@@ -99,7 +99,7 @@ public class MainActivity extends AbsSlidingMusicPanelActivity {
 
         App.setOnProVersionChangedListener(() -> {
             // called if the cached value was outdated (should be a rare event)
-            checkSetUpPro();
+            //checkSetUpPro();
             if (PreferenceUtil.getInstance(MainActivity.this).getLastMusicChooser() == FOLDERS) {
                 setMusicChooser(FOLDERS); // shows the purchase activity and switches to LIBRARY
             }
@@ -165,7 +165,7 @@ public class MainActivity extends AbsSlidingMusicPanelActivity {
         NavigationViewUtil.setItemIconColors(navigationView, ATHUtil.resolveColor(this, R.attr.iconColor, ThemeStore.textColorSecondary(this)), accentColor);
         NavigationViewUtil.setItemTextColors(navigationView, ThemeStore.textColorPrimary(this), accentColor);
 
-        checkSetUpPro();
+        //checkSetUpPro();
         navigationView.setNavigationItemSelectedListener(menuItem -> {
             drawerLayout.closeDrawers();
             switch (menuItem.getItemId()) {
@@ -175,9 +175,10 @@ public class MainActivity extends AbsSlidingMusicPanelActivity {
                 case R.id.nav_folders:
                     new Handler().postDelayed(() -> setMusicChooser(FOLDERS), 200);
                     break;
-                case R.id.buy_pro:
+                //TODO : Remove Forever
+/*                case R.id.buy_pro:
                     new Handler().postDelayed(() -> startActivity(new Intent(MainActivity.this, PurchaseActivity.class)), 200);
-                    break;
+                    break;*/
                 case R.id.action_scan:
                     new Handler().postDelayed(() -> {
                         ScanMediaFolderChooserDialog dialog = ScanMediaFolderChooserDialog.create();
@@ -195,9 +196,9 @@ public class MainActivity extends AbsSlidingMusicPanelActivity {
         });
     }
 
-    private void checkSetUpPro() {
+/*    private void checkSetUpPro() {
         navigationView.getMenu().setGroupVisible(R.id.navigation_drawer_menu_category_buy_pro, false);
-    }
+    }*/
 
     private void setUpDrawerLayout() {
         setUpNavigationView();

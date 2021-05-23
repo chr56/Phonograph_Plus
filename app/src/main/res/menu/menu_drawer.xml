@@ -34,7 +34,8 @@
             android:icon="@drawable/ic_help_white_24dp"
             android:title="@string/action_about" />
     </group>
-
+<!-- TODO : Remove Forever  -->
+<!--
     <group
         android:id="@+id/navigation_drawer_menu_category_buy_pro"
         android:checkableBehavior="none">
@@ -43,5 +44,6 @@
             android:icon="@drawable/ic_local_play_white_24dp"
             android:title="@string/buy_pro" />
     </group>
+-->
 
 </menu>
