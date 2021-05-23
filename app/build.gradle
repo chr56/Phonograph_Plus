@@ -70,6 +70,7 @@ android {
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release
+            resValue "string", "app_name","Phonograph"
         }
         cust{
             minifyEnabled true
@@ -78,11 +79,18 @@ android {
             applicationIdSuffix '.cust'
             signingConfig signingConfigs.cust
             debuggable true
-            //resValue "string", "app_name","Phonograph Custom"
+            resValue "string", "app_name","Phonograph Custom"
         }
         debug {
             applicationIdSuffix '.debug'
             versionNameSuffix ' (' + defaultConfig.versionCode + ') DEBUG (' + gitBranch() + ')'
+            resValue "string", "app_name","Phonograph debug"
+        }
+        custdebug{
+            applicationIdSuffix '.cust.debug'
+            signingConfig signingConfigs.cust
+            debuggable true
+            resValue "string", "app_name","Phonograph Debug Custom"
         }
     }
     packagingOptions {
