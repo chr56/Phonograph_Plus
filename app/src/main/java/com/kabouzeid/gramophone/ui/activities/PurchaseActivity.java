@@ -84,12 +84,7 @@ public class PurchaseActivity extends AbsBaseActivity implements BillingProcesso
 
     @Override
     public void onPurchaseHistoryRestored() {
-        if (App.isProVersion()) {
-            Toast.makeText(this, R.string.restored_previous_purchase_please_restart, Toast.LENGTH_LONG).show();
             App.notifyProVersionChanged();
-        } else {
-            Toast.makeText(this, R.string.no_purchase_found, Toast.LENGTH_SHORT).show();
-        }
     }
 
     @Override

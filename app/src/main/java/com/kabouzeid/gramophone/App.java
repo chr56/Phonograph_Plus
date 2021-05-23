@@ -52,9 +52,7 @@ public class App extends Application {
 
             @Override
             public void onPurchaseHistoryRestored() {
-                if (App.isProVersion()) {
                     App.notifyProVersionChanged();
-                }
             }
 
             @Override
@@ -67,11 +65,11 @@ public class App extends Application {
             }
         });
     }
-
+/*
     public static boolean isProVersion() {
         return true;
 //        return BuildConfig.DEBUG || app.billingProcessor.isPurchased(PRO_VERSION_PRODUCT_ID);
-    }
+    }*/
 
     private static OnProVersionChangedListener onProVersionChangedListener;
     public static void setOnProVersionChangedListener(OnProVersionChangedListener listener) {
@@ -114,7 +112,7 @@ public class App extends Application {
 
         @Override
         protected void onPreExecute() {
-            wasPro = App.isProVersion();
+            wasPro = true;
         }
 
         @Override
@@ -131,7 +129,7 @@ public class App extends Application {
 
         @Override
         protected void onPostExecute(Void aVoid) {
-            if (wasPro != App.isProVersion()) {
+            if (!wasPro) {
                 App.notifyProVersionChanged();
             }
         }

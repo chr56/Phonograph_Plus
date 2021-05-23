@@ -63,11 +63,6 @@ public class SleepTimerDialog extends DialogFragment {
                     if (getActivity() == null) {
                         return;
                     }
-                    if (!App.isProVersion()) {
-                        Toast.makeText(getActivity(), getString(R.string.sleep_timer_is_a_pro_feature), Toast.LENGTH_LONG).show();
-                        startActivity(new Intent(getContext(), PurchaseActivity.class));
-                        return;
-                    }
 
                     PreferenceUtil.getInstance(getActivity()).setSleepTimerFinishMusic(shouldFinishLastSong.isChecked());
 

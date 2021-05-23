@@ -164,7 +164,7 @@ public class AboutActivity extends AbsBaseActivity implements View.OnClickListen
 
     private static String getCurrentVersionName(@NonNull final Context context) {
         try {
-            return context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionName + (App.isProVersion() ? " Pro" : "");
+            return context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionName + " Pro";
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }
@@ -198,11 +198,7 @@ public class AboutActivity extends AbsBaseActivity implements View.OnClickListen
         } else if (v == rateOnGooglePlay) {
             openUrl(RATE_ON_GOOGLE_PLAY);
         } else if (v == donate) {
-            if (App.isProVersion()) {
                 DonationsDialog.create().show(getSupportFragmentManager(), "DONATION_DIALOG");
-            } else {
-                startActivity(new Intent(this, PurchaseActivity.class));
-            }
         } else if (v == aidanFollestadGitHub) {
             openUrl(AIDAN_FOLLESTAD_GITHUB);
         } else if (v == michaelCookWebsite) {

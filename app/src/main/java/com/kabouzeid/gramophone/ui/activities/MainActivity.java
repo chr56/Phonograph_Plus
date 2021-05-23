@@ -100,7 +100,7 @@ public class MainActivity extends AbsSlidingMusicPanelActivity {
         App.setOnProVersionChangedListener(() -> {
             // called if the cached value was outdated (should be a rare event)
             checkSetUpPro();
-            if (!App.isProVersion() && PreferenceUtil.getInstance(MainActivity.this).getLastMusicChooser() == FOLDERS) {
+            if (PreferenceUtil.getInstance(MainActivity.this).getLastMusicChooser() == FOLDERS) {
                 setMusicChooser(FOLDERS); // shows the purchase activity and switches to LIBRARY
             }
         });
@@ -113,12 +113,6 @@ public class MainActivity extends AbsSlidingMusicPanelActivity {
     }
 
     private void setMusicChooser(int key) {
-        if (!App.isProVersion() && key == FOLDERS) {
-            Toast.makeText(this, R.string.folder_view_is_a_pro_feature, Toast.LENGTH_LONG).show();
-            startActivity(new Intent(this, PurchaseActivity.class));
-            key = LIBRARY;
-        }
-
         PreferenceUtil.getInstance(this).setLastMusicChooser(key);
         switch (key) {
             case LIBRARY:
@@ -202,7 +196,7 @@ public class MainActivity extends AbsSlidingMusicPanelActivity {
     }
 
     private void checkSetUpPro() {
-        navigationView.getMenu().setGroupVisible(R.id.navigation_drawer_menu_category_buy_pro, !App.isProVersion());
+        navigationView.getMenu().setGroupVisible(R.id.navigation_drawer_menu_category_buy_pro, false);
     }
 
     private void setUpDrawerLayout() {

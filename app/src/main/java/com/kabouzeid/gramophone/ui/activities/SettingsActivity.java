@@ -77,29 +77,11 @@ public class SettingsActivity extends AbsBaseActivity implements ColorChooserDia
     public void onColorSelection(@NonNull ColorChooserDialog dialog, @ColorInt int selectedColor) {
         switch (dialog.getTitle()) {
             case R.string.primary_color:
-                if (!App.isProVersion()) {
-                    Arrays.sort(NonProAllowedColors.PRIMARY_COLORS);
-                    if (Arrays.binarySearch(NonProAllowedColors.PRIMARY_COLORS, selectedColor) < 0) {
-                        // color wasn't found
-                        Toast.makeText(this, R.string.only_the_first_5_colors_available, Toast.LENGTH_LONG).show();
-                        startActivity(new Intent(this, PurchaseActivity.class));
-                        return;
-                    }
-                }
                 ThemeStore.editTheme(this)
                         .primaryColor(selectedColor)
                         .commit();
                 break;
             case R.string.accent_color:
-                if (!App.isProVersion()) {
-                    Arrays.sort(NonProAllowedColors.ACCENT_COLORS);
-                    if (Arrays.binarySearch(NonProAllowedColors.ACCENT_COLORS, selectedColor) < 0) {
-                        // color wasn't found
-                        Toast.makeText(this, R.string.only_the_first_5_colors_available, Toast.LENGTH_LONG).show();
-                        startActivity(new Intent(this, PurchaseActivity.class));
-                        return;
-                    }
-                }
                 ThemeStore.editTheme(this)
                         .accentColor(selectedColor)
                         .commit();
@@ -193,11 +175,6 @@ public class SettingsActivity extends AbsBaseActivity implements ColorChooserDia
             setSummary(generalTheme);
             generalTheme.setOnPreferenceChangeListener((preference, o) -> {
                 String themeName = (String) o;
-                if (themeName.equals("black") && !App.isProVersion()) {
-                    Toast.makeText(getActivity(), R.string.black_theme_is_a_pro_feature, Toast.LENGTH_LONG).show();
-                    startActivity(new Intent(getContext(), PurchaseActivity.class));
-                    return false;
-                }
 
                 setSummary(generalTheme, o);
 
