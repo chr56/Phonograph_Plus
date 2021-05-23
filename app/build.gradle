@@ -32,6 +32,8 @@ def getProperties(String fileName) {
 static def getProperty(@Nullable Properties properties, String name) {
     return properties.getProperty(name) ?: "$name missing"
 }
+def signingProperties = new Properties()
+signingProperties.load(new FileInputStream(rootProject.file("signing.properties")))
 
 android {
     compileSdkVersion 30
@@ -54,6 +56,12 @@ android {
             keyAlias getProperty(properties, 'keyAlias')
             storePassword getProperty(properties, 'storePassword')
             keyPassword getProperty(properties, 'keyPassword')
+        }
+        cust {
+            storeFile file(signingProperties['storeFile'])
+            storePassword signingProperties['storePassword']
+            keyAlias signingProperties['keyAlias']
+            keyPassword signingProperties['keyPassword']
         }
     }
     buildTypes {
