@@ -63,6 +63,15 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release
         }
+        cust{
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            applicationIdSuffix '.cust'
+            signingConfig signingConfigs.cust
+            debuggable true
+            //resValue "string", "app_name","Phonograph Custom"
+        }
         debug {
             applicationIdSuffix '.debug'
             versionNameSuffix ' (' + defaultConfig.versionCode + ') DEBUG (' + gitBranch() + ')'
