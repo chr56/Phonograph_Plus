@@ -31,7 +31,7 @@ public abstract class AbsThemeActivity extends ATHToolbarActivity {
     protected void setDrawUnderStatusbar() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
             Util.setAllowDrawUnderStatusBar(getWindow());
-        else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
+        else //if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
             Util.setStatusBarTranslucent(getWindow());
     }
 
@@ -42,7 +42,7 @@ public abstract class AbsThemeActivity extends ATHToolbarActivity {
      * @param color the new statusbar color (will be shifted down on Lollipop and above)
      */
     public void setStatusbarColor(int color) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+        //if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             final View statusBar = getWindow().getDecorView().getRootView().findViewById(R.id.status_bar);
             if (statusBar != null) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -55,7 +55,7 @@ public abstract class AbsThemeActivity extends ATHToolbarActivity {
                 getWindow().setStatusBarColor(ColorUtil.darkenColor(color));
                 setLightStatusbarAuto(color);
             }
-        }
+        //}
     }
 
     public void setStatusbarColorAuto() {
