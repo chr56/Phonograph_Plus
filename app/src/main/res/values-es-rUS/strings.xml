@@ -189,9 +189,6 @@
     <string name="permissions_denied">Permisos denegados.</string>
     <string name="permission_external_storage_denied">Permiso para acceder al almacenamiento externo denegado.</string>
     <string name="support_development">Apoyar el desarrollo</string>
-    <string name="buy_pro">Comprar Phonograph Pro</string>
-    <string name="thank_you">¡Gracias!</string>
-    <string name="restored_previous_purchase_please_restart">Compra previa restaurada. Por favor reinicie la aplicación para hacer uso de todas las características.</string>
     <string name="version">Versión</string>
     <string name="author">Autor</string>
     <string name="write_an_email">Escribir un email</string>
@@ -210,7 +207,6 @@
     <string name="maarten_corpel_summary">Por la elaboración de la ilustración en Play Store y la portada de álbum por defecto.</string>
     <string name="aleksandar_tesic_summary">Por ayudarme con el diseño.</string>
     <string name="website">Sitio web</string>
-    <string name="loading_products">Cargando productos...</string>
     <string name="up_next">En seguida</string>
     <string name="pref_title_now_playing_screen_appearance">Apariencia</string>
     <string name="intro_label">Introducción</string>
@@ -262,15 +258,6 @@
     <string name="playlist_is_empty">La lista de reproducción está vacía</string>
     <string name="playing_notification_description">La notificación de reproducción proporciona acciones para reproducir/pausar, etc.</string>
     <string name="playing_notification_name">Notificación de reproducción</string>
-    <string name="only_the_first_5_colors_available">Solo los primeros 5 colores están disponibles en la versión gratuita.</string>
-    <string name="black_theme_is_a_pro_feature">El tema negro es una función de Phonograph Pro.</string>
-    <string name="sleep_timer_is_a_pro_feature">El temporizador de apagado es una función de Phonograph Pro</string>
-    <string name="folder_view_is_a_pro_feature">La vista de carpetas es una función de Phonograph Pro.</string>
-    <string name="restoring_purchase">Restaurando compra...</string>
-    <string name="could_not_restore_purchase">No se pudo restaurar la compra.</string>
-    <string name="purchase">Comprar</string>
-    <string name="restore">Restaurar</string>
-    <string name="no_purchase_found">No se encontró la compra.</string>
     <string name="eugene_cheung_summary">Por sus contribuciones al código fuente.</string>
     <string name="adrian_summary">Por crear el diseño para la ventana del álbum.</string>
     <string name="add_action">Agregar</string>

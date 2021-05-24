@@ -190,9 +190,6 @@
     <string name="permissions_denied">У доступі відмовлено.</string>
     <string name="permission_external_storage_denied">Дозвіл на доступ до зовнішньої пам\'яті відмовлено.</string>
     <string name="support_development">Підтримати розробника</string>
-    <string name="buy_pro">Придбайте Phonograph Pro</string>
-    <string name="thank_you">Щиро дякую!</string>
-    <string name="restored_previous_purchase_please_restart">Відновлено попередню покупку. Перезапустіть додаток, щоб скористатися всіма функціями.</string>
     <string name="version">Версія</string>
     <string name="author">Автор</string>
     <string name="write_an_email">Написати листа</string>
@@ -211,7 +208,6 @@
     <string name="maarten_corpel_summary">За ілюстрацію в Play Store та пусте зображення обкладинки альбому.</string>
     <string name="aleksandar_tesic_summary">За допомогу в дизайні.</string>
     <string name="website">Веб-сайт</string>
-    <string name="loading_products">Завантаження продуктів...</string>
     <string name="up_next">До наступного</string>
     <string name="pref_title_now_playing_screen_appearance">Вигляд</string>
     <string name="intro_label">Знайомство</string>
@@ -255,14 +251,6 @@
     <string name="bug_report_failed_unknown">Сталася несподівана помилка. Зверніться до розробника програми.</string>
     <string name="app_shortcut_shuffle_all_short">Перемішати</string>
     <string name="playlist_is_empty">Список відтворення пустий</string>
-    <string name="black_theme_is_a_pro_feature">Темна тема доступна у платній версії.</string>
-    <string name="sleep_timer_is_a_pro_feature">Таймер сну доступний у платній версії.</string>
-    <string name="folder_view_is_a_pro_feature">Перегляд тек доступний у платній версії.</string>
-    <string name="restoring_purchase">Відновлення купівлі...</string>
-    <string name="could_not_restore_purchase">Неможливо відновити купівлю.</string>
-    <string name="purchase">Придбати</string>
-    <string name="restore">Відновити купівлю</string>
-    <string name="no_purchase_found">Не знайдено купівель.</string>
     <string name="add_action">Додати</string>
     <string name="blacklist">Чорний список</string>
     <string name="remove_from_blacklist">Видалити з чорного списку</string>

@@ -189,9 +189,6 @@
     <string name="permissions_denied">Jogosultságok megtagadva.</string>
     <string name="permission_external_storage_denied">Hozzáférés megtagadva a külső tárhelyhez.</string>
     <string name="support_development">Fejlesztés támogatás</string>
-    <string name="buy_pro">Vásárolja med a  Phonograph Pro(t)</string>
-    <string name="thank_you">Köszönöm!</string>
-    <string name="restored_previous_purchase_please_restart">Az előző vásárlás helyreállítása. Kérjük, indítsa újra az alkalmazást az összes funkció használatához.</string>
     <string name="version">Verzió</string>
     <string name="author">Készítő</string>
     <string name="write_an_email">Írjon e-mailt</string>
@@ -210,7 +207,6 @@
     <string name="maarten_corpel_summary">A Play Áruházas illusztrációért és az üres albumborítóért.</string>
     <string name="aleksandar_tesic_summary">A dizájnban való segítségért.</string>
     <string name="website">Weboldal</string>
-    <string name="loading_products">Termékek betöltése...</string>
     <string name="up_next">Lejátszási sor</string>
     <string name="pref_title_now_playing_screen_appearance">Megjelenés</string>
     <string name="intro_label">Bevezető</string>
@@ -263,15 +259,6 @@
     <string name="playlist_is_empty">A lejátszási lista üres</string>
     <string name="playing_notification_description">A lejátszási értesítés lejátszási / szüneteltetési intézkedéseket tartalmaz.</string>
     <string name="playing_notification_name">Értesítés lejátszása</string>
-    <string name="only_the_first_5_colors_available">Csak az első 5 szín áll rendelkezésre az ingyenes verzióban.</string>
-    <string name="black_theme_is_a_pro_feature">A fekete téma a Phonograph Pro funkcióban van.</string>
-    <string name="sleep_timer_is_a_pro_feature">Az elalvásidőzitő a Phonograph Pro funkcióban van.</string>
-    <string name="folder_view_is_a_pro_feature">A mappa nézete a  Phonograph Pro funkcióban van.</string>
-    <string name="restoring_purchase">A vásárlás visszaállítása...</string>
-    <string name="could_not_restore_purchase">A vásárlást nem sikerült visszaállítani.</string>
-    <string name="purchase">Vásárlás</string>
-    <string name="restore">Visszaállítás</string>
-    <string name="no_purchase_found">Nem található vásárlás.</string>
     <string name="eugene_cheung_summary">A forráskódhoz való hozzájárulásáért.</string>
     <string name="adrian_summary">Az album oldalának kialakításához.</string>
     <string name="add_action">Hozzáadás</string>

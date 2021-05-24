@@ -182,7 +182,6 @@
     <string name="permissions_denied">Άρνηση χορήγησης δικαιωμάτων.</string>
     <string name="permission_external_storage_denied">Άρνηση χορήγησης δικαιώματος πρόσβασης σε εξωτερικά μέσα αποθήκευσης.</string>
     <string name="support_development">Υποστηρίξτε την ανάπτυξη της εφαρμογής</string>
-    <string name="thank_you">Σας ευχαριστώ!</string>
     <string name="version">Έκδοση</string>
     <string name="author">Εκδότης</string>
     <string name="follow_on_twitter">Ακολουθήστε στο Twitter</string>
@@ -199,7 +198,6 @@
     <string name="maarten_corpel_summary">Για την δημιουργία της εικονογράφησης του Play Store και του άδειου εξώφυλλου του άλμπουμ.</string>
     <string name="aleksandar_tesic_summary">Για την βοήθειά του στον σχεδιασμό.</string>
     <string name="website">Ιστοσελίδα</string>
-    <string name="loading_products">Φόρτωση προϊόντων...</string>
     <string name="up_next">Επόμενο</string>
     <string name="pref_title_now_playing_screen_appearance">Εμφάνιση</string>
     <string name="intro_label">Εισαγωγή</string>

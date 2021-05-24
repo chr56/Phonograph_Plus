@@ -193,9 +193,6 @@
     <string name="permissions_denied">Berechtigungen verweigert.</string>
     <string name="permission_external_storage_denied">Die Berechtigung für den Zugriff auf den externen Speicher wurde verweigert.</string>
     <string name="support_development">Unterstütze die Entwicklung</string>
-    <string name="buy_pro">Phonograph Pro kaufen</string>
-    <string name="thank_you">Vielen Dank!</string>
-    <string name="restored_previous_purchase_please_restart">Vorheriger Kauf wiederhergestellt. Bitte starte die App neu, um alle Features nutzen zu können.</string>
     <string name="version">Version</string>
     <string name="author">Autor</string>
     <string name="write_an_email">Eine E-Mail schreiben</string>
@@ -214,7 +211,6 @@
     <string name="maarten_corpel_summary">Für das Machen der Play Store Illustration und des leeren Album Covers.</string>
     <string name="aleksandar_tesic_summary">Für die Hilfe beim Design.</string>
     <string name="website">Website</string>
-    <string name="loading_products">Produkte werden geladen...</string>
     <string name="up_next">Als nächstes</string>
     <string name="pref_title_now_playing_screen_appearance">Aussehen</string>
     <string name="intro_label">Einführung</string>
@@ -267,15 +263,6 @@
     <string name="playlist_is_empty">Die Wiedergabeliste ist leer</string>
     <string name="playing_notification_description">Die Benachrichtigung zur Steuerung von Play/Pause etc.</string>
     <string name="playing_notification_name">Wiedergabe-Benachrichtigung</string>
-    <string name="only_the_first_5_colors_available">Nur die ersten 5 Farben sind in der kostenlosen Version verfügbar.</string>
-    <string name="black_theme_is_a_pro_feature">Das schwarze Theme ist ein Phonograph Pro-Feature</string>
-    <string name="sleep_timer_is_a_pro_feature">Der Einschlaf-Timer ist ein Phonograph Pro-Feature</string>
-    <string name="folder_view_is_a_pro_feature">Die Ordner-Ansicht ist ein Phonograph Pro-Feature.</string>
-    <string name="restoring_purchase">Stelle Kauf wieder her...</string>
-    <string name="could_not_restore_purchase">Kauf konnte nicht wiederhergestellt werden.</string>
-    <string name="purchase">Kaufen</string>
-    <string name="restore">Wiederherstellen</string>
-    <string name="no_purchase_found">Kein Kauf gefunden.</string>
     <string name="eugene_cheung_summary">Für seinen Beitrag zum Quellcode.</string>
     <string name="adrian_summary">Für die Erstellung des Designs der Album-Seite.</string>
     <string name="add_action">Hinzufügen</string>

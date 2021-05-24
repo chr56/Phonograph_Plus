@@ -193,9 +193,6 @@
     <string name="permissions_denied">İzinler reddedildi.</string>
     <string name="permission_external_storage_denied">Harici depolamaya erişim izin reddedildi.</string>
     <string name="support_development">Geliştirmeyi destekleyin</string>
-    <string name="buy_pro">Phonograph Pro\'yu Satın Alın</string>
-    <string name="thank_you">Teşekkürler!</string>
-    <string name="restored_previous_purchase_please_restart">Önceki satın alma geri yüklendi. Tüm özellikleri kullanabilmek için lütfen uygulamayı tekrar başlatın.</string>
     <string name="version">Sürüm</string>
     <string name="author">Yapımcı</string>
     <string name="write_an_email">Bir e-posta yazın</string>
@@ -214,7 +211,6 @@
     <string name="maarten_corpel_summary">Play Store ve boş albüm kapağı düzenlemeleri için.</string>
     <string name="aleksandar_tesic_summary">Tasarımda bana yardımcı olduğu için.</string>
     <string name="website">Web sitesi</string>
-    <string name="loading_products">İçerik yükleniyor...</string>
     <string name="up_next">Sırada olanlar</string>
     <string name="pref_title_now_playing_screen_appearance">Görünüm</string>
     <string name="intro_label">Tanıtım</string>
@@ -267,15 +263,6 @@
     <string name="playlist_is_empty">Çalma listesi boş</string>
     <string name="playing_notification_description">Çalma bildirimi, başlat/duraklat vb. işlemleri sağlar</string>
     <string name="playing_notification_name">Çalma bildirimi</string>
-    <string name="only_the_first_5_colors_available">Ücretsiz sürümde sadece ilk 5 renk mevcuttur.</string>
-    <string name="black_theme_is_a_pro_feature">Siyah tema, Phonograph Pro özelliğidir.</string>
-    <string name="sleep_timer_is_a_pro_feature">Uyku zamanlayıcı bir Phonograph Pro özelliğidir.</string>
-    <string name="folder_view_is_a_pro_feature">Klasör görünümü bir Phonograph Pro özelliğidir.</string>
-    <string name="restoring_purchase">Satın alma geri yükleniyor...</string>
-    <string name="could_not_restore_purchase">Satın alma geri yüklenemedi.</string>
-    <string name="purchase">Satın Al</string>
-    <string name="restore">Geri yükle</string>
-    <string name="no_purchase_found">Satın alma bulunamadı.</string>
     <string name="eugene_cheung_summary">Kaynak koda yaptığı katkılardan dolayı.</string>
     <string name="adrian_summary">Albüm sayfası tasarımı oluşturmak için.</string>
     <string name="add_action">Ekle</string>

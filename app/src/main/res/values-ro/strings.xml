@@ -189,9 +189,6 @@
     <string name="permissions_denied">Permisiune refuzată.</string>
     <string name="permission_external_storage_denied">Permisiunea de a accesa stocarea externă a fost respinsă.</string>
     <string name="support_development">Susţineţi dezvoltarea</string>
-    <string name="buy_pro">Cumpăraţi Phonograph Pro</string>
-    <string name="thank_you">Mulţumesc!</string>
-    <string name="restored_previous_purchase_please_restart">A fost restaurată achiziția anterioară. Reporniți aplicația pentru a utiliza toate funcțiile.</string>
     <string name="version">Versiune</string>
     <string name="author">Autor</string>
     <string name="write_an_email">Scrieţi un e-mail</string>
@@ -210,7 +207,6 @@
     <string name="maarten_corpel_summary">Pentru ilustrația din magazinului Play și coperta albumului gol.</string>
     <string name="aleksandar_tesic_summary">Pentru ajutorul cu designul.</string>
     <string name="website">Site web</string>
-    <string name="loading_products">Încărcare produse...</string>
     <string name="up_next">Urmează</string>
     <string name="pref_title_now_playing_screen_appearance">Aspect</string>
     <string name="intro_label">Introducere</string>
@@ -263,15 +259,6 @@
     <string name="playlist_is_empty">Listă de redare goală</string>
     <string name="playing_notification_description">Notificarea de redare oferă acțiuni de redare/pauză etc.</string>
     <string name="playing_notification_name">Notificare de redare</string>
-    <string name="only_the_first_5_colors_available">Numai primele 5 culori sunt disponibile în versiunea gratuită.</string>
-    <string name="black_theme_is_a_pro_feature">Tema întunecată este disponibilă doar în versiunea Phonograph Pro.</string>
-    <string name="sleep_timer_is_a_pro_feature">Temporizatorul este disponibil doar în versiunea Phonograph Pro</string>
-    <string name="folder_view_is_a_pro_feature">Afișarea dosarelor este disponibilă doar în versiunea Phonograph Pro.</string>
-    <string name="restoring_purchase">Se restabilește achiziția...</string>
-    <string name="could_not_restore_purchase">Nu a putut fi restabilită achiziția.</string>
-    <string name="purchase">Cumpărare</string>
-    <string name="restore">Restabilire</string>
-    <string name="no_purchase_found">Nu s-a găsit nicio achiziție.</string>
     <string name="eugene_cheung_summary">Pentru contribuțiile sale la codul sursă.</string>
     <string name="adrian_summary">Pentru crearea designului paginii albume</string>
     <string name="add_action">Adăugare</string>

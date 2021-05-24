@@ -165,7 +165,6 @@
     <string name="permissions_denied">Достъпът е отказан.</string>
     <string name="permission_external_storage_denied">Достъпът до външното място за съхранение е отказан.</string>
     <string name="support_development">Подкрепете развитието</string>
-    <string name="thank_you">Благодаря Ви!</string>
     <string name="version">Версия</string>
     <string name="author">Автор</string>
     <string name="follow_on_twitter">Последвай в Twitter</string>
@@ -182,7 +181,6 @@
     <string name="maarten_corpel_summary">За направата на Play Store илюстрацията и обложката по подразбиране.</string>
     <string name="aleksandar_tesic_summary">За помощта относно дизайн</string>
     <string name="website">Уебсайт</string>
-    <string name="loading_products">Зареждане...</string>
     <string name="up_next">Следващи песни</string>
     <string name="pref_title_now_playing_screen_appearance">Изглед</string>
     <string name="intro_label">Въеведение</string>

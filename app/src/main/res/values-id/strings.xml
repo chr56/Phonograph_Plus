@@ -193,9 +193,6 @@
     <string name="permissions_denied">Izin ditolak</string>
     <string name="permission_external_storage_denied">Izin untuk akses ke memori eksternal ditolak.</string>
     <string name="support_development">Dukung pengembangan</string>
-    <string name="buy_pro">Beli Phonographo Pro</string>
-    <string name="thank_you">Terima kasih!</string>
-    <string name="restored_previous_purchase_please_restart">Mengembalikan pembelian sebelumnya. Mohon buka kembali aplikasi untuk memakai semua fitur.</string>
     <string name="version">Versi</string>
     <string name="author">Penulis</string>
     <string name="write_an_email">Tulis pesan elektronik</string>
@@ -214,7 +211,6 @@
     <string name="maarten_corpel_summary">"Untuk pembuat ilustrasi Play Store dan sampul album yang kosong. "</string>
     <string name="aleksandar_tesic_summary">"Untuk yang membantu saya dengan desainnya. "</string>
     <string name="website">Situs</string>
-    <string name="loading_products">Memuat produk...</string>
     <string name="up_next">Berikutnya</string>
     <string name="pref_title_now_playing_screen_appearance">Tampilan</string>
     <string name="intro_label">Pengenalan</string>
@@ -267,15 +263,6 @@
     <string name="playlist_is_empty">Daftar putar kosong</string>
     <string name="playing_notification_description">Notifikasi bermain memberi tindakan untuk putar/jeda, dll.</string>
     <string name="playing_notification_name">Notifikasi bermain</string>
-    <string name="only_the_first_5_colors_available">Hanya 5 warna pertama yang tersedia untuk versi gratis.</string>
-    <string name="black_theme_is_a_pro_feature">Tema gelap adalah fitur Phonograph Pro.</string>
-    <string name="sleep_timer_is_a_pro_feature">Pengatur waktu tidur adalah fitur Phonograph Pro</string>
-    <string name="folder_view_is_a_pro_feature">Tampilan folder adalah fitur Phonograph Pro.</string>
-    <string name="restoring_purchase">Memulihkan pembelian...</string>
-    <string name="could_not_restore_purchase">Tidak dapat memulihkan pembelian.</string>
-    <string name="purchase">Pembelian</string>
-    <string name="restore">Pulihkan</string>
-    <string name="no_purchase_found">Tidak ada pembelian yang ditemukan.</string>
     <string name="eugene_cheung_summary">Untuk kontribusinya terhadap kode sumber.</string>
     <string name="adrian_summary">Untuk membuat halaman desain album.</string>
     <string name="add_action">Tambah</string>

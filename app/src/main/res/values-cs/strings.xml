@@ -193,9 +193,6 @@
     <string name="permissions_denied">"Oprávnění zamítnuta. "</string>
     <string name="permission_external_storage_denied">"Přístup k otevření externího úložiště zamítnut. "</string>
     <string name="support_development">Podpořte vývoj</string>
-    <string name="buy_pro">Zakoupit Phonograph Pro</string>
-    <string name="thank_you">"Díky! "</string>
-    <string name="restored_previous_purchase_please_restart">Předchozí nákup byl obnoven. Restartujte aplikaci pro využití všech funkcí.</string>
     <string name="version">Verze</string>
     <string name="author">Autor</string>
     <string name="write_an_email">Napsat e-mail</string>
@@ -214,7 +211,6 @@
     <string name="maarten_corpel_summary">"Za vytvoření ilustrace do Play Store a prázdného obalu alba. "</string>
     <string name="aleksandar_tesic_summary">"Za pomoc s designem. "</string>
     <string name="website">"Stránka "</string>
-    <string name="loading_products">"Načítání výrobků... "</string>
     <string name="up_next">"Další "</string>
     <string name="pref_title_now_playing_screen_appearance">Vzhled</string>
     <string name="intro_label">"Úvod "</string>
@@ -267,15 +263,6 @@
     <string name="playlist_is_empty">Playlist je prázdný</string>
     <string name="playing_notification_description">Oznámení o přehrávání obsahuje akce pro přehrávání/pauzu atd.</string>
     <string name="playing_notification_name">Oznámení o přehrávání</string>
-    <string name="only_the_first_5_colors_available">Ve verzi zdarma je dostupných pouze prvních 5 barev.</string>
-    <string name="black_theme_is_a_pro_feature">Černý motiv je funkce Phonograph Pro.</string>
-    <string name="sleep_timer_is_a_pro_feature">Časovač vypnutí je funkce Phonograph Pro.</string>
-    <string name="folder_view_is_a_pro_feature">Prohlížení složek je funkce Phonograph Pro.</string>
-    <string name="restoring_purchase">Obnovení nákupu...</string>
-    <string name="could_not_restore_purchase">Nákup nelze obnovit.</string>
-    <string name="purchase">Zakoupit</string>
-    <string name="restore">Obnovit</string>
-    <string name="no_purchase_found">Nebyl nalezen žádný nákup.</string>
     <string name="eugene_cheung_summary">Pro příspěvky ke zdrojovému kódu.</string>
     <string name="adrian_summary">Pro vytvoření návrhu stránky alba.</string>
     <string name="add_action">Přidat</string>

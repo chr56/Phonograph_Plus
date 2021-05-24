@@ -191,9 +191,6 @@
     <string name="permissions_denied">권한이 거부되었습니다.</string>
     <string name="permission_external_storage_denied">외부 저장소 접근 권한이 거부되었습니다.</string>
     <string name="support_development">개발 지원</string>
-    <string name="buy_pro">프로 구매하기</string>
-    <string name="thank_you">감사합니다!</string>
-    <string name="restored_previous_purchase_please_restart">구매를 복원했습니다. 모든 기능을 사용하시려면 앱을 다시 시작해 주세요.</string>
     <string name="version">버전</string>
     <string name="author">제작자</string>
     <string name="write_an_email">이메일 작성</string>
@@ -212,7 +209,6 @@
     <string name="maarten_corpel_summary">Play 스토어 일러스트 및 기본 앨범 아트</string>
     <string name="aleksandar_tesic_summary">디자인 관련 도움</string>
     <string name="website">웹사이트</string>
-    <string name="loading_products">상품 불러오는 중...</string>
     <string name="up_next">다음 곡</string>
     <string name="pref_title_now_playing_screen_appearance">스타일</string>
     <string name="intro_label">소개</string>
@@ -265,15 +261,6 @@
     <string name="playlist_is_empty">재생 목록이 비어 있습니다.</string>
     <string name="playing_notification_description">재생 알림을 통해 재생/일시 정지 등을 제어할 수 있습니다.</string>
     <string name="playing_notification_name">재생 알림</string>
-    <string name="only_the_first_5_colors_available">무료 버전에서는 첫 5개의 색상만 선택 가능합니다.</string>
-    <string name="black_theme_is_a_pro_feature">검정 테마는 프로 기능입니다.</string>
-    <string name="sleep_timer_is_a_pro_feature">수면 타이머는 프로 기능입니다.</string>
-    <string name="folder_view_is_a_pro_feature">폴더 보기는 프로 기능입니다.</string>
-    <string name="restoring_purchase">구매 내역을 복원하는 중…</string>
-    <string name="could_not_restore_purchase">구매 내역을 복원하지 못했습니다.</string>
-    <string name="purchase">구매하기</string>
-    <string name="restore">복원</string>
-    <string name="no_purchase_found">구매 내역이 없습니다.</string>
     <string name="eugene_cheung_summary">소스 코드에 대한 기여</string>
     <string name="adrian_summary">앨범 페이지 디자인 제작</string>
     <string name="add_action">추가</string>

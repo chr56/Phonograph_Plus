@@ -193,9 +193,6 @@
     <string name="permissions_denied">Sinulla ei ole oikeuksia tähän.</string>
     <string name="permission_external_storage_denied">Oikeus päästä muistikortille evätty.</string>
     <string name="support_development">Tue kehitystä</string>
-    <string name="buy_pro">Osta Phonograph Pro</string>
-    <string name="thank_you">Kiitos!</string>
-    <string name="restored_previous_purchase_please_restart">Palautettiin aiempi ostos. Ole hyvä ja käynnistä sovellus uudelleen saadaksesi hyödyn uusista ominaisuuksista.</string>
     <string name="version">Versio</string>
     <string name="author">Luoja</string>
     <string name="write_an_email">Kirjoita sähköpostia</string>
@@ -214,7 +211,6 @@
     <string name="maarten_corpel_summary">Play-kaupan kuvituksesta ja tyhjän albumin kannesta.</string>
     <string name="aleksandar_tesic_summary">Sovelluksen ulkonäön kanssa auttamisesta.</string>
     <string name="website">Verkkosivu</string>
-    <string name="loading_products">Ladataan tuotteita...</string>
     <string name="up_next">Seuraavaksi</string>
     <string name="pref_title_now_playing_screen_appearance">Ulkonäkö</string>
     <string name="intro_label">Esittely</string>
@@ -267,15 +263,6 @@
     <string name="playlist_is_empty">Soittolista on tyhjä</string>
     <string name="playing_notification_description">Toistoilmoitus sisältää nappeja musiikin toistolle/pysäyttämiselle jne.</string>
     <string name="playing_notification_name">Toistoilmoitus</string>
-    <string name="only_the_first_5_colors_available">Sovelluksen ilmaisversio on rajoitettu 5 ensimmäiseen värivaihtoehtoon.</string>
-    <string name="black_theme_is_a_pro_feature">Musta teema on Phonograph Pro:n ominaisuus.</string>
-    <string name="sleep_timer_is_a_pro_feature">Herätyskello on Phonograph Pro:n ominaisuus.</string>
-    <string name="folder_view_is_a_pro_feature">Kansionäkymä on Phonograph Pro:n ominaisuus.</string>
-    <string name="restoring_purchase">Palautetaan ostoa...</string>
-    <string name="could_not_restore_purchase">Ei voitu palauttaa ostoa.</string>
-    <string name="purchase">Osta</string>
-    <string name="restore">Palauta</string>
-    <string name="no_purchase_found">Ostoa ei löytynyt.</string>
     <string name="eugene_cheung_summary">Työpanoksesta sovelluksen lähdekoodin parissa.</string>
     <string name="adrian_summary">Albumisivun ulkonäöstä.</string>
     <string name="add_action">Lisää</string>

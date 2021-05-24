@@ -193,9 +193,6 @@
     <string name="permissions_denied">Quyền hạn bị từ chối.</string>
     <string name="permission_external_storage_denied">Quyền truy cập lưu trữ bên ngoài bị từ chối.</string>
     <string name="support_development">Hỗ trợ phát triển</string>
-    <string name="buy_pro">Mua Phonograph Pro</string>
-    <string name="thank_you">Cảm ơn!</string>
-    <string name="restored_previous_purchase_please_restart">Khôi phục mua trước đó. Vui lòng khởi động lại ứng dụng để sử dụng tất cả các tính năng.</string>
     <string name="version">Phiên bản</string>
     <string name="author">Tác giả</string>
     <string name="write_an_email">Viết email</string>
@@ -214,7 +211,6 @@
     <string name="maarten_corpel_summary">Ảnh minh họa trên Play Store và ảnh bìa album rỗng.</string>
     <string name="aleksandar_tesic_summary">Vì đã giúp tôi thiết kế.</string>
     <string name="website">Trang web</string>
-    <string name="loading_products">Đang tải sản phẩm...</string>
     <string name="up_next">Tiếp theo</string>
     <string name="pref_title_now_playing_screen_appearance">Giao diện</string>
     <string name="intro_label">Giới thiệu</string>
@@ -267,15 +263,6 @@
     <string name="playlist_is_empty">Danh sách nhạc trống</string>
     <string name="playing_notification_description">Thông báo đang phát cung cấp các hành động để phát / tạm dừng vv.</string>
     <string name="playing_notification_name">Thông báo đang phát</string>
-    <string name="only_the_first_5_colors_available">Chỉ 5 màu đầu tiên có trong phiên bản miễn phí.</string>
-    <string name="black_theme_is_a_pro_feature">Chủ đề màu đen là tính năng của Phonograph Pro.</string>
-    <string name="sleep_timer_is_a_pro_feature">Hẹn giờ ngủ là một tính năng của Phonograph Pro</string>
-    <string name="folder_view_is_a_pro_feature">Xem thư mục là một tính năng của Phonograph Pro.</string>
-    <string name="restoring_purchase">Đang khôi phục mua hàng...</string>
-    <string name="could_not_restore_purchase">Không thể khôi phục mua hàng.</string>
-    <string name="purchase">Mua hàng</string>
-    <string name="restore">Khôi phục</string>
-    <string name="no_purchase_found">Không tìm thấy hàng mua.</string>
     <string name="eugene_cheung_summary">Đối với đóng góp cho mã nguồn.</string>
     <string name="adrian_summary">Tạo thiết kế cho trang album.</string>
     <string name="add_action">Thêm</string>
