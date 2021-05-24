@@ -61,7 +61,8 @@ public class App extends Application {
 
             @Override
             public void onBillingInitialized() {
-                App.loadPurchases(); // runs in background
+                //TODO : Remove Forever
+                //App.loadPurchases(); // runs in background
             }
         });
     }
@@ -94,7 +95,7 @@ public class App extends Application {
         billingProcessor.release();
     }
 
-    private static LoadOwnedPurchasesFromGoogleAsyncTask loadOwnedPurchasesFromGoogleAsyncTask;
+/*    private static LoadOwnedPurchasesFromGoogleAsyncTask loadOwnedPurchasesFromGoogleAsyncTask;
     public static void loadPurchases() { // currently a bit unnecessary since it is only executed once and not outside of this class
         if (loadOwnedPurchasesFromGoogleAsyncTask == null || loadOwnedPurchasesFromGoogleAsyncTask.getStatus() == AsyncTask.Status.FINISHED) {
             loadOwnedPurchasesFromGoogleAsyncTask = new LoadOwnedPurchasesFromGoogleAsyncTask(App.getInstance().billingProcessor);
@@ -133,5 +134,5 @@ public class App extends Application {
                 App.notifyProVersionChanged();
             }
         }
-    }
+    }*/
 }
