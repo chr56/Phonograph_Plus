@@ -77,11 +77,11 @@ public class App extends Application {
     public static void setOnProVersionChangedListener(OnProVersionChangedListener listener) {
         onProVersionChangedListener = listener;
     }
-    public static void notifyProVersionChanged() {
+/*    public static void notifyProVersionChanged() {
         if (onProVersionChangedListener != null) {
             onProVersionChangedListener.onProVersionChanged();
         }
-    }
+    }*/
     public interface OnProVersionChangedListener {
         void onProVersionChanged();
     }
