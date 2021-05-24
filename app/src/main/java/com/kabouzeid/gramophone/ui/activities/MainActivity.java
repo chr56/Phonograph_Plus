@@ -97,20 +97,20 @@ public class MainActivity extends AbsSlidingMusicPanelActivity {
             showChangelog();
         }
 
-        App.setOnProVersionChangedListener(() -> {
+       // App.setOnProVersionChangedListener(() -> {
             // called if the cached value was outdated (should be a rare event)
             //checkSetUpPro();
             if (PreferenceUtil.getInstance(MainActivity.this).getLastMusicChooser() == FOLDERS) {
                 setMusicChooser(FOLDERS); // shows the purchase activity and switches to LIBRARY
             }
-        });
+       // });
     }
 
-    @Override
+/*    @Override
     protected void onDestroy() {
         super.onDestroy();
         App.setOnProVersionChangedListener(null);
-    }
+    }*/
 
     private void setMusicChooser(int key) {
         PreferenceUtil.getInstance(this).setLastMusicChooser(key);

@@ -72,19 +72,20 @@ public class App extends Application {
         return true;
 //        return BuildConfig.DEBUG || app.billingProcessor.isPurchased(PRO_VERSION_PRODUCT_ID);
     }*/
-
-    private static OnProVersionChangedListener onProVersionChangedListener;
-    public static void setOnProVersionChangedListener(OnProVersionChangedListener listener) {
+//TODO : Remove Forever
+    //
+//    private static OnProVersionChangedListener onProVersionChangedListener;
+/*    public static void setOnProVersionChangedListener(OnProVersionChangedListener listener) {
         onProVersionChangedListener = listener;
-    }
+    }*/
 /*    public static void notifyProVersionChanged() {
         if (onProVersionChangedListener != null) {
             onProVersionChangedListener.onProVersionChanged();
         }
     }*/
-    public interface OnProVersionChangedListener {
+/*    public interface OnProVersionChangedListener {
         void onProVersionChanged();
-    }
+    }*/
 
     public static App getInstance() {
         return app;
