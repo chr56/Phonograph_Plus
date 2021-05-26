@@ -87,12 +87,15 @@ public class MainActivity extends AbsSlidingMusicPanelActivity {
         }
 */
 
-        setUpDrawerLayout();
+        //setUpDrawerLayout
+        setUpNavigationView();
 
         if (savedInstanceState == null) {
             setMusicChooser(PreferenceUtil.getInstance(this).getLastMusicChooser());
         } else {
-            restoreCurrentFragment();
+            //restoreCurrentFragment
+            currentFragment = (MainActivityFragmentCallbacks) getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+
         }
 
         if (!checkShowIntro()) {
@@ -102,9 +105,9 @@ public class MainActivity extends AbsSlidingMusicPanelActivity {
        // App.setOnProVersionChangedListener(() -> {
             // called if the cached value was outdated (should be a rare event)
             //checkSetUpPro();
-            if (PreferenceUtil.getInstance(MainActivity.this).getLastMusicChooser() == FOLDERS) {
+            /*if (PreferenceUtil.getInstance(MainActivity.this).getLastMusicChooser() == FOLDERS) {
                 setMusicChooser(FOLDERS); // shows the purchase activity and switches to LIBRARY
-            }
+            }*/
        // });
     }
 
@@ -133,9 +136,9 @@ public class MainActivity extends AbsSlidingMusicPanelActivity {
         currentFragment = (MainActivityFragmentCallbacks) fragment;
     }
 
-    private void restoreCurrentFragment() {
+/*    private void restoreCurrentFragment() {
         currentFragment = (MainActivityFragmentCallbacks) getSupportFragmentManager().findFragmentById(R.id.fragment_container);
-    }
+    }*/ //TODO
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -202,9 +205,11 @@ public class MainActivity extends AbsSlidingMusicPanelActivity {
         navigationView.getMenu().setGroupVisible(R.id.navigation_drawer_menu_category_buy_pro, false);
     }*/
 
-    private void setUpDrawerLayout() {
+
+/*    private void setUpDrawerLayout() {
         setUpNavigationView();
-    }
+    }*/ //Useless
+
 
     private void updateNavigationDrawerHeader() {
         if (!MusicPlayerRemote.getPlayingQueue().isEmpty()) {

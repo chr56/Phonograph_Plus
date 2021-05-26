@@ -82,10 +82,10 @@ public class Util {
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     public static boolean isRTL(@NonNull Context context) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+        //if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
             Configuration config = context.getResources().getConfiguration();
             return config.getLayoutDirection() == View.LAYOUT_DIRECTION_RTL;
-        } else return false;
+        //} else return false;
     }
 
 }

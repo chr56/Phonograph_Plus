@@ -39,7 +39,7 @@ android {
     compileSdkVersion 30
     buildToolsVersion '30.0.3'
     defaultConfig {
-        minSdkVersion 24
+        minSdkVersion 21
         targetSdkVersion 30
 
         renderscriptTargetApi 29
