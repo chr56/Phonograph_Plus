@@ -77,9 +77,6 @@ public class AboutActivity extends AbsBaseActivity implements View.OnClickListen
     LinearLayout reportBugs;
     @BindView(R.id.translate)
     LinearLayout translate;
-    //TODO : Remove Forever
-//    @BindView(R.id.donate)
-//    LinearLayout donate;
     @BindView(R.id.rate_on_google_play)
     LinearLayout rateOnGooglePlay;
     @BindView(R.id.aidan_follestad_git_hub)
@@ -196,9 +193,7 @@ public class AboutActivity extends AbsBaseActivity implements View.OnClickListen
             openUrl(TRANSLATE);
         } else if (v == rateOnGooglePlay) {
             openUrl(RATE_ON_GOOGLE_PLAY);
-        } /*else if (v == donate) {
-        //        DonationsDialog.create().show(getSupportFragmentManager(), "DONATION_DIALOG"); //TODO : Remove Forever
-        }*/ else if (v == aidanFollestadGitHub) {
+        } else if (v == aidanFollestadGitHub) {
             openUrl(AIDAN_FOLLESTAD_GITHUB);
         } else if (v == michaelCookWebsite) {
             openUrl(MICHAEL_COOK_WEBSITE);

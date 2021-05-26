@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.MediaStore;
@@ -20,14 +19,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 
 import com.kabouzeid.appthemehelper.ThemeStore;
 import com.kabouzeid.appthemehelper.util.ATHUtil;
 import com.kabouzeid.appthemehelper.util.NavigationViewUtil;
-import com.kabouzeid.gramophone.App;
 import com.kabouzeid.gramophone.R;
 import com.kabouzeid.gramophone.dialogs.ChangelogDialog;
 import com.kabouzeid.gramophone.dialogs.ScanMediaFolderChooserDialog;
@@ -102,20 +99,8 @@ public class MainActivity extends AbsSlidingMusicPanelActivity {
             showChangelog();
         }
 
-       // App.setOnProVersionChangedListener(() -> {
-            // called if the cached value was outdated (should be a rare event)
-            //checkSetUpPro();
-            /*if (PreferenceUtil.getInstance(MainActivity.this).getLastMusicChooser() == FOLDERS) {
-                setMusicChooser(FOLDERS); // shows the purchase activity and switches to LIBRARY
-            }*/
-       // });
-    }
 
-/*    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        App.setOnProVersionChangedListener(null);
-    }*/
+    }
 
     private void setMusicChooser(int key) {
         PreferenceUtil.getInstance(this).setLastMusicChooser(key);
@@ -180,10 +165,6 @@ public class MainActivity extends AbsSlidingMusicPanelActivity {
                 case R.id.nav_folders:
                     new Handler().postDelayed(() -> setMusicChooser(FOLDERS), 200);
                     break;
-                //TODO : Remove Forever
-/*                case R.id.buy_pro:
-                    new Handler().postDelayed(() -> startActivity(new Intent(MainActivity.this, PurchaseActivity.class)), 200);
-                    break;*/
                 case R.id.action_scan:
                     new Handler().postDelayed(() -> {
                         ScanMediaFolderChooserDialog dialog = ScanMediaFolderChooserDialog.create();
@@ -200,10 +181,6 @@ public class MainActivity extends AbsSlidingMusicPanelActivity {
             return true;
         });
     }
-
-/*    private void checkSetUpPro() {
-        navigationView.getMenu().setGroupVisible(R.id.navigation_drawer_menu_category_buy_pro, false);
-    }*/
 
 
 /*    private void setUpDrawerLayout() {
