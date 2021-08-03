@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest package="com.kabouzeid.appthemehelper"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <application>
+        <activity android:name=".common.ATHToolbarActivity" />
+        <activity android:name=".ATHActivity" />
+        <activity android:name=".common.ATHActionBarActivity"></activity>
+    </application>
+
+</manifest>
