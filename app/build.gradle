@@ -92,6 +92,16 @@ android {
             debuggable true
             resValue "string", "app_name","Phonograph Debug Custom"
         }
+        pub{
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            applicationIdSuffix '.mod'
+            signingConfig signingConfigs.release
+//            debuggable true
+            resValue "string", "app_name","Phonograph Pro"
+            matchingFallbacks = ['release','cust']
+        }
     }
     packagingOptions {
         exclude 'META-INF/LICENSE'
