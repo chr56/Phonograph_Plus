@@ -1,17 +1,17 @@
 <resources>
 
     <string-array name="pref_general_theme_list_titles">
+        <item>@string/auto_theme_name</item>
         <item>@string/light_theme_name</item>
         <item>@string/dark_theme_name</item>
         <item>@string/black_theme_name</item>
-        <item>@string/auto_theme_name</item>
     </string-array>
 
     <string-array name="pref_general_theme_list_values">
+        <item>auto</item>
         <item>light</item>
         <item>dark</item>
         <item>black</item>
-        <item>auto</item>
     </string-array>
 
     <string-array name="pref_auto_download_images_titles">
