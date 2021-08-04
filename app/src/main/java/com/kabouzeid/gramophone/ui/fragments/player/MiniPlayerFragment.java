@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.android.material.progressindicator.LinearProgressIndicator;
 import com.kabouzeid.appthemehelper.ThemeStore;
 import com.kabouzeid.appthemehelper.util.ATHUtil;
 import com.kabouzeid.gramophone.R;
@@ -39,8 +40,11 @@ public class MiniPlayerFragment extends AbsMusicServiceFragment implements Music
     TextView miniPlayerTitle;
     @BindView(R.id.mini_player_play_pause_button)
     ImageView miniPlayerPlayPauseButton;
-    @BindView(R.id.progress_bar)
-    MaterialProgressBar progressBar;
+//    @BindView(R.id.progress_bar)
+//    MaterialProgressBar progressBar;
+
+    @BindView(R.id.progress_indicator)
+    LinearProgressIndicator progressIndicator;
 
     private PlayPauseDrawable miniPlayerPlayPauseDrawable;
 
@@ -75,7 +79,9 @@ public class MiniPlayerFragment extends AbsMusicServiceFragment implements Music
 
     private void setUpMiniPlayer() {
         setUpPlayPauseButton();
-        progressBar.setSupportProgressTintList(ColorStateList.valueOf(ThemeStore.accentColor(getActivity())));
+        //progressBar.setSupportProgressTintList(ColorStateList.valueOf(ThemeStore.accentColor(getActivity())));
+        //progressIndicator.setProgressTintList();
+        progressIndicator.setIndicatorColor(ThemeStore.accentColor(getContext()));
     }
 
     private void setUpPlayPauseButton() {
@@ -107,8 +113,11 @@ public class MiniPlayerFragment extends AbsMusicServiceFragment implements Music
 
     @Override
     public void onUpdateProgressViews(int progress, int total) {
-        progressBar.setMax(total);
-        progressBar.setProgress(progress);
+//        progressBar.setMax(total);
+//        progressBar.setProgress(progress);
+        progressIndicator.setMax(total);
+        progressIndicator.setProgress(progress);
+        progressIndicator.show();
     }
 
     @Override
