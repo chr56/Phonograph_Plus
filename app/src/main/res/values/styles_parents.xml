@@ -8,6 +8,10 @@
         <item name="rectSelector">@drawable/rect_selector_dark</item>
         <item name="rectSelectorStrong">@drawable/rect_selector_strong_dark</item>
 
+        <item name="cardBackgroundColor">@color/cardBackgroundColor</item>
+        <item name="defaultFooterColor">@color/defaultFooterColor</item>
+        <item name="dividerColor">@color/dividerColor</item>
+        <item name="iconColor">@color/iconColor</item>
     </style>
     
     <style name="Theme.Phonograph.Base.Dark" parent="Theme.AppCompat.NoActionBar">

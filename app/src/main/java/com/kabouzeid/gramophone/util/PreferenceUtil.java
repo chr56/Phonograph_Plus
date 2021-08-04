@@ -141,15 +141,16 @@ public final class PreferenceUtil {
     @StyleRes
     public static int getThemeResFromPrefValue(String themePrefValue) {
         switch (themePrefValue) {
-            case "auto":
-                return R.style.Theme_Phonograph_Auto;
             case "dark":
                 return R.style.Theme_Phonograph_Dark;
             case "black":
                 return R.style.Theme_Phonograph_Black;
             case "light":
-            default:
                 return R.style.Theme_Phonograph_Light;
+            case "auto":
+            default:
+                return R.style.Theme_Phonograph_Auto;
+
         }
     }
 

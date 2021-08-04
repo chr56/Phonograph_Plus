@@ -10,4 +10,8 @@
     <color name="app_shortcut_default_foreground">@color/md_blue_grey_500</color>
     <color name="app_shortcut_default_background">@color/md_grey_50</color>
 
+    <color name="cardBackgroundColor">@color/md_white_1000</color>
+    <color name="defaultFooterColor">@color/md_grey_300</color>
+    <color name="dividerColor">@color/md_divider_black</color>
+    <color name="iconColor">@color/ate_secondary_text_light</color>
 </resources>
