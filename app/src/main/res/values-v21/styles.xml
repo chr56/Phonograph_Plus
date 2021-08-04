@@ -1,6 +1,6 @@
 <resources>
 
-    <style name="Theme.Phonograph" parent="Theme.Phonograph.Base">
+    <style name="Theme.Phonograph" parent="Theme.Phonograph.Base.Dark">
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:windowSharedElementsUseOverlay">false</item>
     </style>

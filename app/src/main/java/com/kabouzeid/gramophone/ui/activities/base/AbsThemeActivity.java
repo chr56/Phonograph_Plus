@@ -4,6 +4,8 @@ import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import androidx.annotation.ColorInt;
+import androidx.appcompat.app.AppCompatDelegate;
+
 import android.view.View;
 
 import com.kabouzeid.appthemehelper.ATH;
@@ -23,6 +25,7 @@ public abstract class AbsThemeActivity extends ATHToolbarActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
         setTheme(PreferenceUtil.getInstance(this).getGeneralTheme());
         super.onCreate(savedInstanceState);
         MaterialDialogsUtil.updateMaterialDialogsThemeSingleton(this);

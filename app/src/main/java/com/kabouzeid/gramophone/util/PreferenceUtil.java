@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.preference.PreferenceManager;
+//import androidx.preference.PreferenceManager;
 import androidx.annotation.NonNull;
 import androidx.annotation.StyleRes;
 
@@ -140,8 +141,10 @@ public final class PreferenceUtil {
     @StyleRes
     public static int getThemeResFromPrefValue(String themePrefValue) {
         switch (themePrefValue) {
+            case "auto":
+                return R.style.Theme_Phonograph_Auto;
             case "dark":
-                return R.style.Theme_Phonograph;
+                return R.style.Theme_Phonograph_Dark;
             case "black":
                 return R.style.Theme_Phonograph_Black;
             case "light":
