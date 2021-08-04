@@ -145,8 +145,8 @@
     <string name="x_selected">%1$d項目を選択中</string>
     <string name="primary_color">メインカラー</string>
     <string name="accent_color">アクセントカラー</string>
-    <string name="primary_color_desc">ツールバーなどの色を設定します。(デフォルトではインディゴ)</string>
-    <string name="accent_color_desc">コントロールキーやシークバーなどの色を設定します。(デフォルトではピンク)</string>
+    <string name="primary_color_desc">ツールバーなどの色を設定します。</string>
+    <string name="accent_color_desc">コントロールキーやシークバーなどの色を設定します。</string>
     <string name="update_image">アルバムアートを更新</string>
     <string name="playlist_empty_text">空のプレイリスト</string>
     <string name="no_playlists">プレイリストなし</string>

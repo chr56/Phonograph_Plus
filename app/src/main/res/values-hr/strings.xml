@@ -145,8 +145,8 @@
     <string name="x_selected">%1$d odabrano</string>
     <string name="primary_color">Primarna boja</string>
     <string name="accent_color">Naglašena boja</string>
-    <string name="primary_color_desc">Primarna boja teme, zadana je indigo plava.</string>
-    <string name="accent_color_desc">Naglašena boja teme, zadana je roza.</string>
+    <string name="primary_color_desc">Primarna boja teme</string>
+    <string name="accent_color_desc">Naglašena boja teme</string>
     <string name="update_image">Ažuriraj sliku</string>
     <string name="playlist_empty_text">Prazan popis naslova</string>
     <string name="no_playlists">Nema popisa naslova</string>

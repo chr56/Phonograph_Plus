@@ -142,8 +142,8 @@
     <string name="x_selected">%1$d 선택됨</string>
     <string name="primary_color">주 색상</string>
     <string name="accent_color">강조 색상</string>
-    <string name="primary_color_desc">테마의 주 색상입니다. 기본값은 인디고색입니다.</string>
-    <string name="accent_color_desc">테마의 강조 색상입니다. 기본값은 분홍색입니다.</string>
+    <string name="primary_color_desc">"테마의 주 색상입니다. "</string>
+    <string name="accent_color_desc">테마의 강조 색상입니다.</string>
     <string name="update_image">이미지 갱신</string>
     <string name="playlist_empty_text">빈 재생 목록</string>
     <string name="no_playlists">재생 목록 없음</string>

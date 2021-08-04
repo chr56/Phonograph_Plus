@@ -145,8 +145,8 @@
     <string name="x_selected">%1$d выбрано</string>
     <string name="primary_color">Основной цвет</string>
     <string name="accent_color">Цвет акцента</string>
-    <string name="primary_color_desc">Основной цвет темы, по умолчанию — индиго.</string>
-    <string name="accent_color_desc">Цвет акцента, по умолчанию — розовый</string>
+    <string name="primary_color_desc">Основной цвет темы.</string>
+    <string name="accent_color_desc">Цвет акцента.</string>
     <string name="update_image">Обновить изображение</string>
     <string name="playlist_empty_text">Пустой плейлист</string>
     <string name="no_playlists">Нет плейлистов для отображения</string>

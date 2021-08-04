@@ -142,8 +142,8 @@
     <string name="x_selected">%1$d geselecteerd</string>
     <string name="primary_color">Primaire kleur</string>
     <string name="accent_color">Accentkleur</string>
-    <string name="primary_color_desc">De primaire themakleur, standaard indigo.</string>
-    <string name="accent_color_desc">De thema accentkleur, standaard roze.</string>
+    <string name="primary_color_desc">De primaire themakleu</string>
+    <string name="accent_color_desc">De thema accentkleur</string>
     <string name="update_image">Afbeelding bijwerken</string>
     <string name="playlist_empty_text">Lege afspeellijst</string>
     <string name="no_playlists">Geen afspeellijsten</string>

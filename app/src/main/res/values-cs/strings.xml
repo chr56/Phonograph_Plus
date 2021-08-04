@@ -145,8 +145,8 @@
     <string name="x_selected">%1$d vybrána</string>
     <string name="primary_color">Hlavní barva</string>
     <string name="accent_color">Vedlejší barva</string>
-    <string name="primary_color_desc">Hlavní barva motivu (výchozí: modrá).</string>
-    <string name="accent_color_desc">Vedlejší barva motivu (výchozí: růžová).</string>
+    <string name="primary_color_desc">Hlavní barva motivu</string>
+    <string name="accent_color_desc">Vedlejší barva motivu</string>
     <string name="update_image">Změnit obrázek</string>
     <string name="playlist_empty_text">Tento playlist je prázdný</string>
     <string name="no_playlists">Žádný playlist</string>

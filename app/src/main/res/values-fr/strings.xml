@@ -145,8 +145,8 @@
     <string name="x_selected">%1$d séléctionné(s)</string>
     <string name="primary_color">Couleur principale</string>
     <string name="accent_color">Couleur secondaire</string>
-    <string name="primary_color_desc">La couleur principale du thème, indigo par défaut.</string>
-    <string name="accent_color_desc">La couleur secondaire du thème, rose par défaut.</string>
+    <string name="primary_color_desc">La couleur principale du thème</string>
+    <string name="accent_color_desc">La couleur secondaire du thème</string>
     <string name="update_image">Actualiser l\'image</string>
     <string name="playlist_empty_text">Playlist vide</string>
     <string name="no_playlists">Aucune playlist</string>
