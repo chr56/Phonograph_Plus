@@ -14,6 +14,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.afollestad.materialdialogs.internal.ThemeSingleton;
 import com.kabouzeid.appthemehelper.ThemeStore;
@@ -79,6 +80,8 @@ public class AboutActivity extends AbsBaseActivity implements View.OnClickListen
     LinearLayout translate;
     @BindView(R.id.rate_on_google_play)
     LinearLayout rateOnGooglePlay;
+    @BindView(R.id.cracked)
+    LinearLayout cracked;
     @BindView(R.id.aidan_follestad_git_hub)
     AppCompatButton aidanFollestadGitHub;
     @BindView(R.id.michael_cook_website)
@@ -193,6 +196,9 @@ public class AboutActivity extends AbsBaseActivity implements View.OnClickListen
             openUrl(TRANSLATE);
         } else if (v == rateOnGooglePlay) {
             openUrl(RATE_ON_GOOGLE_PLAY);
+        } else if (v == cracked) {
+            openUrl("https://github.com/chr56/Phonograph");
+            Toast.makeText(this,R.string.description_cracked,Toast.LENGTH_SHORT).show();
         } else if (v == aidanFollestadGitHub) {
             openUrl(AIDAN_FOLLESTAD_GITHUB);
         } else if (v == michaelCookWebsite) {

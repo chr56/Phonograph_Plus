@@ -160,10 +160,12 @@
 
         </LinearLayout>
         <LinearLayout
+            android:id="@+id/cracked"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="?attr/rectSelector"
             android:gravity="center_vertical"
+            android:clickable="true"
             android:minHeight="@dimen/md_listitem_height"
             android:orientation="horizontal"
             android:paddingLeft="16dp"
