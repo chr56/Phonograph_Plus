@@ -12,6 +12,14 @@
         <item name="defaultFooterColor">@color/defaultFooterColor</item>
         <item name="dividerColor">@color/dividerColor</item>
         <item name="iconColor">@color/iconColor</item>
+
+        <item name="android:actionOverflowButtonStyle">@style/Widget.ActionButton.Overflow</item>
+        <item name="android:forceDarkAllowed">true</item>
+
+        <item name="dialogTheme">@style/Theme.AppCompat.DayNight.Dialog</item>
+        <item name="toolbarPopupTheme">@style/ThemeOverlay.AppCompat.DayNight</item>
+        <item name="preferenceTheme">@style/PreferenceThemeOverlay</item>
+
     </style>
     
     <style name="Theme.Phonograph.Base.Dark" parent="Theme.AppCompat.NoActionBar">
