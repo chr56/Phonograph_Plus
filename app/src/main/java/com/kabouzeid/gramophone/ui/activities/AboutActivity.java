@@ -138,7 +138,7 @@ public class AboutActivity extends AbsBaseActivity implements View.OnClickListen
         writeAnEmail.setOnClickListener(this);
         translate.setOnClickListener(this);
         rateOnGooglePlay.setOnClickListener(this);
-//        donate.setOnClickListener(this);
+        cracked.setOnClickListener(this);
         aidanFollestadGitHub.setOnClickListener(this);
         michaelCookWebsite.setOnClickListener(this);
         maartenCorpelWebsite.setOnClickListener(this);

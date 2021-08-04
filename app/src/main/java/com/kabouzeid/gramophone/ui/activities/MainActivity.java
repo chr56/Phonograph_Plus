@@ -2,6 +2,7 @@ package com.kabouzeid.gramophone.ui.activities;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -13,6 +14,8 @@ import androidx.annotation.Nullable;
 import com.google.android.material.navigation.NavigationView;
 import androidx.fragment.app.Fragment;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.preference.PreferenceManager;
+
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -170,6 +173,22 @@ public class MainActivity extends AbsSlidingMusicPanelActivity {
                         ScanMediaFolderChooserDialog dialog = ScanMediaFolderChooserDialog.create();
                         dialog.show(getSupportFragmentManager(), "SCAN_MEDIA_FOLDER_CHOOSER");
                     }, 200);
+                    break;
+                case R.id.theme_toggle:
+                    new Handler().postDelayed(() -> {
+                        final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+                        String theme_setting = sharedPreferences.getString("general_theme","auto");
+                        SharedPreferences.Editor editor = sharedPreferences.edit();
+                        if (theme_setting.equals("light")){
+                            editor.putString("general_theme","dark");
+                        } else if (theme_setting.equals("dark")){
+                            editor.putString("general_theme","light");
+                        } else if (theme_setting.equals("black")){
+                            editor.putString("general_theme","light");
+                        }
+                        editor.apply();
+                        recreate();
+                    },200);
                     break;
                 case R.id.nav_settings:
                     new Handler().postDelayed(() -> startActivity(new Intent(MainActivity.this, SettingsActivity.class)), 200);

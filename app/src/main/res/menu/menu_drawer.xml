@@ -21,6 +21,13 @@
             android:title="@string/scan_media" />
     </group>
 
+    <group android:checkableBehavior="none">
+        <item
+            android:id="@+id/theme_toggle"
+            android:icon="@drawable/ic_theme_switch_white_24dp"
+            android:title="@string/theme"/>
+    </group>
+
 
     <group
         android:id="@+id/navigation_drawer_menu_category_other"
