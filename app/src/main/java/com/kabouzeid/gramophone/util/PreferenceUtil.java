@@ -90,6 +90,8 @@ public final class PreferenceUtil {
 
     private static final String REMEMBER_SHUFFLE = "remember_shuffle";
 
+    private static final String FIXED_TAB_LAYOUT = "fixed_tab_layout";
+
     private static PreferenceUtil sInstance;
 
     private final SharedPreferences mPreferences;
@@ -473,6 +475,10 @@ public final class PreferenceUtil {
 
     public final boolean rememberShuffle() {
         return mPreferences.getBoolean(REMEMBER_SHUFFLE, true);
+    }
+
+    public final boolean fixed_tab_layout(){
+        return mPreferences.getBoolean(FIXED_TAB_LAYOUT,false);
     }
 
     public final String autoDownloadImagesPolicy() {

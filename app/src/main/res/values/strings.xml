@@ -300,4 +300,6 @@
     <string name="dialog_ringtone_message">Allow phonograph to modify audio settings</string>
     <string name="cracked_version">Why do you use cracked version?</string>
     <string name="description_cracked"><del>Don\'t judge me too much !</del></string>
+    <string name="perf_title_fixed_tab_layout">Fix all tabs</string>
+    <string name="pref_summary_fixed_tab_layout">Tabs in top will not be scrollable, but wound be tiled without any margin.(Restart app to take effect.)</string>
 </resources>

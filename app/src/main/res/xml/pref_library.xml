@@ -11,6 +11,13 @@
 
         <com.kabouzeid.appthemehelper.common.prefs.supportv7.ATESwitchPreference
             app:iconSpaceReserved="false"
+            android:defaultValue="false"
+            android:key="fixed_tab_layout"
+            android:summary="@string/pref_summary_fixed_tab_layout"
+            android:title="@string/perf_title_fixed_tab_layout"/>
+
+        <com.kabouzeid.appthemehelper.common.prefs.supportv7.ATESwitchPreference
+            app:iconSpaceReserved="false"
             android:defaultValue="true"
             android:key="remember_last_tab"
             android:summary="@string/pref_summary_remember_last_tab"

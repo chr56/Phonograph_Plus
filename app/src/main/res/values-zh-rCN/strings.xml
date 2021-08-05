@@ -291,4 +291,6 @@
     <string name="dialog_ringtone_message">允许 Phonograph 调整音频设定</string>
     <string name="cracked_version">那你为什么要用这个版本？</string>
     <string name="description_cracked"><del>大佬勿喷！（</del></string>
+    <string name="perf_title_fixed_tab_layout">固定顶部标签</string>
+    <string name="pref_summary_fixed_tab_layout">顶部标签不再能够滑动，并完全平铺(重启应用生效)</string>
 </resources>
