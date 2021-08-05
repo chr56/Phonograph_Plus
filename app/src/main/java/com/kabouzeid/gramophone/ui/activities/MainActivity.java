@@ -179,12 +179,14 @@ public class MainActivity extends AbsSlidingMusicPanelActivity {
                         final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
                         String theme_setting = sharedPreferences.getString("general_theme","auto");
                         SharedPreferences.Editor editor = sharedPreferences.edit();
-                        if (theme_setting.equals("light")){
-                            editor.putString("general_theme","dark");
-                        } else if (theme_setting.equals("dark")){
-                            editor.putString("general_theme","light");
-                        } else if (theme_setting.equals("black")){
-                            editor.putString("general_theme","light");
+                        switch (theme_setting) {
+                            case "light":
+                                editor.putString("general_theme", "dark");
+                                break;
+                            case "dark":
+                            case "black":
+                                editor.putString("general_theme", "light");
+                                break;
                         }
                         editor.apply();
                         recreate();

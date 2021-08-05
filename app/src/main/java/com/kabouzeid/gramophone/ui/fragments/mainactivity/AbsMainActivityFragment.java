@@ -18,5 +18,5 @@ public abstract class AbsMainActivityFragment extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         setHasOptionsMenu(true);
-    }
+    }//Todo
 }

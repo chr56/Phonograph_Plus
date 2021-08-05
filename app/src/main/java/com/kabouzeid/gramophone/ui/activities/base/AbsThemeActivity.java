@@ -50,14 +50,13 @@ public abstract class AbsThemeActivity extends ATHToolbarActivity {
             if (statusBar != null) {
                 //if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     statusBar.setBackgroundColor(ColorUtil.darkenColor(color));
-                    setLightStatusbarAuto(color);
                 //} else {
                 //    statusBar.setBackgroundColor(color);
                 //}
             } else /*if (Build.VERSION.SDK_INT >= 21)*/ {
                 getWindow().setStatusBarColor(ColorUtil.darkenColor(color));
-                setLightStatusbarAuto(color);
             }
+        setLightStatusbarAuto(color);
         //}
     }
 
