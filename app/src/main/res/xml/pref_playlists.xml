@@ -5,7 +5,7 @@
 
         <com.kabouzeid.appthemehelper.common.prefs.supportv7.ATEListPreference
             app:iconSpaceReserved="false"
-            android:defaultValue="this_month"
+            android:defaultValue="past_seven_days"
             android:entries="@array/pref_playlists_last_added_interval_titles"
             android:entryValues="@array/pref_playlists_last_added_interval_values"
             android:key="last_added_interval"

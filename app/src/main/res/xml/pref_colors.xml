@@ -29,7 +29,7 @@
 
         <com.kabouzeid.appthemehelper.common.prefs.supportv7.ATESwitchPreference
             app:iconSpaceReserved="false"
-            android:defaultValue="false"
+            android:defaultValue="true"
             android:key="should_color_navigation_bar"
             android:persistent="false"
             android:summary="@string/pref_summary_colored_navigation_bar"
