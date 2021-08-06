@@ -109,6 +109,12 @@ public class LibraryFragment extends AbsMainActivityFragment implements CabHolde
             PreferenceUtil.getInstance(getContext()).setLastPage(position);
 
             updateTabVisibility();
+        }else if (PreferenceUtil.FIXED_TAB_LAYOUT.equals(key)){
+            if (PreferenceUtil.getInstance(getContext()).fixed_tab_layout()){
+                tabs.setTabMode(TabLayout.MODE_FIXED);
+            } else {
+                tabs.setTabMode(TabLayout.MODE_SCROLLABLE);
+            }
         }
     }
 
@@ -118,10 +124,12 @@ public class LibraryFragment extends AbsMainActivityFragment implements CabHolde
         toolbar.setBackgroundColor(primaryColor);
         toolbar.setNavigationIcon(R.drawable.ic_menu_white_24dp);
         getActivity().setTitle(R.string.app_name);
+
         if (PreferenceUtil.getInstance(getContext()).fixed_tab_layout()){
             tabs.setTabMode(TabLayout.MODE_FIXED);
+        } else {
+            tabs.setTabMode(TabLayout.MODE_SCROLLABLE);
         }
-
         getMainActivity().setSupportActionBar(toolbar);
     }
 

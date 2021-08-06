@@ -90,7 +90,7 @@ public final class PreferenceUtil {
 
     private static final String REMEMBER_SHUFFLE = "remember_shuffle";
 
-    private static final String FIXED_TAB_LAYOUT = "fixed_tab_layout";
+    public static final String FIXED_TAB_LAYOUT = "fixed_tab_layout";
 
     private static PreferenceUtil sInstance;
 
