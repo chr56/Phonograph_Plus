@@ -131,7 +131,7 @@ public final class PreferenceUtil {
 
     @StyleRes
     public int getGeneralTheme() {
-        return getThemeResFromPrefValue(mPreferences.getString(GENERAL_THEME, "light"));
+        return getThemeResFromPrefValue(mPreferences.getString(GENERAL_THEME, "auto"));
     }
 
     public void setGeneralTheme(String theme) {

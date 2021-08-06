@@ -9,22 +9,22 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.MediaStore;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import com.google.android.material.navigation.NavigationView;
-import androidx.fragment.app.Fragment;
-import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.preference.PreferenceManager;
-
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
+import androidx.preference.PreferenceManager;
 
 import com.bumptech.glide.Glide;
-
+import com.google.android.material.navigation.NavigationView;
 import com.kabouzeid.appthemehelper.ThemeStore;
 import com.kabouzeid.appthemehelper.util.ATHUtil;
 import com.kabouzeid.appthemehelper.util.NavigationViewUtil;
@@ -45,7 +45,6 @@ import com.kabouzeid.gramophone.ui.fragments.mainactivity.folders.FoldersFragmen
 import com.kabouzeid.gramophone.ui.fragments.mainactivity.library.LibraryFragment;
 import com.kabouzeid.gramophone.util.MusicUtil;
 import com.kabouzeid.gramophone.util.PreferenceUtil;
-
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import java.util.ArrayList;
@@ -53,6 +52,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import retrofit2.http.PUT;
 
 public class MainActivity extends AbsSlidingMusicPanelActivity {
 
@@ -66,6 +66,8 @@ public class MainActivity extends AbsSlidingMusicPanelActivity {
     NavigationView navigationView;
     @BindView(R.id.drawer_layout)
     DrawerLayout drawerLayout;
+
+    //MenuItem menuItem;
 
     @Nullable
     MainActivityFragmentCallbacks currentFragment;
@@ -158,7 +160,29 @@ public class MainActivity extends AbsSlidingMusicPanelActivity {
         NavigationViewUtil.setItemIconColors(navigationView, ATHUtil.resolveColor(this, R.attr.iconColor, ThemeStore.textColorSecondary(this)), accentColor);
         NavigationViewUtil.setItemTextColors(navigationView, ThemeStore.textColorPrimary(this), accentColor);
 
-        //checkSetUpPro();
+//        SwitchCompat switchNightmode = (SwitchCompat) navigationView.getMenu().findItem(R.id.theme_switch).getActionView().findViewById(R.id.nightmode_switch);
+//        switchNightmode.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+//            @Override
+//            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+//                PreferenceUtil preferenceUtil = PreferenceUtil.getInstance(this);
+//                int theme_setting = preferenceUtil.getGeneralTheme();
+//                if (theme_setting == R.style.Theme_Phonograph_Auto){
+//                    Toast.makeText(buttonView.getContext(), R.string.auto_mode_on,Toast.LENGTH_SHORT).show();
+//                } else {
+//                    switch (theme_setting) {
+//                        case R.style.Theme_Phonograph_Light:
+//                            preferenceUtil.setGeneralTheme("dark");
+//                            break;
+//                        case R.style.Theme_Phonograph_Dark:
+//                        case R.style.Theme_Phonograph_Black:
+//                            preferenceUtil.setGeneralTheme("light");
+//                            break;
+//                    }
+//                    recreate();
+//                }
+//            }
+//        });
+
         navigationView.setNavigationItemSelectedListener(menuItem -> {
             drawerLayout.closeDrawers();
             switch (menuItem.getItemId()) {
@@ -176,22 +200,44 @@ public class MainActivity extends AbsSlidingMusicPanelActivity {
                     break;
                 case R.id.theme_toggle:
                     new Handler().postDelayed(() -> {
-                        final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-                        String theme_setting = sharedPreferences.getString("general_theme","auto");
-                        SharedPreferences.Editor editor = sharedPreferences.edit();
-                        switch (theme_setting) {
-                            case "light":
-                                editor.putString("general_theme", "dark");
-                                break;
-                            case "dark":
-                            case "black":
-                                editor.putString("general_theme", "light");
-                                break;
+                        PreferenceUtil preferenceUtil = PreferenceUtil.getInstance(this);
+                        int theme_setting = preferenceUtil.getGeneralTheme();
+                        if (theme_setting == R.style.Theme_Phonograph_Auto){
+                            Toast.makeText(this, R.string.auto_mode_on,Toast.LENGTH_SHORT).show();
+                        } else {
+                            switch (theme_setting) {
+                                case R.style.Theme_Phonograph_Light:
+                                    preferenceUtil.setGeneralTheme("dark");
+                                    break;
+                                case R.style.Theme_Phonograph_Dark:
+                                case R.style.Theme_Phonograph_Black:
+                                    preferenceUtil.setGeneralTheme("light");
+                                    break;
+                            }
+                            recreate();
                         }
-                        editor.apply();
-                        recreate();
                     },200);
                     break;
+//                case R.id.theme_switch:
+//                    new Handler().postDelayed(() -> {
+//                        PreferenceUtil preferenceUtil = PreferenceUtil.getInstance(this);
+//                        int theme_setting = preferenceUtil.getGeneralTheme();
+//                        if (theme_setting == R.style.Theme_Phonograph_Auto){
+//                            Toast.makeText(this, R.string.auto_mode_on,Toast.LENGTH_SHORT).show();
+//                        } else {
+//                            switch (theme_setting) {
+//                                case R.style.Theme_Phonograph_Light:
+//                                    preferenceUtil.setGeneralTheme("dark");
+//                                    break;
+//                                case R.style.Theme_Phonograph_Dark:
+//                                case R.style.Theme_Phonograph_Black:
+//                                    preferenceUtil.setGeneralTheme("light");
+//                                    break;
+//                            }
+//                            recreate();
+//                        }
+//                    },200);
+//                    break;
                 case R.id.nav_settings:
                     new Handler().postDelayed(() -> startActivity(new Intent(MainActivity.this, SettingsActivity.class)), 200);
                     break;
