@@ -7,11 +7,12 @@
         android:id="@+id/action_shuffle_playlist"
         android:icon="@drawable/ic_shuffle_white_24dp"
         android:title="@string/action_shuffle_playlist"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="always" />
     <item
         android:id="@+id/action_play"
+        android:icon="@drawable/ic_play_arrow_white_24dp"
         android:title="@string/action_play"
-        app:showAsAction="never" />
+        app:showAsAction="always" />
     <item
         android:id="@+id/action_play_next"
         android:title="@string/action_play_next"
@@ -22,7 +23,8 @@
         app:showAsAction="never" />
     <item
         android:id="@+id/action_add_to_playlist"
-        android:title="@string/action_add_to_playlist" />
+        android:title="@string/action_add_to_playlist"
+        app:showAsAction="never"/>
     <item
         android:id="@+id/action_rename_playlist"
         android:title="@string/action_rename"
