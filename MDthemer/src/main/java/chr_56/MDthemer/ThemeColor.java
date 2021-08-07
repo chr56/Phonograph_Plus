@@ -213,7 +213,7 @@ public final class ThemeColor implements ThemeColorPrefKeys, ThemeColorInterface
 
     @CheckResult
     @NonNull
-    protected static SharedPreferences prefs(@NonNull Context context) {
+    public static SharedPreferences prefs(@NonNull Context context) {
         return context.getSharedPreferences(CONFIG_PREFS_KEY_DEFAULT, Context.MODE_PRIVATE);
     }
 
