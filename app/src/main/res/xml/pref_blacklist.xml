@@ -3,7 +3,7 @@
 
     <com.kabouzeid.appthemehelper.common.prefs.supportv7.ATEPreferenceCategory android:title="@string/blacklist">
 
-        <com.kabouzeid.gramophone.preferences.BlacklistPreference
+        <com.kabouzeid.gramophone.preferences.BlacklistPreferenceX
             app:iconSpaceReserved="false"
             android:key="blacklist"
             android:summary="@string/pref_summary_blacklist"

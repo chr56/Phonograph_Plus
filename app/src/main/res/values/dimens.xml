@@ -64,4 +64,10 @@ http://developer.android.com/guide/topics/appwidgets/index.html#CreatingLayout
 
     <dimen name="card_on_app_bar_side_padding">8dp</dimen>
 
+
+
+    <dimen name="pref_default_textsize_subheading">16sp</dimen>
+    <dimen name="pref_default_textsize_body">14sp</dimen>
+    <dimen name="pref_preference_inset">16dp</dimen>
+
 </resources>

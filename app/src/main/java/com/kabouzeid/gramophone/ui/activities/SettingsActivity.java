@@ -18,28 +18,23 @@ import androidx.preference.TwoStatePreference;
 import androidx.appcompat.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
 import com.afollestad.materialdialogs.color.ColorChooserDialog;
 import com.kabouzeid.appthemehelper.ThemeStore;
 import com.kabouzeid.appthemehelper.common.prefs.supportv7.ATEColorPreference;
 import com.kabouzeid.appthemehelper.common.prefs.supportv7.ATEPreferenceFragmentCompat;
 import com.kabouzeid.appthemehelper.util.ColorUtil;
-import com.kabouzeid.gramophone.App;
 import com.kabouzeid.gramophone.R;
 import com.kabouzeid.gramophone.appshortcuts.DynamicShortcutManager;
-import com.kabouzeid.gramophone.misc.NonProAllowedColors;
-import com.kabouzeid.gramophone.preferences.BlacklistPreference;
 import com.kabouzeid.gramophone.preferences.BlacklistPreferenceDialog;
-import com.kabouzeid.gramophone.preferences.LibraryPreference;
+import com.kabouzeid.gramophone.preferences.BlacklistPreferenceX;
+import com.kabouzeid.gramophone.preferences.LibraryPreferenceX;
 import com.kabouzeid.gramophone.preferences.LibraryPreferenceDialog;
-import com.kabouzeid.gramophone.preferences.NowPlayingScreenPreference;
+import com.kabouzeid.gramophone.preferences.NowPlayingScreenPreferenceX;
 import com.kabouzeid.gramophone.preferences.NowPlayingScreenPreferenceDialog;
 import com.kabouzeid.gramophone.ui.activities.base.AbsBaseActivity;
 import com.kabouzeid.gramophone.util.NavigationUtil;
 import com.kabouzeid.gramophone.util.PreferenceUtil;
-
-import java.util.Arrays;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -146,11 +141,11 @@ public class SettingsActivity extends AbsBaseActivity implements ColorChooserDia
         @Nullable
         @Override
         public DialogFragment onCreatePreferenceDialog(Preference preference) {
-            if (preference instanceof NowPlayingScreenPreference) {
+            if (preference instanceof NowPlayingScreenPreferenceX) {
                 return NowPlayingScreenPreferenceDialog.newInstance();
-            } else if (preference instanceof BlacklistPreference) {
+            } else if (preference instanceof BlacklistPreferenceX) {
                 return BlacklistPreferenceDialog.newInstance();
-            } else if (preference instanceof LibraryPreference) {
+            } else if (preference instanceof LibraryPreferenceX) {
                 return LibraryPreferenceDialog.newInstance();
             }
             return super.onCreatePreferenceDialog(preference);
