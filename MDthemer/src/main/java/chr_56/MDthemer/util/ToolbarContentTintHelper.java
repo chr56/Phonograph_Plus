@@ -35,7 +35,7 @@ import androidx.appcompat.widget.ToolbarWidgetWrapper;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 
-import chr_56.MDthemer.ThemeColor;
+import chr_56.MDthemer.core.ThemeColor;
 import chr_56.MDthemer.R;
 
 /**

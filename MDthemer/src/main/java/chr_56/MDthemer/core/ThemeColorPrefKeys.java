@@ -1,4 +1,4 @@
-package chr_56.MDthemer;
+package chr_56.MDthemer.core;
 
 /**
  * @author Aidan Follestad (afollestad), Karim Abou Zeid (kabouzeid)

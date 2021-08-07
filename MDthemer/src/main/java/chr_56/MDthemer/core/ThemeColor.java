@@ -1,4 +1,4 @@
-package chr_56.MDthemer;
+package chr_56.MDthemer.core;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -13,6 +13,7 @@ import androidx.annotation.IntRange;
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 
+import chr_56.MDthemer.R;
 import chr_56.MDthemer.util.ColorUtil;
 import chr_56.MDthemer.util.Util;
 

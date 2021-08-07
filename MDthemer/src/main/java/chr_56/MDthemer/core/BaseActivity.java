@@ -22,12 +22,8 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         if (Themer.didThemeValuesChange(this, updateTime)) {
-            onThemeChanged();
+            postRecreate();
         }
-    }
-
-    public void onThemeChanged() {
-        postRecreate();
     }
 
     public void postRecreate() {
