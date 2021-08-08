@@ -21,7 +21,6 @@ import android.view.View;
 
 import com.afollestad.materialdialogs.color.ColorChooserDialog;
 import com.kabouzeid.appthemehelper.ThemeStore;
-import com.kabouzeid.appthemehelper.common.prefs.supportv7.ATEColorPreference;
 import com.kabouzeid.appthemehelper.common.prefs.supportv7.ATEPreferenceFragmentCompat;
 import com.kabouzeid.appthemehelper.util.ColorUtil;
 import com.kabouzeid.gramophone.R;
@@ -32,6 +31,7 @@ import com.kabouzeid.gramophone.preferences.LibraryPreferenceX;
 import com.kabouzeid.gramophone.preferences.LibraryPreferenceDialog;
 import com.kabouzeid.gramophone.preferences.NowPlayingScreenPreferenceX;
 import com.kabouzeid.gramophone.preferences.NowPlayingScreenPreferenceDialog;
+import com.kabouzeid.gramophone.preferences.basic.ColorPreferenceX;
 import com.kabouzeid.gramophone.ui.activities.base.AbsBaseActivity;
 import com.kabouzeid.gramophone.util.NavigationUtil;
 import com.kabouzeid.gramophone.util.PreferenceUtil;
@@ -192,7 +192,7 @@ public class SettingsActivity extends AbsBaseActivity implements ColorChooserDia
                 return true;
             });
 
-            final ATEColorPreference primaryColorPref = (ATEColorPreference) findPreference("primary_color");
+            final ColorPreferenceX primaryColorPref = (ColorPreferenceX) findPreference("primary_color");
             final int primaryColor = ThemeStore.primaryColor(getActivity());
             primaryColorPref.setColor(primaryColor, ColorUtil.darkenColor(primaryColor));
             primaryColorPref.setOnPreferenceClickListener(preference -> {
@@ -205,7 +205,7 @@ public class SettingsActivity extends AbsBaseActivity implements ColorChooserDia
                 return true;
             });
 
-            final ATEColorPreference accentColorPref = (ATEColorPreference) findPreference("accent_color");
+            final ColorPreferenceX accentColorPref = (ColorPreferenceX) findPreference("accent_color");
             final int accentColor = ThemeStore.accentColor(getActivity());
             accentColorPref.setColor(accentColor, ColorUtil.darkenColor(accentColor));
             accentColorPref.setOnPreferenceClickListener(preference -> {
