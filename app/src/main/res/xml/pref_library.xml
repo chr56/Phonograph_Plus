@@ -1,7 +1,7 @@
 <androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <com.kabouzeid.appthemehelper.common.prefs.supportv7.ATEPreferenceCategory android:title="@string/pref_header_library">
+    <com.kabouzeid.gramophone.preferences.basic.PreferenceCategoryX android:title="@string/pref_header_library">
 
         <com.kabouzeid.gramophone.preferences.LibraryPreferenceX
             app:iconSpaceReserved="false"
@@ -23,6 +23,6 @@
             android:summary="@string/pref_summary_remember_last_tab"
             android:title="@string/pref_title_remember_last_tab" />
 
-    </com.kabouzeid.appthemehelper.common.prefs.supportv7.ATEPreferenceCategory>
+    </com.kabouzeid.gramophone.preferences.basic.PreferenceCategoryX>
 
 </androidx.preference.PreferenceScreen>
