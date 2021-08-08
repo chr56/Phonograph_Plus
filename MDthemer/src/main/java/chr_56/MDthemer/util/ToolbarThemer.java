@@ -15,7 +15,6 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RadioButton;
 
-import androidx.annotation.CheckResult;
 import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -35,51 +34,37 @@ import androidx.appcompat.widget.ToolbarWidgetWrapper;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 
-import chr_56.MDthemer.core.ThemeColor;
 import chr_56.MDthemer.R;
+import chr_56.MDthemer.core.ThemeColor;
 
 /**
- * @author Karim Abou Zeid (kabouzeid)
+ * @author Karim Abou Zeid (kabouzeid), chr_56 [modify]
  */
-public final class ToolbarContentTintHelper {
-
-    public static void setToolbarContentColorBasedOnToolbarColor(@NonNull Context context, Toolbar toolbar, int toolbarColor) {
-        setToolbarContentColorBasedOnToolbarColor(context, toolbar, null, toolbarColor);
-    }
-
-    public static void setToolbarContentColorBasedOnToolbarColor(@NonNull Context context, Toolbar toolbar, @Nullable Menu menu, int toolbarColor) {
-        setToolbarContentColorBasedOnToolbarColor(context, toolbar, menu, toolbarColor, ThemeColor.accentColor(context));
-    }
-
-    public static void setToolbarContentColorBasedOnToolbarColor(@NonNull Context context, Toolbar toolbar, @Nullable Menu menu, int toolbarColor, final @ColorInt int menuWidgetColor) {
-        setToolbarContentColor(context, toolbar, menu, toolbarContentColor(context, toolbarColor), toolbarTitleColor(context, toolbarColor), toolbarSubtitleColor(context, toolbarColor), menuWidgetColor);
-    }
-
-    public static void setToolbarContentColor(@NonNull Context context, Toolbar toolbar, final @ColorInt int toolbarContentColor, final @ColorInt int primaryTextColor, final @ColorInt int secondaryTextColor, final @ColorInt int menuWidgetColor) {
-        setToolbarContentColor(context, toolbar, null, toolbarContentColor, primaryTextColor, secondaryTextColor, menuWidgetColor);
-    }
-
+public class ToolbarThemer {
     @SuppressWarnings("unchecked")
-    public static void setToolbarContentColor(@NonNull Context context, Toolbar toolbar, @Nullable Menu menu, final @ColorInt int toolbarContentColor, final @ColorInt int titleTextColor, final @ColorInt int subtitleTextColor, final @ColorInt int menuWidgetColor) {
-        if (toolbar == null) return;
+    public static void setToolbarColor(@NonNull Context context, @NonNull Toolbar toolbar,
+                                       final @ColorInt int toolbarColor,
+                                       final @ColorInt int titleTextColor,
+                                       final @ColorInt int subtitleTextColor,
+                                       final @ColorInt int menuWidgetColor) {
+        final Menu menu = toolbar.getMenu();
 
-        if (menu == null) {
-            menu = toolbar.getMenu();
-        }
-
+        //Text
         toolbar.setTitleTextColor(titleTextColor);
         toolbar.setSubtitleTextColor(subtitleTextColor);
 
+        //Icon
         if (toolbar.getNavigationIcon() != null) {
             // Tint the toolbar navigation icon (e.g. back, drawer, etc.)
-            toolbar.setNavigationIcon(TintHelper.createTintedDrawable(toolbar.getNavigationIcon(), toolbarContentColor));
+            toolbar.setNavigationIcon(TintHelper.createTintedDrawable(toolbar.getNavigationIcon(), toolbarColor));
         }
 
-        InternalToolbarContentTintUtil.tintMenu(toolbar, menu, toolbarContentColor);
+        //Menu
+        InternalToolbarContentTintUtil.tintMenu(toolbar, menu, toolbarColor);
         InternalToolbarContentTintUtil.applyOverflowMenuTint(context, toolbar, menuWidgetColor);
 
         if (context instanceof Activity) {
-            InternalToolbarContentTintUtil.setOverflowButtonColor((Activity) context, toolbarContentColor);
+            InternalToolbarContentTintUtil.setOverflowButtonColor((Activity) context, toolbarColor);
         }
 
         try {
@@ -92,8 +77,8 @@ public final class ToolbarContentTintHelper {
             menuViewField.setAccessible(true);
 
             final MenuPresenter.Callback currentPresenterCb = (MenuPresenter.Callback) presenterField.get(toolbar);
-            if (!(currentPresenterCb instanceof ATHMenuPresenterCallback)) {
-                final ATHMenuPresenterCallback newPresenterCb = new ATHMenuPresenterCallback(context, menuWidgetColor, currentPresenterCb, toolbar);
+            if (!(currentPresenterCb instanceof _MenuPresenterCallback)) {
+                final _MenuPresenterCallback newPresenterCb = new _MenuPresenterCallback(context, menuWidgetColor, currentPresenterCb, toolbar);
                 final MenuBuilder.Callback currentMenuCb = (MenuBuilder.Callback) menuField.get(toolbar);
                 toolbar.setMenuCallbacks(newPresenterCb, currentMenuCb);
                 ActionMenuView menuView = (ActionMenuView) menuViewField.get(toolbar);
@@ -105,61 +90,51 @@ public final class ToolbarContentTintHelper {
             final Field menuItemClickListener = Toolbar.class.getDeclaredField("mOnMenuItemClickListener");
             menuItemClickListener.setAccessible(true);
             Toolbar.OnMenuItemClickListener currentClickListener = (Toolbar.OnMenuItemClickListener) menuItemClickListener.get(toolbar);
-            if (!(currentClickListener instanceof ATHOnMenuItemClickListener)) {
-                final ATHOnMenuItemClickListener newClickListener = new ATHOnMenuItemClickListener(context, menuWidgetColor, currentClickListener, toolbar);
+            if (!(currentClickListener instanceof _OnMenuItemClickListener)) {
+                final _OnMenuItemClickListener newClickListener = new _OnMenuItemClickListener(context, menuWidgetColor, currentClickListener, toolbar);
                 toolbar.setOnMenuItemClickListener(newClickListener);
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
-
-    private static class ATHMenuPresenterCallback implements MenuPresenter.Callback {
-
-        public ATHMenuPresenterCallback(Context context, final @ColorInt int color, MenuPresenter.Callback parentCb, Toolbar toolbar) {
-            mContext = context;
-            mColor = color;
-            mParentCb = parentCb;
-            mToolbar = toolbar;
-        }
-
-        private Context mContext;
-        private int mColor;
-        private MenuPresenter.Callback mParentCb;
-        private Toolbar mToolbar;
-
-        @Override
-        public void onCloseMenu(MenuBuilder menu, boolean allMenusAreClosing) {
-            if (mParentCb != null)
-                mParentCb.onCloseMenu(menu, allMenusAreClosing);
-        }
-
-        @Override
-        public boolean onOpenSubMenu(MenuBuilder subMenu) {
-            InternalToolbarContentTintUtil.applyOverflowMenuTint(mContext, mToolbar, mColor);
-            return mParentCb != null && mParentCb.onOpenSubMenu(subMenu);
-        }
+    public static void setToolbarColorAuto(@NonNull Context context, Toolbar toolbar,
+                                           final @ColorInt int toolbarColor,
+                                           final @ColorInt int menuWidgetColor){
+        setToolbarColor(context, toolbar,
+                ColorUtil.isColorLight(toolbarColor)?
+                        MaterialValueHelper.getSecondaryTextColor(context, ColorUtil.isColorLight(toolbarColor))
+                        :MaterialValueHelper.getPrimaryTextColor(context, ColorUtil.isColorLight(toolbarColor)),
+                MaterialValueHelper.getPrimaryTextColor(context, ColorUtil.isColorLight(toolbarColor)),
+                MaterialValueHelper.getSecondaryTextColor(context, ColorUtil.isColorLight(toolbarColor)),
+                    menuWidgetColor);
+    }
+    public static void setToolbarColorAuto(@NonNull Context context, Toolbar toolbar,
+                                           int toolbarColor) {
+        setToolbarColorAuto(context, toolbar,
+                toolbarColor, ThemeColor.accentColor(context));
     }
 
-    private static class ATHOnMenuItemClickListener implements Toolbar.OnMenuItemClickListener {
+    public static void handleOnPrepareOptionsMenu(Activity activity, Toolbar toolbar) {
+        handleOnPrepareOptionsMenu(activity, toolbar, ThemeColor.accentColor(activity));
+    }
 
-        private Context mContext;
-        private int mColor;
-        private Toolbar.OnMenuItemClickListener mParentListener;
-        private Toolbar mToolbar;
+    public static void handleOnPrepareOptionsMenu(Activity activity, Toolbar toolbar,
+                                                  int widgetColor) {
+        InternalToolbarContentTintUtil.applyOverflowMenuTint(activity, toolbar, widgetColor);
+    }
 
-        public ATHOnMenuItemClickListener(Context context, final @ColorInt int color, Toolbar.OnMenuItemClickListener parentCb, Toolbar toolbar) {
-            mContext = context;
-            mColor = color;
-            mParentListener = parentCb;
-            mToolbar = toolbar;
-        }
+    public static void handleOnCreateOptionsMenu(Context context, Toolbar toolbar,
+                                                 int toolbarColor) {
+        setToolbarColorAuto(context, toolbar,  toolbarColor);
+    }
 
-        @Override
-        public boolean onMenuItemClick(MenuItem item) {
-            InternalToolbarContentTintUtil.applyOverflowMenuTint(mContext, mToolbar, mColor);
-            return mParentListener != null && mParentListener.onMenuItemClick(item);
-        }
+    public static void handleOnCreateOptionsMenu(Context context, Toolbar toolbar,
+                                                 @ColorInt int toolbarColor,
+                                                 @ColorInt int titleTextColor,
+                                                 @ColorInt int subtitleTextColor,
+                                                 @ColorInt int menuWidgetColor) {
+        setToolbarColor(context, toolbar,  toolbarColor, titleTextColor, subtitleTextColor, menuWidgetColor);
     }
 
     @Nullable
@@ -176,46 +151,6 @@ public final class ToolbarContentTintHelper {
         } catch (Throwable t) {
             throw new RuntimeException("Failed to retrieve Toolbar from AppCompat support ActionBar: " + t.getMessage(), t);
         }
-    }
-
-    public static void handleOnPrepareOptionsMenu(Activity activity, Toolbar toolbar) {
-        handleOnPrepareOptionsMenu(activity, toolbar, ThemeColor.accentColor(activity));
-    }
-
-    public static void handleOnPrepareOptionsMenu(Activity activity, Toolbar toolbar, int widgetColor) {
-        InternalToolbarContentTintUtil.applyOverflowMenuTint(activity, toolbar, widgetColor);
-    }
-
-    public static void handleOnCreateOptionsMenu(Context context, Toolbar toolbar, Menu menu, int toolbarColor) {
-        setToolbarContentColorBasedOnToolbarColor(context, toolbar, menu, toolbarColor);
-    }
-
-    public static void handleOnCreateOptionsMenu(Context context, Toolbar toolbar, Menu menu, @ColorInt int toolbarContentColor, @ColorInt int titleTextColor, @ColorInt int subtitleTextColor, @ColorInt int menuWidgetColor) {
-        setToolbarContentColor(context, toolbar, menu, toolbarContentColor, titleTextColor, subtitleTextColor, menuWidgetColor);
-    }
-
-    @CheckResult
-    @ColorInt
-    public static int toolbarContentColor(@NonNull Context context, @ColorInt int toolbarColor) {
-        if (ColorUtil.isColorLight(toolbarColor)) {
-            return toolbarSubtitleColor(context, toolbarColor);
-        }
-        return toolbarTitleColor(context, toolbarColor);
-    }
-
-    @CheckResult
-    @ColorInt
-    public static int toolbarSubtitleColor(@NonNull Context context, @ColorInt int toolbarColor) {
-        return MaterialValueHelper.getSecondaryTextColor(context, ColorUtil.isColorLight(toolbarColor));
-    }
-
-    @CheckResult
-    @ColorInt
-    public static int toolbarTitleColor(@NonNull Context context, @ColorInt int toolbarColor) {
-        return MaterialValueHelper.getPrimaryTextColor(context, ColorUtil.isColorLight(toolbarColor));
-    }
-
-    private ToolbarContentTintHelper() {
     }
 
     public static class InternalToolbarContentTintUtil {
@@ -241,7 +176,7 @@ public final class ToolbarContentTintHelper {
                     }
                     // Search view theming
                     if (item.getActionView() != null && (item.getActionView() instanceof android.widget.SearchView || item.getActionView() instanceof androidx.appcompat.widget.SearchView)) {
-                        SearchViewTintUtil.setSearchViewContentColor(item.getActionView(), color);
+                        InternalToolbarContentTintUtil.SearchViewTintUtil.setSearchViewContentColor(item.getActionView(), color);
                     }
                 }
             }
@@ -314,12 +249,12 @@ public final class ToolbarContentTintHelper {
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                            //if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
                                 listView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                            } else {
+                            /*} else {
                                 //noinspection deprecation
                                 listView.getViewTreeObserver().removeGlobalOnLayoutListener(this);
-                            }
+                            }*/
                         }
                     });
                 }
@@ -385,4 +320,52 @@ public final class ToolbarContentTintHelper {
         private InternalToolbarContentTintUtil() {
         }
     }
+
+    private static class _MenuPresenterCallback implements MenuPresenter.Callback {
+
+        public _MenuPresenterCallback(Context context, final @ColorInt int color, MenuPresenter.Callback parentCb, Toolbar toolbar) {
+            mContext = context;
+            mColor = color;
+            mParentCb = parentCb;
+            mToolbar = toolbar;
+        }
+
+        private Context mContext;
+        private int mColor;
+        private MenuPresenter.Callback mParentCb;
+        private Toolbar mToolbar;
+
+        @Override
+        public void onCloseMenu(MenuBuilder menu, boolean allMenusAreClosing) {
+            if (mParentCb != null)
+                mParentCb.onCloseMenu(menu, allMenusAreClosing);
+        }
+
+        @Override
+        public boolean onOpenSubMenu(MenuBuilder subMenu) {
+            InternalToolbarContentTintUtil.applyOverflowMenuTint(mContext, mToolbar, mColor);
+            return mParentCb != null && mParentCb.onOpenSubMenu(subMenu);
+        }
+    }
+    private static class _OnMenuItemClickListener implements Toolbar.OnMenuItemClickListener {
+
+        private Context mContext;
+        private int mColor;
+        private Toolbar.OnMenuItemClickListener mParentListener;
+        private Toolbar mToolbar;
+
+        public _OnMenuItemClickListener(Context context, final @ColorInt int color, Toolbar.OnMenuItemClickListener parentCb, Toolbar toolbar) {
+            mContext = context;
+            mColor = color;
+            mParentListener = parentCb;
+            mToolbar = toolbar;
+        }
+
+        @Override
+        public boolean onMenuItemClick(MenuItem item) {
+            InternalToolbarContentTintUtil.applyOverflowMenuTint(mContext, mToolbar, mColor);
+            return mParentListener != null && mParentListener.onMenuItemClick(item);
+        }
+    }
 }
+

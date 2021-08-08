@@ -14,7 +14,7 @@ import androidx.appcompat.widget.Toolbar;
 
 import chr_56.MDthemer.util.ColorUtil;
 import chr_56.MDthemer.util.TintHelper;
-import chr_56.MDthemer.util.ToolbarContentTintHelper;
+import chr_56.MDthemer.util.ToolbarThemer;
 
 import static android.view.View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR;
 
@@ -90,7 +90,7 @@ public final class Themer {
     public static void setActivityToolbarColor(Activity activity, @Nullable Toolbar toolbar, int color) {
         if (toolbar == null) return;
         toolbar.setBackgroundColor(color);
-        ToolbarContentTintHelper.setToolbarContentColorBasedOnToolbarColor(activity, toolbar, color);
+        ToolbarThemer.setToolbarColorAuto(activity, toolbar, color);
     }
 
     public static void setTaskDescriptionColorAuto(@NonNull Activity activity) {

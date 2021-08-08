@@ -1,9 +1,13 @@
 package chr_56.MDthemer.core;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
+import androidx.appcompat.widget.Toolbar;
 
 /**
  * @author Aidan Follestad (afollestad), Karim Abou Zeid (kabouzeid)
@@ -11,11 +15,13 @@ import androidx.appcompat.app.AppCompatActivity;
 public abstract class BaseActivity extends AppCompatActivity {
 
     private long updateTime = -1;
+    private Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         updateTime = System.currentTimeMillis();
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
     }
 
     @Override
@@ -36,4 +42,17 @@ public abstract class BaseActivity extends AppCompatActivity {
             }
         });
     }
+
+    @Override
+    public void setSupportActionBar(@Nullable Toolbar toolbar) {
+        this.toolbar = toolbar;
+        super.setSupportActionBar(toolbar);
+    }
+
+    protected Toolbar getToolbar() {
+        return toolbar;
+    }
+
+
+    abstract protected void initView(Context context);
 }
