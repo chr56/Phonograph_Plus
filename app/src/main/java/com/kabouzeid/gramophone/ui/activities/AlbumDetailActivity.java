@@ -25,8 +25,6 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.util.DialogUtils;
 import com.bumptech.glide.Glide;
 import com.github.ksoichiro.android.observablescrollview.ObservableRecyclerView;
-import com.kabouzeid.appthemehelper.util.ColorUtil;
-import com.kabouzeid.appthemehelper.util.MaterialValueHelper;
 import com.kabouzeid.gramophone.R;
 import com.kabouzeid.gramophone.adapter.song.AlbumSongAdapter;
 import com.kabouzeid.gramophone.dialogs.AddToPlaylistDialog;
@@ -59,6 +57,8 @@ import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import chr_56.MDthemer.util.ColorUtil;
+import chr_56.MDthemer.util.MaterialColorHelper;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -189,12 +189,12 @@ public class AlbumDetailActivity extends AbsSlidingMusicPanelActivity implements
         setSupportActionBar(toolbar); // needed to auto readjust the toolbar content color
         setStatusbarColor(color);
 
-        int secondaryTextColor = MaterialValueHelper.getSecondaryTextColor(this, ColorUtil.isColorLight(color));
+        int secondaryTextColor = MaterialColorHelper.getSecondaryTextColor(this, ColorUtil.isColorLight(color));
         artistIconImageView.setColorFilter(secondaryTextColor, PorterDuff.Mode.SRC_IN);
         durationIconImageView.setColorFilter(secondaryTextColor, PorterDuff.Mode.SRC_IN);
         songCountIconImageView.setColorFilter(secondaryTextColor, PorterDuff.Mode.SRC_IN);
         albumYearIconImageView.setColorFilter(secondaryTextColor, PorterDuff.Mode.SRC_IN);
-        artistTextView.setTextColor(MaterialValueHelper.getPrimaryTextColor(this, ColorUtil.isColorLight(color)));
+        artistTextView.setTextColor(MaterialColorHelper.getPrimaryTextColor(this, ColorUtil.isColorLight(color)));
         durationTextView.setTextColor(secondaryTextColor);
         songCountTextView.setTextColor(secondaryTextColor);
         albumYearTextView.setTextColor(secondaryTextColor);

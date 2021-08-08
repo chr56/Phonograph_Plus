@@ -18,11 +18,11 @@ import android.view.View;
 import android.view.animation.PathInterpolator;
 import android.widget.TextView;
 
-import com.kabouzeid.appthemehelper.util.ATHUtil;
-import com.kabouzeid.appthemehelper.util.ColorUtil;
-import com.kabouzeid.appthemehelper.util.MaterialValueHelper;
 import com.kabouzeid.gramophone.R;
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView;
+
+import chr_56.MDthemer.util.ColorUtil;
+import chr_56.MDthemer.util.MaterialColorHelper;
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
@@ -81,9 +81,9 @@ public class ViewUtil {
 
     public static void setUpFastScrollRecyclerViewColor(Context context, FastScrollRecyclerView recyclerView, int accentColor) {
         recyclerView.setPopupBgColor(accentColor);
-        recyclerView.setPopupTextColor(MaterialValueHelper.getPrimaryTextColor(context, ColorUtil.isColorLight(accentColor)));
+        recyclerView.setPopupTextColor(MaterialColorHelper.getPrimaryTextColor(context, ColorUtil.isColorLight(accentColor)));
         recyclerView.setThumbColor(accentColor);
-        recyclerView.setTrackColor(ColorUtil.withAlpha(ATHUtil.resolveColor(context, R.attr.colorControlNormal), 0.12f));
+        recyclerView.setTrackColor(ColorUtil.withAlpha(chr_56.MDthemer.util.Util.resolveColor(context, R.attr.colorControlNormal), 0.12f));//todo
     }
 
     public static float convertDpToPixel(float dp, Resources resources) {

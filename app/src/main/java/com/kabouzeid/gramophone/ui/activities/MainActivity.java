@@ -25,9 +25,6 @@ import androidx.preference.PreferenceManager;
 
 import com.bumptech.glide.Glide;
 import com.google.android.material.navigation.NavigationView;
-import com.kabouzeid.appthemehelper.ThemeStore;
-import com.kabouzeid.appthemehelper.util.ATHUtil;
-import com.kabouzeid.appthemehelper.util.NavigationViewUtil;
 import com.kabouzeid.gramophone.R;
 import com.kabouzeid.gramophone.dialogs.ChangelogDialog;
 import com.kabouzeid.gramophone.dialogs.ScanMediaFolderChooserDialog;
@@ -52,6 +49,9 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import chr_56.MDthemer.core.ThemeColor;
+import chr_56.MDthemer.util.NavigationViewUtil;
+import chr_56.MDthemer.util.Util;
 import retrofit2.http.PUT;
 
 public class MainActivity extends AbsSlidingMusicPanelActivity {
@@ -156,9 +156,9 @@ public class MainActivity extends AbsSlidingMusicPanelActivity {
     }
 
     private void setUpNavigationView() {
-        int accentColor = ThemeStore.accentColor(this);
-        NavigationViewUtil.setItemIconColors(navigationView, ATHUtil.resolveColor(this, R.attr.iconColor, ThemeStore.textColorSecondary(this)), accentColor);
-        NavigationViewUtil.setItemTextColors(navigationView, ThemeStore.textColorPrimary(this), accentColor);
+        int accentColor = ThemeColor.accentColor(this);
+        NavigationViewUtil.setItemIconColors(navigationView, Util.resolveColor(this, R.attr.iconColor, ThemeColor.textColorSecondary(this)), accentColor);
+        NavigationViewUtil.setItemTextColors(navigationView, ThemeColor.textColorPrimary(this), accentColor);
 
 //        SwitchCompat switchNightmode = (SwitchCompat) navigationView.getMenu().findItem(R.id.theme_switch).getActionView().findViewById(R.id.nightmode_switch);
 //        switchNightmode.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {

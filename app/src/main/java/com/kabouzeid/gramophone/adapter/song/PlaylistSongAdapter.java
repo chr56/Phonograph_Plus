@@ -8,7 +8,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.kabouzeid.appthemehelper.ThemeStore;
 import com.kabouzeid.gramophone.R;
 import com.kabouzeid.gramophone.interfaces.CabHolder;
 import com.kabouzeid.gramophone.model.Song;
@@ -17,6 +16,8 @@ import com.kabouzeid.gramophone.util.NavigationUtil;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import chr_56.MDthemer.core.ThemeColor;
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
@@ -36,7 +37,7 @@ public class PlaylistSongAdapter extends AbsOffsetSongAdapter {
     @Override
     public void onBindViewHolder(@NonNull final SongAdapter.ViewHolder holder, int position) {
         if (holder.getItemViewType() == OFFSET_ITEM) {
-            int textColor = ThemeStore.textColorSecondary(activity);
+            int textColor = ThemeColor.textColorSecondary(activity);
             if (holder.title != null) {
                 holder.title.setText(MusicUtil.getPlaylistInfoString(activity, dataSet));
                 holder.title.setTextColor(textColor);

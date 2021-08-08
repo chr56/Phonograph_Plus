@@ -61,7 +61,7 @@
                         android:inputType="text|textCapWords"
                         android:singleLine="true"
                         android:textAppearance="@style/TextAppearance.AppCompat.Title"
-                        android:textColor="@color/ate_primary_text_dark" />
+                        android:textColor="@color/MD_primary_text_dark" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 

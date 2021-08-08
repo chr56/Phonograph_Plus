@@ -15,6 +15,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RadioButton;
 
+import androidx.annotation.CheckResult;
 import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -102,11 +103,9 @@ public class ToolbarThemer {
                                            final @ColorInt int toolbarColor,
                                            final @ColorInt int menuWidgetColor){
         setToolbarColor(context, toolbar,
-                ColorUtil.isColorLight(toolbarColor)?
-                        MaterialColorHelper.getSecondaryTextColor(context, ColorUtil.isColorLight(toolbarColor))
-                        : MaterialColorHelper.getPrimaryTextColor(context, ColorUtil.isColorLight(toolbarColor)),
-                MaterialColorHelper.getPrimaryTextColor(context, ColorUtil.isColorLight(toolbarColor)),
-                MaterialColorHelper.getSecondaryTextColor(context, ColorUtil.isColorLight(toolbarColor)),
+                toolbarContentColor(context, toolbarColor),
+                toolbarTitleColor(context, toolbarColor),
+                toolbarSubtitleColor(context, toolbarColor),
                     menuWidgetColor);
     }
     public static void setToolbarColorAuto(@NonNull Context context, Toolbar toolbar,
@@ -124,19 +123,26 @@ public class ToolbarThemer {
         InternalToolbarContentTintUtil.applyOverflowMenuTint(activity, toolbar, widgetColor);
     }
 
-    public static void handleOnCreateOptionsMenu(Context context, Toolbar toolbar,
-                                                 int toolbarColor) {
-        setToolbarColorAuto(context, toolbar,  toolbarColor);
+    @CheckResult
+    @ColorInt
+    public static int toolbarContentColor(@NonNull Context context, @ColorInt int toolbarColor) {
+        if (ColorUtil.isColorLight(toolbarColor)) {
+            return toolbarSubtitleColor(context, toolbarColor);
+        }
+        return toolbarTitleColor(context, toolbarColor);
     }
 
-    public static void handleOnCreateOptionsMenu(Context context, Toolbar toolbar,
-                                                 @ColorInt int toolbarColor,
-                                                 @ColorInt int titleTextColor,
-                                                 @ColorInt int subtitleTextColor,
-                                                 @ColorInt int menuWidgetColor) {
-        setToolbarColor(context, toolbar,  toolbarColor, titleTextColor, subtitleTextColor, menuWidgetColor);
+    @CheckResult
+    @ColorInt
+    public static int toolbarSubtitleColor(@NonNull Context context, @ColorInt int toolbarColor) {
+        return MaterialColorHelper.getSecondaryTextColor(context, ColorUtil.isColorLight(toolbarColor));
     }
 
+    @CheckResult
+    @ColorInt
+    public static int toolbarTitleColor(@NonNull Context context, @ColorInt int toolbarColor) {
+        return MaterialColorHelper.getPrimaryTextColor(context, ColorUtil.isColorLight(toolbarColor));
+    }
     @Nullable
     public static Toolbar getSupportActionBarView(@Nullable ActionBar ab) {
         if (ab == null || !(ab instanceof WindowDecorActionBar)) return null;

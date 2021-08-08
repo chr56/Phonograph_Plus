@@ -20,9 +20,7 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.afollestad.materialdialogs.color.ColorChooserDialog;
-import com.kabouzeid.appthemehelper.ThemeStore;
 import com.kabouzeid.gramophone.preferences.basic.PreferenceFragmentCompatX;
-import com.kabouzeid.appthemehelper.util.ColorUtil;
 import com.kabouzeid.gramophone.R;
 import com.kabouzeid.gramophone.appshortcuts.DynamicShortcutManager;
 import com.kabouzeid.gramophone.preferences.BlacklistPreferenceDialog;
@@ -38,6 +36,8 @@ import com.kabouzeid.gramophone.util.PreferenceUtil;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import chr_56.MDthemer.core.ThemeColor;
+import chr_56.MDthemer.util.ColorUtil;
 
 public class SettingsActivity extends AbsBaseActivity implements ColorChooserDialog.ColorCallback {
 
@@ -55,7 +55,7 @@ public class SettingsActivity extends AbsBaseActivity implements ColorChooserDia
         setNavigationbarColorAuto();
         setTaskDescriptionColorAuto();
 
-        toolbar.setBackgroundColor(ThemeStore.primaryColor(this));
+        toolbar.setBackgroundColor(ThemeColor.primaryColor(this));
         setSupportActionBar(toolbar);
         //noinspection ConstantConditions
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -72,12 +72,12 @@ public class SettingsActivity extends AbsBaseActivity implements ColorChooserDia
     public void onColorSelection(@NonNull ColorChooserDialog dialog, @ColorInt int selectedColor) {
         switch (dialog.getTitle()) {
             case R.string.primary_color:
-                ThemeStore.editTheme(this)
+                ThemeColor.editTheme(this)
                         .primaryColor(selectedColor)
                         .commit();
                 break;
             case R.string.accent_color:
-                ThemeStore.editTheme(this)
+                ThemeColor.editTheme(this)
                         .accentColor(selectedColor)
                         .commit();
                 break;
@@ -173,7 +173,7 @@ public class SettingsActivity extends AbsBaseActivity implements ColorChooserDia
 
                 setSummary(generalTheme, o);
 
-                ThemeStore.markChanged(getActivity());
+                ThemeColor.markChanged(getActivity());
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
                     // Set the new theme so that updateAppShortcuts can pull it
@@ -193,7 +193,7 @@ public class SettingsActivity extends AbsBaseActivity implements ColorChooserDia
             });
 
             final ColorPreferenceX primaryColorPref = (ColorPreferenceX) findPreference("primary_color");
-            final int primaryColor = ThemeStore.primaryColor(getActivity());
+            final int primaryColor = ThemeColor.primaryColor(getActivity());
             primaryColorPref.setColor(primaryColor, ColorUtil.darkenColor(primaryColor));
             primaryColorPref.setOnPreferenceClickListener(preference -> {
                 new ColorChooserDialog.Builder(getActivity(), R.string.primary_color)
@@ -206,7 +206,7 @@ public class SettingsActivity extends AbsBaseActivity implements ColorChooserDia
             });
 
             final ColorPreferenceX accentColorPref = (ColorPreferenceX) findPreference("accent_color");
-            final int accentColor = ThemeStore.accentColor(getActivity());
+            final int accentColor = ThemeColor.accentColor(getActivity());
             accentColorPref.setColor(accentColor, ColorUtil.darkenColor(accentColor));
             accentColorPref.setOnPreferenceClickListener(preference -> {
                 new ColorChooserDialog.Builder(getActivity(), R.string.accent_color)
@@ -222,9 +222,9 @@ public class SettingsActivity extends AbsBaseActivity implements ColorChooserDia
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
                 colorNavBar.setVisible(false);
             } else {
-                colorNavBar.setChecked(ThemeStore.coloredNavigationBar(getActivity()));
+                colorNavBar.setChecked(ThemeColor.coloredNavigationBar(getActivity()));
                 colorNavBar.setOnPreferenceChangeListener((preference, newValue) -> {
-                    ThemeStore.editTheme(getActivity())
+                    ThemeColor.editTheme(getActivity())
                             .coloredNavigationBar((Boolean) newValue)
                             .commit();
                     getActivity().recreate();

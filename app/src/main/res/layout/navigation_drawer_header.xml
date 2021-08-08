@@ -40,7 +40,7 @@
             android:fontFamily="sans-serif-medium"
             android:singleLine="true"
             android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-            android:textColor="@color/ate_primary_text_dark"
+            android:textColor="@color/MD_primary_text_dark"
             android:textSize="14sp" />
 
         <TextView
@@ -52,7 +52,7 @@
             android:fontFamily="sans-serif"
             android:singleLine="true"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-            android:textColor="@color/ate_secondary_text_dark"
+            android:textColor="@color/MD_secondary_text_dark"
             android:textSize="14sp" />
 
     </LinearLayout>

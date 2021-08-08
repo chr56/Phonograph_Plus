@@ -22,7 +22,7 @@
             android:paddingLeft="8dp"
             android:singleLine="true"
             android:textAppearance="@style/TextAppearance.AppCompat.Title"
-            android:textColor="@color/ate_primary_text_dark"
+            android:textColor="@color/MD_primary_text_dark"
             android:textSize="12sp"
             tools:ignore="RtlHardcoded,RtlSymmetry"
             tools:text="0:00" />
@@ -37,7 +37,7 @@
             android:paddingRight="8dp"
             android:singleLine="true"
             android:textAppearance="@style/TextAppearance.AppCompat.Title"
-            android:textColor="@color/ate_primary_text_dark"
+            android:textColor="@color/MD_primary_text_dark"
             android:textSize="12sp"
             tools:ignore="RtlHardcoded,RtlSymmetry"
             tools:text="3:14" />

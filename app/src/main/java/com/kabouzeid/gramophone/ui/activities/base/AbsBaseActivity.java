@@ -15,8 +15,9 @@ import androidx.core.app.ActivityCompat;
 import android.view.KeyEvent;
 import android.view.View;
 
-import com.kabouzeid.appthemehelper.ThemeStore;
 import com.kabouzeid.gramophone.R;
+
+import chr_56.MDthemer.core.ThemeColor;
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
@@ -121,7 +122,7 @@ public abstract class AbsBaseActivity extends AbsThemeActivity {
                         Snackbar.make(getSnackBarContainer(), getPermissionDeniedMessage(),
                                 Snackbar.LENGTH_INDEFINITE)
                                 .setAction(R.string.action_grant, view -> requestPermissions())
-                                .setActionTextColor(ThemeStore.accentColor(this))
+                                .setActionTextColor(ThemeColor.accentColor(this))
                                 .show();
                     } else {
                         // User has deny permission and checked never show permission dialog so you can redirect to Application settings page
@@ -134,7 +135,7 @@ public abstract class AbsBaseActivity extends AbsThemeActivity {
                                     intent.setData(uri);
                                     startActivity(intent);
                                 })
-                                .setActionTextColor(ThemeStore.accentColor(this))
+                                .setActionTextColor(ThemeColor.accentColor(this))
                                 .show();
                     }
                     return;

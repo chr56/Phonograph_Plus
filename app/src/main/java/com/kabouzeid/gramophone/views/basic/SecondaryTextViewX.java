@@ -5,7 +5,8 @@ import android.util.AttributeSet;
 
 import androidx.appcompat.widget.AppCompatTextView;
 
-import com.kabouzeid.appthemehelper.ThemeStore;
+import chr_56.MDthemer.core.ThemeColor;
+
 
 /**
  * @author Aidan Follestad (afollestad)
@@ -28,6 +29,6 @@ public class SecondaryTextViewX extends AppCompatTextView {
     }
 
     private void init(Context context, AttributeSet attrs) {
-        setTextColor(ThemeStore.textColorSecondary(context));
+        setTextColor(ThemeColor.textColorSecondary(context));
     }
 }

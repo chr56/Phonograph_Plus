@@ -18,8 +18,6 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.target.Target;
-import com.kabouzeid.appthemehelper.util.ColorUtil;
-import com.kabouzeid.appthemehelper.util.MaterialValueHelper;
 import com.kabouzeid.gramophone.R;
 import com.kabouzeid.gramophone.glide.SongGlideRequest;
 import com.kabouzeid.gramophone.glide.palette.BitmapPaletteWrapper;
@@ -29,6 +27,9 @@ import com.kabouzeid.gramophone.ui.activities.MainActivity;
 import com.kabouzeid.gramophone.util.ImageUtil;
 import com.kabouzeid.gramophone.util.PhonographColorUtil;
 import com.kabouzeid.gramophone.util.PreferenceUtil;
+
+import chr_56.MDthemer.util.ColorUtil;
+import chr_56.MDthemer.util.MaterialColorHelper;
 
 public class PlayingNotificationImpl extends PlayingNotification {
 
@@ -129,8 +130,8 @@ public class PlayingNotificationImpl extends PlayingNotification {
                             }
 
                             private void setNotificationContent(boolean dark) {
-                                int primary = MaterialValueHelper.getPrimaryTextColor(service, dark);
-                                int secondary = MaterialValueHelper.getSecondaryTextColor(service, dark);
+                                int primary = MaterialColorHelper.getPrimaryTextColor(service, dark);
+                                int secondary = MaterialColorHelper.getSecondaryTextColor(service, dark);
 
                                 Bitmap prev = ImageUtil.createBitmap(ImageUtil.getTintedVectorDrawable(service, R.drawable.ic_skip_previous_white_24dp, primary), 1.5f);
                                 Bitmap next = ImageUtil.createBitmap(ImageUtil.getTintedVectorDrawable(service, R.drawable.ic_skip_next_white_24dp, primary), 1.5f);

@@ -14,7 +14,6 @@ import android.view.ViewGroup;
 import android.widget.PopupMenu;
 import android.widget.Toast;
 
-import com.kabouzeid.appthemehelper.util.ATHUtil;
 import com.kabouzeid.gramophone.App;
 import com.kabouzeid.gramophone.R;
 import com.kabouzeid.gramophone.adapter.base.AbsMultiSelectAdapter;
@@ -38,6 +37,8 @@ import com.kabouzeid.gramophone.util.PlaylistsUtil;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import chr_56.MDthemer.util.Util;
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
@@ -225,7 +226,7 @@ public class PlaylistAdapter extends AbsMultiSelectAdapter<PlaylistAdapter.ViewH
                 if (shortSeparator != null) {
                     shortSeparator.setVisibility(View.GONE);
                 }
-                itemView.setBackgroundColor(ATHUtil.resolveColor(activity, R.attr.cardBackgroundColor));
+                itemView.setBackgroundColor(Util.resolveColor(activity, R.attr.cardBackgroundColor));
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     itemView.setElevation(activity.getResources().getDimensionPixelSize(R.dimen.card_elevation));
                 }
@@ -234,7 +235,7 @@ public class PlaylistAdapter extends AbsMultiSelectAdapter<PlaylistAdapter.ViewH
             if (image != null) {
                 int iconPadding = activity.getResources().getDimensionPixelSize(R.dimen.list_item_image_icon_padding);
                 image.setPadding(iconPadding, iconPadding, iconPadding, iconPadding);
-                image.setColorFilter(ATHUtil.resolveColor(activity, R.attr.iconColor), PorterDuff.Mode.SRC_IN);
+                image.setColorFilter(Util.resolveColor(activity, R.attr.iconColor), PorterDuff.Mode.SRC_IN);
             }
 
             if (menu != null) {

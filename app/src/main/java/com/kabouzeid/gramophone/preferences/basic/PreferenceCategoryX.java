@@ -9,8 +9,9 @@ import android.widget.TextView;
 import androidx.preference.PreferenceCategory;
 import androidx.preference.PreferenceViewHolder;
 
-import com.kabouzeid.appthemehelper.ThemeStore;
 import com.kabouzeid.gramophone.R;
+
+import chr_56.MDthemer.core.ThemeColor;
 
 public class PreferenceCategoryX extends PreferenceCategory {
 
@@ -39,7 +40,7 @@ public class PreferenceCategoryX extends PreferenceCategory {
     public void onBindViewHolder(PreferenceViewHolder holder) {
         super.onBindViewHolder(holder);
         TextView mTitle = (TextView) holder.itemView;
-        mTitle.setTextColor(ThemeStore.accentColor(getContext()));
+        mTitle.setTextColor(ThemeColor.accentColor(getContext()));
     }
 
     private void init(Context context, AttributeSet attrs) {

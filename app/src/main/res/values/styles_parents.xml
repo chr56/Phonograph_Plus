@@ -37,7 +37,7 @@
         <item name="defaultFooterColor">@color/md_grey_900</item>
 
         <item name="dividerColor">@color/md_divider_white</item>
-        <item name="iconColor">@color/ate_secondary_text_dark</item>
+        <item name="iconColor">@color/MD_secondary_text_dark</item>
 
         <item name="toolbarPopupTheme">@style/ThemeOverlay.AppCompat</item>
 
@@ -66,7 +66,7 @@
         <item name="defaultFooterColor">@color/md_grey_300</item>
 
         <item name="dividerColor">@color/md_divider_black</item>
-        <item name="iconColor">@color/ate_secondary_text_light</item>
+        <item name="iconColor">@color/MD_secondary_text_light</item>
 
         <item name="toolbarPopupTheme">@style/ThemeOverlay.AppCompat.Light</item>
 

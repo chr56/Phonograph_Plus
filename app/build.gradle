@@ -20,18 +20,6 @@ static def gitBranch() {
     branch
 }
 
-//def getProperties(String fileName) {
-//    final Properties properties = new Properties()
-//    def file = file(fileName)
-//    if (file.exists()) {
-//        file.withInputStream { stream -> properties.load(stream) }
-//    }
-//    return properties
-//}
-//
-//static def getProperty(@Nullable Properties properties, String name) {
-//    return properties.getProperty(name) ?: "$name missing"
-//}
 def signingProperties = new Properties()
 signingProperties.load(new FileInputStream(rootProject.file("signing.properties")))
 
@@ -50,13 +38,6 @@ android {
         versionName '1.3.5'
     }
     signingConfigs {
-//        release {
-//            Properties properties = getProperties('/Users/karim/Documents/Phonograph/privatekeys/keystore.properties')
-//            storeFile file(getProperty(properties, 'storeFile'))
-//            keyAlias getProperty(properties, 'keyAlias')
-//            storePassword getProperty(properties, 'storePassword')
-//            keyPassword getProperty(properties, 'keyPassword')
-//        }
         release {
             storeFile file(signingProperties['storeFile'])
             storePassword signingProperties['storePassword']
@@ -69,6 +50,7 @@ android {
             minifyEnabled true
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+
             signingConfig signingConfigs.release
             resValue "string", "app_name","Phonograph"
         }
@@ -76,33 +58,38 @@ android {
             minifyEnabled true
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            applicationIdSuffix '.cust'
+
             signingConfig signingConfigs.release
-            debuggable true
             resValue "string", "app_name","Phonograph Custom"
+            applicationIdSuffix '.cust'
             matchingFallbacks = ['release','cust']
-        }
-        debug {
-            applicationIdSuffix '.debug'
             versionNameSuffix ' (' + defaultConfig.versionCode + ') DEBUG (' + gitBranch() + ')'
-            resValue "string", "app_name","Phonograph debug"
-        }
-        custdebug{
-            applicationIdSuffix '.cust.debug'
-            signingConfig signingConfigs.release
             debuggable true
-            resValue "string", "app_name","Phonograph Debug Custom"
+        }
+        exp{
+            signingConfig signingConfigs.release
+            resValue "string", "app_name","Phonograph exp"
+            applicationIdSuffix '.exp'
             matchingFallbacks = ['release','cust']
+            versionNameSuffix ' (' + defaultConfig.versionCode + ') DEBUG (' + gitBranch() + ')'
+            debuggable true
+
         }
         pub{
             minifyEnabled true
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            applicationIdSuffix '.mod'
+
             signingConfig signingConfigs.release
-//            debuggable true
             resValue "string", "app_name","Phonograph Pro"
+            applicationIdSuffix '.mod'
             matchingFallbacks = ['release','cust']
+            versionNameSuffix ' (' + defaultConfig.versionCode + ') DEBUG (' + gitBranch() + ')'
+        }
+        debug {
+            applicationIdSuffix '.debug'
+            versionNameSuffix ' (' + defaultConfig.versionCode + ') DEBUG (' + gitBranch() + ')'
+            resValue "string", "app_name","Phonograph debug"
         }
     }
     packagingOptions {
@@ -121,7 +108,7 @@ android {
 }
 
 dependencies {
-    implementation project(path: ':libappthemehelper')
+    //implementation project(path: ':libappthemehelper')
     implementation project(path: ':MDthemer')
 
     implementation 'androidx.annotation:annotation:1.2.0'

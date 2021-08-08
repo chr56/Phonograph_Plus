@@ -15,8 +15,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.android.material.progressindicator.LinearProgressIndicator;
-import com.kabouzeid.appthemehelper.ThemeStore;
-import com.kabouzeid.appthemehelper.util.ATHUtil;
 import com.kabouzeid.gramophone.R;
 import com.kabouzeid.gramophone.helper.MusicPlayerRemote;
 import com.kabouzeid.gramophone.helper.MusicProgressViewUpdateHelper;
@@ -27,6 +25,8 @@ import com.kabouzeid.gramophone.views.PlayPauseDrawable;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import chr_56.MDthemer.core.ThemeColor;
+import chr_56.MDthemer.util.Util;
 import me.zhanghai.android.materialprogressbar.MaterialProgressBar;
 
 /**
@@ -81,13 +81,13 @@ public class MiniPlayerFragment extends AbsMusicServiceFragment implements Music
         setUpPlayPauseButton();
         //progressBar.setSupportProgressTintList(ColorStateList.valueOf(ThemeStore.accentColor(getActivity())));
         //progressIndicator.setProgressTintList();
-        progressIndicator.setIndicatorColor(ThemeStore.accentColor(getContext()));
+        progressIndicator.setIndicatorColor(ThemeColor.accentColor(getContext()));
     }
 
     private void setUpPlayPauseButton() {
         miniPlayerPlayPauseDrawable = new PlayPauseDrawable(getActivity());
         miniPlayerPlayPauseButton.setImageDrawable(miniPlayerPlayPauseDrawable);
-        miniPlayerPlayPauseButton.setColorFilter(ATHUtil.resolveColor(getActivity(), R.attr.iconColor, ThemeStore.textColorSecondary(getActivity())), PorterDuff.Mode.SRC_IN);
+        miniPlayerPlayPauseButton.setColorFilter(Util.resolveColor(getActivity(), R.attr.iconColor, ThemeColor.textColorSecondary(getActivity())), PorterDuff.Mode.SRC_IN);
         miniPlayerPlayPauseButton.setOnClickListener(new PlayPauseButtonOnClickHandler());
     }
 

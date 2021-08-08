@@ -54,5 +54,4 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
 
-    abstract protected void initView(Context context);
 }

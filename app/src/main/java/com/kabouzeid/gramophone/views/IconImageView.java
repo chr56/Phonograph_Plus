@@ -5,8 +5,9 @@ import android.graphics.PorterDuff;
 import androidx.appcompat.widget.AppCompatImageView;
 import android.util.AttributeSet;
 
-import com.kabouzeid.appthemehelper.util.ATHUtil;
 import com.kabouzeid.gramophone.R;
+
+import chr_56.MDthemer.util.Util;
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
@@ -29,6 +30,6 @@ public class IconImageView extends AppCompatImageView {
 
     private void init(Context context) {
         if (context == null) return;
-        setColorFilter(ATHUtil.resolveColor(context, R.attr.iconColor), PorterDuff.Mode.SRC_IN);
+        setColorFilter(Util.resolveColor(context, R.attr.iconColor), PorterDuff.Mode.SRC_IN);
     }
 }

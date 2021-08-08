@@ -42,7 +42,6 @@ public class ThemeActivity extends BaseActivity {
         return ToolbarThemer.getSupportActionBarView(getSupportActionBar());
     }
 
-    @Override
     protected void initView(Context context) {
     }
 }

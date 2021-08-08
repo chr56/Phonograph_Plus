@@ -10,10 +10,11 @@ import androidx.annotation.RequiresApi;
 import androidx.core.graphics.drawable.IconCompat;
 import android.util.TypedValue;
 
-import com.kabouzeid.appthemehelper.ThemeStore;
 import com.kabouzeid.gramophone.R;
 import com.kabouzeid.gramophone.util.ImageUtil;
 import com.kabouzeid.gramophone.util.PreferenceUtil;
+
+import chr_56.MDthemer.core.ThemeColor;
 
 /**
  * @author Adrian Campos
@@ -44,7 +45,7 @@ public final class AppShortcutIconGenerator {
 
         // Return an Icon of iconId with those colors
         return generateThemedIcon(context, iconId,
-                ThemeStore.primaryColor(context),
+                ThemeColor.primaryColor(context),
                 typedColorBackground.data
         );
     }

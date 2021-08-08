@@ -5,8 +5,9 @@ import android.util.AttributeSet;
 
 import androidx.appcompat.widget.AppCompatCheckBox;
 
-import com.kabouzeid.appthemehelper.ATH;
-import com.kabouzeid.appthemehelper.ThemeStore;
+import chr_56.MDthemer.core.ThemeColor;
+import chr_56.MDthemer.core.Themer;
+
 
 /**
  * @author Aidan Follestad (afollestad)
@@ -29,6 +30,6 @@ public class CheckBoxX extends AppCompatCheckBox {
     }
 
     private void init(Context context, AttributeSet attrs) {
-        ATH.setTint(this, ThemeStore.accentColor(context));
+        Themer.setTint(this, ThemeColor.accentColor(context));
     }
 }

@@ -23,9 +23,6 @@ import android.widget.LinearLayout;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollView;
-import com.kabouzeid.appthemehelper.ThemeStore;
-import com.kabouzeid.appthemehelper.util.ColorUtil;
-import com.kabouzeid.appthemehelper.util.TintHelper;
 import com.kabouzeid.gramophone.R;
 import com.kabouzeid.gramophone.misc.DialogAsyncTask;
 import com.kabouzeid.gramophone.misc.SimpleObservableScrollViewCallbacks;
@@ -55,6 +52,9 @@ import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import chr_56.MDthemer.core.ThemeColor;
+import chr_56.MDthemer.util.ColorUtil;
+import chr_56.MDthemer.util.TintHelper;
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
@@ -178,7 +178,7 @@ public abstract class AbsTagEditorActivity extends AbsBaseActivity {
         fab.setEnabled(false);
         fab.setOnClickListener(v -> save());
 
-        TintHelper.setTintAuto(fab, ThemeStore.accentColor(this), true);
+        TintHelper.setTintAuto(fab, ThemeColor.accentColor(this), true);
     }
 
     protected abstract void save();
@@ -226,7 +226,7 @@ public abstract class AbsTagEditorActivity extends AbsBaseActivity {
         observableScrollView.setPadding(0, Util.getActionBarSize(this), 0, 0);
         observableScrollViewCallbacks.onScrollChanged(observableScrollView.getCurrentScrollY(), false, false);
 
-        setColors(getIntent().getIntExtra(EXTRA_PALETTE, ThemeStore.primaryColor(this)));
+        setColors(getIntent().getIntExtra(EXTRA_PALETTE, ThemeColor.primaryColor(this)));
         toolbar.setBackgroundColor(paletteColorPrimary);
     }
 

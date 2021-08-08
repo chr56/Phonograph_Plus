@@ -16,7 +16,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.kabouzeid.appthemehelper.ThemeStore;
 import com.kabouzeid.gramophone.R;
 
 import java.io.File;
@@ -24,6 +23,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+
+import chr_56.MDthemer.core.ThemeColor;
 
 /**
  * @author Aidan Follestad (afollestad), modified for Phonograph by Karim Abou Zeid (kabouzeid)
@@ -134,8 +135,8 @@ public class BreadCrumbLayout extends HorizontalScrollView implements View.OnCli
     private SelectionCallback mCallback;
 
     private void init() {
-        contentColorActivated = ThemeStore.textColorPrimary(getContext());
-        contentColorDeactivated = ThemeStore.textColorSecondary(getContext());
+        contentColorActivated = ThemeColor.textColorPrimary(getContext());
+        contentColorDeactivated = ThemeColor.textColorSecondary(getContext());
         setMinimumHeight((int) getResources().getDimension(R.dimen.tab_height));
         setClipToPadding(false);
         setHorizontalScrollBarEnabled(false);
