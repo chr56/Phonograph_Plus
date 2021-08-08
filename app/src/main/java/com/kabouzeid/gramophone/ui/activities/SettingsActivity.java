@@ -21,7 +21,7 @@ import android.view.View;
 
 import com.afollestad.materialdialogs.color.ColorChooserDialog;
 import com.kabouzeid.appthemehelper.ThemeStore;
-import com.kabouzeid.appthemehelper.common.prefs.supportv7.ATEPreferenceFragmentCompat;
+import com.kabouzeid.gramophone.preferences.basic.PreferenceFragmentCompatX;
 import com.kabouzeid.appthemehelper.util.ColorUtil;
 import com.kabouzeid.gramophone.R;
 import com.kabouzeid.gramophone.appshortcuts.DynamicShortcutManager;
@@ -102,7 +102,7 @@ public class SettingsActivity extends AbsBaseActivity implements ColorChooserDia
         return super.onOptionsItemSelected(item);
     }
 
-    public static class SettingsFragment extends ATEPreferenceFragmentCompat implements SharedPreferences.OnSharedPreferenceChangeListener {
+    public static class SettingsFragment extends PreferenceFragmentCompatX implements SharedPreferences.OnSharedPreferenceChangeListener {
 
         private static void setSummary(@NonNull Preference preference) {
             setSummary(preference, PreferenceManager
