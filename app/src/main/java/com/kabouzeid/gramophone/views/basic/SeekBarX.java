@@ -1,10 +1,9 @@
-package com.kabouzeid.appthemehelper.common.views;
+package com.kabouzeid.gramophone.views.basic;
 
-import android.annotation.TargetApi;
 import android.content.Context;
-import android.os.Build;
 import android.util.AttributeSet;
-import androidx.appcompat.widget.AppCompatRadioButton;
+
+import androidx.appcompat.widget.AppCompatSeekBar;
 
 import com.kabouzeid.appthemehelper.ATH;
 import com.kabouzeid.appthemehelper.ThemeStore;
@@ -12,25 +11,25 @@ import com.kabouzeid.appthemehelper.ThemeStore;
 /**
  * @author Aidan Follestad (afollestad)
  */
-public class ATERadioButton extends AppCompatRadioButton {
+public class SeekBarX extends AppCompatSeekBar {
 
-    public ATERadioButton(Context context) {
+    public SeekBarX(Context context) {
         super(context);
         init(context, null);
     }
 
-    public ATERadioButton(Context context, AttributeSet attrs) {
+    public SeekBarX(Context context, AttributeSet attrs) {
         super(context, attrs);
         init(context, attrs);
     }
 
-    public ATERadioButton(Context context, AttributeSet attrs, int defStyleAttr) {
+    public SeekBarX(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init(context, attrs);
     }
-//
+
 //    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-//    public ATERadioButton(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+//    public SeekBarX(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
 //        super(context, attrs, defStyleAttr, defStyleRes);
 //        init(context, attrs);
 //    }
