@@ -6,6 +6,7 @@ import android.app.ActivityManager;
 import android.content.Context;
 import android.os.Build;
 import android.view.View;
+import android.view.WindowInsetsController;
 
 import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
@@ -44,7 +45,16 @@ public final class Themer {
     }
 
     public static void setLightStatusbar(Activity activity, boolean enabled) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            final WindowInsetsController wic = activity.getWindow().getInsetsController();
+            if (wic != null) {
+                if (enabled) {
+                    wic.setSystemBarsAppearance(WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS, WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS);
+                } else {
+                    wic.setSystemBarsAppearance(0, WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS);
+                }
+            }
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             final View decorView = activity.getWindow().getDecorView();
             final int systemUiVisibility = decorView.getSystemUiVisibility();
             if (enabled) {
@@ -56,7 +66,16 @@ public final class Themer {
     }
 
     public static void setLightNavigationbar(Activity activity, boolean enabled){
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            final WindowInsetsController wic = activity.getWindow().getInsetsController();
+            if (wic != null){
+                if(enabled) {
+                    wic.setSystemBarsAppearance(WindowInsetsController.APPEARANCE_LIGHT_NAVIGATION_BARS, WindowInsetsController.APPEARANCE_LIGHT_NAVIGATION_BARS);
+                } else {
+                    wic.setSystemBarsAppearance(0,WindowInsetsController.APPEARANCE_LIGHT_NAVIGATION_BARS);
+                }
+            }
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
             final View decorView = activity.getWindow().getDecorView();
             int systemUiVisibility = decorView.getSystemUiVisibility();
             if(enabled){
