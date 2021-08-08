@@ -35,7 +35,7 @@ public class BorderCircleView extends FrameLayout {
 
     public BorderCircleView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        mCheck = ContextCompat.getDrawable(context, R.drawable.ate_check);
+        mCheck = ContextCompat.getDrawable(context, R.drawable.ic_check);
         borderWidth = (int) getResources().getDimension(R.dimen.ate_circleview_border);
 
         paint = new Paint();
