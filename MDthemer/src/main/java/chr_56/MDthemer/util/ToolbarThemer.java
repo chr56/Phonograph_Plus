@@ -103,10 +103,10 @@ public class ToolbarThemer {
                                            final @ColorInt int menuWidgetColor){
         setToolbarColor(context, toolbar,
                 ColorUtil.isColorLight(toolbarColor)?
-                        MaterialValueHelper.getSecondaryTextColor(context, ColorUtil.isColorLight(toolbarColor))
-                        :MaterialValueHelper.getPrimaryTextColor(context, ColorUtil.isColorLight(toolbarColor)),
-                MaterialValueHelper.getPrimaryTextColor(context, ColorUtil.isColorLight(toolbarColor)),
-                MaterialValueHelper.getSecondaryTextColor(context, ColorUtil.isColorLight(toolbarColor)),
+                        MaterialColorHelper.getSecondaryTextColor(context, ColorUtil.isColorLight(toolbarColor))
+                        : MaterialColorHelper.getPrimaryTextColor(context, ColorUtil.isColorLight(toolbarColor)),
+                MaterialColorHelper.getPrimaryTextColor(context, ColorUtil.isColorLight(toolbarColor)),
+                MaterialColorHelper.getSecondaryTextColor(context, ColorUtil.isColorLight(toolbarColor)),
                     menuWidgetColor);
     }
     public static void setToolbarColorAuto(@NonNull Context context, Toolbar toolbar,

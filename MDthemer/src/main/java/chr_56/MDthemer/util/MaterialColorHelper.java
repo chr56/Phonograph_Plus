@@ -12,7 +12,7 @@ import chr_56.MDthemer.R;
 /**
  * @author Karim Abou Zeid (kabouzeid)
  */
-public final class MaterialValueHelper {
+public final class MaterialColorHelper {
 
     @SuppressLint("PrivateResource")
     @ColorInt
@@ -50,6 +50,6 @@ public final class MaterialValueHelper {
         return ContextCompat.getColor(context, R.color.secondary_text_disabled_material_dark);
     }
 
-    private MaterialValueHelper() {
+    private MaterialColorHelper() {
     }
 }
