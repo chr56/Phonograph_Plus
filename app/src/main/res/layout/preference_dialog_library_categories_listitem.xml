@@ -15,7 +15,7 @@
     android:paddingStart="@dimen/md_dialog_frame_margin"
     tools:gravity="start|center_vertical">
 
-    <com.kabouzeid.appthemehelper.common.views.ATECheckBox
+    <com.kabouzeid.gramophone.views.basic.CheckBoxX
         android:id="@+id/checkbox"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
