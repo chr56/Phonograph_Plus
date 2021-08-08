@@ -1,10 +1,11 @@
-package com.kabouzeid.appthemehelper.util;
+package com.kabouzeid.gramophone.util;
 
 import android.content.Context;
 import android.content.res.ColorStateList;
 
 import com.afollestad.materialdialogs.internal.ThemeSingleton;
 import com.kabouzeid.appthemehelper.ThemeStore;
+import com.kabouzeid.appthemehelper.util.ATHUtil;
 
 /**
  * @author Karim Abou Zeid (kabouzeid)

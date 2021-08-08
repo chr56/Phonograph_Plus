@@ -1,7 +1,6 @@
 package com.kabouzeid.gramophone.ui.activities.base;
 
 import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
 import androidx.annotation.ColorInt;
 import androidx.appcompat.app.AppCompatDelegate;
@@ -12,7 +11,7 @@ import com.kabouzeid.appthemehelper.ATH;
 import com.kabouzeid.appthemehelper.ThemeStore;
 import com.kabouzeid.appthemehelper.common.ATHToolbarActivity;
 import com.kabouzeid.appthemehelper.util.ColorUtil;
-import com.kabouzeid.appthemehelper.util.MaterialDialogsUtil;
+import com.kabouzeid.gramophone.util.MaterialDialogsUtil;
 import com.kabouzeid.gramophone.R;
 import com.kabouzeid.gramophone.util.PreferenceUtil;
 import com.kabouzeid.gramophone.util.Util;
