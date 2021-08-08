@@ -3,7 +3,7 @@
 
     <com.kabouzeid.gramophone.preferences.basic.PreferenceCategoryX android:title="@string/pref_header_colors">
 
-        <com.kabouzeid.appthemehelper.common.prefs.supportv7.ATEListPreference
+        <com.kabouzeid.gramophone.preferences.basic.ListPreferenceX
             app:iconSpaceReserved="false"
             android:defaultValue="auto"
             android:entries="@array/pref_general_theme_list_titles"

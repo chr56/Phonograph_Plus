@@ -11,7 +11,7 @@
             android:summary="@string/pref_summary_ignore_media_store_artwork"
             android:title="@string/pref_title_ignore_media_store_artwork" />
 
-        <com.kabouzeid.appthemehelper.common.prefs.supportv7.ATEListPreference
+        <com.kabouzeid.gramophone.preferences.basic.ListPreferenceX
             app:iconSpaceReserved="false"
             android:defaultValue="never"
             android:entries="@array/pref_auto_download_images_titles"

@@ -25,7 +25,7 @@
             android:summary="@string/pref_summary_remember_shuffle"
             android:title="@string/pref_title_remember_shuffle" />
 
-        <com.kabouzeid.appthemehelper.common.prefs.supportv7.ATEPreference
+        <com.kabouzeid.gramophone.preferences.basic.PreferenceX
             app:iconSpaceReserved="false"
             android:key="equalizer"
             android:title="@string/equalizer" />
