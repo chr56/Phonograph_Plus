@@ -31,6 +31,6 @@ public class BlacklistPreferenceX extends DialogPreference {
         init();
     }
     private void init(){
-        setLayoutResource(R.layout.x_preference_custom);
+        setLayoutResource(R.layout.x_preference);
     }
 }

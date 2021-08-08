@@ -9,7 +9,7 @@
             android:key="now_playing_screen_id"
             android:title="@string/pref_title_now_playing_screen_appearance" />
 
-        <com.kabouzeid.appthemehelper.common.prefs.supportv7.ATESwitchPreference
+        <com.kabouzeid.gramophone.preferences.basic.SwitchPreferenceX
             app:iconSpaceReserved="false"
             android:defaultValue="true"
             android:key="synchronized_lyrics_show"

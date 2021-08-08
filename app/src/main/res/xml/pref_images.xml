@@ -4,7 +4,7 @@
 
     <com.kabouzeid.appthemehelper.common.prefs.supportv7.ATEPreferenceCategory android:title="@string/pref_header_images">
 
-        <com.kabouzeid.appthemehelper.common.prefs.supportv7.ATESwitchPreference
+        <com.kabouzeid.gramophone.preferences.basic.SwitchPreferenceX
             app:iconSpaceReserved="false"
             android:defaultValue="false"
             android:key="ignore_media_store_artwork"

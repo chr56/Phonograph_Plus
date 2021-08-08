@@ -4,21 +4,21 @@
 
     <com.kabouzeid.appthemehelper.common.prefs.supportv7.ATEPreferenceCategory android:title="@string/pref_header_audio">
 
-        <com.kabouzeid.appthemehelper.common.prefs.supportv7.ATESwitchPreference
+        <com.kabouzeid.gramophone.preferences.basic.SwitchPreferenceX
             app:iconSpaceReserved="false"
             android:defaultValue="true"
             android:key="audio_ducking"
             android:summary="@string/pref_summary_audio_ducking"
             android:title="@string/pref_title_audio_ducking" />
 
-        <com.kabouzeid.appthemehelper.common.prefs.supportv7.ATESwitchPreference
+        <com.kabouzeid.gramophone.preferences.basic.SwitchPreferenceX
             app:iconSpaceReserved="false"
             android:defaultValue="false"
             android:key="gapless_playback"
             android:summary="@string/pref_summary_gapless_playback"
             android:title="@string/pref_title_gapless_playback" />
 
-        <com.kabouzeid.appthemehelper.common.prefs.supportv7.ATESwitchPreference
+        <com.kabouzeid.gramophone.preferences.basic.SwitchPreferenceX
             app:iconSpaceReserved="false"
             android:defaultValue="true"
             android:key="remember_shuffle"
