@@ -43,13 +43,11 @@ import chr_56.MDthemer.core.ThemeColor;
  */
 public class ToolbarThemer {
     @SuppressWarnings("unchecked")
-    public static void setToolbarColor(@NonNull Context context, @NonNull Toolbar toolbar,
+    public static void setToolbarColor(@NonNull Context context, @NonNull Toolbar toolbar,@Nullable Menu menu,
                                        final @ColorInt int toolbarColor,
                                        final @ColorInt int titleTextColor,
                                        final @ColorInt int subtitleTextColor,
                                        final @ColorInt int menuWidgetColor) {
-        final Menu menu = toolbar.getMenu();
-
         //Text
         toolbar.setTitleTextColor(titleTextColor);
         toolbar.setSubtitleTextColor(subtitleTextColor);
@@ -61,6 +59,9 @@ public class ToolbarThemer {
         }
 
         //Menu
+        if (menu == null) {
+            menu = toolbar.getMenu();
+        }
         InternalToolbarContentTintUtil.tintMenu(toolbar, menu, toolbarColor);
         InternalToolbarContentTintUtil.applyOverflowMenuTint(context, toolbar, menuWidgetColor);
 
@@ -99,18 +100,18 @@ public class ToolbarThemer {
             e.printStackTrace();
         }
     }
-    public static void setToolbarColorAuto(@NonNull Context context, Toolbar toolbar,
+    public static void setToolbarColorAuto(@NonNull Context context, Toolbar toolbar,Menu menu,
                                            final @ColorInt int toolbarColor,
                                            final @ColorInt int menuWidgetColor){
-        setToolbarColor(context, toolbar,
+        setToolbarColor(context, toolbar,menu,
                 toolbarContentColor(context, toolbarColor),
                 toolbarTitleColor(context, toolbarColor),
                 toolbarSubtitleColor(context, toolbarColor),
                     menuWidgetColor);
     }
-    public static void setToolbarColorAuto(@NonNull Context context, Toolbar toolbar,
+    public static void setToolbarColorAuto(@NonNull Context context, Toolbar toolbar,Menu menu,
                                            int toolbarColor) {
-        setToolbarColorAuto(context, toolbar,
+        setToolbarColorAuto(context, toolbar,menu,
                 toolbarColor, ThemeColor.accentColor(context));
     }
 

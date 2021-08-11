@@ -249,7 +249,7 @@ public class FoldersFragment extends AbsMainActivityFragment implements MainActi
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.menu_folders, menu);
-        ToolbarThemer.setToolbarColorAuto(getActivity(), toolbar, ThemeActivity.getToolbarBackgroundColor(toolbar));
+        ToolbarThemer.setToolbarColorAuto(getActivity(), toolbar, menu, ThemeActivity.getToolbarBackgroundColor(toolbar));
     }
 
     @Override

@@ -109,7 +109,7 @@ public final class Themer {
     public static void setActivityToolbarColor(Activity activity, @Nullable Toolbar toolbar, int color) {
         if (toolbar == null) return;
         toolbar.setBackgroundColor(color);
-        ToolbarThemer.setToolbarColorAuto(activity, toolbar, color);
+        ToolbarThemer.setToolbarColorAuto(activity, toolbar,null, color);
     }
 
     public static void setTaskDescriptionColorAuto(@NonNull Activity activity) {

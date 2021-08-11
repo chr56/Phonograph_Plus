@@ -19,7 +19,7 @@ public class ThemeActivity extends BaseActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         Toolbar toolbar = getToolbar();
-        ToolbarThemer.setToolbarColorAuto(this,toolbar,getToolbarBackgroundColor(toolbar));
+        ToolbarThemer.setToolbarColorAuto(this,toolbar,menu,getToolbarBackgroundColor(toolbar));
         return super.onCreateOptionsMenu(menu);
     }
 

@@ -221,7 +221,7 @@ public class LibraryFragment extends AbsMainActivityFragment implements CabHolde
         }
         Activity activity = getActivity();
         if (activity == null) return;
-        ToolbarThemer.setToolbarColorAuto(getActivity(), toolbar,  ThemeActivity.getToolbarBackgroundColor(toolbar));
+        ToolbarThemer.setToolbarColorAuto(getActivity(), toolbar, menu, ThemeActivity.getToolbarBackgroundColor(toolbar));
     }
 
     @Override
