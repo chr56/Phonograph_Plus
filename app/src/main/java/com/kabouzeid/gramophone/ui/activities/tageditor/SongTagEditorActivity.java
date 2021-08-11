@@ -20,7 +20,7 @@ import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import chr_56.MDthemer.util.ToolbarThemer;
+import chr_56.MDthemer.util.ToolbarTinter;
 
 public class SongTagEditorActivity extends AbsTagEditorActivity implements TextWatcher {
 
@@ -141,7 +141,7 @@ public class SongTagEditorActivity extends AbsTagEditorActivity implements TextW
     @Override
     protected void setColors(int color) {
         super.setColors(color);
-        int toolbarTitleColor = ToolbarThemer.toolbarTitleColor(this, color);
+        int toolbarTitleColor = ToolbarTinter.toolbarTitleColor(this, color);
         songTitle.setTextColor(toolbarTitleColor);
         albumTitle.setTextColor(toolbarTitleColor);
     }

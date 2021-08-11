@@ -11,7 +11,7 @@ import chr_56.MDthemer.color.MaterialColor;
 import chr_56.MDthemer.core.BaseActivity;
 import chr_56.MDthemer.core.ThemeColor;
 import chr_56.MDthemer.util.MenuTinter;
-import chr_56.MDthemer.util.ToolbarThemer;
+import chr_56.MDthemer.util.ToolbarTinter;
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
@@ -41,7 +41,7 @@ public class ThemeActivity extends BaseActivity {
     }
     @Override
     protected Toolbar getToolbar() {
-        return ToolbarThemer.getSupportActionBarView(getSupportActionBar());
+        return ToolbarTinter.getSupportActionBarView(getSupportActionBar());
     }
 
     protected void initView(Context context) {

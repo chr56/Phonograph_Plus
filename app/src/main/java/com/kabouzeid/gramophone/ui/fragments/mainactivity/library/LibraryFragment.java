@@ -46,10 +46,9 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import chr_56.MDthemer.color.MaterialColor;
 import chr_56.MDthemer.core.ThemeColor;
-import chr_56.MDthemer.core.activities.ThemeActivity;
 import chr_56.MDthemer.util.MenuTinter;
 import chr_56.MDthemer.util.TabLayoutUtil;
-import chr_56.MDthemer.util.ToolbarThemer;
+import chr_56.MDthemer.util.ToolbarTinter;
 
 public class LibraryFragment extends AbsMainActivityFragment implements CabHolder, MainActivity.MainActivityFragmentCallbacks, ViewPager.OnPageChangeListener, SharedPreferences.OnSharedPreferenceChangeListener {
 
@@ -144,8 +143,8 @@ public class LibraryFragment extends AbsMainActivityFragment implements CabHolde
         tabs.setupWithViewPager(pager);
 
         int primaryColor = ThemeColor.primaryColor(getActivity());
-        int normalColor = ToolbarThemer.toolbarSubtitleColor(getActivity(), primaryColor);
-        int selectedColor = ToolbarThemer.toolbarTitleColor(getActivity(), primaryColor);
+        int normalColor = ToolbarTinter.toolbarSubtitleColor(getActivity(), primaryColor);
+        int selectedColor = ToolbarTinter.toolbarTitleColor(getActivity(), primaryColor);
         TabLayoutUtil.setTabIconColors(tabs, normalColor, selectedColor);
         tabs.setTabTextColors(normalColor, selectedColor);
         tabs.setSelectedTabIndicatorColor(ThemeColor.accentColor(getActivity()));

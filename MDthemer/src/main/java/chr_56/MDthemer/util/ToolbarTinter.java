@@ -41,7 +41,7 @@ import chr_56.MDthemer.core.ThemeColor;
 /**
  * @author Karim Abou Zeid (kabouzeid), chr_56 [modify]
  */
-public class ToolbarThemer {
+public class ToolbarTinter {
     @SuppressWarnings("unchecked")
     public static void setToolbarColor(@NonNull Context context, @NonNull Toolbar toolbar,@Nullable Menu menu,
                                        final @ColorInt int toolbarColor,
