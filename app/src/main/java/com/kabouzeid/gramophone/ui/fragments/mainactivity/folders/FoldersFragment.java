@@ -65,6 +65,7 @@ import butterknife.Unbinder;
 import chr_56.MDthemer.color.MaterialColor;
 import chr_56.MDthemer.core.ThemeColor;
 import chr_56.MDthemer.util.MenuTinter;
+import chr_56.MDthemer.util.ToolbarColorUtil;
 import chr_56.MDthemer.util.ToolbarTinter;
 
 public class FoldersFragment extends AbsMainActivityFragment implements MainActivity.MainActivityFragmentCallbacks, CabHolder, BreadCrumbLayout.SelectionCallback, SongFileAdapter.Callbacks, AppBarLayout.OnOffsetChangedListener, LoaderManager.LoaderCallbacks<List<File>> {
@@ -173,8 +174,8 @@ public class FoldersFragment extends AbsMainActivityFragment implements MainActi
         appbar.setBackgroundColor(primaryColor);
         toolbar.setBackgroundColor(primaryColor);
         breadCrumbs.setBackgroundColor(primaryColor);
-        breadCrumbs.setActivatedContentColor(ToolbarTinter.toolbarTitleColor(getActivity(), primaryColor));
-        breadCrumbs.setDeactivatedContentColor(ToolbarTinter.toolbarSubtitleColor(getActivity(), primaryColor));
+        breadCrumbs.setActivatedContentColor(ToolbarColorUtil.toolbarTitleColor(getActivity(), primaryColor));
+        breadCrumbs.setDeactivatedContentColor(ToolbarColorUtil.toolbarSubtitleColor(getActivity(), primaryColor));
     }
 
     private void setUpToolbar() {

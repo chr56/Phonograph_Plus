@@ -48,6 +48,7 @@ import chr_56.MDthemer.color.MaterialColor;
 import chr_56.MDthemer.core.ThemeColor;
 import chr_56.MDthemer.util.MenuTinter;
 import chr_56.MDthemer.util.TabLayoutUtil;
+import chr_56.MDthemer.util.ToolbarColorUtil;
 import chr_56.MDthemer.util.ToolbarTinter;
 
 public class LibraryFragment extends AbsMainActivityFragment implements CabHolder, MainActivity.MainActivityFragmentCallbacks, ViewPager.OnPageChangeListener, SharedPreferences.OnSharedPreferenceChangeListener {
@@ -143,8 +144,8 @@ public class LibraryFragment extends AbsMainActivityFragment implements CabHolde
         tabs.setupWithViewPager(pager);
 
         int primaryColor = ThemeColor.primaryColor(getActivity());
-        int normalColor = ToolbarTinter.toolbarSubtitleColor(getActivity(), primaryColor);
-        int selectedColor = ToolbarTinter.toolbarTitleColor(getActivity(), primaryColor);
+        int normalColor = ToolbarColorUtil.toolbarSubtitleColor(getActivity(), primaryColor);
+        int selectedColor = ToolbarColorUtil.toolbarTitleColor(getActivity(), primaryColor);
         TabLayoutUtil.setTabIconColors(tabs, normalColor, selectedColor);
         tabs.setTabTextColors(normalColor, selectedColor);
         tabs.setSelectedTabIndicatorColor(ThemeColor.accentColor(getActivity()));
