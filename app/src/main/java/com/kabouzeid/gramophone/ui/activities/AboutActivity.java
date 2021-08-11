@@ -15,7 +15,8 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.Toolbar;
 
-import com.afollestad.materialdialogs.internal.ThemeSingleton;
+
+import com.kabouzeid.gramophone.App;
 import com.kabouzeid.gramophone.R;
 import com.kabouzeid.gramophone.dialogs.ChangelogDialog;
 import com.kabouzeid.gramophone.ui.activities.base.AbsBaseActivity;
@@ -225,13 +226,14 @@ public class AboutActivity extends AbsBaseActivity implements View.OnClickListen
     }
 
     private void showLicenseDialog() {
+        App app = App.getInstance();
         new LicensesDialog.Builder(this)
                 .setNotices(R.raw.notices)
                 .setTitle(R.string.licenses)
                 .setNoticesCssStyle(getString(R.string.license_dialog_style)
-                        .replace("{bg-color}", ThemeSingleton.get().darkTheme ? "424242" : "ffffff")
-                        .replace("{text-color}", ThemeSingleton.get().darkTheme ? "ffffff" : "000000")
-                        .replace("{license-bg-color}", ThemeSingleton.get().darkTheme ? "535353" : "eeeeee")
+                        .replace("{bg-color}", app.nightmode() ? "424242" : "ffffff")
+                        .replace("{text-color}", app.nightmode() ? "ffffff" : "000000")
+                        .replace("{license-bg-color}", app.nightmode() ? "535353" : "eeeeee")
                 )
                 .setIncludeOwnLicense(true)
                 .build()

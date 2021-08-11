@@ -17,7 +17,7 @@ import android.view.View;
 import android.webkit.WebView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.afollestad.materialdialogs.internal.ThemeSingleton;
+import com.kabouzeid.gramophone.App;
 import com.kabouzeid.gramophone.R;
 import com.kabouzeid.gramophone.util.PreferenceUtil;
 
@@ -25,6 +25,7 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
+import chr_56.MDthemer.core.ThemeColor;
 import chr_56.MDthemer.util.ColorUtil;
 import chr_56.MDthemer.util.Util;
 
@@ -73,14 +74,16 @@ public class ChangelogDialog extends DialogFragment {
                 buf.append(str);
             in.close();
 
+            App app = App.getInstance();
+
             // Inject color values for WebView body background and links
-            final String backgroundColor = colorToCSS(Util.resolveColor(getActivity(), R.attr.md_background_color, Color.parseColor(ThemeSingleton.get().darkTheme ? "#424242" : "#ffffff")));
-            final String contentColor = colorToCSS(Color.parseColor(ThemeSingleton.get().darkTheme ? "#ffffff" : "#000000"));
+            final String backgroundColor = colorToCSS(Util.resolveColor(getActivity(), R.attr.md_background_color, Color.parseColor(app.nightmode() ? "#424242" : "#ffffff")));
+            final String contentColor = colorToCSS(Color.parseColor(app.nightmode() ? "#ffffff" : "#000000"));
             final String changeLog = buf.toString()
                     .replace("{style-placeholder}",
                             String.format("body { background-color: %s; color: %s; }", backgroundColor, contentColor))
-                    .replace("{link-color}", colorToCSS(ThemeSingleton.get().positiveColor.getDefaultColor()))
-                    .replace("{link-color-active}", colorToCSS(ColorUtil.lightenColor(ThemeSingleton.get().positiveColor.getDefaultColor())));
+                    .replace("{link-color}", colorToCSS(ThemeColor.accentColor(app)))//TODO MD
+                    .replace("{link-color-active}", colorToCSS(ColorUtil.lightenColor(ThemeColor.accentColor(app))));//TODO MD
             webView.loadData(changeLog, "text/html", "UTF-8");
         } catch (Throwable e) {
             webView.loadData("<h1>Unable to load</h1><p>" + e.getLocalizedMessage() + "</p>", "text/html", "UTF-8");

@@ -24,7 +24,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.afollestad.materialcab.MaterialCab;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.afollestad.materialdialogs.util.DialogUtils;
 import com.bumptech.glide.Glide;
 import com.github.ksoichiro.android.observablescrollview.ObservableListView;
 import com.kabouzeid.gramophone.R;
@@ -59,6 +58,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import chr_56.MDthemer.util.ColorUtil;
 import chr_56.MDthemer.util.MaterialColorHelper;
+import chr_56.MDthemer.util.Util;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -165,7 +165,7 @@ public class ArtistDetailActivity extends AbsSlidingMusicPanelActivity implement
     private void setUpViews() {
         setUpSongListView();
         setUpAlbumRecyclerView();
-        setColors(DialogUtils.resolveColor(this, R.attr.defaultFooterColor));
+        setColors(Util.resolveColor(this, R.attr.defaultFooterColor));
     }
 
     private void setUpSongListView() {

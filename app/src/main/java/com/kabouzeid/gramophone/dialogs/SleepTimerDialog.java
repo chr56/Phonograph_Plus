@@ -18,7 +18,6 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.afollestad.materialdialogs.internal.ThemeSingleton;
 import com.kabouzeid.gramophone.App;
 import com.kabouzeid.gramophone.R;
 import com.kabouzeid.gramophone.helper.MusicPlayerRemote;
@@ -29,6 +28,7 @@ import com.triggertrap.seekarc.SeekArc;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import chr_56.MDthemer.core.ThemeColor;
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
@@ -111,8 +111,8 @@ public class SleepTimerDialog extends DialogFragment {
         boolean finishMusic = PreferenceUtil.getInstance(getActivity()).getSleepTimerFinishMusic();
         shouldFinishLastSong.setChecked(finishMusic);
 
-        seekArc.setProgressColor(ThemeSingleton.get().positiveColor.getDefaultColor());
-        seekArc.setThumbColor(ThemeSingleton.get().positiveColor.getDefaultColor());
+        seekArc.setProgressColor(ThemeColor.accentColor(getActivity()));
+        seekArc.setThumbColor(ThemeColor.accentColor(getActivity()));
 
         seekArc.post(() -> {
             int width = seekArc.getWidth();

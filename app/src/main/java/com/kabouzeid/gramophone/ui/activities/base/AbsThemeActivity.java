@@ -7,14 +7,11 @@ import android.os.Bundle;
 import android.view.View;
 
 import androidx.annotation.ColorInt;
-import androidx.appcompat.app.AppCompatDelegate;
 
-import com.afollestad.materialdialogs.internal.ThemeSingleton;
 import com.kabouzeid.gramophone.R;
 import com.kabouzeid.gramophone.util.PreferenceUtil;
 import com.kabouzeid.gramophone.util.Util;
 
-import chr_56.MDthemer.core.BaseActivity;
 import chr_56.MDthemer.core.ThemeColor;
 import chr_56.MDthemer.core.Themer;
 import chr_56.MDthemer.core.activities.ThemeActivity;
@@ -31,7 +28,7 @@ public abstract class AbsThemeActivity extends ThemeActivity {
         setTheme(PreferenceUtil.getInstance(this).getGeneralTheme());
         //AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
         super.onCreate(savedInstanceState);
-        MaterialDialogsUtil.updateMaterialDialogsThemeSingleton(this);
+        //MaterialDialogsUtil.updateMaterialDialogsThemeSingleton(this);
     }
 
     protected void setDrawUnderStatusbar() {
@@ -96,22 +93,22 @@ public abstract class AbsThemeActivity extends ThemeActivity {
         setLightStatusbar(ColorUtil.isColorLight(bgColor));
     }
 
-    static final class MaterialDialogsUtil {
-
-        public static void updateMaterialDialogsThemeSingleton(Context context) {
-            final ThemeSingleton md = ThemeSingleton.get();
-            md.titleColor = ThemeColor.textColorPrimary(context);
-            md.contentColor = ThemeColor.textColorSecondary(context);
-            md.itemColor = md.titleColor;
-            md.widgetColor = ThemeColor.accentColor(context);
-            md.linkColor = ColorStateList.valueOf(md.widgetColor);
-            md.positiveColor = ColorStateList.valueOf(md.widgetColor);
-            md.neutralColor = ColorStateList.valueOf(md.widgetColor);
-            md.negativeColor = ColorStateList.valueOf(md.widgetColor);
-            md.darkTheme = chr_56.MDthemer.util.Util.isWindowBackgroundDark(context);//todo
-        }
-
-        private MaterialDialogsUtil() {
-        }
-    }
+//    static final class MaterialDialogsUtil {
+//
+//        public static void updateMaterialDialogsThemeSingleton(Context context) {
+//            final ThemeSingleton md = ThemeSingleton.get();
+//            md.titleColor = ThemeColor.textColorPrimary(context);
+//            md.contentColor = ThemeColor.textColorSecondary(context);
+//            md.itemColor = md.titleColor;
+//            md.widgetColor = ThemeColor.accentColor(context);
+//            md.linkColor = ColorStateList.valueOf(md.widgetColor);
+//            md.positiveColor = ColorStateList.valueOf(md.widgetColor);
+//            md.neutralColor = ColorStateList.valueOf(md.widgetColor);
+//            md.negativeColor = ColorStateList.valueOf(md.widgetColor);
+//            md.darkTheme = chr_56.MDthemer.util.Util.isWindowBackgroundDark(context);//todo
+//        }
+//
+//        private MaterialDialogsUtil() {
+//        }
+//    }
 }

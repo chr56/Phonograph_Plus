@@ -71,4 +71,6 @@ http://developer.android.com/guide/topics/appwidgets/index.html#CreatingLayout
     <dimen name="pref_preference_inset">16dp</dimen>
     <dimen name="circleview_border">1dp</dimen>
 
+    <dimen name="md_dialog_frame_margin">24dp</dimen>
+
 </resources>
