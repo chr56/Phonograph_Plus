@@ -13,6 +13,8 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.afollestad.materialdialogs.Theme;
+import com.kabouzeid.gramophone.App;
 import com.kabouzeid.gramophone.R;
 import com.kabouzeid.gramophone.model.Song;
 import com.kabouzeid.gramophone.util.MusicUtil;
@@ -59,11 +61,18 @@ public class SongDetailDialog extends DialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         final Activity context = getActivity();
         final Song song = getArguments().getParcelable("song");
+        Theme theme ;
+        if (App.getInstance().nightmode()){
+            theme = Theme.DARK;
+        } else {
+            theme = Theme.LIGHT;
+        }
 
         MaterialDialog dialog = new MaterialDialog.Builder(context)
                 .customView(R.layout.dialog_file_details, true)
                 .title(context.getResources().getString(R.string.label_details))
                 .positiveText(android.R.string.ok)
+                .theme(theme)
                 .build();
 
         View dialogView = dialog.getCustomView();
