@@ -48,14 +48,15 @@ public class ToolbarThemer {
                                        final @ColorInt int titleTextColor,
                                        final @ColorInt int subtitleTextColor,
                                        final @ColorInt int menuWidgetColor) {
-        //Text
-        toolbar.setTitleTextColor(titleTextColor);
-        toolbar.setSubtitleTextColor(subtitleTextColor);
-
-        //Icon
-        if (toolbar.getNavigationIcon() != null) {
-            // Tint the toolbar navigation icon (e.g. back, drawer, etc.)
-            toolbar.setNavigationIcon(TintHelper.createTintedDrawable(toolbar.getNavigationIcon(), toolbarColor));
+        if (toolbar != null) {
+            //Text
+            toolbar.setTitleTextColor(titleTextColor);
+            toolbar.setSubtitleTextColor(subtitleTextColor);
+            //Icon
+            if (toolbar.getNavigationIcon() != null) {
+                // Tint the toolbar navigation icon (e.g. back, drawer, etc.)
+                toolbar.setNavigationIcon(TintHelper.createTintedDrawable(toolbar.getNavigationIcon(), toolbarColor));
+            }
         }
 
         //Menu

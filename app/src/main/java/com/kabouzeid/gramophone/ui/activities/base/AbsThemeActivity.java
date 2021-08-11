@@ -17,18 +17,19 @@ import com.kabouzeid.gramophone.util.Util;
 import chr_56.MDthemer.core.BaseActivity;
 import chr_56.MDthemer.core.ThemeColor;
 import chr_56.MDthemer.core.Themer;
+import chr_56.MDthemer.core.activities.ThemeActivity;
 import chr_56.MDthemer.util.ColorUtil;
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
  */
 
-public abstract class AbsThemeActivity extends BaseActivity {
+public abstract class AbsThemeActivity extends ThemeActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         setTheme(PreferenceUtil.getInstance(this).getGeneralTheme());
-        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
+        //AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
         super.onCreate(savedInstanceState);
         MaterialDialogsUtil.updateMaterialDialogsThemeSingleton(this);
     }
