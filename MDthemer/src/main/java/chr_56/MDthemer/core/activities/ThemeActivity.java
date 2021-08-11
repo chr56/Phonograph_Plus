@@ -27,7 +27,7 @@ public class ThemeActivity extends BaseActivity {
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        ToolbarThemer.InternalToolbarContentTintUtil.applyOverflowMenuTint(this,getToolbar(), ThemeColor.accentColor(this));
+        MenuTinter.applyOverflowMenuTint(this,getToolbar(), ThemeColor.accentColor(this));
         return super.onPrepareOptionsMenu(menu);
     }
 

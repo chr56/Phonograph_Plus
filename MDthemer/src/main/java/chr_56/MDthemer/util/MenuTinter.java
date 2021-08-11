@@ -151,7 +151,7 @@ public class MenuTinter {
         }
     }
 
-    private static void applyOverflowMenuTint(final @NonNull Context context, final Toolbar toolbar, final @ColorInt int color) {
+    public static void applyOverflowMenuTint(final @NonNull Context context, final Toolbar toolbar, final @ColorInt int color) {
         if (toolbar == null) return;
         toolbar.post(new Runnable() {
             @Override

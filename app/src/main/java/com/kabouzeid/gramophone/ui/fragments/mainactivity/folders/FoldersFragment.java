@@ -257,7 +257,7 @@ public class FoldersFragment extends AbsMainActivityFragment implements MainActi
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
-        ToolbarThemer.InternalToolbarContentTintUtil.applyOverflowMenuTint(getActivity(), toolbar,ThemeColor.accentColor(getActivity()));
+        MenuTinter.applyOverflowMenuTint(getActivity(), toolbar,ThemeColor.accentColor(getActivity()));
     }
 
     public static final FileFilter AUDIO_FILE_FILTER = file -> !file.isHidden() && (file.isDirectory() ||

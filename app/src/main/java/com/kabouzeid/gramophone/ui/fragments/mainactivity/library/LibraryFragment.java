@@ -232,7 +232,7 @@ public class LibraryFragment extends AbsMainActivityFragment implements CabHolde
         super.onPrepareOptionsMenu(menu);
         Activity activity = getActivity();
         if (activity == null) return;
-        ToolbarThemer.handleOnPrepareOptionsMenu(activity, toolbar);
+        MenuTinter.handleOnPrepareOptionsMenu(activity, toolbar);
     }
 
     @Override
