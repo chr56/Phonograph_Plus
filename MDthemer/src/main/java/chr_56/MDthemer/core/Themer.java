@@ -14,6 +14,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 
 import chr_56.MDthemer.util.ColorUtil;
+import chr_56.MDthemer.util.MenuTinter;
 import chr_56.MDthemer.util.TintHelper;
 import chr_56.MDthemer.util.ToolbarThemer;
 
@@ -107,9 +108,11 @@ public final class Themer {
     }
 
     public static void setActivityToolbarColor(Activity activity, @Nullable Toolbar toolbar, int color) {
-        if (toolbar == null) return;
-        toolbar.setBackgroundColor(color);
-        ToolbarThemer.setToolbarColorAuto(activity, toolbar,null, color);
+        if (toolbar != null) {
+            toolbar.setBackgroundColor(color);
+            MenuTinter.setMenuColor_White(activity,toolbar,toolbar.getMenu());
+            ToolbarThemer.setToolbarColorAuto(activity, toolbar, null, color);
+        }
     }
 
     public static void setTaskDescriptionColorAuto(@NonNull Activity activity) {

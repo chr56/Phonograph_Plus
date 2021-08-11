@@ -7,8 +7,10 @@ import android.view.Menu;
 
 import androidx.appcompat.widget.Toolbar;
 
+import chr_56.MDthemer.color.MaterialColor;
 import chr_56.MDthemer.core.BaseActivity;
 import chr_56.MDthemer.core.ThemeColor;
+import chr_56.MDthemer.util.MenuTinter;
 import chr_56.MDthemer.util.ToolbarThemer;
 
 /**
@@ -19,7 +21,7 @@ public class ThemeActivity extends BaseActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         Toolbar toolbar = getToolbar();
-        ToolbarThemer.setToolbarColorAuto(this,toolbar,menu,getToolbarBackgroundColor(toolbar));
+        MenuTinter.setMenuColor(this,toolbar,menu,MaterialColor.White._1000.getAsColor());
         return super.onCreateOptionsMenu(menu);
     }
 

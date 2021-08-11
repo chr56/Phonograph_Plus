@@ -44,8 +44,10 @@ import com.kabouzeid.gramophone.util.Util;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import chr_56.MDthemer.color.MaterialColor;
 import chr_56.MDthemer.core.ThemeColor;
 import chr_56.MDthemer.core.activities.ThemeActivity;
+import chr_56.MDthemer.util.MenuTinter;
 import chr_56.MDthemer.util.TabLayoutUtil;
 import chr_56.MDthemer.util.ToolbarThemer;
 
@@ -222,7 +224,7 @@ public class LibraryFragment extends AbsMainActivityFragment implements CabHolde
         }
         Activity activity = getActivity();
         if (activity == null) return;
-        ToolbarThemer.setToolbarColorAuto(getActivity(), toolbar, menu, ThemeActivity.getToolbarBackgroundColor(toolbar));
+        MenuTinter.setMenuColor(getActivity(), toolbar, menu, MaterialColor.White._1000.getAsColor());
     }
 
     @Override

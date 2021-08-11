@@ -111,7 +111,7 @@ public class ToolbarThemer {
                     menuWidgetColor);
     }
     public static void setToolbarColorAuto(@NonNull Context context, Toolbar toolbar,Menu menu,
-                                           int toolbarColor) {
+                                           final @ColorInt int toolbarColor) {
         setToolbarColorAuto(context, toolbar,menu,
                 toolbarColor, ThemeColor.accentColor(context));
     }

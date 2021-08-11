@@ -62,8 +62,10 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import chr_56.MDthemer.color.MaterialColor;
 import chr_56.MDthemer.core.ThemeColor;
 import chr_56.MDthemer.core.activities.ThemeActivity;
+import chr_56.MDthemer.util.MenuTinter;
 import chr_56.MDthemer.util.ToolbarThemer;
 
 public class FoldersFragment extends AbsMainActivityFragment implements MainActivity.MainActivityFragmentCallbacks, CabHolder, BreadCrumbLayout.SelectionCallback, SongFileAdapter.Callbacks, AppBarLayout.OnOffsetChangedListener, LoaderManager.LoaderCallbacks<List<File>> {
@@ -249,7 +251,7 @@ public class FoldersFragment extends AbsMainActivityFragment implements MainActi
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.menu_folders, menu);
-        ToolbarThemer.setToolbarColorAuto(getActivity(), toolbar, menu, ThemeActivity.getToolbarBackgroundColor(toolbar));
+        MenuTinter.setMenuColor(getActivity(), toolbar, menu, MaterialColor.White._1000.getAsColor());
     }
 
     @Override
