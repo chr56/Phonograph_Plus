@@ -1,6 +1,7 @@
 package com.kabouzeid.gramophone.ui.fragments.mainactivity;
 
 import android.os.Bundle;
+
 import androidx.fragment.app.Fragment;
 
 import com.kabouzeid.gramophone.ui.activities.MainActivity;

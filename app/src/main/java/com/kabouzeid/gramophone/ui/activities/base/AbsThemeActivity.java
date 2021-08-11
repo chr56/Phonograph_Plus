@@ -2,13 +2,13 @@ package com.kabouzeid.gramophone.ui.activities.base;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.view.View;
+
 import androidx.annotation.ColorInt;
 import androidx.appcompat.app.AppCompatDelegate;
 
-import android.view.View;
-
-import com.kabouzeid.gramophone.util.MaterialDialogsUtil;
 import com.kabouzeid.gramophone.R;
+import com.kabouzeid.gramophone.util.MaterialDialogsUtil;
 import com.kabouzeid.gramophone.util.PreferenceUtil;
 import com.kabouzeid.gramophone.util.Util;
 
