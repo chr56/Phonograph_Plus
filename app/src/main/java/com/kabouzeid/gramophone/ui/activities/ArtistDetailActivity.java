@@ -235,7 +235,7 @@ public class ArtistDetailActivity extends AbsSlidingMusicPanelActivity implement
 
                         if (!PreferenceUtil.isAllowedToDownloadMetadata(ArtistDetailActivity.this)) {
                             if (biography != null) {
-                                biographyDialog.setContent(biography);
+                                biographyDialog.message(biography,null,null);//TODO md
                             } else {
                                 biographyDialog.dismiss();
                                 Toast.makeText(ArtistDetailActivity.this, getResources().getString(R.string.biography_unavailable), Toast.LENGTH_SHORT).show();
@@ -347,14 +347,13 @@ public class ArtistDetailActivity extends AbsSlidingMusicPanelActivity implement
                 return true;
             case R.id.action_biography:
                 if (biographyDialog == null) {
-                    biographyDialog = new MaterialDialog.Builder(this)
-                            .title(artist.getName())
-                            .positiveText(android.R.string.ok)
-                            .build();
+                    biographyDialog = new MaterialDialog(this,MaterialDialog.getDEFAULT_BEHAVIOR())
+                            .title(null,artist.getName())
+                            .positiveButton(android.R.string.ok,null,null);
                 }
                 if (PreferenceUtil.isAllowedToDownloadMetadata(ArtistDetailActivity.this)) { // wiki should've been already downloaded
                     if (biography != null) {
-                        biographyDialog.setContent(biography);
+                        biographyDialog.message(biography,null,null);//TODO MD
                         biographyDialog.show();
                     } else {
                         Toast.makeText(ArtistDetailActivity.this, getResources().getString(R.string.biography_unavailable), Toast.LENGTH_SHORT).show();

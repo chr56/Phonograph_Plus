@@ -275,7 +275,7 @@ public class AlbumDetailActivity extends AbsSlidingMusicPanelActivity implements
 
                         if (!PreferenceUtil.isAllowedToDownloadMetadata(AlbumDetailActivity.this)) {
                             if (wiki != null) {
-                                wikiDialog.setContent(wiki);
+                                wikiDialog.message(wiki,null,null);
                             } else {
                                 wikiDialog.dismiss();
                                 Toast.makeText(AlbumDetailActivity.this, getResources().getString(R.string.wiki_unavailable), Toast.LENGTH_SHORT).show();
@@ -329,14 +329,13 @@ public class AlbumDetailActivity extends AbsSlidingMusicPanelActivity implements
                 return true;
             case R.id.action_wiki:
                 if (wikiDialog == null) {
-                    wikiDialog = new MaterialDialog.Builder(this)
-                            .title(album.getTitle())
-                            .positiveText(android.R.string.ok)
-                            .build();
+                    wikiDialog = new MaterialDialog(this,MaterialDialog.getDEFAULT_BEHAVIOR())
+                            .title(null,album.getTitle())
+                            .positiveButton(android.R.string.ok,null,null);//TODO MDD
                 }
                 if (PreferenceUtil.isAllowedToDownloadMetadata(this)) {
                     if (wiki != null) {
-                        wikiDialog.setContent(wiki);
+                        wikiDialog.message(wiki,null,null);
                         wikiDialog.show();
                     } else {
                         Toast.makeText(this, getResources().getString(R.string.wiki_unavailable), Toast.LENGTH_SHORT).show();

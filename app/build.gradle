@@ -126,8 +126,11 @@ dependencies {
     implementation 'com.github.kabouzeid:RecyclerView-FastScroll:1.0.16-kmod'
     implementation 'com.github.kabouzeid:SeekArc:1.2-kmod'
     implementation 'com.github.kabouzeid:AndroidSlidingUpPanel:6'
-    implementation 'com.afollestad.material-dialogs:core:0.9.6.0'
-    implementation 'com.afollestad.material-dialogs:commons:0.9.6.0'
+    implementation 'com.afollestad.material-dialogs:core:3.3.0'
+    implementation 'com.afollestad.material-dialogs:input:3.3.0'
+    implementation 'com.afollestad.material-dialogs:color:3.3.0'
+
+//    implementation 'com.afollestad.material-dialogs:commons:0.9.6.0'
     implementation 'com.afollestad:material-cab:0.1.12'
     implementation 'com.github.ksoichiro:android-observablescrollview:1.6.0'
     implementation 'com.heinrichreimersoftware:material-intro:2.0.0'
