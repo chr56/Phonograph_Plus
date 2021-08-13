@@ -235,7 +235,7 @@ public class ArtistDetailActivity extends AbsSlidingMusicPanelActivity implement
 
                         if (!PreferenceUtil.isAllowedToDownloadMetadata(ArtistDetailActivity.this)) {
                             if (biography != null) {
-                                biographyDialog.message(biography,null,null);//TODO md
+                                biographyDialog.message(null,biography,null);//TODO md
                             } else {
                                 biographyDialog.dismiss();
                                 Toast.makeText(ArtistDetailActivity.this, getResources().getString(R.string.biography_unavailable), Toast.LENGTH_SHORT).show();
@@ -353,7 +353,7 @@ public class ArtistDetailActivity extends AbsSlidingMusicPanelActivity implement
                 }
                 if (PreferenceUtil.isAllowedToDownloadMetadata(ArtistDetailActivity.this)) { // wiki should've been already downloaded
                     if (biography != null) {
-                        biographyDialog.message(biography,null,null);//TODO MD
+                        biographyDialog.message(null,biography,null);//TODO MD
                         biographyDialog.show();
                     } else {
                         Toast.makeText(ArtistDetailActivity.this, getResources().getString(R.string.biography_unavailable), Toast.LENGTH_SHORT).show();

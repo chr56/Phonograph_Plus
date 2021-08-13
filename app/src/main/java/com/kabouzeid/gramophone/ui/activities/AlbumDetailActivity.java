@@ -23,7 +23,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.afollestad.materialcab.MaterialCab;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.afollestad.materialdialogs.utils.ColorsKt;
 import com.bumptech.glide.Glide;
 import com.github.ksoichiro.android.observablescrollview.ObservableRecyclerView;
 import com.kabouzeid.gramophone.R;
@@ -275,7 +274,7 @@ public class AlbumDetailActivity extends AbsSlidingMusicPanelActivity implements
 
                         if (!PreferenceUtil.isAllowedToDownloadMetadata(AlbumDetailActivity.this)) {
                             if (wiki != null) {
-                                wikiDialog.message(wiki,null,null);
+                                wikiDialog.message(null,wiki,null);
                             } else {
                                 wikiDialog.dismiss();
                                 Toast.makeText(AlbumDetailActivity.this, getResources().getString(R.string.wiki_unavailable), Toast.LENGTH_SHORT).show();
@@ -335,7 +334,7 @@ public class AlbumDetailActivity extends AbsSlidingMusicPanelActivity implements
                 }
                 if (PreferenceUtil.isAllowedToDownloadMetadata(this)) {
                     if (wiki != null) {
-                        wikiDialog.message(wiki,null,null);
+                        wikiDialog.message(null,wiki,null);
                         wikiDialog.show();
                     } else {
                         Toast.makeText(this, getResources().getString(R.string.wiki_unavailable), Toast.LENGTH_SHORT).show();
