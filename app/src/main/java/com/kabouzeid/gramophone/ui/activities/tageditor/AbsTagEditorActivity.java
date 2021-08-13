@@ -1,5 +1,6 @@
 package com.kabouzeid.gramophone.ui.activities.tageditor;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.SearchManager;
@@ -22,6 +23,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.afollestad.materialdialogs.list.DialogListExtKt;
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.kabouzeid.gramophone.R;
@@ -47,6 +49,7 @@ import org.jaudiotagger.tag.images.ArtworkFactory;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -56,6 +59,7 @@ import butterknife.ButterKnife;
 import chr_56.MDthemer.core.ThemeColor;
 import chr_56.MDthemer.util.ColorUtil;
 import chr_56.MDthemer.util.TintHelper;
+import kotlin.Unit;
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
@@ -130,33 +134,23 @@ public abstract class AbsTagEditorActivity extends AbsBaseActivity {
         observableScrollView.setScrollViewCallbacks(observableScrollViewCallbacks);
     }
 
+    @SuppressLint("CheckResult")
     private void setUpImageView() {
         loadCurrentImage();
-        final CharSequence[] items = new CharSequence[]{
+        final String[] items = new String[]{
                 getString(R.string.download_from_last_fm),
                 getString(R.string.pick_from_local_storage),
                 getString(R.string.web_search),
                 getString(R.string.remove_cover)
         };
-        image.setOnClickListener(v -> new MaterialDialog.Builder(AbsTagEditorActivity.this)
-                .title(R.string.update_image)
-                .items(items)
-                .itemsCallback((dialog, view, which, text) -> {
-                    switch (which) {
-                        case 0:
-                            getImageFromLastFM();
-                            break;
-                        case 1:
-                            startImagePicker();
-                            break;
-                        case 2:
-                            searchImageOnWeb();
-                            break;
-                        case 3:
-                            deleteImage();
-                            break;
-                    }
-                }).show());
+        image.setOnClickListener(v -> {
+            MaterialDialog dialog = new MaterialDialog(AbsTagEditorActivity.this,MaterialDialog.getDEFAULT_BEHAVIOR())
+                .title(R.string.update_image,null);
+            DialogListExtKt.listItems(dialog,null, Arrays.asList(items),null,true,
+                    this::invoke
+            );
+            dialog.show();
+        });
     }
 
     private void startImagePicker() {
@@ -269,6 +263,24 @@ public abstract class AbsTagEditorActivity extends AbsBaseActivity {
         new WriteTagsAsyncTask(this).execute(new WriteTagsAsyncTask.LoadingInfo(getSongPaths(), fieldKeyValueMap, artworkInfo));
     }
 
+    private Unit invoke(MaterialDialog dialog1, Integer index, CharSequence text) {
+        switch (index) {
+            case 0:
+                getImageFromLastFM();
+                break;
+            case 1:
+                startImagePicker();
+                break;
+            case 2:
+                searchImageOnWeb();
+                break;
+            case 3:
+                deleteImage();
+                break;
+        }
+        return null;
+    }
+
     private static class WriteTagsAsyncTask extends DialogAsyncTask<WriteTagsAsyncTask.LoadingInfo, Integer, String[]> {
         Context applicationContext;
 
@@ -365,18 +377,17 @@ public abstract class AbsTagEditorActivity extends AbsBaseActivity {
 
         @Override
         protected Dialog createDialog(@NonNull Context context) {
-            return new MaterialDialog.Builder(context)
-                    .title(R.string.saving_changes)
-                    .cancelable(false)
-                    .progress(false, 0)
-                    .build();
+            return new MaterialDialog(context,MaterialDialog.getDEFAULT_BEHAVIOR())
+                    .title(R.string.saving_changes,null)
+//                    .progress(false, 0)//TODO
+                    .cancelable(false);
         }
 
         @Override
         protected void onProgressUpdate(@NonNull Dialog dialog, Integer... values) {
             super.onProgressUpdate(dialog, values);
-            ((MaterialDialog) dialog).setMaxProgress(values[1]);
-            ((MaterialDialog) dialog).setProgress(values[0]);
+//            ((MaterialDialog) dialog).setMaxProgress(values[1]);
+//            ((MaterialDialog) dialog).setProgress(values[0]);Todo
         }
 
         public static class LoadingInfo {
