@@ -680,13 +680,14 @@ public class FoldersFragment extends AbsMainActivityFragment implements MainActi
 
         @Override
         protected Dialog createDialog(@NonNull Context context) {
-            return new MaterialDialog(context,MaterialDialog.getDEFAULT_BEHAVIOR())
-                    .title(R.string.listing_files,null)
-//                    .progress(true, 0)
-//                    .progressIndeterminateStyle(true)
-                    .cancelable(true)
-                    .negativeButton(android.R.string.cancel,null,(dialog -> {cancel(false)}))
-                    .show();
+            MaterialDialog dialog = new MaterialDialog(context, MaterialDialog.getDEFAULT_BEHAVIOR());
+            dialog.title(R.string.listing_files, null);
+            dialog.cancelable(true);
+            dialog.negativeButton(android.R.string.cancel, null, dialog1 -> {
+                cancel(false);
+                return null;
+            });
+            return dialog;
         }
     }
 }
