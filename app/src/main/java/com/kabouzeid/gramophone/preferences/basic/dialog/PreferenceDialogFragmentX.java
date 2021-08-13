@@ -3,22 +3,28 @@ package com.kabouzeid.gramophone.preferences.basic.dialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.view.View;
 import android.view.Window;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.preference.DialogPreference;
 
-import com.afollestad.materialdialogs.DialogAction;
+//import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.android.material.dialog.MaterialDialogs;
+
+import static android.view.WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE;
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
  */
-public class PreferenceDialogFragmentX extends DialogFragment implements MaterialDialog.SingleButtonCallback {
-    private DialogAction mWhichButtonClicked;
+public class PreferenceDialogFragmentX extends DialogFragment /*implements MaterialDialog.SingleButtonCallback*/ {
+    //private DialogAction mWhichButtonClicked;
 
     protected static final String ARG_KEY = "key";
     private DialogPreference mPreference;
@@ -46,16 +52,15 @@ public class PreferenceDialogFragmentX extends DialogFragment implements Materia
     @NonNull
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         FragmentActivity context = this.getActivity();
-        MaterialDialog.Builder builder = new MaterialDialog.Builder(context)
-                .title(this.mPreference.getDialogTitle())
-                .icon(this.mPreference.getDialogIcon())
-                .onAny(this)
-                .positiveText(this.mPreference.getPositiveButtonText())
-                .negativeText(this.mPreference.getNegativeButtonText());
-
-        builder.content(this.mPreference.getDialogMessage());
+        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(context);
+        builder.setTitle(this.mPreference.getDialogTitle())
+                .setIcon(this.mPreference.getDialogIcon())
+//                .onAny(this)
+                .setPositiveButton(this.mPreference.getPositiveButtonText(),new PositiveListener())
+                .setNegativeButton(this.mPreference.getNegativeButtonText(),new NegativeListener())
+                .setMessage(this.mPreference.getDialogMessage());
         this.onPrepareDialogBuilder(builder);
-        MaterialDialog dialog = builder.build();
+        AlertDialog dialog = builder.create();
         if (this.needInputMethod()) {
             this.requestInputMethod(dialog);
         }
@@ -67,7 +72,7 @@ public class PreferenceDialogFragmentX extends DialogFragment implements Materia
         return this.mPreference;
     }
 
-    protected void onPrepareDialogBuilder(MaterialDialog.Builder builder) {
+    protected void onPrepareDialogBuilder(MaterialAlertDialogBuilder builder) {
     }
 
     protected boolean needInputMethod() {
@@ -76,21 +81,39 @@ public class PreferenceDialogFragmentX extends DialogFragment implements Materia
 
     private void requestInputMethod(Dialog dialog) {
         Window window = dialog.getWindow();
-        window.setSoftInputMode(5);
+        window.setSoftInputMode(SOFT_INPUT_STATE_ALWAYS_VISIBLE);
     }
 
-    @Override
-    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-        mWhichButtonClicked = which;
+//    @Override
+//    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+//        mWhichButtonClicked = which;
+//    }
+
+//    @Override
+//    public void onDismiss(DialogInterface dialog) {
+//        super.onDismiss(dialog);
+//        onDialogClosed(mWhichButtonClicked == DialogAction.POSITIVE);
+//    }
+
+//    public void onDialogClosed(boolean positiveResult) {
+//
+//    }
+
+    static class PositiveListener implements View.OnClickListener {
+        @Override
+        public void onClick(View v) {
+            PreferenceDialogFragmentX.positiveClick(v);
+        }
+    }
+    private static void positiveClick(View v) {
     }
 
-    @Override
-    public void onDismiss(DialogInterface dialog) {
-        super.onDismiss(dialog);
-        onDialogClosed(mWhichButtonClicked == DialogAction.POSITIVE);
+    static class NegativeListener implements View.OnClickListener {
+        @Override
+        public void onClick(View v) {
+            PreferenceDialogFragmentX.negativeClick(v);
+        }
     }
-
-    public void onDialogClosed(boolean positiveResult) {
-
+    private static void negativeClick(View v) {
     }
 }

@@ -7,12 +7,13 @@ import androidx.preference.ListPreference;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.google.android.material.dialog.MaterialDialogs;
 import com.kabouzeid.gramophone.preferences.basic.ListPreferenceX;
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
  */
-public class ListPreferenceDialogFragmentCompatX extends PreferenceDialogFragmentX implements MaterialDialog.ListCallbackSingleChoice {
+public class ListPreferenceDialogFragmentCompatX extends PreferenceDialogFragmentX /*implements MaterialDialog.ListCallbackSingleChoice*/ {
     private int mClickedDialogEntryIndex;
 
     public static ListPreferenceDialogFragmentCompatX newInstance(String key) {
@@ -28,7 +29,7 @@ public class ListPreferenceDialogFragmentCompatX extends PreferenceDialogFragmen
     }
 
     @Override
-    protected void onPrepareDialogBuilder(MaterialDialog.Builder builder) {
+    protected void onPrepareDialogBuilder(MaterialDialogs builder) {
         super.onPrepareDialogBuilder(builder);
 
         final ListPreference preference = getListPreference();

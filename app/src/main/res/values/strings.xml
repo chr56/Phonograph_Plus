@@ -304,4 +304,6 @@
     <string name="pref_summary_fixed_tab_layout">Tabs in top will not be scrollable, but wound be tiled without any margin.</string>
     <string name="night_mode">Night Mode</string>
     <string name="auto_mode_on">Auto Mode is on!</string>
+    <string name="Permission_denied">Permission denied!</string>
+    <string name="err_permission_storage">Storage Permission</string>
 </resources>

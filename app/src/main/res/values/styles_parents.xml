@@ -27,7 +27,7 @@
         <item name="android:windowActionBarOverlay">true</item>
         <item name="windowActionBarOverlay">true</item>
 
-        <item name="md_dark_theme">true</item>
+<!--        <item name="md_dark_theme">true</item>-->
 
         <item name="roundSelector">@drawable/round_selector_dark</item>
         <item name="rectSelector">@drawable/rect_selector_dark</item>
@@ -56,7 +56,7 @@
         <item name="android:windowActionBarOverlay">true</item>
         <item name="windowActionBarOverlay">true</item>
 
-        <item name="md_dark_theme">false</item>
+<!--        <item name="md_dark_theme">false</item>-->
 
         <item name="roundSelector">@drawable/round_selector</item>
         <item name="rectSelector">@drawable/rect_selector</item>

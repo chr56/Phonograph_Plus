@@ -295,4 +295,6 @@
     <string name="pref_summary_fixed_tab_layout">顶部标签不再能够滑动，并完全平铺</string>
     <string name="night_mode">夜间模式</string>
     <string name="auto_mode_on">自动模式已开启!</string>
+    <string name="Permission_denied">Permission denied!</string>
+    <string name="err_permission_storage">Storage Permission</string>
 </resources>
