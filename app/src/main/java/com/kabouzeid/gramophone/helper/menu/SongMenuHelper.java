@@ -21,6 +21,8 @@ import com.kabouzeid.gramophone.util.MusicUtil;
 import com.kabouzeid.gramophone.util.NavigationUtil;
 import com.kabouzeid.gramophone.util.RingtoneManager;
 
+import java.util.List;
+
 /**
  * @author Karim Abou Zeid (kabouzeid)
  */
@@ -41,10 +43,10 @@ public class SongMenuHelper {
                 activity.startActivity(Intent.createChooser(MusicUtil.createShareSongFileIntent(song, activity), null));
                 return true;
             case R.id.action_delete_from_device:
-                DeleteSongsDialog.create(song).show(activity.getSupportFragmentManager(), "DELETE_SONGS");
+                DeleteSongsDialog.create(List.of(song)).show(activity.getSupportFragmentManager(), "DELETE_SONGS");
                 return true;
             case R.id.action_add_to_playlist:
-                AddToPlaylistDialog.create(song).show(activity.getSupportFragmentManager(), "ADD_PLAYLIST");
+                AddToPlaylistDialog.create(List.of(song)).show(activity.getSupportFragmentManager(), "ADD_PLAYLIST");
                 return true;
             case R.id.action_play_next:
                 MusicPlayerRemote.playNext(song);
