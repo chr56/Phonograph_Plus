@@ -17,6 +17,8 @@ import androidx.annotation.NonNull;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.kabouzeid.gramophone.R;
 
+import kotlin.Unit;
+
 public class RingtoneManager {
 
 
@@ -28,17 +30,30 @@ public class RingtoneManager {
     }
 
     public static MaterialDialog showDialog(Context context) {
-        return new MaterialDialog.Builder(context)
-                .title(R.string.dialog_ringtone_title)
-                .content(R.string.dialog_ringtone_message)
-                .positiveText(android.R.string.ok)
-                .negativeText(android.R.string.cancel)
-                .onPositive((dialog, which) -> {
+        return new MaterialDialog(context,MaterialDialog.getDEFAULT_BEHAVIOR())
+                .title(R.string.dialog_ringtone_title,null)
+                .message(R.string.dialog_ringtone_message,null,null)
+                .negativeButton(android.R.string.cancel,null,null)
+                .positiveButton(android.R.string.ok,null,
+                        (dialog) -> {
                     Intent intent = new Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS);
                     intent.setData(Uri.parse("package:" + context.getPackageName()));
                     context.startActivity(intent);
-                })
+                    return;
+                    }
+                )
                 .show();
+//        return new MaterialDialog.Builder(context)
+//                .title(R.string.dialog_ringtone_title)
+//                .content)
+//                .positiveText(android.R.string.ok)
+//                .negativeText(android.R.string.cancel)
+//                .onPositive((dialog, which) -> {
+//                    Intent intent = new Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS);
+//                    intent.setData(Uri.parse("package:" + context.getPackageName()));
+//                    context.startActivity(intent);
+//                })
+//                .show();
     }
 
     public   void setRingtone(@NonNull final Context context, final long id) {
