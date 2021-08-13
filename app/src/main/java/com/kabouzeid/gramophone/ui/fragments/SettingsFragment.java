@@ -18,7 +18,6 @@ import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.PreferenceManager;
 import androidx.preference.TwoStatePreference;
 
-import com.afollestad.materialdialogs.color.ColorChooserDialog;
 import com.kabouzeid.gramophone.R;
 import com.kabouzeid.gramophone.appshortcuts.DynamicShortcutManager;
 import com.kabouzeid.gramophone.preferences.BlacklistPreferenceDialog;
@@ -34,6 +33,7 @@ import com.kabouzeid.gramophone.preferences.basic.ListPreferenceX;
 import com.kabouzeid.gramophone.preferences.basic.dialog.EditTextPreferenceDialogFragmentCompatX;
 import com.kabouzeid.gramophone.preferences.basic.dialog.ListPreferenceDialogFragmentCompatX;
 import com.kabouzeid.gramophone.preferences.basic.dialog.PreferenceDialogFragmentX;
+import com.kabouzeid.gramophone.util.ColorChooserListener;
 import com.kabouzeid.gramophone.util.NavigationUtil;
 import com.kabouzeid.gramophone.util.PreferenceUtil;
 
@@ -162,28 +162,17 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
         final ColorPreferenceX primaryColorPref = (ColorPreferenceX) findPreference("primary_color");
         final int primaryColor = ThemeColor.primaryColor(getActivity());
         primaryColorPref.setColor(primaryColor, ColorUtil.darkenColor(primaryColor));
-        primaryColorPref.setOnPreferenceClickListener(preference -> {
-            new ColorChooserDialog.Builder(getActivity(), R.string.primary_color)
-                    .accentMode(false)
-                    .allowUserColorInput(true)
-                    .allowUserColorInputAlpha(false)
-                    .preselect(primaryColor)
-                    .show(getActivity());
-            return true;
-        });
+        primaryColorPref.setOnPreferenceClickListener(
+                new ColorChooserListener(getActivity(),primaryColor,ColorChooserListener.Companion.getPRIMANY_COLOR())
+        );
+
 
         final ColorPreferenceX accentColorPref = (ColorPreferenceX) findPreference("accent_color");
         final int accentColor = ThemeColor.accentColor(getActivity());
         accentColorPref.setColor(accentColor, ColorUtil.darkenColor(accentColor));
-        accentColorPref.setOnPreferenceClickListener(preference -> {
-            new ColorChooserDialog.Builder(getActivity(), R.string.accent_color)
-                    .accentMode(true)
-                    .allowUserColorInput(true)
-                    .allowUserColorInputAlpha(false)
-                    .preselect(accentColor)
-                    .show(getActivity());
-            return true;
-        });
+        accentColorPref.setOnPreferenceClickListener(
+                new ColorChooserListener(getActivity(),accentColor,ColorChooserListener.Companion.getACCENT_COLOR())
+        );
 
         TwoStatePreference colorNavBar = (TwoStatePreference) findPreference("should_color_navigation_bar");
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {

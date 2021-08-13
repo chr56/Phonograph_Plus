@@ -1,17 +1,13 @@
 package com.kabouzeid.gramophone.ui.activities;
 
-import android.os.Build;
 import android.os.Bundle;
 import android.view.MenuItem;
 
-import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 
-import com.afollestad.materialdialogs.color.ColorChooserDialog;
 import com.kabouzeid.gramophone.R;
-import com.kabouzeid.gramophone.appshortcuts.DynamicShortcutManager;
 import com.kabouzeid.gramophone.ui.activities.base.AbsBaseActivity;
 import com.kabouzeid.gramophone.ui.fragments.SettingsFragment;
 
@@ -19,7 +15,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import chr_56.MDthemer.core.ThemeColor;
 
-public class SettingsActivity extends AbsBaseActivity implements ColorChooserDialog.ColorCallback {
+public class SettingsActivity extends AbsBaseActivity {
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
@@ -48,30 +44,6 @@ public class SettingsActivity extends AbsBaseActivity implements ColorChooserDia
         }
     }
 
-    @Override
-    public void onColorSelection(@NonNull ColorChooserDialog dialog, @ColorInt int selectedColor) {
-        switch (dialog.getTitle()) {
-            case R.string.primary_color:
-                ThemeColor.editTheme(this)
-                        .primaryColor(selectedColor)
-                        .commit();
-                break;
-            case R.string.accent_color:
-                ThemeColor.editTheme(this)
-                        .accentColor(selectedColor)
-                        .commit();
-                break;
-        }
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
-            new DynamicShortcutManager(this).updateDynamicShortcuts();
-        }
-        recreate();
-    }
-
-    @Override
-    public void onColorChooserDismissed(@NonNull ColorChooserDialog dialog) {
-    }
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
