@@ -1,119 +1,97 @@
-package com.kabouzeid.gramophone.preferences.basic.dialog;
+package com.kabouzeid.gramophone.preferences.basic.dialog
 
-import android.app.Dialog;
-import android.content.DialogInterface;
-import android.os.Bundle;
-import android.view.View;
-import android.view.Window;
-
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
-import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
-import androidx.preference.DialogPreference;
-
-//import com.afollestad.materialdialogs.DialogAction;
-import com.afollestad.materialdialogs.MaterialDialog;
-import com.google.android.material.dialog.MaterialAlertDialogBuilder;
-import com.google.android.material.dialog.MaterialDialogs;
-
-import static android.view.WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE;
+import android.app.Activity
+import android.app.Dialog
+import android.content.DialogInterface
+import android.os.Bundle
+import android.view.WindowManager
+import androidx.fragment.app.DialogFragment
+import androidx.preference.DialogPreference
+import androidx.preference.DialogPreference.TargetFragment
+import androidx.preference.Preference
+import com.afollestad.materialdialogs.DialogCallback
+import com.afollestad.materialdialogs.MaterialDialog
+import com.afollestad.materialdialogs.WhichButton
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
  */
-public class PreferenceDialogFragmentX extends DialogFragment /*implements MaterialDialog.SingleButtonCallback*/ {
-    //private DialogAction mWhichButtonClicked;
+open class PreferenceDialogFragmentX : DialogFragment() {
+    var preference: DialogPreference? = null
+        private set
 
-    protected static final String ARG_KEY = "key";
-    private DialogPreference mPreference;
-
-    public static PreferenceDialogFragmentX newInstance(String key) {
-        PreferenceDialogFragmentX fragment = new PreferenceDialogFragmentX();
-        Bundle b = new Bundle(1);
-        b.putString(ARG_KEY, key);
-        fragment.setArguments(b);
-        return fragment;
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        val rawFragment = this.targetFragment
+        check(rawFragment is TargetFragment) { "Target fragment must implement TargetFragment interface" }
+        val fragment = rawFragment as TargetFragment
+        val key = this.requireArguments().getString(ARG_KEY)
+        preference = key?.let { fragment.findPreference<Preference>(it) } as DialogPreference
     }
 
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        Fragment rawFragment = this.getTargetFragment();
-        if (!(rawFragment instanceof DialogPreference.TargetFragment)) {
-            throw new IllegalStateException("Target fragment must implement TargetFragment interface");
-        } else {
-            DialogPreference.TargetFragment fragment = (DialogPreference.TargetFragment) rawFragment;
-            String key = this.getArguments().getString(ARG_KEY);
-            this.mPreference = (DialogPreference) fragment.findPreference(key);
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        val context = this.activity
+        val dialog = MaterialDialog(context as Activity)
+            .title(text = preference!!.dialogTitle as String)
+            .icon(drawable = preference!!.dialogIcon)
+            .message(text = preference!!.dialogMessage)
+            .positiveButton(text = preference!!.positiveButtonText, click = PositiveListener())
+            .negativeButton(text = preference!!.negativeButtonText, click = NegativeListener())
+        if (needInputMethod()) {
+            requestInputMethod(dialog)
+        }
+        return dialog
+    }
+    private fun requestInputMethod(dialog: MaterialDialog) {
+        val window = dialog.window
+        window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE)
+    }
+    protected open fun needInputMethod(): Boolean {
+        return false
+    }
+
+    protected open fun onPrepareDialog(dialog: MaterialDialog) {}
+
+    fun onClick(dialog: MaterialDialog, which: WhichButton) {
+        mWhichButtonClicked = which
+    }
+
+    override fun onDismiss(dialog: DialogInterface) {
+        super.onDismiss(dialog)
+        onDialogClosed(mWhichButtonClicked === WhichButton.POSITIVE)
+    }
+
+    open fun onDialogClosed(positiveResult: Boolean) {}
+
+    internal open class PositiveListener : DialogCallback {
+        override fun invoke(d: MaterialDialog) {
+            positiveClick(d)
+        }
+        open fun positiveClick(d: MaterialDialog) {
         }
     }
 
-    @NonNull
-    public Dialog onCreateDialog(Bundle savedInstanceState) {
-        FragmentActivity context = this.getActivity();
-        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(context);
-        builder.setTitle(this.mPreference.getDialogTitle())
-                .setIcon(this.mPreference.getDialogIcon())
-//                .onAny(this)
-                .setPositiveButton(this.mPreference.getPositiveButtonText(),new PositiveListener())
-                .setNegativeButton(this.mPreference.getNegativeButtonText(),new NegativeListener())
-                .setMessage(this.mPreference.getDialogMessage());
-        this.onPrepareDialogBuilder(builder);
-        AlertDialog dialog = builder.create();
-        if (this.needInputMethod()) {
-            this.requestInputMethod(dialog);
+    internal open class NegativeListener : DialogCallback {
+        override fun invoke(d: MaterialDialog) {
+            negativeClick(d)
         }
-
-        return dialog;
-    }
-
-    public DialogPreference getPreference() {
-        return this.mPreference;
-    }
-
-    protected void onPrepareDialogBuilder(MaterialAlertDialogBuilder builder) {
-    }
-
-    protected boolean needInputMethod() {
-        return false;
-    }
-
-    private void requestInputMethod(Dialog dialog) {
-        Window window = dialog.getWindow();
-        window.setSoftInputMode(SOFT_INPUT_STATE_ALWAYS_VISIBLE);
-    }
-
-//    @Override
-//    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-//        mWhichButtonClicked = which;
-//    }
-
-//    @Override
-//    public void onDismiss(DialogInterface dialog) {
-//        super.onDismiss(dialog);
-//        onDialogClosed(mWhichButtonClicked == DialogAction.POSITIVE);
-//    }
-
-//    public void onDialogClosed(boolean positiveResult) {
-//
-//    }
-
-    static class PositiveListener implements View.OnClickListener {
-        @Override
-        public void onClick(View v) {
-            PreferenceDialogFragmentX.positiveClick(v);
+        open fun negativeClick(d: MaterialDialog) {
         }
     }
-    private static void positiveClick(View v) {
-    }
+//    open fun positiveClick(d: MaterialDialog) {}
+//    open fun negativeClick(d: MaterialDialog) {}
 
-    static class NegativeListener implements View.OnClickListener {
-        @Override
-        public void onClick(View v) {
-            PreferenceDialogFragmentX.negativeClick(v);
+    companion object {
+        private lateinit var mWhichButtonClicked: WhichButton
+        @JvmStatic
+        protected val ARG_KEY = "key"
+        @JvmStatic
+        fun newInstance(key: String?): PreferenceDialogFragmentX {
+            val fragment = PreferenceDialogFragmentX()
+            val b = Bundle(1)
+            b.putString(ARG_KEY, key)
+            fragment.arguments = b
+            return fragment
         }
-    }
-    private static void negativeClick(View v) {
     }
 }

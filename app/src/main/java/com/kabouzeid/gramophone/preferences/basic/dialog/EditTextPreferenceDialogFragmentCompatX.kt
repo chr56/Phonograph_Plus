@@ -1,53 +1,50 @@
-package com.kabouzeid.gramophone.preferences.basic.dialog;
+package com.kabouzeid.gramophone.preferences.basic.dialog
 
-import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-
-import com.afollestad.materialdialogs.MaterialDialog;
-import com.kabouzeid.gramophone.preferences.basic.EditTextPreferenceX;
+import android.os.Bundle
+import com.afollestad.materialdialogs.MaterialDialog
+import com.afollestad.materialdialogs.input.InputCallback
+import com.afollestad.materialdialogs.input.input
+import com.kabouzeid.gramophone.preferences.basic.EditTextPreferenceX
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
  */
-public class EditTextPreferenceDialogFragmentCompatX extends PreferenceDialogFragmentX implements MaterialDialog.InputCallback {
+class EditTextPreferenceDialogFragmentCompatX : PreferenceDialogFragmentX(), InputCallback {
+    private var input: CharSequence? = null
+    private val editTextPreference: EditTextPreferenceX
+        get() = preference as EditTextPreferenceX
 
-    private CharSequence input;
-
-    public static EditTextPreferenceDialogFragmentCompatX newInstance(String key) {
-        EditTextPreferenceDialogFragmentCompatX fragment = new EditTextPreferenceDialogFragmentCompatX();
-        Bundle b = new Bundle(1);
-        b.putString(ARG_KEY, key);
-        fragment.setArguments(b);
-        return fragment;
+    override fun onPrepareDialog(dialog: MaterialDialog) {
+        super.onPrepareDialog(dialog)
+        dialog.input(hint = null, prefill = editTextPreference.text, callback = this)
     }
 
-    private EditTextPreferenceX getEditTextPreference() {
-        return (EditTextPreferenceX) getPreference();
+    override fun needInputMethod(): Boolean {
+        return true
     }
 
-    @Override
-    protected void onPrepareDialogBuilder(MaterialDialog.Builder builder) {
-        super.onPrepareDialogBuilder(builder);
-        builder.input("", getEditTextPreference().getText(), this);
-    }
-
-    protected boolean needInputMethod() {
-        return true;
-    }
-
-    public void onDialogClosed(boolean positiveResult) {
+    override fun onDialogClosed(positiveResult: Boolean) {
         if (positiveResult) {
-            String value = input.toString();
-            if (this.getEditTextPreference().callChangeListener(value)) {
-                this.getEditTextPreference().setText(value);
+            val value = input.toString()
+            if (editTextPreference.callChangeListener(value)) {
+                editTextPreference.text = value
             }
         }
-
     }
 
-    @Override
-    public void onInput(@NonNull MaterialDialog dialog, CharSequence input) {
-        this.input = input;
+    fun onInput(dialog: MaterialDialog, input: CharSequence?) {
+        this.input = input
+    }
+    override fun invoke(d: MaterialDialog, s: CharSequence) {
+    }
+    companion object {
+        @JvmStatic
+        fun newInstance(key: String?): EditTextPreferenceDialogFragmentCompatX {
+            val fragment = EditTextPreferenceDialogFragmentCompatX()
+            val b = Bundle(1)
+            b.putString(ARG_KEY, key)
+            fragment.arguments = b
+            return fragment
+        }
     }
 }

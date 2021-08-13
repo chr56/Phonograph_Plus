@@ -1,76 +1,66 @@
-package com.kabouzeid.gramophone.preferences.basic.dialog;
+package com.kabouzeid.gramophone.preferences.basic.dialog
 
-import android.os.Bundle;
-import android.view.View;
-
-import androidx.preference.ListPreference;
-
-import com.afollestad.materialdialogs.DialogAction;
-import com.afollestad.materialdialogs.MaterialDialog;
-import com.google.android.material.dialog.MaterialDialogs;
-import com.kabouzeid.gramophone.preferences.basic.ListPreferenceX;
+import android.os.Bundle
+import android.view.View
+import androidx.preference.ListPreference
+import com.afollestad.materialdialogs.MaterialDialog
+import com.afollestad.materialdialogs.WhichButton
+import com.afollestad.materialdialogs.internal.button.DialogActionButton
+import com.afollestad.materialdialogs.list.listItems
+import com.google.android.material.dialog.MaterialDialogs
+import com.kabouzeid.gramophone.preferences.basic.ListPreferenceX
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
  */
-public class ListPreferenceDialogFragmentCompatX extends PreferenceDialogFragmentX /*implements MaterialDialog.ListCallbackSingleChoice*/ {
-    private int mClickedDialogEntryIndex;
+class ListPreferenceDialogFragmentCompatX : PreferenceDialogFragmentX() {
+    private var mClickedDialogEntryIndex = 0
+    private val listPreference: ListPreferenceX
+        get() = preference as ListPreferenceX
 
-    public static ListPreferenceDialogFragmentCompatX newInstance(String key) {
-        final ListPreferenceDialogFragmentCompatX fragment = new ListPreferenceDialogFragmentCompatX();
-        final Bundle b = new Bundle(1);
-        b.putString(ARG_KEY, key);
-        fragment.setArguments(b);
-        return fragment;
-    }
-
-    private ListPreferenceX getListPreference() {
-        return (ListPreferenceX) getPreference();
-    }
-
-    @Override
-    protected void onPrepareDialogBuilder(MaterialDialogs builder) {
-        super.onPrepareDialogBuilder(builder);
-
-        final ListPreference preference = getListPreference();
-
-        if (preference.getEntries() == null || preference.getEntryValues() == null) {
-            throw new IllegalStateException(
-                    "ListPreference requires an entries array and an entryValues array.");
-        }
-
-        mClickedDialogEntryIndex = preference.findIndexOfValue(preference.getValue());
-        builder.items(preference.getEntries())
-                .alwaysCallSingleChoiceCallback()
-                .itemsCallbackSingleChoice(mClickedDialogEntryIndex, this);
+    fun onPrepareDialogBuilder(dialog: MaterialDialog) {
+        super.onPrepareDialog(dialog)
+        val preference: ListPreference = listPreference
+        check(!(preference.entries == null || preference.entryValues == null)) { "ListPreference requires an entries array and an entryValues array." }
+        mClickedDialogEntryIndex = preference.findIndexOfValue(preference.value)
+//        dialog.listItems(items = preference.entries)
+//                .itemsCallbackSingleChoice(mClickedDialogEntryIndex, this)//TODO
 
         /*
          * The typical interaction for list-based dialogs is to have
          * click-on-an-item dismiss the dialog instead of the user having to
          * press 'Ok'.
          */
-        builder.positiveText("");
-        builder.negativeText("");
-        builder.neutralText("");
+        dialog.positiveButton(text = null)
+        dialog.negativeButton(text = null)
+        dialog.negativeButton(text = null)
     }
 
-    @Override
-    public void onDialogClosed(boolean positiveResult) {
-        final ListPreference preference = getListPreference();
-        if (positiveResult && mClickedDialogEntryIndex >= 0 &&
-                preference.getEntryValues() != null) {
-            String value = preference.getEntryValues()[mClickedDialogEntryIndex].toString();
+    override fun onDialogClosed(positiveResult: Boolean) {
+        val preference: ListPreference = listPreference
+        if (positiveResult && mClickedDialogEntryIndex >= 0 && preference.entryValues != null) {
+            val value = preference.entryValues[mClickedDialogEntryIndex].toString()
             if (preference.callChangeListener(value)) {
-                preference.setValue(value);
+                preference.value = value
             }
         }
     }
 
-    @Override
-    public boolean onSelection(MaterialDialog dialog, View itemView, int which, CharSequence text) {
-        mClickedDialogEntryIndex = which;
-        onClick(dialog, DialogAction.POSITIVE);
-        dismiss();
-        return true;
+    fun onSelection(dialog: MaterialDialog?, itemView: View?, which: Int, text: CharSequence?): Boolean {
+        mClickedDialogEntryIndex = which
+        onClick(dialog!!, WhichButton.POSITIVE)
+        dismiss()
+        return true
+    }
+
+    companion object {
+        @JvmStatic
+        fun newInstance(key: String?): ListPreferenceDialogFragmentCompatX {
+            val fragment = ListPreferenceDialogFragmentCompatX()
+            val b = Bundle(1)
+            b.putString(ARG_KEY, key)
+            fragment.arguments = b
+            return fragment
+        }
     }
 }
