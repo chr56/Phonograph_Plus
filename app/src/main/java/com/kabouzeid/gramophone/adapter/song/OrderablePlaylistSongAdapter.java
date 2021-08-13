@@ -118,7 +118,7 @@ public class OrderablePlaylistSongAdapter extends PlaylistSongAdapter implements
         protected boolean onSongMenuItemClick(MenuItem item) {
             switch (item.getItemId()) {
                 case R.id.action_remove_from_playlist:
-                    RemoveFromPlaylistDialog.create((PlaylistSong) getSong()).show(activity.getSupportFragmentManager(), "REMOVE_FROM_PLAYLIST");
+                    RemoveFromPlaylistDialog.create((List<? extends PlaylistSong>) getSong()).show(activity.getSupportFragmentManager(), "REMOVE_FROM_PLAYLIST");
                     return true;
             }
             return super.onSongMenuItemClick(item);

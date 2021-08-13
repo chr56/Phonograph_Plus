@@ -260,7 +260,7 @@ public class LibraryFragment extends AbsMainActivityFragment implements CabHolde
                 MusicPlayerRemote.openAndShuffleQueue(SongLoader.getAllSongs(getActivity()), true);
                 return true;
             case R.id.action_new_playlist:
-                CreatePlaylistDialog.create().show(getChildFragmentManager(), "CREATE_PLAYLIST");
+                CreatePlaylistDialog.create(null).show(getChildFragmentManager(), "CREATE_PLAYLIST");
                 return true;
             case R.id.action_search:
                 startActivity(new Intent(getActivity(), SearchActivity.class));

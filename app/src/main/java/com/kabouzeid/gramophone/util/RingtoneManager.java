@@ -30,19 +30,20 @@ public class RingtoneManager {
     }
 
     public static MaterialDialog showDialog(Context context) {
-        return new MaterialDialog(context,MaterialDialog.getDEFAULT_BEHAVIOR())
-                .title(R.string.dialog_ringtone_title,null)
-                .message(R.string.dialog_ringtone_message,null,null)
-                .negativeButton(android.R.string.cancel,null,null)
-                .positiveButton(android.R.string.ok,null,
-                        (dialog) -> {
+        MaterialDialog dialog = new MaterialDialog(context, MaterialDialog.getDEFAULT_BEHAVIOR());
+        dialog.title(R.string.dialog_ringtone_title, null);
+        dialog.message(R.string.dialog_ringtone_message, null, null);
+        dialog.negativeButton(android.R.string.cancel, null, null);
+        dialog.positiveButton(android.R.string.ok, null,
+                (dialog1) -> {
                     Intent intent = new Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS);
                     intent.setData(Uri.parse("package:" + context.getPackageName()));
                     context.startActivity(intent);
-                    return;
-                    }
-                )
-                .show();
+                    return null;
+                }
+        );
+        dialog.show();
+        return dialog;
 //        return new MaterialDialog.Builder(context)
 //                .title(R.string.dialog_ringtone_title)
 //                .content)

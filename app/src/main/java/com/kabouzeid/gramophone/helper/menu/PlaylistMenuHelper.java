@@ -46,7 +46,7 @@ public class PlaylistMenuHelper {
                 RenamePlaylistDialog.create(playlist.id).show(activity.getSupportFragmentManager(), "RENAME_PLAYLIST");
                 return true;
             case R.id.action_delete_playlist:
-                DeletePlaylistDialog.create(playlist).show(activity.getSupportFragmentManager(), "DELETE_PLAYLIST");
+                DeletePlaylistDialog.create(List.of(playlist)).show(activity.getSupportFragmentManager(), "DELETE_PLAYLIST");
                 return true;
             case R.id.action_save_playlist:
                 new SavePlaylistAsyncTask(activity).execute(playlist);
