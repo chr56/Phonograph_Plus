@@ -22,6 +22,7 @@ import androidx.annotation.StringRes;
 import androidx.appcompat.widget.Toolbar;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.afollestad.materialdialogs.utils.MDUtil;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
@@ -295,11 +296,10 @@ public class BugReportActivity extends AbsThemeActivity {
 
         @Override
         protected Dialog createDialog(@NonNull Context context) {
-            return new MaterialDialog.Builder(context)
-                    .progress(true, 0)
-                    .progressIndeterminateStyle(true)
-                    .title(R.string.bug_report_uploading)
-                    .show();
+            return new MaterialDialog(context,MaterialDialog.getDEFAULT_BEHAVIOR())
+//                    .progress(true, 0)
+//                    .progressIndeterminateStyle(true)
+                    .title(R.string.bug_report_uploading,null);
         }
 
         @Override
@@ -346,33 +346,32 @@ public class BugReportActivity extends AbsThemeActivity {
                     tryToFinishActivity();
                     break;
                 case RESULT_BAD_CREDENTIALS:
-                    new MaterialDialog.Builder(context)
-                            .title(R.string.bug_report_failed)
-                            .content(R.string.bug_report_failed_wrong_credentials)
-                            .positiveText(android.R.string.ok)
+                    new MaterialDialog(context,MaterialDialog.getDEFAULT_BEHAVIOR())
+                            .title(R.string.bug_report_failed,null)
+                            .message(R.string.bug_report_failed_wrong_credentials,null,null)
+                            .positiveButton(android.R.string.ok,null,null)
                             .show();
                     break;
                 case RESULT_INVALID_TOKEN:
-                    new MaterialDialog.Builder(context)
-                            .title(R.string.bug_report_failed)
-                            .content(R.string.bug_report_failed_invalid_token)
-                            .positiveText(android.R.string.ok)
+                    new MaterialDialog(context,MaterialDialog.getDEFAULT_BEHAVIOR())
+                            .title(R.string.bug_report_failed,null)
+                            .message(R.string.bug_report_failed_invalid_token,null,null)
+                            .positiveButton(android.R.string.ok,null,null)
                             .show();
                     break;
                 case RESULT_ISSUES_NOT_ENABLED:
-                    new MaterialDialog.Builder(context)
-                            .title(R.string.bug_report_failed)
-                            .content(R.string.bug_report_failed_issues_not_available)
-                            .positiveText(android.R.string.ok)
+                    new MaterialDialog(context,MaterialDialog.getDEFAULT_BEHAVIOR())
+                            .title(R.string.bug_report_failed,null)
+                            .message(R.string.bug_report_failed_issues_not_available,null,null)
+                            .positiveButton(android.R.string.ok,null,null)
                             .show();
                     break;
                 default:
-                    new MaterialDialog.Builder(context)
-                            .title(R.string.bug_report_failed)
-                            .content(R.string.bug_report_failed_unknown)
-                            .positiveText(android.R.string.ok)
-                            .onPositive((dialog, which) -> tryToFinishActivity())
-                            .cancelListener(dialog -> tryToFinishActivity())
+                    new MaterialDialog(context, MaterialDialog.getDEFAULT_BEHAVIOR())
+                            .title(R.string.bug_report_failed,null)
+                            .message(R.string.bug_report_failed_unknown,null,null)
+                            .positiveButton(android.R.string.ok,null,(dialog ->{tryToFinishActivity();return null;}))
+                            .negativeButton(android.R.string.cancel,null, dialog -> {tryToFinishActivity();return null;})
                             .show();
                     break;
             }
