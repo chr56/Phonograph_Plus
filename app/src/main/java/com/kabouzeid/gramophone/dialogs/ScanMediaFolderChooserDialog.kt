@@ -31,25 +31,29 @@ import kotlin.collections.ArrayList
  * @author Aidan Follestad (afollestad), modified by Karim Abou Zeid
  */
 class ScanMediaFolderChooserDialog : DialogFragment() {
-    var initialPath = PreferenceUtil.getInstance(requireContext()).startDirectory.absolutePath
+    private lateinit var initialPath : String
     private var parentFolder: File? = null
     private var parentContents: Array<File>? = null
     private var canGoUp = false
-    private val contentsArray: Array<String?>
+    private val contentsArray: List<CharSequence?>
         get() {
             if (parentContents == null) {
                 return if (canGoUp) {
-                    arrayOf("..")
-                } else arrayOf()
+                    arrayListOf("..")
+                } else arrayListOf()
             }
-            val results = arrayOfNulls<String>(parentContents!!.size + if (canGoUp) 1 else 0)
-            if (canGoUp) {
-                results[0] = ".."
+            val resultList = List<CharSequence?>(parentContents!!.size + if (canGoUp) 1 else 0) {
+                if (canGoUp) {
+                    if (it == 0) {
+                        ".."
+                    } else {
+                        parentContents!![it - 1].name
+                    }
+                } else {
+                    parentContents!![it].name
+                }
             }
-            for (i in parentContents!!.indices) {
-                results[if (canGoUp) i + 1 else i] = parentContents!![i].name
-            }
-            return results
+            return resultList
         }
 
     private fun listFiles(): Array<File>? {
@@ -80,6 +84,7 @@ class ScanMediaFolderChooserDialog : DialogFragment() {
                 .message(R.string.err_permission_storage) // TODO
                 .positiveButton(android.R.string.ok)
         }
+        initialPath = PreferenceUtil.getInstance(requireContext()).startDirectory.absolutePath
         if (savedInstanceState == null) {
             savedInstanceState = Bundle()
         }

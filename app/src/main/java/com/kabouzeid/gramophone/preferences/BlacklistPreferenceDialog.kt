@@ -1,5 +1,6 @@
 package com.kabouzeid.gramophone.preferences
 
+import android.annotation.SuppressLint
 import android.app.Dialog
 import android.os.Bundle
 import android.text.Html
@@ -17,11 +18,11 @@ import java.io.File
  * @author Karim Abou Zeid (kabouzeid)
  */
 class BlacklistPreferenceDialog : DialogFragment(), FolderCallback {
-    private var paths: List<String>? = null
+    private lateinit var paths: List<String>
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val blacklistFolderChooserDialog = childFragmentManager.findFragmentByTag("FOLDER_CHOOSER") as BlacklistFolderChooserDialog?
         blacklistFolderChooserDialog?.setCallback(this)
-        refreshBlacklistData()
+        paths = BlacklistStore.getInstance(requireContext()).paths
         return MaterialDialog(requireContext())
             .title(R.string.blacklist)
             .positiveButton(android.R.string.ok) { dismiss() }
@@ -36,7 +37,11 @@ class BlacklistPreferenceDialog : DialogFragment(), FolderCallback {
                     .negativeButton(android.R.string.cancel)
                     .show()
             }
-            .negativeButton(R.string.add_action)
+            .negativeButton(R.string.add_action) {
+                val dialog = create()
+                dialog.setCallback(this@BlacklistPreferenceDialog)
+                dialog.show(childFragmentManager, "FOLDER_CHOOSER")
+            }
             .listItems(items = paths) { _, _, charSequence ->
                 MaterialDialog(requireContext())
                     .title(R.string.remove_from_blacklist)
@@ -49,18 +54,13 @@ class BlacklistPreferenceDialog : DialogFragment(), FolderCallback {
                     .show()
             }
             .noAutoDismiss()
-
-            .negativeButton {
-                val dialog = create()
-                dialog.setCallback(this@BlacklistPreferenceDialog)
-                dialog.show(childFragmentManager, "FOLDER_CHOOSER")
-            }
     }
 
+    @SuppressLint("CheckResult")
     private fun refreshBlacklistData() {
         val paths = BlacklistStore.getInstance(requireContext()).paths
-        val dialog = dialog as MaterialDialog?
-        dialog?.listItems(items = paths as List<CharSequence>)
+        val dialog = dialog as MaterialDialog
+        dialog.listItems(items = paths as List<CharSequence>)
     }
 
     override fun onFolderSelection(dialog: BlacklistFolderChooserDialog, file: File) {
