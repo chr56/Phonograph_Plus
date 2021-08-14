@@ -75,6 +75,14 @@ android {
             debuggable true
 
         }
+        exptest{
+            signingConfig signingConfigs.release
+            resValue "string", "app_name","Phonograph exp"
+            applicationIdSuffix '.exptest'
+            matchingFallbacks = ['release','cust']
+            debuggable true
+
+        }
         pub{
             minifyEnabled true
             shrinkResources true
@@ -153,7 +161,7 @@ dependencies {
     implementation 'org.eclipse.mylyn.github:org.eclipse.egit.github.core:2.1.5'
 
     implementation 'com.github.AdrienPoupa:jaudiotagger:2.2.3'
-    implementation "androidx.core:core-ktx:+"
+    implementation "androidx.core:core-ktx:1.6.0"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }
 repositories {

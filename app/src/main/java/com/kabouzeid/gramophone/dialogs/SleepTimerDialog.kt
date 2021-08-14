@@ -18,12 +18,11 @@ import butterknife.BindView
 import butterknife.ButterKnife
 import chr_56.MDthemer.core.ThemeColor
 import com.afollestad.materialdialogs.MaterialDialog
-import com.afollestad.materialdialogs.customview.*
-import com.afollestad.materialdialogs.actions.*
+import com.afollestad.materialdialogs.customview.customView
+import com.afollestad.materialdialogs.customview.getCustomView
 import com.kabouzeid.gramophone.R
 import com.kabouzeid.gramophone.helper.MusicPlayerRemote
 import com.kabouzeid.gramophone.service.MusicService
-import com.kabouzeid.gramophone.util.MusicUtil
 import com.kabouzeid.gramophone.util.PreferenceUtil
 import com.triggertrap.seekarc.SeekArc
 import com.triggertrap.seekarc.SeekArc.OnSeekArcChangeListener
@@ -31,7 +30,7 @@ import com.triggertrap.seekarc.SeekArc.OnSeekArcChangeListener
 /**
  * @author Karim Abou Zeid (kabouzeid)
  */
-class SleepTimerDialog : DialogFragment()  {
+class SleepTimerDialog : DialogFragment() {
     @JvmField
     @BindView(R.id.seek_arc)
     var seekArc: SeekArc? = null
@@ -43,6 +42,7 @@ class SleepTimerDialog : DialogFragment()  {
     @JvmField
     @BindView(R.id.should_finish_last_song)
     var shouldFinishLastSong: CheckBox? = null
+
     private var seekArcProgress = 0
     private lateinit var materialDialog: MaterialDialog
     private var timerUpdater: TimerUpdater? = null
@@ -54,45 +54,47 @@ class SleepTimerDialog : DialogFragment()  {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         timerUpdater = TimerUpdater()
         materialDialog = MaterialDialog(requireActivity())
-                .title(R.string.action_sleep_timer)
-                .positiveButton(R.string.action_set){ dialog ->
-                    if (requireActivity() == null) {
-                        return@positiveButton
-                    }
-                    PreferenceUtil.getInstance(requireActivity()).sleepTimerFinishMusic = shouldFinishLastSong!!.isChecked
-                    val minutes = seekArcProgress
-                    val pi = makeTimerPendingIntent(PendingIntent.FLAG_CANCEL_CURRENT)
-                    val nextSleepTimerElapsedTime = SystemClock.elapsedRealtime() + minutes * 60 * 1000
-                    PreferenceUtil.getInstance(requireActivity()).setNextSleepTimerElapsedRealtime(nextSleepTimerElapsedTime)
+            .title(R.string.action_sleep_timer)
+            .positiveButton(R.string.action_set) {
+                PreferenceUtil.getInstance(requireActivity()).sleepTimerFinishMusic = shouldFinishLastSong!!.isChecked
+                val minutes = seekArcProgress
+                val pi = makeTimerPendingIntent(PendingIntent.FLAG_CANCEL_CURRENT)
+                val nextSleepTimerElapsedTime = SystemClock.elapsedRealtime() + minutes * 60 * 1000
+                PreferenceUtil.getInstance(requireActivity()).setNextSleepTimerElapsedRealtime(nextSleepTimerElapsedTime)
+                val am = requireActivity().getSystemService(Context.ALARM_SERVICE) as AlarmManager
+                am[AlarmManager.ELAPSED_REALTIME_WAKEUP, nextSleepTimerElapsedTime] = pi
+                Toast.makeText(requireActivity(), requireActivity().resources.getString(R.string.sleep_timer_set, minutes), Toast.LENGTH_SHORT).show()
+            }
+            .negativeButton {
+                val previous = makeTimerPendingIntent(PendingIntent.FLAG_NO_CREATE)
+                if (previous != null) {
                     val am = requireActivity().getSystemService(Context.ALARM_SERVICE) as AlarmManager
-                    am[AlarmManager.ELAPSED_REALTIME_WAKEUP, nextSleepTimerElapsedTime] = pi
-                    Toast.makeText(requireActivity(), requireActivity().resources.getString(R.string.sleep_timer_set, minutes), Toast.LENGTH_SHORT).show()
+                    am.cancel(previous)
+                    previous.cancel()
+                    Toast.makeText(requireActivity(), requireActivity().resources.getString(R.string.sleep_timer_canceled), Toast.LENGTH_SHORT).show()
                 }
-                .negativeButton{ dialog ->
-                    if (requireActivity() == null) {
-                        return@negativeButton
-                    }
-                    val previous = makeTimerPendingIntent(PendingIntent.FLAG_NO_CREATE)
-                    if (previous != null) {
-                        val am = requireActivity().getSystemService(Context.ALARM_SERVICE) as AlarmManager
-                        am.cancel(previous)
-                        previous.cancel()
-                        Toast.makeText(requireActivity(), requireActivity().resources.getString(R.string.sleep_timer_canceled), Toast.LENGTH_SHORT).show()
-                    }
-                    val musicService = MusicPlayerRemote.musicService
-                    if (musicService != null && musicService.pendingQuit) {
-                        musicService.pendingQuit = false
-                        Toast.makeText(requireActivity(), requireActivity().resources.getString(R.string.sleep_timer_canceled), Toast.LENGTH_SHORT).show()
-                    }
+                val musicService = MusicPlayerRemote.musicService
+                if (musicService != null && musicService.pendingQuit) {
+                    musicService.pendingQuit = false
+                    Toast.makeText(requireActivity(), requireActivity().resources.getString(R.string.sleep_timer_canceled), Toast.LENGTH_SHORT).show()
                 }
+            }
+                //New
+//            .show {
+//                if (makeTimerPendingIntent(PendingIntent.FLAG_NO_CREATE) != null) {
+//                    timerUpdater!!.start()
+//                }
+//            }
+
+            // OLD
 //                .showListener { dialog ->
 //                    if (makeTimerPendingIntent(PendingIntent.FLAG_NO_CREATE) != null) {
 //                        timerUpdater!!.start()
 //                    }
 //                }
-                .customView(viewRes = R.layout.dialog_sleep_timer, dialogWrapContent = false)//Todo
+            .customView(viewRes = R.layout.dialog_sleep_timer, dialogWrapContent = false) // Todo
         if (requireActivity() == null || materialDialog.getCustomView() == null) {
-            return materialDialog!!
+            return materialDialog
         }
         ButterKnife.bind(this, materialDialog.getCustomView())
         val finishMusic = PreferenceUtil.getInstance(requireActivity()).sleepTimerFinishMusic
@@ -125,7 +127,7 @@ class SleepTimerDialog : DialogFragment()  {
                 PreferenceUtil.getInstance(requireActivity()).lastSleepTimerValue = seekArcProgress
             }
         })
-        return materialDialog!!
+        return materialDialog
     }
 
     private fun updateTimeDisplayTime() {

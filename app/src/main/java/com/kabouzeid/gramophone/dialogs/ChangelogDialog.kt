@@ -33,14 +33,14 @@ class ChangelogDialog : DialogFragment() {
         } catch (e: InflateException) {
             e.printStackTrace()
             return MaterialDialog(requireActivity())
-                    .title(android.R.string.dialog_alert_title)
-                    .message(text = "This device doesn't support web view, which is necessary to view the change log. It is missing a system component.")
-                    .positiveButton(android.R.string.ok)
+                .title(android.R.string.dialog_alert_title)
+                .message(text = "This device doesn't support web view, which is necessary to view the change log. It is missing a system component.")
+                .positiveButton(android.R.string.ok)
         }
         val dialog: MaterialDialog = MaterialDialog(requireActivity())
-                .title(R.string.changelog)
-                .customView(view = customView, noVerticalPadding = false)
-                .positiveButton(android.R.string.ok) { if (activity != null) setChangelogRead(requireActivity()) }
+            .title(R.string.changelog)
+            .customView(view = customView, noVerticalPadding = false)
+            .positiveButton(android.R.string.ok) { if (activity != null) setChangelogRead(requireActivity()) }
 //                .showListener { dialog1 -> if (activity != null) setChangelogRead(requireActivity()) }
         val webView = customView.findViewById<WebView>(R.id.web_view)
         try {
@@ -57,9 +57,9 @@ class ChangelogDialog : DialogFragment() {
             val backgroundColor = colorToCSS(Util.resolveColor(activity, R.attr.md_background_color, Color.parseColor(if (app.nightmode()) "#424242" else "#ffffff")))
             val contentColor = colorToCSS(Color.parseColor(if (app.nightmode()) "#ffffff" else "#000000"))
             val changeLog = buf.toString()
-                    .replace("{style-placeholder}", String.format("body { background-color: %s; color: %s; }", backgroundColor, contentColor))
-                    .replace("{link-color}", colorToCSS(ThemeColor.accentColor(app))) //TODO MD
-                    .replace("{link-color-active}", colorToCSS(ColorUtil.lightenColor(ThemeColor.accentColor(app)))) //TODO MD
+                .replace("{style-placeholder}", String.format("body { background-color: %s; color: %s; }", backgroundColor, contentColor))
+                .replace("{link-color}", colorToCSS(ThemeColor.accentColor(app))) // TODO MD
+                .replace("{link-color-active}", colorToCSS(ColorUtil.lightenColor(ThemeColor.accentColor(app)))) // TODO MD
             webView.loadData(changeLog, "text/html", "UTF-8")
         } catch (e: Throwable) {
             webView.loadData("<h1>Unable to load</h1><p>" + e.localizedMessage + "</p>", "text/html", "UTF-8")

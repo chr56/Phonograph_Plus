@@ -1,5 +1,6 @@
 package com.kabouzeid.gramophone.preferences.basic.dialog
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.View
 import androidx.preference.ListPreference
@@ -7,6 +8,7 @@ import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.WhichButton
 import com.afollestad.materialdialogs.internal.button.DialogActionButton
 import com.afollestad.materialdialogs.list.listItems
+import com.afollestad.materialdialogs.list.listItemsSingleChoice
 import com.google.android.material.dialog.MaterialDialogs
 import com.kabouzeid.gramophone.preferences.basic.ListPreferenceX
 
@@ -18,13 +20,17 @@ class ListPreferenceDialogFragmentCompatX : PreferenceDialogFragmentX() {
     private val listPreference: ListPreferenceX
         get() = preference as ListPreferenceX
 
+    @SuppressLint("CheckResult")
     fun onPrepareDialogBuilder(dialog: MaterialDialog) {
         super.onPrepareDialog(dialog)
         val preference: ListPreference = listPreference
         check(!(preference.entries == null || preference.entryValues == null)) { "ListPreference requires an entries array and an entryValues array." }
         mClickedDialogEntryIndex = preference.findIndexOfValue(preference.value)
-//        dialog.listItems(items = preference.entries)
-//                .itemsCallbackSingleChoice(mClickedDialogEntryIndex, this)//TODO
+        dialog.listItemsSingleChoice(items = preference.entries as List<CharSequence>)
+//        {
+//        }
+//                .itemsCallbackSingleChoice(mClickedDialogEntryIndex, this)
+// TODO
 
         /*
          * The typical interaction for list-based dialogs is to have
