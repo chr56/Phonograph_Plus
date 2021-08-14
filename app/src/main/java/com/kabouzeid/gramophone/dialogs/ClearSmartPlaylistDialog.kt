@@ -7,7 +7,7 @@ import androidx.fragment.app.DialogFragment
 import com.afollestad.materialdialogs.MaterialDialog
 import com.kabouzeid.gramophone.R
 import com.kabouzeid.gramophone.model.smartplaylist.AbsSmartPlaylist
-
+// Todo Completed
 /**
  * @author Karim Abou Zeid (kabouzeid)
  */

@@ -26,10 +26,10 @@ class RemoveFromPlaylistDialog : DialogFragment() {
             content = Html.fromHtml(getString(R.string.remove_song_x_from_playlist, songs[0].title))
         }
         return MaterialDialog(requireActivity())
-                .title(title)
-                .message(text = content)
-                .negativeButton(android.R.string.cancel)
-                .positiveButton(R.string.remove_action){ if (activity != null) PlaylistsUtil.removeFromPlaylist(requireActivity(), songs) }
+            .title(title)
+            .message(text = content)
+            .negativeButton(android.R.string.cancel)
+            .positiveButton(R.string.remove_action) { if (activity != null) PlaylistsUtil.removeFromPlaylist(requireActivity(), songs) }
     }
 
     companion object {

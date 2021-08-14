@@ -2,14 +2,13 @@ package com.kabouzeid.gramophone.dialogs
 
 import android.app.Dialog
 import android.os.Bundle
-import android.os.Parcelable
 import android.text.Html
 import androidx.fragment.app.DialogFragment
 import com.afollestad.materialdialogs.MaterialDialog
 import com.kabouzeid.gramophone.R
 import com.kabouzeid.gramophone.model.Song
 import com.kabouzeid.gramophone.util.MusicUtil
-// Todo Review
+// Todo Completed Review
 /**
  * @author Karim Abou Zeid (kabouzeid), Aidan Follestad (afollestad), chr_56<modify>
  */
@@ -45,7 +44,7 @@ class DeleteSongsDialog : DialogFragment() {
         fun create(songs: List<Song>?): DeleteSongsDialog {
             val dialog = DeleteSongsDialog()
             val args = Bundle()
-            args.putParcelableArrayList("songs",songs as java.util.ArrayList<Song>)
+            args.putParcelableArrayList("songs", ArrayList(songs))
             dialog.arguments = args
             return dialog
         }

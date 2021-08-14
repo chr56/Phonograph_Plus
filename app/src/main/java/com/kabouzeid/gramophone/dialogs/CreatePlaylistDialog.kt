@@ -10,7 +10,7 @@ import com.afollestad.materialdialogs.input.input
 import com.kabouzeid.gramophone.R
 import com.kabouzeid.gramophone.model.Song
 import com.kabouzeid.gramophone.util.PlaylistsUtil
-// import java.util.*
+// Todo Completed
 
 /**
  * @author Karim Abou Zeid (kabouzeid), Aidan Follestad (afollestad)
@@ -56,7 +56,7 @@ class CreatePlaylistDialog : DialogFragment() {
     companion object {
         private const val SONGS = "songs"
         @JvmOverloads
-        fun create(song: Song? = null as Song?): CreatePlaylistDialog {
+        fun create(song: Song? = null): CreatePlaylistDialog {
             val list: MutableList<Song> = ArrayList()
             if (song != null) list.add(song)
             return create(list)
@@ -67,6 +67,14 @@ class CreatePlaylistDialog : DialogFragment() {
             val dialog = CreatePlaylistDialog()
             val args = Bundle()
             args.putParcelableArrayList(SONGS, ArrayList(songs))
+            dialog.arguments = args
+            return dialog
+        }
+        @JvmStatic
+        fun createEmpty(): CreatePlaylistDialog {
+            val dialog = CreatePlaylistDialog()
+            val args = Bundle()
+            args.putParcelableArrayList(SONGS,null)
             dialog.arguments = args
             return dialog
         }

@@ -11,6 +11,7 @@ import android.view.View
 import android.widget.TextView
 import androidx.fragment.app.DialogFragment
 import com.afollestad.materialdialogs.MaterialDialog
+import com.afollestad.materialdialogs.customview.customView
 import com.afollestad.materialdialogs.customview.getCustomView
 import com.kabouzeid.gramophone.R
 import com.kabouzeid.gramophone.model.Song
@@ -24,7 +25,7 @@ import org.jaudiotagger.audio.exceptions.ReadOnlyFileException
 import org.jaudiotagger.tag.TagException
 import java.io.File
 import java.io.IOException
-
+// Todo Completed
 /**
  * @author Karim Abou Zeid (kabouzeid), Aidan Follestad (afollestad), chr_56<modify>
  */
@@ -35,8 +36,10 @@ class SongDetailDialog : DialogFragment() {
         val dialog = MaterialDialog(context as Context)
             .title(R.string.label_details)
             .positiveButton(android.R.string.ok)
+            .customView(viewRes = R.layout.dialog_file_details,horizontalPadding = true)
 
         val dialogView: View = dialog.getCustomView()
+
         val fileName: TextView = dialogView.findViewById(R.id.file_name)
         val filePath: TextView = dialogView.findViewById(R.id.file_path)
         val fileSize: TextView = dialogView.findViewById(R.id.file_size)
