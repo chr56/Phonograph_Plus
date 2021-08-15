@@ -1,6 +1,5 @@
 package com.kabouzeid.gramophone.preferences.basic.dialog
 
-import android.app.Activity
 import android.app.Dialog
 import android.content.DialogInterface
 import android.os.Bundle
@@ -9,14 +8,15 @@ import androidx.fragment.app.DialogFragment
 import androidx.preference.DialogPreference
 import androidx.preference.DialogPreference.TargetFragment
 import androidx.preference.Preference
-import com.afollestad.materialdialogs.DialogCallback
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.WhichButton
+// Todo Completed
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
  */
 open class PreferenceDialogFragmentX : DialogFragment() {
+    private var mWhichButtonClicked: WhichButton? = null
     var preference: DialogPreference? = null
         private set
 
@@ -26,22 +26,22 @@ open class PreferenceDialogFragmentX : DialogFragment() {
         check(rawFragment is TargetFragment) { "Target fragment must implement TargetFragment interface" }
         val fragment = rawFragment as TargetFragment
         val key = this.requireArguments().getString(ARG_KEY)
-        preference = key?.let { fragment.findPreference<Preference>(it) } as DialogPreference
+        preference = fragment.findPreference<Preference>(key.toString()) as DialogPreference
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val context = this.activity
-        val dialog = MaterialDialog(context as Activity)
+        val context = requireContext()
+        val dialog = MaterialDialog(context)
             .title(text = preference!!.dialogTitle as String)
-            .icon(drawable = preference!!.dialogIcon)
-            .message(text = preference!!.dialogMessage)
-            .positiveButton(text = preference!!.positiveButtonText, click = PositiveListener())
-            .negativeButton(text = preference!!.negativeButtonText, click = NegativeListener())
+            .positiveButton(text = preference!!.positiveButtonText)
+            .negativeButton(text = preference!!.negativeButtonText)
         if (needInputMethod()) {
             requestInputMethod(dialog)
         }
+        onPrepareDialog(dialog)
         return dialog
     }
+
     private fun requestInputMethod(dialog: MaterialDialog) {
         val window = dialog.window
         window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE)
@@ -52,37 +52,14 @@ open class PreferenceDialogFragmentX : DialogFragment() {
 
     protected open fun onPrepareDialog(dialog: MaterialDialog) {}
 
-    fun onClick(dialog: MaterialDialog, which: WhichButton) {
-        mWhichButtonClicked = which
-    }
-
     override fun onDismiss(dialog: DialogInterface) {
         super.onDismiss(dialog)
-        onDialogClosed(mWhichButtonClicked === WhichButton.POSITIVE)
+        mWhichButtonClicked?.let { onDialogClosed(mWhichButtonClicked === WhichButton.POSITIVE) }
     }
 
     open fun onDialogClosed(positiveResult: Boolean) {}
 
-    internal open class PositiveListener : DialogCallback {
-        override fun invoke(d: MaterialDialog) {
-            positiveClick(d)
-        }
-        open fun positiveClick(d: MaterialDialog) {
-        }
-    }
-
-    internal open class NegativeListener : DialogCallback {
-        override fun invoke(d: MaterialDialog) {
-            negativeClick(d)
-        }
-        open fun negativeClick(d: MaterialDialog) {
-        }
-    }
-//    open fun positiveClick(d: MaterialDialog) {}
-//    open fun negativeClick(d: MaterialDialog) {}
-
     companion object {
-        private lateinit var mWhichButtonClicked: WhichButton
         @JvmStatic
         protected val ARG_KEY = "key"
         @JvmStatic
