@@ -17,4 +17,6 @@
 
     <color name="md_divider_black">#10000000</color>
     <color name="md_divider_white">#10FFFFFF</color>
+
+    <color name="SeekArcText">@color/md_black_1000</color>
 </resources>

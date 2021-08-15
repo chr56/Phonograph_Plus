@@ -27,6 +27,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:textColor="@color/SeekArcText"
             android:textAppearance="?android:textAppearanceLarge" />
 
     </FrameLayout>
@@ -37,6 +38,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
         android:layout_marginStart="16dp"
+        android:textColor="@color/SeekArcText"
         android:text="@string/finish_current_music_sleep_timer" />
 
 </LinearLayout>
