@@ -163,7 +163,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
         final int primaryColor = ThemeColor.primaryColor(getActivity());
         primaryColorPref.setColor(primaryColor, ColorUtil.darkenColor(primaryColor));
         primaryColorPref.setOnPreferenceClickListener(
-                new ColorChooserListener(getActivity(),primaryColor,ColorChooserListener.Companion.getPRIMANY_COLOR())
+                new ColorChooserListener(getActivity(),primaryColor, ColorChooserListener.MODE_PRIMARY_COLOR)
         );
 
 
@@ -171,7 +171,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
         final int accentColor = ThemeColor.accentColor(getActivity());
         accentColorPref.setColor(accentColor, ColorUtil.darkenColor(accentColor));
         accentColorPref.setOnPreferenceClickListener(
-                new ColorChooserListener(getActivity(),accentColor,ColorChooserListener.Companion.getACCENT_COLOR())
+                new ColorChooserListener(getActivity(),accentColor, ColorChooserListener.MODE_ACCENT_COLOR)
         );
 
         TwoStatePreference colorNavBar = (TwoStatePreference) findPreference("should_color_navigation_bar");
