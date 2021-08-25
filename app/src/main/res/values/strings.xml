@@ -306,4 +306,5 @@
     <string name="auto_mode_on">Auto Mode is on!</string>
     <string name="Permission_denied">Permission denied!</string>
     <string name="err_permission_storage">Storage Permission</string>
+    <string name="add_blacklist">Do you want to add this to blacklist?</string>
 </resources>
