@@ -26,6 +26,7 @@ import com.google.android.material.navigation.NavigationView;
 import com.kabouzeid.gramophone.R;
 import com.kabouzeid.gramophone.dialogs.ChangelogDialog;
 import com.kabouzeid.gramophone.dialogs.ScanMediaFolderChooserDialog;
+import com.kabouzeid.gramophone.dialogs.ScanMediaFolderDialog;
 import com.kabouzeid.gramophone.glide.SongGlideRequest;
 import com.kabouzeid.gramophone.helper.MusicPlayerRemote;
 import com.kabouzeid.gramophone.helper.SearchQueryHelper;
@@ -191,8 +192,10 @@ public class MainActivity extends AbsSlidingMusicPanelActivity {
                     break;
                 case R.id.action_scan:
                     new Handler().postDelayed(() -> {
-                        ScanMediaFolderChooserDialog dialog = ScanMediaFolderChooserDialog.create();
-                        dialog.show(getSupportFragmentManager(), "SCAN_MEDIA_FOLDER_CHOOSER");
+                        ScanMediaFolderDialog dialog = new ScanMediaFolderDialog();
+                        dialog.show(getSupportFragmentManager(),"SCAN_MEDIA_FOLDER_CHOOSER");
+//                        ScanMediaFolderChooserDialog dialog = ScanMediaFolderChooserDialog.create();
+//                        dialog.show(getSupportFragmentManager(), "SCAN_MEDIA_FOLDER_CHOOSER");
                     }, 200);
                     break;
                 case R.id.theme_toggle:
