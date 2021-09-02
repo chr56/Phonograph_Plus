@@ -14,12 +14,15 @@
         <item name="iconColor">@color/iconColor</item>
 
         <item name="android:actionOverflowButtonStyle">@style/Widget.ActionButton.Overflow</item>
-        <item name="android:forceDarkAllowed">true</item>
+<!--        <item name="android:forceDarkAllowed">true</item>-->
 
-        <item name="android:dialogTheme">@style/Theme.AppCompat.DayNight.Dialog</item>
-        <item name="android:alertDialogTheme">@style/Theme.AppCompat.DayNight.Dialog.Alert</item>
+<!--        <item name="android:dialogTheme">@style/Theme.AppCompat.DayNight.Dialog</item>-->
+<!--        <item name="android:alertDialogTheme">@style/Theme.AppCompat.DayNight.Dialog.Alert</item>-->
         <item name="toolbarPopupTheme">@style/Theme.AppCompat.DayNight.Dialog</item>
-        <item name="preferenceTheme">@style/Theme.AppCompat.DayNight</item>
+<!--        <item name="preferenceTheme">@style/Theme.AppCompat.DayNight</item>-->
+
+        <item name="md_color_button_text">@color/dialog_button_color</item>
+        <item name="md_corner_radius">0dp</item>
 
     </style>
     
@@ -48,7 +51,10 @@
         <!-- necessary to find the overflow button later in the layout-->
         <item name="android:actionOverflowButtonStyle">@style/Widget.ActionButton.Overflow</item>
 
-        <item name="preferenceTheme">@style/PreferenceThemeOverlay</item>
+<!--        <item name="preferenceTheme">@style/PreferenceThemeOverlay</item>-->
+
+        <item name="md_color_button_text">@color/dialog_button_color</item>
+        <item name="md_corner_radius">0dp</item>
     </style>
 
     <style name="Theme.Phonograph.Base.Light" parent="Theme.AppCompat.Light.NoActionBar">
@@ -77,7 +83,12 @@
         <!-- necessary to find the overflow button later in the layout-->
         <item name="android:actionOverflowButtonStyle">@style/Widget.ActionButton.Overflow</item>
 
-        <item name="preferenceTheme">@style/PreferenceThemeOverlay.v14.Material</item>
+<!--        <item name="preferenceTheme">@style/PreferenceThemeOverlay.v14.Material</item>-->
+
+
+        <item name="md_color_button_text">@color/dialog_button_color</item>
+        <item name="md_corner_radius">0dp</item>
+
     </style>
 
     <style name="Theme.Phonograph.Base.Black" parent="@style/Theme.Phonograph.Base.Dark">
