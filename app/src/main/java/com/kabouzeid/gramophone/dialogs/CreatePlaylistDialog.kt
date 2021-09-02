@@ -27,7 +27,6 @@ class CreatePlaylistDialog : DialogFragment() {
                     InputType.TYPE_TEXT_VARIATION_PERSON_NAME or
                     InputType.TYPE_TEXT_FLAG_CAP_WORDS,
                 hintRes = R.string.playlist_name_empty,
-                // maxLength = 0,
                 allowEmpty = false
             ) { _, charSequence ->
                 if (activity == null) return@input
@@ -50,17 +49,12 @@ class CreatePlaylistDialog : DialogFragment() {
                         ).show()
                     }
                 }
+                dismiss()
             }
     }
 
     companion object {
         private const val SONGS = "songs"
-        @JvmOverloads
-        fun create(song: Song? = null): CreatePlaylistDialog {
-            val list: MutableList<Song> = ArrayList()
-            if (song != null) list.add(song)
-            return create(list)
-        }
 
         @JvmStatic
         fun create(songs: List<Song>?): CreatePlaylistDialog {
