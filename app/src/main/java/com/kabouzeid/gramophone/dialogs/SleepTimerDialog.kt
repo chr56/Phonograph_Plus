@@ -15,6 +15,8 @@ import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 import chr_56.MDthemer.core.ThemeColor
 import com.afollestad.materialdialogs.MaterialDialog
+import com.afollestad.materialdialogs.WhichButton
+import com.afollestad.materialdialogs.actions.getActionButton
 import com.afollestad.materialdialogs.customview.customView
 import com.kabouzeid.gramophone.R
 import com.kabouzeid.gramophone.databinding.DialogSleepTimerBinding
@@ -90,6 +92,11 @@ class SleepTimerDialog : DialogFragment() {
                 timerUpdater.start()
             }
         }
+
+        //set button color
+        dialog.getActionButton(WhichButton.POSITIVE).updateTextColor(ThemeColor.accentColor(requireActivity()))
+        dialog.getActionButton(WhichButton.NEGATIVE).updateTextColor(ThemeColor.accentColor(requireActivity()))
+        dialog.getActionButton(WhichButton.NEUTRAL).updateTextColor(ThemeColor.accentColor(requireActivity()))
 
         // View
         val seekArc = binding!!.seekArc

@@ -6,6 +6,8 @@ import androidx.preference.Preference
 import chr_56.MDthemer.color.MaterialColor
 import chr_56.MDthemer.core.ThemeColor
 import com.afollestad.materialdialogs.MaterialDialog
+import com.afollestad.materialdialogs.WhichButton
+import com.afollestad.materialdialogs.actions.getActionButton
 import com.afollestad.materialdialogs.color.colorChooser
 import com.kabouzeid.gramophone.R
 import com.kabouzeid.gramophone.appshortcuts.DynamicShortcutManager
@@ -41,7 +43,11 @@ class ColorChooserListener(context: Context, defautColor: Int, mode: Int) : Pref
                 (context as Activity).recreate()
             }
             .negativeButton(res = android.R.string.cancel)
-            .show()
+        //set button color
+        dialog.getActionButton(WhichButton.POSITIVE).updateTextColor(ThemeColor.accentColor(context))
+        dialog.getActionButton(WhichButton.NEGATIVE).updateTextColor(ThemeColor.accentColor(context))
+
+        dialog.show()
 
         return true
     }

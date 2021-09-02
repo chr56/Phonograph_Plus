@@ -9,7 +9,11 @@ import android.provider.Settings;
 import androidx.annotation.NonNull;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.afollestad.materialdialogs.WhichButton;
+import com.afollestad.materialdialogs.actions.DialogActionExtKt;
 import com.kabouzeid.gramophone.R;
+
+import chr_56.MDthemer.core.ThemeColor;
 
 public class RingtoneManager {
 
@@ -34,6 +38,10 @@ public class RingtoneManager {
                     return null;
                 }
         );
+        //set button color
+        DialogActionExtKt.getActionButton(dialog, WhichButton.POSITIVE).updateTextColor(ThemeColor.accentColor(context));
+        DialogActionExtKt.getActionButton(dialog, WhichButton.NEGATIVE).updateTextColor(ThemeColor.accentColor(context));
+
         dialog.show();
         return dialog;
 //        return new MaterialDialog.Builder(context)

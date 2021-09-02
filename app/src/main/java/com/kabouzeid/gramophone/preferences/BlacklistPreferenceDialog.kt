@@ -5,7 +5,10 @@ import android.app.Dialog
 import android.os.Bundle
 import android.text.Html
 import androidx.fragment.app.DialogFragment
+import chr_56.MDthemer.core.ThemeColor
 import com.afollestad.materialdialogs.MaterialDialog
+import com.afollestad.materialdialogs.WhichButton
+import com.afollestad.materialdialogs.actions.getActionButton
 import com.afollestad.materialdialogs.list.listItems
 import com.kabouzeid.gramophone.App
 import com.kabouzeid.gramophone.R
@@ -19,7 +22,7 @@ class BlacklistPreferenceDialog : DialogFragment() {
     private lateinit var paths: List<String>
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         paths = BlacklistStore.getInstance(requireContext()).paths
-        return MaterialDialog(requireContext())
+        val dialog = MaterialDialog(requireContext())
             .title(R.string.blacklist)
             .positiveButton(android.R.string.ok) { dismiss() }
             .neutralButton(R.string.clear_action) {
@@ -50,6 +53,12 @@ class BlacklistPreferenceDialog : DialogFragment() {
                     .show()
             }
             .noAutoDismiss()
+        //set button color
+        dialog.getActionButton(WhichButton.POSITIVE).updateTextColor(ThemeColor.accentColor(requireActivity()))
+        dialog.getActionButton(WhichButton.NEGATIVE).updateTextColor(ThemeColor.accentColor(requireActivity()))
+        dialog.getActionButton(WhichButton.NEUTRAL).updateTextColor(ThemeColor.accentColor(requireActivity()))
+        return dialog
+
     }
 
     @SuppressLint("CheckResult")

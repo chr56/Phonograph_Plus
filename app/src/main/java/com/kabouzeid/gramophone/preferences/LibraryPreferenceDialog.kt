@@ -5,7 +5,10 @@ import android.os.Bundle
 import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import chr_56.MDthemer.core.ThemeColor
 import com.afollestad.materialdialogs.MaterialDialog
+import com.afollestad.materialdialogs.WhichButton
+import com.afollestad.materialdialogs.actions.getActionButton
 import com.afollestad.materialdialogs.customview.customView
 import com.kabouzeid.gramophone.R
 import com.kabouzeid.gramophone.adapter.CategoryInfoAdapter
@@ -26,7 +29,7 @@ class LibraryPreferenceDialog : DialogFragment() {
         recyclerView.layoutManager = LinearLayoutManager(activity)
         recyclerView.adapter = adapter
         adapter!!.attachToRecyclerView(recyclerView)
-        return MaterialDialog(requireContext())
+        val dialog = MaterialDialog(requireContext())
             .title(R.string.library_categories)
             .customView(view = view, dialogWrapContent = false)
             .positiveButton(android.R.string.ok) {
@@ -35,6 +38,12 @@ class LibraryPreferenceDialog : DialogFragment() {
             }
             .negativeButton(android.R.string.cancel) { dismiss() }
             .neutralButton(R.string.reset_action) { adapter!!.categoryInfos = PreferenceUtil.getInstance(requireContext()).defaultLibraryCategoryInfos }
+        //set button color
+        dialog.getActionButton(WhichButton.POSITIVE).updateTextColor(ThemeColor.accentColor(requireActivity()))
+        dialog.getActionButton(WhichButton.NEGATIVE).updateTextColor(ThemeColor.accentColor(requireActivity()))
+        dialog.getActionButton(WhichButton.NEUTRAL).updateTextColor(ThemeColor.accentColor(requireActivity()))
+
+        return dialog
     }
 
     override fun onSaveInstanceState(outState: Bundle) {

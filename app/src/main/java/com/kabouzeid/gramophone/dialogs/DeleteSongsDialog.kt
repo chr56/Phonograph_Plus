@@ -4,7 +4,10 @@ import android.app.Dialog
 import android.os.Bundle
 import android.text.Html
 import androidx.fragment.app.DialogFragment
+import chr_56.MDthemer.core.ThemeColor
 import com.afollestad.materialdialogs.MaterialDialog
+import com.afollestad.materialdialogs.WhichButton
+import com.afollestad.materialdialogs.actions.getActionButton
 import com.kabouzeid.gramophone.R
 import com.kabouzeid.gramophone.model.Song
 import com.kabouzeid.gramophone.util.MusicUtil
@@ -22,7 +25,7 @@ class DeleteSongsDialog : DialogFragment() {
             Html.fromHtml(getString(R.string.delete_song_x, songs[0].title))
         }
 
-        return MaterialDialog(requireActivity())
+        val dialog = MaterialDialog(requireActivity())
             .title(titleRes)
             .message(text = content)
             .positiveButton(R.string.delete_action) {
@@ -31,6 +34,11 @@ class DeleteSongsDialog : DialogFragment() {
                 }
             }
             .negativeButton(android.R.string.cancel)
+        //set button color
+        dialog.getActionButton(WhichButton.POSITIVE).updateTextColor(ThemeColor.accentColor(requireActivity()))
+        dialog.getActionButton(WhichButton.NEGATIVE).updateTextColor(ThemeColor.accentColor(requireActivity()))
+
+        return dialog
     }
 
     companion object {

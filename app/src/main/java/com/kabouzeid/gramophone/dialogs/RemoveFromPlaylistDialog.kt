@@ -4,7 +4,10 @@ import android.app.Dialog
 import android.os.Bundle
 import android.text.Html
 import androidx.fragment.app.DialogFragment
+import chr_56.MDthemer.core.ThemeColor
 import com.afollestad.materialdialogs.MaterialDialog
+import com.afollestad.materialdialogs.WhichButton
+import com.afollestad.materialdialogs.actions.getActionButton
 import com.kabouzeid.gramophone.R
 import com.kabouzeid.gramophone.model.PlaylistSong
 import com.kabouzeid.gramophone.util.PlaylistsUtil
@@ -25,11 +28,15 @@ class RemoveFromPlaylistDialog : DialogFragment() {
             title = R.string.remove_song_from_playlist_title
             content = Html.fromHtml(getString(R.string.remove_song_x_from_playlist, songs[0].title))
         }
-        return MaterialDialog(requireActivity())
+        val dialog = MaterialDialog(requireActivity())
             .title(title)
             .message(text = content)
             .negativeButton(android.R.string.cancel)
             .positiveButton(R.string.remove_action) { if (activity != null) PlaylistsUtil.removeFromPlaylist(requireActivity(), songs) }
+        //set button color
+        dialog.getActionButton(WhichButton.POSITIVE).updateTextColor(ThemeColor.accentColor(requireActivity()))
+        dialog.getActionButton(WhichButton.NEGATIVE).updateTextColor(ThemeColor.accentColor(requireActivity()))
+        return dialog
     }
 
     companion object {

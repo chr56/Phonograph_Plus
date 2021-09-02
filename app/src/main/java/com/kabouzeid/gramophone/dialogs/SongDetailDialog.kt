@@ -10,7 +10,10 @@ import android.util.Log
 import android.view.View
 import android.widget.TextView
 import androidx.fragment.app.DialogFragment
+import chr_56.MDthemer.core.ThemeColor
 import com.afollestad.materialdialogs.MaterialDialog
+import com.afollestad.materialdialogs.WhichButton
+import com.afollestad.materialdialogs.actions.getActionButton
 import com.afollestad.materialdialogs.customview.customView
 import com.afollestad.materialdialogs.customview.getCustomView
 import com.kabouzeid.gramophone.R
@@ -25,6 +28,7 @@ import org.jaudiotagger.audio.exceptions.ReadOnlyFileException
 import org.jaudiotagger.tag.TagException
 import java.io.File
 import java.io.IOException
+
 // Todo Completed
 /**
  * @author Karim Abou Zeid (kabouzeid), Aidan Follestad (afollestad), chr_56<modify>
@@ -37,6 +41,9 @@ class SongDetailDialog : DialogFragment() {
             .title(R.string.label_details)
             .positiveButton(android.R.string.ok)
             .customView(viewRes = R.layout.dialog_file_details,horizontalPadding = true)
+
+        //set button color
+        dialog.getActionButton(WhichButton.POSITIVE).updateTextColor(ThemeColor.accentColor(context))
 
         val dialogView: View = dialog.getCustomView()
 

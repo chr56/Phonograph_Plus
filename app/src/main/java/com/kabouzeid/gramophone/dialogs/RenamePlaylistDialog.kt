@@ -4,7 +4,10 @@ import android.app.Dialog
 import android.os.Bundle
 import android.text.InputType
 import androidx.fragment.app.DialogFragment
+import chr_56.MDthemer.core.ThemeColor
 import com.afollestad.materialdialogs.MaterialDialog
+import com.afollestad.materialdialogs.WhichButton
+import com.afollestad.materialdialogs.actions.getActionButton
 import com.afollestad.materialdialogs.input.input
 import com.kabouzeid.gramophone.R
 import com.kabouzeid.gramophone.util.PlaylistsUtil
@@ -15,7 +18,7 @@ import com.kabouzeid.gramophone.util.PlaylistsUtil
 class RenamePlaylistDialog : DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val playlistId = requireArguments().getLong(PLAYLIST_ID)
-        return MaterialDialog(requireActivity())
+        val dialog = MaterialDialog(requireActivity())
             .title(R.string.rename_playlist_title)
             .positiveButton(R.string.rename_action)
             .negativeButton(android.R.string.cancel)
@@ -33,6 +36,10 @@ class RenamePlaylistDialog : DialogFragment() {
                     PlaylistsUtil.renamePlaylist(requireActivity(), playlistId1, name)
                 }
             }
+        //set button color
+        dialog.getActionButton(WhichButton.POSITIVE).updateTextColor(ThemeColor.accentColor(requireActivity()))
+        dialog.getActionButton(WhichButton.NEGATIVE).updateTextColor(ThemeColor.accentColor(requireActivity()))
+        return dialog
     }
 
     companion object {

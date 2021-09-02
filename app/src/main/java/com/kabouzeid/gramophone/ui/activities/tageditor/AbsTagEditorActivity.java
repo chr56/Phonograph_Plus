@@ -23,6 +23,8 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.afollestad.materialdialogs.WhichButton;
+import com.afollestad.materialdialogs.actions.DialogActionExtKt;
 import com.afollestad.materialdialogs.list.DialogListExtKt;
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -149,6 +151,8 @@ public abstract class AbsTagEditorActivity extends AbsBaseActivity {
             DialogListExtKt.listItems(dialog,null, Arrays.asList(items),null,true,
                     this::invoke
             );
+            //set button color
+            DialogActionExtKt.getActionButton(dialog, WhichButton.POSITIVE).updateTextColor(ThemeColor.accentColor(this));
             dialog.show();
         });
     }
@@ -377,10 +381,13 @@ public abstract class AbsTagEditorActivity extends AbsBaseActivity {
 
         @Override
         protected Dialog createDialog(@NonNull Context context) {
-            return new MaterialDialog(context,MaterialDialog.getDEFAULT_BEHAVIOR())
+            MaterialDialog dialog = new MaterialDialog(context,MaterialDialog.getDEFAULT_BEHAVIOR())
                     .title(R.string.saving_changes,null)
 //                    .progress(false, 0)//TODO
                     .cancelable(false);
+            //set button color
+            DialogActionExtKt.getActionButton(dialog,WhichButton.POSITIVE).updateTextColor(ThemeColor.accentColor(context));
+            return dialog;
         }
 
         @Override

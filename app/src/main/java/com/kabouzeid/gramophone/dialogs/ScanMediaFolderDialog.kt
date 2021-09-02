@@ -12,8 +12,10 @@ import android.util.Log
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.DialogFragment
+import chr_56.MDthemer.core.ThemeColor
 import com.afollestad.materialdialogs.MaterialDialog
-import com.afollestad.materialdialogs.files.fileChooser
+import com.afollestad.materialdialogs.WhichButton
+import com.afollestad.materialdialogs.actions.getActionButton
 import com.afollestad.materialdialogs.files.folderChooser
 import com.kabouzeid.gramophone.R
 import com.kabouzeid.gramophone.misc.UpdateToastMediaScannerCompletionListener
@@ -74,6 +76,10 @@ class ScanMediaFolderDialog : DialogFragment() {
             .noAutoDismiss()
             .positiveButton(android.R.string.ok)
             .negativeButton(android.R.string.cancel) { dismiss() }
+        //set button color
+        dialog.getActionButton(WhichButton.POSITIVE).updateTextColor(ThemeColor.accentColor(requireActivity()))
+        dialog.getActionButton(WhichButton.NEGATIVE).updateTextColor(ThemeColor.accentColor(requireActivity()))
+        dialog.getActionButton(WhichButton.NEUTRAL).updateTextColor(ThemeColor.accentColor(requireActivity()))
         return dialog
     }
 

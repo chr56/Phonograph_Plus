@@ -5,7 +5,10 @@ import android.os.Bundle
 import android.text.InputType
 import android.widget.Toast
 import androidx.fragment.app.DialogFragment
+import chr_56.MDthemer.core.ThemeColor
 import com.afollestad.materialdialogs.MaterialDialog
+import com.afollestad.materialdialogs.WhichButton
+import com.afollestad.materialdialogs.actions.getActionButton
 import com.afollestad.materialdialogs.input.input
 import com.kabouzeid.gramophone.R
 import com.kabouzeid.gramophone.model.Song
@@ -18,7 +21,7 @@ import com.kabouzeid.gramophone.util.PlaylistsUtil
 class CreatePlaylistDialog : DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val songs: List<Song>? = requireArguments().getParcelableArrayList(SONGS)
-        return MaterialDialog(requireActivity())
+        val dialog = MaterialDialog(requireActivity())
             .title(R.string.new_playlist_title)
             .positiveButton(R.string.create_action)
             .negativeButton(android.R.string.cancel)
@@ -51,6 +54,12 @@ class CreatePlaylistDialog : DialogFragment() {
                 }
                 dismiss()
             }
+        //set button color
+        dialog.getActionButton(WhichButton.POSITIVE).updateTextColor(ThemeColor.accentColor(requireActivity()))
+        dialog.getActionButton(WhichButton.NEGATIVE).updateTextColor(ThemeColor.accentColor(requireActivity()))
+
+        return dialog
+
     }
 
     companion object {

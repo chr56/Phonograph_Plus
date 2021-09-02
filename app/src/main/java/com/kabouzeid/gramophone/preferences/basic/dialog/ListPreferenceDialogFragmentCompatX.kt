@@ -27,7 +27,7 @@ class ListPreferenceDialogFragmentCompatX : PreferenceDialogFragmentX() {
         dialog.noAutoDismiss()
             .listItemsSingleChoice(
                 items = List<CharSequence>(preference.entries.size) { preference.entries[it] },
-                checkedColor = ThemeColor.primaryColor(requireContext()),
+                checkedColor = ThemeColor.accentColor(requireContext()),
                 initialSelection = ClickedEntryIndex,
                 waitForPositiveButton = false
             ) { _, index, _ -> ClickedEntryIndex = index }

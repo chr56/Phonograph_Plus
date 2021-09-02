@@ -13,7 +13,10 @@ import androidx.fragment.app.DialogFragment
 import androidx.viewpager.widget.PagerAdapter
 import androidx.viewpager.widget.ViewPager
 import androidx.viewpager.widget.ViewPager.OnPageChangeListener
+import chr_56.MDthemer.core.ThemeColor
 import com.afollestad.materialdialogs.MaterialDialog
+import com.afollestad.materialdialogs.WhichButton
+import com.afollestad.materialdialogs.actions.getActionButton
 import com.afollestad.materialdialogs.customview.customView
 import com.heinrichreimersoftware.materialintro.view.InkPageIndicator
 import com.kabouzeid.gramophone.R
@@ -37,7 +40,7 @@ class NowPlayingScreenPreferenceDialog : DialogFragment(), OnPageChangeListener 
         val pageIndicator: InkPageIndicator = view.findViewById(R.id.page_indicator)
         pageIndicator.setViewPager(viewPager)
         pageIndicator.onPageSelected(viewPager.currentItem)
-        return MaterialDialog(requireContext())
+        val dialog = MaterialDialog(requireContext())
             .title(R.string.pref_title_now_playing_screen_appearance)
             .positiveButton(android.R.string.ok) {
                 PreferenceUtil.getInstance(requireContext()).nowPlayingScreen = NowPlayingScreen.values()[viewPagerPosition]
@@ -45,6 +48,11 @@ class NowPlayingScreenPreferenceDialog : DialogFragment(), OnPageChangeListener 
             .negativeButton(android.R.string.cancel)
 //                .onAny(this)
             .customView(view = view, dialogWrapContent = false)
+        //set button color
+        dialog.getActionButton(WhichButton.POSITIVE).updateTextColor(ThemeColor.accentColor(requireActivity()))
+        dialog.getActionButton(WhichButton.NEGATIVE).updateTextColor(ThemeColor.accentColor(requireActivity()))
+        return dialog
+
     }
 
 //    fun onClick(dialog: MaterialDialog, which: DialogAction) {

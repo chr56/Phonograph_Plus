@@ -23,6 +23,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.afollestad.materialcab.MaterialCab;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.afollestad.materialdialogs.WhichButton;
+import com.afollestad.materialdialogs.actions.DialogActionExtKt;
 import com.bumptech.glide.Glide;
 import com.github.ksoichiro.android.observablescrollview.ObservableRecyclerView;
 import com.kabouzeid.gramophone.R;
@@ -56,6 +58,7 @@ import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import chr_56.MDthemer.core.ThemeColor;
 import chr_56.MDthemer.util.ColorUtil;
 import chr_56.MDthemer.util.MaterialColorHelper;
 import chr_56.MDthemer.util.Util;
@@ -331,6 +334,9 @@ public class AlbumDetailActivity extends AbsSlidingMusicPanelActivity implements
                     wikiDialog = new MaterialDialog(this,MaterialDialog.getDEFAULT_BEHAVIOR())
                             .title(null,album.getTitle())
                             .positiveButton(android.R.string.ok,null,null);//TODO MDD
+                    //set button color
+                    DialogActionExtKt.getActionButton(wikiDialog, WhichButton.POSITIVE).updateTextColor(ThemeColor.accentColor(this));
+
                 }
                 if (PreferenceUtil.isAllowedToDownloadMetadata(this)) {
                     if (wiki != null) {

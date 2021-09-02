@@ -8,8 +8,11 @@ import androidx.fragment.app.DialogFragment
 import androidx.preference.DialogPreference
 import androidx.preference.DialogPreference.TargetFragment
 import androidx.preference.Preference
+import chr_56.MDthemer.core.ThemeColor
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.WhichButton
+import com.afollestad.materialdialogs.actions.getActionButton
+
 // Todo Completed
 
 /**
@@ -35,6 +38,10 @@ open class PreferenceDialogFragmentX : DialogFragment() {
             .title(text = preference!!.dialogTitle as String)
             .positiveButton(text = preference!!.positiveButtonText)
             .negativeButton(text = preference!!.negativeButtonText)
+        //set button color
+        dialog.getActionButton(WhichButton.POSITIVE).updateTextColor(ThemeColor.accentColor(requireActivity()))
+        dialog.getActionButton(WhichButton.NEGATIVE).updateTextColor(ThemeColor.accentColor(requireActivity()))
+
         if (needInputMethod()) {
             requestInputMethod(dialog)
         }

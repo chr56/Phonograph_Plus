@@ -15,13 +15,15 @@ import chr_56.MDthemer.core.ThemeColor
 import chr_56.MDthemer.util.ColorUtil
 import chr_56.MDthemer.util.Util
 import com.afollestad.materialdialogs.MaterialDialog
+import com.afollestad.materialdialogs.WhichButton
+import com.afollestad.materialdialogs.actions.getActionButton
 import com.afollestad.materialdialogs.customview.customView
 import com.kabouzeid.gramophone.App
 import com.kabouzeid.gramophone.R
 import com.kabouzeid.gramophone.util.PreferenceUtil
 import java.io.BufferedReader
 import java.io.InputStreamReader
-
+// Todo Review
 /**
  * @author Aidan Follestad (afollestad)
  */
@@ -42,6 +44,9 @@ class ChangelogDialog : DialogFragment() {
             .customView(view = customView, noVerticalPadding = false)
             .positiveButton(android.R.string.ok) { if (activity != null) setChangelogRead(requireActivity()) }
 //                .showListener { dialog1 -> if (activity != null) setChangelogRead(requireActivity()) }
+        //set button color
+        dialog.getActionButton(WhichButton.POSITIVE).updateTextColor(ThemeColor.accentColor(requireActivity()))
+
         val webView = customView.findViewById<WebView>(R.id.web_view)
         try {
             // Load from phonograph-changelog.html in the assets folder

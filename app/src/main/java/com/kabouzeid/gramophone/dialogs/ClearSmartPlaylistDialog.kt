@@ -4,7 +4,10 @@ import android.app.Dialog
 import android.os.Bundle
 import android.text.Html
 import androidx.fragment.app.DialogFragment
+import chr_56.MDthemer.core.ThemeColor
 import com.afollestad.materialdialogs.MaterialDialog
+import com.afollestad.materialdialogs.WhichButton
+import com.afollestad.materialdialogs.actions.getActionButton
 import com.kabouzeid.gramophone.R
 import com.kabouzeid.gramophone.model.smartplaylist.AbsSmartPlaylist
 // Todo Completed
@@ -16,7 +19,7 @@ class ClearSmartPlaylistDialog : DialogFragment() {
         val playlist: AbsSmartPlaylist = requireArguments().getParcelable("playlist")!!
         val title = R.string.clear_playlist_title
         val content: CharSequence = Html.fromHtml(getString(R.string.clear_playlist_x, playlist.name))
-        return MaterialDialog(requireActivity())
+        val dialog = MaterialDialog(requireActivity())
             .title(title)
             .message(text = content)
             .negativeButton(android.R.string.cancel)
@@ -25,6 +28,11 @@ class ClearSmartPlaylistDialog : DialogFragment() {
                     playlist.clear(activity)
                 }
             }
+        //set button color
+        dialog.getActionButton(WhichButton.POSITIVE).updateTextColor(ThemeColor.accentColor(requireActivity()))
+        dialog.getActionButton(WhichButton.NEGATIVE).updateTextColor(ThemeColor.accentColor(requireActivity()))
+        return dialog
+
     }
     companion object {
         @JvmStatic
