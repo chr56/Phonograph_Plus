@@ -77,7 +77,7 @@ android {
         }
         exptest{
             signingConfig signingConfigs.release
-            resValue "string", "app_name","Phonograph exp"
+            resValue "string", "app_name","Phonograph exp test"
             applicationIdSuffix '.exptest'
             matchingFallbacks = ['release','cust']
             debuggable true
@@ -140,6 +140,7 @@ dependencies {
     implementation 'com.afollestad.material-dialogs:core:3.3.0'
     implementation 'com.afollestad.material-dialogs:input:3.3.0'
     implementation 'com.afollestad.material-dialogs:color:3.3.0'
+    implementation 'com.afollestad.material-dialogs:files:3.3.0'
 
 
     implementation 'com.afollestad:material-cab:0.1.12'
