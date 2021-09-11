@@ -298,4 +298,5 @@
     <string name="Permission_denied">未授予权限!</string>
     <string name="err_permission_storage">存储权限</string>
     <string name="add_blacklist">你确定要将该目录加入黑名单吗？</string>
+    <string name="minutes_short">%1$d 分钟</string>
 </resources>

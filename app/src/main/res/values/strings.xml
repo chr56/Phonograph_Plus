@@ -307,4 +307,5 @@
     <string name="Permission_denied">Permission denied!</string>
     <string name="err_permission_storage">Storage Permission</string>
     <string name="add_blacklist">Do you want to add this to blacklist?</string>
+    <string name="minutes_short">%1$d min</string>
 </resources>
