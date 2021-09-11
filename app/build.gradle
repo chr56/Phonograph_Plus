@@ -90,6 +90,13 @@ android {
             applicationIdSuffix '.debug'
             resValue "string", "app_name","Phonograph debug"
         }
+        // for ci
+        ci {
+            applicationIdSuffix '.ci'
+            resValue "string", "app_name","Phonograph ci build"
+            matchingFallbacks = ['release','cust']
+            debuggable true
+        }
     }
     packagingOptions {
         exclude 'META-INF/LICENSE'
