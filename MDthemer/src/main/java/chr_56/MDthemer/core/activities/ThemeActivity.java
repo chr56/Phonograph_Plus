@@ -26,8 +26,8 @@ public class ThemeActivity extends BaseActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        Toolbar toolbar = getToolbar();
-        MenuTinter.setMenuColor(this,toolbar,menu,MaterialColor.White._1000.getAsColor());
+//        Toolbar toolbar = getToolbar();
+//        MenuTinter.setMenuColor(this,toolbar,menu,MaterialColor.White._1000.getAsColor());
         return super.onCreateOptionsMenu(menu);
     }
 

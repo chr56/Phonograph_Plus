@@ -98,6 +98,7 @@ public class PlaylistsUtil {
             // Necessary because somehow the MediaStoreObserver doesn't work for playlists
             context.getContentResolver().notifyChange(EXTERNAL_CONTENT_URI, null);
         } catch (SecurityException ignored) {
+            ignored.printStackTrace();
         }
     }
 
