@@ -10,11 +10,12 @@ def getGitHash = { ->
     return stdout.toString().trim()
 }
 
-Boolean file_exist = rootProject.file("signing.properties").exists()
+Boolean signing_file_exist = rootProject.file("signing.properties").exists()
 def signingProperties = new Properties()
-if(file_exist){
-signingProperties.load(new FileInputStream(rootProject.file("signing.properties")))
+if (signing_file_exist) {
+    signingProperties.load(new FileInputStream(rootProject.file("signing.properties")))
 }
+
 android {
     compileSdkVersion 30
     buildToolsVersion '30.0.3'
@@ -32,12 +33,18 @@ android {
     }
     signingConfigs {
         release {
-            if(file_exist){
+            if (signing_file_exist) {
             storeFile file(signingProperties['storeFile'])
             storePassword signingProperties['storePassword']
             keyAlias signingProperties['keyAlias']
             keyPassword signingProperties['keyPassword']
             }
+        }
+        ci_trustless {
+            storeFile rootProject.file("public_signing_key.jks")
+            keyAlias 'trustless'
+            storePassword '000000'
+            keyPassword '000000'
         }
     }
     buildTypes {
@@ -46,7 +53,7 @@ android {
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
 
-            if(file_exist) signingConfig signingConfigs.release
+            if(signing_file_exist) signingConfig signingConfigs.release
             resValue "string", "app_name","Phonograph"
         }
         cust{
@@ -54,14 +61,14 @@ android {
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
 
-            if(file_exist) signingConfig signingConfigs.release
+            if(signing_file_exist) signingConfig signingConfigs.release
             resValue "string", "app_name","Phonograph Custom"
             applicationIdSuffix '.cust'
             matchingFallbacks = ['release','cust']
             debuggable true
         }
         exp{
-            if(file_exist) signingConfig signingConfigs.release
+            if(signing_file_exist) signingConfig signingConfigs.release
             resValue "string", "app_name","Phonograph exp"
             applicationIdSuffix '.exp'
             matchingFallbacks = ['release','cust']
@@ -69,7 +76,7 @@ android {
 
         }
         exptest{
-            if(file_exist) signingConfig signingConfigs.release
+            if(signing_file_exist) signingConfig signingConfigs.release
             resValue "string", "app_name","Phonograph exp test"
             applicationIdSuffix '.exptest'
             matchingFallbacks = ['release','cust']
@@ -81,7 +88,7 @@ android {
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
 
-            if(file_exist) signingConfig signingConfigs.release
+            if(signing_file_exist) signingConfig signingConfigs.release
             resValue "string", "app_name","Phonograph Pro"
             applicationIdSuffix '.mod'
             matchingFallbacks = ['release','cust']
@@ -92,6 +99,7 @@ android {
         }
         // for ci
         ci {
+            signingConfig signingConfigs.ci_trustless
             applicationIdSuffix '.ci'
             resValue "string", "app_name","Phonograph ci build"
             matchingFallbacks = ['release','cust']
