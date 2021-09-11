@@ -40,5 +40,6 @@
         android:layout_marginStart="16dp"
         android:textColor="@color/SeekArcText"
         android:text="@string/finish_current_music_sleep_timer" />
+    <!-- Todo ColorRes-->
 
 </LinearLayout>
