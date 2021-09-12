@@ -116,7 +116,6 @@ android {
 }
 
 dependencies {
-    //implementation project(path: ':libappthemehelper')
     implementation project(path: ':MDthemer')
 
     implementation 'androidx.annotation:annotation:1.2.0'
