@@ -1,3 +1,31 @@
+# Phonograph Modified Version 
+[<img src="https://github.com/chr56/Phonograph/workflows/ci/badge.svg" alt="CI Status">](https://github.com/chr56/Phonograph/actions)
+
+**A third part modified version of Phonograph**
+
+**feature**
+
+//todo 
+
+# Phonograph 修改版
+
+**Phonograph 第三方修改版**
+
+**特性**
+
+* 待填
+
+**TO-DO list**
+
+* 完成 Readme . md
+* 依lrc歌词时间轴快进快退
+* 检查文件
+* 歌曲按创建时间修改时间排序
+<br/>
+<br/>
+<br/>
+<br/>
+
 # Phonograph
 [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://github.com/kabouzeid/Phonograph/blob/master/LICENSE.txt)
 
