@@ -26,8 +26,8 @@ public class App extends Application {
         // default theme
         if (!ThemeColor.isConfigured(this, 1)) {
             ThemeColor.editTheme(this)
-                    .primaryColorRes(R.color.md_light_blue_500)
-                    .accentColorRes(R.color.md_yellow_800)
+                    .primaryColorRes(R.color.md_blue_A400)
+                    .accentColorRes(R.color.md_yellow_900)
                     .commit();
         }
 
