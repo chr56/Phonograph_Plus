@@ -25,6 +25,7 @@ import org.jaudiotagger.audio.AudioHeader
 import org.jaudiotagger.audio.exceptions.CannotReadException
 import org.jaudiotagger.audio.exceptions.InvalidAudioFrameException
 import org.jaudiotagger.audio.exceptions.ReadOnlyFileException
+import org.jaudiotagger.tag.FieldKey
 import org.jaudiotagger.tag.TagException
 import java.io.File
 import java.io.IOException
@@ -41,7 +42,6 @@ class SongDetailDialog : DialogFragment() {
             .title(R.string.label_details)
             .positiveButton(android.R.string.ok)
             .customView(viewRes = R.layout.dialog_file_details,horizontalPadding = true)
-
         //set button color
         dialog.getActionButton(WhichButton.POSITIVE).updateTextColor(ThemeColor.accentColor(context))
 
@@ -54,6 +54,13 @@ class SongDetailDialog : DialogFragment() {
         val trackLength: TextView = dialogView.findViewById(R.id.track_length)
         val bitRate: TextView = dialogView.findViewById(R.id.bitrate)
         val samplingRate: TextView = dialogView.findViewById(R.id.sampling_rate)
+
+        val title: TextView = dialogView.findViewById(R.id.text_song_title)
+        val artist: TextView = dialogView.findViewById(R.id.text_song_artist_name)
+        val album: TextView = dialogView.findViewById(R.id.text_song_album_name)
+        val year: TextView = dialogView.findViewById(R.id.text_song_year)
+        val genre: TextView = dialogView.findViewById(R.id.text_song_genre)
+
         fileName.text = makeTextWithTitle(context, R.string.label_file_name, "-")
         filePath.text = makeTextWithTitle(context, R.string.label_file_path, "-")
         fileSize.text = makeTextWithTitle(context, R.string.label_file_size, "-")
@@ -61,6 +68,13 @@ class SongDetailDialog : DialogFragment() {
         trackLength.text = makeTextWithTitle(context, R.string.label_track_length, "-")
         bitRate.text = makeTextWithTitle(context, R.string.label_bit_rate, "-")
         samplingRate.text = makeTextWithTitle(context, R.string.label_sampling_rate, "-")
+
+        title.text = makeTextWithTitle(context, R.string.title,"-")
+        artist.text = makeTextWithTitle(context, R.string.artist,"-")
+        album.text = makeTextWithTitle(context, R.string.album,"-")
+        year.text = makeTextWithTitle(context, R.string.year,"-")
+        genre.text = makeTextWithTitle(context, R.string.genre,"-")
+
         if (song != null) {
             val songFile = File(song.data)
             if (songFile.exists()) {
@@ -69,11 +83,20 @@ class SongDetailDialog : DialogFragment() {
                 fileSize.text = makeTextWithTitle(context, R.string.label_file_size, getFileSizeString(songFile.length()))
                 try {
                     val audioFile: AudioFile = AudioFileIO.read(songFile)
+                    // files of the song
                     val audioHeader: AudioHeader = audioFile.audioHeader
                     fileFormat.text = makeTextWithTitle(context, R.string.label_file_format, audioHeader.format)
                     trackLength.text = makeTextWithTitle(context, R.string.label_track_length, MusicUtil.getReadableDurationString((audioHeader.trackLength * 1000).toLong()))
                     bitRate.text = makeTextWithTitle(context, R.string.label_bit_rate, audioHeader.bitRate + " kb/s")
                     samplingRate.text = makeTextWithTitle(context, R.string.label_sampling_rate, audioHeader.sampleRate + " Hz")
+                    // tags of the song
+                    title.text = makeTextWithTitle(context, R.string.title,song.title)
+                    artist.text = makeTextWithTitle(context, R.string.artist,song.artistName)
+                    album.text = makeTextWithTitle(context, R.string.album,song.albumName)
+                    year.text = makeTextWithTitle(context, R.string.year,song.year.toString())
+                    val songGenre = audioFile.tag.getFirst(FieldKey.GENRE)
+                    genre.text = makeTextWithTitle(context, R.string.genre,songGenre) //Todo
+
                 } catch (e: CannotReadException) {
                     Log.e(TAG, "error while reading the song file", e)
                     // fallback
