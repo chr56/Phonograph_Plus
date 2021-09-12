@@ -44,6 +44,7 @@
     <string name="genre">Genre</string>
     <string name="album_artist">Album artist</string>
     <string name="year">Year</string>
+    <string name="track">"Track Number</string>
     <string name="track_hint">"Track (2 for track 2 or 3004 for CD3 track 4)"</string>
     <string name="lyrics">Lyrics</string>
     <string name="album_or_artist_empty">The title or artist is empty.</string>
@@ -308,4 +309,6 @@
     <string name="err_permission_storage">Storage Permission</string>
     <string name="add_blacklist">Do you want to add this to blacklist?</string>
     <string name="minutes_short">%1$d min</string>
+    <!-- use for tag -->
+    <string name="other_information">Other</string>
 </resources>

@@ -6,6 +6,11 @@
     android:orientation="vertical"
     tools:ignore="NewApi,RtlSymmetry">
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="?android:attr/listDivider" />
+
     <TextView
         android:id="@+id/file_path"
         android:layout_width="wrap_content"
@@ -19,7 +24,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif"
-        android:paddingTop="16dp"
+        android:paddingTop="8dp"
         android:textAppearance="?android:textAppearanceMedium"
         android:textSize="16sp" />
 
@@ -28,7 +33,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif"
-        android:paddingTop="16dp"
+        android:paddingTop="8dp"
         android:textAppearance="?android:textAppearanceMedium"
         android:textSize="16sp" />
 
@@ -37,7 +42,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif"
-        android:paddingTop="16dp"
+        android:paddingTop="8dp"
         android:textAppearance="?android:textAppearanceMedium"
         android:textSize="16sp" />
 
@@ -46,7 +51,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif"
-        android:paddingTop="16dp"
+        android:paddingTop="8dp"
         android:textAppearance="?android:textAppearanceMedium"
         android:textSize="16sp" />
 
@@ -55,7 +60,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif"
-        android:paddingTop="16dp"
+        android:paddingTop="8dp"
         android:textAppearance="?android:textAppearanceMedium"
         android:textSize="16sp" />
 
@@ -64,16 +69,21 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif"
-        android:paddingTop="16dp"
+        android:paddingTop="8dp"
         android:textAppearance="?android:textAppearanceMedium"
         android:textSize="16sp" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="?android:attr/listDivider" />
 
     <TextView
         android:id="@+id/text_song_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif"
-        android:paddingTop="16dp"
+        android:paddingTop="8dp"
         android:textAppearance="?android:textAppearanceMedium"
         android:textSize="16sp"/>
 
@@ -82,7 +92,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif"
-        android:paddingTop="16dp"
+        android:paddingTop="8dp"
         android:textAppearance="?android:textAppearanceMedium"
         android:textSize="16sp"/>
 
@@ -91,7 +101,16 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif"
-        android:paddingTop="16dp"
+        android:paddingTop="8dp"
+        android:textAppearance="?android:textAppearanceMedium"
+        android:textSize="16sp"/>
+
+    <TextView
+        android:id="@+id/text_song_album_artist"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif"
+        android:paddingTop="8dp"
         android:textAppearance="?android:textAppearanceMedium"
         android:textSize="16sp"/>
 
@@ -100,7 +119,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif"
-        android:paddingTop="16dp"
+        android:paddingTop="8dp"
         android:textAppearance="?android:textAppearanceMedium"
         android:textSize="16sp"/>
 
@@ -109,8 +128,31 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif"
-        android:paddingTop="16dp"
+        android:paddingTop="8dp"
         android:textAppearance="?android:textAppearanceMedium"
         android:textSize="16sp"/>
 
+    <TextView
+        android:id="@+id/text_song_track_number"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif"
+        android:paddingTop="8dp"
+        android:textAppearance="?android:textAppearanceMedium"
+        android:textSize="16sp"/>
+
+    <TextView
+        android:id="@+id/text_song_other"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif"
+        android:paddingTop="8dp"
+        android:textAppearance="?android:textAppearanceMedium"
+        android:textSize="16sp"/>
+
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="?android:attr/listDivider" />
 </LinearLayout>
