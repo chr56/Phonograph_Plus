@@ -64,24 +64,15 @@ android {
             if(signing_file_exist) signingConfig signingConfigs.release
             resValue "string", "app_name","Phonograph Custom"
             applicationIdSuffix '.cust'
-            matchingFallbacks = ['release','cust']
+            matchingFallbacks = ['release']
             debuggable true
         }
-        exp{
+        experimental{
             if(signing_file_exist) signingConfig signingConfigs.release
-            resValue "string", "app_name","Phonograph exp"
-            applicationIdSuffix '.exp'
-            matchingFallbacks = ['release','cust']
+            resValue "string", "app_name","Phonograph Experi"
+            applicationIdSuffix '.experimental'
+            matchingFallbacks = ['release']
             debuggable true
-
-        }
-        exptest{
-            if(signing_file_exist) signingConfig signingConfigs.release
-            resValue "string", "app_name","Phonograph exp test"
-            applicationIdSuffix '.exptest'
-            matchingFallbacks = ['release','cust']
-            debuggable true
-
         }
         pub{
             minifyEnabled true
@@ -91,18 +82,18 @@ android {
             if(signing_file_exist) signingConfig signingConfigs.release
             resValue "string", "app_name","Phonograph Pro"
             applicationIdSuffix '.mod'
-            matchingFallbacks = ['release','cust']
+            matchingFallbacks = ['release']
         }
         debug {
             applicationIdSuffix '.debug'
-            resValue "string", "app_name","Phonograph debug"
+            resValue "string", "app_name","Phonograph Debug"
         }
         // for ci
         ci {
             signingConfig signingConfigs.ci_trustless
             applicationIdSuffix '.ci'
-            resValue "string", "app_name","Phonograph ci build"
-            matchingFallbacks = ['release','cust']
+            resValue "string", "app_name","Phonograph CI build"
+            matchingFallbacks = ['release']
             debuggable true
         }
     }
