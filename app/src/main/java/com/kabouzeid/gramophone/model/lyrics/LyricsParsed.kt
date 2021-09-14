@@ -5,16 +5,21 @@ import com.kabouzeid.gramophone.util.FileUtil
 import org.jaudiotagger.audio.AudioFileIO
 import org.jaudiotagger.tag.FieldKey
 import java.io.File
-import java.lang.Exception
-import java.lang.NumberFormatException
-import java.util.Locale
 import java.util.regex.Pattern
-import kotlin.collections.ArrayList
 
-class LyricsParsed private constructor() {
+class LyricsParsed private constructor() : ILyrics {
     var lyrics: ArrayList<LyricsLine>? = null
     private constructor(lyrics: ArrayList<LyricsLine>) : this() {
         this.lyrics = lyrics
+    }
+
+    override fun getText(): String{
+        if (lyrics.isNullOrEmpty()) throw Exception("NO_LYRIC")
+        val stringBuilder = StringBuilder()
+        lyrics?.forEach { ll ->
+            stringBuilder.append(ll.getLine()).append("\r\n")
+        }
+        return stringBuilder.toString().trim { it <= ' ' }.replace("(\r?\n){3,}".toRegex(), "\r\n\r\n")
     }
 
 
@@ -22,7 +27,7 @@ class LyricsParsed private constructor() {
 
         fun parse(raw: String):LyricsParsed{
             val lines: List<String?> = raw.split(Pattern.compile("\r?\n"))
-            val lyrics: MutableList<LyricsLine> = ArrayList()
+            val lyrics: MutableList<LyricsLine> = emptyList<LyricsLine>().toMutableList()
             lines.forEach {
                 lyrics.add(LyricsLine(it.orEmpty()))
             }
@@ -77,6 +82,13 @@ class LyricsParsed private constructor() {
             if (rawLyrics.isNullOrEmpty()) throw Exception("NO_LYRICS")//todo
             //create lyric
             return parse(rawLyrics)//TODO;
+        }
+        /**
+         * create parsed lyrics via file
+         */
+        @JvmStatic
+        fun parse(file: File): LyricsParsedSynchronized{
+            return LyricsParsedSynchronized.parse(FileUtil.read(file))
         }
 
     }
