@@ -1,10 +1,11 @@
 package com.kabouzeid.gramophone.model.lyrics
 
-class LyricsLineSynchronized(timeStamp: Long, line: CharSequence) {
+class LyricsLineSynchronized(timeStamp: Long, line: CharSequence): AbsLyricsLine() {
     private val timeStamp: Long = timeStamp
     fun getTimeStamp(): Long { return timeStamp }
 
-    private val line: CharSequence = line
+    override val line: CharSequence = line
+    @JvmName("getLineLegacy")
     fun getLine(): CharSequence { return line }
 
 

@@ -21,8 +21,8 @@ import com.kabouzeid.gramophone.adapter.AlbumCoverPagerAdapter;
 import com.kabouzeid.gramophone.helper.MusicPlayerRemote;
 import com.kabouzeid.gramophone.helper.MusicProgressViewUpdateHelper;
 import com.kabouzeid.gramophone.misc.SimpleAnimatorListener;
-import com.kabouzeid.gramophone.model.lyrics.AbsSynchronizedLyrics;
-import com.kabouzeid.gramophone.model.lyrics.Lyrics;
+import com.kabouzeid.gramophone.model.lyrics.LyricsParsedSynchronized;
+import com.kabouzeid.gramophone.model.lyrics.AbsLyrics;
 import com.kabouzeid.gramophone.ui.fragments.AbsMusicServiceFragment;
 import com.kabouzeid.gramophone.util.PreferenceUtil;
 import com.kabouzeid.gramophone.util.ViewUtil;
@@ -55,7 +55,7 @@ public class PlayerAlbumCoverFragment extends AbsMusicServiceFragment implements
     private Callbacks callbacks;
     private int currentPosition;
 
-    private Lyrics lyrics;
+    private AbsLyrics lyrics;
     private MusicProgressViewUpdateHelper progressViewUpdateHelper;
 
     @Override
@@ -178,7 +178,7 @@ public class PlayerAlbumCoverFragment extends AbsMusicServiceFragment implements
     }
 
     private boolean isLyricsLayoutVisible() {
-        return lyrics != null && lyrics.isSynchronized() && lyrics.isValid() && PreferenceUtil.getInstance(getActivity()).synchronizedLyricsShow();
+        return lyrics != null /*&& lyrics.isSynchronized() && lyrics.isValid()*/ && PreferenceUtil.getInstance(getActivity()).synchronizedLyricsShow();
     }
 
     private boolean isLyricsLayoutBound() {
@@ -194,7 +194,7 @@ public class PlayerAlbumCoverFragment extends AbsMusicServiceFragment implements
         });
     }
 
-    public void setLyrics(Lyrics l) {
+    public void setLyrics(AbsLyrics l) {
         lyrics = l;
 
         if (!isLyricsLayoutBound()) return;
@@ -228,8 +228,11 @@ public class PlayerAlbumCoverFragment extends AbsMusicServiceFragment implements
             return;
         }
 
-        if (!(lyrics instanceof AbsSynchronizedLyrics)) return;
-        AbsSynchronizedLyrics synchronizedLyrics = (AbsSynchronizedLyrics) lyrics;
+//        if (!(lyrics instanceof AbsSynchronizedLyrics)) return;
+//        AbsSynchronizedLyrics synchronizedLyrics = (AbsSynchronizedLyrics) lyrics;
+
+        if (!(lyrics instanceof LyricsParsedSynchronized)) return;
+        LyricsParsedSynchronized synchronizedLyrics = (LyricsParsedSynchronized) lyrics;
 
         lyricsLayout.setVisibility(View.VISIBLE);
         lyricsLayout.setAlpha(1f);

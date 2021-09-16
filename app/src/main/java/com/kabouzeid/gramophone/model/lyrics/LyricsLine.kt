@@ -1,7 +1,8 @@
 package com.kabouzeid.gramophone.model.lyrics
 
-class LyricsLine(line: CharSequence) {
-    private val line: CharSequence = line
+class LyricsLine(line: CharSequence): AbsLyricsLine() {
+    override val line: CharSequence = line
+    @JvmName("getLineLegacy")
     fun getLine(): CharSequence { return line }
 
     override fun equals(other: Any?): Boolean {

@@ -11,8 +11,10 @@ import java.util.Locale
 import java.util.regex.Pattern
 import kotlin.collections.ArrayList
 
-class LyricsParsedSynchronized private constructor() : ILyrics {
-    var lyrics: ArrayList<LyricsLineSynchronized>? = null
+class LyricsParsedSynchronized private constructor() : AbsLyrics() {
+    override var TYPE: Short = AbsLyrics.LRC //2
+
+    private var lyrics: ArrayList<LyricsLineSynchronized>? = null
     private var offset: Long =0
     private var totalTime: Long = -1 // -1 means "no length info in lyrics"
     private var title: CharSequence? = null
@@ -31,6 +33,10 @@ class LyricsParsedSynchronized private constructor() : ILyrics {
             stringBuilder.append(ll.getLine()).append("\r\n")
         }
         return stringBuilder.toString().trim { it <= ' ' }.replace("(\r?\n){3,}".toRegex(), "\r\n\r\n")
+    }
+
+    override fun getTitle(): CharSequence {
+        return title ?: super.getTitle()
     }
 
     fun getLine(timeStamp: Long): String{

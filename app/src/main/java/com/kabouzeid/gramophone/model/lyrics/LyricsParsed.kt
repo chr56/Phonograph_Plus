@@ -7,8 +7,11 @@ import org.jaudiotagger.tag.FieldKey
 import java.io.File
 import java.util.regex.Pattern
 
-class LyricsParsed private constructor() : ILyrics {
-    var lyrics: ArrayList<LyricsLine>? = null
+class LyricsParsed private constructor() : AbsLyrics() {
+    override var TYPE: Short = 1
+
+    private var lyrics: ArrayList<LyricsLine>? = null
+    private var title: CharSequence? = null
     private constructor(lyrics: ArrayList<LyricsLine>) : this() {
         this.lyrics = lyrics
     }
@@ -22,9 +25,14 @@ class LyricsParsed private constructor() : ILyrics {
         return stringBuilder.toString().trim { it <= ' ' }.replace("(\r?\n){3,}".toRegex(), "\r\n\r\n")
     }
 
+    override fun getTitle(): CharSequence {
+        return title ?: super.getTitle()
+    }
+
 
     companion object{
 
+        @JvmStatic
         fun parse(raw: String):LyricsParsed{
             val lines: List<String?> = raw.split(Pattern.compile("\r?\n"))
             val lyrics: MutableList<LyricsLine> = emptyList<LyricsLine>().toMutableList()

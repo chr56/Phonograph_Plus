@@ -2,6 +2,7 @@ package com.kabouzeid.gramophone.ui.fragments.player.flat;
 
 import android.animation.Animator;
 import android.animation.AnimatorSet;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
@@ -39,7 +40,8 @@ import com.kabouzeid.gramophone.dialogs.SongShareDialog;
 import com.kabouzeid.gramophone.helper.MusicPlayerRemote;
 import com.kabouzeid.gramophone.helper.menu.SongMenuHelper;
 import com.kabouzeid.gramophone.model.Song;
-import com.kabouzeid.gramophone.model.lyrics.Lyrics;
+import com.kabouzeid.gramophone.model.lyrics.AbsLyrics;
+import com.kabouzeid.gramophone.model.lyrics.LyricsParsedSynchronized;
 import com.kabouzeid.gramophone.ui.activities.base.AbsSlidingMusicPanelActivity;
 import com.kabouzeid.gramophone.ui.fragments.player.AbsPlayerFragment;
 import com.kabouzeid.gramophone.ui.fragments.player.PlayerAlbumCoverFragment;
@@ -50,13 +52,14 @@ import com.kabouzeid.gramophone.util.ViewUtil;
 import com.kabouzeid.gramophone.views.WidthFitSquareLayout;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
+import java.util.Objects;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import chr_56.MDthemer.core.ThemeColor;
 import chr_56.MDthemer.util.ColorUtil;
 import chr_56.MDthemer.util.ToolbarColorUtil;
-import chr_56.MDthemer.util.ToolbarTinter;
 
 public class FlatPlayerFragment extends AbsPlayerFragment implements PlayerAlbumCoverFragment.Callbacks, SlidingUpPanelLayout.PanelSlideListener {
 
@@ -92,7 +95,8 @@ public class FlatPlayerFragment extends AbsPlayerFragment implements PlayerAlbum
     private AsyncTask updateIsFavoriteTask;
     private AsyncTask updateLyricsAsyncTask;
 
-    private Lyrics lyrics;
+//    private Lyrics lyrics;
+    private AbsLyrics lyrics2;
 
     private Impl impl;
 
@@ -240,8 +244,11 @@ public class FlatPlayerFragment extends AbsPlayerFragment implements PlayerAlbum
     public boolean onMenuItemClick(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_show_lyrics:
-                if (lyrics != null)
-                    LyricsDialog.create(lyrics).show(getFragmentManager(), "LYRICS");
+//                if (lyrics != null)
+//                    LyricsDialog.create(lyrics).show(getFragmentManager(), "LYRICS");
+//                return true;
+                if (lyrics2 != null)
+                    LyricsDialog.create(lyrics2).show(getFragmentManager(), "LYRICS");
                 return true;
         }
         return super.onMenuItemClick(item);
@@ -271,6 +278,7 @@ public class FlatPlayerFragment extends AbsPlayerFragment implements PlayerAlbum
         layoutManager.scrollToPositionWithOffset(MusicPlayerRemote.getPosition() + 1, 0);
     }
 
+    @SuppressLint("StaticFieldLeak") //TODO StaticFieldLeak
     private void updateIsFavorite() {
         if (updateIsFavoriteTask != null) updateIsFavoriteTask.cancel(false);
         updateIsFavoriteTask = new AsyncTask<Song, Void, Boolean>() {
@@ -300,32 +308,40 @@ public class FlatPlayerFragment extends AbsPlayerFragment implements PlayerAlbum
         }.execute(MusicPlayerRemote.getCurrentSong());
     }
 
+    @SuppressLint("StaticFieldLeak") //TODO StaticFieldLeak
     private void updateLyrics() {
         if (updateLyricsAsyncTask != null) updateLyricsAsyncTask.cancel(false);
         final Song song = MusicPlayerRemote.getCurrentSong();
-        updateLyricsAsyncTask = new AsyncTask<Void, Void, Lyrics>() {
+        updateLyricsAsyncTask = new AsyncTask<Void, Void, AbsLyrics>() {
             @Override
             protected void onPreExecute() {
                 super.onPreExecute();
-                lyrics = null;
+                lyrics2 = null;
                 playerAlbumCoverFragment.setLyrics(null);
                 toolbar.getMenu().removeItem(R.id.action_show_lyrics);
             }
 
             @Override
-            protected Lyrics doInBackground(Void... params) {
-                String data = MusicUtil.getLyrics(song);
-                if (TextUtils.isEmpty(data)) {
-                    return null;
+            protected AbsLyrics doInBackground(Void... params) {
+                String raw = null;
+                try {
+                    raw = MusicUtil.readRawLyrics(song);
+                } catch (Exception e) {
+                    if (Objects.equals(e.getMessage(), "NO_LYRICS")) {
+                        return null;
+                    } else {
+                        e.printStackTrace();
+                    }
                 }
-                return Lyrics.parse(song, data);
+                if (raw == null) return null;
+                return MusicUtil.loadLyrics(raw);
             }
 
             @Override
-            protected void onPostExecute(Lyrics l) {
-                lyrics = l;
-                playerAlbumCoverFragment.setLyrics(lyrics);
-                if (lyrics == null) {
+            protected void onPostExecute(AbsLyrics l) {
+                lyrics2 = l;
+                playerAlbumCoverFragment.setLyrics(lyrics2);
+                if (lyrics2 == null) {
                     if (toolbar != null) {
                         toolbar.getMenu().removeItem(R.id.action_show_lyrics);
                     }
@@ -344,7 +360,7 @@ public class FlatPlayerFragment extends AbsPlayerFragment implements PlayerAlbum
             }
 
             @Override
-            protected void onCancelled(Lyrics s) {
+            protected void onCancelled(AbsLyrics s) {
                 onPostExecute(null);
             }
         }.execute();
