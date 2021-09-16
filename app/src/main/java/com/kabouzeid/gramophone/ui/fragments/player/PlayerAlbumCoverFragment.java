@@ -2,6 +2,9 @@ package com.kabouzeid.gramophone.ui.fragments.player;
 
 import android.animation.Animator;
 import android.os.Bundle;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.Spanned;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -228,9 +231,9 @@ public class PlayerAlbumCoverFragment extends AbsMusicServiceFragment implements
             return;
         }
 
-//        if (!(lyrics instanceof AbsSynchronizedLyrics)) return;
-//        AbsSynchronizedLyrics synchronizedLyrics = (AbsSynchronizedLyrics) lyrics;
-
+        //
+        // Synchronized lyrics begin
+        //
         if (!(lyrics instanceof LyricsParsedSynchronized)) return;
         LyricsParsedSynchronized synchronizedLyrics = (LyricsParsedSynchronized) lyrics;
 
@@ -240,9 +243,18 @@ public class PlayerAlbumCoverFragment extends AbsMusicServiceFragment implements
         String oldLine = lyricsLine2.getText().toString();
         String line = synchronizedLyrics.getLine(progress);
 
+//        String[] lineParsed = line.split("\\\\[nNrR]");
+//        StringBuilder builder = new StringBuilder();
+//        for (String s :lineParsed){
+//            builder.append(s);
+//        }
+//        String newLine = builder.toString();
+
+
         if (!oldLine.equals(line) || oldLine.isEmpty()) {
             lyricsLine1.setText(oldLine);
             lyricsLine2.setText(line);
+//            lyricsLine2.setText(newLine);
 
             lyricsLine1.setVisibility(View.VISIBLE);
             lyricsLine2.setVisibility(View.VISIBLE);
