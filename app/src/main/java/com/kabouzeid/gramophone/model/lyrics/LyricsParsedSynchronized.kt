@@ -5,11 +5,8 @@ import com.kabouzeid.gramophone.util.FileUtil
 import org.jaudiotagger.audio.AudioFileIO
 import org.jaudiotagger.tag.FieldKey
 import java.io.File
-import java.lang.Exception
-import java.lang.NumberFormatException
-import java.util.Locale
+import java.util.*
 import java.util.regex.Pattern
-import kotlin.collections.ArrayList
 
 class LyricsParsedSynchronized private constructor() : AbsLyrics() {
     override var TYPE: Short = AbsLyrics.LRC //2
@@ -45,7 +42,7 @@ class LyricsParsedSynchronized private constructor() : AbsLyrics() {
             if (timeStamp >= totalTime) throw Exception("TimeStamp is over the total lyrics length: lyrics might be mismatched")
         }
 
-        val ms = timeStamp + offset
+        val ms = timeStamp + offset + TIME_OFFSET_MS
         var index = 0;
         // Todo performance improve
         for (i in 0 until lyrics!!.size) {
@@ -69,6 +66,7 @@ class LyricsParsedSynchronized private constructor() : AbsLyrics() {
         private val LRC_ATTRIBUTE_PATTERN = Pattern.compile("\\[(\\D+):(.+)\\]")
         private const val LRC_SECONDS_TO_MS_MULTIPLIER = 1000f
         private const val LRC_MINUTES_TO_MS_MULTIPLIER = 60000
+        private const val TIME_OFFSET_MS = -1500 // time adjustment to display line before it actually starts
 
         /**
          * create parsed lyrics via raw string (from a file)
