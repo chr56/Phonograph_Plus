@@ -8,19 +8,20 @@ import java.io.File
 import java.util.regex.Pattern
 
 class LyricsParsed private constructor() : AbsLyrics() {
-    override var TYPE: Short = 1
+    override var TYPE: Short = TXT
 
-    private var lyrics: ArrayList<LyricsLine>? = null
+    private var lyrics: ArrayList<CharSequence>? = null
     private var title: CharSequence? = null
-    private constructor(lyrics: ArrayList<LyricsLine>) : this() {
+
+    private constructor(lyrics: ArrayList<CharSequence>) : this() {
+        if (lyrics.isNullOrEmpty()) throw Exception("NO_LYRIC")
         this.lyrics = lyrics
     }
 
-    override fun getText(): String{
-        if (lyrics.isNullOrEmpty()) throw Exception("NO_LYRIC")
+    override fun getText(): String {
         val stringBuilder = StringBuilder()
-        lyrics?.forEach { ll ->
-            stringBuilder.append(ll.getLine()).append("\r\n")
+        lyrics?.forEach { line ->
+            stringBuilder.append(line).append("\r\n")
         }
         return stringBuilder.toString().trim { it <= ' ' }.replace("(\r?\n){3,}".toRegex(), "\r\n\r\n")
     }
@@ -30,16 +31,16 @@ class LyricsParsed private constructor() : AbsLyrics() {
     }
 
 
-    companion object{
+    companion object {
 
+        /**
+         *  @param raw : String that contain the entire file
+         */
         @JvmStatic
-        fun parse(raw: String):LyricsParsed{
-            val lines: List<String?> = raw.split(Pattern.compile("\r?\n"))
-            val lyrics: MutableList<LyricsLine> = emptyList<LyricsLine>().toMutableList()
-            lines.forEach {
-                lyrics.add(LyricsLine(it.orEmpty()))
-            }
-            return LyricsParsed(lyrics as ArrayList<LyricsLine>)
+        fun parse(raw: String): LyricsParsed {
+            val lines: List<CharSequence> = raw.split(Pattern.compile("(\r?\n)|(\\\\[nNrR])"))
+            val lyrics: MutableList<CharSequence> = MutableList(lines.size) { lines[it] }
+            return LyricsParsed(lyrics as ArrayList<CharSequence>)
         }
 
 
@@ -49,7 +50,7 @@ class LyricsParsed private constructor() : AbsLyrics() {
          * @author Karim Abou Zeid (kabouzeid), chr_56
          */
         @JvmStatic
-        fun parse(song: Song): LyricsParsed{
+        fun parse(song: Song): LyricsParsed {
             val file = File(song.data)
 
             var rawLyrics: String? = null
@@ -60,10 +61,10 @@ class LyricsParsed private constructor() : AbsLyrics() {
                 e.printStackTrace()
             }
             // Read from .lrc/.txt with same name
-            if (rawLyrics == null || rawLyrics.trim().isEmpty()){
+            if (rawLyrics == null || rawLyrics.trim().isEmpty()) {
                 val dir = file.absoluteFile.parentFile
 
-                if (dir != null && dir.exists() && dir.isDirectory){
+                if (dir != null && dir.exists() && dir.isDirectory) {
                     val format = ".*%s.*\\.(lrc|txt)" //Todo
                     val filename = Pattern.quote(FileUtil.stripExtension(file.name))
                     val patternForFile = Pattern.compile(String.format(format, filename), Pattern.CASE_INSENSITIVE or Pattern.UNICODE_CASE)
@@ -91,11 +92,12 @@ class LyricsParsed private constructor() : AbsLyrics() {
             //create lyric
             return parse(rawLyrics)//TODO;
         }
+
         /**
          * create parsed lyrics via file
          */
         @JvmStatic
-        fun parse(file: File): LyricsParsedSynchronized{
+        fun parse(file: File): LyricsParsedSynchronized {
             return LyricsParsedSynchronized.parse(FileUtil.read(file))
         }
 

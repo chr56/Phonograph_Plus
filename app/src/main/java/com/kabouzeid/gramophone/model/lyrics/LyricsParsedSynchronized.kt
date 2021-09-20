@@ -1,5 +1,8 @@
 package com.kabouzeid.gramophone.model.lyrics
 
+import android.util.SparseArray
+import androidx.core.util.forEach
+import androidx.core.util.isEmpty
 import com.kabouzeid.gramophone.model.Song
 import com.kabouzeid.gramophone.util.FileUtil
 import org.jaudiotagger.audio.AudioFileIO
@@ -9,25 +12,25 @@ import java.util.*
 import java.util.regex.Pattern
 
 class LyricsParsedSynchronized private constructor() : AbsLyrics() {
-    override var TYPE: Short = AbsLyrics.LRC //2
+    override var TYPE: Short = LRC
 
-    private var lyrics: ArrayList<LyricsLineSynchronized>? = null
-    private var offset: Long =0
-    private var totalTime: Long = -1 // -1 means "no length info in lyrics"
+    private var lyrics: SparseArray<CharSequence>? = null
+    private var offset: Long = 0
+    private var totalTime: Long = -1 // -1 means "no length info in lyrics file"
     private var title: CharSequence? = null
-    private constructor(lyrics: ArrayList<LyricsLineSynchronized>, offset: Long, totalTime: Long, title: CharSequence?) : this() {
+
+    private constructor(lyrics: SparseArray<CharSequence>, offset: Long, totalTime: Long, title: CharSequence?) : this() {
+        if (lyrics.isEmpty()) throw Exception("NO_LYRIC")
         this.lyrics = lyrics
         this.offset = offset
         this.totalTime = totalTime
         this.title = title
     }
 
-    override fun getText(): String{
-        if (lyrics.isNullOrEmpty()) throw Exception("NO_LYRIC")
-
+    override fun getText(): String {
         val stringBuilder = StringBuilder()
-        lyrics?.forEach { ll ->
-            stringBuilder.append(ll.getLine()).append("\r\n")
+        lyrics?.forEach { _, line ->
+            stringBuilder.append(line).append("\r\n")
         }
         return stringBuilder.toString().trim { it <= ' ' }.replace("(\r?\n){3,}".toRegex(), "\r\n\r\n")
     }
@@ -36,17 +39,16 @@ class LyricsParsedSynchronized private constructor() : AbsLyrics() {
         return title ?: super.getTitle()
     }
 
-    fun getLine(timeStamp: Long): String{
-        if (lyrics.isNullOrEmpty()) throw Exception("NO_LYRIC")
-        if (totalTime != -1L){ // -1 means " no length info in lyrics"
+    fun getLine(timeStamp: Int): String {
+        if (totalTime != -1L) { // -1 means " no length info in lyrics"
             if (timeStamp >= totalTime) throw Exception("TimeStamp is over the total lyrics length: lyrics might be mismatched")
         }
 
         val ms = timeStamp + offset + TIME_OFFSET_MS
         var index = 0;
         // Todo performance improve
-        for (i in 0 until lyrics!!.size) {
-            if (ms >= lyrics!![index].getTimeStamp()) {
+        for (i in 0 until lyrics!!.size()) {
+            if (ms >= lyrics!!.keyAt(i)) {
                 index = i
             } else {
                 break
@@ -54,38 +56,37 @@ class LyricsParsedSynchronized private constructor() : AbsLyrics() {
         }
 
         // Todo '\n' detect
-        return lyrics!![index].getLine() as String
+        return lyrics!!.valueAt(index) as String
     }
 
 
-
-
-    companion object{
+    companion object {
         private val LRC_LINE_PATTERN = Pattern.compile("((?:\\[.*?\\])+)(.*)")
         private val LRC_TIME_PATTERN = Pattern.compile("\\[(\\d+):(\\d{2}(?:\\.\\d+)?)\\]")
         private val LRC_ATTRIBUTE_PATTERN = Pattern.compile("\\[(\\D+):(.+)\\]")
         private const val LRC_SECONDS_TO_MS_MULTIPLIER = 1000f
         private const val LRC_MINUTES_TO_MS_MULTIPLIER = 60000
-        private const val TIME_OFFSET_MS = -1500 // time adjustment to display line before it actually starts
+        private const val TIME_OFFSET_MS = 400
+        // time adjustment to display line before it actually starts
 
         /**
          * create parsed lyrics via raw string (from a file)
          * @author Karim Abou Zeid (kabouzeid), chr_56
          */
         @JvmStatic
-        fun parse(rawLyrics: String): LyricsParsedSynchronized{
+        fun parse(rawLyrics: String): LyricsParsedSynchronized {
             // raw data:
             //
-            val lines: List<String> = rawLyrics.split(Pattern.compile("\r?\n"))
-            var offset: Long =0
+            val rawLines: List<String> = rawLyrics.split(Pattern.compile("\r?\n"))
+            var offset: Long = 0
             var totalTime: Long = -1
-            var title: String? =null
+            var title: String? = null
             // data to Return:
             //
-            var lyrics: MutableList<LyricsLineSynchronized> = emptyArray<LyricsLineSynchronized>().toMutableList()
+            val lyrics: SparseArray<CharSequence> = SparseArray()
 
             // Parse start
-            for (line in lines) {
+            for (line in rawLines) {
                 // blank line ?
                 if (line.isBlank()) {
                     continue
@@ -112,9 +113,9 @@ class LyricsParsedSynchronized private constructor() : AbsLyrics() {
                     val time: String? = matcher.group(1)
                     val text: String? = matcher.group(2)
 
-                    var ms: Long = 0
+                    var ms: Int = 0
 
-                    //Time
+                    // Time
                     try {//todo: null safe?
                         val timeMatcher = LRC_TIME_PATTERN.matcher(time!!)
                         while (timeMatcher.find()) {
@@ -126,24 +127,24 @@ class LyricsParsedSynchronized private constructor() : AbsLyrics() {
                             } catch (ex: NumberFormatException) {
                                 ex.printStackTrace()
                             }
-                            ms = ((s * LRC_SECONDS_TO_MS_MULTIPLIER).toInt() + m * LRC_MINUTES_TO_MS_MULTIPLIER).toLong()
+                            ms = ((s * LRC_SECONDS_TO_MS_MULTIPLIER).toInt() + m * LRC_MINUTES_TO_MS_MULTIPLIER)
                         }
                     } catch (e: Exception) {
                         e.printStackTrace()
                     }
-                    //Text
-                    //
 
-                    //write to var
-                    //
-                    lyrics.add(LyricsLineSynchronized(ms,text.orEmpty()))
+
+                    // Write to var
+                    lyrics.put(ms, text.orEmpty())
 
 
                 }
             } // loop_end
 
+
+
             // create lyrics
-            return LyricsParsedSynchronized(lyrics as ArrayList<LyricsLineSynchronized>, offset, totalTime, title)
+            return LyricsParsedSynchronized(lyrics, offset, totalTime, title)
         }
 
 
@@ -153,7 +154,7 @@ class LyricsParsedSynchronized private constructor() : AbsLyrics() {
          * @author Karim Abou Zeid (kabouzeid), chr_56
          */
         @JvmStatic
-        fun parse(song: Song): LyricsParsedSynchronized{
+        fun parse(song: Song): LyricsParsedSynchronized {
             val file = File(song.data)
 
             var rawLyrics: String? = null
@@ -164,10 +165,10 @@ class LyricsParsedSynchronized private constructor() : AbsLyrics() {
                 e.printStackTrace()
             }
             // Read from .lrc/.txt with same name
-            if (rawLyrics == null || rawLyrics.trim().isEmpty()){
+            if (rawLyrics == null || rawLyrics.trim().isEmpty()) {
                 val dir = file.absoluteFile.parentFile
 
-                if (dir != null && dir.exists() && dir.isDirectory){
+                if (dir != null && dir.exists() && dir.isDirectory) {
                     val format = ".*%s.*\\.(lrc)" //Todo
                     val filename = Pattern.quote(FileUtil.stripExtension(file.name))
                     val patternForFile = Pattern.compile(String.format(format, filename), Pattern.CASE_INSENSITIVE or Pattern.UNICODE_CASE)
@@ -195,66 +196,58 @@ class LyricsParsedSynchronized private constructor() : AbsLyrics() {
             //create lyric
             return parse(rawLyrics!!)//TODO;
         }
+
         /**
          * create parsed lyrics via file
          */
         @JvmStatic
-        fun parse(file: File): LyricsParsedSynchronized{
+        fun parse(file: File): LyricsParsedSynchronized {
             return parse(FileUtil.read(file))
         }
     }
 
     // todo improve
-    inner class LyricsCursor(lyricsParsedSynchronized: LyricsParsedSynchronized){
+    inner class LyricsCursor(lyricsParsedSynchronized: LyricsParsedSynchronized) {
         private val l: LyricsParsedSynchronized = lyricsParsedSynchronized;
+
         init {
-            if (lyricsParsedSynchronized.lyrics.isNullOrEmpty()) throw Exception("NO_LYRIC")
+            if (lyricsParsedSynchronized.lyrics!!.isEmpty()) throw Exception("NO_LYRIC")
         }
 
 
         private var index: Int = 0
-        fun setIndex(i: Int) { index = i}
-
-        fun locate(index: Int): String{
-            return l.lyrics!![index].getLine() as String
-        }
-        fun locateLine(index: Int): LyricsLineSynchronized{
-            return l.lyrics!![index]
+        fun setIndex(i: Int) {
+            index = i
         }
 
-        fun next(): String{
-            index ++
-            return l.lyrics!![index].getLine() as String
-        }
-        fun nextLine(): LyricsLineSynchronized{
-            index ++
-            return l.lyrics!![index]
+        fun locate(index: Int): String {
+            return l.lyrics!!.valueAt(index) as String
         }
 
-        fun previous(): String{
-            index --
-            return l.lyrics!![index].getLine() as String
-        }
-        fun previousLine(): LyricsLineSynchronized{
-            index --
-            return l.lyrics!![index]
+        fun next(): String {
+            index++
+            return l.lyrics!!.valueAt(index) as String
         }
 
-        fun first(): String{
-            return l.lyrics!![0].getLine() as String
-        }
-        fun moveToFirst(){ index = 0 }
-        fun firstLine(): LyricsLineSynchronized{
-            return l.lyrics!![0]
+        fun previous(): String {
+            index--
+            return l.lyrics!!.valueAt(index) as String
         }
 
-
-        fun last(): String{
-            return l.lyrics!![l.lyrics!!.size].getLine() as String
+        fun first(): String {
+            return l.lyrics!![0] as String
         }
-        fun moveToLast(){ index = l.lyrics!!.size }
-        fun lastLine(): LyricsLineSynchronized{
-            return l.lyrics!![l.lyrics!!.size]
+
+        fun moveToFirst() {
+            index = 0
+        }
+
+        fun last(): String {
+            return l.lyrics!![l.lyrics!!.size()] as String
+        }
+
+        fun moveToLast() {
+            index = l.lyrics!!.size()
         }
 
     }
