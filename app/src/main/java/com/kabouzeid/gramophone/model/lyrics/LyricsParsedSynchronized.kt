@@ -44,6 +44,18 @@ class LyricsParsedSynchronized private constructor() : AbsLyrics() {
         return title ?: super.getTitle()
     }
 
+    override fun getLyricsLineArray(): Array<CharSequence> {
+        return Array<CharSequence>(lyrics!!.size()){
+            lyrics!!.valueAt(it)
+        }
+    }
+
+    override fun getLyricsTimeArray(): IntArray {
+        return IntArray(lyrics!!.size()){
+            lyrics!!.keyAt(it)
+        }
+    }
+
     fun getLine(timeStamp: Int): String {
         if (totalTime != -1L) { // -1 means " no length info in lyrics"
             if (timeStamp >= totalTime) throw Exception("TimeStamp is over the total lyrics length: lyrics might be mismatched")

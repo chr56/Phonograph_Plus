@@ -6,6 +6,8 @@ abstract class AbsLyrics {
     open fun getTitle(): CharSequence {
         return "Lyrics"
     }
+    abstract fun getLyricsLineArray(): Array<CharSequence>
+    abstract fun getLyricsTimeArray(): IntArray
 
     companion object {
         const val LRC: Short = 2

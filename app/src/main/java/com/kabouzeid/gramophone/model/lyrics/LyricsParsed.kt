@@ -30,6 +30,16 @@ class LyricsParsed private constructor() : AbsLyrics() {
         return title ?: super.getTitle()
     }
 
+    override fun getLyricsLineArray(): Array<CharSequence> {
+        return Array<CharSequence>(lyrics!!.size) {
+            lyrics!![it]
+        }
+    }
+
+    override fun getLyricsTimeArray(): IntArray {
+        return IntArray(lyrics!!.size) { -1 }
+    }
+
     companion object {
 
         /**
