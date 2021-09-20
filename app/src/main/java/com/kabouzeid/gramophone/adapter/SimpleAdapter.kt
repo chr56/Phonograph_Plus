@@ -31,6 +31,7 @@ class SimpleAdapter(stamps: IntArray, lines: Array<CharSequence>) : RecyclerView
         }
 
         holder.time.text = MusicUtil.parseTimeStamp(timeStamps[position])
+        if (timeStamps[position] < 0) holder.time.visibility = View.GONE
         holder.line.text = b.toString()
         holder.line.setOnLongClickListener {
             MusicPlayerRemote.seekTo(timeStamps[position])

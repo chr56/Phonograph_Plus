@@ -1,5 +1,6 @@
 package com.kabouzeid.gramophone.util;
 
+import android.annotation.SuppressLint;
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
@@ -404,11 +405,13 @@ public class MusicUtil {
      * @param t timeStamp to parse (Unit: milliseconds)
      * @return human-friendly time
      */
+    @SuppressLint("DefaultLocale")
     public static String  parseTimeStamp(int t){
         long ms = t % 1000;
         long s = (t % (1000*60)) / 1000;
         long m = (t - s*1000 - ms) / (1000*60);
-        return m + ":" + s + "." + ms;
+        return String.format("%d:%02d.%03d",m ,s , ms);
+//        return m + ":" + s + "." + ms;
     }
 
 }

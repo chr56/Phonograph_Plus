@@ -10,7 +10,6 @@ import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -44,7 +43,6 @@ import com.kabouzeid.gramophone.helper.MusicPlayerRemote;
 import com.kabouzeid.gramophone.helper.menu.SongMenuHelper;
 import com.kabouzeid.gramophone.model.Song;
 import com.kabouzeid.gramophone.model.lyrics.AbsLyrics;
-import com.kabouzeid.gramophone.model.lyrics.LyricsParsedSynchronized;
 import com.kabouzeid.gramophone.ui.activities.base.AbsSlidingMusicPanelActivity;
 import com.kabouzeid.gramophone.ui.fragments.player.AbsPlayerFragment;
 import com.kabouzeid.gramophone.ui.fragments.player.PlayerAlbumCoverFragment;
@@ -99,8 +97,7 @@ public class CardPlayerFragment extends AbsPlayerFragment implements PlayerAlbum
     private AsyncTask updateIsFavoriteTask;
     private AsyncTask updateLyricsAsyncTask;
 
-//    private Lyrics lyrics;
-    private AbsLyrics lyrics2;
+    private AbsLyrics lyrics;
 
     private Impl impl;
 
@@ -249,11 +246,8 @@ public class CardPlayerFragment extends AbsPlayerFragment implements PlayerAlbum
     public boolean onMenuItemClick(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_show_lyrics:
-//                if (lyrics != null)
-//                    LyricsDialog.create(lyrics).show(getFragmentManager(), "LYRICS");
-//                return true;
-                if (lyrics2 != null)
-                    LyricsDialog.create(lyrics2).show(getFragmentManager(), "LYRICS");
+                if (lyrics != null)
+                    LyricsDialog.create(lyrics, MusicPlayerRemote.getCurrentSong()).show(getFragmentManager(), "LYRICS");
                 return true;
         }
         return super.onMenuItemClick(item);
@@ -322,8 +316,7 @@ public class CardPlayerFragment extends AbsPlayerFragment implements PlayerAlbum
             @Override
             protected void onPreExecute() {
                 super.onPreExecute();
-//                lyrics = null;
-                lyrics2 = null;
+                lyrics = null;
                 playerAlbumCoverFragment.setLyrics(null);
                 toolbar.getMenu().removeItem(R.id.action_show_lyrics);
             }
@@ -346,9 +339,9 @@ public class CardPlayerFragment extends AbsPlayerFragment implements PlayerAlbum
 
             @Override
             protected void onPostExecute(AbsLyrics l) {
-                lyrics2 = l;
-                playerAlbumCoverFragment.setLyrics(lyrics2);
-                if (lyrics2 == null) {
+                lyrics = l;
+                playerAlbumCoverFragment.setLyrics(lyrics);
+                if (lyrics == null) {
                     if (toolbar != null) {
                         toolbar.getMenu().removeItem(R.id.action_show_lyrics);
                     }
