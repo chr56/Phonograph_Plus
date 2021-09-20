@@ -36,7 +36,7 @@ class RenamePlaylistDialog : DialogFragment() {
                     PlaylistsUtil.renamePlaylist(requireActivity(), playlistId1, name)
                 }
             }
-        //set button color
+        // set button color
         dialog.getActionButton(WhichButton.POSITIVE).updateTextColor(ThemeColor.accentColor(requireActivity()))
         dialog.getActionButton(WhichButton.NEGATIVE).updateTextColor(ThemeColor.accentColor(requireActivity()))
         return dialog

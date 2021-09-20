@@ -33,7 +33,7 @@ class RemoveFromPlaylistDialog : DialogFragment() {
             .message(text = content)
             .negativeButton(android.R.string.cancel)
             .positiveButton(R.string.remove_action) { if (activity != null) PlaylistsUtil.removeFromPlaylist(requireActivity(), songs) }
-        //set button color
+        // set button color
         dialog.getActionButton(WhichButton.POSITIVE).updateTextColor(ThemeColor.accentColor(requireActivity()))
         dialog.getActionButton(WhichButton.NEGATIVE).updateTextColor(ThemeColor.accentColor(requireActivity()))
         return dialog

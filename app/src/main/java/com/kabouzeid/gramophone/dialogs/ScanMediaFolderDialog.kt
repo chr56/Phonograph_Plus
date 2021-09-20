@@ -32,7 +32,6 @@ class ScanMediaFolderDialog : DialogFragment() {
     private lateinit var initial: File
 //    private var mode: Int = 0
 
-
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         // Storage permission check
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
@@ -60,7 +59,7 @@ class ScanMediaFolderDialog : DialogFragment() {
 
         // FileChooser
         val dialog = MaterialDialog(requireContext())
-            .folderChooser(context = requireContext(), waitForPositiveButton = true, emptyTextRes = R.string.empty, initialDirectory = initial, ) {
+            .folderChooser(context = requireContext(), waitForPositiveButton = true, emptyTextRes = R.string.empty, initialDirectory = initial,) {
                 _, file ->
 //                selected = file
                 val applicationContext = requireActivity().applicationContext
@@ -71,12 +70,11 @@ class ScanMediaFolderDialog : DialogFragment() {
                 ArrayListPathsAsyncTask(activity) { paths: Array<String>? ->
                     scanPaths(activityWeakReference, applicationContext, paths)
                 }.execute(ArrayListPathsAsyncTask.LoadingInfo(file, FoldersFragment.AUDIO_FILE_FILTER))
-
             }
             .noAutoDismiss()
             .positiveButton(android.R.string.ok)
             .negativeButton(android.R.string.cancel) { dismiss() }
-        //set button color
+        // set button color
         dialog.getActionButton(WhichButton.POSITIVE).updateTextColor(ThemeColor.accentColor(requireActivity()))
         dialog.getActionButton(WhichButton.NEGATIVE).updateTextColor(ThemeColor.accentColor(requireActivity()))
         dialog.getActionButton(WhichButton.NEUTRAL).updateTextColor(ThemeColor.accentColor(requireActivity()))
@@ -88,12 +86,16 @@ class ScanMediaFolderDialog : DialogFragment() {
 //        arg = requireArguments()
 //    }
 
-    companion object{
+    companion object {
 //        @JvmStatic
 //        fun Create(mode: Int) {
 //        }
 
-        private fun scanPaths(activityWeakReference: WeakReference<Activity?>, applicationContext: Context, toBeScanned: Array<String>?) {
+        private fun scanPaths(
+            activityWeakReference: WeakReference<Activity?>,
+            applicationContext: Context,
+            toBeScanned: Array<String>?
+        ) {
             val activity = activityWeakReference.get()
             if (toBeScanned == null || toBeScanned.isEmpty()) {
                 Toast.makeText(applicationContext, R.string.nothing_to_scan, Toast.LENGTH_SHORT).show()

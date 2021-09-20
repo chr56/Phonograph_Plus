@@ -30,13 +30,12 @@ class DeletePlaylistDialog : DialogFragment() {
             .positiveButton(R.string.delete_action) {
                 PlaylistsUtil.deletePlaylists(requireActivity(), playlists)
             }
-            .negativeButton(android.R.string.cancel){dismiss()}
-        //set button color
+            .negativeButton(android.R.string.cancel) { dismiss() }
+        // set button color
         dialog.getActionButton(WhichButton.POSITIVE).updateTextColor(ThemeColor.accentColor(requireActivity()))
         dialog.getActionButton(WhichButton.NEGATIVE).updateTextColor(ThemeColor.accentColor(requireActivity()))
 
         return dialog
-
     }
 
     companion object {

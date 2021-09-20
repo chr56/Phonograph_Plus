@@ -38,21 +38,21 @@ class BlacklistFolderChooserDialog : DialogFragment() {
             .folderChooser(context = requireContext(), waitForPositiveButton = true, emptyTextRes = R.string.empty, initialDirectory = File("/storage/emulated/0")) {
                 _, file ->
                 val dialog = MaterialDialog(requireContext())
-                        .title(R.string.add_blacklist)// todo ResFile
-                        .message(text = file.absolutePath)
-                        .positiveButton(android.R.string.ok) {
-                            BlacklistStore.getInstance(App.getInstance()).addPath(file)
-                            dismiss() // dismiss alert dialog
-                        }
-                        .negativeButton(android.R.string.cancel) { dismiss() /* dismiss alert dialog */}
-                        .show()
-                //todo tint
+                    .title(R.string.add_blacklist) // todo ResFile
+                    .message(text = file.absolutePath)
+                    .positiveButton(android.R.string.ok) {
+                        BlacklistStore.getInstance(App.getInstance()).addPath(file)
+                        dismiss() // dismiss alert dialog
+                    }
+                    .negativeButton(android.R.string.cancel) { dismiss() /* dismiss alert dialog */ }
+                    .show()
+                // todo tint
                 dismiss() // dismiss Folder Chooser
             }
             .noAutoDismiss()
-            .positiveButton(R.string.add_action )
+            .positiveButton(R.string.add_action)
             .negativeButton(android.R.string.cancel) { dismiss() }
-        //set button color
+        // set button color
         dialog.getActionButton(WhichButton.POSITIVE).updateTextColor(ThemeColor.accentColor(requireActivity()))
         dialog.getActionButton(WhichButton.NEGATIVE).updateTextColor(ThemeColor.accentColor(requireActivity()))
 

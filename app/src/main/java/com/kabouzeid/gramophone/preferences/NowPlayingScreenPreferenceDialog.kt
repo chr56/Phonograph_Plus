@@ -48,11 +48,10 @@ class NowPlayingScreenPreferenceDialog : DialogFragment(), OnPageChangeListener 
             .negativeButton(android.R.string.cancel)
 //                .onAny(this)
             .customView(view = view, dialogWrapContent = false)
-        //set button color
+        // set button color
         dialog.getActionButton(WhichButton.POSITIVE).updateTextColor(ThemeColor.accentColor(requireActivity()))
         dialog.getActionButton(WhichButton.NEGATIVE).updateTextColor(ThemeColor.accentColor(requireActivity()))
         return dialog
-
     }
 
 //    fun onClick(dialog: MaterialDialog, which: DialogAction) {

@@ -2,10 +2,10 @@ package com.kabouzeid.gramophone.model.lyrics
 
 import com.kabouzeid.gramophone.model.Song
 import com.kabouzeid.gramophone.util.FileUtil
-import org.jaudiotagger.audio.AudioFileIO
-import org.jaudiotagger.tag.FieldKey
 import java.io.File
 import java.util.regex.Pattern
+import org.jaudiotagger.audio.AudioFileIO
+import org.jaudiotagger.tag.FieldKey
 
 class LyricsParsed private constructor() : AbsLyrics() {
     override var TYPE: Short = TXT
@@ -30,7 +30,6 @@ class LyricsParsed private constructor() : AbsLyrics() {
         return title ?: super.getTitle()
     }
 
-
     companion object {
 
         /**
@@ -42,7 +41,6 @@ class LyricsParsed private constructor() : AbsLyrics() {
             val lyrics: MutableList<CharSequence> = MutableList(lines.size) { lines[it] }
             return LyricsParsed(lyrics as ArrayList<CharSequence>)
         }
-
 
         /**
          * create parsed lyrics via song
@@ -65,7 +63,7 @@ class LyricsParsed private constructor() : AbsLyrics() {
                 val dir = file.absoluteFile.parentFile
 
                 if (dir != null && dir.exists() && dir.isDirectory) {
-                    val format = ".*%s.*\\.(lrc|txt)" //Todo
+                    val format = ".*%s.*\\.(lrc|txt)" // Todo
                     val filename = Pattern.quote(FileUtil.stripExtension(file.name))
                     val patternForFile = Pattern.compile(String.format(format, filename), Pattern.CASE_INSENSITIVE or Pattern.UNICODE_CASE)
 
@@ -87,10 +85,10 @@ class LyricsParsed private constructor() : AbsLyrics() {
                     }
                 }
             }
-            //check success
-            if (rawLyrics.isNullOrEmpty()) throw Exception("NO_LYRICS")//todo
-            //create lyric
-            return parse(rawLyrics)//TODO;
+            // check success
+            if (rawLyrics.isNullOrEmpty()) throw Exception("NO_LYRICS") // todo
+            // create lyric
+            return parse(rawLyrics) // TODO;
         }
 
         /**
@@ -100,6 +98,5 @@ class LyricsParsed private constructor() : AbsLyrics() {
         fun parse(file: File): LyricsParsedSynchronized {
             return LyricsParsedSynchronized.parse(FileUtil.read(file))
         }
-
     }
 }

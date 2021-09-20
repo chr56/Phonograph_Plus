@@ -34,7 +34,7 @@ class DeleteSongsDialog : DialogFragment() {
                 }
             }
             .negativeButton(android.R.string.cancel)
-        //set button color
+        // set button color
         dialog.getActionButton(WhichButton.POSITIVE).updateTextColor(ThemeColor.accentColor(requireActivity()))
         dialog.getActionButton(WhichButton.NEGATIVE).updateTextColor(ThemeColor.accentColor(requireActivity()))
 

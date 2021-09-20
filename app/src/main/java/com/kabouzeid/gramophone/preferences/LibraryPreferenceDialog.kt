@@ -38,7 +38,7 @@ class LibraryPreferenceDialog : DialogFragment() {
             }
             .negativeButton(android.R.string.cancel) { dismiss() }
             .neutralButton(R.string.reset_action) { adapter!!.categoryInfos = PreferenceUtil.getInstance(requireContext()).defaultLibraryCategoryInfos }
-        //set button color
+        // set button color
         dialog.getActionButton(WhichButton.POSITIVE).updateTextColor(ThemeColor.accentColor(requireActivity()))
         dialog.getActionButton(WhichButton.NEGATIVE).updateTextColor(ThemeColor.accentColor(requireActivity()))
         dialog.getActionButton(WhichButton.NEUTRAL).updateTextColor(ThemeColor.accentColor(requireActivity()))

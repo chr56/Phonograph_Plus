@@ -19,6 +19,8 @@ import com.afollestad.materialdialogs.customview.getCustomView
 import com.kabouzeid.gramophone.R
 import com.kabouzeid.gramophone.model.Song
 import com.kabouzeid.gramophone.util.MusicUtil
+import java.io.File
+import java.io.IOException
 import org.jaudiotagger.audio.AudioFile
 import org.jaudiotagger.audio.AudioFileIO
 import org.jaudiotagger.audio.AudioHeader
@@ -30,8 +32,6 @@ import org.jaudiotagger.tag.FieldKey
 import org.jaudiotagger.tag.TagException
 import org.jaudiotagger.tag.datatype.DataTypes
 import org.jaudiotagger.tag.id3.AbstractID3v2Frame
-import java.io.File
-import java.io.IOException
 
 // Todo Completed
 /**
@@ -45,7 +45,7 @@ class SongDetailDialog : DialogFragment() {
             .title(R.string.label_details)
             .positiveButton(android.R.string.ok)
             .customView(viewRes = R.layout.dialog_file_details, horizontalPadding = true, scrollable = true)
-        //set button color
+        // set button color
         dialog.getActionButton(WhichButton.POSITIVE).updateTextColor(ThemeColor.accentColor(context))
 
         val dialogView: View = dialog.getCustomView()
@@ -75,14 +75,14 @@ class SongDetailDialog : DialogFragment() {
         bitRate.text = makeTextWithTitle(context, R.string.label_bit_rate, "-")
         samplingRate.text = makeTextWithTitle(context, R.string.label_sampling_rate, "-")
 
-        title.text = makeTextWithTitle(context, R.string.title,"-")
-        artist.text = makeTextWithTitle(context, R.string.artist,"-")
-        album.text = makeTextWithTitle(context, R.string.album,"-")
-        albumArtist.text = makeTextWithTitle(context, R.string.album_artist,"-")
-        year.text = makeTextWithTitle(context, R.string.year,"-")
-        genre.text = makeTextWithTitle(context, R.string.genre,"-")
-        track.text = makeTextWithTitle(context, R.string.track,"-")
-        other.text = makeTextWithTitle(context,R.string.other_information,"-")
+        title.text = makeTextWithTitle(context, R.string.title, "-")
+        artist.text = makeTextWithTitle(context, R.string.artist, "-")
+        album.text = makeTextWithTitle(context, R.string.album, "-")
+        albumArtist.text = makeTextWithTitle(context, R.string.album_artist, "-")
+        year.text = makeTextWithTitle(context, R.string.year, "-")
+        genre.text = makeTextWithTitle(context, R.string.genre, "-")
+        track.text = makeTextWithTitle(context, R.string.track, "-")
+        other.text = makeTextWithTitle(context, R.string.other_information, "-")
 
         if (song != null) {
             val songFile = File(song.data)
@@ -96,7 +96,7 @@ class SongDetailDialog : DialogFragment() {
                     audioFile.tag.fields.forEach { tagField ->
                         Log.v("DetailDialog", "# " + String(tagField.rawContent))
                         var hexString: String = "# "
-                        tagField.rawContent.forEach { byte -> 
+                        tagField.rawContent.forEach { byte ->
                             hexString += Hex.asHex(byte)
                             hexString += " "
                         }
@@ -110,31 +110,28 @@ class SongDetailDialog : DialogFragment() {
                     bitRate.text = makeTextWithTitle(context, R.string.label_bit_rate, audioHeader.bitRate + " kb/s")
                     samplingRate.text = makeTextWithTitle(context, R.string.label_sampling_rate, audioHeader.sampleRate + " Hz")
                     // tags of the song
-                    title.text = makeTextWithTitle(context, R.string.title,song.title)
-                    artist.text = makeTextWithTitle(context, R.string.artist,song.artistName)
-                    album.text = makeTextWithTitle(context, R.string.album,song.albumName)
-                    albumArtist.text = makeTextWithTitle(context, R.string.album_artist,audioFile.tag.getFirst(FieldKey.ALBUM_ARTIST))
-                    if (song.year != 0) year.text = makeTextWithTitle(context, R.string.year,song.year.toString())
+                    title.text = makeTextWithTitle(context, R.string.title, song.title)
+                    artist.text = makeTextWithTitle(context, R.string.artist, song.artistName)
+                    album.text = makeTextWithTitle(context, R.string.album, song.albumName)
+                    albumArtist.text = makeTextWithTitle(context, R.string.album_artist, audioFile.tag.getFirst(FieldKey.ALBUM_ARTIST))
+                    if (song.year != 0) year.text = makeTextWithTitle(context, R.string.year, song.year.toString())
                     val songGenre = audioFile.tag.getFirst(FieldKey.GENRE)
-                    genre.text = makeTextWithTitle(context, R.string.genre,songGenre)
-                    if (song.trackNumber != 0) track.text = makeTextWithTitle(context, R.string.track,song.trackNumber.toString())
-
+                    genre.text = makeTextWithTitle(context, R.string.genre, songGenre)
+                    if (song.trackNumber != 0) track.text = makeTextWithTitle(context, R.string.track, song.trackNumber.toString())
 
                     val custInfoField = audioFile.tag.getFields("TXXX")
-                    var custInfo: String = "-";
-                    if (custInfoField != null && custInfoField.size > 0){
-                        custInfo = "<br />";
+                    var custInfo: String = "-"
+                    if (custInfoField != null && custInfoField.size > 0) {
+                        custInfo = "<br />"
                         custInfoField.forEach { TagField ->
                             val frame = TagField as AbstractID3v2Frame
                             custInfo += frame.body.getObjectValue(DataTypes.OBJ_DESCRIPTION)
-                            custInfo +=  ":<br />"
+                            custInfo += ":<br />"
                             custInfo += frame.body.getObjectValue(DataTypes.OBJ_TEXT)
                             custInfo += "<br />"
                         }
                     }
-                    other.text = makeTextWithTitle(context, R.string.other_information,custInfo)
-
-
+                    other.text = makeTextWithTitle(context, R.string.other_information, custInfo)
                 } catch (e: CannotReadException) {
                     Log.e(TAG, "error while reading the song file", e)
                     // fallback
@@ -177,7 +174,7 @@ class SongDetailDialog : DialogFragment() {
         }
         private fun makeTextWithTitle(context: Context, title: String, text: String): Spanned {
             return Html.fromHtml("<b>$title: </b>$text", Html.FROM_HTML_MODE_COMPACT)
-        }//Todo Remove
+        } // Todo Remove
 
         private fun getFileSizeString(sizeInBytes: Long): String {
             val fileSizeInKB = sizeInBytes / 1024

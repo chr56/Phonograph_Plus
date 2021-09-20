@@ -54,12 +54,11 @@ class CreatePlaylistDialog : DialogFragment() {
                 }
                 dismiss()
             }
-        //set button color
+        // set button color
         dialog.getActionButton(WhichButton.POSITIVE).updateTextColor(ThemeColor.accentColor(requireActivity()))
         dialog.getActionButton(WhichButton.NEGATIVE).updateTextColor(ThemeColor.accentColor(requireActivity()))
 
         return dialog
-
     }
 
     companion object {
@@ -77,7 +76,7 @@ class CreatePlaylistDialog : DialogFragment() {
         fun createEmpty(): CreatePlaylistDialog {
             val dialog = CreatePlaylistDialog()
             val args = Bundle()
-            args.putParcelableArrayList(SONGS,null)
+            args.putParcelableArrayList(SONGS, null)
             dialog.arguments = args
             return dialog
         }

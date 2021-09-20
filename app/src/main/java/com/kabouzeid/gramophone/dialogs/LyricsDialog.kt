@@ -23,20 +23,11 @@ class LyricsDialog : DialogFragment() {
         val text = builder.toString()
 
         return MaterialDialog(activity as Context)
-                .title(text = requireArguments().getString("title")!!)
-                .message(text = text)
+            .title(text = requireArguments().getString("title")!!)
+            .message(text = text)
     }
 
     companion object {
-//        @JvmStatic
-//        fun create(lyrics: Lyrics): LyricsDialog {
-//            val dialog = LyricsDialog()
-//            val args = Bundle()
-//            args.putString("title", lyrics.song.title)
-//            args.putString("lyrics", lyrics.text)
-//            dialog.arguments = args
-//            return dialog
-//        }
         @JvmStatic
         fun create(lyrics: AbsLyrics): LyricsDialog {
             val dialog = LyricsDialog()

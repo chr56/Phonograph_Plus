@@ -5,11 +5,11 @@ import androidx.core.util.forEach
 import androidx.core.util.isEmpty
 import com.kabouzeid.gramophone.model.Song
 import com.kabouzeid.gramophone.util.FileUtil
-import org.jaudiotagger.audio.AudioFileIO
-import org.jaudiotagger.tag.FieldKey
 import java.io.File
 import java.util.*
 import java.util.regex.Pattern
+import org.jaudiotagger.audio.AudioFileIO
+import org.jaudiotagger.tag.FieldKey
 
 class LyricsParsedSynchronized private constructor() : AbsLyrics() {
     override var TYPE: Short = LRC
@@ -19,7 +19,12 @@ class LyricsParsedSynchronized private constructor() : AbsLyrics() {
     private var totalTime: Long = -1 // -1 means "no length info in lyrics file"
     private var title: CharSequence? = null
 
-    private constructor(lyrics: SparseArray<CharSequence>, offset: Long, totalTime: Long, title: CharSequence?) : this() {
+    private constructor(
+        lyrics: SparseArray<CharSequence>,
+        offset: Long,
+        totalTime: Long,
+        title: CharSequence?
+    ) : this() {
         if (lyrics.isEmpty()) throw Exception("NO_LYRIC")
         this.lyrics = lyrics
         this.offset = offset
@@ -45,7 +50,7 @@ class LyricsParsedSynchronized private constructor() : AbsLyrics() {
         }
 
         val ms = timeStamp + offset + TIME_OFFSET_MS
-        var index = 0;
+        var index = 0
         // Todo performance improve
         for (i in 0 until lyrics!!.size()) {
             if (ms >= lyrics!!.keyAt(i)) {
@@ -58,7 +63,6 @@ class LyricsParsedSynchronized private constructor() : AbsLyrics() {
         // Todo '\n' detect
         return lyrics!!.valueAt(index) as String
     }
-
 
     companion object {
         private val LRC_LINE_PATTERN = Pattern.compile("((?:\\[.*?\\])+)(.*)")
@@ -94,7 +98,7 @@ class LyricsParsedSynchronized private constructor() : AbsLyrics() {
                 // parse metadata of lyric
                 val attrMatcher = LRC_ATTRIBUTE_PATTERN.matcher(line)
                 if (attrMatcher.find()) {
-                    try { //todo [lyric parse] fix null safe in attr parse
+                    try { // todo [lyric parse] fix null safe in attr parse
                         val attr = attrMatcher.group(1)!!.lowercase(Locale.ENGLISH).trim { it <= ' ' }
                         val value = attrMatcher.group(2)!!.lowercase(Locale.ENGLISH).trim { it <= ' ' }
                         when (attr) {
@@ -116,12 +120,12 @@ class LyricsParsedSynchronized private constructor() : AbsLyrics() {
                     var ms: Int = 0
 
                     // Time
-                    try {//todo: null safe?
+                    try { // todo: null safe?
                         val timeMatcher = LRC_TIME_PATTERN.matcher(time!!)
                         while (timeMatcher.find()) {
                             var m = 0
                             var s = 0f
-                            try {//todo [lyric parse] fix null safe in line parse
+                            try { // todo [lyric parse] fix null safe in line parse
                                 m = timeMatcher.group(1)!!.toInt()
                                 s = timeMatcher.group(2)!!.toFloat()
                             } catch (ex: NumberFormatException) {
@@ -133,20 +137,14 @@ class LyricsParsedSynchronized private constructor() : AbsLyrics() {
                         e.printStackTrace()
                     }
 
-
                     // Write to var
                     lyrics.put(ms, text.orEmpty())
-
-
                 }
             } // loop_end
-
-
 
             // create lyrics
             return LyricsParsedSynchronized(lyrics, offset, totalTime, title)
         }
-
 
         /**
          * create parsed lyrics via song
@@ -169,7 +167,7 @@ class LyricsParsedSynchronized private constructor() : AbsLyrics() {
                 val dir = file.absoluteFile.parentFile
 
                 if (dir != null && dir.exists() && dir.isDirectory) {
-                    val format = ".*%s.*\\.(lrc)" //Todo
+                    val format = ".*%s.*\\.(lrc)" // Todo
                     val filename = Pattern.quote(FileUtil.stripExtension(file.name))
                     val patternForFile = Pattern.compile(String.format(format, filename), Pattern.CASE_INSENSITIVE or Pattern.UNICODE_CASE)
 
@@ -191,10 +189,10 @@ class LyricsParsedSynchronized private constructor() : AbsLyrics() {
                     }
                 }
             }
-            //check success
-            if (rawLyrics.isNullOrEmpty()) throw Exception("NO_LYRICS")//todo
-            //create lyric
-            return parse(rawLyrics!!)//TODO;
+            // check success
+            if (rawLyrics.isNullOrEmpty()) throw Exception("NO_LYRICS") // todo
+            // create lyric
+            return parse(rawLyrics!!) // TODO;
         }
 
         /**
@@ -208,12 +206,11 @@ class LyricsParsedSynchronized private constructor() : AbsLyrics() {
 
     // todo improve
     inner class LyricsCursor(lyricsParsedSynchronized: LyricsParsedSynchronized) {
-        private val l: LyricsParsedSynchronized = lyricsParsedSynchronized;
+        private val l: LyricsParsedSynchronized = lyricsParsedSynchronized
 
         init {
             if (lyricsParsedSynchronized.lyrics!!.isEmpty()) throw Exception("NO_LYRIC")
         }
-
 
         private var index: Int = 0
         fun setIndex(i: Int) {
@@ -249,7 +246,5 @@ class LyricsParsedSynchronized private constructor() : AbsLyrics() {
         fun moveToLast() {
             index = l.lyrics!!.size()
         }
-
     }
-
 }

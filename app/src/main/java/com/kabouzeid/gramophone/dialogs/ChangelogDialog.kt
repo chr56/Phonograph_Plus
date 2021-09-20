@@ -44,7 +44,7 @@ class ChangelogDialog : DialogFragment() {
             .customView(view = customView, noVerticalPadding = false)
             .positiveButton(android.R.string.ok) { if (activity != null) setChangelogRead(requireActivity()) }
 //                .showListener { dialog1 -> if (activity != null) setChangelogRead(requireActivity()) }
-        //set button color
+        // set button color
         dialog.getActionButton(WhichButton.POSITIVE).updateTextColor(ThemeColor.accentColor(requireActivity()))
 
         val webView = customView.findViewById<WebView>(R.id.web_view)

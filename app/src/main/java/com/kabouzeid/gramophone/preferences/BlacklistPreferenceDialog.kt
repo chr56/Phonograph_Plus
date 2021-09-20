@@ -53,12 +53,11 @@ class BlacklistPreferenceDialog : DialogFragment() {
                     .show()
             }
             .noAutoDismiss()
-        //set button color
+        // set button color
         dialog.getActionButton(WhichButton.POSITIVE).updateTextColor(ThemeColor.accentColor(requireActivity()))
         dialog.getActionButton(WhichButton.NEGATIVE).updateTextColor(ThemeColor.accentColor(requireActivity()))
         dialog.getActionButton(WhichButton.NEUTRAL).updateTextColor(ThemeColor.accentColor(requireActivity()))
         return dialog
-
     }
 
     @SuppressLint("CheckResult")
@@ -67,7 +66,6 @@ class BlacklistPreferenceDialog : DialogFragment() {
         val dialog = dialog as MaterialDialog
         dialog.listItems(items = paths)
     }
-
 
     companion object {
         @JvmStatic

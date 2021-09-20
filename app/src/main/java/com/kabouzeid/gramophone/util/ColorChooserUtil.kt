@@ -1,4 +1,5 @@
 package com.kabouzeid.gramophone.util
+
 import android.app.Activity
 import android.content.Context
 import android.os.Build
@@ -26,8 +27,7 @@ class ColorChooserListener(context: Context, defautColor: Int, mode: Int) : Pref
     override fun onPreferenceClick(preference: Preference?): Boolean {
         val dialog = MaterialDialog(context)
             .title(R.string.pref_header_colors)
-            .colorChooser(colors = colors, subColors = subColors, allowCustomArgb = true, initialSelection = defaultColor) {
-                _, color ->
+            .colorChooser(colors = colors, subColors = subColors, allowCustomArgb = true, initialSelection = defaultColor) { _, color ->
                 val editor = ThemeColor.editTheme(context)
                 when (mode) {
                     MODE_PRIMARY_COLOR -> editor.primaryColor(color)
@@ -43,7 +43,7 @@ class ColorChooserListener(context: Context, defautColor: Int, mode: Int) : Pref
                 (context as Activity).recreate()
             }
             .negativeButton(res = android.R.string.cancel)
-        //set button color
+        // set button color
         dialog.getActionButton(WhichButton.POSITIVE).updateTextColor(ThemeColor.accentColor(context))
         dialog.getActionButton(WhichButton.NEGATIVE).updateTextColor(ThemeColor.accentColor(context))
 

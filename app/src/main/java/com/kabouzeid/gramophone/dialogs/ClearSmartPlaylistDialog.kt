@@ -28,11 +28,10 @@ class ClearSmartPlaylistDialog : DialogFragment() {
                     playlist.clear(activity)
                 }
             }
-        //set button color
+        // set button color
         dialog.getActionButton(WhichButton.POSITIVE).updateTextColor(ThemeColor.accentColor(requireActivity()))
         dialog.getActionButton(WhichButton.NEGATIVE).updateTextColor(ThemeColor.accentColor(requireActivity()))
         return dialog
-
     }
     companion object {
         @JvmStatic
