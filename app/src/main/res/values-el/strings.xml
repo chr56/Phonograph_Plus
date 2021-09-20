@@ -3,7 +3,6 @@
     <string name="what_do_you_want_to_share">Τι θα θέλατε να μοιραστείτε;</string>
     <string name="currently_listening_to_x_by_x">Ακούτε το %1$s από %2$s</string>
     <string name="the_audio_file">Το αρχείο ήχου</string>
-    <string name="x_has_been_set_as_ringtone">Ορίστε το %1$s ως ήχο κλήσης.</string>
     <string name="action_set_as_ringtone">Ορισμός ως ήχος κλήσης</string>
     <string name="action_share">Μοιραστείτε</string>
     <string name="action_settings">"Ρυθμίσεις "</string>

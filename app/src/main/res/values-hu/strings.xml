@@ -3,7 +3,6 @@
     <string name="what_do_you_want_to_share">Mit szeretne megosztani?</string>
     <string name="currently_listening_to_x_by_x">Jelenleg a(z) %1$s-t hallgatja %2$s-tól.</string>
     <string name="the_audio_file">A hangfájlt</string>
-    <string name="x_has_been_set_as_ringtone">A(z) %1$s be lett állítva csengőhangnak.</string>
     <string name="action_set_as_ringtone">Beállítás csengőhangként</string>
     <string name="action_share">Megosztás</string>
     <string name="action_settings">"Beállítások"</string>

@@ -3,7 +3,6 @@
     <string name="what_do_you_want_to_share">Ne paylaşmak istersin?</string>
     <string name="currently_listening_to_x_by_x">Şu anda %2$s - %1$s parçası çalınıyor.</string>
     <string name="the_audio_file">Ses dosyası</string>
-    <string name="x_has_been_set_as_ringtone">%1$s zil sesi olarak ayarla.</string>
     <string name="action_set_as_ringtone">Zil sesi olarak ayarla</string>
     <string name="action_share">Paylaş</string>
     <string name="action_settings">"Ayarlar"</string>

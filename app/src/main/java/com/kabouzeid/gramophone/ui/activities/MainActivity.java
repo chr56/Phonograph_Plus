@@ -123,10 +123,6 @@ public class MainActivity extends AbsSlidingMusicPanelActivity {
         currentFragment = (MainActivityFragmentCallbacks) fragment;
     }
 
-/*    private void restoreCurrentFragment() {
-        currentFragment = (MainActivityFragmentCallbacks) getSupportFragmentManager().findFragmentById(R.id.fragment_container);
-    }*/ //TODO
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);

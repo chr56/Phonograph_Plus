@@ -3,7 +3,6 @@
     <string name="what_do_you_want_to_share">O que deseja partilhar?</string>
     <string name="currently_listening_to_x_by_x">A ouvir %1$s por %2$s.</string>
     <string name="the_audio_file">O ficheiro áudio</string>
-    <string name="x_has_been_set_as_ringtone">Definir %1$s como o seu toque de telemóvel.</string>
     <string name="action_set_as_ringtone">Definir como toque de telemóvel</string>
     <string name="action_share">Partilhar</string>
     <string name="action_settings">"Definições"</string>

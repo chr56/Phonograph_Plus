@@ -3,7 +3,6 @@
     <string name="what_do_you_want_to_share">공유할 내용을 선택하세요.</string>
     <string name="currently_listening_to_x_by_x">%2$s 의 %1$s 듣는 중</string>
     <string name="the_audio_file">음원 파일</string>
-    <string name="x_has_been_set_as_ringtone">%1$s 로 전화 벨소리를 설정하였습니다.</string>
     <string name="action_set_as_ringtone">전화 벨소리로 설정</string>
     <string name="action_share">공유</string>
     <string name="action_settings">"설정"</string>

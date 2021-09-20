@@ -333,8 +333,8 @@ public class AlbumDetailActivity extends AbsSlidingMusicPanelActivity implements
                 if (wikiDialog == null) {
                     wikiDialog = new MaterialDialog(this,MaterialDialog.getDEFAULT_BEHAVIOR())
                             .title(null,album.getTitle())
-                            .positiveButton(android.R.string.ok,null,null);//TODO MDD
-                    //set button color
+                            .positiveButton(android.R.string.ok,null,null);
+                    // set button color
                     DialogActionExtKt.getActionButton(wikiDialog, WhichButton.POSITIVE).updateTextColor(ThemeColor.accentColor(this));
 
                 }

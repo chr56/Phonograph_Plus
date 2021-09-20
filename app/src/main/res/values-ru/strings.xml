@@ -3,7 +3,6 @@
     <string name="what_do_you_want_to_share">Чем вы хотите поделиться?</string>
     <string name="currently_listening_to_x_by_x">Сейчас воспроизводится « %1$s » исполнителя %2$s</string>
     <string name="the_audio_file">Аудиофайл</string>
-    <string name="x_has_been_set_as_ringtone">%1$s был установлен на звонок.</string>
     <string name="action_set_as_ringtone">Установить как мелодию звонка</string>
     <string name="action_share">Поделиться</string>
     <string name="action_settings">"Настройки"</string>

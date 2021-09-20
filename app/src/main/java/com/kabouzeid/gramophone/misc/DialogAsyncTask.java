@@ -50,10 +50,10 @@ public abstract class DialogAsyncTask<Params, Progress, Result> extends WeakCont
     @Override
     protected void onProgressUpdate(Progress... values) {
         super.onProgressUpdate(values);
-        Dialog dialog = getDialog();
-        if (dialog != null) {
-            onProgressUpdate(dialog, values);
-        }
+//        Dialog dialog = getDialog();
+//        if (dialog != null) {
+//            onProgressUpdate(dialog, values);
+//        }
     }
 
     @SuppressWarnings("unchecked")

@@ -3,7 +3,6 @@
     <string name="what_do_you_want_to_share">Mitä haluat jakaa?</string>
     <string name="currently_listening_to_x_by_x">Kuunnellaan parhaillaan kappaletta %1$s artistilta %2$s.</string>
     <string name="the_audio_file">Äänitiedosto</string>
-    <string name="x_has_been_set_as_ringtone">Asetettiin %1$s soittoääneksesi.</string>
     <string name="action_set_as_ringtone">Aseta soittoääneksi</string>
     <string name="action_share">Jaa</string>
     <string name="action_settings">"Asetukset"</string>

@@ -3,7 +3,6 @@
     <string name="what_do_you_want_to_share">"Apa yang ingin Anda bagikan? "</string>
     <string name="currently_listening_to_x_by_x">Sedang mendengarkan %1$s oleh %2$s.</string>
     <string name="the_audio_file">Berkas audio</string>
-    <string name="x_has_been_set_as_ringtone">Jadikan %1$s sebagai nada dering Anda.</string>
     <string name="action_set_as_ringtone">Setel sebagai nada dering</string>
     <string name="action_share">Bagikan</string>
     <string name="action_settings">"Pengaturan"</string>

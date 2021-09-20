@@ -3,7 +3,6 @@
     <string name="what_do_you_want_to_share">Vad vill du dela?</string>
     <string name="currently_listening_to_x_by_x">Nu spelas %1$s av %2$s</string>
     <string name="the_audio_file">Ljudfilen</string>
-    <string name="x_has_been_set_as_ringtone">Använd %1$s som ringsignal.</string>
     <string name="action_set_as_ringtone">Använd som ringsignal.</string>
     <string name="action_share">Dela</string>
     <string name="action_settings">"Inställningar"</string>

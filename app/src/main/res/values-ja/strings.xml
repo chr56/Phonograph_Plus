@@ -3,7 +3,6 @@
     <string name="what_do_you_want_to_share">どれを共有しますか？</string>
     <string name="currently_listening_to_x_by_x">現在%2$sの%1$sを再生しています</string>
     <string name="the_audio_file">音声ファイル</string>
-    <string name="x_has_been_set_as_ringtone">%1$sを着信音に設定しました</string>
     <string name="action_set_as_ringtone">着信音に設定</string>
     <string name="action_share">共有</string>
     <string name="action_settings">"設定"</string>

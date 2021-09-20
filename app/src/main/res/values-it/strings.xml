@@ -3,7 +3,6 @@
     <string name="what_do_you_want_to_share">Cosa vuoi condividere?</string>
     <string name="currently_listening_to_x_by_x">Stai ascoltando %1$s di %2$s.</string>
     <string name="the_audio_file">Il file audio</string>
-    <string name="x_has_been_set_as_ringtone">Imposta %1$s come suoneria.</string>
     <string name="action_set_as_ringtone">Imposta come suoneria</string>
     <string name="action_share">Condividi</string>
     <string name="action_settings">"Impostazioni"</string>

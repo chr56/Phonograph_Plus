@@ -3,7 +3,6 @@
     <string name="what_do_you_want_to_share">您想分享哪些內容？</string>
     <string name="currently_listening_to_x_by_x">我正在聽 %2$s 的 %1$s ！</string>
     <string name="the_audio_file">音訊檔案</string>
-    <string name="x_has_been_set_as_ringtone">已將 %1$s 設為鈴聲。</string>
     <string name="action_set_as_ringtone">設為鈴聲</string>
     <string name="action_share">分享</string>
     <string name="action_settings">"設定"</string>

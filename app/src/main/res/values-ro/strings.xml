@@ -3,7 +3,6 @@
     <string name="what_do_you_want_to_share">Ce doriți să distribuiți?</string>
     <string name="currently_listening_to_x_by_x">Momentan ascultând %1$s de %2$s</string>
     <string name="the_audio_file">Fișierul audio</string>
-    <string name="x_has_been_set_as_ringtone">Setează %1$s ca sonerie.</string>
     <string name="action_set_as_ringtone">Setați ca sonerie</string>
     <string name="action_share">Distribuiți</string>
     <string name="action_settings">"Setări"</string>

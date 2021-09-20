@@ -3,7 +3,6 @@
     <string name="what_do_you_want_to_share">מה תרצה/י לשתף?</string>
     <string name="currently_listening_to_x_by_x">כרגע מאזין ל%1$s מאת %2$s.</string>
     <string name="the_audio_file">קובץ האודיו</string>
-    <string name="x_has_been_set_as_ringtone">הגדר/י את %1$s בתור הצלצול שלך.</string>
     <string name="action_set_as_ringtone">הגדרה כצלצול</string>
     <string name="action_share">שיתוף</string>
     <string name="action_settings">"הגדרות"</string>

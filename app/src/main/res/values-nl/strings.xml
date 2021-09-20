@@ -3,7 +3,6 @@
     <string name="what_do_you_want_to_share">Wat wil je delen?</string>
     <string name="currently_listening_to_x_by_x">Je luistert naar %1$s door %2$s.</string>
     <string name="the_audio_file">Het audiobestand</string>
-    <string name="x_has_been_set_as_ringtone">%1$s is ingesteld als beltoon.</string>
     <string name="action_set_as_ringtone">Instellen als beltoon</string>
     <string name="action_share">Delen</string>
     <string name="action_settings">"Instellingen"</string>

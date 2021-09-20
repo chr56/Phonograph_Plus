@@ -1,7 +1,5 @@
 package com.kabouzeid.gramophone.ui.activities.base;
 
-import android.content.Context;
-import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
@@ -17,6 +15,7 @@ import chr_56.MDthemer.core.Themer;
 import chr_56.MDthemer.core.activities.ThemeActivity;
 import chr_56.MDthemer.util.ColorUtil;
 
+// todo remove Platform check
 /**
  * @author Karim Abou Zeid (kabouzeid)
  */
@@ -34,7 +33,7 @@ public abstract class AbsThemeActivity extends ThemeActivity {
     protected void setDrawUnderStatusbar() {
 //        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
             Util.setAllowDrawUnderStatusBar(getWindow());
-//        else //if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) //TODO
+//        else //if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
 //            Util.setStatusBarTranslucent(getWindow());
     }
 
@@ -44,7 +43,7 @@ public abstract class AbsThemeActivity extends ThemeActivity {
      *
      * @param color the new statusbar color (will be shifted down on Lollipop and above)
      */
-    public void setStatusbarColor(int color) { //TODO
+    public void setStatusbarColor(int color) {
         //if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             final View statusBar = getWindow().getDecorView().getRootView().findViewById(R.id.status_bar);
             if (statusBar != null) {
@@ -93,22 +92,4 @@ public abstract class AbsThemeActivity extends ThemeActivity {
         setLightStatusbar(ColorUtil.isColorLight(bgColor));
     }
 
-//    static final class MaterialDialogsUtil {
-//
-//        public static void updateMaterialDialogsThemeSingleton(Context context) {
-//            final ThemeSingleton md = ThemeSingleton.get();
-//            md.titleColor = ThemeColor.textColorPrimary(context);
-//            md.contentColor = ThemeColor.textColorSecondary(context);
-//            md.itemColor = md.titleColor;
-//            md.widgetColor = ThemeColor.accentColor(context);
-//            md.linkColor = ColorStateList.valueOf(md.widgetColor);
-//            md.positiveColor = ColorStateList.valueOf(md.widgetColor);
-//            md.neutralColor = ColorStateList.valueOf(md.widgetColor);
-//            md.negativeColor = ColorStateList.valueOf(md.widgetColor);
-//            md.darkTheme = chr_56.MDthemer.util.Util.isWindowBackgroundDark(context);//todo
-//        }
-//
-//        private MaterialDialogsUtil() {
-//        }
-//    }
 }
