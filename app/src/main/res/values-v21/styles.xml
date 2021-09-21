@@ -1,0 +1,30 @@
+<resources>
+
+    <style name="Theme.Phonograph" parent="Theme.Phonograph.Base">
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:windowSharedElementsUseOverlay">false</item>
+    </style>
+
+    <style name="Theme.Phonograph.Light" parent="Theme.Phonograph.Base.Light">
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:windowSharedElementsUseOverlay">false</item>
+    </style>
+
+    <style name="Theme.Phonograph.Black" parent="Theme.Phonograph.Base.Black">
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:windowSharedElementsUseOverlay">false</item>
+    </style>
+
+    <style name="Theme.Phonograph.Notification" parent="@android:style/TextAppearance.Material.Notification" />
+
+    <style name="Theme.Phonograph.Notification.Title" parent="@android:style/TextAppearance.Material.Notification.Title" />
+
+    <style name="Fab" parent="FabParent">
+        <item name="android:transitionName">@string/transition_fab</item>
+    </style>
+
+    <style name="MusicProgressSlider" parent="MusicProgressSliderParent">
+        <item name="android:padding">0dp</item>
+    </style>
+
+</resources>

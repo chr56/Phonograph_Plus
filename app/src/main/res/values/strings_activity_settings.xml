@@ -1,0 +1,45 @@
+<resources>
+
+    <string-array name="pref_general_theme_list_titles">
+        <item>@string/light_theme_name</item>
+        <item>@string/dark_theme_name</item>
+        <item>@string/black_theme_name</item>
+    </string-array>
+
+    <string-array name="pref_general_theme_list_values">
+        <item>light</item>
+        <item>dark</item>
+        <item>black</item>
+    </string-array>
+
+    <string-array name="pref_auto_download_images_titles">
+        <item>@string/always</item>
+        <item>@string/only_on_wifi</item>
+        <item>@string/never</item>
+    </string-array>
+
+    <string-array name="pref_auto_download_images_values">
+        <item>always</item>
+        <item>only_wifi</item>
+        <item>never</item>
+    </string-array>
+
+    <string-array name="pref_playlists_last_added_interval_titles">
+        <item>@string/today</item>
+        <item>@string/this_week</item>
+        <item>@string/past_seven_days</item>
+        <item>@string/this_month</item>
+        <item>@string/past_three_months</item>
+        <item>@string/this_year</item>
+    </string-array>
+
+    <string-array name="pref_playlists_last_added_interval_values">
+        <item>today</item>
+        <item>this_week</item>
+        <item>past_seven_days</item>
+        <item>this_month</item>
+        <item>past_three_months</item>
+        <item>this_year</item>
+    </string-array>
+
+</resources>

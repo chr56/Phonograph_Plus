@@ -1,0 +1,40 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <style name="Theme.Phonograph" parent="Theme.Phonograph.Base" />
+
+    <style name="Theme.Phonograph.Light" parent="Theme.Phonograph.Base.Light" />
+
+    <style name="Theme.Phonograph.Black" parent="Theme.Phonograph.Base.Black" />
+
+    <style name="Theme.Phonograph.Notification" parent="@android:style/TextAppearance.StatusBar.EventContent" />
+
+    <style name="Theme.Phonograph.Notification.Title" parent="@android:style/TextAppearance.StatusBar.EventContent.Title" />
+
+    <style name="OverFlowButton">
+        <item name="srcCompat">@drawable/ic_more_vert_white_24dp</item>
+        <item name="android:layout_margin">8dp</item>
+        <item name="android:layout_width">48dp</item>
+        <item name="android:layout_height">48dp</item>
+        <item name="android:scaleType">center</item>
+        <item name="android:background">?attr/roundSelector</item>
+        <item name="android:focusableInTouchMode">false</item>
+        <item name="android:focusable">false</item>
+    </style>
+
+    <style name="Fab" parent="FabParent" />
+
+    <style name="MusicProgressSlider" parent="MusicProgressSliderParent">
+        <item name="android:thumbOffset">0dp</item>
+    </style>
+
+    <style name="Toolbar">
+        <item name="titleMarginStart">16dp</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">?android:attr/actionBarSize</item>
+        <item name="android:theme">@style/ThemeOverlay.AppCompat.Dark.ActionBar</item>
+        <item name="popupTheme">?toolbarPopupTheme</item>
+        <item name="android:elevation" tools:ignore="NewApi">@dimen/toolbar_elevation</item>
+        <item name="android:transitionName" tools:ignore="NewApi">toolbar</item>
+    </style>
+
+</resources>

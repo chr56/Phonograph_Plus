@@ -1,0 +1,67 @@
+<resources>
+
+    <dimen name="default_item_margin">16dp</dimen>
+
+    <dimen name="detail_header_height">176dp</dimen>
+    <dimen name="detail_header_image_height">144dp</dimen>
+    <dimen name="title_view_height">72dp</dimen>
+    <dimen name="toolbar_elevation">4dp</dimen>
+    <dimen name="card_elevation">2dp</dimen>
+
+    <!-- 3x standard action bar height (56dp) -->
+    <dimen name="toolbar_scrim_height">168dp</dimen>
+
+    <dimen name="progress_container_height">20dp</dimen>
+    <dimen name="fab_media_controller_container_height">120dp</dimen>
+    <dimen name="media_controller_container_height">104dp</dimen>
+
+    <dimen name="status_bar_padding">0dp</dimen>
+
+    <dimen name="tab_height">48dp</dimen>
+
+    <dimen name="tagEditorHeaderVariableSpace">100dp</dimen>
+
+    <!--
+Refer to App Widget Documentation for margin information
+http://developer.android.com/guide/topics/appwidgets/index.html#CreatingLayout
+    -->
+    <dimen name="pause_bar_width">5dp</dimen>
+    <dimen name="pause_bar_distance">4dp</dimen>
+    <dimen name="pause_bar_height">14dp</dimen>
+
+    <dimen name="empty_text_size">20sp</dimen>
+
+    <dimen name="notification_big_image_size">128dp</dimen>
+
+    <!-- MUST BE THE RESULT OF WIDTH PLUS INSET-->
+
+    <!-- ONLY 0dp WHILE THERE IS THE BUG IN DESIGN SUPPORT LIBRARY 22.2.0-->
+    <dimen name="fab_margin_top_left_right">0dp</dimen>
+
+    <!-- For use with 24dp drawables in the item_list layouts-->
+    <dimen name="list_item_image_icon_padding">8dp</dimen>
+
+    <dimen name="mini_player_height">56dp</dimen>
+
+    <!--App Widgets-->
+    <dimen name="app_widget_classic_image_size">96dp</dimen>
+    <dimen name="app_widget_classic_min_width">250dp</dimen>
+    <dimen name="app_widget_classic_min_height">40dp</dimen>
+
+    <dimen name="app_widget_small_button_height">48dp</dimen>
+    <dimen name="app_widget_small_image_size">48dp</dimen>
+    <dimen name="app_widget_small_min_width">250dp</dimen>
+    <dimen name="app_widget_small_min_height">40dp</dimen>
+
+    <dimen name="app_widget_big_min_width">250dp</dimen>
+    <dimen name="app_widget_big_min_height">110dp</dimen>
+
+    <dimen name="app_widget_card_image_size">56dp</dimen>
+    <dimen name="app_widget_card_min_width">250dp</dimen>
+    <dimen name="app_widget_card_min_height">40dp</dimen>
+    <dimen name="app_widget_card_buttons_width">128dp</dimen>
+    <dimen name="app_widget_card_radius">2dp</dimen>
+
+    <dimen name="card_on_app_bar_side_padding">8dp</dimen>
+
+</resources>
