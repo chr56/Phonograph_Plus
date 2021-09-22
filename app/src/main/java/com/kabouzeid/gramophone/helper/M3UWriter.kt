@@ -1,55 +1,59 @@
-package com.kabouzeid.gramophone.helper;
+package com.kabouzeid.gramophone.helper
 
-import android.content.Context;
+import android.content.Context
+import com.kabouzeid.gramophone.loader.PlaylistSongLoader
+import com.kabouzeid.gramophone.model.AbsCustomPlaylist
+import com.kabouzeid.gramophone.model.Playlist
+import com.kabouzeid.gramophone.model.Song
+import java.io.BufferedWriter
+import java.io.File
+import java.io.FileWriter
+import java.io.IOException
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Locale
 
-import com.kabouzeid.gramophone.loader.PlaylistSongLoader;
-import com.kabouzeid.gramophone.model.AbsCustomPlaylist;
-import com.kabouzeid.gramophone.model.Playlist;
-import com.kabouzeid.gramophone.model.Song;
+object M3UWriter {
+    private const val EXTENSION = "m3u"
+    private const val HEADER = "#EXTM3U"
+    private const val ENTRY = "#EXTINF:"
+    private const val DURATION_SEPARATOR = ","
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.List;
-import java.util.Locale;
+    @JvmStatic
+    @Throws(IOException::class)
+    fun write(context: Context?, dir: File, playlist: Playlist): File {
+        if (!dir.exists()) dir.mkdirs() //noinspection ResultOfMethodCallIgnored
+        val filename: String
 
-public class M3UWriter implements M3UConstants {
+        val songs: List<Song>
+        if (playlist is AbsCustomPlaylist) {
+            songs = playlist.getSongs(context)
 
-    public static File write(Context context, File dir, Playlist playlist) throws IOException {
-        if (!dir.exists()) //noinspection ResultOfMethodCallIgnored
-            dir.mkdirs();
-        //File name
-        String filename;
-
-        List<? extends Song> songs;
-        if (playlist instanceof AbsCustomPlaylist) {
-            songs = ((AbsCustomPlaylist) playlist).getSongs(context);
             // Since AbsCustomPlaylists are dynamic, we add a timestamp after their names.
-            filename = playlist.name.concat(new SimpleDateFormat("_yy-MM-dd_HH-mm", Locale.getDefault()).format(Calendar.getInstance().getTime()));
+            filename =
+                playlist.name + SimpleDateFormat("_yy-MM-dd_HH-mm", Locale.getDefault()).format(
+                Calendar.getInstance().time
+            )
         } else {
-            songs = PlaylistSongLoader.getPlaylistSongList(context, playlist.id);
-            filename = playlist.name;
+            songs = PlaylistSongLoader.getPlaylistSongList(context!!, playlist.id)
+            filename = playlist.name
         }
 
-        File file = new File(dir, filename.concat("." + EXTENSION));
+        val file = File(dir, "$filename.$EXTENSION")
+        if (songs.isNotEmpty()) {
+            val bw = BufferedWriter(FileWriter(file))
 
-        if (songs.size() > 0) {
-            BufferedWriter bw = new BufferedWriter(new FileWriter(file));
-
-            bw.write(HEADER);
-            for (Song song : songs) {
-                bw.newLine();
-                bw.write(ENTRY + song.duration + DURATION_SEPARATOR + song.artistName + " - " + song.title);
-                bw.newLine();
-                bw.write(song.data);
+            bw.write(HEADER)
+            for (song in songs) {
+                bw.newLine()
+                bw.write(ENTRY + song.duration + DURATION_SEPARATOR + song.artistName + " - " + song.title)
+                bw.newLine()
+                bw.write(song.data)
             }
 
-            bw.close();
+            bw.close()
         }
 
-        return file;
+        return file
     }
 }
