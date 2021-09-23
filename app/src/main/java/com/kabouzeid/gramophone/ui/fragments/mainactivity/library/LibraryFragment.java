@@ -383,6 +383,8 @@ public class LibraryFragment extends AbsMainActivityFragment implements CabHolde
                     .setChecked(currentSortOrder.equals(SortOrder.SongSortOrder.SONG_ALBUM));
             sortOrderMenu.add(0, R.id.action_song_sort_order_year, 4, R.string.sort_order_year)
                     .setChecked(currentSortOrder.equals(SortOrder.SongSortOrder.SONG_YEAR));
+            sortOrderMenu.add(0, R.id.action_song_sort_order_date_added, 5, R.string.sort_order_date_added)
+                    .setChecked(currentSortOrder.equals(SortOrder.SongSortOrder.SONG_DATE));
         }
 
         sortOrderMenu.setGroupCheckable(0, true, true);
@@ -430,6 +432,9 @@ public class LibraryFragment extends AbsMainActivityFragment implements CabHolde
                     break;
                 case R.id.action_song_sort_order_year:
                     sortOrder = SortOrder.SongSortOrder.SONG_YEAR;
+                    break;
+                case R.id.action_song_sort_order_date_added:
+                    sortOrder = SortOrder.SongSortOrder.SONG_DATE;
                     break;
             }
         }
