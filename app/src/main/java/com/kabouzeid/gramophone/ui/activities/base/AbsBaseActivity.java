@@ -23,7 +23,7 @@ import chr_56.MDthemer.core.ThemeColor;
 /**
  * @author Karim Abou Zeid (kabouzeid)
  */
-public abstract class AbsBaseActivity extends AbsThemeActivity {
+public abstract class AbsBaseActivity extends ThemeActivity {
     public static final int PERMISSION_REQUEST = 100;
 
     private boolean hadPermissions;
