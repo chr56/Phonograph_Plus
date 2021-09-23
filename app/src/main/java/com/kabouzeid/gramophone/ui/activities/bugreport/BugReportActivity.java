@@ -22,13 +22,12 @@ import androidx.annotation.StringRes;
 import androidx.appcompat.widget.Toolbar;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.afollestad.materialdialogs.utils.MDUtil;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.kabouzeid.gramophone.R;
 import com.kabouzeid.gramophone.misc.DialogAsyncTask;
-import com.kabouzeid.gramophone.ui.activities.base.AbsThemeActivity;
+import com.kabouzeid.gramophone.ui.activities.base.ThemeActivity;
 import com.kabouzeid.gramophone.ui.activities.bugreport.model.DeviceInfo;
 import com.kabouzeid.gramophone.ui.activities.bugreport.model.Report;
 import com.kabouzeid.gramophone.ui.activities.bugreport.model.github.ExtraInfo;
@@ -49,7 +48,7 @@ import butterknife.ButterKnife;
 import chr_56.MDthemer.core.ThemeColor;
 import chr_56.MDthemer.util.TintHelper;
 
-public class BugReportActivity extends AbsThemeActivity {
+public class BugReportActivity extends ThemeActivity {
 
     private static final int STATUS_BAD_CREDENTIALS = 401;
     private static final int STATUS_ISSUES_NOT_ENABLED = 410;
