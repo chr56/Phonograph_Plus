@@ -36,7 +36,7 @@ class AddToPlaylistDialog : DialogFragment() {
 
     companion object {
         @JvmStatic
-        fun create(songs: List<Song>?): AddToPlaylistDialog {
+        fun create(songs: List<Song?>): AddToPlaylistDialog {
             val dialog = AddToPlaylistDialog()
             val args = Bundle()
             args.putParcelableArrayList("songs", ArrayList(songs))

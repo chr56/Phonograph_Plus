@@ -42,14 +42,8 @@ class DeleteSongsDialog : DialogFragment() {
     }
 
     companion object {
-        fun create(song: Song): DeleteSongsDialog {
-            val list: MutableList<Song> = ArrayList()
-            list.add(song)
-            return create(list)
-        }
-
         @JvmStatic
-        fun create(songs: List<Song>?): DeleteSongsDialog {
+        fun create(songs: List<Song?>): DeleteSongsDialog {
             val dialog = DeleteSongsDialog()
             val args = Bundle()
             args.putParcelableArrayList("songs", ArrayList(songs))
