@@ -210,7 +210,7 @@ public class SongAdapter extends AbsMultiSelectAdapter<SongAdapter.ViewHolder, S
     }
 
     public class ViewHolder extends MediaEntryViewHolder {
-        protected int DEFAULT_MENU_RES = SongMenuHelper.MENU_RES;
+        protected int DEFAULT_MENU_RES = SongMenuHelper.menuRes;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -223,11 +223,6 @@ public class SongAdapter extends AbsMultiSelectAdapter<SongAdapter.ViewHolder, S
                 @Override
                 public Song getSong() {
                     return ViewHolder.this.getSong();
-                }
-
-                @Override
-                public int getMenuRes() {
-                    return getSongMenuRes();
                 }
 
                 @Override
