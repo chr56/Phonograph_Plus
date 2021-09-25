@@ -48,7 +48,7 @@ public class OrderablePlaylistSongAdapter extends PlaylistSongAdapter implements
     }
 
     @Override
-    protected void onMultipleItemAction(@NonNull MenuItem menuItem, @NonNull List<Song> selection) {
+    protected void onMultipleItemAction(@NonNull MenuItem menuItem, @NonNull List<? extends Song> selection) {
         switch (menuItem.getItemId()) {
             case R.id.action_remove_from_playlist:
                 RemoveFromPlaylistDialog.create((List<PlaylistSong>) (List) selection).show(activity.getSupportFragmentManager(), "ADD_PLAYLIST");
@@ -118,7 +118,9 @@ public class OrderablePlaylistSongAdapter extends PlaylistSongAdapter implements
         protected boolean onSongMenuItemClick(MenuItem item) {
             switch (item.getItemId()) {
                 case R.id.action_remove_from_playlist:
-                    RemoveFromPlaylistDialog.create(List.of((PlaylistSong) getSong())).show(activity.getSupportFragmentManager(), "REMOVE_FROM_PLAYLIST");
+                    List<PlaylistSong> l = new ArrayList<PlaylistSong>(1);
+                    l.add((PlaylistSong) getSong());
+                    RemoveFromPlaylistDialog.create(l).show(activity.getSupportFragmentManager(), "REMOVE_FROM_PLAYLIST");
                     return true;
             }
             return super.onSongMenuItemClick(item);

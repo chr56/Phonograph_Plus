@@ -175,9 +175,9 @@ public class AlbumAdapter extends AbsMultiSelectAdapter<AlbumAdapter.ViewHolder,
     }
 
     @Override
-    protected void onMultipleItemAction(@NonNull MenuItem menuItem, @NonNull List<Album> selection) {
-        SongsMenuHelper.handleMenuClick(activity, getSongList(selection), menuItem.getItemId());
-    }
+    protected void onMultipleItemAction(@NonNull MenuItem menuItem, @NonNull List<? extends Album> selection) {
+        SongsMenuHelper.handleMenuClick(activity, getSongList((List<Album>) selection), menuItem.getItemId());
+    }//todo
 
     @NonNull
     private List<Song> getSongList(@NonNull List<Album> albums) {

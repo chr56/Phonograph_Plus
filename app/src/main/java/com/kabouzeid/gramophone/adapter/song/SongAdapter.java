@@ -179,7 +179,7 @@ public class SongAdapter extends AbsMultiSelectAdapter<SongAdapter.ViewHolder, S
     }
 
     @Override
-    protected void onMultipleItemAction(@NonNull MenuItem menuItem, @NonNull List<Song> selection) {
+    protected void onMultipleItemAction(@NonNull MenuItem menuItem, @NonNull List<? extends Song> selection) {
         SongsMenuHelper.handleMenuClick(activity, selection, menuItem.getItemId());
     }
 

@@ -24,7 +24,6 @@ import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView;
 
 import java.io.File;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
 import java.util.List;
 
 import chr_56.MDthemer.util.Util;
@@ -152,9 +151,9 @@ public class SongFileAdapter extends AbsMultiSelectAdapter<SongFileAdapter.ViewH
     }
 
     @Override
-    protected void onMultipleItemAction(MenuItem menuItem, List<File> selection) {
+    protected void onMultipleItemAction(MenuItem menuItem, List<? extends File> selection) {
         if (callbacks == null) return;
-        callbacks.onMultipleItemAction(menuItem, selection);
+        callbacks.onMultipleItemAction(menuItem, (List<File>) selection);
     }
 
     @NonNull
