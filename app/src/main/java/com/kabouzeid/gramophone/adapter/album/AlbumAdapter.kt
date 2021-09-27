@@ -82,7 +82,7 @@ open class AlbumAdapter(
         val album = dataSet[position]
         val isChecked = isChecked(album)
         holder.itemView.isActivated = isChecked
-        if (holder.adapterPosition == itemCount - 1) {
+        if (holder.bindingAdapterPosition == itemCount - 1) {
             if (holder.shortSeparator != null) {
                 holder.shortSeparator!!.visibility = View.GONE
             }
@@ -186,7 +186,7 @@ open class AlbumAdapter(
     inner class ViewHolder(itemView: View) : MediaEntryViewHolder(itemView) {
         override fun onClick(v: View) {
             if (isInQuickSelectMode) {
-                toggleChecked(adapterPosition)
+                toggleChecked(bindingAdapterPosition)
             } else {
                 val albumPairs = arrayOf<Pair<*, *>>(
                     Pair.create(
@@ -194,12 +194,12 @@ open class AlbumAdapter(
                         activity.resources.getString(R.string.transition_album_art)
                     )
                 )
-                NavigationUtil.goToAlbum(activity, dataSet[adapterPosition].id, *albumPairs)
+                NavigationUtil.goToAlbum(activity, dataSet[bindingAdapterPosition].id, *albumPairs)
             }
         }
 
         override fun onLongClick(view: View): Boolean {
-            toggleChecked(adapterPosition)
+            toggleChecked(bindingAdapterPosition)
             return true
         }
 

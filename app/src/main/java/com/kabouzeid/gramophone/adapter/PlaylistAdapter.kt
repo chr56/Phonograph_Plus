@@ -73,7 +73,7 @@ class PlaylistAdapter(
         if (holder.title != null) {
             holder.title!!.text = playlist.name
         }
-        if (holder.adapterPosition == itemCount - 1) {
+        if (holder.bindingAdapterPosition == itemCount - 1) {
             if (holder.shortSeparator != null) {
                 holder.shortSeparator!!.visibility = View.GONE
             }
@@ -211,7 +211,7 @@ class PlaylistAdapter(
             }
             if (menu != null) {
                 menu!!.setOnClickListener { view: View? ->
-                    val playlist = dataSet[adapterPosition]
+                    val playlist = dataSet[bindingAdapterPosition]
                     val popupMenu = PopupMenu(activity, view)
                     popupMenu.inflate(if (getItemViewType() == SMART_PLAYLIST) R.menu.menu_item_smart_playlist else R.menu.menu_item_playlist)
                     if (playlist is LastAddedPlaylist) {
@@ -228,7 +228,7 @@ class PlaylistAdapter(
                             }
                         }
                         handleMenuClick(
-                            activity, dataSet[adapterPosition], item
+                            activity, dataSet[bindingAdapterPosition], item
                         )
                     }
                     popupMenu.show()
@@ -237,15 +237,15 @@ class PlaylistAdapter(
         }
         override fun onClick(view: View) {
             if (isInQuickSelectMode) {
-                toggleChecked(adapterPosition)
+                toggleChecked(bindingAdapterPosition)
             } else {
-                val playlist = dataSet[adapterPosition]
+                val playlist = dataSet[bindingAdapterPosition]
                 NavigationUtil.goToPlaylist(activity, playlist)
             }
         }
 
         override fun onLongClick(view: View): Boolean {
-            toggleChecked(adapterPosition)
+            toggleChecked(bindingAdapterPosition)
             return true
         }
     }

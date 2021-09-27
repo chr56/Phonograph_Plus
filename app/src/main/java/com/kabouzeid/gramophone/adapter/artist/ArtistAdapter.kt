@@ -76,7 +76,7 @@ class ArtistAdapter(
         val artist = dataSet[position]
         val isChecked = isChecked(artist)
         holder.itemView.isActivated = isChecked
-        if (holder.adapterPosition == itemCount - 1) {
+        if (holder.bindingAdapterPosition == itemCount - 1) {
             if (holder.shortSeparator != null) {
                 holder.shortSeparator!!.visibility = View.GONE
             }
@@ -173,7 +173,7 @@ class ArtistAdapter(
     inner class ViewHolder(itemView: View) : MediaEntryViewHolder(itemView) {
         override fun onClick(v: View) {
             if (isInQuickSelectMode) {
-                toggleChecked(adapterPosition)
+                toggleChecked(bindingAdapterPosition)
             } else {
                 val artistPairs = arrayOf<Pair<*, *>>(
                     Pair.create(
@@ -181,12 +181,12 @@ class ArtistAdapter(
                         activity.resources.getString(R.string.transition_artist_image)
                     )
                 )
-                NavigationUtil.goToArtist(activity, dataSet[adapterPosition].id, *artistPairs)
+                NavigationUtil.goToArtist(activity, dataSet[bindingAdapterPosition].id, *artistPairs)
             }
         }
 
         override fun onLongClick(view: View): Boolean {
-            toggleChecked(adapterPosition)
+            toggleChecked(bindingAdapterPosition)
             return true
         }
 
