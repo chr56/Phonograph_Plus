@@ -37,7 +37,7 @@ open class SongAdapter @JvmOverloads constructor(
     @LayoutRes protected var itemLayoutRes: Int,
     protected var usePalette: Boolean = false,
     cabHolder: CabHolder?,
-    protected val showSectionName: Boolean = true
+    protected var showSectionName: Boolean = true
 ) : AbsMultiSelectAdapter<SongAdapter.ViewHolder?, Song?>(
     activity, cabHolder, R.menu.menu_media_selection
 ),
@@ -177,7 +177,7 @@ open class SongAdapter @JvmOverloads constructor(
 
     open inner class ViewHolder(itemView: View) : MediaEntryViewHolder(itemView) {
 
-        protected open var songMenuRes = SongMenuHelper.menuRes
+        protected open val songMenuRes = SongMenuHelper.menuRes
         protected open val song: Song
             get() = dataSet[bindingAdapterPosition]
 
