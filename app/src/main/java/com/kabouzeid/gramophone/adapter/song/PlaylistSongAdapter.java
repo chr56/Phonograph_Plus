@@ -39,7 +39,7 @@ public class PlaylistSongAdapter extends AbsOffsetSongAdapter {
         if (holder.getItemViewType() == OFFSET_ITEM) {
             int textColor = ThemeColor.textColorSecondary(activity);
             if (holder.title != null) {
-                holder.title.setText(MusicUtil.getPlaylistInfoString(activity, dataSet));
+                holder.title.setText(MusicUtil.getPlaylistInfoString(activity, getDataSet()));
                 holder.title.setTextColor(textColor);
             }
             if (holder.text != null) {

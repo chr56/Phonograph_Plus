@@ -72,7 +72,7 @@ public class ShuffleButtonSongAdapter extends AbsOffsetSongAdapter {
         @Override
         public void onClick(View v) {
             if (getItemViewType() == OFFSET_ITEM) {
-                MusicPlayerRemote.openAndShuffleQueue(dataSet, true);
+                MusicPlayerRemote.openAndShuffleQueue(getDataSet(), true);
                 return;
             }
             super.onClick(v);
