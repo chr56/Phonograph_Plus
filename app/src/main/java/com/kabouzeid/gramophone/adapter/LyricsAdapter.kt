@@ -10,7 +10,7 @@ import com.kabouzeid.gramophone.helper.MusicPlayerRemote
 import com.kabouzeid.gramophone.util.MusicUtil
 import java.util.regex.Pattern
 
-class SimpleAdapter(stamps: IntArray, lines: Array<CharSequence>) : RecyclerView.Adapter<SimpleAdapter.VH>() {
+class LyricsAdapter(stamps: IntArray, lines: Array<CharSequence>) : RecyclerView.Adapter<LyricsAdapter.VH>() {
     var lyrics = lines
     var timeStamps = stamps
 

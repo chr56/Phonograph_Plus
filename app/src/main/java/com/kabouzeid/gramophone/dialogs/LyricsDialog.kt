@@ -10,7 +10,7 @@ import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.customview.customView
 import com.afollestad.materialdialogs.customview.getCustomView
 import com.kabouzeid.gramophone.R
-import com.kabouzeid.gramophone.adapter.SimpleAdapter
+import com.kabouzeid.gramophone.adapter.LyricsAdapter
 import com.kabouzeid.gramophone.model.Song
 import com.kabouzeid.gramophone.model.lyrics.AbsLyrics
 
@@ -31,7 +31,7 @@ class LyricsDialog : DialogFragment() {
             .customView(R.layout.dialog_lyrics, horizontalPadding = true)
         val recyclerView = dialog.getCustomView().findViewById<RecyclerView>(R.id.recycler_view_lyrics)
         recyclerView.layoutManager = LinearLayoutManager(activity, RecyclerView.VERTICAL, false)
-        recyclerView.adapter = SimpleAdapter(timeStamps, lines)
+        recyclerView.adapter = LyricsAdapter(timeStamps, lines)
 
         return dialog
     }
