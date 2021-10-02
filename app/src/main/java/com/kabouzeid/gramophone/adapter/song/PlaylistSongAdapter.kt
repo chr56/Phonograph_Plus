@@ -36,7 +36,7 @@ open class PlaylistSongAdapter(
         if (holder.itemViewType == OFFSET_ITEM) {
             val textColor = ThemeColor.textColorSecondary(activity)
             holder.title?.let {
-                it.text = MusicUtil.getPlaylistInfoString(activity, getDataSet())
+                it.text = MusicUtil.getPlaylistInfoString(activity, dataSet)
                 it.setTextColor(textColor)
             }
             holder.text?.let {

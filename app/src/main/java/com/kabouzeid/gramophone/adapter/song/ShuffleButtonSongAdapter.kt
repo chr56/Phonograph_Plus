@@ -64,7 +64,7 @@ class ShuffleButtonSongAdapter(
     inner class ViewHolder(itemView: View) : AbsOffsetSongAdapter.ViewHolder(itemView) {
         override fun onClick(v: View) {
             if (itemViewType == OFFSET_ITEM) {
-                MusicPlayerRemote.openAndShuffleQueue(getDataSet(), true)
+                MusicPlayerRemote.openAndShuffleQueue(dataSet, true)
                 return
             }
             super.onClick(v)

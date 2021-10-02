@@ -33,7 +33,7 @@ import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView.S
  */
 open class SongAdapter @JvmOverloads constructor(
     @JvmField protected val activity: AppCompatActivity,
-    @JvmField var dataSet: List<Song>,
+    dataSet: List<Song>,
     @LayoutRes protected var itemLayoutRes: Int,
     protected var usePalette: Boolean = false,
     cabHolder: CabHolder?,
@@ -48,7 +48,11 @@ open class SongAdapter @JvmOverloads constructor(
         setHasStableIds(true)
     }
 
-    fun getDataSet(): List<Song> = dataSet
+    var dataSet: List<Song> = dataSet
+        get() = field
+        protected set(dataSet: List<Song>) {
+            field = dataSet
+        }
 
     fun swapDataSet(dataSet: List<Song>) {
         this.dataSet = dataSet

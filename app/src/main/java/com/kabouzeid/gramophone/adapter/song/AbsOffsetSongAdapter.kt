@@ -82,7 +82,7 @@ abstract class AbsOffsetSongAdapter(
             if (isInQuickSelectMode && itemViewType != OFFSET_ITEM) {
                 toggleChecked(adapterPosition)
             } else {
-                MusicPlayerRemote.openQueue(getDataSet(), adapterPosition - 1, true)
+                MusicPlayerRemote.openQueue(dataSet, adapterPosition - 1, true)
             }
         }
 
