@@ -331,7 +331,7 @@ public class FoldersFragment extends AbsMainActivityFragment implements MainActi
     }
 
     @Override
-    public void onMultipleItemAction(MenuItem item, List<File> files) {
+    public void onMultipleItemAction(MenuItem item, List<? extends File> files) {
         final int itemId = item.getItemId();
         new ListSongsAsyncTask(getActivity(), null, (songs, extra) -> {
             if (!songs.isEmpty()) {
@@ -349,7 +349,7 @@ public class FoldersFragment extends AbsMainActivityFragment implements MainActi
                         .setActionTextColor(ThemeColor.accentColor(getActivity()))
                         .show();
             }
-        }).execute(new ListSongsAsyncTask.LoadingInfo(files, AUDIO_FILE_FILTER, getFileComparator()));
+        }).execute(new ListSongsAsyncTask.LoadingInfo((List<File>) files, AUDIO_FILE_FILTER, getFileComparator()));
     }
 
     private List<File> toList(File file) {
