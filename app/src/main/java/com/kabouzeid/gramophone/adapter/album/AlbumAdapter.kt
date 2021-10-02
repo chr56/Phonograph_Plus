@@ -31,13 +31,20 @@ import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView.S
  */
 open class AlbumAdapter(
     protected val activity: AppCompatActivity,
-    @JvmField protected var dataSet: List<Album>,
+    dataSet: List<Album>,
     @LayoutRes protected var itemLayoutRes: Int,
     protected var usePalette: Boolean = false,
     cabHolder: CabHolder?
 ) : AbsMultiSelectAdapter<AlbumAdapter.ViewHolder?, Album?>(
     activity, cabHolder, R.menu.menu_media_selection
 ), SectionedAdapter {
+
+    var dataSet:List<Album> = dataSet
+        get() = field
+        protected set(dataSet: List<Album>) {
+        field = dataSet
+    }
+
 
 
     init {
@@ -52,10 +59,6 @@ open class AlbumAdapter(
     fun swapDataSet(dataSet: List<Album>) {
         this.dataSet = dataSet
         notifyDataSetChanged()
-    }
-
-    fun getDataSet(): List<Album>{
-        return dataSet
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
