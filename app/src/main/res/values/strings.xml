@@ -304,7 +304,7 @@
     <string name="perf_title_fixed_tab_layout">Fix all tabs</string>
     <string name="pref_summary_fixed_tab_layout">Tabs in top will not be scrollable, but wound be tiled without any margin.</string>
     <string name="night_mode">Night Mode</string>
-    <string name="auto_mode_on">Auto Mode is on!</string>
+    <string name="auto_mode_on">Auto Mode is on, please turn off and try again!</string>
     <string name="Permission_denied">Permission denied!</string>
     <string name="err_permission_storage">Storage Permission</string>
     <string name="add_blacklist">Do you want to add this to blacklist?</string>
