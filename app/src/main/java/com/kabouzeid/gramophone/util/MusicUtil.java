@@ -19,6 +19,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.FileProvider;
 
+import com.kabouzeid.gramophone.BuildConfig;
 import com.kabouzeid.gramophone.R;
 import com.kabouzeid.gramophone.helper.MusicPlayerRemote;
 import com.kabouzeid.gramophone.loader.PlaylistLoader;
@@ -40,7 +41,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
@@ -343,7 +343,10 @@ public class MusicUtil {
         try {
             rawLyrics = AudioFileIO.read(file).getTagOrCreateDefault().getFirst(FieldKey.LYRICS);
         } catch (Exception e) {
-            e.printStackTrace();
+            String buildType = BuildConfig.BUILD_TYPE;
+            if (!buildType.equals("release") || !buildType.equals("pub") || !buildType.equals("experimental")){
+                e.printStackTrace();
+            }
         }
 
         if (rawLyrics == null || rawLyrics.trim().isEmpty()) {
