@@ -191,7 +191,7 @@ open class SongAdapter @JvmOverloads constructor(
             setupMenu()
         }
         protected open fun setupMenu(@Nullable @MenuRes menuRes: Int = R.menu.menu_item_song) {
-            menu!!.setOnClickListener(object : SongMenuHelper.ClickMenuListener(activity, menuRes) {
+            menu?.setOnClickListener(object : SongMenuHelper.ClickMenuListener(activity, menuRes) {
                 override val song: Song
                     get() = this@ViewHolder.song
 
