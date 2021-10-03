@@ -95,8 +95,6 @@ class OrderablePlaylistSongAdapter(
         PlaylistSongAdapter.ViewHolder(itemView),
         DraggableItemViewHolder {
 
-        override val songMenuRes: Int
-            get() = R.menu.menu_item_playlist_song
 
         init {
             dragView?.let {
@@ -106,7 +104,7 @@ class OrderablePlaylistSongAdapter(
         }
 
         override fun setupMenu(menuRes: Int?) {
-            super.setupMenu(songMenuRes)
+            super.setupMenu(R.menu.menu_item_song_short)
         }
 
         @DraggableItemStateFlags

@@ -25,7 +25,7 @@ import com.kabouzeid.gramophone.util.RingtoneManager
  * @author Karim Abou Zeid (kabouzeid)
  */
 object SongMenuHelper {
-    const val menuResDefault = R.menu.menu_item_song
+    const val menuResDefault = R.menu.menu_item_song_short
 
     @JvmStatic
     fun handleMenuClick(activity: FragmentActivity, song: Song, menuItemId: Int): Boolean {

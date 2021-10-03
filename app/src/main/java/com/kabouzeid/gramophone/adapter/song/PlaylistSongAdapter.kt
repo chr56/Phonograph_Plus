@@ -68,7 +68,7 @@ open class PlaylistSongAdapter(
     open inner class ViewHolder(itemView: View) : AbsOffsetSongAdapter.ViewHolder(itemView) {
 
         override fun setupMenu(menuRes: Int?) {
-            super.setupMenu(songMenuRes)
+            super.setupMenu(R.menu.menu_item_song_short)
         }
 
         override fun onSongMenuItemClick(item: MenuItem): Boolean {

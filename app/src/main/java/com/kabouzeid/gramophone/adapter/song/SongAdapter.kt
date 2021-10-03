@@ -183,7 +183,6 @@ open class SongAdapter @JvmOverloads constructor(
 
     open inner class ViewHolder(itemView: View) : MediaEntryViewHolder(itemView) {
 
-        protected open val songMenuRes = SongMenuHelper.menuResDefault
         protected open val song: Song
             get() = dataSet[bindingAdapterPosition]
 
@@ -191,7 +190,7 @@ open class SongAdapter @JvmOverloads constructor(
             setImageTransitionName(activity.getString(R.string.transition_album_art))
             setupMenu()
         }
-        protected open fun setupMenu(@Nullable @MenuRes menuRes: Int? = songMenuRes) {
+        protected open fun setupMenu(@Nullable @MenuRes menuRes: Int? = R.menu.menu_item_song) {
             menu!!.setOnClickListener(object : SongMenuHelper.ClickMenuListener(activity, menuRes) {
                 override val song: Song
                     get() = this@ViewHolder.song

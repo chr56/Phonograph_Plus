@@ -3,6 +3,7 @@ package com.kabouzeid.gramophone.adapter.song
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
+import com.kabouzeid.gramophone.R
 import com.kabouzeid.gramophone.interfaces.CabHolder
 import com.kabouzeid.gramophone.model.Song
 import com.kabouzeid.gramophone.util.MusicUtil
@@ -46,6 +47,10 @@ class AlbumSongAdapter(
             if (image != null) {
                 image!!.visibility = View.GONE
             }
+        }
+
+        override fun setupMenu(menuRes: Int?) {
+            super.setupMenu(R.menu.menu_item_song_short)
         }
     }
 

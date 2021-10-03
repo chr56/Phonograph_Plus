@@ -122,10 +122,12 @@ class PlayingQueueAdapter(
             }
         }
 
+        override fun setupMenu(menuRes: Int?) {
+            super.setupMenu(R.menu.menu_item_playing_queue_song)
+        }
+
         @DraggableItemStateFlags
         private var mDragStateFlags = 0
-        override val songMenuRes: Int
-            get() = R.menu.menu_item_playing_queue_song
 
         override fun onSongMenuItemClick(item: MenuItem): Boolean {
             when (item.itemId) {
