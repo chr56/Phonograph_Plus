@@ -516,14 +516,11 @@ public class FlatPlayerFragment extends AbsPlayerFragment implements PlayerAlbum
                     fragment.slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
                 }
             });
-            currentSongViewHolder.menu.setOnClickListener(new SongMenuHelper.ClickMenuListener((AppCompatActivity) fragment.getActivity(), null) {
+            currentSongViewHolder.menu.setOnClickListener(
+                    new SongMenuHelper.ClickMenuListener((AppCompatActivity) fragment.getActivity(), R.menu.menu_item_playing_queue_song) {
                 @Override
                 public Song getSong() {
                     return currentSong;
-                }
-
-                public int getMenuRes() {
-                    return R.menu.menu_item_playing_queue_song;
                 }
 
                 @Override

@@ -66,8 +66,6 @@ open class PlaylistSongAdapter(
     }
 
     open inner class ViewHolder(itemView: View) : AbsOffsetSongAdapter.ViewHolder(itemView) {
-        override val songMenuRes: Int
-            get() = R.menu.menu_item_cannot_delete_single_songs_playlist_song
 
         override fun setupMenu(menuRes: Int?) {
             super.setupMenu(songMenuRes)

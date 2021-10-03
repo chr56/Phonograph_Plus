@@ -72,7 +72,7 @@ class ArtistSongAdapter(
             albumArt.transitionName = activity.getString(R.string.transition_album_art)
 //        }
         val overflowButton = convertView.findViewById<ImageView>(R.id.menu)
-        overflowButton.setOnClickListener(object : ClickMenuListener(activity) {
+        overflowButton.setOnClickListener(object : ClickMenuListener(activity, null) {
             override val song: Song
                 get() = song
 

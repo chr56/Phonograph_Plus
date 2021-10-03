@@ -95,17 +95,18 @@ object SongMenuHelper {
         return false
     }
 
-    abstract class ClickMenuListener(private val activity: AppCompatActivity, @Nullable @MenuRes resToUse: Int? = menuResDefault) :
+    abstract class ClickMenuListener(private val activity: AppCompatActivity, @Nullable @MenuRes resToUse: Int?) :
         View.OnClickListener,
         PopupMenu.OnMenuItemClickListener {
 
         abstract val song: Song
-        protected open var menuRes = menuResDefault // if resToUse is null
+        protected open var menuRes = menuResDefault // defaultRes
 
         init {
+            // as we all know, this is executed before onClick(v)
             resToUse?.let {
                 menuRes = resToUse
-            }
+            } // or the defaultRes
         }
 
         override fun onClick(v: View) {
@@ -119,7 +120,7 @@ object SongMenuHelper {
         }
 
         override fun onMenuItemClick(item: MenuItem): Boolean {
-            return handleMenuClick(activity, song, item.itemId)
+            return SongMenuHelper.handleMenuClick(activity, song, item.itemId)
         }
     }
 }
