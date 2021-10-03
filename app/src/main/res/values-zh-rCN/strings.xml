@@ -301,4 +301,5 @@
     <string name="minutes_short">%1$d 分钟</string>
     <string name="other_information">其他信息</string>
     <string name="track">音轨号</string>
+    <string name="more_actions">更多</string>
 </resources>
