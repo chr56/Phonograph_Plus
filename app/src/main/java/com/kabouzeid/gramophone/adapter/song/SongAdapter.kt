@@ -6,6 +6,8 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
+import androidx.annotation.MenuRes
+import androidx.annotation.Nullable
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.util.Pair
 import chr_56.MDthemer.util.ColorUtil
@@ -181,14 +183,16 @@ open class SongAdapter @JvmOverloads constructor(
 
     open inner class ViewHolder(itemView: View) : MediaEntryViewHolder(itemView) {
 
-        protected open val songMenuRes = SongMenuHelper.menuRes
+        protected open val songMenuRes = SongMenuHelper.menuResDefault
         protected open val song: Song
             get() = dataSet[bindingAdapterPosition]
 
         init {
             setImageTransitionName(activity.getString(R.string.transition_album_art))
-
-            menu!!.setOnClickListener(object : SongMenuHelper.OnClickSongMenu(activity) {
+            setupMenu()
+        }
+        protected open fun setupMenu(@Nullable @MenuRes menuRes: Int? = songMenuRes) {
+            menu!!.setOnClickListener(object : SongMenuHelper.ClickMenuListener(activity, menuRes) {
                 override val song: Song
                     get() = this@ViewHolder.song
 

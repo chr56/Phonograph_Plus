@@ -105,6 +105,10 @@ class OrderablePlaylistSongAdapter(
             }
         }
 
+        override fun setupMenu(menuRes: Int?) {
+            super.setupMenu(songMenuRes)
+        }
+
         @DraggableItemStateFlags
         private var mDragStateFlags = 0
 

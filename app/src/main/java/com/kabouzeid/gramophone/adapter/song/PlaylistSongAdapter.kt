@@ -69,6 +69,10 @@ open class PlaylistSongAdapter(
         override val songMenuRes: Int
             get() = R.menu.menu_item_cannot_delete_single_songs_playlist_song
 
+        override fun setupMenu(menuRes: Int?) {
+            super.setupMenu(songMenuRes)
+        }
+
         override fun onSongMenuItemClick(item: MenuItem): Boolean {
             if (item.itemId == R.id.action_go_to_album) {
                 val albumPairs = arrayOf<Pair<*, *>>(

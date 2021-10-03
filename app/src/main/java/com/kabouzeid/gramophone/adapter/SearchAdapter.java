@@ -119,7 +119,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
             if (menu != null) {
                 if (itemViewType == SONG) {
                     menu.setVisibility(View.VISIBLE);
-                    menu.setOnClickListener(new SongMenuHelper.OnClickSongMenu(activity) {
+                    menu.setOnClickListener(new SongMenuHelper.ClickMenuListener(activity,null) {
                         @Override
                         public Song getSong() {
                             return (Song) dataSet.get(getAdapterPosition());

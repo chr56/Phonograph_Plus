@@ -11,7 +11,7 @@ import com.bumptech.glide.Glide
 import com.kabouzeid.gramophone.R
 import com.kabouzeid.gramophone.glide.SongGlideRequest
 import com.kabouzeid.gramophone.helper.MusicPlayerRemote
-import com.kabouzeid.gramophone.helper.menu.SongMenuHelper.OnClickSongMenu
+import com.kabouzeid.gramophone.helper.menu.SongMenuHelper.ClickMenuListener
 import com.kabouzeid.gramophone.helper.menu.SongsMenuHelper.handleMenuClick
 import com.kabouzeid.gramophone.interfaces.CabHolder
 import com.kabouzeid.gramophone.model.Song
@@ -72,7 +72,7 @@ class ArtistSongAdapter(
             albumArt.transitionName = activity.getString(R.string.transition_album_art)
 //        }
         val overflowButton = convertView.findViewById<ImageView>(R.id.menu)
-        overflowButton.setOnClickListener(object : OnClickSongMenu(activity) {
+        overflowButton.setOnClickListener(object : ClickMenuListener(activity) {
             override val song: Song
                 get() = song
 

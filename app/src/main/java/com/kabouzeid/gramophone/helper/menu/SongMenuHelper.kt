@@ -4,6 +4,8 @@ import android.content.Intent
 import android.view.MenuItem
 import android.view.View
 import android.widget.PopupMenu
+import androidx.annotation.MenuRes
+import androidx.annotation.Nullable
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentActivity
 import com.kabouzeid.gramophone.R
@@ -23,7 +25,7 @@ import com.kabouzeid.gramophone.util.RingtoneManager
  * @author Karim Abou Zeid (kabouzeid)
  */
 object SongMenuHelper {
-    const val menuRes = R.menu.menu_item_song
+    const val menuResDefault = R.menu.menu_item_song
 
     @JvmStatic
     fun handleMenuClick(activity: FragmentActivity, song: Song, menuItemId: Int): Boolean {
@@ -43,7 +45,8 @@ object SongMenuHelper {
                         MusicUtil.createShareSongFileIntent(
                             song,
                             activity
-                        ), null
+                        ),
+                        null
                     )
                 )
                 return true
@@ -92,11 +95,23 @@ object SongMenuHelper {
         return false
     }
 
-    abstract class OnClickSongMenu(private val activity: AppCompatActivity) : View.OnClickListener,
+    abstract class ClickMenuListener(private val activity: AppCompatActivity, @Nullable @MenuRes resToUse: Int? = menuResDefault) :
+        View.OnClickListener,
         PopupMenu.OnMenuItemClickListener {
+
         abstract val song: Song
+        protected open var menuRes = menuResDefault // if resToUse is null
+
+        init {
+            resToUse?.let {
+                menuRes = resToUse
+            }
+        }
 
         override fun onClick(v: View) {
+            handleMenuButtonClick(v)
+        }
+        protected fun handleMenuButtonClick(v: View) {
             val popupMenu = PopupMenu(activity, v)
             popupMenu.inflate(menuRes)
             popupMenu.setOnMenuItemClickListener(this)
@@ -107,5 +122,4 @@ object SongMenuHelper {
             return handleMenuClick(activity, song, item.itemId)
         }
     }
-
 }
