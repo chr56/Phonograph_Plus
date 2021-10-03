@@ -31,7 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TopAndRecentlyPlayedTracksLoader {
-    public static final int NUMBER_OF_TOP_TRACKS = 100;
+    public static final int NUMBER_OF_TOP_TRACKS = 150;
 
     @NonNull
     public static List<Song> getRecentlyPlayedTracks(@NonNull Context context) {
