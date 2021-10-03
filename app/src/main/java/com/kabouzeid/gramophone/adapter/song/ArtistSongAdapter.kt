@@ -25,7 +25,7 @@ class ArtistSongAdapter(
     private val activity: AppCompatActivity,
     @JvmField var dataSet: List<Song>,
     private val cabHolder: CabHolder?
-) : ArrayAdapter<Song?>(
+) : ArrayAdapter<Song>(
     activity, R.layout.item_list, dataSet
 ),
     MaterialCab.Callback {

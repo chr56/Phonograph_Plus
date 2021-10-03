@@ -12,7 +12,7 @@ import com.kabouzeid.gramophone.ui.activities.MainActivity;
 public abstract class AbsMainActivityFragment extends Fragment {
 
     public MainActivity getMainActivity() {
-        return (MainActivity) getActivity();
+        return (MainActivity) requireActivity();
     }
 
     @Override

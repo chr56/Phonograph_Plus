@@ -2,6 +2,7 @@ package com.kabouzeid.gramophone.adapter.song
 
 import android.view.View
 import androidx.annotation.LayoutRes
+import androidx.annotation.MenuRes
 import androidx.appcompat.app.AppCompatActivity
 import com.kabouzeid.gramophone.R
 import com.kabouzeid.gramophone.interfaces.CabHolder
@@ -12,13 +13,13 @@ import com.kabouzeid.gramophone.util.MusicUtil
  * @author Karim Abou Zeid (kabouzeid)
  */
 class AlbumSongAdapter(
-    activity: AppCompatActivity?,
+    activity: AppCompatActivity,
     dataSet: List<Song>,
     @LayoutRes itemLayoutRes: Int,
     usePalette: Boolean,
     cabHolder: CabHolder?
 ) : SongAdapter(
-    activity!!, dataSet, itemLayoutRes, usePalette, cabHolder
+    activity, dataSet, itemLayoutRes, usePalette, cabHolder
 ) {
     override fun createViewHolder(view: View): SongAdapter.ViewHolder {
         return ViewHolder(view)
@@ -35,7 +36,7 @@ class AlbumSongAdapter(
         }
     }
 
-    override fun getSongText(song: Song): String? {
+    override fun getSongText(song: Song): String {
         return MusicUtil.getReadableDurationString(song.duration)
     }
 
@@ -49,12 +50,12 @@ class AlbumSongAdapter(
             }
         }
 
-        override fun setupMenu(menuRes: Int?) {
+        override fun setupMenu(@MenuRes menuRes: Int) {
             super.setupMenu(R.menu.menu_item_song_short)
         }
     }
 
-    override fun loadAlbumCover(song: Song?, holder: SongAdapter.ViewHolder) {
+    override fun loadAlbumCover(song: Song, holder: SongAdapter.ViewHolder) {
         // We don't want to load it in this adapter
     }
 }

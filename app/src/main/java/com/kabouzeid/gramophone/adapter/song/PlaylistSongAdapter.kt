@@ -3,6 +3,7 @@ package com.kabouzeid.gramophone.adapter.song
 import android.view.MenuItem
 import android.view.View
 import androidx.annotation.LayoutRes
+import androidx.annotation.MenuRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.util.Pair
 import chr_56.MDthemer.core.ThemeColor
@@ -67,7 +68,7 @@ open class PlaylistSongAdapter(
 
     open inner class ViewHolder(itemView: View) : AbsOffsetSongAdapter.ViewHolder(itemView) {
 
-        override fun setupMenu(menuRes: Int?) {
+        override fun setupMenu(@MenuRes menuRes: Int) {
             super.setupMenu(R.menu.menu_item_song_short)
         }
 

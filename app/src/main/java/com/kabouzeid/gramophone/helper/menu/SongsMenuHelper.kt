@@ -12,7 +12,7 @@ import com.kabouzeid.gramophone.model.Song
  */
 object SongsMenuHelper {
     @JvmStatic
-    fun handleMenuClick(activity: FragmentActivity, songs: List<Song?>, menuItemId: Int): Boolean {
+    fun handleMenuClick(activity: FragmentActivity, songs: List<Song>, menuItemId: Int): Boolean {
         when (menuItemId) {
             R.id.action_play_next -> {
                 MusicPlayerRemote.playNext(songs)

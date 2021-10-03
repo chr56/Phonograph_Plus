@@ -23,6 +23,7 @@ import com.kabouzeid.gramophone.ui.fragments.AbsMusicServiceFragment;
 import com.kabouzeid.gramophone.util.MusicUtil;
 import com.kabouzeid.gramophone.util.NavigationUtil;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public abstract class AbsPlayerFragment extends AbsMusicServiceFragment implements Toolbar.OnMenuItemClickListener, PaletteColorHolder {
@@ -63,7 +64,9 @@ public abstract class AbsPlayerFragment extends AbsMusicServiceFragment implemen
                 NavigationUtil.openEqualizer(getActivity());
                 return true;
             case R.id.action_add_to_playlist:
-                AddToPlaylistDialog.create(List.of(song)).show(getFragmentManager(), "ADD_PLAYLIST");
+                List<Song> songs = new ArrayList<Song>();
+                songs.add(song);
+                AddToPlaylistDialog.create(songs).show(getFragmentManager(), "ADD_PLAYLIST");
                 return true;
             case R.id.action_clear_playing_queue:
                 MusicPlayerRemote.clearQueue();

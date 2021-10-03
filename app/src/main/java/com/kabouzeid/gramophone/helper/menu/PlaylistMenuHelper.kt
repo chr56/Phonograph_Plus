@@ -63,7 +63,7 @@ object PlaylistMenuHelper {
         return false
     }
 
-    private fun getPlaylistSongs(activity: Activity, playlist: Playlist): List<Song?> {
+    private fun getPlaylistSongs(activity: Activity, playlist: Playlist): List<Song> {
         return if (playlist is AbsCustomPlaylist) playlist.getSongs(activity)
         else PlaylistSongLoader.getPlaylistSongList(activity, playlist.id)
     }

@@ -41,7 +41,7 @@ class PlaylistAdapter(
     var dataSet: List<Playlist>,
     @param:LayoutRes private val itemLayoutRes: Int,
     cabHolder: CabHolder?
-) : AbsMultiSelectAdapter<PlaylistAdapter.ViewHolder?, Playlist?>(
+) : AbsMultiSelectAdapter<PlaylistAdapter.ViewHolder, Playlist>(
     activity, cabHolder, R.menu.menu_playlists_selection
 ) {
 
@@ -107,14 +107,14 @@ class PlaylistAdapter(
         return dataSet[position]
     }
 
-    override fun getName(obj: Playlist?): String {
-        return obj!!.name
+    override fun getName(obj: Playlist): String {
+        return obj.name
     }
 
-    override fun onMultipleItemAction(menuItem: MenuItem, selection: List<Playlist?>) {
+    override fun onMultipleItemAction(menuItem: MenuItem, selection: List<Playlist>) {
         when (menuItem.itemId) {
             R.id.action_delete_playlist -> {
-                val playlists: MutableList<Playlist?> = selection as MutableList<Playlist?>
+                val playlists: MutableList<Playlist> = selection as MutableList<Playlist>
                 for (playlist in playlists) {
                     if (playlist != null) { // it shouldn't be, but we'd better do  null check
                         if (playlist is AbsSmartPlaylist) {
@@ -132,13 +132,13 @@ class PlaylistAdapter(
             }
             R.id.action_save_playlist ->
                 if (selection.size == 1) {
-                    selection[0]?.let { handleMenuClick(activity, it, menuItem) }
+                    handleMenuClick(activity, selection[0], menuItem)
                 } else {
                     SavePlaylistsAsyncTask(activity).execute(selection)
                 }
             else ->
                 // default, handle common items
-                SongsMenuHelper.handleMenuClick(activity, getSongList(selection as List<Playlist>), menuItem.itemId)
+                SongsMenuHelper.handleMenuClick(activity, getSongList(selection), menuItem.itemId)
         }
     }
 
@@ -178,8 +178,8 @@ class PlaylistAdapter(
         }
     }
 
-    private fun getSongList(playlists: List<Playlist>): List<Song?> {
-        val songs: MutableList<Song?> = ArrayList()
+    private fun getSongList(playlists: List<Playlist>): List<Song> {
+        val songs: MutableList<Song> = ArrayList()
         for (playlist in playlists) {
             if (playlist is AbsCustomPlaylist) {
                 songs.addAll(playlist.getSongs(activity))

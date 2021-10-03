@@ -40,7 +40,7 @@ open class SongAdapter @JvmOverloads constructor(
     protected var usePalette: Boolean = false,
     cabHolder: CabHolder?,
     protected var showSectionName: Boolean = true
-) : AbsMultiSelectAdapter<SongAdapter.ViewHolder?, Song?>(
+) : AbsMultiSelectAdapter<SongAdapter.ViewHolder, Song>(
     activity, cabHolder, R.menu.menu_media_selection
 ),
     MaterialCab.Callback,
@@ -122,7 +122,7 @@ open class SongAdapter @JvmOverloads constructor(
         }
     }
 
-    protected open fun loadAlbumCover(song: Song?, holder: ViewHolder) {
+    protected open fun loadAlbumCover(song: Song, holder: ViewHolder) {
         if (holder.image == null) return
         SongGlideRequest.Builder.from(Glide.with(activity), song)
             .checkIgnoreMediaStore(activity)
@@ -142,7 +142,7 @@ open class SongAdapter @JvmOverloads constructor(
             })
     }
 
-    protected open fun getSongText(song: Song): String? {
+    protected open fun getSongText(song: Song): String {
         return MusicUtil.getSongInfoString(song)
     }
 
@@ -154,11 +154,11 @@ open class SongAdapter @JvmOverloads constructor(
         return dataSet[position]
     }
 
-    override fun getName(obj: Song?): String {
-        return obj!!.title
+    override fun getName(obj: Song): String {
+        return obj.title
     }
 
-    override fun onMultipleItemAction(menuItem: MenuItem, selection: List<Song?>) {
+    override fun onMultipleItemAction(menuItem: MenuItem, selection: List<Song>) {
         handleMenuClick(activity, selection, menuItem.itemId)
     }
 
@@ -190,7 +190,7 @@ open class SongAdapter @JvmOverloads constructor(
             setImageTransitionName(activity.getString(R.string.transition_album_art))
             setupMenu()
         }
-        protected open fun setupMenu(@Nullable @MenuRes menuRes: Int? = R.menu.menu_item_song) {
+        protected open fun setupMenu(@Nullable @MenuRes menuRes: Int = R.menu.menu_item_song) {
             menu!!.setOnClickListener(object : SongMenuHelper.ClickMenuListener(activity, menuRes) {
                 override val song: Song
                     get() = this@ViewHolder.song

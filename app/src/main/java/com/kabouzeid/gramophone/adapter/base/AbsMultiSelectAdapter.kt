@@ -13,7 +13,7 @@ import java.util.ArrayList
 /**
  * @author Karim Abou Zeid (kabouzeid)
  */
-abstract class AbsMultiSelectAdapter<VH : RecyclerView.ViewHolder?, I>(
+abstract class AbsMultiSelectAdapter<VH : RecyclerView.ViewHolder, I>(
     private val context: Context,
     private val cabHolder: CabHolder?,
     @MenuRes var  menuRes: Int

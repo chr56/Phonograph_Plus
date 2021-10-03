@@ -35,7 +35,7 @@ class ArtistAdapter(
     @LayoutRes private var itemLayoutRes: Int,
     private var usePalette: Boolean = false,
     cabHolder: CabHolder?
-) : AbsMultiSelectAdapter<ArtistAdapter.ViewHolder?, Artist?>(
+) : AbsMultiSelectAdapter<ArtistAdapter.ViewHolder, Artist>(
     activity, cabHolder, R.menu.menu_media_selection
 ),
     SectionedAdapter {
@@ -144,15 +144,15 @@ class ArtistAdapter(
         return dataSet[position]
     }
 
-    override fun getName(obj: Artist?): String {
-        return obj!!.name
+    override fun getName(obj: Artist): String {
+        return obj.name
     }
-    override fun onMultipleItemAction(menuItem: MenuItem, selection: List<Artist?>) {
-        handleMenuClick(activity, getSongList(selection as List<Artist>), menuItem.itemId)
+    override fun onMultipleItemAction(menuItem: MenuItem, selection: List<Artist>) {
+        handleMenuClick(activity, getSongList(selection), menuItem.itemId)
     }
 
-    private fun getSongList(artists: List<Artist>): List<Song?> {
-        val songs: MutableList<Song?> = ArrayList()
+    private fun getSongList(artists: List<Artist>): List<Song> {
+        val songs: MutableList<Song> = ArrayList()
         for (artist in artists) {
             songs.addAll(artist.songs)
             // maybe async in future?  Todo
@@ -164,8 +164,7 @@ class ArtistAdapter(
         var sectionName: String? = null
         when (PreferenceUtil.getInstance(activity).artistSortOrder) {
             SortOrder.ArtistSortOrder.ARTIST_A_Z, SortOrder.ArtistSortOrder.ARTIST_Z_A ->
-                sectionName =
-                    dataSet[position].name
+                sectionName = dataSet[position].name
         }
         return MusicUtil.getSectionName(sectionName)
     }

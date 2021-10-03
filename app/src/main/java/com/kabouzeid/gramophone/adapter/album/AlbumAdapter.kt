@@ -35,7 +35,7 @@ open class AlbumAdapter(
     @LayoutRes protected var itemLayoutRes: Int,
     protected var usePalette: Boolean = false,
     cabHolder: CabHolder?
-) : AbsMultiSelectAdapter<AlbumAdapter.ViewHolder?, Album?>(
+) : AbsMultiSelectAdapter<AlbumAdapter.ViewHolder, Album>(
     activity, cabHolder, R.menu.menu_media_selection
 ), SectionedAdapter {
 
@@ -74,7 +74,7 @@ open class AlbumAdapter(
         return album.title
     }
 
-    protected open fun getAlbumText(album: Album): String? {
+    protected open fun getAlbumText(album: Album): String {
         return MusicUtil.buildInfoString(
             album.artistName,
             MusicUtil.getSongCountString(activity, album.songs.size)
@@ -157,16 +157,16 @@ open class AlbumAdapter(
         return dataSet[position]
     }
 
-    override fun getName(obj: Album?): String {
-        return obj!!.title
+    override fun getName(obj: Album): String {
+        return obj.title
     }
 
-    override fun onMultipleItemAction(menuItem: MenuItem, selection: List<Album?>) {
-        handleMenuClick(activity, getSongList(selection as List<Album>), menuItem.itemId)
+    override fun onMultipleItemAction(menuItem: MenuItem, selection: List<Album>) {
+        handleMenuClick(activity, getSongList(selection), menuItem.itemId)
     } //todo
 
-    private fun getSongList(albums: List<Album>): List<Song?> {
-        val songs: MutableList<Song?> = ArrayList()
+    private fun getSongList(albums: List<Album>): List<Song> {
+        val songs: MutableList<Song> = ArrayList()
         for (album in albums) {
             songs.addAll(album.songs)
         }

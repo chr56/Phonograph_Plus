@@ -15,13 +15,13 @@ import java.util.Locale
  * @author Karim Abou Zeid (kabouzeid)
  */
 class ShuffleButtonSongAdapter(
-    activity: AppCompatActivity?,
+    activity: AppCompatActivity,
     dataSet: List<Song>,
     @LayoutRes itemLayoutRes: Int,
     usePalette: Boolean,
     cabHolder: CabHolder?
 ) : AbsOffsetSongAdapter(
-    activity!!, dataSet, itemLayoutRes, usePalette, cabHolder
+    activity, dataSet, itemLayoutRes, usePalette, cabHolder
 ) {
     override fun createViewHolder(view: View): SongAdapter.ViewHolder {
         return ViewHolder(view)

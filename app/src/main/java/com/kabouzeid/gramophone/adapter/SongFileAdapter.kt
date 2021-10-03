@@ -30,7 +30,7 @@ class SongFileAdapter(
     @LayoutRes private val itemLayoutRes: Int,
     private val callbacks: Callbacks?,
     cabHolder: CabHolder?
-) : AbsMultiSelectAdapter<SongFileAdapter.ViewHolder?, File?>(
+) : AbsMultiSelectAdapter<SongFileAdapter.ViewHolder, File?>(
     activity, cabHolder, R.menu.menu_media_selection
 ),
     SectionedAdapter {

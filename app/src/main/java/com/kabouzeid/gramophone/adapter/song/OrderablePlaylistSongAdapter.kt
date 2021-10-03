@@ -47,7 +47,7 @@ class OrderablePlaylistSongAdapter(
         // important!
     }
 
-    override fun onMultipleItemAction(menuItem: MenuItem, selection: List<Song?>) {
+    override fun onMultipleItemAction(menuItem: MenuItem, selection: List<Song>) {
         when (menuItem.itemId) {
             R.id.action_remove_from_playlist -> {
                 RemoveFromPlaylistDialog.create(selection as List<PlaylistSong>?).show(
@@ -103,7 +103,7 @@ class OrderablePlaylistSongAdapter(
             }
         }
 
-        override fun setupMenu(menuRes: Int?) {
+        override fun setupMenu(menuRes: Int) {
             super.setupMenu(R.menu.menu_item_song_short)
         }
 

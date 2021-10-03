@@ -3,6 +3,7 @@ package com.kabouzeid.gramophone.adapter.song
 import android.view.MenuItem
 import android.view.View
 import androidx.annotation.LayoutRes
+import androidx.annotation.MenuRes
 import androidx.appcompat.app.AppCompatActivity
 import com.h6ah4i.android.widget.advrecyclerview.draggable.DraggableItemAdapter
 import com.h6ah4i.android.widget.advrecyclerview.draggable.DraggableItemViewHolder
@@ -18,14 +19,14 @@ import com.kabouzeid.gramophone.util.ViewUtil
  * @author Karim Abou Zeid (kabouzeid)
  */
 class PlayingQueueAdapter(
-    activity: AppCompatActivity?,
+    activity: AppCompatActivity,
     dataSet: List<Song>,
     private var current: Int,
     @LayoutRes itemLayoutRes: Int,
     usePalette: Boolean,
     cabHolder: CabHolder?
 ) : SongAdapter(
-    activity!!, dataSet, itemLayoutRes, usePalette, cabHolder
+    activity, dataSet, itemLayoutRes, usePalette, cabHolder
 ),
     DraggableItemAdapter<PlayingQueueAdapter.ViewHolder> {
 
@@ -52,11 +53,11 @@ class PlayingQueueAdapter(
         return CURRENT
     }
 
-    override fun loadAlbumCover(song: Song?, holder: SongAdapter.ViewHolder) {
+    override fun loadAlbumCover(song: Song, holder: SongAdapter.ViewHolder) {
         // We don't want to load it in this adapter
     }
 
-    fun swapDataSet(dataSet: List<Song?>?, position: Int) {
+    fun swapDataSet(dataSet: List<Song?>, position: Int) {
         this.dataSet = dataSet as List<Song>
         current = position
         notifyDataSetChanged()
@@ -122,7 +123,7 @@ class PlayingQueueAdapter(
             }
         }
 
-        override fun setupMenu(menuRes: Int?) {
+        override fun setupMenu(@MenuRes menuRes: Int) {
             super.setupMenu(R.menu.menu_item_playing_queue_song)
         }
 
