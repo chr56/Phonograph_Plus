@@ -94,13 +94,10 @@ public class MainActivity extends AbsSlidingMusicPanelActivity {
         } else {
             //restoreCurrentFragment
             currentFragment = (MainActivityFragmentCallbacks) getSupportFragmentManager().findFragmentById(R.id.fragment_container);
-
         }
 
-        if (!checkShowIntro()) {
-            showChangelog();
-        }
-
+        showIntro();
+        showChangelog();
 
     }
 
@@ -131,6 +128,7 @@ public class MainActivity extends AbsSlidingMusicPanelActivity {
             if (!hasPermissions()) {
                 requestPermissions();
             }
+            ChangelogDialog.create().show(getSupportFragmentManager(), "CHANGE_LOG_DIALOG");
         }
     }
 
@@ -389,15 +387,14 @@ public class MainActivity extends AbsSlidingMusicPanelActivity {
         drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
     }
 
-    private boolean checkShowIntro() {
+    private void showIntro() {
         if (!PreferenceUtil.getInstance(this).introShown()) {
             PreferenceUtil.getInstance(this).setIntroShown();
             ChangelogDialog.setChangelogRead(this);
             blockRequestPermissions = true;
             new Handler().postDelayed(() -> startActivityForResult(new Intent(MainActivity.this, AppIntroActivity.class), APP_INTRO_REQUEST), 50);
-            return true;
         }
-        return false;
+
     }
 
     private void showChangelog() {
