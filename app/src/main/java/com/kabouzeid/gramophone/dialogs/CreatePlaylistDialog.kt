@@ -65,7 +65,7 @@ class CreatePlaylistDialog : DialogFragment() {
         private const val SONGS = "songs"
 
         @JvmStatic
-        fun create(songs: List<Song>?): CreatePlaylistDialog {
+        fun create(songs: List<Song>): CreatePlaylistDialog {
             val dialog = CreatePlaylistDialog()
             val args = Bundle()
             args.putParcelableArrayList(SONGS, ArrayList(songs))

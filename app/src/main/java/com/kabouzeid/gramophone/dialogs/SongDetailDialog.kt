@@ -40,7 +40,7 @@ import org.jaudiotagger.tag.id3.AbstractID3v2Frame
 class SongDetailDialog : DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val context: Activity? = activity
-        val song: Song? = requireArguments().getParcelable("song")
+        val song: Song = requireArguments().getParcelable("song")!!
         val dialog = MaterialDialog(context as Context)
             .title(R.string.label_details)
             .positiveButton(android.R.string.ok)
@@ -161,7 +161,7 @@ class SongDetailDialog : DialogFragment() {
     companion object {
         val TAG: String = SongDetailDialog::class.java.simpleName
         @JvmStatic
-        fun create(song: Song?): SongDetailDialog {
+        fun create(song: Song): SongDetailDialog {
             val dialog = SongDetailDialog()
             val args = Bundle()
             args.putParcelable("song", song)

@@ -26,7 +26,7 @@ class RemoveFromPlaylistDialog : DialogFragment() {
             content = Html.fromHtml(getString(R.string.remove_x_songs_from_playlist, songs.size))
         } else {
             title = R.string.remove_song_from_playlist_title
-            content = Html.fromHtml(getString(R.string.remove_song_x_from_playlist, songs[0].title))
+            content = Html.fromHtml(getString(R.string.remove_song_x_from_playlist, songs.get(0).title))
         }
         val dialog = MaterialDialog(requireActivity())
             .title(title)
@@ -40,6 +40,8 @@ class RemoveFromPlaylistDialog : DialogFragment() {
     }
 
     companion object {
+
+        @JvmStatic
         fun create(song: PlaylistSong): RemoveFromPlaylistDialog {
             val list: MutableList<PlaylistSong> = ArrayList()
             list.add(song)
@@ -47,7 +49,7 @@ class RemoveFromPlaylistDialog : DialogFragment() {
         }
 
         @JvmStatic
-        fun create(songs: List<PlaylistSong>?): RemoveFromPlaylistDialog {
+        fun create(songs: List<PlaylistSong>): RemoveFromPlaylistDialog {
             val dialog = RemoveFromPlaylistDialog()
             val args = Bundle()
             args.putParcelableArrayList("songs", ArrayList(songs))

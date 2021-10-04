@@ -40,7 +40,7 @@ class DeletePlaylistDialog : DialogFragment() {
 
     companion object {
         @JvmStatic
-        fun create(playlists: List<Playlist>?): DeletePlaylistDialog {
+        fun create(playlists: List<Playlist>): DeletePlaylistDialog {
             val dialog = DeletePlaylistDialog()
             val args = Bundle()
             args.putParcelableArrayList("playlists", ArrayList(playlists))

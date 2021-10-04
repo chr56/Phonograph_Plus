@@ -17,21 +17,19 @@ import com.kabouzeid.gramophone.util.MusicUtil
  */
 class DeleteSongsDialog : DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val songs: List<Song>? = requireArguments().getParcelableArrayList("songs")!!
-        val titleRes: Int = if (songs?.size!! > 1) { R.string.delete_songs_title } else { R.string.delete_song_title }
+        val songs: List<Song> = requireArguments().getParcelableArrayList("songs")!!
+        val titleRes: Int = if (songs.size > 1) { R.string.delete_songs_title } else { R.string.delete_song_title }
         val content: CharSequence = if (songs.size > 1) {
-            Html.fromHtml(getString(R.string.delete_x_songs, songs.size))
+            Html.fromHtml(getString(R.string.delete_x_songs, songs.size), Html.FROM_HTML_MODE_LEGACY)
         } else {
-            Html.fromHtml(getString(R.string.delete_song_x, songs[0].title))
+            Html.fromHtml(getString(R.string.delete_song_x, songs[0].title), Html.FROM_HTML_MODE_LEGACY)
         }
 
         val dialog = MaterialDialog(requireActivity())
             .title(titleRes)
             .message(text = content)
             .positiveButton(R.string.delete_action) {
-                if (songs != null && requireActivity() != null) {
-                    MusicUtil.deleteTracks(requireActivity(), songs)
-                }
+                MusicUtil.deleteTracks(requireActivity(), songs)
             }
             .negativeButton(android.R.string.cancel)
         // set button color
@@ -43,7 +41,7 @@ class DeleteSongsDialog : DialogFragment() {
 
     companion object {
         @JvmStatic
-        fun create(songs: List<Song?>): DeleteSongsDialog {
+        fun create(songs: List<Song>): DeleteSongsDialog {
             val dialog = DeleteSongsDialog()
             val args = Bundle()
             args.putParcelableArrayList("songs", ArrayList(songs))

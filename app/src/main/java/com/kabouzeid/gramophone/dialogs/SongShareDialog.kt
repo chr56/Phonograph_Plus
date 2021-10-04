@@ -41,7 +41,7 @@ class SongShareDialog : DialogFragment() {
 
     companion object {
         @JvmStatic
-        fun create(song: Song?): SongShareDialog {
+        fun create(song: Song): SongShareDialog {
             val dialog = SongShareDialog()
             val args = Bundle()
             args.putParcelable("song", song)

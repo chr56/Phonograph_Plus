@@ -35,7 +35,7 @@ class ClearSmartPlaylistDialog : DialogFragment() {
     }
     companion object {
         @JvmStatic
-        fun create(playlist: AbsSmartPlaylist?): ClearSmartPlaylistDialog {
+        fun create(playlist: AbsSmartPlaylist): ClearSmartPlaylistDialog {
             val dialog = ClearSmartPlaylistDialog()
             val args = Bundle()
             args.putParcelable("playlist", playlist)

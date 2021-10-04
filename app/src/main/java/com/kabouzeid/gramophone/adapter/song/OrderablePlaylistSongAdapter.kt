@@ -10,7 +10,6 @@ import com.h6ah4i.android.widget.advrecyclerview.draggable.ItemDraggableRange
 import com.h6ah4i.android.widget.advrecyclerview.draggable.annotation.DraggableItemStateFlags
 import com.kabouzeid.gramophone.R
 import com.kabouzeid.gramophone.dialogs.RemoveFromPlaylistDialog
-import com.kabouzeid.gramophone.dialogs.RemoveFromPlaylistDialog.Companion.create
 import com.kabouzeid.gramophone.interfaces.CabHolder
 import com.kabouzeid.gramophone.model.PlaylistSong
 import com.kabouzeid.gramophone.model.Song
@@ -50,7 +49,7 @@ class OrderablePlaylistSongAdapter(
     override fun onMultipleItemAction(menuItem: MenuItem, selection: List<Song>) {
         when (menuItem.itemId) {
             R.id.action_remove_from_playlist -> {
-                RemoveFromPlaylistDialog.create(selection as List<PlaylistSong>?).show(
+                RemoveFromPlaylistDialog.create(selection as List<PlaylistSong>).show(
                     activity.supportFragmentManager,
                     "ADD_PLAYLIST"
                 )
@@ -116,7 +115,7 @@ class OrderablePlaylistSongAdapter(
                 R.id.action_remove_from_playlist -> {
                     val l: MutableList<PlaylistSong> = ArrayList(1)
                     l.add(song as PlaylistSong)
-                    create(l).show(activity.supportFragmentManager, "REMOVE_FROM_PLAYLIST")
+                    RemoveFromPlaylistDialog.create(l).show(activity.supportFragmentManager, "REMOVE_FROM_PLAYLIST")
                     return true
                 }
             }
