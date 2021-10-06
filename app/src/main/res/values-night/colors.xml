@@ -13,8 +13,10 @@
     <color name="dividerColor">@color/md_divider_white</color>
     <color name="iconColor">@color/MD_secondary_text_dark</color>
 
-    <color name="md_divider_black">#10000000</color>
-    <color name="md_divider_white">#10FFFFFF</color>
+    <color name="grey_highlight">@color/md_grey_200</color>
+
+    <color name="md_divider_black">#1F3E3E3E</color>
+    <color name="md_divider_white">#1FD6D6D6</color>
 
     <color name="seek_arc_text">@color/md_white_1000</color>
 
