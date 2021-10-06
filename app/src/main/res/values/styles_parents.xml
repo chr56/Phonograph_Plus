@@ -47,7 +47,7 @@
         <item name="colorAccent">@android:color/white</item>
 
 
-        <item name="toolbarPopupTheme">@style/ThemeOverlay.AppCompat</item>
+        <item name="toolbarPopupTheme">@style/ThemeOverlay.AppCompat.ActionBar</item>
 
         <!-- necessary to find the overflow button later in the layout-->
         <item name="android:actionOverflowButtonStyle">@style/Widget.ActionButton.Overflow</item>
@@ -76,7 +76,7 @@
         <item name="colorAccent">@android:color/black</item>
 
 
-        <item name="toolbarPopupTheme">@style/ThemeOverlay.AppCompat.Light</item>
+        <item name="toolbarPopupTheme">@style/ThemeOverlay.AppCompat.Dark.ActionBar</item>
 
         <!-- necessary to find the overflow button later in the layout-->
         <item name="android:actionOverflowButtonStyle">@style/Widget.ActionButton.Overflow</item>
