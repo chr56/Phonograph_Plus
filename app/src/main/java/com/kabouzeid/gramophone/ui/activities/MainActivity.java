@@ -64,8 +64,6 @@ public class MainActivity extends AbsSlidingMusicPanelActivity {
     @BindView(R.id.drawer_layout)
     DrawerLayout drawerLayout;
 
-    //MenuItem menuItem;
-
     @Nullable
     MainActivityFragmentCallbacks currentFragment;
 
@@ -80,14 +78,11 @@ public class MainActivity extends AbsSlidingMusicPanelActivity {
         setDrawUnderStatusbar();
         ButterKnife.bind(this);
 
-/*
-        if (Build.VERSION.SDK_INT == Build.VERSION_CODES.KITKAT) {
-            navigationView.setFitsSystemWindows(false); // for header to go below statusbar
-        }
-*/
+//        if (Build.VERSION.SDK_INT == Build.VERSION_CODES.KITKAT) {
+//            navigationView.setFitsSystemWindows(false); // for header to go below statusbar
+//        }
 
-        //setUpDrawerLayout
-        setUpNavigationView();
+        setUpDrawer();
 
         if (savedInstanceState == null) {
             setMusicChooser(PreferenceUtil.getInstance(this).getLastMusicChooser());
@@ -146,33 +141,10 @@ public class MainActivity extends AbsSlidingMusicPanelActivity {
         return contentView;
     }
 
-    private void setUpNavigationView() {
+    private void setUpDrawer() {
         int accentColor = ThemeColor.accentColor(this);
         NavigationViewUtil.setItemIconColors(navigationView, Util.resolveColor(this, R.attr.iconColor, ThemeColor.textColorSecondary(this)), accentColor);
         NavigationViewUtil.setItemTextColors(navigationView, ThemeColor.textColorPrimary(this), accentColor);
-
-//        SwitchCompat switchNightmode = (SwitchCompat) navigationView.getMenu().findItem(R.id.theme_switch).getActionView().findViewById(R.id.nightmode_switch);
-//        switchNightmode.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-//            @Override
-//            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-//                PreferenceUtil preferenceUtil = PreferenceUtil.getInstance(this);
-//                int theme_setting = preferenceUtil.getGeneralTheme();
-//                if (theme_setting == R.style.Theme_Phonograph_Auto){
-//                    Toast.makeText(buttonView.getContext(), R.string.auto_mode_on,Toast.LENGTH_SHORT).show();
-//                } else {
-//                    switch (theme_setting) {
-//                        case R.style.Theme_Phonograph_Light:
-//                            preferenceUtil.setGeneralTheme("dark");
-//                            break;
-//                        case R.style.Theme_Phonograph_Dark:
-//                        case R.style.Theme_Phonograph_Black:
-//                            preferenceUtil.setGeneralTheme("light");
-//                            break;
-//                    }
-//                    recreate();
-//                }
-//            }
-//        });
 
         navigationView.setNavigationItemSelectedListener(menuItem -> {
             drawerLayout.closeDrawers();
@@ -187,8 +159,6 @@ public class MainActivity extends AbsSlidingMusicPanelActivity {
                     new Handler().postDelayed(() -> {
                         ScanMediaFolderDialog dialog = new ScanMediaFolderDialog();
                         dialog.show(getSupportFragmentManager(),"SCAN_MEDIA_FOLDER_CHOOSER");
-//                        ScanMediaFolderChooserDialog dialog = ScanMediaFolderChooserDialog.create();
-//                        dialog.show(getSupportFragmentManager(), "SCAN_MEDIA_FOLDER_CHOOSER");
                     }, 200);
                     break;
                 case R.id.theme_toggle:
@@ -211,26 +181,6 @@ public class MainActivity extends AbsSlidingMusicPanelActivity {
                         }
                     },200);
                     break;
-//                case R.id.theme_switch:
-//                    new Handler().postDelayed(() -> {
-//                        PreferenceUtil preferenceUtil = PreferenceUtil.getInstance(this);
-//                        int theme_setting = preferenceUtil.getGeneralTheme();
-//                        if (theme_setting == R.style.Theme_Phonograph_Auto){
-//                            Toast.makeText(this, R.string.auto_mode_on,Toast.LENGTH_SHORT).show();
-//                        } else {
-//                            switch (theme_setting) {
-//                                case R.style.Theme_Phonograph_Light:
-//                                    preferenceUtil.setGeneralTheme("dark");
-//                                    break;
-//                                case R.style.Theme_Phonograph_Dark:
-//                                case R.style.Theme_Phonograph_Black:
-//                                    preferenceUtil.setGeneralTheme("light");
-//                                    break;
-//                            }
-//                            recreate();
-//                        }
-//                    },200);
-//                    break;
                 case R.id.nav_settings:
                     new Handler().postDelayed(() -> startActivity(new Intent(MainActivity.this, SettingsActivity.class)), 200);
                     break;
@@ -241,12 +191,6 @@ public class MainActivity extends AbsSlidingMusicPanelActivity {
             return true;
         });
     }
-
-
-/*    private void setUpDrawerLayout() {
-        setUpNavigationView();
-    }*/ //Useless
-
 
     private void updateNavigationDrawerHeader() {
         if (!MusicPlayerRemote.getPlayingQueue().isEmpty()) {
