@@ -53,7 +53,6 @@ import chr_56.MDthemer.util.ToolbarColorUtil;
 public class LibraryFragment extends AbsMainActivityFragment implements CabHolder, MainActivity.MainActivityFragmentCallbacks, ViewPager.OnPageChangeListener, SharedPreferences.OnSharedPreferenceChangeListener {
 
     private Unbinder unbinder;
-    private Activity hostActivity;
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
@@ -67,12 +66,11 @@ public class LibraryFragment extends AbsMainActivityFragment implements CabHolde
     private MusicLibraryPagerAdapter pagerAdapter;
     private MaterialCab cab;
 
-    public static LibraryFragment newInstance(Activity activity) {
-        return new LibraryFragment(activity);
+    public static LibraryFragment newInstance() {
+        return new LibraryFragment();
     }
 
-    public LibraryFragment(Activity activity) {
-        hostActivity = activity;
+    public LibraryFragment() {
     }
 
     @Override
@@ -84,16 +82,15 @@ public class LibraryFragment extends AbsMainActivityFragment implements CabHolde
 
     @Override
     public void onDestroyView() {
-        PreferenceUtil.getInstance(hostActivity).unregisterOnSharedPreferenceChangedListener(this);
+        PreferenceUtil.getInstance(getActivity()).unregisterOnSharedPreferenceChangedListener(this);
         super.onDestroyView();
         pager.removeOnPageChangeListener(this);
         unbinder.unbind();
     }
 
     @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        PreferenceUtil.getInstance(hostActivity).registerOnSharedPreferenceChangedListener(this);
-
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        PreferenceUtil.getInstance(getActivity()).registerOnSharedPreferenceChangedListener(this);
         getMainActivity().setStatusbarColorAuto();
         getMainActivity().setNavigationbarColorAuto();
         getMainActivity().setTaskDescriptionColorAuto();
@@ -106,16 +103,16 @@ public class LibraryFragment extends AbsMainActivityFragment implements CabHolde
     public void onSharedPreferenceChanged(SharedPreferences preferences, String key) {
         if (PreferenceUtil.LIBRARY_CATEGORIES.equals(key)) {
             Fragment current = getCurrentFragment();
-            pagerAdapter.setCategoryInfos(PreferenceUtil.getInstance(hostActivity).getLibraryCategoryInfos());
+            pagerAdapter.setCategoryInfos(PreferenceUtil.getInstance(getActivity()).getLibraryCategoryInfos());
             pager.setOffscreenPageLimit(pagerAdapter.getCount() - 1);
             int position = pagerAdapter.getItemPosition(current);
             if (position < 0) position = 0;
             pager.setCurrentItem(position);
-            PreferenceUtil.getInstance(hostActivity).setLastPage(position);
+            PreferenceUtil.getInstance(getContext()).setLastPage(position);
 
             updateTabVisibility();
         }else if (PreferenceUtil.FIXED_TAB_LAYOUT.equals(key)){
-            if (PreferenceUtil.getInstance(hostActivity).fixed_tab_layout()){
+            if (PreferenceUtil.getInstance(getContext()).fixed_tab_layout()){
                 tabs.setTabMode(TabLayout.MODE_FIXED);
             } else {
                 tabs.setTabMode(TabLayout.MODE_SCROLLABLE);
@@ -124,13 +121,13 @@ public class LibraryFragment extends AbsMainActivityFragment implements CabHolde
     }
 
     private void setUpToolbar() {
-        int primaryColor = ThemeColor.primaryColor(hostActivity);
+        int primaryColor = ThemeColor.primaryColor(getActivity());
         appbar.setBackgroundColor(primaryColor);
         toolbar.setBackgroundColor(primaryColor);
         toolbar.setNavigationIcon(R.drawable.ic_menu_white_24dp);
-        hostActivity.setTitle(R.string.app_name);
+        getActivity().setTitle(R.string.app_name);
 
-        if (PreferenceUtil.getInstance(hostActivity).fixed_tab_layout()){
+        if (PreferenceUtil.getInstance(getContext()).fixed_tab_layout()){
             tabs.setTabMode(TabLayout.MODE_FIXED);
         } else {
             tabs.setTabMode(TabLayout.MODE_SCROLLABLE);
@@ -139,23 +136,23 @@ public class LibraryFragment extends AbsMainActivityFragment implements CabHolde
     }
 
     private void setUpViewPager() {
-        pagerAdapter = new MusicLibraryPagerAdapter(hostActivity, getChildFragmentManager());
+        pagerAdapter = new MusicLibraryPagerAdapter(getActivity(), getChildFragmentManager());
         pager.setAdapter(pagerAdapter);
         pager.setOffscreenPageLimit(pagerAdapter.getCount() - 1);
 
         tabs.setupWithViewPager(pager);
 
-        int primaryColor = ThemeColor.primaryColor(hostActivity);
-        int normalColor = ToolbarColorUtil.toolbarSubtitleColor(hostActivity, primaryColor);
-        int selectedColor = ToolbarColorUtil.toolbarTitleColor(hostActivity, primaryColor);
+        int primaryColor = ThemeColor.primaryColor(getActivity());
+        int normalColor = ToolbarColorUtil.toolbarSubtitleColor(getActivity(), primaryColor);
+        int selectedColor = ToolbarColorUtil.toolbarTitleColor(getActivity(), primaryColor);
         TabLayoutUtil.setTabIconColors(tabs, normalColor, selectedColor);
         tabs.setTabTextColors(normalColor, selectedColor);
-        tabs.setSelectedTabIndicatorColor(ThemeColor.accentColor(hostActivity));
+        tabs.setSelectedTabIndicatorColor(ThemeColor.accentColor(getActivity()));
 
         updateTabVisibility();
 
-        if (PreferenceUtil.getInstance(hostActivity).rememberLastTab()) {
-            pager.setCurrentItem(PreferenceUtil.getInstance(hostActivity).getLastPage());
+        if (PreferenceUtil.getInstance(getContext()).rememberLastTab()) {
+            pager.setCurrentItem(PreferenceUtil.getInstance(getContext()).getLastPage());
         }
         pager.addOnPageChangeListener(this);
     }
@@ -180,7 +177,7 @@ public class LibraryFragment extends AbsMainActivityFragment implements CabHolde
         cab = new MaterialCab(getMainActivity(), R.id.cab_stub)
                 .setMenu(menuRes)
                 .setCloseDrawableRes(R.drawable.ic_close_white_24dp)
-                .setBackgroundColor(PhonographColorUtil.shiftBackgroundColorForLightText(ThemeColor.primaryColor(hostActivity)))
+                .setBackgroundColor(PhonographColorUtil.shiftBackgroundColorForLightText(ThemeColor.primaryColor(getActivity())))
                 .start(callback);
         return cab;
     }
@@ -226,7 +223,7 @@ public class LibraryFragment extends AbsMainActivityFragment implements CabHolde
         }
         Activity activity = getActivity();
         if (activity == null) return;
-        MenuTinter.setMenuColor(activity, toolbar, menu, MaterialColor.White._1000.getAsColor());
+        MenuTinter.setMenuColor(getActivity(), toolbar, menu, MaterialColor.White._1000.getAsColor());
     }
 
     @Override
@@ -259,13 +256,13 @@ public class LibraryFragment extends AbsMainActivityFragment implements CabHolde
         int id = item.getItemId();
         switch (id) {
             case R.id.action_shuffle_all:
-                MusicPlayerRemote.openAndShuffleQueue(SongLoader.getAllSongs(requireContext()), true);
+                MusicPlayerRemote.openAndShuffleQueue(SongLoader.getAllSongs(getActivity()), true);
                 return true;
             case R.id.action_new_playlist:
                 CreatePlaylistDialog.createEmpty().show(getChildFragmentManager(), "CREATE_PLAYLIST");
                 return true;
             case R.id.action_search:
-                startActivity(new Intent(hostActivity, SearchActivity.class));
+                startActivity(new Intent(getActivity(), SearchActivity.class));
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -465,7 +462,7 @@ public class LibraryFragment extends AbsMainActivityFragment implements CabHolde
 
     @Override
     public void onPageSelected(int position) {
-        PreferenceUtil.getInstance(hostActivity).setLastPage(position);
+        PreferenceUtil.getInstance(getActivity()).setLastPage(position);
     }
 
     @Override

@@ -101,7 +101,7 @@ public class MainActivity extends AbsSlidingMusicPanelActivity {
         switch (key) {
             case LIBRARY:
                 navigationView.setCheckedItem(R.id.nav_library);
-                setCurrentFragment(LibraryFragment.newInstance(this));
+                setCurrentFragment(LibraryFragment.newInstance());
                 break;
             case FOLDERS:
                 navigationView.setCheckedItem(R.id.nav_folders);
