@@ -1,8 +1,11 @@
 package com.kabouzeid.gramophone.ui.activities
 
+import android.annotation.SuppressLint
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
+import android.content.pm.PackageInfo
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
@@ -28,16 +31,21 @@ class CrashActivity : ThemeActivity() {
         setSupportActionBar(toolbar)
 
         // stack trace text
-        val stackTrace: String? = intent.getStringExtra(App.KEY_STACK_TRACE)
+        var stackTraceText: String = "No Stack Trace !?"
+        intent.getStringExtra(App.KEY_STACK_TRACE)?.let { stackTraceText = it }
+
+        // other data
+        val otherInfo: String = collectData()
+
+        // display textview
         val textView = findViewById<TextView>(R.id.crash_text)
-        textView.text = getString(R.string.Crash)
-        stackTrace?.let {
-            textView.text = it
-        }
+        @SuppressLint("SetTextI18n")
+        textView.text =
+            "Crash Report:\n\n$otherInfo\n$stackTraceText"
 
         // button
         val button = findViewById<Button>(R.id.copy_to_clipboard)
-        if (stackTrace.isNullOrEmpty()) {
+        if (stackTraceText.isEmpty()) {
             button.visibility = View.GONE
         } else {
             button.visibility = View.VISIBLE
@@ -45,10 +53,28 @@ class CrashActivity : ThemeActivity() {
             button.setOnClickListener {
                 val clipboardManager =
                     getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-                val clipData = ClipData.newPlainText("CRASH", stackTrace)
+                val clipData = ClipData.newPlainText("CRASH",             "Crash Report:\n$otherInfo\n$stackTraceText")
                 clipboardManager.setPrimaryClip(clipData)
                 Toast.makeText(this, R.string.success, Toast.LENGTH_SHORT).show()
             }
         }
+    }
+
+    private fun collectData(): String {
+        val pm: PackageManager = this.packageManager
+        val packageInfo: PackageInfo? = pm.getPackageInfo(this.packageName, PackageManager.GET_ACTIVITIES)
+
+        var packageName: String = "null"
+        var versionName: String = "null"
+
+        packageInfo?.let {
+            versionName = packageInfo.versionName
+            packageName = packageInfo.packageName
+        }
+
+        val buffer: StringBuffer = StringBuffer()
+        buffer.append("packageName $packageName").appendLine()
+            .append("versionName $versionName").appendLine()
+        return buffer.toString()
     }
 }
