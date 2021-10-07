@@ -6,6 +6,7 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
@@ -14,6 +15,7 @@ import android.widget.Toast
 import com.kabouzeid.gramophone.App
 import com.kabouzeid.gramophone.R
 import com.kabouzeid.gramophone.ui.activities.base.ThemeActivity
+import java.util.*
 
 class CrashActivity : ThemeActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -53,7 +55,7 @@ class CrashActivity : ThemeActivity() {
             button.setOnClickListener {
                 val clipboardManager =
                     getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-                val clipData = ClipData.newPlainText("CRASH",             "Crash Report:\n$otherInfo\n$stackTraceText")
+                val clipData = ClipData.newPlainText("CRASH", "Crash Report:\n$otherInfo\n$stackTraceText")
                 clipboardManager.setPrimaryClip(clipData)
                 Toast.makeText(this, R.string.success, Toast.LENGTH_SHORT).show()
             }
@@ -66,6 +68,9 @@ class CrashActivity : ThemeActivity() {
 
         var packageName: String = "null"
         var versionName: String = "null"
+        val osVersion: String = getOsString()
+        val deviceInfo: String = getDeviceString()
+        val appLanguage: String = Locale.getDefault().language
 
         packageInfo?.let {
             versionName = packageInfo.versionName
@@ -75,6 +80,47 @@ class CrashActivity : ThemeActivity() {
         val buffer: StringBuffer = StringBuffer()
         buffer.append("packageName $packageName").appendLine()
             .append("versionName $versionName").appendLine()
+            .append("osVersion   $osVersion").appendLine()
+            .append("deviceInfo  $deviceInfo").appendLine()
+            .append("appLanguage $appLanguage").appendLine()
+
         return buffer.toString()
+    }
+
+    companion object {
+        fun getOsString(): String {
+            val buffer: StringBuffer = StringBuffer()
+
+            // 
+            // OS Name&version
+            //
+            System.getProperty("os.name")?.let { buffer.append(it).append(" ") }
+
+            val osName = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+                Build.VERSION.BASE_OS else "Android"
+            if (!osName.isNullOrEmpty()) {
+                buffer.append(osName).append(" ")
+            }
+
+            buffer.append("Android")
+            buffer.append(Build.VERSION.RELEASE).append(" ")
+            buffer.append(Build.VERSION.SDK_INT).append(" ")
+            buffer.append(Build.VERSION.SECURITY_PATCH)
+
+            return buffer.toString()
+        }
+
+        fun getDeviceString(): String {
+            val buffer: StringBuffer = StringBuffer()
+
+            //
+            // Brand & Device
+            //
+            buffer.append(Build.BRAND).append(": ")
+            buffer.append(Build.MODEL).append(" ")
+            buffer.append(Build.DEVICE).append(" ")
+
+            return buffer.toString()
+        }
     }
 }
