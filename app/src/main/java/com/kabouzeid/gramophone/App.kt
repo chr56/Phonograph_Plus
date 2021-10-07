@@ -1,14 +1,16 @@
 package com.kabouzeid.gramophone
 
 import android.app.Application
+import android.content.Intent
 import android.content.res.Configuration
-import com.kabouzeid.gramophone.App
-import chr_56.MDthemer.core.ThemeColor
-import com.kabouzeid.gramophone.R
 import android.os.Build
-import androidx.annotation.StyleRes
+import android.os.Process
+import android.util.Log
+import chr_56.MDthemer.core.ThemeColor
 import com.kabouzeid.gramophone.appshortcuts.DynamicShortcutManager
+import com.kabouzeid.gramophone.ui.activities.CrashActivity
 import com.kabouzeid.gramophone.util.PreferenceUtil
+import kotlin.system.exitProcess
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
@@ -17,6 +19,19 @@ class App : Application() {
     override fun onCreate() {
         super.onCreate()
         instance = this
+
+        // Exception Handler
+        Thread.setDefaultUncaughtExceptionHandler { _, exception ->
+            val intent: Intent = Intent()
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK  or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            intent.putExtra(KEY_STACK_TRACE, Log.getStackTraceString(exception))
+            intent.action = "$PACKAGE_NAME.CRASH_HANDLER"
+
+            this.startActivity(intent)
+
+            Process.killProcess(Process.myPid())
+            exitProcess(1);
+        }
 
         // default theme
         if (!ThemeColor.isConfigured(this, 1)) {
@@ -37,8 +52,10 @@ class App : Application() {
     private var themeRes: Int = 0
 
     fun nightmode(): Boolean {
-        val currentNightMode = (resources.configuration.uiMode
-                and Configuration.UI_MODE_NIGHT_MASK)
+        val currentNightMode = (
+            resources.configuration.uiMode
+                and Configuration.UI_MODE_NIGHT_MASK
+            )
         return when (currentNightMode) {
             Configuration.UI_MODE_NIGHT_YES -> true
             Configuration.UI_MODE_NIGHT_NO -> false
@@ -50,5 +67,8 @@ class App : Application() {
         @JvmStatic
         lateinit var instance: App
             private set
+
+        const val PACKAGE_NAME = "com.kabouzeid.gramophone" // todo
+        const val KEY_STACK_TRACE = "stack_trace"
     }
 }

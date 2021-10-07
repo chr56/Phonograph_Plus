@@ -302,4 +302,7 @@
     <string name="other_information">其他信息</string>
     <string name="track">音轨号</string>
     <string name="more_actions">更多</string>
+    <string name="Crash">程序崩溃</string>
+    <string name="copy_to_clipboard">复制到剪贴板</string>
+    <string name="success">成功！</string>
 </resources>
