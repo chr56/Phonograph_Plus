@@ -4,9 +4,9 @@
         <item name="android:windowActionBarOverlay">true</item>
         <item name="windowActionBarOverlay">true</item>
 
-        <item name="roundSelector">@drawable/round_selector_dark</item>
-        <item name="rectSelector">@drawable/rect_selector_dark</item>
-        <item name="rectSelectorStrong">@drawable/rect_selector_strong_dark</item>
+        <item name="roundSelector">@drawable/round_selector_auto</item>
+        <item name="rectSelector">@drawable/rect_selector_auto</item>
+        <item name="rectSelectorStrong">@drawable/rect_selector_strong_auto</item>
 
         <item name="cardBackgroundColor">@color/cardBackgroundColor</item>
         <item name="defaultFooterColor">@color/defaultFooterColor</item>
@@ -32,7 +32,7 @@
 
 
         <item name="roundSelector">@drawable/round_selector_dark</item>
-        <item name="rectSelector">@drawable/rect_selector_dark</item>
+        <item name="rectSelector">@drawable/rect_selector_auto</item>
         <item name="rectSelectorStrong">@drawable/rect_selector_strong_dark</item>
 
         <item name="cardBackgroundColor">@color/md_grey_800</item>
