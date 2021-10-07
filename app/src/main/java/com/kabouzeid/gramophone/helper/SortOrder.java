@@ -23,7 +23,7 @@ public final class SortOrder {
     /**
      * This class is never instantiated
      */
-    public SortOrder() {
+    private SortOrder() {
     }
 
     /**
@@ -40,9 +40,15 @@ public final class SortOrder {
         String ARTIST_NUMBER_OF_SONGS = MediaStore.Audio.Artists.NUMBER_OF_TRACKS
                 + " DESC";
 
+        /* Artist sort order number of songs (less to more)*/
+        String ARTIST_NUMBER_OF_SONGS_REVERT = MediaStore.Audio.Artists.NUMBER_OF_TRACKS;
+
         /* Artist sort order number of albums */
         String ARTIST_NUMBER_OF_ALBUMS = MediaStore.Audio.Artists.NUMBER_OF_ALBUMS
                 + " DESC";
+
+        /* Artist sort order number of albums (less to more)*/
+        String ARTIST_NUMBER_OF_ALBUMS_REVERT = MediaStore.Audio.Artists.NUMBER_OF_ALBUMS;
     }
 
     /**
@@ -58,13 +64,17 @@ public final class SortOrder {
         /* Album sort order songs */
         String ALBUM_NUMBER_OF_SONGS = MediaStore.Audio.Albums.NUMBER_OF_SONGS
                 + " DESC";
+        /* Album sort order songs (less to more)*/
+        String ALBUM_NUMBER_OF_SONGS_REVERT = MediaStore.Audio.Albums.NUMBER_OF_SONGS;
 
         /* Album sort order artist */
         String ALBUM_ARTIST = MediaStore.Audio.Artists.DEFAULT_SORT_ORDER
                 + ", " + MediaStore.Audio.Albums.DEFAULT_SORT_ORDER;
 
-        /* Album sort order year */
+        /* Album sort order year (new to old)*/
         String ALBUM_YEAR = MediaStore.Audio.Media.YEAR + " DESC";
+        /* Album sort order year (old to new)*/
+        String ALBUM_YEAR_REVERT = MediaStore.Audio.Media.YEAR;
     }
 
     /**
@@ -85,12 +95,21 @@ public final class SortOrder {
 
         /* Song sort order year */
         String SONG_YEAR = MediaStore.Audio.Media.YEAR + " DESC";
+        /* Song sort order year (old to new)*/
+        String SONG_YEAR_REVERT = MediaStore.Audio.Media.YEAR;
 
         /* Song sort order duration */
         String SONG_DURATION = MediaStore.Audio.Media.DURATION + " DESC";
 
-        /* Song sort order date */
+        /* Song sort order add date */
         String SONG_DATE = MediaStore.Audio.Media.DATE_ADDED + " DESC";
+        /* Song sort order add date (old to new)*/
+        String SONG_DATE_REVERT = MediaStore.Audio.Media.DATE_ADDED;
+
+        /* Song sort order modified date */
+        String SONG_DATE_MODIFIED = MediaStore.Audio.Media.DATE_MODIFIED + " DESC";
+        /* Song sort order modified date (old to new)*/
+        String SONG_DATE_MODIFIED_REVERT = MediaStore.Audio.Media.DATE_MODIFIED;
     }
 
     /**
@@ -109,6 +128,16 @@ public final class SortOrder {
 
         /* Album song sort order duration */
         String SONG_DURATION = SongSortOrder.SONG_DURATION;
+
+        /* Song sort order add date */
+        String SONG_DATE = MediaStore.Audio.Media.DATE_ADDED + " DESC";
+        /* Song sort order add date (old to new)*/
+        String SONG_DATE_REVERT = MediaStore.Audio.Media.DATE_ADDED;
+
+        /* Song sort order modified date */
+        String SONG_DATE_MODIFIED = MediaStore.Audio.Media.DATE_MODIFIED + " DESC";
+        /* Song sort order modified date (old to new)*/
+        String SONG_DATE_MODIFIED_REVERT = MediaStore.Audio.Media.DATE_MODIFIED;
     }
 
     /**
@@ -126,12 +155,21 @@ public final class SortOrder {
 
         /* Artist song sort order year */
         String SONG_YEAR = MediaStore.Audio.Media.YEAR + " DESC";
+        /* Song sort order year (old to new)*/
+        String SONG_YEAR_REVERT = MediaStore.Audio.Media.YEAR;
 
         /* Artist song sort order duration */
         String SONG_DURATION = MediaStore.Audio.Media.DURATION + " DESC";
 
         /* Artist song sort order date */
         String SONG_DATE = MediaStore.Audio.Media.DATE_ADDED + " DESC";
+        /* Song sort order add date (old to new)*/
+        String SONG_DATE_REVERT = MediaStore.Audio.Media.DATE_ADDED;
+
+        /* Song sort order modified date */
+        String SONG_DATE_MODIFIED = MediaStore.Audio.Media.DATE_MODIFIED + " DESC";
+        /* Song sort order modified date (old to new)*/
+        String SONG_DATE_MODIFIED_REVERT = MediaStore.Audio.Media.DATE_MODIFIED;
     }
 
     /**
