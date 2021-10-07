@@ -9,6 +9,7 @@ import android.text.Spanned
 import android.util.Log
 import android.view.View
 import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 import chr_56.MDthemer.core.ThemeColor
 import com.afollestad.materialdialogs.MaterialDialog
@@ -92,16 +93,6 @@ class SongDetailDialog : DialogFragment() {
                 fileSize.text = makeTextWithTitle(context, R.string.label_file_size, getFileSizeString(songFile.length()))
                 try {
                     val audioFile: AudioFile = AudioFileIO.read(songFile)
-                    // debug only
-                    audioFile.tag.fields.forEach { tagField ->
-                        Log.v("DetailDialog", "# " + String(tagField.rawContent))
-                        var hexString: String = "# "
-                        tagField.rawContent.forEach { byte ->
-                            hexString += Hex.asHex(byte)
-                            hexString += " "
-                        }
-                        Log.v("DetailDialog", hexString)
-                    }
 
                     // files of the song
                     val audioHeader: AudioHeader = audioFile.audioHeader
@@ -123,12 +114,23 @@ class SongDetailDialog : DialogFragment() {
                     var custInfo: String = "-"
                     if (custInfoField != null && custInfoField.size > 0) {
                         custInfo = "<br />"
-                        custInfoField.forEach { TagField ->
-                            val frame = TagField as AbstractID3v2Frame
-                            custInfo += frame.body.getObjectValue(DataTypes.OBJ_DESCRIPTION)
-                            custInfo += ":<br />"
-                            custInfo += frame.body.getObjectValue(DataTypes.OBJ_TEXT)
-                            custInfo += "<br />"
+                        if (custInfoField.size <= 128) {
+                            custInfoField.forEach { TagField ->
+                                val frame = TagField as AbstractID3v2Frame
+                                custInfo += frame.body.getObjectValue(DataTypes.OBJ_DESCRIPTION)
+                                custInfo += ":<br />"
+                                custInfo += frame.body.getObjectValue(DataTypes.OBJ_TEXT)
+                                custInfo += "<br />"
+                            }
+                        } else { // todo: limit sizes
+                            Toast.makeText(requireContext(),"Other tags in this song is too many, only show the first 128 entries",Toast.LENGTH_LONG).show()
+                            for (index in 0 until 127){
+                                val frame = custInfoField[index] as AbstractID3v2Frame
+                                custInfo += frame.body.getObjectValue(DataTypes.OBJ_DESCRIPTION)
+                                custInfo += ":<br />"
+                                custInfo += frame.body.getObjectValue(DataTypes.OBJ_TEXT)
+                                custInfo += "<br />"
+                            }
                         }
                     }
                     other.text = makeTextWithTitle(context, R.string.other_information, custInfo)
