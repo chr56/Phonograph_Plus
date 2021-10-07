@@ -49,7 +49,7 @@ public abstract class AbsLibraryPagerRecyclerViewFragment<A extends RecyclerView
     }
 
     @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
         getLibraryFragment().addOnAppBarOffsetChangedListener(this);
@@ -61,7 +61,7 @@ public abstract class AbsLibraryPagerRecyclerViewFragment<A extends RecyclerView
 
     private void setUpRecyclerView() {
         if (recyclerView instanceof FastScrollRecyclerView) {
-            ViewUtil.setUpFastScrollRecyclerViewColor(getActivity(), ((FastScrollRecyclerView) recyclerView), ThemeColor.accentColor(getActivity()));
+            ViewUtil.setUpFastScrollRecyclerViewColor(requireActivity(), ((FastScrollRecyclerView) recyclerView), ThemeColor.accentColor(requireActivity()));
         }
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
