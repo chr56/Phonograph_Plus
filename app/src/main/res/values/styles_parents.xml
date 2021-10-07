@@ -61,9 +61,9 @@
         <item name="windowActionBarOverlay">true</item>
 
 
-        <item name="roundSelector">@drawable/round_selector</item>
-        <item name="rectSelector">@drawable/rect_selector</item>
-        <item name="rectSelectorStrong">@drawable/rect_selector_strong</item>
+        <item name="roundSelector">@drawable/round_selector_light</item>
+        <item name="rectSelector">@drawable/rect_selector_light</item>
+        <item name="rectSelectorStrong">@drawable/rect_selector_strong_light</item>
 
         <item name="cardBackgroundColor">@color/md_white_1000</item>
         <item name="defaultFooterColor">@color/md_grey_300</item>
