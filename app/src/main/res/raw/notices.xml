@@ -53,12 +53,6 @@
         <license>Apache Software License 2.0</license>
     </notice>
     <notice>
-        <name>Android In-App Billing v3 Library</name>
-        <url>https://github.com/anjlab/android-inapp-billing-v3</url>
-        <copyright>Copyright 2014 AnjLab</copyright>
-        <license>Apache Software License 2.0</license>
-    </notice>
-    <notice>
         <name>Butter Knife</name>
         <url>https://github.com/JakeWharton/butterknife</url>
         <copyright>Copyright 2013 Jake Wharton</copyright>
@@ -95,8 +89,8 @@
     <notice>
         <name>Material Dialogs</name>
         <url>https://github.com/afollestad/material-dialogs</url>
-        <copyright>Copyright (c) 2015 Aidan Michael Follestad</copyright>
-        <license>MIT License</license>
+        <copyright>Copyright (c) 2018 Aidan Michael Follestad</copyright>
+        <license>Apache Software License 2.0</license>
     </notice>
     <notice>
         <name>Material Intro</name>
