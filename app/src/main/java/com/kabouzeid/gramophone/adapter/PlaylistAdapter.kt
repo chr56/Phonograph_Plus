@@ -151,7 +151,7 @@ class PlaylistAdapter(
             for (playlist in params[0]!!) {
                 try {
                     dir = PlaylistsUtil.savePlaylist(
-                        App.getInstance().applicationContext,
+                        App.instance.applicationContext,
                         playlist
                     ).parent
                     successes++
@@ -161,10 +161,10 @@ class PlaylistAdapter(
                 }
             }
             return if (failures == 0) String.format(
-                App.getInstance().applicationContext.getString(R.string.saved_x_playlists_to_x),
+                App.instance.applicationContext.getString(R.string.saved_x_playlists_to_x),
                 successes, dir
             ) else String.format(
-                App.getInstance().applicationContext.getString(R.string.saved_x_playlists_to_x_failed_to_save_x),
+                App.instance.applicationContext.getString(R.string.saved_x_playlists_to_x_failed_to_save_x),
                 successes, dir, failures
             )
         }

@@ -56,7 +56,7 @@ class ChangelogDialog : DialogFragment() {
             var str: String?
             while (`in`.readLine().also { str = it } != null) buf.append(str)
             `in`.close()
-            val app = App.getInstance()
+            val app = App.instance
 
             // Inject color values for WebView body background and links
             val backgroundColor = colorToCSS(Util.resolveColor(activity, R.attr.md_background_color, Color.parseColor(if (app.nightmode()) "#424242" else "#ffffff")))

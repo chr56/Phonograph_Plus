@@ -30,7 +30,7 @@ class BlacklistPreferenceDialog : DialogFragment() {
                     .title(R.string.clear_blacklist)
                     .message(R.string.do_you_want_to_clear_the_blacklist)
                     .positiveButton(R.string.clear_action) {
-                        BlacklistStore.getInstance(App.getInstance()).clear()
+                        BlacklistStore.getInstance(App.instance).clear()
                         refreshBlacklistData()
                     }
                     .negativeButton(android.R.string.cancel)
@@ -46,7 +46,7 @@ class BlacklistPreferenceDialog : DialogFragment() {
                     .title(R.string.remove_from_blacklist)
                     .message(text = Html.fromHtml(getString(R.string.do_you_want_to_remove_from_the_blacklist, charSequence)))
                     .positiveButton(R.string.remove_action) {
-                        BlacklistStore.getInstance(App.getInstance()).removePath(File(charSequence.toString()))
+                        BlacklistStore.getInstance(App.instance).removePath(File(charSequence.toString()))
                         refreshBlacklistData()
                     }
                     .negativeButton(android.R.string.cancel)
@@ -62,7 +62,7 @@ class BlacklistPreferenceDialog : DialogFragment() {
 
     @SuppressLint("CheckResult")
     private fun refreshBlacklistData() {
-        val paths = BlacklistStore.getInstance(App.getInstance()).paths
+        val paths = BlacklistStore.getInstance(App.instance).paths
         val dialog = dialog as MaterialDialog
         dialog.listItems(items = paths)
     }

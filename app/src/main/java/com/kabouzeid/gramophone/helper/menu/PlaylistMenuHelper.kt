@@ -73,13 +73,13 @@ object PlaylistMenuHelper {
         override fun doInBackground(vararg params: Playlist?): String? {
             return try {
                 String.format(
-                    App.getInstance().applicationContext.getString(R.string.saved_playlist_to),
-                    PlaylistsUtil.savePlaylist(App.getInstance().applicationContext, params[0])
+                    App.instance.applicationContext.getString(R.string.saved_playlist_to),
+                    PlaylistsUtil.savePlaylist(App.instance.applicationContext, params[0])
                 )
             } catch (e: IOException) {
                 e.printStackTrace()
                 String.format(
-                    App.getInstance().applicationContext.getString(R.string.failed_to_save_playlist), e
+                    App.instance.applicationContext.getString(R.string.failed_to_save_playlist), e
                 )
             }
         }

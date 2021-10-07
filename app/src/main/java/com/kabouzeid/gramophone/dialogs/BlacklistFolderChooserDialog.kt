@@ -41,7 +41,7 @@ class BlacklistFolderChooserDialog : DialogFragment() {
                     .title(R.string.add_blacklist) // todo ResFile
                     .message(text = file.absolutePath)
                     .positiveButton(android.R.string.ok) {
-                        BlacklistStore.getInstance(App.getInstance()).addPath(file)
+                        BlacklistStore.getInstance(App.instance).addPath(file)
                         dismiss() // dismiss alert dialog
                     }
                     .negativeButton(android.R.string.cancel) { dismiss() /* dismiss alert dialog */ }
