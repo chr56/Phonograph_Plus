@@ -15,6 +15,7 @@ import android.widget.Toast
 import com.kabouzeid.gramophone.App
 import com.kabouzeid.gramophone.R
 import com.kabouzeid.gramophone.ui.activities.base.ThemeActivity
+import com.kabouzeid.gramophone.ui.activities.bugreport.model.DeviceInfo
 import java.util.*
 
 class CrashActivity : ThemeActivity() {
@@ -36,14 +37,20 @@ class CrashActivity : ThemeActivity() {
         var stackTraceText: String = "No Stack Trace !?"
         intent.getStringExtra(App.KEY_STACK_TRACE)?.let { stackTraceText = it }
 
+        // device data
+        val devicedata: String = collectData()
+
         // other data
-        val otherInfo: String = collectData()
+        val otherInfo: String = DeviceInfo(this).toString()
+
+        // appended string
+        val displayText: String =
+            "Crash Report:\n\n$devicedata\n$stackTraceText\nOther detailed info:\n$otherInfo"
 
         // display textview
         val textView = findViewById<TextView>(R.id.crash_text)
         @SuppressLint("SetTextI18n")
-        textView.text =
-            "Crash Report:\n\n$otherInfo\n$stackTraceText"
+        textView.text = displayText
 
         // button
         val button = findViewById<Button>(R.id.copy_to_clipboard)
@@ -51,11 +58,11 @@ class CrashActivity : ThemeActivity() {
             button.visibility = View.GONE
         } else {
             button.visibility = View.VISIBLE
-            // clipboard
+            // copy to clipboard
             button.setOnClickListener {
                 val clipboardManager =
                     getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-                val clipData = ClipData.newPlainText("CRASH", "Crash Report:\n$otherInfo\n$stackTraceText")
+                val clipData = ClipData.newPlainText("CRASH", displayText)
                 clipboardManager.setPrimaryClip(clipData)
                 Toast.makeText(this, R.string.success, Toast.LENGTH_SHORT).show()
             }
