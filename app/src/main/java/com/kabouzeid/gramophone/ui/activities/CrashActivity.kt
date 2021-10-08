@@ -12,10 +12,10 @@ import android.view.View
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
+import androidx.annotation.IntRange
 import com.kabouzeid.gramophone.App
 import com.kabouzeid.gramophone.R
 import com.kabouzeid.gramophone.ui.activities.base.ThemeActivity
-import com.kabouzeid.gramophone.ui.activities.bugreport.model.DeviceInfo
 import java.util.*
 
 class CrashActivity : ThemeActivity() {
@@ -38,14 +38,11 @@ class CrashActivity : ThemeActivity() {
         intent.getStringExtra(App.KEY_STACK_TRACE)?.let { stackTraceText = it }
 
         // device data
-        val devicedata: String = collectData()
-
-        // other data
-        val otherInfo: String = DeviceInfo(this).toString()
+        val deviceInfo: String = getDeviceInfo(this)
 
         // appended string
         val displayText: String =
-            "Crash Report:\n\n$devicedata\n$stackTraceText\nOther detailed info:\n$otherInfo"
+            "Crash Report:\n\n$deviceInfo\n$stackTraceText\n"
 
         // display textview
         val textView = findViewById<TextView>(R.id.crash_text)
@@ -69,6 +66,7 @@ class CrashActivity : ThemeActivity() {
         }
     }
 
+    @Deprecated("abandoned")
     private fun collectData(): String {
         val pm: PackageManager = this.packageManager
         val packageInfo: PackageInfo? = pm.getPackageInfo(this.packageName, PackageManager.GET_ACTIVITIES)
@@ -95,6 +93,67 @@ class CrashActivity : ThemeActivity() {
     }
 
     companion object {
+        @SuppressLint("ObsoleteSdkInt")
+        fun getDeviceInfo(context: Context): String {
+
+            // App
+            val pm: PackageManager = context.packageManager
+            val packageInfo: PackageInfo? = pm.getPackageInfo(context.packageName, PackageManager.GET_ACTIVITIES)
+
+            var packageName: String = "null"
+            var versionName: String = "null"
+            var versionCode: String = "null"
+            packageInfo?.let {
+                versionName = packageInfo.versionName
+                packageName = packageInfo.packageName
+                versionCode = packageInfo.versionCode.toString()
+            }
+            val appLanguage: String = Locale.getDefault().language
+
+
+            // os
+            val releaseVersion = Build.VERSION.RELEASE
+            @IntRange(from = 0)
+            val sdkVersion: Int = Build.VERSION.SDK_INT
+            val buildID: String = Build.DISPLAY
+            val buildVersion = Build.VERSION.INCREMENTAL
+            // device
+            val brand: String = Build.BRAND
+            val manufacturer: String = Build.MANUFACTURER
+            val model: String = Build.MODEL
+            val device: String = Build.DEVICE // device code name
+            val product: String = Build.PRODUCT // rom code name
+            val hardware: String = Build.HARDWARE // motherboard?
+            /*
+            val abis: String =
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) Build.SUPPORTED_ABIS.toString()
+                else "${Build.CPU_ABI},${Build.CPU_ABI2}"
+            val abis32Bits: String =
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) Build.SUPPORTED_32_BIT_ABIS.toString()
+                else "not available"
+            val abis64Bits: String =
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) Build.SUPPORTED_64_BIT_ABIS.toString()
+                else "not available"
+            */
+//            ABIs: $abis
+//            ABIs (32bit): $abis32Bits
+//            ABIs (64bit): $abis64Bits
+
+            return """
+            Package name:    $packageName
+            App version:     $versionName ($versionCode)
+            Android version: $releaseVersion (SDK $sdkVersion)
+            Build version:   $buildID ($buildVersion)
+            Device brand:    $brand  (by $manufacturer)
+            Device model:    $model (code: $device)
+            Product name:    $product
+            Hardware:        $hardware
+            Language:        $appLanguage
+
+            """.trimIndent()
+        }
+
+        @Deprecated("abandoned")
         fun getOsString(): String {
             val buffer: StringBuffer = StringBuffer()
 
@@ -117,6 +176,7 @@ class CrashActivity : ThemeActivity() {
             return buffer.toString()
         }
 
+        @Deprecated("abandoned")
         fun getDeviceString(): String {
             val buffer: StringBuffer = StringBuffer()
 

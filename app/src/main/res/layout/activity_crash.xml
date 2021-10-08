@@ -9,25 +9,30 @@
         android:id="@+id/toolbar"
         style="@style/Toolbar" />
 
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="480dp">
+    <FrameLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
 
-        <TextView
-            android:id="@+id/crash_text"
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:fontFamily="monospace"
-            android:textIsSelectable="true"
-            android:textSize="12sp" />
-    </ScrollView>
+            android:layout_height="wrap_content">
 
-    <Button
-        android:id="@+id/copy_to_clipboard"
-        android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:layout_gravity="bottom"
-        android:text="@string/copy_to_clipboard"/>
+            <TextView
+                android:id="@+id/crash_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="monospace"
+                android:textIsSelectable="true"
+                android:textSize="12sp" />
+        </ScrollView>
 
+        <Button
+            android:id="@+id/copy_to_clipboard"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_gravity="bottom"
+            android:text="@string/copy_to_clipboard"/>
+
+    </FrameLayout>
 
 </LinearLayout>
