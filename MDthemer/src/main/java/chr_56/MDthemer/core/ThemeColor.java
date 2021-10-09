@@ -312,4 +312,11 @@ public final class ThemeColor implements ThemeColorPrefKeys, ThemeColorInterface
         }
         return true;
     }
+
+    /**
+     * <b>Dangerous !</b>, this reset all SharedPreferences!
+     */
+    public void clearAllPreference(){
+        mEditor.clear().commit();
+    }
 }
