@@ -306,5 +306,5 @@
     <string name="copy_to_clipboard">复制到剪贴板</string>
     <string name="success">成功！</string>
     <string name="clear_all_preference">清空应用设置</string>
-    <string name="clear_all_preference_msg"><b>警告</b>: 这将清除应用所有设置, 确定?</string>
+    <string name="clear_all_preference_msg"><b>警告</b>: 这将清除应用的<b>所有设置</b>! \n\n若应用在启动时立刻崩溃, 请尝试使用该选项! \n<b>确定?</b></string>
 </resources>

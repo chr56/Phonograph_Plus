@@ -216,6 +216,8 @@ public class AboutActivity extends AbsBaseActivity implements View.OnClickListen
         } else if (v == adrianTwitter) {
             openUrl(ADRIAN_TWITTER);
         }
+//        Test Only
+//        throw new RuntimeException("Crash Test"); // Crash Test
     }
 
     private void openUrl(String url) {
@@ -238,5 +240,7 @@ public class AboutActivity extends AbsBaseActivity implements View.OnClickListen
                 .setIncludeOwnLicense(true)
                 .build()
                 .show();
+//        Test Only
+//        throw new RuntimeException("Crash Test"); // crash test
     }
 }

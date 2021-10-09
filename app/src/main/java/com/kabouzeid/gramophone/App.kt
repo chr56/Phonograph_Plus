@@ -8,7 +8,6 @@ import android.os.Process
 import android.util.Log
 import chr_56.MDthemer.core.ThemeColor
 import com.kabouzeid.gramophone.appshortcuts.DynamicShortcutManager
-import com.kabouzeid.gramophone.ui.activities.CrashActivity
 import com.kabouzeid.gramophone.util.PreferenceUtil
 import kotlin.system.exitProcess
 

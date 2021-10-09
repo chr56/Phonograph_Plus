@@ -1,6 +1,7 @@
 package com.kabouzeid.gramophone.ui.activities
 
 import android.annotation.SuppressLint
+import android.app.Application
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
@@ -8,6 +9,8 @@ import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
+import android.os.Process
 import android.view.View
 import android.widget.Button
 import android.widget.TextView
@@ -21,6 +24,7 @@ import com.kabouzeid.gramophone.R
 import com.kabouzeid.gramophone.ui.activities.base.ThemeActivity
 import com.kabouzeid.gramophone.util.PreferenceUtil
 import java.util.*
+import kotlin.system.exitProcess
 
 class CrashActivity : ThemeActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -65,7 +69,6 @@ class CrashActivity : ThemeActivity() {
                     getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
                 val clipData = ClipData.newPlainText("CRASH", displayText)
                 clipboardManager.setPrimaryClip(clipData)
-                Toast.makeText(this, R.string.success, Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -77,8 +80,16 @@ class CrashActivity : ThemeActivity() {
                 .message(R.string.clear_all_preference_msg)
                 .negativeButton(android.R.string.cancel)
                 .positiveButton(R.string.clear_all_preference) {
-                    PreferenceUtil.getInstance(applicationContext).clearAllPreference()
+                    PreferenceUtil.getInstance(applicationContext).clearAllPreference(applicationContext)
+
+                    Handler().postDelayed({
+                        Process.killProcess(Process.myPid())
+                        exitProcess(1);
+                    },4000)
+
                 }
+                .cancelOnTouchOutside(true)
+
             dialog.getActionButton(WhichButton.POSITIVE).updateTextColor(getColor(R.color.md_red_A700))
 
             dialog.show()
@@ -162,10 +173,11 @@ class CrashActivity : ThemeActivity() {
             Package name:    $packageName
             App version:     $versionName ($versionCode)
             Android version: $releaseVersion (SDK $sdkVersion)
-            Build version:   $buildID ($buildVersion)
             Device brand:    $brand  (by $manufacturer)
             Device model:    $model (code: $device)
             Product name:    $product
+            Build version:   $buildID 
+                             ($buildVersion)
             Hardware:        $hardware
             Language:        $appLanguage
 

@@ -6,7 +6,7 @@ import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.preference.PreferenceManager;
-//import androidx.preference.PreferenceManager;
+import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.StyleRes;
 
@@ -548,8 +548,12 @@ public final class PreferenceUtil {
 
     /**
      * <b>Dangerous !</b>, this reset all SharedPreferences!
+     * @param context this is used to make toast
      */
-    public void clearAllPreference(){
-        mPreferences.edit().clear().apply();
+    @SuppressLint("ApplySharedPref") // must do immediately!
+    public void clearAllPreference(Context context){
+        mPreferences.edit().clear().commit();
+        Toast.makeText(context, R.string.success, Toast.LENGTH_SHORT).show();
+
     }
 }
