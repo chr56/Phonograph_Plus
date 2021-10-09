@@ -25,6 +25,8 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
+import chr_56.MDthemer.core.ThemeColor;
+
 public final class PreferenceUtil {
     public static final String GENERAL_THEME = "general_theme";
     public static final String REMEMBER_LAST_TAB = "remember_last_tab";
@@ -553,6 +555,10 @@ public final class PreferenceUtil {
     @SuppressLint("ApplySharedPref") // must do immediately!
     public void clearAllPreference(Context context){
         mPreferences.edit().clear().commit();
+
+        // lib
+        ThemeColor.editTheme(context.getApplicationContext()).clearAllPreference();
+
         Toast.makeText(context, R.string.success, Toast.LENGTH_SHORT).show();
 
     }
