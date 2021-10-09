@@ -315,4 +315,6 @@
     <string name="Crash">crashed!!</string>
     <string name="copy_to_clipboard">copy to clipboard</string>
     <string name="success">Successes!</string>
+    <string name="clear_all_preference">clear all application settings</string>
+    <string name="clear_all_preference_msg"><b>Warning</b>: this will reset ALL app preferences/settings, are you sure?</string>
 </resources>

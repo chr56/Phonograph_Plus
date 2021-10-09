@@ -15,7 +15,8 @@
 
         <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="96dp">
 
             <TextView
                 android:id="@+id/crash_text"
@@ -26,13 +27,26 @@
                 android:textSize="12sp" />
         </ScrollView>
 
-        <Button
-            android:id="@+id/copy_to_clipboard"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="48dp"
+            android:layout_height="wrap_content"
             android:layout_gravity="bottom"
-            android:text="@string/copy_to_clipboard"/>
+            android:orientation="vertical">
 
+            <Button
+                android:id="@+id/copy_to_clipboard"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_gravity="top"
+                android:text="@string/copy_to_clipboard" />
+            <Button
+                android:id="@+id/clear_all_preference"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_gravity="bottom"
+                android:textColor="@color/md_red_A700"
+                android:text="@string/clear_all_preference"/>
+        </LinearLayout>
     </FrameLayout>
 
 </LinearLayout>

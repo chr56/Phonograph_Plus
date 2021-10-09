@@ -545,4 +545,11 @@ public final class PreferenceUtil {
         defaultCategoryInfos.add(new CategoryInfo(CategoryInfo.Category.PLAYLISTS, true));
         return defaultCategoryInfos;
     }
+
+    /**
+     * <b>Dangerous !</b>, this reset all SharedPreferences!
+     */
+    public void clearAllPreference(){
+        mPreferences.edit().clear().apply();
+    }
 }

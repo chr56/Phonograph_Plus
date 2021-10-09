@@ -13,9 +13,13 @@ import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.IntRange
+import com.afollestad.materialdialogs.MaterialDialog
+import com.afollestad.materialdialogs.WhichButton
+import com.afollestad.materialdialogs.actions.getActionButton
 import com.kabouzeid.gramophone.App
 import com.kabouzeid.gramophone.R
 import com.kabouzeid.gramophone.ui.activities.base.ThemeActivity
+import com.kabouzeid.gramophone.util.PreferenceUtil
 import java.util.*
 
 class CrashActivity : ThemeActivity() {
@@ -49,20 +53,36 @@ class CrashActivity : ThemeActivity() {
         @SuppressLint("SetTextI18n")
         textView.text = displayText
 
-        // button
-        val button = findViewById<Button>(R.id.copy_to_clipboard)
+        // button "copy to clipboard"
+        val buttonCopy = findViewById<Button>(R.id.copy_to_clipboard)
         if (stackTraceText.isEmpty()) {
-            button.visibility = View.GONE
+            buttonCopy.visibility = View.GONE
         } else {
-            button.visibility = View.VISIBLE
+            buttonCopy.visibility = View.VISIBLE
             // copy to clipboard
-            button.setOnClickListener {
+            buttonCopy.setOnClickListener {
                 val clipboardManager =
                     getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
                 val clipData = ClipData.newPlainText("CRASH", displayText)
                 clipboardManager.setPrimaryClip(clipData)
                 Toast.makeText(this, R.string.success, Toast.LENGTH_SHORT).show()
             }
+        }
+
+        // button "clear all preference"
+        val buttonReset = findViewById<Button>(R.id.clear_all_preference)
+        buttonReset.setOnClickListener {
+            val dialog: MaterialDialog = MaterialDialog(this)
+                .title(R.string.clear_all_preference)
+                .message(R.string.clear_all_preference_msg)
+                .negativeButton(android.R.string.cancel)
+                .positiveButton(R.string.clear_all_preference) {
+                    PreferenceUtil.getInstance(applicationContext).clearAllPreference()
+                }
+            dialog.getActionButton(WhichButton.POSITIVE).updateTextColor(getColor(R.color.md_red_A700))
+
+            dialog.show()
+
         }
     }
 
@@ -109,7 +129,6 @@ class CrashActivity : ThemeActivity() {
                 versionCode = packageInfo.versionCode.toString()
             }
             val appLanguage: String = Locale.getDefault().language
-
 
             // os
             val releaseVersion = Build.VERSION.RELEASE
