@@ -227,6 +227,11 @@ public class MusicUtil {
         return albumArtDir;
     }
 
+    /**
+     * use {@link com.kabouzeid.gramophone.util.MediaStoreUtil#deleteSongs} instead
+     * @see com.kabouzeid.gramophone.util.MediaStoreUtil#deleteSongs
+     */
+    @Deprecated
     public static void deleteTracks(@NonNull final Context context, @NonNull final List<Song> songs) {
         final String[] projection = new String[]{
                 BaseColumns._ID, MediaStore.MediaColumns.DATA

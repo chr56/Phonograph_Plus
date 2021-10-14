@@ -10,7 +10,7 @@ import com.afollestad.materialdialogs.WhichButton
 import com.afollestad.materialdialogs.actions.getActionButton
 import com.kabouzeid.gramophone.R
 import com.kabouzeid.gramophone.model.Song
-import com.kabouzeid.gramophone.util.MusicUtil
+import com.kabouzeid.gramophone.util.MediaStoreUtil
 // Todo Completed Review
 /**
  * @author Karim Abou Zeid (kabouzeid), Aidan Follestad (afollestad), chr_56<modify>
@@ -29,7 +29,7 @@ class DeleteSongsDialog : DialogFragment() {
             .title(titleRes)
             .message(text = content)
             .positiveButton(R.string.delete_action) {
-                MusicUtil.deleteTracks(requireActivity(), songs)
+                MediaStoreUtil.deleteSongs(requireContext(), songs)
             }
             .negativeButton(android.R.string.cancel)
         // set button color

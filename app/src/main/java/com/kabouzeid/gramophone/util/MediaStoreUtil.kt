@@ -12,6 +12,9 @@ import java.util.Locale
 object MediaStoreUtil {
     const val TAG: String = "MediaStoreUtil"
 
+    /**
+     * delete songs by path via MediaStore
+     */
     fun deleteSongs(context: Context, songs: List<Song>) {
 
         var total: Int = songs.size
@@ -41,6 +44,7 @@ object MediaStoreUtil {
                 .title(R.string.failed_to_delete)
                 .message(text = "ERROR\n ${buffer.toString()} are failed to delete")
                 .positiveButton(android.R.string.ok)
+                .show()
         }
 
         /*
