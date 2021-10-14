@@ -19,7 +19,7 @@ import java.util.List;
  * @author Karim Abou Zeid (kabouzeid)
  */
 public class SongLoader {
-    protected static final String BASE_SELECTION = AudioColumns.IS_MUSIC + "=1" + " AND " + AudioColumns.TITLE + " != ''";
+    protected static final String BASE_SELECTION = AudioColumns.IS_MUSIC + " =1" + " AND " + AudioColumns.TITLE + " != ''";
     protected static final String[] BASE_PROJECTION = new String[]{
             BaseColumns._ID,// 0
             AudioColumns.TITLE,// 1

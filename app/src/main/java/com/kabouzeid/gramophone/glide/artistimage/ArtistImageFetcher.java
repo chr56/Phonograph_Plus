@@ -48,7 +48,7 @@ public class ArtistImageFetcher implements DataFetcher<InputStream> {
 
     @Override
     public InputStream loadData(Priority priority) throws Exception {
-        Log.d("MOSAIC", "load data for" + model.artistName);
+        Log.d("MOSAIC", "load data for " + model.artistName);
         return stream = getMosaic(model.albumCovers);
     }
 
