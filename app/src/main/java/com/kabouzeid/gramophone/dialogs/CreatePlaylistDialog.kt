@@ -39,6 +39,7 @@ class CreatePlaylistDialog : DialogFragment() {
                         val playlistId = PlaylistsUtil.createPlaylist(requireActivity(), name)
                         if (activity != null) {
                             if (songs != null && songs.isNotEmpty()) {
+                                dismiss()
                                 PlaylistsUtil.addToPlaylist(requireActivity(), songs, playlistId, true)
                             }
                         }
@@ -50,9 +51,9 @@ class CreatePlaylistDialog : DialogFragment() {
                             ),
                             Toast.LENGTH_SHORT
                         ).show()
+                        dismiss()
                     }
                 }
-                dismiss()
             }
         // set button color
         dialog.getActionButton(WhichButton.POSITIVE).updateTextColor(ThemeColor.accentColor(requireActivity()))
