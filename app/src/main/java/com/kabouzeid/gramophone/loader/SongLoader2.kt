@@ -109,27 +109,24 @@ object SongLoader2 {
         selectionValues: Array<String>?,
         sortOrder: String?
     ): Cursor? {
-        var _selection = selection
-        var _selectionValues = selectionValues
+        var realSelection = BASE_SELECTION
+        var realSelectionValues = selectionValues
 
-        _selection = if (_selection != null && _selection.trim { it <= ' ' } != "") {
-            "$BASE_SELECTION AND $_selection"
-        } else {
-            BASE_SELECTION
-        }
+        if (selection != null && realSelection.trim { it <= ' ' } != "")
+            realSelection += "AND $selection "
 
-        // Blacklist // Todo: check
+        // Blacklist 
         val paths: List<String> = BlacklistStore.getInstance(context).paths
         if (paths.isNotEmpty()) {
-            _selection = generateBlacklistSelection(_selection, paths.size)
-            _selectionValues = addBlacklistSelectionValues(_selectionValues, paths)
+            realSelection = appendBlacklistForSelection(realSelection, paths.size)
+            realSelectionValues = appendBlacklistForSelectionValues(realSelectionValues, paths)
         }
 
         var cursor: Cursor? = null
         try {
             cursor = context.contentResolver.query(
                 MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
-                BASE_PROJECTION, _selection, _selectionValues, sortOrder
+                BASE_PROJECTION, realSelection, realSelectionValues, sortOrder
             )
         } catch (e: SecurityException) {
         }
@@ -137,10 +134,17 @@ object SongLoader2 {
         return cursor
     }
 
-    private fun generateBlacklistSelection(selection: String, pathCount: Int): String {
+    /**
+     * append blacklist filter in (database query) "selection"
+     *
+     * use with [appendBlacklistForSelectionValues]
+     * @param selection target
+     * @param pathCount the number of blacklist entries
+     */
+    private fun appendBlacklistForSelection(selection: String?, pathCount: Int): String {
         var realSelection =
-            if (selection.trim { it <= ' ' } != "") "$selection AND "
-            else ""
+            if (selection != null && selection.trim { it <= ' ' } != "") "$selection AND "
+            else "" // why you pass null selection
 
         realSelection += AudioColumns.DATA + " NOT LIKE ?"
 
@@ -150,14 +154,21 @@ object SongLoader2 {
         return realSelection
     }
 
-    private fun addBlacklistSelectionValues(
+    /**
+     * append blacklist filter in (database query) "selectionValues"
+     *
+     * use with [appendBlacklistForSelection]
+     * @param selectionValues target
+     * @param paths the blacklist path would added to
+     */
+    private fun appendBlacklistForSelectionValues(
         selectionValues: Array<String>?,
         paths: List<String>
     ): Array<String> {
         val realSelectionValues: Array<String> =
             Array<String>((selectionValues?.size ?: 0) + paths.size) { index ->
                 // Todo: Check 
-                if (index < (selectionValues?.size ?: 0) ) selectionValues?.get(index) ?: ""
+                if (index < (selectionValues?.size ?: 0)) selectionValues?.get(index) ?: ""
                 else paths[index - (selectionValues?.size ?: 0)] + "%"
             }
         return realSelectionValues
