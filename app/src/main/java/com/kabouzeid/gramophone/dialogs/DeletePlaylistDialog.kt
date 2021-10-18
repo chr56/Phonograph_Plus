@@ -21,12 +21,20 @@ class DeletePlaylistDialog : DialogFragment() {
         val playlists: List<Playlist> = requireArguments().getParcelableArrayList("playlists")!!
         val title: Int = if (playlists.size > 1) {R.string.delete_playlists_title}
                             else {R.string.delete_playlist_title}
-        val content: CharSequence = if (playlists.size > 1) {Html.fromHtml(getString(R.string.delete_x_playlists, playlists.size))}
-                            else {Html.fromHtml(getString(R.string.delete_playlist_x, playlists[0].name))}
+
+        val msg: StringBuffer = StringBuffer()
+        msg.append(
+            Html.fromHtml(
+                resources.getQuantityString(R.plurals.msg_playlist_deletion_summary, playlists.size, playlists.size), Html.FROM_HTML_MODE_LEGACY
+            )
+        )
+        playlists.forEach { playlist ->
+            msg.append(playlist.name).appendLine()
+        }
 
         val dialog = MaterialDialog(requireActivity())
             .title(title)
-            .message(text = content)
+            .message(text = msg)
             .positiveButton(R.string.delete_action) {
                 PlaylistsUtil.deletePlaylists(requireActivity(), playlists)
             }
