@@ -9,7 +9,9 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
+import android.os.Handler
 import android.provider.MediaStore
+import android.provider.Settings
 import android.util.Log
 import android.widget.Toast
 import com.afollestad.materialdialogs.MaterialDialog
@@ -24,17 +26,17 @@ object MediaStoreUtil {
      * delete songs by path via MediaStore
      */
     fun deleteSongs(context: Context, songs: List<Song>) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             if (context.checkSelfPermission(Manifest.permission.MANAGE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {
                 Toast.makeText(context, R.string.permission_external_storage_denied, Toast.LENGTH_SHORT).show()
                 Log.w(TAG, "No MANAGE_EXTERNAL_STORAGE permission")
 
-                /*
-                val intent = Intent(Intent.ACTION_OPEN_DOCUMENT_TREE).apply {
-                    flags = Intent.FLAG_GRANT_WRITE_URI_PERMISSION or Intent.FLAG_GRANT_READ_URI_PERMISSION
+                val intent = Intent(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION).apply {
+//                    data = Uri.parse("package:${context.packageName}")
+                    flags = Intent.FLAG_ACTIVITY_NEW_TASK
                 }
-                context.startActivity(intent)
-                */
+                Handler().postDelayed({context.startActivity(intent)}, 2200)
+
             }
         }
 
@@ -70,18 +72,6 @@ object MediaStoreUtil {
                 .show()
         }
 
-        /*
-        val path: Array<String> = Array(songs.size) { songs[it].data }
-        var where: String = ""
-        for (i in songs.indices) {
-            if (i > 0) where += " OR "
-            where += "${MediaStore.Audio.Media.DATA} = ?"
-        }
-        Log.d("MSU", "where = '$where' ")
-        val result: Int = context.contentResolver.delete(
-            MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, where, path
-        )
-         */
 
         Toast.makeText(
             context,
