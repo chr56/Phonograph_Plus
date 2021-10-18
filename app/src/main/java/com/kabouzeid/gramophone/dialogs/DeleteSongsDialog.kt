@@ -19,15 +19,19 @@ class DeleteSongsDialog : DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val songs: List<Song> = requireArguments().getParcelableArrayList("songs")!!
         val titleRes: Int = if (songs.size > 1) { R.string.delete_songs_title } else { R.string.delete_song_title }
-        val content: CharSequence = if (songs.size > 1) {
-            Html.fromHtml(getString(R.string.delete_x_songs, songs.size), Html.FROM_HTML_MODE_LEGACY)
-        } else {
-            Html.fromHtml(getString(R.string.delete_song_x, songs[0].title), Html.FROM_HTML_MODE_LEGACY)
+        val msg: StringBuffer = StringBuffer()
+
+        msg.append(Html.fromHtml(
+            resources.getQuantityString(R.plurals.msg_song_deletion_summary, songs.size, songs.size)
+            , Html.FROM_HTML_MODE_LEGACY)
+        )
+        songs.forEach{ song ->
+            msg.append(song.title).appendLine()
         }
 
         val dialog = MaterialDialog(requireActivity())
             .title(titleRes)
-            .message(text = content)
+            .message(text = msg)
             .positiveButton(R.string.delete_action) {
                 MediaStoreUtil.deleteSongs(requireContext(), songs)
             }

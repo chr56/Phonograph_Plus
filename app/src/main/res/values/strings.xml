@@ -74,8 +74,12 @@
     <string name="delete_playlist_x"><![CDATA[Delete the playlist <b>%1$s</b>?]]></string>
     <string name="clear_playlist_x"><![CDATA[Clear the playlist <b>%1$s</b>? This can\u2019t be undone!]]></string>
     <string name="delete_x_playlists"><![CDATA[Delete <b>%1$d</b> playlists?]]></string>
-    <string name="delete_song_x"><![CDATA[Delete the song <b>%1$s</b>?]]></string>
+    <string name="delete_song_x"><![CDATA[Delete the song <b>%1$s</b>?<br/>]]></string>
     <string name="delete_x_songs"><![CDATA[Delete <b>%1$d</b> songs?]]></string>
+    <plurals name="msg_song_deletion_summary">
+        <item quantity="one"><![CDATA[Delete <b>%1$d</b> song from the device?<br/>]]></item>
+        <item quantity="other"><![CDATA[Delete <b>%1$d</b> songs from the device?<br/>]]></item>
+    </plurals>
     <string name="remove_song_x_from_playlist"><![CDATA[Remove the song <b>%1$s</b> from the playlist?]]></string>
     <string name="remove_x_songs_from_playlist"><![CDATA[Remove <b>%1$d</b> songs from the playlist?]]></string>
     <string name="delete_song_title">Delete song</string>
