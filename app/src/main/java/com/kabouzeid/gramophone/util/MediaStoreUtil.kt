@@ -38,7 +38,7 @@ object MediaStoreUtil {
             }
         }
 
-        var total: Int = songs.size
+        val total: Int = songs.size
         var result: Int = 0
         val failList: MutableList<Song> = ArrayList<Song>()
 
@@ -57,13 +57,15 @@ object MediaStoreUtil {
         }
         // report fail
         if (failList.isNotEmpty()) {
-            val buffer = StringBuffer()
+            val list = StringBuffer()
             for (song in failList) {
-                buffer.append(song.title).append(",\n")
+                list.append(song.title).append("\n")
             }
-            val dialog = MaterialDialog(context)
+            MaterialDialog(context)
                 .title(R.string.failed_to_delete)
-                .message(text = "${context.getString(R.string.failed_to_delete)}: \n$buffer ")
+                .message(text = "${context.resources.getQuantityString(R.plurals.msg_deletion_result,total,result,total)}\n" +
+                        "${context.getString(R.string.failed_to_delete)}: \n" +
+                        "$list ")
                 .positiveButton(android.R.string.ok)
                 .show()
         }
