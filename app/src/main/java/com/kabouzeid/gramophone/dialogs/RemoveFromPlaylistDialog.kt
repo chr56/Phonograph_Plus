@@ -19,18 +19,20 @@ import java.util.*
 class RemoveFromPlaylistDialog : DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val songs: List<PlaylistSong> = requireArguments().getParcelableArrayList("songs")!!
-        val title: Int
+        val title: Int = if (songs.size > 1) { R.string.remove_songs_from_playlist_title } else { R.string.remove_song_from_playlist_title }
         val content: CharSequence
-        if (songs.size > 1) {
-            title = R.string.remove_songs_from_playlist_title
-            content = Html.fromHtml(getString(R.string.remove_x_songs_from_playlist, songs.size))
-        } else {
-            title = R.string.remove_song_from_playlist_title
-            content = Html.fromHtml(getString(R.string.remove_song_x_from_playlist, songs.get(0).title))
+        val msg: StringBuffer = StringBuffer()
+
+        msg.append(Html.fromHtml(
+            resources.getQuantityString(R.plurals.msg_song_removal_summary, songs.size, songs.size)
+            , Html.FROM_HTML_MODE_LEGACY)
+        )
+        songs.forEach{ song ->
+            msg.append(song.title).appendLine()
         }
         val dialog = MaterialDialog(requireActivity())
             .title(title)
-            .message(text = content)
+            .message(text = msg)
             .negativeButton(android.R.string.cancel)
             .positiveButton(R.string.remove_action) { if (activity != null) PlaylistsUtil.removeFromPlaylist(requireActivity(), songs) }
         // set button color
