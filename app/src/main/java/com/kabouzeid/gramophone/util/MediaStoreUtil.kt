@@ -160,7 +160,7 @@ object MediaStoreUtil {
 
         Toast.makeText( // todo
             context,
-            String.format(Locale.getDefault(), context.getString(R.string.delete_x_playlists), result),
+            String.format(Locale.getDefault(), context.getString(R.string.deleted_x_playlists), result),
             Toast.LENGTH_SHORT
         ).show()
     }
