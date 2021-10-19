@@ -5,6 +5,8 @@
 package com.kabouzeid.gramophone.util
 
 import android.Manifest
+import android.app.Activity
+import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -32,18 +34,24 @@ object MediaStoreUtil {
     /**
      * delete songs by path via MediaStore
      */
-    fun deleteSongs(context: Context, songs: List<Song>) {
+    fun deleteSongs(context: Activity, songs: List<Song>) {
+        // permission check on R
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             if (context.checkSelfPermission(Manifest.permission.MANAGE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {
-                Toast.makeText(context, R.string.permission_external_storage_denied, Toast.LENGTH_SHORT).show()
+//                Toast.makeText(context, R.string.permission_external_storage_denied, Toast.LENGTH_SHORT).show()
+                MaterialDialog(context)
+                    .title(R.string.permission_external_storage_denied)
+                    .message(R.string.permission_external_storage_denied)
+                    .positiveButton(text = "Request Permission") {
+                        val intent = Intent(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION).apply {
+//                            data = Uri.parse("package:${context.packageName}")
+                            flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                        }
+                        Handler().postDelayed({ context.startActivity(intent) }, 200)
+                    }
+                    .negativeButton(android.R.string.cancel)
+                    .show()
                 Log.w(TAG, "No MANAGE_EXTERNAL_STORAGE permission")
-
-                val intent = Intent(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION).apply {
-//                    data = Uri.parse("package:${context.packageName}")
-                    flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                }
-                Handler().postDelayed({context.startActivity(intent)}, 2200)
-
             }
         }
 
@@ -64,6 +72,7 @@ object MediaStoreUtil {
             }
             result += output
         }
+
         // report fail
         if (failList.isNotEmpty()) {
             val list = StringBuffer()
@@ -72,10 +81,29 @@ object MediaStoreUtil {
             }
             MaterialDialog(context)
                 .title(R.string.failed_to_delete)
-                .message(text = "${context.resources.getQuantityString(R.plurals.msg_deletion_result,total,result,total)}\n" +
+                .message(
+                    text = "${context.resources.getQuantityString(R.plurals.msg_deletion_result,total,result,total)}\n" +
                         "${context.getString(R.string.failed_to_delete)}: \n" +
-                        "$list ")
+                        "$list "
+                )
                 .positiveButton(android.R.string.ok)
+                .neutralButton(text = "Retry") {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                        val uris: List<Uri> = List<Uri>(failList.size) { index ->
+                            Uri.withAppendedPath(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, failList[index].id.toString())
+                        }
+                        uris.forEach {
+                            Log.d(TAG, it.toString())
+                            Log.d(TAG, it.path.toString())
+                        }
+                        val pi: PendingIntent = MediaStore.createDeleteRequest(
+                            context.contentResolver, uris
+                        )
+                        context.startIntentSenderForResult(pi.intentSender, 0, null, 0, 0, 0)
+                    } else {
+                        // todo
+                    }
+                }
                 .show()
         }
 

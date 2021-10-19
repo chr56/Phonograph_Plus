@@ -33,7 +33,7 @@ class DeleteSongsDialog : DialogFragment() {
             .title(titleRes)
             .message(text = msg)
             .positiveButton(R.string.delete_action) {
-                MediaStoreUtil.deleteSongs(requireContext(), songs)
+                MediaStoreUtil.deleteSongs(requireActivity(), songs)
             }
             .negativeButton(android.R.string.cancel)
         // set button color
