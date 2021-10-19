@@ -2,6 +2,7 @@ package com.kabouzeid.gramophone.loader;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.os.Build;
 import android.provider.MediaStore.Audio.Genres;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -36,12 +37,15 @@ public class GenreLoader {
                         genres.add(genre);
                     } else {
                         // try to remove the empty genre from the media store
-                        try {
-                            context.getContentResolver().delete(Genres.EXTERNAL_CONTENT_URI, Genres._ID + " == " + genre.id, null);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                            // nothing we can do then
+                        if (Build.VERSION.SDK_INT< Build.VERSION_CODES.Q){
+                            try {
+                                context.getContentResolver().delete(Genres.EXTERNAL_CONTENT_URI, Genres._ID + " == " + genre.id, null);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                                // nothing we can do then
+                            }
                         }
+
                     }
                 } while (cursor.moveToNext());
             }
