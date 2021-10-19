@@ -1,8 +1,17 @@
 package com.kabouzeid.gramophone.dialogs
 
+import android.Manifest
+import android.app.Activity
 import android.app.Dialog
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
+import android.os.Handler
+import android.provider.Settings
 import android.text.Html
+import android.util.Log
+import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 import chr_56.MDthemer.core.ThemeColor
 import com.afollestad.materialdialogs.MaterialDialog
@@ -10,7 +19,7 @@ import com.afollestad.materialdialogs.WhichButton
 import com.afollestad.materialdialogs.actions.getActionButton
 import com.kabouzeid.gramophone.R
 import com.kabouzeid.gramophone.model.Playlist
-import com.kabouzeid.gramophone.util.PlaylistsUtil
+import com.kabouzeid.gramophone.util.MediaStoreUtil
 
 // Todo Completed
 /**
@@ -18,9 +27,9 @@ import com.kabouzeid.gramophone.util.PlaylistsUtil
  */
 class DeletePlaylistDialog : DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        val attachedActivity: Activity = requireActivity()
         val playlists: List<Playlist> = requireArguments().getParcelableArrayList("playlists")!!
-        val title: Int = if (playlists.size > 1) {R.string.delete_playlists_title}
-                            else {R.string.delete_playlist_title}
+        val title: Int = if (playlists.size > 1) { R.string.delete_playlists_title } else { R.string.delete_playlist_title }
 
         val msg: StringBuffer = StringBuffer()
         msg.append(
@@ -32,21 +41,48 @@ class DeletePlaylistDialog : DialogFragment() {
             msg.append(playlist.name).appendLine()
         }
 
+        // extra permission check on R(11)
+        var hasPermission: Boolean = true
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            if (attachedActivity.checkSelfPermission(Manifest.permission.MANAGE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {
+                Toast.makeText(context, R.string.permission_manage_external_storage_denied, Toast.LENGTH_SHORT).show()
+                Log.w(TAG, "No MANAGE_EXTERNAL_STORAGE permission")
+
+                hasPermission = false
+                msg.appendLine().append(attachedActivity.resources.getString(R.string.permission_manage_external_storage_denied))
+            }
+        }
+
         val dialog = MaterialDialog(requireActivity())
             .title(title)
             .message(text = msg)
             .positiveButton(R.string.delete_action) {
-                PlaylistsUtil.deletePlaylists(requireActivity(), playlists)
+//                PlaylistsUtil.deletePlaylists(requireActivity(), playlists)
+                MediaStoreUtil.deletePlaylists(requireActivity(), playlists)
             }
             .negativeButton(android.R.string.cancel) { dismiss() }
+        // grant permission button for R
+        if (!hasPermission) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                dialog.neutralButton(R.string.grant_permission) {
+                    val intent = Intent(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION).apply { // todo
+//                            data = Uri.parse("package:${context.packageName}")
+                        flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                    }
+                    Handler().postDelayed({ attachedActivity.startActivity(intent) }, 200)
+                }
+            }
+        }
         // set button color
         dialog.getActionButton(WhichButton.POSITIVE).updateTextColor(ThemeColor.accentColor(requireActivity()))
         dialog.getActionButton(WhichButton.NEGATIVE).updateTextColor(ThemeColor.accentColor(requireActivity()))
+        dialog.getActionButton(WhichButton.NEUTRAL).updateTextColor(ThemeColor.accentColor(requireActivity()))
 
         return dialog
     }
 
     companion object {
+        private const val TAG = "DeletePlaylistDialog"
         @JvmStatic
         fun create(playlists: List<Playlist>): DeletePlaylistDialog {
             val dialog = DeletePlaylistDialog()

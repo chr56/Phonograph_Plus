@@ -15,6 +15,7 @@ import android.util.Log
 import android.widget.Toast
 import com.afollestad.materialdialogs.MaterialDialog
 import com.kabouzeid.gramophone.R
+import com.kabouzeid.gramophone.model.Playlist
 import com.kabouzeid.gramophone.model.Song
 import java.util.Locale
 import kotlin.collections.ArrayList
@@ -87,6 +88,79 @@ object MediaStoreUtil {
         Toast.makeText(
             context,
             String.format(Locale.getDefault(), context.getString(R.string.deleted_x_songs), result),
+            Toast.LENGTH_SHORT
+        ).show()
+    }
+
+    /**
+     * delete playlist by path via MediaStore
+     */
+    fun deletePlaylists(context: Activity, playlists: List<Playlist>) {
+        val total: Int = playlists.size
+        var result: Int = 0
+        val failList: MutableList<Playlist> = ArrayList<Playlist>()
+
+        // try to delete
+        for (index in playlists.indices) {
+            val output = context.contentResolver.delete(
+                MediaStore.Audio.Playlists.EXTERNAL_CONTENT_URI,
+                "${MediaStore.Audio.Media._ID} = ?",
+                arrayOf(playlists[index].id.toString())
+            )
+            if (output == 0) {
+                Log.w(TAG, "fail to delete playlist ${playlists[index].name}(id:${playlists[index].id})")
+                failList.add(playlists[index])
+            }
+            result += output
+        }
+
+        // handle fail , report and try again
+        if (failList.isNotEmpty()) {
+            val list = StringBuffer()
+            for (playlist in failList) {
+                list.append(playlist.name).append("\n")
+            }
+            MaterialDialog(context)
+                .title(R.string.failed_to_delete)
+                .message(
+                    text = "${
+                    context.resources.getQuantityString(
+                        R.plurals.msg_deletion_result,
+                        total,
+                        result,
+                        total
+                    )
+                    }\n" +
+                        "${context.getString(R.string.failed_to_delete)}: \n" +
+                        "$list "
+                )
+                .positiveButton(android.R.string.ok)
+                .neutralButton(R.string.retry) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                        val uris: List<Uri> = List<Uri>(failList.size) { index ->
+                            Uri.withAppendedPath(
+                                MediaStore.Audio.Playlists.EXTERNAL_CONTENT_URI,
+                                failList[index].id.toString()
+                            )
+                        }
+                        uris.forEach {
+                            Log.d(TAG, it.toString())
+                            Log.d(TAG, it.path.toString())
+                        }
+                        val pi: PendingIntent = MediaStore.createDeleteRequest(
+                            context.contentResolver, uris
+                        )
+                        context.startIntentSenderForResult(pi.intentSender, 0, null, 0, 0, 0)
+                    } else {
+                        // todo
+                    }
+                }
+                .show()
+        }
+
+        Toast.makeText( // todo
+            context,
+            String.format(Locale.getDefault(), context.getString(R.string.delete_x_playlists), result),
             Toast.LENGTH_SHORT
         ).show()
     }
