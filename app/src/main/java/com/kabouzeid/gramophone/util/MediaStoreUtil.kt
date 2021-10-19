@@ -35,25 +35,6 @@ object MediaStoreUtil {
      * delete songs by path via MediaStore
      */
     fun deleteSongs(context: Activity, songs: List<Song>) {
-        // permission check on R
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            if (context.checkSelfPermission(Manifest.permission.MANAGE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {
-//                Toast.makeText(context, R.string.permission_external_storage_denied, Toast.LENGTH_SHORT).show()
-                MaterialDialog(context)
-                    .title(R.string.permission_external_storage_denied)
-                    .message(R.string.permission_external_storage_denied)
-                    .positiveButton(text = "Request Permission") {
-                        val intent = Intent(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION).apply {
-//                            data = Uri.parse("package:${context.packageName}")
-                            flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                        }
-                        Handler().postDelayed({ context.startActivity(intent) }, 200)
-                    }
-                    .negativeButton(android.R.string.cancel)
-                    .show()
-                Log.w(TAG, "No MANAGE_EXTERNAL_STORAGE permission")
-            }
-        }
 
         val total: Int = songs.size
         var result: Int = 0
