@@ -4,18 +4,13 @@
 
 package com.kabouzeid.gramophone.util
 
-import android.Manifest
 import android.app.Activity
 import android.app.PendingIntent
 import android.content.Context
-import android.content.Intent
-import android.content.pm.PackageManager
 import android.media.MediaScannerConnection
 import android.net.Uri
 import android.os.Build
-import android.os.Handler
 import android.provider.MediaStore
-import android.provider.Settings
 import android.util.Log
 import android.widget.Toast
 import com.afollestad.materialdialogs.MaterialDialog
@@ -40,21 +35,22 @@ object MediaStoreUtil {
         var result: Int = 0
         val failList: MutableList<Song> = ArrayList<Song>()
 
+        // try to delete
         for (index in songs.indices) {
             val output = context.contentResolver.delete(
                 MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
                 "${MediaStore.Audio.Media.DATA} = ?",
                 arrayOf(songs[index].data)
             )
+            // if it failed
             if (output == 0) {
-                // if it failed
                 Log.w(TAG, "fail to delete song ${songs[index].title} at ${songs[index].data}")
                 failList.add(songs[index])
             }
             result += output
         }
 
-        // report fail
+        // handle fail , report and try again
         if (failList.isNotEmpty()) {
             val list = StringBuffer()
             for (song in failList) {
@@ -68,7 +64,7 @@ object MediaStoreUtil {
                         "$list "
                 )
                 .positiveButton(android.R.string.ok)
-                .neutralButton(text = "Retry") {
+                .neutralButton(R.string.retry) {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                         val uris: List<Uri> = List<Uri>(failList.size) { index ->
                             Uri.withAppendedPath(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, failList[index].id.toString())

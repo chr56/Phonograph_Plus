@@ -330,6 +330,9 @@
     <string name="clear_all_preference">clear all application settings</string>
     <string name="clear_all_preference_msg"><b>Warning</b>: this will reset <b>ALL</b> app preferences/settings! \n\nThis might be very helpful if application crashes on launching. \nAre you sure?</string>
     <string name="failed_to_delete">Failed to delete</string>
+    <string name="grant_permission">Grant Permission</string>
+    <string name="retry">Retry</string>
+    <string name="permission_manage_external_storage_denied">no permission \"manage external storage\"!</string>
     <plurals name="msg_deletion_result">
         <item quantity="one">%1$d / %2$d item was successfully deleted.</item>>
         <item quantity="other">%1$d / %2$d items were successfully deleted.</item>
