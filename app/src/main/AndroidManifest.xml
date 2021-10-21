@@ -126,10 +126,10 @@
             android:launchMode="singleInstance"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
         <activity android:name=".ui.activities.CrashActivity"
-            android:process="com.kabouzeid.phonograph.crash"
+            android:process="player.phonograph.crash"
             android:launchMode="singleInstance">
             <intent-filter>
-                <action android:name="com.kabouzeid.phonograph.CRASH_HANDLER"/>
+                <action android:name="player.phonograph.CRASH_HANDLER"/>
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
