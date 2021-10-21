@@ -48,77 +48,31 @@ android {
         }
     }
     buildTypes {
-        plus_release{
-            minifyEnabled true
-            shrinkResources true
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-
-            if(signing_file_exist) signingConfig signingConfigs.release
-            resValue "string", "app_name","Phonograph Plus"
-            applicationIdSuffix '.plus'
-
-            matchingFallbacks = ['release']
-        }
-        plus_debug{
-//            minifyEnabled true
-//            shrinkResources true
-//            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-
-            debuggable true
-
-            if(signing_file_exist) signingConfig signingConfigs.release
-            resValue "string", "app_name","Phonograph Plus debug"
-            applicationIdSuffix '.plus.debug'
-
-            matchingFallbacks = ['release']
-        }
-
-
         release {
             minifyEnabled true
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
 
             if(signing_file_exist) signingConfig signingConfigs.release
-            resValue "string", "app_name","Phonograph"
-        }
-        cust{
-            minifyEnabled true
-            shrinkResources true
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-
-            if(signing_file_exist) signingConfig signingConfigs.release
-            resValue "string", "app_name","Phonograph Custom"
-            applicationIdSuffix '.cust'
-            matchingFallbacks = ['release']
-            debuggable true
-        }
-        experimental{
-            if(signing_file_exist) signingConfig signingConfigs.release
-            resValue "string", "app_name","Phonograph Experi"
-            applicationIdSuffix '.experimental'
-            matchingFallbacks = ['release']
-            debuggable true
-        }
-        pub{
-            minifyEnabled true
-            shrinkResources true
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-
-            if(signing_file_exist) signingConfig signingConfigs.release
-            resValue "string", "app_name","Phonograph Pro"
-            applicationIdSuffix '.mod'
-            matchingFallbacks = ['release']
+            applicationIdSuffix '.plus'
+            resValue "string", "app_name","Phonograph Plus"
         }
         debug {
-            applicationIdSuffix '.debug'
-            resValue "string", "app_name","Phonograph Debug"
+            applicationIdSuffix '.plus.debug'
+            resValue "string", "app_name","Phonograph Plus Debug"
+        }
+        preview{
+            if(signing_file_exist) signingConfig signingConfigs.release
+            resValue "string", "app_name","Phonograph Plus Preview"
+            applicationIdSuffix '.plus.preview'
+            matchingFallbacks = ['release']
+            debuggable true
         }
         // for ci
         ci {
             signingConfig signingConfigs.ci_trustless
-            applicationIdSuffix '.ci'
-            resValue "string", "app_name","Phonograph CI build"
+            applicationIdSuffix '.plus.ci'
+            resValue "string", "app_name","Phonograph Plus CI build"
             matchingFallbacks = ['release']
             debuggable true
         }
