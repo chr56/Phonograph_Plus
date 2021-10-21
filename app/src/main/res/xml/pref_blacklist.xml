@@ -1,14 +1,14 @@
 <androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <com.kabouzeid.phonograph.preferences.basic.PreferenceCategoryX android:title="@string/blacklist">
+    <player.phonograph.preferences.basic.PreferenceCategoryX android:title="@string/blacklist">
 
-        <com.kabouzeid.phonograph.preferences.BlacklistPreferenceX
+        <player.phonograph.preferences.BlacklistPreferenceX
             app:iconSpaceReserved="false"
             android:key="blacklist"
             android:summary="@string/pref_summary_blacklist"
             android:title="@string/blacklist" />
 
-    </com.kabouzeid.phonograph.preferences.basic.PreferenceCategoryX>
+    </player.phonograph.preferences.basic.PreferenceCategoryX>
 
 </androidx.preference.PreferenceScreen>

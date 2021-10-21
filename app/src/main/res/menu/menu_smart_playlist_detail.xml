@@ -1,7 +1,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.kabouzeid.phonograph.ui.activities.PlaylistDetailActivity">
+    tools:context=".ui.activities.PlaylistDetailActivity">
 
     <item
         android:id="@+id/action_shuffle_playlist"

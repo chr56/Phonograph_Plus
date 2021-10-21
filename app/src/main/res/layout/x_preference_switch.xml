@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.kabouzeid.phonograph.views.basic.SwitchX android:id="@android:id/checkbox"
+<player.phonograph.views.basic.SwitchX android:id="@android:id/checkbox"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"

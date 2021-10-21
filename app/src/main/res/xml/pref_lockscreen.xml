@@ -1,16 +1,16 @@
 <androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <com.kabouzeid.phonograph.preferences.basic.PreferenceCategoryX android:title="@string/pref_header_lockscreen">
+    <player.phonograph.preferences.basic.PreferenceCategoryX android:title="@string/pref_header_lockscreen">
 
-        <com.kabouzeid.phonograph.preferences.basic.SwitchPreferenceX
+        <player.phonograph.preferences.basic.SwitchPreferenceX
             app:iconSpaceReserved="false"
             android:defaultValue="true"
             android:key="album_art_on_lockscreen"
             android:summary="@string/pref_summary_album_art_on_lockscreen"
             android:title="@string/pref_title_album_art_on_lockscreen" />
 
-        <com.kabouzeid.phonograph.preferences.basic.SwitchPreferenceX
+        <player.phonograph.preferences.basic.SwitchPreferenceX
             app:iconSpaceReserved="false"
             android:defaultValue="false"
             android:dependency="album_art_on_lockscreen"
@@ -18,6 +18,6 @@
             android:summary="@string/pref_summary_blurred_album_art"
             android:title="@string/pref_title_blurred_album_art" />
 
-    </com.kabouzeid.phonograph.preferences.basic.PreferenceCategoryX>
+    </player.phonograph.preferences.basic.PreferenceCategoryX>
 
 </androidx.preference.PreferenceScreen>

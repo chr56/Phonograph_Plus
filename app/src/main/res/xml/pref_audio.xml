@@ -2,34 +2,34 @@
 <androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <com.kabouzeid.phonograph.preferences.basic.PreferenceCategoryX android:title="@string/pref_header_audio">
+    <player.phonograph.preferences.basic.PreferenceCategoryX android:title="@string/pref_header_audio">
 
-        <com.kabouzeid.phonograph.preferences.basic.SwitchPreferenceX
+        <player.phonograph.preferences.basic.SwitchPreferenceX
             app:iconSpaceReserved="false"
             android:defaultValue="true"
             android:key="audio_ducking"
             android:summary="@string/pref_summary_audio_ducking"
             android:title="@string/pref_title_audio_ducking" />
 
-        <com.kabouzeid.phonograph.preferences.basic.SwitchPreferenceX
+        <player.phonograph.preferences.basic.SwitchPreferenceX
             app:iconSpaceReserved="false"
             android:defaultValue="false"
             android:key="gapless_playback"
             android:summary="@string/pref_summary_gapless_playback"
             android:title="@string/pref_title_gapless_playback" />
 
-        <com.kabouzeid.phonograph.preferences.basic.SwitchPreferenceX
+        <player.phonograph.preferences.basic.SwitchPreferenceX
             app:iconSpaceReserved="false"
             android:defaultValue="true"
             android:key="remember_shuffle"
             android:summary="@string/pref_summary_remember_shuffle"
             android:title="@string/pref_title_remember_shuffle" />
 
-        <com.kabouzeid.phonograph.preferences.basic.PreferenceX
+        <player.phonograph.preferences.basic.PreferenceX
             app:iconSpaceReserved="false"
             android:key="equalizer"
             android:title="@string/equalizer" />
 
-    </com.kabouzeid.phonograph.preferences.basic.PreferenceCategoryX>
+    </player.phonograph.preferences.basic.PreferenceCategoryX>
 
 </androidx.preference.PreferenceScreen>

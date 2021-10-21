@@ -29,7 +29,7 @@
         android:layout_marginTop="12dip"
         android:layout_weight="1">
 
-        <com.kabouzeid.phonograph.views.basic.PrimaryTextViewX
+        <player.phonograph.views.basic.PrimaryTextViewX
             android:id="@android:id/title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -41,7 +41,7 @@
             android:textSize="@dimen/pref_default_textsize_subheading"
             tools:text="Title" />
 
-        <com.kabouzeid.phonograph.views.basic.SecondaryTextViewX
+        <player.phonograph.views.basic.SecondaryTextViewX
             android:id="@android:id/summary"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

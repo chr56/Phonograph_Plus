@@ -15,7 +15,7 @@
     android:paddingStart="@dimen/md_dialog_frame_margin"
     tools:gravity="start|center_vertical">
 
-    <com.kabouzeid.phonograph.views.basic.CheckBoxX
+    <player.phonograph.views.basic.CheckBoxX
         android:id="@+id/checkbox"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
@@ -40,7 +40,7 @@
         android:textSize="@dimen/md_listitem_textsize"
         tools:text="Item" />
 
-    <com.kabouzeid.phonograph.views.IconImageView
+    <player.phonograph.views.IconImageView
         android:id="@+id/drag_view"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"

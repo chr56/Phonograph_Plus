@@ -2,20 +2,20 @@
 <androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <com.kabouzeid.phonograph.preferences.basic.PreferenceCategoryX android:title="@string/pref_header_now_playing_screen">
+    <player.phonograph.preferences.basic.PreferenceCategoryX android:title="@string/pref_header_now_playing_screen">
 
-        <com.kabouzeid.phonograph.preferences.NowPlayingScreenPreferenceX
+        <player.phonograph.preferences.NowPlayingScreenPreferenceX
             app:iconSpaceReserved="false"
             android:key="now_playing_screen_id"
             android:title="@string/pref_title_now_playing_screen_appearance" />
 
-        <com.kabouzeid.phonograph.preferences.basic.SwitchPreferenceX
+        <player.phonograph.preferences.basic.SwitchPreferenceX
             app:iconSpaceReserved="false"
             android:defaultValue="true"
             android:key="synchronized_lyrics_show"
             android:summary="@string/pref_summary_synchronized_lyrics_show"
             android:title="@string/pref_title_synchronized_lyrics_show" />
 
-    </com.kabouzeid.phonograph.preferences.basic.PreferenceCategoryX>
+    </player.phonograph.preferences.basic.PreferenceCategoryX>
 
 </androidx.preference.PreferenceScreen>
