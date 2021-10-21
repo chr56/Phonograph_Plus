@@ -48,6 +48,32 @@ android {
         }
     }
     buildTypes {
+        plus_release{
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+
+            if(signing_file_exist) signingConfig signingConfigs.release
+            resValue "string", "app_name","Phonograph Plus"
+            applicationIdSuffix '.plus'
+
+            matchingFallbacks = ['release']
+        }
+        plus_debug{
+//            minifyEnabled true
+//            shrinkResources true
+//            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+
+            debuggable true
+
+            if(signing_file_exist) signingConfig signingConfigs.release
+            resValue "string", "app_name","Phonograph Plus debug"
+            applicationIdSuffix '.plus.debug'
+
+            matchingFallbacks = ['release']
+        }
+
+
         release {
             minifyEnabled true
             shrinkResources true
