@@ -1,9 +1,9 @@
 <androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <com.kabouzeid.gramophone.preferences.basic.PreferenceCategoryX android:title="@string/pref_header_playlists">
+    <com.kabouzeid.phonograph.preferences.basic.PreferenceCategoryX android:title="@string/pref_header_playlists">
 
-        <com.kabouzeid.gramophone.preferences.basic.ListPreferenceX
+        <com.kabouzeid.phonograph.preferences.basic.ListPreferenceX
             app:iconSpaceReserved="false"
             android:defaultValue="past_seven_days"
             android:entries="@array/pref_playlists_last_added_interval_titles"
@@ -13,6 +13,6 @@
             android:positiveButtonText="@null"
             android:title="@string/pref_title_last_added_interval" />
 
-    </com.kabouzeid.gramophone.preferences.basic.PreferenceCategoryX>
+    </com.kabouzeid.phonograph.preferences.basic.PreferenceCategoryX>
 
 </androidx.preference.PreferenceScreen>

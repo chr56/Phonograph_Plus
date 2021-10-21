@@ -1,9 +1,9 @@
 <androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <com.kabouzeid.gramophone.preferences.basic.PreferenceCategoryX android:title="@string/pref_header_colors">
+    <com.kabouzeid.phonograph.preferences.basic.PreferenceCategoryX android:title="@string/pref_header_colors">
 
-        <com.kabouzeid.gramophone.preferences.basic.ListPreferenceX
+        <com.kabouzeid.phonograph.preferences.basic.ListPreferenceX
             app:iconSpaceReserved="false"
             android:defaultValue="auto"
             android:entries="@array/pref_general_theme_list_titles"
@@ -13,21 +13,21 @@
             android:positiveButtonText="@null"
             android:title="@string/pref_title_general_theme" />
 
-        <com.kabouzeid.gramophone.preferences.basic.ColorPreferenceX
+        <com.kabouzeid.phonograph.preferences.basic.ColorPreferenceX
             app:iconSpaceReserved="false"
             android:key="primary_color"
             android:persistent="false"
             android:summary="@string/primary_color_desc"
             android:title="@string/primary_color" />
 
-        <com.kabouzeid.gramophone.preferences.basic.ColorPreferenceX
+        <com.kabouzeid.phonograph.preferences.basic.ColorPreferenceX
             app:iconSpaceReserved="false"
             android:key="accent_color"
             android:persistent="false"
             android:summary="@string/accent_color_desc"
             android:title="@string/accent_color" />
 
-        <com.kabouzeid.gramophone.preferences.basic.SwitchPreferenceX
+        <com.kabouzeid.phonograph.preferences.basic.SwitchPreferenceX
             app:iconSpaceReserved="false"
             android:defaultValue="true"
             android:key="should_color_navigation_bar"
@@ -35,13 +35,13 @@
             android:summary="@string/pref_summary_colored_navigation_bar"
             android:title="@string/pref_title_navigation_bar" />
 
-        <com.kabouzeid.gramophone.preferences.basic.SwitchPreferenceX
+        <com.kabouzeid.phonograph.preferences.basic.SwitchPreferenceX
             app:iconSpaceReserved="false"
             android:defaultValue="true"
             android:key="should_color_app_shortcuts"
             android:summary="@string/pref_summary_colored_app_shortcuts"
             android:title="@string/pref_title_app_shortcuts" />
 
-    </com.kabouzeid.gramophone.preferences.basic.PreferenceCategoryX>
+    </com.kabouzeid.phonograph.preferences.basic.PreferenceCategoryX>
 
 </androidx.preference.PreferenceScreen>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.kabouzeid.gramophone">
+    package="com.kabouzeid.phonograph">
 
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
@@ -126,10 +126,10 @@
             android:launchMode="singleInstance"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
         <activity android:name=".ui.activities.CrashActivity"
-            android:process="com.kabouzeid.gramophone.crash"
+            android:process="com.kabouzeid.phonograph.crash"
             android:launchMode="singleInstance">
             <intent-filter>
-                <action android:name="com.kabouzeid.gramophone.CRASH_HANDLER"/>
+                <action android:name="com.kabouzeid.phonograph.CRASH_HANDLER"/>
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
@@ -150,7 +150,7 @@
             android:name="com.lge.support.SPLIT_WINDOW"
             android:value="true" />
         <meta-data
-            android:name="com.kabouzeid.gramophone.glide.PhonographGlideModule"
+            android:name="com.kabouzeid.phonograph.glide.PhonographGlideModule"
             android:value="GlideModule" />
         <meta-data
             android:name="com.bumptech.glide.integration.okhttp3.OkHttpGlideModule"

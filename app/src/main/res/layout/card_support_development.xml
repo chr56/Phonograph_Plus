@@ -38,7 +38,7 @@
             android:paddingLeft="16dp"
             android:paddingRight="16dp">
 
-            <com.kabouzeid.gramophone.views.IconImageView
+            <com.kabouzeid.phonograph.views.IconImageView
                 android:id="@+id/icon_bug_report"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
@@ -82,7 +82,7 @@
             android:paddingLeft="16dp"
             android:paddingRight="16dp">
 
-            <com.kabouzeid.gramophone.views.IconImageView
+            <com.kabouzeid.phonograph.views.IconImageView
                 android:id="@+id/icon_flag"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
@@ -126,7 +126,7 @@
             android:paddingLeft="16dp"
             android:paddingRight="16dp">
 
-            <com.kabouzeid.gramophone.views.IconImageView
+            <com.kabouzeid.phonograph.views.IconImageView
                 android:id="@+id/icon_rate"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
@@ -171,7 +171,7 @@
             android:paddingLeft="16dp"
             android:paddingRight="16dp"
             >
-            <com.kabouzeid.gramophone.views.IconImageView
+            <com.kabouzeid.phonograph.views.IconImageView
                 android:id="@+id/icon_donate"
                 android:layout_width="24dp"
                 android:layout_height="24dp"

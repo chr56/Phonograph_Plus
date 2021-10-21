@@ -26,7 +26,7 @@ android {
         renderscriptTargetApi 29
         vectorDrawables.useSupportLibrary = true
 
-        applicationId 'com.kabouzeid.gramophone'
+        applicationId 'com.kabouzeid.phonograph'
         versionCode 184
         versionName '1.3.5'
         versionNameSuffix '-' + getGitHash()
