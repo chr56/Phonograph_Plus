@@ -27,8 +27,8 @@ android {
         vectorDrawables.useSupportLibrary = true
 
         applicationId 'player.phonograph'
-        versionCode 184
-        versionName '1.3.5'
+        versionCode 1
+        versionName '0.0.1'
         versionNameSuffix '-' + getGitHash()
     }
     signingConfigs {
