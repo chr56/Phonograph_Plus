@@ -7,202 +7,221 @@
     android:layout_gravity="center"
     app:cardBackgroundColor="?cardBackgroundColor"
     app:cardUseCompatPadding="true">
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
         android:orientation="vertical">
 
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="72dp"
-            android:orientation="horizontal"
+            android:layout_height="wrap_content"
             android:padding="16dp">
 
             <ImageView
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:id="@+id/phonograph_icon"
+                android:layout_width="72dp"
+                android:layout_height="72dp"
                 android:layout_gravity="center_vertical"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
                 android:src="@drawable/icon_web"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/barrier"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
                 tools:ignore="ContentDescription" />
 
+            <androidx.constraintlayout.widget.Barrier
+                android:id="@+id/barrier"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:barrierDirection="left"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/app_name"
+                app:layout_constraintStart_toEndOf="@id/phonograph_icon"
+                app:layout_constraintTop_toTopOf="parent" />
+
             <TextView
+                android:id="@+id/app_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
+                android:layout_marginBottom="16dp"
                 android:paddingLeft="16dp"
                 android:paddingRight="16dp"
                 android:text="@string/app_name"
-                android:textAppearance="@style/TextAppearance.AppCompat.Headline" />
+                android:textAppearance="@style/TextAppearance.AppCompat.Headline"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/barrier"
+                app:layout_constraintTop_toTopOf="@+id/phonograph_icon"
+                app:layout_constraintVertical_bias="0.0" />
 
-        </LinearLayout>
+            <TextView
+                android:id="@+id/app_version_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:text="@string/version"
+                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                app:layout_constraintBottom_toTopOf="@id/app_version"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toEndOf="@id/barrier"
+                app:layout_constraintTop_toBottomOf="@+id/app_name" />
+
+            <TextView
+                android:id="@+id/app_version"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:text="0.0.0 (0)"
+                android:textAppearance="@style/TextAppearance.AppCompat.Caption"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toEndOf="@id/barrier"
+                app:layout_constraintTop_toBottomOf="@id/app_version_title"
+                tools:ignore="HardcodedText" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="?attr/rectSelector"
-            android:clickable="true"
-            android:gravity="center_vertical"
-            android:minHeight="@dimen/md_listitem_height"
-            android:orientation="horizontal"
-            android:paddingLeft="16dp"
-            android:paddingRight="16dp">
-
-            <player.phonograph.views.IconImageView
-                android:id="@+id/icon_info"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                app:srcCompat="@drawable/ic_info_outline_white_24dp"
-                tools:ignore="ContentDescription,UnusedAttribute" />
+            android:layout_marginBottom="8dp"
+            android:orientation="vertical">
 
             <LinearLayout
+                android:id="@+id/changelog"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="32dp"
-                android:layout_marginStart="32dp"
-                android:orientation="vertical"
-                android:paddingBottom="8dp"
-                android:paddingTop="8dp">
+                android:background="?attr/rectSelector"
+                android:clickable="true"
+                android:gravity="center_vertical"
+                android:minHeight="@dimen/md_listitem_height"
+                android:orientation="horizontal"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp">
+
+                <player.phonograph.views.IconImageView
+                    android:id="@+id/icon_changelog"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    app:srcCompat="@drawable/ic_restore_white_24dp"
+                    tools:ignore="ContentDescription,UnusedAttribute" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/version"
+                    android:layout_marginLeft="32dp"
+                    android:layout_marginStart="32dp"
+                    android:paddingBottom="8dp"
+                    android:paddingTop="8dp"
+                    android:text="@string/changelog"
                     android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
 
-                <TextView
-                    android:id="@+id/app_version"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="0.0.0 (0)"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Caption"
-                    tools:ignore="HardcodedText" />
             </LinearLayout>
 
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/changelog"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="?attr/rectSelector"
-            android:clickable="true"
-            android:gravity="center_vertical"
-            android:minHeight="@dimen/md_listitem_height"
-            android:orientation="horizontal"
-            android:paddingLeft="16dp"
-            android:paddingRight="16dp">
-
-            <player.phonograph.views.IconImageView
-                android:id="@+id/icon_changelog"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                app:srcCompat="@drawable/ic_restore_white_24dp"
-                tools:ignore="ContentDescription,UnusedAttribute" />
-
-            <TextView
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:id="@+id/intro"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="32dp"
-                android:layout_marginStart="32dp"
-                android:paddingBottom="8dp"
-                android:paddingTop="8dp"
-                android:text="@string/changelog"
-                android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
+                android:background="?attr/rectSelector"
+                android:clickable="true"
+                android:gravity="center_vertical"
+                android:minHeight="@dimen/md_listitem_height"
+                android:orientation="horizontal"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp">
 
-        </LinearLayout>
+                <player.phonograph.views.IconImageView
+                    android:id="@+id/icon_intro"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    app:srcCompat="@drawable/ic_assignment_turned_in_white_24dp"
+                    tools:ignore="ContentDescription,UnusedAttribute" />
 
-        <LinearLayout
-            android:id="@+id/intro"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="?attr/rectSelector"
-            android:clickable="true"
-            android:gravity="center_vertical"
-            android:minHeight="@dimen/md_listitem_height"
-            android:orientation="horizontal"
-            android:paddingLeft="16dp"
-            android:paddingRight="16dp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="32dp"
+                    android:layout_marginStart="32dp"
+                    android:paddingBottom="8dp"
+                    android:paddingTop="8dp"
+                    android:text="@string/intro_label"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
 
-            <player.phonograph.views.IconImageView
-                android:id="@+id/icon_intro"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                app:srcCompat="@drawable/ic_assignment_turned_in_white_24dp"
-                tools:ignore="ContentDescription,UnusedAttribute" />
+            </LinearLayout>
 
-            <TextView
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:id="@+id/fork_on_github"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="32dp"
-                android:layout_marginStart="32dp"
-                android:paddingBottom="8dp"
-                android:paddingTop="8dp"
-                android:text="@string/intro_label"
-                android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
+                android:background="?attr/rectSelector"
+                android:clickable="true"
+                android:gravity="center_vertical"
+                android:minHeight="@dimen/md_listitem_height"
+                android:orientation="horizontal"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp">
 
-        </LinearLayout>
+                <player.phonograph.views.IconImageView
+                    android:id="@+id/icon_github"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    app:srcCompat="@drawable/ic_github_circle_white_24dp"
+                    tools:ignore="ContentDescription,UnusedAttribute" />
 
-        <LinearLayout
-            android:id="@+id/fork_on_github"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="?attr/rectSelector"
-            android:clickable="true"
-            android:gravity="center_vertical"
-            android:minHeight="@dimen/md_listitem_height"
-            android:orientation="horizontal"
-            android:paddingLeft="16dp"
-            android:paddingRight="16dp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="32dp"
+                    android:layout_marginStart="32dp"
+                    android:paddingBottom="8dp"
+                    android:paddingTop="8dp"
+                    android:text="@string/fork_on_github"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
 
-            <player.phonograph.views.IconImageView
-                android:id="@+id/icon_github"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                app:srcCompat="@drawable/ic_github_circle_white_24dp"
-                tools:ignore="ContentDescription,UnusedAttribute" />
+            </LinearLayout>
 
-            <TextView
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:id="@+id/licenses"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="32dp"
-                android:layout_marginStart="32dp"
-                android:paddingBottom="8dp"
-                android:paddingTop="8dp"
-                android:text="@string/fork_on_github"
-                android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
+                android:background="?attr/rectSelector"
+                android:clickable="true"
+                android:gravity="center_vertical"
+                android:minHeight="@dimen/md_listitem_height"
+                android:orientation="horizontal"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp">
 
-        </LinearLayout>
+                <player.phonograph.views.IconImageView
+                    android:id="@+id/icon_licenses"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    app:srcCompat="@drawable/ic_description_white_24dp"
+                    tools:ignore="ContentDescription,UnusedAttribute" />
 
-        <LinearLayout
-            android:id="@+id/licenses"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="?attr/rectSelector"
-            android:clickable="true"
-            android:gravity="center_vertical"
-            android:minHeight="@dimen/md_listitem_height"
-            android:orientation="horizontal"
-            android:paddingLeft="16dp"
-            android:paddingRight="16dp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="32dp"
+                    android:layout_marginStart="32dp"
+                    android:paddingBottom="8dp"
+                    android:paddingTop="8dp"
+                    android:text="@string/licenses"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
 
-            <player.phonograph.views.IconImageView
-                android:id="@+id/icon_licenses"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                app:srcCompat="@drawable/ic_description_white_24dp"
-                tools:ignore="ContentDescription,UnusedAttribute" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="32dp"
-                android:layout_marginStart="32dp"
-                android:paddingBottom="8dp"
-                android:paddingTop="8dp"
-                android:text="@string/licenses"
-                android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
+            </LinearLayout>
 
         </LinearLayout>
 
