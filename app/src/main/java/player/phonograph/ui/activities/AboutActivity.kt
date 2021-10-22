@@ -52,12 +52,12 @@ class AboutActivity : ThemeActivity(), View.OnClickListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_about)
 
         binding = ActivityAboutBinding.inflate(layoutInflater)
         binding()
+        mToolbar = binding.toolbar
 
-        mToolbar = findViewById<Toolbar>(R.id.toolbar)
+        setContentView(binding.root)
 
         setDrawUnderStatusbar()
 
