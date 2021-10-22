@@ -17,7 +17,7 @@ import de.psdev.licensesdialog.LicensesDialog
 import player.phonograph.App.Companion.instance
 import player.phonograph.R
 import player.phonograph.databinding.ActivityAboutBinding
-import player.phonograph.dialogs.ChangelogDialog.Companion.create
+import player.phonograph.dialogs.ChangelogDialog
 import player.phonograph.ui.activities.base.ThemeActivity
 import player.phonograph.ui.activities.bugreport.BugReportActivity
 import player.phonograph.ui.activities.intro.AppIntroActivity
@@ -49,17 +49,22 @@ class AboutActivity : ThemeActivity(), View.OnClickListener {
     private lateinit var eugeneCheungGitHub: AppCompatButton
     private lateinit var eugeneCheungWebsite: AppCompatButton
     private lateinit var adrianTwitter: AppCompatButton
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_about)
+
         binding = ActivityAboutBinding.inflate(layoutInflater)
         binding()
-        mToolbar = findViewById<View>(R.id.toolbar) as Toolbar
+
+        mToolbar = findViewById<Toolbar>(R.id.toolbar)
+
         setDrawUnderStatusbar()
-        //        ButterKnife.bind(this);
+
         setStatusbarColorAuto()
         setNavigationbarColorAuto()
         setTaskDescriptionColorAuto()
+
         setUpViews()
     }
 
@@ -68,15 +73,18 @@ class AboutActivity : ThemeActivity(), View.OnClickListener {
         changelog = binding.activityAboutMainContent.cardAboutAppLayout.changelog
         licenses = binding.activityAboutMainContent.cardAboutAppLayout.licenses
         forkOnGitHub = binding.activityAboutMainContent.cardAboutAppLayout.forkOnGithub
+
         writeAnEmail = binding.activityAboutMainContent.cardAuthorLayout.writeAnEmail
         followOnTwitter = binding.activityAboutMainContent.cardAuthorLayout.followOnTwitter
         visitWebsite = binding.activityAboutMainContent.cardAuthorLayout.visitWebsite
+
         intro = binding.activityAboutMainContent.cardSupportDevelopmentLayout.intro
         reportBugs = binding.activityAboutMainContent.cardSupportDevelopmentLayout.reportBugs
         translate = binding.activityAboutMainContent.cardSupportDevelopmentLayout.translate
         rateOnGooglePlay =
             binding.activityAboutMainContent.cardSupportDevelopmentLayout.rateOnGooglePlay
         cracked = binding.activityAboutMainContent.cardSupportDevelopmentLayout.cracked
+
         aidanFollestadGitHub =
             binding.activityAboutMainContent.cardSpecialThanksLayout.aidanFollestadGitHub
         michaelCookWebsite =
@@ -108,6 +116,14 @@ class AboutActivity : ThemeActivity(), View.OnClickListener {
 
     private fun setUpAppVersion() {
         appVersion.text = getCurrentVersionName(this)
+    }
+    private fun getCurrentVersionName(context: Context): String {
+        try {
+            return context.packageManager.getPackageInfo(context.packageName, 0).versionName
+        } catch (e: PackageManager.NameNotFoundException) {
+            e.printStackTrace()
+        }
+        return "Unkown"
     }
 
     private fun setUpOnClickListeners() {
@@ -143,7 +159,7 @@ class AboutActivity : ThemeActivity(), View.OnClickListener {
     override fun onClick(v: View) {
         when (v) {
             changelog -> {
-                create().show(supportFragmentManager, "CHANGELOG_DIALOG")
+                ChangelogDialog.create().show(supportFragmentManager, "CHANGELOG_DIALOG")
             }
             licenses -> {
                 showLicenseDialog()
@@ -205,8 +221,6 @@ class AboutActivity : ThemeActivity(), View.OnClickListener {
                 openUrl(ADRIAN_TWITTER)
             }
         }
-        //        Test Only
-//        throw new RuntimeException("Crash Test"); // Crash Test
     }
 
     private fun openUrl(url: String) {
@@ -250,13 +264,5 @@ class AboutActivity : ThemeActivity(), View.OnClickListener {
         private const val EUGENE_CHEUNG_GITHUB = "https://github.com/arkon"
         private const val EUGENE_CHEUNG_WEBSITE = "https://echeung.me/"
         private const val ADRIAN_TWITTER = "https://twitter.com/froschgames"
-        private fun getCurrentVersionName(context: Context): String {
-            try {
-                return context.packageManager.getPackageInfo(context.packageName, 0).versionName
-            } catch (e: PackageManager.NameNotFoundException) {
-                e.printStackTrace()
-            }
-            return "Unkown"
-        }
     }
 }
