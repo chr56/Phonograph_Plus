@@ -15,24 +15,21 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.Toolbar;
 
-
-import player.phonograph.App;
-import player.phonograph.R;
-import player.phonograph.dialogs.ChangelogDialog;
-import player.phonograph.ui.activities.base.AbsBaseActivity;
-import player.phonograph.ui.activities.bugreport.BugReportActivity;
-import player.phonograph.ui.activities.intro.AppIntroActivity;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import chr_56.MDthemer.core.ThemeColor;
 import de.psdev.licensesdialog.LicensesDialog;
+import player.phonograph.App;
+import player.phonograph.R;
+import player.phonograph.databinding.ActivityAboutBinding;
+import player.phonograph.dialogs.ChangelogDialog;
+import player.phonograph.ui.activities.base.ThemeActivity;
+import player.phonograph.ui.activities.bugreport.BugReportActivity;
+import player.phonograph.ui.activities.intro.AppIntroActivity;
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
  */
 @SuppressWarnings("FieldCanBeLocal")
-public class AboutActivity extends AbsBaseActivity implements View.OnClickListener {
+public class AboutActivity extends ThemeActivity implements View.OnClickListener {
 
     private static String GITHUB = "https://github.com/kabouzeid/Phonograph";
 
@@ -56,61 +53,96 @@ public class AboutActivity extends AbsBaseActivity implements View.OnClickListen
 
     private static String ADRIAN_TWITTER = "https://twitter.com/froschgames";
 
-    @BindView(R.id.toolbar)
+    ActivityAboutBinding binding;
+
+//    @BindView(R.id.toolbar)
     Toolbar toolbar;
-    @BindView(R.id.app_version)
+//    @BindView(R.id.app_version)
     TextView appVersion;
-    @BindView(R.id.changelog)
+//    @BindView(R.id.changelog)
     LinearLayout changelog;
-    @BindView(R.id.intro)
+//    @BindView(R.id.intro)
     LinearLayout intro;
-    @BindView(R.id.licenses)
+//    @BindView(R.id.licenses)
     LinearLayout licenses;
-    @BindView(R.id.write_an_email)
+//    @BindView(R.id.write_an_email)
     LinearLayout writeAnEmail;
-    @BindView(R.id.follow_on_twitter)
+//    @BindView(R.id.follow_on_twitter)
     LinearLayout followOnTwitter;
-    @BindView(R.id.fork_on_github)
+//    @BindView(R.id.fork_on_github)
     LinearLayout forkOnGitHub;
-    @BindView(R.id.visit_website)
+//    @BindView(R.id.visit_website)
     LinearLayout visitWebsite;
-    @BindView(R.id.report_bugs)
+//    @BindView(R.id.report_bugs)
     LinearLayout reportBugs;
-    @BindView(R.id.translate)
+//    @BindView(R.id.translate)
     LinearLayout translate;
-    @BindView(R.id.rate_on_google_play)
+//    @BindView(R.id.rate_on_google_play)
     LinearLayout rateOnGooglePlay;
-    @BindView(R.id.cracked)
+//    @BindView(R.id.cracked)
     LinearLayout cracked;
-    @BindView(R.id.aidan_follestad_git_hub)
+//    @BindView(R.id.aidan_follestad_git_hub)
     AppCompatButton aidanFollestadGitHub;
-    @BindView(R.id.michael_cook_website)
+//    @BindView(R.id.michael_cook_website)
     AppCompatButton michaelCookWebsite;
-    @BindView(R.id.maarten_corpel_website)
+//    @BindView(R.id.maarten_corpel_website)
     AppCompatButton maartenCorpelWebsite;
-    @BindView(R.id.maarten_corpel_twitter)
+//    @BindView(R.id.maarten_corpel_twitter)
     AppCompatButton maartenCorpelTwitter;
-    @BindView(R.id.aleksandar_tesic_twitter)
+//    @BindView(R.id.aleksandar_tesic_twitter)
     AppCompatButton aleksandarTesicTwitter;
-    @BindView(R.id.eugene_cheung_git_hub)
+//    @BindView(R.id.eugene_cheung_git_hub)
     AppCompatButton eugeneCheungGitHub;
-    @BindView(R.id.eugene_cheung_website)
+//    @BindView(R.id.eugene_cheung_website)
     AppCompatButton eugeneCheungWebsite;
-    @BindView(R.id.adrian_twitter)
+//    @BindView(R.id.adrian_twitter)
     AppCompatButton adrianTwitter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_about);
+
+        binding = ActivityAboutBinding.inflate(getLayoutInflater());
+        binding();
+
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+
         setDrawUnderStatusbar();
-        ButterKnife.bind(this);
+//        ButterKnife.bind(this);
 
         setStatusbarColorAuto();
         setNavigationbarColorAuto();
         setTaskDescriptionColorAuto();
 
         setUpViews();
+    }
+
+    private void binding(){
+        appVersion = binding.activityAboutMainContent.cardAboutAppLayout.appVersion;
+        changelog = binding.activityAboutMainContent.cardAboutAppLayout.changelog;
+        licenses = binding.activityAboutMainContent.cardAboutAppLayout.licenses;
+        forkOnGitHub = binding.activityAboutMainContent.cardAboutAppLayout.forkOnGithub;
+
+        writeAnEmail = binding.activityAboutMainContent.cardAuthorLayout.writeAnEmail;
+        followOnTwitter = binding.activityAboutMainContent.cardAuthorLayout.followOnTwitter;
+        visitWebsite = binding.activityAboutMainContent.cardAuthorLayout.visitWebsite;
+
+        intro = binding.activityAboutMainContent.cardSupportDevelopmentLayout.intro;
+        reportBugs = binding.activityAboutMainContent.cardSupportDevelopmentLayout.reportBugs;
+        translate = binding.activityAboutMainContent.cardSupportDevelopmentLayout.translate;
+        rateOnGooglePlay = binding.activityAboutMainContent.cardSupportDevelopmentLayout.rateOnGooglePlay;
+        cracked = binding.activityAboutMainContent.cardSupportDevelopmentLayout.cracked;
+
+        aidanFollestadGitHub = binding.activityAboutMainContent.cardSpecialThanksLayout.aidanFollestadGitHub;
+        michaelCookWebsite = binding.activityAboutMainContent.cardSpecialThanksLayout.michaelCookWebsite;
+        maartenCorpelTwitter = binding.activityAboutMainContent.cardSpecialThanksLayout.maartenCorpelTwitter;
+        maartenCorpelWebsite = binding.activityAboutMainContent.cardSpecialThanksLayout.maartenCorpelWebsite;
+        aleksandarTesicTwitter = binding.activityAboutMainContent.cardSpecialThanksLayout.aleksandarTesicTwitter;
+        eugeneCheungGitHub = binding.activityAboutMainContent.cardSpecialThanksLayout.eugeneCheungGitHub;
+        eugeneCheungWebsite = binding.activityAboutMainContent.cardSpecialThanksLayout.eugeneCheungWebsite;
+        adrianTwitter = binding.activityAboutMainContent.cardSpecialThanksLayout.adrianTwitter;
+
     }
 
     private void setUpViews() {

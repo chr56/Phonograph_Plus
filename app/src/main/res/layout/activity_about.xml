@@ -19,7 +19,9 @@
         android:clipToPadding="false"
         android:isScrollContainer="true">
 
-        <include layout="@layout/activity_about_content" />
+        <include
+            android:id="@+id/activity_about_main_content"
+            layout="@layout/activity_about_content" />
 
     </ScrollView>
 
