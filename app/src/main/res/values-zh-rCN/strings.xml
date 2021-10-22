@@ -320,7 +320,7 @@
     <string name="failed_to_delete">删除失败</string>
     <string name="grant_permission">请求权限</string>
     <string name="retry">重试</string>
-    <string name="permission_manage_external_storage_denied">无\"所有文件访问\"权限!</string>
+    <string name="permission_manage_external_storage_denied"> Phonograph 疑似\"所有文件访问\"权限! </string>
     <plurals name="msg_deletion_result">
         <item quantity="other">%1$d / %2$d 个项目删除成功</item>
     </plurals>
