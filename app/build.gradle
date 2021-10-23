@@ -29,7 +29,7 @@ android {
         applicationId 'player.phonograph'
         versionCode 1
         versionName '0.0.1'
-        versionNameSuffix '-' + getGitHash()
+        versionNameSuffix ' (' + getGitHash() + ')'
     }
     signingConfigs {
         release {
