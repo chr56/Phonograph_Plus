@@ -125,7 +125,7 @@ object MediaStoreUtil {
         val paths: List<String> = BlacklistStore.getInstance(context).paths
         if (paths.isNotEmpty()) {
 
-            realSelection += "${AudioColumns.DATA} NOT LIKE ?"
+            realSelection += "AND ${AudioColumns.DATA} NOT LIKE ?"
             for (i in 0 until paths.size - 1) {
                 realSelection += " AND ${AudioColumns.DATA} NOT LIKE ?"
             }
@@ -137,6 +137,7 @@ object MediaStoreUtil {
                     else paths[index - (selectionValues?.size ?: 0)] + "%"
                 }
         }
+
 
         var cursor: Cursor? = null
         try {
