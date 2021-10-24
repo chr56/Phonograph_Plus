@@ -138,7 +138,6 @@ object MediaStoreUtil {
                 }
         }
 
-
         var cursor: Cursor? = null
         try {
             cursor = context.contentResolver.query(
@@ -268,20 +267,47 @@ object MediaStoreUtil {
     fun queryPlaylists(
         context: Context,
         selection: String?,
-        values: Array<String?>?
+        selectionValues: Array<String>?
     ): Cursor? {
-        return try {
+        var realSelection =
+            if (selection != null && selection.trim { it <= ' ' } != "") {
+                "${SongConst.BASE_PLAYLIST_SELECTION} AND $selection "
+            } else {
+                SongConst.BASE_PLAYLIST_SELECTION
+            }
+        var realSelectionValues = selectionValues
+
+        // Blacklist
+        val paths: List<String> = BlacklistStore.getInstance(context).paths
+        if (paths.isNotEmpty()) {
+
+            realSelection += " AND ${MediaStore.MediaColumns.DATA} NOT LIKE ?"
+            for (i in 0 until paths.size - 1) {
+                realSelection += " AND ${MediaStore.MediaColumns.DATA} NOT LIKE ?"
+            }
+            Log.i(TAG,"playlist selection: $realSelection")
+
+            realSelectionValues =
+                Array<String>((selectionValues?.size ?: 0) + paths.size) { index ->
+                    // Todo: Check
+                    if (index < (selectionValues?.size ?: 0)) selectionValues?.get(index) ?: ""
+                    else paths[index - (selectionValues?.size ?: 0)] + "%"
+                }
+        }
+
+        val cursor: Cursor? = try {
             context.contentResolver.query( // todo Blacklist for playlists
                 MediaStore.Audio.Playlists.EXTERNAL_CONTENT_URI,
                 arrayOf(
                     BaseColumns._ID, /* 0 */
                     PlaylistsColumns.NAME /* 1 */
                 ),
-                selection, values, MediaStore.Audio.Playlists.DEFAULT_SORT_ORDER
+                realSelection, realSelectionValues, MediaStore.Audio.Playlists.DEFAULT_SORT_ORDER
             )
         } catch (e: SecurityException) {
             null
         }
+        return cursor
     }
 
     /**
@@ -379,6 +405,9 @@ object MediaStoreUtil {
         // just select only songs
         const val BASE_AUDIO_SELECTION =
             "${AudioColumns.IS_MUSIC} =1 AND ${AudioColumns.TITLE} != '' "
+        // just select only named playlist
+        const val BASE_PLAYLIST_SELECTION =
+            "${MediaStore.MediaColumns.TITLE} != '' "
         val BASE_PROJECTION = arrayOf(
             BaseColumns._ID, // 0
             AudioColumns.TITLE, // 1
