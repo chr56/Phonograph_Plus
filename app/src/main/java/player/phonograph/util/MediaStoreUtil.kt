@@ -4,6 +4,7 @@
 
 package player.phonograph.util
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.PendingIntent
 import android.content.Context
@@ -14,6 +15,7 @@ import android.os.Build
 import android.provider.BaseColumns
 import android.provider.MediaStore
 import android.provider.MediaStore.Audio.AudioColumns
+import android.provider.MediaStore.Audio.PlaylistsColumns
 import android.util.Log
 import android.widget.Toast
 import com.afollestad.materialdialogs.MaterialDialog
@@ -211,6 +213,74 @@ object MediaStoreUtil {
             String.format(Locale.getDefault(), context.getString(R.string.deleted_x_songs), result),
             Toast.LENGTH_SHORT
         ).show()
+    }
+
+    /* ***************************
+     **        Playlists         **
+     *****************************/
+
+    fun getAllPlaylists(context: Context): List<Playlist?> {
+        return getAllPlaylists(
+            queryPlaylists(context, null, null)
+        )
+    }
+    fun getAllPlaylists(cursor: Cursor?): List<Playlist> {
+        val playlists: MutableList<Playlist> = java.util.ArrayList()
+        if (cursor != null && cursor.moveToFirst()) {
+            do {
+                playlists.add(
+                    Playlist(cursor.getLong(0), cursor.getString(1))
+                )
+            } while (cursor.moveToNext())
+        }
+        cursor?.close()
+        return playlists
+    }
+
+    fun getPlaylist(context: Context, playlistId: Long): Playlist? {
+        return getPlaylist(
+            queryPlaylists(
+                context, BaseColumns._ID + "=?", arrayOf(playlistId.toString())
+            )
+        )
+    }
+    fun getPlaylist(context: Context, playlistName: String): Playlist {
+        return getPlaylist(
+            queryPlaylists(
+                context, PlaylistsColumns.NAME + "=?", arrayOf(playlistName)
+            )
+        )
+    }
+    fun getPlaylist(cursor: Cursor?): Playlist {
+        var playlist = Playlist()
+        if (cursor != null && cursor.moveToFirst()) {
+            playlist = Playlist(cursor.getLong(0), cursor.getString(1))
+        }
+        cursor?.close()
+        return playlist
+    }
+
+    /**
+     * query playlist file via MediaStore
+     */
+    @SuppressLint("Recycle")
+    fun queryPlaylists(
+        context: Context,
+        selection: String?,
+        values: Array<String?>?
+    ): Cursor? {
+        return try {
+            context.contentResolver.query( // todo Blacklist for playlists
+                MediaStore.Audio.Playlists.EXTERNAL_CONTENT_URI,
+                arrayOf(
+                    BaseColumns._ID, /* 0 */
+                    PlaylistsColumns.NAME /* 1 */
+                ),
+                selection, values, MediaStore.Audio.Playlists.DEFAULT_SORT_ORDER
+            )
+        } catch (e: SecurityException) {
+            null
+        }
     }
 
     /**
