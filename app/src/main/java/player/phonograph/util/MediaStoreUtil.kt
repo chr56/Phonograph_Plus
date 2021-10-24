@@ -27,9 +27,10 @@ import kotlin.collections.ArrayList
 object MediaStoreUtil {
     private const val TAG: String = "MediaStoreUtil"
 
-    //////////////////////////////
-    //           Songs          //
-    //////////////////////////////
+    /* ***************************
+     **           Songs          **
+     *****************************/
+
     fun getAllSongs(context: Context): List<Song?> {
         val cursor = querySongs(context, null, null)
         return getSongs(cursor)
@@ -89,6 +90,9 @@ object MediaStoreUtil {
         )
     }
 
+    /**
+     * query audio file via MediaStore
+     */
     fun querySongs(
         context: Context,
         selection: String?,
