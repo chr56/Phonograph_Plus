@@ -238,7 +238,7 @@ object MediaStoreUtil {
         return playlists
     }
 
-    fun getPlaylist(context: Context, playlistId: Long): Playlist? {
+    fun getPlaylist(context: Context, playlistId: Long): Playlist {
         return getPlaylist(
             queryPlaylists(
                 context, BaseColumns._ID + "=?", arrayOf(playlistId.toString())
