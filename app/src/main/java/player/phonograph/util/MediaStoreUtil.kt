@@ -27,6 +27,68 @@ import kotlin.collections.ArrayList
 object MediaStoreUtil {
     private const val TAG: String = "MediaStoreUtil"
 
+    //////////////////////////////
+    //           Songs          //
+    //////////////////////////////
+    fun getAllSongs(context: Context): List<Song?> {
+        val cursor = querySongs(context, null, null)
+        return getSongs(cursor)
+    }
+    fun getSongs(context: Context, query: String): List<Song> {
+        val cursor = querySongs(
+            context, "${AudioColumns.TITLE} LIKE ?", arrayOf("%$query%")
+        )
+        return getSongs(cursor)
+    }
+    fun getSongs(cursor: Cursor?): List<Song> {
+        val songs: MutableList<Song> = java.util.ArrayList()
+        if (cursor != null && cursor.moveToFirst()) {
+            do {
+                songs.add(getSongFromCursor(cursor))
+            } while (cursor.moveToNext())
+            cursor.close()
+        }
+        return songs
+    }
+
+    fun getSong(context: Context, id: Long): Song {
+        val cursor =
+            querySongs(
+                context, "${AudioColumns._ID} =? ", arrayOf(id.toString())
+            )
+        return getSong(cursor)
+    }
+    fun getSong(cursor: Cursor?): Song {
+        if (cursor != null) {
+            val song: Song =
+                if (cursor.moveToFirst()) {
+                    getSongFromCursor(cursor)
+                } else {
+                    Song.EMPTY_SONG
+                }
+            cursor.close()
+            return song
+        }
+        return Song.EMPTY_SONG
+    }
+
+    private fun getSongFromCursor(cursor: Cursor): Song {
+        val id = cursor.getLong(0)
+        val title = cursor.getString(1)
+        val trackNumber = cursor.getInt(2)
+        val year = cursor.getInt(3)
+        val duration = cursor.getLong(4)
+        val data = cursor.getString(5)
+        val dateModified = cursor.getLong(6)
+        val albumId = cursor.getLong(7)
+        val albumName = cursor.getString(8)
+        val artistId = cursor.getLong(9)
+        val artistName = cursor.getString(10)
+        return Song(
+            id, title, trackNumber, year, duration, data, dateModified, albumId, albumName, artistId, artistName
+        )
+    }
+
     fun querySongs(
         context: Context,
         selection: String?,
