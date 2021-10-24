@@ -7,25 +7,80 @@ package player.phonograph.util
 import android.app.Activity
 import android.app.PendingIntent
 import android.content.Context
+import android.database.Cursor
 import android.media.MediaScannerConnection
 import android.net.Uri
 import android.os.Build
+import android.provider.BaseColumns
 import android.provider.MediaStore
+import android.provider.MediaStore.Audio.AudioColumns
 import android.util.Log
 import android.widget.Toast
 import com.afollestad.materialdialogs.MaterialDialog
 import player.phonograph.R
 import player.phonograph.model.Playlist
 import player.phonograph.model.Song
+import player.phonograph.provider.BlacklistStore
 import java.util.Locale
 import kotlin.collections.ArrayList
-import kotlin.collections.List
-import kotlin.collections.MutableList
-import kotlin.collections.indices
-import kotlin.collections.isNotEmpty
 
 object MediaStoreUtil {
     private const val TAG: String = "MediaStoreUtil"
+
+    fun querySongs(
+        context: Context,
+        selection: String?,
+        selectionValues: Array<String>?
+    ): Cursor? {
+        return querySongs(
+            context, selection, selectionValues, PreferenceUtil.getInstance(context).songSortOrder
+        )
+    }
+    /**
+     * query audio file via MediaStore
+     */
+    fun querySongs(
+        context: Context,
+        selection: String?,
+        selectionValues: Array<String>?,
+        sortOrder: String
+    ): Cursor? {
+        var realSelection =
+            if (selection != null && selection.trim { it <= ' ' } != "") {
+                "${SongConst.BASE_AUDIO_SELECTION} AND $selection "
+            } else {
+                SongConst.BASE_AUDIO_SELECTION
+            }
+        var realSelectionValues = selectionValues
+
+        // Blacklist
+        val paths: List<String> = BlacklistStore.getInstance(context).paths
+        if (paths.isNotEmpty()) {
+
+            realSelection += "${AudioColumns.DATA} NOT LIKE ?"
+            for (i in 0 until paths.size - 1) {
+                realSelection += " AND ${AudioColumns.DATA} NOT LIKE ?"
+            }
+
+            realSelectionValues =
+                Array<String>((selectionValues?.size ?: 0) + paths.size) { index ->
+                    // Todo: Check
+                    if (index < (selectionValues?.size ?: 0)) selectionValues?.get(index) ?: ""
+                    else paths[index - (selectionValues?.size ?: 0)] + "%"
+                }
+        }
+
+        var cursor: Cursor? = null
+        try {
+            cursor = context.contentResolver.query(
+                MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
+                SongConst.BASE_PROJECTION, realSelection, realSelectionValues, sortOrder
+            )
+        } catch (e: SecurityException) {
+        }
+
+        return cursor
+    }
 
     /**
      * delete songs by path via MediaStore
@@ -178,5 +233,27 @@ object MediaStoreUtil {
             if (failed > 0) String.format(context.resources.getString(R.string.could_not_scan_files, failed)) else ""}"
             Toast.makeText(context, text, Toast.LENGTH_SHORT).show()
         }
+    }
+
+    /**
+     * Const values about MediaStore of Audio
+     */
+    object SongConst {
+        // just select only songs
+        const val BASE_AUDIO_SELECTION =
+            "${AudioColumns.IS_MUSIC} =1 AND ${AudioColumns.TITLE} != '' "
+        val BASE_PROJECTION = arrayOf(
+            BaseColumns._ID, // 0
+            AudioColumns.TITLE, // 1
+            AudioColumns.TRACK, // 2
+            AudioColumns.YEAR, // 3
+            AudioColumns.DURATION, // 4
+            AudioColumns.DATA, // 5
+            AudioColumns.DATE_MODIFIED, // 6
+            AudioColumns.ALBUM_ID, // 7
+            AudioColumns.ALBUM, // 8
+            AudioColumns.ARTIST_ID, // 9
+            AudioColumns.ARTIST, // 10
+        )
     }
 }
