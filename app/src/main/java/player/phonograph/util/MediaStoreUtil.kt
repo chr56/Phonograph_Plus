@@ -407,7 +407,7 @@ object MediaStoreUtil {
             "${AudioColumns.IS_MUSIC} =1 AND ${AudioColumns.TITLE} != '' "
         // just select only named playlist
         const val BASE_PLAYLIST_SELECTION =
-            "${MediaStore.MediaColumns.TITLE} != '' "
+            "${MediaStore.Audio.PlaylistsColumns.NAME} != '' "
         val BASE_PROJECTION = arrayOf(
             BaseColumns._ID, // 0
             AudioColumns.TITLE, // 1
