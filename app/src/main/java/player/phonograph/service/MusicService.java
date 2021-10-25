@@ -230,7 +230,7 @@ public class MusicService extends Service implements SharedPreferences.OnSharedP
 
         mediaSession.setActive(true);
 
-        sendBroadcast(new Intent("com.kabouzeid.gramophone.PHONOGRAPH_MUSIC_SERVICE_CREATED"));
+        sendBroadcast(new Intent("player.phonograph.PHONOGRAPH_MUSIC_SERVICE_CREATED"));
     }
 
     private AudioManager getAudioManager() {
@@ -376,7 +376,7 @@ public class MusicService extends Service implements SharedPreferences.OnSharedP
         PreferenceUtil.getInstance(this).unregisterOnSharedPreferenceChangedListener(this);
         wakeLock.release();
 
-        sendBroadcast(new Intent("com.kabouzeid.gramophone.PHONOGRAPH_MUSIC_SERVICE_DESTROYED"));
+        sendBroadcast(new Intent("player.phonograph.PHONOGRAPH_MUSIC_SERVICE_DESTROYED"));
     }
 
     @Override

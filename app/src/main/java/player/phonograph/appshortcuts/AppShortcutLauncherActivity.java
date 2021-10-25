@@ -18,7 +18,7 @@ import player.phonograph.service.MusicService;
  */
 
 public class AppShortcutLauncherActivity extends Activity {
-    public static final String KEY_SHORTCUT_TYPE = "com.kabouzeid.gramophone.appshortcuts.ShortcutType";
+    public static final String KEY_SHORTCUT_TYPE = "player.phonograph.appshortcuts.ShortcutType";
 
     public static final int SHORTCUT_TYPE_SHUFFLE_ALL = 0;
     public static final int SHORTCUT_TYPE_TOP_TRACKS = 1;
