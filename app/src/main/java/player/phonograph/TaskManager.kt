@@ -16,6 +16,14 @@ class TaskManager {
         }
     }
 
+    fun findTask(taskId: Int): Task? {
+        for (task in taskList) {
+            if (task.getTaskId() == taskId)
+                return task
+        }
+        return null
+    }
+
     fun executeTask(code: Int) {
         taskList.last().callback?.invoke(code)
     }
@@ -29,7 +37,7 @@ class TaskManager {
     /**
      *  execute first task with target action
      */
-    fun executeTask(action: String, code: Int){
+    fun executeTask(action: String, code: Int) {
         for (task in taskList) {
             if (task.action.equals(action)) {
                 task.callback?.invoke(code)
