@@ -175,7 +175,7 @@ object PlaylistMenuHelper {
                 // report result
                 if (result.toInt() != 0) {
                     Toast.makeText(
-                        activity, activity.resources.getText(R.string.failed_to_save_playlist, "_"), Toast.LENGTH_SHORT
+                        activity, activity.resources.getText(R.string.failed), Toast.LENGTH_SHORT
                     ).show()
                 } else {
                     Toast.makeText(

@@ -329,6 +329,7 @@
     <string name="Crash">crashed!!</string>
     <string name="copy_to_clipboard">copy to clipboard</string>
     <string name="success">Successes!</string>
+    <string name="failed">failed!</string>
     <string name="clear_all_preference">clear all application settings</string>
     <string name="clear_all_preference_msg"><b>Warning</b>: this will reset <b>ALL</b> app preferences/settings! \n\nThis might be very helpful if application crashes on launching. \nAre you sure?</string>
     <string name="failed_to_delete">Failed to delete</string>
