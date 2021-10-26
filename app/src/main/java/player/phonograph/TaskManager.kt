@@ -53,5 +53,10 @@ class Task(private val taskId: Int, var callback: Callback?) {
     fun getTaskId(): Int = taskId
 
     var action: String? = null
-    var data: String? = null // just in case
+    var data: String? = null
+    var num: Long? = null
+
+    companion object {
+        const val SAVE_PLAYLIST: String = "SavePlaylist"
+    }
 }

@@ -2,11 +2,14 @@ package player.phonograph.helper.menu
 
 import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat.startActivityForResult
 import player.phonograph.App
 import player.phonograph.R
+import player.phonograph.Task
 import player.phonograph.dialogs.AddToPlaylistDialog
 import player.phonograph.dialogs.DeletePlaylistDialog
 import player.phonograph.dialogs.RenamePlaylistDialog
@@ -16,8 +19,16 @@ import player.phonograph.misc.WeakContextAsyncTask
 import player.phonograph.model.AbsCustomPlaylist
 import player.phonograph.model.Playlist
 import player.phonograph.model.Song
+import player.phonograph.model.smartplaylist.AbsSmartPlaylist
+import player.phonograph.model.smartplaylist.HistoryPlaylist
+import player.phonograph.model.smartplaylist.LastAddedPlaylist
+import player.phonograph.model.smartplaylist.MyTopTracksPlaylist
 import player.phonograph.util.PlaylistsUtil
 import java.io.IOException
+import java.text.SimpleDateFormat
+import java.util.Locale
+import java.util.Calendar
+import kotlin.collections.ArrayList
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
@@ -56,7 +67,39 @@ object PlaylistMenuHelper {
                 return true
             }
             R.id.action_save_playlist -> {
-                SavePlaylistAsyncTask(activity).execute(playlist)
+//                SavePlaylistAsyncTask(activity).execute(playlist)
+
+                val intent = Intent(Intent.ACTION_CREATE_DOCUMENT).apply {
+                    addCategory(Intent.CATEGORY_OPENABLE)
+                    type = "audio/x-mpegurl"
+                    putExtra(
+                        Intent.EXTRA_TITLE,
+                        playlist.name +
+                            SimpleDateFormat(
+                                "_yy-MM-dd_HH-mm", Locale.getDefault()
+                            ).format(Calendar.getInstance().time)
+                    )
+                }
+                App.instance.taskManager.addTask(
+                    Task(100_000, null).also {
+                        it.action = Task.SAVE_PLAYLIST
+
+                        if (playlist is AbsSmartPlaylist) {
+                            it.data =
+                                when (playlist) {
+                                    is HistoryPlaylist -> "HistoryPlaylist"
+                                    is LastAddedPlaylist -> "LastAddedPlaylist"
+                                    is MyTopTracksPlaylist -> "MyTopTracksPlaylist"
+                                    else -> "Smart"
+                                }
+                        } else {
+                            it.data = "Normal" // todo const val
+                            it.num = playlist.id
+                        }
+                    }
+                )
+                startActivityForResult(activity, intent, 100_000, null)
+
                 return true
             }
         }
