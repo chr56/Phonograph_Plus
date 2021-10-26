@@ -1,8 +1,8 @@
 /*
- * Copyright (c) 2021 chr_56
+ * Copyright (c) 2021 chr_56 & Abou Zeid (kabouzeid) (original author)
  */
 
-package player.phonograph.helper
+package player.phonograph.util
 
 import android.app.Activity
 import android.content.Context
@@ -11,7 +11,6 @@ import player.phonograph.loader.PlaylistSongLoader
 import player.phonograph.model.AbsCustomPlaylist
 import player.phonograph.model.Playlist
 import player.phonograph.model.Song
-import player.phonograph.util.MediaStoreUtil
 
 object FileSaver {
     fun saveFile(activity: Activity, uri: Uri, data: String): Short {
