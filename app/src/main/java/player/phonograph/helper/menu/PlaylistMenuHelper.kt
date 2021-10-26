@@ -37,6 +37,10 @@ import kotlin.collections.ArrayList
  */
 object PlaylistMenuHelper {
     const val TASK_ID_SAVE_PLAYLIST: Int = 909090
+    const val TASK_DATA_HistoryPlaylist = "HistoryPlaylist"
+    const val TASK_DATA_LastAddedPlaylist = "LastAddedPlaylist"
+    const val TASK_DATA_MyTopTracksPlaylist = "MyTopTracksPlaylist"
+    const val TASK_DATA_Normal = "Normal"
 
     @JvmStatic
     fun handleMenuClick(activity: AppCompatActivity, playlist: Playlist, item: MenuItem): Boolean {
@@ -90,13 +94,13 @@ object PlaylistMenuHelper {
                         if (playlist is AbsSmartPlaylist) {
                             it.data =
                                 when (playlist) {
-                                    is HistoryPlaylist -> "HistoryPlaylist"
-                                    is LastAddedPlaylist -> "LastAddedPlaylist"
-                                    is MyTopTracksPlaylist -> "MyTopTracksPlaylist"
+                                    is HistoryPlaylist -> TASK_DATA_HistoryPlaylist
+                                    is LastAddedPlaylist -> TASK_DATA_LastAddedPlaylist
+                                    is MyTopTracksPlaylist -> TASK_DATA_MyTopTracksPlaylist
                                     else -> "Smart"
                                 }
                         } else {
-                            it.data = "Normal" // todo const val
+                            it.data = TASK_DATA_Normal
                             it.num = playlist.id
                         }
                     }
@@ -155,13 +159,13 @@ object PlaylistMenuHelper {
             var result: Short = -1
             try {
                 when (data) {
-                    "Normal" ->
+                    TASK_DATA_Normal ->
                         task.num?.let { result = savePlaylist(activity, uri, it) }
-                    "MyTopTracksPlaylist" ->
+                    TASK_DATA_MyTopTracksPlaylist ->
                         result = savePlaylist(activity, uri, MyTopTracksPlaylist(activity))
-                    "LastAddedPlaylist" ->
+                    TASK_DATA_LastAddedPlaylist ->
                         result = savePlaylist(activity, uri, LastAddedPlaylist(activity))
-                    "HistoryPlaylist" ->
+                    TASK_DATA_HistoryPlaylist ->
                         result = savePlaylist(activity, uri, HistoryPlaylist(activity))
                     else -> {
                         result = -1
