@@ -29,6 +29,7 @@ import player.phonograph.dialogs.ScanMediaFolderDialog;
 import player.phonograph.glide.SongGlideRequest;
 import player.phonograph.helper.MusicPlayerRemote;
 import player.phonograph.helper.SearchQueryHelper;
+import player.phonograph.helper.menu.PlaylistMenuHelper;
 import player.phonograph.loader.AlbumLoader;
 import player.phonograph.loader.ArtistLoader;
 import player.phonograph.loader.PlaylistSongLoader;
@@ -124,6 +125,11 @@ public class MainActivity extends AbsSlidingMusicPanelActivity {
                 requestPermissions();
             }
             ChangelogDialog.create().show(getSupportFragmentManager(), "CHANGE_LOG_DIALOG");
+        } else if (resultCode == RESULT_OK && requestCode == 100_000){
+            if (data != null) {
+                Uri uri = data.getData();
+                PlaylistMenuHelper.handleSavePlaylist(this, uri, requestCode);
+            }
         }
     }
 
