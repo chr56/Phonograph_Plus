@@ -36,6 +36,8 @@ import kotlin.collections.ArrayList
  * @author Karim Abou Zeid (kabouzeid)
  */
 object PlaylistMenuHelper {
+    const val TASK_ID_SAVE_PLAYLIST: Int = 909090
+
     @JvmStatic
     fun handleMenuClick(activity: AppCompatActivity, playlist: Playlist, item: MenuItem): Boolean {
         when (item.itemId) {
@@ -82,7 +84,7 @@ object PlaylistMenuHelper {
                     )
                 }
                 App.instance.taskManager.addTask(
-                    Task(100_000, null).also {
+                    Task(TASK_ID_SAVE_PLAYLIST, null).also {
                         it.action = Task.ACTION_SAVE_PLAYLIST
 
                         if (playlist is AbsSmartPlaylist) {
@@ -99,7 +101,7 @@ object PlaylistMenuHelper {
                         }
                     }
                 )
-                startActivityForResult(activity, intent, 100_000, null)
+                startActivityForResult(activity, intent, TASK_ID_SAVE_PLAYLIST, null)
 
                 return true
             }
@@ -141,11 +143,11 @@ object PlaylistMenuHelper {
      * CALL this IN onActivityResult()
      */
     @JvmStatic
-    fun handleSavePlaylist(activity: Activity, uri: Uri, taskId: Int) {
+    fun handleSavePlaylist(activity: Activity, uri: Uri) {
 
         val taskManager = App.instance.taskManager
 
-        val task = taskManager.findTask(taskId) ?: return
+        val task = taskManager.findTask(TASK_ID_SAVE_PLAYLIST) ?: return
         val action: String = task.action ?: return
 
         if (action == Task.ACTION_SAVE_PLAYLIST) {
@@ -177,7 +179,7 @@ object PlaylistMenuHelper {
                     ).show()
                 }
             } finally {
-                taskManager.removeTask(taskId)
+                taskManager.removeTask(TASK_ID_SAVE_PLAYLIST)
             }
         }
     }

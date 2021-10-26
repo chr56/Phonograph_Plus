@@ -244,13 +244,10 @@ public class PlaylistDetailActivity extends AbsSlidingMusicPanelActivity impleme
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        if (resultCode == RESULT_OK && requestCode == 100_000){
+        if (resultCode == RESULT_OK && requestCode == PlaylistMenuHelper.TASK_ID_SAVE_PLAYLIST){
             if (data != null) {
                 Uri uri = data.getData();
-//                Log.d(TAG,"SAF: " + uri.toString());
-
-                PlaylistMenuHelper.handleSavePlaylist(this, uri, requestCode);
-
+                PlaylistMenuHelper.handleSavePlaylist(this, uri);
             }
         }
 

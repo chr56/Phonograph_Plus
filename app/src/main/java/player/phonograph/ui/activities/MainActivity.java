@@ -125,10 +125,10 @@ public class MainActivity extends AbsSlidingMusicPanelActivity {
                 requestPermissions();
             }
             ChangelogDialog.create().show(getSupportFragmentManager(), "CHANGE_LOG_DIALOG");
-        } else if (resultCode == RESULT_OK && requestCode == 100_000){
+        } else if (resultCode == RESULT_OK && requestCode == PlaylistMenuHelper.TASK_ID_SAVE_PLAYLIST){
             if (data != null) {
                 Uri uri = data.getData();
-                PlaylistMenuHelper.handleSavePlaylist(this, uri, requestCode);
+                PlaylistMenuHelper.handleSavePlaylist(this, uri);
             }
         }
     }
