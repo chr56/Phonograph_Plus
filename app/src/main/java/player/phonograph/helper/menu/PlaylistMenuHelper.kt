@@ -3,6 +3,7 @@ package player.phonograph.helper.menu
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -23,11 +24,12 @@ import player.phonograph.model.smartplaylist.AbsSmartPlaylist
 import player.phonograph.model.smartplaylist.HistoryPlaylist
 import player.phonograph.model.smartplaylist.LastAddedPlaylist
 import player.phonograph.model.smartplaylist.MyTopTracksPlaylist
+import player.phonograph.util.FileSaver.savePlaylist
 import player.phonograph.util.PlaylistsUtil
 import java.io.IOException
 import java.text.SimpleDateFormat
-import java.util.Locale
 import java.util.Calendar
+import java.util.Locale
 import kotlin.collections.ArrayList
 
 /**
@@ -67,7 +69,6 @@ object PlaylistMenuHelper {
                 return true
             }
             R.id.action_save_playlist -> {
-//                SavePlaylistAsyncTask(activity).execute(playlist)
 
                 val intent = Intent(Intent.ACTION_CREATE_DOCUMENT).apply {
                     addCategory(Intent.CATEGORY_OPENABLE)
@@ -82,7 +83,7 @@ object PlaylistMenuHelper {
                 }
                 App.instance.taskManager.addTask(
                     Task(100_000, null).also {
-                        it.action = Task.SAVE_PLAYLIST
+                        it.action = Task.ACTION_SAVE_PLAYLIST
 
                         if (playlist is AbsSmartPlaylist) {
                             it.data =
@@ -132,6 +133,51 @@ object PlaylistMenuHelper {
             val context = context
             if (context != null) {
                 Toast.makeText(context, string, Toast.LENGTH_LONG).show()
+            }
+        }
+    }
+
+    /**
+     * CALL this IN onActivityResult()
+     */
+    @JvmStatic
+    fun handleSavePlaylist(activity: Activity, uri: Uri, taskId: Int) {
+
+        val taskManager = App.instance.taskManager
+
+        val task = taskManager.findTask(taskId) ?: return
+        val action: String = task.action ?: return
+
+        if (action == Task.ACTION_SAVE_PLAYLIST) {
+            val data: String = task.data ?: return
+            var result: Short = -1
+            try {
+                when (data) {
+                    "Normal" ->
+                        task.num?.let { result = savePlaylist(activity, uri, it) }
+                    "MyTopTracksPlaylist" ->
+                        result = savePlaylist(activity, uri, MyTopTracksPlaylist(activity))
+                    "LastAddedPlaylist" ->
+                        result = savePlaylist(activity, uri, LastAddedPlaylist(activity))
+                    "HistoryPlaylist" ->
+                        result = savePlaylist(activity, uri, HistoryPlaylist(activity))
+                    else -> {
+                        result = -1
+                    }
+                }
+
+                // report result
+                if (result.toInt() != 0) {
+                    Toast.makeText(
+                        activity, activity.resources.getText(R.string.failed_to_save_playlist, "_"), Toast.LENGTH_SHORT
+                    ).show()
+                } else {
+                    Toast.makeText(
+                        activity, activity.resources.getText(R.string.success), Toast.LENGTH_SHORT
+                    ).show()
+                }
+            } finally {
+                taskManager.removeTask(taskId)
             }
         }
     }

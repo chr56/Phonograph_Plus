@@ -4,12 +4,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -25,14 +23,10 @@ import com.h6ah4i.android.widget.advrecyclerview.animator.RefactoredDefaultItemA
 import com.h6ah4i.android.widget.advrecyclerview.draggable.RecyclerViewDragDropManager;
 import com.h6ah4i.android.widget.advrecyclerview.utils.WrapperAdapterUtils;
 
-import player.phonograph.App;
 import player.phonograph.R;
-import player.phonograph.Task;
-import player.phonograph.TaskManager;
 import player.phonograph.adapter.song.OrderablePlaylistSongAdapter;
 import player.phonograph.adapter.song.PlaylistSongAdapter;
 import player.phonograph.adapter.song.SongAdapter;
-import player.phonograph.util.FileSaver;
 import player.phonograph.helper.MusicPlayerRemote;
 import player.phonograph.helper.menu.PlaylistMenuHelper;
 import player.phonograph.interfaces.CabHolder;
@@ -43,9 +37,6 @@ import player.phonograph.misc.WrappedAsyncTaskLoader;
 import player.phonograph.model.AbsCustomPlaylist;
 import player.phonograph.model.Playlist;
 import player.phonograph.model.Song;
-import player.phonograph.model.smartplaylist.HistoryPlaylist;
-import player.phonograph.model.smartplaylist.LastAddedPlaylist;
-import player.phonograph.model.smartplaylist.MyTopTracksPlaylist;
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity;
 import player.phonograph.util.PhonographColorUtil;
 import player.phonograph.util.PlaylistsUtil;
@@ -54,7 +45,6 @@ import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -257,49 +247,9 @@ public class PlaylistDetailActivity extends AbsSlidingMusicPanelActivity impleme
         if (resultCode == RESULT_OK && requestCode == 100_000){
             if (data != null) {
                 Uri uri = data.getData();
-                Log.d(TAG,"SAF: " + uri.toString());
+//                Log.d(TAG,"SAF: " + uri.toString());
 
-                Task task = App.getInstance().getTaskManager().findTask(requestCode);
-                if (task != null){
-                    if (Objects.equals(task.getAction(), Task.SAVE_PLAYLIST)) {
-                        try {
-                            String _data = task.getData();
-                            if (_data != null){
-                                short result = -1;
-                                switch (_data){
-                                    case "Normal":
-                                        if (task.getNum() != null) {
-                                            result = FileSaver.INSTANCE.savePlaylist(this, uri, task.getNum());
-                                        }
-                                        break;
-                                    case "MyTopTracksPlaylist":
-                                        result = FileSaver.INSTANCE.savePlaylist(this, uri, new MyTopTracksPlaylist(this));
-                                        break;
-                                    case "LastAddedPlaylist":
-                                        result = FileSaver.INSTANCE.savePlaylist(this, uri, new LastAddedPlaylist(this));
-                                        break;
-                                    case "HistoryPlaylist":
-                                        result = FileSaver.INSTANCE.savePlaylist(this, uri, new HistoryPlaylist(this));
-                                        break;
-                                    default:
-                                        //
-                                }
-                                if (result != 0) {
-                                    Toast.makeText(this, getResources().getText(R.string.failed_to_save_playlist, "_"), Toast.LENGTH_SHORT).show();
-                                } else {
-                                    Toast.makeText(this, getResources().getText(R.string.success), Toast.LENGTH_SHORT).show();
-                                }
-                                Log.w(TAG, "result"+ result);
-
-                            }
-
-
-
-
-                        } finally {
-                        }
-                    }
-                }
+                PlaylistMenuHelper.handleSavePlaylist(this, uri, requestCode);
 
             }
         }

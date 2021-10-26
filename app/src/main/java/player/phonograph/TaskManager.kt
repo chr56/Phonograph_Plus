@@ -57,6 +57,6 @@ class Task(private val taskId: Int, var callback: Callback?) {
     var num: Long? = null
 
     companion object {
-        const val SAVE_PLAYLIST: String = "SavePlaylist"
+        const val ACTION_SAVE_PLAYLIST: String = "SavePlaylist"
     }
 }
