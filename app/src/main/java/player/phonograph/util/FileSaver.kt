@@ -17,6 +17,8 @@ object FileSaver {
         val stream = activity.contentResolver.openOutputStream(uri) ?: return ERROR
         stream.write(data.encodeToByteArray())
         stream.close()
+        activity.contentResolver.notifyChange(uri, null)
+
         return SUCCESS
     }
 
