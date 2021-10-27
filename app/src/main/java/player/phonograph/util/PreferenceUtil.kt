@@ -16,6 +16,7 @@ import chr_56.MDthemer.core.ThemeColor
 import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
 import com.google.gson.reflect.TypeToken
+import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.helper.SortOrder
 import player.phonograph.model.CategoryInfo
@@ -25,31 +26,30 @@ import java.io.File
 import java.util.ArrayList
 
 
-@Suppress("unused")
 @SuppressLint("ApplySharedPref")
 class PreferenceUtil(context: Context) {
 
-//    private var sInstance: PreferenceUtil2? = null
+//    private var sInstance: PreferenceUtil? = null
     private val mPreferences: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
 
-//    fun getInstance(context: Context): PreferenceUtil2 {
-//        return if (sInstance == null) PreferenceUtil2(context.applicationContext)
+//    fun getInstance(context: Context): PreferenceUtil {
+//        return if (sInstance == null) PreferenceUtil(context.applicationContext)
 //        else sInstance!!
 //    }
 
-    fun isAllowedToDownloadMetadata(context: Context): Boolean {
-        return when (getInstance(context).autoDownloadImagesPolicy()) {
-            "always" -> true
-            "only_wifi" -> {
-                val connectivityManager =
-                    context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-                val netInfo = connectivityManager.activeNetworkInfo
-                netInfo != null && netInfo.type == ConnectivityManager.TYPE_WIFI && netInfo.isConnectedOrConnecting
-            }
-            "never" -> false
-            else -> false
-        }
-    }
+//    fun isAllowedToDownloadMetadata(context: Context): Boolean {
+//        return when (getInstance(context).autoDownloadImagesPolicy()) {
+//            "always" -> true
+//            "only_wifi" -> {
+//                val connectivityManager =
+//                    context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+//                val netInfo = connectivityManager.activeNetworkInfo
+//                netInfo != null && netInfo.type == ConnectivityManager.TYPE_WIFI && netInfo.isConnectedOrConnecting
+//            }
+//            "never" -> false
+//            else -> false
+//        }
+//    }
 
     fun registerOnSharedPreferenceChangedListener(sharedPreferenceChangeListener: OnSharedPreferenceChangeListener?) {
         mPreferences.registerOnSharedPreferenceChangeListener(sharedPreferenceChangeListener)
@@ -59,68 +59,62 @@ class PreferenceUtil(context: Context) {
         mPreferences.unregisterOnSharedPreferenceChangeListener(sharedPreferenceChangeListener)
     }
 
-    @StyleRes
-    fun getGeneralTheme(): Int {
-        return getThemeResFromPrefValue(
+//    @StyleRes
+//    fun getGeneralTheme(): Int {
+//        return getThemeResFromPrefValue(
+//            mPreferences.getString(GENERAL_THEME, "auto")
+//        )
+//    }
+//    fun setGeneralTheme(theme: String?) {
+//        val editor = mPreferences.edit()
+//        editor.putString(GENERAL_THEME, theme)
+//        editor.commit()
+//    }
+
+    @get:StyleRes
+    val generalTheme: Int
+        get() = getThemeResFromPrefValue(
             mPreferences.getString(GENERAL_THEME, "auto")
         )
-    }
     fun setGeneralTheme(theme: String?) {
         val editor = mPreferences.edit()
         editor.putString(GENERAL_THEME, theme)
         editor.commit()
     }
 
-    @StyleRes
-    fun getThemeResFromPrefValue(themePrefValue: String?): Int {
-        return when (themePrefValue) {
-            "dark" -> R.style.Theme_Phonograph_Dark
-            "black" -> R.style.Theme_Phonograph_Black
-            "light" -> R.style.Theme_Phonograph_Light
-            "auto" -> R.style.Theme_Phonograph_Auto
-            else -> R.style.Theme_Phonograph_Auto
-        }
-    }
-
-
     fun rememberLastTab(): Boolean {
         return mPreferences.getBoolean(REMEMBER_LAST_TAB, true)
     }
 
-    fun setLastPage(value: Int) {
-        val editor = mPreferences.edit()
-        editor.putInt(LAST_PAGE, value)
-        editor.apply()
-    }
-
-    fun getLastPage(): Int {
-        return mPreferences.getInt(LAST_PAGE, 0)
-    }
-
-    fun setLastMusicChooser(value: Int) {
-        val editor = mPreferences.edit()
-        editor.putInt(LAST_MUSIC_CHOOSER, value)
-        editor.apply()
-    }
-
-    fun getLastMusicChooser(): Int {
-        return mPreferences.getInt(LAST_MUSIC_CHOOSER, 0)
-    }
-
-    fun getNowPlayingScreen(): NowPlayingScreen {
-        val id = mPreferences.getInt(NOW_PLAYING_SCREEN_ID, 0)
-        for (nowPlayingScreen in NowPlayingScreen.values()) {
-            if (nowPlayingScreen.id == id) return nowPlayingScreen
+    var lastPage: Int
+        get() = mPreferences.getInt(LAST_PAGE, 0)
+        set(value) {
+            val editor = mPreferences.edit()
+            editor.putInt(LAST_PAGE, value)
+            editor.apply()
         }
-        return NowPlayingScreen.CARD
-    }
 
+    var lastMusicChooser: Int
+        get() = mPreferences.getInt(LAST_MUSIC_CHOOSER, 0)
+        set(value) {
+            val editor = mPreferences.edit()
+            editor.putInt(LAST_MUSIC_CHOOSER, value)
+            editor.apply()
+        }
 
-    fun setNowPlayingScreen(nowPlayingScreen: NowPlayingScreen) {
-        val editor = mPreferences.edit()
-        editor.putInt(NOW_PLAYING_SCREEN_ID, nowPlayingScreen.id)
-        editor.commit()
-    }
+    var nowPlayingScreen: NowPlayingScreen
+        get() {
+            val id = mPreferences.getInt(NOW_PLAYING_SCREEN_ID, 0)
+            for (nowPlayingScreen in NowPlayingScreen.values()) {
+                if (nowPlayingScreen.id == id) return nowPlayingScreen
+            }
+            return NowPlayingScreen.CARD
+        }
+        set(nowPlayingScreen) {
+            val editor = mPreferences.edit()
+            editor.putInt(NOW_PLAYING_SCREEN_ID, nowPlayingScreen.id)
+            editor.commit()
+        }
 
     fun coloredNotification(): Boolean {
         return mPreferences.getBoolean(COLORED_NOTIFICATION, true)
@@ -156,7 +150,6 @@ class PreferenceUtil(context: Context) {
         return mPreferences.getBoolean(GAPLESS_PLAYBACK, false)
     }
 
-
     fun audioDucking(): Boolean {
         return mPreferences.getBoolean(AUDIO_DUCKING, true)
     }
@@ -173,79 +166,55 @@ class PreferenceUtil(context: Context) {
         return mPreferences.getBoolean(IGNORE_MEDIA_STORE_ARTWORK, false)
     }
 
-    fun getArtistSortOrder(): String? {
-        return mPreferences.getString(
-            ARTIST_SORT_ORDER,
-            SortOrder.ArtistSortOrder.ARTIST_A_Z
-        )
-    }
+    var artistSortOrder: String?
+        get() = mPreferences.getString(ARTIST_SORT_ORDER, SortOrder.ArtistSortOrder.ARTIST_A_Z)
+        set(sortOrder) {
+            val editor = mPreferences.edit()
+            editor.putString(ARTIST_SORT_ORDER, sortOrder)
+            editor.commit()
+        }
 
-    fun setArtistSortOrder(sortOrder: String?) {
-        val editor = mPreferences.edit()
-        editor.putString(ARTIST_SORT_ORDER, sortOrder)
-        editor.commit()
-    }
-
-    fun getArtistSongSortOrder(): String? {
-        return mPreferences.getString(
+    val artistSongSortOrder: String?
+        get() = mPreferences.getString(
             ARTIST_SONG_SORT_ORDER,
             SortOrder.ArtistSongSortOrder.SONG_A_Z
         )
-    }
 
-    fun getArtistAlbumSortOrder(): String? {
-        return mPreferences.getString(
+    val artistAlbumSortOrder: String?
+        get() = mPreferences.getString(
             ARTIST_ALBUM_SORT_ORDER,
             SortOrder.ArtistAlbumSortOrder.ALBUM_YEAR
         )
-    }
 
-    fun getAlbumSortOrder(): String? {
-        return mPreferences.getString(
-            ALBUM_SORT_ORDER,
-            SortOrder.AlbumSortOrder.ALBUM_A_Z
-        )
-    }
+    var albumSortOrder: String?
+        get() = mPreferences.getString(ALBUM_SORT_ORDER, SortOrder.AlbumSortOrder.ALBUM_A_Z)
+        set(sortOrder) {
+            val editor = mPreferences.edit()
+            editor.putString(ALBUM_SORT_ORDER, sortOrder)
+            editor.commit()
+        }
 
-    fun setAlbumSortOrder(sortOrder: String?) {
-        val editor = mPreferences.edit()
-        editor.putString(ALBUM_SORT_ORDER, sortOrder)
-        editor.commit()
-    }
-
-    fun getAlbumSongSortOrder(): String? {
-        return mPreferences.getString(
+    val albumSongSortOrder: String?
+        get() = mPreferences.getString(
             ALBUM_SONG_SORT_ORDER,
             SortOrder.AlbumSongSortOrder.SONG_TRACK_LIST
         )
-    }
 
-    fun getSongSortOrder(): String? {
-        return mPreferences.getString(
-            SONG_SORT_ORDER,
-            SortOrder.SongSortOrder.SONG_A_Z
-        )
-    }
+    var songSortOrder: String?
+        get() = mPreferences.getString(SONG_SORT_ORDER, SortOrder.SongSortOrder.SONG_A_Z)
+        set(sortOrder) {
+            val editor = mPreferences.edit()
+            editor.putString(SONG_SORT_ORDER, sortOrder)
+            editor.commit()
+        }
 
-    fun setSongSortOrder(sortOrder: String?) {
-        val editor = mPreferences.edit()
-        editor.putString(SONG_SORT_ORDER, sortOrder)
-        editor.commit()
-    }
+    val genreSortOrder: String?
+        get() = mPreferences.getString(GENRE_SORT_ORDER, SortOrder.GenreSortOrder.GENRE_A_Z)
 
-    fun getGenreSortOrder(): String? {
-        return mPreferences.getString(
-            GENRE_SORT_ORDER,
-            SortOrder.GenreSortOrder.GENRE_A_Z
-        )
-    }
-
-
-    fun getLastAddedCutoff(): Long {
-        val calendarUtil = CalendarUtil()
-        val interval: Long
-        interval =
-            when (mPreferences.getString(LAST_ADDED_CUTOFF, "")) {
+    val lastAddedCutoff: Long
+        get() {
+            val calendarUtil = CalendarUtil()
+            val interval: Long = when (mPreferences.getString(LAST_ADDED_CUTOFF, "")) {
                 "today" -> calendarUtil.elapsedToday
                 "this_week" -> calendarUtil.elapsedWeek
                 "past_seven_days" -> calendarUtil.getElapsedDays(7)
@@ -254,116 +223,108 @@ class PreferenceUtil(context: Context) {
                 "this_month" -> calendarUtil.elapsedMonth
                 else -> calendarUtil.elapsedMonth
             }
-        return (System.currentTimeMillis() - interval) / 1000
-    }
+            return (System.currentTimeMillis() - interval) / 1000
+        }
 
-    fun getLastSleepTimerValue(): Int {
-        return mPreferences.getInt(LAST_SLEEP_TIMER_VALUE, 30)
-    }
+    var lastSleepTimerValue: Int
+        get() = mPreferences.getInt(LAST_SLEEP_TIMER_VALUE, 30)
+        set(value) {
+            val editor = mPreferences.edit()
+            editor.putInt(LAST_SLEEP_TIMER_VALUE, value)
+            editor.apply()
+        }
 
-    fun setLastSleepTimerValue(value: Int) {
-        val editor = mPreferences.edit()
-        editor.putInt(LAST_SLEEP_TIMER_VALUE, value)
-        editor.apply()
-    }
+    var nextSleepTimerElapsedRealTime: Long
+        get() = mPreferences.getLong(NEXT_SLEEP_TIMER_ELAPSED_REALTIME, -1)
+        set(value) {
+            val editor = mPreferences.edit()
+            editor.putLong(NEXT_SLEEP_TIMER_ELAPSED_REALTIME, value)
+            editor.apply()
+        }
 
-    fun getNextSleepTimerElapsedRealTime(): Long {
-        return mPreferences.getLong(NEXT_SLEEP_TIMER_ELAPSED_REALTIME, -1)
-    }
+    var sleepTimerFinishMusic: Boolean
+        get() = mPreferences.getBoolean(SLEEP_TIMER_FINISH_SONG, false)
+        set(value) {
+            val editor = mPreferences.edit()
+            editor.putBoolean(SLEEP_TIMER_FINISH_SONG, value)
+            editor.apply()
+        }
 
-    fun setNextSleepTimerElapsedRealtime(value: Long) {
-        val editor = mPreferences.edit()
-        editor.putLong(NEXT_SLEEP_TIMER_ELAPSED_REALTIME, value)
-        editor.apply()
-    }
+    var albumGridSize: Int
+        get() {
+            return mPreferences.getInt(
+                ALBUM_GRID_SIZE,
+                App.instance.resources.getInteger(R.integer.default_grid_columns)
+            )
+        }
+        set(gridSize) {
+            val editor = mPreferences.edit()
+            editor.putInt(ALBUM_GRID_SIZE, gridSize)
+            editor.apply()
+        }
 
-    fun getSleepTimerFinishMusic(): Boolean {
-        return mPreferences.getBoolean(SLEEP_TIMER_FINISH_SONG, false)
-    }
+    var songGridSize: Int
+        get() {
+            return mPreferences.getInt(
+                SONG_GRID_SIZE,
+                App.instance.resources.getInteger(R.integer.default_list_columns)
+            )
+        }
+        set(gridSize) {
+            val editor = mPreferences.edit()
+            editor.putInt(SONG_GRID_SIZE, gridSize)
+            editor.apply()
+        }
 
-    fun setSleepTimerFinishMusic(value: Boolean) {
-        val editor = mPreferences.edit()
-        editor.putBoolean(SLEEP_TIMER_FINISH_SONG, value)
-        editor.apply()
-    }
+    var artistGridSize: Int
+        get() {
+            return mPreferences.getInt(
+                ARTIST_GRID_SIZE,
+                App.instance.resources.getInteger(R.integer.default_list_columns)
+            )
+        }
+        set(gridSize) {
+            val editor = mPreferences.edit()
+            editor.putInt(ARTIST_GRID_SIZE, gridSize)
+            editor.apply()
+        }
 
-    fun setAlbumGridSize(gridSize: Int) {
-        val editor = mPreferences.edit()
-        editor.putInt(ALBUM_GRID_SIZE, gridSize)
-        editor.apply()
-    }
-
-    fun getAlbumGridSize(context: Context): Int {
-        return mPreferences.getInt(
-            ALBUM_GRID_SIZE,
-            context.resources.getInteger(R.integer.default_grid_columns)
-        )
-    }
-
-    fun setSongGridSize(gridSize: Int) {
-        val editor = mPreferences.edit()
-        editor.putInt(SONG_GRID_SIZE, gridSize)
-        editor.apply()
-    }
-
-    fun getSongGridSize(context: Context): Int {
-        return mPreferences.getInt(
-            SONG_GRID_SIZE,
-            context.resources.getInteger(R.integer.default_list_columns)
-        )
-    }
-
-    fun setArtistGridSize(gridSize: Int) {
-        val editor = mPreferences.edit()
-        editor.putInt(ARTIST_GRID_SIZE, gridSize)
-        editor.apply()
-    }
-
-    fun getArtistGridSize(context: Context): Int {
-        return mPreferences.getInt(
-            ARTIST_GRID_SIZE,
-            context.resources.getInteger(R.integer.default_list_columns)
-        )
-    }
-
-    fun setAlbumGridSizeLand(gridSize: Int) {
-        val editor = mPreferences.edit()
-        editor.putInt(ALBUM_GRID_SIZE_LAND, gridSize)
-        editor.apply()
-    }
-
-    fun getAlbumGridSizeLand(context: Context): Int {
-        return mPreferences.getInt(
-            ALBUM_GRID_SIZE_LAND,
-            context.resources.getInteger(R.integer.default_grid_columns_land)
-        )
-    }
-
-    fun setSongGridSizeLand(gridSize: Int) {
-        val editor = mPreferences.edit()
-        editor.putInt(SONG_GRID_SIZE_LAND, gridSize)
-        editor.apply()
-    }
-
-    fun getSongGridSizeLand(context: Context): Int {
-        return mPreferences.getInt(
-            SONG_GRID_SIZE_LAND,
-            context.resources.getInteger(R.integer.default_list_columns_land)
-        )
-    }
-
-    fun setArtistGridSizeLand(gridSize: Int) {
-        val editor = mPreferences.edit()
-        editor.putInt(ARTIST_GRID_SIZE_LAND, gridSize)
-        editor.apply()
-    }
-
-    fun getArtistGridSizeLand(context: Context): Int {
-        return mPreferences.getInt(
-            ARTIST_GRID_SIZE_LAND,
-            context.resources.getInteger(R.integer.default_list_columns_land)
-        )
-    }
+    var albumGridSizeLand: Int
+        get() {
+            return mPreferences.getInt(
+                ALBUM_GRID_SIZE_LAND,
+                App.instance.resources.getInteger(R.integer.default_grid_columns_land)
+            )
+        }
+        set(gridSize) {
+            val editor = mPreferences.edit()
+            editor.putInt(ALBUM_GRID_SIZE_LAND, gridSize)
+            editor.apply()
+        }
+    var songGridSizeLand: Int
+        get() {
+            return mPreferences.getInt(
+                SONG_GRID_SIZE_LAND,
+                App.instance.resources.getInteger(R.integer.default_grid_columns_land)
+            )
+        }
+        set(gridSize) {
+            val editor = mPreferences.edit()
+            editor.putInt(SONG_GRID_SIZE_LAND, gridSize)
+            editor.apply()
+        }
+    var artistGridSizeLand: Int
+        get() {
+            return mPreferences.getInt(
+                ARTIST_GRID_SIZE_LAND,
+                App.instance.resources.getInteger(R.integer.default_grid_columns_land)
+            )
+        }
+        set(gridSize) {
+            val editor = mPreferences.edit()
+            editor.putInt(ARTIST_GRID_SIZE_LAND, gridSize)
+            editor.apply()
+        }
 
     fun setAlbumColoredFooters(value: Boolean) {
         val editor = mPreferences.edit()
@@ -413,7 +374,6 @@ class PreferenceUtil(context: Context) {
         return mPreferences.getInt(LAST_CHANGELOG_VERSION, -1)
     }
 
-    @SuppressLint("ApplySharedPref")
     fun setIntroShown() {
         // don't use apply here
         mPreferences.edit().putBoolean(INTRO_SHOWN, true).commit()
@@ -427,7 +387,10 @@ class PreferenceUtil(context: Context) {
         return mPreferences.getBoolean(REMEMBER_SHUFFLE, true)
     }
 
-    fun fixed_tab_layout(): Boolean {
+    fun fixed_tab_layout(): Boolean { // todo
+        return mPreferences.getBoolean(FIXED_TAB_LAYOUT, false)
+    }
+    fun fixedTabLayout(): Boolean {
         return mPreferences.getBoolean(FIXED_TAB_LAYOUT, false)
     }
 
@@ -464,37 +427,38 @@ class PreferenceUtil(context: Context) {
         return mPreferences.getBoolean(INITIALIZED_BLACKLIST, false)
     }
 
-    fun setLibraryCategoryInfos(categories: List<CategoryInfo?>?) {
-        val gson = Gson()
-        val collectionType = object : TypeToken<List<CategoryInfo?>?>() {}.type
-        val editor = mPreferences.edit()
-        editor.putString(LIBRARY_CATEGORIES, gson.toJson(categories, collectionType))
-        editor.apply()
-    }
 
-    fun getLibraryCategoryInfos(): List<CategoryInfo?>? {
-        val data = mPreferences.getString(LIBRARY_CATEGORIES, null)
-        if (data != null) {
+    var libraryCategoryInfos: List<CategoryInfo?>?
+        get() {
+            val data = mPreferences.getString(LIBRARY_CATEGORIES, null)
+            if (data != null) {
+                val gson = Gson()
+                val collectionType = object : TypeToken<List<CategoryInfo?>?>() {}.type
+                try {
+                    return gson.fromJson<List<CategoryInfo>>(data, collectionType)
+                } catch (e: JsonSyntaxException) {
+                    e.printStackTrace()
+                }
+            }
+            return defaultLibraryCategoryInfos
+        }
+        set(categories) {
             val gson = Gson()
             val collectionType = object : TypeToken<List<CategoryInfo?>?>() {}.type
-            try {
-                return gson.fromJson(data, collectionType)
-            } catch (e: JsonSyntaxException) {
-                e.printStackTrace()
-            }
+            val editor = mPreferences.edit()
+            editor.putString(LIBRARY_CATEGORIES, gson.toJson(categories, collectionType))
+            editor.apply()
         }
-        return getDefaultLibraryCategoryInfos()
-    }
-
-    fun getDefaultLibraryCategoryInfos(): List<CategoryInfo?>? {
-        val defaultCategoryInfos: MutableList<CategoryInfo?> = ArrayList(5)
-        defaultCategoryInfos.add(CategoryInfo(CategoryInfo.Category.SONGS, true))
-        defaultCategoryInfos.add(CategoryInfo(CategoryInfo.Category.ALBUMS, true))
-        defaultCategoryInfos.add(CategoryInfo(CategoryInfo.Category.ARTISTS, true))
-        defaultCategoryInfos.add(CategoryInfo(CategoryInfo.Category.GENRES, true))
-        defaultCategoryInfos.add(CategoryInfo(CategoryInfo.Category.PLAYLISTS, true))
-        return defaultCategoryInfos
-    }
+    val defaultLibraryCategoryInfos: List<CategoryInfo>
+        get() {
+            val defaultCategoryInfos: MutableList<CategoryInfo> = ArrayList(5)
+            defaultCategoryInfos.add(CategoryInfo(CategoryInfo.Category.SONGS, true))
+            defaultCategoryInfos.add(CategoryInfo(CategoryInfo.Category.ALBUMS, true))
+            defaultCategoryInfos.add(CategoryInfo(CategoryInfo.Category.ARTISTS, true))
+            defaultCategoryInfos.add(CategoryInfo(CategoryInfo.Category.GENRES, true))
+            defaultCategoryInfos.add(CategoryInfo(CategoryInfo.Category.PLAYLISTS, true))
+            return defaultCategoryInfos
+        }
 
     /**
      * **Dangerous !**, this reset all SharedPreferences!
@@ -518,6 +482,33 @@ class PreferenceUtil(context: Context) {
                 sInstance = PreferenceUtil(context.applicationContext)
             }
             return sInstance as PreferenceUtil
+        }
+
+        // todo
+        @JvmStatic
+        fun isAllowedToDownloadMetadata(context: Context): Boolean {
+            return when (getInstance(context).autoDownloadImagesPolicy()) {
+                "always" -> true
+                "only_wifi" -> {
+                    val connectivityManager =
+                        context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+                    val netInfo = connectivityManager.activeNetworkInfo
+                    netInfo != null && netInfo.type == ConnectivityManager.TYPE_WIFI && netInfo.isConnectedOrConnecting
+                }
+                "never" -> false
+                else -> false
+            }
+        }
+
+        @StyleRes
+        fun getThemeResFromPrefValue(themePrefValue: String?): Int {
+            return when (themePrefValue) {
+                "dark" -> R.style.Theme_Phonograph_Dark
+                "black" -> R.style.Theme_Phonograph_Black
+                "light" -> R.style.Theme_Phonograph_Light
+                "auto" -> R.style.Theme_Phonograph_Auto
+                else -> R.style.Theme_Phonograph_Auto
+            }
         }
 
         const val GENERAL_THEME = "general_theme"
