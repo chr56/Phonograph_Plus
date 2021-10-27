@@ -9,6 +9,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener
 import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import android.widget.Toast
 import androidx.annotation.StyleRes
 import androidx.preference.PreferenceManager
@@ -480,10 +481,12 @@ class PreferenceUtil(context: Context) {
             return when (getInstance(context).autoDownloadImagesPolicy()) {
                 "always" -> true
                 "only_wifi" -> {
-                    val connectivityManager =
-                        context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-                    val netInfo = connectivityManager.activeNetworkInfo
-                    netInfo != null && netInfo.type == ConnectivityManager.TYPE_WIFI && netInfo.isConnectedOrConnecting
+                    val cm = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+
+                    if (!cm.isActiveNetworkMetered) return false // we pass first metred Wifi and Cellular
+                    val network = cm.activeNetwork ?: return false // no active network?
+                    val capabilities = cm.getNetworkCapabilities(network) ?: return false // no capabilities?
+                    capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)
                 }
                 "never" -> false
                 else -> false
