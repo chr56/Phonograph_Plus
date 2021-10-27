@@ -25,7 +25,6 @@ import player.phonograph.ui.fragments.player.NowPlayingScreen
 import java.io.File
 import java.util.ArrayList
 
-
 @SuppressLint("ApplySharedPref")
 class PreferenceUtil(context: Context) {
 
@@ -166,50 +165,47 @@ class PreferenceUtil(context: Context) {
         return mPreferences.getBoolean(IGNORE_MEDIA_STORE_ARTWORK, false)
     }
 
-    var artistSortOrder: String?
-        get() = mPreferences.getString(ARTIST_SORT_ORDER, SortOrder.ArtistSortOrder.ARTIST_A_Z)
+    var artistSortOrder: String
+        get() = mPreferences.getString(ARTIST_SORT_ORDER, SortOrder.ArtistSortOrder.ARTIST_A_Z)!!
         set(sortOrder) {
             val editor = mPreferences.edit()
             editor.putString(ARTIST_SORT_ORDER, sortOrder)
             editor.commit()
         }
 
-    val artistSongSortOrder: String?
+    val artistSongSortOrder: String
         get() = mPreferences.getString(
-            ARTIST_SONG_SORT_ORDER,
-            SortOrder.ArtistSongSortOrder.SONG_A_Z
-        )
+            ARTIST_SONG_SORT_ORDER, SortOrder.ArtistSongSortOrder.SONG_A_Z
+        )!!
 
-    val artistAlbumSortOrder: String?
+    val artistAlbumSortOrder: String
         get() = mPreferences.getString(
-            ARTIST_ALBUM_SORT_ORDER,
-            SortOrder.ArtistAlbumSortOrder.ALBUM_YEAR
-        )
+            ARTIST_ALBUM_SORT_ORDER, SortOrder.ArtistAlbumSortOrder.ALBUM_YEAR
+        )!!
 
-    var albumSortOrder: String?
-        get() = mPreferences.getString(ALBUM_SORT_ORDER, SortOrder.AlbumSortOrder.ALBUM_A_Z)
+    var albumSortOrder: String
+        get() = mPreferences.getString(ALBUM_SORT_ORDER, SortOrder.AlbumSortOrder.ALBUM_A_Z)!!
         set(sortOrder) {
             val editor = mPreferences.edit()
             editor.putString(ALBUM_SORT_ORDER, sortOrder)
             editor.commit()
         }
 
-    val albumSongSortOrder: String?
+    val albumSongSortOrder: String
         get() = mPreferences.getString(
-            ALBUM_SONG_SORT_ORDER,
-            SortOrder.AlbumSongSortOrder.SONG_TRACK_LIST
-        )
+            ALBUM_SONG_SORT_ORDER, SortOrder.AlbumSongSortOrder.SONG_TRACK_LIST
+        )!!
 
-    var songSortOrder: String?
-        get() = mPreferences.getString(SONG_SORT_ORDER, SortOrder.SongSortOrder.SONG_A_Z)
+    var songSortOrder: String
+        get() = mPreferences.getString(SONG_SORT_ORDER, SortOrder.SongSortOrder.SONG_A_Z)!!
         set(sortOrder) {
             val editor = mPreferences.edit()
             editor.putString(SONG_SORT_ORDER, sortOrder)
             editor.commit()
         }
 
-    val genreSortOrder: String?
-        get() = mPreferences.getString(GENRE_SORT_ORDER, SortOrder.GenreSortOrder.GENRE_A_Z)
+    val genreSortOrder: String
+        get() = mPreferences.getString(GENRE_SORT_ORDER, SortOrder.GenreSortOrder.GENRE_A_Z)!!
 
     val lastAddedCutoff: Long
         get() {
@@ -387,9 +383,6 @@ class PreferenceUtil(context: Context) {
         return mPreferences.getBoolean(REMEMBER_SHUFFLE, true)
     }
 
-    fun fixed_tab_layout(): Boolean { // todo
-        return mPreferences.getBoolean(FIXED_TAB_LAYOUT, false)
-    }
     fun fixedTabLayout(): Boolean {
         return mPreferences.getBoolean(FIXED_TAB_LAYOUT, false)
     }
@@ -427,8 +420,7 @@ class PreferenceUtil(context: Context) {
         return mPreferences.getBoolean(INITIALIZED_BLACKLIST, false)
     }
 
-
-    var libraryCategoryInfos: List<CategoryInfo?>?
+    var libraryCategoryInfos: List<CategoryInfo>?
         get() {
             val data = mPreferences.getString(LIBRARY_CATEGORIES, null)
             if (data != null) {
@@ -473,7 +465,6 @@ class PreferenceUtil(context: Context) {
         Toast.makeText(context, R.string.success, Toast.LENGTH_SHORT).show()
     }
 
-
     companion object {
         private var sInstance: PreferenceUtil? = null
         @JvmStatic
@@ -484,7 +475,6 @@ class PreferenceUtil(context: Context) {
             return sInstance as PreferenceUtil
         }
 
-        // todo
         @JvmStatic
         fun isAllowedToDownloadMetadata(context: Context): Boolean {
             return when (getInstance(context).autoDownloadImagesPolicy()) {

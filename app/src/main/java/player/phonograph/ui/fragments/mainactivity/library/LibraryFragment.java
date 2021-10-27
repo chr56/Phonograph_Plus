@@ -112,7 +112,7 @@ public class LibraryFragment extends AbsMainActivityFragment implements CabHolde
 
             updateTabVisibility();
         }else if (PreferenceUtil.FIXED_TAB_LAYOUT.equals(key)){
-            if (PreferenceUtil.getInstance(requireContext()).fixed_tab_layout()){
+            if (PreferenceUtil.getInstance(requireContext()).fixedTabLayout()){
                 tabs.setTabMode(TabLayout.MODE_FIXED);
             } else {
                 tabs.setTabMode(TabLayout.MODE_SCROLLABLE);
@@ -127,7 +127,7 @@ public class LibraryFragment extends AbsMainActivityFragment implements CabHolde
         toolbar.setNavigationIcon(R.drawable.ic_menu_white_24dp);
         requireActivity().setTitle(R.string.app_name);
 
-        if (PreferenceUtil.getInstance(requireContext()).fixed_tab_layout()){
+        if (PreferenceUtil.getInstance(requireContext()).fixedTabLayout()){
             tabs.setTabMode(TabLayout.MODE_FIXED);
         } else {
             tabs.setTabMode(TabLayout.MODE_SCROLLABLE);

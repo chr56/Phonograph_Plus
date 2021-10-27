@@ -47,7 +47,7 @@ class ScanMediaFolderDialog : DialogFragment() {
         }
 
         // init Default Path
-        initial = PreferenceUtil.getInstance(requireContext()).startDirectory
+        initial = PreferenceUtil.getInstance(requireContext()).getStartDirectory()
 //        initialPath = PreferenceUtil.getInstance(requireContext()).startDirectory.absolutePath
 //        var mSavedInstanceState = savedInstanceState
 //        if (mSavedInstanceState == null) {

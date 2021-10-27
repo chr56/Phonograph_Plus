@@ -43,7 +43,7 @@ class SleepTimerDialog : DialogFragment() {
                 val minutesToQuit = progress
 
                 val nextSleepTimerElapsedTime = SystemClock.elapsedRealtime() + minutesToQuit * 60 * 1000
-                PreferenceUtil.getInstance(requireActivity()).setNextSleepTimerElapsedRealtime(nextSleepTimerElapsedTime)
+                PreferenceUtil.getInstance(requireActivity()).nextSleepTimerElapsedRealTime = nextSleepTimerElapsedTime
 
                 val alarmManager = requireActivity().getSystemService(Context.ALARM_SERVICE) as AlarmManager
                 val intent = makeTimerPendingIntent(
