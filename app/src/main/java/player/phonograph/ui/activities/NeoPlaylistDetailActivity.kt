@@ -69,8 +69,8 @@ class NeoPlaylistDetailActivity : AbsSlidingMusicPanelActivity() {
      * ********************/
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
         binding = ActivityPlaylistDetailBinding.inflate(layoutInflater)
+        super.onCreate(savedInstanceState)
 
         bindingViews()
 
