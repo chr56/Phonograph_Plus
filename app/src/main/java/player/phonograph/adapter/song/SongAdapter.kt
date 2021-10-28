@@ -7,13 +7,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.annotation.MenuRes
-import androidx.annotation.Nullable
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.util.Pair
 import chr_56.MDthemer.util.ColorUtil
 import chr_56.MDthemer.util.MaterialColorHelper
 import com.afollestad.materialcab.MaterialCab
 import com.bumptech.glide.Glide
+import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView.SectionedAdapter
 import player.phonograph.R
 import player.phonograph.adapter.base.AbsMultiSelectAdapter
 import player.phonograph.adapter.base.MediaEntryViewHolder
@@ -28,7 +28,6 @@ import player.phonograph.model.Song
 import player.phonograph.util.MusicUtil
 import player.phonograph.util.NavigationUtil
 import player.phonograph.util.PreferenceUtil
-import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView.SectionedAdapter
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
@@ -186,11 +185,28 @@ open class SongAdapter @JvmOverloads constructor(
         protected open val song: Song
             get() = dataSet[bindingAdapterPosition]
 
+        protected open val menuRes: Int?
+            get() = R.menu.menu_item_song
+
         init {
             setImageTransitionName(activity.getString(R.string.transition_album_art))
-            setupMenu()
+            setupMenuListener()
+//            setupMenu()
         }
-        protected open fun setupMenu(@Nullable @MenuRes menuRes: Int = R.menu.menu_item_song) {
+//        protected open fun setupMenu(@Nullable @MenuRes menuRes: Int?) {
+//            val realMenuRes: Int = menuRes ?: R.menu.menu_item_song // default
+//
+//            menu?.setOnClickListener(object : SongMenuHelper.ClickMenuListener(activity, realMenuRes) {
+//                override val song: Song
+//                    get() = this@ViewHolder.song
+//
+//                override fun onMenuItemClick(item: MenuItem): Boolean {
+//                    return onSongMenuItemClick(item) || super.onMenuItemClick(item)
+//                }
+//            })
+//        }
+
+        private fun setupMenuListener() {
             menu?.setOnClickListener(object : SongMenuHelper.ClickMenuListener(activity, menuRes) {
                 override val song: Song
                     get() = this@ViewHolder.song

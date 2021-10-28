@@ -3,7 +3,6 @@ package player.phonograph.adapter.song
 import android.view.MenuItem
 import android.view.View
 import androidx.annotation.LayoutRes
-import androidx.annotation.MenuRes
 import androidx.appcompat.app.AppCompatActivity
 import com.h6ah4i.android.widget.advrecyclerview.draggable.DraggableItemAdapter
 import com.h6ah4i.android.widget.advrecyclerview.draggable.DraggableItemState
@@ -124,9 +123,9 @@ class PlayingQueueAdapter(
             }
         }
 
-        override fun setupMenu(@MenuRes menuRes: Int) {
-            super.setupMenu(R.menu.menu_item_playing_queue_song)
-        }
+        override val menuRes: Int
+            get() = R.menu.menu_item_playing_queue_song
+//            get() = R.menu.menu_item_playing_queue_song
 
         @DraggableItemStateFlags
         private var mDragStateFlags = 0

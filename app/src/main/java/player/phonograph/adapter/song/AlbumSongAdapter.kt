@@ -2,7 +2,6 @@ package player.phonograph.adapter.song
 
 import android.view.View
 import androidx.annotation.LayoutRes
-import androidx.annotation.MenuRes
 import androidx.appcompat.app.AppCompatActivity
 import player.phonograph.R
 import player.phonograph.interfaces.CabHolder
@@ -50,9 +49,8 @@ class AlbumSongAdapter(
             }
         }
 
-        override fun setupMenu(@MenuRes menuRes: Int) {
-            super.setupMenu(R.menu.menu_item_song_short)
-        }
+        override val menuRes: Int
+            get() = R.menu.menu_item_song_short
     }
 
     override fun loadAlbumCover(song: Song, holder: SongAdapter.ViewHolder) {

@@ -25,7 +25,6 @@ import player.phonograph.util.RingtoneManager
  * @author Karim Abou Zeid (kabouzeid)
  */
 object SongMenuHelper {
-    const val menuResDefault = R.menu.menu_item_song_short
 
     @JvmStatic
     fun handleMenuClick(activity: FragmentActivity, song: Song, menuItemId: Int): Boolean {
@@ -95,32 +94,26 @@ object SongMenuHelper {
         return false
     }
 
-    abstract class ClickMenuListener(private val activity: AppCompatActivity, @Nullable @MenuRes resToUse: Int?) :
+    const val menuResDefault = R.menu.menu_item_song
+    abstract class ClickMenuListener(private val activity: AppCompatActivity, @Nullable @MenuRes menuRes: Int?) :
         View.OnClickListener,
         PopupMenu.OnMenuItemClickListener {
 
         abstract val song: Song
-        protected open var menuRes = menuResDefault // defaultRes
-
-        init {
-            // as we all know, this is executed before onClick(v)
-            resToUse?.let {
-                menuRes = resToUse
-            } // or the defaultRes
-        }
+        protected open var realRes = menuRes ?: menuResDefault
 
         override fun onClick(v: View) {
             handleMenuButtonClick(v)
         }
-        protected fun handleMenuButtonClick(v: View) {
+        private fun handleMenuButtonClick(v: View) {
             val popupMenu = PopupMenu(activity, v)
-            popupMenu.inflate(menuRes)
+            popupMenu.inflate(realRes)
             popupMenu.setOnMenuItemClickListener(this)
             popupMenu.show()
         }
 
         override fun onMenuItemClick(item: MenuItem): Boolean {
-            return SongMenuHelper.handleMenuClick(activity, song, item.itemId)
+            return handleMenuClick(activity, song, item.itemId)
         }
     }
 }

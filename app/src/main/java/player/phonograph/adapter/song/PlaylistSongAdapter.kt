@@ -3,7 +3,6 @@ package player.phonograph.adapter.song
 import android.view.MenuItem
 import android.view.View
 import androidx.annotation.LayoutRes
-import androidx.annotation.MenuRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.util.Pair
 import chr_56.MDthemer.core.ThemeColor
@@ -55,10 +54,10 @@ open class PlaylistSongAdapter(
             holder.dragView?.let {
                 it.visibility = View.GONE
             }
-            holder.separator?.let{
+            holder.separator?.let {
                 it.visibility = View.VISIBLE
             }
-            holder.shortSeparator?.let{
+            holder.shortSeparator?.let {
                 it.visibility = View.GONE
             }
         } else {
@@ -68,9 +67,8 @@ open class PlaylistSongAdapter(
 
     open inner class ViewHolder(itemView: View) : AbsOffsetSongAdapter.ViewHolder(itemView) {
 
-        override fun setupMenu(@MenuRes menuRes: Int) {
-            super.setupMenu(R.menu.menu_item_song_short)
-        }
+        override val menuRes: Int
+            get() = R.menu.menu_item_song_short
 
         override fun onSongMenuItemClick(item: MenuItem): Boolean {
             if (item.itemId == R.id.action_go_to_album) {

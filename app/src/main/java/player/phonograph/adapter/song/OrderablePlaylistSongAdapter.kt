@@ -17,8 +17,7 @@ import player.phonograph.model.Song
 import player.phonograph.util.ViewUtil
 import java.util.*
 
-
-//Todo: full of errors/crashes
+// Todo: full of errors/crashes
 /**
  * @author Karim Abou Zeid (kabouzeid)
  */
@@ -102,9 +101,8 @@ class OrderablePlaylistSongAdapter(
             }
         }
 
-        override fun setupMenu(menuRes: Int) {
-            super.setupMenu(R.menu.menu_item_song_short)
-        }
+        override val menuRes: Int
+            get() = R.menu.menu_item_playlist_song_short
 
         @DraggableItemStateFlags
         private var mDragStateFlags = 0
