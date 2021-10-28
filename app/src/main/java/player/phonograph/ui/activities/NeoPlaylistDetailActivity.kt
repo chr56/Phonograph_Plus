@@ -191,7 +191,7 @@ class NeoPlaylistDetailActivity : AbsSlidingMusicPanelActivity() {
                 recyclerView.stopScroll()
                 super.onBackPressed()
             }
-        }
+        } ?: super.onBackPressed()
     }
 
     /* *******************
