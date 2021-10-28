@@ -19,11 +19,7 @@
 
 - [ ] 完成 Readme . md
 
-- [x] 依lrc歌词时间轴快进快退
-
 - [ ] 检查文件
-
-- [x] 歌曲按创建时间修改时间排序
 
 <br/>
 <br/>
@@ -37,9 +33,3 @@
 
 ![Screenshots](./art/art.jpg?raw=true)
 
-[<img src="https://play.google.com/intl/en_us/badges/images/generic/en-play-badge.png"
-     alt="Get it on Google Play"
-     height="80">](https://play.google.com/store/apps/details?id=com.kabouzeid.gramophone)
-[<img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png"
-     alt="Get it on F-Droid"
-     height="80">](https://f-droid.org/packages/com.kabouzeid.gramophone/)
