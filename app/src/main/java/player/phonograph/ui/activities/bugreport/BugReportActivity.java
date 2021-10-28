@@ -97,7 +97,7 @@ public class BugReportActivity extends ThemeActivity {
     @BindView(R.id.button_send)
     FloatingActionButton sendFab;
 
-    private static final String ISSUE_TRACKER_LINK = "https://github.com/kabouzeid/Phonograph/issues";
+    private static final String ISSUE_TRACKER_LINK = "https://github.com/chr56/Phonograph_Plus/issues";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -262,7 +262,7 @@ public class BugReportActivity extends ThemeActivity {
         String bugDescription = inputDescription.getText().toString();
 
         Report report = new Report(bugTitle, bugDescription, deviceInfo, new ExtraInfo());
-        GithubTarget target = new GithubTarget("kabouzeid", "Phonograph");
+        GithubTarget target = new GithubTarget("chr56", "Phonograph_Plus");
 
         ReportIssueAsyncTask.report(this, report, target, login);
     }

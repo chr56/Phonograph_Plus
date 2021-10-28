@@ -241,7 +241,7 @@ class AboutActivity : ThemeActivity(), View.OnClickListener {
     }
 
     companion object {
-        private const val GITHUB = "https://github.com/kabouzeid/Phonograph"
+        private const val GITHUB = "https://github.com/chr56/Phonograph_Plus"
         private const val TWITTER = "https://twitter.com/swiftkarim"
         private const val WEBSITE = "https://kabouzeid.com/"
 //        private const val TRANSLATE =
