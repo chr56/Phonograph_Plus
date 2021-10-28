@@ -215,6 +215,14 @@ public abstract class AbsSlidingMusicPanelActivity extends AbsMusicServiceActivi
         getLayoutInflater().inflate(resId, contentContainer);
         return slidingMusicPanelLayout;
     }
+    protected View wrapSlidingMusicPanel(View view) {
+        @SuppressLint("InflateParams")
+        View slidingMusicPanelLayout = getLayoutInflater().inflate(R.layout.sliding_music_panel_layout, null);
+        ViewGroup contentContainer = slidingMusicPanelLayout.findViewById(R.id.content_container);
+        contentContainer.addView(view);
+//        getLayoutInflater().inflate(resId, contentContainer);
+        return slidingMusicPanelLayout;
+    }
 
     @Override
     public void onBackPressed() {

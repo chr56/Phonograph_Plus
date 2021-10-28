@@ -63,9 +63,7 @@ class NeoPlaylistDetailActivity : AbsSlidingMusicPanelActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityPlaylistDetailBinding.inflate(layoutInflater)
 
-        mToolbar = binding.toolbar
-        binding()
-        setContentView(binding.root)
+        bindingViews()
 
         setDrawUnderStatusbar()
 
@@ -79,7 +77,9 @@ class NeoPlaylistDetailActivity : AbsSlidingMusicPanelActivity() {
         setUpRecyclerView()
         setUpToolbar()
     }
-    private fun binding() {
+    private fun bindingViews() {
+        mToolbar = binding.toolbar
+
         recyclerView = binding.recyclerView
         empty = binding.empty
         cabStub = binding.cabStub
