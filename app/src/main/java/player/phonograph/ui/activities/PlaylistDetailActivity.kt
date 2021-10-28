@@ -44,7 +44,7 @@ import player.phonograph.util.PlaylistsUtil
 import player.phonograph.util.ViewUtil
 import java.util.*
 
-class NeoPlaylistDetailActivity : AbsSlidingMusicPanelActivity() {
+class PlaylistDetailActivity : AbsSlidingMusicPanelActivity() {
     private lateinit var binding: ActivityPlaylistDetailBinding // init in OnCreate()
 
     // init/bind in OnCreate() -> bindingView()
@@ -122,7 +122,7 @@ class NeoPlaylistDetailActivity : AbsSlidingMusicPanelActivity() {
                     object : OnMoveItemListener {
                         override fun onMoveItem(fromPosition: Int, toPosition: Int) {
                             if (PlaylistsUtil.moveItem(
-                                    this@NeoPlaylistDetailActivity,
+                                    this@PlaylistDetailActivity,
                                     playlist.id, fromPosition, toPosition
                                 )
                             ) {
@@ -293,7 +293,7 @@ class NeoPlaylistDetailActivity : AbsSlidingMusicPanelActivity() {
         }
     }
 
-    private inner class CabCallBack(private val activity: NeoPlaylistDetailActivity) : CabHolder {
+    private inner class CabCallBack(private val activity: PlaylistDetailActivity) : CabHolder {
         override fun openCab(menuRes: Int, callback: MaterialCab.Callback?): MaterialCab {
             // finish existed cab
             cab?.also { if (it.isActive) it.finish() }

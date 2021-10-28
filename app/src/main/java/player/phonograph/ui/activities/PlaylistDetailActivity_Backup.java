@@ -50,7 +50,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import chr_56.MDthemer.core.ThemeColor;
 
-public class PlaylistDetailActivity extends AbsSlidingMusicPanelActivity implements CabHolder, LoaderManager.LoaderCallbacks<List<Song>> {
+public class PlaylistDetailActivity_Backup extends AbsSlidingMusicPanelActivity implements CabHolder, LoaderManager.LoaderCallbacks<List<Song>> {
 
     private static final int LOADER_ID = LoaderIds.PLAYLIST_DETAIL_ACTIVITY;
     private static final String TAG = "PlaylistDetail";
@@ -107,7 +107,7 @@ public class PlaylistDetailActivity extends AbsSlidingMusicPanelActivity impleme
             recyclerViewDragDropManager = new RecyclerViewDragDropManager();
             final GeneralItemAnimator animator = new RefactoredDefaultItemAnimator();
             adapter = new OrderablePlaylistSongAdapter(this, new ArrayList<>(), R.layout.item_list, false, this, (fromPosition, toPosition) -> {
-                if (PlaylistsUtil.moveItem(PlaylistDetailActivity.this, playlist.id, fromPosition, toPosition)) {
+                if (PlaylistsUtil.moveItem(PlaylistDetailActivity_Backup.this, playlist.id, fromPosition, toPosition)) {
                     Song song = adapter.getDataSet().remove(fromPosition);
                     adapter.getDataSet().add(toPosition, song);
                     adapter.notifyItemMoved(fromPosition, toPosition);
