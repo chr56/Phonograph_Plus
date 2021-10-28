@@ -76,6 +76,10 @@ class NeoPlaylistDetailActivity : AbsSlidingMusicPanelActivity() {
 
         setUpRecyclerView()
         setUpToolbar()
+
+        LoaderManager.getInstance(this)
+            .initLoader<List<Song>>(LOADER_ID, null, Loader())
+
     }
     private fun bindingViews() {
         mToolbar = binding.toolbar
