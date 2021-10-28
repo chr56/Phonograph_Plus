@@ -38,8 +38,7 @@ class AboutActivity : ThemeActivity(), View.OnClickListener {
     private lateinit var forkOnGitHub: LinearLayout
     private lateinit var visitWebsite: LinearLayout
     private lateinit var reportBugs: LinearLayout
-    private lateinit var translate: LinearLayout
-    private lateinit var rateOnGooglePlay: LinearLayout
+//    private lateinit var translate: LinearLayout
     private lateinit var cracked: LinearLayout
     private lateinit var aidanFollestadGitHub: AppCompatButton
     private lateinit var michaelCookWebsite: AppCompatButton
@@ -80,9 +79,7 @@ class AboutActivity : ThemeActivity(), View.OnClickListener {
 
         intro = binding.activityAboutMainContent.cardSupportDevelopmentLayout.intro
         reportBugs = binding.activityAboutMainContent.cardSupportDevelopmentLayout.reportBugs
-        translate = binding.activityAboutMainContent.cardSupportDevelopmentLayout.translate
-        rateOnGooglePlay =
-            binding.activityAboutMainContent.cardSupportDevelopmentLayout.rateOnGooglePlay
+//        translate = binding.activityAboutMainContent.cardSupportDevelopmentLayout.translate
         cracked = binding.activityAboutMainContent.cardSupportDevelopmentLayout.cracked
 
         aidanFollestadGitHub =
@@ -135,8 +132,6 @@ class AboutActivity : ThemeActivity(), View.OnClickListener {
         visitWebsite.setOnClickListener(this)
         reportBugs.setOnClickListener(this)
         writeAnEmail.setOnClickListener(this)
-        translate.setOnClickListener(this)
-        rateOnGooglePlay.setOnClickListener(this)
         cracked.setOnClickListener(this)
         aidanFollestadGitHub.setOnClickListener(this)
         michaelCookWebsite.setOnClickListener(this)
@@ -186,12 +181,9 @@ class AboutActivity : ThemeActivity(), View.OnClickListener {
                 intent.putExtra(Intent.EXTRA_SUBJECT, "Phonograph")
                 startActivity(Intent.createChooser(intent, "E-Mail"))
             }
-            translate -> {
-                openUrl(TRANSLATE)
-            }
-            rateOnGooglePlay -> {
-                openUrl(RATE_ON_GOOGLE_PLAY)
-            }
+//            translate -> {
+//                openUrl(TRANSLATE)
+//            }
             cracked -> {
                 openUrl("https://github.com/chr56/Phonograph_Plus")
                 Toast.makeText(this, R.string.description_cracked, Toast.LENGTH_SHORT).show()
@@ -252,10 +244,8 @@ class AboutActivity : ThemeActivity(), View.OnClickListener {
         private const val GITHUB = "https://github.com/kabouzeid/Phonograph"
         private const val TWITTER = "https://twitter.com/swiftkarim"
         private const val WEBSITE = "https://kabouzeid.com/"
-        private const val TRANSLATE =
-            "https://phonograph.oneskyapp.com/collaboration/project?id=26521"
-        private const val RATE_ON_GOOGLE_PLAY =
-            "https://play.google.com/store/apps/details?id=com.kabouzeid.gramophone"
+//        private const val TRANSLATE =
+//            "https://phonograph.oneskyapp.com/collaboration/project?id=26521"
         private const val AIDAN_FOLLESTAD_GITHUB = "https://github.com/afollestad"
         private const val MICHAEL_COOK_WEBSITE = "https://cookicons.co/"
         private const val MAARTEN_CORPEL_WEBSITE = "https://maartencorpel.com/"
