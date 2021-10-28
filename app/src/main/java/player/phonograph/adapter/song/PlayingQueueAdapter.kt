@@ -6,6 +6,7 @@ import androidx.annotation.LayoutRes
 import androidx.annotation.MenuRes
 import androidx.appcompat.app.AppCompatActivity
 import com.h6ah4i.android.widget.advrecyclerview.draggable.DraggableItemAdapter
+import com.h6ah4i.android.widget.advrecyclerview.draggable.DraggableItemState
 import com.h6ah4i.android.widget.advrecyclerview.draggable.DraggableItemViewHolder
 import com.h6ah4i.android.widget.advrecyclerview.draggable.ItemDraggableRange
 import com.h6ah4i.android.widget.advrecyclerview.draggable.annotation.DraggableItemStateFlags
@@ -147,6 +148,12 @@ class PlayingQueueAdapter(
         @DraggableItemStateFlags
         override fun getDragStateFlags(): Int {
             return mDragStateFlags
+        }
+
+        override fun getDragState(): DraggableItemState {
+            return DraggableItemState().apply {
+                this.flags = mDragStateFlags
+            }
         }
     }
 

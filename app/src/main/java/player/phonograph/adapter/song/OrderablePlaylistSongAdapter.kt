@@ -5,6 +5,7 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
 import com.h6ah4i.android.widget.advrecyclerview.draggable.DraggableItemAdapter
+import com.h6ah4i.android.widget.advrecyclerview.draggable.DraggableItemState
 import com.h6ah4i.android.widget.advrecyclerview.draggable.DraggableItemViewHolder
 import com.h6ah4i.android.widget.advrecyclerview.draggable.ItemDraggableRange
 import com.h6ah4i.android.widget.advrecyclerview.draggable.annotation.DraggableItemStateFlags
@@ -94,7 +95,6 @@ class OrderablePlaylistSongAdapter(
         PlaylistSongAdapter.ViewHolder(itemView),
         DraggableItemViewHolder {
 
-
         init {
             dragView?.let {
                 if (onMoveItemListener != null) it.visibility = View.VISIBLE
@@ -108,7 +108,6 @@ class OrderablePlaylistSongAdapter(
 
         @DraggableItemStateFlags
         private var mDragStateFlags = 0
-
 
         override fun onSongMenuItemClick(item: MenuItem): Boolean {
             when (item.itemId) {
@@ -129,6 +128,12 @@ class OrderablePlaylistSongAdapter(
         @DraggableItemStateFlags
         override fun getDragStateFlags(): Int {
             return mDragStateFlags
+        }
+
+        override fun getDragState(): DraggableItemState {
+            return DraggableItemState().apply {
+                this.flags = mDragStateFlags
+            }
         }
     }
 }
