@@ -9,6 +9,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.*
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.loader.app.LoaderManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -44,20 +45,28 @@ import player.phonograph.util.ViewUtil
 import java.util.*
 
 class NeoPlaylistDetailActivity : AbsSlidingMusicPanelActivity() {
-    private lateinit var binding: ActivityPlaylistDetailBinding
+    private lateinit var binding: ActivityPlaylistDetailBinding // init in OnCreate()
 
+    // init/bind in OnCreate() -> bindingView()
     private lateinit var recyclerView: RecyclerView
     private lateinit var mToolbar: Toolbar
     private lateinit var empty: TextView
     private lateinit var cabStub: ViewStub
 
-    private lateinit var playlist: Playlist
-//    private lateinit var songs: MutableList<PlaylistSong>
+    private lateinit var playlist: Playlist // init in OnCreate()
 
-    private lateinit var cab: MaterialCab
-    private lateinit var adapter: SongAdapter
-    private lateinit var wrappedAdapter: RecyclerView.Adapter<*>
-    private lateinit var recyclerViewDragDropManager: RecyclerViewDragDropManager
+    private var cab: MaterialCab? = null
+    private lateinit var adapter: SongAdapter // init in OnCreate() -> setUpRecyclerView()
+    private var wrappedAdapter: RecyclerView.Adapter<*>? = null
+    private var recyclerViewDragDropManager: RecyclerViewDragDropManager? = null
+
+    private lateinit var loader: Loader // init in OnCreate()
+
+    /* ********************
+     *
+     *  First Initialization
+     *
+     * ********************/
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -72,14 +81,15 @@ class NeoPlaylistDetailActivity : AbsSlidingMusicPanelActivity() {
         setTaskDescriptionColorAuto()
 
         playlist = intent.extras!!.getParcelable(EXTRA_PLAYLIST)!!
-//        songs = PlaylistSongLoader.getPlaylistSongList(this, playlist.id) as MutableList<PlaylistSong>
 
+        // Init RecyclerView and Adapter
         setUpRecyclerView()
+        loader = Loader(this, playlist, adapter)
+
         setUpToolbar()
 
         LoaderManager.getInstance(this)
-            .initLoader<List<Song>>(LOADER_ID, null, Loader())
-
+            .initLoader(LOADER_ID, null, loader)
     }
     private fun bindingViews() {
         mToolbar = binding.toolbar
@@ -94,11 +104,11 @@ class NeoPlaylistDetailActivity : AbsSlidingMusicPanelActivity() {
 
     private fun setUpRecyclerView() {
         ViewUtil.setUpFastScrollRecyclerViewColor(
-            this,
-            recyclerView as FastScrollRecyclerView, ThemeColor.accentColor(this)
+            this, recyclerView as FastScrollRecyclerView, ThemeColor.accentColor(this)
         )
         recyclerView.layoutManager = LinearLayoutManager(this)
 
+        // Init (song)adapter
         if (playlist is AbsCustomPlaylist) {
             adapter = PlaylistSongAdapter(this, ArrayList(), R.layout.item_list, false, CabCallBack(this))
             recyclerView.adapter = adapter
@@ -122,18 +132,18 @@ class NeoPlaylistDetailActivity : AbsSlidingMusicPanelActivity() {
                                 val songs = adapter.dataSet as MutableList<Song>
                                 val song = songs.removeAt(fromPosition)
                                 songs.add(toPosition, song)
-                                adapter.swapDataSet(songs)
-                                // todo
+                                adapter.swapDataSet(songs) // todo
                             }
                         }
                     }
                 )
 
-            wrappedAdapter = recyclerViewDragDropManager.createWrappedAdapter(adapter)
+            wrappedAdapter = recyclerViewDragDropManager!!.createWrappedAdapter(adapter)
             recyclerView.adapter = wrappedAdapter
             recyclerView.itemAnimator = animator
-            recyclerViewDragDropManager.attachRecyclerView(recyclerView)
+            recyclerViewDragDropManager!!.attachRecyclerView(recyclerView)
         }
+
         adapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
             override fun onChanged() {
                 super.onChanged()
@@ -173,12 +183,22 @@ class NeoPlaylistDetailActivity : AbsSlidingMusicPanelActivity() {
         }
         return handleMenuClick(this, playlist, item)
     }
+
     override fun onBackPressed() {
-        if (cab != null && cab.isActive) cab.finish() else {
-            recyclerView.stopScroll()
-            super.onBackPressed()
+        cab?.let {
+            if (it.isActive) it.finish()
+            else {
+                recyclerView.stopScroll()
+                super.onBackPressed()
+            }
         }
     }
+
+    /* *******************
+     *
+     *    States Changed
+     *
+     * *******************/
 
     override fun onMediaStoreChanged() {
         super.onMediaStoreChanged()
@@ -196,30 +216,33 @@ class NeoPlaylistDetailActivity : AbsSlidingMusicPanelActivity() {
                 setToolbarTitle(playlist.name)
             }
         }
-        LoaderManager.getInstance(this).restartLoader(LOADER_ID, null, Loader()) // todo
+
+        // don't forge this
+        loader.updatePlaylist(playlist)
+
+        LoaderManager.getInstance(this).restartLoader(LOADER_ID, null, loader)
     }
 
     override fun onPause() {
-        if (recyclerViewDragDropManager != null) {
-            recyclerViewDragDropManager.cancelDrag()
-        }
+        recyclerViewDragDropManager?.cancelDrag()
         super.onPause()
     }
 
     override fun onDestroy() {
-        if (recyclerViewDragDropManager != null) {
-            recyclerViewDragDropManager.release()
-//            recyclerViewDragDropManager = null
+        recyclerViewDragDropManager?.let {
+            it.release()
+            recyclerViewDragDropManager = null
         }
-        if (recyclerView != null) {
-            recyclerView.itemAnimator = null
-            recyclerView.adapter = null
+//      if (recyclerView != null) {
+        recyclerView.itemAnimator = null
+        recyclerView.adapter = null
 //            recyclerView = null
+//      }
+        wrappedAdapter?. let {
+            WrapperAdapterUtils.releaseAll(it)
+            wrappedAdapter = null
         }
-        if (wrappedAdapter != null) {
-            WrapperAdapterUtils.releaseAll(wrappedAdapter)
-//            wrappedAdapter = null
-        }
+
 //        adapter = null
         super.onDestroy()
     }
@@ -235,21 +258,28 @@ class NeoPlaylistDetailActivity : AbsSlidingMusicPanelActivity() {
         super.onActivityResult(requestCode, resultCode, data)
     }
 
-    private inner class Loader : LoaderManager.LoaderCallbacks<List<Song>> {
+    private class Loader(private val context: AppCompatActivity, private var playlist: Playlist, private val adapter: SongAdapter) : LoaderManager.LoaderCallbacks<List<Song>> {
         override fun onCreateLoader(
             id: Int,
             args: Bundle?
         ): androidx.loader.content.Loader<List<Song>> {
-            return AsyncPlaylistSongLoader(this@NeoPlaylistDetailActivity, playlist)
+            return AsyncPlaylistSongLoader(context, this.playlist)
         }
 
         override fun onLoadFinished(
             loader: androidx.loader.content.Loader<List<Song>>,
             data: List<Song>
-        ) { adapter?.swapDataSet(data) }
+        ) {
+            this.adapter.swapDataSet(data)
+        }
 
         override fun onLoaderReset(loader: androidx.loader.content.Loader<List<Song>>) {
-            adapter?.swapDataSet(ArrayList())
+            this.adapter.swapDataSet(ArrayList())
+        }
+        fun updatePlaylist(playlist: Playlist) {
+            this.playlist = playlist
+            // todo check whether it is validated or not
+            // I'm not sure this works
         }
     }
     private class AsyncPlaylistSongLoader(context: Context, private val playlist: Playlist) :
@@ -262,17 +292,22 @@ class NeoPlaylistDetailActivity : AbsSlidingMusicPanelActivity() {
             }
         }
     }
+
     private inner class CabCallBack(private val activity: NeoPlaylistDetailActivity) : CabHolder {
         override fun openCab(menuRes: Int, callback: MaterialCab.Callback?): MaterialCab {
-            if (cab != null && cab.isActive) cab.finish()
-            cab = MaterialCab(activity, R.id.cab_stub)
+            // finish existed cab
+            cab?.also { if (it.isActive) it.finish() }
+            // create new
+            return MaterialCab(activity, R.id.cab_stub)
                 .setMenu(menuRes)
                 .setCloseDrawableRes(R.drawable.ic_close_white_24dp)
                 .setBackgroundColor(
                     PhonographColorUtil.shiftBackgroundColorForLightText(ThemeColor.primaryColor(activity))
                 )
                 .start(callback)
-            return cab
+                .apply {
+                    cab = this // also set activity's cab to this}
+                }
         }
     }
 
