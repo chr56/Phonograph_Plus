@@ -6,11 +6,13 @@ package player.phonograph.ui.activities
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.*
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.loader.app.LoaderManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -52,6 +54,7 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity() {
     private lateinit var mToolbar: Toolbar
     private lateinit var empty: TextView
     private lateinit var cabStub: ViewStub
+    private lateinit var header: ConstraintLayout
 
     private lateinit var playlist: Playlist // init in OnCreate()
 
@@ -79,6 +82,7 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity() {
         setStatusbarColorAuto()
         setNavigationbarColorAuto()
         setTaskDescriptionColorAuto()
+        header.background = ColorDrawable(ThemeColor.primaryColor(this))
 
         playlist = intent.extras!!.getParcelable(EXTRA_PLAYLIST)!!
 
@@ -97,6 +101,7 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity() {
         recyclerView = binding.recyclerView
         empty = binding.empty
         cabStub = binding.cabStub
+        header = binding.header
     }
     override fun createContentView(): View {
         return wrapSlidingMusicPanel(binding.root)
