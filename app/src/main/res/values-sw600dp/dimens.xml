@@ -1,4 +1,5 @@
 <resources>
     <dimen name="detail_header_height">176dp</dimen>
     <dimen name="detail_header_image_height">144dp</dimen>
+    <dimen name="detail_header_small_image_height">80dp</dimen>
 </resources>
