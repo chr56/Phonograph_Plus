@@ -40,10 +40,9 @@ import player.phonograph.misc.WrappedAsyncTaskLoader
 import player.phonograph.model.AbsCustomPlaylist
 import player.phonograph.model.Playlist
 import player.phonograph.model.Song
+import player.phonograph.model.smartplaylist.AbsSmartPlaylist
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
-import player.phonograph.util.PhonographColorUtil
-import player.phonograph.util.PlaylistsUtil
-import player.phonograph.util.ViewUtil
+import player.phonograph.util.*
 import java.util.*
 
 class PlaylistDetailActivity : AbsSlidingMusicPanelActivity() {
@@ -55,6 +54,10 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity() {
     private lateinit var empty: TextView
     private lateinit var cabStub: ViewStub
     private lateinit var header: ConstraintLayout
+    private lateinit var nameText: TextView
+    private lateinit var songCountText: TextView
+    private lateinit var durationText: TextView
+    private lateinit var pathText: TextView
 
     private lateinit var playlist: Playlist // init in OnCreate()
 
@@ -91,6 +94,7 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity() {
         loader = Loader(this, playlist, adapter)
 
         setUpToolbar()
+        updateHeader()
 
         LoaderManager.getInstance(this)
             .initLoader(LOADER_ID, null, loader)
@@ -101,7 +105,12 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity() {
         recyclerView = binding.recyclerView
         empty = binding.empty
         cabStub = binding.cabStub
+
         header = binding.header
+        nameText = binding.nameText
+        songCountText = binding.songCountText
+        durationText = binding.durationText
+        pathText = binding.pathText
     }
     override fun createContentView(): View {
         return wrapSlidingMusicPanel(binding.root)
@@ -166,6 +175,16 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity() {
     }
     private fun setToolbarTitle(title: String) {
         supportActionBar!!.title = title
+    }
+
+    private fun updateHeader() {
+        nameText.text = playlist.name
+        songCountText.text = MusicUtil.getSongCountString(this, adapter.dataSet.size)
+        durationText.text = MusicUtil.getReadableDurationString(
+            MusicUtil.getTotalDuration(this, adapter.dataSet)
+        )
+        pathText.text = if (playlist is AbsSmartPlaylist) "-" else
+            MediaStoreUtil.getPlaylistPath(this, playlist)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -263,7 +282,7 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity() {
         super.onActivityResult(requestCode, resultCode, data)
     }
 
-    private class Loader(private val context: AppCompatActivity, private var playlist: Playlist, private val adapter: SongAdapter) : LoaderManager.LoaderCallbacks<List<Song>> {
+    inner class Loader(private val context: AppCompatActivity, private var playlist: Playlist, private val adapter: SongAdapter) : LoaderManager.LoaderCallbacks<List<Song>> {
         override fun onCreateLoader(
             id: Int,
             args: Bundle?
@@ -276,6 +295,7 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity() {
             data: List<Song>
         ) {
             this.adapter.swapDataSet(data)
+            updateHeader()
         }
 
         override fun onLoaderReset(loader: androidx.loader.content.Loader<List<Song>>) {

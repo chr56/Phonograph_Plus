@@ -310,6 +310,27 @@ object MediaStoreUtil {
         return cursor
     }
 
+    fun getPlaylistPath(context: Context, playlist: Playlist): String {
+        val cursor = context.contentResolver.query(
+            MediaStore.Audio.Playlists.EXTERNAL_CONTENT_URI,
+            arrayOf(
+                BaseColumns._ID /* 0 */,
+                PlaylistsColumns.NAME /* 1 */,
+                PlaylistsColumns.DATA /* 2 */
+            ),
+            "${BaseColumns._ID} = ? AND ${PlaylistsColumns.NAME} = ?",
+            arrayOf(playlist.id.toString(), playlist.name),
+            MediaStore.Audio.Playlists.DEFAULT_SORT_ORDER
+        )
+        var path: String = "-"
+        cursor?.let {
+            it.moveToFirst()
+            path = it.getString(2)
+            it.close()
+        }
+        return path
+    }
+
     /**
      * delete playlist by path via MediaStore
      */
