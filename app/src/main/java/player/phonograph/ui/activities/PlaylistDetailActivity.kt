@@ -9,6 +9,7 @@ import android.content.Intent
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.*
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -58,6 +59,7 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity() {
     private lateinit var songCountText: TextView
     private lateinit var durationText: TextView
     private lateinit var pathText: TextView
+    private lateinit var pathIcon: ImageView
 
     private lateinit var playlist: Playlist // init in OnCreate()
 
@@ -111,6 +113,7 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity() {
         songCountText = binding.songCountText
         durationText = binding.durationText
         pathText = binding.pathText
+        pathIcon = binding.pathIcon
     }
     override fun createContentView(): View {
         return wrapSlidingMusicPanel(binding.root)
@@ -183,8 +186,13 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity() {
         durationText.text = MusicUtil.getReadableDurationString(
             MusicUtil.getTotalDuration(this, adapter.dataSet)
         )
-        pathText.text = if (playlist is AbsSmartPlaylist) "-" else
-            MediaStoreUtil.getPlaylistPath(this, playlist)
+
+        if (playlist is AbsSmartPlaylist) {
+            pathText.visibility = View.GONE
+            pathIcon.visibility = View.GONE
+        } else {
+            pathText.text = MediaStoreUtil.getPlaylistPath(this, playlist)
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
