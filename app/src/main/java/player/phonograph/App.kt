@@ -50,7 +50,7 @@ class App : Application() {
         //
         themeRes = PreferenceUtil.getInstance(this).generalTheme
 
-        Updater.checkUpdate(this)
+//        Updater.checkUpdate(this)
     }
     private var themeRes: Int = 0
 

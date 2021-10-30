@@ -21,9 +21,21 @@ import androidx.annotation.Nullable;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.bumptech.glide.Glide;
 import com.google.android.material.navigation.NavigationView;
+import com.sothree.slidinguppanel.SlidingUpPanelLayout;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import chr_56.MDthemer.core.ThemeColor;
+import chr_56.MDthemer.util.NavigationViewUtil;
+import chr_56.MDthemer.util.Util;
 import player.phonograph.R;
+import player.phonograph.Updater;
 import player.phonograph.dialogs.ChangelogDialog;
 import player.phonograph.dialogs.ScanMediaFolderDialog;
 import player.phonograph.glide.SongGlideRequest;
@@ -41,16 +53,6 @@ import player.phonograph.ui.fragments.mainactivity.folders.FoldersFragment;
 import player.phonograph.ui.fragments.mainactivity.library.LibraryFragment;
 import player.phonograph.util.MusicUtil;
 import player.phonograph.util.PreferenceUtil;
-import com.sothree.slidinguppanel.SlidingUpPanelLayout;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import chr_56.MDthemer.core.ThemeColor;
-import chr_56.MDthemer.util.NavigationViewUtil;
-import chr_56.MDthemer.util.Util;
 
 public class MainActivity extends AbsSlidingMusicPanelActivity {
 
@@ -345,6 +347,39 @@ public class MainActivity extends AbsSlidingMusicPanelActivity {
             new Handler().postDelayed(() -> startActivityForResult(new Intent(MainActivity.this, AppIntroActivity.class), APP_INTRO_REQUEST), 50);
         }
 
+        Updater.INSTANCE.checkUpdate();
+        new Handler().postDelayed(
+            ()->{
+                try {
+                    Bundle versionInfo = Updater.INSTANCE.getResult();
+                    int versionCode = versionInfo.getInt(Updater.VersionCode);
+                    String version = versionInfo.getString(Updater.Version);
+                    String log = versionInfo.getString(Updater.LogSummary);
+                    if (versionInfo.getBoolean(Updater.Upgradable)) {
+
+                        new MaterialDialog(this, MaterialDialog.getDEFAULT_BEHAVIOR())
+                                .title(null,"updatable!")
+                                .message(null,"newVersion available:\n"+"version:"+ version +"\nlog:"+log,null)
+                                .positiveButton(android.R.string.ok, null,null)
+                                .neutralButton(R.string.git_hub, null,(MaterialDialog dialog)->{
+                                    Intent i = new Intent(Intent.ACTION_VIEW);
+                                    i.setData(Uri.parse("https://github.com/chr56/Phonograph_Plus/releases"));
+                                    i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                    startActivity(i);
+
+                                    return null;
+                                })
+                                .show();
+                    }
+                } catch (Exception e){
+                    e.printStackTrace();
+                }
+
+            }
+            ,12_000);
+
+
+
     }
 
     private void showChangelog() {
@@ -357,6 +392,7 @@ public class MainActivity extends AbsSlidingMusicPanelActivity {
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }
+
     }
 
     public interface MainActivityFragmentCallbacks {
