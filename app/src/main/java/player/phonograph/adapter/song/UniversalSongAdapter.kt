@@ -32,8 +32,8 @@ import player.phonograph.util.MusicUtil
 import player.phonograph.util.NavigationUtil
 import player.phonograph.util.PreferenceUtil
 
-open class SongAdapter2(val activity: AppCompatActivity, songs: List<Song>, private val mode: Int = MODE_COMMON, cabHolder: CabHolder) :
-    AbsMultiSelectAdapter<SongAdapter2.CommonSongViewHolder, Song>(
+open class UniversalSongAdapter(val activity: AppCompatActivity, songs: List<Song>, private val mode: Int = MODE_COMMON, cabHolder: CabHolder) :
+    AbsMultiSelectAdapter<UniversalSongAdapter.CommonSongViewHolder, Song>(
         activity, cabHolder, R.menu.menu_media_selection
     ),
     SectionedAdapter,
