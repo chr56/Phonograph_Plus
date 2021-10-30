@@ -26,6 +26,7 @@ import player.phonograph.helper.SortOrder
 import player.phonograph.helper.menu.SongMenuHelper
 import player.phonograph.helper.menu.SongsMenuHelper
 import player.phonograph.interfaces.CabHolder
+import player.phonograph.model.Album
 import player.phonograph.model.Playlist
 import player.phonograph.model.Song
 import player.phonograph.util.MusicUtil
@@ -38,6 +39,11 @@ open class UniversalSongAdapter(val activity: AppCompatActivity, songs: List<Son
     ),
     SectionedAdapter,
     MaterialCab.Callback {
+
+    init {
+        setHasStableIds(true)
+    }
+    override fun getItemId(position: Int): Long = songs[position].id
 
     var songs: List<Song> = songs
         get() = field
@@ -52,6 +58,7 @@ open class UniversalSongAdapter(val activity: AppCompatActivity, songs: List<Son
             MODE_NO_COVER, MODE_SEARCH -> R.layout.item_list_no_image
             MODE_PLAYING_QUEUE, MODE_ALBUM -> R.layout.item_list // todo
             MODE_ARTIST, MODE_PLAYLIST_LOCAL, MODE_PLAYLIST_SMART -> R.layout.item_list
+            MODE_GRID -> R.layout.item_grid
             else -> R.layout.item_list_no_image
         }
 
@@ -62,32 +69,16 @@ open class UniversalSongAdapter(val activity: AppCompatActivity, songs: List<Son
         get() = field
         set(value) { field = value }
 
-    private var sectionName: String = "-"
-
-    override fun getSectionName(position: Int): String {
-        when (PreferenceUtil.getInstance(activity).songSortOrder) {
-            SortOrder.SongSortOrder.SONG_A_Z, SortOrder.SongSortOrder.SONG_Z_A ->
-                sectionName = songs[position].title
-            SortOrder.SongSortOrder.SONG_ALBUM ->
-                sectionName = songs[position].albumName
-            SortOrder.SongSortOrder.SONG_ARTIST ->
-                sectionName = songs[position].artistName
-            SortOrder.SongSortOrder.SONG_YEAR ->
-                return MusicUtil.getYearString(songs[position].year)
-        }
-        return MusicUtil.getSectionName(sectionName) // todo
-    }
-
     var linkedPlaylist: Playlist? = null
+        get() = field
+        set(value) { field = value }
+
+    var linkedAlbum: Album? = null
         get() = field
         set(value) { field = value }
 
     override fun getIdentifier(position: Int): Song {
         return songs[position]
-    }
-
-    override fun onMultipleItemAction(menuItem: MenuItem, selection: List<Song>) {
-        SongsMenuHelper.handleMenuClick(activity, selection, menuItem.itemId) // todo
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CommonSongViewHolder {
@@ -149,6 +140,28 @@ open class UniversalSongAdapter(val activity: AppCompatActivity, songs: List<Son
         }
     }
 
+    override fun onMultipleItemAction(menuItem: MenuItem, selection: List<Song>) {
+        SongsMenuHelper.handleMenuClick(activity, selection, menuItem.itemId) // todo
+    }
+
+    override fun getSectionName(position: Int): String =
+        MusicUtil.getSectionName(
+            when (PreferenceUtil.getInstance(activity).songSortOrder) {
+                SortOrder.SongSortOrder.SONG_A_Z, SortOrder.SongSortOrder.SONG_Z_A ->
+                    songs[position].title
+                SortOrder.SongSortOrder.SONG_ALBUM ->
+                    songs[position].albumName
+                SortOrder.SongSortOrder.SONG_ARTIST ->
+                    songs[position].artistName
+                SortOrder.SongSortOrder.SONG_YEAR ->
+                    songs[position].year.let {
+                        if (it> 0) it.toString() else "-"
+                    }
+//                    MusicUtil.getYearString(songs[position].year)
+                else -> "-"
+            }
+        )
+
     open inner class CommonSongViewHolder(itemView: View) : MediaEntryViewHolder(itemView) {
         protected open val song: Song
             get() = songs[bindingAdapterPosition]
@@ -206,10 +219,13 @@ open class UniversalSongAdapter(val activity: AppCompatActivity, songs: List<Son
 
     @Suppress("MemberVisibilityCanBePrivate")
     companion object {
+        const val FEATURE_GRID = 1 shl 8
+
         const val FEATURE_PLAIN = 0
         const val FEATURE_IMAGE = 1
         const val FEATURE_NUMBER = 1 shl 1
         const val FEATURE_WITH_HANDLE = 1 shl 2
+
         const val FEATURE_ORDERABLE = 1 shl 3
         const val FEATURE_DELETABLE = 1 shl 4
 
@@ -222,6 +238,7 @@ open class UniversalSongAdapter(val activity: AppCompatActivity, songs: List<Son
         const val MENU_SHORT_PLAYLIST = R.menu.menu_item_playlist_song_short
         const val MENU_QUEUE = R.menu.menu_item_playing_queue_song
 
+        const val MODE_GRID = FEATURE_GRID // no menu button ,so no ORDERABLE or DELETABLE
         const val MODE_NO_COVER = FEATURE_PLAIN
         const val MODE_COMMON = FEATURE_PLAIN + FEATURE_IMAGE
         const val MODE_ALL_SONGS = FEATURE_PLAIN + FEATURE_IMAGE + FEATURE_HEADER_SHUFFLE
