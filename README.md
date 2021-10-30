@@ -1,25 +1,85 @@
 # Phonograph Modified Version 
-[<img src="https://github.com/chr56/Phonograph/workflows/ci/badge.svg" alt="CI Status">](https://github.com/chr56/Phonograph/actions)
-
-**A third part modified version of Phonograph**
-
-**feature**
-
-//todo 
-
 # Phonograph 修改版
+
+[<img src="https://github.com/chr56/Phonograph/workflows/ci/badge.svg" alt="CI Status">](https://github.com/chr56/Phonograph/actions)
 
 **Phonograph 第三方修改版**
 
-**特性**
+**A third-party modified version of Phonograph**
 
-* 待填
+<br/>
+<br/>
+
+**特性** 
+**feature**
+
+* 解锁 Pro | Unlock pro.
+
+* 自动夜间模式 | Auto adaptive dark mode.
+
+* 更新对话框样式 | Update dialog style.
+
+* 允许标签固定并平铺 | Allow tab fixed.
+
+* 详情对话框内显示Tag信息 | Show tag information in "Detail" Dialog
+
+* 歌词对话框内显示歌词时间轴信息, 并可以通过长按进行快速转跳 | Show Time Axis in "Lyrics" Dialog and allow seeking basing lyric's time axis.
+
+* 适配 Android 11 分区存储 （部分） | Fix Android 11 Scope Storage.(WIP)
+
+* 适当折叠歌曲弹出菜单 | Optimus song item menu.
+
+* 增大“最近播放”和“最喜爱的歌曲(实际是“最常播放”的歌曲)”条目数量(100→150) | Increase history played tracks and top played tracks entries capacity (100->150).
+
+* 新增崩溃报告页面 | Handle crash.
+
+* // todo
+
+* 优化界面 | Optimus UI.
+
+* 以及更多细小特性 | and more small features/fixes.
+
+// todo
 
 **TO-DO list**
 
 - [ ] 完成 Readme . md
 
+- [ ] 万能 Adapter ❗WIP
+
+- [ ] 增强“播放列表详情”(信息展示, 支持搜索, 更好的修改本地列表方式) ❗WIP
+
+- [ ] 打开 .m3u (使用"播放列表详情")
+
+- [ ] 完全适配 Android11+ 的文件访问
+
 - [ ] 检查文件
+
+- [ ]  ...
+
+- [ ] 整理设置页
+
+- [ ] 优化歌曲“详情”
+
+- [ ] 解析歌词中的 "\n"
+
+- [ ] 解析 Tag 中 ‘;’, '&', '/', '\', ','
+
+- [ ] 滚动歌词页面(?)
+
+- [ ] 桌面歌词(?)
+
+- [ ] 使用 AndroidX Room
+
+- [ ] 实现更好的播放频率计数
+
+- [ ] 移除 ButterKnife, 使用 ViewBinding
+
+- [ ] 修改 SlidingMusicBar
+
+- [ ] 增强"搜索"页面
+
+- [ ] ???
 
 <br/>
 <br/>
