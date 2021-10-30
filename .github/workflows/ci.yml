@@ -9,6 +9,7 @@ on:
     paths-ignore:
       - 'README.md'
       - 'version'
+      - 'version.json'
 
 jobs:
   build:
