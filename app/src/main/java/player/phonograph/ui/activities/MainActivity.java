@@ -356,10 +356,11 @@ public class MainActivity extends AbsSlidingMusicPanelActivity {
                     String version = versionInfo.getString(Updater.Version);
                     String log = versionInfo.getString(Updater.LogSummary);
                     if (versionInfo.getBoolean(Updater.Upgradable)) {
-
                         new MaterialDialog(this, MaterialDialog.getDEFAULT_BEHAVIOR())
-                                .title(null,"updatable!")
-                                .message(null,"newVersion available:\n"+"version:"+ version +"\nlog:"+log,null)
+                                .title(R.string.new_version,null)
+                                .message(null,
+                                        getString(R.string.new_version_msg, version, log),
+                                        null)
                                 .positiveButton(android.R.string.ok, null,null)
                                 .neutralButton(R.string.git_hub, null,(MaterialDialog dialog)->{
                                     Intent i = new Intent(Intent.ACTION_VIEW);
