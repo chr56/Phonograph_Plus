@@ -4,13 +4,14 @@
 
 package player.phonograph.adapter.song
 
+import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
-import android.view.LayoutInflater
-import android.view.MenuItem
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.util.Pair
+import chr_56.MDthemer.core.ThemeColor
 import chr_56.MDthemer.util.ColorUtil
 import chr_56.MDthemer.util.MaterialColorHelper
 import com.afollestad.materialcab.MaterialCab
@@ -29,6 +30,7 @@ import player.phonograph.interfaces.CabHolder
 import player.phonograph.model.Album
 import player.phonograph.model.Playlist
 import player.phonograph.model.Song
+import player.phonograph.util.MediaStoreUtil
 import player.phonograph.util.MusicUtil
 import player.phonograph.util.NavigationUtil
 import player.phonograph.util.PreferenceUtil
@@ -39,11 +41,6 @@ open class UniversalSongAdapter(val activity: AppCompatActivity, songs: List<Son
     ),
     SectionedAdapter,
     MaterialCab.Callback {
-
-    init {
-        setHasStableIds(true)
-    }
-    override fun getItemId(position: Int): Long = songs[position].id
 
     var songs: List<Song> = songs
         get() = field
@@ -61,6 +58,19 @@ open class UniversalSongAdapter(val activity: AppCompatActivity, songs: List<Son
             MODE_GRID -> R.layout.item_grid
             else -> R.layout.item_list_no_image
         }
+    val headerLayoutRes: Int
+        get() = when (mode) {
+            MODE_PLAYLIST_LOCAL, MODE_PLAYLIST_SMART -> R.layout.item_header_playlist
+            else -> R.layout.item_list_single_row
+        }
+
+    protected val hasHeader: Boolean
+        get() {
+            return when (mode) {
+                MODE_PLAYLIST_SMART, MODE_PLAYLIST_LOCAL -> true
+                else -> false
+            }
+        }
 
     var usePalette: Boolean = false
         set(value) { field = value }
@@ -77,46 +87,81 @@ open class UniversalSongAdapter(val activity: AppCompatActivity, songs: List<Son
         get() = field
         set(value) { field = value }
 
+    init {
+        setHasStableIds(true)
+    }
+    override fun getItemId(position: Int): Long =
+        if (hasHeader && position == 0) -2 else songs[position - 1].id
+
+    override fun getItemViewType(position: Int): Int = if (hasHeader && position == 0) ITEM_HEADER else ITEM_SONG
+
     override fun getIdentifier(position: Int): Song {
-        return songs[position]
+        return if (hasHeader && position == 0) Song.EMPTY_SONG else songs[position]
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CommonSongViewHolder {
-        return CommonSongViewHolder(
+        return if (viewType == ITEM_SONG) CommonSongViewHolder(
             LayoutInflater.from(activity).inflate(itemLayoutRes, parent, false)
+        ) else /* viewType == ITEM_HEADER */ CommonSongViewHolder(
+            LayoutInflater.from(activity).inflate(headerLayoutRes, parent, false)
         )
     }
 
     override fun onBindViewHolder(holder: CommonSongViewHolder, position: Int) {
-        val song = songs[position]
+        if (holder.itemViewType == ITEM_SONG) {
+            val song = if (hasHeader) songs[position - 1] else songs[position]
 
-        val isChecked = isChecked(song)
-        holder.itemView.isActivated = isChecked
+            val isChecked = isChecked(song)
+            holder.itemView.isActivated = isChecked
 
-        holder.title?.text = song.title
-        holder.text?.text = MusicUtil.getSongInfoString(song)
-        holder.shortSeparator?.visibility = View.VISIBLE
-        holder.image?.also {
-            SongGlideRequest.Builder.from(Glide.with(activity), song)
-                .checkIgnoreMediaStore(activity)
-                .generatePalette(activity).build()
-                .into(object : PhonographColoredTarget(holder.image) {
-                    override fun onLoadCleared(placeholder: Drawable?) {
-                        super.onLoadCleared(placeholder)
-                        setColors(defaultFooterColor, holder)
-                    }
+            holder.title?.text = song.title
+            holder.text?.text = MusicUtil.getSongInfoString(song)
+            holder.shortSeparator?.visibility = View.VISIBLE
+            holder.image?.also {
+                SongGlideRequest.Builder.from(Glide.with(activity), song)
+                    .checkIgnoreMediaStore(activity)
+                    .generatePalette(activity).build()
+                    .into(object : PhonographColoredTarget(holder.image) {
+                        override fun onLoadCleared(placeholder: Drawable?) {
+                            super.onLoadCleared(placeholder)
+                            setColors(defaultFooterColor, holder)
+                        }
 
-                    override fun onColorReady(color: Int) {
-                        if (usePalette) setColors(color, holder) else setColors(
-                            defaultFooterColor, holder
-                        )
-                    }
-                })
+                        override fun onColorReady(color: Int) {
+                            if (usePalette) setColors(color, holder) else setColors(
+                                defaultFooterColor, holder
+                            )
+                        }
+                    })
+            }
+        } else /* holder.itemViewType == ITEM_HEADER */ {
+
+            // todo MODE detect
+            // todo multitask
+            // todo update header
+            val name = holder.itemView.findViewById<TextView>(R.id.name_text)
+            val songCountText = holder.itemView.findViewById<TextView>(R.id.song_count_text)
+            val durationText = holder.itemView.findViewById<TextView>(R.id.duration_text)
+            val path = holder.itemView.findViewById<TextView>(R.id.path_text)
+
+            name.text = linkedPlaylist?.let { it.name } ?: "-"
+            songCountText.text = linkedPlaylist?.let { MusicUtil.getSongCountString(activity, songs.size) } ?: "-"
+            durationText.text = linkedPlaylist?.let {
+                MusicUtil.getReadableDurationString(MusicUtil.getTotalDuration(activity, songs))
+            } ?: "-"
+            path.text = linkedPlaylist?.let {
+                MediaStoreUtil.getPlaylistPath(activity, it)
+            } ?: "-"
+
+            holder.itemView.findViewById<ConstraintLayout>(R.id.header)?.background = ColorDrawable(
+                ThemeColor.primaryColor(activity)
+            )
         }
     }
 
     override fun getItemCount(): Int {
-        return songs.size
+        return songs.size +
+            if (hasHeader) 1 else 0
     }
 
     private fun setColors(color: Int, holder: CommonSongViewHolder) {
@@ -146,25 +191,27 @@ open class UniversalSongAdapter(val activity: AppCompatActivity, songs: List<Son
 
     override fun getSectionName(position: Int): String =
         MusicUtil.getSectionName(
-            when (PreferenceUtil.getInstance(activity).songSortOrder) {
-                SortOrder.SongSortOrder.SONG_A_Z, SortOrder.SongSortOrder.SONG_Z_A ->
-                    songs[position].title
-                SortOrder.SongSortOrder.SONG_ALBUM ->
-                    songs[position].albumName
-                SortOrder.SongSortOrder.SONG_ARTIST ->
-                    songs[position].artistName
-                SortOrder.SongSortOrder.SONG_YEAR ->
-                    songs[position].year.let {
-                        if (it> 0) it.toString() else "-"
-                    }
+            if (hasHeader && position == 0) ""
+            else
+                when (PreferenceUtil.getInstance(activity).songSortOrder) {
+                    SortOrder.SongSortOrder.SONG_A_Z, SortOrder.SongSortOrder.SONG_Z_A ->
+                        songs[position].title
+                    SortOrder.SongSortOrder.SONG_ALBUM ->
+                        songs[position].albumName
+                    SortOrder.SongSortOrder.SONG_ARTIST ->
+                        songs[position].artistName
+                    SortOrder.SongSortOrder.SONG_YEAR ->
+                        songs[position].year.let {
+                            if (it> 0) it.toString() else "-"
+                        }
 //                    MusicUtil.getYearString(songs[position].year)
-                else -> "-"
-            }
+                    else -> "-"
+                }
         )
 
     open inner class CommonSongViewHolder(itemView: View) : MediaEntryViewHolder(itemView) {
         protected open val song: Song
-            get() = songs[bindingAdapterPosition]
+            get() = if (itemViewType == ITEM_HEADER) Song.EMPTY_SONG else songs[bindingAdapterPosition - 1]
 
         protected open val menuRes: Int?
             get() = when (mode) {
@@ -206,14 +253,14 @@ open class UniversalSongAdapter(val activity: AppCompatActivity, songs: List<Son
         }
 
         override fun onClick(v: View) {
-            if (isInQuickSelectMode) {
+            if (isInQuickSelectMode && itemViewType != ITEM_HEADER) {
                 toggleChecked(bindingAdapterPosition)
             } else {
                 MusicPlayerRemote.openQueue(songs, bindingAdapterPosition, true)
             }
         }
         override fun onLongClick(view: View): Boolean {
-            return toggleChecked(bindingAdapterPosition)
+            return if (itemViewType != ITEM_HEADER) toggleChecked(bindingAdapterPosition) else false
         }
     }
 
@@ -249,5 +296,9 @@ open class UniversalSongAdapter(val activity: AppCompatActivity, songs: List<Son
         const val MODE_ARTIST = FEATURE_PLAIN + FEATURE_IMAGE
 
         const val MODE_SEARCH = MODE_NO_COVER
+
+        // header & real songs
+        private const val ITEM_HEADER = 0
+        private const val ITEM_SONG = 1
     }
 }
