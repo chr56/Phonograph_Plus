@@ -41,7 +41,7 @@ object Updater {
                 result?.let {
                     it.putInt(VersionCode, versionJson.versionCode)
                     it.putString(Version, versionJson.version)
-                    it.putString(VersionCode, versionJson.logSummary)
+                    it.putString(LogSummary, versionJson.logSummary)
 
                     if (versionJson.versionCode > BuildConfig.VERSION_CODE) {
                         Log.i(TAG, "updatable!")
