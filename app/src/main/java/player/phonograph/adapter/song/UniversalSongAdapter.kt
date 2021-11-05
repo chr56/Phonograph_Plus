@@ -30,6 +30,7 @@ import player.phonograph.interfaces.CabHolder
 import player.phonograph.model.Album
 import player.phonograph.model.Playlist
 import player.phonograph.model.Song
+import player.phonograph.model.smartplaylist.AbsSmartPlaylist
 import player.phonograph.util.MediaStoreUtil
 import player.phonograph.util.MusicUtil
 import player.phonograph.util.NavigationUtil
@@ -47,6 +48,7 @@ open class UniversalSongAdapter(val activity: AppCompatActivity, songs: List<Son
         set(dataSet: List<Song>) {
             field = dataSet
             notifyDataSetChanged()
+            updateHeader()
         }
 
     val itemLayoutRes: Int
@@ -107,6 +109,11 @@ open class UniversalSongAdapter(val activity: AppCompatActivity, songs: List<Son
         )
     }
 
+    var name: TextView? = null
+    var songCountText: TextView? = null
+    var durationText: TextView? = null
+    var path: TextView? = null
+
     override fun onBindViewHolder(holder: CommonSongViewHolder, position: Int) {
         if (holder.itemViewType == ITEM_SONG) {
             val song = if (hasHeader) songs[position - 1] else songs[position]
@@ -135,28 +142,39 @@ open class UniversalSongAdapter(val activity: AppCompatActivity, songs: List<Son
                     })
             }
         } else /* holder.itemViewType == ITEM_HEADER */ {
-
-            // todo MODE detect
-            // todo multitask
-            // todo update header
-            val name = holder.itemView.findViewById<TextView>(R.id.name_text)
-            val songCountText = holder.itemView.findViewById<TextView>(R.id.song_count_text)
-            val durationText = holder.itemView.findViewById<TextView>(R.id.duration_text)
-            val path = holder.itemView.findViewById<TextView>(R.id.path_text)
-
-            name.text = linkedPlaylist?.let { it.name } ?: "-"
-            songCountText.text = linkedPlaylist?.let { MusicUtil.getSongCountString(activity, songs.size) } ?: "-"
-            durationText.text = linkedPlaylist?.let {
-                MusicUtil.getReadableDurationString(MusicUtil.getTotalDuration(activity, songs))
-            } ?: "-"
-            path.text = linkedPlaylist?.let {
-                MediaStoreUtil.getPlaylistPath(activity, it)
-            } ?: "-"
-
             holder.itemView.findViewById<ConstraintLayout>(R.id.header)?.background = ColorDrawable(
                 ThemeColor.primaryColor(activity)
             )
+
+            // todo MODE detect
+
+            name = holder.itemView.findViewById<TextView>(R.id.name_text)
+                .also { it.text = linkedPlaylist?.name ?: "-" }
+            songCountText = holder.itemView.findViewById<TextView>(R.id.song_count_text)
+                .also {
+                    it.text = linkedPlaylist?.let { MusicUtil.getSongCountString(activity, songs.size) } ?: "-"
+                }
+            durationText = holder.itemView.findViewById<TextView>(R.id.duration_text)
+                .also {
+                    it.text = linkedPlaylist?.let { MusicUtil.getReadableDurationString(MusicUtil.getTotalDuration(activity, songs)) } ?: "-"
+                }
+            path = holder.itemView.findViewById<TextView>(R.id.path_text)
+                .also { it ->
+                    it.text = linkedPlaylist?.let { playlist ->
+                        if (playlist is AbsSmartPlaylist) "-" else
+                            MediaStoreUtil.getPlaylistPath(activity, playlist)
+                    } ?: "-"
+                }
         }
+    }
+    private fun updateHeader() {
+        name?.text = linkedPlaylist?.name ?: "-"
+        songCountText?.text = linkedPlaylist?.let { MusicUtil.getSongCountString(activity, songs.size) } ?: "-"
+        durationText?.text = linkedPlaylist?.let { MusicUtil.getReadableDurationString(MusicUtil.getTotalDuration(activity, songs)) } ?: "-"
+        path?.text = linkedPlaylist?.let { playlist ->
+            if (playlist is AbsSmartPlaylist) "-" else
+                MediaStoreUtil.getPlaylistPath(activity, playlist)
+        } ?: "-"
     }
 
     override fun getItemCount(): Int {
