@@ -53,12 +53,12 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity() {
     private lateinit var mToolbar: Toolbar
     private lateinit var empty: TextView
     private lateinit var cabStub: ViewStub
-    private lateinit var header: ConstraintLayout
-    private lateinit var nameText: TextView
-    private lateinit var songCountText: TextView
-    private lateinit var durationText: TextView
-    private lateinit var pathText: TextView
-    private lateinit var pathIcon: ImageView
+//    private lateinit var header: ConstraintLayout
+//    private lateinit var nameText: TextView
+//    private lateinit var songCountText: TextView
+//    private lateinit var durationText: TextView
+//    private lateinit var pathText: TextView
+//    private lateinit var pathIcon: ImageView
 
     private lateinit var playlist: Playlist // init in OnCreate()
 
@@ -87,7 +87,7 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity() {
         setStatusbarColorAuto()
         setNavigationbarColorAuto()
         setTaskDescriptionColorAuto()
-        header.background = ColorDrawable(ThemeColor.primaryColor(this))
+//        header.background = ColorDrawable(ThemeColor.primaryColor(this))
 
         playlist = intent.extras!!.getParcelable(EXTRA_PLAYLIST)!!
 
@@ -97,7 +97,6 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity() {
         loader = Loader(this, playlist, songAdapter)
 
         setUpToolbar()
-        header.visibility = View.GONE
 //        updateHeader()
 
         LoaderManager.getInstance(this)
@@ -110,12 +109,12 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity() {
         empty = binding.empty
         cabStub = binding.cabStub
 
-        header = binding.header
-        nameText = binding.nameText
-        songCountText = binding.songCountText
-        durationText = binding.durationText
-        pathText = binding.pathText
-        pathIcon = binding.pathIcon
+//        header = binding.header
+//        nameText = binding.nameText
+//        songCountText = binding.songCountText
+//        durationText = binding.durationText
+//        pathText = binding.pathText
+//        pathIcon = binding.pathIcon
     }
     override fun createContentView(): View {
         return wrapSlidingMusicPanel(binding.root)
