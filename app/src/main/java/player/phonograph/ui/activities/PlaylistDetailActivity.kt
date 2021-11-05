@@ -25,10 +25,8 @@ import com.h6ah4i.android.widget.advrecyclerview.draggable.RecyclerViewDragDropM
 import com.h6ah4i.android.widget.advrecyclerview.utils.WrapperAdapterUtils
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView
 import player.phonograph.R
-import player.phonograph.adapter.song.OrderablePlaylistSongAdapter
-import player.phonograph.adapter.song.OrderablePlaylistSongAdapter.OnMoveItemListener
-import player.phonograph.adapter.song.PlaylistSongAdapter
 import player.phonograph.adapter.song.SongAdapter
+import player.phonograph.adapter.song.UniversalSongAdapter
 import player.phonograph.databinding.ActivityPlaylistDetailBinding
 import player.phonograph.helper.MusicPlayerRemote
 import player.phonograph.helper.menu.PlaylistMenuHelper
@@ -45,6 +43,7 @@ import player.phonograph.model.smartplaylist.AbsSmartPlaylist
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
 import player.phonograph.util.*
 import java.util.*
+import kotlin.collections.ArrayList
 
 class PlaylistDetailActivity : AbsSlidingMusicPanelActivity() {
     private lateinit var binding: ActivityPlaylistDetailBinding // init in OnCreate()
@@ -64,7 +63,8 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity() {
     private lateinit var playlist: Playlist // init in OnCreate()
 
     private var cab: MaterialCab? = null
-    private lateinit var adapter: SongAdapter // init in OnCreate() -> setUpRecyclerView()
+//    private lateinit var adapter: SongAdapter // init in OnCreate() -> setUpRecyclerView()
+    private lateinit var songAdapter: UniversalSongAdapter // init in OnCreate() -> setUpRecyclerView()
     private var wrappedAdapter: RecyclerView.Adapter<*>? = null
     private var recyclerViewDragDropManager: RecyclerViewDragDropManager? = null
 
@@ -93,10 +93,12 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity() {
 
         // Init RecyclerView and Adapter
         setUpRecyclerView()
-        loader = Loader(this, playlist, adapter)
+//        loader = Loader(this, playlist, adapter)
+        loader = Loader(this, playlist, songAdapter)
 
         setUpToolbar()
-        updateHeader()
+        header.visibility = View.GONE
+//        updateHeader()
 
         LoaderManager.getInstance(this)
             .initLoader(LOADER_ID, null, loader)
@@ -127,12 +129,15 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity() {
 
         // Init (song)adapter
         if (playlist is AbsCustomPlaylist) {
-            adapter = PlaylistSongAdapter(this, ArrayList(), R.layout.item_list, false, CabCallBack(this))
-            recyclerView.adapter = adapter
+//            adapter = PlaylistSongAdapter(this, ArrayList(), R.layout.item_list, false, CabCallBack(this))
+//            recyclerView.adapter = adapter
+            songAdapter = UniversalSongAdapter(this, ArrayList(), UniversalSongAdapter.MODE_PLAYLIST_SMART, CabCallBack(this))
+            recyclerView.adapter = songAdapter
         } else {
             recyclerViewDragDropManager = RecyclerViewDragDropManager()
             val animator: GeneralItemAnimator = RefactoredDefaultItemAnimator()
 
+            /*
             adapter =
                 OrderablePlaylistSongAdapter( // todo cab holder
                     this, ArrayList(), R.layout.item_list, false, CabCallBack(this),
@@ -154,21 +159,38 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity() {
                         }
                     }
                 )
+              */
 
-            wrappedAdapter = recyclerViewDragDropManager!!.createWrappedAdapter(adapter)
+//            wrappedAdapter = recyclerViewDragDropManager!!.createWrappedAdapter(adapter)
+//            recyclerView.adapter = wrappedAdapter
+//            recyclerView.itemAnimator = animator
+//            recyclerViewDragDropManager!!.attachRecyclerView(recyclerView)
+
+            songAdapter = UniversalSongAdapter(this, ArrayList(), UniversalSongAdapter.MODE_PLAYLIST_LOCAL, CabCallBack(this))
+            wrappedAdapter = recyclerViewDragDropManager!!.createWrappedAdapter(songAdapter)
             recyclerView.adapter = wrappedAdapter
             recyclerView.itemAnimator = animator
             recyclerViewDragDropManager!!.attachRecyclerView(recyclerView)
         }
 
-        adapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
+//        adapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
+//            override fun onChanged() {
+//                super.onChanged()
+//                checkIsEmpty()
+//            }
+//        })
+        songAdapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
             override fun onChanged() {
                 super.onChanged()
                 checkIsEmpty()
             }
         })
     }
-    private fun checkIsEmpty() { empty.visibility = if (adapter.itemCount == 0) View.VISIBLE else View.GONE }
+    private fun checkIsEmpty() {
+        empty.visibility =
+//        if (adapter.itemCount == 0) View.VISIBLE else View.GONE 
+            if (songAdapter.itemCount == 0) View.VISIBLE else View.GONE
+    }
 
     private fun setUpToolbar() {
         mToolbar.setBackgroundColor(ThemeColor.primaryColor(this))
@@ -179,7 +201,7 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity() {
     private fun setToolbarTitle(title: String) {
         supportActionBar!!.title = title
     }
-
+/*
     private fun updateHeader() {
         nameText.text = playlist.name
         songCountText.text = MusicUtil.getSongCountString(this, adapter.dataSet.size)
@@ -194,6 +216,7 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity() {
             pathText.text = MediaStoreUtil.getPlaylistPath(this, playlist)
         }
     }
+ */
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(
@@ -205,7 +228,8 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.action_shuffle_playlist -> {
-                MusicPlayerRemote.openAndShuffleQueue(adapter.dataSet, true)
+//                MusicPlayerRemote.openAndShuffleQueue(adapter.dataSet, true)
+                MusicPlayerRemote.openAndShuffleQueue(songAdapter.songs, true)
                 return true
             }
             android.R.id.home -> {
@@ -290,7 +314,7 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity() {
         super.onActivityResult(requestCode, resultCode, data)
     }
 
-    inner class Loader(private val context: AppCompatActivity, private var playlist: Playlist, private val adapter: SongAdapter) : LoaderManager.LoaderCallbacks<List<Song>> {
+    inner class Loader(private val context: AppCompatActivity, private var playlist: Playlist, private val adapter: UniversalSongAdapter) : LoaderManager.LoaderCallbacks<List<Song>> {
         override fun onCreateLoader(
             id: Int,
             args: Bundle?
@@ -302,12 +326,15 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity() {
             loader: androidx.loader.content.Loader<List<Song>>,
             data: List<Song>
         ) {
-            this.adapter.swapDataSet(data)
-            updateHeader()
+//            this.adapter.swapDataSet(data)
+//            updateHeader()
+            this.adapter.linkedPlaylist = playlist
+            this.adapter.songs = data
         }
 
         override fun onLoaderReset(loader: androidx.loader.content.Loader<List<Song>>) {
-            this.adapter.swapDataSet(ArrayList())
+//            this.adapter.swapDataSet(ArrayList())
+            this.adapter.songs = ArrayList()
         }
         fun updatePlaylist(playlist: Playlist) {
             this.playlist = playlist
