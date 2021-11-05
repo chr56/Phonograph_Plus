@@ -228,8 +228,13 @@ open class UniversalSongAdapter(val activity: AppCompatActivity, songs: List<Son
         )
 
     open inner class CommonSongViewHolder(itemView: View) : MediaEntryViewHolder(itemView) {
+        // real position if header exists
+        protected open val songPosition: Int
+            get() = if (!hasHeader) bindingAdapterPosition
+            else bindingAdapterPosition - 1
+
         protected open val song: Song
-            get() = if (itemViewType == ITEM_HEADER) Song.EMPTY_SONG else songs[bindingAdapterPosition - 1]
+            get() = if (itemViewType == ITEM_HEADER) Song.EMPTY_SONG else songs[songPosition]
 
         protected open val menuRes: Int?
             get() = when (mode) {
@@ -271,14 +276,15 @@ open class UniversalSongAdapter(val activity: AppCompatActivity, songs: List<Son
         }
 
         override fun onClick(v: View) {
-            if (isInQuickSelectMode && itemViewType != ITEM_HEADER) {
-                toggleChecked(bindingAdapterPosition)
+            if (itemViewType == ITEM_HEADER) return
+            if (isInQuickSelectMode) {
+                toggleChecked(songPosition)
             } else {
-                MusicPlayerRemote.openQueue(songs, bindingAdapterPosition, true)
+                MusicPlayerRemote.openQueue(songs, songPosition, true)
             }
         }
         override fun onLongClick(view: View): Boolean {
-            return if (itemViewType != ITEM_HEADER) toggleChecked(bindingAdapterPosition) else false
+            return if (itemViewType != ITEM_HEADER) toggleChecked(songPosition) else false
         }
     }
 
