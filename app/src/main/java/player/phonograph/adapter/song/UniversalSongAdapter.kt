@@ -242,7 +242,7 @@ open class UniversalSongAdapter(val activity: AppCompatActivity, songs: List<Son
             get() = when (mode) {
                 MODE_COMMON, MODE_ALL_SONGS, MODE_NO_COVER, MODE_SEARCH -> MENU_LONG
                 MODE_ARTIST, MODE_ALBUM -> MENU_SHORT
-                MODE_PLAYLIST_LOCAL, MODE_PLAYLIST_SMART -> MENU_SHORT_PLAYLIST
+                MODE_PLAYLIST_LOCAL, MODE_PLAYLIST_SMART -> MENU_SHORT
                 MODE_PLAYING_QUEUE -> MENU_QUEUE
                 else -> R.menu.menu_item_song
             }
