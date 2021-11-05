@@ -26,6 +26,10 @@
         android:title="@string/action_add_to_playlist"
         app:showAsAction="never"/>
     <item
+        android:id="@+id/action_edit_playlist"
+        android:title="@string/edit"
+        app:showAsAction="never"/>
+    <item
         android:id="@+id/action_rename_playlist"
         android:title="@string/action_rename"
         app:showAsAction="never" />

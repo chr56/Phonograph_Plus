@@ -339,6 +339,7 @@
     <string name="not_available_now">not available now</string>
     <string name="new_version">New Version!</string>
     <string name="new_version_msg">New Version available:\n version: %1$s \n changelog: %2$s</string>
+    <string name="edit">Edit…</string>
     <plurals name="msg_deletion_result">
         <item quantity="one">%1$d / %2$d item was successfully deleted.</item>>
         <item quantity="other">%1$d / %2$d items were successfully deleted.</item>

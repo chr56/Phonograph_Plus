@@ -6,14 +6,12 @@ package player.phonograph.ui.activities
 
 import android.content.Context
 import android.content.Intent
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.*
-import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.loader.app.LoaderManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -25,7 +23,6 @@ import com.h6ah4i.android.widget.advrecyclerview.draggable.RecyclerViewDragDropM
 import com.h6ah4i.android.widget.advrecyclerview.utils.WrapperAdapterUtils
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView
 import player.phonograph.R
-import player.phonograph.adapter.song.SongAdapter
 import player.phonograph.adapter.song.UniversalSongAdapter
 import player.phonograph.databinding.ActivityPlaylistDetailBinding
 import player.phonograph.helper.MusicPlayerRemote
@@ -39,7 +36,6 @@ import player.phonograph.misc.WrappedAsyncTaskLoader
 import player.phonograph.model.AbsCustomPlaylist
 import player.phonograph.model.Playlist
 import player.phonograph.model.Song
-import player.phonograph.model.smartplaylist.AbsSmartPlaylist
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
 import player.phonograph.util.*
 import java.util.*
@@ -229,6 +225,11 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity() {
             R.id.action_shuffle_playlist -> {
 //                MusicPlayerRemote.openAndShuffleQueue(adapter.dataSet, true)
                 MusicPlayerRemote.openAndShuffleQueue(songAdapter.songs, true)
+                return true
+            }
+            R.id.action_edit_playlist -> {
+                // todo
+                Toast.makeText(this, "Not available now!", Toast.LENGTH_SHORT).show()
                 return true
             }
             android.R.id.home -> {
