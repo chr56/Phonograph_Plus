@@ -3,11 +3,11 @@ package player.phonograph.adapter.base
 import android.content.Context
 import android.view.Menu
 import android.view.MenuItem
-import player.phonograph.interfaces.CabHolder
 import androidx.annotation.MenuRes
 import androidx.recyclerview.widget.RecyclerView
 import com.afollestad.materialcab.MaterialCab
 import player.phonograph.R
+import player.phonograph.interfaces.CabHolder
 import java.util.ArrayList
 
 /**
@@ -16,13 +16,11 @@ import java.util.ArrayList
 abstract class AbsMultiSelectAdapter<VH : RecyclerView.ViewHolder, I>(
     private val context: Context,
     private val cabHolder: CabHolder?,
-    @MenuRes var  menuRes: Int
+    @MenuRes var menuRes: Int
 ) : RecyclerView.Adapter<VH>(), MaterialCab.Callback {
-
 
     private var cab: MaterialCab? = null
     private var checked: MutableList<I> = ArrayList()
-
 
     protected fun setMultiSelectMenuRes(@MenuRes menuRes: Int) {
         this.menuRes = menuRes
@@ -33,6 +31,19 @@ abstract class AbsMultiSelectAdapter<VH : RecyclerView.ViewHolder, I>(
             val identifier = getIdentifier(position) ?: return false
             if (!checked.remove(identifier)) checked.add(identifier)
             notifyItemChanged(position)
+            updateCab()
+            return true
+        }
+        return false
+    }
+
+    // todo: split realPosition and displayPosition
+    // like this:
+    protected fun toggleChecked(realPosition: Int, displayPosition: Int): Boolean {
+        if (cabHolder != null) {
+            val identifier = getIdentifier(realPosition) ?: return false
+            if (!checked.remove(identifier)) checked.add(identifier)
+            notifyItemChanged(displayPosition)
             updateCab()
             return true
         }
@@ -104,6 +115,4 @@ abstract class AbsMultiSelectAdapter<VH : RecyclerView.ViewHolder, I>(
 
     protected abstract fun getIdentifier(position: Int): I
     protected abstract fun onMultipleItemAction(menuItem: MenuItem, selection: List<I>)
-
-
 }

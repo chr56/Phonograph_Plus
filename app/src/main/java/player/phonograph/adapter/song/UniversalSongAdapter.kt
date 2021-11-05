@@ -93,12 +93,14 @@ open class UniversalSongAdapter(val activity: AppCompatActivity, songs: List<Son
         setHasStableIds(true)
     }
     override fun getItemId(position: Int): Long =
-        if (hasHeader && position == 0) -2 else songs[position - 1].id
+        if (!hasHeader) songs[position].id else if (position <= 0) -2 else songs[position - 1].id
 
     override fun getItemViewType(position: Int): Int = if (hasHeader && position == 0) ITEM_HEADER else ITEM_SONG
 
     override fun getIdentifier(position: Int): Song {
-        return if (hasHeader && position == 0) Song.EMPTY_SONG else songs[position]
+//        return if (hasHeader && position == 0) Song.EMPTY_SONG else songs[position]
+//        return if (!hasHeader) songs[position] else if (position <= 0) Song.EMPTY_SONG else songs[position - 1]
+        return songs[position] // fix in AbsMultiSelectAdapter
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CommonSongViewHolder {
@@ -207,7 +209,7 @@ open class UniversalSongAdapter(val activity: AppCompatActivity, songs: List<Son
         SongsMenuHelper.handleMenuClick(activity, selection, menuItem.itemId) // todo
     }
 
-    override fun getSectionName(position: Int): String =
+    override fun getSectionName(position: Int): String = // todo fix offset
         MusicUtil.getSectionName(
             if (hasHeader && position == 0) ""
             else
@@ -278,13 +280,13 @@ open class UniversalSongAdapter(val activity: AppCompatActivity, songs: List<Son
         override fun onClick(v: View) {
             if (itemViewType == ITEM_HEADER) return
             if (isInQuickSelectMode) {
-                toggleChecked(songPosition)
+                toggleChecked(songPosition, bindingAdapterPosition)
             } else {
                 MusicPlayerRemote.openQueue(songs, songPosition, true)
             }
         }
         override fun onLongClick(view: View): Boolean {
-            return if (itemViewType != ITEM_HEADER) toggleChecked(songPosition) else false
+            return if (itemViewType != ITEM_HEADER) toggleChecked(songPosition, bindingAdapterPosition) else false
         }
     }
 
