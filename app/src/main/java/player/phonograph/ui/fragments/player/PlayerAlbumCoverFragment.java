@@ -270,7 +270,7 @@ public class PlayerAlbumCoverFragment extends AbsMusicServiceFragment implements
             lyricsLine2.animate().alpha(1f).translationY(0f).setDuration(PlayerAlbumCoverFragment.VISIBILITY_ANIM_DURATION);
         }
         // for "MIUI StatusBar Lyrics" Xposed module
-        App.getInstance().sendBroadcast(new Intent()
+        if (MusicPlayerRemote.isPlaying()) App.getInstance().sendBroadcast(new Intent()
                         .setAction("Lyric_Server")
                         .putExtra("Lyric_Data", line)
                         .putExtra("Lyric_Type", "app")
