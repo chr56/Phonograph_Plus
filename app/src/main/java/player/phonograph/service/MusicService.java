@@ -849,6 +849,13 @@ public class MusicService extends Service implements SharedPreferences.OnSharedP
             playback.pause();
             notifyChange(PLAY_STATE_CHANGED);
         }
+
+        // for "MIUI StatusBar Lyrics" Xposed module
+        sendBroadcast(new Intent()
+                .setAction("Lyric_Server")
+                .putExtra("Lyric_Type", "app_stop")
+        );
+
     }
 
     public void play() {

@@ -1,6 +1,7 @@
 package player.phonograph.ui.fragments.player;
 
 import android.animation.Animator;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
@@ -16,6 +17,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.viewpager.widget.ViewPager;
 
+import player.phonograph.App;
 import player.phonograph.R;
 import player.phonograph.adapter.AlbumCoverPagerAdapter;
 import player.phonograph.helper.MusicPlayerRemote;
@@ -267,6 +269,15 @@ public class PlayerAlbumCoverFragment extends AbsMusicServiceFragment implements
             lyricsLine2.setTranslationY(h);
             lyricsLine2.animate().alpha(1f).translationY(0f).setDuration(PlayerAlbumCoverFragment.VISIBILITY_ANIM_DURATION);
         }
+        // for "MIUI StatusBar Lyrics" Xposed module
+        App.getInstance().sendBroadcast(new Intent()
+                        .setAction("Lyric_Server")
+                        .putExtra("Lyric_Data", line)
+                        .putExtra("Lyric_Type", "app")
+                        .putExtra("Lyric_PackName", App.PACKAGE_NAME)
+//                        .putExtra("Lyric_Icon", getResources().getString(R.string.icon_base64))
+
+        );
     }
 
     public interface Callbacks {
