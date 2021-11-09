@@ -73,6 +73,7 @@ class App : Application() {
             private set
 
         const val PACKAGE_NAME = "player.phonograph" // todo
+        const val ACTUAL_PACKAGE_NAME = BuildConfig.APPLICATION_ID
         const val KEY_STACK_TRACE = "stack_trace"
     }
 }

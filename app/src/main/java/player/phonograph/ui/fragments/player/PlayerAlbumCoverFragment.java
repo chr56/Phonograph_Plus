@@ -274,7 +274,7 @@ public class PlayerAlbumCoverFragment extends AbsMusicServiceFragment implements
                         .setAction("Lyric_Server")
                         .putExtra("Lyric_Data", line)
                         .putExtra("Lyric_Type", "app")
-                        .putExtra("Lyric_PackName", App.PACKAGE_NAME)
+                        .putExtra("Lyric_PackName", App.ACTUAL_PACKAGE_NAME)
                         .putExtra("Lyric_Icon", getResources().getString(R.string.icon_base64))
 
         );
