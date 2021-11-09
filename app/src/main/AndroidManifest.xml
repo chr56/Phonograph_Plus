@@ -130,10 +130,10 @@
             android:process="player.phonograph.crash"
             android:launchMode="singleInstance"
             android:exported="true">
-            <intent-filter>
-                <action android:name="player.phonograph.CRASH_HANDLER"/>
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
+<!--            <intent-filter>-->
+<!--                <action android:name="player.phonograph.CRASH_HANDLER"/>-->
+<!--                <category android:name="android.intent.category.DEFAULT" />-->
+<!--            </intent-filter>-->
         </activity>
         <service
             android:name=".service.MusicService"

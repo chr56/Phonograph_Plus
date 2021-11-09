@@ -8,6 +8,7 @@ import android.os.Process
 import android.util.Log
 import chr_56.MDthemer.core.ThemeColor
 import player.phonograph.appshortcuts.DynamicShortcutManager
+import player.phonograph.ui.activities.CrashActivity
 import player.phonograph.util.PreferenceUtil
 import kotlin.system.exitProcess
 
@@ -23,10 +24,10 @@ class App : Application() {
 
         // Exception Handler
         Thread.setDefaultUncaughtExceptionHandler { _, exception ->
-            val intent: Intent = Intent()
+            val intent: Intent = Intent(this, CrashActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK  or Intent.FLAG_ACTIVITY_CLEAR_TASK
             intent.putExtra(KEY_STACK_TRACE, Log.getStackTraceString(exception))
-            intent.action = "$PACKAGE_NAME.CRASH_HANDLER"
+//            intent.action = "$PACKAGE_NAME.CRASH_HANDLER"
 
             this.startActivity(intent)
 
