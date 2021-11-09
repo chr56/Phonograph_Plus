@@ -7,12 +7,15 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.Toolbar
 import chr_56.MDthemer.core.ThemeColor
+import com.afollestad.materialdialogs.MaterialDialog
+import com.afollestad.materialdialogs.list.listItemsSingleChoice
 import de.psdev.licensesdialog.LicensesDialog
 import player.phonograph.App.Companion.instance
 import player.phonograph.R
@@ -29,6 +32,7 @@ class AboutActivity : ThemeActivity(), View.OnClickListener {
     private lateinit var binding: ActivityAboutBinding
 
     private lateinit var mToolbar: Toolbar
+    private lateinit var appIcon: ImageView
     private lateinit var appVersion: TextView
     private lateinit var changelog: LinearLayout
     private lateinit var intro: LinearLayout
@@ -68,6 +72,7 @@ class AboutActivity : ThemeActivity(), View.OnClickListener {
     }
 
     private fun binding() {
+        appIcon = binding.activityAboutMainContent.cardAboutAppLayout.phonographIcon
         appVersion = binding.activityAboutMainContent.cardAboutAppLayout.appVersion
         changelog = binding.activityAboutMainContent.cardAboutAppLayout.changelog
         licenses = binding.activityAboutMainContent.cardAboutAppLayout.licenses
@@ -124,6 +129,20 @@ class AboutActivity : ThemeActivity(), View.OnClickListener {
     }
 
     private fun setUpOnClickListeners() {
+        val debugMenuItem = listOf<String>("Crash the app")
+        appIcon.setOnLongClickListener {
+            MaterialDialog(this)
+                .title(text = "Debug Menu")
+                .listItemsSingleChoice(items = debugMenuItem) { dialog: MaterialDialog, index: Int, text: CharSequence ->
+                    when (index) {
+                        0 -> throw Exception("Crash Test")
+                        else -> dialog.dismiss()
+                    }
+                }
+                .show()
+            return@setOnLongClickListener true
+        } // debug Menu
+
         changelog.setOnClickListener(this)
         intro.setOnClickListener(this)
         licenses.setOnClickListener(this)
