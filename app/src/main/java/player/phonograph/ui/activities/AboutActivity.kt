@@ -21,6 +21,7 @@ import player.phonograph.App.Companion.instance
 import player.phonograph.R
 import player.phonograph.databinding.ActivityAboutBinding
 import player.phonograph.dialogs.ChangelogDialog
+import player.phonograph.dialogs.UpgradeDialog
 import player.phonograph.ui.activities.base.ThemeActivity
 import player.phonograph.ui.activities.bugreport.BugReportActivity
 import player.phonograph.ui.activities.intro.AppIntroActivity
@@ -129,13 +130,16 @@ class AboutActivity : ThemeActivity(), View.OnClickListener {
     }
 
     private fun setUpOnClickListeners() {
-        val debugMenuItem = listOf<String>("Crash the app")
+        val debugMenuItem = listOf<String>("Crash the app", "Test Upgrade Dialog")
         appIcon.setOnLongClickListener {
             MaterialDialog(this)
                 .title(text = "Debug Menu")
                 .listItemsSingleChoice(items = debugMenuItem) { dialog: MaterialDialog, index: Int, text: CharSequence ->
                     when (index) {
                         0 -> throw Exception("Crash Test")
+                        1 -> {
+                            UpgradeDialog().show(supportFragmentManager, "DebugDialog")
+                        }
                         else -> dialog.dismiss()
                     }
                 }

@@ -38,6 +38,7 @@ import player.phonograph.R;
 import player.phonograph.Updater;
 import player.phonograph.dialogs.ChangelogDialog;
 import player.phonograph.dialogs.ScanMediaFolderDialog;
+import player.phonograph.dialogs.UpgradeDialog;
 import player.phonograph.glide.SongGlideRequest;
 import player.phonograph.helper.MusicPlayerRemote;
 import player.phonograph.helper.SearchQueryHelper;
@@ -352,25 +353,9 @@ public class MainActivity extends AbsSlidingMusicPanelActivity {
             ()->{
                 try {
                     Bundle versionInfo = Updater.INSTANCE.getResult();
-                    int versionCode = versionInfo.getInt(Updater.VersionCode);
-                    String version = versionInfo.getString(Updater.Version);
-                    String log = versionInfo.getString(Updater.LogSummary);
-                    if (versionInfo.getBoolean(Updater.Upgradable)) {
-                        new MaterialDialog(this, MaterialDialog.getDEFAULT_BEHAVIOR())
-                                .title(R.string.new_version,null)
-                                .message(null,
-                                        getString(R.string.new_version_msg, version, log),
-                                        null)
-                                .positiveButton(android.R.string.ok, null,null)
-                                .neutralButton(R.string.git_hub, null,(MaterialDialog dialog)->{
-                                    Intent i = new Intent(Intent.ACTION_VIEW);
-                                    i.setData(Uri.parse("https://github.com/chr56/Phonograph_Plus/releases"));
-                                    i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                    startActivity(i);
-
-                                    return null;
-                                })
-                                .show();
+                    if (versionInfo != null && versionInfo.getBoolean(Updater.Upgradable)) {
+                        UpgradeDialog dialog = new UpgradeDialog();
+                        dialog.show(getSupportFragmentManager(), "MainActivity");
                     }
                 } catch (Exception e){
                     e.printStackTrace();
