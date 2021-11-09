@@ -268,16 +268,18 @@ public class PlayerAlbumCoverFragment extends AbsMusicServiceFragment implements
             lyricsLine2.setAlpha(0f);
             lyricsLine2.setTranslationY(h);
             lyricsLine2.animate().alpha(1f).translationY(0f).setDuration(PlayerAlbumCoverFragment.VISIBILITY_ANIM_DURATION);
-        }
-        // for "MIUI StatusBar Lyrics" Xposed module
-        if (MusicPlayerRemote.isPlaying()) App.getInstance().sendBroadcast(new Intent()
-                        .setAction("Lyric_Server")
-                        .putExtra("Lyric_Data", line)
-                        .putExtra("Lyric_Type", "app")
-                        .putExtra("Lyric_PackName", App.ACTUAL_PACKAGE_NAME)
-                        .putExtra("Lyric_Icon", getResources().getString(R.string.icon_base64))
 
-        );
+            // for "MIUI StatusBar Lyrics" Xposed module
+            if (MusicPlayerRemote.isPlaying()) App.getInstance().sendBroadcast(new Intent()
+                    .setAction("Lyric_Server")
+                    .putExtra("Lyric_Data", line)
+                    .putExtra("Lyric_Type", "app")
+                    .putExtra("Lyric_PackName", App.ACTUAL_PACKAGE_NAME)
+                    .putExtra("Lyric_Icon", getResources().getString(R.string.icon_base64))
+
+            );
+//            Log.i("LYRICS", line);
+        }
     }
 
     public interface Callbacks {
