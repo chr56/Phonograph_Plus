@@ -33,8 +33,6 @@
 
 * 新增崩溃报告页面 | Handle crash.
 
-* 适配"<a href="https://github.com/xiaowine/miui.statusbar.lyric">MIUI状态栏歌词</a>"Xposed模块(播放图标暂无)
-
 * // todo
 
 * 优化界面 | Optimus UI.
