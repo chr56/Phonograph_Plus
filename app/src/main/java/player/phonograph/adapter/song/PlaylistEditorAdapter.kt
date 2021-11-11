@@ -67,7 +67,7 @@ class PlaylistEditorAdapter(
     }
 
     override fun onCheckCanStartDrag(holder: ViewHolder, position: Int, x: Int, y: Int): Boolean =
-        position > 0 &&
+        position >= 0 &&
             (ViewUtil.hitTest(holder.dragView, x, y) || ViewUtil.hitTest(holder.image, x, y))
 
     override fun onGetItemDraggableRange(holder: ViewHolder, position: Int): ItemDraggableRange = ItemDraggableRange(0, songs.size -1)
@@ -75,12 +75,12 @@ class PlaylistEditorAdapter(
     override fun onMoveItem(fromPosition: Int, toPosition: Int) {
         if (fromPosition != toPosition) {
 //            onMoveItemListener.onMoveItem(fromPosition - 1, toPosition - 1)
-            if (PlaylistsUtil.moveItem(activity, playlist.id, fromPosition - 1, toPosition - 1)
+            if (PlaylistsUtil.moveItem(activity, playlist.id, fromPosition, toPosition)
             ) {
                 // update dataset(playlistSongs)
                 val newSongs = playlistSongs
-                val song = newSongs.removeAt(fromPosition - 1)
-                newSongs.add(toPosition - 1, song)
+                val song = newSongs.removeAt(fromPosition)
+                newSongs.add(toPosition, song)
                 playlistSongs = newSongs
                 songs = newSongs
             }
@@ -90,14 +90,14 @@ class PlaylistEditorAdapter(
     override fun onCheckCanDrop(draggingPosition: Int, dropPosition: Int): Boolean = (dropPosition > 0)
 
     override fun onItemDragStarted(position: Int) {
-        notifyItemRangeChanged(position - 1, position + 1)
+        notifyItemRangeChanged(position - 2, position + 2)
     }
 
     override fun onItemDragFinished(fromPosition: Int, toPosition: Int, result: Boolean) {
         if (result) {
             notifyItemMoved(fromPosition, toPosition)
         } else {
-            notifyItemRangeChanged(fromPosition - 1, fromPosition + 1)
+            notifyItemRangeChanged(fromPosition - 2, fromPosition + 2)
         }
     }
 
