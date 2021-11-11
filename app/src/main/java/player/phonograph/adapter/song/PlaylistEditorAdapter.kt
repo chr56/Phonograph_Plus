@@ -30,7 +30,7 @@ class PlaylistEditorAdapter(
     var playlist: Playlist,
     cabHolder: CabHolder,
 //    private val onMoveItemListener: OnMoveItemListener
-) : UniversalSongAdapter(activity, emptyList(), MODE_PLAYLIST_LOCAL, cabHolder),
+) : UniversalSongAdapter(activity, emptyList(), MODE_COMMON, cabHolder),
     DraggableItemAdapter<PlaylistEditorAdapter.ViewHolder> {
 
     var playlistSongs: MutableList<PlaylistSong>
@@ -38,6 +38,8 @@ class PlaylistEditorAdapter(
     init {
         setMultiSelectMenuRes(R.menu.menu_playlist_editor_selection)
         playlistSongs = PlaylistSongLoader.getPlaylistSongList(activity, playlist.id)
+        linkedPlaylist = playlist
+        songs = playlistSongs
     }
     override fun onMultipleItemAction(menuItem: MenuItem, selection: List<Song>) { // todo
         when (menuItem.itemId) {
@@ -61,33 +63,43 @@ class PlaylistEditorAdapter(
     }
 
     override fun getItemId(position: Int): Long {
-        return if (position <= 0) -2 else playlistSongs[position - 1].idInPlayList
+        return if (position <= 0) -2 else playlistSongs[position - 1].idInPlayList // todo
     }
 
     override fun onCheckCanStartDrag(holder: ViewHolder, position: Int, x: Int, y: Int): Boolean =
         position > 0 &&
             (ViewUtil.hitTest(holder.dragView, x, y) || ViewUtil.hitTest(holder.image, x, y))
 
-    override fun onGetItemDraggableRange(holder: ViewHolder, position: Int): ItemDraggableRange = ItemDraggableRange(1, songs.size)
+    override fun onGetItemDraggableRange(holder: ViewHolder, position: Int): ItemDraggableRange = ItemDraggableRange(0, songs.size -1)
 
     override fun onMoveItem(fromPosition: Int, toPosition: Int) {
         if (fromPosition != toPosition) {
 //            onMoveItemListener.onMoveItem(fromPosition - 1, toPosition - 1)
             if (PlaylistsUtil.moveItem(activity, playlist.id, fromPosition - 1, toPosition - 1)
             ) {
-                val songs = playlistSongs
-                val song = songs.removeAt(fromPosition - 1)
-                songs.add(toPosition - 1, song)
-                playlistSongs = songs
+                // update dataset(playlistSongs)
+                val newSongs = playlistSongs
+                val song = newSongs.removeAt(fromPosition - 1)
+                newSongs.add(toPosition - 1, song)
+                playlistSongs = newSongs
+                songs = newSongs
             }
         }
     }
 
     override fun onCheckCanDrop(draggingPosition: Int, dropPosition: Int): Boolean = (dropPosition > 0)
 
-    override fun onItemDragStarted(position: Int) { notifyDataSetChanged() }
+    override fun onItemDragStarted(position: Int) {
+        notifyItemRangeChanged(position - 1, position + 1)
+    }
 
-    override fun onItemDragFinished(fromPosition: Int, toPosition: Int, result: Boolean) { notifyDataSetChanged() }
+    override fun onItemDragFinished(fromPosition: Int, toPosition: Int, result: Boolean) {
+        if (result) {
+            notifyItemMoved(fromPosition, toPosition)
+        } else {
+            notifyItemRangeChanged(fromPosition - 1, fromPosition + 1)
+        }
+    }
 
 //    interface OnMoveItemListener {
 //        fun onMoveItem(fromPosition: Int, toPosition: Int)
@@ -104,7 +116,7 @@ class PlaylistEditorAdapter(
             get() = R.menu.menu_item_playlist_editor // todo add more items
         override fun onSongMenuItemClick(item: MenuItem): Boolean {
             when (item.itemId) {
-                R.id.action_remove_from_playlist -> { // todo
+                R.id.action_remove_from_playlist -> {
                     RemoveFromPlaylistDialog.create(listOf(song as PlaylistSong))
                         .show(activity.supportFragmentManager, "REMOVE_FROM_PLAYLIST")
                     return true

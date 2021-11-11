@@ -58,6 +58,8 @@ class PlaylistEditorActivity : AbsSlidingMusicPanelActivity() {
 
         playlist = intent.extras!!.getParcelable(PlaylistDetailActivity.EXTRA_PLAYLIST)!!
 
+        setUpRecyclerView()
+
         setUpToolbar()
     }
 
@@ -117,6 +119,8 @@ class PlaylistEditorActivity : AbsSlidingMusicPanelActivity() {
         recyclerView.adapter = wrappedAdapter
         recyclerView.itemAnimator = animator
         recyclerViewDragDropManager.attachRecyclerView(recyclerView)
+
+        checkIsEmpty()
     }
 
     // todo menu
