@@ -102,6 +102,7 @@
         <activity android:name=".ui.activities.ArtistDetailActivity" />
         <activity android:name=".ui.activities.GenreDetailActivity" />
         <activity android:name=".ui.activities.PlaylistDetailActivity" />
+        <activity android:name=".ui.activities.PlaylistEditorActivity" />
         <activity
             android:name=".ui.activities.tageditor.SongTagEditorActivity"
             android:windowSoftInputMode="adjustResize" />
