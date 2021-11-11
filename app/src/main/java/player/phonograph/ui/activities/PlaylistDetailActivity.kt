@@ -9,7 +9,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.*
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.loader.app.LoaderManager
@@ -228,8 +227,12 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity() {
                 return true
             }
             R.id.action_edit_playlist -> {
-                // todo
-                Toast.makeText(this, "Not available now!", Toast.LENGTH_SHORT).show()
+//                Toast.makeText(this, "Not available now!", Toast.LENGTH_SHORT).show()
+                startActivity(
+                    Intent(this, PlaylistEditorActivity::class.java).apply {
+                        putExtra(EXTRA_PLAYLIST, playlist)
+                    }
+                )
                 return true
             }
             android.R.id.home -> {
