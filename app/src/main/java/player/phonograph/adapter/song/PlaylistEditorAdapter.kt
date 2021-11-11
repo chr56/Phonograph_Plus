@@ -15,6 +15,7 @@ import com.h6ah4i.android.widget.advrecyclerview.draggable.DraggableItemViewHold
 import com.h6ah4i.android.widget.advrecyclerview.draggable.ItemDraggableRange
 import com.h6ah4i.android.widget.advrecyclerview.draggable.annotation.DraggableItemStateFlags
 import player.phonograph.R
+import player.phonograph.dialogs.AddToPlaylistDialog
 import player.phonograph.dialogs.RemoveFromPlaylistDialog
 import player.phonograph.interfaces.CabHolder
 import player.phonograph.loader.PlaylistSongLoader
@@ -35,19 +36,24 @@ class PlaylistEditorAdapter(
     var playlistSongs: MutableList<PlaylistSong>
 
     init {
-        setMultiSelectMenuRes(R.menu.menu_playlists_songs_selection)
+        setMultiSelectMenuRes(R.menu.menu_playlist_editor_selection)
         playlistSongs = PlaylistSongLoader.getPlaylistSongList(activity, playlist.id)
     }
-    override fun onMultipleItemAction(menuItem: MenuItem, selection: List<Song>) {
+    override fun onMultipleItemAction(menuItem: MenuItem, selection: List<Song>) { // todo
         when (menuItem.itemId) {
             R.id.action_remove_from_playlist -> {
                 RemoveFromPlaylistDialog.create(selection as List<PlaylistSong>).show(
-                    activity.supportFragmentManager, "ADD_PLAYLIST"
+                    activity.supportFragmentManager, "PlaylistEditor"
+                )
+                return
+            }
+            R.id.action_add_to_playlist -> {
+                AddToPlaylistDialog.create(selection).show(
+                    activity.supportFragmentManager, "PlaylistEditor"
                 )
                 return
             }
         }
-        super.onMultipleItemAction(menuItem, selection)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CommonSongViewHolder {
@@ -70,8 +76,8 @@ class PlaylistEditorAdapter(
             if (PlaylistsUtil.moveItem(activity, playlist.id, fromPosition - 1, toPosition - 1)
             ) {
                 val songs = playlistSongs
-                val song = songs.removeAt(fromPosition-1)
-                songs.add(toPosition-1, song)
+                val song = songs.removeAt(fromPosition - 1)
+                songs.add(toPosition - 1, song)
                 playlistSongs = songs
             }
         }
@@ -95,7 +101,7 @@ class PlaylistEditorAdapter(
             dragView?.visibility = View.VISIBLE
         }
         override val menuRes: Int
-            get() = R.menu.menu_item_playlist_song_short // todo remove other items
+            get() = R.menu.menu_item_playlist_editor // todo add more items
         override fun onSongMenuItemClick(item: MenuItem): Boolean {
             when (item.itemId) {
                 R.id.action_remove_from_playlist -> { // todo
