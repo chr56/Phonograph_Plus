@@ -37,19 +37,6 @@ abstract class AbsMultiSelectAdapter<VH : RecyclerView.ViewHolder, I>(
         return false
     }
 
-    // todo: split realPosition and displayPosition
-    // like this:
-    protected fun toggleChecked(realPosition: Int, displayPosition: Int): Boolean {
-        if (cabHolder != null) {
-            val identifier = getIdentifier(realPosition) ?: return false
-            if (!checked.remove(identifier)) checked.add(identifier)
-            notifyItemChanged(displayPosition)
-            updateCab()
-            return true
-        }
-        return false
-    }
-
     protected fun checkAll() {
         if (cabHolder != null) {
             checked.clear()

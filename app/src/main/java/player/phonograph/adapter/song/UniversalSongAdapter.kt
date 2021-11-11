@@ -98,9 +98,8 @@ open class UniversalSongAdapter(val activity: AppCompatActivity, songs: List<Son
     override fun getItemViewType(position: Int): Int = if (hasHeader && position == 0) ITEM_HEADER else ITEM_SONG
 
     override fun getIdentifier(position: Int): Song {
-//        return if (hasHeader && position == 0) Song.EMPTY_SONG else songs[position]
-//        return if (!hasHeader) songs[position] else if (position <= 0) Song.EMPTY_SONG else songs[position - 1]
-        return songs[position] // fix in AbsMultiSelectAdapter
+        return if (!hasHeader) songs[position] else
+            if (position <= 0) Song.EMPTY_SONG else songs[position - 1]
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CommonSongViewHolder {
@@ -280,13 +279,13 @@ open class UniversalSongAdapter(val activity: AppCompatActivity, songs: List<Son
         override fun onClick(v: View) {
             if (itemViewType == ITEM_HEADER) return
             if (isInQuickSelectMode) {
-                toggleChecked(songPosition, bindingAdapterPosition)
+                toggleChecked(bindingAdapterPosition)
             } else {
                 MusicPlayerRemote.openQueue(songs, songPosition, true)
             }
         }
         override fun onLongClick(view: View): Boolean {
-            return if (itemViewType != ITEM_HEADER) toggleChecked(songPosition, bindingAdapterPosition) else false
+            return if (itemViewType != ITEM_HEADER) toggleChecked(bindingAdapterPosition) else false
         }
     }
 
