@@ -44,14 +44,16 @@ class PlaylistEditorAdapter(
     override fun onMultipleItemAction(menuItem: MenuItem, selection: List<Song>) { // todo
         when (menuItem.itemId) {
             R.id.action_remove_from_playlist -> {
-                RemoveFromPlaylistDialog.create(selection as List<PlaylistSong>).show(
-                    activity.supportFragmentManager, "PlaylistEditor"
-                )
+                selection.forEach {
+                    playlistSongs.remove(it)
+                    PlaylistsUtil.removeFromPlaylist(activity,it,playlist.id)
+                }
+                songs = playlistSongs
                 return
             }
             R.id.action_add_to_playlist -> {
                 AddToPlaylistDialog.create(selection).show(
-                    activity.supportFragmentManager, "PlaylistEditor"
+                    activity.supportFragmentManager, "ADD_TO_PLAYLIST"
                 )
                 return
             }
@@ -90,15 +92,21 @@ class PlaylistEditorAdapter(
     override fun onCheckCanDrop(draggingPosition: Int, dropPosition: Int): Boolean = (dropPosition > 0)
 
     override fun onItemDragStarted(position: Int) {
-        notifyItemRangeChanged(position - 2, position + 2)
+        notifyItemChanged(position)
+//        notifyItemRangeChanged(position - 1, position + 1)
+//        notifyDataSetChanged()
     }
 
     override fun onItemDragFinished(fromPosition: Int, toPosition: Int, result: Boolean) {
         if (result) {
             notifyItemMoved(fromPosition, toPosition)
         } else {
-            notifyItemRangeChanged(fromPosition - 2, fromPosition + 2)
+            notifyItemChanged(fromPosition)
+//            notifyItemRangeChanged(fromPosition - 1, fromPosition + 1)
         }
+        
+
+
     }
 
 //    interface OnMoveItemListener {
@@ -117,8 +125,9 @@ class PlaylistEditorAdapter(
         override fun onSongMenuItemClick(item: MenuItem): Boolean {
             when (item.itemId) {
                 R.id.action_remove_from_playlist -> {
-                    RemoveFromPlaylistDialog.create(listOf(song as PlaylistSong))
-                        .show(activity.supportFragmentManager, "REMOVE_FROM_PLAYLIST")
+                    PlaylistsUtil.removeFromPlaylist(activity, song,playlist.id)
+                    playlistSongs.remove(song)
+                    songs = playlistSongs
                     return true
                 }
             }
