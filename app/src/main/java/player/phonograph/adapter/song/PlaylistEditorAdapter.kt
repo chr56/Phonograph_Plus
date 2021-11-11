@@ -17,50 +17,26 @@ import com.h6ah4i.android.widget.advrecyclerview.draggable.annotation.DraggableI
 import player.phonograph.R
 import player.phonograph.dialogs.RemoveFromPlaylistDialog
 import player.phonograph.interfaces.CabHolder
+import player.phonograph.loader.PlaylistSongLoader
+import player.phonograph.model.Playlist
 import player.phonograph.model.PlaylistSong
 import player.phonograph.model.Song
+import player.phonograph.util.PlaylistsUtil
 import player.phonograph.util.ViewUtil
 
 class PlaylistEditorAdapter(
     activity: AppCompatActivity,
-    private var playlistSongs: List<PlaylistSong>,
+    var playlist: Playlist,
     cabHolder: CabHolder,
-    private val onMoveItemListener: OnMoveItemListener
-
-) : UniversalSongAdapter(activity, playlistSongs as List<Song>, MODE_PLAYLIST_LOCAL, cabHolder),
+//    private val onMoveItemListener: OnMoveItemListener
+) : UniversalSongAdapter(activity, emptyList(), MODE_PLAYLIST_LOCAL, cabHolder),
     DraggableItemAdapter<PlaylistEditorAdapter.ViewHolder> {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CommonSongViewHolder {
-        return ViewHolder(LayoutInflater.from(activity).inflate(itemLayoutRes, parent, false))
-    }
-    override fun getItemId(position: Int): Long {
-        return if (position <= 0) -2 else playlistSongs[position - 1].idInPlayList
-    }
-
-    override fun onCheckCanStartDrag(holder: ViewHolder, position: Int, x: Int, y: Int): Boolean =
-        position > 0 &&
-            (ViewUtil.hitTest(holder.dragView, x, y) || ViewUtil.hitTest(holder.image, x, y))
-
-    override fun onGetItemDraggableRange(holder: ViewHolder, position: Int): ItemDraggableRange = ItemDraggableRange(1, songs.size)
-
-    override fun onMoveItem(fromPosition: Int, toPosition: Int) {
-        if (fromPosition != toPosition) {
-            onMoveItemListener.onMoveItem(fromPosition - 1, toPosition - 1)
-        }
-    }
-
-    override fun onCheckCanDrop(draggingPosition: Int, dropPosition: Int): Boolean = (dropPosition > 0)
-
-    override fun onItemDragStarted(position: Int) { notifyDataSetChanged() }
-
-    override fun onItemDragFinished(fromPosition: Int, toPosition: Int, result: Boolean) { notifyDataSetChanged() }
-
-    interface OnMoveItemListener {
-        fun onMoveItem(fromPosition: Int, toPosition: Int)
-    }
+    var playlistSongs: MutableList<PlaylistSong>
 
     init {
         setMultiSelectMenuRes(R.menu.menu_playlists_songs_selection)
+        playlistSongs = PlaylistSongLoader.getPlaylistSongList(activity, playlist.id)
     }
     override fun onMultipleItemAction(menuItem: MenuItem, selection: List<Song>) {
         when (menuItem.itemId) {
@@ -73,6 +49,43 @@ class PlaylistEditorAdapter(
         }
         super.onMultipleItemAction(menuItem, selection)
     }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CommonSongViewHolder {
+        return ViewHolder(LayoutInflater.from(activity).inflate(itemLayoutRes, parent, false))
+    }
+
+    override fun getItemId(position: Int): Long {
+        return if (position <= 0) -2 else playlistSongs[position - 1].idInPlayList
+    }
+
+    override fun onCheckCanStartDrag(holder: ViewHolder, position: Int, x: Int, y: Int): Boolean =
+        position > 0 &&
+            (ViewUtil.hitTest(holder.dragView, x, y) || ViewUtil.hitTest(holder.image, x, y))
+
+    override fun onGetItemDraggableRange(holder: ViewHolder, position: Int): ItemDraggableRange = ItemDraggableRange(1, songs.size)
+
+    override fun onMoveItem(fromPosition: Int, toPosition: Int) {
+        if (fromPosition != toPosition) {
+//            onMoveItemListener.onMoveItem(fromPosition - 1, toPosition - 1)
+            if (PlaylistsUtil.moveItem(activity, playlist.id, fromPosition - 1, toPosition - 1)
+            ) {
+                val songs = playlistSongs
+                val song = songs.removeAt(fromPosition-1)
+                songs.add(toPosition-1, song)
+                playlistSongs = songs
+            }
+        }
+    }
+
+    override fun onCheckCanDrop(draggingPosition: Int, dropPosition: Int): Boolean = (dropPosition > 0)
+
+    override fun onItemDragStarted(position: Int) { notifyDataSetChanged() }
+
+    override fun onItemDragFinished(fromPosition: Int, toPosition: Int, result: Boolean) { notifyDataSetChanged() }
+
+//    interface OnMoveItemListener {
+//        fun onMoveItem(fromPosition: Int, toPosition: Int)
+//    }
 
     inner class ViewHolder(itemView: View) :
         UniversalSongAdapter.CommonSongViewHolder(itemView),
