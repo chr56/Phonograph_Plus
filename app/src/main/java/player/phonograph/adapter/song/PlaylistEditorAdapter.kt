@@ -104,7 +104,7 @@ class PlaylistEditorAdapter(
             notifyItemChanged(fromPosition)
 //            notifyItemRangeChanged(fromPosition - 1, fromPosition + 1)
         }
-        
+
 
 
     }
@@ -132,6 +132,10 @@ class PlaylistEditorAdapter(
                 }
             }
             return super.onSongMenuItemClick(item)
+        }
+
+        override fun onClick(v: View) { // disable clicking to play
+            return
         }
 
         @DraggableItemStateFlags
