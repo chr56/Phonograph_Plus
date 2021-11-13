@@ -235,6 +235,10 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity() {
                 )
                 return true
             }
+            R.id.action_refresh -> {
+                onMediaStoreChanged()
+                return true
+            }
             android.R.id.home -> {
                 onBackPressed()
                 return true
