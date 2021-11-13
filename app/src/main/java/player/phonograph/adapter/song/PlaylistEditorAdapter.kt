@@ -84,10 +84,43 @@ class PlaylistEditorAdapter(
                     get() = song
 
                 override fun onMenuItemClick(item: MenuItem): Boolean {
+                    val pos = playlistSongs.indexOf(song)
                     return when (item.itemId) {
                         R.id.action_remove_from_playlist -> {
                             PlaylistsUtil.removeFromPlaylist(activity, song, playlist.id)
                             playlistSongs.remove(song)
+                            true
+                        }
+                        R.id.action_move_to_top -> {
+                            if (PlaylistsUtil.moveItem(activity, playlist.id, pos, 0)) {
+                                playlistSongs.removeAt(pos)
+                                playlistSongs.add(0, song)
+                                notifyDataSetChanged()
+                            }
+                            true
+                        }
+                        R.id.action_move_to_bottom -> {
+                            if (PlaylistsUtil.moveItem(activity, playlist.id, pos, playlistSongs.size -1)) {
+                                playlistSongs.removeAt(pos)
+                                playlistSongs.add(song)
+                                notifyDataSetChanged()
+                            }
+                            true
+                        }
+                        R.id.action_move_up -> {
+                            if (PlaylistsUtil.moveItem(activity, playlist.id, pos, pos - 1)) {
+                                playlistSongs.removeAt(pos)
+                                playlistSongs.add(pos - 1, song)
+                                notifyItemRangeChanged(pos - 1, pos)
+                            }
+                            true
+                        }
+                        R.id.action_move_down -> {
+                            if (PlaylistsUtil.moveItem(activity, playlist.id, pos, pos + 1)) {
+                                playlistSongs.removeAt(pos)
+                                playlistSongs.add(pos + 1, song)
+                                notifyItemRangeChanged(pos, pos + 1)
+                            }
                             true
                         }
                         else -> super.onMenuItemClick(item)

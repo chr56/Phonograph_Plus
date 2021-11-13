@@ -6,9 +6,26 @@
         android:title="@string/action_remove_from_playlist"
         app:showAsAction="never" />
     <item
+        android:id="@+id/action_move_to_top"
+        android:title="@string/move_to_top"
+        app:showAsAction="never"/>
+    <item
+        android:id="@+id/action_move_up"
+        android:title="@string/move_up"
+        app:showAsAction="never"/>
+    <item
+        android:id="@+id/action_move_down"
+        android:title="@string/move_down"
+        app:showAsAction="never"/>
+    <item
+        android:id="@+id/action_move_to_bottom"
+        android:title="@string/move_to_bottom"
+        app:showAsAction="never"/>
+    <item
         android:id="@+id/action_details"
         android:title="@string/action_details"
         app:showAsAction="never" />
+
     <item
         android:id="@+id/more_actions"
         android:title="@string/more_actions">

@@ -325,8 +325,12 @@
     <string name="not_available_now">暂不可用</string>
     <string name="new_version">有新版本!</string>
     <string name="new_version_msg">有新版本:\n 版本号: %1$s \n 更新日志: %2$s</string>
-    <string name="edit">编辑…</string>
     <string name="tg_channel">TG</string>
+    <string name="edit">编辑…</string>
+    <string name="move_to_top">移至顶部</string>
+    <string name="move_to_bottom">移至底部</string>
+    <string name="move_up">上移</string>
+    <string name="move_down">下移</string>
     <plurals name="msg_deletion_result">
         <item quantity="other">%1$d / %2$d 个项目删除成功</item>
     </plurals>
