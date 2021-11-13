@@ -119,19 +119,15 @@ class PlaylistEditorAdapter(
     override fun onCheckCanDrop(draggingPosition: Int, dropPosition: Int): Boolean = (dropPosition >= 0) && (dropPosition <= playlistSongs.size - 1)
 
     override fun onItemDragStarted(position: Int) {
-//        notifyItemChanged(position)
-//        notifyItemRangeChanged(position - 1, position + 1)
-        notifyDataSetChanged()
     }
 
     override fun onItemDragFinished(fromPosition: Int, toPosition: Int, result: Boolean) {
 //        if (result) {
-//            notifyItemMoved(fromPosition, toPosition+1)
+//            notifyItemRangeChanged(fromPosition, fromPosition)
 //        } else {
 //            notifyItemChanged(fromPosition)
-//            notifyItemRangeChanged(fromPosition - 1, fromPosition + 1)
 //        }
-        notifyDataSetChanged()
+        notifyDataSetChanged() // only use this can renumber items
     }
 
     override fun getItemId(position: Int): Long {
