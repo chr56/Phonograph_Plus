@@ -105,7 +105,6 @@ class PlaylistEditorAdapter(
 
     override fun onMoveItem(fromPosition: Int, toPosition: Int) {
         if (fromPosition != toPosition) {
-//            onMoveItemListener.onMoveItem(fromPosition - 1, toPosition - 1)
             if (PlaylistsUtil.moveItem(activity, playlist.id, fromPosition, toPosition)
             ) {
                 // update dataset(playlistSongs)
@@ -117,25 +116,26 @@ class PlaylistEditorAdapter(
         }
     }
 
-    override fun onCheckCanDrop(draggingPosition: Int, dropPosition: Int): Boolean = (dropPosition > 0)
+    override fun onCheckCanDrop(draggingPosition: Int, dropPosition: Int): Boolean = (dropPosition >= 0) && (dropPosition <= playlistSongs.size - 1)
 
     override fun onItemDragStarted(position: Int) {
-        notifyItemChanged(position)
+//        notifyItemChanged(position)
 //        notifyItemRangeChanged(position - 1, position + 1)
-//        notifyDataSetChanged()
+        notifyDataSetChanged()
     }
 
     override fun onItemDragFinished(fromPosition: Int, toPosition: Int, result: Boolean) {
-        if (result) {
-            notifyItemMoved(fromPosition-1, toPosition-1)
-        } else {
-            notifyItemChanged(fromPosition)
+//        if (result) {
+//            notifyItemMoved(fromPosition, toPosition+1)
+//        } else {
+//            notifyItemChanged(fromPosition)
 //            notifyItemRangeChanged(fromPosition - 1, fromPosition + 1)
-        }
+//        }
+        notifyDataSetChanged()
     }
 
     override fun getItemId(position: Int): Long {
-        return if (position <= 0) -2 else playlistSongs[position - 1].idInPlayList // todo
+        return if (position < 0) -2 else playlistSongs[position].idInPlayList // todo
     }
 
     override fun getIdentifier(position: Int): PlaylistSong = playlistSongs[position]
