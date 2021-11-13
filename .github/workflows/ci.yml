@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-18.04
     steps:
       - uses: actions/checkout@v2
-      - uses: gradle/wrapper-validation-action@v1
+#      - uses: gradle/wrapper-validation-action@v1 # its timeout fails the action
 
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
