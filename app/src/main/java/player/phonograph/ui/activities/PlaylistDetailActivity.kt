@@ -37,7 +37,6 @@ import player.phonograph.model.Playlist
 import player.phonograph.model.Song
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
 import player.phonograph.util.*
-import java.util.*
 import kotlin.collections.ArrayList
 
 class PlaylistDetailActivity : AbsSlidingMusicPanelActivity() {
@@ -228,10 +227,11 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity() {
             }
             R.id.action_edit_playlist -> {
 //                Toast.makeText(this, "Not available now!", Toast.LENGTH_SHORT).show()
-                startActivity(
+                startActivityForResult(
                     Intent(this, PlaylistEditorActivity::class.java).apply {
                         putExtra(EXTRA_PLAYLIST, playlist)
-                    }
+                    },
+                    EDIT_PLAYLIST
                 )
                 return true
             }
@@ -317,9 +317,17 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity() {
                     PlaylistMenuHelper.handleSavePlaylist(this, it)
                 }
             }
+        } else if (requestCode == EDIT_PLAYLIST) {
+            onMediaStoreChanged() // refresh after editing
         }
         super.onActivityResult(requestCode, resultCode, data)
     }
+
+    /* *******************
+     *
+     *        Loader
+     *
+     * *******************/
 
     inner class Loader(private val context: AppCompatActivity, private var playlist: Playlist, private val adapter: UniversalSongAdapter) : LoaderManager.LoaderCallbacks<List<Song>> {
         override fun onCreateLoader(
@@ -360,6 +368,11 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity() {
         }
     }
 
+    /* *******************
+     *
+     *     cabCallBack
+     *
+     * *******************/
     private inner class CabCallBack(private val activity: PlaylistDetailActivity) : CabHolder {
         override fun openCab(menuRes: Int, callback: MaterialCab.Callback?): MaterialCab {
             // finish existed cab
@@ -378,9 +391,14 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity() {
         }
     }
 
+    /* *******************
+     *   companion object
+     * *******************/
+
     companion object {
         private const val LOADER_ID = LoaderIds.PLAYLIST_DETAIL_ACTIVITY
         private const val TAG = "PlaylistDetail"
         const val EXTRA_PLAYLIST = "extra_playlist"
+        const val EDIT_PLAYLIST: Int = 100
     }
 }
