@@ -10,6 +10,7 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewStub
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -23,9 +24,12 @@ import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView
 import player.phonograph.R
 import player.phonograph.adapter.song.PlaylistEditorAdapter
 import player.phonograph.databinding.ActivityPlaylistEditorBinding
+import player.phonograph.helper.menu.PlaylistMenuHelper
+import player.phonograph.loader.PlaylistSongLoader
 import player.phonograph.model.Playlist
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
 import player.phonograph.util.PhonographColorUtil
+import player.phonograph.util.PlaylistsUtil
 import player.phonograph.util.ViewUtil
 
 class PlaylistEditorActivity : AbsSlidingMusicPanelActivity() {
@@ -125,13 +129,26 @@ class PlaylistEditorActivity : AbsSlidingMusicPanelActivity() {
         checkIsEmpty()
     }
 
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_playlist_editor, menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when(item.itemId){
+        return when (item.itemId) {
             android.R.id.home -> {
                 onBackPressed()
                 true
             }
-            else -> super.onOptionsItemSelected(item)
+            R.id.action_refresh -> {
+                onMediaStoreChanged()
+                return true
+            }
+            R.id.action_add -> {
+                Toast.makeText(this, "Not available now", Toast.LENGTH_SHORT).show()
+                return true
+            }
+            else -> PlaylistMenuHelper.handleMenuClick(this, playlist, item)
         }
     }
 
@@ -157,5 +174,22 @@ class PlaylistEditorActivity : AbsSlidingMusicPanelActivity() {
             wrappedAdapter = null
         }
         super.onDestroy()
+    }
+
+    override fun onMediaStoreChanged() {
+        super.onMediaStoreChanged()
+        // Playlist deleted
+        if (!PlaylistsUtil.doesPlaylistExist(this, playlist.id)) {
+            finish()
+            return
+        }
+        // Playlist renamed
+        val newPlaylistName = PlaylistsUtil.getNameForPlaylist(this, playlist.id)
+        if (newPlaylistName != playlist.name) {
+            setToolbarTitle(newPlaylistName)
+        }
+
+        // refresh playlist content
+        adapter.playlistSongs = PlaylistSongLoader.getPlaylistSongList(this, playlist.id)
     }
 }
