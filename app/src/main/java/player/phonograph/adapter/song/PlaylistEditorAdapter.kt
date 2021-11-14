@@ -121,7 +121,7 @@ class PlaylistEditorAdapter(
                             true
                         }
                         R.id.action_move_down -> {
-                            if (pos == playlistSongs.size -1) return false
+                            if (pos == playlistSongs.size - 1) return false
                             if (PlaylistsUtil.moveItem(activity, playlist.id, pos, pos + 1)) {
                                 playlistSongs.removeAt(pos)
                                 playlistSongs.add(pos + 1, song)
@@ -165,6 +165,14 @@ class PlaylistEditorAdapter(
             fromPosition < toPosition -> notifyItemRangeChanged(fromPosition, toPosition)
             fromPosition > toPosition -> notifyItemRangeChanged(toPosition, fromPosition)
             fromPosition == toPosition -> notifyItemChanged(fromPosition)
+        }
+
+        // top position is kinda of special?
+        if (fromPosition == 0) {
+            notifyItemChanged(toPosition)
+        }
+        if (fromPosition == playlistSongs.size - 1 && toPosition == 0) {
+            notifyItemChanged(playlistSongs.size - 1)
         }
     }
 
