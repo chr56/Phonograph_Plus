@@ -89,21 +89,25 @@ class PlaylistEditorAdapter(
                         R.id.action_remove_from_playlist -> {
                             PlaylistsUtil.removeFromPlaylist(activity, song, playlist.id)
                             playlistSongs.remove(song)
+//                            notifyItemRemoved(pos)
+                            notifyItemRangeChanged(pos, playlistSongs.size - 1) // so we can reorder the items behind removed one
                             true
                         }
                         R.id.action_move_to_top -> {
                             if (PlaylistsUtil.moveItem(activity, playlist.id, pos, 0)) {
                                 playlistSongs.removeAt(pos)
                                 playlistSongs.add(0, song)
-                                notifyDataSetChanged()
+                                notifyItemRangeChanged(0, pos + 1) // so we can reorder the items affected
+//                                notifyDataSetChanged()
                             }
                             true
                         }
                         R.id.action_move_to_bottom -> {
-                            if (PlaylistsUtil.moveItem(activity, playlist.id, pos, playlistSongs.size -1)) {
+                            if (PlaylistsUtil.moveItem(activity, playlist.id, pos, playlistSongs.size - 1)) {
                                 playlistSongs.removeAt(pos)
                                 playlistSongs.add(song)
-                                notifyDataSetChanged()
+                                notifyItemRangeChanged(pos - 1, playlistSongs.size - 1) // so we can reorder the items affected
+//                                notifyDataSetChanged()
                             }
                             true
                         }
@@ -155,12 +159,11 @@ class PlaylistEditorAdapter(
     }
 
     override fun onItemDragFinished(fromPosition: Int, toPosition: Int, result: Boolean) {
-//        if (result) {
-//            notifyItemRangeChanged(fromPosition, fromPosition)
-//        } else {
-//            notifyItemChanged(fromPosition)
-//        }
-        notifyDataSetChanged() // only use this can renumber items
+        when {
+            fromPosition < toPosition -> notifyItemRangeChanged(fromPosition, toPosition)
+            fromPosition > toPosition -> notifyItemRangeChanged(toPosition, fromPosition)
+            fromPosition == toPosition -> notifyItemChanged(fromPosition)
+        }
     }
 
     override fun getItemId(position: Int): Long {
