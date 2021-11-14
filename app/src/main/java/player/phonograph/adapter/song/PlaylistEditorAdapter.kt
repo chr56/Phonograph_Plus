@@ -112,6 +112,7 @@ class PlaylistEditorAdapter(
                             true
                         }
                         R.id.action_move_up -> {
+                            if (pos == 0) return false
                             if (PlaylistsUtil.moveItem(activity, playlist.id, pos, pos - 1)) {
                                 playlistSongs.removeAt(pos)
                                 playlistSongs.add(pos - 1, song)
@@ -120,6 +121,7 @@ class PlaylistEditorAdapter(
                             true
                         }
                         R.id.action_move_down -> {
+                            if (pos == playlistSongs.size -1) return false
                             if (PlaylistsUtil.moveItem(activity, playlist.id, pos, pos + 1)) {
                                 playlistSongs.removeAt(pos)
                                 playlistSongs.add(pos + 1, song)
