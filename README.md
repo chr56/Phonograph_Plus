@@ -33,6 +33,8 @@
 
 * 新增崩溃报告页面 | Handle crash.
 
+* 适配"<a href="https://github.com/xiaowine/miui.statusbar.lyric">MIUI状态栏歌词</a>"Xposed模块(播放图标暂无)
+
 * // todo
 
 * 优化界面 | Optimus UI.
@@ -47,7 +49,7 @@
 
 - [ ] 万能歌曲 Adapter ❗WIP
 
-- [ ] 增强“播放列表详情”(信息展示, 支持搜索, 更好的修改本地列表方式) ❗WIP
+- [ ] 增强“播放列表详情”(信息展示✔, 支持搜索❌, 更好的修改本地列表方式 ❗WIP) 
 
 - [ ] 打开 .m3u (使用"播放列表详情")
 
