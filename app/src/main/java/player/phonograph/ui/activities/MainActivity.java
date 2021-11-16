@@ -350,7 +350,7 @@ public class MainActivity extends AbsSlidingMusicPanelActivity {
 
         new Handler().postDelayed(
                 ()->{
-                    Updater.INSTANCE.checkUpdate(this::showUpgradeDialog);
+                    Updater.INSTANCE.checkUpdate(this::showUpgradeDialog,false);
                 },3_000);
 
 

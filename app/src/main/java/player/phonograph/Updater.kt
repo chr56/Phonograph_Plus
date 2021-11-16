@@ -16,7 +16,11 @@ import okhttp3.Response
 import java.io.IOException
 
 object Updater {
-    fun checkUpdate(callback: (Bundle) -> Unit) {
+    /**
+     * @param callback a callback that would be executed if there's newer version ()
+     * @param force true if you want to execute callback no mater there is no newer version
+     */
+    fun checkUpdate(callback: (Bundle) -> Unit, force: Boolean = false) {
         val okHttpClient = OkHttpClient()
         val request = Request.Builder()
             .url(requestUri)
@@ -35,23 +39,24 @@ object Updater {
                 val versionJson = Gson().fromJson<VersionJson>(responseBody.string(), VersionJson::class.java)
                 Log.i(TAG, "versionCode: ${versionJson.versionCode}, version: ${versionJson.version}, logSummary: ${versionJson.logSummary}")
 
+                val result = Bundle().also {
+                    it.putInt(VersionCode, versionJson.versionCode)
+                    it.putString(Version, versionJson.version)
+                    it.putString(LogSummary, versionJson.logSummary)
+                }
+
                 when {
                     versionJson.versionCode > BuildConfig.VERSION_CODE -> {
                         Log.i(TAG, "updatable!")
-                        val result = Bundle().also {
-                            it.putInt(VersionCode, versionJson.versionCode)
-                            it.putString(Version, versionJson.version)
-                            it.putString(LogSummary, versionJson.logSummary)
-                        }
                         callback.invoke(result) // call upgrade dialog
                     }
                     versionJson.versionCode == BuildConfig.VERSION_CODE -> {
                         Log.i(TAG, "no update, latest version!")
-                        // do nothing
+                        if (force) callback.invoke(result)
                     }
                     versionJson.versionCode < BuildConfig.VERSION_CODE -> {
                         Log.w(TAG, "no update, version is newer than latest?")
-                        // do nothing
+                        if (force) callback.invoke(result)
                     }
                 }
             }

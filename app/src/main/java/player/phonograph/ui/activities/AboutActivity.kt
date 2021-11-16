@@ -139,9 +139,9 @@ class AboutActivity : ThemeActivity(), View.OnClickListener {
                     when (index) {
                         0 -> throw Exception("Crash Test")
                         1 -> {
-                            Updater.checkUpdate {
+                            Updater.checkUpdate(callback = {
                                 UpgradeDialog.create(it).show(supportFragmentManager, "DebugDialog")
-                            }
+                            },force = true)
                         }
                         else -> dialog.dismiss()
                     }
