@@ -15,6 +15,7 @@ import okhttp3.Request
 import okhttp3.Response
 import player.phonograph.util.PreferenceUtil
 import java.io.IOException
+import java.util.concurrent.TimeUnit
 
 object Updater {
     /**
@@ -22,57 +23,79 @@ object Updater {
      * @param force true if you want to execute callback no mater there is no newer version or automatic check is disabled
      */
     fun checkUpdate(callback: (Bundle) -> Unit, force: Boolean = false) {
-        if (!force && !PreferenceUtil.getInstance(App.instance).checkUpgradeAtStartup) { Log.w(TAG, "ignore upgrade check!") ; return }
-
-        val okHttpClient = OkHttpClient()
-
-        val requestJsdelivr = Request.Builder()
-            .url(requestUriJsdelivr).get().build()
-        val requestGithub = Request.Builder()
-            .url(requestUriGitHub).get().build()
-
-        okHttpClient.newCall(requestJsdelivr).enqueue(ResponseHandler(callback, force))
-        okHttpClient.newCall(requestGithub).enqueue(ResponseHandler(callback, force))
-    }
-
-    private class ResponseHandler(val callback: (Bundle) -> Unit, val force: Boolean = false) : okhttp3.Callback {
-        override fun onFailure(call: Call, e: IOException) {
-            Log.e(TAG, "Fail to check new version! call = ${call.request().url()}")
+        if (!force && !PreferenceUtil.getInstance(App.instance).checkUpgradeAtStartup) {
+            Log.w(TAG, "ignore upgrade check!"); return
         }
 
-        override fun onResponse(call: Call, response: Response) {
-            val responseBody = response.body() ?: return
-            Log.i(TAG, "succeed to check new version!")
+        val okHttpClient = OkHttpClient.Builder()
+            .connectTimeout(8, TimeUnit.SECONDS)
+            .build()
 
-            val versionJson = Gson().fromJson<VersionJson>(responseBody.string(), VersionJson::class.java)
-            Log.i(TAG, "versionCode: ${versionJson.versionCode}, version: ${versionJson.version}, logSummary: ${versionJson.logSummary}")
+        val requestGithub = Request.Builder()
+            .url(requestUriGitHub).get().build()
+        val requestJsdelivr = Request.Builder()
+            .url(requestUriJsdelivr).get().build()
 
-            val result = Bundle().also {
-                it.putInt(VersionCode, versionJson.versionCode)
-                it.putString(Version, versionJson.version)
-                it.putString(LogSummary, versionJson.logSummary)
-                it.putBoolean(Upgradable, false)
+        // try github
+        okHttpClient.newCall(requestGithub)
+            .enqueue(object : okhttp3.Callback {
+
+                override fun onResponse(call: Call, response: Response) {
+                    handleResponse(callback, force, call, response)
+                }
+
+                override fun onFailure(call: Call, e: IOException) {
+                    Log.e(TAG, "Fail to check new version! callUri = ${call.request().url()}")
+
+                    // then try Jsdelivr
+                    okHttpClient.newCall(requestJsdelivr).enqueue(object : okhttp3.Callback {
+                        override fun onFailure(call: Call, e: IOException) {
+                            Log.e(TAG, "Fail to check new version! callUri = ${call.request().url()}")
+                        }
+
+                        override fun onResponse(call: Call, response: Response) {
+                            handleResponse(callback, force, call, response)
+                        }
+                    })
+                }
+            })
+    }
+
+    private fun handleResponse(callback: (Bundle) -> Unit, force: Boolean, call: Call, response: Response) {
+        val responseBody = response.body() ?: return
+        Log.i(TAG, "succeed to check new version! callUri = ${call.request().url()}")
+
+        val versionJson =
+            Gson().fromJson<VersionJson>(responseBody.string(), VersionJson::class.java)
+        Log.i(
+            TAG,
+            "versionCode: ${versionJson.versionCode}, version: ${versionJson.version}, logSummary: ${versionJson.logSummary}"
+        )
+
+        val result = Bundle().also {
+            it.putInt(VersionCode, versionJson.versionCode)
+            it.putString(Version, versionJson.version)
+            it.putString(LogSummary, versionJson.logSummary)
+        }
+
+        when {
+            versionJson.versionCode > BuildConfig.VERSION_CODE -> {
+                Log.i(TAG, "updatable!")
+                result.putBoolean(Upgradable, true)
+                callback.invoke(result)
             }
-
-            when {
-                versionJson.versionCode > BuildConfig.VERSION_CODE -> {
-                    Log.i(TAG, "updatable!")
-                    result.putBoolean(Upgradable, true)
+            versionJson.versionCode == BuildConfig.VERSION_CODE -> {
+                Log.i(TAG, "no update, latest version!")
+                if (force) {
+                    result.putBoolean(Upgradable, false)
                     callback.invoke(result)
                 }
-                versionJson.versionCode == BuildConfig.VERSION_CODE -> {
-                    Log.i(TAG, "no update, latest version!")
-                    if (force) {
-                        result.putBoolean(Upgradable, false)
-                        callback.invoke(result)
-                    }
-                }
-                versionJson.versionCode < BuildConfig.VERSION_CODE -> {
-                    Log.w(TAG, "no update, version is newer than latest?")
-                    if (force) {
-                        result.putBoolean(Upgradable, false)
-                        callback.invoke(result)
-                    }
+            }
+            versionJson.versionCode < BuildConfig.VERSION_CODE -> {
+                Log.w(TAG, "no update, version is newer than latest?")
+                if (force) {
+                    result.putBoolean(Upgradable, false)
+                    callback.invoke(result)
                 }
             }
         }
@@ -82,8 +105,10 @@ object Updater {
     class VersionJson {
         @SerializedName(Version)
         var version: String? = ""
+
         @SerializedName(VersionCode)
         var versionCode: Int = 0
+
         @SerializedName(LogSummary)
         var logSummary: String? = ""
     }
@@ -94,7 +119,8 @@ object Updater {
     private const val file = "version.json"
 
     private const val requestUriJsdelivr = "https://cdn.jsdelivr.net/gh/$owner/$repo@$branch/$file"
-    private const val requestUriGitHub = "https://raw.githubusercontent.com/$owner/$repo/$branch/$file"
+    private const val requestUriGitHub =
+        "https://raw.githubusercontent.com/$owner/$repo/$branch/$file"
 
     private const val TAG = "Updater"
 
