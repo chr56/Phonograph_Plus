@@ -21,7 +21,6 @@ import androidx.annotation.Nullable;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 
-import com.afollestad.materialdialogs.MaterialDialog;
 import com.bumptech.glide.Glide;
 import com.google.android.material.navigation.NavigationView;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
@@ -34,6 +33,7 @@ import butterknife.ButterKnife;
 import chr_56.MDthemer.core.ThemeColor;
 import chr_56.MDthemer.util.NavigationViewUtil;
 import chr_56.MDthemer.util.Util;
+import kotlin.Unit;
 import player.phonograph.R;
 import player.phonograph.Updater;
 import player.phonograph.dialogs.ChangelogDialog;
@@ -348,22 +348,10 @@ public class MainActivity extends AbsSlidingMusicPanelActivity {
             new Handler().postDelayed(() -> startActivityForResult(new Intent(MainActivity.this, AppIntroActivity.class), APP_INTRO_REQUEST), 50);
         }
 
-        Updater.INSTANCE.checkUpdate();
         new Handler().postDelayed(
-            ()->{
-                try {
-                    Bundle versionInfo = Updater.INSTANCE.getResult();
-                    if (versionInfo != null && versionInfo.getBoolean(Updater.Upgradable)) {
-                        UpgradeDialog dialog = new UpgradeDialog();
-                        dialog.show(getSupportFragmentManager(), "MainActivity");
-                    }
-                } catch (Exception e){
-                    e.printStackTrace();
-                }
-
-            }
-            ,12_000);
-
+                ()->{
+                    Updater.INSTANCE.checkUpdate(this::showUpgradeDialog);
+                },3_000);
 
 
     }
@@ -379,6 +367,12 @@ public class MainActivity extends AbsSlidingMusicPanelActivity {
             e.printStackTrace();
         }
 
+    }
+
+    public Unit showUpgradeDialog(Bundle versionInfo){
+        UpgradeDialog.Companion.create(versionInfo)
+                .show(getSupportFragmentManager(), "UpgradeDialog");
+        return Unit.INSTANCE;
     }
 
     public interface MainActivityFragmentCallbacks {

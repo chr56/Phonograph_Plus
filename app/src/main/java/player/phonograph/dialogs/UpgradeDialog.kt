@@ -14,12 +14,17 @@ import player.phonograph.R
 import player.phonograph.Updater
 
 class UpgradeDialog : DialogFragment() {
+    private var versionCode: Int = -1
+    private var version: String? = null
+    private var log: String? = null
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val versionInfo = Updater.result!!
+//        val versionInfo = Updater.result!!
 
-        val versionCode = versionInfo.getInt(Updater.VersionCode)
-        val version = versionInfo.getString(Updater.Version)
-        val log = versionInfo.getString(Updater.LogSummary)
+        val arguments = requireArguments()
+
+        versionCode = arguments.getInt(Updater.VersionCode)
+        version = arguments.getString(Updater.Version)
+        log = arguments.getString(Updater.LogSummary)
 
         val dialog = MaterialDialog(requireActivity())
             .title(R.string.new_version)
@@ -31,12 +36,24 @@ class UpgradeDialog : DialogFragment() {
                 i.flags = Intent.FLAG_ACTIVITY_NEW_TASK
                 startActivity(i)
             }
-            .negativeButton(R.string.tg_channel, null){
+            .negativeButton(R.string.tg_channel, null) {
                 val i = Intent(Intent.ACTION_VIEW)
                 i.data = Uri.parse("https://t.me/Phonograph_Plus")
                 i.flags = Intent.FLAG_ACTIVITY_NEW_TASK
                 startActivity(i)
             }
         return dialog
+    }
+
+    companion object {
+        fun create(versionInfo: Bundle): UpgradeDialog {
+            val dialog = UpgradeDialog()
+            val args = Bundle()
+            args.putInt(Updater.VersionCode, versionInfo.getInt(Updater.VersionCode))
+            args.putString(Updater.Version, versionInfo.getString(Updater.Version))
+            args.putString(Updater.LogSummary, versionInfo.getString(Updater.LogSummary))
+            dialog.arguments = args
+            return dialog
+        }
     }
 }

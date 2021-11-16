@@ -1,11 +1,12 @@
 /*
- * Copyright (c) 2021 chr_56 & Abou Zeid (kabouzeid) (original author)
+ * Copyright (c) 2021 chr_56
  */
 
 package player.phonograph
 
 import android.os.Bundle
 import android.util.Log
+import androidx.annotation.Keep
 import com.google.gson.Gson
 import com.google.gson.annotations.SerializedName
 import okhttp3.Call
@@ -15,51 +16,50 @@ import okhttp3.Response
 import java.io.IOException
 
 object Updater {
-    var result: Bundle? = null
-    fun checkUpdate(/*callback: (Bundle) -> Unit*/) {
+    fun checkUpdate(callback: (Bundle) -> Unit) {
         val okHttpClient = OkHttpClient()
         val request = Request.Builder()
-            .url(uri)
+            .url(requestUri)
             .get()
             .build()
 
-        result = Bundle()
-
         okHttpClient.newCall(request).enqueue(object : okhttp3.Callback {
             override fun onFailure(call: Call, e: IOException) {
-                Log.e(TAG, "check version fail")
+                Log.e(TAG, "Fail to check new version!")
             }
 
             override fun onResponse(call: Call, response: Response) {
-                val sources = response.body()?.string()
-                Log.w(TAG, "success")
+                val responseBody = response.body() ?: return
+                Log.i(TAG, "succeed to check new version!")
 
-                val gson = Gson()
-                val versionJson = gson.fromJson<VersionJson>(sources, VersionJson::class.java)
+                val versionJson = Gson().fromJson<VersionJson>(responseBody.string(), VersionJson::class.java)
                 Log.i(TAG, "versionCode: ${versionJson.versionCode}, version: ${versionJson.version}, logSummary: ${versionJson.logSummary}")
 
-                result?.let {
-                    it.putInt(VersionCode, versionJson.versionCode)
-                    it.putString(Version, versionJson.version)
-                    it.putString(LogSummary, versionJson.logSummary)
-
-                    if (versionJson.versionCode > BuildConfig.VERSION_CODE) {
+                when {
+                    versionJson.versionCode > BuildConfig.VERSION_CODE -> {
                         Log.i(TAG, "updatable!")
-                        it.putBoolean(Upgradable, true)
-                    } else if (versionJson.versionCode == BuildConfig.VERSION_CODE) {
+                        val result = Bundle().also {
+                            it.putInt(VersionCode, versionJson.versionCode)
+                            it.putString(Version, versionJson.version)
+                            it.putString(LogSummary, versionJson.logSummary)
+                        }
+                        callback.invoke(result) // call upgrade dialog
+                    }
+                    versionJson.versionCode == BuildConfig.VERSION_CODE -> {
                         Log.i(TAG, "no update, latest version!")
-                        it.putBoolean(Upgradable, false)
-                    } else {
+                        // do nothing
+                    }
+                    versionJson.versionCode < BuildConfig.VERSION_CODE -> {
                         Log.w(TAG, "no update, version is newer than latest?")
-                        it.putBoolean(Upgradable, false)
+                        // do nothing
                     }
                 }
             }
         })
     }
 
+    @Keep
     class VersionJson {
-
         @SerializedName(Version)
         var version: String? = ""
         @SerializedName(VersionCode)
@@ -68,10 +68,13 @@ object Updater {
         var logSummary: String? = ""
     }
 
-    private const val base = "https://cdn.jsdelivr.net/gh/"
-    private const val repo = "chr56/Phonograph_Plus@dev/"
+    private const val owner = "chr56"
+    private const val repo = "Phonograph_Plus"
+    private const val branch = "dev"
     private const val file = "version.json"
-    private const val uri = base + repo + file
+
+    private const val requestUri = "https://cdn.jsdelivr.net/gh/$owner/$repo@$branch/$file"
+
     private const val TAG = "Updater"
 
     const val Version = "version"
