@@ -325,8 +325,8 @@
     <string name="not_available_now">暂不可用</string>
     <string name="keep_upgrade">检查更新</string>
     <string name="no_newer_version">无更新</string>
-    <string name="new_version">有新版本!</string>
-    <string name="new_version_msg">有新版本:\n 版本号: %1$s \n 更新日志: %2$s</string>
+    <string name="new_version">新版本可用!</string>
+    <string name="new_version_msg">新版本已发布:\n 版本号: %1$s \n 更新日志: %2$s</string>
     <string name="tg_channel">TG</string>
     <string name="edit">编辑…</string>
     <string name="move_to_top">移至顶部</string>
