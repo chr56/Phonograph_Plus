@@ -19,10 +19,10 @@ import java.io.IOException
 object Updater {
     /**
      * @param callback a callback that would be executed if there's newer version ()
-     * @param force true if you want to execute callback no mater there is no newer version
+     * @param force true if you want to execute callback no mater there is no newer version or automatic check is disabled
      */
     fun checkUpdate(callback: (Bundle) -> Unit, force: Boolean = false) {
-        if (!PreferenceUtil.getInstance(App.instance).checkUpgradeAtStartup) { Log.w(TAG, "ignore upgrade check!") ; return }
+        if (!force && !PreferenceUtil.getInstance(App.instance).checkUpgradeAtStartup) { Log.w(TAG, "ignore upgrade check!") ; return }
 
         val okHttpClient = OkHttpClient()
         val request = Request.Builder()
