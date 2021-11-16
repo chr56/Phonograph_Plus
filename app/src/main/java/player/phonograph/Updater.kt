@@ -25,53 +25,57 @@ object Updater {
         if (!force && !PreferenceUtil.getInstance(App.instance).checkUpgradeAtStartup) { Log.w(TAG, "ignore upgrade check!") ; return }
 
         val okHttpClient = OkHttpClient()
-        val request = Request.Builder()
-            .url(requestUri)
-            .get()
-            .build()
 
-        okHttpClient.newCall(request).enqueue(object : okhttp3.Callback {
-            override fun onFailure(call: Call, e: IOException) {
-                Log.e(TAG, "Fail to check new version!")
+        val requestJsdelivr = Request.Builder()
+            .url(requestUriJsdelivr).get().build()
+        val requestGithub = Request.Builder()
+            .url(requestUriGitHub).get().build()
+
+        okHttpClient.newCall(requestJsdelivr).enqueue(ResponseHandler(callback, force))
+        okHttpClient.newCall(requestGithub).enqueue(ResponseHandler(callback, force))
+    }
+
+    private class ResponseHandler(val callback: (Bundle) -> Unit, val force: Boolean = false) : okhttp3.Callback {
+        override fun onFailure(call: Call, e: IOException) {
+            Log.e(TAG, "Fail to check new version! call = ${call.request().url()}")
+        }
+
+        override fun onResponse(call: Call, response: Response) {
+            val responseBody = response.body() ?: return
+            Log.i(TAG, "succeed to check new version!")
+
+            val versionJson = Gson().fromJson<VersionJson>(responseBody.string(), VersionJson::class.java)
+            Log.i(TAG, "versionCode: ${versionJson.versionCode}, version: ${versionJson.version}, logSummary: ${versionJson.logSummary}")
+
+            val result = Bundle().also {
+                it.putInt(VersionCode, versionJson.versionCode)
+                it.putString(Version, versionJson.version)
+                it.putString(LogSummary, versionJson.logSummary)
+                it.putBoolean(Upgradable, false)
             }
 
-            override fun onResponse(call: Call, response: Response) {
-                val responseBody = response.body() ?: return
-                Log.i(TAG, "succeed to check new version!")
-
-                val versionJson = Gson().fromJson<VersionJson>(responseBody.string(), VersionJson::class.java)
-                Log.i(TAG, "versionCode: ${versionJson.versionCode}, version: ${versionJson.version}, logSummary: ${versionJson.logSummary}")
-
-                val result = Bundle().also {
-                    it.putInt(VersionCode, versionJson.versionCode)
-                    it.putString(Version, versionJson.version)
-                    it.putString(LogSummary, versionJson.logSummary)
-                    it.putBoolean(Upgradable, false)
+            when {
+                versionJson.versionCode > BuildConfig.VERSION_CODE -> {
+                    Log.i(TAG, "updatable!")
+                    result.putBoolean(Upgradable, true)
+                    callback.invoke(result)
                 }
-
-                when {
-                    versionJson.versionCode > BuildConfig.VERSION_CODE -> {
-                        Log.i(TAG, "updatable!")
-                        result.putBoolean(Upgradable, true)
+                versionJson.versionCode == BuildConfig.VERSION_CODE -> {
+                    Log.i(TAG, "no update, latest version!")
+                    if (force) {
+                        result.putBoolean(Upgradable, false)
                         callback.invoke(result)
                     }
-                    versionJson.versionCode == BuildConfig.VERSION_CODE -> {
-                        Log.i(TAG, "no update, latest version!")
-                        if (force) {
-                            result.putBoolean(Upgradable, false)
-                            callback.invoke(result)
-                        }
-                    }
-                    versionJson.versionCode < BuildConfig.VERSION_CODE -> {
-                        Log.w(TAG, "no update, version is newer than latest?")
-                        if (force) {
-                            result.putBoolean(Upgradable, false)
-                            callback.invoke(result)
-                        }
+                }
+                versionJson.versionCode < BuildConfig.VERSION_CODE -> {
+                    Log.w(TAG, "no update, version is newer than latest?")
+                    if (force) {
+                        result.putBoolean(Upgradable, false)
+                        callback.invoke(result)
                     }
                 }
             }
-        })
+        }
     }
 
     @Keep
@@ -89,7 +93,8 @@ object Updater {
     private const val branch = "dev"
     private const val file = "version.json"
 
-    private const val requestUri = "https://cdn.jsdelivr.net/gh/$owner/$repo@$branch/$file"
+    private const val requestUriJsdelivr = "https://cdn.jsdelivr.net/gh/$owner/$repo@$branch/$file"
+    private const val requestUriGitHub = "https://raw.githubusercontent.com/$owner/$repo/$branch/$file"
 
     private const val TAG = "Updater"
 
