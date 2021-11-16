@@ -13,6 +13,7 @@ import okhttp3.Call
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
+import player.phonograph.util.PreferenceUtil
 import java.io.IOException
 
 object Updater {
@@ -21,6 +22,8 @@ object Updater {
      * @param force true if you want to execute callback no mater there is no newer version
      */
     fun checkUpdate(callback: (Bundle) -> Unit, force: Boolean = false) {
+        if (!PreferenceUtil.getInstance(App.instance).checkUpgradeAtStartup) { Log.w(TAG, "ignore upgrade check!") ; return }
+
         val okHttpClient = OkHttpClient()
         val request = Request.Builder()
             .url(requestUri)
