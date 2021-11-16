@@ -37,6 +37,7 @@ class AboutActivity : ThemeActivity(), View.OnClickListener {
     private lateinit var appIcon: ImageView
     private lateinit var appVersion: TextView
     private lateinit var changelog: LinearLayout
+    private lateinit var checkUpgrade: LinearLayout
     private lateinit var intro: LinearLayout
     private lateinit var licenses: LinearLayout
     private lateinit var writeAnEmail: LinearLayout
@@ -77,6 +78,7 @@ class AboutActivity : ThemeActivity(), View.OnClickListener {
         appIcon = binding.activityAboutMainContent.cardAboutAppLayout.phonographIcon
         appVersion = binding.activityAboutMainContent.cardAboutAppLayout.appVersion
         changelog = binding.activityAboutMainContent.cardAboutAppLayout.changelog
+        checkUpgrade = binding.activityAboutMainContent.cardAboutAppLayout.checkUpgrade
         licenses = binding.activityAboutMainContent.cardAboutAppLayout.licenses
         forkOnGitHub = binding.activityAboutMainContent.cardAboutAppLayout.forkOnGithub
 
@@ -141,7 +143,7 @@ class AboutActivity : ThemeActivity(), View.OnClickListener {
                         1 -> {
                             Updater.checkUpdate(callback = {
                                 UpgradeDialog.create(it).show(supportFragmentManager, "DebugDialog")
-                            },force = true)
+                            }, force = true)
                         }
                         else -> dialog.dismiss()
                     }
@@ -151,6 +153,7 @@ class AboutActivity : ThemeActivity(), View.OnClickListener {
         } // debug Menu
 
         changelog.setOnClickListener(this)
+        checkUpgrade.setOnClickListener(this)
         intro.setOnClickListener(this)
         licenses.setOnClickListener(this)
         followOnTwitter.setOnClickListener(this)
@@ -181,6 +184,11 @@ class AboutActivity : ThemeActivity(), View.OnClickListener {
         when (v) {
             changelog -> {
                 ChangelogDialog.create().show(supportFragmentManager, "CHANGELOG_DIALOG")
+            }
+            checkUpgrade -> {
+                Updater.checkUpdate(callback = {
+                    UpgradeDialog.create(it).show(supportFragmentManager, "DebugDialog")
+                }, force = false)
             }
             licenses -> {
                 showLicenseDialog()

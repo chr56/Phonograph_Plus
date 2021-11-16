@@ -43,20 +43,28 @@ object Updater {
                     it.putInt(VersionCode, versionJson.versionCode)
                     it.putString(Version, versionJson.version)
                     it.putString(LogSummary, versionJson.logSummary)
+                    it.putBoolean(Upgradable, false)
                 }
 
                 when {
                     versionJson.versionCode > BuildConfig.VERSION_CODE -> {
                         Log.i(TAG, "updatable!")
-                        callback.invoke(result) // call upgrade dialog
+                        result.putBoolean(Upgradable, true)
+                        callback.invoke(result)
                     }
                     versionJson.versionCode == BuildConfig.VERSION_CODE -> {
                         Log.i(TAG, "no update, latest version!")
-                        if (force) callback.invoke(result)
+                        if (force) {
+                            result.putBoolean(Upgradable, false)
+                            callback.invoke(result)
+                        }
                     }
                     versionJson.versionCode < BuildConfig.VERSION_CODE -> {
                         Log.w(TAG, "no update, version is newer than latest?")
-                        if (force) callback.invoke(result)
+                        if (force) {
+                            result.putBoolean(Upgradable, false)
+                            callback.invoke(result)
+                        }
                     }
                 }
             }

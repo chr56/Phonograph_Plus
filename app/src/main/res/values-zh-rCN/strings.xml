@@ -323,6 +323,7 @@
     <string name="retry">重试</string>
     <string name="permission_manage_external_storage_denied"> Phonograph 疑似无\"所有文件访问\"权限! </string>
     <string name="not_available_now">暂不可用</string>
+    <string name="keep_upgrade">检查更新</string>
     <string name="new_version">有新版本!</string>
     <string name="new_version_msg">有新版本:\n 版本号: %1$s \n 更新日志: %2$s</string>
     <string name="tg_channel">TG</string>
