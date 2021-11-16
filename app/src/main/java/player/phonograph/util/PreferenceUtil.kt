@@ -453,6 +453,12 @@ class PreferenceUtil(context: Context) {
             return defaultCategoryInfos
         }
 
+    var checkUpgradeAtStartup: Boolean
+        get() = mPreferences.getBoolean(CHECK_UPGRADE_AT_STARTUP, true)
+        set(value) {
+            mPreferences.edit().putBoolean(CHECK_UPGRADE_AT_STARTUP, value).apply()
+        }
+
     /**
      * **Dangerous !**, this reset all SharedPreferences!
      * @param context this is used to make toast
@@ -569,5 +575,7 @@ class PreferenceUtil(context: Context) {
         private const val REMEMBER_SHUFFLE = "remember_shuffle"
 
         const val FIXED_TAB_LAYOUT = "fixed_tab_layout"
+
+        const val CHECK_UPGRADE_AT_STARTUP = "check_upgrade_at_startup"
     }
 }

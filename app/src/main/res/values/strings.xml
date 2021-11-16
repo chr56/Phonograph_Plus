@@ -337,11 +337,13 @@
     <string name="retry">Retry</string>
     <string name="permission_manage_external_storage_denied">it seems that Phonograph has no permission \"manage external storage\"!</string>
     <string name="not_available_now">not available now</string>
-    <string name="keep_upgrade">Check upgrade</string>
+    <string name="check_upgrade">Check upgrade</string>
     <string name="no_newer_version">No update!</string>
     <string name="new_version">New Version!</string>
     <string name="new_version_msg">New Version available:\n version: %1$s \n changelog: %2$s</string>
     <string name="tg_channel">Telegram Channel</string>
+    <string name="auto_check_upgrade">Check update automatically</string>
+    <string name="auto_check_upgrade_summary">Pop up an upgrade dialog instantly if newer version available.</string>
     <string name="edit">Edit…</string>
     <string name="move_to_top">Move to top</string>
     <string name="move_to_bottom">Move to bottom</string>
