@@ -5,6 +5,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
+import android.os.Looper
 import android.view.MenuItem
 import android.view.View
 import android.widget.ImageView
@@ -187,8 +188,12 @@ class AboutActivity : ThemeActivity(), View.OnClickListener {
             }
             checkUpgrade -> {
                 Updater.checkUpdate(callback = {
-                    UpgradeDialog.create(it).show(supportFragmentManager, "DebugDialog")
-                }, force = false)
+                    if (it.getBoolean(Updater.Upgradable)) {
+                        UpgradeDialog.create(it).show(supportFragmentManager, "DebugDialog")
+                    } else {
+                        toast(getText(R.string.no_newer_version))
+                    }
+                }, force = true)
             }
             licenses -> {
                 showLicenseDialog()
@@ -256,6 +261,12 @@ class AboutActivity : ThemeActivity(), View.OnClickListener {
         startActivity(i)
     }
 
+    private fun toast(text: CharSequence) {
+        Looper.prepare()
+        Toast.makeText(this,text,Toast.LENGTH_SHORT).show()
+        Looper.loop()
+    }
+
     private fun showLicenseDialog() {
         val app = instance
         LicensesDialog.Builder(this)
@@ -270,8 +281,6 @@ class AboutActivity : ThemeActivity(), View.OnClickListener {
             .setIncludeOwnLicense(true)
             .build()
             .show()
-        //        Test Only
-//        throw new RuntimeException("Crash Test"); // crash test
     }
 
     companion object {
