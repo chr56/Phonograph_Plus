@@ -19,6 +19,7 @@ import com.afollestad.materialdialogs.list.listItemsSingleChoice
 import de.psdev.licensesdialog.LicensesDialog
 import player.phonograph.App.Companion.instance
 import player.phonograph.R
+import player.phonograph.Updater
 import player.phonograph.databinding.ActivityAboutBinding
 import player.phonograph.dialogs.ChangelogDialog
 import player.phonograph.dialogs.UpgradeDialog
@@ -130,7 +131,7 @@ class AboutActivity : ThemeActivity(), View.OnClickListener {
     }
 
     private fun setUpOnClickListeners() {
-        val debugMenuItem = listOf<String>("Crash the app", "Test Upgrade Dialog")
+        val debugMenuItem = listOf<String>("Crash the app", "Check Upgrade")
         appIcon.setOnLongClickListener {
             MaterialDialog(this)
                 .title(text = "Debug Menu")
@@ -138,7 +139,9 @@ class AboutActivity : ThemeActivity(), View.OnClickListener {
                     when (index) {
                         0 -> throw Exception("Crash Test")
                         1 -> {
-                            UpgradeDialog().show(supportFragmentManager, "DebugDialog")
+                            Updater.checkUpdate {
+                                UpgradeDialog.create(it).show(supportFragmentManager, "DebugDialog")
+                            }
                         }
                         else -> dialog.dismiss()
                     }
