@@ -1,381 +1,371 @@
-package player.phonograph.ui.activities;
+package player.phonograph.ui.activities
 
-import android.annotation.SuppressLint;
-import android.content.Intent;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
-import android.net.Uri;
-import android.os.Bundle;
-import android.os.Handler;
-import android.provider.MediaStore;
-import android.util.Log;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.annotation.SuppressLint
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.os.Bundle
+import android.os.Handler
+import android.provider.MediaStore
+import android.util.Log
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
+import android.widget.Toast
+import androidx.drawerlayout.widget.DrawerLayout
+import chr_56.MDthemer.core.ThemeColor
+import chr_56.MDthemer.util.NavigationViewUtil
+import chr_56.MDthemer.util.Util
+import com.bumptech.glide.Glide
+import com.google.android.material.navigation.NavigationView
+import com.sothree.slidinguppanel.SlidingUpPanelLayout
+import player.phonograph.R
+import player.phonograph.Updater.checkUpdate
+import player.phonograph.dialogs.ChangelogDialog.Companion.create
+import player.phonograph.dialogs.ChangelogDialog.Companion.setChangelogRead
+import player.phonograph.dialogs.ScanMediaFolderDialog
+import player.phonograph.dialogs.UpgradeDialog.Companion.create
+import player.phonograph.glide.SongGlideRequest
+import player.phonograph.helper.MusicPlayerRemote
+import player.phonograph.helper.SearchQueryHelper
+import player.phonograph.helper.menu.PlaylistMenuHelper
+import player.phonograph.helper.menu.PlaylistMenuHelper.handleSavePlaylist
+import player.phonograph.loader.AlbumLoader
+import player.phonograph.loader.ArtistLoader
+import player.phonograph.loader.PlaylistSongLoader
+import player.phonograph.model.Song
+import player.phonograph.service.MusicService
+import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
+import player.phonograph.ui.activities.intro.AppIntroActivity
+import player.phonograph.ui.fragments.mainactivity.AbsMainActivityFragment
+import player.phonograph.ui.fragments.mainactivity.folders.FoldersFragment
+import player.phonograph.ui.fragments.mainactivity.library.LibraryFragment
+import player.phonograph.util.MusicUtil
+import player.phonograph.util.PreferenceUtil
+import player.phonograph.util.PreferenceUtil.Companion.getInstance
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.fragment.app.Fragment;
+class MainActivity : AbsSlidingMusicPanelActivity() {
+    // init : onCreate()
+    private lateinit var navigationView: NavigationView
+    private lateinit var drawerLayout: DrawerLayout
 
-import com.bumptech.glide.Glide;
-import com.google.android.material.navigation.NavigationView;
-import com.sothree.slidinguppanel.SlidingUpPanelLayout;
+    private lateinit var currentFragment: MainActivityFragmentCallbacks
+    private var navigationDrawerHeader: View? = null
+    private var blockRequestPermissions = false
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
 
-import java.util.ArrayList;
-import java.util.List;
+        setDrawUnderStatusbar()
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import chr_56.MDthemer.core.ThemeColor;
-import chr_56.MDthemer.util.NavigationViewUtil;
-import chr_56.MDthemer.util.Util;
-import kotlin.Unit;
-import player.phonograph.R;
-import player.phonograph.Updater;
-import player.phonograph.dialogs.ChangelogDialog;
-import player.phonograph.dialogs.ScanMediaFolderDialog;
-import player.phonograph.dialogs.UpgradeDialog;
-import player.phonograph.glide.SongGlideRequest;
-import player.phonograph.helper.MusicPlayerRemote;
-import player.phonograph.helper.SearchQueryHelper;
-import player.phonograph.helper.menu.PlaylistMenuHelper;
-import player.phonograph.loader.AlbumLoader;
-import player.phonograph.loader.ArtistLoader;
-import player.phonograph.loader.PlaylistSongLoader;
-import player.phonograph.model.Song;
-import player.phonograph.service.MusicService;
-import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity;
-import player.phonograph.ui.activities.intro.AppIntroActivity;
-import player.phonograph.ui.fragments.mainactivity.folders.FoldersFragment;
-import player.phonograph.ui.fragments.mainactivity.library.LibraryFragment;
-import player.phonograph.util.MusicUtil;
-import player.phonograph.util.PreferenceUtil;
-
-public class MainActivity extends AbsSlidingMusicPanelActivity {
-
-    public static final String TAG = MainActivity.class.getSimpleName();
-    public static final int APP_INTRO_REQUEST = 100;
-
-    private static final int LIBRARY = 0;
-    private static final int FOLDERS = 1;
-
-    @BindView(R.id.navigation_view)
-    NavigationView navigationView;
-    @BindView(R.id.drawer_layout)
-    DrawerLayout drawerLayout;
-
-    @Nullable
-    MainActivityFragmentCallbacks currentFragment;
-
-    @Nullable
-    private View navigationDrawerHeader;
-
-    private boolean blockRequestPermissions;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setDrawUnderStatusbar();
-        ButterKnife.bind(this);
+        // todo: viewBinding
+        navigationView = findViewById(R.id.navigation_view)
+        drawerLayout = findViewById(R.id.drawer_layout)
 
 //        if (Build.VERSION.SDK_INT == Build.VERSION_CODES.KITKAT) {
-//            navigationView.setFitsSystemWindows(false); // for header to go below statusbar
+//            navigationView.fitsSystemWindows = false // for header to go below statusbar
 //        }
 
-        setUpDrawer();
+        setUpDrawer()
 
         if (savedInstanceState == null) {
-            setMusicChooser(PreferenceUtil.getInstance(this).getLastMusicChooser());
+            setMusicChooser(getInstance(this).lastMusicChooser)
         } else {
-            //restoreCurrentFragment
-            currentFragment = (MainActivityFragmentCallbacks) getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+            currentFragment =
+                supportFragmentManager.findFragmentById(R.id.fragment_container) as MainActivityFragmentCallbacks
         }
 
-        showIntro();
-        showChangelog();
-
+        showIntro()
+        checkUpdate()
+        showChangelog()
     }
 
-    private void setMusicChooser(int key) {
-        PreferenceUtil.getInstance(this).setLastMusicChooser(key);
-        switch (key) {
-            case LIBRARY:
-                navigationView.setCheckedItem(R.id.nav_library);
-                setCurrentFragment(LibraryFragment.newInstance());
-                break;
-            case FOLDERS:
-                navigationView.setCheckedItem(R.id.nav_folders);
-                setCurrentFragment(FoldersFragment.newInstance(this));
-                break;
-        }
-    }
-
-    private void setCurrentFragment(@SuppressWarnings("NullableProblems") Fragment fragment) {
-        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, fragment, null).commit();
-        currentFragment = (MainActivityFragmentCallbacks) fragment;
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == APP_INTRO_REQUEST) {
-            blockRequestPermissions = false;
-            if (!hasPermissions()) {
-                requestPermissions();
-            }
-            ChangelogDialog.create().show(getSupportFragmentManager(), "CHANGE_LOG_DIALOG");
-        } else if (resultCode == RESULT_OK && requestCode == PlaylistMenuHelper.TASK_ID_SAVE_PLAYLIST){
-            if (data != null) {
-                Uri uri = data.getData();
-                PlaylistMenuHelper.handleSavePlaylist(this, uri);
-            }
-        }
-    }
-
-    @Override
-    protected void requestPermissions() {
-        if (!blockRequestPermissions) super.requestPermissions();
-    }
-
-    @Override
-    protected View createContentView() {
+    override fun createContentView(): View {
         @SuppressLint("InflateParams")
-        View contentView = getLayoutInflater().inflate(R.layout.activity_main_drawer_layout, null);
-        ViewGroup drawerContent = contentView.findViewById(R.id.drawer_content_container);
-        drawerContent.addView(wrapSlidingMusicPanel(R.layout.activity_main_content));
-        return contentView;
+        val contentView =
+            layoutInflater.inflate(R.layout.activity_main_drawer_layout, null)
+        val drawerContent = contentView.findViewById<ViewGroup>(R.id.drawer_content_container)
+        drawerContent.addView(wrapSlidingMusicPanel(R.layout.activity_main_content))
+        return contentView
     }
 
-    private void setUpDrawer() {
-        int accentColor = ThemeColor.accentColor(this);
-        NavigationViewUtil.setItemIconColors(navigationView, Util.resolveColor(this, R.attr.iconColor, ThemeColor.textColorSecondary(this)), accentColor);
-        NavigationViewUtil.setItemTextColors(navigationView, ThemeColor.textColorPrimary(this), accentColor);
+    private fun setMusicChooser(key: Int) {
+        getInstance(this).lastMusicChooser = key
+        when (key) {
+            LIBRARY -> {
+                navigationView.setCheckedItem(R.id.nav_library)
+                setCurrentFragment(LibraryFragment.newInstance())
+            }
+            FOLDERS -> {
+                navigationView.setCheckedItem(R.id.nav_folders)
+                setCurrentFragment(FoldersFragment.newInstance(this))
+            }
+        }
+    }
 
-        navigationView.setNavigationItemSelectedListener(menuItem -> {
-            drawerLayout.closeDrawers();
-            switch (menuItem.getItemId()) {
-                case R.id.nav_library:
-                    new Handler().postDelayed(() -> setMusicChooser(LIBRARY), 200);
-                    break;
-                case R.id.nav_folders:
-                    new Handler().postDelayed(() -> setMusicChooser(FOLDERS), 200);
-                    break;
-                case R.id.action_scan:
-                    new Handler().postDelayed(() -> {
-                        ScanMediaFolderDialog dialog = new ScanMediaFolderDialog();
-                        dialog.show(getSupportFragmentManager(),"SCAN_MEDIA_FOLDER_CHOOSER");
-                    }, 200);
-                    break;
-                case R.id.theme_toggle:
-                    new Handler().postDelayed(() -> {
-                        PreferenceUtil preferenceUtil = PreferenceUtil.getInstance(this);
-                        int theme_setting = preferenceUtil.getGeneralTheme();
-                        if (theme_setting == R.style.Theme_Phonograph_Auto){
-                            Toast.makeText(this, R.string.auto_mode_on,Toast.LENGTH_SHORT).show();
-                        } else {
-                            switch (theme_setting) {
-                                case R.style.Theme_Phonograph_Light:
-                                    preferenceUtil.setGeneralTheme("dark");
-                                    break;
-                                case R.style.Theme_Phonograph_Dark:
-                                case R.style.Theme_Phonograph_Black:
-                                    preferenceUtil.setGeneralTheme("light");
-                                    break;
-                            }
-                            recreate();
+    private fun setCurrentFragment(fragment: AbsMainActivityFragment) {
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.fragment_container, fragment, null)
+            .commit()
+        currentFragment = fragment as MainActivityFragmentCallbacks
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == APP_INTRO_REQUEST) {
+            blockRequestPermissions = false
+            if (!hasPermissions()) {
+                requestPermissions()
+            }
+            create().show(supportFragmentManager, "CHANGE_LOG_DIALOG")
+        } else if (resultCode == RESULT_OK && requestCode == PlaylistMenuHelper.TASK_ID_SAVE_PLAYLIST) {
+            if (data != null) {
+                val uri = data.data
+                handleSavePlaylist(this, uri!!)
+            }
+        }
+    }
+
+    override fun requestPermissions() {
+        if (!blockRequestPermissions) super.requestPermissions()
+    }
+
+    private fun setUpDrawer() {
+        val accentColor = ThemeColor.accentColor(this)
+        NavigationViewUtil.setItemIconColors(
+            navigationView, Util.resolveColor(this, R.attr.iconColor, ThemeColor.textColorSecondary(this)), accentColor
+        )
+        NavigationViewUtil.setItemTextColors(
+            navigationView, ThemeColor.textColorPrimary(this), accentColor
+        )
+
+        navigationView.setNavigationItemSelectedListener { menuItem: MenuItem ->
+            drawerLayout.closeDrawers()
+
+            when (menuItem.itemId) {
+                R.id.nav_library -> Handler().postDelayed({ setMusicChooser(LIBRARY) }, 200)
+                R.id.nav_folders -> Handler().postDelayed({ setMusicChooser(FOLDERS) }, 200)
+
+                R.id.action_scan -> Handler().postDelayed({
+                    ScanMediaFolderDialog().show(supportFragmentManager, "SCAN_MEDIA_FOLDER_CHOOSER")
+                }, 200)
+                R.id.theme_toggle -> Handler().postDelayed({
+                    val themeSetting = PreferenceUtil.getInstance(this).generalTheme
+
+                    if (themeSetting == R.style.Theme_Phonograph_Auto) {
+                        Toast.makeText(this, R.string.auto_mode_on, Toast.LENGTH_SHORT).show()
+                    } else {
+                        when (themeSetting) {
+                            R.style.Theme_Phonograph_Light ->
+                                PreferenceUtil.getInstance(this).setGeneralTheme("dark")
+                            R.style.Theme_Phonograph_Dark, R.style.Theme_Phonograph_Black ->
+                                PreferenceUtil.getInstance(this).setGeneralTheme("light")
                         }
-                    },200);
-                    break;
-                case R.id.nav_settings:
-                    new Handler().postDelayed(() -> startActivity(new Intent(MainActivity.this, SettingsActivity.class)), 200);
-                    break;
-                case R.id.nav_about:
-                    new Handler().postDelayed(() -> startActivity(new Intent(MainActivity.this, AboutActivity.class)), 200);
-                    break;
+                        recreate()
+                    }
+                }, 200)
+
+                R.id.nav_settings -> Handler().postDelayed({
+                    startActivity(Intent(this, SettingsActivity::class.java))
+                }, 200)
+                R.id.nav_about -> Handler().postDelayed({
+                    startActivity(Intent(this, AboutActivity::class.java))
+                }, 200)
             }
-            return true;
-        });
+            true
+        }
     }
 
-    private void updateNavigationDrawerHeader() {
-        if (!MusicPlayerRemote.getPlayingQueue().isEmpty()) {
-            Song song = MusicPlayerRemote.getCurrentSong();
+    private fun updateNavigationDrawerHeader() {
+        if (MusicPlayerRemote.getPlayingQueue().isNotEmpty()) {
+            val song = MusicPlayerRemote.getCurrentSong()
+
             if (navigationDrawerHeader == null) {
-                navigationDrawerHeader = navigationView.inflateHeaderView(R.layout.navigation_drawer_header);
-                //noinspection ConstantConditions
-                navigationDrawerHeader.setOnClickListener(v -> {
-                    drawerLayout.closeDrawers();
-                    if (getPanelState() == SlidingUpPanelLayout.PanelState.COLLAPSED) {
-                        expandPanel();
+                navigationDrawerHeader =
+                    navigationView.inflateHeaderView(R.layout.navigation_drawer_header)
+                (navigationDrawerHeader as View).setOnClickListener {
+                    drawerLayout.closeDrawers()
+                    if (panelState == SlidingUpPanelLayout.PanelState.COLLAPSED) {
+                        expandPanel()
                     }
-                });
+                }
             }
-            ((TextView) navigationDrawerHeader.findViewById(R.id.title)).setText(song.title);
-            ((TextView) navigationDrawerHeader.findViewById(R.id.text)).setText(MusicUtil.getSongInfoString(song));
+
+            (navigationDrawerHeader!!.findViewById<View>(R.id.title) as TextView).text = song.title
+            (navigationDrawerHeader!!.findViewById<View>(R.id.text) as TextView).text =
+                MusicUtil.getSongInfoString(song)
             SongGlideRequest.Builder.from(Glide.with(this), song)
-                    .checkIgnoreMediaStore(this).build()
-                    .into(((ImageView) navigationDrawerHeader.findViewById(R.id.image)));
+                .checkIgnoreMediaStore(this).build()
+                .into(navigationDrawerHeader!!.findViewById<View>(R.id.image) as ImageView)
         } else {
             if (navigationDrawerHeader != null) {
-                navigationView.removeHeaderView(navigationDrawerHeader);
-                navigationDrawerHeader = null;
+                navigationView.removeHeaderView(navigationDrawerHeader!!)
+                navigationDrawerHeader = null
             }
         }
     }
 
-    @Override
-    public void onPlayingMetaChanged() {
-        super.onPlayingMetaChanged();
-        updateNavigationDrawerHeader();
+    override fun onPlayingMetaChanged() {
+        super.onPlayingMetaChanged()
+        updateNavigationDrawerHeader()
     }
 
-    @Override
-    public void onServiceConnected() {
-        super.onServiceConnected();
-        updateNavigationDrawerHeader();
-        handlePlaybackIntent(getIntent());
+    override fun onServiceConnected() {
+        super.onServiceConnected()
+        updateNavigationDrawerHeader()
+
+        intent?.let { handlePlaybackIntent(it) }
     }
 
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == android.R.id.home) {
             if (drawerLayout.isDrawerOpen(navigationView)) {
-                drawerLayout.closeDrawer(navigationView);
+                drawerLayout.closeDrawer(navigationView)
             } else {
-                drawerLayout.openDrawer(navigationView);
+                drawerLayout.openDrawer(navigationView)
             }
-            return true;
+            return true
         }
-        return super.onOptionsItemSelected(item);
+        return super.onOptionsItemSelected(item)
     }
 
-    @Override
-    public boolean handleBackPress() {
+    override fun handleBackPress(): Boolean {
         if (drawerLayout.isDrawerOpen(navigationView)) {
-            drawerLayout.closeDrawers();
-            return true;
+            drawerLayout.closeDrawers()
+            return true
         }
-        return super.handleBackPress() || (currentFragment != null && currentFragment.handleBackPress());
+        return super.handleBackPress() || currentFragment.handleBackPress()
     }
 
-    private void handlePlaybackIntent(@Nullable Intent intent) {
-        if (intent == null) {
-            return;
-        }
+    private fun handlePlaybackIntent(intent: Intent) {
+        var handled = false
 
-        Uri uri = intent.getData();
-        String mimeType = intent.getType();
-        boolean handled = false;
-
-        if (intent.getAction() != null && intent.getAction().equals(MediaStore.INTENT_ACTION_MEDIA_PLAY_FROM_SEARCH)) {
-            final List<Song> songs = SearchQueryHelper.getSongs(this, intent.getExtras());
-            if (MusicPlayerRemote.getShuffleMode() == MusicService.SHUFFLE_MODE_SHUFFLE) {
-                MusicPlayerRemote.openAndShuffleQueue(songs, true);
-            } else {
-                MusicPlayerRemote.openQueue(songs, 0, true);
-            }
-            handled = true;
-        }
-
-        if (uri != null && uri.toString().length() > 0) {
-            MusicPlayerRemote.playFromUri(uri);
-            handled = true;
-        } else if (MediaStore.Audio.Playlists.CONTENT_TYPE.equals(mimeType)) {
-            final long id = parseIdFromIntent(intent, "playlistId", "playlist");
-            if (id >= 0) {
-                int position = intent.getIntExtra("position", 0);
-                List<Song> songs = new ArrayList<>(PlaylistSongLoader.getPlaylistSongList(this, id));
-                MusicPlayerRemote.openQueue(songs, position, true);
-                handled = true;
-            }
-        } else if (MediaStore.Audio.Albums.CONTENT_TYPE.equals(mimeType)) {
-            final long id = parseIdFromIntent(intent, "albumId", "album");
-            if (id >= 0) {
-                int position = intent.getIntExtra("position", 0);
-                MusicPlayerRemote.openQueue(AlbumLoader.getAlbum(this, id).songs, position, true);
-                handled = true;
-            }
-        } else if (MediaStore.Audio.Artists.CONTENT_TYPE.equals(mimeType)) {
-            final long id = parseIdFromIntent(intent, "artistId", "artist");
-            if (id >= 0) {
-                int position = intent.getIntExtra("position", 0);
-                MusicPlayerRemote.openQueue(ArtistLoader.getArtist(this, id).getSongs(), position, true);
-                handled = true;
+        intent.action?.let {
+            if (it == MediaStore.INTENT_ACTION_MEDIA_PLAY_FROM_SEARCH) {
+                val songs = SearchQueryHelper.getSongs(this, intent.extras!!)
+                if (MusicPlayerRemote.getShuffleMode() == MusicService.SHUFFLE_MODE_SHUFFLE) {
+                    MusicPlayerRemote.openAndShuffleQueue(songs, true)
+                } else {
+                    MusicPlayerRemote.openQueue(songs, 0, true)
+                }
+                handled = true
             }
         }
-        if (handled) {
-            setIntent(new Intent());
-        }
-    }
 
-    private long parseIdFromIntent(@NonNull Intent intent, String longKey,
-                                   String stringKey) {
-        long id = intent.getLongExtra(longKey, -1);
-        if (id < 0) {
-            String idString = intent.getStringExtra(stringKey);
-            if (idString != null) {
-                try {
-                    id = Long.parseLong(idString);
-                } catch (NumberFormatException e) {
-                    Log.e(TAG, e.getMessage());
+        val uri = intent.data
+        if (uri != null && uri.toString().isNotEmpty()) {
+            MusicPlayerRemote.playFromUri(uri)
+            handled = true
+        } else {
+            when (intent.type) {
+                MediaStore.Audio.Playlists.CONTENT_TYPE -> {
+                    val id = parseIdFromIntent(intent, "playlistId", "playlist")
+                    if (id >= 0) {
+                        val position = intent.getIntExtra("position", 0)
+                        val songs: List<Song> =
+                            ArrayList<Song>(PlaylistSongLoader.getPlaylistSongList(this, id))
+                        MusicPlayerRemote.openQueue(songs, position, true)
+                        handled = true
+                    }
+                }
+                MediaStore.Audio.Albums.CONTENT_TYPE -> {
+                    val id = parseIdFromIntent(intent, "albumId", "album")
+                    if (id >= 0) {
+                        val position = intent.getIntExtra("position", 0)
+                        MusicPlayerRemote.openQueue(AlbumLoader.getAlbum(this, id).songs, position, true)
+                        handled = true
+                    }
+                }
+                MediaStore.Audio.Artists.CONTENT_TYPE -> {
+                    val id = parseIdFromIntent(intent, "artistId", "artist")
+                    if (id >= 0) {
+                        val position = intent.getIntExtra("position", 0)
+                        MusicPlayerRemote.openQueue(ArtistLoader.getArtist(this, id).songs, position, true)
+                        handled = true
+                    }
                 }
             }
         }
-        return id;
+
+        if (handled) setIntent(Intent())
     }
 
-    @Override
-    public void onPanelExpanded(View view) {
-        super.onPanelExpanded(view);
-        drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
-    }
-
-    @Override
-    public void onPanelCollapsed(View view) {
-        super.onPanelCollapsed(view);
-        drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
-    }
-
-    private void showIntro() {
-        if (!PreferenceUtil.getInstance(this).introShown()) {
-            PreferenceUtil.getInstance(this).setIntroShown();
-            ChangelogDialog.setChangelogRead(this);
-            blockRequestPermissions = true;
-            new Handler().postDelayed(() -> startActivityForResult(new Intent(MainActivity.this, AppIntroActivity.class), APP_INTRO_REQUEST), 50);
-        }
-
-        new Handler().postDelayed(
-                ()->{
-                    Updater.INSTANCE.checkUpdate(this::showUpgradeDialog,false);
-                },3_000);
-
-
-    }
-
-    private void showChangelog() {
-        try {
-            PackageInfo pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
-            int currentVersion = pInfo.versionCode;
-            if (currentVersion != PreferenceUtil.getInstance(this).getLastChangelogVersion()) {
-                ChangelogDialog.create().show(getSupportFragmentManager(), "CHANGE_LOG_DIALOG");
+    private fun parseIdFromIntent(intent: Intent, longKey: String, stringKey: String): Long {
+        var id = intent.getLongExtra(longKey, -1)
+        if (id < 0) {
+            val idString = intent.getStringExtra(stringKey)
+            if (idString != null) {
+                try {
+                    id = idString.toLong()
+                } catch (e: NumberFormatException) {
+                    e.message?.let { Log.e(TAG, it) }
+                }
             }
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
         }
-
+        return id
     }
 
-    public Unit showUpgradeDialog(Bundle versionInfo){
-        UpgradeDialog.Companion.create(versionInfo)
-                .show(getSupportFragmentManager(), "UpgradeDialog");
-        return Unit.INSTANCE;
+    override fun onPanelExpanded(view: View) {
+        super.onPanelExpanded(view)
+        drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
     }
 
-    public interface MainActivityFragmentCallbacks {
-        boolean handleBackPress();
+    override fun onPanelCollapsed(view: View) {
+        super.onPanelCollapsed(view)
+        drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
+    }
+
+    private fun showIntro() {
+        if (!getInstance(this).introShown()) {
+            getInstance(this).setIntroShown()
+            setChangelogRead(this)
+
+            blockRequestPermissions = true
+
+            Handler().postDelayed({
+                startActivityForResult(Intent(this@MainActivity, AppIntroActivity::class.java), APP_INTRO_REQUEST)
+            }, 50)
+        }
+    }
+
+    private fun checkUpdate() {
+        Handler().postDelayed(
+            {
+                checkUpdate({ versionInfo: Bundle ->
+                    showUpgradeDialog(versionInfo)
+                }, false)
+            }, 3000
+        )
+    }
+
+    private fun showChangelog() {
+        try {
+            val pInfo = packageManager.getPackageInfo(packageName, 0)
+            val currentVersion = pInfo.versionCode
+            if (currentVersion != getInstance(this).getLastChangelogVersion()) {
+                create().show(supportFragmentManager, "CHANGE_LOG_DIALOG")
+            }
+        } catch (e: PackageManager.NameNotFoundException) {
+            e.printStackTrace()
+        }
+    }
+
+    private fun showUpgradeDialog(versionInfo: Bundle?) {
+        create(versionInfo!!)
+            .show(supportFragmentManager, "UpgradeDialog")
+        return
+    }
+
+    interface MainActivityFragmentCallbacks {
+        fun handleBackPress(): Boolean
+    }
+
+    companion object {
+
+        val TAG: String = MainActivity::class.java.simpleName
+        const val APP_INTRO_REQUEST = 100
+
+        private const val LIBRARY = 0
+        private const val FOLDERS = 1
     }
 }
