@@ -1,218 +1,192 @@
-package player.phonograph.ui.activities;
+package player.phonograph.ui.activities
 
-import android.content.Context;
-import android.os.Bundle;
-import android.text.TextUtils;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.TextView;
+import android.content.Context
+import android.os.Bundle
+import android.text.TextUtils
+import android.view.Menu
+import android.view.MenuItem
+import android.view.View
+import android.widget.TextView
+import androidx.appcompat.widget.SearchView
+import androidx.appcompat.widget.Toolbar
+import androidx.loader.app.LoaderManager
+import androidx.loader.content.Loader
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import chr_56.MDthemer.core.ThemeColor
+import player.phonograph.R
+import player.phonograph.adapter.SearchAdapter
+import player.phonograph.interfaces.LoaderIds
+import player.phonograph.loader.AlbumLoader
+import player.phonograph.loader.ArtistLoader
+import player.phonograph.loader.SongLoader
+import player.phonograph.misc.WrappedAsyncTaskLoader
+import player.phonograph.ui.activities.base.AbsMusicServiceActivity
+import player.phonograph.util.Util
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.widget.SearchView;
-import androidx.appcompat.widget.Toolbar;
-import androidx.loader.app.LoaderManager;
-import androidx.loader.content.Loader;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+class SearchActivity :
+    AbsMusicServiceActivity(),
+    SearchView.OnQueryTextListener,
+    LoaderManager.LoaderCallbacks<List<Any>> {
 
-import player.phonograph.R;
-import player.phonograph.adapter.SearchAdapter;
-import player.phonograph.interfaces.LoaderIds;
-import player.phonograph.loader.AlbumLoader;
-import player.phonograph.loader.ArtistLoader;
-import player.phonograph.loader.SongLoader;
-import player.phonograph.misc.WrappedAsyncTaskLoader;
-import player.phonograph.ui.activities.base.AbsMusicServiceActivity;
-import player.phonograph.util.Util;
+    private lateinit var recyclerView: RecyclerView
+    private lateinit var mToolbar: Toolbar
+    private lateinit var empty: TextView
+    private var searchView: SearchView? = null
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+    private lateinit var adapter: SearchAdapter
+    private var query: String? = null
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import chr_56.MDthemer.core.ThemeColor;
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_search)
+        setDrawUnderStatusbar()
 
-public class SearchActivity extends AbsMusicServiceActivity implements SearchView.OnQueryTextListener, LoaderManager.LoaderCallbacks<List<Object>> {
+        // todo: viewBinding
+        recyclerView = findViewById(R.id.recycler_view)
+        mToolbar = findViewById(R.id.toolbar)
+        empty = findViewById(android.R.id.empty)
 
-    public static final String QUERY = "query";
-    private static final int LOADER_ID = LoaderIds.SEARCH_ACTIVITY;
+        setStatusbarColorAuto()
+        setNavigationbarColorAuto()
+        setTaskDescriptionColorAuto()
 
-    @BindView(R.id.recycler_view)
-    RecyclerView recyclerView;
-    @BindView(R.id.toolbar)
-    Toolbar toolbar;
-    @BindView(android.R.id.empty)
-    TextView empty;
+        recyclerView.layoutManager = LinearLayoutManager(this)
 
-    SearchView searchView;
-
-    private SearchAdapter adapter;
-    private String query;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_search);
-        setDrawUnderStatusbar();
-        ButterKnife.bind(this);
-
-        setStatusbarColorAuto();
-        setNavigationbarColorAuto();
-        setTaskDescriptionColorAuto();
-
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        adapter = new SearchAdapter(this, Collections.emptyList());
-        adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
-            @Override
-            public void onChanged() {
-                super.onChanged();
-                empty.setVisibility(adapter.getItemCount() < 1 ? View.VISIBLE : View.GONE);
+        adapter = SearchAdapter(this, emptyList())
+        adapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
+            override fun onChanged() {
+                super.onChanged()
+                empty.visibility = if (adapter.itemCount < 1) View.VISIBLE else View.GONE
             }
-        });
-        recyclerView.setAdapter(adapter);
+        })
+        recyclerView.adapter = adapter
 
-        recyclerView.setOnTouchListener((v, event) -> {
-            hideSoftKeyboard();
-            return false;
-        });
-
-        setUpToolBar();
-
-        if (savedInstanceState != null) {
-            query = savedInstanceState.getString(QUERY);
+        // noinspection ClickableViewAccessibility
+        recyclerView.setOnTouchListener { _, _ ->
+            hideSoftKeyboard()
+            false
         }
 
-        getSupportLoaderManager().initLoader(LOADER_ID, null, this);
+        setUpToolBar()
+
+        savedInstanceState?.let { query = it.getString(QUERY) }
+
+        LoaderManager.getInstance(this).initLoader(LOADER_ID, null, this)
     }
 
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putString(QUERY, query);
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putString(QUERY, query)
     }
 
-    private void setUpToolBar() {
-        toolbar.setBackgroundColor(ThemeColor.primaryColor(this));
-        setSupportActionBar(toolbar);
-        //noinspection ConstantConditions
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    private fun setUpToolBar() {
+        mToolbar.setBackgroundColor(ThemeColor.primaryColor(this))
+        setSupportActionBar(mToolbar)
+        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_search, menu);
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_search, menu)
 
-        final MenuItem searchItem = menu.findItem(R.id.search);
-        searchView = (SearchView) searchItem.getActionView();
-        searchView.setQueryHint(getString(R.string.search_hint));
-        searchView.setMaxWidth(Integer.MAX_VALUE);
+        val searchItem = menu!!.findItem(R.id.search)
 
-        searchItem.expandActionView();
-        searchItem.setOnActionExpandListener(new MenuItem.OnActionExpandListener() {
-            @Override
-            public boolean onMenuItemActionExpand(MenuItem item) {
-                return true;
+        searchView = searchItem.actionView as SearchView
+        searchView!!.queryHint = getString(R.string.search_hint)
+        searchView!!.maxWidth = Int.MAX_VALUE
+
+        searchItem.expandActionView()
+        searchItem.setOnActionExpandListener(object : MenuItem.OnActionExpandListener {
+            override fun onMenuItemActionExpand(item: MenuItem): Boolean {
+                return true
             }
 
-            @Override
-            public boolean onMenuItemActionCollapse(MenuItem item) {
-                onBackPressed();
-                return false;
+            override fun onMenuItemActionCollapse(item: MenuItem): Boolean {
+                onBackPressed()
+                return false
             }
-        });
+        })
 
-        searchView.setQuery(query, false);
-        searchView.post(() -> searchView.setOnQueryTextListener(SearchActivity.this));
+        searchView!!.setQuery(query, false)
+        searchView!!.post { searchView!!.setOnQueryTextListener(this) }
 
-        return super.onCreateOptionsMenu(menu);
+        return super.onCreateOptionsMenu(menu)
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
-            onBackPressed();
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == android.R.id.home) {
+            onBackPressed()
         }
-        return super.onOptionsItemSelected(item);
+        return super.onOptionsItemSelected(item)
     }
 
-    private void search(@NonNull String query) {
-        this.query = query;
-        getSupportLoaderManager().restartLoader(LOADER_ID, null, this);
+    private fun search(query: String) {
+        this.query = query
+        LoaderManager.getInstance(this).restartLoader(LOADER_ID, null, this)
     }
 
-    @Override
-    public void onMediaStoreChanged() {
-        super.onMediaStoreChanged();
-        getSupportLoaderManager().restartLoader(LOADER_ID, null, this);
+    override fun onMediaStoreChanged() {
+        super.onMediaStoreChanged()
+        LoaderManager.getInstance(this).restartLoader(LOADER_ID, null, this)
     }
 
-    @Override
-    public boolean onQueryTextSubmit(String query) {
-        hideSoftKeyboard();
-        return false;
+    override fun onQueryTextSubmit(query: String): Boolean {
+        hideSoftKeyboard()
+        return false
     }
 
-    @Override
-    public boolean onQueryTextChange(String newText) {
-        search(newText);
-        return false;
+    override fun onQueryTextChange(newText: String): Boolean {
+        search(newText)
+        return false
     }
 
-    private void hideSoftKeyboard() {
-        Util.hideSoftKeyboard(SearchActivity.this);
-        if (searchView != null) {
-            searchView.clearFocus();
-        }
+    private fun hideSoftKeyboard() {
+        Util.hideSoftKeyboard(this)
+        searchView?.clearFocus()
     }
 
-    @Override
-    public Loader<List<Object>> onCreateLoader(int id, Bundle args) {
-        return new AsyncSearchResultLoader(this, query);
+    override fun onCreateLoader(id: Int, args: Bundle?): Loader<List<Any>> {
+        return AsyncSearchResultLoader(this, query)
     }
 
-    @Override
-    public void onLoadFinished(Loader<List<Object>> loader, List<Object> data) {
-        adapter.swapDataSet(data);
+    override fun onLoadFinished(loader: Loader<List<Any>>, data: List<Any>) {
+        adapter.swapDataSet(data)
     }
 
-    @Override
-    public void onLoaderReset(Loader<List<Object>> loader) {
-        adapter.swapDataSet(Collections.emptyList());
+    override fun onLoaderReset(loader: Loader<List<Any>>) {
+        adapter.swapDataSet(emptyList())
     }
 
-    private static class AsyncSearchResultLoader extends WrappedAsyncTaskLoader<List<Object>> {
-        private final String query;
+    private class AsyncSearchResultLoader(context: Context, private val query: String?) :
+        WrappedAsyncTaskLoader<List<Any>>(context) {
 
-        public AsyncSearchResultLoader(Context context, String query) {
-            super(context);
-            this.query = query;
-        }
+        override fun loadInBackground(): List<Any> {
+            val results: MutableList<Any> = ArrayList()
 
-        @Override
-        public List<Object> loadInBackground() {
-            List<Object> results = new ArrayList<>();
             if (!TextUtils.isEmpty(query)) {
-                List songs = SongLoader.getSongs(getContext(), query.trim());
-                if (!songs.isEmpty()) {
-                    results.add(getContext().getResources().getString(R.string.songs));
-                    results.addAll(songs);
+                val songs = SongLoader.getSongs(context, query!!.trim { it <= ' ' })
+                if (songs.isNotEmpty()) {
+                    results.add(context.resources.getString(R.string.songs))
+                    results.addAll(songs)
                 }
-
-                List artists = ArtistLoader.getArtists(getContext(), query.trim());
-                if (!artists.isEmpty()) {
-                    results.add(getContext().getResources().getString(R.string.artists));
-                    results.addAll(artists);
+                val artists = ArtistLoader.getArtists(context, query.trim { it <= ' ' })
+                if (artists.isNotEmpty()) {
+                    results.add(context.resources.getString(R.string.artists))
+                    results.addAll(artists)
                 }
-
-                List albums = AlbumLoader.getAlbums(getContext(), query.trim());
-                if (!albums.isEmpty()) {
-                    results.add(getContext().getResources().getString(R.string.albums));
-                    results.addAll(albums);
+                val albums = AlbumLoader.getAlbums(context, query.trim { it <= ' ' })
+                if (albums.isNotEmpty()) {
+                    results.add(context.resources.getString(R.string.albums))
+                    results.addAll(albums)
                 }
             }
-            return results;
+
+            return results
         }
+    }
+
+    companion object {
+        const val QUERY = "query"
+        private const val LOADER_ID = LoaderIds.SEARCH_ACTIVITY
     }
 }
