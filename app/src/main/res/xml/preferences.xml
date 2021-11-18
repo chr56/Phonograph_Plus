@@ -200,6 +200,7 @@
     <player.phonograph.preferences.basic.PreferenceCategoryX android:title="@string/check_upgrade">
         <player.phonograph.preferences.basic.SwitchPreferenceX
             app:iconSpaceReserved="false"
+            android:defaultValue="true"
             android:key="check_upgrade_at_startup"
             android:summary="@string/auto_check_upgrade_summary"
             android:title="@string/auto_check_upgrade" />
