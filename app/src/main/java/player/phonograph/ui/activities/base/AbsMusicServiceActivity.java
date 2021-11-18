@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
 
 import androidx.annotation.NonNull;
@@ -33,6 +34,9 @@ public abstract class AbsMusicServiceActivity extends AbsBaseActivity implements
     private MusicStateReceiver musicStateReceiver;
     private boolean receiverRegistered;
 
+    @Nullable
+    public Handler handler;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,7 +53,21 @@ public abstract class AbsMusicServiceActivity extends AbsBaseActivity implements
         });
 
         setPermissionDeniedMessage(getString(R.string.permission_external_storage_denied));
+//        setupHandler();
     }
+//    void setupHandler(){
+//        handler = new Handler(Looper.getMainLooper()) {
+//            @Override
+//            public void handleMessage(Message msg) {
+//                super.handleMessage(msg);
+//                switch (msg.what){
+//                    case REQUEST_CODE_SAVE_PLAYLIST:
+//                        //todo
+//                }
+//
+//            }
+//        };
+//    }
 
     @Override
     protected void onDestroy() {

@@ -7,11 +7,15 @@ package player.phonograph.ui.activities
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.os.Message
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewStub
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.loader.app.LoaderManager
@@ -24,11 +28,10 @@ import com.h6ah4i.android.widget.advrecyclerview.animator.RefactoredDefaultItemA
 import com.h6ah4i.android.widget.advrecyclerview.draggable.RecyclerViewDragDropManager
 import com.h6ah4i.android.widget.advrecyclerview.utils.WrapperAdapterUtils
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView
-import player.phonograph.R
+import player.phonograph.*
 import player.phonograph.adapter.song.UniversalSongAdapter
 import player.phonograph.databinding.ActivityPlaylistDetailBinding
 import player.phonograph.helper.MusicPlayerRemote
-import player.phonograph.helper.menu.PlaylistMenuHelper
 import player.phonograph.helper.menu.PlaylistMenuHelper.handleMenuClick
 import player.phonograph.interfaces.CabHolder
 import player.phonograph.interfaces.LoaderIds
@@ -38,10 +41,15 @@ import player.phonograph.misc.WrappedAsyncTaskLoader
 import player.phonograph.model.AbsCustomPlaylist
 import player.phonograph.model.Playlist
 import player.phonograph.model.Song
+import player.phonograph.model.smartplaylist.HistoryPlaylist
+import player.phonograph.model.smartplaylist.LastAddedPlaylist
+import player.phonograph.model.smartplaylist.MyTopTracksPlaylist
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
+import player.phonograph.util.FileSaver
 import player.phonograph.util.PhonographColorUtil
 import player.phonograph.util.PlaylistsUtil
 import player.phonograph.util.ViewUtil
+import java.lang.Exception
 
 class PlaylistDetailActivity : AbsSlidingMusicPanelActivity() {
     private lateinit var binding: ActivityPlaylistDetailBinding // init in OnCreate()
@@ -60,6 +68,8 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity() {
     private var recyclerViewDragDropManager: RecyclerViewDragDropManager? = null
 
     private lateinit var loader: Loader // init in OnCreate()
+
+    private var savedMessageBundle: Bundle? = null
 
     /* ********************
      *
@@ -89,6 +99,8 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity() {
 
         LoaderManager.getInstance(this)
             .initLoader(LOADER_ID, null, loader)
+
+        setupHandler()
     }
     private fun bindingViews() {
         mToolbar = binding.toolbar
@@ -143,6 +155,20 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity() {
     }
     private fun setToolbarTitle(title: String) {
         supportActionBar!!.title = title
+    }
+
+    private fun setupHandler() {
+        handler = object : Handler(Looper.getMainLooper()) {
+            override fun handleMessage(msg: Message) {
+                super.handleMessage(msg)
+                when (msg.what) {
+                    REQUEST_CODE_SAVE_PLAYLIST -> {
+                        savedMessageBundle = msg.data
+                        // just save message bundle, then wait for uri
+                    }
+                }
+            }
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -240,11 +266,35 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity() {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (resultCode == RESULT_OK && requestCode == PlaylistMenuHelper.TASK_ID_SAVE_PLAYLIST) {
-            if (data != null) {
-                data.data?.also {
-                    PlaylistMenuHelper.handleSavePlaylist(this, it)
+        if (resultCode == RESULT_OK && requestCode == REQUEST_CODE_SAVE_PLAYLIST) {
+            data?.let { intent ->
+                val uri = intent.data!!
+
+                val bundle = savedMessageBundle ?: throw Exception("No Playlist to save?")
+
+                val playlistType = bundle.getString(TYPE)!!
+                var result: Short
+
+                when (playlistType) {
+                    NormalPlaylist ->
+                        bundle.getLong(PLAYLIST_ID).let { result = FileSaver.savePlaylist(this, uri, it) }
+                    MyTopTracksPlaylist ->
+                        result =
+                            FileSaver.savePlaylist(this, uri, MyTopTracksPlaylist(this))
+                    LastAddedPlaylist ->
+                        result = FileSaver.savePlaylist(this, uri, LastAddedPlaylist(this))
+                    HistoryPlaylist ->
+                        result = FileSaver.savePlaylist(this, uri, HistoryPlaylist(this))
+                    else -> {
+                        result = -1
+                    }
                 }
+                // report result
+                Toast.makeText(
+                    this,
+                    if (result.toInt() != 0) getText(R.string.failed) else getText(R.string.success),
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         } else if (requestCode == EDIT_PLAYLIST) {
             onMediaStoreChanged() // refresh after editing

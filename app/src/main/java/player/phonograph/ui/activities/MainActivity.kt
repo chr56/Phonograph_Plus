@@ -5,6 +5,8 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
+import android.os.Message
 import android.provider.MediaStore
 import android.util.Log
 import android.view.MenuItem
@@ -20,7 +22,9 @@ import chr_56.MDthemer.util.Util
 import com.bumptech.glide.Glide
 import com.google.android.material.navigation.NavigationView
 import com.sothree.slidinguppanel.SlidingUpPanelLayout
-import player.phonograph.R
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import player.phonograph.*
 import player.phonograph.Updater.checkUpdate
 import player.phonograph.dialogs.ChangelogDialog.Companion.create
 import player.phonograph.dialogs.ChangelogDialog.Companion.setChangelogRead
@@ -29,18 +33,20 @@ import player.phonograph.dialogs.UpgradeDialog.Companion.create
 import player.phonograph.glide.SongGlideRequest
 import player.phonograph.helper.MusicPlayerRemote
 import player.phonograph.helper.SearchQueryHelper
-import player.phonograph.helper.menu.PlaylistMenuHelper
-import player.phonograph.helper.menu.PlaylistMenuHelper.handleSavePlaylist
 import player.phonograph.loader.AlbumLoader
 import player.phonograph.loader.ArtistLoader
 import player.phonograph.loader.PlaylistSongLoader
 import player.phonograph.model.Song
+import player.phonograph.model.smartplaylist.HistoryPlaylist
+import player.phonograph.model.smartplaylist.LastAddedPlaylist
+import player.phonograph.model.smartplaylist.MyTopTracksPlaylist
 import player.phonograph.service.MusicService
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
 import player.phonograph.ui.activities.intro.AppIntroActivity
 import player.phonograph.ui.fragments.mainactivity.AbsMainActivityFragment
 import player.phonograph.ui.fragments.mainactivity.folders.FoldersFragment
 import player.phonograph.ui.fragments.mainactivity.library.LibraryFragment
+import player.phonograph.util.FileSaver
 import player.phonograph.util.MusicUtil
 import player.phonograph.util.PreferenceUtil
 import player.phonograph.util.PreferenceUtil.Companion.getInstance
@@ -53,6 +59,9 @@ class MainActivity : AbsSlidingMusicPanelActivity() {
     private lateinit var currentFragment: MainActivityFragmentCallbacks
     private var navigationDrawerHeader: View? = null
     private var blockRequestPermissions = false
+
+    private var savedMessageBundle: Bundle? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -75,6 +84,8 @@ class MainActivity : AbsSlidingMusicPanelActivity() {
                 supportFragmentManager.findFragmentById(R.id.fragment_container) as MainActivityFragmentCallbacks
         }
 
+        setupHandler()
+
         showIntro()
         checkUpdate()
         showChangelog()
@@ -87,6 +98,20 @@ class MainActivity : AbsSlidingMusicPanelActivity() {
         val drawerContent = contentView.findViewById<ViewGroup>(R.id.drawer_content_container)
         drawerContent.addView(wrapSlidingMusicPanel(R.layout.activity_main_content))
         return contentView
+    }
+
+    private fun setupHandler() {
+        handler = object : Handler(Looper.getMainLooper()) {
+            override fun handleMessage(msg: Message) {
+                super.handleMessage(msg)
+                when (msg.what) {
+                    REQUEST_CODE_SAVE_PLAYLIST -> {
+                        savedMessageBundle = msg.data
+                        // just save message bundle, then wait for uri
+                    }
+                }
+            }
+        }
     }
 
     private fun setMusicChooser(key: Int) {
@@ -118,11 +143,39 @@ class MainActivity : AbsSlidingMusicPanelActivity() {
                 requestPermissions()
             }
             create().show(supportFragmentManager, "CHANGE_LOG_DIALOG")
-        } else if (resultCode == RESULT_OK && requestCode == PlaylistMenuHelper.TASK_ID_SAVE_PLAYLIST) {
-            if (data != null) {
-                val uri = data.data
-                handleSavePlaylist(this, uri!!)
+        } else if (resultCode == RESULT_OK && requestCode == REQUEST_CODE_SAVE_PLAYLIST) {
+            data?.let { intent ->
+                val uri = intent.data!!
+
+                val bundle = savedMessageBundle ?: throw Exception("No Playlist to save?")
+
+                val playlistType = bundle.getString(TYPE) ?: throw Exception("No Playlist to save?")
+                var result: Short
+
+                when (playlistType) {
+                    NormalPlaylist ->
+                        bundle.getLong(PLAYLIST_ID).let { result = FileSaver.savePlaylist(this, uri, it) }
+                    MyTopTracksPlaylist ->
+                        result = FileSaver.savePlaylist(this, uri, MyTopTracksPlaylist(this))
+                    LastAddedPlaylist ->
+                        result = FileSaver.savePlaylist(this, uri, LastAddedPlaylist(this))
+                    HistoryPlaylist ->
+                        result = FileSaver.savePlaylist(this, uri, HistoryPlaylist(this))
+                    else -> {
+                        result = -1
+                    }
+                }
+                // report result
+                Toast.makeText(
+                    this,
+                    if (result.toInt() != 0) getText(R.string.failed) else getText(R.string.success),
+                    Toast.LENGTH_SHORT
+                ).show()
             }
+//            if (data != null) {
+//                val uri = data.data
+//                handleSavePlaylist(this, uri!!)
+//            }
         }
     }
 
