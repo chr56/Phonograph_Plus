@@ -16,7 +16,6 @@ import kotlin.system.exitProcess
  * @author Karim Abou Zeid (kabouzeid)
  */
 class App : Application() {
-    val taskManager: TaskManager = TaskManager()
 
     override fun onCreate() {
         super.onCreate()

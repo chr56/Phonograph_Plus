@@ -22,8 +22,6 @@ import chr_56.MDthemer.util.Util
 import com.bumptech.glide.Glide
 import com.google.android.material.navigation.NavigationView
 import com.sothree.slidinguppanel.SlidingUpPanelLayout
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import player.phonograph.*
 import player.phonograph.Updater.checkUpdate
 import player.phonograph.dialogs.ChangelogDialog.Companion.create
@@ -70,10 +68,6 @@ class MainActivity : AbsSlidingMusicPanelActivity() {
         // todo: viewBinding
         navigationView = findViewById(R.id.navigation_view)
         drawerLayout = findViewById(R.id.drawer_layout)
-
-//        if (Build.VERSION.SDK_INT == Build.VERSION_CODES.KITKAT) {
-//            navigationView.fitsSystemWindows = false // for header to go below statusbar
-//        }
 
         setUpDrawer()
 
@@ -172,10 +166,6 @@ class MainActivity : AbsSlidingMusicPanelActivity() {
                     Toast.LENGTH_SHORT
                 ).show()
             }
-//            if (data != null) {
-//                val uri = data.data
-//                handleSavePlaylist(this, uri!!)
-//            }
         }
     }
 

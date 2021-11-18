@@ -143,7 +143,6 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity() {
     }
     private fun checkIsEmpty() {
         empty.visibility =
-//        if (adapter.itemCount == 0) View.VISIBLE else View.GONE 
             if (songAdapter.itemCount == 0) View.VISIBLE else View.GONE
     }
 
@@ -181,12 +180,10 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.action_shuffle_playlist -> {
-//                MusicPlayerRemote.openAndShuffleQueue(adapter.dataSet, true)
                 MusicPlayerRemote.openAndShuffleQueue(songAdapter.songs, true)
                 return true
             }
             R.id.action_edit_playlist -> {
-//                Toast.makeText(this, "Not available now!", Toast.LENGTH_SHORT).show()
                 startActivityForResult(
                     Intent(this, PlaylistEditorActivity::class.java).apply {
                         putExtra(EXTRA_PLAYLIST, playlist)
