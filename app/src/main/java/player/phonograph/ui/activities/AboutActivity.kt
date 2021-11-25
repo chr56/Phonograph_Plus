@@ -15,6 +15,7 @@ import android.widget.Toast
 import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.Toolbar
 import chr_56.MDthemer.core.ThemeColor
+import chr_56.MDthemer.core.Themer.setActivityToolbarColorAuto
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.list.listItemsSingleChoice
 import de.psdev.licensesdialog.LicensesDialog
@@ -63,6 +64,8 @@ class AboutActivity : ThemeActivity(), View.OnClickListener {
         binding = ActivityAboutBinding.inflate(layoutInflater)
         binding()
         mToolbar = binding.toolbar
+
+        setActivityToolbarColorAuto(this,mToolbar)
 
         setContentView(binding.root)
 

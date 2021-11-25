@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.MenuItem
 import androidx.appcompat.widget.Toolbar
 import chr_56.MDthemer.core.ThemeColor
+import chr_56.MDthemer.core.Themer
 import player.phonograph.R
 import player.phonograph.ui.activities.base.AbsBaseActivity
 import player.phonograph.ui.fragments.SettingsFragment
@@ -22,6 +23,7 @@ class SettingsActivity : AbsBaseActivity() {
         toolbar.setBackgroundColor(ThemeColor.primaryColor(this))
         setSupportActionBar(toolbar)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+        Themer.setActivityToolbarColorAuto(this, toolbar)
 
         if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction()

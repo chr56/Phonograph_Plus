@@ -14,6 +14,7 @@ import androidx.loader.content.Loader
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import chr_56.MDthemer.core.ThemeColor
+import chr_56.MDthemer.core.Themer
 import player.phonograph.R
 import player.phonograph.adapter.SearchAdapter
 import player.phonograph.interfaces.LoaderIds
@@ -46,6 +47,9 @@ class SearchActivity :
         recyclerView = findViewById(R.id.recycler_view)
         mToolbar = findViewById(R.id.toolbar)
         empty = findViewById(android.R.id.empty)
+
+        Themer.setActivityToolbarColorAuto(this, mToolbar)
+
 
         setStatusbarColorAuto()
         setNavigationbarColorAuto()

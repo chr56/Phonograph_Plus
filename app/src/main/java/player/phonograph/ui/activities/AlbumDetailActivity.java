@@ -27,6 +27,8 @@ import com.afollestad.materialdialogs.WhichButton;
 import com.afollestad.materialdialogs.actions.DialogActionExtKt;
 import com.bumptech.glide.Glide;
 import com.github.ksoichiro.android.observablescrollview.ObservableRecyclerView;
+
+import chr_56.MDthemer.core.Themer;
 import player.phonograph.R;
 import player.phonograph.adapter.song.AlbumSongAdapter;
 import player.phonograph.dialogs.AddToPlaylistDialog;
@@ -122,6 +124,7 @@ public class AlbumDetailActivity extends AbsSlidingMusicPanelActivity implements
         super.onCreate(savedInstanceState);
         setDrawUnderStatusbar();
         ButterKnife.bind(this);
+        Themer.setActivityToolbarColorAuto(this, toolbar);
 
         lastFMRestClient = new LastFMRestClient(this);
 

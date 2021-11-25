@@ -15,6 +15,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import chr_56.MDthemer.core.ThemeColor
+import chr_56.MDthemer.core.Themer
 import com.afollestad.materialcab.MaterialCab
 import com.h6ah4i.android.widget.advrecyclerview.animator.GeneralItemAnimator
 import com.h6ah4i.android.widget.advrecyclerview.animator.RefactoredDefaultItemAnimator
@@ -61,6 +62,8 @@ class PlaylistEditorActivity : AbsSlidingMusicPanelActivity() {
         setStatusbarColorAuto()
         setNavigationbarColorAuto()
         setTaskDescriptionColorAuto()
+
+        Themer.setActivityToolbarColorAuto(this, mToolbar)
 
         playlist = intent.extras!!.getParcelable(PlaylistDetailActivity.EXTRA_PLAYLIST)!!
 

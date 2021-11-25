@@ -12,6 +12,7 @@ import androidx.loader.content.Loader
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import chr_56.MDthemer.core.ThemeColor
+import chr_56.MDthemer.core.Themer
 import com.afollestad.materialcab.MaterialCab
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView
 import player.phonograph.R
@@ -48,6 +49,8 @@ class GenreDetailActivity :
         recyclerView = findViewById(R.id.recycler_view)
         mToolbar = findViewById(R.id.toolbar)
         empty = findViewById(android.R.id.empty)
+
+        Themer.setActivityToolbarColorAuto(this, mToolbar)
 
         setStatusbarColorAuto()
         setNavigationbarColorAuto()

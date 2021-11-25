@@ -28,6 +28,8 @@ import com.afollestad.materialdialogs.WhichButton;
 import com.afollestad.materialdialogs.actions.DialogActionExtKt;
 import com.bumptech.glide.Glide;
 import com.github.ksoichiro.android.observablescrollview.ObservableListView;
+
+import chr_56.MDthemer.core.Themer;
 import player.phonograph.R;
 import player.phonograph.adapter.album.HorizontalAlbumAdapter;
 import player.phonograph.adapter.song.ArtistSongAdapter;
@@ -297,6 +299,7 @@ public class ArtistDetailActivity extends AbsSlidingMusicPanelActivity implement
 
         toolbar.setBackgroundColor(color);
         setSupportActionBar(toolbar); // needed to auto readjust the toolbar content color
+        Themer.setActivityToolbarColorAuto(this, toolbar);
         setStatusbarColor(color);
 
         int secondaryTextColor = MaterialColorHelper.getSecondaryTextColor(this, ColorUtil.isColorLight(color));
