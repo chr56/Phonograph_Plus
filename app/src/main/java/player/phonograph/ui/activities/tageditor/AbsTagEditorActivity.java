@@ -28,6 +28,8 @@ import com.afollestad.materialdialogs.actions.DialogActionExtKt;
 import com.afollestad.materialdialogs.list.DialogListExtKt;
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+import chr_56.MDthemer.util.ToolbarColorUtil;
 import player.phonograph.R;
 import player.phonograph.misc.DialogAsyncTask;
 import player.phonograph.misc.SimpleObservableScrollViewCallbacks;
@@ -259,6 +261,8 @@ public abstract class AbsTagEditorActivity extends AbsBaseActivity {
         setStatusbarColor(paletteColorPrimary);
         setNavigationbarColor(paletteColorPrimary);
         setTaskDescriptionColor(paletteColorPrimary);
+
+        toolbar.setTitleTextColor(ToolbarColorUtil.toolbarTitleColor(this,color));
     }
 
     protected void writeValuesToFiles(@NonNull final Map<FieldKey, String> fieldKeyValueMap, @Nullable final ArtworkInfo artworkInfo) {
