@@ -30,6 +30,7 @@ import com.bumptech.glide.Glide;
 import com.github.ksoichiro.android.observablescrollview.ObservableListView;
 
 import chr_56.MDthemer.core.Themer;
+import chr_56.MDthemer.util.ToolbarColorUtil;
 import player.phonograph.R;
 import player.phonograph.adapter.album.HorizontalAlbumAdapter;
 import player.phonograph.adapter.song.ArtistSongAdapter;
@@ -299,7 +300,7 @@ public class ArtistDetailActivity extends AbsSlidingMusicPanelActivity implement
 
         toolbar.setBackgroundColor(color);
         setSupportActionBar(toolbar); // needed to auto readjust the toolbar content color
-        Themer.setActivityToolbarColorAuto(this, toolbar);
+        toolbar.setTitleTextColor(ToolbarColorUtil.toolbarTitleColor(this,color));
         setStatusbarColor(color);
 
         int secondaryTextColor = MaterialColorHelper.getSecondaryTextColor(this, ColorUtil.isColorLight(color));
