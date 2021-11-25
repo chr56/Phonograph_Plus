@@ -4,9 +4,11 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.os.Handler
+import android.util.Log
 import android.view.Menu
 import android.view.View
 import androidx.annotation.ColorInt
+import androidx.annotation.Keep
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
@@ -65,6 +67,13 @@ abstract class ThemeActivity : AppCompatActivity() {
     // 
     override fun setSupportActionBar(toolbar: Toolbar?) {
         this.toolbar = toolbar
+        this.toolbar?.let {
+            it.setTitleTextColor(
+                if (ColorUtil.isColorLight((it.background as ColorDrawable).color))
+                    resources.getColor(R.color.md_light_primary_text)
+                else resources.getColor(R.color.md_dark_primary_text)
+            )
+        } ?: Log.w(this.toString(), "Toolbar is null")
         super.setSupportActionBar(toolbar)
     }
     protected fun getToolbar(): Toolbar? {
@@ -76,6 +85,8 @@ abstract class ThemeActivity : AppCompatActivity() {
         }
         return 0
     }
+
+    @Keep
     protected open fun getSupportActionBarView(ab: ActionBar?): Toolbar? {
         return if (ab == null || ab !is WindowDecorActionBar) null else try {
             var field = WindowDecorActionBar::class.java.getDeclaredField("mDecorToolbar")
@@ -85,10 +96,7 @@ abstract class ThemeActivity : AppCompatActivity() {
             field.isAccessible = true
             field[wrapper] as Toolbar
         } catch (t: Throwable) {
-            throw RuntimeException(
-                "Failed to retrieve Toolbar from AppCompat support ActionBar: " + t.message,
-                t
-            )
+            throw RuntimeException("Failed to retrieve Toolbar from AppCompat support ActionBar: " + t.message, t)
         }
     }
 
@@ -102,19 +110,13 @@ abstract class ThemeActivity : AppCompatActivity() {
      * @param color the new statusbar color (will be shifted down on Lollipop and above)
      */
     open fun setStatusbarColor(color: Int) {
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
         val statusBar = window.decorView.rootView.findViewById<View>(R.id.status_bar)
         if (statusBar != null) {
-//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             statusBar.setBackgroundColor(ColorUtil.darkenColor(color))
-//                } else {
-//                    statusBar.setBackgroundColor(color)
-//                }
-        } else /* if (Build.VERSION.SDK_INT >= 21) */ {
+        } else {
             window.statusBarColor = ColorUtil.darkenColor(color)
         }
         setLightStatusbarAuto(color)
-//        }
     }
     open fun setStatusbarColorAuto() {
         // we don't want to use statusbar color because we are doing the color darkening on our own to support KitKat
@@ -156,7 +158,6 @@ abstract class ThemeActivity : AppCompatActivity() {
     // Menu (Tint)
     //
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-//        MenuTinter.setMenuColor(this, getToolbar(), menu!!, MaterialColor.White._1000.asColor) //todo
         return super.onCreateOptionsMenu(menu)
     }
     override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
