@@ -174,6 +174,7 @@ public class FoldersFragment extends AbsMainActivityFragment implements MainActi
         int primaryColor = ThemeColor.primaryColor(getActivity());
         appbar.setBackgroundColor(primaryColor);
         toolbar.setBackgroundColor(primaryColor);
+        toolbar.setTitleTextColor(ToolbarColorUtil.toolbarTitleColor(requireActivity(),primaryColor));
         breadCrumbs.setBackgroundColor(primaryColor);
         breadCrumbs.setActivatedContentColor(ToolbarColorUtil.toolbarTitleColor(getActivity(), primaryColor));
         breadCrumbs.setDeactivatedContentColor(ToolbarColorUtil.toolbarSubtitleColor(getActivity(), primaryColor));

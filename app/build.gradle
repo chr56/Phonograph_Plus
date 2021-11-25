@@ -58,6 +58,8 @@ android {
             resValue "string", "app_name","Phonograph Plus"
         }
         debug {
+            if(signing_file_exist) signingConfig signingConfigs.release
+
             applicationIdSuffix '.plus.debug'
             resValue "string", "app_name","Phonograph Plus Debug"
         }

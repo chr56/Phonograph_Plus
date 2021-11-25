@@ -125,6 +125,7 @@ public class LibraryFragment extends AbsMainActivityFragment implements CabHolde
         appbar.setBackgroundColor(primaryColor);
         toolbar.setBackgroundColor(primaryColor);
         toolbar.setNavigationIcon(R.drawable.ic_menu_white_24dp);
+        toolbar.setTitleTextColor(ToolbarColorUtil.toolbarTitleColor(requireActivity(),primaryColor));
         requireActivity().setTitle(R.string.app_name);
 
         if (PreferenceUtil.getInstance(requireContext()).fixedTabLayout()){
