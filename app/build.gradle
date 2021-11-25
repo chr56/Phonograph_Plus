@@ -64,6 +64,9 @@ android {
             resValue "string", "app_name","Phonograph Plus Debug"
         }
         preview{
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+
             if(signing_file_exist) signingConfig signingConfigs.release
             resValue "string", "app_name","Phonograph Plus Preview"
             applicationIdSuffix '.plus.preview'
