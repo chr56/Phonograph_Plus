@@ -1166,6 +1166,7 @@ public class MusicService extends Service implements SharedPreferences.OnSharedP
     @Override
     public void onTrackEnded() {
         acquireWakeLock(30000);
+        broadcastStopLyric();
         playerHandler.sendEmptyMessage(TRACK_ENDED);
     }
 
