@@ -279,6 +279,7 @@ public class PlayerAlbumCoverFragment extends AbsMusicServiceFragment implements
                             .putExtra("Lyric_PackName", App.PACKAGE_NAME)
                             // Actually, PackName is (music) service name, so we have no suffix (.plus.YOUR_BUILD_TYPE)
                             .putExtra("Lyric_Icon", getResources().getString(R.string.icon_base64))
+                            .putExtra("Lyric_UseSystemMusicActive", true)
                     );
                 } else {
                     App.getInstance().sendBroadcast(new Intent()
