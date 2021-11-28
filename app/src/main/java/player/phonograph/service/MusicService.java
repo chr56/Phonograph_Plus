@@ -836,6 +836,8 @@ public class MusicService extends Service implements SharedPreferences.OnSharedP
         // handle this on the handlers thread to avoid blocking the ui thread
         playerHandler.removeMessages(SET_POSITION);
         playerHandler.obtainMessage(SET_POSITION, position, 0).sendToTarget();
+
+        broadcastStopLyric(); // reset lyrics
     }
 
     private void playSongAtImpl(int position) {
