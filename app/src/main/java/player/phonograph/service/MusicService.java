@@ -888,6 +888,7 @@ public class MusicService extends Service implements SharedPreferences.OnSharedP
 
                         broadcastStopLyric(); // reset lyrics
                     }
+                    broadcastStopLyric();
                 }
             } else {
                 Toast.makeText(this, getResources().getString(R.string.audio_focus_denied), Toast.LENGTH_SHORT).show();
