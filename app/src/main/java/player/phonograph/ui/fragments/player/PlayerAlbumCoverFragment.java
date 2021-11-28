@@ -270,15 +270,22 @@ public class PlayerAlbumCoverFragment extends AbsMusicServiceFragment implements
             lyricsLine2.animate().alpha(1f).translationY(0f).setDuration(PlayerAlbumCoverFragment.VISIBILITY_ANIM_DURATION);
 
             // for "MIUI StatusBar Lyrics" Xposed module
-            if (MusicPlayerRemote.isPlaying()) App.getInstance().sendBroadcast(new Intent()
-                    .setAction("Lyric_Server")
-                    .putExtra("Lyric_Data", line)
-                    .putExtra("Lyric_Type", "app")
-                    .putExtra("Lyric_PackName", App.ACTUAL_PACKAGE_NAME)
-                    .putExtra("Lyric_Icon", getResources().getString(R.string.icon_base64))
-
-            );
-//            Log.i("LYRICS", line);
+            if (MusicPlayerRemote.isPlaying()){
+                if (!line.isEmpty()){
+                    App.getInstance().sendBroadcast(new Intent()
+                            .setAction("Lyric_Server")
+                            .putExtra("Lyric_Type", "app")
+                            .putExtra("Lyric_Data", line)
+                            .putExtra("Lyric_PackName", App.PACKAGE_NAME)
+                            // Actually, PackName is (music) service name, so we have no suffix (.plus.YOUR_BUILD_TYPE)
+                            .putExtra("Lyric_Icon", getResources().getString(R.string.icon_base64))
+                    );
+                } else {
+                    App.getInstance().sendBroadcast(new Intent()
+                            .setAction("Lyric_Server")
+                            .putExtra("Lyric_Type", "app_stop")); // clear, because is null
+                }
+            }
         }
     }
 
