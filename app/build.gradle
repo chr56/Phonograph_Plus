@@ -48,8 +48,14 @@ android {
         }
     }
     applicationVariants.all { variant ->
-        variant.outputs.all {
-            outputFileName = "PhonographPlus_${variant.name}_${variant.versionName}.apk"
+        if (variant.name == "release") {
+            variant.outputs.all {
+                outputFileName = "PhonographPlus_${variant.versionName}.apk"
+            }
+        } else {
+            variant.outputs.all {
+                outputFileName = "${variant.name}_${variant.versionName}_${new Date().format("MMdd_HHmm")}.apk"
+            }
         }
     }
 
