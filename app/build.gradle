@@ -47,6 +47,12 @@ android {
             keyPassword '000000'
         }
     }
+    applicationVariants.all { variant ->
+        variant.outputs.all {
+            outputFileName = "PhonographPlus_${variant.name}_${variant.versionName}.apk"
+        }
+    }
+
     buildTypes {
         release {
             minifyEnabled true
