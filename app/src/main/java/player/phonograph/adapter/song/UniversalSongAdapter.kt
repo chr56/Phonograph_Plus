@@ -7,13 +7,16 @@ package player.phonograph.adapter.song
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.view.*
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.util.Pair
 import chr_56.MDthemer.core.ThemeColor
 import chr_56.MDthemer.util.ColorUtil
 import chr_56.MDthemer.util.MaterialColorHelper
+import chr_56.MDthemer.util.TintHelper
 import com.afollestad.materialcab.MaterialCab
 import com.bumptech.glide.Glide
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView.SectionedAdapter
@@ -143,21 +146,43 @@ open class UniversalSongAdapter(val activity: AppCompatActivity, songs: List<Son
                     })
             }
         } else /* holder.itemViewType == ITEM_HEADER */ {
-            holder.itemView.findViewById<ConstraintLayout>(R.id.header)?.background = ColorDrawable(
-                ThemeColor.primaryColor(activity)
-            )
+            val primaryColor = ThemeColor.primaryColor(activity)
+            holder.itemView.findViewById<ConstraintLayout>(R.id.header)?.background = ColorDrawable(primaryColor)
+
+
+            val textColor = MaterialColorHelper.getSecondaryTextColor(activity, ColorUtil.isColorLight(primaryColor))
+            val iconColor = MaterialColorHelper.getSecondaryDisabledTextColor(activity, ColorUtil.isColorLight(primaryColor))
+
+            holder.itemView.findViewById<ImageView>(R.id.icon)
+                .also {
+                    it.setImageDrawable(
+                        TintHelper.createTintedDrawable(
+                            AppCompatResources.getDrawable(activity, R.drawable.ic_queue_music_white_24dp), textColor
+                        )
+                    )
+                }
+            TintHelper.setTint(holder.itemView.findViewById<ImageView>(R.id.name_icon),iconColor)
+            TintHelper.setTint(holder.itemView.findViewById<ImageView>(R.id.song_count_icon),iconColor)
+            TintHelper.setTint(holder.itemView.findViewById<ImageView>(R.id.duration_icon),iconColor)
+            TintHelper.setTint(holder.itemView.findViewById<ImageView>(R.id.path_icon),iconColor)
+
 
             // todo MODE detect
 
             name = holder.itemView.findViewById<TextView>(R.id.name_text)
-                .also { it.text = linkedPlaylist?.name ?: "-" }
+                .also {
+                    it.text = linkedPlaylist?.name ?: "-"
+                    it.setTextColor(textColor)
+                }
             songCountText = holder.itemView.findViewById<TextView>(R.id.song_count_text)
                 .also {
                     it.text = linkedPlaylist?.let { MusicUtil.getSongCountString(activity, songs.size) } ?: "-"
+                    it.setTextColor(textColor)
                 }
             durationText = holder.itemView.findViewById<TextView>(R.id.duration_text)
                 .also {
                     it.text = linkedPlaylist?.let { MusicUtil.getReadableDurationString(MusicUtil.getTotalDuration(activity, songs)) } ?: "-"
+                    it.setTextColor(textColor)
                 }
             path = holder.itemView.findViewById<TextView>(R.id.path_text)
                 .also { it ->
@@ -165,6 +190,7 @@ open class UniversalSongAdapter(val activity: AppCompatActivity, songs: List<Son
                         if (playlist is AbsSmartPlaylist) "-" else
                             MediaStoreUtil.getPlaylistPath(activity, playlist)
                     } ?: "-"
+                    it.setTextColor(textColor)
                 }
         }
     }
