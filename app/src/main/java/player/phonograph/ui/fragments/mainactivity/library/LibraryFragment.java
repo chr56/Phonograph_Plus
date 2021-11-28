@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.content.res.AppCompatResources;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
@@ -22,6 +23,10 @@ import androidx.viewpager.widget.ViewPager;
 import com.afollestad.materialcab.MaterialCab;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.tabs.TabLayout;
+
+import chr_56.MDthemer.util.ColorUtil;
+import chr_56.MDthemer.util.MaterialColorHelper;
+import chr_56.MDthemer.util.TintHelper;
 import player.phonograph.R;
 import player.phonograph.adapter.MusicLibraryPagerAdapter;
 import player.phonograph.dialogs.CreatePlaylistDialog;
@@ -124,7 +129,12 @@ public class LibraryFragment extends AbsMainActivityFragment implements CabHolde
         int primaryColor = ThemeColor.primaryColor(requireActivity());
         appbar.setBackgroundColor(primaryColor);
         toolbar.setBackgroundColor(primaryColor);
-        toolbar.setNavigationIcon(R.drawable.ic_menu_white_24dp);
+        toolbar.setNavigationIcon(
+                TintHelper.createTintedDrawable(
+                        AppCompatResources.getDrawable(requireActivity(), R.drawable.ic_menu_white_24dp),
+                        MaterialColorHelper.getPrimaryTextColor(requireActivity(), ColorUtil.isColorLight(primaryColor))
+                )
+        );
         toolbar.setTitleTextColor(ToolbarColorUtil.toolbarTitleColor(requireActivity(),primaryColor));
         requireActivity().setTitle(R.string.app_name);
 
