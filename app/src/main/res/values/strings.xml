@@ -350,6 +350,8 @@
     <string name="move_up">Move up</string>
     <string name="move_down">Move down</string>
     <string name="refresh">Refresh</string>
+    <string name="pref_title_send_lyrics">Broadcast synchronized lyrics</string>
+    <string name="pref_summary_send_lyrics">Broadcast synchronized lyrics to Xposed Module "StatusBar Lyrics"</string>
     <plurals name="msg_deletion_result">
         <item quantity="one">%1$d / %2$d item was successfully deleted.</item>>
         <item quantity="other">%1$d / %2$d items were successfully deleted.</item>

@@ -411,6 +411,9 @@ class PreferenceUtil(context: Context) {
         return mPreferences.getBoolean(SYNCHRONIZED_LYRICS_SHOW, true)
     }
 
+    fun broadcastSynchronizedLyrics(): Boolean =
+        mPreferences.getBoolean(BROADCAST_SYNCHRONIZED_LYRICS, true)
+
     fun setInitializedBlacklist() {
         val editor = mPreferences.edit()
         editor.putBoolean(INITIALIZED_BLACKLIST, true)
@@ -567,6 +570,8 @@ class PreferenceUtil(context: Context) {
         const val START_DIRECTORY = "start_directory"
 
         const val SYNCHRONIZED_LYRICS_SHOW = "synchronized_lyrics_show"
+
+        const val BROADCAST_SYNCHRONIZED_LYRICS = "synchronized_lyrics_send"
 
         const val INITIALIZED_BLACKLIST = "initialized_blacklist"
 

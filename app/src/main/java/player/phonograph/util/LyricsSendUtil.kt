@@ -23,6 +23,7 @@ object LyricsSendUtil {
      * @param line the lyrics
      */
     fun broadcastLyrics(context: Context, line: String) {
+        if (!PreferenceUtil.getInstance(context).broadcastSynchronizedLyrics()) return;
         // sending only when playing
         if (MusicPlayerRemote.isPlaying()) {
             if (line.isNotEmpty()) {
@@ -45,6 +46,7 @@ object LyricsSendUtil {
      * broadcast for "MIUI StatusBar Lyrics" Xposed module
      */
     fun broadcastLyricsStop(context: Context) {
+        if (!PreferenceUtil.getInstance(context).broadcastSynchronizedLyrics()) return;
         context.sendBroadcast(
             Intent().setAction("Lyric_Server").putExtra("Lyric_Type", "app_stop")
         )
@@ -55,6 +57,7 @@ object LyricsSendUtil {
      * @param line the lyrics
      */
     fun writeLyricsFile(context: Context, line: String) {
+        if (!PreferenceUtil.getInstance(context).broadcastSynchronizedLyrics()) return;
         // sending only when playing
         if (!MusicPlayerRemote.isPlaying()) return
         try {
@@ -79,6 +82,7 @@ object LyricsSendUtil {
      * write a file for "MIUI StatusBar Lyrics" Xposed module
      */
     fun writeLyricsFileStop() {
+        if (!PreferenceUtil.getInstance(App.instance).broadcastSynchronizedLyrics()) return;
         try {
             val outputStream = FileOutputStream(PATH)
             val jsonArray = JSONArray()
