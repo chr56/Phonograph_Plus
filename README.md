@@ -57,6 +57,8 @@
 
 - [ ] 解析歌词中的 "\n"
 
+- [ ]  适配 FlyMe / exTHmUI(等一系类原生)状态栏歌词
+
 - [ ]  ...
 
 - [ ] 检查文件
@@ -90,6 +92,8 @@
 
 # Phonograph
 [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://github.com/chr56/Phonograph_Plus/blob/release/LICENSE.txt)
+
+([Link](https://github.com/kabouzeid/Phonograph))
 
 **A material designed local music player for Android.**
 
