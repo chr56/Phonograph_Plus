@@ -2,9 +2,7 @@ package player.phonograph.ui.fragments.player
 
 import android.animation.Animator
 import android.annotation.SuppressLint
-import android.content.Intent
 import android.os.Bundle
-import android.os.Environment
 import android.view.*
 import android.view.GestureDetector.SimpleOnGestureListener
 import android.view.View.OnTouchListener
@@ -15,9 +13,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.viewpager.widget.ViewPager
 import androidx.viewpager.widget.ViewPager.OnPageChangeListener
-import org.json.JSONArray
 import player.phonograph.App
-import player.phonograph.App.Companion.instance
 import player.phonograph.R
 import player.phonograph.adapter.AlbumCoverPagerAdapter
 import player.phonograph.adapter.AlbumCoverPagerAdapter.AlbumCoverFragment.ColorReceiver
@@ -27,9 +23,9 @@ import player.phonograph.misc.SimpleAnimatorListener
 import player.phonograph.model.lyrics.AbsLyrics
 import player.phonograph.model.lyrics.LyricsParsedSynchronized
 import player.phonograph.ui.fragments.AbsMusicServiceFragment
+import player.phonograph.util.LyricsSendUtil.broadcastLyrics
 import player.phonograph.util.PreferenceUtil.Companion.getInstance
 import player.phonograph.util.ViewUtil
-import java.io.FileOutputStream
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
@@ -199,7 +195,7 @@ class PlayerAlbumCoverFragment :
 
         if (oldLine != line || oldLine.isEmpty()) {
 
-            broadcastLyrics(line)
+            broadcastLyrics(App.instance, line)
 
             lyricsLine1.text = oldLine
             lyricsLine2.text = line
@@ -222,65 +218,6 @@ class PlayerAlbumCoverFragment :
             lyricsLine2.translationY = height.toFloat()
             lyricsLine2.animate().alpha(1f).translationY(0f)
                 .duration = VISIBILITY_ANIM_DURATION.toLong()
-        }
-    }
-
-    /**
-     * broadcast for "MIUI StatusBar Lyrics" Xposed module
-     * @param line the lyrics
-     */
-    private fun broadcastLyrics(line: String) {
-        if (MusicPlayerRemote.isPlaying()) {
-            if (line.isNotEmpty()) {
-                instance.sendBroadcast(
-                    Intent().setAction("Lyric_Server")
-                        .putExtra("Lyric_Type", "app")
-                        .putExtra("Lyric_Data", line)
-                        .putExtra("Lyric_PackName", App.PACKAGE_NAME) // Actually, PackName is (music) service name, so we have no suffix (.plus.YOUR_BUILD_TYPE)
-                        .putExtra("Lyric_Icon", resources.getString(R.string.icon_base64))
-                        .putExtra("Lyric_UseSystemMusicActive", true)
-                )
-            } else {
-                instance.sendBroadcast(
-                    Intent().setAction("Lyric_Server").putExtra("Lyric_Type", "app_stop")
-                ) // clear, because is null
-            }
-        }
-    }
-    /**
-     * write a file for "MIUI StatusBar Lyrics" Xposed module
-     * @param line the lyrics
-     */
-    private fun writeLyricsFile(line: String) {
-        try {
-            val outputStream = FileOutputStream("${Environment.getExternalStorageDirectory().absolutePath}/Android/media/miui.statusbar.lyric/lyric.txt")
-
-            val jsonArray = JSONArray()
-            jsonArray.put("app")
-            jsonArray.put(App.PACKAGE_NAME)
-            jsonArray.put(line)
-            jsonArray.put(resources.getString(R.string.icon_base64))
-            jsonArray.put(true)
-
-            val json: String = jsonArray.toString()
-            outputStream.write(json.toByteArray())
-            outputStream.close()
-
-        } catch (ignored: Exception) {
-        }
-    }
-    /**
-     * write a file for "MIUI StatusBar Lyrics" Xposed module
-     */
-    fun writeLyricsFileStop() {
-        try {
-            val outputStream = FileOutputStream("${Environment.getExternalStorageDirectory().absolutePath}/Android/media/miui.statusbar.lyric/lyric.txt")
-            val jsonArray = JSONArray()
-            jsonArray.put("app_stop")
-            val json: String = jsonArray.toString()
-            outputStream.write(json.toByteArray())
-            outputStream.close()
-        } catch (ignored: Exception) {
         }
     }
 
