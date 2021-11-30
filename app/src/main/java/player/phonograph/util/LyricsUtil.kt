@@ -16,7 +16,7 @@ import java.io.FileOutputStream
 /**
  * Util for "MIUI StatusBar Lyrics" Xposed module
  */
-object LyricsSendUtil {
+object LyricsUtil {
 
     /**
      * broadcast for "MIUI StatusBar Lyrics" Xposed module

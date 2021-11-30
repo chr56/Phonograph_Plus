@@ -23,7 +23,7 @@ import player.phonograph.misc.SimpleAnimatorListener
 import player.phonograph.model.lyrics.AbsLyrics
 import player.phonograph.model.lyrics.LyricsParsedSynchronized
 import player.phonograph.ui.fragments.AbsMusicServiceFragment
-import player.phonograph.util.LyricsSendUtil.broadcastLyrics
+import player.phonograph.util.LyricsUtil.broadcastLyrics
 import player.phonograph.util.PreferenceUtil.Companion.getInstance
 import player.phonograph.util.ViewUtil
 
