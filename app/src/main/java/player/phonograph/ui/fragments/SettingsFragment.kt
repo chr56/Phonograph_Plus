@@ -16,6 +16,7 @@ import androidx.fragment.app.DialogFragment
 import androidx.preference.*
 import chr_56.MDthemer.core.ThemeColor
 import chr_56.MDthemer.util.ColorUtil
+import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.appshortcuts.DynamicShortcutManager
 import player.phonograph.preferences.*
@@ -256,6 +257,9 @@ class SettingsFragment : PreferenceFragmentCompat() {
                         findPreference<Preference>("colored_notification")!!.isEnabled =
                             sharedPreferences.getBoolean(key, false)
                     }
+                PreferenceUtil.BROADCAST_SYNCHRONIZED_LYRICS ->
+                    // clear lyrics displaying on the statusbar now
+                    player.phonograph.util.LyricsSendUtil.broadcastLyricsStop(requireActivity(), true)
             }
         }
     }

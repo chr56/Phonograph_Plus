@@ -37,16 +37,17 @@ object LyricsSendUtil {
                         .putExtra("Lyric_UseSystemMusicActive", true)
                 )
             } else {
-                broadcastLyricsStop(context) // clear, because is null
+                broadcastLyricsStop(context, false) // clear, because is null
             }
         }
     }
 
     /**
      * broadcast for "MIUI StatusBar Lyrics" Xposed module
+     * @param force send stop intent but ignoring preference
      */
-    fun broadcastLyricsStop(context: Context) {
-        if (!PreferenceUtil.getInstance(context).broadcastSynchronizedLyrics()) return;
+    fun broadcastLyricsStop(context: Context, force: Boolean) {
+        if ((!PreferenceUtil.getInstance(context).broadcastSynchronizedLyrics()) && (!force)) return;
         context.sendBroadcast(
             Intent().setAction("Lyric_Server").putExtra("Lyric_Type", "app_stop")
         )
