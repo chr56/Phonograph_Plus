@@ -36,33 +36,34 @@ class PlayerAlbumCoverFragment :
     OnPageChangeListener,
     MusicProgressViewUpdateHelper.Callback {
 
-    lateinit var viewPager: ViewPager
-    lateinit var favoriteIcon: ImageView
-    lateinit var lyricsLayout: FrameLayout
+    private lateinit var viewPager: ViewPager /**[onCreateView]*/
+    private lateinit var favoriteIcon: ImageView
+    private var lyricsLayout: FrameLayout? = null
 
-    lateinit var lyricsLine1: TextView
-    lateinit var lyricsLine2: TextView
+    private var lyricsLine1: TextView? = null
+    private var lyricsLine2: TextView? = null
 
     private var callbacks: Callbacks? = null
     private var currentPosition = 0
     private var lyrics: AbsLyrics? = null
-    private var progressViewUpdateHelper: MusicProgressViewUpdateHelper? = null
+    private lateinit var progressViewUpdateHelper: MusicProgressViewUpdateHelper
+
+    /**[onViewCreated]*/
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_player_album_cover, container, false)
-        // todo viewBinding
-
-        viewPager = view.findViewById(R.id.player_album_cover_viewpager)
-        favoriteIcon = view.findViewById(R.id.player_favorite_icon)
-        lyricsLayout = view.findViewById<FrameLayout>(R.id.player_lyrics)
-        lyricsLine1 = view.findViewById(R.id.player_lyrics_line1)
-        lyricsLine2 = view.findViewById(R.id.player_lyrics_line2)
-        return view
+        return inflater.inflate(R.layout.fragment_player_album_cover, container, false)
     }
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        // todo viewBinding
+        viewPager = view.findViewById(R.id.player_album_cover_viewpager)
+        favoriteIcon = view.findViewById(R.id.player_favorite_icon)
+        lyricsLayout = view.findViewById(R.id.player_lyrics)
+        lyricsLine1 = view.findViewById(R.id.player_lyrics_line1)
+        lyricsLine2 = view.findViewById(R.id.player_lyrics_line2)
+
         viewPager.addOnPageChangeListener(this)
         viewPager.setOnTouchListener(object : OnTouchListener {
             val gestureDetector = GestureDetector(
@@ -81,14 +82,13 @@ class PlayerAlbumCoverFragment :
                 return gestureDetector.onTouchEvent(event)
             }
         })
-        progressViewUpdateHelper = MusicProgressViewUpdateHelper(this, 500, 1000)
-        progressViewUpdateHelper!!.start()
+        progressViewUpdateHelper = MusicProgressViewUpdateHelper(this, 500, 1000).apply { start() }
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         viewPager.removeOnPageChangeListener(this)
-        progressViewUpdateHelper!!.stop()
+        progressViewUpdateHelper.stop()
     }
 
     override fun onServiceConnected() {
@@ -104,8 +104,7 @@ class PlayerAlbumCoverFragment :
     }
 
     private fun updatePlayingQueue() {
-        viewPager.adapter =
-            AlbumCoverPagerAdapter(parentFragmentManager, MusicPlayerRemote.getPlayingQueue())
+        viewPager.adapter = AlbumCoverPagerAdapter(parentFragmentManager, MusicPlayerRemote.getPlayingQueue())
         viewPager.currentItem = MusicPlayerRemote.getPosition()
         onPageSelected(MusicPlayerRemote.getPosition())
     }
@@ -113,16 +112,14 @@ class PlayerAlbumCoverFragment :
     override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
     override fun onPageSelected(position: Int) {
         currentPosition = position
-        (viewPager.adapter as AlbumCoverPagerAdapter?)!!.receiveColor(colorReceiver, position)
+        (viewPager.adapter as AlbumCoverPagerAdapter).receiveColor(colorReceiver, position)
         if (position != MusicPlayerRemote.getPosition()) {
             MusicPlayerRemote.playSongAt(position)
         }
     }
 
     private val colorReceiver = ColorReceiver { color, requestCode ->
-        if (currentPosition == requestCode) {
-            notifyColorChange(color)
-        }
+        if (currentPosition == requestCode) { notifyColorChange(color) }
     }
 
     override fun onPageScrollStateChanged(state: Int) {}
@@ -158,31 +155,36 @@ class PlayerAlbumCoverFragment :
             .start()
     }
 
-    private val isLyricsLayoutVisible: Boolean = lyrics != null && getInstance(requireActivity()).synchronizedLyricsShow()
+    private fun isLyricsLayoutVisible(): Boolean = lyrics != null && getInstance(requireActivity()).synchronizedLyricsShow()
 
-    private val isLyricsLayoutBound: Boolean = lyricsLayout != null && lyricsLine1 != null && lyricsLine2 != null
+    private fun isLyricsLayoutBound(): Boolean = lyricsLayout != null && lyricsLine1 != null && lyricsLine2 != null
 
     private fun hideLyricsLayout() {
-        lyricsLayout.animate().alpha(0f).setDuration(VISIBILITY_ANIM_DURATION.toLong())
-            .withEndAction {
-                if (!isLyricsLayoutBound) return@withEndAction
-                lyricsLayout.visibility = View.GONE
-                lyricsLine1.text = null
-                lyricsLine2.text = null
-            }
+        lyricsLayout?.let {
+            it.animate().alpha(0f).setDuration(VISIBILITY_ANIM_DURATION.toLong())
+                .withEndAction {
+                    if (!isLyricsLayoutBound()) {
+                        return@withEndAction
+                    } else {
+                        lyricsLayout!!.visibility = View.GONE
+                        lyricsLine1!!.text = null
+                        lyricsLine2!!.text = null
+                    }
+                }
+        }
     }
 
     fun setLyrics(l: AbsLyrics?) {
         lyrics = l
-        if (!isLyricsLayoutBound) return
-        if (!isLyricsLayoutVisible) {
+        if (!isLyricsLayoutBound()) return
+        if (!isLyricsLayoutVisible()) {
             hideLyricsLayout()
             return
         }
-        lyricsLine1.text = null
-        lyricsLine2.text = null
-        lyricsLayout.visibility = View.VISIBLE
-        lyricsLayout.animate().alpha(1f).duration = VISIBILITY_ANIM_DURATION.toLong()
+        lyricsLine1!!.text = null
+        lyricsLine2!!.text = null
+        lyricsLayout!!.visibility = View.VISIBLE
+        lyricsLayout!!.animate().alpha(1f).duration = VISIBILITY_ANIM_DURATION.toLong()
     }
 
     private fun notifyColorChange(color: Int) {
@@ -194,8 +196,8 @@ class PlayerAlbumCoverFragment :
     }
 
     override fun onUpdateProgressViews(progress: Int, total: Int) {
-        if (!isLyricsLayoutBound) return
-        if (!isLyricsLayoutVisible) {
+        if (!isLyricsLayoutBound()) return
+        if (!isLyricsLayoutVisible()) {
             hideLyricsLayout()
             return
         }
@@ -205,31 +207,31 @@ class PlayerAlbumCoverFragment :
         //
         if (lyrics !is LyricsParsedSynchronized) return
         val synchronizedLyrics = lyrics as LyricsParsedSynchronized
-        lyricsLayout.visibility = View.VISIBLE
-        lyricsLayout.alpha = 1f
-        val oldLine = lyricsLine2.text.toString()
+        lyricsLayout!!.visibility = View.VISIBLE
+        lyricsLayout!!.alpha = 1f
+        val oldLine = lyricsLine2!!.text.toString()
         val line = synchronizedLyrics.getLine(progress)
         if (oldLine != line || oldLine.isEmpty()) {
-            lyricsLine1.text = oldLine
-            lyricsLine2.text = line
+            lyricsLine1!!.text = oldLine
+            lyricsLine2!!.text = line
             //            lyricsLine2.setText(newLine);
-            lyricsLine1.visibility = View.VISIBLE
-            lyricsLine2.visibility = View.VISIBLE
-            lyricsLine2.measure(
+            lyricsLine1!!.visibility = View.VISIBLE
+            lyricsLine2!!.visibility = View.VISIBLE
+            lyricsLine2!!.measure(
                 View.MeasureSpec.makeMeasureSpec(
-                    lyricsLine2.measuredWidth,
+                    lyricsLine2!!.measuredWidth,
                     View.MeasureSpec.EXACTLY
                 ),
                 View.MeasureSpec.UNSPECIFIED
             )
-            val h = lyricsLine2.measuredHeight
-            lyricsLine1.alpha = 1f
-            lyricsLine1.translationY = 0f
-            lyricsLine1.animate().alpha(0f).translationY(-h.toFloat()).duration =
+            val h = lyricsLine2!!.measuredHeight
+            lyricsLine1!!.alpha = 1f
+            lyricsLine1!!.translationY = 0f
+            lyricsLine1!!.animate().alpha(0f).translationY(-h.toFloat()).duration =
                 VISIBILITY_ANIM_DURATION.toLong()
-            lyricsLine2.alpha = 0f
-            lyricsLine2.translationY = h.toFloat()
-            lyricsLine2.animate().alpha(1f).translationY(0f).duration =
+            lyricsLine2!!.alpha = 0f
+            lyricsLine2!!.translationY = h.toFloat()
+            lyricsLine2!!.animate().alpha(1f).translationY(0f).duration =
                 VISIBILITY_ANIM_DURATION.toLong()
 
             // for "MIUI StatusBar Lyrics" Xposed module
