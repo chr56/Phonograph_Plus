@@ -36,19 +36,17 @@ class PlayerAlbumCoverFragment :
     OnPageChangeListener,
     MusicProgressViewUpdateHelper.Callback {
 
-    private lateinit var viewPager: ViewPager /**[onCreateView]*/
-    private lateinit var favoriteIcon: ImageView
-    private var lyricsLayout: FrameLayout? = null
+    private lateinit var viewPager: ViewPager /**[onViewCreated]*/
+    private lateinit var favoriteIcon: ImageView /**[onViewCreated]*/
+    private lateinit var lyricsLayout: FrameLayout /**[onViewCreated]*/
 
-    private var lyricsLine1: TextView? = null
-    private var lyricsLine2: TextView? = null
+    private lateinit var lyricsLine1: TextView /**[onViewCreated]*/
+    private lateinit var lyricsLine2: TextView /**[onViewCreated]*/
 
     private var callbacks: Callbacks? = null
     private var currentPosition = 0
     private var lyrics: AbsLyrics? = null
-    private lateinit var progressViewUpdateHelper: MusicProgressViewUpdateHelper
-
-    /**[onViewCreated]*/
+    private lateinit var progressViewUpdateHelper: MusicProgressViewUpdateHelper /**[onViewCreated]*/
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_player_album_cover, container, false)
@@ -157,82 +155,46 @@ class PlayerAlbumCoverFragment :
 
     private fun isLyricsLayoutVisible(): Boolean = lyrics != null && getInstance(requireActivity()).synchronizedLyricsShow()
 
-    private fun isLyricsLayoutBound(): Boolean = lyricsLayout != null && lyricsLine1 != null && lyricsLine2 != null
-
     private fun hideLyricsLayout() {
-        lyricsLayout?.let {
-            it.animate().alpha(0f).setDuration(VISIBILITY_ANIM_DURATION.toLong())
-                .withEndAction {
-                    if (!isLyricsLayoutBound()) {
-                        return@withEndAction
-                    } else {
-                        lyricsLayout!!.visibility = View.GONE
-                        lyricsLine1!!.text = null
-                        lyricsLine2!!.text = null
-                    }
-                }
-        }
+        lyricsLayout.animate().alpha(0f).setDuration(VISIBILITY_ANIM_DURATION.toLong())
+            .withEndAction {
+                lyricsLayout.visibility = View.GONE
+                lyricsLine1.text = null
+                lyricsLine2.text = null
+            }
     }
 
     fun setLyrics(l: AbsLyrics?) {
         lyrics = l
-        if (!isLyricsLayoutBound()) return
         if (!isLyricsLayoutVisible()) {
             hideLyricsLayout()
             return
         }
-        lyricsLine1!!.text = null
-        lyricsLine2!!.text = null
-        lyricsLayout!!.visibility = View.VISIBLE
-        lyricsLayout!!.animate().alpha(1f).duration = VISIBILITY_ANIM_DURATION.toLong()
+        lyricsLine1.text = null
+        lyricsLine2.text = null
+        lyricsLayout.visibility = View.VISIBLE
+        lyricsLayout.animate().alpha(1f).duration = VISIBILITY_ANIM_DURATION.toLong()
     }
 
-    private fun notifyColorChange(color: Int) {
-        callbacks?.onColorChanged(color)
-    }
+    private fun notifyColorChange(color: Int) { callbacks?.onColorChanged(color) }
 
-    fun setCallbacks(listener: Callbacks?) {
-        callbacks = listener
-    }
+    fun setCallbacks(listener: Callbacks) { callbacks = listener }
 
     override fun onUpdateProgressViews(progress: Int, total: Int) {
-        if (!isLyricsLayoutBound()) return
-        if (!isLyricsLayoutVisible()) {
+        if ((!isLyricsLayoutVisible()) || (lyrics !is LyricsParsedSynchronized)) {
             hideLyricsLayout()
             return
         }
 
-        //
         // Synchronized lyrics begin
-        //
-        if (lyrics !is LyricsParsedSynchronized) return
-        val synchronizedLyrics = lyrics as LyricsParsedSynchronized
-        lyricsLayout!!.visibility = View.VISIBLE
-        lyricsLayout!!.alpha = 1f
-        val oldLine = lyricsLine2!!.text.toString()
-        val line = synchronizedLyrics.getLine(progress)
+        val lyrics = lyrics as LyricsParsedSynchronized
+        lyricsLayout.visibility = View.VISIBLE
+        lyricsLayout.alpha = 1f
+
+        val oldLine = lyricsLine2.text.toString()
+        val line = lyrics.getLine(progress)
+
         if (oldLine != line || oldLine.isEmpty()) {
-            lyricsLine1!!.text = oldLine
-            lyricsLine2!!.text = line
-            //            lyricsLine2.setText(newLine);
-            lyricsLine1!!.visibility = View.VISIBLE
-            lyricsLine2!!.visibility = View.VISIBLE
-            lyricsLine2!!.measure(
-                View.MeasureSpec.makeMeasureSpec(
-                    lyricsLine2!!.measuredWidth,
-                    View.MeasureSpec.EXACTLY
-                ),
-                View.MeasureSpec.UNSPECIFIED
-            )
-            val h = lyricsLine2!!.measuredHeight
-            lyricsLine1!!.alpha = 1f
-            lyricsLine1!!.translationY = 0f
-            lyricsLine1!!.animate().alpha(0f).translationY(-h.toFloat()).duration =
-                VISIBILITY_ANIM_DURATION.toLong()
-            lyricsLine2!!.alpha = 0f
-            lyricsLine2!!.translationY = h.toFloat()
-            lyricsLine2!!.animate().alpha(1f).translationY(0f).duration =
-                VISIBILITY_ANIM_DURATION.toLong()
 
             // for "MIUI StatusBar Lyrics" Xposed module
             if (MusicPlayerRemote.isPlaying()) {
@@ -252,6 +214,28 @@ class PlayerAlbumCoverFragment :
                     ) // clear, because is null
                 }
             }
+
+            lyricsLine1.text = oldLine
+            lyricsLine2.text = line
+            lyricsLine1.visibility = View.VISIBLE
+            lyricsLine2.visibility = View.VISIBLE
+
+            lyricsLine2.measure(
+                View.MeasureSpec.makeMeasureSpec(lyricsLine2.measuredWidth, View.MeasureSpec.EXACTLY),
+                View.MeasureSpec.UNSPECIFIED
+            )
+
+            val height = lyricsLine2.measuredHeight
+
+            lyricsLine1.alpha = 1f
+            lyricsLine1.translationY = 0f
+            lyricsLine1.animate().alpha(0f).translationY(-height.toFloat())
+                .duration = VISIBILITY_ANIM_DURATION.toLong()
+
+            lyricsLine2.alpha = 0f
+            lyricsLine2.translationY = height.toFloat()
+            lyricsLine2.animate().alpha(1f).translationY(0f)
+                .duration = VISIBILITY_ANIM_DURATION.toLong()
         }
     }
 
