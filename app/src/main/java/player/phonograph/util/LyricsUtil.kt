@@ -7,6 +7,7 @@ package player.phonograph.util
 import android.content.Context
 import android.content.Intent
 import android.os.Environment
+import android.util.Log
 import org.jaudiotagger.audio.AudioFileIO
 import org.jaudiotagger.tag.FieldKey
 import org.json.JSONArray
@@ -86,23 +87,31 @@ object LyricsUtil {
                     // precise match
                     if (precisePattern.matcher(f.name).matches()) {
                         preciseFiles.add(f)
+                        Log.d("LyricsUtil", "add a precise file: ${f.path}")
                         return@listFiles true
                     }
                     // vague match
                     for (pattern in patterns) {
                         if (pattern.matcher(f.name).matches()) {
                             vagueFiles.add(f)
+                            Log.d("LyricsUtil", "add a vague file: ${f.path}")
                             return@listFiles true
                         }
                     }
                     false
                 }?.let { allMatchedFiles ->
                     if (allMatchedFiles.isEmpty()) throw IllegalStateException("NO_LYRICS")
+
+                    val s = StringBuffer().append("ALL FILES: ")
+                    allMatchedFiles.forEach { s.append(it.path).append(" ") }
+                    Log.d("LyricsUtil", s.toString())
+
                     // precise first
                     for (f in preciseFiles) {
                         try {
                             val raw = FileUtil.read(f)
                             if (raw.trim { it <= ' ' }.isNotEmpty()) {
+                                Log.d("LyricsUtil", "use the precise file: ${f.path}")
                                 return raw
                             }
                         } catch (e: Exception) {
@@ -114,6 +123,7 @@ object LyricsUtil {
                         try {
                             val raw = FileUtil.read(f)
                             if (raw.trim { it <= ' ' }.isNotEmpty()) {
+                                Log.d("LyricsUtil", "use the vague file: ${f.path}")
                                 return raw
                             }
                         } catch (e: Exception) {
