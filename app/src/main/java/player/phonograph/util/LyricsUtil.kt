@@ -7,6 +7,9 @@ package player.phonograph.util
 import android.content.Context
 import android.content.Intent
 import android.os.Environment
+import android.os.Handler
+import android.os.Looper
+import android.os.Message
 import android.util.Log
 import org.jaudiotagger.audio.AudioFileIO
 import org.jaudiotagger.tag.FieldKey
@@ -169,6 +172,48 @@ object LyricsUtil {
         fun replaceLyrics(lyrics: LyricsParsedSynchronized?) { this.lyrics = lyrics }
 
         fun getLine(time: Int): String? = lyrics?.getLine(time)
+    }
+
+    class LyricsRefresher(looper: Looper, private var context: Context, var fetcher: LyricsFetcher) : Handler(looper) {
+
+        override fun handleMessage(msg: Message) {
+            super.handleMessage(msg)
+            if (msg.what == CMD_REFRESH_PROGRESS_VIEWS) {
+                queueNextRefresh(refreshProgressViews().toLong())
+            }
+        }
+
+        @Suppress("ReplaceJavaStaticMethodWithKotlinAnalog")
+        private fun refreshProgressViews(): Int {
+            val progressMillis = MusicPlayerRemote.getSongProgressMillis()
+            val totalMillis = MusicPlayerRemote.getSongDurationMillis()
+
+            broadcast(progressMillis)
+
+            if (!MusicPlayerRemote.isPlaying()) {
+                return UPDATE_INTERVAL_PAUSED
+            }
+            val remainingMillis = UPDATE_INTERVAL_PLAYING - progressMillis % UPDATE_INTERVAL_PLAYING
+            return Math.max(MIN_INTERVAL, remainingMillis)
+        }
+
+        private fun queueNextRefresh(delay: Long) {
+            val message = obtainMessage(CMD_REFRESH_PROGRESS_VIEWS)
+            removeMessages(CMD_REFRESH_PROGRESS_VIEWS)
+            sendMessageDelayed(message, delay)
+        }
+
+        private fun broadcast(time: Int) {
+            fetcher.getLine(time)
+                ?.let { broadcastLyrics(context, it) }
+        }
+
+        companion object {
+            private const val CMD_REFRESH_PROGRESS_VIEWS = 1
+            private const val MIN_INTERVAL = 20
+            private const val UPDATE_INTERVAL_PLAYING = 1000
+            private const val UPDATE_INTERVAL_PAUSED = 500
+        }
     }
 
     /**
