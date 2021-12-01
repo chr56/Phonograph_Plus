@@ -69,14 +69,18 @@ object LyricsUtil {
                 val songTitle = Pattern.quote(song.title)
 
                 // precise pattern
-                val precisePattern =
-                    Pattern.compile("%s\\.(lrc|txt)", Pattern.CASE_INSENSITIVE or Pattern.UNICODE_CASE)
+                val preciseFormat = "%s\\.(lrc|txt)"
+                val precisePattern = Pattern.compile(String.format(preciseFormat, filename), Pattern.CASE_INSENSITIVE or Pattern.UNICODE_CASE)
+//                val precisePatterns =listOf<Pattern>(
+//                    Pattern.compile(String.format(preciseFormat, filename), Pattern.CASE_INSENSITIVE or Pattern.UNICODE_CASE),
+//                    Pattern.compile(String.format(preciseFormat, songTitle), Pattern.CASE_INSENSITIVE or Pattern.UNICODE_CASE)
+//                )
 
                 // vague pattern
-                val format = ".*[-;]?%s[-;]?.*\\.(lrc|txt)"
-                val patterns = listOf<Pattern>(
-                    Pattern.compile(String.format(format, filename), Pattern.CASE_INSENSITIVE or Pattern.UNICODE_CASE),
-                    Pattern.compile(String.format(format, songTitle), Pattern.CASE_INSENSITIVE or Pattern.UNICODE_CASE)
+                val vagueFormat = ".*[-;]?%s[-;]?.*\\.(lrc|txt)"
+                val vaguePatterns = listOf<Pattern>(
+                    Pattern.compile(String.format(vagueFormat, filename), Pattern.CASE_INSENSITIVE or Pattern.UNICODE_CASE),
+                    Pattern.compile(String.format(vagueFormat, songTitle), Pattern.CASE_INSENSITIVE or Pattern.UNICODE_CASE)
                 )
 
                 val preciseFiles: MutableList<File> = ArrayList(2)
@@ -85,13 +89,15 @@ object LyricsUtil {
                 // start list file under the same dir
                 dir.listFiles { f: File ->
                     // precise match
+
                     if (precisePattern.matcher(f.name).matches()) {
                         preciseFiles.add(f)
                         Log.d("LyricsUtil", "add a precise file: ${f.path}")
                         return@listFiles true
                     }
+
                     // vague match
-                    for (pattern in patterns) {
+                    for (pattern in vaguePatterns) {
                         if (pattern.matcher(f.name).matches()) {
                             vagueFiles.add(f)
                             Log.d("LyricsUtil", "add a vague file: ${f.path}")
