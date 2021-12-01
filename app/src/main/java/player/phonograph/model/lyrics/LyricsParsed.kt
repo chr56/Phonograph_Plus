@@ -8,7 +8,7 @@ import org.jaudiotagger.audio.AudioFileIO
 import org.jaudiotagger.tag.FieldKey
 
 class LyricsParsed private constructor() : AbsLyrics() {
-    override var type: Short = TXT
+    override fun getType() = TXT
 
     private var lyrics: ArrayList<CharSequence>? = null
     private var title: CharSequence? = null

@@ -171,7 +171,7 @@ object LyricsUtil {
         constructor(song: Song) : this(null) {
             val lyrics = fetchLyrics(song)
             lyrics?.let {
-                if (it.type == AbsLyrics.LRC) this.lyrics = it as LyricsParsedSynchronized
+                if (it.getType() == AbsLyrics.LRC) this.lyrics = it as LyricsParsedSynchronized
             }
         }
 
