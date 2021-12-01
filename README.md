@@ -33,7 +33,7 @@
 
 * 新增崩溃报告页面 | Handle crash.
 
-* 适配"<a href="https://github.com/xiaowine/miui.statusbar.lyric">MIUI状态栏歌词</a>"Xposed模块(播放图标暂无)
+* 适配" [MIUI状态栏歌词](https://github.com/xiaowine/miui.statusbar.lyric) "Xposed模块 | Co-work-with/Support MIUI StatusBar Lyric Xposed Module (api)
 
 * // todo
 
