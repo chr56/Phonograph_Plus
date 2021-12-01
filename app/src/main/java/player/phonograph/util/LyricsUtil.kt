@@ -28,6 +28,7 @@ import java.util.regex.Pattern
  */
 object LyricsUtil {
 
+    @JvmStatic
     fun loadLyrics(raw: String): AbsLyrics {
         return if (checkType(raw) == AbsLyrics.LRC) {
             LyricsParsedSynchronized.parse(raw)
@@ -36,6 +37,7 @@ object LyricsUtil {
         }
     }
 
+    @JvmStatic
     fun checkType(raw: String): Short {
         val sample = if (raw.length > 50) raw.substring(0, 45) else raw
 
@@ -48,6 +50,7 @@ object LyricsUtil {
     }
 
     @Throws(IllegalStateException::class)
+    @JvmStatic
     fun retrieveRawLyrics(song: Song): String {
 
         var rawLyrics: String? = null
@@ -143,6 +146,7 @@ object LyricsUtil {
         throw IllegalStateException("NO_LYRICS")
     }
 
+    @JvmStatic
     fun fetchLyrics(song: Song): AbsLyrics? {
         var raw: String? = null
         try {

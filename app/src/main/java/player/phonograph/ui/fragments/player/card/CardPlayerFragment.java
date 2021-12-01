@@ -324,19 +324,7 @@ public class CardPlayerFragment extends AbsPlayerFragment implements PlayerAlbum
 
             @Override
             protected AbsLyrics doInBackground(Void... params) {
-                return LyricsUtil.INSTANCE.fetchLyrics(song);
-//                String raw = null;
-//                try {
-//                    raw = MusicUtil.readRawLyrics(song);
-//                } catch (Exception e) {
-//                    if (Objects.equals(e.getMessage(), "NO_LYRICS")) {
-//                        return null;
-//                    } else {
-//                        e.printStackTrace();
-//                    }
-//                }
-//                if (raw == null) return null;
-//                return MusicUtil.loadLyrics(raw);
+                return LyricsUtil.fetchLyrics(song);
             }
 
             @Override
