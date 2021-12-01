@@ -85,13 +85,13 @@ object LyricsUtil {
                 dir.listFiles { f: File ->
                     // precise match
                     if (precisePattern.matcher(f.name).matches()) {
-                        preciseFiles.add(file)
+                        preciseFiles.add(f)
                         return@listFiles true
                     }
                     // vague match
                     for (pattern in patterns) {
                         if (pattern.matcher(f.name).matches()) {
-                            vagueFiles.add(file)
+                            vagueFiles.add(f)
                             return@listFiles true
                         }
                     }
