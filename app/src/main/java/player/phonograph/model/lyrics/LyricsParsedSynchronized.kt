@@ -12,7 +12,7 @@ import org.jaudiotagger.audio.AudioFileIO
 import org.jaudiotagger.tag.FieldKey
 
 class LyricsParsedSynchronized private constructor() : AbsLyrics() {
-    override var TYPE: Short = LRC
+    override var type: Short = LRC
 
     private var lyrics: SparseArray<CharSequence>? = null
     private var offset: Long = 0

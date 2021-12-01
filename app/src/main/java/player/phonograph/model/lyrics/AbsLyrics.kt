@@ -1,7 +1,8 @@
 package player.phonograph.model.lyrics
 
 abstract class AbsLyrics {
-    protected open var TYPE: Short = TXT
+    open var type: Short = TXT
+
     abstract fun getText(): String
     open fun getTitle(): CharSequence {
         return DEFAULT_TITLE
