@@ -163,6 +163,14 @@ object LyricsUtil {
         else null
     }
 
+    class LyricsFetcher(var lyrics: LyricsParsedSynchronized?) {
+        constructor(song: Song) : this(fetchLyrics(song) as LyricsParsedSynchronized?)
+
+        fun replaceLyrics(lyrics: LyricsParsedSynchronized?) { this.lyrics = lyrics }
+
+        fun getLine(time: Int): String? = lyrics?.getLine(time)
+    }
+
     /**
      * broadcast for "MIUI StatusBar Lyrics" Xposed module
      * @param line the lyrics
