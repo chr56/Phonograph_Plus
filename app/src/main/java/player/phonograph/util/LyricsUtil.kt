@@ -131,13 +131,14 @@ object LyricsUtil {
         var raw: String? = null
         try {
             raw = retrieveRawLyrics(song)
-        } catch (e: Exception) {
+        } catch (e: IllegalStateException) {
             if (e.message == "NO_LYRICS") {
                 return null
             } else {
                 e.printStackTrace()
             }
-        }
+        } catch (e: Exception) {}
+
         return if (raw != null) loadLyrics(raw)
         else null
     }

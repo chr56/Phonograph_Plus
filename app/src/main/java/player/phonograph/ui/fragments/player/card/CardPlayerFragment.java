@@ -47,6 +47,7 @@ import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity;
 import player.phonograph.ui.fragments.player.AbsPlayerFragment;
 import player.phonograph.ui.fragments.player.PlayerAlbumCoverFragment;
 import player.phonograph.util.ImageUtil;
+import player.phonograph.util.LyricsUtil;
 import player.phonograph.util.MusicUtil;
 import player.phonograph.util.Util;
 import player.phonograph.util.ViewUtil;
@@ -323,18 +324,19 @@ public class CardPlayerFragment extends AbsPlayerFragment implements PlayerAlbum
 
             @Override
             protected AbsLyrics doInBackground(Void... params) {
-                String raw = null;
-                try {
-                    raw = MusicUtil.readRawLyrics(song);
-                } catch (Exception e) {
-                    if (Objects.equals(e.getMessage(), "NO_LYRICS")) {
-                        return null;
-                    } else {
-                        e.printStackTrace();
-                    }
-                }
-                if (raw == null) return null;
-                return MusicUtil.loadLyrics(raw);
+                return LyricsUtil.INSTANCE.fetchLyrics(song);
+//                String raw = null;
+//                try {
+//                    raw = MusicUtil.readRawLyrics(song);
+//                } catch (Exception e) {
+//                    if (Objects.equals(e.getMessage(), "NO_LYRICS")) {
+//                        return null;
+//                    } else {
+//                        e.printStackTrace();
+//                    }
+//                }
+//                if (raw == null) return null;
+//                return MusicUtil.loadLyrics(raw);
             }
 
             @Override
