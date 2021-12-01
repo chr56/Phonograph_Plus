@@ -167,14 +167,38 @@ object LyricsUtil {
     }
 
     class LyricsFetcher(var lyrics: LyricsParsedSynchronized?) {
-        constructor(song: Song) : this(fetchLyrics(song) as LyricsParsedSynchronized?)
+
+        constructor(song: Song) : this(null) {
+            val lyrics = fetchLyrics(song)
+            lyrics?.let {
+                if (it.type == AbsLyrics.LRC) this.lyrics = it as LyricsParsedSynchronized
+            }
+        }
 
         fun replaceLyrics(lyrics: LyricsParsedSynchronized?) { this.lyrics = lyrics }
 
         fun getLine(time: Int): String? = lyrics?.getLine(time)
     }
 
-    class LyricsRefresher(looper: Looper, private var context: Context, var fetcher: LyricsFetcher) : Handler(looper) {
+    class LyricsRefresher(looper: Looper, private var context: Context, private var fetcher: LyricsFetcher) : Handler(looper) {
+
+        constructor(looper: Looper, context: Context, song: Song) : this(looper, context, LyricsFetcher(song))
+        constructor(looper: Looper, context: Context, lyrics: LyricsParsedSynchronized) : this(looper, context, LyricsFetcher(lyrics))
+
+        fun start() {
+            queueNextRefresh(1)
+        }
+        fun stop() {
+            removeMessages(CMD_REFRESH_PROGRESS_VIEWS)
+        }
+
+        fun replaceFetcher(fetcher: LyricsFetcher) { this.fetcher = fetcher }
+        fun replaceLyrics(lyrics: LyricsParsedSynchronized) {
+            fetcher.lyrics = lyrics
+        }
+        fun replaceSong(song: Song) {
+            fetcher.lyrics = fetchLyrics(song) as LyricsParsedSynchronized?
+        }
 
         override fun handleMessage(msg: Message) {
             super.handleMessage(msg)
