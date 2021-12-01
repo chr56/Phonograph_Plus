@@ -339,6 +339,10 @@ public class MusicUtil {
         return String.valueOf(musicMediaTitle.charAt(0)).toUpperCase();
     }
 
+    /**
+     * use {@link player.phonograph.util.LyricsUtil#retrieveRawLyrics} instead
+     */
+    @Deprecated
     @NonNull
     public static String readRawLyrics(Song song) throws Exception {
         String rawLyrics = null;
@@ -392,6 +396,10 @@ public class MusicUtil {
         return rawLyrics;
     }
 
+    /**
+     * use {@link player.phonograph.util.LyricsUtil#checkType} instead
+     */
+    @Deprecated
     public static int checkType(String raw){
         Pattern LRC = Pattern.compile("(\\[.+\\])+.*",Pattern.MULTILINE);
         if (LRC.matcher(raw).find()) {
@@ -400,6 +408,11 @@ public class MusicUtil {
             return AbsLyrics.TXT;
         }
     }
+
+    /**
+     * use {@link player.phonograph.util.LyricsUtil#loadLyrics} instead
+     */
+    @Deprecated
     public static AbsLyrics loadLyrics(String raw){
         if (checkType(raw) == AbsLyrics.LRC){
             return LyricsParsedSynchronized.parse(raw);

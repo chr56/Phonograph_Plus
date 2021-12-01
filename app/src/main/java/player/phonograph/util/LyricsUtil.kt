@@ -27,7 +27,27 @@ import java.util.regex.Pattern
  */
 object LyricsUtil {
 
-    fun readRawLyrics(song: Song): String {
+    fun loadLyrics(raw: String): AbsLyrics {
+        return if (checkType(raw) == AbsLyrics.LRC) {
+            LyricsParsedSynchronized.parse(raw)
+        } else {
+            LyricsParsed.parse(raw)
+        }
+    }
+
+    fun checkType(raw: String): Short {
+        val sample = if (raw.length > 50) raw.substring(0, 45) else raw
+
+        val lrc = Pattern.compile("(\\[.+\\])+.*", Pattern.MULTILINE)
+        return if (lrc.matcher(sample).find()) {
+            AbsLyrics.LRC
+        } else {
+            AbsLyrics.TXT
+        }
+    }
+
+    @Throws(IllegalStateException::class)
+    fun retrieveRawLyrics(song: Song): String {
 
         var rawLyrics: String? = null
         val file = File(song.data)
@@ -44,31 +64,57 @@ object LyricsUtil {
         if (rawLyrics == null || rawLyrics.trim { it <= ' ' }.isEmpty()) {
             val dir = file.absoluteFile.parentFile
             if (dir != null && dir.exists() && dir.isDirectory) {
-                val format = ".*%s.*\\.(lrc|txt)"
-
                 val filename = Pattern.quote(FileUtil.stripExtension(file.name))
                 val songTitle = Pattern.quote(song.title)
 
+                // precise pattern
+                val precisePattern =
+                    Pattern.compile("%s\\.(lrc|txt)", Pattern.CASE_INSENSITIVE or Pattern.UNICODE_CASE)
+
+                // vague pattern
+                val format = ".*[-;]?%s[-;]?.*\\.(lrc|txt)"
                 val patterns = listOf<Pattern>(
                     Pattern.compile(String.format(format, filename), Pattern.CASE_INSENSITIVE or Pattern.UNICODE_CASE),
                     Pattern.compile(String.format(format, songTitle), Pattern.CASE_INSENSITIVE or Pattern.UNICODE_CASE)
                 )
 
-                val files = dir.listFiles { f: File ->
+                val preciseFiles: MutableList<File> = ArrayList(2)
+                val vagueFiles: MutableList<File> = ArrayList(6)
+
+                // start list file under the same dir
+                dir.listFiles { f: File ->
+                    // precise match
+                    if (precisePattern.matcher(f.name).matches()) {
+                        preciseFiles.add(file)
+                        return@listFiles true
+                    }
+                    // vague match
                     for (pattern in patterns) {
-                        if (pattern.matcher(f.name).matches())
+                        if (pattern.matcher(f.name).matches()) {
+                            vagueFiles.add(file)
                             return@listFiles true
+                        }
                     }
                     false
-                }
-
-                if (files != null && files.isNotEmpty()) {
-                    for (f in files) {
-                        // todo Precise match
+                }?.let { allMatchedFiles ->
+                    if (allMatchedFiles.isEmpty()) throw IllegalStateException("NO_LYRICS")
+                    // precise first
+                    for (f in preciseFiles) {
                         try {
-                            rawLyrics = FileUtil.read(f)
-                            if (rawLyrics.trim { it <= ' ' }.isNotEmpty()) {
-                                return rawLyrics
+                            val raw = FileUtil.read(f)
+                            if (raw.trim { it <= ' ' }.isNotEmpty()) {
+                                return raw
+                            }
+                        } catch (e: Exception) {
+                            e.printStackTrace()
+                        }
+                    }
+                    // then vague
+                    for (f in vagueFiles) {
+                        try {
+                            val raw = FileUtil.read(f)
+                            if (raw.trim { it <= ' ' }.isNotEmpty()) {
+                                return raw
                             }
                         } catch (e: Exception) {
                             e.printStackTrace()
@@ -78,30 +124,13 @@ object LyricsUtil {
             }
         }
 
-        return rawLyrics ?: throw Exception("NO_LYRICS")
-    }
-
-    fun checkType(raw: String): Short {
-        val lrc = Pattern.compile("(\\[.+\\])+.*", Pattern.MULTILINE)
-        return if (lrc.matcher(raw).find()) {
-            AbsLyrics.LRC
-        } else {
-            AbsLyrics.TXT
-        }
-    }
-
-    fun loadLyrics(raw: String): AbsLyrics? {
-        return if (checkType(raw) == AbsLyrics.LRC) {
-            LyricsParsedSynchronized.parse(raw)
-        } else {
-            LyricsParsed.parse(raw)
-        }
+        throw IllegalStateException("NO_LYRICS")
     }
 
     fun fetchLyrics(song: Song): AbsLyrics? {
         var raw: String? = null
         try {
-            raw = readRawLyrics(song)
+            raw = retrieveRawLyrics(song)
         } catch (e: Exception) {
             if (e.message == "NO_LYRICS") {
                 return null
