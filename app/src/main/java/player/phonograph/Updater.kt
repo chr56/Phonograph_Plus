@@ -103,12 +103,15 @@ object Updater {
 
     @Keep
     class VersionJson {
+        @JvmField
         @SerializedName(Version)
         var version: String? = ""
 
+        @JvmField
         @SerializedName(VersionCode)
         var versionCode: Int = 0
 
+        @JvmField
         @SerializedName(LogSummary)
         var logSummary: String? = ""
     }
