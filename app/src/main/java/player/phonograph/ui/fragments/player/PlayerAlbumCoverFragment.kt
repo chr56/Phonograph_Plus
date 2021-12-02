@@ -195,7 +195,7 @@ class PlayerAlbumCoverFragment :
 
         if (oldLine != line || oldLine.isEmpty()) {
 
-            broadcastLyrics(App.instance, line)
+//            broadcastLyrics(App.instance, line)
 
             lyricsLine1.text = oldLine
             lyricsLine2.text = line

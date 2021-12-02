@@ -60,6 +60,7 @@ import player.phonograph.service.notification.PlayingNotification;
 import player.phonograph.service.notification.PlayingNotificationImpl;
 import player.phonograph.service.notification.PlayingNotificationImpl24;
 import player.phonograph.service.playback.Playback;
+import player.phonograph.util.LyricsUtil;
 import player.phonograph.util.MusicUtil;
 import player.phonograph.util.PreferenceUtil;
 import player.phonograph.util.Util;
@@ -176,6 +177,9 @@ public class MusicService extends Service implements SharedPreferences.OnSharedP
 
     private Handler uiThreadHandler;
 
+    private LyricsUtil.LyricsRefresher refresher;
+
+
     private static String getTrackUri(@NonNull Song song) {
         return MusicUtil.getSongFileUri(song.id).toString();
     }
@@ -231,6 +235,8 @@ public class MusicService extends Service implements SharedPreferences.OnSharedP
         mediaSession.setActive(true);
 
         sendBroadcast(new Intent("player.phonograph.PHONOGRAPH_MUSIC_SERVICE_CREATED"));
+
+        refresher = new LyricsUtil.LyricsRefresher(Looper.myLooper(),this, Song.EMPTY_SONG);
     }
 
     private AudioManager getAudioManager() {
@@ -822,6 +828,9 @@ public class MusicService extends Service implements SharedPreferences.OnSharedP
 
         setPosition(-1);
         notifyChange(QUEUE_CHANGED);
+
+        refresher.replaceSong(Song.EMPTY_SONG);
+        refresher.stop();
     }
 
     public void playSongAt(final int position) {
@@ -830,6 +839,9 @@ public class MusicService extends Service implements SharedPreferences.OnSharedP
         playerHandler.obtainMessage(PLAY_SONG, position, 0).sendToTarget();
 
         broadcastStopLyric(); // reset lyrics
+
+        refresher.replaceSong(getSongAt(position));
+        refresher.start();
     }
 
     public void setPosition(final int position) {
@@ -838,6 +850,8 @@ public class MusicService extends Service implements SharedPreferences.OnSharedP
         playerHandler.obtainMessage(SET_POSITION, position, 0).sendToTarget();
 
         broadcastStopLyric(); // reset lyrics
+
+        refresher.replaceSong(getSongAt(position));
     }
 
     private void playSongAtImpl(int position) {
@@ -861,6 +875,7 @@ public class MusicService extends Service implements SharedPreferences.OnSharedP
             playback.pause();
             notifyChange(PLAY_STATE_CHANGED);
             broadcastStopLyric(); // reset lyrics
+            refresher.stop();
         }
     }
 
@@ -887,6 +902,9 @@ public class MusicService extends Service implements SharedPreferences.OnSharedP
                         playerHandler.sendEmptyMessage(UNDUCK);
 
                         broadcastStopLyric(); // reset lyrics
+
+                        refresher.replaceSong(getSongAt(getPosition()));
+                        refresher.start();
                     }
                     broadcastStopLyric();
                 }
