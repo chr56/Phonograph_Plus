@@ -60,6 +60,7 @@
 #
 
 -keepnames class ** implements java.io.Serializable
+-keepnames class ** implements android.os.Parcelable
 
 
 
@@ -69,6 +70,7 @@
 
 -keep class player.phonograph.preferences.** {*;}
 -keep class player.phonograph.views.** {*;}
+-keep class player.phonograph.model.** {*;}
 
 -keep,allowoptimization class player.phonograph.adapter.** {<init>(...);public <methods>;<fields>;}
 -keep,allowoptimization class player.phonograph.dialogs.** {public <methods>;}
