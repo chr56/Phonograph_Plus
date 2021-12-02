@@ -33,8 +33,11 @@ jobs:
         run: ./gradlew assembleCi --stacktrace
 
 
-      - uses: r0adkll/sign-android-release@v1.0.4
+      - name: signing apk
+        uses: r0adkll/sign-android-release@v1.0.4
         id: sign_app
+        env:
+          BUILD_TOOLS_VERSION: 30.0.3
         with:
           releaseDirectory: ./app/build/outputs/apk/ci
           signingKeyBase64: ${{ secrets.KEY }}
