@@ -41,7 +41,7 @@ jobs:
         with:
           releaseDirectory: ./app/build/outputs/apk/ci
           signingKeyBase64: ${{ secrets.KEY }}
-          keyStorePassword: ${{ secrets.KEY_STORE_PASSWORD }}
+          keyStorePassword: ${{ secrets.STORE_PASSWORD }}
           alias: ${{ secrets.KEY_ALIAS }}
           keyPassword: ${{ secrets.KEY_PASSWORD }}
 
