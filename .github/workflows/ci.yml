@@ -32,8 +32,18 @@ jobs:
       - name: Build with Gradle
         run: ./gradlew assembleCi --stacktrace
 
+
+      - uses: r0adkll/sign-android-release@v1.0.4
+        id: sign_app
+        with:
+          releaseDirectory: ./app/build/outputs/apk/ci
+          signingKeyBase64: ${{ secrets.KEY }}
+          keyStorePassword: ${{ secrets.KEY_STORE_PASSWORD }}
+          alias: ${{ secrets.KEY_ALIAS }}
+          keyPassword: ${{ secrets.KEY_PASSWORD }}
+
       - name: Upload APK
         uses: actions/upload-artifact@v2
         with:
           name: ci_build
-          path: app/build/outputs/apk/ci/*.apk
+          path: ${{steps.sign_app.outputs.signedReleaseFile}}

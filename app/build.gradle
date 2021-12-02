@@ -42,12 +42,12 @@ android {
             keyPassword signingProperties['keyPassword']
             }
         }
-        ci_trustless {
-            storeFile rootProject.file("public_signing_key.jks")
-            keyAlias 'trustless'
-            storePassword '000000'
-            keyPassword '000000'
-        }
+//        ci_trustless {
+//            storeFile rootProject.file("public_signing_key.jks")
+//            keyAlias 'trustless'
+//            storePassword '000000'
+//            keyPassword '000000'
+//        }
     }
     applicationVariants.all { variant ->
         if (variant.name == "release") {
@@ -94,7 +94,7 @@ android {
         }
         // for ci
         ci {
-            signingConfig signingConfigs.ci_trustless
+//            signingConfig signingConfigs.ci_trustless
             versionNameSuffix ' (' + getGitHash(0) + ')'
 
             applicationIdSuffix '.plus.ci'
