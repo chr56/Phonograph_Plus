@@ -87,7 +87,20 @@
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toEndOf="@id/barrier"
                 app:layout_constraintTop_toBottomOf="@id/app_version_title"
-                tools:ignore="HardcodedText" />
+                tools:ignore="HardcodedText,TouchTargetSizeCheck" />
+
+            <TextView
+                android:id="@+id/app_version_hash"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
+                android:visibility="invisible"
+                android:textAppearance="@style/TextAppearance.AppCompat.Caption"
+                app:layout_constraintBaseline_toBaselineOf="@id/app_version"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.101"
+                app:layout_constraintStart_toEndOf="@+id/app_version" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

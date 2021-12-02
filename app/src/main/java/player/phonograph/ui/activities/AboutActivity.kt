@@ -12,6 +12,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.annotation.Keep
 import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.Toolbar
 import chr_56.MDthemer.core.ThemeColor
@@ -20,6 +21,7 @@ import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.list.listItemsSingleChoice
 import de.psdev.licensesdialog.LicensesDialog
 import player.phonograph.App.Companion.instance
+import player.phonograph.BuildConfig
 import player.phonograph.R
 import player.phonograph.Updater
 import player.phonograph.databinding.ActivityAboutBinding
@@ -38,6 +40,7 @@ class AboutActivity : ThemeActivity(), View.OnClickListener {
     private lateinit var mToolbar: Toolbar
     private lateinit var appIcon: ImageView
     private lateinit var appVersion: TextView
+    private lateinit var appVersionHash: TextView
     private lateinit var changelog: LinearLayout
     private lateinit var checkUpgrade: LinearLayout
     private lateinit var intro: LinearLayout
@@ -65,7 +68,7 @@ class AboutActivity : ThemeActivity(), View.OnClickListener {
         binding()
         mToolbar = binding.toolbar
 
-        setActivityToolbarColorAuto(this,mToolbar)
+        setActivityToolbarColorAuto(this, mToolbar)
 
         setContentView(binding.root)
 
@@ -81,6 +84,7 @@ class AboutActivity : ThemeActivity(), View.OnClickListener {
     private fun binding() {
         appIcon = binding.activityAboutMainContent.cardAboutAppLayout.phonographIcon
         appVersion = binding.activityAboutMainContent.cardAboutAppLayout.appVersion
+        appVersionHash = binding.activityAboutMainContent.cardAboutAppLayout.appVersionHash
         changelog = binding.activityAboutMainContent.cardAboutAppLayout.changelog
         checkUpgrade = binding.activityAboutMainContent.cardAboutAppLayout.checkUpgrade
         licenses = binding.activityAboutMainContent.cardAboutAppLayout.licenses
@@ -124,8 +128,17 @@ class AboutActivity : ThemeActivity(), View.OnClickListener {
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
     }
 
+    @Keep
     private fun setUpAppVersion() {
         appVersion.text = getCurrentVersionName(this)
+        var gitCommitHash: String? = null
+        try {
+            gitCommitHash = BuildConfig.GitCommitHash.substring(0,8) // there may not be this field in BuildConfig.java
+            appVersionHash.text = gitCommitHash
+            appVersionHash.visibility = View.VISIBLE
+        } catch (e: Exception) {
+            appVersionHash.visibility = View.INVISIBLE
+        }
     }
     private fun getCurrentVersionName(context: Context): String {
         try {
@@ -266,7 +279,7 @@ class AboutActivity : ThemeActivity(), View.OnClickListener {
 
     private fun toast(text: CharSequence) {
         Looper.prepare()
-        Toast.makeText(this,text,Toast.LENGTH_SHORT).show()
+        Toast.makeText(this, text, Toast.LENGTH_SHORT).show()
         Looper.loop()
     }
 
