@@ -77,7 +77,6 @@
 -keep,allowoptimization class player.phonograph.appshortcuts.** {<init>(...);public <methods>;}
 -keep,allowoptimization class player.phonograph.appwidgets.** {<init>(...);public <methods>;}
 -keep,allowoptimization class player.phonograph.glide.** {<init>(...);public <methods>;}
--keep,allowoptimization class player.phonograph.provider.** {<init>(...);public <methods>;public <fields>;}
 -keep,allowoptimization class player.phonograph.service.** {<init>(...);public <methods>;public <fields>;}
 -keep class player.phonograph.ui.** {*;}
 -keep,allowoptimization,allowshrinking class player.phonograph.util.** {public <methods>;public <fields>;<init>(...);}
