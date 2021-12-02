@@ -80,5 +80,5 @@
 -keep,allowoptimization class player.phonograph.provider.** {<init>(...);public <methods>;public <fields>;}
 -keep,allowoptimization class player.phonograph.service.** {<init>(...);public <methods>;public <fields>;}
 -keep class player.phonograph.ui.** {*;}
--keep,allowoptimization,allowoptimization class player.phonograph.util.** {public <methods>;public <fields>;<init>(...);}
--keep class player.phonograph.* {public <methods>;}
+-keep,allowoptimization,allowshrinking class player.phonograph.util.** {public <methods>;public <fields>;<init>(...);}
+-keep,allowshrinking class player.phonograph.* {public <methods>;}
