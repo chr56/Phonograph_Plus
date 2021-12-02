@@ -69,7 +69,6 @@
 
 -keep class player.phonograph.preferences.** {*;}
 -keep class player.phonograph.views.** {*;}
--keep,allowoptimization class player.phonograph.** {*;}
 
 -keep,allowoptimization class player.phonograph.adapter.** {<init>(...);public <methods>;<fields>;}
 -keep,allowoptimization class player.phonograph.dialogs.** {public <methods>;}
