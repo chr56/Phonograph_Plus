@@ -73,19 +73,4 @@ public class Util {
         return resources.getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
     }
 
-    public static int resolveDimensionPixelSize(@NonNull Context context, @AttrRes int dimenAttr) {
-        TypedArray a = context.obtainStyledAttributes(new int[]{dimenAttr});
-        int dimensionPixelSize = a.getDimensionPixelSize(0, 0);
-        a.recycle();
-        return dimensionPixelSize;
-    }
-
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
-    public static boolean isRTL(@NonNull Context context) {
-        //if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            Configuration config = context.getResources().getConfiguration();
-            return config.getLayoutDirection() == View.LAYOUT_DIRECTION_RTL;
-        //} else return false;
-    }
-
 }
