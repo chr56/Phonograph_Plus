@@ -69,7 +69,6 @@ android {
         }
         debug {
             if(signing_file_exist) signingConfig signingConfigs.release
-            versionNameSuffix ' (' + getGitHash(0) + ')'
 
             applicationIdSuffix '.plus.debug'
             resValue "string", "app_name","Phonograph Plus Debug"
@@ -79,7 +78,6 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
 
             if(signing_file_exist) signingConfig signingConfigs.release
-            versionNameSuffix ' (' + getGitHash(0) + ')'
 
             resValue "string", "app_name","Phonograph Plus Preview"
             applicationIdSuffix '.plus.preview'
@@ -88,7 +86,6 @@ android {
         }
         // for ci
         ci {
-            versionNameSuffix ' (' + getGitHash(0) + ')'
 
             applicationIdSuffix '.plus.ci'
             resValue "string", "app_name","Phonograph Plus CI Build"
