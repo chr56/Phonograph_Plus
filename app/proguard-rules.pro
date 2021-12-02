@@ -50,7 +50,7 @@
 #AndroidX
 -keep class androidx.** {*;}
 -keep interface androidx.** {*;}
--keep class com.google.android.material.** {*;}
+-keep,allowshrinking,allowoptimization class com.google.android.material.** {*;}
 -keep class android.support.v4.** {*;}
 
 #
