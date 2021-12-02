@@ -18,9 +18,11 @@ import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.WhichButton
 import com.afollestad.materialdialogs.actions.getActionButton
 import player.phonograph.App
+import player.phonograph.BuildConfig
 import player.phonograph.R
 import player.phonograph.ui.activities.base.ThemeActivity
 import player.phonograph.util.PreferenceUtil
+import java.lang.Exception
 import java.util.*
 import kotlin.system.exitProcess
 
@@ -82,16 +84,14 @@ class CrashActivity : ThemeActivity() {
 
                     Handler().postDelayed({
                         Process.killProcess(Process.myPid())
-                        exitProcess(1);
-                    },4000)
-
+                        exitProcess(1)
+                    }, 4000)
                 }
                 .cancelOnTouchOutside(true)
 
             dialog.getActionButton(WhichButton.POSITIVE).updateTextColor(getColor(R.color.md_red_A700))
 
             dialog.show()
-
         }
     }
 
@@ -102,6 +102,12 @@ class CrashActivity : ThemeActivity() {
 
         var packageName: String = "null"
         var versionName: String = "null"
+        val gitCommitHash: String = try {
+            BuildConfig.GitCommitHash.substring(0, 20)
+        } catch (e: Exception) {
+            "Not Found"
+        }
+
         val osVersion: String = getOsString()
         val deviceInfo: String = getDeviceString()
         val appLanguage: String = Locale.getDefault().language
@@ -114,6 +120,7 @@ class CrashActivity : ThemeActivity() {
         val buffer: StringBuffer = StringBuffer()
         buffer.append("packageName $packageName").appendLine()
             .append("versionName $versionName").appendLine()
+            .append("gitCommitHash $gitCommitHash").appendLine()
             .append("osVersion   $osVersion").appendLine()
             .append("deviceInfo  $deviceInfo").appendLine()
             .append("appLanguage $appLanguage").appendLine()
@@ -137,6 +144,11 @@ class CrashActivity : ThemeActivity() {
                 packageName = packageInfo.packageName
                 versionCode = packageInfo.versionCode.toString()
             }
+            val gitCommitHash: String = try {
+                BuildConfig.GitCommitHash.substring(0, 20) // there may not be this field in BuildConfig.java
+            } catch (e: Exception) {
+                "Not Found"
+            }
             val appLanguage: String = Locale.getDefault().language
 
             // os
@@ -152,24 +164,11 @@ class CrashActivity : ThemeActivity() {
             val device: String = Build.DEVICE // device code name
             val product: String = Build.PRODUCT // rom code name
             val hardware: String = Build.HARDWARE // motherboard?
-            /*
-            val abis: String =
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) Build.SUPPORTED_ABIS.toString()
-                else "${Build.CPU_ABI},${Build.CPU_ABI2}"
-            val abis32Bits: String =
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) Build.SUPPORTED_32_BIT_ABIS.toString()
-                else "not available"
-            val abis64Bits: String =
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) Build.SUPPORTED_64_BIT_ABIS.toString()
-                else "not available"
-            */
-//            ABIs: $abis
-//            ABIs (32bit): $abis32Bits
-//            ABIs (64bit): $abis64Bits
 
             return """
             Package name:    $packageName
             App version:     $versionName ($versionCode)
+            Git Commit Hash: $gitCommitHash
             Android version: $releaseVersion (SDK $sdkVersion)
             Device brand:    $brand  (by $manufacturer)
             Device model:    $model (code: $device)
