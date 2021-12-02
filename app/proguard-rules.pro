@@ -71,16 +71,14 @@
 -keep class player.phonograph.views.** {*;}
 -keep,allowoptimization class player.phonograph.** {*;}
 
--keep class player.phonograph.adapter.** {<init>(...);public <methods>;<fields>;}
--keep class player.phonograph.dialogs.** {public <methods>;}
--keep class player.phonograph.misc.** {public <methods>;}
+-keep,allowoptimization class player.phonograph.adapter.** {<init>(...);public <methods>;<fields>;}
+-keep,allowoptimization class player.phonograph.dialogs.** {public <methods>;}
+-keep,allowoptimization class player.phonograph.misc.** {public <methods>;}
 -keep,allowoptimization class player.phonograph.appshortcuts.** {<init>(...);public <methods>;}
 -keep,allowoptimization class player.phonograph.appwidgets.** {<init>(...);public <methods>;}
 -keep,allowoptimization class player.phonograph.glide.** {*;}
--keep,allowoptimization class player.phonograph.helper.** {<init>(...);public <methods>;public <fields>;}
 -keep,allowoptimization class player.phonograph.provider.** {<init>(...);public <methods>;public <fields>;}
 -keep,allowoptimization class player.phonograph.service.** {<init>(...);public <methods>;public <fields>;}
--keep interface player.phonograph.service.** {*;}
 -keep class player.phonograph.ui.** {*;}
--keep class player.phonograph.util.** {public <methods>;public <fields>;<init>(...);}
+-keep,allowoptimization,allowoptimization class player.phonograph.util.** {public <methods>;public <fields>;<init>(...);}
 -keep class player.phonograph.* {public <methods>;}
