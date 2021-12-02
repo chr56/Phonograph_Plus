@@ -22,7 +22,6 @@ import player.phonograph.BuildConfig
 import player.phonograph.R
 import player.phonograph.ui.activities.base.ThemeActivity
 import player.phonograph.util.PreferenceUtil
-import java.lang.Exception
 import java.util.*
 import kotlin.system.exitProcess
 
@@ -102,11 +101,7 @@ class CrashActivity : ThemeActivity() {
 
         var packageName: String = "null"
         var versionName: String = "null"
-        val gitCommitHash: String = try {
-            BuildConfig.GitCommitHash.substring(0, 20)
-        } catch (e: Exception) {
-            "Not Found"
-        }
+        val gitCommitHash: String = BuildConfig.GIT_COMMIT_HASH.substring(0, 20)
 
         val osVersion: String = getOsString()
         val deviceInfo: String = getDeviceString()
@@ -144,11 +139,7 @@ class CrashActivity : ThemeActivity() {
                 packageName = packageInfo.packageName
                 versionCode = packageInfo.versionCode.toString()
             }
-            val gitCommitHash: String = try {
-                BuildConfig.GitCommitHash.substring(0, 20) // there may not be this field in BuildConfig.java
-            } catch (e: Exception) {
-                "Not Found"
-            }
+            val gitCommitHash: String = BuildConfig.GIT_COMMIT_HASH.substring(0, 20)
             val appLanguage: String = Locale.getDefault().language
 
             // os

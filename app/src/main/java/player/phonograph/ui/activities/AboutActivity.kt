@@ -131,10 +131,8 @@ class AboutActivity : ThemeActivity(), View.OnClickListener {
     @Keep
     private fun setUpAppVersion() {
         appVersion.text = getCurrentVersionName(this)
-        var gitCommitHash: String? = null
         try {
-            gitCommitHash = BuildConfig.GitCommitHash.substring(0,8) // there may not be this field in BuildConfig.java
-            appVersionHash.text = gitCommitHash
+            appVersionHash.text = BuildConfig.GIT_COMMIT_HASH.substring(0,8)
             appVersionHash.visibility = View.VISIBLE
         } catch (e: Exception) {
             appVersionHash.visibility = View.INVISIBLE
