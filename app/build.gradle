@@ -1,9 +1,12 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 
-def getGitHash = { ->
+String getGitHash(int type) {
     def stdout = new ByteArrayOutputStream()
-    exec {
+    if (type == 1) exec {
+        commandLine 'git', 'rev-parse', 'HEAD'
+        standardOutput = stdout
+    } else exec {
         commandLine 'git', 'rev-parse', '--short', 'HEAD'
         standardOutput = stdout
     }
@@ -29,7 +32,6 @@ android {
         applicationId 'player.phonograph'
         versionCode 4
         versionName '0.0.3'
-        versionNameSuffix ' (' + getGitHash() + ')'
     }
     signingConfigs {
         release {
@@ -68,18 +70,23 @@ android {
             if(signing_file_exist) signingConfig signingConfigs.release
             applicationIdSuffix '.plus'
             resValue "string", "app_name","Phonograph Plus"
+            buildConfigField "String","GitCommitHash", String.join('', '\"', getGitHash(1), '\"')
         }
         debug {
             if(signing_file_exist) signingConfig signingConfigs.release
+            versionNameSuffix ' (' + getGitHash(0) + ')'
 
             applicationIdSuffix '.plus.debug'
             resValue "string", "app_name","Phonograph Plus Debug"
+            buildConfigField "String","GitCommitHash", String.join('', '\"', getGitHash(1), '\"')
         }
         preview{
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
 
             if(signing_file_exist) signingConfig signingConfigs.release
+            versionNameSuffix ' (' + getGitHash(0) + ')'
+
             resValue "string", "app_name","Phonograph Plus Preview"
             applicationIdSuffix '.plus.preview'
             matchingFallbacks = ['release']
@@ -88,10 +95,13 @@ android {
         // for ci
         ci {
             signingConfig signingConfigs.ci_trustless
+            versionNameSuffix ' (' + getGitHash(0) + ')'
+
             applicationIdSuffix '.plus.ci'
             resValue "string", "app_name","Phonograph Plus CI build"
             matchingFallbacks = ['release']
             debuggable true
+            buildConfigField "String","GitCommitHash", String.join('', '\"', getGitHash(1), '\"')
         }
     }
     packagingOptions {
