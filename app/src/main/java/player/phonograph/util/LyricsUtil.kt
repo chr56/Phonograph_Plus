@@ -227,9 +227,15 @@ object LyricsUtil {
             sendMessageDelayed(message, delay)
         }
 
+        private var cache: String = ""
+
         private fun broadcast(time: Int) {
-            fetcher.getLine(time)
-                ?.let { broadcastLyrics(context, it) }
+            fetcher.getLine(time) ?.let {
+                if (it != cache) {
+                    broadcastLyrics(context, it)
+                    cache = it
+                }
+            }
         }
 
         companion object {
