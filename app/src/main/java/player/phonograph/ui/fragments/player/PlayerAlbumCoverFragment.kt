@@ -23,7 +23,6 @@ import player.phonograph.misc.SimpleAnimatorListener
 import player.phonograph.model.lyrics.AbsLyrics
 import player.phonograph.model.lyrics.LyricsParsedSynchronized
 import player.phonograph.ui.fragments.AbsMusicServiceFragment
-import player.phonograph.util.LyricsUtil.broadcastLyrics
 import player.phonograph.util.PreferenceUtil.Companion.getInstance
 import player.phonograph.util.ViewUtil
 
@@ -194,8 +193,6 @@ class PlayerAlbumCoverFragment :
         val line = lyrics.getLine(progress)
 
         if (oldLine != line || oldLine.isEmpty()) {
-
-//            broadcastLyrics(App.instance, line)
 
             lyricsLine1.text = oldLine
             lyricsLine2.text = line

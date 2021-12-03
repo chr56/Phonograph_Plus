@@ -1444,9 +1444,10 @@ public class MusicService extends Service implements SharedPreferences.OnSharedP
     }
     // for "MIUI StatusBar Lyrics" Xposed module
     public void broadcastStopLyric() {
-        sendBroadcast(new Intent()
-                .setAction("Lyric_Server")
-                .putExtra("Lyric_Type", "app_stop")
-        );
+        App.getInstance().getLyricsService().stopLyric();
+//        sendBroadcast(new Intent()
+//                .setAction("Lyric_Server")
+//                .putExtra("Lyric_Type", "app_stop")
+//        );
     }
 }

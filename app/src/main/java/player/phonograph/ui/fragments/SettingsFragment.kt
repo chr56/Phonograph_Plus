@@ -258,7 +258,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
                     }
                 PreferenceUtil.BROADCAST_SYNCHRONIZED_LYRICS ->
                     // clear lyrics displaying on the statusbar now
-                    player.phonograph.util.LyricsUtil.broadcastLyricsStop(requireActivity(), true)
+                    player.phonograph.App.instance.lyricsService.stopLyric()
             }
         }
     }

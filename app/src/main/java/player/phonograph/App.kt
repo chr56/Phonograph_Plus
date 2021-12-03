@@ -6,16 +6,18 @@ import android.content.res.Configuration
 import android.os.Build
 import android.os.Process
 import android.util.Log
+import androidx.appcompat.content.res.AppCompatResources
 import chr_56.MDthemer.core.ThemeColor
 import player.phonograph.appshortcuts.DynamicShortcutManager
 import player.phonograph.ui.activities.CrashActivity
-import player.phonograph.util.PreferenceUtil
+import statusbarsdk.statusbarlyric
 import kotlin.system.exitProcess
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
  */
 class App : Application() {
+    lateinit var lyricsService: statusbarsdk.statusbarlyric
 
     override fun onCreate() {
         super.onCreate()
@@ -24,14 +26,14 @@ class App : Application() {
         // Exception Handler
         Thread.setDefaultUncaughtExceptionHandler { _, exception ->
             val intent: Intent = Intent(this, CrashActivity::class.java)
-            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK  or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             intent.putExtra(KEY_STACK_TRACE, Log.getStackTraceString(exception))
 //            intent.action = "$PACKAGE_NAME.CRASH_HANDLER"
 
             this.startActivity(intent)
 
             Process.killProcess(Process.myPid())
-            exitProcess(1);
+            exitProcess(1)
         }
 
         // default theme
@@ -47,12 +49,9 @@ class App : Application() {
             DynamicShortcutManager(this).initDynamicShortcuts()
         }
 
-        //
-        themeRes = PreferenceUtil.getInstance(this).generalTheme
-
-//        Updater.checkUpdate(this)
+        // StatusBar Lyrics API
+        lyricsService = statusbarlyric(this, AppCompatResources.getDrawable(this, R.drawable.ic_notification), false)
     }
-    private var themeRes: Int = 0
 
     fun nightmode(): Boolean {
         val currentNightMode = (
