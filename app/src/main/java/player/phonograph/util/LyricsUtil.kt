@@ -229,7 +229,12 @@ object LyricsUtil {
         private fun broadcast(time: Int) {
             fetcher.getLine(time)?.let { line ->
                 if (line != cache) {
-                    App.instance.lyricsService.updateLyric(line)
+                    // sending only when playing
+                    if (MusicPlayerRemote.isPlaying()) {
+                        if (!PreferenceUtil.getInstance(context).broadcastSynchronizedLyrics()) return // do nothing
+                        App.instance.lyricsService.updateLyric(line)
+                    }
+                    // update cache
                     cache = line
                 }
             } ?: App.instance.lyricsService.stopLyric()
