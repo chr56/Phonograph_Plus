@@ -12,6 +12,7 @@ import androidx.annotation.Keep;
 import java.io.ByteArrayOutputStream;
 
 import player.phonograph.App;
+import player.phonograph.util.PreferenceUtil;
 
 @Keep
 public class statusbarlyric {
@@ -86,7 +87,7 @@ public class statusbarlyric {
     @Keep
     protected void sendLyric(Context context, String lyric, String icon, boolean useSystemMusicActive) {
 
-        if (!hasEnable()){
+        if (!hasEnable() && PreferenceUtil.getInstance(context).broadcastSynchronizedLyrics()){
             if (!lyric.isEmpty()) {
                 context.sendBroadcast(
                         new Intent().setAction("Lyric_Server")
