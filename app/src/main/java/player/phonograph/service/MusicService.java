@@ -383,7 +383,6 @@ public class MusicService extends Service implements SharedPreferences.OnSharedP
         wakeLock.release();
 
         sendBroadcast(new Intent("player.phonograph.PHONOGRAPH_MUSIC_SERVICE_DESTROYED"));
-        broadcastStopLyric();
     }
 
     @Override
@@ -838,7 +837,7 @@ public class MusicService extends Service implements SharedPreferences.OnSharedP
         playerHandler.removeMessages(PLAY_SONG);
         playerHandler.obtainMessage(PLAY_SONG, position, 0).sendToTarget();
 
-        broadcastStopLyric(); // reset lyrics
+        broadcastStopLyric(); // clear lyrics on switching
 
         refresher.replaceSong(getSongAt(position));
         refresher.start();
@@ -848,8 +847,6 @@ public class MusicService extends Service implements SharedPreferences.OnSharedP
         // handle this on the handlers thread to avoid blocking the ui thread
         playerHandler.removeMessages(SET_POSITION);
         playerHandler.obtainMessage(SET_POSITION, position, 0).sendToTarget();
-
-        broadcastStopLyric(); // reset lyrics
 
         refresher.replaceSong(getSongAt(position));
     }
@@ -874,7 +871,7 @@ public class MusicService extends Service implements SharedPreferences.OnSharedP
         if (playback.isPlaying()) {
             playback.pause();
             notifyChange(PLAY_STATE_CHANGED);
-            broadcastStopLyric(); // reset lyrics
+            broadcastStopLyric(); // clear lyrics on pause/stop
             refresher.stop();
         }
     }
@@ -901,12 +898,11 @@ public class MusicService extends Service implements SharedPreferences.OnSharedP
                         playerHandler.removeMessages(DUCK);
                         playerHandler.sendEmptyMessage(UNDUCK);
 
-                        broadcastStopLyric(); // reset lyrics
+                        broadcastStopLyric(); // clear lyrics on staring
 
                         refresher.replaceSong(getSongAt(getPosition()));
                         refresher.start();
                     }
-                    broadcastStopLyric();
                 }
             } else {
                 Toast.makeText(this, getResources().getString(R.string.audio_focus_denied), Toast.LENGTH_SHORT).show();
@@ -1184,7 +1180,7 @@ public class MusicService extends Service implements SharedPreferences.OnSharedP
     @Override
     public void onTrackEnded() {
         acquireWakeLock(30000);
-        broadcastStopLyric();
+        broadcastStopLyric(); // clear lyrics on ending
         playerHandler.sendEmptyMessage(TRACK_ENDED);
     }
 
@@ -1401,7 +1397,6 @@ public class MusicService extends Service implements SharedPreferences.OnSharedP
             mHandler.removeCallbacks(this);
             mHandler.postDelayed(this, THROTTLE);
 
-            broadcastStopLyric(); // reset lyrics
         }
 
         @Override
@@ -1442,12 +1437,11 @@ public class MusicService extends Service implements SharedPreferences.OnSharedP
             }
         }
     }
-    // for "MIUI StatusBar Lyrics" Xposed module
-    public void broadcastStopLyric() {
+
+    /**
+     * broadcast for "MIUI StatusBar Lyrics" Xposed module
+     */
+    private void broadcastStopLyric() {
         App.getInstance().getLyricsService().stopLyric();
-//        sendBroadcast(new Intent()
-//                .setAction("Lyric_Server")
-//                .putExtra("Lyric_Type", "app_stop")
-//        );
     }
 }

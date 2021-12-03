@@ -177,6 +177,9 @@ object LyricsUtil {
         fun getLine(time: Int): String? = lyrics?.getLine(time)
     }
 
+    /**
+     * broadcast for "MIUI StatusBar Lyrics" Xposed module
+     */
     class LyricsRefresher(looper: Looper, private var context: Context, private var fetcher: LyricsFetcher) : Handler(looper) {
 
         constructor(looper: Looper, context: Context, song: Song) : this(looper, context, LyricsFetcher(song))
@@ -187,6 +190,7 @@ object LyricsUtil {
         }
         fun stop() {
             removeMessages(CMD_REFRESH_PROGRESS_VIEWS)
+            App.instance.lyricsService.stopLyric()
         }
 
         fun replaceFetcher(fetcher: LyricsFetcher) { this.fetcher = fetcher }
@@ -248,38 +252,4 @@ object LyricsUtil {
         }
     }
 
-    /**
-     * broadcast for "MIUI StatusBar Lyrics" Xposed module
-     * @param line the lyrics
-     */
-    fun broadcastLyrics(context: Context, line: String) {
-        if (!PreferenceUtil.getInstance(context).broadcastSynchronizedLyrics()) return
-        // sending only when playing
-        if (MusicPlayerRemote.isPlaying()) {
-            if (line.isNotEmpty()) {
-                context.sendBroadcast(
-                    Intent().setAction("Lyric_Server")
-                        .putExtra("Lyric_Type", "app")
-                        .putExtra("Lyric_Data", line)
-                        .putExtra("Lyric_PackName", App.PACKAGE_NAME)
-                        // Actually, PackName is (music) service name, so we have no suffix (.plus.YOUR_BUILD_TYPE)
-                        .putExtra("Lyric_Icon", context.resources.getString(R.string.icon_base64))
-                        .putExtra("Lyric_UseSystemMusicActive", true)
-                )
-            } else {
-                broadcastLyricsStop(context, false) // clear, because is null
-            }
-        }
-    }
-
-    /**
-     * broadcast for "MIUI StatusBar Lyrics" Xposed module
-     * @param force send stop intent but ignoring preference
-     */
-    fun broadcastLyricsStop(context: Context, force: Boolean) {
-        if ((!PreferenceUtil.getInstance(context).broadcastSynchronizedLyrics()) && (!force)) return
-        context.sendBroadcast(
-            Intent().setAction("Lyric_Server").putExtra("Lyric_Type", "app_stop")
-        )
-    }
 }
