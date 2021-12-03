@@ -5,7 +5,6 @@
 package player.phonograph.util
 
 import android.content.Context
-import android.content.Intent
 import android.os.Handler
 import android.os.Looper
 import android.os.Message
@@ -14,7 +13,6 @@ import org.jaudiotagger.audio.AudioFileIO
 import org.jaudiotagger.tag.FieldKey
 import player.phonograph.App
 import player.phonograph.BuildConfig
-import player.phonograph.R
 import player.phonograph.helper.MusicPlayerRemote
 import player.phonograph.model.Song
 import player.phonograph.model.lyrics.AbsLyrics
@@ -174,7 +172,10 @@ object LyricsUtil {
 
         fun replaceLyrics(lyrics: LyricsParsedSynchronized?) { this.lyrics = lyrics }
 
-        fun getLine(time: Int): String? = lyrics?.getLine(time)
+        fun getLine(time: Int): String? {
+            val offsetTime = if (time > 100) time - 100 else time
+            return lyrics?.getLine(offsetTime)
+        }
     }
 
     /**
@@ -251,5 +252,4 @@ object LyricsUtil {
             private const val UPDATE_INTERVAL_PAUSED = 500
         }
     }
-
 }
