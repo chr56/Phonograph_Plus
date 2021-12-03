@@ -374,26 +374,6 @@ object MediaStoreUtil {
                         "$list "
                 )
                 .positiveButton(android.R.string.ok)
-                .neutralButton(R.string.retry) {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                        val uris: List<Uri> = List<Uri>(failList.size) { index ->
-                            Uri.withAppendedPath(
-                                MediaStore.Audio.Playlists.EXTERNAL_CONTENT_URI,
-                                failList[index].id.toString()
-                            )
-                        }
-                        uris.forEach {
-                            Log.d(TAG, it.toString())
-                            Log.d(TAG, it.path.toString())
-                        }
-                        val pi: PendingIntent = MediaStore.createDeleteRequest(
-                            context.contentResolver, uris
-                        )
-                        context.startIntentSenderForResult(pi.intentSender, 0, null, 0, 0, 0)
-                    } else {
-                        // todo
-                    }
-                }
                 .show()
         }
 
