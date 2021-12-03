@@ -1,13 +1,19 @@
 package statusbarsdk;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.util.Base64;
 
+import androidx.annotation.Keep;
+
 import java.io.ByteArrayOutputStream;
 
+import player.phonograph.App;
+
+@Keep
 public class statusbarlyric {
 
     String icon;
@@ -54,6 +60,7 @@ public class statusbarlyric {
      * 获取模块是否对本软件激活
      * </p>
      */
+    @Keep
     public boolean hasEnable() {
         return false;
     }
@@ -76,8 +83,31 @@ public class statusbarlyric {
         return Base64.encodeToString(bytes, Base64.DEFAULT);
     }
 
-    protected void sendLyric(Context context, String lyric, String icon, boolean useSystemMusicActive) {}
+    @Keep
+    protected void sendLyric(Context context, String lyric, String icon, boolean useSystemMusicActive) {
 
-    protected void stopLyric(Context context) {}
+        if (!hasEnable()){
+            if (!lyric.isEmpty()) {
+                context.sendBroadcast(
+                        new Intent().setAction("Lyric_Server")
+                                .putExtra("Lyric_Type", "app")
+                                .putExtra("Lyric_Data", lyric)
+                                .putExtra("Lyric_PackName", App.PACKAGE_NAME)
+                                // Actually, PackName is (music) service name, so we have no suffix (.plus.BUILD_TYPE)
+                                .putExtra("Lyric_Icon",icon)
+                                .putExtra("Lyric_UseSystemMusicActive", useSystemMusicActive)
+                );
+            }
+        }
+    }
+
+    @Keep
+    protected void stopLyric(Context context) {
+        if (!hasEnable()) {
+            context.sendBroadcast(
+                    new Intent().setAction("Lyric_Server").putExtra("Lyric_Type", "app_stop")
+            );
+        }
+    }
 
 }
