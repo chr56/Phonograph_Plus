@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.util.Base64;
+import android.util.Log;
 
 import androidx.annotation.Keep;
 
@@ -88,6 +89,7 @@ public class statusbarlyric {
     protected void sendLyric(Context context, String lyric, String icon, boolean useSystemMusicActive) {
 
         if (!hasEnable() && PreferenceUtil.getInstance(context).broadcastSynchronizedLyrics()){
+            Log.d("statusbar_lyric", "use fallback: "+lyric);
             if (!lyric.isEmpty()) {
                 context.sendBroadcast(
                         new Intent().setAction("Lyric_Server")
