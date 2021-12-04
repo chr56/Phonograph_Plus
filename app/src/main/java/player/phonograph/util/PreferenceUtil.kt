@@ -407,6 +407,9 @@ class PreferenceUtil(context: Context) {
         editor.apply()
     }
 
+    fun displaySynchronizedLyricsTimeAxis(): Boolean =
+        mPreferences.getBoolean(DISPLAY_LYRICS_TIME_AXIS, true)
+
     fun synchronizedLyricsShow(): Boolean {
         return mPreferences.getBoolean(SYNCHRONIZED_LYRICS_SHOW, true)
     }
@@ -568,6 +571,8 @@ class PreferenceUtil(context: Context) {
         const val AUTO_DOWNLOAD_IMAGES_POLICY = "auto_download_images_policy"
 
         const val START_DIRECTORY = "start_directory"
+
+        const val DISPLAY_LYRICS_TIME_AXIS = "display_lyrics_time_axis"
 
         const val SYNCHRONIZED_LYRICS_SHOW = "synchronized_lyrics_show"
 
