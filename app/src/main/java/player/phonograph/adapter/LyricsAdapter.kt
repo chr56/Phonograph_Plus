@@ -1,5 +1,6 @@
 package player.phonograph.adapter
 
+import android.app.Activity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,13 +11,13 @@ import player.phonograph.helper.MusicPlayerRemote
 import player.phonograph.util.MusicUtil
 import java.util.regex.Pattern
 
-class LyricsAdapter(stamps: IntArray, lines: Array<CharSequence>) : RecyclerView.Adapter<LyricsAdapter.VH>() {
-    var lyrics = lines
-    var timeStamps = stamps
+class LyricsAdapter(private val context: Activity, stamps: IntArray, lines: Array<CharSequence>) : RecyclerView.Adapter<LyricsAdapter.VH>() {
+    private var lyrics = lines
+    private var timeStamps = stamps
 
     inner class VH(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val line: TextView = itemView.findViewById<TextView>(R.id.dialog_lyrics_line)
-        val time: TextView = itemView.findViewById<TextView>(R.id.dialog_lyrics_times)
+        val line: TextView = itemView.findViewById(R.id.dialog_lyrics_line)
+        val time: TextView = itemView.findViewById(R.id.dialog_lyrics_times)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH {
@@ -31,9 +32,14 @@ class LyricsAdapter(stamps: IntArray, lines: Array<CharSequence>) : RecyclerView
         }
 
         holder.time.text = MusicUtil.parseTimeStamp(timeStamps[position])
-        if (timeStamps[position] < 0) holder.time.visibility = View.GONE
-        holder.line.text = b.toString()
-        holder.line.setOnLongClickListener {
+        holder.time.setTextColor(context.resources.getColor(R.color.dividerColor))
+        if (timeStamps[position] < 0)
+            holder.time.visibility = View.GONE
+
+        holder.line.text = b.trim().toString()
+
+
+        holder.itemView.setOnLongClickListener {
             MusicPlayerRemote.seekTo(timeStamps[position])
             true
         }

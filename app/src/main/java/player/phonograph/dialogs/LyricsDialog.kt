@@ -31,7 +31,7 @@ class LyricsDialog : DialogFragment() {
             .customView(R.layout.dialog_lyrics, horizontalPadding = true)
         val recyclerView = dialog.getCustomView().findViewById<RecyclerView>(R.id.recycler_view_lyrics)
         recyclerView.layoutManager = LinearLayoutManager(activity, RecyclerView.VERTICAL, false)
-        recyclerView.adapter = LyricsAdapter(timeStamps, lines)
+        recyclerView.adapter = LyricsAdapter(requireActivity(),timeStamps, lines)
 
         return dialog
     }
