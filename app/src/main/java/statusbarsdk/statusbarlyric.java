@@ -82,7 +82,7 @@ public class statusbarlyric {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.PNG,100,baos);
         byte[] bytes = baos.toByteArray();
-        return Base64.encodeToString(bytes, Base64.DEFAULT);
+        return Base64.encodeToString(bytes, Base64.DEFAULT).replace("\n","");
     }
 
     @Keep
