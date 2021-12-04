@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import player.phonograph.R
 import player.phonograph.helper.MusicPlayerRemote
 import player.phonograph.util.MusicUtil
+import player.phonograph.util.PreferenceUtil
 import java.util.regex.Pattern
 
 class LyricsAdapter(private val context: Activity, stamps: IntArray, lines: Array<CharSequence>, private val callbackDialog: Dialog? = null) :
@@ -35,7 +36,7 @@ class LyricsAdapter(private val context: Activity, stamps: IntArray, lines: Arra
 
         holder.time.text = MusicUtil.parseTimeStamp(timeStamps[position])
         holder.time.setTextColor(context.resources.getColor(R.color.dividerColor))
-        if (timeStamps[position] < 0)
+        if (timeStamps[position] < 0 || !PreferenceUtil.getInstance(context).displaySynchronizedLyricsTimeAxis())
             holder.time.visibility = View.GONE
 
         holder.line.text = b.trim().toString()
