@@ -56,8 +56,8 @@ object LyricsUtil {
 
         // from song
         try {
-            AudioFileIO.read(file).tagOrCreateDefault.getFirst(FieldKey.LYRICS)?.let {
-                return it
+            AudioFileIO.read(file).tagOrCreateDefault.getFirst(FieldKey.LYRICS).also {
+                if (it.trim().isNotEmpty()) return it
             }
         } catch (e: Exception) {
             val buildType = BuildConfig.BUILD_TYPE
