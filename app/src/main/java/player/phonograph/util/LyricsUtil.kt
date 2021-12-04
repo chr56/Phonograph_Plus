@@ -56,7 +56,9 @@ object LyricsUtil {
 
         // from song
         try {
-            rawLyrics = AudioFileIO.read(file).tagOrCreateDefault.getFirst(FieldKey.LYRICS)
+            AudioFileIO.read(file).tagOrCreateDefault.getFirst(FieldKey.LYRICS)?.let {
+                return it
+            }
         } catch (e: Exception) {
             val buildType = BuildConfig.BUILD_TYPE
             if (buildType != "release" || buildType != "preview") { e.printStackTrace() }
