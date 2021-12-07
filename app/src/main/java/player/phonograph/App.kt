@@ -1,5 +1,6 @@
 package player.phonograph
 
+import StatusbarLyric.API.StatusBarLyric
 import android.app.Application
 import android.content.Intent
 import android.content.res.Configuration
@@ -10,14 +11,13 @@ import androidx.appcompat.content.res.AppCompatResources
 import chr_56.MDthemer.core.ThemeColor
 import player.phonograph.appshortcuts.DynamicShortcutManager
 import player.phonograph.ui.activities.CrashActivity
-import statusbarsdk.statusbarlyric
 import kotlin.system.exitProcess
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
  */
 class App : Application() {
-    lateinit var lyricsService: statusbarsdk.statusbarlyric
+    lateinit var lyricsService: StatusbarLyric.API.StatusBarLyric
 
     override fun onCreate() {
         super.onCreate()
@@ -50,7 +50,13 @@ class App : Application() {
         }
 
         // StatusBar Lyrics API
-        lyricsService = statusbarlyric(this, AppCompatResources.getDrawable(this, R.drawable.ic_notification), false)
+        lyricsService =
+            StatusBarLyric(
+                this,
+                AppCompatResources.getDrawable(this, R.drawable.ic_notification),
+                PACKAGE_NAME,
+                false
+            )
     }
 
     fun nightmode(): Boolean {
