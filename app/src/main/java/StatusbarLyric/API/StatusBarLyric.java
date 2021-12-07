@@ -1,4 +1,8 @@
-package statusbarsdk;
+/*
+ * Copyright (c) 2021 chr_56 & Abou Zeid (kabouzeid) (original author)
+ */
+
+package StatusbarLyric.API;
 
 import android.content.Context;
 import android.content.Intent;
@@ -12,14 +16,14 @@ import androidx.annotation.Keep;
 
 import java.io.ByteArrayOutputStream;
 
-import player.phonograph.App;
 import player.phonograph.util.PreferenceUtil;
 
 @Keep
-public class statusbarlyric {
+public class StatusBarLyric {
 
     String icon;
     Context context;
+    String serviceName;
     boolean useSystemMusicActive;
 
     /**
@@ -30,14 +34,16 @@ public class statusbarlyric {
      * 调用{@link #sendLyric}发送歌词, 调用{@link #stopLyric}清除(当然你的应用被杀死也会清除), 调用{@link #hasEnable}判断是否激活模块.
      * </p>
      *
-     * @param context context
-     * @param drawable (notification) icon (you can use your music service's notification icon), Drawable, format should be webp. 通知栏图标(Webp格式,Drawable)
+     * @param context              context
+     * @param drawable             (notification) icon (you can use your music service's notification icon), Null: do not display icon, Drawable, format should be webp. 通知栏图标, null 为不显示图标, (Webp格式, Drawable)
+     * @param serviceName          ServiceName, for example (demo.abc.Service) 服务名称, 例如 (demo.abc.Service)
      * @param useSystemMusicActive detect your music service running status via system. 是否使用系统检测音乐是否播放
      */
-    public statusbarlyric(Context context, Drawable drawable, boolean useSystemMusicActive) {
+    public StatusBarLyric(Context context, Drawable drawable, String serviceName, boolean useSystemMusicActive) {
         icon = drawableToBase64(drawable);
         this.context = context;
         this.useSystemMusicActive = useSystemMusicActive;
+        this.serviceName = serviceName;
     }
 
     /**
@@ -51,8 +57,9 @@ public class statusbarlyric {
      * @param lyric A single line lyrics 单行歌词
      */
     public void updateLyric(String lyric) {
-        sendLyric(context, lyric, icon, useSystemMusicActive);
+        sendLyric(context, lyric, icon, serviceName, useSystemMusicActive);
     }
+
 
     /**
      * Whether to activate the Xposed module / 是否激活模块 &nbsp;
@@ -62,7 +69,6 @@ public class statusbarlyric {
      * 获取模块是否对本软件激活
      * </p>
      */
-    @Keep
     public boolean hasEnable() {
         return false;
     }
@@ -82,22 +88,23 @@ public class statusbarlyric {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.PNG,100,baos);
         byte[] bytes = baos.toByteArray();
-        return Base64.encodeToString(bytes, Base64.DEFAULT).replace("\n","");
+        return Base64.encodeToString(bytes, Base64.DEFAULT);
     }
 
-    @Keep
-    protected void sendLyric(Context context, String lyric, String icon, boolean useSystemMusicActive) {
 
-        if (!hasEnable() && PreferenceUtil.getInstance(context).broadcastSynchronizedLyrics()){
-            Log.d("statusbar_lyric", "use fallback: "+lyric);
+    @Keep
+    protected void sendLyric(Context context, String lyric, String icon, String serviceName, boolean useSystemMusicActive) {
+
+        if (!hasEnable() && PreferenceUtil.getInstance(context).broadcastSynchronizedLyrics()) {
+            Log.d("statusbar_lyric", "use fallback: " + lyric);
             if (!lyric.isEmpty()) {
                 context.sendBroadcast(
                         new Intent().setAction("Lyric_Server")
                                 .putExtra("Lyric_Type", "app")
                                 .putExtra("Lyric_Data", lyric)
-                                .putExtra("Lyric_PackName", App.PACKAGE_NAME)
+                                .putExtra("Lyric_PackName", serviceName)
                                 // Actually, PackName is (music) service name, so we have no suffix (.plus.BUILD_TYPE)
-                                .putExtra("Lyric_Icon",icon)
+                                .putExtra("Lyric_Icon", icon)
                                 .putExtra("Lyric_UseSystemMusicActive", useSystemMusicActive)
                 );
             }
