@@ -72,7 +72,7 @@
 -keep class player.phonograph.views.** {*;}
 -keep class player.phonograph.model.** {*;}
 
--keep class statusbarsdk.statusbarlyric {*;}
+-keep class StatusbarLyric.API.StatusBarLyric {*;}
 
 -keep,allowoptimization class player.phonograph.adapter.** {<init>(...);public <methods>;<fields>;}
 -keep,allowoptimization class player.phonograph.dialogs.** {public <methods>;}
