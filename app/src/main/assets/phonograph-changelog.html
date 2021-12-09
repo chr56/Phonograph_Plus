@@ -30,11 +30,24 @@
     <h3 style="color: tomato">修改说明</h3>
 
 
+    <h4><b>0.0.6</b> 2021.12.09</h4>
+    <div style="color: black">
+        <ol>
+            <li>
+                适配 支持新版<a href="https://github.com/577fkj/MIUIStatusBarLyric">MIUI状态栏歌词</a>API变化 \n(请Hook本应用, 并在"MIUI状态栏歌词"-&gt;"软件列表"中开启,以生效)
+            </li>
+        </ol>
+        <div style="color: black; font-size: x-large;">
+            即日起, Phonograph Plus 暂停更新, 并计划于约明年(2022)恢复更新。
+        </div>
+    </div>
+
     <h4><b>0.0.5</b> 2021.12.04</h4>
     <div style="color: black">
         <ol>
             <li>修复 无法显示内嵌歌词</li>
-            <li>新增 支持新版<a href="https://github.com/577fkj/MIUIStatusBarLyric">MIUI状态栏歌词</a>API(请Hook本应用生效)</li>
+            <li>新增 支持新版<a href="https://github.com/577fkj/MIUIStatusBarLyric">MIUI状态栏歌词</a>API(请Hook本应用生效)
+            </li>
             <li>改进 微调歌词对话框</li>
             <li>改进 允许关闭歌词对话框时间轴信息显示(设置->显示歌词时间轴)</li>
             <li>改进 长按歌词对话框歌词转跳时间轴后, 自动关闭歌词对话框</li>
@@ -53,13 +66,15 @@
                 <li>新增 允许关闭歌词广播</li>
                 <li>修复 关闭歌词显示后，无法发送歌词广播</li>
                 <li>
-                    修复 歌词文件匹配错误<br />（现在歌词读取顺序为: <b>内嵌</b>歌词 -&gt; <b>同文件名</b>的外载歌词 -&gt; 有
+                    修复 歌词文件匹配错误<br/>（现在歌词读取顺序为: <b>内嵌</b>歌词 -&gt; <b>同文件名</b>的外载歌词 -&gt; 有
                     <b>前后缀</b>的同名的外载歌词）
                 </li>
                 <li>优化 代码</li>
                 <li>变更 版本号不再带有 Git Commit Hash</li>
                 <li>开发 加强代码混淆力度</li>
-                <li><del>开发 更换Github Actions 的CI构建签名</del></li>
+                <li>
+                    <del>开发 更换Github Actions 的CI构建签名</del>
+                </li>
             </ol>
             <div>
                 注: 此版暂未适配新版<a href="https://github.com/577fkj/MIUIStatusBarLyric">MIUI状态栏歌词</a>API
@@ -127,7 +142,7 @@
                 <li>新增 崩溃报告页面</li>
             </ul>
         </div>
-        <br />
+        <br/>
         <a href="https://github.com/chr56/Phonograph_Plus">开源地址(GitHub)</a>
     </div>
 
@@ -155,7 +170,8 @@
                 <li>变更 适当折叠歌曲弹出菜单</li>
                 <li>修复 因幽灵播放列表导致崩溃(但是幽灵文件的Bug还在)</li>
                 <li>
-                    其他 重构部分代码<del style="color: grey">(可能动了一些"不该动"的地方，然后引起某些崩溃或行为异常)</del>
+                    其他 重构部分代码
+                    <del style="color: grey">(可能动了一些"不该动"的地方，然后引起某些崩溃或行为异常)</del>
                 </li>
             </ol>
         </div>
@@ -181,14 +197,18 @@
             <ol style="margin-left: 5px">
                 <li>添加新黑名单后未能及时刷新黑名单列表显示</li>
                 <li>扫描媒体中选择文件夹对话框卡慢</li>
-                <li>睡眠定时器"播完最后一首"<del>随缘</del>生效</li>
-                <li><del>安装包体积膨胀至6MB以上</del></li>
+                <li>睡眠定时器"播完最后一首"
+                    <del>随缘</del> 生效
+                </li>
+                <li>
+                    <del>安装包体积膨胀至6MB以上</del>
+                </li>
                 <li>(右上角)菜单主题失效</li>
                 <li>"设为铃声"失效</li>
             </ol>
             <p style="color: slategrey; margin-top: 0dp">可能仍有其他轻微Bug</p>
         </div>
-        <br />
+        <br/>
 
         <h4>2021.08.06 <i>181</i></h4>
         <div>
@@ -198,7 +218,7 @@
                 <li>优化 主题切换按钮</li>
             </ol>
         </div>
-        <br />
+        <br/>
 
         <h4>2021.08.04 <i>180</i></h4>
         <div>
@@ -208,8 +228,8 @@
                 <li>抽屉新增主题切换开关（将就用吧）</li>
             </ol>
         </div>
-        <br />
-        <br />
+        <br/>
+        <br/>
         <a href="https://github.com/chr56/Phonograph">开源地址(GitHub)</a>
     </div>
 
@@ -223,29 +243,29 @@
 
         <p>
             <b>Version 1.3.5</b>
-            <br />
+            <br/>
             <b>FIX:</b> Fix crash on Android 11
-            <br />
+            <br/>
             <b>IMPROVEMENT:</b> Sync translations
         </p>
 
         <p>
             <b>Version 1.3.4</b> <b>FIX:</b> Crash for some users
-            <br />
+            <br/>
             <b>IMPROVEMENT:</b> Sync translations
         </p>
 
         <p>
             <b>Version 1.3.3</b>
-            <br />
+            <br/>
             <b>FIX:</b> Compatibility with Android 10 (tag editing, deleting songs, etc.).
-            <br />
+            <br/>
             <b>FIX:</b> Deleting from playlists.
-            <br />
+            <br/>
             <b>FIX:</b> Sleep timer when gapless playback was enabled.
-            <br />
+            <br/>
             <b>FIX:</b> Broken links.
-            <br />
+            <br/>
             <b>IMPROVEMENT:</b> Sync translations
         </p>
     </div>
