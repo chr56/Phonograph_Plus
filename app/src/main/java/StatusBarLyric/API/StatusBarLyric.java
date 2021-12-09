@@ -2,7 +2,7 @@
  * Copyright (c) 2021 chr_56 & Abou Zeid (kabouzeid) (original author)
  */
 
-package StatusbarLyric.API;
+package StatusBarLyric.API;
 
 import android.content.Context;
 import android.content.Intent;

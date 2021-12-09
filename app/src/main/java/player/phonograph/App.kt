@@ -1,6 +1,5 @@
 package player.phonograph
 
-import StatusbarLyric.API.StatusBarLyric
 import android.app.Application
 import android.content.Intent
 import android.content.res.Configuration
@@ -17,7 +16,7 @@ import kotlin.system.exitProcess
  * @author Karim Abou Zeid (kabouzeid)
  */
 class App : Application() {
-    lateinit var lyricsService: StatusbarLyric.API.StatusBarLyric
+    lateinit var lyricsService: StatusBarLyric.API.StatusBarLyric
 
     override fun onCreate() {
         super.onCreate()
@@ -51,7 +50,7 @@ class App : Application() {
 
         // StatusBar Lyrics API
         lyricsService =
-            StatusBarLyric(
+            StatusBarLyric.API.StatusBarLyric(
                 this,
                 AppCompatResources.getDrawable(this, R.drawable.ic_notification),
                 PACKAGE_NAME,
