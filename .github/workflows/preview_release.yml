@@ -61,7 +61,7 @@ jobs:
           name: "[CI]Preview: ${{ github.ref_name }}"
           files: ${{steps.sign_app.outputs.signedReleaseFile}}
           prerelease: true
-          draft: true
+          draft: false
           tag_name: ${{ github.ref }}
           body: CI Preview Release - ${{ github.ref }}
           body_path: ${{ github.workspace }}/ReleaseNote.md
@@ -76,8 +76,8 @@ jobs:
           token: ${{ secrets.TG_BOT_TOKEN }}
           document: ${{ github.workspace }}/${{steps.sign_app.outputs.signedReleaseFile}}
           message: |
-            **Preview ${{ github.ref_name }}**
-            [GitHub](${{ steps.release_github.outputs.url }})
+            **Preview version - ${{ github.ref_name }}**
+            Link:[GitHub](${{ steps.release_github.outputs.url }})
           format: markdown
           disable_notification: true
           disable_web_page_preview: true
