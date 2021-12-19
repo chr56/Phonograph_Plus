@@ -8,7 +8,7 @@ on:
       - "README.md"
       - "version"
       - "version.json"
-  workflow_dispatch:
+  # workflow_dispatch:
 
 jobs:
   build:
@@ -65,3 +65,4 @@ jobs:
           draft: true
           body: CI Release
           body_path: ${{ github.workspace }}ReleaseNote.txt
+          token: ${{ secrets.TOKEN }}
