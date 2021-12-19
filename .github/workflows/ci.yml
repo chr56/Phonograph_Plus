@@ -1,6 +1,13 @@
 name: ci
 on:
   push:
+    branches:
+      - 'dev'
+      - 'release'
+    tags-ignore:
+      - 'preview_*'
+      - 'v0*'
+      - 'r_*'
     paths-ignore:
       - 'README.md'
       - 'version'
