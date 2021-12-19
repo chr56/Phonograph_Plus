@@ -64,5 +64,5 @@ jobs:
           prerelease: true
           draft: true
           body: CI Release
-          body_path: ${{ github.workspace }}ReleaseNote.txt
+          body_path: ${{ github.workspace }}/ReleaseNote.txt
           token: ${{ secrets.TOKEN }}
