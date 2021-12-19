@@ -46,14 +46,15 @@ jobs:
           alias: ${{ secrets.KEY_ALIAS }}
           keyPassword: ${{ secrets.KEY_PASSWORD }}
 
-      - name: Upload APK
+      - name: Upload Artifact
         uses: actions/upload-artifact@v2
         with:
           name: preview_release
           path: ${{steps.sign_app.outputs.signedReleaseFile}}
 
-      - name: Release
+      - name: Release New Version
         uses: softprops/action-gh-release@v1
+        id: release_github
 
         if: startsWith(github.ref, 'refs/tags/preview_')
         with:
@@ -65,3 +66,18 @@ jobs:
           body: CI Preview Release - ${{ github.ref }}
           body_path: ${{ github.workspace }}/ReleaseNote.md
           token: ${{ secrets.TOKEN }}
+
+      - name: Upload to TG
+        uses: appleboy/telegram-action@master
+
+        if: startsWith(github.ref, 'refs/tags/preview_')
+        with:
+          to: ${{ secrets.TG_CHAT_ID }}
+          token: ${{ secrets.TG_BOT_TOKEN }}
+          document: ${{steps.sign_app.outputs.signedReleaseFile}}
+          message: |
+            **Preview ${{ github.ref_name }}**
+            [GitHub](${{ steps.release_github.outputs.upload_url }})
+          format: markdown
+          disable_notification: true
+          disable_web_page_preview: true
