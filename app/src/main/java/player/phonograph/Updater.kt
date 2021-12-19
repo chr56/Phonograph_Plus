@@ -68,8 +68,7 @@ object Updater {
         val versionJson =
             Gson().fromJson<VersionJson>(responseBody.string(), VersionJson::class.java)
         Log.i(
-            TAG,
-            "versionCode: ${versionJson.versionCode}, version: ${versionJson.version}, logSummary: ${versionJson.logSummary}"
+            TAG, "versionCode: ${versionJson.versionCode}, version: ${versionJson.version}, logSummary: ${versionJson.logSummary}"
         )
 
         val result = Bundle().also {

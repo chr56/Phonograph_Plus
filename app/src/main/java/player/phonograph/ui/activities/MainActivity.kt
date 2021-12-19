@@ -27,7 +27,7 @@ import player.phonograph.Updater.checkUpdate
 import player.phonograph.dialogs.ChangelogDialog.Companion.create
 import player.phonograph.dialogs.ChangelogDialog.Companion.setChangelogRead
 import player.phonograph.dialogs.ScanMediaFolderDialog
-import player.phonograph.dialogs.UpgradeDialog.Companion.create
+import player.phonograph.dialogs.UpgradeDialog
 import player.phonograph.glide.SongGlideRequest
 import player.phonograph.helper.MusicPlayerRemote
 import player.phonograph.helper.SearchQueryHelper
@@ -372,12 +372,8 @@ class MainActivity : AbsSlidingMusicPanelActivity() {
     }
 
     private fun checkUpdate() {
-        Handler().postDelayed(
-            {
-                checkUpdate({ versionInfo: Bundle ->
-                    showUpgradeDialog(versionInfo)
-                }, false)
-            }, 3000
+        Handler(Looper.getMainLooper()).postDelayed(
+            { checkUpdate(this::showUpgradeDialog, false) }, 3000
         )
     }
 
@@ -393,10 +389,8 @@ class MainActivity : AbsSlidingMusicPanelActivity() {
         }
     }
 
-    private fun showUpgradeDialog(versionInfo: Bundle?) {
-        create(versionInfo!!)
-            .show(supportFragmentManager, "UpgradeDialog")
-        return
+    private fun showUpgradeDialog(versionInfo: Bundle) {
+        UpgradeDialog.create(versionInfo).show(supportFragmentManager, "UpgradeDialog")
     }
 
     interface MainActivityFragmentCallbacks {
