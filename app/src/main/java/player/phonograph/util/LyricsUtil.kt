@@ -201,7 +201,14 @@ object LyricsUtil {
             fetcher.lyrics = lyrics
         }
         fun replaceSong(song: Song) {
-            fetcher.lyrics = fetchLyrics(song) as LyricsParsedSynchronized?
+            fetchLyrics(song)
+                ?.let {
+                    fetcher.lyrics = if (it.getType() == AbsLyrics.LRC) {
+                        it as LyricsParsedSynchronized
+                    } else {
+                        null
+                    }
+                }
         }
 
         override fun handleMessage(msg: Message) {
