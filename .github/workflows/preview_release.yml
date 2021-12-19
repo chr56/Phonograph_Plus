@@ -59,10 +59,10 @@ jobs:
 
         if: startsWith(github.ref, 'refs/tags/')
         with:
-          name: Preview Release [CI]
+          name: Preview [CI]
           files: ${{steps.sign_app.outputs.signedReleaseFile}}
           prerelease: true
           draft: true
           body: CI Release
-          body_path: ${{ github.workspace }}/ReleaseNote.txt
+          body_path: ${{ github.workspace }}/ReleaseNote.md
           token: ${{ secrets.TOKEN }}
