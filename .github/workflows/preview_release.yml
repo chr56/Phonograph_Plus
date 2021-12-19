@@ -74,10 +74,10 @@ jobs:
         with:
           to: ${{ secrets.TG_CHAT_ID }}
           token: ${{ secrets.TG_BOT_TOKEN }}
-          document: ${{steps.sign_app.outputs.signedReleaseFile}}
+          document: ${{ github.workspace }}/${{steps.sign_app.outputs.signedReleaseFile}}
           message: |
             **Preview ${{ github.ref_name }}**
-            [GitHub](${{ steps.release_github.outputs.upload_url }})
+            [GitHub](${{ steps.release_github.outputs.url }})
           format: markdown
           disable_notification: true
           disable_web_page_preview: true
