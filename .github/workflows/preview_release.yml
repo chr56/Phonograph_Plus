@@ -1,0 +1,67 @@
+name: preview_release
+on:
+  push:
+    # branches: [preview]
+    tags:
+      - "preview_*"
+    paths-ignore:
+      - "README.md"
+      - "version"
+      - "version.json"
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: build preview
+    runs-on: ubuntu-18.04
+    permissions:
+      contents: write
+
+    steps:
+      - name: checkout
+        uses: actions/checkout@v2.2.0
+
+      # - uses: gradle/wrapper-validation-action@v1 # its timeout fails the action
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: set up JDK 8
+        uses: actions/setup-java@v2
+        with:
+          java-version: "8"
+          distribution: "adopt"
+          cache: gradle
+
+      - name: Build with Gradle
+        run: ./gradlew assemblePreview --stacktrace
+
+      - name: signing apk
+        uses: r0adkll/sign-android-release@v1.0.4
+        id: sign_app
+        env:
+          BUILD_TOOLS_VERSION: 30.0.3
+        with:
+          releaseDirectory: ./app/build/outputs/apk/preview
+          signingKeyBase64: ${{ secrets.KEY }}
+          keyStorePassword: ${{ secrets.STORE_PASSWORD }}
+          alias: ${{ secrets.KEY_ALIAS }}
+          keyPassword: ${{ secrets.KEY_PASSWORD }}
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v2
+        with:
+          name: preview_release
+          path: ${{steps.sign_app.outputs.signedReleaseFile}}
+
+      - name: Release
+        uses: softprops/action-gh-release@v1
+
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          name: Preview Release [CI]
+          files: ${{steps.sign_app.outputs.signedReleaseFile}}
+          prerelease: true
+          draft: true
+          body: CI Release
+          body_path: ${{ github.workspace }}ReleaseNote.txt
