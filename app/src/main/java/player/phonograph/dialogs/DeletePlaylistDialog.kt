@@ -20,8 +20,6 @@ import com.afollestad.materialdialogs.actions.getActionButton
 import player.phonograph.R
 import player.phonograph.model.Playlist
 import player.phonograph.util.MediaStoreUtil
-
-// Todo Completed
 /**
  * @author Karim Abou Zeid (kabouzeid)
  */

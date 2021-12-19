@@ -11,7 +11,6 @@ import com.afollestad.materialdialogs.actions.getActionButton
 import com.afollestad.materialdialogs.input.input
 import player.phonograph.R
 import player.phonograph.util.PlaylistsUtil
-// Todo Completed
 /**
  * @author Karim Abou Zeid (kabouzeid), Aidan Follestad (afollestad)
  */

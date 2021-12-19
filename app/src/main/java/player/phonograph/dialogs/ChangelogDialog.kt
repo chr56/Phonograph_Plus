@@ -23,7 +23,6 @@ import player.phonograph.R
 import player.phonograph.util.PreferenceUtil
 import java.io.BufferedReader
 import java.io.InputStreamReader
-// Todo Review
 /**
  * @author Aidan Follestad (afollestad)
  */

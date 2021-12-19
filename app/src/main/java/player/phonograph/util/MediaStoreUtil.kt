@@ -296,7 +296,7 @@ object MediaStoreUtil {
         }
 
         val cursor: Cursor? = try {
-            context.contentResolver.query( // todo Blacklist for playlists
+            context.contentResolver.query(
                 MediaStore.Audio.Playlists.EXTERNAL_CONTENT_URI,
                 arrayOf(
                     BaseColumns._ID, /* 0 */

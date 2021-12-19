@@ -42,7 +42,7 @@ class ScanMediaFolderDialog : DialogFragment() {
         ) {
             return MaterialDialog(requireContext())
                 .title(R.string.Permission_denied)
-                .message(R.string.err_permission_storage) // TODO ResFile
+                .message(R.string.err_permission_storage)
                 .positiveButton(android.R.string.ok)
         }
 

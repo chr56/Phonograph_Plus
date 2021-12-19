@@ -856,7 +856,7 @@ public class MusicService extends Service implements SharedPreferences.OnSharedP
             play();
         } else {
             Toast.makeText(this, getResources().getString(R.string.unplayable_file), Toast.LENGTH_SHORT).show();
-            // todo preference
+            // todo add a preference to control this behavior
             if (
                     (position != getPlayingQueue().size() - 1)
                             && (getRepeatMode() != REPEAT_MODE_THIS)

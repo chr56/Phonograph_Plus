@@ -13,8 +13,6 @@ import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.WhichButton
 import com.afollestad.materialdialogs.actions.getActionButton
 
-// Todo Completed
-
 /**
  * @author Karim Abou Zeid (kabouzeid)
  */

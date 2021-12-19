@@ -10,7 +10,6 @@ import com.afollestad.materialdialogs.WhichButton
 import com.afollestad.materialdialogs.actions.getActionButton
 import player.phonograph.R
 import player.phonograph.model.smartplaylist.AbsSmartPlaylist
-// Todo Completed
 /**
  * @author Karim Abou Zeid (kabouzeid)
  */

@@ -7,7 +7,6 @@ import chr_56.MDthemer.core.ThemeColor
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.list.listItemsSingleChoice
 import player.phonograph.preferences.basic.ListPreferenceX
-// Todo Completed
 
 /**
  * @author Karim Abou Zeid (kabouzeid)

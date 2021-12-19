@@ -11,7 +11,6 @@ import player.phonograph.R
 import player.phonograph.loader.PlaylistLoader
 import player.phonograph.model.Song
 import player.phonograph.util.PlaylistsUtil
-/*TODO review*/
 
 /**
  * @author Karim Abou Zeid (kabouzeid), Aidan Follestad (afollestad)

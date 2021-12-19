@@ -29,7 +29,7 @@ class BlacklistFolderChooserDialog : DialogFragment() {
         ) {
             return MaterialDialog(requireContext())
                 .title(R.string.Permission_denied)
-                .message(R.string.err_permission_storage) // TODO ResFile
+                .message(R.string.err_permission_storage)
                 .positiveButton(android.R.string.ok)
         }
 
@@ -38,7 +38,7 @@ class BlacklistFolderChooserDialog : DialogFragment() {
             .folderChooser(context = requireContext(), waitForPositiveButton = true, emptyTextRes = R.string.empty, initialDirectory = File("/storage/emulated/0")) {
                 _, file ->
                 val dialog = MaterialDialog(requireContext())
-                    .title(R.string.add_blacklist) // todo ResFile
+                    .title(R.string.add_blacklist)
                     .message(text = file.absolutePath)
                     .positiveButton(android.R.string.ok) {
                         BlacklistStore.getInstance(App.instance).addPath(file)

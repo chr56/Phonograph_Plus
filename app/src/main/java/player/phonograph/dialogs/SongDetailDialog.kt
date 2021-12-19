@@ -33,7 +33,6 @@ import org.jaudiotagger.tag.TagException
 import org.jaudiotagger.tag.datatype.DataTypes
 import org.jaudiotagger.tag.id3.AbstractID3v2Frame
 
-// Todo Completed
 /**
  * @author Karim Abou Zeid (kabouzeid), Aidan Follestad (afollestad), chr_56<modify>
  */
@@ -121,7 +120,7 @@ class SongDetailDialog : DialogFragment() {
                                 custInfo += frame.body.getObjectValue(DataTypes.OBJ_TEXT)
                                 custInfo += "<br />"
                             }
-                        } else { // todo: limit sizes
+                        } else {
                             Toast.makeText(requireContext(),"Other tags in this song is too many, only show the first 128 entries",Toast.LENGTH_LONG).show()
                             for (index in 0 until 127){
                                 val frame = custInfoField[index] as AbstractID3v2Frame
@@ -175,7 +174,7 @@ class SongDetailDialog : DialogFragment() {
         }
         private fun makeTextWithTitle(context: Context, title: String, text: String): Spanned {
             return Html.fromHtml("<b>$title: </b>$text", Html.FROM_HTML_MODE_COMPACT)
-        } // Todo Remove
+        }
 
         private fun getFileSizeString(sizeInBytes: Long): String {
             val fileSizeInKB = sizeInBytes / 1024

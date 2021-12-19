@@ -6,7 +6,6 @@ import androidx.preference.EditTextPreference
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.input.input
 import player.phonograph.preferences.basic.EditTextPreferenceX
-// Todo Completed
 /**
  * @author Karim Abou Zeid (kabouzeid)
  */
