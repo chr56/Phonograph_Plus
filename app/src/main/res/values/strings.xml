@@ -340,7 +340,9 @@
     <string name="check_upgrade">Check upgrade</string>
     <string name="no_newer_version">No update!</string>
     <string name="new_version">New Version!</string>
-    <string name="new_version_msg">New Version available:\n version: %1$s \n changelog: %2$s</string>
+    <string name="new_version_code">version:</string>
+    <string name="new_version_log">changelog:</string>
+    <string name="new_version_tips">This dialog can be disabled in Settings. (You can also check update in About manually.)</string>
     <string name="tg_channel">Telegram Channel</string>
     <string name="auto_check_upgrade">Check update automatically</string>
     <string name="auto_check_upgrade_summary">Pop up an upgrade dialog instantly if newer version available.</string>

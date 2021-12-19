@@ -8,6 +8,8 @@ import android.app.Dialog
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.text.Html
+import android.util.Log
 import androidx.fragment.app.DialogFragment
 import com.afollestad.materialdialogs.MaterialDialog
 import player.phonograph.R
@@ -26,9 +28,17 @@ class UpgradeDialog : DialogFragment() {
         version = arguments.getString(Updater.Version)
         log = arguments.getString(Updater.LogSummary)
 
+        val message = "<p>" +
+            "<b>${getString(R.string.new_version_code)}</b>: $version <br/>" +
+            "<b>${getString(R.string.new_version_log)}</b>: ${log?.replace("\n","<br/>") ?: "UNKNOWN"} <br/>" +
+            "</p> " + "<br/>" +
+            "<p style=\"color: grey;font: small;\"><br/>${getString(R.string.new_version_tips)}</p>"
+
+        Log.w(this::class.simpleName, "Formatted Log:" + log?.replace("\\n", "<br/>"))
+
         val dialog = MaterialDialog(requireActivity())
             .title(R.string.new_version)
-            .message(text = getString(R.string.new_version_msg, version, log))
+            .message(text = Html.fromHtml(message, Html.FROM_HTML_MODE_COMPACT or Html.FROM_HTML_OPTION_USE_CSS_COLORS))
             .neutralButton(android.R.string.ok, null, null)
             .positiveButton(R.string.git_hub, null) {
                 val i = Intent(Intent.ACTION_VIEW)
