@@ -201,12 +201,12 @@ object LyricsUtil {
             fetcher.lyrics = lyrics
         }
         fun replaceSong(song: Song) {
+            fetcher.lyrics = null // clean first
             fetchLyrics(song)
                 ?.let {
-                    fetcher.lyrics = if (it.getType() == AbsLyrics.LRC) {
-                        it as LyricsParsedSynchronized
-                    } else {
-                        null
+                    fetcher.lyrics = when(it.getType()){
+                        AbsLyrics.LRC -> it as LyricsParsedSynchronized
+                        else -> null
                     }
                 }
         }
