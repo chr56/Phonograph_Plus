@@ -204,9 +204,12 @@ object LyricsUtil {
             fetcher.lyrics = null // clean first
             fetchLyrics(song)
                 ?.let {
-                    fetcher.lyrics = when(it.getType()){
+                    fetcher.lyrics = when (it.getType()) {
                         AbsLyrics.LRC -> it as LyricsParsedSynchronized
-                        else -> null
+                        else -> {
+                            stop()
+                            null
+                        }
                     }
                 }
         }
