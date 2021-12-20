@@ -33,8 +33,10 @@ object Updater {
 
         val requestGithub = Request.Builder()
             .url(requestUriGitHub).get().build()
-        val requestJsdelivr = Request.Builder()
-            .url(requestUriJsdelivr).get().build()
+//        val requestJsdelivr = Request.Builder()
+//            .url(requestUriJsdelivr).get().build()
+        val requestFastGit = Request.Builder()
+            .url(requestUriFastGit).get().build()
 
         // try github
         okHttpClient.newCall(requestGithub)
@@ -47,8 +49,8 @@ object Updater {
                 override fun onFailure(call: Call, e: IOException) {
                     Log.e(TAG, "Fail to check new version! callUri = ${call.request().url()}")
 
-                    // then try Jsdelivr
-                    okHttpClient.newCall(requestJsdelivr).enqueue(object : okhttp3.Callback {
+                    // then try fastGit
+                    okHttpClient.newCall(requestFastGit).enqueue(object : okhttp3.Callback {
                         override fun onFailure(call: Call, e: IOException) {
                             Log.e(TAG, "Fail to check new version! callUri = ${call.request().url()}")
                         }
@@ -120,9 +122,11 @@ object Updater {
     private const val branch = "dev"
     private const val file = "version.json"
 
-    private const val requestUriJsdelivr = "https://cdn.jsdelivr.net/gh/$owner/$repo@$branch/$file"
+//    private const val requestUriJsdelivr = "https://cdn.jsdelivr.net/gh/$owner/$repo@$branch/$file"
+    private const val requestUriFastGit = "https://endpoint.fastgit.org/https://github.com/$owner/$repo/blob/$branch/$file"
     private const val requestUriGitHub =
         "https://raw.githubusercontent.com/$owner/$repo/$branch/$file"
+
 
     private const val TAG = "Updater"
 
