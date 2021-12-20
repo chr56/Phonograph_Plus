@@ -31,6 +31,8 @@ object Updater {
             .connectTimeout(8, TimeUnit.SECONDS)
             .build()
 
+        blockLock = false // unlock
+
         val requestGithub = Request.Builder()
             .url(requestUriGitHub).get().build()
         val requestJsdelivr = Request.Builder()
@@ -38,44 +40,95 @@ object Updater {
         val requestFastGit = Request.Builder()
             .url(requestUriFastGit).get().build()
 
-        // try github
-        okHttpClient.newCall(requestGithub)
-            .enqueue(object : okhttp3.Callback {
+        sendRequest(
+            okHttpClient, requestGithub,
+            { call: Call, _: IOException ->
+                logFails(call)
+            },
+            { call: Call, response: Response ->
+                if (!blockLock) handleResponse(callback, force, call, response)
+            }
+        )
+        sendRequest(
+            okHttpClient, requestJsdelivr,
+            { call: Call, _: IOException ->
+                logFails(call)
+            },
+            { call: Call, response: Response ->
+                if (!blockLock) handleResponse(callback, force, call, response)
+            }
+        )
+        sendRequest(
+            okHttpClient, requestFastGit,
+            { call: Call, _: IOException ->
+                logFails(call)
+            },
+            { call: Call, response: Response ->
+                if (!blockLock) handleResponse(callback, force, call, response)
+            }
+        )
 
-                override fun onResponse(call: Call, response: Response) {
-                    handleResponse(callback, force, call, response)
-                }
-
-                override fun onFailure(call: Call, e: IOException) {
-                    Log.e(TAG, "Fail to check new version! callUri = ${call.request().url()}")
-
-                    // then try Jsdelivr
-                    okHttpClient.newCall(requestJsdelivr).enqueue(object : okhttp3.Callback {
-
-                        override fun onResponse(call: Call, response: Response) {
-                            handleResponse(callback, force, call, response)
-                        }
-                        override fun onFailure(call: Call, e: IOException) {
-                            Log.e(TAG, "Fail to check new version! callUri = ${call.request().url()}")
-
-                            // then try requestFastGit
-                            okHttpClient.newCall(requestFastGit).enqueue(object : okhttp3.Callback {
-
-                                override fun onResponse(call: Call, response: Response) {
-                                    handleResponse(callback, force, call, response)
-                                }
-                                override fun onFailure(call: Call, e: IOException) {
-                                    Log.e(TAG, "Fail to check new version! callUri = ${call.request().url()}")
-
-                                }
-                            })
-                        }
-                    })
-                }
-            })
+//        // try github
+//        okHttpClient.newCall(requestGithub)
+//            .enqueue(object : okhttp3.Callback {
+//
+//                override fun onResponse(call: Call, response: Response) {
+//                    handleResponse(callback, force, call, response)
+//                }
+//
+//                override fun onFailure(call: Call, e: IOException) {
+//                    Log.e(TAG, "Fail to check new version! callUri = ${call.request().url()}")
+//
+//                    // then try Jsdelivr
+//                    okHttpClient.newCall(requestJsdelivr).enqueue(object : okhttp3.Callback {
+//
+//                        override fun onResponse(call: Call, response: Response) {
+//                            handleResponse(callback, force, call, response)
+//                        }
+//                        override fun onFailure(call: Call, e: IOException) {
+//                            Log.e(TAG, "Fail to check new version! callUri = ${call.request().url()}")
+//
+//                            // then try requestFastGit
+//                            okHttpClient.newCall(requestFastGit).enqueue(object : okhttp3.Callback {
+//
+//                                override fun onResponse(call: Call, response: Response) {
+//                                    handleResponse(callback, force, call, response)
+//                                }
+//                                override fun onFailure(call: Call, e: IOException) {
+//                                    Log.e(TAG, "Fail to check new version! callUri = ${call.request().url()}")
+//                                }
+//                            })
+//                        }
+//                    })
+//                }
+//            })
     }
 
+    private inline fun sendRequest(
+        client: OkHttpClient,
+        request: Request,
+        crossinline failureCallback: (Call, IOException) -> Unit,
+        crossinline successCallback: (Call, Response) -> Unit
+    ): Call {
+        return client.newCall(request).apply {
+            this.enqueue(object : okhttp3.Callback {
+                override fun onFailure(call: Call, e: IOException) =
+                    failureCallback(call, e)
+
+                override fun onResponse(call: Call, response: Response) =
+                    successCallback(call, response)
+            })
+        }
+    }
+
+    private fun logFails(call: Call) =
+        Log.e(TAG, "Fail to check new version! callUri = ${call.request().url()}")
+
+    var blockLock: Boolean = false
+
     private fun handleResponse(callback: (Bundle) -> Unit, force: Boolean, call: Call, response: Response) {
+        blockLock = true // block other successful call
+
         val responseBody = response.body() ?: return
         Log.i(TAG, "succeed to check new version! callUri = ${call.request().url()}")
 
