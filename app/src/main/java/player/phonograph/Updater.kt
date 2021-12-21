@@ -35,6 +35,8 @@ object Updater {
 
         val requestGithub = Request.Builder()
             .url(requestUriGitHub).get().build()
+        val requestBitBucket = Request.Builder()
+            .url(requestUriBitBucket).get().build()
         val requestJsdelivr = Request.Builder()
             .url(requestUriJsdelivr).get().build()
         val requestFastGit = Request.Builder()
@@ -42,6 +44,15 @@ object Updater {
 
         sendRequest(
             okHttpClient, requestGithub,
+            { call: Call, _: IOException ->
+                logFails(call)
+            },
+            { call: Call, response: Response ->
+                if (!blockLock) handleResponse(callback, force, call, response) else logIgnored(call)
+            }
+        )
+        sendRequest(
+            okHttpClient, requestBitBucket,
             { call: Call, _: IOException ->
                 logFails(call)
             },
@@ -155,14 +166,16 @@ object Updater {
     }
 
     private const val owner = "chr56"
+    private const val organization = "Phonograph-Plus"
     private const val repo = "Phonograph_Plus"
     private const val branch = "dev"
     private const val file = "version.json"
 
+    private const val requestUriGitHub = "https://raw.githubusercontent.com/$owner/$repo/$branch/$file"
+    private const val requestUriBitBucket = "https://bitbucket.org/$organization/$repo/raw/$branch/$file"
+
     private const val requestUriJsdelivr = "https://cdn.jsdelivr.net/gh/$owner/$repo@$branch/$file"
     private const val requestUriFastGit = "https://endpoint.fastgit.org/https://github.com/$owner/$repo/blob/$branch/$file"
-    private const val requestUriGitHub =
-        "https://raw.githubusercontent.com/$owner/$repo/$branch/$file"
 
     private const val TAG = "Updater"
 
