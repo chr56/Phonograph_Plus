@@ -19,6 +19,7 @@ import player.phonograph.ui.activities.MainActivity
 
 object UpgradeNotification {
     private var notificationManager: NotificationManager? = null
+    private var isReady: Boolean = false
 
     fun init() {
         notificationManager =
@@ -26,26 +27,27 @@ object UpgradeNotification {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && notificationManager != null) {
             createNotificationChannel(notificationManager!!)
         }
+        isReady = true
     }
 
     fun sendUpgradeNotification(versionInfo: Bundle) {
         val context = App.instance
-
-        val action = Intent(context, MainActivity::class.java).apply {
-            this.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
-            this.putExtra(
-                NOTIFICATION_CHANNEL_ID_UPGRADABLE,
-                NOTIFICATION_ID_UPGRADABLE
-            )
-        }
-        val clickIntent: PendingIntent = PendingIntent.getActivity(context, 0, action, 0)
+        if (!isReady) init()
 
         notificationManager?.let { notificationManager ->
+
+            val action = Intent(context, MainActivity::class.java).apply {
+                this.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+                this.putExtra(UPGRADABLE, true)
+                this.putExtra(VERSION_INFO, versionInfo)
+            }
+            val clickIntent: PendingIntent = PendingIntent.getActivity(context, 0, action, 0)
+
             val notification: Notification =
                 NotificationCompat.Builder(context, NOTIFICATION_CHANNEL_ID_UPGRADABLE)
                     .setSmallIcon(R.drawable.ic_notification)
-                    .setCategory(NotificationCompat.CATEGORY_SERVICE)
-                    .setPriority(NotificationCompat.PRIORITY_LOW)
+                    .setCategory(NotificationCompat.CATEGORY_RECOMMENDATION)
+                    .setPriority(NotificationCompat.PRIORITY_HIGH)
                     .setVisibility(NotificationCompat.VISIBILITY_PRIVATE)
                     .setContentTitle(context.getText(R.string.new_version))
                     .setContentText(
@@ -54,8 +56,7 @@ object UpgradeNotification {
                         )}"
                     )
                     .setContentIntent(clickIntent)
-//                    .setDeleteIntent(deleteIntent)
-//                    .setContent(notificationLayout)
+                    .setAutoCancel(true)
                     .setOngoing(false)
                     .build()
             notificationManager.notify(NOTIFICATION_ID_UPGRADABLE, notification)

@@ -27,6 +27,7 @@ import player.phonograph.Updater
 import player.phonograph.databinding.ActivityAboutBinding
 import player.phonograph.dialogs.ChangelogDialog
 import player.phonograph.dialogs.UpgradeDialog
+import player.phonograph.notification.UpgradeNotification
 import player.phonograph.ui.activities.base.ThemeActivity
 import player.phonograph.ui.activities.bugreport.BugReportActivity
 import player.phonograph.ui.activities.intro.AppIntroActivity
@@ -132,7 +133,7 @@ class AboutActivity : ThemeActivity(), View.OnClickListener {
     private fun setUpAppVersion() {
         appVersion.text = getCurrentVersionName(this)
         try {
-            appVersionHash.text = BuildConfig.GIT_COMMIT_HASH.substring(0,8)
+            appVersionHash.text = BuildConfig.GIT_COMMIT_HASH.substring(0, 8)
             appVersionHash.visibility = View.VISIBLE
         } catch (e: Exception) {
             appVersionHash.visibility = View.INVISIBLE
@@ -148,7 +149,7 @@ class AboutActivity : ThemeActivity(), View.OnClickListener {
     }
 
     private fun setUpOnClickListeners() {
-        val debugMenuItem = listOf<String>("Crash the app", "Check Upgrade")
+        val debugMenuItem = listOf<String>("Crash the app", "Check Upgrade (Dialog)", "Check Upgrade (Notification)")
         appIcon.setOnLongClickListener {
             MaterialDialog(this)
                 .title(text = "Debug Menu")
@@ -158,6 +159,11 @@ class AboutActivity : ThemeActivity(), View.OnClickListener {
                         1 -> {
                             Updater.checkUpdate(callback = {
                                 UpgradeDialog.create(it).show(supportFragmentManager, "DebugDialog")
+                            }, force = true)
+                        }
+                        2 -> {
+                            Updater.checkUpdate(callback = {
+                                UpgradeNotification.sendUpgradeNotification(it)
                             }, force = true)
                         }
                         else -> dialog.dismiss()
