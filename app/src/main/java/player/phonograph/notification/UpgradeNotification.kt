@@ -41,7 +41,7 @@ object UpgradeNotification {
                 this.putExtra(UPGRADABLE, true)
                 this.putExtra(VERSION_INFO, versionInfo)
             }
-            val clickIntent: PendingIntent = PendingIntent.getActivity(context, 0, action, 0)
+            val clickIntent: PendingIntent = PendingIntent.getActivity(context, 0, action, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
 
             val notification: Notification =
                 NotificationCompat.Builder(context, NOTIFICATION_CHANNEL_ID_UPGRADABLE)

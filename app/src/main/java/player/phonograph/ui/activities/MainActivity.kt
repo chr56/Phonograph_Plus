@@ -78,6 +78,7 @@ class MainActivity : AbsSlidingMusicPanelActivity() {
                 supportFragmentManager.findFragmentById(R.id.fragment_container) as MainActivityFragmentCallbacks
         }
 
+        Log.d("MainActivity", "StartIntent:${intent.toString()}: UPGRADABLE-${intent.getBooleanExtra(UPGRADABLE, false)}")
         if (intent.getBooleanExtra(UPGRADABLE, false)) {
             Log.i("Updater", "receive upgradable notification intent!")
             UpgradeDialog.create(intent.getBundleExtra(VERSION_INFO)!!).show(supportFragmentManager, "UpgradeDialog")
