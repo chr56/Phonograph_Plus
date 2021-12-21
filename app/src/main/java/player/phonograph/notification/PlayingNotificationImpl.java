@@ -1,4 +1,4 @@
-package player.phonograph.service.notification;
+package player.phonograph.notification;
 
 import android.app.Notification;
 import android.app.PendingIntent;
