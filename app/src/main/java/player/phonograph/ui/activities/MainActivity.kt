@@ -38,6 +38,7 @@ import player.phonograph.model.Song
 import player.phonograph.model.smartplaylist.HistoryPlaylist
 import player.phonograph.model.smartplaylist.LastAddedPlaylist
 import player.phonograph.model.smartplaylist.MyTopTracksPlaylist
+import player.phonograph.notification.UpgradeNotification
 import player.phonograph.service.MusicService
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
 import player.phonograph.ui.activities.intro.AppIntroActivity
@@ -78,10 +79,10 @@ class MainActivity : AbsSlidingMusicPanelActivity() {
                 supportFragmentManager.findFragmentById(R.id.fragment_container) as MainActivityFragmentCallbacks
         }
 
-        Log.d("MainActivity", "StartIntent:${intent.toString()}: UPGRADABLE-${intent.getBooleanExtra(UPGRADABLE, false)}")
+        Log.d("MainActivity", "StartIntent:$intent: UPGRADABLE-${intent.getBooleanExtra(UPGRADABLE, false)}")
         if (intent.getBooleanExtra(UPGRADABLE, false)) {
-            Log.i("Updater", "receive upgradable notification intent!")
-            UpgradeDialog.create(intent.getBundleExtra(VERSION_INFO)!!).show(supportFragmentManager, "UpgradeDialog")
+            Log.d("Updater", "receive upgradable notification intent!")
+            showUpgradeDialog(intent.getBundleExtra(VERSION_INFO)!!)
         }
 
         setupHandler()
@@ -379,7 +380,7 @@ class MainActivity : AbsSlidingMusicPanelActivity() {
 
     private fun checkUpdate() {
         Handler(Looper.getMainLooper()).postDelayed(
-            { checkUpdate(this::showUpgradeDialog, false) }, 3000
+            { checkUpdate(callback = { UpgradeNotification.sendUpgradeNotification(it) }, false) }, 3000
         )
     }
 
