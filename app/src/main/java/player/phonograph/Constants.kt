@@ -19,3 +19,6 @@ const val NormalPlaylist = "Normal"
 
 const val TYPE = "Type"
 const val PLAYLIST_ID ="Playlist_ID"
+
+const val NOTIFICATION_CHANNEL_ID_UPGRADABLE = "upgrade_notification"
+const val NOTIFICATION_ID_UPGRADABLE = 8747233
