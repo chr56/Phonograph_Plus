@@ -72,7 +72,7 @@ object UpgradeNotification {
             notificationChannel = NotificationChannel(
                 NOTIFICATION_CHANNEL_ID_UPGRADABLE,
                 App.instance.getString(R.string.upgrade_notification_name),
-                NotificationManager.IMPORTANCE_MIN
+                NotificationManager.IMPORTANCE_HIGH
             )
             notificationChannel.description =
                 App.instance.getString(R.string.upgrade_notification_description)
