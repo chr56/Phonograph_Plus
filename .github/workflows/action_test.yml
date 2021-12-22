@@ -1,0 +1,100 @@
+name: preview_release
+on:
+  push:
+    tags:
+      - "test_*"
+    paths-ignore:
+      - "README.md"
+      - "version"
+      - "version.json"
+
+jobs:
+  build:
+    name: test
+    runs-on: ubuntu-18.04
+    permissions:
+      contents: write
+    env:
+      RELEASE_NOTE: "NO_RELEASE_NOTE"
+
+    steps:
+      - name: checkout
+        uses: actions/checkout@v2.2.0
+
+      # - uses: gradle/wrapper-validation-action@v1 # its timeout fails the action
+
+#
+#      - name: Grant execute permission for gradlew
+#        run: chmod +x gradlew
+#
+#      - name: set up JDK 8
+#        uses: actions/setup-java@v2
+#        with:
+#          java-version: "8"
+#          distribution: "adopt"
+#          cache: gradle
+#
+#      - name: Build with Gradle
+#        run: ./gradlew assemblePreview --stacktrace
+#
+#      - name: signing apk
+#        uses: r0adkll/sign-android-release@v1.0.4
+#        id: sign_app
+#        env:
+#          BUILD_TOOLS_VERSION: 30.0.3
+#        with:
+#          releaseDirectory: ./app/build/outputs/apk/preview
+#          signingKeyBase64: ${{ secrets.KEY }}
+#          keyStorePassword: ${{ secrets.STORE_PASSWORD }}
+#          alias: ${{ secrets.KEY_ALIAS }}
+#          keyPassword: ${{ secrets.KEY_PASSWORD }}
+#
+#      - name: Upload Artifact
+#        uses: actions/upload-artifact@v2
+#        with:
+#          name: preview_release
+#          path: ${{steps.sign_app.outputs.signedReleaseFile}}
+
+      - name: Read release note
+        id: release_note
+        run: |
+          cat ${{ github.workspace }}/ReleaseNote.md >> ${{ jobs.build.env.RELEASE_NOTE }}
+          echo ${{ jobs.build.env.RELEASE_NOTE }}
+
+      - name: Release New Version
+        uses: softprops/action-gh-release@v1
+        id: release_github
+
+        if: startsWith(github.ref, 'refs/tags/preview_')
+        with:
+#          name: "[CI]Preview: ${{ github.ref_name }}"
+          name: "[CI]TEST ${{ github.ref_name }}"
+#          files: ${{steps.sign_app.outputs.signedReleaseFile}}
+          prerelease: true
+#          draft: false
+          draft: true
+          tag_name: ${{ github.ref }}
+#          body: CI Preview Release - ${{ github.ref }}
+          body: |
+            TEST
+            测试
+          body_path: ${{ github.workspace }}/ReleaseNote.md
+          token: ${{ secrets.TOKEN }}
+
+      - name: Upload to TG
+        uses: appleboy/telegram-action@master
+
+        if: startsWith(github.ref, 'refs/tags/preview_')
+        with:
+          to: ${{ secrets.TG_CHAT_ID }}
+          token: ${{ secrets.TG_BOT_TOKEN }}
+#          document: ${{ github.workspace }}/${{steps.sign_app.outputs.signedReleaseFile}}
+          message: |
+            BOT TEST 测试
+            Please ignore 请无视
+            [GitHub Link](https://github.com/chr56/Phonograph_Plus/releases/tag/${{ github.ref_name }})
+            ${{ jobs.build.env.RELEASE_NOTE }}
+
+          format: markdown
+          disable_notification: true
+          disable_web_page_preview: true
