@@ -67,6 +67,11 @@ jobs:
           body_path: ${{ github.workspace }}/ReleaseNote.md
           token: ${{ secrets.TOKEN }}
 
+      - name: Read release note
+        run: |
+          cat ${{ github.workspace }}/ReleaseNote.md >> $env.RELEASE_NOTE
+          echo $RELEASE_NOTE
+
       - name: Upload to TG
         uses: appleboy/telegram-action@master
 
@@ -75,7 +80,10 @@ jobs:
           to: ${{ secrets.TG_CHAT_ID }}
           token: ${{ secrets.TG_BOT_TOKEN }}
           document: ${{ github.workspace }}/${{steps.sign_app.outputs.signedReleaseFile}}
-          message: "new **Preview version - ${{ github.ref_name }}** Link:[GitHub](${{ steps.release_github.outputs.url }})"
+          message: |
+            "new **Preview version - ${{ github.ref_name }}** Link:[GitHub](${{ steps.release_github.outputs.url }})"
+            "${{ env.RELEASE_NOTE }}"
+
           format: markdown
           disable_notification: true
           disable_web_page_preview: true
