@@ -115,36 +115,45 @@ object Updater {
 
         val responseBody = response.body() ?: return
 
-        val versionJson =
-            Gson().fromJson<VersionJson>(responseBody.string(), VersionJson::class.java)
-        Log.i(
-            TAG, "versionCode: ${versionJson.versionCode}, version: ${versionJson.version}, logSummary: ${versionJson.logSummary}"
-        )
-
-        val result = Bundle().also {
-            it.putInt(VersionCode, versionJson.versionCode)
-            it.putString(Version, versionJson.version)
-            it.putString(LogSummary, versionJson.logSummary)
+        var versionJson: VersionJson? = null
+        try {
+            versionJson = Gson().fromJson<VersionJson>(responseBody.string(), VersionJson::class.java)
+        } catch (e: Exception) {
+            blockLock = false
+            e.printStackTrace()
+            Log.e(TAG, "Parse version.json fail!")
         }
 
-        when {
-            versionJson.versionCode > BuildConfig.VERSION_CODE -> {
-                Log.i(TAG, "updatable!")
-                result.putBoolean(Upgradable, true)
-                callback.invoke(result)
+        versionJson?.let { json: VersionJson ->
+            Log.i(
+                TAG, "versionCode: ${json.versionCode}, version: ${json.version}, logSummary: ${json.logSummary}"
+            )
+
+            val result = Bundle().also {
+                it.putInt(VersionCode, json.versionCode)
+                it.putString(Version, json.version)
+                it.putString(LogSummary, json.logSummary)
             }
-            versionJson.versionCode == BuildConfig.VERSION_CODE -> {
-                Log.i(TAG, "no update, latest version!")
-                if (force) {
-                    result.putBoolean(Upgradable, false)
+
+            when {
+                json.versionCode > BuildConfig.VERSION_CODE -> {
+                    Log.i(TAG, "updatable!")
+                    result.putBoolean(Upgradable, true)
                     callback.invoke(result)
                 }
-            }
-            versionJson.versionCode < BuildConfig.VERSION_CODE -> {
-                Log.w(TAG, "no update, version is newer than latest?")
-                if (force) {
-                    result.putBoolean(Upgradable, false)
-                    callback.invoke(result)
+                json.versionCode == BuildConfig.VERSION_CODE -> {
+                    Log.i(TAG, "no update, latest version!")
+                    if (force) {
+                        result.putBoolean(Upgradable, false)
+                        callback.invoke(result)
+                    }
+                }
+                json.versionCode < BuildConfig.VERSION_CODE -> {
+                    Log.w(TAG, "no update, version is newer than latest?")
+                    if (force) {
+                        result.putBoolean(Upgradable, false)
+                        callback.invoke(result)
+                    }
                 }
             }
         }
