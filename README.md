@@ -8,6 +8,8 @@
 **A third-party modified version of Phonograph**
 
 <br/>
+([Original Project](https://github.com/kabouzeid/Phonograph))
+<br/>
 <br/>
 
 **特性** 
@@ -47,13 +49,19 @@
 
 - [ ] 完成 Readme . md
 
+- [ ] 快捷添加黑名单
+
+- [ ] 改进更新提示
+
+- [ ] 部分重构(所谓的)"主题引擎"
+
 - [ ] 万能歌曲 Adapter ❗WIP
 
 - [ ] 增强“播放列表详情”(信息展示✔, 支持搜索❌, 更好的修改本地列表方式 ❗WIP) 
 
 - [ ] 打开 .m3u (使用"播放列表详情")
 
-- [ ] 完全适配 Android11+ 的文件访问
+- [ ] 完美适配 Android11+ 的文件访问
 
 - [ ] 解析歌词中的 "\n"
 
@@ -67,21 +75,25 @@
 
 - [ ] 优化歌曲“详情”
 
-- [ ] 解析 Tag 中 ‘;’, '&', '/', '\', ','
+- [ ] 移除 ButterKnife, 使用 ViewBinding
 
-- [ ] 滚动歌词页面(?)
+- [ ] 重构并优化歌词系统
 
-- [ ] 桌面歌词(?)
+- [ ] 全屏滚动歌词页面
 
 - [ ] 使用 AndroidX Room
 
-- [ ] 实现更好的播放频率计数
+- [ ] 解析 Tag 中 ‘;’, '&', '/', '\', ','
 
-- [ ] 移除 ButterKnife, 使用 ViewBinding
+- [ ] 建立本地媒体数据库
+
+- [ ] 桌面歌词(?)
 
 - [ ] 修改 SlidingMusicBar
 
 - [ ] 增强"搜索"页面
+
+- [ ] 实现更好的播放频率计数
 
 - [ ] ???
 
@@ -93,7 +105,6 @@
 # Phonograph
 [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://github.com/chr56/Phonograph_Plus/blob/release/LICENSE.txt)
 
-([Link](https://github.com/kabouzeid/Phonograph))
 
 **A material designed local music player for Android.**
 
