@@ -7,6 +7,7 @@ import android.media.MediaPlayer
 import android.media.MediaPlayer.OnCompletionListener
 import android.media.audiofx.AudioEffect
 import android.net.Uri
+import android.os.Build
 import android.os.PowerManager
 import android.util.Log
 import android.widget.Toast
@@ -61,17 +62,24 @@ class MultiPlayer(private val context: Context?) :
         try {
             player.reset()
             player.setOnPreparedListener(null)
+
             if (path.startsWith("content://")) {
                 player.setDataSource(context, Uri.parse(path))
             } else {
                 player.setDataSource(path)
             }
+
             player.setAudioAttributes(
                 AudioAttributes.Builder()
                     .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
                     .setUsage(AudioAttributes.USAGE_MEDIA)
+                    .apply {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
+                            this.setAllowedCapturePolicy(AudioAttributes.ALLOW_CAPTURE_BY_ALL)
+                    }
                     .build()
             )
+
             player.prepare()
         } catch (e: Exception) {
             return false
