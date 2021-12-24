@@ -1,138 +1,138 @@
-package player.phonograph.service;
+package player.phonograph.service
 
-import android.content.Context;
-import android.content.Intent;
-import android.media.AudioManager;
-import android.media.MediaPlayer;
-import android.media.audiofx.AudioEffect;
-import android.net.Uri;
-import android.os.PowerManager;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import android.util.Log;
-import android.widget.Toast;
-
-import player.phonograph.R;
-import player.phonograph.service.playback.Playback;
-import player.phonograph.util.PreferenceUtil;
+import android.content.Context
+import android.content.Intent
+import android.media.AudioAttributes
+import android.media.AudioManager
+import android.media.MediaPlayer
+import android.media.MediaPlayer.OnCompletionListener
+import android.media.audiofx.AudioEffect
+import android.net.Uri
+import android.os.PowerManager
+import android.util.Log
+import android.widget.Toast
+import player.phonograph.R
+import player.phonograph.service.playback.Playback
+import player.phonograph.service.playback.Playback.PlaybackCallbacks
+import player.phonograph.util.PreferenceUtil.Companion.getInstance
 
 /**
  * @author Andrew Neal, Karim Abou Zeid (kabouzeid)
  */
-public class MultiPlayer implements Playback, MediaPlayer.OnErrorListener, MediaPlayer.OnCompletionListener {
-    public static final String TAG = MultiPlayer.class.getSimpleName();
+class MultiPlayer(private val context: Context?) :
+    Playback,
+    MediaPlayer.OnErrorListener,
+    OnCompletionListener {
 
-    private MediaPlayer mCurrentMediaPlayer = new MediaPlayer();
-    private MediaPlayer mNextMediaPlayer;
+    private var mCurrentMediaPlayer = MediaPlayer()
+    private var mNextMediaPlayer: MediaPlayer? = null
+    private var callbacks: PlaybackCallbacks? = null
+    private var mIsInitialized = false
 
-    private Context context;
-    @Nullable
-    private Playback.PlaybackCallbacks callbacks;
-
-    private boolean mIsInitialized = false;
-
-    /**
-     * Constructor of <code>MultiPlayer</code>
-     */
-    public MultiPlayer(final Context context) {
-        this.context = context;
-        mCurrentMediaPlayer.setWakeMode(context, PowerManager.PARTIAL_WAKE_LOCK);
+    init {
+        mCurrentMediaPlayer.setWakeMode(context, PowerManager.PARTIAL_WAKE_LOCK)
     }
 
     /**
      * @param path The path of the file, or the http/rtsp URL of the stream
-     *             you want to play
-     * @return True if the <code>player</code> has been prepared and is
+     * you want to play
+     * @return True if the `player` has been prepared and is
      * ready to play, false otherwise
      */
-    @Override
-    public boolean setDataSource(@NonNull final String path) {
-        mIsInitialized = false;
-        mIsInitialized = setDataSourceImpl(mCurrentMediaPlayer, path);
+    override fun setDataSource(path: String): Boolean {
+        mIsInitialized = false
+        mIsInitialized = setDataSourceImpl(mCurrentMediaPlayer, path)
         if (mIsInitialized) {
-            setNextDataSource(null);
+            setNextDataSource(null)
         }
-        return mIsInitialized;
+        return mIsInitialized
     }
 
     /**
-     * @param player The {@link MediaPlayer} to use
+     * @param player The [MediaPlayer] to use
      * @param path   The path of the file, or the http/rtsp URL of the stream
-     *               you want to play
-     * @return True if the <code>player</code> has been prepared and is
+     * you want to play
+     * @return True if the `player` has been prepared and is
      * ready to play, false otherwise
      */
-    private boolean setDataSourceImpl(@NonNull final MediaPlayer player, @NonNull final String path) {
+    private fun setDataSourceImpl(player: MediaPlayer, path: String): Boolean {
         if (context == null) {
-            return false;
+            return false
         }
         try {
-            player.reset();
-            player.setOnPreparedListener(null);
+            player.reset()
+            player.setOnPreparedListener(null)
             if (path.startsWith("content://")) {
-                player.setDataSource(context, Uri.parse(path));
+                player.setDataSource(context, Uri.parse(path))
             } else {
-                player.setDataSource(path);
+                player.setDataSource(path)
             }
-            player.setAudioStreamType(AudioManager.STREAM_MUSIC);
-            player.prepare();
-        } catch (Exception e) {
-            return false;
+            player.setAudioStreamType(AudioManager.STREAM_MUSIC)
+            player.prepare()
+        } catch (e: Exception) {
+            return false
         }
-        player.setOnCompletionListener(this);
-        player.setOnErrorListener(this);
-        final Intent intent = new Intent(AudioEffect.ACTION_OPEN_AUDIO_EFFECT_CONTROL_SESSION);
-        intent.putExtra(AudioEffect.EXTRA_AUDIO_SESSION, getAudioSessionId());
-        intent.putExtra(AudioEffect.EXTRA_PACKAGE_NAME, context.getPackageName());
-        intent.putExtra(AudioEffect.EXTRA_CONTENT_TYPE, AudioEffect.CONTENT_TYPE_MUSIC);
-        context.sendBroadcast(intent);
-        return true;
+        player.setOnCompletionListener(this)
+        player.setOnErrorListener(this)
+
+        val intent = Intent(AudioEffect.ACTION_OPEN_AUDIO_EFFECT_CONTROL_SESSION)
+        intent.putExtra(AudioEffect.EXTRA_AUDIO_SESSION, audioSessionId)
+        intent.putExtra(AudioEffect.EXTRA_PACKAGE_NAME, context.packageName)
+        intent.putExtra(AudioEffect.EXTRA_CONTENT_TYPE, AudioEffect.CONTENT_TYPE_MUSIC)
+        context.sendBroadcast(intent)
+
+        return true
     }
 
     /**
      * Set the MediaPlayer to start when this MediaPlayer finishes playback.
      *
      * @param path The path of the file, or the http/rtsp URL of the stream
-     *             you want to play
+     * you want to play
      */
-    @Override
-    public void setNextDataSource(@Nullable final String path) {
+    override fun setNextDataSource(path: String?) {
         if (context == null) {
-            return;
+            return
         }
         try {
-            mCurrentMediaPlayer.setNextMediaPlayer(null);
-        } catch (IllegalArgumentException e) {
-            Log.i(TAG, "Next media player is current one, continuing");
-        } catch (IllegalStateException e) {
-            Log.e(TAG, "Media player not initialized!");
-            return;
+            mCurrentMediaPlayer.setNextMediaPlayer(null)
+        } catch (e: IllegalArgumentException) {
+            Log.i(TAG, "Next media player is current one, continuing")
+        } catch (e: IllegalStateException) {
+            Log.e(TAG, "Media player not initialized!")
+            return
         }
-        if (mNextMediaPlayer != null) {
-            mNextMediaPlayer.release();
-            mNextMediaPlayer = null;
+        mNextMediaPlayer?.let {
+            it.release()
+            mNextMediaPlayer = null
         }
         if (path == null) {
-            return;
+            return
         }
-        if (PreferenceUtil.getInstance(context).gaplessPlayback()) {
-            mNextMediaPlayer = new MediaPlayer();
-            mNextMediaPlayer.setWakeMode(context, PowerManager.PARTIAL_WAKE_LOCK);
-            mNextMediaPlayer.setAudioSessionId(getAudioSessionId());
-            if (setDataSourceImpl(mNextMediaPlayer, path)) {
+        if (getInstance(context).gaplessPlayback()) {
+            mNextMediaPlayer = MediaPlayer()
+            mNextMediaPlayer!!.setWakeMode(context, PowerManager.PARTIAL_WAKE_LOCK)
+            mNextMediaPlayer!!.audioSessionId = audioSessionId
+            if (setDataSourceImpl(mNextMediaPlayer!!, path)) {
                 try {
-                    mCurrentMediaPlayer.setNextMediaPlayer(mNextMediaPlayer);
-                } catch (@NonNull IllegalArgumentException | IllegalStateException e) {
-                    Log.e(TAG, "setNextDataSource: setNextMediaPlayer()", e);
-                    if (mNextMediaPlayer != null) {
-                        mNextMediaPlayer.release();
-                        mNextMediaPlayer = null;
+                    mCurrentMediaPlayer.setNextMediaPlayer(mNextMediaPlayer)
+                } catch (e: IllegalArgumentException) {
+                    Log.e(TAG, "setNextDataSource: setNextMediaPlayer()", e)
+                    mNextMediaPlayer?.let {
+                        it.release()
+                        mNextMediaPlayer = null
+                    }
+                } catch (e: IllegalStateException) {
+                    Log.e(TAG, "setNextDataSource: setNextMediaPlayer()", e)
+                    mNextMediaPlayer?.let {
+                        it.release()
+                        mNextMediaPlayer = null
                     }
                 }
             } else {
-                if (mNextMediaPlayer != null) {
-                    mNextMediaPlayer.release();
-                    mNextMediaPlayer = null;
+                mNextMediaPlayer?.let {
+                    it.release()
+                    mNextMediaPlayer = null
                 }
             }
         }
@@ -143,72 +143,63 @@ public class MultiPlayer implements Playback, MediaPlayer.OnErrorListener, Media
      *
      * @param callbacks The callbacks to use
      */
-    @Override
-    public void setCallbacks(@Nullable Playback.PlaybackCallbacks callbacks) {
-        this.callbacks = callbacks;
+    override fun setCallbacks(callbacks: PlaybackCallbacks?) {
+        this.callbacks = callbacks
     }
 
     /**
      * @return True if the player is ready to go, false otherwise
      */
-    @Override
-    public boolean isInitialized() {
-        return mIsInitialized;
+    override fun isInitialized(): Boolean {
+        return mIsInitialized
     }
 
     /**
      * Starts or resumes playback.
      */
-    @Override
-    public boolean start() {
-        try {
-            mCurrentMediaPlayer.start();
-            return true;
-        } catch (IllegalStateException e) {
-            return false;
+    override fun start(): Boolean {
+        return try {
+            mCurrentMediaPlayer.start()
+            true
+        } catch (e: IllegalStateException) {
+            false
         }
     }
 
     /**
      * Resets the MediaPlayer to its uninitialized state.
      */
-    @Override
-    public void stop() {
-        mCurrentMediaPlayer.reset();
-        mIsInitialized = false;
+    override fun stop() {
+        mCurrentMediaPlayer.reset()
+        mIsInitialized = false
     }
 
     /**
      * Releases resources associated with this MediaPlayer object.
      */
-    @Override
-    public void release() {
-        stop();
-        mCurrentMediaPlayer.release();
-        if (mNextMediaPlayer != null) {
-            mNextMediaPlayer.release();
-        }
+    override fun release() {
+        stop()
+        mCurrentMediaPlayer.release()
+        mNextMediaPlayer?.release()
     }
 
     /**
      * Pauses playback. Call start() to resume.
      */
-    @Override
-    public boolean pause() {
-        try {
-            mCurrentMediaPlayer.pause();
-            return true;
-        } catch (IllegalStateException e) {
-            return false;
+    override fun pause(): Boolean {
+        return try {
+            mCurrentMediaPlayer.pause()
+            true
+        } catch (e: IllegalStateException) {
+            false
         }
     }
 
     /**
      * Checks whether the MultiPlayer is playing.
      */
-    @Override
-    public boolean isPlaying() {
-        return mIsInitialized && mCurrentMediaPlayer.isPlaying();
+    override fun isPlaying(): Boolean {
+        return mIsInitialized && mCurrentMediaPlayer.isPlaying
     }
 
     /**
@@ -216,15 +207,13 @@ public class MultiPlayer implements Playback, MediaPlayer.OnErrorListener, Media
      *
      * @return The duration in milliseconds
      */
-    @Override
-    public int duration() {
-        if (!mIsInitialized) {
-            return -1;
-        }
-        try {
-            return mCurrentMediaPlayer.getDuration();
-        } catch (IllegalStateException e) {
-            return -1;
+    override fun duration(): Int {
+        return if (!mIsInitialized) {
+            -1
+        } else try {
+            mCurrentMediaPlayer.duration
+        } catch (e: IllegalStateException) {
+            -1
         }
     }
 
@@ -233,15 +222,13 @@ public class MultiPlayer implements Playback, MediaPlayer.OnErrorListener, Media
      *
      * @return The current position in milliseconds
      */
-    @Override
-    public int position() {
-        if (!mIsInitialized) {
-            return -1;
-        }
-        try {
-            return mCurrentMediaPlayer.getCurrentPosition();
-        } catch (IllegalStateException e) {
-            return -1;
+    override fun position(): Int {
+        return if (!mIsInitialized) {
+            -1
+        } else try {
+            mCurrentMediaPlayer.currentPosition
+        } catch (e: IllegalStateException) {
+            -1
         }
     }
 
@@ -251,23 +238,21 @@ public class MultiPlayer implements Playback, MediaPlayer.OnErrorListener, Media
      * @param whereto The offset in milliseconds from the start to seek to
      * @return The offset in milliseconds from the start to seek to
      */
-    @Override
-    public int seek(final int whereto) {
-        try {
-            mCurrentMediaPlayer.seekTo(whereto);
-            return whereto;
-        } catch (IllegalStateException e) {
-            return -1;
+    override fun seek(whereto: Int): Int {
+        return try {
+            mCurrentMediaPlayer.seekTo(whereto)
+            whereto
+        } catch (e: IllegalStateException) {
+            -1
         }
     }
 
-    @Override
-    public boolean setVolume(final float vol) {
-        try {
-            mCurrentMediaPlayer.setVolume(vol, vol);
-            return true;
-        } catch (IllegalStateException e) {
-            return false;
+    override fun setVolume(vol: Float): Boolean {
+        return try {
+            mCurrentMediaPlayer.setVolume(vol, vol)
+            true
+        } catch (e: IllegalStateException) {
+            false
         }
     }
 
@@ -276,13 +261,14 @@ public class MultiPlayer implements Playback, MediaPlayer.OnErrorListener, Media
      *
      * @param sessionId The audio session ID
      */
-    @Override
-    public boolean setAudioSessionId(final int sessionId) {
-        try {
-            mCurrentMediaPlayer.setAudioSessionId(sessionId);
-            return true;
-        } catch (@NonNull IllegalArgumentException | IllegalStateException e) {
-            return false;
+    override fun setAudioSessionId(sessionId: Int): Boolean {
+        return try {
+            mCurrentMediaPlayer.audioSessionId = sessionId
+            true
+        } catch (e: IllegalArgumentException) {
+            false
+        } catch (e: IllegalStateException) {
+            false
         }
     }
 
@@ -291,42 +277,44 @@ public class MultiPlayer implements Playback, MediaPlayer.OnErrorListener, Media
      *
      * @return The current audio session ID.
      */
-    @Override
-    public int getAudioSessionId() {
-        return mCurrentMediaPlayer.getAudioSessionId();
+    override fun getAudioSessionId(): Int {
+        return mCurrentMediaPlayer.audioSessionId
     }
 
     /**
      * {@inheritDoc}
      */
-    @Override
-    public boolean onError(final MediaPlayer mp, final int what, final int extra) {
-        mIsInitialized = false;
-        mCurrentMediaPlayer.release();
-        mCurrentMediaPlayer = new MediaPlayer();
-        mCurrentMediaPlayer.setWakeMode(context, PowerManager.PARTIAL_WAKE_LOCK);
+    override fun onError(mp: MediaPlayer, what: Int, extra: Int): Boolean {
+        mIsInitialized = false
+        mCurrentMediaPlayer.release()
+        mCurrentMediaPlayer = MediaPlayer()
+        mCurrentMediaPlayer.setWakeMode(context, PowerManager.PARTIAL_WAKE_LOCK)
         if (context != null) {
-            Toast.makeText(context, context.getResources().getString(R.string.unplayable_file), Toast.LENGTH_SHORT).show();
+            Toast.makeText(
+                context,
+                context.resources.getString(R.string.unplayable_file),
+                Toast.LENGTH_SHORT
+            ).show()
         }
-        return false;
+        return false
     }
 
     /**
      * {@inheritDoc}
      */
-    @Override
-    public void onCompletion(final MediaPlayer mp) {
-        if (mp == mCurrentMediaPlayer && mNextMediaPlayer != null) {
-            mIsInitialized = false;
-            mCurrentMediaPlayer.release();
-            mCurrentMediaPlayer = mNextMediaPlayer;
-            mIsInitialized = true;
-            mNextMediaPlayer = null;
-            if (callbacks != null)
-                callbacks.onTrackWentToNext();
+    override fun onCompletion(mp: MediaPlayer) {
+        if (mp === mCurrentMediaPlayer && mNextMediaPlayer != null) {
+            mIsInitialized = false
+            mCurrentMediaPlayer.release()
+            mCurrentMediaPlayer = mNextMediaPlayer!!
+            mIsInitialized = true
+            mNextMediaPlayer = null
+            callbacks?.onTrackWentToNext()
         } else {
-            if (callbacks != null)
-                callbacks.onTrackEnded();
+            callbacks?.onTrackEnded()
         }
     }
+
+    @Suppress("PropertyName")
+    val TAG: String = MultiPlayer::class.java.simpleName
 }
