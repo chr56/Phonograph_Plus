@@ -3,7 +3,6 @@ package player.phonograph.service
 import android.content.Context
 import android.content.Intent
 import android.media.AudioAttributes
-import android.media.AudioManager
 import android.media.MediaPlayer
 import android.media.MediaPlayer.OnCompletionListener
 import android.media.audiofx.AudioEffect
@@ -67,7 +66,12 @@ class MultiPlayer(private val context: Context?) :
             } else {
                 player.setDataSource(path)
             }
-            player.setAudioStreamType(AudioManager.STREAM_MUSIC)
+            player.setAudioAttributes(
+                AudioAttributes.Builder()
+                    .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                    .setUsage(AudioAttributes.USAGE_MEDIA)
+                    .build()
+            )
             player.prepare()
         } catch (e: Exception) {
             return false
