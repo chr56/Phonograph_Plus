@@ -149,7 +149,7 @@ public class AppWidgetCard extends BaseAppWidget {
         // Home
         action = new Intent(context, MainActivity.class);
         action.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        pendingIntent = PendingIntent.getActivity(context, 0, action, 0);
+        pendingIntent = PendingIntent.getActivity(context, 0, action, PendingIntent.FLAG_IMMUTABLE);
         views.setOnClickPendingIntent(R.id.image, pendingIntent);
         views.setOnClickPendingIntent(R.id.media_titles, pendingIntent);
 
