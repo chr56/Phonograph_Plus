@@ -67,11 +67,6 @@ jobs:
           body_path: ${{ github.workspace }}/ReleaseNote.md
           token: ${{ secrets.TOKEN }}
 
-      - name: Read release note
-        run: |
-          cat ${{ github.workspace }}/ReleaseNote.md >> $env.RELEASE_NOTE
-          echo $RELEASE_NOTE
-
       - name: Upload to TG
         uses: appleboy/telegram-action@master
 
@@ -79,11 +74,14 @@ jobs:
         with:
           to: ${{ secrets.TG_CHAT_ID }}
           token: ${{ secrets.TG_BOT_TOKEN }}
-          document: ${{ github.workspace }}/${{steps.sign_app.outputs.signedReleaseFile}}
           message: |
-            "new **Preview version - ${{ github.ref_name }}** Link:[GitHub](${{ steps.release_github.outputs.url }})"
-            "${{ env.RELEASE_NOTE }}"
+            **New Preview Version - ${{ github.ref_name }}**
+            **Preview版本更新! - ${{ github.ref_name }}**
+            [GitHub Link](https://github.com/chr56/Phonograph_Plus/releases/tag/${{ github.ref_name }})
+            ${{ github.action_path }}
+            '''${{ github.sha }}'''
 
           format: markdown
+          document: ${{ github.workspace }}/${{steps.sign_app.outputs.signedReleaseFile}}
           disable_notification: true
           disable_web_page_preview: true
