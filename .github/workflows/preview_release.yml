@@ -83,14 +83,13 @@ jobs:
           to: ${{ secrets.TG_CHAT_ID }}
           token: ${{ secrets.TG_BOT_TOKEN }}
           message: |
-            *New Preview Version!*
-            *${{ github.ref_name }}* (`${{ github.sha }}`)
-            *Preview版本更新!*
+            <b>New Preview Version!</b>
+            <b>${{ github.ref_name }}</b> (<pre>${{ github.sha }}</pre>)
+            <b>Preview版本更新!</b>
 
-            [GitHub Link](https://github.com/chr56/Phonograph_Plus/releases/tag/${{ github.ref_name }})
-            ${{ github.action_path }}
-
-          format: markdown
+            <a href="https://github.com/chr56/Phonograph_Plus/releases/tag/${{ github.ref_name }}"> GitHub Link </a>
+            <pre>${{ github.action_path }}</pre>
+          format: html
           document: ${{ github.workspace }}/${{steps.sign_app.outputs.signedReleaseFile}}
           disable_notification: true
           disable_web_page_preview: true
