@@ -31,7 +31,7 @@ android {
 
         applicationId 'player.phonograph'
         versionCode 7
-        versionName '0.0.6'
+        versionName '0.0.7'
         buildConfigField "String", "GIT_COMMIT_HASH", String.join('', '\"', getGitHash(1), '\"')
     }
     signingConfigs {
@@ -80,6 +80,7 @@ android {
 
             resValue "string", "app_name", "Phonograph Plus Preview"
             applicationIdSuffix '.plus.preview'
+            versionNameSuffix "(Preview)"
             matchingFallbacks = ['release']
             debuggable true
         }
