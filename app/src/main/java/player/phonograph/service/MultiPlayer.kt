@@ -19,19 +19,23 @@ import player.phonograph.util.PreferenceUtil.Companion.getInstance
 /**
  * @author Andrew Neal, Karim Abou Zeid (kabouzeid)
  */
-class MultiPlayer(private val context: Context?) :
-    Playback,
-    MediaPlayer.OnErrorListener,
-    OnCompletionListener {
+class MultiPlayer(private val context: Context) : Playback, MediaPlayer.OnErrorListener, OnCompletionListener {
 
-    private var mCurrentMediaPlayer = MediaPlayer()
+    private var mCurrentMediaPlayer =
+        MediaPlayer().also { it.setWakeMode(context, PowerManager.PARTIAL_WAKE_LOCK) }
     private var mNextMediaPlayer: MediaPlayer? = null
+
     private var callbacks: PlaybackCallbacks? = null
+
     private var mIsInitialized = false
 
-    init {
-        mCurrentMediaPlayer.setWakeMode(context, PowerManager.PARTIAL_WAKE_LOCK)
-    }
+    /**
+     * Sets the callbacks
+     * @param callbacks The callbacks to use
+     */
+    override fun setCallbacks(callbacks: PlaybackCallbacks?) { this.callbacks = callbacks }
+
+    constructor(context: Context, callbacks: PlaybackCallbacks) : this(context) { this.callbacks = callbacks }
 
     /**
      * @param path The path of the file, or the http/rtsp URL of the stream
@@ -56,9 +60,6 @@ class MultiPlayer(private val context: Context?) :
      * ready to play, false otherwise
      */
     private fun setDataSourceImpl(player: MediaPlayer, path: String): Boolean {
-        if (context == null) {
-            return false
-        }
         try {
             player.reset()
             player.setOnPreparedListener(null)
@@ -103,9 +104,7 @@ class MultiPlayer(private val context: Context?) :
      * you want to play
      */
     override fun setNextDataSource(path: String?) {
-        if (context == null) {
-            return
-        }
+
         try {
             mCurrentMediaPlayer.setNextMediaPlayer(null)
         } catch (e: IllegalArgumentException) {
@@ -114,6 +113,7 @@ class MultiPlayer(private val context: Context?) :
             Log.e(TAG, "Media player not initialized!")
             return
         }
+
         mNextMediaPlayer?.let {
             it.release()
             mNextMediaPlayer = null
@@ -121,10 +121,12 @@ class MultiPlayer(private val context: Context?) :
         if (path == null) {
             return
         }
+
         if (getInstance(context).gaplessPlayback()) {
             mNextMediaPlayer = MediaPlayer()
             mNextMediaPlayer!!.setWakeMode(context, PowerManager.PARTIAL_WAKE_LOCK)
             mNextMediaPlayer!!.audioSessionId = audioSessionId
+
             if (setDataSourceImpl(mNextMediaPlayer!!, path)) {
                 try {
                     mCurrentMediaPlayer.setNextMediaPlayer(mNextMediaPlayer)
@@ -151,32 +153,20 @@ class MultiPlayer(private val context: Context?) :
     }
 
     /**
-     * Sets the callbacks
-     *
-     * @param callbacks The callbacks to use
-     */
-    override fun setCallbacks(callbacks: PlaybackCallbacks?) {
-        this.callbacks = callbacks
-    }
-
-    /**
      * @return True if the player is ready to go, false otherwise
      */
-    override fun isInitialized(): Boolean {
-        return mIsInitialized
-    }
+    override fun isInitialized(): Boolean = mIsInitialized
 
     /**
      * Starts or resumes playback.
      */
-    override fun start(): Boolean {
-        return try {
+    override fun start(): Boolean =
+        try {
             mCurrentMediaPlayer.start()
             true
         } catch (e: IllegalStateException) {
             false
         }
-    }
 
     /**
      * Resets the MediaPlayer to its uninitialized state.
@@ -198,51 +188,44 @@ class MultiPlayer(private val context: Context?) :
     /**
      * Pauses playback. Call start() to resume.
      */
-    override fun pause(): Boolean {
-        return try {
+    override fun pause(): Boolean =
+        try {
             mCurrentMediaPlayer.pause()
             true
         } catch (e: IllegalStateException) {
             false
         }
-    }
 
     /**
      * Checks whether the MultiPlayer is playing.
      */
-    override fun isPlaying(): Boolean {
-        return mIsInitialized && mCurrentMediaPlayer.isPlaying
-    }
+    override fun isPlaying(): Boolean = mIsInitialized && mCurrentMediaPlayer.isPlaying
 
     /**
      * Gets the duration of the file.
      *
      * @return The duration in milliseconds
      */
-    override fun duration(): Int {
-        return if (!mIsInitialized) {
-            -1
-        } else try {
-            mCurrentMediaPlayer.duration
-        } catch (e: IllegalStateException) {
-            -1
-        }
-    }
+    override fun duration(): Int =
+        if (!mIsInitialized) { -1 } else
+            try {
+                mCurrentMediaPlayer.duration
+            } catch (e: IllegalStateException) {
+                -1
+            }
 
     /**
      * Gets the current playback position.
      *
      * @return The current position in milliseconds
      */
-    override fun position(): Int {
-        return if (!mIsInitialized) {
-            -1
-        } else try {
-            mCurrentMediaPlayer.currentPosition
-        } catch (e: IllegalStateException) {
-            -1
-        }
-    }
+    override fun position(): Int =
+        if (!mIsInitialized) { -1 } else
+            try {
+                mCurrentMediaPlayer.currentPosition
+            } catch (e: IllegalStateException) {
+                -1
+            }
 
     /**
      * Gets the current playback position.
@@ -250,31 +233,29 @@ class MultiPlayer(private val context: Context?) :
      * @param whereto The offset in milliseconds from the start to seek to
      * @return The offset in milliseconds from the start to seek to
      */
-    override fun seek(whereto: Int): Int {
-        return try {
+    override fun seek(whereto: Int): Int =
+        try {
             mCurrentMediaPlayer.seekTo(whereto)
             whereto
         } catch (e: IllegalStateException) {
             -1
         }
-    }
 
-    override fun setVolume(vol: Float): Boolean {
-        return try {
+    override fun setVolume(vol: Float): Boolean =
+        try {
             mCurrentMediaPlayer.setVolume(vol, vol)
             true
         } catch (e: IllegalStateException) {
             false
         }
-    }
 
     /**
      * Sets the audio session ID.
      *
      * @param sessionId The audio session ID
      */
-    override fun setAudioSessionId(sessionId: Int): Boolean {
-        return try {
+    override fun setAudioSessionId(sessionId: Int): Boolean =
+        try {
             mCurrentMediaPlayer.audioSessionId = sessionId
             true
         } catch (e: IllegalArgumentException) {
@@ -282,7 +263,6 @@ class MultiPlayer(private val context: Context?) :
         } catch (e: IllegalStateException) {
             false
         }
-    }
 
     /**
      * Returns the audio session ID.
@@ -301,13 +281,7 @@ class MultiPlayer(private val context: Context?) :
         mCurrentMediaPlayer.release()
         mCurrentMediaPlayer = MediaPlayer()
         mCurrentMediaPlayer.setWakeMode(context, PowerManager.PARTIAL_WAKE_LOCK)
-        if (context != null) {
-            Toast.makeText(
-                context,
-                context.resources.getString(R.string.unplayable_file),
-                Toast.LENGTH_SHORT
-            ).show()
-        }
+        Toast.makeText(context, context.resources.getString(R.string.unplayable_file), Toast.LENGTH_SHORT).show()
         return false
     }
 
