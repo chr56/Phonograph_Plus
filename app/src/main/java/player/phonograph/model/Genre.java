@@ -3,6 +3,8 @@ package player.phonograph.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import androidx.annotation.Keep;
+
 public class Genre implements Parcelable {
     public final long id;
     public final String name;
@@ -61,6 +63,7 @@ public class Genre implements Parcelable {
         this.songCount = in.readInt();
     }
 
+    @Keep
     public static final Creator<Genre> CREATOR = new Creator<Genre>() {
         public Genre createFromParcel(Parcel source) {
             return new Genre(source);

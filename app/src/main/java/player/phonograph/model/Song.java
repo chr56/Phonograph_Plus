@@ -3,6 +3,8 @@ package player.phonograph.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import androidx.annotation.Keep;
+
 /**
  * @author Karim Abou Zeid (kabouzeid)
  */
@@ -125,6 +127,7 @@ public class Song implements Parcelable {
         this.artistName = in.readString();
     }
 
+    @Keep
     public static final Creator<Song> CREATOR = new Creator<Song>() {
         public Song createFromParcel(Parcel source) {
             return new Song(source);

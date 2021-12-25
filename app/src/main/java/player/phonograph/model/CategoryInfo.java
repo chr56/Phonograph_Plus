@@ -3,6 +3,8 @@ package player.phonograph.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import androidx.annotation.Keep;
+
 import player.phonograph.R;
 
 public class CategoryInfo implements Parcelable {
@@ -30,6 +32,7 @@ public class CategoryInfo implements Parcelable {
         dest.writeInt(visible ? 1 : 0);
     }
 
+    @Keep
     public static final Parcelable.Creator<CategoryInfo> CREATOR = new Parcelable.Creator<CategoryInfo>() {
         public CategoryInfo createFromParcel(Parcel source) {
             return new CategoryInfo(source);
@@ -40,6 +43,7 @@ public class CategoryInfo implements Parcelable {
         }
     };
 
+    @Keep
     public enum Category {
         SONGS(R.string.songs),
         ALBUMS(R.string.albums),

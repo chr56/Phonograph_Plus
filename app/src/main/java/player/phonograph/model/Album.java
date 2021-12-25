@@ -2,6 +2,8 @@ package player.phonograph.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+
+import androidx.annotation.Keep;
 import androidx.annotation.NonNull;
 
 import java.util.ArrayList;
@@ -91,6 +93,7 @@ public class Album implements Parcelable {
         this.songs = in.createTypedArrayList(Song.CREATOR);
     }
 
+    @Keep
     public static final Creator<Album> CREATOR = new Creator<Album>() {
         public Album createFromParcel(Parcel source) {
             return new Album(source);

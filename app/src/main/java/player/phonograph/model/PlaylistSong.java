@@ -2,6 +2,8 @@ package player.phonograph.model;
 
 import android.os.Parcel;
 
+import androidx.annotation.Keep;
+
 public class PlaylistSong extends Song {
     public static final PlaylistSong EMPTY_PLAYLIST_SONG = new PlaylistSong(-1, "", -1, -1, -1, "", -1, -1, "", -1, "", -1, -1);
 
@@ -63,6 +65,7 @@ public class PlaylistSong extends Song {
         this.idInPlayList = in.readLong();
     }
 
+    @Keep
     public static final Creator<PlaylistSong> CREATOR = new Creator<PlaylistSong>() {
         public PlaylistSong createFromParcel(Parcel source) {
             return new PlaylistSong(source);

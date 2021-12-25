@@ -3,6 +3,8 @@ package player.phonograph.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import androidx.annotation.Keep;
+
 /**
  * @author Karim Abou Zeid (kabouzeid)
  */
@@ -64,6 +66,7 @@ public class Playlist implements Parcelable {
         this.name = in.readString();
     }
 
+    @Keep
     public static final Creator<Playlist> CREATOR = new Creator<Playlist>() {
         public Playlist createFromParcel(Parcel source) {
             return new Playlist(source);
