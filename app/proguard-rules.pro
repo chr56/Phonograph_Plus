@@ -60,8 +60,9 @@
 #
 
 -keepnames class ** implements java.io.Serializable
--keepnames class ** implements android.os.Parcelable
-
+-keep,allowoptimization class * implements android.os.Parcelable {
+    public static final android.os.Parcelable$Creator *;
+}
 
 
 -keep class * {
