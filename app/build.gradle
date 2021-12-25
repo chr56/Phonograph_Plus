@@ -84,6 +84,18 @@ android {
             matchingFallbacks = ['release']
             debuggable true
         }
+        checkout {
+            // for checkout
+            if (signing_file_exist) signingConfig signingConfigs.release
+
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+
+            resValue "string", "app_name", "Phonograph Plus Checkout"
+            applicationIdSuffix '.plus.checkout'
+            matchingFallbacks = ['release']
+            debuggable true
+        }
         // for ci
         ci {
 
