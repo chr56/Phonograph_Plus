@@ -48,7 +48,7 @@ object Updater {
                 logFails(call)
             },
             { call: Call, response: Response ->
-                if (!blockLock) handleResponse(callback, force, call, response) else logIgnored(call)
+                handleResponse(callback, force, call, response) // Github is on the highest priority
             }
         )
         sendRequest(
