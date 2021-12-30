@@ -14,6 +14,7 @@ import com.afollestad.materialdialogs.actions.getActionButton
 import com.afollestad.materialdialogs.files.folderChooser
 import player.phonograph.App
 import player.phonograph.R
+import player.phonograph.preferences.BlacklistPreferenceDialog
 import player.phonograph.provider.BlacklistStore
 import java.io.File
 
@@ -37,17 +38,23 @@ class BlacklistFolderChooserDialog : DialogFragment() {
         val dialog = MaterialDialog(requireContext())
             .folderChooser(context = requireContext(), waitForPositiveButton = true, emptyTextRes = R.string.empty, initialDirectory = File("/storage/emulated/0")) {
                 _, file ->
-                val dialog = MaterialDialog(requireContext())
+                val alertDialog = MaterialDialog(requireContext())
                     .title(R.string.add_blacklist)
                     .message(text = file.absolutePath)
+
+                alertDialog
                     .positiveButton(android.R.string.ok) {
                         BlacklistStore.getInstance(App.instance).addPath(file)
-                        dismiss() // dismiss alert dialog
+                        alertDialog.dismiss() // dismiss this alert dialog
+
+                        dismiss() // dismiss Folder Chooser
+                        BlacklistPreferenceDialog.newInstance().show(parentFragmentManager,"Blacklist_Preference_Dialog") // then reopen BlacklistPreferenceDialog
                     }
-                    .negativeButton(android.R.string.cancel) { dismiss() /* dismiss alert dialog */ }
+                    .negativeButton(android.R.string.cancel) {
+                        alertDialog.dismiss() // dismiss this alert dialog
+                    }
                     .show()
                 // todo tint
-                dismiss() // dismiss Folder Chooser
             }
             .noAutoDismiss()
             .positiveButton(R.string.add_action)

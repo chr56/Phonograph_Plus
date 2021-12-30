@@ -37,9 +37,8 @@ class BlacklistPreferenceDialog : DialogFragment() {
                     .show()
             }
             .negativeButton(R.string.add_action) {
-                val dialog = BlacklistFolderChooserDialog()
-                dialog.show(childFragmentManager, "FOLDER_CHOOSER")
-                refreshBlacklistData()
+                BlacklistFolderChooserDialog().show(parentFragmentManager, "FOLDER_CHOOSER")
+                dismiss()
             }
             .listItems(items = paths, waitForPositiveButton = false) { _, _, charSequence ->
                 MaterialDialog(requireContext())
