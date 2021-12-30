@@ -5,7 +5,6 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.PopupMenu
 import androidx.annotation.MenuRes
-import androidx.annotation.Nullable
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentActivity
 import player.phonograph.R
@@ -29,32 +28,6 @@ object SongMenuHelper {
     @JvmStatic
     fun handleMenuClick(activity: FragmentActivity, song: Song, menuItemId: Int): Boolean {
         when (menuItemId) {
-            R.id.action_set_as_ringtone -> {
-                if (RingtoneManager.requiresDialog(activity)) {
-                    RingtoneManager.showDialog(activity)
-                } else {
-                    val ringtoneManager = RingtoneManager()
-                    ringtoneManager.setRingtone(activity, song.id)
-                }
-                return true
-            }
-            R.id.action_share -> {
-                activity.startActivity(
-                    Intent.createChooser(
-                        MusicUtil.createShareSongFileIntent(
-                            song,
-                            activity
-                        ),
-                        null
-                    )
-                )
-                return true
-            }
-            R.id.action_delete_from_device -> {
-                DeleteSongsDialog.create(listOf(song))
-                    .show(activity.supportFragmentManager, "DELETE_SONGS")
-                return true
-            }
             R.id.action_add_to_playlist -> {
                 AddToPlaylistDialog.create(listOf(song))
                     .show(activity.supportFragmentManager, "ADD_PLAYLIST")
@@ -82,6 +55,11 @@ object SongMenuHelper {
                 SongDetailDialog.create(song).show(activity.supportFragmentManager, "SONG_DETAILS")
                 return true
             }
+            R.id.action_delete_from_device -> {
+                DeleteSongsDialog.create(listOf(song))
+                    .show(activity.supportFragmentManager, "DELETE_SONGS")
+                return true
+            }
             R.id.action_go_to_album -> {
                 NavigationUtil.goToAlbum(activity, song.albumId)
                 return true
@@ -90,14 +68,34 @@ object SongMenuHelper {
                 NavigationUtil.goToArtist(activity, song.artistId)
                 return true
             }
+            R.id.action_set_as_ringtone -> {
+                if (RingtoneManager.requiresDialog(activity)) {
+                    RingtoneManager.showDialog(activity)
+                } else {
+                    val ringtoneManager = RingtoneManager()
+                    ringtoneManager.setRingtone(activity, song.id)
+                }
+                return true
+            }
+            R.id.action_share -> {
+                activity.startActivity(
+                    Intent.createChooser(
+                        MusicUtil.createShareSongFileIntent(
+                            song,
+                            activity
+                        ),
+                        null
+                    )
+                )
+                return true
+            }
         }
         return false
     }
 
     const val menuResDefault = R.menu.menu_item_song
-    abstract class ClickMenuListener(private val activity: AppCompatActivity, @Nullable @MenuRes menuRes: Int?) :
-        View.OnClickListener,
-        PopupMenu.OnMenuItemClickListener {
+
+    abstract class ClickMenuListener(private val activity: AppCompatActivity, @MenuRes menuRes: Int?) : View.OnClickListener, PopupMenu.OnMenuItemClickListener {
 
         abstract val song: Song
         protected open var realRes = menuRes ?: menuResDefault
