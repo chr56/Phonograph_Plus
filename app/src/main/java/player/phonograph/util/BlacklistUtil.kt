@@ -15,16 +15,19 @@ import java.io.File
 
 object BlacklistUtil {
     fun addToBlacklist(context: Context, file: File) {
-        addToBlacklistImpl(context, file.absolutePath)
+        if (file.isDirectory)
+            addToBlacklistImpl(context, file.absolutePath)
+        else
+            addToBlacklistImpl(context, file.absolutePath.dropLastWhile { it != '/' }.dropLast(1))
     }
 
     fun addToBlacklist(context: Context, song: Song) {
-        if (song.data.isNotBlank()) addToBlacklistImpl(context, song.data)
+        if (song.data.isNotBlank())
+            addToBlacklistImpl(context, song.data.dropLastWhile { it != '/' }.dropLast(1)) // last char is '/'
     }
 
     private fun addToBlacklistImpl(context: Context, string: String) {
-        // parent folder
-        var path: String = string.dropLastWhile { it != '/' }.dropLast(1) // last char is '/'
+        var path: String = string // parent folder
 
         val candidatesPath = mutableListOf<String>()
         while (path.isNotEmpty()) {
