@@ -31,7 +31,7 @@ android {
 
         applicationId 'player.phonograph'
         versionCode 8
-        versionName '0.0.7'
+        versionName '0.0.8'
         buildConfigField "String", "GIT_COMMIT_HASH", String.join('', '\"', getGitHash(1), '\"')
     }
     signingConfigs {
