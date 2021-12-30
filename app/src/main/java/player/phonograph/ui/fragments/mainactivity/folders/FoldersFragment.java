@@ -45,6 +45,7 @@ import player.phonograph.misc.WrappedAsyncTaskLoader;
 import player.phonograph.model.Song;
 import player.phonograph.ui.activities.MainActivity;
 import player.phonograph.ui.fragments.mainactivity.AbsMainActivityFragment;
+import player.phonograph.util.BlacklistUtil;
 import player.phonograph.util.FileUtil;
 import player.phonograph.util.PhonographColorUtil;
 import player.phonograph.util.PreferenceUtil;
@@ -398,6 +399,9 @@ public class FoldersFragment extends AbsMainActivityFragment implements MainActi
                     case R.id.action_scan:
                         new ArrayListPathsAsyncTask(getActivity(), this::scanPaths).execute(new ArrayListPathsAsyncTask.LoadingInfo(file, AUDIO_FILE_FILTER));
                         return true;
+                    case R.id.action_add_to_black_list:
+                        BlacklistUtil.INSTANCE.addToBlacklist(requireActivity(),file);
+                        return true;
                 }
                 return false;
             });
@@ -415,6 +419,7 @@ public class FoldersFragment extends AbsMainActivityFragment implements MainActi
                     case R.id.action_tag_editor:
                     case R.id.action_details:
                     case R.id.action_set_as_ringtone:
+                    case R.id.action_add_to_black_list:
                     case R.id.action_delete_from_device:
                         new ListSongsAsyncTask(getActivity(), null, (songs, extra) -> {
                             if (!songs.isEmpty()) {
