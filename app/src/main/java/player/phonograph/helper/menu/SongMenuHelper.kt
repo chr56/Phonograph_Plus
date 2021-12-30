@@ -61,10 +61,19 @@ object SongMenuHelper {
                 return true
             }
             R.id.action_add_to_black_list -> {
-                var path: String = song.data
-                val candidatesPath = List(5) { _ ->
-                    path.dropLastWhile { it != '/' }.dropLast(1).also { path = it }
+                // parent folder
+                var path: String = song.data.dropLastWhile { it != '/' }.dropLast(1) // last char is '/'
+
+                val candidatesPath = mutableListOf<String>()
+                while (path.isNotEmpty()) {
+                    if (path.endsWith("/emulated/0", true)
+                        or path.endsWith("/emulated", true)
+                        or path.endsWith("/storage", true)
+                    ) break // no junk paths
+                    candidatesPath.add(path)
+                    path = path.dropLastWhile { it != '/' }.dropLast(1) // last char is '/'
                 }
+
                 MaterialDialog(activity)
                     .title(R.string.label_file_path)
                     .noAutoDismiss()
