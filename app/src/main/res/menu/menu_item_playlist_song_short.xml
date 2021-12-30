@@ -46,6 +46,10 @@
                 android:title="@string/action_tag_editor"
                 app:showAsAction="never" />
             <item
+                android:id="@+id/action_add_to_black_list"
+                android:title="@string/action_add_to_black_list"
+                app:showAsAction="never" />
+            <item
                 android:id="@+id/action_delete_from_device"
                 android:title="@string/action_delete_from_device"
                 app:showAsAction="never" />

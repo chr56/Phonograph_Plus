@@ -344,6 +344,7 @@
     <string name="pref_summary_display_lyrics_time_axis">在歌词对话框中显示同步歌词时间轴</string>
     <string name="upgrade_notification_name">更新</string>
     <string name="upgrade_notification_description">应用更新通知</string>
+    <string name="action_add_to_black_list">加入黑名单</string>
     <plurals name="msg_deletion_result">
         <item quantity="other">%1$d / %2$d 个项目删除成功</item>
     </plurals>
