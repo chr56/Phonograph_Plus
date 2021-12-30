@@ -7,9 +7,6 @@ import android.widget.PopupMenu
 import androidx.annotation.MenuRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentActivity
-import com.afollestad.materialdialogs.MaterialDialog
-import com.afollestad.materialdialogs.list.listItemsSingleChoice
-import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.dialogs.AddToPlaylistDialog
 import player.phonograph.dialogs.DeleteSongsDialog
@@ -17,13 +14,12 @@ import player.phonograph.dialogs.SongDetailDialog
 import player.phonograph.helper.MusicPlayerRemote
 import player.phonograph.interfaces.PaletteColorHolder
 import player.phonograph.model.Song
-import player.phonograph.provider.BlacklistStore
 import player.phonograph.ui.activities.tageditor.AbsTagEditorActivity
 import player.phonograph.ui.activities.tageditor.SongTagEditorActivity
+import player.phonograph.util.BlacklistUtil
 import player.phonograph.util.MusicUtil
 import player.phonograph.util.NavigationUtil
 import player.phonograph.util.RingtoneManager
-import java.io.File
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
@@ -61,36 +57,7 @@ object SongMenuHelper {
                 return true
             }
             R.id.action_add_to_black_list -> {
-                // parent folder
-                var path: String = song.data.dropLastWhile { it != '/' }.dropLast(1) // last char is '/'
-
-                val candidatesPath = mutableListOf<String>()
-                while (path.isNotEmpty()) {
-                    if (path.endsWith("/emulated/0", true)
-                        or path.endsWith("/emulated", true)
-                        or path.endsWith("/storage", true)
-                    ) break // no junk paths
-                    candidatesPath.add(path)
-                    path = path.dropLastWhile { it != '/' }.dropLast(1) // last char is '/'
-                }
-
-                MaterialDialog(activity)
-                    .title(R.string.label_file_path)
-                    .noAutoDismiss()
-                    .listItemsSingleChoice(items = candidatesPath) { dialog, _, pathText ->
-                        if (pathText.isNotBlank()) {
-                            MaterialDialog(activity)
-                                .title(R.string.add_blacklist)
-                                .message(text = pathText)
-                                .positiveButton(android.R.string.ok) {
-                                    BlacklistStore.getInstance(App.instance).addPath(File(pathText as String))
-                                    dialog.dismiss()
-                                }
-                                .negativeButton(android.R.string.cancel)
-                                .show()
-                        }
-                    }
-                    .show()
+                BlacklistUtil.addToBlacklist(activity, song)
             }
             R.id.action_delete_from_device -> {
                 DeleteSongsDialog.create(listOf(song))
