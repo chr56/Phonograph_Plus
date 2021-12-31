@@ -7,12 +7,12 @@ package player.phonograph
 import android.os.Bundle
 import android.util.Log
 import androidx.annotation.Keep
-import com.google.gson.Gson
-import com.google.gson.annotations.SerializedName
+//import com.google.gson.annotations.SerializedName
 import okhttp3.Call
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
+import org.json.JSONObject
 import player.phonograph.util.PreferenceUtil
 import java.io.IOException
 import java.util.concurrent.TimeUnit
@@ -124,7 +124,8 @@ object Updater {
 
         var versionJson: VersionJson? = null
         try {
-            versionJson = Gson().fromJson<VersionJson>(responseBody.string(), VersionJson::class.java)
+//            versionJson = Gson().fromJson<VersionJson>(responseBody.string(), VersionJson::class.java)
+            versionJson = parseJson(JSONObject(responseBody.string()))
         } catch (e: Exception) {
             blockLock = false
             e.printStackTrace()
@@ -184,25 +185,47 @@ object Updater {
 
     @Keep
     class VersionJson {
-        @JvmField
-        @SerializedName(Version)
+//        @JvmField
+//        @SerializedName(Version)
         var version: String? = ""
 
-        @JvmField
-        @SerializedName(VersionCode)
+//        @JvmField
+//        @SerializedName(VersionCode)
         var versionCode: Int = 0
 
-        @JvmField
-        @SerializedName(LogSummary)
+//        @JvmField
+//        @SerializedName(LogSummary)
         var logSummary: String? = ""
 
-        @JvmField
-        @SerializedName(DownloadSources)
+//        @JvmField
+//        @SerializedName(DownloadSources)
         var downloadSources: Array<String>? = null
 
-        @JvmField
-        @SerializedName(DownloadUris)
+//        @JvmField
+//        @SerializedName(DownloadUris)
         var downloadUris: Array<String>? = null
+    }
+
+    private fun parseJson(json: JSONObject): VersionJson {
+        val version = VersionJson()
+
+        version.version = json.optString(Version)
+        version.versionCode = json.optInt(VersionCode)
+        version.logSummary = json.optString(LogSummary)
+
+        val downloadSourcesArray = json.optJSONArray(DownloadSources)
+        version.downloadSources =
+            downloadSourcesArray?.let { array ->
+                Array<String>(array.length()) { i -> array.optString(i) }
+            }
+
+        val downloadUrisArray = json.optJSONArray(DownloadUris)
+        version.downloadUris =
+            downloadUrisArray?.let { array ->
+                Array<String>(array.length()) { i -> array.optString(i) }
+            }
+
+        return version
     }
 
     private const val owner = "chr56"
