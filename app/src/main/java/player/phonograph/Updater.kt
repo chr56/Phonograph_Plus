@@ -125,9 +125,18 @@ object Updater {
         }
 
         versionJson?.let { json: VersionJson ->
-            Log.i(
-                TAG, "versionCode: ${json.versionCode}, version: ${json.version}, logSummary: ${json.logSummary}"
-            )
+            Log.i(TAG, "versionCode: ${json.versionCode}, version: ${json.version}, logSummary: ${json.logSummary}")
+
+            val ignoreUpgradeVersionCode = PreferenceUtil(App.instance).ignoreUpgradeVersionCode
+            Log.d(TAG, "current state: force:$force, ignoreUpgradeVersionCode:$ignoreUpgradeVersionCode")
+            // stop if version code is lower ignore version code level and not force to execute
+            if (
+                ignoreUpgradeVersionCode >= json.versionCode &&
+                !force
+            ) {
+                Log.d(TAG, "ignore this upgrade(version code: ${json.versionCode})")
+                return@handleResponse
+            }
 
             val result = Bundle().also {
                 it.putInt(VersionCode, json.versionCode)

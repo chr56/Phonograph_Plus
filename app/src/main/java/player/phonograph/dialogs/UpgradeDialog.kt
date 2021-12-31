@@ -13,8 +13,10 @@ import android.util.Log
 import androidx.fragment.app.DialogFragment
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.list.listItemsSingleChoice
+import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.Updater
+import player.phonograph.util.PreferenceUtil
 
 class UpgradeDialog : DialogFragment() {
     private var versionCode: Int = -1
@@ -61,6 +63,7 @@ class UpgradeDialog : DialogFragment() {
             }
             .neutralButton(R.string.ignore_once) { _ ->
                 dismiss()
+                PreferenceUtil(App.instance).ignoreUpgradeVersionCode = versionCode
             }
 //            .positiveButton(R.string.git_hub, null) {
 //                val i = Intent(Intent.ACTION_VIEW)

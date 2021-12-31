@@ -466,6 +466,15 @@ class PreferenceUtil(context: Context) {
         }
 
     /**
+     * the version code that is ignored to upgrade
+     */
+    var ignoreUpgradeVersionCode: Int
+        get() = mPreferences.getInt(IGNORE_UPGRADE_VERSION_CODE, 0)
+        set(value) {
+            mPreferences.edit().putInt(IGNORE_UPGRADE_VERSION_CODE, value).apply()
+        }
+
+    /**
      * **Dangerous !**, this reset all SharedPreferences!
      * @param context this is used to make toast
      */
@@ -587,5 +596,10 @@ class PreferenceUtil(context: Context) {
         const val FIXED_TAB_LAYOUT = "fixed_tab_layout"
 
         const val CHECK_UPGRADE_AT_STARTUP = "check_upgrade_at_startup"
+
+        /**
+         * the version code that is ignored to upgrade
+         */
+        const val IGNORE_UPGRADE_VERSION_CODE = "ignore_upgrade_version_code"
     }
 }
