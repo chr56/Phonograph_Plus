@@ -1,166 +1,131 @@
-package player.phonograph.ui.fragments.mainactivity.library.pager;
+package player.phonograph.ui.fragments.mainactivity.library.pager
 
-import android.os.Bundle;
-import android.view.View;
+import android.os.Bundle
+import android.view.View
+import androidx.annotation.LayoutRes
+import androidx.recyclerview.widget.RecyclerView
+import player.phonograph.R
+import player.phonograph.util.Util.isLandscape
 
-import androidx.annotation.LayoutRes;
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
-
-import player.phonograph.R;
-import player.phonograph.util.Util;
-
+// todo cleanup
 /**
  * @author Karim Abou Zeid (kabouzeid)
  */
-public abstract class AbsLibraryPagerRecyclerViewCustomGridSizeFragment<A extends RecyclerView.Adapter<?>, LM extends RecyclerView.LayoutManager> extends AbsLibraryPagerRecyclerViewFragment<A, LM> {
-    private int gridSize;
-    private String sortOrder;
+@Suppress("unused")
+abstract class AbsLibraryPagerRecyclerViewCustomGridSizeFragment<A : RecyclerView.Adapter<*>, LM : RecyclerView.LayoutManager> :
+    AbsLibraryPagerRecyclerViewFragment<A, LM>() {
 
-    private boolean usePaletteInitialized;
-    private boolean usePalette;
-    private int currentLayoutRes;
-
-    public final int getGridSize() {
-        if (gridSize == 0) {
-            if (isLandscape()) {
-                gridSize = loadGridSizeLand();
-            } else {
-                gridSize = loadGridSize();
+    var gridSize: Int = 0
+        get() {
+            if (field == 0) {
+                field = if (isLandscape) {
+                    loadGridSizeLand()
+                } else {
+                    loadGridSize()
+                }
             }
+            return field
         }
-        return gridSize;
-    }
-
-    public int getMaxGridSize() {
-        if (isLandscape()) {
-            return getResources().getInteger(R.integer.max_columns_land);
+        private set
+    val maxGridSize: Int
+        get() = if (isLandscape) {
+            resources.getInteger(R.integer.max_columns_land)
         } else {
-            return getResources().getInteger(R.integer.max_columns);
+            resources.getInteger(R.integer.max_columns)
         }
+    private val isLandscape: Boolean
+        get() = isLandscape(resources)
+    protected val maxGridSizeForList: Int
+        get() =
+            if (isLandscape) {
+                requireActivity().resources.getInteger(R.integer.default_list_columns_land)
+            } else requireActivity().resources.getInteger(R.integer.default_list_columns)
+
+    var sortOrder: String? = null
+        get(): String? {
+            if (field == null) { sortOrder = loadSortOrder() }
+            return field
+        }
+        private set
+
+    private var currentLayoutRes = 0
+    /**
+     * Override to customize which item layout currentLayoutRes should be used. You might also want to override [.canUsePalette] then.
+     * @see [gridSize]
+     */
+    protected val itemLayoutRes: Int
+        @LayoutRes
+        get() = if (gridSize > maxGridSizeForList) { R.layout.item_grid } else R.layout.item_list
+    protected fun notifyLayoutResChanged(@LayoutRes res: Int) {
+        currentLayoutRes = res
+        val recyclerView = recyclerView
+        recyclerView?.let { applyRecyclerViewPaddingForLayoutRes(it, currentLayoutRes) }
+    }
+    private fun applyRecyclerViewPaddingForLayoutRes(recyclerView: RecyclerView, @LayoutRes res: Int) {
+        val padding: Int =
+            if (res == R.layout.item_grid) { (resources.displayMetrics.density * 2).toInt() } else { 0 }
+        recyclerView.setPadding(padding, padding, padding, padding)
+    }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        applyRecyclerViewPaddingForLayoutRes(recyclerView!!, currentLayoutRes)
     }
 
+    private var usePaletteInitialized = false
+    private var usePalette = false
     /**
      * @return whether the palette should be used at all or not
      */
-    public final boolean usePalette() {
+    fun usePalette(): Boolean {
         if (!usePaletteInitialized) {
-            usePalette = loadUsePalette();
-            usePaletteInitialized = true;
+            usePalette = loadUsePalette()
+            usePaletteInitialized = true
         }
-        return usePalette;
+        return usePalette
     }
-
-    public final String getSortOrder() {
-        if (sortOrder == null) {
-            sortOrder = loadSortOrder();
-        }
-        return sortOrder;
-    }
-
-    public void setAndSaveGridSize(final int gridSize) {
-        int oldLayoutRes = getItemLayoutRes();
-        this.gridSize = gridSize;
-        if (isLandscape()) {
-            saveGridSizeLand(gridSize);
-        } else {
-            saveGridSize(gridSize);
-        }
-        // only recreate the adapter and layout manager if the layout currentLayoutRes has changed
-        if (oldLayoutRes != getItemLayoutRes()) {
-            invalidateLayoutManager();
-            invalidateAdapter();
-        } else {
-            setGridSize(gridSize);
-        }
-    }
-
-    public void setAndSaveUsePalette(final boolean usePalette) {
-        this.usePalette = usePalette;
-        saveUsePalette(usePalette);
-        setUsePalette(usePalette);
-    }
-
-    public void setAndSaveSortOrder(final String sortOrder) {
-        this.sortOrder = sortOrder;
-        saveSortOrder(sortOrder);
-        setSortOrder(sortOrder);
-    }
-
     /**
      * @return whether the palette option should be available for the current item layout or not
      */
-    public boolean canUsePalette() {
-        return getItemLayoutRes() == R.layout.item_grid;
+    fun canUsePalette(): Boolean {
+        return itemLayoutRes == R.layout.item_grid
     }
 
-    /**
-     * Override to customize which item layout currentLayoutRes should be used. You might also want to override {@link #canUsePalette()} then.
-     *
-     * @see #getGridSize()
-     */
-    @LayoutRes
-    protected int getItemLayoutRes() {
-        if (getGridSize() > getMaxGridSizeForList()) {
-            return R.layout.item_grid;
-        }
-        return R.layout.item_list;
-    }
+    protected abstract fun loadGridSize(): Int
+    protected abstract fun saveGridSize(gridColumns: Int)
+    protected abstract fun loadGridSizeLand(): Int
+    protected abstract fun saveGridSizeLand(gridColumns: Int)
+    protected abstract fun saveUsePalette(usePalette: Boolean)
+    protected abstract fun loadUsePalette(): Boolean
+    protected abstract fun setUsePalette(usePalette: Boolean)
+    protected abstract fun setGridSize(gridSize: Int)
+    protected abstract fun loadSortOrder(): String?
+    protected abstract fun saveSortOrder(sortOrder: String?)
+    protected abstract fun setSortOrder(sortOrder: String?)
 
-    protected final void notifyLayoutResChanged(@LayoutRes int res) {
-        this.currentLayoutRes = res;
-        RecyclerView recyclerView = getRecyclerView();
-        if (recyclerView != null) {
-            applyRecyclerViewPaddingForLayoutRes(recyclerView, currentLayoutRes);
-        }
-    }
-
-    @Override
-    public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        applyRecyclerViewPaddingForLayoutRes(getRecyclerView(), currentLayoutRes);
-    }
-
-    protected void applyRecyclerViewPaddingForLayoutRes(@NonNull RecyclerView recyclerView, @LayoutRes int res) {
-        int padding;
-        if (res == R.layout.item_grid) {
-            padding = (int) (getResources().getDisplayMetrics().density * 2);
+    fun setAndSaveGridSize(gridSize: Int) {
+        val oldLayoutRes = itemLayoutRes
+        this.gridSize = gridSize
+        if (isLandscape) {
+            saveGridSizeLand(gridSize)
         } else {
-            padding = 0;
+            saveGridSize(gridSize)
         }
-        recyclerView.setPadding(padding, padding, padding, padding);
-    }
-
-    protected abstract int loadGridSize();
-
-    protected abstract void saveGridSize(int gridColumns);
-
-    protected abstract int loadGridSizeLand();
-
-    protected abstract void saveGridSizeLand(int gridColumns);
-
-    protected abstract void saveUsePalette(boolean usePalette);
-
-    protected abstract boolean loadUsePalette();
-
-    protected abstract void setUsePalette(boolean usePalette);
-
-    protected abstract void setGridSize(int gridSize);
-
-    protected abstract String loadSortOrder();
-
-    protected abstract void saveSortOrder(String sortOrder);
-
-    protected abstract void setSortOrder(String sortOrder);
-
-    protected int getMaxGridSizeForList() {
-        if (isLandscape()) {
-            return requireActivity().getResources().getInteger(R.integer.default_list_columns_land);
+        // only recreate the adapter and layout manager if the layout currentLayoutRes has changed
+        if (oldLayoutRes != itemLayoutRes) {
+            invalidateLayoutManager()
+            invalidateAdapter()
+        } else {
+            setGridSize(gridSize)
         }
-        return requireActivity().getResources().getInteger(R.integer.default_list_columns);
     }
-
-    protected final boolean isLandscape() {
-        return Util.isLandscape(getResources());
+    fun setAndSaveUsePalette(usePalette: Boolean) {
+        this.usePalette = usePalette
+        saveUsePalette(usePalette)
+        setUsePalette(usePalette)
+    }
+    fun setAndSaveSortOrder(sortOrder: String?) {
+        this.sortOrder = sortOrder
+        saveSortOrder(sortOrder)
+        setSortOrder(sortOrder)
     }
 }
