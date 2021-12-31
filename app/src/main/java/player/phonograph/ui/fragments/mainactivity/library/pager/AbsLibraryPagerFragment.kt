@@ -1,32 +1,20 @@
-package player.phonograph.ui.fragments.mainactivity.library.pager;
+package player.phonograph.ui.fragments.mainactivity.library.pager
 
-import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.loader.app.LoaderManager;
-
-import player.phonograph.ui.fragments.AbsMusicServiceFragment;
-import player.phonograph.ui.fragments.mainactivity.library.LibraryFragment;
+import android.os.Bundle
+import androidx.loader.app.LoaderManager
+import player.phonograph.ui.fragments.AbsMusicServiceFragment
+import player.phonograph.ui.fragments.mainactivity.library.LibraryFragment
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
  */
-public class AbsLibraryPagerFragment extends AbsMusicServiceFragment {
+open class AbsLibraryPagerFragment : AbsMusicServiceFragment() {
+    override fun getLoaderManager(): LoaderManager = parentFragment!!.loaderManager
 
-    /* http://stackoverflow.com/a/2888433 */
-    @NonNull
-    @Override
-    public LoaderManager getLoaderManager() {
-        return getParentFragment().getLoaderManager();
-    }
+    val libraryFragment: LibraryFragment? get() = parentFragment as LibraryFragment?
 
-    public LibraryFragment getLibraryFragment() {
-        return (LibraryFragment) getParentFragment();
-    }
-
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        setHasOptionsMenu(true);
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        setHasOptionsMenu(true)
     }
 }
