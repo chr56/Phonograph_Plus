@@ -23,6 +23,8 @@ class UpgradeDialog : DialogFragment() {
     private var versionCode: Int = -1
     private var version: String? = null
     private var log: String? = null
+    private var downloadUris: Array<String>? = null
+    private var downloadSources: Array<String>? = null
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
 
         val arguments = requireArguments()
@@ -31,6 +33,10 @@ class UpgradeDialog : DialogFragment() {
         versionCode = arguments.getInt(Updater.VersionCode)
         version = arguments.getString(Updater.Version)
         log = arguments.getString(Updater.LogSummary)
+        val canAccessGitHub = arguments.getBoolean(Updater.CanAccessGitHub, false)
+
+        downloadUris = arguments.getStringArray(Updater.DownloadUris)
+        downloadSources = arguments.getStringArray(Updater.DownloadSources)
 
         val message = "<p>" +
             "<b>${getString(R.string.new_version_code)}</b>: $version <br/>" +
@@ -46,8 +52,19 @@ class UpgradeDialog : DialogFragment() {
             .negativeButton(android.R.string.ok)
             .positiveButton(R.string.download) { _ ->
                 dismiss() // dismiss UpgradeDialog
-                val uris = mutableListOf<String>("https://github.com/chr56/Phonograph_Plus/releases", "https://t.me/Phonograph_Plus")
-                val text = mutableListOf<String>(getString(R.string.git_hub), getString(R.string.tg_channel))
+
+                val uris = mutableListOf<String>("https://github.com/chr56/Phonograph_Plus/releases")
+                val text = mutableListOf<String>(getString(R.string.git_hub))
+
+                if (canAccessGitHub) {
+                    uris.add("https://t.me/Phonograph_Plus")
+                    text.add(getString(R.string.tg_channel))
+                }
+                if (downloadUris != null && downloadSources != null) {
+                    uris.addAll(downloadUris!!)
+                    text.addAll(downloadSources!!)
+                }
+
                 val downloadDialog = MaterialDialog(activity)
                     .title(R.string.download)
                     .listItemsSingleChoice(items = text, waitForPositiveButton = true) { d: MaterialDialog, index: Int, _: CharSequence ->
@@ -77,6 +94,8 @@ class UpgradeDialog : DialogFragment() {
             args.putInt(Updater.VersionCode, versionInfo.getInt(Updater.VersionCode))
             args.putString(Updater.Version, versionInfo.getString(Updater.Version))
             args.putString(Updater.LogSummary, versionInfo.getString(Updater.LogSummary))
+            args.putStringArray(Updater.DownloadUris,versionInfo.getStringArray(Updater.DownloadUris))
+            args.putStringArray(Updater.DownloadSources,versionInfo.getStringArray(Updater.DownloadSources))
             dialog.arguments = args
             return dialog
         }
