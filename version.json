@@ -1,5 +1,13 @@
 {
     "version": "0.0.7",
     "versionCode": 8,
-    "logSummary": "\n🎉Phonograph Plus 已恢复更新! \n\nv0.0.7[2021.12.26]\n修复 (无时间轴)纯文本歌词导致的崩溃\n修复 正在播放曲目切换后，状态栏歌词偶尔未切换\n变更 启动时检查更新使用通知提示(，并顺便微调了检查更新方式与对话框样式)，防止凭空弹出对话框引起崩溃\n变更 尝试避免潜在的崩溃(似乎仅会出现在 Android 12 上)，准备适配向SDK31(Android12)迁移\n（更新对话框在0.0.3版本以后可在设置中手动关闭，可在\"关于\"中手动检查更新）"
+    "logSummary": "\n🎉Phonograph Plus 已恢复更新! \n\nv0.0.7[2021.12.26]\n修复 (无时间轴)纯文本歌词导致的崩溃\n修复 正在播放曲目切换后，状态栏歌词偶尔未切换\n变更 启动时检查更新使用通知提示(，并顺便微调了检查更新方式与对话框样式)，防止凭空弹出对话框引起崩溃\n变更 尝试避免潜在的崩溃(似乎仅会出现在 Android 12 上)，准备适配向SDK31(Android12)迁移\n（更新对话框在0.0.3版本以后可在设置中手动关闭，可在\"关于\"中手动检查更新）",
+    "downloadSources": [
+        "Github(v0.0.7)",
+        "Github(v0.0.6)"
+    ],
+    "downloadUris": [
+        "https://github.com/chr56/Phonograph_Plus/releases/tag/v0.0.7",
+        "https://github.com/chr56/Phonograph_Plus/releases/tag/v0.0.6"
+    ]
 }
