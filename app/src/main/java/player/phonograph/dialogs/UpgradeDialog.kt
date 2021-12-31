@@ -12,6 +12,7 @@ import android.text.Html
 import android.util.Log
 import androidx.fragment.app.DialogFragment
 import com.afollestad.materialdialogs.MaterialDialog
+import com.afollestad.materialdialogs.list.listItemsSingleChoice
 import player.phonograph.R
 import player.phonograph.Updater
 
@@ -20,9 +21,9 @@ class UpgradeDialog : DialogFragment() {
     private var version: String? = null
     private var log: String? = null
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-//        val versionInfo = Updater.result!!
 
         val arguments = requireArguments()
+        val activity = requireActivity()
 
         versionCode = arguments.getInt(Updater.VersionCode)
         version = arguments.getString(Updater.Version)
@@ -36,22 +37,43 @@ class UpgradeDialog : DialogFragment() {
 
         Log.w(this::class.simpleName, "Formatted Log:" + log?.replace("\\n", "<br/>"))
 
-        val dialog = MaterialDialog(requireActivity())
+        val dialog = MaterialDialog(activity)
             .title(R.string.new_version)
             .message(text = Html.fromHtml(message, Html.FROM_HTML_MODE_COMPACT or Html.FROM_HTML_OPTION_USE_CSS_COLORS))
-            .neutralButton(android.R.string.ok, null, null)
-            .positiveButton(R.string.git_hub, null) {
-                val i = Intent(Intent.ACTION_VIEW)
-                i.data = Uri.parse("https://github.com/chr56/Phonograph_Plus/releases")
-                i.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                startActivity(i)
+            .negativeButton(android.R.string.ok)
+            .positiveButton(R.string.download) { _ ->
+                dismiss() // dismiss UpgradeDialog
+                val uris = mutableListOf<String>("https://github.com/chr56/Phonograph_Plus/releases", "https://t.me/Phonograph_Plus")
+                val text = mutableListOf<String>(getString(R.string.git_hub), getString(R.string.tg_channel))
+                val downloadDialog = MaterialDialog(activity)
+                    .title(R.string.download)
+                    .listItemsSingleChoice(items = text, waitForPositiveButton = true) { d: MaterialDialog, index: Int, _: CharSequence ->
+                        val intent = Intent(Intent.ACTION_VIEW)
+                        intent.data = Uri.parse(uris[index])
+                        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                        activity.startActivity(intent)
+                        d.dismiss() // dismiss DownloadDialog
+                    }
+                downloadDialog
+                    .positiveButton(android.R.string.ok) { downloadDialog.dismiss() }
+                    .negativeButton(android.R.string.cancel) { downloadDialog.dismiss() }
+                    .show()
             }
-            .negativeButton(R.string.tg_channel, null) {
-                val i = Intent(Intent.ACTION_VIEW)
-                i.data = Uri.parse("https://t.me/Phonograph_Plus")
-                i.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                startActivity(i)
+            .neutralButton(R.string.ignore_once) { _ ->
+                dismiss()
             }
+//            .positiveButton(R.string.git_hub, null) {
+//                val i = Intent(Intent.ACTION_VIEW)
+//                i.data = Uri.parse("https://github.com/chr56/Phonograph_Plus/releases")
+//                i.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+//                startActivity(i)
+//            }
+//            .negativeButton(R.string.tg_channel, null) {
+//                val i = Intent(Intent.ACTION_VIEW)
+//                i.data = Uri.parse("https://t.me/Phonograph_Plus")
+//                i.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+//                startActivity(i)
+//            }
         return dialog
     }
 

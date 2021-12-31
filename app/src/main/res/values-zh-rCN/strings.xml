@@ -329,6 +329,8 @@
     <string name="new_version_code">版本号</string>
     <string name="new_version_log">更新日志</string>
     <string name="new_version_tips">更新对话框可在设置中手动关闭(可在\"关于\"中手动检查更新)</string>
+    <string name="download">下载</string>
+    <string name="ignore_once">忽略一次</string>
     <string name="tg_channel">TG</string>
     <string name="auto_check_upgrade">自动检查更新</string>
     <string name="auto_check_upgrade_summary">自动检查更新并及时弹出更新对话框</string>
