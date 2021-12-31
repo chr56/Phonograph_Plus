@@ -39,16 +39,32 @@ import player.phonograph.util.MusicUtil
 import player.phonograph.util.NavigationUtil
 import player.phonograph.util.PreferenceUtil
 
-open class UniversalSongAdapter(val activity: AppCompatActivity, songs: List<Song>, private val mode: Int = MODE_COMMON, cabHolder: CabHolder) :
-    AbsMultiSelectAdapter<UniversalSongAdapter.CommonSongViewHolder, Song>(
-        activity, cabHolder, R.menu.menu_media_selection
-    ),
+@Suppress("unused")
+open class UniversalSongAdapter :
+    AbsMultiSelectAdapter<UniversalSongAdapter.CommonSongViewHolder, Song>,
     SectionedAdapter,
     MaterialCab.Callback {
 
-    var songs: List<Song> = songs
-        get() = field
-        set(dataSet: List<Song>) {
+    @Suppress("JoinDeclarationAndAssignment")
+    private val activity: AppCompatActivity
+    private val mode: Int
+
+    constructor(
+        activity: AppCompatActivity,
+        songs: List<Song>,
+        mode: Int = MODE_COMMON,
+        cabHolder: CabHolder
+    ) : super(
+        activity, cabHolder, R.menu.menu_media_selection
+    ) {
+        this.activity = activity
+        this.mode = mode
+        this.songs = songs
+        setHasStableIds(true)
+    }
+
+    var songs: List<Song>
+        set(dataSet) {
             field = dataSet
             notifyDataSetChanged()
             updateHeader()
@@ -57,13 +73,14 @@ open class UniversalSongAdapter(val activity: AppCompatActivity, songs: List<Son
     val itemLayoutRes: Int
         get() = when (mode) {
             MODE_COMMON, MODE_ALL_SONGS -> R.layout.item_list
-            MODE_NO_COVER, MODE_SEARCH -> R.layout.item_list_no_image
+            /*MODE_NO_COVER,*/ MODE_SEARCH -> R.layout.item_list_no_image
             MODE_PLAYING_QUEUE, MODE_ALBUM -> R.layout.item_list // todo
-            MODE_ARTIST, MODE_PLAYLIST_LOCAL, MODE_PLAYLIST_SMART -> R.layout.item_list
+            /*MODE_ARTIST,*/ MODE_PLAYLIST_LOCAL, MODE_PLAYLIST_SMART -> R.layout.item_list
             MODE_GRID -> R.layout.item_grid
             else -> R.layout.item_list_no_image
         }
-    val headerLayoutRes: Int
+
+    private val headerLayoutRes: Int
         get() = when (mode) {
             MODE_PLAYLIST_LOCAL, MODE_PLAYLIST_SMART -> R.layout.item_header_playlist
             else -> R.layout.item_list_single_row
@@ -73,37 +90,33 @@ open class UniversalSongAdapter(val activity: AppCompatActivity, songs: List<Son
         get() {
             return when (mode) {
                 MODE_PLAYLIST_SMART, MODE_PLAYLIST_LOCAL -> true
+                MODE_ALL_SONGS -> true
                 else -> false
             }
         }
 
     var usePalette: Boolean = false
-        set(value) { field = value }
 
     var showSectionName: Boolean = true
-        get() = field
-        set(value) { field = value }
 
     var linkedPlaylist: Playlist? = null
-        get() = field
-        set(value) { field = value }
 
     var linkedAlbum: Album? = null
-        get() = field
-        set(value) { field = value }
 
-    init {
-        setHasStableIds(true)
-    }
     override fun getItemId(position: Int): Long =
-        if (!hasHeader) songs[position].id else if (position <= 0) -2 else songs[position - 1].id
+        when (hasHeader) {
+            false -> songs[position].id
+            true -> if (position > 0) songs[position - 1].id else -2 // position == 0
+        }
 
-    override fun getItemViewType(position: Int): Int = if (hasHeader && position == 0) ITEM_HEADER else ITEM_SONG
+    override fun getItemViewType(position: Int): Int =
+        if (hasHeader && position == 0) ITEM_HEADER else ITEM_SONG
 
-    override fun getIdentifier(position: Int): Song {
-        return if (!hasHeader) songs[position] else
-            if (position <= 0) Song.EMPTY_SONG else songs[position - 1]
-    }
+    override fun getIdentifier(position: Int): Song =
+        when (hasHeader) {
+            false -> songs[position]
+            true -> if (position > 0) songs[position - 1] else Song.EMPTY_SONG
+        }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CommonSongViewHolder {
         return if (viewType == ITEM_SONG) CommonSongViewHolder(
@@ -113,10 +126,10 @@ open class UniversalSongAdapter(val activity: AppCompatActivity, songs: List<Son
         )
     }
 
-    var name: TextView? = null
-    var songCountText: TextView? = null
-    var durationText: TextView? = null
-    var path: TextView? = null
+    private var name: TextView? = null
+    private var songCountText: TextView? = null
+    private var durationText: TextView? = null
+    private var path: TextView? = null
 
     override fun onBindViewHolder(holder: CommonSongViewHolder, position: Int) {
         if (holder.itemViewType == ITEM_SONG) {
@@ -149,7 +162,6 @@ open class UniversalSongAdapter(val activity: AppCompatActivity, songs: List<Son
             val primaryColor = ThemeColor.primaryColor(activity)
             holder.itemView.findViewById<ConstraintLayout>(R.id.header)?.background = ColorDrawable(primaryColor)
 
-
             val textColor = MaterialColorHelper.getSecondaryTextColor(activity, ColorUtil.isColorLight(primaryColor))
             val iconColor = MaterialColorHelper.getSecondaryDisabledTextColor(activity, ColorUtil.isColorLight(primaryColor))
 
@@ -161,11 +173,10 @@ open class UniversalSongAdapter(val activity: AppCompatActivity, songs: List<Son
                         )
                     )
                 }
-            TintHelper.setTint(holder.itemView.findViewById<ImageView>(R.id.name_icon),iconColor)
-            TintHelper.setTint(holder.itemView.findViewById<ImageView>(R.id.song_count_icon),iconColor)
-            TintHelper.setTint(holder.itemView.findViewById<ImageView>(R.id.duration_icon),iconColor)
-            TintHelper.setTint(holder.itemView.findViewById<ImageView>(R.id.path_icon),iconColor)
-
+            TintHelper.setTint(holder.itemView.findViewById<ImageView>(R.id.name_icon), iconColor)
+            TintHelper.setTint(holder.itemView.findViewById<ImageView>(R.id.song_count_icon), iconColor)
+            TintHelper.setTint(holder.itemView.findViewById<ImageView>(R.id.duration_icon), iconColor)
+            TintHelper.setTint(holder.itemView.findViewById<ImageView>(R.id.path_icon), iconColor)
 
             // todo MODE detect
 
@@ -194,6 +205,7 @@ open class UniversalSongAdapter(val activity: AppCompatActivity, songs: List<Son
                 }
         }
     }
+
     private fun updateHeader() {
         name?.text = linkedPlaylist?.name ?: "-"
         songCountText?.text = linkedPlaylist?.let { MusicUtil.getSongCountString(activity, songs.size) } ?: "-"
@@ -222,8 +234,7 @@ open class UniversalSongAdapter(val activity: AppCompatActivity, songs: List<Son
             holder.text?.also { textView ->
                 textView.setTextColor(
                     MaterialColorHelper.getSecondaryTextColor(
-                        activity,
-                        ColorUtil.isColorLight(color)
+                        activity, ColorUtil.isColorLight(color)
                     )
                 )
             }
@@ -257,16 +268,17 @@ open class UniversalSongAdapter(val activity: AppCompatActivity, songs: List<Son
     open inner class CommonSongViewHolder(itemView: View) : MediaEntryViewHolder(itemView) {
         // real position if header exists
         protected open val songPosition: Int
-            get() = if (!hasHeader) bindingAdapterPosition
-            else bindingAdapterPosition - 1
+            get() =
+                if (hasHeader) bindingAdapterPosition - 1
+                else bindingAdapterPosition
 
         protected open val song: Song
             get() = if (itemViewType == ITEM_HEADER) Song.EMPTY_SONG else songs[songPosition]
 
         protected open val menuRes: Int?
             get() = when (mode) {
-                MODE_COMMON, MODE_ALL_SONGS, MODE_NO_COVER, MODE_SEARCH -> MENU_LONG
-                MODE_ARTIST, MODE_ALBUM -> MENU_SHORT
+                MODE_COMMON, MODE_ALL_SONGS, /*MODE_NO_COVER,*/ MODE_SEARCH -> MENU_LONG
+                /*MODE_ARTIST,*/ MODE_ALBUM -> MENU_SHORT
                 MODE_PLAYLIST_LOCAL, MODE_PLAYLIST_SMART -> MENU_SHORT
                 MODE_PLAYING_QUEUE -> MENU_QUEUE
                 else -> R.menu.menu_item_song
@@ -288,26 +300,25 @@ open class UniversalSongAdapter(val activity: AppCompatActivity, songs: List<Son
         }
 
         protected open fun onSongMenuItemClick(item: MenuItem): Boolean {
-            return image?.let {
-                if (it.visibility == View.VISIBLE) false
-                else if (item.itemId == R.id.action_go_to_album) {
+            return when {
+                image == null && image?.visibility == View.VISIBLE -> false
+                item.itemId == R.id.action_go_to_album -> {
                     NavigationUtil.goToAlbum(
                         activity, song.albumId,
-                        Pair.create(
-                            image, activity.resources.getString(R.string.transition_album_art)
-                        )
+                        Pair.create(image, activity.resources.getString(R.string.transition_album_art))
                     )
-                    return true
-                } else false
-            } ?: false
+                    true
+                }
+                else -> false
+            }
         }
 
         override fun onClick(v: View) {
             if (itemViewType == ITEM_HEADER) return
-            if (isInQuickSelectMode) {
-                toggleChecked(bindingAdapterPosition)
-            } else {
-                MusicPlayerRemote.openQueue(songs, songPosition, true)
+
+            when (isInQuickSelectMode) {
+                true -> toggleChecked(bindingAdapterPosition)
+                false -> MusicPlayerRemote.openQueue(songs, songPosition, true)
             }
         }
         override fun onLongClick(view: View): Boolean {
@@ -337,16 +348,16 @@ open class UniversalSongAdapter(val activity: AppCompatActivity, songs: List<Son
         const val MENU_QUEUE = R.menu.menu_item_playing_queue_song
 
         const val MODE_GRID = FEATURE_GRID // no menu button ,so no ORDERABLE or DELETABLE
-        const val MODE_NO_COVER = FEATURE_PLAIN
+//        const val MODE_NO_COVER = FEATURE_PLAIN
         const val MODE_COMMON = FEATURE_PLAIN + FEATURE_IMAGE
         const val MODE_ALL_SONGS = FEATURE_PLAIN + FEATURE_IMAGE + FEATURE_HEADER_SHUFFLE
         const val MODE_PLAYLIST_LOCAL = FEATURE_PLAIN + FEATURE_IMAGE + FEATURE_HEADER_SUMMARY + FEATURE_WITH_HANDLE + FEATURE_ORDERABLE + FEATURE_DELETABLE
         const val MODE_PLAYLIST_SMART = FEATURE_PLAIN + FEATURE_IMAGE + FEATURE_HEADER_SUMMARY
         const val MODE_PLAYING_QUEUE = FEATURE_PLAIN + FEATURE_NUMBER + FEATURE_ORDERABLE + FEATURE_DELETABLE
         const val MODE_ALBUM = FEATURE_PLAIN + FEATURE_NUMBER
-        const val MODE_ARTIST = FEATURE_PLAIN + FEATURE_IMAGE
+//        const val MODE_ARTIST = FEATURE_PLAIN + FEATURE_IMAGE
 
-        const val MODE_SEARCH = MODE_NO_COVER
+        const val MODE_SEARCH = FEATURE_PLAIN
 
         // header & real songs
         private const val ITEM_HEADER = 0
