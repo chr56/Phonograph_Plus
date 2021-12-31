@@ -1,141 +1,121 @@
-package player.phonograph.ui.fragments.mainactivity.library.pager;
+package player.phonograph.ui.fragments.mainactivity.library.pager
 
-import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
-
-import androidx.annotation.LayoutRes;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.annotation.StringRes;
-import androidx.recyclerview.widget.RecyclerView;
-
-import com.google.android.material.appbar.AppBarLayout;
-import com.google.android.material.appbar.AppBarLayout.OnOffsetChangedListener;
-import player.phonograph.R;
-import player.phonograph.util.ViewUtil;
-import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
-import chr_56.MDthemer.core.ThemeColor;
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.TextView
+import androidx.annotation.LayoutRes
+import androidx.annotation.StringRes
+import androidx.recyclerview.widget.RecyclerView
+import chr_56.MDthemer.core.ThemeColor
+import com.google.android.material.appbar.AppBarLayout
+import com.google.android.material.appbar.AppBarLayout.OnOffsetChangedListener
+import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView
+import player.phonograph.R
+import player.phonograph.databinding.FragmentMainActivityRecyclerViewBinding
+import player.phonograph.util.ViewUtil
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
  */
-public abstract class AbsLibraryPagerRecyclerViewFragment<A extends RecyclerView.Adapter, LM extends RecyclerView.LayoutManager> extends AbsLibraryPagerFragment implements OnOffsetChangedListener {
+abstract class AbsLibraryPagerRecyclerViewFragment<A : RecyclerView.Adapter<*>, LM : RecyclerView.LayoutManager> :
+    AbsLibraryPagerFragment(), OnOffsetChangedListener {
 
-    private Unbinder unbinder;
+    private var _viewBinding: FragmentMainActivityRecyclerViewBinding? = null
+    private val binding get() = _viewBinding!!
 
-    @BindView(R.id.container)
-    View container;
-    @BindView(R.id.recycler_view)
-    RecyclerView recyclerView;
-    @Nullable
-    @BindView(android.R.id.empty)
-    TextView empty;
-
-    private A adapter;
-    private LM layoutManager;
-
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(getLayoutRes(), container, false);
-        unbinder = ButterKnife.bind(this, view);
-        return view;
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        _viewBinding = FragmentMainActivityRecyclerViewBinding.inflate(inflater, container, false)
+        bind()
+        return binding.root
+    }
+    protected var container: View? = null
+    protected var recyclerView: RecyclerView? = null
+    protected var empty: TextView? = null
+    private fun bind() {
+        container = binding.container
+        recyclerView = binding.recyclerView
+        empty = binding.empty
     }
 
-    @Override
-    public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        libraryFragment!!.addOnAppBarOffsetChangedListener(this)
 
-        getLibraryFragment().addOnAppBarOffsetChangedListener(this);
-
-        initLayoutManager();
-        initAdapter();
-        setUpRecyclerView();
+        initLayoutManager()
+        initAdapter()
+        setUpRecyclerView()
     }
 
-    private void setUpRecyclerView() {
-        if (recyclerView instanceof FastScrollRecyclerView) {
-            ViewUtil.setUpFastScrollRecyclerViewColor(requireActivity(), ((FastScrollRecyclerView) recyclerView), ThemeColor.accentColor(requireActivity()));
-        }
-        recyclerView.setLayoutManager(layoutManager);
-        recyclerView.setAdapter(adapter);
+    protected var adapter: A? = null
+        private set
+    protected var layoutManager: LM? = null
+        private set
+
+    private fun setUpRecyclerView() {
+//        if (binding.recyclerView is FastScrollRecyclerView) {
+        ViewUtil.setUpFastScrollRecyclerViewColor(
+            requireActivity(), binding.recyclerView as FastScrollRecyclerView?, ThemeColor.accentColor(requireActivity())
+        )
+//        }
+        recyclerView!!.layoutManager = layoutManager
+        recyclerView!!.adapter = adapter
     }
 
-    protected void invalidateLayoutManager() {
-        initLayoutManager();
-        recyclerView.setLayoutManager(layoutManager);
+    protected fun invalidateLayoutManager() {
+        initLayoutManager()
+        recyclerView!!.layoutManager = layoutManager
     }
 
-    protected void invalidateAdapter() {
-        initAdapter();
-        checkIsEmpty();
-        recyclerView.setAdapter(adapter);
+    protected fun invalidateAdapter() {
+        initAdapter()
+        checkIsEmpty()
+        recyclerView!!.adapter = adapter
     }
 
-    private void initAdapter() {
-        adapter = createAdapter();
-        adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
-            @Override
-            public void onChanged() {
-                super.onChanged();
-                checkIsEmpty();
+    private fun initAdapter() {
+        adapter = createAdapter()
+        adapter!!.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
+            override fun onChanged() {
+                super.onChanged()
+                checkIsEmpty()
             }
-        });
+        })
     }
 
-    private void initLayoutManager() {
-        layoutManager = createLayoutManager();
+    private fun initLayoutManager() { layoutManager = createLayoutManager() }
+
+    override fun onOffsetChanged(appBarLayout: AppBarLayout, i: Int) {
+        container!!.setPadding(
+            container!!.paddingLeft,
+            container!!.paddingTop,
+            container!!.paddingRight,
+            libraryFragment!!.totalAppBarScrollingRange + i
+        )
     }
 
-    protected A getAdapter() {
-        return adapter;
-    }
-
-    protected LM getLayoutManager() {
-        return layoutManager;
-    }
-
-    protected RecyclerView getRecyclerView() {
-        return recyclerView;
-    }
-
-    @Override
-    public void onOffsetChanged(AppBarLayout appBarLayout, int i) {
-        container.setPadding(container.getPaddingLeft(), container.getPaddingTop(), container.getPaddingRight(), getLibraryFragment().getTotalAppBarScrollingRange() + i);
-    }
-
-    private void checkIsEmpty() {
-        if (empty != null) {
-            empty.setText(getEmptyMessage());
-            empty.setVisibility(adapter == null || adapter.getItemCount() == 0 ? View.VISIBLE : View.GONE);
+    private fun checkIsEmpty() {
+        empty?.let {
+            it.setText(emptyMessage)
+            it.visibility = if (adapter == null || adapter!!.itemCount == 0) View.VISIBLE else View.GONE
         }
     }
 
-    @StringRes
-    protected int getEmptyMessage() {
-        return R.string.empty;
-    }
+    protected open val emptyMessage: Int
+        @StringRes
+        get() = R.string.empty
 
-    @LayoutRes
-    protected int getLayoutRes() {
-        return R.layout.fragment_main_activity_recycler_view;
-    }
+    protected val layoutRes: Int
+        @LayoutRes
+        get() = R.layout.fragment_main_activity_recycler_view
 
-    protected abstract LM createLayoutManager();
+    protected abstract fun createLayoutManager(): LM
+    protected abstract fun createAdapter(): A
 
-    @NonNull
-    protected abstract A createAdapter();
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        getLibraryFragment().removeOnAppBarOffsetChangedListener(this);
-        unbinder.unbind();
+    override fun onDestroyView() {
+        super.onDestroyView()
+        libraryFragment!!.removeOnAppBarOffsetChangedListener(this)
+        _viewBinding = null
     }
 }
