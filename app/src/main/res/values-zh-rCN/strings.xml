@@ -332,7 +332,7 @@
     <string name="download">下载</string>
     <string name="ignore_once">忽略此次</string>
     <string name="upgrade_ignored">更新已忽略！</string>
-    <string name="tg_channel">TG</string>
+    <string name="tg_channel">Telegram Channel</string>
     <string name="auto_check_upgrade">自动检查更新</string>
     <string name="auto_check_upgrade_summary">自动检查更新并及时弹出更新对话框</string>
     <string name="edit">编辑…</string>
