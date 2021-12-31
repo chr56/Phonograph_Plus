@@ -20,14 +20,8 @@ import player.phonograph.Updater
 import player.phonograph.util.PreferenceUtil
 
 class UpgradeDialog : DialogFragment() {
-//    private var versionCode: Int = -1
-//    private var version: String? = null
-//    private var log: String? = null
-//    private var downloadUris: Array<String>? = null
-//    private var downloadSources: Array<String>? = null
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
 
-//        val arguments = requireArguments()
         val activity = requireActivity()
 
         val versionInfo = requireArguments().getBundle(VERSION_BUNDLE) ?: Bundle()
@@ -53,7 +47,6 @@ class UpgradeDialog : DialogFragment() {
             .message(text = Html.fromHtml(message, Html.FROM_HTML_MODE_COMPACT or Html.FROM_HTML_OPTION_USE_CSS_COLORS))
             .negativeButton(android.R.string.ok)
             .positiveButton(R.string.download) { _ ->
-//                dismiss() // dismiss UpgradeDialog
 
                 val uris = mutableListOf<String>("https://github.com/chr56/Phonograph_Plus/releases")
                 val text = mutableListOf<String>(getString(R.string.git_hub) + "(Release Page)")
@@ -91,22 +84,18 @@ class UpgradeDialog : DialogFragment() {
 
     companion object {
         fun create(versionInfo: Bundle): UpgradeDialog {
-            val dialog = UpgradeDialog()
-//            val args = Bundle().also {
-//                it.putBundle(versionBundle, versionInfo)
+//            val dialog = UpgradeDialog()
+//            dialog.arguments = Bundle().also {
+//                it.putBundle(VERSION_BUNDLE, versionInfo)
 //            }
-//            args.putInt(Updater.VersionCode, versionInfo.getInt(Updater.VersionCode))
-//            args.putString(Updater.Version, versionInfo.getString(Updater.Version))
-//            args.putString(Updater.LogSummary, versionInfo.getString(Updater.LogSummary))
-//            args.putBoolean(Updater.CanAccessGitHub, versionInfo.getBoolean(Updater.CanAccessGitHub))
-//            args.putStringArray(Updater.DownloadUris, versionInfo.getStringArray(Updater.DownloadUris))
-//            args.putStringArray(Updater.DownloadSources, versionInfo.getStringArray(Updater.DownloadSources))
-//            dialog.arguments = args
-            dialog.arguments = Bundle().also {
-                it.putBundle(VERSION_BUNDLE, versionInfo)
+//            return dialog
+            return UpgradeDialog().apply {
+                this.arguments = Bundle().also {
+                    it.putBundle(VERSION_BUNDLE, versionInfo)
+                }
             }
-            return dialog
         }
+
         private const val VERSION_BUNDLE = "VERSION_BUNDLE"
     }
 }
