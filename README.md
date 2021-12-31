@@ -8,7 +8,9 @@
 **A third-party modified version of Phonograph**
 
 <br/>
-([Original Project](https://github.com/kabouzeid/Phonograph))
+
+([Original Project Repo](https://github.com/kabouzeid/Phonograph))
+
 <br/>
 <br/>
 
