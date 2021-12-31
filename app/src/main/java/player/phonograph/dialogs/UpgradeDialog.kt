@@ -10,6 +10,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.text.Html
 import android.util.Log
+import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.list.listItemsSingleChoice
@@ -64,19 +65,8 @@ class UpgradeDialog : DialogFragment() {
             .neutralButton(R.string.ignore_once) { _ ->
                 dismiss()
                 PreferenceUtil(App.instance).ignoreUpgradeVersionCode = versionCode
+                Toast.makeText(activity, R.string.upgrade_ignored, Toast.LENGTH_SHORT).show()
             }
-//            .positiveButton(R.string.git_hub, null) {
-//                val i = Intent(Intent.ACTION_VIEW)
-//                i.data = Uri.parse("https://github.com/chr56/Phonograph_Plus/releases")
-//                i.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-//                startActivity(i)
-//            }
-//            .negativeButton(R.string.tg_channel, null) {
-//                val i = Intent(Intent.ACTION_VIEW)
-//                i.data = Uri.parse("https://t.me/Phonograph_Plus")
-//                i.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-//                startActivity(i)
-//            }
         return dialog
     }
 

@@ -31,6 +31,7 @@ import player.phonograph.notification.UpgradeNotification
 import player.phonograph.ui.activities.base.ThemeActivity
 import player.phonograph.ui.activities.bugreport.BugReportActivity
 import player.phonograph.ui.activities.intro.AppIntroActivity
+import player.phonograph.util.PreferenceUtil
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
@@ -159,11 +160,17 @@ class AboutActivity : ThemeActivity(), View.OnClickListener {
                         1 -> {
                             Updater.checkUpdate(callback = {
                                 UpgradeDialog.create(it).show(supportFragmentManager, "DebugDialog")
+                                if (PreferenceUtil(instance).ignoreUpgradeVersionCode >= it.getInt(Updater.VersionCode)) {
+                                    toast(getString(R.string.upgrade_ignored))
+                                }
                             }, force = true)
                         }
                         2 -> {
                             Updater.checkUpdate(callback = {
                                 UpgradeNotification.sendUpgradeNotification(it)
+                                if (PreferenceUtil(instance).ignoreUpgradeVersionCode >= it.getInt(Updater.VersionCode)) {
+                                    toast(getString(R.string.upgrade_ignored))
+                                }
                             }, force = true)
                         }
                         else -> dialog.dismiss()
@@ -209,7 +216,10 @@ class AboutActivity : ThemeActivity(), View.OnClickListener {
             checkUpgrade -> {
                 Updater.checkUpdate(callback = {
                     if (it.getBoolean(Updater.Upgradable)) {
-                        UpgradeDialog.create(it).show(supportFragmentManager, "DebugDialog")
+                        UpgradeDialog.create(it).show(supportFragmentManager, "UPGRADE_DIALOG")
+                        if (PreferenceUtil(instance).ignoreUpgradeVersionCode >= it.getInt(Updater.VersionCode)) {
+                            toast(getString(R.string.upgrade_ignored))
+                        }
                     } else {
                         toast(getText(R.string.no_newer_version))
                     }
