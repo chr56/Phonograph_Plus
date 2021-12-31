@@ -7,7 +7,6 @@ package player.phonograph
 import android.os.Bundle
 import android.util.Log
 import androidx.annotation.Keep
-//import com.google.gson.annotations.SerializedName
 import okhttp3.Call
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -124,12 +123,12 @@ object Updater {
 
         var versionJson: VersionJson? = null
         try {
-//            versionJson = Gson().fromJson<VersionJson>(responseBody.string(), VersionJson::class.java)
             versionJson = parseJson(JSONObject(responseBody.string()))
         } catch (e: Exception) {
             blockLock = false
-            e.printStackTrace()
+            blockLockHolder = ""
             Log.e(TAG, "Parse version.json fail!")
+            e.printStackTrace()
         }
 
         versionJson?.let { json: VersionJson ->
@@ -186,23 +185,18 @@ object Updater {
     @Keep
     class VersionJson {
 //        @JvmField
-//        @SerializedName(Version)
         var version: String? = ""
 
 //        @JvmField
-//        @SerializedName(VersionCode)
         var versionCode: Int = 0
 
 //        @JvmField
-//        @SerializedName(LogSummary)
         var logSummary: String? = ""
 
 //        @JvmField
-//        @SerializedName(DownloadSources)
         var downloadSources: Array<String>? = null
 
 //        @JvmField
-//        @SerializedName(DownloadUris)
         var downloadUris: Array<String>? = null
     }
 
