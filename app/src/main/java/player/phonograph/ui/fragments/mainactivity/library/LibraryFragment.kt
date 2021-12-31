@@ -123,8 +123,8 @@ class LibraryFragment :
         binding.tabs.visibility = if (pagerAdapter.count == 1) View.GONE else View.VISIBLE
     }
 
-    private fun getCurrentFragment(): Fragment? = pagerAdapter.getFragment(binding.pager.currentItem)
-    private fun isPlaylistPage(): Boolean = getCurrentFragment() is PlaylistsFragment
+    private val currentFragment: Fragment? get() = pagerAdapter.getFragment(binding.pager.currentItem)
+    private val isPlaylistPage: Boolean get() = currentFragment is PlaylistsFragment
 
     private fun setupTheme(activity: MainActivity) {
         activity.setStatusbarColorAuto()
@@ -150,16 +150,15 @@ class LibraryFragment :
         return cab as MaterialCab
     }
 
-    fun getTotalAppBarScrollingRange(): Int = binding.appbar.totalScrollRange
+    val totalAppBarScrollingRange: Int
+        get() = binding.appbar.totalScrollRange
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
         inflater.inflate(R.menu.menu_main, menu)
-        if (isPlaylistPage()) {
-            menu.add(0, R.id.action_new_playlist, 0, R.string.new_playlist_title)
-        }
+        if (isPlaylistPage) { menu.add(0, R.id.action_new_playlist, 0, R.string.new_playlist_title) }
 
-        val currentFragment = getCurrentFragment()
+        val currentFragment = currentFragment
 
         if (currentFragment is AbsLibraryPagerRecyclerViewCustomGridSizeFragment<*, *> && currentFragment.isAdded()) {
             val gridSizeItem = menu.findItem(R.id.action_grid_size)
@@ -171,10 +170,7 @@ class LibraryFragment :
                 currentFragment.usePalette()
             menu.findItem(R.id.action_colored_footers).isEnabled =
                 currentFragment.canUsePalette()
-            setUpSortOrderMenu(
-                currentFragment,
-                menu.findItem(R.id.action_sort_order).subMenu
-            )
+            setUpSortOrderMenu(currentFragment, menu.findItem(R.id.action_sort_order).subMenu)
         } else {
             menu.removeItem(R.id.action_grid_size)
             menu.removeItem(R.id.action_colored_footers)
@@ -193,7 +189,7 @@ class LibraryFragment :
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
         // TODO: clean up & extract
         if (PreferenceUtil.LIBRARY_CATEGORIES == key) {
-            val current = getCurrentFragment()
+            val current = currentFragment
             pagerAdapter.setCategoryInfos(PreferenceUtil.getInstance(requireActivity()).libraryCategoryInfos!!)
             binding.pager.offscreenPageLimit = pagerAdapter.count - 1
             var position = pagerAdapter.getItemPosition(current!!)
@@ -332,7 +328,7 @@ class LibraryFragment :
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        val currentFragment = getCurrentFragment()
+        val currentFragment = currentFragment
         if (currentFragment is AbsLibraryPagerRecyclerViewCustomGridSizeFragment<*, *>) {
             if (item.itemId == R.id.action_colored_footers) {
                 item.isChecked = !item.isChecked
@@ -379,7 +375,6 @@ class LibraryFragment :
     }
 
     companion object {
-        fun newInstance(): LibraryFragment =
-            LibraryFragment()
+        fun newInstance(): LibraryFragment = LibraryFragment()
     }
 }
