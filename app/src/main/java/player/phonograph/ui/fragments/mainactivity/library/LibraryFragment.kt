@@ -39,7 +39,7 @@ import player.phonograph.util.PhonographColorUtil
 import player.phonograph.util.PreferenceUtil
 import player.phonograph.util.Util.isLandscape
 
-class LibraryFragmentKt :
+class LibraryFragment :
     AbsMainActivityFragment(), CabHolder, MainActivity.MainActivityFragmentCallbacks, SharedPreferences.OnSharedPreferenceChangeListener, ViewPager.OnPageChangeListener {
 
     // viewBinding
@@ -379,6 +379,7 @@ class LibraryFragmentKt :
     }
 
     companion object {
-        fun newInstance(): LibraryFragmentKt = LibraryFragmentKt()
+        fun newInstance(): LibraryFragment =
+            LibraryFragment()
     }
 }
