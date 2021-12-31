@@ -20,23 +20,25 @@ import player.phonograph.Updater
 import player.phonograph.util.PreferenceUtil
 
 class UpgradeDialog : DialogFragment() {
-    private var versionCode: Int = -1
-    private var version: String? = null
-    private var log: String? = null
-    private var downloadUris: Array<String>? = null
-    private var downloadSources: Array<String>? = null
+//    private var versionCode: Int = -1
+//    private var version: String? = null
+//    private var log: String? = null
+//    private var downloadUris: Array<String>? = null
+//    private var downloadSources: Array<String>? = null
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
 
-        val arguments = requireArguments()
+//        val arguments = requireArguments()
         val activity = requireActivity()
 
-        versionCode = arguments.getInt(Updater.VersionCode)
-        version = arguments.getString(Updater.Version)
-        log = arguments.getString(Updater.LogSummary)
-        val canAccessGitHub = arguments.getBoolean(Updater.CanAccessGitHub, false)
+        val versionInfo = requireArguments().getBundle(VERSION_BUNDLE) ?: Bundle()
 
-        downloadUris = arguments.getStringArray(Updater.DownloadUris)
-        downloadSources = arguments.getStringArray(Updater.DownloadSources)
+        val versionCode = versionInfo.getInt(Updater.VersionCode, -1)
+        val version = versionInfo.getString(Updater.Version, "")
+        val log = versionInfo.getString(Updater.LogSummary, "")
+        val canAccessGitHub = versionInfo.getBoolean(Updater.CanAccessGitHub, false)
+
+        val downloadUris: Array<String>? = versionInfo.getStringArray(Updater.DownloadUris)
+        val downloadSources: Array<String>? = versionInfo.getStringArray(Updater.DownloadSources)
 
         val message = "<p>" +
             "<b>${getString(R.string.new_version_code)}</b>: $version <br/>" +
@@ -44,35 +46,35 @@ class UpgradeDialog : DialogFragment() {
             "</p> " + "<br/>" +
             "<p style=\"color: grey;font: small;\"><br/>${getString(R.string.new_version_tips)}</p>"
 
-        Log.w(this::class.simpleName, "Formatted Log:" + log?.replace("\\n", "<br/>"))
+        Log.d(this::class.simpleName, "Formatted Log:" + log?.replace("\\n", "<br/>"))
 
         val dialog = MaterialDialog(activity)
             .title(R.string.new_version)
             .message(text = Html.fromHtml(message, Html.FROM_HTML_MODE_COMPACT or Html.FROM_HTML_OPTION_USE_CSS_COLORS))
             .negativeButton(android.R.string.ok)
             .positiveButton(R.string.download) { _ ->
-                dismiss() // dismiss UpgradeDialog
+//                dismiss() // dismiss UpgradeDialog
 
                 val uris = mutableListOf<String>("https://github.com/chr56/Phonograph_Plus/releases")
-                val text = mutableListOf<String>(getString(R.string.git_hub))
+                val text = mutableListOf<String>(getString(R.string.git_hub) + "(Release Page)")
 
                 if (canAccessGitHub) {
                     uris.add("https://t.me/Phonograph_Plus")
                     text.add(getString(R.string.tg_channel))
                 }
-                if (downloadUris != null && downloadSources != null) {
-                    uris.addAll(downloadUris!!)
-                    text.addAll(downloadSources!!)
+                if (downloadUris != null && downloadSources != null && (downloadUris.size == downloadSources.size)) {
+                    uris.addAll(downloadUris)
+                    text.addAll(downloadSources)
                 }
 
                 val downloadDialog = MaterialDialog(activity)
                     .title(R.string.download)
-                    .listItemsSingleChoice(items = text, waitForPositiveButton = true) { d: MaterialDialog, index: Int, _: CharSequence ->
+                    .listItemsSingleChoice(items = text, waitForPositiveButton = true) { downloadDialog: MaterialDialog, index: Int, _: CharSequence ->
                         val intent = Intent(Intent.ACTION_VIEW)
                         intent.data = Uri.parse(uris[index])
                         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
                         activity.startActivity(intent)
-                        d.dismiss() // dismiss DownloadDialog
+                        downloadDialog.dismiss() // dismiss DownloadDialog
                     }
                 downloadDialog
                     .positiveButton(android.R.string.ok) { downloadDialog.dismiss() }
@@ -90,15 +92,21 @@ class UpgradeDialog : DialogFragment() {
     companion object {
         fun create(versionInfo: Bundle): UpgradeDialog {
             val dialog = UpgradeDialog()
-            val args = Bundle()
-            args.putInt(Updater.VersionCode, versionInfo.getInt(Updater.VersionCode))
-            args.putString(Updater.Version, versionInfo.getString(Updater.Version))
-            args.putString(Updater.LogSummary, versionInfo.getString(Updater.LogSummary))
-            args.putBoolean(Updater.CanAccessGitHub,versionInfo.getBoolean(Updater.CanAccessGitHub))
-            args.putStringArray(Updater.DownloadUris,versionInfo.getStringArray(Updater.DownloadUris))
-            args.putStringArray(Updater.DownloadSources,versionInfo.getStringArray(Updater.DownloadSources))
-            dialog.arguments = args
+//            val args = Bundle().also {
+//                it.putBundle(versionBundle, versionInfo)
+//            }
+//            args.putInt(Updater.VersionCode, versionInfo.getInt(Updater.VersionCode))
+//            args.putString(Updater.Version, versionInfo.getString(Updater.Version))
+//            args.putString(Updater.LogSummary, versionInfo.getString(Updater.LogSummary))
+//            args.putBoolean(Updater.CanAccessGitHub, versionInfo.getBoolean(Updater.CanAccessGitHub))
+//            args.putStringArray(Updater.DownloadUris, versionInfo.getStringArray(Updater.DownloadUris))
+//            args.putStringArray(Updater.DownloadSources, versionInfo.getStringArray(Updater.DownloadSources))
+//            dialog.arguments = args
+            dialog.arguments = Bundle().also {
+                it.putBundle(VERSION_BUNDLE, versionInfo)
+            }
             return dialog
         }
+        private const val VERSION_BUNDLE = "VERSION_BUNDLE"
     }
 }
