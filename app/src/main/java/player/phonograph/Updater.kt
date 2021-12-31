@@ -49,9 +49,11 @@ object Updater {
             okHttpClient, requestGithub,
             { call: Call, _: IOException ->
                 logFails(call)
+                canAccessGitHub = false
             },
             { call: Call, response: Response ->
                 handleResponse(callback, force, call, response) // Github is on the highest priority
+                canAccessGitHub = true
             }
         )
         sendRequest(
@@ -133,7 +135,8 @@ object Updater {
             Log.i(TAG, "versionCode: ${json.versionCode}, version: ${json.version}, logSummary: ${json.logSummary}")
 
             val ignoreUpgradeVersionCode = PreferenceUtil(App.instance).ignoreUpgradeVersionCode
-            Log.d(TAG, "current state: force:$force, ignoreUpgradeVersionCode:$ignoreUpgradeVersionCode")
+            Log.d(TAG, "current state: force:$force, ignoreUpgradeVersionCode:$ignoreUpgradeVersionCode, CanAccessGitHub:$canAccessGitHub ")
+
             // stop if version code is lower ignore version code level and not force to execute
             if (
                 ignoreUpgradeVersionCode >= json.versionCode &&
@@ -147,6 +150,7 @@ object Updater {
                 it.putInt(VersionCode, json.versionCode)
                 it.putString(Version, json.version)
                 it.putString(LogSummary, json.logSummary)
+                it.putBoolean(CanAccessGitHub, canAccessGitHub)
             }
 
             when {
@@ -172,6 +176,7 @@ object Updater {
             }
         }
     }
+    private var canAccessGitHub: Boolean = false
 
     @Keep
     class VersionJson {
@@ -206,4 +211,6 @@ object Updater {
     const val VersionCode = "versionCode"
     const val LogSummary = "logSummary"
     const val Upgradable = "upgradable"
+
+    const val CanAccessGitHub = "canAccessGitHub"
 }
