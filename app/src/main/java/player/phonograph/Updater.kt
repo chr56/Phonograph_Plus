@@ -17,6 +17,8 @@ import player.phonograph.util.PreferenceUtil
 import java.io.IOException
 import java.util.concurrent.TimeUnit
 
+// TODO: better ways to ignore jsdelivr
+
 object Updater {
     /**
      * @param callback a callback that would be executed if there's newer version ()
@@ -32,6 +34,7 @@ object Updater {
             .build()
 
         blockLock = false // unlock
+        blockLockHolder = ""
 
         val requestGithub = Request.Builder()
             .url(requestUriGitHub).get().build()
@@ -57,7 +60,7 @@ object Updater {
                 logFails(call)
             },
             { call: Call, response: Response ->
-                if (!blockLock) handleResponse(callback, force, call, response) else logIgnored(call)
+                if (!blockLock || blockLockHolder.contains("jsdelivr.net")) handleResponse(callback, force, call, response) else logIgnored(call)
             }
         )
         sendRequest(
@@ -75,7 +78,7 @@ object Updater {
                 logFails(call)
             },
             { call: Call, response: Response ->
-                if (!blockLock) handleResponse(callback, force, call, response) else logIgnored(call)
+                if (!blockLock || blockLockHolder.contains("jsdelivr.net")) handleResponse(callback, force, call, response) else logIgnored(call)
             }
         )
     }
@@ -107,9 +110,11 @@ object Updater {
         Log.i(TAG, "Succeed to check new version! callUri = ${call.request().url()}")
 
     var blockLock: Boolean = false
+    var blockLockHolder: String = ""
 
     private fun handleResponse(callback: (Bundle) -> Unit, force: Boolean, call: Call, response: Response) {
         blockLock = true // block other successful call
+        blockLockHolder = call.request().url().host() ; Log.d(TAG, "blockLockHolder:$blockLockHolder")
 
         logSucceed(call)
 
