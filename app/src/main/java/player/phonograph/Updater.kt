@@ -51,8 +51,8 @@ object Updater {
                 canAccessGitHub = false
             },
             { call: Call, response: Response ->
-                handleResponse(callback, force, call, response) // Github is on the highest priority
                 canAccessGitHub = true
+                handleResponse(callback, force, call, response) // Github is on the highest priority
             }
         )
         sendRequest(

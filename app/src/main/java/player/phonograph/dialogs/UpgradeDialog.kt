@@ -94,6 +94,7 @@ class UpgradeDialog : DialogFragment() {
             args.putInt(Updater.VersionCode, versionInfo.getInt(Updater.VersionCode))
             args.putString(Updater.Version, versionInfo.getString(Updater.Version))
             args.putString(Updater.LogSummary, versionInfo.getString(Updater.LogSummary))
+            args.putBoolean(Updater.CanAccessGitHub,versionInfo.getBoolean(Updater.CanAccessGitHub))
             args.putStringArray(Updater.DownloadUris,versionInfo.getStringArray(Updater.DownloadUris))
             args.putStringArray(Updater.DownloadSources,versionInfo.getStringArray(Updater.DownloadSources))
             dialog.arguments = args
