@@ -151,6 +151,10 @@ object Updater {
                 it.putString(Version, json.version)
                 it.putString(LogSummary, json.logSummary)
                 it.putBoolean(CanAccessGitHub, canAccessGitHub)
+                if (json.downloadUris != null && json.downloadSources != null) {
+                    it.putStringArray(DownloadUris, json.downloadUris)
+                    it.putStringArray(DownloadSources, json.downloadSources)
+                }
             }
 
             when {
@@ -191,6 +195,14 @@ object Updater {
         @JvmField
         @SerializedName(LogSummary)
         var logSummary: String? = ""
+
+        @JvmField
+        @SerializedName(DownloadSources)
+        var downloadSources: Array<String>? = null
+
+        @JvmField
+        @SerializedName(DownloadUris)
+        var downloadUris: Array<String>? = null
     }
 
     private const val owner = "chr56"
@@ -210,6 +222,8 @@ object Updater {
     const val Version = "version"
     const val VersionCode = "versionCode"
     const val LogSummary = "logSummary"
+    const val DownloadUris = "downloadUris"
+    const val DownloadSources = "downloadSources"
     const val Upgradable = "upgradable"
 
     const val CanAccessGitHub = "canAccessGitHub"
