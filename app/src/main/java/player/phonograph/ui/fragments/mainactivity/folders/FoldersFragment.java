@@ -169,6 +169,8 @@ public class FoldersFragment extends AbsMainActivityFragment implements MainActi
         setUpBreadCrumbs();
         setUpRecyclerView();
         setUpAdapter();
+
+        getMainActivity().setFloatingActionButtonVisibility(View.GONE);
     }
 
     private void setUpAppbarColor() {

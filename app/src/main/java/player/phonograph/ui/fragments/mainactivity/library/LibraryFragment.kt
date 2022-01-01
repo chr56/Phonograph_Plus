@@ -26,10 +26,8 @@ import player.phonograph.adapter.MusicLibraryPagerAdapter
 import player.phonograph.databinding.FragmentLibraryBinding
 import player.phonograph.databinding.PopupWindowMainBinding
 import player.phonograph.dialogs.CreatePlaylistDialog
-import player.phonograph.helper.MusicPlayerRemote
 import player.phonograph.helper.SortOrder
 import player.phonograph.interfaces.CabHolder
-import player.phonograph.loader.SongLoader
 import player.phonograph.ui.activities.MainActivity
 import player.phonograph.ui.activities.SearchActivity
 import player.phonograph.ui.fragments.mainactivity.AbsMainActivityFragment
@@ -568,7 +566,14 @@ class LibraryFragment :
     }
 
     override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) { }
-    override fun onPageSelected(position: Int) { PreferenceUtil.getInstance(requireActivity()).lastPage = position }
+    override fun onPageSelected(position: Int) {
+        PreferenceUtil.getInstance(requireActivity()).lastPage = position
+        if (currentFragment is PlaylistsFragment) {
+            mainActivity.setFloatingActionButtonVisibility(View.VISIBLE)
+        } else {
+            mainActivity.setFloatingActionButtonVisibility(View.GONE)
+        }
+    }
     override fun onPageScrollStateChanged(state: Int) { }
 
     fun addOnAppBarOffsetChangedListener(onOffsetChangedListener: OnOffsetChangedListener) {
@@ -587,7 +592,7 @@ class LibraryFragment :
     }
 
     override fun handleFloatingActionButtonPress(): Boolean {
-        // Todo
+        CreatePlaylistDialog.createEmpty().show(childFragmentManager, "CREATE_PLAYLIST")
         return true
     }
 
