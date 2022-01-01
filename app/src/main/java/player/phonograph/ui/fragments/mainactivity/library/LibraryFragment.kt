@@ -10,6 +10,7 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import android.widget.PopupWindow
 import android.widget.RadioButton
@@ -259,13 +260,16 @@ class LibraryFragment :
         }
 
         val currentSortOrder = fragment.sortOrder
+        Log.d(this::class.simpleName, "READ:$currentSortOrder")
+
         when (currentSortOrder) {
-            SortOrder.SongSortOrder.SONG_Z_A, SortOrder.AlbumSortOrder.ALBUM_Z_A, SortOrder.ArtistSortOrder.ARTIST_Z_A, SortOrder.SongSortOrder.SONG_DURATION_REVERT,
+            SortOrder.SongSortOrder.SONG_Z_A, SortOrder.AlbumSortOrder.ALBUM_Z_A, SortOrder.ArtistSortOrder.ARTIST_Z_A,
+            SortOrder.SongSortOrder.SONG_DURATION_REVERT, SortOrder.AlbumSortOrder.ALBUM_ARTIST_REVERT,
             SortOrder.SongSortOrder.SONG_YEAR_REVERT, SortOrder.SongSortOrder.SONG_DATE_REVERT, SortOrder.SongSortOrder.SONG_DATE_MODIFIED_REVERT,
-            SortOrder.AlbumSortOrder.ALBUM_NUMBER_OF_SONGS_REVERT, SortOrder.ArtistSortOrder.ARTIST_NUMBER_OF_SONGS_REVERT, SortOrder.ArtistSortOrder.ARTIST_NUMBER_OF_ALBUMS_REVERT
-            ->
-                popup.sortOrderBasic.check(R.id.sort_order_z_a)
-            else -> popup.sortOrderBasic.check(R.id.sort_order_a_z)
+            SortOrder.ArtistSortOrder.ARTIST_NUMBER_OF_SONGS_REVERT, SortOrder.ArtistSortOrder.ARTIST_NUMBER_OF_ALBUMS_REVERT
+            -> popup.sortOrderBasic.check(R.id.sort_order_z_a)
+            else
+            -> popup.sortOrderBasic.check(R.id.sort_order_a_z)
         }
 
         popup.sortOrderContent.clearCheck()
@@ -295,12 +299,10 @@ class LibraryFragment :
                 popup.sortOrderAlbum.visibility = View.VISIBLE
                 popup.sortOrderArtist.visibility = View.VISIBLE
                 popup.sortOrderYear.visibility = View.VISIBLE
-//                popup.sortOrder_.visibility = View.VISIBLE
                 when (currentSortOrder) {
-                    SortOrder.AlbumSortOrder.ALBUM_Z_A, SortOrder.AlbumSortOrder.ALBUM_A_Z -> popup.sortOrderContent.check(R.id.sort_order_song)
+                    SortOrder.AlbumSortOrder.ALBUM_Z_A, SortOrder.AlbumSortOrder.ALBUM_A_Z -> popup.sortOrderContent.check(R.id.sort_order_album)
                     SortOrder.AlbumSortOrder.ALBUM_YEAR, SortOrder.AlbumSortOrder.ALBUM_YEAR_REVERT -> popup.sortOrderContent.check(R.id.sort_order_year)
-                    SortOrder.AlbumSortOrder.ALBUM_ARTIST -> popup.sortOrderContent.check(R.id.sort_order_artist)
-                    SortOrder.AlbumSortOrder.ALBUM_NUMBER_OF_SONGS, SortOrder.AlbumSortOrder.ALBUM_NUMBER_OF_SONGS_REVERT -> { /* todo */ }
+                    SortOrder.AlbumSortOrder.ALBUM_ARTIST, SortOrder.AlbumSortOrder.ALBUM_ARTIST_REVERT -> popup.sortOrderContent.check(R.id.sort_order_artist)
                     else -> { popup.sortOrderContent.clearCheck() }
                 }
             }
@@ -415,22 +417,24 @@ class LibraryFragment :
                 //
                 is AlbumsFragment -> {
                     when (contentSelected) {
-                        R.id.sort_order_song ->
+                        R.id.sort_order_album ->
                             when (basicSelected) {
-                                R.id.sort_order_a_z -> SortOrder.AlbumSortOrder.ALBUM_Z_A
-                                R.id.sort_order_z_a -> SortOrder.AlbumSortOrder.ALBUM_A_Z
+                                R.id.sort_order_a_z -> SortOrder.AlbumSortOrder.ALBUM_A_Z
+                                R.id.sort_order_z_a -> SortOrder.AlbumSortOrder.ALBUM_Z_A
                                 else -> ""
                             }
-
                         R.id.sort_order_year ->
                             when (basicSelected) {
                                 R.id.sort_order_a_z -> SortOrder.AlbumSortOrder.ALBUM_YEAR
                                 R.id.sort_order_z_a -> SortOrder.AlbumSortOrder.ALBUM_YEAR_REVERT
                                 else -> ""
                             }
-                        R.id.sort_order_artist -> SortOrder.AlbumSortOrder.ALBUM_ARTIST
-                        // R.id. ->
-                        // SortOrder.AlbumSortOrder.ALBUM_NUMBER_OF_SONGS, SortOrder.AlbumSortOrder.ALBUM_NUMBER_OF_SONGS_REVERT
+                        R.id.sort_order_artist ->
+                            when (basicSelected) {
+                                R.id.sort_order_a_z -> SortOrder.AlbumSortOrder.ALBUM_ARTIST
+                                R.id.sort_order_z_a -> SortOrder.AlbumSortOrder.ALBUM_ARTIST_REVERT
+                                else -> ""
+                            }
                         else -> ""
                     }
                 }
@@ -452,6 +456,7 @@ class LibraryFragment :
             } // end when(fragment)
 
         if (sortOrderSelected.isNotBlank()) {
+            Log.d(this::class.simpleName, "WRITE:$sortOrderSelected")
             if (fragment.sortOrder != sortOrderSelected)
                 fragment.setAndSaveSortOrder(sortOrderSelected)
         }
