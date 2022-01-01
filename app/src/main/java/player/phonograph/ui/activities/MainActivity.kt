@@ -3,6 +3,7 @@ package player.phonograph.ui.activities
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.content.res.ColorStateList
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -415,7 +416,9 @@ class MainActivity : AbsSlidingMusicPanelActivity() {
     }
 
     private fun setUpFloatingActionButton() {
+        floatingActionButton.backgroundTintList = ColorStateList.valueOf(ThemeColor.primaryColor(this))
         floatingActionButton.rippleColor = ThemeColor.accentColor(this)
+
         floatingActionButton.setOnClickListener { currentFragment.handleFloatingActionButtonPress() }
     }
     fun setFloatingActionButtonVisibility(visibility: Int) {
