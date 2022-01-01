@@ -160,16 +160,6 @@ class LibraryFragment :
         super.onCreateOptionsMenu(menu, inflater)
         inflater.inflate(R.menu.menu_main, menu)
 
-//        val currentFragment = currentFragment
-//        if (currentFragment is AbsLibraryPagerRecyclerViewCustomGridSizeFragment<*, *> && currentFragment.isAdded()) {
-//            val gridSizeItem = menu.findItem(R.id.action_grid_size)
-//            if (isLandscape(resources)) gridSizeItem.setTitle(R.string.action_grid_size_land)
-//            setUpGridSizeMenu(currentFragment, gridSizeItem.subMenu)
-//        } else {
-//            menu.removeItem(R.id.action_grid_size)
-//            menu.removeItem(R.id.action_main_popup_window_menu)
-//        }
-//        val currentFragment = currentFragment
         currentFragment?.let {
             if (it!is AbsLibraryPagerRecyclerViewCustomGridSizeFragment<*, *>)
                 menu.removeItem(R.id.action_main_popup_window_menu)
@@ -203,47 +193,29 @@ class LibraryFragment :
             }
         }
     }
-//
-//    private fun setUpGridSizeMenu(fragment: AbsLibraryPagerRecyclerViewCustomGridSizeFragment<*, *>, gridSizeMenu: SubMenu) {
-//        when (fragment.gridSize) {
-//            1 -> gridSizeMenu.findItem(R.id.action_grid_size_1).isChecked = true
-//            2 -> gridSizeMenu.findItem(R.id.action_grid_size_2).isChecked = true
-//            3 -> gridSizeMenu.findItem(R.id.action_grid_size_3).isChecked = true
-//            4 -> gridSizeMenu.findItem(R.id.action_grid_size_4).isChecked = true
-//            5 -> gridSizeMenu.findItem(R.id.action_grid_size_5).isChecked = true
-//            6 -> gridSizeMenu.findItem(R.id.action_grid_size_6).isChecked = true
-//            7 -> gridSizeMenu.findItem(R.id.action_grid_size_7).isChecked = true
-//            8 -> gridSizeMenu.findItem(R.id.action_grid_size_8).isChecked = true
-//        }
-//        val maxGridSize = fragment.maxGridSize
-//        if (maxGridSize < 8) gridSizeMenu.findItem(R.id.action_grid_size_8).isVisible = false
-//        if (maxGridSize < 7) gridSizeMenu.findItem(R.id.action_grid_size_7).isVisible = false
-//        if (maxGridSize < 6) gridSizeMenu.findItem(R.id.action_grid_size_6).isVisible = false
-//        if (maxGridSize < 5) gridSizeMenu.findItem(R.id.action_grid_size_5).isVisible = false
-//        if (maxGridSize < 4) gridSizeMenu.findItem(R.id.action_grid_size_4).isVisible = false
-//        if (maxGridSize < 3) gridSizeMenu.findItem(R.id.action_grid_size_3).isVisible = false
-//    }
 
-//    private fun handleGridSizeMenuItem(fragment: AbsLibraryPagerRecyclerViewCustomGridSizeFragment<*, *>, item: MenuItem): Boolean {
-//        var gridSize = 0
-//        when (item.itemId) {
-//            R.id.action_grid_size_1 -> gridSize = 1
-//            R.id.action_grid_size_2 -> gridSize = 2
-//            R.id.action_grid_size_3 -> gridSize = 3
-//            R.id.action_grid_size_4 -> gridSize = 4
-//            R.id.action_grid_size_5 -> gridSize = 5
-//            R.id.action_grid_size_6 -> gridSize = 6
-//            R.id.action_grid_size_7 -> gridSize = 7
-//            R.id.action_grid_size_8 -> gridSize = 8
-//        }
-//        if (gridSize > 0) {
-//            item.isChecked = true
-//            fragment.setAndSaveGridSize(gridSize)
-// //            binding.toolbar.menu.findItem(R.id.action_colored_footers).isEnabled = fragment.canUsePalette() //todo
-//            return true
-//        }
-//        return false
-//    }
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+
+        when (item.itemId) {
+            R.id.action_search -> {
+                startActivity(Intent(mainActivity, SearchActivity::class.java))
+                return true
+            }
+            R.id.action_main_popup_window_menu -> {
+                if (!isPopupMenuInited) initPopup()
+
+                val yOffset = (mainActivity.supportActionBar?.height ?: binding.toolbar.height) +
+                    (mainActivity.findViewById<player.phonograph.views.StatusBarView>(R.id.status_bar)?.height ?: 8)
+
+                popupMenu.showAtLocation(binding.toolbar.rootView, Gravity.TOP or Gravity.END, 0, yOffset)
+
+                val fragment = currentFragment ?: return true
+                configPopup(popupMenu, popup, fragment)
+                return true
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
 
     private lateinit var popupMenu: PopupWindow
     private var _bindingPopup: PopupWindowMainBinding? = null
@@ -260,43 +232,19 @@ class LibraryFragment :
         isPopupMenuInited = true
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        val currentFragment = currentFragment
-//        if (currentFragment is AbsLibraryPagerRecyclerViewCustomGridSizeFragment<*, *>) {
-//            if (handleGridSizeMenuItem(currentFragment, item)) { return true }
-//        }
-        when (item.itemId) {
-            R.id.action_search -> {
-                startActivity(Intent(mainActivity, SearchActivity::class.java))
-                return true
+    private fun configPopup(popupWindow: PopupWindow, popup: PopupWindowMainBinding, fragment: Fragment) {
+        if (fragment is AbsLibraryPagerRecyclerViewCustomGridSizeFragment<*, *> && fragment.isAdded) {
+            initSortOrder(popupMenu, popup, fragment)
+            initGridSize(popupMenu, popup, fragment)
+            initColorFooter(popupMenu, popup, fragment)
+            popupMenu.setOnDismissListener {
+                handlePopupMenuDismiss(popup, popupMenu, fragment)
             }
-            R.id.action_main_popup_window_menu -> {
-                if (!isPopupMenuInited) initPopup()
-
-                val yOffset = (mainActivity.supportActionBar?.height ?: binding.toolbar.height) +
-                    (mainActivity.findViewById<player.phonograph.views.StatusBarView>(R.id.status_bar)?.height ?: 8)
-
-                popupMenu.showAtLocation(binding.toolbar.rootView, Gravity.TOP or Gravity.END, 0, yOffset)
-
-                val fragment = currentFragment ?: return true
-
-                if (fragment is AbsLibraryPagerRecyclerViewCustomGridSizeFragment<*, *> && fragment.isAdded) {
-                    initSortOrder(popupMenu, popup, fragment)
-                    initGridSize(popupMenu, popup, fragment)
-                    initColorFooter(popupMenu, popup, fragment)
-                    popupMenu.setOnDismissListener {
-                        handlePopupMenuDismiss(popup, popupMenu, fragment)
-                    }
-                } else {
-                    disableSortOrder(popup)
-                    disableGridSize(popup)
-                    disableColorFooter(popup)
-                }
-
-                return true
-            }
+        } else {
+            disableSortOrder(popup)
+            disableGridSize(popup)
+            disableColorFooter(popup)
         }
-        return super.onOptionsItemSelected(item)
     }
 
     private fun initSortOrder(popupWindow: PopupWindow, popup: PopupWindowMainBinding, fragment: AbsLibraryPagerRecyclerViewCustomGridSizeFragment<*, *>) {
@@ -371,6 +319,35 @@ class LibraryFragment :
         popup.sortOrderContent.visibility = View.GONE
         popup.sortOrderContent.clearCheck()
         popup.textSortOrderContent.visibility = View.GONE
+    }
+
+    private fun initGridSize(popupWindow: PopupWindow, popup: PopupWindowMainBinding, fragment: AbsLibraryPagerRecyclerViewCustomGridSizeFragment<*, *>) {
+        popup.textGridSize.visibility = View.VISIBLE
+        popup.gridSize.visibility = View.VISIBLE
+        if (isLandscape(resources)) popup.textGridSize.text = resources.getText(R.string.action_grid_size_land)
+
+        val current = fragment.gridSize
+        val max = fragment.maxGridSize
+        for (i in 0 until max) {
+            popup.gridSize.getChildAt(i).visibility = View.VISIBLE
+        }
+
+        popup.gridSize.clearCheck()
+        (popup.gridSize.getChildAt(current - 1) as RadioButton).isChecked = true
+    }
+    private fun disableGridSize(popup: PopupWindowMainBinding) {
+        popup.textGridSize.visibility = View.GONE
+        popup.gridSize.clearCheck()
+        popup.gridSize.visibility = View.GONE
+    }
+
+    private fun initColorFooter(popupWindow: PopupWindow, popup: PopupWindowMainBinding, fragment: AbsLibraryPagerRecyclerViewCustomGridSizeFragment<*, *>) {
+        popup.actionColoredFooters.visibility = View.VISIBLE
+        popup.actionColoredFooters.isChecked = fragment.usePalette()
+        popup.actionColoredFooters.isEnabled = fragment.canUsePalette()
+    }
+    private fun disableColorFooter(popup: PopupWindowMainBinding) {
+        popup.actionColoredFooters.visibility = View.GONE
     }
 
     private fun handlePopupMenuDismiss(popup: PopupWindowMainBinding, popupWindow: PopupWindow, fragment: AbsLibraryPagerRecyclerViewCustomGridSizeFragment<*, *>) {
@@ -473,35 +450,6 @@ class LibraryFragment :
         }
         if (gridSize > 0)
             fragment.setAndSaveGridSize(gridSize)
-    }
-
-    private fun initGridSize(popupWindow: PopupWindow, popup: PopupWindowMainBinding, fragment: AbsLibraryPagerRecyclerViewCustomGridSizeFragment<*, *>) {
-        popup.textGridSize.visibility = View.VISIBLE
-        popup.gridSize.visibility = View.VISIBLE
-        if (isLandscape(resources)) popup.textGridSize.text = resources.getText(R.string.action_grid_size_land)
-
-        val current = fragment.gridSize
-        val max = fragment.maxGridSize
-        for (i in 0 until max) {
-            popup.gridSize.getChildAt(i).visibility = View.VISIBLE
-        }
-
-        popup.gridSize.clearCheck()
-        (popup.gridSize.getChildAt(current - 1) as RadioButton).isChecked = true
-    }
-    private fun disableGridSize(popup: PopupWindowMainBinding) {
-        popup.textGridSize.visibility = View.GONE
-        popup.gridSize.clearCheck()
-        popup.gridSize.visibility = View.GONE
-    }
-
-    private fun initColorFooter(popupWindow: PopupWindow, popup: PopupWindowMainBinding, fragment: AbsLibraryPagerRecyclerViewCustomGridSizeFragment<*, *>) {
-        popup.actionColoredFooters.visibility = View.VISIBLE
-        popup.actionColoredFooters.isChecked = fragment.usePalette()
-        popup.actionColoredFooters.isEnabled = fragment.canUsePalette()
-    }
-    private fun disableColorFooter(popup: PopupWindowMainBinding) {
-        popup.actionColoredFooters.visibility = View.GONE
     }
 
     override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) { }
