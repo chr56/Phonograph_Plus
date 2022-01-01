@@ -8,6 +8,7 @@ package player.phonograph.ui.fragments.mainactivity.library
 
 import android.content.Intent
 import android.content.SharedPreferences
+import android.content.res.ColorStateList
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.util.Log
@@ -232,6 +233,35 @@ class LibraryFragment :
         popup.textSortOrderBasic.setTextColor(accentColor)
         popup.textSortOrderContent.setTextColor(accentColor)
 
+        popup.actionColoredFooters.buttonTintList = ColorStateList(
+            arrayOf(
+                intArrayOf(android.R.attr.state_enabled), intArrayOf()
+            ),
+            intArrayOf(
+                accentColor, ThemeColor.textColorSecondary(mainActivity)
+            )
+        )
+
+        val csl = ColorStateList(
+            arrayOf(
+                intArrayOf(android.R.attr.state_checked),
+                intArrayOf()
+            ),
+            intArrayOf(
+                accentColor, ThemeColor.textColorSecondary(mainActivity)
+            )
+        )
+
+        for (i in 0 until popup.gridSize.childCount) {
+            (popup.gridSize.getChildAt(i) as RadioButton).buttonTintList = csl
+        }
+        for (i in 0 until popup.sortOrderContent.childCount) {
+            (popup.sortOrderContent.getChildAt(i) as RadioButton).buttonTintList = csl
+        }
+        for (i in 0 until popup.sortOrderBasic.childCount) {
+            (popup.sortOrderBasic.getChildAt(i) as RadioButton).buttonTintList = csl
+        }
+
         popupMenu = PopupWindow(popup.root, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, true)
         popupMenu.setBackgroundDrawable(ColorDrawable(mainActivity.resources.getColor(R.color.md_white_1000)))
         popupMenu.animationStyle = android.R.style.Animation_Dialog
@@ -260,7 +290,7 @@ class LibraryFragment :
         popup.sortOrderContent.visibility = View.VISIBLE
         popup.textSortOrderContent.visibility = View.VISIBLE
 
-        for (i in 0 until 7) {
+        for (i in 0 until popup.sortOrderContent.childCount) {
             val view: View? = popup.sortOrderContent.getChildAt(i)
             view?.visibility = View.GONE
         }
