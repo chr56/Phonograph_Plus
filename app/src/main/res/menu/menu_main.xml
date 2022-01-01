@@ -14,10 +14,6 @@
         android:title="@string/action_settings"
         android:icon="@drawable/ic_settings_white_24dp"
         app:showAsAction="ifRoom"/>
-    <!--    <item-->
-    <!--        android:id="@+id/action_shuffle_all"-->
-    <!--        android:title="@string/action_shuffle_all"-->
-    <!--        app:showAsAction="never" />-->
 
     <item
         android:id="@+id/action_grid_size"
@@ -54,12 +50,6 @@
             </group>
         </menu>
     </item>
-
-<!--    <item-->
-<!--        android:id="@+id/action_sort_order"-->
-<!--        android:title="@string/action_sort_order">-->
-<!--        <menu></menu>-->
-<!--    </item>-->
 
     <item
         android:id="@+id/action_colored_footers"
