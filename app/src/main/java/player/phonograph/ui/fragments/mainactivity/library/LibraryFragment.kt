@@ -126,7 +126,7 @@ class LibraryFragment :
     }
 
     private val currentFragment: Fragment? get() = pagerAdapter.getFragment(binding.pager.currentItem)
-    private val isPlaylistPage: Boolean get() = currentFragment is PlaylistsFragment
+//    private val isPlaylistPage: Boolean get() = currentFragment is PlaylistsFragment
 
     private fun setupTheme(activity: MainActivity) {
         activity.setStatusbarColorAuto()
@@ -158,10 +158,10 @@ class LibraryFragment :
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
         inflater.inflate(R.menu.menu_main, menu)
-        if (isPlaylistPage) {
-//            menu.add(0, R.id.action_new_playlist, 0, R.string.new_playlist_title)
-            menu.removeItem(R.id.action_main_popup_window_menu)
-        }
+//        if (isPlaylistPage) {
+////            menu.add(0, R.id.action_new_playlist, 0, R.string.new_playlist_title)
+//            menu.removeItem(R.id.action_main_popup_window_menu)
+//        }
 
         val currentFragment = currentFragment
 
@@ -180,6 +180,7 @@ class LibraryFragment :
             menu.removeItem(R.id.action_grid_size)
             menu.removeItem(R.id.action_colored_footers)
             menu.removeItem(R.id.action_sort_order)
+            menu.removeItem(R.id.action_main_popup_window_menu)
         }
 
         MenuTinter.setMenuColor(
