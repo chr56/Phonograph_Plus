@@ -163,17 +163,10 @@ class LibraryFragment :
 
         if (currentFragment is AbsLibraryPagerRecyclerViewCustomGridSizeFragment<*, *> && currentFragment.isAdded()) {
             val gridSizeItem = menu.findItem(R.id.action_grid_size)
-            if (isLandscape(resources)) {
-                gridSizeItem.setTitle(R.string.action_grid_size_land)
-            }
+            if (isLandscape(resources)) gridSizeItem.setTitle(R.string.action_grid_size_land)
             setUpGridSizeMenu(currentFragment, gridSizeItem.subMenu)
-            menu.findItem(R.id.action_colored_footers).isChecked =
-                currentFragment.usePalette()
-            menu.findItem(R.id.action_colored_footers).isEnabled =
-                currentFragment.canUsePalette()
         } else {
             menu.removeItem(R.id.action_grid_size)
-            menu.removeItem(R.id.action_colored_footers)
             menu.removeItem(R.id.action_main_popup_window_menu)
         }
 
@@ -241,7 +234,7 @@ class LibraryFragment :
         if (gridSize > 0) {
             item.isChecked = true
             fragment.setAndSaveGridSize(gridSize)
-            binding.toolbar.menu.findItem(R.id.action_colored_footers).isEnabled = fragment.canUsePalette()
+//            binding.toolbar.menu.findItem(R.id.action_colored_footers).isEnabled = fragment.canUsePalette() //todo
             return true
         }
         return false
@@ -265,11 +258,6 @@ class LibraryFragment :
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         val currentFragment = currentFragment
         if (currentFragment is AbsLibraryPagerRecyclerViewCustomGridSizeFragment<*, *>) {
-            if (item.itemId == R.id.action_colored_footers) {
-                item.isChecked = !item.isChecked
-                currentFragment.setAndSaveUsePalette(item.isChecked)
-                return true
-            }
             if (handleGridSizeMenuItem(currentFragment, item)) { return true }
         }
         when (item.itemId) {
