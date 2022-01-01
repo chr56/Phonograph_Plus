@@ -59,6 +59,7 @@ class LibraryFragment :
         PreferenceUtil.getInstance(requireActivity()).unregisterOnSharedPreferenceChangedListener(this)
         super.onDestroyView()
         binding.pager.removeOnPageChangeListener(this)
+        isPopupMenuInited = false
         _viewBinding = null
     }
 
@@ -71,8 +72,6 @@ class LibraryFragment :
         setupTheme(requireActivity() as MainActivity)
         setupToolbar()
         setUpViewPager()
-
-        setupPopupMenu()
     }
 
     private fun setupToolbar() {
@@ -334,12 +333,16 @@ class LibraryFragment :
 
     private lateinit var popupMenu: PopupWindow
     private lateinit var popupView: View
-    private fun setupPopupMenu() {
+    private var isPopupMenuInited: Boolean = false
+
+    private fun initPopup() {
         popupView = LayoutInflater.from(mainActivity).inflate(R.layout.popup_window_main, null, false)
-//        val width = mainActivity.window.decorView.width / 2
-//        val height = mainActivity.window.decorView.height / 3 * 2
-//        popupMenu = PopupWindow(popupView, width, height, true)
-//        popupMenu.setBackgroundDrawable(ColorDrawable(mainActivity.resources.getColor(R.color.md_white_1000)))
+
+        val width = mainActivity.window.decorView.width / 2
+        popupMenu = PopupWindow(popupView, width, AppBarLayout.LayoutParams.WRAP_CONTENT, true)
+        popupMenu.setBackgroundDrawable(ColorDrawable(mainActivity.resources.getColor(R.color.md_white_1000)))
+
+        isPopupMenuInited = true
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -367,13 +370,10 @@ class LibraryFragment :
                 return true
             }
             R.id.action_main_popup_window_menu -> {
+                if (!isPopupMenuInited) initPopup()
+
                 val yOffset = (mainActivity.supportActionBar?.height ?: binding.toolbar.height) +
                     (mainActivity.findViewById<player.phonograph.views.StatusBarView>(R.id.status_bar)?.height ?: 8)
-
-                val width = mainActivity.window.decorView.width / 2
-//                val height = mainActivity.window.decorView.height / 3 * 2
-                popupMenu = PopupWindow(popupView, width, AppBarLayout.LayoutParams.WRAP_CONTENT, true)
-                popupMenu.setBackgroundDrawable(ColorDrawable(mainActivity.resources.getColor(R.color.md_white_1000)))
 
                 popupMenu.showAtLocation(binding.toolbar.rootView, Gravity.TOP or Gravity.END, 0, yOffset)
             }
