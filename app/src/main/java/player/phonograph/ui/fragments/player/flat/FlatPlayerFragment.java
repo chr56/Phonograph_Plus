@@ -24,6 +24,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -40,6 +41,7 @@ import player.phonograph.helper.MusicPlayerRemote;
 import player.phonograph.helper.menu.SongMenuHelper;
 import player.phonograph.model.Song;
 import player.phonograph.model.lyrics.AbsLyrics;
+import player.phonograph.ui.activities.MainActivity;
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity;
 import player.phonograph.ui.fragments.player.AbsPlayerFragment;
 import player.phonograph.ui.fragments.player.PlayerAlbumCoverFragment;
@@ -375,6 +377,8 @@ public class FlatPlayerFragment extends AbsPlayerFragment implements PlayerAlbum
     @Override
     public void onShow() {
         playbackControlsFragment.show();
+        FragmentActivity activity = getActivity();
+        if (activity instanceof MainActivity) ((MainActivity) activity).setFloatingActionButtonVisibility(View.GONE);
     }
 
     @Override

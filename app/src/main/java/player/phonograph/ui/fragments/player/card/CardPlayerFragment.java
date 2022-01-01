@@ -27,6 +27,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
+import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -34,6 +35,14 @@ import com.h6ah4i.android.widget.advrecyclerview.animator.GeneralItemAnimator;
 import com.h6ah4i.android.widget.advrecyclerview.animator.RefactoredDefaultItemAnimator;
 import com.h6ah4i.android.widget.advrecyclerview.draggable.RecyclerViewDragDropManager;
 import com.h6ah4i.android.widget.advrecyclerview.utils.WrapperAdapterUtils;
+import com.sothree.slidinguppanel.SlidingUpPanelLayout;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
+import chr_56.MDthemer.core.ThemeColor;
+import chr_56.MDthemer.util.ColorUtil;
+import chr_56.MDthemer.util.ToolbarColorUtil;
 import player.phonograph.R;
 import player.phonograph.adapter.base.MediaEntryViewHolder;
 import player.phonograph.adapter.song.PlayingQueueAdapter;
@@ -43,6 +52,7 @@ import player.phonograph.helper.MusicPlayerRemote;
 import player.phonograph.helper.menu.SongMenuHelper;
 import player.phonograph.model.Song;
 import player.phonograph.model.lyrics.AbsLyrics;
+import player.phonograph.ui.activities.MainActivity;
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity;
 import player.phonograph.ui.fragments.player.AbsPlayerFragment;
 import player.phonograph.ui.fragments.player.PlayerAlbumCoverFragment;
@@ -52,16 +62,6 @@ import player.phonograph.util.MusicUtil;
 import player.phonograph.util.Util;
 import player.phonograph.util.ViewUtil;
 import player.phonograph.views.WidthFitSquareLayout;
-import com.sothree.slidinguppanel.SlidingUpPanelLayout;
-
-import java.util.Objects;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
-import chr_56.MDthemer.core.ThemeColor;
-import chr_56.MDthemer.util.ColorUtil;
-import chr_56.MDthemer.util.ToolbarColorUtil;
 
 public class CardPlayerFragment extends AbsPlayerFragment implements PlayerAlbumCoverFragment.Callbacks, SlidingUpPanelLayout.PanelSlideListener {
 
@@ -381,6 +381,8 @@ public class CardPlayerFragment extends AbsPlayerFragment implements PlayerAlbum
     @Override
     public void onShow() {
         playbackControlsFragment.show();
+        FragmentActivity activity = getActivity();
+        if (activity instanceof MainActivity) ((MainActivity) activity).setFloatingActionButtonVisibility(View.GONE);
     }
 
     @Override
@@ -423,7 +425,8 @@ public class CardPlayerFragment extends AbsPlayerFragment implements PlayerAlbum
             float density = getResources().getDisplayMetrics().density;
 
             float cardElevation = (6 * slide + 2) * density;
-            if (!isValidElevation(cardElevation)) return; // we have received some crash reports in setCardElevation()
+            if (!isValidElevation(cardElevation))
+                return; // we have received some crash reports in setCardElevation()
             playingQueueCard.setCardElevation(cardElevation);
 
             float buttonElevation = (2 * Math.max(0, (1 - (slide * 16))) + 2) * density;
