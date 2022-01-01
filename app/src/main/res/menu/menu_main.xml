@@ -7,7 +7,7 @@
     <item
         android:id="@+id/action_main_popup_window_menu"
         android:title="@string/action_settings"
-        android:icon="@drawable/ic_settings_white_24dp"
+        android:icon="@drawable/ic_sort_variant_white_24dp"
         app:showAsAction="ifRoom"/>
 
     <item
