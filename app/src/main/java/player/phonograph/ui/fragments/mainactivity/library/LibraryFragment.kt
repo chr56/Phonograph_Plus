@@ -228,6 +228,7 @@ class LibraryFragment :
         val width = mainActivity.window.decorView.width / 2
         popupMenu = PopupWindow(popup.root, width, ViewGroup.LayoutParams.WRAP_CONTENT, true)
         popupMenu.setBackgroundDrawable(ColorDrawable(mainActivity.resources.getColor(R.color.md_white_1000)))
+        popupMenu.animationStyle = android.R.style.Animation_Dialog
 
         isPopupMenuInited = true
     }
