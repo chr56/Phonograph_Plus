@@ -266,7 +266,6 @@ class LibraryFragment :
             SortOrder.SongSortOrder.SONG_Z_A, SortOrder.AlbumSortOrder.ALBUM_Z_A, SortOrder.ArtistSortOrder.ARTIST_Z_A,
             SortOrder.SongSortOrder.SONG_DURATION_REVERT, SortOrder.AlbumSortOrder.ALBUM_ARTIST_REVERT,
             SortOrder.SongSortOrder.SONG_YEAR_REVERT, SortOrder.SongSortOrder.SONG_DATE_REVERT, SortOrder.SongSortOrder.SONG_DATE_MODIFIED_REVERT,
-            SortOrder.ArtistSortOrder.ARTIST_NUMBER_OF_SONGS_REVERT, SortOrder.ArtistSortOrder.ARTIST_NUMBER_OF_ALBUMS_REVERT
             -> popup.sortOrderBasic.check(R.id.sort_order_z_a)
             else
             -> popup.sortOrderBasic.check(R.id.sort_order_a_z)
@@ -308,12 +307,8 @@ class LibraryFragment :
             }
             is ArtistsFragment -> {
                 popup.sortOrderArtist.visibility = View.VISIBLE
-//                popup.sortOrder_.visibility = View.GONE
-//                popup.sortOrder_.visibility = View.GONE
                 when (currentSortOrder) {
                     SortOrder.ArtistSortOrder.ARTIST_A_Z, SortOrder.ArtistSortOrder.ARTIST_Z_A -> popup.sortOrderContent.check(R.id.sort_order_artist)
-                    SortOrder.ArtistSortOrder.ARTIST_NUMBER_OF_ALBUMS, SortOrder.ArtistSortOrder.ARTIST_NUMBER_OF_ALBUMS_REVERT -> { /* todo */ }
-                    SortOrder.ArtistSortOrder.ARTIST_NUMBER_OF_SONGS, SortOrder.ArtistSortOrder.ARTIST_NUMBER_OF_SONGS_REVERT -> { /* todo */ }
                     else -> { popup.sortOrderContent.clearCheck() }
                 }
             }
@@ -447,8 +442,6 @@ class LibraryFragment :
                                 R.id.sort_order_z_a -> SortOrder.ArtistSortOrder.ARTIST_Z_A
                                 else -> ""
                             }
-//                        R.id. -> SortOrder.ArtistSortOrder.ARTIST_NUMBER_OF_ALBUMS, SortOrder.ArtistSortOrder.ARTIST_NUMBER_OF_ALBUMS_REVERT
-//                        R.id. -> SortOrder.ArtistSortOrder.ARTIST_NUMBER_OF_SONGS, SortOrder.ArtistSortOrder.ARTIST_NUMBER_OF_SONGS_REVERT
                         else -> ""
                     }
                 }

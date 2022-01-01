@@ -28,24 +28,18 @@ object SortOrder {
 
             /* Artist sort order Z-A */
             const val ARTIST_Z_A = "$ARTIST_A_Z DESC"
-
-            /* Artist sort order number of songs */
-            const val ARTIST_NUMBER_OF_SONGS = (
-                MediaStore.Audio.Artists.NUMBER_OF_TRACKS +
-                    " DESC"
-                )
-
-            /* Artist sort order number of songs (less to more)*/
-            const val ARTIST_NUMBER_OF_SONGS_REVERT = MediaStore.Audio.Artists.NUMBER_OF_TRACKS
-
-            /* Artist sort order number of albums */
-            const val ARTIST_NUMBER_OF_ALBUMS = (
-                MediaStore.Audio.Artists.NUMBER_OF_ALBUMS +
-                    " DESC"
-                )
-
-            /* Artist sort order number of albums (less to more)*/
-            const val ARTIST_NUMBER_OF_ALBUMS_REVERT = MediaStore.Audio.Artists.NUMBER_OF_ALBUMS
+// Crashes!!
+//            /* Artist sort order number of songs */
+//            const val ARTIST_NUMBER_OF_SONGS = MediaStore.Audio.Artists.NUMBER_OF_TRACKS + " DESC"
+//
+//            /* Artist sort order number of songs (less to more)*/
+//            const val ARTIST_NUMBER_OF_SONGS_REVERT = MediaStore.Audio.Artists.NUMBER_OF_TRACKS
+//
+//            /* Artist sort order number of albums */
+//            const val ARTIST_NUMBER_OF_ALBUMS = MediaStore.Audio.Artists.NUMBER_OF_ALBUMS + " DESC"
+//
+//            /* Artist sort order number of albums (less to more)*/
+//            const val ARTIST_NUMBER_OF_ALBUMS_REVERT = MediaStore.Audio.Artists.NUMBER_OF_ALBUMS
         }
     }
 
