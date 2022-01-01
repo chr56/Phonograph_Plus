@@ -14,7 +14,6 @@ import android.view.*
 import android.widget.PopupWindow
 import android.widget.RadioButton
 import androidx.appcompat.content.res.AppCompatResources
-import androidx.core.view.get
 import androidx.fragment.app.Fragment
 import androidx.viewpager.widget.ViewPager
 import chr_56.MDthemer.color.MaterialColor
@@ -161,15 +160,19 @@ class LibraryFragment :
         super.onCreateOptionsMenu(menu, inflater)
         inflater.inflate(R.menu.menu_main, menu)
 
-        val currentFragment = currentFragment
-
-        if (currentFragment is AbsLibraryPagerRecyclerViewCustomGridSizeFragment<*, *> && currentFragment.isAdded()) {
-            val gridSizeItem = menu.findItem(R.id.action_grid_size)
-            if (isLandscape(resources)) gridSizeItem.setTitle(R.string.action_grid_size_land)
-            setUpGridSizeMenu(currentFragment, gridSizeItem.subMenu)
-        } else {
-            menu.removeItem(R.id.action_grid_size)
-            menu.removeItem(R.id.action_main_popup_window_menu)
+//        val currentFragment = currentFragment
+//        if (currentFragment is AbsLibraryPagerRecyclerViewCustomGridSizeFragment<*, *> && currentFragment.isAdded()) {
+//            val gridSizeItem = menu.findItem(R.id.action_grid_size)
+//            if (isLandscape(resources)) gridSizeItem.setTitle(R.string.action_grid_size_land)
+//            setUpGridSizeMenu(currentFragment, gridSizeItem.subMenu)
+//        } else {
+//            menu.removeItem(R.id.action_grid_size)
+//            menu.removeItem(R.id.action_main_popup_window_menu)
+//        }
+//        val currentFragment = currentFragment
+        currentFragment?.let {
+            if (it!is AbsLibraryPagerRecyclerViewCustomGridSizeFragment<*, *>)
+                menu.removeItem(R.id.action_main_popup_window_menu)
         }
 
         MenuTinter.setMenuColor(
@@ -200,47 +203,47 @@ class LibraryFragment :
             }
         }
     }
+//
+//    private fun setUpGridSizeMenu(fragment: AbsLibraryPagerRecyclerViewCustomGridSizeFragment<*, *>, gridSizeMenu: SubMenu) {
+//        when (fragment.gridSize) {
+//            1 -> gridSizeMenu.findItem(R.id.action_grid_size_1).isChecked = true
+//            2 -> gridSizeMenu.findItem(R.id.action_grid_size_2).isChecked = true
+//            3 -> gridSizeMenu.findItem(R.id.action_grid_size_3).isChecked = true
+//            4 -> gridSizeMenu.findItem(R.id.action_grid_size_4).isChecked = true
+//            5 -> gridSizeMenu.findItem(R.id.action_grid_size_5).isChecked = true
+//            6 -> gridSizeMenu.findItem(R.id.action_grid_size_6).isChecked = true
+//            7 -> gridSizeMenu.findItem(R.id.action_grid_size_7).isChecked = true
+//            8 -> gridSizeMenu.findItem(R.id.action_grid_size_8).isChecked = true
+//        }
+//        val maxGridSize = fragment.maxGridSize
+//        if (maxGridSize < 8) gridSizeMenu.findItem(R.id.action_grid_size_8).isVisible = false
+//        if (maxGridSize < 7) gridSizeMenu.findItem(R.id.action_grid_size_7).isVisible = false
+//        if (maxGridSize < 6) gridSizeMenu.findItem(R.id.action_grid_size_6).isVisible = false
+//        if (maxGridSize < 5) gridSizeMenu.findItem(R.id.action_grid_size_5).isVisible = false
+//        if (maxGridSize < 4) gridSizeMenu.findItem(R.id.action_grid_size_4).isVisible = false
+//        if (maxGridSize < 3) gridSizeMenu.findItem(R.id.action_grid_size_3).isVisible = false
+//    }
 
-    private fun setUpGridSizeMenu(fragment: AbsLibraryPagerRecyclerViewCustomGridSizeFragment<*, *>, gridSizeMenu: SubMenu) {
-        when (fragment.gridSize) {
-            1 -> gridSizeMenu.findItem(R.id.action_grid_size_1).isChecked = true
-            2 -> gridSizeMenu.findItem(R.id.action_grid_size_2).isChecked = true
-            3 -> gridSizeMenu.findItem(R.id.action_grid_size_3).isChecked = true
-            4 -> gridSizeMenu.findItem(R.id.action_grid_size_4).isChecked = true
-            5 -> gridSizeMenu.findItem(R.id.action_grid_size_5).isChecked = true
-            6 -> gridSizeMenu.findItem(R.id.action_grid_size_6).isChecked = true
-            7 -> gridSizeMenu.findItem(R.id.action_grid_size_7).isChecked = true
-            8 -> gridSizeMenu.findItem(R.id.action_grid_size_8).isChecked = true
-        }
-        val maxGridSize = fragment.maxGridSize
-        if (maxGridSize < 8) gridSizeMenu.findItem(R.id.action_grid_size_8).isVisible = false
-        if (maxGridSize < 7) gridSizeMenu.findItem(R.id.action_grid_size_7).isVisible = false
-        if (maxGridSize < 6) gridSizeMenu.findItem(R.id.action_grid_size_6).isVisible = false
-        if (maxGridSize < 5) gridSizeMenu.findItem(R.id.action_grid_size_5).isVisible = false
-        if (maxGridSize < 4) gridSizeMenu.findItem(R.id.action_grid_size_4).isVisible = false
-        if (maxGridSize < 3) gridSizeMenu.findItem(R.id.action_grid_size_3).isVisible = false
-    }
-
-    private fun handleGridSizeMenuItem(fragment: AbsLibraryPagerRecyclerViewCustomGridSizeFragment<*, *>, item: MenuItem): Boolean {
-        var gridSize = 0
-        when (item.itemId) {
-            R.id.action_grid_size_1 -> gridSize = 1
-            R.id.action_grid_size_2 -> gridSize = 2
-            R.id.action_grid_size_3 -> gridSize = 3
-            R.id.action_grid_size_4 -> gridSize = 4
-            R.id.action_grid_size_5 -> gridSize = 5
-            R.id.action_grid_size_6 -> gridSize = 6
-            R.id.action_grid_size_7 -> gridSize = 7
-            R.id.action_grid_size_8 -> gridSize = 8
-        }
-        if (gridSize > 0) {
-            item.isChecked = true
-            fragment.setAndSaveGridSize(gridSize)
-//            binding.toolbar.menu.findItem(R.id.action_colored_footers).isEnabled = fragment.canUsePalette() //todo
-            return true
-        }
-        return false
-    }
+//    private fun handleGridSizeMenuItem(fragment: AbsLibraryPagerRecyclerViewCustomGridSizeFragment<*, *>, item: MenuItem): Boolean {
+//        var gridSize = 0
+//        when (item.itemId) {
+//            R.id.action_grid_size_1 -> gridSize = 1
+//            R.id.action_grid_size_2 -> gridSize = 2
+//            R.id.action_grid_size_3 -> gridSize = 3
+//            R.id.action_grid_size_4 -> gridSize = 4
+//            R.id.action_grid_size_5 -> gridSize = 5
+//            R.id.action_grid_size_6 -> gridSize = 6
+//            R.id.action_grid_size_7 -> gridSize = 7
+//            R.id.action_grid_size_8 -> gridSize = 8
+//        }
+//        if (gridSize > 0) {
+//            item.isChecked = true
+//            fragment.setAndSaveGridSize(gridSize)
+// //            binding.toolbar.menu.findItem(R.id.action_colored_footers).isEnabled = fragment.canUsePalette() //todo
+//            return true
+//        }
+//        return false
+//    }
 
     private lateinit var popupMenu: PopupWindow
     private var _bindingPopup: PopupWindowMainBinding? = null
@@ -259,9 +262,9 @@ class LibraryFragment :
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         val currentFragment = currentFragment
-        if (currentFragment is AbsLibraryPagerRecyclerViewCustomGridSizeFragment<*, *>) {
-            if (handleGridSizeMenuItem(currentFragment, item)) { return true }
-        }
+//        if (currentFragment is AbsLibraryPagerRecyclerViewCustomGridSizeFragment<*, *>) {
+//            if (handleGridSizeMenuItem(currentFragment, item)) { return true }
+//        }
         when (item.itemId) {
             R.id.action_search -> {
                 startActivity(Intent(mainActivity, SearchActivity::class.java))
