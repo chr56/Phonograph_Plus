@@ -20,6 +20,7 @@ import chr_56.MDthemer.core.ThemeColor
 import chr_56.MDthemer.util.NavigationViewUtil
 import chr_56.MDthemer.util.Util
 import com.bumptech.glide.Glide
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
 import com.sothree.slidinguppanel.SlidingUpPanelLayout
 import player.phonograph.*
@@ -55,6 +56,7 @@ class MainActivity : AbsSlidingMusicPanelActivity() {
     // init : onCreate()
     private lateinit var navigationView: NavigationView
     private lateinit var drawerLayout: DrawerLayout
+    private lateinit var floatingActionButton: FloatingActionButton
 
     private lateinit var currentFragment: MainActivityFragmentCallbacks
     private var navigationDrawerHeader: View? = null
@@ -70,6 +72,7 @@ class MainActivity : AbsSlidingMusicPanelActivity() {
         // todo: viewBinding
         navigationView = findViewById(R.id.navigation_view)
         drawerLayout = findViewById(R.id.drawer_layout)
+        floatingActionButton = findViewById(R.id.add_new_item)
 
         setUpDrawer()
 
@@ -91,6 +94,8 @@ class MainActivity : AbsSlidingMusicPanelActivity() {
         showIntro()
         checkUpdate()
         showChangelog()
+
+        setUpFloatingActionButton()
     }
 
     override fun createContentView(): View {
@@ -406,6 +411,15 @@ class MainActivity : AbsSlidingMusicPanelActivity() {
 
     interface MainActivityFragmentCallbacks {
         fun handleBackPress(): Boolean
+        fun handleFloatingActionButtonPress(): Boolean
+    }
+
+    private fun setUpFloatingActionButton() {
+        floatingActionButton.rippleColor = ThemeColor.accentColor(this)
+        floatingActionButton.setOnClickListener { currentFragment.handleFloatingActionButtonPress() }
+    }
+    fun setFloatingActionButtonVisibility(visibility: Int) {
+        floatingActionButton.visibility = visibility
     }
 
     companion object {

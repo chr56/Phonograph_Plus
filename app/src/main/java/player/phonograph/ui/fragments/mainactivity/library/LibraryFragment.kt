@@ -586,6 +586,11 @@ class LibraryFragment :
         return false
     }
 
+    override fun handleFloatingActionButtonPress(): Boolean {
+        // Todo
+        return true
+    }
+
     companion object {
         fun newInstance(): LibraryFragment = LibraryFragment()
     }
