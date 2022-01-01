@@ -12,7 +12,9 @@ import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.*
 import android.widget.PopupWindow
+import android.widget.RadioButton
 import androidx.appcompat.content.res.AppCompatResources
+import androidx.core.view.get
 import androidx.fragment.app.Fragment
 import androidx.viewpager.widget.ViewPager
 import chr_56.MDthemer.color.MaterialColor
@@ -462,6 +464,16 @@ class LibraryFragment :
     private fun initGridSize(popupWindow: PopupWindow, popup: PopupWindowMainBinding, fragment: AbsLibraryPagerRecyclerViewCustomGridSizeFragment<*, *>) {
         popup.textGridSize.visibility = View.VISIBLE
         popup.gridSize.visibility = View.VISIBLE
+        if (isLandscape(resources)) popup.textGridSize.text = resources.getText(R.string.action_grid_size_land)
+
+        val current = fragment.gridSize
+        val max = fragment.maxGridSize
+        for (i in 0 until max) {
+            popup.gridSize.getChildAt(i).visibility = View.VISIBLE
+        }
+
+        popup.gridSize.clearCheck()
+        (popup.gridSize.getChildAt(current - 1) as RadioButton).isChecked = true
     }
     private fun disableGridSize(popup: PopupWindowMainBinding) {
         popup.textGridSize.visibility = View.GONE

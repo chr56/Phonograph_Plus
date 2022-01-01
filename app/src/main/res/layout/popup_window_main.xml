@@ -133,31 +133,57 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:minHeight="32dp"
-                android:text="@string/grid_size_1" />
+                android:text="@string/grid_size_1"
+                android:visibility="gone" />
 
             <RadioButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:minHeight="32dp"
-                android:text="@string/grid_size_2" />
+                android:text="@string/grid_size_2"
+                android:visibility="gone" />
 
             <RadioButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:minHeight="32dp"
-                android:text="@string/grid_size_3" />
+                android:text="@string/grid_size_3"
+                android:visibility="gone" />
 
             <RadioButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:minHeight="32dp"
-                android:text="@string/grid_size_4" />
+                android:text="@string/grid_size_4"
+                android:visibility="gone" />
 
             <RadioButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:minHeight="32dp"
-                android:text="@string/grid_size_5" />
+                android:text="@string/grid_size_5"
+                android:visibility="gone" />
+
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minHeight="32dp"
+                android:text="@string/grid_size_6"
+                android:visibility="gone" />
+
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minHeight="32dp"
+                android:text="@string/grid_size_7"
+                android:visibility="gone" />
+
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minHeight="32dp"
+                android:text="@string/grid_size_8"
+                android:visibility="gone" />
         </RadioGroup>
 
         <CheckBox
