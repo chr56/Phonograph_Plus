@@ -160,6 +160,13 @@
                 android:text="@string/grid_size_5" />
         </RadioGroup>
 
+        <CheckBox
+            android:id="@+id/action_colored_footers"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="@string/colored_footers"
+            android:visibility="gone" />
+
     </LinearLayout>
 
 </ScrollView>

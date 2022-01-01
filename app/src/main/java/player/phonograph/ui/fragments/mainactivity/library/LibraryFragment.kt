@@ -247,8 +247,6 @@ class LibraryFragment :
         return false
     }
 
-
-
     private lateinit var popupMenu: PopupWindow
     private var _bindingPopup: PopupWindowMainBinding? = null
     private val popup get() = _bindingPopup!!
@@ -292,12 +290,14 @@ class LibraryFragment :
                 if (fragment is AbsLibraryPagerRecyclerViewCustomGridSizeFragment<*, *> && fragment.isAdded) {
                     initSortOrder(popupMenu, popup, fragment)
                     initGridSize(popupMenu, popup, fragment)
+                    initColorFooter(popupMenu, popup, fragment)
                     popupMenu.setOnDismissListener {
                         handlePopupMenuDismiss(popup, popupMenu, fragment)
                     }
                 } else {
                     disableSortOrder(popup)
                     disableGridSize(popup)
+                    disableColorFooter(popup)
                 }
 
                 return true
@@ -464,6 +464,11 @@ class LibraryFragment :
             if (fragment.sortOrder != sortOrderSelected)
                 fragment.setAndSaveSortOrder(sortOrderSelected)
         }
+
+        //  Colored footers
+        val coloredFooters = popup.actionColoredFooters.isChecked
+        if (fragment.usePalette() != coloredFooters)
+            fragment.setAndSaveUsePalette(coloredFooters)
     }
 
     private fun initGridSize(popupWindow: PopupWindow, popup: PopupWindowMainBinding, fragment: AbsLibraryPagerRecyclerViewCustomGridSizeFragment<*, *>) {
@@ -474,6 +479,15 @@ class LibraryFragment :
         popup.textGridSize.visibility = View.GONE
         popup.gridSize.clearCheck()
         popup.gridSize.visibility = View.GONE
+    }
+
+    private fun initColorFooter(popupWindow: PopupWindow, popup: PopupWindowMainBinding, fragment: AbsLibraryPagerRecyclerViewCustomGridSizeFragment<*, *>) {
+        popup.actionColoredFooters.visibility = View.VISIBLE
+        popup.actionColoredFooters.isChecked = fragment.usePalette()
+        popup.actionColoredFooters.isEnabled = fragment.canUsePalette()
+    }
+    private fun disableColorFooter(popup: PopupWindowMainBinding) {
+        popup.actionColoredFooters.visibility = View.GONE
     }
 
     override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) { }
