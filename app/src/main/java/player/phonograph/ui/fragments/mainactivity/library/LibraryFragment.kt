@@ -175,11 +175,11 @@ class LibraryFragment :
                 currentFragment.usePalette()
             menu.findItem(R.id.action_colored_footers).isEnabled =
                 currentFragment.canUsePalette()
-            setUpSortOrderMenu(currentFragment, menu.findItem(R.id.action_sort_order).subMenu)
+//            setUpSortOrderMenu(currentFragment, menu.findItem(R.id.action_sort_order).subMenu)
         } else {
             menu.removeItem(R.id.action_grid_size)
             menu.removeItem(R.id.action_colored_footers)
-            menu.removeItem(R.id.action_sort_order)
+//            menu.removeItem(R.id.action_sort_order)
             menu.removeItem(R.id.action_main_popup_window_menu)
         }
 
@@ -253,85 +253,85 @@ class LibraryFragment :
         return false
     }
 
-    private fun setUpSortOrderMenu(
-        fragment: AbsLibraryPagerRecyclerViewCustomGridSizeFragment<*, *>,
-        sortOrderMenu: SubMenu
-    ) {
-        val currentSortOrder = fragment.sortOrder
-        sortOrderMenu.clear()
-        when (fragment) {
-            is AlbumsFragment -> {
-                sortOrderMenu.add(0, R.id.action_album_sort_order_asc, 0, R.string.sort_order_a_z).isChecked =
-                    currentSortOrder == SortOrder.AlbumSortOrder.ALBUM_A_Z
-                sortOrderMenu.add(0, R.id.action_album_sort_order_desc, 1, R.string.sort_order_z_a).isChecked =
-                    currentSortOrder == SortOrder.AlbumSortOrder.ALBUM_Z_A
-                sortOrderMenu.add(0, R.id.action_album_sort_order_artist, 2, R.string.sort_order_artist).isChecked =
-                    currentSortOrder == SortOrder.AlbumSortOrder.ALBUM_ARTIST
-                sortOrderMenu.add(0, R.id.action_album_sort_order_year, 3, R.string.sort_order_year).isChecked =
-                    currentSortOrder == SortOrder.AlbumSortOrder.ALBUM_YEAR
-            }
-            is ArtistsFragment -> {
-                sortOrderMenu.add(0, R.id.action_artist_sort_order_asc, 0, R.string.sort_order_a_z).isChecked =
-                    currentSortOrder == SortOrder.ArtistSortOrder.ARTIST_A_Z
-                sortOrderMenu.add(0, R.id.action_artist_sort_order_desc, 1, R.string.sort_order_z_a).isChecked =
-                    currentSortOrder == SortOrder.ArtistSortOrder.ARTIST_Z_A
-            }
-            is SongsFragment -> {
-                sortOrderMenu.add(0, R.id.action_song_sort_order_asc, 0, R.string.sort_order_a_z).isChecked =
-                    currentSortOrder == SortOrder.SongSortOrder.SONG_A_Z
-                sortOrderMenu.add(0, R.id.action_song_sort_order_desc, 1, R.string.sort_order_z_a).isChecked =
-                    currentSortOrder == SortOrder.SongSortOrder.SONG_Z_A
-                sortOrderMenu.add(0, R.id.action_song_sort_order_artist, 2, R.string.sort_order_artist).isChecked =
-                    currentSortOrder == SortOrder.SongSortOrder.SONG_ARTIST
-                sortOrderMenu.add(0, R.id.action_song_sort_order_album, 3, R.string.sort_order_album).isChecked =
-                    currentSortOrder == SortOrder.SongSortOrder.SONG_ALBUM
-                sortOrderMenu.add(0, R.id.action_song_sort_order_year, 4, R.string.sort_order_year).isChecked =
-                    currentSortOrder == SortOrder.SongSortOrder.SONG_YEAR
-                sortOrderMenu.add(0, R.id.action_song_sort_order_date_added, 5, R.string.sort_order_date_added).isChecked =
-                    currentSortOrder == SortOrder.SongSortOrder.SONG_DATE
-            }
-        }
-        sortOrderMenu.setGroupCheckable(0, true, true)
-    }
-
-    private fun handleSortOrderMenuItem(
-        fragment: AbsLibraryPagerRecyclerViewCustomGridSizeFragment<*, *>,
-        item: MenuItem
-    ): Boolean {
-        var sortOrder: String? = null
-        when (fragment) {
-            is AlbumsFragment -> {
-                when (item.itemId) {
-                    R.id.action_album_sort_order_asc -> sortOrder = SortOrder.AlbumSortOrder.ALBUM_A_Z
-                    R.id.action_album_sort_order_desc -> sortOrder = SortOrder.AlbumSortOrder.ALBUM_Z_A
-                    R.id.action_album_sort_order_artist -> sortOrder = SortOrder.AlbumSortOrder.ALBUM_ARTIST
-                    R.id.action_album_sort_order_year -> sortOrder = SortOrder.AlbumSortOrder.ALBUM_YEAR
-                }
-            }
-            is ArtistsFragment -> {
-                when (item.itemId) {
-                    R.id.action_artist_sort_order_asc -> sortOrder = SortOrder.ArtistSortOrder.ARTIST_A_Z
-                    R.id.action_artist_sort_order_desc -> sortOrder = SortOrder.ArtistSortOrder.ARTIST_Z_A
-                }
-            }
-            is SongsFragment -> {
-                when (item.itemId) {
-                    R.id.action_song_sort_order_asc -> sortOrder = SortOrder.SongSortOrder.SONG_A_Z
-                    R.id.action_song_sort_order_desc -> sortOrder = SortOrder.SongSortOrder.SONG_Z_A
-                    R.id.action_song_sort_order_artist -> sortOrder = SortOrder.SongSortOrder.SONG_ARTIST
-                    R.id.action_song_sort_order_album -> sortOrder = SortOrder.SongSortOrder.SONG_ALBUM
-                    R.id.action_song_sort_order_year -> sortOrder = SortOrder.SongSortOrder.SONG_YEAR
-                    R.id.action_song_sort_order_date_added -> sortOrder = SortOrder.SongSortOrder.SONG_DATE
-                }
-            }
-        }
-        if (sortOrder != null) {
-            item.isChecked = true
-            fragment.setAndSaveSortOrder(sortOrder)
-            return true
-        }
-        return false
-    }
+//    private fun setUpSortOrderMenu(
+//        fragment: AbsLibraryPagerRecyclerViewCustomGridSizeFragment<*, *>,
+//        sortOrderMenu: SubMenu
+//    ) {
+//        val currentSortOrder = fragment.sortOrder
+//        sortOrderMenu.clear()
+//        when (fragment) {
+//            is AlbumsFragment -> {
+//                sortOrderMenu.add(0, R.id.action_album_sort_order_asc, 0, R.string.sort_order_a_z).isChecked =
+//                    currentSortOrder == SortOrder.AlbumSortOrder.ALBUM_A_Z
+//                sortOrderMenu.add(0, R.id.action_album_sort_order_desc, 1, R.string.sort_order_z_a).isChecked =
+//                    currentSortOrder == SortOrder.AlbumSortOrder.ALBUM_Z_A
+//                sortOrderMenu.add(0, R.id.action_album_sort_order_artist, 2, R.string.sort_order_artist).isChecked =
+//                    currentSortOrder == SortOrder.AlbumSortOrder.ALBUM_ARTIST
+//                sortOrderMenu.add(0, R.id.action_album_sort_order_year, 3, R.string.sort_order_year).isChecked =
+//                    currentSortOrder == SortOrder.AlbumSortOrder.ALBUM_YEAR
+//            }
+//            is ArtistsFragment -> {
+//                sortOrderMenu.add(0, R.id.action_artist_sort_order_asc, 0, R.string.sort_order_a_z).isChecked =
+//                    currentSortOrder == SortOrder.ArtistSortOrder.ARTIST_A_Z
+//                sortOrderMenu.add(0, R.id.action_artist_sort_order_desc, 1, R.string.sort_order_z_a).isChecked =
+//                    currentSortOrder == SortOrder.ArtistSortOrder.ARTIST_Z_A
+//            }
+//            is SongsFragment -> {
+//                sortOrderMenu.add(0, R.id.action_song_sort_order_asc, 0, R.string.sort_order_a_z).isChecked =
+//                    currentSortOrder == SortOrder.SongSortOrder.SONG_A_Z
+//                sortOrderMenu.add(0, R.id.action_song_sort_order_desc, 1, R.string.sort_order_z_a).isChecked =
+//                    currentSortOrder == SortOrder.SongSortOrder.SONG_Z_A
+//                sortOrderMenu.add(0, R.id.action_song_sort_order_artist, 2, R.string.sort_order_artist).isChecked =
+//                    currentSortOrder == SortOrder.SongSortOrder.SONG_ARTIST
+//                sortOrderMenu.add(0, R.id.action_song_sort_order_album, 3, R.string.sort_order_album).isChecked =
+//                    currentSortOrder == SortOrder.SongSortOrder.SONG_ALBUM
+//                sortOrderMenu.add(0, R.id.action_song_sort_order_year, 4, R.string.sort_order_year).isChecked =
+//                    currentSortOrder == SortOrder.SongSortOrder.SONG_YEAR
+//                sortOrderMenu.add(0, R.id.action_song_sort_order_date_added, 5, R.string.sort_order_date_added).isChecked =
+//                    currentSortOrder == SortOrder.SongSortOrder.SONG_DATE
+//            }
+//        }
+//        sortOrderMenu.setGroupCheckable(0, true, true)
+//    }
+//
+//    private fun handleSortOrderMenuItem(
+//        fragment: AbsLibraryPagerRecyclerViewCustomGridSizeFragment<*, *>,
+//        item: MenuItem
+//    ): Boolean {
+//        var sortOrder: String? = null
+//        when (fragment) {
+//            is AlbumsFragment -> {
+//                when (item.itemId) {
+//                    R.id.action_album_sort_order_asc -> sortOrder = SortOrder.AlbumSortOrder.ALBUM_A_Z
+//                    R.id.action_album_sort_order_desc -> sortOrder = SortOrder.AlbumSortOrder.ALBUM_Z_A
+//                    R.id.action_album_sort_order_artist -> sortOrder = SortOrder.AlbumSortOrder.ALBUM_ARTIST
+//                    R.id.action_album_sort_order_year -> sortOrder = SortOrder.AlbumSortOrder.ALBUM_YEAR
+//                }
+//            }
+//            is ArtistsFragment -> {
+//                when (item.itemId) {
+//                    R.id.action_artist_sort_order_asc -> sortOrder = SortOrder.ArtistSortOrder.ARTIST_A_Z
+//                    R.id.action_artist_sort_order_desc -> sortOrder = SortOrder.ArtistSortOrder.ARTIST_Z_A
+//                }
+//            }
+//            is SongsFragment -> {
+//                when (item.itemId) {
+//                    R.id.action_song_sort_order_asc -> sortOrder = SortOrder.SongSortOrder.SONG_A_Z
+//                    R.id.action_song_sort_order_desc -> sortOrder = SortOrder.SongSortOrder.SONG_Z_A
+//                    R.id.action_song_sort_order_artist -> sortOrder = SortOrder.SongSortOrder.SONG_ARTIST
+//                    R.id.action_song_sort_order_album -> sortOrder = SortOrder.SongSortOrder.SONG_ALBUM
+//                    R.id.action_song_sort_order_year -> sortOrder = SortOrder.SongSortOrder.SONG_YEAR
+//                    R.id.action_song_sort_order_date_added -> sortOrder = SortOrder.SongSortOrder.SONG_DATE
+//                }
+//            }
+//        }
+//        if (sortOrder != null) {
+//            item.isChecked = true
+//            fragment.setAndSaveSortOrder(sortOrder)
+//            return true
+//        }
+//        return false
+//    }
 
     private lateinit var popupMenu: PopupWindow
     private var _bindingPopup: PopupWindowMainBinding? = null
@@ -357,7 +357,7 @@ class LibraryFragment :
                 return true
             }
             if (handleGridSizeMenuItem(currentFragment, item)) { return true }
-            if (handleSortOrderMenuItem(currentFragment, item)) { return true }
+//            if (handleSortOrderMenuItem(currentFragment, item)) { return true }
         }
         when (item.itemId) {
 //            R.id.action_shuffle_all -> {
