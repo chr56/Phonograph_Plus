@@ -413,12 +413,18 @@ class LibraryFragment :
             else -> popup.sortOrderBasic.check(R.id.sort_order_a_z)
         }
 
-//        popup.sortOrderContent.isClickable = false
         popup.sortOrderContent.clearCheck()
 
         // TODO implement content Sort Order
         when (fragment) {
             is SongsFragment -> {
+                popup.sortOrderSong.visibility = View.VISIBLE
+                popup.sortOrderAlbum.visibility = View.VISIBLE
+                popup.sortOrderArtist.visibility = View.VISIBLE
+                popup.sortOrderYear.visibility = View.VISIBLE
+                popup.sortOrderDateAdded.visibility = View.VISIBLE
+                popup.sortOrderDateModified.visibility = View.VISIBLE
+                popup.sortOrderDuration.visibility = View.VISIBLE
                 when (currentSortOrder) {
                     SortOrder.SongSortOrder.SONG_A_Z, SortOrder.SongSortOrder.SONG_Z_A -> popup.sortOrderContent.check(R.id.sort_order_song)
                     SortOrder.SongSortOrder.SONG_ALBUM -> popup.sortOrderContent.check(R.id.sort_order_album)
@@ -429,9 +435,12 @@ class LibraryFragment :
                     SortOrder.SongSortOrder.SONG_DURATION -> popup.sortOrderContent.check(R.id.sort_order_duration)
                     else -> { popup.sortOrderContent.clearCheck() }
                 }
-//                popup.sortOrderContent.isClickable = true
             }
             is AlbumsFragment -> {
+                popup.sortOrderAlbum.visibility = View.VISIBLE
+                popup.sortOrderArtist.visibility = View.VISIBLE
+                popup.sortOrderYear.visibility = View.VISIBLE
+//                popup.sortOrder_.visibility = View.VISIBLE
                 when (currentSortOrder) {
                     SortOrder.AlbumSortOrder.ALBUM_Z_A, SortOrder.AlbumSortOrder.ALBUM_A_Z -> popup.sortOrderContent.check(R.id.sort_order_song)
                     SortOrder.AlbumSortOrder.ALBUM_YEAR, SortOrder.AlbumSortOrder.ALBUM_YEAR_REVERT -> popup.sortOrderContent.check(R.id.sort_order_year)
@@ -439,16 +448,17 @@ class LibraryFragment :
                     SortOrder.AlbumSortOrder.ALBUM_NUMBER_OF_SONGS, SortOrder.AlbumSortOrder.ALBUM_NUMBER_OF_SONGS_REVERT -> { /* todo */ }
                     else -> { popup.sortOrderContent.clearCheck() }
                 }
-//                popup.sortOrderContent.isClickable = true
             }
             is ArtistsFragment -> {
+                popup.sortOrderArtist.visibility = View.VISIBLE
+//                popup.sortOrder_.visibility = View.GONE
+//                popup.sortOrder_.visibility = View.GONE
                 when (currentSortOrder) {
                     SortOrder.ArtistSortOrder.ARTIST_A_Z, SortOrder.ArtistSortOrder.ARTIST_Z_A -> popup.sortOrderContent.check(R.id.sort_order_artist)
                     SortOrder.ArtistSortOrder.ARTIST_NUMBER_OF_ALBUMS, SortOrder.ArtistSortOrder.ARTIST_NUMBER_OF_ALBUMS_REVERT -> { /* todo */ }
                     SortOrder.ArtistSortOrder.ARTIST_NUMBER_OF_SONGS, SortOrder.ArtistSortOrder.ARTIST_NUMBER_OF_SONGS_REVERT -> { /* todo */ }
                     else -> { popup.sortOrderContent.clearCheck() }
                 }
-//                popup.sortOrderContent.isClickable = true
             }
         }
     }

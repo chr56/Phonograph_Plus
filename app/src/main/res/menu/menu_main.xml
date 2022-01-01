@@ -64,7 +64,7 @@
 
     <item
         android:id="@+id/action_main_popup_window_menu"
-        android:title="TEST"
+        android:title="@string/action_settings"
         />
 
 </menu>
