@@ -8,8 +8,10 @@ package player.phonograph.ui.fragments.mainactivity.library
 
 import android.content.Intent
 import android.content.SharedPreferences
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.*
+import android.widget.PopupWindow
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.fragment.app.Fragment
 import androidx.viewpager.widget.ViewPager
@@ -17,6 +19,7 @@ import chr_56.MDthemer.color.MaterialColor
 import chr_56.MDthemer.core.ThemeColor
 import chr_56.MDthemer.util.*
 import com.afollestad.materialcab.MaterialCab
+import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.AppBarLayout.OnOffsetChangedListener
 import com.google.android.material.tabs.TabLayout
 import player.phonograph.R
@@ -68,6 +71,8 @@ class LibraryFragment :
         setupTheme(requireActivity() as MainActivity)
         setupToolbar()
         setUpViewPager()
+
+        setupPopupMenu()
     }
 
     private fun setupToolbar() {
@@ -327,6 +332,16 @@ class LibraryFragment :
         return false
     }
 
+    private lateinit var popupMenu: PopupWindow
+    private lateinit var popupView: View
+    private fun setupPopupMenu() {
+        popupView = LayoutInflater.from(mainActivity).inflate(R.layout.popup_window_main, null, false)
+//        val width = mainActivity.window.decorView.width / 2
+//        val height = mainActivity.window.decorView.height / 3 * 2
+//        popupMenu = PopupWindow(popupView, width, height, true)
+//        popupMenu.setBackgroundDrawable(ColorDrawable(mainActivity.resources.getColor(R.color.md_white_1000)))
+    }
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         val currentFragment = currentFragment
         if (currentFragment is AbsLibraryPagerRecyclerViewCustomGridSizeFragment<*, *>) {
@@ -350,6 +365,17 @@ class LibraryFragment :
             R.id.action_search -> {
                 startActivity(Intent(mainActivity, SearchActivity::class.java))
                 return true
+            }
+            R.id.action_main_popup_window_menu -> {
+                val yOffset = (mainActivity.supportActionBar?.height ?: binding.toolbar.height) +
+                    (mainActivity.findViewById<player.phonograph.views.StatusBarView>(R.id.status_bar)?.height ?: 8)
+
+                val width = mainActivity.window.decorView.width / 2
+//                val height = mainActivity.window.decorView.height / 3 * 2
+                popupMenu = PopupWindow(popupView, width, AppBarLayout.LayoutParams.WRAP_CONTENT, true)
+                popupMenu.setBackgroundDrawable(ColorDrawable(mainActivity.resources.getColor(R.color.md_white_1000)))
+
+                popupMenu.showAtLocation(binding.toolbar.rootView, Gravity.TOP or Gravity.END, 0, yOffset)
             }
         }
         return super.onOptionsItemSelected(item)

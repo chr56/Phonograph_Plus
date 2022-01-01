@@ -62,4 +62,9 @@
         android:checkable="true"
         android:title="@string/colored_footers" />
 
+    <item
+        android:id="@+id/action_main_popup_window_menu"
+        android:title="TEST"
+        />
+
 </menu>
