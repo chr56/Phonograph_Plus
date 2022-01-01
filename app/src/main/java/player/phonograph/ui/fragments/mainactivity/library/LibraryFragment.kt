@@ -260,9 +260,10 @@ class LibraryFragment :
 
         val currentSortOrder = fragment.sortOrder
         when (currentSortOrder) {
-            SortOrder.SongSortOrder.SONG_Z_A, SortOrder.SongSortOrder.SONG_YEAR_REVERT, SortOrder.SongSortOrder.SONG_DATE_MODIFIED_REVERT, SortOrder.SongSortOrder.SONG_DATE_REVERT,
-            SortOrder.AlbumSortOrder.ALBUM_Z_A, SortOrder.AlbumSortOrder.ALBUM_NUMBER_OF_SONGS_REVERT, /*SortOrder.AlbumSortOrder.ALBUM_YEAR_REVERT,*/
-            SortOrder.ArtistSortOrder.ARTIST_Z_A, SortOrder.ArtistSortOrder.ARTIST_NUMBER_OF_SONGS_REVERT, SortOrder.ArtistSortOrder.ARTIST_NUMBER_OF_ALBUMS_REVERT ->
+            SortOrder.SongSortOrder.SONG_Z_A, SortOrder.AlbumSortOrder.ALBUM_Z_A, SortOrder.ArtistSortOrder.ARTIST_Z_A, SortOrder.SongSortOrder.SONG_DURATION_REVERT,
+            SortOrder.SongSortOrder.SONG_YEAR_REVERT, SortOrder.SongSortOrder.SONG_DATE_REVERT, SortOrder.SongSortOrder.SONG_DATE_MODIFIED_REVERT,
+            SortOrder.AlbumSortOrder.ALBUM_NUMBER_OF_SONGS_REVERT, SortOrder.ArtistSortOrder.ARTIST_NUMBER_OF_SONGS_REVERT, SortOrder.ArtistSortOrder.ARTIST_NUMBER_OF_ALBUMS_REVERT
+            ->
                 popup.sortOrderBasic.check(R.id.sort_order_z_a)
             else -> popup.sortOrderBasic.check(R.id.sort_order_a_z)
         }
@@ -281,12 +282,12 @@ class LibraryFragment :
                 popup.sortOrderDuration.visibility = View.VISIBLE
                 when (currentSortOrder) {
                     SortOrder.SongSortOrder.SONG_A_Z, SortOrder.SongSortOrder.SONG_Z_A -> popup.sortOrderContent.check(R.id.sort_order_song)
-                    SortOrder.SongSortOrder.SONG_ALBUM -> popup.sortOrderContent.check(R.id.sort_order_album)
-                    SortOrder.SongSortOrder.SONG_ARTIST -> popup.sortOrderContent.check(R.id.sort_order_artist)
+                    SortOrder.SongSortOrder.SONG_ALBUM, SortOrder.SongSortOrder.SONG_ALBUM_REVERT -> popup.sortOrderContent.check(R.id.sort_order_album)
+                    SortOrder.SongSortOrder.SONG_ARTIST, SortOrder.SongSortOrder.SONG_ARTIST_REVERT -> popup.sortOrderContent.check(R.id.sort_order_artist)
                     SortOrder.SongSortOrder.SONG_YEAR, SortOrder.SongSortOrder.SONG_YEAR_REVERT -> popup.sortOrderContent.check(R.id.sort_order_year)
                     SortOrder.SongSortOrder.SONG_DATE, SortOrder.SongSortOrder.SONG_DATE_REVERT -> popup.sortOrderContent.check(R.id.sort_order_date_added)
                     SortOrder.SongSortOrder.SONG_DATE_MODIFIED, SortOrder.SongSortOrder.SONG_DATE_MODIFIED_REVERT -> popup.sortOrderContent.check(R.id.sort_order_date_modified)
-                    SortOrder.SongSortOrder.SONG_DURATION -> popup.sortOrderContent.check(R.id.sort_order_duration)
+                    SortOrder.SongSortOrder.SONG_DURATION, SortOrder.SongSortOrder.SONG_DURATION_REVERT -> popup.sortOrderContent.check(R.id.sort_order_duration)
                     else -> { popup.sortOrderContent.clearCheck() }
                 }
             }
@@ -372,8 +373,18 @@ class LibraryFragment :
                                 R.id.sort_order_z_a -> SortOrder.SongSortOrder.SONG_Z_A
                                 else -> ""
                             }
-                        R.id.sort_order_album -> SortOrder.SongSortOrder.SONG_ALBUM
-                        R.id.sort_order_artist -> SortOrder.SongSortOrder.SONG_ARTIST
+                        R.id.sort_order_album ->
+                            when (basicSelected) {
+                                R.id.sort_order_a_z -> SortOrder.SongSortOrder.SONG_ALBUM
+                                R.id.sort_order_z_a -> SortOrder.SongSortOrder.SONG_ALBUM_REVERT
+                                else -> ""
+                            }
+                        R.id.sort_order_artist ->
+                            when (basicSelected) {
+                                R.id.sort_order_a_z -> SortOrder.SongSortOrder.SONG_ARTIST
+                                R.id.sort_order_z_a -> SortOrder.SongSortOrder.SONG_ARTIST_REVERT
+                                else -> ""
+                            }
                         R.id.sort_order_year ->
                             when (basicSelected) {
                                 R.id.sort_order_a_z -> SortOrder.SongSortOrder.SONG_YEAR
@@ -392,7 +403,12 @@ class LibraryFragment :
                                 R.id.sort_order_z_a -> SortOrder.SongSortOrder.SONG_DATE_MODIFIED_REVERT
                                 else -> ""
                             }
-                        R.id.sort_order_duration -> SortOrder.SongSortOrder.SONG_DURATION
+                        R.id.sort_order_duration ->
+                            when (basicSelected) {
+                                R.id.sort_order_a_z -> SortOrder.SongSortOrder.SONG_DURATION
+                                R.id.sort_order_z_a -> SortOrder.SongSortOrder.SONG_DURATION_REVERT
+                                else -> ""
+                            }
                         else -> ""
                     }
                 }

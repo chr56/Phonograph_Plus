@@ -30,15 +30,19 @@ object SortOrder {
             const val ARTIST_Z_A = "$ARTIST_A_Z DESC"
 
             /* Artist sort order number of songs */
-            const val ARTIST_NUMBER_OF_SONGS = (MediaStore.Audio.Artists.NUMBER_OF_TRACKS
-                    + " DESC")
+            const val ARTIST_NUMBER_OF_SONGS = (
+                MediaStore.Audio.Artists.NUMBER_OF_TRACKS +
+                    " DESC"
+                )
 
             /* Artist sort order number of songs (less to more)*/
             const val ARTIST_NUMBER_OF_SONGS_REVERT = MediaStore.Audio.Artists.NUMBER_OF_TRACKS
 
             /* Artist sort order number of albums */
-            const val ARTIST_NUMBER_OF_ALBUMS = (MediaStore.Audio.Artists.NUMBER_OF_ALBUMS
-                    + " DESC")
+            const val ARTIST_NUMBER_OF_ALBUMS = (
+                MediaStore.Audio.Artists.NUMBER_OF_ALBUMS +
+                    " DESC"
+                )
 
             /* Artist sort order number of albums (less to more)*/
             const val ARTIST_NUMBER_OF_ALBUMS_REVERT = MediaStore.Audio.Artists.NUMBER_OF_ALBUMS
@@ -57,15 +61,19 @@ object SortOrder {
             const val ALBUM_Z_A = "$ALBUM_A_Z DESC"
 
             /* Album sort order songs */
-            const val ALBUM_NUMBER_OF_SONGS = (MediaStore.Audio.Albums.NUMBER_OF_SONGS
-                    + " DESC")
+            const val ALBUM_NUMBER_OF_SONGS = (
+                MediaStore.Audio.Albums.NUMBER_OF_SONGS +
+                    " DESC"
+                )
 
             /* Album sort order songs (less to more)*/
             const val ALBUM_NUMBER_OF_SONGS_REVERT = MediaStore.Audio.Albums.NUMBER_OF_SONGS
 
             /* Album sort order artist */
-            const val ALBUM_ARTIST = (MediaStore.Audio.Artists.DEFAULT_SORT_ORDER
-                    + ", " + MediaStore.Audio.Albums.DEFAULT_SORT_ORDER)
+            const val ALBUM_ARTIST = (
+                MediaStore.Audio.Artists.DEFAULT_SORT_ORDER +
+                    ", " + MediaStore.Audio.Albums.DEFAULT_SORT_ORDER
+                )
 
             /* Album sort order year (new to old)*/
             const val ALBUM_YEAR = MediaStore.Audio.Media.YEAR + " DESC"
@@ -86,32 +94,41 @@ object SortOrder {
             /* Song sort order Z-A */
             const val SONG_Z_A = "$SONG_A_Z DESC"
 
-            /* Song sort order artist */
+            /* Song sort order artist A-Z */
             const val SONG_ARTIST = MediaStore.Audio.Artists.DEFAULT_SORT_ORDER
 
-            /* Song sort order album */
+            /* Song sort order artist Z-A*/
+            const val SONG_ARTIST_REVERT = MediaStore.Audio.Artists.DEFAULT_SORT_ORDER + " DESC"
+
+            /* Song sort order album A-Z*/
             const val SONG_ALBUM = MediaStore.Audio.Albums.DEFAULT_SORT_ORDER
 
-            /* Song sort order year */
-            const val SONG_YEAR = MediaStore.Audio.Media.YEAR + " DESC"
+            /* Song sort order album Z-A*/
+            const val SONG_ALBUM_REVERT = MediaStore.Audio.Albums.DEFAULT_SORT_ORDER + " DESC"
+
+            /* Song sort order year (new to old)*/
+            const val SONG_YEAR = MediaStore.Audio.Media.YEAR
 
             /* Song sort order year (old to new)*/
-            const val SONG_YEAR_REVERT = MediaStore.Audio.Media.YEAR
+            const val SONG_YEAR_REVERT = MediaStore.Audio.Media.YEAR + " DESC"
 
-            /* Song sort order duration */
-            const val SONG_DURATION = MediaStore.Audio.Media.DURATION + " DESC"
+            /* Song sort order duration (short to long)*/
+            const val SONG_DURATION = MediaStore.Audio.Media.DURATION
 
-            /* Song sort order add date */
-            const val SONG_DATE = MediaStore.Audio.Media.DATE_ADDED + " DESC"
+            /* Song sort order duration (long to old)*/
+            const val SONG_DURATION_REVERT = MediaStore.Audio.Media.DURATION + " DESC"
+
+            /* Song sort order add date (new to old)*/
+            const val SONG_DATE = MediaStore.Audio.Media.DATE_ADDED
 
             /* Song sort order add date (old to new)*/
-            const val SONG_DATE_REVERT = MediaStore.Audio.Media.DATE_ADDED
+            const val SONG_DATE_REVERT = MediaStore.Audio.Media.DATE_ADDED + " DESC"
 
-            /* Song sort order modified date */
-            const val SONG_DATE_MODIFIED = MediaStore.Audio.Media.DATE_MODIFIED + " DESC"
+            /* Song sort order modified date (new to old) */
+            const val SONG_DATE_MODIFIED = MediaStore.Audio.Media.DATE_MODIFIED
 
             /* Song sort order modified date (old to new)*/
-            const val SONG_DATE_MODIFIED_REVERT = MediaStore.Audio.Media.DATE_MODIFIED
+            const val SONG_DATE_MODIFIED_REVERT = MediaStore.Audio.Media.DATE_MODIFIED + " DESC"
         }
     }
 
@@ -127,8 +144,10 @@ object SortOrder {
             const val SONG_Z_A = "$SONG_A_Z DESC"
 
             /* Album song sort order track list */
-            const val SONG_TRACK_LIST = (MediaStore.Audio.Media.TRACK + ", "
-                    + MediaStore.Audio.Media.DEFAULT_SORT_ORDER)
+            const val SONG_TRACK_LIST = (
+                MediaStore.Audio.Media.TRACK + ", " +
+                    MediaStore.Audio.Media.DEFAULT_SORT_ORDER
+                )
 
             /* Album song sort order duration */
             const val SONG_DURATION = SongSortOrder.SONG_DURATION
@@ -196,12 +215,16 @@ object SortOrder {
             const val ALBUM_Z_A = "$ALBUM_A_Z DESC"
 
             /* Artist album sort order year */
-            const val ALBUM_YEAR = (MediaStore.Audio.Media.YEAR
-                    + " DESC")
+            const val ALBUM_YEAR = (
+                MediaStore.Audio.Media.YEAR +
+                    " DESC"
+                )
 
             /* Artist album sort order year */
-            const val ALBUM_YEAR_ASC = (MediaStore.Audio.Media.YEAR
-                    + " ASC")
+            const val ALBUM_YEAR_ASC = (
+                MediaStore.Audio.Media.YEAR +
+                    " ASC"
+                )
         }
     }
 
