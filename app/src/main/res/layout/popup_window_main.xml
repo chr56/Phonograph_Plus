@@ -15,18 +15,20 @@
         android:textSize="14sp" />
 
     <RadioGroup
+        android:id="@+id/sort_order_basic"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/sort_order_basic"
         android:orientation="horizontal">
 
         <RadioButton
+            android:id="@+id/sort_order_a_z"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:minHeight="48dp"
             android:text="@string/sort_order_a_z" />
 
         <RadioButton
+            android:id="@+id/sort_order_z_a"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:minHeight="48dp"
@@ -42,9 +44,44 @@
         android:textSize="14sp" />
 
     <RadioGroup
+        android:id="@+id/sort_order_content"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/sort_order_content">
+        android:layout_height="wrap_content">
+
+        <RadioButton
+            android:id="@+id/sort_order_song"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minHeight="48dp"
+            android:text="@string/sort_order_song" />
+
+        <RadioButton
+            android:id="@+id/sort_order_album"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minHeight="48dp"
+            android:text="@string/sort_order_album" />
+
+        <RadioButton
+            android:id="@+id/sort_order_artist"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minHeight="48dp"
+            android:text="@string/sort_order_artist" />
+
+        <RadioButton
+            android:id="@+id/sort_order_year"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minHeight="48dp"
+            android:text="@string/sort_order_year" />
+
+        <RadioButton
+            android:id="@+id/sort_order_date_added"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minHeight="48dp"
+            android:text="@string/sort_order_date_added" />
 
     </RadioGroup>
 

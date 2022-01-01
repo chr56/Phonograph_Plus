@@ -381,9 +381,62 @@ class LibraryFragment :
                     (mainActivity.findViewById<player.phonograph.views.StatusBarView>(R.id.status_bar)?.height ?: 8)
 
                 popupMenu.showAtLocation(binding.toolbar.rootView, Gravity.TOP or Gravity.END, 0, yOffset)
+
+                val fragment = currentFragment ?: return true
+
+                if (fragment.isAdded && fragment is AbsLibraryPagerRecyclerViewCustomGridSizeFragment<*, *>)
+                    initSortOrder(popupMenu, popup, fragment)
+                return true
             }
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun initSortOrder(popupWindow: PopupWindow, popup: PopupWindowMainBinding, fragment: AbsLibraryPagerRecyclerViewCustomGridSizeFragment<*, *>) {
+        val currentSortOrder = fragment.sortOrder
+        when (currentSortOrder) {
+            SortOrder.SongSortOrder.SONG_Z_A, SortOrder.SongSortOrder.SONG_YEAR_REVERT, SortOrder.SongSortOrder.SONG_DATE_MODIFIED_REVERT, SortOrder.SongSortOrder.SONG_DATE_REVERT,
+            SortOrder.AlbumSortOrder.ALBUM_Z_A, SortOrder.AlbumSortOrder.ALBUM_NUMBER_OF_SONGS_REVERT, /*SortOrder.AlbumSortOrder.ALBUM_YEAR_REVERT,*/
+            SortOrder.ArtistSortOrder.ARTIST_Z_A, SortOrder.ArtistSortOrder.ARTIST_NUMBER_OF_SONGS_REVERT, SortOrder.ArtistSortOrder.ARTIST_NUMBER_OF_ALBUMS_REVERT ->
+                popup.sortOrderBasic.check(R.id.sort_order_z_a)
+            else -> popup.sortOrderBasic.check(R.id.sort_order_a_z)
+        }
+
+        // TODO implement content Sort Order
+        when (fragment) {
+            is SongsFragment -> {
+                when (currentSortOrder) {
+                    SortOrder.SongSortOrder.SONG_A_Z, SortOrder.SongSortOrder.SONG_Z_A -> popup.sortOrderContent.check(R.id.sort_order_song)
+                    SortOrder.SongSortOrder.SONG_ALBUM -> popup.sortOrderContent.check(R.id.sort_order_album)
+                    SortOrder.SongSortOrder.SONG_ARTIST -> popup.sortOrderContent.check(R.id.sort_order_artist)
+                    SortOrder.SongSortOrder.SONG_YEAR, SortOrder.SongSortOrder.SONG_YEAR_REVERT -> popup.sortOrderContent.check(R.id.sort_order_year)
+                    SortOrder.SongSortOrder.SONG_DATE_MODIFIED, SortOrder.SongSortOrder.SONG_DATE_MODIFIED_REVERT -> popup.sortOrderContent.check(R.id.sort_order_date_added)
+                    SortOrder.SongSortOrder.SONG_DURATION -> { /* todo */ }
+                    else -> { popup.sortOrderContent.clearCheck() }
+                }
+            }
+            is AlbumsFragment -> {
+                when (currentSortOrder) {
+                    SortOrder.AlbumSortOrder.ALBUM_Z_A, SortOrder.AlbumSortOrder.ALBUM_A_Z -> popup.sortOrderContent.check(R.id.sort_order_song)
+                    SortOrder.AlbumSortOrder.ALBUM_YEAR, SortOrder.AlbumSortOrder.ALBUM_YEAR_REVERT -> popup.sortOrderContent.check(R.id.sort_order_year)
+                    SortOrder.AlbumSortOrder.ALBUM_ARTIST -> popup.sortOrderContent.check(R.id.sort_order_artist)
+                    SortOrder.AlbumSortOrder.ALBUM_NUMBER_OF_SONGS, SortOrder.AlbumSortOrder.ALBUM_NUMBER_OF_SONGS_REVERT -> { /* todo */ }
+                    else -> { popup.sortOrderContent.clearCheck() }
+                }
+            }
+            is ArtistsFragment -> {
+                when (currentSortOrder) {
+                    SortOrder.ArtistSortOrder.ARTIST_A_Z, SortOrder.ArtistSortOrder.ARTIST_Z_A -> popup.sortOrderContent.check(R.id.sort_order_artist)
+                    SortOrder.ArtistSortOrder.ARTIST_NUMBER_OF_ALBUMS, SortOrder.ArtistSortOrder.ARTIST_NUMBER_OF_ALBUMS_REVERT -> { /* todo */ }
+                    SortOrder.ArtistSortOrder.ARTIST_NUMBER_OF_SONGS, SortOrder.ArtistSortOrder.ARTIST_NUMBER_OF_SONGS_REVERT -> { /* todo */ }
+                    else -> { popup.sortOrderContent.clearCheck() }
+                }
+            }
+            else -> {
+                popup.sortOrderContent.clearCheck()
+                popup.sortOrderContent.isClickable = false
+            }
+        }
     }
 
     override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) { }
