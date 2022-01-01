@@ -34,6 +34,7 @@ import player.phonograph.helper.SearchQueryHelper
 import player.phonograph.loader.AlbumLoader
 import player.phonograph.loader.ArtistLoader
 import player.phonograph.loader.PlaylistSongLoader
+import player.phonograph.loader.SongLoader
 import player.phonograph.model.Song
 import player.phonograph.model.smartplaylist.HistoryPlaylist
 import player.phonograph.model.smartplaylist.LastAddedPlaylist
@@ -196,6 +197,9 @@ class MainActivity : AbsSlidingMusicPanelActivity() {
                 R.id.nav_library -> Handler().postDelayed({ setMusicChooser(LIBRARY) }, 200)
                 R.id.nav_folders -> Handler().postDelayed({ setMusicChooser(FOLDERS) }, 200)
 
+                R.id.action_shuffle_all -> Handler().postDelayed({
+                    MusicPlayerRemote.openAndShuffleQueue(SongLoader.getAllSongs(this), true)
+                }, 350)
                 R.id.action_scan -> Handler().postDelayed({
                     ScanMediaFolderDialog().show(supportFragmentManager, "SCAN_MEDIA_FOLDER_CHOOSER")
                 }, 200)

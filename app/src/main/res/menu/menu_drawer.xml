@@ -15,24 +15,28 @@
             android:title="@string/folders" />
     </group>
 
-    <group android:checkableBehavior="none">
+    <group
+        android:id="@+id/navigation_drawer_menu_category_tools"
+        android:checkableBehavior="none">
+        <item
+            android:id="@+id/action_shuffle_all"
+            android:icon="@drawable/ic_shuffle_white_24dp"
+            android:title="@string/action_shuffle_all" />
         <item
             android:id="@+id/action_scan"
             android:icon="@drawable/ic_scanner_white_24dp"
             android:title="@string/scan_media" />
     </group>
 
-    <group android:checkableBehavior="none">
+    <group
+        android:id="@+id/navigation_drawer_menu_category_theme"
+        android:checkableBehavior="none">
         <item
             android:id="@+id/theme_toggle"
             android:icon="@drawable/ic_theme_switch_white_24dp"
-            android:title="@string/theme_switch"/>
+            android:title="@string/theme_switch" />
     </group>
-    <!--        <item-->
-    <!--            android:id="@+id/theme_switch"-->
-    <!--            android:icon="@drawable/ic_theme_switch_white_24dp"-->
-    <!--            app:actionLayout="@layout/action_theme_switch"-->
-    <!--            android:title="@string/night_mode"/>-->
+
 
     <group
         android:id="@+id/navigation_drawer_menu_category_other"

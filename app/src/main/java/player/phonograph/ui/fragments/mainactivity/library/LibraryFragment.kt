@@ -358,10 +358,10 @@ class LibraryFragment :
             if (handleSortOrderMenuItem(currentFragment, item)) { return true }
         }
         when (item.itemId) {
-            R.id.action_shuffle_all -> {
-                MusicPlayerRemote.openAndShuffleQueue(SongLoader.getAllSongs(requireActivity()), true)
-                return true
-            }
+//            R.id.action_shuffle_all -> {
+//                MusicPlayerRemote.openAndShuffleQueue(SongLoader.getAllSongs(requireActivity()), true)
+//                return true
+//            }
             R.id.action_new_playlist -> {
                 CreatePlaylistDialog.createEmpty().show(childFragmentManager, "CREATE_PLAYLIST")
                 return true
