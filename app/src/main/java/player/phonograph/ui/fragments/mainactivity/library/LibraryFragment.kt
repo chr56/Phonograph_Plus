@@ -25,6 +25,7 @@ import com.google.android.material.tabs.TabLayout
 import player.phonograph.R
 import player.phonograph.adapter.MusicLibraryPagerAdapter
 import player.phonograph.databinding.FragmentLibraryBinding
+import player.phonograph.databinding.PopupWindowMainBinding
 import player.phonograph.dialogs.CreatePlaylistDialog
 import player.phonograph.helper.MusicPlayerRemote
 import player.phonograph.helper.SortOrder
@@ -332,14 +333,18 @@ class LibraryFragment :
     }
 
     private lateinit var popupMenu: PopupWindow
-    private lateinit var popupView: View
+//    private lateinit var popupView: View
+    private var _bindingPopup: PopupWindowMainBinding? = null
+    private val popup get() = _bindingPopup!!
     private var isPopupMenuInited: Boolean = false
 
     private fun initPopup() {
-        popupView = LayoutInflater.from(mainActivity).inflate(R.layout.popup_window_main, null, false)
+//        popupView = LayoutInflater.from(mainActivity).inflate(R.layout.popup_window_main, null, false)
+        _bindingPopup = PopupWindowMainBinding.inflate(LayoutInflater.from(mainActivity))
 
         val width = mainActivity.window.decorView.width / 2
-        popupMenu = PopupWindow(popupView, width, AppBarLayout.LayoutParams.WRAP_CONTENT, true)
+//        popupMenu = PopupWindow(popupView, width, AppBarLayout.LayoutParams.WRAP_CONTENT, true)
+        popupMenu = PopupWindow(popup.root, width, AppBarLayout.LayoutParams.WRAP_CONTENT, true)
         popupMenu.setBackgroundDrawable(ColorDrawable(mainActivity.resources.getColor(R.color.md_white_1000)))
 
         isPopupMenuInited = true
