@@ -384,8 +384,14 @@ class LibraryFragment :
 
                 val fragment = currentFragment ?: return true
 
-                if (fragment.isAdded && fragment is AbsLibraryPagerRecyclerViewCustomGridSizeFragment<*, *>)
+                if (fragment is AbsLibraryPagerRecyclerViewCustomGridSizeFragment<*, *> && fragment.isAdded) {
                     initSortOrder(popupMenu, popup, fragment)
+                    initGridSize(popupMenu, popup, fragment)
+                } else {
+                    disableSortOrder(popup)
+                    disableGridSize(popup)
+                }
+
                 return true
             }
         }
@@ -393,6 +399,11 @@ class LibraryFragment :
     }
 
     private fun initSortOrder(popupWindow: PopupWindow, popup: PopupWindowMainBinding, fragment: AbsLibraryPagerRecyclerViewCustomGridSizeFragment<*, *>) {
+        popup.sortOrderBasic.visibility = View.VISIBLE
+        popup.textSortOrderBasic.visibility = View.VISIBLE
+        popup.sortOrderContent.visibility = View.VISIBLE
+        popup.textSortOrderContent.visibility = View.VISIBLE
+
         val currentSortOrder = fragment.sortOrder
         when (currentSortOrder) {
             SortOrder.SongSortOrder.SONG_Z_A, SortOrder.SongSortOrder.SONG_YEAR_REVERT, SortOrder.SongSortOrder.SONG_DATE_MODIFIED_REVERT, SortOrder.SongSortOrder.SONG_DATE_REVERT,
@@ -402,6 +413,9 @@ class LibraryFragment :
             else -> popup.sortOrderBasic.check(R.id.sort_order_a_z)
         }
 
+//        popup.sortOrderContent.isClickable = false
+        popup.sortOrderContent.clearCheck()
+
         // TODO implement content Sort Order
         when (fragment) {
             is SongsFragment -> {
@@ -410,10 +424,12 @@ class LibraryFragment :
                     SortOrder.SongSortOrder.SONG_ALBUM -> popup.sortOrderContent.check(R.id.sort_order_album)
                     SortOrder.SongSortOrder.SONG_ARTIST -> popup.sortOrderContent.check(R.id.sort_order_artist)
                     SortOrder.SongSortOrder.SONG_YEAR, SortOrder.SongSortOrder.SONG_YEAR_REVERT -> popup.sortOrderContent.check(R.id.sort_order_year)
-                    SortOrder.SongSortOrder.SONG_DATE_MODIFIED, SortOrder.SongSortOrder.SONG_DATE_MODIFIED_REVERT -> popup.sortOrderContent.check(R.id.sort_order_date_added)
-                    SortOrder.SongSortOrder.SONG_DURATION -> { /* todo */ }
+                    SortOrder.SongSortOrder.SONG_DATE, SortOrder.SongSortOrder.SONG_DATE_REVERT -> popup.sortOrderContent.check(R.id.sort_order_date_added)
+                    SortOrder.SongSortOrder.SONG_DATE_MODIFIED, SortOrder.SongSortOrder.SONG_DATE_MODIFIED_REVERT -> popup.sortOrderContent.check(R.id.sort_order_date_modified)
+                    SortOrder.SongSortOrder.SONG_DURATION -> popup.sortOrderContent.check(R.id.sort_order_duration)
                     else -> { popup.sortOrderContent.clearCheck() }
                 }
+//                popup.sortOrderContent.isClickable = true
             }
             is AlbumsFragment -> {
                 when (currentSortOrder) {
@@ -423,6 +439,7 @@ class LibraryFragment :
                     SortOrder.AlbumSortOrder.ALBUM_NUMBER_OF_SONGS, SortOrder.AlbumSortOrder.ALBUM_NUMBER_OF_SONGS_REVERT -> { /* todo */ }
                     else -> { popup.sortOrderContent.clearCheck() }
                 }
+//                popup.sortOrderContent.isClickable = true
             }
             is ArtistsFragment -> {
                 when (currentSortOrder) {
@@ -431,12 +448,28 @@ class LibraryFragment :
                     SortOrder.ArtistSortOrder.ARTIST_NUMBER_OF_SONGS, SortOrder.ArtistSortOrder.ARTIST_NUMBER_OF_SONGS_REVERT -> { /* todo */ }
                     else -> { popup.sortOrderContent.clearCheck() }
                 }
-            }
-            else -> {
-                popup.sortOrderContent.clearCheck()
-                popup.sortOrderContent.isClickable = false
+//                popup.sortOrderContent.isClickable = true
             }
         }
+    }
+    private fun disableSortOrder(popup: PopupWindowMainBinding) {
+        popup.sortOrderBasic.visibility = View.GONE
+        popup.sortOrderBasic.clearCheck()
+        popup.textSortOrderBasic.visibility = View.GONE
+
+        popup.sortOrderContent.visibility = View.GONE
+        popup.sortOrderContent.clearCheck()
+        popup.textSortOrderContent.visibility = View.GONE
+    }
+
+    private fun initGridSize(popupWindow: PopupWindow, popup: PopupWindowMainBinding, fragment: AbsLibraryPagerRecyclerViewCustomGridSizeFragment<*, *>) {
+        popup.textGridSize.visibility = View.VISIBLE
+        popup.gridSize.visibility = View.VISIBLE
+    }
+    private fun disableGridSize(popup: PopupWindowMainBinding) {
+        popup.textGridSize.visibility = View.GONE
+        popup.gridSize.clearCheck()
+        popup.gridSize.visibility = View.GONE
     }
 
     override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) { }

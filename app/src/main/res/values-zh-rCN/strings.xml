@@ -349,6 +349,8 @@
     <string name="upgrade_notification_description">应用更新通知</string>
     <string name="action_add_to_black_list">加入黑名单</string>
     <string name="sort_order_song">歌曲</string>
+    <string name="sort_order_duration">时长</string>
+    <string name="sort_order_date_modified">修改日期</string>
     <plurals name="msg_deletion_result">
         <item quantity="other">%1$d / %2$d 个项目删除成功</item>
     </plurals>

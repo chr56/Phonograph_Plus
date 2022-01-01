@@ -7,6 +7,7 @@
     android:padding="10sp">
 
     <TextView
+        android:id="@+id/text_sort_order_basic"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="start"
@@ -36,6 +37,7 @@
     </RadioGroup>
 
     <TextView
+        android:id="@+id/text_sort_order_content"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="start"
@@ -83,9 +85,24 @@
             android:minHeight="48dp"
             android:text="@string/sort_order_date_added" />
 
+        <RadioButton
+            android:id="@+id/sort_order_date_modified"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minHeight="48dp"
+            android:text="@string/sort_order_date_modified" />
+
+        <RadioButton
+            android:id="@+id/sort_order_duration"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minHeight="48dp"
+            android:text="@string/sort_order_duration" />
+
     </RadioGroup>
 
     <TextView
+        android:id="@+id/text_grid_size"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="start"
@@ -94,6 +111,7 @@
         android:textSize="14sp" />
 
     <RadioGroup
+        android:id="@+id/grid_size"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
 
