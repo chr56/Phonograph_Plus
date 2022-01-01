@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    tools:ignore="TouchTargetSizeCheck">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -30,14 +32,14 @@
                 android:id="@+id/sort_order_a_z"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:minHeight="48dp"
+                android:minHeight="32dp"
                 android:text="@string/sort_order_a_z" />
 
             <RadioButton
                 android:id="@+id/sort_order_z_a"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:minHeight="48dp"
+                android:minHeight="32dp"
                 android:text="@string/sort_order_z_a" />
         </RadioGroup>
 
@@ -59,7 +61,7 @@
                 android:id="@+id/sort_order_song"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:minHeight="48dp"
+                android:minHeight="32dp"
                 android:text="@string/sort_order_song"
                 android:visibility="gone" />
 
@@ -67,7 +69,7 @@
                 android:id="@+id/sort_order_album"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:minHeight="48dp"
+                android:minHeight="32dp"
                 android:text="@string/sort_order_album"
                 android:visibility="gone" />
 
@@ -75,7 +77,7 @@
                 android:id="@+id/sort_order_artist"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:minHeight="48dp"
+                android:minHeight="32dp"
                 android:text="@string/sort_order_artist"
                 android:visibility="gone" />
 
@@ -83,7 +85,7 @@
                 android:id="@+id/sort_order_year"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:minHeight="48dp"
+                android:minHeight="32dp"
                 android:text="@string/sort_order_year"
                 android:visibility="gone" />
 
@@ -91,7 +93,7 @@
                 android:id="@+id/sort_order_date_added"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:minHeight="48dp"
+                android:minHeight="32dp"
                 android:text="@string/sort_order_date_added"
                 android:visibility="gone" />
 
@@ -99,7 +101,7 @@
                 android:id="@+id/sort_order_date_modified"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:minHeight="48dp"
+                android:minHeight="32dp"
                 android:text="@string/sort_order_date_modified"
                 android:visibility="gone" />
 
@@ -107,7 +109,7 @@
                 android:id="@+id/sort_order_duration"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:minHeight="48dp"
+                android:minHeight="32dp"
                 android:text="@string/sort_order_duration"
                 android:visibility="gone" />
 
@@ -130,31 +132,31 @@
             <RadioButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:minHeight="48dp"
+                android:minHeight="32dp"
                 android:text="@string/grid_size_1" />
 
             <RadioButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:minHeight="48dp"
+                android:minHeight="32dp"
                 android:text="@string/grid_size_2" />
 
             <RadioButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:minHeight="48dp"
+                android:minHeight="32dp"
                 android:text="@string/grid_size_3" />
 
             <RadioButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:minHeight="48dp"
+                android:minHeight="32dp"
                 android:text="@string/grid_size_4" />
 
             <RadioButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:minHeight="48dp"
+                android:minHeight="32dp"
                 android:text="@string/grid_size_5" />
         </RadioGroup>
 
