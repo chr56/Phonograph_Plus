@@ -383,6 +383,9 @@ class LibraryFragment :
                 if (fragment is AbsLibraryPagerRecyclerViewCustomGridSizeFragment<*, *> && fragment.isAdded) {
                     initSortOrder(popupMenu, popup, fragment)
                     initGridSize(popupMenu, popup, fragment)
+                    popupMenu.setOnDismissListener {
+                        handlePopupMenuDismiss(popup, popupMenu, fragment)
+                    }
                 } else {
                     disableSortOrder(popup)
                     disableGridSize(popup)
@@ -466,6 +469,92 @@ class LibraryFragment :
         popup.sortOrderContent.visibility = View.GONE
         popup.sortOrderContent.clearCheck()
         popup.textSortOrderContent.visibility = View.GONE
+    }
+
+    private fun handlePopupMenuDismiss(popup: PopupWindowMainBinding, popupWindow: PopupWindow, fragment: AbsLibraryPagerRecyclerViewCustomGridSizeFragment<*, *>) {
+        // saving sort order
+
+        val basicSelected = popup.sortOrderBasic.checkedRadioButtonId
+        val contentSelected = popup.sortOrderContent.checkedRadioButtonId
+
+        val sortOrderSelected: String =
+            when (fragment) {
+                //
+                is SongsFragment -> {
+                    when (contentSelected) {
+                        R.id.sort_order_song ->
+                            when (basicSelected) {
+                                R.id.sort_order_a_z -> SortOrder.SongSortOrder.SONG_A_Z
+                                R.id.sort_order_z_a -> SortOrder.SongSortOrder.SONG_Z_A
+                                else -> ""
+                            }
+                        R.id.sort_order_album -> SortOrder.SongSortOrder.SONG_ALBUM
+                        R.id.sort_order_artist -> SortOrder.SongSortOrder.SONG_ARTIST
+                        R.id.sort_order_year ->
+                            when (basicSelected) {
+                                R.id.sort_order_a_z -> SortOrder.SongSortOrder.SONG_YEAR
+                                R.id.sort_order_z_a -> SortOrder.SongSortOrder.SONG_YEAR_REVERT
+                                else -> ""
+                            }
+                        R.id.sort_order_date_added ->
+                            when (basicSelected) {
+                                R.id.sort_order_a_z -> SortOrder.SongSortOrder.SONG_DATE
+                                R.id.sort_order_z_a -> SortOrder.SongSortOrder.SONG_DATE_REVERT
+                                else -> ""
+                            }
+                        R.id.sort_order_date_modified ->
+                            when (basicSelected) {
+                                R.id.sort_order_a_z -> SortOrder.SongSortOrder.SONG_DATE_MODIFIED
+                                R.id.sort_order_z_a -> SortOrder.SongSortOrder.SONG_DATE_MODIFIED_REVERT
+                                else -> ""
+                            }
+                        R.id.sort_order_duration -> SortOrder.SongSortOrder.SONG_DURATION
+                        else -> ""
+                    }
+                }
+                //
+                is AlbumsFragment -> {
+                    when (contentSelected) {
+                        R.id.sort_order_song ->
+                            when (basicSelected) {
+                                R.id.sort_order_a_z -> SortOrder.AlbumSortOrder.ALBUM_Z_A
+                                R.id.sort_order_z_a -> SortOrder.AlbumSortOrder.ALBUM_A_Z
+                                else -> ""
+                            }
+
+                        R.id.sort_order_year ->
+                            when (basicSelected) {
+                                R.id.sort_order_a_z -> SortOrder.AlbumSortOrder.ALBUM_YEAR
+                                R.id.sort_order_z_a -> SortOrder.AlbumSortOrder.ALBUM_YEAR_REVERT
+                                else -> ""
+                            }
+                        R.id.sort_order_artist -> SortOrder.AlbumSortOrder.ALBUM_ARTIST
+                        // R.id. ->
+                        // SortOrder.AlbumSortOrder.ALBUM_NUMBER_OF_SONGS, SortOrder.AlbumSortOrder.ALBUM_NUMBER_OF_SONGS_REVERT
+                        else -> ""
+                    }
+                }
+                //
+                is ArtistsFragment -> {
+                    when (contentSelected) {
+                        R.id.sort_order_artist ->
+                            when (basicSelected) {
+                                R.id.sort_order_a_z -> SortOrder.ArtistSortOrder.ARTIST_A_Z
+                                R.id.sort_order_z_a -> SortOrder.ArtistSortOrder.ARTIST_Z_A
+                                else -> ""
+                            }
+//                        R.id. -> SortOrder.ArtistSortOrder.ARTIST_NUMBER_OF_ALBUMS, SortOrder.ArtistSortOrder.ARTIST_NUMBER_OF_ALBUMS_REVERT
+//                        R.id. -> SortOrder.ArtistSortOrder.ARTIST_NUMBER_OF_SONGS, SortOrder.ArtistSortOrder.ARTIST_NUMBER_OF_SONGS_REVERT
+                        else -> ""
+                    }
+                }
+                else -> ""
+            } // end when(fragment)
+
+        if (sortOrderSelected.isNotBlank()) {
+            if (fragment.sortOrder != sortOrderSelected)
+                fragment.setAndSaveSortOrder(sortOrderSelected)
+        }
     }
 
     private fun initGridSize(popupWindow: PopupWindow, popup: PopupWindowMainBinding, fragment: AbsLibraryPagerRecyclerViewCustomGridSizeFragment<*, *>) {
