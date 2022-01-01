@@ -19,7 +19,6 @@ import chr_56.MDthemer.color.MaterialColor
 import chr_56.MDthemer.core.ThemeColor
 import chr_56.MDthemer.util.*
 import com.afollestad.materialcab.MaterialCab
-import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.AppBarLayout.OnOffsetChangedListener
 import com.google.android.material.tabs.TabLayout
 import player.phonograph.R
@@ -333,18 +332,15 @@ class LibraryFragment :
     }
 
     private lateinit var popupMenu: PopupWindow
-//    private lateinit var popupView: View
     private var _bindingPopup: PopupWindowMainBinding? = null
     private val popup get() = _bindingPopup!!
     private var isPopupMenuInited: Boolean = false
 
     private fun initPopup() {
-//        popupView = LayoutInflater.from(mainActivity).inflate(R.layout.popup_window_main, null, false)
         _bindingPopup = PopupWindowMainBinding.inflate(LayoutInflater.from(mainActivity))
 
         val width = mainActivity.window.decorView.width / 2
-//        popupMenu = PopupWindow(popupView, width, AppBarLayout.LayoutParams.WRAP_CONTENT, true)
-        popupMenu = PopupWindow(popup.root, width, AppBarLayout.LayoutParams.WRAP_CONTENT, true)
+        popupMenu = PopupWindow(popup.root, width, ViewGroup.LayoutParams.WRAP_CONTENT, true)
         popupMenu.setBackgroundDrawable(ColorDrawable(mainActivity.resources.getColor(R.color.md_white_1000)))
 
         isPopupMenuInited = true
