@@ -459,6 +459,17 @@ class LibraryFragment :
         val coloredFooters = popup.actionColoredFooters.isChecked
         if (fragment.usePalette() != coloredFooters)
             fragment.setAndSaveUsePalette(coloredFooters)
+
+        //  Grid Size
+        var gridSize = 0
+        for (i in 0 until fragment.maxGridSize) {
+            if ((popup.gridSize.getChildAt(i) as RadioButton).isChecked) {
+                gridSize = i + 1
+                break
+            }
+        }
+        if (gridSize > 0)
+            fragment.setAndSaveGridSize(gridSize)
     }
 
     private fun initGridSize(popupWindow: PopupWindow, popup: PopupWindowMainBinding, fragment: AbsLibraryPagerRecyclerViewCustomGridSizeFragment<*, *>) {
