@@ -158,7 +158,10 @@ class LibraryFragment :
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
         inflater.inflate(R.menu.menu_main, menu)
-        if (isPlaylistPage) { menu.add(0, R.id.action_new_playlist, 0, R.string.new_playlist_title) }
+        if (isPlaylistPage) {
+//            menu.add(0, R.id.action_new_playlist, 0, R.string.new_playlist_title)
+            menu.removeItem(R.id.action_main_popup_window_menu)
+        }
 
         val currentFragment = currentFragment
 
@@ -360,10 +363,10 @@ class LibraryFragment :
 //                MusicPlayerRemote.openAndShuffleQueue(SongLoader.getAllSongs(requireActivity()), true)
 //                return true
 //            }
-            R.id.action_new_playlist -> {
-                CreatePlaylistDialog.createEmpty().show(childFragmentManager, "CREATE_PLAYLIST")
-                return true
-            }
+//            R.id.action_new_playlist -> {
+//                CreatePlaylistDialog.createEmpty().show(childFragmentManager, "CREATE_PLAYLIST")
+//                return true
+//            }
             R.id.action_search -> {
                 startActivity(Intent(mainActivity, SearchActivity::class.java))
                 return true
