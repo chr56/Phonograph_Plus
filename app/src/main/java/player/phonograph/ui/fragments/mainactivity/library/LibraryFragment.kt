@@ -253,6 +253,11 @@ class LibraryFragment :
         popup.sortOrderContent.visibility = View.VISIBLE
         popup.textSortOrderContent.visibility = View.VISIBLE
 
+        for (i in 0 until 7) {
+            val view: View? = popup.sortOrderContent.getChildAt(i)
+            view?.visibility = View.GONE
+        }
+
         val currentSortOrder = fragment.sortOrder
         when (currentSortOrder) {
             SortOrder.SongSortOrder.SONG_Z_A, SortOrder.SongSortOrder.SONG_YEAR_REVERT, SortOrder.SongSortOrder.SONG_DATE_MODIFIED_REVERT, SortOrder.SongSortOrder.SONG_DATE_REVERT,
