@@ -226,6 +226,12 @@ class LibraryFragment :
     private fun initPopup() {
         _bindingPopup = PopupWindowMainBinding.inflate(LayoutInflater.from(mainActivity))
 
+//        val primaColor = ThemeColor.primaryColor(mainActivity)
+        val accentColor = ThemeColor.accentColor(mainActivity)
+        popup.textGridSize.setTextColor(accentColor)
+        popup.textSortOrderBasic.setTextColor(accentColor)
+        popup.textSortOrderContent.setTextColor(accentColor)
+
         popupMenu = PopupWindow(popup.root, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, true)
         popupMenu.setBackgroundDrawable(ColorDrawable(mainActivity.resources.getColor(R.color.md_white_1000)))
         popupMenu.animationStyle = android.R.style.Animation_Dialog
