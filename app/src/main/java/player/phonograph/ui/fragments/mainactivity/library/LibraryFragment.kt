@@ -263,7 +263,18 @@ class LibraryFragment :
         }
 
         popupMenu = PopupWindow(popup.root, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, true)
-        popupMenu.setBackgroundDrawable(ColorDrawable(mainActivity.resources.getColor(R.color.md_white_1000)))
+
+        val backgroundColor = mainActivity.getColor(
+            when (PreferenceUtil.getInstance(mainActivity).generalTheme) {
+                R.style.Theme_Phonograph_Auto -> R.color.cardBackgroundColor
+                R.style.Theme_Phonograph_Light -> R.color.md_white_1000
+                R.style.Theme_Phonograph_Black -> R.color.md_black_1000
+                R.style.Theme_Phonograph_Dark -> R.color.md_grey_800
+                else -> R.color.md_grey_700
+            }
+        )
+        popupMenu.setBackgroundDrawable(ColorDrawable(backgroundColor))
+
         popupMenu.animationStyle = android.R.style.Animation_Dialog
 
         isPopupMenuInited = true
