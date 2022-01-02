@@ -30,7 +30,7 @@ android {
         vectorDrawables.useSupportLibrary = true
 
         applicationId 'player.phonograph'
-        versionCode 8
+        versionCode 9
         versionName '0.0.8'
         buildConfigField "String", "GIT_COMMIT_HASH", String.join('', '\"', getGitHash(1), '\"')
     }
