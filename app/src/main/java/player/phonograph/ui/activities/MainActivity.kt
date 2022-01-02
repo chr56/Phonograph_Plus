@@ -18,6 +18,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.drawerlayout.widget.DrawerLayout
 import chr_56.MDthemer.core.ThemeColor
+import chr_56.MDthemer.util.ColorUtil
 import chr_56.MDthemer.util.NavigationViewUtil
 import chr_56.MDthemer.util.Util
 import com.bumptech.glide.Glide
@@ -416,8 +417,20 @@ class MainActivity : AbsSlidingMusicPanelActivity() {
     }
 
     private fun setUpFloatingActionButton() {
-        floatingActionButton.backgroundTintList = ColorStateList.valueOf(ThemeColor.primaryColor(this))
-        floatingActionButton.rippleColor = ThemeColor.accentColor(this)
+        val primaryColor = ThemeColor.primaryColor(this)
+        val accentColor = ThemeColor.accentColor(this)
+
+        floatingActionButton.backgroundTintList = ColorStateList(
+            arrayOf(
+                intArrayOf(android.R.attr.state_activated),
+                intArrayOf(android.R.attr.state_pressed),
+                intArrayOf(),
+            ),
+            intArrayOf(
+                ColorUtil.lightenColor(primaryColor), accentColor, primaryColor
+            )
+        )
+//        floatingActionButton.rippleColor = accentColor
 
         floatingActionButton.setOnClickListener { currentFragment.handleFloatingActionButtonPress() }
     }
