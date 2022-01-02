@@ -161,12 +161,14 @@ class LibraryFragment :
         super.onCreateOptionsMenu(menu, inflater)
         val primaryColor = ThemeColor.primaryColor(mainActivity)
 
-        val popup = menu.add(0, R.id.action_main_popup_window_menu, 0, R.string.action_settings)
-        popup.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM)
-        popup.icon = TintHelper.createTintedDrawable(
-            AppCompatResources.getDrawable(requireActivity(), R.drawable.ic_sort_variant_white_24dp),
-            MaterialColorHelper.getPrimaryTextColor(requireActivity(), ColorUtil.isColorLight(primaryColor))
-        )
+        if (currentFragment is AbsLibraryPagerRecyclerViewCustomGridSizeFragment<*, *>) {
+            val popup = menu.add(0, R.id.action_main_popup_window_menu, 0, R.string.action_settings)
+            popup.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM)
+            popup.icon = TintHelper.createTintedDrawable(
+                AppCompatResources.getDrawable(requireActivity(), R.drawable.ic_sort_variant_white_24dp),
+                MaterialColorHelper.getPrimaryTextColor(requireActivity(), ColorUtil.isColorLight(primaryColor))
+            )
+        }
 
         val search = menu.add(0, R.id.action_search, 1, R.string.action_search)
         search.icon = TintHelper.createTintedDrawable(
@@ -174,11 +176,6 @@ class LibraryFragment :
             MaterialColorHelper.getPrimaryTextColor(requireActivity(), ColorUtil.isColorLight(primaryColor))
         )
         search.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS)
-
-        currentFragment?.let {
-            if (it!is AbsLibraryPagerRecyclerViewCustomGridSizeFragment<*, *>)
-                menu.removeItem(R.id.action_main_popup_window_menu)
-        }
     }
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
