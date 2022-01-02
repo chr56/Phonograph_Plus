@@ -19,6 +19,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.content.res.AppCompatResources;
 import androidx.appcompat.widget.Toolbar;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.loader.app.LoaderManager;
@@ -32,6 +33,10 @@ import com.afollestad.materialdialogs.WhichButton;
 import com.afollestad.materialdialogs.actions.DialogActionExtKt;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.snackbar.Snackbar;
+
+import chr_56.MDthemer.util.ColorUtil;
+import chr_56.MDthemer.util.MaterialColorHelper;
+import chr_56.MDthemer.util.TintHelper;
 import player.phonograph.R;
 import player.phonograph.adapter.SongFileAdapter;
 import player.phonograph.helper.MusicPlayerRemote;
@@ -51,6 +56,7 @@ import player.phonograph.util.PhonographColorUtil;
 import player.phonograph.util.PreferenceUtil;
 import player.phonograph.util.ViewUtil;
 import player.phonograph.views.BreadCrumbLayout;
+
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView;
 
 import java.io.File;
@@ -177,15 +183,17 @@ public class FoldersFragment extends AbsMainActivityFragment implements MainActi
         int primaryColor = ThemeColor.primaryColor(getActivity());
         appbar.setBackgroundColor(primaryColor);
         toolbar.setBackgroundColor(primaryColor);
-        toolbar.setTitleTextColor(ToolbarColorUtil.toolbarTitleColor(requireActivity(),primaryColor));
+        toolbar.setTitleTextColor(ToolbarColorUtil.toolbarTitleColor(requireActivity(), primaryColor));
         breadCrumbs.setBackgroundColor(primaryColor);
         breadCrumbs.setActivatedContentColor(ToolbarColorUtil.toolbarTitleColor(getActivity(), primaryColor));
         breadCrumbs.setDeactivatedContentColor(ToolbarColorUtil.toolbarSubtitleColor(getActivity(), primaryColor));
     }
 
     private void setUpToolbar() {
-        toolbar.setNavigationIcon(R.drawable.ic_menu_white_24dp);
-        getActivity().setTitle(R.string.app_name);
+        toolbar.setNavigationIcon(TintHelper.createTintedDrawable(
+                AppCompatResources.getDrawable(requireActivity(), R.drawable.ic_menu_white_24dp),
+                MaterialColorHelper.getPrimaryTextColor(requireActivity(), ColorUtil.isColorLight(ThemeColor.primaryColor(getMainActivity())))));
+        getMainActivity().setTitle(R.string.app_name);
         getMainActivity().setSupportActionBar(toolbar);
     }
 
@@ -253,17 +261,35 @@ public class FoldersFragment extends AbsMainActivityFragment implements MainActi
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.menu_folders, menu);
-        MenuTinter.setMenuColor(getActivity(), toolbar, menu, MaterialColor.White._1000.getAsColor());
-    }
 
-    @Override
-    public void onPrepareOptionsMenu(Menu menu) {
-        super.onPrepareOptionsMenu(menu);
-        MenuTinter.applyOverflowMenuTint(getActivity(), toolbar,ThemeColor.accentColor(getActivity()));
+        int primaryColor = ThemeColor.primaryColor(getMainActivity());
+
+        MenuItem scan = menu.add(0, R.id.action_scan, 0, R.string.action_scan_directory);
+        scan.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+        scan.setIcon(TintHelper.createTintedDrawable(
+                AppCompatResources.getDrawable(requireActivity(), R.drawable.ic_scanner_white_24dp),
+                MaterialColorHelper.getPrimaryTextColor(requireActivity(), ColorUtil.isColorLight(primaryColor)))
+        );
+
+        MenuItem home = menu.add(0, R.id.action_go_to_start_directory, 1, R.string.action_go_to_start_directory);
+        home.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+        home.setIcon(TintHelper.createTintedDrawable(
+                AppCompatResources.getDrawable(requireActivity(), R.drawable.ic_bookmark_music_white_24dp),
+                MaterialColorHelper.getPrimaryTextColor(requireActivity(), ColorUtil.isColorLight(primaryColor))
+        ));
+
+
+//        inflater.inflate(R.menu.menu_folders, menu);
+//        MenuTinter.setMenuColor(getActivity(), toolbar, menu, MaterialColor.White._1000.getAsColor());
     }
+//
+//    @Override
+//    public void onPrepareOptionsMenu(Menu menu) {
+//        super.onPrepareOptionsMenu(menu);
+//        MenuTinter.applyOverflowMenuTint(getActivity(), toolbar, ThemeColor.accentColor(getActivity()));
+//    }
 
     public static final FileFilter AUDIO_FILE_FILTER = file -> !file.isHidden() && (file.isDirectory() ||
             FileUtil.fileIsMimeType(file, "audio/*", MimeTypeMap.getSingleton()) ||
@@ -402,7 +428,7 @@ public class FoldersFragment extends AbsMainActivityFragment implements MainActi
                         new ArrayListPathsAsyncTask(getActivity(), this::scanPaths).execute(new ArrayListPathsAsyncTask.LoadingInfo(file, AUDIO_FILE_FILTER));
                         return true;
                     case R.id.action_add_to_black_list:
-                        BlacklistUtil.INSTANCE.addToBlacklist(requireActivity(),file);
+                        BlacklistUtil.INSTANCE.addToBlacklist(requireActivity(), file);
                         return true;
                 }
                 return false;
