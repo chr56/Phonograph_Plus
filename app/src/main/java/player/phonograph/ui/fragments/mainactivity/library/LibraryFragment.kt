@@ -18,7 +18,6 @@ import android.widget.RadioButton
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.fragment.app.Fragment
 import androidx.viewpager.widget.ViewPager
-import chr_56.MDthemer.color.MaterialColor
 import chr_56.MDthemer.core.ThemeColor
 import chr_56.MDthemer.util.*
 import com.afollestad.materialcab.MaterialCab
@@ -167,13 +166,16 @@ class LibraryFragment :
                 menu.removeItem(R.id.action_main_popup_window_menu)
         }
 
-        MenuTinter.setMenuColor(
-            mainActivity, binding.toolbar, menu, MaterialColor.White._1000.asColor
+        val primaryColor = ThemeColor.primaryColor(mainActivity)
+
+        menu.findItem(R.id.action_main_popup_window_menu).icon = TintHelper.createTintedDrawable(
+            AppCompatResources.getDrawable(requireActivity(), R.drawable.ic_sort_variant_white_24dp),
+            MaterialColorHelper.getPrimaryTextColor(requireActivity(), ColorUtil.isColorLight(primaryColor))
         )
-    }
-    override fun onPrepareOptionsMenu(menu: Menu) {
-        super.onPrepareOptionsMenu(menu)
-        MenuTinter.handleOnPrepareOptionsMenu(mainActivity, binding.toolbar)
+        menu.findItem(R.id.action_search).icon = TintHelper.createTintedDrawable(
+            AppCompatResources.getDrawable(requireActivity(), R.drawable.ic_search_white_24dp),
+            MaterialColorHelper.getPrimaryTextColor(requireActivity(), ColorUtil.isColorLight(primaryColor))
+        )
     }
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
@@ -227,7 +229,6 @@ class LibraryFragment :
     private fun initPopup() {
         _bindingPopup = PopupWindowMainBinding.inflate(LayoutInflater.from(mainActivity))
 
-//        val primaColor = ThemeColor.primaryColor(mainActivity)
         val accentColor = ThemeColor.accentColor(mainActivity)
         popup.textGridSize.setTextColor(accentColor)
         popup.textSortOrderBasic.setTextColor(accentColor)

@@ -1,18 +1,12 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".DrawerActivity">
-
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
         android:id="@+id/action_main_popup_window_menu"
         android:title="@string/action_settings"
-        android:icon="@drawable/ic_sort_variant_white_24dp"
-        app:showAsAction="ifRoom"/>
-
+        app:showAsAction="ifRoom" />
     <item
         android:id="@+id/action_search"
-        android:icon="@drawable/ic_search_white_24dp"
         android:title="@string/action_search"
         app:showAsAction="always" />
 
