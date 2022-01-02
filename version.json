@@ -1,13 +1,13 @@
 {
-    "version": "0.0.7",
-    "versionCode": 8,
-    "logSummary": "\n🎉Phonograph Plus 已恢复更新! \n\nv0.0.7[2021.12.26]\n修复 (无时间轴)纯文本歌词导致的崩溃\n修复 正在播放曲目切换后，状态栏歌词偶尔未切换\n变更 启动时检查更新使用通知提示(，并顺便微调了检查更新方式与对话框样式)，防止凭空弹出对话框引起崩溃\n变更 尝试避免潜在的崩溃(似乎仅会出现在 Android 12 上)，准备适配向SDK31(Android12)迁移\n（更新对话框在0.0.3版本以后可在设置中手动关闭，可在\"关于\"中手动检查更新）",
+    "version": "0.0.8",
+    "versionCode": 9,
+    "logSummary": "\n🎉Phonograph Plus 已恢复更新! \n\nv0.0.8 [2022.1.2]\n\n\n1. 开发 使用SDK31(Android12)开发\n2. 变更 移动主界面右上角菜单中的“随机播放所有歌曲”至抽屉\n3. 变更 移动播放列表页上的“新建播放列表”至右下角悬浮按钮\n4. 新增 支持更多(潜在的)排序方式\n5. 新增 将右上角排序方式与网格尺寸和合二为一, 并改进交互\n6. 新增 快速添加黑名单, 在歌曲(或文件)弹出菜单中,新增“添加至黑名单”选项\n7. 修复 浅色主色调下，主界面标题菜单图标不变黑\n8. 修复 设置中黑名单对话框添加新路径后未能刷新, 以及一系列稀奇古怪的问题\n9. 改进 更新提示对话框, 允许忽略某个版本更新, 改进下载引导, 以及一系列可能的稀奇古怪的问题\n10. 开发 清理代码（可能又弄坏了什么）\n\n历史版本\nv0.0.7[2021.12.26]\n修复 (无时间轴)纯文本歌词导致的崩溃\n修复 正在播放曲目切换后，状态栏歌词偶尔未切换\n变更 启动时检查更新使用通知提示(，并顺便微调了检查更新方式与对话框样式)，防止凭空弹出对话框引起崩溃\n变更 尝试避免潜在的崩溃(似乎仅会出现在 Android 12 上)，准备适配向SDK31(Android12)迁移",
     "downloadSources": [
-        "Github(v0.0.7)",
-        "Github(v0.0.6)"
+        "Github(v0.0.8)",
+        "Github(v0.0.7)"
     ],
     "downloadUris": [
-        "https://github.com/chr56/Phonograph_Plus/releases/tag/v0.0.7",
-        "https://github.com/chr56/Phonograph_Plus/releases/tag/v0.0.6"
+        "https://github.com/chr56/Phonograph_Plus/releases/tag/v0.0.8",
+        "https://github.com/chr56/Phonograph_Plus/releases/tag/v0.0.7"
     ]
 }
