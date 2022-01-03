@@ -1,98 +1,68 @@
-package player.phonograph.ui.fragments.mainactivity.library.pager;
+package player.phonograph.ui.fragments.mainactivity.library.pager
 
-import android.content.Context;
-import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.loader.app.LoaderManager;
-import androidx.loader.content.Loader;
-import androidx.recyclerview.widget.LinearLayoutManager;
-
-import player.phonograph.R;
-import player.phonograph.adapter.PlaylistAdapter;
-import player.phonograph.interfaces.LoaderIds;
-import player.phonograph.misc.WrappedAsyncTaskLoader;
-import player.phonograph.model.Playlist;
-import player.phonograph.model.smartplaylist.HistoryPlaylist;
-import player.phonograph.model.smartplaylist.LastAddedPlaylist;
-import player.phonograph.model.smartplaylist.MyTopTracksPlaylist;
-import player.phonograph.util.MediaStoreUtil;
-
-import java.util.ArrayList;
-import java.util.List;
+import android.content.Context
+import android.os.Bundle
+import androidx.loader.app.LoaderManager
+import androidx.loader.content.Loader
+import androidx.recyclerview.widget.LinearLayoutManager
+import player.phonograph.R
+import player.phonograph.adapter.PlaylistAdapter
+import player.phonograph.interfaces.LoaderIds
+import player.phonograph.misc.WrappedAsyncTaskLoader
+import player.phonograph.model.Playlist
+import player.phonograph.model.smartplaylist.HistoryPlaylist
+import player.phonograph.model.smartplaylist.LastAddedPlaylist
+import player.phonograph.model.smartplaylist.MyTopTracksPlaylist
+import player.phonograph.util.MediaStoreUtil
+import java.util.*
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
  */
-public class PlaylistsFragment extends AbsLibraryPagerRecyclerViewFragment<PlaylistAdapter, LinearLayoutManager> implements LoaderManager.LoaderCallbacks<List<Playlist>> {
-
-    private static final int LOADER_ID = LoaderIds.PLAYLISTS_FRAGMENT;
-
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        getLoaderManager().initLoader(LOADER_ID, null, this);
+// todo null safety
+class PlaylistsFragment :
+    AbsLibraryPagerRecyclerViewFragment<PlaylistAdapter, LinearLayoutManager>(),
+    LoaderManager.LoaderCallbacks<List<Playlist>> {
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        loaderManager.initLoader(LOADER_ID, null, this)
     }
 
-    @NonNull
-    @Override
-    protected LinearLayoutManager createLayoutManager() {
-        return new LinearLayoutManager(requireActivity());
+    override fun createLayoutManager(): LinearLayoutManager {
+        return LinearLayoutManager(requireActivity())
     }
 
-    @NonNull
-    @Override
-    protected PlaylistAdapter createAdapter() {
-        List<Playlist> dataSet = getAdapter() == null ? new ArrayList<>() : getAdapter().getDataSet();
-        return new PlaylistAdapter(getLibraryFragment().getMainActivity(), dataSet, R.layout.item_list_single_row, getLibraryFragment());
+    override fun createAdapter(): PlaylistAdapter {
+        val dataSet = if (adapter == null) ArrayList() else adapter!!.dataSet
+        return PlaylistAdapter(libraryFragment!!.mainActivity, dataSet, R.layout.item_list_single_row, libraryFragment)
     }
 
-    @Override
-    protected int getEmptyMessage() {
-        return R.string.no_playlists;
+    override val emptyMessage: Int = R.string.no_playlists
+
+    override fun onMediaStoreChanged() {
+        loaderManager.restartLoader(LOADER_ID, null, this)
     }
 
-    @Override
-    public void onMediaStoreChanged() {
-        getLoaderManager().restartLoader(LOADER_ID, null, this);
+    override fun onCreateLoader(id: Int, args: Bundle?): Loader<List<Playlist>> {
+        return AsyncPlaylistLoader(libraryFragment!!.mainActivity)
     }
 
-    @NonNull
-    @Override
-    public Loader<List<Playlist>> onCreateLoader(int id, Bundle args) {
-        return new AsyncPlaylistLoader(requireActivity());
+    override fun onLoadFinished(loader: Loader<List<Playlist>>, data: List<Playlist>) {
+        adapter!!.swapDataSet(data)
     }
 
-    @Override
-    public void onLoadFinished(@NonNull Loader<List<Playlist>> loader, List<Playlist> data) {
-        getAdapter().swapDataSet(data);
+    override fun onLoaderReset(loader: Loader<List<Playlist>>) {
+        adapter!!.swapDataSet(ArrayList())
     }
 
-    @Override
-    public void onLoaderReset(@NonNull Loader<List<Playlist>> loader) {
-        getAdapter().swapDataSet(new ArrayList<>());
+    private class AsyncPlaylistLoader(context: Context?) : WrappedAsyncTaskLoader<List<Playlist>>(context) {
+        override fun loadInBackground(): List<Playlist> =
+            mutableListOf<Playlist>(
+                LastAddedPlaylist(context), HistoryPlaylist(context), MyTopTracksPlaylist(context)
+            ).also { it.addAll(MediaStoreUtil.getAllPlaylists(context)) }
     }
 
-    private static class AsyncPlaylistLoader extends WrappedAsyncTaskLoader<List<Playlist>> {
-        public AsyncPlaylistLoader(Context context) {
-            super(context);
-        }
-
-        private static List<Playlist> getAllPlaylists(Context context) {
-            List<Playlist> playlists = new ArrayList<>();
-
-            playlists.add(new LastAddedPlaylist(context));
-            playlists.add(new HistoryPlaylist(context));
-            playlists.add(new MyTopTracksPlaylist(context));
-
-            playlists.addAll(MediaStoreUtil.INSTANCE.getAllPlaylists(context));
-
-            return playlists;
-        }
-
-        @Override
-        public List<Playlist> loadInBackground() {
-            return getAllPlaylists(getContext());
-        }
+    companion object {
+        private const val LOADER_ID = LoaderIds.PLAYLISTS_FRAGMENT
     }
 }
