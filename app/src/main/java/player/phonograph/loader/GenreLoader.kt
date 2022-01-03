@@ -1,91 +1,89 @@
-package player.phonograph.loader;
+package player.phonograph.loader
 
-import android.content.Context;
-import android.database.Cursor;
-import android.os.Build;
-import android.provider.MediaStore.Audio.Genres;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+import android.annotation.SuppressLint
+import android.content.Context
+import android.database.Cursor
+import android.os.Build
+import android.provider.MediaStore
+import player.phonograph.model.Genre
+import player.phonograph.model.Song
+import player.phonograph.util.PreferenceUtil.Companion.getInstance
+import java.lang.Exception
+import java.util.ArrayList
 
-import player.phonograph.model.Genre;
-import player.phonograph.model.Song;
-import player.phonograph.util.PreferenceUtil;
-
-import java.util.ArrayList;
-import java.util.List;
-
-public class GenreLoader {
-
-    @NonNull
-    public static List<Genre> getAllGenres(@NonNull final Context context) {
-        return getGenresFromCursor(context, makeGenreCursor(context));
+@SuppressLint("Recycle")
+object GenreLoader {
+    @JvmStatic
+    fun getAllGenres(context: Context): List<Genre> {
+        return getGenresFromCursor(context, makeGenreCursor(context))
     }
 
-    @NonNull
-    public static List<Song> getSongs(@NonNull final Context context, final long genreId) {
-        return SongLoader.getSongs(makeGenreSongCursor(context, genreId));
+    fun getSongs(context: Context, genreId: Long): List<Song> {
+        return SongLoader.getSongs(makeGenreSongCursor(context, genreId))
     }
 
-    @NonNull
-    private static List<Genre> getGenresFromCursor(@NonNull final Context context, @Nullable final Cursor cursor) {
-        final List<Genre> genres = new ArrayList<>();
+    private fun getGenresFromCursor(context: Context, cursor: Cursor?): List<Genre> {
+        val genres: MutableList<Genre> = ArrayList()
         if (cursor != null) {
             if (cursor.moveToFirst()) {
                 do {
-                    Genre genre = getGenreFromCursor(context, cursor);
+                    val genre = getGenreFromCursor(context, cursor)
                     if (genre.songCount > 0) {
-                        genres.add(genre);
+                        genres.add(genre)
                     } else {
                         // try to remove the empty genre from the media store
-                        if (Build.VERSION.SDK_INT< Build.VERSION_CODES.Q){
+                        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
                             try {
-                                context.getContentResolver().delete(Genres.EXTERNAL_CONTENT_URI, Genres._ID + " == " + genre.id, null);
-                            } catch (Exception e) {
-                                e.printStackTrace();
+                                context.contentResolver.delete(
+                                    MediaStore.Audio.Genres.EXTERNAL_CONTENT_URI,
+                                    MediaStore.Audio.Genres._ID + " == " + genre.id,
+                                    null
+                                )
+                            } catch (e: Exception) {
+                                e.printStackTrace()
                                 // nothing we can do then
                             }
                         }
-
                     }
-                } while (cursor.moveToNext());
+                } while (cursor.moveToNext())
             }
-            cursor.close();
+            cursor.close()
         }
-        return genres;
+        return genres
     }
 
-    @NonNull
-    private static Genre getGenreFromCursor(@NonNull final Context context, @NonNull final Cursor cursor) {
-        final long id = cursor.getLong(0);
-        final String name = cursor.getString(1);
-        final int songs = getSongs(context, id).size();
-        return new Genre(id, name, songs);
+    private fun getGenreFromCursor(context: Context, cursor: Cursor): Genre {
+        val id = cursor.getLong(0)
+        val name = cursor.getString(1)
+        val songs = getSongs(context, id).size
+        return Genre(id, name, songs)
     }
 
-    @Nullable
-    private static Cursor makeGenreSongCursor(@NonNull final Context context, long genreId) {
-        try {
-            return context.getContentResolver().query(
-                    Genres.Members.getContentUri("external", genreId),
-                    SongLoader.BASE_PROJECTION, SongLoader.BASE_SELECTION, null, PreferenceUtil.getInstance(context).getSongSortOrder());
-        } catch (SecurityException e) {
-            return null;
+    private fun makeGenreSongCursor(context: Context, genreId: Long): Cursor? {
+        return try {
+            context.contentResolver.query(
+                MediaStore.Audio.Genres.Members.getContentUri("external", genreId),
+                SongLoader.BASE_PROJECTION,
+                SongLoader.BASE_SELECTION,
+                null,
+                getInstance(context).songSortOrder
+            )
+        } catch (e: SecurityException) {
+            null
         }
     }
 
-    @Nullable
-    private static Cursor makeGenreCursor(@NonNull final Context context) {
-        final String[] projection = new String[]{
-                Genres._ID,
-                Genres.NAME
-        };
-
-        try {
-            return context.getContentResolver().query(
-                    Genres.EXTERNAL_CONTENT_URI,
-                    projection, null, null, PreferenceUtil.getInstance(context).getGenreSortOrder());
-        } catch (SecurityException e) {
-            return null;
+    private fun makeGenreCursor(context: Context): Cursor? {
+        val projection = arrayOf(
+            MediaStore.Audio.Genres._ID, MediaStore.Audio.Genres.NAME
+        )
+        return try {
+            context.contentResolver.query(
+                MediaStore.Audio.Genres.EXTERNAL_CONTENT_URI,
+                projection, null, null, getInstance(context).genreSortOrder
+            )
+        } catch (e: SecurityException) {
+            null
         }
     }
 }
