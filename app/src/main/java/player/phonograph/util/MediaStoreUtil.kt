@@ -219,7 +219,7 @@ object MediaStoreUtil {
      **        Playlists         **
      *****************************/
 
-    fun getAllPlaylists(context: Context): List<Playlist?> {
+    fun getAllPlaylists(context: Context): List<Playlist> {
         return getAllPlaylists(
             queryPlaylists(context, null, null)
         )

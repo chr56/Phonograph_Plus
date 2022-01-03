@@ -11,12 +11,12 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import player.phonograph.R;
 import player.phonograph.adapter.PlaylistAdapter;
 import player.phonograph.interfaces.LoaderIds;
-import player.phonograph.loader.PlaylistLoader;
 import player.phonograph.misc.WrappedAsyncTaskLoader;
 import player.phonograph.model.Playlist;
 import player.phonograph.model.smartplaylist.HistoryPlaylist;
 import player.phonograph.model.smartplaylist.LastAddedPlaylist;
 import player.phonograph.model.smartplaylist.MyTopTracksPlaylist;
+import player.phonograph.util.MediaStoreUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -85,7 +85,7 @@ public class PlaylistsFragment extends AbsLibraryPagerRecyclerViewFragment<Playl
             playlists.add(new HistoryPlaylist(context));
             playlists.add(new MyTopTracksPlaylist(context));
 
-            playlists.addAll(PlaylistLoader.getAllPlaylists(context));
+            playlists.addAll(MediaStoreUtil.INSTANCE.getAllPlaylists(context));
 
             return playlists;
         }

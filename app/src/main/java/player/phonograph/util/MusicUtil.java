@@ -19,29 +19,19 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.FileProvider;
 
-import player.phonograph.BuildConfig;
+import java.io.File;
+import java.io.IOException;
+import java.util.List;
+import java.util.Locale;
+
 import player.phonograph.R;
 import player.phonograph.helper.MusicPlayerRemote;
-import player.phonograph.loader.PlaylistLoader;
 import player.phonograph.loader.SongLoader;
 import player.phonograph.model.Album;
 import player.phonograph.model.Artist;
 import player.phonograph.model.Genre;
 import player.phonograph.model.Playlist;
 import player.phonograph.model.Song;
-import player.phonograph.model.lyrics.AbsLyrics;
-import player.phonograph.model.lyrics.LyricsParsed;
-import player.phonograph.model.lyrics.LyricsParsedSynchronized;
-
-import org.jaudiotagger.audio.AudioFileIO;
-import org.jaudiotagger.tag.FieldKey;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.regex.Pattern;
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
@@ -300,11 +290,11 @@ public class MusicUtil {
     }
 
     public static Playlist getFavoritesPlaylist(@NonNull final Context context) {
-        return PlaylistLoader.getPlaylist(context, context.getString(R.string.favorites));
+        return MediaStoreUtil.INSTANCE.getPlaylist(context, context.getString(R.string.favorites));
     }
 
     private static Playlist getOrCreateFavoritesPlaylist(@NonNull final Context context) {
-        return PlaylistLoader.getPlaylist(context, PlaylistsUtil.createPlaylist(context, context.getString(R.string.favorites)));
+        return MediaStoreUtil.INSTANCE.getPlaylist(context, PlaylistsUtil.createPlaylist(context, context.getString(R.string.favorites)));
     }
 
     public static boolean isFavorite(@NonNull final Context context, @NonNull final Song song) {

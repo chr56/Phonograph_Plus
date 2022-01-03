@@ -8,8 +8,8 @@ import androidx.fragment.app.DialogFragment
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.list.listItemsSingleChoice
 import player.phonograph.R
-import player.phonograph.loader.PlaylistLoader
 import player.phonograph.model.Song
+import player.phonograph.util.MediaStoreUtil
 import player.phonograph.util.PlaylistsUtil
 
 /**
@@ -18,7 +18,7 @@ import player.phonograph.util.PlaylistsUtil
 class AddToPlaylistDialog : DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val songs: List<Song> = requireArguments().getParcelableArrayList(SONG)!!
-        val playlists = PlaylistLoader.getAllPlaylists(requireActivity())
+        val playlists = MediaStoreUtil.getAllPlaylists(requireActivity())
 
         val playlistNames: List<CharSequence> = List<CharSequence>(playlists.size + 1) {
             if (it == 0) {

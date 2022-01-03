@@ -36,7 +36,6 @@ import player.phonograph.helper.MusicPlayerRemote
 import player.phonograph.helper.menu.PlaylistMenuHelper.handleMenuClick
 import player.phonograph.interfaces.CabHolder
 import player.phonograph.interfaces.LoaderIds
-import player.phonograph.loader.PlaylistLoader
 import player.phonograph.loader.PlaylistSongLoader
 import player.phonograph.misc.WrappedAsyncTaskLoader
 import player.phonograph.model.AbsCustomPlaylist
@@ -46,11 +45,7 @@ import player.phonograph.model.smartplaylist.HistoryPlaylist
 import player.phonograph.model.smartplaylist.LastAddedPlaylist
 import player.phonograph.model.smartplaylist.MyTopTracksPlaylist
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
-import player.phonograph.util.FileSaver
-import player.phonograph.util.PhonographColorUtil
-import player.phonograph.util.PlaylistsUtil
-import player.phonograph.util.ViewUtil
-import java.lang.Exception
+import player.phonograph.util.*
 
 class PlaylistDetailActivity : AbsSlidingMusicPanelActivity() {
     private lateinit var binding: ActivityPlaylistDetailBinding // init in OnCreate()
@@ -236,7 +231,7 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity() {
             // Playlist renamed
             val playlistName = PlaylistsUtil.getNameForPlaylist(this, playlist.id)
             if (playlistName != playlist.name) {
-                playlist = PlaylistLoader.getPlaylist(this, playlist.id)
+                playlist = MediaStoreUtil.getPlaylist(this, playlist.id)
                 setToolbarTitle(playlist.name)
             }
         }
