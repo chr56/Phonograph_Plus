@@ -1,151 +1,135 @@
-package player.phonograph.ui.fragments.player;
+package player.phonograph.ui.fragments.player
 
-import android.annotation.SuppressLint;
-import android.content.Context;
-import android.graphics.PorterDuff;
-import android.os.Bundle;
-import android.view.GestureDetector;
-import android.view.LayoutInflater;
-import android.view.MotionEvent;
-import android.view.View;
-import android.view.ViewGroup;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
-import chr_56.MDthemer.core.ThemeColor;
-import chr_56.MDthemer.util.Util;
-import player.phonograph.R;
-import player.phonograph.databinding.FragmentMiniPlayerBinding;
-import player.phonograph.helper.MusicPlayerRemote;
-import player.phonograph.helper.MusicProgressViewUpdateHelper;
-import player.phonograph.helper.PlayPauseButtonOnClickHandler;
-import player.phonograph.ui.fragments.AbsMusicServiceFragment;
-import player.phonograph.views.PlayPauseDrawable;
+import android.annotation.SuppressLint
+import android.content.Context
+import android.graphics.PorterDuff
+import android.os.Bundle
+import android.view.*
+import chr_56.MDthemer.core.ThemeColor
+import chr_56.MDthemer.util.Util
+import player.phonograph.R
+import player.phonograph.databinding.FragmentMiniPlayerBinding
+import player.phonograph.helper.MusicPlayerRemote
+import player.phonograph.helper.MusicProgressViewUpdateHelper
+import player.phonograph.helper.PlayPauseButtonOnClickHandler
+import player.phonograph.ui.fragments.AbsMusicServiceFragment
+import player.phonograph.views.PlayPauseDrawable
+import kotlin.math.abs
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
  */
-public class MiniPlayerFragment extends AbsMusicServiceFragment implements MusicProgressViewUpdateHelper.Callback {
+class MiniPlayerFragment : AbsMusicServiceFragment(), MusicProgressViewUpdateHelper.Callback {
+    private var viewBinding: FragmentMiniPlayerBinding? = null
+    private val binding get() = viewBinding!!
 
-    private FragmentMiniPlayerBinding viewBinding;
+    private var miniPlayerPlayPauseDrawable: PlayPauseDrawable? = null
+    private var progressViewUpdateHelper: MusicProgressViewUpdateHelper = MusicProgressViewUpdateHelper(this)
 
-    private PlayPauseDrawable miniPlayerPlayPauseDrawable;
-    private MusicProgressViewUpdateHelper progressViewUpdateHelper;
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        viewBinding = FragmentMiniPlayerBinding.inflate(getLayoutInflater());
-        super.onCreate(savedInstanceState);
-        progressViewUpdateHelper = new MusicProgressViewUpdateHelper(this);
+    override fun onCreate(savedInstanceState: Bundle?) {
+        viewBinding = FragmentMiniPlayerBinding.inflate(layoutInflater)
+        super.onCreate(savedInstanceState)
     }
 
-    @Nullable
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return viewBinding.getRoot();
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        return binding.root
     }
 
-    @Override
-    public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
-        view.setOnTouchListener(new FlingPlayBackController(getActivity()));
-        setUpMiniPlayer();
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        view.setOnTouchListener(FlingPlayBackController(activity))
+        setUpMiniPlayer()
     }
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        viewBinding = null;
+    override fun onDestroyView() {
+        super.onDestroyView()
+        viewBinding = null
     }
 
-
-    private void setUpMiniPlayer() {
-        setUpPlayPauseButton();
-        viewBinding.progressIndicator.setIndicatorColor(ThemeColor.accentColor(requireContext()));
+    private fun setUpMiniPlayer() {
+        setUpPlayPauseButton()
+        binding.progressIndicator.setIndicatorColor(ThemeColor.accentColor(requireContext()))
     }
 
-    private void setUpPlayPauseButton() {
-        miniPlayerPlayPauseDrawable = new PlayPauseDrawable(requireContext());
-        viewBinding.miniPlayerPlayPauseButton.setImageDrawable(miniPlayerPlayPauseDrawable);
-        viewBinding.miniPlayerPlayPauseButton.setColorFilter(Util.resolveColor(requireActivity(), R.attr.iconColor, ThemeColor.textColorSecondary(requireActivity())), PorterDuff.Mode.SRC_IN);
-        viewBinding.miniPlayerPlayPauseButton.setOnClickListener(new PlayPauseButtonOnClickHandler());
+    private fun setUpPlayPauseButton() {
+        miniPlayerPlayPauseDrawable = PlayPauseDrawable(requireContext())
+        binding.miniPlayerPlayPauseButton.setImageDrawable(miniPlayerPlayPauseDrawable)
+        binding.miniPlayerPlayPauseButton.setColorFilter(
+            Util.resolveColor(
+                requireActivity(),
+                R.attr.iconColor,
+                ThemeColor.textColorSecondary(requireActivity())
+            ),
+            PorterDuff.Mode.SRC_IN
+        )
+        binding.miniPlayerPlayPauseButton.setOnClickListener(PlayPauseButtonOnClickHandler())
     }
 
-    private void updateSongTitle() {
-        viewBinding.miniPlayerTitle.setText(MusicPlayerRemote.getCurrentSong().title);
+    private fun updateSongTitle() {
+        binding.miniPlayerTitle.text = MusicPlayerRemote.getCurrentSong().title
     }
 
-    @Override
-    public void onServiceConnected() {
-        updateSongTitle();
-        updatePlayPauseDrawableState(false);
+    override fun onServiceConnected() {
+        updateSongTitle()
+        updatePlayPauseDrawableState(false)
     }
 
-    @Override
-    public void onPlayingMetaChanged() {
-        updateSongTitle();
+    override fun onPlayingMetaChanged() {
+        updateSongTitle()
     }
 
-    @Override
-    public void onPlayStateChanged() {
-        updatePlayPauseDrawableState(true);
+    override fun onPlayStateChanged() {
+        updatePlayPauseDrawableState(true)
     }
 
-    @Override
-    public void onUpdateProgressViews(int progress, int total) {
-        viewBinding.progressIndicator.setMax(total);
-        viewBinding.progressIndicator.setProgress(progress);
-        viewBinding.progressIndicator.show();
+    override fun onUpdateProgressViews(progress: Int, total: Int) {
+        binding.progressIndicator.max = total
+        binding.progressIndicator.progress = progress
+        binding.progressIndicator.show()
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        progressViewUpdateHelper.start();
+    override fun onResume() {
+        super.onResume()
+        progressViewUpdateHelper.start()
     }
 
-    @Override
-    public void onPause() {
-        super.onPause();
-        progressViewUpdateHelper.stop();
+    override fun onPause() {
+        super.onPause()
+        progressViewUpdateHelper.stop()
     }
 
-    private static class FlingPlayBackController implements View.OnTouchListener {
+    private class FlingPlayBackController(context: Context?) : View.OnTouchListener {
+        var flingPlayBackController: GestureDetector =
+            GestureDetector(
+                context,
+                object : GestureDetector.SimpleOnGestureListener() {
+                    override fun onFling(e1: MotionEvent, e2: MotionEvent, velocityX: Float, velocityY: Float): Boolean {
 
-        GestureDetector flingPlayBackController;
-
-        public FlingPlayBackController(Context context) {
-            flingPlayBackController = new GestureDetector(context, new GestureDetector.SimpleOnGestureListener() {
-                @Override
-                public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-                    if (Math.abs(velocityX) > Math.abs(velocityY)) {
-                        if (velocityX < 0) {
-                            MusicPlayerRemote.playNextSong();
-                            return true;
-                        } else if (velocityX > 0) {
-                            MusicPlayerRemote.playPreviousSong();
-                            return true;
+                        if (abs(velocityX) > abs(velocityY)) {
+                            if (velocityX < 0) {
+                                MusicPlayerRemote.playNextSong()
+                                return true
+                            } else if (velocityX > 0) {
+                                MusicPlayerRemote.playPreviousSong()
+                                return true
+                            }
                         }
+                        return false
                     }
-                    return false;
                 }
-            });
-        }
+            )
 
         @SuppressLint("ClickableViewAccessibility")
-        @Override
-        public boolean onTouch(View v, MotionEvent event) {
-            return flingPlayBackController.onTouchEvent(event);
+        override fun onTouch(v: View, event: MotionEvent): Boolean {
+            return flingPlayBackController.onTouchEvent(event)
         }
     }
 
-    protected void updatePlayPauseDrawableState(boolean animate) {
+    protected fun updatePlayPauseDrawableState(animate: Boolean) {
         if (MusicPlayerRemote.isPlaying()) {
-            miniPlayerPlayPauseDrawable.setPause(animate);
+            miniPlayerPlayPauseDrawable!!.setPause(animate)
         } else {
-            miniPlayerPlayPauseDrawable.setPlay(animate);
+            miniPlayerPlayPauseDrawable!!.setPlay(animate)
         }
     }
 }
