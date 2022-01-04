@@ -2,12 +2,12 @@ package player.phonograph.ui.activities;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
+import android.graphics.BlendModeColorFilter;
+import android.graphics.ColorFilter;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.text.Html;
 import android.text.Spanned;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -15,6 +15,9 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.content.res.AppCompatResources;
+import androidx.core.graphics.BlendModeColorFilterCompat;
+import androidx.core.graphics.BlendModeCompat;
 import androidx.loader.app.LoaderManager;
 import androidx.loader.content.Loader;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -25,7 +28,6 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.WhichButton;
 import com.afollestad.materialdialogs.actions.DialogActionExtKt;
 import com.bumptech.glide.Glide;
-import com.github.ksoichiro.android.observablescrollview.ObservableRecyclerView;
 
 import java.util.List;
 import java.util.Locale;
@@ -172,10 +174,19 @@ public class AlbumDetailActivity extends AbsSlidingMusicPanelActivity implements
 
         int secondaryTextColor = MaterialColorHelper.getSecondaryTextColor(this, ColorUtil.isColorLight(color));
 
-        viewBinding.artistIcon.setColorFilter(secondaryTextColor, PorterDuff.Mode.SRC_IN);
-        viewBinding.durationIcon.setColorFilter(secondaryTextColor, PorterDuff.Mode.SRC_IN);
-        viewBinding.songCountIcon.setColorFilter(secondaryTextColor, PorterDuff.Mode.SRC_IN);
-        viewBinding.albumYearIcon.setColorFilter(secondaryTextColor, PorterDuff.Mode.SRC_IN);
+
+        ColorFilter f = BlendModeColorFilterCompat
+                .createBlendModeColorFilterCompat(secondaryTextColor, BlendModeCompat.SRC_IN);
+
+        viewBinding.artistIcon.setImageDrawable(AppCompatResources.getDrawable(this,R.drawable.ic_person_white_24dp));
+        viewBinding.artistIcon.setColorFilter(f);
+        viewBinding.durationIcon.setImageDrawable(AppCompatResources.getDrawable(this,R.drawable.ic_timer_white_24dp));
+        viewBinding.durationIcon.setColorFilter(f);
+        viewBinding.songCountIcon.setImageDrawable(AppCompatResources.getDrawable(this,R.drawable.ic_music_note_white_24dp));
+        viewBinding.songCountIcon.setColorFilter(f);
+        viewBinding.albumYearIcon.setImageDrawable(AppCompatResources.getDrawable(this,R.drawable.ic_event_white_24dp));
+        viewBinding.albumYearIcon.setColorFilter(f);
+
         viewBinding.artistText.setTextColor(MaterialColorHelper.getPrimaryTextColor(this, ColorUtil.isColorLight(color)));
         viewBinding.durationText.setTextColor(secondaryTextColor);
         viewBinding.songCountText.setTextColor(secondaryTextColor);

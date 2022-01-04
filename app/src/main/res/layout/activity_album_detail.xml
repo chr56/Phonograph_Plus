@@ -85,7 +85,6 @@
                             android:layout_marginLeft="0dp"
                             android:layout_marginRight="8dp"
                             android:layout_marginStart="0dp"
-                            app:srcCompat="@drawable/ic_person_white_24dp"
                             tools:ignore="ContentDescription,UnusedAttribute" />
 
                         <TextView
@@ -117,7 +116,6 @@
                             android:layout_marginLeft="0dp"
                             android:layout_marginRight="8dp"
                             android:layout_marginStart="0dp"
-                            app:srcCompat="@drawable/ic_music_note_white_24dp"
                             tools:ignore="ContentDescription,UnusedAttribute" />
 
                         <TextView
@@ -147,7 +145,6 @@
                             android:layout_marginLeft="0dp"
                             android:layout_marginRight="8dp"
                             android:layout_marginStart="0dp"
-                            app:srcCompat="@drawable/ic_timer_white_24dp"
                             tools:ignore="ContentDescription,UnusedAttribute" />
 
                         <TextView
@@ -177,7 +174,6 @@
                             android:layout_marginLeft="0dp"
                             android:layout_marginRight="8dp"
                             android:layout_marginStart="0dp"
-                            app:srcCompat="@drawable/ic_event_white_24dp"
                             tools:ignore="ContentDescription,UnusedAttribute" />
 
                         <TextView
