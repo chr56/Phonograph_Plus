@@ -39,12 +39,14 @@
 
                 <include
                     layout="@layout/bug_report_card_report"
+                    android:id="@+id/v"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="8dp" />
 
                 <include
                     layout="@layout/bug_report_card_device_info"
+                    android:id="@+id/infoCard"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
 
