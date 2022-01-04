@@ -9,7 +9,9 @@ import android.util.Log
 import androidx.appcompat.content.res.AppCompatResources
 import chr_56.MDthemer.core.ThemeColor
 import player.phonograph.appshortcuts.DynamicShortcutManager
+import player.phonograph.database.mediastore.MusicDatabase
 import player.phonograph.ui.activities.CrashActivity
+import java.util.*
 import kotlin.system.exitProcess
 
 /**
@@ -56,6 +58,9 @@ class App : Application() {
                 PACKAGE_NAME,
                 false
             )
+
+        // database
+        MusicDatabase.songsDataBase.lastAccessTimestamp = Calendar.getInstance().timeInMillis
     }
 
     fun nightmode(): Boolean {

@@ -77,17 +77,19 @@ abstract class SongDataBase : RoomDatabase() {
 }
 
 object MusicDatabase {
-    private fun initSongDataBase(): SongDataBase {
+    private var innerSongsDataBase: SongDataBase? = null
+
+    private fun initSongDataBase() {
         // todo disable allowMainThreadQueries
-        return Room.databaseBuilder(App.instance, SongDataBase::class.java, "musicV1.db")
+        innerSongsDataBase = Room.databaseBuilder(App.instance, SongDataBase::class.java, "musicV1.db")
             .allowMainThreadQueries().build()
     }
 
-    var songsDataBase: SongDataBase? = null
-        get() = if (field == null) {
-            initSongDataBase()
-        } else field
-        private set
+    val songsDataBase: SongDataBase
+        get() {
+            if (innerSongsDataBase == null) { initSongDataBase() }
+            return innerSongsDataBase!!
+        }
 }
 
 // todo remove
