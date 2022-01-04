@@ -1,39 +1,25 @@
-package player.phonograph.ui.activities.bugreport.model.github;
+package player.phonograph.ui.activities.bugreport.model.github
 
-import android.text.TextUtils;
+import android.text.TextUtils
 
-public class GithubLogin {
+class GithubLogin {
+    val username: String?
+    val password: String?
+    val apiToken: String?
 
-    private final String username;
-    private final String password;
-    private final String apiToken;
-
-    public GithubLogin(String username, String password) {
-        this.username = username;
-        this.password = password;
-        this.apiToken = null;
+    constructor(username: String?, password: String?) {
+        this.username = username
+        this.password = password
+        apiToken = null
     }
 
-    public GithubLogin(String apiToken) {
-        this.username = null;
-        this.password = null;
-        this.apiToken = apiToken;
+    constructor(apiToken: String?) {
+        username = null
+        password = null
+        this.apiToken = apiToken
     }
 
-    public String getUsername() {
-        return username;
+    fun shouldUseApiToken(): Boolean {
+        return TextUtils.isEmpty(username) || TextUtils.isEmpty(password)
     }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public boolean shouldUseApiToken() {
-        return TextUtils.isEmpty(username) || TextUtils.isEmpty(password);
-    }
-
-    public String getApiToken() {
-        return apiToken;
-    }
-
 }

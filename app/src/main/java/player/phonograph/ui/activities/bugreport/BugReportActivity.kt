@@ -39,7 +39,7 @@ import java.io.IOException
 
 class BugReportActivity : ThemeActivity() {
 
-    private var deviceInfo: DeviceInfo? = null
+    private lateinit var deviceInfo: DeviceInfo
 
     private var activityBinding: ActivityBugReportBinding? = null
     private val binding get() = activityBinding!!
@@ -50,66 +50,7 @@ class BugReportActivity : ThemeActivity() {
 //    private var viewBindingInfoCard: BugReportCardDeviceInfoBinding? = null
 //    private val infoCard get() = viewBindingInfoCard!!
 
-//
-//    //    @BindView(R.id.toolbar)
-//    @JvmField
-//    var toolbar: Toolbar? = null
-//
-// //        @BindView(R.id.input_layout_title)
-//    @JvmField
-//    var inputLayoutTitle: TextInputLayout? = null
-//
-//    //    @BindView(R.id.input_title)
-//    @JvmField
-//    var inputTitle: TextInputEditText? = null
-//
-//    //    @BindView(R.id.input_layout_description)
-//    @JvmField
-//    var inputLayoutDescription: TextInputLayout? = null
-//
-//    //    @BindView(R.id.input_description)
-//    @JvmField
-//    var inputDescription: TextInputEditText? = null
-//
-//        @BindView(R.id.air_textDeviceInfo)
-//    @JvmField
-//    var textDeviceInfo: TextView? = null
-//
-//    //    @BindView(R.id.input_layout_username)
-//    @JvmField
-//    var inputLayoutUsername: TextInputLayout? = null
-//
-//    //    @BindView(R.id.input_username)
-//    @JvmField
-//    var inputUsername: TextInputEditText? = null
-//
-//    //    @BindView(R.id.input_layout_password)
-//    @JvmField
-//    var inputLayoutPassword: TextInputLayout? = null
-//
-//    //    @BindView(R.id.input_password)
-//    @JvmField
-//    var inputPassword: TextInputEditText? = null
-//
-//    //    @BindView(R.id.option_use_account)
-//    @JvmField
-//    var optionUseAccount: RadioButton? = null
-//
-//    //    @BindView(R.id.option_anonymous)
-//    @JvmField
-//    var optionManual: RadioButton? = null
-//
-//    @BindView(R.id.button_send)
-//    @JvmField
-//    var sendFab: FloatingActionButton? = null
-
-    @StringDef(
-        RESULT_OK,
-        RESULT_BAD_CREDENTIALS,
-        RESULT_INVALID_TOKEN,
-        RESULT_ISSUES_NOT_ENABLED,
-        RESULT_UNKNOWN
-    )
+    @StringDef(RESULT_OK, RESULT_BAD_CREDENTIALS, RESULT_INVALID_TOKEN, RESULT_ISSUES_NOT_ENABLED, RESULT_UNKNOWN)
     @kotlin.annotation.Retention(AnnotationRetention.SOURCE)
     private annotation class Result
 

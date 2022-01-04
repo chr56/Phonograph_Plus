@@ -1,59 +1,62 @@
-package player.phonograph.ui.activities.bugreport.model.github;
+package player.phonograph.ui.activities.bugreport.model.github
 
-import java.util.LinkedHashMap;
-import java.util.Map;
+class ExtraInfo {
+    private val extraInfo: MutableMap<String, String> = LinkedHashMap()
 
-public class ExtraInfo {
-    private final Map<String, String> extraInfo = new LinkedHashMap<>();
-
-    public void put(String key, String value) {
-        extraInfo.put(key, value);
+    fun put(key: String, value: String) {
+        extraInfo[key] = value
     }
 
-    public void put(String key, boolean value) {
-        extraInfo.put(key, Boolean.toString(value));
+    fun put(key: String, value: Boolean) {
+        extraInfo[key] = value.toString()
     }
 
-    public void put(String key, double value) {
-        extraInfo.put(key, Double.toString(value));
+    fun put(key: String, value: Double) {
+        extraInfo[key] = value.toString()
     }
 
-    public void put(String key, float value) {
-        extraInfo.put(key, Float.toString(value));
+    fun put(key: String, value: Float) {
+        extraInfo[key] = value.toString()
     }
 
-    public void put(String key, long value) {
-        extraInfo.put(key, Long.toString(value));
+    fun put(key: String, value: Long) {
+        extraInfo[key] = value.toString()
     }
 
-    public void put(String key, int value) {
-        extraInfo.put(key, Integer.toString(value));
+    fun put(key: String, value: Int) {
+        extraInfo[key] = value.toString()
     }
 
-    public void put(String key, Object value) {
-        extraInfo.put(key, String.valueOf(value));
+    fun put(key: String, value: Any) {
+        extraInfo[key] = value.toString()
     }
 
-    public void remove(String key) {
-        extraInfo.remove(key);
+    fun remove(key: String) {
+        extraInfo.remove(key)
     }
 
-    public String toMarkdown() {
-        if (extraInfo.isEmpty()) return "";
+    fun toMarkdown(): String {
+        if (extraInfo.isEmpty()) return ""
 
-        StringBuilder output = new StringBuilder();
-        output.append("Extra info:\n"
-                + "---\n"
-                + "<table>\n");
-        for (String key : extraInfo.keySet()) {
+        val output = StringBuilder()
+        output.append(
+            """
+    Extra info:
+    ---
+    <table>
+    
+            """.trimIndent()
+        )
+
+        for (key in extraInfo.keys) {
             output.append("<tr><td>")
-                    .append(key)
-                    .append("</td><td>")
-                    .append(extraInfo.get(key))
-                    .append("</td></tr>\n");
+                .append(key)
+                .append("</td><td>")
+                .append(extraInfo[key])
+                .append("</td></tr>\n")
         }
-        output.append("</table>\n");
 
-        return output.toString();
+        output.append("</table>\n")
+        return output.toString()
     }
 }
