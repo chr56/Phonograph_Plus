@@ -4,12 +4,10 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.View;
 import android.widget.EditText;
 
 import androidx.annotation.NonNull;
-
-import player.phonograph.R;
-import player.phonograph.loader.SongLoader;
 
 import org.jaudiotagger.tag.FieldKey;
 
@@ -18,37 +16,45 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import chr_56.MDthemer.util.ToolbarColorUtil;
+import player.phonograph.R;
+import player.phonograph.databinding.ActivitySongTagEditorBinding;
+import player.phonograph.loader.SongLoader;
 
 public class SongTagEditorActivity extends AbsTagEditorActivity implements TextWatcher {
 
-    @BindView(R.id.title1)
+    protected ActivitySongTagEditorBinding viewBinding;
+
     EditText songTitle;
-    @BindView(R.id.title2)
     EditText albumTitle;
-    @BindView(R.id.artist)
     EditText artist;
-    @BindView(R.id.genre)
     EditText genre;
-    @BindView(R.id.year)
     EditText year;
-    @BindView(R.id.image_text)
     EditText trackNumber;
-    @BindView(R.id.lyrics)
     EditText lyrics;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        viewBinding = ActivitySongTagEditorBinding.inflate(getLayoutInflater());
+        bind();
         super.onCreate(savedInstanceState);
-        ButterKnife.bind(this);
 
         setNoImageMode();
         setUpViews();
 
         //noinspection ConstantConditions
         getSupportActionBar().setTitle(R.string.action_tag_editor);
+    }
+
+    private void bind() {
+        songTitle = viewBinding.title1;
+        albumTitle = viewBinding.title2;
+        artist = viewBinding.artist;
+        genre = viewBinding.genre;
+        year = viewBinding.year;
+        trackNumber = viewBinding.imageText;
+        lyrics = viewBinding.lyrics;
+
     }
 
     private void setUpViews() {
@@ -106,8 +112,8 @@ public class SongTagEditorActivity extends AbsTagEditorActivity implements TextW
     }
 
     @Override
-    protected int getContentViewLayout() {
-        return R.layout.activity_song_tag_editor;
+    protected View getContentViewLayout() {
+        return viewBinding.getRoot();
     }
 
     @NonNull

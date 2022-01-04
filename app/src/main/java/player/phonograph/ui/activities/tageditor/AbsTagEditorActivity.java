@@ -190,7 +190,7 @@ public abstract class AbsTagEditorActivity extends AbsBaseActivity {
         }
     }
 
-    protected abstract int getContentViewLayout();
+    protected abstract View getContentViewLayout();
 
     @NonNull
     protected abstract List<String> getSongPaths();

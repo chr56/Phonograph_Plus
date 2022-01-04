@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -18,7 +19,9 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
+
 import player.phonograph.R;
+import player.phonograph.databinding.ActivityAlbumTagEditorBinding;
 import player.phonograph.glide.palette.BitmapPaletteTranscoder;
 import player.phonograph.glide.palette.BitmapPaletteWrapper;
 import player.phonograph.lastfm.rest.LastFMRestClient;
@@ -36,8 +39,6 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import chr_56.MDthemer.util.ToolbarColorUtil;
 import chr_56.MDthemer.util.Util;
 import retrofit2.Call;
@@ -46,13 +47,11 @@ import retrofit2.Response;
 
 public class AlbumTagEditorActivity extends AbsTagEditorActivity implements TextWatcher {
 
-    @BindView(R.id.title)
+    protected ActivityAlbumTagEditorBinding viewBinding;
+
     EditText albumTitle;
-    @BindView(R.id.album_artist)
     EditText albumArtist;
-    @BindView(R.id.genre)
     EditText genre;
-    @BindView(R.id.year)
     EditText year;
 
     private Bitmap albumArtBitmap;
@@ -61,12 +60,20 @@ public class AlbumTagEditorActivity extends AbsTagEditorActivity implements Text
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        viewBinding = ActivityAlbumTagEditorBinding.inflate(getLayoutInflater());
+        bind();
         super.onCreate(savedInstanceState);
-        ButterKnife.bind(this);
 
         lastFMRestClient = new LastFMRestClient(this);
 
         setUpViews();
+    }
+
+    private void bind() {
+        albumTitle = viewBinding.title;
+        albumArtist = viewBinding.albumArtist;
+        genre = viewBinding.genre;
+        year = viewBinding.year;
     }
 
     private void setUpViews() {
@@ -174,8 +181,8 @@ public class AlbumTagEditorActivity extends AbsTagEditorActivity implements Text
     }
 
     @Override
-    protected int getContentViewLayout() {
-        return R.layout.activity_album_tag_editor;
+    protected View getContentViewLayout() {
+        return viewBinding.getRoot();
     }
 
     @NonNull
