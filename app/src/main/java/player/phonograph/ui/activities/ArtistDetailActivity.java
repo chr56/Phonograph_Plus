@@ -10,13 +10,10 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.widget.Toolbar;
 import androidx.loader.app.LoaderManager;
 import androidx.loader.content.Loader;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -27,13 +24,19 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.WhichButton;
 import com.afollestad.materialdialogs.actions.DialogActionExtKt;
 import com.bumptech.glide.Glide;
-import com.github.ksoichiro.android.observablescrollview.ObservableListView;
 
-import chr_56.MDthemer.core.Themer;
+import java.util.List;
+import java.util.Locale;
+
+import chr_56.MDthemer.core.ThemeColor;
+import chr_56.MDthemer.util.ColorUtil;
+import chr_56.MDthemer.util.MaterialColorHelper;
 import chr_56.MDthemer.util.ToolbarColorUtil;
+import chr_56.MDthemer.util.Util;
 import player.phonograph.R;
 import player.phonograph.adapter.album.HorizontalAlbumAdapter;
 import player.phonograph.adapter.song.ArtistSongAdapter;
+import player.phonograph.databinding.ActivityArtistDetailBinding;
 import player.phonograph.dialogs.AddToPlaylistDialog;
 import player.phonograph.dialogs.SleepTimerDialog;
 import player.phonograph.glide.ArtistGlideRequest;
@@ -55,16 +58,6 @@ import player.phonograph.util.MusicUtil;
 import player.phonograph.util.NavigationUtil;
 import player.phonograph.util.PhonographColorUtil;
 import player.phonograph.util.PreferenceUtil;
-
-import java.util.List;
-import java.util.Locale;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import chr_56.MDthemer.core.ThemeColor;
-import chr_56.MDthemer.util.ColorUtil;
-import chr_56.MDthemer.util.MaterialColorHelper;
-import chr_56.MDthemer.util.Util;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -79,29 +72,7 @@ public class ArtistDetailActivity extends AbsSlidingMusicPanelActivity implement
 
     public static final String EXTRA_ARTIST_ID = "extra_artist_id";
 
-    @BindView(R.id.list)
-    ObservableListView songListView;
-    @BindView(R.id.image)
-    ImageView artistImage;
-    @BindView(R.id.toolbar)
-    Toolbar toolbar;
-    @BindView(R.id.header)
-    View headerView;
-    @BindView(R.id.header_overlay)
-    View headerOverlay;
-
-    @BindView(R.id.duration_icon)
-    ImageView durationIconImageView;
-    @BindView(R.id.song_count_icon)
-    ImageView songCountIconImageView;
-    @BindView(R.id.album_count_icon)
-    ImageView albumCountIconImageView;
-    @BindView(R.id.duration_text)
-    TextView durationTextView;
-    @BindView(R.id.song_count_text)
-    TextView songCountTextView;
-    @BindView(R.id.album_count_text)
-    TextView albumCountTextView;
+    private ActivityArtistDetailBinding viewBinding;
 
     View songListHeader;
     RecyclerView albumRecyclerView;
@@ -126,20 +97,21 @@ public class ArtistDetailActivity extends AbsSlidingMusicPanelActivity implement
 
             // Change alpha of overlay
             float headerAlpha = Math.max(0, Math.min(1, (float) 2 * scrollY / headerViewHeight));
-            headerOverlay.setBackgroundColor(ColorUtil.withAlpha(toolbarColor, headerAlpha));
+            viewBinding.headerOverlay.setBackgroundColor(ColorUtil.withAlpha(toolbarColor, headerAlpha));
 
             // Translate name text
-            headerView.setTranslationY(Math.max(-scrollY, -headerViewHeight));
-            headerOverlay.setTranslationY(Math.max(-scrollY, -headerViewHeight));
-            artistImage.setTranslationY(Math.max(-scrollY, -headerViewHeight));
+            viewBinding.header.setTranslationY(Math.max(-scrollY, -headerViewHeight));
+            viewBinding.headerOverlay.setTranslationY(Math.max(-scrollY, -headerViewHeight));
+            viewBinding.image.setTranslationY(Math.max(-scrollY, -headerViewHeight));
         }
     };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        viewBinding = ActivityArtistDetailBinding.inflate(getLayoutInflater());
+
         super.onCreate(savedInstanceState);
         setDrawUnderStatusbar();
-        ButterKnife.bind(this);
 
         lastFMRestClient = new LastFMRestClient(this);
         usePalette = PreferenceUtil.getInstance(this).albumArtistColoredFooters();
@@ -154,7 +126,7 @@ public class ArtistDetailActivity extends AbsSlidingMusicPanelActivity implement
 
     @Override
     protected View createContentView() {
-        return wrapSlidingMusicPanel(R.layout.activity_artist_detail);
+        return wrapSlidingMusicPanel(viewBinding.getRoot());
     }
 
     private boolean usePalette;
@@ -164,7 +136,7 @@ public class ArtistDetailActivity extends AbsSlidingMusicPanelActivity implement
     }
 
     private void initViews() {
-        songListHeader = LayoutInflater.from(this).inflate(R.layout.artist_detail_header, songListView, false);
+        songListHeader = LayoutInflater.from(this).inflate(R.layout.artist_detail_header, viewBinding.list, false);
         albumRecyclerView = songListHeader.findViewById(R.id.recycler_view);
     }
 
@@ -176,18 +148,18 @@ public class ArtistDetailActivity extends AbsSlidingMusicPanelActivity implement
 
     private void setUpSongListView() {
         setUpSongListPadding();
-        songListView.setScrollViewCallbacks(observableScrollViewCallbacks);
-        songListView.addHeaderView(songListHeader);
+        viewBinding.list.setScrollViewCallbacks(observableScrollViewCallbacks);
+        viewBinding.list.addHeaderView(songListHeader);
 
         songAdapter = new ArtistSongAdapter(this, getArtist().getSongs(), this);
-        songListView.setAdapter(songAdapter);
+        viewBinding.list.setAdapter(songAdapter);
 
         final View contentView = getWindow().getDecorView().findViewById(android.R.id.content);
         contentView.post(() -> observableScrollViewCallbacks.onScrollChanged(-headerViewHeight, false, false));
     }
 
     private void setUpSongListPadding() {
-        songListView.setPadding(0, headerViewHeight, 0, 0);
+        viewBinding.list.setPadding(0, headerViewHeight, 0, 0);
     }
 
     private void setUpAlbumRecyclerView() {
@@ -241,7 +213,7 @@ public class ArtistDetailActivity extends AbsSlidingMusicPanelActivity implement
 
                         if (!PreferenceUtil.isAllowedToDownloadMetadata(ArtistDetailActivity.this)) {
                             if (biography != null) {
-                                biographyDialog.message(null,biography,null);
+                                biographyDialog.message(null, biography, null);
                             } else {
                                 biographyDialog.dismiss();
                                 Toast.makeText(ArtistDetailActivity.this, getResources().getString(R.string.biography_unavailable), Toast.LENGTH_SHORT).show();
@@ -261,7 +233,7 @@ public class ArtistDetailActivity extends AbsSlidingMusicPanelActivity implement
         ArtistGlideRequest.Builder.from(Glide.with(this), artist)
                 .generatePalette(this).build()
                 .dontAnimate()
-                .into(new PhonographColoredTarget(artistImage) {
+                .into(new PhonographColoredTarget(viewBinding.image) {
                     @Override
                     public void onColorReady(int color) {
                         setColors(color);
@@ -293,27 +265,27 @@ public class ArtistDetailActivity extends AbsSlidingMusicPanelActivity implement
 
     private void setColors(int color) {
         toolbarColor = color;
-        headerView.setBackgroundColor(color);
+        viewBinding.header.setBackgroundColor(color);
 
         setNavigationbarColor(color);
         setTaskDescriptionColor(color);
 
-        toolbar.setBackgroundColor(color);
-        setSupportActionBar(toolbar); // needed to auto readjust the toolbar content color
-        toolbar.setTitleTextColor(ToolbarColorUtil.toolbarTitleColor(this,color));
+        viewBinding.toolbar.setBackgroundColor(color);
+        setSupportActionBar(viewBinding.toolbar); // needed to auto readjust the toolbar content color
+        viewBinding.toolbar.setTitleTextColor(ToolbarColorUtil.toolbarTitleColor(this, color));
         setStatusbarColor(color);
 
         int secondaryTextColor = MaterialColorHelper.getSecondaryTextColor(this, ColorUtil.isColorLight(color));
-        durationIconImageView.setColorFilter(secondaryTextColor, PorterDuff.Mode.SRC_IN);
-        songCountIconImageView.setColorFilter(secondaryTextColor, PorterDuff.Mode.SRC_IN);
-        albumCountIconImageView.setColorFilter(secondaryTextColor, PorterDuff.Mode.SRC_IN);
-        durationTextView.setTextColor(secondaryTextColor);
-        songCountTextView.setTextColor(secondaryTextColor);
-        albumCountTextView.setTextColor(secondaryTextColor);
+        viewBinding.durationIcon.setColorFilter(secondaryTextColor, PorterDuff.Mode.SRC_IN);
+        viewBinding.songCountIcon.setColorFilter(secondaryTextColor, PorterDuff.Mode.SRC_IN);
+        viewBinding.albumCountIcon.setColorFilter(secondaryTextColor, PorterDuff.Mode.SRC_IN);
+        viewBinding.durationText.setTextColor(secondaryTextColor);
+        viewBinding.songCountText.setTextColor(secondaryTextColor);
+        viewBinding.albumCountText.setTextColor(secondaryTextColor);
     }
 
     private void setUpToolbar() {
-        setSupportActionBar(toolbar);
+        setSupportActionBar(viewBinding.toolbar);
         //noinspection ConstantConditions
         getSupportActionBar().setTitle(null);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -354,15 +326,15 @@ public class ArtistDetailActivity extends AbsSlidingMusicPanelActivity implement
                 return true;
             case R.id.action_biography:
                 if (biographyDialog == null) {
-                    biographyDialog = new MaterialDialog(this,MaterialDialog.getDEFAULT_BEHAVIOR())
-                            .title(null,artist.getName())
-                            .positiveButton(android.R.string.ok,null,null);
+                    biographyDialog = new MaterialDialog(this, MaterialDialog.getDEFAULT_BEHAVIOR())
+                            .title(null, artist.getName())
+                            .positiveButton(android.R.string.ok, null, null);
                     //set button color
-                    DialogActionExtKt.getActionButton(biographyDialog,WhichButton.POSITIVE).updateTextColor(ThemeColor.accentColor(this));
+                    DialogActionExtKt.getActionButton(biographyDialog, WhichButton.POSITIVE).updateTextColor(ThemeColor.accentColor(this));
                 }
                 if (PreferenceUtil.isAllowedToDownloadMetadata(ArtistDetailActivity.this)) { // wiki should've been already downloaded
                     if (biography != null) {
-                        biographyDialog.message(null,biography,null);
+                        biographyDialog.message(null, biography, null);
                         biographyDialog.show();
                     } else {
                         Toast.makeText(ArtistDetailActivity.this, getResources().getString(R.string.biography_unavailable), Toast.LENGTH_SHORT).show();
@@ -446,9 +418,9 @@ public class ArtistDetailActivity extends AbsSlidingMusicPanelActivity implement
         }
 
         getSupportActionBar().setTitle(artist.getName());
-        songCountTextView.setText(MusicUtil.getSongCountString(this, artist.getSongCount()));
-        albumCountTextView.setText(MusicUtil.getAlbumCountString(this, artist.getAlbumCount()));
-        durationTextView.setText(MusicUtil.getReadableDurationString(MusicUtil.getTotalDuration(this, artist.getSongs())));
+        viewBinding.songCountText.setText(MusicUtil.getSongCountString(this, artist.getSongCount()));
+        viewBinding.albumCountText.setText(MusicUtil.getAlbumCountString(this, artist.getAlbumCount()));
+        viewBinding.durationText.setText(MusicUtil.getReadableDurationString(MusicUtil.getTotalDuration(this, artist.getSongs())));
 
         songAdapter.swapDataSet(artist.getSongs());
         albumAdapter.swapDataSet(artist.albums);
