@@ -29,10 +29,10 @@
             android:id="@+id/mini_player_title"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_marginEnd="16dp"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
             android:layout_marginStart="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginRight="16dp"
             android:layout_weight="1"
             android:gravity="center_vertical"
             android:singleLine="true"
@@ -50,14 +50,6 @@
 
     </LinearLayout>
 
-<!--    <me.zhanghai.android.materialprogressbar.MaterialProgressBar-->
-<!--        android:id="@+id/progress_bar"-->
-<!--        style="@style/Widget.MaterialProgressBar.ProgressBar.Horizontal"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="3dp"-->
-<!--        android:layout_gravity="bottom"-->
-<!--        app:mpb_progressStyle="horizontal"-->
-<!--        app:mpb_useIntrinsicPadding="false" />-->
 
     <com.google.android.material.progressindicator.LinearProgressIndicator
         android:id="@+id/progress_indicator"
