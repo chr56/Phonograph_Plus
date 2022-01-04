@@ -17,16 +17,11 @@ import android.view.View;
 import android.view.ViewAnimationUtils;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.cardview.widget.CardView;
 import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -37,15 +32,13 @@ import com.h6ah4i.android.widget.advrecyclerview.draggable.RecyclerViewDragDropM
 import com.h6ah4i.android.widget.advrecyclerview.utils.WrapperAdapterUtils;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
 import chr_56.MDthemer.core.ThemeColor;
 import chr_56.MDthemer.util.ColorUtil;
 import chr_56.MDthemer.util.ToolbarColorUtil;
 import player.phonograph.R;
 import player.phonograph.adapter.base.MediaEntryViewHolder;
 import player.phonograph.adapter.song.PlayingQueueAdapter;
+import player.phonograph.databinding.FragmentCardPlayerBinding;
 import player.phonograph.dialogs.LyricsDialog;
 import player.phonograph.dialogs.SongShareDialog;
 import player.phonograph.helper.MusicPlayerRemote;
@@ -65,25 +58,10 @@ import player.phonograph.views.WidthFitSquareLayout;
 
 public class CardPlayerFragment extends AbsPlayerFragment implements PlayerAlbumCoverFragment.Callbacks, SlidingUpPanelLayout.PanelSlideListener {
 
-    private Unbinder unbinder;
-
-    @Nullable
-    @BindView(R.id.toolbar_container)
-    FrameLayout toolbarContainer;
-    @BindView(R.id.player_toolbar)
-    Toolbar toolbar;
-    @BindView(R.id.player_sliding_layout)
-    SlidingUpPanelLayout slidingUpPanelLayout;
-    @BindView(R.id.player_recycler_view)
-    RecyclerView recyclerView;
-    @BindView(R.id.playing_queue_card)
-    CardView playingQueueCard;
-    @BindView(R.id.color_background)
-    View colorBackground;
-    @BindView(R.id.player_queue_sub_header)
-    TextView playerQueueSubHeader;
 
     private int lastColor;
+
+    protected FragmentCardPlayerBinding viewBinding;
 
     private CardPlayerPlaybackControlsFragment playbackControlsFragment;
     private PlayerAlbumCoverFragment playerAlbumCoverFragment;
@@ -110,9 +88,8 @@ public class CardPlayerFragment extends AbsPlayerFragment implements PlayerAlbum
             impl = new PortraitImpl(this);
         }
 
-        View view = inflater.inflate(R.layout.fragment_card_player, container, false);
-        unbinder = ButterKnife.bind(this, view);
-        return view;
+        viewBinding = FragmentCardPlayerBinding.inflate(inflater);
+        return viewBinding.getRoot();
     }
 
     @Override
@@ -126,8 +103,8 @@ public class CardPlayerFragment extends AbsPlayerFragment implements PlayerAlbum
 
         setUpRecyclerView();
 
-        slidingUpPanelLayout.addPanelSlideListener(this);
-        slidingUpPanelLayout.setAntiDragView(view.findViewById(R.id.draggable_area));
+        viewBinding.playerSlidingLayout.addPanelSlideListener(this);
+        viewBinding.playerSlidingLayout.setAntiDragView(view.findViewById(R.id.draggable_area));
 
         view.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
@@ -138,24 +115,19 @@ public class CardPlayerFragment extends AbsPlayerFragment implements PlayerAlbum
         });
 
         // for some reason the xml attribute doesn't get applied here.
-        playingQueueCard.setCardBackgroundColor(chr_56.MDthemer.util.Util.resolveColor(getActivity(), R.attr.cardBackgroundColor));
+        viewBinding.playingQueueCard.setCardBackgroundColor(chr_56.MDthemer.util.Util.resolveColor(getActivity(), R.attr.cardBackgroundColor));
     }
 
     @Override
     public void onDestroyView() {
-        if (slidingUpPanelLayout != null) {
-            slidingUpPanelLayout.removePanelSlideListener(this);
-        }
         if (recyclerViewDragDropManager != null) {
             recyclerViewDragDropManager.release();
             recyclerViewDragDropManager = null;
         }
 
-        if (recyclerView != null) {
-            recyclerView.setItemAnimator(null);
-            recyclerView.setAdapter(null);
-            recyclerView = null;
-        }
+        viewBinding.playerRecyclerView.setItemAnimator(null);
+        viewBinding.playerRecyclerView.setAdapter(null);
+
 
         if (wrappedAdapter != null) {
             WrapperAdapterUtils.releaseAll(wrappedAdapter);
@@ -164,7 +136,7 @@ public class CardPlayerFragment extends AbsPlayerFragment implements PlayerAlbum
         playingQueueAdapter = null;
         layoutManager = null;
         super.onDestroyView();
-        unbinder.unbind();
+        viewBinding = null;
     }
 
     @Override
@@ -178,7 +150,7 @@ public class CardPlayerFragment extends AbsPlayerFragment implements PlayerAlbum
     @Override
     public void onResume() {
         super.onResume();
-        checkToggleToolbar(toolbarContainer);
+        checkToggleToolbar(viewBinding.toolbarContainer);
     }
 
     @Override
@@ -210,16 +182,16 @@ public class CardPlayerFragment extends AbsPlayerFragment implements PlayerAlbum
 
     private void updateQueue() {
         playingQueueAdapter.swapDataSet(MusicPlayerRemote.getPlayingQueue(), MusicPlayerRemote.getPosition());
-        playerQueueSubHeader.setText(getUpNextAndQueueTime());
-        if (slidingUpPanelLayout.getPanelState() == SlidingUpPanelLayout.PanelState.COLLAPSED) {
+        viewBinding.playerQueueSubHeader.setText(getUpNextAndQueueTime());
+        if (viewBinding.playerSlidingLayout.getPanelState() == SlidingUpPanelLayout.PanelState.COLLAPSED) {
             resetToCurrentPosition();
         }
     }
 
     private void updateQueuePosition() {
         playingQueueAdapter.setCurrent(MusicPlayerRemote.getPosition());
-        playerQueueSubHeader.setText(getUpNextAndQueueTime());
-        if (slidingUpPanelLayout.getPanelState() == SlidingUpPanelLayout.PanelState.COLLAPSED) {
+        viewBinding.playerQueueSubHeader.setText(getUpNextAndQueueTime());
+        if (viewBinding.playerSlidingLayout.getPanelState() == SlidingUpPanelLayout.PanelState.COLLAPSED) {
             resetToCurrentPosition();
         }
     }
@@ -237,10 +209,10 @@ public class CardPlayerFragment extends AbsPlayerFragment implements PlayerAlbum
     }
 
     private void setUpPlayerToolbar() {
-        toolbar.inflateMenu(R.menu.menu_player);
-        toolbar.setNavigationIcon(R.drawable.ic_close_white_24dp);
-        toolbar.setNavigationOnClickListener(v -> getActivity().onBackPressed());
-        toolbar.setOnMenuItemClickListener(this);
+        viewBinding.playerToolbar.inflateMenu(R.menu.menu_player);
+        viewBinding.playerToolbar.setNavigationIcon(R.drawable.ic_close_white_24dp);
+        viewBinding.playerToolbar.setNavigationOnClickListener(v -> getActivity().onBackPressed());
+        viewBinding.playerToolbar.setOnMenuItemClickListener(this);
     }
 
     @Override
@@ -269,11 +241,11 @@ public class CardPlayerFragment extends AbsPlayerFragment implements PlayerAlbum
 
         layoutManager = new LinearLayoutManager(getActivity());
 
-        recyclerView.setLayoutManager(layoutManager);
-        recyclerView.setAdapter(wrappedAdapter);
-        recyclerView.setItemAnimator(animator);
+        viewBinding.playerRecyclerView.setLayoutManager(layoutManager);
+        viewBinding.playerRecyclerView.setAdapter(wrappedAdapter);
+        viewBinding.playerRecyclerView.setItemAnimator(animator);
 
-        recyclerViewDragDropManager.attachRecyclerView(recyclerView);
+        recyclerViewDragDropManager.attachRecyclerView(viewBinding.playerRecyclerView);
 
         layoutManager.scrollToPositionWithOffset(MusicPlayerRemote.getPosition() + 1, 0);
     }
@@ -301,7 +273,7 @@ public class CardPlayerFragment extends AbsPlayerFragment implements PlayerAlbum
                     int res = isFavorite ? R.drawable.ic_favorite_white_24dp : R.drawable.ic_favorite_border_white_24dp;
                     int color = ToolbarColorUtil.toolbarContentColor(activity, Color.TRANSPARENT);
                     Drawable drawable = ImageUtil.getTintedVectorDrawable(activity, res, color);
-                    toolbar.getMenu().findItem(R.id.action_toggle_favorite)
+                    viewBinding.playerToolbar.getMenu().findItem(R.id.action_toggle_favorite)
                             .setIcon(drawable)
                             .setTitle(isFavorite ? getString(R.string.action_remove_from_favorites) : getString(R.string.action_add_to_favorites));
                 }
@@ -319,7 +291,7 @@ public class CardPlayerFragment extends AbsPlayerFragment implements PlayerAlbum
                 super.onPreExecute();
                 lyrics = null;
                 playerAlbumCoverFragment.setLyrics(null);
-                toolbar.getMenu().removeItem(R.id.action_show_lyrics);
+                viewBinding.playerToolbar.getMenu().removeItem(R.id.action_show_lyrics);
             }
 
             @Override
@@ -332,16 +304,14 @@ public class CardPlayerFragment extends AbsPlayerFragment implements PlayerAlbum
                 lyrics = l;
                 playerAlbumCoverFragment.setLyrics(lyrics);
                 if (lyrics == null) {
-                    if (toolbar != null) {
-                        toolbar.getMenu().removeItem(R.id.action_show_lyrics);
-                    }
+                    viewBinding.playerToolbar.getMenu().removeItem(R.id.action_show_lyrics);
                 } else {
                     Activity activity = getActivity();
-                    if (toolbar != null && activity != null)
-                        if (toolbar.getMenu().findItem(R.id.action_show_lyrics) == null) {
+                    if (activity != null)
+                        if (viewBinding.playerToolbar.getMenu().findItem(R.id.action_show_lyrics) == null) {
                             int color = ToolbarColorUtil.toolbarContentColor(activity, Color.TRANSPARENT);
                             Drawable drawable = ImageUtil.getTintedVectorDrawable(activity, R.drawable.ic_comment_text_outline_white_24dp, color);
-                            toolbar.getMenu()
+                            viewBinding.playerToolbar.getMenu()
                                     .add(Menu.NONE, R.id.action_show_lyrics, Menu.NONE, R.string.action_show_lyrics)
                                     .setIcon(drawable)
                                     .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
@@ -382,7 +352,8 @@ public class CardPlayerFragment extends AbsPlayerFragment implements PlayerAlbum
     public void onShow() {
         playbackControlsFragment.show();
         FragmentActivity activity = getActivity();
-        if (activity instanceof MainActivity) ((MainActivity) activity).setFloatingActionButtonVisibility(View.GONE);
+        if (activity instanceof MainActivity)
+            ((MainActivity) activity).setFloatingActionButtonVisibility(View.GONE);
     }
 
     @Override
@@ -394,10 +365,8 @@ public class CardPlayerFragment extends AbsPlayerFragment implements PlayerAlbum
     @Override
     public boolean onBackPressed() {
         boolean wasExpanded = false;
-        if (slidingUpPanelLayout != null) {
-            wasExpanded = slidingUpPanelLayout.getPanelState() == SlidingUpPanelLayout.PanelState.EXPANDED;
-            slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
-        }
+        wasExpanded = viewBinding.playerSlidingLayout.getPanelState() == SlidingUpPanelLayout.PanelState.EXPANDED;
+        viewBinding.playerSlidingLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
 
         return wasExpanded;
     }
@@ -416,7 +385,7 @@ public class CardPlayerFragment extends AbsPlayerFragment implements PlayerAlbum
 
     @Override
     public void onToolbarToggled() {
-        toggleToolbar(toolbarContainer);
+        toggleToolbar(viewBinding.toolbarContainer);
     }
 
     @Override
@@ -427,7 +396,7 @@ public class CardPlayerFragment extends AbsPlayerFragment implements PlayerAlbum
             float cardElevation = (6 * slide + 2) * density;
             if (!isValidElevation(cardElevation))
                 return; // we have received some crash reports in setCardElevation()
-            playingQueueCard.setCardElevation(cardElevation);
+            viewBinding.playingQueueCard.setCardElevation(cardElevation);
 
             float buttonElevation = (2 * Math.max(0, (1 - (slide * 16))) + 2) * density;
             if (!isValidElevation(buttonElevation)) return;
@@ -446,7 +415,7 @@ public class CardPlayerFragment extends AbsPlayerFragment implements PlayerAlbum
                 onPanelCollapsed(panel);
                 break;
             case ANCHORED:
-                slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED); // this fixes a bug where the panel would get stuck for some reason
+                viewBinding.playerSlidingLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED); // this fixes a bug where the panel would get stuck for some reason
                 break;
         }
     }
@@ -456,7 +425,7 @@ public class CardPlayerFragment extends AbsPlayerFragment implements PlayerAlbum
     }
 
     private void resetToCurrentPosition() {
-        recyclerView.stopScroll();
+        viewBinding.playerRecyclerView.stopScroll();
         layoutManager.scrollToPositionWithOffset(MusicPlayerRemote.getPosition() + 1, 0);
     }
 
@@ -484,11 +453,11 @@ public class CardPlayerFragment extends AbsPlayerFragment implements PlayerAlbum
                 int x = (int) (fragment.playbackControlsFragment.viewBinding.playerPlayPauseFab.getX() + fragment.playbackControlsFragment.viewBinding.playerPlayPauseFab.getWidth() / 2 + fragment.playbackControlsFragment.getView().getX());
                 int y = (int) (fragment.playbackControlsFragment.viewBinding.playerPlayPauseFab.getY() + fragment.playbackControlsFragment.viewBinding.playerPlayPauseFab.getHeight() / 2 + fragment.playbackControlsFragment.getView().getY() + fragment.playbackControlsFragment.viewBinding.playerProgressSlider.getHeight());
                 float startRadius = Math.max(fragment.playbackControlsFragment.viewBinding.playerPlayPauseFab.getWidth() / 2, fragment.playbackControlsFragment.viewBinding.playerPlayPauseFab.getHeight() / 2);
-                float endRadius = Math.max(fragment.colorBackground.getWidth(), fragment.colorBackground.getHeight());
-                fragment.colorBackground.setBackgroundColor(newColor);
-                backgroundAnimator = ViewAnimationUtils.createCircularReveal(fragment.colorBackground, x, y, startRadius, endRadius);
+                float endRadius = Math.max(fragment.viewBinding.colorBackground.getWidth(), fragment.viewBinding.colorBackground.getHeight());
+                fragment.viewBinding.colorBackground.setBackgroundColor(newColor);
+                backgroundAnimator = ViewAnimationUtils.createCircularReveal(fragment.viewBinding.colorBackground, x, y, startRadius, endRadius);
             } else {
-                backgroundAnimator = ViewUtil.createBackgroundColorTransition(fragment.colorBackground, fragment.lastColor, newColor);
+                backgroundAnimator = ViewUtil.createBackgroundColorTransition(fragment.viewBinding.colorBackground, fragment.lastColor, newColor);
             }
 
             AnimatorSet animatorSet = new AnimatorSet();
@@ -498,7 +467,7 @@ public class CardPlayerFragment extends AbsPlayerFragment implements PlayerAlbum
             if (!chr_56.MDthemer.util.Util.isWindowBackgroundDark(fragment.getActivity())) {
                 int adjustedLastColor = ColorUtil.isColorLight(fragment.lastColor) ? ColorUtil.darkenColor(fragment.lastColor) : fragment.lastColor;
                 int adjustedNewColor = ColorUtil.isColorLight(newColor) ? ColorUtil.darkenColor(newColor) : newColor;
-                Animator subHeaderAnimator = ViewUtil.createTextColorTransition(fragment.playerQueueSubHeader, adjustedLastColor, adjustedNewColor);
+                Animator subHeaderAnimator = ViewUtil.createTextColorTransition(fragment.viewBinding.playerQueueSubHeader, adjustedLastColor, adjustedNewColor);
                 animatorSet.play(subHeaderAnimator);
             }
 
@@ -509,7 +478,7 @@ public class CardPlayerFragment extends AbsPlayerFragment implements PlayerAlbum
         @Override
         public void animateColorChange(int newColor) {
             if (chr_56.MDthemer.util.Util.isWindowBackgroundDark(fragment.getActivity())) {
-                fragment.playerQueueSubHeader.setTextColor(ThemeColor.textColorSecondary(fragment.getActivity()));
+                fragment.viewBinding.playerQueueSubHeader.setTextColor(ThemeColor.textColorSecondary(fragment.requireActivity()));
             }
         }
     }
@@ -534,10 +503,10 @@ public class CardPlayerFragment extends AbsPlayerFragment implements PlayerAlbum
             currentSongViewHolder.image.setImageResource(R.drawable.ic_volume_up_white_24dp);
             currentSongViewHolder.itemView.setOnClickListener(v -> {
                 // toggle the panel
-                if (fragment.slidingUpPanelLayout.getPanelState() == SlidingUpPanelLayout.PanelState.COLLAPSED) {
-                    fragment.slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.EXPANDED);
-                } else if (fragment.slidingUpPanelLayout.getPanelState() == SlidingUpPanelLayout.PanelState.EXPANDED) {
-                    fragment.slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+                if (fragment.viewBinding.playerSlidingLayout.getPanelState() == SlidingUpPanelLayout.PanelState.COLLAPSED) {
+                    fragment.viewBinding.playerSlidingLayout.setPanelState(SlidingUpPanelLayout.PanelState.EXPANDED);
+                } else if (fragment.viewBinding.playerSlidingLayout.getPanelState() == SlidingUpPanelLayout.PanelState.EXPANDED) {
+                    fragment.viewBinding.playerSlidingLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
                 }
             });
             currentSongViewHolder.menu.setOnClickListener(new SongMenuHelper.ClickMenuListener((AppCompatActivity) fragment.getActivity(), R.menu.menu_item_playing_queue_song) {
@@ -565,15 +534,15 @@ public class CardPlayerFragment extends AbsPlayerFragment implements PlayerAlbum
         public void setUpPanelAndAlbumCoverHeight() {
             WidthFitSquareLayout albumCoverContainer = fragment.getView().findViewById(R.id.album_cover_container);
 
-            final int availablePanelHeight = fragment.slidingUpPanelLayout.getHeight() - fragment.getView().findViewById(R.id.player_content).getHeight() + (int) ViewUtil.convertDpToPixel(8, fragment.getResources());
+            final int availablePanelHeight = fragment.viewBinding.playerSlidingLayout.getHeight() - fragment.getView().findViewById(R.id.player_content).getHeight() + (int) ViewUtil.convertDpToPixel(8, fragment.getResources());
             final int minPanelHeight = (int) ViewUtil.convertDpToPixel(72 + 24, fragment.getResources());
             if (availablePanelHeight < minPanelHeight) {
                 albumCoverContainer.getLayoutParams().height = albumCoverContainer.getHeight() - (minPanelHeight - availablePanelHeight);
                 albumCoverContainer.forceSquare(false);
             }
-            fragment.slidingUpPanelLayout.setPanelHeight(Math.max(minPanelHeight, availablePanelHeight));
+            fragment.viewBinding.playerSlidingLayout.setPanelHeight(Math.max(minPanelHeight, availablePanelHeight));
 
-            ((AbsSlidingMusicPanelActivity) fragment.getActivity()).setAntiDragView(fragment.slidingUpPanelLayout.findViewById(R.id.player_panel));
+            ((AbsSlidingMusicPanelActivity) fragment.getActivity()).setAntiDragView(fragment.viewBinding.playerSlidingLayout.findViewById(R.id.player_panel));
         }
 
         @Override
@@ -587,7 +556,7 @@ public class CardPlayerFragment extends AbsPlayerFragment implements PlayerAlbum
         public void animateColorChange(int newColor) {
             super.animateColorChange(newColor);
 
-            fragment.slidingUpPanelLayout.setBackgroundColor(fragment.lastColor);
+            fragment.viewBinding.playerSlidingLayout.setBackgroundColor(fragment.lastColor);
 
             createDefaultColorChangeAnimatorSet(newColor).start();
         }
@@ -606,26 +575,26 @@ public class CardPlayerFragment extends AbsPlayerFragment implements PlayerAlbum
 
         @Override
         public void setUpPanelAndAlbumCoverHeight() {
-            int panelHeight = fragment.slidingUpPanelLayout.getHeight() - fragment.playbackControlsFragment.getView().getHeight();
-            fragment.slidingUpPanelLayout.setPanelHeight(panelHeight);
+            int panelHeight = fragment.viewBinding.playerSlidingLayout.getHeight() - fragment.playbackControlsFragment.getView().getHeight();
+            fragment.viewBinding.playerSlidingLayout.setPanelHeight(panelHeight);
 
-            ((AbsSlidingMusicPanelActivity) fragment.getActivity()).setAntiDragView(fragment.slidingUpPanelLayout.findViewById(R.id.player_panel));
+            ((AbsSlidingMusicPanelActivity) fragment.getActivity()).setAntiDragView(fragment.viewBinding.playerSlidingLayout.findViewById(R.id.player_panel));
         }
 
         @Override
         public void updateCurrentSong(Song song) {
-            fragment.toolbar.setTitle(song.title);
-            fragment.toolbar.setSubtitle(MusicUtil.getSongInfoString(song));
+            fragment.viewBinding.playerToolbar.setTitle(song.title);
+            fragment.viewBinding.playerToolbar.setSubtitle(MusicUtil.getSongInfoString(song));
         }
 
         @Override
         public void animateColorChange(int newColor) {
             super.animateColorChange(newColor);
 
-            fragment.slidingUpPanelLayout.setBackgroundColor(fragment.lastColor);
+            fragment.viewBinding.playerSlidingLayout.setBackgroundColor(fragment.lastColor);
 
             AnimatorSet animatorSet = createDefaultColorChangeAnimatorSet(newColor);
-            animatorSet.play(ViewUtil.createBackgroundColorTransition(fragment.toolbar, fragment.lastColor, newColor))
+            animatorSet.play(ViewUtil.createBackgroundColorTransition(fragment.viewBinding.playerToolbar, fragment.lastColor, newColor))
                     .with(ViewUtil.createBackgroundColorTransition(fragment.getView().findViewById(R.id.status_bar), ColorUtil.darkenColor(fragment.lastColor), ColorUtil.darkenColor(newColor)));
             animatorSet.start();
         }
