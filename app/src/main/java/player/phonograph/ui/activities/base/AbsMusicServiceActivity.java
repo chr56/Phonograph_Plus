@@ -18,6 +18,7 @@ import androidx.annotation.Nullable;
 
 import player.phonograph.R;
 import player.phonograph.database.mediastore.MusicDatabase;
+import player.phonograph.database.mediastore.Refresher;
 import player.phonograph.helper.MusicPlayerRemote;
 import player.phonograph.helper.SortOrder;
 import player.phonograph.interfaces.MusicServiceEventListener;
@@ -88,6 +89,7 @@ public abstract class AbsMusicServiceActivity extends AbsBaseActivity implements
     }
 
     protected void updateMusicDataBase() { //todo
+        Refresher.INSTANCE.importFromMediaStore(this);
     }
 
     @Override
