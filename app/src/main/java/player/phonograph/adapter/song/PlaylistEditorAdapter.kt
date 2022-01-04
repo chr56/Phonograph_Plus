@@ -187,7 +187,7 @@ class PlaylistEditorAdapter(
         MediaEntryViewHolder(itemView),
         DraggableItemViewHolder {
 
-        override fun onLongClick(v: View?): Boolean {
+        override fun onLongClick(v: View): Boolean {
             return toggleChecked(bindingAdapterPosition)
         }
 

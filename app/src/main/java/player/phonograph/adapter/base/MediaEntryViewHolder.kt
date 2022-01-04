@@ -1,79 +1,68 @@
-package player.phonograph.adapter.base;
+package player.phonograph.adapter.base
 
-import android.os.Build;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.recyclerview.widget.RecyclerView;
-import android.view.View;
-import android.widget.ImageView;
-import android.widget.TextView;
-
-import player.phonograph.R;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
+import android.os.Build
+import android.view.View
+import android.widget.ImageView
+import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
+import player.phonograph.R
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
  */
-public class MediaEntryViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
-    @Nullable
-    @BindView(R.id.image)
-    public ImageView image;
+open class MediaEntryViewHolder : RecyclerView.ViewHolder, View.OnClickListener, View.OnLongClickListener {
 
-    @Nullable
-    @BindView(R.id.image_text)
-    public TextView imageText;
+    @JvmField
+    var image: ImageView? = null
 
-    @Nullable
-    @BindView(R.id.title)
-    public TextView title;
+    @JvmField
+    var imageText: TextView? = null
 
-    @Nullable
-    @BindView(R.id.text)
-    public TextView text;
+    @JvmField
+    var title: TextView? = null
 
-    @Nullable
-    @BindView(R.id.menu)
-    public View menu;
+    @JvmField
+    var text: TextView? = null
 
-    @Nullable
-    @BindView(R.id.separator)
-    public View separator;
+    @JvmField
+    var menu: View? = null
 
-    @Nullable
-    @BindView(R.id.short_separator)
-    public View shortSeparator;
+    @JvmField
+    var separator: View? = null
 
-    @Nullable
-    @BindView(R.id.drag_view)
-    public View dragView;
+    @JvmField
+    var shortSeparator: View? = null
 
-    @Nullable
-    @BindView(R.id.palette_color_container)
-    public View paletteColorContainer;
+    @JvmField
+    var dragView: View? = null
 
-    public MediaEntryViewHolder(View itemView) {
-        super(itemView);
-        ButterKnife.bind(this, itemView);
+    @JvmField
+    var paletteColorContainer: View? = null
 
-        itemView.setOnClickListener(this);
-        itemView.setOnLongClickListener(this);
+    @Suppress("ConvertSecondaryConstructorToPrimary")
+    constructor(itemView: View) : super(itemView) {
+        // todo viewBinding
+        image = itemView.findViewById(R.id.image)
+        imageText = itemView.findViewById(R.id.image_text)
+        title = itemView.findViewById(R.id.title)
+        text = itemView.findViewById(R.id.text)
+        menu = itemView.findViewById(R.id.menu)
+        separator = itemView.findViewById(R.id.separator)
+        shortSeparator = itemView.findViewById(R.id.short_separator)
+        dragView = itemView.findViewById(R.id.drag_view)
+        paletteColorContainer = itemView.findViewById(R.id.palette_color_container)
+
+        itemView.setOnClickListener(this)
+        itemView.setOnLongClickListener(this)
     }
 
-    protected void setImageTransitionName(@NonNull String transitionName) {
+    protected fun setImageTransitionName(transitionName: String) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && image != null) {
-            image.setTransitionName(transitionName);
+            image!!.transitionName = transitionName
         }
     }
 
-    @Override
-    public boolean onLongClick(View v) {
-        return false;
-    }
+    override fun onLongClick(v: View): Boolean = false
 
-    @Override
-    public void onClick(View v) {
-
-    }
+    override fun onClick(v: View) {}
 }

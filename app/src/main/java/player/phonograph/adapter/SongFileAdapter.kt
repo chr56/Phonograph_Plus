@@ -134,7 +134,7 @@ class SongFileAdapter(
         return dataSet[position].name[0].toString().uppercase(Locale.getDefault())
     }
 
-    inner class ViewHolder(itemView: View?) : MediaEntryViewHolder(itemView) {
+    inner class ViewHolder(itemView: View) : MediaEntryViewHolder(itemView) {
 
         init {
             if (menu != null && callbacks != null) {
@@ -158,7 +158,7 @@ class SongFileAdapter(
             }
         }
 
-        override fun onLongClick(view: View): Boolean {
+        override fun onLongClick(v: View): Boolean {
             val position = bindingAdapterPosition
             return isPositionInRange(position) && toggleChecked(position)
         }
