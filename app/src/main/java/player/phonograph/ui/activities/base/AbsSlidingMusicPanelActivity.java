@@ -24,20 +24,17 @@ import player.phonograph.ui.fragments.player.card.CardPlayerFragment;
 import player.phonograph.ui.fragments.player.flat.FlatPlayerFragment;
 import player.phonograph.util.PreferenceUtil;
 import player.phonograph.util.ViewUtil;
-import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
+import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
- *         <p/>
- *         Do not use {@link #setContentView(int)}. Instead wrap your layout with
- *         {@link #wrapSlidingMusicPanel(int)} first and then return it in {@link #createContentView()}
+ * <p/>
+ * Do not use {@link #setContentView(int)}. Instead wrap your layout with
+ * {@link #wrapSlidingMusicPanel(int)} first and then return it in {@link #createContentView()}
  */
 public abstract class AbsSlidingMusicPanelActivity extends AbsMusicServiceActivity implements SlidingUpPanelLayout.PanelSlideListener, CardPlayerFragment.Callbacks {
 
-    @BindView(R.id.sliding_layout)
     SlidingUpPanelLayout slidingUpPanelLayout;
 
     private int navigationbarColor;
@@ -55,7 +52,8 @@ public abstract class AbsSlidingMusicPanelActivity extends AbsMusicServiceActivi
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(createContentView());
-        ButterKnife.bind(this);
+        slidingUpPanelLayout = findViewById(R.id.sliding_layout);
+
 
         currentNowPlayingScreen = PreferenceUtil.getInstance(this).getNowPlayingScreen();
         Fragment fragment; // must implement AbsPlayerFragment
@@ -215,6 +213,7 @@ public abstract class AbsSlidingMusicPanelActivity extends AbsMusicServiceActivi
         getLayoutInflater().inflate(resId, contentContainer);
         return slidingMusicPanelLayout;
     }
+
     protected View wrapSlidingMusicPanel(View view) {
         @SuppressLint("InflateParams")
         View slidingMusicPanelLayout = getLayoutInflater().inflate(R.layout.sliding_music_panel_layout, null);
