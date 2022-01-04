@@ -10,6 +10,8 @@ import android.view.animation.DecelerateInterpolator;
 import android.widget.SeekBar;
 
 import androidx.annotation.NonNull;
+import androidx.core.graphics.BlendModeColorFilterCompat;
+import androidx.core.graphics.BlendModeCompat;
 
 import chr_56.MDthemer.util.ColorUtil;
 import chr_56.MDthemer.util.MaterialColorHelper;
@@ -118,9 +120,14 @@ public class CardPlayerPlaybackControlsFragment extends AbsMusicServiceFragment 
         TintHelper.setTintAuto(viewBinding.playerPlayPauseFab, fabColor, true);
 
         playerFabPlayPauseDrawable = new PlayPauseDrawable(requireActivity());
+        playerFabPlayPauseDrawable.setColorFilter(BlendModeColorFilterCompat
+                .createBlendModeColorFilterCompat(
+                        MaterialColorHelper.getSecondaryTextColor(requireContext(), ColorUtil.isColorLight(fabColor)), BlendModeCompat.SRC_IN)
+        );
 
         viewBinding.playerPlayPauseFab.setImageDrawable(playerFabPlayPauseDrawable); // Note: set the drawable AFTER TintHelper.setTintAuto() was called
-        viewBinding.playerPlayPauseFab.setColorFilter(MaterialColorHelper.getPrimaryTextColor(getContext(), ColorUtil.isColorLight(fabColor)), PorterDuff.Mode.SRC_IN);
+//        // won't work
+//        viewBinding.playerPlayPauseFab.setColorFilter(MaterialColorHelper.getPrimaryTextColor(getContext(), ColorUtil.isColorLight(fabColor)), PorterDuff.Mode.SRC_IN);
         viewBinding.playerPlayPauseFab.setOnClickListener(new PlayPauseButtonOnClickHandler());
         viewBinding.playerPlayPauseFab.post(() -> {
             viewBinding.playerPlayPauseFab.setPivotX((float) viewBinding.playerPlayPauseFab.getWidth() / 2);
