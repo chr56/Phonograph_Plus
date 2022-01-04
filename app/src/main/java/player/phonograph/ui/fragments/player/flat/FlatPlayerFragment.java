@@ -15,15 +15,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -32,9 +28,15 @@ import com.h6ah4i.android.widget.advrecyclerview.animator.GeneralItemAnimator;
 import com.h6ah4i.android.widget.advrecyclerview.animator.RefactoredDefaultItemAnimator;
 import com.h6ah4i.android.widget.advrecyclerview.draggable.RecyclerViewDragDropManager;
 import com.h6ah4i.android.widget.advrecyclerview.utils.WrapperAdapterUtils;
+import com.sothree.slidinguppanel.SlidingUpPanelLayout;
+
+import chr_56.MDthemer.core.ThemeColor;
+import chr_56.MDthemer.util.ColorUtil;
+import chr_56.MDthemer.util.ToolbarColorUtil;
 import player.phonograph.R;
 import player.phonograph.adapter.base.MediaEntryViewHolder;
 import player.phonograph.adapter.song.PlayingQueueAdapter;
+import player.phonograph.databinding.FragmentFlatPlayerBinding;
 import player.phonograph.dialogs.LyricsDialog;
 import player.phonograph.dialogs.SongShareDialog;
 import player.phonograph.helper.MusicPlayerRemote;
@@ -51,35 +53,11 @@ import player.phonograph.util.MusicUtil;
 import player.phonograph.util.Util;
 import player.phonograph.util.ViewUtil;
 import player.phonograph.views.WidthFitSquareLayout;
-import com.sothree.slidinguppanel.SlidingUpPanelLayout;
-
-import java.util.Objects;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
-import chr_56.MDthemer.core.ThemeColor;
-import chr_56.MDthemer.util.ColorUtil;
-import chr_56.MDthemer.util.ToolbarColorUtil;
 
 public class FlatPlayerFragment extends AbsPlayerFragment implements PlayerAlbumCoverFragment.Callbacks, SlidingUpPanelLayout.PanelSlideListener {
 
-    private Unbinder unbinder;
+    protected FragmentFlatPlayerBinding viewBinding;
 
-    @BindView(R.id.player_status_bar)
-    View playerStatusBar;
-    @Nullable
-    @BindView(R.id.toolbar_container)
-    FrameLayout toolbarContainer;
-    @BindView(R.id.player_toolbar)
-    Toolbar toolbar;
-    @Nullable
-    @BindView(R.id.player_sliding_layout)
-    SlidingUpPanelLayout slidingUpPanelLayout;
-    @BindView(R.id.player_recycler_view)
-    RecyclerView recyclerView;
-    @BindView(R.id.player_queue_sub_header)
-    TextView playerQueueSubHeader;
 
     private int lastColor;
 
@@ -107,10 +85,9 @@ public class FlatPlayerFragment extends AbsPlayerFragment implements PlayerAlbum
         } else {
             impl = new PortraitImpl(this);
         }
+        viewBinding = FragmentFlatPlayerBinding.inflate(inflater);
+        return viewBinding.getRoot();
 
-        View view = inflater.inflate(R.layout.fragment_flat_player, container, false);
-        unbinder = ButterKnife.bind(this, view);
-        return view;
     }
 
     @Override
@@ -124,11 +101,10 @@ public class FlatPlayerFragment extends AbsPlayerFragment implements PlayerAlbum
 
         setUpRecyclerView();
 
-        if (slidingUpPanelLayout != null) {
-            slidingUpPanelLayout.addPanelSlideListener(this);
-            slidingUpPanelLayout.setAntiDragView(view.findViewById(R.id.draggable_area));
+        if (viewBinding.playerSlidingLayout != null) {
+            viewBinding.playerSlidingLayout.addPanelSlideListener(this);
+            viewBinding.playerSlidingLayout.setAntiDragView(view.findViewById(R.id.draggable_area));
         }
-
         view.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
@@ -140,19 +116,15 @@ public class FlatPlayerFragment extends AbsPlayerFragment implements PlayerAlbum
 
     @Override
     public void onDestroyView() {
-        if (slidingUpPanelLayout != null) {
-            slidingUpPanelLayout.removePanelSlideListener(this);
+        if (viewBinding.playerSlidingLayout != null) {
+            viewBinding.playerSlidingLayout.removePanelSlideListener(this);
         }
         if (recyclerViewDragDropManager != null) {
             recyclerViewDragDropManager.release();
             recyclerViewDragDropManager = null;
         }
-
-        if (recyclerView != null) {
-            recyclerView.setItemAnimator(null);
-            recyclerView.setAdapter(null);
-            recyclerView = null;
-        }
+        viewBinding.playerRecyclerView.setItemAnimator(null);
+        viewBinding.playerRecyclerView.setAdapter(null);
 
         if (wrappedAdapter != null) {
             WrapperAdapterUtils.releaseAll(wrappedAdapter);
@@ -161,7 +133,7 @@ public class FlatPlayerFragment extends AbsPlayerFragment implements PlayerAlbum
         playingQueueAdapter = null;
         layoutManager = null;
         super.onDestroyView();
-        unbinder.unbind();
+        viewBinding = null;
     }
 
     @Override
@@ -175,7 +147,7 @@ public class FlatPlayerFragment extends AbsPlayerFragment implements PlayerAlbum
     @Override
     public void onResume() {
         super.onResume();
-        checkToggleToolbar(toolbarContainer);
+        checkToggleToolbar(viewBinding.toolbarContainer);
     }
 
     @Override
@@ -207,16 +179,16 @@ public class FlatPlayerFragment extends AbsPlayerFragment implements PlayerAlbum
 
     private void updateQueue() {
         playingQueueAdapter.swapDataSet(MusicPlayerRemote.getPlayingQueue(), MusicPlayerRemote.getPosition());
-        playerQueueSubHeader.setText(getUpNextAndQueueTime());
-        if (slidingUpPanelLayout == null || slidingUpPanelLayout.getPanelState() == SlidingUpPanelLayout.PanelState.COLLAPSED) {
+        viewBinding.playerQueueSubHeader.setText(getUpNextAndQueueTime());
+        if (viewBinding.playerSlidingLayout == null || viewBinding.playerSlidingLayout.getPanelState() == SlidingUpPanelLayout.PanelState.COLLAPSED) {
             resetToCurrentPosition();
         }
     }
 
     private void updateQueuePosition() {
         playingQueueAdapter.setCurrent(MusicPlayerRemote.getPosition());
-        playerQueueSubHeader.setText(getUpNextAndQueueTime());
-        if (slidingUpPanelLayout == null || slidingUpPanelLayout.getPanelState() == SlidingUpPanelLayout.PanelState.COLLAPSED) {
+        viewBinding.playerQueueSubHeader.setText(getUpNextAndQueueTime());
+        if (viewBinding.playerSlidingLayout == null || viewBinding.playerSlidingLayout.getPanelState() == SlidingUpPanelLayout.PanelState.COLLAPSED) {
             resetToCurrentPosition();
         }
     }
@@ -234,10 +206,10 @@ public class FlatPlayerFragment extends AbsPlayerFragment implements PlayerAlbum
     }
 
     private void setUpPlayerToolbar() {
-        toolbar.inflateMenu(R.menu.menu_player);
-        toolbar.setNavigationIcon(R.drawable.ic_close_white_24dp);
-        toolbar.setNavigationOnClickListener(v -> getActivity().onBackPressed());
-        toolbar.setOnMenuItemClickListener(this);
+        viewBinding.playerToolbar.inflateMenu(R.menu.menu_player);
+        viewBinding.playerToolbar.setNavigationIcon(R.drawable.ic_close_white_24dp);
+        viewBinding.playerToolbar.setNavigationOnClickListener(v -> getActivity().onBackPressed());
+        viewBinding.playerToolbar.setOnMenuItemClickListener(this);
     }
 
     @Override
@@ -266,11 +238,11 @@ public class FlatPlayerFragment extends AbsPlayerFragment implements PlayerAlbum
 
         layoutManager = new LinearLayoutManager(getActivity());
 
-        recyclerView.setLayoutManager(layoutManager);
-        recyclerView.setAdapter(wrappedAdapter);
-        recyclerView.setItemAnimator(animator);
+        viewBinding.playerRecyclerView.setLayoutManager(layoutManager);
+        viewBinding.playerRecyclerView.setAdapter(wrappedAdapter);
+        viewBinding.playerRecyclerView.setItemAnimator(animator);
 
-        recyclerViewDragDropManager.attachRecyclerView(recyclerView);
+        recyclerViewDragDropManager.attachRecyclerView(viewBinding.playerRecyclerView);
 
         layoutManager.scrollToPositionWithOffset(MusicPlayerRemote.getPosition() + 1, 0);
     }
@@ -297,7 +269,7 @@ public class FlatPlayerFragment extends AbsPlayerFragment implements PlayerAlbum
                     int res = isFavorite ? R.drawable.ic_favorite_white_24dp : R.drawable.ic_favorite_border_white_24dp;
                     int color = ToolbarColorUtil.toolbarContentColor(activity, Color.TRANSPARENT);
                     Drawable drawable = ImageUtil.getTintedVectorDrawable(activity, res, color);
-                    toolbar.getMenu().findItem(R.id.action_toggle_favorite)
+                    viewBinding.playerToolbar.getMenu().findItem(R.id.action_toggle_favorite)
                             .setIcon(drawable)
                             .setTitle(isFavorite ? getString(R.string.action_remove_from_favorites) : getString(R.string.action_add_to_favorites));
                 }
@@ -315,7 +287,7 @@ public class FlatPlayerFragment extends AbsPlayerFragment implements PlayerAlbum
                 super.onPreExecute();
                 lyrics = null;
                 playerAlbumCoverFragment.setLyrics(null);
-                toolbar.getMenu().removeItem(R.id.action_show_lyrics);
+                viewBinding.playerToolbar.getMenu().removeItem(R.id.action_show_lyrics);
             }
 
             @Override
@@ -328,16 +300,14 @@ public class FlatPlayerFragment extends AbsPlayerFragment implements PlayerAlbum
                 lyrics = l;
                 playerAlbumCoverFragment.setLyrics(lyrics);
                 if (lyrics == null) {
-                    if (toolbar != null) {
-                        toolbar.getMenu().removeItem(R.id.action_show_lyrics);
-                    }
+                    viewBinding.playerToolbar.getMenu().removeItem(R.id.action_show_lyrics);
                 } else {
                     Activity activity = getActivity();
-                    if (toolbar != null && activity != null)
-                        if (toolbar.getMenu().findItem(R.id.action_show_lyrics) == null) {
+                    if (activity != null)
+                        if (viewBinding.playerToolbar.getMenu().findItem(R.id.action_show_lyrics) == null) {
                             int color = ToolbarColorUtil.toolbarContentColor(activity, Color.TRANSPARENT);
                             Drawable drawable = ImageUtil.getTintedVectorDrawable(activity, R.drawable.ic_comment_text_outline_white_24dp, color);
-                            toolbar.getMenu()
+                            viewBinding.playerToolbar.getMenu()
                                     .add(Menu.NONE, R.id.action_show_lyrics, Menu.NONE, R.string.action_show_lyrics)
                                     .setIcon(drawable)
                                     .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
@@ -378,7 +348,8 @@ public class FlatPlayerFragment extends AbsPlayerFragment implements PlayerAlbum
     public void onShow() {
         playbackControlsFragment.show();
         FragmentActivity activity = getActivity();
-        if (activity instanceof MainActivity) ((MainActivity) activity).setFloatingActionButtonVisibility(View.GONE);
+        if (activity instanceof MainActivity)
+            ((MainActivity) activity).setFloatingActionButtonVisibility(View.GONE);
     }
 
     @Override
@@ -390,9 +361,9 @@ public class FlatPlayerFragment extends AbsPlayerFragment implements PlayerAlbum
     @Override
     public boolean onBackPressed() {
         boolean wasExpanded = false;
-        if (slidingUpPanelLayout != null) {
-            wasExpanded = slidingUpPanelLayout.getPanelState() == SlidingUpPanelLayout.PanelState.EXPANDED;
-            slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+        if (viewBinding.playerSlidingLayout != null) {
+            wasExpanded = viewBinding.playerSlidingLayout.getPanelState() == SlidingUpPanelLayout.PanelState.EXPANDED;
+            viewBinding.playerSlidingLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
         }
 
         return wasExpanded;
@@ -412,7 +383,7 @@ public class FlatPlayerFragment extends AbsPlayerFragment implements PlayerAlbum
 
     @Override
     public void onToolbarToggled() {
-        toggleToolbar(toolbarContainer);
+        toggleToolbar(viewBinding.toolbarContainer);
     }
 
     @Override
@@ -427,7 +398,7 @@ public class FlatPlayerFragment extends AbsPlayerFragment implements PlayerAlbum
                 break;
             case ANCHORED:
                 //noinspection ConstantConditions
-                slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED); // this fixes a bug where the panel would get stuck for some reason
+                viewBinding.playerSlidingLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED); // this fixes a bug where the panel would get stuck for some reason
                 break;
         }
     }
@@ -437,7 +408,7 @@ public class FlatPlayerFragment extends AbsPlayerFragment implements PlayerAlbum
     }
 
     private void resetToCurrentPosition() {
-        recyclerView.stopScroll();
+        viewBinding.playerRecyclerView.stopScroll();
         layoutManager.scrollToPositionWithOffset(MusicPlayerRemote.getPosition() + 1, 0);
     }
 
@@ -460,7 +431,7 @@ public class FlatPlayerFragment extends AbsPlayerFragment implements PlayerAlbum
 
         public AnimatorSet createDefaultColorChangeAnimatorSet(int newColor) {
             Animator backgroundAnimator = ViewUtil.createBackgroundColorTransition(fragment.playbackControlsFragment.getView(), fragment.lastColor, newColor);
-            Animator statusBarAnimator = ViewUtil.createBackgroundColorTransition(fragment.playerStatusBar, fragment.lastColor, newColor);
+            Animator statusBarAnimator = ViewUtil.createBackgroundColorTransition(fragment.viewBinding.playerStatusBar, fragment.lastColor, newColor);
 
             AnimatorSet animatorSet = new AnimatorSet();
             animatorSet.playTogether(backgroundAnimator, statusBarAnimator);
@@ -468,7 +439,7 @@ public class FlatPlayerFragment extends AbsPlayerFragment implements PlayerAlbum
             if (!chr_56.MDthemer.util.Util.isWindowBackgroundDark(fragment.getActivity())) {
                 int adjustedLastColor = ColorUtil.isColorLight(fragment.lastColor) ? ColorUtil.darkenColor(fragment.lastColor) : fragment.lastColor;
                 int adjustedNewColor = ColorUtil.isColorLight(newColor) ? ColorUtil.darkenColor(newColor) : newColor;
-                Animator subHeaderAnimator = ViewUtil.createTextColorTransition(fragment.playerQueueSubHeader, adjustedLastColor, adjustedNewColor);
+                Animator subHeaderAnimator = ViewUtil.createTextColorTransition(fragment.viewBinding.playerQueueSubHeader, adjustedLastColor, adjustedNewColor);
                 animatorSet.play(subHeaderAnimator);
             }
 
@@ -479,7 +450,7 @@ public class FlatPlayerFragment extends AbsPlayerFragment implements PlayerAlbum
         @Override
         public void animateColorChange(int newColor) {
             if (chr_56.MDthemer.util.Util.isWindowBackgroundDark(fragment.getActivity())) {
-                fragment.playerQueueSubHeader.setTextColor(ThemeColor.textColorSecondary(fragment.getActivity()));
+                fragment.viewBinding.playerQueueSubHeader.setTextColor(ThemeColor.textColorSecondary(fragment.requireActivity()));
             }
         }
     }
@@ -504,47 +475,47 @@ public class FlatPlayerFragment extends AbsPlayerFragment implements PlayerAlbum
             currentSongViewHolder.image.setImageResource(R.drawable.ic_volume_up_white_24dp);
             currentSongViewHolder.itemView.setOnClickListener(v -> {
                 // toggle the panel
-                if (fragment.slidingUpPanelLayout.getPanelState() == SlidingUpPanelLayout.PanelState.COLLAPSED) {
-                    fragment.slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.EXPANDED);
-                } else if (fragment.slidingUpPanelLayout.getPanelState() == SlidingUpPanelLayout.PanelState.EXPANDED) {
-                    fragment.slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+                if (fragment.viewBinding.playerSlidingLayout.getPanelState() == SlidingUpPanelLayout.PanelState.COLLAPSED) {
+                    fragment.viewBinding.playerSlidingLayout.setPanelState(SlidingUpPanelLayout.PanelState.EXPANDED);
+                } else if (fragment.viewBinding.playerSlidingLayout.getPanelState() == SlidingUpPanelLayout.PanelState.EXPANDED) {
+                    fragment.viewBinding.playerSlidingLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
                 }
             });
             currentSongViewHolder.menu.setOnClickListener(
                     new SongMenuHelper.ClickMenuListener((AppCompatActivity) fragment.getActivity(), R.menu.menu_item_playing_queue_song) {
-                @Override
-                public Song getSong() {
-                    return currentSong;
-                }
+                        @Override
+                        public Song getSong() {
+                            return currentSong;
+                        }
 
-                @Override
-                public boolean onMenuItemClick(MenuItem item) {
-                    switch (item.getItemId()) {
-                        case R.id.action_remove_from_playing_queue:
-                            MusicPlayerRemote.removeFromQueue(MusicPlayerRemote.getPosition());
-                            return true;
-                        case R.id.action_share:
-                            SongShareDialog.create(getSong()).show(fragment.getFragmentManager(), "SONG_SHARE_DIALOG");
-                            return true;
-                    }
-                    return super.onMenuItemClick(item);
-                }
-            });
+                        @Override
+                        public boolean onMenuItemClick(MenuItem item) {
+                            switch (item.getItemId()) {
+                                case R.id.action_remove_from_playing_queue:
+                                    MusicPlayerRemote.removeFromQueue(MusicPlayerRemote.getPosition());
+                                    return true;
+                                case R.id.action_share:
+                                    SongShareDialog.create(getSong()).show(fragment.getFragmentManager(), "SONG_SHARE_DIALOG");
+                                    return true;
+                            }
+                            return super.onMenuItemClick(item);
+                        }
+                    });
         }
 
         @Override
         public void setUpPanelAndAlbumCoverHeight() {
             WidthFitSquareLayout albumCoverContainer = fragment.getView().findViewById(R.id.album_cover_container);
 
-            final int availablePanelHeight = fragment.slidingUpPanelLayout.getHeight() - fragment.getView().findViewById(R.id.player_content).getHeight();
+            final int availablePanelHeight = fragment.viewBinding.playerSlidingLayout.getHeight() - fragment.getView().findViewById(R.id.player_content).getHeight();
             final int minPanelHeight = (int) ViewUtil.convertDpToPixel(8 + 72 + 24, fragment.getResources()) + fragment.getResources().getDimensionPixelSize(R.dimen.progress_container_height) + fragment.getResources().getDimensionPixelSize(R.dimen.media_controller_container_height);
             if (availablePanelHeight < minPanelHeight) {
                 albumCoverContainer.getLayoutParams().height = albumCoverContainer.getHeight() - (minPanelHeight - availablePanelHeight);
                 albumCoverContainer.forceSquare(false);
             }
-            fragment.slidingUpPanelLayout.setPanelHeight(Math.max(minPanelHeight, availablePanelHeight));
+            fragment.viewBinding.playerSlidingLayout.setPanelHeight(Math.max(minPanelHeight, availablePanelHeight));
 
-            ((AbsSlidingMusicPanelActivity) fragment.getActivity()).setAntiDragView(fragment.slidingUpPanelLayout.findViewById(R.id.player_panel));
+            ((AbsSlidingMusicPanelActivity) fragment.getActivity()).setAntiDragView(fragment.viewBinding.playerSlidingLayout.findViewById(R.id.player_panel));
         }
 
         @Override
@@ -578,8 +549,8 @@ public class FlatPlayerFragment extends AbsPlayerFragment implements PlayerAlbum
 
         @Override
         public void updateCurrentSong(Song song) {
-            fragment.toolbar.setTitle(song.title);
-            fragment.toolbar.setSubtitle(MusicUtil.getSongInfoString(song));
+            fragment.viewBinding.playerToolbar.setTitle(song.title);
+            fragment.viewBinding.playerToolbar.setSubtitle(MusicUtil.getSongInfoString(song));
         }
 
         @Override
@@ -587,7 +558,7 @@ public class FlatPlayerFragment extends AbsPlayerFragment implements PlayerAlbum
             super.animateColorChange(newColor);
 
             AnimatorSet animatorSet = createDefaultColorChangeAnimatorSet(newColor);
-            animatorSet.play(ViewUtil.createBackgroundColorTransition(fragment.toolbar, fragment.lastColor, newColor));
+            animatorSet.play(ViewUtil.createBackgroundColorTransition(fragment.viewBinding.playerToolbar, fragment.lastColor, newColor));
             animatorSet.start();
         }
     }
