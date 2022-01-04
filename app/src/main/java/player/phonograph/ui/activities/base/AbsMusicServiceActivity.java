@@ -7,17 +7,23 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
+import android.os.Looper;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import player.phonograph.R;
+import player.phonograph.database.mediastore.MusicDatabase;
 import player.phonograph.helper.MusicPlayerRemote;
+import player.phonograph.helper.SortOrder;
 import player.phonograph.interfaces.MusicServiceEventListener;
+import player.phonograph.model.Song;
 import player.phonograph.service.MusicService;
+import player.phonograph.util.MediaStoreUtil;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -53,7 +59,35 @@ public abstract class AbsMusicServiceActivity extends AbsBaseActivity implements
         });
 
         setPermissionDeniedMessage(getString(R.string.permission_external_storage_denied));
-//        setupHandler();
+
+        new Handler(Looper.getMainLooper()).postDelayed(
+                AbsMusicServiceActivity.this::refreshMusicDataBase
+                , 1200
+        );
+
+    }
+
+    protected void refreshMusicDataBase() {
+        long latestSongTimestamp = -1L;
+        long databaseUpdateTimestamp = -1L;
+
+
+        // check latest music files
+        Song latestSong;
+        Cursor c = MediaStoreUtil.INSTANCE.querySongs(this, null, null, SortOrder.SongSortOrder.SONG_DATE_MODIFIED_REVERT);
+
+        latestSong = MediaStoreUtil.INSTANCE.getSong(c);
+        if (latestSong.dateModified > 0) latestSongTimestamp = latestSong.dateModified;
+
+        // check database timestamps
+        databaseUpdateTimestamp = MusicDatabase.INSTANCE.getSongsDataBase().getLastUpdateTimestamp();
+
+        // compare
+        if (latestSongTimestamp > databaseUpdateTimestamp) updateMusicDataBase();
+
+    }
+
+    protected void updateMusicDataBase() { //todo
     }
 
     @Override
