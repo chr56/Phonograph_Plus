@@ -1,179 +1,154 @@
-package player.phonograph.adapter;
+package player.phonograph.adapter
 
-import android.content.SharedPreferences;
-import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
-
-import com.bumptech.glide.Glide;
-import player.phonograph.R;
-import player.phonograph.glide.PhonographColoredTarget;
-import player.phonograph.glide.SongGlideRequest;
-import player.phonograph.misc.CustomFragmentStatePagerAdapter;
-import player.phonograph.model.Song;
-import player.phonograph.util.PreferenceUtil;
-
-import java.util.List;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
+import android.content.SharedPreferences
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.ImageView
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import com.bumptech.glide.Glide
+import player.phonograph.R
+import player.phonograph.adapter.AlbumCoverPagerAdapter.AlbumCoverFragment.ColorReceiver
+import player.phonograph.glide.PhonographColoredTarget
+import player.phonograph.glide.SongGlideRequest
+import player.phonograph.misc.CustomFragmentStatePagerAdapter
+import player.phonograph.model.Song
+import player.phonograph.util.PreferenceUtil
+import player.phonograph.util.PreferenceUtil.Companion.getInstance
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
  */
-public class AlbumCoverPagerAdapter extends CustomFragmentStatePagerAdapter {
+class AlbumCoverPagerAdapter(fm: FragmentManager?, private val dataSet: List<Song>) :
+    CustomFragmentStatePagerAdapter(fm) {
 
-    private List<Song> dataSet;
-
-    private AlbumCoverFragment.ColorReceiver currentColorReceiver;
-    private int currentColorReceiverPosition = -1;
-
-    public AlbumCoverPagerAdapter(FragmentManager fm, List<Song> dataSet) {
-        super(fm);
-        this.dataSet = dataSet;
+    private var currentColorReceiver: ColorReceiver? = null
+    private var currentColorReceiverPosition = -1
+    override fun getItem(position: Int): Fragment {
+        return AlbumCoverFragment.newInstance(dataSet[position])
     }
 
-    @Override
-    public Fragment getItem(final int position) {
-        return AlbumCoverFragment.newInstance(dataSet.get(position));
+    override fun getCount(): Int {
+        return dataSet.size
     }
 
-    @Override
-    public int getCount() {
-        return dataSet.size();
-    }
-
-    @Override
-    @NonNull
-    public Object instantiateItem(ViewGroup container, int position) {
-        Object o = super.instantiateItem(container, position);
+    override fun instantiateItem(container: ViewGroup, position: Int): Any {
+        val o = super.instantiateItem(container, position)
         if (currentColorReceiver != null && currentColorReceiverPosition == position) {
-            receiveColor(currentColorReceiver, currentColorReceiverPosition);
+            receiveColor(currentColorReceiver!!, currentColorReceiverPosition)
         }
-        return o;
+        return o
     }
 
     /**
-     * Only the latest passed {@link AlbumCoverFragment.ColorReceiver} is guaranteed to receive a response
+     * Only the latest passed [AlbumCoverFragment.ColorReceiver] is guaranteed to receive a response
      */
-    public void receiveColor(AlbumCoverFragment.ColorReceiver colorReceiver, int position) {
-        AlbumCoverFragment fragment = (AlbumCoverFragment) getFragment(position);
+    fun receiveColor(colorReceiver: ColorReceiver, position: Int) {
+        var fragment = getFragment(position)
         if (fragment != null) {
-            currentColorReceiver = null;
-            currentColorReceiverPosition = -1;
-            fragment.receiveColor(colorReceiver, position);
+            fragment = getFragment(position) as AlbumCoverFragment
+            currentColorReceiver = null
+            currentColorReceiverPosition = -1
+            fragment.receiveColor(colorReceiver, position)
         } else {
-            currentColorReceiver = colorReceiver;
-            currentColorReceiverPosition = position;
+            currentColorReceiver = colorReceiver
+            currentColorReceiverPosition = position
         }
     }
 
-    public static class AlbumCoverFragment extends Fragment implements SharedPreferences.OnSharedPreferenceChangeListener {
-        private static final String SONG_ARG = "song";
-
-        private Unbinder unbinder;
-
-        @BindView(R.id.player_image)
-        ImageView albumCover;
-
-        private boolean isColorReady;
-        private int color;
-        private Song song;
-        private ColorReceiver colorReceiver;
-        private int request;
-
-        public static AlbumCoverFragment newInstance(final Song song) {
-            AlbumCoverFragment frag = new AlbumCoverFragment();
-            final Bundle args = new Bundle();
-            args.putParcelable(SONG_ARG, song);
-            frag.setArguments(args);
-            return frag;
+    class AlbumCoverFragment : Fragment(), SharedPreferences.OnSharedPreferenceChangeListener {
+        @JvmField
+        var albumCover: ImageView? = null
+        private var isColorReady = false
+        private var color = 0
+        private var song: Song? = null
+        private var colorReceiver: ColorReceiver? = null
+        private var request = 0
+        override fun onCreate(savedInstanceState: Bundle?) {
+            super.onCreate(savedInstanceState)
+            song = arguments!!.getParcelable(SONG_ARG)
         }
 
-        @Override
-        public void onCreate(final Bundle savedInstanceState) {
-            super.onCreate(savedInstanceState);
-            song = getArguments().getParcelable(SONG_ARG);
+        override fun onCreateView(
+            inflater: LayoutInflater,
+            container: ViewGroup?,
+            savedInstanceState: Bundle?
+        ): View? {
+            val view = inflater.inflate(R.layout.fragment_album_cover, container, false)
+            albumCover = view.findViewById(R.id.player_image)
+            return view
         }
 
-        @Override
-        public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-            View view = inflater.inflate(R.layout.fragment_album_cover, container, false);
-            unbinder = ButterKnife.bind(this, view);
-            return view;
-        }
-
-        @Override
-        public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
-            super.onViewCreated(view, savedInstanceState);
-            forceSquareAlbumCover(false);
+        override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+            super.onViewCreated(view, savedInstanceState)
+            forceSquareAlbumCover(false)
             // TODO
 //            forceSquareAlbumCover(PreferenceUtil.getInstance(getContext()).forceSquareAlbumCover());
-            PreferenceUtil.getInstance(getActivity()).registerOnSharedPreferenceChangedListener(this);
-            loadAlbumCover();
+            getInstance(requireActivity()).registerOnSharedPreferenceChangedListener(this)
+            loadAlbumCover()
         }
 
-        @Override
-        public void onDestroyView() {
-            super.onDestroyView();
-            PreferenceUtil.getInstance(getActivity()).unregisterOnSharedPreferenceChangedListener(this);
-            unbinder.unbind();
-            colorReceiver = null;
+        override fun onDestroyView() {
+            super.onDestroyView()
+            getInstance(requireActivity()).unregisterOnSharedPreferenceChangedListener(this)
+            colorReceiver = null
         }
 
-        private void loadAlbumCover() {
+        private fun loadAlbumCover() {
             SongGlideRequest.Builder.from(Glide.with(this), song)
-                    .checkIgnoreMediaStore(getActivity())
-                    .generatePalette(getActivity()).build()
-                    .into(new PhonographColoredTarget(albumCover) {
-                        @Override
-                        public void onColorReady(int color) {
-                            setColor(color);
-                        }
-                    });
+                .checkIgnoreMediaStore(requireActivity())
+                .generatePalette(requireActivity()).build()
+                .into(object : PhonographColoredTarget(albumCover) {
+                    override fun onColorReady(color: Int) {
+                        setColor(color)
+                    }
+                })
         }
 
-        @Override
-        public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-            switch (key) {
-                case PreferenceUtil.FORCE_SQUARE_ALBUM_COVER:
-                    // TODO
-//                    forceSquareAlbumCover(PreferenceUtil.getInstance(getActivity()).forceSquareAlbumCover());
-                    break;
+        override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String) {
+            when (key) {
+                PreferenceUtil.FORCE_SQUARE_ALBUM_COVER -> {}
             }
         }
 
-        public void forceSquareAlbumCover(boolean forceSquareAlbumCover) {
-            albumCover.setScaleType(forceSquareAlbumCover ? ImageView.ScaleType.FIT_CENTER : ImageView.ScaleType.CENTER_CROP);
+        fun forceSquareAlbumCover(forceSquareAlbumCover: Boolean) {
+            albumCover!!.scaleType =
+                if (forceSquareAlbumCover) ImageView.ScaleType.FIT_CENTER else ImageView.ScaleType.CENTER_CROP
         }
 
-        private void setColor(int color) {
-            this.color = color;
-            isColorReady = true;
+        private fun setColor(color: Int) {
+            this.color = color
+            isColorReady = true
             if (colorReceiver != null) {
-                colorReceiver.onColorReady(color, request);
-                colorReceiver = null;
+                colorReceiver!!.onColorReady(color, request)
+                colorReceiver = null
             }
         }
 
-        public void receiveColor(ColorReceiver colorReceiver, int request) {
+        fun receiveColor(colorReceiver: ColorReceiver, request: Int) {
             if (isColorReady) {
-                colorReceiver.onColorReady(color, request);
+                colorReceiver.onColorReady(color, request)
             } else {
-                this.colorReceiver = colorReceiver;
-                this.request = request;
+                this.colorReceiver = colorReceiver
+                this.request = request
             }
         }
 
-        public interface ColorReceiver {
-            void onColorReady(int color, int request);
+        interface ColorReceiver {
+            fun onColorReady(color: Int, request: Int)
+        }
+
+        companion object {
+            private const val SONG_ARG = "song"
+            fun newInstance(song: Song?): AlbumCoverFragment {
+                val frag = AlbumCoverFragment()
+                val args = Bundle()
+                args.putParcelable(SONG_ARG, song)
+                frag.arguments = args
+                return frag
+            }
         }
     }
 }
-

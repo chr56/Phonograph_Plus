@@ -13,7 +13,6 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.viewpager.widget.ViewPager
 import androidx.viewpager.widget.ViewPager.OnPageChangeListener
-import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.adapter.AlbumCoverPagerAdapter
 import player.phonograph.adapter.AlbumCoverPagerAdapter.AlbumCoverFragment.ColorReceiver
@@ -114,9 +113,12 @@ class PlayerAlbumCoverFragment :
         }
     }
 
-    private val colorReceiver = ColorReceiver { color, requestCode ->
-        if (currentPosition == requestCode) { notifyColorChange(color) }
-    }
+    private val colorReceiver =
+        object : ColorReceiver {
+            override fun onColorReady(color: Int, request: Int) {
+                if (currentPosition == request) { notifyColorChange(color) }
+            }
+        }
 
     override fun onPageScrollStateChanged(state: Int) {}
 
