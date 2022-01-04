@@ -2,6 +2,7 @@ package player.phonograph.ui.activities;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.ColorFilter;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.text.Html;
@@ -14,6 +15,9 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.content.res.AppCompatResources;
+import androidx.core.graphics.BlendModeColorFilterCompat;
+import androidx.core.graphics.BlendModeCompat;
 import androidx.loader.app.LoaderManager;
 import androidx.loader.content.Loader;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -276,9 +280,21 @@ public class ArtistDetailActivity extends AbsSlidingMusicPanelActivity implement
         setStatusbarColor(color);
 
         int secondaryTextColor = MaterialColorHelper.getSecondaryTextColor(this, ColorUtil.isColorLight(color));
+
+        ColorFilter f = BlendModeColorFilterCompat
+                .createBlendModeColorFilterCompat(secondaryTextColor, BlendModeCompat.SRC_IN);
+
+        viewBinding.durationIcon.setImageDrawable(AppCompatResources.getDrawable(this,R.drawable.ic_timer_white_24dp));
+        viewBinding.durationIcon.setColorFilter(f);
+        viewBinding.songCountIcon.setImageDrawable(AppCompatResources.getDrawable(this,R.drawable.ic_music_note_white_24dp));
+        viewBinding.songCountIcon.setColorFilter(f);
+        viewBinding.albumCountIcon.setImageDrawable(AppCompatResources.getDrawable(this,R.drawable.ic_album_white_24dp));
+        viewBinding.albumCountIcon.setColorFilter(f);
+
         viewBinding.durationIcon.setColorFilter(secondaryTextColor, PorterDuff.Mode.SRC_IN);
         viewBinding.songCountIcon.setColorFilter(secondaryTextColor, PorterDuff.Mode.SRC_IN);
         viewBinding.albumCountIcon.setColorFilter(secondaryTextColor, PorterDuff.Mode.SRC_IN);
+
         viewBinding.durationText.setTextColor(secondaryTextColor);
         viewBinding.songCountText.setTextColor(secondaryTextColor);
         viewBinding.albumCountText.setTextColor(secondaryTextColor);
