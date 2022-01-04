@@ -9,6 +9,7 @@ import player.phonograph.App
 
 // @Fts3
 @Entity(tableName = "songs")
+@TypeConverters(SongConverter::class)
 data class Song(
     @PrimaryKey // media store id
     var id: Long,
@@ -39,8 +40,12 @@ interface SongDao {
     @Query("SELECT * from songs")
     fun getAllSongs(): List<Song>
 
+    @Query("SELECT * from songs where id = :id")
+    fun findSongById(id: Long): List<Song>
     @Query("SELECT * from songs where title = :title")
     fun findSongByTitle(title: String): List<Song>
+    @Query("SELECT * from songs where title like :title")
+    fun searchSongByTitle(title: String): List<Song>
     @Query("SELECT * from songs where album_name = :album")
     fun findSongByAlbum(album: String): List<Song>
     @Query("SELECT * from songs where artist_name = :artist")
@@ -66,11 +71,32 @@ abstract class SongDataBase : RoomDatabase() {
 }
 
 object MusicDatabase {
+    private fun initSongDataBase(): SongDataBase {
+        // todo disable allowMainThreadQueries
+        return Room.databaseBuilder(App.instance, SongDataBase::class.java, "musicV1.db")
+            .allowMainThreadQueries().build()
+    }
+
     var songsDataBase: SongDataBase? = null
         get() = if (field == null) {
-            // todo disable allowMainThreadQueries
-            Room.databaseBuilder(App.instance, SongDataBase::class.java, "songsV1.db")
-                .allowMainThreadQueries().build()
+            initSongDataBase()
         } else field
         private set
+}
+
+// todo remove
+object SongConverter {
+    @TypeConverter
+    fun fromSongModel(song: player.phonograph.model.Song): Song {
+        return Song(
+            song.id, song.data, song.title, song.year, song.duration, song.dateModified, song.albumId, song.albumName, song.artistId, song.artistName, song.trackNumber
+        )
+    }
+
+    @TypeConverter
+    fun toSongModel(song: Song): player.phonograph.model.Song {
+        return player.phonograph.model.Song(
+            song.id, song.title, song.trackNumber, song.year, song.duration, song.path, song.dateModified, song.albumId, song.albumName, song.artistId, song.artistName
+        )
+    }
 }
