@@ -6,6 +6,7 @@ package player.phonograph.database.mediastore
 
 import androidx.room.*
 import player.phonograph.App
+import player.phonograph.util.PreferenceUtil
 
 // @Fts3
 @Entity(tableName = "songs")
@@ -68,6 +69,11 @@ interface SongDao {
 abstract class SongDataBase : RoomDatabase() {
     abstract fun SongDao(): SongDao
     var lastUpdateTimestamp: Long = 0
+        get() = PreferenceUtil.getInstance(App.instance).lastMusicDatabaseUpdateTimestamp
+        set(value) { field = value; PreferenceUtil.getInstance(App.instance).lastMusicDatabaseUpdateTimestamp = value }
+    var lastAccessTimestamp: Long = 0
+        get() = PreferenceUtil.getInstance(App.instance).lastMusicDatabaseAccessTimestamp
+        set(value) { field = value; PreferenceUtil.getInstance(App.instance).lastMusicDatabaseAccessTimestamp = value }
 }
 
 object MusicDatabase {

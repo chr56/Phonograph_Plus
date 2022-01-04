@@ -474,7 +474,19 @@ class PreferenceUtil(context: Context) {
             mPreferences.edit().putInt(IGNORE_UPGRADE_VERSION_CODE, value).apply()
         }
 
-    /**
+    var lastMusicDatabaseUpdateTimestamp: Long
+        get() = mPreferences.getLong(LAST_MUSIC_DATABASE_UPDATE_TIMESTAMP, 0)
+        set(value) {
+            mPreferences.edit().putLong(LAST_MUSIC_DATABASE_UPDATE_TIMESTAMP, value).apply()
+        }
+
+    var lastMusicDatabaseAccessTimestamp: Long
+        get() = mPreferences.getLong(LAST_MUSIC_DATABASE_ACCESS_TIMESTAMP, 0)
+        set(value) {
+            mPreferences.edit().putLong(LAST_MUSIC_DATABASE_ACCESS_TIMESTAMP, value).apply()
+        }
+
+/**
      * **Dangerous !**, this reset all SharedPreferences!
      * @param context this is used to make toast
      */
@@ -601,5 +613,8 @@ class PreferenceUtil(context: Context) {
          * the version code that is ignored to upgrade
          */
         const val IGNORE_UPGRADE_VERSION_CODE = "ignore_upgrade_version_code"
+
+        const val LAST_MUSIC_DATABASE_UPDATE_TIMESTAMP = "last_music_database_update_timestamp"
+        const val LAST_MUSIC_DATABASE_ACCESS_TIMESTAMP = "last_music_database_access_timestamp"
     }
 }
