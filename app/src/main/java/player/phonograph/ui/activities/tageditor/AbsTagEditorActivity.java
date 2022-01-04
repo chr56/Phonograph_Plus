@@ -29,15 +29,6 @@ import com.afollestad.materialdialogs.list.DialogListExtKt;
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-import chr_56.MDthemer.util.ToolbarColorUtil;
-import player.phonograph.R;
-import player.phonograph.misc.DialogAsyncTask;
-import player.phonograph.misc.SimpleObservableScrollViewCallbacks;
-import player.phonograph.misc.UpdateToastMediaScannerCompletionListener;
-import player.phonograph.ui.activities.base.AbsBaseActivity;
-import player.phonograph.util.MusicUtil;
-import player.phonograph.util.Util;
-
 import org.jaudiotagger.audio.AudioFile;
 import org.jaudiotagger.audio.AudioFileIO;
 import org.jaudiotagger.audio.exceptions.CannotReadException;
@@ -58,12 +49,18 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import chr_56.MDthemer.core.ThemeColor;
 import chr_56.MDthemer.util.ColorUtil;
 import chr_56.MDthemer.util.TintHelper;
+import chr_56.MDthemer.util.ToolbarColorUtil;
 import kotlin.Unit;
+import player.phonograph.R;
+import player.phonograph.misc.DialogAsyncTask;
+import player.phonograph.misc.SimpleObservableScrollViewCallbacks;
+import player.phonograph.misc.UpdateToastMediaScannerCompletionListener;
+import player.phonograph.ui.activities.base.AbsBaseActivity;
+import player.phonograph.util.MusicUtil;
+import player.phonograph.util.Util;
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
@@ -74,16 +71,13 @@ public abstract class AbsTagEditorActivity extends AbsBaseActivity {
     public static final String EXTRA_PALETTE = "extra_palette";
     private static final String TAG = AbsTagEditorActivity.class.getSimpleName();
     private static final int REQUEST_CODE_SELECT_IMAGE = 1000;
-    @BindView(R.id.play_pause_fab)
+
     FloatingActionButton fab;
-    @BindView(R.id.observableScrollView)
     ObservableScrollView observableScrollView;
-    @BindView(R.id.toolbar)
     Toolbar toolbar;
-    @BindView(R.id.image)
     ImageView image;
-    @BindView(R.id.header)
     LinearLayout header;
+
     private long id;
     private int headerVariableSpace;
     private int paletteColorPrimary;
@@ -108,7 +102,12 @@ public abstract class AbsTagEditorActivity extends AbsBaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(getContentViewLayout());
-        ButterKnife.bind(this);
+
+        fab = findViewById(R.id.play_pause_fab);
+        observableScrollView = findViewById(R.id.observableScrollView);
+        toolbar = findViewById(R.id.toolbar);
+        image = findViewById(R.id.image);
+        header = findViewById(R.id.header);
 
         getIntentExtras();
 
@@ -148,9 +147,9 @@ public abstract class AbsTagEditorActivity extends AbsBaseActivity {
                 getString(R.string.remove_cover)
         };
         image.setOnClickListener(v -> {
-            MaterialDialog dialog = new MaterialDialog(AbsTagEditorActivity.this,MaterialDialog.getDEFAULT_BEHAVIOR())
-                .title(R.string.update_image,null);
-            DialogListExtKt.listItems(dialog,null, Arrays.asList(items),null,true,
+            MaterialDialog dialog = new MaterialDialog(AbsTagEditorActivity.this, MaterialDialog.getDEFAULT_BEHAVIOR())
+                    .title(R.string.update_image, null);
+            DialogListExtKt.listItems(dialog, null, Arrays.asList(items), null, true,
                     this::invoke
             );
             //set button color
@@ -262,7 +261,7 @@ public abstract class AbsTagEditorActivity extends AbsBaseActivity {
         setNavigationbarColor(paletteColorPrimary);
         setTaskDescriptionColor(paletteColorPrimary);
 
-        toolbar.setTitleTextColor(ToolbarColorUtil.toolbarTitleColor(this,color));
+        toolbar.setTitleTextColor(ToolbarColorUtil.toolbarTitleColor(this, color));
     }
 
     protected void writeValuesToFiles(@NonNull final Map<FieldKey, String> fieldKeyValueMap, @Nullable final ArtworkInfo artworkInfo) {
@@ -385,12 +384,12 @@ public abstract class AbsTagEditorActivity extends AbsBaseActivity {
 
         @Override
         protected Dialog createDialog(@NonNull Context context) {
-            MaterialDialog dialog = new MaterialDialog(context,MaterialDialog.getDEFAULT_BEHAVIOR())
-                    .title(R.string.saving_changes,null)
+            MaterialDialog dialog = new MaterialDialog(context, MaterialDialog.getDEFAULT_BEHAVIOR())
+                    .title(R.string.saving_changes, null)
 //                    .progress(false, 0)//TODO
                     .cancelable(false);
             //set button color
-            DialogActionExtKt.getActionButton(dialog,WhichButton.POSITIVE).updateTextColor(ThemeColor.accentColor(context));
+            DialogActionExtKt.getActionButton(dialog, WhichButton.POSITIVE).updateTextColor(ThemeColor.accentColor(context));
             return dialog;
         }
 
