@@ -1,38 +1,42 @@
 package player.phonograph.glide.artistimage;
 
-import android.content.Context;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
+import com.bumptech.glide.load.Options;
+import com.bumptech.glide.load.model.ModelLoader;
+import com.bumptech.glide.load.model.ModelLoaderFactory;
+import com.bumptech.glide.load.model.MultiModelLoaderFactory;
+import com.bumptech.glide.signature.ObjectKey;
 
 import java.io.InputStream;
 
-import com.bumptech.glide.load.data.DataFetcher;
-import com.bumptech.glide.load.model.GenericLoaderFactory;
-import com.bumptech.glide.load.model.ModelLoader;
-import com.bumptech.glide.load.model.ModelLoaderFactory;
-import com.bumptech.glide.load.model.stream.StreamModelLoader;
+import player.phonograph.App;
 import player.phonograph.util.PreferenceUtil;
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
  */
 
-public class ArtistImageLoader implements StreamModelLoader<ArtistImage> {
-    private Context context;
+public class ArtistImageLoader implements ModelLoader<ArtistImage, InputStream> {
 
-    public ArtistImageLoader(Context context) {
-        this.context = context;
+    @Nullable
+    @Override
+    public LoadData<InputStream> buildLoadData(@NonNull ArtistImage artistImage, int width, int height, @NonNull Options options) {
+        return new LoadData<>(new ObjectKey(artistImage), new ArtistImageFetcher(artistImage, PreferenceUtil.getInstance(App.getInstance()).ignoreMediaStoreArtwork()));
     }
 
     @Override
-    public DataFetcher<InputStream> getResourceFetcher(final ArtistImage model, int width, int height) {
-
-        return new ArtistImageFetcher(model, PreferenceUtil.getInstance(context).ignoreMediaStoreArtwork());
+    public boolean handles(@NonNull ArtistImage artistImage) {
+        return !artistImage.albumCovers.isEmpty();
     }
 
     public static class Factory implements ModelLoaderFactory<ArtistImage, InputStream> {
 
+        @NonNull
         @Override
-        public ModelLoader<ArtistImage, InputStream> build(Context context, GenericLoaderFactory factories) {
-            return new ArtistImageLoader(context);
+        public ModelLoader<ArtistImage, InputStream> build(@NonNull MultiModelLoaderFactory multiFactory) {
+            return new ArtistImageLoader();
         }
 
         @Override

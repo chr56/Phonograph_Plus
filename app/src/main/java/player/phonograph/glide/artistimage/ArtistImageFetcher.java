@@ -5,6 +5,8 @@ import android.graphics.Canvas;
 import android.media.MediaMetadataRetriever;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
@@ -16,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.bumptech.glide.Priority;
+import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.data.DataFetcher;
 import player.phonograph.glide.audiocover.AudioFileCoverUtils;
 import player.phonograph.util.ImageUtil;
@@ -36,7 +39,7 @@ public class ArtistImageFetcher implements DataFetcher<InputStream> {
         this.ignoreMediaStore = ignoreMediaStore;
     }
 
-    @Override
+    // todo remove
     public String getId() {
         Log.d("MOSAIC", "get id for" + model.artistName);
         // never return NULL here!
@@ -46,9 +49,14 @@ public class ArtistImageFetcher implements DataFetcher<InputStream> {
     }
 
     @Override
-    public InputStream loadData(Priority priority) throws Exception {
+    public void loadData(@NonNull Priority priority, @NonNull DataCallback<? super InputStream> callback) {
         Log.d("MOSAIC", "load data for " + model.artistName);
-        return stream = getMosaic(model.albumCovers);
+        try {
+            stream = getMosaic(model.albumCovers);
+            callback.onDataReady(stream);
+        } catch (FileNotFoundException e) {
+            callback.onLoadFailed(e);
+        }
     }
 
     private InputStream getMosaic(final List<AlbumCover> albumCovers) throws FileNotFoundException {
@@ -170,5 +178,17 @@ public class ArtistImageFetcher implements DataFetcher<InputStream> {
     @Override
     public void cancel() {
 
+    }
+
+    @NonNull
+    @Override
+    public Class<InputStream> getDataClass() {
+        return InputStream.class;
+    }
+
+    @NonNull
+    @Override
+    public DataSource getDataSource() {
+        return DataSource.LOCAL;
     }
 }
