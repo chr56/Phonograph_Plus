@@ -31,6 +31,8 @@
 
 # Glide
 -keep public class * implements com.bumptech.glide.module.AppGlideModule
+-keep public class * implements com.bumptech.glide.module.LibraryGlideModule
+-keep public class * implements com.bumptech.glide.module.GlideModule
 -keep class com.bumptech.glide.GeneratedAppGlideModuleImpl
 -keep public enum com.bumptech.glide.load.resource.bitmap.ImageHeaderParser$** {
     **[] $VALUES;

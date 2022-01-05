@@ -169,7 +169,7 @@ dependencies {
 
     implementation 'com.github.bumptech.glide:glide:4.12.0'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.12.0'
-    implementation 'com.github.bumptech.glide:okhttp3-integration:1.5.0'
+    implementation 'com.github.bumptech.glide:okhttp3-integration:4.12.0'
     implementation 'org.eclipse.mylyn.github:org.eclipse.egit.github.core:2.1.5'
 
     implementation 'com.github.AdrienPoupa:jaudiotagger:2.2.3'
