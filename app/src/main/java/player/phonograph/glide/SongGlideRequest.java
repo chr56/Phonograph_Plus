@@ -33,6 +33,7 @@ public class SongGlideRequest {
 
     public static final RequestOptions DEFAULT_OPTION =
             new RequestOptions().diskCacheStrategy(DEFAULT_DISK_CACHE_STRATEGY)
+                    .placeholder(DEFAULT_ERROR_IMAGE)
                     .error(DEFAULT_ERROR_IMAGE);
 
     public static final DrawableTransitionOptions DEFAULT_DRAWABLE_TRANSITION_OPTIONS = new DrawableTransitionOptions().transition(DEFAULT_ANIMATION);
