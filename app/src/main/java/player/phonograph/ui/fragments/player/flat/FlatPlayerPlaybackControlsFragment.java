@@ -172,7 +172,7 @@ public class FlatPlayerPlaybackControlsFragment extends AbsMusicServiceFragment 
     }
 
     private void setUpShuffleButton() {
-        viewBinding.playerPrevButton.setOnClickListener(v -> MusicPlayerRemote.toggleShuffleMode());
+        viewBinding.playerShuffleButton.setOnClickListener(v -> MusicPlayerRemote.toggleShuffleMode());
     }
 
     private void updateShuffleState() {
