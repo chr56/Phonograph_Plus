@@ -3,9 +3,10 @@ package player.phonograph.util;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
+
 import androidx.annotation.NonNull;
 
-import com.bumptech.glide.signature.StringSignature;
+import com.bumptech.glide.signature.ObjectKey;
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
@@ -37,7 +38,7 @@ public class ArtistSignatureUtil {
         return mPreferences.getLong(artistName, 0);
     }
 
-    public StringSignature getArtistSignature(String artistName) {
-        return new StringSignature(String.valueOf(getArtistSignatureRaw(artistName)));
+    public ObjectKey getArtistSignature(String artistName) {
+        return new ObjectKey(String.valueOf(getArtistSignatureRaw(artistName)));
     }
 }
