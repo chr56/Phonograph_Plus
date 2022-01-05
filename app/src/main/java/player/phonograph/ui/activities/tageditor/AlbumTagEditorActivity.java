@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -60,6 +61,9 @@ public class AlbumTagEditorActivity extends AbsTagEditorActivity implements Text
     private Bitmap albumArtBitmap;
     private boolean deleteAlbumArt;
     private LastFMRestClient lastFMRestClient;
+
+    private final String TAG = "AlbumCoverImage";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -129,9 +133,13 @@ public class AlbumTagEditorActivity extends AbsTagEditorActivity implements Text
                                 .listener(new RequestListener<BitmapPaletteWrapper>() {
                                     @Override
                                     public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<BitmapPaletteWrapper> target, boolean isFirstResource) {
-                                        if (e != null) {
-                                            e.printStackTrace();
-                                        }
+//                                        if (e != null) {
+//                                            e.printStackTrace();
+//                                        }
+                                        Log.w(TAG, "Fail to load image cover:");
+                                        Log.i(TAG, "   Album      :" + albumTitleStr);
+                                        Log.i(TAG, "   AlbumArtist:" + albumArtistNameStr);
+                                        Log.i(TAG, "   Uri        :" + url.toString());
                                         return false;
                                     }
 
@@ -229,9 +237,11 @@ public class AlbumTagEditorActivity extends AbsTagEditorActivity implements Text
                 .listener(new RequestListener<BitmapPaletteWrapper>() {
                     @Override
                     public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<BitmapPaletteWrapper> target, boolean isFirstResource) {
-                        if (e != null) {
-                            e.printStackTrace();
-                        }
+//                        if (e != null) {
+//                            e.printStackTrace();
+//                        }
+                        Log.w(TAG, "Fail to load image cover:");
+                        Log.i(TAG, "   Uri:  " + selectedFileUri.toString());
                         return false;
                     }
 

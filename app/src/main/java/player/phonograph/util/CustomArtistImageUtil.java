@@ -8,6 +8,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -40,6 +41,8 @@ public class CustomArtistImageUtil {
     private static final String CUSTOM_ARTIST_IMAGE_PREFS = "custom_artist_image";
     private static final String FOLDER_NAME = "/custom_artist_images/";
 
+    private final String TAG = "ArtistCoverImage";
+
     private static CustomArtistImageUtil sInstance;
 
     private final SharedPreferences mPreferences;
@@ -64,11 +67,12 @@ public class CustomArtistImageUtil {
                         new RequestListener<Bitmap>() {
                             @Override
                             public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Bitmap> target, boolean isFirstResource) {
-                                if (e != null) {
-                                    e.printStackTrace();
-                                    // todo send notification instead
-//                                    Toast.makeText(App.getInstance(), e.toString(), Toast.LENGTH_LONG).show();
-                                }
+                                Log.w(TAG, "Fail to load artist cover:");
+                                Log.i(TAG, "   Artist" + artist.getName() + " " + artist.getId());
+                                Log.i(TAG, "   Uri:  " + uri.toString());
+//                                e.printStackTrace();
+                                // todo send notification instead
+//                              Toast.makeText(App.getInstance(), e.toString(), Toast.LENGTH_LONG).show();
                                 return false;
                             }
 
@@ -90,6 +94,7 @@ public class CustomArtistImageUtil {
                         // todo check leakage
                     }
 
+                    @SuppressLint("StaticFieldLeak")
                     @Override
                     public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
                         new AsyncTask<Void, Void, Void>() {
@@ -126,6 +131,7 @@ public class CustomArtistImageUtil {
                 });
     }
 
+    @SuppressLint("StaticFieldLeak")
     public void resetCustomArtistImage(final Artist artist) {
         new AsyncTask<Void, Void, Void>() {
             @SuppressLint("ApplySharedPref")
