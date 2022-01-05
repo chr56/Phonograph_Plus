@@ -32,7 +32,10 @@ public class PhonographGlideModule extends AppGlideModule {
     public void applyOptions(@NonNull Context context, @NonNull GlideBuilder builder) {
         builder.setDefaultRequestOptions(new RequestOptions().format(DecodeFormat.PREFER_RGB_565));
     }
-
+    @Override
+    public boolean isManifestParsingEnabled() {
+        return false;
+    }
     @Override
     public void registerComponents(@NonNull Context context, @NonNull Glide glide, @NonNull Registry registry) {
 
