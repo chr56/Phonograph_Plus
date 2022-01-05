@@ -1,6 +1,7 @@
 package player.phonograph.glide;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 
 import androidx.annotation.NonNull;
 
@@ -14,10 +15,13 @@ import com.bumptech.glide.request.RequestOptions;
 
 import java.io.InputStream;
 
+import player.phonograph.App;
 import player.phonograph.glide.artistimage.ArtistImage;
 import player.phonograph.glide.artistimage.ArtistImageLoader;
 import player.phonograph.glide.audiocover.AudioFileCover;
 import player.phonograph.glide.audiocover.AudioFileCoverLoader;
+import player.phonograph.glide.palette.BitmapPaletteTranscoder;
+import player.phonograph.glide.palette.BitmapPaletteWrapper;
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
@@ -35,6 +39,8 @@ public class PhonographGlideModule extends AppGlideModule {
 
         registry.prepend(AudioFileCover.class, InputStream.class, new AudioFileCoverLoader.Factory());
         registry.prepend(ArtistImage.class, InputStream.class, new ArtistImageLoader.Factory());
+
+        registry.register(Bitmap.class, BitmapPaletteWrapper.class, new BitmapPaletteTranscoder(App.getInstance()));
 
         super.registerComponents(context, glide, registry);
     }

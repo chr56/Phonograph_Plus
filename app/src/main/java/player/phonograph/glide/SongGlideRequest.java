@@ -15,12 +15,8 @@ import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.signature.MediaStoreSignature;
 
-import java.io.File;
-
 import player.phonograph.R;
-import player.phonograph.glide.artistimage.AlbumCover;
 import player.phonograph.glide.audiocover.AudioFileCover;
-import player.phonograph.glide.palette.BitmapPaletteTranscoder;
 import player.phonograph.glide.palette.BitmapPaletteWrapper;
 import player.phonograph.model.Song;
 import player.phonograph.util.MusicUtil;
