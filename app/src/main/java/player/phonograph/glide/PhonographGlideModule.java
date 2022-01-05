@@ -10,6 +10,7 @@ import com.bumptech.glide.GlideBuilder;
 import com.bumptech.glide.Registry;
 import com.bumptech.glide.annotation.GlideModule;
 import com.bumptech.glide.load.DecodeFormat;
+import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool;
 import com.bumptech.glide.module.AppGlideModule;
 import com.bumptech.glide.request.RequestOptions;
 
@@ -40,7 +41,7 @@ public class PhonographGlideModule extends AppGlideModule {
         registry.prepend(AudioFileCover.class, InputStream.class, new AudioFileCoverLoader.Factory());
         registry.prepend(ArtistImage.class, InputStream.class, new ArtistImageLoader.Factory());
 
-        registry.register(Bitmap.class, BitmapPaletteWrapper.class, new BitmapPaletteTranscoder(App.getInstance()));
+        registry.register(Bitmap.class, BitmapPaletteWrapper.class, new BitmapPaletteTranscoder(glide.getBitmapPool()));
 
         super.registerComponents(context, glide, registry);
     }
