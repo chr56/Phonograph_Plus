@@ -9,15 +9,15 @@ import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
 import chr_56.MDthemer.util.Util
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.signature.MediaStoreSignature
+import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView.SectionedAdapter
 import player.phonograph.R
 import player.phonograph.adapter.base.AbsMultiSelectAdapter
 import player.phonograph.adapter.base.MediaEntryViewHolder
+import player.phonograph.glide.SongGlideRequest
 import player.phonograph.glide.audiocover.AudioFileCover
 import player.phonograph.interfaces.CabHolder
 import player.phonograph.util.ImageUtil
-import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView.SectionedAdapter
 import java.io.File
 import java.text.DecimalFormat
 import java.util.Locale
@@ -104,12 +104,11 @@ class SongFileAdapter(
             )
             Glide.with(activity)
                 .load(AudioFileCover(file.path))
-                .diskCacheStrategy(DiskCacheStrategy.NONE)
-                .error(error)
+                .apply(SongGlideRequest.DEFAULT_OPTION)
+                .transition(SongGlideRequest.DEFAULT_DRAWABLE_TRANSITION_OPTIONS)
                 .placeholder(error)
-                .animate(android.R.anim.fade_in)
                 .signature(MediaStoreSignature("", file.lastModified(), 0))
-                .into(holder.image)
+                .into(holder.image!!)
         }
     }
 

@@ -34,11 +34,16 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.bumptech.glide.BitmapRequestBuilder;
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.RequestBuilder;
+import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
+
+import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 import player.phonograph.App;
 import player.phonograph.R;
@@ -54,22 +59,17 @@ import player.phonograph.loader.PlaylistSongLoader;
 import player.phonograph.model.AbsCustomPlaylist;
 import player.phonograph.model.Playlist;
 import player.phonograph.model.Song;
-import player.phonograph.provider.HistoryStore;
-import player.phonograph.provider.MusicPlaybackQueueStore;
-import player.phonograph.provider.SongPlayCountStore;
 import player.phonograph.notification.PlayingNotification;
 import player.phonograph.notification.PlayingNotificationImpl;
 import player.phonograph.notification.PlayingNotificationImpl24;
+import player.phonograph.provider.HistoryStore;
+import player.phonograph.provider.MusicPlaybackQueueStore;
+import player.phonograph.provider.SongPlayCountStore;
 import player.phonograph.service.playback.Playback;
 import player.phonograph.util.LyricsUtil;
 import player.phonograph.util.MusicUtil;
 import player.phonograph.util.PreferenceUtil;
 import player.phonograph.util.Util;
-
-import java.lang.ref.WeakReference;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
 
 /**
  * @author Karim Abou Zeid (kabouzeid), Andrew Neal
@@ -607,16 +607,17 @@ public class MusicService extends Service implements SharedPreferences.OnSharedP
 
         if (PreferenceUtil.getInstance(this).albumArtOnLockscreen()) {
             final Point screenSize = Util.getScreenSize(MusicService.this);
-            final BitmapRequestBuilder<?, Bitmap> request = SongGlideRequest.Builder.from(Glide.with(MusicService.this), song)
-                    .checkIgnoreMediaStore(MusicService.this)
-                    .asBitmap().build();
+            final RequestBuilder<Bitmap> request =
+                    SongGlideRequest.Builder.from(Glide.with(MusicService.this), song)
+                            .checkIgnoreMediaStore(MusicService.this)
+                            .asBitmap().build();
             if (PreferenceUtil.getInstance(this).blurredAlbumArt()) {
                 request.transform(new BlurTransformation.Builder(MusicService.this).build());
             }
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    request.into(new SimpleTarget<Bitmap>(screenSize.x, screenSize.y) {
+                    request.into(new CustomTarget<Bitmap>(screenSize.x, screenSize.y) {
                         @Override
                         public void onLoadFailed(Drawable errorDrawable) {
                             super.onLoadFailed(errorDrawable);
@@ -627,6 +628,11 @@ public class MusicService extends Service implements SharedPreferences.OnSharedP
                         public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
                             metaData.putBitmap(MediaMetadataCompat.METADATA_KEY_ALBUM_ART, copy(resource));
                             mediaSession.setMetadata(metaData.build());
+                        }
+
+                        @Override
+                        public void onLoadCleared(@Nullable Drawable placeholder) {
+                            mediaSession.setMetadata(metaData.build()); // todo check leakage
                         }
                     });
                 }

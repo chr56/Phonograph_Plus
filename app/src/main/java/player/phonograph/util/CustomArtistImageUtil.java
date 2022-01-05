@@ -7,20 +7,19 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
 import android.provider.MediaStore;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.request.animation.GlideAnimation;
-import com.bumptech.glide.request.target.SimpleTarget;
-import com.bumptech.glide.request.transition.Transition;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
-import player.phonograph.App;
-import player.phonograph.model.Artist;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.CustomTarget;
+import com.bumptech.glide.request.target.Target;
+import com.bumptech.glide.request.transition.Transition;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -28,6 +27,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Locale;
+
+import player.phonograph.App;
+import player.phonograph.glide.SongGlideRequest;
+import player.phonograph.model.Artist;
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
@@ -54,16 +57,37 @@ public class CustomArtistImageUtil {
 
     public void setCustomArtistImage(final Artist artist, Uri uri) {
         Glide.with(App.getInstance())
-                .load(uri)
                 .asBitmap()
-                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                .apply(SongGlideRequest.DEFAULT_OPTION)
                 .skipMemoryCache(true)
-                .into(new SimpleTarget<Bitmap>() {
+                .listener(
+                        new RequestListener<Bitmap>() {
+                            @Override
+                            public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Bitmap> target, boolean isFirstResource) {
+                                if (e != null) {
+                                    e.printStackTrace();
+                                    // todo send notification instead
+//                                    Toast.makeText(App.getInstance(), e.toString(), Toast.LENGTH_LONG).show();
+                                }
+                                return false;
+                            }
+
+                            @Override
+                            public boolean onResourceReady(Bitmap resource, Object model, Target<Bitmap> target, DataSource dataSource, boolean isFirstResource) {
+                                return false;
+                            }
+                        }
+                )
+                .load(uri)
+                .into(new CustomTarget<Bitmap>() {
                     @Override
-                    public void onLoadFailed( Drawable errorDrawable) {
+                    public void onLoadFailed(Drawable errorDrawable) {
                         super.onLoadFailed(errorDrawable);
-//                        e.printStackTrace();// todo register error listener
-//                        Toast.makeText(App.getInstance(), e.toString(), Toast.LENGTH_LONG).show();
+                    }
+
+                    @Override
+                    public void onLoadCleared(@Nullable Drawable placeholder) {
+                        // todo check leakage
                     }
 
                     @Override
@@ -98,6 +122,7 @@ public class CustomArtistImageUtil {
                             }
                         }.execute();
                     }
+
                 });
     }
 

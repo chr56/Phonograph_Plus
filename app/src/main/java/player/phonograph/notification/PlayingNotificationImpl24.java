@@ -1,5 +1,9 @@
 package player.phonograph.notification;
 
+import static player.phonograph.service.MusicService.ACTION_REWIND;
+import static player.phonograph.service.MusicService.ACTION_SKIP;
+import static player.phonograph.service.MusicService.ACTION_TOGGLE_PAUSE;
+
 import android.app.PendingIntent;
 import android.content.ComponentName;
 import android.content.Intent;
@@ -16,7 +20,6 @@ import androidx.media.app.NotificationCompat.MediaStyle;
 import androidx.palette.graphics.Palette;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
 
@@ -27,10 +30,6 @@ import player.phonograph.model.Song;
 import player.phonograph.service.MusicService;
 import player.phonograph.ui.activities.MainActivity;
 import player.phonograph.util.PreferenceUtil;
-
-import static player.phonograph.service.MusicService.ACTION_REWIND;
-import static player.phonograph.service.MusicService.ACTION_SKIP;
-import static player.phonograph.service.MusicService.ACTION_TOGGLE_PAUSE;
 
 public class PlayingNotificationImpl24 extends PlayingNotification {
 

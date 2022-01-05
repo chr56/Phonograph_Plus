@@ -6,20 +6,20 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.palette.graphics.Palette;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.RemoteViews;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.palette.graphics.Palette;
+
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.target.Target;
 import com.bumptech.glide.request.transition.Transition;
 
+import chr_56.MDthemer.util.MaterialColorHelper;
 import player.phonograph.R;
 import player.phonograph.appwidgets.base.BaseAppWidget;
 import player.phonograph.glide.SongGlideRequest;
@@ -28,8 +28,6 @@ import player.phonograph.model.Song;
 import player.phonograph.service.MusicService;
 import player.phonograph.ui.activities.MainActivity;
 import player.phonograph.util.ImageUtil;
-
-import chr_56.MDthemer.util.MaterialColorHelper;
 
 public class AppWidgetClassic extends BaseAppWidget {
     public static final String NAME = "app_widget_classic";
@@ -95,7 +93,7 @@ public class AppWidgetClassic extends BaseAppWidget {
             @Override
             public void run() {
                 if (target != null) {
-                    Glide.clear(target);
+                    Glide.with(service).clear(target);
                 }
                 target = SongGlideRequest.Builder.from(Glide.with(appContext), song)
                         .checkIgnoreMediaStore(appContext)

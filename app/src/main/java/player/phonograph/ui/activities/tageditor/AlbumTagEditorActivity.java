@@ -17,11 +17,24 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.target.Target;
 import com.bumptech.glide.request.transition.Transition;
 
+import org.jaudiotagger.tag.FieldKey;
+
+import java.util.ArrayList;
+import java.util.EnumMap;
+import java.util.List;
+import java.util.Map;
+
+import chr_56.MDthemer.util.ToolbarColorUtil;
+import chr_56.MDthemer.util.Util;
 import player.phonograph.R;
 import player.phonograph.databinding.ActivityAlbumTagEditorBinding;
 import player.phonograph.glide.palette.BitmapPaletteTranscoder;
@@ -33,16 +46,6 @@ import player.phonograph.model.Song;
 import player.phonograph.util.ImageUtil;
 import player.phonograph.util.LastFMUtil;
 import player.phonograph.util.PhonographColorUtil;
-
-import org.jaudiotagger.tag.FieldKey;
-
-import java.util.ArrayList;
-import java.util.EnumMap;
-import java.util.List;
-import java.util.Map;
-
-import chr_56.MDthemer.util.ToolbarColorUtil;
-import chr_56.MDthemer.util.Util;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -111,23 +114,22 @@ public class AlbumTagEditorActivity extends AbsTagEditorActivity implements Text
         }
         lastFMRestClient.getApiService().getAlbumInfo(albumTitleStr, albumArtistNameStr, null).enqueue(new Callback<LastFmAlbum>() {
             @Override
-            public void onResponse(Call<LastFmAlbum> call, Response<LastFmAlbum> response) {
+            public void onResponse(@NonNull Call<LastFmAlbum> call, @NonNull Response<LastFmAlbum> response) {
                 LastFmAlbum lastFmAlbum = response.body();
                 if (lastFmAlbum.getAlbum() != null) {
                     String url = LastFMUtil.getLargestAlbumImageUrl(lastFmAlbum.getAlbum().getImage());
                     if (!TextUtils.isEmpty(url) && url.trim().length() > 0) {
                         Glide.with(AlbumTagEditorActivity.this)
-                                .load(url)
                                 .asBitmap()
+                                .load(url)
                                 .transcode(new BitmapPaletteTranscoder(AlbumTagEditorActivity.this), BitmapPaletteWrapper.class)
-                                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                                .diskCacheStrategy(DiskCacheStrategy.DATA)
                                 .error(R.drawable.default_album_art)
                                 .into(new SimpleTarget<BitmapPaletteWrapper>() {
                                     @Override
                                     public void onLoadFailed(Drawable errorDrawable) {
                                         super.onLoadFailed(errorDrawable);
 //                                        e.printStackTrace(); // todo register error listener
-                                        Toast.makeText(AlbumTagEditorActivity.this, e.toString(), Toast.LENGTH_LONG).show();
                                     }
 
                                     @Override
@@ -146,7 +148,7 @@ public class AlbumTagEditorActivity extends AbsTagEditorActivity implements Text
             }
 
             @Override
-            public void onFailure(Call<LastFmAlbum> call, Throwable t) {
+            public void onFailure(@NonNull Call<LastFmAlbum> call, @NonNull Throwable t) {
                 toastLoadingFailed();
             }
 
@@ -202,16 +204,14 @@ public class AlbumTagEditorActivity extends AbsTagEditorActivity implements Text
     protected void loadImageFromFile(@NonNull final Uri selectedFileUri) {
         Glide.with(AlbumTagEditorActivity.this)
                 .load(selectedFileUri)
-                .asBitmap()
                 .transcode(new BitmapPaletteTranscoder(AlbumTagEditorActivity.this), BitmapPaletteWrapper.class)
                 .diskCacheStrategy(DiskCacheStrategy.NONE)
                 .skipMemoryCache(true)
-                .into(new SimpleTarget<BitmapPaletteWrapper>() {
+                .into(new CustomTarget<BitmapPaletteWrapper>() {
                     @Override
                     public void onLoadFailed(Drawable errorDrawable) {
                         super.onLoadFailed(errorDrawable);
 //                        e.printStackTrace();// todo register error listener
-                        Toast.makeText(AlbumTagEditorActivity.this, e.toString(), Toast.LENGTH_LONG).show();
                     }
 
                     @Override
@@ -222,6 +222,11 @@ public class AlbumTagEditorActivity extends AbsTagEditorActivity implements Text
                         deleteAlbumArt = false;
                         dataChanged();
                         setResult(RESULT_OK);
+                    }
+
+                    @Override
+                    public void onLoadCleared(@Nullable Drawable placeholder) {
+                        // todo check leakage
                     }
                 });
     }
