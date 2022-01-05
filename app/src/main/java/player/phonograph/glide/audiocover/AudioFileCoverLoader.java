@@ -1,12 +1,13 @@
 package player.phonograph.glide.audiocover;
 
-import android.content.Context;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
-import com.bumptech.glide.load.data.DataFetcher;
-import com.bumptech.glide.load.model.GenericLoaderFactory;
+import com.bumptech.glide.load.Options;
 import com.bumptech.glide.load.model.ModelLoader;
 import com.bumptech.glide.load.model.ModelLoaderFactory;
-import com.bumptech.glide.load.model.stream.StreamModelLoader;
+import com.bumptech.glide.load.model.MultiModelLoaderFactory;
+import com.bumptech.glide.signature.ObjectKey;
 
 import java.io.InputStream;
 
@@ -14,16 +15,24 @@ import java.io.InputStream;
  * @author Karim Abou Zeid (kabouzeid)
  */
 
-public class AudioFileCoverLoader implements StreamModelLoader<AudioFileCover> {
+public class AudioFileCoverLoader implements ModelLoader<AudioFileCover, InputStream> {
 
+    @Nullable
     @Override
-    public DataFetcher<InputStream> getResourceFetcher(AudioFileCover model, int width, int height) {
-        return new AudioFileCoverFetcher(model);
+    public LoadData<InputStream> buildLoadData(@NonNull AudioFileCover audioFileCover, int width, int height, @NonNull Options options) {
+        return new LoadData<>(new ObjectKey(audioFileCover), new AudioFileCoverFetcher(audioFileCover));
     }
 
+    @Override
+    public boolean handles(@NonNull AudioFileCover audioFileCover) {
+        return !audioFileCover.filePath.isEmpty();
+    }
+
+
     public static class Factory implements ModelLoaderFactory<AudioFileCover, InputStream> {
+        @NonNull
         @Override
-        public ModelLoader<AudioFileCover, InputStream> build(Context context, GenericLoaderFactory factories) {
+        public ModelLoader<AudioFileCover, InputStream> build(@NonNull MultiModelLoaderFactory multiFactory) {
             return new AudioFileCoverLoader();
         }
 

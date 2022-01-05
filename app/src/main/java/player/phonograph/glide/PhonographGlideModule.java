@@ -31,7 +31,7 @@ public class PhonographGlideModule extends AppGlideModule {
     @Override
     public void registerComponents(@NonNull Context context, @NonNull Glide glide, @NonNull Registry registry) {
 
-        registry.register(AudioFileCover.class, InputStream.class, new AudioFileCoverLoader.Factory());
+        registry.prepend(AudioFileCover.class, InputStream.class, new AudioFileCoverLoader.Factory());
         registry.register(ArtistImage.class, InputStream.class, new ArtistImageLoader.Factory());
 
         super.registerComponents(context, glide, registry);

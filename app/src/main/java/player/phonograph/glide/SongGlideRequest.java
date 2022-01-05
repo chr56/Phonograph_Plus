@@ -18,6 +18,8 @@ import com.bumptech.glide.signature.MediaStoreSignature;
 import java.io.File;
 
 import player.phonograph.R;
+import player.phonograph.glide.artistimage.AlbumCover;
+import player.phonograph.glide.audiocover.AudioFileCover;
 import player.phonograph.glide.palette.BitmapPaletteTranscoder;
 import player.phonograph.glide.palette.BitmapPaletteWrapper;
 import player.phonograph.model.Song;
@@ -113,7 +115,7 @@ public class SongGlideRequest {
 
     public static <T> RequestBuilder<T> createBaseRequest(Class<T> type, RequestManager requestManager, Song song, boolean ignoreMediaStore) {
         if (ignoreMediaStore) {
-            return requestManager.as(type).load(new File(song.data));
+            return requestManager.as(type).load(new AudioFileCover(song.data));
         } else {
             return requestManager.as(type).load(MusicUtil.getMediaStoreAlbumCoverUri(song.albumId));
         }

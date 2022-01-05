@@ -2,12 +2,15 @@ package player.phonograph.glide.audiocover;
 
 import android.media.MediaMetadataRetriever;
 
+import androidx.annotation.NonNull;
+
+import com.bumptech.glide.Priority;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.data.DataFetcher;
+
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-
-import com.bumptech.glide.Priority;
-import com.bumptech.glide.load.data.DataFetcher;
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
@@ -22,14 +25,15 @@ public class AudioFileCoverFetcher implements DataFetcher<InputStream> {
         this.model = model;
     }
 
-    @Override
+//    @Override
     public String getId() {
         // makes sure we never ever return null here
         return String.valueOf(model.filePath);
     }
 
+
     @Override
-    public InputStream loadData(final Priority priority) throws Exception {
+    public void loadData(@NonNull Priority priority, @NonNull DataCallback<? super InputStream> callback) {
 
         final MediaMetadataRetriever retriever = new MediaMetadataRetriever();
         try {
@@ -40,11 +44,13 @@ public class AudioFileCoverFetcher implements DataFetcher<InputStream> {
             } else {
                 stream = AudioFileCoverUtils.fallback(model.filePath);
             }
+            callback.onDataReady(stream);
+
+        } catch (Exception e) {
+            callback.onLoadFailed(e);
         } finally {
             retriever.release();
         }
-
-        return stream;
     }
 
     @Override
@@ -62,5 +68,17 @@ public class AudioFileCoverFetcher implements DataFetcher<InputStream> {
     @Override
     public void cancel() {
         // cannot cancel
+    }
+
+    @NonNull
+    @Override
+    public Class<InputStream> getDataClass() {
+        return InputStream.class;
+    }
+
+    @NonNull
+    @Override
+    public DataSource getDataSource() {
+        return DataSource.LOCAL;
     }
 }
