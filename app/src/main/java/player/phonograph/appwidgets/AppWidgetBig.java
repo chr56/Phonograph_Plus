@@ -7,6 +7,8 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.graphics.drawable.Drawable;
+
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.View;
@@ -16,9 +18,12 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.target.Target;
+import com.bumptech.glide.request.transition.Transition;
+
 import player.phonograph.R;
 import player.phonograph.appwidgets.base.BaseAppWidget;
 import player.phonograph.glide.SongGlideRequest;
+import player.phonograph.glide.palette.BitmapPaletteWrapper;
 import player.phonograph.model.Song;
 import player.phonograph.service.MusicService;
 import player.phonograph.ui.activities.MainActivity;

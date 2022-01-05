@@ -14,11 +14,13 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.transition.Transition;
 
 import player.phonograph.R;
 import player.phonograph.databinding.ActivityAlbumTagEditorBinding;
@@ -129,7 +131,7 @@ public class AlbumTagEditorActivity extends AbsTagEditorActivity implements Text
                                     }
 
                                     @Override
-                                    public void onResourceReady(BitmapPaletteWrapper resource, GlideAnimation<? super BitmapPaletteWrapper> glideAnimation) {
+                                    public void onResourceReady(@NonNull BitmapPaletteWrapper resource, @Nullable Transition<? super BitmapPaletteWrapper> transition) {
                                         albumArtBitmap = ImageUtil.resizeBitmap(resource.getBitmap(), 2048);
                                         setImageBitmap(albumArtBitmap, PhonographColorUtil.getColor(resource.getPalette(), Util.resolveColor(AlbumTagEditorActivity.this, R.attr.defaultFooterColor)));
                                         deleteAlbumArt = false;
@@ -213,7 +215,7 @@ public class AlbumTagEditorActivity extends AbsTagEditorActivity implements Text
                     }
 
                     @Override
-                    public void onResourceReady(BitmapPaletteWrapper resource, GlideAnimation<? super BitmapPaletteWrapper> glideAnimation) {
+                    public void onResourceReady(@NonNull BitmapPaletteWrapper resource, @Nullable Transition<? super BitmapPaletteWrapper> transition) {
                         PhonographColorUtil.getColor(resource.getPalette(), Color.TRANSPARENT);
                         albumArtBitmap = ImageUtil.resizeBitmap(resource.getBitmap(), 2048);
                         setImageBitmap(albumArtBitmap, PhonographColorUtil.getColor(resource.getPalette(), Util.resolveColor(AlbumTagEditorActivity.this, R.attr.defaultFooterColor)));

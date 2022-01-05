@@ -6,6 +6,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
+
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.palette.graphics.Palette;
 import android.text.TextUtils;
@@ -16,6 +18,8 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.target.Target;
+import com.bumptech.glide.request.transition.Transition;
+
 import player.phonograph.R;
 import player.phonograph.appwidgets.base.BaseAppWidget;
 import player.phonograph.glide.SongGlideRequest;
@@ -106,7 +110,7 @@ public class AppWidgetCard extends BaseAppWidget {
                         .centerCrop()
                         .into(new SimpleTarget<BitmapPaletteWrapper>(imageSize, imageSize) {
                             @Override
-                            public void onResourceReady(BitmapPaletteWrapper resource, GlideAnimation<? super BitmapPaletteWrapper> glideAnimation) {
+                            public void onResourceReady(@NonNull BitmapPaletteWrapper resource, @Nullable Transition<? super BitmapPaletteWrapper> transition) {
                                 Palette palette = resource.getPalette();
                                 update(resource.getBitmap(), palette.getVibrantColor(palette.getMutedColor(MaterialColorHelper.getSecondaryTextColor(service, true))));
                             }
