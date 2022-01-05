@@ -11,10 +11,12 @@ import com.bumptech.glide.load.Options;
 import com.bumptech.glide.load.engine.Resource;
 import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool;
 import com.bumptech.glide.load.resource.transcode.ResourceTranscoder;
+
 import player.phonograph.util.PhonographColorUtil;
 
 public class BitmapPaletteTranscoder implements ResourceTranscoder<Bitmap, BitmapPaletteWrapper> {
     private final BitmapPool bitmapPool;
+    private final String ID = "BitmapPaletteTranscoder.player.phonograph.glide.palette";
 
     public BitmapPaletteTranscoder(Context context) {
         this(Glide.get(context).getBitmapPool());
@@ -24,6 +26,7 @@ public class BitmapPaletteTranscoder implements ResourceTranscoder<Bitmap, Bitma
         this.bitmapPool = bitmapPool;
     }
 
+    @Nullable
     @Override
     public Resource<BitmapPaletteWrapper> transcode(@NonNull Resource<Bitmap> toTranscode, @NonNull Options options) {
         Bitmap bitmap = toTranscode.get();
@@ -31,8 +34,4 @@ public class BitmapPaletteTranscoder implements ResourceTranscoder<Bitmap, Bitma
         return new BitmapPaletteResource(bitmapPaletteWrapper, bitmapPool);
     }
 
-//    @Override
-    public String getId() {
-        return "BitmapPaletteTranscoder.player.phonograph.glide.palette";
-    }
 }

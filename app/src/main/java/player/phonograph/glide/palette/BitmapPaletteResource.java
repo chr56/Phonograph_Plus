@@ -1,5 +1,7 @@
 package player.phonograph.glide.palette;
 
+import androidx.annotation.NonNull;
+
 import com.bumptech.glide.load.engine.Resource;
 import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool;
 import com.bumptech.glide.util.Util;
@@ -17,6 +19,13 @@ public class BitmapPaletteResource implements Resource<BitmapPaletteWrapper> {
         this.bitmapPool = bitmapPool;
     }
 
+    @NonNull
+    @Override
+    public Class<BitmapPaletteWrapper> getResourceClass() {
+        return (Class<BitmapPaletteWrapper>) bitmapPaletteWrapper.getClass();
+    }
+
+    @NonNull
     @Override
     public BitmapPaletteWrapper get() {
         return bitmapPaletteWrapper;
@@ -29,8 +38,11 @@ public class BitmapPaletteResource implements Resource<BitmapPaletteWrapper> {
 
     @Override
     public void recycle() {
-        if (!bitmapPool.put(bitmapPaletteWrapper.getBitmap())) {
-            bitmapPaletteWrapper.getBitmap().recycle();
-        }
+        bitmapPool.put(bitmapPaletteWrapper.getBitmap());
+        bitmapPaletteWrapper.getBitmap().recycle();
+//
+//        if (!bitmapPool.put(bitmapPaletteWrapper.getBitmap())) {
+//            bitmapPaletteWrapper.getBitmap().recycle();
+//        }
     }
 }

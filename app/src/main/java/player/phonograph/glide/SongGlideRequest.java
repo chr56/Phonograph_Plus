@@ -6,17 +6,12 @@ import android.graphics.drawable.Drawable;
 
 import androidx.annotation.NonNull;
 
-import com.bumptech.glide.BitmapRequestBuilder;
-import com.bumptech.glide.DrawableRequestBuilder;
-import com.bumptech.glide.DrawableTypeRequest;
 import com.bumptech.glide.RequestBuilder;
 import com.bumptech.glide.RequestManager;
-import com.bumptech.glide.TransitionOptions;
 import com.bumptech.glide.load.Key;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.bitmap.BitmapTransitionOptions;
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
-import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.signature.MediaStoreSignature;
 
@@ -108,11 +103,10 @@ public class SongGlideRequest {
             this.context = context;
         }
 
-        public RequestBuilder<Bitmap> build() {
-            return createBaseRequest(Bitmap.class, builder.requestManager, builder.song, builder.ignoreMediaStore)
+        public RequestBuilder<BitmapPaletteWrapper> build() {
+            return createBaseRequest(BitmapPaletteWrapper.class, builder.requestManager, builder.song, builder.ignoreMediaStore)
                     .apply(DEFAULT_OPTION)
-                    .transition(DEFAULT_BITMAP_TRANSITION_OPTIONS)
-                    .transcode(new BitmapPaletteTranscoder(context), BitmapPaletteWrapper.class) //todo
+//                    .transition(DEFAULT_BITMAP_TRANSITION_OPTIONS) //todo
                     .signature(createSignature(builder.song));
         }
     }

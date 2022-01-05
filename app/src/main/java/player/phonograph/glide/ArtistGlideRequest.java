@@ -23,6 +23,7 @@ import player.phonograph.App;
 import player.phonograph.R;
 import player.phonograph.glide.artistimage.AlbumCover;
 import player.phonograph.glide.artistimage.ArtistImage;
+import player.phonograph.glide.palette.BitmapPaletteWrapper;
 import player.phonograph.model.Album;
 import player.phonograph.model.Artist;
 import player.phonograph.model.Song;
@@ -108,11 +109,10 @@ public class ArtistGlideRequest {
             this.context = context;
         }
 
-        public RequestBuilder<Bitmap> build() {
-            return createBaseRequest(Bitmap.class, builder.requestManager, builder.artist, builder.noCustomImage)
+        public RequestBuilder<BitmapPaletteWrapper> build() {
+            return createBaseRequest(BitmapPaletteWrapper.class, builder.requestManager, builder.artist, builder.noCustomImage)
                     .apply(DEFAULT_OPTION)
-                    .transition(DEFAULT_BITMAP_TRANSITION_OPTIONS)
-//                    .transcode(new BitmapPaletteTranscoder(context), BitmapPaletteWrapper.class) //todo
+//                    .transition(DEFAULT_BITMAP_TRANSITION_OPTIONS)//todo
                     .override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)
                     .signature(createSignature(builder.artist));
         }
