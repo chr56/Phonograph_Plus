@@ -1,5 +1,7 @@
 package player.phonograph.glide.palette;
 
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 
 import com.bumptech.glide.load.engine.Resource;
@@ -38,7 +40,13 @@ public class BitmapPaletteResource implements Resource<BitmapPaletteWrapper> {
 
     @Override
     public void recycle() {//todo check
-        bitmapPool.put(bitmapPaletteWrapper.getBitmap());
-        bitmapPaletteWrapper.getBitmap().recycle();
+        try {
+            bitmapPool.put(bitmapPaletteWrapper.getBitmap());
+            bitmapPaletteWrapper.getBitmap().recycle();
+        } catch (Exception e) {
+            Log.e("BitmapPaletteResource", "Palette recycle fails");
+            Log.w("BitmapPaletteResource", e.getMessage());
+        }
+
     }
 }
