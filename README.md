@@ -35,10 +35,17 @@
 
 * 适当折叠歌曲弹出菜单 | Optimus song item menu.
 
+* 并改进主菜单交互体验, 将主菜单中排序方式与网格尺寸和合二为一 | Improve main menu user experience, merge sort order and grid
+  size to one menu in main ui menu.
+
 * 增大“最近播放”和“最喜爱的歌曲(实际是“最常播放”的歌曲)”条目数量(100→150) | Increase history played tracks and top played
   tracks entries capacity (100->150).
 
 * 新增崩溃报告页面 | Handle crash.
+
+* 支持更多排序方式 | Support more sort orders.
+
+* 在歌曲(或文件)弹出菜单中, 快速添加黑名单 | Add song menu shortcut to add new items to blacklist.
 
 * 适配" [MIUI状态栏歌词](https://github.com/xiaowine/miui.statusbar.lyric) "Xposed模块 | Co-work-with/Support
   MIUI StatusBar Lyric Xposed Module (api)
