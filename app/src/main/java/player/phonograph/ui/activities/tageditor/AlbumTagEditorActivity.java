@@ -123,8 +123,8 @@ public class AlbumTagEditorActivity extends AbsTagEditorActivity implements Text
                     String url = LastFMUtil.getLargestAlbumImageUrl(lastFmAlbum.getAlbum().getImage());
                     if (!TextUtils.isEmpty(url) && url.trim().length() > 0) {
                         Glide.with(AlbumTagEditorActivity.this)
-                                .applyDefaultRequestOptions(SongGlideRequest.DEFAULT_OPTION)
                                 .as(BitmapPaletteWrapper.class)
+                                .apply(SongGlideRequest.DEFAULT_OPTION)
                                 .load(url)
                                 .listener(new RequestListener<BitmapPaletteWrapper>() {
                                     @Override
@@ -222,8 +222,8 @@ public class AlbumTagEditorActivity extends AbsTagEditorActivity implements Text
     @Override
     protected void loadImageFromFile(@NonNull final Uri selectedFileUri) {
         Glide.with(AlbumTagEditorActivity.this)
-                .applyDefaultRequestOptions(SongGlideRequest.DEFAULT_OPTION)
                 .as(BitmapPaletteWrapper.class)
+                .apply(SongGlideRequest.DEFAULT_OPTION)
                 .skipMemoryCache(true)
                 .load(selectedFileUri)
                 .listener(new RequestListener<BitmapPaletteWrapper>() {
