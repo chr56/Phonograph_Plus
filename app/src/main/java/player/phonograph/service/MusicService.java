@@ -616,8 +616,8 @@ public class MusicService extends Service implements SharedPreferences.OnSharedP
                 public void run() {
                     request.into(new SimpleTarget<Bitmap>(screenSize.x, screenSize.y) {
                         @Override
-                        public void onLoadFailed(Exception e, Drawable errorDrawable) {
-                            super.onLoadFailed(e, errorDrawable);
+                        public void onLoadFailed(Drawable errorDrawable) {
+                            super.onLoadFailed(errorDrawable);
                             mediaSession.setMetadata(metaData.build());
                         }
 

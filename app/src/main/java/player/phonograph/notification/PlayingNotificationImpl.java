@@ -102,8 +102,8 @@ public class PlayingNotificationImpl extends PlayingNotification {
                             }
 
                             @Override
-                            public void onLoadFailed(Exception e, Drawable errorDrawable) {
-                                super.onLoadFailed(e, errorDrawable);
+                            public void onLoadFailed(Drawable errorDrawable) {
+                                super.onLoadFailed(errorDrawable);
                                 update(null, Color.WHITE);
                             }
 

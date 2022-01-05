@@ -122,9 +122,9 @@ public class AlbumTagEditorActivity extends AbsTagEditorActivity implements Text
                                 .error(R.drawable.default_album_art)
                                 .into(new SimpleTarget<BitmapPaletteWrapper>() {
                                     @Override
-                                    public void onLoadFailed(Exception e, Drawable errorDrawable) {
-                                        super.onLoadFailed(e, errorDrawable);
-                                        e.printStackTrace();
+                                    public void onLoadFailed(Drawable errorDrawable) {
+                                        super.onLoadFailed(errorDrawable);
+//                                        e.printStackTrace(); // todo register error listener
                                         Toast.makeText(AlbumTagEditorActivity.this, e.toString(), Toast.LENGTH_LONG).show();
                                     }
 
@@ -206,9 +206,9 @@ public class AlbumTagEditorActivity extends AbsTagEditorActivity implements Text
                 .skipMemoryCache(true)
                 .into(new SimpleTarget<BitmapPaletteWrapper>() {
                     @Override
-                    public void onLoadFailed(Exception e, Drawable errorDrawable) {
-                        super.onLoadFailed(e, errorDrawable);
-                        e.printStackTrace();
+                    public void onLoadFailed(Drawable errorDrawable) {
+                        super.onLoadFailed(errorDrawable);
+//                        e.printStackTrace();// todo register error listener
                         Toast.makeText(AlbumTagEditorActivity.this, e.toString(), Toast.LENGTH_LONG).show();
                     }
 

@@ -57,10 +57,10 @@ public class CustomArtistImageUtil {
                 .skipMemoryCache(true)
                 .into(new SimpleTarget<Bitmap>() {
                     @Override
-                    public void onLoadFailed(Exception e, Drawable errorDrawable) {
-                        super.onLoadFailed(e, errorDrawable);
-                        e.printStackTrace();
-                        Toast.makeText(App.getInstance(), e.toString(), Toast.LENGTH_LONG).show();
+                    public void onLoadFailed( Drawable errorDrawable) {
+                        super.onLoadFailed(errorDrawable);
+//                        e.printStackTrace();// todo register error listener
+//                        Toast.makeText(App.getInstance(), e.toString(), Toast.LENGTH_LONG).show();
                     }
 
                     @Override

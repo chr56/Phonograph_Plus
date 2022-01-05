@@ -63,7 +63,7 @@ public class PlayingNotificationImpl24 extends PlayingNotification {
                     }
 
                     @Override
-                    public void onLoadFailed(Exception e, Drawable errorDrawable) {
+                    public void onLoadFailed(Drawable errorDrawable) {
                         update(null, Color.TRANSPARENT);
                     }
 
