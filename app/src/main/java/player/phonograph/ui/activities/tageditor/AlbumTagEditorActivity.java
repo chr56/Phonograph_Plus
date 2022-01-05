@@ -18,11 +18,9 @@ import androidx.annotation.Nullable;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DataSource;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.CustomTarget;
-import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.target.Target;
 import com.bumptech.glide.request.transition.Transition;
 
@@ -37,7 +35,7 @@ import chr_56.MDthemer.util.ToolbarColorUtil;
 import chr_56.MDthemer.util.Util;
 import player.phonograph.R;
 import player.phonograph.databinding.ActivityAlbumTagEditorBinding;
-import player.phonograph.glide.palette.BitmapPaletteTranscoder;
+import player.phonograph.glide.SongGlideRequest;
 import player.phonograph.glide.palette.BitmapPaletteWrapper;
 import player.phonograph.lastfm.rest.LastFMRestClient;
 import player.phonograph.lastfm.rest.model.LastFmAlbum;
@@ -120,16 +118,27 @@ public class AlbumTagEditorActivity extends AbsTagEditorActivity implements Text
                     String url = LastFMUtil.getLargestAlbumImageUrl(lastFmAlbum.getAlbum().getImage());
                     if (!TextUtils.isEmpty(url) && url.trim().length() > 0) {
                         Glide.with(AlbumTagEditorActivity.this)
-                                .asBitmap()
+                                .applyDefaultRequestOptions(SongGlideRequest.DEFAULT_OPTION)
+                                .as(BitmapPaletteWrapper.class)
                                 .load(url)
-                                .transcode(new BitmapPaletteTranscoder(AlbumTagEditorActivity.this), BitmapPaletteWrapper.class)
-                                .diskCacheStrategy(DiskCacheStrategy.DATA)
-                                .error(R.drawable.default_album_art)
-                                .into(new SimpleTarget<BitmapPaletteWrapper>() {
+                                .listener(new RequestListener<BitmapPaletteWrapper>() {
+                                    @Override
+                                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<BitmapPaletteWrapper> target, boolean isFirstResource) {
+                                        if (e != null) {
+                                            e.printStackTrace();
+                                        }
+                                        return false;
+                                    }
+
+                                    @Override
+                                    public boolean onResourceReady(BitmapPaletteWrapper resource, Object model, Target<BitmapPaletteWrapper> target, DataSource dataSource, boolean isFirstResource) {
+                                        return false;
+                                    }
+                                })
+                                .into(new CustomTarget<BitmapPaletteWrapper>() {
                                     @Override
                                     public void onLoadFailed(Drawable errorDrawable) {
                                         super.onLoadFailed(errorDrawable);
-//                                        e.printStackTrace(); // todo register error listener
                                     }
 
                                     @Override
@@ -139,6 +148,11 @@ public class AlbumTagEditorActivity extends AbsTagEditorActivity implements Text
                                         deleteAlbumArt = false;
                                         dataChanged();
                                         setResult(RESULT_OK);
+                                    }
+
+                                    @Override
+                                    public void onLoadCleared(@Nullable Drawable placeholder) {
+                                        // todo check leakage
                                     }
                                 });
                         return;
@@ -203,15 +217,28 @@ public class AlbumTagEditorActivity extends AbsTagEditorActivity implements Text
     @Override
     protected void loadImageFromFile(@NonNull final Uri selectedFileUri) {
         Glide.with(AlbumTagEditorActivity.this)
-                .load(selectedFileUri)
-                .transcode(new BitmapPaletteTranscoder(AlbumTagEditorActivity.this), BitmapPaletteWrapper.class)
-                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                .applyDefaultRequestOptions(SongGlideRequest.DEFAULT_OPTION)
+                .as(BitmapPaletteWrapper.class)
                 .skipMemoryCache(true)
+                .load(selectedFileUri)
+                .listener(new RequestListener<BitmapPaletteWrapper>() {
+                    @Override
+                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<BitmapPaletteWrapper> target, boolean isFirstResource) {
+                        if (e != null) {
+                            e.printStackTrace();
+                        }
+                        return false;
+                    }
+
+                    @Override
+                    public boolean onResourceReady(BitmapPaletteWrapper resource, Object model, Target<BitmapPaletteWrapper> target, DataSource dataSource, boolean isFirstResource) {
+                        return false;
+                    }
+                })
                 .into(new CustomTarget<BitmapPaletteWrapper>() {
                     @Override
                     public void onLoadFailed(Drawable errorDrawable) {
                         super.onLoadFailed(errorDrawable);
-//                        e.printStackTrace();// todo register error listener
                     }
 
                     @Override
