@@ -22,7 +22,7 @@ public class BitmapPaletteResource implements Resource<BitmapPaletteWrapper> {
     @NonNull
     @Override
     public Class<BitmapPaletteWrapper> getResourceClass() {
-        return (Class<BitmapPaletteWrapper>) bitmapPaletteWrapper.getClass();
+        return BitmapPaletteWrapper.class;
     }
 
     @NonNull
