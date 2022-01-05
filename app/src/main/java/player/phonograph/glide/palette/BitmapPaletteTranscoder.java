@@ -1,12 +1,10 @@
 package player.phonograph.glide.palette;
 
-import android.content.Context;
 import android.graphics.Bitmap;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.Options;
 import com.bumptech.glide.load.engine.Resource;
 import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool;
@@ -16,11 +14,7 @@ import player.phonograph.util.PhonographColorUtil;
 
 public class BitmapPaletteTranscoder implements ResourceTranscoder<Bitmap, BitmapPaletteWrapper> {
     private final BitmapPool bitmapPool;
-    private final String ID = "BitmapPaletteTranscoder.player.phonograph.glide.palette";
-
-    public BitmapPaletteTranscoder(Context context) {
-        this(Glide.get(context).getBitmapPool());
-    }
+//    private final String ID = "BitmapPaletteTranscoder.player.phonograph.glide.palette";
 
     public BitmapPaletteTranscoder(BitmapPool bitmapPool) {
         this.bitmapPool = bitmapPool;

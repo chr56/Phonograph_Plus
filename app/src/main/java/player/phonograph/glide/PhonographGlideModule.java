@@ -10,13 +10,11 @@ import com.bumptech.glide.GlideBuilder;
 import com.bumptech.glide.Registry;
 import com.bumptech.glide.annotation.GlideModule;
 import com.bumptech.glide.load.DecodeFormat;
-import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool;
 import com.bumptech.glide.module.AppGlideModule;
 import com.bumptech.glide.request.RequestOptions;
 
 import java.io.InputStream;
 
-import player.phonograph.App;
 import player.phonograph.glide.artistimage.ArtistImage;
 import player.phonograph.glide.artistimage.ArtistImageLoader;
 import player.phonograph.glide.audiocover.AudioFileCover;

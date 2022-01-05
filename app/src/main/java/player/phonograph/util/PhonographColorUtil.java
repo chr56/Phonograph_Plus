@@ -2,6 +2,7 @@ package player.phonograph.util;
 
 import android.graphics.Bitmap;
 import androidx.annotation.ColorInt;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.palette.graphics.Palette;
 
@@ -15,9 +16,8 @@ import java.util.Comparator;
  */
 public class PhonographColorUtil {
 
-    @Nullable
-    public static Palette generatePalette(Bitmap bitmap) {
-        if (bitmap == null) return null;
+    @NonNull
+    public static Palette generatePalette(@NonNull Bitmap bitmap) {
         return Palette.from(bitmap).generate();
     }
 

@@ -30,10 +30,7 @@ public class AudioFileCoverUtils {
                 }
             }
             // If there are any exceptions, we ignore them and continue to the other fallback method
-        } catch (ReadOnlyFileException ignored) {
-        } catch (InvalidAudioFrameException ignored) {
-        } catch (TagException ignored) {
-        } catch (IOException ignored) {
+        } catch (ReadOnlyFileException | InvalidAudioFrameException | TagException | IOException ignored) {
         }
 
         // Method 2: look for album art in external files

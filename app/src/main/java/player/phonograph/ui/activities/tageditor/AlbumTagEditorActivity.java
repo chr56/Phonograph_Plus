@@ -98,7 +98,12 @@ public class AlbumTagEditorActivity extends AbsTagEditorActivity implements Text
     @Override
     protected void loadCurrentImage() {
         Bitmap bitmap = getAlbumArt();
-        setImageBitmap(bitmap, PhonographColorUtil.getColor(PhonographColorUtil.generatePalette(bitmap), Util.resolveColor(this, R.attr.defaultFooterColor)));
+        if (bitmap != null) {
+            setImageBitmap(
+                    bitmap,
+                    PhonographColorUtil.getColor(PhonographColorUtil.generatePalette(bitmap), Util.resolveColor(this, R.attr.defaultFooterColor))
+            );
+        }
         deleteAlbumArt = false;
     }
 
