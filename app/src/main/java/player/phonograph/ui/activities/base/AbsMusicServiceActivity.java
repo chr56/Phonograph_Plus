@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -71,6 +72,8 @@ public abstract class AbsMusicServiceActivity extends AbsBaseActivity implements
     }
 
     protected void refreshMusicDataBase() {
+        Log.i("RoomDatabase", "Start refreshing");
+
         long latestSongTimestamp = -1L;
         long databaseUpdateTimestamp = -1L;
 
@@ -85,6 +88,8 @@ public abstract class AbsMusicServiceActivity extends AbsBaseActivity implements
 
         // compare
         if (latestSongTimestamp > databaseUpdateTimestamp) updateMusicDataBase();
+        Log.i("RoomDatabase", "latestSongTimestamp    :" + latestSongTimestamp);
+        Log.i("RoomDatabase", "databaseUpdateTimestamp:" + databaseUpdateTimestamp);
 
         App.getInstance().setDatabaseChecked(true);
     }
