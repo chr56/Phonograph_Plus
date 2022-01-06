@@ -30,6 +30,7 @@ import java.io.OutputStream;
 import java.util.Locale;
 
 import player.phonograph.App;
+import player.phonograph.glide.GlideRequestOptions;
 import player.phonograph.glide.SongGlideRequest;
 import player.phonograph.model.Artist;
 
@@ -61,7 +62,7 @@ public class CustomArtistImageUtil {
     public void setCustomArtistImage(final Artist artist, Uri uri) {
         Glide.with(App.getInstance())
                 .asBitmap()
-                .apply(SongGlideRequest.DEFAULT_OPTION)
+                .apply(GlideRequestOptions.get_default_option_song())
                 .skipMemoryCache(true)
                 .listener(
                         new RequestListener<Bitmap>() {
