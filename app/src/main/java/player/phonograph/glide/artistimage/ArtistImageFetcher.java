@@ -20,6 +20,8 @@ import java.util.Map;
 import com.bumptech.glide.Priority;
 import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.data.DataFetcher;
+
+import player.phonograph.BuildConfig;
 import player.phonograph.glide.audiocover.AudioFileCoverUtils;
 import player.phonograph.util.ImageUtil;
 
@@ -39,24 +41,22 @@ public class ArtistImageFetcher implements DataFetcher<InputStream> {
         this.ignoreMediaStore = ignoreMediaStore;
     }
 
-    // todo remove
-    public String getId() {
-        Log.d("MOSAIC", "get id for" + model.artistName);
-        // never return NULL here!
-        // this id is used to determine whether the image is already cached
-        // we use the artist name as well as the album years + file paths
-        return model.toIdString() + "ignoremediastore:" + ignoreMediaStore;
-    }
-
     @Override
     public void loadData(@NonNull Priority priority, @NonNull DataCallback<? super InputStream> callback) {
-        Log.d("MOSAIC", "load data for " + model.artistName);
+        if (BuildConfig.DEBUG)
+            Log.d("MOSAIC", "load data for " + model.artistName);
+
         try {
             stream = getMosaic(model.albumCovers);
             callback.onDataReady(stream);
+            return;
         } catch (FileNotFoundException e) {
-            callback.onLoadFailed(e);
+            if (BuildConfig.DEBUG)
+                Log.d(TAG, "No Available Photo for " + model.artistName);
         }
+
+        callback.onLoadFailed(new Exception("No Available Photo For " + model.artistName));
+
     }
 
     private InputStream getMosaic(final List<AlbumCover> albumCovers) throws FileNotFoundException {
@@ -191,4 +191,7 @@ public class ArtistImageFetcher implements DataFetcher<InputStream> {
     public DataSource getDataSource() {
         return DataSource.LOCAL;
     }
+
+    private static final String TAG = "ArtistImageFetcher";
+
 }

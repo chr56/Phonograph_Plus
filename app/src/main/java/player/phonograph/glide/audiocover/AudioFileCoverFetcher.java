@@ -1,6 +1,7 @@
 package player.phonograph.glide.audiocover;
 
 import android.media.MediaMetadataRetriever;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 
@@ -9,8 +10,11 @@ import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.data.DataFetcher;
 
 import java.io.ByteArrayInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+
+import player.phonograph.BuildConfig;
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
@@ -21,36 +25,46 @@ public class AudioFileCoverFetcher implements DataFetcher<InputStream> {
     private InputStream stream;
 
     public AudioFileCoverFetcher(AudioFileCover model) {
-
         this.model = model;
     }
 
-//    @Override
-    public String getId() {
-        // makes sure we never ever return null here
-        return String.valueOf(model.filePath);
-    }
 
-
+    @SuppressWarnings("ConstantConditions")
     @Override
     public void loadData(@NonNull Priority priority, @NonNull DataCallback<? super InputStream> callback) {
 
         final MediaMetadataRetriever retriever = new MediaMetadataRetriever();
+
+        byte[] picture = null;
         try {
             retriever.setDataSource(model.filePath);
-            byte[] picture = retriever.getEmbeddedPicture();
-            if (picture != null) {
-                stream = new ByteArrayInputStream(picture);
-            } else {
-                stream = AudioFileCoverUtils.fallback(model.filePath);
-            }
-            callback.onDataReady(stream);
-
-        } catch (Exception e) {
-            callback.onLoadFailed(e);
-        } finally {
-            retriever.release();
+            picture = retriever.getEmbeddedPicture();
+        } catch (Exception ignored) {
         }
+
+        if (picture != null) {
+            stream = new ByteArrayInputStream(picture);
+            callback.onDataReady(stream);
+            return;
+        } else {
+            if (BuildConfig.DEBUG)
+                Log.d(TAG, "No Media Store Embedded Picture for " + model.filePath);
+        }
+
+        // use fallback
+        try {
+            stream = AudioFileCoverUtils.fallback(model.filePath);
+            callback.onDataReady(stream);
+            return;
+        } catch (FileNotFoundException e) {
+            if (BuildConfig.DEBUG)
+                Log.d(TAG, "No Available Cover Picture for " + model.filePath);
+        }
+
+
+        // so onLoadFailed
+        callback.onLoadFailed(new Exception("No Available Cover Picture For " + model.filePath));
+
     }
 
     @Override
@@ -81,4 +95,6 @@ public class AudioFileCoverFetcher implements DataFetcher<InputStream> {
     public DataSource getDataSource() {
         return DataSource.LOCAL;
     }
+
+    static final String TAG = "AudioFileCoverFetcher";
 }
