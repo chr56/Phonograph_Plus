@@ -26,6 +26,7 @@ object Refresher {
             }
         }
 
+        MusicDatabase.songsDataBase.lastUpdateTimestamp = getLastSong(context).dateModified
         Log.i("RoomDatabase", "End importing")
     }
 
