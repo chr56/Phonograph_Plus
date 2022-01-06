@@ -15,22 +15,24 @@ import android.os.Environment;
 import android.os.IBinder;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import android.util.Log;
 import android.widget.Toast;
 
-import player.phonograph.R;
-import player.phonograph.loader.SongLoader;
-import player.phonograph.model.Song;
-import player.phonograph.service.MusicService;
-import player.phonograph.util.PreferenceUtil;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.WeakHashMap;
+
+import player.phonograph.R;
+import player.phonograph.database.mediastore.Refresher;
+import player.phonograph.loader.SongLoader;
+import player.phonograph.model.Song;
+import player.phonograph.service.MusicService;
+import player.phonograph.util.PreferenceUtil;
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
@@ -178,7 +180,7 @@ public class MusicPlayerRemote {
     public static void openQueue(final List<Song> queue, final int startPosition, final boolean startPlaying) {
         if (!tryToHandleOpenPlayingQueue(queue, startPosition, startPlaying) && musicService != null) {
             musicService.openQueue(queue, startPosition, startPlaying);
-            if (!PreferenceUtil.getInstance(musicService).rememberShuffle()){
+            if (!PreferenceUtil.getInstance(musicService).rememberShuffle()) {
                 setShuffleMode(MusicService.SHUFFLE_MODE_NONE);
             }
         }
@@ -213,7 +215,9 @@ public class MusicPlayerRemote {
 
     public static Song getCurrentSong() {
         if (musicService != null) {
-            return musicService.getCurrentSong();
+            Song song = musicService.getCurrentSong();
+            Refresher.INSTANCE.refreshSingleSong(null, song);
+            return song;
         }
         return Song.EMPTY_SONG;
     }
@@ -443,9 +447,9 @@ public class MusicPlayerRemote {
             }
         }
     }
+
     @Nullable
-    private static String getFilePathFromUri(Context context, Uri uri)
-    {
+    private static String getFilePathFromUri(Context context, Uri uri) {
         Cursor cursor = null;
         final String column = "_data";
         final String[] projection = {
