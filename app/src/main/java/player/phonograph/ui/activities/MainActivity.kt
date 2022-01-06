@@ -390,9 +390,13 @@ class MainActivity : AbsSlidingMusicPanelActivity() {
     }
 
     private fun checkUpdate() {
-        Handler(Looper.getMainLooper()).postDelayed(
-            { checkUpdate(callback = { UpgradeNotification.sendUpgradeNotification(it) }, false) }, 3000
-        )
+
+        App.instance.threadPoolExecutors.execute {
+            checkUpdate(callback = { UpgradeNotification.sendUpgradeNotification(it) }, false)
+        }
+//        Handler(Looper.getMainLooper()).postDelayed(
+//            { checkUpdate(callback = { UpgradeNotification.sendUpgradeNotification(it) }, false) }, 3000
+//        )
     }
 
     private fun showChangelog() {

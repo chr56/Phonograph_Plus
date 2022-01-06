@@ -20,6 +20,7 @@ import chr_56.MDthemer.core.Themer.setActivityToolbarColorAuto
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.list.listItemsSingleChoice
 import de.psdev.licensesdialog.LicensesDialog
+import player.phonograph.App
 import player.phonograph.App.Companion.instance
 import player.phonograph.BuildConfig
 import player.phonograph.R
@@ -166,12 +167,14 @@ class AboutActivity : ThemeActivity(), View.OnClickListener {
                             }, force = true)
                         }
                         2 -> {
-                            Updater.checkUpdate(callback = {
-                                UpgradeNotification.sendUpgradeNotification(it)
-                                if (PreferenceUtil(instance).ignoreUpgradeVersionCode >= it.getInt(Updater.VersionCode)) {
-                                    toast(getString(R.string.upgrade_ignored))
-                                }
-                            }, force = true)
+                            App.instance.threadPoolExecutors.execute {
+                                Updater.checkUpdate(callback = {
+                                    UpgradeNotification.sendUpgradeNotification(it)
+                                    if (PreferenceUtil(instance).ignoreUpgradeVersionCode >= it.getInt(Updater.VersionCode)) {
+                                        toast(getString(R.string.upgrade_ignored))
+                                    }
+                                }, force = true)
+                            }
                         }
                         else -> dialog.dismiss()
                     }
