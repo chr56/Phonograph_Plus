@@ -5,7 +5,10 @@
 package player.phonograph.database.mediastore
 
 import android.content.Context
+import player.phonograph.helper.SortOrder
 import player.phonograph.util.MediaStoreUtil
+import player.phonograph.util.MediaStoreUtil.getSong
+import player.phonograph.util.MediaStoreUtil.querySongs
 
 object Refresher {
 
@@ -18,5 +21,17 @@ object Refresher {
                 songDataBaseDao.override(SongConverter.fromSongModel(it))
             }
         }
+    }
+
+    fun getLastSong(context: Context): player.phonograph.model.Song {
+
+        return getSong(
+            querySongs(
+                context,
+                null,
+                null,
+                SortOrder.SongSortOrder.SONG_DATE_MODIFIED_REVERT
+            )
+        )
     }
 }

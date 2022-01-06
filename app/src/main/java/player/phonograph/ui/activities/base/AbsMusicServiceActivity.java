@@ -16,6 +16,7 @@ import android.os.Looper;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import player.phonograph.App;
 import player.phonograph.R;
 import player.phonograph.database.mediastore.MusicDatabase;
 import player.phonograph.database.mediastore.Refresher;
@@ -61,10 +62,11 @@ public abstract class AbsMusicServiceActivity extends AbsBaseActivity implements
 
         setPermissionDeniedMessage(getString(R.string.permission_external_storage_denied));
 
-        new Handler(Looper.getMainLooper()).postDelayed(
-                AbsMusicServiceActivity.this::refreshMusicDataBase
-                , 1200
-        );
+        if (!App.getInstance().isDatabaseChecked())
+            new Handler(Looper.getMainLooper()).postDelayed(
+                    AbsMusicServiceActivity.this::refreshMusicDataBase
+                    , 1200
+            );
 
     }
 
@@ -74,10 +76,8 @@ public abstract class AbsMusicServiceActivity extends AbsBaseActivity implements
 
 
         // check latest music files
-        Song latestSong;
-        Cursor c = MediaStoreUtil.INSTANCE.querySongs(this, null, null, SortOrder.SongSortOrder.SONG_DATE_MODIFIED_REVERT);
+        Song latestSong = Refresher.INSTANCE.getLastSong(this);
 
-        latestSong = MediaStoreUtil.INSTANCE.getSong(c);
         if (latestSong.dateModified > 0) latestSongTimestamp = latestSong.dateModified;
 
         // check database timestamps
@@ -86,6 +86,7 @@ public abstract class AbsMusicServiceActivity extends AbsBaseActivity implements
         // compare
         if (latestSongTimestamp > databaseUpdateTimestamp) updateMusicDataBase();
 
+        App.getInstance().setDatabaseChecked(true);
     }
 
     protected void updateMusicDataBase() { //todo

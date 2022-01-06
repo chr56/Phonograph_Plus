@@ -19,6 +19,7 @@ import kotlin.system.exitProcess
  */
 class App : Application() {
     lateinit var lyricsService: StatusBarLyric.API.StatusBarLyric
+    var isDatabaseChecked: Boolean = false
 
     override fun onCreate() {
         super.onCreate()
