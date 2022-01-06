@@ -28,7 +28,11 @@ object GlideRequestOptions {
     @JvmStatic
     private val default_base_option: RequestOptions =
         RequestOptions().diskCacheStrategy(_default_disk_cache_strategy)
-
+            .also {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+                    it.set(Downsampler.ALLOW_HARDWARE_CONFIG, true)
+                // todo use preference
+            }
 
     @JvmStatic
     val _default_option_song = default_base_option
