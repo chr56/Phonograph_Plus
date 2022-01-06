@@ -19,18 +19,18 @@ object Refresher {
     fun importFromMediaStore(context: Context) {
         Log.i("RoomDatabase", "Start importing")
 
-        val songs = MediaStoreUtil.getAllSongs(context)
-
-        val songDataBaseDao = MusicDatabase.songsDataBase.SongDao()
-        for (song in songs.listIterator()) {
-            song?.let {
-                songDataBaseDao.override(SongConverter.fromSongModel(it))
-                Log.d("RoomDatabase", "Add Song:${it.title}")
+        App.instance.threadPoolExecutors.execute {
+            val songs = MediaStoreUtil.getAllSongs(context)
+            val songDataBaseDao = MusicDatabase.songsDataBase.SongDao()
+            for (song in songs.listIterator()) {
+                song?.let {
+                    songDataBaseDao.override(SongConverter.fromSongModel(it))
+                    Log.d("RoomDatabase", "Add Song:${it.title}")
+                }
             }
+            MusicDatabase.songsDataBase.lastUpdateTimestamp = getLastSong(context).dateModified
+            Log.i("RoomDatabase", "End importing")
         }
-
-        MusicDatabase.songsDataBase.lastUpdateTimestamp = getLastSong(context).dateModified
-        Log.i("RoomDatabase", "End importing")
     }
 
     fun refreshSingleSong(context: Context?, songId: Long) {
@@ -38,13 +38,17 @@ object Refresher {
     }
 
     fun refreshSingleSong(context: Context?, song: SongModel) {
-        val songDataBaseDao = MusicDatabase.songsDataBase.SongDao()
-        songDataBaseDao.update(SongConverter.fromSongModel(song))
+        App.instance.threadPoolExecutors.execute {
+            val songDataBaseDao = MusicDatabase.songsDataBase.SongDao()
+            songDataBaseDao.update(SongConverter.fromSongModel(song))
+        }
     }
 
     fun refreshSingleSong(context: Context?, song: SongEntity) {
-        val songDataBaseDao = MusicDatabase.songsDataBase.SongDao()
-        songDataBaseDao.update(song)
+        App.instance.threadPoolExecutors.execute {
+            val songDataBaseDao = MusicDatabase.songsDataBase.SongDao()
+            songDataBaseDao.update(song)
+        }
     }
 
     fun getLastSong(context: Context): player.phonograph.model.Song {
