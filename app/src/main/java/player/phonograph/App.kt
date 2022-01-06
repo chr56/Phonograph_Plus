@@ -12,13 +12,21 @@ import player.phonograph.appshortcuts.DynamicShortcutManager
 import player.phonograph.database.mediastore.MusicDatabase
 import player.phonograph.ui.activities.CrashActivity
 import java.util.*
+import java.util.concurrent.LinkedBlockingDeque
+import java.util.concurrent.ThreadPoolExecutor
+import java.util.concurrent.TimeUnit
 import kotlin.system.exitProcess
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
  */
 class App : Application() {
+    lateinit var threadPoolExecutors: ThreadPoolExecutor
+        private set
+    lateinit var queue: LinkedBlockingDeque<Runnable>
+        private set
     lateinit var lyricsService: StatusBarLyric.API.StatusBarLyric
+        private set
     var isDatabaseChecked: Boolean = false
 
     override fun onCreate() {
@@ -58,6 +66,13 @@ class App : Application() {
                 AppCompatResources.getDrawable(this, R.drawable.ic_notification),
                 PACKAGE_NAME,
                 false
+            )
+        // executor
+        queue = LinkedBlockingDeque<Runnable>(12)
+        threadPoolExecutors =
+            ThreadPoolExecutor(
+                1, 3, 30, TimeUnit.SECONDS,
+                queue, ThreadPoolExecutor.CallerRunsPolicy()
             )
 
         // database
