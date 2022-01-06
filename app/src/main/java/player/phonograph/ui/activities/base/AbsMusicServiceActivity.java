@@ -95,7 +95,7 @@ public abstract class AbsMusicServiceActivity extends AbsBaseActivity implements
     }
 
     protected void updateMusicDataBase() { //todo
-        Refresher.INSTANCE.importFromMediaStore(this);
+        Refresher.INSTANCE.importFromMediaStore(this, null);
     }
 
     @Override

@@ -16,7 +16,7 @@ import player.phonograph.model.Song as SongModel
 
 object Refresher {
 
-    fun importFromMediaStore(context: Context) {
+    fun importFromMediaStore(context: Context, callbacks: (() -> Unit)?) {
         Log.i("RoomDatabase", "Start importing")
 
         App.instance.threadPoolExecutors.execute {
@@ -30,6 +30,7 @@ object Refresher {
             }
             MusicDatabase.songsDataBase.lastUpdateTimestamp = getLastSong(context).dateModified
             Log.i("RoomDatabase", "End importing")
+            callbacks?.let { it() }
         }
     }
 

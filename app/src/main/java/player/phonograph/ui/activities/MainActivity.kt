@@ -27,6 +27,7 @@ import com.google.android.material.navigation.NavigationView
 import com.sothree.slidinguppanel.SlidingUpPanelLayout
 import player.phonograph.*
 import player.phonograph.Updater.checkUpdate
+import player.phonograph.database.mediastore.Refresher
 import player.phonograph.dialogs.ChangelogDialog.Companion.create
 import player.phonograph.dialogs.ChangelogDialog.Companion.setChangelogRead
 import player.phonograph.dialogs.ScanMediaFolderDialog
@@ -209,6 +210,18 @@ class MainActivity : AbsSlidingMusicPanelActivity() {
                 }, 350)
                 R.id.action_scan -> Handler().postDelayed({
                     ScanMediaFolderDialog().show(supportFragmentManager, "SCAN_MEDIA_FOLDER_CHOOSER")
+                }, 200)
+                R.id.action_refresh -> Handler().postDelayed({
+                    App.instance.threadPoolExecutors.execute {
+                        // todo notification
+                        Refresher.importFromMediaStore(App.instance) {
+                            // call back
+                            Handler(Looper.getMainLooper()).post {
+                                Toast.makeText(App.instance, R.string.success, Toast.LENGTH_SHORT)
+                                    .show()
+                            }
+                        }
+                    }
                 }, 200)
                 R.id.theme_toggle -> Handler().postDelayed({
                     val themeSetting = PreferenceUtil.getInstance(this).generalTheme
