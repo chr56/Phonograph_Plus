@@ -32,6 +32,7 @@ import player.phonograph.notification.UpgradeNotification
 import player.phonograph.ui.activities.base.ThemeActivity
 import player.phonograph.ui.activities.bugreport.BugReportActivity
 import player.phonograph.ui.activities.intro.AppIntroActivity
+import player.phonograph.util.MediaStoreUtil
 import player.phonograph.util.PreferenceUtil
 
 /**
@@ -151,7 +152,7 @@ class AboutActivity : ThemeActivity(), View.OnClickListener {
     }
 
     private fun setUpOnClickListeners() {
-        val debugMenuItem = listOf<String>("Crash the app", "Check Upgrade (Dialog)", "Check Upgrade (Notification)")
+        val debugMenuItem = listOf<String>("Crash the app", "Check Upgrade (Dialog)", "Check Upgrade (Notification)", "Tag Parse (Artists)")
         appIcon.setOnLongClickListener {
             MaterialDialog(this)
                 .title(text = "Debug Menu")
@@ -175,6 +176,30 @@ class AboutActivity : ThemeActivity(), View.OnClickListener {
                                     }
                                 }, force = true)
                             }
+                        }
+                        3 -> {
+                            val output = StringBuffer()
+                            MediaStoreUtil.getAllSongs(App.instance)
+                                .forEach { song ->
+                                    song?.let {
+                                        output.append("\nSong: ${song.title} \nRaw Artist: ${song.artistName}")
+                                        val result = player.phonograph.util.TagsUtil.parse(it.artistName)
+                                        if (result == null) {
+                                            output.append("\nNo result\n")
+                                        } else {
+                                            output.append("\nArtist List:\n")
+                                            result.forEach { s ->
+                                                output.append(s).appendLine()
+                                            }
+                                        }
+                                    }
+                                }
+                            dialog.dismiss()
+                            MaterialDialog(this)
+                                .title(text = "All artists parsed")
+                                .message(text = output.toString())
+                                .positiveButton(android.R.string.ok)
+                                .show()
                         }
                         else -> dialog.dismiss()
                     }
