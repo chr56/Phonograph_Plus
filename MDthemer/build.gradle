@@ -27,11 +27,11 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 
-    gradle.projectsEvaluated {
-        tasks.withType(JavaCompile) {
-            options.compilerArgs << "-Xlint:deprecation" << "-Xlint:unchecked"
-        }
-    }
+//    gradle.projectsEvaluated {
+//        tasks.withType(JavaCompile) {
+//            options.compilerArgs << "-Xlint:deprecation" << "-Xlint:unchecked"
+//        }
+//    }
 
 }
 
