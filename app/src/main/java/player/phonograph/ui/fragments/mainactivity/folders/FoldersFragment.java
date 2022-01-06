@@ -82,6 +82,8 @@ public class FoldersFragment extends AbsMainActivityFragment implements MainActi
     private SongFileAdapter adapter;
     private MaterialCab cab;
 
+    private RecyclerView.AdapterDataObserver dataObserver;
+
     public FoldersFragment() {
     }
 
@@ -116,7 +118,10 @@ public class FoldersFragment extends AbsMainActivityFragment implements MainActi
 
     @Nullable
     private BreadCrumbLayout.Crumb getActiveCrumb() {
-        return viewBinding.breadCrumbs.size() > 0 ? viewBinding.breadCrumbs.getCrumb(viewBinding.breadCrumbs.getActiveIndex()) : null;
+        if ((viewBinding != null) && (viewBinding.breadCrumbs.size() > 0))
+            return viewBinding.breadCrumbs.getCrumb(viewBinding.breadCrumbs.getActiveIndex());
+        else
+            return null;
     }
 
     @Override
@@ -189,13 +194,16 @@ public class FoldersFragment extends AbsMainActivityFragment implements MainActi
 
     private void setUpAdapter() {
         adapter = new SongFileAdapter(getMainActivity(), new LinkedList<>(), R.layout.item_list, this, this);
-        adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+
+        dataObserver = new RecyclerView.AdapterDataObserver() {
             @Override
             public void onChanged() {
                 super.onChanged();
                 checkIsEmpty();
             }
-        });
+        };
+        // keep observer
+        adapter.registerAdapterDataObserver(dataObserver);
         viewBinding.recyclerView.setAdapter(adapter);
         checkIsEmpty();
     }
@@ -208,9 +216,10 @@ public class FoldersFragment extends AbsMainActivityFragment implements MainActi
 
     @Override
     public void onDestroyView() {
+        adapter.unregisterAdapterDataObserver(dataObserver);
         viewBinding.appbar.removeOnOffsetChangedListener(this);
-        viewBinding = null;
         super.onDestroyView();
+        viewBinding = null;
     }
 
     @Override
