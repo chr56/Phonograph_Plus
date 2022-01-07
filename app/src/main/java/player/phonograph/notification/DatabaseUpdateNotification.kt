@@ -73,6 +73,7 @@ object DatabaseUpdateNotification {
                 App.instance.getString(R.string.database_update_notification_description)
             notificationChannel.enableLights(false)
             notificationChannel.enableVibration(false)
+            notificationChannel.setSound(null, null)
             notificationManager.createNotificationChannel(notificationChannel)
         }
     }
