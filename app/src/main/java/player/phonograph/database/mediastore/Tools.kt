@@ -82,11 +82,12 @@ object Refresher {
         App.instance.threadPoolExecutors.execute {
             DatabaseUpdateNotification.sendNotification(context.getString(R.string.updating_database))
             val songs: List<Song>? = getAllSongs(context)
-            val songDataBaseDao = MusicDatabase.songsDataBase.SongDao()
+            val songDataBase = MusicDatabase.songsDataBase
 
             if (songs != null) {
                 for (song in songs.listIterator()) {
-                    songDataBaseDao.override(song)
+                    songDataBase.SongDao().override(song)
+                    songDataBase.AlbumDao().override(SongMarker.getAlbum(song))
                     Log.d(TAG, "Add Song: ${song.title}")
                 }
                 MusicDatabase.songsDataBase.lastUpdateTimestamp = getLastSong(context).dateModified
