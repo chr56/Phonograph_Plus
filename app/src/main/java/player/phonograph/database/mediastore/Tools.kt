@@ -6,15 +6,49 @@ package player.phonograph.database.mediastore
 
 import android.content.Context
 import android.util.Log
+import androidx.room.TypeConverter
 import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.helper.SortOrder
 import player.phonograph.notification.DatabaseUpdateNotification
 import player.phonograph.util.MediaStoreUtil
-import player.phonograph.util.MediaStoreUtil.getSong
-import player.phonograph.util.MediaStoreUtil.querySongs
-import player.phonograph.database.mediastore.Song as SongEntity
-import player.phonograph.model.Song as SongModel
+
+// todo remove
+object SongConverter {
+    @TypeConverter
+    fun fromSongModel(song: player.phonograph.model.Song): Song {
+        return Song(
+            song.id,
+            song.data,
+            song.title,
+            song.year,
+            song.duration,
+            song.dateModified,
+            song.albumId,
+            song.albumName,
+            song.artistId,
+            song.artistName,
+            song.trackNumber
+        )
+    }
+
+    @TypeConverter
+    fun toSongModel(song: Song): player.phonograph.model.Song {
+        return player.phonograph.model.Song(
+            song.id,
+            song.title,
+            song.trackNumber,
+            song.year,
+            song.duration,
+            song.path,
+            song.dateModified,
+            song.albumId,
+            song.albumName,
+            song.artistId,
+            song.artistName
+        )
+    }
+}
 
 object Refresher {
 
@@ -42,14 +76,14 @@ object Refresher {
         refreshSingleSong(context, MediaStoreUtil.getSong(context ?: App.instance, songId))
     }
 
-    fun refreshSingleSong(context: Context?, song: SongModel) {
+    fun refreshSingleSong(context: Context?, song: player.phonograph.model.Song) {
         App.instance.threadPoolExecutors.execute {
             val songDataBaseDao = MusicDatabase.songsDataBase.SongDao()
             songDataBaseDao.update(SongConverter.fromSongModel(song))
         }
     }
 
-    fun refreshSingleSong(context: Context?, song: SongEntity) {
+    fun refreshSingleSong(context: Context?, song: Song) {
         App.instance.threadPoolExecutors.execute {
             val songDataBaseDao = MusicDatabase.songsDataBase.SongDao()
             songDataBaseDao.update(song)
@@ -58,8 +92,8 @@ object Refresher {
 
     fun getLastSong(context: Context): player.phonograph.model.Song {
 
-        return getSong(
-            querySongs(
+        return MediaStoreUtil.getSong(
+            MediaStoreUtil.querySongs(
                 context,
                 null,
                 null,

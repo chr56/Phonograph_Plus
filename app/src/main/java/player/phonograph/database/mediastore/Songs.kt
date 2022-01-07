@@ -5,8 +5,6 @@
 package player.phonograph.database.mediastore
 
 import androidx.room.*
-import player.phonograph.App
-import player.phonograph.util.PreferenceUtil
 
 // @Fts3
 @Entity(tableName = "songs")
@@ -75,48 +73,4 @@ interface SongDao {
 
     @Delete
     fun delete(song: Song)
-}
-
-@Database(entities = [Song::class], version = 1, exportSchema = false)
-abstract class SongDataBase : RoomDatabase() {
-    abstract fun SongDao(): SongDao
-    var lastUpdateTimestamp: Long = 0
-        get() = PreferenceUtil.getInstance(App.instance).lastMusicDatabaseUpdateTimestamp
-        set(value) { field = value; PreferenceUtil.getInstance(App.instance).lastMusicDatabaseUpdateTimestamp = value }
-    var lastAccessTimestamp: Long = 0
-        get() = PreferenceUtil.getInstance(App.instance).lastMusicDatabaseAccessTimestamp
-        set(value) { field = value; PreferenceUtil.getInstance(App.instance).lastMusicDatabaseAccessTimestamp = value }
-}
-
-object MusicDatabase {
-    private var innerSongsDataBase: SongDataBase? = null
-
-    private fun initSongDataBase() {
-        // todo disable allowMainThreadQueries
-        innerSongsDataBase = Room.databaseBuilder(App.instance, SongDataBase::class.java, "musicV1.db")
-            .allowMainThreadQueries().build()
-    }
-
-    val songsDataBase: SongDataBase
-        get() {
-            if (innerSongsDataBase == null) { initSongDataBase() }
-            return innerSongsDataBase!!
-        }
-}
-
-// todo remove
-object SongConverter {
-    @TypeConverter
-    fun fromSongModel(song: player.phonograph.model.Song): Song {
-        return Song(
-            song.id, song.data, song.title, song.year, song.duration, song.dateModified, song.albumId, song.albumName, song.artistId, song.artistName, song.trackNumber
-        )
-    }
-
-    @TypeConverter
-    fun toSongModel(song: Song): player.phonograph.model.Song {
-        return player.phonograph.model.Song(
-            song.id, song.title, song.trackNumber, song.year, song.duration, song.path, song.dateModified, song.albumId, song.albumName, song.artistId, song.artistName
-        )
-    }
 }
