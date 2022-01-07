@@ -69,7 +69,7 @@ object SongMarker {
     }
     @TypeConverter
     fun getArtist(song: Song): Artist {
-        return Artist(song.artistId, song.artistName)
+        return Artist(song.artistId, song.artistName ?: "")
     }
 }
 
