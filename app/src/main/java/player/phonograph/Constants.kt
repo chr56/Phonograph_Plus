@@ -16,11 +16,14 @@ const val LastAddedPlaylist = "LastAddedPlaylist"
 const val MyTopTracksPlaylist = "MyTopTracksPlaylist"
 const val NormalPlaylist = "Normal"
 
-
 const val TYPE = "Type"
-const val PLAYLIST_ID ="Playlist_ID"
+const val PLAYLIST_ID = "Playlist_ID"
 
 const val VERSION_INFO = "versionInfo"
 const val UPGRADABLE = "upgradable"
+
 const val NOTIFICATION_CHANNEL_ID_UPGRADABLE = "upgrade_notification"
 const val NOTIFICATION_ID_UPGRADABLE = 8747233
+
+const val NOTIFICATION_CHANNEL_ID_DATABASE = "database_update_notification"
+const val NOTIFICATION_ID_DATABASE= 32822273
