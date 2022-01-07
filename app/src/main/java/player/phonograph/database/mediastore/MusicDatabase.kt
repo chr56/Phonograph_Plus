@@ -35,10 +35,10 @@ abstract class SongDataBase : RoomDatabase() {
     abstract fun SongDao(): SongDao
     abstract fun AlbumDao(): AlbumDAO
     abstract fun ArtistDao(): ArtistDAO
-    var lastUpdateTimestamp: Long = 0
+    var lastUpdateTimestamp: Long = -1L
         get() = PreferenceUtil.getInstance(App.instance).lastMusicDatabaseUpdateTimestamp
         set(value) { field = value; PreferenceUtil.getInstance(App.instance).lastMusicDatabaseUpdateTimestamp = value }
-    var lastAccessTimestamp: Long = 0
+    var lastAccessTimestamp: Long = -1L
         get() = PreferenceUtil.getInstance(App.instance).lastMusicDatabaseAccessTimestamp
         set(value) { field = value; PreferenceUtil.getInstance(App.instance).lastMusicDatabaseAccessTimestamp = value }
 }

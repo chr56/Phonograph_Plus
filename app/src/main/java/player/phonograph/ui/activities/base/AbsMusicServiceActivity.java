@@ -87,7 +87,7 @@ public abstract class AbsMusicServiceActivity extends AbsBaseActivity implements
         databaseUpdateTimestamp = MusicDatabase.INSTANCE.getSongsDataBase().getLastUpdateTimestamp();
 
         // compare
-        if (latestSongTimestamp > databaseUpdateTimestamp) updateMusicDataBase();
+        if (latestSongTimestamp > databaseUpdateTimestamp || databaseUpdateTimestamp == -1L) updateMusicDataBase();
         Log.i("RoomDatabase", "latestSongTimestamp    :" + latestSongTimestamp);
         Log.i("RoomDatabase", "databaseUpdateTimestamp:" + databaseUpdateTimestamp);
 

@@ -475,13 +475,13 @@ class PreferenceUtil(context: Context) {
         }
 
     var lastMusicDatabaseUpdateTimestamp: Long
-        get() = mPreferences.getLong(LAST_MUSIC_DATABASE_UPDATE_TIMESTAMP, 0)
+        get() = mPreferences.getLong(LAST_MUSIC_DATABASE_UPDATE_TIMESTAMP, -1)
         set(value) {
             mPreferences.edit().putLong(LAST_MUSIC_DATABASE_UPDATE_TIMESTAMP, value).apply()
         }
 
     var lastMusicDatabaseAccessTimestamp: Long
-        get() = mPreferences.getLong(LAST_MUSIC_DATABASE_ACCESS_TIMESTAMP, 0)
+        get() = mPreferences.getLong(LAST_MUSIC_DATABASE_ACCESS_TIMESTAMP, -1)
         set(value) {
             mPreferences.edit().putLong(LAST_MUSIC_DATABASE_ACCESS_TIMESTAMP, value).apply()
         }
