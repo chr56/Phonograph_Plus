@@ -67,7 +67,7 @@ object DatabaseUpdateNotification {
             notificationChannel = NotificationChannel(
                 NOTIFICATION_CHANNEL_ID_DATABASE,
                 App.instance.getString(R.string.database_update_notification_name),
-                NotificationManager.IMPORTANCE_DEFAULT
+                NotificationManager.IMPORTANCE_HIGH
             )
             notificationChannel.description =
                 App.instance.getString(R.string.database_update_notification_description)
