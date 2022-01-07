@@ -7,20 +7,24 @@ package player.phonograph.database.mediastore
 import androidx.room.*
 
 // @Fts3
-@Entity(tableName = "songs")
+@Entity(
+    tableName = "songs",
+    indices = [Index(value = ["id"])]
+)
 data class Song(
-    @PrimaryKey // media store id
-    var id: Long,
-    @ColumnInfo
+    @PrimaryKey
+    var id: Long, // media store id
     var path: String,
-    @ColumnInfo
-    var title: String? = null,
-    @ColumnInfo
-    var year: Int = 0,
-    @ColumnInfo
-    var duration: Long = 0,
+    var size: Long,
+
+    @ColumnInfo(name = "display_name")
+    var displayName: String? = null,
+    @ColumnInfo(name = "date_added")
+    var dateAdded: Long = 0,
     @ColumnInfo(name = "date_modified")
     var dateModified: Long = 0,
+
+    var title: String? = null,
     @ColumnInfo(name = "album_id")
     var albumId: Long = 0,
     @ColumnInfo(name = "album_name")
@@ -29,6 +33,9 @@ data class Song(
     var artistId: Long = 0,
     @ColumnInfo(name = "artist_name")
     var artistName: String? = null,
+
+    var year: Int = 0,
+    var duration: Long = 0,
     @ColumnInfo(name = "track_number")
     var trackNumber: Int = 0
 )

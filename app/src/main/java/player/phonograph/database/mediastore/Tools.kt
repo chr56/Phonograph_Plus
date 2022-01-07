@@ -17,28 +17,34 @@ import player.phonograph.helper.SortOrder
 import player.phonograph.notification.DatabaseUpdateNotification
 import player.phonograph.provider.BlacklistStore
 import player.phonograph.util.MediaStoreUtil
+import player.phonograph.database.mediastore.Song as Song
+import player.phonograph.model.Song as OldSongModel
 
 // todo remove
 object SongConverter {
     @TypeConverter
-    fun fromSongModel(song: player.phonograph.model.Song): Song {
+    fun fromSongModel(song: OldSongModel): Song {
+        // todo
         return Song(
-            song.id,
-            song.data,
-            song.title,
-            song.year,
-            song.duration,
-            song.dateModified,
-            song.albumId,
-            song.albumName,
-            song.artistId,
-            song.artistName,
-            song.trackNumber
+            id = song.id,
+            path = song.data,
+            size = 0,
+            displayName = "",
+            dateAdded = song.dateModified,
+            dateModified = song.dateModified,
+            title = song.title,
+            albumId = song.albumId,
+            albumName = song.albumName,
+            artistId = song.artistId,
+            artistName = song.artistName,
+            year = song.year,
+            duration = song.duration,
+            trackNumber = song.trackNumber
         )
     }
 
     @TypeConverter
-    fun toSongModel(song: Song): player.phonograph.model.Song {
+    fun toSongModel(song: Song): OldSongModel {
         return player.phonograph.model.Song(
             song.id,
             song.title,
@@ -175,18 +181,20 @@ object Refresher {
             do {
                 songs.add(
                     Song(
-                        cursor.getLong(0),
-                        cursor.getString(1),
-                        cursor.getString(6),
-                        cursor.getInt(11),
-                        cursor.getLong(12),
-                        cursor.getLong(5),
-                        cursor.getLong(7),
-                        cursor.getString(8),
-                        cursor.getLong(9),
-                        cursor.getString(10),
-                        cursor.getInt(13),
-                        // todo
+                        id = cursor.getLong(0),
+                        path = cursor.getString(1),
+                        size = cursor.getLong(2),
+                        displayName = cursor.getString(3),
+                        dateAdded = cursor.getLong(4),
+                        dateModified = cursor.getLong(5),
+                        title = cursor.getString(6),
+                        albumId = cursor.getLong(7),
+                        albumName = cursor.getString(8),
+                        artistId = cursor.getLong(9),
+                        artistName = cursor.getString(10),
+                        year = cursor.getInt(11),
+                        duration = cursor.getLong(12),
+                        trackNumber = cursor.getInt(13)
                     )
                 )
             } while (cursor.moveToNext())
