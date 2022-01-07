@@ -17,6 +17,7 @@ import player.phonograph.helper.SortOrder
 import player.phonograph.notification.DatabaseUpdateNotification
 import player.phonograph.provider.BlacklistStore
 import player.phonograph.util.MediaStoreUtil
+import player.phonograph.util.TagsUtil
 import player.phonograph.database.mediastore.Song as Song
 import player.phonograph.model.Song as OldSongModel
 
@@ -70,6 +71,31 @@ object SongMarker {
     @TypeConverter
     fun getArtist(song: Song): Artist {
         return Artist(song.artistId, song.artistName ?: "")
+    }
+}
+
+object SongRegistry {
+    fun registerArtists(song: Song) {
+        val raw = song.artistName
+        if (raw != null) {
+            val artistSongsDao = MusicDatabase.songsDataBase.ArtistSongsDao()
+            val artistDao = MusicDatabase.songsDataBase.ArtistDao()
+
+            val parsed = TagsUtil.parse(raw)
+
+            if (parsed != null) {
+                for (name in parsed) {
+                    val artist = Artist(name.hashCode().toLong(), name)
+
+                    artistDao.update(artist)
+                    artistSongsDao.override(SongAndArtistLinkage(song.id, artist.artistId))
+                }
+            } else {
+                Log.v("RoomDatabase", "no artist in Song ${song.title}")
+            }
+        } else {
+            Log.v("RoomDatabase", "no artist in Song ${song.title}")
+        }
     }
 }
 
