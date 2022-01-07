@@ -60,6 +60,7 @@ import player.phonograph.misc.DialogAsyncTask;
 import player.phonograph.misc.UpdateToastMediaScannerCompletionListener;
 import player.phonograph.misc.WrappedAsyncTaskLoader;
 import player.phonograph.model.Song;
+import player.phonograph.notification.ScanMediaNotification;
 import player.phonograph.ui.activities.MainActivity;
 import player.phonograph.ui.fragments.mainactivity.AbsMainActivityFragment;
 import player.phonograph.util.BlacklistUtil;
@@ -630,6 +631,7 @@ public class FoldersFragment extends AbsMainActivityFragment implements MainActi
 
                 final String[] paths;
 
+                ScanMediaNotification.INSTANCE.sendNotification("");
                 if (info.file.isDirectory()) {
                     List<File> files = FileUtil.listFilesDeep(info.file, info.fileFilter);
 
@@ -651,6 +653,7 @@ public class FoldersFragment extends AbsMainActivityFragment implements MainActi
             } catch (Exception e) {
                 e.printStackTrace();
                 cancel(false);
+                ScanMediaNotification.INSTANCE.cancelNotification();
                 return null;
             }
         }
@@ -658,6 +661,7 @@ public class FoldersFragment extends AbsMainActivityFragment implements MainActi
         @Override
         protected void onPostExecute(String[] paths) {
             super.onPostExecute(paths);
+            ScanMediaNotification.INSTANCE.cancelNotification();
             OnPathsListedCallback callback = checkCallbackReference();
             if (callback != null && paths != null) {
                 callback.onPathsListed(paths);
