@@ -25,6 +25,7 @@ import player.phonograph.App.Companion.instance
 import player.phonograph.BuildConfig
 import player.phonograph.R
 import player.phonograph.Updater
+import player.phonograph.database.mediastore.MusicDatabaseDebugDialog
 import player.phonograph.databinding.ActivityAboutBinding
 import player.phonograph.dialogs.ChangelogDialog
 import player.phonograph.dialogs.UpgradeDialog
@@ -152,7 +153,7 @@ class AboutActivity : ThemeActivity(), View.OnClickListener {
     }
 
     private fun setUpOnClickListeners() {
-        val debugMenuItem = listOf<String>("Crash the app", "Check Upgrade (Dialog)", "Check Upgrade (Notification)", "Tag Parse (Artists)")
+        val debugMenuItem = listOf<String>("Crash the app", "Check Upgrade (Dialog)", "Check Upgrade (Notification)", "Music Database Test", "Tag Parse (Artists)")
         appIcon.setOnLongClickListener {
             MaterialDialog(this)
                 .title(text = "Debug Menu")
@@ -177,7 +178,10 @@ class AboutActivity : ThemeActivity(), View.OnClickListener {
                                 }, force = true)
                             }
                         }
-                        3 -> {
+                        3->{
+                            MusicDatabaseDebugDialog().show(supportFragmentManager, "MusicDBDebugDialog")
+                        }
+                        4 -> {
                             val output = StringBuffer()
                             MediaStoreUtil.getAllSongs(App.instance)
                                 .forEach { song ->

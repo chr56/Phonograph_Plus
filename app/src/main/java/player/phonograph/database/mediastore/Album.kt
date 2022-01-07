@@ -36,6 +36,10 @@ interface AlbumDAO {
     @Query("SELECT * from albums where album_id = :albumId or album_name like :albumName order by :sortOrder")
     fun getAlbumsWithSongs(albumId: Long = 0, albumName: String = "", sortOrder: String): List<AlbumWithSongs>
 
+    @Transaction
+    @Query("SELECT * from albums order by :sortOrder")
+    fun getAllAlbumsWithSongs(sortOrder: String): List<AlbumWithSongs>
+
     @Insert(onConflict = OnConflictStrategy.ABORT)
     fun insert(album: Album)
 
