@@ -50,6 +50,18 @@ object SongConverter {
     }
 }
 
+object SongMarker {
+
+    @TypeConverter
+    fun getAlbum(song: Song): Album {
+        return Album(song.albumId, song.albumName)
+    }
+    @TypeConverter
+    fun getArtist(song: Song): Artist {
+        return Artist(song.artistId, song.artistName)
+    }
+}
+
 object Refresher {
 
     fun importFromMediaStore(context: Context, callbacks: (() -> Unit)?) {

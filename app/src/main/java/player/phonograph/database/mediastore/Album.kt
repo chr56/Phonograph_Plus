@@ -24,6 +24,7 @@ data class AlbumWithSongs(
 )
 
 @Dao
+@TypeConverters(SongMarker::class)
 interface AlbumDAO {
     @Query("SELECT * from albums order by :sortOrder")
     fun getAllAlbums(sortOrder: String): List<Album>
@@ -34,4 +35,16 @@ interface AlbumDAO {
     @Transaction
     @Query("SELECT * from albums where album_id = :albumId or album_name like :albumName order by :sortOrder")
     fun getAlbumsWithSongs(albumId: Long = 0, albumName: String = "", sortOrder: String): List<AlbumWithSongs>
+
+    @Insert(onConflict = OnConflictStrategy.ABORT)
+    fun insert(album: Album)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun override(album: Album)
+
+    @Update
+    fun update(album: Album)
+
+    @Delete
+    fun delete(album: Album)
 }
