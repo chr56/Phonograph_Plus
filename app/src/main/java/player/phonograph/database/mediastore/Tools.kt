@@ -114,9 +114,13 @@ object Refresher {
 
             if (songs != null) {
                 for (song in songs.listIterator()) {
+                    // song
                     songDataBase.SongDao().override(song)
+                    Log.d(TAG, "Override Song: ${song.title}")
+                    // album
                     songDataBase.AlbumDao().override(SongMarker.getAlbum(song))
-                    Log.d(TAG, "Add Song: ${song.title}")
+                    // artist
+                    SongRegistry.registerArtists(song)
                 }
                 MusicDatabase.songsDataBase.lastUpdateTimestamp = getLastSong(context).dateModified
             } else Log.e(TAG, "No songs?")
