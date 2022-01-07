@@ -369,6 +369,8 @@
     <string name="database_update_notification_name">Database Update</string>
     <string name="database_update_notification_description">Notifications of database operations.</string>
     <string name="updating_database">Updating database…</string>
+    <string name="scan_media_notification_name">Scan Media</string>
+    <string name="scan_media_notification_description">Notifications of media scanning.</string>
     <plurals name="msg_deletion_result">
         <item quantity="one">%1$d / %2$d item was successfully deleted.</item>>
         <item quantity="other">%1$d / %2$d items were successfully deleted.</item>
