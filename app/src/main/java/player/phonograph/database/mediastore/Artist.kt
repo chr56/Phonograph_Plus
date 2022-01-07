@@ -82,7 +82,7 @@ interface ArtistSongDAO {
     @Query("SELECT * from songs order by :sortOrder")
     fun getArtistByAllSong(sortOrder: String): List<SongWithArtists>
 
-    @Update(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun override(linkage: SongAndArtistLinkage)
 
     @Delete

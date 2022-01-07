@@ -87,8 +87,10 @@ object SongRegistry {
                 for (name in parsed) {
                     val artist = Artist(name.hashCode().toLong(), name)
 
-                    artistDao.update(artist)
+                    artistDao.override(artist)
                     artistSongsDao.override(SongAndArtistLinkage(song.id, artist.artistId))
+
+                    Log.v("RoomDatabase", "::artist was registered: ${song.title}<->$name")
                 }
             } else {
                 Log.v("RoomDatabase", "no artist in Song ${song.title}")
