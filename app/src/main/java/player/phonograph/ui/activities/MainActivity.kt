@@ -214,7 +214,7 @@ class MainActivity : AbsSlidingMusicPanelActivity() {
                 R.id.action_refresh -> Handler().postDelayed({
                     App.instance.threadPoolExecutors.execute {
                         // todo notification
-                        Refresher.importFromMediaStore(App.instance) {
+                        Refresher.importFromMediaStore(App.instance, 0) {
                             // call back
                             Handler(Looper.getMainLooper()).post {
                                 Toast.makeText(App.instance, R.string.success, Toast.LENGTH_SHORT)

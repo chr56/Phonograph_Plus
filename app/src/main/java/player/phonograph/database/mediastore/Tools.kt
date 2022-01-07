@@ -76,12 +76,12 @@ object SongMarker {
 object Refresher {
     const val TAG = "RoomDatabase"
 
-    fun importFromMediaStore(context: Context, callbacks: (() -> Unit)?) {
+    fun importFromMediaStore(context: Context, sinceTimestamp: Long, callbacks: (() -> Unit)?) {
         Log.i(TAG, "Start importing")
 
         App.instance.threadPoolExecutors.execute {
             DatabaseUpdateNotification.sendNotification(context.getString(R.string.updating_database))
-            val songs: List<Song>? = getAllSongs(context)
+            val songs: List<Song>? = getAllSongs(context, sinceTimestamp)
             val songDataBase = MusicDatabase.songsDataBase
 
             if (songs != null) {
@@ -150,24 +150,29 @@ object Refresher {
 //            MediaStore.Audio.AudioColumns.GENRE,
     )
 
-    private fun getAllSongs(c: Context?): List<Song>? {
+    private fun getAllSongs(c: Context?, sinceTimestamp: Long?): List<Song>? {
         val context = c ?: App.instance
 
         val paths: List<String> = BlacklistStore.getInstance(context).paths
 
         val selection: String =
             if (paths.isNotEmpty()) {
-                var s = ""
+                val buffer = StringBuffer()
                 for (i in paths) {
-                    s += " AND ${MediaStore.Audio.AudioColumns.DATA} NOT LIKE ?"
+                    buffer.append(" AND ${MediaStore.Audio.AudioColumns.DATA} NOT LIKE ?")
                 }
-                s
-            } else ""
+                buffer.append(" AND ${MediaStore.MediaColumns.DATE_MODIFIED} > ?").toString()
+            } else "AND ${MediaStore.MediaColumns.DATE_MODIFIED} > ?"
 
-        val selectionValues: Array<String>? =
+        val selectionValues: Array<String> =
             if (paths.isNotEmpty()) {
-                Array(paths.size) { index -> paths[index] }
-            } else null
+                Array(paths.size + 1) { index ->
+                    when {
+                        index < paths.size -> paths[index]
+                        else -> sinceTimestamp.toString()
+                    }
+                }
+            } else arrayOf(sinceTimestamp.toString())
 
         val cursor = context.contentResolver.query(
             MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,

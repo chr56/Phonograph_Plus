@@ -88,6 +88,8 @@ public abstract class AbsMusicServiceActivity extends AbsBaseActivity implements
 
         // compare
         if (latestSongTimestamp > databaseUpdateTimestamp || databaseUpdateTimestamp == -1L) updateMusicDataBase();
+
+
         Log.i("RoomDatabase", "latestSongTimestamp    :" + latestSongTimestamp);
         Log.i("RoomDatabase", "databaseUpdateTimestamp:" + databaseUpdateTimestamp);
 
@@ -95,7 +97,7 @@ public abstract class AbsMusicServiceActivity extends AbsBaseActivity implements
     }
 
     protected void updateMusicDataBase() { //todo
-        Refresher.INSTANCE.importFromMediaStore(this, null);
+        Refresher.INSTANCE.importFromMediaStore(this,  MusicDatabase.INSTANCE.getSongsDataBase().getLastUpdateTimestamp(),null);
     }
 
     @Override
