@@ -11,8 +11,16 @@ data class Album(
     @ColumnInfo(name = "album_id")
     var albumId: Long = 0,
     @ColumnInfo(name = "album_name")
-    var albumName: String? = null,
+    var albumName: String? = null
+)
 
+data class AlbumWithSongs(
+    @Embedded var album: Album,
+    @Relation(
+        parentColumn = "album_id",
+        entityColumn = "album_id"
+    )
+    var songs: List<Song>
 )
 
 @Dao
@@ -22,4 +30,8 @@ interface AlbumDAO {
 
     @Query("SELECT * from albums where album_name like :albumName order by :sortOrder")
     fun searchAlbums(albumName: String, sortOrder: String): List<Album>
+
+    @Transaction
+    @Query("SELECT * from albums where album_id = :albumId or album_name like :albumName order by :sortOrder")
+    fun getAlbumsWithSongs(albumId: Long = 0, albumName: String = "", sortOrder: String): List<AlbumWithSongs>
 }
