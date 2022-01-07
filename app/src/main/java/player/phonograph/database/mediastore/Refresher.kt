@@ -7,7 +7,9 @@ package player.phonograph.database.mediastore
 import android.content.Context
 import android.util.Log
 import player.phonograph.App
+import player.phonograph.R
 import player.phonograph.helper.SortOrder
+import player.phonograph.notification.DatabaseUpdateNotification
 import player.phonograph.util.MediaStoreUtil
 import player.phonograph.util.MediaStoreUtil.getSong
 import player.phonograph.util.MediaStoreUtil.querySongs
@@ -20,6 +22,7 @@ object Refresher {
         Log.i("RoomDatabase", "Start importing")
 
         App.instance.threadPoolExecutors.execute {
+            DatabaseUpdateNotification.sendNotification(context.getString(R.string.updating_database))
             val songs = MediaStoreUtil.getAllSongs(context)
             val songDataBaseDao = MusicDatabase.songsDataBase.SongDao()
             for (song in songs.listIterator()) {
@@ -30,6 +33,7 @@ object Refresher {
             }
             MusicDatabase.songsDataBase.lastUpdateTimestamp = getLastSong(context).dateModified
             Log.i("RoomDatabase", "End importing")
+            DatabaseUpdateNotification.cancelNotification()
             callbacks?.let { it() }
         }
     }
