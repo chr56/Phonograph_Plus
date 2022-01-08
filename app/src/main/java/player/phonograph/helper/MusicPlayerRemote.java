@@ -420,11 +420,6 @@ public class MusicPlayerRemote {
                                 )
                         )
                         ;
-//                                MediaStoreUtil.INSTANCE.getSongs(SongLoader.makeSongCursor(
-//                                musicService,
-//                                MediaStore.Audio.AudioColumns._ID + "=?",
-//                                new String[]{songId}
-//                        ));
                     }
                 }
             }
@@ -447,14 +442,9 @@ public class MusicPlayerRemote {
                     String[] path = new String[]{songFile.getAbsolutePath()};
                     songs.add(
                             SongConverter.INSTANCE.toSongModel(
-                                    MusicDatabase.INSTANCE.getSongsDataBase().SongDao().querySongByPath(new String[]{songFile.getAbsolutePath()},SortOrder.SongSortOrder.SONG_A_Z).get(0)
+                                    MusicDatabase.INSTANCE.getSongsDataBase().SongDao().querySongByPath(new String[]{songFile.getAbsolutePath()}, SortOrder.SongSortOrder.SONG_A_Z).get(0)
                             )
                     );
-//                            MediaStoreUtil.INSTANCE.getSongs(SongLoader.makeSongCursor(
-//                            musicService,
-//                            MediaStore.Audio.AudioColumns.DATA + "=?",
-//                            new String[]{songFile.getAbsolutePath()}
-//                    ));
                 }
             }
             if (songs != null && !songs.isEmpty()) {
