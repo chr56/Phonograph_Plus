@@ -225,9 +225,9 @@ public class AlbumTagEditorActivity extends AbsTagEditorActivity implements Text
 //        for (Song song : songs) {
 //            paths.add(song.data);
 //        }
-        AlbumWithSongs l = MusicDatabase.INSTANCE.getSongsDataBase().AlbumDao().getAlbumsWithSongs(getId(),"", SortOrder.AlbumSortOrder.ALBUM_A_Z).get(0);
+        AlbumWithSongs l = MusicDatabase.INSTANCE.getSongsDataBase().AlbumDao().getAlbumsWithSongs(getId(), "");
         List<String> paths = new ArrayList<String>(l.getSongs().size());
-        for (player.phonograph.database.mediastore.Song song: l.getSongs()){
+        for (player.phonograph.database.mediastore.Song song : l.getSongs()) {
             paths.add(song.getPath());
         }
 

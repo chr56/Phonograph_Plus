@@ -9,7 +9,6 @@ import android.os.Bundle
 import androidx.fragment.app.DialogFragment
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.list.listItemsSingleChoice
-import player.phonograph.helper.SortOrder
 
 class MusicDatabaseDebugDialog : DialogFragment() {
 
@@ -32,21 +31,21 @@ class MusicDatabaseDebugDialog : DialogFragment() {
                 when (index) {
                     0 -> {
                         val buffer = StringBuffer()
-                        MusicDatabase.songsDataBase.SongDao().getAllSongs(SongColumns.DATE_MODIFIED,true).forEach { song ->
+                        MusicDatabase.songsDataBase.SongDao().getAllSongs(SongColumns.DATE_MODIFIED, true).forEach { song ->
                             buffer.append(song).append("\n\n")
                         }
                         resultDialog.message(text = buffer.toString()).show()
                     }
                     1 -> {
                         val buffer = StringBuffer()
-                        MusicDatabase.songsDataBase.AlbumDao().getAllAlbums(SortOrder.AlbumSortOrder.ALBUM_YEAR_REVERT).forEach { album ->
+                        MusicDatabase.songsDataBase.AlbumDao().getAllAlbums(AlbumColumns.ALBUM_NAME, true).forEach { album ->
                             buffer.append(album).append("\n\n")
                         }
                         resultDialog.message(text = buffer.toString()).show()
                     }
                     2 -> {
                         val buffer = StringBuffer()
-                        MusicDatabase.songsDataBase.AlbumDao().getAllAlbumsWithSongs(SortOrder.AlbumSortOrder.ALBUM_YEAR_REVERT).forEach { albumWithSong ->
+                        MusicDatabase.songsDataBase.AlbumDao().getAllAlbumsWithSongs().forEach { albumWithSong ->
                             buffer.append(albumWithSong.album).append(":\n")
                             albumWithSong.songs.forEach {
                                 buffer.append("${it.id}-${it.title}").append("\n")
