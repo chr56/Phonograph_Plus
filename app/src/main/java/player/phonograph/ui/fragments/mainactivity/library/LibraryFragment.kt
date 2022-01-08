@@ -337,7 +337,7 @@ class LibraryFragment :
                 currentSortOrder?.let {
                     val p = it.split(Pattern.compile(" "), 2)
                     if (p.isNotEmpty() && p.size >= 2) {
-                        Log.v("LibraryFragment", "${p[0]}    ${p[1]}")
+                        Log.v("LibraryFragment", "p0=${p[0]}-p1=${p[1]}")
                         when (p[0]) {
 
 //                        SongColumns.ID ->
@@ -438,6 +438,8 @@ class LibraryFragment :
         val basicSelected = popup.sortOrderBasic.checkedRadioButtonId
         val contentSelected = popup.sortOrderContent.checkedRadioButtonId
 
+        var temp = false // use new sort order?
+
         val sortOrderSelected: String =
             when (fragment) {
                 //
@@ -454,15 +456,16 @@ class LibraryFragment :
                         R.id.sort_order_duration -> /* p.sortOrderSongColumn =*/ SongColumns.DURATION
                         else -> ""
                     }
-                    if (c.isNotEmpty()) p.sortOrderSongColumn = c
+                    if (c.isNotBlank()) p.sortOrderSongColumn = c else p.sortOrderSongColumn = SongColumns.TITLE
                     val o = when (basicSelected) {
                         R.id.sort_order_a_z -> /* p.sortOrderSongOrientation =*/ true
                         R.id.sort_order_z_a -> /* p.sortOrderSongOrientation =*/ false
                         else -> { true }
                     }
+                    temp = true
                     p.sortOrderSongOrientation = o
                     fragment.setAndSaveSortOrder("$c $o")
-                    Log.d(this::class.simpleName, "$c $o")
+                    Log.d(this::class.simpleName, "WRITE:$c - $o")
                     "" // empty
 
 //                    when (contentSelected) {
@@ -550,7 +553,7 @@ class LibraryFragment :
                 else -> ""
             } // end when(fragment)
 
-        if (sortOrderSelected.isNotBlank()) {
+        if (sortOrderSelected.isNotBlank() && !temp) {
             Log.d(this::class.simpleName, "WRITE:$sortOrderSelected")
             if (fragment.sortOrder != sortOrderSelected)
                 fragment.setAndSaveSortOrder(sortOrderSelected)

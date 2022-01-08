@@ -82,7 +82,8 @@ interface SongDao {
      */
     fun getAllSongs(columns: String, order: Boolean = true): List<Song> {
         // todo valid input
-        val query = "SELECT * FROM songs ORDER BY ${if (order) "$columns ASC" else "$columns DESC"}"
+        val query = if (columns.isNotBlank()) "SELECT * FROM songs ORDER BY ${if (order) "$columns ASC" else "$columns DESC"}"
+        else "SELECT * FROM songs"
 
         return rawQuery(SimpleSQLiteQuery(query))
     }
