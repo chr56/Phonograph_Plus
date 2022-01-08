@@ -2,12 +2,14 @@ package player.phonograph.loader;
 
 import android.content.Context;
 import android.provider.MediaStore.Audio.AudioColumns;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import player.phonograph.model.Album;
 import player.phonograph.model.Artist;
 import player.phonograph.model.Song;
+import player.phonograph.util.MediaStoreUtil;
 import player.phonograph.util.PreferenceUtil;
 
 import java.util.ArrayList;
@@ -23,7 +25,7 @@ public class ArtistLoader {
 
     @NonNull
     public static List<Artist> getAllArtists(@NonNull final Context context) {
-        List<Song> songs = SongLoader.getSongs(SongLoader.makeSongCursor(
+        List<Song> songs = SongLoader.getSongs(MediaStoreUtil.INSTANCE.querySongs(
                 context,
                 null,
                 null,
@@ -34,7 +36,7 @@ public class ArtistLoader {
 
     @NonNull
     public static List<Artist> getArtists(@NonNull final Context context, String query) {
-        List<Song> songs = SongLoader.getSongs(SongLoader.makeSongCursor(
+        List<Song> songs = SongLoader.getSongs(MediaStoreUtil.INSTANCE.querySongs(
                 context,
                 AudioColumns.ARTIST + " LIKE ?",
                 new String[]{"%" + query + "%"},
@@ -45,7 +47,7 @@ public class ArtistLoader {
 
     @NonNull
     public static Artist getArtist(@NonNull final Context context, long artistId) {
-        List<Song> songs = SongLoader.getSongs(SongLoader.makeSongCursor(
+        List<Song> songs = SongLoader.getSongs(MediaStoreUtil.INSTANCE.querySongs(
                 context,
                 AudioColumns.ARTIST_ID + "=?",
                 new String[]{String.valueOf(artistId)},

@@ -23,6 +23,7 @@ import player.phonograph.loader.ArtistLoader
 import player.phonograph.loader.SongLoader
 import player.phonograph.misc.WrappedAsyncTaskLoader
 import player.phonograph.ui.activities.base.AbsMusicServiceActivity
+import player.phonograph.util.MediaStoreUtil
 import player.phonograph.util.Util
 
 class SearchActivity :
@@ -168,7 +169,7 @@ class SearchActivity :
             val results: MutableList<Any> = ArrayList()
 
             if (!TextUtils.isEmpty(query)) {
-                val songs = SongLoader.getSongs(context, query!!.trim { it <= ' ' })
+                val songs = MediaStoreUtil.getSongs(context, query!!.trim { it <= ' ' })
                 if (songs.isNotEmpty()) {
                     results.add(context.resources.getString(R.string.songs))
                     results.addAll(songs)

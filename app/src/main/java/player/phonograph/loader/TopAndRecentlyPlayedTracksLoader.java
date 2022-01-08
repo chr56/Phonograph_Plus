@@ -26,6 +26,7 @@ import androidx.annotation.Nullable;
 import player.phonograph.model.Song;
 import player.phonograph.provider.HistoryStore;
 import player.phonograph.provider.SongPlayCountStore;
+import player.phonograph.util.MediaStoreUtil;
 
 import java.util.List;
 
@@ -130,7 +131,7 @@ public class TopAndRecentlyPlayedTracksLoader {
             selection.append(")");
 
             // get a list of songs with the data given the selection statement
-            Cursor songCursor = SongLoader.makeSongCursor(context, selection.toString(), null);
+            Cursor songCursor = MediaStoreUtil.INSTANCE.querySongs(context, selection.toString(), null);
             if (songCursor != null) {
                 // now return the wrapped TopTracksCursor to handle sorting given order
                 return new SortedLongCursor(songCursor, order, BaseColumns._ID);

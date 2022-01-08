@@ -4,13 +4,14 @@ import android.app.SearchManager
 import android.content.Context
 import android.os.Bundle
 import android.provider.MediaStore
-import player.phonograph.loader.SongLoader
 import player.phonograph.model.Song
+import player.phonograph.util.MediaStoreUtil
 import java.util.*
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
  */
+// todo use new database
 object SearchQueryHelper {
     private const val TITLE_SELECTION = "lower(" + MediaStore.Audio.AudioColumns.TITLE + ") = ?"
     private const val ALBUM_SELECTION = "lower(" + MediaStore.Audio.AudioColumns.ALBUM + ") = ?"
@@ -26,8 +27,8 @@ object SearchQueryHelper {
         var songs: List<Song> = ArrayList()
 
         if (artistName != null && albumName != null && titleName != null) {
-            songs = SongLoader.getSongs(
-                SongLoader.makeSongCursor(
+            songs = MediaStoreUtil.getSongs(
+                MediaStoreUtil.querySongs(
                     context,
                     ARTIST_SELECTION + AND + ALBUM_SELECTION + AND + TITLE_SELECTION,
                     arrayOf(
@@ -43,8 +44,8 @@ object SearchQueryHelper {
         }
 
         if (artistName != null && titleName != null) {
-            songs = SongLoader.getSongs(
-                SongLoader.makeSongCursor(
+            songs = MediaStoreUtil.getSongs(
+                MediaStoreUtil.querySongs(
                     context,
                     ARTIST_SELECTION + AND + TITLE_SELECTION,
                     arrayOf(
@@ -59,8 +60,8 @@ object SearchQueryHelper {
         }
 
         if (albumName != null && titleName != null) {
-            songs = SongLoader.getSongs(
-                SongLoader.makeSongCursor(
+            songs = MediaStoreUtil.getSongs(
+                MediaStoreUtil.querySongs(
                     context,
                     ALBUM_SELECTION + AND + TITLE_SELECTION,
                     arrayOf(
@@ -75,8 +76,8 @@ object SearchQueryHelper {
         }
 
         if (artistName != null) {
-            songs = SongLoader.getSongs(
-                SongLoader.makeSongCursor(
+            songs = MediaStoreUtil.getSongs(
+                MediaStoreUtil.querySongs(
                     context,
                     ARTIST_SELECTION,
                     arrayOf(artistName.lowercase(Locale.getDefault()).trim { it <= ' ' })
@@ -88,8 +89,8 @@ object SearchQueryHelper {
         }
 
         if (albumName != null) {
-            songs = SongLoader.getSongs(
-                SongLoader.makeSongCursor(
+            songs = MediaStoreUtil.getSongs(
+                MediaStoreUtil.querySongs(
                     context,
                     ALBUM_SELECTION,
                     arrayOf(albumName.lowercase(Locale.getDefault()).trim { it <= ' ' })
@@ -101,8 +102,8 @@ object SearchQueryHelper {
         }
 
         if (titleName != null) {
-            songs = SongLoader.getSongs(
-                SongLoader.makeSongCursor(
+            songs = MediaStoreUtil.getSongs(
+                MediaStoreUtil.querySongs(
                     context,
                     TITLE_SELECTION,
                     arrayOf(titleName.lowercase(Locale.getDefault()).trim { it <= ' ' })
@@ -113,8 +114,8 @@ object SearchQueryHelper {
             return songs
         }
 
-        songs = SongLoader.getSongs(
-            SongLoader.makeSongCursor(
+        songs = MediaStoreUtil.getSongs(
+            MediaStoreUtil.querySongs(
                 context,
                 ARTIST_SELECTION,
                 arrayOf(query.lowercase(Locale.getDefault()).trim { it <= ' ' })
@@ -124,8 +125,8 @@ object SearchQueryHelper {
             return songs
         }
 
-        songs = SongLoader.getSongs(
-            SongLoader.makeSongCursor(
+        songs = MediaStoreUtil.getSongs(
+            MediaStoreUtil.querySongs(
                 context,
                 ALBUM_SELECTION,
                 arrayOf(query.lowercase(Locale.getDefault()).trim { it <= ' ' })
@@ -135,8 +136,8 @@ object SearchQueryHelper {
             return songs
         }
 
-        songs = SongLoader.getSongs(
-            SongLoader.makeSongCursor(
+        songs = MediaStoreUtil.getSongs(
+            MediaStoreUtil.querySongs(
                 context,
                 TITLE_SELECTION,
                 arrayOf(query.lowercase(Locale.getDefault()).trim { it <= ' ' })
@@ -144,6 +145,6 @@ object SearchQueryHelper {
         )
         return if (songs.isNotEmpty()) {
             songs
-        } else SongLoader.getSongs(context, query)
+        } else MediaStoreUtil.getSongs(context, query)
     }
 }

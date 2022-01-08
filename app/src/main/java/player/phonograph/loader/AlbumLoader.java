@@ -2,11 +2,13 @@ package player.phonograph.loader;
 
 import android.content.Context;
 import android.provider.MediaStore.Audio.AudioColumns;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import player.phonograph.model.Album;
 import player.phonograph.model.Song;
+import player.phonograph.util.MediaStoreUtil;
 import player.phonograph.util.PreferenceUtil;
 
 import java.util.ArrayList;
@@ -24,7 +26,7 @@ public class AlbumLoader {
 
     @NonNull
     public static List<Album> getAllAlbums(@NonNull final Context context) {
-        List<Song> songs = SongLoader.getSongs(SongLoader.makeSongCursor(
+        List<Song> songs = SongLoader.getSongs(MediaStoreUtil.INSTANCE.querySongs(
                 context,
                 null,
                 null,
@@ -35,7 +37,7 @@ public class AlbumLoader {
 
     @NonNull
     public static List<Album> getAlbums(@NonNull final Context context, String query) {
-        List<Song> songs = SongLoader.getSongs(SongLoader.makeSongCursor(
+        List<Song> songs = SongLoader.getSongs(MediaStoreUtil.INSTANCE.querySongs(
                 context,
                 AudioColumns.ALBUM + " LIKE ?",
                 new String[]{"%" + query + "%"},
@@ -46,7 +48,7 @@ public class AlbumLoader {
 
     @NonNull
     public static Album getAlbum(@NonNull final Context context, long albumId) {
-        List<Song> songs = SongLoader.getSongs(SongLoader.makeSongCursor(context, AudioColumns.ALBUM_ID + "=?", new String[]{String.valueOf(albumId)}, getSongLoaderSortOrder(context)));
+        List<Song> songs = SongLoader.getSongs(MediaStoreUtil.INSTANCE.querySongs(context, AudioColumns.ALBUM_ID + "=?", new String[]{String.valueOf(albumId)}, getSongLoaderSortOrder(context)));
         Album album = new Album(songs);
         sortSongsByTrackNumber(album);
         return album;
