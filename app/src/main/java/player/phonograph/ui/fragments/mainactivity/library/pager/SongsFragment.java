@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import java.util.ArrayList;
 import java.util.List;
 
+import player.phonograph.App;
 import player.phonograph.R;
 import player.phonograph.adapter.song.ShuffleButtonSongAdapter;
 import player.phonograph.adapter.song.SongAdapter;
@@ -74,14 +75,25 @@ public class SongsFragment extends AbsLibraryPagerRecyclerViewCustomGridSizeFrag
         getLoaderManager().restartLoader(LOADER_ID, null, this);
     }
 
+    //todo
     @Override
     protected String loadSortOrder() {
-        return PreferenceUtil.getInstance(requireActivity()).getSongSortOrder();
+        PreferenceUtil p = PreferenceUtil.getInstance(requireActivity());
+        return p.getSortOrderSongColumn() + " " + (p.getSortOrderSongOrientation() ? "ASC" : "DECS");
     }
 
+    //todo
     @Override
     protected void saveSortOrder(String sortOrder) {
-        PreferenceUtil.getInstance(requireActivity()).setSongSortOrder(sortOrder);
+        if (sortOrder != null) {
+            String[] parsed = sortOrder.split(" ", 2);
+            PreferenceUtil.getInstance(requireActivity()).setSortOrderSongColumn(parsed[0]);
+            boolean b;
+            if (parsed[1].equals("ASC")) b = true;
+            else if (parsed[1].equals("DECS")) b = false;
+            else return;// no saving
+            PreferenceUtil.getInstance(requireActivity()).setSortOrderSongOrientation(b);
+        }
     }
 
     @Override
@@ -153,8 +165,11 @@ public class SongsFragment extends AbsLibraryPagerRecyclerViewCustomGridSizeFrag
 
         @Override
         public List<Song> loadInBackground() {
+
+            PreferenceUtil p = PreferenceUtil.getInstance(App.getInstance());
+
             return SongModelConverterHelper.convert(
-                    MusicDatabase.INSTANCE.getSongsDataBase().SongDao().getAllSongs()
+                    MusicDatabase.INSTANCE.getSongsDataBase().SongDao().getAllSongs(p.getSortOrderSongColumn(), p.getSortOrderSongOrientation())
             );
         }
     }

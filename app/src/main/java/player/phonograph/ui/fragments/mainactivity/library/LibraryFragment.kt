@@ -25,6 +25,7 @@ import com.google.android.material.appbar.AppBarLayout.OnOffsetChangedListener
 import com.google.android.material.tabs.TabLayout
 import player.phonograph.R
 import player.phonograph.adapter.MusicLibraryPagerAdapter
+import player.phonograph.database.mediastore.SongColumns
 import player.phonograph.databinding.FragmentLibraryBinding
 import player.phonograph.databinding.PopupWindowMainBinding
 import player.phonograph.dialogs.CreatePlaylistDialog
@@ -41,6 +42,7 @@ import player.phonograph.ui.fragments.mainactivity.library.pager.SongsFragment
 import player.phonograph.util.PhonographColorUtil
 import player.phonograph.util.PreferenceUtil
 import player.phonograph.util.Util.isLandscape
+import java.util.regex.Pattern
 
 class LibraryFragment :
     AbsMainActivityFragment(), CabHolder, MainActivity.MainActivityFragmentCallbacks, SharedPreferences.OnSharedPreferenceChangeListener, ViewPager.OnPageChangeListener {
@@ -331,16 +333,45 @@ class LibraryFragment :
                 popup.sortOrderDateAdded.visibility = View.VISIBLE
                 popup.sortOrderDateModified.visibility = View.VISIBLE
                 popup.sortOrderDuration.visibility = View.VISIBLE
-                when (currentSortOrder) {
-                    SortOrder.SongSortOrder.SONG_A_Z, SortOrder.SongSortOrder.SONG_Z_A -> popup.sortOrderContent.check(R.id.sort_order_song)
-                    SortOrder.SongSortOrder.SONG_ALBUM, SortOrder.SongSortOrder.SONG_ALBUM_REVERT -> popup.sortOrderContent.check(R.id.sort_order_album)
-                    SortOrder.SongSortOrder.SONG_ARTIST, SortOrder.SongSortOrder.SONG_ARTIST_REVERT -> popup.sortOrderContent.check(R.id.sort_order_artist)
-                    SortOrder.SongSortOrder.SONG_YEAR, SortOrder.SongSortOrder.SONG_YEAR_REVERT -> popup.sortOrderContent.check(R.id.sort_order_year)
-                    SortOrder.SongSortOrder.SONG_DATE, SortOrder.SongSortOrder.SONG_DATE_REVERT -> popup.sortOrderContent.check(R.id.sort_order_date_added)
-                    SortOrder.SongSortOrder.SONG_DATE_MODIFIED, SortOrder.SongSortOrder.SONG_DATE_MODIFIED_REVERT -> popup.sortOrderContent.check(R.id.sort_order_date_modified)
-                    SortOrder.SongSortOrder.SONG_DURATION, SortOrder.SongSortOrder.SONG_DURATION_REVERT -> popup.sortOrderContent.check(R.id.sort_order_duration)
-                    else -> { popup.sortOrderContent.clearCheck() }
+
+                currentSortOrder?.let {
+                    val p = it.split(Pattern.compile(" "), 2)
+                    if (p.isNotEmpty() && p.size >= 2) {
+                        Log.v("LibraryFragment", "${p[0]}    ${p[1]}")
+                        when (p[0]) {
+
+//                        SongColumns.ID ->
+//                        SongColumns.PATH ->
+//                        SongColumns.SIZE ->
+//                        SongColumns.DISPLAY_NAME ->
+                            SongColumns.DATE_ADDED -> popup.sortOrderContent.check(R.id.sort_order_date_added)
+                            SongColumns.DATE_MODIFIED -> popup.sortOrderContent.check(R.id.sort_order_date_modified)
+                            SongColumns.TITLE -> popup.sortOrderContent.check(R.id.sort_order_song)
+//                        SongColumns.ALBUM_ID ->
+                            SongColumns.ALBUM_NAME -> popup.sortOrderContent.check(R.id.sort_order_album)
+//                        SongColumns.ARTIST_ID ->
+                            SongColumns.ARTIST_NAME -> popup.sortOrderContent.check(R.id.sort_order_artist)
+                            SongColumns.YEAR -> popup.sortOrderContent.check(R.id.sort_order_year)
+                            SongColumns.DURATION -> popup.sortOrderContent.check(R.id.sort_order_duration)
+//                        SongColumns.TRACK_NUMBER ->
+                        }
+                        when (p[1]) {
+                            "ASC" -> popup.sortOrderContent.check(R.id.sort_order_a_z)
+                            "DECS" -> popup.sortOrderContent.check(R.id.sort_order_z_a)
+                        }
+                    }
                 }
+                // todo migrate to new database
+//                when (currentSortOrder) {
+//                    SortOrder.SongSortOrder.SONG_A_Z, SortOrder.SongSortOrder.SONG_Z_A -> popup.sortOrderContent.check(R.id.sort_order_song)
+//                    SortOrder.SongSortOrder.SONG_ALBUM, SortOrder.SongSortOrder.SONG_ALBUM_REVERT -> popup.sortOrderContent.check(R.id.sort_order_album)
+//                    SortOrder.SongSortOrder.SONG_ARTIST, SortOrder.SongSortOrder.SONG_ARTIST_REVERT -> popup.sortOrderContent.check(R.id.sort_order_artist)
+//                    SortOrder.SongSortOrder.SONG_YEAR, SortOrder.SongSortOrder.SONG_YEAR_REVERT -> popup.sortOrderContent.check(R.id.sort_order_year)
+//                    SortOrder.SongSortOrder.SONG_DATE, SortOrder.SongSortOrder.SONG_DATE_REVERT -> popup.sortOrderContent.check(R.id.sort_order_date_added)
+//                    SortOrder.SongSortOrder.SONG_DATE_MODIFIED, SortOrder.SongSortOrder.SONG_DATE_MODIFIED_REVERT -> popup.sortOrderContent.check(R.id.sort_order_date_modified)
+//                    SortOrder.SongSortOrder.SONG_DURATION, SortOrder.SongSortOrder.SONG_DURATION_REVERT -> popup.sortOrderContent.check(R.id.sort_order_duration)
+//                    else -> { popup.sortOrderContent.clearCheck() }
+//                }
             }
             is AlbumsFragment -> {
                 popup.sortOrderAlbum.visibility = View.VISIBLE
@@ -411,51 +442,74 @@ class LibraryFragment :
             when (fragment) {
                 //
                 is SongsFragment -> {
-                    when (contentSelected) {
-                        R.id.sort_order_song ->
-                            when (basicSelected) {
-                                R.id.sort_order_a_z -> SortOrder.SongSortOrder.SONG_A_Z
-                                R.id.sort_order_z_a -> SortOrder.SongSortOrder.SONG_Z_A
-                                else -> ""
-                            }
-                        R.id.sort_order_album ->
-                            when (basicSelected) {
-                                R.id.sort_order_a_z -> SortOrder.SongSortOrder.SONG_ALBUM
-                                R.id.sort_order_z_a -> SortOrder.SongSortOrder.SONG_ALBUM_REVERT
-                                else -> ""
-                            }
-                        R.id.sort_order_artist ->
-                            when (basicSelected) {
-                                R.id.sort_order_a_z -> SortOrder.SongSortOrder.SONG_ARTIST
-                                R.id.sort_order_z_a -> SortOrder.SongSortOrder.SONG_ARTIST_REVERT
-                                else -> ""
-                            }
-                        R.id.sort_order_year ->
-                            when (basicSelected) {
-                                R.id.sort_order_a_z -> SortOrder.SongSortOrder.SONG_YEAR
-                                R.id.sort_order_z_a -> SortOrder.SongSortOrder.SONG_YEAR_REVERT
-                                else -> ""
-                            }
-                        R.id.sort_order_date_added ->
-                            when (basicSelected) {
-                                R.id.sort_order_a_z -> SortOrder.SongSortOrder.SONG_DATE
-                                R.id.sort_order_z_a -> SortOrder.SongSortOrder.SONG_DATE_REVERT
-                                else -> ""
-                            }
-                        R.id.sort_order_date_modified ->
-                            when (basicSelected) {
-                                R.id.sort_order_a_z -> SortOrder.SongSortOrder.SONG_DATE_MODIFIED
-                                R.id.sort_order_z_a -> SortOrder.SongSortOrder.SONG_DATE_MODIFIED_REVERT
-                                else -> ""
-                            }
-                        R.id.sort_order_duration ->
-                            when (basicSelected) {
-                                R.id.sort_order_a_z -> SortOrder.SongSortOrder.SONG_DURATION
-                                R.id.sort_order_z_a -> SortOrder.SongSortOrder.SONG_DURATION_REVERT
-                                else -> ""
-                            }
+                    // todo migrate to new database
+                    val p = PreferenceUtil.getInstance(requireContext())
+                    val c = when (contentSelected) {
+                        R.id.sort_order_song -> /* /* p.sortOrderSongColumn =*/*/ SongColumns.TITLE
+                        R.id.sort_order_album -> /* p.sortOrderSongColumn =*/ SongColumns.ALBUM_NAME
+                        R.id.sort_order_artist -> /* p.sortOrderSongColumn =*/ SongColumns.ARTIST_NAME
+                        R.id.sort_order_year -> /* p.sortOrderSongColumn =*/ SongColumns.YEAR
+                        R.id.sort_order_date_added -> /* p.sortOrderSongColumn =*/ SongColumns.DATE_ADDED
+                        R.id.sort_order_date_modified -> /* p.sortOrderSongColumn =*/ SongColumns.DATE_MODIFIED
+                        R.id.sort_order_duration -> /* p.sortOrderSongColumn =*/ SongColumns.DURATION
                         else -> ""
                     }
+                    if (c.isNotEmpty()) p.sortOrderSongColumn = c
+                    val o = when (basicSelected) {
+                        R.id.sort_order_a_z -> /* p.sortOrderSongOrientation =*/ true
+                        R.id.sort_order_z_a -> /* p.sortOrderSongOrientation =*/ false
+                        else -> { true }
+                    }
+                    p.sortOrderSongOrientation = o
+                    fragment.setAndSaveSortOrder("$c $o")
+                    Log.d(this::class.simpleName, "$c $o")
+                    "" // empty
+
+//                    when (contentSelected) {
+//                        R.id.sort_order_song ->
+//                            when (basicSelected) {
+//                                R.id.sort_order_a_z -> SortOrder.SongSortOrder.SONG_A_Z
+//                                R.id.sort_order_z_a -> SortOrder.SongSortOrder.SONG_Z_A
+//                                else -> ""
+//                            }
+//                        R.id.sort_order_album ->
+//                            when (basicSelected) {
+//                                R.id.sort_order_a_z -> SortOrder.SongSortOrder.SONG_ALBUM
+//                                R.id.sort_order_z_a -> SortOrder.SongSortOrder.SONG_ALBUM_REVERT
+//                                else -> ""
+//                            }
+//                        R.id.sort_order_artist ->
+//                            when (basicSelected) {
+//                                R.id.sort_order_a_z -> SortOrder.SongSortOrder.SONG_ARTIST
+//                                R.id.sort_order_z_a -> SortOrder.SongSortOrder.SONG_ARTIST_REVERT
+//                                else -> ""
+//                            }
+//                        R.id.sort_order_year ->
+//                            when (basicSelected) {
+//                                R.id.sort_order_a_z -> SortOrder.SongSortOrder.SONG_YEAR
+//                                R.id.sort_order_z_a -> SortOrder.SongSortOrder.SONG_YEAR_REVERT
+//                                else -> ""
+//                            }
+//                        R.id.sort_order_date_added ->
+//                            when (basicSelected) {
+//                                R.id.sort_order_a_z -> SortOrder.SongSortOrder.SONG_DATE
+//                                R.id.sort_order_z_a -> SortOrder.SongSortOrder.SONG_DATE_REVERT
+//                                else -> ""
+//                            }
+//                        R.id.sort_order_date_modified ->
+//                            when (basicSelected) {
+//                                R.id.sort_order_a_z -> SortOrder.SongSortOrder.SONG_DATE_MODIFIED
+//                                R.id.sort_order_z_a -> SortOrder.SongSortOrder.SONG_DATE_MODIFIED_REVERT
+//                                else -> ""
+//                            }
+//                        R.id.sort_order_duration ->
+//                            when (basicSelected) {
+//                                R.id.sort_order_a_z -> SortOrder.SongSortOrder.SONG_DURATION
+//                                R.id.sort_order_z_a -> SortOrder.SongSortOrder.SONG_DURATION_REVERT
+//                                else -> ""
+//                            }
+//                        else -> ""
+//                    }
                 }
                 //
                 is AlbumsFragment -> {

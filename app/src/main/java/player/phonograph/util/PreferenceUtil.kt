@@ -19,37 +19,18 @@ import com.google.gson.JsonSyntaxException
 import com.google.gson.reflect.TypeToken
 import player.phonograph.App
 import player.phonograph.R
+import player.phonograph.database.mediastore.SongColumns
 import player.phonograph.helper.SortOrder
 import player.phonograph.model.CategoryInfo
 import player.phonograph.ui.fragments.mainactivity.folders.FoldersFragment
 import player.phonograph.ui.fragments.player.NowPlayingScreen
 import java.io.File
-import java.util.ArrayList
+import java.util.*
 
 @SuppressLint("ApplySharedPref")
 class PreferenceUtil(context: Context) {
 
-//    private var sInstance: PreferenceUtil? = null
     private val mPreferences: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
-
-//    fun getInstance(context: Context): PreferenceUtil {
-//        return if (sInstance == null) PreferenceUtil(context.applicationContext)
-//        else sInstance!!
-//    }
-
-//    fun isAllowedToDownloadMetadata(context: Context): Boolean {
-//        return when (getInstance(context).autoDownloadImagesPolicy()) {
-//            "always" -> true
-//            "only_wifi" -> {
-//                val connectivityManager =
-//                    context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-//                val netInfo = connectivityManager.activeNetworkInfo
-//                netInfo != null && netInfo.type == ConnectivityManager.TYPE_WIFI && netInfo.isConnectedOrConnecting
-//            }
-//            "never" -> false
-//            else -> false
-//        }
-//    }
 
     fun registerOnSharedPreferenceChangedListener(sharedPreferenceChangeListener: OnSharedPreferenceChangeListener?) {
         mPreferences.registerOnSharedPreferenceChangeListener(sharedPreferenceChangeListener)
@@ -58,18 +39,6 @@ class PreferenceUtil(context: Context) {
     fun unregisterOnSharedPreferenceChangedListener(sharedPreferenceChangeListener: OnSharedPreferenceChangeListener?) {
         mPreferences.unregisterOnSharedPreferenceChangeListener(sharedPreferenceChangeListener)
     }
-
-//    @StyleRes
-//    fun getGeneralTheme(): Int {
-//        return getThemeResFromPrefValue(
-//            mPreferences.getString(GENERAL_THEME, "auto")
-//        )
-//    }
-//    fun setGeneralTheme(theme: String?) {
-//        val editor = mPreferences.edit()
-//        editor.putString(GENERAL_THEME, theme)
-//        editor.commit()
-//    }
 
     @get:StyleRes
     val generalTheme: Int
@@ -197,11 +166,27 @@ class PreferenceUtil(context: Context) {
             ALBUM_SONG_SORT_ORDER, SortOrder.AlbumSongSortOrder.SONG_TRACK_LIST
         )!!
 
+    @Deprecated("use column")
     var songSortOrder: String
         get() = mPreferences.getString(SONG_SORT_ORDER, SortOrder.SongSortOrder.SONG_A_Z)!!
         set(sortOrder) {
             val editor = mPreferences.edit()
             editor.putString(SONG_SORT_ORDER, sortOrder)
+            editor.commit()
+        }
+
+    var sortOrderSongColumn: String
+        get() = mPreferences.getString(SORT_ORDER_SONG_COLUMNS, SongColumns.DATE_MODIFIED)!!
+        set(sortOrder) {
+            val editor = mPreferences.edit()
+            editor.putString(SORT_ORDER_SONG_COLUMNS, sortOrder)
+            editor.commit()
+        }
+    var sortOrderSongOrientation: Boolean // DECS(false) or ASC(true)
+        get() = mPreferences.getBoolean(SORT_ORDER_SONG_ORIENTATION, true)
+        set(sortOrder) {
+            val editor = mPreferences.edit()
+            editor.putBoolean(SORT_ORDER_SONG_ORIENTATION, sortOrder)
             editor.commit()
         }
 
@@ -486,7 +471,7 @@ class PreferenceUtil(context: Context) {
             mPreferences.edit().putLong(LAST_MUSIC_DATABASE_ACCESS_TIMESTAMP, value).apply()
         }
 
-/**
+    /**
      * **Dangerous !**, this reset all SharedPreferences!
      * @param context this is used to make toast
      */
@@ -550,6 +535,9 @@ class PreferenceUtil(context: Context) {
         const val ALBUM_SONG_SORT_ORDER = "album_song_sort_order"
         const val SONG_SORT_ORDER = "song_sort_order"
         const val GENRE_SORT_ORDER = "genre_sort_order"
+
+        const val SORT_ORDER_SONG_COLUMNS = "song_columns"
+        const val SORT_ORDER_SONG_ORIENTATION = "song_orientation"
 
         const val ALBUM_GRID_SIZE = "album_grid_size"
         const val ALBUM_GRID_SIZE_LAND = "album_grid_size_land"

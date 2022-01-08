@@ -23,10 +23,10 @@ import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView.S
 import player.phonograph.R
 import player.phonograph.adapter.base.AbsMultiSelectAdapter
 import player.phonograph.adapter.base.MediaEntryViewHolder
+import player.phonograph.database.mediastore.SongColumns
 import player.phonograph.glide.PhonographColoredTarget
 import player.phonograph.glide.SongGlideRequest
 import player.phonograph.helper.MusicPlayerRemote
-import player.phonograph.helper.SortOrder
 import player.phonograph.helper.menu.SongMenuHelper
 import player.phonograph.helper.menu.SongsMenuHelper
 import player.phonograph.interfaces.CabHolder
@@ -249,18 +249,19 @@ open class UniversalSongAdapter :
         MusicUtil.getSectionName(
             if (hasHeader && position == 0) ""
             else
-                when (PreferenceUtil.getInstance(activity).songSortOrder) {
-                    SortOrder.SongSortOrder.SONG_A_Z, SortOrder.SongSortOrder.SONG_Z_A ->
+                when (PreferenceUtil.getInstance(activity).sortOrderSongColumn) {
+                    SongColumns.TITLE ->
                         songs[position].title
-                    SortOrder.SongSortOrder.SONG_ALBUM ->
+                    SongColumns.ALBUM_NAME ->
                         songs[position].albumName
-                    SortOrder.SongSortOrder.SONG_ARTIST ->
+                    SongColumns.ARTIST_NAME ->
                         songs[position].artistName
-                    SortOrder.SongSortOrder.SONG_YEAR ->
+                    SongColumns.YEAR ->
                         songs[position].year.let {
                             if (it> 0) it.toString() else "-"
                         }
 //                    MusicUtil.getYearString(songs[position].year)
+                    // todo display more
                     else -> "-"
                 }
         )

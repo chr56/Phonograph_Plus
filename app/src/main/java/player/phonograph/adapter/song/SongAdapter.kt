@@ -17,6 +17,7 @@ import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView.S
 import player.phonograph.R
 import player.phonograph.adapter.base.AbsMultiSelectAdapter
 import player.phonograph.adapter.base.MediaEntryViewHolder
+import player.phonograph.database.mediastore.SongColumns
 import player.phonograph.glide.PhonographColoredTarget
 import player.phonograph.glide.SongGlideRequest
 import player.phonograph.helper.MusicPlayerRemote
@@ -166,15 +167,14 @@ open class SongAdapter @JvmOverloads constructor(
             return ""
         }
         var sectionName: String? = null
-        when (PreferenceUtil.getInstance(activity).songSortOrder) {
-            SortOrder.SongSortOrder.SONG_A_Z, SortOrder.SongSortOrder.SONG_Z_A ->
+        when (PreferenceUtil.getInstance(activity).sortOrderSongColumn) {
+            SongColumns.TITLE ->
                 sectionName = dataSet[position].title
-            SortOrder.SongSortOrder.SONG_ALBUM ->
+            SongColumns.ALBUM_NAME ->
                 sectionName = dataSet[position].albumName
-            SortOrder.SongSortOrder.SONG_ARTIST ->
+            SongColumns.ARTIST_NAME ->
                 sectionName = dataSet[position].artistName
-            SortOrder.SongSortOrder.SONG_YEAR ->
-//                sectionName = if (dataSet[position].year > 1000) dataSet[position].year.toString() else "-"
+            SongColumns.YEAR ->
                 return MusicUtil.getYearString(dataSet[position].year)
         }
         return MusicUtil.getSectionName(sectionName)
