@@ -26,7 +26,7 @@ public class AlbumLoader {
 
     @NonNull
     public static List<Album> getAllAlbums(@NonNull final Context context) {
-        List<Song> songs = SongLoader.getSongs(MediaStoreUtil.INSTANCE.querySongs(
+        List<Song> songs = MediaStoreUtil.INSTANCE.getSongs(MediaStoreUtil.INSTANCE.querySongs(
                 context,
                 null,
                 null,
@@ -37,7 +37,7 @@ public class AlbumLoader {
 
     @NonNull
     public static List<Album> getAlbums(@NonNull final Context context, String query) {
-        List<Song> songs = SongLoader.getSongs(MediaStoreUtil.INSTANCE.querySongs(
+        List<Song> songs = MediaStoreUtil.INSTANCE.getSongs(MediaStoreUtil.INSTANCE.querySongs(
                 context,
                 AudioColumns.ALBUM + " LIKE ?",
                 new String[]{"%" + query + "%"},
@@ -48,7 +48,7 @@ public class AlbumLoader {
 
     @NonNull
     public static Album getAlbum(@NonNull final Context context, long albumId) {
-        List<Song> songs = SongLoader.getSongs(MediaStoreUtil.INSTANCE.querySongs(context, AudioColumns.ALBUM_ID + "=?", new String[]{String.valueOf(albumId)}, getSongLoaderSortOrder(context)));
+        List<Song> songs = MediaStoreUtil.INSTANCE.getSongs(MediaStoreUtil.INSTANCE.querySongs(context, AudioColumns.ALBUM_ID + "=?", new String[]{String.valueOf(albumId)}, getSongLoaderSortOrder(context)));
         Album album = new Album(songs);
         sortSongsByTrackNumber(album);
         return album;

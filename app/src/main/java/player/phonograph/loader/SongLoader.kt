@@ -15,9 +15,6 @@ object SongLoader {
     fun getAllSongs(context: Context): List<Song?> = MediaStoreUtil.getAllSongs(context)
 
     @JvmStatic
-    fun getSongs(cursor: Cursor?): List<Song> = MediaStoreUtil.getSongs(cursor)
-
-    @JvmStatic
     fun makeSongCursor(context: Context, selection: String?, selectionValues: Array<String>?): Cursor? =
         querySongs(context, selection, selectionValues)
 }

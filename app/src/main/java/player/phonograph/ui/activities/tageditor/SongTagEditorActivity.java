@@ -19,9 +19,7 @@ import java.util.Map;
 import chr_56.MDthemer.util.ToolbarColorUtil;
 import player.phonograph.R;
 import player.phonograph.database.mediastore.MusicDatabase;
-import player.phonograph.database.mediastore.SongConverter;
 import player.phonograph.databinding.ActivitySongTagEditorBinding;
-import player.phonograph.loader.SongLoader;
 
 public class SongTagEditorActivity extends AbsTagEditorActivity implements TextWatcher {
 

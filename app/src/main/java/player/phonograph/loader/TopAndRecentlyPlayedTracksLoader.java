@@ -35,12 +35,12 @@ public class TopAndRecentlyPlayedTracksLoader {
 
     @NonNull
     public static List<Song> getRecentlyPlayedTracks(@NonNull Context context) {
-        return SongLoader.getSongs(makeRecentTracksCursorAndClearUpDatabase(context));
+        return MediaStoreUtil.INSTANCE.getSongs(makeRecentTracksCursorAndClearUpDatabase(context));
     }
 
     @NonNull
     public static List<Song> getTopTracks(@NonNull Context context) {
-        return SongLoader.getSongs(makeTopTracksCursorAndClearUpDatabase(context));
+        return MediaStoreUtil.INSTANCE.getSongs(makeTopTracksCursorAndClearUpDatabase(context));
     }
 
     @Nullable

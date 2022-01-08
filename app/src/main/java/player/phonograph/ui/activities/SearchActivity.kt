@@ -20,7 +20,6 @@ import player.phonograph.adapter.SearchAdapter
 import player.phonograph.interfaces.LoaderIds
 import player.phonograph.loader.AlbumLoader
 import player.phonograph.loader.ArtistLoader
-import player.phonograph.loader.SongLoader
 import player.phonograph.misc.WrappedAsyncTaskLoader
 import player.phonograph.ui.activities.base.AbsMusicServiceActivity
 import player.phonograph.util.MediaStoreUtil

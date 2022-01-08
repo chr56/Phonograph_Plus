@@ -32,6 +32,7 @@ import player.phonograph.database.mediastore.Refresher;
 import player.phonograph.loader.SongLoader;
 import player.phonograph.model.Song;
 import player.phonograph.service.MusicService;
+import player.phonograph.util.MediaStoreUtil;
 import player.phonograph.util.PreferenceUtil;
 
 /**
@@ -411,7 +412,7 @@ public class MusicPlayerRemote {
                         songId = uri.getLastPathSegment();
                     }
                     if (songId != null) {
-                        songs = SongLoader.getSongs(SongLoader.makeSongCursor(
+                        songs = MediaStoreUtil.INSTANCE.getSongs(SongLoader.makeSongCursor(
                                 musicService,
                                 MediaStore.Audio.AudioColumns._ID + "=?",
                                 new String[]{songId}
@@ -433,7 +434,7 @@ public class MusicPlayerRemote {
                     songFile = new File(uri.getPath());
                 }
                 if (songFile != null) {
-                    songs = SongLoader.getSongs(SongLoader.makeSongCursor(
+                    songs = MediaStoreUtil.INSTANCE.getSongs(SongLoader.makeSongCursor(
                             musicService,
                             MediaStore.Audio.AudioColumns.DATA + "=?",
                             new String[]{songFile.getAbsolutePath()}

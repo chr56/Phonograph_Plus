@@ -22,13 +22,14 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.provider.BaseColumns;
 import android.provider.MediaStore.Audio.AudioColumns;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import player.phonograph.loader.SongLoader;
-import player.phonograph.model.Song;
-
 import java.util.List;
+
+import player.phonograph.model.Song;
+import player.phonograph.util.MediaStoreUtil;
 
 /**
  * @author Andrew Neal, modified for Phonograph by Karim Abou Zeid
@@ -196,6 +197,6 @@ public class MusicPlaybackQueueStore extends SQLiteOpenHelper {
     private List<Song> getQueue(@NonNull final String tableName) {
         Cursor cursor = getReadableDatabase().query(tableName, null,
                 null, null, null, null, null);
-        return SongLoader.getSongs(cursor);
+        return MediaStoreUtil.INSTANCE.getSongs(cursor);
     }
 }

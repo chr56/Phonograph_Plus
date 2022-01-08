@@ -25,7 +25,7 @@ public class ArtistLoader {
 
     @NonNull
     public static List<Artist> getAllArtists(@NonNull final Context context) {
-        List<Song> songs = SongLoader.getSongs(MediaStoreUtil.INSTANCE.querySongs(
+        List<Song> songs = MediaStoreUtil.INSTANCE.getSongs(MediaStoreUtil.INSTANCE.querySongs(
                 context,
                 null,
                 null,
@@ -36,7 +36,7 @@ public class ArtistLoader {
 
     @NonNull
     public static List<Artist> getArtists(@NonNull final Context context, String query) {
-        List<Song> songs = SongLoader.getSongs(MediaStoreUtil.INSTANCE.querySongs(
+        List<Song> songs = MediaStoreUtil.INSTANCE.getSongs(MediaStoreUtil.INSTANCE.querySongs(
                 context,
                 AudioColumns.ARTIST + " LIKE ?",
                 new String[]{"%" + query + "%"},
@@ -47,7 +47,7 @@ public class ArtistLoader {
 
     @NonNull
     public static Artist getArtist(@NonNull final Context context, long artistId) {
-        List<Song> songs = SongLoader.getSongs(MediaStoreUtil.INSTANCE.querySongs(
+        List<Song> songs = MediaStoreUtil.INSTANCE.getSongs(MediaStoreUtil.INSTANCE.querySongs(
                 context,
                 AudioColumns.ARTIST_ID + "=?",
                 new String[]{String.valueOf(artistId)},

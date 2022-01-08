@@ -20,7 +20,7 @@ object GenreLoader {
     }
 
     fun getSongs(context: Context, genreId: Long): List<Song> {
-        return SongLoader.getSongs(makeGenreSongCursor(context, genreId))
+        return MediaStoreUtil.getSongs(makeGenreSongCursor(context, genreId))
     }
 
     private fun getGenresFromCursor(context: Context, cursor: Cursor?): List<Genre> {
