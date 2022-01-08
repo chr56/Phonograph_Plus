@@ -11,6 +11,8 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import player.phonograph.R;
 import player.phonograph.adapter.song.ShuffleButtonSongAdapter;
 import player.phonograph.adapter.song.SongAdapter;
+import player.phonograph.database.mediastore.MusicDatabase;
+import player.phonograph.helper.SongModelConverterHelper;
 import player.phonograph.interfaces.LoaderIds;
 import player.phonograph.loader.SongLoader;
 import player.phonograph.misc.WrappedAsyncTaskLoader;
@@ -152,7 +154,9 @@ public class SongsFragment extends AbsLibraryPagerRecyclerViewCustomGridSizeFrag
 
         @Override
         public List<Song> loadInBackground() {
-            return SongLoader.getAllSongs(getContext());
+            return SongModelConverterHelper.convert(
+                    MusicDatabase.INSTANCE.getSongsDataBase().SongDao().getAllSongs()
+            );
         }
     }
 }
