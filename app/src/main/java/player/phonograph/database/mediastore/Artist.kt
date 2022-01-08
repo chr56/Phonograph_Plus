@@ -5,6 +5,13 @@
 package player.phonograph.database.mediastore
 
 import androidx.room.*
+import androidx.sqlite.db.SimpleSQLiteQuery
+import androidx.sqlite.db.SupportSQLiteQuery
+
+object ArtistColumns {
+    const val ARTIST_ID = "artist_id"
+    const val ARTIST_NAME = "artist_name"
+}
 
 @Entity(tableName = "artists", primaryKeys = ["artist_id", "artist_name"])
 data class Artist(
@@ -44,14 +51,24 @@ data class SongWithArtists(
 @Dao
 @TypeConverters(SongMarker::class)
 interface ArtistDAO {
-    @Query("SELECT * from artists order by :sortOrder")
-    fun getAllArtists(sortOrder: String): List<Artist>
 
-    @Query("SELECT * from artists where artist_name like :artistName order by :sortOrder")
-    fun searchArtists(artistName: String, sortOrder: String): List<Artist>
+    @RawQuery
+    fun rawQuery(query: SupportSQLiteQuery): List<Artist>
 
-    @Insert(onConflict = OnConflictStrategy.ABORT)
-    fun insert(artist: Artist)
+    fun getAllArtists(columns: String, order: Boolean = true): List<Artist> {
+        // todo valid input
+        val query =
+            if (columns.isNotBlank()) "SELECT * from artists order by ${if (order) "$columns ASC" else "$columns DESC"}"
+            else "SELECT * FROM artists"
+
+        return rawQuery(SimpleSQLiteQuery(query))
+    }
+
+    @Query("SELECT * from artists where artist_name like :artistName")
+    fun searchArtists(artistName: String): List<Artist>
+
+    @Query("SELECT * from artists where artist_id = :artistId")
+    fun findArtist(artistId: Long): Artist
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun override(artist: Artist)
@@ -67,20 +84,21 @@ interface ArtistDAO {
 interface ArtistSongDAO {
 
     @Transaction
-    @Query("SELECT * from artists where artist_name like :artistName order by :sortOrder")
-    fun getArtistSong(artistName: String, sortOrder: String): ArtistWithSongs
+    @Query("SELECT * from artists where artist_name like :artistName ")
+    fun getArtistSong(artistName: String): ArtistWithSongs
 
     @Transaction
-    @Query("SELECT * from artists order by :sortOrder")
-    fun getAllArtistSong(sortOrder: String): List<ArtistWithSongs>
+    @Query("SELECT * from artists")
+    fun getAllArtistSong(): List<ArtistWithSongs>
 
     @Transaction
-    @Query("SELECT * from songs where id like :songId order by :sortOrder")
-    fun getArtistBySong(songId: Long, sortOrder: String): SongWithArtists
+    @Query("SELECT * from songs where id like :songId")
+    fun getArtistBySong(songId: Long): SongWithArtists
 
-    @Transaction
-    @Query("SELECT * from songs order by :sortOrder")
-    fun getArtistByAllSong(sortOrder: String): List<SongWithArtists>
+// useful?
+//    @Transaction
+//    @Query("SELECT * from songs")
+//    fun getArtistByAllSong(): List<SongWithArtists>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun override(linkage: SongAndArtistLinkage)
