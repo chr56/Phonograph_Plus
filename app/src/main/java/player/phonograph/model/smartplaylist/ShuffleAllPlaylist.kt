@@ -1,48 +1,43 @@
-package player.phonograph.model.smartplaylist;
+package player.phonograph.model.smartplaylist
 
-import android.content.Context;
-import android.os.Parcel;
-import androidx.annotation.NonNull;
+import android.content.Context
+import android.os.Parcel
+import android.os.Parcelable
+import androidx.annotation.Keep
+import player.phonograph.R
+import player.phonograph.loader.SongLoader.getAllSongs
+import player.phonograph.model.Song
 
-import player.phonograph.R;
-import player.phonograph.loader.SongLoader;
-import player.phonograph.model.Song;
+class ShuffleAllPlaylist : AbsSmartPlaylist {
 
-import java.util.List;
+    constructor(context: Context) :
+        super(context.getString(R.string.action_shuffle_all), R.drawable.ic_shuffle_white_24dp)
 
-public class ShuffleAllPlaylist extends AbsSmartPlaylist {
+    constructor(`in`: Parcel?) : super(`in`)
 
-    public ShuffleAllPlaylist(@NonNull Context context) {
-        super(context.getString(R.string.action_shuffle_all), R.drawable.ic_shuffle_white_24dp);
+    override fun getSongs(context: Context): List<Song?> {
+        return getAllSongs(context)
     }
 
-    @NonNull
-    @Override
-    public List<Song> getSongs(@NonNull Context context) {
-        return SongLoader.getAllSongs(context);
-    }
-
-    @Override
-    public void clear(@NonNull Context context) {
+    override fun clear(context: Context) {
         // Shuffle all is not a real "Smart Playlist"
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
+    @Keep
+    override fun describeContents(): Int = 0
+
+    companion object {
+        @Keep
+        @JvmField
+        var CREATOR: Parcelable.Creator<ShuffleAllPlaylist> =
+            object : Parcelable.Creator<ShuffleAllPlaylist> {
+                override fun createFromParcel(source: Parcel): ShuffleAllPlaylist {
+                    return ShuffleAllPlaylist(source)
+                }
+
+                override fun newArray(size: Int): Array<ShuffleAllPlaylist?> {
+                    return arrayOfNulls(size)
+                }
+            }
     }
-
-    protected ShuffleAllPlaylist(Parcel in) {
-        super(in);
-    }
-
-    public static final Creator<ShuffleAllPlaylist> CREATOR = new Creator<ShuffleAllPlaylist>() {
-        public ShuffleAllPlaylist createFromParcel(Parcel source) {
-            return new ShuffleAllPlaylist(source);
-        }
-
-        public ShuffleAllPlaylist[] newArray(int size) {
-            return new ShuffleAllPlaylist[size];
-        }
-    };
 }
