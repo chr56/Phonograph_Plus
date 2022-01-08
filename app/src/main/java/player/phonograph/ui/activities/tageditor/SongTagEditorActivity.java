@@ -122,7 +122,6 @@ public class SongTagEditorActivity extends AbsTagEditorActivity implements TextW
         List<String> paths = new ArrayList<>(1);
         paths.add(
                 MusicDatabase.INSTANCE.getSongsDataBase().SongDao().findSongById(getId()).getPath()
-//                SongLoader.getSong(this, getId()).data
         );
         return paths;
     }

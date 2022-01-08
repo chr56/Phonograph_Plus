@@ -8,19 +8,18 @@ import androidx.loader.app.LoaderManager;
 import androidx.loader.content.Loader;
 import androidx.recyclerview.widget.GridLayoutManager;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import player.phonograph.R;
 import player.phonograph.adapter.song.ShuffleButtonSongAdapter;
 import player.phonograph.adapter.song.SongAdapter;
 import player.phonograph.database.mediastore.MusicDatabase;
 import player.phonograph.helper.SongModelConverterHelper;
 import player.phonograph.interfaces.LoaderIds;
-import player.phonograph.loader.SongLoader;
 import player.phonograph.misc.WrappedAsyncTaskLoader;
 import player.phonograph.model.Song;
 import player.phonograph.util.PreferenceUtil;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author Karim Abou Zeid (kabouzeid)

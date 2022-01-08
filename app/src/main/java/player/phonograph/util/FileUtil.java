@@ -48,26 +48,7 @@ public final class FileUtil {
         else
             return new ArrayList<Song>();
 
-//        return SongLoader.getSongs(makeSongCursor(context, files));
     }
-//
-//    @Nullable
-//    public static SortedCursor makeSongCursor(@NonNull final Context context, @Nullable final List<File> files) {
-//        String selection = null;
-//        String[] paths = null;
-//
-//        if (files != null) {
-//            paths = toPathArray(files);
-//
-//            if (files.size() > 0 && files.size() < 999) { // 999 is the max amount Androids SQL implementation can handle.
-//                selection = MediaStore.Audio.AudioColumns.DATA + " IN (" + makePlaceholders(files.size()) + ")";
-//            }
-//        }
-//
-//        Cursor songCursor = SongLoader.makeSongCursor(context, selection, selection == null ? null : paths);
-//
-//        return songCursor == null ? null : new SortedCursor(songCursor, paths, MediaStore.Audio.AudioColumns.DATA);
-//    }
 
     private static String makePlaceholders(int len) {
         StringBuilder sb = new StringBuilder(len * 2 - 1);
