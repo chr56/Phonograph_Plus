@@ -30,12 +30,15 @@ object MusicDatabase {
         }
 }
 
+@Suppress("FunctionName")
 @Database(entities = [Song::class, Album::class, Artist::class, SongAndArtistLinkage::class], version = 1, exportSchema = false)
 abstract class SongDataBase : RoomDatabase() {
+
     abstract fun SongDao(): SongDao
     abstract fun AlbumDao(): AlbumDAO
     abstract fun ArtistDao(): ArtistDAO
     abstract fun ArtistSongsDao(): ArtistSongDAO
+
     var lastUpdateTimestamp: Long = -1L
         get() = PreferenceUtil.getInstance(App.instance).lastMusicDatabaseUpdateTimestamp
         set(value) { field = value; PreferenceUtil.getInstance(App.instance).lastMusicDatabaseUpdateTimestamp = value }

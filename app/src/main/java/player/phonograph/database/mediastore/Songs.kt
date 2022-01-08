@@ -8,6 +8,24 @@ import androidx.room.*
 import androidx.sqlite.db.SimpleSQLiteQuery
 import androidx.sqlite.db.SupportSQLiteQuery
 
+
+object SongColumns{
+    const val ID = "id"
+    const val PATH = "path"
+    const val SIZE = "size"
+    const val DISPLAY_NAME = "display_name"
+    const val DATE_ADDED = "date_added"
+    const val DATE_MODIFIED = "date_modified"
+    const val TITLE = "title"
+    const val ALBUM_ID = "album_id"
+    const val ALBUM_NAME = "album_name"
+    const val ARTIST_ID = "artist_id"
+    const val ARTIST_NAME = "artist_name"
+    const val YEAR = "year"
+    const val DURATION = "duration"
+    const val TRACK_NUMBER = "track_number"
+}
+
 // @Fts3
 @Entity(
     tableName = "songs",
@@ -15,30 +33,35 @@ import androidx.sqlite.db.SupportSQLiteQuery
 )
 data class Song(
     @PrimaryKey
+    @ColumnInfo(name = SongColumns.ID)
     var id: Long, // media store id
+    @ColumnInfo(name = SongColumns.PATH)
     var path: String,
+    @ColumnInfo(name = SongColumns.SIZE)
     var size: Long,
 
-    @ColumnInfo(name = "display_name")
+    @ColumnInfo(name = SongColumns.DISPLAY_NAME)
     var displayName: String? = null,
-    @ColumnInfo(name = "date_added")
+    @ColumnInfo(name = SongColumns.DATE_ADDED)
     var dateAdded: Long = 0,
-    @ColumnInfo(name = "date_modified")
+    @ColumnInfo(name = SongColumns.DATE_MODIFIED)
     var dateModified: Long = 0,
 
     var title: String? = null,
-    @ColumnInfo(name = "album_id")
+    @ColumnInfo(name = SongColumns.ALBUM_ID)
     var albumId: Long = 0,
-    @ColumnInfo(name = "album_name")
+    @ColumnInfo(name = SongColumns.ALBUM_NAME)
     var albumName: String? = null,
-    @ColumnInfo(name = "artist_id")
+    @ColumnInfo(name = SongColumns.ARTIST_ID)
     var artistId: Long = 0,
-    @ColumnInfo(name = "artist_name")
+    @ColumnInfo(name = SongColumns.ARTIST_NAME)
     var artistName: String? = null,
 
+    @ColumnInfo(name = SongColumns.YEAR)
     var year: Int = 0,
+    @ColumnInfo(name = SongColumns.DURATION)
     var duration: Long = 0,
-    @ColumnInfo(name = "track_number")
+    @ColumnInfo(name = SongColumns.TRACK_NUMBER)
     var trackNumber: Int = 0
 )
 
@@ -51,8 +74,8 @@ interface SongDao {
     @RawQuery
     fun rawQuery(query: SupportSQLiteQuery): List<Song>
 
-    fun getAllSongs(sortOrder: String): List<Song> {
-        val query = SimpleSQLiteQuery("SELECT * FROM songs ORDER BY $sortOrder")
+    fun getAllSongs(columns: String): List<Song> {
+        val query = SimpleSQLiteQuery("SELECT * FROM songs ORDER BY $columns")
         return rawQuery(query)
     }
 
