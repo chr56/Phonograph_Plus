@@ -35,14 +35,14 @@ import java.util.Map;
 import chr_56.MDthemer.util.ToolbarColorUtil;
 import chr_56.MDthemer.util.Util;
 import player.phonograph.R;
+import player.phonograph.database.mediastore.AlbumWithSongs;
+import player.phonograph.database.mediastore.MusicDatabase;
 import player.phonograph.databinding.ActivityAlbumTagEditorBinding;
 import player.phonograph.glide.GlideRequestOptions;
-import player.phonograph.glide.SongGlideRequest;
 import player.phonograph.glide.palette.BitmapPaletteWrapper;
+import player.phonograph.helper.SortOrder;
 import player.phonograph.lastfm.rest.LastFMRestClient;
 import player.phonograph.lastfm.rest.model.LastFmAlbum;
-import player.phonograph.loader.AlbumLoader;
-import player.phonograph.model.Song;
 import player.phonograph.util.ImageUtil;
 import player.phonograph.util.LastFMUtil;
 import player.phonograph.util.PhonographColorUtil;
@@ -220,11 +220,17 @@ public class AlbumTagEditorActivity extends AbsTagEditorActivity implements Text
     @NonNull
     @Override
     protected List<String> getSongPaths() {
-        List<Song> songs = AlbumLoader.getAlbum(this, getId()).songs;
-        List<String> paths = new ArrayList<>(songs.size());
-        for (Song song : songs) {
-            paths.add(song.data);
+//        List<Song> songs = AlbumLoader.getAlbum(this, getId()).songs;
+//        List<String> paths = new ArrayList<>(songs.size());
+//        for (Song song : songs) {
+//            paths.add(song.data);
+//        }
+        AlbumWithSongs l = MusicDatabase.INSTANCE.getSongsDataBase().AlbumDao().getAlbumsWithSongs(getId(),"", SortOrder.AlbumSortOrder.ALBUM_A_Z).get(0);
+        List<String> paths = new ArrayList<String>(l.getSongs().size());
+        for (player.phonograph.database.mediastore.Song song: l.getSongs()){
+            paths.add(song.getPath());
         }
+
         return paths;
     }
 
