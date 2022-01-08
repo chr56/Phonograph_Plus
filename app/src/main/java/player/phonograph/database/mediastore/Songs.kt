@@ -5,6 +5,8 @@
 package player.phonograph.database.mediastore
 
 import androidx.room.*
+import androidx.sqlite.db.SimpleSQLiteQuery
+import androidx.sqlite.db.SupportSQLiteQuery
 
 // @Fts3
 @Entity(
@@ -45,8 +47,14 @@ data class Song(
 interface SongDao {
     @Query("SELECT * from songs")
     fun getAllSongs(): List<Song>
-    @Query("SELECT * from songs order by :sortOrder")
-    fun getAllSongs(sortOrder: String): List<Song>
+
+    @RawQuery
+    fun rawQuery(query: SupportSQLiteQuery): List<Song>
+
+    fun getAllSongs(sortOrder: String): List<Song> {
+        val query = SimpleSQLiteQuery("SELECT * FROM songs ORDER BY $sortOrder")
+        return rawQuery(query)
+    }
 
     @Query("SELECT * from songs where id = :id")
     fun findSongById(id: Long): Song
