@@ -4,12 +4,14 @@ import android.content.Context;
 import android.database.Cursor;
 import android.provider.MediaStore;
 import android.provider.MediaStore.Audio.AudioColumns;
-import androidx.annotation.NonNull;
 
-import player.phonograph.model.PlaylistSong;
+import androidx.annotation.NonNull;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import player.phonograph.model.PlaylistSong;
+import player.phonograph.util.MediaStoreUtil;
 
 public class PlaylistSongLoader {
 
@@ -64,7 +66,7 @@ public class PlaylistSongLoader {
                             AudioColumns.ARTIST_ID,// 9
                             AudioColumns.ARTIST,// 10
                             MediaStore.Audio.Playlists.Members._ID // 11
-                    }, SongLoader.BASE_SELECTION, null,
+                    }, MediaStoreUtil.SongConst.BASE_AUDIO_SELECTION, null,
                     MediaStore.Audio.Playlists.Members.DEFAULT_SORT_ORDER);
         } catch (SecurityException e) {
             return null;
