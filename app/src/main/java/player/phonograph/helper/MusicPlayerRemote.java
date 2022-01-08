@@ -14,7 +14,6 @@ import android.os.Build;
 import android.os.Environment;
 import android.os.IBinder;
 import android.provider.DocumentsContract;
-import android.provider.MediaStore;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -28,11 +27,11 @@ import java.util.Random;
 import java.util.WeakHashMap;
 
 import player.phonograph.R;
+import player.phonograph.database.mediastore.MusicDatabase;
 import player.phonograph.database.mediastore.Refresher;
-import player.phonograph.loader.SongLoader;
+import player.phonograph.database.mediastore.SongConverter;
 import player.phonograph.model.Song;
 import player.phonograph.service.MusicService;
-import player.phonograph.util.MediaStoreUtil;
 import player.phonograph.util.PreferenceUtil;
 
 /**
@@ -405,18 +404,27 @@ public class MusicPlayerRemote {
             List<Song> songs = null;
             if (uri.getScheme() != null && uri.getAuthority() != null) {
                 if (uri.getScheme().equals(ContentResolver.SCHEME_CONTENT)) {
-                    String songId = null;
+                    String songIdString = null;
                     if (uri.getAuthority().equals("com.android.providers.media.documents")) {
-                        songId = getSongIdFromMediaProvider(uri);
+                        songIdString = getSongIdFromMediaProvider(uri);
                     } else if (uri.getAuthority().equals("media")) {
-                        songId = uri.getLastPathSegment();
+                        songIdString = uri.getLastPathSegment();
                     }
+                    Long songId = Long.getLong(songIdString);
                     if (songId != null) {
-                        songs = MediaStoreUtil.INSTANCE.getSongs(SongLoader.makeSongCursor(
-                                musicService,
-                                MediaStore.Audio.AudioColumns._ID + "=?",
-                                new String[]{songId}
-                        ));
+                        songs = new ArrayList<Song>(1);
+                        // todo check (song id isn't unique)
+                        songs.add(
+                                SongConverter.INSTANCE.toSongModel(
+                                        MusicDatabase.INSTANCE.getSongsDataBase().SongDao().findSongById(songId)
+                                )
+                        )
+                        ;
+//                                MediaStoreUtil.INSTANCE.getSongs(SongLoader.makeSongCursor(
+//                                musicService,
+//                                MediaStore.Audio.AudioColumns._ID + "=?",
+//                                new String[]{songId}
+//                        ));
                     }
                 }
             }
@@ -434,11 +442,19 @@ public class MusicPlayerRemote {
                     songFile = new File(uri.getPath());
                 }
                 if (songFile != null) {
-                    songs = MediaStoreUtil.INSTANCE.getSongs(SongLoader.makeSongCursor(
-                            musicService,
-                            MediaStore.Audio.AudioColumns.DATA + "=?",
-                            new String[]{songFile.getAbsolutePath()}
-                    ));
+                    songs = new ArrayList<Song>(1);
+                    // todo check (song id isn't unique)
+                    String[] path = new String[]{songFile.getAbsolutePath()};
+                    songs.add(
+                            SongConverter.INSTANCE.toSongModel(
+                                    MusicDatabase.INSTANCE.getSongsDataBase().SongDao().querySongByPath(new String[]{songFile.getAbsolutePath()},SortOrder.SongSortOrder.SONG_A_Z).get(0)
+                            )
+                    );
+//                            MediaStoreUtil.INSTANCE.getSongs(SongLoader.makeSongCursor(
+//                            musicService,
+//                            MediaStore.Audio.AudioColumns.DATA + "=?",
+//                            new String[]{songFile.getAbsolutePath()}
+//                    ));
                 }
             }
             if (songs != null && !songs.isEmpty()) {
