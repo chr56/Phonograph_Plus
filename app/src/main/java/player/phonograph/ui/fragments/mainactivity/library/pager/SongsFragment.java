@@ -154,7 +154,7 @@ public class SongsFragment extends AbsLibraryPagerRecyclerViewCustomGridSizeFrag
         @Override
         public List<Song> loadInBackground() {
             return SongModelConverterHelper.convert(
-                    MusicDatabase.INSTANCE.getSongsDataBase().SongDao().getAllSongs(PreferenceUtil.getInstance(getContext()).getSongSortOrder())
+                    MusicDatabase.INSTANCE.getSongsDataBase().SongDao().getAllSongs()
             );
         }
     }

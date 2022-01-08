@@ -80,7 +80,9 @@ object SortOrder {
 
     /**
      * Song sort order entries.
+     * @see player.phonograph.database.mediastore.SongColumns
      */
+    @Deprecated("Use SongColumns")
     interface SongSortOrder {
         companion object {
             /* Song sort order A-Z */

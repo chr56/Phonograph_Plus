@@ -32,7 +32,7 @@ class MusicDatabaseDebugDialog : DialogFragment() {
                 when (index) {
                     0 -> {
                         val buffer = StringBuffer()
-                        MusicDatabase.songsDataBase.SongDao().getAllSongs(SortOrder.SongSortOrder.SONG_DATE_MODIFIED_REVERT).forEach { song ->
+                        MusicDatabase.songsDataBase.SongDao().getAllSongs(SongColumns.DATE_MODIFIED,true).forEach { song ->
                             buffer.append(song).append("\n\n")
                         }
                         resultDialog.message(text = buffer.toString()).show()

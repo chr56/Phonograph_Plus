@@ -8,8 +8,10 @@ import androidx.room.*
 import androidx.sqlite.db.SimpleSQLiteQuery
 import androidx.sqlite.db.SupportSQLiteQuery
 
-
-object SongColumns{
+/**
+ * available sort orders
+ */
+object SongColumns {
     const val ID = "id"
     const val PATH = "path"
     const val SIZE = "size"
@@ -74,9 +76,15 @@ interface SongDao {
     @RawQuery
     fun rawQuery(query: SupportSQLiteQuery): List<Song>
 
-    fun getAllSongs(columns: String): List<Song> {
-        val query = SimpleSQLiteQuery("SELECT * FROM songs ORDER BY $columns")
-        return rawQuery(query)
+    /**
+     * @param columns The columns must be one string in [SongColumns]
+     * @param order true - Asc; false- Desc
+     */
+    fun getAllSongs(columns: String, order: Boolean = true): List<Song> {
+        // todo valid input
+        val query = "SELECT * FROM songs ORDER BY ${if (order) "$columns ASC" else "$columns DESC"}"
+
+        return rawQuery(SimpleSQLiteQuery(query))
     }
 
     @Query("SELECT * from songs where id = :id")
