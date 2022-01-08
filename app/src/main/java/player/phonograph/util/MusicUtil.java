@@ -249,7 +249,7 @@ public class MusicUtil {
                 while (!cursor.isAfterLast()) {
                     final long id = cursor.getLong(0);
                     // todo check
-                    final Song song = SongConverter.INSTANCE.toSongModel(MusicDatabase.INSTANCE.getSongsDataBase().SongDao().findSongById(id).get(0));
+                    final Song song = SongConverter.INSTANCE.toSongModel(MusicDatabase.INSTANCE.getSongsDataBase().SongDao().findSongById(id));
                     MusicPlayerRemote.removeFromQueue(song);
                     cursor.moveToNext();
                 }

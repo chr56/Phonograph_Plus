@@ -49,7 +49,7 @@ interface SongDao {
     fun getAllSongs(sortOrder: String): List<Song>
 
     @Query("SELECT * from songs where id = :id")
-    fun findSongById(id: Long): List<Song>
+    fun findSongById(id: Long): Song
     @Query("SELECT * from songs where title = :title")
     fun findSongByTitle(title: String): List<Song>
     @Query("SELECT * from songs where title like :title order by :sortOrder")
