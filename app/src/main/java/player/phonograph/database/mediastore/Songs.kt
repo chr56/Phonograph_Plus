@@ -89,18 +89,27 @@ interface SongDao {
 
     @Query("SELECT * from songs where id = :id")
     fun findSongById(id: Long): Song
-    @Query("SELECT * from songs where title = :title")
-    fun findSongByTitle(title: String): List<Song>
-    @Query("SELECT * from songs where title like :title order by :sortOrder")
-    fun searchSongByTitle(title: String, sortOrder: String): List<Song>
-    @Query("SELECT * from songs where album_name = :album")
-    fun findSongByAlbum(album: String): List<Song>
-    @Query("SELECT * from songs where album_name like :album order by :sortOrder")
-    fun searchSongByAlbum(album: String, sortOrder: String): List<Song>
-    @Query("SELECT * from songs where artist_name = :artist")
-    fun findSongByArtist(artist: String): List<Song>
-    @Query("SELECT * from songs where artist_name like :artist order by :sortOrder")
-    fun searchSongByArtist(artist: String, sortOrder: String): List<Song>
+
+    @Query("SELECT * from songs where title like :title AND album_name like :album AND artist_name like :artist")
+    fun findSongByTag(title: String, album: String, artist: String): List<Song>
+
+    fun findSong(title: String?, album: String?, artist: String?): List<Song> {
+        return findSongByTag(title ?: "%", album ?: "%", artist ?: "%")
+    }
+
+//
+//    @Query("SELECT * from songs where title = :title")
+//    fun findSongByTitle(title: String): List<Song>
+//    @Query("SELECT * from songs where title like :title order by :sortOrder")
+//    fun searchSongByTitle(title: String, sortOrder: String): List<Song>
+//    @Query("SELECT * from songs where album_name = :album")
+//    fun findSongByAlbum(album: String): List<Song>
+//    @Query("SELECT * from songs where album_name like :album order by :sortOrder")
+//    fun searchSongByAlbum(album: String, sortOrder: String): List<Song>
+//    @Query("SELECT * from songs where artist_name = :artist")
+//    fun findSongByArtist(artist: String): List<Song>
+//    @Query("SELECT * from songs where artist_name like :artist order by :sortOrder")
+//    fun searchSongByArtist(artist: String, sortOrder: String): List<Song>
 
     @Query("SELECT * from songs where path in(:path) order by :sortOrder")
     fun querySongByPath(path: Array<String>, sortOrder: String): List<Song>
@@ -108,8 +117,8 @@ interface SongDao {
     @Query("SELECT * from songs where date_modified > :time order by :sortOrder")
     fun queryLastAddedSongs(time: Long, sortOrder: String): List<Song>
 
-    @Insert(onConflict = OnConflictStrategy.ABORT)
-    fun insert(song: Song)
+//    @Insert(onConflict = OnConflictStrategy.ABORT)
+//    fun insert(song: Song)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun override(song: Song)
