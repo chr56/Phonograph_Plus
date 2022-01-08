@@ -3,6 +3,7 @@ package player.phonograph.loader
 import android.content.Context
 import player.phonograph.database.mediastore.MusicDatabase
 import player.phonograph.database.mediastore.SongConverter
+import player.phonograph.helper.SongModelConverterHelper
 import player.phonograph.helper.SortOrder
 import player.phonograph.model.Song
 import player.phonograph.util.PreferenceUtil.Companion.getInstance
@@ -15,8 +16,6 @@ object LastAddedLoader {
             .queryLastAddedSongs(
                 getInstance(context).lastAddedCutoff, SortOrder.SongSortOrder.SONG_DATE_MODIFIED_REVERT
             )
-        return List<Song>(list.size) { index ->
-            SongConverter.toSongModel(list[index])
-        }
+        return SongModelConverterHelper.convert(list)
     }
 }
