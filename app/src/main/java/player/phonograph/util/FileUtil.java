@@ -1,15 +1,10 @@
 package player.phonograph.util;
 
 import android.content.Context;
-import android.database.Cursor;
-import android.provider.MediaStore;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import android.webkit.MimeTypeMap;
 
-import player.phonograph.loader.SongLoader;
-import player.phonograph.loader.SortedCursor;
-import player.phonograph.model.Song;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -18,10 +13,17 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+
+import player.phonograph.database.mediastore.MusicDatabase;
+import player.phonograph.database.mediastore.SongDao;
+import player.phonograph.helper.SongModelConverterHelper;
+import player.phonograph.helper.SortOrder;
+import player.phonograph.model.Song;
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
@@ -32,26 +34,40 @@ public final class FileUtil {
 
     @NonNull
     public static List<Song> matchFilesWithMediaStore(@NonNull Context context, @Nullable List<File> files) {
-        return SongLoader.getSongs(makeSongCursor(context, files));
-    }
+        SongDao dao = MusicDatabase.INSTANCE.getSongsDataBase().SongDao();
+        String[] paths = toPathArray(files);
 
-    @Nullable
-    public static SortedCursor makeSongCursor(@NonNull final Context context, @Nullable final List<File> files) {
-        String selection = null;
-        String[] paths = null;
-
-        if (files != null) {
-            paths = toPathArray(files);
-
-            if (files.size() > 0 && files.size() < 999) { // 999 is the max amount Androids SQL implementation can handle.
-                selection = MediaStore.Audio.AudioColumns.DATA + " IN (" + makePlaceholders(files.size()) + ")";
-            }
+        List<Song> songs = null;
+        if (paths != null) {
+            songs = SongModelConverterHelper.convert(
+                    dao.querySongByPath(paths, SortOrder.SongSortOrder.SONG_A_Z)
+            );
         }
+        if (songs != null)
+            return songs;
+        else
+            return new ArrayList<Song>();
 
-        Cursor songCursor = SongLoader.makeSongCursor(context, selection, selection == null ? null : paths);
-
-        return songCursor == null ? null : new SortedCursor(songCursor, paths, MediaStore.Audio.AudioColumns.DATA);
+//        return SongLoader.getSongs(makeSongCursor(context, files));
     }
+//
+//    @Nullable
+//    public static SortedCursor makeSongCursor(@NonNull final Context context, @Nullable final List<File> files) {
+//        String selection = null;
+//        String[] paths = null;
+//
+//        if (files != null) {
+//            paths = toPathArray(files);
+//
+//            if (files.size() > 0 && files.size() < 999) { // 999 is the max amount Androids SQL implementation can handle.
+//                selection = MediaStore.Audio.AudioColumns.DATA + " IN (" + makePlaceholders(files.size()) + ")";
+//            }
+//        }
+//
+//        Cursor songCursor = SongLoader.makeSongCursor(context, selection, selection == null ? null : paths);
+//
+//        return songCursor == null ? null : new SortedCursor(songCursor, paths, MediaStore.Audio.AudioColumns.DATA);
+//    }
 
     private static String makePlaceholders(int len) {
         StringBuilder sb = new StringBuilder(len * 2 - 1);
