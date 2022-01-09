@@ -115,8 +115,8 @@ interface SongDao {
     @Query("SELECT * from songs where path in(:path) order by :sortOrder")
     fun querySongByPath(path: Array<String>, sortOrder: String): List<Song>
 
-    @Query("SELECT * from songs where date_modified > :time order by :sortOrder")
-    fun queryLastAddedSongs(time: Long, sortOrder: String): List<Song>
+    @Query("SELECT * from songs where date_modified > :timestamp order by date_added DESC")
+    fun queryLastAddedSongs(timestamp: Long): List<Song>
 
 //    @Insert(onConflict = OnConflictStrategy.ABORT)
 //    fun insert(song: Song)
