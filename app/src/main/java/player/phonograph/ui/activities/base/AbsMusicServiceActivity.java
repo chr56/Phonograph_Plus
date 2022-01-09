@@ -65,39 +65,10 @@ public abstract class AbsMusicServiceActivity extends AbsBaseActivity implements
 
         if (!App.getInstance().isDatabaseChecked())
             new Handler(Looper.getMainLooper()).postDelayed(
-                    AbsMusicServiceActivity.this::refreshMusicDataBase
+                    ()-> Refresher.INSTANCE.refreshDatabase(App.getInstance())
                     , 1200
             );
 
-    }
-
-    protected void refreshMusicDataBase() {
-        Log.i("RoomDatabase", "Start refreshing");
-
-        long latestSongTimestamp = -1L;
-        long databaseUpdateTimestamp = -1L;
-
-
-        // check latest music files
-        Song latestSong = Refresher.INSTANCE.getLastSong(this);
-
-        if (latestSong.dateModified > 0) latestSongTimestamp = latestSong.dateModified;
-
-        // check database timestamps
-        databaseUpdateTimestamp = MusicDatabase.INSTANCE.getSongsDataBase().getLastUpdateTimestamp();
-
-        // compare
-        if (latestSongTimestamp > databaseUpdateTimestamp || databaseUpdateTimestamp == -1L) updateMusicDataBase();
-
-
-        Log.i("RoomDatabase", "latestSongTimestamp    :" + latestSongTimestamp);
-        Log.i("RoomDatabase", "databaseUpdateTimestamp:" + databaseUpdateTimestamp);
-
-        App.getInstance().setDatabaseChecked(true);
-    }
-
-    protected void updateMusicDataBase() { //todo
-        Refresher.INSTANCE.importFromMediaStore(this,  MusicDatabase.INSTANCE.getSongsDataBase().getLastUpdateTimestamp(),null);
     }
 
     @Override

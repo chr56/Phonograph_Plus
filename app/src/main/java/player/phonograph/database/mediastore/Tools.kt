@@ -13,7 +13,7 @@ import android.util.Log
 import androidx.room.TypeConverter
 import player.phonograph.App
 import player.phonograph.R
-import player.phonograph.database.mediastore.Song
+import player.phonograph.database.mediastore.MusicDatabase.songsDataBase
 import player.phonograph.helper.SortOrder
 import player.phonograph.notification.DatabaseUpdateNotification
 import player.phonograph.provider.BlacklistStore
@@ -67,7 +67,7 @@ object SongRegistry {
         val albumDAO = MusicDatabase.songsDataBase.AlbumDao()
         // todo analyse
         albumDAO.override(
-            Album(albumId = song.albumId, albumName = song.albumName, albumArtist = song.artistName ?: "UNKNOWN", year = song.year,0)
+            Album(albumId = song.albumId, albumName = song.albumName, albumArtist = song.artistName ?: "UNKNOWN", year = song.year, 0)
         )
         Log.v("RoomDatabase", "::album was registered: ${song.albumName}")
     }
@@ -88,7 +88,7 @@ object SongRegistry {
 
                     artistDao.override(artist)
                     artistSongsDao.override(SongAndArtistLinkage(song.id, artist.artistId))
-                    artistAlbumsDao.override(ArtistAndAlbumLinkage(song.id,artist.artistId))
+                    artistAlbumsDao.override(ArtistAndAlbumLinkage(song.id, artist.artistId))
 
                     Log.v("RoomDatabase", "::artist was registered: ${song.title}<->$name")
                 }
@@ -101,8 +101,31 @@ object SongRegistry {
     }
 }
 
+const val TAG = "RoomDatabase"
+
 object Refresher {
-    const val TAG = "RoomDatabase"
+    fun refreshDatabase(context: Context) {
+        Log.i("RoomDatabase", "Start refreshing")
+        var latestSongTimestamp = -1L
+        var databaseUpdateTimestamp = -1L
+
+        // check latest music files
+        val latestSong = getLastSong(context)
+        if (latestSong.dateModified > 0) latestSongTimestamp = latestSong.dateModified
+        // check database timestamps
+        databaseUpdateTimestamp = songsDataBase.lastUpdateTimestamp
+
+        Log.i("RoomDatabase", "latestSongTimestamp    :$latestSongTimestamp")
+        Log.i("RoomDatabase", "databaseUpdateTimestamp:$databaseUpdateTimestamp")
+
+        // compare
+        if (latestSongTimestamp > databaseUpdateTimestamp || databaseUpdateTimestamp == -1L)
+            importFromMediaStore(
+                context, songsDataBase.lastUpdateTimestamp, null
+            )
+
+        App.instance.isDatabaseChecked = true
+    }
 
     fun importFromMediaStore(context: Context, sinceTimestamp: Long, callbacks: (() -> Unit)?) {
         Log.i(TAG, "Start importing")
