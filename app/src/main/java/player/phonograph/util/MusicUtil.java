@@ -26,7 +26,7 @@ import java.util.Locale;
 
 import player.phonograph.R;
 import player.phonograph.database.mediastore.MusicDatabase;
-import player.phonograph.database.mediastore.SongConverter;
+import player.phonograph.database.mediastore.Converter;
 import player.phonograph.helper.MusicPlayerRemote;
 import player.phonograph.model.Album;
 import player.phonograph.model.Artist;
@@ -249,7 +249,7 @@ public class MusicUtil {
                 while (!cursor.isAfterLast()) {
                     final long id = cursor.getLong(0);
                     // todo check
-                    final Song song = SongConverter.INSTANCE.toSongModel(MusicDatabase.INSTANCE.getSongsDataBase().SongDao().findSongById(id));
+                    final Song song = Converter.INSTANCE.toSongModel(MusicDatabase.INSTANCE.getSongsDataBase().SongDao().findSongById(id));
                     MusicPlayerRemote.removeFromQueue(song);
                     cursor.moveToNext();
                 }

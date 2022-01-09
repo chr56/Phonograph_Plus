@@ -14,15 +14,18 @@ import androidx.room.TypeConverter
 import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.database.mediastore.MusicDatabase.songsDataBase
+import player.phonograph.helper.ModelConverterHelper
 import player.phonograph.helper.SortOrder
 import player.phonograph.notification.DatabaseUpdateNotification
 import player.phonograph.provider.BlacklistStore
 import player.phonograph.util.MediaStoreUtil
 import player.phonograph.util.TagsUtil
+import player.phonograph.model.Album as OldAlbumModel
+import player.phonograph.model.Artist as OldArtistModel
 import player.phonograph.model.Song as OldSongModel
 
 // todo remove
-object SongConverter {
+object Converter {
     @TypeConverter
     fun fromSongModel(song: OldSongModel): Song {
         // todo
@@ -58,6 +61,42 @@ object SongConverter {
             song.albumName,
             song.artistId,
             song.artistName
+        )
+    }
+    @TypeConverter
+    fun fromAlbumModel(album: OldAlbumModel): Album {
+        return Album(
+            albumId = album.id,
+            albumName = album.title,
+            albumArtist = album.artistName,
+            year = album.year,
+            songCount = album.songCount,
+        )
+    }
+    @TypeConverter
+    fun toAlbumModel(album: Album): OldAlbumModel {
+        return OldAlbumModel(
+            ModelConverterHelper.convertSong(
+                songsDataBase.AlbumDao().getAlbumsWithSongs(album.albumId, album.albumName ?: "%").songs
+            )
+        )
+    }
+    @TypeConverter
+    fun fromArtistModel(artist: OldArtistModel): Artist {
+        return Artist(
+            artistId = artist.id,
+            artistName = artist.name,
+            songCount = artist.songCount,
+            albumCount = artist.albumCount,
+        )
+    }
+    @TypeConverter
+    fun toArtistModel(artist: Artist): OldArtistModel {
+        val albums = songsDataBase.ArtistAlbumsDao().getArtistAlbum(artist.artistName).albums
+        return OldArtistModel(
+            List<OldAlbumModel>(albums.size){
+                toAlbumModel(albums[it])
+            }
         )
     }
 }
@@ -161,7 +200,7 @@ object Refresher {
     fun refreshSingleSong(context: Context?, song: player.phonograph.model.Song) {
         App.instance.threadPoolExecutors.execute {
             val songDataBaseDao = MusicDatabase.songsDataBase.SongDao()
-            songDataBaseDao.update(SongConverter.fromSongModel(song))
+            songDataBaseDao.update(Converter.fromSongModel(song))
         }
     }
 

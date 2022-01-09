@@ -29,7 +29,7 @@ import java.util.WeakHashMap;
 import player.phonograph.R;
 import player.phonograph.database.mediastore.MusicDatabase;
 import player.phonograph.database.mediastore.Refresher;
-import player.phonograph.database.mediastore.SongConverter;
+import player.phonograph.database.mediastore.Converter;
 import player.phonograph.model.Song;
 import player.phonograph.service.MusicService;
 import player.phonograph.util.PreferenceUtil;
@@ -415,7 +415,7 @@ public class MusicPlayerRemote {
                         songs = new ArrayList<Song>(1);
                         // todo check (song id isn't unique)
                         songs.add(
-                                SongConverter.INSTANCE.toSongModel(
+                                Converter.INSTANCE.toSongModel(
                                         MusicDatabase.INSTANCE.getSongsDataBase().SongDao().findSongById(songId)
                                 )
                         )
@@ -441,7 +441,7 @@ public class MusicPlayerRemote {
                     // todo check (song id isn't unique)
                     String[] path = new String[]{songFile.getAbsolutePath()};
                     songs.add(
-                            SongConverter.INSTANCE.toSongModel(
+                            Converter.INSTANCE.toSongModel(
                                     MusicDatabase.INSTANCE.getSongsDataBase().SongDao().querySongByPath(new String[]{songFile.getAbsolutePath()}, SortOrder.SongSortOrder.SONG_A_Z).get(0)
                             )
                     );

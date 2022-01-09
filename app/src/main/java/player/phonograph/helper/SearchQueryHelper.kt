@@ -164,7 +164,7 @@ object SearchQueryHelper {
                 album = albumName?.let { "%$albumName%" },
                 artist = artistName?.let { "%$artistName%" },
             )
-        if (songs.isNotEmpty()) return SongModelConverterHelper.convert(songs)
+        if (songs.isNotEmpty()) return ModelConverterHelper.convertSong(songs)
 
         if (query == null) return ArrayList()
 
@@ -175,6 +175,6 @@ object SearchQueryHelper {
                 artist = "%$query%",
             )
 
-        return if (songs.isNotEmpty()) SongModelConverterHelper.convert(songs) else ArrayList()
+        return if (songs.isNotEmpty()) ModelConverterHelper.convertSong(songs) else ArrayList()
     }
 }

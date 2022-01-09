@@ -68,7 +68,7 @@ data class Song(
 )
 
 @Dao
-@TypeConverters(SongConverter::class)
+@TypeConverters(Converter::class)
 interface SongDao {
     @Query("SELECT * from songs")
     fun getAllSongs(): List<Song>
