@@ -320,7 +320,7 @@ class MainActivity : AbsSlidingMusicPanelActivity() {
 
         intent.action?.let {
             if (it == MediaStore.INTENT_ACTION_MEDIA_PLAY_FROM_SEARCH) {
-                val songs = SearchQueryHelper.getSongs(this, intent.extras!!)
+                val songs = SearchQueryHelper.query(intent.extras!!)
                 if (MusicPlayerRemote.getShuffleMode() == MusicService.SHUFFLE_MODE_SHUFFLE) {
                     MusicPlayerRemote.openAndShuffleQueue(songs, true)
                 } else {
