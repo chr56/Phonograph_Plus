@@ -11,14 +11,21 @@ import androidx.sqlite.db.SupportSQLiteQuery
 object ArtistColumns {
     const val ARTIST_ID = "artist_id"
     const val ARTIST_NAME = "artist_name"
+    const val SONG_COUNT = "song_count"
+    const val ALBUM_COUNT = "album_count"
 }
 
 @Entity(tableName = "artists", primaryKeys = ["artist_id", "artist_name"])
 data class Artist(
-    @ColumnInfo(name = "artist_id")
+    @ColumnInfo(name = ArtistColumns.ARTIST_ID)
     var artistId: Long = 0,
-    @ColumnInfo(name = "artist_name")
-    var artistName: String
+    @ColumnInfo(name = ArtistColumns.ARTIST_NAME)
+    var artistName: String,
+    @ColumnInfo(name = ArtistColumns.SONG_COUNT)
+    var songCount: Int,
+    @ColumnInfo(name = ArtistColumns.ALBUM_COUNT)
+    var albumCount: Int,
+
 )
 
 @Entity(tableName = "artist_song_linkage", primaryKeys = ["artist_id", "id"])
@@ -26,6 +33,13 @@ data class SongAndArtistLinkage(
     @ColumnInfo(name = "id")
     var songId: Long,
     @ColumnInfo(name = "artist_id")
+    var artistId: Long,
+)
+@Entity(tableName = "artist_album_linkage", primaryKeys = ["artist_id", "album_id"])
+data class ArtistAndAlbumLinkage(
+    @ColumnInfo(name = "album_id", index = true)
+    var albumId: Long,
+    @ColumnInfo(name = "artist_id", index = true)
     var artistId: Long,
 )
 
@@ -48,8 +62,17 @@ data class SongWithArtists(
     var artist: List<Artist>
 )
 
+data class ArtistWithAlbums(
+    @Embedded var artist: Artist,
+    @Relation(
+        parentColumn = "artist_id",
+        entityColumn = "album_id",
+        associateBy = Junction(ArtistAndAlbumLinkage::class)
+    )
+    var albums: List<Album>
+)
+
 @Dao
-@TypeConverters(SongMarker::class)
 interface ArtistDAO {
 
     @RawQuery
@@ -105,4 +128,22 @@ interface ArtistSongDAO {
 
     @Delete
     fun remove(linkage: SongAndArtistLinkage)
+}
+
+@Dao
+interface ArtistAlbumDAO{
+
+    @Transaction
+    @Query("SELECT * from artists where artist_name like :artistName ")
+    fun getArtistAlbum(artistName: String): ArtistWithAlbums
+
+    @Transaction
+    @Query("SELECT * from artists")
+    fun getAllArtistAlbum(): List<ArtistWithAlbums>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun override(linkage: ArtistAndAlbumLinkage)
+
+    @Delete
+    fun remove(linkage: ArtistAndAlbumLinkage)
 }

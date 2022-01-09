@@ -11,14 +11,23 @@ import androidx.sqlite.db.SupportSQLiteQuery
 object AlbumColumns {
     const val ALBUM_ID = "album_id"
     const val ALBUM_NAME = "album_name"
+    const val ALBUM_ARTIST = "album_artist"
+    const val YEAR = "year"
+    const val SONG_COUNT = "song_count"
 }
 
 @Entity(tableName = "albums", primaryKeys = ["album_id"])
 data class Album(
-    @ColumnInfo(name = "album_id")
+    @ColumnInfo(name = AlbumColumns.ALBUM_ID)
     var albumId: Long = 0,
-    @ColumnInfo(name = "album_name")
-    var albumName: String? = null
+    @ColumnInfo(name = AlbumColumns.ALBUM_NAME)
+    var albumName: String? = null,
+    @ColumnInfo(name = AlbumColumns.ALBUM_ARTIST)
+    var albumArtist: String,
+    @ColumnInfo(name = AlbumColumns.YEAR)
+    var year: Int,
+    @ColumnInfo(name = AlbumColumns.SONG_COUNT)
+    var songCount: Int,
 )
 
 data class AlbumWithSongs(
@@ -31,7 +40,6 @@ data class AlbumWithSongs(
 )
 
 @Dao
-@TypeConverters(SongMarker::class)
 interface AlbumDAO {
     @RawQuery
     fun rawQuery(query: SupportSQLiteQuery): List<Album>

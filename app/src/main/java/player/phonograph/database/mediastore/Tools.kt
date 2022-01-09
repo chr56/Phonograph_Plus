@@ -13,12 +13,12 @@ import android.util.Log
 import androidx.room.TypeConverter
 import player.phonograph.App
 import player.phonograph.R
+import player.phonograph.database.mediastore.Song
 import player.phonograph.helper.SortOrder
 import player.phonograph.notification.DatabaseUpdateNotification
 import player.phonograph.provider.BlacklistStore
 import player.phonograph.util.MediaStoreUtil
 import player.phonograph.util.TagsUtil
-import player.phonograph.database.mediastore.Song as Song
 import player.phonograph.model.Song as OldSongModel
 
 // todo remove
@@ -62,33 +62,33 @@ object SongConverter {
     }
 }
 
-object SongMarker {
-
-    @TypeConverter
-    fun getAlbum(song: Song): Album {
-        return Album(song.albumId, song.albumName)
-    }
-    @TypeConverter
-    fun getArtist(song: Song): Artist {
-        return Artist(song.artistId, song.artistName ?: "")
-    }
-}
-
 object SongRegistry {
+    fun registerAlbums(song: Song) {
+        val albumDAO = MusicDatabase.songsDataBase.AlbumDao()
+        // todo analyse
+        albumDAO.override(
+            Album(albumId = song.albumId, albumName = song.albumName, albumArtist = song.artistName ?: "UNKNOWN", year = song.year,0)
+        )
+        Log.v("RoomDatabase", "::album was registered: ${song.albumName}")
+    }
+
     fun registerArtists(song: Song) {
         val raw = song.artistName
         if (raw != null) {
-            val artistSongsDao = MusicDatabase.songsDataBase.ArtistSongsDao()
             val artistDao = MusicDatabase.songsDataBase.ArtistDao()
+            val artistSongsDao = MusicDatabase.songsDataBase.ArtistSongsDao()
+            val artistAlbumsDao = MusicDatabase.songsDataBase.ArtistAlbumsDao()
 
             val parsed = TagsUtil.parse(raw)
 
             if (parsed != null) {
                 for (name in parsed) {
-                    val artist = Artist(name.hashCode().toLong(), name)
+                    // todo analyse
+                    val artist = Artist(artistId = name.hashCode().toLong(), artistName = name, songCount = 0, albumCount = 0)
 
                     artistDao.override(artist)
                     artistSongsDao.override(SongAndArtistLinkage(song.id, artist.artistId))
+                    artistAlbumsDao.override(ArtistAndAlbumLinkage(song.id,artist.artistId))
 
                     Log.v("RoomDatabase", "::artist was registered: ${song.title}<->$name")
                 }
@@ -118,7 +118,7 @@ object Refresher {
                     songDataBase.SongDao().override(song)
                     Log.d(TAG, "Override Song: ${song.title}")
                     // album
-                    songDataBase.AlbumDao().override(SongMarker.getAlbum(song))
+                    SongRegistry.registerAlbums(song)
                     // artist
                     SongRegistry.registerArtists(song)
                 }
