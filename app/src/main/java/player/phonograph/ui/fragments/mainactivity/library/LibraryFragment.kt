@@ -25,6 +25,7 @@ import com.google.android.material.appbar.AppBarLayout.OnOffsetChangedListener
 import com.google.android.material.tabs.TabLayout
 import player.phonograph.R
 import player.phonograph.adapter.MusicLibraryPagerAdapter
+import player.phonograph.database.mediastore.AlbumColumns
 import player.phonograph.database.mediastore.SongColumns
 import player.phonograph.databinding.FragmentLibraryBinding
 import player.phonograph.databinding.PopupWindowMainBinding
@@ -377,12 +378,30 @@ class LibraryFragment :
                 popup.sortOrderAlbum.visibility = View.VISIBLE
                 popup.sortOrderArtist.visibility = View.VISIBLE
                 popup.sortOrderYear.visibility = View.VISIBLE
-                when (currentSortOrder) {
-                    SortOrder.AlbumSortOrder.ALBUM_Z_A, SortOrder.AlbumSortOrder.ALBUM_A_Z -> popup.sortOrderContent.check(R.id.sort_order_album)
-                    SortOrder.AlbumSortOrder.ALBUM_YEAR, SortOrder.AlbumSortOrder.ALBUM_YEAR_REVERT -> popup.sortOrderContent.check(R.id.sort_order_year)
-                    SortOrder.AlbumSortOrder.ALBUM_ARTIST, SortOrder.AlbumSortOrder.ALBUM_ARTIST_REVERT -> popup.sortOrderContent.check(R.id.sort_order_artist)
-                    else -> { popup.sortOrderContent.clearCheck() }
+                currentSortOrder?.let {
+                    val p = it.split(Pattern.compile(" "), 2)
+                    if (p.isNotEmpty() && p.size >= 2) {
+                        Log.v("LibraryFragment", "p0=${p[0]}-p1=${p[1]}")
+                        when (p[0]) {
+//                            AlbumColumns.ALBUM_ID ->
+                            AlbumColumns.ALBUM_NAME -> popup.sortOrderContent.check(R.id.sort_order_album)
+                            AlbumColumns.ALBUM_ARTIST -> popup.sortOrderContent.check(R.id.sort_order_artist)
+                            AlbumColumns.YEAR -> popup.sortOrderContent.check(R.id.sort_order_year)
+//                            AlbumColumns.SONG_COUNT ->
+                        }
+                        when (p[1]) {
+                            "ASC" -> popup.sortOrderContent.check(R.id.sort_order_a_z)
+                            "DECS" -> popup.sortOrderContent.check(R.id.sort_order_z_a)
+                        }
+                    }
                 }
+
+//                when (currentSortOrder) {
+//                    SortOrder.AlbumSortOrder.ALBUM_Z_A, SortOrder.AlbumSortOrder.ALBUM_A_Z -> popup.sortOrderContent.check(R.id.sort_order_album)
+//                    SortOrder.AlbumSortOrder.ALBUM_YEAR, SortOrder.AlbumSortOrder.ALBUM_YEAR_REVERT -> popup.sortOrderContent.check(R.id.sort_order_year)
+//                    SortOrder.AlbumSortOrder.ALBUM_ARTIST, SortOrder.AlbumSortOrder.ALBUM_ARTIST_REVERT -> popup.sortOrderContent.check(R.id.sort_order_artist)
+//                    else -> { popup.sortOrderContent.clearCheck() }
+//                }
             }
             is ArtistsFragment -> {
                 popup.sortOrderArtist.visibility = View.VISIBLE
@@ -516,27 +535,46 @@ class LibraryFragment :
                 }
                 //
                 is AlbumsFragment -> {
-                    when (contentSelected) {
-                        R.id.sort_order_album ->
-                            when (basicSelected) {
-                                R.id.sort_order_a_z -> SortOrder.AlbumSortOrder.ALBUM_A_Z
-                                R.id.sort_order_z_a -> SortOrder.AlbumSortOrder.ALBUM_Z_A
-                                else -> ""
-                            }
-                        R.id.sort_order_year ->
-                            when (basicSelected) {
-                                R.id.sort_order_a_z -> SortOrder.AlbumSortOrder.ALBUM_YEAR
-                                R.id.sort_order_z_a -> SortOrder.AlbumSortOrder.ALBUM_YEAR_REVERT
-                                else -> ""
-                            }
-                        R.id.sort_order_artist ->
-                            when (basicSelected) {
-                                R.id.sort_order_a_z -> SortOrder.AlbumSortOrder.ALBUM_ARTIST
-                                R.id.sort_order_z_a -> SortOrder.AlbumSortOrder.ALBUM_ARTIST_REVERT
-                                else -> ""
-                            }
+                    val p = PreferenceUtil.getInstance(requireContext())
+                    val c = when (contentSelected) {
+                        R.id.sort_order_album -> /* p.sortOrderSongColumn =*/ AlbumColumns.ALBUM_NAME
+                        R.id.sort_order_artist -> /* p.sortOrderSongColumn =*/ AlbumColumns.ALBUM_ARTIST
+                        R.id.sort_order_year -> /* p.sortOrderSongColumn =*/ AlbumColumns.YEAR
                         else -> ""
                     }
+                    if (c.isNotBlank()) p.sortOrderAlbumColumn = c else p.sortOrderSongColumn = AlbumColumns.ALBUM_ID
+                    val o = when (basicSelected) {
+                        R.id.sort_order_a_z -> /* p.sortOrderSongOrientation =*/ true
+                        R.id.sort_order_z_a -> /* p.sortOrderSongOrientation =*/ false
+                        else -> { true }
+                    }
+                    temp = true
+                    p.sortOrderAlbumOrientation = o
+                    fragment.setAndSaveSortOrder("$c $o")
+                    Log.d(this::class.simpleName, "WRITE:$c - $o")
+                    "" // empty
+
+//                    when (contentSelected) {
+//                        R.id.sort_order_album ->
+//                            when (basicSelected) {
+//                                R.id.sort_order_a_z -> SortOrder.AlbumSortOrder.ALBUM_A_Z
+//                                R.id.sort_order_z_a -> SortOrder.AlbumSortOrder.ALBUM_Z_A
+//                                else -> ""
+//                            }
+//                        R.id.sort_order_year ->
+//                            when (basicSelected) {
+//                                R.id.sort_order_a_z -> SortOrder.AlbumSortOrder.ALBUM_YEAR
+//                                R.id.sort_order_z_a -> SortOrder.AlbumSortOrder.ALBUM_YEAR_REVERT
+//                                else -> ""
+//                            }
+//                        R.id.sort_order_artist ->
+//                            when (basicSelected) {
+//                                R.id.sort_order_a_z -> SortOrder.AlbumSortOrder.ALBUM_ARTIST
+//                                R.id.sort_order_z_a -> SortOrder.AlbumSortOrder.ALBUM_ARTIST_REVERT
+//                                else -> ""
+//                            }
+//                        else -> ""
+//                    }
                 }
                 //
                 is ArtistsFragment -> {
