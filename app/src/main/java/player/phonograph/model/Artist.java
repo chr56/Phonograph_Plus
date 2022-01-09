@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import player.phonograph.database.mediastore.ArtistWithAlbums;
+import player.phonograph.database.mediastore.ArtistWithSongs;
 import player.phonograph.database.mediastore.Converter;
 import player.phonograph.database.mediastore.MusicDatabase;
 import player.phonograph.util.MusicUtil;
@@ -61,10 +62,6 @@ public class Artist implements Parcelable {
 
     public int getSongCount() {
         int songCount = 0;
-        try{
-            songCount =MusicDatabase.INSTANCE.getSongsDataBase().ArtistSongsDao().getArtistSong(getName()).getSongs().size();
-        } catch (Exception ignored){
-        }
         if (albums != null)
             for (Album album : albums) {
                 songCount += album.getSongCount();
@@ -80,11 +77,13 @@ public class Artist implements Parcelable {
 
 
     public List<Song> getSongs() {
-        return
+        ArtistWithSongs t = MusicDatabase.INSTANCE.getSongsDataBase().ArtistSongsDao().getArtistSong(getId());
+        if (t != null) return
                 Converter.convertSong(
-                        MusicDatabase.INSTANCE.getSongsDataBase().ArtistSongsDao().getArtistSong(getName()).getSongs()
+                        t.getSongs()
 
                 );
+        else return new ArrayList<Song>();
 
 
 //        List<Song> songs = new ArrayList<>();

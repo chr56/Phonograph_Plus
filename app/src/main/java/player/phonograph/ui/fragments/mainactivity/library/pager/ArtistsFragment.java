@@ -8,16 +8,18 @@ import androidx.loader.app.LoaderManager;
 import androidx.loader.content.Loader;
 import androidx.recyclerview.widget.GridLayoutManager;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import player.phonograph.App;
 import player.phonograph.R;
 import player.phonograph.adapter.artist.ArtistAdapter;
+import player.phonograph.database.mediastore.Converter;
+import player.phonograph.database.mediastore.MusicDatabase;
 import player.phonograph.interfaces.LoaderIds;
-import player.phonograph.loader.ArtistLoader;
 import player.phonograph.misc.WrappedAsyncTaskLoader;
 import player.phonograph.model.Artist;
 import player.phonograph.util.PreferenceUtil;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
@@ -144,7 +146,12 @@ public class ArtistsFragment extends AbsLibraryPagerRecyclerViewCustomGridSizeFr
 
         @Override
         public List<Artist> loadInBackground() {
-            return ArtistLoader.getAllArtists(getContext());
+
+            PreferenceUtil p = PreferenceUtil.getInstance(App.getInstance());
+
+            return Converter.convertArtist(
+                    MusicDatabase.INSTANCE.getSongsDataBase().ArtistDao().getAllArtists(p.getSortOrderArtistColumn(), p.getSortOrderArtistOrientation())
+            );
         }
     }
 }

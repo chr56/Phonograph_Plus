@@ -121,7 +121,8 @@ object Converter {
 
     @TypeConverter
     fun toArtistModel(artist: Artist): OldArtistModel {
-        val albums = songsDataBase.ArtistAlbumsDao().getArtistAlbum(artist.artistName).albums
+        val artistWithAlbums = songsDataBase.ArtistAlbumsDao().getArtistAlbum(artist.artistName)
+        val albums = artistWithAlbums?.albums ?: ArrayList() //todo
         return OldArtistModel().also {
             it.id = artist.artistId
             it.name = artist.artistName

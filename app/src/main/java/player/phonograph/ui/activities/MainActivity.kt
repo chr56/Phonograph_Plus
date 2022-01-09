@@ -37,7 +37,6 @@ import player.phonograph.dialogs.UpgradeDialog
 import player.phonograph.glide.SongGlideRequest
 import player.phonograph.helper.MusicPlayerRemote
 import player.phonograph.helper.SearchQueryHelper
-import player.phonograph.loader.ArtistLoader
 import player.phonograph.loader.PlaylistSongLoader
 import player.phonograph.model.Song
 import player.phonograph.model.smartplaylist.HistoryPlaylist
@@ -353,9 +352,9 @@ class MainActivity : AbsSlidingMusicPanelActivity() {
                         val position = intent.getIntExtra("position", 0)
                         MusicPlayerRemote.openQueue(
                             Converter.convertSong(
-                                MusicDatabase.songsDataBase.AlbumDao().getAlbumsWithSongs(id,"").songs
-                            )
-                            , position, true
+                                MusicDatabase.songsDataBase.AlbumDao().getAlbumsWithSongs(id, "").songs
+                            ),
+                            position, true
                         )
                         handled = true
                     }
@@ -364,7 +363,12 @@ class MainActivity : AbsSlidingMusicPanelActivity() {
                     val id = parseIdFromIntent(intent, "artistId", "artist")
                     if (id >= 0) {
                         val position = intent.getIntExtra("position", 0)
-                        MusicPlayerRemote.openQueue(ArtistLoader.getArtist(this, id).songs, position, true)
+                        MusicPlayerRemote.openQueue(
+                            Converter.convertSong(
+                                MusicDatabase.songsDataBase.ArtistSongsDao().getArtistSong(id)?.songs ?: ArrayList()
+                            ),
+                            position, true
+                        )
                         handled = true
                     }
                 }

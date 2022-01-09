@@ -108,7 +108,11 @@ interface ArtistSongDAO {
 
     @Transaction
     @Query("SELECT * from artists where artist_name like :artistName ")
-    fun getArtistSong(artistName: String): ArtistWithSongs
+    fun getArtistSong(artistName: String): ArtistWithSongs?
+
+    @Transaction
+    @Query("SELECT * from artists where artist_id = :artistId ")
+    fun getArtistSong(artistId: Long): ArtistWithSongs?
 
     @Transaction
     @Query("SELECT * from artists")
@@ -135,7 +139,7 @@ interface ArtistAlbumDAO{
 
     @Transaction
     @Query("SELECT * from artists where artist_name like :artistName ")
-    fun getArtistAlbum(artistName: String): ArtistWithAlbums
+    fun getArtistAlbum(artistName: String): ArtistWithAlbums?
 
     @Transaction
     @Query("SELECT * from artists")

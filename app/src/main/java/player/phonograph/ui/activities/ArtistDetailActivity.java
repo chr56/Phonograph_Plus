@@ -40,6 +40,8 @@ import chr_56.MDthemer.util.Util;
 import player.phonograph.R;
 import player.phonograph.adapter.album.HorizontalAlbumAdapter;
 import player.phonograph.adapter.song.ArtistSongAdapter;
+import player.phonograph.database.mediastore.Converter;
+import player.phonograph.database.mediastore.MusicDatabase;
 import player.phonograph.databinding.ActivityArtistDetailBinding;
 import player.phonograph.dialogs.AddToPlaylistDialog;
 import player.phonograph.dialogs.SleepTimerDialog;
@@ -51,7 +53,6 @@ import player.phonograph.interfaces.LoaderIds;
 import player.phonograph.interfaces.PaletteColorHolder;
 import player.phonograph.lastfm.rest.LastFMRestClient;
 import player.phonograph.lastfm.rest.model.LastFmArtist;
-import player.phonograph.loader.ArtistLoader;
 import player.phonograph.misc.SimpleObservableScrollViewCallbacks;
 import player.phonograph.misc.WrappedAsyncTaskLoader;
 import player.phonograph.model.Artist;
@@ -474,7 +475,10 @@ public class ArtistDetailActivity extends AbsSlidingMusicPanelActivity implement
 
         @Override
         public Artist loadInBackground() {
-            return ArtistLoader.getArtist(getContext(), artistId);
+            return
+                    Converter.INSTANCE.toArtistModel(
+                            MusicDatabase.INSTANCE.getSongsDataBase().ArtistDao().findArtist(artistId)
+                    );
         }
     }
 }
