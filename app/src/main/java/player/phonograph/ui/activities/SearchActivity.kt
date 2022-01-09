@@ -2,7 +2,6 @@ package player.phonograph.ui.activities
 
 import android.content.Context
 import android.os.Bundle
-import android.text.TextUtils
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -17,14 +16,14 @@ import chr_56.MDthemer.core.ThemeColor
 import chr_56.MDthemer.core.Themer
 import player.phonograph.R
 import player.phonograph.adapter.SearchAdapter
+import player.phonograph.database.mediastore.MusicDatabase
+import player.phonograph.helper.ModelConverterHelper
 import player.phonograph.interfaces.LoaderIds
-import player.phonograph.loader.AlbumLoader
-import player.phonograph.loader.ArtistLoader
 import player.phonograph.misc.WrappedAsyncTaskLoader
 import player.phonograph.ui.activities.base.AbsMusicServiceActivity
-import player.phonograph.util.MediaStoreUtil
 import player.phonograph.util.Util
 
+// fixme: artist
 class SearchActivity :
     AbsMusicServiceActivity(),
     SearchView.OnQueryTextListener,
@@ -49,7 +48,6 @@ class SearchActivity :
         empty = findViewById(android.R.id.empty)
 
         Themer.setActivityToolbarColorAuto(this, mToolbar)
-
 
         setStatusbarColorAuto()
         setNavigationbarColorAuto()
@@ -166,22 +164,31 @@ class SearchActivity :
 
         override fun loadInBackground(): List<Any> {
             val results: MutableList<Any> = ArrayList()
+            val db = MusicDatabase.songsDataBase
 
-            if (!TextUtils.isEmpty(query)) {
-                val songs = MediaStoreUtil.getSongs(context, query!!.trim { it <= ' ' })
+            if (query != null && query.isNotBlank()) {
+//                val songs = MediaStoreUtil.getSongs(context, query!!.trim { it <= ' ' })
+                val songs = db.SongDao().findSong(title = "%$query%", null, null)
                 if (songs.isNotEmpty()) {
                     results.add(context.resources.getString(R.string.songs))
-                    results.addAll(songs)
+//                    results.addAll(songs)
+                    results.addAll(ModelConverterHelper.convertSong(songs))
                 }
-                val artists = ArtistLoader.getArtists(context, query.trim { it <= ' ' })
+
+//                val artists = ArtistLoader.getArtists(context, query.trim { it <= ' ' })
+                val artists = db.ArtistDao().searchArtists("%$query%")
                 if (artists.isNotEmpty()) {
                     results.add(context.resources.getString(R.string.artists))
-                    results.addAll(artists)
+//                    results.addAll(artists)
+                    results.addAll(ModelConverterHelper.convertArtist(artists))
                 }
-                val albums = AlbumLoader.getAlbums(context, query.trim { it <= ' ' })
+
+//                val albums = AlbumLoader.getAlbums(context, query.trim { it <= ' ' })
+                val albums = db.AlbumDao().searchAlbums("%$query%")
                 if (albums.isNotEmpty()) {
                     results.add(context.resources.getString(R.string.albums))
-                    results.addAll(albums)
+//                    results.addAll(albums)
+                    results.addAll(ModelConverterHelper.convertAlbum(albums))
                 }
             }
 
