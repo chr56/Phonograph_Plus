@@ -8,8 +8,11 @@ import androidx.loader.app.LoaderManager;
 import androidx.loader.content.Loader;
 import androidx.recyclerview.widget.GridLayoutManager;
 
+import player.phonograph.App;
 import player.phonograph.R;
 import player.phonograph.adapter.album.AlbumAdapter;
+import player.phonograph.database.mediastore.Converter;
+import player.phonograph.database.mediastore.MusicDatabase;
 import player.phonograph.interfaces.LoaderIds;
 import player.phonograph.loader.AlbumLoader;
 import player.phonograph.misc.WrappedAsyncTaskLoader;
@@ -140,7 +143,12 @@ public class AlbumsFragment extends AbsLibraryPagerRecyclerViewCustomGridSizeFra
 
         @Override
         public List<Album> loadInBackground() {
-            return AlbumLoader.getAllAlbums(getContext());
+
+            PreferenceUtil p = PreferenceUtil.getInstance(App.getInstance());
+
+            return Converter.convertAlbum(
+                    MusicDatabase.INSTANCE.getSongsDataBase().AlbumDao().getAllAlbums(p.getSortOrderAlbumColumn(), p.getSortOrderAlbumOrientation())
+            );
         }
     }
 }
