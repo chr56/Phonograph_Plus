@@ -65,14 +65,14 @@ object Converter {
     @JvmStatic
     fun convertSong(songs: List<Song>): List<player.phonograph.model.Song> {
         return List(songs.size) { index ->
-            Converter.toSongModel(songs[index])
+            toSongModel(songs[index])
         }
     }
 
     @JvmStatic
     fun convertSongBack(songs: List<player.phonograph.model.Song>): List<Song> {
         return List(songs.size) { index ->
-            Converter.fromSongModel(songs[index])
+            fromSongModel(songs[index])
         }
     }
 
@@ -98,14 +98,14 @@ object Converter {
     @JvmStatic
     fun convertAlbum(albums: List<Album>): List<player.phonograph.model.Album> {
         return List(albums.size) { index ->
-            Converter.toAlbumModel(albums[index])
+            toAlbumModel(albums[index])
         }
     }
 
     @JvmStatic
     fun convertAlbumBack(albums: List<player.phonograph.model.Album>): List<Album> {
         return List(albums.size) { index ->
-            Converter.fromAlbumModel(albums[index])
+            fromAlbumModel(albums[index])
         }
     }
 
@@ -118,27 +118,27 @@ object Converter {
             albumCount = artist.albumCount,
         )
     }
+
     @TypeConverter
     fun toArtistModel(artist: Artist): OldArtistModel {
         val albums = songsDataBase.ArtistAlbumsDao().getArtistAlbum(artist.artistName).albums
-        return OldArtistModel(
-            List<OldAlbumModel>(albums.size) {
-                toAlbumModel(albums[it])
-            }
-        )
-    }
-
-    @JvmStatic
-    fun convertArtist(artists: List<Artist>): List<player.phonograph.model.Artist> {
-        return List(artists.size) { index ->
-            Converter.toArtistModel(artists[index])
+        return OldArtistModel().also {
+            it.id = artist.artistId
+            it.name = artist.artistName
         }
     }
 
     @JvmStatic
-    fun convertArtistBack(artists: List<player.phonograph.model.Artist>): List<Artist> {
+    fun convertArtist(artists: List<Artist>): List<OldArtistModel> {
         return List(artists.size) { index ->
-            Converter.fromArtistModel(artists[index])
+            toArtistModel(artists[index])
+        }
+    }
+
+    @JvmStatic
+    fun convertArtistBack(artists: List<OldArtistModel>): List<Artist> {
+        return List(artists.size) { index ->
+            fromArtistModel(artists[index])
         }
     }
 }
