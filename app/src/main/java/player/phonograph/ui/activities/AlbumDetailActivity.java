@@ -2,9 +2,7 @@ package player.phonograph.ui.activities;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.BlendModeColorFilter;
 import android.graphics.ColorFilter;
-import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.text.Html;
 import android.text.Spanned;
@@ -39,6 +37,8 @@ import chr_56.MDthemer.util.MaterialColorHelper;
 import chr_56.MDthemer.util.Util;
 import player.phonograph.R;
 import player.phonograph.adapter.song.AlbumSongAdapter;
+import player.phonograph.database.mediastore.Converter;
+import player.phonograph.database.mediastore.MusicDatabase;
 import player.phonograph.databinding.ActivityAlbumDetailBinding;
 import player.phonograph.dialogs.AddToPlaylistDialog;
 import player.phonograph.dialogs.DeleteSongsDialog;
@@ -51,7 +51,6 @@ import player.phonograph.interfaces.LoaderIds;
 import player.phonograph.interfaces.PaletteColorHolder;
 import player.phonograph.lastfm.rest.LastFMRestClient;
 import player.phonograph.lastfm.rest.model.LastFmAlbum;
-import player.phonograph.loader.AlbumLoader;
 import player.phonograph.misc.SimpleObservableScrollViewCallbacks;
 import player.phonograph.misc.WrappedAsyncTaskLoader;
 import player.phonograph.model.Album;
@@ -178,13 +177,13 @@ public class AlbumDetailActivity extends AbsSlidingMusicPanelActivity implements
         ColorFilter f = BlendModeColorFilterCompat
                 .createBlendModeColorFilterCompat(secondaryTextColor, BlendModeCompat.SRC_IN);
 
-        viewBinding.artistIcon.setImageDrawable(AppCompatResources.getDrawable(this,R.drawable.ic_person_white_24dp));
+        viewBinding.artistIcon.setImageDrawable(AppCompatResources.getDrawable(this, R.drawable.ic_person_white_24dp));
         viewBinding.artistIcon.setColorFilter(f);
-        viewBinding.durationIcon.setImageDrawable(AppCompatResources.getDrawable(this,R.drawable.ic_timer_white_24dp));
+        viewBinding.durationIcon.setImageDrawable(AppCompatResources.getDrawable(this, R.drawable.ic_timer_white_24dp));
         viewBinding.durationIcon.setColorFilter(f);
-        viewBinding.songCountIcon.setImageDrawable(AppCompatResources.getDrawable(this,R.drawable.ic_music_note_white_24dp));
+        viewBinding.songCountIcon.setImageDrawable(AppCompatResources.getDrawable(this, R.drawable.ic_music_note_white_24dp));
         viewBinding.songCountIcon.setColorFilter(f);
-        viewBinding.albumYearIcon.setImageDrawable(AppCompatResources.getDrawable(this,R.drawable.ic_event_white_24dp));
+        viewBinding.albumYearIcon.setImageDrawable(AppCompatResources.getDrawable(this, R.drawable.ic_event_white_24dp));
         viewBinding.albumYearIcon.setColorFilter(f);
 
         viewBinding.artistText.setTextColor(MaterialColorHelper.getPrimaryTextColor(this, ColorUtil.isColorLight(color)));
@@ -449,7 +448,10 @@ public class AlbumDetailActivity extends AbsSlidingMusicPanelActivity implements
 
         @Override
         public Album loadInBackground() {
-            return AlbumLoader.getAlbum(getContext(), albumId);
+            return Converter.INSTANCE.toAlbumModel(
+                    MusicDatabase.INSTANCE.getSongsDataBase().AlbumDao().findAlbum(albumId)
+            );
+
         }
     }
 }

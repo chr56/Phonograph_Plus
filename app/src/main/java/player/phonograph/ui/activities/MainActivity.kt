@@ -27,6 +27,7 @@ import com.google.android.material.navigation.NavigationView
 import com.sothree.slidinguppanel.SlidingUpPanelLayout
 import player.phonograph.*
 import player.phonograph.Updater.checkUpdate
+import player.phonograph.database.mediastore.Converter
 import player.phonograph.database.mediastore.MusicDatabase
 import player.phonograph.database.mediastore.Refresher
 import player.phonograph.dialogs.ChangelogDialog.Companion.create
@@ -36,8 +37,6 @@ import player.phonograph.dialogs.UpgradeDialog
 import player.phonograph.glide.SongGlideRequest
 import player.phonograph.helper.MusicPlayerRemote
 import player.phonograph.helper.SearchQueryHelper
-import player.phonograph.database.mediastore.Converter
-import player.phonograph.loader.AlbumLoader
 import player.phonograph.loader.ArtistLoader
 import player.phonograph.loader.PlaylistSongLoader
 import player.phonograph.model.Song
@@ -209,8 +208,10 @@ class MainActivity : AbsSlidingMusicPanelActivity() {
                 R.id.action_shuffle_all -> Handler().postDelayed({
                     MusicPlayerRemote.openAndShuffleQueue(
                         Converter.convertSong(
-                        MusicDatabase.songsDataBase.SongDao().getAllSongs()
-                    ), true)
+                            MusicDatabase.songsDataBase.SongDao().getAllSongs()
+                        ),
+                        true
+                    )
                 }, 350)
                 R.id.action_scan -> Handler().postDelayed({
                     ScanMediaFolderDialog().show(supportFragmentManager, "SCAN_MEDIA_FOLDER_CHOOSER")
@@ -350,7 +351,12 @@ class MainActivity : AbsSlidingMusicPanelActivity() {
                     val id = parseIdFromIntent(intent, "albumId", "album")
                     if (id >= 0) {
                         val position = intent.getIntExtra("position", 0)
-                        MusicPlayerRemote.openQueue(AlbumLoader.getAlbum(this, id).songs, position, true)
+                        MusicPlayerRemote.openQueue(
+                            Converter.convertSong(
+                                MusicDatabase.songsDataBase.AlbumDao().getAlbumsWithSongs(id,"").songs
+                            )
+                            , position, true
+                        )
                         handled = true
                     }
                 }

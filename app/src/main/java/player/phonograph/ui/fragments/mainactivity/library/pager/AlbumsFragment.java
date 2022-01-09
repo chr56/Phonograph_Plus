@@ -8,19 +8,18 @@ import androidx.loader.app.LoaderManager;
 import androidx.loader.content.Loader;
 import androidx.recyclerview.widget.GridLayoutManager;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import player.phonograph.App;
 import player.phonograph.R;
 import player.phonograph.adapter.album.AlbumAdapter;
 import player.phonograph.database.mediastore.Converter;
 import player.phonograph.database.mediastore.MusicDatabase;
 import player.phonograph.interfaces.LoaderIds;
-import player.phonograph.loader.AlbumLoader;
 import player.phonograph.misc.WrappedAsyncTaskLoader;
 import player.phonograph.model.Album;
 import player.phonograph.util.PreferenceUtil;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
