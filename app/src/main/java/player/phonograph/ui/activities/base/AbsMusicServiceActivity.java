@@ -216,6 +216,7 @@ public abstract class AbsMusicServiceActivity extends AbsBaseActivity implements
                         activity.onShuffleModeChanged();
                         break;
                     case MusicService.MEDIA_STORE_CHANGED:
+                        Refresher.INSTANCE.refreshDatabase(App.getInstance());
                         activity.onMediaStoreChanged();
                         break;
                 }
