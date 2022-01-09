@@ -19,6 +19,8 @@ import com.google.gson.JsonSyntaxException
 import com.google.gson.reflect.TypeToken
 import player.phonograph.App
 import player.phonograph.R
+import player.phonograph.database.mediastore.AlbumColumns
+import player.phonograph.database.mediastore.ArtistColumns
 import player.phonograph.database.mediastore.SongColumns
 import player.phonograph.helper.SortOrder
 import player.phonograph.model.CategoryInfo
@@ -135,6 +137,7 @@ class PreferenceUtil(context: Context) {
         return mPreferences.getBoolean(IGNORE_MEDIA_STORE_ARTWORK, false)
     }
 
+    @Deprecated("use column")
     var artistSortOrder: String
         get() = mPreferences.getString(ARTIST_SORT_ORDER, SortOrder.ArtistSortOrder.ARTIST_A_Z)!!
         set(sortOrder) {
@@ -153,6 +156,7 @@ class PreferenceUtil(context: Context) {
             ARTIST_ALBUM_SORT_ORDER, SortOrder.ArtistAlbumSortOrder.ALBUM_YEAR
         )!!
 
+    @Deprecated("use column")
     var albumSortOrder: String
         get() = mPreferences.getString(ALBUM_SORT_ORDER, SortOrder.AlbumSortOrder.ALBUM_A_Z)!!
         set(sortOrder) {
@@ -187,6 +191,36 @@ class PreferenceUtil(context: Context) {
         set(sortOrder) {
             val editor = mPreferences.edit()
             editor.putBoolean(SORT_ORDER_SONG_ORIENTATION, sortOrder)
+            editor.commit()
+        }
+
+    var sortOrderArtistColumn: String
+        get() = mPreferences.getString(SORT_ORDER_ARTIST_COLUMNS, ArtistColumns.ARTIST_NAME)!!
+        set(sortOrder) {
+            val editor = mPreferences.edit()
+            editor.putString(SORT_ORDER_ARTIST_COLUMNS, sortOrder)
+            editor.commit()
+        }
+    var sortOrderArtistOrientation: Boolean // DECS(false) or ASC(true)
+        get() = mPreferences.getBoolean(SORT_ORDER_ARTIST_ORIENTATION, true)
+        set(sortOrder) {
+            val editor = mPreferences.edit()
+            editor.putBoolean(SORT_ORDER_ARTIST_ORIENTATION, sortOrder)
+            editor.commit()
+        }
+
+    var sortOrderAlbumColumn: String
+        get() = mPreferences.getString(SORT_ORDER_ALBUM_COLUMNS, AlbumColumns.ALBUM_NAME)!!
+        set(sortOrder) {
+            val editor = mPreferences.edit()
+            editor.putString(SORT_ORDER_ALBUM_COLUMNS, sortOrder)
+            editor.commit()
+        }
+    var sortOrderAlbumOrientation: Boolean // DECS(false) or ASC(true)
+        get() = mPreferences.getBoolean(SORT_ORDER_ALBUM_ORIENTATION, true)
+        set(sortOrder) {
+            val editor = mPreferences.edit()
+            editor.putBoolean(SORT_ORDER_ALBUM_ORIENTATION, sortOrder)
             editor.commit()
         }
 
@@ -538,6 +572,10 @@ class PreferenceUtil(context: Context) {
 
         const val SORT_ORDER_SONG_COLUMNS = "song_columns"
         const val SORT_ORDER_SONG_ORIENTATION = "song_orientation"
+        const val SORT_ORDER_ALBUM_COLUMNS = "album_columns"
+        const val SORT_ORDER_ALBUM_ORIENTATION = "album_orientation"
+        const val SORT_ORDER_ARTIST_COLUMNS = "artist_columns"
+        const val SORT_ORDER_ARTIST_ORIENTATION = "artist_orientation"
 
         const val ALBUM_GRID_SIZE = "album_grid_size"
         const val ALBUM_GRID_SIZE_LAND = "album_grid_size_land"
