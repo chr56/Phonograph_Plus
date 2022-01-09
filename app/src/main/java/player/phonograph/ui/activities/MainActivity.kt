@@ -36,7 +36,7 @@ import player.phonograph.dialogs.UpgradeDialog
 import player.phonograph.glide.SongGlideRequest
 import player.phonograph.helper.MusicPlayerRemote
 import player.phonograph.helper.SearchQueryHelper
-import player.phonograph.helper.ModelConverterHelper
+import player.phonograph.database.mediastore.Converter
 import player.phonograph.loader.AlbumLoader
 import player.phonograph.loader.ArtistLoader
 import player.phonograph.loader.PlaylistSongLoader
@@ -208,7 +208,7 @@ class MainActivity : AbsSlidingMusicPanelActivity() {
 
                 R.id.action_shuffle_all -> Handler().postDelayed({
                     MusicPlayerRemote.openAndShuffleQueue(
-                        ModelConverterHelper.convertSong(
+                        Converter.convertSong(
                         MusicDatabase.songsDataBase.SongDao().getAllSongs()
                     ), true)
                 }, 350)

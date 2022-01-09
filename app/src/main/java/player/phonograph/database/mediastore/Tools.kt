@@ -14,7 +14,6 @@ import androidx.room.TypeConverter
 import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.database.mediastore.MusicDatabase.songsDataBase
-import player.phonograph.helper.ModelConverterHelper
 import player.phonograph.helper.SortOrder
 import player.phonograph.notification.DatabaseUpdateNotification
 import player.phonograph.provider.BlacklistStore
@@ -24,7 +23,6 @@ import player.phonograph.model.Album as OldAlbumModel
 import player.phonograph.model.Artist as OldArtistModel
 import player.phonograph.model.Song as OldSongModel
 
-// todo remove
 object Converter {
     @TypeConverter
     fun fromSongModel(song: OldSongModel): Song {
@@ -63,6 +61,21 @@ object Converter {
             song.artistName
         )
     }
+
+    @JvmStatic
+    fun convertSong(songs: List<Song>): List<player.phonograph.model.Song> {
+        return List(songs.size) { index ->
+            Converter.toSongModel(songs[index])
+        }
+    }
+
+    @JvmStatic
+    fun convertSongBack(songs: List<player.phonograph.model.Song>): List<Song> {
+        return List(songs.size) { index ->
+            Converter.fromSongModel(songs[index])
+        }
+    }
+
     @TypeConverter
     fun fromAlbumModel(album: OldAlbumModel): Album {
         return Album(
@@ -76,11 +89,26 @@ object Converter {
     @TypeConverter
     fun toAlbumModel(album: Album): OldAlbumModel {
         return OldAlbumModel(
-            ModelConverterHelper.convertSong(
+            convertSong(
                 songsDataBase.AlbumDao().getAlbumsWithSongs(album.albumId, album.albumName ?: "%").songs
             )
         )
     }
+
+    @JvmStatic
+    fun convertAlbum(albums: List<Album>): List<player.phonograph.model.Album> {
+        return List(albums.size) { index ->
+            Converter.toAlbumModel(albums[index])
+        }
+    }
+
+    @JvmStatic
+    fun convertAlbumBack(albums: List<player.phonograph.model.Album>): List<Album> {
+        return List(albums.size) { index ->
+            Converter.fromAlbumModel(albums[index])
+        }
+    }
+
     @TypeConverter
     fun fromArtistModel(artist: OldArtistModel): Artist {
         return Artist(
@@ -94,10 +122,24 @@ object Converter {
     fun toArtistModel(artist: Artist): OldArtistModel {
         val albums = songsDataBase.ArtistAlbumsDao().getArtistAlbum(artist.artistName).albums
         return OldArtistModel(
-            List<OldAlbumModel>(albums.size){
+            List<OldAlbumModel>(albums.size) {
                 toAlbumModel(albums[it])
             }
         )
+    }
+
+    @JvmStatic
+    fun convertArtist(artists: List<Artist>): List<player.phonograph.model.Artist> {
+        return List(artists.size) { index ->
+            Converter.toArtistModel(artists[index])
+        }
+    }
+
+    @JvmStatic
+    fun convertArtistBack(artists: List<player.phonograph.model.Artist>): List<Artist> {
+        return List(artists.size) { index ->
+            Converter.fromArtistModel(artists[index])
+        }
     }
 }
 

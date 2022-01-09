@@ -4,12 +4,13 @@ import android.app.SearchManager
 import android.content.Context
 import android.os.Bundle
 import android.provider.MediaStore
+import player.phonograph.database.mediastore.Converter
 import player.phonograph.database.mediastore.MusicDatabase
+import player.phonograph.model.Song
 import player.phonograph.util.MediaStoreUtil
 import java.util.*
 import kotlin.collections.ArrayList
 import player.phonograph.database.mediastore.Song as SongEntity
-import player.phonograph.model.Song as Song
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
@@ -164,7 +165,7 @@ object SearchQueryHelper {
                 album = albumName?.let { "%$albumName%" },
                 artist = artistName?.let { "%$artistName%" },
             )
-        if (songs.isNotEmpty()) return ModelConverterHelper.convertSong(songs)
+        if (songs.isNotEmpty()) return Converter.convertSong(songs)
 
         if (query == null) return ArrayList()
 
@@ -175,6 +176,6 @@ object SearchQueryHelper {
                 artist = "%$query%",
             )
 
-        return if (songs.isNotEmpty()) ModelConverterHelper.convertSong(songs) else ArrayList()
+        return if (songs.isNotEmpty()) Converter.convertSong(songs) else ArrayList()
     }
 }

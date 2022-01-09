@@ -21,7 +21,7 @@ import java.util.List;
 
 import player.phonograph.database.mediastore.MusicDatabase;
 import player.phonograph.database.mediastore.SongDao;
-import player.phonograph.helper.ModelConverterHelper;
+import player.phonograph.database.mediastore.Converter;
 import player.phonograph.helper.SortOrder;
 import player.phonograph.model.Song;
 
@@ -39,7 +39,7 @@ public final class FileUtil {
 
         List<Song> songs = null;
         if (paths != null) {
-            songs = ModelConverterHelper.convertSong(
+            songs = Converter.convertSong(
                     dao.querySongByPath(paths, SortOrder.SongSortOrder.SONG_A_Z)
             );
         }

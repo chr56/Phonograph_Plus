@@ -16,7 +16,7 @@ import player.phonograph.R;
 import player.phonograph.adapter.song.ShuffleButtonSongAdapter;
 import player.phonograph.adapter.song.SongAdapter;
 import player.phonograph.database.mediastore.MusicDatabase;
-import player.phonograph.helper.ModelConverterHelper;
+import player.phonograph.database.mediastore.Converter;
 import player.phonograph.interfaces.LoaderIds;
 import player.phonograph.misc.WrappedAsyncTaskLoader;
 import player.phonograph.model.Song;
@@ -168,7 +168,7 @@ public class SongsFragment extends AbsLibraryPagerRecyclerViewCustomGridSizeFrag
 
             PreferenceUtil p = PreferenceUtil.getInstance(App.getInstance());
 
-            return ModelConverterHelper.convertSong(
+            return Converter.convertSong(
                     MusicDatabase.INSTANCE.getSongsDataBase().SongDao().getAllSongs(p.getSortOrderSongColumn(), p.getSortOrderSongOrientation())
             );
         }

@@ -6,7 +6,7 @@ import android.os.Parcelable
 import androidx.annotation.Keep
 import player.phonograph.R
 import player.phonograph.database.mediastore.MusicDatabase
-import player.phonograph.helper.ModelConverterHelper
+import player.phonograph.database.mediastore.Converter
 import player.phonograph.model.Song
 
 class ShuffleAllPlaylist : AbsSmartPlaylist {
@@ -17,7 +17,7 @@ class ShuffleAllPlaylist : AbsSmartPlaylist {
     constructor(`in`: Parcel?) : super(`in`)
 
     override fun getSongs(context: Context): List<Song> =
-        ModelConverterHelper.convertSong(
+        Converter.convertSong(
             MusicDatabase.songsDataBase.SongDao().getAllSongs()
         )
 

@@ -2,7 +2,7 @@ package player.phonograph.loader
 
 import android.content.Context
 import player.phonograph.database.mediastore.MusicDatabase
-import player.phonograph.helper.ModelConverterHelper
+import player.phonograph.database.mediastore.Converter
 import player.phonograph.model.Song
 import player.phonograph.util.PreferenceUtil.Companion.getInstance
 
@@ -12,6 +12,6 @@ object LastAddedLoader {
 
         val list = MusicDatabase.songsDataBase.SongDao()
             .queryLastAddedSongs(getInstance(context).lastAddedCutoff)
-        return ModelConverterHelper.convertSong(list)
+        return Converter.convertSong(list)
     }
 }
