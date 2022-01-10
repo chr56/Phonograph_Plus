@@ -58,7 +58,12 @@ class HomeFragment : AbsMainActivityFragment(), MainActivity.MainActivityFragmen
     }
     private fun setupToolbar() {
         val primaryColor = ThemeColor.primaryColor(requireActivity())
+        val accentColor = ThemeColor.accentColor(requireActivity())
         val primaryTextColor = MaterialColorHelper.getPrimaryTextColor(
+            requireActivity(),
+            ColorUtil.isColorLight(primaryColor)
+        )
+        val secondaryTextColor = MaterialColorHelper.getSecondaryTextColor(
             requireActivity(),
             ColorUtil.isColorLight(primaryColor)
         )
@@ -76,9 +81,11 @@ class HomeFragment : AbsMainActivityFragment(), MainActivity.MainActivityFragmen
         binding.toolbar.setBackgroundColor(primaryColor)
         binding.toolbar.setTitleTextColor(primaryColor)
         binding.toolbar.title = requireActivity().getString(R.string.app_name)
+        mainActivity.setSupportActionBar(binding.toolbar)
 
         binding.tabs.tabMode = if (PreferenceUtil.getInstance(requireContext()).fixedTabLayout()) TabLayout.MODE_FIXED else TabLayout.MODE_SCROLLABLE
-        mainActivity.setSupportActionBar(binding.toolbar)
+        binding.tabs.setTabTextColors(secondaryTextColor, primaryTextColor)
+        binding.tabs.setSelectedTabIndicatorColor(accentColor)
     }
 
     private val cfg: PagerConfig = PagerConfig(
@@ -94,8 +101,10 @@ class HomeFragment : AbsMainActivityFragment(), MainActivity.MainActivityFragmen
         binding.pager.orientation = ViewPager2.ORIENTATION_HORIZONTAL
         binding.pager.adapter = pagerAdapter
         TabLayoutMediator(binding.tabs, binding.pager) { tab: TabLayout.Tab, i: Int ->
-            cfg.get(i)
-        }
+            when (cfg.get(i)) {
+                PAGERS.SONG -> tab.text = getString(R.string.songs)
+            }
+        }.attach()
     }
 
     override fun handleBackPress(): Boolean {
