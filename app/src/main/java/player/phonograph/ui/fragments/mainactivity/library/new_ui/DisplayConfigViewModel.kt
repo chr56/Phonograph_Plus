@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 chr_56 & Abou Zeid (kabouzeid) (original author)
+ * Copyright (c) 2022 chr_56
  */
 
 package player.phonograph.ui.fragments.mainactivity.library.new_ui
@@ -9,6 +9,8 @@ import player.phonograph.App
 import player.phonograph.util.PreferenceUtil
 
 class DisplayConfigViewModel : ViewModel() {
+    var isLandscape: Boolean = false
+
     fun getSortOrder(page: AbsDisplayPage<*, *>): String {
         val pref = PreferenceUtil.getInstance(App.instance)
         return when (page) {
@@ -30,25 +32,25 @@ class DisplayConfigViewModel : ViewModel() {
             else -> {}
         }
     }
-    fun getGridSize(page: AbsDisplayPage<*, *>, isLand: Boolean): Int {
+    fun getGridSize(page: AbsDisplayPage<*, *>): Int {
 
         val pref = PreferenceUtil.getInstance(App.instance)
 
         return when (page) {
             is SongPage -> {
-                if (isLand) pref.songGridSizeLand
+                if (isLandscape) pref.songGridSizeLand
                 else pref.songGridSize
             }
             else -> 1
         }
     }
-    fun setGridSize(page: AbsDisplayPage<*, *>, isLand: Boolean, value: Int) {
+    fun setGridSize(page: AbsDisplayPage<*, *>, value: Int) {
         if (value <= 0) return
         val pref = PreferenceUtil.getInstance(App.instance)
         // todo valid input
         when (page) {
             is SongPage -> {
-                if (isLand) pref.songGridSizeLand = value
+                if (isLandscape) pref.songGridSizeLand = value
                 else pref.songGridSize = value
             }
             else -> {}

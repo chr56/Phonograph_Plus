@@ -21,7 +21,6 @@ import androidx.drawerlayout.widget.DrawerLayout
 import chr_56.MDthemer.core.ThemeColor
 import chr_56.MDthemer.util.ColorUtil
 import chr_56.MDthemer.util.NavigationViewUtil
-import chr_56.MDthemer.util.Util
 import com.bumptech.glide.Glide
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
@@ -55,7 +54,8 @@ import player.phonograph.ui.fragments.mainactivity.library.new_ui.HomeFragment
 import player.phonograph.util.FileSaver
 import player.phonograph.util.MusicUtil
 import player.phonograph.util.PreferenceUtil
-import player.phonograph.util.PreferenceUtil.Companion.getInstance
+import chr_56.MDthemer.util.Util as MDthemerUtil
+import player.phonograph.util.Util as Util
 
 class MainActivity : AbsSlidingMusicPanelActivity() {
     // init : onCreate()
@@ -84,7 +84,7 @@ class MainActivity : AbsSlidingMusicPanelActivity() {
         setUpDrawer()
 
         if (savedInstanceState == null) {
-            setMusicChooser(getInstance(this).lastMusicChooser)
+            setMusicChooser(PreferenceUtil.getInstance(this).lastMusicChooser)
         } else {
             currentFragment =
                 supportFragmentManager.findFragmentById(R.id.fragment_container) as MainActivityFragmentCallbacks
@@ -103,6 +103,7 @@ class MainActivity : AbsSlidingMusicPanelActivity() {
         showChangelog()
 
         setUpFloatingActionButton()
+        displayConfig.isLandscape = Util.isLandscape(resources)
     }
 
     override fun createContentView(): View {
@@ -129,7 +130,7 @@ class MainActivity : AbsSlidingMusicPanelActivity() {
     }
 
     private fun setMusicChooser(key: Int) {
-        getInstance(this).lastMusicChooser = key
+        PreferenceUtil.getInstance(this).lastMusicChooser = key
         when (key) {
             LIBRARY -> {
                 navigationView.setCheckedItem(R.id.nav_library)
@@ -200,7 +201,7 @@ class MainActivity : AbsSlidingMusicPanelActivity() {
     private fun setUpDrawer() {
         val accentColor = ThemeColor.accentColor(this)
         NavigationViewUtil.setItemIconColors(
-            navigationView, Util.resolveColor(this, R.attr.iconColor, ThemeColor.textColorSecondary(this)), accentColor
+            navigationView, MDthemerUtil.resolveColor(this, R.attr.iconColor, ThemeColor.textColorSecondary(this)), accentColor
         )
         NavigationViewUtil.setItemTextColors(
             navigationView, ThemeColor.textColorPrimary(this), accentColor
@@ -387,8 +388,8 @@ class MainActivity : AbsSlidingMusicPanelActivity() {
     }
 
     private fun showIntro() {
-        if (!getInstance(this).introShown()) {
-            getInstance(this).setIntroShown()
+        if (!PreferenceUtil.getInstance(this).introShown()) {
+            PreferenceUtil.getInstance(this).setIntroShown()
             setChangelogRead(this)
 
             blockRequestPermissions = true
@@ -409,7 +410,7 @@ class MainActivity : AbsSlidingMusicPanelActivity() {
         try {
             val pInfo = packageManager.getPackageInfo(packageName, 0)
             val currentVersion = pInfo.versionCode
-            if (currentVersion != getInstance(this).getLastChangelogVersion()) {
+            if (currentVersion != PreferenceUtil.getInstance(this).getLastChangelogVersion()) {
                 create().show(supportFragmentManager, "CHANGE_LOG_DIALOG")
             }
         } catch (e: PackageManager.NameNotFoundException) {
