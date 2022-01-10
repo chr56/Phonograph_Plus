@@ -101,6 +101,8 @@ abstract class AbsDisplayPage<A : RecyclerView.Adapter<*>, LM : RecyclerView.Lay
             )
         }
         binding.empty.setText(emptyMessage)
+
+        binding.innerAppBar.setExpanded(false)
     }
 
     abstract fun configPopup(popupMenu: PopupWindow, popup: PopupWindowMainBinding)
