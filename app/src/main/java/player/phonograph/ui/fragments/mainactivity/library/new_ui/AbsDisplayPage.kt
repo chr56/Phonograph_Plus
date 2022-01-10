@@ -94,6 +94,7 @@ sealed class AbsDisplayPage<A : RecyclerView.Adapter<*>, LM : RecyclerView.Layou
             if (!hostFragment.isPopupMenuInited) hostFragment.initPopup()
             configPopup(hostFragment.popupMenu, hostFragment.popup)
             Log.d("HomePage", "popupWindowVerticalOffset:")
+            hostFragment.popupMenu.setOnDismissListener(initOnDismissListener(hostFragment.popupMenu, hostFragment.popup))
             hostFragment.popupMenu.showAtLocation(
                 binding.root, Gravity.TOP or Gravity.END, 0,
                 (hostFragment.mainActivity.findViewById<player.phonograph.views.StatusBarView>(R.id.status_bar)?.height ?: 8) +
@@ -104,6 +105,8 @@ sealed class AbsDisplayPage<A : RecyclerView.Adapter<*>, LM : RecyclerView.Layou
 
         binding.innerAppBar.setExpanded(false)
     }
+
+    abstract fun initOnDismissListener(popupMenu: PopupWindow, popup: PopupWindowMainBinding): PopupWindow.OnDismissListener?
 
     abstract fun configPopup(popupMenu: PopupWindow, popup: PopupWindowMainBinding)
 
