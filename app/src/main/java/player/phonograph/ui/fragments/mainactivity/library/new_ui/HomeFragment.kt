@@ -24,7 +24,7 @@ import com.google.android.material.tabs.TabLayoutMediator
 import player.phonograph.R
 import player.phonograph.adapter.HomePagerAdapter
 import player.phonograph.adapter.PAGERS
-import player.phonograph.adapter.PagerConfig
+import player.phonograph.adapter.PageConfig
 import player.phonograph.databinding.FragmentHomeBinding
 import player.phonograph.databinding.PopupWindowMainBinding
 import player.phonograph.ui.activities.MainActivity
@@ -94,8 +94,8 @@ class HomeFragment : AbsMainActivityFragment(), MainActivity.MainActivityFragmen
         binding.tabs.setSelectedTabIndicatorColor(accentColor)
     }
 
-    private fun readConfig(): PagerConfig { // todo
-        return PagerConfig(
+    private fun readConfig(): PageConfig { // todo
+        return PageConfig(
             HashMap<Int, String>(1)
                 .also {
                     it[0] = PAGERS.EMPTY
@@ -104,7 +104,7 @@ class HomeFragment : AbsMainActivityFragment(), MainActivity.MainActivityFragmen
         )
     }
 
-    private val cfg: PagerConfig get() = readConfig()
+    private val cfg: PageConfig get() = readConfig()
 
     private lateinit var pagerAdapter: HomePagerAdapter
 
