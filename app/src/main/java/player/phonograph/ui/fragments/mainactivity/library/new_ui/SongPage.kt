@@ -5,6 +5,7 @@
 package player.phonograph.ui.fragments.mainactivity.library.new_ui
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -30,14 +31,19 @@ class SongPage : AbsDisplayPage<UniversalSongAdapter, GridLayoutManager>() {
     }
 
     override fun initAdapter(): UniversalSongAdapter {
-//        val dataSet = MutableList(15) {
-//            Song(0, "test", 0, 0, 0, "/storage/emulated/0/Music/demo.mp3", 0, 0, "demo", 0, "NA")
-//        }
+        val displayConfig = hostFragment.mainActivity.displayConfig
+        val layoutRes =
+            if (displayConfig.getGridSize(this) > displayConfig.maxGridSizeForList) R.layout.item_grid
+            else R.layout.item_list
+        Log.d(TAG, "layoutRes: ${
+            if (layoutRes == R.layout.item_grid) "GRID" else if (layoutRes == R.layout.item_list) "LIST" else "UNKNOWN"
+        }")
+
         return UniversalSongAdapter(
             hostFragment.mainActivity,
             songs,
             UniversalSongAdapter.MODE_COMMON,
-            R.layout.item_list,
+            layoutRes,
             null
         )
     }
@@ -61,5 +67,9 @@ class SongPage : AbsDisplayPage<UniversalSongAdapter, GridLayoutManager>() {
 
     override fun configPopup(popupMenu: PopupWindow, popup: PopupWindowMainBinding) {
 //        TODO("Not yet implemented")
+    }
+
+    companion object {
+        const val TAG = "SongPage"
     }
 }
