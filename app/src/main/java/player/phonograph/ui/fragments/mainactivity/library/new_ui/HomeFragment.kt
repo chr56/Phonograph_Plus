@@ -4,12 +4,11 @@
 
 package player.phonograph.ui.fragments.mainactivity.library.new_ui
 
+import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.PopupWindow
 import android.widget.RadioButton
 import androidx.appcompat.content.res.AppCompatResources
@@ -29,6 +28,7 @@ import player.phonograph.adapter.PagerConfig
 import player.phonograph.databinding.FragmentHomeBinding
 import player.phonograph.databinding.PopupWindowMainBinding
 import player.phonograph.ui.activities.MainActivity
+import player.phonograph.ui.activities.SearchActivity
 import player.phonograph.ui.fragments.mainactivity.AbsMainActivityFragment
 import player.phonograph.util.PreferenceUtil
 
@@ -197,6 +197,32 @@ class HomeFragment : AbsMainActivityFragment(), MainActivity.MainActivityFragmen
         popupMenu.animationStyle = android.R.style.Animation_Dialog
 
         isPopupMenuInited = true
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+
+        val primaryColor = ThemeColor.primaryColor(mainActivity)
+        val primaryTextColor = MaterialColorHelper.getPrimaryTextColor(mainActivity, ColorUtil.isColorLight(primaryColor))
+
+        val f = BlendModeColorFilterCompat
+            .createBlendModeColorFilterCompat(primaryTextColor, BlendModeCompat.SRC_IN)
+
+        val search = menu.add(0, R.id.action_search, 0, R.string.action_search)
+        search.icon =
+            AppCompatResources.getDrawable(requireActivity(), R.drawable.ic_search_white_24dp)
+                .also { it?.colorFilter = f }
+
+        search.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS)
+    }
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.action_search -> {
+                startActivity(Intent(mainActivity, SearchActivity::class.java))
+                return true
+            }
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     fun addOnAppBarOffsetChangedListener(onOffsetChangedListener: AppBarLayout.OnOffsetChangedListener) {
