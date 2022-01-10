@@ -120,13 +120,25 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity() {
 
         // Init (song)adapter
         if (playlist is AbsCustomPlaylist) {
-            songAdapter = UniversalSongAdapter(this, ArrayList(), UniversalSongAdapter.MODE_PLAYLIST_SMART, CabCallBack(this))
+            songAdapter = UniversalSongAdapter(
+                this,
+                ArrayList(),
+                UniversalSongAdapter.MODE_PLAYLIST_SMART,
+                0,
+                CabCallBack(this)
+            )
             recyclerView.adapter = songAdapter
         } else {
             recyclerViewDragDropManager = RecyclerViewDragDropManager()
             val animator: GeneralItemAnimator = RefactoredDefaultItemAnimator()
 
-            songAdapter = UniversalSongAdapter(this, ArrayList(), UniversalSongAdapter.MODE_PLAYLIST_LOCAL, CabCallBack(this))
+            songAdapter = UniversalSongAdapter(
+                this,
+                ArrayList(),
+                UniversalSongAdapter.MODE_PLAYLIST_LOCAL,
+                0,
+                CabCallBack(this)
+            )
             wrappedAdapter = recyclerViewDragDropManager!!.createWrappedAdapter(songAdapter)
             recyclerView.adapter = wrappedAdapter
             recyclerView.itemAnimator = animator

@@ -9,6 +9,7 @@ import android.graphics.drawable.Drawable
 import android.view.*
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -48,17 +49,22 @@ open class UniversalSongAdapter :
     @Suppress("JoinDeclarationAndAssignment")
     private val activity: AppCompatActivity
     private val mode: Int
+    var itemLayoutRes: Int
+        private set
 
     constructor(
         activity: AppCompatActivity,
         songs: List<Song>,
         mode: Int = MODE_COMMON,
+        @LayoutRes
+        layoutRes: Int,
         cabHolder: CabHolder?
     ) : super(
         activity, cabHolder, R.menu.menu_media_selection
     ) {
         this.activity = activity
         this.mode = mode
+        this.itemLayoutRes = layoutRes
         this.songs = songs
         setHasStableIds(true)
     }
@@ -68,16 +74,6 @@ open class UniversalSongAdapter :
             field = dataSet
             notifyDataSetChanged()
             updateHeader()
-        }
-
-    val itemLayoutRes: Int
-        get() = when (mode) {
-            MODE_COMMON, MODE_ALL_SONGS -> R.layout.item_list
-            /*MODE_NO_COVER,*/ MODE_SEARCH -> R.layout.item_list_no_image
-            MODE_PLAYING_QUEUE, MODE_ALBUM -> R.layout.item_list // todo
-            /*MODE_ARTIST,*/ MODE_PLAYLIST_LOCAL, MODE_PLAYLIST_SMART -> R.layout.item_list
-            MODE_GRID -> R.layout.item_grid
-            else -> R.layout.item_list_no_image
         }
 
     private val headerLayoutRes: Int

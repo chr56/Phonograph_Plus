@@ -14,6 +14,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import player.phonograph.App
+import player.phonograph.R
 import player.phonograph.adapter.song.UniversalSongAdapter
 import player.phonograph.databinding.PopupWindowMainBinding
 import player.phonograph.model.Song
@@ -36,6 +37,7 @@ class SongPage : AbsDisplayPage<UniversalSongAdapter, GridLayoutManager>() {
             hostFragment.mainActivity,
             songs,
             UniversalSongAdapter.MODE_COMMON,
+            R.layout.item_list,
             null
         )
     }
