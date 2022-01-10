@@ -91,7 +91,7 @@ class HomeFragment : AbsMainActivityFragment(), MainActivity.MainActivityFragmen
 
     private val cfg: PagerConfig = PagerConfig(
         HashMap<Int, String>(1)
-            .also { it[0] = PAGERS.SONG }
+            .also { it[0] = PAGERS.EMPTY }
     )
 
     private lateinit var pagerAdapter: HomePagerAdapter
@@ -103,7 +103,8 @@ class HomeFragment : AbsMainActivityFragment(), MainActivity.MainActivityFragmen
         binding.pager.adapter = pagerAdapter
         TabLayoutMediator(binding.tabs, binding.pager) { tab: TabLayout.Tab, i: Int ->
             when (cfg.get(i)) {
-                PAGERS.SONG -> tab.text = getString(R.string.songs)
+//                PAGERS.SONG -> tab.text = getString(R.string.songs)
+                PAGERS.EMPTY -> tab.text = "TODO"
             }
         }.attach()
     }

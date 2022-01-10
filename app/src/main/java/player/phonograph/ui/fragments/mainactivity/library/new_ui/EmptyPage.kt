@@ -10,7 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import player.phonograph.databinding.FragmentMainActivityRecyclerViewBinding
 
-class SongPage : AbsPage() {
+class EmptyPage : AbsPage() {
     private var _viewBinding: FragmentMainActivityRecyclerViewBinding? = null
     private val binding get() = _viewBinding!!
 
