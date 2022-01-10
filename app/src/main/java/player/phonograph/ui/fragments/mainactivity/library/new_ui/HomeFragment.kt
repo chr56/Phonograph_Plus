@@ -15,6 +15,7 @@ import androidx.viewpager2.widget.ViewPager2
 import chr_56.MDthemer.core.ThemeColor
 import chr_56.MDthemer.util.ColorUtil
 import chr_56.MDthemer.util.MaterialColorHelper
+import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import player.phonograph.R
@@ -119,6 +120,16 @@ class HomeFragment : AbsMainActivityFragment(), MainActivity.MainActivityFragmen
     companion object {
         fun newInstance(): HomeFragment = HomeFragment()
     }
+
+    fun addOnAppBarOffsetChangedListener(onOffsetChangedListener: AppBarLayout.OnOffsetChangedListener) {
+        binding.appbar.addOnOffsetChangedListener(onOffsetChangedListener)
+    }
+
+    fun removeOnAppBarOffsetChangedListener(onOffsetChangedListener: AppBarLayout.OnOffsetChangedListener) {
+        binding.appbar.removeOnOffsetChangedListener(onOffsetChangedListener)
+    }
+
+    val totalAppBarScrollingRange: Int get() = binding.appbar.totalScrollRange
 }
 
 //    SharedPreferences.OnSharedPreferenceChangeListener, ViewPager.OnPageChangeListener
