@@ -89,13 +89,17 @@ class HomeFragment : AbsMainActivityFragment(), MainActivity.MainActivityFragmen
         binding.tabs.setSelectedTabIndicatorColor(accentColor)
     }
 
-    private val cfg: PagerConfig = PagerConfig(
-        HashMap<Int, String>(1)
-            .also {
-                it[0] = PAGERS.EMPTY
-                it[1] = PAGERS.SONG
-            }
-    )
+    private fun readConfig(): PagerConfig { // todo
+        return PagerConfig(
+            HashMap<Int, String>(1)
+                .also {
+                    it[0] = PAGERS.EMPTY
+                    it[1] = PAGERS.SONG
+                }
+        )
+    }
+
+    private val cfg: PagerConfig get() = readConfig()
 
     private lateinit var pagerAdapter: HomePagerAdapter
 
