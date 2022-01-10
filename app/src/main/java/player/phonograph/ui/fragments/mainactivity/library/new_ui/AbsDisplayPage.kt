@@ -15,17 +15,16 @@ import com.google.android.material.appbar.AppBarLayout
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView
 import player.phonograph.App
 import player.phonograph.R
-import player.phonograph.databinding.FragmentMainActivityRecyclerViewBinding
+import player.phonograph.databinding.FragmentDisplayPageBinding
 import player.phonograph.util.ViewUtil
 
-abstract class AbsDisplayPage<A : RecyclerView.Adapter<*>, LM : RecyclerView.LayoutManager> :
-    AbsPage(), AppBarLayout.OnOffsetChangedListener {
+abstract class AbsDisplayPage<A : RecyclerView.Adapter<*>, LM : RecyclerView.LayoutManager> : AbsPage() {
 
-    private var _viewBinding: FragmentMainActivityRecyclerViewBinding? = null
+    private var _viewBinding: FragmentDisplayPageBinding? = null
     private val binding get() = _viewBinding!!
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        _viewBinding = FragmentMainActivityRecyclerViewBinding.inflate(inflater, container, false)
+        _viewBinding = FragmentDisplayPageBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -37,13 +36,24 @@ abstract class AbsDisplayPage<A : RecyclerView.Adapter<*>, LM : RecyclerView.Lay
 
     protected var adapterDataObserver: RecyclerView.AdapterDataObserver? = null
 
-    protected var onOffsetChangedListener =
+//    protected var outerAppbarOffsetListener =
+//        AppBarLayout.OnOffsetChangedListener { _, verticalOffset ->
+//            binding.container.setPadding(
+//                binding.container.paddingLeft,
+//                binding.container.paddingTop,
+//                binding.container.paddingRight,
+//                hostFragment.totalAppBarScrollingRange + verticalOffset
+//            )
+//        }
+
+    protected var innerAppbarOffsetListener =
         AppBarLayout.OnOffsetChangedListener { _, verticalOffset ->
             binding.container.setPadding(
                 binding.container.paddingLeft,
-                binding.container.paddingTop,
+                binding.innerAppBar.totalScrollRange + verticalOffset,
                 binding.container.paddingRight,
-                hostFragment.totalAppBarScrollingRange + verticalOffset
+                binding.container.paddingBottom
+
             )
         }
 
@@ -64,20 +74,12 @@ abstract class AbsDisplayPage<A : RecyclerView.Adapter<*>, LM : RecyclerView.Lay
             it.layoutManager = layoutManager
         }
 
-        hostFragment.addOnAppBarOffsetChangedListener(onOffsetChangedListener)
+//        hostFragment.addOnAppBarOffsetChangedListener(outerAppbarOffsetListener)
+        binding.innerAppBar.addOnOffsetChangedListener(innerAppbarOffsetListener)
         binding.empty.setText(emptyMessage)
     }
 
     protected open val emptyMessage: Int @StringRes get() = R.string.empty
-
-    override fun onOffsetChanged(appBarLayout: AppBarLayout, i: Int) {
-        binding.container.setPadding(
-            binding.container.paddingLeft,
-            binding.container.paddingTop,
-            binding.container.paddingRight,
-            hostFragment.totalAppBarScrollingRange + i
-        )
-    }
 
     override fun onDestroyView() {
         super.onDestroyView()
@@ -86,7 +88,8 @@ abstract class AbsDisplayPage<A : RecyclerView.Adapter<*>, LM : RecyclerView.Lay
         }
         adapterDataObserver = null
 
-        hostFragment.removeOnAppBarOffsetChangedListener(onOffsetChangedListener)
+        binding.innerAppBar.addOnOffsetChangedListener(innerAppbarOffsetListener)
+//        hostFragment.removeOnAppBarOffsetChangedListener(outerAppbarOffsetListener)
         _viewBinding = null
     }
 }

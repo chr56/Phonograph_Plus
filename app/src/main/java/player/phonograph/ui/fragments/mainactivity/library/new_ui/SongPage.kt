@@ -15,7 +15,9 @@ class SongPage : AbsDisplayPage<UniversalSongAdapter, GridLayoutManager>() {
     }
 
     override fun initAdapter(): UniversalSongAdapter {
-        val dataSet = MutableList(1) { Song(0, "test", 0, 0, 0, "/storage/emulated/0/Music/SpecialForFool/todo.mp3", 0, 0, "todo", 0, "NA") }
+        val dataSet = MutableList(15) {
+            Song(0, "test", 0, 0, 0, "/storage/emulated/0/Music/todo.mp3", 0, 0, "todo", 0, "NA")
+        }
         return UniversalSongAdapter(
             hostFragment.mainActivity,
             dataSet,
