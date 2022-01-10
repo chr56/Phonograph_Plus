@@ -192,7 +192,7 @@ open class UniversalSongAdapter :
                     it.setTextColor(textColor)
                 }
             path = holder.itemView.findViewById<TextView>(R.id.path_text)
-                .also { it ->
+                .also {
                     it.text = linkedPlaylist?.let { playlist ->
                         if (playlist is AbsSmartPlaylist) "-" else
                             MediaStoreUtil.getPlaylistPath(activity, playlist)
@@ -317,14 +317,13 @@ open class UniversalSongAdapter :
                 false -> MusicPlayerRemote.openQueue(songs, songPosition, true)
             }
         }
-        override fun onLongClick(view: View): Boolean {
+        override fun onLongClick(v: View): Boolean {
             return if (itemViewType != ITEM_HEADER) toggleChecked(bindingAdapterPosition) else false
         }
     }
 
     @Suppress("MemberVisibilityCanBePrivate")
     companion object {
-        const val FEATURE_GRID = 1 shl 8
 
         const val FEATURE_PLAIN = 0
         const val FEATURE_IMAGE = 1
@@ -343,8 +342,6 @@ open class UniversalSongAdapter :
         const val MENU_SHORT_PLAYLIST = R.menu.menu_item_playlist_song_short
         const val MENU_QUEUE = R.menu.menu_item_playing_queue_song
 
-        const val MODE_GRID = FEATURE_GRID // no menu button ,so no ORDERABLE or DELETABLE
-//        const val MODE_NO_COVER = FEATURE_PLAIN
         const val MODE_COMMON = FEATURE_PLAIN + FEATURE_IMAGE
         const val MODE_ALL_SONGS = FEATURE_PLAIN + FEATURE_IMAGE + FEATURE_HEADER_SHUFFLE
         const val MODE_PLAYLIST_LOCAL = FEATURE_PLAIN + FEATURE_IMAGE + FEATURE_HEADER_SUMMARY + FEATURE_WITH_HANDLE + FEATURE_ORDERABLE + FEATURE_DELETABLE
