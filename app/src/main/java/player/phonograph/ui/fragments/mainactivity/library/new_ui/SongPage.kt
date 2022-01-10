@@ -28,6 +28,7 @@ class SongPage : AbsDisplayPage<UniversalSongAdapter, GridLayoutManager>() {
 
     override fun initLayoutManager(): GridLayoutManager {
         return GridLayoutManager(hostFragment.requireContext(), 1)
+            .also { it.spanCount = hostFragment.mainActivity.displayConfig.getGridSize(this) }
     }
 
     override fun initAdapter(): UniversalSongAdapter {
@@ -35,9 +36,12 @@ class SongPage : AbsDisplayPage<UniversalSongAdapter, GridLayoutManager>() {
         val layoutRes =
             if (displayConfig.getGridSize(this) > displayConfig.maxGridSizeForList) R.layout.item_grid
             else R.layout.item_list
-        Log.d(TAG, "layoutRes: ${
+        Log.d(
+            TAG,
+            "layoutRes: ${
             if (layoutRes == R.layout.item_grid) "GRID" else if (layoutRes == R.layout.item_list) "LIST" else "UNKNOWN"
-        }")
+            }"
+        )
 
         return UniversalSongAdapter(
             hostFragment.mainActivity,
@@ -54,11 +58,6 @@ class SongPage : AbsDisplayPage<UniversalSongAdapter, GridLayoutManager>() {
         }
         return super.onCreateView(inflater, container, savedInstanceState)
     }
-
-//    override fun onStart() {
-//        super.onStart()
-//        adapter.songs = songs
-//    }
 
     override fun onResume() {
         super.onResume()
