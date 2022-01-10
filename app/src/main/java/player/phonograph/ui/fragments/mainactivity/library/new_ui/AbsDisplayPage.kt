@@ -9,6 +9,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.StringRes
+import androidx.appcompat.content.res.AppCompatResources
+import androidx.core.graphics.BlendModeColorFilterCompat
+import androidx.core.graphics.BlendModeCompat
 import androidx.recyclerview.widget.RecyclerView
 import chr_56.MDthemer.core.ThemeColor
 import com.google.android.material.appbar.AppBarLayout
@@ -76,6 +79,13 @@ abstract class AbsDisplayPage<A : RecyclerView.Adapter<*>, LM : RecyclerView.Lay
 
 //        hostFragment.addOnAppBarOffsetChangedListener(outerAppbarOffsetListener)
         binding.innerAppBar.addOnOffsetChangedListener(innerAppbarOffsetListener)
+        val actionDrawable = AppCompatResources.getDrawable(hostFragment.mainActivity, R.drawable.ic_sort_variant_white_24dp)
+        actionDrawable?.colorFilter = BlendModeColorFilterCompat
+            .createBlendModeColorFilterCompat(
+                binding.textPageHeader.currentTextColor,
+                BlendModeCompat.SRC_IN
+            )
+        binding.actionPageHeader.setImageDrawable(actionDrawable)
         binding.empty.setText(emptyMessage)
     }
 
