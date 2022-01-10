@@ -80,7 +80,7 @@ class HomeFragment : AbsMainActivityFragment(), MainActivity.MainActivityFragmen
         binding.appbar.setBackgroundColor(primaryColor)
         binding.toolbar.navigationIcon = navigationIcon
         binding.toolbar.setBackgroundColor(primaryColor)
-        binding.toolbar.setTitleTextColor(primaryColor)
+        binding.toolbar.setTitleTextColor(primaryTextColor)
         binding.toolbar.title = requireActivity().getString(R.string.app_name)
         mainActivity.setSupportActionBar(binding.toolbar)
 
