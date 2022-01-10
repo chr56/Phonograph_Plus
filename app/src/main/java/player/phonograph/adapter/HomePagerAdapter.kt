@@ -7,6 +7,7 @@ package player.phonograph.adapter
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import player.phonograph.ui.fragments.mainactivity.library.new_ui.EmptyPage
+import player.phonograph.ui.fragments.mainactivity.library.new_ui.SongPage
 import java.lang.ref.WeakReference
 
 class HomePagerAdapter(fragment: Fragment, var cfg: PagerConfig) : FragmentStateAdapter(fragment) {
@@ -20,7 +21,7 @@ class HomePagerAdapter(fragment: Fragment, var cfg: PagerConfig) : FragmentState
     override fun createFragment(position: Int): Fragment {
         val fragmentClass =
             when (cfg.get(position)) {
-//                PAGERS.SONG -> SongPage::class.java
+                PAGERS.SONG -> SongPage::class.java
                 else -> EmptyPage::class.java
             }
         var fragment: Fragment? = null
