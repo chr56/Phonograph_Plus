@@ -8,10 +8,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
 import player.phonograph.databinding.FragmentMainActivityRecyclerViewBinding
 
-class SongPage : Fragment() {
+class SongPage : AbsPage() {
     private var _viewBinding: FragmentMainActivityRecyclerViewBinding? = null
     private val binding get() = _viewBinding!!
 
