@@ -35,14 +35,6 @@ sealed class AbsDisplayPage<A : RecyclerView.Adapter<*>, LM : RecyclerView.Layou
         return binding.root
     }
 
-    protected lateinit var adapter: A
-    protected lateinit var layoutManager: LM
-
-    protected abstract fun initLayoutManager(): LM
-    protected abstract fun initAdapter(): A
-
-    protected var adapterDataObserver: RecyclerView.AdapterDataObserver? = null
-
 //    protected var outerAppbarOffsetListener =
 //        AppBarLayout.OnOffsetChangedListener { _, verticalOffset ->
 //            binding.container.setPadding(
@@ -68,6 +60,21 @@ sealed class AbsDisplayPage<A : RecyclerView.Adapter<*>, LM : RecyclerView.Layou
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        initViewPage()
+        initAppBar()
+    }
+
+    protected lateinit var adapter: A
+    protected lateinit var layoutManager: LM
+
+    protected abstract fun initLayoutManager(): LM
+    protected abstract fun initAdapter(): A
+
+    protected var adapterDataObserver: RecyclerView.AdapterDataObserver? = null
+
+    protected fun initViewPage() {
+
         layoutManager = initLayoutManager()
         adapter = initAdapter()
         adapterDataObserver?.let { adapter.registerAdapterDataObserver(it) }
@@ -81,6 +88,13 @@ sealed class AbsDisplayPage<A : RecyclerView.Adapter<*>, LM : RecyclerView.Layou
             it.layoutManager = layoutManager
         }
 
+        binding.empty.setText(emptyMessage)
+        // todo
+    }
+
+    protected fun initAppBar() {
+
+        binding.innerAppBar.setExpanded(false)
 //        hostFragment.addOnAppBarOffsetChangedListener(outerAppbarOffsetListener)
         binding.innerAppBar.addOnOffsetChangedListener(innerAppbarOffsetListener)
         val actionDrawable = AppCompatResources.getDrawable(hostFragment.mainActivity, R.drawable.ic_sort_variant_white_24dp)
@@ -98,17 +112,15 @@ sealed class AbsDisplayPage<A : RecyclerView.Adapter<*>, LM : RecyclerView.Layou
             hostFragment.popupMenu.showAtLocation(
                 binding.root, Gravity.TOP or Gravity.END, 0,
                 (hostFragment.mainActivity.findViewById<player.phonograph.views.StatusBarView>(R.id.status_bar)?.height ?: 8) +
-                    hostFragment.totalHeaderHeight + binding.innerAppBar.height
+                        hostFragment.totalHeaderHeight + binding.innerAppBar.height
             )
         }
-        binding.empty.setText(emptyMessage)
-
-        binding.innerAppBar.setExpanded(false)
     }
 
     abstract fun initOnDismissListener(popupMenu: PopupWindow, popup: PopupWindowMainBinding): PopupWindow.OnDismissListener?
 
     abstract fun configPopup(popupMenu: PopupWindow, popup: PopupWindowMainBinding)
+
 
     protected open val emptyMessage: Int @StringRes get() = R.string.empty
 

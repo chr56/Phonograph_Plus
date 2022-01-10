@@ -50,7 +50,6 @@ open class UniversalSongAdapter :
     private val activity: AppCompatActivity
     private val mode: Int
     var itemLayoutRes: Int
-        private set
 
     constructor(
         activity: AppCompatActivity,

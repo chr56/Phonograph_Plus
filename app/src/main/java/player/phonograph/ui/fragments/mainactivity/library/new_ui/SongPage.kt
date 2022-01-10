@@ -96,7 +96,14 @@ class SongPage : AbsDisplayPage<UniversalSongAdapter, GridLayoutManager>() {
             }
 
             if (gridSize > 0) {
+
                 displayConfig.setGridSize(this, gridSize)
+                val itemLayoutRes =
+                    if (gridSize > displayConfig.maxGridSizeForList) R.layout.item_grid else R.layout.item_list
+
+                if (displayConfig.getGridSize(this) != itemLayoutRes)
+                    initViewPage() // again
+
                 layoutManager.spanCount = gridSize
             }
         }
