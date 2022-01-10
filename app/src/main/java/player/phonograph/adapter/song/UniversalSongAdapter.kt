@@ -53,7 +53,7 @@ open class UniversalSongAdapter :
         activity: AppCompatActivity,
         songs: List<Song>,
         mode: Int = MODE_COMMON,
-        cabHolder: CabHolder
+        cabHolder: CabHolder?
     ) : super(
         activity, cabHolder, R.menu.menu_media_selection
     ) {
