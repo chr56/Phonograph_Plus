@@ -6,9 +6,7 @@ package player.phonograph.adapter
 
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import com.google.android.material.tabs.TabLayout
-import player.phonograph.ui.fragments.mainactivity.library.pager.AbsLibraryPagerFragment
-import java.lang.Exception
+import player.phonograph.ui.fragments.mainactivity.library.pager.SongsFragment
 import java.lang.ref.WeakReference
 
 class HomePagerAdapter(fragment: Fragment, var cfg: PagerConfig) : FragmentStateAdapter(fragment) {
@@ -20,34 +18,33 @@ class HomePagerAdapter(fragment: Fragment, var cfg: PagerConfig) : FragmentState
     }
 
     override fun createFragment(position: Int): Fragment {
-        val fragmentClass = cfg.get(position).fragmentClass
+        val fragmentClass =
+            when (cfg.get(position)) {
+                PAGERS.SONG -> SongsFragment::class.java
+                else -> Fragment::class.java
+            }
         var fragment: Fragment? = null
+
         try {
             fragment = fragmentClass.getConstructor().newInstance()
         } catch (e: Exception) {
             e.printStackTrace()
         }
+
         return fragment ?: Fragment()
     }
 }
 
-class PagerConfig(var list: MutableList<TabPair>) {
-    init {
-        list.sortedBy { it.index }
+class PagerConfig(var tabMap: MutableMap<Int, String>) {
+
+    fun getSize(): Int = tabMap.size
+
+    fun get(index: Int): String {
+        return tabMap[index] ?: "EMPTY"
     }
-
-    fun getSize(): Int = list.size
-
-    fun get(index: Int): TabPair {
-        list.forEach { tabPair ->
-            if (tabPair.index == index) return@get tabPair
-        }
-        return list[0]
+}
+interface PAGERS {
+    companion object {
+        const val SONG = "SONG"
     }
-
-    data class TabPair(
-        var index: Int,
-        var tab: TabLayout.Tab,
-        var fragmentClass: Class<out AbsLibraryPagerFragment>
-    )
 }

@@ -19,11 +19,11 @@ import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import player.phonograph.R
 import player.phonograph.adapter.HomePagerAdapter
+import player.phonograph.adapter.PAGERS
 import player.phonograph.adapter.PagerConfig
 import player.phonograph.databinding.FragmentHomeBinding
 import player.phonograph.ui.activities.MainActivity
 import player.phonograph.ui.fragments.mainactivity.AbsMainActivityFragment
-import player.phonograph.ui.fragments.mainactivity.library.pager.SongsFragment
 import player.phonograph.util.PreferenceUtil
 
 class HomeFragment : AbsMainActivityFragment(), MainActivity.MainActivityFragmentCallbacks {
@@ -81,10 +81,10 @@ class HomeFragment : AbsMainActivityFragment(), MainActivity.MainActivityFragmen
         mainActivity.setSupportActionBar(binding.toolbar)
     }
 
-    private val cfg: PagerConfig =
-        PagerConfig(
-            mutableListOf(PagerConfig.TabPair(0, TabLayout.Tab().also { it.text = "Song" }, SongsFragment::class.java))
-        )
+    private val cfg: PagerConfig = PagerConfig(
+        HashMap<Int, String>(1)
+            .also { it[0] = PAGERS.SONG }
+    )
 
     private lateinit var pagerAdapter: HomePagerAdapter
 
