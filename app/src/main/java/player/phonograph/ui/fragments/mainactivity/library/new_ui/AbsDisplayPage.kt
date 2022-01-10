@@ -25,7 +25,7 @@ import player.phonograph.databinding.FragmentDisplayPageBinding
 import player.phonograph.databinding.PopupWindowMainBinding
 import player.phonograph.util.ViewUtil
 
-abstract class AbsDisplayPage<A : RecyclerView.Adapter<*>, LM : RecyclerView.LayoutManager> : AbsPage() {
+sealed class AbsDisplayPage<A : RecyclerView.Adapter<*>, LM : RecyclerView.LayoutManager> : AbsPage() {
 
     private var _viewBinding: FragmentDisplayPageBinding? = null
     private val binding get() = _viewBinding!!
