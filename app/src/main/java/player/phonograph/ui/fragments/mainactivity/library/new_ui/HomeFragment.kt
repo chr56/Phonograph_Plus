@@ -11,15 +11,19 @@ import android.view.ViewGroup
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.graphics.BlendModeColorFilterCompat
 import androidx.core.graphics.BlendModeCompat
+import androidx.viewpager2.widget.ViewPager2
 import chr_56.MDthemer.core.ThemeColor
 import chr_56.MDthemer.util.ColorUtil
 import chr_56.MDthemer.util.MaterialColorHelper
 import com.google.android.material.tabs.TabLayout
+import com.google.android.material.tabs.TabLayoutMediator
 import player.phonograph.R
-import player.phonograph.adapter.MusicLibraryPagerAdapter
+import player.phonograph.adapter.HomePagerAdapter
+import player.phonograph.adapter.PagerConfig
 import player.phonograph.databinding.FragmentHomeBinding
 import player.phonograph.ui.activities.MainActivity
 import player.phonograph.ui.fragments.mainactivity.AbsMainActivityFragment
+import player.phonograph.ui.fragments.mainactivity.library.pager.SongsFragment
 import player.phonograph.util.PreferenceUtil
 
 class HomeFragment : AbsMainActivityFragment(), MainActivity.MainActivityFragmentCallbacks {
@@ -73,18 +77,26 @@ class HomeFragment : AbsMainActivityFragment(), MainActivity.MainActivityFragmen
         binding.toolbar.setTitleTextColor(primaryColor)
         binding.toolbar.title = requireActivity().getString(R.string.app_name)
 
-        binding.tabs.tabMode = if (PreferenceUtil.getInstance(requireContext())
-                .fixedTabLayout()
-        ) TabLayout.MODE_FIXED else TabLayout.MODE_SCROLLABLE
+        binding.tabs.tabMode = if (PreferenceUtil.getInstance(requireContext()).fixedTabLayout()) TabLayout.MODE_FIXED else TabLayout.MODE_SCROLLABLE
         mainActivity.setSupportActionBar(binding.toolbar)
     }
 
+    private val cfg: PagerConfig =
+        PagerConfig(
+            mutableListOf(PagerConfig.TabPair(0, TabLayout.Tab().also { it.text = "Song" }, SongsFragment::class.java))
+        )
+
+    private lateinit var pagerAdapter: HomePagerAdapter
+
     private fun setUpViewPager() {
-        TODO("Not yet implemented")
+        pagerAdapter = HomePagerAdapter(this, cfg)
+
+        binding.pager.orientation = ViewPager2.ORIENTATION_HORIZONTAL
+        binding.pager.adapter = pagerAdapter
+        TabLayoutMediator(binding.tabs, binding.pager) { tab: TabLayout.Tab, i: Int ->
+            cfg.get(i)
+        }
     }
-
-
-    private lateinit var pagerAdapter: MusicLibraryPagerAdapter // [setUpViewPager()]
 
     override fun handleBackPress(): Boolean {
         // todo cab
