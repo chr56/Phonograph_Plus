@@ -4,8 +4,10 @@
 
 package player.phonograph.ui.fragments.mainactivity.library.new_ui
 
+import android.widget.PopupWindow
 import androidx.recyclerview.widget.GridLayoutManager
 import player.phonograph.adapter.song.UniversalSongAdapter
+import player.phonograph.databinding.PopupWindowMainBinding
 import player.phonograph.model.Song
 
 class SongPage : AbsDisplayPage<UniversalSongAdapter, GridLayoutManager>() {
@@ -24,5 +26,9 @@ class SongPage : AbsDisplayPage<UniversalSongAdapter, GridLayoutManager>() {
             UniversalSongAdapter.MODE_COMMON,
             null
         )
+    }
+
+    override fun configPopup(popupMenu: PopupWindow, popup: PopupWindowMainBinding) {
+//        TODO("Not yet implemented")
     }
 }

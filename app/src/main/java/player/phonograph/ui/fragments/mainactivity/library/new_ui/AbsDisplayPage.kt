@@ -5,9 +5,12 @@
 package player.phonograph.ui.fragments.mainactivity.library.new_ui
 
 import android.os.Bundle
+import android.util.Log
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.PopupWindow
 import androidx.annotation.StringRes
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.graphics.BlendModeColorFilterCompat
@@ -19,6 +22,7 @@ import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView
 import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.databinding.FragmentDisplayPageBinding
+import player.phonograph.databinding.PopupWindowMainBinding
 import player.phonograph.util.ViewUtil
 
 abstract class AbsDisplayPage<A : RecyclerView.Adapter<*>, LM : RecyclerView.LayoutManager> : AbsPage() {
@@ -86,8 +90,20 @@ abstract class AbsDisplayPage<A : RecyclerView.Adapter<*>, LM : RecyclerView.Lay
                 BlendModeCompat.SRC_IN
             )
         binding.actionPageHeader.setImageDrawable(actionDrawable)
+        binding.actionPageHeader.setOnClickListener {
+            if (!hostFragment.isPopupMenuInited) hostFragment.initPopup()
+            configPopup(hostFragment.popupMenu, hostFragment.popup)
+            Log.d("HomePage", "popupWindowVerticalOffset:")
+            hostFragment.popupMenu.showAtLocation(
+                binding.root, Gravity.TOP or Gravity.END, 0,
+                (hostFragment.mainActivity.findViewById<player.phonograph.views.StatusBarView>(R.id.status_bar)?.height ?: 8) +
+                    hostFragment.totalHeaderHeight + binding.innerAppBar.height
+            )
+        }
         binding.empty.setText(emptyMessage)
     }
+
+    abstract fun configPopup(popupMenu: PopupWindow, popup: PopupWindowMainBinding)
 
     protected open val emptyMessage: Int @StringRes get() = R.string.empty
 
