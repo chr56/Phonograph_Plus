@@ -106,6 +106,10 @@ class HomeFragment : AbsMainActivityFragment(), MainActivity.MainActivityFragmen
     override fun handleFloatingActionButtonPress(): Boolean {
         return false
     }
+
+    companion object {
+        fun newInstance(): HomeFragment = HomeFragment()
+    }
 }
 
 //    SharedPreferences.OnSharedPreferenceChangeListener, ViewPager.OnPageChangeListener

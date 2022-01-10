@@ -49,6 +49,7 @@ import player.phonograph.ui.activities.intro.AppIntroActivity
 import player.phonograph.ui.fragments.mainactivity.AbsMainActivityFragment
 import player.phonograph.ui.fragments.mainactivity.folders.FoldersFragment
 import player.phonograph.ui.fragments.mainactivity.library.LibraryFragment
+import player.phonograph.ui.fragments.mainactivity.library.new_ui.HomeFragment
 import player.phonograph.util.FileSaver
 import player.phonograph.util.MusicUtil
 import player.phonograph.util.PreferenceUtil
@@ -134,6 +135,10 @@ class MainActivity : AbsSlidingMusicPanelActivity() {
                 navigationView.setCheckedItem(R.id.nav_folders)
                 setCurrentFragment(FoldersFragment.newInstance(this))
             }
+            HOME -> {
+                navigationView.setCheckedItem(R.id.nav_home)
+                setCurrentFragment(HomeFragment.newInstance())
+            }
         }
     }
 
@@ -203,6 +208,7 @@ class MainActivity : AbsSlidingMusicPanelActivity() {
             when (menuItem.itemId) {
                 R.id.nav_library -> Handler().postDelayed({ setMusicChooser(LIBRARY) }, 200)
                 R.id.nav_folders -> Handler().postDelayed({ setMusicChooser(FOLDERS) }, 200)
+                R.id.nav_home -> Handler().postDelayed({ setMusicChooser(HOME) }, 200)
 
                 R.id.action_shuffle_all -> Handler().postDelayed({
                     MusicPlayerRemote.openAndShuffleQueue(SongLoader.getAllSongs(this), true)
@@ -445,5 +451,6 @@ class MainActivity : AbsSlidingMusicPanelActivity() {
 
         private const val LIBRARY = 0
         private const val FOLDERS = 1
+        private const val HOME = 2
     }
 }
