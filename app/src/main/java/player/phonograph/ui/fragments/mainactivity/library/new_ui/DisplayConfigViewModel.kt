@@ -6,10 +6,18 @@ package player.phonograph.ui.fragments.mainactivity.library.new_ui
 
 import androidx.lifecycle.ViewModel
 import player.phonograph.App
+import player.phonograph.R
 import player.phonograph.util.PreferenceUtil
 
 class DisplayConfigViewModel : ViewModel() {
     var isLandscape: Boolean = false
+
+    val maxGridSize: Int
+        get() = if (isLandscape) App.instance.resources.getInteger(R.integer.max_columns_land) else
+            App.instance.resources.getInteger(R.integer.max_columns)
+    val maxGridSizeForList: Int
+        get() = if (isLandscape) App.instance.resources.getInteger(R.integer.default_list_columns_land) else
+            App.instance.resources.getInteger(R.integer.default_list_columns)
 
     fun getSortOrder(page: AbsDisplayPage<*, *>): String {
         val pref = PreferenceUtil.getInstance(App.instance)
