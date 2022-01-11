@@ -220,6 +220,10 @@ class SongPage : AbsDisplayPage<Song, UniversalSongAdapter, GridLayoutManager>()
         }
     }
 
+    override fun getHeaderText(): CharSequence {
+        return "Song: ${items.size}"
+    }
+
     companion object {
         const val TAG = "SongPage"
     }

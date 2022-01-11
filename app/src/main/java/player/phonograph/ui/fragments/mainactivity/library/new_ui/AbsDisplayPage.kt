@@ -22,7 +22,6 @@ import androidx.core.graphics.BlendModeCompat
 import androidx.recyclerview.widget.RecyclerView
 import chr_56.MDthemer.core.ThemeColor
 import com.google.android.material.appbar.AppBarLayout
-import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView
 import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.databinding.FragmentDisplayPageBinding
@@ -102,6 +101,7 @@ sealed class AbsDisplayPage<IT, A : RecyclerView.Adapter<*>, LM : RecyclerView.L
             override fun onChanged() {
                 super.onChanged()
                 checkEmpty()
+                updateHeaderText()
             }
         }
         adapter.registerAdapterDataObserver(adapterDataObserver)
@@ -222,6 +222,12 @@ sealed class AbsDisplayPage<IT, A : RecyclerView.Adapter<*>, LM : RecyclerView.L
             binding.empty.visibility = if (items.isEmpty()) View.VISIBLE else View.GONE
         }
     }
+
+    protected fun updateHeaderText() {
+        binding.textPageHeader.text = getHeaderText()
+    }
+    protected abstract fun getHeaderText(): CharSequence
+
     override fun onDestroyView() {
         super.onDestroyView()
         adapter.unregisterAdapterDataObserver(adapterDataObserver)
