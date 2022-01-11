@@ -16,6 +16,14 @@ import player.phonograph.R
  * @author Karim Abou Zeid (kabouzeid)
  */
 object Util {
+
+    @JvmStatic
+    fun getStyleId(context: Context): Int {
+        val outValue = TypedValue()
+        val result: Boolean = context.theme.resolveAttribute(android.R.attr.theme, outValue, true)
+        return if (result)outValue.resourceId else 0
+    }
+
     @JvmStatic
     fun getActionBarSize(context: Context): Int {
         val typedValue = TypedValue()
