@@ -26,6 +26,7 @@ import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.databinding.FragmentDisplayPageBinding
 import player.phonograph.databinding.PopupWindowMainBinding
+import player.phonograph.util.PhonographColorUtil
 import player.phonograph.util.PreferenceUtil
 import player.phonograph.util.Util
 import player.phonograph.util.ViewUtil
@@ -171,10 +172,10 @@ sealed class AbsDisplayPage<IT, A : RecyclerView.Adapter<*>, LM : RecyclerView.L
 
         return PopupWindow(popupView.root, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, true).apply {
             this.animationStyle = android.R.style.Animation_Dialog
-            this.setBackgroundDrawable(ColorDrawable(getCorrectBackgroundColor(mainActivity)))
+            this.setBackgroundDrawable(ColorDrawable(PhonographColorUtil.getCorrectBackgroundColor(mainActivity)))
         }
     }
-    protected fun resetPopupMenuBackgroundColor() { popupWindow.setBackgroundDrawable(ColorDrawable(getCorrectBackgroundColor(hostFragment.mainActivity))) }
+    protected fun resetPopupMenuBackgroundColor() { popupWindow.setBackgroundDrawable(ColorDrawable(PhonographColorUtil.getCorrectBackgroundColor(hostFragment.mainActivity))) }
 
     protected fun onPopupShow() {
         // first, hide all items
@@ -238,19 +239,6 @@ sealed class AbsDisplayPage<IT, A : RecyclerView.Adapter<*>, LM : RecyclerView.L
         _viewBinding = null
     }
 
-    @ColorInt
-    protected fun getCorrectBackgroundColor(context: Context): Int { // todo move to util or view model
-        return context.resources.getColor(
-            when (PreferenceUtil.getInstance(context).generalTheme) {
-                R.style.Theme_Phonograph_Auto -> R.color.cardBackgroundColor
-                R.style.Theme_Phonograph_Light -> R.color.md_white_1000
-                R.style.Theme_Phonograph_Black -> R.color.md_black_1000
-                R.style.Theme_Phonograph_Dark -> R.color.md_grey_800
-                else -> R.color.md_grey_700
-            },
-            context.theme
-        )
-    }
 }
 
 class DisplayUtil(private val page: AbsDisplayPage<*, *, *>) {
