@@ -356,7 +356,7 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity() {
      *
      * *******************/
     private inner class CabCallBack(private val activity: PlaylistDetailActivity) : CabHolder {
-        override fun openCab(menuRes: Int, callback: MaterialCab.Callback?): MaterialCab {
+        override fun showCab(menuRes: Int, callback: MaterialCab.Callback?): MaterialCab {
             // finish existed cab
             cab?.also { if (it.isActive) it.finish() }
             // create new

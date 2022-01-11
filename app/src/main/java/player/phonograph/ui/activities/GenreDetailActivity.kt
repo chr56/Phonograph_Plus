@@ -111,7 +111,7 @@ class GenreDetailActivity :
         return super.onOptionsItemSelected(item)
     }
 
-    override fun openCab(menu: Int, callback: MaterialCab.Callback): MaterialCab {
+    override fun showCab(menu: Int, callback: MaterialCab.Callback): MaterialCab {
         cab?.let { if (it.isActive) it.finish() }
         return MaterialCab(this, R.id.cab_stub)
             .setMenu(menu)

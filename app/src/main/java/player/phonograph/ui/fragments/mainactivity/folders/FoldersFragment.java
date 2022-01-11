@@ -237,7 +237,7 @@ public class FoldersFragment extends AbsMainActivityFragment implements MainActi
 
     @NonNull
     @Override
-    public MaterialCab openCab(int menuRes, MaterialCab.Callback callback) {
+    public MaterialCab showCab(int menuRes, MaterialCab.Callback callback) {
         if (cab != null && cab.isActive()) cab.finish();
         cab = new MaterialCab(getMainActivity(), R.id.cab_stub)
                 .setMenu(menuRes)

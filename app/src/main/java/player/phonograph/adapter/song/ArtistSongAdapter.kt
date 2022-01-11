@@ -127,7 +127,7 @@ class ArtistSongAdapter(
     private fun openCabIfNecessary() {
         if (cabHolder != null) {
             if (cab == null || !cab!!.isActive) {
-                cab = cabHolder.openCab(R.menu.menu_media_selection, this)
+                cab = cabHolder.showCab(R.menu.menu_media_selection, this)
             }
         }
     }

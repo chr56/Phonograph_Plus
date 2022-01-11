@@ -54,7 +54,7 @@ abstract class AbsMultiSelectAdapter<VH : RecyclerView.ViewHolder, I>(
     private fun updateCab() {
         if (cabHolder != null) {
             if (cab == null || !cab!!.isActive) {
-                cab = cabHolder.openCab(menuRes, this)
+                cab = cabHolder.showCab(menuRes, this)
             }
             val size = checked.size
             if (size <= 0) cab!!.finish()

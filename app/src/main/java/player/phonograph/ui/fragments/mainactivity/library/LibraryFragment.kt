@@ -137,7 +137,7 @@ class LibraryFragment :
     }
 
     private var cab: MaterialCab? = null
-    override fun openCab(menuRes: Int, callback: MaterialCab.Callback?): MaterialCab {
+    override fun showCab(menuRes: Int, callback: MaterialCab.Callback?): MaterialCab {
 
         cab?.let {
             if (it.isActive) it.finish()

@@ -379,7 +379,7 @@ public class ArtistDetailActivity extends AbsSlidingMusicPanelActivity implement
 
     @NonNull
     @Override
-    public MaterialCab openCab(int menuRes, @NonNull final MaterialCab.Callback callback) {
+    public MaterialCab showCab(int menuRes, @NonNull final MaterialCab.Callback callback) {
         if (cab != null && cab.isActive()) cab.finish();
         cab = new MaterialCab(this, R.id.cab_stub)
                 .setMenu(menuRes)
