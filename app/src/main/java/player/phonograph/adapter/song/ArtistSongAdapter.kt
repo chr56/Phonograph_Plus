@@ -6,7 +6,9 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.util.Pair
-import com.afollestad.materialcab.MaterialCab
+import com.afollestad.materialcab.attached.AttachedCab
+import com.afollestad.materialcab.attached.destroy
+import com.afollestad.materialcab.attached.isActive
 import com.bumptech.glide.Glide
 import player.phonograph.R
 import player.phonograph.glide.SongGlideRequest
@@ -27,10 +29,9 @@ class ArtistSongAdapter(
     private val cabHolder: CabHolder?
 ) : ArrayAdapter<Song>(
     activity, R.layout.item_list, dataSet
-),
-    MaterialCab.Callback {
+) {
 
-    private var cab: MaterialCab? = null
+    private var cab: AttachedCab? = null
     private val checked: MutableList<Song> = ArrayList<Song>()
 //    init {
 //        checked = ArrayList()
@@ -69,7 +70,7 @@ class ArtistSongAdapter(
             .checkIgnoreMediaStore(activity).build()
             .into(albumArt)
 //        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            albumArt.transitionName = activity.getString(R.string.transition_album_art)
+        albumArt.transitionName = activity.getString(R.string.transition_album_art)
 //        }
         val overflowButton = convertView.findViewById<ImageView>(R.id.menu)
         overflowButton.setOnClickListener(object : ClickMenuListener(activity, R.menu.menu_item_song_short) {
@@ -116,9 +117,9 @@ class ArtistSongAdapter(
             notifyDataSetChanged()
             val size = checked.size
             when {
-                size <= 0 -> cab!!.finish()
-                size > 0 -> cab!!.setTitle(
-                    size.toString()
+                size <= 0 -> cab!!.destroy()
+                size > 0 -> cab!!.title(
+                    literal = size.toString()
                 )
             }
         }
@@ -126,8 +127,8 @@ class ArtistSongAdapter(
 
     private fun openCabIfNecessary() {
         if (cabHolder != null) {
-            if (cab == null || !cab!!.isActive) {
-                cab = cabHolder.showCab(R.menu.menu_media_selection, this)
+            if (cab == null || !cab!!.isActive()) {
+                cab = cabHolder.showCab(R.menu.menu_media_selection, this::onCabCreated, this::onCabItemClicked, this::onCabFinished)
             }
         }
     }
@@ -142,20 +143,20 @@ class ArtistSongAdapter(
     }
 
     protected val isInQuickSelectMode: Boolean
-        get() = cab != null && cab!!.isActive
+        get() = cab != null && cab!!.isActive()
 
-    override fun onCabCreated(materialCab: MaterialCab, menu: Menu): Boolean {
+    fun onCabCreated(materialCab: AttachedCab, menu: Menu): Boolean {
         return true
     }
 
-    override fun onCabItemClicked(menuItem: MenuItem): Boolean {
+    fun onCabItemClicked(menuItem: MenuItem): Boolean {
         onMultipleItemAction(menuItem, ArrayList(checked))
-        cab!!.finish()
+        cab!!.destroy()
         unCheckAll()
         return true
     }
 
-    override fun onCabFinished(materialCab: MaterialCab): Boolean {
+    fun onCabFinished(materialCab: AttachedCab): Boolean {
         unCheckAll()
         return true
     }

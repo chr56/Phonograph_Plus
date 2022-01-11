@@ -6,12 +6,10 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
-import androidx.annotation.MenuRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.util.Pair
 import chr_56.MDthemer.util.ColorUtil
 import chr_56.MDthemer.util.MaterialColorHelper
-import com.afollestad.materialcab.MaterialCab
 import com.bumptech.glide.Glide
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView.SectionedAdapter
 import player.phonograph.R
@@ -39,10 +37,10 @@ open class SongAdapter @JvmOverloads constructor(
     protected var usePalette: Boolean = false,
     cabHolder: CabHolder?,
     protected var showSectionName: Boolean = true
-) : AbsMultiSelectAdapter<SongAdapter.ViewHolder, Song>(
-    activity, cabHolder, R.menu.menu_media_selection
-),
-    MaterialCab.Callback,
+) :
+    AbsMultiSelectAdapter<SongAdapter.ViewHolder, Song>(
+        activity, cabHolder, R.menu.menu_media_selection
+    ),
     SectionedAdapter {
 
     init {

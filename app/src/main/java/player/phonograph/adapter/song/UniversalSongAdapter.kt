@@ -18,7 +18,6 @@ import chr_56.MDthemer.core.ThemeColor
 import chr_56.MDthemer.util.ColorUtil
 import chr_56.MDthemer.util.MaterialColorHelper
 import chr_56.MDthemer.util.TintHelper
-import com.afollestad.materialcab.MaterialCab
 import com.bumptech.glide.Glide
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView.SectionedAdapter
 import player.phonograph.R
@@ -43,8 +42,7 @@ import player.phonograph.util.PreferenceUtil
 @Suppress("unused")
 open class UniversalSongAdapter :
     AbsMultiSelectAdapter<UniversalSongAdapter.CommonSongViewHolder, Song>,
-    SectionedAdapter,
-    MaterialCab.Callback {
+    SectionedAdapter {
 
     @Suppress("JoinDeclarationAndAssignment")
     private val activity: AppCompatActivity
