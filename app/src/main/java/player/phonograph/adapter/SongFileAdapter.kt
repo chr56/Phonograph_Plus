@@ -14,7 +14,7 @@ import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView.S
 import player.phonograph.R
 import player.phonograph.adapter.base.AbsMultiSelectAdapter
 import player.phonograph.adapter.base.MediaEntryViewHolder
-import player.phonograph.glide.GlideRequestOptions
+import player.phonograph.glide.SongGlideRequest
 import player.phonograph.glide.audiocover.AudioFileCover
 import player.phonograph.interfaces.CabHolder
 import player.phonograph.util.ImageUtil
@@ -104,10 +104,9 @@ class SongFileAdapter(
             )
             Glide.with(activity)
                 .load(AudioFileCover(file.path))
-                .apply(
-                    GlideRequestOptions._default_option_song.placeholder(error).error(error)
-                )
-                .transition(GlideRequestOptions._default_drawable_transition_options)
+                .apply(SongGlideRequest.DEFAULT_OPTION)
+                .transition(SongGlideRequest.DEFAULT_DRAWABLE_TRANSITION_OPTIONS)
+                .placeholder(error)
                 .signature(MediaStoreSignature("", file.lastModified(), 0))
                 .into(holder.image!!)
         }

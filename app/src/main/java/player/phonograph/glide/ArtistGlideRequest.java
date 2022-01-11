@@ -35,6 +35,20 @@ import player.phonograph.util.CustomArtistImageUtil;
  */
 public class ArtistGlideRequest {
 
+    private static final DiskCacheStrategy DEFAULT_DISK_CACHE_STRATEGY = DiskCacheStrategy.ALL;
+    private static final int DEFAULT_ERROR_IMAGE = R.drawable.default_artist_image;
+    public static final int DEFAULT_ANIMATION = android.R.anim.fade_in;
+
+    public static final RequestOptions DEFAULT_OPTION =
+            new RequestOptions().diskCacheStrategy(DEFAULT_DISK_CACHE_STRATEGY)
+                    .priority(Priority.LOW)
+                    .placeholder(DEFAULT_ERROR_IMAGE)
+                    .error(DEFAULT_ERROR_IMAGE);
+
+    public static final DrawableTransitionOptions DEFAULT_DRAWABLE_TRANSITION_OPTIONS = new DrawableTransitionOptions().transition(DEFAULT_ANIMATION);
+    public static final BitmapTransitionOptions DEFAULT_BITMAP_TRANSITION_OPTIONS = new BitmapTransitionOptions().transition(DEFAULT_ANIMATION);
+
+
     public static class Builder {
         final RequestManager requestManager;
         final Artist artist;
@@ -64,8 +78,8 @@ public class ArtistGlideRequest {
 
         public RequestBuilder<Drawable> build() {
             return createBaseRequest(Drawable.class, requestManager, artist, noCustomImage)
-                    .apply(GlideRequestOptions.get_default_option_artist())
-                    .transition(GlideRequestOptions.get_default_drawable_transition_options())
+                    .apply(DEFAULT_OPTION)
+                    .transition(DEFAULT_DRAWABLE_TRANSITION_OPTIONS)
                     .override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)
                     .signature(createSignature(artist));
         }
@@ -80,8 +94,8 @@ public class ArtistGlideRequest {
 
         public RequestBuilder<Bitmap> build() {
             return createBaseRequest(Bitmap.class, builder.requestManager, builder.artist, builder.noCustomImage)
-                    .apply(GlideRequestOptions.get_default_option_artist())
-                    .transition(GlideRequestOptions.get_default_bitmap_transition_options())
+                    .apply(DEFAULT_OPTION)
+                    .transition(DEFAULT_BITMAP_TRANSITION_OPTIONS)
                     .override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)
                     .signature(createSignature(builder.artist));
         }
@@ -98,7 +112,7 @@ public class ArtistGlideRequest {
 
         public RequestBuilder<BitmapPaletteWrapper> build() {
             return createBaseRequest(BitmapPaletteWrapper.class, builder.requestManager, builder.artist, builder.noCustomImage)
-                    .apply(GlideRequestOptions.get_default_option_artist())
+                    .apply(DEFAULT_OPTION)
 //                    .transition(DEFAULT_BITMAP_TRANSITION_OPTIONS)//todo
                     .override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)
                     .signature(createSignature(builder.artist));
