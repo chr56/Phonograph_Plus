@@ -112,18 +112,7 @@ sealed class AbsDisplayPage<A : RecyclerView.Adapter<*>, LM : RecyclerView.Layou
                 BlendModeCompat.SRC_IN
             )
         binding.actionPageHeader.setImageDrawable(actionDrawable)
-        binding.actionPageHeader.setOnClickListener {
-            onPopupShow()
-//            if (!hostFragment.isPopupMenuInited) hostFragment.initPopup()
-//            configPopup(hostFragment.popupMenu, hostFragment.popup)
-//            Log.d("HomePage", "popupWindowVerticalOffset:")
-//            hostFragment.popupMenu.setOnDismissListener(initOnDismissListener(hostFragment.popupMenu, hostFragment.popup))
-//            hostFragment.popupMenu.showAtLocation(
-//                binding.root, Gravity.TOP or Gravity.END, 0,
-//                (hostFragment.mainActivity.findViewById<player.phonograph.views.StatusBarView>(R.id.status_bar)?.height ?: 8) +
-//                    hostFragment.totalHeaderHeight + binding.innerAppBar.height
-//            )
-        }
+        binding.actionPageHeader.setOnClickListener { onPopupShow() }
     }
 
     // all pages share/re-used one popup on host fragment
@@ -184,6 +173,9 @@ sealed class AbsDisplayPage<A : RecyclerView.Adapter<*>, LM : RecyclerView.Layou
             (hostFragment.mainActivity.findViewById<player.phonograph.views.StatusBarView>(R.id.status_bar)?.height ?: 8) +
                 hostFragment.totalHeaderHeight + binding.innerAppBar.height
         )
+
+        // then valid background color
+        resetPopupMenuBackgroundColor()
     }
 
     protected fun hideAllPopupItems() {
@@ -223,12 +215,15 @@ sealed class AbsDisplayPage<A : RecyclerView.Adapter<*>, LM : RecyclerView.Layou
 
     @ColorInt
     protected fun getCorrectBackgroundColor(context: Context): Int { // todo move to util or view model
-        return when (PreferenceUtil.getInstance(context).generalTheme) {
-            R.style.Theme_Phonograph_Auto -> R.color.cardBackgroundColor
-            R.style.Theme_Phonograph_Light -> R.color.md_white_1000
-            R.style.Theme_Phonograph_Black -> R.color.md_black_1000
-            R.style.Theme_Phonograph_Dark -> R.color.md_grey_800
-            else -> R.color.md_grey_700
-        }
+        return context.resources.getColor(
+            when (PreferenceUtil.getInstance(context).generalTheme) {
+                R.style.Theme_Phonograph_Auto -> R.color.cardBackgroundColor
+                R.style.Theme_Phonograph_Light -> R.color.md_white_1000
+                R.style.Theme_Phonograph_Black -> R.color.md_black_1000
+                R.style.Theme_Phonograph_Dark -> R.color.md_grey_800
+                else -> R.color.md_grey_700
+            },
+            context.theme
+        )
     }
 }
