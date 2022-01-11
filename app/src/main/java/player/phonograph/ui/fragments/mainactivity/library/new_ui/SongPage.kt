@@ -22,10 +22,9 @@ import player.phonograph.model.Song
 import player.phonograph.util.MediaStoreUtil
 import player.phonograph.util.Util
 
-class SongPage : AbsDisplayPage<UniversalSongAdapter, GridLayoutManager>() {
+class SongPage : AbsDisplayPage<Song, UniversalSongAdapter, GridLayoutManager>() {
 
     private val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.IO)
-    private var songs: List<Song> = ArrayList()
 
     override fun initLayoutManager(): GridLayoutManager {
         return GridLayoutManager(hostFragment.requireContext(), 1)
@@ -44,7 +43,7 @@ class SongPage : AbsDisplayPage<UniversalSongAdapter, GridLayoutManager>() {
 
         return UniversalSongAdapter(
             hostFragment.mainActivity,
-            songs,
+            items, // empty util songs loaded
             UniversalSongAdapter.MODE_COMMON,
             layoutRes,
             null
@@ -63,7 +62,7 @@ class SongPage : AbsDisplayPage<UniversalSongAdapter, GridLayoutManager>() {
 
     private fun loadSongs() {
         coroutineScope.launch {
-            songs = MediaStoreUtil.getAllSongs(App.instance) as List<Song>
+            items = MediaStoreUtil.getAllSongs(App.instance) as List<Song>
             withContext(Dispatchers.Main) {
                 updateAdapterDataset()
             }
@@ -71,7 +70,7 @@ class SongPage : AbsDisplayPage<UniversalSongAdapter, GridLayoutManager>() {
     }
 
     private fun updateAdapterDataset() {
-        if (isRecyclerViewPrepared) adapter.songs = songs
+        if (isRecyclerViewPrepared) adapter.songs = items
     }
 
     override fun configPopup(popupMenu: PopupWindow, popup: PopupWindowMainBinding) {

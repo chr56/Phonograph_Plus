@@ -32,12 +32,21 @@ import player.phonograph.util.Util
 import player.phonograph.util.ViewUtil
 import java.lang.ref.WeakReference
 
-sealed class AbsDisplayPage<A : RecyclerView.Adapter<*>, LM : RecyclerView.LayoutManager> : AbsPage() {
+/**
+ * @param IT the model type that this fragment displays
+ * @param A relevant Adapter
+ * @param LM relevant LayoutManager
+ */
+sealed class AbsDisplayPage<IT, A : RecyclerView.Adapter<*>, LM : RecyclerView.LayoutManager> : AbsPage() {
 
     private var _viewBinding: FragmentDisplayPageBinding? = null
     private val binding get() = _viewBinding!!
 
+    protected lateinit var items: List<IT>
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        items = ArrayList() // initialize variant first
+
         _viewBinding = FragmentDisplayPageBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -232,7 +241,7 @@ sealed class AbsDisplayPage<A : RecyclerView.Adapter<*>, LM : RecyclerView.Layou
     }
 }
 
-class DisplayUtil(private val page: AbsDisplayPage<*, *>) {
+class DisplayUtil(private val page: AbsDisplayPage<*, *, *>) {
     private val isLandscape: Boolean
         get() = Util.isLandscape(page.resources)
 
