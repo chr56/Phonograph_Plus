@@ -36,7 +36,6 @@ import chr_56.MDthemer.util.ToolbarColorUtil;
 import chr_56.MDthemer.util.Util;
 import player.phonograph.R;
 import player.phonograph.databinding.ActivityAlbumTagEditorBinding;
-import player.phonograph.glide.GlideRequestOptions;
 import player.phonograph.glide.SongGlideRequest;
 import player.phonograph.glide.palette.BitmapPaletteWrapper;
 import player.phonograph.lastfm.rest.LastFMRestClient;
@@ -129,7 +128,7 @@ public class AlbumTagEditorActivity extends AbsTagEditorActivity implements Text
                     if (!TextUtils.isEmpty(url) && url.trim().length() > 0) {
                         Glide.with(AlbumTagEditorActivity.this)
                                 .as(BitmapPaletteWrapper.class)
-                                .apply(GlideRequestOptions.get_default_option_song())
+                                .apply(SongGlideRequest.DEFAULT_OPTION)
                                 .load(url)
                                 .listener(new RequestListener<BitmapPaletteWrapper>() {
                                     @Override
@@ -232,7 +231,7 @@ public class AlbumTagEditorActivity extends AbsTagEditorActivity implements Text
     protected void loadImageFromFile(@NonNull final Uri selectedFileUri) {
         Glide.with(AlbumTagEditorActivity.this)
                 .as(BitmapPaletteWrapper.class)
-                .apply(GlideRequestOptions.get_default_option_song())
+                .apply(SongGlideRequest.DEFAULT_OPTION)
                 .skipMemoryCache(true)
                 .load(selectedFileUri)
                 .listener(new RequestListener<BitmapPaletteWrapper>() {
