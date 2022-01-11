@@ -26,7 +26,9 @@ import androidx.loader.content.Loader;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.afollestad.materialcab.MaterialCab;
+import com.afollestad.materialcab.MaterialCabKt;
+import com.afollestad.materialcab.attached.AttachedCab;
+import com.afollestad.materialcab.attached.AttachedCabKt;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.WhichButton;
 import com.afollestad.materialdialogs.actions.DialogActionExtKt;
@@ -47,6 +49,9 @@ import chr_56.MDthemer.util.ColorUtil;
 import chr_56.MDthemer.util.MaterialColorHelper;
 import chr_56.MDthemer.util.TintHelper;
 import chr_56.MDthemer.util.ToolbarColorUtil;
+import kotlin.Unit;
+import kotlin.jvm.functions.Function1;
+import kotlin.jvm.functions.Function2;
 import player.phonograph.App;
 import player.phonograph.R;
 import player.phonograph.adapter.SongFileAdapter;
@@ -80,7 +85,7 @@ public class FoldersFragment extends AbsMainActivityFragment implements MainActi
     private FragmentFolderBinding viewBinding;
 
     private SongFileAdapter adapter;
-    private MaterialCab cab;
+    private AttachedCab cab;
 
     private RecyclerView.AdapterDataObserver dataObserver;
 
@@ -224,8 +229,8 @@ public class FoldersFragment extends AbsMainActivityFragment implements MainActi
 
     @Override
     public boolean handleBackPress() {
-        if (cab != null && cab.isActive()) {
-            cab.finish();
+        if (cab != null && AttachedCabKt.isActive(cab)) {
+            AttachedCabKt.destroy(cab);
             return true;
         }
         if (viewBinding.breadCrumbs.popHistory()) {
@@ -235,17 +240,27 @@ public class FoldersFragment extends AbsMainActivityFragment implements MainActi
         return false;
     }
 
-    @NonNull
-    @Override
-    public MaterialCab showCab(int menuRes, MaterialCab.Callback callback) {
-        if (cab != null && cab.isActive()) cab.finish();
-        cab = new MaterialCab(getMainActivity(), R.id.cab_stub)
-                .setMenu(menuRes)
-                .setCloseDrawableRes(R.drawable.ic_close_white_24dp)
-                .setBackgroundColor(PhonographColorUtil.shiftBackgroundColorForLightText(ThemeColor.primaryColor(getMainActivity())))
-                .start(callback);
+
+    public AttachedCab showCab(int menuRes,
+                               @NonNull Function2<? super AttachedCab, ? super Menu, Unit> createCallback,
+                               @NonNull Function1<? super MenuItem, Boolean> selectCallback,
+                               @NonNull Function1<? super AttachedCab, Boolean> destroyCallback) {
+
+        if (cab != null && AttachedCabKt.isActive(cab)) AttachedCabKt.destroy(cab);
+
+        cab = MaterialCabKt.createCab(this, R.id.cab_stub, attachedCab -> {
+            attachedCab.menu(menuRes);
+            attachedCab.closeDrawable(R.drawable.ic_close_white_24dp);
+            attachedCab.backgroundColor(null, PhonographColorUtil.shiftBackgroundColorForLightText(ThemeColor.primaryColor(getMainActivity())));
+            attachedCab.onCreate(createCallback);
+            attachedCab.onSelection(selectCallback);
+            attachedCab.onDestroy(destroyCallback);
+            return null;
+        });
+
         return cab;
     }
+
 
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {

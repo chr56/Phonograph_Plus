@@ -20,7 +20,10 @@ import androidx.fragment.app.Fragment
 import androidx.viewpager.widget.ViewPager
 import chr_56.MDthemer.core.ThemeColor
 import chr_56.MDthemer.util.*
-import com.afollestad.materialcab.MaterialCab
+import com.afollestad.materialcab.*
+import com.afollestad.materialcab.attached.AttachedCab
+import com.afollestad.materialcab.attached.destroy
+import com.afollestad.materialcab.attached.isActive
 import com.google.android.material.appbar.AppBarLayout.OnOffsetChangedListener
 import com.google.android.material.tabs.TabLayout
 import player.phonograph.R
@@ -136,22 +139,27 @@ class LibraryFragment :
         activity.setTaskDescriptionColorAuto()
     }
 
-    private var cab: MaterialCab? = null
-    override fun showCab(menuRes: Int, callback: MaterialCab.Callback?): MaterialCab {
+    private var cab: AttachedCab? = null
+    override fun showCab(
+        menuRes: Int,
+        createCallback: CreateCallback,
+        selectCallback: SelectCallback,
+        destroyCallback: DestroyCallback
+    ): AttachedCab {
 
         cab?.let {
-            if (it.isActive) it.finish()
+            if (it.isActive()) it.destroy()
+        }
+        cab = createCab(R.id.cab_stub) {
+            menu(menuRes)
+            closeDrawable(R.drawable.ic_close_white_24dp)
+            backgroundColor(literal = PhonographColorUtil.shiftBackgroundColorForLightText(ThemeColor.primaryColor(requireActivity())))
+            onCreate(createCallback)
+            onSelection(selectCallback)
+            onDestroy(destroyCallback)
         }
 
-        cab = MaterialCab(mainActivity, R.id.cab_stub)
-            .setMenu(menuRes)
-            .setCloseDrawableRes(R.drawable.ic_close_white_24dp)
-            .setBackgroundColor(
-                PhonographColorUtil.shiftBackgroundColorForLightText(ThemeColor.primaryColor(requireActivity()))
-            )
-            .start(callback)
-
-        return cab as MaterialCab
+        return cab as AttachedCab
     }
 
     val totalAppBarScrollingRange: Int
@@ -538,9 +546,8 @@ class LibraryFragment :
         binding.appbar.removeOnOffsetChangedListener(onOffsetChangedListener)
     }
     override fun handleBackPress(): Boolean {
-        if (cab != null && cab!!.isActive) {
-            cab!!.finish()
-            return true
+        if (cab != null && cab.isActive()) {
+            cab.destroy()
         }
         return false
     }

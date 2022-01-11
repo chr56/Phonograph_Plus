@@ -13,7 +13,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import chr_56.MDthemer.core.ThemeColor
 import chr_56.MDthemer.core.Themer
-import com.afollestad.materialcab.MaterialCab
+import com.afollestad.materialcab.*
+import com.afollestad.materialcab.attached.AttachedCab
+import com.afollestad.materialcab.attached.destroy
+import com.afollestad.materialcab.attached.isActive
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView
 import player.phonograph.R
 import player.phonograph.adapter.song.SongAdapter
@@ -39,7 +42,7 @@ class GenreDetailActivity :
 
     private lateinit var adapter: SongAdapter
 
-    private var cab: MaterialCab? = null
+    private var cab: AttachedCab? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -111,18 +114,30 @@ class GenreDetailActivity :
         return super.onOptionsItemSelected(item)
     }
 
-    override fun showCab(menu: Int, callback: MaterialCab.Callback): MaterialCab {
-        cab?.let { if (it.isActive) it.finish() }
-        return MaterialCab(this, R.id.cab_stub)
-            .setMenu(menu)
-            .setCloseDrawableRes(R.drawable.ic_close_white_24dp)
-            .setBackgroundColor(PhonographColorUtil.shiftBackgroundColorForLightText(ThemeColor.primaryColor(this)))
-            .start(callback)
-            .also { cab = it /* set activity's cab */ }
+    override fun showCab(
+        menuRes: Int,
+        createCallback: CreateCallback,
+        selectCallback: SelectCallback,
+        destroyCallback: DestroyCallback
+    ): AttachedCab {
+
+        cab?.let {
+            if (it.isActive()) it.destroy()
+        }
+        cab = createCab(R.id.cab_stub) {
+            menu(menuRes)
+            closeDrawable(R.drawable.ic_close_white_24dp)
+            backgroundColor(literal = PhonographColorUtil.shiftBackgroundColorForLightText(ThemeColor.primaryColor(this@GenreDetailActivity)))
+            onCreate(createCallback)
+            onSelection(selectCallback)
+            onDestroy(destroyCallback)
+        }
+
+        return cab as AttachedCab
     }
 
     override fun onBackPressed() {
-        if (cab != null && cab!!.isActive) cab!!.finish() else {
+        if (cab != null && cab.isActive()) cab.destroy() else {
             recyclerView.stopScroll()
             super.onBackPressed()
         }

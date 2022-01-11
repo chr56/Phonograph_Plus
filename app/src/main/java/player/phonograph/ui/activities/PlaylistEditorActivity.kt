@@ -16,7 +16,13 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import chr_56.MDthemer.core.ThemeColor
 import chr_56.MDthemer.core.Themer
-import com.afollestad.materialcab.MaterialCab
+import com.afollestad.materialcab.CreateCallback
+import com.afollestad.materialcab.DestroyCallback
+import com.afollestad.materialcab.SelectCallback
+import com.afollestad.materialcab.attached.AttachedCab
+import com.afollestad.materialcab.attached.destroy
+import com.afollestad.materialcab.attached.isActive
+import com.afollestad.materialcab.createCab
 import com.h6ah4i.android.widget.advrecyclerview.animator.GeneralItemAnimator
 import com.h6ah4i.android.widget.advrecyclerview.animator.RefactoredDefaultItemAnimator
 import com.h6ah4i.android.widget.advrecyclerview.draggable.RecyclerViewDragDropManager
@@ -26,6 +32,7 @@ import player.phonograph.R
 import player.phonograph.adapter.song.PlaylistEditorAdapter
 import player.phonograph.databinding.ActivityPlaylistEditorBinding
 import player.phonograph.helper.menu.PlaylistMenuHelper
+import player.phonograph.interfaces.CabHolder
 import player.phonograph.loader.PlaylistSongLoader
 import player.phonograph.model.Playlist
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
@@ -46,7 +53,7 @@ class PlaylistEditorActivity : AbsSlidingMusicPanelActivity() {
 
     private lateinit var adapter: PlaylistEditorAdapter
 
-    private var cab: MaterialCab? = null // init in OnCreate() -> setUpRecyclerView()
+    private var cab: AttachedCab? = null // init in OnCreate() -> setUpRecyclerView()
 
     private lateinit var recyclerViewDragDropManager: RecyclerViewDragDropManager // init in OnCreate() -> setUpRecyclerView()
     private var wrappedAdapter: RecyclerView.Adapter<*>? = null
@@ -105,24 +112,32 @@ class PlaylistEditorActivity : AbsSlidingMusicPanelActivity() {
 
         recyclerViewDragDropManager = RecyclerViewDragDropManager()
         val animator: GeneralItemAnimator = RefactoredDefaultItemAnimator()
-
         adapter = PlaylistEditorAdapter(
-            this, playlist
-        ) { menuRes, callback ->
-            // finish existed cab
-            cab?.also { if (it.isActive) it.finish() }
-            // create new
-            MaterialCab(this, R.id.cab_stub)
-                .setMenu(menuRes)
-                .setCloseDrawableRes(R.drawable.ic_close_white_24dp)
-                .setBackgroundColor(
-                    PhonographColorUtil.shiftBackgroundColorForLightText(ThemeColor.primaryColor(this))
-                )
-                .start(callback)
-                .apply {
-                    cab = this // also set activity's cab to this
+            this, playlist,
+            object : CabHolder {
+                override fun showCab(
+                    menuRes: Int,
+                    createCallback: CreateCallback,
+                    selectCallback: SelectCallback,
+                    destroyCallback: DestroyCallback
+                ): AttachedCab {
+                    // finish existed cab
+                    cab?.also { if (it.isActive()) it.destroy() }
+                    cab = this@PlaylistEditorActivity.createCab(R.id.cab_stub) {
+                        menu(menuRes)
+                        closeDrawable(R.drawable.ic_close_white_24dp)
+                        backgroundColor(
+                            literal = PhonographColorUtil.shiftBackgroundColorForLightText(ThemeColor.primaryColor(this@PlaylistEditorActivity))
+                        )
+                        onCreate(createCallback)
+                        onSelection(selectCallback)
+                        onDestroy(destroyCallback)
+                    }
+
+                    return cab as AttachedCab
                 }
-        }
+            }
+        )
 
         wrappedAdapter = recyclerViewDragDropManager.createWrappedAdapter(adapter)
         recyclerView.adapter = wrappedAdapter
@@ -157,7 +172,7 @@ class PlaylistEditorActivity : AbsSlidingMusicPanelActivity() {
 
     override fun onBackPressed() {
         cab?.let {
-            if (it.isActive) it.finish()
+            if (it.isActive()) it.destroy()
             else {
                 recyclerView.stopScroll()
                 super.onBackPressed()
