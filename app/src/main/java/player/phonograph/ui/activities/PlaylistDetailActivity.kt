@@ -127,7 +127,7 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity() {
                 this,
                 ArrayList(),
                 UniversalSongAdapter.MODE_PLAYLIST_SMART,
-                0,
+                R.layout.item_list,
                 CabCallBack(this)
             )
             recyclerView.adapter = songAdapter
@@ -139,7 +139,7 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity() {
                 this,
                 ArrayList(),
                 UniversalSongAdapter.MODE_PLAYLIST_LOCAL,
-                0,
+                R.layout.item_list,
                 CabCallBack(this)
             )
             wrappedAdapter = recyclerViewDragDropManager!!.createWrappedAdapter(songAdapter)
