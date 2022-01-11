@@ -1,77 +1,63 @@
-package player.phonograph.util;
+package player.phonograph.util
 
-import android.graphics.Bitmap;
-import androidx.annotation.ColorInt;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.palette.graphics.Palette;
-
-import chr_56.MDthemer.util.ColorUtil;
-
-import java.util.Collections;
-import java.util.Comparator;
+import android.graphics.Bitmap
+import androidx.annotation.ColorInt
+import androidx.palette.graphics.Palette
+import androidx.palette.graphics.Palette.Swatch
+import chr_56.MDthemer.util.ColorUtil
+import java.util.*
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
  */
-public class PhonographColorUtil {
+object PhonographColorUtil {
 
-    @NonNull
-    public static Palette generatePalette(@NonNull Bitmap bitmap) {
-        return Palette.from(bitmap).generate();
+    @JvmStatic
+    @ColorInt
+    fun shiftBackgroundColorForLightText(@ColorInt backgroundColor: Int): Int {
+        var newColor = backgroundColor
+        while (ColorUtil.isColorLight(newColor)) newColor = ColorUtil.darkenColor(newColor)
+        return newColor
     }
 
     @ColorInt
-    public static int getColor(@Nullable Palette palette, int fallback) {
+    fun shiftBackgroundColorForDarkText(@ColorInt backgroundColor: Int): Int {
+        var newColor = backgroundColor
+        while (!ColorUtil.isColorLight(newColor)) newColor = ColorUtil.lightenColor(newColor)
+        return newColor
+    }
+
+    @JvmStatic
+    fun generatePalette(bitmap: Bitmap): Palette = Palette.from(bitmap).generate()
+
+    @JvmStatic
+    @ColorInt
+    fun getColor(palette: Palette?, fallback: Int): Int {
         if (palette != null) {
-            if (palette.getVibrantSwatch() != null) {
-                return palette.getVibrantSwatch().getRgb();
-            } else if (palette.getMutedSwatch() != null) {
-                return palette.getMutedSwatch().getRgb();
-            } else if (palette.getDarkVibrantSwatch() != null) {
-                return palette.getDarkVibrantSwatch().getRgb();
-            } else if (palette.getDarkMutedSwatch() != null) {
-                return palette.getDarkMutedSwatch().getRgb();
-            } else if (palette.getLightVibrantSwatch() != null) {
-                return palette.getLightVibrantSwatch().getRgb();
-            } else if (palette.getLightMutedSwatch() != null) {
-                return palette.getLightMutedSwatch().getRgb();
-            } else if (!palette.getSwatches().isEmpty()) {
-                return Collections.max(palette.getSwatches(), SwatchComparator.getInstance()).getRgb();
+            when {
+                palette.vibrantSwatch != null -> return palette.vibrantSwatch!!.rgb
+                palette.mutedSwatch != null -> return palette.mutedSwatch!!.rgb
+                palette.darkVibrantSwatch != null -> return palette.darkVibrantSwatch!!.rgb
+                palette.darkMutedSwatch != null -> return palette.darkMutedSwatch!!.rgb
+                palette.lightVibrantSwatch != null -> return palette.lightVibrantSwatch!!.rgb
+                palette.lightMutedSwatch != null -> return palette.lightMutedSwatch!!.rgb
+                palette.swatches.isNotEmpty() -> return Collections.max(palette.swatches, SwatchComparator.instance).rgb
             }
         }
-        return fallback;
+        return fallback
     }
 
-    private static class SwatchComparator implements Comparator<Palette.Swatch> {
-        private static SwatchComparator sInstance;
+    private class SwatchComparator : Comparator<Swatch> {
+        override fun compare(lhs: Swatch, rhs: Swatch): Int = lhs.population - rhs.population
 
-        static SwatchComparator getInstance() {
-            if (sInstance == null) {
-                sInstance = new SwatchComparator();
-            }
-            return sInstance;
-        }
+        companion object {
+            private var mInstance: SwatchComparator? = null
 
-        @Override
-        public int compare(Palette.Swatch lhs, Palette.Swatch rhs) {
-            return lhs.getPopulation() - rhs.getPopulation();
+            val instance: SwatchComparator?
+                get() {
+                    if (mInstance == null) mInstance = SwatchComparator()
+                    return mInstance
+                }
         }
-    }
-
-    @ColorInt
-    public static int shiftBackgroundColorForLightText(@ColorInt int backgroundColor) {
-        while (ColorUtil.isColorLight(backgroundColor)) {
-            backgroundColor = ColorUtil.darkenColor(backgroundColor);
-        }
-        return backgroundColor;
-    }
-
-    @ColorInt
-    public static int shiftBackgroundColorForDarkText(@ColorInt int backgroundColor) {
-        while (!ColorUtil.isColorLight(backgroundColor)) {
-            backgroundColor = ColorUtil.lightenColor(backgroundColor);
-        }
-        return backgroundColor;
     }
 }
