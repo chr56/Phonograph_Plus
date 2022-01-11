@@ -145,7 +145,7 @@ class SongPage : AbsDisplayPage<Song, UniversalSongAdapter, GridLayoutManager>()
                 val itemLayoutRes =
                     if (gridSizeSelected > displayUtil.maxGridSizeForList) R.layout.item_grid else R.layout.item_list
 
-                if (displayUtil.gridSize != itemLayoutRes) initViewPage() // again
+                if (displayUtil.gridSize != itemLayoutRes) initRecyclerView() // again
                 layoutManager.spanCount = gridSizeSelected
             }
 

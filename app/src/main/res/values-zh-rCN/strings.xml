@@ -351,6 +351,7 @@
     <string name="sort_order_song">歌曲</string>
     <string name="sort_order_duration">时长</string>
     <string name="sort_order_date_modified">修改日期</string>
+    <string name="loading">加载中</string>
     <plurals name="msg_deletion_result">
         <item quantity="other">%1$d / %2$d 个项目删除成功</item>
     </plurals>

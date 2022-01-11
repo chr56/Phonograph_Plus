@@ -365,6 +365,7 @@
     <string name="sort_order_song">Song</string>
     <string name="sort_order_duration">Duration</string>
     <string name="sort_order_date_modified">Date Modified</string>
+    <string name="loading">Loading</string>
     <plurals name="msg_deletion_result">
         <item quantity="one">%1$d / %2$d item was successfully deleted.</item>>
         <item quantity="other">%1$d / %2$d items were successfully deleted.</item>

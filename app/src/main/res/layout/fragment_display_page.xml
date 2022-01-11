@@ -58,8 +58,7 @@
             android:fontFamily="sans-serif-light"
             android:text="@string/empty"
             android:textColor="?android:textColorSecondary"
-            android:textSize="@dimen/empty_text_size"
-            android:visibility="gone" />
+            android:textSize="@dimen/empty_text_size" />
 
         <com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView
             android:id="@+id/recycler_view"

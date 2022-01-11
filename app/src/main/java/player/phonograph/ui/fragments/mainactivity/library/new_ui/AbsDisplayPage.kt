@@ -76,11 +76,11 @@ sealed class AbsDisplayPage<IT, A : RecyclerView.Adapter<*>, LM : RecyclerView.L
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        binding.empty.text = resources.getText(R.string.loading)
 
-        initViewPage()
+        initRecyclerView()
         _bindingPopup = PopupWindowMainBinding.inflate(LayoutInflater.from(hostFragment.mainActivity))
         initAppBar()
-
     }
 
     protected lateinit var adapter: A
@@ -91,13 +91,20 @@ sealed class AbsDisplayPage<IT, A : RecyclerView.Adapter<*>, LM : RecyclerView.L
 
     protected var isRecyclerViewPrepared: Boolean = false
 
-    protected var adapterDataObserver: RecyclerView.AdapterDataObserver? = null
+    protected lateinit var adapterDataObserver: RecyclerView.AdapterDataObserver
 
-    protected fun initViewPage() {
+    protected fun initRecyclerView() {
 
         layoutManager = initLayoutManager()
         adapter = initAdapter()
-        adapterDataObserver?.let { adapter.registerAdapterDataObserver(it) }
+
+        adapterDataObserver = object : RecyclerView.AdapterDataObserver() {
+            override fun onChanged() {
+                super.onChanged()
+                checkEmpty()
+            }
+        }
+        adapter.registerAdapterDataObserver(adapterDataObserver)
 
         ViewUtil.setUpFastScrollRecyclerViewColor(
             hostFragment.mainActivity, binding.recyclerView as FastScrollRecyclerView,
@@ -108,9 +115,6 @@ sealed class AbsDisplayPage<IT, A : RecyclerView.Adapter<*>, LM : RecyclerView.L
             it.layoutManager = layoutManager
         }
         isRecyclerViewPrepared = true
-
-        binding.empty.setText(emptyMessage)
-        // todo
     }
 
     protected fun initAppBar() {
@@ -212,13 +216,15 @@ sealed class AbsDisplayPage<IT, A : RecyclerView.Adapter<*>, LM : RecyclerView.L
     abstract fun configPopup(popupMenu: PopupWindow, popup: PopupWindowMainBinding)
 
     protected open val emptyMessage: Int @StringRes get() = R.string.empty
-
+    protected fun checkEmpty() {
+        if (isRecyclerViewPrepared) {
+            binding.empty.setText(emptyMessage)
+            binding.empty.visibility = if (items.isEmpty()) View.VISIBLE else View.GONE
+        }
+    }
     override fun onDestroyView() {
         super.onDestroyView()
-        adapterDataObserver?.let {
-            adapter.unregisterAdapterDataObserver(it)
-        }
-        adapterDataObserver = null
+        adapter.unregisterAdapterDataObserver(adapterDataObserver)
 
         binding.innerAppBar.addOnOffsetChangedListener(innerAppbarOffsetListener)
 //        hostFragment.removeOnAppBarOffsetChangedListener(outerAppbarOffsetListener)
