@@ -107,7 +107,7 @@ sealed class AbsDisplayPage<IT, A : RecyclerView.Adapter<*>, LM : RecyclerView.L
         adapter.registerAdapterDataObserver(adapterDataObserver)
 
         ViewUtil.setUpFastScrollRecyclerViewColor(
-            hostFragment.mainActivity, binding.recyclerView as FastScrollRecyclerView,
+            hostFragment.mainActivity, binding.recyclerView,
             ThemeColor.accentColor(App.instance.applicationContext)
         )
         binding.recyclerView.also {
@@ -128,8 +128,8 @@ sealed class AbsDisplayPage<IT, A : RecyclerView.Adapter<*>, LM : RecyclerView.L
                 binding.textPageHeader.currentTextColor,
                 BlendModeCompat.SRC_IN
             )
-        binding.actionPageHeader.setImageDrawable(actionDrawable)
-        binding.actionPageHeader.setOnClickListener { onPopupShow() }
+        binding.buttonPageHeader.setImageDrawable(actionDrawable)
+        binding.buttonPageHeader.setOnClickListener { onPopupShow() }
     }
 
     // all pages share/re-used one popup on host fragment
