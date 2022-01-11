@@ -16,7 +16,6 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
-import androidx.activity.viewModels
 import androidx.drawerlayout.widget.DrawerLayout
 import chr_56.MDthemer.core.ThemeColor
 import chr_56.MDthemer.util.ColorUtil
@@ -49,13 +48,11 @@ import player.phonograph.ui.activities.intro.AppIntroActivity
 import player.phonograph.ui.fragments.mainactivity.AbsMainActivityFragment
 import player.phonograph.ui.fragments.mainactivity.folders.FoldersFragment
 import player.phonograph.ui.fragments.mainactivity.library.LibraryFragment
-import player.phonograph.ui.fragments.mainactivity.library.new_ui.DisplayConfigViewModel
 import player.phonograph.ui.fragments.mainactivity.library.new_ui.HomeFragment
 import player.phonograph.util.FileSaver
 import player.phonograph.util.MusicUtil
 import player.phonograph.util.PreferenceUtil
 import chr_56.MDthemer.util.Util as MDthemerUtil
-import player.phonograph.util.Util as Util
 
 class MainActivity : AbsSlidingMusicPanelActivity() {
     // init : onCreate()
@@ -68,8 +65,6 @@ class MainActivity : AbsSlidingMusicPanelActivity() {
     private var blockRequestPermissions = false
 
     private var savedMessageBundle: Bundle? = null
-
-    val displayConfig: DisplayConfigViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -103,7 +98,6 @@ class MainActivity : AbsSlidingMusicPanelActivity() {
         showChangelog()
 
         setUpFloatingActionButton()
-        displayConfig.isLandscape = Util.isLandscape(resources)
     }
 
     override fun createContentView(): View {

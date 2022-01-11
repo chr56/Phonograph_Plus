@@ -30,19 +30,17 @@ class SongPage : AbsDisplayPage<UniversalSongAdapter, GridLayoutManager>() {
 
     override fun initLayoutManager(): GridLayoutManager {
         return GridLayoutManager(hostFragment.requireContext(), 1)
-            .also { it.spanCount = hostFragment.mainActivity.displayConfig.getGridSize(this) }
+            .also { it.spanCount = DisplayUtil(this).gridSize }
     }
 
     override fun initAdapter(): UniversalSongAdapter {
-        val displayConfig = hostFragment.mainActivity.displayConfig
+        val displayUtil = DisplayUtil(this)
+
         val layoutRes =
-            if (displayConfig.getGridSize(this) > displayConfig.maxGridSizeForList) R.layout.item_grid
+            if (displayUtil.gridSize > displayUtil.maxGridSizeForList) R.layout.item_grid
             else R.layout.item_list
         Log.d(
-            TAG,
-            "layoutRes: ${
-            if (layoutRes == R.layout.item_grid) "GRID" else if (layoutRes == R.layout.item_list) "LIST" else "UNKNOWN"
-            }"
+            TAG, "layoutRes: ${ if (layoutRes == R.layout.item_grid) "GRID" else if (layoutRes == R.layout.item_list) "LIST" else "UNKNOWN" }"
         )
 
         return UniversalSongAdapter(
@@ -67,15 +65,15 @@ class SongPage : AbsDisplayPage<UniversalSongAdapter, GridLayoutManager>() {
     }
 
     override fun configPopup(popupMenu: PopupWindow, popup: PopupWindowMainBinding) {
-        val displayConfig = hostFragment.mainActivity.displayConfig
+        val displayUtil = DisplayUtil(this)
 
         popup.textGridSize.visibility = View.VISIBLE
         popup.gridSize.visibility = View.VISIBLE
         if (Util.isLandscape(resources))
             popup.textGridSize.text = resources.getText(R.string.action_grid_size_land)
 
-        val current = displayConfig.getGridSize(this)
-        val max = displayConfig.maxGridSize
+        val current = displayUtil.gridSize
+        val max = displayUtil.maxGridSize
         for (i in 0 until max) {
             popup.gridSize.getChildAt(i).visibility = View.VISIBLE
         }
@@ -84,24 +82,24 @@ class SongPage : AbsDisplayPage<UniversalSongAdapter, GridLayoutManager>() {
     }
 
     override fun initOnDismissListener(popupMenu: PopupWindow, popup: PopupWindowMainBinding): PopupWindow.OnDismissListener? {
-        val displayConfig = hostFragment.mainActivity.displayConfig
+        val displayUtil = DisplayUtil(this)
         return PopupWindow.OnDismissListener {
             //  Grid Size
             var gridSize = 0
-            for (i in 0 until displayConfig.maxGridSize) {
+            for (i in 0 until displayUtil.maxGridSize) {
                 if ((popup.gridSize.getChildAt(i) as RadioButton).isChecked) {
                     gridSize = i + 1
                     break
                 }
             }
 
-            if (gridSize > 0 && gridSize != displayConfig.getGridSize(this)) {
+            if (gridSize > 0 && gridSize != displayUtil.gridSize) {
 
-                displayConfig.setGridSize(this, gridSize)
+                displayUtil.gridSize = gridSize
                 val itemLayoutRes =
-                    if (gridSize > displayConfig.maxGridSizeForList) R.layout.item_grid else R.layout.item_list
+                    if (gridSize > displayUtil.maxGridSizeForList) R.layout.item_grid else R.layout.item_list
 
-                if (displayConfig.getGridSize(this) != itemLayoutRes)
+                if (displayUtil.gridSize != itemLayoutRes)
                     initViewPage() // again
 
                 layoutManager.spanCount = gridSize

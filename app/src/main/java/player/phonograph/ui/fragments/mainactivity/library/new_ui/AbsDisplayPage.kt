@@ -28,6 +28,7 @@ import player.phonograph.R
 import player.phonograph.databinding.FragmentDisplayPageBinding
 import player.phonograph.databinding.PopupWindowMainBinding
 import player.phonograph.util.PreferenceUtil
+import player.phonograph.util.Util
 import player.phonograph.util.ViewUtil
 import java.lang.ref.WeakReference
 
@@ -226,4 +227,84 @@ sealed class AbsDisplayPage<A : RecyclerView.Adapter<*>, LM : RecyclerView.Layou
             context.theme
         )
     }
+}
+
+class DisplayUtil(private val page: AbsDisplayPage<*, *>) {
+    private val isLandscape: Boolean
+        get() = Util.isLandscape(page.resources)
+
+    val maxGridSize: Int
+        get() = if (isLandscape) App.instance.resources.getInteger(R.integer.max_columns_land) else
+            App.instance.resources.getInteger(R.integer.max_columns)
+    val maxGridSizeForList: Int
+        get() = if (isLandscape) App.instance.resources.getInteger(R.integer.default_list_columns_land) else
+            App.instance.resources.getInteger(R.integer.default_list_columns)
+
+    var sortOrder: String
+        get() {
+            val pref = PreferenceUtil.getInstance(App.instance)
+            return when (page) {
+                is SongPage -> {
+                    pref.songSortOrder
+                }
+                else -> { "" }
+            }
+        }
+        set(value) {
+            if (value.isBlank()) return
+
+            val pref = PreferenceUtil.getInstance(App.instance)
+            // todo valid input
+            when (page) {
+                is SongPage -> {
+                    pref.songSortOrder = value
+                }
+                else -> {}
+            }
+        }
+
+    var gridSize: Int
+        get() {
+            val pref = PreferenceUtil.getInstance(App.instance)
+
+            return when (page) {
+                is SongPage -> {
+                    if (isLandscape) pref.songGridSizeLand
+                    else pref.songGridSize
+                }
+                else -> 1
+            }
+        }
+        set(value) {
+            if (value <= 0) return
+            val pref = PreferenceUtil.getInstance(App.instance)
+            // todo valid input
+            when (page) {
+                is SongPage -> {
+                    if (isLandscape) pref.songGridSizeLand = value
+                    else pref.songGridSize = value
+                }
+                else -> {}
+            }
+        }
+    var colorFooter: Boolean
+        get() {
+            val pref = PreferenceUtil.getInstance(App.instance)
+            return when (page) {
+                is SongPage -> {
+                    pref.songColoredFooters()
+                }
+                else -> false
+            }
+        }
+        set(value) {
+            val pref = PreferenceUtil.getInstance(App.instance)
+            // todo valid input
+            when (page) {
+                is SongPage -> {
+                    pref.setSongColoredFooters(value)
+                }
+                else -> {}
+            }
+        }
 }
