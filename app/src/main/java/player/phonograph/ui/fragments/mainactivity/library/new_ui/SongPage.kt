@@ -12,9 +12,7 @@ import android.view.ViewGroup
 import android.widget.PopupWindow
 import android.widget.RadioButton
 import androidx.recyclerview.widget.GridLayoutManager
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.adapter.song.UniversalSongAdapter
@@ -54,15 +52,26 @@ class SongPage : AbsDisplayPage<UniversalSongAdapter, GridLayoutManager>() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        coroutineScope.launch {
-            songs = MediaStoreUtil.getAllSongs(App.instance) as List<Song>
-        }
+        loadSongs()
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
-    override fun onResume() {
-        super.onResume()
-        adapter.songs = songs
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        updateAdapterDataset() // in case that rhe adapter may not be ready when loadSong (in coroutineScope) call for it
+    }
+
+    private fun loadSongs() {
+        coroutineScope.launch {
+            songs = MediaStoreUtil.getAllSongs(App.instance) as List<Song>
+            withContext(Dispatchers.Main) {
+                updateAdapterDataset()
+            }
+        }
+    }
+
+    private fun updateAdapterDataset() {
+        if (isRecyclerViewPrepared) adapter.songs = songs
     }
 
     override fun configPopup(popupMenu: PopupWindow, popup: PopupWindowMainBinding) {
@@ -191,6 +200,7 @@ class SongPage : AbsDisplayPage<UniversalSongAdapter, GridLayoutManager>() {
                 }
             if (sortOrderSelected.isNotBlank() && displayUtil.sortOrder != sortOrderSelected) {
                 displayUtil.sortOrder = sortOrderSelected
+                loadSongs()
                 Log.d(TAG, "Write cfg: $sortOrderSelected")
             }
         }

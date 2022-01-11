@@ -69,9 +69,9 @@ sealed class AbsDisplayPage<A : RecyclerView.Adapter<*>, LM : RecyclerView.Layou
         super.onViewCreated(view, savedInstanceState)
 
         initViewPage()
+        _bindingPopup = PopupWindowMainBinding.inflate(LayoutInflater.from(hostFragment.mainActivity))
         initAppBar()
 
-        _bindingPopup = PopupWindowMainBinding.inflate(LayoutInflater.from(hostFragment.mainActivity))
     }
 
     protected lateinit var adapter: A
@@ -79,6 +79,8 @@ sealed class AbsDisplayPage<A : RecyclerView.Adapter<*>, LM : RecyclerView.Layou
 
     protected abstract fun initLayoutManager(): LM
     protected abstract fun initAdapter(): A
+
+    protected var isRecyclerViewPrepared: Boolean = false
 
     protected var adapterDataObserver: RecyclerView.AdapterDataObserver? = null
 
@@ -96,6 +98,7 @@ sealed class AbsDisplayPage<A : RecyclerView.Adapter<*>, LM : RecyclerView.Layou
             it.adapter = adapter
             it.layoutManager = layoutManager
         }
+        isRecyclerViewPrepared = true
 
         binding.empty.setText(emptyMessage)
         // todo
