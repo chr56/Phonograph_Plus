@@ -372,6 +372,7 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity() {
 
             // create new
             cab = createCab(R.id.cab_stub) {
+                popupTheme(PreferenceUtil.getInstance(this@PlaylistDetailActivity).generalTheme)
                 menu(menuRes)
                 closeDrawable(R.drawable.ic_close_white_24dp)
                 backgroundColor(literal = PhonographColorUtil.shiftBackgroundColorForLightText(ThemeColor.primaryColor(activity)))

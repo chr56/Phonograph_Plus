@@ -249,6 +249,7 @@ public class FoldersFragment extends AbsMainActivityFragment implements MainActi
         if (cab != null && AttachedCabKt.isActive(cab)) AttachedCabKt.destroy(cab);
 
         cab = MaterialCabKt.createCab(this, R.id.cab_stub, attachedCab -> {
+            attachedCab.popupTheme(PreferenceUtil.getInstance(requireContext()).getGeneralTheme());
             attachedCab.menu(menuRes);
             attachedCab.closeDrawable(R.drawable.ic_close_white_24dp);
             attachedCab.backgroundColor(null, PhonographColorUtil.shiftBackgroundColorForLightText(ThemeColor.primaryColor(getMainActivity())));

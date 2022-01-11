@@ -29,6 +29,7 @@ import player.phonograph.model.Genre
 import player.phonograph.model.Song
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
 import player.phonograph.util.PhonographColorUtil
+import player.phonograph.util.PreferenceUtil
 import player.phonograph.util.ViewUtil
 
 class GenreDetailActivity :
@@ -126,6 +127,7 @@ class GenreDetailActivity :
         }
         cab = createCab(R.id.cab_stub) {
             menu(menuRes)
+            popupTheme(PreferenceUtil.getInstance(this@GenreDetailActivity).generalTheme);
             closeDrawable(R.drawable.ic_close_white_24dp)
             backgroundColor(literal = PhonographColorUtil.shiftBackgroundColorForLightText(ThemeColor.primaryColor(this@GenreDetailActivity)))
             onCreate(createCallback)

@@ -151,6 +151,7 @@ class LibraryFragment :
             if (it.isActive()) it.destroy()
         }
         cab = createCab(R.id.cab_stub) {
+            popupTheme(PreferenceUtil.getInstance(requireContext()).generalTheme)
             menu(menuRes)
             closeDrawable(R.drawable.ic_close_white_24dp)
             backgroundColor(literal = PhonographColorUtil.shiftBackgroundColorForLightText(ThemeColor.primaryColor(requireActivity())))

@@ -38,6 +38,7 @@ import player.phonograph.model.Playlist
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
 import player.phonograph.util.PhonographColorUtil
 import player.phonograph.util.PlaylistsUtil
+import player.phonograph.util.PreferenceUtil
 import player.phonograph.util.ViewUtil
 
 class PlaylistEditorActivity : AbsSlidingMusicPanelActivity() {
@@ -124,6 +125,7 @@ class PlaylistEditorActivity : AbsSlidingMusicPanelActivity() {
                     // finish existed cab
                     cab?.also { if (it.isActive()) it.destroy() }
                     cab = this@PlaylistEditorActivity.createCab(R.id.cab_stub) {
+                        popupTheme(PreferenceUtil.getInstance(this@PlaylistEditorActivity).generalTheme);
                         menu(menuRes)
                         closeDrawable(R.drawable.ic_close_white_24dp)
                         backgroundColor(
