@@ -47,7 +47,9 @@ class SongPage : AbsDisplayPage<Song, UniversalSongAdapter, GridLayoutManager>()
             UniversalSongAdapter.MODE_COMMON,
             layoutRes,
             null
-        )
+        ).also { adapter ->
+            adapter.usePalette = displayUtil.colorFooter
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -85,6 +87,11 @@ class SongPage : AbsDisplayPage<Song, UniversalSongAdapter, GridLayoutManager>()
         for (i in 0 until max) popup.gridSize.getChildAt(i).visibility = View.VISIBLE
         popup.gridSize.clearCheck()
         (popup.gridSize.getChildAt(current - 1) as RadioButton).isChecked = true
+
+        // color footer
+        popup.actionColoredFooters.visibility = View.VISIBLE
+        popup.actionColoredFooters.isChecked = displayUtil.colorFooter
+        popup.actionColoredFooters.isEnabled = displayUtil.gridSize > displayUtil.maxGridSizeForList
 
         // sort order
         popup.sortOrderBasic.visibility = View.VISIBLE
@@ -147,6 +154,14 @@ class SongPage : AbsDisplayPage<Song, UniversalSongAdapter, GridLayoutManager>()
 
                 if (displayUtil.gridSize != itemLayoutRes) initRecyclerView() // again
                 layoutManager.spanCount = gridSizeSelected
+            }
+
+            // color footer
+            val coloredFootersSelected = popup.actionColoredFooters.isChecked
+            if (displayUtil.colorFooter != coloredFootersSelected) {
+                displayUtil.colorFooter = coloredFootersSelected
+                adapter.usePalette = coloredFootersSelected
+                adapter.songs = items // just refresh
             }
 
             // sort order
