@@ -5,12 +5,9 @@
 package player.phonograph.ui.fragments.mainactivity.library.new_ui
 
 import android.content.Intent
-import android.content.res.ColorStateList
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.*
 import android.widget.PopupWindow
-import android.widget.RadioButton
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.graphics.BlendModeColorFilterCompat
 import androidx.core.graphics.BlendModeCompat
@@ -26,11 +23,11 @@ import player.phonograph.adapter.HomePagerAdapter
 import player.phonograph.adapter.PAGERS
 import player.phonograph.adapter.PageConfig
 import player.phonograph.databinding.FragmentHomeBinding
-import player.phonograph.databinding.PopupWindowMainBinding
 import player.phonograph.ui.activities.MainActivity
 import player.phonograph.ui.activities.SearchActivity
 import player.phonograph.ui.fragments.mainactivity.AbsMainActivityFragment
 import player.phonograph.util.PreferenceUtil
+import java.lang.ref.WeakReference
 
 class HomeFragment : AbsMainActivityFragment(), MainActivity.MainActivityFragmentCallbacks {
 
@@ -134,70 +131,10 @@ class HomeFragment : AbsMainActivityFragment(), MainActivity.MainActivityFragmen
         fun newInstance(): HomeFragment = HomeFragment()
     }
 
-    // all pages share one popup this all can be re-used
-    lateinit var popupMenu: PopupWindow
-        private set
-
-    private var _bindingPopup: PopupWindowMainBinding? = null
-    val popup get() = _bindingPopup!!
-
-    var isPopupMenuInited: Boolean = false
-        private set
-
-    fun initPopup() {
-        _bindingPopup = PopupWindowMainBinding.inflate(LayoutInflater.from(mainActivity))
-
-        val accentColor = ThemeColor.accentColor(mainActivity)
-        popup.textGridSize.setTextColor(accentColor)
-        popup.textSortOrderBasic.setTextColor(accentColor)
-        popup.textSortOrderContent.setTextColor(accentColor)
-
-        popup.actionColoredFooters.buttonTintList = ColorStateList(
-            arrayOf(
-                intArrayOf(android.R.attr.state_enabled), intArrayOf()
-            ),
-            intArrayOf(
-                accentColor, ThemeColor.textColorSecondary(mainActivity)
-            )
-        )
-
-        val csl = ColorStateList(
-            arrayOf(
-                intArrayOf(android.R.attr.state_checked),
-                intArrayOf()
-            ),
-            intArrayOf(
-                accentColor, ThemeColor.textColorSecondary(mainActivity)
-            )
-        )
-
-        for (i in 0 until popup.gridSize.childCount) {
-            (popup.gridSize.getChildAt(i) as RadioButton).buttonTintList = csl
-        }
-        for (i in 0 until popup.sortOrderContent.childCount) {
-            (popup.sortOrderContent.getChildAt(i) as RadioButton).buttonTintList = csl
-        }
-        for (i in 0 until popup.sortOrderBasic.childCount) {
-            (popup.sortOrderBasic.getChildAt(i) as RadioButton).buttonTintList = csl
-        }
-
-        popupMenu = PopupWindow(popup.root, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, true)
-
-        val backgroundColor = mainActivity.getColor(
-            when (PreferenceUtil.getInstance(mainActivity).generalTheme) {
-                R.style.Theme_Phonograph_Auto -> R.color.cardBackgroundColor
-                R.style.Theme_Phonograph_Light -> R.color.md_white_1000
-                R.style.Theme_Phonograph_Black -> R.color.md_black_1000
-                R.style.Theme_Phonograph_Dark -> R.color.md_grey_800
-                else -> R.color.md_grey_700
-            }
-        )
-        popupMenu.setBackgroundDrawable(ColorDrawable(backgroundColor))
-
-        popupMenu.animationStyle = android.R.style.Animation_Dialog
-
-        isPopupMenuInited = true
-    }
+    /**
+     *     the popup window for [AbsDisplayPage]
+     */
+    var displayPopup: WeakReference<PopupWindow?> = WeakReference(null)
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
