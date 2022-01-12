@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.appcompat.widget.Toolbar
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="?actionBarSize"
+    android:elevation="4dp"
+    android:theme="@style/ThemeOverlay.AppCompat.DayNight.ActionBar"
+    tools:ignore="UnusedAttribute"
+    />
