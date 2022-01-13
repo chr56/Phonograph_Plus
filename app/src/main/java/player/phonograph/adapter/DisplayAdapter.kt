@@ -87,7 +87,9 @@ class DisplayAdapter<I : Displayable>(
     }
 
     override fun getSectionName(position: Int): String {
-        return dataset[position].getSortOrderReference() ?: "-" // TODO
+        if (!showSectionName) return ""
+
+        return dataset[position].getSortOrderReference()?.substring(0..1) ?: "-" // TODO
     }
 
     inner class DisplayViewHolder(itemView: View) : UniversalMediaEntryViewHolder(itemView), MediaEntryViewClickListener {
