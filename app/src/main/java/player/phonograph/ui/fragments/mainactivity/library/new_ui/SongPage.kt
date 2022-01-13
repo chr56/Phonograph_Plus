@@ -15,14 +15,14 @@ import androidx.recyclerview.widget.GridLayoutManager
 import kotlinx.coroutines.*
 import player.phonograph.App
 import player.phonograph.R
-import player.phonograph.adapter.song.UniversalSongAdapter
+import player.phonograph.adapter.DisplayAdapter
 import player.phonograph.databinding.PopupWindowMainBinding
 import player.phonograph.helper.SortOrder
 import player.phonograph.model.Song
 import player.phonograph.util.MediaStoreUtil
 import player.phonograph.util.Util
 
-class SongPage : AbsDisplayPage<Song, UniversalSongAdapter, GridLayoutManager>() {
+class SongPage : AbsDisplayPage<Song, DisplayAdapter<Song>, GridLayoutManager>() {
 
     private val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.IO)
 
@@ -31,7 +31,7 @@ class SongPage : AbsDisplayPage<Song, UniversalSongAdapter, GridLayoutManager>()
             .also { it.spanCount = DisplayUtil(this).gridSize }
     }
 
-    override fun initAdapter(): UniversalSongAdapter {
+    override fun initAdapter(): DisplayAdapter<Song> {
         val displayUtil = DisplayUtil(this)
 
         val layoutRes =
@@ -41,15 +41,24 @@ class SongPage : AbsDisplayPage<Song, UniversalSongAdapter, GridLayoutManager>()
             TAG, "layoutRes: ${ if (layoutRes == R.layout.item_grid) "GRID" else if (layoutRes == R.layout.item_list) "LIST" else "UNKNOWN" }"
         )
 
-        return UniversalSongAdapter(
+        return DisplayAdapter<Song>(
             hostFragment.mainActivity,
-            items, // empty util songs loaded
-            UniversalSongAdapter.MODE_COMMON,
-            layoutRes,
-            null
-        ).also { adapter ->
-            adapter.usePalette = displayUtil.colorFooter
+            null, // todo
+            ArrayList<Song>(),
+            layoutRes
+        ) {
+            usePalette = displayUtil.colorFooter
         }
+
+//        return UniversalSongAdapter(
+//            hostFragment.mainActivity,
+//            items, // empty util songs loaded
+//            UniversalSongAdapter.MODE_COMMON,
+//            layoutRes,
+//            null
+//        ).also { adapter ->
+//            adapter.usePalette = displayUtil.colorFooter
+//        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -72,7 +81,7 @@ class SongPage : AbsDisplayPage<Song, UniversalSongAdapter, GridLayoutManager>()
     }
 
     private fun updateAdapterDataset() {
-        if (isRecyclerViewPrepared) adapter.songs = items
+        if (isRecyclerViewPrepared) adapter.dataset = items
     }
 
     override fun configPopup(popupMenu: PopupWindow, popup: PopupWindowMainBinding) {
@@ -161,7 +170,7 @@ class SongPage : AbsDisplayPage<Song, UniversalSongAdapter, GridLayoutManager>()
             if (displayUtil.colorFooter != coloredFootersSelected) {
                 displayUtil.colorFooter = coloredFootersSelected
                 adapter.usePalette = coloredFootersSelected
-                adapter.songs = items // just refresh
+                adapter.dataset = items // just refresh
             }
 
             // sort order

@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import android.widget.PopupMenu
 import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.content.res.AppCompatResources
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView
 import player.phonograph.R
 import player.phonograph.adapter.base.MediaEntryViewClickListener
@@ -18,6 +19,7 @@ import player.phonograph.adapter.base.MultiSelectAdapter
 import player.phonograph.adapter.base.UniversalMediaEntryViewHolder
 import player.phonograph.interfaces.Displayable
 import player.phonograph.interfaces.MultiSelectionCabProvider
+import player.phonograph.model.Artist
 
 class DisplayAdapter<I : Displayable>(
     private val activity: AppCompatActivity,
@@ -29,7 +31,7 @@ class DisplayAdapter<I : Displayable>(
     MultiSelectAdapter<DisplayAdapter<I>.DisplayViewHolder, I>(activity, host), FastScrollRecyclerView.SectionedAdapter {
 
     var dataset: List<I> = dataSet
-        private set(value) {
+        set(value) {
             field = value
             notifyDataSetChanged()
         }
@@ -58,6 +60,11 @@ class DisplayAdapter<I : Displayable>(
         )
     }
 
+    private val defaultIcon = when (dataset.getOrNull(0)) {
+        is Artist -> AppCompatResources.getDrawable(activity, R.drawable.default_artist_image)
+        else -> AppCompatResources.getDrawable(activity, R.drawable.default_album_art)
+    }
+
     override fun onBindViewHolder(holder: DisplayViewHolder, position: Int) {
         val item: I = dataset[position]
         holder.itemView.isActivated = isChecked(item)
@@ -65,7 +72,8 @@ class DisplayAdapter<I : Displayable>(
         holder.text?.text = item.getDescription()
         holder.shortSeparator?.visibility = View.VISIBLE
         holder.image?.also {
-            TODO()
+            it.setImageDrawable(defaultIcon)
+//            TODO()
         }
     }
 
@@ -84,8 +92,6 @@ class DisplayAdapter<I : Displayable>(
 
     inner class DisplayViewHolder(itemView: View) : UniversalMediaEntryViewHolder(itemView), MediaEntryViewClickListener {
 
-        private val displayItem = dataset[bindingAdapterPosition]
-
         init {
             // Item Click
             setClickListener(object : MediaEntryViewClickListener {
@@ -95,11 +101,11 @@ class DisplayAdapter<I : Displayable>(
                 override fun onClick(v: View) {
                     when (isInQuickSelectMode) {
                         true -> toggleChecked(bindingAdapterPosition)
-                        false -> dataset[0].clickHandler().invoke(displayItem, dataset)
+                        false -> dataset[0].clickHandler().invoke(dataset[bindingAdapterPosition], dataset)
                     }
                 }
             })
-            // Munu Click
+            // Menu Click
             menu?.setOnClickListener { view ->
                 if (dataset.isNotEmpty()) {
                     val menuRes = dataset[0].menuRes()
@@ -108,7 +114,7 @@ class DisplayAdapter<I : Displayable>(
                     popupMenu.setOnMenuItemClickListener { menuItem ->
                         if (menuItem != null)
                             return@setOnMenuItemClickListener dataset[0].menuHandler()
-                                ?.invoke(activity, displayItem, menuItem.itemId) ?: false
+                                ?.invoke(activity, dataset[bindingAdapterPosition], menuItem.itemId) ?: false
                         else return@setOnMenuItemClickListener false
                     }
                     popupMenu.show()
