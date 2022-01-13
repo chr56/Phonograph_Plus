@@ -4,13 +4,13 @@
 
 package player.phonograph.adapter
 
-import android.app.Activity
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupMenu
 import androidx.annotation.LayoutRes
+import androidx.appcompat.app.AppCompatActivity
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView
 import player.phonograph.R
 import player.phonograph.adapter.base.MediaEntryViewClickListener
@@ -20,7 +20,7 @@ import player.phonograph.interfaces.Displayable
 import player.phonograph.interfaces.MultiSelectionCabProvider
 
 class DisplayAdapter<I : Displayable>(
-    private val activity: Activity,
+    private val activity: AppCompatActivity,
     host: MultiSelectionCabProvider?,
     dataSet: List<I>,
     @LayoutRes var layoutRes: Int,
@@ -36,6 +36,7 @@ class DisplayAdapter<I : Displayable>(
 
     init {
         setHasStableIds(true)
+        cfg?.invoke(this)
     }
 
     var usePalette: Boolean = false
@@ -74,7 +75,7 @@ class DisplayAdapter<I : Displayable>(
     override fun updateItemCheckStatus(datasetPosition: Int) = notifyItemChanged(datasetPosition)
 
     override fun onMultipleItemAction(menuItem: MenuItem, selection: List<I>) {
-        if (dataset.isNotEmpty()) dataset[0].multiMenuHandler()?.invoke(selection, menuItem.itemId)
+        if (dataset.isNotEmpty()) dataset[0].multiMenuHandler()?.invoke(activity, selection, menuItem.itemId)
     }
 
     override fun getSectionName(position: Int): String {
@@ -94,7 +95,7 @@ class DisplayAdapter<I : Displayable>(
                 override fun onClick(v: View) {
                     when (isInQuickSelectMode) {
                         true -> toggleChecked(bindingAdapterPosition)
-                        false -> dataset[0].clickHandler().invoke()
+                        false -> dataset[0].clickHandler().invoke(displayItem, dataset)
                     }
                 }
             })
@@ -107,7 +108,7 @@ class DisplayAdapter<I : Displayable>(
                     popupMenu.setOnMenuItemClickListener { menuItem ->
                         if (menuItem != null)
                             return@setOnMenuItemClickListener dataset[0].menuHandler()
-                                ?.invoke(displayItem, menuItem.itemId) ?: false
+                                ?.invoke(activity, displayItem, menuItem.itemId) ?: false
                         else return@setOnMenuItemClickListener false
                     }
                     popupMenu.show()

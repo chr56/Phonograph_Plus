@@ -1,14 +1,32 @@
 package player.phonograph.model;
 
+import android.app.Activity;
+import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import androidx.annotation.Keep;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+
+import java.util.List;
+
+import kotlin.Unit;
+import kotlin.jvm.functions.Function0;
+import kotlin.jvm.functions.Function2;
+import kotlin.jvm.functions.Function3;
+import player.phonograph.R;
+import player.phonograph.helper.MusicPlayerRemote;
+import player.phonograph.helper.menu.SongMenuHelper;
+import player.phonograph.helper.menu.SongsMenuHelper;
+import player.phonograph.interfaces.Displayable;
+import player.phonograph.util.MusicUtil;
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
  */
-public class Song implements Parcelable {
+public class Song implements Parcelable, Displayable {
     public static final Song EMPTY_SONG = new Song(-1, "", -1, -1, -1, "", -1, -1, "", -1, "");
 
     public final long id;
@@ -61,16 +79,16 @@ public class Song implements Parcelable {
 
     @Override
     public int hashCode() {
-        int result = (int)id;
+        int result = (int) id;
         result = 31 * result + (title != null ? title.hashCode() : 0);
         result = 31 * result + trackNumber;
         result = 31 * result + year;
         result = 31 * result + (int) (duration ^ (duration >>> 32));
         result = 31 * result + (data != null ? data.hashCode() : 0);
         result = 31 * result + (int) (dateModified ^ (dateModified >>> 32));
-        result = 31 * result + (int)albumId;
+        result = 31 * result + (int) albumId;
         result = 31 * result + (albumName != null ? albumName.hashCode() : 0);
-        result = 31 * result + (int)artistId;
+        result = 31 * result + (int) artistId;
         result = 31 * result + (artistName != null ? artistName.hashCode() : 0);
         return result;
     }
@@ -137,4 +155,59 @@ public class Song implements Parcelable {
             return new Song[size];
         }
     };
+
+    @Override
+    public long getItemID() {
+        return id;
+    }
+
+    @NonNull
+    @Override
+    public CharSequence getTitle() {
+        return title;
+    }
+
+    @Nullable
+    @Override
+    public CharSequence getDescription() {
+        return MusicUtil.getSongInfoString(this);
+    }
+
+    @Nullable
+    @Override
+    public Uri getPic() {
+        return null; //todo
+    }
+
+    @Nullable
+    @Override
+    public String getSortOrderReference() {
+        return title; //todo
+    }
+
+    @Override
+    public int menuRes() {
+        return R.menu.menu_item_song_short;
+    }
+
+    @Nullable
+    @Override
+    public Function3<AppCompatActivity, Displayable, Integer, Boolean> menuHandler() {
+        return (appCompatActivity, displayable, integer) -> SongMenuHelper.handleMenuClick(appCompatActivity, (Song) displayable, integer);
+    }
+
+    @Nullable
+    @Override
+    public Function3<AppCompatActivity, List<? extends Displayable>, Integer, Boolean> multiMenuHandler() {
+        return (appCompatActivity, list, integer) -> SongsMenuHelper.handleMenuClick(appCompatActivity, (List<Song>) list, integer);
+    }
+
+    @NonNull
+    @Override
+    public Function2<Displayable, List<? extends Displayable>, Unit> clickHandler() {
+        return (displayable, queue) -> {
+            MusicPlayerRemote.openQueue((List<Song>) queue, 0, true);
+            return null;
+        };
+    }
 }
