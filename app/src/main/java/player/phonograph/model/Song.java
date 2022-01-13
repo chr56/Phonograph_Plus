@@ -206,7 +206,7 @@ public class Song implements Parcelable, Displayable {
     @Override
     public Function2<Displayable, List<? extends Displayable>, Unit> clickHandler() {
         return (displayable, queue) -> {
-            MusicPlayerRemote.openQueue((List<Song>) queue, 0, true);
+            MusicPlayerRemote.openQueue((List<Song>) queue, queue.indexOf(displayable), true);
             return null;
         };
     }
