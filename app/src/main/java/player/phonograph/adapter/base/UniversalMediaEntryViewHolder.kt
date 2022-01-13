@@ -11,7 +11,7 @@ import player.phonograph.R
 /**
  * @author Karim Abou Zeid (kabouzeid)
  */
-open class UniversalMediaEntryViewHolder(itemView: View, clickListener: MediaEntryViewClickListener) :
+open class UniversalMediaEntryViewHolder(itemView: View) :
     RecyclerView.ViewHolder(itemView) {
 
     var image: ImageView? = null
@@ -26,9 +26,13 @@ open class UniversalMediaEntryViewHolder(itemView: View, clickListener: MediaEnt
 
     init {
         bindingViews()
+    }
+
+    protected fun setClickListener(clickListener: MediaEntryViewClickListener) {
         itemView.setOnClickListener(clickListener)
         itemView.setOnLongClickListener(clickListener)
     }
+
     private fun bindingViews() {
         // todo: use viewBinding
         image = itemView.findViewById(R.id.image)
