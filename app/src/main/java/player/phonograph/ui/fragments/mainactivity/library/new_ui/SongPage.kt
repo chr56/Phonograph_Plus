@@ -44,7 +44,7 @@ class SongPage : AbsDisplayPage<Song, DisplayAdapter<Song>, GridLayoutManager>()
         return DisplayAdapter<Song>(
             hostFragment.mainActivity,
             null, // todo
-            ArrayList<Song>(),
+            items,
             layoutRes
         ) {
             usePalette = displayUtil.colorFooter
@@ -161,7 +161,7 @@ class SongPage : AbsDisplayPage<Song, DisplayAdapter<Song>, GridLayoutManager>()
                 val itemLayoutRes =
                     if (gridSizeSelected > displayUtil.maxGridSizeForList) R.layout.item_grid else R.layout.item_list
 
-                if (displayUtil.gridSize != itemLayoutRes) initRecyclerView() // again
+                if (adapter.layoutRes != itemLayoutRes) initRecyclerView() // again
                 layoutManager.spanCount = gridSizeSelected
             }
 
