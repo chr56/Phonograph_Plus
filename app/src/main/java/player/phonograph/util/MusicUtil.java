@@ -345,10 +345,19 @@ public class MusicUtil {
     }
 
     @NonNull
-    public static ArrayList<Song> getSongList(List<Album> albums) {
+    public static ArrayList<Song> getAlbumSongList(List<Album> albums) {
         ArrayList<Song> songs = new ArrayList<>(1);
         for (Album album : albums) {
             songs.addAll(album.songs);
+        }
+        return songs;
+    }
+
+    @NonNull
+    public static ArrayList<Song> getArtistSongList(List<Artist> artists) {
+        ArrayList<Song> songs = new ArrayList<>(1);
+        for (Artist artist: artists) {
+            songs.addAll(artist.getSongs());
         }
         return songs;
     }

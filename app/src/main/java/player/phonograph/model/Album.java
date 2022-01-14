@@ -3,7 +3,6 @@ package player.phonograph.model;
 import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.widget.ImageView;
 
 import androidx.annotation.Keep;
 import androidx.annotation.NonNull;
@@ -18,7 +17,6 @@ import java.util.List;
 import kotlin.Unit;
 import kotlin.jvm.functions.Function3;
 import player.phonograph.App;
-import player.phonograph.R;
 import player.phonograph.helper.menu.SongsMenuHelper;
 import player.phonograph.interfaces.Displayable;
 import player.phonograph.util.MusicUtil;
@@ -165,7 +163,7 @@ public class Album implements Parcelable, Displayable {
     @Nullable
     @Override
     public Function3<AppCompatActivity, List<? extends Displayable>, Integer, Boolean> multiMenuHandler() {
-        return (appCompatActivity, list, integer) -> SongsMenuHelper.handleMenuClick(appCompatActivity, MusicUtil.getSongList((List<Album>) list), integer);//todo more variety
+        return (appCompatActivity, list, integer) -> SongsMenuHelper.handleMenuClick(appCompatActivity, MusicUtil.getAlbumSongList((List<Album>) list), integer);//todo more variety
     }
 
     @NonNull
