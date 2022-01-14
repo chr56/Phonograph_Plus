@@ -165,7 +165,7 @@ public class Album implements Parcelable, Displayable {
     @Nullable
     @Override
     public Function3<AppCompatActivity, List<? extends Displayable>, Integer, Boolean> multiMenuHandler() {
-        return (appCompatActivity, list, integer) -> SongsMenuHelper.handleMenuClick(appCompatActivity, (List<Song>) list, integer);//todo more variety
+        return (appCompatActivity, list, integer) -> SongsMenuHelper.handleMenuClick(appCompatActivity, MusicUtil.getSongList((List<Album>) list), integer);//todo more variety
     }
 
     @NonNull
