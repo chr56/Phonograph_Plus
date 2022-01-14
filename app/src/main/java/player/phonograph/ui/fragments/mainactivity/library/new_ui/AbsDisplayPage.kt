@@ -43,8 +43,10 @@ sealed class AbsDisplayPage<IT, A : RecyclerView.Adapter<*>, LM : RecyclerView.L
     private val binding get() = _viewBinding!!
 
     abstract fun getDataSet(): List<IT>
+    abstract fun loadDataSet()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        loadDataSet()
         _viewBinding = FragmentDisplayPageBinding.inflate(inflater, container, false)
         return binding.root
     }

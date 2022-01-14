@@ -4,11 +4,8 @@
 
 package player.phonograph.ui.fragments.mainactivity.library.new_ui
 
-import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.PopupWindow
 import android.widget.RadioButton
 import androidx.recyclerview.widget.GridLayoutManager
@@ -52,17 +49,7 @@ class SongPage : AbsDisplayPage<Song, DisplayAdapter<Song>, GridLayoutManager>()
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        loadSongs()
-        return super.onCreateView(inflater, container, savedInstanceState)
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-//        updateAdapterDataset() // in case that rhe adapter may not be ready when loadSong (in coroutineScope) call for it
-    }
-
-    private fun loadSongs() {
+    override fun loadDataSet() {
         loaderCoroutineScope.launch {
             val temp = MediaStoreUtil.getAllSongs(App.instance) as List<Song>
             while (!isRecyclerViewPrepared) yield() // wait until ready
@@ -155,7 +142,7 @@ class SongPage : AbsDisplayPage<Song, DisplayAdapter<Song>, GridLayoutManager>()
                     if (gridSizeSelected > displayUtil.maxGridSizeForList) R.layout.item_grid else R.layout.item_list
 
                 if (adapter.layoutRes != itemLayoutRes) {
-                    loadSongs()
+                    loadDataSet()
                     initRecyclerView() // again
                 }
                 layoutManager.spanCount = gridSizeSelected
@@ -219,7 +206,7 @@ class SongPage : AbsDisplayPage<Song, DisplayAdapter<Song>, GridLayoutManager>()
                 }
             if (sortOrderSelected.isNotBlank() && displayUtil.sortOrder != sortOrderSelected) {
                 displayUtil.sortOrder = sortOrderSelected
-                loadSongs()
+                loadDataSet()
                 Log.d(TAG, "Write cfg: $sortOrderSelected")
             }
         }
