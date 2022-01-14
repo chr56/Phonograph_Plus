@@ -2,6 +2,8 @@
  * Copyright (c) 2022 chr_56 & Aidan Follestad (@afollestad) (original designer/author)
  */
 
+@file:Suppress("unused")
+
 package lib.phonograph.cab
 
 import android.app.Activity
@@ -11,12 +13,15 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewStub
+import android.widget.ImageView
 import androidx.annotation.ColorInt
 import androidx.annotation.IdRes
 import androidx.annotation.MenuRes
 import androidx.annotation.StyleRes
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
+import androidx.core.view.forEach
 import player.phonograph.R
 
 fun createMultiSelectionCab(
@@ -25,25 +30,28 @@ fun createMultiSelectionCab(
     @IdRes inflatedId: Int,
     applyCfg: CabCfg
 ): MultiSelectionCab {
-    val stub = activity.findViewById<View>(stubId)
-    val toolbar: Toolbar = if (stub is ViewStub) {
-        stub.inflatedId = inflatedId
-        stub.layoutResource = R.layout.stub_toolbar
-        stub.inflate() as Toolbar
-    } else {
-        throw IllegalStateException(
-            "Unable to attach to ${activity.resources.getResourceName(stubId)}, it's not a ViewStub"
-        )
-    }
+    val toolbar: Toolbar =
+        when (val stub = activity.findViewById<View>(stubId)) {
+            is ViewStub -> {
+                stub.inflatedId = inflatedId
+                stub.layoutResource = R.layout.stub_toolbar
+                stub.inflate() as Toolbar
+            }
+            else -> {
+                throw IllegalStateException(
+                    "Unable to attach to ${activity.resources.getResourceName(stubId)}, it's not a ViewStub"
+                )
+            }
+        }
     toolbar.visibility = View.GONE
     return MultiSelectionCab(activity, toolbar, applyCfg)
 }
 
 // todo leak check
 class MultiSelectionCab internal constructor(
-    var activityField: Activity?,
-    var toolbarField: Toolbar?,
-    var applyCfg: CabCfg
+    private var activityField: Activity?,
+    private var toolbarField: Toolbar?,
+    var applyCfg: CabCfg?
 ) {
 
     private val activity: Activity
@@ -52,9 +60,10 @@ class MultiSelectionCab internal constructor(
         get() = toolbarField ?: throw IllegalStateException("Cab has already destroyed or not created!!")
 
     @Synchronized
-    private fun init(applyCfg: CabCfg) {
+    private fun init(applyCfg: CabCfg?) {
         status = CabStatus.STATUS_INITIATING
-        applyCfg.invoke(this)
+        initCallback.forEach { it.invoke(this) }
+        applyCfg?.invoke(this)
         refresh()
         status = CabStatus.STATUS_AVAILABLE
     }
@@ -79,7 +88,7 @@ class MultiSelectionCab internal constructor(
         alpha = 1f
 
         navigationIcon = closeDrawable
-        setNavigationOnClickListener (dismissClickListener)
+        setNavigationOnClickListener(dismissClickListener)
 
         title = titleText
         setTitleTextColor(titleTextColor)
@@ -89,9 +98,16 @@ class MultiSelectionCab internal constructor(
 
         popupTheme = themeRes
 
+        menu.clear()
         if (menuRes != 0) {
-            menu.clear()
             inflateMenu(menuRes)
+            if (autoTintMenuIcon) {
+                toolbar.forEach { View ->
+                    if (View is ImageView) ;
+                }
+            }
+            overflowIcon =
+                AppCompatResources.getDrawable(activity, androidx.appcompat.R.drawable.abc_ic_menu_overflow_material)?.let { it.setTint(titleTextColor); it }
             setOnMenuItemClickListener(menuClickListener)
         } else {
             setOnMenuItemClickListener(null)
@@ -146,16 +162,6 @@ class MultiSelectionCab internal constructor(
         return@OnClickListener
     }
 
-    private var showCallbacks = mutableListOf<ShowCallback>()
-    private var selectCallbacks = mutableListOf<SelectCallback>()
-    private var dismissCallbacks = mutableListOf<DismissCallback>()
-    private var destroyCallbacks = mutableListOf<DestroyCallback>()
-
-    fun onShow(callback: ShowCallback) { showCallbacks.add(callback) }
-    fun onSelection(callback: SelectCallback) { selectCallbacks.add(callback) }
-    fun onDismiss(callback: DismissCallback) { dismissCallbacks.add(callback) }
-    fun onDestroy(callback: DestroyCallback) { destroyCallbacks.add(callback) }
-
     /** call this on host destroying **/
     @Synchronized
     fun destroy(): Boolean {
@@ -175,14 +181,23 @@ class MultiSelectionCab internal constructor(
         status = CabStatus.STATUS_DESTROYED
         return true
     }
+
+    private var initCallback = mutableListOf<InitCallback>()
+    private var showCallbacks = mutableListOf<ShowCallback>()
+    private var selectCallbacks = mutableListOf<SelectCallback>()
+    private var dismissCallbacks = mutableListOf<DismissCallback>()
+    private var destroyCallbacks = mutableListOf<DestroyCallback>()
+
+    fun onInit(callback: InitCallback) { initCallback.add(callback) }
+    fun onShow(callback: ShowCallback) { showCallbacks.add(callback) }
+    fun onSelection(callback: SelectCallback) { selectCallbacks.add(callback) }
+    fun onDismiss(callback: DismissCallback) { dismissCallbacks.add(callback) }
+    fun onDestroy(callback: DestroyCallback) { destroyCallbacks.add(callback) }
 }
-
+typealias InitCallback = (cab: MultiSelectionCab) -> Unit
 typealias ShowCallback = (cab: MultiSelectionCab, menu: Menu) -> Unit
-
 typealias SelectCallback = (item: MenuItem) -> Boolean
-
 typealias DismissCallback = (cab: MultiSelectionCab) -> Unit
-
 typealias DestroyCallback = (cab: MultiSelectionCab) -> Boolean
 
 typealias CabCfg = MultiSelectionCab.() -> Unit
