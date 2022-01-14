@@ -68,7 +68,7 @@ class DisplayAdapter<I : Displayable>(
     override fun onBindViewHolder(holder: DisplayViewHolder, position: Int) {
         val item: I = dataset[position]
         holder.itemView.isActivated = isChecked(item)
-        holder.title?.text = item.getTitle()
+        holder.title?.text = item.getDisplayTitle()
         holder.text?.text = item.getDescription()
         holder.shortSeparator?.visibility = View.VISIBLE
         holder.image?.also {
@@ -103,23 +103,27 @@ class DisplayAdapter<I : Displayable>(
                 override fun onClick(v: View) {
                     when (isInQuickSelectMode) {
                         true -> toggleChecked(bindingAdapterPosition)
-                        false -> dataset[0].clickHandler().invoke(dataset[bindingAdapterPosition], dataset)
+                        false -> dataset[0].clickHandler().invoke(activity, dataset[bindingAdapterPosition], dataset)
                     }
                 }
             })
             // Menu Click
-            menu?.setOnClickListener { view ->
-                if (dataset.isNotEmpty()) {
-                    val menuRes = dataset[0].menuRes()
-                    val popupMenu = PopupMenu(activity, view)
-                    popupMenu.inflate(menuRes)
-                    popupMenu.setOnMenuItemClickListener { menuItem ->
-                        if (menuItem != null)
-                            return@setOnMenuItemClickListener dataset[0].menuHandler()
-                                ?.invoke(activity, dataset[bindingAdapterPosition], menuItem.itemId) ?: false
-                        else return@setOnMenuItemClickListener false
+            if (dataset[0].menuRes() == 0 || dataset[0].menuHandler() == null) {
+                menu?.visibility = View.INVISIBLE
+            } else {
+                menu?.setOnClickListener { view ->
+                    if (dataset.isNotEmpty()) {
+                        val menuRes = dataset[0].menuRes()
+                        val popupMenu = PopupMenu(activity, view)
+                        popupMenu.inflate(menuRes)
+                        popupMenu.setOnMenuItemClickListener { menuItem ->
+                            if (menuItem != null)
+                                return@setOnMenuItemClickListener dataset[0].menuHandler()
+                                    ?.invoke(activity, dataset[bindingAdapterPosition], menuItem.itemId) ?: false
+                            else return@setOnMenuItemClickListener false
+                        }
+                        popupMenu.show()
                     }
-                    popupMenu.show()
                 }
             }
         }

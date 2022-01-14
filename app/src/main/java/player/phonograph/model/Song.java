@@ -9,6 +9,7 @@ import androidx.annotation.Keep;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentActivity;
 
 import java.util.List;
 
@@ -163,7 +164,7 @@ public class Song implements Parcelable, Displayable {
 
     @NonNull
     @Override
-    public CharSequence getTitle() {
+    public CharSequence getDisplayTitle() {
         return title;
     }
 
@@ -204,8 +205,8 @@ public class Song implements Parcelable, Displayable {
 
     @NonNull
     @Override
-    public Function2<Displayable, List<? extends Displayable>, Unit> clickHandler() {
-        return (displayable, queue) -> {
+    public Function3<FragmentActivity, Displayable, List<? extends Displayable>, Unit> clickHandler() {
+        return (activity, displayable, queue) -> {
             MusicPlayerRemote.openQueue((List<Song>) queue, queue.indexOf(displayable), true);
             return null;
         };

@@ -7,11 +7,12 @@ package player.phonograph.interfaces
 import android.net.Uri
 import androidx.annotation.MenuRes
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.FragmentActivity
 
 interface Displayable {
     fun getItemID(): Long
 
-    fun getTitle(): CharSequence
+    fun getDisplayTitle(): CharSequence
     fun getDescription(): CharSequence?
     fun getPic(): Uri?
 
@@ -26,5 +27,5 @@ interface Displayable {
     fun multiMenuHandler():
         ((activity: AppCompatActivity, selection: List<Displayable>, menuItemId: Int) -> Boolean)?
 
-    fun clickHandler(): (Displayable, List<Displayable>?) -> Unit
+    fun clickHandler(): (FragmentActivity, Displayable, List<Displayable>?) -> Unit
 }
