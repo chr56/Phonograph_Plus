@@ -41,24 +41,14 @@ class SongPage : AbsDisplayPage<Song, DisplayAdapter<Song>, GridLayoutManager>()
             TAG, "layoutRes: ${ if (layoutRes == R.layout.item_grid) "GRID" else if (layoutRes == R.layout.item_list) "LIST" else "UNKNOWN" }"
         )
 
-        return DisplayAdapter<Song>(
+        return DisplayAdapter(
             hostFragment.mainActivity,
-            hostFragment, // todo
-            items,
+            hostFragment,
+            ArrayList(), // empty until songs loaded
             layoutRes
         ) {
             usePalette = displayUtil.colorFooter
         }
-
-//        return UniversalSongAdapter(
-//            hostFragment.mainActivity,
-//            items, // empty util songs loaded
-//            UniversalSongAdapter.MODE_COMMON,
-//            layoutRes,
-//            null
-//        ).also { adapter ->
-//            adapter.usePalette = displayUtil.colorFooter
-//        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -68,20 +58,22 @@ class SongPage : AbsDisplayPage<Song, DisplayAdapter<Song>, GridLayoutManager>()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        updateAdapterDataset() // in case that rhe adapter may not be ready when loadSong (in coroutineScope) call for it
+//        updateAdapterDataset() // in case that rhe adapter may not be ready when loadSong (in coroutineScope) call for it
     }
 
     private fun loadSongs() {
         coroutineScope.launch {
-            items = MediaStoreUtil.getAllSongs(App.instance) as List<Song>
+            val temp = MediaStoreUtil.getAllSongs(App.instance) as List<Song>
+            while (!isRecyclerViewPrepared) yield() // wait until ready
+
             withContext(Dispatchers.Main) {
-                updateAdapterDataset()
+                if (isRecyclerViewPrepared) adapter.dataset = temp
             }
         }
     }
 
-    private fun updateAdapterDataset() {
-        if (isRecyclerViewPrepared) adapter.dataset = items
+    override fun getDataSet(): List<Song> {
+        return if (isRecyclerViewPrepared) adapter.dataset else emptyList()
     }
 
     override fun configPopup(popupMenu: PopupWindow, popup: PopupWindowMainBinding) {
@@ -161,7 +153,10 @@ class SongPage : AbsDisplayPage<Song, DisplayAdapter<Song>, GridLayoutManager>()
                 val itemLayoutRes =
                     if (gridSizeSelected > displayUtil.maxGridSizeForList) R.layout.item_grid else R.layout.item_list
 
-                if (adapter.layoutRes != itemLayoutRes) initRecyclerView() // again
+                if (adapter.layoutRes != itemLayoutRes) {
+                    loadSongs()
+                    initRecyclerView() // again
+                }
                 layoutManager.spanCount = gridSizeSelected
             }
 
@@ -170,7 +165,7 @@ class SongPage : AbsDisplayPage<Song, DisplayAdapter<Song>, GridLayoutManager>()
             if (displayUtil.colorFooter != coloredFootersSelected) {
                 displayUtil.colorFooter = coloredFootersSelected
                 adapter.usePalette = coloredFootersSelected
-                adapter.dataset = items // just refresh
+                adapter.dataset = getDataSet() // just refresh
             }
 
             // sort order
@@ -230,7 +225,7 @@ class SongPage : AbsDisplayPage<Song, DisplayAdapter<Song>, GridLayoutManager>()
     }
 
     override fun getHeaderText(): CharSequence {
-        return "Song: ${items.size}"
+        return "Song: ${getDataSet().size}"
     }
 
     companion object {

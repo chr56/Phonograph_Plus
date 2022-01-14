@@ -4,7 +4,6 @@
 
 package player.phonograph.ui.fragments.mainactivity.library.new_ui
 
-import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
@@ -14,7 +13,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupWindow
 import android.widget.RadioButton
-import androidx.annotation.ColorInt
 import androidx.annotation.StringRes
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.graphics.BlendModeColorFilterCompat
@@ -42,11 +40,9 @@ sealed class AbsDisplayPage<IT, A : RecyclerView.Adapter<*>, LM : RecyclerView.L
     private var _viewBinding: FragmentDisplayPageBinding? = null
     private val binding get() = _viewBinding!!
 
-    protected lateinit var items: List<IT>
+    abstract fun getDataSet(): List<IT>
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        items = ArrayList() // initialize variant first
-
         _viewBinding = FragmentDisplayPageBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -220,7 +216,7 @@ sealed class AbsDisplayPage<IT, A : RecyclerView.Adapter<*>, LM : RecyclerView.L
     protected fun checkEmpty() {
         if (isRecyclerViewPrepared) {
             binding.empty.setText(emptyMessage)
-            binding.empty.visibility = if (items.isEmpty()) View.VISIBLE else View.GONE
+            binding.empty.visibility = if (getDataSet().isEmpty()) View.VISIBLE else View.GONE
         }
     }
 
@@ -238,7 +234,6 @@ sealed class AbsDisplayPage<IT, A : RecyclerView.Adapter<*>, LM : RecyclerView.L
         _bindingPopup = null
         _viewBinding = null
     }
-
 }
 
 class DisplayUtil(private val page: AbsDisplayPage<*, *, *>) {
