@@ -43,7 +43,7 @@ class SongPage : AbsDisplayPage<Song, DisplayAdapter<Song>, GridLayoutManager>()
 
         return DisplayAdapter<Song>(
             hostFragment.mainActivity,
-            null, // todo
+            hostFragment, // todo
             items,
             layoutRes
         ) {

@@ -18,18 +18,21 @@ import chr_56.MDthemer.util.MaterialColorHelper
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
+import lib.phonograph.cab.*
 import player.phonograph.R
 import player.phonograph.adapter.HomePagerAdapter
 import player.phonograph.adapter.PAGERS
 import player.phonograph.adapter.PageConfig
 import player.phonograph.databinding.FragmentHomeBinding
+import player.phonograph.interfaces.MultiSelectionCabProvider
 import player.phonograph.ui.activities.MainActivity
 import player.phonograph.ui.activities.SearchActivity
 import player.phonograph.ui.fragments.mainactivity.AbsMainActivityFragment
+import player.phonograph.util.PhonographColorUtil
 import player.phonograph.util.PreferenceUtil
 import java.lang.ref.WeakReference
 
-class HomeFragment : AbsMainActivityFragment(), MainActivity.MainActivityFragmentCallbacks {
+class HomeFragment : AbsMainActivityFragment(), MainActivity.MainActivityFragmentCallbacks, MultiSelectionCabProvider {
 
     private var _viewBinding: FragmentHomeBinding? = null
     private val binding: FragmentHomeBinding get() = _viewBinding!!
@@ -119,7 +122,9 @@ class HomeFragment : AbsMainActivityFragment(), MainActivity.MainActivityFragmen
     }
 
     override fun handleBackPress(): Boolean {
-        // todo cab
+        if (multiSelectionCab != null && multiSelectionCab!!.status == CabStatus.STATUS_AVAILABLE) {
+            multiSelectionCab!!.destroy()
+        }
         return false
     }
 
@@ -174,6 +179,52 @@ class HomeFragment : AbsMainActivityFragment(), MainActivity.MainActivityFragmen
 
     val totalHeaderHeight: Int get() =
         totalAppBarScrollingRange + if (binding.tabs.visibility == View.VISIBLE) binding.tabs.height else 0
-}
 
-//    SharedPreferences.OnSharedPreferenceChangeListener, ViewPager.OnPageChangeListener
+    private var multiSelectionCab: MultiSelectionCab? = null
+    override fun getCab(): MultiSelectionCab? = multiSelectionCab
+
+    override fun createCab(
+        menuRes: Int,
+        showCallback: ShowCallback,
+        selectCallback: SelectCallback,
+        destroyCallback: DestroyCallback
+    ): MultiSelectionCab {
+
+        multiSelectionCab?.let {
+            if (it.status == CabStatus.STATUS_AVAILABLE || it.status == CabStatus.STATUS_ACTIVE) it.destroy()
+        }
+
+        multiSelectionCab = createMultiSelectionCab(mainActivity, R.id.cab_stub, R.id.multi_selection_cab) {
+
+            val primaryColor = ThemeColor.primaryColor(requireActivity())
+            backgroundColor = PhonographColorUtil.shiftBackgroundColorForLightText(primaryColor)
+
+            val textColor = MaterialColorHelper.getSecondaryTextColor(mainActivity, ColorUtil.isColorLight(primaryColor))
+
+            inflateMenuRes(menuRes)
+
+            titleTextColor = textColor
+
+            closeDrawable = AppCompatResources.getDrawable(mainActivity, R.drawable.ic_close_white_24dp)!!.also {
+                it.colorFilter = BlendModeColorFilterCompat.createBlendModeColorFilterCompat(textColor, BlendModeCompat.SRC_IN)
+            }
+
+            onCreate(showCallback)
+            onSelection(selectCallback)
+            onDestroy(destroyCallback)
+        }
+
+        return multiSelectionCab!!
+    }
+    override fun showCab() {
+        multiSelectionCab?.let { cab ->
+            binding.toolbar.visibility = View.INVISIBLE
+            cab.refresh()
+            cab.show()
+        }
+    }
+    override fun dismissCab() {
+        multiSelectionCab?.destroy()
+        binding.toolbar.visibility = View.VISIBLE
+    }
+}

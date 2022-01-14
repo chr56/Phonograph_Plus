@@ -7,7 +7,7 @@ import android.content.Context
 import android.view.Menu
 import android.view.MenuItem
 import androidx.recyclerview.widget.RecyclerView
-import com.afollestad.materialcab.attached.AttachedCab
+import chr_56.MDthemer.core.ThemeColor
 import lib.phonograph.cab.CabStatus
 import lib.phonograph.cab.MultiSelectionCab
 import player.phonograph.R
@@ -29,15 +29,21 @@ abstract class MultiSelectAdapter<VH : RecyclerView.ViewHolder, I>(
 
     private fun updateCab() {
         if (cabProvider != null) {
-            cab = cabProvider.getCab()
-            when {
-                cab == null || cab != null && cab!!.status != CabStatus.STATUS_AVAILABLE() ->
-                    { cab = cabProvider.createCab(multiSelectMenuRes, this::onCabCreated, this::onCabItemClicked, this::onCabFinished) }
+            cab = cabProvider.getCab() ?: cabProvider.createCab(multiSelectMenuRes, this::onCabCreated, this::onCabItemClicked, this::onCabFinished)
+            when (cab!!.status) {
+                CabStatus.STATUS_DESTROYING -> return
+                CabStatus.STATUS_DESTROYED -> {
+                    cab = cabProvider.createCab(multiSelectMenuRes, this::onCabCreated, this::onCabItemClicked, this::onCabFinished)
+                }
+                else -> {}
             }
-            val size = checkedList.size
-            if (size <= 0) cab!!.destroy()
-            else cab!!.titleText = context.getString(R.string.x_selected, size)
-            // color
+
+            if (checkedList.size <= 0) cabProvider.dismissCab()
+            else {
+                cab!!.titleText = context.getString(R.string.x_selected, checkedList.size)
+                cab!!.titleTextColor = ThemeColor.textColorPrimary(context)
+                cabProvider.showCab()
+            }
         }
     }
 
@@ -78,11 +84,11 @@ abstract class MultiSelectAdapter<VH : RecyclerView.ViewHolder, I>(
     protected fun isChecked(identifier: I): Boolean = checkedList.contains(identifier)
 
     protected val isInQuickSelectMode: Boolean
-        get() = cab != null && cab!!.status == CabStatus.STATUS_AVAILABLE()
+        get() = cab != null && cab!!.status == CabStatus.STATUS_ACTIVE
 
     protected open fun getName(obj: I): String = obj.toString()
 
-    private fun onCabCreated(cab: AttachedCab, menu: Menu): Boolean {
+    private fun onCabCreated(cab: MultiSelectionCab, menu: Menu): Boolean {
         return true
     }
 
@@ -97,7 +103,7 @@ abstract class MultiSelectAdapter<VH : RecyclerView.ViewHolder, I>(
         return true
     }
 
-    private fun onCabFinished(cab: AttachedCab): Boolean {
+    private fun onCabFinished(cab: MultiSelectionCab): Boolean {
         clearChecked()
         return true
     }

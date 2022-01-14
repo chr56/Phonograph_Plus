@@ -4,13 +4,14 @@
 
 package player.phonograph.interfaces
 
-import com.afollestad.materialcab.CreateCallback
-import com.afollestad.materialcab.DestroyCallback
-import com.afollestad.materialcab.SelectCallback
+import lib.phonograph.cab.ShowCallback
+import lib.phonograph.cab.DestroyCallback
 import lib.phonograph.cab.MultiSelectionCab
+import lib.phonograph.cab.SelectCallback
 
 interface MultiSelectionCabProvider {
-    fun createCab(menuRes: Int, createCallback: CreateCallback, selectCallback: SelectCallback, destroyCallback: DestroyCallback): MultiSelectionCab
+    fun createCab(menuRes: Int, showCallback: ShowCallback, selectCallback: SelectCallback, destroyCallback: DestroyCallback): MultiSelectionCab
     fun getCab(): MultiSelectionCab?
+    fun showCab()
     fun dismissCab()
 }
