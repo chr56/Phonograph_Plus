@@ -5,6 +5,7 @@
 package player.phonograph.ui.fragments.mainactivity.library.new_ui
 
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.view.*
 import android.widget.PopupWindow
@@ -200,13 +201,16 @@ class HomeFragment : AbsMainActivityFragment(), MainActivity.MainActivityFragmen
 
         val cfg: CabCfg = {
             val primaryColor = ThemeColor.primaryColor(requireActivity())
-            backgroundColor = PhonographColorUtil.shiftBackgroundColorForLightText(primaryColor)
+            val textColor = Color.WHITE
 
-            val textColor = MaterialColorHelper.getSecondaryTextColor(mainActivity, ColorUtil.isColorLight(primaryColor))
+            backgroundColor = PhonographColorUtil.shiftBackgroundColorForLightText(primaryColor)
+            titleTextColor = textColor
+
+            closeDrawable = AppCompatResources.getDrawable(mainActivity, R.drawable.ic_close_white_24dp)!!.also {
+                it.colorFilter = BlendModeColorFilterCompat.createBlendModeColorFilterCompat(textColor, BlendModeCompat.SRC_IN)
+            }
 
             this.menuRes = menuRes
-
-            titleTextColor = textColor
 
             onInit(initCallback)
             onShow(showCallback)
@@ -214,10 +218,6 @@ class HomeFragment : AbsMainActivityFragment(), MainActivity.MainActivityFragmen
             onHide(hideCallback)
             onClose { dismissCab() }
             onDestroy(destroyCallback)
-
-            closeDrawable = AppCompatResources.getDrawable(mainActivity, R.drawable.ic_close_white_24dp)!!.also {
-                it.colorFilter = BlendModeColorFilterCompat.createBlendModeColorFilterCompat(textColor, BlendModeCompat.SRC_IN)
-            }
         }
 
         if (multiSelectionCab == null) multiSelectionCab = createMultiSelectionCab(mainActivity, R.id.cab_stub, R.id.multi_selection_cab, cfg)
