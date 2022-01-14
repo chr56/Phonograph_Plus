@@ -196,7 +196,7 @@ class HomeFragment : AbsMainActivityFragment(), MainActivity.MainActivityFragmen
         destroyCallback: DestroyCallback
     ): MultiSelectionCab {
 
-        val cfg: MultiSelectionCab.() -> Unit = {
+        val cfg: CabCfg = {
             val primaryColor = ThemeColor.primaryColor(requireActivity())
             backgroundColor = PhonographColorUtil.shiftBackgroundColorForLightText(primaryColor)
 
@@ -205,6 +205,8 @@ class HomeFragment : AbsMainActivityFragment(), MainActivity.MainActivityFragmen
             this.menuRes = menuRes
 
             titleTextColor = textColor
+
+            onDismiss { dismissCab() }
 
             closeDrawable = AppCompatResources.getDrawable(mainActivity, R.drawable.ic_close_white_24dp)!!.also {
                 it.colorFilter = BlendModeColorFilterCompat.createBlendModeColorFilterCompat(textColor, BlendModeCompat.SRC_IN)

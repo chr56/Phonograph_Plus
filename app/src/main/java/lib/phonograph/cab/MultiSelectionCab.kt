@@ -23,7 +23,7 @@ fun createMultiSelectionCab(
     activity: Activity,
     @IdRes stubId: Int,
     @IdRes inflatedId: Int,
-    applyCfg: MultiSelectionCab.() -> Unit
+    applyCfg: CabCfg
 ): MultiSelectionCab {
     val stub = activity.findViewById<View>(stubId)
     val toolbar: Toolbar = if (stub is ViewStub) {
@@ -43,7 +43,7 @@ fun createMultiSelectionCab(
 class MultiSelectionCab internal constructor(
     var activityField: Activity?,
     var toolbarField: Toolbar?,
-    var applyCfg: MultiSelectionCab.() -> Unit
+    var applyCfg: CabCfg
 ) {
 
     private val activity: Activity
@@ -51,12 +51,8 @@ class MultiSelectionCab internal constructor(
     private val toolbar: Toolbar
         get() = toolbarField ?: throw IllegalStateException("Cab has already destroyed or not created!!")
 
-    private var showCallbacks = mutableListOf<ShowCallback>()
-    private var selectCallbacks = mutableListOf<SelectCallback>()
-    private var destroyCallbacks = mutableListOf<DestroyCallback>()
-
     @Synchronized
-    private fun init(applyCfg: MultiSelectionCab.() -> Unit) {
+    private fun init(applyCfg: CabCfg) {
         status = CabStatus.STATUS_INITIATING
         applyCfg.invoke(this)
         refresh()
@@ -83,6 +79,7 @@ class MultiSelectionCab internal constructor(
         alpha = 1f
 
         navigationIcon = closeDrawable
+        setNavigationOnClickListener (dismissClickListener)
 
         title = titleText
         setTitleTextColor(titleTextColor)
@@ -110,12 +107,20 @@ class MultiSelectionCab internal constructor(
 
     var subtitleText: CharSequence = ""
     @ColorInt
-    var subtitleTextColor: Int = Color.WHITE
+    var subtitleTextColor: Int = titleTextColor
 
     @StyleRes
     var themeRes: Int = R.style.ThemeOverlay_AppCompat_DayNight_ActionBar
 
-    var closeDrawable: Drawable = ContextCompat.getDrawable(activity, R.drawable.ic_close_white_24dp)!!.also { it.setTint(titleTextColor) }
+    /** use [closeDrawableColor] to set color first **/
+    var closeDrawable: Drawable =
+        ContextCompat.getDrawable(activity, R.drawable.ic_close_white_24dp)!!.let {
+            if (autoTintMenuIcon) it.setTint(closeDrawableColor)
+            it
+        }
+
+    @ColorInt
+    var closeDrawableColor: Int = titleTextColor
 
     @ColorInt
     var backgroundColor: Int = Color.GRAY
@@ -125,6 +130,8 @@ class MultiSelectionCab internal constructor(
 
     val menu: Menu? get() = toolbar.menu
 
+    var autoTintMenuIcon = true
+
     private var menuClickListener = Toolbar.OnMenuItemClickListener { item ->
         selectCallbacks.forEach {
             return@OnMenuItemClickListener it.invoke(item)
@@ -132,17 +139,22 @@ class MultiSelectionCab internal constructor(
         return@OnMenuItemClickListener false
     }
 
-    fun onShow(callback: ShowCallback) {
-        showCallbacks.add(callback)
+    private var dismissClickListener = View.OnClickListener { _ ->
+        dismissCallbacks.forEach {
+            return@OnClickListener it.invoke(this)
+        }
+        return@OnClickListener
     }
 
-    fun onSelection(callback: SelectCallback) {
-        selectCallbacks.add(callback)
-    }
+    private var showCallbacks = mutableListOf<ShowCallback>()
+    private var selectCallbacks = mutableListOf<SelectCallback>()
+    private var dismissCallbacks = mutableListOf<DismissCallback>()
+    private var destroyCallbacks = mutableListOf<DestroyCallback>()
 
-    fun onDestroy(callback: DestroyCallback) {
-        destroyCallbacks.add(callback)
-    }
+    fun onShow(callback: ShowCallback) { showCallbacks.add(callback) }
+    fun onSelection(callback: SelectCallback) { selectCallbacks.add(callback) }
+    fun onDismiss(callback: DismissCallback) { dismissCallbacks.add(callback) }
+    fun onDestroy(callback: DestroyCallback) { destroyCallbacks.add(callback) }
 
     /** call this on host destroying **/
     @Synchronized
@@ -169,7 +181,11 @@ typealias ShowCallback = (cab: MultiSelectionCab, menu: Menu) -> Unit
 
 typealias SelectCallback = (item: MenuItem) -> Boolean
 
+typealias DismissCallback = (cab: MultiSelectionCab) -> Unit
+
 typealias DestroyCallback = (cab: MultiSelectionCab) -> Boolean
+
+typealias CabCfg = MultiSelectionCab.() -> Unit
 
 @Suppress("ClassName")
 sealed class CabStatus { // todo
