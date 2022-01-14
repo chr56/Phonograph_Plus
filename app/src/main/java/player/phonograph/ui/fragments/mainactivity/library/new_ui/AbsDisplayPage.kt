@@ -260,7 +260,10 @@ class DisplayUtil(private val page: AbsDisplayPage<*, *, *>) {
                 is SongPage -> {
                     pref.songSortOrder
                 }
-                else -> { "" }
+                is AlbumPage -> {
+                    pref.albumSortOrder
+                }
+                else -> ""
             }
         }
         set(value) {
@@ -272,7 +275,9 @@ class DisplayUtil(private val page: AbsDisplayPage<*, *, *>) {
                 is SongPage -> {
                     pref.songSortOrder = value
                 }
-                else -> {}
+                is AlbumPage -> {
+                    pref.albumSortOrder = value
+                }
             }
         }
 
@@ -284,6 +289,10 @@ class DisplayUtil(private val page: AbsDisplayPage<*, *, *>) {
                 is SongPage -> {
                     if (isLandscape) pref.songGridSizeLand
                     else pref.songGridSize
+                }
+                is AlbumPage -> {
+                    if (isLandscape) pref.albumGridSizeLand
+                    else pref.albumGridSize
                 }
                 else -> 1
             }
@@ -297,7 +306,10 @@ class DisplayUtil(private val page: AbsDisplayPage<*, *, *>) {
                     if (isLandscape) pref.songGridSizeLand = value
                     else pref.songGridSize = value
                 }
-                else -> {}
+                is AlbumPage -> {
+                    if (isLandscape) pref.albumGridSizeLand = value
+                    else pref.albumGridSize = value
+                }
             }
         }
     var colorFooter: Boolean
@@ -306,6 +318,9 @@ class DisplayUtil(private val page: AbsDisplayPage<*, *, *>) {
             return when (page) {
                 is SongPage -> {
                     pref.songColoredFooters()
+                }
+                is AlbumPage -> {
+                    pref.albumColoredFooters()
                 }
                 else -> false
             }
@@ -317,7 +332,9 @@ class DisplayUtil(private val page: AbsDisplayPage<*, *, *>) {
                 is SongPage -> {
                     pref.setSongColoredFooters(value)
                 }
-                else -> {}
+                is AlbumPage -> {
+                    pref.setAlbumColoredFooters(value)
+                }
             }
         }
 }
