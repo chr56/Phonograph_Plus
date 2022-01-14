@@ -88,6 +88,8 @@ class MultiSelectionCab internal constructor(
         translationY = 0f
         alpha = 1f
 
+        setBackgroundColor(backgroundColor)
+
         navigationIcon = closeDrawable
         setNavigationOnClickListener(closeClickListener)
 
