@@ -4,7 +4,6 @@
 package player.phonograph.adapter.base
 
 import android.content.Context
-import android.view.Menu
 import android.view.MenuItem
 import androidx.recyclerview.widget.RecyclerView
 import chr_56.MDthemer.core.ThemeColor
@@ -29,11 +28,11 @@ abstract class MultiSelectAdapter<VH : RecyclerView.ViewHolder, I>(
 
     private fun updateCab() {
         if (cabProvider != null) {
-            cab = cabProvider.getCab() ?: cabProvider.createCab(multiSelectMenuRes, this::onCabCreated, this::onCabItemClicked, this::onCabFinished)
+            cab = cabProvider.getCab() ?: cabProvider.createCab(multiSelectMenuRes, null, null, this::onCabItemClicked, this::onCabDismiss, this::onCabDismiss, this::onCabDismiss)
             when (cab!!.status) {
                 CabStatus.STATUS_DESTROYING -> return
                 CabStatus.STATUS_DESTROYED -> {
-                    cab = cabProvider.createCab(multiSelectMenuRes, this::onCabCreated, this::onCabItemClicked, this::onCabFinished)
+                    cab = cabProvider.createCab(multiSelectMenuRes, null, null, this::onCabItemClicked, this::onCabDismiss, this::onCabDismiss, this::onCabDismiss)
                 }
                 else -> {}
             }
@@ -88,10 +87,6 @@ abstract class MultiSelectAdapter<VH : RecyclerView.ViewHolder, I>(
 
     protected open fun getName(obj: I): String = obj.toString()
 
-    private fun onCabCreated(cab: MultiSelectionCab, menu: Menu): Boolean {
-        return true
-    }
-
     private fun onCabItemClicked(menuItem: MenuItem): Boolean {
         if (menuItem.itemId == R.id.action_multi_select_adapter_check_all) {
             checkAll()
@@ -102,7 +97,7 @@ abstract class MultiSelectAdapter<VH : RecyclerView.ViewHolder, I>(
         return true
     }
 
-    private fun onCabFinished(cab: MultiSelectionCab): Boolean {
+    private fun onCabDismiss(cab: MultiSelectionCab): Boolean {
         clearChecked()
         return true
     }

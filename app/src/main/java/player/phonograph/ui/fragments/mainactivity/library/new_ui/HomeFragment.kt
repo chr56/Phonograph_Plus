@@ -191,9 +191,12 @@ class HomeFragment : AbsMainActivityFragment(), MainActivity.MainActivityFragmen
 
     override fun createCab(
         menuRes: Int,
-        showCallback: ShowCallback,
-        selectCallback: SelectCallback,
-        destroyCallback: DestroyCallback
+        initCallback: InitCallback?,
+        showCallback: ShowCallback?,
+        selectCallback: SelectCallback?,
+        closeCallback: CloseCallback?,
+        hideCallback: HideCallback?,
+        destroyCallback: DestroyCallback?
     ): MultiSelectionCab {
 
         val cfg: CabCfg = {
@@ -206,7 +209,12 @@ class HomeFragment : AbsMainActivityFragment(), MainActivity.MainActivityFragmen
 
             titleTextColor = textColor
 
-            onDismiss { dismissCab() }
+            onInit(initCallback)
+            onShow(showCallback)
+            onSelection(selectCallback)
+            onHide(hideCallback)
+            onClose { dismissCab() }
+            onDestroy(destroyCallback)
 
             closeDrawable = AppCompatResources.getDrawable(mainActivity, R.drawable.ic_close_white_24dp)!!.also {
                 it.colorFilter = BlendModeColorFilterCompat.createBlendModeColorFilterCompat(textColor, BlendModeCompat.SRC_IN)

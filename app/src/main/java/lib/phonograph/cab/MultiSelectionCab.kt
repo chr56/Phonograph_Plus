@@ -13,7 +13,6 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewStub
-import android.widget.ImageView
 import androidx.annotation.ColorInt
 import androidx.annotation.IdRes
 import androidx.annotation.MenuRes
@@ -21,7 +20,6 @@ import androidx.annotation.StyleRes
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
-import androidx.core.view.forEach
 import player.phonograph.R
 
 fun createMultiSelectionCab(
@@ -80,6 +78,9 @@ class MultiSelectionCab internal constructor(
 
     fun hide() = toolbar.run {
         visibility = View.INVISIBLE
+        hideCallbacks.forEach {
+            it.invoke(this@MultiSelectionCab)
+        }
         status = CabStatus.STATUS_AVAILABLE
     }
 
@@ -88,7 +89,7 @@ class MultiSelectionCab internal constructor(
         alpha = 1f
 
         navigationIcon = closeDrawable
-        setNavigationOnClickListener(dismissClickListener)
+        setNavigationOnClickListener(closeClickListener)
 
         title = titleText
         setTitleTextColor(titleTextColor)
@@ -102,12 +103,9 @@ class MultiSelectionCab internal constructor(
         if (menuRes != 0) {
             inflateMenu(menuRes)
             if (autoTintMenuIcon) {
-                toolbar.forEach { View ->
-                    if (View is ImageView) ;
-                }
+                overflowIcon =
+                    AppCompatResources.getDrawable(activity, androidx.appcompat.R.drawable.abc_ic_menu_overflow_material)?.let { it.setTint(titleTextColor); it }
             }
-            overflowIcon =
-                AppCompatResources.getDrawable(activity, androidx.appcompat.R.drawable.abc_ic_menu_overflow_material)?.let { it.setTint(titleTextColor); it }
             setOnMenuItemClickListener(menuClickListener)
         } else {
             setOnMenuItemClickListener(null)
@@ -155,14 +153,13 @@ class MultiSelectionCab internal constructor(
         return@OnMenuItemClickListener false
     }
 
-    private var dismissClickListener = View.OnClickListener { _ ->
-        dismissCallbacks.forEach {
+    private var closeClickListener = View.OnClickListener { _ ->
+        closeCallbacks.forEach {
             return@OnClickListener it.invoke(this)
         }
         return@OnClickListener
     }
-
-    /** call this on host destroying **/
+    /** call this function in cab's host OnDestroy **/
     @Synchronized
     fun destroy(): Boolean {
         if (status == CabStatus.STATUS_DESTROYED) return false
@@ -185,19 +182,22 @@ class MultiSelectionCab internal constructor(
     private var initCallback = mutableListOf<InitCallback>()
     private var showCallbacks = mutableListOf<ShowCallback>()
     private var selectCallbacks = mutableListOf<SelectCallback>()
-    private var dismissCallbacks = mutableListOf<DismissCallback>()
+    private var closeCallbacks = mutableListOf<CloseCallback>()
+    private var hideCallbacks = mutableListOf<HideCallback>()
     private var destroyCallbacks = mutableListOf<DestroyCallback>()
 
-    fun onInit(callback: InitCallback) { initCallback.add(callback) }
-    fun onShow(callback: ShowCallback) { showCallbacks.add(callback) }
-    fun onSelection(callback: SelectCallback) { selectCallbacks.add(callback) }
-    fun onDismiss(callback: DismissCallback) { dismissCallbacks.add(callback) }
-    fun onDestroy(callback: DestroyCallback) { destroyCallbacks.add(callback) }
+    fun onInit(callback: InitCallback?) { callback?.let { initCallback.add(callback) } }
+    fun onShow(callback: ShowCallback?) { callback?.let { showCallbacks.add(callback) } }
+    fun onSelection(callback: SelectCallback?) { callback?.let { selectCallbacks.add(callback) } }
+    fun onClose(callback: HideCallback?) { callback?.let { closeCallbacks.add(callback) } }
+    fun onHide(callback: HideCallback?) { callback?.let { hideCallbacks.add(callback) } }
+    fun onDestroy(callback: DestroyCallback?) { callback?.let { destroyCallbacks.add(callback) } }
 }
 typealias InitCallback = (cab: MultiSelectionCab) -> Unit
 typealias ShowCallback = (cab: MultiSelectionCab, menu: Menu) -> Unit
 typealias SelectCallback = (item: MenuItem) -> Boolean
-typealias DismissCallback = (cab: MultiSelectionCab) -> Unit
+typealias CloseCallback = (cab: MultiSelectionCab) -> Unit
+typealias HideCallback = (cab: MultiSelectionCab) -> Unit
 typealias DestroyCallback = (cab: MultiSelectionCab) -> Boolean
 
 typealias CabCfg = MultiSelectionCab.() -> Unit
