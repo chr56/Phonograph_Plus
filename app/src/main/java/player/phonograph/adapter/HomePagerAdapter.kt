@@ -10,6 +10,7 @@ import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
 import player.phonograph.ui.fragments.mainactivity.library.new_ui.AlbumPage
+import player.phonograph.ui.fragments.mainactivity.library.new_ui.ArtistPage
 import player.phonograph.ui.fragments.mainactivity.library.new_ui.EmptyPage
 import player.phonograph.ui.fragments.mainactivity.library.new_ui.SongPage
 import java.lang.ref.WeakReference
@@ -28,6 +29,7 @@ class HomePagerAdapter(fragment: Fragment, var cfg: PageConfig) : FragmentStateA
             when (cfg.get(position)) {
                 PAGERS.SONG -> SongPage::class.java
                 PAGERS.ALBUM -> AlbumPage::class.java
+                PAGERS.ARTIST -> ArtistPage::class.java
                 else -> EmptyPage::class.java
             }
         var fragment: Fragment? = null
