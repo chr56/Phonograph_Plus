@@ -25,6 +25,7 @@ import player.phonograph.adapter.HomePagerAdapter
 import player.phonograph.adapter.PAGERS
 import player.phonograph.adapter.PageConfig
 import player.phonograph.databinding.FragmentHomeBinding
+import player.phonograph.databinding.PopupWindowMainBinding
 import player.phonograph.interfaces.MultiSelectionCabProvider
 import player.phonograph.ui.activities.MainActivity
 import player.phonograph.ui.activities.SearchActivity
@@ -151,6 +152,7 @@ class HomeFragment : AbsMainActivityFragment(), MainActivity.MainActivityFragmen
      *     the popup window for [AbsDisplayPage]
      */
     var displayPopup: WeakReference<PopupWindow?> = WeakReference(null)
+    var displayPopupView: WeakReference<PopupWindowMainBinding?> = WeakReference(null)
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)

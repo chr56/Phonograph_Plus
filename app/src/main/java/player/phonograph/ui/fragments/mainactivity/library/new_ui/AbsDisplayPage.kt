@@ -79,7 +79,7 @@ sealed class AbsDisplayPage<IT, A : RecyclerView.Adapter<*>, LM : RecyclerView.L
         binding.empty.text = resources.getText(R.string.loading)
 
         initRecyclerView()
-        _bindingPopup = PopupWindowMainBinding.inflate(LayoutInflater.from(hostFragment.mainActivity))
+//        _bindingPopup = PopupWindowMainBinding.inflate(LayoutInflater.from(hostFragment.mainActivity))
         initAppBar()
     }
 
@@ -141,7 +141,12 @@ sealed class AbsDisplayPage<IT, A : RecyclerView.Adapter<*>, LM : RecyclerView.L
             }
             return hostFragment.displayPopup.get()!!
         }
-    private var _bindingPopup: PopupWindowMainBinding? = null
+    private val _bindingPopup: PopupWindowMainBinding?
+        get() {
+            if (hostFragment.displayPopupView.get()==null)
+                hostFragment.displayPopupView = WeakReference(PopupWindowMainBinding.inflate(LayoutInflater.from(hostFragment.mainActivity)))
+            return hostFragment.displayPopupView.get()!!
+        }
     val popupView get() = _bindingPopup!!
 
     protected fun createPopup(): PopupWindow {
@@ -235,7 +240,7 @@ sealed class AbsDisplayPage<IT, A : RecyclerView.Adapter<*>, LM : RecyclerView.L
 
         binding.innerAppBar.addOnOffsetChangedListener(innerAppbarOffsetListener)
 //        hostFragment.removeOnAppBarOffsetChangedListener(outerAppbarOffsetListener)
-        _bindingPopup = null
+//        _bindingPopup = null
         _viewBinding = null
     }
 
@@ -263,7 +268,7 @@ class DisplayUtil(private val page: AbsDisplayPage<*, *, *>) {
                 is AlbumPage -> {
                     pref.albumSortOrder
                 }
-                is ArtistPage ->{
+                is ArtistPage -> {
                     pref.artistSortOrder
                 }
                 else -> ""
