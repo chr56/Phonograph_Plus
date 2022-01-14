@@ -20,6 +20,8 @@ import androidx.core.graphics.BlendModeCompat
 import androidx.recyclerview.widget.RecyclerView
 import chr_56.MDthemer.core.ThemeColor
 import com.google.android.material.appbar.AppBarLayout
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.databinding.FragmentDisplayPageBinding
@@ -234,6 +236,8 @@ sealed class AbsDisplayPage<IT, A : RecyclerView.Adapter<*>, LM : RecyclerView.L
         _bindingPopup = null
         _viewBinding = null
     }
+
+    protected val loaderCoroutineScope: CoroutineScope = CoroutineScope(Dispatchers.IO)
 }
 
 class DisplayUtil(private val page: AbsDisplayPage<*, *, *>) {

@@ -12,7 +12,10 @@ import android.view.ViewGroup
 import android.widget.PopupWindow
 import android.widget.RadioButton
 import androidx.recyclerview.widget.GridLayoutManager
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import kotlinx.coroutines.yield
 import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.adapter.DisplayAdapter
@@ -23,8 +26,6 @@ import player.phonograph.util.MediaStoreUtil
 import player.phonograph.util.Util
 
 class SongPage : AbsDisplayPage<Song, DisplayAdapter<Song>, GridLayoutManager>() {
-
-    private val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.IO)
 
     override fun initLayoutManager(): GridLayoutManager {
         return GridLayoutManager(hostFragment.requireContext(), 1)
@@ -62,7 +63,7 @@ class SongPage : AbsDisplayPage<Song, DisplayAdapter<Song>, GridLayoutManager>()
     }
 
     private fun loadSongs() {
-        coroutineScope.launch {
+        loaderCoroutineScope.launch {
             val temp = MediaStoreUtil.getAllSongs(App.instance) as List<Song>
             while (!isRecyclerViewPrepared) yield() // wait until ready
 
