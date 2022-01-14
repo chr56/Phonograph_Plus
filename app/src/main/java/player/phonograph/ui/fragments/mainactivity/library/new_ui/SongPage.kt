@@ -213,7 +213,7 @@ class SongPage : AbsDisplayPage<Song, DisplayAdapter<Song>, GridLayoutManager>()
     }
 
     override fun getHeaderText(): CharSequence {
-        return "Song: ${getDataSet().size}"
+        return "${hostFragment.mainActivity.getString(R.string.songs)}: ${getDataSet().size}"
     }
 
     companion object {

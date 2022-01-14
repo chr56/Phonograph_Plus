@@ -167,7 +167,7 @@ class ArtistPage : AbsDisplayPage<Artist, DisplayAdapter<Artist>, GridLayoutMana
     }
 
     override fun getHeaderText(): CharSequence {
-        return "Artist: ${getDataSet().size}"
+        return "${hostFragment.mainActivity.getString(R.string.artists)}: ${getDataSet().size}"
     }
 
     companion object {
