@@ -49,6 +49,8 @@ class HomeFragment : AbsMainActivityFragment(), MainActivity.MainActivityFragmen
     override fun onDestroy() {
         super.onDestroy()
         _viewBinding = null
+        multiSelectionCab?.destroy()
+        multiSelectionCab = null
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -122,8 +124,12 @@ class HomeFragment : AbsMainActivityFragment(), MainActivity.MainActivityFragmen
     }
 
     override fun handleBackPress(): Boolean {
-        if (multiSelectionCab != null && multiSelectionCab!!.status == CabStatus.STATUS_AVAILABLE) {
+        if (multiSelectionCab != null && multiSelectionCab!!.status == CabStatus.STATUS_ACTIVE) {
+            dismissCab()
+            return true
+        } else if (multiSelectionCab != null) {
             multiSelectionCab!!.destroy()
+            multiSelectionCab = null
         }
         return false
     }
@@ -190,12 +196,7 @@ class HomeFragment : AbsMainActivityFragment(), MainActivity.MainActivityFragmen
         destroyCallback: DestroyCallback
     ): MultiSelectionCab {
 
-        multiSelectionCab?.let {
-            if (it.status == CabStatus.STATUS_AVAILABLE || it.status == CabStatus.STATUS_ACTIVE) it.destroy()
-        }
-
-        multiSelectionCab = createMultiSelectionCab(mainActivity, R.id.cab_stub, R.id.multi_selection_cab) {
-
+        val cfg: MultiSelectionCab.() -> Unit = {
             val primaryColor = ThemeColor.primaryColor(requireActivity())
             backgroundColor = PhonographColorUtil.shiftBackgroundColorForLightText(primaryColor)
 
@@ -208,10 +209,12 @@ class HomeFragment : AbsMainActivityFragment(), MainActivity.MainActivityFragmen
             closeDrawable = AppCompatResources.getDrawable(mainActivity, R.drawable.ic_close_white_24dp)!!.also {
                 it.colorFilter = BlendModeColorFilterCompat.createBlendModeColorFilterCompat(textColor, BlendModeCompat.SRC_IN)
             }
+        }
 
-            onCreate(showCallback)
-            onSelection(selectCallback)
-            onDestroy(destroyCallback)
+        if (multiSelectionCab == null) multiSelectionCab = createMultiSelectionCab(mainActivity, R.id.cab_stub, R.id.multi_selection_cab, cfg)
+        else {
+            multiSelectionCab!!.applyCfg = cfg
+            multiSelectionCab!!.refresh()
         }
 
         return multiSelectionCab!!
@@ -224,7 +227,7 @@ class HomeFragment : AbsMainActivityFragment(), MainActivity.MainActivityFragmen
         }
     }
     override fun dismissCab() {
-        multiSelectionCab?.destroy()
+        multiSelectionCab?.hide()
         binding.toolbar.visibility = View.VISIBLE
     }
 }

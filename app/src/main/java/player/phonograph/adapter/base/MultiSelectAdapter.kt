@@ -97,8 +97,7 @@ abstract class MultiSelectAdapter<VH : RecyclerView.ViewHolder, I>(
             checkAll()
         } else {
             onMultipleItemAction(menuItem, ArrayList(checkedList))
-            cab!!.destroy()
-            clearChecked()
+            cabProvider?.dismissCab()
         }
         return true
     }

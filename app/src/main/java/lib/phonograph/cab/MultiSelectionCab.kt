@@ -132,18 +132,7 @@ class MultiSelectionCab internal constructor(
         return@OnMenuItemClickListener false
     }
 
-    fun inflateMenuRes(@MenuRes menuRes: Int) {
-        toolbar.run {
-            if (menuRes != 0) {
-                this@MultiSelectionCab.menuRes = menuRes
-                inflateMenu(menuRes)
-                setOnMenuItemClickListener(menuClickListener)
-            } else {
-                setOnMenuItemClickListener(null)
-            }
-        }
-    }
-    fun onCreate(callback: ShowCallback) {
+    fun onShow(callback: ShowCallback) {
         showCallbacks.add(callback)
     }
 
@@ -155,6 +144,7 @@ class MultiSelectionCab internal constructor(
         destroyCallbacks.add(callback)
     }
 
+    /** call this on host destroying **/
     @Synchronized
     fun destroy(): Boolean {
         if (status == CabStatus.STATUS_DESTROYED) return false
