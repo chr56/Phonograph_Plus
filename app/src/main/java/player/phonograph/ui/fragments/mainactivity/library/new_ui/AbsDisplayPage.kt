@@ -263,6 +263,9 @@ class DisplayUtil(private val page: AbsDisplayPage<*, *, *>) {
                 is AlbumPage -> {
                     pref.albumSortOrder
                 }
+                is ArtistPage ->{
+                    pref.artistSortOrder
+                }
                 else -> ""
             }
         }
@@ -277,6 +280,9 @@ class DisplayUtil(private val page: AbsDisplayPage<*, *, *>) {
                 }
                 is AlbumPage -> {
                     pref.albumSortOrder = value
+                }
+                is ArtistPage -> {
+                    pref.artistSortOrder = value
                 }
             }
         }
@@ -294,6 +300,10 @@ class DisplayUtil(private val page: AbsDisplayPage<*, *, *>) {
                     if (isLandscape) pref.albumGridSizeLand
                     else pref.albumGridSize
                 }
+                is ArtistPage -> {
+                    if (isLandscape) pref.artistGridSizeLand
+                    else pref.artistGridSize
+                }
                 else -> 1
             }
         }
@@ -310,6 +320,10 @@ class DisplayUtil(private val page: AbsDisplayPage<*, *, *>) {
                     if (isLandscape) pref.albumGridSizeLand = value
                     else pref.albumGridSize = value
                 }
+                is ArtistPage -> {
+                    if (isLandscape) pref.artistGridSizeLand = value
+                    else pref.artistGridSize = value
+                }
             }
         }
     var colorFooter: Boolean
@@ -321,6 +335,9 @@ class DisplayUtil(private val page: AbsDisplayPage<*, *, *>) {
                 }
                 is AlbumPage -> {
                     pref.albumColoredFooters()
+                }
+                is ArtistPage -> {
+                    pref.artistColoredFooters()
                 }
                 else -> false
             }
@@ -334,6 +351,9 @@ class DisplayUtil(private val page: AbsDisplayPage<*, *, *>) {
                 }
                 is AlbumPage -> {
                     pref.setAlbumColoredFooters(value)
+                }
+                is ArtistPage -> {
+                    pref.setArtistColoredFooters(value)
                 }
             }
         }
