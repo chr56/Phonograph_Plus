@@ -201,7 +201,7 @@ class HomeFragment : AbsMainActivityFragment(), MainActivity.MainActivityFragmen
 
             val textColor = MaterialColorHelper.getSecondaryTextColor(mainActivity, ColorUtil.isColorLight(primaryColor))
 
-            inflateMenuRes(menuRes)
+            this.menuRes = menuRes
 
             titleTextColor = textColor
 

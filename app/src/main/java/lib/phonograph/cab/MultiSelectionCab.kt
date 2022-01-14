@@ -66,20 +66,6 @@ class MultiSelectionCab internal constructor(
     fun show() {
         if (status != CabStatus.STATUS_AVAILABLE) init(applyCfg)
         toolbar.run {
-            //        status = CabStatus.STATUS_INITIATING
-            //
-            //        translationY = 0f
-            //        alpha = 1f
-            //
-            //        navigationIcon = closeDrawable
-            //
-            //        title = titleText
-            //        setTitleTextColor(titleTextColor)
-            //
-            //        subtitle = subtitleText
-            //        setSubtitleTextColor(subtitleTextColor)
-            //
-            //        popupTheme = themeRes
             showCallbacks.forEach { it.invoke(this@MultiSelectionCab, menu) }
             visibility = View.VISIBLE
             bringToFront()
@@ -105,6 +91,14 @@ class MultiSelectionCab internal constructor(
         setSubtitleTextColor(subtitleTextColor)
 
         popupTheme = themeRes
+
+        if (menuRes != 0) {
+            menu.clear()
+            inflateMenu(menuRes)
+            setOnMenuItemClickListener(menuClickListener)
+        } else {
+            setOnMenuItemClickListener(null)
+        }
     }
 
     var status: CabStatus = CabStatus.STATUS_INITIATING // default
