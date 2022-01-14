@@ -103,6 +103,7 @@ class HomeFragment : AbsMainActivityFragment(), MainActivity.MainActivityFragmen
                 .also {
                     it[0] = PAGERS.EMPTY
                     it[1] = PAGERS.SONG
+                    it[2] = PAGERS.ALBUM
                 }
         )
     }
@@ -119,7 +120,8 @@ class HomeFragment : AbsMainActivityFragment(), MainActivity.MainActivityFragmen
         TabLayoutMediator(binding.tabs, binding.pager) { tab: TabLayout.Tab, i: Int ->
             when (cfg.get(i)) {
                 PAGERS.SONG -> tab.text = getString(R.string.songs)
-                PAGERS.EMPTY -> tab.text = "TODO"
+                PAGERS.ALBUM -> tab.text = getString(R.string.albums)
+                PAGERS.EMPTY -> tab.text = getString(R.string.empty)
             }
         }.attach()
     }
