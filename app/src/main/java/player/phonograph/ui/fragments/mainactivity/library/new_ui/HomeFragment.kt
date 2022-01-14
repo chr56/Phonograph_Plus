@@ -189,12 +189,11 @@ class HomeFragment : AbsMainActivityFragment(), MainActivity.MainActivityFragmen
     private var multiSelectionCab: MultiSelectionCab? = null
     override fun getCab(): MultiSelectionCab? = multiSelectionCab
 
-    override fun createCab(
+    override fun deployCab(
         menuRes: Int,
         initCallback: InitCallback?,
         showCallback: ShowCallback?,
         selectCallback: SelectCallback?,
-        closeCallback: CloseCallback?,
         hideCallback: HideCallback?,
         destroyCallback: DestroyCallback?
     ): MultiSelectionCab {

@@ -28,11 +28,11 @@ abstract class MultiSelectAdapter<VH : RecyclerView.ViewHolder, I>(
 
     private fun updateCab() {
         if (cabProvider != null) {
-            cab = cabProvider.getCab() ?: cabProvider.createCab(multiSelectMenuRes, null, null, this::onCabItemClicked, this::onCabDismiss, this::onCabDismiss, this::onCabDismiss)
+            cab = cabProvider.getCab() ?: cabProvider.deployCab(multiSelectMenuRes, null, null, this::onCabItemClicked, this::onCabCancel,  this::onCabCancel)
             when (cab!!.status) {
                 CabStatus.STATUS_DESTROYING -> return
                 CabStatus.STATUS_DESTROYED -> {
-                    cab = cabProvider.createCab(multiSelectMenuRes, null, null, this::onCabItemClicked, this::onCabDismiss, this::onCabDismiss, this::onCabDismiss)
+                    cab = cabProvider.deployCab(multiSelectMenuRes, null, null, this::onCabItemClicked, this::onCabCancel,  this::onCabCancel)
                 }
                 else -> {}
             }
@@ -97,7 +97,7 @@ abstract class MultiSelectAdapter<VH : RecyclerView.ViewHolder, I>(
         return true
     }
 
-    private fun onCabDismiss(cab: MultiSelectionCab): Boolean {
+    private fun onCabCancel(cab: MultiSelectionCab): Boolean {
         clearChecked()
         return true
     }
