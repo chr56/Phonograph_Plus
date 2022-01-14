@@ -231,6 +231,8 @@ class HomeFragment : AbsMainActivityFragment(), MainActivity.MainActivityFragmen
     override fun showCab() {
         multiSelectionCab?.let { cab ->
             binding.toolbar.visibility = View.INVISIBLE
+            binding.tabs.visibility = View.GONE
+            binding.pager.isUserInputEnabled = false
             cab.refresh()
             cab.show()
         }
@@ -238,5 +240,7 @@ class HomeFragment : AbsMainActivityFragment(), MainActivity.MainActivityFragmen
     override fun dismissCab() {
         multiSelectionCab?.hide()
         binding.toolbar.visibility = View.VISIBLE
+        binding.tabs.visibility = View.VISIBLE
+        binding.pager.isUserInputEnabled = true
     }
 }
