@@ -43,6 +43,7 @@ public class PlaylistsUtil {
                 new String[]{name});
     }
 
+    @Deprecated
     public static long createPlaylist(@NonNull final Context context, @Nullable final String name) {
         long id = -1;
         if (name != null && name.length() > 0) {

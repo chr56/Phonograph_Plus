@@ -16,6 +16,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.drawerlayout.widget.DrawerLayout
 import chr_56.MDthemer.core.ThemeColor
 import chr_56.MDthemer.util.ColorUtil
@@ -32,6 +33,7 @@ import player.phonograph.dialogs.ChangelogDialog.Companion.setChangelogRead
 import player.phonograph.dialogs.ScanMediaFolderDialog
 import player.phonograph.dialogs.UpgradeDialog
 import player.phonograph.glide.SongGlideRequest
+import player.phonograph.helper.M3UWriter
 import player.phonograph.helper.MusicPlayerRemote
 import player.phonograph.helper.SearchQueryHelper
 import player.phonograph.loader.AlbumLoader
@@ -53,6 +55,8 @@ import player.phonograph.util.FileSaver
 import player.phonograph.util.MusicUtil
 import player.phonograph.util.PreferenceUtil
 import player.phonograph.util.PreferenceUtil.Companion.getInstance
+import java.io.FileNotFoundException
+import java.io.IOException
 
 class MainActivity : AbsSlidingMusicPanelActivity() {
     // init : onCreate()
@@ -142,6 +146,36 @@ class MainActivity : AbsSlidingMusicPanelActivity() {
             .replace(R.id.fragment_container, fragment, null)
             .commit()
         currentFragment = fragment as MainActivityFragmentCallbacks
+    }
+
+//    var playlistToSave: Playlist? = null
+    var songsToSave: List<Song>? = null
+    val savePlaylistContract = registerForActivityResult(ActivityResultContracts.CreateDocument()) { uri ->
+        try {
+            val outputStream = contentResolver.openOutputStream(uri, "rw")
+            if (outputStream != null) {
+                if (songsToSave != null) {
+                    try {
+                        M3UWriter.write(outputStream, songsToSave!!)
+                    } catch (e: IOException) {
+                        Toast.makeText(this, getString(R.string.failed) + ":${uri.path} can not be written", Toast.LENGTH_SHORT).show()
+                        songsToSave = null // clear
+                        outputStream.close()
+                        return@registerForActivityResult
+                    }
+                    Toast.makeText(this, getString(R.string.success), Toast.LENGTH_SHORT).show()
+                    songsToSave = null // clear
+                    outputStream.close()
+                    return@registerForActivityResult
+                }
+            }
+        } catch (e: FileNotFoundException) {
+            Toast.makeText(this, getString(R.string.failed) + ":${uri.path} not found", Toast.LENGTH_SHORT).show()
+        } catch (e: Exception) {
+            Toast.makeText(this, getString(R.string.failed), Toast.LENGTH_SHORT).show()
+        } finally {
+            songsToSave = null
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
