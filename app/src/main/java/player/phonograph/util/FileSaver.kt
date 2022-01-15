@@ -6,8 +6,12 @@ package player.phonograph.util
 
 import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.net.Uri
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import kotlinx.coroutines.*
+import player.phonograph.App
+import player.phonograph.BROADCAST_PLAYLISTS_CHANGED
 import player.phonograph.loader.PlaylistSongLoader
 import player.phonograph.model.AbsCustomPlaylist
 import player.phonograph.model.Playlist
@@ -19,6 +23,8 @@ object FileSaver {
         stream.write(data.encodeToByteArray())
         stream.close()
         activity.contentResolver.notifyChange(uri, null)
+
+        LocalBroadcastManager.getInstance(App.instance).sendBroadcast(Intent(BROADCAST_PLAYLISTS_CHANGED))
 
         return SUCCESS
     }

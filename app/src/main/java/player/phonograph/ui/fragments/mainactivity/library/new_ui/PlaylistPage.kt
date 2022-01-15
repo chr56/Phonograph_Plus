@@ -4,14 +4,21 @@
 
 package player.phonograph.ui.fragments.mainactivity.library.new_ui
 
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import chr_56.MDthemer.core.ThemeColor
 import kotlinx.coroutines.*
+import player.phonograph.App
+import player.phonograph.BROADCAST_PLAYLISTS_CHANGED
 import player.phonograph.R
 import player.phonograph.adapter.NeoPlaylistAdapter
 import player.phonograph.databinding.FragmentDisplayPageBinding
@@ -74,6 +81,13 @@ class PlaylistPage : AbsPage() {
             }
         }
         adapter.registerAdapterDataObserver(adapterDataObserver)
+
+        // Receiver
+        playlistsModifiedReceiver = PlaylistsModifiedReceiver()
+        LocalBroadcastManager.getInstance(App.instance).registerReceiver(
+            playlistsModifiedReceiver,
+            IntentFilter().also { it.addAction(BROADCAST_PLAYLISTS_CHANGED) }
+        )
     }
 
     private val loaderCoroutineScope: CoroutineScope = CoroutineScope(Dispatchers.IO)
@@ -112,6 +126,17 @@ class PlaylistPage : AbsPage() {
         _viewBinding = null
         isRecyclerViewPrepared = false
     }
+
+    private lateinit var playlistsModifiedReceiver: PlaylistsModifiedReceiver
+    private inner class PlaylistsModifiedReceiver : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            when (intent?.action ?: "NONE") {
+                "NONE" -> {} // do nothing
+                BROADCAST_PLAYLISTS_CHANGED -> loadPlaylist()
+            }
+        }
+    }
+
     companion object {
         const val TAG = "PlaylistPage"
     }
