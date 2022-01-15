@@ -27,10 +27,7 @@ import com.bumptech.glide.Glide
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
 import com.sothree.slidinguppanel.SlidingUpPanelLayout
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 import player.phonograph.*
 import player.phonograph.Updater.checkUpdate
 import player.phonograph.dialogs.ChangelogDialog.Companion.create
@@ -59,9 +56,9 @@ import player.phonograph.ui.fragments.mainactivity.library.LibraryFragment
 import player.phonograph.util.FileSaver
 import player.phonograph.util.MusicUtil
 import player.phonograph.util.PreferenceUtil
-import player.phonograph.util.PreferenceUtil.Companion.getInstance
 import java.io.FileNotFoundException
 import java.io.IOException
+import chr_56.MDthemer.util.Util as MDthemerUtil
 
 class MainActivity : AbsSlidingMusicPanelActivity() {
     // init : onCreate()
@@ -88,7 +85,7 @@ class MainActivity : AbsSlidingMusicPanelActivity() {
         setUpDrawer()
 
         if (savedInstanceState == null) {
-            setMusicChooser(getInstance(this).lastMusicChooser)
+            setMusicChooser(PreferenceUtil.getInstance(this).lastMusicChooser)
         } else {
             currentFragment =
                 supportFragmentManager.findFragmentById(R.id.fragment_container) as MainActivityFragmentCallbacks
@@ -133,7 +130,7 @@ class MainActivity : AbsSlidingMusicPanelActivity() {
     }
 
     private fun setMusicChooser(key: Int) {
-        getInstance(this).lastMusicChooser = key
+        PreferenceUtil.getInstance(this).lastMusicChooser = key
         when (key) {
             LIBRARY -> {
                 navigationView.setCheckedItem(R.id.nav_library)
@@ -187,6 +184,8 @@ class MainActivity : AbsSlidingMusicPanelActivity() {
         }
     }
 
+    private val backgroundCoroutineScope: CoroutineScope = CoroutineScope(Dispatchers.IO)
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == APP_INTRO_REQUEST) {
@@ -201,7 +200,7 @@ class MainActivity : AbsSlidingMusicPanelActivity() {
 
                 val bundle = savedMessageBundle ?: throw Exception("No Playlist to save?")
 
-                GlobalScope.launch(Dispatchers.IO) {
+                backgroundCoroutineScope.launch(Dispatchers.IO) {
                     val result = when (bundle.getString(TYPE)!!) {
                         NormalPlaylist ->
                             bundle.getLong(PLAYLIST_ID).let { FileSaver.savePlaylist(this@MainActivity, uri, it) }
@@ -211,15 +210,13 @@ class MainActivity : AbsSlidingMusicPanelActivity() {
                             FileSaver.savePlaylist(this@MainActivity, uri, LastAddedPlaylist(this@MainActivity))
                         HistoryPlaylist ->
                             FileSaver.savePlaylist(this@MainActivity, uri, HistoryPlaylist(this@MainActivity))
-                        else -> null
+                        else -> throw Exception("Unknown Playlist Type: ${bundle.getString(TYPE)}")
                     }
+
                     // report result
-                    val text = when {
-                        result == null -> "No playlist to save?"
-                        result.await().toInt() == 0 -> getText(R.string.success)
-                        result.await().toInt() != 0 -> getText(R.string.failed)
-                        else -> getText(R.string.failed)
-                    }
+                    val text =
+                        if (result.await() == 0) getText(R.string.success) else getText(R.string.failed)
+
                     withContext(Dispatchers.Main) {
                         Toast.makeText(this@MainActivity, text, Toast.LENGTH_SHORT).show()
                     }
@@ -235,7 +232,7 @@ class MainActivity : AbsSlidingMusicPanelActivity() {
     private fun setUpDrawer() {
         val accentColor = ThemeColor.accentColor(this)
         NavigationViewUtil.setItemIconColors(
-            navigationView, Util.resolveColor(this, R.attr.iconColor, ThemeColor.textColorSecondary(this)), accentColor
+            navigationView, MDthemerUtil.resolveColor(this, R.attr.iconColor, ThemeColor.textColorSecondary(this)), accentColor
         )
         NavigationViewUtil.setItemTextColors(
             navigationView, ThemeColor.textColorPrimary(this), accentColor
@@ -247,7 +244,6 @@ class MainActivity : AbsSlidingMusicPanelActivity() {
             when (menuItem.itemId) {
                 R.id.nav_library -> Handler().postDelayed({ setMusicChooser(LIBRARY) }, 200)
                 R.id.nav_folders -> Handler().postDelayed({ setMusicChooser(FOLDERS) }, 200)
-
                 R.id.action_shuffle_all -> Handler().postDelayed({
                     MusicPlayerRemote.openAndShuffleQueue(SongLoader.getAllSongs(this), true)
                 }, 350)
@@ -421,8 +417,8 @@ class MainActivity : AbsSlidingMusicPanelActivity() {
     }
 
     private fun showIntro() {
-        if (!getInstance(this).introShown()) {
-            getInstance(this).setIntroShown()
+        if (!PreferenceUtil.getInstance(this).introShown()) {
+            PreferenceUtil.getInstance(this).setIntroShown()
             setChangelogRead(this)
 
             blockRequestPermissions = true
@@ -443,7 +439,7 @@ class MainActivity : AbsSlidingMusicPanelActivity() {
         try {
             val pInfo = packageManager.getPackageInfo(packageName, 0)
             val currentVersion = pInfo.versionCode
-            if (currentVersion != getInstance(this).getLastChangelogVersion()) {
+            if (currentVersion != PreferenceUtil.getInstance(this).getLastChangelogVersion()) {
                 create().show(supportFragmentManager, "CHANGE_LOG_DIALOG")
             }
         } catch (e: PackageManager.NameNotFoundException) {
@@ -480,6 +476,11 @@ class MainActivity : AbsSlidingMusicPanelActivity() {
     }
     fun setFloatingActionButtonVisibility(visibility: Int) {
         floatingActionButton.visibility = visibility
+    }
+
+    override fun onDestroy() {
+        try { backgroundCoroutineScope.coroutineContext[Job]?.cancel() } catch (e: Exception) { Log.i("BackgroundCoroutineScope", e.message.orEmpty()) }
+        super.onDestroy()
     }
 
     companion object {
