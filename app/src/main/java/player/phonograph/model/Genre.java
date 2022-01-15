@@ -1,11 +1,25 @@
 package player.phonograph.model;
 
+import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import androidx.annotation.Keep;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentActivity;
 
-public class Genre implements Parcelable {
+import java.util.List;
+
+import kotlin.Unit;
+import kotlin.jvm.functions.Function3;
+import player.phonograph.helper.menu.SongsMenuHelper;
+import player.phonograph.interfaces.Displayable;
+import player.phonograph.util.MusicUtil;
+import player.phonograph.util.NavigationUtil;
+
+public class Genre implements Parcelable, Displayable {
     public final long id;
     public final String name;
     public final int songCount;
@@ -33,7 +47,7 @@ public class Genre implements Parcelable {
         long result = id;
         result = 31 * result + name.hashCode();
         result = 31 * result + songCount;
-        return (int)result;
+        return (int) result;
     }
 
     @Override
@@ -73,4 +87,62 @@ public class Genre implements Parcelable {
             return new Genre[size];
         }
     };
+
+    @Override
+    public long getItemID() {
+        return id;
+    }
+
+    @NonNull
+    @Override
+    public CharSequence getDisplayTitle() {
+        return name;
+    }
+
+    @Nullable
+    @Override
+    public CharSequence getDescription() {
+        return String.valueOf(songCount);
+    }
+
+    @Nullable
+    @Override
+    public Uri getPic() {
+        return null;
+    }
+
+    @Nullable
+    @Override
+    public String getSortOrderReference() {
+        return name;
+    }
+
+    @Override
+    public int menuRes() {
+        return 0;
+    }
+
+    @Nullable
+    @Override
+    public Function3<AppCompatActivity, Displayable, Integer, Boolean> menuHandler() {
+        return null;
+    }
+
+    @Nullable
+    @Override
+    public Function3<AppCompatActivity, List<? extends Displayable>, Integer, Boolean> multiMenuHandler() {
+        return (appCompatActivity, list, integer) -> {
+            SongsMenuHelper.handleMenuClick(appCompatActivity, MusicUtil.getGenreSongList((List<Genre>) list),integer);
+            return true;
+        };
+    }
+
+    @NonNull
+    @Override
+    public Function3<FragmentActivity, Displayable, List<? extends Displayable>, Unit> clickHandler() {
+        return (fragmentActivity, displayable, list) -> {
+            NavigationUtil.goToGenre(fragmentActivity, (Genre) displayable);
+            return null;
+        };
+    }
 }

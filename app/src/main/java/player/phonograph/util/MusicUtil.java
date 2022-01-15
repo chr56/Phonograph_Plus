@@ -25,8 +25,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import player.phonograph.App;
 import player.phonograph.R;
 import player.phonograph.helper.MusicPlayerRemote;
+import player.phonograph.loader.GenreLoader;
 import player.phonograph.loader.SongLoader;
 import player.phonograph.model.Album;
 import player.phonograph.model.Artist;
@@ -356,8 +358,17 @@ public class MusicUtil {
     @NonNull
     public static ArrayList<Song> getArtistSongList(List<Artist> artists) {
         ArrayList<Song> songs = new ArrayList<>(1);
-        for (Artist artist: artists) {
+        for (Artist artist : artists) {
             songs.addAll(artist.getSongs());
+        }
+        return songs;
+    }
+
+    @NonNull
+    public static ArrayList<Song> getGenreSongList(List<Genre> genres) {
+        ArrayList<Song> songs = new ArrayList<>(1);
+        for (Genre genre : genres) {
+            songs.addAll(GenreLoader.INSTANCE.getSongs(App.getInstance(), genre.id));
         }
         return songs;
     }
