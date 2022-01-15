@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.ColorStateList
+import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -22,7 +23,6 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import chr_56.MDthemer.core.ThemeColor
 import chr_56.MDthemer.util.ColorUtil
 import chr_56.MDthemer.util.NavigationViewUtil
-import chr_56.MDthemer.util.Util
 import com.bumptech.glide.Glide
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
@@ -152,35 +152,37 @@ class MainActivity : AbsSlidingMusicPanelActivity() {
 
 //    var playlistToSave: Playlist? = null
     var songsToSave: List<Song>? = null
-    val savePlaylistContract = registerForActivityResult(ActivityResultContracts.CreateDocument()) { uri ->
-        try {
-            val outputStream = contentResolver.openOutputStream(uri, "rw")
-            Handler(Looper.getMainLooper()).postDelayed({
-                LocalBroadcastManager.getInstance(App.instance).sendBroadcast(Intent(BROADCAST_PLAYLISTS_CHANGED))
-            }, 800)
-            if (outputStream != null) {
-                if (songsToSave != null) {
-                    try {
-                        M3UWriter.write(outputStream, songsToSave!!)
-                    } catch (e: IOException) {
-                        Toast.makeText(this, getString(R.string.failed) + ":${uri.path} can not be written", Toast.LENGTH_SHORT).show()
-                        songsToSave = null // clear
-                        outputStream.close()
-                        return@registerForActivityResult
-                    }
-                    Toast.makeText(this, getString(R.string.success), Toast.LENGTH_SHORT).show()
-                    LocalBroadcastManager.getInstance(App.instance).sendBroadcast(Intent(BROADCAST_PLAYLISTS_CHANGED))
-                    songsToSave = null // clear
-                    outputStream.close()
-                    return@registerForActivityResult
-                }
-            }
-        } catch (e: FileNotFoundException) {
-            Toast.makeText(this, getString(R.string.failed) + ":${uri.path} not found", Toast.LENGTH_SHORT).show()
-        } catch (e: Exception) {
+    val savePlaylistContract = registerForActivityResult(ActivityResultContracts.CreateDocument()) { uri: Uri? ->
+        if (uri == null) {
             Toast.makeText(this, getString(R.string.failed), Toast.LENGTH_SHORT).show()
-        } finally {
-            songsToSave = null
+            return@registerForActivityResult
+        }
+        LocalBroadcastManager.getInstance(App.instance).sendBroadcast(Intent(BROADCAST_PLAYLISTS_CHANGED))
+        backgroundCoroutineScope.launch(Dispatchers.IO) {
+            try {
+                val outputStream = contentResolver.openOutputStream(uri, "rw")
+                if (outputStream != null) {
+                    try {
+                        if (songsToSave != null) M3UWriter.write(outputStream, songsToSave!!)
+                        withContext(Dispatchers.Main) {
+                            Toast.makeText(this@MainActivity, getString(R.string.success), Toast.LENGTH_SHORT).show()
+                        }
+                        LocalBroadcastManager.getInstance(App.instance).sendBroadcast(Intent(BROADCAST_PLAYLISTS_CHANGED))
+                    } catch (e: IOException) {
+                        withContext(Dispatchers.Main) {
+                            Toast.makeText(this@MainActivity, getString(R.string.failed) + ":${uri.path} can not be written", Toast.LENGTH_SHORT).show()
+                        }
+                    } finally {
+                        outputStream.close()
+                    }
+                }
+            } catch (e: FileNotFoundException) {
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(this@MainActivity, getString(R.string.failed) + ":${uri.path} is not available", Toast.LENGTH_SHORT).show()
+                }
+            } finally {
+                songsToSave = null // clear
+            }
         }
     }
 
