@@ -5,9 +5,10 @@
 package player.phonograph.ui.fragments.mainactivity.library.new_ui
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
+import player.phonograph.ui.fragments.AbsMusicServiceFragment
 
-abstract class AbsPage : Fragment() {
+// todo no more AbsMusicServiceFragment
+abstract class AbsPage : AbsMusicServiceFragment() {
 
     protected val hostFragment: HomeFragment
         get() = parentFragment?.let { it as HomeFragment } ?: throw IllegalStateException("${this::class.simpleName} hasn't attach to HomeFragment")
