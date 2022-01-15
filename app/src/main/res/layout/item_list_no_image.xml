@@ -68,8 +68,7 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_gravity="bottom"
-        android:background="?attr/dividerColor"
-        android:visibility="gone" />
+        android:background="?attr/dividerColor"/>
 
     <View
         android:id="@+id/short_separator"
@@ -78,6 +77,7 @@
         android:layout_gravity="bottom"
         android:layout_marginLeft="72dp"
         android:layout_marginStart="72dp"
-        android:background="?attr/dividerColor" />
+        android:background="?attr/dividerColor"
+        android:visibility="gone" />
 
 </FrameLayout>
