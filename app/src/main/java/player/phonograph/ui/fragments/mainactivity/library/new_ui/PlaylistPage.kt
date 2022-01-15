@@ -5,6 +5,7 @@
 package player.phonograph.ui.fragments.mainactivity.library.new_ui
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -62,8 +63,8 @@ class PlaylistPage : AbsPage() {
             ThemeColor.accentColor(requireActivity())
         )
         binding.recyclerView.apply {
-            layoutManager = layoutManager
-            adapter = adapter
+            layoutManager = this@PlaylistPage.layoutManager
+            adapter = this@PlaylistPage.adapter
         }
         isRecyclerViewPrepared = true
 
@@ -89,7 +90,7 @@ class PlaylistPage : AbsPage() {
             while (!isRecyclerViewPrepared) yield() // wait until ready
 
             withContext(Dispatchers.Main) {
-                if (isRecyclerViewPrepared) adapter.dataSet = temp
+                if (isRecyclerViewPrepared) adapter.swapDataSet(temp)
             }
         }
     }
@@ -106,5 +107,8 @@ class PlaylistPage : AbsPage() {
         super.onDestroyView()
         _viewBinding = null
         isRecyclerViewPrepared = false
+    }
+    companion object{
+        const val TAG = "PlaylistPage"
     }
 }
