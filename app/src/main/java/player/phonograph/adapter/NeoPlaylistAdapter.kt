@@ -1,5 +1,6 @@
 package player.phonograph.adapter
 
+import android.app.Activity
 import android.content.Context
 import android.graphics.PorterDuff
 import android.view.LayoutInflater
@@ -11,6 +12,10 @@ import android.widget.Toast
 import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
 import chr_56.MDthemer.util.Util
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.adapter.base.MediaEntryViewHolder
@@ -130,7 +135,8 @@ class NeoPlaylistAdapter(
                 if (selection.size == 1) {
                     handleMenuClick(activity, selection[0], menuItem)
                 } else {
-                    SavePlaylistsAsyncTask(activity).execute(selection)
+                    savePlaylist(activity,selection)
+//                    SavePlaylistsAsyncTask(activity).execute(selection)
                 }
             else ->
                 // default, handle common items
@@ -148,6 +154,71 @@ class NeoPlaylistAdapter(
             }
         }
         return songs
+    }
+
+    private val backgroundCoroutineScope: CoroutineScope = CoroutineScope(Dispatchers.IO)
+    private fun savePlaylist(activity: Activity, playlists: List<Playlist>) {
+        backgroundCoroutineScope.launch {
+            var successes = 0
+            var failures = 0
+            var dir: String? = ""
+            for (playlist in playlists) {
+                try {
+                    dir = PlaylistsUtil.savePlaylist(App.instance, playlist).parent
+                    successes++
+                } catch (e: IOException) {
+                    failures++
+                    e.printStackTrace()
+                }
+            }
+            val result =
+                if (failures == 0) String.format(
+                    App.instance.applicationContext.getString(R.string.saved_x_playlists_to_x),
+                    successes, dir
+                ) else String.format(
+                    App.instance.applicationContext.getString(R.string.saved_x_playlists_to_x_failed_to_save_x),
+                    successes, dir, failures
+                )
+            withContext(Dispatchers.Main) {
+                Toast.makeText(activity, result, Toast.LENGTH_LONG).show()
+            }
+        }
+    }
+
+    private class SavePlaylistsAsyncTask(context: Context?) :
+        WeakContextAsyncTask<List<Playlist?>?, String?, String?>(context) {
+        override fun doInBackground(vararg params: List<Playlist?>?): String {
+            var successes = 0
+            var failures = 0
+            var dir: String? = ""
+            for (playlist in params[0]!!) {
+                try {
+                    dir = PlaylistsUtil.savePlaylist(
+                        App.instance.applicationContext,
+                        playlist
+                    ).parent
+                    successes++
+                } catch (e: IOException) {
+                    failures++
+                    e.printStackTrace()
+                }
+            }
+            return if (failures == 0) String.format(
+                App.instance.applicationContext.getString(R.string.saved_x_playlists_to_x),
+                successes, dir
+            ) else String.format(
+                App.instance.applicationContext.getString(R.string.saved_x_playlists_to_x_failed_to_save_x),
+                successes, dir, failures
+            )
+        }
+
+        override fun onPostExecute(string: String?) {
+            super.onPostExecute(string)
+            val context = context
+            if (context != null) {
+                Toast.makeText(context, string, Toast.LENGTH_LONG).show()
+            }
+        }
     }
 
     inner class ViewHolder(itemView: View, itemViewType: Int) : MediaEntryViewHolder(itemView) {
@@ -208,42 +279,6 @@ class NeoPlaylistAdapter(
         override fun onLongClick(v: View): Boolean {
             toggleChecked(bindingAdapterPosition)
             return true
-        }
-    }
-
-    private class SavePlaylistsAsyncTask(context: Context?) :
-        WeakContextAsyncTask<List<Playlist?>?, String?, String?>(context) {
-        override fun doInBackground(vararg params: List<Playlist?>?): String {
-            var successes = 0
-            var failures = 0
-            var dir: String? = ""
-            for (playlist in params[0]!!) {
-                try {
-                    dir = PlaylistsUtil.savePlaylist(
-                        App.instance.applicationContext,
-                        playlist
-                    ).parent
-                    successes++
-                } catch (e: IOException) {
-                    failures++
-                    e.printStackTrace()
-                }
-            }
-            return if (failures == 0) String.format(
-                App.instance.applicationContext.getString(R.string.saved_x_playlists_to_x),
-                successes, dir
-            ) else String.format(
-                App.instance.applicationContext.getString(R.string.saved_x_playlists_to_x_failed_to_save_x),
-                successes, dir, failures
-            )
-        }
-
-        override fun onPostExecute(string: String?) {
-            super.onPostExecute(string)
-            val context = context
-            if (context != null) {
-                Toast.makeText(context, string, Toast.LENGTH_LONG).show()
-            }
         }
     }
 
