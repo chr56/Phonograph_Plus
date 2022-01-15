@@ -277,6 +277,11 @@ sealed class AbsDisplayPage<IT, A : RecyclerView.Adapter<*>, LM : RecyclerView.L
 
     protected abstract fun getHeaderText(): CharSequence
 
+    override fun onMediaStoreChanged() {
+        loadDataSet()
+        super.onMediaStoreChanged()
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         adapter.unregisterAdapterDataObserver(adapterDataObserver)
