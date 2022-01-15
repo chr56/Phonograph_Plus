@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 import chr_56.MDthemer.core.ThemeColor
 import kotlinx.coroutines.*
 import player.phonograph.R
+import player.phonograph.adapter.NeoPlaylistAdapter
 import player.phonograph.adapter.PlaylistAdapter
 import player.phonograph.databinding.FragmentDisplayPageBinding
 import player.phonograph.model.Playlist
@@ -39,7 +40,7 @@ class PlaylistPage : AbsPage() {
         return binding.root
     }
 
-    private lateinit var adapter: PlaylistAdapter
+    private lateinit var adapter: NeoPlaylistAdapter
     private lateinit var layoutManager: RecyclerView.LayoutManager
     private lateinit var adapterDataObserver: RecyclerView.AdapterDataObserver
 
@@ -51,10 +52,10 @@ class PlaylistPage : AbsPage() {
 
         layoutManager = LinearLayoutManager(requireActivity())
 
-        adapter = PlaylistAdapter(
+        adapter = NeoPlaylistAdapter(
             hostFragment.mainActivity,
             ArrayList<Playlist>(), R.layout.item_list_single_row,
-            null // todo
+            hostFragment
         )
 
         ViewUtil.setUpFastScrollRecyclerViewColor(
@@ -90,7 +91,7 @@ class PlaylistPage : AbsPage() {
             while (!isRecyclerViewPrepared) yield() // wait until ready
 
             withContext(Dispatchers.Main) {
-                if (isRecyclerViewPrepared) adapter.swapDataSet(temp)
+                if (isRecyclerViewPrepared) adapter.dataSet = temp
             }
         }
     }
