@@ -27,6 +27,10 @@ import com.bumptech.glide.Glide
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
 import com.sothree.slidinguppanel.SlidingUpPanelLayout
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import player.phonograph.*
 import player.phonograph.Updater.checkUpdate
 import player.phonograph.dialogs.ChangelogDialog.Companion.create
@@ -197,28 +201,29 @@ class MainActivity : AbsSlidingMusicPanelActivity() {
 
                 val bundle = savedMessageBundle ?: throw Exception("No Playlist to save?")
 
-                val playlistType = bundle.getString(TYPE) ?: throw Exception("No Playlist to save?")
-                var result: Short
-
-                when (playlistType) {
-                    NormalPlaylist ->
-                        bundle.getLong(PLAYLIST_ID).let { result = FileSaver.savePlaylist(this, uri, it) }
-                    MyTopTracksPlaylist ->
-                        result = FileSaver.savePlaylist(this, uri, MyTopTracksPlaylist(this))
-                    LastAddedPlaylist ->
-                        result = FileSaver.savePlaylist(this, uri, LastAddedPlaylist(this))
-                    HistoryPlaylist ->
-                        result = FileSaver.savePlaylist(this, uri, HistoryPlaylist(this))
-                    else -> {
-                        result = -1
+                GlobalScope.launch(Dispatchers.IO) {
+                    val result = when (bundle.getString(TYPE)!!) {
+                        NormalPlaylist ->
+                            bundle.getLong(PLAYLIST_ID).let { FileSaver.savePlaylist(this@MainActivity, uri, it) }
+                        MyTopTracksPlaylist ->
+                            FileSaver.savePlaylist(this@MainActivity, uri, MyTopTracksPlaylist(this@MainActivity))
+                        LastAddedPlaylist ->
+                            FileSaver.savePlaylist(this@MainActivity, uri, LastAddedPlaylist(this@MainActivity))
+                        HistoryPlaylist ->
+                            FileSaver.savePlaylist(this@MainActivity, uri, HistoryPlaylist(this@MainActivity))
+                        else -> null
+                    }
+                    // report result
+                    val text = when {
+                        result == null -> "No playlist to save?"
+                        result.await().toInt() == 0 -> getText(R.string.success)
+                        result.await().toInt() != 0 -> getText(R.string.failed)
+                        else -> getText(R.string.failed)
+                    }
+                    withContext(Dispatchers.Main) {
+                        Toast.makeText(this@MainActivity, text, Toast.LENGTH_SHORT).show()
                     }
                 }
-                // report result
-                Toast.makeText(
-                    this,
-                    if (result.toInt() != 0) getText(R.string.failed) else getText(R.string.success),
-                    Toast.LENGTH_SHORT
-                ).show()
             }
         }
     }

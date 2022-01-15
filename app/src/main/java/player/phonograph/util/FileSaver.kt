@@ -8,6 +8,10 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import player.phonograph.App
 import player.phonograph.BROADCAST_PLAYLISTS_CHANGED
@@ -32,9 +36,8 @@ object FileSaver {
      * save Playlist as M3U
      * @param uri target file
      */
-    fun savePlaylist(activity: Activity, uri: Uri, playlistId: Long): Short {
+    fun savePlaylist(activity: Activity, uri: Uri, playlistId: Long): Deferred<Short> {
         val playlist: Playlist = MediaStoreUtil.getPlaylist(activity as Context, playlistId)
-        if (playlist.id == -1L) return ERROR // id -1 -> empty/null playlist
         return savePlaylist(activity, uri, playlist)
     }
 
@@ -42,27 +45,32 @@ object FileSaver {
      * save Playlist as M3U
      * @param uri target file
      */
-    fun savePlaylist(activity: Activity, uri: Uri, playlist: Playlist): Short {
+    fun savePlaylist(activity: Activity, uri: Uri, playlist: Playlist): Deferred<Short> {
+        val result = GlobalScope.async(Dispatchers.IO) {
+            if (playlist.id == -1L) return@async ERROR // id -1 -> empty/null playlist
 
-        val songs: List<Song> =
-            if (playlist is AbsCustomPlaylist) {
-                playlist.getSongs(activity)
-            } else {
-                PlaylistSongLoader.getPlaylistSongList(activity, playlist.id)
+            val songs: List<Song> =
+                if (playlist is AbsCustomPlaylist) {
+                    playlist.getSongs(activity)
+                } else {
+                    PlaylistSongLoader.getPlaylistSongList(activity, playlist.id)
+                }
+
+            if (songs.isEmpty()) return@async ERROR // no song? why save it?
+
+            val buffer = StringBuffer()
+            buffer.append(FILE_HEADER)
+            for (song in songs) {
+                buffer.appendLine()
+                buffer.append(ENTRY_HEADER + song.duration + "," + song.artistName + " - " + song.title)
+                buffer.appendLine()
+                buffer.append(song.data)
             }
 
-        if (songs.isEmpty()) return ERROR // no song? why save it?
-
-        val buffer = StringBuffer()
-        buffer.append(FILE_HEADER)
-        for (song in songs) {
-            buffer.appendLine()
-            buffer.append(ENTRY_HEADER + song.duration + "," + song.artistName + " - " + song.title)
-            buffer.appendLine()
-            buffer.append(song.data)
+            return@async saveFile(activity, uri, buffer.toString())
         }
 
-        return saveFile(activity, uri, buffer.toString())
+        return result
     }
 
     private const val FILE_HEADER = "#EXTM3U"
