@@ -24,10 +24,7 @@ import com.bumptech.glide.Glide
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
 import com.sothree.slidinguppanel.SlidingUpPanelLayout
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 import player.phonograph.*
 import player.phonograph.Updater.checkUpdate
 import player.phonograph.dialogs.ChangelogDialog.Companion.create
@@ -152,6 +149,8 @@ class MainActivity : AbsSlidingMusicPanelActivity() {
         currentFragment = fragment as MainActivityFragmentCallbacks
     }
 
+    private val backgroundCoroutineScope: CoroutineScope = CoroutineScope(Dispatchers.IO)
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == APP_INTRO_REQUEST) {
@@ -166,7 +165,7 @@ class MainActivity : AbsSlidingMusicPanelActivity() {
 
                 val bundle = savedMessageBundle ?: throw Exception("No Playlist to save?")
 
-                GlobalScope.launch(Dispatchers.IO) {
+                backgroundCoroutineScope.launch(Dispatchers.IO) {
                     val result = when (bundle.getString(TYPE)!!) {
                         NormalPlaylist ->
                             bundle.getLong(PLAYLIST_ID).let { FileSaver.savePlaylist(this@MainActivity, uri, it) }
@@ -176,15 +175,13 @@ class MainActivity : AbsSlidingMusicPanelActivity() {
                             FileSaver.savePlaylist(this@MainActivity, uri, LastAddedPlaylist(this@MainActivity))
                         HistoryPlaylist ->
                             FileSaver.savePlaylist(this@MainActivity, uri, HistoryPlaylist(this@MainActivity))
-                        else -> null
+                        else -> throw Exception("Unknown Playlist Type: ${bundle.getString(TYPE)}")
                     }
+
                     // report result
-                    val text = when {
-                        result == null -> "No playlist to save?"
-                        result.await().toInt() == 0 -> getText(R.string.success)
-                        result.await().toInt() != 0 -> getText(R.string.failed)
-                        else -> getText(R.string.failed)
-                    }
+                    val text =
+                        if (result.await() == 0) getText(R.string.success) else getText(R.string.failed)
+
                     withContext(Dispatchers.Main) {
                         Toast.makeText(this@MainActivity, text, Toast.LENGTH_SHORT).show()
                     }
@@ -446,6 +443,11 @@ class MainActivity : AbsSlidingMusicPanelActivity() {
     }
     fun setFloatingActionButtonVisibility(visibility: Int) {
         floatingActionButton.visibility = visibility
+    }
+
+    override fun onDestroy() {
+        try { backgroundCoroutineScope.coroutineContext[Job]?.cancel() } catch (e: Exception) { Log.i("BackgroundCoroutineScope", e.message.orEmpty()) }
+        super.onDestroy()
     }
 
     companion object {

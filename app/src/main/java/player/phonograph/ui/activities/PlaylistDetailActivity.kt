@@ -10,6 +10,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.os.Message
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -32,10 +33,7 @@ import com.h6ah4i.android.widget.advrecyclerview.animator.RefactoredDefaultItemA
 import com.h6ah4i.android.widget.advrecyclerview.draggable.RecyclerViewDragDropManager
 import com.h6ah4i.android.widget.advrecyclerview.utils.WrapperAdapterUtils
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 import player.phonograph.*
 import player.phonograph.R
 import player.phonograph.adapter.song.UniversalSongAdapter
@@ -267,6 +265,7 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity() {
     }
 
     override fun onDestroy() {
+        try { backgroundCoroutineScope.coroutineContext[Job]?.cancel() } catch (e: java.lang.Exception) { Log.i("BackgroundCoroutineScope", e.message.orEmpty()) }
         recyclerViewDragDropManager?.let {
             it.release()
             recyclerViewDragDropManager = null
@@ -280,6 +279,8 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity() {
         super.onDestroy()
     }
 
+    private val backgroundCoroutineScope: CoroutineScope = CoroutineScope(Dispatchers.IO)
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (resultCode == RESULT_OK && requestCode == REQUEST_CODE_SAVE_PLAYLIST) {
             data?.let { intent ->
@@ -287,7 +288,7 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity() {
 
                 val bundle = savedMessageBundle ?: throw Exception("No Playlist to save?")
 
-                GlobalScope.launch(Dispatchers.IO) {
+                backgroundCoroutineScope.launch(Dispatchers.Main) {
                     val result = when (bundle.getString(TYPE)!!) {
                         NormalPlaylist ->
                             bundle.getLong(PLAYLIST_ID).let { FileSaver.savePlaylist(this@PlaylistDetailActivity, uri, it) }
@@ -297,15 +298,13 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity() {
                             FileSaver.savePlaylist(this@PlaylistDetailActivity, uri, LastAddedPlaylist(this@PlaylistDetailActivity))
                         HistoryPlaylist ->
                             FileSaver.savePlaylist(this@PlaylistDetailActivity, uri, HistoryPlaylist(this@PlaylistDetailActivity))
-                        else -> null
+                        else -> throw Exception("Unknown Playlist Type: ${bundle.getString(TYPE)}")
                     }
+
                     // report result
-                    val text = when {
-                        result == null -> "No playlist to save?"
-                        result.await().toInt() == 0 -> getText(R.string.success)
-                        result.await().toInt() != 0 -> getText(R.string.failed)
-                        else -> getText(R.string.failed)
-                    }
+                    val text =
+                        if (result.await() == 0) getText(R.string.success) else getText(R.string.failed)
+
                     withContext(Dispatchers.Main) {
                         Toast.makeText(this@PlaylistDetailActivity, text, Toast.LENGTH_SHORT).show()
                     }
