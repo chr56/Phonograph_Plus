@@ -4,15 +4,19 @@ import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import android.widget.Toast;
 
+import player.phonograph.App;
 import player.phonograph.R;
 import player.phonograph.helper.M3UWriter;
 import player.phonograph.model.Playlist;
@@ -25,6 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static android.provider.MediaStore.Audio.Playlists.EXTERNAL_CONTENT_URI;
+import static player.phonograph.ConstantsKt.BROADCAST_PLAYLISTS_CHANGED;
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
@@ -63,6 +68,8 @@ public class PlaylistsUtil {
                         Toast.makeText(context, context.getResources().getString(
                                 R.string.created_playlist_x, name), Toast.LENGTH_SHORT).show();
                         id = Long.parseLong(uri.getLastPathSegment());
+                        LocalBroadcastManager.getInstance(App.getInstance()).sendBroadcast(new Intent(BROADCAST_PLAYLISTS_CHANGED));
+
                     }
                 } else {
                     // Playlist exists
