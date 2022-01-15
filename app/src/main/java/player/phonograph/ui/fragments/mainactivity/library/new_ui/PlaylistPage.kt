@@ -4,9 +4,6 @@
 
 package player.phonograph.ui.fragments.mainactivity.library.new_ui
 
-import android.content.BroadcastReceiver
-import android.content.Context
-import android.content.Intent
 import android.content.IntentFilter
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -22,6 +19,7 @@ import player.phonograph.BROADCAST_PLAYLISTS_CHANGED
 import player.phonograph.R
 import player.phonograph.adapter.NeoPlaylistAdapter
 import player.phonograph.databinding.FragmentDisplayPageBinding
+import player.phonograph.misc.PlaylistsModifiedReceiver
 import player.phonograph.model.Playlist
 import player.phonograph.model.smartplaylist.HistoryPlaylist
 import player.phonograph.model.smartplaylist.LastAddedPlaylist
@@ -83,9 +81,9 @@ class PlaylistPage : AbsPage() {
         adapter.registerAdapterDataObserver(adapterDataObserver)
 
         // Receiver
-        playlistsModifiedReceiver = PlaylistsModifiedReceiver()
+        playlistsModifiedReceiver = PlaylistsModifiedReceiver(this::loadPlaylist)
         LocalBroadcastManager.getInstance(App.instance).registerReceiver(
-            playlistsModifiedReceiver,
+            playlistsModifiedReceiver!!,
             IntentFilter().also { it.addAction(BROADCAST_PLAYLISTS_CHANGED) }
         )
     }
@@ -125,17 +123,11 @@ class PlaylistPage : AbsPage() {
         super.onDestroyView()
         _viewBinding = null
         isRecyclerViewPrepared = false
+        LocalBroadcastManager.getInstance(App.instance).unregisterReceiver(playlistsModifiedReceiver!!)
+        playlistsModifiedReceiver = null
     }
 
-    private lateinit var playlistsModifiedReceiver: PlaylistsModifiedReceiver
-    private inner class PlaylistsModifiedReceiver : BroadcastReceiver() {
-        override fun onReceive(context: Context?, intent: Intent?) {
-            when (intent?.action ?: "NONE") {
-                "NONE" -> {} // do nothing
-                BROADCAST_PLAYLISTS_CHANGED -> loadPlaylist()
-            }
-        }
-    }
+    private var playlistsModifiedReceiver: PlaylistsModifiedReceiver? = null
 
     companion object {
         const val TAG = "PlaylistPage"
