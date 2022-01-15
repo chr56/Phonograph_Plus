@@ -18,6 +18,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import chr_56.MDthemer.core.ThemeColor
 import chr_56.MDthemer.util.ColorUtil
 import chr_56.MDthemer.util.NavigationViewUtil
@@ -153,6 +154,9 @@ class MainActivity : AbsSlidingMusicPanelActivity() {
     val savePlaylistContract = registerForActivityResult(ActivityResultContracts.CreateDocument()) { uri ->
         try {
             val outputStream = contentResolver.openOutputStream(uri, "rw")
+            Handler(Looper.getMainLooper()).postDelayed({
+                LocalBroadcastManager.getInstance(App.instance).sendBroadcast(Intent(BROADCAST_PLAYLISTS_CHANGED))
+            }, 800)
             if (outputStream != null) {
                 if (songsToSave != null) {
                     try {
@@ -164,6 +168,7 @@ class MainActivity : AbsSlidingMusicPanelActivity() {
                         return@registerForActivityResult
                     }
                     Toast.makeText(this, getString(R.string.success), Toast.LENGTH_SHORT).show()
+                    LocalBroadcastManager.getInstance(App.instance).sendBroadcast(Intent(BROADCAST_PLAYLISTS_CHANGED))
                     songsToSave = null // clear
                     outputStream.close()
                     return@registerForActivityResult

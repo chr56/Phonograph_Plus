@@ -8,6 +8,7 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.PendingIntent
 import android.content.Context
+import android.content.Intent
 import android.database.Cursor
 import android.media.MediaScannerConnection
 import android.net.Uri
@@ -18,7 +19,10 @@ import android.provider.MediaStore.Audio.AudioColumns
 import android.provider.MediaStore.Audio.PlaylistsColumns
 import android.util.Log
 import android.widget.Toast
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.afollestad.materialdialogs.MaterialDialog
+import player.phonograph.App
+import player.phonograph.BROADCAST_PLAYLISTS_CHANGED
 import player.phonograph.R
 import player.phonograph.model.Playlist
 import player.phonograph.model.Song
@@ -285,7 +289,7 @@ object MediaStoreUtil {
             for (i in 0 until paths.size - 1) {
                 realSelection += " AND ${MediaStore.MediaColumns.DATA} NOT LIKE ?"
             }
-            Log.i(TAG,"playlist selection: $realSelection")
+            Log.i(TAG, "playlist selection: $realSelection")
 
             realSelectionValues =
                 Array<String>((selectionValues?.size ?: 0) + paths.size) { index ->
@@ -382,6 +386,7 @@ object MediaStoreUtil {
             String.format(Locale.getDefault(), context.getString(R.string.deleted_x_playlists), result),
             Toast.LENGTH_SHORT
         ).show()
+        LocalBroadcastManager.getInstance(App.instance).sendBroadcast(Intent(BROADCAST_PLAYLISTS_CHANGED))
     }
 
     fun scanFiles(context: Context, paths: Array<String>, mimeTypes: Array<String>) {
