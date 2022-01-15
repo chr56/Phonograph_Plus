@@ -5,7 +5,6 @@
 package player.phonograph.ui.fragments.mainactivity.library.new_ui
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,7 +14,6 @@ import chr_56.MDthemer.core.ThemeColor
 import kotlinx.coroutines.*
 import player.phonograph.R
 import player.phonograph.adapter.NeoPlaylistAdapter
-import player.phonograph.adapter.PlaylistAdapter
 import player.phonograph.databinding.FragmentDisplayPageBinding
 import player.phonograph.model.Playlist
 import player.phonograph.model.smartplaylist.HistoryPlaylist
@@ -104,12 +102,17 @@ class PlaylistPage : AbsPage() {
         }
     }
 
+    override fun onMediaStoreChanged() {
+        loadPlaylist()
+        super.onMediaStoreChanged()
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         _viewBinding = null
         isRecyclerViewPrepared = false
     }
-    companion object{
+    companion object {
         const val TAG = "PlaylistPage"
     }
 }
