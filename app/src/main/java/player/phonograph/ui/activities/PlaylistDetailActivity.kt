@@ -32,6 +32,10 @@ import com.h6ah4i.android.widget.advrecyclerview.animator.RefactoredDefaultItemA
 import com.h6ah4i.android.widget.advrecyclerview.draggable.RecyclerViewDragDropManager
 import com.h6ah4i.android.widget.advrecyclerview.utils.WrapperAdapterUtils
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import player.phonograph.*
 import player.phonograph.R
 import player.phonograph.adapter.song.UniversalSongAdapter
@@ -283,29 +287,29 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity() {
 
                 val bundle = savedMessageBundle ?: throw Exception("No Playlist to save?")
 
-                val playlistType = bundle.getString(TYPE)!!
-                var result: Short
-
-                when (playlistType) {
-                    NormalPlaylist ->
-                        bundle.getLong(PLAYLIST_ID).let { result = FileSaver.savePlaylist(this, uri, it) }
-                    MyTopTracksPlaylist ->
-                        result =
-                            FileSaver.savePlaylist(this, uri, MyTopTracksPlaylist(this))
-                    LastAddedPlaylist ->
-                        result = FileSaver.savePlaylist(this, uri, LastAddedPlaylist(this))
-                    HistoryPlaylist ->
-                        result = FileSaver.savePlaylist(this, uri, HistoryPlaylist(this))
-                    else -> {
-                        result = -1
+                GlobalScope.launch(Dispatchers.IO) {
+                    val result = when (bundle.getString(TYPE)!!) {
+                        NormalPlaylist ->
+                            bundle.getLong(PLAYLIST_ID).let { FileSaver.savePlaylist(this@PlaylistDetailActivity, uri, it) }
+                        MyTopTracksPlaylist ->
+                            FileSaver.savePlaylist(this@PlaylistDetailActivity, uri, MyTopTracksPlaylist(this@PlaylistDetailActivity))
+                        LastAddedPlaylist ->
+                            FileSaver.savePlaylist(this@PlaylistDetailActivity, uri, LastAddedPlaylist(this@PlaylistDetailActivity))
+                        HistoryPlaylist ->
+                            FileSaver.savePlaylist(this@PlaylistDetailActivity, uri, HistoryPlaylist(this@PlaylistDetailActivity))
+                        else -> null
+                    }
+                    // report result
+                    val text = when {
+                        result == null -> "No playlist to save?"
+                        result.await().toInt() == 0 -> getText(R.string.success)
+                        result.await().toInt() != 0 -> getText(R.string.failed)
+                        else -> getText(R.string.failed)
+                    }
+                    withContext(Dispatchers.Main) {
+                        Toast.makeText(this@PlaylistDetailActivity, text, Toast.LENGTH_SHORT).show()
                     }
                 }
-                // report result
-                Toast.makeText(
-                    this,
-                    if (result.toInt() != 0) getText(R.string.failed) else getText(R.string.success),
-                    Toast.LENGTH_SHORT
-                ).show()
             }
         } else if (requestCode == EDIT_PLAYLIST) {
             onMediaStoreChanged() // refresh after editing
