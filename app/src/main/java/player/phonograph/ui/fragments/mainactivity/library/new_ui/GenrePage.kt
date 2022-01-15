@@ -34,7 +34,7 @@ class GenrePage : AbsDisplayPage<Genre, DisplayAdapter<Genre>, GridLayoutManager
             hostFragment.mainActivity,
             hostFragment,
             ArrayList(), // empty until Genre loaded
-            R.layout.item_list
+            R.layout.item_list_no_image
         ) {
             showSectionName = true
         }
@@ -42,7 +42,7 @@ class GenrePage : AbsDisplayPage<Genre, DisplayAdapter<Genre>, GridLayoutManager
 
     override fun loadDataSet() {
         loaderCoroutineScope.launch {
-            val temp = GenreLoader.getAllGenres(App.instance) as List<Genre>
+            val temp = GenreLoader.getAllGenres(App.instance)
             while (!isRecyclerViewPrepared) yield() // wait until ready
 
             withContext(Dispatchers.Main) {
@@ -61,9 +61,10 @@ class GenrePage : AbsDisplayPage<Genre, DisplayAdapter<Genre>, GridLayoutManager
         // grid size
         popup.textGridSize.visibility = View.VISIBLE
         popup.gridSize.visibility = View.VISIBLE
-        if (Util.isLandscape(resources)) popup.textGridSize.text = resources.getText(R.string.action_grid_size_land)
+        if (Util.isLandscape(resources)) popup.textGridSize.text =
+            resources.getText(R.string.action_grid_size_land)
         val current = displayUtil.gridSize
-        val max = 3
+        val max = displayUtil.maxGridSize
         for (i in 0 until max) popup.gridSize.getChildAt(i).visibility = View.VISIBLE
         popup.gridSize.clearCheck()
         (popup.gridSize.getChildAt(current - 1) as RadioButton).isChecked = true
@@ -80,12 +81,11 @@ class GenrePage : AbsDisplayPage<Genre, DisplayAdapter<Genre>, GridLayoutManager
 
         // todo
         when (currentSortOrder) {
-            SortOrder.SongSortOrder.SONG_Z_A, SortOrder.AlbumSortOrder.ALBUM_Z_A, SortOrder.ArtistSortOrder.ARTIST_Z_A,
-            SortOrder.SongSortOrder.SONG_DURATION_REVERT, SortOrder.AlbumSortOrder.ALBUM_ARTIST_REVERT,
-            SortOrder.SongSortOrder.SONG_YEAR_REVERT, SortOrder.SongSortOrder.SONG_DATE_REVERT, SortOrder.SongSortOrder.SONG_DATE_MODIFIED_REVERT,
+            SortOrder.GenreSortOrder.GENRE_Z_A
             -> popup.sortOrderBasic.check(R.id.sort_order_z_a)
-            else
+            SortOrder.GenreSortOrder.GENRE_A_Z
             -> popup.sortOrderBasic.check(R.id.sort_order_a_z)
+            else -> popup.sortOrderBasic.clearCheck()
         }
 
 //        popup.sortOrder__.visibility = View.VISIBLE
@@ -95,13 +95,16 @@ class GenrePage : AbsDisplayPage<Genre, DisplayAdapter<Genre>, GridLayoutManager
 //        }
     }
 
-    override fun initOnDismissListener(popupMenu: PopupWindow, popup: PopupWindowMainBinding): PopupWindow.OnDismissListener {
+    override fun initOnDismissListener(
+        popupMenu: PopupWindow,
+        popup: PopupWindowMainBinding
+    ): PopupWindow.OnDismissListener {
         val displayUtil = DisplayUtil(this)
         return PopupWindow.OnDismissListener {
 
             //  Grid Size
             var gridSizeSelected = 0
-            for (i in 0 until 3) {
+            for (i in 0 until displayUtil.maxGridSize) {
                 if ((popup.gridSize.getChildAt(i) as RadioButton).isChecked) {
                     gridSizeSelected = i + 1
                     break

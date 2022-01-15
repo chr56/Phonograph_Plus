@@ -109,7 +109,7 @@ class DisplayAdapter<I : Displayable>(
             })
             // Menu Click
             if (dataset[0].menuRes() == 0 || dataset[0].menuHandler() == null) {
-                menu?.visibility = View.INVISIBLE
+                menu?.visibility = View.GONE
             } else {
                 menu?.setOnClickListener { view ->
                     if (dataset.isNotEmpty()) {

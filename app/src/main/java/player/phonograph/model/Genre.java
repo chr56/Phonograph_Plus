@@ -14,6 +14,7 @@ import java.util.List;
 
 import kotlin.Unit;
 import kotlin.jvm.functions.Function3;
+import player.phonograph.App;
 import player.phonograph.helper.menu.SongsMenuHelper;
 import player.phonograph.interfaces.Displayable;
 import player.phonograph.util.MusicUtil;
@@ -102,7 +103,7 @@ public class Genre implements Parcelable, Displayable {
     @Nullable
     @Override
     public CharSequence getDescription() {
-        return String.valueOf(songCount);
+        return MusicUtil.getGenreInfoString(App.getInstance(), this);
     }
 
     @Nullable
