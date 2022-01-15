@@ -5,6 +5,7 @@ import android.app.Activity
 import android.app.Dialog
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
@@ -63,8 +64,8 @@ class DeletePlaylistDialog : DialogFragment() {
         if (!hasPermission) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                 dialog.neutralButton(R.string.grant_permission) {
-                    val intent = Intent(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION).apply { // todo
-//                            data = Uri.parse("package:${context.packageName}")
+                    val intent = Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION).apply {
+                        data = Uri.parse("package:${attachedActivity.packageName}")
                         flags = Intent.FLAG_ACTIVITY_NEW_TASK
                     }
                     Handler().postDelayed({ attachedActivity.startActivity(intent) }, 200)
