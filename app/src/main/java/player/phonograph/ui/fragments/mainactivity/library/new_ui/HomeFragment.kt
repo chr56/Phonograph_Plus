@@ -100,7 +100,7 @@ class HomeFragment : AbsMainActivityFragment(), MainActivity.MainActivityFragmen
 
     private fun readConfig(): PageConfig { // todo
         return PageConfig(
-            HashMap<Int, String>(6)
+            HashMap<Int, String>(7)
                 .also {
                     it[0] = PAGERS.EMPTY
                     it[1] = PAGERS.SONG
@@ -108,6 +108,7 @@ class HomeFragment : AbsMainActivityFragment(), MainActivity.MainActivityFragmen
                     it[3] = PAGERS.ARTIST
                     it[4] = PAGERS.PLAYLIST
                     it[5] = PAGERS.GENRE
+                    it[6] = PAGERS.FOLDER
                 }
         )
     }
@@ -128,6 +129,7 @@ class HomeFragment : AbsMainActivityFragment(), MainActivity.MainActivityFragmen
                 PAGERS.ARTIST -> tab.text = getString(R.string.artists)
                 PAGERS.PLAYLIST -> tab.text = getString(R.string.playlists)
                 PAGERS.GENRE -> tab.text = getString(R.string.genres)
+                PAGERS.FOLDER -> tab.text = getString(R.string.folders)
                 PAGERS.EMPTY -> tab.text = getString(R.string.empty)
             }
         }.attach()

@@ -9,7 +9,6 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
-import player.phonograph.model.Genre
 import player.phonograph.ui.fragments.mainactivity.library.new_ui.*
 import java.lang.ref.WeakReference
 import kotlin.jvm.Throws
@@ -30,6 +29,7 @@ class HomePagerAdapter(fragment: Fragment, var cfg: PageConfig) : FragmentStateA
                 PAGERS.ARTIST -> ArtistPage::class.java
                 PAGERS.PLAYLIST -> PlaylistPage::class.java
                 PAGERS.GENRE -> GenrePage::class.java
+                PAGERS.FOLDER -> EmptyPage::class.java
                 else -> EmptyPage::class.java
             }
         var fragment: Fragment? = null
@@ -57,12 +57,13 @@ class PageConfig(var tabMap: MutableMap<Int, String>) {
          *  TODO Not yet implemented
          */
         val DEFAULT_CONFIG = PageConfig(
-            HashMap<Int, String>(5).also {
+            HashMap<Int, String>(6).also {
                 it[0] = PAGERS.SONG
                 it[1] = PAGERS.ALBUM
                 it[2] = PAGERS.ARTIST
                 it[3] = PAGERS.PLAYLIST
                 it[4] = PAGERS.GENRE
+                it[5] = PAGERS.FOLDER
             }
         )
     }
@@ -76,6 +77,7 @@ interface PAGERS {
         const val ARTIST = "ARTIST"
         const val PLAYLIST = "PLAYLIST"
         const val GENRE = "GENRE"
+        const val FOLDER = "FOLDER"
     }
 }
 
