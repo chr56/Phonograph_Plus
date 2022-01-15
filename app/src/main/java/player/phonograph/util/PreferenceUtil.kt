@@ -29,8 +29,9 @@ import java.util.ArrayList
 @SuppressLint("ApplySharedPref")
 class PreferenceUtil(context: Context) {
 
-//    private var sInstance: PreferenceUtil? = null
-    private val mPreferences: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+    //    private var sInstance: PreferenceUtil? = null
+    private val mPreferences: SharedPreferences =
+        PreferenceManager.getDefaultSharedPreferences(context)
 
 //    fun getInstance(context: Context): PreferenceUtil {
 //        return if (sInstance == null) PreferenceUtil(context.applicationContext)
@@ -76,6 +77,7 @@ class PreferenceUtil(context: Context) {
         get() = getThemeResFromPrefValue(
             mPreferences.getString(GENERAL_THEME, "auto")
         )
+
     fun setGeneralTheme(theme: String?) {
         val editor = mPreferences.edit()
         editor.putString(GENERAL_THEME, theme)
@@ -205,8 +207,13 @@ class PreferenceUtil(context: Context) {
             editor.commit()
         }
 
-    val genreSortOrder: String
+    var genreSortOrder: String
         get() = mPreferences.getString(GENRE_SORT_ORDER, SortOrder.GenreSortOrder.GENRE_A_Z)!!
+        set(sortOrder) {
+            val editor = mPreferences.edit()
+            editor.putString(GENRE_SORT_ORDER, sortOrder)
+            editor.commit()
+        }
 
     val lastAddedCutoff: Long
         get() {
@@ -286,6 +293,19 @@ class PreferenceUtil(context: Context) {
             editor.apply()
         }
 
+    var genreGridSize: Int
+        get() {
+            return mPreferences.getInt(
+                GENRE_GRID_SIZE,
+                App.instance.resources.getInteger(R.integer.default_list_columns)
+            )
+        }
+        set(gridSize) {
+            val editor = mPreferences.edit()
+            editor.putInt(GENRE_GRID_SIZE, gridSize)
+            editor.apply()
+        }
+
     var albumGridSizeLand: Int
         get() {
             return mPreferences.getInt(
@@ -320,6 +340,18 @@ class PreferenceUtil(context: Context) {
         set(gridSize) {
             val editor = mPreferences.edit()
             editor.putInt(ARTIST_GRID_SIZE_LAND, gridSize)
+            editor.apply()
+        }
+    var genreGridSizeLand: Int
+        get() {
+            return mPreferences.getInt(
+                GENRE_GRID_SIZE_LAND,
+                App.instance.resources.getInteger(R.integer.default_grid_columns_land)
+            )
+        }
+        set(gridSize) {
+            val editor = mPreferences.edit()
+            editor.putInt(GENRE_GRID_SIZE_LAND, gridSize)
             editor.apply()
         }
 
@@ -489,6 +521,7 @@ class PreferenceUtil(context: Context) {
 
     companion object {
         private var sInstance: PreferenceUtil? = null
+
         @JvmStatic
         fun getInstance(context: Context): PreferenceUtil {
             if (sInstance == null) {
@@ -502,11 +535,13 @@ class PreferenceUtil(context: Context) {
             return when (getInstance(context).autoDownloadImagesPolicy()) {
                 "always" -> true
                 "only_wifi" -> {
-                    val cm = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+                    val cm =
+                        context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 
                     if (!cm.isActiveNetworkMetered) return false // we pass first metred Wifi and Cellular
                     val network = cm.activeNetwork ?: return false // no active network?
-                    val capabilities = cm.getNetworkCapabilities(network) ?: return false // no capabilities?
+                    val capabilities =
+                        cm.getNetworkCapabilities(network) ?: return false // no capabilities?
                     capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)
                 }
                 "never" -> false
@@ -547,6 +582,9 @@ class PreferenceUtil(context: Context) {
 
         const val ARTIST_GRID_SIZE = "artist_grid_size"
         const val ARTIST_GRID_SIZE_LAND = "artist_grid_size_land"
+
+        const val GENRE_GRID_SIZE = "genre_grid_size"
+        const val GENRE_GRID_SIZE_LAND = "genre_grid_size_land"
 
         const val ALBUM_COLORED_FOOTERS = "album_colored_footers"
         const val SONG_COLORED_FOOTERS = "song_colored_footers"

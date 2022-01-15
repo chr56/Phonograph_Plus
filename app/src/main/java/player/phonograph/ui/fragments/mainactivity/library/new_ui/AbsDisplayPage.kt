@@ -37,7 +37,8 @@ import java.lang.ref.WeakReference
  * @param A relevant Adapter
  * @param LM relevant LayoutManager
  */
-sealed class AbsDisplayPage<IT, A : RecyclerView.Adapter<*>, LM : RecyclerView.LayoutManager> : AbsPage() {
+sealed class AbsDisplayPage<IT, A : RecyclerView.Adapter<*>, LM : RecyclerView.LayoutManager> :
+    AbsPage() {
 
     private var _viewBinding: FragmentDisplayPageBinding? = null
     private val binding get() = _viewBinding!!
@@ -45,7 +46,11 @@ sealed class AbsDisplayPage<IT, A : RecyclerView.Adapter<*>, LM : RecyclerView.L
     abstract fun getDataSet(): List<IT>
     abstract fun loadDataSet()
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         loadDataSet()
         _viewBinding = FragmentDisplayPageBinding.inflate(inflater, container, false)
         return binding.root
@@ -123,7 +128,10 @@ sealed class AbsDisplayPage<IT, A : RecyclerView.Adapter<*>, LM : RecyclerView.L
         binding.innerAppBar.setExpanded(false)
 //        hostFragment.addOnAppBarOffsetChangedListener(outerAppbarOffsetListener)
         binding.innerAppBar.addOnOffsetChangedListener(innerAppbarOffsetListener)
-        val actionDrawable = AppCompatResources.getDrawable(hostFragment.mainActivity, R.drawable.ic_sort_variant_white_24dp)
+        val actionDrawable = AppCompatResources.getDrawable(
+            hostFragment.mainActivity,
+            R.drawable.ic_sort_variant_white_24dp
+        )
         actionDrawable?.colorFilter = BlendModeColorFilterCompat
             .createBlendModeColorFilterCompat(
                 binding.textPageHeader.currentTextColor,
@@ -143,8 +151,9 @@ sealed class AbsDisplayPage<IT, A : RecyclerView.Adapter<*>, LM : RecyclerView.L
         }
     private val _bindingPopup: PopupWindowMainBinding?
         get() {
-            if (hostFragment.displayPopupView.get()==null)
-                hostFragment.displayPopupView = WeakReference(PopupWindowMainBinding.inflate(LayoutInflater.from(hostFragment.mainActivity)))
+            if (hostFragment.displayPopupView.get() == null)
+                hostFragment.displayPopupView =
+                    WeakReference(PopupWindowMainBinding.inflate(LayoutInflater.from(hostFragment.mainActivity)))
             return hostFragment.displayPopupView.get()!!
         }
     val popupView get() = _bindingPopup!!
@@ -156,7 +165,11 @@ sealed class AbsDisplayPage<IT, A : RecyclerView.Adapter<*>, LM : RecyclerView.L
         val accentColor = ThemeColor.accentColor(mainActivity)
         val textColor = ThemeColor.textColorSecondary(mainActivity)
         val widgetColor = ColorStateList(
-            arrayOf(intArrayOf(android.R.attr.state_enabled), intArrayOf(android.R.attr.state_selected), intArrayOf()),
+            arrayOf(
+                intArrayOf(android.R.attr.state_enabled),
+                intArrayOf(android.R.attr.state_selected),
+                intArrayOf()
+            ),
             intArrayOf(accentColor, accentColor, textColor)
         )
         //
@@ -170,17 +183,40 @@ sealed class AbsDisplayPage<IT, A : RecyclerView.Adapter<*>, LM : RecyclerView.L
             // checkbox color
             this.actionColoredFooters.buttonTintList = widgetColor
             // radioButton
-            for (i in 0 until this.gridSize.childCount) (this.gridSize.getChildAt(i) as RadioButton).buttonTintList = widgetColor
-            for (i in 0 until this.sortOrderContent.childCount) (this.sortOrderContent.getChildAt(i) as RadioButton).buttonTintList = widgetColor
-            for (i in 0 until this.sortOrderBasic.childCount) (this.sortOrderBasic.getChildAt(i) as RadioButton).buttonTintList = widgetColor
+            for (i in 0 until this.gridSize.childCount) (this.gridSize.getChildAt(i) as RadioButton).buttonTintList =
+                widgetColor
+            for (i in 0 until this.sortOrderContent.childCount) (this.sortOrderContent.getChildAt(i) as RadioButton).buttonTintList =
+                widgetColor
+            for (i in 0 until this.sortOrderBasic.childCount) (this.sortOrderBasic.getChildAt(i) as RadioButton).buttonTintList =
+                widgetColor
         }
 
-        return PopupWindow(popupView.root, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, true).apply {
+        return PopupWindow(
+            popupView.root,
+            ViewGroup.LayoutParams.WRAP_CONTENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT,
+            true
+        ).apply {
             this.animationStyle = android.R.style.Animation_Dialog
-            this.setBackgroundDrawable(ColorDrawable(PhonographColorUtil.getCorrectBackgroundColor(mainActivity)))
+            this.setBackgroundDrawable(
+                ColorDrawable(
+                    PhonographColorUtil.getCorrectBackgroundColor(
+                        mainActivity
+                    )
+                )
+            )
         }
     }
-    protected fun resetPopupMenuBackgroundColor() { popupWindow.setBackgroundDrawable(ColorDrawable(PhonographColorUtil.getCorrectBackgroundColor(hostFragment.mainActivity))) }
+
+    protected fun resetPopupMenuBackgroundColor() {
+        popupWindow.setBackgroundDrawable(
+            ColorDrawable(
+                PhonographColorUtil.getCorrectBackgroundColor(
+                    hostFragment.mainActivity
+                )
+            )
+        )
+    }
 
     protected fun onPopupShow() {
         // first, hide all items
@@ -193,7 +229,10 @@ sealed class AbsDisplayPage<IT, A : RecyclerView.Adapter<*>, LM : RecyclerView.L
         // show popup
         popupWindow.showAtLocation(
             binding.root, Gravity.TOP or Gravity.END, 0,
-            (hostFragment.mainActivity.findViewById<player.phonograph.views.StatusBarView>(R.id.status_bar)?.height ?: 8) +
+            (
+                hostFragment.mainActivity.findViewById<player.phonograph.views.StatusBarView>(R.id.status_bar)?.height
+                    ?: 8
+                ) +
                 hostFragment.totalHeaderHeight + binding.innerAppBar.height
         )
 
@@ -217,7 +256,10 @@ sealed class AbsDisplayPage<IT, A : RecyclerView.Adapter<*>, LM : RecyclerView.L
         popupView.actionColoredFooters.visibility = View.GONE
     }
 
-    abstract fun initOnDismissListener(popupMenu: PopupWindow, popup: PopupWindowMainBinding): PopupWindow.OnDismissListener?
+    abstract fun initOnDismissListener(
+        popupMenu: PopupWindow,
+        popup: PopupWindowMainBinding
+    ): PopupWindow.OnDismissListener?
 
     abstract fun configPopup(popupMenu: PopupWindow, popup: PopupWindowMainBinding)
 
@@ -232,6 +274,7 @@ sealed class AbsDisplayPage<IT, A : RecyclerView.Adapter<*>, LM : RecyclerView.L
     protected fun updateHeaderText() {
         binding.textPageHeader.text = getHeaderText()
     }
+
     protected abstract fun getHeaderText(): CharSequence
 
     override fun onDestroyView() {
@@ -271,6 +314,9 @@ class DisplayUtil(private val page: AbsDisplayPage<*, *, *>) {
                 is ArtistPage -> {
                     pref.artistSortOrder
                 }
+                is GenrePage -> {
+                    pref.genreSortOrder
+                }
                 else -> ""
             }
         }
@@ -288,6 +334,9 @@ class DisplayUtil(private val page: AbsDisplayPage<*, *, *>) {
                 }
                 is ArtistPage -> {
                     pref.artistSortOrder = value
+                }
+                is GenrePage -> {
+                    pref.genreSortOrder = value
                 }
             }
         }
@@ -309,6 +358,10 @@ class DisplayUtil(private val page: AbsDisplayPage<*, *, *>) {
                     if (isLandscape) pref.artistGridSizeLand
                     else pref.artistGridSize
                 }
+                is GenrePage -> {
+                    if (isLandscape) pref.genreGridSizeLand
+                    else pref.genreGridSize
+                }
                 else -> 1
             }
         }
@@ -328,6 +381,10 @@ class DisplayUtil(private val page: AbsDisplayPage<*, *, *>) {
                 is ArtistPage -> {
                     if (isLandscape) pref.artistGridSizeLand = value
                     else pref.artistGridSize = value
+                }
+                is GenrePage -> {
+                    if (isLandscape) pref.genreGridSizeLand = value
+                    else pref.genreGridSize = value
                 }
             }
         }
@@ -359,6 +416,9 @@ class DisplayUtil(private val page: AbsDisplayPage<*, *, *>) {
                 }
                 is ArtistPage -> {
                     pref.setArtistColoredFooters(value)
+                }
+                is GenrePage -> {
+                    // do noting
                 }
             }
         }
