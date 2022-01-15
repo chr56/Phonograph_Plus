@@ -1,8 +1,8 @@
 package player.phonograph.adapter
 
 import android.app.Activity
-import android.content.Context
 import android.graphics.PorterDuff
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
@@ -11,12 +11,9 @@ import android.widget.PopupMenu
 import android.widget.Toast
 import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.RecyclerView
 import chr_56.MDthemer.util.Util
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import player.phonograph.App
+import kotlinx.coroutines.*
 import player.phonograph.R
 import player.phonograph.adapter.base.MediaEntryViewHolder
 import player.phonograph.adapter.base.MultiSelectAdapter
@@ -26,7 +23,6 @@ import player.phonograph.helper.menu.PlaylistMenuHelper.handleMenuClick
 import player.phonograph.helper.menu.SongsMenuHelper
 import player.phonograph.interfaces.MultiSelectionCabProvider
 import player.phonograph.loader.PlaylistSongLoader
-import player.phonograph.misc.WeakContextAsyncTask
 import player.phonograph.model.AbsCustomPlaylist
 import player.phonograph.model.Playlist
 import player.phonograph.model.Song
@@ -36,6 +32,7 @@ import player.phonograph.util.MusicUtil
 import player.phonograph.util.NavigationUtil
 import player.phonograph.util.PlaylistsUtil
 import java.io.IOException
+import java.lang.Exception
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
@@ -135,8 +132,7 @@ class NeoPlaylistAdapter(
                 if (selection.size == 1) {
                     handleMenuClick(activity, selection[0], menuItem)
                 } else {
-                    savePlaylist(activity,selection)
-//                    SavePlaylistsAsyncTask(activity).execute(selection)
+                    savePlaylist(activity, selection)
                 }
             else ->
                 // default, handle common items
@@ -163,8 +159,9 @@ class NeoPlaylistAdapter(
             var failures = 0
             var dir: String? = ""
             for (playlist in playlists) {
+                if (!isActive) break
                 try {
-                    dir = PlaylistsUtil.savePlaylist(App.instance, playlist).parent
+                    dir = PlaylistsUtil.savePlaylist(activity, playlist).parent
                     successes++
                 } catch (e: IOException) {
                     failures++
@@ -173,50 +170,14 @@ class NeoPlaylistAdapter(
             }
             val result =
                 if (failures == 0) String.format(
-                    App.instance.applicationContext.getString(R.string.saved_x_playlists_to_x),
+                    activity.getString(R.string.saved_x_playlists_to_x),
                     successes, dir
                 ) else String.format(
-                    App.instance.applicationContext.getString(R.string.saved_x_playlists_to_x_failed_to_save_x),
+                    activity.getString(R.string.saved_x_playlists_to_x_failed_to_save_x),
                     successes, dir, failures
                 )
             withContext(Dispatchers.Main) {
                 Toast.makeText(activity, result, Toast.LENGTH_LONG).show()
-            }
-        }
-    }
-
-    private class SavePlaylistsAsyncTask(context: Context?) :
-        WeakContextAsyncTask<List<Playlist?>?, String?, String?>(context) {
-        override fun doInBackground(vararg params: List<Playlist?>?): String {
-            var successes = 0
-            var failures = 0
-            var dir: String? = ""
-            for (playlist in params[0]!!) {
-                try {
-                    dir = PlaylistsUtil.savePlaylist(
-                        App.instance.applicationContext,
-                        playlist
-                    ).parent
-                    successes++
-                } catch (e: IOException) {
-                    failures++
-                    e.printStackTrace()
-                }
-            }
-            return if (failures == 0) String.format(
-                App.instance.applicationContext.getString(R.string.saved_x_playlists_to_x),
-                successes, dir
-            ) else String.format(
-                App.instance.applicationContext.getString(R.string.saved_x_playlists_to_x_failed_to_save_x),
-                successes, dir, failures
-            )
-        }
-
-        override fun onPostExecute(string: String?) {
-            super.onPostExecute(string)
-            val context = context
-            if (context != null) {
-                Toast.makeText(context, string, Toast.LENGTH_LONG).show()
             }
         }
     }
@@ -280,6 +241,11 @@ class NeoPlaylistAdapter(
             toggleChecked(bindingAdapterPosition)
             return true
         }
+    }
+
+    override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {
+        super.onDetachedFromRecyclerView(recyclerView)
+        try { backgroundCoroutineScope.coroutineContext[Job]?.cancel() } catch (e: Exception) { Log.i("BackgroundCoroutineScope", e.message.orEmpty()) }
     }
 
     companion object {
