@@ -1,6 +1,7 @@
 package player.phonograph.dialogs
 
 import android.app.Dialog
+import android.os.Build
 import android.os.Bundle
 import android.text.InputType
 import android.util.Log
@@ -15,7 +16,6 @@ import player.phonograph.R
 import player.phonograph.model.Song
 import player.phonograph.ui.activities.MainActivity
 import player.phonograph.util.PlaylistsUtil
-import java.lang.Exception
 
 /**
  * @author Karim Abou Zeid (kabouzeid), Aidan Follestad (afollestad)
@@ -39,20 +39,23 @@ class CreatePlaylistDialog : DialogFragment() {
                 val name: String = charSequence.toString().trim()
                 if (name.isNotEmpty()) {
                     if (!PlaylistsUtil.doesPlaylistExist(requireActivity(), name)) {
-//                        val playlistId = PlaylistsUtil.createPlaylist(requireActivity(), name)
-//                        if (activity != null) {
-//                            if (songs != null && songs.isNotEmpty()) {
-//                                dismiss()
-//                                PlaylistsUtil.addToPlaylist(requireActivity(), songs, playlistId, true)
-//                            }
-//                        }
-                        try {
-                            (requireActivity() as MainActivity).also {
-                                it.songsToSave = songs
-                                it.savePlaylistContract.launch("$name.m3u")
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                            try {
+                                (requireActivity() as MainActivity).also {
+                                    it.songsToSave = songs
+                                    it.savePlaylistContract.launch("$name.m3u")
+                                }
+                            } catch (e: Exception) {
+                                Log.d("CreatePlaylistDialog", "SaveFail: \n${e.message}")
                             }
-                        } catch (e: Exception) {
-                            Log.d("CreatePlaylistDialog", "SaveFail: \n${e.message}")
+                        } else {
+                            val playlistId = PlaylistsUtil.createPlaylist(requireActivity(), name)
+                            if (activity != null) {
+                                if (songs != null && songs.isNotEmpty()) {
+                                    dismiss()
+                                    PlaylistsUtil.addToPlaylist(requireActivity(), songs, playlistId, true)
+                                }
+                            }
                         }
                     } else {
                         Toast.makeText(activity, requireActivity().resources.getString(R.string.playlist_exists, name), Toast.LENGTH_SHORT).show()
