@@ -4,6 +4,7 @@
 
 package player.phonograph.util
 
+import android.content.Context
 import android.util.Log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -46,6 +47,13 @@ object PlaylistWriter {
             }
         } catch (e: Exception) {
             Log.i("CreatePlaylistDialog", "SaveFail: \n${e.message}")
+        }
+    }
+
+    fun savePlaylist(name: String, songs: List<Song>?, context: Context) {
+        val playlistId = PlaylistsUtil.createPlaylist(context, name)
+        if (songs != null && songs.isNotEmpty()) {
+            PlaylistsUtil.addToPlaylist(context, songs, playlistId, true)
         }
     }
 }

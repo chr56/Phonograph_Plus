@@ -34,30 +34,27 @@ class CreatePlaylistDialog : DialogFragment() {
                 hintRes = R.string.playlist_name_empty,
                 waitForPositiveButton = true,
                 allowEmpty = false
-            ) { _, charSequence ->
-                if (activity == null) return@input
-                val name: String = charSequence.toString().trim()
-                if (name.isNotEmpty()) {
-                    if (!PlaylistsUtil.doesPlaylistExist(requireActivity(), name)) {
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                            val activity = requireActivity()
-                            if (activity is MainActivity)
-                                PlaylistWriter.savePlaylistViaSAF(name, songs, activity)
-                            else
-                                Toast.makeText(activity, R.string.failed, Toast.LENGTH_SHORT).show()
-                        } else {
-                            val playlistId = PlaylistsUtil.createPlaylist(requireActivity(), name)
-                            if (activity != null) {
-                                if (songs != null && songs.isNotEmpty()) {
-                                    dismiss()
-                                    PlaylistsUtil.addToPlaylist(requireActivity(), songs, playlistId, true)
-                                }
-                            }
-                        }
+            ) { _, input ->
+                val name = input.toString().trim()
+                if (name.isEmpty()) {
+                    Toast.makeText(requireContext(), getString(R.string.failed), Toast.LENGTH_SHORT).show()
+                    return@input
+                }
+                if (!PlaylistsUtil.doesPlaylistExist(requireActivity(), name)) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                        val activity = requireActivity()
+                        if (activity is MainActivity)
+                            PlaylistWriter.savePlaylistViaSAF(name, songs, activity)
+                        else
+                            Toast.makeText(activity, R.string.failed, Toast.LENGTH_SHORT).show()
                     } else {
-                        Toast.makeText(activity, requireActivity().resources.getString(R.string.playlist_exists, name), Toast.LENGTH_SHORT).show()
                         dismiss()
+                        // legacy ways
+                        PlaylistWriter.savePlaylist(name, songs, requireContext())
                     }
+                } else {
+                    Toast.makeText(requireContext(), requireActivity().resources.getString(R.string.playlist_exists, name), Toast.LENGTH_SHORT).show()
+                    dismiss()
                 }
             }
         // set button color
