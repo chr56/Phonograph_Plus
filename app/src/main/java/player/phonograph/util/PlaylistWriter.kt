@@ -58,9 +58,9 @@ object PlaylistWriter {
         }
 
         GlobalScope.launch(Dispatchers.IO) {
-            while (safLauncher.uriDocumentInUse) yield()
+            while (safLauncher.createCallbackInUse) yield()
             try {
-                safLauncher.launchSAF("$name.m3u", uriCallback)
+                safLauncher.createFile("$name.m3u", uriCallback)
             } catch (e: Exception) {
                 coroutineToast(activity, activity.getString(R.string.failed) + ": unknown")
                 Log.i("CreatePlaylistDialog", "SaveFail: \n${e.message}")
@@ -77,23 +77,39 @@ object PlaylistWriter {
 }
 typealias UriCallback = (Uri?) -> Any
 class SafLauncher(private val registry: ActivityResultRegistry) : DefaultLifecycleObserver {
-    private lateinit var launcher: ActivityResultLauncher<String>
-    lateinit var callback: UriCallback
-    var uriDocumentInUse = false
+    private lateinit var createLauncher: ActivityResultLauncher<String>
+    lateinit var createCallback: UriCallback
+    var createCallbackInUse = false
+        private set
+
+    private lateinit var dirLauncher: ActivityResultLauncher<Uri>
+    lateinit var dirCallback: UriCallback
+    var dirCallbackInUse = false
         private set
 
     override fun onCreate(owner: LifecycleOwner) {
-        launcher = registry.register("SAF", owner, ActivityResultContracts.CreateDocument()) {
-            callback(it)
-            uriDocumentInUse = false
+        createLauncher = registry.register("CreateFile", owner, ActivityResultContracts.CreateDocument()) {
+            createCallback(it)
+            createCallbackInUse = false
+        }
+        dirLauncher = registry.register("OpenDir", owner, ActivityResultContracts.OpenDocumentTree()) {
+            dirCallback(it)
+            createCallbackInUse = false
         }
     }
 
-    fun launchSAF(fileName: String, callback: UriCallback) {
-        if (uriDocumentInUse) return // todo
-        uriDocumentInUse = true
-        this.callback = callback
-        launcher.launch(fileName)
+    fun createFile(fileName: String, callback: UriCallback) {
+        if (createCallbackInUse) return // todo
+        createCallbackInUse = true
+        this.createCallback = callback
+        createLauncher.launch(fileName)
+    }
+
+    fun openDir(dir: Uri, callback: UriCallback) {
+        if (dirCallbackInUse) return // todo
+        dirCallbackInUse = true
+        this.dirCallback = callback
+        dirLauncher.launch(dir)
     }
 }
 interface SAFCallbackHandlerActivity {
