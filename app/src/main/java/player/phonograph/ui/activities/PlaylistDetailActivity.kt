@@ -49,7 +49,7 @@ import player.phonograph.model.smartplaylist.MyTopTracksPlaylist
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
 import player.phonograph.util.*
 
-class PlaylistDetailActivity : AbsSlidingMusicPanelActivity() {
+class PlaylistDetailActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity {
     private lateinit var binding: ActivityPlaylistDetailBinding // init in OnCreate()
 
     // init/bind in OnCreate() -> bindingView()
@@ -69,6 +69,10 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity() {
 
     private var savedMessageBundle: Bundle? = null
 
+    // for saf callback
+    private lateinit var safLauncher: SafLauncher
+    override fun getSafLauncher(): SafLauncher = safLauncher
+
     /* ********************
      *
      *  First Initialization
@@ -87,10 +91,12 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity() {
         setNavigationbarColorAuto()
         setTaskDescriptionColorAuto()
 
-
         Themer.setActivityToolbarColorAuto(this, mToolbar)
 
         playlist = intent.extras!!.getParcelable(EXTRA_PLAYLIST)!!
+
+        safLauncher = SafLauncher(activityResultRegistry)
+        lifecycle.addObserver(safLauncher)
 
         // Init RecyclerView and Adapter
         setUpRecyclerView()
