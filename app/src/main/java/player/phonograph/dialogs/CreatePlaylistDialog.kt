@@ -13,9 +13,9 @@ import com.afollestad.materialdialogs.actions.getActionButton
 import com.afollestad.materialdialogs.input.input
 import player.phonograph.R
 import player.phonograph.model.Song
-import player.phonograph.ui.activities.MainActivity
 import player.phonograph.util.PlaylistWriter
 import player.phonograph.util.PlaylistsUtil
+import player.phonograph.util.SAFCallbackHandlerActivity
 
 /**
  * @author Karim Abou Zeid (kabouzeid), Aidan Follestad (afollestad)
@@ -43,14 +43,15 @@ class CreatePlaylistDialog : DialogFragment() {
                 if (!PlaylistsUtil.doesPlaylistExist(requireActivity(), name)) {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                         val activity = requireActivity()
-                        if (activity is MainActivity)
-                            PlaylistWriter.savePlaylistViaSAF(name, songs, activity)
-                        else
+                        if (activity is SAFCallbackHandlerActivity) {
+                            PlaylistWriter.createPlaylistViaSAF(name, songs, activity)
+                        } else {
                             Toast.makeText(activity, R.string.failed, Toast.LENGTH_SHORT).show()
+                        }
                     } else {
                         dismiss()
                         // legacy ways
-                        PlaylistWriter.savePlaylist(name, songs, requireContext())
+                        PlaylistWriter.createPlaylist(name, songs, requireContext())
                     }
                 } else {
                     Toast.makeText(requireContext(), requireActivity().resources.getString(R.string.playlist_exists, name), Toast.LENGTH_SHORT).show()

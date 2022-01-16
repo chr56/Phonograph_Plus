@@ -19,7 +19,6 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.drawerlayout.widget.DrawerLayout
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import chr_56.MDthemer.core.ThemeColor
 import chr_56.MDthemer.util.ColorUtil
 import chr_56.MDthemer.util.NavigationViewUtil
@@ -56,11 +55,13 @@ import player.phonograph.ui.fragments.mainactivity.library.LibraryFragment
 import player.phonograph.util.FileSaver
 import player.phonograph.util.MusicUtil
 import player.phonograph.util.PreferenceUtil
+import player.phonograph.util.SafLauncher
+import player.phonograph.util.SAFCallbackHandlerActivity
 import java.io.FileNotFoundException
 import java.io.IOException
 import chr_56.MDthemer.util.Util as MDthemerUtil
 
-class MainActivity : AbsSlidingMusicPanelActivity() {
+class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity {
     // init : onCreate()
     private lateinit var navigationView: NavigationView
     private lateinit var drawerLayout: DrawerLayout
@@ -72,8 +73,14 @@ class MainActivity : AbsSlidingMusicPanelActivity() {
 
     private var savedMessageBundle: Bundle? = null
 
+    private lateinit var safLauncher: SafLauncher
+    override fun getSafLauncher(): SafLauncher = safLauncher
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        safLauncher = SafLauncher(activityResultRegistry)
+        lifecycle.addObserver(safLauncher)
 
         setDrawUnderStatusbar()
 
