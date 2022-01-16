@@ -88,41 +88,6 @@ object PlaylistMenuHelper {
                         Looper.loop()
                     } catch (e: Exception) { Log.w("SAVE_PLAYLIST", e.message.orEmpty()) }
                 }
-
-//                val intent = Intent(Intent.ACTION_CREATE_DOCUMENT).apply {
-//                    addCategory(Intent.CATEGORY_OPENABLE)
-//                    type = "audio/x-mpegurl"
-//                    putExtra(
-//                        Intent.EXTRA_TITLE,
-//                        playlist.name +
-//                            SimpleDateFormat(
-//                                "_yy-MM-dd_HH-mm", Locale.getDefault()
-//                            ).format(Calendar.getInstance().time)
-//                    )
-//                }
-//
-//                startActivityForResult(activity, intent, REQUEST_CODE_SAVE_PLAYLIST, null)
-//
-//                val msgBundle = Bundle()
-//                if (playlist is AbsSmartPlaylist) {
-//                    val type: String = when (playlist) {
-//                        is HistoryPlaylist -> HistoryPlaylist
-//                        is LastAddedPlaylist -> LastAddedPlaylist
-//                        is MyTopTracksPlaylist -> MyTopTracksPlaylist
-//                        else -> "Smart"
-//                    }
-//                    msgBundle.putString(TYPE, type)
-//                } else {
-//                    msgBundle.putString(TYPE, NormalPlaylist)
-//                    msgBundle.putLong(PLAYLIST_ID, playlist.id)
-//                }
-//
-//                (activity as AbsMusicServiceActivity).handler?.let { handler ->
-//                    val msg = Message.obtain(handler, REQUEST_CODE_SAVE_PLAYLIST).also {
-//                        it.data = msgBundle
-//                    }
-//                    handler.sendMessageDelayed(msg, 10)
-//                }
             }
         }
         return false

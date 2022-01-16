@@ -7,16 +7,12 @@ package player.phonograph.ui.activities
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
-import android.os.Message
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewStub
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.loader.app.LoaderManager
@@ -43,9 +39,6 @@ import player.phonograph.misc.WrappedAsyncTaskLoader
 import player.phonograph.model.AbsCustomPlaylist
 import player.phonograph.model.Playlist
 import player.phonograph.model.Song
-import player.phonograph.model.smartplaylist.HistoryPlaylist
-import player.phonograph.model.smartplaylist.LastAddedPlaylist
-import player.phonograph.model.smartplaylist.MyTopTracksPlaylist
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
 import player.phonograph.util.*
 
@@ -106,8 +99,6 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandle
 
         LoaderManager.getInstance(this)
             .initLoader(LOADER_ID, null, loader)
-
-        setupHandler()
     }
     private fun bindingViews() {
         mToolbar = binding.toolbar
@@ -161,20 +152,6 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandle
     }
     private fun setToolbarTitle(title: String) {
         supportActionBar!!.title = title
-    }
-
-    private fun setupHandler() {
-        handler = object : Handler(Looper.getMainLooper()) {
-            override fun handleMessage(msg: Message) {
-                super.handleMessage(msg)
-                when (msg.what) {
-                    REQUEST_CODE_SAVE_PLAYLIST -> {
-                        savedMessageBundle = msg.data
-                        // just save message bundle, then wait for uri
-                    }
-                }
-            }
-        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -271,41 +248,6 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandle
     }
 
     private val backgroundCoroutineScope: CoroutineScope = CoroutineScope(Dispatchers.IO)
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (resultCode == RESULT_OK && requestCode == REQUEST_CODE_SAVE_PLAYLIST) {
-            data?.let { intent ->
-                val uri = intent.data!!
-
-                val bundle = savedMessageBundle ?: throw Exception("No Playlist to save?")
-
-                backgroundCoroutineScope.launch(Dispatchers.Main) {
-                    val result = when (bundle.getString(TYPE)!!) {
-                        NormalPlaylist ->
-                            bundle.getLong(PLAYLIST_ID).let { FileSaver.savePlaylist(this@PlaylistDetailActivity, uri, it) }
-                        MyTopTracksPlaylist ->
-                            FileSaver.savePlaylist(this@PlaylistDetailActivity, uri, MyTopTracksPlaylist(this@PlaylistDetailActivity))
-                        LastAddedPlaylist ->
-                            FileSaver.savePlaylist(this@PlaylistDetailActivity, uri, LastAddedPlaylist(this@PlaylistDetailActivity))
-                        HistoryPlaylist ->
-                            FileSaver.savePlaylist(this@PlaylistDetailActivity, uri, HistoryPlaylist(this@PlaylistDetailActivity))
-                        else -> throw Exception("Unknown Playlist Type: ${bundle.getString(TYPE)}")
-                    }
-
-                    // report result
-                    val text =
-                        if (result.await() == 0) getText(R.string.success) else getText(R.string.failed)
-
-                    withContext(Dispatchers.Main) {
-                        Toast.makeText(this@PlaylistDetailActivity, text, Toast.LENGTH_SHORT).show()
-                    }
-                }
-            }
-        } else if (requestCode == EDIT_PLAYLIST) {
-            onMediaStoreChanged() // refresh after editing
-        }
-        super.onActivityResult(requestCode, resultCode, data)
-    }
 
     /* *******************
      *
