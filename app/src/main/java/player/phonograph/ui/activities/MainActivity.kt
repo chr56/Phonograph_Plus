@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.ColorStateList
-import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -16,7 +15,6 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.drawerlayout.widget.DrawerLayout
 import chr_56.MDthemer.core.ThemeColor
 import chr_56.MDthemer.util.ColorUtil
@@ -62,8 +60,6 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
     private lateinit var currentFragment: MainActivityFragmentCallbacks
     private var navigationDrawerHeader: View? = null
     private var blockRequestPermissions = false
-
-    private var savedMessageBundle: Bundle? = null
 
     private lateinit var safLauncher: SafLauncher
     override fun getSafLauncher(): SafLauncher = safLauncher
@@ -132,21 +128,6 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
             .commit()
         currentFragment = fragment as MainActivityFragmentCallbacks
     }
-
-    var documentInUse = false
-        private set
-    private lateinit var uriCallbacks: (Uri?) -> Any
-    private val createDocumentResultContract = registerForActivityResult(ActivityResultContracts.CreateDocument()) {
-        uriCallbacks(it)
-        documentInUse = false
-    }
-    fun openDocumentPicker(filename: String, uriCallbacks: (Uri?) -> Any) {
-        documentInUse = true
-        this.uriCallbacks = uriCallbacks
-        createDocumentResultContract.launch(filename)
-    }
-
-    private val backgroundCoroutineScope: CoroutineScope = CoroutineScope(Dispatchers.IO)
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
@@ -410,11 +391,6 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
     }
     fun setFloatingActionButtonVisibility(visibility: Int) {
         floatingActionButton.visibility = visibility
-    }
-
-    override fun onDestroy() {
-        try { backgroundCoroutineScope.coroutineContext[Job]?.cancel() } catch (e: Exception) { Log.i("BackgroundCoroutineScope", e.message.orEmpty()) }
-        super.onDestroy()
     }
 
     companion object {
