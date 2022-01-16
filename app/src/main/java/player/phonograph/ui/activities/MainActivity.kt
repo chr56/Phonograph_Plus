@@ -150,40 +150,17 @@ class MainActivity : AbsSlidingMusicPanelActivity() {
         currentFragment = fragment as MainActivityFragmentCallbacks
     }
 
-//    var playlistToSave: Playlist? = null
-    var songsToSave: List<Song>? = null
-    val savePlaylistContract = registerForActivityResult(ActivityResultContracts.CreateDocument()) { uri: Uri? ->
-        if (uri == null) {
-            Toast.makeText(this, getString(R.string.failed), Toast.LENGTH_SHORT).show()
-            return@registerForActivityResult
-        }
-        LocalBroadcastManager.getInstance(App.instance).sendBroadcast(Intent(BROADCAST_PLAYLISTS_CHANGED))
-        backgroundCoroutineScope.launch(Dispatchers.IO) {
-            try {
-                val outputStream = contentResolver.openOutputStream(uri, "rw")
-                if (outputStream != null) {
-                    try {
-                        if (songsToSave != null) M3UWriter.write(outputStream, songsToSave!!)
-                        withContext(Dispatchers.Main) {
-                            Toast.makeText(this@MainActivity, getString(R.string.success), Toast.LENGTH_SHORT).show()
-                        }
-                        LocalBroadcastManager.getInstance(App.instance).sendBroadcast(Intent(BROADCAST_PLAYLISTS_CHANGED))
-                    } catch (e: IOException) {
-                        withContext(Dispatchers.Main) {
-                            Toast.makeText(this@MainActivity, getString(R.string.failed) + ":${uri.path} can not be written", Toast.LENGTH_SHORT).show()
-                        }
-                    } finally {
-                        outputStream.close()
-                    }
-                }
-            } catch (e: FileNotFoundException) {
-                withContext(Dispatchers.Main) {
-                    Toast.makeText(this@MainActivity, getString(R.string.failed) + ":${uri.path} is not available", Toast.LENGTH_SHORT).show()
-                }
-            } finally {
-                songsToSave = null // clear
-            }
-        }
+    var documentInUse = false
+        private set
+    private lateinit var uriCallbacks: (Uri?) -> Any
+    private val createDocumentResultContract = registerForActivityResult(ActivityResultContracts.CreateDocument()) {
+        uriCallbacks(it)
+        documentInUse = false
+    }
+    fun openDocumentPicker(filename: String, uriCallbacks: (Uri?) -> Any) {
+        documentInUse = true
+        this.uriCallbacks = uriCallbacks
+        createDocumentResultContract.launch(filename)
     }
 
     private val backgroundCoroutineScope: CoroutineScope = CoroutineScope(Dispatchers.IO)

@@ -1,21 +1,32 @@
 package player.phonograph.dialogs
 
 import android.app.Dialog
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.text.InputType
 import android.util.Log
 import android.widget.Toast
 import androidx.fragment.app.DialogFragment
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import chr_56.MDthemer.core.ThemeColor
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.WhichButton
 import com.afollestad.materialdialogs.actions.getActionButton
 import com.afollestad.materialdialogs.input.input
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import player.phonograph.App
+import player.phonograph.BROADCAST_PLAYLISTS_CHANGED
 import player.phonograph.R
+import player.phonograph.helper.M3UWriter
 import player.phonograph.model.Song
 import player.phonograph.ui.activities.MainActivity
 import player.phonograph.util.PlaylistsUtil
+import player.phonograph.util.Util.coroutineToast
+import java.io.FileNotFoundException
+import java.io.IOException
 
 /**
  * @author Karim Abou Zeid (kabouzeid), Aidan Follestad (afollestad)
@@ -40,13 +51,35 @@ class CreatePlaylistDialog : DialogFragment() {
                 if (name.isNotEmpty()) {
                     if (!PlaylistsUtil.doesPlaylistExist(requireActivity(), name)) {
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                            try {
-                                (requireActivity() as MainActivity).also {
-                                    it.songsToSave = songs
-                                    it.savePlaylistContract.launch("$name.m3u")
+                            try { // todo
+                                (requireActivity() as MainActivity).also { activity ->
+                                    activity.openDocumentPicker("$name.m3u") { uri ->
+                                        GlobalScope.launch(Dispatchers.IO) {
+                                            if (uri == null) {
+                                                coroutineToast(activity, R.string.failed)
+                                            } else {
+                                                LocalBroadcastManager.getInstance(App.instance).sendBroadcast(Intent(BROADCAST_PLAYLISTS_CHANGED))
+                                                try {
+                                                    val outputStream = activity.contentResolver.openOutputStream(uri, "rw")
+                                                    if (outputStream != null) {
+                                                        try {
+                                                            if (songs != null) M3UWriter.write(outputStream, songs)
+                                                            coroutineToast(activity, R.string.success)
+                                                        } catch (e: IOException) {
+                                                            coroutineToast(activity, getString(R.string.failed) + ":${uri.path} can not be written")
+                                                        } finally {
+                                                            outputStream.close()
+                                                        }
+                                                    }
+                                                } catch (e: FileNotFoundException) {
+                                                    coroutineToast(activity, getString(R.string.failed) + ":${uri.path} is not available")
+                                                }
+                                            }
+                                        }
+                                    }
                                 }
                             } catch (e: Exception) {
-                                Log.d("CreatePlaylistDialog", "SaveFail: \n${e.message}")
+                                Log.i("CreatePlaylistDialog", "SaveFail: \n${e.message}")
                             }
                         } else {
                             val playlistId = PlaylistsUtil.createPlaylist(requireActivity(), name)
