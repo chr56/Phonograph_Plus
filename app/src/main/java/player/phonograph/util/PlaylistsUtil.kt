@@ -14,6 +14,7 @@ import android.content.Context
 import android.content.Intent
 import android.database.Cursor
 import android.net.Uri
+import android.os.Build
 import android.provider.BaseColumns
 import android.provider.MediaStore
 import android.provider.MediaStore.Audio.Playlists
@@ -22,6 +23,7 @@ import android.text.Html
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
+import androidx.annotation.RequiresApi
 import androidx.documentfile.provider.DocumentFile
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.afollestad.materialdialogs.MaterialDialog
@@ -543,6 +545,31 @@ object PlaylistWriter {
         val playlistId = PlaylistsUtil.createPlaylist(context, name)
         if (songs != null && songs.isNotEmpty()) {
             PlaylistsUtil.addToPlaylist(context, songs, playlistId, true)
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun appendToPlaylist(songs: List<Song>, playlistId: Long, removeDuplicated: Boolean, context: Context, activity: SAFCallbackHandlerActivity) {
+        if (songs.isEmpty()) return
+//        val mediaStoreUri = PlaylistsUtil.getPlaylistUris(context, playlistId)
+//        val documentUri = MediaStore.getDocumentUri(context, mediaStoreUri)
+
+        activity.getSafLauncher().openFile(arrayOf("audio/x-mpegurl", Playlists.CONTENT_TYPE, Playlists.ENTRY_CONTENT_TYPE)) { uri: Uri? ->
+            if (uri != null) {
+                GlobalScope.launch(Dispatchers.IO) {
+                    try {
+                        val outputStream = context.contentResolver.openOutputStream(uri, "wa")
+                        outputStream?.let {
+                            M3UWriter.append(it, songs)
+                            Util.coroutineToast(context, context.getString(R.string.success))
+                        }
+                    } catch (e: FileNotFoundException) {
+                        Util.coroutineToast(context, context.getString(R.string.failed) + ": ${uri.path} is not available")
+                    } catch (e: IOException) {
+                        Util.coroutineToast(context, context.getString(R.string.failed) + ": Unknown!")
+                    }
+                }
+            }
         }
     }
 }
