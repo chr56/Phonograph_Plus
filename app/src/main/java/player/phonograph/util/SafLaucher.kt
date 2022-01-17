@@ -44,7 +44,7 @@ class SafLauncher(private val registry: ActivityResultRegistry) : DefaultLifecyc
             dirCallback(it)
             dirCallbackInUse = false
         }
-        openLauncher = registry.register("OpenDir", owner, ActivityResultContracts.OpenDocument()) {
+        openLauncher = registry.register("OpenFile", owner, ActivityResultContracts.OpenDocument()) {
             openCallback(it)
             openCallbackInUse = false
         }
