@@ -33,7 +33,6 @@ import player.phonograph.BROADCAST_PLAYLISTS_CHANGED
 import player.phonograph.R
 import player.phonograph.loader.PlaylistSongLoader
 import player.phonograph.model.AbsCustomPlaylist
-import player.phonograph.util.M3UWriter
 import player.phonograph.model.Playlist
 import player.phonograph.model.PlaylistSong
 import player.phonograph.model.Song
@@ -256,6 +255,7 @@ object PlaylistsUtil {
     fun addToPlaylist(context: Context, song: Song, playlistId: Long, showToastOnFinish: Boolean) =
         addToPlaylist(context, listOf(song), playlistId, showToastOnFinish)
 
+    @Deprecated("")
     fun addToPlaylist(context: Context, songs: List<Song>, playlistId: Long, showToastOnFinish: Boolean) {
 
         val uri = getPlaylistUris(context, playlistId)
@@ -488,7 +488,6 @@ object PlaylistsUtil {
         }
         return result
     }
-
 }
 
 object PlaylistWriter {
@@ -554,6 +553,15 @@ object M3UWriter {
     private const val ENTRY = "#EXTINF:"
     private const val DURATION_SEPARATOR = ","
 
+    private fun createLine(song: Song): String {
+        val b = StringBuffer()
+        b.appendLine()
+        b.append("$ENTRY${song.duration}$DURATION_SEPARATOR${song.artistName} - ${song.title}")
+        b.appendLine()
+        b.append(song.data)
+        return b.toString()
+    }
+
     @JvmStatic
     @Throws(IOException::class)
     fun write(context: Context?, dir: File, playlist: Playlist): File {
@@ -580,10 +588,9 @@ object M3UWriter {
 
             bw.write(HEADER)
             for (song in songs) {
-                bw.newLine()
-                bw.write(ENTRY + song.duration + DURATION_SEPARATOR + song.artistName + " - " + song.title)
-                bw.newLine()
-                bw.write(song.data)
+                bw.write(
+                    createLine(song)
+                )
             }
 
             bw.close()
@@ -617,14 +624,27 @@ object M3UWriter {
 
             bw.write(HEADER)
             for (song in songs) {
-                bw.newLine()
-                bw.write(ENTRY + song.duration + DURATION_SEPARATOR + song.artistName + " - " + song.title)
-                bw.newLine()
-                bw.write(song.data)
+                bw.write(
+                    createLine(song)
+                )
             }
 
             bw.close()
         }
         return
+    }
+    @JvmStatic
+    @Throws(IOException::class)
+    fun append(outputStream: OutputStream, songs: List<Song>) {
+        if (songs.isNotEmpty()) {
+            val bw = BufferedWriter(OutputStreamWriter(outputStream, StandardCharsets.UTF_8))
+
+            for (song in songs) {
+                bw.write(
+                    createLine(song)
+                )
+            }
+            bw.close()
+        }
     }
 }
