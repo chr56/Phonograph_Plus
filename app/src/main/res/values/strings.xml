@@ -369,4 +369,8 @@
         <item quantity="one">%1$d / %2$d item was successfully deleted.</item>>
         <item quantity="other">%1$d / %2$d items were successfully deleted.</item>
     </plurals>
+    <plurals name="msg_files_deletion_summary">
+        <item quantity="one"><![CDATA[Delete <b>%1$d</b> file from the device?<br/> <b>This action can not be retracted!</b> <br/>]]></item>
+        <item quantity="other"><![CDATA[Delete <b>%1$d</b> files from the device?<br/> <b>This action can not be retracted!</b> <br/>]]></item>
+    </plurals>
 </resources>
