@@ -369,14 +369,8 @@ object MediaStoreUtil {
      * WARNING: random order (perhaps)
      */
     fun getPlaylistFileNames(context: Context, playlists: List<Playlist>): List<String> {
-        val b = StringBuffer()
-        playlists.forEachIndexed { index: Int, playlist: Playlist ->
-            if (index != 0) b.append(",")
-            b.append(playlist.id)
-        }
 
-        val playlistIds: String = b.toString()
-        Log.v(TAG, "PlaylistIds: $playlistIds")
+        val ids: List<Long> = List(playlists.size) { playlists[it].id }
 
         val cursor = context.contentResolver.query(
             MediaStore.Audio.Playlists.EXTERNAL_CONTENT_URI,
@@ -384,17 +378,20 @@ object MediaStoreUtil {
                 BaseColumns._ID /* 0 */,
                 MediaStore.MediaColumns.DISPLAY_NAME /* 1 */
             ),
-            "${BaseColumns._ID} IN (?) ",
-            arrayOf(playlistIds), null
+            null, null, null
         )
+
         val displayNames: MutableList<String> = ArrayList()
-        cursor?.let {
-            if (it.moveToFirst()) {
-                displayNames.add(it.getString(1))
-                while (it.moveToNext()) displayNames.add(it.getString(1))
-                cursor.close()
-            } else Log.w(TAG, "No such playlist ids: $playlistIds")
+        if (cursor != null && cursor.moveToFirst()) {
+            do {
+                ids.forEach { id ->
+                    if (cursor.getLong(0) == id) {
+                        displayNames.add(cursor.getString(1))
+                    }
+                }
+            } while (cursor.moveToNext())
         }
+
         return if (displayNames.isNotEmpty()) displayNames else ArrayList()
     }
 
