@@ -337,12 +337,11 @@ object MediaStoreUtil {
 
     /**
      * delete playlist by path via MediaStore
+     * @return playlists failing to delete
      */
-    fun deletePlaylists(context: Activity, playlists: List<Playlist>) {
-        val total: Int = playlists.size
+    fun deletePlaylists(context: Activity, playlists: List<Playlist>): List<Playlist> {
         var result: Int = 0
         val failList: MutableList<Playlist> = ArrayList<Playlist>()
-
         // try to delete
         for (index in playlists.indices) {
             val output = context.contentResolver.delete(
@@ -356,37 +355,13 @@ object MediaStoreUtil {
             }
             result += output
         }
-
-        // handle fail , report and try again
-        if (failList.isNotEmpty()) {
-            val list = StringBuffer()
-            for (playlist in failList) {
-                list.append(playlist.name).append("\n")
-            }
-            MaterialDialog(context)
-                .title(R.string.failed_to_delete)
-                .message(
-                    text = "${
-                    context.resources.getQuantityString(
-                        R.plurals.msg_deletion_result,
-                        total,
-                        result,
-                        total
-                    )
-                    }\n" +
-                        "${context.getString(R.string.failed_to_delete)}: \n" +
-                        "$list "
-                )
-                .positiveButton(android.R.string.ok)
-                .show()
-        }
-
         Toast.makeText( // todo
             context,
             String.format(Locale.getDefault(), context.getString(R.string.deleted_x_playlists), result),
             Toast.LENGTH_SHORT
         ).show()
         LocalBroadcastManager.getInstance(App.instance).sendBroadcast(Intent(BROADCAST_PLAYLISTS_CHANGED))
+        return failList
     }
 
     fun scanFiles(context: Context, paths: Array<String>, mimeTypes: Array<String>) {

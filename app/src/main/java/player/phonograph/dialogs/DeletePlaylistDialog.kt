@@ -115,7 +115,22 @@ class DeletePlaylistDialog : DialogFragment() {
                         }
                     }
                 } else {
-                    MediaStoreUtil.deletePlaylists(requireActivity(), playlists)
+                    val failList = MediaStoreUtil.deletePlaylists(requireActivity(), playlists)
+                    if (failList.isNotEmpty()) {
+                        val list = StringBuffer()
+                        for (playlist in failList) {
+                            list.append(playlist.name).append("\n")
+                        }
+                        MaterialDialog(requireContext())
+                            .title(R.string.failed_to_delete)
+                            .message(
+                                text = "${
+                                requireActivity().resources.getQuantityString(R.plurals.msg_deletion_result, playlists.size, playlists.size - failList.size, playlists.size)
+                                }\n ${requireActivity().getString(R.string.failed_to_delete)}: \n $list "
+                            )
+                            .positiveButton(android.R.string.ok)
+                            .show()
+                    }
                 }
             }
             .negativeButton(android.R.string.cancel) { dismiss() }
