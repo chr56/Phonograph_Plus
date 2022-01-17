@@ -59,81 +59,81 @@ class DeletePlaylistDialog : DialogFragment() {
         val dialog = MaterialDialog(requireActivity())
             .title(title)
             .message(text = msg)
+            .negativeButton(android.R.string.cancel) { dismiss() }
             .positiveButton(R.string.delete_action) {
                 val activity = requireActivity()
 
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                val failList = MediaStoreUtil.deletePlaylists(requireActivity(), playlists)
+                if (failList.isNotEmpty()) {
+                    val list = StringBuffer()
+                    for (playlist in failList) {
+                        list.append(playlist.name).append("\n")
+                    }
+                    // report failure
+                    MaterialDialog(requireContext())
+                        .title(R.string.failed_to_delete)
+                        .message(
+                            text = "${
+                            requireActivity().resources.getQuantityString(R.plurals.msg_deletion_result, playlists.size, playlists.size - failList.size, playlists.size)
+                            }\n ${requireActivity().getString(R.string.failed_to_delete)}: \n $list "
+                        )
+                        .positiveButton(android.R.string.ok)
+                        // retry
+                        .negativeButton(R.string.retry) {
+                            if (activity is SAFCallbackHandlerActivity) {
+                                val defaultLocation = activity.getExternalFilesDir(Environment.DIRECTORY_MUSIC)
+                                val initialUri = Uri.fromFile(defaultLocation)
 
-                    if (activity is SAFCallbackHandlerActivity) {
-                        val defaultLocation = activity.getExternalFilesDir(Environment.DIRECTORY_MUSIC)
-                        val initialUri = Uri.fromFile(defaultLocation)
+                                val deleteList: MutableList<DocumentFile> = ArrayList()
 
-                        val deleteList: MutableList<DocumentFile> = ArrayList()
+                                activity.getSafLauncher().openDir(initialUri) { uri: Uri? ->
+                                    if (uri != null) {
+                                        val documentDir = DocumentFile.fromTreeUri(activity, uri)
+                                        documentDir?.let { dir ->
 
-                        activity.getSafLauncher().openDir(initialUri) { uri: Uri? ->
-                            if (uri != null) {
-                                val documentDir = DocumentFile.fromTreeUri(activity, uri)
-                                documentDir?.let { dir ->
-
-                                    dir.listFiles().forEach { file ->
-                                        if (file.isFile) {
-                                            playlists.forEach { playlist ->
-                                                if (file.name != null)
-                                                    if (playlist.name == file.name!!.dropLastWhile { it != '.' }.dropLast(1)) {
-                                                        deleteList.add(file)
+                                            dir.listFiles().forEach { file ->
+                                                if (file.isFile) {
+                                                    playlists.forEach { playlist ->
+                                                        if (file.name != null)
+                                                            if (playlist.name == file.name!!.dropLastWhile { it != '.' }.dropLast(1)) {
+                                                                deleteList.add(file)
+                                                            }
                                                     }
+                                                }
+                                            }
+
+                                            if (deleteList.isNotEmpty()) {
+                                                val m = StringBuffer()
+                                                    .append(Html.fromHtml(activity.resources.getQuantityString(R.plurals.msg_playlist_deletion_summary, deleteList.size, deleteList.size), Html.FROM_HTML_MODE_LEGACY))
+                                                deleteList.forEach { file ->
+                                                    Log.d("FILE_DEL", "DEL: ${file.name}@${file.uri}")
+                                                    val name = file.uri.path.toString().substringAfter(":").substringAfter(":")
+                                                    m.append(name).appendLine()
+                                                }
+
+                                                MaterialDialog(activity)
+                                                    .title(R.string.delete_playlist_title)
+                                                    .message(text = m)
+                                                    .positiveButton(R.string.delete_action) {
+                                                        deleteList.forEach { it.delete() }
+                                                        Util.sentPlaylistChangedLocalBoardCast()
+                                                    }
+                                                    .negativeButton(android.R.string.cancel) { it.dismiss() }
+                                                    .show()
+                                            } else {
+                                                MaterialDialog(activity)
+                                                    .title(R.string.delete_playlist_title)
+                                                    .message(R.string.failed_to_delete)
+                                                    .show()
                                             }
                                         }
-                                    }
-
-                                    if (deleteList.isNotEmpty()) {
-                                        val msg = StringBuffer()
-                                            .append(Html.fromHtml(activity.resources.getQuantityString(R.plurals.msg_playlist_deletion_summary, deleteList.size, deleteList.size), Html.FROM_HTML_MODE_LEGACY))
-                                        deleteList.forEach { file ->
-                                            Log.d("FILE_DEL", "DEL: ${file.name}@${file.uri}")
-                                            val name = file.uri.path.toString().substringAfter(":").substringAfter(":")
-                                            msg.append(name).appendLine()
-                                        }
-
-                                        MaterialDialog(activity)
-                                            .title(R.string.delete_playlist_title)
-                                            .message(text = msg)
-                                            .positiveButton(R.string.delete_action) {
-                                                deleteList.forEach { it.delete() }
-                                                Util.sentPlaylistChangedLocalBoardCast()
-                                            }
-                                            .negativeButton(android.R.string.cancel) { it.dismiss() }
-                                            .show()
-                                    } else {
-                                        MaterialDialog(activity)
-                                            .title(R.string.delete_playlist_title)
-                                            .message(R.string.failed_to_delete)
-                                            .show()
                                     }
                                 }
                             }
                         }
-                    }
-                } else {
-                    val failList = MediaStoreUtil.deletePlaylists(requireActivity(), playlists)
-                    if (failList.isNotEmpty()) {
-                        val list = StringBuffer()
-                        for (playlist in failList) {
-                            list.append(playlist.name).append("\n")
-                        }
-                        MaterialDialog(requireContext())
-                            .title(R.string.failed_to_delete)
-                            .message(
-                                text = "${
-                                requireActivity().resources.getQuantityString(R.plurals.msg_deletion_result, playlists.size, playlists.size - failList.size, playlists.size)
-                                }\n ${requireActivity().getString(R.string.failed_to_delete)}: \n $list "
-                            )
-                            .positiveButton(android.R.string.ok)
-                            .show()
-                    }
+                        .show()
                 }
             }
-            .negativeButton(android.R.string.cancel) { dismiss() }
         // grant permission button for R
         if (!hasPermission) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
@@ -142,6 +142,7 @@ class DeletePlaylistDialog : DialogFragment() {
                         data = Uri.parse("package:${attachedActivity.packageName}")
                         flags = Intent.FLAG_ACTIVITY_NEW_TASK
                     }
+                    startActivity(intent)
                 }
             }
         }
