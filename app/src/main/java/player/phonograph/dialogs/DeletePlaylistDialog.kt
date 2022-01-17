@@ -20,7 +20,7 @@ import com.afollestad.materialdialogs.WhichButton
 import com.afollestad.materialdialogs.actions.getActionButton
 import player.phonograph.R
 import player.phonograph.model.Playlist
-import player.phonograph.util.MediaStoreUtil
+import player.phonograph.util.PlaylistsUtil
 import player.phonograph.util.SAFCallbackHandlerActivity
 
 /**
@@ -61,7 +61,7 @@ class DeletePlaylistDialog : DialogFragment() {
             .positiveButton(R.string.delete_action) {
                 val activity = requireActivity()
 
-                val failList = MediaStoreUtil.deletePlaylists(requireActivity(), playlists)
+                val failList = PlaylistsUtil.deletePlaylists(requireActivity(), playlists)
                 if (failList.isNotEmpty()) {
                     val list = StringBuffer()
                     for (playlist in failList) {
@@ -83,7 +83,7 @@ class DeletePlaylistDialog : DialogFragment() {
                                 val initialUri = Uri.fromFile(defaultLocation)
                                 Toast.makeText(activity, R.string.direction_open_folder_with_saf, Toast.LENGTH_SHORT).show()
                                 activity.getSafLauncher().openDir(initialUri) { uri: Uri? ->
-                                    uri?.let { MediaStoreUtil.deletePlaylistsInDir(activity, playlists, it) }
+                                    uri?.let { PlaylistsUtil.deletePlaylistsInDir(activity, playlists, it) }
                                     return@openDir Unit
                                 }
                             } else {

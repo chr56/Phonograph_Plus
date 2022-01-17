@@ -290,22 +290,22 @@ public class MusicUtil {
     }
 
     public static Playlist getFavoritesPlaylist(@NonNull final Context context) {
-        return MediaStoreUtil.INSTANCE.getPlaylist(context, context.getString(R.string.favorites));
+        return PlaylistsUtil.INSTANCE.getPlaylist(context, context.getString(R.string.favorites));
     }
 
     private static Playlist getOrCreateFavoritesPlaylist(@NonNull final Context context) {
-        return MediaStoreUtil.INSTANCE.getPlaylist(context, PlaylistsUtil.createPlaylist(context, context.getString(R.string.favorites)));
+        return PlaylistsUtil.INSTANCE.getPlaylist(context, PlaylistsUtil.INSTANCE.createPlaylist(context, context.getString(R.string.favorites)));
     }
 
     public static boolean isFavorite(@NonNull final Context context, @NonNull final Song song) {
-        return PlaylistsUtil.doesPlaylistContain(context, getFavoritesPlaylist(context).id, song.id);
+        return PlaylistsUtil.INSTANCE.doesPlaylistContain(context, getFavoritesPlaylist(context).id, song.id);
     }
 
     public static void toggleFavorite(@NonNull final Context context, @NonNull final Song song) {
         if (isFavorite(context, song)) {
-            PlaylistsUtil.removeFromPlaylist(context, song, getFavoritesPlaylist(context).id);
+            PlaylistsUtil.INSTANCE.removeFromPlaylist(context, song, getFavoritesPlaylist(context).id);
         } else {
-            PlaylistsUtil.addToPlaylist(context, song, getOrCreateFavoritesPlaylist(context).id, false);
+            PlaylistsUtil.INSTANCE.addToPlaylist(context, song, getOrCreateFavoritesPlaylist(context).id, false);
         }
     }
 

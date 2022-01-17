@@ -216,7 +216,7 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandle
             // Playlist renamed
             val playlistName = PlaylistsUtil.getNameForPlaylist(this, playlist.id)
             if (playlistName != playlist.name) {
-                playlist = MediaStoreUtil.getPlaylist(this, playlist.id)
+                playlist = PlaylistsUtil.getPlaylist(this, playlist.id)
                 setToolbarTitle(playlist.name)
             }
         }

@@ -11,6 +11,7 @@ import com.afollestad.materialdialogs.actions.getActionButton
 import com.afollestad.materialdialogs.input.input
 import player.phonograph.R
 import player.phonograph.util.PlaylistsUtil
+
 /**
  * @author Karim Abou Zeid (kabouzeid), Aidan Follestad (afollestad)
  */
@@ -31,8 +32,7 @@ class RenamePlaylistDialog : DialogFragment() {
             ) { _, charSequence ->
                 val name: String = charSequence.toString().trim()
                 if (name.isNotEmpty()) {
-                    val playlistId1 = requireArguments().getLong(PLAYLIST_ID)
-                    PlaylistsUtil.renamePlaylist(requireActivity(), playlistId1, name)
+                    PlaylistsUtil.renamePlaylist(requireActivity(), requireArguments().getLong(PLAYLIST_ID), name)
                 }
             }
         // set button color

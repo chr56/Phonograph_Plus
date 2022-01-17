@@ -3,6 +3,7 @@ package player.phonograph.adapter
 import android.content.Context
 import android.graphics.PorterDuff
 import android.os.Build
+import android.os.Environment
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
@@ -18,6 +19,7 @@ import player.phonograph.adapter.base.AbsMultiSelectAdapter
 import player.phonograph.adapter.base.MediaEntryViewHolder
 import player.phonograph.dialogs.ClearSmartPlaylistDialog
 import player.phonograph.dialogs.DeletePlaylistDialog
+import player.phonograph.helper.M3UWriter
 import player.phonograph.helper.menu.PlaylistMenuHelper.handleMenuClick
 import player.phonograph.helper.menu.SongsMenuHelper
 import player.phonograph.interfaces.CabHolder
@@ -30,7 +32,7 @@ import player.phonograph.model.smartplaylist.AbsSmartPlaylist
 import player.phonograph.model.smartplaylist.LastAddedPlaylist
 import player.phonograph.util.MusicUtil
 import player.phonograph.util.NavigationUtil
-import player.phonograph.util.PlaylistsUtil
+import java.io.File
 import java.io.IOException
 
 /**
@@ -151,9 +153,8 @@ class PlaylistAdapter(
             var dir: String? = ""
             for (playlist in params[0]!!) {
                 try {
-                    dir = PlaylistsUtil.savePlaylist(
-                        App.instance.applicationContext,
-                        playlist
+                    dir = M3UWriter.write(
+                        App.instance, File(Environment.getExternalStorageDirectory(), Environment.DIRECTORY_DOWNLOADS), playlist!!
                     ).parent
                     successes++
                 } catch (e: IOException) {

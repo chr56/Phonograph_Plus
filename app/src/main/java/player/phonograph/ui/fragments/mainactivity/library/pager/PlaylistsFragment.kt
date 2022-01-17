@@ -19,7 +19,7 @@ import player.phonograph.model.Playlist
 import player.phonograph.model.smartplaylist.HistoryPlaylist
 import player.phonograph.model.smartplaylist.LastAddedPlaylist
 import player.phonograph.model.smartplaylist.MyTopTracksPlaylist
-import player.phonograph.util.MediaStoreUtil
+import player.phonograph.util.PlaylistsUtil
 import java.util.*
 
 /**
@@ -82,7 +82,7 @@ class PlaylistsFragment :
         override fun loadInBackground(): List<Playlist> =
             mutableListOf<Playlist>(
                 LastAddedPlaylist(context), HistoryPlaylist(context), MyTopTracksPlaylist(context)
-            ).also { it.addAll(MediaStoreUtil.getAllPlaylists(context)) }
+            ).also { it.addAll(PlaylistsUtil.getAllPlaylists(context)) }
     }
 
     companion object {
