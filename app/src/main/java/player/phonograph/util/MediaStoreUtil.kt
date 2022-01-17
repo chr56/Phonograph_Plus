@@ -19,6 +19,7 @@ import android.provider.MediaStore.Audio.AudioColumns
 import android.provider.MediaStore.Audio.PlaylistsColumns
 import android.util.Log
 import android.widget.Toast
+import androidx.documentfile.provider.DocumentFile
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.afollestad.materialdialogs.MaterialDialog
 import player.phonograph.App
@@ -362,6 +363,72 @@ object MediaStoreUtil {
         ).show()
         LocalBroadcastManager.getInstance(App.instance).sendBroadcast(Intent(BROADCAST_PLAYLISTS_CHANGED))
         return failList
+    }
+
+    /**
+     * WARNING: random order (perhaps)
+     */
+    fun getPlaylistFileNames(context: Context, playlists: List<Playlist>): List<String> {
+        val b = StringBuffer()
+        playlists.forEachIndexed { index: Int, playlist: Playlist ->
+            if (index != 0) b.append(",")
+            b.append(playlist.id)
+        }
+
+        val playlistIds: String = b.toString()
+        Log.v(TAG, "PlaylistIds: $playlistIds")
+
+        val cursor = context.contentResolver.query(
+            MediaStore.Audio.Playlists.EXTERNAL_CONTENT_URI,
+            arrayOf(
+                BaseColumns._ID /* 0 */,
+                MediaStore.MediaColumns.DISPLAY_NAME /* 1 */
+            ),
+            "${BaseColumns._ID} IN (?) ",
+            arrayOf(playlistIds), null
+        )
+        val displayNames: MutableList<String> = ArrayList()
+        cursor?.let {
+            if (it.moveToFirst()) {
+                displayNames.add(it.getString(1))
+                while (it.moveToNext()) displayNames.add(it.getString(1))
+                cursor.close()
+            } else Log.w(TAG, "No such playlist ids: $playlistIds")
+        }
+        return if (displayNames.isNotEmpty()) displayNames else ArrayList()
+    }
+
+    fun getPlaylistUris(context: Context, playlists: List<Playlist>): List<Uri> {
+        TODO()
+    }
+
+    fun searchPlaylist(context: Context, dir: DocumentFile, playlists: List<Playlist>): List<DocumentFile> {
+        val fileNames = getPlaylistFileNames(context, playlists)
+        if (fileNames.isEmpty()) {
+            Log.w(TAG, "No playlist display name?")
+            return ArrayList()
+        }
+        return searchFiles(context, dir, fileNames)
+    }
+
+    fun searchFiles(context: Context, dir: DocumentFile, filenames: List<String>): List<DocumentFile> {
+        if (dir.isFile or dir.isVirtual) return ArrayList()
+        val result: MutableList<DocumentFile> = ArrayList(1)
+        if (dir.isDirectory) {
+            dir.listFiles().forEach { sub ->
+                if (sub.isFile) {
+                    filenames.forEach { n ->
+                        if (n == sub.name.orEmpty()) result.add(sub)
+                    }
+                }
+                if (sub.isDirectory) {
+                    result.addAll(
+                        searchFiles(context, sub, filenames)
+                    )
+                }
+            }
+        }
+        return result
     }
 
     fun scanFiles(context: Context, paths: Array<String>, mimeTypes: Array<String>) {
