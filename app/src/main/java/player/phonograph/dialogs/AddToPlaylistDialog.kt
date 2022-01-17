@@ -1,6 +1,7 @@
 package player.phonograph.dialogs
 
 import android.app.Dialog
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
@@ -9,7 +10,9 @@ import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.list.listItemsSingleChoice
 import player.phonograph.R
 import player.phonograph.model.Song
+import player.phonograph.util.PlaylistWriter
 import player.phonograph.util.PlaylistsUtil
+import player.phonograph.util.SAFCallbackHandlerActivity
 
 /**
  * @author Karim Abou Zeid (kabouzeid), Aidan Follestad (afollestad)
@@ -24,8 +27,8 @@ class AddToPlaylistDialog : DialogFragment() {
                 requireActivity().resources.getString(R.string.action_new_playlist)
             } else {
                 if (playlists[it - 1].name.isNullOrEmpty()) {
-                    Log.w("AddToPlaylistDialog","A playlist has null name!!!")
-                    Toast.makeText(requireContext(),"There is/are (a )playlist(s) with null name, please check playlist!🤔", Toast.LENGTH_SHORT).show()
+                    Log.w("AddToPlaylistDialog", "A playlist has null name!!!")
+                    Toast.makeText(requireContext(), "There is/are (a )playlist(s) with null name, please check playlist!🤔", Toast.LENGTH_SHORT).show()
                     "Null Name Playlist ?!🤔"
                 } else {
                     playlists[it - 1].name
@@ -40,7 +43,17 @@ class AddToPlaylistDialog : DialogFragment() {
                     CreatePlaylistDialog.create(songs).show(requireActivity().supportFragmentManager, "ADD_TO_PLAYLIST")
                 } else {
                     materialDialog.dismiss()
-                    PlaylistsUtil.addToPlaylist(requireActivity(), songs, playlists[index - 1].id, true)
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                        val activity = requireActivity()
+                        if (activity is SAFCallbackHandlerActivity) {
+                            Toast.makeText(activity, R.string.direction_open_file_with_saf, Toast.LENGTH_SHORT).show()
+                            PlaylistWriter.appendToPlaylist(songs, playlists[index - 1].id, false, requireContext(), activity)
+                        } else {
+                            Toast.makeText(activity, R.string.failed, Toast.LENGTH_SHORT).show()
+                        }
+                    } else {
+                        PlaylistsUtil.addToPlaylist(requireActivity(), songs, playlists[index - 1].id, true)
+                    }
                 }
             }
     }

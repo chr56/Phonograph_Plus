@@ -353,6 +353,7 @@
     <string name="sort_order_date_modified">修改日期</string>
     <string name="delete_with_saf">使用SAF删除</string>
     <string name="direction_open_folder_with_saf">请在SAF中选择包含待处理文件的文件夹</string>
+    <string name="direction_open_file_with_saf">请在SAF中选择包含待处理的文件</string>
     <plurals name="msg_deletion_result">
         <item quantity="other">%1$d / %2$d 个项目删除成功</item>
     </plurals>
