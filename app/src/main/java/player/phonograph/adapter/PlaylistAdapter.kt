@@ -19,7 +19,7 @@ import player.phonograph.adapter.base.AbsMultiSelectAdapter
 import player.phonograph.adapter.base.MediaEntryViewHolder
 import player.phonograph.dialogs.ClearSmartPlaylistDialog
 import player.phonograph.dialogs.DeletePlaylistDialog
-import player.phonograph.helper.M3UWriter
+import player.phonograph.util.M3UWriter
 import player.phonograph.helper.menu.PlaylistMenuHelper.handleMenuClick
 import player.phonograph.helper.menu.SongsMenuHelper
 import player.phonograph.interfaces.CabHolder
