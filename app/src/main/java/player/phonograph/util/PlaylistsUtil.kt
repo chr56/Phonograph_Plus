@@ -21,22 +21,23 @@ import android.provider.MediaStore.Audio.PlaylistsColumns
 import android.text.Html
 import android.util.Log
 import android.widget.Toast
+import androidx.activity.ComponentActivity
 import androidx.documentfile.provider.DocumentFile
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.WhichButton
 import com.afollestad.materialdialogs.actions.getActionButton
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 import player.phonograph.App
 import player.phonograph.BROADCAST_PLAYLISTS_CHANGED
 import player.phonograph.R
+import player.phonograph.helper.M3UWriter
 import player.phonograph.model.Playlist
 import player.phonograph.model.PlaylistSong
 import player.phonograph.model.Song
 import player.phonograph.provider.BlacklistStore
+import java.io.FileNotFoundException
+import java.io.IOException
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -485,4 +486,61 @@ object PlaylistsUtil {
         return result
     }
 
+}
+
+object PlaylistWriter {
+    fun createPlaylistViaSAF(name: String, songs: List<Song>?, activity: SAFCallbackHandlerActivity) {
+        val safLauncher: SafLauncher = activity.getSafLauncher()
+        activity as ComponentActivity
+        // prepare callback
+        val uriCallback: UriCallback = { uri ->
+            // callback start
+            GlobalScope.launch(Dispatchers.IO) {
+                if (uri == null) {
+                    Util.coroutineToast(activity, R.string.failed)
+                } else {
+                    Util.sentPlaylistChangedLocalBoardCast()
+                    try {
+                        val outputStream = activity.contentResolver.openOutputStream(uri, "rw")
+                        if (outputStream != null) {
+                            try {
+                                if (songs != null) M3UWriter.write(outputStream, songs)
+                                Util.coroutineToast(activity, R.string.success)
+                            } catch (e: IOException) {
+                                Util.coroutineToast(
+                                    activity,
+                                    activity.getString(R.string.failed) + ":${uri.path} can not be written"
+                                )
+                            } finally {
+                                outputStream.close()
+                            }
+                        }
+                    } catch (e: FileNotFoundException) {
+                        Util.coroutineToast(
+                            activity,
+                            activity.getString(R.string.failed) + ":${uri.path} is not available"
+                        )
+                    }
+                }
+            }
+            // callback end
+        }
+
+        GlobalScope.launch(Dispatchers.IO) {
+            while (safLauncher.createCallbackInUse) yield()
+            try {
+                safLauncher.createFile("$name.m3u", uriCallback)
+            } catch (e: Exception) {
+                Util.coroutineToast(activity, activity.getString(R.string.failed) + ": unknown")
+                Log.i("CreatePlaylistDialog", "SaveFail: \n${e.message}")
+            }
+        }
+    }
+
+    fun createPlaylist(name: String, songs: List<Song>?, context: Context) {
+        val playlistId = PlaylistsUtil.createPlaylist(context, name)
+        if (songs != null && songs.isNotEmpty()) {
+            PlaylistsUtil.addToPlaylist(context, songs, playlistId, true)
+        }
+    }
 }
