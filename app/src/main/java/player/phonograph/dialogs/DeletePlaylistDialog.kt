@@ -8,11 +8,12 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.os.Handler
+import android.os.Environment
 import android.provider.Settings
 import android.text.Html
 import android.util.Log
 import android.widget.Toast
+import androidx.documentfile.provider.DocumentFile
 import androidx.fragment.app.DialogFragment
 import chr_56.MDthemer.core.ThemeColor
 import com.afollestad.materialdialogs.MaterialDialog
@@ -21,6 +22,9 @@ import com.afollestad.materialdialogs.actions.getActionButton
 import player.phonograph.R
 import player.phonograph.model.Playlist
 import player.phonograph.util.MediaStoreUtil
+import player.phonograph.util.SAFCallbackHandlerActivity
+import player.phonograph.util.Util
+
 /**
  * @author Karim Abou Zeid (kabouzeid)
  */
@@ -56,8 +60,63 @@ class DeletePlaylistDialog : DialogFragment() {
             .title(title)
             .message(text = msg)
             .positiveButton(R.string.delete_action) {
-//                PlaylistsUtil.deletePlaylists(requireActivity(), playlists)
-                MediaStoreUtil.deletePlaylists(requireActivity(), playlists)
+                val activity = requireActivity()
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+
+                    if (activity is SAFCallbackHandlerActivity) {
+                        val defaultLocation = activity.getExternalFilesDir(Environment.DIRECTORY_MUSIC)
+                        val initialUri = Uri.fromFile(defaultLocation)
+
+                        val deleteList: MutableList<DocumentFile> = ArrayList()
+
+                        activity.getSafLauncher().openDir(initialUri) { uri: Uri? ->
+                            if (uri != null) {
+                                val documentDir = DocumentFile.fromTreeUri(activity, uri)
+                                documentDir?.let { dir ->
+
+                                    dir.listFiles().forEach { file ->
+                                        if (file.isFile) {
+                                            playlists.forEach { playlist ->
+                                                if (file.name != null)
+                                                    if (playlist.name == file.name!!.dropLastWhile { it != '.' }.dropLast(1)) {
+                                                        deleteList.add(file)
+                                                    }
+                                            }
+                                        }
+                                    }
+
+                                    if (deleteList.isNotEmpty()) {
+                                        val msg = StringBuffer()
+                                            .append(Html.fromHtml(activity.resources.getQuantityString(R.plurals.msg_playlist_deletion_summary, deleteList.size, deleteList.size), Html.FROM_HTML_MODE_LEGACY))
+                                        deleteList.forEach { file ->
+                                            Log.d("FILE_DEL", "DEL: ${file.name}@${file.uri}")
+                                            val name = file.uri.path.toString().substringAfter(":").substringAfter(":")
+                                            msg.append(name).appendLine()
+                                        }
+
+                                        MaterialDialog(activity)
+                                            .title(R.string.delete_playlist_title)
+                                            .message(text = msg)
+                                            .positiveButton(R.string.delete_action) {
+                                                deleteList.forEach { it.delete() }
+                                                Util.sentPlaylistChangedLocalBoardCast()
+                                            }
+                                            .negativeButton(android.R.string.cancel) { it.dismiss() }
+                                            .show()
+                                    } else {
+                                        MaterialDialog(activity)
+                                            .title(R.string.delete_playlist_title)
+                                            .message(R.string.failed_to_delete)
+                                            .show()
+                                    }
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    MediaStoreUtil.deletePlaylists(requireActivity(), playlists)
+                }
             }
             .negativeButton(android.R.string.cancel) { dismiss() }
         // grant permission button for R
@@ -68,7 +127,6 @@ class DeletePlaylistDialog : DialogFragment() {
                         data = Uri.parse("package:${attachedActivity.packageName}")
                         flags = Intent.FLAG_ACTIVITY_NEW_TASK
                     }
-                    Handler().postDelayed({ attachedActivity.startActivity(intent) }, 200)
                 }
             }
         }
@@ -91,4 +149,12 @@ class DeletePlaylistDialog : DialogFragment() {
             return dialog
         }
     }
+}
+
+fun removeSuffix(s: String): String {
+    var t = s
+    while (!t.endsWith('.', true)) {
+        t = t.dropLastWhile { it != '.' }.dropLast(1)
+    }
+    return t
 }
