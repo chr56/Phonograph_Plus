@@ -594,7 +594,9 @@ object PlaylistWriter {
         val playlist = PlaylistsUtil.getPlaylist(context, playlistId)
 
         val rawPath = PlaylistsUtil.getPlaylistPath(context, playlist)
-        val path = rawPath.removePrefix(Environment.getExternalStorageDirectory().absolutePath).removePrefix("/storage/emulated/").removePrefix("0/") // todo multi user
+
+        val regex = "/(sdcard)|(storage/emulated)/\\d+/".toRegex()
+        val path = regex.replace(rawPath.removePrefix(Environment.getExternalStorageDirectory().absolutePath), "")
 
         val parentFolderUri = Uri.parse(
             "content://com.android.externalstorage.documents/document/primary:" + Uri.encode(path)
