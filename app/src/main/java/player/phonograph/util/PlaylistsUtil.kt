@@ -15,6 +15,7 @@ import android.content.Intent
 import android.database.Cursor
 import android.net.Uri
 import android.os.Build
+import android.os.Environment
 import android.provider.BaseColumns
 import android.provider.MediaStore
 import android.provider.MediaStore.Audio.Playlists
@@ -548,13 +549,24 @@ object PlaylistWriter {
         }
     }
 
+    // todo remove hardcode
+    @Suppress("SpellCheckingInspection")
     @RequiresApi(Build.VERSION_CODES.O)
     fun appendToPlaylist(songs: List<Song>, playlistId: Long, removeDuplicated: Boolean, context: Context, activity: SAFCallbackHandlerActivity) {
         if (songs.isEmpty()) return
+
+        val rawPath = PlaylistsUtil.getPlaylistPath(context, PlaylistsUtil.getPlaylist(context, playlistId))
+        val path = rawPath.removePrefix(Environment.getExternalStorageDirectory().absolutePath).removePrefix("/storage/emulated/").removePrefix("0/") // todo multi user
+
+        val parentFolderUri = Uri.parse(
+            "content://com.android.externalstorage.documents/document/primary:" + Uri.encode(path)
+        )
+
 //        val mediaStoreUri = PlaylistsUtil.getPlaylistUris(context, playlistId)
 //        val documentUri = MediaStore.getDocumentUri(context, mediaStoreUri)
 
-        activity.getSafLauncher().openFile(arrayOf("audio/x-mpegurl", Playlists.CONTENT_TYPE, Playlists.ENTRY_CONTENT_TYPE)) { uri: Uri? ->
+        val cfg = OpenDocumentContract.Cfg(parentFolderUri, arrayOf("audio/x-mpegurl", Playlists.CONTENT_TYPE, Playlists.ENTRY_CONTENT_TYPE), false)
+        activity.getSafLauncher().openFile(cfg) { uri: Uri? ->
             if (uri != null) {
                 GlobalScope.launch(Dispatchers.IO) {
                     try {

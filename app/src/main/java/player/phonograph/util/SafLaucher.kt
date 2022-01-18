@@ -31,7 +31,7 @@ class SafLauncher(private val registry: ActivityResultRegistry) : DefaultLifecyc
     var dirCallbackInUse = false
         private set
 
-    private lateinit var openLauncher: ActivityResultLauncher<Array<String>?>
+    private lateinit var openLauncher: ActivityResultLauncher<OpenDocumentContract.Cfg>
     lateinit var openCallback: UriCallback
     var openCallbackInUse = false
         private set
@@ -44,7 +44,7 @@ class SafLauncher(private val registry: ActivityResultRegistry) : DefaultLifecyc
             dirCallback(it)
             dirCallbackInUse = false
         }
-        openLauncher = registry.register("OpenFile", owner, ActivityResultContracts.OpenDocument()) {
+        openLauncher = registry.register("OpenFile", owner, OpenDocumentContract()) {
             openCallback(it)
             openCallbackInUse = false
         }
@@ -62,11 +62,11 @@ class SafLauncher(private val registry: ActivityResultRegistry) : DefaultLifecyc
         this.dirCallback = callback
         dirLauncher.launch(dir)
     }
-    fun openFile(type: Array<String>?, callback: UriCallback) {
+    fun openFile(cfg: OpenDocumentContract.Cfg, callback: UriCallback) {
         if (openCallbackInUse) return // todo
         openCallbackInUse = true
         this.openCallback = callback
-        openLauncher.launch(type)
+        openLauncher.launch(cfg)
     }
 }
 interface SAFCallbackHandlerActivity {
