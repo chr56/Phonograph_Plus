@@ -131,12 +131,12 @@ object PlaylistsUtil {
 
         val cursor: Cursor? = try {
             context.contentResolver.query(
-                MediaStore.Audio.Playlists.EXTERNAL_CONTENT_URI,
+                Playlists.EXTERNAL_CONTENT_URI,
                 arrayOf(
                     BaseColumns._ID, /* 0 */
                     PlaylistsColumns.NAME /* 1 */
                 ),
-                realSelection, realSelectionValues, MediaStore.Audio.Playlists.DEFAULT_SORT_ORDER
+                realSelection, realSelectionValues, Playlists.DEFAULT_SORT_ORDER
             )
         } catch (e: SecurityException) {
             null
@@ -146,15 +146,14 @@ object PlaylistsUtil {
 
     fun getPlaylistPath(context: Context, playlist: Playlist): String {
         val cursor = context.contentResolver.query(
-            MediaStore.Audio.Playlists.EXTERNAL_CONTENT_URI,
+            Playlists.EXTERNAL_CONTENT_URI,
             arrayOf(
                 BaseColumns._ID /* 0 */,
                 PlaylistsColumns.NAME /* 1 */,
                 PlaylistsColumns.DATA /* 2 */
             ),
             "${BaseColumns._ID} = ? AND ${PlaylistsColumns.NAME} = ?",
-            arrayOf(playlist.id.toString(), playlist.name),
-            MediaStore.Audio.Playlists.DEFAULT_SORT_ORDER
+            arrayOf(playlist.id.toString(), playlist.name), null
         )
         var path: String = "-"
         cursor?.let {
@@ -175,7 +174,7 @@ object PlaylistsUtil {
         // try to delete
         for (index in playlists.indices) {
             val output = context.contentResolver.delete(
-                MediaStore.Audio.Playlists.EXTERNAL_CONTENT_URI,
+                Playlists.EXTERNAL_CONTENT_URI,
                 "${MediaStore.Audio.Media._ID} = ?",
                 arrayOf(playlists[index].id.toString())
             )
@@ -247,7 +246,7 @@ object PlaylistsUtil {
     }
 
     fun renamePlaylist(context: Context, id: Long, newName: String) {
-        val playlistUri = getPlaylistUris(context, id)
+        val playlistUri = getPlaylistUris(id)
         try {
             context.contentResolver.update(playlistUri, ContentValues().also { it.put(PlaylistsColumns.NAME, newName) }, null, null)
             // Necessary because somehow the MediaStoreObserver doesn't work for playlists
@@ -261,7 +260,7 @@ object PlaylistsUtil {
     @Deprecated("")
     fun addToPlaylist(context: Context, songs: List<Song>, playlistId: Long, showToastOnFinish: Boolean) {
 
-        val uri = getPlaylistUris(context, playlistId)
+        val uri = getPlaylistUris(playlistId)
         var cursor: Cursor? = null
         var base = 0
         try {
@@ -323,9 +322,9 @@ object PlaylistsUtil {
         val selection = Playlists.Members.AUDIO_ID + " =?"
         val selectionArgs = arrayOf(song.id.toString())
         try {
-            context.contentResolver.delete(getPlaylistUris(context, playlistId), selection, selectionArgs)
+            context.contentResolver.delete(getPlaylistUris(playlistId), selection, selectionArgs)
             // Necessary because somehow the MediaStoreObserver doesn't work for playlists
-            context.contentResolver.notifyChange(getPlaylistUris(context, playlistId), null)
+            context.contentResolver.notifyChange(getPlaylistUris(playlistId), null)
         } catch (ignored: SecurityException) {
         }
     }
@@ -341,9 +340,9 @@ object PlaylistsUtil {
         selection = selection.substring(0, selection.length - 2) + ")"
 
         try {
-            context.contentResolver.delete(getPlaylistUris(context, songs[0].playlistId), selection, selectionArgs)
+            context.contentResolver.delete(getPlaylistUris(songs[0].playlistId), selection, selectionArgs)
             // Necessary because somehow the MediaStoreObserver is not notified when adding a playlist
-            context.contentResolver.notifyChange(getPlaylistUris(context, songs[0].playlistId), null)
+            context.contentResolver.notifyChange(getPlaylistUris(songs[0].playlistId), null)
         } catch (ignored: SecurityException) {
         }
     }
@@ -424,6 +423,19 @@ object PlaylistsUtil {
         }
     }
 
+    fun getNameForPlaylist(context: Context, id: Long): String {
+        try {
+            val cursor = context.contentResolver.query(
+                ContentUris.withAppendedId(Playlists.EXTERNAL_CONTENT_URI, id),
+                arrayOf(PlaylistsColumns.NAME), null, null, null
+            )
+            if (cursor != null && cursor.moveToFirst()) {
+                cursor.use { return it.getString(0).orEmpty() }
+            }
+        } catch (ignored: SecurityException) { }
+        return ""
+    }
+
     /**
      * WARNING: random order (perhaps)
      */
@@ -432,7 +444,7 @@ object PlaylistsUtil {
         val ids: List<Long> = List(playlists.size) { playlists[it].id }
 
         val cursor = context.contentResolver.query(
-            MediaStore.Audio.Playlists.EXTERNAL_CONTENT_URI,
+            Playlists.EXTERNAL_CONTENT_URI,
             arrayOf(
                 BaseColumns._ID /* 0 */,
                 MediaStore.MediaColumns.DISPLAY_NAME /* 1 */
@@ -449,35 +461,23 @@ object PlaylistsUtil {
                     }
                 }
             } while (cursor.moveToNext())
+            cursor.close()
         }
 
         return if (displayNames.isNotEmpty()) displayNames else ArrayList()
     }
 
-    fun getNameForPlaylist(context: Context, id: Long): String {
-        try {
-            val cursor = context.contentResolver.query(
-                ContentUris.withAppendedId(Playlists.EXTERNAL_CONTENT_URI, id),
-                arrayOf(PlaylistsColumns.NAME), null, null, null
-            )
-            if (cursor != null && cursor.moveToFirst()) {
-                cursor.use { return it.getString(0).orEmpty() }
-            }
-        } catch (ignored: SecurityException) { }
-        return ""
-    }
+    fun getPlaylistUris(playlist: Playlist): Uri =
+        ContentUris.withAppendedId(Playlists.EXTERNAL_CONTENT_URI, playlist.id)
 
-    fun getPlaylistUris(context: Context, playlists: Playlist): Uri =
-        MediaStore.Audio.Playlists.Members.getContentUri("external", playlists.id)
-
-    fun getPlaylistUris(context: Context, playlistsId: Long): Uri =
-        MediaStore.Audio.Playlists.Members.getContentUri("external", playlistsId)
+    fun getPlaylistUris(playlistsId: Long): Uri =
+        ContentUris.withAppendedId(Playlists.EXTERNAL_CONTENT_URI, playlistsId)
 
     fun doesPlaylistContain(context: Context, playlistId: Long, songId: Long): Boolean {
         if (playlistId != -1L) {
             try {
                 val c = context.contentResolver.query(
-                    getPlaylistUris(context, playlistId),
+                    getPlaylistUris(playlistId),
                     arrayOf(Playlists.Members.AUDIO_ID),
                     Playlists.Members.AUDIO_ID + "=?", arrayOf(songId.toString()), null
                 )
