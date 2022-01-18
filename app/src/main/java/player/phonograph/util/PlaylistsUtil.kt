@@ -351,44 +351,74 @@ object PlaylistsUtil {
     fun deletePlaylistsInDir(activity: Activity, playlists: List<Playlist>, treeUri: Uri) {
 
         GlobalScope.launch(Dispatchers.IO) {
+            val folder = DocumentFile.fromTreeUri(activity, treeUri)
+            if (folder != null) {
+                val coroutineScope = CoroutineScope(Dispatchers.IO)
 
-            val documentDir = DocumentFile.fromTreeUri(activity, treeUri)
-            val deleteList: MutableList<DocumentFile> = ArrayList()
-
-            documentDir?.let { dir ->
-                deleteList.addAll(
-                    searchPlaylist(activity, dir, playlists)
-                )
-            }
-
-            if (deleteList.isNotEmpty()) {
-                val m = StringBuffer().append(Html.fromHtml(activity.resources.getQuantityString(R.plurals.msg_files_deletion_summary, deleteList.size, deleteList.size), Html.FROM_HTML_MODE_LEGACY))
-                deleteList.forEach { file ->
-                    Log.d("FILE_DEL", "DEL: ${file.name}@${file.uri}")
-                    val name = file.uri.path.toString().substringAfter(":").substringAfter(":")
-                    m.append(name).appendLine()
+                // get given playlist paths
+                val mediaStorePaths = coroutineScope.async {
+                    val paths: MutableList<String> = ArrayList(playlists.size)
+                    playlists.forEach {
+                        paths.add(getPlaylistPath(activity, it))
+                    }
+                    return@async paths
                 }
-                Log.v(TAG, deleteList.toString())
-                withContext(Dispatchers.Main) {
+                // search playlist in folder
+                val playlistInFolder = coroutineScope.async {
+                    val deleteList: MutableList<DocumentFile> = ArrayList()
+                    deleteList.addAll(
+                        searchPlaylist(activity, folder, playlists)
+                    )
+                    return@async deleteList
+                }
 
-//                    Looper.prepare()
-                    val dialog = MaterialDialog(activity)
-                        .title(R.string.delete_playlist_title)
-                        .message(text = m)
-                        .positiveButton(R.string.delete_action) {
-                            deleteList.forEach { it.delete() }
-                            Util.sentPlaylistChangedLocalBoardCast()
+                val prepareList: MutableList<DocumentFile> = playlistInFolder.await()
+                val deleteList: MutableList<DocumentFile> = ArrayList(prepareList.size / 2)
+
+                if (prepareList.isNullOrEmpty()) {
+                    // no playlist found in folder?
+                    Util.coroutineToast(activity, R.string.failed_to_delete)
+                } else {
+                    val playlistPaths = mediaStorePaths.await()
+                    // valid playlists
+                    prepareList.forEach { file ->
+                        // todo remove hardcode
+                        val fileUriPath = file.uri.path!!.substringAfter("/document/")
+                        if (fileUriPath.endsWith("m3u", ignoreCase = true) or fileUriPath.endsWith("m3u8", ignoreCase = true)) {
+                            val path = fileUriPath.substringAfter(":").substringAfter(":")
+                            playlistPaths.forEach {
+                                if (it.contains(path, ignoreCase = true)) deleteList.add(file)
+                            }
                         }
-                        .negativeButton(android.R.string.cancel) { it.dismiss() }
+                    }
 
-                    dialog.getActionButton(WhichButton.POSITIVE).updateTextColor(activity.getColor(R.color.md_red_A700))
-                    dialog.getActionButton(WhichButton.NEGATIVE).updateTextColor(activity.getColor(R.color.md_green_A700))
+                    // confirm to delete
+                    val m = StringBuffer().append(Html.fromHtml(activity.resources.getQuantityString(R.plurals.msg_files_deletion_summary, deleteList.size, deleteList.size), Html.FROM_HTML_MODE_LEGACY))
+                    deleteList.forEach { file ->
+                        m.append(file.uri.path!!.substringAfter("/document/").substringAfter(":").substringAfter(":")).appendLine()
+                        Log.i("FileDelete", "DeleteList:")
+                        Log.i("FileDelete", "${file.name}@${file.uri}")
+                    }
 
-                    dialog.show()
+                    withContext(Dispatchers.Main) {
 
-//                    Looper.loop()
+                        val dialog = MaterialDialog(activity)
+                            .title(R.string.delete_playlist_title)
+                            .message(text = m)
+                            .positiveButton(R.string.delete_action) {
+                                prepareList.forEach { it.delete() }
+                                Util.sentPlaylistChangedLocalBoardCast()
+                            }
+                            .negativeButton(android.R.string.cancel) { it.dismiss() }
+                            .also {
+                                it.getActionButton(WhichButton.POSITIVE).updateTextColor(activity.getColor(R.color.md_red_A700))
+                                it.getActionButton(WhichButton.NEGATIVE).updateTextColor(activity.getColor(R.color.md_green_A700))
+                            }
+                            .show()
+                    }
                 }
             } else {
+                // folder unavailable
                 Util.coroutineToast(activity, R.string.failed_to_delete)
             }
         }
