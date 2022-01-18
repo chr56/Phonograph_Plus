@@ -87,3 +87,29 @@ class GrandDirContract : ActivityResultContract<Uri?, Uri?>() {
     override fun parseResult(resultCode: Int, intent: Intent?): Uri? =
         if (intent == null || resultCode != Activity.RESULT_OK) null else intent.data
 }
+
+@TargetApi(19)
+class OpenDocumentContract : ActivityResultContract<OpenDocumentContract.Cfg, Uri?>() {
+    override fun createIntent(context: Context, input: Cfg): Intent {
+        return Intent(ACTION_OPEN_DOCUMENT).apply {
+            type = "*/*"
+            putExtra(EXTRA_MIME_TYPES, input.mime_types)
+            putExtra(EXTRA_ALLOW_MULTIPLE, input.allowMultiSelect)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && input.initial_uri != null) {
+                putExtra(DocumentsContract.EXTRA_INITIAL_URI, input.initial_uri)
+                addCategory(CATEGORY_OPENABLE)
+            }
+        }
+    }
+    override fun getSynchronousResult(context: Context, input: Cfg?): SynchronousResult<Uri?>? = null
+    override fun parseResult(resultCode: Int, intent: Intent?): Uri? {
+        return if (intent == null || resultCode != Activity.RESULT_OK) null else intent.data
+    }
+
+    @Suppress("ArrayInDataClass")
+    data class Cfg(
+        val initial_uri: Uri?,
+        val mime_types: Array<String>,
+        val allowMultiSelect: Boolean = false
+    )
+}
