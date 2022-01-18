@@ -322,7 +322,10 @@ object PlaylistsUtil {
         val selection = Playlists.Members.AUDIO_ID + " =?"
         val selectionArgs = arrayOf(song.id.toString())
         try {
-            context.contentResolver.delete(getPlaylistUris(playlistId), selection, selectionArgs)
+            if (Build.VERSION.SDK_INT >= 29)
+                context.contentResolver.delete(Playlists.Members.getContentUri(MediaStore.getExternalVolumeNames(context).firstOrNull(), playlistId), selection, selectionArgs)
+            else
+                context.contentResolver.delete(getPlaylistUris(playlistId), selection, selectionArgs)
             // Necessary because somehow the MediaStoreObserver doesn't work for playlists
             context.contentResolver.notifyChange(getPlaylistUris(playlistId), null)
         } catch (ignored: SecurityException) {
@@ -340,7 +343,10 @@ object PlaylistsUtil {
         selection = selection.substring(0, selection.length - 2) + ")"
 
         try {
-            context.contentResolver.delete(getPlaylistUris(songs[0].playlistId), selection, selectionArgs)
+            if (Build.VERSION.SDK_INT >= 29)
+                context.contentResolver.delete(Playlists.Members.getContentUri(MediaStore.getExternalVolumeNames(context).firstOrNull(), songs[0].playlistId), selection, selectionArgs)
+            else
+                context.contentResolver.delete(getPlaylistUris(songs[0].playlistId), selection, selectionArgs)
             // Necessary because somehow the MediaStoreObserver is not notified when adding a playlist
             context.contentResolver.notifyChange(getPlaylistUris(songs[0].playlistId), null)
         } catch (ignored: SecurityException) {
