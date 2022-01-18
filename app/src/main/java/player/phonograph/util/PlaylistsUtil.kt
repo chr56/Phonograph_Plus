@@ -585,7 +585,9 @@ object PlaylistWriter {
     fun appendToPlaylist(songs: List<Song>, playlistId: Long, removeDuplicated: Boolean, context: Context, activity: SAFCallbackHandlerActivity) {
         if (songs.isEmpty()) return
 
-        val rawPath = PlaylistsUtil.getPlaylistPath(context, PlaylistsUtil.getPlaylist(context, playlistId))
+        val playlist = PlaylistsUtil.getPlaylist(context, playlistId)
+
+        val rawPath = PlaylistsUtil.getPlaylistPath(context, playlist)
         val path = rawPath.removePrefix(Environment.getExternalStorageDirectory().absolutePath).removePrefix("/storage/emulated/").removePrefix("0/") // todo multi user
 
         val parentFolderUri = Uri.parse(
@@ -600,15 +602,25 @@ object PlaylistWriter {
             if (uri != null) {
                 GlobalScope.launch(Dispatchers.IO) {
                     try {
+                        // valid uri
+                        val parsedUriPath = uri.path!!.substringAfter("/document/").substringAfter(":").substringAfter(":")
+                        if (!parsedUriPath.contains(path.substringAfter('/'))) {
+                            val errorMsg = "${ context.getString(R.string.failed_to_save_playlist, playlist.name) }: ${context.getString(R.string.file_incorrect)}" +
+                                " $path -> $parsedUriPath "
+                            Log.e("appendToPlaylist", errorMsg)
+                            Util.coroutineToast(context, errorMsg)
+                            return@launch
+                        }
+
                         val outputStream = context.contentResolver.openOutputStream(uri, "wa")
                         outputStream?.let {
                             M3UWriter.append(it, songs)
                             Util.coroutineToast(context, context.getString(R.string.success))
                         }
                     } catch (e: FileNotFoundException) {
-                        Util.coroutineToast(context, context.getString(R.string.failed) + ": ${uri.path} is not available")
+                        Util.coroutineToast(context, context.getString(R.string.failed_to_save_playlist, playlist.name) + ": ${uri.path} is not available")
                     } catch (e: IOException) {
-                        Util.coroutineToast(context, context.getString(R.string.failed) + ": Unknown!")
+                        Util.coroutineToast(context, context.getString(R.string.failed_to_save_playlist, playlist.name) + ": Unknown!")
                     }
                 }
             }
