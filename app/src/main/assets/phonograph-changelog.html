@@ -29,13 +29,17 @@
 <body>
     <h3 style="color: tomato">修改说明</h3>
 
-    <h4><b>0.0.9</b> 2022.1.*</h4>
+    <h4><b>0.1.0 Preview</b> 2022.1.*</h4>
     <div style="color: black">
         <ol>
             <li>开发 清理代码</li>
             <li>开发 移除ButterKnife</li>
             <li>开发 使用AGP 7.0.4 (以及Gradle7.1.1) 构建</li>
             <li>开发 升级Glide(3.8.0 -&gt; 4.12.0)</li>
+            <li>修复 播放列表更改(新建/改名/删除)后,未能及时刷新（仅限App内操作）</li>
+            <li>改进 再删除播放列表失败后, 可尝试使用SAF(Storage Access Framework, 存储访问框架)授权目录后再次尝试删除（目前交互体验不佳, 且可能误删文件!!!）</li>
+            <li>改进 对于Android 8 (O)以上版本用户, 使用SAF授权后再追加歌曲至已有播放列表（目前交互体验不佳）</li>
+            <li>改进 对于Android 10 (Q)以上版本用户, 使用SAF创建和复制(单个)播放列表</li>
             <li></li>
         </ol>
     </div>
