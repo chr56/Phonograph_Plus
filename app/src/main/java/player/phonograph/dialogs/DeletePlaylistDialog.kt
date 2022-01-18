@@ -79,10 +79,16 @@ class DeletePlaylistDialog : DialogFragment() {
                         // retry
                         .negativeButton(R.string.delete_with_saf) {
                             if (activity is SAFCallbackHandlerActivity) {
-                                val defaultLocation = activity.getExternalFilesDir(Environment.DIRECTORY_MUSIC)
-                                val initialUri = Uri.fromFile(defaultLocation)
+                                // todo remove hardcode
+                                val rawPath = PlaylistsUtil.getPlaylistPath(activity, playlists[0])
+                                val path = rawPath.removePrefix(Environment.getExternalStorageDirectory().absolutePath).removePrefix("/storage/emulated/").removePrefix("0/") // todo multi user
+
+                                val parentFolderUri = Uri.parse(
+                                    "content://com.android.externalstorage.documents/document/primary:" + Uri.encode(path)
+                                )
+
                                 Toast.makeText(activity, R.string.direction_open_folder_with_saf, Toast.LENGTH_SHORT).show()
-                                activity.getSafLauncher().openDir(initialUri) { uri: Uri? ->
+                                activity.getSafLauncher().openDir(parentFolderUri) { uri: Uri? ->
                                     uri?.let { PlaylistsUtil.deletePlaylistsInDir(activity, playlists, it) }
                                     return@openDir Unit
                                 }
