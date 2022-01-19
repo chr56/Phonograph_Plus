@@ -10,7 +10,6 @@ import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.WhichButton
 import com.afollestad.materialdialogs.actions.getActionButton
 import com.afollestad.materialdialogs.input.input
-import legacy.phonograph.LegacyPlaylistsUtil
 import player.phonograph.R
 import player.phonograph.model.Song
 import player.phonograph.util.PlaylistsUtil
@@ -45,16 +44,7 @@ class CreatePlaylistDialog : DialogFragment() {
                     if (activity is SAFCallbackHandlerActivity) {
                         PlaylistsManager(activity, activity).createPlaylist(name, songs)
                     } else {
-                        // legacy ways
-                        LegacyPlaylistsUtil.createPlaylist(activity, name).also { id ->
-                            if (PlaylistsUtil.doesPlaylistExist(activity, id)) {
-                                songs?.let {
-                                    LegacyPlaylistsUtil.addToPlaylist(activity, it, id, true)
-                                }
-                            } else {
-                                Toast.makeText(activity, R.string.failed, Toast.LENGTH_SHORT).show()
-                            }
-                        }
+                        PlaylistsManager(activity, null).createPlaylist(name, songs)
                     }
                 } else {
                     Toast.makeText(requireContext(), requireActivity().resources.getString(R.string.playlist_exists, name), Toast.LENGTH_SHORT).show()

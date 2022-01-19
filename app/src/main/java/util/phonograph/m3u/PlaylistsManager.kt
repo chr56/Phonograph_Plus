@@ -22,12 +22,16 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import legacy.phonograph.LegacyPlaylistsUtil
 import player.phonograph.R
+import player.phonograph.loader.PlaylistSongLoader
+import player.phonograph.model.AbsCustomPlaylist
 import player.phonograph.model.Playlist
 import player.phonograph.model.Song
 import player.phonograph.util.PlaylistsUtil
 import player.phonograph.util.SAFCallbackHandlerActivity
 import player.phonograph.util.SafLauncher
 import player.phonograph.util.Util.coroutineToast
+import java.text.SimpleDateFormat
+import java.util.*
 
 class PlaylistsManager(private val context: Context, requester: SAFCallbackHandlerActivity?) {
     private val activity: ComponentActivity? = requester as ComponentActivity?
@@ -38,8 +42,16 @@ class PlaylistsManager(private val context: Context, requester: SAFCallbackHandl
             if (activity != null && safLauncher != null) {
                 FileOperator.createPlaylistViaSAF(name, songs, safLauncher, activity)
             } else {
-                coroutineToast(context, R.string.failed)
-                LegacyPlaylistsUtil.createPlaylist(context, name)
+                // legacy ways
+                LegacyPlaylistsUtil.createPlaylist(context, name).also { id ->
+                    if (PlaylistsUtil.doesPlaylistExist(context, id)) {
+                        songs?.let {
+                            LegacyPlaylistsUtil.addToPlaylist(context, it, id, true)
+                        }
+                    } else {
+                        coroutineToast(context, R.string.failed)
+                    }
+                }
             }
         }
     }
@@ -114,5 +126,26 @@ class PlaylistsManager(private val context: Context, requester: SAFCallbackHandl
                 }
             }
         }
+    }
+
+    fun duplicatePlaylistsViaSaf(playlists: List<Playlist>) {
+        GlobalScope.launch(Dispatchers.Default) {
+            playlists.forEach {
+                duplicatePlaylistViaSaf(it)
+            }
+        }
+    }
+    fun duplicatePlaylistViaSaf(playlist: Playlist) {
+        val suffix = SimpleDateFormat("_yy-MM-dd_HH-mm", Locale.getDefault()).format(Calendar.getInstance().time)
+        val songs: List<Song> =
+            when (playlist) {
+                is AbsCustomPlaylist -> {
+                    playlist.getSongs(activity)
+                }
+                else -> {
+                    PlaylistSongLoader.getPlaylistSongList(context, playlist.id)
+                }
+            }
+        createPlaylist(playlist.name + suffix, songs)
     }
 }
