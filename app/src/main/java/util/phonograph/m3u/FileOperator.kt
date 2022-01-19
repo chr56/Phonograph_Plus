@@ -20,6 +20,8 @@ import com.afollestad.materialdialogs.WhichButton
 import com.afollestad.materialdialogs.actions.getActionButton
 import kotlinx.coroutines.*
 import player.phonograph.R
+import player.phonograph.loader.PlaylistSongLoader
+import player.phonograph.model.AbsCustomPlaylist
 import player.phonograph.model.Playlist
 import player.phonograph.model.Song
 import player.phonograph.util.OpenDocumentContract
@@ -31,6 +33,9 @@ import player.phonograph.util.Util.sentPlaylistChangedLocalBoardCast
 import util.phonograph.m3u.internal.M3UGenerator
 import java.io.FileNotFoundException
 import java.io.IOException
+import java.text.SimpleDateFormat
+import java.util.*
+import kotlin.collections.ArrayList
 
 object FileOperator {
 
@@ -203,6 +208,77 @@ object FileOperator {
             } else {
                 // folder unavailable
                 coroutineToast(activity, R.string.failed_to_delete)
+            }
+        }
+    }
+
+    fun createPlaylistsViaSAF(playlists: List<Playlist>, context: Context, safLauncher: SafLauncher) {
+
+        GlobalScope.launch(Dispatchers.IO) {
+            while (safLauncher.openCallbackInUse) yield()
+            try {
+                // callback
+                val uriCallback: UriCallback = { treeUri ->
+                    GlobalScope.launch(Dispatchers.IO) {
+                        if (treeUri == null) {
+                            coroutineToast(context, R.string.failed)
+                        } else {
+                            try {
+                                val dir = DocumentFile.fromTreeUri(context, treeUri)
+                                if (dir != null && dir.isDirectory) {
+                                    val suffix = SimpleDateFormat("_yy-MM-dd_HH-mm", Locale.getDefault()).format(Calendar.getInstance().time)
+
+                                    playlists.forEach { playlist ->
+                                        val file = dir.createFile("audio/x-mpegurl", playlist.name + suffix)
+                                        if (file != null) {
+                                            val outputStream = context.contentResolver.openOutputStream(file.uri)
+                                            if (outputStream != null) {
+                                                val songs: List<Song> =
+                                                    when (playlist) {
+                                                        is AbsCustomPlaylist -> {
+                                                            playlist.getSongs(context)
+                                                        }
+                                                        else -> {
+                                                            PlaylistSongLoader.getPlaylistSongList(context, playlist.id)
+                                                        }
+                                                    }
+                                                M3UGenerator.generate(outputStream, songs, true)
+                                            } else {
+                                                coroutineToast(
+                                                    context, context.getString(R.string.failed_to_save_playlist, playlist.name)
+                                                )
+                                            }
+                                        } else {
+                                            coroutineToast(
+                                                context, context.getString(R.string.failed_to_save_playlist, playlist.name)
+                                            )
+                                        }
+                                    }
+                                    sentPlaylistChangedLocalBoardCast()
+                                }
+                            } catch (e: FileNotFoundException) {
+                                coroutineToast(
+                                    context, context.getString(R.string.failed) + ":${treeUri.path} is not available"
+                                )
+                            }
+                        }
+                    }
+                }
+
+                // todo remove hardcode
+                val regex = "/(sdcard)|(storage/emulated)/\\d+/".toRegex()
+                val rawPath = PlaylistsUtil.getPlaylistPath(context, playlists[0])
+                val path = regex.replace(rawPath.removePrefix(Environment.getExternalStorageDirectory().absolutePath), "")
+
+                val parentFolderUri = Uri.parse(
+                    "content://com.android.externalstorage.documents/document/primary:" + Uri.encode(path)
+                )
+
+                coroutineToast(context, context.getString(R.string.direction_open_folder_with_saf), true)
+                safLauncher.openDir(parentFolderUri, uriCallback)
+            } catch (e: Exception) {
+                coroutineToast(context, context.getString(R.string.failed) + ": unknown")
+                Log.i("CreatePlaylistDialog", "SaveFail: \n${e.message}")
             }
         }
     }

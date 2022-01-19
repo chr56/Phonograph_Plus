@@ -130,8 +130,12 @@ class PlaylistsManager(private val context: Context, requester: SAFCallbackHandl
 
     fun duplicatePlaylistsViaSaf(playlists: List<Playlist>) {
         GlobalScope.launch(Dispatchers.Default) {
-            playlists.forEach {
-                duplicatePlaylistViaSaf(it)
+
+            if (activity != null && safLauncher != null) {
+                FileOperator.createPlaylistsViaSAF(playlists, context, safLauncher)
+            } else {
+                // todo
+                coroutineToast(context, context.getString(R.string.failed))
             }
         }
     }
