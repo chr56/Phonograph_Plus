@@ -227,6 +227,15 @@ object MediaStoreUtil {
         }
     }
 
+    fun searchSong(context: Context, fileName: String): Song {
+        val cursor = querySongs(
+            context,
+            selection = "${MediaStore.MediaColumns.DATA} LIKE ? OR ${MediaStore.MediaColumns.DISPLAY_NAME} LIKE ? ",
+            selectionValues = arrayOf(fileName, fileName)
+        )
+        return getSong(cursor)
+    }
+
     /**
      * Const values about MediaStore of Audio
      */
