@@ -11,11 +11,9 @@ import android.app.Activity
 import android.content.ContentUris
 import android.content.ContentValues
 import android.content.Context
-import android.content.Intent
 import android.database.Cursor
 import android.net.Uri
 import android.os.Build
-import android.os.Environment
 import android.provider.BaseColumns
 import android.provider.MediaStore
 import android.provider.MediaStore.Audio.Playlists
@@ -23,26 +21,17 @@ import android.provider.MediaStore.Audio.PlaylistsColumns
 import android.text.Html
 import android.util.Log
 import android.widget.Toast
-import androidx.activity.ComponentActivity
-import androidx.annotation.RequiresApi
 import androidx.documentfile.provider.DocumentFile
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.WhichButton
 import com.afollestad.materialdialogs.actions.getActionButton
 import kotlinx.coroutines.*
-import player.phonograph.App
-import player.phonograph.BROADCAST_PLAYLISTS_CHANGED
 import player.phonograph.R
-import player.phonograph.loader.PlaylistSongLoader
-import player.phonograph.model.AbsCustomPlaylist
 import player.phonograph.model.Playlist
 import player.phonograph.model.PlaylistSong
 import player.phonograph.model.Song
 import player.phonograph.provider.BlacklistStore
 import java.io.*
-import java.nio.charset.StandardCharsets
-import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -324,82 +313,6 @@ object PlaylistsUtil {
         }
     }
 
-    fun deletePlaylistsInDir(activity: Activity, playlists: List<Playlist>, treeUri: Uri) {
-
-        GlobalScope.launch(Dispatchers.IO) {
-            val folder = DocumentFile.fromTreeUri(activity, treeUri)
-            if (folder != null) {
-                val coroutineScope = CoroutineScope(Dispatchers.IO)
-
-                // get given playlist paths
-                val mediaStorePaths = coroutineScope.async {
-                    val paths: MutableList<String> = ArrayList(playlists.size)
-                    playlists.forEach {
-                        paths.add(getPlaylistPath(activity, it))
-                    }
-                    return@async paths
-                }
-                // search playlist in folder
-                val playlistInFolder = coroutineScope.async {
-                    val deleteList: MutableList<DocumentFile> = ArrayList()
-                    deleteList.addAll(
-                        searchPlaylist(activity, folder, playlists)
-                    )
-                    return@async deleteList
-                }
-
-                val prepareList: MutableList<DocumentFile> = playlistInFolder.await()
-                val deleteList: MutableList<DocumentFile> = ArrayList(prepareList.size / 2)
-
-                if (prepareList.isNullOrEmpty()) {
-                    // no playlist found in folder?
-                    Util.coroutineToast(activity, R.string.failed_to_delete)
-                } else {
-                    val playlistPaths = mediaStorePaths.await()
-                    // valid playlists
-                    prepareList.forEach { file ->
-                        // todo remove hardcode
-                        val fileUriPath = file.uri.path!!.substringAfter("/document/")
-                        if (fileUriPath.endsWith("m3u", ignoreCase = true) or fileUriPath.endsWith("m3u8", ignoreCase = true)) {
-                            val path = fileUriPath.substringAfter(":").substringAfter(":")
-                            playlistPaths.forEach {
-                                if (it.contains(path, ignoreCase = true)) deleteList.add(file)
-                            }
-                        }
-                    }
-
-                    // confirm to delete
-                    val m = StringBuffer().append(Html.fromHtml(activity.resources.getQuantityString(R.plurals.msg_files_deletion_summary, deleteList.size, deleteList.size), Html.FROM_HTML_MODE_LEGACY))
-                    deleteList.forEach { file ->
-                        m.append(file.uri.path!!.substringAfter("/document/").substringAfter(":").substringAfter(":")).appendLine()
-                        Log.i("FileDelete", "DeleteList:")
-                        Log.i("FileDelete", "${file.name}@${file.uri}")
-                    }
-
-                    withContext(Dispatchers.Main) {
-
-                        val dialog = MaterialDialog(activity)
-                            .title(R.string.delete_playlist_title)
-                            .message(text = m)
-                            .positiveButton(R.string.delete_action) {
-                                prepareList.forEach { it.delete() }
-                                Util.sentPlaylistChangedLocalBoardCast()
-                            }
-                            .negativeButton(android.R.string.cancel) { it.dismiss() }
-                            .also {
-                                it.getActionButton(WhichButton.POSITIVE).updateTextColor(activity.getColor(R.color.md_red_A700))
-                                it.getActionButton(WhichButton.NEGATIVE).updateTextColor(activity.getColor(R.color.md_green_A700))
-                            }
-                            .show()
-                    }
-                }
-            } else {
-                // folder unavailable
-                Util.coroutineToast(activity, R.string.failed_to_delete)
-            }
-        }
-    }
-
     fun getNameForPlaylist(context: Context, id: Long): String {
         try {
             val cursor = context.contentResolver.query(
@@ -497,107 +410,5 @@ object PlaylistsUtil {
             }
         }
         return result
-    }
-}
-
-object M3UWriter {
-    private const val EXTENSION = "m3u"
-    private const val HEADER = "#EXTM3U"
-    private const val ENTRY = "#EXTINF:"
-    private const val DURATION_SEPARATOR = ","
-
-    private fun createLine(song: Song): String {
-        val b = StringBuffer()
-        b.appendLine()
-        b.append("$ENTRY${song.duration}$DURATION_SEPARATOR${song.artistName} - ${song.title}")
-        b.appendLine()
-        b.append(song.data)
-        return b.toString()
-    }
-
-    @JvmStatic
-    @Throws(IOException::class)
-    fun write(context: Context?, dir: File, playlist: Playlist): File {
-        if (!dir.exists()) dir.mkdirs() //noinspection ResultOfMethodCallIgnored
-        val filename: String
-
-        val songs: List<Song>
-        if (playlist is AbsCustomPlaylist) {
-            songs = playlist.getSongs(context)
-
-            // Since AbsCustomPlaylists are dynamic, we add a timestamp after their names.
-            filename =
-                playlist.name + SimpleDateFormat("_yy-MM-dd_HH-mm", Locale.getDefault()).format(
-                Calendar.getInstance().time
-            )
-        } else {
-            songs = PlaylistSongLoader.getPlaylistSongList(context!!, playlist.id)
-            filename = playlist.name
-        }
-
-        val file = File(dir, "$filename.$EXTENSION")
-        if (songs.isNotEmpty()) {
-            val bw = BufferedWriter(FileWriter(file))
-
-            bw.write(HEADER)
-            for (song in songs) {
-                bw.write(
-                    createLine(song)
-                )
-            }
-
-            bw.close()
-        }
-
-        return file
-    }
-
-    @JvmStatic
-    @Throws(IOException::class)
-    fun write(outputStream: OutputStream, context: Context?, playlist: Playlist) {
-
-        val songs: List<Song> =
-            if (playlist is AbsCustomPlaylist) {
-                playlist.getSongs(context)
-            } else {
-                PlaylistSongLoader.getPlaylistSongList(context ?: App.instance, playlist.id)
-            }
-
-        if (songs.isNotEmpty()) {
-            write(outputStream, songs)
-        }
-        return
-    }
-
-    @JvmStatic
-    @Throws(IOException::class)
-    fun write(outputStream: OutputStream, songs: List<Song>) {
-        if (songs.isNotEmpty()) {
-            val bw = BufferedWriter(OutputStreamWriter(outputStream, StandardCharsets.UTF_8))
-
-            bw.write(HEADER)
-            for (song in songs) {
-                bw.write(
-                    createLine(song)
-                )
-            }
-
-            bw.close()
-        }
-        return
-    }
-    @JvmStatic
-    @Throws(IOException::class)
-    fun append(outputStream: OutputStream, songs: List<Song>) {
-        if (songs.isNotEmpty()) {
-            val bw = BufferedWriter(OutputStreamWriter(outputStream, StandardCharsets.UTF_8))
-
-            for (song in songs) {
-                bw.write(
-                    createLine(song)
-                )
-            }
-            bw.close()
-        }
     }
 }
