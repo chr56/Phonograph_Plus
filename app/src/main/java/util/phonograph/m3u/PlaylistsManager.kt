@@ -10,6 +10,7 @@ import android.content.Context
 import android.net.Uri
 import android.os.Build
 import android.os.Environment
+import android.util.Log
 import androidx.activity.ComponentActivity
 import chr_56.MDthemer.core.ThemeColor
 import com.afollestad.materialdialogs.DialogCallback
@@ -21,6 +22,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import legacy.phonograph.LegacyPlaylistsUtil
+import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.loader.PlaylistSongLoader
 import player.phonograph.model.AbsCustomPlaylist
@@ -30,6 +32,9 @@ import player.phonograph.util.PlaylistsUtil
 import player.phonograph.util.SAFCallbackHandlerActivity
 import player.phonograph.util.SafLauncher
 import player.phonograph.util.Util.coroutineToast
+import util.phonograph.m3u.internal.M3UGenerator
+import java.io.File
+import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -134,8 +139,10 @@ class PlaylistsManager(private val context: Context, requester: SAFCallbackHandl
             if (activity != null && safLauncher != null) {
                 FileOperator.createPlaylistsViaSAF(playlists, context, safLauncher)
             } else {
-                // todo
-                coroutineToast(context, context.getString(R.string.failed))
+                // legacy ways
+                withContext(Dispatchers.IO) {
+                    legacySavePlaylists(playlists)
+                }
             }
         }
     }
@@ -151,5 +158,37 @@ class PlaylistsManager(private val context: Context, requester: SAFCallbackHandl
                 }
             }
         createPlaylist(playlist.name + suffix, songs)
+    }
+
+    private suspend fun legacySavePlaylists(playlists: List<Playlist>) {
+        var successes = 0
+        var failures = 0
+        var dir: String? = ""
+        val failureList = StringBuffer()
+        for (playlist in playlists) {
+            try {
+                dir = M3UGenerator.writeFile(
+                    App.instance, File(Environment.getExternalStorageDirectory(), Environment.DIRECTORY_DOWNLOADS), playlist
+                ).parent
+                successes++
+            } catch (e: IOException) {
+                failures++
+                failureList.append(playlist.name).append(" ")
+                Log.w(TAG, e.message ?: "")
+            }
+        }
+        val msg =
+            if (failures == 0) String.format(
+                App.instance.applicationContext.getString(R.string.saved_x_playlists_to_x),
+                successes, dir
+            ) else String.format(
+                App.instance.applicationContext.getString(R.string.saved_x_playlists_to_x_failed_to_save_x),
+                successes, dir, failureList
+            )
+        coroutineToast(context, msg)
+    }
+
+    companion object {
+        private const val TAG = "PlaylistManager"
     }
 }
