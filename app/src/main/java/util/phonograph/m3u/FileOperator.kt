@@ -24,7 +24,6 @@ import player.phonograph.model.Playlist
 import player.phonograph.model.Song
 import player.phonograph.util.OpenDocumentContract
 import player.phonograph.util.PlaylistsUtil
-import player.phonograph.util.SAFCallbackHandlerActivity
 import player.phonograph.util.SafLauncher
 import player.phonograph.util.UriCallback
 import player.phonograph.util.Util.coroutineToast
@@ -35,9 +34,7 @@ import java.io.IOException
 
 object FileOperator {
 
-    fun createPlaylistViaSAF(name: String, songs: List<Song>?, safCallbackHandler: SAFCallbackHandlerActivity) {
-        val safLauncher: SafLauncher = safCallbackHandler.getSafLauncher()
-        val activity = safCallbackHandler as ComponentActivity
+    fun createPlaylistViaSAF(name: String, songs: List<Song>?, safLauncher: SafLauncher, activity: ComponentActivity) {
 
         // prepare callback
         val uriCallback: UriCallback = { uri ->
@@ -82,14 +79,14 @@ object FileOperator {
         }
     }
 
-    fun appendToPlaylistViaSAF(songs: List<Song>, playlistId: Long, removeDuplicated: Boolean, context: Context, activity: SAFCallbackHandlerActivity) {
+    fun appendToPlaylistViaSAF(songs: List<Song>, playlistId: Long, removeDuplicated: Boolean, context: Context, safLauncher: SafLauncher) {
         if (songs.isEmpty()) return
         val playlist = PlaylistsUtil.getPlaylist(context, playlistId)
-        appendToPlaylistViaSAF(songs, playlist, removeDuplicated, context, activity)
+        appendToPlaylistViaSAF(songs, playlist, removeDuplicated, context, safLauncher)
     }
 
     // todo remove hardcode
-    fun appendToPlaylistViaSAF(songs: List<Song>, playlist: Playlist, removeDuplicated: Boolean, context: Context, activity: SAFCallbackHandlerActivity) {
+    fun appendToPlaylistViaSAF(songs: List<Song>, playlist: Playlist, removeDuplicated: Boolean, context: Context, safLauncher: SafLauncher) {
         if (songs.isEmpty()) return
 
         val rawPath = PlaylistsUtil.getPlaylistPath(context, playlist)
@@ -103,7 +100,7 @@ object FileOperator {
         )
 
         val cfg = OpenDocumentContract.Cfg(parentFolderUri, arrayOf("audio/x-mpegurl", MediaStore.Audio.Playlists.CONTENT_TYPE, MediaStore.Audio.Playlists.ENTRY_CONTENT_TYPE), false)
-        activity.getSafLauncher().openFile(cfg) { uri: Uri? ->
+        safLauncher.openFile(cfg) { uri: Uri? ->
             if (uri != null) {
                 GlobalScope.launch(Dispatchers.IO) {
                     try {
