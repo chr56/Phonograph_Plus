@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 
+import legacy.phonograph.LegacyPlaylistsUtil;
 import player.phonograph.R;
 import player.phonograph.helper.MusicPlayerRemote;
 import player.phonograph.loader.SongLoader;
@@ -294,7 +295,7 @@ public class MusicUtil {
     }
 
     private static Playlist getOrCreateFavoritesPlaylist(@NonNull final Context context) {
-        return PlaylistsUtil.INSTANCE.getPlaylist(context, PlaylistsUtil.INSTANCE.createPlaylist(context, context.getString(R.string.favorites)));
+        return PlaylistsUtil.INSTANCE.getPlaylist(context, LegacyPlaylistsUtil.INSTANCE.createPlaylist(context, context.getString(R.string.favorites)));
     }
 
     public static boolean isFavorite(@NonNull final Context context, @NonNull final Song song) {
@@ -303,9 +304,9 @@ public class MusicUtil {
 
     public static void toggleFavorite(@NonNull final Context context, @NonNull final Song song) {
         if (isFavorite(context, song)) {
-            PlaylistsUtil.INSTANCE.removeFromPlaylist(context, song, getFavoritesPlaylist(context).id);
+            LegacyPlaylistsUtil.INSTANCE.removeFromPlaylist(context, song, getFavoritesPlaylist(context).id);
         } else {
-            PlaylistsUtil.INSTANCE.addToPlaylist(context, song, getOrCreateFavoritesPlaylist(context).id, false);
+            LegacyPlaylistsUtil.INSTANCE.addToPlaylist(context, song, getOrCreateFavoritesPlaylist(context).id, false);
         }
     }
 

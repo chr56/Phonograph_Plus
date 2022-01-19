@@ -9,6 +9,7 @@ import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.WhichButton
 import com.afollestad.materialdialogs.actions.getActionButton
 import com.afollestad.materialdialogs.input.input
+import legacy.phonograph.LegacyPlaylistsUtil
 import player.phonograph.R
 import player.phonograph.util.PlaylistsUtil
 
@@ -32,7 +33,7 @@ class RenamePlaylistDialog : DialogFragment() {
             ) { _, charSequence ->
                 val name: String = charSequence.toString().trim()
                 if (name.isNotEmpty()) {
-                    PlaylistsUtil.renamePlaylist(requireActivity(), requireArguments().getLong(PLAYLIST_ID), name)
+                    LegacyPlaylistsUtil.renamePlaylist(requireActivity(), requireArguments().getLong(PLAYLIST_ID), name)
                 }
             }
         // set button color
