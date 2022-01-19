@@ -8,7 +8,6 @@ import android.content.res.Configuration
 import android.content.res.Resources
 import android.graphics.Point
 import android.os.Build
-import android.os.Looper
 import android.util.TypedValue
 import android.view.*
 import android.view.inputmethod.InputMethodManager
@@ -26,11 +25,12 @@ import player.phonograph.R
  */
 object Util {
 
-    suspend fun coroutineToast(context: Context, text: String) {
-        withContext(Dispatchers.IO) {
-            Looper.prepare()
-            Toast.makeText(context, text, Toast.LENGTH_SHORT).show()
-            Looper.loop()
+    suspend fun coroutineToast(context: Context, text: String, longToast: Boolean = false) {
+        withContext(Dispatchers.Main) {
+            Toast.makeText(
+                context, text,
+                if (longToast) Toast.LENGTH_LONG else Toast.LENGTH_SHORT
+            ).show()
         }
     }
     suspend fun coroutineToast(context: Context, @StringRes res: Int) = coroutineToast(context, context.getString(res))
