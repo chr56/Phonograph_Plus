@@ -164,35 +164,6 @@ object PlaylistsUtil {
         return path
     }
 
-    /**
-     * delete playlist by path via MediaStore
-     * @return playlists failing to delete
-     */
-    fun deletePlaylists(context: Activity, playlists: List<Playlist>): List<Playlist> {
-        var result: Int = 0
-        val failList: MutableList<Playlist> = ArrayList<Playlist>()
-        // try to delete
-        for (index in playlists.indices) {
-            val output = context.contentResolver.delete(
-                Playlists.EXTERNAL_CONTENT_URI,
-                "${MediaStore.Audio.Media._ID} = ?",
-                arrayOf(playlists[index].id.toString())
-            )
-            if (output == 0) {
-                Log.w(TAG, "fail to delete playlist ${playlists[index].name}(id:${playlists[index].id})")
-                failList.add(playlists[index])
-            }
-            result += output
-        }
-        Toast.makeText( // todo
-            context,
-            String.format(Locale.getDefault(), context.getString(R.string.deleted_x_playlists), result),
-            Toast.LENGTH_SHORT
-        ).show()
-        LocalBroadcastManager.getInstance(App.instance).sendBroadcast(Intent(BROADCAST_PLAYLISTS_CHANGED))
-        return failList
-    }
-
     fun doesPlaylistExist(context: Context, name: String): Boolean {
         return doesPlaylistExistImp(context, PlaylistsColumns.NAME + "=?", arrayOf(name))
     }
