@@ -46,7 +46,8 @@ class PlaylistsManager(private val context: Context, requester: SAFCallbackHandl
 
     fun appendPlaylist(songs: List<Song>, playlist: Playlist) {
         GlobalScope.launch(Dispatchers.Default) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && safLauncher != null) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && safLauncher != null && activity != null) {
+                coroutineToast(activity, R.string.direction_open_file_with_saf)
                 FileOperator.appendToPlaylistViaSAF(songs, playlist, false, context, safLauncher)
             } else {
                 LegacyPlaylistsUtil.addToPlaylist(context, songs, playlist.id, true)

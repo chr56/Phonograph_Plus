@@ -1,7 +1,6 @@
 package player.phonograph.dialogs
 
 import android.app.Dialog
-import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
@@ -10,9 +9,9 @@ import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.list.listItemsSingleChoice
 import player.phonograph.R
 import player.phonograph.model.Song
-import player.phonograph.util.PlaylistWriter
 import player.phonograph.util.PlaylistsUtil
 import player.phonograph.util.SAFCallbackHandlerActivity
+import util.phonograph.m3u.PlaylistsManager
 
 /**
  * @author Karim Abou Zeid (kabouzeid), Aidan Follestad (afollestad)
@@ -43,16 +42,11 @@ class AddToPlaylistDialog : DialogFragment() {
                     CreatePlaylistDialog.create(songs).show(requireActivity().supportFragmentManager, "ADD_TO_PLAYLIST")
                 } else {
                     materialDialog.dismiss()
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                        val activity = requireActivity()
-                        if (activity is SAFCallbackHandlerActivity) {
-                            Toast.makeText(activity, R.string.direction_open_file_with_saf, Toast.LENGTH_SHORT).show()
-                            PlaylistWriter.appendToPlaylist(songs, playlists[index - 1].id, false, requireContext(), activity)
-                        } else {
-                            Toast.makeText(activity, R.string.failed, Toast.LENGTH_SHORT).show()
-                        }
+                    val activity = requireActivity()
+                    if (activity is SAFCallbackHandlerActivity) {
+                        PlaylistsManager(activity, activity).appendPlaylist(songs, playlist = playlists[index - 1])
                     } else {
-                        PlaylistsUtil.addToPlaylist(requireActivity(), songs, playlists[index - 1].id, true)
+                        PlaylistsManager(activity, null).appendPlaylist(songs, playlist = playlists[index - 1])
                     }
                 }
             }
