@@ -1,7 +1,6 @@
 package player.phonograph.dialogs
 
 import android.app.Dialog
-import android.os.Build
 import android.os.Bundle
 import android.text.InputType
 import android.widget.Toast
@@ -11,11 +10,12 @@ import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.WhichButton
 import com.afollestad.materialdialogs.actions.getActionButton
 import com.afollestad.materialdialogs.input.input
+import legacy.phonograph.LegacyPlaylistsUtil
 import player.phonograph.R
 import player.phonograph.model.Song
 import player.phonograph.util.PlaylistsUtil
-import player.phonograph.util.PlaylistWriter
 import player.phonograph.util.SAFCallbackHandlerActivity
+import util.phonograph.m3u.PlaylistsManager
 
 /**
  * @author Karim Abou Zeid (kabouzeid), Aidan Follestad (afollestad)
@@ -41,17 +41,20 @@ class CreatePlaylistDialog : DialogFragment() {
                     return@input
                 }
                 if (!PlaylistsUtil.doesPlaylistExist(requireActivity(), name)) {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                        val activity = requireActivity()
-                        if (activity is SAFCallbackHandlerActivity) {
-                            PlaylistWriter.createPlaylistViaSAF(name, songs, activity)
-                        } else {
-                            Toast.makeText(activity, R.string.failed, Toast.LENGTH_SHORT).show()
-                        }
+                    val activity = requireActivity()
+                    if (activity is SAFCallbackHandlerActivity) {
+                        PlaylistsManager(activity, activity).createPlaylist(name, songs)
                     } else {
-                        dismiss()
                         // legacy ways
-                        PlaylistWriter.createPlaylist(name, songs, requireContext())
+                        LegacyPlaylistsUtil.createPlaylist(activity, name).also { id ->
+                            if (PlaylistsUtil.doesPlaylistExist(activity, id)) {
+                                songs?.let {
+                                    LegacyPlaylistsUtil.addToPlaylist(activity, it, id, true)
+                                }
+                            } else {
+                                Toast.makeText(activity, R.string.failed, Toast.LENGTH_SHORT).show()
+                            }
+                        }
                     }
                 } else {
                     Toast.makeText(requireContext(), requireActivity().resources.getString(R.string.playlist_exists, name), Toast.LENGTH_SHORT).show()

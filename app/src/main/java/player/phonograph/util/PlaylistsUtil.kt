@@ -549,13 +549,6 @@ object PlaylistWriter {
         }
     }
 
-    fun createPlaylist(name: String, songs: List<Song>?, context: Context) {
-        val playlistId = PlaylistsUtil.createPlaylist(context, name)
-        if (songs != null && songs.isNotEmpty()) {
-            PlaylistsUtil.addToPlaylist(context, songs, playlistId, true)
-        }
-    }
-
     // todo remove hardcode
     @Suppress("SpellCheckingInspection")
     @RequiresApi(Build.VERSION_CODES.O)
