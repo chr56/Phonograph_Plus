@@ -58,7 +58,7 @@ class DeletePlaylistDialog : DialogFragment() {
                 PlaylistsManager(
                     attachedActivity,
                     if (attachedActivity is SAFCallbackHandlerActivity) attachedActivity else null
-                )
+                ).deletePlaylistWithGuide(playlists)
             }
             .also {
                 // grant permission button for R
