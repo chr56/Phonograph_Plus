@@ -1,10 +1,7 @@
 package player.phonograph.helper.menu
 
 import android.app.Activity
-import android.os.Looper
-import android.util.Log
 import android.view.MenuItem
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -18,8 +15,8 @@ import player.phonograph.loader.PlaylistSongLoader
 import player.phonograph.model.AbsCustomPlaylist
 import player.phonograph.model.Playlist
 import player.phonograph.model.Song
-import player.phonograph.util.PlaylistWriter
 import player.phonograph.util.SAFCallbackHandlerActivity
+import util.phonograph.m3u.PlaylistsManager
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
@@ -62,32 +59,27 @@ object PlaylistMenuHelper {
                 return true
             }
             R.id.action_save_playlist -> {
-
-                if (activity is SAFCallbackHandlerActivity) {
-                    GlobalScope.launch(Dispatchers.IO) {
-                        val filename = playlist.name + SimpleDateFormat("_yy-MM-dd_HH-mm", Locale.getDefault()).format(
-                            Calendar.getInstance().time
-                        )
-                        val songs: List<Song> =
-                            when (playlist) {
-                                is AbsCustomPlaylist -> {
-                                    playlist.getSongs(activity)
-                                }
-                                else -> {
-                                    PlaylistSongLoader.getPlaylistSongList(activity, playlist.id)
-                                }
+                GlobalScope.launch(Dispatchers.Default) {
+                    val filename = playlist.name + SimpleDateFormat("_yy-MM-dd_HH-mm", Locale.getDefault()).format(
+                        Calendar.getInstance().time
+                    )
+                    val songs: List<Song> =
+                        when (playlist) {
+                            is AbsCustomPlaylist -> {
+                                playlist.getSongs(activity)
                             }
+                            else -> {
+                                PlaylistSongLoader.getPlaylistSongList(activity, playlist.id)
+                            }
+                        }
 
-                        PlaylistWriter.createPlaylistViaSAF(filename, songs, activity)
+                    if (activity is SAFCallbackHandlerActivity) {
+                        PlaylistsManager(activity, activity).createPlaylist(filename, songs)
+                    } else {
+                        PlaylistsManager(activity, null).createPlaylist(filename, songs)
                     }
-                    return true
-                } else {
-                    try {
-                        Looper.prepare()
-                        Toast.makeText(activity, R.string.failed, Toast.LENGTH_SHORT).show()
-                        Looper.loop()
-                    } catch (e: Exception) { Log.w("SAVE_PLAYLIST", e.message.orEmpty()) }
                 }
+                return true
             }
         }
         return false
