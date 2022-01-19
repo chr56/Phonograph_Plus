@@ -17,7 +17,6 @@ import player.phonograph.model.Playlist
 import player.phonograph.model.Song
 import player.phonograph.util.SAFCallbackHandlerActivity
 import util.phonograph.m3u.PlaylistsManager
-import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -60,23 +59,11 @@ object PlaylistMenuHelper {
             }
             R.id.action_save_playlist -> {
                 GlobalScope.launch(Dispatchers.Default) {
-                    val filename = playlist.name + SimpleDateFormat("_yy-MM-dd_HH-mm", Locale.getDefault()).format(
-                        Calendar.getInstance().time
-                    )
-                    val songs: List<Song> =
-                        when (playlist) {
-                            is AbsCustomPlaylist -> {
-                                playlist.getSongs(activity)
-                            }
-                            else -> {
-                                PlaylistSongLoader.getPlaylistSongList(activity, playlist.id)
-                            }
-                        }
 
                     if (activity is SAFCallbackHandlerActivity) {
-                        PlaylistsManager(activity, activity).createPlaylist(filename, songs)
+                        PlaylistsManager(activity, activity).duplicatePlaylistViaSaf(playlist)
                     } else {
-                        PlaylistsManager(activity, null).createPlaylist(filename, songs)
+                        PlaylistsManager(activity, null).duplicatePlaylistViaSaf(playlist)
                     }
                 }
                 return true

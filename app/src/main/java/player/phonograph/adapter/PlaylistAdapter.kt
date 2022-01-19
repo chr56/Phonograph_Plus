@@ -1,30 +1,24 @@
 package player.phonograph.adapter
 
-import android.content.Context
 import android.graphics.PorterDuff
 import android.os.Build
-import android.os.Environment
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupMenu
-import android.widget.Toast
 import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
 import chr_56.MDthemer.util.Util
-import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.adapter.base.AbsMultiSelectAdapter
 import player.phonograph.adapter.base.MediaEntryViewHolder
 import player.phonograph.dialogs.ClearSmartPlaylistDialog
 import player.phonograph.dialogs.DeletePlaylistDialog
-import player.phonograph.util.M3UWriter
 import player.phonograph.helper.menu.PlaylistMenuHelper.handleMenuClick
 import player.phonograph.helper.menu.SongsMenuHelper
 import player.phonograph.interfaces.CabHolder
 import player.phonograph.loader.PlaylistSongLoader
-import player.phonograph.misc.WeakContextAsyncTask
 import player.phonograph.model.AbsCustomPlaylist
 import player.phonograph.model.Playlist
 import player.phonograph.model.Song
@@ -32,8 +26,8 @@ import player.phonograph.model.smartplaylist.AbsSmartPlaylist
 import player.phonograph.model.smartplaylist.LastAddedPlaylist
 import player.phonograph.util.MusicUtil
 import player.phonograph.util.NavigationUtil
-import java.io.File
-import java.io.IOException
+import player.phonograph.util.SAFCallbackHandlerActivity
+import util.phonograph.m3u.PlaylistsManager
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
@@ -133,50 +127,14 @@ class PlaylistAdapter(
                     .show(activity.supportFragmentManager, "DELETE_PLAYLIST")
             }
             R.id.action_save_playlist ->
-                if (selection.size == 1) {
-                    handleMenuClick(activity, selection[0], menuItem)
+                if (activity is SAFCallbackHandlerActivity) {
+                    PlaylistsManager(activity, activity).duplicatePlaylistsViaSaf(selection)
                 } else {
-                    SavePlaylistsAsyncTask(activity).execute(selection)
+                    PlaylistsManager(activity, null).duplicatePlaylistsViaSaf(selection)
                 }
             else ->
                 // default, handle common items
                 SongsMenuHelper.handleMenuClick(activity, getSongList(selection), menuItem.itemId)
-        }
-    }
-
-    // todo
-    private class SavePlaylistsAsyncTask(context: Context?) :
-        WeakContextAsyncTask<List<Playlist?>?, String?, String?>(context) {
-        override fun doInBackground(vararg params: List<Playlist?>?): String {
-            var successes = 0
-            var failures = 0
-            var dir: String? = ""
-            for (playlist in params[0]!!) {
-                try {
-                    dir = M3UWriter.write(
-                        App.instance, File(Environment.getExternalStorageDirectory(), Environment.DIRECTORY_DOWNLOADS), playlist!!
-                    ).parent
-                    successes++
-                } catch (e: IOException) {
-                    failures++
-                    e.printStackTrace()
-                }
-            }
-            return if (failures == 0) String.format(
-                App.instance.applicationContext.getString(R.string.saved_x_playlists_to_x),
-                successes, dir
-            ) else String.format(
-                App.instance.applicationContext.getString(R.string.saved_x_playlists_to_x_failed_to_save_x),
-                successes, dir, failures
-            )
-        }
-
-        override fun onPostExecute(string: String?) {
-            super.onPostExecute(string)
-            val context = context
-            if (context != null) {
-                Toast.makeText(context, string, Toast.LENGTH_LONG).show()
-            }
         }
     }
 
