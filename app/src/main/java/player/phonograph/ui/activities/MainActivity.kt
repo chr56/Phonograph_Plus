@@ -7,7 +7,6 @@ import android.content.res.ColorStateList
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.os.Message
 import android.provider.MediaStore
 import android.util.Log
 import android.view.MenuItem
@@ -39,9 +38,6 @@ import player.phonograph.loader.ArtistLoader
 import player.phonograph.loader.PlaylistSongLoader
 import player.phonograph.loader.SongLoader
 import player.phonograph.model.Song
-import player.phonograph.model.smartplaylist.HistoryPlaylist
-import player.phonograph.model.smartplaylist.LastAddedPlaylist
-import player.phonograph.model.smartplaylist.MyTopTracksPlaylist
 import player.phonograph.notification.UpgradeNotification
 import player.phonograph.service.MusicService
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
@@ -50,12 +46,13 @@ import player.phonograph.ui.fragments.mainactivity.AbsMainActivityFragment
 import player.phonograph.ui.fragments.mainactivity.folders.FoldersFragment
 import player.phonograph.ui.fragments.mainactivity.library.LibraryFragment
 import player.phonograph.ui.fragments.mainactivity.library.new_ui.HomeFragment
-import player.phonograph.util.FileSaver
 import player.phonograph.util.MusicUtil
 import player.phonograph.util.PreferenceUtil
+import player.phonograph.util.SAFCallbackHandlerActivity
+import player.phonograph.util.SafLauncher
 import chr_56.MDthemer.util.Util as MDthemerUtil
 
-class MainActivity : AbsSlidingMusicPanelActivity() {
+class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity {
     // init : onCreate()
     private lateinit var navigationView: NavigationView
     private lateinit var drawerLayout: DrawerLayout
@@ -65,10 +62,14 @@ class MainActivity : AbsSlidingMusicPanelActivity() {
     private var navigationDrawerHeader: View? = null
     private var blockRequestPermissions = false
 
-    private var savedMessageBundle: Bundle? = null
+    private lateinit var safLauncher: SafLauncher
+    override fun getSafLauncher(): SafLauncher = safLauncher
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        safLauncher = SafLauncher(activityResultRegistry)
+        lifecycle.addObserver(safLauncher)
 
         setDrawUnderStatusbar()
 
@@ -92,8 +93,6 @@ class MainActivity : AbsSlidingMusicPanelActivity() {
             showUpgradeDialog(intent.getBundleExtra(VERSION_INFO)!!)
         }
 
-        setupHandler()
-
         showIntro()
         checkUpdate()
         showChangelog()
@@ -108,20 +107,6 @@ class MainActivity : AbsSlidingMusicPanelActivity() {
         val drawerContent = contentView.findViewById<ViewGroup>(R.id.drawer_content_container)
         drawerContent.addView(wrapSlidingMusicPanel(R.layout.activity_main_content))
         return contentView
-    }
-
-    private fun setupHandler() {
-        handler = object : Handler(Looper.getMainLooper()) {
-            override fun handleMessage(msg: Message) {
-                super.handleMessage(msg)
-                when (msg.what) {
-                    REQUEST_CODE_SAVE_PLAYLIST -> {
-                        savedMessageBundle = msg.data
-                        // just save message bundle, then wait for uri
-                    }
-                }
-            }
-        }
     }
 
     private fun setMusicChooser(key: Int) {
@@ -159,34 +144,6 @@ class MainActivity : AbsSlidingMusicPanelActivity() {
                 requestPermissions()
             }
             create().show(supportFragmentManager, "CHANGE_LOG_DIALOG")
-        } else if (resultCode == RESULT_OK && requestCode == REQUEST_CODE_SAVE_PLAYLIST) {
-            data?.let { intent ->
-                val uri = intent.data!!
-
-                val bundle = savedMessageBundle ?: throw Exception("No Playlist to save?")
-
-                backgroundCoroutineScope.launch(Dispatchers.IO) {
-                    val result = when (bundle.getString(TYPE)!!) {
-                        NormalPlaylist ->
-                            bundle.getLong(PLAYLIST_ID).let { FileSaver.savePlaylist(this@MainActivity, uri, it) }
-                        MyTopTracksPlaylist ->
-                            FileSaver.savePlaylist(this@MainActivity, uri, MyTopTracksPlaylist(this@MainActivity))
-                        LastAddedPlaylist ->
-                            FileSaver.savePlaylist(this@MainActivity, uri, LastAddedPlaylist(this@MainActivity))
-                        HistoryPlaylist ->
-                            FileSaver.savePlaylist(this@MainActivity, uri, HistoryPlaylist(this@MainActivity))
-                        else -> throw Exception("Unknown Playlist Type: ${bundle.getString(TYPE)}")
-                    }
-
-                    // report result
-                    val text =
-                        if (result.await() == 0) getText(R.string.success) else getText(R.string.failed)
-
-                    withContext(Dispatchers.Main) {
-                        Toast.makeText(this@MainActivity, text, Toast.LENGTH_SHORT).show()
-                    }
-                }
-            }
         }
     }
 

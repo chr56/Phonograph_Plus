@@ -366,8 +366,16 @@
     <string name="sort_order_duration">Duration</string>
     <string name="sort_order_date_modified">Date Modified</string>
     <string name="loading">Loading</string>
+    <string name="delete_with_saf">Delete with SAF</string>
+    <string name="direction_open_folder_with_saf">Now, please select the file folder containing the files that you would like to operate with</string>
+    <string name="direction_open_file_with_saf">Now, please select the file that you would like to operate with</string>
+    <string name="file_incorrect">File is incorrect!</string>
     <plurals name="msg_deletion_result">
         <item quantity="one">%1$d / %2$d item was successfully deleted.</item>>
         <item quantity="other">%1$d / %2$d items were successfully deleted.</item>
+    </plurals>
+    <plurals name="msg_files_deletion_summary">
+        <item quantity="one"><![CDATA[Delete <b>%1$d</b> file from the device?<br/> <b>This action can not be retracted!</b> <br/>]]></item>
+        <item quantity="other"><![CDATA[Delete <b>%1$d</b> files from the device?<br/> <b>This action can not be retracted!</b> <br/>]]></item>
     </plurals>
 </resources>

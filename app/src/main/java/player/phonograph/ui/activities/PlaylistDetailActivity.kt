@@ -7,16 +7,12 @@ package player.phonograph.ui.activities
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
-import android.os.Message
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewStub
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.loader.app.LoaderManager
@@ -47,13 +43,10 @@ import player.phonograph.misc.WrappedAsyncTaskLoader
 import player.phonograph.model.AbsCustomPlaylist
 import player.phonograph.model.Playlist
 import player.phonograph.model.Song
-import player.phonograph.model.smartplaylist.HistoryPlaylist
-import player.phonograph.model.smartplaylist.LastAddedPlaylist
-import player.phonograph.model.smartplaylist.MyTopTracksPlaylist
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
 import player.phonograph.util.*
 
-class PlaylistDetailActivity : AbsSlidingMusicPanelActivity() {
+class PlaylistDetailActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity {
     private lateinit var binding: ActivityPlaylistDetailBinding // init in OnCreate()
 
     // init/bind in OnCreate() -> bindingView()
@@ -72,6 +65,10 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity() {
     private lateinit var loader: Loader // init in OnCreate()
 
     private var savedMessageBundle: Bundle? = null
+
+    // for saf callback
+    private lateinit var safLauncher: SafLauncher
+    override fun getSafLauncher(): SafLauncher = safLauncher
 
     /* ********************
      *
@@ -95,6 +92,9 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity() {
 
         playlist = intent.extras!!.getParcelable(EXTRA_PLAYLIST)!!
 
+        safLauncher = SafLauncher(activityResultRegistry)
+        lifecycle.addObserver(safLauncher)
+
         // Init RecyclerView and Adapter
         setUpRecyclerView()
         loader = Loader(this, playlist, songAdapter)
@@ -103,8 +103,6 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity() {
 
         LoaderManager.getInstance(this)
             .initLoader(LOADER_ID, null, loader)
-
-        setupHandler()
     }
     private fun bindingViews() {
         mToolbar = binding.toolbar
@@ -172,20 +170,6 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity() {
         supportActionBar!!.title = title
     }
 
-    private fun setupHandler() {
-        handler = object : Handler(Looper.getMainLooper()) {
-            override fun handleMessage(msg: Message) {
-                super.handleMessage(msg)
-                when (msg.what) {
-                    REQUEST_CODE_SAVE_PLAYLIST -> {
-                        savedMessageBundle = msg.data
-                        // just save message bundle, then wait for uri
-                    }
-                }
-            }
-        }
-    }
-
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(
             if (playlist is AbsCustomPlaylist) R.menu.menu_smart_playlist_detail else R.menu.menu_playlist_detail,
@@ -248,7 +232,7 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity() {
             // Playlist renamed
             val playlistName = PlaylistsUtil.getNameForPlaylist(this, playlist.id)
             if (playlistName != playlist.name) {
-                playlist = MediaStoreUtil.getPlaylist(this, playlist.id)
+                playlist = PlaylistsUtil.getPlaylist(this, playlist.id)
                 setToolbarTitle(playlist.name)
             }
         }
@@ -280,41 +264,6 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity() {
     }
 
     private val backgroundCoroutineScope: CoroutineScope = CoroutineScope(Dispatchers.IO)
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (resultCode == RESULT_OK && requestCode == REQUEST_CODE_SAVE_PLAYLIST) {
-            data?.let { intent ->
-                val uri = intent.data!!
-
-                val bundle = savedMessageBundle ?: throw Exception("No Playlist to save?")
-
-                backgroundCoroutineScope.launch(Dispatchers.Main) {
-                    val result = when (bundle.getString(TYPE)!!) {
-                        NormalPlaylist ->
-                            bundle.getLong(PLAYLIST_ID).let { FileSaver.savePlaylist(this@PlaylistDetailActivity, uri, it) }
-                        MyTopTracksPlaylist ->
-                            FileSaver.savePlaylist(this@PlaylistDetailActivity, uri, MyTopTracksPlaylist(this@PlaylistDetailActivity))
-                        LastAddedPlaylist ->
-                            FileSaver.savePlaylist(this@PlaylistDetailActivity, uri, LastAddedPlaylist(this@PlaylistDetailActivity))
-                        HistoryPlaylist ->
-                            FileSaver.savePlaylist(this@PlaylistDetailActivity, uri, HistoryPlaylist(this@PlaylistDetailActivity))
-                        else -> throw Exception("Unknown Playlist Type: ${bundle.getString(TYPE)}")
-                    }
-
-                    // report result
-                    val text =
-                        if (result.await() == 0) getText(R.string.success) else getText(R.string.failed)
-
-                    withContext(Dispatchers.Main) {
-                        Toast.makeText(this@PlaylistDetailActivity, text, Toast.LENGTH_SHORT).show()
-                    }
-                }
-            }
-        } else if (requestCode == EDIT_PLAYLIST) {
-            onMediaStoreChanged() // refresh after editing
-        }
-        super.onActivityResult(requestCode, resultCode, data)
-    }
 
     /* *******************
      *

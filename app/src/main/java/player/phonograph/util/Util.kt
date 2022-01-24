@@ -3,6 +3,7 @@ package player.phonograph.util
 import android.annotation.TargetApi
 import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.content.res.Configuration
 import android.content.res.Resources
 import android.graphics.Point
@@ -10,6 +11,13 @@ import android.os.Build
 import android.util.TypedValue
 import android.view.*
 import android.view.inputmethod.InputMethodManager
+import android.widget.Toast
+import androidx.annotation.StringRes
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import player.phonograph.App
+import player.phonograph.BROADCAST_PLAYLISTS_CHANGED
 import player.phonograph.R
 
 /**
@@ -23,6 +31,20 @@ object Util {
         val result: Boolean = context.theme.resolveAttribute(android.R.attr.theme, outValue, true)
         return if (result)outValue.resourceId else 0
     }
+
+
+    suspend fun coroutineToast(context: Context, text: String, longToast: Boolean = false) {
+        withContext(Dispatchers.Main) {
+            Toast.makeText(
+                context, text,
+                if (longToast) Toast.LENGTH_LONG else Toast.LENGTH_SHORT
+            ).show()
+        }
+    }
+    suspend fun coroutineToast(context: Context, @StringRes res: Int) = coroutineToast(context, context.getString(res))
+
+    fun sentPlaylistChangedLocalBoardCast() =
+        LocalBroadcastManager.getInstance(App.instance).sendBroadcast(Intent(BROADCAST_PLAYLISTS_CHANGED))
 
     @JvmStatic
     fun getActionBarSize(context: Context): Int {
@@ -52,7 +74,7 @@ object Util {
 //        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
 //            window.setDecorFitsSystemWindows(false)
 //        } else
-            window.decorView.systemUiVisibility =
+        window.decorView.systemUiVisibility =
             (View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN)
     }
 

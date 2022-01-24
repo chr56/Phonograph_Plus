@@ -8,20 +8,19 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.IBinder;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.List;
+
 import player.phonograph.R;
 import player.phonograph.helper.MusicPlayerRemote;
 import player.phonograph.interfaces.MusicServiceEventListener;
 import player.phonograph.service.MusicService;
-
-import java.lang.ref.WeakReference;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
@@ -33,9 +32,6 @@ public abstract class AbsMusicServiceActivity extends AbsBaseActivity implements
     private MusicPlayerRemote.ServiceToken serviceToken;
     private MusicStateReceiver musicStateReceiver;
     private boolean receiverRegistered;
-
-    @Nullable
-    public Handler handler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

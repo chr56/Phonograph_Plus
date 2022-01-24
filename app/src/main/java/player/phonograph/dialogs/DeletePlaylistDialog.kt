@@ -5,9 +5,9 @@ import android.app.Activity
 import android.app.Dialog
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.os.Handler
 import android.provider.Settings
 import android.text.Html
 import android.util.Log
@@ -19,7 +19,10 @@ import com.afollestad.materialdialogs.WhichButton
 import com.afollestad.materialdialogs.actions.getActionButton
 import player.phonograph.R
 import player.phonograph.model.Playlist
-import player.phonograph.util.MediaStoreUtil
+import player.phonograph.util.SAFCallbackHandlerActivity
+import util.phonograph.m3u.PlaylistsManager
+import java.lang.StringBuilder
+
 /**
  * @author Karim Abou Zeid (kabouzeid)
  */
@@ -29,52 +32,50 @@ class DeletePlaylistDialog : DialogFragment() {
         val playlists: List<Playlist> = requireArguments().getParcelableArrayList("playlists")!!
         val title: Int = if (playlists.size > 1) { R.string.delete_playlists_title } else { R.string.delete_playlist_title }
 
-        val msg: StringBuffer = StringBuffer()
-        msg.append(
-            Html.fromHtml(
-                resources.getQuantityString(R.plurals.msg_playlist_deletion_summary, playlists.size, playlists.size), Html.FROM_HTML_MODE_LEGACY
-            )
+        val msg = StringBuilder(
+            Html.fromHtml(resources.getQuantityString(R.plurals.msg_playlist_deletion_summary, playlists.size, playlists.size), Html.FROM_HTML_MODE_LEGACY)
         )
         playlists.forEach { playlist ->
             msg.append(playlist.name).appendLine()
         }
 
+        var hasPermission = true
         // extra permission check on R(11)
-        var hasPermission: Boolean = true
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             if (attachedActivity.checkSelfPermission(Manifest.permission.MANAGE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {
-                Toast.makeText(context, R.string.permission_manage_external_storage_denied, Toast.LENGTH_SHORT).show()
-                Log.w(TAG, "No MANAGE_EXTERNAL_STORAGE permission")
-
                 hasPermission = false
                 msg.appendLine().append(attachedActivity.resources.getString(R.string.permission_manage_external_storage_denied))
+                Toast.makeText(context, R.string.permission_manage_external_storage_denied, Toast.LENGTH_SHORT).show()
+                Log.w(TAG, "No MANAGE_EXTERNAL_STORAGE permission")
             }
         }
 
         val dialog = MaterialDialog(requireActivity())
             .title(title)
             .message(text = msg)
-            .positiveButton(R.string.delete_action) {
-//                PlaylistsUtil.deletePlaylists(requireActivity(), playlists)
-                MediaStoreUtil.deletePlaylists(requireActivity(), playlists)
-            }
             .negativeButton(android.R.string.cancel) { dismiss() }
-        // grant permission button for R
-        if (!hasPermission) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                dialog.neutralButton(R.string.grant_permission) {
-                    val intent = Intent(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION).apply { // todo
-//                            data = Uri.parse("package:${context.packageName}")
-                        flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                    }
-                    Handler().postDelayed({ attachedActivity.startActivity(intent) }, 200)
-                }
+            .positiveButton(R.string.delete_action) {
+                PlaylistsManager(
+                    attachedActivity,
+                    if (attachedActivity is SAFCallbackHandlerActivity) attachedActivity else null
+                ).deletePlaylistWithGuide(playlists)
             }
-        }
-        // set button color
-        dialog.getActionButton(WhichButton.POSITIVE).updateTextColor(ThemeColor.accentColor(requireActivity()))
-        dialog.getActionButton(WhichButton.NEGATIVE).updateTextColor(ThemeColor.accentColor(requireActivity()))
-        dialog.getActionButton(WhichButton.NEUTRAL).updateTextColor(ThemeColor.accentColor(requireActivity()))
+            .also {
+                // grant permission button for R
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && !hasPermission) {
+                    it.neutralButton(R.string.grant_permission) {
+                        val intent = Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION).apply {
+                            data = Uri.parse("package:${attachedActivity.packageName}")
+                            flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                        }
+                        startActivity(intent)
+                    }
+                }
+                // set button color
+                it.getActionButton(WhichButton.POSITIVE).updateTextColor(ThemeColor.accentColor(attachedActivity))
+                it.getActionButton(WhichButton.NEGATIVE).updateTextColor(ThemeColor.accentColor(attachedActivity))
+                it.getActionButton(WhichButton.NEUTRAL).updateTextColor(ThemeColor.accentColor(attachedActivity))
+            }
 
         return dialog
     }

@@ -1,12 +1,11 @@
 package player.phonograph.helper.menu
 
 import android.app.Activity
-import android.content.Intent
-import android.os.Bundle
-import android.os.Message
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat.startActivityForResult
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import player.phonograph.*
 import player.phonograph.dialogs.AddToPlaylistDialog
 import player.phonograph.dialogs.DeletePlaylistDialog
@@ -16,14 +15,9 @@ import player.phonograph.loader.PlaylistSongLoader
 import player.phonograph.model.AbsCustomPlaylist
 import player.phonograph.model.Playlist
 import player.phonograph.model.Song
-import player.phonograph.model.smartplaylist.AbsSmartPlaylist
-import player.phonograph.model.smartplaylist.HistoryPlaylist
-import player.phonograph.model.smartplaylist.LastAddedPlaylist
-import player.phonograph.model.smartplaylist.MyTopTracksPlaylist
-import player.phonograph.ui.activities.base.AbsMusicServiceActivity
-import java.text.SimpleDateFormat
-import java.util.Calendar
-import java.util.Locale
+import player.phonograph.util.SAFCallbackHandlerActivity
+import util.phonograph.m3u.PlaylistsManager
+import java.util.*
 import kotlin.collections.ArrayList
 
 /**
@@ -64,42 +58,14 @@ object PlaylistMenuHelper {
                 return true
             }
             R.id.action_save_playlist -> {
+                GlobalScope.launch(Dispatchers.Default) {
 
-                val intent = Intent(Intent.ACTION_CREATE_DOCUMENT).apply {
-                    addCategory(Intent.CATEGORY_OPENABLE)
-                    type = "audio/x-mpegurl"
-                    putExtra(
-                        Intent.EXTRA_TITLE,
-                        playlist.name +
-                            SimpleDateFormat(
-                                "_yy-MM-dd_HH-mm", Locale.getDefault()
-                            ).format(Calendar.getInstance().time)
-                    )
-                }
-
-                startActivityForResult(activity, intent, REQUEST_CODE_SAVE_PLAYLIST, null)
-
-                val msgBundle = Bundle()
-                if (playlist is AbsSmartPlaylist) {
-                    val type: String = when (playlist) {
-                        is HistoryPlaylist -> HistoryPlaylist
-                        is LastAddedPlaylist -> LastAddedPlaylist
-                        is MyTopTracksPlaylist -> MyTopTracksPlaylist
-                        else -> "Smart"
+                    if (activity is SAFCallbackHandlerActivity) {
+                        PlaylistsManager(activity, activity).duplicatePlaylistViaSaf(playlist)
+                    } else {
+                        PlaylistsManager(activity, null).duplicatePlaylistViaSaf(playlist)
                     }
-                    msgBundle.putString(TYPE, type)
-                } else {
-                    msgBundle.putString(TYPE, NormalPlaylist)
-                    msgBundle.putLong(PLAYLIST_ID, playlist.id)
                 }
-
-                (activity as AbsMusicServiceActivity).handler?.let { handler ->
-                    val msg = Message.obtain(handler, REQUEST_CODE_SAVE_PLAYLIST).also {
-                        it.data = msgBundle
-                    }
-                    handler.sendMessageDelayed(msg, 10)
-                }
-
                 return true
             }
         }

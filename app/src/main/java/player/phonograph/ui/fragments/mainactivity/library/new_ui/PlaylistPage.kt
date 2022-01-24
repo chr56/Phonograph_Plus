@@ -24,7 +24,7 @@ import player.phonograph.model.Playlist
 import player.phonograph.model.smartplaylist.HistoryPlaylist
 import player.phonograph.model.smartplaylist.LastAddedPlaylist
 import player.phonograph.model.smartplaylist.MyTopTracksPlaylist
-import player.phonograph.util.MediaStoreUtil
+import player.phonograph.util.PlaylistsUtil
 import player.phonograph.util.ViewUtil
 import java.util.ArrayList
 
@@ -96,7 +96,7 @@ class PlaylistPage : AbsPage() {
                 LastAddedPlaylist(context),
                 HistoryPlaylist(context),
                 MyTopTracksPlaylist(context)
-            ).also { it.addAll(MediaStoreUtil.getAllPlaylists(context)) }
+            ).also { it.addAll(PlaylistsUtil.getAllPlaylists(context)) }
 
             while (!isRecyclerViewPrepared) yield() // wait until ready
 

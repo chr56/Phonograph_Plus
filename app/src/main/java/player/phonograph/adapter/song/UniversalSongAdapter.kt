@@ -34,10 +34,7 @@ import player.phonograph.model.Album
 import player.phonograph.model.Playlist
 import player.phonograph.model.Song
 import player.phonograph.model.smartplaylist.AbsSmartPlaylist
-import player.phonograph.util.MediaStoreUtil
-import player.phonograph.util.MusicUtil
-import player.phonograph.util.NavigationUtil
-import player.phonograph.util.PreferenceUtil
+import player.phonograph.util.*
 
 @Suppress("unused")
 open class UniversalSongAdapter :
@@ -192,7 +189,7 @@ open class UniversalSongAdapter :
                 .also {
                     it.text = linkedPlaylist?.let { playlist ->
                         if (playlist is AbsSmartPlaylist) "-" else
-                            MediaStoreUtil.getPlaylistPath(activity, playlist)
+                            PlaylistsUtil.getPlaylistPath(activity, playlist)
                     } ?: "-"
                     it.setTextColor(textColor)
                 }
@@ -205,7 +202,7 @@ open class UniversalSongAdapter :
         durationText?.text = linkedPlaylist?.let { MusicUtil.getReadableDurationString(MusicUtil.getTotalDuration(activity, songs)) } ?: "-"
         path?.text = linkedPlaylist?.let { playlist ->
             if (playlist is AbsSmartPlaylist) "-" else
-                MediaStoreUtil.getPlaylistPath(activity, playlist)
+                PlaylistsUtil.getPlaylistPath(activity, playlist)
         } ?: "-"
     }
 

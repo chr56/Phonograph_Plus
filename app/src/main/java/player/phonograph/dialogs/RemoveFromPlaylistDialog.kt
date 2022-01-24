@@ -8,9 +8,9 @@ import chr_56.MDthemer.core.ThemeColor
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.WhichButton
 import com.afollestad.materialdialogs.actions.getActionButton
+import legacy.phonograph.LegacyPlaylistsUtil
 import player.phonograph.R
 import player.phonograph.model.PlaylistSong
-import player.phonograph.util.PlaylistsUtil
 import java.util.*
 
 /**
@@ -23,18 +23,19 @@ class RemoveFromPlaylistDialog : DialogFragment() {
         val content: CharSequence
         val msg: StringBuffer = StringBuffer()
 
-        msg.append(Html.fromHtml(
-            resources.getQuantityString(R.plurals.msg_song_removal_summary, songs.size, songs.size)
-            , Html.FROM_HTML_MODE_LEGACY)
+        msg.append(
+            Html.fromHtml(
+                resources.getQuantityString(R.plurals.msg_song_removal_summary, songs.size, songs.size), Html.FROM_HTML_MODE_LEGACY
+            )
         )
-        songs.forEach{ song ->
+        songs.forEach { song ->
             msg.append(song.title).appendLine()
         }
         val dialog = MaterialDialog(requireActivity())
             .title(title)
             .message(text = msg)
             .negativeButton(android.R.string.cancel)
-            .positiveButton(R.string.remove_action) { if (activity != null) PlaylistsUtil.removeFromPlaylist(requireActivity(), songs) }
+            .positiveButton(R.string.remove_action) { if (activity != null) LegacyPlaylistsUtil.removeFromPlaylist(requireActivity(), songs) }
         // set button color
         dialog.getActionButton(WhichButton.POSITIVE).updateTextColor(ThemeColor.accentColor(requireActivity()))
         dialog.getActionButton(WhichButton.NEGATIVE).updateTextColor(ThemeColor.accentColor(requireActivity()))

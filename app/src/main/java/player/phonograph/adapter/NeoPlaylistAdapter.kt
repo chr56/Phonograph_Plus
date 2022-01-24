@@ -1,17 +1,13 @@
 package player.phonograph.adapter
 
-import android.app.Activity
 import android.graphics.PorterDuff
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupMenu
-import android.widget.Toast
 import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.RecyclerView
 import chr_56.MDthemer.util.Util
 import kotlinx.coroutines.*
 import player.phonograph.R
@@ -30,9 +26,8 @@ import player.phonograph.model.smartplaylist.AbsSmartPlaylist
 import player.phonograph.model.smartplaylist.LastAddedPlaylist
 import player.phonograph.util.MusicUtil
 import player.phonograph.util.NavigationUtil
-import player.phonograph.util.PlaylistsUtil
-import java.io.IOException
-import java.lang.Exception
+import player.phonograph.util.SAFCallbackHandlerActivity
+import util.phonograph.m3u.PlaylistsManager
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
@@ -129,10 +124,10 @@ class NeoPlaylistAdapter(
                     .show(activity.supportFragmentManager, "DELETE_PLAYLIST")
             }
             R.id.action_save_playlist ->
-                if (selection.size == 1) {
-                    handleMenuClick(activity, selection[0], menuItem)
+                if (activity is SAFCallbackHandlerActivity) {
+                    PlaylistsManager(activity, activity).duplicatePlaylistsViaSaf(selection)
                 } else {
-                    savePlaylist(activity, selection)
+                    PlaylistsManager(activity, null).duplicatePlaylistsViaSaf(selection)
                 }
             else ->
                 // default, handle common items
@@ -150,36 +145,6 @@ class NeoPlaylistAdapter(
             }
         }
         return songs
-    }
-
-    private val backgroundCoroutineScope: CoroutineScope = CoroutineScope(Dispatchers.IO)
-    private fun savePlaylist(activity: Activity, playlists: List<Playlist>) {
-        backgroundCoroutineScope.launch {
-            var successes = 0
-            var failures = 0
-            var dir: String? = ""
-            for (playlist in playlists) {
-                if (!isActive) break
-                try {
-                    dir = PlaylistsUtil.savePlaylist(activity, playlist).parent
-                    successes++
-                } catch (e: IOException) {
-                    failures++
-                    e.printStackTrace()
-                }
-            }
-            val result =
-                if (failures == 0) String.format(
-                    activity.getString(R.string.saved_x_playlists_to_x),
-                    successes, dir
-                ) else String.format(
-                    activity.getString(R.string.saved_x_playlists_to_x_failed_to_save_x),
-                    successes, dir, failures
-                )
-            withContext(Dispatchers.Main) {
-                Toast.makeText(activity, result, Toast.LENGTH_LONG).show()
-            }
-        }
     }
 
     inner class ViewHolder(itemView: View, itemViewType: Int) : MediaEntryViewHolder(itemView) {
@@ -241,11 +206,6 @@ class NeoPlaylistAdapter(
             toggleChecked(bindingAdapterPosition)
             return true
         }
-    }
-
-    override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {
-        super.onDetachedFromRecyclerView(recyclerView)
-        try { backgroundCoroutineScope.coroutineContext[Job]?.cancel() } catch (e: Exception) { Log.i("BackgroundCoroutineScope", e.message.orEmpty()) }
     }
 
     companion object {

@@ -29,14 +29,28 @@
 <body>
     <h3 style="color: tomato">修改说明</h3>
 
-    <h4><b>0.0.9</b> 2022.1.*</h4>
+    <h4><b>0.1.0 Preview</b> 2022.1.*</h4>
     <div style="color: black">
         <ol>
+            <li>
+                修复 播放列表更改(新建/改名/删除)后,未能及时刷新（仅限App内操作）
+            </li>
+            <li>
+                改进 再删除播放列表失败后, 可尝试使用SAF(Storage Access Framework, 存储访问框架)授权目录后再次尝试删除（目前交互体验不佳, 且可能误删文件!!!）
+            </li>
+            <li>
+                改进 对于Android 10 (Q)以上版本用户, 使用SAF创建播放列表(包括新建空列表与保存播放器当前播放队列)
+            </li>
+            <li>
+                改进 使用SAF复制(保存)播放列表(单个播放列表可自定义名称, 多个播放列表同意添加时间后缀并保存在所选同一目录下)
+            </li>
+            <li>
+                改进 对于Android 10 (Q)以上版本用户, 使用SAF授权后再追加歌曲至已有播放列表（目前交互体验不佳）
+            </li>
             <li>开发 清理代码</li>
             <li>开发 移除ButterKnife</li>
             <li>开发 使用AGP 7.0.4 (以及Gradle7.1.1) 构建</li>
             <li>开发 升级Glide(3.8.0 -&gt; 4.12.0)</li>
-            <li></li>
         </ol>
     </div>
 
@@ -58,9 +72,7 @@
             <li>
                 改进 更新提示对话框, 允许忽略某个版本更新, 改进下载引导, 以及一系列可能的稀奇古怪的问题
             </li>
-            <li>开发 清理代码（可能
-                <del>又弄坏了什么</del> ）
-            </li>
+            <li>开发 清理代码（可能 <del>又弄坏了什么</del> ）</li>
         </ol>
     </div>
 
@@ -71,17 +83,13 @@
             <li>修复 正在播放曲目切换后，状态栏歌词偶尔未切换</li>
             <li>
                 变更 启动时检查更新使用通知提示(
-                <del>，并顺便微调了检查更新方式与对话框样式
-            </del
-            >
-            )，防止凭空弹出对话框引起崩溃
-        </li>
-        <li>
-            变更 尝试避免潜在的崩溃(似乎仅会出现在 Android 12
-            上)，准备适配向SDK31(Android12)迁移
-        </li>
-        <li>
-            <del>开发 尝试使用 Github Action 自动上传Preview版本</del>
+                <del>，并顺便微调了检查更新方式与对话框样式 </del> )，防止凭空弹出对话框引起崩溃
+            </li>
+            <li>
+                变更 尝试避免潜在的崩溃(似乎仅会出现在 Android 12 上)，准备适配向SDK31(Android12)迁移
+            </li>
+            <li>
+                <del>开发 尝试使用 Github Action 自动上传Preview版本</del>
             </li>
         </ol>
     </div>
@@ -91,126 +99,126 @@
         <ol>
             <li>
                 适配 支持新版<a href="https://github.com/577fkj/MIUIStatusBarLyric">MIUI状态栏歌词</a
-        >API变化 <br/>(请Hook本应用,
-            并在"MIUI状态栏歌词"-&gt;"软件列表"中开启,以生效)
+          >API变化 <br />(请Hook本应用,
+          并在"MIUI状态栏歌词"-&gt;"软件列表"中开启,以生效)
         </li>
-    </ol>
-</div>
+      </ol>
+    </div>
 
-<h4><b>0.0.5</b> 2021.12.04</h4>
-<div style="color: black">
-    <ol>
+    <h4><b>0.0.5</b> 2021.12.04</h4>
+    <div style="color: black">
+      <ol>
         <li>修复 无法显示内嵌歌词</li>
         <li>
-            新增 支持新版<a href="https://github.com/577fkj/MIUIStatusBarLyric"
-        >MIUI状态栏歌词</a
-        >API(请Hook本应用生效)
+          新增 支持新版<a href="https://github.com/577fkj/MIUIStatusBarLyric"
+            >MIUI状态栏歌词</a
+          >API(请Hook本应用生效)
         </li>
         <li>改进 微调歌词对话框</li>
         <li>改进 允许关闭歌词对话框时间轴信息显示(设置->显示歌词时间轴)</li>
         <li>改进 长按歌词对话框歌词转跳时间轴后, 自动关闭歌词对话框</li>
-    </ol>
-</div>
+      </ol>
+    </div>
 
-<div
-        style="
+    <div
+      style="
         margin-top: 2px;
         margin-bottom: 160px;
         margin-left: 2px;
         padding-top: 1px; ;
       "
->
-    <h4><b>0.0.4</b> 2021.12.03</h4>
-    <div style="color: black">
+    >
+      <h4><b>0.0.4</b> 2021.12.03</h4>
+      <div style="color: black">
         <ol>
-            <li>新增 允许关闭歌词广播</li>
-            <li>修复 关闭歌词显示后，无法发送歌词广播</li>
-            <li>
-                修复 歌词文件匹配错误<br/>（现在歌词读取顺序为: <b>内嵌</b>歌词
-                -&gt; <b>同文件名</b>的外载歌词 -&gt; 有
-                <b>前后缀</b>的同名的外载歌词）
-            </li>
-            <li>优化 代码</li>
-            <li>变更 版本号不再带有 Git Commit Hash</li>
-            <li>开发 加强代码混淆力度</li>
-            <li>
-                <del>开发 更换Github Actions 的CI构建签名</del>
-            </li>
+          <li>新增 允许关闭歌词广播</li>
+          <li>修复 关闭歌词显示后，无法发送歌词广播</li>
+          <li>
+            修复 歌词文件匹配错误<br />（现在歌词读取顺序为: <b>内嵌</b>歌词
+            -&gt; <b>同文件名</b>的外载歌词 -&gt; 有
+            <b>前后缀</b>的同名的外载歌词）
+          </li>
+          <li>优化 代码</li>
+          <li>变更 版本号不再带有 Git Commit Hash</li>
+          <li>开发 加强代码混淆力度</li>
+          <li>
+            <del>开发 更换Github Actions 的CI构建签名</del>
+          </li>
         </ol>
         <div>
-            注: 此版暂未适配新版<a
-                href="https://github.com/577fkj/MIUIStatusBarLyric"
-        >MIUI状态栏歌词</a
-        >API
+          注: 此版暂未适配新版<a
+            href="https://github.com/577fkj/MIUIStatusBarLyric"
+            >MIUI状态栏歌词</a
+          >API
         </div>
-    </div>
+      </div>
 
-    <h4><b>0.0.3</b> 2021.11.28</h4>
-    <div style="color: black">
+      <h4><b>0.0.3</b> 2021.11.28</h4>
+      <div style="color: black">
         <ol>
-            <li>修复 状态栏歌词适配</li>
-            <li>变更 更好的检查更新行为</li>
-            <li>新增 允许关闭检查更新弹窗</li>
-            <li>修复 浅色主色调下标题图标仍然为白色(仅部分修复)</li>
+          <li>修复 状态栏歌词适配</li>
+          <li>变更 更好的检查更新行为</li>
+          <li>新增 允许关闭检查更新弹窗</li>
+          <li>修复 浅色主色调下标题图标仍然为白色(仅部分修复)</li>
         </ol>
         <div>此外, 从该版本起,逐渐启用混淆（否则apk体积要破七了）</div>
-    </div>
+      </div>
 
-    <h4><b>0.0.2</b> 2021.11.15</h4>
-    <div style="color: black">
+      <h4><b>0.0.2</b> 2021.11.15</h4>
+      <div style="color: black">
         <ol>
-            <li>改进 歌曲与播放列表读取</li>
-            <li>
-                变更 播放列表现在支持黑名单, 无名播放列表("幽灵"播放列表)不再显示
-            </li>
-            <li>
-                变更 现在通过 SAF (Storage Access Framework, 存储访问框架)
-                另保存播放列表 (若同时保存多个, 则仍保存至/Download)
-            </li>
-            <li>改进 网络状态检测</li>
-            <li>新增 启动时检查更新</li>
-            <li>新增 检查更新对话框</li>
-            <li>
-                新增 适配"<a href="https://github.com/xiaowine/miui.statusbar.lyric"
-            >MIUI状态栏歌词</a
+          <li>改进 歌曲与播放列表读取</li>
+          <li>
+            变更 播放列表现在支持黑名单, 无名播放列表("幽灵"播放列表)不再显示
+          </li>
+          <li>
+            变更 现在通过 SAF (Storage Access Framework, 存储访问框架)
+            另保存播放列表 (若同时保存多个, 则仍保存至/Download)
+          </li>
+          <li>改进 网络状态检测</li>
+          <li>新增 启动时检查更新</li>
+          <li>新增 检查更新对话框</li>
+          <li>
+            新增 适配"<a href="https://github.com/xiaowine/miui.statusbar.lyric"
+              >MIUI状态栏歌词</a
             >"Xposed模块
-            </li>
-            <li>变更 播放列表页不再支持直接编辑</li>
-            <li>新增 专门的播放列表编辑页(仍未完工)</li>
-            <li>
-                开发 重构 歌曲弹出菜单, 播放列表, 设置 等相关代码 (若崩溃请及时反馈)
-            </li>
+          </li>
+          <li>变更 播放列表页不再支持直接编辑</li>
+          <li>新增 专门的播放列表编辑页(仍未完工)</li>
+          <li>
+            开发 重构 歌曲弹出菜单, 播放列表, 设置 等相关代码 (若崩溃请及时反馈)
+          </li>
         </ol>
-    </div>
+      </div>
 
-    <h4><b>0.0.1</b> (2021.10.21)</h4>
-    <p style="color: gray">初始版本</p>
-    <div style="color: black">
+      <h4><b>0.0.1</b> (2021.10.21)</h4>
+      <p style="color: gray">初始版本</p>
+      <div style="color: black">
         <ol>
-            <li>★更换包名为 player.phonograph.plus★</li>
-            <li>版本号重新计数</li>
-            <li>修复 主题"自动"下进入多选模式, 选择高亮失效</li>
-            <li>移除 残留的 Google Play 内购权限</li>
-            <li>适配 Android 11 分区存储(Scoped Storage)的删除操作</li>
-            <li>允许 卸载时保留数据</li>
-            <li>优化 崩溃报告页面, 现在提供更多设备信息并允许在该页面重置设置</li>
-            <li>优化 "关于"页面</li>
-            <li>优化 其他细节</li>
-            <li>开发 又重构了部分代码...</li>
+          <li>★更换包名为 player.phonograph.plus★</li>
+          <li>版本号重新计数</li>
+          <li>修复 主题"自动"下进入多选模式, 选择高亮失效</li>
+          <li>移除 残留的 Google Play 内购权限</li>
+          <li>适配 Android 11 分区存储(Scoped Storage)的删除操作</li>
+          <li>允许 卸载时保留数据</li>
+          <li>优化 崩溃报告页面, 现在提供更多设备信息并允许在该页面重置设置</li>
+          <li>优化 "关于"页面</li>
+          <li>优化 其他细节</li>
+          <li>开发 又重构了部分代码...</li>
         </ol>
-    </div>
-    <p style="color: gray">以下为之前紧急更新的更新日志</p>
-    <div style="color: gray">
+      </div>
+      <p style="color: gray">以下为之前紧急更新的更新日志</p>
+      <div style="color: gray">
         <ul style="padding: 16px">
-            <li>修复 歌曲列表使用网格试图(无论几列)闪退</li>
-            <li>修复 "详情"对话框卡死(若歌曲内嵌大图)</li>
-            <li>修复 弹出菜单主题失效</li>
-            <li>修复 第一次安装不弹出日志</li>
-            <li>新增 崩溃报告页面</li>
+          <li>修复 歌曲列表使用网格试图(无论几列)闪退</li>
+          <li>修复 "详情"对话框卡死(若歌曲内嵌大图)</li>
+          <li>修复 弹出菜单主题失效</li>
+          <li>修复 第一次安装不弹出日志</li>
+          <li>新增 崩溃报告页面</li>
         </ul>
-    </div>
-    <br/>
-    <a href="https://github.com/chr56/Phonograph_Plus">开源地址(GitHub)</a>
+      </div>
+      <br />
+      <a href="https://github.com/chr56/Phonograph_Plus">开源地址(GitHub)</a>
     </div>
 
     <div>以下是旧更新日志</div>
@@ -239,36 +247,33 @@
                 <li>
                     其他 重构部分代码
                     <del style="color: grey">(可能动了一些"不该动"的地方，然后引起某些崩溃或行为异常)
-                </del
-                >
-            </li>
-        </ol>
-    </div>
-
-    <h4>2021.9.21 <i>183</i></h4>
-    <div>
-        <ol>
-            <li>
-                新增 在详情对话框内显示所含Tag信息(标题, 专辑, 艺术家, 年代, 流派等)
-            </li>
-            <li>
-                新增 歌词对话框内显示歌词时间轴信息, 并可以通过长按进行快速转跳
-            </li>
-        </ol>
-    </div>
-
-    <h4>2021.9.11 <i>182</i></h4>
-    <div>
-        <ol>
-            <li>修复 对话框夜间模式无效</li>
-        </ol>
-        <p style="color: slategrey">已知Bug</p>
-        <ol style="margin-left: 5px">
-            <li>添加新黑名单后未能及时刷新黑名单列表显示</li>
-            <li>扫描媒体中选择文件夹对话框卡慢</li>
-            <li>睡眠定时器"播完最后一首"
-                <del>随缘</del> 生效
+            </del>
                 </li>
+            </ol>
+        </div>
+
+        <h4>2021.9.21 <i>183</i></h4>
+        <div>
+            <ol>
+                <li>
+                    新增 在详情对话框内显示所含Tag信息(标题, 专辑, 艺术家, 年代, 流派等)
+                </li>
+                <li>
+                    新增 歌词对话框内显示歌词时间轴信息, 并可以通过长按进行快速转跳
+                </li>
+            </ol>
+        </div>
+
+        <h4>2021.9.11 <i>182</i></h4>
+        <div>
+            <ol>
+                <li>修复 对话框夜间模式无效</li>
+            </ol>
+            <p style="color: slategrey">已知Bug</p>
+            <ol style="margin-left: 5px">
+                <li>添加新黑名单后未能及时刷新黑名单列表显示</li>
+                <li>扫描媒体中选择文件夹对话框卡慢</li>
+                <li>睡眠定时器"播完最后一首" <del>随缘</del> 生效</li>
                 <li>
                     <del>安装包体积膨胀至6MB以上</del>
                 </li>
@@ -277,7 +282,7 @@
             </ol>
             <p style="color: slategrey; margin-top: 0dp">可能仍有其他轻微Bug</p>
         </div>
-        <br/>
+        <br />
 
         <h4>2021.08.06 <i>181</i></h4>
         <div>
@@ -287,7 +292,7 @@
                 <li>优化 主题切换按钮</li>
             </ol>
         </div>
-        <br/>
+        <br />
 
         <h4>2021.08.04 <i>180</i></h4>
         <div>
@@ -297,8 +302,8 @@
                 <li>抽屉新增主题切换开关（将就用吧）</li>
             </ol>
         </div>
-        <br/>
-        <br/>
+        <br />
+        <br />
         <a href="https://github.com/chr56/Phonograph">开源地址(GitHub)</a>
     </div>
 
@@ -312,29 +317,29 @@
 
         <p>
             <b>Version 1.3.5</b>
-            <br/>
+            <br />
             <b>FIX:</b> Fix crash on Android 11
-            <br/>
+            <br />
             <b>IMPROVEMENT:</b> Sync translations
         </p>
 
         <p>
             <b>Version 1.3.4</b> <b>FIX:</b> Crash for some users
-            <br/>
+            <br />
             <b>IMPROVEMENT:</b> Sync translations
         </p>
 
         <p>
             <b>Version 1.3.3</b>
-            <br/>
+            <br />
             <b>FIX:</b> Compatibility with Android 10 (tag editing, deleting songs, etc.).
-            <br/>
+            <br />
             <b>FIX:</b> Deleting from playlists.
-            <br/>
+            <br />
             <b>FIX:</b> Sleep timer when gapless playback was enabled.
-            <br/>
+            <br />
             <b>FIX:</b> Broken links.
-            <br/>
+            <br />
             <b>IMPROVEMENT:</b> Sync translations
         </p>
     </div>

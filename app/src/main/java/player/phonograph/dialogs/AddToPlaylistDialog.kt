@@ -9,8 +9,9 @@ import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.list.listItemsSingleChoice
 import player.phonograph.R
 import player.phonograph.model.Song
-import player.phonograph.util.MediaStoreUtil
 import player.phonograph.util.PlaylistsUtil
+import player.phonograph.util.SAFCallbackHandlerActivity
+import util.phonograph.m3u.PlaylistsManager
 
 /**
  * @author Karim Abou Zeid (kabouzeid), Aidan Follestad (afollestad)
@@ -18,15 +19,15 @@ import player.phonograph.util.PlaylistsUtil
 class AddToPlaylistDialog : DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val songs: List<Song> = requireArguments().getParcelableArrayList(SONG)!!
-        val playlists = MediaStoreUtil.getAllPlaylists(requireActivity())
+        val playlists = PlaylistsUtil.getAllPlaylists(requireActivity())
 
         val playlistNames: List<CharSequence> = List<CharSequence>(playlists.size + 1) {
             if (it == 0) {
                 requireActivity().resources.getString(R.string.action_new_playlist)
             } else {
                 if (playlists[it - 1].name.isNullOrEmpty()) {
-                    Log.w("AddToPlaylistDialog","A playlist has null name!!!")
-                    Toast.makeText(requireContext(),"There is/are (a )playlist(s) with null name, please check playlist!🤔", Toast.LENGTH_SHORT).show()
+                    Log.w("AddToPlaylistDialog", "A playlist has null name!!!")
+                    Toast.makeText(requireContext(), "There is/are (a )playlist(s) with null name, please check playlist!🤔", Toast.LENGTH_SHORT).show()
                     "Null Name Playlist ?!🤔"
                 } else {
                     playlists[it - 1].name
@@ -41,7 +42,12 @@ class AddToPlaylistDialog : DialogFragment() {
                     CreatePlaylistDialog.create(songs).show(requireActivity().supportFragmentManager, "ADD_TO_PLAYLIST")
                 } else {
                     materialDialog.dismiss()
-                    PlaylistsUtil.addToPlaylist(requireActivity(), songs, playlists[index - 1].id, true)
+                    val activity = requireActivity()
+                    if (activity is SAFCallbackHandlerActivity) {
+                        PlaylistsManager(activity, activity).appendPlaylist(songs, playlist = playlists[index - 1])
+                    } else {
+                        PlaylistsManager(activity, null).appendPlaylist(songs, playlist = playlists[index - 1])
+                    }
                 }
             }
     }

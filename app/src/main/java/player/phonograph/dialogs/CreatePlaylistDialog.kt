@@ -13,6 +13,9 @@ import com.afollestad.materialdialogs.input.input
 import player.phonograph.R
 import player.phonograph.model.Song
 import player.phonograph.util.PlaylistsUtil
+import player.phonograph.util.SAFCallbackHandlerActivity
+import util.phonograph.m3u.PlaylistsManager
+
 /**
  * @author Karim Abou Zeid (kabouzeid), Aidan Follestad (afollestad)
  */
@@ -28,29 +31,24 @@ class CreatePlaylistDialog : DialogFragment() {
                     InputType.TYPE_TEXT_VARIATION_PERSON_NAME or
                     InputType.TYPE_TEXT_FLAG_CAP_WORDS,
                 hintRes = R.string.playlist_name_empty,
+                waitForPositiveButton = true,
                 allowEmpty = false
-            ) { _, charSequence ->
-                if (activity == null) return@input
-                val name: String = charSequence.toString().trim()
-                if (name.isNotEmpty()) {
-                    if (!PlaylistsUtil.doesPlaylistExist(requireActivity(), name)) {
-                        val playlistId = PlaylistsUtil.createPlaylist(requireActivity(), name)
-                        if (activity != null) {
-                            if (songs != null && songs.isNotEmpty()) {
-                                dismiss()
-                                PlaylistsUtil.addToPlaylist(requireActivity(), songs, playlistId, true)
-                            }
-                        }
+            ) { _, input ->
+                val name = input.toString().trim()
+                if (name.isEmpty()) {
+                    Toast.makeText(requireContext(), getString(R.string.failed), Toast.LENGTH_SHORT).show()
+                    return@input
+                }
+                if (!PlaylistsUtil.doesPlaylistExist(requireActivity(), name)) {
+                    val activity = requireActivity()
+                    if (activity is SAFCallbackHandlerActivity) {
+                        PlaylistsManager(activity, activity).createPlaylist(name, songs)
                     } else {
-                        Toast.makeText(
-                            activity,
-                            requireActivity().resources.getString(
-                                R.string.playlist_exists, name
-                            ),
-                            Toast.LENGTH_SHORT
-                        ).show()
-                        dismiss()
+                        PlaylistsManager(activity, null).createPlaylist(name, songs)
                     }
+                } else {
+                    Toast.makeText(requireContext(), requireActivity().resources.getString(R.string.playlist_exists, name), Toast.LENGTH_SHORT).show()
+                    dismiss()
                 }
             }
         // set button color
