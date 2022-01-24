@@ -16,6 +16,7 @@ import kotlinx.coroutines.yield
 import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.adapter.display.DisplayAdapter
+import player.phonograph.adapter.display.SongDisplayAdapter
 import player.phonograph.databinding.PopupWindowMainBinding
 import player.phonograph.helper.SortOrder
 import player.phonograph.model.Song
@@ -39,7 +40,7 @@ class SongPage : AbsDisplayPage<Song, DisplayAdapter<Song>, GridLayoutManager>()
             TAG, "layoutRes: ${ if (layoutRes == R.layout.item_grid) "GRID" else if (layoutRes == R.layout.item_list) "LIST" else "UNKNOWN" }"
         )
 
-        return DisplayAdapter(
+        return SongDisplayAdapter(
             hostFragment.mainActivity,
             hostFragment,
             ArrayList(), // empty until songs loaded

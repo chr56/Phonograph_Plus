@@ -15,6 +15,7 @@ import kotlinx.coroutines.withContext
 import kotlinx.coroutines.yield
 import player.phonograph.App
 import player.phonograph.R
+import player.phonograph.adapter.display.ArtistDisplayAdapter
 import player.phonograph.adapter.display.DisplayAdapter
 import player.phonograph.databinding.PopupWindowMainBinding
 import player.phonograph.helper.SortOrder
@@ -39,7 +40,7 @@ class ArtistPage : AbsDisplayPage<Artist, DisplayAdapter<Artist>, GridLayoutMana
             TAG, "layoutRes: ${ if (layoutRes == R.layout.item_grid) "GRID" else if (layoutRes == R.layout.item_list) "LIST" else "UNKNOWN" }"
         )
 
-        return DisplayAdapter(
+        return ArtistDisplayAdapter(
             hostFragment.mainActivity,
             hostFragment,
             ArrayList(), // empty until Artist loaded
@@ -107,7 +108,6 @@ class ArtistPage : AbsDisplayPage<Artist, DisplayAdapter<Artist>, GridLayoutMana
             SortOrder.ArtistSortOrder.ARTIST_A_Z, SortOrder.ArtistSortOrder.ARTIST_Z_A -> popup.sortOrderContent.check(R.id.sort_order_artist)
             else -> { popup.sortOrderContent.clearCheck() }
         }
-
     }
 
     override fun initOnDismissListener(popupMenu: PopupWindow, popup: PopupWindowMainBinding): PopupWindow.OnDismissListener {
