@@ -36,7 +36,6 @@ import util.phonograph.m3u.internal.M3UGenerator
 import util.phonograph.m3u.internal.appendTimestampSuffix
 import java.io.File
 import java.io.IOException
-import java.text.SimpleDateFormat
 import java.util.*
 
 class PlaylistsManager(private val context: Context, requester: SAFCallbackHandlerActivity?) {
@@ -45,7 +44,7 @@ class PlaylistsManager(private val context: Context, requester: SAFCallbackHandl
 
     fun createPlaylist(name: String, songs: List<Song>? = null, path: String? = null) {
         GlobalScope.launch(Dispatchers.Default) {
-            if (activity != null && safLauncher != null) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && activity != null && safLauncher != null) {
                 FileOperator.createPlaylistViaSAF(name, songs, safLauncher, activity)
             } else {
                 // legacy ways
