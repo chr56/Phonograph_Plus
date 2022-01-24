@@ -123,7 +123,7 @@ object LegacyPlaylistsUtil {
     )
     fun addToPlaylist(context: Context, songs: List<Song>, playlistId: Long, showToastOnFinish: Boolean) {
 
-        val uri = PlaylistsUtil.getPlaylistUris(playlistId)
+        val uri = MediaStore.Audio.Playlists.Members.getContentUri("external", playlistId)
         var cursor: Cursor? = null
         var base = 0
         try {
