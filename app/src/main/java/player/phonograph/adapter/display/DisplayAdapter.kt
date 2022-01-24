@@ -45,7 +45,7 @@ open class DisplayAdapter<I : Displayable>(
 
     var usePalette: Boolean = false
 
-    var showSectionName: Boolean = false
+    var showSectionName: Boolean = true
 
     override var multiSelectMenuRes: Int = R.menu.menu_media_selection
 
@@ -91,11 +91,7 @@ open class DisplayAdapter<I : Displayable>(
         if (dataset.isNotEmpty()) dataset[0].multiMenuHandler()?.invoke(activity, selection, menuItem.itemId)
     }
 
-    override fun getSectionName(position: Int): String {
-        if (!showSectionName) return ""
-
-        return dataset[position].getSortOrderReference()?.substring(0..1) ?: "-" // TODO
-    }
+    override fun getSectionName(position: Int): String = if (showSectionName) getSectionNameImp(position) else ""
 
     // for inheriting
     protected fun setPaletteColors(color: Int, holder: DisplayViewHolder) {
@@ -105,6 +101,9 @@ open class DisplayAdapter<I : Displayable>(
             holder.text?.setTextColor(MaterialColorHelper.getSecondaryTextColor(activity, ColorUtil.isColorLight(color)))
         }
     }
+
+    // for inheriting
+    open fun getSectionNameImp(position: Int): String = dataset[position].getSortOrderReference()?.substring(0..1) ?: ""
 
     inner class DisplayViewHolder(itemView: View) : UniversalMediaEntryViewHolder(itemView), MediaEntryViewClickListener {
 

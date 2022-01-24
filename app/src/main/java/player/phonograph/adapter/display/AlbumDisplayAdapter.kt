@@ -9,8 +9,11 @@ import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import player.phonograph.glide.PhonographColoredTarget
 import player.phonograph.glide.SongGlideRequest
+import player.phonograph.helper.SortOrder
 import player.phonograph.interfaces.MultiSelectionCabProvider
 import player.phonograph.model.Album
+import player.phonograph.util.MusicUtil
+import player.phonograph.util.PreferenceUtil
 
 class AlbumDisplayAdapter(
     activity: AppCompatActivity,
@@ -37,5 +40,18 @@ class AlbumDisplayAdapter(
                     }
                 })
         }
+    }
+    override fun getSectionNameImp(position: Int): String {
+        val sectionName =
+            when (PreferenceUtil.getInstance(activity).albumSortOrder) {
+                SortOrder.AlbumSortOrder.ALBUM_A_Z, SortOrder.AlbumSortOrder.ALBUM_Z_A ->
+                    MusicUtil.getSectionName(dataset[position].title)
+                SortOrder.AlbumSortOrder.ALBUM_ARTIST, SortOrder.AlbumSortOrder.ALBUM_ARTIST_REVERT ->
+                    MusicUtil.getSectionName(dataset[position].artistName)
+                SortOrder.AlbumSortOrder.ALBUM_YEAR, SortOrder.AlbumSortOrder.ALBUM_YEAR_REVERT ->
+                    MusicUtil.getSectionName(MusicUtil.getYearString(dataset[position].year))
+                else -> { "" }
+            }
+        return sectionName
     }
 }

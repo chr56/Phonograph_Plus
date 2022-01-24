@@ -9,8 +9,11 @@ import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import player.phonograph.glide.ArtistGlideRequest
 import player.phonograph.glide.PhonographColoredTarget
+import player.phonograph.helper.SortOrder
 import player.phonograph.interfaces.MultiSelectionCabProvider
 import player.phonograph.model.Artist
+import player.phonograph.util.MusicUtil
+import player.phonograph.util.PreferenceUtil
 
 class ArtistDisplayAdapter(
     activity: AppCompatActivity,
@@ -36,5 +39,13 @@ class ArtistDisplayAdapter(
                     }
                 })
         }
+    }
+    override fun getSectionNameImp(position: Int): String {
+        val sectionName =
+            when (PreferenceUtil.getInstance(activity).artistSortOrder) {
+                SortOrder.ArtistSortOrder.ARTIST_A_Z, SortOrder.ArtistSortOrder.ARTIST_Z_A -> dataset[position].name
+                else -> { "" }
+            }
+        return MusicUtil.getSectionName(sectionName)
     }
 }
