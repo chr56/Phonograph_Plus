@@ -71,9 +71,12 @@ class DisplayAdapter<I : Displayable>(
         holder.title?.text = item.getDisplayTitle()
         holder.text?.text = item.getDescription()
         holder.shortSeparator?.visibility = View.VISIBLE
+        setImage(holder)
+    }
+
+    fun setImage(holder: DisplayViewHolder) {
         holder.image?.also {
             it.setImageDrawable(defaultIcon)
-//            TODO()
         }
     }
 
