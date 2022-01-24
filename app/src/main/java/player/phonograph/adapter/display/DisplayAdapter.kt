@@ -2,7 +2,7 @@
  * Copyright (c) 2022 chr_56 & Abou Zeid (kabouzeid) (original author)
  */
 
-package player.phonograph.adapter
+package player.phonograph.adapter.display
 
 import android.view.LayoutInflater
 import android.view.MenuItem

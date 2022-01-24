@@ -15,7 +15,7 @@ import kotlinx.coroutines.withContext
 import kotlinx.coroutines.yield
 import player.phonograph.App
 import player.phonograph.R
-import player.phonograph.adapter.DisplayAdapter
+import player.phonograph.adapter.display.DisplayAdapter
 import player.phonograph.databinding.PopupWindowMainBinding
 import player.phonograph.helper.SortOrder
 import player.phonograph.model.Song
