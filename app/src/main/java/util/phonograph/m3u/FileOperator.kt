@@ -31,9 +31,9 @@ import player.phonograph.util.UriCallback
 import player.phonograph.util.Util.coroutineToast
 import player.phonograph.util.Util.sentPlaylistChangedLocalBoardCast
 import util.phonograph.m3u.internal.M3UGenerator
+import util.phonograph.m3u.internal.appendTimestampSuffix
 import java.io.FileNotFoundException
 import java.io.IOException
-import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -226,10 +226,9 @@ object FileOperator {
                             try {
                                 val dir = DocumentFile.fromTreeUri(context, treeUri)
                                 if (dir != null && dir.isDirectory) {
-                                    val suffix = SimpleDateFormat("_yy-MM-dd_HH-mm", Locale.getDefault()).format(Calendar.getInstance().time)
 
                                     playlists.forEach { playlist ->
-                                        val file = dir.createFile("audio/x-mpegurl", playlist.name + suffix)
+                                        val file = dir.createFile("audio/x-mpegurl", appendTimestampSuffix(playlist.name))
                                         if (file != null) {
                                             val outputStream = context.contentResolver.openOutputStream(file.uri)
                                             if (outputStream != null) {

@@ -33,6 +33,7 @@ import player.phonograph.util.SAFCallbackHandlerActivity
 import player.phonograph.util.SafLauncher
 import player.phonograph.util.Util.coroutineToast
 import util.phonograph.m3u.internal.M3UGenerator
+import util.phonograph.m3u.internal.appendTimestampSuffix
 import java.io.File
 import java.io.IOException
 import java.text.SimpleDateFormat
@@ -147,7 +148,6 @@ class PlaylistsManager(private val context: Context, requester: SAFCallbackHandl
         }
     }
     fun duplicatePlaylistViaSaf(playlist: Playlist) {
-        val suffix = SimpleDateFormat("_yy-MM-dd_HH-mm", Locale.getDefault()).format(Calendar.getInstance().time)
         val songs: List<Song> =
             when (playlist) {
                 is AbsCustomPlaylist -> {
@@ -157,7 +157,7 @@ class PlaylistsManager(private val context: Context, requester: SAFCallbackHandl
                     PlaylistSongLoader.getPlaylistSongList(context, playlist.id)
                 }
             }
-        createPlaylist(playlist.name + suffix, songs)
+        createPlaylist(appendTimestampSuffix(playlist.name), songs)
     }
 
     private suspend fun legacySavePlaylists(playlists: List<Playlist>) {
