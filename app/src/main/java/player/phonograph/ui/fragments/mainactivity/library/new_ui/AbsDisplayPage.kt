@@ -56,15 +56,16 @@ sealed class AbsDisplayPage<IT, A : RecyclerView.Adapter<*>, LM : RecyclerView.L
         return binding.root
     }
 
-//    protected var outerAppbarOffsetListener =
-//        AppBarLayout.OnOffsetChangedListener { _, verticalOffset ->
-//            binding.container.setPadding(
-//                binding.container.paddingLeft,
-//                binding.container.paddingTop,
-//                binding.container.paddingRight,
-//                hostFragment.totalAppBarScrollingRange + verticalOffset
-//            )
-//        }
+    // for mini player bar
+    protected var outerAppbarOffsetListener =
+        AppBarLayout.OnOffsetChangedListener { _, verticalOffset ->
+            binding.container.setPadding(
+                binding.container.paddingLeft,
+                binding.container.paddingTop,
+                binding.container.paddingRight,
+                hostFragment.totalAppBarScrollingRange + verticalOffset
+            )
+        }
 
     protected var innerAppbarOffsetListener =
         AppBarLayout.OnOffsetChangedListener { _, verticalOffset ->
@@ -126,7 +127,6 @@ sealed class AbsDisplayPage<IT, A : RecyclerView.Adapter<*>, LM : RecyclerView.L
     protected fun initAppBar() {
 
         binding.innerAppBar.setExpanded(false)
-//        hostFragment.addOnAppBarOffsetChangedListener(outerAppbarOffsetListener)
         binding.innerAppBar.addOnOffsetChangedListener(innerAppbarOffsetListener)
         val actionDrawable = AppCompatResources.getDrawable(
             hostFragment.mainActivity,
@@ -139,6 +139,8 @@ sealed class AbsDisplayPage<IT, A : RecyclerView.Adapter<*>, LM : RecyclerView.L
             )
         binding.buttonPageHeader.setImageDrawable(actionDrawable)
         binding.buttonPageHeader.setOnClickListener { onPopupShow() }
+
+        hostFragment.addOnAppBarOffsetChangedListener(outerAppbarOffsetListener)
     }
 
     // all pages share/re-used one popup on host fragment
@@ -287,7 +289,7 @@ sealed class AbsDisplayPage<IT, A : RecyclerView.Adapter<*>, LM : RecyclerView.L
         adapter.unregisterAdapterDataObserver(adapterDataObserver)
 
         binding.innerAppBar.addOnOffsetChangedListener(innerAppbarOffsetListener)
-//        hostFragment.removeOnAppBarOffsetChangedListener(outerAppbarOffsetListener)
+        hostFragment.removeOnAppBarOffsetChangedListener(outerAppbarOffsetListener)
 //        _bindingPopup = null
         _viewBinding = null
     }
