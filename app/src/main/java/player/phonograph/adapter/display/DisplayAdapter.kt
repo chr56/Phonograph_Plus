@@ -12,6 +12,8 @@ import android.widget.PopupMenu
 import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
+import chr_56.MDthemer.util.ColorUtil
+import chr_56.MDthemer.util.MaterialColorHelper
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView
 import player.phonograph.R
 import player.phonograph.adapter.base.MediaEntryViewClickListener
@@ -21,8 +23,8 @@ import player.phonograph.interfaces.Displayable
 import player.phonograph.interfaces.MultiSelectionCabProvider
 import player.phonograph.model.Artist
 
-class DisplayAdapter<I : Displayable>(
-    private val activity: AppCompatActivity,
+open class DisplayAdapter<I : Displayable>(
+    protected val activity: AppCompatActivity,
     host: MultiSelectionCabProvider?,
     dataSet: List<I>,
     @LayoutRes var layoutRes: Int,
@@ -71,10 +73,10 @@ class DisplayAdapter<I : Displayable>(
         holder.title?.text = item.getDisplayTitle()
         holder.text?.text = item.getDescription()
         holder.shortSeparator?.visibility = View.VISIBLE
-        setImage(holder)
+        setImage(holder, position)
     }
 
-    fun setImage(holder: DisplayViewHolder) {
+    protected open fun setImage(holder: DisplayViewHolder, position: Int) {
         holder.image?.also {
             it.setImageDrawable(defaultIcon)
         }
@@ -93,6 +95,15 @@ class DisplayAdapter<I : Displayable>(
         if (!showSectionName) return ""
 
         return dataset[position].getSortOrderReference()?.substring(0..1) ?: "-" // TODO
+    }
+
+    // for inheriting
+    protected fun setPaletteColors(color: Int, holder: DisplayViewHolder) {
+        holder.paletteColorContainer?.let { paletteColorContainer ->
+            paletteColorContainer.setBackgroundColor(color)
+            holder.title?.setTextColor(MaterialColorHelper.getPrimaryTextColor(activity, ColorUtil.isColorLight(color)))
+            holder.text?.setTextColor(MaterialColorHelper.getSecondaryTextColor(activity, ColorUtil.isColorLight(color)))
+        }
     }
 
     inner class DisplayViewHolder(itemView: View) : UniversalMediaEntryViewHolder(itemView), MediaEntryViewClickListener {
