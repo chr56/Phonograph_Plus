@@ -99,18 +99,7 @@ class HomeFragment : AbsMainActivityFragment(), MainActivity.MainActivityFragmen
     }
 
     private fun readConfig(): PageConfig { // todo
-        return PageConfig(
-            HashMap<Int, String>(7)
-                .also {
-                    it[0] = PAGERS.EMPTY
-                    it[1] = PAGERS.SONG
-                    it[2] = PAGERS.ALBUM
-                    it[3] = PAGERS.ARTIST
-                    it[4] = PAGERS.PLAYLIST
-                    it[5] = PAGERS.GENRE
-                    it[6] = PAGERS.FOLDER
-                }
-        )
+        return PageConfig.DEFAULT_CONFIG
     }
 
     private val cfg: PageConfig get() = readConfig()

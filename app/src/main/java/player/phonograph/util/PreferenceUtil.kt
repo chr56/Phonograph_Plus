@@ -10,6 +10,7 @@ import android.content.SharedPreferences
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
+import android.util.Log
 import android.widget.Toast
 import androidx.annotation.StyleRes
 import androidx.preference.PreferenceManager
@@ -17,8 +18,12 @@ import chr_56.MDthemer.core.ThemeColor
 import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
 import com.google.gson.reflect.TypeToken
+import org.json.JSONException
+import org.json.JSONObject
 import player.phonograph.App
 import player.phonograph.R
+import player.phonograph.adapter.PageConfig
+import player.phonograph.adapter.PageConfigUtil
 import player.phonograph.helper.SortOrder
 import player.phonograph.model.CategoryInfo
 import player.phonograph.ui.fragments.mainactivity.folders.FoldersFragment
@@ -459,6 +464,34 @@ class PreferenceUtil(context: Context) {
         return mPreferences.getBoolean(INITIALIZED_BLACKLIST, false)
     }
 
+    var homeTabConfig: PageConfig
+        get() {
+            val rawString = mPreferences.getString(HOME_TAB_CONFIG, null)
+            val config: PageConfig = try {
+                PageConfigUtil.fromJson(JSONObject(rawString ?: ""))
+            } catch (e: JSONException) {
+                Log.e("Preference", "home tab config string $rawString")
+                Log.e("Preference", "Fail to parse home tab config string\n ${e.message}")
+                // return default
+                PageConfig.DEFAULT_CONFIG
+            }
+            // valid // TODO
+            return config
+        }
+        set(value) {
+            val json =
+                try {
+                    PageConfigUtil.toJson(value)
+                } catch (e: JSONException) {
+                    Log.e("Preference", "Save home tab config failed, use default. \n${e.message}")
+                    // return default
+                    PageConfigUtil.DEFAULT_CONFIG
+                }
+            val editor = mPreferences.edit()
+            editor.putString(HOME_TAB_CONFIG, json.toString(0))
+            editor.apply()
+        }
+
     var libraryCategoryInfos: List<CategoryInfo>?
         get() {
             val data = mPreferences.getString(LIBRARY_CATEGORIES, null)
@@ -628,6 +661,8 @@ class PreferenceUtil(context: Context) {
         const val INITIALIZED_BLACKLIST = "initialized_blacklist"
 
         const val LIBRARY_CATEGORIES = "library_categories"
+
+        const val HOME_TAB_CONFIG = "home_tab_config"
 
         private const val REMEMBER_SHUFFLE = "remember_shuffle"
 
