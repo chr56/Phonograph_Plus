@@ -97,7 +97,7 @@ object PageConfigUtil {
 
         val cfg = HashMap<Int, String>()
         for (i in 0 until array.length()) {
-            cfg[i] = array.optString(i).also { if (it.isNotBlank()) throw JSONException("Empty String at index $i") }
+            cfg[i] = array.optString(i).also { if (it.isBlank()) throw JSONException("Empty String at index $i") }
         }
         return PageConfig(cfg)
     }
