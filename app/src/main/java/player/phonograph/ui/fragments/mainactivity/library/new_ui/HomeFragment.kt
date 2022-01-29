@@ -5,6 +5,7 @@
 package player.phonograph.ui.fragments.mainactivity.library.new_ui
 
 import android.content.Intent
+import android.content.SharedPreferences
 import android.graphics.Color
 import android.os.Bundle
 import android.view.*
@@ -34,7 +35,7 @@ import player.phonograph.util.PhonographColorUtil
 import player.phonograph.util.PreferenceUtil
 import java.lang.ref.WeakReference
 
-class HomeFragment : AbsMainActivityFragment(), MainActivity.MainActivityFragmentCallbacks, MultiSelectionCabProvider {
+class HomeFragment : AbsMainActivityFragment(), MainActivity.MainActivityFragmentCallbacks, SharedPreferences.OnSharedPreferenceChangeListener, MultiSelectionCabProvider {
 
     private var _viewBinding: FragmentHomeBinding? = null
     private val binding: FragmentHomeBinding get() = _viewBinding!!
@@ -53,6 +54,8 @@ class HomeFragment : AbsMainActivityFragment(), MainActivity.MainActivityFragmen
         _viewBinding = null
         multiSelectionCab?.destroy()
         multiSelectionCab = null
+
+        PreferenceUtil.getInstance(requireActivity()).unregisterOnSharedPreferenceChangedListener(this)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -65,6 +68,8 @@ class HomeFragment : AbsMainActivityFragment(), MainActivity.MainActivityFragmen
 
         setupToolbar()
         setUpViewPager()
+
+        PreferenceUtil.getInstance(requireActivity()).registerOnSharedPreferenceChangedListener(this)
     }
     private fun setupToolbar() {
         val primaryColor = ThemeColor.primaryColor(requireActivity())
@@ -99,7 +104,7 @@ class HomeFragment : AbsMainActivityFragment(), MainActivity.MainActivityFragmen
     }
 
     private fun readConfig(): PageConfig { // todo
-        return PageConfig.DEFAULT_CONFIG
+        return PreferenceUtil.getInstance(mainActivity).homeTabConfig
     }
 
     private val cfg: PageConfig get() = readConfig()
@@ -122,6 +127,8 @@ class HomeFragment : AbsMainActivityFragment(), MainActivity.MainActivityFragmen
                 PAGERS.EMPTY -> tab.text = getString(R.string.empty)
             }
         }.attach()
+        binding.pager.offscreenPageLimit = if (pagerAdapter.itemCount> 1) pagerAdapter.itemCount - 1 else 1
+        updateTabVisibility()
     }
 
     override fun handleBackPress(): Boolean {
@@ -243,5 +250,40 @@ class HomeFragment : AbsMainActivityFragment(), MainActivity.MainActivityFragmen
         binding.toolbar.visibility = View.VISIBLE
         binding.tabs.visibility = View.VISIBLE
         binding.pager.isUserInputEnabled = true
+    }
+
+    override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
+        when (key) {
+            PreferenceUtil.HOME_TAB_CONFIG -> {
+                var oldPosition = binding.pager.currentItem
+                if (oldPosition < 0) oldPosition = 0
+
+                val current = pagerAdapter.cfg.get(oldPosition)
+
+                var newPosition = -1
+
+                readConfig().tabMap.forEach { entry: Map.Entry<Int, String> ->
+                    if (entry.value == current) {
+                        newPosition = entry.key
+                        return@forEach
+                    }
+                }
+                if (newPosition < 0) newPosition = 0
+
+                setUpViewPager()
+                binding.pager.currentItem = newPosition
+            }
+            PreferenceUtil.FIXED_TAB_LAYOUT -> {
+                binding.tabs.tabMode =
+                    if (PreferenceUtil.getInstance(requireContext()).fixedTabLayout())
+                        TabLayout.MODE_FIXED
+                    else
+                        TabLayout.MODE_SCROLLABLE
+            }
+        }
+    }
+    private fun updateTabVisibility() {
+        // hide the tab bar when only a single tab is visible
+        binding.tabs.visibility = if (pagerAdapter.itemCount == 1) View.GONE else View.VISIBLE
     }
 }
