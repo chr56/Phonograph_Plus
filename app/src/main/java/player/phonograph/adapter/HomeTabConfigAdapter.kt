@@ -14,6 +14,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
+import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.util.SwipeAndDragHelper
 import player.phonograph.util.SwipeAndDragHelper.ActionCompletionContract
@@ -54,7 +55,7 @@ class HomeTabConfigAdapter(private val config: PageConfig) : RecyclerView.Adapte
             )
             restAvailableTabs.removeFirst()
         }
-        holder.title.text = tabs.get(position)?.name ?: "ERROR"
+        holder.title.text = PAGERS.getDisplayName(tabs.get(position)?.name, App.instance)
 
         setupBehavior(holder, position)
     }
