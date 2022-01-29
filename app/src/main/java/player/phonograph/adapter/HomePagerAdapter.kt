@@ -4,11 +4,13 @@
 
 package player.phonograph.adapter
 
+import android.content.Context
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
+import player.phonograph.R
 import player.phonograph.ui.fragments.mainactivity.library.new_ui.*
 import java.lang.ref.WeakReference
 import kotlin.jvm.Throws
@@ -78,6 +80,19 @@ interface PAGERS {
         const val PLAYLIST = "PLAYLIST"
         const val GENRE = "GENRE"
         const val FOLDER = "FOLDER"
+
+        fun getDisplayName(pager: String?, context: Context): String {
+            return when (pager) {
+                SONG -> context.getString(R.string.songs)
+                ALBUM -> context.getString(R.string.albums)
+                ARTIST -> context.getString(R.string.artists)
+                PLAYLIST -> context.getString(R.string.playlists)
+                GENRE -> context.getString(R.string.genres)
+                FOLDER -> context.getString(R.string.folders)
+                EMPTY -> context.getString(R.string.empty)
+                else -> "UNKNOWN"
+            }
+        }
     }
 }
 

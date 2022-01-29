@@ -103,9 +103,7 @@ class HomeFragment : AbsMainActivityFragment(), MainActivity.MainActivityFragmen
         binding.tabs.setSelectedTabIndicatorColor(accentColor)
     }
 
-    private fun readConfig(): PageConfig { // todo
-        return PreferenceUtil.getInstance(mainActivity).homeTabConfig
-    }
+    private fun readConfig(): PageConfig = PreferenceUtil.getInstance(mainActivity).homeTabConfig
 
     private val cfg: PageConfig get() = readConfig()
 
@@ -117,15 +115,7 @@ class HomeFragment : AbsMainActivityFragment(), MainActivity.MainActivityFragmen
         binding.pager.orientation = ViewPager2.ORIENTATION_HORIZONTAL
         binding.pager.adapter = pagerAdapter
         TabLayoutMediator(binding.tabs, binding.pager) { tab: TabLayout.Tab, i: Int ->
-            when (cfg.get(i)) {
-                PAGERS.SONG -> tab.text = getString(R.string.songs)
-                PAGERS.ALBUM -> tab.text = getString(R.string.albums)
-                PAGERS.ARTIST -> tab.text = getString(R.string.artists)
-                PAGERS.PLAYLIST -> tab.text = getString(R.string.playlists)
-                PAGERS.GENRE -> tab.text = getString(R.string.genres)
-                PAGERS.FOLDER -> tab.text = getString(R.string.folders)
-                PAGERS.EMPTY -> tab.text = getString(R.string.empty)
-            }
+            tab.text = PAGERS.getDisplayName(cfg.get(i), requireContext())
         }.attach()
         binding.pager.offscreenPageLimit = if (pagerAdapter.itemCount> 1) pagerAdapter.itemCount - 1 else 1
         updateTabVisibility()
@@ -142,13 +132,7 @@ class HomeFragment : AbsMainActivityFragment(), MainActivity.MainActivityFragmen
         return false
     }
 
-    override fun handleFloatingActionButtonPress(): Boolean {
-        return false
-    }
-
-    companion object {
-        fun newInstance(): HomeFragment = HomeFragment()
-    }
+    override fun handleFloatingActionButtonPress(): Boolean = false
 
     /**
      *     the popup window for [AbsDisplayPage]
@@ -285,5 +269,9 @@ class HomeFragment : AbsMainActivityFragment(), MainActivity.MainActivityFragmen
     private fun updateTabVisibility() {
         // hide the tab bar when only a single tab is visible
         binding.tabs.visibility = if (pagerAdapter.itemCount == 1) View.GONE else View.VISIBLE
+    }
+
+    companion object {
+        fun newInstance(): HomeFragment = HomeFragment()
     }
 }
