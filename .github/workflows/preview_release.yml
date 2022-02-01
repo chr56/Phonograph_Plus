@@ -58,6 +58,8 @@ jobs:
         with:
           name: preview_release
           path: ${{steps.sign_app.outputs.signedReleaseFile}}
+          retention-days: 30
+
 
       - name: Upload mapping.txt
         uses: actions/upload-artifact@v2
