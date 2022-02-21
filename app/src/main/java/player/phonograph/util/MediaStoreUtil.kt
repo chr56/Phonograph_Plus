@@ -20,7 +20,7 @@ import com.afollestad.materialdialogs.MaterialDialog
 import player.phonograph.R
 import player.phonograph.model.Song
 import player.phonograph.provider.BlacklistStore
-import java.util.Locale
+import java.util.*
 import kotlin.collections.ArrayList
 
 object MediaStoreUtil {

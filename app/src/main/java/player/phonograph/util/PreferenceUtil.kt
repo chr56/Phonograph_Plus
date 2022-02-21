@@ -10,6 +10,7 @@ import android.content.SharedPreferences
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
+import android.util.Log
 import android.widget.Toast
 import androidx.annotation.StyleRes
 import androidx.preference.PreferenceManager
@@ -17,8 +18,12 @@ import chr_56.MDthemer.core.ThemeColor
 import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
 import com.google.gson.reflect.TypeToken
+import org.json.JSONException
+import org.json.JSONObject
 import player.phonograph.App
 import player.phonograph.R
+import player.phonograph.adapter.PageConfig
+import player.phonograph.adapter.PageConfigUtil
 import player.phonograph.helper.SortOrder
 import player.phonograph.model.CategoryInfo
 import player.phonograph.ui.fragments.mainactivity.folders.FoldersFragment
@@ -29,8 +34,9 @@ import java.util.ArrayList
 @SuppressLint("ApplySharedPref")
 class PreferenceUtil(context: Context) {
 
-//    private var sInstance: PreferenceUtil? = null
-    private val mPreferences: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+    //    private var sInstance: PreferenceUtil? = null
+    private val mPreferences: SharedPreferences =
+        PreferenceManager.getDefaultSharedPreferences(context)
 
 //    fun getInstance(context: Context): PreferenceUtil {
 //        return if (sInstance == null) PreferenceUtil(context.applicationContext)
@@ -76,6 +82,7 @@ class PreferenceUtil(context: Context) {
         get() = getThemeResFromPrefValue(
             mPreferences.getString(GENERAL_THEME, "auto")
         )
+
     fun setGeneralTheme(theme: String?) {
         val editor = mPreferences.edit()
         editor.putString(GENERAL_THEME, theme)
@@ -205,8 +212,13 @@ class PreferenceUtil(context: Context) {
             editor.commit()
         }
 
-    val genreSortOrder: String
+    var genreSortOrder: String
         get() = mPreferences.getString(GENRE_SORT_ORDER, SortOrder.GenreSortOrder.GENRE_A_Z)!!
+        set(sortOrder) {
+            val editor = mPreferences.edit()
+            editor.putString(GENRE_SORT_ORDER, sortOrder)
+            editor.commit()
+        }
 
     val lastAddedCutoff: Long
         get() {
@@ -286,6 +298,19 @@ class PreferenceUtil(context: Context) {
             editor.apply()
         }
 
+    var genreGridSize: Int
+        get() {
+            return mPreferences.getInt(
+                GENRE_GRID_SIZE,
+                App.instance.resources.getInteger(R.integer.default_list_columns)
+            )
+        }
+        set(gridSize) {
+            val editor = mPreferences.edit()
+            editor.putInt(GENRE_GRID_SIZE, gridSize)
+            editor.apply()
+        }
+
     var albumGridSizeLand: Int
         get() {
             return mPreferences.getInt(
@@ -320,6 +345,18 @@ class PreferenceUtil(context: Context) {
         set(gridSize) {
             val editor = mPreferences.edit()
             editor.putInt(ARTIST_GRID_SIZE_LAND, gridSize)
+            editor.apply()
+        }
+    var genreGridSizeLand: Int
+        get() {
+            return mPreferences.getInt(
+                GENRE_GRID_SIZE_LAND,
+                App.instance.resources.getInteger(R.integer.default_grid_columns_land)
+            )
+        }
+        set(gridSize) {
+            val editor = mPreferences.edit()
+            editor.putInt(GENRE_GRID_SIZE_LAND, gridSize)
             editor.apply()
         }
 
@@ -427,6 +464,34 @@ class PreferenceUtil(context: Context) {
         return mPreferences.getBoolean(INITIALIZED_BLACKLIST, false)
     }
 
+    var homeTabConfig: PageConfig
+        get() {
+            val rawString = mPreferences.getString(HOME_TAB_CONFIG, null)
+            val config: PageConfig = try {
+                PageConfigUtil.fromJson(JSONObject(rawString ?: ""))
+            } catch (e: JSONException) {
+                Log.e("Preference", "home tab config string $rawString")
+                Log.e("Preference", "Fail to parse home tab config string\n ${e.message}")
+                // return default
+                PageConfig.DEFAULT_CONFIG
+            }
+            // valid // TODO
+            return config
+        }
+        set(value) {
+            val json =
+                try {
+                    PageConfigUtil.toJson(value)
+                } catch (e: JSONException) {
+                    Log.e("Preference", "Save home tab config failed, use default. \n${e.message}")
+                    // return default
+                    PageConfigUtil.DEFAULT_CONFIG
+                }
+            val editor = mPreferences.edit()
+            editor.putString(HOME_TAB_CONFIG, json.toString(0))
+            editor.apply()
+        }
+
     var libraryCategoryInfos: List<CategoryInfo>?
         get() {
             val data = mPreferences.getString(LIBRARY_CATEGORIES, null)
@@ -489,6 +554,7 @@ class PreferenceUtil(context: Context) {
 
     companion object {
         private var sInstance: PreferenceUtil? = null
+
         @JvmStatic
         fun getInstance(context: Context): PreferenceUtil {
             if (sInstance == null) {
@@ -502,11 +568,13 @@ class PreferenceUtil(context: Context) {
             return when (getInstance(context).autoDownloadImagesPolicy()) {
                 "always" -> true
                 "only_wifi" -> {
-                    val cm = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+                    val cm =
+                        context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 
                     if (!cm.isActiveNetworkMetered) return false // we pass first metred Wifi and Cellular
                     val network = cm.activeNetwork ?: return false // no active network?
-                    val capabilities = cm.getNetworkCapabilities(network) ?: return false // no capabilities?
+                    val capabilities =
+                        cm.getNetworkCapabilities(network) ?: return false // no capabilities?
                     capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)
                 }
                 "never" -> false
@@ -547,6 +615,9 @@ class PreferenceUtil(context: Context) {
 
         const val ARTIST_GRID_SIZE = "artist_grid_size"
         const val ARTIST_GRID_SIZE_LAND = "artist_grid_size_land"
+
+        const val GENRE_GRID_SIZE = "genre_grid_size"
+        const val GENRE_GRID_SIZE_LAND = "genre_grid_size_land"
 
         const val ALBUM_COLORED_FOOTERS = "album_colored_footers"
         const val SONG_COLORED_FOOTERS = "song_colored_footers"
@@ -590,6 +661,8 @@ class PreferenceUtil(context: Context) {
         const val INITIALIZED_BLACKLIST = "initialized_blacklist"
 
         const val LIBRARY_CATEGORIES = "library_categories"
+
+        const val HOME_TAB_CONFIG = "home_tab_config"
 
         private const val REMEMBER_SHUFFLE = "remember_shuffle"
 

@@ -1,12 +1,23 @@
 package player.phonograph.model;
 
+import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import androidx.annotation.Keep;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.util.Pair;
+import androidx.fragment.app.FragmentActivity;
 
+import kotlin.Unit;
+import kotlin.jvm.functions.Function3;
+import player.phonograph.App;
+import player.phonograph.helper.menu.SongsMenuHelper;
+import player.phonograph.interfaces.Displayable;
 import player.phonograph.util.MusicUtil;
+import player.phonograph.util.NavigationUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +25,7 @@ import java.util.List;
 /**
  * @author Karim Abou Zeid (kabouzeid)
  */
-public class Artist implements Parcelable {
+public class Artist implements Parcelable, Displayable {
     public static final String UNKNOWN_ARTIST_DISPLAY_NAME = "Unknown Artist";
 
     public final List<Album> albums;
@@ -114,4 +125,59 @@ public class Artist implements Parcelable {
             return new Artist[size];
         }
     };
+
+    @Override
+    public long getItemID() {
+        return getId();
+    }
+
+    @NonNull
+    @Override
+    public CharSequence getDisplayTitle() {
+        return getName();
+    }
+
+    @Nullable
+    @Override
+    public CharSequence getDescription() {
+        return MusicUtil.getArtistInfoString(App.getInstance(), this);
+    }
+
+    @Nullable
+    @Override
+    public Uri getPic() {
+        return null;//todo
+    }
+
+    @Nullable
+    @Override
+    public String getSortOrderReference() {
+        return getName();//todo
+    }
+
+    @Override
+    public int menuRes() {
+        return 0;//todo
+    }
+
+    @Nullable
+    @Override
+    public Function3<AppCompatActivity, Displayable, Integer, Boolean> menuHandler() {
+        return null;//todo artist menu action
+    }
+
+    @Nullable
+    @Override
+    public Function3<AppCompatActivity, List<? extends Displayable>, Integer, Boolean> multiMenuHandler() {
+        return (appCompatActivity, list, integer) -> SongsMenuHelper.handleMenuClick(appCompatActivity, MusicUtil.getArtistSongList((List<Artist>) list), integer);//todo more variety
+    }
+
+    @NonNull
+    @Override
+    public Function3<FragmentActivity, Displayable, List<? extends Displayable>, Unit> clickHandler() {
+        return (fragmentActivity, displayable, queue) -> {
+            NavigationUtil.goToArtist(fragmentActivity, ((Artist) displayable).getId(), (Pair[]) null);//todo animate
+            return null;
+        };
+    }
 }

@@ -2,6 +2,14 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <player.phonograph.preferences.basic.PreferenceCategoryX android:title="@string/pref_header_appearance">
+        <player.phonograph.preferences.HomeTabConfigPreferenceX
+            app:iconSpaceReserved="false"
+            android:key="home_pages_tab_config"
+            android:summary="@string/pref_summary_library_categories"
+            android:title="@string/library_categories" />
+    </player.phonograph.preferences.basic.PreferenceCategoryX>
+
     <player.phonograph.preferences.basic.PreferenceCategoryX android:title="@string/pref_header_library">
 
         <player.phonograph.preferences.LibraryPreferenceX

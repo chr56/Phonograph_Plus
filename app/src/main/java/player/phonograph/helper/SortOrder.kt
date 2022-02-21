@@ -230,7 +230,7 @@ object SortOrder {
             const val GENRE_A_Z = MediaStore.Audio.Genres.DEFAULT_SORT_ORDER
 
             /* Genre sort order Z-A */
-            const val ALBUM_Z_A = "$GENRE_A_Z DESC"
+            const val GENRE_Z_A = "$GENRE_A_Z DESC"
         }
     }
 }

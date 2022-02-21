@@ -9,6 +9,7 @@ import android.graphics.drawable.Drawable
 import android.view.*
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -17,7 +18,6 @@ import chr_56.MDthemer.core.ThemeColor
 import chr_56.MDthemer.util.ColorUtil
 import chr_56.MDthemer.util.MaterialColorHelper
 import chr_56.MDthemer.util.TintHelper
-import com.afollestad.materialcab.MaterialCab
 import com.bumptech.glide.Glide
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView.SectionedAdapter
 import player.phonograph.R
@@ -39,23 +39,26 @@ import player.phonograph.util.*
 @Suppress("unused")
 open class UniversalSongAdapter :
     AbsMultiSelectAdapter<UniversalSongAdapter.CommonSongViewHolder, Song>,
-    SectionedAdapter,
-    MaterialCab.Callback {
+    SectionedAdapter {
 
     @Suppress("JoinDeclarationAndAssignment")
     private val activity: AppCompatActivity
     private val mode: Int
+    var itemLayoutRes: Int
 
     constructor(
         activity: AppCompatActivity,
         songs: List<Song>,
         mode: Int = MODE_COMMON,
-        cabHolder: CabHolder
+        @LayoutRes
+        layoutRes: Int,
+        cabHolder: CabHolder?
     ) : super(
         activity, cabHolder, R.menu.menu_media_selection
     ) {
         this.activity = activity
         this.mode = mode
+        this.itemLayoutRes = layoutRes
         this.songs = songs
         setHasStableIds(true)
     }
@@ -65,16 +68,6 @@ open class UniversalSongAdapter :
             field = dataSet
             notifyDataSetChanged()
             updateHeader()
-        }
-
-    val itemLayoutRes: Int
-        get() = when (mode) {
-            MODE_COMMON, MODE_ALL_SONGS -> R.layout.item_list
-            /*MODE_NO_COVER,*/ MODE_SEARCH -> R.layout.item_list_no_image
-            MODE_PLAYING_QUEUE, MODE_ALBUM -> R.layout.item_list // todo
-            /*MODE_ARTIST,*/ MODE_PLAYLIST_LOCAL, MODE_PLAYLIST_SMART -> R.layout.item_list
-            MODE_GRID -> R.layout.item_grid
-            else -> R.layout.item_list_no_image
         }
 
     private val headerLayoutRes: Int
@@ -193,7 +186,7 @@ open class UniversalSongAdapter :
                     it.setTextColor(textColor)
                 }
             path = holder.itemView.findViewById<TextView>(R.id.path_text)
-                .also { it ->
+                .also {
                     it.text = linkedPlaylist?.let { playlist ->
                         if (playlist is AbsSmartPlaylist) "-" else
                             PlaylistsUtil.getPlaylistPath(activity, playlist)
@@ -318,14 +311,13 @@ open class UniversalSongAdapter :
                 false -> MusicPlayerRemote.openQueue(songs, songPosition, true)
             }
         }
-        override fun onLongClick(view: View): Boolean {
+        override fun onLongClick(v: View): Boolean {
             return if (itemViewType != ITEM_HEADER) toggleChecked(bindingAdapterPosition) else false
         }
     }
 
     @Suppress("MemberVisibilityCanBePrivate")
     companion object {
-        const val FEATURE_GRID = 1 shl 8
 
         const val FEATURE_PLAIN = 0
         const val FEATURE_IMAGE = 1
@@ -344,8 +336,6 @@ open class UniversalSongAdapter :
         const val MENU_SHORT_PLAYLIST = R.menu.menu_item_playlist_song_short
         const val MENU_QUEUE = R.menu.menu_item_playing_queue_song
 
-        const val MODE_GRID = FEATURE_GRID // no menu button ,so no ORDERABLE or DELETABLE
-//        const val MODE_NO_COVER = FEATURE_PLAIN
         const val MODE_COMMON = FEATURE_PLAIN + FEATURE_IMAGE
         const val MODE_ALL_SONGS = FEATURE_PLAIN + FEATURE_IMAGE + FEATURE_HEADER_SHUFFLE
         const val MODE_PLAYLIST_LOCAL = FEATURE_PLAIN + FEATURE_IMAGE + FEATURE_HEADER_SUMMARY + FEATURE_WITH_HANDLE + FEATURE_ORDERABLE + FEATURE_DELETABLE

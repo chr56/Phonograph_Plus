@@ -5,10 +5,12 @@ import android.view.Menu
 import android.view.MenuItem
 import androidx.annotation.MenuRes
 import androidx.recyclerview.widget.RecyclerView
-import com.afollestad.materialcab.MaterialCab
+import com.afollestad.materialcab.attached.AttachedCab
+import com.afollestad.materialcab.attached.destroy
+import com.afollestad.materialcab.attached.isActive
 import player.phonograph.R
 import player.phonograph.interfaces.CabHolder
-import java.util.ArrayList
+import java.util.*
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
@@ -17,9 +19,9 @@ abstract class AbsMultiSelectAdapter<VH : RecyclerView.ViewHolder, I>(
     private val context: Context,
     private val cabHolder: CabHolder?,
     @MenuRes var menuRes: Int
-) : RecyclerView.Adapter<VH>(), MaterialCab.Callback {
+) : RecyclerView.Adapter<VH>() {
 
-    private var cab: MaterialCab? = null
+    private var cab: AttachedCab? = null
     private var checked: MutableList<I> = ArrayList()
 
     protected fun setMultiSelectMenuRes(@MenuRes menuRes: Int) {
@@ -53,13 +55,13 @@ abstract class AbsMultiSelectAdapter<VH : RecyclerView.ViewHolder, I>(
 
     private fun updateCab() {
         if (cabHolder != null) {
-            if (cab == null || !cab!!.isActive) {
-                cab = cabHolder.openCab(menuRes, this)
+            if (cab == null || !cab!!.isActive()) {
+                cab = cabHolder.showCab(menuRes, this::onCabCreated, this::onCabItemClicked, this::onCabFinished)
             }
             val size = checked.size
-            if (size <= 0) cab!!.finish()
-            else cab!!.setTitle(
-                context.getString(R.string.x_selected, size)
+            if (size <= 0) cab!!.destroy()
+            else cab!!.title(
+                literal = context.getString(R.string.x_selected, size)
             )
         }
     }
@@ -74,24 +76,24 @@ abstract class AbsMultiSelectAdapter<VH : RecyclerView.ViewHolder, I>(
     }
 
     protected val isInQuickSelectMode: Boolean
-        get() = cab != null && cab!!.isActive
+        get() = cab != null && cab!!.isActive()
 
-    override fun onCabCreated(materialCab: MaterialCab, menu: Menu): Boolean {
+    fun onCabCreated(cab: AttachedCab, menu: Menu): Boolean {
         return true
     }
 
-    override fun onCabItemClicked(menuItem: MenuItem): Boolean {
+    fun onCabItemClicked(menuItem: MenuItem): Boolean {
         if (menuItem.itemId == R.id.action_multi_select_adapter_check_all) {
             checkAll()
         } else {
             onMultipleItemAction(menuItem, ArrayList(checked))
-            cab!!.finish()
+            cab!!.destroy()
             clearChecked()
         }
         return true
     }
 
-    override fun onCabFinished(materialCab: MaterialCab): Boolean {
+    fun onCabFinished(materialCab: AttachedCab): Boolean {
         clearChecked()
         return true
     }

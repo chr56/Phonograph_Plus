@@ -2,9 +2,7 @@ package player.phonograph.ui.activities;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.BlendModeColorFilter;
 import android.graphics.ColorFilter;
-import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.text.Html;
 import android.text.Spanned;
@@ -23,7 +21,9 @@ import androidx.loader.content.Loader;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.afollestad.materialcab.MaterialCab;
+import com.afollestad.materialcab.MaterialCabKt;
+import com.afollestad.materialcab.attached.AttachedCab;
+import com.afollestad.materialcab.attached.AttachedCabKt;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.WhichButton;
 import com.afollestad.materialdialogs.actions.DialogActionExtKt;
@@ -37,6 +37,9 @@ import chr_56.MDthemer.core.Themer;
 import chr_56.MDthemer.util.ColorUtil;
 import chr_56.MDthemer.util.MaterialColorHelper;
 import chr_56.MDthemer.util.Util;
+import kotlin.Unit;
+import kotlin.jvm.functions.Function1;
+import kotlin.jvm.functions.Function2;
 import player.phonograph.R;
 import player.phonograph.adapter.song.AlbumSongAdapter;
 import player.phonograph.databinding.ActivityAlbumDetailBinding;
@@ -84,7 +87,7 @@ public class AlbumDetailActivity extends AbsSlidingMusicPanelActivity implements
 
     private AlbumSongAdapter adapter;
 
-    private MaterialCab cab;
+    private AttachedCab cab;
     private int headerViewHeight;
     private int toolbarColor;
 
@@ -178,13 +181,13 @@ public class AlbumDetailActivity extends AbsSlidingMusicPanelActivity implements
         ColorFilter f = BlendModeColorFilterCompat
                 .createBlendModeColorFilterCompat(secondaryTextColor, BlendModeCompat.SRC_IN);
 
-        viewBinding.artistIcon.setImageDrawable(AppCompatResources.getDrawable(this,R.drawable.ic_person_white_24dp));
+        viewBinding.artistIcon.setImageDrawable(AppCompatResources.getDrawable(this, R.drawable.ic_person_white_24dp));
         viewBinding.artistIcon.setColorFilter(f);
-        viewBinding.durationIcon.setImageDrawable(AppCompatResources.getDrawable(this,R.drawable.ic_timer_white_24dp));
+        viewBinding.durationIcon.setImageDrawable(AppCompatResources.getDrawable(this, R.drawable.ic_timer_white_24dp));
         viewBinding.durationIcon.setColorFilter(f);
-        viewBinding.songCountIcon.setImageDrawable(AppCompatResources.getDrawable(this,R.drawable.ic_music_note_white_24dp));
+        viewBinding.songCountIcon.setImageDrawable(AppCompatResources.getDrawable(this, R.drawable.ic_music_note_white_24dp));
         viewBinding.songCountIcon.setColorFilter(f);
-        viewBinding.albumYearIcon.setImageDrawable(AppCompatResources.getDrawable(this,R.drawable.ic_event_white_24dp));
+        viewBinding.albumYearIcon.setImageDrawable(AppCompatResources.getDrawable(this, R.drawable.ic_event_white_24dp));
         viewBinding.albumYearIcon.setColorFilter(f);
 
         viewBinding.artistText.setTextColor(MaterialColorHelper.getPrimaryTextColor(this, ColorUtil.isColorLight(color)));
@@ -355,34 +358,31 @@ public class AlbumDetailActivity extends AbsSlidingMusicPanelActivity implements
 
     @NonNull
     @Override
-    public MaterialCab openCab(int menuRes, @NonNull final MaterialCab.Callback callback) {
-        if (cab != null && cab.isActive()) cab.finish();
-        cab = new MaterialCab(this, R.id.cab_stub)
-                .setMenu(menuRes)
-                .setCloseDrawableRes(R.drawable.ic_close_white_24dp)
-                .setBackgroundColor(PhonographColorUtil.shiftBackgroundColorForLightText(getPaletteColor()))
-                .start(new MaterialCab.Callback() {
-                    @Override
-                    public boolean onCabCreated(MaterialCab materialCab, Menu menu) {
-                        return callback.onCabCreated(materialCab, menu);
-                    }
+    public AttachedCab showCab(int menuRes,
+                               @NonNull Function2<? super AttachedCab, ? super Menu, Unit> createCallback,
+                               @NonNull Function1<? super MenuItem, Boolean> selectCallback,
+                               @NonNull Function1<? super AttachedCab, Boolean> destroyCallback) {
 
-                    @Override
-                    public boolean onCabItemClicked(MenuItem menuItem) {
-                        return callback.onCabItemClicked(menuItem);
-                    }
+        if (cab != null && AttachedCabKt.isActive(cab)) AttachedCabKt.destroy(cab);
 
-                    @Override
-                    public boolean onCabFinished(MaterialCab materialCab) {
-                        return callback.onCabFinished(materialCab);
-                    }
-                });
+        cab = MaterialCabKt.createCab(this, R.id.cab_stub, attachedCab -> {
+            attachedCab.popupTheme(PreferenceUtil.getInstance(this).getGeneralTheme());
+            attachedCab.menu(menuRes);
+            attachedCab.closeDrawable(R.drawable.ic_close_white_24dp);
+            attachedCab.backgroundColor(null,PhonographColorUtil.shiftBackgroundColorForLightText(getPaletteColor()));
+            attachedCab.onCreate(createCallback);
+            attachedCab.onSelection(selectCallback);
+            attachedCab.onDestroy(destroyCallback);
+            return null;
+        }
+
+        );
         return cab;
     }
 
     @Override
     public void onBackPressed() {
-        if (cab != null && cab.isActive()) cab.finish();
+        if (cab != null && AttachedCabKt.isActive(cab)) AttachedCabKt.destroy(cab);
         else {
             viewBinding.list.stopScroll();
             super.onBackPressed();

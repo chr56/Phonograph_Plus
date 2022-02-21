@@ -25,6 +25,14 @@ import player.phonograph.R
  */
 object Util {
 
+    @JvmStatic
+    fun getStyleId(context: Context): Int {
+        val outValue = TypedValue()
+        val result: Boolean = context.theme.resolveAttribute(android.R.attr.theme, outValue, true)
+        return if (result)outValue.resourceId else 0
+    }
+
+
     suspend fun coroutineToast(context: Context, text: String, longToast: Boolean = false) {
         withContext(Dispatchers.Main) {
             Toast.makeText(

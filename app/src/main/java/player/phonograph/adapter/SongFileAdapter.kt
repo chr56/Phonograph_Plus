@@ -26,53 +26,50 @@ import kotlin.math.pow
 
 class SongFileAdapter(
     private val activity: AppCompatActivity,
-    private var dataSet: List<File>,
-    @LayoutRes private val itemLayoutRes: Int,
+    dataSet: List<File>,
+    @LayoutRes
+    private val itemLayoutRes: Int,
     private val callbacks: Callbacks?,
     cabHolder: CabHolder?
-) : AbsMultiSelectAdapter<SongFileAdapter.ViewHolder, File?>(
-    activity, cabHolder, R.menu.menu_media_selection
-),
+) :
+    AbsMultiSelectAdapter<SongFileAdapter.ViewHolder, File>(activity, cabHolder, R.menu.menu_media_selection),
     SectionedAdapter {
 
     init {
         setHasStableIds(true)
     }
 
-    override fun getItemViewType(position: Int): Int {
-        return if (dataSet[position].isDirectory) FOLDER
-        else FILE
-    }
+    var dataSet: List<File> = dataSet
+        set(value) {
+            field = value
+            notifyDataSetChanged()
+        }
 
-    override fun getItemId(position: Int): Long {
-        return dataSet[position].hashCode().toLong()
-    }
+    override fun getItemViewType(position: Int): Int = if (dataSet[position].isDirectory) FOLDER else FILE
 
+    override fun getItemId(position: Int): Long = dataSet[position].hashCode().toLong()
+
+    @Deprecated("use getter")
     fun swapDataSet(songFiles: List<File>) {
         dataSet = songFiles
-        notifyDataSetChanged()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder(
-            LayoutInflater.from(activity).inflate(itemLayoutRes, parent, false)
-        )
+        return ViewHolder(LayoutInflater.from(activity).inflate(itemLayoutRes, parent, false))
     }
 
     override fun onBindViewHolder(holder: ViewHolder, index: Int) {
         val file = dataSet[index]
+
         holder.itemView.isActivated = isChecked(file)
-        holder.shortSeparator?.let {
-            it.visibility =
-                if (holder.bindingAdapterPosition == itemCount - 1) {
-                    View.GONE
-                } else {
-                    View.VISIBLE
-                }
-        }
-        holder.title?.let {
-            it.text = getFileTitle(file)
-        }
+        holder.title?.text = getFileTitle(file)
+        holder.shortSeparator?.visibility =
+            if (holder.bindingAdapterPosition == itemCount - 1) {
+                View.GONE
+            } else {
+                View.VISIBLE
+            }
+
         holder.text?.let {
             if (holder.itemViewType == FILE) {
                 it.text = getFileText(file)
@@ -85,13 +82,9 @@ class SongFileAdapter(
         }
     }
 
-    private fun getFileTitle(file: File): String {
-        return file.name
-    }
+    private fun getFileTitle(file: File): String = file.name
 
-    private fun getFileText(file: File): String? {
-        return if (file.isDirectory) null else readableFileSize(file.length())
-    }
+    private fun getFileText(file: File): String? = if (file.isDirectory) null else readableFileSize(file.length())
 
     private fun loadFileImage(file: File, holder: ViewHolder) {
         val iconColor = Util.resolveColor(activity, R.attr.iconColor)
@@ -112,35 +105,27 @@ class SongFileAdapter(
         }
     }
 
-    override fun getItemCount(): Int {
-        return dataSet.size
-    }
+    override fun getItemCount(): Int = dataSet.size
 
-    override fun getIdentifier(position: Int): File {
-        return dataSet[position]
-    }
+    override fun getIdentifier(position: Int): File = dataSet[position]
 
-    override fun getName(obj: File?): String {
-        return getFileTitle(obj!!)
-    }
+    override fun getName(obj: File): String = getFileTitle(obj)
 
-    override fun onMultipleItemAction(menuItem: MenuItem, selection: List<File?>) {
+    override fun onMultipleItemAction(menuItem: MenuItem, selection: List<File>) {
         if (callbacks == null) return
-        callbacks.onMultipleItemAction(menuItem, selection as List<File>)
+        callbacks.onMultipleItemAction(menuItem, selection)
     }
 
-    override fun getSectionName(position: Int): String {
-        return dataSet[position].name[0].toString().uppercase(Locale.getDefault())
-    }
+    override fun getSectionName(position: Int): String =
+        dataSet[position].name[0].uppercase(Locale.getDefault())
 
     inner class ViewHolder(itemView: View) : MediaEntryViewHolder(itemView) {
 
         init {
-            if (menu != null && callbacks != null) {
-                menu!!.setOnClickListener { v: View? ->
-                    val position = bindingAdapterPosition
-                    if (isPositionInRange(position)) {
-                        callbacks.onFileMenuClicked(dataSet[position], v)
+            menu?.let { menu ->
+                menu.setOnClickListener { v: View? ->
+                    if (isPositionInRange(bindingAdapterPosition)) {
+                        callbacks?.onFileMenuClicked(dataSet[bindingAdapterPosition], v)
                     }
                 }
             }
@@ -157,14 +142,17 @@ class SongFileAdapter(
             }
         }
 
-        override fun onLongClick(v: View): Boolean {
-            val position = bindingAdapterPosition
-            return isPositionInRange(position) && toggleChecked(position)
-        }
+        override fun onLongClick(v: View): Boolean =
+            isPositionInRange(bindingAdapterPosition) && toggleChecked(bindingAdapterPosition)
 
-        private fun isPositionInRange(position: Int): Boolean {
-            return position >= 0 && position < dataSet.size
-        }
+        private fun isPositionInRange(position: Int): Boolean =
+            position >= 0 && position < dataSet.size
+    }
+
+    interface Callbacks {
+        fun onFileSelected(file: File?)
+        fun onFileMenuClicked(file: File?, view: View?)
+        fun onMultipleItemAction(item: MenuItem?, files: List<File>?)
     }
 
     companion object {
@@ -181,11 +169,5 @@ class SongFileAdapter(
                 size / 1024.0.pow(digitGroups.toDouble())
             ) + " " + units[digitGroups]
         }
-    }
-
-    interface Callbacks {
-        fun onFileSelected(file: File?)
-        fun onFileMenuClicked(file: File?, view: View?)
-        fun onMultipleItemAction(item: MenuItem?, files: List<File>?)
     }
 }

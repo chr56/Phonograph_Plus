@@ -20,7 +20,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import chr_56.MDthemer.core.ThemeColor
 import chr_56.MDthemer.core.Themer
-import com.afollestad.materialcab.MaterialCab
+import com.afollestad.materialcab.*
+import com.afollestad.materialcab.attached.AttachedCab
+import com.afollestad.materialcab.attached.destroy
+import com.afollestad.materialcab.attached.isActive
 import com.h6ah4i.android.widget.advrecyclerview.animator.GeneralItemAnimator
 import com.h6ah4i.android.widget.advrecyclerview.animator.RefactoredDefaultItemAnimator
 import com.h6ah4i.android.widget.advrecyclerview.draggable.RecyclerViewDragDropManager
@@ -28,6 +31,7 @@ import com.h6ah4i.android.widget.advrecyclerview.utils.WrapperAdapterUtils
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView
 import kotlinx.coroutines.*
 import player.phonograph.*
+import player.phonograph.R
 import player.phonograph.adapter.song.UniversalSongAdapter
 import player.phonograph.databinding.ActivityPlaylistDetailBinding
 import player.phonograph.helper.MusicPlayerRemote
@@ -53,7 +57,7 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandle
 
     private lateinit var playlist: Playlist // init in OnCreate()
 
-    private var cab: MaterialCab? = null
+    private var cab: AttachedCab? = null
     private lateinit var songAdapter: UniversalSongAdapter // init in OnCreate() -> setUpRecyclerView()
     private var wrappedAdapter: RecyclerView.Adapter<*>? = null
     private var recyclerViewDragDropManager: RecyclerViewDragDropManager? = null
@@ -119,13 +123,25 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandle
 
         // Init (song)adapter
         if (playlist is AbsCustomPlaylist) {
-            songAdapter = UniversalSongAdapter(this, ArrayList(), UniversalSongAdapter.MODE_PLAYLIST_SMART, CabCallBack(this))
+            songAdapter = UniversalSongAdapter(
+                this,
+                ArrayList(),
+                UniversalSongAdapter.MODE_PLAYLIST_SMART,
+                R.layout.item_list,
+                CabCallBack(this)
+            )
             recyclerView.adapter = songAdapter
         } else {
             recyclerViewDragDropManager = RecyclerViewDragDropManager()
             val animator: GeneralItemAnimator = RefactoredDefaultItemAnimator()
 
-            songAdapter = UniversalSongAdapter(this, ArrayList(), UniversalSongAdapter.MODE_PLAYLIST_LOCAL, CabCallBack(this))
+            songAdapter = UniversalSongAdapter(
+                this,
+                ArrayList(),
+                UniversalSongAdapter.MODE_PLAYLIST_LOCAL,
+                R.layout.item_list,
+                CabCallBack(this)
+            )
             wrappedAdapter = recyclerViewDragDropManager!!.createWrappedAdapter(songAdapter)
             recyclerView.adapter = wrappedAdapter
             recyclerView.itemAnimator = animator
@@ -190,7 +206,7 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandle
 
     override fun onBackPressed() {
         cab?.let {
-            if (it.isActive) it.finish()
+            if (it.isActive()) it.destroy()
             else {
                 recyclerView.stopScroll()
                 super.onBackPressed()
@@ -295,20 +311,28 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandle
      *
      * *******************/
     private inner class CabCallBack(private val activity: PlaylistDetailActivity) : CabHolder {
-        override fun openCab(menuRes: Int, callback: MaterialCab.Callback?): MaterialCab {
+        override fun showCab(
+            menuRes: Int,
+            createCallback: CreateCallback,
+            selectCallback: SelectCallback,
+            destroyCallback: DestroyCallback
+        ): AttachedCab {
             // finish existed cab
-            cab?.also { if (it.isActive) it.finish() }
+            cab?.let {
+                if (cab.isActive()) cab.destroy()
+            }
+
             // create new
-            return MaterialCab(activity, R.id.cab_stub)
-                .setMenu(menuRes)
-                .setCloseDrawableRes(R.drawable.ic_close_white_24dp)
-                .setBackgroundColor(
-                    PhonographColorUtil.shiftBackgroundColorForLightText(ThemeColor.primaryColor(activity))
-                )
-                .start(callback)
-                .apply {
-                    cab = this // also set activity's cab to this
-                }
+            cab = createCab(R.id.cab_stub) {
+                popupTheme(PreferenceUtil.getInstance(this@PlaylistDetailActivity).generalTheme)
+                menu(menuRes)
+                closeDrawable(R.drawable.ic_close_white_24dp)
+                backgroundColor(literal = PhonographColorUtil.shiftBackgroundColorForLightText(ThemeColor.primaryColor(activity)))
+                onCreate(createCallback)
+                onSelection(selectCallback)
+                onDestroy(destroyCallback)
+            }
+            return cab as AttachedCab
         }
     }
 
