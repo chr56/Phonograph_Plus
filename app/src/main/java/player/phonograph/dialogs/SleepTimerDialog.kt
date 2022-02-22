@@ -49,7 +49,7 @@ class SleepTimerDialog : DialogFragment() {
                 val intent = makeTimerPendingIntent(
                     requireContext(),
                     PreferenceUtil.getInstance(requireActivity()).sleepTimerFinishMusic,
-                    PendingIntent.FLAG_CANCEL_CURRENT
+                    PendingIntent.FLAG_CANCEL_CURRENT or PendingIntent.FLAG_IMMUTABLE
                 )
 
                 alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, nextSleepTimerElapsedTime, intent)
@@ -59,7 +59,7 @@ class SleepTimerDialog : DialogFragment() {
                 val previous = makeTimerPendingIntent(
                     requireContext(),
                     PreferenceUtil.getInstance(requireActivity()).sleepTimerFinishMusic,
-                    PendingIntent.FLAG_CANCEL_CURRENT
+                    PendingIntent.FLAG_CANCEL_CURRENT or PendingIntent.FLAG_IMMUTABLE
                 )
                 if (previous != null) {
                     val alarmManager = requireActivity().getSystemService(Context.ALARM_SERVICE) as AlarmManager
@@ -114,7 +114,7 @@ class SleepTimerDialog : DialogFragment() {
         // set up countdown timer
         timerUpdater = TimerUpdater()
         dialog.setOnShowListener {
-            if (makeTimerPendingIntent(requireContext(), checkBox.isChecked, PendingIntent.FLAG_NO_CREATE) != null) {
+            if (makeTimerPendingIntent(requireContext(), checkBox.isChecked, PendingIntent.FLAG_NO_CREATE or PendingIntent.FLAG_IMMUTABLE) != null) {
                 timerUpdater.start()
             }
         }
