@@ -37,7 +37,7 @@ jobs:
 
 
       - name: Build with Gradle
-        run: ./gradlew buildRelease --stacktrace
+        run: ./gradlew assembleRelease --stacktrace
 
       - name: signing apk
         uses: r0adkll/sign-android-release@v1.0.4
@@ -80,24 +80,24 @@ jobs:
           body_path: ${{ github.workspace }}/ReleaseNote.md
           token: ${{ secrets.TOKEN }}
 
-      - name: Upload to TG
-        uses: appleboy/telegram-action@master
-
-        if: startsWith(github.ref, 'refs/tags/v0.0')
-        with:
-          to: ${{ secrets.TG_CHAT_ID }}
-          token: ${{ secrets.TG_BOT_TOKEN }}
-          message: |
-            <b>LTS Version!</b>
-            <b>${{ github.ref_name }}</b> (<pre>${{ github.sha }}</pre>)
-            This is Long Term Support version release!
-
-            <b>LTS版本更新!</b>
-            长期支持版
-
-            <a href="https://github.com/chr56/Phonograph_Plus/releases/tag/${{ github.ref_name }}"> GitHub Link </a>
-            <pre>${{ github.action_path }}</pre>
-          format: html
-          document: ${{ github.workspace }}/${{steps.sign_app.outputs.signedReleaseFile}}
-          disable_notification: true
-          disable_web_page_preview: true
+#      - name: Upload to TG
+#        uses: appleboy/telegram-action@master
+#
+#        if: startsWith(github.ref, 'refs/tags/v0.0')
+#        with:
+#          to: ${{ secrets.TG_CHAT_ID }}
+#          token: ${{ secrets.TG_BOT_TOKEN }}
+#          message: |
+#            <b>LTS Version!</b>
+#            <b>${{ github.ref_name }}</b> (<pre>${{ github.sha }}</pre>)
+#            This is Long Term Support version release!
+#
+#            <b>LTS版本更新!</b>
+#            长期支持版
+#
+#            <a href="https://github.com/chr56/Phonograph_Plus/releases/tag/${{ github.ref_name }}"> GitHub Link </a>
+#            <pre>${{ github.action_path }}</pre>
+#          format: html
+#          document: ${{ github.workspace }}/${{steps.sign_app.outputs.signedReleaseFile}}
+#          disable_notification: true
+#          disable_web_page_preview: true
