@@ -85,4 +85,4 @@
 -keep,allowoptimization class player.phonograph.notification.** {public <methods>;public <fields>;}
 -keep class player.phonograph.ui.** {*;}
 -keep,allowoptimization,allowshrinking class player.phonograph.util.** {public <methods>;public <fields>;<init>(...);}
--keep,allowshrinking class player.phonograph.* {public <methods>;}
+#-keep,allowshrinking class player.phonograph.* {public <methods>;}
