@@ -32,7 +32,7 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 
 import chr_56.MDthemer.R;
-import chr_56.MDthemer.color.MaterialColor;
+import util.mdcolor.MaterialColor;
 import chr_56.MDthemer.core.ThemeColor;
 
 /**
