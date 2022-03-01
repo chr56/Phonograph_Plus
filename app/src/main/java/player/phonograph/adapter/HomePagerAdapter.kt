@@ -11,7 +11,7 @@ import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
 import player.phonograph.R
-import player.phonograph.ui.fragments.mainactivity.library.new_ui.*
+import player.phonograph.ui.fragments.mainactivity.home.*
 import java.lang.ref.WeakReference
 import kotlin.jvm.Throws
 

@@ -2,7 +2,7 @@
  * Copyright (c) 2022 chr_56
  */
 
-package player.phonograph.ui.fragments.mainactivity.library.new_ui
+package player.phonograph.ui.fragments.mainactivity.home
 
 import android.content.IntentFilter
 import android.os.Bundle

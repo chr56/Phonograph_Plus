@@ -2,7 +2,7 @@
  * Copyright (c) 2022 chr_56 & Abou Zeid (kabouzeid) (original author)
  */
 
-package player.phonograph.ui.fragments.mainactivity.library.new_ui
+package player.phonograph.ui.fragments.mainactivity.home
 
 import android.util.Log
 import android.view.View
@@ -15,22 +15,22 @@ import kotlinx.coroutines.withContext
 import kotlinx.coroutines.yield
 import player.phonograph.App
 import player.phonograph.R
+import player.phonograph.adapter.display.ArtistDisplayAdapter
 import player.phonograph.adapter.display.DisplayAdapter
-import player.phonograph.adapter.display.SongDisplayAdapter
 import player.phonograph.databinding.PopupWindowMainBinding
 import player.phonograph.helper.SortOrder
-import player.phonograph.model.Song
-import player.phonograph.util.MediaStoreUtil
+import player.phonograph.loader.ArtistLoader
+import player.phonograph.model.Artist
 import player.phonograph.util.Util
 
-class SongPage : AbsDisplayPage<Song, DisplayAdapter<Song>, GridLayoutManager>() {
+class ArtistPage : AbsDisplayPage<Artist, DisplayAdapter<Artist>, GridLayoutManager>() {
 
     override fun initLayoutManager(): GridLayoutManager {
         return GridLayoutManager(hostFragment.requireContext(), 1)
             .also { it.spanCount = DisplayUtil(this).gridSize }
     }
 
-    override fun initAdapter(): DisplayAdapter<Song> {
+    override fun initAdapter(): DisplayAdapter<Artist> {
         val displayUtil = DisplayUtil(this)
 
         val layoutRes =
@@ -40,10 +40,10 @@ class SongPage : AbsDisplayPage<Song, DisplayAdapter<Song>, GridLayoutManager>()
             TAG, "layoutRes: ${ if (layoutRes == R.layout.item_grid) "GRID" else if (layoutRes == R.layout.item_list) "LIST" else "UNKNOWN" }"
         )
 
-        return SongDisplayAdapter(
+        return ArtistDisplayAdapter(
             hostFragment.mainActivity,
             hostFragment,
-            ArrayList(), // empty until songs loaded
+            ArrayList(), // empty until Artist loaded
             layoutRes
         ) {
             usePalette = displayUtil.colorFooter
@@ -52,7 +52,7 @@ class SongPage : AbsDisplayPage<Song, DisplayAdapter<Song>, GridLayoutManager>()
 
     override fun loadDataSet() {
         loaderCoroutineScope.launch {
-            val temp = MediaStoreUtil.getAllSongs(App.instance) as List<Song>
+            val temp = ArtistLoader.getAllArtists(App.instance) as List<Artist>
             while (!isRecyclerViewPrepared) yield() // wait until ready
 
             withContext(Dispatchers.Main) {
@@ -61,7 +61,7 @@ class SongPage : AbsDisplayPage<Song, DisplayAdapter<Song>, GridLayoutManager>()
         }
     }
 
-    override fun getDataSet(): List<Song> {
+    override fun getDataSet(): List<Artist> {
         return if (isRecyclerViewPrepared) adapter.dataset else emptyList()
     }
 
@@ -103,22 +103,9 @@ class SongPage : AbsDisplayPage<Song, DisplayAdapter<Song>, GridLayoutManager>()
             -> popup.sortOrderBasic.check(R.id.sort_order_a_z)
         }
 
-        popup.sortOrderContent.clearCheck()
-        popup.sortOrderSong.visibility = View.VISIBLE
-        popup.sortOrderAlbum.visibility = View.VISIBLE
         popup.sortOrderArtist.visibility = View.VISIBLE
-        popup.sortOrderYear.visibility = View.VISIBLE
-        popup.sortOrderDateAdded.visibility = View.VISIBLE
-        popup.sortOrderDateModified.visibility = View.VISIBLE
-        popup.sortOrderDuration.visibility = View.VISIBLE
         when (currentSortOrder) {
-            SortOrder.SongSortOrder.SONG_A_Z, SortOrder.SongSortOrder.SONG_Z_A -> popup.sortOrderContent.check(R.id.sort_order_song)
-            SortOrder.SongSortOrder.SONG_ALBUM, SortOrder.SongSortOrder.SONG_ALBUM_REVERT -> popup.sortOrderContent.check(R.id.sort_order_album)
-            SortOrder.SongSortOrder.SONG_ARTIST, SortOrder.SongSortOrder.SONG_ARTIST_REVERT -> popup.sortOrderContent.check(R.id.sort_order_artist)
-            SortOrder.SongSortOrder.SONG_YEAR, SortOrder.SongSortOrder.SONG_YEAR_REVERT -> popup.sortOrderContent.check(R.id.sort_order_year)
-            SortOrder.SongSortOrder.SONG_DATE, SortOrder.SongSortOrder.SONG_DATE_REVERT -> popup.sortOrderContent.check(R.id.sort_order_date_added)
-            SortOrder.SongSortOrder.SONG_DATE_MODIFIED, SortOrder.SongSortOrder.SONG_DATE_MODIFIED_REVERT -> popup.sortOrderContent.check(R.id.sort_order_date_modified)
-            SortOrder.SongSortOrder.SONG_DURATION, SortOrder.SongSortOrder.SONG_DURATION_REVERT -> popup.sortOrderContent.check(R.id.sort_order_duration)
+            SortOrder.ArtistSortOrder.ARTIST_A_Z, SortOrder.ArtistSortOrder.ARTIST_Z_A -> popup.sortOrderContent.check(R.id.sort_order_artist)
             else -> { popup.sortOrderContent.clearCheck() }
         }
     }
@@ -160,51 +147,17 @@ class SongPage : AbsDisplayPage<Song, DisplayAdapter<Song>, GridLayoutManager>()
             // sort order
             val basicSelected = popup.sortOrderBasic.checkedRadioButtonId
             val sortOrderSelected: String =
+
                 when (popup.sortOrderContent.checkedRadioButtonId) {
-                    R.id.sort_order_song ->
-                        when (basicSelected) {
-                            R.id.sort_order_a_z -> SortOrder.SongSortOrder.SONG_A_Z
-                            R.id.sort_order_z_a -> SortOrder.SongSortOrder.SONG_Z_A
-                            else -> ""
-                        }
-                    R.id.sort_order_album ->
-                        when (basicSelected) {
-                            R.id.sort_order_a_z -> SortOrder.SongSortOrder.SONG_ALBUM
-                            R.id.sort_order_z_a -> SortOrder.SongSortOrder.SONG_ALBUM_REVERT
-                            else -> ""
-                        }
                     R.id.sort_order_artist ->
                         when (basicSelected) {
-                            R.id.sort_order_a_z -> SortOrder.SongSortOrder.SONG_ARTIST
-                            R.id.sort_order_z_a -> SortOrder.SongSortOrder.SONG_ARTIST_REVERT
-                            else -> ""
-                        }
-                    R.id.sort_order_year ->
-                        when (basicSelected) {
-                            R.id.sort_order_a_z -> SortOrder.SongSortOrder.SONG_YEAR
-                            R.id.sort_order_z_a -> SortOrder.SongSortOrder.SONG_YEAR_REVERT
-                            else -> ""
-                        }
-                    R.id.sort_order_date_added ->
-                        when (basicSelected) {
-                            R.id.sort_order_a_z -> SortOrder.SongSortOrder.SONG_DATE
-                            R.id.sort_order_z_a -> SortOrder.SongSortOrder.SONG_DATE_REVERT
-                            else -> ""
-                        }
-                    R.id.sort_order_date_modified ->
-                        when (basicSelected) {
-                            R.id.sort_order_a_z -> SortOrder.SongSortOrder.SONG_DATE_MODIFIED
-                            R.id.sort_order_z_a -> SortOrder.SongSortOrder.SONG_DATE_MODIFIED_REVERT
-                            else -> ""
-                        }
-                    R.id.sort_order_duration ->
-                        when (basicSelected) {
-                            R.id.sort_order_a_z -> SortOrder.SongSortOrder.SONG_DURATION
-                            R.id.sort_order_z_a -> SortOrder.SongSortOrder.SONG_DURATION_REVERT
+                            R.id.sort_order_a_z -> SortOrder.ArtistSortOrder.ARTIST_A_Z
+                            R.id.sort_order_z_a -> SortOrder.ArtistSortOrder.ARTIST_Z_A
                             else -> ""
                         }
                     else -> ""
                 }
+
             if (sortOrderSelected.isNotBlank() && displayUtil.sortOrder != sortOrderSelected) {
                 displayUtil.sortOrder = sortOrderSelected
                 loadDataSet()
@@ -214,10 +167,10 @@ class SongPage : AbsDisplayPage<Song, DisplayAdapter<Song>, GridLayoutManager>()
     }
 
     override fun getHeaderText(): CharSequence {
-        return "${hostFragment.mainActivity.getString(R.string.songs)}: ${getDataSet().size}"
+        return "${hostFragment.mainActivity.getString(R.string.artists)}: ${getDataSet().size}"
     }
 
     companion object {
-        const val TAG = "SongPage"
+        const val TAG = "ArtistPage"
     }
 }

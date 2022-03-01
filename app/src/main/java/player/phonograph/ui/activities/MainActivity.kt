@@ -45,7 +45,7 @@ import player.phonograph.ui.activities.intro.AppIntroActivity
 import player.phonograph.ui.fragments.mainactivity.AbsMainActivityFragment
 import player.phonograph.ui.fragments.mainactivity.folders.FoldersFragment
 import player.phonograph.ui.fragments.mainactivity.library.LibraryFragment
-import player.phonograph.ui.fragments.mainactivity.library.new_ui.HomeFragment
+import player.phonograph.ui.fragments.mainactivity.home.HomeFragment
 import player.phonograph.util.MusicUtil
 import player.phonograph.util.PreferenceUtil
 import player.phonograph.util.SAFCallbackHandlerActivity
