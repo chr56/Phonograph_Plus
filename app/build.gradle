@@ -132,6 +132,7 @@ android {
 
 dependencies {
     implementation project(path: ':MDthemer')
+    implementation project(path: ':mdColor')
 
     implementation 'androidx.annotation:annotation:1.3.0'
     implementation 'androidx.appcompat:appcompat:1.4.0'

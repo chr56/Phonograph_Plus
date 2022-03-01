@@ -4,7 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.os.Build
 import androidx.preference.Preference
-import chr_56.MDthemer.color.MaterialColor
+import util.mdcolor.MaterialColor
 import chr_56.MDthemer.core.ThemeColor
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.WhichButton
