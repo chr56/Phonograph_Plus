@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2022 chr_56 & Abou Zeid (kabouzeid) (original author)
+  -->
+
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="util.mdcolor">
+
+</manifest>
