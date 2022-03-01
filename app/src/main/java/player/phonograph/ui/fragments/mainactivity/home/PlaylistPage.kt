@@ -5,6 +5,7 @@
 package player.phonograph.ui.fragments.mainactivity.home
 
 import android.content.IntentFilter
+import android.content.res.ColorStateList
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -13,12 +14,14 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import chr_56.MDthemer.core.ThemeColor
+import chr_56.MDthemer.util.ColorUtil
 import kotlinx.coroutines.*
 import player.phonograph.App
 import player.phonograph.BROADCAST_PLAYLISTS_CHANGED
 import player.phonograph.R
 import player.phonograph.adapter.NeoPlaylistAdapter
 import player.phonograph.databinding.FragmentDisplayPageBinding
+import player.phonograph.dialogs.CreatePlaylistDialog
 import player.phonograph.misc.PlaylistsModifiedReceiver
 import player.phonograph.model.Playlist
 import player.phonograph.model.smartplaylist.HistoryPlaylist
@@ -86,6 +89,8 @@ class PlaylistPage : AbsPage() {
             playlistsModifiedReceiver!!,
             IntentFilter().also { it.addAction(BROADCAST_PLAYLISTS_CHANGED) }
         )
+
+        setUpFloatingActionButton()
     }
 
     private val loaderCoroutineScope: CoroutineScope = CoroutineScope(Dispatchers.IO)
@@ -128,6 +133,28 @@ class PlaylistPage : AbsPage() {
     }
 
     private var playlistsModifiedReceiver: PlaylistsModifiedReceiver? = null
+
+    private fun setUpFloatingActionButton() {
+        val primaryColor = ThemeColor.primaryColor(hostFragment.mainActivity)
+        val accentColor = ThemeColor.accentColor(hostFragment.mainActivity)
+
+        binding.addNewItem.backgroundTintList = ColorStateList(
+            arrayOf(
+                intArrayOf(android.R.attr.state_activated),
+                intArrayOf(android.R.attr.state_pressed),
+                intArrayOf(),
+            ),
+            intArrayOf(
+                ColorUtil.lightenColor(primaryColor), accentColor, primaryColor
+            )
+        )
+
+        binding.addNewItem.setOnClickListener {
+            CreatePlaylistDialog.createEmpty().show(childFragmentManager, "CREATE_NEW_PLAYLIST")
+        }
+
+        binding.addNewItem.visibility = View.VISIBLE
+    }
 
     companion object {
         const val TAG = "PlaylistPage"
