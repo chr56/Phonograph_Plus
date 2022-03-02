@@ -37,7 +37,7 @@ class CrashActivity : ThemeActivity() {
         // toolbar theme
         val toolbar = findViewById<androidx.appcompat.widget.Toolbar>(R.id.toolbar)
         toolbar.setBackgroundColor(resources.getColor(R.color.md_grey_700))
-        toolbar.title = getString(R.string.Crash)
+        toolbar.title = getString(R.string.crash)
         setSupportActionBar(toolbar)
 
         // stack trace text
