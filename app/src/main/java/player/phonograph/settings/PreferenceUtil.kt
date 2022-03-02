@@ -34,6 +34,7 @@ import java.io.File
 import java.util.ArrayList
 
 @SuppressLint("ApplySharedPref")
+@Deprecated("use class Setting")
 class PreferenceUtil(context: Context) {
 
     private val mPreferences: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
