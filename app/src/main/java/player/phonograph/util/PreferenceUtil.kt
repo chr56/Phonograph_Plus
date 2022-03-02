@@ -14,7 +14,6 @@ import android.util.Log
 import android.widget.Toast
 import androidx.annotation.StyleRes
 import androidx.preference.PreferenceManager
-import util.mdcolor.pref.ThemeColor
 import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
 import com.google.gson.reflect.TypeToken
@@ -28,34 +27,14 @@ import player.phonograph.helper.SortOrder
 import player.phonograph.model.CategoryInfo
 import player.phonograph.ui.fragments.mainactivity.folders.FoldersFragment
 import player.phonograph.ui.fragments.player.NowPlayingScreen
+import util.mdcolor.pref.ThemeColor
 import java.io.File
 import java.util.ArrayList
 
 @SuppressLint("ApplySharedPref")
 class PreferenceUtil(context: Context) {
 
-    //    private var sInstance: PreferenceUtil? = null
-    private val mPreferences: SharedPreferences =
-        PreferenceManager.getDefaultSharedPreferences(context)
-
-//    fun getInstance(context: Context): PreferenceUtil {
-//        return if (sInstance == null) PreferenceUtil(context.applicationContext)
-//        else sInstance!!
-//    }
-
-//    fun isAllowedToDownloadMetadata(context: Context): Boolean {
-//        return when (getInstance(context).autoDownloadImagesPolicy()) {
-//            "always" -> true
-//            "only_wifi" -> {
-//                val connectivityManager =
-//                    context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-//                val netInfo = connectivityManager.activeNetworkInfo
-//                netInfo != null && netInfo.type == ConnectivityManager.TYPE_WIFI && netInfo.isConnectedOrConnecting
-//            }
-//            "never" -> false
-//            else -> false
-//        }
-//    }
+    private val mPreferences: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
 
     fun registerOnSharedPreferenceChangedListener(sharedPreferenceChangeListener: OnSharedPreferenceChangeListener?) {
         mPreferences.registerOnSharedPreferenceChangeListener(sharedPreferenceChangeListener)
@@ -64,18 +43,6 @@ class PreferenceUtil(context: Context) {
     fun unregisterOnSharedPreferenceChangedListener(sharedPreferenceChangeListener: OnSharedPreferenceChangeListener?) {
         mPreferences.unregisterOnSharedPreferenceChangeListener(sharedPreferenceChangeListener)
     }
-
-//    @StyleRes
-//    fun getGeneralTheme(): Int {
-//        return getThemeResFromPrefValue(
-//            mPreferences.getString(GENERAL_THEME, "auto")
-//        )
-//    }
-//    fun setGeneralTheme(theme: String?) {
-//        val editor = mPreferences.edit()
-//        editor.putString(GENERAL_THEME, theme)
-//        editor.commit()
-//    }
 
     @get:StyleRes
     val generalTheme: Int
