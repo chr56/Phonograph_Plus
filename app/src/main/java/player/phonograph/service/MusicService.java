@@ -37,7 +37,6 @@ import androidx.annotation.Nullable;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestBuilder;
 import com.bumptech.glide.request.target.CustomTarget;
-import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
 
 import java.lang.ref.WeakReference;
@@ -68,7 +67,7 @@ import player.phonograph.provider.SongPlayCountStore;
 import player.phonograph.service.playback.Playback;
 import player.phonograph.util.LyricsUtil;
 import player.phonograph.util.MusicUtil;
-import player.phonograph.util.PreferenceUtil;
+import player.phonograph.settings.PreferenceUtil;
 import player.phonograph.util.Util;
 
 /**

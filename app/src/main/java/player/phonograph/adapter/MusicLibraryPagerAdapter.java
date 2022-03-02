@@ -15,7 +15,7 @@ import player.phonograph.ui.fragments.mainactivity.library.pager.ArtistsFragment
 import player.phonograph.ui.fragments.mainactivity.library.pager.GenresFragment;
 import player.phonograph.ui.fragments.mainactivity.library.pager.PlaylistsFragment;
 import player.phonograph.ui.fragments.mainactivity.library.pager.SongsFragment;
-import player.phonograph.util.PreferenceUtil;
+import player.phonograph.settings.PreferenceUtil;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;

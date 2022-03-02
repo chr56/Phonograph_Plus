@@ -21,7 +21,7 @@ import com.afollestad.materialdialogs.customview.customView
 import com.heinrichreimersoftware.materialintro.view.InkPageIndicator
 import player.phonograph.R
 import player.phonograph.ui.fragments.player.NowPlayingScreen
-import player.phonograph.util.PreferenceUtil
+import player.phonograph.settings.PreferenceUtil
 import player.phonograph.util.ViewUtil
 
 /**

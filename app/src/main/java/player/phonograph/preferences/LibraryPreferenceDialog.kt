@@ -13,7 +13,7 @@ import com.afollestad.materialdialogs.customview.customView
 import player.phonograph.R
 import player.phonograph.adapter.CategoryInfoAdapter
 import player.phonograph.model.CategoryInfo
-import player.phonograph.util.PreferenceUtil
+import player.phonograph.settings.PreferenceUtil
 
 class LibraryPreferenceDialog : DialogFragment() {
     private var adapter: CategoryInfoAdapter? = null

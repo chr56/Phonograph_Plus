@@ -8,7 +8,7 @@ import androidx.annotation.Nullable;
 import player.phonograph.model.Album;
 import player.phonograph.model.Artist;
 import player.phonograph.model.Song;
-import player.phonograph.util.PreferenceUtil;
+import player.phonograph.settings.PreferenceUtil;
 
 import java.util.ArrayList;
 import java.util.List;

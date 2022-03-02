@@ -13,7 +13,7 @@ import player.phonograph.helper.SortOrder
 import player.phonograph.interfaces.MultiSelectionCabProvider
 import player.phonograph.model.Song
 import player.phonograph.util.MusicUtil
-import player.phonograph.util.PreferenceUtil
+import player.phonograph.settings.PreferenceUtil
 import java.text.SimpleDateFormat
 import java.util.*
 

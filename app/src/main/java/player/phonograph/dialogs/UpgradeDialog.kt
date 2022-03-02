@@ -17,7 +17,7 @@ import com.afollestad.materialdialogs.list.listItemsSingleChoice
 import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.Updater
-import player.phonograph.util.PreferenceUtil
+import player.phonograph.settings.PreferenceUtil
 
 class UpgradeDialog : DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {

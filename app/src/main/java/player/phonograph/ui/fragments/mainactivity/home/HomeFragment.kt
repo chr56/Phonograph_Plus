@@ -32,7 +32,7 @@ import player.phonograph.ui.activities.MainActivity
 import player.phonograph.ui.activities.SearchActivity
 import player.phonograph.ui.fragments.mainactivity.AbsMainActivityFragment
 import player.phonograph.util.PhonographColorUtil
-import player.phonograph.util.PreferenceUtil
+import player.phonograph.settings.PreferenceUtil
 import java.lang.ref.WeakReference
 
 class HomeFragment : AbsMainActivityFragment(), MainActivity.MainActivityFragmentCallbacks, SharedPreferences.OnSharedPreferenceChangeListener, MultiSelectionCabProvider {

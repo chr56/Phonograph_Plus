@@ -69,7 +69,7 @@ import player.phonograph.ui.fragments.mainactivity.AbsMainActivityFragment;
 import player.phonograph.util.BlacklistUtil;
 import player.phonograph.util.FileUtil;
 import player.phonograph.util.PhonographColorUtil;
-import player.phonograph.util.PreferenceUtil;
+import player.phonograph.settings.PreferenceUtil;
 import player.phonograph.util.ViewUtil;
 import player.phonograph.views.BreadCrumbLayout;
 import util.mdcolor.pref.ThemeColor;

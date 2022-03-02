@@ -16,7 +16,7 @@ import androidx.annotation.Keep;
 
 import java.io.ByteArrayOutputStream;
 
-import player.phonograph.util.PreferenceUtil;
+import player.phonograph.settings.PreferenceUtil;
 
 @Keep
 public class StatusBarLyric {

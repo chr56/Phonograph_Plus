@@ -20,7 +20,7 @@ import player.phonograph.glide.audiocover.AudioFileCover;
 import player.phonograph.glide.palette.BitmapPaletteWrapper;
 import player.phonograph.model.Song;
 import player.phonograph.util.MusicUtil;
-import player.phonograph.util.PreferenceUtil;
+import player.phonograph.settings.PreferenceUtil;
 
 /**
  * @author Karim Abou Zeid (kabouzeid)

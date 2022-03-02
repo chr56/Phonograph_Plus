@@ -38,7 +38,7 @@ import player.phonograph.model.Playlist
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
 import player.phonograph.util.PhonographColorUtil
 import player.phonograph.util.PlaylistsUtil
-import player.phonograph.util.PreferenceUtil
+import player.phonograph.settings.PreferenceUtil
 import player.phonograph.util.ViewUtil
 
 class PlaylistEditorActivity : AbsSlidingMusicPanelActivity() {

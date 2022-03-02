@@ -18,6 +18,7 @@ import player.phonograph.model.Song
 import player.phonograph.model.lyrics.AbsLyrics
 import player.phonograph.model.lyrics.LyricsParsed
 import player.phonograph.model.lyrics.LyricsParsedSynchronized
+import player.phonograph.settings.PreferenceUtil
 import java.io.File
 import java.util.regex.Pattern
 

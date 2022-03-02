@@ -7,6 +7,7 @@ import androidx.palette.graphics.Palette
 import androidx.palette.graphics.Palette.Swatch
 import util.mddesign.util.ColorUtil
 import player.phonograph.R
+import player.phonograph.settings.PreferenceUtil
 import java.util.*
 
 /**

@@ -23,7 +23,7 @@ import player.phonograph.R
 import player.phonograph.helper.MusicPlayerRemote
 import player.phonograph.service.MusicService
 import player.phonograph.util.MusicUtil
-import player.phonograph.util.PreferenceUtil
+import player.phonograph.settings.PreferenceUtil
 import player.phonograph.views.basic.CheckBoxX
 import com.triggertrap.seekarc.SeekArc
 

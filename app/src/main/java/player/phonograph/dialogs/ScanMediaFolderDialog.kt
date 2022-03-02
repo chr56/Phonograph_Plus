@@ -21,7 +21,7 @@ import player.phonograph.R
 import player.phonograph.misc.UpdateToastMediaScannerCompletionListener
 import player.phonograph.ui.fragments.mainactivity.folders.FoldersFragment
 import player.phonograph.ui.fragments.mainactivity.folders.FoldersFragment.ArrayListPathsAsyncTask
-import player.phonograph.util.PreferenceUtil
+import player.phonograph.settings.PreferenceUtil
 import java.io.File
 import java.lang.ref.WeakReference
 

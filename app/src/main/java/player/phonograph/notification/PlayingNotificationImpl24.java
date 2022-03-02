@@ -29,7 +29,7 @@ import player.phonograph.glide.palette.BitmapPaletteWrapper;
 import player.phonograph.model.Song;
 import player.phonograph.service.MusicService;
 import player.phonograph.ui.activities.MainActivity;
-import player.phonograph.util.PreferenceUtil;
+import player.phonograph.settings.PreferenceUtil;
 
 public class PlayingNotificationImpl24 extends PlayingNotification {
 

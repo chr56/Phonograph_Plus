@@ -28,7 +28,7 @@ import player.phonograph.preferences.basic.dialog.ListPreferenceDialogFragmentCo
 import player.phonograph.preferences.basic.dialog.PreferenceDialogFragmentX
 import player.phonograph.util.ColorChooserListener
 import player.phonograph.util.NavigationUtil
-import player.phonograph.util.PreferenceUtil
+import player.phonograph.settings.PreferenceUtil
 
 class SettingsFragment : PreferenceFragmentCompat() {
 

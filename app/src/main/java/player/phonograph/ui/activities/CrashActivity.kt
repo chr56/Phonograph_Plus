@@ -21,7 +21,7 @@ import player.phonograph.App
 import player.phonograph.BuildConfig
 import player.phonograph.R
 import player.phonograph.ui.activities.base.ThemeActivity
-import player.phonograph.util.PreferenceUtil
+import player.phonograph.settings.PreferenceUtil
 import java.util.*
 import kotlin.system.exitProcess
 

@@ -27,7 +27,7 @@ import player.phonograph.R
 import player.phonograph.databinding.FragmentDisplayPageBinding
 import player.phonograph.databinding.PopupWindowMainBinding
 import player.phonograph.util.PhonographColorUtil
-import player.phonograph.util.PreferenceUtil
+import player.phonograph.settings.PreferenceUtil
 import player.phonograph.util.Util
 import player.phonograph.util.ViewUtil
 import java.lang.ref.WeakReference

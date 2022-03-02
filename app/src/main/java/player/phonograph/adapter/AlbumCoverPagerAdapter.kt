@@ -15,8 +15,8 @@ import player.phonograph.glide.PhonographColoredTarget
 import player.phonograph.glide.SongGlideRequest
 import player.phonograph.misc.CustomFragmentStatePagerAdapter
 import player.phonograph.model.Song
-import player.phonograph.util.PreferenceUtil
-import player.phonograph.util.PreferenceUtil.Companion.getInstance
+import player.phonograph.settings.PreferenceUtil
+import player.phonograph.settings.PreferenceUtil.Companion.getInstance
 
 /**
  * @author Karim Abou Zeid (kabouzeid)

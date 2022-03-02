@@ -24,7 +24,7 @@ import player.phonograph.R;
 import player.phonograph.loader.SongLoader;
 import player.phonograph.model.Song;
 import player.phonograph.service.MusicService;
-import player.phonograph.util.PreferenceUtil;
+import player.phonograph.settings.PreferenceUtil;
 
 import java.io.File;
 import java.util.ArrayList;

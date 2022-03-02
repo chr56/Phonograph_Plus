@@ -65,7 +65,7 @@ import player.phonograph.ui.activities.tageditor.AlbumTagEditorActivity;
 import player.phonograph.util.MusicUtil;
 import player.phonograph.util.NavigationUtil;
 import player.phonograph.util.PhonographColorUtil;
-import player.phonograph.util.PreferenceUtil;
+import player.phonograph.settings.PreferenceUtil;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;

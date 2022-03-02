@@ -31,7 +31,7 @@ import player.phonograph.service.MusicService;
 import player.phonograph.ui.activities.MainActivity;
 import player.phonograph.util.ImageUtil;
 import player.phonograph.util.PhonographColorUtil;
-import player.phonograph.util.PreferenceUtil;
+import player.phonograph.settings.PreferenceUtil;
 
 public class PlayingNotificationImpl extends PlayingNotification {
 

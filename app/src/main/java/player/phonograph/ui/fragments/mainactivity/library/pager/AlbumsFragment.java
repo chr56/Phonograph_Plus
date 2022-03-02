@@ -14,7 +14,7 @@ import player.phonograph.interfaces.LoaderIds;
 import player.phonograph.loader.AlbumLoader;
 import player.phonograph.misc.WrappedAsyncTaskLoader;
 import player.phonograph.model.Album;
-import player.phonograph.util.PreferenceUtil;
+import player.phonograph.settings.PreferenceUtil;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -6,7 +6,7 @@ import android.provider.MediaStore;
 import androidx.annotation.NonNull;
 
 import player.phonograph.model.Song;
-import player.phonograph.util.PreferenceUtil;
+import player.phonograph.settings.PreferenceUtil;
 
 import java.util.List;
 

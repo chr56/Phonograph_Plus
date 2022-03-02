@@ -12,7 +12,7 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
 import org.json.JSONObject
-import player.phonograph.util.PreferenceUtil
+import player.phonograph.settings.PreferenceUtil
 import java.io.IOException
 import java.util.concurrent.TimeUnit
 

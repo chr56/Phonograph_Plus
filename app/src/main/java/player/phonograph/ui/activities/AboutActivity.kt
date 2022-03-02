@@ -31,7 +31,7 @@ import player.phonograph.notification.UpgradeNotification
 import player.phonograph.ui.activities.base.ThemeActivity
 import player.phonograph.ui.activities.bugreport.BugReportActivity
 import player.phonograph.ui.activities.intro.AppIntroActivity
-import player.phonograph.util.PreferenceUtil
+import player.phonograph.settings.PreferenceUtil
 
 /**
  * @author Karim Abou Zeid (kabouzeid)

@@ -42,6 +42,7 @@ import player.phonograph.misc.WrappedAsyncTaskLoader
 import player.phonograph.model.AbsCustomPlaylist
 import player.phonograph.model.Playlist
 import player.phonograph.model.Song
+import player.phonograph.settings.PreferenceUtil
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
 import player.phonograph.util.*
 

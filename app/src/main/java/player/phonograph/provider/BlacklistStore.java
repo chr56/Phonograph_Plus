@@ -11,7 +11,7 @@ import androidx.annotation.NonNull;
 
 import player.phonograph.service.MusicService;
 import player.phonograph.util.FileUtil;
-import player.phonograph.util.PreferenceUtil;
+import player.phonograph.settings.PreferenceUtil;
 
 import java.io.File;
 import java.util.ArrayList;

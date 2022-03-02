@@ -7,7 +7,7 @@ import android.os.Build
 import android.provider.MediaStore
 import player.phonograph.model.Genre
 import player.phonograph.model.Song
-import player.phonograph.util.PreferenceUtil.Companion.getInstance
+import player.phonograph.settings.PreferenceUtil.Companion.getInstance
 import java.lang.Exception
 import java.util.ArrayList
 

@@ -12,7 +12,7 @@ import com.bumptech.glide.signature.ObjectKey;
 import java.io.InputStream;
 
 import player.phonograph.App;
-import player.phonograph.util.PreferenceUtil;
+import player.phonograph.settings.PreferenceUtil;
 
 /**
  * @author Karim Abou Zeid (kabouzeid)

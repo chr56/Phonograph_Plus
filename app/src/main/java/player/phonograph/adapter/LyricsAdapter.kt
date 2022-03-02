@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import player.phonograph.R
 import player.phonograph.helper.MusicPlayerRemote
 import player.phonograph.util.MusicUtil
-import player.phonograph.util.PreferenceUtil
+import player.phonograph.settings.PreferenceUtil
 import java.util.regex.Pattern
 
 class LyricsAdapter(private val context: Activity, stamps: IntArray, lines: Array<CharSequence>, private val callbackDialog: Dialog? = null) :

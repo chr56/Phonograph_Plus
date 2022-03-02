@@ -14,7 +14,7 @@ import android.widget.Toast
 import player.phonograph.R
 import player.phonograph.service.playback.Playback
 import player.phonograph.service.playback.Playback.PlaybackCallbacks
-import player.phonograph.util.PreferenceUtil.Companion.getInstance
+import player.phonograph.settings.PreferenceUtil.Companion.getInstance
 
 /**
  * @author Andrew Neal, Karim Abou Zeid (kabouzeid)

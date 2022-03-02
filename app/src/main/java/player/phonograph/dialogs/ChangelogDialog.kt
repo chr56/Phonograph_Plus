@@ -20,7 +20,7 @@ import com.afollestad.materialdialogs.actions.getActionButton
 import com.afollestad.materialdialogs.customview.customView
 import player.phonograph.App
 import player.phonograph.R
-import player.phonograph.util.PreferenceUtil
+import player.phonograph.settings.PreferenceUtil
 import java.io.BufferedReader
 import java.io.InputStreamReader
 /**

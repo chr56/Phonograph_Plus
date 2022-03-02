@@ -23,7 +23,7 @@ import player.phonograph.model.Artist
 import player.phonograph.model.Song
 import player.phonograph.util.MusicUtil
 import player.phonograph.util.NavigationUtil
-import player.phonograph.util.PreferenceUtil
+import player.phonograph.settings.PreferenceUtil
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView.SectionedAdapter
 
 /**

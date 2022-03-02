@@ -18,7 +18,7 @@ import util.mddesign.core.Themer
 import util.mddesign.util.ColorUtil
 import util.mddesign.util.MenuTinter
 import player.phonograph.R
-import player.phonograph.util.PreferenceUtil
+import player.phonograph.settings.PreferenceUtil
 import player.phonograph.util.Util
 
 // todo remove Platform check

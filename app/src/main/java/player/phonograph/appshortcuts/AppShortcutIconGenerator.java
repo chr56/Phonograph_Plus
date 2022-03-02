@@ -12,7 +12,7 @@ import android.util.TypedValue;
 
 import player.phonograph.R;
 import player.phonograph.util.ImageUtil;
-import player.phonograph.util.PreferenceUtil;
+import player.phonograph.settings.PreferenceUtil;
 
 import util.mdcolor.pref.ThemeColor;
 
