@@ -5,7 +5,7 @@ import android.graphics.Bitmap
 import androidx.annotation.ColorInt
 import androidx.palette.graphics.Palette
 import androidx.palette.graphics.Palette.Swatch
-import chr_56.MDthemer.util.ColorUtil
+import util.mddesign.util.ColorUtil
 import player.phonograph.R
 import java.util.*
 

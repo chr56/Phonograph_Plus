@@ -44,10 +44,10 @@ import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 
-import chr_56.MDthemer.util.ColorUtil;
-import chr_56.MDthemer.util.MaterialColorHelper;
-import chr_56.MDthemer.util.TintHelper;
-import chr_56.MDthemer.util.ToolbarColorUtil;
+import util.mddesign.util.ColorUtil;
+import util.mddesign.util.MaterialColorHelper;
+import util.mddesign.util.TintHelper;
+import util.mddesign.util.ToolbarColorUtil;
 import kotlin.Unit;
 import kotlin.jvm.functions.Function1;
 import kotlin.jvm.functions.Function2;

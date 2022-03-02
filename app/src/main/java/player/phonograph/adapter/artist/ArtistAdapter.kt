@@ -8,8 +8,8 @@ import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.util.Pair
-import chr_56.MDthemer.util.ColorUtil
-import chr_56.MDthemer.util.MaterialColorHelper
+import util.mddesign.util.ColorUtil
+import util.mddesign.util.MaterialColorHelper
 import com.bumptech.glide.Glide
 import player.phonograph.R
 import player.phonograph.adapter.base.AbsMultiSelectAdapter

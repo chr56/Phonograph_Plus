@@ -8,7 +8,7 @@ import androidx.annotation.Nullable;
 
 import com.bumptech.glide.request.transition.Transition;
 
-import chr_56.MDthemer.util.Util;
+import util.mddesign.util.Util;
 import player.phonograph.R;
 import player.phonograph.glide.palette.BitmapPaletteTarget;
 import player.phonograph.glide.palette.BitmapPaletteWrapper;

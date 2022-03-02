@@ -14,7 +14,7 @@ import androidx.loader.content.Loader
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import util.mdcolor.pref.ThemeColor
-import chr_56.MDthemer.core.Themer
+import util.mddesign.core.Themer
 import player.phonograph.R
 import player.phonograph.adapter.SearchAdapter
 import player.phonograph.interfaces.LoaderIds

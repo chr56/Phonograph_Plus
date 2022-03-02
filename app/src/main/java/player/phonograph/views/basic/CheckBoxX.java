@@ -6,7 +6,7 @@ import android.util.AttributeSet;
 import androidx.appcompat.widget.AppCompatCheckBox;
 
 import util.mdcolor.pref.ThemeColor;
-import chr_56.MDthemer.core.Themer;
+import util.mddesign.core.Themer;
 
 
 /**

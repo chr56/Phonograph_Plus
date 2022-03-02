@@ -35,10 +35,10 @@ import java.util.List;
 import java.util.Locale;
 
 import util.mdcolor.pref.ThemeColor;
-import chr_56.MDthemer.util.ColorUtil;
-import chr_56.MDthemer.util.MaterialColorHelper;
-import chr_56.MDthemer.util.ToolbarColorUtil;
-import chr_56.MDthemer.util.Util;
+import util.mddesign.util.ColorUtil;
+import util.mddesign.util.MaterialColorHelper;
+import util.mddesign.util.ToolbarColorUtil;
+import util.mddesign.util.Util;
 import kotlin.Unit;
 import kotlin.jvm.functions.Function1;
 import kotlin.jvm.functions.Function2;

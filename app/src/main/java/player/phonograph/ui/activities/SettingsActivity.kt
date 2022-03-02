@@ -4,7 +4,7 @@ import android.os.Bundle
 import android.view.MenuItem
 import androidx.appcompat.widget.Toolbar
 import util.mdcolor.pref.ThemeColor
-import chr_56.MDthemer.core.Themer
+import util.mddesign.core.Themer
 import player.phonograph.R
 import player.phonograph.ui.activities.base.AbsBaseActivity
 import player.phonograph.ui.fragments.SettingsFragment

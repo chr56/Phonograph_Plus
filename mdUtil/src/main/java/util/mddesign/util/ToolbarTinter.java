@@ -1,4 +1,4 @@
-package chr_56.MDthemer.util;
+package util.mddesign.util;
 
 import android.content.Context;
 import android.view.Menu;
@@ -8,7 +8,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 
-import static chr_56.MDthemer.util.ToolbarColorUtil.*;
+import static util.mddesign.util.ToolbarColorUtil.*;
 
 /**
  * @author Karim Abou Zeid (kabouzeid), chr_56 [modify]

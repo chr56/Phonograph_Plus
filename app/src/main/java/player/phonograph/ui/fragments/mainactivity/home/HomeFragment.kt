@@ -15,8 +15,8 @@ import androidx.core.graphics.BlendModeColorFilterCompat
 import androidx.core.graphics.BlendModeCompat
 import androidx.viewpager2.widget.ViewPager2
 import util.mdcolor.pref.ThemeColor
-import chr_56.MDthemer.util.ColorUtil
-import chr_56.MDthemer.util.MaterialColorHelper
+import util.mddesign.util.ColorUtil
+import util.mddesign.util.MaterialColorHelper
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator

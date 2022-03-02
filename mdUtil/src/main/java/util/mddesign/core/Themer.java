@@ -1,4 +1,4 @@
-package chr_56.MDthemer.core;
+package util.mddesign.core;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -13,10 +13,10 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 
-import chr_56.MDthemer.util.ColorUtil;
-import chr_56.MDthemer.util.MenuTinter;
-import chr_56.MDthemer.util.TintHelper;
-import chr_56.MDthemer.util.ToolbarTinter;
+import util.mddesign.util.ColorUtil;
+import util.mddesign.util.MenuTinter;
+import util.mddesign.util.TintHelper;
+import util.mddesign.util.ToolbarTinter;
 
 import static android.view.View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR;
 

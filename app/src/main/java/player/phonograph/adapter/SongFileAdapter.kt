@@ -7,7 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
-import chr_56.MDthemer.util.Util
+import util.mddesign.util.Util
 import com.bumptech.glide.Glide
 import com.bumptech.glide.signature.MediaStoreSignature
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView.SectionedAdapter

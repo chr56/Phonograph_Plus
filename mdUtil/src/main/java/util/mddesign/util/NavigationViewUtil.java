@@ -1,4 +1,4 @@
-package chr_56.MDthemer.util;
+package util.mddesign.util;
 
 import android.content.res.ColorStateList;
 

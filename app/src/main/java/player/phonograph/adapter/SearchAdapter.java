@@ -25,7 +25,7 @@ import player.phonograph.util.NavigationUtil;
 import java.util.ArrayList;
 import java.util.List;
 
-import chr_56.MDthemer.util.Util;
+import util.mddesign.util.Util;
 
 /**
  * @author Karim Abou Zeid (kabouzeid)

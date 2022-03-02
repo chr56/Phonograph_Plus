@@ -19,7 +19,7 @@ import androidx.loader.app.LoaderManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import util.mdcolor.pref.ThemeColor
-import chr_56.MDthemer.core.Themer
+import util.mddesign.core.Themer
 import com.afollestad.materialcab.*
 import com.afollestad.materialcab.attached.AttachedCab
 import com.afollestad.materialcab.attached.destroy
@@ -30,7 +30,6 @@ import com.h6ah4i.android.widget.advrecyclerview.draggable.RecyclerViewDragDropM
 import com.h6ah4i.android.widget.advrecyclerview.utils.WrapperAdapterUtils
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView
 import kotlinx.coroutines.*
-import player.phonograph.*
 import player.phonograph.R
 import player.phonograph.adapter.song.UniversalSongAdapter
 import player.phonograph.databinding.ActivityPlaylistDetailBinding

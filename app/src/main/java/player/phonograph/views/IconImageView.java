@@ -7,7 +7,7 @@ import android.util.AttributeSet;
 
 import player.phonograph.R;
 
-import chr_56.MDthemer.util.Util;
+import util.mddesign.util.Util;
 
 /**
  * @author Karim Abou Zeid (kabouzeid)

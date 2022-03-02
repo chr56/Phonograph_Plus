@@ -15,9 +15,9 @@ import androidx.appcompat.content.res.AppCompatResources
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.util.Pair
 import util.mdcolor.pref.ThemeColor
-import chr_56.MDthemer.util.ColorUtil
-import chr_56.MDthemer.util.MaterialColorHelper
-import chr_56.MDthemer.util.TintHelper
+import util.mddesign.util.ColorUtil
+import util.mddesign.util.MaterialColorHelper
+import util.mddesign.util.TintHelper
 import com.bumptech.glide.Glide
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView.SectionedAdapter
 import player.phonograph.R

@@ -17,7 +17,7 @@ import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat;
 
 import java.io.InputStream;
 
-import chr_56.MDthemer.util.TintHelper;
+import util.mddesign.util.TintHelper;
 
 /**
  * @author Karim Abou Zeid (kabouzeid)

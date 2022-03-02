@@ -16,7 +16,7 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 
-import chr_56.MDthemer.util.ToolbarColorUtil;
+import util.mddesign.util.ToolbarColorUtil;
 import player.phonograph.R;
 import player.phonograph.databinding.ActivitySongTagEditorBinding;
 import player.phonograph.loader.SongLoader;

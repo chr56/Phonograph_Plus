@@ -14,7 +14,7 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import util.mdcolor.pref.ThemeColor
-import chr_56.MDthemer.util.ColorUtil
+import util.mddesign.util.ColorUtil
 import kotlinx.coroutines.*
 import player.phonograph.App
 import player.phonograph.BROADCAST_PLAYLISTS_CHANGED

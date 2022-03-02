@@ -13,9 +13,9 @@ import androidx.annotation.NonNull;
 import androidx.core.graphics.BlendModeColorFilterCompat;
 import androidx.core.graphics.BlendModeCompat;
 
-import chr_56.MDthemer.util.ColorUtil;
-import chr_56.MDthemer.util.MaterialColorHelper;
-import chr_56.MDthemer.util.TintHelper;
+import util.mddesign.util.ColorUtil;
+import util.mddesign.util.MaterialColorHelper;
+import util.mddesign.util.TintHelper;
 import player.phonograph.R;
 import player.phonograph.databinding.FragmentCardPlayerPlaybackControlsBinding;
 import player.phonograph.helper.MusicPlayerRemote;

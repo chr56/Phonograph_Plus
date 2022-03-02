@@ -18,7 +18,7 @@ import androidx.interpolator.view.animation.FastOutSlowInInterpolator;
 import java.util.Collection;
 import java.util.LinkedList;
 
-import chr_56.MDthemer.util.MaterialColorHelper;
+import util.mddesign.util.MaterialColorHelper;
 import player.phonograph.R;
 import player.phonograph.databinding.FragmentFlatPlayerPlaybackControlsBinding;
 import player.phonograph.helper.MusicPlayerRemote;

@@ -7,7 +7,7 @@ import android.view.View;
 import androidx.appcompat.widget.SwitchCompat;
 
 import util.mdcolor.pref.ThemeColor;
-import chr_56.MDthemer.core.Themer;
+import util.mddesign.core.Themer;
 
 
 /**

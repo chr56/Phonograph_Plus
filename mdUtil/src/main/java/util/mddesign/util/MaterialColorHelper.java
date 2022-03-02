@@ -1,4 +1,4 @@
-package chr_56.MDthemer.util;
+package util.mddesign.util;
 
 import android.annotation.SuppressLint;
 import android.content.Context;

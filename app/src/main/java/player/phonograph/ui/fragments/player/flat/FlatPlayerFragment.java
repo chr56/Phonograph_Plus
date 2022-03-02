@@ -31,8 +31,8 @@ import com.h6ah4i.android.widget.advrecyclerview.utils.WrapperAdapterUtils;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import util.mdcolor.pref.ThemeColor;
-import chr_56.MDthemer.util.ColorUtil;
-import chr_56.MDthemer.util.ToolbarColorUtil;
+import util.mddesign.util.ColorUtil;
+import util.mddesign.util.ToolbarColorUtil;
 import player.phonograph.R;
 import player.phonograph.adapter.base.MediaEntryViewHolder;
 import player.phonograph.adapter.song.PlayingQueueAdapter;
@@ -436,7 +436,7 @@ public class FlatPlayerFragment extends AbsPlayerFragment implements PlayerAlbum
             AnimatorSet animatorSet = new AnimatorSet();
             animatorSet.playTogether(backgroundAnimator, statusBarAnimator);
 
-            if (!chr_56.MDthemer.util.Util.isWindowBackgroundDark(fragment.getActivity())) {
+            if (!util.mddesign.util.Util.isWindowBackgroundDark(fragment.getActivity())) {
                 int adjustedLastColor = ColorUtil.isColorLight(fragment.lastColor) ? ColorUtil.darkenColor(fragment.lastColor) : fragment.lastColor;
                 int adjustedNewColor = ColorUtil.isColorLight(newColor) ? ColorUtil.darkenColor(newColor) : newColor;
                 Animator subHeaderAnimator = ViewUtil.createTextColorTransition(fragment.viewBinding.playerQueueSubHeader, adjustedLastColor, adjustedNewColor);
@@ -449,7 +449,7 @@ public class FlatPlayerFragment extends AbsPlayerFragment implements PlayerAlbum
 
         @Override
         public void animateColorChange(int newColor) {
-            if (chr_56.MDthemer.util.Util.isWindowBackgroundDark(fragment.getActivity())) {
+            if (util.mddesign.util.Util.isWindowBackgroundDark(fragment.getActivity())) {
                 fragment.viewBinding.playerQueueSubHeader.setTextColor(ThemeColor.textColorSecondary(fragment.requireActivity()));
             }
         }
@@ -471,7 +471,7 @@ public class FlatPlayerFragment extends AbsPlayerFragment implements PlayerAlbum
             currentSongViewHolder.separator.setVisibility(View.VISIBLE);
             currentSongViewHolder.shortSeparator.setVisibility(View.GONE);
             currentSongViewHolder.image.setScaleType(ImageView.ScaleType.CENTER);
-            currentSongViewHolder.image.setColorFilter(chr_56.MDthemer.util.Util.resolveColor(fragment.getActivity(), R.attr.iconColor, ThemeColor.textColorSecondary(fragment.getActivity())), PorterDuff.Mode.SRC_IN);
+            currentSongViewHolder.image.setColorFilter(util.mddesign.util.Util.resolveColor(fragment.getActivity(), R.attr.iconColor, ThemeColor.textColorSecondary(fragment.getActivity())), PorterDuff.Mode.SRC_IN);
             currentSongViewHolder.image.setImageResource(R.drawable.ic_volume_up_white_24dp);
             currentSongViewHolder.itemView.setOnClickListener(v -> {
                 // toggle the panel

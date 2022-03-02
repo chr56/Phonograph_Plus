@@ -14,9 +14,9 @@ import androidx.appcompat.app.WindowDecorActionBar
 import androidx.appcompat.widget.Toolbar
 import androidx.appcompat.widget.ToolbarWidgetWrapper
 import util.mdcolor.pref.ThemeColor
-import chr_56.MDthemer.core.Themer
-import chr_56.MDthemer.util.ColorUtil
-import chr_56.MDthemer.util.MenuTinter
+import util.mddesign.core.Themer
+import util.mddesign.util.ColorUtil
+import util.mddesign.util.MenuTinter
 import player.phonograph.R
 import player.phonograph.util.PreferenceUtil
 import player.phonograph.util.Util

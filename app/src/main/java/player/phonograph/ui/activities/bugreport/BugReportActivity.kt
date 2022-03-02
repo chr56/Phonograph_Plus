@@ -17,7 +17,7 @@ import android.widget.Toast
 import androidx.annotation.StringDef
 import androidx.annotation.StringRes
 import util.mdcolor.pref.ThemeColor
-import chr_56.MDthemer.util.TintHelper
+import util.mddesign.util.TintHelper
 import com.afollestad.materialdialogs.MaterialDialog
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.floatingactionbutton.FloatingActionButton.OnVisibilityChangedListener

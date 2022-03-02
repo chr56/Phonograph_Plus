@@ -19,7 +19,7 @@ import androidx.appcompat.content.res.AppCompatResources
 import androidx.fragment.app.Fragment
 import androidx.viewpager.widget.ViewPager
 import util.mdcolor.pref.ThemeColor
-import chr_56.MDthemer.util.*
+import util.mddesign.util.*
 import com.afollestad.materialcab.*
 import com.afollestad.materialcab.attached.AttachedCab
 import com.afollestad.materialcab.attached.destroy

@@ -12,7 +12,7 @@ import androidx.loader.content.Loader
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import util.mdcolor.pref.ThemeColor
-import chr_56.MDthemer.core.Themer
+import util.mddesign.core.Themer
 import com.afollestad.materialcab.*
 import com.afollestad.materialcab.attached.AttachedCab
 import com.afollestad.materialcab.attached.destroy

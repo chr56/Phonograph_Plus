@@ -19,7 +19,7 @@ import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.target.Target;
 import com.bumptech.glide.request.transition.Transition;
 
-import chr_56.MDthemer.util.MaterialColorHelper;
+import util.mddesign.util.MaterialColorHelper;
 import player.phonograph.R;
 import player.phonograph.appwidgets.base.BaseAppWidget;
 import player.phonograph.glide.SongGlideRequest;

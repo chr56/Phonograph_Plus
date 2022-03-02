@@ -32,8 +32,8 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 
-import chr_56.MDthemer.util.ToolbarColorUtil;
-import chr_56.MDthemer.util.Util;
+import util.mddesign.util.ToolbarColorUtil;
+import util.mddesign.util.Util;
 import player.phonograph.R;
 import player.phonograph.databinding.ActivityAlbumTagEditorBinding;
 import player.phonograph.glide.SongGlideRequest;

@@ -17,8 +17,8 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.drawerlayout.widget.DrawerLayout
 import util.mdcolor.pref.ThemeColor
-import chr_56.MDthemer.util.ColorUtil
-import chr_56.MDthemer.util.NavigationViewUtil
+import util.mddesign.util.ColorUtil
+import util.mddesign.util.NavigationViewUtil
 import com.bumptech.glide.Glide
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
@@ -50,7 +50,7 @@ import player.phonograph.util.MusicUtil
 import player.phonograph.util.PreferenceUtil
 import player.phonograph.util.SAFCallbackHandlerActivity
 import player.phonograph.util.SafLauncher
-import chr_56.MDthemer.util.Util as MDthemerUtil
+import util.mddesign.util.Util as MDthemerUtil
 
 class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity {
     // init : onCreate()

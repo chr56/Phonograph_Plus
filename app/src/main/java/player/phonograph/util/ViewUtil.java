@@ -21,8 +21,8 @@ import android.widget.TextView;
 import player.phonograph.R;
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView;
 
-import chr_56.MDthemer.util.ColorUtil;
-import chr_56.MDthemer.util.MaterialColorHelper;
+import util.mddesign.util.ColorUtil;
+import util.mddesign.util.MaterialColorHelper;
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
@@ -83,7 +83,7 @@ public class ViewUtil {
         recyclerView.setPopupBgColor(accentColor);
         recyclerView.setPopupTextColor(MaterialColorHelper.getPrimaryTextColor(context, ColorUtil.isColorLight(accentColor)));
         recyclerView.setThumbColor(accentColor);
-        recyclerView.setTrackColor(ColorUtil.withAlpha(chr_56.MDthemer.util.Util.resolveColor(context, R.attr.colorControlNormal), 0.12f));//todo
+        recyclerView.setTrackColor(ColorUtil.withAlpha(util.mddesign.util.Util.resolveColor(context, R.attr.colorControlNormal), 0.12f));//todo
     }
 
     public static float convertDpToPixel(float dp, Resources resources) {

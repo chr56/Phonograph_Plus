@@ -50,9 +50,9 @@ import java.util.List;
 import java.util.Map;
 
 import util.mdcolor.pref.ThemeColor;
-import chr_56.MDthemer.util.ColorUtil;
-import chr_56.MDthemer.util.TintHelper;
-import chr_56.MDthemer.util.ToolbarColorUtil;
+import util.mddesign.util.ColorUtil;
+import util.mddesign.util.TintHelper;
+import util.mddesign.util.ToolbarColorUtil;
 import kotlin.Unit;
 import player.phonograph.R;
 import player.phonograph.misc.DialogAsyncTask;

@@ -12,8 +12,8 @@ import android.view.View
 import android.webkit.WebView
 import androidx.fragment.app.DialogFragment
 import util.mdcolor.pref.ThemeColor
-import chr_56.MDthemer.util.ColorUtil
-import chr_56.MDthemer.util.Util
+import util.mddesign.util.ColorUtil
+import util.mddesign.util.Util
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.WhichButton
 import com.afollestad.materialdialogs.actions.getActionButton

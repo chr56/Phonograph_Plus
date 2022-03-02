@@ -6,7 +6,7 @@ import android.graphics.PorterDuff
 import android.os.Bundle
 import android.view.*
 import util.mdcolor.pref.ThemeColor
-import chr_56.MDthemer.util.Util
+import util.mddesign.util.Util
 import player.phonograph.R
 import player.phonograph.databinding.FragmentMiniPlayerBinding
 import player.phonograph.helper.MusicPlayerRemote
