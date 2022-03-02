@@ -33,7 +33,7 @@ import java.util.ArrayList;
 
 import chr_56.MDthemer.R;
 import util.mdcolor.MaterialColor;
-import chr_56.MDthemer.core.ThemeColor;
+import util.mdcolor.pref.ThemeColor;
 
 /**
  * @author Karim Abou Zeid (kabouzeid), chr_56 [modify]

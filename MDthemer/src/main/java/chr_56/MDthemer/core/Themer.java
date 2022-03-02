@@ -27,11 +27,11 @@ public final class Themer {
 
     @SuppressLint("CommitPrefEdits")
     public static boolean didThemeValuesChange(@NonNull Context context, long since) {
-        return ThemeColor.isConfigured(context) && ThemeColor.prefs(context).getLong(ThemeColor.VALUES_CHANGED, -1) > since;
+        return util.mdcolor.pref.ThemeColor.isConfigured(context) && util.mdcolor.pref.ThemeColor.mPreferences(context).getLong(util.mdcolor.pref.ThemeColor.VALUES_CHANGED, -1) > since;
     }
 
     public static void setStatusbarColorAuto(Activity activity) {
-        setStatusbarColor(activity, ThemeColor.statusBarColor(activity));
+        setStatusbarColor(activity, util.mdcolor.pref.ThemeColor.statusBarColor(activity));
     }
 
     public static void setStatusbarColor(Activity activity, int color) {
@@ -93,7 +93,7 @@ public final class Themer {
     }
 
     public static void setNavigationbarColorAuto(Activity activity) {
-        setNavigationbarColor(activity, ThemeColor.navigationBarColor(activity));
+        setNavigationbarColor(activity, util.mdcolor.pref.ThemeColor.navigationBarColor(activity));
     }
 
     public static void setNavigationbarColor(Activity activity, int color) {
@@ -104,7 +104,7 @@ public final class Themer {
     }
 
     public static void setActivityToolbarColorAuto(Activity activity, @Nullable Toolbar toolbar) {
-        setActivityToolbarColor(activity, toolbar, ThemeColor.primaryColor(activity));
+        setActivityToolbarColor(activity, toolbar, util.mdcolor.pref.ThemeColor.primaryColor(activity));
     }
 
     public static void setActivityToolbarColor(Activity activity, @Nullable Toolbar toolbar, int color) {
@@ -116,7 +116,7 @@ public final class Themer {
     }
 
     public static void setTaskDescriptionColorAuto(@NonNull Activity activity) {
-        setTaskDescriptionColor(activity, ThemeColor.primaryColor(activity));
+        setTaskDescriptionColor(activity, util.mdcolor.pref.ThemeColor.primaryColor(activity));
     }
 
     public static void setTaskDescriptionColor(@NonNull Activity activity, @ColorInt int color) {
