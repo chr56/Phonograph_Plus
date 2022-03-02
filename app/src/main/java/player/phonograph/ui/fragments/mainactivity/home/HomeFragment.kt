@@ -14,13 +14,11 @@ import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.graphics.BlendModeColorFilterCompat
 import androidx.core.graphics.BlendModeCompat
 import androidx.viewpager2.widget.ViewPager2
-import util.mdcolor.pref.ThemeColor
-import util.mddesign.util.ColorUtil
-import util.mddesign.util.MaterialColorHelper
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import lib.phonograph.cab.*
+import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.adapter.HomePagerAdapter
 import player.phonograph.adapter.PAGERS
@@ -28,11 +26,14 @@ import player.phonograph.adapter.PageConfig
 import player.phonograph.databinding.FragmentHomeBinding
 import player.phonograph.databinding.PopupWindowMainBinding
 import player.phonograph.interfaces.MultiSelectionCabProvider
+import player.phonograph.settings.PreferenceUtil
 import player.phonograph.ui.activities.MainActivity
 import player.phonograph.ui.activities.SearchActivity
 import player.phonograph.ui.fragments.mainactivity.AbsMainActivityFragment
 import player.phonograph.util.PhonographColorUtil
-import player.phonograph.settings.PreferenceUtil
+import util.mdcolor.pref.ThemeColor
+import util.mddesign.util.ColorUtil
+import util.mddesign.util.MaterialColorHelper
 import java.lang.ref.WeakReference
 
 class HomeFragment : AbsMainActivityFragment(), MainActivity.MainActivityFragmentCallbacks, SharedPreferences.OnSharedPreferenceChangeListener, MultiSelectionCabProvider {
@@ -51,6 +52,7 @@ class HomeFragment : AbsMainActivityFragment(), MainActivity.MainActivityFragmen
 
     override fun onDestroy() {
         super.onDestroy()
+        binding.pager.unregisterOnPageChangeCallback(pageChangeListener)
         _viewBinding = null
         multiSelectionCab?.destroy()
         multiSelectionCab = null
@@ -119,6 +121,17 @@ class HomeFragment : AbsMainActivityFragment(), MainActivity.MainActivityFragmen
         }.attach()
         binding.pager.offscreenPageLimit = if (pagerAdapter.itemCount> 1) pagerAdapter.itemCount - 1 else 1
         updateTabVisibility()
+        if (PreferenceUtil.getInstance(requireContext()).rememberLastTab()) {
+            binding.pager.currentItem = PreferenceUtil.getInstance(requireContext()).lastPage
+        }
+        binding.pager.registerOnPageChangeCallback(pageChangeListener)
+    }
+
+    private val pageChangeListener = object : ViewPager2.OnPageChangeCallback() {
+        override fun onPageSelected(position: Int) {
+            PreferenceUtil.getInstance(App.instance).lastPage = position
+            super.onPageSelected(position)
+        }
     }
 
     override fun handleBackPress(): Boolean {
