@@ -24,6 +24,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
 import com.sothree.slidinguppanel.SlidingUpPanelLayout
 import kotlinx.coroutines.*
+import legacy.phonograph.JunkCleaner
 import player.phonograph.*
 import player.phonograph.Updater.checkUpdate
 import player.phonograph.dialogs.ChangelogDialog.Companion.create
@@ -365,6 +366,7 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
             val currentVersion = pInfo.versionCode
             if (currentVersion != PreferenceUtil.getInstance(this).getLastChangelogVersion()) {
                 create().show(supportFragmentManager, "CHANGE_LOG_DIALOG")
+                JunkCleaner(App.instance).clear(currentVersion)
             }
         } catch (e: PackageManager.NameNotFoundException) {
             e.printStackTrace()
