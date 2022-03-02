@@ -18,7 +18,7 @@ import android.widget.RadioButton
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.fragment.app.Fragment
 import androidx.viewpager.widget.ViewPager
-import chr_56.MDthemer.core.ThemeColor
+import util.mdcolor.pref.ThemeColor
 import chr_56.MDthemer.util.*
 import com.afollestad.materialcab.*
 import com.afollestad.materialcab.attached.AttachedCab
@@ -277,10 +277,10 @@ class LibraryFragment :
         val backgroundColor = mainActivity.getColor(
             when (PreferenceUtil.getInstance(mainActivity).generalTheme) {
                 R.style.Theme_Phonograph_Auto -> R.color.cardBackgroundColor
-                R.style.Theme_Phonograph_Light -> R.color.md_white_1000
-                R.style.Theme_Phonograph_Black -> R.color.md_black_1000
-                R.style.Theme_Phonograph_Dark -> R.color.md_grey_800
-                else -> R.color.md_grey_700
+                R.style.Theme_Phonograph_Light -> util.mdcolor.R.color.md_white_1000
+                R.style.Theme_Phonograph_Black -> util.mdcolor.R.color.md_black_1000
+                R.style.Theme_Phonograph_Dark -> util.mdcolor.R.color.md_grey_800
+                else -> util.mdcolor.R.color.md_grey_700
             }
         )
         popupMenu.setBackgroundDrawable(ColorDrawable(backgroundColor))

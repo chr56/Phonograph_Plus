@@ -30,7 +30,7 @@ import com.h6ah4i.android.widget.advrecyclerview.draggable.RecyclerViewDragDropM
 import com.h6ah4i.android.widget.advrecyclerview.utils.WrapperAdapterUtils;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
-import chr_56.MDthemer.core.ThemeColor;
+import util.mdcolor.pref.ThemeColor;
 import chr_56.MDthemer.util.ColorUtil;
 import chr_56.MDthemer.util.ToolbarColorUtil;
 import player.phonograph.R;

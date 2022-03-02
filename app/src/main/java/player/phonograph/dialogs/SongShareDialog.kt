@@ -5,7 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.DialogFragment
-import chr_56.MDthemer.core.ThemeColor
+import util.mdcolor.pref.ThemeColor
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.list.listItemsSingleChoice
 import player.phonograph.R

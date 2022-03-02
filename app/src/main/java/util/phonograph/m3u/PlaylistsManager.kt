@@ -12,7 +12,7 @@ import android.os.Build
 import android.os.Environment
 import android.util.Log
 import androidx.activity.ComponentActivity
-import chr_56.MDthemer.core.ThemeColor
+import util.mdcolor.pref.ThemeColor
 import com.afollestad.materialdialogs.DialogCallback
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.WhichButton

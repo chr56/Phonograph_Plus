@@ -13,7 +13,7 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.app.WindowDecorActionBar
 import androidx.appcompat.widget.Toolbar
 import androidx.appcompat.widget.ToolbarWidgetWrapper
-import chr_56.MDthemer.core.ThemeColor
+import util.mdcolor.pref.ThemeColor
 import chr_56.MDthemer.core.Themer
 import chr_56.MDthemer.util.ColorUtil
 import chr_56.MDthemer.util.MenuTinter

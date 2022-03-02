@@ -18,7 +18,7 @@ import androidx.core.app.ActivityCompat;
 import com.google.android.material.snackbar.Snackbar;
 import player.phonograph.R;
 
-import chr_56.MDthemer.core.ThemeColor;
+import util.mdcolor.pref.ThemeColor;
 
 /**
  * @author Karim Abou Zeid (kabouzeid)

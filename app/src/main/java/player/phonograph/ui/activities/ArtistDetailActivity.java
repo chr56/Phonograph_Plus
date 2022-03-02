@@ -34,7 +34,7 @@ import com.bumptech.glide.Glide;
 import java.util.List;
 import java.util.Locale;
 
-import chr_56.MDthemer.core.ThemeColor;
+import util.mdcolor.pref.ThemeColor;
 import chr_56.MDthemer.util.ColorUtil;
 import chr_56.MDthemer.util.MaterialColorHelper;
 import chr_56.MDthemer.util.ToolbarColorUtil;

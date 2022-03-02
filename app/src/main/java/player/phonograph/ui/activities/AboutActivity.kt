@@ -15,7 +15,7 @@ import android.widget.Toast
 import androidx.annotation.Keep
 import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.Toolbar
-import chr_56.MDthemer.core.ThemeColor
+import util.mdcolor.pref.ThemeColor
 import chr_56.MDthemer.core.Themer.setActivityToolbarColorAuto
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.list.listItemsSingleChoice

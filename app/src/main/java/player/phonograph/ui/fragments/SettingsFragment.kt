@@ -14,7 +14,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.DialogFragment
 import androidx.preference.*
-import chr_56.MDthemer.core.ThemeColor
+import util.mdcolor.pref.ThemeColor
 import chr_56.MDthemer.util.ColorUtil
 import player.phonograph.R
 import player.phonograph.appshortcuts.DynamicShortcutManager

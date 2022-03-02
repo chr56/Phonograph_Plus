@@ -3,7 +3,7 @@ package player.phonograph.ui.activities
 import android.os.Bundle
 import android.view.MenuItem
 import androidx.appcompat.widget.Toolbar
-import chr_56.MDthemer.core.ThemeColor
+import util.mdcolor.pref.ThemeColor
 import chr_56.MDthemer.core.Themer
 import player.phonograph.R
 import player.phonograph.ui.activities.base.AbsBaseActivity

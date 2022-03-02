@@ -5,7 +5,7 @@ import android.content.Context
 import android.graphics.PorterDuff
 import android.os.Bundle
 import android.view.*
-import chr_56.MDthemer.core.ThemeColor
+import util.mdcolor.pref.ThemeColor
 import chr_56.MDthemer.util.Util
 import player.phonograph.R
 import player.phonograph.databinding.FragmentMiniPlayerBinding

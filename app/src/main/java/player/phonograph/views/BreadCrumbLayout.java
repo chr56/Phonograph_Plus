@@ -24,7 +24,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-import chr_56.MDthemer.core.ThemeColor;
+import util.mdcolor.pref.ThemeColor;
 
 /**
  * @author Aidan Follestad (afollestad), modified for Phonograph by Karim Abou Zeid (kabouzeid)

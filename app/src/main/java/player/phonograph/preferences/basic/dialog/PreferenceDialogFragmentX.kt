@@ -8,7 +8,7 @@ import androidx.fragment.app.DialogFragment
 import androidx.preference.DialogPreference
 import androidx.preference.DialogPreference.TargetFragment
 import androidx.preference.Preference
-import chr_56.MDthemer.core.ThemeColor
+import util.mdcolor.pref.ThemeColor
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.WhichButton
 import com.afollestad.materialdialogs.actions.getActionButton

@@ -7,7 +7,7 @@ import android.os.Build
 import android.os.Process
 import android.util.Log
 import androidx.appcompat.content.res.AppCompatResources
-import chr_56.MDthemer.core.ThemeColor
+import util.mdcolor.pref.ThemeColor
 import player.phonograph.appshortcuts.DynamicShortcutManager
 import player.phonograph.ui.activities.CrashActivity
 import kotlin.system.exitProcess
@@ -38,8 +38,8 @@ class App : Application() {
         // default theme
         if (!ThemeColor.isConfigured(this, 1)) {
             ThemeColor.editTheme(this)
-                .primaryColorRes(R.color.md_blue_A400)
-                .accentColorRes(R.color.md_yellow_900)
+                .primaryColorRes(util.mdcolor.R.color.md_blue_A400)
+                .accentColorRes(util.mdcolor.R.color.md_yellow_900)
                 .commit()
         }
 

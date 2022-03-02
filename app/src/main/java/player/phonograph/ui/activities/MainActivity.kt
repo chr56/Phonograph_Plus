@@ -16,7 +16,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.drawerlayout.widget.DrawerLayout
-import chr_56.MDthemer.core.ThemeColor
+import util.mdcolor.pref.ThemeColor
 import chr_56.MDthemer.util.ColorUtil
 import chr_56.MDthemer.util.NavigationViewUtil
 import com.bumptech.glide.Glide

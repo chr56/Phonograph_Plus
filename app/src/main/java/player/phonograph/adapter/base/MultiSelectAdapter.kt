@@ -6,7 +6,7 @@ package player.phonograph.adapter.base
 import android.content.Context
 import android.view.MenuItem
 import androidx.recyclerview.widget.RecyclerView
-import chr_56.MDthemer.core.ThemeColor
+import util.mdcolor.pref.ThemeColor
 import lib.phonograph.cab.CabStatus
 import lib.phonograph.cab.MultiSelectionCab
 import player.phonograph.R

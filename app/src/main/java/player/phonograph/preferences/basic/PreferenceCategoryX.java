@@ -11,7 +11,7 @@ import androidx.preference.PreferenceViewHolder;
 
 import player.phonograph.R;
 
-import chr_56.MDthemer.core.ThemeColor;
+import util.mdcolor.pref.ThemeColor;
 
 public class PreferenceCategoryX extends PreferenceCategory {
 

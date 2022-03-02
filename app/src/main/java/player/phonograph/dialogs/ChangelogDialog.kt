@@ -11,7 +11,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.webkit.WebView
 import androidx.fragment.app.DialogFragment
-import chr_56.MDthemer.core.ThemeColor
+import util.mdcolor.pref.ThemeColor
 import chr_56.MDthemer.util.ColorUtil
 import chr_56.MDthemer.util.Util
 import com.afollestad.materialdialogs.MaterialDialog

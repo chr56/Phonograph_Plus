@@ -4,7 +4,7 @@ import android.graphics.Typeface
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
-import chr_56.MDthemer.core.ThemeColor
+import util.mdcolor.pref.ThemeColor
 import player.phonograph.R
 import player.phonograph.helper.MusicPlayerRemote
 import player.phonograph.interfaces.CabHolder

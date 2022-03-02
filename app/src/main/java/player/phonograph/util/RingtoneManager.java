@@ -13,7 +13,7 @@ import com.afollestad.materialdialogs.WhichButton;
 import com.afollestad.materialdialogs.actions.DialogActionExtKt;
 import player.phonograph.R;
 
-import chr_56.MDthemer.core.ThemeColor;
+import util.mdcolor.pref.ThemeColor;
 
 public class RingtoneManager {
 

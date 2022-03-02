@@ -14,7 +14,7 @@ import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import chr_56.MDthemer.core.ThemeColor
+import util.mdcolor.pref.ThemeColor
 import chr_56.MDthemer.core.Themer
 import com.afollestad.materialcab.CreateCallback
 import com.afollestad.materialcab.DestroyCallback

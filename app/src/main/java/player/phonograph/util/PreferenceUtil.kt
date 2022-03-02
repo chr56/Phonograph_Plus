@@ -14,7 +14,7 @@ import android.util.Log
 import android.widget.Toast
 import androidx.annotation.StyleRes
 import androidx.preference.PreferenceManager
-import chr_56.MDthemer.core.ThemeColor
+import util.mdcolor.pref.ThemeColor
 import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
 import com.google.gson.reflect.TypeToken

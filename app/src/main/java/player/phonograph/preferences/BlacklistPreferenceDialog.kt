@@ -5,7 +5,7 @@ import android.app.Dialog
 import android.os.Bundle
 import android.text.Html
 import androidx.fragment.app.DialogFragment
-import chr_56.MDthemer.core.ThemeColor
+import util.mdcolor.pref.ThemeColor
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.WhichButton
 import com.afollestad.materialdialogs.actions.getActionButton

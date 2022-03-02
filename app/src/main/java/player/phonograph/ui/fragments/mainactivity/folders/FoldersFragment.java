@@ -44,7 +44,6 @@ import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 
-import chr_56.MDthemer.core.ThemeColor;
 import chr_56.MDthemer.util.ColorUtil;
 import chr_56.MDthemer.util.MaterialColorHelper;
 import chr_56.MDthemer.util.TintHelper;
@@ -73,6 +72,7 @@ import player.phonograph.util.PhonographColorUtil;
 import player.phonograph.util.PreferenceUtil;
 import player.phonograph.util.ViewUtil;
 import player.phonograph.views.BreadCrumbLayout;
+import util.mdcolor.pref.ThemeColor;
 
 @SuppressLint("NonConstantResourceId")
 public class FoldersFragment extends AbsMainActivityFragment implements MainActivity.MainActivityFragmentCallbacks, CabHolder, BreadCrumbLayout.SelectionCallback, SongFileAdapter.Callbacks, AppBarLayout.OnOffsetChangedListener, LoaderManager.LoaderCallbacks<List<File>> {

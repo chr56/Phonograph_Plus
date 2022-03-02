@@ -49,7 +49,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import chr_56.MDthemer.core.ThemeColor;
+import util.mdcolor.pref.ThemeColor;
 import chr_56.MDthemer.util.ColorUtil;
 import chr_56.MDthemer.util.TintHelper;
 import chr_56.MDthemer.util.ToolbarColorUtil;

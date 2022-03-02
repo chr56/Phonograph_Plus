@@ -8,7 +8,7 @@ import android.widget.TextView
 import androidx.annotation.LayoutRes
 import androidx.annotation.StringRes
 import androidx.recyclerview.widget.RecyclerView
-import chr_56.MDthemer.core.ThemeColor
+import util.mdcolor.pref.ThemeColor
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.AppBarLayout.OnOffsetChangedListener
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView

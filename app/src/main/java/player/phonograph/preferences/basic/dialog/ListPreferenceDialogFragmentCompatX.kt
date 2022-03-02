@@ -3,7 +3,7 @@ package player.phonograph.preferences.basic.dialog
 import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.preference.ListPreference
-import chr_56.MDthemer.core.ThemeColor
+import util.mdcolor.pref.ThemeColor
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.list.listItemsSingleChoice
 import player.phonograph.preferences.basic.ListPreferenceX

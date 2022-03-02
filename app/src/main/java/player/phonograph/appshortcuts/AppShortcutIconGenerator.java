@@ -14,7 +14,7 @@ import player.phonograph.R;
 import player.phonograph.util.ImageUtil;
 import player.phonograph.util.PreferenceUtil;
 
-import chr_56.MDthemer.core.ThemeColor;
+import util.mdcolor.pref.ThemeColor;
 
 /**
  * @author Adrian Campos
