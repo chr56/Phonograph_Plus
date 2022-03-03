@@ -6,17 +6,13 @@
         android:id="@+id/navigation_drawer_menu_category_sections"
         android:checkableBehavior="single">
         <item
-            android:id="@+id/nav_library"
+            android:id="@+id/nav_home"
             android:icon="@drawable/ic_library_music_white_24dp"
             android:title="@string/library" />
         <item
             android:id="@+id/nav_folders"
             android:icon="@drawable/ic_folder_white_24dp"
             android:title="@string/folders" />
-        <item
-            android:id="@+id/nav_home"
-            android:icon="@drawable/ic_library_music_white_24dp"
-            android:title="@string/library" />
     </group>
 
     <group

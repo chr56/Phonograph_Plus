@@ -44,7 +44,6 @@ import player.phonograph.ui.activities.intro.AppIntroActivity
 import player.phonograph.ui.fragments.mainactivity.AbsMainActivityFragment
 import player.phonograph.ui.fragments.mainactivity.folders.FoldersFragment
 import player.phonograph.ui.fragments.mainactivity.home.HomeFragment
-import player.phonograph.ui.fragments.mainactivity.library.LibraryFragment
 import player.phonograph.util.MusicUtil
 import player.phonograph.util.SAFCallbackHandlerActivity
 import player.phonograph.util.SafLauncher
@@ -113,10 +112,6 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
     private fun setMusicChooser(key: Int) {
         Setting.instance.lastMusicChooser = key
         when (key) {
-            LIBRARY -> {
-                navigationView.setCheckedItem(R.id.nav_library)
-                setCurrentFragment(LibraryFragment.newInstance())
-            }
             FOLDERS -> {
                 navigationView.setCheckedItem(R.id.nav_folders)
                 setCurrentFragment(FoldersFragment.newInstance(this))
@@ -165,7 +160,7 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
             drawerLayout.closeDrawers()
 
             when (menuItem.itemId) {
-                R.id.nav_library -> Handler().postDelayed({ setMusicChooser(LIBRARY) }, 200)
+//                R.id.nav_library -> Handler().postDelayed({ setMusicChooser(LIBRARY) }, 200)
                 R.id.nav_folders -> Handler().postDelayed({ setMusicChooser(FOLDERS) }, 200)
                 R.id.nav_home -> Handler().postDelayed({ setMusicChooser(HOME) }, 200)
 
@@ -400,12 +395,17 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
 
         floatingActionButton.setOnClickListener { currentFragment.handleFloatingActionButtonPress() }
     }
+
     fun setFloatingActionButtonVisibility(visibility: Int) {
         floatingActionButton.visibility = visibility
     }
 
     override fun onDestroy() {
-        try { backgroundCoroutineScope.coroutineContext[Job]?.cancel() } catch (e: Exception) { Log.i("BackgroundCoroutineScope", e.message.orEmpty()) }
+        try {
+            backgroundCoroutineScope.coroutineContext[Job]?.cancel()
+        } catch (e: Exception) {
+            Log.i("BackgroundCoroutineScope", e.message.orEmpty())
+        }
         super.onDestroy()
     }
 
@@ -414,8 +414,7 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
         val TAG: String = MainActivity::class.java.simpleName
         const val APP_INTRO_REQUEST = 100
 
-        private const val LIBRARY = 0
+        private const val HOME = 0
         private const val FOLDERS = 1
-        private const val HOME = 2
     }
 }
