@@ -211,7 +211,7 @@
 
 
 # Serialization
--keepnames class ** implements java.io.Serializable
+#-keepnames class ** implements java.io.Serializable
 
 # StatusBarLyric API
 -keep class StatusBarLyric.API.StatusBarLyric {*;}
