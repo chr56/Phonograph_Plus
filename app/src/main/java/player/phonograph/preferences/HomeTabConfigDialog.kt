@@ -25,7 +25,7 @@ class HomeTabConfigDialog : DialogFragment() {
     private lateinit var recyclerView: RecyclerView
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val view = requireActivity().layoutInflater.inflate(R.layout.preference_dialog_library_categories, null)
+        val view = requireActivity().layoutInflater.inflate(R.layout.preference_dialog_home_tab_config, null)
 
 //        Setting.instance.homeTabConfig = PageConfig.DEFAULT_CONFIG
 

@@ -25,7 +25,7 @@ class HomeTabConfigAdapter(private val config: PageConfig) : RecyclerView.Adapte
     private val touchHelper = ItemTouchHelper(SwipeAndDragHelper(this))
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.preference_dialog_library_categories_listitem, parent, false))
+        return ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.preference_dialog_home_tab_config_listitem, parent, false))
     }
 
     private val tabs: TabList = TabList(ArrayList(3))
