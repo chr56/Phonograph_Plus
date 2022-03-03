@@ -197,9 +197,12 @@
 -keep,allowobfuscation,allowshrinking class * extends com.google.gson.reflect.TypeToken
 
 
-# AndroidX
--keepnames,allowshrinking,allowoptimization class androidx.** {*;}
--keepnames,allowshrinking interface androidx.** {*;}
+# Android X
+#-keepclassmembernames,allowshrinking,allowoptimization class androidx.** {*;}
+#-keepnames,allowshrinking interface androidx.** {*;}
+
+
+# Material Design Componant
 #-keepnames,allowshrinking,allowoptimization class com.google.android.material.**
 # CoordinatorLayout resolves the behaviors of its child components with reflection.
 -keep public class * extends androidx.coordinatorlayout.widget.CoordinatorLayout$Behavior {
