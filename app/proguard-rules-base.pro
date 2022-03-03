@@ -198,10 +198,26 @@
 
 
 # AndroidX
--keep,allowshrinking class androidx.** {*;}
--keep,allowshrinking interface androidx.** {*;}
--keep,allowshrinking,allowoptimization class com.google.android.material.** {*;}
--keep class android.support.v4.** {*;}
+-keepnames,allowshrinking,allowoptimization class androidx.** {*;}
+-keepnames,allowshrinking interface androidx.** {*;}
+#-keepnames,allowshrinking,allowoptimization class com.google.android.material.**
+# CoordinatorLayout resolves the behaviors of its child components with reflection.
+-keep public class * extends androidx.coordinatorlayout.widget.CoordinatorLayout$Behavior {
+    public <init>(android.content.Context, android.util.AttributeSet);
+    public <init>();
+}
+# AppCompatViewInflater reads the viewInflaterClass theme attribute which then
+# reflectively instantiates MaterialComponentsViewInflater using the no-argument
+# constructor. We only need to keep this constructor and the class name if
+# AppCompatViewInflater is also being kept.
+-if class androidx.appcompat.app.AppCompatViewInflater
+-keep class com.google.android.material.theme.MaterialComponentsViewInflater {
+    <init>();
+}
+# Make sure we keep annotations for CoordinatorLayout's DefaultBehavior
+-keepattributes RuntimeVisible*Annotation*
+#-keep class android.support.v4.** {*;}
+
 
 
 # jaudiotagger
