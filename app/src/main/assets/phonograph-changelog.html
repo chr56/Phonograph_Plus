@@ -29,7 +29,32 @@
 <body>
     <h3 style="color: tomato">修改说明</h3>
 
-    <h4><b>0.1.0 Preview</b> 2022.1.*</h4>
+
+    <h4><b>Preview 0.1.0RC1</b> 2022.3.3</h4>
+    <div>正式版现已暂停更新,等待该版本稳定</div>
+    <div style="color: black">
+
+        <ol>
+            <li>
+                修复 睡眠定时器在Android12上的崩溃
+            </li>
+            <li>
+                开发 大幅度调整"媒体库"的UI,以便于维护(但部分还未完成)
+            </li>
+            <li>
+                开发 调整代码结构,优化代码,清理依赖(需要重新设置主题配色)
+            </li>
+            <li>
+                新增 添加清理旧版本历史残留文件配置功能(但是<del>仅从此版本开始记录历史包袱</del>)
+            </li>
+            <li>
+                开发 极限混淆,实现Apk<del>小而美</del>(<b>可能出现异常</b>)
+            </li>
+        </ol>
+    </div>
+
+
+    <h4><b>Preview</b> 2022.1.18</h4>
     <div style="color: black">
         <ol>
             <li>
@@ -98,127 +123,114 @@
     <div style="color: black">
         <ol>
             <li>
-                适配 支持新版<a href="https://github.com/577fkj/MIUIStatusBarLyric">MIUI状态栏歌词</a
-          >API变化 <br />(请Hook本应用,
-          并在"MIUI状态栏歌词"-&gt;"软件列表"中开启,以生效)
-        </li>
-      </ol>
+                适配 支持新版<a href="https://github.com/577fkj/MIUIStatusBarLyric">MIUI状态栏歌词</a>API变化 <br />(请Hook本应用, 并在"MIUI状态栏歌词"-&gt;"软件列表"中开启,以生效)
+            </li>
+        </ol>
     </div>
 
     <h4><b>0.0.5</b> 2021.12.04</h4>
     <div style="color: black">
-      <ol>
-        <li>修复 无法显示内嵌歌词</li>
-        <li>
-          新增 支持新版<a href="https://github.com/577fkj/MIUIStatusBarLyric"
-            >MIUI状态栏歌词</a
-          >API(请Hook本应用生效)
-        </li>
-        <li>改进 微调歌词对话框</li>
-        <li>改进 允许关闭歌词对话框时间轴信息显示(设置->显示歌词时间轴)</li>
-        <li>改进 长按歌词对话框歌词转跳时间轴后, 自动关闭歌词对话框</li>
-      </ol>
+        <ol>
+            <li>修复 无法显示内嵌歌词</li>
+            <li>
+                新增 支持新版<a href="https://github.com/577fkj/MIUIStatusBarLyric">MIUI状态栏歌词</a>API(请Hook本应用生效)
+            </li>
+            <li>改进 微调歌词对话框</li>
+            <li>改进 允许关闭歌词对话框时间轴信息显示(设置->显示歌词时间轴)</li>
+            <li>改进 长按歌词对话框歌词转跳时间轴后, 自动关闭歌词对话框</li>
+        </ol>
     </div>
 
-    <div
-      style="
+    <div style="
         margin-top: 2px;
         margin-bottom: 160px;
         margin-left: 2px;
         padding-top: 1px; ;
-      "
-    >
-      <h4><b>0.0.4</b> 2021.12.03</h4>
-      <div style="color: black">
-        <ol>
-          <li>新增 允许关闭歌词广播</li>
-          <li>修复 关闭歌词显示后，无法发送歌词广播</li>
-          <li>
-            修复 歌词文件匹配错误<br />（现在歌词读取顺序为: <b>内嵌</b>歌词
-            -&gt; <b>同文件名</b>的外载歌词 -&gt; 有
-            <b>前后缀</b>的同名的外载歌词）
-          </li>
-          <li>优化 代码</li>
-          <li>变更 版本号不再带有 Git Commit Hash</li>
-          <li>开发 加强代码混淆力度</li>
-          <li>
-            <del>开发 更换Github Actions 的CI构建签名</del>
-          </li>
-        </ol>
-        <div>
-          注: 此版暂未适配新版<a
-            href="https://github.com/577fkj/MIUIStatusBarLyric"
-            >MIUI状态栏歌词</a
-          >API
+      ">
+        <h4><b>0.0.4</b> 2021.12.03</h4>
+        <div style="color: black">
+            <ol>
+                <li>新增 允许关闭歌词广播</li>
+                <li>修复 关闭歌词显示后，无法发送歌词广播</li>
+                <li>
+                    修复 歌词文件匹配错误<br />（现在歌词读取顺序为: <b>内嵌</b>歌词 -&gt; <b>同文件名</b>的外载歌词 -&gt; 有
+                    <b>前后缀</b>的同名的外载歌词）
+                </li>
+                <li>优化 代码</li>
+                <li>变更 版本号不再带有 Git Commit Hash</li>
+                <li>开发 加强代码混淆力度</li>
+                <li>
+                    <del>开发 更换Github Actions 的CI构建签名</del>
+                </li>
+            </ol>
+            <div>
+                注: 此版暂未适配新版<a href="https://github.com/577fkj/MIUIStatusBarLyric">MIUI状态栏歌词</a>API
+            </div>
         </div>
-      </div>
 
-      <h4><b>0.0.3</b> 2021.11.28</h4>
-      <div style="color: black">
-        <ol>
-          <li>修复 状态栏歌词适配</li>
-          <li>变更 更好的检查更新行为</li>
-          <li>新增 允许关闭检查更新弹窗</li>
-          <li>修复 浅色主色调下标题图标仍然为白色(仅部分修复)</li>
-        </ol>
-        <div>此外, 从该版本起,逐渐启用混淆（否则apk体积要破七了）</div>
-      </div>
+        <h4><b>0.0.3</b> 2021.11.28</h4>
+        <div style="color: black">
+            <ol>
+                <li>修复 状态栏歌词适配</li>
+                <li>变更 更好的检查更新行为</li>
+                <li>新增 允许关闭检查更新弹窗</li>
+                <li>修复 浅色主色调下标题图标仍然为白色(仅部分修复)</li>
+            </ol>
+            <div>此外, 从该版本起,逐渐启用混淆（否则apk体积要破七了）</div>
+        </div>
 
-      <h4><b>0.0.2</b> 2021.11.15</h4>
-      <div style="color: black">
-        <ol>
-          <li>改进 歌曲与播放列表读取</li>
-          <li>
-            变更 播放列表现在支持黑名单, 无名播放列表("幽灵"播放列表)不再显示
-          </li>
-          <li>
-            变更 现在通过 SAF (Storage Access Framework, 存储访问框架)
-            另保存播放列表 (若同时保存多个, 则仍保存至/Download)
-          </li>
-          <li>改进 网络状态检测</li>
-          <li>新增 启动时检查更新</li>
-          <li>新增 检查更新对话框</li>
-          <li>
-            新增 适配"<a href="https://github.com/xiaowine/miui.statusbar.lyric"
-              >MIUI状态栏歌词</a
-            >"Xposed模块
-          </li>
-          <li>变更 播放列表页不再支持直接编辑</li>
-          <li>新增 专门的播放列表编辑页(仍未完工)</li>
-          <li>
-            开发 重构 歌曲弹出菜单, 播放列表, 设置 等相关代码 (若崩溃请及时反馈)
-          </li>
-        </ol>
-      </div>
+        <h4><b>0.0.2</b> 2021.11.15</h4>
+        <div style="color: black">
+            <ol>
+                <li>改进 歌曲与播放列表读取</li>
+                <li>
+                    变更 播放列表现在支持黑名单, 无名播放列表("幽灵"播放列表)不再显示
+                </li>
+                <li>
+                    变更 现在通过 SAF (Storage Access Framework, 存储访问框架) 另保存播放列表 (若同时保存多个, 则仍保存至/Download)
+                </li>
+                <li>改进 网络状态检测</li>
+                <li>新增 启动时检查更新</li>
+                <li>新增 检查更新对话框</li>
+                <li>
+                    新增 适配"<a href="https://github.com/xiaowine/miui.statusbar.lyric">MIUI状态栏歌词</a>"Xposed模块
+                </li>
+                <li>变更 播放列表页不再支持直接编辑</li>
+                <li>新增 专门的播放列表编辑页(仍未完工)</li>
+                <li>
+                    开发 重构 歌曲弹出菜单, 播放列表, 设置 等相关代码 (若崩溃请及时反馈)
+                </li>
+            </ol>
+        </div>
 
-      <h4><b>0.0.1</b> (2021.10.21)</h4>
-      <p style="color: gray">初始版本</p>
-      <div style="color: black">
-        <ol>
-          <li>★更换包名为 player.phonograph.plus★</li>
-          <li>版本号重新计数</li>
-          <li>修复 主题"自动"下进入多选模式, 选择高亮失效</li>
-          <li>移除 残留的 Google Play 内购权限</li>
-          <li>适配 Android 11 分区存储(Scoped Storage)的删除操作</li>
-          <li>允许 卸载时保留数据</li>
-          <li>优化 崩溃报告页面, 现在提供更多设备信息并允许在该页面重置设置</li>
-          <li>优化 "关于"页面</li>
-          <li>优化 其他细节</li>
-          <li>开发 又重构了部分代码...</li>
-        </ol>
-      </div>
-      <p style="color: gray">以下为之前紧急更新的更新日志</p>
-      <div style="color: gray">
-        <ul style="padding: 16px">
-          <li>修复 歌曲列表使用网格试图(无论几列)闪退</li>
-          <li>修复 "详情"对话框卡死(若歌曲内嵌大图)</li>
-          <li>修复 弹出菜单主题失效</li>
-          <li>修复 第一次安装不弹出日志</li>
-          <li>新增 崩溃报告页面</li>
-        </ul>
-      </div>
-      <br />
-      <a href="https://github.com/chr56/Phonograph_Plus">开源地址(GitHub)</a>
+        <h4><b>0.0.1</b> (2021.10.21)</h4>
+        <p style="color: gray">初始版本</p>
+        <div style="color: black">
+            <ol>
+                <li>★更换包名为 player.phonograph.plus★</li>
+                <li>版本号重新计数</li>
+                <li>修复 主题"自动"下进入多选模式, 选择高亮失效</li>
+                <li>移除 残留的 Google Play 内购权限</li>
+                <li>适配 Android 11 分区存储(Scoped Storage)的删除操作</li>
+                <li>允许 卸载时保留数据</li>
+                <li>优化 崩溃报告页面, 现在提供更多设备信息并允许在该页面重置设置</li>
+                <li>优化 "关于"页面</li>
+                <li>优化 其他细节</li>
+                <li>开发 又重构了部分代码...</li>
+            </ol>
+        </div>
+        <p style="color: gray">以下为之前紧急更新的更新日志</p>
+        <div style="color: gray">
+            <ul style="padding: 16px">
+                <li>修复 歌曲列表使用网格试图(无论几列)闪退</li>
+                <li>修复 "详情"对话框卡死(若歌曲内嵌大图)</li>
+                <li>修复 弹出菜单主题失效</li>
+                <li>修复 第一次安装不弹出日志</li>
+                <li>新增 崩溃报告页面</li>
+            </ul>
+        </div>
+        <br />
+        <a href="https://github.com/chr56/Phonograph_Plus">开源地址(GitHub)</a>
     </div>
 
     <div>以下是旧更新日志</div>
@@ -247,7 +259,7 @@
                 <li>
                     其他 重构部分代码
                     <del style="color: grey">(可能动了一些"不该动"的地方，然后引起某些崩溃或行为异常)
-            </del>
+                    </del>
                 </li>
             </ol>
         </div>
