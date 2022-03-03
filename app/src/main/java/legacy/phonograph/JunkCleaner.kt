@@ -7,10 +7,13 @@ package legacy.phonograph
 import android.content.Context
 import android.os.Build
 import android.util.Log
+import androidx.preference.PreferenceManager
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import player.phonograph.R
+import player.phonograph.settings.Setting
 import player.phonograph.util.Util
+import kotlin.math.log
 
 class JunkCleaner(context: Context) : FileCleaner(context) {
     companion object {
@@ -22,12 +25,16 @@ class JunkCleaner(context: Context) : FileCleaner(context) {
             Util.coroutineToast(context, R.string.deleting_old_files)
         }
         removePreferenceFile(versionCode)
-        // more
+        removeDeprecatedPreference(versionCode)
     }
 
     // todo use when bumping version
     fun removePreferenceFile(versionCode: Int) {
-        if (versionCode > 8) deletePreference(context, name = pref_ath)
+        if (versionCode >= 100) deletePreferenceFile(context, name = pref_ath)
+    }
+
+    fun removeDeprecatedPreference(versionCode: Int) {
+        if (versionCode >= 101) removePreference(context, keyName = Setting.LIBRARY_CATEGORIES)
     }
 }
 
@@ -35,9 +42,20 @@ class JunkCleaner(context: Context) : FileCleaner(context) {
 abstract class FileCleaner(val context: Context) {
     abstract fun clear(versionCode: Int)
 
-    protected fun deletePreference(context: Context, name: String) {
+    protected fun removePreference(context: Context, keyName: String) {
         try {
-            logStage(name)
+            logStart(keyName)
+            val pref = PreferenceManager.getDefaultSharedPreferences(context)
+            pref.edit().remove(keyName).apply()
+            logSuccess("Preference Key $keyName")
+        } catch (e: Exception) {
+            logFail("old Preference item \"$keyName\"")
+        }
+    }
+
+    protected fun deletePreferenceFile(context: Context, name: String) {
+        try {
+            logStart(name)
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 context.deleteSharedPreferences(name)
@@ -45,24 +63,24 @@ abstract class FileCleaner(val context: Context) {
                 context.getSharedPreferences(name, Context.MODE_PRIVATE).edit().clear().apply()
                 true
             }
-                .let { result -> if (result) reportSuccess(name) }
+                .let { result -> if (result) logSuccess(name) }
         } catch (e: Exception) {
-            reportFail("old Preference \"app-theme-helper\"")
+            logFail("old Preference file \"$name\"")
         }
     }
 
-    protected fun logStage(str: String) {
-        Log.i(TAG, "Start clean $str")
+    protected fun logStart(str: String) {
+        Log.i(TAG, "Start cleaning $str")
     }
 
-    protected fun reportFail(str: String) {
+    protected fun logFail(str: String) {
         Log.e(TAG, "Failed to clean $str ...")
         GlobalScope.launch {
             Util.coroutineToast(context, R.string.failed_to_delete)
         }
     }
 
-    protected fun reportSuccess(str: String) {
+    protected fun logSuccess(str: String) {
         Log.i(TAG, "$str was deleted!")
     }
 

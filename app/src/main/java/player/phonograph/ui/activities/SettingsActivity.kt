@@ -3,11 +3,11 @@ package player.phonograph.ui.activities
 import android.os.Bundle
 import android.view.MenuItem
 import androidx.appcompat.widget.Toolbar
-import util.mdcolor.pref.ThemeColor
-import util.mddesign.core.Themer
 import player.phonograph.R
 import player.phonograph.ui.activities.base.AbsBaseActivity
 import player.phonograph.ui.fragments.SettingsFragment
+import util.mdcolor.pref.ThemeColor
+import util.mddesign.core.Themer
 
 class SettingsActivity : AbsBaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

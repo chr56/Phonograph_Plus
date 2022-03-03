@@ -42,8 +42,6 @@ class SettingsFragment : PreferenceFragmentCompat() {
                 NowPlayingScreenPreferenceDialog.newInstance()
             is BlacklistPreferenceX ->
                 BlacklistPreferenceDialog.newInstance()
-            is LibraryPreferenceX ->
-                LibraryPreferenceDialog.newInstance()
             is HomeTabConfigPreferenceX ->
                 HomeTabConfigDialog.newInstance()
             is EditTextPreferenceX ->
