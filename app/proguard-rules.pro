@@ -15,6 +15,8 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
+
+# Keep Rules
 -keep class androidx.annotation.Keep {*;}
 -keepclasseswithmembernames class * {
     @androidx.annotation.Keep *;
@@ -39,18 +41,7 @@
     public *;
 }
 
-# ButterKnife
--keep class butterknife.** { *; }
--dontwarn butterknife.internal.**
--keep class **$$ViewBinder { *; }
--keepclasseswithmembernames class * {
-    @butterknife.* <fields>;
-}
--keepclasseswithmembernames class * {
-    @butterknife.* <methods>;
-}
-
-#AndroidX
+# AndroidX
 -keep,allowshrinking class androidx.** {*;}
 -keep,allowshrinking interface androidx.** {*;}
 -keep,allowshrinking,allowoptimization class com.google.android.material.** {*;}
@@ -59,18 +50,32 @@
 #
 # jaudiotagger
 #
--keep,allowoptimization class org.jaudiotagger.** {*;}
+-keepclassmembers class org.jaudiotagger.FileConstants {*;}
+-keepclassmembers,allowoptimization class org.jaudiotagger.audio.** {<init>(...);public <methods>;public <fields>;}
+-keepclassmembers,allowoptimization class org.jaudiotagger.utils.** {<init>(...);public <methods>;public <fields>;}
+-keepclassmembers class org.jaudiotagger.tag.**{*;}
 #
 
+
+# Serialization
 -keepnames class ** implements java.io.Serializable
 -keep,allowoptimization class * implements android.os.Parcelable {
     public static final android.os.Parcelable$Creator *;
 }
 
-
+# Json
 -keep class * {
     @com.google.gson.annotations.SerializedName *;
 }
+
+
+# StatusBarLyric API
+-keep class StatusBarLyric.API.StatusBarLyric {*;}
+
+
+#
+#  Phonograph
+#
 
 -keep class lib.phonograph.view.** {*;}
 -keep class lib.phonograph.preference.** {*;}
@@ -79,14 +84,12 @@
 -keep class player.phonograph.views.** {*;}
 -keep class player.phonograph.model.** {*;}
 
--keep class StatusBarLyric.API.StatusBarLyric {*;}
-
--keep,allowoptimization class player.phonograph.adapter.** {<init>(...);public <methods>;<fields>;}
+-keep,allowoptimization class player.phonograph.ui.** {public <methods>;public <fields>;}
+-keep,allowoptimization class player.phonograph.adapter.** {public <methods>;<fields>;}
 -keep,allowoptimization class player.phonograph.dialogs.** {public <methods>;}
 -keep,allowoptimization class player.phonograph.glide.** {<init>(...);public <methods>;}
--keep,allowoptimization class player.phonograph.service.** {<init>(...);public <methods>;public <fields>;}
--keep,allowoptimization class player.phonograph.notification.** {public <methods>;public <fields>;}
--keep class player.phonograph.ui.** {*;}
+-keep,allowoptimization class player.phonograph.service.** {public <methods>;public <fields>;}
 -keep,allowoptimization,allowshrinking class player.phonograph.util.** {public <methods>;public <fields>;<init>(...);}
 -keep,allowoptimization,allowshrinking class player.phonograph.settings.** {public <methods>;}
+-keepclassmembernames,allowoptimization class player.phonograph.notification.** {public <methods>;}
 #-keep,allowshrinking class player.phonograph.* {public <methods>;}
