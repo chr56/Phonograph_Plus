@@ -203,12 +203,9 @@
 -keep,allowshrinking,allowoptimization class com.google.android.material.** {*;}
 -keep class android.support.v4.** {*;}
 
-#
+
 # jaudiotagger
-#
--keepclassmembers class org.jaudiotagger.FileConstants {*;}
 -keepclassmembers,allowoptimization class org.jaudiotagger.audio.** {<init>(...);public <methods>;public <fields>;}
--keepclassmembers,allowoptimization class org.jaudiotagger.utils.** {<init>(...);public <methods>;public <fields>;}
 -keepclassmembers class org.jaudiotagger.tag.**{*;}
 #
 
