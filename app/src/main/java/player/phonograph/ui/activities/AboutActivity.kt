@@ -15,8 +15,6 @@ import android.widget.Toast
 import androidx.annotation.Keep
 import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.Toolbar
-import util.mdcolor.pref.ThemeColor
-import util.mddesign.core.Themer.setActivityToolbarColorAuto
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.list.listItemsSingleChoice
 import de.psdev.licensesdialog.LicensesDialog
@@ -28,10 +26,12 @@ import player.phonograph.databinding.ActivityAboutBinding
 import player.phonograph.dialogs.ChangelogDialog
 import player.phonograph.dialogs.UpgradeDialog
 import player.phonograph.notification.UpgradeNotification
+import player.phonograph.settings.Setting
 import player.phonograph.ui.activities.base.ThemeActivity
 import player.phonograph.ui.activities.bugreport.BugReportActivity
 import player.phonograph.ui.activities.intro.AppIntroActivity
-import player.phonograph.settings.PreferenceUtil
+import util.mdcolor.pref.ThemeColor
+import util.mddesign.core.Themer.setActivityToolbarColorAuto
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
@@ -160,7 +160,7 @@ class AboutActivity : ThemeActivity(), View.OnClickListener {
                         1 -> {
                             Updater.checkUpdate(callback = {
                                 UpgradeDialog.create(it).show(supportFragmentManager, "DebugDialog")
-                                if (PreferenceUtil(instance).ignoreUpgradeVersionCode >= it.getInt(Updater.VersionCode)) {
+                                if (Setting.instance.ignoreUpgradeVersionCode >= it.getInt(Updater.VersionCode)) {
                                     toast(getString(R.string.upgrade_ignored))
                                 }
                             }, force = true)
@@ -168,7 +168,7 @@ class AboutActivity : ThemeActivity(), View.OnClickListener {
                         2 -> {
                             Updater.checkUpdate(callback = {
                                 UpgradeNotification.sendUpgradeNotification(it)
-                                if (PreferenceUtil(instance).ignoreUpgradeVersionCode >= it.getInt(Updater.VersionCode)) {
+                                if (Setting.instance.ignoreUpgradeVersionCode >= it.getInt(Updater.VersionCode)) {
                                     toast(getString(R.string.upgrade_ignored))
                                 }
                             }, force = true)
@@ -217,7 +217,7 @@ class AboutActivity : ThemeActivity(), View.OnClickListener {
                 Updater.checkUpdate(callback = {
                     if (it.getBoolean(Updater.Upgradable)) {
                         UpgradeDialog.create(it).show(supportFragmentManager, "UPGRADE_DIALOG")
-                        if (PreferenceUtil(instance).ignoreUpgradeVersionCode >= it.getInt(Updater.VersionCode)) {
+                        if (Setting.instance.ignoreUpgradeVersionCode >= it.getInt(Updater.VersionCode)) {
                             toast(getString(R.string.upgrade_ignored))
                         }
                     } else {

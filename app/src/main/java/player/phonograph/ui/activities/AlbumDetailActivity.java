@@ -32,11 +32,6 @@ import com.bumptech.glide.Glide;
 import java.util.List;
 import java.util.Locale;
 
-import util.mdcolor.pref.ThemeColor;
-import util.mddesign.core.Themer;
-import util.mddesign.util.ColorUtil;
-import util.mddesign.util.MaterialColorHelper;
-import util.mddesign.util.Util;
 import kotlin.Unit;
 import kotlin.jvm.functions.Function1;
 import kotlin.jvm.functions.Function2;
@@ -59,16 +54,21 @@ import player.phonograph.misc.SimpleObservableScrollViewCallbacks;
 import player.phonograph.misc.WrappedAsyncTaskLoader;
 import player.phonograph.model.Album;
 import player.phonograph.model.Song;
+import player.phonograph.settings.Setting;
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity;
 import player.phonograph.ui.activities.tageditor.AbsTagEditorActivity;
 import player.phonograph.ui.activities.tageditor.AlbumTagEditorActivity;
 import player.phonograph.util.MusicUtil;
 import player.phonograph.util.NavigationUtil;
 import player.phonograph.util.PhonographColorUtil;
-import player.phonograph.settings.PreferenceUtil;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import util.mdcolor.pref.ThemeColor;
+import util.mddesign.core.Themer;
+import util.mddesign.util.ColorUtil;
+import util.mddesign.util.MaterialColorHelper;
+import util.mddesign.util.Util;
 
 /**
  * Be careful when changing things in this Activity!
@@ -268,7 +268,7 @@ public class AlbumDetailActivity extends AbsSlidingMusicPanelActivity implements
                             return;
                         }
 
-                        if (!PreferenceUtil.isAllowedToDownloadMetadata(AlbumDetailActivity.this)) {
+                        if (!Setting.isAllowedToDownloadMetadata(AlbumDetailActivity.this)) {
                             if (wiki != null) {
                                 wikiDialog.message(null, wiki, null);
                             } else {
@@ -331,7 +331,7 @@ public class AlbumDetailActivity extends AbsSlidingMusicPanelActivity implements
                     DialogActionExtKt.getActionButton(wikiDialog, WhichButton.POSITIVE).updateTextColor(ThemeColor.accentColor(this));
 
                 }
-                if (PreferenceUtil.isAllowedToDownloadMetadata(this)) {
+                if (Setting.isAllowedToDownloadMetadata(this)) {
                     if (wiki != null) {
                         wikiDialog.message(null, wiki, null);
                         wikiDialog.show();
@@ -366,7 +366,7 @@ public class AlbumDetailActivity extends AbsSlidingMusicPanelActivity implements
         if (cab != null && AttachedCabKt.isActive(cab)) AttachedCabKt.destroy(cab);
 
         cab = MaterialCabKt.createCab(this, R.id.cab_stub, attachedCab -> {
-            attachedCab.popupTheme(PreferenceUtil.getInstance(this).getGeneralTheme());
+            attachedCab.popupTheme(Setting.instance().getGeneralTheme());
             attachedCab.menu(menuRes);
             attachedCab.closeDrawable(R.drawable.ic_close_white_24dp);
             attachedCab.backgroundColor(null,PhonographColorUtil.shiftBackgroundColorForLightText(getPaletteColor()));
@@ -405,7 +405,7 @@ public class AlbumDetailActivity extends AbsSlidingMusicPanelActivity implements
         this.album = album;
         loadAlbumCover();
 
-        if (PreferenceUtil.isAllowedToDownloadMetadata(this)) {
+        if (Setting.isAllowedToDownloadMetadata(this)) {
             loadWiki();
         }
 

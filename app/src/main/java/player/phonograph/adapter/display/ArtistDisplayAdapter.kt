@@ -13,7 +13,7 @@ import player.phonograph.helper.SortOrder
 import player.phonograph.interfaces.MultiSelectionCabProvider
 import player.phonograph.model.Artist
 import player.phonograph.util.MusicUtil
-import player.phonograph.settings.PreferenceUtil
+import player.phonograph.settings.Setting
 
 class ArtistDisplayAdapter(
     activity: AppCompatActivity,
@@ -42,7 +42,7 @@ class ArtistDisplayAdapter(
     }
     override fun getSectionNameImp(position: Int): String {
         val sectionName =
-            when (PreferenceUtil.getInstance(activity).artistSortOrder) {
+            when (Setting.instance.artistSortOrder) {
                 SortOrder.ArtistSortOrder.ARTIST_A_Z, SortOrder.ArtistSortOrder.ARTIST_Z_A -> dataset[position].name
                 else -> { "" }
             }

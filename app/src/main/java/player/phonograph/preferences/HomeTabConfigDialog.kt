@@ -18,7 +18,7 @@ import com.afollestad.materialdialogs.customview.customView
 import player.phonograph.R
 import player.phonograph.adapter.HomeTabConfigAdapter
 import player.phonograph.adapter.PageConfig
-import player.phonograph.settings.PreferenceUtil
+import player.phonograph.settings.Setting
 
 class HomeTabConfigDialog : DialogFragment() {
     private lateinit var adapter: HomeTabConfigAdapter
@@ -27,9 +27,9 @@ class HomeTabConfigDialog : DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val view = requireActivity().layoutInflater.inflate(R.layout.preference_dialog_library_categories, null)
 
-//        PreferenceUtil.getInstance(requireContext()).homeTabConfig = PageConfig.DEFAULT_CONFIG
+//        Setting.instance.homeTabConfig = PageConfig.DEFAULT_CONFIG
 
-        val config: PageConfig = PreferenceUtil.getInstance(requireContext()).homeTabConfig
+        val config: PageConfig = Setting.instance.homeTabConfig
 
         adapter = HomeTabConfigAdapter(config)
         recyclerView = view.findViewById(R.id.recycler_view)
@@ -43,13 +43,13 @@ class HomeTabConfigDialog : DialogFragment() {
             .title(R.string.library_categories)
             .customView(view = view, dialogWrapContent = false)
             .positiveButton(android.R.string.ok) {
-                PreferenceUtil.getInstance(requireContext()).homeTabConfig = adapter.currentConfig
+                Setting.instance.homeTabConfig = adapter.currentConfig
                 Log.v(TAG, adapter.getState())
                 dismiss()
             }
             .negativeButton(android.R.string.cancel) { dismiss(); Log.i(TAG, adapter.getState()) }
             .neutralButton(R.string.reset_action) {
-                PreferenceUtil.getInstance(requireContext()).homeTabConfig = PageConfig.DEFAULT_CONFIG
+                Setting.instance.homeTabConfig = PageConfig.DEFAULT_CONFIG
                 Log.v(TAG, adapter.getState())
                 dismiss()
             }

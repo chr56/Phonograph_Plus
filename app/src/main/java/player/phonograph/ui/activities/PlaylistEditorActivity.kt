@@ -14,8 +14,6 @@ import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import util.mdcolor.pref.ThemeColor
-import util.mddesign.core.Themer
 import com.afollestad.materialcab.CreateCallback
 import com.afollestad.materialcab.DestroyCallback
 import com.afollestad.materialcab.SelectCallback
@@ -35,11 +33,13 @@ import player.phonograph.helper.menu.PlaylistMenuHelper
 import player.phonograph.interfaces.CabHolder
 import player.phonograph.loader.PlaylistSongLoader
 import player.phonograph.model.Playlist
+import player.phonograph.settings.Setting
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
 import player.phonograph.util.PhonographColorUtil
 import player.phonograph.util.PlaylistsUtil
-import player.phonograph.settings.PreferenceUtil
 import player.phonograph.util.ViewUtil
+import util.mdcolor.pref.ThemeColor
+import util.mddesign.core.Themer
 
 class PlaylistEditorActivity : AbsSlidingMusicPanelActivity() {
     private lateinit var binding: ActivityPlaylistEditorBinding // init in OnCreate()
@@ -125,7 +125,7 @@ class PlaylistEditorActivity : AbsSlidingMusicPanelActivity() {
                     // finish existed cab
                     cab?.also { if (it.isActive()) it.destroy() }
                     cab = this@PlaylistEditorActivity.createCab(R.id.cab_stub) {
-                        popupTheme(PreferenceUtil.getInstance(this@PlaylistEditorActivity).generalTheme);
+                        popupTheme(Setting.instance.generalTheme)
                         menu(menuRes)
                         closeDrawable(R.drawable.ic_close_white_24dp)
                         backgroundColor(

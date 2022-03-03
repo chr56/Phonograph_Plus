@@ -31,7 +31,7 @@ import player.phonograph.service.MusicService;
 import player.phonograph.ui.activities.MainActivity;
 import player.phonograph.util.ImageUtil;
 import player.phonograph.util.PhonographColorUtil;
-import player.phonograph.settings.PreferenceUtil;
+import player.phonograph.settings.Setting;
 
 public class PlayingNotificationImpl extends PlayingNotification {
 
@@ -115,7 +115,7 @@ public class PlayingNotificationImpl extends PlayingNotification {
                                     notificationLayoutBig.setImageViewResource(R.id.image, R.drawable.default_album_art);
                                 }
 
-                                if (!PreferenceUtil.getInstance(service).coloredNotification()) {
+                                if (!Setting.instance().getColoredNotification()) {
                                     bgColor = Color.WHITE;
                                 }
                                 setBackgroundColor(bgColor);

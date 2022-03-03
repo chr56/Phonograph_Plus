@@ -15,8 +15,7 @@ import player.phonograph.glide.PhonographColoredTarget
 import player.phonograph.glide.SongGlideRequest
 import player.phonograph.misc.CustomFragmentStatePagerAdapter
 import player.phonograph.model.Song
-import player.phonograph.settings.PreferenceUtil
-import player.phonograph.settings.PreferenceUtil.Companion.getInstance
+import player.phonograph.settings.Setting
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
@@ -68,7 +67,7 @@ class AlbumCoverPagerAdapter(fm: FragmentManager?, private val dataSet: List<Son
         private var request = 0
         override fun onCreate(savedInstanceState: Bundle?) {
             super.onCreate(savedInstanceState)
-            song = arguments!!.getParcelable(SONG_ARG)
+            song = requireArguments().getParcelable(SONG_ARG)
         }
 
         override fun onCreateView(
@@ -85,14 +84,14 @@ class AlbumCoverPagerAdapter(fm: FragmentManager?, private val dataSet: List<Son
             super.onViewCreated(view, savedInstanceState)
             forceSquareAlbumCover(false)
             // TODO
-//            forceSquareAlbumCover(PreferenceUtil.getInstance(getContext()).forceSquareAlbumCover());
-            getInstance(requireActivity()).registerOnSharedPreferenceChangedListener(this)
+//            forceSquareAlbumCover(Setting.instance.forceSquareAlbumCover);
+            Setting.instance.registerOnSharedPreferenceChangedListener(this)
             loadAlbumCover()
         }
 
         override fun onDestroyView() {
             super.onDestroyView()
-            getInstance(requireActivity()).unregisterOnSharedPreferenceChangedListener(this)
+            Setting.instance.unregisterOnSharedPreferenceChangedListener(this)
             colorReceiver = null
         }
 
@@ -109,7 +108,9 @@ class AlbumCoverPagerAdapter(fm: FragmentManager?, private val dataSet: List<Son
 
         override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String) {
             when (key) {
-                PreferenceUtil.FORCE_SQUARE_ALBUM_COVER -> {}
+                Setting.FORCE_SQUARE_ALBUM_COVER -> {
+                    // todo
+                }
             }
         }
 

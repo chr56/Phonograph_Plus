@@ -42,11 +42,15 @@ import player.phonograph.ui.fragments.mainactivity.library.pager.ArtistsFragment
 import player.phonograph.ui.fragments.mainactivity.library.pager.PlaylistsFragment
 import player.phonograph.ui.fragments.mainactivity.library.pager.SongsFragment
 import player.phonograph.util.PhonographColorUtil
-import player.phonograph.settings.PreferenceUtil
+import player.phonograph.settings.Setting
 import player.phonograph.util.Util.isLandscape
 
 class LibraryFragment :
-    AbsMainActivityFragment(), CabHolder, MainActivity.MainActivityFragmentCallbacks, SharedPreferences.OnSharedPreferenceChangeListener, ViewPager.OnPageChangeListener {
+    AbsMainActivityFragment(),
+    CabHolder,
+    MainActivity.MainActivityFragmentCallbacks,
+    SharedPreferences.OnSharedPreferenceChangeListener,
+    ViewPager.OnPageChangeListener {
 
     // viewBinding
     private var _viewBinding: FragmentLibraryBinding? = null
@@ -59,7 +63,7 @@ class LibraryFragment :
     }
 
     override fun onDestroyView() {
-        PreferenceUtil.getInstance(requireActivity()).unregisterOnSharedPreferenceChangedListener(this)
+        Setting.instance.unregisterOnSharedPreferenceChangedListener(this)
         super.onDestroyView()
         binding.pager.removeOnPageChangeListener(this)
         isPopupMenuInited = false
@@ -70,7 +74,7 @@ class LibraryFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        PreferenceUtil.getInstance(requireActivity()).registerOnSharedPreferenceChangedListener(this)
+        Setting.instance.registerOnSharedPreferenceChangedListener(this)
 
         setupTheme(requireActivity() as MainActivity)
         setupToolbar()
@@ -93,7 +97,7 @@ class LibraryFragment :
         )
         requireActivity().setTitle(R.string.app_name)
 
-        if (PreferenceUtil.getInstance(requireContext()).fixedTabLayout()) {
+        if (Setting.instance.fixedTabLayout) {
             binding.tabs.tabMode = TabLayout.MODE_FIXED
         } else {
             binding.tabs.tabMode = TabLayout.MODE_SCROLLABLE
@@ -118,8 +122,8 @@ class LibraryFragment :
 
         updateTabVisibility()
 
-        if (PreferenceUtil.getInstance(requireContext()).rememberLastTab()) {
-            binding.pager.currentItem = PreferenceUtil.getInstance(requireContext()).lastPage
+        if (Setting.instance.rememberLastTab) {
+            binding.pager.currentItem = Setting.instance.lastPage
         }
 
         binding.pager.addOnPageChangeListener(this)
@@ -151,7 +155,7 @@ class LibraryFragment :
             if (it.isActive()) it.destroy()
         }
         cab = createCab(R.id.cab_stub) {
-            popupTheme(PreferenceUtil.getInstance(requireContext()).generalTheme)
+            popupTheme(Setting.instance.generalTheme)
             menu(menuRes)
             closeDrawable(R.drawable.ic_close_white_24dp)
             backgroundColor(literal = PhonographColorUtil.shiftBackgroundColorForLightText(ThemeColor.primaryColor(requireActivity())))
@@ -189,17 +193,17 @@ class LibraryFragment :
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
         // TODO: clean up & extract
-        if (PreferenceUtil.LIBRARY_CATEGORIES == key) {
+        if (Setting.LIBRARY_CATEGORIES == key) {
             val current = currentFragment
-            pagerAdapter.setCategoryInfos(PreferenceUtil.getInstance(requireActivity()).libraryCategoryInfos!!)
+            pagerAdapter.setCategoryInfos(Setting.instance.libraryCategoryInfos!!)
             binding.pager.offscreenPageLimit = pagerAdapter.count - 1
             var position = pagerAdapter.getItemPosition(current!!)
             if (position < 0) position = 0
             binding.pager.currentItem = position
-            PreferenceUtil.getInstance(requireContext()).lastPage = position
+            Setting.instance.lastPage = position
             updateTabVisibility()
-        } else if (PreferenceUtil.FIXED_TAB_LAYOUT == key) {
-            if (PreferenceUtil.getInstance(requireContext()).fixedTabLayout()) {
+        } else if (Setting.FIXED_TAB_LAYOUT == key) {
+            if (Setting.instance.fixedTabLayout) {
                 binding.tabs.tabMode = TabLayout.MODE_FIXED
             } else {
                 binding.tabs.tabMode = TabLayout.MODE_SCROLLABLE
@@ -275,7 +279,7 @@ class LibraryFragment :
         popupMenu = PopupWindow(popup.root, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, true)
 
         val backgroundColor = mainActivity.getColor(
-            when (PreferenceUtil.getInstance(mainActivity).generalTheme) {
+            when (Setting.instance.generalTheme) {
                 R.style.Theme_Phonograph_Auto -> R.color.cardBackgroundColor
                 R.style.Theme_Phonograph_Light -> util.mdcolor.R.color.md_white_1000
                 R.style.Theme_Phonograph_Black -> util.mdcolor.R.color.md_black_1000
@@ -305,7 +309,11 @@ class LibraryFragment :
         }
     }
 
-    private fun initSortOrder(popupWindow: PopupWindow, popup: PopupWindowMainBinding, fragment: AbsLibraryPagerRecyclerViewCustomGridSizeFragment<*, *>) {
+    private fun initSortOrder(
+        popupWindow: PopupWindow,
+        popup: PopupWindowMainBinding,
+        fragment: AbsLibraryPagerRecyclerViewCustomGridSizeFragment<*, *>
+    ) {
         popup.sortOrderBasic.visibility = View.VISIBLE
         popup.textSortOrderBasic.visibility = View.VISIBLE
         popup.sortOrderContent.visibility = View.VISIBLE
@@ -346,9 +354,13 @@ class LibraryFragment :
                     SortOrder.SongSortOrder.SONG_ARTIST, SortOrder.SongSortOrder.SONG_ARTIST_REVERT -> popup.sortOrderContent.check(R.id.sort_order_artist)
                     SortOrder.SongSortOrder.SONG_YEAR, SortOrder.SongSortOrder.SONG_YEAR_REVERT -> popup.sortOrderContent.check(R.id.sort_order_year)
                     SortOrder.SongSortOrder.SONG_DATE, SortOrder.SongSortOrder.SONG_DATE_REVERT -> popup.sortOrderContent.check(R.id.sort_order_date_added)
-                    SortOrder.SongSortOrder.SONG_DATE_MODIFIED, SortOrder.SongSortOrder.SONG_DATE_MODIFIED_REVERT -> popup.sortOrderContent.check(R.id.sort_order_date_modified)
+                    SortOrder.SongSortOrder.SONG_DATE_MODIFIED, SortOrder.SongSortOrder.SONG_DATE_MODIFIED_REVERT -> popup.sortOrderContent.check(
+                        R.id.sort_order_date_modified
+                    )
                     SortOrder.SongSortOrder.SONG_DURATION, SortOrder.SongSortOrder.SONG_DURATION_REVERT -> popup.sortOrderContent.check(R.id.sort_order_duration)
-                    else -> { popup.sortOrderContent.clearCheck() }
+                    else -> {
+                        popup.sortOrderContent.clearCheck()
+                    }
                 }
             }
             is AlbumsFragment -> {
@@ -359,18 +371,23 @@ class LibraryFragment :
                     SortOrder.AlbumSortOrder.ALBUM_Z_A, SortOrder.AlbumSortOrder.ALBUM_A_Z -> popup.sortOrderContent.check(R.id.sort_order_album)
                     SortOrder.AlbumSortOrder.ALBUM_YEAR, SortOrder.AlbumSortOrder.ALBUM_YEAR_REVERT -> popup.sortOrderContent.check(R.id.sort_order_year)
                     SortOrder.AlbumSortOrder.ALBUM_ARTIST, SortOrder.AlbumSortOrder.ALBUM_ARTIST_REVERT -> popup.sortOrderContent.check(R.id.sort_order_artist)
-                    else -> { popup.sortOrderContent.clearCheck() }
+                    else -> {
+                        popup.sortOrderContent.clearCheck()
+                    }
                 }
             }
             is ArtistsFragment -> {
                 popup.sortOrderArtist.visibility = View.VISIBLE
                 when (currentSortOrder) {
                     SortOrder.ArtistSortOrder.ARTIST_A_Z, SortOrder.ArtistSortOrder.ARTIST_Z_A -> popup.sortOrderContent.check(R.id.sort_order_artist)
-                    else -> { popup.sortOrderContent.clearCheck() }
+                    else -> {
+                        popup.sortOrderContent.clearCheck()
+                    }
                 }
             }
         }
     }
+
     private fun disableSortOrder(popup: PopupWindowMainBinding) {
         popup.sortOrderBasic.visibility = View.GONE
         popup.sortOrderBasic.clearCheck()
@@ -381,7 +398,11 @@ class LibraryFragment :
         popup.textSortOrderContent.visibility = View.GONE
     }
 
-    private fun initGridSize(popupWindow: PopupWindow, popup: PopupWindowMainBinding, fragment: AbsLibraryPagerRecyclerViewCustomGridSizeFragment<*, *>) {
+    private fun initGridSize(
+        popupWindow: PopupWindow,
+        popup: PopupWindowMainBinding,
+        fragment: AbsLibraryPagerRecyclerViewCustomGridSizeFragment<*, *>
+    ) {
         popup.textGridSize.visibility = View.VISIBLE
         popup.gridSize.visibility = View.VISIBLE
         if (isLandscape(resources)) popup.textGridSize.text = resources.getText(R.string.action_grid_size_land)
@@ -395,22 +416,32 @@ class LibraryFragment :
         popup.gridSize.clearCheck()
         (popup.gridSize.getChildAt(current - 1) as RadioButton).isChecked = true
     }
+
     private fun disableGridSize(popup: PopupWindowMainBinding) {
         popup.textGridSize.visibility = View.GONE
         popup.gridSize.clearCheck()
         popup.gridSize.visibility = View.GONE
     }
 
-    private fun initColorFooter(popupWindow: PopupWindow, popup: PopupWindowMainBinding, fragment: AbsLibraryPagerRecyclerViewCustomGridSizeFragment<*, *>) {
+    private fun initColorFooter(
+        popupWindow: PopupWindow,
+        popup: PopupWindowMainBinding,
+        fragment: AbsLibraryPagerRecyclerViewCustomGridSizeFragment<*, *>
+    ) {
         popup.actionColoredFooters.visibility = View.VISIBLE
         popup.actionColoredFooters.isChecked = fragment.usePalette()
         popup.actionColoredFooters.isEnabled = fragment.canUsePalette()
     }
+
     private fun disableColorFooter(popup: PopupWindowMainBinding) {
         popup.actionColoredFooters.visibility = View.GONE
     }
 
-    private fun handlePopupMenuDismiss(popup: PopupWindowMainBinding, popupWindow: PopupWindow, fragment: AbsLibraryPagerRecyclerViewCustomGridSizeFragment<*, *>) {
+    private fun handlePopupMenuDismiss(
+        popup: PopupWindowMainBinding,
+        popupWindow: PopupWindow,
+        fragment: AbsLibraryPagerRecyclerViewCustomGridSizeFragment<*, *>
+    ) {
         // saving sort order
 
         val basicSelected = popup.sortOrderBasic.checkedRadioButtonId
@@ -528,16 +559,17 @@ class LibraryFragment :
             fragment.setAndSaveGridSize(gridSize)
     }
 
-    override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) { }
+    override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
     override fun onPageSelected(position: Int) {
-        PreferenceUtil.getInstance(requireActivity()).lastPage = position
+        Setting.instance.lastPage = position
         if (currentFragment is PlaylistsFragment) {
             mainActivity.setFloatingActionButtonVisibility(View.VISIBLE)
         } else {
             mainActivity.setFloatingActionButtonVisibility(View.GONE)
         }
     }
-    override fun onPageScrollStateChanged(state: Int) { }
+
+    override fun onPageScrollStateChanged(state: Int) {}
 
     fun addOnAppBarOffsetChangedListener(onOffsetChangedListener: OnOffsetChangedListener) {
         binding.appbar.addOnOffsetChangedListener(onOffsetChangedListener)
@@ -546,6 +578,7 @@ class LibraryFragment :
     fun removeOnAppBarOffsetChangedListener(onOffsetChangedListener: OnOffsetChangedListener) {
         binding.appbar.removeOnOffsetChangedListener(onOffsetChangedListener)
     }
+
     override fun handleBackPress(): Boolean {
         if (cab != null && cab.isActive()) {
             cab.destroy()

@@ -44,6 +44,7 @@ import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 
+import player.phonograph.settings.Setting;
 import util.mddesign.util.ColorUtil;
 import util.mddesign.util.MaterialColorHelper;
 import util.mddesign.util.TintHelper;
@@ -69,7 +70,6 @@ import player.phonograph.ui.fragments.mainactivity.AbsMainActivityFragment;
 import player.phonograph.util.BlacklistUtil;
 import player.phonograph.util.FileUtil;
 import player.phonograph.util.PhonographColorUtil;
-import player.phonograph.settings.PreferenceUtil;
 import player.phonograph.util.ViewUtil;
 import player.phonograph.views.BreadCrumbLayout;
 import util.mdcolor.pref.ThemeColor;
@@ -93,7 +93,7 @@ public class FoldersFragment extends AbsMainActivityFragment implements MainActi
     }
 
     public static FoldersFragment newInstance(Context context) {
-        return newInstance(PreferenceUtil.getInstance(context).getStartDirectory());
+        return newInstance(Setting.instance().getStartDirectory());
     }
 
     public static FoldersFragment newInstance(File directory) {
@@ -249,7 +249,7 @@ public class FoldersFragment extends AbsMainActivityFragment implements MainActi
         if (cab != null && AttachedCabKt.isActive(cab)) AttachedCabKt.destroy(cab);
 
         cab = MaterialCabKt.createCab(this, R.id.cab_stub, attachedCab -> {
-            attachedCab.popupTheme(PreferenceUtil.getInstance(requireContext()).getGeneralTheme());
+            attachedCab.popupTheme(Setting.instance().getGeneralTheme());
             attachedCab.menu(menuRes);
             attachedCab.closeDrawable(R.drawable.ic_close_white_24dp);
             attachedCab.backgroundColor(null, PhonographColorUtil.shiftBackgroundColorForLightText(ThemeColor.primaryColor(getMainActivity())));
@@ -315,7 +315,7 @@ public class FoldersFragment extends AbsMainActivityFragment implements MainActi
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_go_to_start_directory:
-                setCrumb(new BreadCrumbLayout.Crumb(FileUtil.safeGetCanonicalFile(PreferenceUtil.getInstance(getMainActivity()).getStartDirectory())), true);
+                setCrumb(new BreadCrumbLayout.Crumb(FileUtil.safeGetCanonicalFile(Setting.instance().getStartDirectory())), true);
                 return true;
             case R.id.action_scan:
                 BreadCrumbLayout.Crumb crumb = getActiveCrumb();
@@ -416,7 +416,7 @@ public class FoldersFragment extends AbsMainActivityFragment implements MainActi
                         }).execute(new ListSongsAsyncTask.LoadingInfo(toList(file), AUDIO_FILE_FILTER, getFileComparator()));
                         return true;
                     case R.id.action_set_as_start_directory:
-                        PreferenceUtil.getInstance(getMainActivity()).setStartDirectory(file);
+                        Setting.instance().setStartDirectory(file);
                         Toast.makeText(getMainActivity(), String.format(getString(R.string.new_start_directory), file.getPath()), Toast.LENGTH_SHORT).show();
                         return true;
                     case R.id.action_scan:

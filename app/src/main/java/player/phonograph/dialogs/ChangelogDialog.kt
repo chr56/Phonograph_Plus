@@ -11,18 +11,19 @@ import android.view.LayoutInflater
 import android.view.View
 import android.webkit.WebView
 import androidx.fragment.app.DialogFragment
-import util.mdcolor.pref.ThemeColor
-import util.mddesign.util.ColorUtil
-import util.mddesign.util.Util
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.WhichButton
 import com.afollestad.materialdialogs.actions.getActionButton
 import com.afollestad.materialdialogs.customview.customView
 import player.phonograph.App
 import player.phonograph.R
-import player.phonograph.settings.PreferenceUtil
+import player.phonograph.settings.Setting
+import util.mdcolor.pref.ThemeColor
+import util.mddesign.util.ColorUtil
+import util.mddesign.util.Util
 import java.io.BufferedReader
 import java.io.InputStreamReader
+
 /**
  * @author Aidan Follestad (afollestad)
  */
@@ -82,7 +83,7 @@ class ChangelogDialog : DialogFragment() {
             try {
                 val pInfo = context.packageManager.getPackageInfo(context.packageName, 0)
                 val currentVersion = pInfo.versionCode
-                PreferenceUtil.getInstance(context).setLastChangeLogVersion(currentVersion)
+                Setting.instance.lastChangeLogVersion = currentVersion
             } catch (e: PackageManager.NameNotFoundException) {
                 e.printStackTrace()
             }

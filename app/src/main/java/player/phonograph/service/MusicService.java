@@ -67,7 +67,7 @@ import player.phonograph.provider.SongPlayCountStore;
 import player.phonograph.service.playback.Playback;
 import player.phonograph.util.LyricsUtil;
 import player.phonograph.util.MusicUtil;
-import player.phonograph.settings.PreferenceUtil;
+import player.phonograph.settings.Setting;
 import player.phonograph.util.Util;
 
 /**
@@ -227,7 +227,7 @@ public class MusicService extends Service implements SharedPreferences.OnSharedP
         getContentResolver().registerContentObserver(MediaStore.Audio.Playlists.INTERNAL_CONTENT_URI, true, mediaStoreObserver);
 
 
-        PreferenceUtil.getInstance(this).registerOnSharedPreferenceChangedListener(this);
+        Setting.Companion.getInstance().registerOnSharedPreferenceChangedListener(this);
 
         restoreState();
 
@@ -380,7 +380,7 @@ public class MusicService extends Service implements SharedPreferences.OnSharedP
         quit();
         releaseResources();
         getContentResolver().unregisterContentObserver(mediaStoreObserver);
-        PreferenceUtil.getInstance(this).unregisterOnSharedPreferenceChangedListener(this);
+        Setting.Companion.getInstance().unregisterOnSharedPreferenceChangedListener(this);
         wakeLock.release();
 
         sendBroadcast(new Intent("player.phonograph.PHONOGRAPH_MUSIC_SERVICE_DESTROYED"));
@@ -559,7 +559,7 @@ public class MusicService extends Service implements SharedPreferences.OnSharedP
     }
 
     public void initNotification() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N && !PreferenceUtil.getInstance(this).classicNotification()) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N && !Setting.Companion.getInstance().getClassicNotification()) {
             playingNotification = new PlayingNotificationImpl24();
         } else {
             playingNotification = new PlayingNotificationImpl();
@@ -604,13 +604,13 @@ public class MusicService extends Service implements SharedPreferences.OnSharedP
             metaData.putLong(MediaMetadataCompat.METADATA_KEY_NUM_TRACKS, getPlayingQueue().size());
         }
 
-        if (PreferenceUtil.getInstance(this).albumArtOnLockscreen()) {
+        if (Setting.Companion.getInstance().getAlbumArtOnLockscreen()) {
             final Point screenSize = Util.getScreenSize(MusicService.this);
             final RequestBuilder<Bitmap> request =
                     SongGlideRequest.Builder.from(Glide.with(MusicService.this), song)
                             .checkIgnoreMediaStore(MusicService.this)
                             .asBitmap().build();
-            if (PreferenceUtil.getInstance(this).blurredAlbumArt()) {
+            if (Setting.Companion.getInstance().getBlurredAlbumArt()) {
                 request.transform(new BlurTransformation.Builder(MusicService.this).build());
             }
             runOnUiThread(new Runnable() {
@@ -1158,21 +1158,21 @@ public class MusicService extends Service implements SharedPreferences.OnSharedP
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         switch (key) {
-            case PreferenceUtil.GAPLESS_PLAYBACK:
+            case Setting.GAPLESS_PLAYBACK:
                 if (sharedPreferences.getBoolean(key, false)) {
                     prepareNext();
                 } else {
                     playback.setNextDataSource(null);
                 }
                 break;
-            case PreferenceUtil.ALBUM_ART_ON_LOCKSCREEN:
-            case PreferenceUtil.BLURRED_ALBUM_ART:
+            case Setting.ALBUM_ART_ON_LOCKSCREEN:
+            case Setting.BLURRED_ALBUM_ART:
                 updateMediaSessionMetaData();
                 break;
-            case PreferenceUtil.COLORED_NOTIFICATION:
+            case Setting.COLORED_NOTIFICATION:
                 updateNotification();
                 break;
-            case PreferenceUtil.CLASSIC_NOTIFICATION:
+            case Setting.CLASSIC_NOTIFICATION:
                 initNotification();
                 updateNotification();
                 break;
@@ -1210,7 +1210,7 @@ public class MusicService extends Service implements SharedPreferences.OnSharedP
 
             switch (msg.what) {
                 case DUCK:
-                    if (PreferenceUtil.getInstance(service).audioDucking()) {
+                    if (Setting.instance().getAudioDucking()) {
                         currentDuckVolume -= .05f;
                         if (currentDuckVolume > .2f) {
                             sendEmptyMessageDelayed(DUCK, 10);
@@ -1224,7 +1224,7 @@ public class MusicService extends Service implements SharedPreferences.OnSharedP
                     break;
 
                 case UNDUCK:
-                    if (PreferenceUtil.getInstance(service).audioDucking()) {
+                    if (Setting.instance().getAudioDucking()) {
                         currentDuckVolume += .03f;
                         if (currentDuckVolume < 1f) {
                             sendEmptyMessageDelayed(UNDUCK, 10);

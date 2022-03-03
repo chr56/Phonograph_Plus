@@ -8,7 +8,7 @@ import androidx.annotation.Nullable;
 import player.phonograph.model.Album;
 import player.phonograph.model.Artist;
 import player.phonograph.model.Song;
-import player.phonograph.settings.PreferenceUtil;
+import player.phonograph.settings.Setting;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +18,7 @@ import java.util.List;
  */
 public class ArtistLoader {
     public static String getSongLoaderSortOrder(Context context) {
-        return PreferenceUtil.getInstance(context).getArtistSortOrder() + ", " + PreferenceUtil.getInstance(context).getArtistAlbumSortOrder() + ", " + PreferenceUtil.getInstance(context).getAlbumSongSortOrder();
+        return Setting.instance().getArtistSortOrder() + ", " + Setting.instance().getArtistAlbumSortOrder() + ", " + Setting.instance().getAlbumSongSortOrder();
     }
 
     @NonNull

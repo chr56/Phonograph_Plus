@@ -15,17 +15,17 @@ import androidx.annotation.FloatRange;
 import androidx.annotation.LayoutRes;
 import androidx.fragment.app.Fragment;
 
+import com.sothree.slidinguppanel.SlidingUpPanelLayout;
+
 import player.phonograph.R;
 import player.phonograph.helper.MusicPlayerRemote;
+import player.phonograph.settings.Setting;
 import player.phonograph.ui.fragments.player.AbsPlayerFragment;
 import player.phonograph.ui.fragments.player.MiniPlayerFragment;
 import player.phonograph.ui.fragments.player.NowPlayingScreen;
 import player.phonograph.ui.fragments.player.card.CardPlayerFragment;
 import player.phonograph.ui.fragments.player.flat.FlatPlayerFragment;
-import player.phonograph.settings.PreferenceUtil;
 import player.phonograph.util.ViewUtil;
-
-import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
@@ -55,7 +55,7 @@ public abstract class AbsSlidingMusicPanelActivity extends AbsMusicServiceActivi
         slidingUpPanelLayout = findViewById(R.id.sliding_layout);
 
 
-        currentNowPlayingScreen = PreferenceUtil.getInstance(this).getNowPlayingScreen();
+        currentNowPlayingScreen = Setting.instance().getNowPlayingScreen();
         Fragment fragment; // must implement AbsPlayerFragment
         switch (currentNowPlayingScreen) {
             case FLAT:
@@ -100,7 +100,7 @@ public abstract class AbsSlidingMusicPanelActivity extends AbsMusicServiceActivi
     @Override
     protected void onResume() {
         super.onResume();
-        if (currentNowPlayingScreen != PreferenceUtil.getInstance(this).getNowPlayingScreen()) {
+        if (currentNowPlayingScreen != Setting.instance().getNowPlayingScreen()) {
             postRecreate();
         }
     }

@@ -8,9 +8,8 @@ import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.util.Pair
-import util.mddesign.util.ColorUtil
-import util.mddesign.util.MaterialColorHelper
 import com.bumptech.glide.Glide
+import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView.SectionedAdapter
 import player.phonograph.R
 import player.phonograph.adapter.base.AbsMultiSelectAdapter
 import player.phonograph.adapter.base.MediaEntryViewHolder
@@ -21,10 +20,11 @@ import player.phonograph.helper.menu.SongsMenuHelper.handleMenuClick
 import player.phonograph.interfaces.CabHolder
 import player.phonograph.model.Album
 import player.phonograph.model.Song
+import player.phonograph.settings.Setting
 import player.phonograph.util.MusicUtil
 import player.phonograph.util.NavigationUtil
-import player.phonograph.settings.PreferenceUtil
-import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView.SectionedAdapter
+import util.mddesign.util.ColorUtil
+import util.mddesign.util.MaterialColorHelper
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
@@ -37,15 +37,14 @@ open class AlbumAdapter(
     cabHolder: CabHolder?
 ) : AbsMultiSelectAdapter<AlbumAdapter.ViewHolder, Album>(
     activity, cabHolder, R.menu.menu_media_selection
-), SectionedAdapter {
+),
+    SectionedAdapter {
 
-    var dataSet:List<Album> = dataSet
+    var dataSet: List<Album> = dataSet
         get() = field
         protected set(dataSet: List<Album>) {
-        field = dataSet
-    }
-
-
+            field = dataSet
+        }
 
     init {
         setHasStableIds(true)
@@ -163,7 +162,7 @@ open class AlbumAdapter(
 
     override fun onMultipleItemAction(menuItem: MenuItem, selection: List<Album>) {
         handleMenuClick(activity, getSongList(selection), menuItem.itemId)
-    } //todo
+    } // todo
 
     private fun getSongList(albums: List<Album>): List<Song> {
         val songs: MutableList<Song> = ArrayList()
@@ -175,9 +174,10 @@ open class AlbumAdapter(
 
     override fun getSectionName(position: Int): String {
         var sectionName: String? = null
-        when (PreferenceUtil.getInstance(activity).albumSortOrder) {
-            SortOrder.AlbumSortOrder.ALBUM_A_Z, SortOrder.AlbumSortOrder.ALBUM_Z_A -> sectionName =
-                dataSet[position].title
+        when (Setting.instance.albumSortOrder) {
+            SortOrder.AlbumSortOrder.ALBUM_A_Z, SortOrder.AlbumSortOrder.ALBUM_Z_A ->
+                sectionName =
+                    dataSet[position].title
             SortOrder.AlbumSortOrder.ALBUM_ARTIST -> sectionName = dataSet[position].artistName
             SortOrder.AlbumSortOrder.ALBUM_YEAR -> return MusicUtil.getYearString(
                 dataSet[position].year
@@ -213,5 +213,4 @@ open class AlbumAdapter(
             }
         }
     }
-
 }

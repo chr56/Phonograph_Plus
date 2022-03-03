@@ -29,7 +29,7 @@ import player.phonograph.glide.palette.BitmapPaletteWrapper;
 import player.phonograph.model.Song;
 import player.phonograph.service.MusicService;
 import player.phonograph.ui.activities.MainActivity;
-import player.phonograph.settings.PreferenceUtil;
+import player.phonograph.settings.Setting;
 
 public class PlayingNotificationImpl24 extends PlayingNotification {
 
@@ -98,7 +98,7 @@ public class PlayingNotificationImpl24 extends PlayingNotification {
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                             builder.setStyle(new MediaStyle().setMediaSession(service.getMediaSession().getSessionToken()).setShowActionsInCompactView(0, 1, 2))
                                     .setVisibility(NotificationCompat.VISIBILITY_PUBLIC);
-                            if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.O && PreferenceUtil.getInstance(service).coloredNotification())
+                            if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.O && Setting.instance().getColoredNotification())
                                 builder.setColor(color);
                         }
 

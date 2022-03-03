@@ -16,9 +16,6 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.drawerlayout.widget.DrawerLayout
-import util.mdcolor.pref.ThemeColor
-import util.mddesign.util.ColorUtil
-import util.mddesign.util.NavigationViewUtil
 import com.bumptech.glide.Glide
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
@@ -41,16 +38,19 @@ import player.phonograph.loader.SongLoader
 import player.phonograph.model.Song
 import player.phonograph.notification.UpgradeNotification
 import player.phonograph.service.MusicService
+import player.phonograph.settings.Setting
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
 import player.phonograph.ui.activities.intro.AppIntroActivity
 import player.phonograph.ui.fragments.mainactivity.AbsMainActivityFragment
 import player.phonograph.ui.fragments.mainactivity.folders.FoldersFragment
-import player.phonograph.ui.fragments.mainactivity.library.LibraryFragment
 import player.phonograph.ui.fragments.mainactivity.home.HomeFragment
+import player.phonograph.ui.fragments.mainactivity.library.LibraryFragment
 import player.phonograph.util.MusicUtil
-import player.phonograph.settings.PreferenceUtil
 import player.phonograph.util.SAFCallbackHandlerActivity
 import player.phonograph.util.SafLauncher
+import util.mdcolor.pref.ThemeColor
+import util.mddesign.util.ColorUtil
+import util.mddesign.util.NavigationViewUtil
 import util.mddesign.util.Util as MDthemerUtil
 
 class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity {
@@ -82,7 +82,7 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
         setUpDrawer()
 
         if (savedInstanceState == null) {
-            setMusicChooser(PreferenceUtil.getInstance(this).lastMusicChooser)
+            setMusicChooser(Setting.instance.lastMusicChooser)
         } else {
             currentFragment =
                 supportFragmentManager.findFragmentById(R.id.fragment_container) as MainActivityFragmentCallbacks
@@ -111,7 +111,7 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
     }
 
     private fun setMusicChooser(key: Int) {
-        PreferenceUtil.getInstance(this).lastMusicChooser = key
+        Setting.instance.lastMusicChooser = key
         when (key) {
             LIBRARY -> {
                 navigationView.setCheckedItem(R.id.nav_library)
@@ -176,16 +176,16 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
                     ScanMediaFolderDialog().show(supportFragmentManager, "SCAN_MEDIA_FOLDER_CHOOSER")
                 }, 200)
                 R.id.theme_toggle -> Handler().postDelayed({
-                    val themeSetting = PreferenceUtil.getInstance(this).generalTheme
+                    val themeSetting = Setting.instance.generalTheme
 
                     if (themeSetting == R.style.Theme_Phonograph_Auto) {
                         Toast.makeText(this, R.string.auto_mode_on, Toast.LENGTH_SHORT).show()
                     } else {
                         when (themeSetting) {
                             R.style.Theme_Phonograph_Light ->
-                                PreferenceUtil.getInstance(this).setGeneralTheme("dark")
+                                Setting.instance.setGeneralTheme("dark")
                             R.style.Theme_Phonograph_Dark, R.style.Theme_Phonograph_Black ->
-                                PreferenceUtil.getInstance(this).setGeneralTheme("light")
+                                Setting.instance.setGeneralTheme("light")
                         }
                         recreate()
                     }
@@ -342,8 +342,8 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
     }
 
     private fun showIntro() {
-        if (!PreferenceUtil.getInstance(this).introShown()) {
-            PreferenceUtil.getInstance(this).setIntroShown()
+        if (!Setting.instance.introShown) {
+            Setting.instance.introShown = true
             setChangelogRead(this)
 
             blockRequestPermissions = true
@@ -364,7 +364,7 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
         try {
             val pInfo = packageManager.getPackageInfo(packageName, 0)
             val currentVersion = pInfo.versionCode
-            if (currentVersion != PreferenceUtil.getInstance(this).getLastChangelogVersion()) {
+            if (currentVersion != Setting.instance.lastChangeLogVersion) {
                 create().show(supportFragmentManager, "CHANGE_LOG_DIALOG")
                 JunkCleaner(App.instance).clear(currentVersion)
             }

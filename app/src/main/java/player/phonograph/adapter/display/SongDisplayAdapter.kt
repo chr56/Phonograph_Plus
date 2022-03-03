@@ -13,7 +13,7 @@ import player.phonograph.helper.SortOrder
 import player.phonograph.interfaces.MultiSelectionCabProvider
 import player.phonograph.model.Song
 import player.phonograph.util.MusicUtil
-import player.phonograph.settings.PreferenceUtil
+import player.phonograph.settings.Setting
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -46,7 +46,7 @@ class SongDisplayAdapter(
 
     override fun getSectionNameImp(position: Int): String {
         val sectionName: String =
-            when (PreferenceUtil.getInstance(activity).songSortOrder) {
+            when (Setting.instance.songSortOrder) {
                 SortOrder.SongSortOrder.SONG_A_Z, SortOrder.SongSortOrder.SONG_Z_A ->
                     MusicUtil.getSectionName(dataset[position].title)
                 SortOrder.SongSortOrder.SONG_ALBUM, SortOrder.SongSortOrder.SONG_ALBUM_REVERT ->

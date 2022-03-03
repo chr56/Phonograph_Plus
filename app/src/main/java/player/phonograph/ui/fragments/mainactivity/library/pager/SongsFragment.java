@@ -15,7 +15,7 @@ import player.phonograph.interfaces.LoaderIds;
 import player.phonograph.loader.SongLoader;
 import player.phonograph.misc.WrappedAsyncTaskLoader;
 import player.phonograph.model.Song;
-import player.phonograph.settings.PreferenceUtil;
+import player.phonograph.settings.Setting;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -75,12 +75,12 @@ public class SongsFragment extends AbsLibraryPagerRecyclerViewCustomGridSizeFrag
 
     @Override
     protected String loadSortOrder() {
-        return PreferenceUtil.getInstance(requireActivity()).getSongSortOrder();
+        return Setting.instance().getSongSortOrder();
     }
 
     @Override
     protected void saveSortOrder(String sortOrder) {
-        PreferenceUtil.getInstance(requireActivity()).setSongSortOrder(sortOrder);
+        Setting.instance().setSongSortOrder(sortOrder);
     }
 
     @Override
@@ -90,32 +90,32 @@ public class SongsFragment extends AbsLibraryPagerRecyclerViewCustomGridSizeFrag
 
     @Override
     protected int loadGridSize() {
-        return PreferenceUtil.getInstance(requireActivity()).getSongGridSize();
+        return Setting.instance().getSongGridSize();
     }
 
     @Override
     protected void saveGridSize(int gridSize) {
-        PreferenceUtil.getInstance(requireActivity()).setSongGridSize(gridSize);
+        Setting.instance().setSongGridSize(gridSize);
     }
 
     @Override
     protected int loadGridSizeLand() {
-        return PreferenceUtil.getInstance(requireActivity()).getSongGridSizeLand();
+        return Setting.instance().getSongGridSizeLand();
     }
 
     @Override
     protected void saveGridSizeLand(int gridSize) {
-        PreferenceUtil.getInstance(requireActivity()).setSongGridSizeLand(gridSize);
+        Setting.instance().setSongGridSizeLand(gridSize);
     }
 
     @Override
     public void saveUsePalette(boolean usePalette) {
-        PreferenceUtil.getInstance(requireActivity()).setSongColoredFooters(usePalette);
+        Setting.instance().setSongColoredFooters(usePalette);
     }
 
     @Override
     public boolean loadUsePalette() {
-        return PreferenceUtil.getInstance(requireActivity()).songColoredFooters();
+        return Setting.instance().getSongColoredFooters();
     }
 
     @Override

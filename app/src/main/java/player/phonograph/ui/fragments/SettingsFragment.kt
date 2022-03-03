@@ -24,7 +24,7 @@ import lib.phonograph.preference.dialog.PreferenceDialogFragmentX
 import player.phonograph.R
 import player.phonograph.appshortcuts.DynamicShortcutManager
 import player.phonograph.preferences.*
-import player.phonograph.settings.PreferenceUtil
+import player.phonograph.settings.Setting
 import player.phonograph.util.ColorChooserListener
 import player.phonograph.util.NavigationUtil
 import util.mdcolor.pref.ThemeColor
@@ -85,17 +85,17 @@ class SettingsFragment : PreferenceFragmentCompat() {
         super.onViewCreated(requireView(), savedInstanceState)
         listView.setPadding(0, 0, 0, 0)
         invalidateSettings()
-        PreferenceUtil.getInstance(requireActivity()).registerOnSharedPreferenceChangedListener(SharedPreferenceChangeListener())
+        Setting.instance.registerOnSharedPreferenceChangedListener(SharedPreferenceChangeListener())
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        PreferenceUtil.getInstance(requireActivity()).unregisterOnSharedPreferenceChangedListener(SharedPreferenceChangeListener())
+        Setting.instance.unregisterOnSharedPreferenceChangedListener(SharedPreferenceChangeListener())
     }
 
     private fun updateNowPlayingScreenSummary() {
         findPreference<Preference>("now_playing_screen_id")!!
-            .setSummary(PreferenceUtil.getInstance(requireActivity()).nowPlayingScreen.titleRes)
+            .setSummary(Setting.instance.nowPlayingScreen.titleRes)
     }
 
     fun invalidateSettings() {
@@ -113,7 +113,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
                     // Set the new theme so that updateAppShortcuts can pull it
-                    requireActivity().setTheme(PreferenceUtil.getThemeResFromPrefValue(themeName))
+                    requireActivity().setTheme(Setting.getThemeResFromPrefValue(themeName))
                     DynamicShortcutManager(activity).updateDynamicShortcuts()
                 }
                 requireActivity().recreate()
@@ -165,11 +165,11 @@ class SettingsFragment : PreferenceFragmentCompat() {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
             classicNotification!!.isVisible = false
         } else {
-            classicNotification!!.isChecked = PreferenceUtil.getInstance(requireActivity()).classicNotification()
+            classicNotification!!.isChecked = Setting.instance.classicNotification
             classicNotification.onPreferenceChangeListener =
                 Preference.OnPreferenceChangeListener { _: Preference?, newValue: Any? ->
                     // Save preference
-                    PreferenceUtil.getInstance(requireActivity()).setClassicNotification((newValue as Boolean?)!!)
+                    Setting.instance.classicNotification = newValue as Boolean
                     true
                 }
         }
@@ -177,13 +177,13 @@ class SettingsFragment : PreferenceFragmentCompat() {
         //
         val coloredNotification = findPreference<Preference>("colored_notification") as TwoStatePreference?
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            coloredNotification!!.isEnabled = PreferenceUtil.getInstance(requireActivity()).classicNotification()
+            coloredNotification!!.isEnabled = Setting.instance.classicNotification
         } else {
-            coloredNotification!!.isChecked = PreferenceUtil.getInstance(requireActivity()).coloredNotification()
+            coloredNotification!!.isChecked = Setting.instance.coloredNotification
             coloredNotification.onPreferenceChangeListener =
                 Preference.OnPreferenceChangeListener { _: Preference?, newValue: Any? ->
                     // Save preference
-                    PreferenceUtil.getInstance(requireActivity()).setColoredNotification((newValue as Boolean?)!!)
+                    Setting.instance.coloredNotification = newValue as Boolean
                     true
                 }
         }
@@ -191,11 +191,11 @@ class SettingsFragment : PreferenceFragmentCompat() {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N_MR1) {
             colorAppShortcuts!!.isVisible = false
         } else {
-            colorAppShortcuts!!.isChecked = PreferenceUtil.getInstance(requireActivity()).coloredAppShortcuts()
+            colorAppShortcuts!!.isChecked = Setting.instance.coloredAppShortcuts
             colorAppShortcuts.onPreferenceChangeListener =
                 Preference.OnPreferenceChangeListener { _: Preference?, newValue: Any? ->
                     // Save preference
-                    PreferenceUtil.getInstance(requireActivity()).setColoredAppShortcuts((newValue as Boolean?)!!)
+                    Setting.instance.coloredAppShortcuts = newValue as Boolean
                     // Update app shortcuts
                     DynamicShortcutManager(activity).updateDynamicShortcuts()
                     true
@@ -252,13 +252,13 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
         override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String?) {
             when (key) {
-                PreferenceUtil.NOW_PLAYING_SCREEN_ID -> updateNowPlayingScreenSummary()
-                PreferenceUtil.CLASSIC_NOTIFICATION ->
+                Setting.NOW_PLAYING_SCREEN_ID -> updateNowPlayingScreenSummary()
+                Setting.CLASSIC_NOTIFICATION ->
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                         findPreference<Preference>("colored_notification")!!.isEnabled =
                             sharedPreferences.getBoolean(key, false)
                     }
-                PreferenceUtil.BROADCAST_SYNCHRONIZED_LYRICS ->
+                Setting.BROADCAST_SYNCHRONIZED_LYRICS ->
                     // clear lyrics displaying on the statusbar now
                     player.phonograph.App.instance.lyricsService.stopLyric()
             }

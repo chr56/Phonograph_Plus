@@ -7,11 +7,12 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Environment;
+
 import androidx.annotation.NonNull;
 
 import player.phonograph.service.MusicService;
 import player.phonograph.util.FileUtil;
-import player.phonograph.settings.PreferenceUtil;
+import player.phonograph.settings.Setting;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -50,13 +51,13 @@ public class BlacklistStore extends SQLiteOpenHelper {
     public static synchronized BlacklistStore getInstance(@NonNull final Context context) {
         if (sInstance == null) {
             sInstance = new BlacklistStore(context.getApplicationContext());
-            if (!PreferenceUtil.getInstance(context).initializedBlacklist()) {
+            if (!Setting.instance().getInitializedBlacklist()) {
                 // blacklisted by default
                 sInstance.addPathImpl(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_ALARMS));
                 sInstance.addPathImpl(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_NOTIFICATIONS));
                 sInstance.addPathImpl(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_RINGTONES));
 
-                PreferenceUtil.getInstance(context).setInitializedBlacklist();
+                Setting.instance().setInitializedBlacklist(true);
             }
         }
         return sInstance;

@@ -20,8 +20,8 @@ import com.afollestad.materialdialogs.actions.getActionButton
 import player.phonograph.App
 import player.phonograph.BuildConfig
 import player.phonograph.R
+import player.phonograph.settings.Setting
 import player.phonograph.ui.activities.base.ThemeActivity
-import player.phonograph.settings.PreferenceUtil
 import java.util.*
 import kotlin.system.exitProcess
 
@@ -79,7 +79,7 @@ class CrashActivity : ThemeActivity() {
                 .message(R.string.clear_all_preference_msg)
                 .negativeButton(android.R.string.cancel)
                 .positiveButton(R.string.clear_all_preference) {
-                    PreferenceUtil.getInstance(applicationContext).clearAllPreference(applicationContext)
+                    Setting.instance.clearAllPreference()
 
                     Handler().postDelayed({
                         Process.killProcess(Process.myPid())

@@ -8,8 +8,6 @@ import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.util.Pair
-import util.mddesign.util.ColorUtil
-import util.mddesign.util.MaterialColorHelper
 import com.bumptech.glide.Glide
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView.SectionedAdapter
 import player.phonograph.R
@@ -23,9 +21,11 @@ import player.phonograph.helper.menu.SongMenuHelper
 import player.phonograph.helper.menu.SongsMenuHelper.handleMenuClick
 import player.phonograph.interfaces.CabHolder
 import player.phonograph.model.Song
+import player.phonograph.settings.Setting
 import player.phonograph.util.MusicUtil
 import player.phonograph.util.NavigationUtil
-import player.phonograph.settings.PreferenceUtil
+import util.mddesign.util.ColorUtil
+import util.mddesign.util.MaterialColorHelper
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
@@ -164,7 +164,7 @@ open class SongAdapter @JvmOverloads constructor(
             return ""
         }
         var sectionName: String? = null
-        when (PreferenceUtil.getInstance(activity).songSortOrder) {
+        when (Setting.instance.songSortOrder) {
             SortOrder.SongSortOrder.SONG_A_Z, SortOrder.SongSortOrder.SONG_Z_A ->
                 sectionName = dataSet[position].title
             SortOrder.SongSortOrder.SONG_ALBUM ->

@@ -20,7 +20,7 @@ import player.phonograph.glide.audiocover.AudioFileCover;
 import player.phonograph.glide.palette.BitmapPaletteWrapper;
 import player.phonograph.model.Song;
 import player.phonograph.util.MusicUtil;
-import player.phonograph.settings.PreferenceUtil;
+import player.phonograph.settings.Setting;
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
@@ -62,7 +62,7 @@ public class SongGlideRequest {
         }
 
         public Builder checkIgnoreMediaStore(Context context) {
-            return ignoreMediaStore(PreferenceUtil.getInstance(context).ignoreMediaStoreArtwork());
+            return ignoreMediaStore(Setting.instance().getIgnoreMediaStoreArtwork());
         }
 
         public Builder ignoreMediaStore(boolean ignoreMediaStore) {

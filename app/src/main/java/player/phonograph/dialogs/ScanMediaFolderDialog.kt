@@ -12,16 +12,16 @@ import android.util.Log
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.DialogFragment
-import util.mdcolor.pref.ThemeColor
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.WhichButton
 import com.afollestad.materialdialogs.actions.getActionButton
 import com.afollestad.materialdialogs.files.folderChooser
 import player.phonograph.R
 import player.phonograph.misc.UpdateToastMediaScannerCompletionListener
+import player.phonograph.settings.Setting
 import player.phonograph.ui.fragments.mainactivity.folders.FoldersFragment
 import player.phonograph.ui.fragments.mainactivity.folders.FoldersFragment.ArrayListPathsAsyncTask
-import player.phonograph.settings.PreferenceUtil
+import util.mdcolor.pref.ThemeColor
 import java.io.File
 import java.lang.ref.WeakReference
 
@@ -47,8 +47,8 @@ class ScanMediaFolderDialog : DialogFragment() {
         }
 
         // init Default Path
-        initial = PreferenceUtil.getInstance(requireContext()).getStartDirectory()
-//        initialPath = PreferenceUtil.getInstance(requireContext()).startDirectory.absolutePath
+        initial = Setting.instance.startDirectory
+//        initialPath = Setting.instance().startDirectory.absolutePath
 //        var mSavedInstanceState = savedInstanceState
 //        if (mSavedInstanceState == null) {
 //            mSavedInstanceState = Bundle()
@@ -60,7 +60,7 @@ class ScanMediaFolderDialog : DialogFragment() {
         // FileChooser
         val dialog = MaterialDialog(requireContext())
             .folderChooser(context = requireContext(), waitForPositiveButton = true, emptyTextRes = R.string.empty, initialDirectory = initial,) {
-                _, file ->
+                    _, file ->
 //                selected = file
                 val applicationContext = requireActivity().applicationContext
                 val activityWeakReference = WeakReference<Activity?>(activity)

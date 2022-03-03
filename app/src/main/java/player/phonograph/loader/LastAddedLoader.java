@@ -6,7 +6,7 @@ import android.provider.MediaStore;
 import androidx.annotation.NonNull;
 
 import player.phonograph.model.Song;
-import player.phonograph.settings.PreferenceUtil;
+import player.phonograph.settings.Setting;
 
 import java.util.List;
 
@@ -18,7 +18,7 @@ public class LastAddedLoader {
     }
 
     public static Cursor makeLastAddedCursor(@NonNull final Context context) {
-        long cutoff = PreferenceUtil.getInstance(context).getLastAddedCutoff();
+        long cutoff = Setting.instance().getLastAddedCutoff();
 
         return SongLoader.makeSongCursor(
                 context,
