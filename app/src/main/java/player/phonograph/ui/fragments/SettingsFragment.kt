@@ -14,21 +14,21 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.DialogFragment
 import androidx.preference.*
-import util.mdcolor.pref.ThemeColor
-import util.mddesign.util.ColorUtil
+import lib.phonograph.preference.ColorPreferenceX
+import lib.phonograph.preference.DialogPreferenceX
+import lib.phonograph.preference.EditTextPreferenceX
+import lib.phonograph.preference.ListPreferenceX
+import lib.phonograph.preference.dialog.EditTextPreferenceDialogFragmentCompatX
+import lib.phonograph.preference.dialog.ListPreferenceDialogFragmentCompatX
+import lib.phonograph.preference.dialog.PreferenceDialogFragmentX
 import player.phonograph.R
 import player.phonograph.appshortcuts.DynamicShortcutManager
 import player.phonograph.preferences.*
-import player.phonograph.preferences.basic.ColorPreferenceX
-import player.phonograph.preferences.basic.DialogPreferenceX
-import player.phonograph.preferences.basic.EditTextPreferenceX
-import player.phonograph.preferences.basic.ListPreferenceX
-import player.phonograph.preferences.basic.dialog.EditTextPreferenceDialogFragmentCompatX
-import player.phonograph.preferences.basic.dialog.ListPreferenceDialogFragmentCompatX
-import player.phonograph.preferences.basic.dialog.PreferenceDialogFragmentX
+import player.phonograph.settings.PreferenceUtil
 import player.phonograph.util.ColorChooserListener
 import player.phonograph.util.NavigationUtil
-import player.phonograph.settings.PreferenceUtil
+import util.mdcolor.pref.ThemeColor
+import util.mddesign.util.ColorUtil
 
 class SettingsFragment : PreferenceFragmentCompat() {
 
@@ -159,7 +159,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
             }
 //        }
 
-        // 
+        //
         val classicNotification = findPreference<Preference>("classic_notification") as TwoStatePreference?
         @SuppressLint("ObsoleteSdkInt")
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {

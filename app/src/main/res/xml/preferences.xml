@@ -2,15 +2,15 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <player.phonograph.preferences.basic.PreferenceCategoryX android:title="@string/pref_header_appearance">
+    <lib.phonograph.preference.PreferenceCategoryX android:title="@string/pref_header_appearance">
         <player.phonograph.preferences.HomeTabConfigPreferenceX
             app:iconSpaceReserved="false"
             android:key="home_pages_tab_config"
             android:summary="@string/pref_summary_library_categories"
             android:title="@string/library_categories" />
-    </player.phonograph.preferences.basic.PreferenceCategoryX>
+    </lib.phonograph.preference.PreferenceCategoryX>
 
-    <player.phonograph.preferences.basic.PreferenceCategoryX android:title="@string/pref_header_library">
+    <lib.phonograph.preference.PreferenceCategoryX android:title="@string/pref_header_library">
 
         <player.phonograph.preferences.LibraryPreferenceX
             app:iconSpaceReserved="false"
@@ -18,25 +18,25 @@
             android:summary="@string/pref_summary_library_categories"
             android:title="@string/library_categories" />
 
-        <player.phonograph.preferences.basic.SwitchPreferenceX
+        <lib.phonograph.preference.SwitchPreferenceX
             app:iconSpaceReserved="false"
             android:defaultValue="false"
             android:key="fixed_tab_layout"
             android:summary="@string/pref_summary_fixed_tab_layout"
             android:title="@string/perf_title_fixed_tab_layout"/>
 
-        <player.phonograph.preferences.basic.SwitchPreferenceX
+        <lib.phonograph.preference.SwitchPreferenceX
             app:iconSpaceReserved="false"
             android:defaultValue="true"
             android:key="remember_last_tab"
             android:summary="@string/pref_summary_remember_last_tab"
             android:title="@string/pref_title_remember_last_tab" />
 
-    </player.phonograph.preferences.basic.PreferenceCategoryX>
+    </lib.phonograph.preference.PreferenceCategoryX>
 
-    <player.phonograph.preferences.basic.PreferenceCategoryX android:title="@string/pref_header_colors">
+    <lib.phonograph.preference.PreferenceCategoryX android:title="@string/pref_header_colors">
 
-        <player.phonograph.preferences.basic.ListPreferenceX
+        <lib.phonograph.preference.ListPreferenceX
             app:iconSpaceReserved="false"
             android:defaultValue="auto"
             android:entries="@array/pref_general_theme_list_titles"
@@ -46,21 +46,21 @@
             android:positiveButtonText="@null"
             android:title="@string/pref_title_general_theme" />
 
-        <player.phonograph.preferences.basic.ColorPreferenceX
+        <lib.phonograph.preference.ColorPreferenceX
             app:iconSpaceReserved="false"
             android:key="primary_color"
             android:persistent="false"
             android:summary="@string/primary_color_desc"
             android:title="@string/primary_color" />
 
-        <player.phonograph.preferences.basic.ColorPreferenceX
+        <lib.phonograph.preference.ColorPreferenceX
             app:iconSpaceReserved="false"
             android:key="accent_color"
             android:persistent="false"
             android:summary="@string/accent_color_desc"
             android:title="@string/accent_color" />
 
-        <player.phonograph.preferences.basic.SwitchPreferenceX
+        <lib.phonograph.preference.SwitchPreferenceX
             app:iconSpaceReserved="false"
             android:defaultValue="true"
             android:key="should_color_navigation_bar"
@@ -68,73 +68,73 @@
             android:summary="@string/pref_summary_colored_navigation_bar"
             android:title="@string/pref_title_navigation_bar" />
 
-        <player.phonograph.preferences.basic.SwitchPreferenceX
+        <lib.phonograph.preference.SwitchPreferenceX
             app:iconSpaceReserved="false"
             android:defaultValue="true"
             android:key="should_color_app_shortcuts"
             android:summary="@string/pref_summary_colored_app_shortcuts"
             android:title="@string/pref_title_app_shortcuts" />
 
-    </player.phonograph.preferences.basic.PreferenceCategoryX>
+    </lib.phonograph.preference.PreferenceCategoryX>
 
-    <player.phonograph.preferences.basic.PreferenceCategoryX android:title="@string/pref_header_notification">
+    <lib.phonograph.preference.PreferenceCategoryX android:title="@string/pref_header_notification">
 
-        <player.phonograph.preferences.basic.SwitchPreferenceX
+        <lib.phonograph.preference.SwitchPreferenceX
             app:iconSpaceReserved="false"
             android:defaultValue="false"
             android:key="classic_notification"
             android:summary="@string/pref_summary_classic_notification"
             android:title="@string/pref_title_classic_notification" />
 
-        <player.phonograph.preferences.basic.SwitchPreferenceX
+        <lib.phonograph.preference.SwitchPreferenceX
             app:iconSpaceReserved="false"
             android:defaultValue="true"
             android:key="colored_notification"
             android:summary="@string/pref_summary_colored_notification"
             android:title="@string/pref_title_colored_notification" />
 
-    </player.phonograph.preferences.basic.PreferenceCategoryX>
+    </lib.phonograph.preference.PreferenceCategoryX>
 
-    <player.phonograph.preferences.basic.PreferenceCategoryX android:title="@string/pref_header_now_playing_screen">
+    <lib.phonograph.preference.PreferenceCategoryX android:title="@string/pref_header_now_playing_screen">
 
         <player.phonograph.preferences.NowPlayingScreenPreferenceX
             app:iconSpaceReserved="false"
             android:key="now_playing_screen_id"
             android:title="@string/pref_title_now_playing_screen_appearance" />
 
-        <player.phonograph.preferences.basic.SwitchPreferenceX
+        <lib.phonograph.preference.SwitchPreferenceX
             app:iconSpaceReserved="false"
             android:defaultValue="true"
             android:key="display_lyrics_time_axis"
             android:summary="@string/pref_summary_display_lyrics_time_axis"
             android:title="@string/pref_title_display_lyrics_time_axis" />
 
-        <player.phonograph.preferences.basic.SwitchPreferenceX
+        <lib.phonograph.preference.SwitchPreferenceX
             app:iconSpaceReserved="false"
             android:defaultValue="true"
             android:key="synchronized_lyrics_show"
             android:summary="@string/pref_summary_synchronized_lyrics_show"
             android:title="@string/pref_title_synchronized_lyrics_show" />
 
-        <player.phonograph.preferences.basic.SwitchPreferenceX
+        <lib.phonograph.preference.SwitchPreferenceX
             app:iconSpaceReserved="false"
             android:defaultValue="true"
             android:key="synchronized_lyrics_send"
             android:title="@string/pref_title_send_lyrics"
             android:summary="@string/pref_summary_send_lyrics"/>
 
-    </player.phonograph.preferences.basic.PreferenceCategoryX>
+    </lib.phonograph.preference.PreferenceCategoryX>
 
-    <player.phonograph.preferences.basic.PreferenceCategoryX android:title="@string/pref_header_images">
+    <lib.phonograph.preference.PreferenceCategoryX android:title="@string/pref_header_images">
 
-        <player.phonograph.preferences.basic.SwitchPreferenceX
+        <lib.phonograph.preference.SwitchPreferenceX
             app:iconSpaceReserved="false"
             android:defaultValue="false"
             android:key="ignore_media_store_artwork"
             android:summary="@string/pref_summary_ignore_media_store_artwork"
             android:title="@string/pref_title_ignore_media_store_artwork" />
 
-        <player.phonograph.preferences.basic.ListPreferenceX
+        <lib.phonograph.preference.ListPreferenceX
             app:iconSpaceReserved="false"
             android:defaultValue="never"
             android:entries="@array/pref_auto_download_images_titles"
@@ -144,18 +144,18 @@
             android:positiveButtonText="@null"
             android:title="@string/pref_title_auto_download_metadata" />
 
-    </player.phonograph.preferences.basic.PreferenceCategoryX>
+    </lib.phonograph.preference.PreferenceCategoryX>
 
-    <player.phonograph.preferences.basic.PreferenceCategoryX android:title="@string/pref_header_lockscreen">
+    <lib.phonograph.preference.PreferenceCategoryX android:title="@string/pref_header_lockscreen">
 
-        <player.phonograph.preferences.basic.SwitchPreferenceX
+        <lib.phonograph.preference.SwitchPreferenceX
             app:iconSpaceReserved="false"
             android:defaultValue="true"
             android:key="album_art_on_lockscreen"
             android:summary="@string/pref_summary_album_art_on_lockscreen"
             android:title="@string/pref_title_album_art_on_lockscreen" />
 
-        <player.phonograph.preferences.basic.SwitchPreferenceX
+        <lib.phonograph.preference.SwitchPreferenceX
             app:iconSpaceReserved="false"
             android:defaultValue="false"
             android:dependency="album_art_on_lockscreen"
@@ -163,41 +163,41 @@
             android:summary="@string/pref_summary_blurred_album_art"
             android:title="@string/pref_title_blurred_album_art" />
 
-    </player.phonograph.preferences.basic.PreferenceCategoryX>
+    </lib.phonograph.preference.PreferenceCategoryX>
 
-    <player.phonograph.preferences.basic.PreferenceCategoryX android:title="@string/pref_header_audio">
+    <lib.phonograph.preference.PreferenceCategoryX android:title="@string/pref_header_audio">
 
-        <player.phonograph.preferences.basic.SwitchPreferenceX
+        <lib.phonograph.preference.SwitchPreferenceX
             app:iconSpaceReserved="false"
             android:defaultValue="true"
             android:key="audio_ducking"
             android:summary="@string/pref_summary_audio_ducking"
             android:title="@string/pref_title_audio_ducking" />
 
-        <player.phonograph.preferences.basic.SwitchPreferenceX
+        <lib.phonograph.preference.SwitchPreferenceX
             app:iconSpaceReserved="false"
             android:defaultValue="false"
             android:key="gapless_playback"
             android:summary="@string/pref_summary_gapless_playback"
             android:title="@string/pref_title_gapless_playback" />
 
-        <player.phonograph.preferences.basic.SwitchPreferenceX
+        <lib.phonograph.preference.SwitchPreferenceX
             app:iconSpaceReserved="false"
             android:defaultValue="true"
             android:key="remember_shuffle"
             android:summary="@string/pref_summary_remember_shuffle"
             android:title="@string/pref_title_remember_shuffle" />
 
-        <player.phonograph.preferences.basic.PreferenceX
+        <lib.phonograph.preference.PreferenceX
             app:iconSpaceReserved="false"
             android:key="equalizer"
             android:title="@string/equalizer" />
 
-    </player.phonograph.preferences.basic.PreferenceCategoryX>
+    </lib.phonograph.preference.PreferenceCategoryX>
 
-    <player.phonograph.preferences.basic.PreferenceCategoryX android:title="@string/pref_header_playlists">
+    <lib.phonograph.preference.PreferenceCategoryX android:title="@string/pref_header_playlists">
 
-        <player.phonograph.preferences.basic.ListPreferenceX
+        <lib.phonograph.preference.ListPreferenceX
             app:iconSpaceReserved="false"
             android:defaultValue="past_seven_days"
             android:entries="@array/pref_playlists_last_added_interval_titles"
@@ -207,9 +207,9 @@
             android:positiveButtonText="@null"
             android:title="@string/pref_title_last_added_interval" />
 
-    </player.phonograph.preferences.basic.PreferenceCategoryX>
+    </lib.phonograph.preference.PreferenceCategoryX>
 
-    <player.phonograph.preferences.basic.PreferenceCategoryX android:title="@string/blacklist">
+    <lib.phonograph.preference.PreferenceCategoryX android:title="@string/blacklist">
 
         <player.phonograph.preferences.BlacklistPreferenceX
             app:iconSpaceReserved="false"
@@ -217,15 +217,15 @@
             android:summary="@string/pref_summary_blacklist"
             android:title="@string/blacklist" />
 
-    </player.phonograph.preferences.basic.PreferenceCategoryX>
+    </lib.phonograph.preference.PreferenceCategoryX>
 
-    <player.phonograph.preferences.basic.PreferenceCategoryX android:title="@string/check_upgrade">
-        <player.phonograph.preferences.basic.SwitchPreferenceX
+    <lib.phonograph.preference.PreferenceCategoryX android:title="@string/check_upgrade">
+        <lib.phonograph.preference.SwitchPreferenceX
             app:iconSpaceReserved="false"
             android:defaultValue="true"
             android:key="check_upgrade_at_startup"
             android:summary="@string/auto_check_upgrade_summary"
             android:title="@string/auto_check_upgrade" />
-    </player.phonograph.preferences.basic.PreferenceCategoryX>
+    </lib.phonograph.preference.PreferenceCategoryX>
 
 </PreferenceScreen>

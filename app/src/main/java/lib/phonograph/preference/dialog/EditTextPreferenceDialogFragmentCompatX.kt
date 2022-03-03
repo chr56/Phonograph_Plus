@@ -1,11 +1,11 @@
-package player.phonograph.preferences.basic.dialog
+package lib.phonograph.preference.dialog
 
 import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.preference.EditTextPreference
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.input.input
-import player.phonograph.preferences.basic.EditTextPreferenceX
+import lib.phonograph.preference.EditTextPreferenceX
 /**
  * @author Karim Abou Zeid (kabouzeid)
  */

@@ -1,4 +1,8 @@
-package player.phonograph.preferences.basic;
+/*
+ * Copyright (c) 2022 chr_56 & Abou Zeid (kabouzeid) (original author)
+ */
+
+package lib.phonograph.preference;
 
 import android.content.Context;
 import android.util.AttributeSet;

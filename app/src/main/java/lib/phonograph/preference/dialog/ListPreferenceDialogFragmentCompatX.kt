@@ -1,4 +1,4 @@
-package player.phonograph.preferences.basic.dialog
+package lib.phonograph.preference.dialog
 
 import android.annotation.SuppressLint
 import android.os.Bundle
@@ -6,7 +6,7 @@ import androidx.preference.ListPreference
 import util.mdcolor.pref.ThemeColor
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.list.listItemsSingleChoice
-import player.phonograph.preferences.basic.ListPreferenceX
+import lib.phonograph.preference.ListPreferenceX
 
 /**
  * @author Karim Abou Zeid (kabouzeid)

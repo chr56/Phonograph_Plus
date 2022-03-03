@@ -73,6 +73,7 @@
 }
 
 -keep class lib.phonograph.view.** {*;}
+-keep class lib.phonograph.preference.** {*;}
 
 -keep class player.phonograph.preferences.** {*;}
 -keep class player.phonograph.views.** {*;}

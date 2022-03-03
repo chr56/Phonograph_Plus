@@ -1,4 +1,4 @@
-package player.phonograph.preferences.basic.dialog
+package lib.phonograph.preference.dialog
 
 import android.app.Dialog
 import android.content.DialogInterface
