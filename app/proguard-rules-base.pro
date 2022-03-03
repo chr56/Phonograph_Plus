@@ -217,3 +217,17 @@
 -keep class StatusBarLyric.API.StatusBarLyric {*;}
 
 
+# Kotlin
+-dontwarn kotlin.**
+-keep class kotlin.Metadata { *; }
+-keepclassmembers class **$WhenMappings {
+    <fields>;
+}
+-keepclassmembers class kotlin.Metadata {
+    public <methods>;
+}
+-assumenosideeffects class kotlin.jvm.internal.Intrinsics {
+    static void checkParameterIsNotNull(java.lang.Object, java.lang.String);
+}
+# kotlin coroutines
+-keep class kotlinx.coroutines.android.AndroidDispatcherFactory {*;}
