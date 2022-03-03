@@ -13,9 +13,6 @@ import android.util.Log
 import android.widget.Toast
 import androidx.annotation.StyleRes
 import androidx.preference.PreferenceManager
-import com.google.gson.Gson
-import com.google.gson.JsonSyntaxException
-import com.google.gson.reflect.TypeToken
 import org.json.JSONException
 import org.json.JSONObject
 import player.phonograph.App
@@ -23,14 +20,12 @@ import player.phonograph.R
 import player.phonograph.adapter.PageConfig
 import player.phonograph.adapter.PageConfigUtil
 import player.phonograph.helper.SortOrder
-import player.phonograph.model.CategoryInfo
 import player.phonograph.ui.fragments.mainactivity.folders.FoldersFragment
 import player.phonograph.ui.fragments.player.NowPlayingScreen
 import player.phonograph.util.CalendarUtil
 import player.phonograph.util.FileUtil
 import util.mdcolor.pref.ThemeColor
 import java.io.File
-import java.util.ArrayList
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 
@@ -97,38 +92,6 @@ class Setting(context: Context) {
             val editor = mPreferences.edit()
             editor.putString(HOME_TAB_CONFIG, json.toString(0))
             editor.apply()
-        }
-
-    var libraryCategoryInfos: List<CategoryInfo>?
-        get() {
-            val data = mPreferences.getString(LIBRARY_CATEGORIES, null)
-            if (data != null) {
-                val gson = Gson()
-                val collectionType = object : TypeToken<List<CategoryInfo?>?>() {}.type
-                try {
-                    return gson.fromJson<List<CategoryInfo>>(data, collectionType)
-                } catch (e: JsonSyntaxException) {
-                    e.printStackTrace()
-                }
-            }
-            return defaultLibraryCategoryInfos
-        }
-        set(categories) {
-            val gson = Gson()
-            val collectionType = object : TypeToken<List<CategoryInfo?>?>() {}.type
-            val editor = mPreferences.edit()
-            editor.putString(LIBRARY_CATEGORIES, gson.toJson(categories, collectionType))
-            editor.apply()
-        }
-    val defaultLibraryCategoryInfos: List<CategoryInfo>
-        get() {
-            val defaultCategoryInfos: MutableList<CategoryInfo> = ArrayList(5)
-            defaultCategoryInfos.add(CategoryInfo(CategoryInfo.Category.SONGS, true))
-            defaultCategoryInfos.add(CategoryInfo(CategoryInfo.Category.ALBUMS, true))
-            defaultCategoryInfos.add(CategoryInfo(CategoryInfo.Category.ARTISTS, true))
-            defaultCategoryInfos.add(CategoryInfo(CategoryInfo.Category.GENRES, true))
-            defaultCategoryInfos.add(CategoryInfo(CategoryInfo.Category.PLAYLISTS, true))
-            return defaultCategoryInfos
         }
 
     var coloredNotification: Boolean by BooleanPref(COLORED_NOTIFICATION, true)
@@ -258,7 +221,6 @@ class Setting(context: Context) {
         const val GENERAL_THEME = "general_theme"
 
         // Appearance
-        const val LIBRARY_CATEGORIES = "library_categories"
         const val HOME_TAB_CONFIG = "home_tab_config"
         const val COLORED_NOTIFICATION = "colored_notification"
         const val CLASSIC_NOTIFICATION = "classic_notification"
@@ -332,6 +294,9 @@ class Setting(context: Context) {
 
         // unused & deprecated
         const val FORCE_SQUARE_ALBUM_COVER = "force_square_album_art"
+
+        @Deprecated("removed since version code 101")
+        const val LIBRARY_CATEGORIES = "library_categories"
 
         //
         // Singleton
