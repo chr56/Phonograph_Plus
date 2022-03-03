@@ -74,15 +74,16 @@ android {
         }
         preview {
             minifyEnabled true
+            shrinkResources true
             proguardFiles 'proguard-rules-base.pro','proguard-rules-app.pro'
 
             if (signing_file_exist) signingConfig signingConfigs.release
 
             resValue "string", "app_name", "Phonograph Plus Preview"
             applicationIdSuffix '.plus.preview'
-            versionNameSuffix "(Preview)"
+//            versionNameSuffix "(Preview)"
             matchingFallbacks = ['release']
-            debuggable true
+//            debuggable true
         }
         proguard {
             minifyEnabled true
