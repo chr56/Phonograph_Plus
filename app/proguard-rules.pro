@@ -72,6 +72,8 @@
     @com.google.gson.annotations.SerializedName *;
 }
 
+-keep class lib.phonograph.view.** {*;}
+
 -keep class player.phonograph.preferences.** {*;}
 -keep class player.phonograph.views.** {*;}
 -keep class player.phonograph.model.** {*;}

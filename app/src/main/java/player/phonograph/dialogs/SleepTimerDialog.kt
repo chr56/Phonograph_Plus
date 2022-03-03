@@ -24,7 +24,7 @@ import player.phonograph.helper.MusicPlayerRemote
 import player.phonograph.service.MusicService
 import player.phonograph.util.MusicUtil
 import player.phonograph.settings.PreferenceUtil
-import player.phonograph.views.basic.CheckBoxX
+import lib.phonograph.view.CheckBoxX
 import com.triggertrap.seekarc.SeekArc
 
 /**

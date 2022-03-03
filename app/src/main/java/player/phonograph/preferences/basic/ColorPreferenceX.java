@@ -8,7 +8,7 @@ import androidx.preference.Preference;
 import androidx.preference.PreferenceViewHolder;
 
 import player.phonograph.R;
-import player.phonograph.views.basic.BorderCircleView;
+import lib.phonograph.view.BorderCircleView;
 
 /**
  * @author Aidan Follestad (afollestad)

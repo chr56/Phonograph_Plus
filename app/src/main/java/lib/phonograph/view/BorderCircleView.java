@@ -1,4 +1,8 @@
-package player.phonograph.views.basic;
+/*
+ * Copyright (c) 2022 chr_56 & Abou Zeid (kabouzeid) (original author)
+ */
+
+package lib.phonograph.view;
 
 import android.content.Context;
 import android.graphics.Canvas;
