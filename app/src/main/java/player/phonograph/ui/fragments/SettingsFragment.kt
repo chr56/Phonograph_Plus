@@ -55,7 +55,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
     }
     // todo
     @SuppressLint("RestrictedApi")
-    override fun onDisplayPreferenceDialog(preference: Preference?) {
+    override fun onDisplayPreferenceDialog(preference: Preference) {
         if (this.callbackFragment is OnPreferenceDisplayDialogCallback) {
             (this.callbackFragment as OnPreferenceDisplayDialogCallback)
                 .onPreferenceDisplayDialog(this, preference)
@@ -67,7 +67,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
             return
         }
         if (this.parentFragmentManager.findFragmentByTag("androidx.preference.PreferenceFragmentCompat.DIALOG") == null) {
-            val dialogFragment = onCreatePreferenceDialog(preference!!)
+            val dialogFragment = onCreatePreferenceDialog(preference)
             if (dialogFragment != null) {
                 dialogFragment.setTargetFragment(this, 0)
                 dialogFragment.show(

@@ -24,7 +24,7 @@ class ColorChooserListener(context: Context, defautColor: Int, mode: Int) : Pref
         this.mode = mode
     }
 
-    override fun onPreferenceClick(preference: Preference?): Boolean {
+    override fun onPreferenceClick(preference: Preference): Boolean {
         val dialog = MaterialDialog(context)
             .title(R.string.pref_header_colors)
             .colorChooser(colors = colors, subColors = subColors, allowCustomArgb = true, initialSelection = defaultColor) { _, color ->
