@@ -6,14 +6,14 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.Icon;
 import android.graphics.drawable.LayerDrawable;
 import android.os.Build;
-import androidx.annotation.RequiresApi;
-import androidx.core.graphics.drawable.IconCompat;
 import android.util.TypedValue;
 
-import player.phonograph.R;
-import player.phonograph.util.ImageUtil;
-import player.phonograph.settings.PreferenceUtil;
+import androidx.annotation.RequiresApi;
+import androidx.core.graphics.drawable.IconCompat;
 
+import player.phonograph.R;
+import player.phonograph.settings.Setting;
+import player.phonograph.util.ImageUtil;
 import util.mdcolor.pref.ThemeColor;
 
 /**
@@ -23,7 +23,7 @@ import util.mdcolor.pref.ThemeColor;
 public final class AppShortcutIconGenerator {
 
     public static Icon generateThemedIcon(Context context, int iconId) {
-        if (PreferenceUtil.getInstance(context).coloredAppShortcuts()) {
+        if (Setting.instance().getColoredAppShortcuts()) {
             return generateUserThemedIcon(context, iconId).toIcon();
         } else {
             return generateDefaultThemedIcon(context, iconId).toIcon();

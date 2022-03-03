@@ -16,7 +16,7 @@ import androidx.annotation.Keep;
 
 import java.io.ByteArrayOutputStream;
 
-import player.phonograph.settings.PreferenceUtil;
+import player.phonograph.settings.Setting;
 
 @Keep
 public class StatusBarLyric {
@@ -95,7 +95,7 @@ public class StatusBarLyric {
     @Keep
     protected void sendLyric(Context context, String lyric, String icon, String serviceName, boolean useSystemMusicActive) {
 
-        if (!hasEnable() && PreferenceUtil.getInstance(context).broadcastSynchronizedLyrics()) {
+        if (!hasEnable() && Setting.instance().getBroadcastSynchronizedLyrics()) {
             Log.d("statusbar_lyric", "use fallback: " + lyric);
             if (!lyric.isEmpty()) {
                 context.sendBroadcast(

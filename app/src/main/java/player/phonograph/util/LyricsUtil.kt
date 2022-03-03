@@ -18,7 +18,7 @@ import player.phonograph.model.Song
 import player.phonograph.model.lyrics.AbsLyrics
 import player.phonograph.model.lyrics.LyricsParsed
 import player.phonograph.model.lyrics.LyricsParsedSynchronized
-import player.phonograph.settings.PreferenceUtil
+import player.phonograph.settings.Setting
 import java.io.File
 import java.util.regex.Pattern
 
@@ -249,7 +249,7 @@ object LyricsUtil {
                 if (line != cache) {
                     // sending only when playing
                     if (MusicPlayerRemote.isPlaying()) {
-                        if (!PreferenceUtil.getInstance(context).broadcastSynchronizedLyrics()) return // do nothing
+                        if (!Setting.instance.broadcastSynchronizedLyrics) return // do nothing
                         App.instance.lyricsService.updateLyric(line)
                     }
                     // update cache

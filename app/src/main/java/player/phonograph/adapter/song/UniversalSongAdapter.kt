@@ -34,7 +34,7 @@ import player.phonograph.model.Album
 import player.phonograph.model.Playlist
 import player.phonograph.model.Song
 import player.phonograph.model.smartplaylist.AbsSmartPlaylist
-import player.phonograph.settings.PreferenceUtil
+import player.phonograph.settings.Setting
 import player.phonograph.util.*
 
 @Suppress("unused")
@@ -240,7 +240,7 @@ open class UniversalSongAdapter :
         MusicUtil.getSectionName(
             if (hasHeader && position == 0) ""
             else
-                when (PreferenceUtil.getInstance(activity).songSortOrder) {
+                when (Setting.instance.songSortOrder) {
                     SortOrder.SongSortOrder.SONG_A_Z, SortOrder.SongSortOrder.SONG_Z_A ->
                         songs[position].title
                     SortOrder.SongSortOrder.SONG_ALBUM ->

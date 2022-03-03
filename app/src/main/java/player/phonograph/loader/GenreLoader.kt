@@ -7,7 +7,7 @@ import android.os.Build
 import android.provider.MediaStore
 import player.phonograph.model.Genre
 import player.phonograph.model.Song
-import player.phonograph.settings.PreferenceUtil.Companion.getInstance
+import player.phonograph.settings.Setting
 import java.lang.Exception
 import java.util.ArrayList
 
@@ -66,7 +66,7 @@ object GenreLoader {
                 SongLoader.BASE_PROJECTION,
                 SongLoader.BASE_SELECTION,
                 null,
-                getInstance(context).songSortOrder
+                Setting.instance.songSortOrder
             )
         } catch (e: SecurityException) {
             null
@@ -80,7 +80,7 @@ object GenreLoader {
         return try {
             context.contentResolver.query(
                 MediaStore.Audio.Genres.EXTERNAL_CONTENT_URI,
-                projection, null, null, getInstance(context).genreSortOrder
+                projection, null, null, Setting.instance.genreSortOrder
             )
         } catch (e: SecurityException) {
             null

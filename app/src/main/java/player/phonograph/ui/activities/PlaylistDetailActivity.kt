@@ -18,8 +18,6 @@ import androidx.appcompat.widget.Toolbar
 import androidx.loader.app.LoaderManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import util.mdcolor.pref.ThemeColor
-import util.mddesign.core.Themer
 import com.afollestad.materialcab.*
 import com.afollestad.materialcab.attached.AttachedCab
 import com.afollestad.materialcab.attached.destroy
@@ -42,9 +40,11 @@ import player.phonograph.misc.WrappedAsyncTaskLoader
 import player.phonograph.model.AbsCustomPlaylist
 import player.phonograph.model.Playlist
 import player.phonograph.model.Song
-import player.phonograph.settings.PreferenceUtil
+import player.phonograph.settings.Setting
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
 import player.phonograph.util.*
+import util.mdcolor.pref.ThemeColor
+import util.mddesign.core.Themer
 
 class PlaylistDetailActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity {
     private lateinit var binding: ActivityPlaylistDetailBinding // init in OnCreate()
@@ -324,7 +324,7 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandle
 
             // create new
             cab = createCab(R.id.cab_stub) {
-                popupTheme(PreferenceUtil.getInstance(this@PlaylistDetailActivity).generalTheme)
+                popupTheme(Setting.instance.generalTheme)
                 menu(menuRes)
                 closeDrawable(R.drawable.ic_close_white_24dp)
                 backgroundColor(literal = PhonographColorUtil.shiftBackgroundColorForLightText(ThemeColor.primaryColor(activity)))

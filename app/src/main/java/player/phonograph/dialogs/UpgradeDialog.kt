@@ -14,10 +14,9 @@ import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.list.listItemsSingleChoice
-import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.Updater
-import player.phonograph.settings.PreferenceUtil
+import player.phonograph.settings.Setting
 
 class UpgradeDialog : DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -76,7 +75,7 @@ class UpgradeDialog : DialogFragment() {
             }
             .neutralButton(R.string.ignore_once) { _ ->
                 dismiss()
-                PreferenceUtil(App.instance).ignoreUpgradeVersionCode = versionCode
+                Setting.instance.ignoreUpgradeVersionCode = versionCode
                 Toast.makeText(activity, R.string.upgrade_ignored, Toast.LENGTH_SHORT).show()
             }
         return dialog

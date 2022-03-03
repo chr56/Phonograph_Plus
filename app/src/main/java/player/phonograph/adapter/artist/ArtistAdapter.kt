@@ -23,7 +23,7 @@ import player.phonograph.model.Artist
 import player.phonograph.model.Song
 import player.phonograph.util.MusicUtil
 import player.phonograph.util.NavigationUtil
-import player.phonograph.settings.PreferenceUtil
+import player.phonograph.settings.Setting
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView.SectionedAdapter
 
 /**
@@ -162,7 +162,7 @@ class ArtistAdapter(
 
     override fun getSectionName(position: Int): String {
         var sectionName: String? = null
-        when (PreferenceUtil.getInstance(activity).artistSortOrder) {
+        when (Setting.instance.artistSortOrder) {
             SortOrder.ArtistSortOrder.ARTIST_A_Z, SortOrder.ArtistSortOrder.ARTIST_Z_A ->
                 sectionName = dataSet[position].name
         }

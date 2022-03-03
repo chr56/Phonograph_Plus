@@ -2,7 +2,6 @@
  * Copyright (c) 2022 chr_56 & Abou Zeid (kabouzeid) (original author)
  */
 
-
 package player.phonograph.settings
 
 import android.annotation.SuppressLint
@@ -261,18 +260,18 @@ class Setting(context: Context) {
         // Appearance
         const val LIBRARY_CATEGORIES = "library_categories"
         const val HOME_TAB_CONFIG = "home_tab_config"
-        private const val COLORED_NOTIFICATION = "colored_notification"
-        private const val CLASSIC_NOTIFICATION = "classic_notification"
+        const val COLORED_NOTIFICATION = "colored_notification"
+        const val CLASSIC_NOTIFICATION = "classic_notification"
         private const val COLORED_APP_SHORTCUTS = "colored_app_shortcuts"
-        private const val ALBUM_ART_ON_LOCKSCREEN = "album_art_on_lockscreen"
-        private const val BLURRED_ALBUM_ART = "blurred_album_art"
-        private const val FIXED_TAB_LAYOUT = "fixed_tab_layout"
+        const val ALBUM_ART_ON_LOCKSCREEN = "album_art_on_lockscreen"
+        const val BLURRED_ALBUM_ART = "blurred_album_art"
+        const val FIXED_TAB_LAYOUT = "fixed_tab_layout"
 
         // Behavior-Retention
         private const val REMEMBER_LAST_TAB = "remember_last_tab"
         private const val LAST_PAGE = "last_start_page"
         private const val LAST_MUSIC_CHOOSER = "last_music_chooser"
-        private const val NOW_PLAYING_SCREEN_ID = "now_playing_screen_id"
+        const val NOW_PLAYING_SCREEN_ID = "now_playing_screen_id"
 
         // Behavior-File
         private const val IGNORE_MEDIA_STORE_ARTWORK = "ignore_media_store_artwork"
@@ -281,12 +280,12 @@ class Setting(context: Context) {
         // Behavior-Playing
         private const val REMEMBER_SHUFFLE = "remember_shuffle"
         private const val AUDIO_DUCKING = "audio_ducking"
-        private const val GAPLESS_PLAYBACK = "gapless_playback"
+        const val GAPLESS_PLAYBACK = "gapless_playback"
 
         // Behavior-Lyrics
         private const val SYNCHRONIZED_LYRICS_SHOW = "synchronized_lyrics_show"
         private const val DISPLAY_LYRICS_TIME_AXIS = "display_lyrics_time_axis"
-        private const val BROADCAST_SYNCHRONIZED_LYRICS = "synchronized_lyrics_send"
+        const val BROADCAST_SYNCHRONIZED_LYRICS = "synchronized_lyrics_send"
 
         // List-Cutoff
         private const val LAST_ADDED_CUTOFF = "last_added_interval"
@@ -332,7 +331,7 @@ class Setting(context: Context) {
         private const val INTRO_SHOWN = "intro_shown"
 
         // unused & deprecated
-        private const val FORCE_SQUARE_ALBUM_COVER = "force_square_album_art"
+        const val FORCE_SQUARE_ALBUM_COVER = "force_square_album_art"
 
         //
         // Singleton
@@ -343,6 +342,9 @@ class Setting(context: Context) {
                 if (singleton == null) singleton = Setting(App.instance)
                 return singleton!!
             }
+
+        @JvmStatic
+        fun instance(): Setting = instance
 
         /*
         @JvmStatic

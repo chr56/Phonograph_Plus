@@ -18,7 +18,6 @@ import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import lib.phonograph.cab.*
-import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.adapter.HomePagerAdapter
 import player.phonograph.adapter.PAGERS
@@ -26,7 +25,7 @@ import player.phonograph.adapter.PageConfig
 import player.phonograph.databinding.FragmentHomeBinding
 import player.phonograph.databinding.PopupWindowMainBinding
 import player.phonograph.interfaces.MultiSelectionCabProvider
-import player.phonograph.settings.PreferenceUtil
+import player.phonograph.settings.Setting
 import player.phonograph.ui.activities.MainActivity
 import player.phonograph.ui.activities.SearchActivity
 import player.phonograph.ui.fragments.mainactivity.AbsMainActivityFragment
@@ -57,7 +56,7 @@ class HomeFragment : AbsMainActivityFragment(), MainActivity.MainActivityFragmen
         multiSelectionCab?.destroy()
         multiSelectionCab = null
 
-        PreferenceUtil.getInstance(requireActivity()).unregisterOnSharedPreferenceChangedListener(this)
+        Setting.instance.unregisterOnSharedPreferenceChangedListener(this)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -71,7 +70,7 @@ class HomeFragment : AbsMainActivityFragment(), MainActivity.MainActivityFragmen
         setupToolbar()
         setUpViewPager()
 
-        PreferenceUtil.getInstance(requireActivity()).registerOnSharedPreferenceChangedListener(this)
+        Setting.instance.registerOnSharedPreferenceChangedListener(this)
     }
     private fun setupToolbar() {
         val primaryColor = ThemeColor.primaryColor(requireActivity())
@@ -100,12 +99,12 @@ class HomeFragment : AbsMainActivityFragment(), MainActivity.MainActivityFragmen
         binding.toolbar.title = requireActivity().getString(R.string.app_name)
         mainActivity.setSupportActionBar(binding.toolbar)
 
-        binding.tabs.tabMode = if (PreferenceUtil.getInstance(requireContext()).fixedTabLayout()) TabLayout.MODE_FIXED else TabLayout.MODE_SCROLLABLE
+        binding.tabs.tabMode = if (Setting.instance.fixedTabLayout) TabLayout.MODE_FIXED else TabLayout.MODE_SCROLLABLE
         binding.tabs.setTabTextColors(secondaryTextColor, primaryTextColor)
         binding.tabs.setSelectedTabIndicatorColor(accentColor)
     }
 
-    private fun readConfig(): PageConfig = PreferenceUtil.getInstance(mainActivity).homeTabConfig
+    private fun readConfig(): PageConfig = Setting.instance.homeTabConfig
 
     private val cfg: PageConfig get() = readConfig()
 
@@ -121,15 +120,15 @@ class HomeFragment : AbsMainActivityFragment(), MainActivity.MainActivityFragmen
         }.attach()
         binding.pager.offscreenPageLimit = if (pagerAdapter.itemCount> 1) pagerAdapter.itemCount - 1 else 1
         updateTabVisibility()
-        if (PreferenceUtil.getInstance(requireContext()).rememberLastTab()) {
-            binding.pager.currentItem = PreferenceUtil.getInstance(requireContext()).lastPage
+        if (Setting.instance.rememberLastTab) {
+            binding.pager.currentItem = Setting.instance.lastPage
         }
         binding.pager.registerOnPageChangeCallback(pageChangeListener)
     }
 
     private val pageChangeListener = object : ViewPager2.OnPageChangeCallback() {
         override fun onPageSelected(position: Int) {
-            PreferenceUtil.getInstance(App.instance).lastPage = position
+            Setting.instance.lastPage = position
             super.onPageSelected(position)
         }
     }
@@ -251,7 +250,7 @@ class HomeFragment : AbsMainActivityFragment(), MainActivity.MainActivityFragmen
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
         when (key) {
-            PreferenceUtil.HOME_TAB_CONFIG -> {
+            Setting.HOME_TAB_CONFIG -> {
                 var oldPosition = binding.pager.currentItem
                 if (oldPosition < 0) oldPosition = 0
 
@@ -270,9 +269,9 @@ class HomeFragment : AbsMainActivityFragment(), MainActivity.MainActivityFragmen
                 setUpViewPager()
                 binding.pager.currentItem = newPosition
             }
-            PreferenceUtil.FIXED_TAB_LAYOUT -> {
+            Setting.FIXED_TAB_LAYOUT -> {
                 binding.tabs.tabMode =
-                    if (PreferenceUtil.getInstance(requireContext()).fixedTabLayout())
+                    if (Setting.instance.fixedTabLayout)
                         TabLayout.MODE_FIXED
                     else
                         TabLayout.MODE_SCROLLABLE

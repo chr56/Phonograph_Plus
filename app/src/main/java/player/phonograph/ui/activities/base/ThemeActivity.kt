@@ -13,13 +13,13 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.app.WindowDecorActionBar
 import androidx.appcompat.widget.Toolbar
 import androidx.appcompat.widget.ToolbarWidgetWrapper
+import player.phonograph.R
+import player.phonograph.settings.Setting
+import player.phonograph.util.Util
 import util.mdcolor.pref.ThemeColor
 import util.mddesign.core.Themer
 import util.mddesign.util.ColorUtil
 import util.mddesign.util.MenuTinter
-import player.phonograph.R
-import player.phonograph.settings.PreferenceUtil
-import player.phonograph.util.Util
 
 // todo remove Platform check
 
@@ -34,7 +34,7 @@ abstract class ThemeActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         createTime = System.currentTimeMillis()
-        setTheme(PreferenceUtil.getInstance(this).generalTheme)
+        setTheme(Setting.instance.generalTheme)
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
     }
 
@@ -62,7 +62,7 @@ abstract class ThemeActivity : AppCompatActivity() {
 
     //
     // Toolbar & Actionbar
-    // 
+    //
     override fun setSupportActionBar(toolbar: Toolbar?) {
         this.toolbar = toolbar
         super.setSupportActionBar(toolbar)

@@ -22,7 +22,7 @@ import player.phonograph.misc.SimpleAnimatorListener
 import player.phonograph.model.lyrics.AbsLyrics
 import player.phonograph.model.lyrics.LyricsParsedSynchronized
 import player.phonograph.ui.fragments.AbsMusicServiceFragment
-import player.phonograph.settings.PreferenceUtil.Companion.getInstance
+import player.phonograph.settings.Setting
 import player.phonograph.util.ViewUtil
 
 /**
@@ -153,7 +153,7 @@ class PlayerAlbumCoverFragment :
             .start()
     }
 
-    private fun isLyricsLayoutVisible(): Boolean = lyrics != null && getInstance(requireActivity()).synchronizedLyricsShow()
+    private fun isLyricsLayoutVisible(): Boolean = lyrics != null && Setting.instance.synchronizedLyricsShow
 
     private fun hideLyricsLayout() {
         lyricsLayout.animate().alpha(0f).setDuration(VISIBILITY_ANIM_DURATION.toLong())

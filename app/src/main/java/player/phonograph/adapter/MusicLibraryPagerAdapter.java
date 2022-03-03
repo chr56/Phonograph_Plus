@@ -15,7 +15,7 @@ import player.phonograph.ui.fragments.mainactivity.library.pager.ArtistsFragment
 import player.phonograph.ui.fragments.mainactivity.library.pager.GenresFragment;
 import player.phonograph.ui.fragments.mainactivity.library.pager.PlaylistsFragment;
 import player.phonograph.ui.fragments.mainactivity.library.pager.SongsFragment;
-import player.phonograph.settings.PreferenceUtil;
+import player.phonograph.settings.Setting;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -35,7 +35,7 @@ public class MusicLibraryPagerAdapter extends FragmentPagerAdapter {
     public MusicLibraryPagerAdapter(@NonNull final Context context, final FragmentManager fragmentManager) {
         super(fragmentManager);
         mContext = context;
-        setCategoryInfos(PreferenceUtil.getInstance(context).getLibraryCategoryInfos());
+        setCategoryInfos(Setting.instance().getLibraryCategoryInfos());
     }
 
     public void setCategoryInfos(@NonNull List<CategoryInfo> categoryInfos) {

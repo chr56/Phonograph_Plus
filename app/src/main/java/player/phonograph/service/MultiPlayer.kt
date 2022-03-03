@@ -14,7 +14,7 @@ import android.widget.Toast
 import player.phonograph.R
 import player.phonograph.service.playback.Playback
 import player.phonograph.service.playback.Playback.PlaybackCallbacks
-import player.phonograph.settings.PreferenceUtil.Companion.getInstance
+import player.phonograph.settings.Setting
 
 /**
  * @author Andrew Neal, Karim Abou Zeid (kabouzeid)
@@ -122,7 +122,7 @@ class MultiPlayer(private val context: Context) : Playback, MediaPlayer.OnErrorL
             return
         }
 
-        if (getInstance(context).gaplessPlayback()) {
+        if (Setting.instance.gaplessPlayback) {
             mNextMediaPlayer = MediaPlayer()
             mNextMediaPlayer!!.setWakeMode(context, PowerManager.PARTIAL_WAKE_LOCK)
             mNextMediaPlayer!!.audioSessionId = audioSessionId

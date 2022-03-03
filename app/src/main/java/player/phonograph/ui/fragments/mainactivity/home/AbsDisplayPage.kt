@@ -18,7 +18,6 @@ import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.graphics.BlendModeColorFilterCompat
 import androidx.core.graphics.BlendModeCompat
 import androidx.recyclerview.widget.RecyclerView
-import util.mdcolor.pref.ThemeColor
 import com.google.android.material.appbar.AppBarLayout
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -26,10 +25,11 @@ import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.databinding.FragmentDisplayPageBinding
 import player.phonograph.databinding.PopupWindowMainBinding
+import player.phonograph.settings.Setting
 import player.phonograph.util.PhonographColorUtil
-import player.phonograph.settings.PreferenceUtil
 import player.phonograph.util.Util
 import player.phonograph.util.ViewUtil
+import util.mdcolor.pref.ThemeColor
 import java.lang.ref.WeakReference
 
 /**
@@ -310,7 +310,7 @@ class DisplayUtil(private val page: AbsDisplayPage<*, *, *>) {
 
     var sortOrder: String
         get() {
-            val pref = PreferenceUtil.getInstance(App.instance)
+            val pref = Setting.instance
             return when (page) {
                 is SongPage -> {
                     pref.songSortOrder
@@ -330,7 +330,7 @@ class DisplayUtil(private val page: AbsDisplayPage<*, *, *>) {
         set(value) {
             if (value.isBlank()) return
 
-            val pref = PreferenceUtil.getInstance(App.instance)
+            val pref = Setting.instance
             // todo valid input
             when (page) {
                 is SongPage -> {
@@ -350,7 +350,7 @@ class DisplayUtil(private val page: AbsDisplayPage<*, *, *>) {
 
     var gridSize: Int
         get() {
-            val pref = PreferenceUtil.getInstance(App.instance)
+            val pref = Setting.instance
 
             return when (page) {
                 is SongPage -> {
@@ -374,7 +374,7 @@ class DisplayUtil(private val page: AbsDisplayPage<*, *, *>) {
         }
         set(value) {
             if (value <= 0) return
-            val pref = PreferenceUtil.getInstance(App.instance)
+            val pref = Setting.instance
             // todo valid input
             when (page) {
                 is SongPage -> {
@@ -397,32 +397,32 @@ class DisplayUtil(private val page: AbsDisplayPage<*, *, *>) {
         }
     var colorFooter: Boolean
         get() {
-            val pref = PreferenceUtil.getInstance(App.instance)
+            val pref = Setting.instance
             return when (page) {
                 is SongPage -> {
-                    pref.songColoredFooters()
+                    pref.songColoredFooters
                 }
                 is AlbumPage -> {
-                    pref.albumColoredFooters()
+                    pref.albumColoredFooters
                 }
                 is ArtistPage -> {
-                    pref.artistColoredFooters()
+                    pref.artistColoredFooters
                 }
                 else -> false
             }
         }
         set(value) {
-            val pref = PreferenceUtil.getInstance(App.instance)
+            val pref = Setting.instance
             // todo valid input
             when (page) {
                 is SongPage -> {
-                    pref.setSongColoredFooters(value)
+                    pref.songColoredFooters = value
                 }
                 is AlbumPage -> {
-                    pref.setAlbumColoredFooters(value)
+                    pref.albumColoredFooters = value
                 }
                 is ArtistPage -> {
-                    pref.setArtistColoredFooters(value)
+                    pref.artistColoredFooters = value
                 }
                 is GenrePage -> {
                     // do noting

@@ -20,7 +20,7 @@ import com.afollestad.materialdialogs.MaterialDialog
 import player.phonograph.R
 import player.phonograph.model.Song
 import player.phonograph.provider.BlacklistStore
-import player.phonograph.settings.PreferenceUtil
+import player.phonograph.settings.Setting
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -99,7 +99,7 @@ object MediaStoreUtil {
         selectionValues: Array<String>?
     ): Cursor? {
         return querySongs(
-            context, selection, selectionValues, PreferenceUtil.getInstance(context).songSortOrder
+            context, selection, selectionValues, Setting.instance.songSortOrder
         )
     }
     /**

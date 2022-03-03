@@ -7,7 +7,7 @@ import androidx.palette.graphics.Palette
 import androidx.palette.graphics.Palette.Swatch
 import util.mddesign.util.ColorUtil
 import player.phonograph.R
-import player.phonograph.settings.PreferenceUtil
+import player.phonograph.settings.Setting
 import java.util.*
 
 /**
@@ -18,7 +18,7 @@ object PhonographColorUtil {
     @JvmStatic
     fun getCorrectBackgroundColor(context: Context): Int {
         return context.resources.getColor(
-            when (PreferenceUtil.getInstance(context).generalTheme) {
+            when (Setting.instance.generalTheme) {
                 R.style.Theme_Phonograph_Auto -> R.color.cardBackgroundColor
                 R.style.Theme_Phonograph_Light -> R.color.md_white_1000
                 R.style.Theme_Phonograph_Black -> R.color.md_black_1000

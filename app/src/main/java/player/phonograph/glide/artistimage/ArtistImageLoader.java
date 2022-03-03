@@ -12,7 +12,7 @@ import com.bumptech.glide.signature.ObjectKey;
 import java.io.InputStream;
 
 import player.phonograph.App;
-import player.phonograph.settings.PreferenceUtil;
+import player.phonograph.settings.Setting;
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
@@ -23,7 +23,7 @@ public class ArtistImageLoader implements ModelLoader<ArtistImage, InputStream> 
     @Nullable
     @Override
     public LoadData<InputStream> buildLoadData(@NonNull ArtistImage artistImage, int width, int height, @NonNull Options options) {
-        return new LoadData<>(new ObjectKey(artistImage), new ArtistImageFetcher(artistImage, PreferenceUtil.getInstance(App.getInstance()).ignoreMediaStoreArtwork()));
+        return new LoadData<>(new ObjectKey(artistImage), new ArtistImageFetcher(artistImage, Setting.instance().getIgnoreMediaStoreArtwork()));
     }
 
     @Override

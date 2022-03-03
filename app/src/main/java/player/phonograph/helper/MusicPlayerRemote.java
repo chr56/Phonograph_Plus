@@ -24,7 +24,7 @@ import player.phonograph.R;
 import player.phonograph.loader.SongLoader;
 import player.phonograph.model.Song;
 import player.phonograph.service.MusicService;
-import player.phonograph.settings.PreferenceUtil;
+import player.phonograph.settings.Setting;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -178,7 +178,7 @@ public class MusicPlayerRemote {
     public static void openQueue(final List<Song> queue, final int startPosition, final boolean startPlaying) {
         if (!tryToHandleOpenPlayingQueue(queue, startPosition, startPlaying) && musicService != null) {
             musicService.openQueue(queue, startPosition, startPlaying);
-            if (!PreferenceUtil.getInstance(musicService).rememberShuffle()){
+            if (!Setting.instance().getRememberShuffle()){
                 setShuffleMode(MusicService.SHUFFLE_MODE_NONE);
             }
         }

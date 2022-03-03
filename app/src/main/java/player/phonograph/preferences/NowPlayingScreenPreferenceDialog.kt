@@ -13,16 +13,16 @@ import androidx.fragment.app.DialogFragment
 import androidx.viewpager.widget.PagerAdapter
 import androidx.viewpager.widget.ViewPager
 import androidx.viewpager.widget.ViewPager.OnPageChangeListener
-import util.mdcolor.pref.ThemeColor
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.WhichButton
 import com.afollestad.materialdialogs.actions.getActionButton
 import com.afollestad.materialdialogs.customview.customView
 import com.heinrichreimersoftware.materialintro.view.InkPageIndicator
 import player.phonograph.R
+import player.phonograph.settings.Setting
 import player.phonograph.ui.fragments.player.NowPlayingScreen
-import player.phonograph.settings.PreferenceUtil
 import player.phonograph.util.ViewUtil
+import util.mdcolor.pref.ThemeColor
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
@@ -36,14 +36,14 @@ class NowPlayingScreenPreferenceDialog : DialogFragment(), OnPageChangeListener 
         viewPager.adapter = NowPlayingScreenAdapter(context)
         viewPager.addOnPageChangeListener(this)
         viewPager.pageMargin = ViewUtil.convertDpToPixel(32f, resources).toInt()
-        viewPager.currentItem = PreferenceUtil.getInstance(requireContext()).nowPlayingScreen.ordinal
+        viewPager.currentItem = Setting.instance.nowPlayingScreen.ordinal
         val pageIndicator: InkPageIndicator = view.findViewById(R.id.page_indicator)
         pageIndicator.setViewPager(viewPager)
         pageIndicator.onPageSelected(viewPager.currentItem)
         val dialog = MaterialDialog(requireContext())
             .title(R.string.pref_title_now_playing_screen_appearance)
             .positiveButton(android.R.string.ok) {
-                PreferenceUtil.getInstance(requireContext()).nowPlayingScreen = NowPlayingScreen.values()[viewPagerPosition]
+                Setting.instance.nowPlayingScreen = NowPlayingScreen.values()[viewPagerPosition]
             }
             .negativeButton(android.R.string.cancel)
 //                .onAny(this)
@@ -61,7 +61,7 @@ class NowPlayingScreenPreferenceDialog : DialogFragment(), OnPageChangeListener 
 //    override fun onDismiss(dialog: DialogInterface) {
 //        super.onDismiss(dialog)
 //        if (whichButtonClicked === DialogAction.POSITIVE) {
-//            PreferenceUtil.getInstance(requireContext()).nowPlayingScreen = NowPlayingScreen.values()[viewPagerPosition]
+//            Setting.instance.nowPlayingScreen = NowPlayingScreen.values()[viewPagerPosition]
 //        }
 //    }
 

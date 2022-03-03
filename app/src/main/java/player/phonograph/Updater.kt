@@ -12,7 +12,7 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
 import org.json.JSONObject
-import player.phonograph.settings.PreferenceUtil
+import player.phonograph.settings.Setting
 import java.io.IOException
 import java.util.concurrent.TimeUnit
 
@@ -24,7 +24,7 @@ object Updater {
      * @param force true if you want to execute callback no mater there is no newer version or automatic check is disabled
      */
     fun checkUpdate(callback: (Bundle) -> Unit, force: Boolean = false) {
-        if (!force && !PreferenceUtil.getInstance(App.instance).checkUpgradeAtStartup) {
+        if (!force && !Setting.instance.checkUpgradeAtStartup) {
             Log.w(TAG, "ignore upgrade check!"); return
         }
 
@@ -134,7 +134,7 @@ object Updater {
         versionJson?.let { json: VersionJson ->
             Log.i(TAG, "versionCode: ${json.versionCode}, version: ${json.version}, logSummary: ${json.logSummary}")
 
-            val ignoreUpgradeVersionCode = PreferenceUtil(App.instance).ignoreUpgradeVersionCode
+            val ignoreUpgradeVersionCode = Setting.instance.ignoreUpgradeVersionCode
             Log.d(TAG, "current state: force:$force, ignoreUpgradeVersionCode:$ignoreUpgradeVersionCode, CanAccessGitHub:$canAccessGitHub ")
 
             // stop if version code is lower ignore version code level and not force to execute

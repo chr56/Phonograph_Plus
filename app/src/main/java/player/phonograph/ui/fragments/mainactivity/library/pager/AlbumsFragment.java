@@ -14,7 +14,7 @@ import player.phonograph.interfaces.LoaderIds;
 import player.phonograph.loader.AlbumLoader;
 import player.phonograph.misc.WrappedAsyncTaskLoader;
 import player.phonograph.model.Album;
-import player.phonograph.settings.PreferenceUtil;
+import player.phonograph.settings.Setting;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,12 +58,12 @@ public class AlbumsFragment extends AbsLibraryPagerRecyclerViewCustomGridSizeFra
 
     @Override
     protected String loadSortOrder() {
-        return PreferenceUtil.getInstance(requireActivity()).getAlbumSortOrder();
+        return Setting.instance().getAlbumSortOrder();
     }
 
     @Override
     protected void saveSortOrder(String sortOrder) {
-        PreferenceUtil.getInstance(requireActivity()).setAlbumSortOrder(sortOrder);
+        Setting.instance().setAlbumSortOrder(sortOrder);
     }
 
     @Override
@@ -73,7 +73,7 @@ public class AlbumsFragment extends AbsLibraryPagerRecyclerViewCustomGridSizeFra
 
     @Override
     public boolean loadUsePalette() {
-        return PreferenceUtil.getInstance(requireActivity()).albumColoredFooters();
+        return Setting.instance().getAlbumColoredFooters();
     }
 
     @Override
@@ -89,27 +89,27 @@ public class AlbumsFragment extends AbsLibraryPagerRecyclerViewCustomGridSizeFra
 
     @Override
     protected int loadGridSize() {
-        return PreferenceUtil.getInstance(requireActivity()).getAlbumGridSize();
+        return Setting.instance().getAlbumGridSize();
     }
 
     @Override
     protected void saveGridSize(int gridSize) {
-        PreferenceUtil.getInstance(requireActivity()).setAlbumGridSize(gridSize);
+        Setting.instance().setAlbumGridSize(gridSize);
     }
 
     @Override
     protected int loadGridSizeLand() {
-        return PreferenceUtil.getInstance(requireActivity()).getAlbumGridSizeLand();
+        return Setting.instance().getAlbumGridSizeLand();
     }
 
     @Override
     protected void saveGridSizeLand(int gridSize) {
-        PreferenceUtil.getInstance(requireActivity()).setAlbumGridSizeLand(gridSize);
+        Setting.instance().setAlbumGridSizeLand(gridSize);
     }
 
     @Override
     protected void saveUsePalette(boolean usePalette) {
-        PreferenceUtil.getInstance(requireActivity()).setAlbumColoredFooters(usePalette);
+        Setting.instance().setAlbumColoredFooters(usePalette);
     }
 
     @Override

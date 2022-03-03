@@ -13,7 +13,7 @@ import player.phonograph.helper.SortOrder
 import player.phonograph.interfaces.MultiSelectionCabProvider
 import player.phonograph.model.Album
 import player.phonograph.util.MusicUtil
-import player.phonograph.settings.PreferenceUtil
+import player.phonograph.settings.Setting
 
 class AlbumDisplayAdapter(
     activity: AppCompatActivity,
@@ -43,7 +43,7 @@ class AlbumDisplayAdapter(
     }
     override fun getSectionNameImp(position: Int): String {
         val sectionName =
-            when (PreferenceUtil.getInstance(activity).albumSortOrder) {
+            when (Setting.instance.albumSortOrder) {
                 SortOrder.AlbumSortOrder.ALBUM_A_Z, SortOrder.AlbumSortOrder.ALBUM_Z_A ->
                     MusicUtil.getSectionName(dataset[position].title)
                 SortOrder.AlbumSortOrder.ALBUM_ARTIST, SortOrder.AlbumSortOrder.ALBUM_ARTIST_REVERT ->

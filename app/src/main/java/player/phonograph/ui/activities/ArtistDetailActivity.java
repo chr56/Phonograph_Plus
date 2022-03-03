@@ -34,11 +34,6 @@ import com.bumptech.glide.Glide;
 import java.util.List;
 import java.util.Locale;
 
-import util.mdcolor.pref.ThemeColor;
-import util.mddesign.util.ColorUtil;
-import util.mddesign.util.MaterialColorHelper;
-import util.mddesign.util.ToolbarColorUtil;
-import util.mddesign.util.Util;
 import kotlin.Unit;
 import kotlin.jvm.functions.Function1;
 import kotlin.jvm.functions.Function2;
@@ -61,15 +56,20 @@ import player.phonograph.misc.SimpleObservableScrollViewCallbacks;
 import player.phonograph.misc.WrappedAsyncTaskLoader;
 import player.phonograph.model.Artist;
 import player.phonograph.model.Song;
+import player.phonograph.settings.Setting;
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity;
 import player.phonograph.util.CustomArtistImageUtil;
 import player.phonograph.util.MusicUtil;
 import player.phonograph.util.NavigationUtil;
 import player.phonograph.util.PhonographColorUtil;
-import player.phonograph.settings.PreferenceUtil;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import util.mdcolor.pref.ThemeColor;
+import util.mddesign.util.ColorUtil;
+import util.mddesign.util.MaterialColorHelper;
+import util.mddesign.util.ToolbarColorUtil;
+import util.mddesign.util.Util;
 
 /**
  * Be careful when changing things in this Activity!
@@ -123,7 +123,7 @@ public class ArtistDetailActivity extends AbsSlidingMusicPanelActivity implement
         setDrawUnderStatusbar();
 
         lastFMRestClient = new LastFMRestClient(this);
-        usePalette = PreferenceUtil.getInstance(this).albumArtistColoredFooters();
+        usePalette = Setting.instance().getAlbumArtistColoredFooters();
 
         initViews();
         setUpObservableListViewParams();
@@ -186,7 +186,7 @@ public class ArtistDetailActivity extends AbsSlidingMusicPanelActivity implement
 
     protected void setUsePalette(boolean usePalette) {
         albumAdapter.usePalette(usePalette);
-        PreferenceUtil.getInstance(this).setAlbumArtistColoredFooters(usePalette);
+        Setting.instance().setAlbumArtistColoredFooters(usePalette);
         this.usePalette = usePalette;
     }
 
@@ -220,7 +220,7 @@ public class ArtistDetailActivity extends AbsSlidingMusicPanelActivity implement
                             return;
                         }
 
-                        if (!PreferenceUtil.isAllowedToDownloadMetadata(ArtistDetailActivity.this)) {
+                        if (!Setting.isAllowedToDownloadMetadata(ArtistDetailActivity.this)) {
                             if (biography != null) {
                                 biographyDialog.message(null, biography, null);
                             } else {
@@ -353,7 +353,7 @@ public class ArtistDetailActivity extends AbsSlidingMusicPanelActivity implement
                     //set button color
                     DialogActionExtKt.getActionButton(biographyDialog, WhichButton.POSITIVE).updateTextColor(ThemeColor.accentColor(this));
                 }
-                if (PreferenceUtil.isAllowedToDownloadMetadata(ArtistDetailActivity.this)) { // wiki should've been already downloaded
+                if (Setting.isAllowedToDownloadMetadata(ArtistDetailActivity.this)) { // wiki should've been already downloaded
                     if (biography != null) {
                         biographyDialog.message(null, biography, null);
                         biographyDialog.show();
@@ -392,7 +392,7 @@ public class ArtistDetailActivity extends AbsSlidingMusicPanelActivity implement
         if (cab != null && AttachedCabKt.isActive(cab)) AttachedCabKt.destroy(cab);
 
         cab = MaterialCabKt.createCab(this, R.id.cab_stub, attachedCab -> {
-            attachedCab.popupTheme(PreferenceUtil.getInstance(this).getGeneralTheme());
+            attachedCab.popupTheme(Setting.instance().getGeneralTheme());
             attachedCab.menu(menuRes);
             attachedCab.closeDrawable(R.drawable.ic_close_white_24dp);
             attachedCab.backgroundColor(null, PhonographColorUtil.shiftBackgroundColorForLightText(getPaletteColor()));
@@ -430,7 +430,7 @@ public class ArtistDetailActivity extends AbsSlidingMusicPanelActivity implement
         this.artist = artist;
         loadArtistImage();
 
-        if (PreferenceUtil.isAllowedToDownloadMetadata(this)) {
+        if (Setting.isAllowedToDownloadMetadata(this)) {
             loadBiography();
         }
 

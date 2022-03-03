@@ -5,7 +5,6 @@ import android.os.Bundle
 import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import util.mdcolor.pref.ThemeColor
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.WhichButton
 import com.afollestad.materialdialogs.actions.getActionButton
@@ -13,16 +12,17 @@ import com.afollestad.materialdialogs.customview.customView
 import player.phonograph.R
 import player.phonograph.adapter.CategoryInfoAdapter
 import player.phonograph.model.CategoryInfo
-import player.phonograph.settings.PreferenceUtil
+import player.phonograph.settings.Setting
+import util.mdcolor.pref.ThemeColor
 
 class LibraryPreferenceDialog : DialogFragment() {
     private var adapter: CategoryInfoAdapter? = null
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val view = requireActivity().layoutInflater.inflate(R.layout.preference_dialog_library_categories, null)
         val categoryInfos: List<CategoryInfo>? = if (savedInstanceState != null) {
-            savedInstanceState.getParcelableArrayList(PreferenceUtil.LIBRARY_CATEGORIES)
+            savedInstanceState.getParcelableArrayList(Setting.LIBRARY_CATEGORIES)
         } else {
-            PreferenceUtil.getInstance(requireContext()).libraryCategoryInfos
+            Setting.instance.libraryCategoryInfos
         }
         adapter = CategoryInfoAdapter(categoryInfos)
         val recyclerView: RecyclerView = view.findViewById(R.id.recycler_view)
@@ -37,7 +37,7 @@ class LibraryPreferenceDialog : DialogFragment() {
                 dismiss()
             }
             .negativeButton(android.R.string.cancel) { dismiss() }
-            .neutralButton(R.string.reset_action) { adapter!!.categoryInfos = PreferenceUtil.getInstance(requireContext()).defaultLibraryCategoryInfos }
+            .neutralButton(R.string.reset_action) { adapter!!.categoryInfos = Setting.instance.defaultLibraryCategoryInfos }
         // set button color
         dialog.getActionButton(WhichButton.POSITIVE).updateTextColor(ThemeColor.accentColor(requireActivity()))
         dialog.getActionButton(WhichButton.NEGATIVE).updateTextColor(ThemeColor.accentColor(requireActivity()))
@@ -48,12 +48,12 @@ class LibraryPreferenceDialog : DialogFragment() {
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState.putParcelableArrayList(PreferenceUtil.LIBRARY_CATEGORIES, ArrayList(adapter!!.categoryInfos))
+        outState.putParcelableArrayList(Setting.LIBRARY_CATEGORIES, ArrayList(adapter!!.categoryInfos))
     }
 
     private fun updateCategories(categories: List<CategoryInfo>) {
         if (getSelected(categories) == 0) return
-        PreferenceUtil.getInstance(requireContext()).libraryCategoryInfos = categories
+        Setting.instance.libraryCategoryInfos = categories
     }
 
     private fun getSelected(categories: List<CategoryInfo>): Int {
