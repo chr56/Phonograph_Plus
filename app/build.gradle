@@ -86,7 +86,7 @@ android {
         }
         proguard {
             minifyEnabled true
-            proguardFiles 'rules.pro'
+            proguardFiles 'proguard-rules-base.pro','proguard-rules-app.pro'
 
             if (signing_file_exist) signingConfig signingConfigs.release
 
