@@ -1,15 +1,13 @@
 {
-    "version": "0.0.8.1",
-    "versionCode": 9,
-    "logSummary": "\n<b>v0.0.8.1 [2022.2.22]\n<b>修复 睡眠定时器在Android12上的崩溃\n<b>注意</b>：在v0.1.0发布前，将以LTS名义继续小修小补<b><b>\n\n历史版本\n<b>v0.0.8 [2022.1.2]</b>\n1. 开发 使用SDK31(Android12)开发\n2. 变更 移动主界面右上角菜单中的“随机播放所有歌曲”至抽屉\n3. 变更 移动播放列表页上的“新建播放列表”至右下角悬浮按钮\n4. 新增 支持更多(潜在的)排序方式\n5. 新增 将右上角排序方式与网格尺寸和合二为一, 并改进交互\n6. 新增 快速添加黑名单, 在歌曲(或文件)弹出菜单中,新增“添加至黑名单”选项\n7. 修复 浅色主色调下，主界面标题菜单图标不变黑\n8. 修复 设置中黑名单对话框添加新路径后未能刷新, 以及一系列稀奇古怪的问题\n9. 改进 更新提示对话框, 允许忽略某个版本更新, 改进下载引导, 以及一系列可能的稀奇古怪的问题\n10. 开发 清理代码（可能<del>又弄坏了什么</del>）\n",
+    "version": "LTS 0.0.8.1 / Preview 0.1.0",
+    "versionCode": 102,
+    "logSummary": "\n\n<b>本次为两个版本:</b>\n一是相对稳定的LTS版,将继续小修小补; 二是开发进展缓慢的预览版,及其不稳定\n\n<b>LTS v0.0.8.1 [2022.2.22]</b>\n修复 睡眠定时器在Android12上的崩溃\n\n\n<b>预览版 v0.1.0RC1 [2022.3.3]</b>\n修复 睡眠定时器在Android12上的崩溃\n开发 大幅度调整\"媒体库\"的UI,以便于维护(但部分还未完成)\n开发 调整代码结构,优化代码,清理依赖(需要出现设置主题配色)\n新增 添加清理旧版本历史残留文件配置功能(但是<del>仅从此版本开始记录历史包袱</del>)\n开发 极限混淆,实现Apk<del>小而美</del>(可能出现异常)\n修复 播放列表更改(新建/改名/删除)后,未能及时刷新(仅限App内操作)\n改进 在删除播放列表失败后,\n可尝试使用SAF(Storage Access Framework, 存储访问框架)授权目录后再次尝试删除(目前交互体验不佳, 且可能误删文件!!!)\n改进 对于Android 10 (Q)以上版本用户, 使用SAF创建播放列表(包括新建空列表与保存播放器当前播放队列)\n改进 使用SAF复制(保存)播放列表(单个播放列表可自定义名称, 多个播放列表同意添加时间后缀并保存在所选同一目录下)\n改进 对于Android 10 (Q)以上版本用户, 使用SAF授权后再追加歌曲至已有播放列表(目前交互体验不佳)\n开发 清理代码\n开发 移除ButterKnife\n开发 使用AGP 7.0.4 (以及Gradle7.1.1) 构建\n开发 升级Glide(3.8.0 -> 4.12.0)",
     "downloadSources": [
-        "Github(v0.0.8.1)",
-        "Github(v0.0.8)",
-        "Github(v0.0.7)"
+        "LTS     Github(v0.0.8.1)",
+        "Preview Github(v0.1.0RC1)"
     ],
     "downloadUris": [
         "https://github.com/chr56/Phonograph_Plus/releases/tag/v0.0.8.1",
-        "https://github.com/chr56/Phonograph_Plus/releases/tag/v0.0.8",
-        "https://github.com/chr56/Phonograph_Plus/releases/tag/v0.0.7"
+        "https://github.com/chr56/Phonograph_Plus/releases/tag/preview_0303"
     ]
 }
