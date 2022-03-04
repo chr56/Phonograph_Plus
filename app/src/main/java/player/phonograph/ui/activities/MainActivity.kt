@@ -20,8 +20,7 @@ import kotlinx.coroutines.*
 import legacy.phonograph.JunkCleaner
 import player.phonograph.*
 import player.phonograph.Updater.checkUpdate
-import player.phonograph.databinding.ActivityMainContentBinding
-import player.phonograph.databinding.ActivityMainDrawerLayoutBinding
+import player.phonograph.databinding.*
 import player.phonograph.dialogs.ChangelogDialog.Companion.create
 import player.phonograph.dialogs.ChangelogDialog.Companion.setChangelogRead
 import player.phonograph.dialogs.ScanMediaFolderDialog
@@ -51,11 +50,11 @@ import util.mddesign.util.NavigationViewUtil
 import util.mddesign.util.Util as MDthemerUtil
 
 class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity {
-    var activityMainContentBinding: ActivityMainContentBinding? = null
-    val pageBinding get() = activityMainContentBinding!!
+    var activityMainPageBinding: ActivityMainPageBinding? = null
+    val pageBinding get() = activityMainPageBinding!!
 
-    var activityMainDrawerLayoutBinding: ActivityMainDrawerLayoutBinding? = null
-    val mainBinding get() = activityMainDrawerLayoutBinding!!
+    var activityMainBinding: ActivityMainBinding? = null
+    val mainBinding get() = activityMainBinding!!
 
     private lateinit var currentFragment: MainActivityFragmentCallbacks
     private var navigationDrawerHeader: View? = null
@@ -95,12 +94,18 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
 
     override fun createContentView(): View {
 
-        activityMainContentBinding = ActivityMainContentBinding.inflate(layoutInflater)
-        activityMainDrawerLayoutBinding = ActivityMainDrawerLayoutBinding.inflate(layoutInflater)
+        activityMainPageBinding = ActivityMainPageBinding.inflate(layoutInflater)
+        activityMainBinding = ActivityMainBinding.inflate(layoutInflater)
 
         mainBinding.drawerContentContainer.addView(wrapSlidingMusicPanel(pageBinding.root))
 
         return mainBinding.root
+    }
+
+    override fun onDestroy() {
+        activityMainPageBinding = null
+        activityMainBinding = null
+        super.onDestroy()
     }
 
     private fun setMusicChooser(key: Int) {
@@ -123,8 +128,6 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
             .commit()
         currentFragment = fragment as MainActivityFragmentCallbacks
     }
-
-    private val backgroundCoroutineScope: CoroutineScope = CoroutineScope(Dispatchers.IO)
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
@@ -154,7 +157,6 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
             mainBinding.drawerLayout.closeDrawers()
 
             when (menuItem.itemId) {
-//                R.id.nav_library -> Handler().postDelayed({ setMusicChooser(LIBRARY) }, 200)
                 R.id.nav_folders -> Handler().postDelayed({ setMusicChooser(FOLDERS) }, 200)
                 R.id.nav_home -> Handler().postDelayed({ setMusicChooser(HOME) }, 200)
 
@@ -394,18 +396,9 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
         mainBinding.addNewItem.visibility = visibility
     }
 
-    override fun onDestroy() {
-        try {
-            backgroundCoroutineScope.coroutineContext[Job]?.cancel()
-        } catch (e: Exception) {
-            Log.i("BackgroundCoroutineScope", e.message.orEmpty())
-        }
-        super.onDestroy()
-    }
-
     companion object {
 
-        val TAG: String = MainActivity::class.java.simpleName
+        const val TAG = "MainActivity"
         const val APP_INTRO_REQUEST = 100
 
         private const val HOME = 0

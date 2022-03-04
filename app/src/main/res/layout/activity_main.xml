@@ -15,11 +15,11 @@
             android:layout_width="56dp"
             android:layout_height="56dp"
             android:layout_gravity="end|bottom"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="48dp"
             android:clickable="true"
             android:contentDescription="@string/add_action"
             android:focusable="true"
-            android:layout_marginEnd="16dp"
-            android:layout_marginBottom="48dp"
             android:visibility="gone"
             app:srcCompat="@drawable/ic_add_white_24dp" />
     </FrameLayout>
