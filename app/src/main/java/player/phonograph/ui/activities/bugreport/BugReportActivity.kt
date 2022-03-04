@@ -30,6 +30,7 @@ import player.phonograph.R
 import player.phonograph.databinding.ActivityBugReportBinding
 import player.phonograph.misc.DialogAsyncTask
 import player.phonograph.ui.activities.base.ThemeActivity
+import player.phonograph.ui.activities.base.ToolbarActivity
 import player.phonograph.ui.activities.bugreport.model.DeviceInfo
 import player.phonograph.ui.activities.bugreport.model.Report
 import player.phonograph.ui.activities.bugreport.model.github.ExtraInfo
@@ -37,7 +38,7 @@ import player.phonograph.ui.activities.bugreport.model.github.GithubLogin
 import player.phonograph.ui.activities.bugreport.model.github.GithubTarget
 import java.io.IOException
 
-class BugReportActivity : ThemeActivity() {
+class BugReportActivity : ToolbarActivity() {
 
     private lateinit var deviceInfo: DeviceInfo
 

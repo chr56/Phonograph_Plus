@@ -23,7 +23,7 @@ import util.mdcolor.pref.ThemeColor;
 /**
  * @author Karim Abou Zeid (kabouzeid)
  */
-public abstract class AbsBaseActivity extends ThemeActivity {
+public abstract class AbsBaseActivity extends ToolbarActivity {
     public static final int PERMISSION_REQUEST = 100;
 
     private boolean hadPermissions;

@@ -22,10 +22,11 @@ import player.phonograph.BuildConfig
 import player.phonograph.R
 import player.phonograph.settings.Setting
 import player.phonograph.ui.activities.base.ThemeActivity
+import player.phonograph.ui.activities.base.ToolbarActivity
 import java.util.*
 import kotlin.system.exitProcess
 
-class CrashActivity : ThemeActivity() {
+class CrashActivity : ToolbarActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_crash)

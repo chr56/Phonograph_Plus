@@ -24,12 +24,11 @@ import util.mddesign.util.MenuTinter
 // todo remove Platform check
 
 /**
- * An abstract class dealing theme
+ * An abstract class providing material activity (no toolbar)
  * @author Karim Abou Zeid (kabouzeid)
  */
 abstract class ThemeActivity : AppCompatActivity() {
     private var createTime: Long = -1
-    private var toolbar: Toolbar? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,37 +59,6 @@ abstract class ThemeActivity : AppCompatActivity() {
 //        else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) Util.setStatusBarTranslucent(window)
     }
 
-    //
-    // Toolbar & Actionbar
-    //
-    override fun setSupportActionBar(toolbar: Toolbar?) {
-        this.toolbar = toolbar
-        super.setSupportActionBar(toolbar)
-    }
-    protected fun getToolbar(): Toolbar? {
-        return getSupportActionBarView(supportActionBar)
-    }
-    fun getToolbarBackgroundColor(toolbar: Toolbar?): Int {
-        toolbar?.let {
-            if (toolbar.background is ColorDrawable) return (toolbar.background as ColorDrawable).color
-        }
-        return 0
-    }
-    protected open fun getSupportActionBarView(ab: ActionBar?): Toolbar? {
-        return if (ab == null || ab !is WindowDecorActionBar) null else try {
-            var field = WindowDecorActionBar::class.java.getDeclaredField("mDecorToolbar")
-            field.isAccessible = true
-            val wrapper = field[ab] as ToolbarWidgetWrapper
-            field = ToolbarWidgetWrapper::class.java.getDeclaredField("mToolbar")
-            field.isAccessible = true
-            field[wrapper] as Toolbar
-        } catch (t: Throwable) {
-            throw RuntimeException(
-                "Failed to retrieve Toolbar from AppCompat support ActionBar: " + t.message,
-                t
-            )
-        }
-    }
 
     //
     // Status Bar
@@ -152,15 +120,4 @@ abstract class ThemeActivity : AppCompatActivity() {
         setTaskDescriptionColor(ThemeColor.primaryColor(this))
     }
 
-    //
-    // Menu (Tint)
-    //
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-//        MenuTinter.setMenuColor(this, getToolbar(), menu!!, MaterialColor.White._1000.asColor) //todo
-        return super.onCreateOptionsMenu(menu)
-    }
-    override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
-        MenuTinter.applyOverflowMenuTint(this, getToolbar(), ThemeColor.accentColor(this))
-        return super.onPrepareOptionsMenu(menu)
-    }
 }

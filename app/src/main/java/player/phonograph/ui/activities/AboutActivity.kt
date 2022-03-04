@@ -28,6 +28,7 @@ import player.phonograph.dialogs.UpgradeDialog
 import player.phonograph.notification.UpgradeNotification
 import player.phonograph.settings.Setting
 import player.phonograph.ui.activities.base.ThemeActivity
+import player.phonograph.ui.activities.base.ToolbarActivity
 import player.phonograph.ui.activities.bugreport.BugReportActivity
 import player.phonograph.ui.activities.intro.AppIntroActivity
 import util.mdcolor.pref.ThemeColor
@@ -36,7 +37,7 @@ import util.mddesign.core.Themer.setActivityToolbarColorAuto
 /**
  * @author Karim Abou Zeid (kabouzeid)
  */
-class AboutActivity : ThemeActivity(), View.OnClickListener {
+class AboutActivity : ToolbarActivity(), View.OnClickListener {
     private lateinit var binding: ActivityAboutBinding
 
     private lateinit var mToolbar: Toolbar
