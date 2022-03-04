@@ -10,7 +10,7 @@
 
 <br/>
 
-([Original Project Repo](https://github.com/kabouzeid/Phonograph))
+([原仓库/Original Project Repo](https://github.com/kabouzeid/Phonograph))
 
 <br/>
 <br/>
@@ -20,11 +20,11 @@
 
 * 解锁 Pro | Unlock pro.
 
-* 自动夜间模式 | Auto adaptive dark mode.
+* 自动夜间模式 | Automatic & adaptive dark mode.
 
-* 更新对话框样式 | Update dialog style.
+* 更新对话框样式 | Update dialogs style.
 
-* 允许标签固定并平铺 | Allow tab fixed.
+* 允许标签固定并平铺 | Allow tabs fixed.
 
 * 详情对话框内显示Tag信息 | Show tag information in "Detail" Dialog
 
@@ -35,20 +35,19 @@
 
 * 适当折叠歌曲弹出菜单 | Optimus song item menu.
 
-* 并改进主菜单交互体验, 将主菜单中排序方式与网格尺寸和合二为一 | Improve main menu user experience, merge sort order and grid
-  size to one menu in main ui menu.
+* 改进媒体库交互 | Improve “Library” pages user experience。
 
 * 增大“最近播放”和“最喜爱的歌曲(实际是“最常播放”的歌曲)”条目数量(100→150) | Increase history played tracks and top played
   tracks entries capacity (100->150).
 
-* 新增崩溃报告页面 | Handle crash.
+* 新增崩溃报告页面 | Handle app crash.
 
 * 支持更多排序方式 | Support more sort orders.
 
 * 在歌曲(或文件)弹出菜单中, 快速添加黑名单 | Add song menu shortcut to add new items to blacklist.
 
-* 适配" [MIUI状态栏歌词](https://github.com/xiaowine/miui.statusbar.lyric) "Xposed模块 | Co-work-with/Support
-  MIUI StatusBar Lyric Xposed Module (api)
+* 适配" [墨·状态栏歌词](https://github.com/577fkj/StatusBarLyric) "Xposed模块 | Co-work-with/Support
+  StatusBar Lyric Xposed Module (api)
 
 * // todo
 
@@ -62,23 +61,17 @@
 
 - [ ] 完成 Readme . md
 
-- [x] 快捷添加黑名单
-
-- [x] 改进更新提示
-
-- [x] 移除 ButterKnife, 使用 ViewBinding
-
-- [ ] 优化歌曲“详情”
+- [ ] 整理设置页
 
 - [ ] 部分重构(所谓的)"主题引擎"
+
+- [ ] 优化歌曲“详情”
 
 - [ ] 万能歌曲 Adapter ❗WIP
 
 - [ ] 自建本地媒体数据库(使用 AndroidX Room), 并解析 Tag 中 ‘;’, '&', '/', '\', ',' , 改进搜索
 
 - [ ] 实现更好的播放频率计数, 统计听歌频率
-
-- [ ] 整理设置页
 
 - [ ] 增强“播放列表详情”(信息展示✔, 支持搜索❌, 更好的修改本地列表方式 ❗WIP)
 
