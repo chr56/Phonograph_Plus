@@ -6,17 +6,14 @@ import android.text.TextUtils
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.TextView
 import androidx.appcompat.widget.SearchView
-import androidx.appcompat.widget.Toolbar
 import androidx.loader.app.LoaderManager
 import androidx.loader.content.Loader
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import util.mdcolor.pref.ThemeColor
-import util.mddesign.core.Themer
 import player.phonograph.R
 import player.phonograph.adapter.SearchAdapter
+import player.phonograph.databinding.ActivitySearchBinding
 import player.phonograph.interfaces.LoaderIds
 import player.phonograph.loader.AlbumLoader
 import player.phonograph.loader.ArtistLoader
@@ -24,15 +21,17 @@ import player.phonograph.loader.SongLoader
 import player.phonograph.misc.WrappedAsyncTaskLoader
 import player.phonograph.ui.activities.base.AbsMusicServiceActivity
 import player.phonograph.util.Util
+import util.mdcolor.pref.ThemeColor
+import util.mddesign.core.Themer
 
 class SearchActivity :
     AbsMusicServiceActivity(),
     SearchView.OnQueryTextListener,
     LoaderManager.LoaderCallbacks<List<Any>> {
 
-    private lateinit var recyclerView: RecyclerView
-    private lateinit var mToolbar: Toolbar
-    private lateinit var empty: TextView
+    private var viewBinding: ActivitySearchBinding? = null
+    val binding get() = viewBinding!!
+
     private var searchView: SearchView? = null
 
     private lateinit var adapter: SearchAdapter
@@ -40,34 +39,31 @@ class SearchActivity :
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_search)
+
+        viewBinding = ActivitySearchBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
         setDrawUnderStatusbar()
 
-        // todo: viewBinding
-        recyclerView = findViewById(R.id.recycler_view)
-        mToolbar = findViewById(R.id.toolbar)
-        empty = findViewById(android.R.id.empty)
-
-        Themer.setActivityToolbarColorAuto(this, mToolbar)
-
+        Themer.setActivityToolbarColorAuto(this, binding.toolbar)
 
         setStatusbarColorAuto()
         setNavigationbarColorAuto()
         setTaskDescriptionColorAuto()
 
-        recyclerView.layoutManager = LinearLayoutManager(this)
+        binding.recyclerView.layoutManager = LinearLayoutManager(this)
 
         adapter = SearchAdapter(this, emptyList())
         adapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
             override fun onChanged() {
                 super.onChanged()
-                empty.visibility = if (adapter.itemCount < 1) View.VISIBLE else View.GONE
+                binding.empty.visibility = if (adapter.itemCount < 1) View.VISIBLE else View.GONE
             }
         })
-        recyclerView.adapter = adapter
+        binding.recyclerView.adapter = adapter
 
         // noinspection ClickableViewAccessibility
-        recyclerView.setOnTouchListener { _, _ ->
+        binding.recyclerView.setOnTouchListener { _, _ ->
             hideSoftKeyboard()
             false
         }
@@ -85,8 +81,8 @@ class SearchActivity :
     }
 
     private fun setUpToolBar() {
-        mToolbar.setBackgroundColor(ThemeColor.primaryColor(this))
-        setSupportActionBar(mToolbar)
+        binding.toolbar.setBackgroundColor(ThemeColor.primaryColor(this))
+        setSupportActionBar(binding.toolbar)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
     }
 
