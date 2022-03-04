@@ -1,6 +1,5 @@
 package player.phonograph.ui.activities
 
-import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.ColorStateList
@@ -11,19 +10,18 @@ import android.provider.MediaStore
 import android.util.Log
 import android.view.MenuItem
 import android.view.View
-import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.drawerlayout.widget.DrawerLayout
 import com.bumptech.glide.Glide
-import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.android.material.navigation.NavigationView
 import com.sothree.slidinguppanel.SlidingUpPanelLayout
 import kotlinx.coroutines.*
 import legacy.phonograph.JunkCleaner
 import player.phonograph.*
 import player.phonograph.Updater.checkUpdate
+import player.phonograph.databinding.ActivityMainContentBinding
+import player.phonograph.databinding.ActivityMainDrawerLayoutBinding
 import player.phonograph.dialogs.ChangelogDialog.Companion.create
 import player.phonograph.dialogs.ChangelogDialog.Companion.setChangelogRead
 import player.phonograph.dialogs.ScanMediaFolderDialog
@@ -53,10 +51,11 @@ import util.mddesign.util.NavigationViewUtil
 import util.mddesign.util.Util as MDthemerUtil
 
 class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity {
-    // init : onCreate()
-    private lateinit var navigationView: NavigationView
-    private lateinit var drawerLayout: DrawerLayout
-    private lateinit var floatingActionButton: FloatingActionButton
+    var activityMainContentBinding: ActivityMainContentBinding? = null
+    val pageBinding get() = activityMainContentBinding!!
+
+    var activityMainDrawerLayoutBinding: ActivityMainDrawerLayoutBinding? = null
+    val mainBinding get() = activityMainDrawerLayoutBinding!!
 
     private lateinit var currentFragment: MainActivityFragmentCallbacks
     private var navigationDrawerHeader: View? = null
@@ -72,12 +71,6 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
         lifecycle.addObserver(safLauncher)
 
         setDrawUnderStatusbar()
-
-        // todo: viewBinding
-        navigationView = findViewById(R.id.navigation_view)
-        drawerLayout = findViewById(R.id.drawer_layout)
-        floatingActionButton = findViewById(R.id.add_new_item)
-
         setUpDrawer()
 
         if (savedInstanceState == null) {
@@ -101,23 +94,24 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
     }
 
     override fun createContentView(): View {
-        @SuppressLint("InflateParams")
-        val contentView =
-            layoutInflater.inflate(R.layout.activity_main_drawer_layout, null)
-        val drawerContent = contentView.findViewById<ViewGroup>(R.id.drawer_content_container)
-        drawerContent.addView(wrapSlidingMusicPanel(R.layout.activity_main_content))
-        return contentView
+
+        activityMainContentBinding = ActivityMainContentBinding.inflate(layoutInflater)
+        activityMainDrawerLayoutBinding = ActivityMainDrawerLayoutBinding.inflate(layoutInflater)
+
+        mainBinding.drawerContentContainer.addView(wrapSlidingMusicPanel(pageBinding.root))
+
+        return mainBinding.root
     }
 
     private fun setMusicChooser(key: Int) {
         Setting.instance.lastMusicChooser = key
         when (key) {
             FOLDERS -> {
-                navigationView.setCheckedItem(R.id.nav_folders)
+                mainBinding.navigationView.setCheckedItem(R.id.nav_folders)
                 setCurrentFragment(FoldersFragment.newInstance(this))
             }
             HOME -> {
-                navigationView.setCheckedItem(R.id.nav_home)
+                mainBinding.navigationView.setCheckedItem(R.id.nav_home)
                 setCurrentFragment(HomeFragment.newInstance())
             }
         }
@@ -150,14 +144,14 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
     private fun setUpDrawer() {
         val accentColor = ThemeColor.accentColor(this)
         NavigationViewUtil.setItemIconColors(
-            navigationView, MDthemerUtil.resolveColor(this, R.attr.iconColor, ThemeColor.textColorSecondary(this)), accentColor
+            mainBinding.navigationView, MDthemerUtil.resolveColor(this, R.attr.iconColor, ThemeColor.textColorSecondary(this)), accentColor
         )
         NavigationViewUtil.setItemTextColors(
-            navigationView, ThemeColor.textColorPrimary(this), accentColor
+            mainBinding.navigationView, ThemeColor.textColorPrimary(this), accentColor
         )
 
-        navigationView.setNavigationItemSelectedListener { menuItem: MenuItem ->
-            drawerLayout.closeDrawers()
+        mainBinding.navigationView.setNavigationItemSelectedListener { menuItem: MenuItem ->
+            mainBinding.drawerLayout.closeDrawers()
 
             when (menuItem.itemId) {
 //                R.id.nav_library -> Handler().postDelayed({ setMusicChooser(LIBRARY) }, 200)
@@ -203,9 +197,9 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
 
             if (navigationDrawerHeader == null) {
                 navigationDrawerHeader =
-                    navigationView.inflateHeaderView(R.layout.navigation_drawer_header)
+                    mainBinding.navigationView.inflateHeaderView(R.layout.navigation_drawer_header)
                 (navigationDrawerHeader as View).setOnClickListener {
-                    drawerLayout.closeDrawers()
+                    mainBinding.drawerLayout.closeDrawers()
                     if (panelState == SlidingUpPanelLayout.PanelState.COLLAPSED) {
                         expandPanel()
                     }
@@ -220,7 +214,7 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
                 .into(navigationDrawerHeader!!.findViewById<View>(R.id.image) as ImageView)
         } else {
             if (navigationDrawerHeader != null) {
-                navigationView.removeHeaderView(navigationDrawerHeader!!)
+                mainBinding.navigationView.removeHeaderView(navigationDrawerHeader!!)
                 navigationDrawerHeader = null
             }
         }
@@ -240,10 +234,10 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == android.R.id.home) {
-            if (drawerLayout.isDrawerOpen(navigationView)) {
-                drawerLayout.closeDrawer(navigationView)
+            if (mainBinding.drawerLayout.isDrawerOpen(mainBinding.navigationView)) {
+                mainBinding.drawerLayout.closeDrawer(mainBinding.navigationView)
             } else {
-                drawerLayout.openDrawer(navigationView)
+                mainBinding.drawerLayout.openDrawer(mainBinding.navigationView)
             }
             return true
         }
@@ -251,8 +245,8 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
     }
 
     override fun handleBackPress(): Boolean {
-        if (drawerLayout.isDrawerOpen(navigationView)) {
-            drawerLayout.closeDrawers()
+        if (mainBinding.drawerLayout.isDrawerOpen(mainBinding.navigationView)) {
+            mainBinding.drawerLayout.closeDrawers()
             return true
         }
         return super.handleBackPress() || currentFragment.handleBackPress()
@@ -328,12 +322,12 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
 
     override fun onPanelExpanded(view: View) {
         super.onPanelExpanded(view)
-        drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
+        mainBinding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
     }
 
     override fun onPanelCollapsed(view: View) {
         super.onPanelCollapsed(view)
-        drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
+        mainBinding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
     }
 
     private fun showIntro() {
@@ -381,7 +375,7 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
         val primaryColor = ThemeColor.primaryColor(this)
         val accentColor = ThemeColor.accentColor(this)
 
-        floatingActionButton.backgroundTintList = ColorStateList(
+        mainBinding.addNewItem.backgroundTintList = ColorStateList(
             arrayOf(
                 intArrayOf(android.R.attr.state_activated),
                 intArrayOf(android.R.attr.state_pressed),
@@ -393,11 +387,11 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
         )
 //        floatingActionButton.rippleColor = accentColor
 
-        floatingActionButton.setOnClickListener { currentFragment.handleFloatingActionButtonPress() }
+        mainBinding.addNewItem.setOnClickListener { currentFragment.handleFloatingActionButtonPress() }
     }
 
     fun setFloatingActionButtonVisibility(visibility: Int) {
-        floatingActionButton.visibility = visibility
+        mainBinding.addNewItem.visibility = visibility
     }
 
     override fun onDestroy() {
