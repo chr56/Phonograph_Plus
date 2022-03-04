@@ -27,8 +27,7 @@ import player.phonograph.dialogs.ChangelogDialog
 import player.phonograph.dialogs.UpgradeDialog
 import player.phonograph.notification.UpgradeNotification
 import player.phonograph.settings.Setting
-import player.phonograph.ui.activities.base.ThemeActivity
-import player.phonograph.ui.activities.base.ToolbarActivity
+import lib.phonograph.activity.ToolbarActivity
 import player.phonograph.ui.activities.bugreport.BugReportActivity
 import player.phonograph.ui.activities.intro.AppIntroActivity
 import util.mdcolor.pref.ThemeColor

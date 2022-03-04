@@ -4,6 +4,7 @@
 
 -keep class lib.phonograph.view.** {*;}
 -keep class lib.phonograph.preference.** {*;}
+-keepclasseswithmembernames class lib.phonograph.activity.** {*;}
 
 -keep class player.phonograph.preferences.** {*;}
 -keep class player.phonograph.views.** {*;}

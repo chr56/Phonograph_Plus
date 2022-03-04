@@ -29,8 +29,7 @@ import org.eclipse.egit.github.core.service.IssueService
 import player.phonograph.R
 import player.phonograph.databinding.ActivityBugReportBinding
 import player.phonograph.misc.DialogAsyncTask
-import player.phonograph.ui.activities.base.ThemeActivity
-import player.phonograph.ui.activities.base.ToolbarActivity
+import lib.phonograph.activity.ToolbarActivity
 import player.phonograph.ui.activities.bugreport.model.DeviceInfo
 import player.phonograph.ui.activities.bugreport.model.Report
 import player.phonograph.ui.activities.bugreport.model.github.ExtraInfo

@@ -1,25 +1,22 @@
-package player.phonograph.ui.activities.base
+/*
+ * Copyright (c) 2022 chr_56 & Abou Zeid (kabouzeid) (original author)
+ */
+
+package lib.phonograph.activity
 
 import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.os.Handler
-import android.view.Menu
 import android.view.View
 import androidx.annotation.ColorInt
-import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.appcompat.app.WindowDecorActionBar
-import androidx.appcompat.widget.Toolbar
-import androidx.appcompat.widget.ToolbarWidgetWrapper
 import player.phonograph.R
 import player.phonograph.settings.Setting
 import player.phonograph.util.Util
 import util.mdcolor.pref.ThemeColor
 import util.mddesign.core.Themer
 import util.mddesign.util.ColorUtil
-import util.mddesign.util.MenuTinter
 
 // todo remove Platform check
 

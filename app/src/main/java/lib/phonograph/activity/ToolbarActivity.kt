@@ -2,7 +2,7 @@
  * Copyright (c) 2022 chr_56 & Abou Zeid (kabouzeid) (original author)
  */
 
-package player.phonograph.ui.activities.base
+package lib.phonograph.activity
 
 import android.graphics.drawable.ColorDrawable
 import android.view.Menu
