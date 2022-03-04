@@ -18,7 +18,7 @@ import util.mdcolor.pref.ThemeColor
 /**
  * @author Karim Abou Zeid (kabouzeid)
  */
-open class PermissionActivity : ToolbarActivity() {
+open class PermissionActivity : ThemeActivity() {
 
     private var permissions: Array<String>? = null
     protected open fun getPermissionsToRequest(): Array<String>? = null

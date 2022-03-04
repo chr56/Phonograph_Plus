@@ -50,6 +50,7 @@ import java.util.List;
 import java.util.Map;
 
 import kotlin.Unit;
+import lib.phonograph.activity.ToolbarActivity;
 import player.phonograph.R;
 import player.phonograph.misc.DialogAsyncTask;
 import player.phonograph.misc.SimpleObservableScrollViewCallbacks;
@@ -65,7 +66,7 @@ import util.mddesign.util.ToolbarColorUtil;
 /**
  * @author Karim Abou Zeid (kabouzeid)
  */
-public abstract class AbsTagEditorActivity extends PermissionActivity {
+public abstract class AbsTagEditorActivity extends ToolbarActivity {
 
     public static final String EXTRA_ID = "extra_id";
     public static final String EXTRA_PALETTE = "extra_palette";

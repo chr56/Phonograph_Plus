@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import lib.phonograph.activity.PermissionActivity;
+import lib.phonograph.activity.ToolbarActivity;
 import player.phonograph.R;
 import player.phonograph.helper.MusicPlayerRemote;
 import player.phonograph.interfaces.MusicServiceEventListener;
@@ -27,7 +28,7 @@ import player.phonograph.service.MusicService;
 /**
  * @author Karim Abou Zeid (kabouzeid)
  */
-public abstract class AbsMusicServiceActivity extends PermissionActivity implements MusicServiceEventListener {
+public abstract class AbsMusicServiceActivity extends ToolbarActivity implements MusicServiceEventListener {
 
     private final List<MusicServiceEventListener> mMusicServiceEventListeners = new ArrayList<>();
 

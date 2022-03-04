@@ -17,7 +17,7 @@ import util.mddesign.util.MenuTinter
  * An abstract class providing material activity with toolbar
  * @author Karim Abou Zeid (kabouzeid)
  */
-abstract class ToolbarActivity : ThemeActivity() {
+abstract class ToolbarActivity : PermissionActivity() {
 
     //
     // Toolbar & Actionbar
