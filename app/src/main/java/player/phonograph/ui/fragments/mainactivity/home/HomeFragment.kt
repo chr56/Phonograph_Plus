@@ -144,8 +144,6 @@ class HomeFragment : AbsMainActivityFragment(), MainActivity.MainActivityFragmen
         return false
     }
 
-    override fun handleFloatingActionButtonPress(): Boolean = false
-
     /**
      *     the popup window for [AbsDisplayPage]
      */

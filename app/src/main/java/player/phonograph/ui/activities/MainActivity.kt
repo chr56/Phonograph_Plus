@@ -88,8 +88,6 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
         showIntro()
         checkUpdate()
         showChangelog()
-
-        setUpFloatingActionButton()
     }
 
     override fun createContentView(): View {
@@ -370,30 +368,6 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
 
     interface MainActivityFragmentCallbacks {
         fun handleBackPress(): Boolean
-        fun handleFloatingActionButtonPress(): Boolean
-    }
-
-    private fun setUpFloatingActionButton() {
-        val primaryColor = ThemeColor.primaryColor(this)
-        val accentColor = ThemeColor.accentColor(this)
-
-        mainBinding.addNewItem.backgroundTintList = ColorStateList(
-            arrayOf(
-                intArrayOf(android.R.attr.state_activated),
-                intArrayOf(android.R.attr.state_pressed),
-                intArrayOf(),
-            ),
-            intArrayOf(
-                ColorUtil.lightenColor(primaryColor), accentColor, primaryColor
-            )
-        )
-//        floatingActionButton.rippleColor = accentColor
-
-        mainBinding.addNewItem.setOnClickListener { currentFragment.handleFloatingActionButtonPress() }
-    }
-
-    fun setFloatingActionButtonVisibility(visibility: Int) {
-        mainBinding.addNewItem.visibility = visibility
     }
 
     companion object {

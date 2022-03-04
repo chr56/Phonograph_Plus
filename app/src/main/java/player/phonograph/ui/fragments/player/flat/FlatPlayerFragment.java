@@ -347,9 +347,6 @@ public class FlatPlayerFragment extends AbsPlayerFragment implements PlayerAlbum
     @Override
     public void onShow() {
         playbackControlsFragment.show();
-        FragmentActivity activity = getActivity();
-        if (activity instanceof MainActivity)
-            ((MainActivity) activity).setFloatingActionButtonVisibility(View.GONE);
     }
 
     @Override

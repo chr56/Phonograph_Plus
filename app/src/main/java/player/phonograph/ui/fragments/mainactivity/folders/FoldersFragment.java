@@ -164,7 +164,6 @@ public class FoldersFragment extends AbsMainActivityFragment implements MainActi
         setUpRecyclerView();
         setUpAdapter();
 
-        getMainActivity().setFloatingActionButtonVisibility(View.GONE);
     }
 
     private void setUpAppbarColor() {
@@ -507,10 +506,6 @@ public class FoldersFragment extends AbsMainActivityFragment implements MainActi
         updateAdapter(new LinkedList<>());
     }
 
-    @Override
-    public boolean handleFloatingActionButtonPress() {
-        return false;
-    }
 
     private static class AsyncFileLoader extends WrappedAsyncTaskLoader<List<File>> {
         private WeakReference<FoldersFragment> fragmentWeakReference;
