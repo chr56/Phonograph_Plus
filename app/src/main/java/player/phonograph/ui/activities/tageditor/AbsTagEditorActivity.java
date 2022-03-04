@@ -54,7 +54,7 @@ import player.phonograph.R;
 import player.phonograph.misc.DialogAsyncTask;
 import player.phonograph.misc.SimpleObservableScrollViewCallbacks;
 import player.phonograph.misc.UpdateToastMediaScannerCompletionListener;
-import player.phonograph.ui.activities.base.PermissionActivity;
+import lib.phonograph.activity.PermissionActivity;
 import player.phonograph.util.MusicUtil;
 import player.phonograph.util.Util;
 import util.mdcolor.pref.ThemeColor;

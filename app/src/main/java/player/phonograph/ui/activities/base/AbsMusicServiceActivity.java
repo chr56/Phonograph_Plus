@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.media.AudioManager;
 import android.os.Bundle;
 import android.os.IBinder;
 
@@ -17,6 +18,7 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
+import lib.phonograph.activity.PermissionActivity;
 import player.phonograph.R;
 import player.phonograph.helper.MusicPlayerRemote;
 import player.phonograph.interfaces.MusicServiceEventListener;
@@ -47,6 +49,8 @@ public abstract class AbsMusicServiceActivity extends PermissionActivity impleme
                 AbsMusicServiceActivity.this.onServiceDisconnected();
             }
         });
+
+        setVolumeControlStream(AudioManager.STREAM_MUSIC);
 
         setPermissionDeniedMessage(getString(R.string.permission_external_storage_denied));
 //        setupHandler();

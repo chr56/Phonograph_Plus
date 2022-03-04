@@ -56,7 +56,6 @@ abstract class ThemeActivity : AppCompatActivity() {
 //        else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) Util.setStatusBarTranslucent(window)
     }
 
-
     //
     // Status Bar
     //
@@ -117,4 +116,8 @@ abstract class ThemeActivity : AppCompatActivity() {
         setTaskDescriptionColor(ThemeColor.primaryColor(this))
     }
 
+    //
+    // SnackBar holder
+    //
+    protected open val snackBarContainer: View get() = window.decorView
 }

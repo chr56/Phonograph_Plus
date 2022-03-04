@@ -4,6 +4,7 @@
 
 package lib.phonograph.activity
 
+import android.view.KeyEvent
 import android.view.Menu
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.WindowDecorActionBar
@@ -70,4 +71,17 @@ abstract class ToolbarActivity : ThemeActivity() {
         MenuTinter.applyOverflowMenuTint(this, toolbar, ThemeColor.accentColor(this))
         return super.onPrepareOptionsMenu(menu)
     }
+
+    //
+    // Physics Keys
+    //
+
+    override fun dispatchKeyEvent(event: KeyEvent): Boolean {
+        if (event.keyCode == KeyEvent.KEYCODE_MENU && event.action == KeyEvent.ACTION_UP) {
+            showOverflowMenu()
+            return true
+        }
+        return super.dispatchKeyEvent(event)
+    }
+    protected open fun showOverflowMenu() {}
 }
