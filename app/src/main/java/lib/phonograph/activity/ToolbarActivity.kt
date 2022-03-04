@@ -4,7 +4,6 @@
 
 package lib.phonograph.activity
 
-import android.graphics.drawable.ColorDrawable
 import android.view.Menu
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.WindowDecorActionBar
@@ -19,26 +18,29 @@ import util.mddesign.util.MenuTinter
  */
 abstract class ToolbarActivity : ThemeActivity() {
 
-    private var toolbar: Toolbar? = null
-
     //
     // Toolbar & Actionbar
     //
+    protected var toolbar: Toolbar? = null
+        private set(value) {
+            field = value
+            super.setSupportActionBar(value)
+        }
+        get() {
+            return getSupportActionBarView(supportActionBar)
+        }
+
     override fun setSupportActionBar(toolbar: Toolbar?) {
         this.toolbar = toolbar
         super.setSupportActionBar(toolbar)
     }
 
-    protected fun getToolbar(): Toolbar? {
-        return getSupportActionBarView(supportActionBar)
-    }
-
-    fun getToolbarBackgroundColor(toolbar: Toolbar?): Int {
-        toolbar?.let {
-            if (toolbar.background is ColorDrawable) return (toolbar.background as ColorDrawable).color
-        }
-        return 0
-    }
+//    fun getToolbarBackgroundColor(toolbar: Toolbar?): Int {
+//        toolbar?.let {
+//            if (toolbar.background is ColorDrawable) return (toolbar.background as ColorDrawable).color
+//        }
+//        return 0
+//    }
 
     protected open fun getSupportActionBarView(ab: ActionBar?): Toolbar? {
         return if (ab == null || ab !is WindowDecorActionBar) null else try {
@@ -56,7 +58,6 @@ abstract class ToolbarActivity : ThemeActivity() {
         }
     }
 
-
     //
     // Menu (Tint)
     //
@@ -66,7 +67,7 @@ abstract class ToolbarActivity : ThemeActivity() {
     }
 
     override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
-        MenuTinter.applyOverflowMenuTint(this, getToolbar(), ThemeColor.accentColor(this))
+        MenuTinter.applyOverflowMenuTint(this, toolbar, ThemeColor.accentColor(this))
         return super.onPrepareOptionsMenu(menu)
     }
 }
