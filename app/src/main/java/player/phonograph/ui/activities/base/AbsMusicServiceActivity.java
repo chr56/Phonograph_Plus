@@ -25,7 +25,7 @@ import player.phonograph.service.MusicService;
 /**
  * @author Karim Abou Zeid (kabouzeid)
  */
-public abstract class AbsMusicServiceActivity extends AbsBaseActivity implements MusicServiceEventListener {
+public abstract class AbsMusicServiceActivity extends PermissionActivity implements MusicServiceEventListener {
 
     private final List<MusicServiceEventListener> mMusicServiceEventListeners = new ArrayList<>();
 

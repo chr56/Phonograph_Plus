@@ -3,13 +3,13 @@ package player.phonograph.ui.activities
 import android.os.Bundle
 import android.view.MenuItem
 import androidx.appcompat.widget.Toolbar
+import lib.phonograph.activity.ToolbarActivity
 import player.phonograph.R
-import player.phonograph.ui.activities.base.AbsBaseActivity
 import player.phonograph.ui.fragments.SettingsFragment
 import util.mdcolor.pref.ThemeColor
 import util.mddesign.core.Themer
 
-class SettingsActivity : AbsBaseActivity() {
+class SettingsActivity : ToolbarActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_preferences)

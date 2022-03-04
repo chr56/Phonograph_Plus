@@ -49,23 +49,23 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import util.mdcolor.pref.ThemeColor;
-import util.mddesign.util.ColorUtil;
-import util.mddesign.util.TintHelper;
-import util.mddesign.util.ToolbarColorUtil;
 import kotlin.Unit;
 import player.phonograph.R;
 import player.phonograph.misc.DialogAsyncTask;
 import player.phonograph.misc.SimpleObservableScrollViewCallbacks;
 import player.phonograph.misc.UpdateToastMediaScannerCompletionListener;
-import player.phonograph.ui.activities.base.AbsBaseActivity;
+import player.phonograph.ui.activities.base.PermissionActivity;
 import player.phonograph.util.MusicUtil;
 import player.phonograph.util.Util;
+import util.mdcolor.pref.ThemeColor;
+import util.mddesign.util.ColorUtil;
+import util.mddesign.util.TintHelper;
+import util.mddesign.util.ToolbarColorUtil;
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
  */
-public abstract class AbsTagEditorActivity extends AbsBaseActivity {
+public abstract class AbsTagEditorActivity extends PermissionActivity {
 
     public static final String EXTRA_ID = "extra_id";
     public static final String EXTRA_PALETTE = "extra_palette";
