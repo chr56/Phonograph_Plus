@@ -1,310 +1,271 @@
-package player.phonograph.ui.activities.base;
+package player.phonograph.ui.activities.base
 
-import android.animation.ArgbEvaluator;
-import android.animation.ValueAnimator;
-import android.annotation.SuppressLint;
-import android.os.Build;
-import android.os.Bundle;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
-import android.view.animation.PathInterpolator;
-
-import androidx.annotation.ColorInt;
-import androidx.annotation.FloatRange;
-import androidx.annotation.LayoutRes;
-import androidx.fragment.app.Fragment;
-
-import com.sothree.slidinguppanel.SlidingUpPanelLayout;
-
-import player.phonograph.R;
-import player.phonograph.helper.MusicPlayerRemote;
-import player.phonograph.settings.Setting;
-import player.phonograph.ui.fragments.player.AbsPlayerFragment;
-import player.phonograph.ui.fragments.player.MiniPlayerFragment;
-import player.phonograph.ui.fragments.player.NowPlayingScreen;
-import player.phonograph.ui.fragments.player.card.CardPlayerFragment;
-import player.phonograph.ui.fragments.player.flat.FlatPlayerFragment;
-import player.phonograph.util.ViewUtil;
+import android.animation.ArgbEvaluator
+import android.animation.ValueAnimator
+import android.animation.ValueAnimator.AnimatorUpdateListener
+import android.annotation.SuppressLint
+import android.os.Bundle
+import android.view.View
+import android.view.ViewGroup
+import android.view.ViewTreeObserver.OnGlobalLayoutListener
+import android.view.animation.PathInterpolator
+import androidx.annotation.ColorInt
+import androidx.annotation.FloatRange
+import androidx.annotation.LayoutRes
+import androidx.fragment.app.Fragment
+import com.sothree.slidinguppanel.SlidingUpPanelLayout
+import com.sothree.slidinguppanel.SlidingUpPanelLayout.PanelState
+import player.phonograph.R
+import player.phonograph.helper.MusicPlayerRemote
+import player.phonograph.settings.Setting
+import player.phonograph.ui.fragments.player.AbsPlayerFragment
+import player.phonograph.ui.fragments.player.MiniPlayerFragment
+import player.phonograph.ui.fragments.player.NowPlayingScreen
+import player.phonograph.ui.fragments.player.card.CardPlayerFragment
+import player.phonograph.ui.fragments.player.flat.FlatPlayerFragment
+import player.phonograph.util.ViewUtil
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
- * <p/>
- * Do not use {@link #setContentView(int)}. Instead wrap your layout with
- * {@link #wrapSlidingMusicPanel(int)} first and then return it in {@link #createContentView()}
+ *
+ *
+ * Do not use [.setContentView]. Instead wrap your layout with
+ * [.wrapSlidingMusicPanel] first and then return it in [.createContentView]
  */
-public abstract class AbsSlidingMusicPanelActivity extends AbsMusicServiceActivity implements SlidingUpPanelLayout.PanelSlideListener, CardPlayerFragment.Callbacks {
+abstract class AbsSlidingMusicPanelActivity :
+    AbsMusicServiceActivity(),
+    SlidingUpPanelLayout.PanelSlideListener,
+    AbsPlayerFragment.Callbacks {
 
-    SlidingUpPanelLayout slidingUpPanelLayout;
+    private lateinit var currentNowPlayingScreen: NowPlayingScreen
+    lateinit var slidingUpPanelLayout: SlidingUpPanelLayout
 
-    private int navigationbarColor;
-    private int taskColor;
-    private boolean lightStatusbar;
+    private var navigationbarColor = 0
+    private var taskColor = 0
+    private var lightStatusbar = false
 
-    private NowPlayingScreen currentNowPlayingScreen;
-    private AbsPlayerFragment playerFragment;
-    private MiniPlayerFragment miniPlayerFragment;
+    var playerFragment: AbsPlayerFragment? = null
+        private set
+    var miniPlayerFragment: MiniPlayerFragment? = null
+        private set
 
-    private ValueAnimator navigationBarColorAnimator;
-    private ArgbEvaluator argbEvaluator = new ArgbEvaluator();
+    private var navigationBarColorAnimator: ValueAnimator? = null
+    private val argbEvaluator = ArgbEvaluator()
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(createContentView());
-        slidingUpPanelLayout = findViewById(R.id.sliding_layout);
+    protected abstract fun createContentView(): View // ?
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
 
-        currentNowPlayingScreen = Setting.instance().getNowPlayingScreen();
-        Fragment fragment; // must implement AbsPlayerFragment
-        switch (currentNowPlayingScreen) {
-            case FLAT:
-                fragment = new FlatPlayerFragment();
-                break;
-            case CARD:
-            default:
-                fragment = new CardPlayerFragment();
-                break;
-        }
-        getSupportFragmentManager().beginTransaction().replace(R.id.player_fragment_container, fragment).commit();
-        getSupportFragmentManager().executePendingTransactions();
+        setContentView(createContentView())
 
-        playerFragment = (AbsPlayerFragment) getSupportFragmentManager().findFragmentById(R.id.player_fragment_container);
-        miniPlayerFragment = (MiniPlayerFragment) getSupportFragmentManager().findFragmentById(R.id.mini_player_fragment);
+        slidingUpPanelLayout = findViewById(R.id.sliding_layout)
+        currentNowPlayingScreen = Setting.instance.nowPlayingScreen
 
-        //noinspection ConstantConditions
-        miniPlayerFragment.getView().setOnClickListener(v -> expandPanel());
+        val fragment: Fragment =
+            when (currentNowPlayingScreen) {
+                NowPlayingScreen.FLAT -> FlatPlayerFragment()
+                NowPlayingScreen.CARD -> CardPlayerFragment()
+                else -> CardPlayerFragment()
+            } // must implement AbsPlayerFragment
 
-        slidingUpPanelLayout.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                slidingUpPanelLayout.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+        supportFragmentManager.beginTransaction().replace(R.id.player_fragment_container, fragment).commit()
+        supportFragmentManager.executePendingTransactions()
 
-                switch (getPanelState()) {
-                    case EXPANDED:
-                        onPanelSlide(slidingUpPanelLayout, 1);
-                        onPanelExpanded(slidingUpPanelLayout);
-                        break;
-                    case COLLAPSED:
-                        onPanelCollapsed(slidingUpPanelLayout);
-                        break;
-                    default:
-                        playerFragment.onHide();
-                        break;
+        playerFragment = supportFragmentManager.findFragmentById(R.id.player_fragment_container) as AbsPlayerFragment?
+
+        miniPlayerFragment = supportFragmentManager.findFragmentById(R.id.mini_player_fragment) as MiniPlayerFragment?
+        miniPlayerFragment!!.requireView().setOnClickListener { expandPanel() }
+
+        slidingUpPanelLayout.viewTreeObserver.addOnGlobalLayoutListener(object : OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                slidingUpPanelLayout.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                when (panelState) {
+                    PanelState.EXPANDED -> {
+                        onPanelSlide(slidingUpPanelLayout, 1f)
+                        onPanelExpanded(slidingUpPanelLayout)
+                    }
+                    PanelState.COLLAPSED -> onPanelCollapsed(slidingUpPanelLayout)
+                    else -> playerFragment!!.onHide()
                 }
             }
-        });
-        slidingUpPanelLayout.addPanelSlideListener(this);
+        })
+        slidingUpPanelLayout.addPanelSlideListener(this)
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        if (currentNowPlayingScreen != Setting.instance().getNowPlayingScreen()) {
-            postRecreate();
+    override fun onResume() {
+        super.onResume()
+        if (currentNowPlayingScreen != Setting.instance.nowPlayingScreen) {
+            postRecreate()
         }
     }
 
-    public void setAntiDragView(View antiDragView) {
-        slidingUpPanelLayout.setAntiDragView(antiDragView);
+    fun setAntiDragView(antiDragView: View?) {
+        slidingUpPanelLayout.setAntiDragView(antiDragView)
     }
 
-    protected abstract View createContentView();
-
-    @Override
-    public void onServiceConnected() {
-        super.onServiceConnected();
-        if (!MusicPlayerRemote.getPlayingQueue().isEmpty()) {
-            slidingUpPanelLayout.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-                @Override
-                public void onGlobalLayout() {
-                    slidingUpPanelLayout.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                    hideBottomBar(false);
+    override fun onServiceConnected() {
+        super.onServiceConnected()
+        if (MusicPlayerRemote.getPlayingQueue().isNotEmpty()) {
+            slidingUpPanelLayout.viewTreeObserver.addOnGlobalLayoutListener(object : OnGlobalLayoutListener {
+                override fun onGlobalLayout() {
+                    slidingUpPanelLayout.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                    hideBottomBar(false)
                 }
-            });
+            })
         } // don't call hideBottomBar(true) here as it causes a bug with the SlidingUpPanelLayout
     }
 
-    @Override
-    public void onQueueChanged() {
-        super.onQueueChanged();
-        hideBottomBar(MusicPlayerRemote.getPlayingQueue().isEmpty());
+    override fun onQueueChanged() {
+        super.onQueueChanged()
+        hideBottomBar(MusicPlayerRemote.getPlayingQueue().isEmpty())
     }
 
-    @Override
-    public void onPanelSlide(View panel, @FloatRange(from = 0, to = 1) float slideOffset) {
-        setMiniPlayerAlphaProgress(slideOffset);
-        if (navigationBarColorAnimator != null) navigationBarColorAnimator.cancel();
-        super.setNavigationbarColor((int) argbEvaluator.evaluate(slideOffset, navigationbarColor, playerFragment.getPaletteColor()));
+    override fun onPanelSlide(panel: View, @FloatRange(from = 0.0, to = 1.0) slideOffset: Float) {
+        setMiniPlayerAlphaProgress(slideOffset)
+        if (navigationBarColorAnimator != null) navigationBarColorAnimator!!.cancel()
+        super.setNavigationbarColor(argbEvaluator.evaluate(slideOffset, navigationbarColor, playerFragment!!.paletteColor) as Int)
     }
 
-    @Override
-    public void onPanelStateChanged(View panel, SlidingUpPanelLayout.PanelState previousState, SlidingUpPanelLayout.PanelState newState) {
-        switch (newState) {
-            case COLLAPSED:
-                onPanelCollapsed(panel);
-                break;
-            case EXPANDED:
-                onPanelExpanded(panel);
-                break;
-            case ANCHORED:
-                collapsePanel(); // this fixes a bug where the panel would get stuck for some reason
-                break;
+    override fun onPanelStateChanged(panel: View, previousState: PanelState, newState: PanelState) {
+        when (newState) {
+            PanelState.COLLAPSED -> onPanelCollapsed(panel)
+            PanelState.EXPANDED -> onPanelExpanded(panel)
+            PanelState.ANCHORED -> collapsePanel() // this fixes a bug where the panel would get stuck for some reason
+            else -> {}
         }
     }
 
-    public void onPanelCollapsed(View panel) {
+    open fun onPanelCollapsed(panel: View?) {
         // restore values
-        super.setLightStatusbar(lightStatusbar);
-        super.setTaskDescriptionColor(taskColor);
-        super.setNavigationbarColor(navigationbarColor);
-
-        playerFragment.setMenuVisibility(false);
-        playerFragment.setUserVisibleHint(false);
-        playerFragment.onHide();
+        super.setLightStatusbar(lightStatusbar)
+        super.setTaskDescriptionColor(taskColor)
+        super.setNavigationbarColor(navigationbarColor)
+        playerFragment!!.setMenuVisibility(false)
+        playerFragment!!.userVisibleHint = false
+        playerFragment!!.onHide()
     }
 
-    public void onPanelExpanded(View panel) {
+    open fun onPanelExpanded(panel: View?) {
         // setting fragments values
-        int playerFragmentColor = playerFragment.getPaletteColor();
-        super.setLightStatusbar(false);
-        super.setTaskDescriptionColor(playerFragmentColor);
-        super.setNavigationbarColor(playerFragmentColor);
-
-        playerFragment.setMenuVisibility(true);
-        playerFragment.setUserVisibleHint(true);
-        playerFragment.onShow();
+        val playerFragmentColor = playerFragment!!.paletteColor
+        super.setLightStatusbar(false)
+        super.setTaskDescriptionColor(playerFragmentColor)
+        super.setNavigationbarColor(playerFragmentColor)
+        playerFragment!!.setMenuVisibility(true)
+        playerFragment!!.userVisibleHint = true
+        playerFragment!!.onShow()
     }
 
-    private void setMiniPlayerAlphaProgress(@FloatRange(from = 0, to = 1) float progress) {
-        if (miniPlayerFragment.getView() == null) return;
-        float alpha = 1 - progress;
-        miniPlayerFragment.getView().setAlpha(alpha);
+    private fun setMiniPlayerAlphaProgress(@FloatRange(from = 0.0, to = 1.0) progress: Float) {
+        if (miniPlayerFragment!!.view == null) return
+        val alpha = 1 - progress
+        miniPlayerFragment!!.requireView().alpha = alpha
         // necessary to make the views below clickable
-        miniPlayerFragment.getView().setVisibility(alpha == 0 ? View.GONE : View.VISIBLE);
+        miniPlayerFragment!!.requireView().visibility = if (alpha == 0f) View.GONE else View.VISIBLE
     }
 
+    val panelState: PanelState?
+        get() = if (slidingUpPanelLayout == null) null else slidingUpPanelLayout.panelState
 
-    public SlidingUpPanelLayout.PanelState getPanelState() {
-        return slidingUpPanelLayout == null ? null : slidingUpPanelLayout.getPanelState();
+    fun collapsePanel() {
+        slidingUpPanelLayout.panelState = PanelState.COLLAPSED
     }
 
-    public void collapsePanel() {
-        slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+    fun expandPanel() {
+        slidingUpPanelLayout.panelState = PanelState.EXPANDED
     }
 
-    public void expandPanel() {
-        slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.EXPANDED);
-    }
-
-    public void hideBottomBar(final boolean hide) {
+    fun hideBottomBar(hide: Boolean) {
         if (hide) {
-            slidingUpPanelLayout.setPanelHeight(0);
-            collapsePanel();
+            slidingUpPanelLayout.panelHeight = 0
+            collapsePanel()
         } else {
-            slidingUpPanelLayout.setPanelHeight(getResources().getDimensionPixelSize(R.dimen.mini_player_height));
+            slidingUpPanelLayout.panelHeight = resources.getDimensionPixelSize(R.dimen.mini_player_height)
         }
     }
 
-    protected View wrapSlidingMusicPanel(@LayoutRes int resId) {
-        @SuppressLint("InflateParams")
-        View slidingMusicPanelLayout = getLayoutInflater().inflate(R.layout.sliding_music_panel_layout, null);
-        ViewGroup contentContainer = slidingMusicPanelLayout.findViewById(R.id.content_container);
-        getLayoutInflater().inflate(resId, contentContainer);
-        return slidingMusicPanelLayout;
+    protected fun wrapSlidingMusicPanel(@LayoutRes resId: Int): View {
+        @SuppressLint("InflateParams") val slidingMusicPanelLayout = layoutInflater.inflate(R.layout.sliding_music_panel_layout, null)
+        val contentContainer = slidingMusicPanelLayout.findViewById<ViewGroup>(R.id.content_container)
+        layoutInflater.inflate(resId, contentContainer)
+        return slidingMusicPanelLayout
     }
 
-    protected View wrapSlidingMusicPanel(View view) {
-        @SuppressLint("InflateParams")
-        View slidingMusicPanelLayout = getLayoutInflater().inflate(R.layout.sliding_music_panel_layout, null);
-        ViewGroup contentContainer = slidingMusicPanelLayout.findViewById(R.id.content_container);
-        contentContainer.addView(view);
-//        getLayoutInflater().inflate(resId, contentContainer);
-        return slidingMusicPanelLayout;
+    protected fun wrapSlidingMusicPanel(view: View?): View {
+        @SuppressLint("InflateParams") val slidingMusicPanelLayout = layoutInflater.inflate(R.layout.sliding_music_panel_layout, null)
+        val contentContainer = slidingMusicPanelLayout.findViewById<ViewGroup>(R.id.content_container)
+        contentContainer.addView(view)
+        //        getLayoutInflater().inflate(resId, contentContainer);
+        return slidingMusicPanelLayout
     }
 
-    @Override
-    public void onBackPressed() {
-        if (!handleBackPress())
-            super.onBackPressed();
+    override fun onBackPressed() {
+        if (!handleBackPress()) super.onBackPressed()
     }
 
-    public boolean handleBackPress() {
-        if (slidingUpPanelLayout.getPanelHeight() != 0 && playerFragment.onBackPressed())
-            return true;
-        if (getPanelState() == SlidingUpPanelLayout.PanelState.EXPANDED) {
-            collapsePanel();
-            return true;
+    open fun handleBackPress(): Boolean {
+        if (slidingUpPanelLayout.panelHeight != 0 && playerFragment!!.onBackPressed()) return true
+        if (panelState == PanelState.EXPANDED) {
+            collapsePanel()
+            return true
         }
-        return false;
+        return false
     }
 
-    @Override
-    public void onPaletteColorChanged() {
-        if (getPanelState() == SlidingUpPanelLayout.PanelState.EXPANDED) {
-            int playerFragmentColor = playerFragment.getPaletteColor();
-            super.setTaskDescriptionColor(playerFragmentColor);
-            animateNavigationBarColor(playerFragmentColor);
+    override fun onPaletteColorChanged() {
+        if (panelState == PanelState.EXPANDED) {
+            val playerFragmentColor = playerFragment!!.paletteColor
+            super.setTaskDescriptionColor(playerFragmentColor)
+            animateNavigationBarColor(playerFragmentColor)
         }
     }
 
-    @Override
-    public void setLightStatusbar(boolean enabled) {
-        lightStatusbar = enabled;
-        if (getPanelState() == SlidingUpPanelLayout.PanelState.COLLAPSED) {
-            super.setLightStatusbar(enabled);
+    override fun setLightStatusbar(enabled: Boolean) {
+        lightStatusbar = enabled
+        if (panelState == PanelState.COLLAPSED) {
+            super.setLightStatusbar(enabled)
         }
     }
 
-    @Override
-    public void setNavigationbarColor(int color) {
-        this.navigationbarColor = color;
-        if (getPanelState() == SlidingUpPanelLayout.PanelState.COLLAPSED) {
-            if (navigationBarColorAnimator != null) navigationBarColorAnimator.cancel();
-            super.setNavigationbarColor(color);
+    override fun setNavigationbarColor(color: Int) {
+        navigationbarColor = color
+        if (panelState == PanelState.COLLAPSED) {
+            if (navigationBarColorAnimator != null) navigationBarColorAnimator!!.cancel()
+            super.setNavigationbarColor(color)
         }
     }
 
-    private void animateNavigationBarColor(int color) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            if (navigationBarColorAnimator != null) navigationBarColorAnimator.cancel();
-            navigationBarColorAnimator = ValueAnimator
-                    .ofArgb(getWindow().getNavigationBarColor(), color)
-                    .setDuration(ViewUtil.PHONOGRAPH_ANIM_TIME);
-            navigationBarColorAnimator.setInterpolator(new PathInterpolator(0.4f, 0f, 1f, 1f));
-            navigationBarColorAnimator.addUpdateListener(animation -> AbsSlidingMusicPanelActivity.super.setNavigationbarColor((Integer) animation.getAnimatedValue()));
-            navigationBarColorAnimator.start();
+    private fun animateNavigationBarColor(color: Int) {
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        if (navigationBarColorAnimator != null) navigationBarColorAnimator!!.cancel()
+        navigationBarColorAnimator = ValueAnimator
+            .ofArgb(window.navigationBarColor, color)
+            .setDuration(ViewUtil.PHONOGRAPH_ANIM_TIME.toLong())
+        navigationBarColorAnimator!!.interpolator = PathInterpolator(0.4f, 0f, 1f, 1f)
+        navigationBarColorAnimator!!.addUpdateListener(
+            AnimatorUpdateListener { animation: ValueAnimator ->
+                super@AbsSlidingMusicPanelActivity.setNavigationbarColor(
+                    (animation.animatedValue as Int)
+                )
+            }
+        )
+        navigationBarColorAnimator!!.start()
+        //        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        if (navigationBarColorAnimator != null) navigationBarColorAnimator!!.cancel() // just in case
+    }
+
+    override fun setTaskDescriptionColor(@ColorInt color: Int) {
+        taskColor = color
+        if (panelState == null || panelState == PanelState.COLLAPSED) {
+            super.setTaskDescriptionColor(color)
         }
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (navigationBarColorAnimator != null) navigationBarColorAnimator.cancel(); // just in case
-    }
-
-    @Override
-    public void setTaskDescriptionColor(@ColorInt int color) {
-        this.taskColor = color;
-        if (getPanelState() == null || getPanelState() == SlidingUpPanelLayout.PanelState.COLLAPSED) {
-            super.setTaskDescriptionColor(color);
-        }
-    }
-
-    @Override
-    protected View getSnackBarContainer() {
-        return findViewById(R.id.content_container);
-    }
-
-    public SlidingUpPanelLayout getSlidingUpPanelLayout() {
-        return slidingUpPanelLayout;
-    }
-
-    public MiniPlayerFragment getMiniPlayerFragment() {
-        return miniPlayerFragment;
-    }
-
-    public AbsPlayerFragment getPlayerFragment() {
-        return playerFragment;
-    }
+    override val snackBarContainer: View
+        protected get() = findViewById(R.id.content_container)
 }

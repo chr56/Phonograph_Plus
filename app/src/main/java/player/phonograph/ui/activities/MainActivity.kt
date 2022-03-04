@@ -2,7 +2,6 @@ package player.phonograph.ui.activities
 
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.content.res.ColorStateList
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -16,7 +15,6 @@ import android.widget.Toast
 import androidx.drawerlayout.widget.DrawerLayout
 import com.bumptech.glide.Glide
 import com.sothree.slidinguppanel.SlidingUpPanelLayout
-import kotlinx.coroutines.*
 import legacy.phonograph.JunkCleaner
 import player.phonograph.*
 import player.phonograph.Updater.checkUpdate
@@ -45,7 +43,6 @@ import player.phonograph.util.MusicUtil
 import player.phonograph.util.SAFCallbackHandlerActivity
 import player.phonograph.util.SafLauncher
 import util.mdcolor.pref.ThemeColor
-import util.mddesign.util.ColorUtil
 import util.mddesign.util.NavigationViewUtil
 import util.mddesign.util.Util as MDthemerUtil
 
@@ -320,13 +317,13 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
         return id
     }
 
-    override fun onPanelExpanded(view: View) {
-        super.onPanelExpanded(view)
+    override fun onPanelExpanded(panel: View?) {
+        super.onPanelExpanded(panel)
         mainBinding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
     }
 
-    override fun onPanelCollapsed(view: View) {
-        super.onPanelCollapsed(view)
+    override fun onPanelCollapsed(panel: View?) {
+        super.onPanelCollapsed(panel)
         mainBinding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
     }
 
