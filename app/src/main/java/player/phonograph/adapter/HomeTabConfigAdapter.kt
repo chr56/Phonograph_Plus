@@ -16,8 +16,8 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import player.phonograph.App
 import player.phonograph.R
-import player.phonograph.util.SwipeAndDragHelper
-import player.phonograph.util.SwipeAndDragHelper.ActionCompletionContract
+import util.phonograph.misc.SwipeAndDragHelper
+import util.phonograph.misc.SwipeAndDragHelper.ActionCompletionContract
 import java.lang.IllegalStateException
 import java.lang.StringBuilder
 
