@@ -1,10 +1,10 @@
-package player.phonograph.lastfm.rest;
+package util.phonograph.lastfm.rest;
 
 import android.content.Context;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import player.phonograph.lastfm.rest.service.LastFMService;
+import util.phonograph.lastfm.rest.service.LastFMService;
 
 import java.io.File;
 import java.util.Locale;

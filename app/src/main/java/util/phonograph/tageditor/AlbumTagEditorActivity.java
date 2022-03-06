@@ -36,22 +36,22 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 
-import util.mddesign.util.ToolbarColorUtil;
-import util.mddesign.util.Util;
 import player.phonograph.R;
 import player.phonograph.databinding.ActivityAlbumTagEditorBinding;
 import player.phonograph.glide.SongGlideRequest;
 import player.phonograph.glide.palette.BitmapPaletteWrapper;
-import player.phonograph.lastfm.rest.LastFMRestClient;
-import player.phonograph.lastfm.rest.model.LastFmAlbum;
 import player.phonograph.loader.AlbumLoader;
 import player.phonograph.model.Song;
 import player.phonograph.util.ImageUtil;
-import player.phonograph.util.LastFMUtil;
+import util.phonograph.lastfm.rest.LastFMUtil;
 import player.phonograph.util.PhonographColorUtil;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import util.mddesign.util.ToolbarColorUtil;
+import util.mddesign.util.Util;
+import util.phonograph.lastfm.rest.LastFMRestClient;
+import util.phonograph.lastfm.rest.model.LastFmAlbum;
 
 public class AlbumTagEditorActivity extends AbsTagEditorActivity implements TextWatcher {
 

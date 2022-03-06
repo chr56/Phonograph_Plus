@@ -1,9 +1,9 @@
-package player.phonograph.lastfm.rest.service;
+package util.phonograph.lastfm.rest.service;
 
 import androidx.annotation.Nullable;
 
-import player.phonograph.lastfm.rest.model.LastFmAlbum;
-import player.phonograph.lastfm.rest.model.LastFmArtist;
+import util.phonograph.lastfm.rest.model.LastFmAlbum;
+import util.phonograph.lastfm.rest.model.LastFmArtist;
 
 import retrofit2.Call;
 import retrofit2.http.GET;

@@ -1,4 +1,4 @@
-package player.phonograph.lastfm.rest.model;
+package util.phonograph.lastfm.rest.model;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -6,23 +6,23 @@ import com.google.gson.annotations.SerializedName;
 import java.util.ArrayList;
 import java.util.List;
 
-public class LastFmArtist {
+public class LastFmAlbum {
     @Expose
-    private Artist artist;
+    private Album album;
 
-    public Artist getArtist() {
-        return artist;
+    public Album getAlbum() {
+        return album;
     }
 
-    public void setArtist(Artist artist) {
-        this.artist = artist;
+    public void setAlbum(Album album) {
+        this.album = album;
     }
 
-    public static class Artist {
+    public static class Album {
         @Expose
         private List<Image> image = new ArrayList<>();
         @Expose
-        private Bio bio;
+        private Wiki wiki;
 
         public List<Image> getImage() {
             return image;
@@ -32,15 +32,13 @@ public class LastFmArtist {
             this.image = image;
         }
 
-        public Bio getBio() {
-            return bio;
+        public Wiki getWiki() { return wiki; }
+
+        public void setWiki(Wiki wiki) {
+            this.wiki = wiki;
         }
 
-        public void setBio(Bio bio) {
-            this.bio = bio;
-        }
-
-        public class Bio {
+        public class Wiki {
             @Expose
             private String content;
 

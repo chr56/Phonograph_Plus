@@ -1,7 +1,11 @@
-package player.phonograph.util;
+/*
+ * Copyright (c) 2022 chr_56 & Abou Zeid (kabouzeid) (original author)
+ */
 
-import player.phonograph.lastfm.rest.model.LastFmAlbum.Album;
-import player.phonograph.lastfm.rest.model.LastFmArtist.Artist;
+package util.phonograph.lastfm.rest;
+
+import util.phonograph.lastfm.rest.model.LastFmAlbum.Album;
+import util.phonograph.lastfm.rest.model.LastFmArtist.Artist;
 
 import java.util.HashMap;
 import java.util.List;
