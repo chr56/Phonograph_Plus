@@ -1,48 +1,46 @@
-package player.phonograph.util
+/*
+ * Copyright (c) 2022 chr_56
+ */
+
+package util.phonograph.misc
 
 import android.app.Activity
 import android.content.Context
 import android.os.Build
 import androidx.preference.Preference
-import util.mdcolor.MaterialColor
-import util.mdcolor.pref.ThemeColor
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.WhichButton
 import com.afollestad.materialdialogs.actions.getActionButton
 import com.afollestad.materialdialogs.color.colorChooser
 import player.phonograph.R
 import player.phonograph.appshortcuts.DynamicShortcutManager
+import util.mdcolor.MaterialColor
+import util.mdcolor.pref.ThemeColor
 
-class ColorChooserListener(context: Context, defautColor: Int, mode: Int) : Preference.OnPreferenceClickListener {
-    private var context: Context
-    private var defaultColor: Int = 0
-    private var mode: Int = 0
-
-    init {
-        this.defaultColor = defautColor
-        this.context = context
-        this.mode = mode
-    }
+class ColorChooserListener(private var context: Context, private var defaultColor: Int = 0, private var mode: Int = 0) : Preference.OnPreferenceClickListener {
 
     override fun onPreferenceClick(preference: Preference): Boolean {
-        val dialog = MaterialDialog(context)
-            .title(R.string.pref_header_colors)
-            .colorChooser(colors = colors, subColors = subColors, allowCustomArgb = true, initialSelection = defaultColor) { _, color ->
-                val editor = ThemeColor.editTheme(context)
-                when (mode) {
-                    MODE_PRIMARY_COLOR -> editor.primaryColor(color)
-                    MODE_ACCENT_COLOR -> editor.accentColor(color)
-                    0 -> return@colorChooser
+        val dialog =
+            MaterialDialog(context)
+                .title(R.string.pref_header_colors)
+                .colorChooser(colors = colors, subColors = subColors, allowCustomArgb = true, initialSelection = defaultColor) { _, color ->
+                    val editor = ThemeColor.editTheme(context)
+                    when (mode) {
+                        MODE_PRIMARY_COLOR -> editor.primaryColor(color)
+                        MODE_ACCENT_COLOR -> editor.accentColor(color)
+                        0 -> return@colorChooser
+                    }
+                    editor.commit()
+
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
+                        DynamicShortcutManager(context).updateDynamicShortcuts()
+                    }
                 }
-                editor.commit()
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
-                    DynamicShortcutManager(context).updateDynamicShortcuts()
+                .positiveButton(res = android.R.string.ok) {
+                    (context as Activity).recreate() // todo
                 }
-            }
-            .positiveButton(res = android.R.string.ok) {
-                (context as Activity).recreate()
-            }
-            .negativeButton(res = android.R.string.cancel)
+                .negativeButton(res = android.R.string.cancel)
+
         // set button color
         dialog.getActionButton(WhichButton.POSITIVE).updateTextColor(ThemeColor.accentColor(context))
         dialog.getActionButton(WhichButton.NEGATIVE).updateTextColor(ThemeColor.accentColor(context))
@@ -58,7 +56,7 @@ class ColorChooserListener(context: Context, defautColor: Int, mode: Int) : Pref
     }
 
     // Color Preset
-    val colors: IntArray = intArrayOf(
+    private val colors: IntArray = intArrayOf(
         MaterialColor.Red._A400.asColor,
         MaterialColor.Pink._A400.asColor,
         MaterialColor.Purple._A400.asColor,
@@ -79,7 +77,7 @@ class ColorChooserListener(context: Context, defautColor: Int, mode: Int) : Pref
         MaterialColor.BlueGrey._600.asColor,
         MaterialColor.Grey._600.asColor
     )
-    val subColors = arrayOf(
+    private val subColors = arrayOf(
         intArrayOf(
             MaterialColor.Red._50.asColor,
             MaterialColor.Red._100.asColor,

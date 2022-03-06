@@ -25,7 +25,7 @@ import player.phonograph.R
 import player.phonograph.appshortcuts.DynamicShortcutManager
 import player.phonograph.preferences.*
 import player.phonograph.settings.Setting
-import player.phonograph.util.ColorChooserListener
+import util.phonograph.misc.ColorChooserListener
 import player.phonograph.util.NavigationUtil
 import util.mdcolor.pref.ThemeColor
 import util.mddesign.util.ColorUtil
