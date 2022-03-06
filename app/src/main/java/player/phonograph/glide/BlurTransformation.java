@@ -21,7 +21,7 @@ import java.nio.charset.Charset;
 import java.security.MessageDigest;
 
 import player.phonograph.BuildConfig;
-import player.phonograph.helper.StackBlur;
+import util.phonograph.misc.StackBlur;
 import player.phonograph.util.ImageUtil;
 
 /**
