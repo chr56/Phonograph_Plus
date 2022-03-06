@@ -1,27 +1,28 @@
-package player.phonograph.appwidgets;
+package player.phonograph.appwidgets
 
-import android.appwidget.AppWidgetManager;
-import android.content.BroadcastReceiver;
-import android.content.ComponentName;
-import android.content.Context;
-import android.content.Intent;
-import android.os.Build;
+import android.appwidget.AppWidgetManager
+import android.content.BroadcastReceiver
+import android.content.ComponentName
+import android.content.Context
+import android.content.Intent
+import android.os.Build
+import player.phonograph.service.MusicService
 
-import player.phonograph.service.MusicService;
+class BootReceiver : BroadcastReceiver() {
 
-public class BootReceiver extends BroadcastReceiver {
-    @Override
-    public void onReceive(final Context context, Intent intent) {
-        final AppWidgetManager widgetManager = AppWidgetManager.getInstance(context);
+    override fun onReceive(context: Context, intent: Intent) {
+        val widgetManager = AppWidgetManager.getInstance(context)
 
         // Start music service if there are any existing widgets
-        if (widgetManager.getAppWidgetIds(new ComponentName(context, AppWidgetBig.class)).length > 0 ||
-                widgetManager.getAppWidgetIds(new ComponentName(context, AppWidgetClassic.class)).length > 0 ||
-                widgetManager.getAppWidgetIds(new ComponentName(context, AppWidgetSmall.class)).length > 0 ||
-                widgetManager.getAppWidgetIds(new ComponentName(context, AppWidgetCard.class)).length > 0) {
-            final Intent serviceIntent = new Intent(context, MusicService.class);
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) { // not allowed on Oreo
-                context.startService(serviceIntent);
+        if (widgetManager.getAppWidgetIds(ComponentName(context, AppWidgetBig::class.java)).isNotEmpty() ||
+            widgetManager.getAppWidgetIds(ComponentName(context, AppWidgetClassic::class.java)).isNotEmpty() ||
+            widgetManager.getAppWidgetIds(ComponentName(context, AppWidgetSmall::class.java)).isNotEmpty() ||
+            widgetManager.getAppWidgetIds(ComponentName(context, AppWidgetCard::class.java)).isNotEmpty()
+        ) {
+            val serviceIntent = Intent(context, MusicService::class.java)
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+                // not allowed on Oreo
+                context.startService(serviceIntent)
             }
         }
     }

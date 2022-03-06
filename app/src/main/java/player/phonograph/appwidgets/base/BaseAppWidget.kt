@@ -1,142 +1,93 @@
-package player.phonograph.appwidgets.base;
+package player.phonograph.appwidgets.base
 
-import android.app.PendingIntent;
-import android.appwidget.AppWidgetManager;
-import android.appwidget.AppWidgetProvider;
-import android.content.ComponentName;
-import android.content.Context;
-import android.content.Intent;
-import android.content.res.Resources;
-import android.graphics.Bitmap;
-import android.graphics.BitmapShader;
-import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.graphics.Path;
-import android.graphics.RectF;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
-import android.os.Build;
-import android.widget.RemoteViews;
+import android.app.PendingIntent
+import android.appwidget.AppWidgetManager
+import android.appwidget.AppWidgetProvider
+import android.content.ComponentName
+import android.content.Context
+import android.content.Intent
+import android.content.res.Resources
+import android.graphics.*
+import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.Drawable
+import android.os.Build
+import android.widget.RemoteViews
+import androidx.core.content.res.ResourcesCompat
+import player.phonograph.R
+import player.phonograph.model.Song
+import player.phonograph.service.MusicService
+import player.phonograph.util.MusicUtil
 
-import player.phonograph.R;
-import player.phonograph.model.Song;
-import player.phonograph.service.MusicService;
-import player.phonograph.util.MusicUtil;
-
-public abstract class BaseAppWidget extends AppWidgetProvider {
-    public static final String NAME = "app_widget";
+abstract class BaseAppWidget : AppWidgetProvider() {
 
     /**
-     * {@inheritDoc}
+     * @see android.appwidget.AppWidgetProvider.onUpdate
      */
-    @Override
-    public void onUpdate(final Context context, final AppWidgetManager appWidgetManager,
-                         final int[] appWidgetIds) {
-        defaultAppWidget(context, appWidgetIds);
-        final Intent updateIntent = new Intent(MusicService.APP_WIDGET_UPDATE);
-        updateIntent.putExtra(MusicService.EXTRA_APP_WIDGET_NAME, NAME);
-        updateIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, appWidgetIds);
-        updateIntent.addFlags(Intent.FLAG_RECEIVER_REGISTERED_ONLY);
-        context.sendBroadcast(updateIntent);
+    override fun onUpdate(context: Context, appWidgetManager: AppWidgetManager, appWidgetIds: IntArray) {
+        defaultAppWidget(context, appWidgetIds)
+        val updateIntent =
+            Intent(MusicService.APP_WIDGET_UPDATE).apply {
+                putExtra(MusicService.EXTRA_APP_WIDGET_NAME, NAME)
+                putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, appWidgetIds)
+                addFlags(Intent.FLAG_RECEIVER_REGISTERED_ONLY)
+            }
+        context.sendBroadcast(updateIntent)
     }
 
     /**
      * Handle a change notification coming over from
-     * {@link MusicService}
+     * [MusicService]
      */
-    public void notifyChange(final MusicService service, final String what) {
+    fun notifyChange(service: MusicService, what: String) {
         if (hasInstances(service)) {
-            if (MusicService.META_CHANGED.equals(what) || MusicService.PLAY_STATE_CHANGED.equals(what)) {
-                performUpdate(service, null);
+            if (MusicService.META_CHANGED == what || MusicService.PLAY_STATE_CHANGED == what) {
+                performUpdate(service, null)
             }
         }
     }
 
-    protected void pushUpdate(final Context context, final int[] appWidgetIds, final RemoteViews views) {
-        final AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
-        if (appWidgetIds != null) {
-            appWidgetManager.updateAppWidget(appWidgetIds, views);
-        } else {
-            appWidgetManager.updateAppWidget(new ComponentName(context, getClass()), views);
-        }
-    }
-
     /**
-     * Check against {@link AppWidgetManager} if there are any instances of this
+     * Check against [AppWidgetManager] if there are any instances of this
      * widget.
      */
-    protected boolean hasInstances(final Context context) {
-        final AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
-        final int[] mAppWidgetIds = appWidgetManager.getAppWidgetIds(new ComponentName(context,
-                getClass()));
-        return mAppWidgetIds.length > 0;
+    protected fun hasInstances(context: Context): Boolean {
+        val mAppWidgetIds =
+            AppWidgetManager.getInstance(context)
+                .getAppWidgetIds(ComponentName(context, javaClass))
+        return mAppWidgetIds.isNotEmpty()
     }
 
-    protected PendingIntent buildPendingIntent(Context context, final String action, final ComponentName serviceName) {
-        Intent intent = new Intent(action);
-        intent.setComponent(serviceName);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            return PendingIntent.getForegroundService(context, 0, intent, PendingIntent.FLAG_IMMUTABLE);
+    protected fun pushUpdate(context: Context?, appWidgetIds: IntArray?, views: RemoteViews?) {
+        val appWidgetManager = AppWidgetManager.getInstance(context)
+        if (appWidgetIds != null) {
+            appWidgetManager.updateAppWidget(appWidgetIds, views)
         } else {
-            return PendingIntent.getService(context, 0, intent, PendingIntent.FLAG_IMMUTABLE);
+            appWidgetManager.updateAppWidget(ComponentName(context!!, javaClass), views)
         }
     }
 
-    protected static Bitmap createRoundedBitmap(Drawable drawable, int width, int height, float tl, float tr, float bl, float br) {
-        if (drawable == null) return null;
+    protected fun buildPendingIntent(context: Context?, action: String?, serviceName: ComponentName?): PendingIntent {
+        val intent = Intent(action).apply { component = serviceName }
 
-        Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
-        Canvas c = new Canvas(bitmap);
-        drawable.setBounds(0, 0, width, height);
-        drawable.draw(c);
-
-        Bitmap rounded = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
-
-        Canvas canvas = new Canvas(rounded);
-        Paint paint = new Paint();
-        paint.setShader(new BitmapShader(bitmap, BitmapShader.TileMode.CLAMP, BitmapShader.TileMode.CLAMP));
-        paint.setAntiAlias(true);
-        canvas.drawPath(composeRoundedRectPath(new RectF(0, 0, width, height), tl, tr, bl, br), paint);
-
-        return rounded;
-    }
-
-    protected static Path composeRoundedRectPath(RectF rect, float tl, float tr, float bl, float br) {
-        Path path = new Path();
-        tl = tl < 0 ? 0 : tl;
-        tr = tr < 0 ? 0 : tr;
-        bl = bl < 0 ? 0 : bl;
-        br = br < 0 ? 0 : br;
-
-        path.moveTo(rect.left + tl, rect.top);
-        path.lineTo(rect.right - tr, rect.top);
-        path.quadTo(rect.right, rect.top, rect.right, rect.top + tr);
-        path.lineTo(rect.right, rect.bottom - br);
-        path.quadTo(rect.right, rect.bottom, rect.right - br, rect.bottom);
-        path.lineTo(rect.left + bl, rect.bottom);
-        path.quadTo(rect.left, rect.bottom, rect.left, rect.bottom - bl);
-        path.lineTo(rect.left, rect.top + tl);
-        path.quadTo(rect.left, rect.top, rect.left + tl, rect.top);
-        path.close();
-
-        return path;
-    }
-
-    abstract protected void defaultAppWidget(final Context context, final int[] appWidgetIds);
-
-    abstract public void performUpdate(final MusicService service, final int[] appWidgetIds);
-
-    protected Drawable getAlbumArtDrawable(final Resources resources, final Bitmap bitmap) {
-        Drawable image;
-        if (bitmap == null) {
-            image = resources.getDrawable(R.drawable.default_album_art);
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            PendingIntent.getForegroundService(context, 0, intent, PendingIntent.FLAG_IMMUTABLE)
         } else {
-            image = new BitmapDrawable(resources, bitmap);
+            PendingIntent.getService(context, 0, intent, PendingIntent.FLAG_IMMUTABLE)
         }
-        return image;
     }
 
-    protected String getSongArtistAndAlbum(final Song song) {
-        return MusicUtil.getSongInfoString(song);
+    protected abstract fun defaultAppWidget(context: Context, appWidgetIds: IntArray)
+
+    abstract fun performUpdate(service: MusicService?, appWidgetIds: IntArray?)
+    protected fun getAlbumArtDrawable(resources: Resources?, bitmap: Bitmap?): Drawable? {
+        return bitmap?.let { BitmapDrawable(resources, it) } ?: ResourcesCompat.getDrawable(resources!!, R.drawable.default_album_art, null)
+    }
+
+    protected fun getSongArtistAndAlbum(song: Song?): String {
+        return MusicUtil.getSongInfoString(song!!)
+    }
+
+    companion object {
+        const val NAME = "app_widget"
     }
 }

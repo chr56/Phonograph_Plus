@@ -1,156 +1,189 @@
-package player.phonograph.appwidgets;
+package player.phonograph.appwidgets
 
-import android.app.PendingIntent;
-import android.content.ComponentName;
-import android.content.Context;
-import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.Point;
-import android.graphics.drawable.Drawable;
-import android.text.TextUtils;
-import android.view.View;
-import android.widget.RemoteViews;
+import android.app.PendingIntent
+import android.content.ComponentName
+import android.content.Context
+import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.drawable.Drawable
+import android.text.TextUtils
+import android.view.View
+import android.widget.RemoteViews
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.target.SimpleTarget
+import com.bumptech.glide.request.target.Target
+import com.bumptech.glide.request.transition.Transition
+import player.phonograph.R
+import player.phonograph.appwidgets.base.BaseAppWidget
+import player.phonograph.glide.SongGlideRequest
+import player.phonograph.service.MusicService
+import player.phonograph.ui.activities.MainActivity
+import player.phonograph.util.ImageUtil
+import player.phonograph.util.Util.getScreenSize
+import util.mddesign.util.MaterialColorHelper
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.target.SimpleTarget;
-import com.bumptech.glide.request.target.Target;
-import com.bumptech.glide.request.transition.Transition;
-
-import util.mddesign.util.MaterialColorHelper;
-import player.phonograph.R;
-import player.phonograph.appwidgets.base.BaseAppWidget;
-import player.phonograph.glide.SongGlideRequest;
-import player.phonograph.model.Song;
-import player.phonograph.service.MusicService;
-import player.phonograph.ui.activities.MainActivity;
-import player.phonograph.util.ImageUtil;
-import player.phonograph.util.Util;
-
-public class AppWidgetBig extends BaseAppWidget {
-    public static final String NAME = "app_widget_big";
-
-    private static AppWidgetBig mInstance;
-    private Target<Bitmap> target; // for cancellation
-
-    public static synchronized AppWidgetBig getInstance() {
-        if (mInstance == null) {
-            mInstance = new AppWidgetBig();
-        }
-        return mInstance;
-    }
+class AppWidgetBig : BaseAppWidget() {
+    private var target: Target<Bitmap>? = null // for cancellation
 
     /**
      * Initialize given widgets to default state, where we launch Music on
      * default click and hide actions if service not running.
      */
-    protected void defaultAppWidget(final Context context, final int[] appWidgetIds) {
-        final RemoteViews appWidgetView = new RemoteViews(context.getPackageName(), R.layout.app_widget_big);
-
-        appWidgetView.setViewVisibility(R.id.media_titles, View.INVISIBLE);
-        appWidgetView.setImageViewResource(R.id.image, R.drawable.default_album_art);
-        appWidgetView.setImageViewBitmap(R.id.button_next, ImageUtil.createBitmap(ImageUtil.getTintedVectorDrawable(context, R.drawable.ic_skip_next_white_24dp, MaterialColorHelper.getPrimaryTextColor(context, false))));
-        appWidgetView.setImageViewBitmap(R.id.button_prev, ImageUtil.createBitmap(ImageUtil.getTintedVectorDrawable(context, R.drawable.ic_skip_previous_white_24dp, MaterialColorHelper.getPrimaryTextColor(context, false))));
-        appWidgetView.setImageViewBitmap(R.id.button_toggle_play_pause, ImageUtil.createBitmap(ImageUtil.getTintedVectorDrawable(context, R.drawable.ic_play_arrow_white_24dp, MaterialColorHelper.getPrimaryTextColor(context, false))));
-
-        linkButtons(context, appWidgetView);
-        pushUpdate(context, appWidgetIds, appWidgetView);
+    override fun defaultAppWidget(context: Context, appWidgetIds: IntArray) {
+        val appWidgetView = RemoteViews(context.packageName, R.layout.app_widget_big)
+        appWidgetView.setViewVisibility(R.id.media_titles, View.INVISIBLE)
+        appWidgetView.setImageViewResource(R.id.image, R.drawable.default_album_art)
+        appWidgetView.setImageViewBitmap(
+            R.id.button_next,
+            ImageUtil.createBitmap(
+                ImageUtil.getTintedVectorDrawable(
+                    context, R.drawable.ic_skip_next_white_24dp, MaterialColorHelper.getPrimaryTextColor(context, false)
+                )
+            )
+        )
+        appWidgetView.setImageViewBitmap(
+            R.id.button_prev,
+            ImageUtil.createBitmap(
+                ImageUtil.getTintedVectorDrawable(
+                    context, R.drawable.ic_skip_previous_white_24dp, MaterialColorHelper.getPrimaryTextColor(context, false)
+                )
+            )
+        )
+        appWidgetView.setImageViewBitmap(
+            R.id.button_toggle_play_pause,
+            ImageUtil.createBitmap(
+                ImageUtil.getTintedVectorDrawable(
+                    context, R.drawable.ic_play_arrow_white_24dp, MaterialColorHelper.getPrimaryTextColor(context, false)
+                )
+            )
+        )
+        linkButtons(context, appWidgetView)
+        pushUpdate(context, appWidgetIds, appWidgetView)
     }
 
     /**
      * Update all active widget instances by pushing changes
      */
-    public void performUpdate(final MusicService service, final int[] appWidgetIds) {
-        final RemoteViews appWidgetView = new RemoteViews(service.getPackageName(), R.layout.app_widget_big);
-
-        final boolean isPlaying = service.isPlaying();
-        final Song song = service.getCurrentSong();
+    override fun performUpdate(service: MusicService?, appWidgetIds: IntArray?) {
+        val appWidgetView = RemoteViews(service!!.packageName, R.layout.app_widget_big)
+        val isPlaying = service.isPlaying
+        val song = service.currentSong
 
         // Set the titles and artwork
         if (TextUtils.isEmpty(song.title) && TextUtils.isEmpty(song.artistName)) {
-            appWidgetView.setViewVisibility(R.id.media_titles, View.INVISIBLE);
+            appWidgetView.setViewVisibility(R.id.media_titles, View.INVISIBLE)
         } else {
-            appWidgetView.setViewVisibility(R.id.media_titles, View.VISIBLE);
-            appWidgetView.setTextViewText(R.id.title, song.title);
-            appWidgetView.setTextViewText(R.id.text, getSongArtistAndAlbum(song));
+            appWidgetView.setViewVisibility(R.id.media_titles, View.VISIBLE)
+            appWidgetView.setTextViewText(R.id.title, song.title)
+            appWidgetView.setTextViewText(R.id.text, getSongArtistAndAlbum(song))
         }
 
         // Set correct drawable for pause state
-        int playPauseRes = isPlaying ? R.drawable.ic_pause_white_24dp : R.drawable.ic_play_arrow_white_24dp;
-        appWidgetView.setImageViewBitmap(R.id.button_toggle_play_pause, ImageUtil.createBitmap(ImageUtil.getTintedVectorDrawable(service, playPauseRes, MaterialColorHelper.getPrimaryTextColor(service, false))));
+        val playPauseRes = if (isPlaying) R.drawable.ic_pause_white_24dp else R.drawable.ic_play_arrow_white_24dp
+        appWidgetView.setImageViewBitmap(
+            R.id.button_toggle_play_pause,
+            ImageUtil.createBitmap(
+                ImageUtil.getTintedVectorDrawable(
+                    service, playPauseRes, MaterialColorHelper.getPrimaryTextColor(service, false)
+                )
+            )
+        )
 
         // Set prev/next button drawables
-        appWidgetView.setImageViewBitmap(R.id.button_next, ImageUtil.createBitmap(ImageUtil.getTintedVectorDrawable(service, R.drawable.ic_skip_next_white_24dp, MaterialColorHelper.getPrimaryTextColor(service, false))));
-        appWidgetView.setImageViewBitmap(R.id.button_prev, ImageUtil.createBitmap(ImageUtil.getTintedVectorDrawable(service, R.drawable.ic_skip_previous_white_24dp, MaterialColorHelper.getPrimaryTextColor(service, false))));
+        appWidgetView.setImageViewBitmap(
+            R.id.button_next,
+            ImageUtil.createBitmap(
+                ImageUtil.getTintedVectorDrawable(
+                    service, R.drawable.ic_skip_next_white_24dp, MaterialColorHelper.getPrimaryTextColor(service, false)
+                )
+            )
+        )
+        appWidgetView.setImageViewBitmap(
+            R.id.button_prev,
+            ImageUtil.createBitmap(
+                ImageUtil.getTintedVectorDrawable(
+                    service, R.drawable.ic_skip_previous_white_24dp, MaterialColorHelper.getPrimaryTextColor(service, false)
+                )
+            )
+        )
 
         // Link actions buttons to intents
-        linkButtons(service, appWidgetView);
+        linkButtons(service, appWidgetView)
 
         // Load the album cover async and push the update on completion
-        Point p = Util.getScreenSize(service);
-        final int widgetImageSize = Math.min(p.x, p.y);
-        final Context appContext = service.getApplicationContext();
-        service.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                if (target != null) {
-                    Glide.with(service).clear(target);
-                }
-                target = SongGlideRequest.Builder.from(Glide.with(appContext), song)
-                        .checkIgnoreMediaStore(appContext)
-                        .asBitmap().build()
-                        .into(new SimpleTarget<Bitmap>(widgetImageSize, widgetImageSize) {
-                            @Override
-                            public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
-                                update(resource);
-                            }
-
-                            @Override
-                            public void onLoadFailed(Drawable errorDrawable) {
-                                super.onLoadFailed(errorDrawable);
-                                update(null);
-                            }
-
-                            private void update(@Nullable Bitmap bitmap) {
-                                if (bitmap == null) {
-                                    appWidgetView.setImageViewResource(R.id.image, R.drawable.default_album_art);
-                                } else {
-                                    appWidgetView.setImageViewBitmap(R.id.image, bitmap);
-                                }
-                                pushUpdate(appContext, appWidgetIds, appWidgetView);
-                            }
-                        });
+        val p = getScreenSize(service)
+        val widgetImageSize = p.x.coerceAtMost(p.y)
+        val appContext = service.applicationContext
+        service.runOnUiThread {
+            if (target != null) {
+                Glide.with(service).clear(target)
             }
-        });
+            target =
+                SongGlideRequest.Builder
+                .from(Glide.with(appContext), song)
+                .checkIgnoreMediaStore(appContext)
+                .asBitmap().build()
+                .into(object : SimpleTarget<Bitmap?>(widgetImageSize, widgetImageSize) {
+                    override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap?>?) {
+                        update(resource)
+                    }
+
+                    override fun onLoadFailed(errorDrawable: Drawable?) {
+                        super.onLoadFailed(errorDrawable)
+                        update(null)
+                    }
+
+                    private fun update(bitmap: Bitmap?) {
+                        if (bitmap == null) {
+                            appWidgetView.setImageViewResource(R.id.image, R.drawable.default_album_art)
+                        } else {
+                            appWidgetView.setImageViewBitmap(R.id.image, bitmap)
+                        }
+                        pushUpdate(appContext, appWidgetIds, appWidgetView)
+                    }
+                }) as Target<Bitmap>?
+        }
     }
 
     /**
-     * Link up various button actions using {@link PendingIntent}.
+     * Link up various button actions using [PendingIntent].
      */
-    private void linkButtons(final Context context, final RemoteViews views) {
-        Intent action;
-        PendingIntent pendingIntent;
-
-        final ComponentName serviceName = new ComponentName(context, MusicService.class);
+    private fun linkButtons(context: Context?, views: RemoteViews) {
+        val action: Intent
+        var pendingIntent: PendingIntent?
+        val serviceName = ComponentName(context!!, MusicService::class.java)
 
         // Home
-        action = new Intent(context, MainActivity.class);
-        action.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        pendingIntent = PendingIntent.getActivity(context, 0, action, PendingIntent.FLAG_IMMUTABLE);
-        views.setOnClickPendingIntent(R.id.clickable_area, pendingIntent);
+        action = Intent(context, MainActivity::class.java)
+        action.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+        pendingIntent = PendingIntent.getActivity(context, 0, action, PendingIntent.FLAG_IMMUTABLE)
+        views.setOnClickPendingIntent(R.id.clickable_area, pendingIntent)
 
         // Previous track
-        pendingIntent = buildPendingIntent(context, MusicService.ACTION_REWIND, serviceName);
-        views.setOnClickPendingIntent(R.id.button_prev, pendingIntent);
+        pendingIntent = buildPendingIntent(context, MusicService.ACTION_REWIND, serviceName)
+        views.setOnClickPendingIntent(R.id.button_prev, pendingIntent)
 
         // Play and pause
-        pendingIntent = buildPendingIntent(context, MusicService.ACTION_TOGGLE_PAUSE, serviceName);
-        views.setOnClickPendingIntent(R.id.button_toggle_play_pause, pendingIntent);
+        pendingIntent = buildPendingIntent(context, MusicService.ACTION_TOGGLE_PAUSE, serviceName)
+        views.setOnClickPendingIntent(R.id.button_toggle_play_pause, pendingIntent)
 
         // Next track
-        pendingIntent = buildPendingIntent(context, MusicService.ACTION_SKIP, serviceName);
-        views.setOnClickPendingIntent(R.id.button_next, pendingIntent);
+        pendingIntent = buildPendingIntent(context, MusicService.ACTION_SKIP, serviceName)
+        views.setOnClickPendingIntent(R.id.button_next, pendingIntent)
+    }
+
+    companion object {
+        const val NAME = "app_widget_big"
+        private var mInstance: AppWidgetBig? = null
+
+        @JvmStatic
+        @get:Synchronized
+        val instance: AppWidgetBig?
+            get() {
+                if (mInstance == null) {
+                    mInstance = AppWidgetBig()
+                }
+                return mInstance
+            }
     }
 }
