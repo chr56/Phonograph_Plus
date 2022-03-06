@@ -1,7 +1,6 @@
 package player.phonograph.appwidgets
 
 import android.app.PendingIntent
-import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
@@ -32,41 +31,21 @@ class AppWidgetSmall : BaseAppWidget() {
      */
     override fun defaultAppWidget(context: Context, appWidgetIds: IntArray) {
         val appWidgetView = RemoteViews(context.packageName, R.layout.app_widget_small)
-        appWidgetView.setViewVisibility(R.id.media_titles, View.INVISIBLE)
-        appWidgetView.setImageViewResource(R.id.image, R.drawable.default_album_art)
-        appWidgetView.setImageViewBitmap(
-            R.id.button_next,
-            ImageUtil.createBitmap(
-                ImageUtil.getTintedVectorDrawable(
-                    context, R.drawable.ic_skip_next_white_24dp, MaterialColorHelper.getSecondaryTextColor(context, true)
-                )
-            )
-        )
-        appWidgetView.setImageViewBitmap(
-            R.id.button_prev,
-            ImageUtil.createBitmap(
-                ImageUtil.getTintedVectorDrawable(
-                    context, R.drawable.ic_skip_previous_white_24dp, MaterialColorHelper.getSecondaryTextColor(context, true)
-                )
-            )
-        )
-        appWidgetView.setImageViewBitmap(
-            R.id.button_toggle_play_pause,
-            ImageUtil.createBitmap(
-                ImageUtil.getTintedVectorDrawable(
-                    context, R.drawable.ic_play_arrow_white_24dp, MaterialColorHelper.getSecondaryTextColor(context, true)
-                )
-            )
-        )
-        linkButtons(context, appWidgetView)
+
+        setupDefaultPhonographWidgetAppearance(context, appWidgetView)
+        setupDefaultPhonographWidgetButtons(context, appWidgetView)
+
+        setupAdditionalWidgetAppearance(context, appWidgetView)
+        setupAdditionalWidgetButtons(context, appWidgetView)
+
         pushUpdate(context, appWidgetIds, appWidgetView)
     }
 
     /**
      * Update all active widget instances by pushing changes
      */
-    override fun performUpdate(service: MusicService?, appWidgetIds: IntArray?) {
-        val appWidgetView = RemoteViews(service!!.packageName, R.layout.app_widget_small)
+    override fun performUpdate(service: MusicService, appWidgetIds: IntArray?) {
+        val appWidgetView = RemoteViews(service.packageName, R.layout.app_widget_small)
         val isPlaying = service.isPlaying
         val song = service.currentSong
 
@@ -85,7 +64,8 @@ class AppWidgetSmall : BaseAppWidget() {
         }
 
         // Link actions buttons to intents
-        linkButtons(service, appWidgetView)
+        setupDefaultPhonographWidgetButtons(service, appWidgetView)
+        setupAdditionalWidgetButtons(service, appWidgetView)
         if (imageSize == 0) imageSize = service.resources.getDimensionPixelSize(R.dimen.app_widget_small_image_size)
         if (cardRadius == 0f) cardRadius = service.resources.getDimension(R.dimen.app_widget_card_radius)
 
@@ -151,32 +131,13 @@ class AppWidgetSmall : BaseAppWidget() {
         }
     }
 
-    /**
-     * Link up various button actions using [PendingIntent].
-     */
-    private fun linkButtons(context: Context?, views: RemoteViews) {
-        val action: Intent
-        var pendingIntent: PendingIntent?
-        val serviceName = ComponentName(context!!, MusicService::class.java)
-
+    override fun setupAdditionalWidgetButtons(context: Context, view: RemoteViews) {
         // Home
-        action = Intent(context, MainActivity::class.java)
-        action.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
-        pendingIntent = PendingIntent.getActivity(context, 0, action, PendingIntent.FLAG_IMMUTABLE)
-        views.setOnClickPendingIntent(R.id.image, pendingIntent)
-        views.setOnClickPendingIntent(R.id.media_titles, pendingIntent)
-
-        // Previous track
-        pendingIntent = buildPendingIntent(context, MusicService.ACTION_REWIND, serviceName)
-        views.setOnClickPendingIntent(R.id.button_prev, pendingIntent)
-
-        // Play and pause
-        pendingIntent = buildPendingIntent(context, MusicService.ACTION_TOGGLE_PAUSE, serviceName)
-        views.setOnClickPendingIntent(R.id.button_toggle_play_pause, pendingIntent)
-
-        // Next track
-        pendingIntent = buildPendingIntent(context, MusicService.ACTION_SKIP, serviceName)
-        views.setOnClickPendingIntent(R.id.button_next, pendingIntent)
+        val action = Intent(context, MainActivity::class.java)
+            .apply { flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP }
+        val pendingIntent = PendingIntent.getActivity(context, 0, action, PendingIntent.FLAG_IMMUTABLE)
+        view.setOnClickPendingIntent(R.id.image, pendingIntent)
+        view.setOnClickPendingIntent(R.id.media_titles, pendingIntent)
     }
 
     companion object {
@@ -187,12 +148,12 @@ class AppWidgetSmall : BaseAppWidget() {
 
         @JvmStatic
         @get:Synchronized
-        val instance: AppWidgetSmall?
+        val instance: AppWidgetSmall
             get() {
                 if (mInstance == null) {
                     mInstance = AppWidgetSmall()
                 }
-                return mInstance
+                return mInstance!!
             }
     }
 }

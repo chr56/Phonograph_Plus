@@ -4,14 +4,8 @@
 
 package player.phonograph.appwidgets
 
-import android.content.Context
 import android.graphics.*
 import android.graphics.drawable.Drawable
-import android.view.View
-import android.widget.RemoteViews
-import player.phonograph.R
-import player.phonograph.util.ImageUtil
-import util.mddesign.util.MaterialColorHelper
 
 object Util {
 
@@ -47,34 +41,5 @@ object Util {
         path.quadTo(rect.left, rect.top, rect.left + tl, rect.top)
         path.close()
         return path
-    }
-
-    fun RemoteViews.setDefaultPhonographWidgetAppearance(context: Context) {
-        this.setViewVisibility(R.id.media_titles, View.INVISIBLE)
-        this.setImageViewResource(R.id.image, R.drawable.default_album_art)
-        this.setImageViewBitmap(
-            R.id.button_next,
-            ImageUtil.createBitmap(
-                ImageUtil.getTintedVectorDrawable(
-                    context, R.drawable.ic_skip_next_white_24dp, MaterialColorHelper.getPrimaryTextColor(context, false)
-                )
-            )
-        )
-        this.setImageViewBitmap(
-            R.id.button_prev,
-            ImageUtil.createBitmap(
-                ImageUtil.getTintedVectorDrawable(
-                    context, R.drawable.ic_skip_previous_white_24dp, MaterialColorHelper.getPrimaryTextColor(context, false)
-                )
-            )
-        )
-        this.setImageViewBitmap(
-            R.id.button_toggle_play_pause,
-            ImageUtil.createBitmap(
-                ImageUtil.getTintedVectorDrawable(
-                    context, R.drawable.ic_play_arrow_white_24dp, MaterialColorHelper.getPrimaryTextColor(context, false)
-                )
-            )
-        )
     }
 }

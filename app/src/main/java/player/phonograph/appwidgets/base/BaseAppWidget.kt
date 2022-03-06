@@ -9,14 +9,16 @@ import android.content.Intent
 import android.content.res.Resources
 import android.graphics.*
 import android.graphics.drawable.BitmapDrawable
-import android.graphics.drawable.Drawable
 import android.os.Build
+import android.view.View
 import android.widget.RemoteViews
 import androidx.core.content.res.ResourcesCompat
 import player.phonograph.R
 import player.phonograph.model.Song
 import player.phonograph.service.MusicService
+import player.phonograph.util.ImageUtil
 import player.phonograph.util.MusicUtil
+import util.mddesign.util.MaterialColorHelper
 
 abstract class BaseAppWidget : AppWidgetProvider() {
 
@@ -57,16 +59,16 @@ abstract class BaseAppWidget : AppWidgetProvider() {
         return mAppWidgetIds.isNotEmpty()
     }
 
-    protected fun pushUpdate(context: Context?, appWidgetIds: IntArray?, views: RemoteViews?) {
+    protected fun pushUpdate(context: Context, appWidgetIds: IntArray?, views: RemoteViews) {
         val appWidgetManager = AppWidgetManager.getInstance(context)
         if (appWidgetIds != null) {
             appWidgetManager.updateAppWidget(appWidgetIds, views)
         } else {
-            appWidgetManager.updateAppWidget(ComponentName(context!!, javaClass), views)
+            appWidgetManager.updateAppWidget(ComponentName(context, javaClass), views)
         }
     }
 
-    protected fun buildPendingIntent(context: Context?, action: String?, serviceName: ComponentName?): PendingIntent {
+    private fun buildPendingIntent(context: Context, action: String, serviceName: ComponentName): PendingIntent {
         val intent = Intent(action).apply { component = serviceName }
 
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -77,15 +79,62 @@ abstract class BaseAppWidget : AppWidgetProvider() {
     }
 
     protected abstract fun defaultAppWidget(context: Context, appWidgetIds: IntArray)
+    abstract fun performUpdate(service: MusicService, appWidgetIds: IntArray?)
 
-    abstract fun performUpdate(service: MusicService?, appWidgetIds: IntArray?)
-    protected fun getAlbumArtDrawable(resources: Resources?, bitmap: Bitmap?): Drawable? {
-        return bitmap?.let { BitmapDrawable(resources, it) } ?: ResourcesCompat.getDrawable(resources!!, R.drawable.default_album_art, null)
+    fun setupDefaultPhonographWidgetAppearance(context: Context, view: RemoteViews) {
+
+        view.setViewVisibility(R.id.media_titles, View.INVISIBLE)
+        view.setImageViewResource(R.id.image, R.drawable.default_album_art)
+        view.setImageViewBitmap(
+            R.id.button_next,
+            ImageUtil.createBitmap(
+                ImageUtil.getTintedVectorDrawable(
+                    context, R.drawable.ic_skip_next_white_24dp, MaterialColorHelper.getPrimaryTextColor(context, false)
+                )
+            )
+        )
+        view.setImageViewBitmap(
+            R.id.button_prev,
+            ImageUtil.createBitmap(
+                ImageUtil.getTintedVectorDrawable(
+                    context, R.drawable.ic_skip_previous_white_24dp, MaterialColorHelper.getPrimaryTextColor(context, false)
+                )
+            )
+        )
+        view.setImageViewBitmap(
+            R.id.button_toggle_play_pause,
+            ImageUtil.createBitmap(
+                ImageUtil.getTintedVectorDrawable(
+                    context, R.drawable.ic_play_arrow_white_24dp, MaterialColorHelper.getPrimaryTextColor(context, false)
+                )
+            )
+        )
+    }
+    fun setupDefaultPhonographWidgetButtons(context: Context, view: RemoteViews) {
+        var pendingIntent: PendingIntent? = null
+        val serviceName = ComponentName(context, MusicService::class.java)
+
+        // Previous track
+        pendingIntent = buildPendingIntent(context, MusicService.ACTION_REWIND, serviceName)
+        view.setOnClickPendingIntent(R.id.button_prev, pendingIntent)
+
+        // Play and pause
+        pendingIntent = buildPendingIntent(context, MusicService.ACTION_TOGGLE_PAUSE, serviceName)
+        view.setOnClickPendingIntent(R.id.button_toggle_play_pause, pendingIntent)
+
+        // Next track
+        pendingIntent = buildPendingIntent(context, MusicService.ACTION_SKIP, serviceName)
+        view.setOnClickPendingIntent(R.id.button_next, pendingIntent)
     }
 
-    protected fun getSongArtistAndAlbum(song: Song?): String {
-        return MusicUtil.getSongInfoString(song!!)
-    }
+    open fun setupAdditionalWidgetAppearance(context: Context, view: RemoteViews) {}
+    open fun setupAdditionalWidgetButtons(context: Context, view: RemoteViews) {}
+
+    protected fun getAlbumArtDrawable(resources: Resources?, bitmap: Bitmap?) =
+        bitmap?.let { BitmapDrawable(resources, it) }
+            ?: ResourcesCompat.getDrawable(resources!!, R.drawable.default_album_art, null)
+
+    protected fun getSongArtistAndAlbum(song: Song): String = MusicUtil.getSongInfoString(song)
 
     companion object {
         const val NAME = "app_widget"
