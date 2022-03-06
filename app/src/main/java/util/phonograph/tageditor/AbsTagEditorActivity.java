@@ -1,4 +1,8 @@
-package player.phonograph.ui.activities.tageditor;
+/*
+ * Copyright (c) 2022 chr_56 & Abou Zeid (kabouzeid) (original author)
+ */
+
+package util.phonograph.tageditor;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -55,7 +59,6 @@ import player.phonograph.R;
 import player.phonograph.misc.DialogAsyncTask;
 import player.phonograph.misc.SimpleObservableScrollViewCallbacks;
 import player.phonograph.misc.UpdateToastMediaScannerCompletionListener;
-import lib.phonograph.activity.PermissionActivity;
 import player.phonograph.util.MusicUtil;
 import player.phonograph.util.Util;
 import util.mdcolor.pref.ThemeColor;

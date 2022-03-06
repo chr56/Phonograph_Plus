@@ -1,4 +1,8 @@
-package player.phonograph.ui.activities.tageditor;
+/*
+ * Copyright (c) 2022 chr_56 & Abou Zeid (kabouzeid) (original author)
+ */
+
+package util.phonograph.tageditor;
 
 import android.net.Uri;
 import android.os.Bundle;

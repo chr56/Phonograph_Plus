@@ -6,6 +6,9 @@
 -keep class lib.phonograph.preference.** {*;}
 -keepclasseswithmembernames class lib.phonograph.activity.** {*;}
 
+-keep,allowoptimization,allowshrinking class util.phonograph.tageditor.** {public <methods>;public <fields>;}
+
+
 -keep class player.phonograph.preferences.** {*;}
 -keep class player.phonograph.views.** {*;}
 -keep class player.phonograph.model.** {*;}

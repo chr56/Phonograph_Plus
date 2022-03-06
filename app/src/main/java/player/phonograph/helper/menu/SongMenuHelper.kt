@@ -14,8 +14,8 @@ import player.phonograph.dialogs.SongDetailDialog
 import player.phonograph.helper.MusicPlayerRemote
 import player.phonograph.interfaces.PaletteColorHolder
 import player.phonograph.model.Song
-import player.phonograph.ui.activities.tageditor.AbsTagEditorActivity
-import player.phonograph.ui.activities.tageditor.SongTagEditorActivity
+import util.phonograph.tageditor.AbsTagEditorActivity
+import util.phonograph.tageditor.SongTagEditorActivity
 import player.phonograph.util.BlacklistUtil
 import player.phonograph.util.MusicUtil
 import player.phonograph.util.NavigationUtil
