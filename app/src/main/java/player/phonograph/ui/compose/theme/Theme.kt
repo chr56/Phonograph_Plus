@@ -18,12 +18,12 @@ import player.phonograph.App
 import util.mdcolor.pref.ThemeColor
 
 @Composable
-fun Phonograph_PlusTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composable () -> Unit) {
+fun Phonograph_PlusTheme(darkTheme: Boolean = isSystemInDarkTheme(), previewMode: Boolean = false, content: @Composable () -> Unit) {
     val colors =
         if (darkTheme) {
-            colorsNight()
+            colorsNight(previewMode)
         } else {
-            colorsLight()
+            colorsLight(previewMode)
         }
 
     MaterialTheme(
@@ -34,28 +34,39 @@ fun Phonograph_PlusTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @C
     )
 }
 
-fun colorsLight(): Colors {
-    val accentColor = Color(ThemeColor.accentColor(App.instance))
-    val primaryColor = Color(ThemeColor.primaryColor(App.instance))
-    val primaryDarkenColor = Color(ThemeColor.statusBarColor(App.instance))
-
+fun colorsLight(previewMode: Boolean): Colors {
+    val cfg = getColorConfig(previewMode)
     return lightColors(
-        primary = primaryColor,
-        primaryVariant = primaryDarkenColor,
-        secondary = accentColor
+        primary = cfg[0],
+        primaryVariant = cfg[1],
+        secondary = cfg[2]
     )
 }
 
-fun colorsNight(): Colors {
-    val accentColor = Color(ThemeColor.accentColor(App.instance))
-    val primaryColor = Color(ThemeColor.primaryColor(App.instance))
-    val primaryDarkenColor = Color(ThemeColor.statusBarColor(App.instance))
-
+fun colorsNight(previewMode: Boolean): Colors {
+    val cfg = getColorConfig(previewMode)
     return darkColors(
-        primary = primaryColor,
-        primaryVariant = primaryDarkenColor,
-        secondary = accentColor
+        primary = cfg[0],
+        primaryVariant = cfg[1],
+        secondary = cfg[2]
     )
+}
+
+// todo
+fun getColorConfig(previewMode: Boolean = false): Array<Color> {
+    return if (previewMode) {
+        arrayOf(
+            Color(util.mdcolor.R.color.md_blue_A400),
+            Color(util.mdcolor.R.color.md_blue_900),
+            Color(util.mdcolor.R.color.md_yellow_900),
+        )
+    } else {
+        arrayOf(
+            Color(ThemeColor.primaryColor(App.instance)),
+            Color(ThemeColor.statusBarColor(App.instance)),
+            Color(ThemeColor.accentColor(App.instance)),
+        )
+    }
 }
 
 // Set of Material typography styles to start with
