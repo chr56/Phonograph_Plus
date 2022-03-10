@@ -9,11 +9,16 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import player.phonograph.R
 import player.phonograph.ui.compose.theme.Phonograph_PlusTheme
 
 class DetailActivity : ComponentActivity() {
@@ -21,32 +26,36 @@ class DetailActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             Phonograph_PlusTheme {
-                Column(modifier = Modifier.fillMaxSize()) {
-                    PhonographAppBar()
-                    Greeting("Android")
-                }
+                DetailActivityUI(title = getString(R.string.label_details))
             }
         }
     }
 }
 
 @Composable
-fun Greeting(name: String) {
-    Text(text = "Hello $name!")
-}
-
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview() {
-    Phonograph_PlusTheme {
-        Greeting("Android")
+fun DetailActivityUI(title: String) {
+    Column(modifier = Modifier.fillMaxSize()) {
+        PhonographAppBar(title)
+        Text(text = "Hello world!")
     }
 }
 
-@Preview(showBackground = true)
+@Preview(showBackground = true, showSystemUi = true)
 @Composable
-fun PhonographAppBar() {
-    Phonograph_PlusTheme {
-        TopAppBar {}
+fun PreviewUI() {
+    Phonograph_PlusTheme(previewMode = true) {
+        DetailActivityUI(title = "Detail")
     }
+}
+
+@Composable
+fun PhonographAppBar(title: String) {
+    TopAppBar(
+        title = { Text(title) },
+        navigationIcon = {
+            IconButton(onClick = { /*TODO*/ }) {
+                Icon(Icons.Default.ArrowBack, contentDescription = null)
+            }
+        }
+    )
 }
