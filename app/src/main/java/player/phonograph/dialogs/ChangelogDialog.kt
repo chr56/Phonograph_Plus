@@ -19,7 +19,7 @@ import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.settings.Setting
 import util.mdcolor.pref.ThemeColor
-import util.mddesign.util.ColorUtil
+import util.mdcolor.ColorUtil
 import util.mddesign.util.Util
 import java.io.BufferedReader
 import java.io.InputStreamReader

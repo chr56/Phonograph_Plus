@@ -31,7 +31,7 @@ import player.phonograph.ui.activities.SearchActivity
 import player.phonograph.ui.fragments.mainactivity.AbsMainActivityFragment
 import player.phonograph.util.PhonographColorUtil
 import util.mdcolor.pref.ThemeColor
-import util.mddesign.util.ColorUtil
+import util.mdcolor.ColorUtil
 import util.mddesign.util.MaterialColorHelper
 import java.lang.ref.WeakReference
 

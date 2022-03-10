@@ -5,7 +5,7 @@ import android.view.View
 import android.view.ViewGroup.MarginLayoutParams
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
-import util.mddesign.util.ColorUtil
+import util.mdcolor.ColorUtil
 import util.mddesign.util.MaterialColorHelper
 import com.bumptech.glide.Glide
 import player.phonograph.glide.PhonographColoredTarget

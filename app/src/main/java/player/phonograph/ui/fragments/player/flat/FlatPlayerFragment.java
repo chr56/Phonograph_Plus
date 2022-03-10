@@ -20,7 +20,6 @@ import android.widget.ImageView;
 import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -31,7 +30,7 @@ import com.h6ah4i.android.widget.advrecyclerview.utils.WrapperAdapterUtils;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import util.mdcolor.pref.ThemeColor;
-import util.mddesign.util.ColorUtil;
+import util.mdcolor.ColorUtil;
 import util.mddesign.util.ToolbarColorUtil;
 import player.phonograph.R;
 import player.phonograph.adapter.base.MediaEntryViewHolder;
@@ -43,7 +42,6 @@ import player.phonograph.helper.MusicPlayerRemote;
 import player.phonograph.helper.menu.SongMenuHelper;
 import player.phonograph.model.Song;
 import player.phonograph.model.lyrics.AbsLyrics;
-import player.phonograph.ui.activities.MainActivity;
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity;
 import player.phonograph.ui.fragments.player.AbsPlayerFragment;
 import player.phonograph.ui.fragments.player.PlayerAlbumCoverFragment;

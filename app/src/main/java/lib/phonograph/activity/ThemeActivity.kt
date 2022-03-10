@@ -16,7 +16,7 @@ import player.phonograph.settings.Setting
 import player.phonograph.util.Util
 import util.mdcolor.pref.ThemeColor
 import util.mddesign.core.Themer
-import util.mddesign.util.ColorUtil
+import util.mdcolor.ColorUtil
 
 // todo remove Platform check
 

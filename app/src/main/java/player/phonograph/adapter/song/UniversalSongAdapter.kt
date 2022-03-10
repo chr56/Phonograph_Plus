@@ -15,7 +15,7 @@ import androidx.appcompat.content.res.AppCompatResources
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.util.Pair
 import util.mdcolor.pref.ThemeColor
-import util.mddesign.util.ColorUtil
+import util.mdcolor.ColorUtil
 import util.mddesign.util.MaterialColorHelper
 import util.mddesign.util.TintHelper
 import com.bumptech.glide.Glide

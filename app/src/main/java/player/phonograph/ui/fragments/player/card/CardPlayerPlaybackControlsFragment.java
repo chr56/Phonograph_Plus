@@ -13,7 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.core.graphics.BlendModeColorFilterCompat;
 import androidx.core.graphics.BlendModeCompat;
 
-import util.mddesign.util.ColorUtil;
+import util.mdcolor.ColorUtil;
 import util.mddesign.util.MaterialColorHelper;
 import util.mddesign.util.TintHelper;
 import player.phonograph.R;

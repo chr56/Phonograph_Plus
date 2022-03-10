@@ -21,7 +21,7 @@ import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.target.Target;
 import com.bumptech.glide.request.transition.Transition;
 
-import util.mddesign.util.ColorUtil;
+import util.mdcolor.ColorUtil;
 import util.mddesign.util.MaterialColorHelper;
 import player.phonograph.R;
 import player.phonograph.glide.SongGlideRequest;

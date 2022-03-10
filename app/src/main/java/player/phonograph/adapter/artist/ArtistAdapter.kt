@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.util.Pair
-import util.mddesign.util.ColorUtil
+import util.mdcolor.ColorUtil
 import util.mddesign.util.MaterialColorHelper
 import com.bumptech.glide.Glide
 import player.phonograph.R

@@ -6,6 +6,8 @@ import androidx.annotation.CheckResult;
 import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
 
+import util.mdcolor.ColorUtil;
+
 public class ToolbarColorUtil {
     @CheckResult
     @ColorInt

@@ -24,7 +24,7 @@ import player.phonograph.model.Song
 import player.phonograph.settings.Setting
 import player.phonograph.util.MusicUtil
 import player.phonograph.util.NavigationUtil
-import util.mddesign.util.ColorUtil
+import util.mdcolor.ColorUtil
 import util.mddesign.util.MaterialColorHelper
 
 /**

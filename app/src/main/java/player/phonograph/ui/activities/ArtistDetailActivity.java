@@ -66,7 +66,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import util.mdcolor.pref.ThemeColor;
-import util.mddesign.util.ColorUtil;
+import util.mdcolor.ColorUtil;
 import util.mddesign.util.MaterialColorHelper;
 import util.mddesign.util.ToolbarColorUtil;
 import util.mddesign.util.Util;

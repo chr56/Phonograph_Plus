@@ -21,7 +21,7 @@ import android.widget.TextView;
 import player.phonograph.R;
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView;
 
-import util.mddesign.util.ColorUtil;
+import util.mdcolor.ColorUtil;
 import util.mddesign.util.MaterialColorHelper;
 
 /**

@@ -6,6 +6,8 @@ import android.content.res.TypedArray;
 import androidx.annotation.AttrRes;
 import androidx.annotation.NonNull;
 
+import util.mdcolor.ColorUtil;
+
 /**
  * @author Aidan Follestad (afollestad)
  */

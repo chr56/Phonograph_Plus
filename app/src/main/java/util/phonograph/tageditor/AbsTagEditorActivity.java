@@ -62,7 +62,7 @@ import player.phonograph.misc.UpdateToastMediaScannerCompletionListener;
 import player.phonograph.util.MusicUtil;
 import player.phonograph.util.Util;
 import util.mdcolor.pref.ThemeColor;
-import util.mddesign.util.ColorUtil;
+import util.mdcolor.ColorUtil;
 import util.mddesign.util.TintHelper;
 import util.mddesign.util.ToolbarColorUtil;
 

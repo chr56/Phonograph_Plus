@@ -1,4 +1,4 @@
-package util.mddesign.util;
+package util.mdcolor;
 
 import android.graphics.Color;
 

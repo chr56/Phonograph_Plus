@@ -28,7 +28,7 @@ import player.phonograph.settings.Setting
 import util.phonograph.misc.ColorChooserListener
 import player.phonograph.util.NavigationUtil
 import util.mdcolor.pref.ThemeColor
-import util.mddesign.util.ColorUtil
+import util.mdcolor.ColorUtil
 
 class SettingsFragment : PreferenceFragmentCompat() {
 

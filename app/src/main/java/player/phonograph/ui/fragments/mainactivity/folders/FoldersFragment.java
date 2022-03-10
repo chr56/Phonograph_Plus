@@ -45,7 +45,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import player.phonograph.settings.Setting;
-import util.mddesign.util.ColorUtil;
+import util.mdcolor.ColorUtil;
 import util.mddesign.util.MaterialColorHelper;
 import util.mddesign.util.TintHelper;
 import util.mddesign.util.ToolbarColorUtil;
