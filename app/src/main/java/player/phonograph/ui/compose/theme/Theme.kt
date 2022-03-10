@@ -68,7 +68,7 @@ fun colorsNight(previewMode: Boolean): Colors {
         onBackground = Color.White,
         onSurface = Color.White,
         onError = Color.Black,
-        isLight = false
+        isLight = true
     )
 }
 
