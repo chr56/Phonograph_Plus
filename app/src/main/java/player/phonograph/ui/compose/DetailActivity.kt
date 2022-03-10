@@ -28,8 +28,8 @@ class DetailActivity : ToolbarActivity() {
 
     override val title: String
         get() = getString(R.string.label_details)
-    override val backClick: (() -> Unit)?
-        get() = null
+    override val backClick: () -> Unit
+        get() = { this.onBackPressed() }
 }
 
 @Composable
