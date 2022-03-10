@@ -1,13 +1,15 @@
 {
-    "version": "LTS 0.0.8.1 / Preview 0.1.0",
-    "versionCode": 102,
-    "logSummary": "\n\n<b>本次为两个版本:</b>\n一是相对稳定的LTS版,将继续小修小补; 二是开发进展缓慢的预览版,及其不稳定\n\n<b>LTS v0.0.8.1 [2022.2.22]</b>\n修复 睡眠定时器在Android12上的崩溃\n\n\n<b>预览版 v0.1.0RC1 [2022.3.3]</b>\n修复 睡眠定时器在Android12上的崩溃\n开发 大幅度调整\"媒体库\"的UI,以便于维护(但部分还未完成)\n开发 调整代码结构,优化代码,清理依赖(需要出现设置主题配色)\n新增 添加清理旧版本历史残留文件配置功能(但是<del>仅从此版本开始记录历史包袱</del>)\n开发 极限混淆,实现Apk<del>小而美</del>(可能出现异常)\n修复 播放列表更改(新建/改名/删除)后,未能及时刷新(仅限App内操作)\n改进 在删除播放列表失败后,\n可尝试使用SAF(Storage Access Framework, 存储访问框架)授权目录后再次尝试删除(目前交互体验不佳, 且可能误删文件!!!)\n改进 对于Android 10 (Q)以上版本用户, 使用SAF创建播放列表(包括新建空列表与保存播放器当前播放队列)\n改进 使用SAF复制(保存)播放列表(单个播放列表可自定义名称, 多个播放列表同意添加时间后缀并保存在所选同一目录下)\n改进 对于Android 10 (Q)以上版本用户, 使用SAF授权后再追加歌曲至已有播放列表(目前交互体验不佳)\n开发 清理代码\n开发 移除ButterKnife\n开发 使用AGP 7.0.4 (以及Gradle7.1.1) 构建\n开发 升级Glide(3.8.0 -> 4.12.0)",
+    "version": "LTS 0.0.8.1 & Preview 0.1.0",
+    "versionCode": 103,
+    "logSummary": "\n\n<b>本次为两个版本:</b>\n一是相对稳定的LTS版,将继续小修小补; 二是开发进展缓慢的预览版,及其不稳定\n\n<b>LTS v0.0.8.1 [2022.2.22]</b>\n修复 睡眠定时器在Android12上的崩溃\n\n<b>预览版 v0.1.0RC2 [2022.3.10]</b>\n修复 媒体库页面头部白条布局异常\n开发 清理代码\n<b>预览版 v0.1.0RC1 [2022.3.3]</b>\n修复 睡眠定时器在Android12上的崩溃\n开发 大幅度调整\"媒体库\"的UI,以便于维护(但部分还未完成)\n开发 调整代码结构,优化代码,清理依赖(需要出现设置主题配色)\n新增 添加清理旧版本历史残留文件配置功能(但是<del>仅从此版本开始记录历史包袱</del>)\n开发 极限混淆,实现Apk<del>小而美</del>(可能出现异常)\n修复 播放列表更改(新建/改名/删除)后,未能及时刷新(仅限App内操作)\n改进 在删除播放列表失败后,\n可尝试使用SAF(Storage Access Framework, 存储访问框架)授权目录后再次尝试删除(目前交互体验不佳, 且可能误删文件!!!)\n改进 对于Android 10 (Q)以上版本用户, 使用SAF创建播放列表(包括新建空列表与保存播放器当前播放队列)\n改进 使用SAF复制(保存)播放列表(单个播放列表可自定义名称, 多个播放列表同意添加时间后缀并保存在所选同一目录下)\n改进 对于Android 10 (Q)以上版本用户, 使用SAF授权后再追加歌曲至已有播放列表(目前交互体验不佳)\n开发 清理代码\n开发 移除ButterKnife\n开发 使用AGP 7.0.4 (以及Gradle7.1.1) 构建\n开发 升级Glide(3.8.0 -> 4.12.0)",
     "downloadSources": [
-        "LTS     Github(v0.0.8.1)",
+        "LTS Github(v0.0.8.1)",
+        "Preview Github(v0.1.0RC2)",
         "Preview Github(v0.1.0RC1)"
     ],
     "downloadUris": [
         "https://github.com/chr56/Phonograph_Plus/releases/tag/v0.0.8.1",
+        "https://github.com/chr56/Phonograph_Plus/releases/tag/preview_0310",
         "https://github.com/chr56/Phonograph_Plus/releases/tag/preview_0303"
     ]
 }
