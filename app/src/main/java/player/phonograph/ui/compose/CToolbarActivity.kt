@@ -9,10 +9,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
@@ -20,7 +17,6 @@ import androidx.compose.ui.Modifier
 import player.phonograph.ui.compose.theme.PhonographTheme
 import util.mdcolor.ColorUtil
 import util.mdcolor.pref.ThemeColor
-import util.mddesign.core.Themer
 
 abstract class ToolbarActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -33,7 +29,9 @@ abstract class ToolbarActivity : ComponentActivity() {
             PhonographTheme {
                 Column(modifier = Modifier.fillMaxSize()) {
                     PhonographAppBar(title = title, backClick = backClick)
-                    Content()
+                    Surface(color = MaterialTheme.colors.background) {
+                        Content()
+                    }
                 }
             }
         }
