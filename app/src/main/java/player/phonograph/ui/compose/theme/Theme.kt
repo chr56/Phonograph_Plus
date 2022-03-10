@@ -18,7 +18,7 @@ import mt.pref.ThemeColor
 import player.phonograph.App
 
 @Composable
-fun Phonograph_PlusTheme(darkTheme: Boolean = isSystemInDarkTheme(), previewMode: Boolean = false, content: @Composable () -> Unit) {
+fun PhonographTheme(darkTheme: Boolean = isSystemInDarkTheme(), previewMode: Boolean = false, content: @Composable () -> Unit) {
     val colors =
         if (darkTheme) {
             colorsNight(previewMode)

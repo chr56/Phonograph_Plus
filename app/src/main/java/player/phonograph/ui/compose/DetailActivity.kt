@@ -5,57 +5,44 @@
 package player.phonograph.ui.compose
 
 import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
 import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import player.phonograph.R
-import player.phonograph.ui.compose.theme.Phonograph_PlusTheme
+import player.phonograph.ui.compose.theme.PhonographTheme
 
-class DetailActivity : ComponentActivity() {
+class DetailActivity : ToolbarActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContent {
-            Phonograph_PlusTheme {
-                DetailActivityUI(title = getString(R.string.label_details))
-            }
+    }
+
+    @Composable
+    override fun Content() {
+        PhonographTheme {
+            DetailActivityContent(title = getString(R.string.label_details))
         }
     }
+
+    override val title: String
+        get() = getString(R.string.label_details)
+    override val backClick: () -> Unit
+        get() = { this.onBackPressed() }
 }
 
 @Composable
-fun DetailActivityUI(title: String) {
+internal fun DetailActivityContent(title: String) {
     Column(modifier = Modifier.fillMaxSize()) {
-        PhonographAppBar(title)
         Text(text = "Hello world!")
     }
 }
 
-@Preview(showBackground = true, showSystemUi = true)
+@Preview(showBackground = true)
 @Composable
-fun PreviewUI() {
-    Phonograph_PlusTheme(previewMode = true) {
-        DetailActivityUI(title = "Detail")
+internal fun PreviewContent() {
+    PhonographTheme(previewMode = true) {
+        DetailActivityContent(title = "Detail")
     }
-}
-
-@Composable
-fun PhonographAppBar(title: String) {
-    TopAppBar(
-        title = { Text(title) },
-        navigationIcon = {
-            IconButton(onClick = { /*TODO*/ }) {
-                Icon(Icons.Default.ArrowBack, contentDescription = null)
-            }
-        }
-    )
 }
