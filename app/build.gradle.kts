@@ -10,6 +10,8 @@ plugins {
     id("kotlin-android")
 }
 
+val composeVersion by extra { "1.1.1" }
+
 fun getGitHash(shortHash: Boolean): String {
     val stdout = ByteArrayOutputStream()
     exec {
@@ -46,6 +48,11 @@ android {
 
     buildFeatures {
         viewBinding = true
+        compose = true
+    }
+
+    composeOptions {
+        kotlinCompilerExtensionVersion = composeVersion
     }
 
     defaultConfig {
@@ -211,6 +218,13 @@ dependencies {
     implementation("androidx.recyclerview:recyclerview:1.2.1")
     implementation("androidx.annotation:annotation:1.3.0")
     implementation("com.google.android.material:material:1.4.0")
+
+    implementation("androidx.compose.ui:ui:$composeVersion")
+    implementation("androidx.compose.ui:ui-tooling:$composeVersion")
+    implementation("androidx.compose.foundation:foundation:$composeVersion")
+    implementation("androidx.compose.material:material:$composeVersion")
+    implementation("androidx.activity:activity-compose:1.4.0")
+    debugImplementation("androidx.compose.ui:ui-tooling:$composeVersion")
 
     implementation("com.github.chr56:mdUtil:0.0.1")
     implementation("com.github.chr56:mdColor:0.0.1")
