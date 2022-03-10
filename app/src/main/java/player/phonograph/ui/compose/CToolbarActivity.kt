@@ -18,10 +18,17 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import player.phonograph.ui.compose.theme.PhonographTheme
+import util.mdcolor.ColorUtil
+import util.mdcolor.pref.ThemeColor
+import util.mddesign.core.Themer
 
 abstract class ToolbarActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        window.statusBarColor = ColorUtil.darkenColor(ThemeColor.statusBarColor(this))
+        window.navigationBarColor = ThemeColor.navigationBarColor(this)
+
         setContent {
             PhonographTheme {
                 Column(modifier = Modifier.fillMaxSize()) {
