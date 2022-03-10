@@ -36,19 +36,39 @@ fun PhonographTheme(darkTheme: Boolean = isSystemInDarkTheme(), previewMode: Boo
 
 fun colorsLight(previewMode: Boolean): Colors {
     val cfg = getColorConfig(previewMode)
-    return lightColors(
+    return Colors(
         primary = cfg[0],
         primaryVariant = cfg[1],
-        secondary = cfg[2]
+        secondary = cfg[2],
+        secondaryVariant = cfg[2],
+        background = Color.White,
+        surface = Color(0xFFDDDDDD),
+        error = Color(0xFFCCCCCC),
+        onPrimary = Color.White,
+        onSecondary = Color.Black,
+        onBackground = Color.Black,
+        onSurface = Color.Black,
+        onError = Color.White,
+        isLight = true
     )
 }
 
 fun colorsNight(previewMode: Boolean): Colors {
     val cfg = getColorConfig(previewMode)
-    return darkColors(
+    return Colors(
         primary = cfg[0],
         primaryVariant = cfg[1],
-        secondary = cfg[2]
+        secondary = cfg[2],
+        secondaryVariant = cfg[2],
+        background = Color(0xFF1B1B1B),
+        surface = Color(0xFF1B1B1B),
+        error = Color(0xFF85002D),
+        onPrimary = Color.Black,
+        onSecondary = Color.Black,
+        onBackground = Color.White,
+        onSurface = Color.White,
+        onError = Color.Black,
+        isLight = false
     )
 }
 
