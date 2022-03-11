@@ -94,6 +94,7 @@ internal fun DetailActivityContent(info: SongInfo) {
         Item(stringResource(id = R.string.label_bit_rate), info.bitRate ?: "-")
         Item(stringResource(id = R.string.label_sampling_rate), info.samplingRate ?: "-")
         // Common Tag
+        Spacer(modifier = Modifier.height(8.dp))
         Item(stringResource(id = R.string.title), info.title ?: "-")
         Item(stringResource(id = R.string.artist), info.artist ?: "-")
         Item(stringResource(id = R.string.album), info.album ?: "-")
@@ -104,6 +105,8 @@ internal fun DetailActivityContent(info: SongInfo) {
         Item(stringResource(id = R.string.genre), info.genre ?: "-")
         Item(stringResource(id = R.string.track), info.track ?: "-")
         // Other Tag
+        Spacer(modifier = Modifier.height(6.dp))
+        Item(stringResource(id = R.string.other_information), "") // Stub
         Item(stringResource(id = R.string.comment), info.comment ?: "-")
         info.otherTags?.let { tags ->
             for (tag in tags) {
