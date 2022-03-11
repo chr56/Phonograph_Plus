@@ -43,12 +43,17 @@ import java.io.IOException
 class DetailActivity : ToolbarActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val song = intent.extras?.getParcelable<Song>("song")
+        info = SongInfo()
+        song?.let {
+            loadSong(song, info!!)
+        }
     }
 
     @Composable
     override fun Content() {
         PhonographTheme {
-            DetailActivityContent(songTest)
+            DetailActivityContent(info ?: SongInfo())
         }
     }
 
@@ -67,9 +72,7 @@ class DetailActivity : ToolbarActivity() {
 }
 
 @Composable
-internal fun DetailActivityContent(song: Song) {
-    val info = SongInfo()
-    loadSong(song, info)
+internal fun DetailActivityContent(info: SongInfo) {
 
     val scrollState = rememberScrollState()
     Column(modifier = Modifier.fillMaxSize().verticalScroll(state = scrollState).padding(4.dp)) {
@@ -100,7 +103,7 @@ fun Item(tag: String = "TagName", value: String = "TagValue") {
 @Composable
 internal fun PreviewContent() {
     PhonographTheme(previewMode = true) {
-        DetailActivityContent(songTest)
+        DetailActivityContent(SongInfo("name"))
     }
 }
 
