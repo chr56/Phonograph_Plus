@@ -8,6 +8,8 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -69,7 +71,9 @@ class DetailActivity : ToolbarActivity() {
 internal fun DetailActivityContent(song: Song) {
     val info = SongInfo()
     loadSong(song, info)
-    Column(modifier = Modifier.fillMaxSize().padding(4.dp)) {
+
+    val scrollState = rememberScrollState()
+    Column(modifier = Modifier.fillMaxSize().verticalScroll(state = scrollState).padding(4.dp)) {
         Item(stringResource(id = R.string.label_file_name), info.fileName ?: "-")
         Item(stringResource(id = R.string.label_file_path), info.filePath ?: "-")
         Item(stringResource(id = R.string.label_track_length), getReadableDurationString(((info.trackLength ?: -1) * 1000)))
@@ -93,7 +97,7 @@ fun Item(tag: String = "TagName", value: String = "TagValue") {
     }
 }
 
-@Preview(showBackground = true)
+// @Preview(showBackground = true)
 @Composable
 internal fun PreviewContent() {
     PhonographTheme(previewMode = true) {
