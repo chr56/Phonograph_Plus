@@ -78,7 +78,7 @@ internal fun DetailActivityContent(info: SongInfo) {
     Column(modifier = Modifier.fillMaxSize().verticalScroll(state = scrollState).padding(4.dp)) {
         Item(stringResource(id = R.string.label_file_name), info.fileName ?: "-")
         Item(stringResource(id = R.string.label_file_path), info.filePath ?: "-")
-        Item(stringResource(id = R.string.label_track_length), MusicUtil.getReadableDurationString(((info.trackLength ?: -1) * 1000)))
+        Item(stringResource(id = R.string.label_track_length), MusicUtil.getReadableDurationString(info.trackLength ?: -1))
         Item(stringResource(id = R.string.label_file_format), info.fileFormat ?: "-")
         Item(stringResource(id = R.string.label_file_size), getFileSizeString(info.fileSize ?: -1))
         Item(stringResource(id = R.string.label_bit_rate), info.bitRate ?: "-")
