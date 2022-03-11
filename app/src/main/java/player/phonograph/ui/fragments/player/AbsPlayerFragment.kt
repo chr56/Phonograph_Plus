@@ -37,6 +37,8 @@ import player.phonograph.model.getReadableDurationString
 import player.phonograph.model.lyrics.AbsLyrics
 import player.phonograph.model.lyrics.LrcLyrics
 import player.phonograph.service.MusicPlayerRemote
+import player.phonograph.settings.Setting
+import player.phonograph.ui.compose.DetailActivity
 import player.phonograph.ui.fragments.AbsMusicServiceFragment
 import player.phonograph.ui.fragments.player.PlayerAlbumCoverFragment.Companion.VISIBILITY_ANIM_DURATION
 import player.phonograph.util.FavoriteUtil.toggleFavorite
@@ -159,8 +161,14 @@ abstract class AbsPlayerFragment :
                 return true
             }
             R.id.action_details -> {
-                SongDetailDialog.create(song)
-                    .show(childFragmentManager, "SONG_DETAIL")
+                if (Setting.instance().useLegacyDetailDialog) {
+                    SongDetailDialog.create(song)
+                        .show(childFragmentManager, "SONG_DETAIL")
+                } else {
+                    startActivity(Intent(requireActivity(), DetailActivity::class.java).apply{
+                        putExtra("song", song)
+                    })
+                }
                 return true
             }
             R.id.action_go_to_album -> {
