@@ -158,7 +158,7 @@ fun loadSong(song: Song, songInfo: SongInfo) {
                 }
 
                 val limit = if (customInfoField.size <= 32) customInfoField.size else 31
-                for (index in 0..limit) {
+                for (index in 0 until limit) {
                     val field = customInfoField[index] as AbstractID3v2Frame
                     customTags.put(
                         field.body.getObjectValue(DataTypes.OBJ_DESCRIPTION) as String,
