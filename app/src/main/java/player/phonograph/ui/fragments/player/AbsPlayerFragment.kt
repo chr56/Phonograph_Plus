@@ -26,6 +26,8 @@ import player.phonograph.model.lyrics2.AbsLyrics
 import player.phonograph.model.lyrics2.LrcLyrics
 import player.phonograph.notification.ErrorNotification
 import player.phonograph.service.MusicPlayerRemote
+import player.phonograph.settings.Setting
+import player.phonograph.ui.compose.DetailActivity
 import player.phonograph.ui.fragments.AbsMusicServiceFragment
 import player.phonograph.util.FavoriteUtil
 import player.phonograph.util.FavoriteUtil.toggleFavorite
@@ -168,8 +170,14 @@ abstract class AbsPlayerFragment :
                 return true
             }
             R.id.action_details -> {
-                SongDetailDialog.create(song)
-                    .show(childFragmentManager, "SONG_DETAIL")
+                if (Setting.instance().useLegacyDetailDialog) {
+                    SongDetailDialog.create(song)
+                        .show(childFragmentManager, "SONG_DETAIL")
+                } else {
+                    startActivity(Intent(requireActivity(), DetailActivity::class.java).apply{
+                        putExtra("song", song)
+                    })
+                }
                 return true
             }
             R.id.action_go_to_album -> {

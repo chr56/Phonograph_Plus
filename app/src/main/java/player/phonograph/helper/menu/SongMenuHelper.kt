@@ -14,6 +14,8 @@ import player.phonograph.dialogs.SongDetailDialog
 import player.phonograph.interfaces.PaletteColorHolder
 import player.phonograph.model.Song
 import player.phonograph.service.MusicPlayerRemote
+import player.phonograph.settings.Setting
+import player.phonograph.ui.compose.DetailActivity
 import player.phonograph.util.BlacklistUtil
 import player.phonograph.util.MusicUtil
 import player.phonograph.util.NavigationUtil
@@ -53,7 +55,15 @@ object SongMenuHelper {
                 return true
             }
             R.id.action_details -> {
-                SongDetailDialog.create(song).show(activity.supportFragmentManager, "SONG_DETAILS")
+                if (Setting.instance.useLegacyDetailDialog) {
+                    SongDetailDialog.create(song).show(activity.supportFragmentManager, "SONG_DETAILS")
+                } else {
+                    activity.startActivity(
+                        Intent(activity, DetailActivity::class.java).apply {
+                            putExtra("song", song)
+                        }
+                    )
+                }
                 return true
             }
             R.id.action_add_to_black_list -> {
