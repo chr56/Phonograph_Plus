@@ -94,8 +94,8 @@ internal val songTest = Song.EMPTY_SONG
 fun Item(tag: String = "TagName", value: String = "TagValue") {
     Box {
         Row(modifier = Modifier.padding(16.dp), horizontalArrangement = Arrangement.SpaceEvenly) {
-            Text(text = tag, modifier = Modifier.padding(end = 8.dp).align(Alignment.Bottom).defaultMinSize(minWidth = 64.dp), style = TextStyle(fontWeight = FontWeight.Bold))
-            Text(text = value, modifier = Modifier.align(Alignment.Bottom))
+            Text(text = tag, modifier = Modifier.padding(end = 8.dp).align(Alignment.Top).defaultMinSize(minWidth = 64.dp), style = TextStyle(fontWeight = FontWeight.Bold))
+            Text(text = value, modifier = Modifier.align(Alignment.Top))
         }
     }
 }
