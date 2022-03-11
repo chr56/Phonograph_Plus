@@ -46,16 +46,16 @@ class DetailActivity : ToolbarActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val song = intent.extras?.getParcelable<Song>("song")
-        info = SongInfo()
+
         song?.let {
-            loadSong(song, info!!)
+            info = loadSong(song)
         }
     }
 
     @Composable
     override fun Content() {
         PhonographTheme {
-            DetailActivityContent(info ?: SongInfo())
+            DetailActivityContent(info)
         }
     }
 
@@ -64,11 +64,14 @@ class DetailActivity : ToolbarActivity() {
     override val backClick: () -> Unit
         get() = { this.onBackPressed() }
 
-    private var info: SongInfo? = null
-    private fun load(song: Song, songInfo: SongInfo) {
-        val coroutines = CoroutineScope(Dispatchers.IO)
+    private var info: SongInfo = SongInfo()
+    private val coroutines: CoroutineScope by lazy {
+        CoroutineScope(Dispatchers.IO)
+    }
+
+    private fun load(song: Song) {
         coroutines.launch {
-            loadSong(song, songInfo)
+            info = loadSong(song)
         }
     }
 }
@@ -77,7 +80,12 @@ class DetailActivity : ToolbarActivity() {
 internal fun DetailActivityContent(info: SongInfo) {
 
     val scrollState = rememberScrollState()
-    Column(modifier = Modifier.fillMaxSize().verticalScroll(state = scrollState).padding(4.dp)) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(state = scrollState)
+            .padding(4.dp)
+    ) {
         Item(stringResource(id = R.string.label_file_name), info.fileName ?: "-")
         Item(stringResource(id = R.string.label_file_path), info.filePath ?: "-")
         Item(stringResource(id = R.string.label_track_length), getReadableDurationString(((info.trackLength ?: -1) * 1000)))
@@ -105,8 +113,6 @@ internal fun DetailActivityContent(info: SongInfo) {
     }
 }
 
-internal val songTest = Song.EMPTY_SONG
-
 @Preview(showBackground = true)
 @Composable
 fun Item(tag: String = "TagName", value: String = "TagValue") {
@@ -115,7 +121,10 @@ fun Item(tag: String = "TagName", value: String = "TagValue") {
             Text(
                 text = tag,
                 style = TextStyle(fontWeight = FontWeight.Bold),
-                modifier = Modifier.padding(end = 8.dp).align(Alignment.Top).defaultMinSize(minWidth = 64.dp),
+                modifier = Modifier
+                    .padding(end = 8.dp)
+                    .align(Alignment.Top)
+                    .defaultMinSize(minWidth = 64.dp),
             )
             SelectionContainer(modifier = Modifier.align(Alignment.Top)) {
                 Text(text = value, modifier = Modifier.align(Alignment.Top))
@@ -152,8 +161,18 @@ data class SongInfo(
     var comment: String? = "",
     var otherTags: MutableMap<String, String>? = null,
 )
-fun loadSong(song: Song, songInfo: SongInfo) {
-    val songFile = File(song.data)
+
+fun loadSong(song: Song): SongInfo {
+    val file = File(song.data)
+    return if (file.exists())
+        loadSong(file)
+    else
+        SongInfo("FILE NOT FOUND")
+}
+
+fun loadSong(songFile: File): SongInfo {
+    val songInfo = SongInfo()
+
     if (songFile.exists()) {
         songInfo.fileName = songFile.name
         songInfo.filePath = songFile.absolutePath
@@ -200,12 +219,13 @@ fun loadSong(song: Song, songInfo: SongInfo) {
                 is CannotReadException, is TagException, is ReadOnlyFileException, is InvalidAudioFrameException, is IOException ->
                     {
                         Log.e("TagRead", "error while reading the song file", e)
-                        songInfo.trackLength = song.duration // fallback
+                        return songInfo.apply { title = "error while reading the song file" }
                     }
                 else -> throw e
             }
         }
     }
+    return songInfo
 }
 
 internal fun getFileSizeString(sizeInBytes: Long): String {
