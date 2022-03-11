@@ -9,6 +9,7 @@ import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -84,6 +85,21 @@ internal fun DetailActivityContent(info: SongInfo) {
         Item(stringResource(id = R.string.label_file_size), getFileSizeString(info.fileSize ?: -1))
         Item(stringResource(id = R.string.label_bit_rate), info.bitRate ?: "-")
         Item(stringResource(id = R.string.label_sampling_rate), info.samplingRate ?: "-")
+        // Common Tag
+        Item(stringResource(id = R.string.title), info.title ?: "-")
+        Item(stringResource(id = R.string.artist), info.artist ?: "-")
+        Item(stringResource(id = R.string.album), info.album ?: "-")
+        Item(stringResource(id = R.string.album_artist), info.albumArtist ?: "-")
+        Item(stringResource(id = R.string.year), info.year ?: "-")
+        Item(stringResource(id = R.string.genre), info.genre ?: "-")
+        Item(stringResource(id = R.string.track), info.track ?: "-")
+        // Other Tag
+        Item(stringResource(id = R.string.other_information), info.comment ?: "-")
+        info.otherTags?.let { tags ->
+            for (tag in tags) {
+                Item(tag.key, tag.value)
+            }
+        }
     }
 }
 
@@ -93,9 +109,15 @@ internal val songTest = Song.EMPTY_SONG
 @Composable
 fun Item(tag: String = "TagName", value: String = "TagValue") {
     Box {
-        Row(modifier = Modifier.padding(16.dp), horizontalArrangement = Arrangement.SpaceEvenly) {
-            Text(text = tag, modifier = Modifier.padding(end = 8.dp).align(Alignment.Top).defaultMinSize(minWidth = 64.dp), style = TextStyle(fontWeight = FontWeight.Bold))
-            Text(text = value, modifier = Modifier.align(Alignment.Top))
+        Row(modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp), horizontalArrangement = Arrangement.SpaceEvenly) {
+            Text(
+                text = tag,
+                style = TextStyle(fontWeight = FontWeight.Bold),
+                modifier = Modifier.padding(end = 8.dp).align(Alignment.Top).defaultMinSize(minWidth = 64.dp),
+            )
+            SelectionContainer(modifier = Modifier.align(Alignment.Top)) {
+                Text(text = value, modifier = Modifier.align(Alignment.Top))
+            }
         }
     }
 }
