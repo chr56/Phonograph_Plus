@@ -108,7 +108,7 @@ internal val songTest = Song.EMPTY_SONG
 @Composable
 fun Item(tag: String = "TagName", value: String = "TagValue") {
     Box {
-        Row(modifier = Modifier.padding(16.dp), horizontalArrangement = Arrangement.SpaceEvenly) {
+        Row(modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp), horizontalArrangement = Arrangement.SpaceEvenly) {
             Text(
                 text = tag,
                 style = TextStyle(fontWeight = FontWeight.Bold),
