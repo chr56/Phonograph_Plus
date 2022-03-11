@@ -7,12 +7,16 @@ package player.phonograph.ui.compose
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -30,8 +34,10 @@ import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.model.Song
 import player.phonograph.ui.compose.theme.PhonographTheme
+import player.phonograph.util.MusicUtil
 import java.io.File
 import java.io.IOException
+import player.phonograph.model.getReadableDurationString
 
 class DetailActivity : ToolbarActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,7 +47,7 @@ class DetailActivity : ToolbarActivity() {
     @Composable
     override fun Content() {
         PhonographTheme {
-            DetailActivityContent(title = getString(R.string.label_details))
+            DetailActivityContent(songTest)
         }
     }
 
@@ -60,9 +66,30 @@ class DetailActivity : ToolbarActivity() {
 }
 
 @Composable
-internal fun DetailActivityContent(title: String) {
-    Column(modifier = Modifier.fillMaxSize()) {
-        Text(text = "Hello world!")
+internal fun DetailActivityContent(song: Song) {
+    val info = SongInfo()
+    loadSong(song, info)
+    Column(modifier = Modifier.fillMaxSize().padding(4.dp)) {
+        Item(stringResource(id = R.string.label_file_name), info.fileName ?: "-")
+        Item(stringResource(id = R.string.label_file_path), info.filePath ?: "-")
+        Item(stringResource(id = R.string.label_track_length), getReadableDurationString(((info.trackLength ?: -1) * 1000)))
+        Item(stringResource(id = R.string.label_file_format), info.fileFormat ?: "-")
+        Item(stringResource(id = R.string.label_file_size), getFileSizeString(info.fileSize ?: -1))
+        Item(stringResource(id = R.string.label_bit_rate), info.bitRate ?: "-")
+        Item(stringResource(id = R.string.label_sampling_rate), info.samplingRate ?: "-")
+    }
+}
+
+internal val songTest = Song.EMPTY_SONG
+
+@Preview(showBackground = true)
+@Composable
+fun Item(tag: String = "TagName", value: String = "TagValue") {
+    Box {
+        Row(modifier = Modifier.padding(16.dp), horizontalArrangement = Arrangement.SpaceEvenly) {
+            Text(text = tag, modifier = Modifier.padding(end = 8.dp).align(Alignment.Bottom).defaultMinSize(minWidth = 64.dp), style = TextStyle(fontWeight = FontWeight.Bold))
+            Text(text = value, modifier = Modifier.align(Alignment.Bottom))
+        }
     }
 }
 
@@ -70,7 +97,7 @@ internal fun DetailActivityContent(title: String) {
 @Composable
 internal fun PreviewContent() {
     PhonographTheme(previewMode = true) {
-        DetailActivityContent(title = "Detail")
+        DetailActivityContent(songTest)
     }
 }
 
@@ -144,4 +171,10 @@ fun loadSong(song: Song, songInfo: SongInfo) {
             }
         }
     }
+}
+
+internal fun getFileSizeString(sizeInBytes: Long): String {
+    val fileSizeInKB = sizeInBytes / 1024
+    val fileSizeInMB = fileSizeInKB / 1024
+    return "$fileSizeInMB MB"
 }
