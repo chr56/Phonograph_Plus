@@ -330,6 +330,8 @@
     <string name="misc">杂项</string>
     <string name="pref_title_use_legacy_detail_dialog">使用旧版详情对话框</string>
     <string name="pref_summary_use_legacy_detail_dialog">使用旧版歌曲详情对话框而不是新页面</string>
+    <string name="composer">作曲</string>
+    <string name="lyricist">作词</string>
     <string name="pref_header_compatibility">兼容性</string>
     <string name="pref_title_use_legacy_favorite_playlist_impl">使用旧式歌曲收藏机制</string>
     <string name="pref_summary_use_legacy_favorite_playlist_impl">开启后，收藏的歌曲将加至外部的m3u播放列表，而不是存于应用内部（需要手动导出）</string>

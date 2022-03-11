@@ -32,7 +32,7 @@ import org.jaudiotagger.audio.exceptions.ReadOnlyFileException
 import org.jaudiotagger.tag.FieldKey
 import org.jaudiotagger.tag.TagException
 import org.jaudiotagger.tag.datatype.DataTypes
-import org.jaudiotagger.tag.id3.AbstractID3v2Frame
+import org.jaudiotagger.tag.id3.AbstractTagFrame
 import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.model.Song
@@ -90,6 +90,8 @@ internal fun DetailActivityContent(info: SongInfo) {
         Item(stringResource(id = R.string.artist), info.artist ?: "-")
         Item(stringResource(id = R.string.album), info.album ?: "-")
         Item(stringResource(id = R.string.album_artist), info.albumArtist ?: "-")
+        Item(stringResource(id = R.string.composer), info.composer ?: "-")
+        Item(stringResource(id = R.string.lyricist), info.lyricist ?: "-")
         Item(stringResource(id = R.string.year), info.year ?: "-")
         Item(stringResource(id = R.string.genre), info.genre ?: "-")
         Item(stringResource(id = R.string.track), info.track ?: "-")
@@ -142,6 +144,8 @@ data class SongInfo(
     var artist: String? = "",
     var album: String? = "",
     var albumArtist: String? = "",
+    var composer: String? = "",
+    var lyricist: String? = "",
     var year: String? = "",
     var genre: String? = "",
     var track: String? = "",
@@ -163,10 +167,12 @@ fun loadSong(song: Song, songInfo: SongInfo) {
             songInfo.bitRate = audioHeader.bitRate // + " kb/s"
             songInfo.samplingRate = audioHeader.sampleRate // + " Hz"
             // tags of the song
-            songInfo.title = song.title
-            songInfo.artist = song.artistName
-            songInfo.album = song.albumName
+            songInfo.title = audioFile.tag.getFirst(FieldKey.TITLE)
+            songInfo.artist = audioFile.tag.getFirst(FieldKey.ARTIST)
+            songInfo.album = audioFile.tag.getFirst(FieldKey.ALBUM)
             songInfo.albumArtist = audioFile.tag.getFirst(FieldKey.ALBUM_ARTIST)
+            songInfo.composer = audioFile.tag.getFirst(FieldKey.COMPOSER)
+            songInfo.lyricist = audioFile.tag.getFirst(FieldKey.LYRICIST)
             songInfo.year = audioFile.tag.getFirst(FieldKey.YEAR)
             songInfo.genre = audioFile.tag.getFirst(FieldKey.GENRE)
             songInfo.track = audioFile.tag.getFirst(FieldKey.TRACK)
@@ -181,7 +187,7 @@ fun loadSong(song: Song, songInfo: SongInfo) {
 
                 val limit = if (customInfoField.size <= 32) customInfoField.size else 31
                 for (index in 0 until limit) {
-                    val field = customInfoField[index] as AbstractID3v2Frame
+                    val field = customInfoField[index] as AbstractTagFrame
                     customTags.put(
                         field.body.getObjectValue(DataTypes.OBJ_DESCRIPTION) as String,
                         field.body.getObjectValue(DataTypes.OBJ_TEXT) as String
