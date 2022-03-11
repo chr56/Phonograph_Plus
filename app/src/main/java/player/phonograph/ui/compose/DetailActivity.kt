@@ -94,7 +94,7 @@ internal fun DetailActivityContent(info: SongInfo) {
         Item(stringResource(id = R.string.genre), info.genre ?: "-")
         Item(stringResource(id = R.string.track), info.track ?: "-")
         // Other Tag
-        Item(stringResource(id = R.string.other_information), info.comment ?: "-")
+        Item(stringResource(id = R.string.comment), info.comment ?: "-")
         info.otherTags?.let { tags ->
             for (tag in tags) {
                 Item(tag.key, tag.value)

@@ -326,6 +326,10 @@
     <string name="are_you_sure">Are you sure?</string>
     <string name="original_author">Original Author</string>
     <string name="plus_author">The author of Phonograph Plus</string>
+    <string name="misc">Misc</string>
+    <string name="comment">Comment</string>
+    <string name="pref_title_use_legacy_detail_dialog">Use legacy detail dialog</string>
+    <string name="pref_summary_use_legacy_detail_dialog">Use old legacy song detail dialog instead of the detail page</string>
     <string name="pref_header_compatibility">Compatibility</string>
     <string name="pref_title_use_legacy_favorite_playlist_impl">Use legacy favorite playlist mechanism</string>
     <string name="pref_summary_use_legacy_favorite_playlist_impl">If enable this, app will save favorite songs to a m3u playlist in Storage instead of saving favorite songs into the internal database of app.(You can  export the list manually.)</string>
