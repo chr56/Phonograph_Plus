@@ -39,6 +39,32 @@ fun TextItem(tag: String = "KeyName", value: String = "KeyValue") {
     }
 }
 
+@Preview(showBackground = true)
+@Composable
+fun TitleContentItem(title: String = "KeyName", value: String = "KeyValue") {
+    Column(modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp), verticalArrangement = Arrangement.SpaceEvenly) {
+        // title
+        Text(
+            text = title,
+            style = TextStyle(
+                fontWeight = FontWeight.Bold,
+            ),
+            modifier = Modifier
+                .align(Alignment.Start),
+        )
+        // content
+        SelectionContainer() {
+            Text(
+                text = value,
+                style = TextStyle(
+                    color = MaterialTheme.colors.onSurface.copy(alpha = 0.92f),
+                ),
+                modifier = Modifier.align(Alignment.Start)
+            )
+        }
+    }
+}
+
 @Composable
 fun TextFieldItem(tag: String = "KeyName", value: String = "KeyValue") {
     BaseTextFieldItem(tag, value, false)
