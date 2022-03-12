@@ -7,13 +7,13 @@
 package player.phonograph.util
 
 import android.content.Context
-import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.core.graphics.drawable.toBitmap
+import androidx.palette.graphics.Palette
 import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestBuilder
 import com.bumptech.glide.request.target.CustomTarget
@@ -30,6 +30,7 @@ import org.jaudiotagger.tag.datatype.DataTypes
 import org.jaudiotagger.tag.id3.AbstractTagFrame
 import player.phonograph.App
 import player.phonograph.glide.SongGlideRequest
+import player.phonograph.glide.palette.BitmapPaletteWrapper
 import player.phonograph.model.Song
 import java.io.File
 import java.io.IOException
@@ -126,22 +127,25 @@ object SongDetailUtil {
         var otherTags: MutableMap<String, String>? = null,
     )
 
-    fun loadArtwork(context: Context, song: Song): MutableState<Bitmap?> {
-        val bitmapState = mutableStateOf<Bitmap?>(null)
+    fun loadArtwork(context: Context, song: Song): MutableState<BitmapPaletteWrapper?> {
+        val bitmapState = mutableStateOf<BitmapPaletteWrapper?>(null)
         getRequestBuilder(context, song)
-            .into(object : CustomTarget<Bitmap?>() {
-                override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap?>?) {
+            .into(object : CustomTarget<BitmapPaletteWrapper?>() {
+                override fun onResourceReady(resource: BitmapPaletteWrapper, transition: Transition<in BitmapPaletteWrapper?>?) {
                     bitmapState.value = resource
                 }
                 override fun onLoadCleared(placeholder: Drawable?) {
-                    bitmapState.value = placeholder?.toBitmap()
+                    val bitmap = placeholder?.toBitmap()
+                    bitmap?.let {
+                        bitmapState.value = BitmapPaletteWrapper(bitmap, Palette.from(bitmap).generate())
+                    }
                 }
             })
         return bitmapState
     }
 
-    private fun getRequestBuilder(context: Context, song: Song): RequestBuilder<Bitmap> {
+    private fun getRequestBuilder(context: Context, song: Song): RequestBuilder<BitmapPaletteWrapper> {
         return SongGlideRequest.Builder.from(Glide.with(context), song)
-            .checkIgnoreMediaStore(context).asBitmap().build()
+            .checkIgnoreMediaStore(context).generatePalette(context).build()
     }
 }

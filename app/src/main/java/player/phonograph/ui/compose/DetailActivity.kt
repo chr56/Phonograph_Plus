@@ -4,7 +4,6 @@
 
 package player.phonograph.ui.compose
 
-import android.graphics.Bitmap
 import android.os.Bundle
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -15,6 +14,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.compose.ui.res.painterResource
@@ -27,6 +27,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import player.phonograph.R
+import player.phonograph.glide.palette.BitmapPaletteWrapper
 import player.phonograph.model.Song
 import player.phonograph.ui.compose.theme.PhonographTheme
 import player.phonograph.util.MusicUtil
@@ -74,13 +75,13 @@ class DetailActivity : ToolbarActivity() {
 
 class DetailModel : ViewModel() {
     var info: SongInfo = SongInfo()
-    var artwork: MutableState<Bitmap?> = mutableStateOf(null)
+    var artwork: MutableState<BitmapPaletteWrapper?> = mutableStateOf(null)
 }
 
 @Composable
 private fun DetailActivityContent(viewModel: DetailModel) {
     val info by remember { mutableStateOf(viewModel.info) }
-    val bitmap by remember { viewModel.artwork }
+    val wrapper by remember { viewModel.artwork }
 
     val scrollState = rememberScrollState()
     Column(
@@ -89,16 +90,24 @@ private fun DetailActivityContent(viewModel: DetailModel) {
             .fillMaxSize()
     ) {
         // Cover Artwork
+        val (painter, color) = if (wrapper != null) {
+            Pair(
+                BitmapPainter(wrapper!!.bitmap.asImageBitmap()),
+                Color(wrapper!!.palette.getVibrantColor(0))
+            )
+        } else {
+            Pair(
+                painterResource(R.drawable.default_album_art),
+                MaterialTheme.colors.surface
+            )
+        }
+
         BoxWithConstraints(
             modifier = Modifier
                 .fillMaxSize()
                 .align(Alignment.CenterHorizontally)
-                .background(MaterialTheme.colors.surface)
+                .background(color)
         ) {
-            val painter = if (bitmap != null)
-                BitmapPainter(bitmap!!.asImageBitmap())
-            else
-                painterResource(R.drawable.default_album_art)
 
             Image(
                 painter = painter,
