@@ -15,10 +15,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.graphics.painter.BitmapPainter
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -99,12 +100,15 @@ private fun DetailActivityContent(viewModel: DetailModel) {
                 .align(Alignment.CenterHorizontally)
                 .background(MaterialTheme.colors.surface)
         ) {
-            bitmap?.let {
-                Image(
-                    bitmap = bitmap!!.asImageBitmap(),
-                    contentDescription = "Cover",
-                )
-            }
+            val painter = if (bitmap != null)
+                BitmapPainter(bitmap!!.asImageBitmap())
+            else
+                painterResource(R.drawable.default_album_art)
+            Image(
+                painter = painter,
+                contentDescription = "Cover",
+                modifier = Modifier.fillMaxSize()
+            )
         }
         // Text Information
         Column(modifier = Modifier.padding(horizontal = 8.dp)) {
