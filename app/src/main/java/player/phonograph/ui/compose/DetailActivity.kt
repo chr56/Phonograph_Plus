@@ -5,12 +5,18 @@
 package player.phonograph.ui.compose
 
 import android.os.Bundle
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -23,8 +29,10 @@ import player.phonograph.R
 import player.phonograph.model.Song
 import player.phonograph.ui.compose.theme.PhonographTheme
 import player.phonograph.util.MusicUtil
+import player.phonograph.util.SongDetailUtil
 import player.phonograph.util.SongDetailUtil.SongInfo
 import player.phonograph.util.SongDetailUtil.getFileSizeString
+import player.phonograph.util.SongDetailUtil.loadArtwork
 import player.phonograph.util.SongDetailUtil.loadSong
 import java.io.File
 import java.io.IOException
@@ -34,7 +42,6 @@ class DetailActivity : ToolbarActivity() {
 
     lateinit var model: DetailModel
         private set
-//    private var info: SongInfo = SongInfo()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,13 +51,14 @@ class DetailActivity : ToolbarActivity() {
 
         song?.let {
             model.info = loadSong(song)
+            loadArtwork(this, song = song, bitmapHolder = model.bitmapHolder)
         }
     }
 
     @Composable
     override fun Content() {
         PhonographTheme {
-            DetailActivityContent(model.info)
+            DetailActivityContent(model)
         }
     }
 
@@ -69,10 +77,13 @@ class DetailActivity : ToolbarActivity() {
 
 class DetailModel : ViewModel() {
     var info: SongInfo = SongInfo()
+    var bitmapHolder: SongDetailUtil.BitmapHolder = SongDetailUtil.BitmapHolder()
 }
 
 @Composable
-internal fun DetailActivityContent(info: SongInfo) {
+private fun DetailActivityContent(viewModel: DetailModel) {
+    val info = viewModel.info
+    var bitmap by remember { mutableStateOf(viewModel.bitmapHolder.bitmap) }
 
     val scrollState = rememberScrollState()
     Column(
@@ -81,6 +92,14 @@ internal fun DetailActivityContent(info: SongInfo) {
             .verticalScroll(state = scrollState)
             .padding(4.dp)
     ) {
+        // Cover
+        bitmap?.let {
+            Image(
+                bitmap = bitmap!!.asImageBitmap(),
+                contentDescription = "Cover",
+            )
+        }
+        // File info
         Title(stringResource(R.string.file), color = MaterialTheme.colors.primaryVariant)
         Item(stringResource(id = R.string.label_file_name), info.fileName ?: "-")
         Item(stringResource(id = R.string.label_file_path), info.filePath ?: "-")
@@ -126,6 +145,6 @@ fun Item(tag: String = "KeyName", value: String = "KeyValue") {
 @Composable
 internal fun PreviewContent() {
     PhonographTheme(previewMode = true) {
-        DetailActivityContent(SongInfo("name"))
+        DetailActivityContent(DetailModel().apply { info = SongInfo("name") })
     }
 }
