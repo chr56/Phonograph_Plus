@@ -91,7 +91,7 @@ private fun DetailActivityContent(viewModel: DetailModel) {
             .fillMaxSize()
     ) {
         // Cover Artwork
-        Box(
+        BoxWithConstraints(
             modifier = Modifier
                 .fillMaxSize()
                 .align(Alignment.CenterHorizontally)
@@ -105,7 +105,12 @@ private fun DetailActivityContent(viewModel: DetailModel) {
             Image(
                 painter = painter,
                 contentDescription = "Cover",
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier.align(Alignment.Center)
+                    .sizeIn(
+                        maxWidth = maxWidth,
+                        maxHeight = maxWidth,
+                        minHeight = maxWidth.div(3)
+                    )
             )
         }
         // Text Information
