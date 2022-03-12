@@ -17,11 +17,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
 @Preview(showBackground = true)
 @Composable
-fun TextItem(tag: String = "KeyName", value: String = "KeyValue") {
+fun HorizontalTextItem(tag: String = "KeyName", value: String = "KeyValue") {
     Box {
         Row(modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp), horizontalArrangement = Arrangement.SpaceEvenly) {
             Text(
@@ -41,7 +42,7 @@ fun TextItem(tag: String = "KeyName", value: String = "KeyValue") {
 
 @Preview(showBackground = true)
 @Composable
-fun TitleContentItem(title: String = "KeyName", value: String = "KeyValue") {
+fun VerticalTextItem(title: String = "KeyName", value: String = "KeyValue") {
     Column(modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp), verticalArrangement = Arrangement.SpaceEvenly) {
         // title
         Text(
@@ -63,6 +64,15 @@ fun TitleContentItem(title: String = "KeyName", value: String = "KeyValue") {
             )
         }
     }
+}
+
+@Composable
+fun Title(title: String, color: Color = MaterialTheme.colors.onSurface, horizontalPadding: Dp = 8.dp) {
+    Text(
+        title,
+        style = TextStyle(fontWeight = FontWeight.Bold, color = color),
+        modifier = Modifier.padding(horizontal = horizontalPadding)
+    )
 }
 
 @Composable
