@@ -5,6 +5,7 @@
 package player.phonograph.ui.compose
 
 import android.os.Bundle
+import androidx.activity.viewModels
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -17,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.painter.BitmapPainter
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -40,14 +42,11 @@ import player.phonograph.util.SongDetailUtil.loadSong
 
 class DetailActivity : ToolbarActivity() {
 
-    lateinit var model: DetailModel
-        private set
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val song = intent.extras?.getParcelable<Song>("song")
 
-        model = ViewModelProvider(this).get(DetailModel::class.java)
+        val model: DetailModel by viewModels()
 
         song?.let {
             model.info = loadSong(song)
@@ -58,6 +57,7 @@ class DetailActivity : ToolbarActivity() {
     @Composable
     override fun Content() {
         PhonographTheme {
+            val model: DetailModel by viewModels()
             DetailActivityContent(model)
         }
     }
@@ -71,11 +71,13 @@ class DetailActivity : ToolbarActivity() {
 
     private fun load(song: Song) {
         coroutines.launch {
+            val model: DetailModel by viewModels()
             model.info = loadSong(song)
         }
     }
 
     fun updateBarsColor() {
+        val model: DetailModel by viewModels()
         model.artwork.value?.paletteColor?.let { color ->
             if (color != 0) {
                 val colorInt = darkenColor(color)
@@ -99,7 +101,7 @@ private fun DetailActivityContent(viewModel: DetailModel) {
     val info by remember { mutableStateOf(viewModel.info) }
     val wrapper by remember { viewModel.artwork }
 
-    val (painter, paletteColor) = if (wrapper != null) {
+    var (painter, paletteColor) = if (wrapper != null) {
         Pair(
             BitmapPainter(wrapper!!.bitmap.asImageBitmap()),
             Color(wrapper!!.paletteColor)
@@ -107,9 +109,20 @@ private fun DetailActivityContent(viewModel: DetailModel) {
     } else {
         Pair(
             painterResource(R.drawable.default_album_art),
-            MaterialTheme.colors.surface
+            MaterialTheme.colors.primaryVariant
         )
     }
+
+    if (ColorTools.isColorRelevant(MaterialTheme.colors.surface, paletteColor)) {
+        paletteColor = paletteColor.getReverseColor()
+    }
+//    MaterialTheme.colors.surface.let { surfaceColor: Color ->
+//        if (surfaceColor.isColorLight()) {
+//            if (paletteColor.isColorLight()) paletteColor = paletteColor.getReverseColor()
+//        } else {
+//            if (!paletteColor.isColorLight()) paletteColor = paletteColor.getReverseColor()
+//        }
+//    }
 
     val scrollState = rememberScrollState()
     Column(
@@ -148,8 +161,8 @@ private fun DetailActivityContent(viewModel: DetailModel) {
             Item(stringResource(id = R.string.label_track_length), getReadableDurationString(info.trackLength ?: -1))
             Item(stringResource(id = R.string.label_file_format), info.fileFormat ?: "-")
             Item(stringResource(id = R.string.label_file_size), getFileSizeString(info.fileSize ?: -1))
-            Item(stringResource(id = R.string.label_bit_rate), info.bitRate ?: "-")
-            Item(stringResource(id = R.string.label_sampling_rate), info.samplingRate ?: "-")
+            Item(stringResource(id = R.string.label_bit_rate), info.bitRate ?: "-" + " kb/s")
+            Item(stringResource(id = R.string.label_sampling_rate), info.samplingRate ?: "-" + " Hz")
             // Common Tag
             Spacer(modifier = Modifier.height(16.dp))
             Title(stringResource(R.string.music_tags), color = paletteColor)
