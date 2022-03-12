@@ -8,6 +8,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -28,7 +29,7 @@ abstract class ToolbarActivity : ComponentActivity() {
         setContent {
             PhonographTheme {
                 Column(modifier = Modifier.fillMaxSize()) {
-                    PhonographAppBar(title = title, backClick = backClick)
+                    PhonographAppBar(title = title, backClick = backClick, actions = toolbarActions)
                     Surface(color = MaterialTheme.colors.background) {
                         Content()
                     }
@@ -40,18 +41,20 @@ abstract class ToolbarActivity : ComponentActivity() {
     @Composable
     protected abstract fun Content()
 
+    protected open val backClick: (() -> (Unit)) = { onBackPressed() }
+    protected open val toolbarActions: @Composable (RowScope.() -> Unit) = {}
     protected abstract val title: String
-    protected abstract val backClick: (() -> (Unit))?
 }
 
 @Composable
-fun PhonographAppBar(title: String, backClick: (() -> Unit)? = { /* Empty*/ }) {
+private fun PhonographAppBar(title: String, backClick: (() -> Unit) = { /* Empty*/ }, actions: @Composable (RowScope.() -> Unit) = { /* Empty*/ }) {
     TopAppBar(
         title = { Text(title) },
         navigationIcon = {
-            IconButton(onClick = backClick ?: {}) {
+            IconButton(onClick = backClick) {
                 Icon(Icons.Default.ArrowBack, contentDescription = null)
             }
-        }
+        },
+        actions = actions,
     )
 }

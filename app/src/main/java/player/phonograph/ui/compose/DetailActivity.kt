@@ -53,8 +53,6 @@ class DetailActivity : ToolbarActivity() {
 
     override val title: String
         get() = getString(R.string.label_details)
-    override val backClick: () -> Unit
-        get() = { this.onBackPressed() }
 
     private val coroutines: CoroutineScope by lazy {
         CoroutineScope(Dispatchers.IO)
