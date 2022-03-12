@@ -11,6 +11,7 @@ import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.util.Log
 import android.widget.Toast
+import androidx.core.graphics.drawable.toBitmap
 import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestBuilder
 import com.bumptech.glide.request.target.CustomTarget
@@ -130,7 +131,7 @@ object SongDetailUtil {
                     bitmapHolder.bitmap = resource
                 }
                 override fun onLoadCleared(placeholder: Drawable?) {
-                    // todo
+                    bitmapHolder.bitmap = placeholder?.toBitmap()
                 }
             })
     }
