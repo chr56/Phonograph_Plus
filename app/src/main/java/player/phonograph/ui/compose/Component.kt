@@ -39,15 +39,24 @@ fun TextItem(tag: String = "KeyName", value: String = "KeyValue") {
     }
 }
 
+@Composable
+fun TextFieldItem(tag: String = "KeyName", value: String = "KeyValue") {
+    BaseTextFieldItem(tag, value, false)
+}
+@Composable
+fun ReadonlyTextFieldItem(tag: String = "KeyName", value: String = "KeyValue") {
+    BaseTextFieldItem(tag, value, true)
+}
+
 @Preview(showBackground = true)
 @Composable
-fun FieldItem(tag: String = "KeyName", value: String = "KeyValue") {
+private fun BaseTextFieldItem(tag: String = "KeyName", value: String = "KeyValue", readonly: Boolean = false) {
     TextField(
-        readOnly = true,
+        readOnly = readonly,
         leadingIcon = {
             Text(
                 text = tag,
-                style = TextStyle(fontWeight = FontWeight.Bold, color = Color.Black),
+                style = TextStyle(fontWeight = FontWeight.Bold, color = MaterialTheme.colors.onSurface),
                 modifier = Modifier
                     .padding(horizontal = 4.dp)
                     .defaultMinSize(minWidth = 64.dp),
@@ -57,7 +66,11 @@ fun FieldItem(tag: String = "KeyName", value: String = "KeyValue") {
         placeholder = { Text("-") },
         onValueChange = {},
         colors = TextFieldDefaults.textFieldColors(
-            backgroundColor = MaterialTheme.colors.background
+            backgroundColor = MaterialTheme.colors.background,
+            textColor = MaterialTheme.colors.onSurface,
+            focusedIndicatorColor = MaterialTheme.colors.onSurface.copy(alpha = TextFieldDefaults.IconOpacity),
+            unfocusedIndicatorColor = Color.Transparent,
+
         ),
         modifier = Modifier
             .padding(horizontal = 12.dp, vertical = 4.dp)
