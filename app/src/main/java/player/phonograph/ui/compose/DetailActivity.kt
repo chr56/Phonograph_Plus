@@ -5,6 +5,7 @@
 package player.phonograph.ui.compose
 
 import android.os.Bundle
+import androidx.activity.viewModels
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -22,7 +23,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -40,14 +40,11 @@ import util.mdcolor.pref.ThemeColor
 
 class DetailActivity : ToolbarActivity() {
 
-    lateinit var model: DetailModel
-        private set
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val song = intent.extras?.getParcelable<Song>("song")
 
-        model = ViewModelProvider(this).get(DetailModel::class.java)
+        val model: DetailModel by viewModels()
 
         song?.let {
             model.info = loadSong(song)
@@ -58,6 +55,7 @@ class DetailActivity : ToolbarActivity() {
     @Composable
     override fun Content() {
         PhonographTheme {
+            val model: DetailModel by viewModels()
             DetailActivityContent(model)
         }
     }
@@ -70,11 +68,13 @@ class DetailActivity : ToolbarActivity() {
     }
     private fun load(song: Song) {
         coroutines.launch {
+            val model: DetailModel by viewModels()
             model.info = loadSong(song)
         }
     }
 
     fun updateBarsColor() {
+        val model: DetailModel by viewModels()
         model.artwork.value?.palette?.let { palette ->
             val colorInt = palette
                 .getVibrantColor(ThemeColor.primaryColor(this)).let { ColorUtil.darkenColor(it) }
