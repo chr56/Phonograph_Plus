@@ -26,17 +26,17 @@ import androidx.lifecycle.ViewModelProvider
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import mt.pref.ThemeColor
+import mt.util.color.darkenColor
 import player.phonograph.R
 import player.phonograph.model.Song
+import player.phonograph.model.getReadableDurationString
 import player.phonograph.ui.compose.theme.PhonographTheme
-import player.phonograph.util.MusicUtil
+import player.phonograph.util.SongDetailUtil
 import player.phonograph.util.SongDetailUtil.SongInfo
 import player.phonograph.util.SongDetailUtil.getFileSizeString
 import player.phonograph.util.SongDetailUtil.loadArtwork
 import player.phonograph.util.SongDetailUtil.loadSong
-
-import player.phonograph.model.getReadableDurationString
-import player.phonograph.util.SongDetailUtil
 
 class DetailActivity : ToolbarActivity() {
 
@@ -51,7 +51,7 @@ class DetailActivity : ToolbarActivity() {
 
         song?.let {
             model.info = loadSong(song)
-            model.artwork = loadArtwork(this, song = song)
+            model.artwork = loadArtwork(this, song = song, this::updateBarsColor)
         }
     }
 
@@ -68,9 +68,23 @@ class DetailActivity : ToolbarActivity() {
     private val coroutines: CoroutineScope by lazy {
         CoroutineScope(Dispatchers.IO)
     }
+
     private fun load(song: Song) {
         coroutines.launch {
             model.info = loadSong(song)
+        }
+    }
+
+    fun updateBarsColor() {
+        model.artwork.value?.paletteColor?.let { color ->
+            if (color != 0) {
+                val colorInt = darkenColor(color)
+                appBarColor.value = Color(colorInt)
+                window.statusBarColor = darkenColor(colorInt)
+                if (ThemeColor.coloredNavigationBar(this)) {
+                    window.navigationBarColor = darkenColor(colorInt)
+                }
+            }
         }
     }
 }
@@ -85,6 +99,18 @@ private fun DetailActivityContent(viewModel: DetailModel) {
     val info by remember { mutableStateOf(viewModel.info) }
     val wrapper by remember { viewModel.artwork }
 
+    val (painter, paletteColor) = if (wrapper != null) {
+        Pair(
+            BitmapPainter(wrapper!!.bitmap.asImageBitmap()),
+            Color(wrapper!!.paletteColor)
+        )
+    } else {
+        Pair(
+            painterResource(R.drawable.default_album_art),
+            MaterialTheme.colors.surface
+        )
+    }
+
     val scrollState = rememberScrollState()
     Column(
         modifier = Modifier
@@ -92,29 +118,19 @@ private fun DetailActivityContent(viewModel: DetailModel) {
             .fillMaxSize()
     ) {
         // Cover Artwork
-        val (painter, color) = if (wrapper != null) {
-            Pair(
-                BitmapPainter(wrapper!!.bitmap.asImageBitmap()),
-                Color(wrapper!!.paletteColor)
-            )
-        } else {
-            Pair(
-                painterResource(R.drawable.default_album_art),
-                MaterialTheme.colors.surface
-            )
-        }
 
         BoxWithConstraints(
             modifier = Modifier
                 .fillMaxSize()
                 .align(Alignment.CenterHorizontally)
-                .background(color)
+                .background(paletteColor)
         ) {
 
             Image(
                 painter = painter,
                 contentDescription = "Cover",
-                modifier = Modifier.align(Alignment.Center)
+                modifier = Modifier
+                    .align(Alignment.Center)
                     .sizeIn(
                         maxWidth = maxWidth,
                         maxHeight = maxWidth,
@@ -126,7 +142,7 @@ private fun DetailActivityContent(viewModel: DetailModel) {
         Column(modifier = Modifier.padding(horizontal = 8.dp)) {
             // File info
             Spacer(modifier = Modifier.height(16.dp))
-            Title(stringResource(R.string.file), color = MaterialTheme.colors.primaryVariant)
+            Title(stringResource(R.string.file), color = paletteColor)
             Item(stringResource(id = R.string.label_file_name), info.fileName ?: "-")
             Item(stringResource(id = R.string.label_file_path), info.filePath ?: "-")
             Item(stringResource(id = R.string.label_track_length), getReadableDurationString(info.trackLength ?: -1))
@@ -136,7 +152,7 @@ private fun DetailActivityContent(viewModel: DetailModel) {
             Item(stringResource(id = R.string.label_sampling_rate), info.samplingRate ?: "-")
             // Common Tag
             Spacer(modifier = Modifier.height(16.dp))
-            Title(stringResource(R.string.music_tags), color = MaterialTheme.colors.primaryVariant)
+            Title(stringResource(R.string.music_tags), color = paletteColor)
             Item(stringResource(id = R.string.title), info.title ?: "-")
             Item(stringResource(id = R.string.artist), info.artist ?: "-")
             Item(stringResource(id = R.string.album), info.album ?: "-")
@@ -157,7 +173,7 @@ private fun DetailActivityContent(viewModel: DetailModel) {
             }
             // Lyrics
             Spacer(modifier = Modifier.height(16.dp))
-            Title(stringResource(R.string.lyrics), color = MaterialTheme.colors.primaryVariant)
+            Title(stringResource(R.string.lyrics), color = paletteColor)
             Spacer(modifier = Modifier.height(16.dp))
         }
     }

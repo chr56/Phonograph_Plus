@@ -40,6 +40,7 @@ object SongDetailUtil {
         val fileSizeInMB = fileSizeInKB / 1024
         return "$fileSizeInMB MB"
     }
+
     fun loadSong(song: Song): SongInfo {
         val file = File(song.data)
         return if (file.exists())
@@ -47,6 +48,7 @@ object SongDetailUtil {
         else
             SongInfo("FILE NOT FOUND")
     }
+
     fun loadSong(songFile: File): SongInfo {
         val songInfo = SongInfo()
 
@@ -78,7 +80,9 @@ object SongDetailUtil {
                 val customInfoField = audioFile.tag.getFields("TXXX")
                 if (customInfoField != null && customInfoField.size > 0) {
                     if (customInfoField.size >= 32) {
-                        Toast.makeText(App.instance, "Other tags in this song is too many, only show the first 32 entries", Toast.LENGTH_LONG)
+                        Toast.makeText(App.instance,
+                            "Other tags in this song is too many, only show the first 32 entries",
+                            Toast.LENGTH_LONG)
                             .show()
                     }
 
@@ -126,7 +130,7 @@ object SongDetailUtil {
         var otherTags: MutableMap<String, String>? = null,
     )
 
-    fun loadArtwork(context: Context, song: Song): MutableState<BitmapPaletteWrapper?> {
+    fun loadArtwork(context: Context, song: Song, callback: () -> Unit): MutableState<BitmapPaletteWrapper?> {
         val bitmapState = mutableStateOf<BitmapPaletteWrapper?>(null)
         loadImage(context) {
             data(song)
@@ -134,11 +138,14 @@ object SongDetailUtil {
                 .onResourceReady { result: Drawable, paletteColor: Int ->
                     bitmapState.value =
                         BitmapPaletteWrapper(result.toBitmap(), paletteColor)
+
+                    callback.invoke()
                 }
                 .onFail {
                     bitmapState.value =
                         BitmapPaletteWrapper(ContextCompat.getDrawable(context, R.drawable.default_album_art)!!.toBitmap(),
                             ThemeColor.primaryColor(context))
+                    callback.invoke()
                 }
                 .build())
         }

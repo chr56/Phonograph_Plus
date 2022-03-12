@@ -13,10 +13,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import mt.pref.ThemeColor
 import mt.util.color.darkenColor
+import mt.util.color.isColorLight
 import player.phonograph.ui.compose.theme.PhonographTheme
 
 abstract class ToolbarActivity : ComponentActivity() {
@@ -28,8 +30,16 @@ abstract class ToolbarActivity : ComponentActivity() {
 
         setContent {
             PhonographTheme {
+                _appbarColor = remember {
+                    mutableStateOf(Color(ThemeColor.primaryColor(this)))
+                }
                 Column(modifier = Modifier.fillMaxSize()) {
-                    PhonographAppBar(title = title, backClick = backClick, actions = toolbarActions)
+                    PhonographAppBar(
+                        title = title,
+                        backClick = backClick,
+                        actions = toolbarActions,
+                        backgroundColor = appBarColor,
+                    )
                     Surface(color = MaterialTheme.colors.background) {
                         Content()
                     }
@@ -40,14 +50,32 @@ abstract class ToolbarActivity : ComponentActivity() {
 
     @Composable
     protected abstract fun Content()
+    protected abstract val title: String
 
     protected open val backClick: (() -> (Unit)) = { onBackPressed() }
     protected open val toolbarActions: @Composable (RowScope.() -> Unit) = {}
-    protected abstract val title: String
+
+    private lateinit var _appbarColor: MutableState<Color>
+    protected open var appBarColor: MutableState<Color>
+        get() = _appbarColor
+        set(value) {
+            _appbarColor = value
+        }
 }
 
 @Composable
-private fun PhonographAppBar(title: String, backClick: (() -> Unit) = { /* Empty*/ }, actions: @Composable (RowScope.() -> Unit) = { /* Empty*/ }) {
+private fun PhonographAppBar(
+    title: String,
+    backgroundColor: MutableState<Color>,
+    backClick: (() -> Unit) = { /* Empty*/ },
+    actions: @Composable (RowScope.() -> Unit) = { /* Empty*/ },
+) {
+    val contentColor = remember {
+        mutableStateOf(
+            if (isColorLight(backgroundColor.value.value.toInt())) Color.Black
+            else Color.White
+        )
+    }
     TopAppBar(
         title = { Text(title) },
         navigationIcon = {
@@ -56,5 +84,7 @@ private fun PhonographAppBar(title: String, backClick: (() -> Unit) = { /* Empty
             }
         },
         actions = actions,
+        backgroundColor = backgroundColor.value,
+        contentColor = contentColor.value
     )
 }
