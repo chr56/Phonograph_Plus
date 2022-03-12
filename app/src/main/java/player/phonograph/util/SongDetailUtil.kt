@@ -11,6 +11,8 @@ import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.util.Log
 import android.widget.Toast
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
 import androidx.core.graphics.drawable.toBitmap
 import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestBuilder
@@ -124,18 +126,19 @@ object SongDetailUtil {
         var otherTags: MutableMap<String, String>? = null,
     )
 
-    fun loadArtwork(context: Context, song: Song, bitmapHolder: BitmapHolder) {
+    fun loadArtwork(context: Context, song: Song): MutableState<Bitmap?> {
+        val bitmapState = mutableStateOf<Bitmap?>(null)
         getRequestBuilder(context, song)
-            .into(object : CustomTarget<Bitmap>() {
-                override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-                    bitmapHolder.bitmap = resource
+            .into(object : CustomTarget<Bitmap?>() {
+                override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap?>?) {
+                    bitmapState.value = resource
                 }
                 override fun onLoadCleared(placeholder: Drawable?) {
-                    bitmapHolder.bitmap = placeholder?.toBitmap()
+                    bitmapState.value = placeholder?.toBitmap()
                 }
             })
+        return bitmapState
     }
-    class BitmapHolder(var bitmap: Bitmap? = null)
 
     private fun getRequestBuilder(context: Context, song: Song): RequestBuilder<Bitmap> {
         return SongGlideRequest.Builder.from(Glide.with(context), song)
