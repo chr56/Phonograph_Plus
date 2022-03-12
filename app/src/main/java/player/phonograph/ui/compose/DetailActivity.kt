@@ -97,6 +97,18 @@ private fun DetailActivityContent(viewModel: DetailModel) {
     val info by remember { mutableStateOf(viewModel.info) }
     val wrapper by remember { viewModel.artwork }
 
+    val (painter, paletteColor) = if (wrapper != null) {
+        Pair(
+            BitmapPainter(wrapper!!.bitmap.asImageBitmap()),
+            Color(wrapper!!.palette.getVibrantColor(0))
+        )
+    } else {
+        Pair(
+            painterResource(R.drawable.default_album_art),
+            MaterialTheme.colors.surface
+        )
+    }
+
     val scrollState = rememberScrollState()
     Column(
         modifier = Modifier
@@ -104,23 +116,12 @@ private fun DetailActivityContent(viewModel: DetailModel) {
             .fillMaxSize()
     ) {
         // Cover Artwork
-        val (painter, color) = if (wrapper != null) {
-            Pair(
-                BitmapPainter(wrapper!!.bitmap.asImageBitmap()),
-                Color(wrapper!!.palette.getVibrantColor(0))
-            )
-        } else {
-            Pair(
-                painterResource(R.drawable.default_album_art),
-                MaterialTheme.colors.surface
-            )
-        }
 
         BoxWithConstraints(
             modifier = Modifier
                 .fillMaxSize()
                 .align(Alignment.CenterHorizontally)
-                .background(color)
+                .background(paletteColor)
         ) {
 
             Image(
@@ -138,7 +139,7 @@ private fun DetailActivityContent(viewModel: DetailModel) {
         Column(modifier = Modifier.padding(horizontal = 8.dp)) {
             // File info
             Spacer(modifier = Modifier.height(16.dp))
-            Title(stringResource(R.string.file), color = MaterialTheme.colors.primaryVariant)
+            Title(stringResource(R.string.file), color = paletteColor)
             Item(stringResource(id = R.string.label_file_name), info.fileName ?: "-")
             Item(stringResource(id = R.string.label_file_path), info.filePath ?: "-")
             Item(stringResource(id = R.string.label_track_length), MusicUtil.getReadableDurationString(info.trackLength ?: -1))
@@ -148,7 +149,7 @@ private fun DetailActivityContent(viewModel: DetailModel) {
             Item(stringResource(id = R.string.label_sampling_rate), info.samplingRate ?: "-")
             // Common Tag
             Spacer(modifier = Modifier.height(16.dp))
-            Title(stringResource(R.string.music_tags), color = MaterialTheme.colors.primaryVariant)
+            Title(stringResource(R.string.music_tags), color = paletteColor)
             Item(stringResource(id = R.string.title), info.title ?: "-")
             Item(stringResource(id = R.string.artist), info.artist ?: "-")
             Item(stringResource(id = R.string.album), info.album ?: "-")
@@ -169,7 +170,7 @@ private fun DetailActivityContent(viewModel: DetailModel) {
             }
             // Lyrics
             Spacer(modifier = Modifier.height(16.dp))
-            Title(stringResource(R.string.lyrics), color = MaterialTheme.colors.primaryVariant)
+            Title(stringResource(R.string.lyrics), color = paletteColor)
             Spacer(modifier = Modifier.height(16.dp))
         }
     }
