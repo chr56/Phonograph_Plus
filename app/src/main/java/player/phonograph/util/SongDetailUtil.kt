@@ -10,6 +10,8 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.util.Log
 import android.widget.Toast
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
 import androidx.core.graphics.drawable.toBitmapOrNull
 import org.jaudiotagger.audio.AudioFile
 import org.jaudiotagger.audio.AudioFileIO
@@ -22,6 +24,7 @@ import org.jaudiotagger.tag.TagException
 import org.jaudiotagger.tag.datatype.DataTypes
 import org.jaudiotagger.tag.id3.AbstractTagFrame
 import player.phonograph.App
+import player.phonograph.R
 import player.phonograph.coil.loadImage
 import player.phonograph.model.Song
 import java.io.File
@@ -119,13 +122,21 @@ object SongDetailUtil {
         var otherTags: MutableMap<String, String>? = null,
     )
 
-    fun loadArtwork(context: Context, song: Song, bitmapHolder: BitmapHolder) {
+    fun loadArtwork(context: Context, song: Song): MutableState<Bitmap?> {
+        val bitmapState = mutableStateOf<Bitmap?>(null)
         loadImage(context) {
             data(song)
-            target(onSuccess = { drawable ->
-                bitmapHolder.bitmap = drawable.toBitmapOrNull()
-            })
+            placeholder(R.drawable.default_album_art)
+            target(
+                onSuccess = { drawable ->
+                    bitmapState.value = drawable.toBitmapOrNull()
+                },
+                onError = { drawable ->
+                    bitmapState.value = drawable?.toBitmapOrNull()
+                })
         }
+        return bitmapState
     }
+
     class BitmapHolder(var bitmap: Bitmap? = null)
 }

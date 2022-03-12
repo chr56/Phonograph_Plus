@@ -4,6 +4,7 @@
 
 package player.phonograph.ui.compose
 
+import android.graphics.Bitmap
 import android.os.Bundle
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -11,10 +12,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.MaterialTheme
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asImageBitmap
@@ -32,7 +30,6 @@ import player.phonograph.R
 import player.phonograph.model.Song
 import player.phonograph.ui.compose.theme.PhonographTheme
 import player.phonograph.util.MusicUtil
-import player.phonograph.util.SongDetailUtil
 import player.phonograph.util.SongDetailUtil.SongInfo
 import player.phonograph.util.SongDetailUtil.getFileSizeString
 import player.phonograph.util.SongDetailUtil.loadArtwork
@@ -53,7 +50,7 @@ class DetailActivity : ToolbarActivity() {
 
         song?.let {
             model.info = loadSong(song)
-            loadArtwork(this, song = song, bitmapHolder = model.bitmapHolder)
+            model.artwork = loadArtwork(this, song = song)
         }
     }
 
@@ -79,13 +76,13 @@ class DetailActivity : ToolbarActivity() {
 
 class DetailModel : ViewModel() {
     var info: SongInfo = SongInfo()
-    var bitmapHolder: SongDetailUtil.BitmapHolder = SongDetailUtil.BitmapHolder()
+    var artwork: MutableState<Bitmap?> = mutableStateOf(null)
 }
 
 @Composable
 private fun DetailActivityContent(viewModel: DetailModel) {
     val info by remember { mutableStateOf(viewModel.info) }
-    val bitmap by remember { mutableStateOf(viewModel.bitmapHolder.bitmap) }
+    val bitmap by remember { viewModel.artwork }
 
     val scrollState = rememberScrollState()
     Column(
@@ -96,7 +93,7 @@ private fun DetailActivityContent(viewModel: DetailModel) {
         // Cover Artwork
         Box(
             modifier = Modifier
-                .padding(0.dp)
+                .fillMaxSize()
                 .align(Alignment.CenterHorizontally)
                 .background(MaterialTheme.colors.surface)
         ) {
@@ -104,6 +101,7 @@ private fun DetailActivityContent(viewModel: DetailModel) {
                 BitmapPainter(bitmap!!.asImageBitmap())
             else
                 painterResource(R.drawable.default_album_art)
+
             Image(
                 painter = painter,
                 contentDescription = "Cover",
