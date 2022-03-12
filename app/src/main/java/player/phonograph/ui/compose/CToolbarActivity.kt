@@ -7,6 +7,7 @@ package player.phonograph.ui.compose
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxSize
@@ -20,6 +21,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import player.phonograph.App
 import player.phonograph.ui.compose.theme.PhonographTheme
 import util.mdcolor.ColorUtil
 import util.mdcolor.pref.ThemeColor
@@ -33,15 +37,16 @@ abstract class ToolbarActivity : ComponentActivity() {
 
         setContent {
             PhonographTheme {
-                _appbarColor = remember {
-                    mutableStateOf(Color(ThemeColor.primaryColor(this)))
+                val model: ToolbarViewModel by viewModels()
+                val backgroundColor by remember {
+                    model.appbarColor
                 }
                 Column(modifier = Modifier.fillMaxSize()) {
                     PhonographAppBar(
                         title = title,
                         backClick = backClick,
                         actions = toolbarActions,
-                        backgroundColor = appBarColor,
+                        backgroundColor = backgroundColor,
                     )
                     Surface(color = MaterialTheme.colors.background) {
                         Content()
@@ -58,24 +63,26 @@ abstract class ToolbarActivity : ComponentActivity() {
     protected open val backClick: (() -> (Unit)) = { onBackPressed() }
     protected open val toolbarActions: @Composable (RowScope.() -> Unit) = {}
 
-    private lateinit var _appbarColor: MutableState<Color>
-    protected open var appBarColor: MutableState<Color>
-        get() = _appbarColor
-        set(value) { _appbarColor = value }
+    protected open var appBarColor: Color
+        get() = ViewModelProvider(this).get(ToolbarViewModel::class.java).appbarColor.value
+        set(value) { ViewModelProvider(this).get(ToolbarViewModel::class.java).appbarColor.value = value }
+}
+
+class ToolbarViewModel : ViewModel() {
+    var appbarColor: MutableState<Color> = mutableStateOf(Color(ThemeColor.primaryColor(App.instance)))
 }
 
 @Composable
 private fun PhonographAppBar(
     title: String,
-    backgroundColor: MutableState<Color>,
+    backgroundColor: Color,
     backClick: (() -> Unit) = { /* Empty*/ },
     actions: @Composable (RowScope.() -> Unit) = { /* Empty*/ }
 ) {
     val contentColor = remember {
         mutableStateOf(
-            if (ColorUtil.isColorLight(backgroundColor.value.value.toInt()))
-                Color.Black
-            else Color.White
+            if (ColorUtil.isColorLight(backgroundColor.value.toInt()))
+                Color.Black else Color.White
         )
     }
     TopAppBar(
@@ -86,7 +93,7 @@ private fun PhonographAppBar(
             }
         },
         actions = actions,
-        backgroundColor = backgroundColor.value,
+        backgroundColor = backgroundColor,
         contentColor = contentColor.value
     )
 }

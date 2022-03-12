@@ -78,7 +78,7 @@ class DetailActivity : ToolbarActivity() {
         model.artwork.value?.palette?.let { palette ->
             val colorInt = palette
                 .getVibrantColor(ThemeColor.primaryColor(this)).let { ColorUtil.darkenColor(it) }
-            appBarColor.value = Color(colorInt)
+            appBarColor = Color(colorInt)
             window.statusBarColor = ColorUtil.darkenColor(colorInt)
             if (ThemeColor.coloredNavigationBar(this)) {
                 window.navigationBarColor = ColorUtil.darkenColor(colorInt)
