@@ -20,6 +20,8 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -43,19 +45,26 @@ import java.io.IOException
 import player.phonograph.model.getReadableDurationString
 
 class DetailActivity : ToolbarActivity() {
+
+    lateinit var model: DetailModel
+        private set
+//    private var info: SongInfo = SongInfo()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val song = intent.extras?.getParcelable<Song>("song")
 
+        model = ViewModelProvider(this).get(DetailModel::class.java)
+
         song?.let {
-            info = loadSong(song)
+            model.info = loadSong(song)
         }
     }
 
     @Composable
     override fun Content() {
         PhonographTheme {
-            DetailActivityContent(info)
+            DetailActivityContent(model.info)
         }
     }
 
@@ -64,16 +73,18 @@ class DetailActivity : ToolbarActivity() {
     override val backClick: () -> Unit
         get() = { this.onBackPressed() }
 
-    private var info: SongInfo = SongInfo()
     private val coroutines: CoroutineScope by lazy {
         CoroutineScope(Dispatchers.IO)
     }
-
     private fun load(song: Song) {
         coroutines.launch {
-            info = loadSong(song)
+            model.info = loadSong(song)
         }
     }
+}
+
+class DetailModel : ViewModel() {
+    var info: SongInfo = SongInfo()
 }
 
 @Composable
@@ -204,7 +215,8 @@ fun loadSong(songFile: File): SongInfo {
             val customInfoField = audioFile.tag.getFields("TXXX")
             if (customInfoField != null && customInfoField.size > 0) {
                 if (customInfoField.size >= 32) {
-                    Toast.makeText(App.instance, "Other tags in this song is too many, only show the first 32 entries", Toast.LENGTH_LONG).show()
+                    Toast.makeText(App.instance, "Other tags in this song is too many, only show the first 32 entries", Toast.LENGTH_LONG)
+                        .show()
                 }
 
                 val limit = if (customInfoField.size <= 32) customInfoField.size else 31
@@ -219,11 +231,10 @@ fun loadSong(songFile: File): SongInfo {
             }
         } catch (e: Exception) {
             when (e) {
-                is CannotReadException, is TagException, is ReadOnlyFileException, is InvalidAudioFrameException, is IOException ->
-                    {
-                        Log.e("TagRead", "error while reading the song file", e)
-                        return songInfo.apply { title = "error while reading the song file" }
-                    }
+                is CannotReadException, is TagException, is ReadOnlyFileException, is InvalidAudioFrameException, is IOException -> {
+                    Log.e("TagRead", "error while reading the song file", e)
+                    return songInfo.apply { title = "error while reading the song file" }
+                }
                 else -> throw e
             }
         }
