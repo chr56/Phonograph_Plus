@@ -94,23 +94,23 @@ object SongDetailUtil {
         return songInfo
     }
 
-    data class SongInfo(
-        var fileName: String? = "",
-        var filePath: String? = "",
-        var fileFormat: String? = "",
-        var bitRate: String? = "",
-        var samplingRate: String? = "",
+    class SongInfo(
+        var fileName: String? = "-",
+        var filePath: String? = "-",
+        var fileFormat: String? = "-",
+        var bitRate: String? = "-",
+        var samplingRate: String? = "-",
         var fileSize: Long? = 0,
         var trackLength: Long? = 0,
-        var title: String? = "",
-        var artist: String? = "",
-        var album: String? = "",
-        var albumArtist: String? = "",
-        var composer: String? = "",
-        var lyricist: String? = "",
-        var year: String? = "",
-        var genre: String? = "",
-        var track: String? = "",
+        var title: String? = "-",
+        var artist: String? = "-",
+        var album: String? = "-",
+        var albumArtist: String? = "-",
+        var composer: String? = "-",
+        var lyricist: String? = "-",
+        var year: String? = "0",
+        var genre: String? = "-",
+        var track: String? = "-",
         var comment: String? = "",
         var otherTags: MutableMap<String, String>? = null,
     )
