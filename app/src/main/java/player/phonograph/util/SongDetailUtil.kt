@@ -6,8 +6,15 @@
 
 package player.phonograph.util
 
+import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.drawable.Drawable
 import android.util.Log
 import android.widget.Toast
+import com.bumptech.glide.Glide
+import com.bumptech.glide.RequestBuilder
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.transition.Transition
 import org.jaudiotagger.audio.AudioFile
 import org.jaudiotagger.audio.AudioFileIO
 import org.jaudiotagger.audio.AudioHeader
@@ -19,6 +26,7 @@ import org.jaudiotagger.tag.TagException
 import org.jaudiotagger.tag.datatype.DataTypes
 import org.jaudiotagger.tag.id3.AbstractTagFrame
 import player.phonograph.App
+import player.phonograph.glide.SongGlideRequest
 import player.phonograph.model.Song
 import java.io.File
 import java.io.IOException
@@ -114,4 +122,22 @@ object SongDetailUtil {
         var comment: String? = "",
         var otherTags: MutableMap<String, String>? = null,
     )
+
+    fun loadArtwork(context: Context, song: Song, bitmapHolder: BitmapHolder) {
+        getRequestBuilder(context, song)
+            .into(object : CustomTarget<Bitmap>() {
+                override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
+                    bitmapHolder.bitmap = resource
+                }
+                override fun onLoadCleared(placeholder: Drawable?) {
+                    // todo
+                }
+            })
+    }
+    class BitmapHolder(var bitmap: Bitmap? = null)
+
+    private fun getRequestBuilder(context: Context, song: Song): RequestBuilder<Bitmap> {
+        return SongGlideRequest.Builder.from(Glide.with(context), song)
+            .checkIgnoreMediaStore(context).asBitmap().build()
+    }
 }
