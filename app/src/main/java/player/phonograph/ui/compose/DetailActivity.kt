@@ -8,6 +8,7 @@ import android.os.Bundle
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -82,6 +83,7 @@ internal fun DetailActivityContent(info: SongInfo) {
             .verticalScroll(state = scrollState)
             .padding(4.dp)
     ) {
+        Title(stringResource(R.string.file), color = MaterialTheme.colors.primaryVariant)
         Item(stringResource(id = R.string.label_file_name), info.fileName ?: "-")
         Item(stringResource(id = R.string.label_file_path), info.filePath ?: "-")
         Item(stringResource(id = R.string.label_track_length), getReadableDurationString(((info.trackLength ?: -1) * 1000)))
@@ -91,6 +93,7 @@ internal fun DetailActivityContent(info: SongInfo) {
         Item(stringResource(id = R.string.label_sampling_rate), info.samplingRate ?: "-")
         // Common Tag
         Spacer(modifier = Modifier.height(12.dp))
+        Title(stringResource(R.string.music_tags), color = MaterialTheme.colors.primaryVariant)
         Item(stringResource(id = R.string.title), info.title ?: "-")
         Item(stringResource(id = R.string.artist), info.artist ?: "-")
         Item(stringResource(id = R.string.album), info.album ?: "-")
@@ -102,23 +105,26 @@ internal fun DetailActivityContent(info: SongInfo) {
         Item(stringResource(id = R.string.track), info.track ?: "-")
         // Other Tag
         Spacer(modifier = Modifier.height(8.dp))
-        TextItem(stringResource(id = R.string.other_information), "") // Stub
+        Title(stringResource(R.string.other_information))
         Item(stringResource(id = R.string.comment), info.comment ?: "-")
         info.otherTags?.let { tags ->
             for (tag in tags) {
                 Item(tag.key, tag.value)
             }
         }
+        // Lyrics
+        Spacer(modifier = Modifier.height(12.dp))
+        Title(stringResource(R.string.lyrics), color = MaterialTheme.colors.primaryVariant)
     }
 }
 
 @Preview(showBackground = true)
 @Composable
 fun Item(tag: String = "KeyName", value: String = "KeyValue") {
-    TitleContentItem(tag, value)
+    VerticalTextItem(tag, value)
 }
 
-// @Preview(showBackground = true)
+@Preview(showBackground = true)
 @Composable
 internal fun PreviewContent() {
     PhonographTheme(previewMode = true) {

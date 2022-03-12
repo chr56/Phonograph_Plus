@@ -332,6 +332,8 @@
     <string name="pref_summary_use_legacy_detail_dialog">Use old legacy song detail dialog instead of the detail page</string>
     <string name="composer">Composer</string>
     <string name="lyricist">Lyricist</string>
+    <string name="music_tags">Music Tags</string>
+    <string name="file">File</string>
     <string name="pref_header_compatibility">Compatibility</string>
     <string name="pref_title_use_legacy_favorite_playlist_impl">Use legacy favorite playlist mechanism</string>
     <string name="pref_summary_use_legacy_favorite_playlist_impl">If enable this, app will save favorite songs to a m3u playlist in Storage instead of saving favorite songs into the internal database of app.(You can  export the list manually.)</string>
