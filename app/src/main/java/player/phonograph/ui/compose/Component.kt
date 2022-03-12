@@ -19,12 +19,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 
 @Preview(showBackground = true)
 @Composable
 fun HorizontalTextItem(tag: String = "KeyName", value: String = "KeyValue") {
     Box {
-        Row(modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp), horizontalArrangement = Arrangement.SpaceEvenly) {
+        Row(modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp), horizontalArrangement = Arrangement.SpaceEvenly) {
             Text(
                 text = tag,
                 style = TextStyle(fontWeight = FontWeight.Bold),
@@ -43,12 +44,13 @@ fun HorizontalTextItem(tag: String = "KeyName", value: String = "KeyValue") {
 @Preview(showBackground = true)
 @Composable
 fun VerticalTextItem(title: String = "KeyName", value: String = "KeyValue") {
-    Column(modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp), verticalArrangement = Arrangement.SpaceEvenly) {
+    Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp), verticalArrangement = Arrangement.SpaceEvenly) {
         // title
         Text(
             text = title,
             style = TextStyle(
                 fontWeight = FontWeight.Bold,
+                fontSize = 16.sp,
             ),
             modifier = Modifier
                 .align(Alignment.Start),
@@ -59,7 +61,8 @@ fun VerticalTextItem(title: String = "KeyName", value: String = "KeyValue") {
                 text = value,
                 style = TextStyle(
                     color = MaterialTheme.colors.onSurface.copy(alpha = 0.92f),
-                ),
+                    fontSize = 14.sp,
+                    ),
                 modifier = Modifier.align(Alignment.Start)
             )
         }
@@ -94,7 +97,7 @@ private fun BaseTextFieldItem(tag: String = "KeyName", value: String = "KeyValue
                 text = tag,
                 style = TextStyle(fontWeight = FontWeight.Bold, color = MaterialTheme.colors.onSurface),
                 modifier = Modifier
-                    .padding(horizontal = 4.dp)
+                    .padding(horizontal = 8.dp)
                     .defaultMinSize(minWidth = 64.dp),
             )
         },
@@ -109,7 +112,7 @@ private fun BaseTextFieldItem(tag: String = "KeyName", value: String = "KeyValue
 
         ),
         modifier = Modifier
-            .padding(horizontal = 12.dp, vertical = 4.dp)
+            .padding(horizontal = 16.dp, vertical = 8.dp)
             .fillMaxWidth()
     )
 }
