@@ -25,7 +25,7 @@ import androidx.compose.ui.unit.sp
 @Composable
 fun HorizontalTextItem(tag: String = "KeyName", value: String = "KeyValue") {
     Box {
-        Row(modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp), horizontalArrangement = Arrangement.SpaceEvenly) {
+        Row(modifier = Modifier.padding(horizontal = 8.dp, vertical = 8.dp), horizontalArrangement = Arrangement.SpaceEvenly) {
             Text(
                 text = tag,
                 style = TextStyle(fontWeight = FontWeight.Bold),
@@ -44,7 +44,7 @@ fun HorizontalTextItem(tag: String = "KeyName", value: String = "KeyValue") {
 @Preview(showBackground = true)
 @Composable
 fun VerticalTextItem(title: String = "KeyName", value: String = "KeyValue") {
-    Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp), verticalArrangement = Arrangement.SpaceEvenly) {
+    Column(modifier = Modifier.padding(horizontal = 8.dp, vertical = 8.dp), verticalArrangement = Arrangement.SpaceEvenly) {
         // title
         Text(
             text = title,
@@ -112,7 +112,7 @@ private fun BaseTextFieldItem(tag: String = "KeyName", value: String = "KeyValue
 
         ),
         modifier = Modifier
-            .padding(horizontal = 16.dp, vertical = 8.dp)
+            .padding(horizontal = 8.dp, vertical = 8.dp)
             .fillMaxWidth()
     )
 }
