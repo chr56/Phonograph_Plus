@@ -8,11 +8,14 @@ package player.phonograph.util
 
 import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.drawable.Drawable
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
-import androidx.core.graphics.drawable.toBitmapOrNull
+import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.toBitmap
+import mt.pref.ThemeColor
 import org.jaudiotagger.audio.AudioFile
 import org.jaudiotagger.audio.AudioFileIO
 import org.jaudiotagger.audio.AudioHeader
@@ -26,6 +29,7 @@ import org.jaudiotagger.tag.id3.AbstractTagFrame
 import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.coil.loadImage
+import player.phonograph.coil.target.PaletteTargetBuilder
 import player.phonograph.model.Song
 import java.io.File
 import java.io.IOException
@@ -122,21 +126,24 @@ object SongDetailUtil {
         var otherTags: MutableMap<String, String>? = null,
     )
 
-    fun loadArtwork(context: Context, song: Song): MutableState<Bitmap?> {
-        val bitmapState = mutableStateOf<Bitmap?>(null)
+    fun loadArtwork(context: Context, song: Song): MutableState<BitmapPaletteWrapper?> {
+        val bitmapState = mutableStateOf<BitmapPaletteWrapper?>(null)
         loadImage(context) {
             data(song)
-            placeholder(R.drawable.default_album_art)
-            target(
-                onSuccess = { drawable ->
-                    bitmapState.value = drawable.toBitmapOrNull()
-                },
-                onError = { drawable ->
-                    bitmapState.value = drawable?.toBitmapOrNull()
-                })
+            target(PaletteTargetBuilder(context)
+                .onResourceReady { result: Drawable, paletteColor: Int ->
+                    bitmapState.value =
+                        BitmapPaletteWrapper(result.toBitmap(), paletteColor)
+                }
+                .onFail {
+                    bitmapState.value =
+                        BitmapPaletteWrapper(ContextCompat.getDrawable(context, R.drawable.default_album_art)!!.toBitmap(),
+                            ThemeColor.primaryColor(context))
+                }
+                .build())
         }
         return bitmapState
     }
 
-    class BitmapHolder(var bitmap: Bitmap? = null)
+    class BitmapPaletteWrapper(var bitmap: Bitmap, var paletteColor: Int)
 }
