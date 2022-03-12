@@ -127,12 +127,13 @@ object SongDetailUtil {
         var otherTags: MutableMap<String, String>? = null,
     )
 
-    fun loadArtwork(context: Context, song: Song): MutableState<BitmapPaletteWrapper?> {
+    fun loadArtwork(context: Context, song: Song, callback: () -> Unit): MutableState<BitmapPaletteWrapper?> {
         val bitmapState = mutableStateOf<BitmapPaletteWrapper?>(null)
         getRequestBuilder(context, song)
             .into(object : CustomTarget<BitmapPaletteWrapper?>() {
                 override fun onResourceReady(resource: BitmapPaletteWrapper, transition: Transition<in BitmapPaletteWrapper?>?) {
                     bitmapState.value = resource
+                    callback.invoke()
                 }
                 override fun onLoadCleared(placeholder: Drawable?) {
                     val bitmap = placeholder?.toBitmap()

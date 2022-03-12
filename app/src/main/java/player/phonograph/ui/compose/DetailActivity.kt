@@ -35,6 +35,8 @@ import player.phonograph.util.SongDetailUtil.SongInfo
 import player.phonograph.util.SongDetailUtil.getFileSizeString
 import player.phonograph.util.SongDetailUtil.loadArtwork
 import player.phonograph.util.SongDetailUtil.loadSong
+import util.mdcolor.ColorUtil
+import util.mdcolor.pref.ThemeColor
 
 class DetailActivity : ToolbarActivity() {
 
@@ -49,7 +51,7 @@ class DetailActivity : ToolbarActivity() {
 
         song?.let {
             model.info = loadSong(song)
-            model.artwork = loadArtwork(this, song = song)
+            model.artwork = loadArtwork(this, song = song, this::updateBarsColor)
         }
     }
 
@@ -69,6 +71,18 @@ class DetailActivity : ToolbarActivity() {
     private fun load(song: Song) {
         coroutines.launch {
             model.info = loadSong(song)
+        }
+    }
+
+    fun updateBarsColor() {
+        model.artwork.value?.palette?.let { palette ->
+            val colorInt = palette
+                .getVibrantColor(ThemeColor.primaryColor(this)).let { ColorUtil.darkenColor(it) }
+            appBarColor.value = Color(colorInt)
+            window.statusBarColor = ColorUtil.darkenColor(colorInt)
+            if (ThemeColor.coloredNavigationBar(this)) {
+                window.navigationBarColor = ColorUtil.darkenColor(colorInt)
+            }
         }
     }
 }
