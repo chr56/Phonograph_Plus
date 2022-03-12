@@ -115,7 +115,7 @@ internal fun DetailActivityContent(info: SongInfo) {
 @Preview(showBackground = true)
 @Composable
 fun Item(tag: String = "KeyName", value: String = "KeyValue") {
-    TextItem(tag, value)
+    TitleContentItem(tag, value)
 }
 
 // @Preview(showBackground = true)
