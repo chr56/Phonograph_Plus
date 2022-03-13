@@ -2,7 +2,7 @@
 
 # Phonograph 修改版
 
-[<img src="https://github.com/chr56/Phonograph/workflows/ci/badge.svg" alt="CI Status">](https://github.com/chr56/Phonograph/actions)
+[<img src="https://github.com/chr56/Phonograph/workflows/ci/badge.svg" alt="CI Status">](https://github.com/chr56/Phonograph_Plus/actions/workflows/ci.yml)
 
 **Phonograph 第三方修改版**
 
@@ -10,7 +10,14 @@
 
 <br/>
 
-([原仓库/Original Project Repo](https://github.com/kabouzeid/Phonograph))
+This is a fork! -> [原仓库/Original Project Repo](https://github.com/kabouzeid/Phonograph)
+
+<br/>
+<br/>
+
+**Phonograph Plus** is (partially) migrating to 🚀 Jetpack Compose
+
+**Phonograph Plus** 正在（部分）迁移至 🚀 Jetpack Compose
 
 <br/>
 <br/>
@@ -33,7 +40,7 @@
 
 * 适配 Android 11 分区存储 （部分） | Fix Android 11 Scope Storage.(WIP)
 
-* 适当折叠歌曲弹出菜单 | Optimus song item menu.
+* 适当折叠歌曲弹出菜单 | Optimise song item menu.
 
 * 改进媒体库交互 | Improve “Library” pages user experience。
 
@@ -60,26 +67,34 @@
 **TO-DO list**
 
 - [ ] 完成 Readme . md
+  
+- [ ] 将歌曲“详情” 迁移至 Compose ❗WIP (基本信息显示)
+  
+- [ ] 重构歌曲封面加载Glide模块
+  
+- [ ] 重构更新对话框
+  
+- [ ] 重构歌词系统
+  
+- [ ] 重构媒体库UI ❗WIP
 
 - [ ] 整理设置页
 
 - [ ] 部分重构(所谓的)"主题引擎"
 
-- [ ] 优化歌曲“详情”
+- [ ] <del>优化歌曲“详情”</del>
 
-- [ ] 万能歌曲 Adapter ❗WIP
+- [ ] 重构并优化歌词系统, 解析歌词中的 "\n", 尝试适配 FlyMe / exTHmUI(等一系类原生)状态栏歌词
 
-- [ ] 自建本地媒体数据库(使用 AndroidX Room), 并解析 Tag 中 ‘;’, '&', '/', '\', ',' , 改进搜索
+- [ ] 万能歌曲 Adapter ⭕
+
+- [ ] 自建本地媒体数据库(使用 AndroidX Room) ⭕, 并解析 Tag 中 ‘;’, '&', '/', '\', ',' , 改进搜索
 
 - [ ] 实现更好的播放频率计数, 统计听歌频率
 
 - [ ] 增强“播放列表详情”(信息展示✔, 支持搜索❌, 更好的修改本地列表方式 ❗WIP)
 
-- [ ] 重构并优化歌词系统, 解析歌词中的 "\n", 尝试适配 FlyMe / exTHmUI(等一系类原生)状态栏歌词
-
 - [ ]  ...
-
-- [ ] 完美适配 Android11+ 的文件访问
 
 - [ ] 检查文件
 
@@ -90,6 +105,10 @@
 - [ ] 桌面歌词(?)
 
 - [ ] 修改 SlidingMusicBar
+
+- [ ] 重构音乐标签编辑
+
+- [ ] 完美适配 Android11+ 的文件访问(❌)
 
 - [ ] ???
 
