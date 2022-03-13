@@ -42,7 +42,10 @@ object SongDetailUtil {
         val fileSizeInMBf: Float = fileSizeInKB / 1024F
 
         val readableFileSizeInMB =
-            fileSizeInMB.toString() + ((fileSizeInMBf - fileSizeInMB).toString()).substring(1,4)
+            fileSizeInMB.toString() +
+                ((fileSizeInMBf - fileSizeInMB).toString()).let {
+                    if (it.isNotBlank() && it.length >= 5) it.substring(1, 4) else ".0"
+                }
 
         return "$readableFileSizeInMB MB ($fileSizeInKB KB)"
     }
@@ -66,8 +69,8 @@ object SongDetailUtil {
                 val audioHeader: AudioHeader = audioFile.audioHeader
                 songInfo.fileFormat = audioHeader.format
                 songInfo.trackLength = (audioHeader.trackLength * 1000).toLong()
-                songInfo.bitRate = audioHeader.bitRate  + " kb/s"
-                songInfo.samplingRate = audioHeader.sampleRate  + " Hz"
+                songInfo.bitRate = audioHeader.bitRate + " kb/s"
+                songInfo.samplingRate = audioHeader.sampleRate + " Hz"
                 // tags of the song
                 songInfo.title = audioFile.tag.getFirst(FieldKey.TITLE)
                 songInfo.artist = audioFile.tag.getFirst(FieldKey.ARTIST)
