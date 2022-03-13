@@ -110,7 +110,7 @@ private fun DetailActivityContent(viewModel: DetailModel) {
         )
     }
 
-    if (ColorTools.isColorRelevant(MaterialTheme.colors.surface,paletteColor)){
+    if (ColorTools.isColorRelevant(MaterialTheme.colors.surface, paletteColor)) {
         paletteColor = paletteColor.getReverseColor()
     }
 //    MaterialTheme.colors.surface.let { surfaceColor: Color ->
@@ -157,8 +157,8 @@ private fun DetailActivityContent(viewModel: DetailModel) {
             Item(stringResource(id = R.string.label_track_length), MusicUtil.getReadableDurationString(info.trackLength ?: -1))
             Item(stringResource(id = R.string.label_file_format), info.fileFormat ?: "-")
             Item(stringResource(id = R.string.label_file_size), getFileSizeString(info.fileSize ?: -1))
-            Item(stringResource(id = R.string.label_bit_rate), info.bitRate ?: "-")
-            Item(stringResource(id = R.string.label_sampling_rate), info.samplingRate ?: "-")
+            Item(stringResource(id = R.string.label_bit_rate), info.bitRate ?: "-" + " kb/s")
+            Item(stringResource(id = R.string.label_sampling_rate), info.samplingRate ?: "-" + " Hz")
             // Common Tag
             Spacer(modifier = Modifier.height(16.dp))
             Title(stringResource(R.string.music_tags), color = paletteColor)

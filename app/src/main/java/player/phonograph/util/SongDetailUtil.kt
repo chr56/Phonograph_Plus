@@ -66,8 +66,8 @@ object SongDetailUtil {
                 val audioHeader: AudioHeader = audioFile.audioHeader
                 songInfo.fileFormat = audioHeader.format
                 songInfo.trackLength = (audioHeader.trackLength * 1000).toLong()
-                songInfo.bitRate = audioHeader.bitRate // + " kb/s"
-                songInfo.samplingRate = audioHeader.sampleRate // + " Hz"
+                songInfo.bitRate = audioHeader.bitRate  + " kb/s"
+                songInfo.samplingRate = audioHeader.sampleRate  + " Hz"
                 // tags of the song
                 songInfo.title = audioFile.tag.getFirst(FieldKey.TITLE)
                 songInfo.artist = audioFile.tag.getFirst(FieldKey.ARTIST)
