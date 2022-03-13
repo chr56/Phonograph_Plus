@@ -37,9 +37,14 @@ import java.io.IOException
 
 object SongDetailUtil {
     fun getFileSizeString(sizeInBytes: Long): String {
-        val fileSizeInKB = sizeInBytes / 1024
-        val fileSizeInMB = fileSizeInKB / 1024
-        return "$fileSizeInMB MB"
+        val fileSizeInKB: Long = sizeInBytes / 1024
+        val fileSizeInMB: Long = fileSizeInKB / 1024
+        val fileSizeInMBf: Float = fileSizeInKB / 1024F
+
+        val readableFileSizeInMB =
+            fileSizeInMB.toString() + ((fileSizeInMBf - fileSizeInMB).toString()).substring(1,4)
+
+        return "$readableFileSizeInMB MB ($fileSizeInKB KB)"
     }
     fun loadSong(song: Song): SongInfo {
         val file = File(song.data)
