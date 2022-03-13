@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - 'dev'
+      - 'Compose'
     tags-ignore:
       - 'preview_*'
       - 'v0*'
