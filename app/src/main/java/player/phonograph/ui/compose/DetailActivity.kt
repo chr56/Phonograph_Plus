@@ -18,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.painter.BitmapPainter
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -97,17 +98,28 @@ private fun DetailActivityContent(viewModel: DetailModel) {
     val info by remember { mutableStateOf(viewModel.info) }
     val wrapper by remember { viewModel.artwork }
 
-    val (painter, paletteColor) = if (wrapper != null) {
+    var (painter, paletteColor) = if (wrapper != null) {
         Pair(
             BitmapPainter(wrapper!!.bitmap.asImageBitmap()),
-            Color(wrapper!!.palette.getVibrantColor(0))
+            Color(wrapper!!.palette.getVibrantColor(MaterialTheme.colors.primaryVariant.toArgb()))
         )
     } else {
         Pair(
             painterResource(R.drawable.default_album_art),
-            MaterialTheme.colors.surface
+            MaterialTheme.colors.primaryVariant
         )
     }
+
+    if (ColorTools.isColorRelevant(MaterialTheme.colors.surface,paletteColor)){
+        paletteColor = paletteColor.getReverseColor()
+    }
+//    MaterialTheme.colors.surface.let { surfaceColor: Color ->
+//        if (surfaceColor.isColorLight()) {
+//            if (paletteColor.isColorLight()) paletteColor = paletteColor.getReverseColor()
+//        } else {
+//            if (!paletteColor.isColorLight()) paletteColor = paletteColor.getReverseColor()
+//        }
+//    }
 
     val scrollState = rememberScrollState()
     Column(
