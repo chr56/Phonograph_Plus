@@ -29,64 +29,60 @@
 <body>
     <h3 style="color: tomato">修改说明</h3>
 
-    <div>正式版现已暂停更新,等待该版本稳定</div>
+    <b>Changelogs soon would be split into two versions (Simplified Chinese and English version)</b>
 
-    <h4><b>Preview 0.1.0RC2</b> 2022.3.10</h4>
+    <h4><b>0.1.0</b> 2022.3.15</h4>
     <div style="color: black">
+
+        <b>注意:</b>
         <ol>
-            <li>
-                修复 媒体库页面头部白条布局异常
-            </li>
-            <li>
-                开发 清理代码
-            </li>
+            <li>此版本需要重新设置主题配色</li>
+            <li>对于Android 10 (Q)以上版本用户, 播放列表的编辑(重新排序,移除歌曲)仍存在较大问题</li>
         </ol>
-    </div>
-
-    <h4><b>Preview 0.1.0RC1</b> 2022.3.3</h4>
-    <div style="color: black">
+        <b>Tips:</b>
         <ol>
-            <li>
-                修复 睡眠定时器在Android12上的崩溃
-            </li>
-            <li>
-                开发 大幅度调整"媒体库"的UI,以便于维护(但部分还未完成)
-            </li>
-            <li>
-                开发 调整代码结构,优化代码,清理依赖(需要重新设置主题配色)
-            </li>
-            <li>
-                新增 添加清理旧版本历史残留文件配置功能(但是<del>仅从此版本开始记录历史包袱</del>)
-            </li>
-            <li>
-                开发 极限混淆,实现Apk<del>小而美</del>(<b>可能出现异常</b>)
-            </li>
+            <li>You may need to set the theme color again in this version.</li>
+            <li>For users of Android 10 (Q) and above, there are still some big problems with playlist editing (reordering &amp; removing songs)</li>
         </ol>
-    </div>
 
-
-    <h4><b>Preview</b> 2022.1.18</h4>
-    <div style="color: black">
+        <b id="zh-cn">变化:</b>
         <ol>
-            <li>
-                修复 播放列表更改(新建/改名/删除)后,未能及时刷新（仅限App内操作）
-            </li>
-            <li>
-                改进 再删除播放列表失败后, 可尝试使用SAF(Storage Access Framework, 存储访问框架)授权目录后再次尝试删除（目前交互体验不佳, 且可能误删文件!!!）
-            </li>
-            <li>
-                改进 对于Android 10 (Q)以上版本用户, 使用SAF创建播放列表(包括新建空列表与保存播放器当前播放队列)
-            </li>
-            <li>
-                改进 使用SAF复制(保存)播放列表(单个播放列表可自定义名称, 多个播放列表同意添加时间后缀并保存在所选同一目录下)
-            </li>
-            <li>
-                改进 对于Android 10 (Q)以上版本用户, 使用SAF授权后再追加歌曲至已有播放列表（目前交互体验不佳）
-            </li>
-            <li>开发 清理代码</li>
+            <li>修复 睡眠定时器在Android12上的崩溃</li>
+            <li>改进 大幅度调整"媒体库"的UI(但部分还未完成)</li>
+            <li>新增 添加清理旧版本历史残留文件配置功能(但是仅从此版本开始记录历史包袱)</li>
+
+            <li>修复 播放列表更改(新建/改名/删除)后,未能及时刷新（仅限App内操作）</li>
+            <li>改进 再删除播放列表失败后, 可尝试使用SAF(Storage Access Framework, 存储访问框架)授权目录后再次尝试删除（目前交互体验不佳, 且可能误删文件!!!）</li>
+            <li>改进 对于Android 10 (Q)以上版本用户, 使用SAF创建播放列表(包括新建空列表与保存播放器当前播放队列)</li>
+            <li>改进 使用SAF复制(保存)播放列表(单个播放列表可自定义名称, 多个播放列表统一添加时间后缀并保存在所选同一目录下)</li>
+            <li>改进 对于Android 10 (Q)以上版本用户, 使用SAF授权后再追加歌曲至已有播放列表（目前交互体验不佳）</li>
+
+            <li>开发 调整代码结构,优化代码,清理依赖(需要重新设置主题配色)</li>
             <li>开发 移除ButterKnife</li>
             <li>开发 使用AGP 7.0.4 (以及Gradle7.1.1) 构建</li>
-            <li>开发 升级Glide(3.8.0 -&gt; 4.12.0)</li>
+            <li>开发 升级Glide(3.8.0 -&gt; 4.12.0), 可能引起若干封面加载问题</li>
+            <li>开发 极限混淆,实现Apk小而美</li>
+        </ol>
+        <br>
+        <b id="en">Changes:</b>
+        <ol>
+            <li>Fix: the crashes caused by sleep timer on Android12 </li>
+            <li>Improve: Major change to "media library" (but some parts are not done yet)</li>
+            <li>Add: the feature of cleaning up the configuration of historical residual files of old versions from now</li>
+
+            <li>Fix: After the playlist is changed (creating / renaming / deleting), it cannot be refreshed in time (but only in-app operation)</li>
+            <li>Improve: If deleting the playlist fails, you can try to use the SAF (Storage Access Framework) to authorize permission for its directory and try to delete it again (but the current interactive experience is horrible, and the file may be
+                deleted by mistake!!!)</li>
+            <li>Improve: For users of Android 10 (Q) and above, use SAF to create playlists (including creating an empty list and saving the player's current play queue)</li>
+            <li>Improve: Use SAF to copy (or save) playlists (Currently, single playlist can be set a custom name, while multiple playlists would be added a time suffix and save in the same selected directory)</li>
+            <li>Improve: For users of Android 10 (Q) and above, SAF authorization is required to add songs to an existing playlist (Currently horrible user experience)</li>
+
+            <li>Development: Refactor the code structure, optimize the code, clean up the dependencies (so need to set the theme color again)</li>
+            <li>Development: Remove ButterKnife</li>
+            <li>Development: Build app with AGP 7.0.4 (along with Gradle 7.1.1)</li>
+            <li>Development: Upgrade Glide from 3.8.0 to 4.12.0 (so may cause some cover loading issues)</li>
+            <li>Development: Extreme code confusion, for keeping Apk small and petty</li>
+
         </ol>
     </div>
 
