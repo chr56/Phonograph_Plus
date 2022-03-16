@@ -6,12 +6,17 @@
             word-wrap: break-word;
         }
         
+        body {
+            background-color: CONTENT-BACKGROUND-COLOR;
+            color: CONTENT-TEXT-COLOR;
+        }
+        
         a {
-            color: link-color;
+            color: HIGHLIGHT-COLOR;
         }
         
         a:active {
-            color: link-color-active;
+            color: HIGHLIGHT-COLOR;
         }
         
         ol {
@@ -27,12 +32,12 @@
 </head>
 
 <body>
-    <h3 style="color: tomato">修改说明</h3>
+    <h3 style="color: HIGHLIGHT-COLOR">修改说明</h3>
 
     <b>Changelogs soon would be split into two versions (Simplified Chinese and English version)</b>
 
     <h4><b>0.1.0</b> 2022.3.15</h4>
-    <div style="color: black">
+    <div>
 
         <b>注意:</b>
         <ol>
@@ -71,8 +76,8 @@
             <li>Add: the feature of cleaning up the configuration of historical residual files of old versions from now</li>
 
             <li>Fix: After the playlist is changed (creating / renaming / deleting), it cannot be refreshed in time (but only in-app operation)</li>
-            <li>Improve: If deleting the playlist fails, you can try to use the SAF (Storage Access Framework) to authorize permission for its directory and try to delete it again (but the current interactive experience is horrible, and the file may be
-                deleted by mistake!!!)</li>
+            <li>Improve: If deleting the playlist fails, you can try to use the SAF (Storage Access Framework) to authorize permission for its directory and try to delete it again (but the current interactive experience is horrible, and the file may be deleted
+                by mistake!!!)</li>
             <li>Improve: For users of Android 10 (Q) and above, use SAF to create playlists (including creating an empty list and saving the player's current play queue)</li>
             <li>Improve: Use SAF to copy (or save) playlists (Currently, single playlist can be set a custom name, while multiple playlists would be added a time suffix and save in the same selected directory)</li>
             <li>Improve: For users of Android 10 (Q) and above, SAF authorization is required to add songs to an existing playlist (Currently horrible user experience)</li>
@@ -87,7 +92,7 @@
     </div>
 
     <h4><b>0.0.8</b> 2022.1.2</h4>
-    <div style="color: black">
+    <div>
         <ol>
             <li>开发 使用SDK31(Android12)开发</li>
             <li>变更 移动主界面右上角菜单中的“随机播放所有歌曲”至抽屉</li>
@@ -109,7 +114,7 @@
     </div>
 
     <h4><b>0.0.7</b> 2021.12.26</h4>
-    <div style="color: black">
+    <div>
         <ol>
             <li>修复 (无时间轴)纯文本歌词导致的崩溃</li>
             <li>修复 正在播放曲目切换后，状态栏歌词偶尔未切换</li>
@@ -127,7 +132,7 @@
     </div>
 
     <h4><b>0.0.6</b> 2021.12.09</h4>
-    <div style="color: black">
+    <div>
         <ol>
             <li>
                 适配 支持新版<a href="https://github.com/577fkj/MIUIStatusBarLyric">MIUI状态栏歌词</a>API变化 <br />(请Hook本应用, 并在"MIUI状态栏歌词"-&gt;"软件列表"中开启,以生效)
@@ -136,7 +141,7 @@
     </div>
 
     <h4><b>0.0.5</b> 2021.12.04</h4>
-    <div style="color: black">
+    <div>
         <ol>
             <li>修复 无法显示内嵌歌词</li>
             <li>
@@ -155,7 +160,7 @@
         padding-top: 1px; ;
       ">
         <h4><b>0.0.4</b> 2021.12.03</h4>
-        <div style="color: black">
+        <div>
             <ol>
                 <li>新增 允许关闭歌词广播</li>
                 <li>修复 关闭歌词显示后，无法发送歌词广播</li>
@@ -176,7 +181,7 @@
         </div>
 
         <h4><b>0.0.3</b> 2021.11.28</h4>
-        <div style="color: black">
+        <div>
             <ol>
                 <li>修复 状态栏歌词适配</li>
                 <li>变更 更好的检查更新行为</li>
@@ -187,7 +192,7 @@
         </div>
 
         <h4><b>0.0.2</b> 2021.11.15</h4>
-        <div style="color: black">
+        <div>
             <ol>
                 <li>改进 歌曲与播放列表读取</li>
                 <li>
@@ -212,7 +217,7 @@
 
         <h4><b>0.0.1</b> (2021.10.21)</h4>
         <p style="color: gray">初始版本</p>
-        <div style="color: black">
+        <div>
             <ol>
                 <li>★更换包名为 player.phonograph.plus★</li>
                 <li>版本号重新计数</li>

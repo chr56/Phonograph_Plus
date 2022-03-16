@@ -7,7 +7,6 @@ import android.content.pm.PackageManager
 import android.graphics.Color
 import android.os.Bundle
 import android.view.InflateException
-import android.view.LayoutInflater
 import android.view.View
 import android.webkit.WebView
 import androidx.fragment.app.DialogFragment
@@ -18,8 +17,8 @@ import com.afollestad.materialdialogs.customview.customView
 import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.settings.Setting
-import util.mdcolor.pref.ThemeColor
 import util.mdcolor.ColorUtil
+import util.mdcolor.pref.ThemeColor
 import util.mddesign.util.Util
 import java.io.BufferedReader
 import java.io.InputStreamReader
@@ -31,7 +30,7 @@ class ChangelogDialog : DialogFragment() {
     @SuppressLint("InflateParams")
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val customView: View = try {
-            LayoutInflater.from(activity).inflate(R.layout.dialog_web_view, null)
+            requireActivity().layoutInflater.inflate(R.layout.dialog_web_view, null)
         } catch (e: InflateException) {
             e.printStackTrace()
             return MaterialDialog(requireActivity())
@@ -39,36 +38,40 @@ class ChangelogDialog : DialogFragment() {
                 .message(text = "This device doesn't support web view, which is necessary to view the change log. It is missing a system component.")
                 .positiveButton(android.R.string.ok)
         }
+
         val dialog: MaterialDialog = MaterialDialog(requireActivity())
             .title(R.string.changelog)
             .customView(view = customView, noVerticalPadding = false)
             .positiveButton(android.R.string.ok) { if (activity != null) setChangelogRead(requireActivity()) }
-//                .showListener { dialog1 -> if (activity != null) setChangelogRead(requireActivity()) }
         // set button color
         dialog.getActionButton(WhichButton.POSITIVE).updateTextColor(ThemeColor.accentColor(requireActivity()))
 
         val webView = customView.findViewById<WebView>(R.id.web_view)
         try {
             // Load from phonograph-changelog.html in the assets folder
-            val buf = StringBuilder()
-            val json = requireActivity().assets.open("phonograph-changelog.html")
-            val `in` = BufferedReader(InputStreamReader(json, "UTF-8"))
-            var str: String?
-            while (`in`.readLine().also { str = it } != null) buf.append(str)
-            `in`.close()
-            val app = App.instance
+            val output = StringBuilder()
+            val inputStream = requireActivity().assets.open("phonograph-changelog.html")
+            val bufferedReader = BufferedReader(InputStreamReader(inputStream, "UTF-8"))
+
+            var buffer: String?
+            while (bufferedReader.readLine().also { buffer = it } != null) {
+                output.append(buffer)
+            }
+            bufferedReader.close()
 
             // Inject color values for WebView body background and links
-            val backgroundColor = colorToCSS(Util.resolveColor(activity, R.attr.md_background_color, Color.parseColor(if (app.nightmode()) "#424242" else "#ffffff")))
-            val contentColor = colorToCSS(Color.parseColor(if (app.nightmode()) "#ffffff" else "#000000"))
-            val changeLog = buf.toString()
-                .replace("{style-placeholder}", String.format("body { background-color: %s; color: %s; }", backgroundColor, contentColor))
-                .replace("{link-color}", colorToCSS(ThemeColor.accentColor(app))) // TODO MD
-                .replace("{link-color-active}", colorToCSS(ColorUtil.lightenColor(ThemeColor.accentColor(app)))) // TODO MD
+            val backgroundColor = colorToCSS(Util.resolveColor(activity, R.attr.md_background_color, Color.parseColor(if (App.instance.nightmode()) "#424242" else "#ffffff")))
+            val contentColor = colorToCSS(Color.parseColor(if (App.instance.nightmode()) "#ffffff" else "#000000"))
+            val changeLog = output.toString()
+                .replace("CONTENT-TEXT-COLOR", contentColor)
+                .replace("CONTENT-BACKGROUND-COLOR", backgroundColor)
+                .replace("HIGHLIGHT-COLOR", colorToCSS(ThemeColor.accentColor(App.instance)))
+
             webView.loadData(changeLog, "text/html", "UTF-8")
         } catch (e: Throwable) {
             webView.loadData("<h1>Unable to load</h1><p>" + e.localizedMessage + "</p>", "text/html", "UTF-8")
         }
+
         return dialog
     }
 
