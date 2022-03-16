@@ -63,8 +63,9 @@ class ChangelogDialog : DialogFragment() {
             val backgroundColor = colorToCSS(Util.resolveColor(activity, R.attr.md_background_color, Color.parseColor(if (App.instance.nightmode()) "#424242" else "#ffffff")))
             val contentColor = colorToCSS(Color.parseColor(if (App.instance.nightmode()) "#ffffff" else "#000000"))
             val changeLog = output.toString()
-                .replace("CONTENT-TEXT-COLOR", contentColor)
                 .replace("CONTENT-BACKGROUND-COLOR", backgroundColor)
+                .replace("TEXT-COLOR", contentColor)
+                .replace("DISABLE-COLOR", "rgb(167, 167, 167)") // grey
                 .replace("HIGHLIGHT-COLOR", colorToCSS(ThemeColor.accentColor(App.instance)))
 
             webView.loadData(changeLog, "text/html", "UTF-8")
