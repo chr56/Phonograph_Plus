@@ -17,11 +17,12 @@ import com.afollestad.materialdialogs.customview.customView
 import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.settings.Setting
-import util.mdcolor.ColorUtil
 import util.mdcolor.pref.ThemeColor
 import util.mddesign.util.Util
 import java.io.BufferedReader
+import java.io.InputStream
 import java.io.InputStreamReader
+import java.util.*
 
 /**
  * @author Aidan Follestad (afollestad)
@@ -48,9 +49,24 @@ class ChangelogDialog : DialogFragment() {
 
         val webView = customView.findViewById<WebView>(R.id.web_view)
         try {
-            // Load from phonograph-changelog.html in the assets folder
+            // Fetch correct changelog
+            val locale = requireContext().resources.configuration.locales.get(0)
+
+            val inputStream: InputStream = when (locale.language) {
+                Locale("zh").language,
+                Locale("zh-rCN").language,
+                Locale("zh-cn").language,
+                Locale("zh-hans").language,
+                -> {
+                    requireActivity().assets.open("phonograph-changelog-zh-rCN.html")
+                }
+                else -> {
+                    requireActivity().assets.open("phonograph-changelog.html")
+                }
+            }
+
+            // Process changelog.html in the assets folder
             val output = StringBuilder()
-            val inputStream = requireActivity().assets.open("phonograph-changelog.html")
             val bufferedReader = BufferedReader(InputStreamReader(inputStream, "UTF-8"))
 
             var buffer: String?
