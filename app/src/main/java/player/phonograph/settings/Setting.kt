@@ -94,6 +94,10 @@ class Setting(context: Context) {
             editor.apply()
         }
 
+    fun resetHomeTabConfig() {
+        editor.putString(HOME_TAB_CONFIG, PageConfigUtil.DEFAULT_CONFIG.toString(0)).apply()
+    }
+
     var coloredNotification: Boolean by BooleanPref(COLORED_NOTIFICATION, true)
     var classicNotification: Boolean by BooleanPref(CLASSIC_NOTIFICATION, false)
     var coloredAppShortcuts: Boolean by BooleanPref(COLORED_APP_SHORTCUTS, true)

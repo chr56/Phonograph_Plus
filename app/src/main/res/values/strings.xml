@@ -372,6 +372,9 @@
     <string name="file_incorrect">File is incorrect!</string>
     <string name="pref_header_appearance">Appearance</string>
     <string name="deleting_old_files">Deleting legacy files…</string>
+    <string name="pref_title_reset_home_pages_tab_config">Reset all tabs</string>
+    <string name="pref_summary_reset_home_pages_tab_config">All library categories would be reset to default.</string>
+    <string name="are_you_sure">Are you sure?</string>
     <plurals name="msg_deletion_result">
         <item quantity="one">%1$d / %2$d item was successfully deleted.</item>>
         <item quantity="other">%1$d / %2$d items were successfully deleted.</item>

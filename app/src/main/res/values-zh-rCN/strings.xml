@@ -358,6 +358,9 @@
     <string name="file_incorrect">文件不正确!</string>
     <string name="pref_header_appearance">外观</string>
     <string name="deleting_old_files">正在删除旧文件…</string>
+    <string name="pref_title_reset_home_pages_tab_config">重置媒体库类别设置</string>
+    <string name="pref_summary_reset_home_pages_tab_config">所有媒体库类别将还原为默认</string>
+    <string name="are_you_sure">确定?</string>
     <plurals name="msg_deletion_result">
         <item quantity="other">%1$d / %2$d 个项目删除成功</item>
     </plurals>

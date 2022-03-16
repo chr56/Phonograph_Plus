@@ -54,6 +54,12 @@
             android:title="@string/library_categories"
             app:iconSpaceReserved="false" />
 
+        <Preference
+            android:key="reset_home_pages_tab_config"
+            android:title="@string/pref_title_reset_home_pages_tab_config"
+            android:summary="@string/pref_summary_reset_home_pages_tab_config"
+            app:iconSpaceReserved="false" />
+
         <lib.phonograph.preference.SwitchPreferenceX
             android:defaultValue="true"
             android:key="remember_last_tab"

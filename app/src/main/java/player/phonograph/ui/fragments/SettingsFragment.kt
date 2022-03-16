@@ -14,6 +14,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.DialogFragment
 import androidx.preference.*
+import com.afollestad.materialdialogs.MaterialDialog
 import lib.phonograph.preference.ColorPreferenceX
 import lib.phonograph.preference.DialogPreferenceX
 import lib.phonograph.preference.EditTextPreferenceX
@@ -25,10 +26,10 @@ import player.phonograph.R
 import player.phonograph.appshortcuts.DynamicShortcutManager
 import player.phonograph.preferences.*
 import player.phonograph.settings.Setting
-import util.phonograph.misc.ColorChooserListener
 import player.phonograph.util.NavigationUtil
-import util.mdcolor.pref.ThemeColor
 import util.mdcolor.ColorUtil
+import util.mdcolor.pref.ThemeColor
+import util.phonograph.misc.ColorChooserListener
 
 class SettingsFragment : PreferenceFragmentCompat() {
 
@@ -89,6 +90,24 @@ class SettingsFragment : PreferenceFragmentCompat() {
     override fun onDestroyView() {
         super.onDestroyView()
         Setting.instance.unregisterOnSharedPreferenceChangedListener(SharedPreferenceChangeListener())
+    }
+
+    override fun onPreferenceTreeClick(preference: Preference): Boolean {
+        if (preference.key == "reset_home_pages_tab_config") {
+            MaterialDialog(requireContext())
+                .title(R.string.pref_title_reset_home_pages_tab_config)
+                .message(
+                    text = "${getString(R.string.pref_summary_reset_home_pages_tab_config)}\n${getString(R.string.are_you_sure)}"
+                )
+                .positiveButton {
+                    Setting.instance.resetHomeTabConfig()
+                }
+                .negativeButton {
+                    it.dismiss()
+                }
+                .show()
+        }
+        return super.onPreferenceTreeClick(preference)
     }
 
     private fun updateNowPlayingScreenSummary() {
