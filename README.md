@@ -3,6 +3,7 @@
 # Phonograph 修改版
 
 [<img src="https://github.com/chr56/Phonograph/workflows/ci/badge.svg" alt="CI Status">](https://github.com/chr56/Phonograph_Plus/actions/workflows/ci.yml)
+[![Crowdin](https://badges.crowdin.net/phonograph-plus/localized.svg)](https://crowdin.com/project/phonograph-plus)
 
 **Phonograph 第三方修改版**
 
@@ -63,6 +64,12 @@ This is a fork! -> [原仓库/Original Project Repo](https://github.com/kabouzei
 * 以及更多细小特性 | and more small features/fixes.
 
 // todo
+
+
+**Translation**
+
+Translate Phonograph Plus into your language -> [crowdin](https://crowdin.com/project/phonograph-plus)
+
 
 **TO-DO list**
 
