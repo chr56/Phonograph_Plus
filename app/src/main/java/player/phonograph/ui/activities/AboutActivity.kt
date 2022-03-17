@@ -18,6 +18,7 @@ import androidx.appcompat.widget.Toolbar
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.list.listItemsSingleChoice
 import de.psdev.licensesdialog.LicensesDialog
+import lib.phonograph.activity.ToolbarActivity
 import player.phonograph.App.Companion.instance
 import player.phonograph.BuildConfig
 import player.phonograph.R
@@ -27,7 +28,6 @@ import player.phonograph.dialogs.ChangelogDialog
 import player.phonograph.dialogs.UpgradeDialog
 import player.phonograph.notification.UpgradeNotification
 import player.phonograph.settings.Setting
-import lib.phonograph.activity.ToolbarActivity
 import player.phonograph.ui.activities.bugreport.BugReportActivity
 import player.phonograph.ui.activities.intro.AppIntroActivity
 import util.mdcolor.pref.ThemeColor
@@ -146,7 +146,7 @@ class AboutActivity : ToolbarActivity(), View.OnClickListener {
         } catch (e: PackageManager.NameNotFoundException) {
             e.printStackTrace()
         }
-        return "Unkown"
+        return "Unknown"
     }
 
     private fun setUpOnClickListeners() {
@@ -189,7 +189,6 @@ class AboutActivity : ToolbarActivity(), View.OnClickListener {
         visitWebsite.setOnClickListener(this)
         reportBugs.setOnClickListener(this)
         writeAnEmail.setOnClickListener(this)
-        cracked.setOnClickListener(this)
         aidanFollestadGitHub.setOnClickListener(this)
         michaelCookWebsite.setOnClickListener(this)
         maartenCorpelWebsite.setOnClickListener(this)
@@ -198,6 +197,8 @@ class AboutActivity : ToolbarActivity(), View.OnClickListener {
         eugeneCheungGitHub.setOnClickListener(this)
         eugeneCheungWebsite.setOnClickListener(this)
         adrianTwitter.setOnClickListener(this)
+
+        binding.activityAboutMainContent.cardAuthorLayoutModifier.github.setOnClickListener(this)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -253,10 +254,6 @@ class AboutActivity : ToolbarActivity(), View.OnClickListener {
 //            translate -> {
 //                openUrl(TRANSLATE)
 //            }
-            cracked -> {
-                openUrl("https://github.com/chr56/Phonograph_Plus")
-                Toast.makeText(this, R.string.description_cracked, Toast.LENGTH_SHORT).show()
-            }
             aidanFollestadGitHub -> {
                 openUrl(AIDAN_FOLLESTAD_GITHUB)
             }
@@ -280,6 +277,10 @@ class AboutActivity : ToolbarActivity(), View.OnClickListener {
             }
             adrianTwitter -> {
                 openUrl(ADRIAN_TWITTER)
+            }
+
+            binding.activityAboutMainContent.cardAuthorLayoutModifier.github -> {
+                openUrl(GITHUB_MODIFIER)
             }
         }
     }
@@ -317,6 +318,9 @@ class AboutActivity : ToolbarActivity(), View.OnClickListener {
         private const val GITHUB = "https://github.com/chr56/Phonograph_Plus"
         private const val TWITTER = "https://twitter.com/swiftkarim"
         private const val WEBSITE = "https://kabouzeid.com/"
+
+        private const val GITHUB_MODIFIER = "https://github.com/chr56/"
+
 //        private const val TRANSLATE =
 //            "https://phonograph.oneskyapp.com/collaboration/project?id=26521"
         private const val AIDAN_FOLLESTAD_GITHUB = "https://github.com/afollestad"

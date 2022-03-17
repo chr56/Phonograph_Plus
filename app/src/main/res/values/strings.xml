@@ -314,7 +314,6 @@
     <string name="dialog_ringtone_title">Set ringtone</string>
     <string name="dialog_ringtone_message">Allow phonograph to modify audio settings</string>
     <string name="cracked_version">Why do you use cracked version?</string>
-    <string name="description_cracked"><del>Don\'t judge me too much !</del></string>
     <string name="perf_title_fixed_tab_layout">Fix all tabs</string>
     <string name="pref_summary_fixed_tab_layout">Tabs in top will not be scrollable, but wound be tiled without any margin.</string>
     <string name="night_mode">Night Mode</string>
@@ -375,6 +374,8 @@
     <string name="pref_title_reset_home_pages_tab_config">Reset all tabs</string>
     <string name="pref_summary_reset_home_pages_tab_config">All library categories would be reset to default.</string>
     <string name="are_you_sure">Are you sure?</string>
+    <string name="original_author">Original Author</string>
+    <string name="plus_author">The author of Phonograph Plus</string>
     <plurals name="msg_deletion_result">
         <item quantity="one">%1$d / %2$d item was successfully deleted.</item>>
         <item quantity="other">%1$d / %2$d items were successfully deleted.</item>

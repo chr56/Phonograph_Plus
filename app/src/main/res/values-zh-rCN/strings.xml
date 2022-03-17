@@ -300,7 +300,6 @@
     <string name="dialog_ringtone_title">设置为铃声</string>
     <string name="dialog_ringtone_message">允许 Phonograph 调整音频设定</string>
     <string name="cracked_version">那你为什么要用这个版本？</string>
-    <string name="description_cracked"><del>大佬勿喷！（</del></string>
     <string name="perf_title_fixed_tab_layout">固定顶部标签</string>
     <string name="pref_summary_fixed_tab_layout">顶部标签不再能够滑动，并完全平铺</string>
     <string name="night_mode">夜间模式</string>
@@ -361,6 +360,8 @@
     <string name="pref_title_reset_home_pages_tab_config">重置媒体库类别设置</string>
     <string name="pref_summary_reset_home_pages_tab_config">所有媒体库类别将还原为默认</string>
     <string name="are_you_sure">确定?</string>
+    <string name="original_author">原作者</string>
+    <string name="plus_author">Phonograph Plus 作者</string>
     <plurals name="msg_deletion_result">
         <item quantity="other">%1$d / %2$d 个项目删除成功</item>
     </plurals>

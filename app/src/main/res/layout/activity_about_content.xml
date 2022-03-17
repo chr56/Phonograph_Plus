@@ -12,6 +12,14 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp" />
 
+
+    <include
+        android:id="@+id/card_author_layout_modifier"
+        layout="@layout/card_author_modifier"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp" />
+
     <include
         android:id="@+id/card_author_layout"
         layout="@layout/card_author"
