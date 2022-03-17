@@ -17,6 +17,7 @@ import com.afollestad.materialdialogs.list.listItemsSingleChoice
 import player.phonograph.R
 import player.phonograph.Updater
 import player.phonograph.settings.Setting
+import java.util.*
 
 class UpgradeDialog : DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -25,13 +26,29 @@ class UpgradeDialog : DialogFragment() {
 
         val versionInfo = requireArguments().getBundle(VERSION_BUNDLE) ?: Bundle()
 
-        val versionCode = versionInfo.getInt(Updater.VersionCode, -1)
-        val version = versionInfo.getString(Updater.Version, "")
-        val log = versionInfo.getString(Updater.LogSummary, "")
-        val canAccessGitHub = versionInfo.getBoolean(Updater.CanAccessGitHub, false)
+        val versionCode = versionInfo.getInt(Updater.VERSIONCODE, -1)
+        val version = versionInfo.getString(Updater.VERSION, "")
+        val logZH = versionInfo.getString("${Updater.ZH_CN}${Updater.separator}${Updater.LOG_SUMMARY}", "")
+        val logEN = versionInfo.getString("${Updater.EN}${Updater.separator}${Updater.LOG_SUMMARY}", "")
+        val canAccessGitHub = versionInfo.getBoolean(Updater.CAN_ACCESS_GITHUB, false)
 
-        val downloadUris: Array<String>? = versionInfo.getStringArray(Updater.DownloadUris)
-        val downloadSources: Array<String>? = versionInfo.getStringArray(Updater.DownloadSources)
+        val downloadUris: Array<String>? = versionInfo.getStringArray(Updater.DOWNLOAD_URIS)
+        val downloadSources: Array<String>? = versionInfo.getStringArray(Updater.DOWNLOAD_SOURCES)
+
+        // use correct log
+
+        val log = when (requireContext().resources.configuration.locales.get(0).language) {
+            Locale("zh").language,
+            Locale("zh-rCN").language,
+            Locale("zh-cn").language,
+            Locale("zh-hans").language,
+            -> {
+                logZH
+            }
+            else -> {
+                logEN
+            }
+        }
 
         val message = "<p>" +
             "<b>${getString(R.string.new_version_code)}</b>: $version <br/>" +

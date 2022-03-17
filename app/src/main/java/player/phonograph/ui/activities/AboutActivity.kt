@@ -160,7 +160,7 @@ class AboutActivity : ToolbarActivity(), View.OnClickListener {
                         1 -> {
                             Updater.checkUpdate(callback = {
                                 UpgradeDialog.create(it).show(supportFragmentManager, "DebugDialog")
-                                if (Setting.instance.ignoreUpgradeVersionCode >= it.getInt(Updater.VersionCode)) {
+                                if (Setting.instance.ignoreUpgradeVersionCode >= it.getInt(Updater.VERSIONCODE)) {
                                     toast(getString(R.string.upgrade_ignored))
                                 }
                             }, force = true)
@@ -168,7 +168,7 @@ class AboutActivity : ToolbarActivity(), View.OnClickListener {
                         2 -> {
                             Updater.checkUpdate(callback = {
                                 UpgradeNotification.sendUpgradeNotification(it)
-                                if (Setting.instance.ignoreUpgradeVersionCode >= it.getInt(Updater.VersionCode)) {
+                                if (Setting.instance.ignoreUpgradeVersionCode >= it.getInt(Updater.VERSIONCODE)) {
                                     toast(getString(R.string.upgrade_ignored))
                                 }
                             }, force = true)
@@ -215,9 +215,9 @@ class AboutActivity : ToolbarActivity(), View.OnClickListener {
             }
             checkUpgrade -> {
                 Updater.checkUpdate(callback = {
-                    if (it.getBoolean(Updater.Upgradable)) {
+                    if (it.getBoolean(Updater.UPGRADABLE)) {
                         UpgradeDialog.create(it).show(supportFragmentManager, "UPGRADE_DIALOG")
-                        if (Setting.instance.ignoreUpgradeVersionCode >= it.getInt(Updater.VersionCode)) {
+                        if (Setting.instance.ignoreUpgradeVersionCode >= it.getInt(Updater.VERSIONCODE)) {
                             toast(getString(R.string.upgrade_ignored))
                         }
                     } else {

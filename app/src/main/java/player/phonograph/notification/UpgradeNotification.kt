@@ -51,12 +51,12 @@ object UpgradeNotification {
                     .setVisibility(NotificationCompat.VISIBILITY_PRIVATE)
                     .setContentTitle(context.getText(R.string.new_version))
                     .setContentText(
-                        "${context.getText(R.string.new_version_code)} ${versionInfo.getString(Updater.Version)}"
+                        "${context.getText(R.string.new_version_code)} ${versionInfo.getString(Updater.VERSION)}"
                     )
                     .setStyle(
                         NotificationCompat.BigTextStyle()
-                            .setBigContentTitle("${context.getText(R.string.new_version_code)} ${versionInfo.getString(Updater.Version)}")
-                            .bigText("${context.getString(R.string.new_version_log)} ${versionInfo.getString(Updater.LogSummary) ?: "NULL"}")
+                            .setBigContentTitle("${context.getText(R.string.new_version_code)} ${versionInfo.getString(Updater.VERSION)}")
+//                            .bigText("${context.getString(R.string.new_version_log)} ${versionInfo.getString(Updater.LOG_SUMMARY) ?: "NULL"}")
                     )
                     .setContentIntent(clickIntent)
                     .setAutoCancel(true)

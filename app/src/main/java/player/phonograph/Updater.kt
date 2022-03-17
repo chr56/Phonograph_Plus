@@ -132,10 +132,10 @@ object Updater {
         }
 
         versionJson?.let { json: VersionJson ->
-            Log.i(TAG, "versionCode: ${json.versionCode}, version: ${json.version}, logSummary: ${json.logSummary}")
+            Log.v(TAG, "versionCode: ${json.versionCode}, version: ${json.version}, logSummary-zh: ${json.logSummaryZH}, logSummary-en: ${json.logSummaryEN}")
 
             val ignoreUpgradeVersionCode = Setting.instance.ignoreUpgradeVersionCode
-            Log.d(TAG, "current state: force:$force, ignoreUpgradeVersionCode:$ignoreUpgradeVersionCode, CanAccessGitHub:$canAccessGitHub ")
+            Log.v(TAG, "current state: force:$force, ignoreUpgradeVersionCode:$ignoreUpgradeVersionCode, canAccessGitHub:$canAccessGitHub ")
 
             // stop if version code is lower ignore version code level and not force to execute
             if (
@@ -147,33 +147,35 @@ object Updater {
             }
 
             val result = Bundle().also {
-                it.putInt(VersionCode, json.versionCode)
-                it.putString(Version, json.version)
-                it.putString(LogSummary, json.logSummary)
-                it.putBoolean(CanAccessGitHub, canAccessGitHub)
+                it.putInt(VERSIONCODE, json.versionCode)
+                it.putString(VERSION, json.version)
+//                it.putString(LOG_SUMMARY, json.logSummary)
+                it.putString("$ZH_CN$separator$LOG_SUMMARY",json.logSummaryZH)
+                it.putString("$EN$separator$LOG_SUMMARY",json.logSummaryEN)
+                it.putBoolean(CAN_ACCESS_GITHUB, canAccessGitHub)
                 if (json.downloadUris != null && json.downloadSources != null) {
-                    it.putStringArray(DownloadUris, json.downloadUris)
-                    it.putStringArray(DownloadSources, json.downloadSources)
+                    it.putStringArray(DOWNLOAD_URIS, json.downloadUris)
+                    it.putStringArray(DOWNLOAD_SOURCES, json.downloadSources)
                 }
             }
 
             when {
                 json.versionCode > BuildConfig.VERSION_CODE -> {
                     Log.i(TAG, "updatable!")
-                    result.putBoolean(Upgradable, true)
+                    result.putBoolean(UPGRADABLE, true)
                     callback.invoke(result)
                 }
                 json.versionCode == BuildConfig.VERSION_CODE -> {
                     Log.i(TAG, "no update, latest version!")
                     if (force) {
-                        result.putBoolean(Upgradable, false)
+                        result.putBoolean(UPGRADABLE, false)
                         callback.invoke(result)
                     }
                 }
                 json.versionCode < BuildConfig.VERSION_CODE -> {
                     Log.w(TAG, "no update, version is newer than latest?")
                     if (force) {
-                        result.putBoolean(Upgradable, false)
+                        result.putBoolean(UPGRADABLE, false)
                         callback.invoke(result)
                     }
                 }
@@ -191,7 +193,11 @@ object Updater {
         var versionCode: Int = 0
 
 //        @JvmField
-        var logSummary: String? = ""
+//        var logSummary: String? = ""
+
+        var logSummaryZH: String = ""
+
+        var logSummaryEN: String = ""
 
 //        @JvmField
         var downloadSources: Array<String>? = null
@@ -203,17 +209,19 @@ object Updater {
     private fun parseJson(json: JSONObject): VersionJson {
         val version = VersionJson()
 
-        version.version = json.optString(Version)
-        version.versionCode = json.optInt(VersionCode)
-        version.logSummary = json.optString(LogSummary)
+        version.version = json.optString(VERSION)
+        version.versionCode = json.optInt(VERSIONCODE)
+//        version.logSummary = json.optString(LOG_SUMMARY)
+        version.logSummaryZH = json.optJSONObject(ZH_CN)?.optString(LOG_SUMMARY) ?: "NOT FOUND"
+        version.logSummaryEN = json.optJSONObject(EN)?.optString(LOG_SUMMARY) ?: "NOT FOUND"
 
-        val downloadSourcesArray = json.optJSONArray(DownloadSources)
+        val downloadSourcesArray = json.optJSONArray(DOWNLOAD_SOURCES)
         version.downloadSources =
             downloadSourcesArray?.let { array ->
                 Array<String>(array.length()) { i -> array.optString(i) }
             }
 
-        val downloadUrisArray = json.optJSONArray(DownloadUris)
+        val downloadUrisArray = json.optJSONArray(DOWNLOAD_URIS)
         version.downloadUris =
             downloadUrisArray?.let { array ->
                 Array<String>(array.length()) { i -> array.optString(i) }
@@ -236,12 +244,16 @@ object Updater {
 
     private const val TAG = "Updater"
 
-    const val Version = "version"
-    const val VersionCode = "versionCode"
-    const val LogSummary = "logSummary"
-    const val DownloadUris = "downloadUris"
-    const val DownloadSources = "downloadSources"
-    const val Upgradable = "upgradable"
+    const val VERSION = "version"
+    const val VERSIONCODE = "versionCode"
+    const val LOG_SUMMARY = "logSummary"
+    const val DOWNLOAD_URIS = "downloadUris"
+    const val DOWNLOAD_SOURCES = "downloadSources"
+    const val UPGRADABLE = "upgradable"
 
-    const val CanAccessGitHub = "canAccessGitHub"
+    const val ZH_CN = "zh-cn"
+    const val EN = "en"
+    const val separator = ":"
+
+    const val CAN_ACCESS_GITHUB = "canAccessGitHub"
 }
