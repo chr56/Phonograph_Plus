@@ -11,18 +11,15 @@ import android.content.ContentUris
 import android.content.Context
 import android.database.Cursor
 import android.net.Uri
+import android.os.Build
 import android.provider.BaseColumns
 import android.provider.MediaStore
 import android.provider.MediaStore.Audio.Playlists
 import android.provider.MediaStore.Audio.PlaylistsColumns
 import android.util.Log
 import androidx.documentfile.provider.DocumentFile
-import kotlinx.coroutines.*
 import player.phonograph.model.Playlist
 import player.phonograph.provider.BlacklistStore
-import java.io.*
-import java.util.*
-import kotlin.collections.ArrayList
 
 object PlaylistsUtil {
     private const val TAG: String = "PlaylistUtil"
@@ -199,11 +196,14 @@ object PlaylistsUtil {
         return if (displayNames.isNotEmpty()) displayNames else ArrayList()
     }
 
-    fun getPlaylistUris(playlist: Playlist): Uri =
-        ContentUris.withAppendedId(Playlists.EXTERNAL_CONTENT_URI, playlist.id)
+    fun getPlaylistUris(playlist: Playlist): Uri = getPlaylistUris(playlist.id)
 
-    fun getPlaylistUris(playlistsId: Long): Uri =
-        ContentUris.withAppendedId(Playlists.EXTERNAL_CONTENT_URI, playlistsId)
+    fun getPlaylistUris(playlistId: Long): Uri =
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
+            Playlists.Members.getContentUri(MediaStore.VOLUME_EXTERNAL, playlistId)
+        else {
+            Playlists.Members.getContentUri("external", playlistId)
+        }
 
     fun doesPlaylistContain(context: Context, playlistId: Long, songId: Long): Boolean {
         if (playlistId != -1L) {
