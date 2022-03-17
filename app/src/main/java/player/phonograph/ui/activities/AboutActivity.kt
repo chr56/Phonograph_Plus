@@ -52,7 +52,7 @@ class AboutActivity : ToolbarActivity(), View.OnClickListener {
     private lateinit var forkOnGitHub: LinearLayout
     private lateinit var visitWebsite: LinearLayout
     private lateinit var reportBugs: LinearLayout
-//    private lateinit var translate: LinearLayout
+    private lateinit var translate: LinearLayout
     private lateinit var cracked: LinearLayout
     private lateinit var aidanFollestadGitHub: AppCompatButton
     private lateinit var michaelCookWebsite: AppCompatButton
@@ -98,7 +98,7 @@ class AboutActivity : ToolbarActivity(), View.OnClickListener {
 
         intro = binding.activityAboutMainContent.cardSupportDevelopmentLayout.intro
         reportBugs = binding.activityAboutMainContent.cardSupportDevelopmentLayout.reportBugs
-//        translate = binding.activityAboutMainContent.cardSupportDevelopmentLayout.translate
+        translate = binding.activityAboutMainContent.cardSupportDevelopmentLayout.translate
         cracked = binding.activityAboutMainContent.cardSupportDevelopmentLayout.cracked
 
         aidanFollestadGitHub =
@@ -188,6 +188,7 @@ class AboutActivity : ToolbarActivity(), View.OnClickListener {
         forkOnGitHub.setOnClickListener(this)
         visitWebsite.setOnClickListener(this)
         reportBugs.setOnClickListener(this)
+        translate.setOnClickListener(this)
         writeAnEmail.setOnClickListener(this)
         aidanFollestadGitHub.setOnClickListener(this)
         michaelCookWebsite.setOnClickListener(this)
@@ -251,9 +252,9 @@ class AboutActivity : ToolbarActivity(), View.OnClickListener {
                 intent.putExtra(Intent.EXTRA_SUBJECT, "Phonograph")
                 startActivity(Intent.createChooser(intent, "E-Mail"))
             }
-//            translate -> {
-//                openUrl(TRANSLATE)
-//            }
+            translate -> {
+                openUrl(TRANSLATE)
+            }
             aidanFollestadGitHub -> {
                 openUrl(AIDAN_FOLLESTAD_GITHUB)
             }
@@ -321,7 +322,8 @@ class AboutActivity : ToolbarActivity(), View.OnClickListener {
 
         private const val GITHUB_MODIFIER = "https://github.com/chr56/"
 
-//        private const val TRANSLATE =
+        private const val TRANSLATE =
+            "https://crowdin.com/project/phonograph-plus"
 //            "https://phonograph.oneskyapp.com/collaboration/project?id=26521"
         private const val AIDAN_FOLLESTAD_GITHUB = "https://github.com/afollestad"
         private const val MICHAEL_COOK_WEBSITE = "https://cookicons.co/"
