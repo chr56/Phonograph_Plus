@@ -55,24 +55,24 @@ object Updater {
                 handleResponse(callback, force, call, response) // Github is on the highest priority
             }
         )
-        sendRequest(
-            okHttpClient, requestBitBucket,
-            { call: Call, _: IOException ->
-                logFails(call)
-            },
-            { call: Call, response: Response ->
-                if (!blockLock || blockLockHolder.contains("jsdelivr.net")) handleResponse(callback, force, call, response) else logIgnored(call)
-            }
-        )
-        sendRequest(
-            okHttpClient, requestJsdelivr,
-            { call: Call, _: IOException ->
-                logFails(call)
-            },
-            { call: Call, response: Response ->
-                if (!blockLock) handleResponse(callback, force, call, response) else logIgnored(call)
-            }
-        )
+//        sendRequest(
+//            okHttpClient, requestBitBucket,
+//            { call: Call, _: IOException ->
+//                logFails(call)
+//            },
+//            { call: Call, response: Response ->
+//                if (!blockLock || blockLockHolder.contains("jsdelivr.net")) handleResponse(callback, force, call, response) else logIgnored(call)
+//            }
+//        )
+//        sendRequest(
+//            okHttpClient, requestJsdelivr,
+//            { call: Call, _: IOException ->
+//                logFails(call)
+//            },
+//            { call: Call, response: Response ->
+//                if (!blockLock) handleResponse(callback, force, call, response) else logIgnored(call)
+//            }
+//        )
         sendRequest(
             okHttpClient, requestFastGit,
             { call: Call, _: IOException ->
@@ -233,7 +233,7 @@ object Updater {
     private const val owner = "chr56"
     private const val organization = "Phonograph-Plus"
     private const val repo = "Phonograph_Plus"
-    private const val branch = "dev"
+    private const val branch = "test"
     private const val file = "version.json"
 
     private const val requestUriGitHub = "https://raw.githubusercontent.com/$owner/$repo/$branch/$file"
