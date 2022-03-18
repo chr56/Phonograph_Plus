@@ -18,48 +18,48 @@ import android.provider.MediaStore.Audio.Playlists
 import android.provider.MediaStore.Audio.PlaylistsColumns
 import android.util.Log
 import androidx.documentfile.provider.DocumentFile
-import player.phonograph.model.Playlist
+import player.phonograph.model.BasePlaylist
 import player.phonograph.provider.BlacklistStore
 
 object PlaylistsUtil {
     private const val TAG: String = "PlaylistUtil"
 
-    fun getAllPlaylists(context: Context): List<Playlist> {
+    fun getAllPlaylists(context: Context): List<BasePlaylist> {
         return getAllPlaylists(
             queryPlaylists(context, null, null)
         )
     }
-    fun getAllPlaylists(cursor: Cursor?): List<Playlist> {
-        val playlists: MutableList<Playlist> = java.util.ArrayList()
+    fun getAllPlaylists(cursor: Cursor?): List<BasePlaylist> {
+        val basePlaylists: MutableList<BasePlaylist> = java.util.ArrayList()
         if (cursor != null && cursor.moveToFirst()) {
             do {
-                playlists.add(
-                    Playlist(cursor.getLong(0), cursor.getString(1))
+                basePlaylists.add(
+                    BasePlaylist(cursor.getLong(0), cursor.getString(1))
                 )
             } while (cursor.moveToNext())
         }
         cursor?.close()
-        return playlists
+        return basePlaylists
     }
 
-    fun getPlaylist(context: Context, playlistId: Long): Playlist {
+    fun getPlaylist(context: Context, playlistId: Long): BasePlaylist {
         return getPlaylist(
             queryPlaylists(
                 context, BaseColumns._ID + "=?", arrayOf(playlistId.toString())
             )
         )
     }
-    fun getPlaylist(context: Context, playlistName: String): Playlist {
+    fun getPlaylist(context: Context, playlistName: String): BasePlaylist {
         return getPlaylist(
             queryPlaylists(
                 context, PlaylistsColumns.NAME + "=?", arrayOf(playlistName)
             )
         )
     }
-    fun getPlaylist(cursor: Cursor?): Playlist {
-        var playlist = Playlist()
+    fun getPlaylist(cursor: Cursor?): BasePlaylist {
+        var playlist = BasePlaylist()
         if (cursor != null && cursor.moveToFirst()) {
-            playlist = Playlist(cursor.getLong(0), cursor.getString(1))
+            playlist = BasePlaylist(cursor.getLong(0), cursor.getString(1))
         }
         cursor?.close()
         return playlist
@@ -115,7 +115,7 @@ object PlaylistsUtil {
         return cursor
     }
 
-    fun getPlaylistPath(context: Context, playlist: Playlist): String {
+    fun getPlaylistPath(context: Context, basePlaylist: BasePlaylist): String {
         val cursor = context.contentResolver.query(
             Playlists.EXTERNAL_CONTENT_URI,
             arrayOf(
@@ -124,7 +124,7 @@ object PlaylistsUtil {
                 PlaylistsColumns.DATA /* 2 */
             ),
             "${BaseColumns._ID} = ? AND ${PlaylistsColumns.NAME} = ?",
-            arrayOf(playlist.id.toString(), playlist.name), null
+            arrayOf(basePlaylist.id.toString(), basePlaylist.name), null
         )
         var path: String = "-"
         cursor?.let {
@@ -168,9 +168,9 @@ object PlaylistsUtil {
     /**
      * WARNING: random order (perhaps)
      */
-    fun getPlaylistFileNames(context: Context, playlists: List<Playlist>): List<String> {
+    fun getPlaylistFileNames(context: Context, basePlaylists: List<BasePlaylist>): List<String> {
 
-        val ids: List<Long> = List(playlists.size) { playlists[it].id }
+        val ids: List<Long> = List(basePlaylists.size) { basePlaylists[it].id }
 
         val cursor = context.contentResolver.query(
             Playlists.EXTERNAL_CONTENT_URI,
@@ -196,7 +196,7 @@ object PlaylistsUtil {
         return if (displayNames.isNotEmpty()) displayNames else ArrayList()
     }
 
-    fun getPlaylistUris(playlist: Playlist): Uri = getPlaylistUris(playlist.id)
+    fun getPlaylistUris(basePlaylist: BasePlaylist): Uri = getPlaylistUris(basePlaylist.id)
 
     fun getPlaylistUris(playlistId: Long): Uri =
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
@@ -225,8 +225,8 @@ object PlaylistsUtil {
         return false
     }
 
-    fun searchPlaylist(context: Context, dir: DocumentFile, playlists: List<Playlist>): List<DocumentFile> {
-        val fileNames = getPlaylistFileNames(context, playlists)
+    fun searchPlaylist(context: Context, dir: DocumentFile, basePlaylists: List<BasePlaylist>): List<DocumentFile> {
+        val fileNames = getPlaylistFileNames(context, basePlaylists)
         if (fileNames.isEmpty()) {
             Log.w(TAG, "No playlist display name?")
             return ArrayList()

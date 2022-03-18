@@ -18,7 +18,7 @@ import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.WhichButton
 import com.afollestad.materialdialogs.actions.getActionButton
 import player.phonograph.R
-import player.phonograph.model.Playlist
+import player.phonograph.model.BasePlaylist
 import player.phonograph.util.SAFCallbackHandlerActivity
 import util.phonograph.m3u.PlaylistsManager
 import java.lang.StringBuilder
@@ -29,13 +29,13 @@ import java.lang.StringBuilder
 class DeletePlaylistDialog : DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val attachedActivity: Activity = requireActivity()
-        val playlists: List<Playlist> = requireArguments().getParcelableArrayList("playlists")!!
-        val title: Int = if (playlists.size > 1) { R.string.delete_playlists_title } else { R.string.delete_playlist_title }
+        val basePlaylists: List<BasePlaylist> = requireArguments().getParcelableArrayList("playlists")!!
+        val title: Int = if (basePlaylists.size > 1) { R.string.delete_playlists_title } else { R.string.delete_playlist_title }
 
         val msg = StringBuilder(
-            Html.fromHtml(resources.getQuantityString(R.plurals.msg_playlist_deletion_summary, playlists.size, playlists.size), Html.FROM_HTML_MODE_LEGACY)
+            Html.fromHtml(resources.getQuantityString(R.plurals.msg_playlist_deletion_summary, basePlaylists.size, basePlaylists.size), Html.FROM_HTML_MODE_LEGACY)
         )
-        playlists.forEach { playlist ->
+        basePlaylists.forEach { playlist ->
             msg.append(playlist.name).appendLine()
         }
 
@@ -58,7 +58,7 @@ class DeletePlaylistDialog : DialogFragment() {
                 PlaylistsManager(
                     attachedActivity,
                     if (attachedActivity is SAFCallbackHandlerActivity) attachedActivity else null
-                ).deletePlaylistWithGuide(playlists)
+                ).deletePlaylistWithGuide(basePlaylists)
             }
             .also {
                 // grant permission button for R
@@ -83,10 +83,10 @@ class DeletePlaylistDialog : DialogFragment() {
     companion object {
         private const val TAG = "DeletePlaylistDialog"
         @JvmStatic
-        fun create(playlists: List<Playlist>): DeletePlaylistDialog {
+        fun create(basePlaylists: List<BasePlaylist>): DeletePlaylistDialog {
             val dialog = DeletePlaylistDialog()
             val args = Bundle()
-            args.putParcelableArrayList("playlists", ArrayList(playlists))
+            args.putParcelableArrayList("playlists", ArrayList(basePlaylists))
             dialog.arguments = args
             return dialog
         }

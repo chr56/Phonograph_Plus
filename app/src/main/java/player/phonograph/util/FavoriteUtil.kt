@@ -10,7 +10,7 @@ import legacy.phonograph.LegacyPlaylistsUtil.createPlaylist
 import legacy.phonograph.LegacyPlaylistsUtil.removeFromPlaylist
 import player.phonograph.App
 import player.phonograph.R
-import player.phonograph.model.Playlist
+import player.phonograph.model.BasePlaylist
 import player.phonograph.model.Song
 import player.phonograph.provider.FavoriteSongsStore
 import player.phonograph.service.MusicService
@@ -62,14 +62,14 @@ object FavoriteUtil {
     @Deprecated(
         "use DatabaseImpl", ReplaceWith("playlist.name != null && playlist.name == context.getString(R.string.favorites)", "player.phonograph.R")
     )
-    fun isFavoritePlaylist(context: Context, playlist: Playlist): Boolean {
-        return playlist.name != null && playlist.name == context.getString(R.string.favorites)
+    fun isFavoritePlaylist(context: Context, basePlaylist: BasePlaylist): Boolean {
+        return basePlaylist.name != null && basePlaylist.name == context.getString(R.string.favorites)
     }
 
-    private fun getFavoritesPlaylist(context: Context): Playlist {
+    private fun getFavoritesPlaylist(context: Context): BasePlaylist {
         return getPlaylist(context, context.getString(R.string.favorites))
     }
-    private fun getOrCreateFavoritesPlaylist(context: Context): Playlist {
+    private fun getOrCreateFavoritesPlaylist(context: Context): BasePlaylist {
         return getPlaylist(context, createPlaylist(context, context.getString(R.string.favorites))).also { notifyMediaStoreChanged() }
     }
     private fun notifyMediaStoreChanged() { App.instance.sendBroadcast(Intent(MusicService.MEDIA_STORE_CHANGED)) }

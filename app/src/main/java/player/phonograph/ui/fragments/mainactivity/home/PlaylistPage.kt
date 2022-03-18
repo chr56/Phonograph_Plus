@@ -21,7 +21,7 @@ import player.phonograph.adapter.PlaylistAdapter
 import player.phonograph.databinding.FragmentDisplayPageBinding
 import player.phonograph.dialogs.CreatePlaylistDialog
 import player.phonograph.misc.PlaylistsModifiedReceiver
-import player.phonograph.model.Playlist
+import player.phonograph.model.BasePlaylist
 import player.phonograph.model.smartplaylist.FavoriteSongsPlaylist
 import player.phonograph.model.smartplaylist.HistoryPlaylist
 import player.phonograph.model.smartplaylist.LastAddedPlaylist
@@ -62,7 +62,7 @@ class PlaylistPage : AbsPage() {
 
         adapter = PlaylistAdapter(
             hostFragment.mainActivity,
-            ArrayList<Playlist>(), R.layout.item_list_single_row,
+            ArrayList<BasePlaylist>(), R.layout.item_list_single_row,
             hostFragment
         )
 
@@ -99,7 +99,7 @@ class PlaylistPage : AbsPage() {
     private fun loadPlaylist() {
         loaderCoroutineScope.launch {
             val context = hostFragment.mainActivity
-            val cache = mutableListOf<Playlist>(
+            val cache = mutableListOf<BasePlaylist>(
                 LastAddedPlaylist(context),
                 HistoryPlaylist(context),
                 MyTopTracksPlaylist(context),

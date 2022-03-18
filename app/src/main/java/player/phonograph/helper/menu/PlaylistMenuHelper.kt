@@ -13,11 +13,10 @@ import player.phonograph.dialogs.RenamePlaylistDialog
 import player.phonograph.helper.MusicPlayerRemote
 import player.phonograph.loader.PlaylistSongLoader
 import player.phonograph.model.AbsCustomPlaylist
-import player.phonograph.model.Playlist
+import player.phonograph.model.BasePlaylist
 import player.phonograph.model.Song
 import player.phonograph.util.SAFCallbackHandlerActivity
 import util.phonograph.m3u.PlaylistsManager
-import java.util.*
 import kotlin.collections.ArrayList
 
 /**
@@ -26,33 +25,33 @@ import kotlin.collections.ArrayList
 object PlaylistMenuHelper {
 
     @JvmStatic
-    fun handleMenuClick(activity: AppCompatActivity, playlist: Playlist, item: MenuItem): Boolean {
+    fun handleMenuClick(activity: AppCompatActivity, basePlaylist: BasePlaylist, item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.action_play -> {
                 MusicPlayerRemote.openQueue(
-                    ArrayList(getPlaylistSongs(activity, playlist)), 0, true
+                    ArrayList(getPlaylistSongs(activity, basePlaylist)), 0, true
                 )
                 return true
             }
             R.id.action_play_next -> {
-                MusicPlayerRemote.playNext(ArrayList(getPlaylistSongs(activity, playlist)))
+                MusicPlayerRemote.playNext(ArrayList(getPlaylistSongs(activity, basePlaylist)))
                 return true
             }
             R.id.action_add_to_current_playing -> {
-                MusicPlayerRemote.enqueue(ArrayList(getPlaylistSongs(activity, playlist)))
+                MusicPlayerRemote.enqueue(ArrayList(getPlaylistSongs(activity, basePlaylist)))
                 return true
             }
             R.id.action_add_to_playlist -> {
-                AddToPlaylistDialog.create(getPlaylistSongs(activity, playlist))
+                AddToPlaylistDialog.create(getPlaylistSongs(activity, basePlaylist))
                     .show(activity.supportFragmentManager, "ADD_PLAYLIST")
                 return true
             }
             R.id.action_rename_playlist -> {
-                RenamePlaylistDialog.create(playlist.id).show(activity.supportFragmentManager, "RENAME_PLAYLIST")
+                RenamePlaylistDialog.create(basePlaylist.id).show(activity.supportFragmentManager, "RENAME_PLAYLIST")
                 return true
             }
             R.id.action_delete_playlist -> {
-                DeletePlaylistDialog.create(listOf(playlist)).show(
+                DeletePlaylistDialog.create(listOf(basePlaylist)).show(
                     activity.supportFragmentManager, "DELETE_PLAYLIST"
                 )
                 return true
@@ -61,9 +60,9 @@ object PlaylistMenuHelper {
                 GlobalScope.launch(Dispatchers.Default) {
 
                     if (activity is SAFCallbackHandlerActivity) {
-                        PlaylistsManager(activity, activity).duplicatePlaylistViaSaf(playlist)
+                        PlaylistsManager(activity, activity).duplicatePlaylistViaSaf(basePlaylist)
                     } else {
-                        PlaylistsManager(activity, null).duplicatePlaylistViaSaf(playlist)
+                        PlaylistsManager(activity, null).duplicatePlaylistViaSaf(basePlaylist)
                     }
                 }
                 return true
@@ -72,8 +71,8 @@ object PlaylistMenuHelper {
         return false
     }
 
-    private fun getPlaylistSongs(activity: Activity, playlist: Playlist): List<Song> {
-        return if (playlist is AbsCustomPlaylist) playlist.getSongs(activity)
-        else PlaylistSongLoader.getPlaylistSongList(activity, playlist.id)
+    private fun getPlaylistSongs(activity: Activity, basePlaylist: BasePlaylist): List<Song> {
+        return if (basePlaylist is AbsCustomPlaylist) basePlaylist.getSongs(activity)
+        else PlaylistSongLoader.getPlaylistSongList(activity, basePlaylist.id)
     }
 }

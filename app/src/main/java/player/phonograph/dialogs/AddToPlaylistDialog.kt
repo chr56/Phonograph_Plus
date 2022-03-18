@@ -44,9 +44,9 @@ class AddToPlaylistDialog : DialogFragment() {
                     materialDialog.dismiss()
                     val activity = requireActivity()
                     if (activity is SAFCallbackHandlerActivity) {
-                        PlaylistsManager(activity, activity).appendPlaylist(songs, playlist = playlists[index - 1])
+                        PlaylistsManager(activity, activity).appendPlaylist(songs, basePlaylist = playlists[index - 1])
                     } else {
-                        PlaylistsManager(activity, null).appendPlaylist(songs, playlist = playlists[index - 1])
+                        PlaylistsManager(activity, null).appendPlaylist(songs, basePlaylist = playlists[index - 1])
                     }
                 }
             }

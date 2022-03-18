@@ -12,7 +12,7 @@ import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.loader.PlaylistSongLoader
 import player.phonograph.model.AbsCustomPlaylist
-import player.phonograph.model.Playlist
+import player.phonograph.model.BasePlaylist
 import player.phonograph.model.Song
 import player.phonograph.util.Util
 import java.io.*
@@ -26,22 +26,22 @@ object M3UGenerator {
     @JvmStatic
     @Deprecated("don not use File")
     @Throws(IOException::class)
-    fun writeFile(context: Context?, dir: File, playlist: Playlist): File {
+    fun writeFile(context: Context?, dir: File, basePlaylist: BasePlaylist): File {
         if (!dir.exists()) dir.mkdirs() //noinspection ResultOfMethodCallIgnored
         val filename: String
 
         val songs: List<Song>
-        if (playlist is AbsCustomPlaylist) {
-            songs = playlist.getSongs(context)
+        if (basePlaylist is AbsCustomPlaylist) {
+            songs = basePlaylist.getSongs(context)
 
             // Since AbsCustomPlaylists are dynamic, we add a timestamp after their names.
             filename =
-                playlist.name + SimpleDateFormat("_yy-MM-dd_HH-mm", Locale.getDefault()).format(
+                basePlaylist.name + SimpleDateFormat("_yy-MM-dd_HH-mm", Locale.getDefault()).format(
                 Calendar.getInstance().time
             )
         } else {
-            songs = PlaylistSongLoader.getPlaylistSongList(context!!, playlist.id)
-            filename = playlist.name
+            songs = PlaylistSongLoader.getPlaylistSongList(context!!, basePlaylist.id)
+            filename = basePlaylist.name
         }
 
         val file = File(dir, "$filename.$EXTENSION")
@@ -62,13 +62,13 @@ object M3UGenerator {
     }
 
     @JvmStatic
-    fun generate(outputStream: OutputStream, context: Context?, playlist: Playlist, addHeader: Boolean) {
+    fun generate(outputStream: OutputStream, context: Context?, basePlaylist: BasePlaylist, addHeader: Boolean) {
 
         val songs: List<Song> =
-            if (playlist is AbsCustomPlaylist) {
-                playlist.getSongs(context)
+            if (basePlaylist is AbsCustomPlaylist) {
+                basePlaylist.getSongs(context)
             } else {
-                PlaylistSongLoader.getPlaylistSongList(context ?: App.instance, playlist.id)
+                PlaylistSongLoader.getPlaylistSongList(context ?: App.instance, basePlaylist.id)
             }
 
         if (songs.isNotEmpty()) {

@@ -13,7 +13,7 @@ import android.widget.Toast;
 import player.phonograph.R;
 import player.phonograph.helper.MusicPlayerRemote;
 import player.phonograph.model.Genre;
-import player.phonograph.model.Playlist;
+import player.phonograph.model.BasePlaylist;
 import player.phonograph.ui.activities.AlbumDetailActivity;
 import player.phonograph.ui.activities.ArtistDetailActivity;
 import player.phonograph.ui.activities.GenreDetailActivity;
@@ -55,7 +55,7 @@ public class NavigationUtil {
         activity.startActivity(intent);
     }
 
-    public static void goToPlaylist(@NonNull final Activity activity, final Playlist playlist, @Nullable Pair... sharedElements) {
+    public static void goToPlaylist(@NonNull final Activity activity, final BasePlaylist playlist, @Nullable Pair... sharedElements) {
         final Intent intent = new Intent(activity, PlaylistDetailActivity.class);
         intent.putExtra(PlaylistDetailActivity.EXTRA_PLAYLIST, playlist);
 

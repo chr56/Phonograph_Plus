@@ -38,7 +38,7 @@ import player.phonograph.interfaces.LoaderIds
 import player.phonograph.loader.PlaylistSongLoader
 import player.phonograph.misc.WrappedAsyncTaskLoader
 import player.phonograph.model.AbsCustomPlaylist
-import player.phonograph.model.Playlist
+import player.phonograph.model.BasePlaylist
 import player.phonograph.model.Song
 import player.phonograph.settings.Setting
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
@@ -55,7 +55,7 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandle
     private lateinit var empty: TextView
     private lateinit var cabStub: ViewStub
 
-    private lateinit var playlist: Playlist // init in OnCreate()
+    private lateinit var basePlaylist: BasePlaylist // init in OnCreate()
 
     private var cab: AttachedCab? = null
     private lateinit var songAdapter: UniversalSongAdapter // init in OnCreate() -> setUpRecyclerView()
@@ -90,14 +90,14 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandle
 
         Themer.setActivityToolbarColorAuto(this, mToolbar)
 
-        playlist = intent.extras!!.getParcelable(EXTRA_PLAYLIST)!!
+        basePlaylist = intent.extras!!.getParcelable(EXTRA_PLAYLIST)!!
 
         safLauncher = SafLauncher(activityResultRegistry)
         lifecycle.addObserver(safLauncher)
 
         // Init RecyclerView and Adapter
         setUpRecyclerView()
-        loader = Loader(this, playlist, songAdapter)
+        loader = Loader(this, basePlaylist, songAdapter)
 
         setUpToolbar()
 
@@ -122,7 +122,7 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandle
         recyclerView.layoutManager = LinearLayoutManager(this)
 
         // Init (song)adapter
-        if (playlist is AbsCustomPlaylist) {
+        if (basePlaylist is AbsCustomPlaylist) {
             songAdapter = UniversalSongAdapter(
                 this,
                 ArrayList(),
@@ -164,7 +164,7 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandle
         mToolbar.setBackgroundColor(ThemeColor.primaryColor(this))
         setSupportActionBar(mToolbar)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-        setToolbarTitle(playlist.name)
+        setToolbarTitle(basePlaylist.name)
     }
     private fun setToolbarTitle(title: String) {
         supportActionBar!!.title = title
@@ -172,7 +172,7 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandle
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(
-            if (playlist is AbsCustomPlaylist) R.menu.menu_smart_playlist_detail else R.menu.menu_playlist_detail,
+            if (basePlaylist is AbsCustomPlaylist) R.menu.menu_smart_playlist_detail else R.menu.menu_playlist_detail,
             menu
         )
         return super.onCreateOptionsMenu(menu)
@@ -186,7 +186,7 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandle
             R.id.action_edit_playlist -> {
                 startActivityForResult(
                     Intent(this, PlaylistEditorActivity::class.java).apply {
-                        putExtra(EXTRA_PLAYLIST, playlist)
+                        putExtra(EXTRA_PLAYLIST, basePlaylist)
                     },
                     EDIT_PLAYLIST
                 )
@@ -201,7 +201,7 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandle
                 return true
             }
         }
-        return handleMenuClick(this, playlist, item)
+        return handleMenuClick(this, basePlaylist, item)
     }
 
     override fun onBackPressed() {
@@ -222,23 +222,23 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandle
 
     override fun onMediaStoreChanged() {
         super.onMediaStoreChanged()
-        if (playlist !is AbsCustomPlaylist) {
+        if (basePlaylist !is AbsCustomPlaylist) {
             // Playlist deleted
-            if (!PlaylistsUtil.doesPlaylistExist(this, playlist.id)) {
+            if (!PlaylistsUtil.doesPlaylistExist(this, basePlaylist.id)) {
                 finish()
                 return
             }
 
             // Playlist renamed
-            val playlistName = PlaylistsUtil.getNameForPlaylist(this, playlist.id)
-            if (playlistName != playlist.name) {
-                playlist = PlaylistsUtil.getPlaylist(this, playlist.id)
-                setToolbarTitle(playlist.name)
+            val playlistName = PlaylistsUtil.getNameForPlaylist(this, basePlaylist.id)
+            if (playlistName != basePlaylist.name) {
+                basePlaylist = PlaylistsUtil.getPlaylist(this, basePlaylist.id)
+                setToolbarTitle(basePlaylist.name)
             }
         }
 
         // don't forge this
-        loader.updatePlaylist(playlist)
+        loader.updatePlaylist(basePlaylist)
 
         LoaderManager.getInstance(this).restartLoader(LOADER_ID, null, loader)
     }
@@ -271,36 +271,36 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandle
      *
      * *******************/
 
-    inner class Loader(private val context: AppCompatActivity, private var playlist: Playlist, private val adapter: UniversalSongAdapter) : LoaderManager.LoaderCallbacks<List<Song>> {
+    inner class Loader(private val context: AppCompatActivity, private var basePlaylist: BasePlaylist, private val adapter: UniversalSongAdapter) : LoaderManager.LoaderCallbacks<List<Song>> {
         override fun onCreateLoader(
             id: Int,
             args: Bundle?
         ): androidx.loader.content.Loader<List<Song>> {
-            return AsyncPlaylistSongLoader(context, this.playlist)
+            return AsyncPlaylistSongLoader(context, this.basePlaylist)
         }
 
         override fun onLoadFinished(
             loader: androidx.loader.content.Loader<List<Song>>,
             data: List<Song>
         ) {
-            this.adapter.linkedPlaylist = playlist
+            this.adapter.linkedPlaylist = basePlaylist
             this.adapter.songs = data
         }
 
         override fun onLoaderReset(loader: androidx.loader.content.Loader<List<Song>>) {
             this.adapter.songs = ArrayList()
         }
-        fun updatePlaylist(playlist: Playlist) {
-            this.playlist = playlist
+        fun updatePlaylist(basePlaylist: BasePlaylist) {
+            this.basePlaylist = basePlaylist
         }
     }
-    private class AsyncPlaylistSongLoader(context: Context, private val playlist: Playlist) :
+    private class AsyncPlaylistSongLoader(context: Context, private val basePlaylist: BasePlaylist) :
         WrappedAsyncTaskLoader<List<Song>>(context) {
         override fun loadInBackground(): List<Song> {
-            return if (playlist is AbsCustomPlaylist) {
-                playlist.getSongs(context)
+            return if (basePlaylist is AbsCustomPlaylist) {
+                basePlaylist.getSongs(context)
             } else {
-                PlaylistSongLoader.getPlaylistSongList(context, playlist.id)
+                PlaylistSongLoader.getPlaylistSongList(context, basePlaylist.id)
             }
         }
     }

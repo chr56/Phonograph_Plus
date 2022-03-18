@@ -12,7 +12,7 @@ import kotlin.math.abs
  */
 abstract class AbsSmartPlaylist : AbsCustomPlaylist {
 
-    open var iconRes: Int
+    override var iconRes: Int
         @DrawableRes
         get() = R.drawable.ic_queue_music_white_24dp
 

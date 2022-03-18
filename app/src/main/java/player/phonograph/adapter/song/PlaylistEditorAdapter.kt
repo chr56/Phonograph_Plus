@@ -22,16 +22,15 @@ import player.phonograph.dialogs.AddToPlaylistDialog
 import player.phonograph.helper.menu.SongMenuHelper
 import player.phonograph.interfaces.CabHolder
 import player.phonograph.loader.PlaylistSongLoader
-import player.phonograph.model.Playlist
+import player.phonograph.model.BasePlaylist
 import player.phonograph.model.PlaylistSong
 import player.phonograph.model.Song
 import player.phonograph.util.MusicUtil
-import player.phonograph.util.PlaylistsUtil
 import player.phonograph.util.ViewUtil
 
 class PlaylistEditorAdapter(
     val activity: AppCompatActivity,
-    var playlist: Playlist,
+    var basePlaylist: BasePlaylist,
     cabHolder: CabHolder
 ) : AbsMultiSelectAdapter<PlaylistEditorAdapter.ViewHolder, PlaylistSong>(activity, cabHolder, R.menu.menu_playlist_editor_selection),
     DraggableItemAdapter<PlaylistEditorAdapter.ViewHolder> {
@@ -39,7 +38,7 @@ class PlaylistEditorAdapter(
     var playlistSongs: MutableList<PlaylistSong>
 
     init {
-        playlistSongs = PlaylistSongLoader.getPlaylistSongList(activity, playlist.id)
+        playlistSongs = PlaylistSongLoader.getPlaylistSongList(activity, basePlaylist.id)
         setHasStableIds(true)
     }
 
@@ -48,7 +47,7 @@ class PlaylistEditorAdapter(
             R.id.action_remove_from_playlist -> {
                 selection.forEach {
                     playlistSongs.remove(it)
-                    LegacyPlaylistsUtil.removeFromPlaylist(activity, it, playlist.id)
+                    LegacyPlaylistsUtil.removeFromPlaylist(activity, it, basePlaylist.id)
                 }
                 return
             }
@@ -88,14 +87,14 @@ class PlaylistEditorAdapter(
                     val pos = playlistSongs.indexOf(song)
                     return when (item.itemId) {
                         R.id.action_remove_from_playlist -> {
-                            LegacyPlaylistsUtil.removeFromPlaylist(activity, song, playlist.id)
+                            LegacyPlaylistsUtil.removeFromPlaylist(activity, song, basePlaylist.id)
                             playlistSongs.remove(song)
 //                            notifyItemRemoved(pos)
                             notifyItemRangeChanged(pos, playlistSongs.size - 1) // so we can reorder the items behind removed one
                             true
                         }
                         R.id.action_move_to_top -> {
-                            if (LegacyPlaylistsUtil.moveItem(activity, playlist.id, pos, 0)) {
+                            if (LegacyPlaylistsUtil.moveItem(activity, basePlaylist.id, pos, 0)) {
                                 playlistSongs.removeAt(pos)
                                 playlistSongs.add(0, song)
                                 notifyItemRangeChanged(0, pos + 1) // so we can reorder the items affected
@@ -104,7 +103,7 @@ class PlaylistEditorAdapter(
                             true
                         }
                         R.id.action_move_to_bottom -> {
-                            if (LegacyPlaylistsUtil.moveItem(activity, playlist.id, pos, playlistSongs.size - 1)) {
+                            if (LegacyPlaylistsUtil.moveItem(activity, basePlaylist.id, pos, playlistSongs.size - 1)) {
                                 playlistSongs.removeAt(pos)
                                 playlistSongs.add(song)
                                 notifyItemRangeChanged(pos - 1, playlistSongs.size - 1) // so we can reorder the items affected
@@ -114,7 +113,7 @@ class PlaylistEditorAdapter(
                         }
                         R.id.action_move_up -> {
                             if (pos == 0) return false
-                            if (LegacyPlaylistsUtil.moveItem(activity, playlist.id, pos, pos - 1)) {
+                            if (LegacyPlaylistsUtil.moveItem(activity, basePlaylist.id, pos, pos - 1)) {
                                 playlistSongs.removeAt(pos)
                                 playlistSongs.add(pos - 1, song)
                                 notifyItemRangeChanged(pos - 1, pos)
@@ -123,7 +122,7 @@ class PlaylistEditorAdapter(
                         }
                         R.id.action_move_down -> {
                             if (pos == playlistSongs.size - 1) return false
-                            if (LegacyPlaylistsUtil.moveItem(activity, playlist.id, pos, pos + 1)) {
+                            if (LegacyPlaylistsUtil.moveItem(activity, basePlaylist.id, pos, pos + 1)) {
                                 playlistSongs.removeAt(pos)
                                 playlistSongs.add(pos + 1, song)
                                 notifyItemRangeChanged(pos, pos + 1)
@@ -145,7 +144,7 @@ class PlaylistEditorAdapter(
 
     override fun onMoveItem(fromPosition: Int, toPosition: Int) {
         if (fromPosition != toPosition) {
-            if (LegacyPlaylistsUtil.moveItem(activity, playlist.id, fromPosition, toPosition)
+            if (LegacyPlaylistsUtil.moveItem(activity, basePlaylist.id, fromPosition, toPosition)
             ) {
                 // update dataset(playlistSongs)
                 val newSongs = playlistSongs

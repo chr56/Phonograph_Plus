@@ -31,7 +31,7 @@ import player.phonograph.helper.menu.SongMenuHelper
 import player.phonograph.helper.menu.SongsMenuHelper
 import player.phonograph.interfaces.CabHolder
 import player.phonograph.model.Album
-import player.phonograph.model.Playlist
+import player.phonograph.model.BasePlaylist
 import player.phonograph.model.Song
 import player.phonograph.model.smartplaylist.AbsSmartPlaylist
 import player.phonograph.settings.Setting
@@ -90,7 +90,7 @@ open class UniversalSongAdapter :
 
     var showSectionName: Boolean = true
 
-    var linkedPlaylist: Playlist? = null
+    var linkedPlaylist: BasePlaylist? = null
 
     var linkedAlbum: Album? = null
 

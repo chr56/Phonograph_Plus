@@ -26,7 +26,7 @@ import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.loader.PlaylistSongLoader
 import player.phonograph.model.AbsCustomPlaylist
-import player.phonograph.model.Playlist
+import player.phonograph.model.BasePlaylist
 import player.phonograph.model.Song
 import player.phonograph.util.PlaylistsUtil
 import player.phonograph.util.SAFCallbackHandlerActivity
@@ -36,7 +36,6 @@ import util.phonograph.m3u.internal.M3UGenerator
 import util.phonograph.m3u.internal.appendTimestampSuffix
 import java.io.File
 import java.io.IOException
-import java.util.*
 
 class PlaylistsManager(private val context: Context, requester: SAFCallbackHandlerActivity?) {
     private val activity: ComponentActivity? = requester as ComponentActivity?
@@ -61,13 +60,13 @@ class PlaylistsManager(private val context: Context, requester: SAFCallbackHandl
         }
     }
 
-    fun appendPlaylist(songs: List<Song>, playlist: Playlist) {
+    fun appendPlaylist(songs: List<Song>, basePlaylist: BasePlaylist) {
         GlobalScope.launch(Dispatchers.Default) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && safLauncher != null && activity != null) {
                 coroutineToast(activity, R.string.direction_open_file_with_saf)
-                FileOperator.appendToPlaylistViaSAF(songs, playlist, false, context, safLauncher)
+                FileOperator.appendToPlaylistViaSAF(songs, basePlaylist, false, context, safLauncher)
             } else {
-                LegacyPlaylistsUtil.addToPlaylist(context, songs, playlist.id, true)
+                LegacyPlaylistsUtil.addToPlaylist(context, songs, basePlaylist.id, true)
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) coroutineToast(context, R.string.failed)
             }
         }
@@ -76,10 +75,10 @@ class PlaylistsManager(private val context: Context, requester: SAFCallbackHandl
         appendPlaylist(songs, PlaylistsUtil.getPlaylist(context, playlistId))
     }
 
-    fun deletePlaylistWithGuide(playlists: List<Playlist>) {
+    fun deletePlaylistWithGuide(basePlaylists: List<BasePlaylist>) {
         GlobalScope.launch(Dispatchers.Default) {
             // try to deleted
-            val failList = LegacyPlaylistsUtil.deletePlaylists(context, playlists)
+            val failList = LegacyPlaylistsUtil.deletePlaylists(context, basePlaylists)
 
             if (failList.isNotEmpty()) {
 
@@ -88,7 +87,7 @@ class PlaylistsManager(private val context: Context, requester: SAFCallbackHandl
                 for (playlist in failList) {
                     list.append(playlist.name).append("\n")
                 }
-                val msg = "${ context.resources.getQuantityString(R.plurals.msg_deletion_result, playlists.size, playlists.size - failList.size, playlists.size) }\n" +
+                val msg = "${ context.resources.getQuantityString(R.plurals.msg_deletion_result, basePlaylists.size, basePlaylists.size - failList.size, basePlaylists.size) }\n" +
                     " ${context.getString(R.string.failed_to_delete)}: \n $list "
 
                 // setup delete with saf callback
@@ -97,7 +96,7 @@ class PlaylistsManager(private val context: Context, requester: SAFCallbackHandl
                         if (safLauncher != null && activity != null) {
                             // todo remove hardcode
                             val regex = "/(sdcard)|(storage/emulated)/\\d+/".toRegex()
-                            val rawPath = PlaylistsUtil.getPlaylistPath(context, playlists[0])
+                            val rawPath = PlaylistsUtil.getPlaylistPath(context, basePlaylists[0])
                             val path = regex.replace(rawPath.removePrefix(Environment.getExternalStorageDirectory().absolutePath), "")
 
                             val parentFolderUri = Uri.parse(
@@ -106,7 +105,7 @@ class PlaylistsManager(private val context: Context, requester: SAFCallbackHandl
 
                             coroutineToast(context, context.getString(R.string.direction_open_folder_with_saf), true)
                             safLauncher.openDir(parentFolderUri) { uri: Uri? ->
-                                uri?.let { FileOperator.deletePlaylistsViaSAF(activity, playlists, it) }
+                                uri?.let { FileOperator.deletePlaylistsViaSAF(activity, basePlaylists, it) }
                                 return@openDir Unit
                             }
                         } else {
@@ -133,38 +132,38 @@ class PlaylistsManager(private val context: Context, requester: SAFCallbackHandl
         }
     }
 
-    fun duplicatePlaylistsViaSaf(playlists: List<Playlist>) {
+    fun duplicatePlaylistsViaSaf(basePlaylists: List<BasePlaylist>) {
         GlobalScope.launch(Dispatchers.Default) {
 
             if (activity != null && safLauncher != null) {
-                FileOperator.createPlaylistsViaSAF(playlists, context, safLauncher)
+                FileOperator.createPlaylistsViaSAF(basePlaylists, context, safLauncher)
             } else {
                 // legacy ways
                 withContext(Dispatchers.IO) {
-                    legacySavePlaylists(playlists)
+                    legacySavePlaylists(basePlaylists)
                 }
             }
         }
     }
-    fun duplicatePlaylistViaSaf(playlist: Playlist) {
+    fun duplicatePlaylistViaSaf(basePlaylist: BasePlaylist) {
         val songs: List<Song> =
-            when (playlist) {
+            when (basePlaylist) {
                 is AbsCustomPlaylist -> {
-                    playlist.getSongs(activity)
+                    basePlaylist.getSongs(activity)
                 }
                 else -> {
-                    PlaylistSongLoader.getPlaylistSongList(context, playlist.id)
+                    PlaylistSongLoader.getPlaylistSongList(context, basePlaylist.id)
                 }
             }
-        createPlaylist(appendTimestampSuffix(playlist.name), songs)
+        createPlaylist(appendTimestampSuffix(basePlaylist.name), songs)
     }
 
-    private suspend fun legacySavePlaylists(playlists: List<Playlist>) {
+    private suspend fun legacySavePlaylists(basePlaylists: List<BasePlaylist>) {
         var successes = 0
         var failures = 0
         var dir: String? = ""
         val failureList = StringBuffer()
-        for (playlist in playlists) {
+        for (playlist in basePlaylists) {
             try {
                 dir = M3UGenerator.writeFile(
                     App.instance, File(Environment.getExternalStorageDirectory(), Environment.DIRECTORY_DOWNLOADS), playlist

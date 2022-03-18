@@ -19,7 +19,7 @@ import player.phonograph.helper.menu.SongsMenuHelper
 import player.phonograph.interfaces.MultiSelectionCabProvider
 import player.phonograph.loader.PlaylistSongLoader
 import player.phonograph.model.AbsCustomPlaylist
-import player.phonograph.model.Playlist
+import player.phonograph.model.BasePlaylist
 import player.phonograph.model.Song
 import player.phonograph.model.smartplaylist.AbsSmartPlaylist
 import player.phonograph.model.smartplaylist.LastAddedPlaylist
@@ -33,10 +33,10 @@ import util.phonograph.m3u.PlaylistsManager
  */
 class PlaylistAdapter(
     private val activity: AppCompatActivity,
-    dataSet: List<Playlist>,
+    dataSet: List<BasePlaylist>,
     @param:LayoutRes private val itemLayoutRes: Int,
     cabProvider: MultiSelectionCabProvider?
-) : MultiSelectAdapter<PlaylistAdapter.ViewHolder, Playlist>(
+) : MultiSelectAdapter<PlaylistAdapter.ViewHolder, BasePlaylist>(
     activity, cabProvider
 ) {
 
@@ -87,9 +87,9 @@ class PlaylistAdapter(
 
     override fun updateItemCheckStatus(datasetPosition: Int) = notifyItemChanged(datasetPosition)
 
-    private fun getIconRes(playlist: Playlist): Int = when {
-        playlist is AbsSmartPlaylist -> playlist.iconRes
-        FavoriteUtil.isFavoritePlaylist(activity, playlist) -> R.drawable.ic_favorite_white_24dp
+    private fun getIconRes(basePlaylist: BasePlaylist): Int = when {
+        basePlaylist is AbsSmartPlaylist -> basePlaylist.iconRes
+        FavoriteUtil.isFavoritePlaylist(activity, basePlaylist) -> R.drawable.ic_favorite_white_24dp
         else -> R.drawable.ic_queue_music_white_24dp
     }
 
@@ -98,28 +98,28 @@ class PlaylistAdapter(
 
     override fun getItemCount(): Int = dataSet.size
 
-    override fun getItem(datasetPosition: Int): Playlist = dataSet[datasetPosition]
+    override fun getItem(datasetPosition: Int): BasePlaylist = dataSet[datasetPosition]
 
-    override fun getName(obj: Playlist): String = obj.name
+    override fun getName(obj: BasePlaylist): String = obj.name
 
     override var multiSelectMenuRes: Int = R.menu.menu_playlists_selection
-    override fun onMultipleItemAction(menuItem: MenuItem, selection: List<Playlist>) {
+    override fun onMultipleItemAction(menuItem: MenuItem, selection: List<BasePlaylist>) {
         when (menuItem.itemId) {
             R.id.action_delete_playlist -> {
-                val playlists: MutableList<Playlist> = selection as MutableList<Playlist>
-                for (playlist in playlists) {
+                val basePlaylists: MutableList<BasePlaylist> = selection as MutableList<BasePlaylist>
+                for (playlist in basePlaylists) {
                     if (playlist != null) { // it shouldn't be, but we'd better do  null check
                         if (playlist is AbsSmartPlaylist) {
                             ClearSmartPlaylistDialog.create(playlist).show(
                                 activity.supportFragmentManager,
                                 "CLEAR_PLAYLIST_" + playlist.name
                             )
-                            playlists.remove(playlist) // then remove this AbsSmartPlaylist
+                            basePlaylists.remove(playlist) // then remove this AbsSmartPlaylist
                         }
-                    } else playlists.remove(playlist) // remove null playlist
+                    } else basePlaylists.remove(playlist) // remove null playlist
                 }
                 // the rest should be "normal" playlists
-                DeletePlaylistDialog.create(playlists as List<Playlist>)
+                DeletePlaylistDialog.create(basePlaylists as List<BasePlaylist>)
                     .show(activity.supportFragmentManager, "DELETE_PLAYLIST")
             }
             R.id.action_save_playlist ->
@@ -134,9 +134,9 @@ class PlaylistAdapter(
         }
     }
 
-    private fun getSongList(playlists: List<Playlist>): List<Song> {
+    private fun getSongList(basePlaylists: List<BasePlaylist>): List<Song> {
         val songs: MutableList<Song> = ArrayList()
-        for (playlist in playlists) {
+        for (playlist in basePlaylists) {
             if (playlist is AbsCustomPlaylist) {
                 songs.addAll(playlist.getSongs(activity))
             } else {

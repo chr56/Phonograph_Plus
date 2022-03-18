@@ -56,7 +56,7 @@ import player.phonograph.helper.ShuffleHelper;
 import player.phonograph.helper.StopWatch;
 import player.phonograph.loader.PlaylistSongLoader;
 import player.phonograph.model.AbsCustomPlaylist;
-import player.phonograph.model.Playlist;
+import player.phonograph.model.BasePlaylist;
 import player.phonograph.model.Song;
 import player.phonograph.notification.PlayingNotification;
 import player.phonograph.notification.PlayingNotificationImpl;
@@ -320,7 +320,7 @@ public class MusicService extends Service implements SharedPreferences.OnSharedP
                         play();
                         break;
                     case ACTION_PLAY_PLAYLIST:
-                        Playlist playlist = intent.getParcelableExtra(INTENT_EXTRA_PLAYLIST);
+                        BasePlaylist playlist = intent.getParcelableExtra(INTENT_EXTRA_PLAYLIST);
                         int shuffleMode = intent.getIntExtra(INTENT_EXTRA_SHUFFLE_MODE, getShuffleMode());
                         if (playlist != null) {
                             List<Song> playlistSongs;
