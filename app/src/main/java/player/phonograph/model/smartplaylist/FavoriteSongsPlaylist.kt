@@ -14,8 +14,7 @@ import player.phonograph.provider.FavoriteSongsStore
  */
 class FavoriteSongsPlaylist : AbsSmartPlaylist {
     @DrawableRes
-    @JvmField
-    val iconRes: Int = R.drawable.ic_favorite_border_white_24dp
+    override var iconRes: Int = R.drawable.ic_favorite_border_white_24dp
 
     constructor(context: Context) : super(context.getString(R.string.favorites), R.drawable.ic_favorite_border_white_24dp)
 
