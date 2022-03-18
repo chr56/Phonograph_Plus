@@ -92,8 +92,11 @@ abstract class AutoPlaylist : BasePlaylist {
 }
 
 class FavoriteSongsPlaylist : AutoPlaylist, EditablePlaylist {
-    // todo id
-    constructor(context: Context) : super(-1, context.getString(R.string.favorites))
+
+    constructor(context: Context) : super(
+        "favorites".hashCode() * 31L + R.drawable.ic_favorite_border_white_24dp,
+        context.getString(R.string.favorites)
+    )
 
     override var iconRes: Int = R.drawable.ic_favorite_border_white_24dp
 
@@ -122,8 +125,10 @@ class FavoriteSongsPlaylist : AutoPlaylist, EditablePlaylist {
 }
 
 class LastAddedPlaylist : AutoPlaylist {
-    // todo id
-    constructor(context: Context) : super(-1, context.getString(R.string.last_added))
+    constructor(context: Context) : super(
+        "last_added".hashCode() * 31L + R.drawable.ic_library_add_white_24dp,
+        context.getString(R.string.last_added)
+    )
 
     override var iconRes: Int = R.drawable.ic_library_add_white_24dp
 
@@ -149,8 +154,10 @@ class LastAddedPlaylist : AutoPlaylist {
 }
 
 class HistoryPlaylist : AutoPlaylist, ResettablePlaylist {
-    // todo id
-    constructor(context: Context) : super(-1, context.getString(R.string.history))
+    constructor(context: Context) : super(
+        "recently_played".hashCode() * 31L + R.drawable.ic_access_time_white_24dp,
+        context.getString(R.string.history)
+    )
 
     override var iconRes: Int = R.drawable.ic_access_time_white_24dp
 
@@ -179,8 +186,10 @@ class HistoryPlaylist : AutoPlaylist, ResettablePlaylist {
 }
 
 class MyTopTracksPlaylist : AutoPlaylist, ResettablePlaylist {
-    // todo id
-    constructor(context: Context) : super(-1, context.getString(R.string.my_top_tracks))
+    constructor(context: Context) : super(
+        "top_tracks".hashCode() * 31L + R.drawable.ic_trending_up_white_24dp,
+        context.getString(R.string.my_top_tracks)
+    )
 
     override var iconRes: Int = R.drawable.ic_trending_up_white_24dp
 
@@ -209,8 +218,10 @@ class MyTopTracksPlaylist : AutoPlaylist, ResettablePlaylist {
 }
 
 class ShuffleAllPlaylist : AutoPlaylist {
-    // todo id
-    constructor(context: Context) : super(-1, context.getString(R.string.action_shuffle_all))
+    constructor(context: Context) : super(
+        "shuffle_all".hashCode() * 31L + R.drawable.ic_shuffle_white_24dp,
+        context.getString(R.string.action_shuffle_all)
+    )
 
     override val iconRes: Int = R.drawable.ic_shuffle_white_24dp
 
