@@ -18,6 +18,7 @@ import player.phonograph.dialogs.SongShareDialog;
 import player.phonograph.helper.MusicPlayerRemote;
 import player.phonograph.interfaces.PaletteColorHolder;
 import player.phonograph.model.Song;
+import player.phonograph.util.FavoriteUtil;
 import util.phonograph.tageditor.AbsTagEditorActivity;
 import util.phonograph.tageditor.SongTagEditorActivity;
 import player.phonograph.ui.fragments.AbsMusicServiceFragment;
@@ -94,7 +95,7 @@ public abstract class AbsPlayerFragment extends AbsMusicServiceFragment implemen
     }
 
     protected void toggleFavorite(Song song) {
-        MusicUtil.toggleFavorite(getActivity(), song);
+        FavoriteUtil.toggleFavorite(getActivity(), song);
     }
 
     protected boolean isToolbarShown() {

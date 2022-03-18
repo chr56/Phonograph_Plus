@@ -26,7 +26,6 @@ import java.util.List;
 import java.util.Locale;
 
 import player.phonograph.App;
-import legacy.phonograph.LegacyPlaylistsUtil;
 import player.phonograph.R;
 import player.phonograph.helper.MusicPlayerRemote;
 import player.phonograph.loader.GenreLoader;
@@ -34,7 +33,6 @@ import player.phonograph.loader.SongLoader;
 import player.phonograph.model.Album;
 import player.phonograph.model.Artist;
 import player.phonograph.model.Genre;
-import player.phonograph.model.Playlist;
 import player.phonograph.model.Song;
 
 /**
@@ -285,30 +283,6 @@ public class MusicUtil {
             }
             Toast.makeText(context, context.getString(R.string.deleted_x_songs, deletedCount), Toast.LENGTH_SHORT).show();
         } catch (SecurityException ignored) {
-        }
-    }
-
-    public static boolean isFavoritePlaylist(@NonNull final Context context, @NonNull final Playlist playlist) {
-        return playlist.name != null && playlist.name.equals(context.getString(R.string.favorites));
-    }
-
-    public static Playlist getFavoritesPlaylist(@NonNull final Context context) {
-        return PlaylistsUtil.INSTANCE.getPlaylist(context, context.getString(R.string.favorites));
-    }
-
-    private static Playlist getOrCreateFavoritesPlaylist(@NonNull final Context context) {
-        return PlaylistsUtil.INSTANCE.getPlaylist(context, LegacyPlaylistsUtil.INSTANCE.createPlaylist(context, context.getString(R.string.favorites)));
-    }
-
-    public static boolean isFavorite(@NonNull final Context context, @NonNull final Song song) {
-        return PlaylistsUtil.INSTANCE.doesPlaylistContain(context, getFavoritesPlaylist(context).id, song.id);
-    }
-
-    public static void toggleFavorite(@NonNull final Context context, @NonNull final Song song) {
-        if (isFavorite(context, song)) {
-            LegacyPlaylistsUtil.INSTANCE.removeFromPlaylist(context, song, getFavoritesPlaylist(context).id);
-        } else {
-            LegacyPlaylistsUtil.INSTANCE.addToPlaylist(context, song, getOrCreateFavoritesPlaylist(context).id, false);
         }
     }
 

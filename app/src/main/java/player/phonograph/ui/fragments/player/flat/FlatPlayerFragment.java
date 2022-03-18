@@ -29,6 +29,7 @@ import com.h6ah4i.android.widget.advrecyclerview.draggable.RecyclerViewDragDropM
 import com.h6ah4i.android.widget.advrecyclerview.utils.WrapperAdapterUtils;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
+import player.phonograph.util.FavoriteUtil;
 import util.mdcolor.pref.ThemeColor;
 import util.mdcolor.ColorUtil;
 import util.mddesign.util.ToolbarColorUtil;
@@ -253,7 +254,7 @@ public class FlatPlayerFragment extends AbsPlayerFragment implements PlayerAlbum
             protected Boolean doInBackground(Song... params) {
                 Activity activity = getActivity();
                 if (activity != null) {
-                    return MusicUtil.isFavorite(getActivity(), params[0]);
+                    return FavoriteUtil.isFavorite(getActivity(), params[0]);
                 } else {
                     cancel(false);
                     return null;
@@ -335,7 +336,7 @@ public class FlatPlayerFragment extends AbsPlayerFragment implements PlayerAlbum
     protected void toggleFavorite(Song song) {
         super.toggleFavorite(song);
         if (song.id == MusicPlayerRemote.getCurrentSong().id) {
-            if (MusicUtil.isFavorite(getActivity(), song)) {
+            if (FavoriteUtil.isFavorite(getActivity(), song)) {
                 playerAlbumCoverFragment.showHeartAnimation();
             }
             updateIsFavorite();

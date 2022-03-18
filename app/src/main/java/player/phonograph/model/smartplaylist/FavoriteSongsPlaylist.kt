@@ -17,7 +17,7 @@ class FavoriteSongsPlaylist : AbsSmartPlaylist {
     @JvmField
     val iconRes: Int = R.drawable.ic_favorite_border_white_24dp
 
-    constructor(context: Context) : super("Favorite", R.drawable.ic_favorite_border_white_24dp)
+    constructor(context: Context) : super(context.getString(R.string.favorites), R.drawable.ic_favorite_border_white_24dp)
 
     override fun getSongs(context: Context?): MutableList<Song> {
         return FavoriteSongsStore.instance.getAllSongs(context ?: App.instance).toMutableList()

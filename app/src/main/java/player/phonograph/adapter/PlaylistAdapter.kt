@@ -24,7 +24,7 @@ import player.phonograph.model.Playlist
 import player.phonograph.model.Song
 import player.phonograph.model.smartplaylist.AbsSmartPlaylist
 import player.phonograph.model.smartplaylist.LastAddedPlaylist
-import player.phonograph.util.MusicUtil
+import player.phonograph.util.FavoriteUtil
 import player.phonograph.util.NavigationUtil
 import player.phonograph.util.SAFCallbackHandlerActivity
 import util.phonograph.m3u.PlaylistsManager
@@ -86,7 +86,7 @@ class PlaylistAdapter(
     private fun getIconRes(playlist: Playlist): Int {
         return if (playlist is AbsSmartPlaylist)
             playlist.iconRes
-        else if (MusicUtil.isFavoritePlaylist(activity, playlist))
+        else if (FavoriteUtil.isFavoritePlaylist(activity, playlist))
             R.drawable.ic_favorite_white_24dp
         else R.drawable.ic_queue_music_white_24dp
     }
