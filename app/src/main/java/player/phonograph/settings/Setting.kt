@@ -215,6 +215,9 @@ class Setting(context: Context) {
     var initializedBlacklist: Boolean by BooleanPref(INITIALIZED_BLACKLIST, false)
     var ignoreUpgradeVersionCode: Int by IntPref(IGNORE_UPGRADE_VERSION_CODE, 0)
 
+    // Compatibility
+    var useLegacyFavoritePlaylistImpl: Boolean by BooleanPref(USE_LEGACY_FAVORITE_PLAYLIST_IMPL, false)
+
     // Changelog
     var lastChangeLogVersion: Int by IntPref(LAST_CHANGELOG_VERSION, -1)
     var introShown: Boolean by BooleanPref(INTRO_SHOWN, false)
@@ -291,6 +294,9 @@ class Setting(context: Context) {
         private const val START_DIRECTORY = "start_directory"
         private const val INITIALIZED_BLACKLIST = "initialized_blacklist"
         private const val IGNORE_UPGRADE_VERSION_CODE = "ignore_upgrade_version_code"
+
+        // compatibility
+        private const val USE_LEGACY_FAVORITE_PLAYLIST_IMPL = "use_legacy_favorite_playlist_impl"
 
         // Changelog
         private const val LAST_CHANGELOG_VERSION = "last_changelog_version"

@@ -6,10 +6,12 @@ package player.phonograph.provider
 
 import android.content.ContentValues
 import android.content.Context
+import android.content.Intent
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import player.phonograph.App
 import player.phonograph.model.Song
+import player.phonograph.service.MusicService
 import player.phonograph.util.MediaStoreUtil
 
 class FavoriteSongsStore(context: Context = App.instance) : SQLiteOpenHelper(context, DATABASE_NAME, null, VERSION) {
@@ -25,6 +27,7 @@ class FavoriteSongsStore(context: Context = App.instance) : SQLiteOpenHelper(con
     fun clear() {
         val database = writableDatabase
         database.delete(TABLE_NAME, null, null)
+        notifyMediaStoreChanged()
     }
 
     fun getAllSongs(context: Context): List<Song> {
@@ -87,6 +90,7 @@ class FavoriteSongsStore(context: Context = App.instance) : SQLiteOpenHelper(con
             database.insert(TABLE_NAME, null, values)
 
             database.setTransactionSuccessful()
+            notifyMediaStoreChanged()
             result = true
         } finally {
             database.endTransaction()
@@ -111,6 +115,7 @@ class FavoriteSongsStore(context: Context = App.instance) : SQLiteOpenHelper(con
             }
 
             database.setTransactionSuccessful()
+            notifyMediaStoreChanged()
         } finally {
             database.endTransaction()
         }
@@ -118,6 +123,8 @@ class FavoriteSongsStore(context: Context = App.instance) : SQLiteOpenHelper(con
         return result
     }
     fun remove(song: Song): Boolean = remove(song.id, song.data)
+
+    private fun notifyMediaStoreChanged() { App.instance.sendBroadcast(Intent(MusicService.MEDIA_STORE_CHANGED)) }
 
     companion object {
         private const val VERSION = 1

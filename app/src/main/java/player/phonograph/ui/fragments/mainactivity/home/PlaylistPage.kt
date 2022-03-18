@@ -13,8 +13,6 @@ import android.view.ViewGroup
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import util.mdcolor.pref.ThemeColor
-import util.mdcolor.ColorUtil
 import kotlinx.coroutines.*
 import player.phonograph.App
 import player.phonograph.BROADCAST_PLAYLISTS_CHANGED
@@ -28,8 +26,11 @@ import player.phonograph.model.smartplaylist.FavoriteSongsPlaylist
 import player.phonograph.model.smartplaylist.HistoryPlaylist
 import player.phonograph.model.smartplaylist.LastAddedPlaylist
 import player.phonograph.model.smartplaylist.MyTopTracksPlaylist
+import player.phonograph.settings.Setting
 import player.phonograph.util.PlaylistsUtil
 import player.phonograph.util.ViewUtil
+import util.mdcolor.ColorUtil
+import util.mdcolor.pref.ThemeColor
 import java.util.ArrayList
 
 class PlaylistPage : AbsPage() {
@@ -98,17 +99,19 @@ class PlaylistPage : AbsPage() {
     private fun loadPlaylist() {
         loaderCoroutineScope.launch {
             val context = hostFragment.mainActivity
-            val temp = mutableListOf<Playlist>(
+            val cache = mutableListOf<Playlist>(
                 LastAddedPlaylist(context),
                 HistoryPlaylist(context),
                 MyTopTracksPlaylist(context),
-                FavoriteSongsPlaylist(context),
-            ).also { it.addAll(PlaylistsUtil.getAllPlaylists(context)) }
+            ).also {
+                if (!Setting.instance.useLegacyFavoritePlaylistImpl)
+                    it.add(FavoriteSongsPlaylist(context),)
+            }.also { it.addAll(PlaylistsUtil.getAllPlaylists(context)) }
 
             while (!isRecyclerViewPrepared) yield() // wait until ready
 
             withContext(Dispatchers.Main) {
-                if (isRecyclerViewPrepared) adapter.dataSet = temp
+                if (isRecyclerViewPrepared) adapter.dataSet = cache
             }
         }
     }
