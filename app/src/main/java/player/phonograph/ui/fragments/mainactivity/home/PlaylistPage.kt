@@ -24,6 +24,7 @@ import player.phonograph.databinding.FragmentDisplayPageBinding
 import player.phonograph.dialogs.CreatePlaylistDialog
 import player.phonograph.misc.PlaylistsModifiedReceiver
 import player.phonograph.model.Playlist
+import player.phonograph.model.smartplaylist.FavoriteSongsPlaylist
 import player.phonograph.model.smartplaylist.HistoryPlaylist
 import player.phonograph.model.smartplaylist.LastAddedPlaylist
 import player.phonograph.model.smartplaylist.MyTopTracksPlaylist
@@ -100,7 +101,8 @@ class PlaylistPage : AbsPage() {
             val temp = mutableListOf<Playlist>(
                 LastAddedPlaylist(context),
                 HistoryPlaylist(context),
-                MyTopTracksPlaylist(context)
+                MyTopTracksPlaylist(context),
+                FavoriteSongsPlaylist(context),
             ).also { it.addAll(PlaylistsUtil.getAllPlaylists(context)) }
 
             while (!isRecyclerViewPrepared) yield() // wait until ready
