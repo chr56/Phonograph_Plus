@@ -14,7 +14,7 @@ import player.phonograph.adapter.base.MediaEntryViewHolder
 import player.phonograph.adapter.base.MultiSelectAdapter
 import player.phonograph.dialogs.ClearSmartPlaylistDialog
 import player.phonograph.dialogs.DeletePlaylistDialog
-import player.phonograph.helper.menu.PlaylistMenuHelper.handleMenuClick
+import player.phonograph.helper.menu.PlaylistMenuHelper
 import player.phonograph.helper.menu.SongsMenuHelper
 import player.phonograph.interfaces.MultiSelectionCabProvider
 import player.phonograph.loader.PlaylistSongLoader
@@ -31,12 +31,12 @@ import util.phonograph.m3u.PlaylistsManager
 /**
  * @author Karim Abou Zeid (kabouzeid)
  */
-class NeoPlaylistAdapter(
+class PlaylistAdapter(
     private val activity: AppCompatActivity,
     dataSet: List<Playlist>,
     @param:LayoutRes private val itemLayoutRes: Int,
     cabProvider: MultiSelectionCabProvider?
-) : MultiSelectAdapter<NeoPlaylistAdapter.ViewHolder, Playlist>(
+) : MultiSelectAdapter<PlaylistAdapter.ViewHolder, Playlist>(
     activity, cabProvider
 ) {
 
@@ -184,7 +184,7 @@ class NeoPlaylistAdapter(
                                 return@setOnMenuItemClickListener true
                             }
                         }
-                        handleMenuClick(
+                        PlaylistMenuHelper.handleMenuClick(
                             activity, dataSet[bindingAdapterPosition], item
                         )
                     }

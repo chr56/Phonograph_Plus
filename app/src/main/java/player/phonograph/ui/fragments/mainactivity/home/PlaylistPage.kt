@@ -17,7 +17,7 @@ import kotlinx.coroutines.*
 import player.phonograph.App
 import player.phonograph.BROADCAST_PLAYLISTS_CHANGED
 import player.phonograph.R
-import player.phonograph.adapter.NeoPlaylistAdapter
+import player.phonograph.adapter.PlaylistAdapter
 import player.phonograph.databinding.FragmentDisplayPageBinding
 import player.phonograph.dialogs.CreatePlaylistDialog
 import player.phonograph.misc.PlaylistsModifiedReceiver
@@ -48,7 +48,7 @@ class PlaylistPage : AbsPage() {
         return binding.root
     }
 
-    private lateinit var adapter: NeoPlaylistAdapter
+    private lateinit var adapter: PlaylistAdapter
     private lateinit var layoutManager: RecyclerView.LayoutManager
     private lateinit var adapterDataObserver: RecyclerView.AdapterDataObserver
 
@@ -60,7 +60,7 @@ class PlaylistPage : AbsPage() {
 
         layoutManager = LinearLayoutManager(requireActivity())
 
-        adapter = NeoPlaylistAdapter(
+        adapter = PlaylistAdapter(
             hostFragment.mainActivity,
             ArrayList<Playlist>(), R.layout.item_list_single_row,
             hostFragment
