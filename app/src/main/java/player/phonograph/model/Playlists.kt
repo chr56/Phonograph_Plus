@@ -97,7 +97,7 @@ class FavoriteSongsPlaylist : AutoPlaylist, EditablePlaylist {
 
     override var iconRes: Int = R.drawable.ic_favorite_border_white_24dp
 
-    override fun getAllSongs(context: Context): List<Song> {
+    override fun getSongs(context: Context): List<Song> {
         return FavoriteSongsStore.instance.getAllSongs(context)
     }
     override fun clear(context: Context) {
@@ -127,7 +127,7 @@ class LastAddedPlaylist : AutoPlaylist {
 
     override var iconRes: Int = R.drawable.ic_library_add_white_24dp
 
-    override fun getAllSongs(context: Context): List<Song> {
+    override fun getSongs(context: Context): List<Song> {
         return LastAddedLoader.getLastAddedSongs(context)
     }
 
@@ -154,7 +154,7 @@ class HistoryPlaylist : AutoPlaylist, ResettablePlaylist {
 
     override var iconRes: Int = R.drawable.ic_access_time_white_24dp
 
-    override fun getAllSongs(context: Context): List<Song> {
+    override fun getSongs(context: Context): List<Song> {
         return TopAndRecentlyPlayedTracksLoader.getRecentlyPlayedTracks(context)
     }
     override fun clear(context: Context) {
@@ -184,7 +184,7 @@ class MyTopTracksPlaylist : AutoPlaylist, ResettablePlaylist {
 
     override var iconRes: Int = R.drawable.ic_trending_up_white_24dp
 
-    override fun getAllSongs(context: Context): List<Song> {
+    override fun getSongs(context: Context): List<Song> {
         return TopAndRecentlyPlayedTracksLoader.getTopTracks(context)
     }
     override fun clear(context: Context) {
@@ -214,7 +214,7 @@ class ShuffleAllPlaylist : AutoPlaylist {
 
     override val iconRes: Int = R.drawable.ic_shuffle_white_24dp
 
-    override fun getAllSongs(context: Context): List<Song> {
+    override fun getSongs(context: Context): List<Song> {
         return MediaStoreUtil.getAllSongs(context) as List<Song>
     }
 

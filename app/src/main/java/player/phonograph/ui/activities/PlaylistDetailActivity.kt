@@ -35,9 +35,8 @@ import player.phonograph.helper.MusicPlayerRemote
 import player.phonograph.helper.menu.PlaylistMenuHelper.handleMenuClick
 import player.phonograph.interfaces.CabHolder
 import player.phonograph.interfaces.LoaderIds
-import player.phonograph.loader.PlaylistSongLoader
 import player.phonograph.misc.WrappedAsyncTaskLoader
-import player.phonograph.model.AbsCustomPlaylist
+import player.phonograph.model.AutoPlaylist
 import player.phonograph.model.BasePlaylist
 import player.phonograph.model.Song
 import player.phonograph.settings.Setting
@@ -122,7 +121,7 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandle
         recyclerView.layoutManager = LinearLayoutManager(this)
 
         // Init (song)adapter
-        if (basePlaylist is AbsCustomPlaylist) {
+        if (basePlaylist is AutoPlaylist) {
             songAdapter = UniversalSongAdapter(
                 this,
                 ArrayList(),
@@ -172,7 +171,7 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandle
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(
-            if (basePlaylist is AbsCustomPlaylist) R.menu.menu_smart_playlist_detail else R.menu.menu_playlist_detail,
+            if (basePlaylist is AutoPlaylist) R.menu.menu_smart_playlist_detail else R.menu.menu_playlist_detail,
             menu
         )
         return super.onCreateOptionsMenu(menu)
@@ -222,7 +221,7 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandle
 
     override fun onMediaStoreChanged() {
         super.onMediaStoreChanged()
-        if (basePlaylist !is AbsCustomPlaylist) {
+        if (basePlaylist !is AutoPlaylist) {
             // Playlist deleted
             if (!PlaylistsUtil.doesPlaylistExist(this, basePlaylist.id)) {
                 finish()
@@ -297,11 +296,7 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandle
     private class AsyncPlaylistSongLoader(context: Context, private val basePlaylist: BasePlaylist) :
         WrappedAsyncTaskLoader<List<Song>>(context) {
         override fun loadInBackground(): List<Song> {
-            return if (basePlaylist is AbsCustomPlaylist) {
-                basePlaylist.getSongs(context)
-            } else {
-                PlaylistSongLoader.getPlaylistSongList(context, basePlaylist.id)
-            }
+            return basePlaylist.getSongs(context)
         }
     }
 

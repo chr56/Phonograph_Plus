@@ -22,10 +22,10 @@ import player.phonograph.databinding.FragmentDisplayPageBinding
 import player.phonograph.dialogs.CreatePlaylistDialog
 import player.phonograph.misc.PlaylistsModifiedReceiver
 import player.phonograph.model.BasePlaylist
-import player.phonograph.model.smartplaylist.FavoriteSongsPlaylist
-import player.phonograph.model.smartplaylist.HistoryPlaylist
-import player.phonograph.model.smartplaylist.LastAddedPlaylist
-import player.phonograph.model.smartplaylist.MyTopTracksPlaylist
+import player.phonograph.model.FavoriteSongsPlaylist
+import player.phonograph.model.HistoryPlaylist
+import player.phonograph.model.LastAddedPlaylist
+import player.phonograph.model.MyTopTracksPlaylist
 import player.phonograph.settings.Setting
 import player.phonograph.util.PlaylistsUtil
 import player.phonograph.util.ViewUtil

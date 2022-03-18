@@ -54,8 +54,6 @@ import player.phonograph.glide.BlurTransformation;
 import player.phonograph.glide.SongGlideRequest;
 import player.phonograph.helper.ShuffleHelper;
 import player.phonograph.helper.StopWatch;
-import player.phonograph.loader.PlaylistSongLoader;
-import player.phonograph.model.AbsCustomPlaylist;
 import player.phonograph.model.BasePlaylist;
 import player.phonograph.model.Song;
 import player.phonograph.notification.PlayingNotification;
@@ -65,9 +63,9 @@ import player.phonograph.provider.HistoryStore;
 import player.phonograph.provider.MusicPlaybackQueueStore;
 import player.phonograph.provider.SongPlayCountStore;
 import player.phonograph.service.playback.Playback;
+import player.phonograph.settings.Setting;
 import player.phonograph.util.LyricsUtil;
 import player.phonograph.util.MusicUtil;
-import player.phonograph.settings.Setting;
 import player.phonograph.util.Util;
 
 /**
@@ -323,13 +321,13 @@ public class MusicService extends Service implements SharedPreferences.OnSharedP
                         BasePlaylist playlist = intent.getParcelableExtra(INTENT_EXTRA_PLAYLIST);
                         int shuffleMode = intent.getIntExtra(INTENT_EXTRA_SHUFFLE_MODE, getShuffleMode());
                         if (playlist != null) {
-                            List<Song> playlistSongs;
-                            if (playlist instanceof AbsCustomPlaylist) {
-                                playlistSongs = ((AbsCustomPlaylist) playlist).getSongs(getApplicationContext());
-                            } else {
-                                //noinspection unchecked,rawtypes
-                                playlistSongs = (List) PlaylistSongLoader.getPlaylistSongList(getApplicationContext(), playlist.id);
-                            }
+                            List<Song> playlistSongs = playlist.getSongs(App.getInstance());
+//                            if (playlist instanceof AbsCustomPlaylist) {
+//                                playlistSongs = ((AbsCustomPlaylist) playlist).getSongs(getApplicationContext());
+//                            } else {
+//                                //noinspection unchecked,rawtypes
+//                                playlistSongs = (List) PlaylistSongLoader.getPlaylistSongList(getApplicationContext(), playlist.id);
+//                            }
                             if (!playlistSongs.isEmpty()) {
                                 if (shuffleMode == SHUFFLE_MODE_SHUFFLE) {
                                     int startPosition = 0;

@@ -20,8 +20,6 @@ import com.afollestad.materialdialogs.WhichButton
 import com.afollestad.materialdialogs.actions.getActionButton
 import kotlinx.coroutines.*
 import player.phonograph.R
-import player.phonograph.loader.PlaylistSongLoader
-import player.phonograph.model.AbsCustomPlaylist
 import player.phonograph.model.BasePlaylist
 import player.phonograph.model.Song
 import player.phonograph.util.OpenDocumentContract
@@ -231,15 +229,7 @@ object FileOperator {
                                         if (file != null) {
                                             val outputStream = context.contentResolver.openOutputStream(file.uri)
                                             if (outputStream != null) {
-                                                val songs: List<Song> =
-                                                    when (playlist) {
-                                                        is AbsCustomPlaylist -> {
-                                                            playlist.getSongs(context)
-                                                        }
-                                                        else -> {
-                                                            PlaylistSongLoader.getPlaylistSongList(context, playlist.id)
-                                                        }
-                                                    }
+                                                val songs: List<Song> = playlist.getSongs(context)
                                                 M3UGenerator.generate(outputStream, songs, true)
                                             } else {
                                                 coroutineToast(

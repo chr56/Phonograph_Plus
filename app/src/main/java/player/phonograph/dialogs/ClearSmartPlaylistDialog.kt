@@ -3,19 +3,22 @@ package player.phonograph.dialogs
 import android.app.Dialog
 import android.os.Bundle
 import android.text.Html
+import android.widget.Toast
 import androidx.fragment.app.DialogFragment
-import util.mdcolor.pref.ThemeColor
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.WhichButton
 import com.afollestad.materialdialogs.actions.getActionButton
 import player.phonograph.R
-import player.phonograph.model.smartplaylist.AbsSmartPlaylist
+import player.phonograph.model.AutoPlaylist
+import player.phonograph.model.ResettablePlaylist
+import util.mdcolor.pref.ThemeColor
 /**
  * @author Karim Abou Zeid (kabouzeid)
  */
+// todo rename
 class ClearSmartPlaylistDialog : DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val playlist: AbsSmartPlaylist = requireArguments().getParcelable("playlist")!!
+        val playlist: AutoPlaylist = requireArguments().getParcelable("playlist")!!
         val title = R.string.clear_playlist_title
         val content: CharSequence = Html.fromHtml(getString(R.string.clear_playlist_x, playlist.name))
         val dialog = MaterialDialog(requireActivity())
@@ -23,8 +26,10 @@ class ClearSmartPlaylistDialog : DialogFragment() {
             .message(text = content)
             .negativeButton(android.R.string.cancel)
             .positiveButton(R.string.clear_action) {
-                if (activity != null) {
-                    playlist.clear(activity)
+                if (playlist is ResettablePlaylist) {
+                    playlist.clear(requireActivity())
+                } else {
+                    Toast.makeText(requireActivity(), "Unclearable!!", Toast.LENGTH_SHORT).show() // todo string
                 }
             }
         // set button color
@@ -34,7 +39,7 @@ class ClearSmartPlaylistDialog : DialogFragment() {
     }
     companion object {
         @JvmStatic
-        fun create(playlist: AbsSmartPlaylist): ClearSmartPlaylistDialog {
+        fun create(playlist: AutoPlaylist): ClearSmartPlaylistDialog {
             val dialog = ClearSmartPlaylistDialog()
             val args = Bundle()
             args.putParcelable("playlist", playlist)

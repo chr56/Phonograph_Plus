@@ -11,7 +11,7 @@ import kotlinx.coroutines.launch
 import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.loader.PlaylistSongLoader
-import player.phonograph.model.AbsCustomPlaylist
+import player.phonograph.model.AutoPlaylist
 import player.phonograph.model.BasePlaylist
 import player.phonograph.model.Song
 import player.phonograph.util.Util
@@ -28,21 +28,16 @@ object M3UGenerator {
     @Throws(IOException::class)
     fun writeFile(context: Context?, dir: File, basePlaylist: BasePlaylist): File {
         if (!dir.exists()) dir.mkdirs() //noinspection ResultOfMethodCallIgnored
-        val filename: String
 
-        val songs: List<Song>
-        if (basePlaylist is AbsCustomPlaylist) {
-            songs = basePlaylist.getSongs(context)
+        val songs: List<Song> = basePlaylist.getSongs(context ?: App.instance)
 
-            // Since AbsCustomPlaylists are dynamic, we add a timestamp after their names.
-            filename =
-                basePlaylist.name + SimpleDateFormat("_yy-MM-dd_HH-mm", Locale.getDefault()).format(
-                Calendar.getInstance().time
-            )
-        } else {
-            songs = PlaylistSongLoader.getPlaylistSongList(context!!, basePlaylist.id)
-            filename = basePlaylist.name
-        }
+        val filename: String = basePlaylist.name +
+            if (basePlaylist is AutoPlaylist) {
+                // Since AbsCustomPlaylists are dynamic, we add a timestamp after their names.
+                SimpleDateFormat("_yy-MM-dd_HH-mm", Locale.getDefault()).format(
+                    Calendar.getInstance().time
+                )
+            } else ""
 
         val file = File(dir, "$filename.$EXTENSION")
         if (songs.isNotEmpty()) {
@@ -65,8 +60,8 @@ object M3UGenerator {
     fun generate(outputStream: OutputStream, context: Context?, basePlaylist: BasePlaylist, addHeader: Boolean) {
 
         val songs: List<Song> =
-            if (basePlaylist is AbsCustomPlaylist) {
-                basePlaylist.getSongs(context)
+            if (basePlaylist is AutoPlaylist) {
+                basePlaylist.getSongs(context ?: App.instance)
             } else {
                 PlaylistSongLoader.getPlaylistSongList(context ?: App.instance, basePlaylist.id)
             }

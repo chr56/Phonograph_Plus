@@ -22,7 +22,7 @@ open class BasePlaylist : AbsPlaylist {
     constructor(id: Long, name: String?) : super(id, name)
     constructor() : super()
 
-    open fun getAllSongs(context: Context): List<Song> {
+    open fun getSongs(context: Context): List<Song> {
         // todo
         return PlaylistSongLoader.getPlaylistSongList(context, id)
     }

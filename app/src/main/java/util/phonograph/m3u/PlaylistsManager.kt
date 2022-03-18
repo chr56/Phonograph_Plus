@@ -12,7 +12,6 @@ import android.os.Build
 import android.os.Environment
 import android.util.Log
 import androidx.activity.ComponentActivity
-import util.mdcolor.pref.ThemeColor
 import com.afollestad.materialdialogs.DialogCallback
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.WhichButton
@@ -24,14 +23,13 @@ import kotlinx.coroutines.withContext
 import legacy.phonograph.LegacyPlaylistsUtil
 import player.phonograph.App
 import player.phonograph.R
-import player.phonograph.loader.PlaylistSongLoader
-import player.phonograph.model.AbsCustomPlaylist
 import player.phonograph.model.BasePlaylist
 import player.phonograph.model.Song
 import player.phonograph.util.PlaylistsUtil
 import player.phonograph.util.SAFCallbackHandlerActivity
 import player.phonograph.util.SafLauncher
 import player.phonograph.util.Util.coroutineToast
+import util.mdcolor.pref.ThemeColor
 import util.phonograph.m3u.internal.M3UGenerator
 import util.phonograph.m3u.internal.appendTimestampSuffix
 import java.io.File
@@ -146,15 +144,8 @@ class PlaylistsManager(private val context: Context, requester: SAFCallbackHandl
         }
     }
     fun duplicatePlaylistViaSaf(basePlaylist: BasePlaylist) {
-        val songs: List<Song> =
-            when (basePlaylist) {
-                is AbsCustomPlaylist -> {
-                    basePlaylist.getSongs(activity)
-                }
-                else -> {
-                    PlaylistSongLoader.getPlaylistSongList(context, basePlaylist.id)
-                }
-            }
+        val songs: List<Song> = basePlaylist.getSongs(activity ?: App.instance)
+
         createPlaylist(appendTimestampSuffix(basePlaylist.name), songs)
     }
 

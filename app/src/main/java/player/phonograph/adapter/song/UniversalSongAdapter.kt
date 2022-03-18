@@ -6,7 +6,10 @@ package player.phonograph.adapter.song
 
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
-import android.view.*
+import android.view.LayoutInflater
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.LayoutRes
@@ -14,10 +17,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.util.Pair
-import util.mdcolor.pref.ThemeColor
-import util.mdcolor.ColorUtil
-import util.mddesign.util.MaterialColorHelper
-import util.mddesign.util.TintHelper
 import com.bumptech.glide.Glide
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView.SectionedAdapter
 import player.phonograph.R
@@ -31,11 +30,17 @@ import player.phonograph.helper.menu.SongMenuHelper
 import player.phonograph.helper.menu.SongsMenuHelper
 import player.phonograph.interfaces.CabHolder
 import player.phonograph.model.Album
+import player.phonograph.model.AutoPlaylist
 import player.phonograph.model.BasePlaylist
 import player.phonograph.model.Song
-import player.phonograph.model.smartplaylist.AbsSmartPlaylist
 import player.phonograph.settings.Setting
-import player.phonograph.util.*
+import player.phonograph.util.MusicUtil
+import player.phonograph.util.NavigationUtil
+import player.phonograph.util.PlaylistsUtil
+import util.mdcolor.ColorUtil
+import util.mdcolor.pref.ThemeColor
+import util.mddesign.util.MaterialColorHelper
+import util.mddesign.util.TintHelper
 
 @Suppress("unused")
 open class UniversalSongAdapter :
@@ -189,7 +194,7 @@ open class UniversalSongAdapter :
             path = holder.itemView.findViewById<TextView>(R.id.path_text)
                 .also {
                     it.text = linkedPlaylist?.let { playlist ->
-                        if (playlist is AbsSmartPlaylist) "-" else
+                        if (playlist is AutoPlaylist) "-" else
                             PlaylistsUtil.getPlaylistPath(activity, playlist)
                     } ?: "-"
                     it.setTextColor(textColor)
@@ -202,7 +207,7 @@ open class UniversalSongAdapter :
         songCountText?.text = linkedPlaylist?.let { MusicUtil.getSongCountString(activity, songs.size) } ?: "-"
         durationText?.text = linkedPlaylist?.let { MusicUtil.getReadableDurationString(MusicUtil.getTotalDuration(activity, songs)) } ?: "-"
         path?.text = linkedPlaylist?.let { playlist ->
-            if (playlist is AbsSmartPlaylist) "-" else
+            if (playlist is AutoPlaylist) "-" else
                 PlaylistsUtil.getPlaylistPath(activity, playlist)
         } ?: "-"
     }

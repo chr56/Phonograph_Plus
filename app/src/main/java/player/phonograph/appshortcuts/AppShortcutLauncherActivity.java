@@ -8,9 +8,9 @@ import player.phonograph.appshortcuts.shortcuttype.LastAddedShortcutType;
 import player.phonograph.appshortcuts.shortcuttype.ShuffleAllShortcutType;
 import player.phonograph.appshortcuts.shortcuttype.TopTracksShortcutType;
 import player.phonograph.model.BasePlaylist;
-import player.phonograph.model.smartplaylist.LastAddedPlaylist;
-import player.phonograph.model.smartplaylist.MyTopTracksPlaylist;
-import player.phonograph.model.smartplaylist.ShuffleAllPlaylist;
+import player.phonograph.model.LastAddedPlaylist;
+import player.phonograph.model.MyTopTracksPlaylist;
+import player.phonograph.model.ShuffleAllPlaylist;
 import player.phonograph.service.MusicService;
 
 /**

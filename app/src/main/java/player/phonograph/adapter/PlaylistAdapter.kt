@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import android.widget.PopupMenu
 import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
-import util.mddesign.util.Util
 import player.phonograph.R
 import player.phonograph.adapter.base.MediaEntryViewHolder
 import player.phonograph.adapter.base.MultiSelectAdapter
@@ -17,15 +16,14 @@ import player.phonograph.dialogs.DeletePlaylistDialog
 import player.phonograph.helper.menu.PlaylistMenuHelper
 import player.phonograph.helper.menu.SongsMenuHelper
 import player.phonograph.interfaces.MultiSelectionCabProvider
-import player.phonograph.loader.PlaylistSongLoader
-import player.phonograph.model.AbsCustomPlaylist
+import player.phonograph.model.AutoPlaylist
 import player.phonograph.model.BasePlaylist
 import player.phonograph.model.Song
-import player.phonograph.model.smartplaylist.AbsSmartPlaylist
-import player.phonograph.model.smartplaylist.LastAddedPlaylist
+import player.phonograph.model.LastAddedPlaylist
 import player.phonograph.util.FavoriteUtil
 import player.phonograph.util.NavigationUtil
 import player.phonograph.util.SAFCallbackHandlerActivity
+import util.mddesign.util.Util
 import util.phonograph.m3u.PlaylistsManager
 
 /**
@@ -74,7 +72,7 @@ class PlaylistAdapter(
                 holder.shortSeparator!!.visibility = View.GONE
             }
         } else {
-            if (holder.shortSeparator != null && dataSet[position] !is AbsSmartPlaylist) {
+            if (holder.shortSeparator != null && dataSet[position] !is AutoPlaylist) {
                 holder.shortSeparator!!.visibility = View.VISIBLE
             }
         }
@@ -88,13 +86,13 @@ class PlaylistAdapter(
     override fun updateItemCheckStatus(datasetPosition: Int) = notifyItemChanged(datasetPosition)
 
     private fun getIconRes(basePlaylist: BasePlaylist): Int = when {
-        basePlaylist is AbsSmartPlaylist -> basePlaylist.iconRes
+        basePlaylist is AutoPlaylist -> basePlaylist.iconRes
         FavoriteUtil.isFavoritePlaylist(activity, basePlaylist) -> R.drawable.ic_favorite_white_24dp
         else -> R.drawable.ic_queue_music_white_24dp
     }
 
     override fun getItemViewType(position: Int): Int =
-        if (dataSet[position] is AbsSmartPlaylist) SMART_PLAYLIST else DEFAULT_PLAYLIST
+        if (dataSet[position] is AutoPlaylist) SMART_PLAYLIST else DEFAULT_PLAYLIST
 
     override fun getItemCount(): Int = dataSet.size
 
@@ -109,7 +107,7 @@ class PlaylistAdapter(
                 val basePlaylists: MutableList<BasePlaylist> = selection as MutableList<BasePlaylist>
                 for (playlist in basePlaylists) {
                     if (playlist != null) { // it shouldn't be, but we'd better do  null check
-                        if (playlist is AbsSmartPlaylist) {
+                        if (playlist is AutoPlaylist) {
                             ClearSmartPlaylistDialog.create(playlist).show(
                                 activity.supportFragmentManager,
                                 "CLEAR_PLAYLIST_" + playlist.name
@@ -137,11 +135,7 @@ class PlaylistAdapter(
     private fun getSongList(basePlaylists: List<BasePlaylist>): List<Song> {
         val songs: MutableList<Song> = ArrayList()
         for (playlist in basePlaylists) {
-            if (playlist is AbsCustomPlaylist) {
-                songs.addAll(playlist.getSongs(activity))
-            } else {
-                songs.addAll(PlaylistSongLoader.getPlaylistSongList(activity, playlist.id))
-            }
+            songs.addAll(playlist.getSongs(activity))
         }
         return songs
     }
@@ -176,7 +170,7 @@ class PlaylistAdapter(
                     }
                     popupMenu.setOnMenuItemClickListener { item: MenuItem ->
                         if (item.itemId == R.id.action_clear_playlist) {
-                            if (playlist is AbsSmartPlaylist) {
+                            if (playlist is AutoPlaylist) {
                                 ClearSmartPlaylistDialog.create(playlist).show(
                                     activity.supportFragmentManager,
                                     "CLEAR_SMART_PLAYLIST_" + playlist.name
