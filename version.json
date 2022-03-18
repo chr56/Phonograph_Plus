@@ -1,19 +1,21 @@
 {
-    "version": "0.1.0",
-    "versionCode": 104,
-    "logSummary": "\n<b>Changelog in this dialog would be provided in English as well soon.</b>\n\n<b>v0.1.0 [2022.3.15]\n</b>\n<b>注意:</b> \n此版本需要重新设置主题配色;\n对于Android 10 (Q)以上版本用户, 播放列表的编辑(重新排序,移除歌曲)仍存在较大问题\n\n 变更:\n修复 睡眠定时器在Android12上的崩溃 \n改进 大幅度调整媒体库的界面(但部分还未完成) \n新增 添加清理旧版本历史残留文件配置功能(但是仅从此版本开始记录历史包袱) \n修复 播放列表更改(新建/改名/删除)后,未能及时刷新(仅限App内操作) \n改进 再删除播放列表失败后, 可尝试使用SAF(Storage Access Framework, 存储访问框架)授权目录后再次尝试删除（目前交互体验不佳, 且可能误删文件!!!) \n改进 对于Android 10 (Q)以上版本用户, 使用SAF创建播放列表(包括新建空列表与保存播放器当前播放队列) \n改进 使用SAF复制(保存)播放列表(单个播放列表可自定义名称, 多个播放列表统一添加时间后缀并保存在所选同一目录下) \n改进 对于Android 10 (Q)以上版本用户, 使用SAF授权后再追加歌曲至已有播放列表(目前交互体验不佳)\n开发 调整代码结构,优化代码,清理依赖(需要重新设置主题配色) \n开发 移除ButterKnife \n开发 使用AGP 7.0.4 (以及Gradle7.1.1) 构建 \n开发 升级Glide(3.8.0 -> 4.12.0), 可能引起若干封面加载问题 \n开发 极限混淆,实现Apk小而美 \n",
+    "version": "0.1.1",
+    "versionCode": 105,
+    "logSummary": "\n<b>v0.1.1 2022.3.18\n</b>\n1. 修复 收藏(最爱)的播放列表导致的崩溃\n2. 修复 更新日志夜间模式失效\n3. 修复 快捷添加黑名单后卡死\n4. 新增 直接重置媒体库类别的设置条目\n5. 新增 分离简体中文和英语的更新日志与更新提示弹窗\n6. 改进 作者信息与翻译入口\n\n1. Fix: crashes caused by the favorite playlist\n2. Fix: changelog's night mode not working\n3. Fix: it gets stuck after adding a blacklist via shortcut\n4. Add: a setting entry for directly resetting the media library category\n5. Add: split changelog and update popup into Simplified Chinese version and English version\n6. Improve: author information and translation entrance in About",
     "downloadSources": [
         "LTS Github(v0.0.8.1)",
+        "Stable Github(v0.1.1)",
         "Stable Github(v0.1.0)"
     ],
     "downloadUris": [
         "https://github.com/chr56/Phonograph_Plus/releases/tag/v0.0.8.1",
-        "https://github.com/chr56/Phonograph_Plus/releases/tag/v0.0.1"
-    ] ,
+        "https://github.com/chr56/Phonograph_Plus/releases/tag/v0.1.1",
+        "https://github.com/chr56/Phonograph_Plus/releases/tag/v0.1.0"
+    ],
     "zh-cn": {
-        "logSummary":"\n<b>v0.1.0 [2022.3.15]\n</b>\n<b>注意:</b> \n此版本需要重新设置主题配色;\n对于Android 10 (Q)以上版本用户, 播放列表的编辑(重新排序,移除歌曲)仍存在较大问题\n\n 变更:\n修复 睡眠定时器在Android12上的崩溃 \n改进 大幅度调整媒体库的界面(但部分还未完成) \n新增 添加清理旧版本历史残留文件配置功能(但是仅从此版本开始记录历史包袱) \n修复 播放列表更改(新建/改名/删除)后,未能及时刷新(仅限App内操作) \n改进 再删除播放列表失败后, 可尝试使用SAF(Storage Access Framework, 存储访问框架)授权目录后再次尝试删除（目前交互体验不佳, 且可能误删文件!!!) \n改进 对于Android 10 (Q)以上版本用户, 使用SAF创建播放列表(包括新建空列表与保存播放器当前播放队列) \n改进 使用SAF复制(保存)播放列表(单个播放列表可自定义名称, 多个播放列表统一添加时间后缀并保存在所选同一目录下) \n改进 对于Android 10 (Q)以上版本用户, 使用SAF授权后再追加歌曲至已有播放列表(目前交互体验不佳)\n开发 调整代码结构,优化代码,清理依赖(需要重新设置主题配色) \n开发 移除ButterKnife \n开发 使用AGP 7.0.4 (以及Gradle7.1.1) 构建 \n开发 升级Glide(3.8.0 -> 4.12.0), 可能引起若干封面加载问题 \n开发 极限混淆,实现Apk小而美 \n"
+        "logSummary": "\n<b>v0.1.1 2022.3.18\n</b>\n1. 修复 收藏(最爱)的播放列表导致的崩溃\n2. 修复 更新日志夜间模式失效\n3. 修复 快捷添加黑名单后卡死\n4. 新增 直接重置媒体库类别的设置条目\n5. 新增 分离简体中文和英语的更新日志与更新提示弹窗\n6. 改进 作者信息与翻译入口\n"
     },
     "en": {
-        "logSummary":"\n<b>Changelog in this dialog would be provided in English as well soon.</b>\n"
+        "logSummary": "\n<b>v0.1.1 2022.3.18\n</b>\n1. Fix: crashes caused by the favorite playlist\n2. Fix: changelog's night mode not working\n3. Fix: it gets stuck after adding a blacklist via shortcut\n4. Add: a setting entry for directly resetting the media library category\n5. Add: split changelog and update popup into Simplified Chinese version and English version\n6. Improve: author information and translation entrance in About"
     }
 }
