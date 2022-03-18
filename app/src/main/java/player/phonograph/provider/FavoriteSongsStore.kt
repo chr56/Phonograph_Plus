@@ -10,6 +10,7 @@ import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import player.phonograph.App
 import player.phonograph.model.Song
+import player.phonograph.util.MediaStoreUtil
 
 class FavoriteSongsStore(context: Context = App.instance) : SQLiteOpenHelper(context, DATABASE_NAME, null, VERSION) {
     override fun onCreate(db: SQLiteDatabase) {
@@ -24,6 +25,34 @@ class FavoriteSongsStore(context: Context = App.instance) : SQLiteOpenHelper(con
     fun clear() {
         val database = writableDatabase
         database.delete(TABLE_NAME, null, null)
+    }
+
+    fun getAllSongs(context: Context): List<Song> {
+        val result: MutableList<Song> = ArrayList()
+        for (item in getAll()) {
+            val song = MediaStoreUtil.getSong(context, item.first)
+            if (song != Song.EMPTY_SONG) result.add(song)
+        }
+        return result
+    }
+
+    fun getAll(): List<Pair<Long, String>> {
+        val database = readableDatabase
+        val cursor = database.query(
+            TABLE_NAME,
+            arrayOf(COLUMNS_ID, COLUMNS_PATH, COLUMNS_TITLE),
+            null, null, null, null, "$COLUMNS_TITLE DESC"
+        )
+        val result: MutableList<Pair<Long, String>> = ArrayList()
+        cursor.use {
+            cursor.moveToFirst().let { if (!it) return@use }
+            do {
+                result.add(
+                    Pair(cursor.getLong(0), cursor.getString(1))
+                )
+            } while (cursor.moveToNext())
+        }
+        return result
     }
 
     fun contains(song: Song): Boolean = contains(song.id, song.data)
