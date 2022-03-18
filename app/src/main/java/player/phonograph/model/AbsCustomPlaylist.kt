@@ -9,7 +9,7 @@ import android.os.Parcel
 abstract class AbsCustomPlaylist : Playlist {
     constructor()
     constructor(id: Long, name: String?) : super(id, name)
-    constructor(parcel: Parcel?) : super(parcel)
+    constructor(parcel: Parcel) : super(parcel)
 
     abstract fun getSongs(context: Context?): MutableList<Song>
 }
