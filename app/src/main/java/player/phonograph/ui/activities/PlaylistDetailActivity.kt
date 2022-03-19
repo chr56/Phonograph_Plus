@@ -4,66 +4,49 @@
 
 package player.phonograph.ui.activities
 
-import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.view.ViewStub
-import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
-import androidx.loader.app.LoaderManager
+import androidx.appcompat.content.res.AppCompatResources
+import androidx.core.graphics.BlendModeColorFilterCompat
+import androidx.core.graphics.BlendModeCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.afollestad.materialcab.*
-import com.afollestad.materialcab.attached.AttachedCab
-import com.afollestad.materialcab.attached.destroy
-import com.afollestad.materialcab.attached.isActive
 import com.h6ah4i.android.widget.advrecyclerview.animator.GeneralItemAnimator
 import com.h6ah4i.android.widget.advrecyclerview.animator.RefactoredDefaultItemAnimator
 import com.h6ah4i.android.widget.advrecyclerview.draggable.RecyclerViewDragDropManager
 import com.h6ah4i.android.widget.advrecyclerview.utils.WrapperAdapterUtils
-import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView
 import kotlinx.coroutines.*
+import lib.phonograph.cab.*
+import lib.phonograph.cab.SelectCallback
 import player.phonograph.R
 import player.phonograph.adapter.song.UniversalSongAdapter
 import player.phonograph.databinding.ActivityPlaylistDetailBinding
 import player.phonograph.helper.MusicPlayerRemote
 import player.phonograph.helper.menu.PlaylistMenuHelper.handleMenuClick
-import player.phonograph.interfaces.CabHolder
-import player.phonograph.interfaces.LoaderIds
-import player.phonograph.misc.WrappedAsyncTaskLoader
-import player.phonograph.model.playlist.SmartPlaylist
+import player.phonograph.interfaces.MultiSelectionCabProvider
 import player.phonograph.model.playlist.Playlist
-import player.phonograph.model.Song
-import player.phonograph.settings.Setting
+import player.phonograph.model.playlist.SmartPlaylist
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
 import player.phonograph.util.*
 import util.mdcolor.pref.ThemeColor
 import util.mddesign.core.Themer
 
-class PlaylistDetailActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity {
-    private lateinit var binding: ActivityPlaylistDetailBinding // init in OnCreate()
+class PlaylistDetailActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity, MultiSelectionCabProvider {
 
-    // init/bind in OnCreate() -> bindingView()
-    private lateinit var recyclerView: RecyclerView
-    private lateinit var mToolbar: Toolbar
-    private lateinit var empty: TextView
-    private lateinit var cabStub: ViewStub
+    private var _binding: ActivityPlaylistDetailBinding? = null
+    private val binding: ActivityPlaylistDetailBinding get() = _binding!!
 
     private lateinit var playlist: Playlist // init in OnCreate()
 
-    private var cab: AttachedCab? = null
     private lateinit var songAdapter: UniversalSongAdapter // init in OnCreate() -> setUpRecyclerView()
     private var wrappedAdapter: RecyclerView.Adapter<*>? = null
     private var recyclerViewDragDropManager: RecyclerViewDragDropManager? = null
-
-    private lateinit var loader: Loader // init in OnCreate()
-
-    private var savedMessageBundle: Bundle? = null
 
     // for saf callback
     private lateinit var safLauncher: SafLauncher
@@ -76,10 +59,8 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandle
      * ********************/
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        binding = ActivityPlaylistDetailBinding.inflate(layoutInflater)
+        _binding = ActivityPlaylistDetailBinding.inflate(layoutInflater)
         super.onCreate(savedInstanceState)
-
-        bindingViews()
 
         setDrawUnderStatusbar()
 
@@ -87,38 +68,34 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandle
         setNavigationbarColorAuto()
         setTaskDescriptionColorAuto()
 
-        Themer.setActivityToolbarColorAuto(this, mToolbar)
+        Themer.setActivityToolbarColorAuto(this, binding.toolbar)
 
         playlist = intent.extras!!.getParcelable(EXTRA_PLAYLIST)!!
+        loadSongs()
 
         safLauncher = SafLauncher(activityResultRegistry)
         lifecycle.addObserver(safLauncher)
 
-        // Init RecyclerView and Adapter
-        setUpRecyclerView()
-        loader = Loader(this, playlist, songAdapter)
-
         setUpToolbar()
-
-        LoaderManager.getInstance(this)
-            .initLoader(LOADER_ID, null, loader)
-    }
-    private fun bindingViews() {
-        mToolbar = binding.toolbar
-
-        recyclerView = binding.recyclerView
-        empty = binding.empty
-        cabStub = binding.cabStub
+        setUpRecyclerView()
     }
     override fun createContentView(): View {
         return wrapSlidingMusicPanel(binding.root)
     }
 
+    private fun setUpToolbar() {
+        binding.toolbar.setBackgroundColor(ThemeColor.primaryColor(this))
+        setSupportActionBar(binding.toolbar)
+        setToolbarTitle(playlist.name)
+        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+    }
+
+    private var isRecyclerViewReady = false
     private fun setUpRecyclerView() {
         ViewUtil.setUpFastScrollRecyclerViewColor(
-            this, recyclerView as FastScrollRecyclerView, ThemeColor.accentColor(this)
+            this, binding.recyclerView, ThemeColor.accentColor(this)
         )
-        recyclerView.layoutManager = LinearLayoutManager(this)
+        binding.recyclerView.layoutManager = LinearLayoutManager(this)
 
         // Init (song)adapter
         if (playlist is SmartPlaylist) {
@@ -127,9 +104,11 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandle
                 ArrayList(),
                 UniversalSongAdapter.MODE_PLAYLIST_SMART,
                 R.layout.item_list,
-                CabCallBack(this)
-            )
-            recyclerView.adapter = songAdapter
+                null
+            ).also {
+                it.linkedPlaylist = playlist
+            }
+            binding.recyclerView.adapter = songAdapter
         } else {
             recyclerViewDragDropManager = RecyclerViewDragDropManager()
             val animator: GeneralItemAnimator = RefactoredDefaultItemAnimator()
@@ -139,12 +118,14 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandle
                 ArrayList(),
                 UniversalSongAdapter.MODE_PLAYLIST_LOCAL,
                 R.layout.item_list,
-                CabCallBack(this)
-            )
+                null
+            ).also {
+                it.linkedPlaylist = playlist
+            }
             wrappedAdapter = recyclerViewDragDropManager!!.createWrappedAdapter(songAdapter)
-            recyclerView.adapter = wrappedAdapter
-            recyclerView.itemAnimator = animator
-            recyclerViewDragDropManager!!.attachRecyclerView(recyclerView)
+            binding.recyclerView.adapter = wrappedAdapter
+            binding.recyclerView.itemAnimator = animator
+            recyclerViewDragDropManager!!.attachRecyclerView(binding.recyclerView)
         }
 
         songAdapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
@@ -153,17 +134,11 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandle
                 checkIsEmpty()
             }
         })
-    }
-    private fun checkIsEmpty() {
-        empty.visibility =
-            if (songAdapter.itemCount == 0) View.VISIBLE else View.GONE
+        isRecyclerViewReady = true
     }
 
-    private fun setUpToolbar() {
-        mToolbar.setBackgroundColor(ThemeColor.primaryColor(this))
-        setSupportActionBar(mToolbar)
-        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-        setToolbarTitle(playlist.name)
+    private fun checkIsEmpty() {
+        binding.empty.visibility = if (songAdapter.songs.isEmpty()) View.VISIBLE else View.GONE
     }
     private fun setToolbarTitle(title: String) {
         supportActionBar!!.title = title
@@ -171,8 +146,7 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandle
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(
-            if (playlist is SmartPlaylist) R.menu.menu_smart_playlist_detail else R.menu.menu_playlist_detail,
-            menu
+            if (playlist is SmartPlaylist) R.menu.menu_smart_playlist_detail else R.menu.menu_playlist_detail, menu
         )
         return super.onCreateOptionsMenu(menu)
     }
@@ -204,13 +178,15 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandle
     }
 
     override fun onBackPressed() {
-        cab?.let {
-            if (it.isActive()) it.destroy()
-            else {
-                recyclerView.stopScroll()
-                super.onBackPressed()
-            }
-        } ?: super.onBackPressed()
+        if (multiSelectionCab != null && multiSelectionCab!!.status == CabStatus.STATUS_ACTIVE) {
+            dismissCab()
+            return
+        } else if (multiSelectionCab != null) {
+            multiSelectionCab!!.destroy()
+            multiSelectionCab = null
+        }
+        binding.recyclerView.stopScroll()
+        super.onBackPressed()
     }
 
     /* *******************
@@ -221,6 +197,7 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandle
 
     override fun onMediaStoreChanged() {
         super.onMediaStoreChanged()
+        loadSongs()
         if (playlist !is SmartPlaylist) {
             // Playlist deleted
             if (!PlaylistsUtil.doesPlaylistExist(this, playlist.id)) {
@@ -233,13 +210,9 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandle
             if (playlistName != playlist.name) {
                 playlist = PlaylistsUtil.getPlaylist(this, playlist.id)
                 setToolbarTitle(playlist.name)
+                songAdapter.linkedPlaylist = playlist
             }
         }
-
-        // don't forge this
-        loader.updatePlaylist(playlist)
-
-        LoaderManager.getInstance(this).restartLoader(LOADER_ID, null, loader)
     }
 
     override fun onPause() {
@@ -248,55 +221,44 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandle
     }
 
     override fun onDestroy() {
-        try { backgroundCoroutineScope.coroutineContext[Job]?.cancel() } catch (e: java.lang.Exception) { Log.i("BackgroundCoroutineScope", e.message.orEmpty()) }
+        try { loaderCoroutineScope.coroutineContext[Job]?.cancel() } catch (e: java.lang.Exception) { Log.i("BackgroundCoroutineScope", e.message.orEmpty()) }
+        super.onDestroy()
+        multiSelectionCab?.destroy()
+        multiSelectionCab = null
         recyclerViewDragDropManager?.let {
             it.release()
             recyclerViewDragDropManager = null
         }
-        recyclerView.itemAnimator = null
-        recyclerView.adapter = null
+        binding.recyclerView.itemAnimator = null
+        binding.recyclerView.adapter = null
         wrappedAdapter?. let {
             WrapperAdapterUtils.releaseAll(it)
             wrappedAdapter = null
         }
-        super.onDestroy()
+        _binding = null
     }
-
-    private val backgroundCoroutineScope: CoroutineScope = CoroutineScope(Dispatchers.IO)
 
     /* *******************
      *
-     *        Loader
+     *   Load Playlist
      *
      * *******************/
 
-    inner class Loader(private val context: AppCompatActivity, private var playlist: Playlist, private val adapter: UniversalSongAdapter) : LoaderManager.LoaderCallbacks<List<Song>> {
-        override fun onCreateLoader(
-            id: Int,
-            args: Bundle?
-        ): androidx.loader.content.Loader<List<Song>> {
-            return AsyncPlaylistSongLoader(context, this.playlist)
-        }
-
-        override fun onLoadFinished(
-            loader: androidx.loader.content.Loader<List<Song>>,
-            data: List<Song>
-        ) {
-            this.adapter.linkedPlaylist = playlist
-            this.adapter.songs = data
-        }
-
-        override fun onLoaderReset(loader: androidx.loader.content.Loader<List<Song>>) {
-            this.adapter.songs = ArrayList()
-        }
-        fun updatePlaylist(playlist: Playlist) {
-            this.playlist = playlist
-        }
+    private val loaderCoroutineScope: CoroutineScope = CoroutineScope(Dispatchers.IO)
+    fun loadSongs() {
+        fetchPlaylist(playlist)
     }
-    private class AsyncPlaylistSongLoader(context: Context, private val playlist: Playlist) :
-        WrappedAsyncTaskLoader<List<Song>>(context) {
-        override fun loadInBackground(): List<Song> {
-            return playlist.getSongs(context)
+
+    private fun fetchPlaylist(list: Playlist) {
+        loaderCoroutineScope.launch {
+            val songs = list.getSongs(this@PlaylistDetailActivity)
+
+            while (!isRecyclerViewReady) yield()
+            withContext(Dispatchers.Main) {
+                if (isRecyclerViewReady) {
+                    songAdapter.songs = songs
+                }
+            }
         }
     }
 
@@ -305,30 +267,60 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandle
      *     cabCallBack
      *
      * *******************/
-    private inner class CabCallBack(private val activity: PlaylistDetailActivity) : CabHolder {
-        override fun showCab(
-            menuRes: Int,
-            createCallback: CreateCallback,
-            selectCallback: SelectCallback,
-            destroyCallback: DestroyCallback
-        ): AttachedCab {
-            // finish existed cab
-            cab?.let {
-                if (cab.isActive()) cab.destroy()
+
+    private var multiSelectionCab: MultiSelectionCab? = null
+
+    override fun deployCab(
+        menuRes: Int,
+        initCallback: InitCallback?,
+        showCallback: ShowCallback?,
+        selectCallback: SelectCallback?,
+        hideCallback: HideCallback?,
+        destroyCallback: lib.phonograph.cab.DestroyCallback?
+    ): MultiSelectionCab {
+        val cfg: CabCfg = {
+            val primaryColor = ThemeColor.primaryColor(this@PlaylistDetailActivity)
+            val textColor = Color.WHITE
+
+            backgroundColor = PhonographColorUtil.shiftBackgroundColorForLightText(primaryColor)
+            titleTextColor = textColor
+
+            closeDrawable = AppCompatResources.getDrawable(this@PlaylistDetailActivity, R.drawable.ic_close_white_24dp)!!.also {
+                it.colorFilter = BlendModeColorFilterCompat.createBlendModeColorFilterCompat(textColor, BlendModeCompat.SRC_IN)
             }
 
-            // create new
-            cab = createCab(R.id.cab_stub) {
-                popupTheme(Setting.instance.generalTheme)
-                menu(menuRes)
-                closeDrawable(R.drawable.ic_close_white_24dp)
-                backgroundColor(literal = PhonographColorUtil.shiftBackgroundColorForLightText(ThemeColor.primaryColor(activity)))
-                onCreate(createCallback)
-                onSelection(selectCallback)
-                onDestroy(destroyCallback)
-            }
-            return cab as AttachedCab
+            this.menuRes = menuRes
+
+            onInit(initCallback)
+            onShow(showCallback)
+            onSelection(selectCallback)
+            onHide(hideCallback)
+            onClose { dismissCab() }
+            onDestroy(destroyCallback)
         }
+
+        if (multiSelectionCab == null) multiSelectionCab =
+            createMultiSelectionCab(this, R.id.cab_stub, R.id.multi_selection_cab, cfg)
+        else {
+            multiSelectionCab!!.applyCfg = cfg
+            multiSelectionCab!!.refresh()
+        }
+
+        return multiSelectionCab!!
+    }
+
+    override fun getCab(): MultiSelectionCab? = multiSelectionCab
+
+    override fun showCab() {
+        multiSelectionCab?.let { cab ->
+            binding.toolbar.visibility = View.INVISIBLE
+            cab.refresh()
+            cab.show()
+        }
+    }
+    override fun dismissCab() {
+        multiSelectionCab?.hide()
+        binding.toolbar.visibility = View.VISIBLE
     }
 
     /* *******************
@@ -336,7 +328,6 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandle
      * *******************/
 
     companion object {
-        private const val LOADER_ID = LoaderIds.PLAYLIST_DETAIL_ACTIVITY
         private const val TAG = "PlaylistDetail"
         const val EXTRA_PLAYLIST = "extra_playlist"
         const val EDIT_PLAYLIST: Int = 100
