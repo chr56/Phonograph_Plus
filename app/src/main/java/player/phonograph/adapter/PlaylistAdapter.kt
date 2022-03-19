@@ -16,15 +16,14 @@ import player.phonograph.dialogs.DeletePlaylistDialog
 import player.phonograph.helper.menu.PlaylistMenuHelper
 import player.phonograph.helper.menu.SongsMenuHelper
 import player.phonograph.interfaces.MultiSelectionCabProvider
-import player.phonograph.model.AutoPlaylist
-import player.phonograph.model.BasePlaylist
-import player.phonograph.model.Song
-import player.phonograph.model.LastAddedPlaylist
+import player.phonograph.model.*
 import player.phonograph.util.FavoriteUtil
 import player.phonograph.util.NavigationUtil
 import player.phonograph.util.SAFCallbackHandlerActivity
 import util.mddesign.util.Util
 import util.phonograph.m3u.PlaylistsManager
+import java.util.*
+import kotlin.collections.ArrayList
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
@@ -106,18 +105,14 @@ class PlaylistAdapter(
             R.id.action_delete_playlist -> {
                 val basePlaylists: MutableList<BasePlaylist> = selection as MutableList<BasePlaylist>
                 for (playlist in basePlaylists) {
-                    if (playlist != null) { // it shouldn't be, but we'd better do  null check
-                        if (playlist is AutoPlaylist) {
-                            ClearSmartPlaylistDialog.create(playlist).show(
-                                activity.supportFragmentManager,
-                                "CLEAR_PLAYLIST_" + playlist.name
-                            )
-                            basePlaylists.remove(playlist) // then remove this AbsSmartPlaylist
-                        }
-                    } else basePlaylists.remove(playlist) // remove null playlist
+                    // todo
+                    if (playlist is AutoPlaylist && playlist is ResettablePlaylist) {
+                        ClearSmartPlaylistDialog.create(playlist).show(activity.supportFragmentManager, "CLEAR_PLAYLIST_" + playlist.name.uppercase(Locale.ENGLISH))
+                        basePlaylists.remove(playlist) // then remove this AbsSmartPlaylist
+                    }
                 }
                 // the rest should be "normal" playlists
-                DeletePlaylistDialog.create(basePlaylists as List<BasePlaylist>)
+                DeletePlaylistDialog.create(basePlaylists as List<FilePlaylist>)
                     .show(activity.supportFragmentManager, "DELETE_PLAYLIST")
             }
             R.id.action_save_playlist ->

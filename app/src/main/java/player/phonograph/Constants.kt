@@ -1,8 +1,18 @@
 /*
- * Copyright (c) 2021 chr_56 & Abou Zeid (kabouzeid) (original author)
+ * Copyright (c) 2021 chr_56
  */
 
 package player.phonograph
+
+object PlaylistType {
+    const val FILE = 0
+    const val ABS_SMART = 1
+    const val FAVORITE = 2
+    const val LAST_ADDED = 4
+    const val HISTORY = 8
+    const val MY_TOP_TRACK = 16
+    const val RANDOM = 32
+}
 
 const val VERSION_INFO = "versionInfo"
 const val UPGRADABLE = "upgradable"

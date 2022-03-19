@@ -29,10 +29,7 @@ import player.phonograph.helper.SortOrder
 import player.phonograph.helper.menu.SongMenuHelper
 import player.phonograph.helper.menu.SongsMenuHelper
 import player.phonograph.interfaces.CabHolder
-import player.phonograph.model.Album
-import player.phonograph.model.AutoPlaylist
-import player.phonograph.model.BasePlaylist
-import player.phonograph.model.Song
+import player.phonograph.model.*
 import player.phonograph.settings.Setting
 import player.phonograph.util.MusicUtil
 import player.phonograph.util.NavigationUtil
@@ -193,10 +190,7 @@ open class UniversalSongAdapter :
                 }
             path = holder.itemView.findViewById<TextView>(R.id.path_text)
                 .also {
-                    it.text = linkedPlaylist?.let { playlist ->
-                        if (playlist is AutoPlaylist) "-" else
-                            PlaylistsUtil.getPlaylistPath(activity, playlist)
-                    } ?: "-"
+                    it.text = getPathString()
                     it.setTextColor(textColor)
                 }
         }
@@ -206,10 +200,15 @@ open class UniversalSongAdapter :
         name?.text = linkedPlaylist?.name ?: "-"
         songCountText?.text = linkedPlaylist?.let { MusicUtil.getSongCountString(activity, songs.size) } ?: "-"
         durationText?.text = linkedPlaylist?.let { MusicUtil.getReadableDurationString(MusicUtil.getTotalDuration(activity, songs)) } ?: "-"
-        path?.text = linkedPlaylist?.let { playlist ->
-            if (playlist is AutoPlaylist) "-" else
-                PlaylistsUtil.getPlaylistPath(activity, playlist)
-        } ?: "-"
+        path?.text = getPathString()
+    }
+
+    private fun getPathString(): String {
+        return if (linkedPlaylist == null)"-" else
+            when (linkedPlaylist) {
+                is FilePlaylist -> PlaylistsUtil.getPlaylistPath(activity, linkedPlaylist as FilePlaylist)
+                else -> "-"
+            }
     }
 
     override fun getItemCount(): Int {

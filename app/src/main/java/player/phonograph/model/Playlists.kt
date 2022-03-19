@@ -7,14 +7,18 @@ package player.phonograph.model
 import android.content.Context
 import android.os.Parcel
 import android.os.Parcelable
+import androidx.annotation.DrawableRes
 import androidx.annotation.Keep
 import player.phonograph.R
+import player.phonograph.PlaylistType
 import player.phonograph.loader.LastAddedLoader
+import player.phonograph.loader.PlaylistSongLoader
 import player.phonograph.loader.TopAndRecentlyPlayedTracksLoader
 import player.phonograph.provider.FavoriteSongsStore
 import player.phonograph.provider.HistoryStore
 import player.phonograph.provider.SongPlayCountStore
 import player.phonograph.util.MediaStoreUtil
+import player.phonograph.util.PlaylistsUtil
 
 interface EditablePlaylist : ResettablePlaylist {
 //    fun move()
@@ -40,8 +44,18 @@ class FilePlaylist : BasePlaylist, EditablePlaylist {
         associatedFilePath = ""
     }
 
+    override fun getSongs(context: Context): List<Song> =
+        PlaylistSongLoader.getPlaylistSongList(context, id)
+
+    override fun containsSong(context: Context, songId: Long): Boolean =
+        PlaylistsUtil.doesPlaylistContain(context, id, songId)
+
     override val type: Int
-        get() = 1
+        get() = PlaylistType.FILE
+
+    override val iconRes: Int
+        @DrawableRes
+        get() = R.drawable.ic_queue_music_white_24dp
 
     override fun clear(context: Context) {
         TODO()
@@ -83,11 +97,11 @@ class FilePlaylist : BasePlaylist, EditablePlaylist {
     }
 }
 
-abstract class AutoPlaylist : BasePlaylist {
+abstract class AutoPlaylist : BasePlaylist, GeneratedPlaylist {
     constructor() : super()
     constructor(id: Long, name: String?) : super(id, name)
     override val type: Int
-        get() = 2
+        get() = PlaylistType.ABS_SMART
     constructor(parcel: Parcel) : super(parcel)
 }
 
@@ -98,11 +112,17 @@ class FavoriteSongsPlaylist : AutoPlaylist, EditablePlaylist {
         context.getString(R.string.favorites)
     )
 
+    override val type: Int
+        get() = PlaylistType.FAVORITE
+
     override var iconRes: Int = R.drawable.ic_favorite_border_white_24dp
 
-    override fun getSongs(context: Context): List<Song> {
-        return FavoriteSongsStore.instance.getAllSongs(context)
-    }
+    override fun getSongs(context: Context): List<Song> =
+        FavoriteSongsStore.instance.getAllSongs(context)
+
+    override fun containsSong(context: Context, songId: Long): Boolean =
+        FavoriteSongsStore.instance.contains(songId, "")
+
     override fun clear(context: Context) {
         FavoriteSongsStore.instance.clear()
     }
@@ -130,11 +150,15 @@ class LastAddedPlaylist : AutoPlaylist {
         context.getString(R.string.last_added)
     )
 
+    override val type: Int
+        get() = PlaylistType.LAST_ADDED
+
     override var iconRes: Int = R.drawable.ic_library_add_white_24dp
 
-    override fun getSongs(context: Context): List<Song> {
-        return LastAddedLoader.getLastAddedSongs(context)
-    }
+    override fun getSongs(context: Context): List<Song> =
+        LastAddedLoader.getLastAddedSongs(context)
+
+    override fun containsSong(context: Context, songId: Long): Boolean = false // todo
 
     override fun toString(): String = "LastAddedPlaylist"
 
@@ -159,11 +183,16 @@ class HistoryPlaylist : AutoPlaylist, ResettablePlaylist {
         context.getString(R.string.history)
     )
 
+    override val type: Int
+        get() =PlaylistType.HISTORY
+
     override var iconRes: Int = R.drawable.ic_access_time_white_24dp
 
-    override fun getSongs(context: Context): List<Song> {
-        return TopAndRecentlyPlayedTracksLoader.getRecentlyPlayedTracks(context)
-    }
+    override fun getSongs(context: Context): List<Song> =
+        TopAndRecentlyPlayedTracksLoader.getRecentlyPlayedTracks(context)
+
+    override fun containsSong(context: Context, songId: Long): Boolean = false // todo
+
     override fun clear(context: Context) {
         HistoryStore.getInstance(context).clear()
     }
@@ -191,11 +220,15 @@ class MyTopTracksPlaylist : AutoPlaylist, ResettablePlaylist {
         context.getString(R.string.my_top_tracks)
     )
 
+    override val type: Int
+        get() = PlaylistType.MY_TOP_TRACK
+
     override var iconRes: Int = R.drawable.ic_trending_up_white_24dp
 
-    override fun getSongs(context: Context): List<Song> {
-        return TopAndRecentlyPlayedTracksLoader.getTopTracks(context)
-    }
+    override fun getSongs(context: Context): List<Song> = TopAndRecentlyPlayedTracksLoader.getTopTracks(context)
+
+    override fun containsSong(context: Context, songId: Long): Boolean = false // todo
+
     override fun clear(context: Context) {
         SongPlayCountStore.getInstance(context).clear()
     }
@@ -223,12 +256,14 @@ class ShuffleAllPlaylist : AutoPlaylist {
         context.getString(R.string.action_shuffle_all)
     )
 
+    override val type: Int
+        get() = PlaylistType.RANDOM
+
     override val iconRes: Int = R.drawable.ic_shuffle_white_24dp
 
-    override fun getSongs(context: Context): List<Song> {
-        return MediaStoreUtil.getAllSongs(context) as List<Song>
-    }
+    override fun getSongs(context: Context): List<Song> = MediaStoreUtil.getAllSongs(context) as List<Song>
 
+    override fun containsSong(context: Context, songId: Long): Boolean = true
     override fun toString(): String = "ShuffleAllPlaylist"
 
     constructor(parcel: Parcel) : super(parcel)
@@ -245,3 +280,4 @@ class ShuffleAllPlaylist : AutoPlaylist {
         }
     }
 }
+

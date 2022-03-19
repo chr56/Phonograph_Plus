@@ -7,53 +7,16 @@ package player.phonograph.model
 import android.content.Context
 import android.os.Parcel
 import android.os.Parcelable
-import androidx.annotation.DrawableRes
 import androidx.annotation.Keep
-import player.phonograph.R
-import player.phonograph.loader.PlaylistSongLoader
-import player.phonograph.util.PlaylistsUtil
+import player.phonograph.PlaylistType
+import java.lang.IllegalStateException
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
  */
 
-open class BasePlaylist : AbsPlaylist {
+sealed class BasePlaylist : Parcelable {
 
-    constructor(id: Long, name: String?) : super(id, name)
-    constructor() : super()
-
-    open fun getSongs(context: Context): List<Song> {
-        // todo
-        return PlaylistSongLoader.getPlaylistSongList(context, id)
-    }
-
-    open fun containsSong(context: Context, songId: Long): Boolean {
-        // todo
-        return PlaylistsUtil.doesPlaylistContain(context, id, songId)
-    }
-
-    override fun describeContents(): Int = 0
-    override fun writeToParcel(dest: Parcel, flags: Int) {
-        dest.writeLong(id)
-        dest.writeString(name)
-    }
-    protected constructor(parcel: Parcel) : super(parcel)
-
-    companion object {
-        @Keep
-        @JvmField
-        val CREATOR: Parcelable.Creator<BasePlaylist?> = object : Parcelable.Creator<BasePlaylist?> {
-            override fun createFromParcel(source: Parcel): BasePlaylist {
-                return BasePlaylist(source)
-            }
-            override fun newArray(size: Int): Array<BasePlaylist?> {
-                return arrayOfNulls(size)
-            }
-        }
-    }
-}
-
-abstract class AbsPlaylist : Parcelable {
     @JvmField
     val id: Long
     @JvmField
@@ -69,12 +32,11 @@ abstract class AbsPlaylist : Parcelable {
         name = ""
     }
 
-    open val type: Int
-        get() = 0
+    abstract val type: Int
+    abstract val iconRes: Int
 
-    open val iconRes: Int
-        @DrawableRes
-        get() = R.drawable.ic_queue_music_white_24dp
+    abstract fun getSongs(context: Context): List<Song>
+    abstract fun containsSong(context: Context, songId: Long): Boolean
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -88,12 +50,36 @@ abstract class AbsPlaylist : Parcelable {
 
     override fun describeContents(): Int = 0
     override fun writeToParcel(dest: Parcel, flags: Int) {
+        dest.writeInt(type)
         dest.writeLong(id)
         dest.writeString(name)
     }
 
-    protected constructor(parcel: Parcel) {
+    constructor(parcel: Parcel) {
+        parcel.readInt()
         id = parcel.readLong()
         name = parcel.readString() ?: ""
+    }
+
+    companion object {
+        @Keep
+        @JvmField
+        val CREATOR: Parcelable.Creator<BasePlaylist?> = object : Parcelable.Creator<BasePlaylist?> {
+            override fun createFromParcel(source: Parcel): BasePlaylist {
+                return when (source.readInt()) {
+                    PlaylistType.FILE -> { FilePlaylist(source) }
+                    PlaylistType.ABS_SMART -> { throw IllegalStateException("Instantiating abstract type of playlist") }
+                    PlaylistType.FAVORITE -> { FavoriteSongsPlaylist(source) }
+                    PlaylistType.LAST_ADDED -> { LastAddedPlaylist(source) }
+                    PlaylistType.HISTORY -> { HistoryPlaylist(source) }
+                    PlaylistType.MY_TOP_TRACK -> { MyTopTracksPlaylist(source) }
+                    PlaylistType.RANDOM -> { ShuffleAllPlaylist(source) }
+                    else -> { throw IllegalStateException("Unknown type of playlist") }
+                }
+            }
+            override fun newArray(size: Int): Array<BasePlaylist?> {
+                return arrayOfNulls(size)
+            }
+        }
     }
 }

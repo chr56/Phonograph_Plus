@@ -13,13 +13,13 @@ import android.text.Html
 import android.util.Log
 import android.widget.Toast
 import androidx.fragment.app.DialogFragment
-import util.mdcolor.pref.ThemeColor
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.WhichButton
 import com.afollestad.materialdialogs.actions.getActionButton
 import player.phonograph.R
-import player.phonograph.model.BasePlaylist
+import player.phonograph.model.FilePlaylist
 import player.phonograph.util.SAFCallbackHandlerActivity
+import util.mdcolor.pref.ThemeColor
 import util.phonograph.m3u.PlaylistsManager
 import java.lang.StringBuilder
 
@@ -29,13 +29,13 @@ import java.lang.StringBuilder
 class DeletePlaylistDialog : DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val attachedActivity: Activity = requireActivity()
-        val basePlaylists: List<BasePlaylist> = requireArguments().getParcelableArrayList("playlists")!!
-        val title: Int = if (basePlaylists.size > 1) { R.string.delete_playlists_title } else { R.string.delete_playlist_title }
+        val filePlaylists: List<FilePlaylist> = requireArguments().getParcelableArrayList("playlists")!!
+        val title: Int = if (filePlaylists.size > 1) { R.string.delete_playlists_title } else { R.string.delete_playlist_title }
 
         val msg = StringBuilder(
-            Html.fromHtml(resources.getQuantityString(R.plurals.msg_playlist_deletion_summary, basePlaylists.size, basePlaylists.size), Html.FROM_HTML_MODE_LEGACY)
+            Html.fromHtml(resources.getQuantityString(R.plurals.msg_playlist_deletion_summary, filePlaylists.size, filePlaylists.size), Html.FROM_HTML_MODE_LEGACY)
         )
-        basePlaylists.forEach { playlist ->
+        filePlaylists.forEach { playlist ->
             msg.append(playlist.name).appendLine()
         }
 
@@ -58,7 +58,7 @@ class DeletePlaylistDialog : DialogFragment() {
                 PlaylistsManager(
                     attachedActivity,
                     if (attachedActivity is SAFCallbackHandlerActivity) attachedActivity else null
-                ).deletePlaylistWithGuide(basePlaylists)
+                ).deletePlaylistWithGuide(filePlaylists)
             }
             .also {
                 // grant permission button for R
@@ -83,10 +83,10 @@ class DeletePlaylistDialog : DialogFragment() {
     companion object {
         private const val TAG = "DeletePlaylistDialog"
         @JvmStatic
-        fun create(basePlaylists: List<BasePlaylist>): DeletePlaylistDialog {
+        fun create(filePlaylists: List<FilePlaylist>): DeletePlaylistDialog {
             val dialog = DeletePlaylistDialog()
             val args = Bundle()
-            args.putParcelableArrayList("playlists", ArrayList(basePlaylists))
+            args.putParcelableArrayList("playlists", ArrayList(filePlaylists))
             dialog.arguments = args
             return dialog
         }

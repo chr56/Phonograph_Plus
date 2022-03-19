@@ -19,7 +19,7 @@ import kotlinx.coroutines.launch
 import player.phonograph.App
 import player.phonograph.BROADCAST_PLAYLISTS_CHANGED
 import player.phonograph.R
-import player.phonograph.model.BasePlaylist
+import player.phonograph.model.FilePlaylist
 import player.phonograph.model.PlaylistSong
 import player.phonograph.model.Song
 import player.phonograph.util.PlaylistsUtil
@@ -78,19 +78,19 @@ object LegacyPlaylistsUtil {
      * @return playlists failing to delete
      */
     @Deprecated("use SAF")
-    fun deletePlaylists(context: Context, basePlaylists: List<BasePlaylist>): List<BasePlaylist> {
+    fun deletePlaylists(context: Context, filePlaylists: List<FilePlaylist>): List<FilePlaylist> {
         var result: Int = 0
-        val failList: MutableList<BasePlaylist> = ArrayList()
+        val failList: MutableList<FilePlaylist> = ArrayList()
         // try to delete
-        for (index in basePlaylists.indices) {
+        for (index in filePlaylists.indices) {
             val output = context.contentResolver.delete(
                 MediaStore.Audio.Playlists.EXTERNAL_CONTENT_URI,
                 "${MediaStore.Audio.Media._ID} = ?",
-                arrayOf(basePlaylists[index].id.toString())
+                arrayOf(filePlaylists[index].id.toString())
             )
             if (output == 0) {
-                Log.w("LegacyPlaylistUtil", "fail to delete playlist ${basePlaylists[index].name}(id:${basePlaylists[index].id})")
-                failList.add(basePlaylists[index])
+                Log.w("LegacyPlaylistUtil", "fail to delete playlist ${filePlaylists[index].name}(id:${filePlaylists[index].id})")
+                failList.add(filePlaylists[index])
             }
             result += output
         }

@@ -21,6 +21,7 @@ import com.afollestad.materialdialogs.actions.getActionButton
 import kotlinx.coroutines.*
 import player.phonograph.R
 import player.phonograph.model.BasePlaylist
+import player.phonograph.model.FilePlaylist
 import player.phonograph.model.Song
 import player.phonograph.util.OpenDocumentContract
 import player.phonograph.util.PlaylistsUtil
@@ -88,10 +89,10 @@ object FileOperator {
     }
 
     // todo remove hardcode
-    fun appendToPlaylistViaSAF(songs: List<Song>, basePlaylist: BasePlaylist, removeDuplicated: Boolean, context: Context, safLauncher: SafLauncher) {
+    fun appendToPlaylistViaSAF(songs: List<Song>, filePlaylist: FilePlaylist, removeDuplicated: Boolean, context: Context, safLauncher: SafLauncher) {
         if (songs.isEmpty()) return
 
-        val rawPath = PlaylistsUtil.getPlaylistPath(context, basePlaylist)
+        val rawPath = PlaylistsUtil.getPlaylistPath(context, filePlaylist)
 
         val regex = "/(sdcard)|(storage/emulated)/\\d+/".toRegex()
         val path = regex.replace(rawPath.removePrefix(Environment.getExternalStorageDirectory().absolutePath), "")
@@ -109,7 +110,7 @@ object FileOperator {
                         // valid uri
                         val parsedUriPath = uri.path!!.substringAfter("/document/").substringAfter(":").substringAfter(":")
                         if (!parsedUriPath.contains(path.substringAfter('/'))) {
-                            val errorMsg = "${ context.getString(R.string.failed_to_save_playlist, basePlaylist.name) }: ${context.getString(R.string.file_incorrect)}" +
+                            val errorMsg = "${ context.getString(R.string.failed_to_save_playlist, filePlaylist.name) }: ${context.getString(R.string.file_incorrect)}" +
                                 " $path -> $parsedUriPath "
                             Log.e("appendToPlaylist", errorMsg)
                             coroutineToast(context, errorMsg, true)
@@ -122,16 +123,16 @@ object FileOperator {
                             coroutineToast(context, context.getString(R.string.success))
                         }
                     } catch (e: FileNotFoundException) {
-                        coroutineToast(context, context.getString(R.string.failed_to_save_playlist, basePlaylist.name) + ": ${uri.path} is not available")
+                        coroutineToast(context, context.getString(R.string.failed_to_save_playlist, filePlaylist.name) + ": ${uri.path} is not available")
                     } catch (e: IOException) {
-                        coroutineToast(context, context.getString(R.string.failed_to_save_playlist, basePlaylist.name) + ": Unknown!")
+                        coroutineToast(context, context.getString(R.string.failed_to_save_playlist, filePlaylist.name) + ": Unknown!")
                     }
                 }
             }
         }
     }
 
-    fun deletePlaylistsViaSAF(activity: Activity, basePlaylists: List<BasePlaylist>, treeUri: Uri) {
+    fun deletePlaylistsViaSAF(activity: Activity, filePlaylists: List<FilePlaylist>, treeUri: Uri) {
 
         GlobalScope.launch(Dispatchers.IO) {
             val folder = DocumentFile.fromTreeUri(activity, treeUri)
@@ -140,8 +141,8 @@ object FileOperator {
 
                 // get given playlist paths
                 val mediaStorePaths = coroutineScope.async {
-                    val paths: MutableList<String> = ArrayList(basePlaylists.size)
-                    basePlaylists.forEach {
+                    val paths: MutableList<String> = ArrayList(filePlaylists.size)
+                    filePlaylists.forEach {
                         paths.add(PlaylistsUtil.getPlaylistPath(activity, it))
                     }
                     return@async paths
@@ -150,7 +151,7 @@ object FileOperator {
                 val playlistInFolder = coroutineScope.async {
                     val deleteList: MutableList<DocumentFile> = ArrayList()
                     deleteList.addAll(
-                        PlaylistsUtil.searchPlaylist(activity, folder, basePlaylists)
+                        PlaylistsUtil.searchPlaylist(activity, folder, filePlaylists)
                     )
                     return@async deleteList
                 }
@@ -255,7 +256,7 @@ object FileOperator {
 
                 // todo remove hardcode
                 val regex = "/(sdcard)|(storage/emulated)/\\d+/".toRegex()
-                val rawPath = PlaylistsUtil.getPlaylistPath(context, basePlaylists[0])
+                val rawPath = PlaylistsUtil.getPlaylistPath(context, basePlaylists[0] as FilePlaylist)
                 val path = regex.replace(rawPath.removePrefix(Environment.getExternalStorageDirectory().absolutePath), "")
 
                 val parentFolderUri = Uri.parse(

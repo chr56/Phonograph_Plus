@@ -11,6 +11,7 @@ import player.phonograph.dialogs.DeletePlaylistDialog
 import player.phonograph.dialogs.RenamePlaylistDialog
 import player.phonograph.helper.MusicPlayerRemote
 import player.phonograph.model.BasePlaylist
+import player.phonograph.model.FilePlaylist
 import player.phonograph.util.SAFCallbackHandlerActivity
 import util.phonograph.m3u.PlaylistsManager
 
@@ -46,7 +47,7 @@ object PlaylistMenuHelper {
                 return true
             }
             R.id.action_delete_playlist -> {
-                DeletePlaylistDialog.create(listOf(basePlaylist)).show(
+                DeletePlaylistDialog.create(listOf(basePlaylist as FilePlaylist)).show(
                     activity.supportFragmentManager, "DELETE_PLAYLIST"
                 )
                 return true
