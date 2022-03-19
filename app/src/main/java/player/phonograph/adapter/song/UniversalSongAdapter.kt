@@ -30,6 +30,8 @@ import player.phonograph.helper.menu.SongMenuHelper
 import player.phonograph.helper.menu.SongsMenuHelper
 import player.phonograph.interfaces.CabHolder
 import player.phonograph.model.*
+import player.phonograph.model.playlist.FilePlaylist
+import player.phonograph.model.playlist.Playlist
 import player.phonograph.settings.Setting
 import player.phonograph.util.MusicUtil
 import player.phonograph.util.NavigationUtil
@@ -92,7 +94,7 @@ open class UniversalSongAdapter :
 
     var showSectionName: Boolean = true
 
-    var linkedPlaylist: BasePlaylist? = null
+    var linkedPlaylist: Playlist? = null
 
     var linkedAlbum: Album? = null
 

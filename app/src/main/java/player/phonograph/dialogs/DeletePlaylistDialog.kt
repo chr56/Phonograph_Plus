@@ -17,7 +17,7 @@ import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.WhichButton
 import com.afollestad.materialdialogs.actions.getActionButton
 import player.phonograph.R
-import player.phonograph.model.FilePlaylist
+import player.phonograph.model.playlist.FilePlaylist
 import player.phonograph.util.SAFCallbackHandlerActivity
 import util.mdcolor.pref.ThemeColor
 import util.phonograph.m3u.PlaylistsManager

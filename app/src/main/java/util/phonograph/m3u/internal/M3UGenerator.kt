@@ -11,8 +11,8 @@ import kotlinx.coroutines.launch
 import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.loader.PlaylistSongLoader
-import player.phonograph.model.AutoPlaylist
-import player.phonograph.model.BasePlaylist
+import player.phonograph.model.playlist.SmartPlaylist
+import player.phonograph.model.playlist.Playlist
 import player.phonograph.model.Song
 import player.phonograph.util.Util
 import java.io.*
@@ -26,13 +26,13 @@ object M3UGenerator {
     @JvmStatic
     @Deprecated("don not use File")
     @Throws(IOException::class)
-    fun writeFile(context: Context?, dir: File, basePlaylist: BasePlaylist): File {
+    fun writeFile(context: Context?, dir: File, playlist: Playlist): File {
         if (!dir.exists()) dir.mkdirs() //noinspection ResultOfMethodCallIgnored
 
-        val songs: List<Song> = basePlaylist.getSongs(context ?: App.instance)
+        val songs: List<Song> = playlist.getSongs(context ?: App.instance)
 
-        val filename: String = basePlaylist.name +
-            if (basePlaylist is AutoPlaylist) {
+        val filename: String = playlist.name +
+            if (playlist is SmartPlaylist) {
                 // Since AbsCustomPlaylists are dynamic, we add a timestamp after their names.
                 SimpleDateFormat("_yy-MM-dd_HH-mm", Locale.getDefault()).format(
                     Calendar.getInstance().time
@@ -57,13 +57,13 @@ object M3UGenerator {
     }
 
     @JvmStatic
-    fun generate(outputStream: OutputStream, context: Context?, basePlaylist: BasePlaylist, addHeader: Boolean) {
+    fun generate(outputStream: OutputStream, context: Context?, playlist: Playlist, addHeader: Boolean) {
 
         val songs: List<Song> =
-            if (basePlaylist is AutoPlaylist) {
-                basePlaylist.getSongs(context ?: App.instance)
+            if (playlist is SmartPlaylist) {
+                playlist.getSongs(context ?: App.instance)
             } else {
-                PlaylistSongLoader.getPlaylistSongList(context ?: App.instance, basePlaylist.id)
+                PlaylistSongLoader.getPlaylistSongList(context ?: App.instance, playlist.id)
             }
 
         if (songs.isNotEmpty()) {

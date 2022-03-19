@@ -7,10 +7,10 @@ import android.os.Bundle;
 import player.phonograph.appshortcuts.shortcuttype.LastAddedShortcutType;
 import player.phonograph.appshortcuts.shortcuttype.ShuffleAllShortcutType;
 import player.phonograph.appshortcuts.shortcuttype.TopTracksShortcutType;
-import player.phonograph.model.BasePlaylist;
-import player.phonograph.model.LastAddedPlaylist;
-import player.phonograph.model.MyTopTracksPlaylist;
-import player.phonograph.model.ShuffleAllPlaylist;
+import player.phonograph.model.playlist.Playlist;
+import player.phonograph.model.playlist.LastAddedPlaylist;
+import player.phonograph.model.playlist.MyTopTracksPlaylist;
+import player.phonograph.model.playlist.ShuffleAllPlaylist;
 import player.phonograph.service.MusicService;
 
 /**
@@ -59,7 +59,7 @@ public class AppShortcutLauncherActivity extends Activity {
         finish();
     }
 
-    private void startServiceWithPlaylist(int shuffleMode, BasePlaylist playlist) {
+    private void startServiceWithPlaylist(int shuffleMode, Playlist playlist) {
         Intent intent = new Intent(this, MusicService.class);
         intent.setAction(MusicService.ACTION_PLAY_PLAYLIST);
 

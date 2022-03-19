@@ -19,7 +19,7 @@ import kotlinx.coroutines.launch
 import player.phonograph.App
 import player.phonograph.BROADCAST_PLAYLISTS_CHANGED
 import player.phonograph.R
-import player.phonograph.model.FilePlaylist
+import player.phonograph.model.playlist.FilePlaylist
 import player.phonograph.model.PlaylistSong
 import player.phonograph.model.Song
 import player.phonograph.util.PlaylistsUtil

@@ -17,6 +17,7 @@ import player.phonograph.helper.menu.PlaylistMenuHelper
 import player.phonograph.helper.menu.SongsMenuHelper
 import player.phonograph.interfaces.MultiSelectionCabProvider
 import player.phonograph.model.*
+import player.phonograph.model.playlist.*
 import player.phonograph.util.FavoriteUtil
 import player.phonograph.util.NavigationUtil
 import player.phonograph.util.SAFCallbackHandlerActivity
@@ -30,10 +31,10 @@ import kotlin.collections.ArrayList
  */
 class PlaylistAdapter(
     private val activity: AppCompatActivity,
-    dataSet: List<BasePlaylist>,
+    dataSet: List<Playlist>,
     @param:LayoutRes private val itemLayoutRes: Int,
     cabProvider: MultiSelectionCabProvider?
-) : MultiSelectAdapter<PlaylistAdapter.ViewHolder, BasePlaylist>(
+) : MultiSelectAdapter<PlaylistAdapter.ViewHolder, Playlist>(
     activity, cabProvider
 ) {
 
@@ -71,7 +72,7 @@ class PlaylistAdapter(
                 holder.shortSeparator!!.visibility = View.GONE
             }
         } else {
-            if (holder.shortSeparator != null && dataSet[position] !is AutoPlaylist) {
+            if (holder.shortSeparator != null && dataSet[position] !is SmartPlaylist) {
                 holder.shortSeparator!!.visibility = View.VISIBLE
             }
         }
@@ -84,35 +85,35 @@ class PlaylistAdapter(
 
     override fun updateItemCheckStatus(datasetPosition: Int) = notifyItemChanged(datasetPosition)
 
-    private fun getIconRes(basePlaylist: BasePlaylist): Int = when {
-        basePlaylist is AutoPlaylist -> basePlaylist.iconRes
-        FavoriteUtil.isFavoritePlaylist(activity, basePlaylist) -> R.drawable.ic_favorite_white_24dp
+    private fun getIconRes(playlist: Playlist): Int = when {
+        playlist is SmartPlaylist -> playlist.iconRes
+        FavoriteUtil.isFavoritePlaylist(activity, playlist) -> R.drawable.ic_favorite_white_24dp
         else -> R.drawable.ic_queue_music_white_24dp
     }
 
     override fun getItemViewType(position: Int): Int =
-        if (dataSet[position] is AutoPlaylist) SMART_PLAYLIST else DEFAULT_PLAYLIST
+        if (dataSet[position] is SmartPlaylist) SMART_PLAYLIST else DEFAULT_PLAYLIST
 
     override fun getItemCount(): Int = dataSet.size
 
-    override fun getItem(datasetPosition: Int): BasePlaylist = dataSet[datasetPosition]
+    override fun getItem(datasetPosition: Int): Playlist = dataSet[datasetPosition]
 
-    override fun getName(obj: BasePlaylist): String = obj.name
+    override fun getName(obj: Playlist): String = obj.name
 
     override var multiSelectMenuRes: Int = R.menu.menu_playlists_selection
-    override fun onMultipleItemAction(menuItem: MenuItem, selection: List<BasePlaylist>) {
+    override fun onMultipleItemAction(menuItem: MenuItem, selection: List<Playlist>) {
         when (menuItem.itemId) {
             R.id.action_delete_playlist -> {
-                val basePlaylists: MutableList<BasePlaylist> = selection as MutableList<BasePlaylist>
-                for (playlist in basePlaylists) {
+                val playlists: MutableList<Playlist> = selection as MutableList<Playlist>
+                for (playlist in playlists) {
                     // todo
-                    if (playlist is AutoPlaylist && playlist is ResettablePlaylist) {
+                    if (playlist is SmartPlaylist && playlist is ResettablePlaylist) {
                         ClearSmartPlaylistDialog.create(playlist).show(activity.supportFragmentManager, "CLEAR_PLAYLIST_" + playlist.name.uppercase(Locale.ENGLISH))
-                        basePlaylists.remove(playlist) // then remove this AbsSmartPlaylist
+                        playlists.remove(playlist) // then remove this AbsSmartPlaylist
                     }
                 }
                 // the rest should be "normal" playlists
-                DeletePlaylistDialog.create(basePlaylists as List<FilePlaylist>)
+                DeletePlaylistDialog.create(playlists as List<FilePlaylist>)
                     .show(activity.supportFragmentManager, "DELETE_PLAYLIST")
             }
             R.id.action_save_playlist ->
@@ -127,9 +128,9 @@ class PlaylistAdapter(
         }
     }
 
-    private fun getSongList(basePlaylists: List<BasePlaylist>): List<Song> {
+    private fun getSongList(playlists: List<Playlist>): List<Song> {
         val songs: MutableList<Song> = ArrayList()
-        for (playlist in basePlaylists) {
+        for (playlist in playlists) {
             songs.addAll(playlist.getSongs(activity))
         }
         return songs
@@ -165,7 +166,7 @@ class PlaylistAdapter(
                     }
                     popupMenu.setOnMenuItemClickListener { item: MenuItem ->
                         if (item.itemId == R.id.action_clear_playlist) {
-                            if (playlist is AutoPlaylist) {
+                            if (playlist is SmartPlaylist) {
                                 ClearSmartPlaylistDialog.create(playlist).show(
                                     activity.supportFragmentManager,
                                     "CLEAR_SMART_PLAYLIST_" + playlist.name

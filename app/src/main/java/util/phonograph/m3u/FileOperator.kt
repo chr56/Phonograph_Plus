@@ -20,8 +20,8 @@ import com.afollestad.materialdialogs.WhichButton
 import com.afollestad.materialdialogs.actions.getActionButton
 import kotlinx.coroutines.*
 import player.phonograph.R
-import player.phonograph.model.BasePlaylist
-import player.phonograph.model.FilePlaylist
+import player.phonograph.model.playlist.Playlist
+import player.phonograph.model.playlist.FilePlaylist
 import player.phonograph.model.Song
 import player.phonograph.util.OpenDocumentContract
 import player.phonograph.util.PlaylistsUtil
@@ -210,7 +210,7 @@ object FileOperator {
         }
     }
 
-    fun createPlaylistsViaSAF(basePlaylists: List<BasePlaylist>, context: Context, safLauncher: SafLauncher) {
+    fun createPlaylistsViaSAF(playlists: List<Playlist>, context: Context, safLauncher: SafLauncher) {
 
         GlobalScope.launch(Dispatchers.IO) {
             while (safLauncher.openCallbackInUse) yield()
@@ -225,7 +225,7 @@ object FileOperator {
                                 val dir = DocumentFile.fromTreeUri(context, treeUri)
                                 if (dir != null && dir.isDirectory) {
 
-                                    basePlaylists.forEach { playlist ->
+                                    playlists.forEach { playlist ->
                                         val file = dir.createFile("audio/x-mpegurl", appendTimestampSuffix(playlist.name))
                                         if (file != null) {
                                             val outputStream = context.contentResolver.openOutputStream(file.uri)
@@ -256,7 +256,7 @@ object FileOperator {
 
                 // todo remove hardcode
                 val regex = "/(sdcard)|(storage/emulated)/\\d+/".toRegex()
-                val rawPath = PlaylistsUtil.getPlaylistPath(context, basePlaylists[0] as FilePlaylist)
+                val rawPath = PlaylistsUtil.getPlaylistPath(context, playlists[0] as FilePlaylist)
                 val path = regex.replace(rawPath.removePrefix(Environment.getExternalStorageDirectory().absolutePath), "")
 
                 val parentFolderUri = Uri.parse(

@@ -32,7 +32,7 @@ import player.phonograph.databinding.ActivityPlaylistEditorBinding
 import player.phonograph.helper.menu.PlaylistMenuHelper
 import player.phonograph.interfaces.CabHolder
 import player.phonograph.loader.PlaylistSongLoader
-import player.phonograph.model.BasePlaylist
+import player.phonograph.model.playlist.Playlist
 import player.phonograph.settings.Setting
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
 import player.phonograph.util.PhonographColorUtil
@@ -50,7 +50,7 @@ class PlaylistEditorActivity : AbsSlidingMusicPanelActivity() {
     private lateinit var empty: TextView
     private lateinit var cabStub: ViewStub
 
-    private lateinit var basePlaylist: BasePlaylist // init in OnCreate()
+    private lateinit var playlist: Playlist // init in OnCreate()
 
     private lateinit var adapter: PlaylistEditorAdapter
 
@@ -73,7 +73,7 @@ class PlaylistEditorActivity : AbsSlidingMusicPanelActivity() {
 
         Themer.setActivityToolbarColorAuto(this, mToolbar)
 
-        basePlaylist = intent.extras!!.getParcelable(PlaylistDetailActivity.EXTRA_PLAYLIST)!!
+        playlist = intent.extras!!.getParcelable(PlaylistDetailActivity.EXTRA_PLAYLIST)!!
 
         setUpRecyclerView()
 
@@ -95,7 +95,7 @@ class PlaylistEditorActivity : AbsSlidingMusicPanelActivity() {
         mToolbar.setBackgroundColor(ThemeColor.primaryColor(this))
         setSupportActionBar(mToolbar)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-        setToolbarTitle(basePlaylist.name)
+        setToolbarTitle(playlist.name)
     }
     private fun setToolbarTitle(title: String) {
         supportActionBar!!.title = title
@@ -114,7 +114,7 @@ class PlaylistEditorActivity : AbsSlidingMusicPanelActivity() {
         recyclerViewDragDropManager = RecyclerViewDragDropManager()
         val animator: GeneralItemAnimator = RefactoredDefaultItemAnimator()
         adapter = PlaylistEditorAdapter(
-            this, basePlaylist,
+            this, playlist,
             object : CabHolder {
                 override fun showCab(
                     menuRes: Int,
@@ -168,7 +168,7 @@ class PlaylistEditorActivity : AbsSlidingMusicPanelActivity() {
                 Toast.makeText(this, "Not available now", Toast.LENGTH_SHORT).show()
                 return true
             }
-            else -> PlaylistMenuHelper.handleMenuClick(this, basePlaylist, item)
+            else -> PlaylistMenuHelper.handleMenuClick(this, playlist, item)
         }
     }
 
@@ -199,17 +199,17 @@ class PlaylistEditorActivity : AbsSlidingMusicPanelActivity() {
     override fun onMediaStoreChanged() {
         super.onMediaStoreChanged()
         // Playlist deleted
-        if (!PlaylistsUtil.doesPlaylistExist(this, basePlaylist.id)) {
+        if (!PlaylistsUtil.doesPlaylistExist(this, playlist.id)) {
             finish()
             return
         }
         // Playlist renamed
-        val newPlaylistName = PlaylistsUtil.getNameForPlaylist(this, basePlaylist.id)
-        if (newPlaylistName != basePlaylist.name) {
+        val newPlaylistName = PlaylistsUtil.getNameForPlaylist(this, playlist.id)
+        if (newPlaylistName != playlist.name) {
             setToolbarTitle(newPlaylistName)
         }
 
         // refresh playlist content
-        adapter.playlistSongs = PlaylistSongLoader.getPlaylistSongList(this, basePlaylist.id)
+        adapter.playlistSongs = PlaylistSongLoader.getPlaylistSongList(this, playlist.id)
     }
 }

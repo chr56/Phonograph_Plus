@@ -9,8 +9,8 @@ import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.WhichButton
 import com.afollestad.materialdialogs.actions.getActionButton
 import player.phonograph.R
-import player.phonograph.model.AutoPlaylist
-import player.phonograph.model.ResettablePlaylist
+import player.phonograph.model.playlist.SmartPlaylist
+import player.phonograph.model.playlist.ResettablePlaylist
 import util.mdcolor.pref.ThemeColor
 /**
  * @author Karim Abou Zeid (kabouzeid)
@@ -18,7 +18,7 @@ import util.mdcolor.pref.ThemeColor
 // todo rename
 class ClearSmartPlaylistDialog : DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val playlist: AutoPlaylist = requireArguments().getParcelable("playlist")!!
+        val playlist: SmartPlaylist = requireArguments().getParcelable("playlist")!!
         val title = R.string.clear_playlist_title
         val content: CharSequence = Html.fromHtml(getString(R.string.clear_playlist_x, playlist.name))
         val dialog = MaterialDialog(requireActivity())
@@ -39,7 +39,7 @@ class ClearSmartPlaylistDialog : DialogFragment() {
     }
     companion object {
         @JvmStatic
-        fun create(playlist: AutoPlaylist): ClearSmartPlaylistDialog {
+        fun create(playlist: SmartPlaylist): ClearSmartPlaylistDialog {
             val dialog = ClearSmartPlaylistDialog()
             val args = Bundle()
             args.putParcelable("playlist", playlist)

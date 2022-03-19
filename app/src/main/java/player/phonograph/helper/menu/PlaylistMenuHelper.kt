@@ -10,8 +10,8 @@ import player.phonograph.dialogs.AddToPlaylistDialog
 import player.phonograph.dialogs.DeletePlaylistDialog
 import player.phonograph.dialogs.RenamePlaylistDialog
 import player.phonograph.helper.MusicPlayerRemote
-import player.phonograph.model.BasePlaylist
-import player.phonograph.model.FilePlaylist
+import player.phonograph.model.playlist.Playlist
+import player.phonograph.model.playlist.FilePlaylist
 import player.phonograph.util.SAFCallbackHandlerActivity
 import util.phonograph.m3u.PlaylistsManager
 
@@ -21,33 +21,33 @@ import util.phonograph.m3u.PlaylistsManager
 object PlaylistMenuHelper {
 
     @JvmStatic
-    fun handleMenuClick(activity: AppCompatActivity, basePlaylist: BasePlaylist, item: MenuItem): Boolean {
+    fun handleMenuClick(activity: AppCompatActivity, playlist: Playlist, item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.action_play -> {
                 MusicPlayerRemote.openQueue(
-                    ArrayList(basePlaylist.getSongs(activity)), 0, true
+                    ArrayList(playlist.getSongs(activity)), 0, true
                 )
                 return true
             }
             R.id.action_play_next -> {
-                MusicPlayerRemote.playNext(ArrayList(basePlaylist.getSongs(activity)))
+                MusicPlayerRemote.playNext(ArrayList(playlist.getSongs(activity)))
                 return true
             }
             R.id.action_add_to_current_playing -> {
-                MusicPlayerRemote.enqueue(ArrayList(basePlaylist.getSongs(activity)))
+                MusicPlayerRemote.enqueue(ArrayList(playlist.getSongs(activity)))
                 return true
             }
             R.id.action_add_to_playlist -> {
-                AddToPlaylistDialog.create(basePlaylist.getSongs(activity))
+                AddToPlaylistDialog.create(playlist.getSongs(activity))
                     .show(activity.supportFragmentManager, "ADD_PLAYLIST")
                 return true
             }
             R.id.action_rename_playlist -> {
-                RenamePlaylistDialog.create(basePlaylist.id).show(activity.supportFragmentManager, "RENAME_PLAYLIST")
+                RenamePlaylistDialog.create(playlist.id).show(activity.supportFragmentManager, "RENAME_PLAYLIST")
                 return true
             }
             R.id.action_delete_playlist -> {
-                DeletePlaylistDialog.create(listOf(basePlaylist as FilePlaylist)).show(
+                DeletePlaylistDialog.create(listOf(playlist as FilePlaylist)).show(
                     activity.supportFragmentManager, "DELETE_PLAYLIST"
                 )
                 return true
@@ -56,9 +56,9 @@ object PlaylistMenuHelper {
                 GlobalScope.launch(Dispatchers.Default) {
 
                     if (activity is SAFCallbackHandlerActivity) {
-                        PlaylistsManager(activity, activity).duplicatePlaylistViaSaf(basePlaylist)
+                        PlaylistsManager(activity, activity).duplicatePlaylistViaSaf(playlist)
                     } else {
-                        PlaylistsManager(activity, null).duplicatePlaylistViaSaf(basePlaylist)
+                        PlaylistsManager(activity, null).duplicatePlaylistViaSaf(playlist)
                     }
                 }
                 return true

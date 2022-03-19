@@ -23,8 +23,8 @@ import kotlinx.coroutines.withContext
 import legacy.phonograph.LegacyPlaylistsUtil
 import player.phonograph.App
 import player.phonograph.R
-import player.phonograph.model.BasePlaylist
-import player.phonograph.model.FilePlaylist
+import player.phonograph.model.playlist.Playlist
+import player.phonograph.model.playlist.FilePlaylist
 import player.phonograph.model.Song
 import player.phonograph.util.PlaylistsUtil
 import player.phonograph.util.SAFCallbackHandlerActivity
@@ -131,7 +131,7 @@ class PlaylistsManager(private val context: Context, requester: SAFCallbackHandl
         }
     }
 
-    fun duplicatePlaylistsViaSaf(filePlaylists: List<BasePlaylist>) {
+    fun duplicatePlaylistsViaSaf(filePlaylists: List<Playlist>) {
         GlobalScope.launch(Dispatchers.Default) {
 
             if (activity != null && safLauncher != null) {
@@ -144,13 +144,13 @@ class PlaylistsManager(private val context: Context, requester: SAFCallbackHandl
             }
         }
     }
-    fun duplicatePlaylistViaSaf(playlist: BasePlaylist) {
+    fun duplicatePlaylistViaSaf(playlist: Playlist) {
         val songs: List<Song> = playlist.getSongs(activity ?: App.instance)
 
         createPlaylist(appendTimestampSuffix(playlist.name), songs)
     }
 
-    private suspend fun legacySavePlaylists(filePlaylists: List<BasePlaylist>) {
+    private suspend fun legacySavePlaylists(filePlaylists: List<Playlist>) {
         var successes = 0
         var failures = 0
         var dir: String? = ""

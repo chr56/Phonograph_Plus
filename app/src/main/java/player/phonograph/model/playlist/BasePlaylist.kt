@@ -2,20 +2,21 @@
  * Copyright (c) 2022 chr_56 & Abou Zeid (kabouzeid) (original author)
  */
 
-package player.phonograph.model
+package player.phonograph.model.playlist
 
 import android.content.Context
 import android.os.Parcel
 import android.os.Parcelable
 import androidx.annotation.Keep
 import player.phonograph.PlaylistType
+import player.phonograph.model.Song
 import java.lang.IllegalStateException
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
  */
 
-sealed class BasePlaylist : Parcelable {
+sealed class Playlist : Parcelable {
 
     @JvmField
     val id: Long
@@ -41,7 +42,7 @@ sealed class BasePlaylist : Parcelable {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other == null || javaClass != other.javaClass) return false
-        val playlist = other as BasePlaylist
+        val playlist = other as Playlist
         return if (id != playlist.id) false else name == playlist.name
     }
 
@@ -64,8 +65,8 @@ sealed class BasePlaylist : Parcelable {
     companion object {
         @Keep
         @JvmField
-        val CREATOR: Parcelable.Creator<BasePlaylist?> = object : Parcelable.Creator<BasePlaylist?> {
-            override fun createFromParcel(source: Parcel): BasePlaylist {
+        val CREATOR: Parcelable.Creator<Playlist?> = object : Parcelable.Creator<Playlist?> {
+            override fun createFromParcel(source: Parcel): Playlist {
                 return when (source.readInt()) {
                     PlaylistType.FILE -> { FilePlaylist(source) }
                     PlaylistType.ABS_SMART -> { throw IllegalStateException("Instantiating abstract type of playlist") }
@@ -77,9 +78,23 @@ sealed class BasePlaylist : Parcelable {
                     else -> { throw IllegalStateException("Unknown type of playlist") }
                 }
             }
-            override fun newArray(size: Int): Array<BasePlaylist?> {
+            override fun newArray(size: Int): Array<Playlist?> {
                 return arrayOfNulls(size)
             }
         }
     }
 }
+
+
+interface EditablePlaylist : ResettablePlaylist {
+//    fun move()
+//    fun remove()
+//    fun add()
+//    fun todo
+}
+
+interface ResettablePlaylist {
+    fun clear(context: Context)
+}
+
+interface GeneratedPlaylist
