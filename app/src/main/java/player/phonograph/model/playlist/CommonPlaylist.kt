@@ -9,11 +9,13 @@ import android.os.Parcel
 import android.os.Parcelable
 import androidx.annotation.DrawableRes
 import androidx.annotation.Keep
+import legacy.phonograph.LegacyPlaylistsUtil
 import player.phonograph.PlaylistType
 import player.phonograph.R
 import player.phonograph.loader.PlaylistSongLoader
 import player.phonograph.model.Song
 import player.phonograph.util.PlaylistsUtil
+import util.phonograph.m3u.PlaylistsManager
 
 class FilePlaylist : Playlist, EditablePlaylist {
 
@@ -39,8 +41,20 @@ class FilePlaylist : Playlist, EditablePlaylist {
         @DrawableRes
         get() = R.drawable.ic_queue_music_white_24dp
 
+    override fun removeSong(context: Context, song: Song) =
+        LegacyPlaylistsUtil.removeFromPlaylist(context, song, id)
+
+    override fun appendSongs(context: Context, songs: List<Song>) {
+        PlaylistsManager(context, null).appendPlaylist(songs, this)
+    }
+    override fun appendSong(context: Context, song: Song) = appendSongs(context, listOf(song))
+
+    override fun moveSong(context: Context, song: Song, from: Int, to: Int) {
+        LegacyPlaylistsUtil.moveItem(context, id, from, to)
+    }
+
     override fun clear(context: Context) {
-        TODO()
+        PlaylistsManager(context, null).deletePlaylistWithGuide(listOf(this))
     }
 
     override fun equals(other: Any?): Boolean {

@@ -12,6 +12,7 @@ import player.phonograph.PlaylistType
 import player.phonograph.R
 import player.phonograph.model.Song
 import player.phonograph.provider.FavoriteSongsStore
+import player.phonograph.util.FavoriteUtil
 
 class FavoriteSongsPlaylist : SmartPlaylist, EditablePlaylist {
 
@@ -30,6 +31,20 @@ class FavoriteSongsPlaylist : SmartPlaylist, EditablePlaylist {
 
     override fun containsSong(context: Context, songId: Long): Boolean =
         FavoriteSongsStore.instance.contains(songId, "")
+
+    override fun removeSong(context: Context, song: Song) {
+        FavoriteUtil.toggleFavorite(context, song)
+    }
+
+    override fun moveSong(context: Context, song: Song, from: Int, to: Int) { } // meaningless
+
+    override fun appendSong(context: Context, song: Song) {
+        FavoriteUtil.toggleFavorite(context, song)
+    }
+
+    override fun appendSongs(context: Context, songs: List<Song>) {
+        for (song in songs) FavoriteUtil.toggleFavorite(context, song)
+    }
 
     override fun clear(context: Context) {
         FavoriteSongsStore.instance.clear()

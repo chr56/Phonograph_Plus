@@ -85,12 +85,18 @@ sealed class Playlist : Parcelable {
     }
 }
 
-
 interface EditablePlaylist : ResettablePlaylist {
-//    fun move()
-//    fun remove()
-//    fun add()
-//    fun todo
+    fun removeSong(context: Context, song: Song)
+    fun removeSongs(context: Context, songs: List<Song>) {
+        for (song in songs) { removeSong(context, song) }
+    }
+    fun appendSong(context: Context, song: Song)
+    fun appendSongs(context: Context, songs: List<Song>) {
+        for (song in songs) { appendSong(context, song) }
+    }
+    fun moveSong(context: Context, song: Song, from: Int, to: Int)
+//    fun insert(context: Context, song: Song, pos: Int)
+//    and more todo
 }
 
 interface ResettablePlaylist {
