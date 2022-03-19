@@ -7,10 +7,9 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import player.phonograph.R
 import player.phonograph.dialogs.AddToPlaylistDialog
-import player.phonograph.dialogs.DeletePlaylistDialog
+import player.phonograph.dialogs.ClearPlaylistDialog
 import player.phonograph.dialogs.RenamePlaylistDialog
 import player.phonograph.helper.MusicPlayerRemote
-import player.phonograph.model.playlist.FilePlaylist
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.util.SAFCallbackHandlerActivity
 import util.phonograph.m3u.PlaylistsManager
@@ -46,10 +45,8 @@ object PlaylistMenuHelper {
                 RenamePlaylistDialog.create(playlist.id).show(activity.supportFragmentManager, "RENAME_PLAYLIST")
                 return true
             }
-            R.id.action_delete_playlist -> {
-                DeletePlaylistDialog.create(listOf(playlist as FilePlaylist)).show(
-                    activity.supportFragmentManager, "DELETE_PLAYLIST"
-                )
+            R.id.action_delete_playlist, R.id.action_clear_playlist -> {
+                ClearPlaylistDialog.create(listOf(playlist)).show(activity.supportFragmentManager, "CLEAR_PLAYLIST")
                 return true
             }
             R.id.action_save_playlist -> {

@@ -11,8 +11,7 @@ import androidx.fragment.app.FragmentActivity
 import player.phonograph.R
 import player.phonograph.adapter.base.MediaEntryViewHolder
 import player.phonograph.adapter.base.MultiSelectAdapter
-import player.phonograph.dialogs.ClearSmartPlaylistDialog
-import player.phonograph.dialogs.DeletePlaylistDialog
+import player.phonograph.dialogs.ClearPlaylistDialog
 import player.phonograph.helper.menu.PlaylistMenuHelper
 import player.phonograph.helper.menu.SongsMenuHelper
 import player.phonograph.interfaces.MultiSelectionCabProvider
@@ -103,25 +102,7 @@ class PlaylistAdapter(
     override fun onMultipleItemAction(menuItem: MenuItem, selection: List<Playlist>) {
         when (menuItem.itemId) {
             R.id.action_delete_playlist -> {
-                val smart: MutableList<SmartPlaylist> = ArrayList()
-                val file: MutableList<FilePlaylist> = ArrayList()
-
-                for (playlist in selection) {
-                    when (playlist) {
-                        is SmartPlaylist -> {
-                            if (playlist is ResettablePlaylist)
-                                smart.add(playlist)
-                        }
-                        is FilePlaylist -> {
-                            file.add(playlist)
-                        }
-                    }
-                }
-                // todo
-                DeletePlaylistDialog.create(file).show(activity.supportFragmentManager, "DELETE_NORMAL_PLAYLIST")
-                smart.forEach {
-                    ClearSmartPlaylistDialog.create(it).show(activity.supportFragmentManager, "CLEAR_SMART_PLAYLIST")
-                }
+                ClearPlaylistDialog.create(selection).show(activity.supportFragmentManager, "DELETE_PLAYLISTS")
             }
             R.id.action_save_playlist ->
                 if (activity is SAFCallbackHandlerActivity) {
@@ -172,15 +153,6 @@ class PlaylistAdapter(
                         popupMenu.menu.findItem(R.id.action_clear_playlist).isVisible = false
                     }
                     popupMenu.setOnMenuItemClickListener { item: MenuItem ->
-                        if (item.itemId == R.id.action_clear_playlist) {
-                            if (playlist is SmartPlaylist) {
-                                ClearSmartPlaylistDialog.create(playlist).show(
-                                    activity.supportFragmentManager,
-                                    "CLEAR_SMART_PLAYLIST_" + playlist.name
-                                )
-                                return@setOnMenuItemClickListener true
-                            }
-                        }
                         PlaylistMenuHelper.handleMenuClick(
                             activity, dataSet[bindingAdapterPosition], item
                         )
