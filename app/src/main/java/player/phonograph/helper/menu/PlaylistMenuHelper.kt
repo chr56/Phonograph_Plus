@@ -1,7 +1,7 @@
 package player.phonograph.helper.menu
 
 import android.view.MenuItem
-import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.FragmentActivity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -10,8 +10,8 @@ import player.phonograph.dialogs.AddToPlaylistDialog
 import player.phonograph.dialogs.DeletePlaylistDialog
 import player.phonograph.dialogs.RenamePlaylistDialog
 import player.phonograph.helper.MusicPlayerRemote
-import player.phonograph.model.playlist.Playlist
 import player.phonograph.model.playlist.FilePlaylist
+import player.phonograph.model.playlist.Playlist
 import player.phonograph.util.SAFCallbackHandlerActivity
 import util.phonograph.m3u.PlaylistsManager
 
@@ -21,7 +21,7 @@ import util.phonograph.m3u.PlaylistsManager
 object PlaylistMenuHelper {
 
     @JvmStatic
-    fun handleMenuClick(activity: AppCompatActivity, playlist: Playlist, item: MenuItem): Boolean {
+    fun handleMenuClick(activity: FragmentActivity, playlist: Playlist, item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.action_play -> {
                 MusicPlayerRemote.openQueue(

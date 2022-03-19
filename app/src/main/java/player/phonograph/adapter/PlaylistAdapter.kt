@@ -7,7 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupMenu
 import androidx.annotation.LayoutRes
-import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.FragmentActivity
 import player.phonograph.R
 import player.phonograph.adapter.base.MediaEntryViewHolder
 import player.phonograph.adapter.base.MultiSelectAdapter
@@ -16,27 +16,28 @@ import player.phonograph.dialogs.DeletePlaylistDialog
 import player.phonograph.helper.menu.PlaylistMenuHelper
 import player.phonograph.helper.menu.SongsMenuHelper
 import player.phonograph.interfaces.MultiSelectionCabProvider
-import player.phonograph.model.*
+import player.phonograph.model.Song
 import player.phonograph.model.playlist.*
 import player.phonograph.util.FavoriteUtil
 import player.phonograph.util.NavigationUtil
 import player.phonograph.util.SAFCallbackHandlerActivity
 import util.mddesign.util.Util
 import util.phonograph.m3u.PlaylistsManager
-import java.util.*
-import kotlin.collections.ArrayList
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
  */
 class PlaylistAdapter(
-    private val activity: AppCompatActivity,
+    private val activity: FragmentActivity,
     dataSet: List<Playlist>,
-    @param:LayoutRes private val itemLayoutRes: Int,
+    itemLayoutRes: Int?,
     cabProvider: MultiSelectionCabProvider?
 ) : MultiSelectAdapter<PlaylistAdapter.ViewHolder, Playlist>(
     activity, cabProvider
 ) {
+
+    @LayoutRes
+    val itemLayoutRes: Int = itemLayoutRes ?: R.layout.item_list_single_row
 
     var dataSet = dataSet
         set(value) {
@@ -48,9 +49,7 @@ class PlaylistAdapter(
         setHasStableIds(true)
     }
 
-    override fun getItemId(position: Int): Long {
-        return dataSet[position].id
-    }
+    override fun getItemId(position: Int): Long = dataSet[position].id
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(activity).inflate(itemLayoutRes, parent, false)
@@ -104,17 +103,25 @@ class PlaylistAdapter(
     override fun onMultipleItemAction(menuItem: MenuItem, selection: List<Playlist>) {
         when (menuItem.itemId) {
             R.id.action_delete_playlist -> {
-                val playlists: MutableList<Playlist> = selection as MutableList<Playlist>
-                for (playlist in playlists) {
-                    // todo
-                    if (playlist is SmartPlaylist && playlist is ResettablePlaylist) {
-                        ClearSmartPlaylistDialog.create(playlist).show(activity.supportFragmentManager, "CLEAR_PLAYLIST_" + playlist.name.uppercase(Locale.ENGLISH))
-                        playlists.remove(playlist) // then remove this AbsSmartPlaylist
+                val smart: MutableList<SmartPlaylist> = ArrayList()
+                val file: MutableList<FilePlaylist> = ArrayList()
+
+                for (playlist in selection) {
+                    when (playlist) {
+                        is SmartPlaylist -> {
+                            if (playlist is ResettablePlaylist)
+                                smart.add(playlist)
+                        }
+                        is FilePlaylist -> {
+                            file.add(playlist)
+                        }
                     }
                 }
-                // the rest should be "normal" playlists
-                DeletePlaylistDialog.create(playlists as List<FilePlaylist>)
-                    .show(activity.supportFragmentManager, "DELETE_PLAYLIST")
+                // todo
+                DeletePlaylistDialog.create(file).show(activity.supportFragmentManager, "DELETE_NORMAL_PLAYLIST")
+                smart.forEach {
+                    ClearSmartPlaylistDialog.create(it).show(activity.supportFragmentManager, "CLEAR_SMART_PLAYLIST")
+                }
             }
             R.id.action_save_playlist ->
                 if (activity is SAFCallbackHandlerActivity) {
