@@ -76,7 +76,7 @@ open class AlbumAdapter(
     protected open fun getAlbumText(album: Album): String {
         return MusicUtil.buildInfoString(
             album.artistName,
-            MusicUtil.getSongCountString(activity, album.songs.size)
+            MusicUtil.getSongCountString(activity, album.songs?.size ?: -1)
         )
     }
 
@@ -167,7 +167,7 @@ open class AlbumAdapter(
     private fun getSongList(albums: List<Album>): List<Song> {
         val songs: MutableList<Song> = ArrayList()
         for (album in albums) {
-            songs.addAll(album.songs)
+            album.songs?.let { songs.addAll(it) }
         }
         return songs
     }
