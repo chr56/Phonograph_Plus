@@ -5,6 +5,7 @@ import android.os.Parcel
 import android.os.Parcelable
 import androidx.annotation.Keep
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.util.Pair
 import androidx.fragment.app.FragmentActivity
 import player.phonograph.App.Companion.instance
 import player.phonograph.helper.menu.SongsMenuHelper.handleMenuClick
@@ -87,7 +88,7 @@ class Album : Parcelable, Displayable {
     override fun clickHandler(): (FragmentActivity, Displayable, List<Displayable>?) -> Unit {
         return { fragmentActivity: FragmentActivity?, displayable: Displayable, queue: List<Displayable>? ->
             NavigationUtil.goToAlbum(
-                fragmentActivity!!, (displayable as Album).id, null
+                fragmentActivity!!, (displayable as Album).id
             ) // todo animate
         }
     }
