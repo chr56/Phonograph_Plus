@@ -6,30 +6,36 @@ package player.phonograph.ui.activities
 
 import android.content.Intent
 import android.graphics.Color
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.ImageView
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.graphics.BlendModeColorFilterCompat
 import androidx.core.graphics.BlendModeCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.afollestad.materialcab.*
+import com.bumptech.glide.Glide
 import com.h6ah4i.android.widget.advrecyclerview.animator.GeneralItemAnimator
 import com.h6ah4i.android.widget.advrecyclerview.animator.RefactoredDefaultItemAnimator
 import com.h6ah4i.android.widget.advrecyclerview.draggable.RecyclerViewDragDropManager
 import com.h6ah4i.android.widget.advrecyclerview.utils.WrapperAdapterUtils
 import kotlinx.coroutines.*
 import lib.phonograph.cab.*
-import lib.phonograph.cab.SelectCallback
 import player.phonograph.R
-import player.phonograph.adapter.song.UniversalSongAdapter
+import player.phonograph.adapter.display.Dashboard
+import player.phonograph.adapter.display.ListSheetAdapter
 import player.phonograph.databinding.ActivityPlaylistDetailBinding
+import player.phonograph.glide.PhonographColoredTarget
+import player.phonograph.glide.SongGlideRequest
 import player.phonograph.helper.MusicPlayerRemote
 import player.phonograph.helper.menu.PlaylistMenuHelper.handleMenuClick
 import player.phonograph.interfaces.MultiSelectionCabProvider
+import player.phonograph.model.Song
+import player.phonograph.model.playlist.FilePlaylist
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.model.playlist.SmartPlaylist
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
@@ -44,7 +50,7 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandle
 
     private lateinit var playlist: Playlist // init in OnCreate()
 
-    private lateinit var songAdapter: UniversalSongAdapter // init in OnCreate() -> setUpRecyclerView()
+    private lateinit var adapter: ListSheetAdapter<Song> // init in OnCreate() -> setUpRecyclerView()
     private var wrappedAdapter: RecyclerView.Adapter<*>? = null
     private var recyclerViewDragDropManager: RecyclerViewDragDropManager? = null
 
@@ -99,36 +105,32 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandle
 
         // Init (song)adapter
         if (playlist is SmartPlaylist) {
-            songAdapter = UniversalSongAdapter(
-                this,
+            adapter = ListSheetAdapter(
+                this, this,
                 ArrayList(),
-                UniversalSongAdapter.MODE_PLAYLIST_SMART,
+                Dashboard(playlist.name),
                 R.layout.item_list,
-                null
-            ).also {
-                it.linkedPlaylist = playlist
-            }
-            binding.recyclerView.adapter = songAdapter
+                R.layout.item_header_playlist,
+            ) { loadImageImpl = loadImage }
+            binding.recyclerView.adapter = adapter
         } else {
             recyclerViewDragDropManager = RecyclerViewDragDropManager()
             val animator: GeneralItemAnimator = RefactoredDefaultItemAnimator()
 
-            songAdapter = UniversalSongAdapter(
-                this,
+            adapter = ListSheetAdapter(
+                this, this,
                 ArrayList(),
-                UniversalSongAdapter.MODE_PLAYLIST_LOCAL,
+                Dashboard(playlist.name, path = PlaylistsUtil.getPlaylistPath(this, playlist as FilePlaylist)),
                 R.layout.item_list,
-                null
-            ).also {
-                it.linkedPlaylist = playlist
-            }
-            wrappedAdapter = recyclerViewDragDropManager!!.createWrappedAdapter(songAdapter)
+                R.layout.item_header_playlist,
+            ) { loadImageImpl = loadImage }
+            wrappedAdapter = recyclerViewDragDropManager!!.createWrappedAdapter(adapter)
             binding.recyclerView.adapter = wrappedAdapter
             binding.recyclerView.itemAnimator = animator
             recyclerViewDragDropManager!!.attachRecyclerView(binding.recyclerView)
         }
 
-        songAdapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
+        adapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
             override fun onChanged() {
                 super.onChanged()
                 checkIsEmpty()
@@ -138,7 +140,7 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandle
     }
 
     private fun checkIsEmpty() {
-        binding.empty.visibility = if (songAdapter.songs.isEmpty()) View.VISIBLE else View.GONE
+        binding.empty.visibility = if (adapter.dataset.isEmpty()) View.VISIBLE else View.GONE
     }
     private fun setToolbarTitle(title: String) {
         supportActionBar!!.title = title
@@ -153,7 +155,7 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandle
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.action_shuffle_playlist -> {
-                MusicPlayerRemote.openAndShuffleQueue(songAdapter.songs, true)
+                MusicPlayerRemote.openAndShuffleQueue(adapter.dataset, true)
                 return true
             }
             R.id.action_edit_playlist -> {
@@ -210,7 +212,8 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandle
             if (playlistName != playlist.name) {
                 playlist = PlaylistsUtil.getPlaylist(this, playlist.id)
                 setToolbarTitle(playlist.name)
-                songAdapter.linkedPlaylist = playlist
+                adapter.dashboard.name = playlist.name
+                adapter.updateDashboardText()
             }
         }
     }
@@ -256,7 +259,7 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandle
             while (!isRecyclerViewReady) yield()
             withContext(Dispatchers.Main) {
                 if (isRecyclerViewReady) {
-                    songAdapter.songs = songs
+                    adapter.dataset = songs
                 }
             }
         }
@@ -332,4 +335,22 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandle
         const val EXTRA_PLAYLIST = "extra_playlist"
         const val EDIT_PLAYLIST: Int = 100
     }
+
+    private val loadImage: (ImageView, Song) -> Unit =
+        { image: ImageView, song: Song ->
+            SongGlideRequest.Builder.from(Glide.with(this), song)
+                .checkIgnoreMediaStore(this)
+                .generatePalette(this).build()
+                .into(object : PhonographColoredTarget(image) {
+                    override fun onLoadCleared(placeholder: Drawable?) {
+                        super.onLoadCleared(placeholder)
+//                            setPaletteColors(defaultFooterColor, holder)
+                    }
+
+                    override fun onColorReady(color: Int) {
+//                            if (usePalette) setPaletteColors(color, holder)
+//                            else setPaletteColors(defaultFooterColor, holder)
+                    }
+                })
+        }
 }
