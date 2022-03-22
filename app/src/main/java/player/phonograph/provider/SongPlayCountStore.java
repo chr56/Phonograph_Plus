@@ -34,7 +34,6 @@ public class SongPlayCountStore extends SQLiteOpenHelper {
     @Nullable
     private static SongPlayCountStore sInstance = null;
 
-    public static final String DATABASE_NAME = "song_play_count.db";
     private static final int VERSION = 3;
 
     // interpolator curve applied for measuring the curve
@@ -65,7 +64,7 @@ public class SongPlayCountStore extends SQLiteOpenHelper {
     private boolean mDatabaseUpdated;
 
     public SongPlayCountStore(final Context context) {
-        super(context, DATABASE_NAME, null, VERSION);
+        super(context, DatabaseConstants.SONG_PLAY_COUNT_DB, null, VERSION);
 
         long msSinceEpoch = System.currentTimeMillis();
         mNumberOfWeeksSinceEpoch = (int) (msSinceEpoch / ONE_WEEK_IN_MS);

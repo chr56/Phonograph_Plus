@@ -27,13 +27,12 @@ import androidx.annotation.Nullable;
 public class HistoryStore extends SQLiteOpenHelper {
     private static final int MAX_ITEMS_IN_DB = 150;
 
-    public static final String DATABASE_NAME = "history.db";
     private static final int VERSION = 1;
     @Nullable
     private static HistoryStore sInstance = null;
 
     public HistoryStore(final Context context) {
-        super(context, DATABASE_NAME, null, VERSION);
+        super(context, DatabaseConstants.HISTORY_DB, null, VERSION);
     }
 
     @Override

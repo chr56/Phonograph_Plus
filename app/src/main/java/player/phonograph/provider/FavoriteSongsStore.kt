@@ -11,10 +11,12 @@ import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import player.phonograph.App
 import player.phonograph.model.Song
+import player.phonograph.provider.DatabaseConstants.FAVORITE_DB
 import player.phonograph.service.MusicService
 import player.phonograph.util.MediaStoreUtil
 
-class FavoriteSongsStore(context: Context = App.instance) : SQLiteOpenHelper(context, DATABASE_NAME, null, VERSION) {
+class FavoriteSongsStore(context: Context = App.instance) : SQLiteOpenHelper(context, FAVORITE_DB, null, VERSION) {
+
     override fun onCreate(db: SQLiteDatabase) {
         db.execSQL("CREATE TABLE IF NOT EXISTS $TABLE_NAME ($COLUMNS_ID LONG NOT NULL PRIMARY KEY, $COLUMNS_PATH TEXT NOT NULL, $COLUMNS_TITLE TEXT);")
     }
@@ -128,7 +130,6 @@ class FavoriteSongsStore(context: Context = App.instance) : SQLiteOpenHelper(con
 
     companion object {
         private const val VERSION = 1
-        private const val DATABASE_NAME = "favorite.db"
 
         private const val TABLE_NAME = "songs"
 

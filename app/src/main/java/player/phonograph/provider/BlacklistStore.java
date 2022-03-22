@@ -20,12 +20,11 @@ import java.util.List;
 
 public class BlacklistStore extends SQLiteOpenHelper {
     private static BlacklistStore sInstance = null;
-    public static final String DATABASE_NAME = "blacklist.db";
     private static final int VERSION = 1;
     private Context context;
 
     public BlacklistStore(final Context context) {
-        super(context, DATABASE_NAME, null, VERSION);
+        super(context, DatabaseConstants.BLACKLIST_DB, null, VERSION);
         this.context = context;
     }
 
