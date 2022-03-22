@@ -1,11 +1,20 @@
 package player.phonograph.ui.activities
 
 import android.os.Bundle
+import android.view.Menu
+import android.view.Menu.NONE
 import android.view.MenuItem
+import android.view.MenuItem.SHOW_AS_ACTION_NEVER
 import androidx.appcompat.widget.Toolbar
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import lib.phonograph.activity.ToolbarActivity
+import player.phonograph.App
 import player.phonograph.R
+import player.phonograph.provider.DatabaseManger
 import player.phonograph.ui.fragments.SettingsFragment
+import player.phonograph.util.Util
 import util.mdcolor.pref.ThemeColor
 import util.mddesign.core.Themer
 
@@ -35,10 +44,29 @@ class SettingsActivity : ToolbarActivity() {
         }
     }
 
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menu?.let { m ->
+            m.add(NONE, R.id.action_export_data, 0, "Export...").also {
+                it.setShowAsAction(SHOW_AS_ACTION_NEVER)
+            }
+        }
+
+        return true
+    }
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == android.R.id.home) {
-            onBackPressed()
-            return true
+        when (item.itemId) {
+            android.R.id.home -> {
+                onBackPressed()
+                return true
+            }
+            R.id.action_export_data -> {
+                CoroutineScope(Dispatchers.IO).launch {
+                    DatabaseManger(App.instance).exportDatabases()
+                    Util.coroutineToast(App.instance, R.string.success)
+                }
+                return true
+            }
         }
         return super.onOptionsItemSelected(item)
     }

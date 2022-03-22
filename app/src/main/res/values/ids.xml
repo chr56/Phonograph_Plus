@@ -11,4 +11,9 @@
 
     <item name="action_multi_select_adapter_check_all" type="id" />
     <item name="multi_selection_cab" type="id" />
+
+
+    <!-- Menu Items -->
+    <item name="action_export_data" type="id" />
+
 </resources>
