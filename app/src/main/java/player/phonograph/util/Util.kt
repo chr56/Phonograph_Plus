@@ -7,6 +7,9 @@ import android.content.Intent
 import android.content.res.Configuration
 import android.content.res.Resources
 import android.graphics.Point
+import android.icu.util.Calendar
+import android.icu.util.TimeZone
+import android.icu.util.ULocale
 import android.os.Build
 import android.util.TypedValue
 import android.view.*
@@ -32,7 +35,6 @@ object Util {
         return if (result)outValue.resourceId else 0
     }
 
-
     suspend fun coroutineToast(context: Context, text: String, longToast: Boolean = false) {
         withContext(Dispatchers.Main) {
             Toast.makeText(
@@ -45,6 +47,10 @@ object Util {
 
     fun sentPlaylistChangedLocalBoardCast() =
         LocalBroadcastManager.getInstance(App.instance).sendBroadcast(Intent(BROADCAST_PLAYLISTS_CHANGED))
+
+    val currentTimestamp: Long by lazy {
+        Calendar.getInstance(TimeZone.getDefault(), ULocale.getDefault()).timeInMillis
+    }
 
     @JvmStatic
     fun getActionBarSize(context: Context): Int {

@@ -5,6 +5,7 @@ import android.view.Menu
 import android.view.Menu.NONE
 import android.view.MenuItem
 import android.view.MenuItem.SHOW_AS_ACTION_NEVER
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.widget.Toolbar
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -15,6 +16,7 @@ import player.phonograph.R
 import player.phonograph.provider.DatabaseManger
 import player.phonograph.ui.fragments.SettingsFragment
 import player.phonograph.util.Util
+import player.phonograph.util.Util.currentTimestamp
 import util.mdcolor.pref.ThemeColor
 import util.mddesign.core.Themer
 
@@ -61,13 +63,19 @@ class SettingsActivity : ToolbarActivity() {
                 return true
             }
             R.id.action_export_data -> {
-                CoroutineScope(Dispatchers.IO).launch {
-                    DatabaseManger(App.instance).exportDatabases()
-                    Util.coroutineToast(App.instance, R.string.success)
-                }
+                launcher.launch("phonograph_plus_databases_$currentTimestamp.zip")
                 return true
             }
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    private val launcher = registerForActivityResult(ActivityResultContracts.CreateDocument()) {
+        it?.let { uri ->
+            CoroutineScope(Dispatchers.IO).launch {
+                DatabaseManger(App.instance).exportDatabases(uri)
+                Util.coroutineToast(App.instance, R.string.success)
+            }
+        }
     }
 }
