@@ -52,6 +52,14 @@ object Util {
         Calendar.getInstance(TimeZone.getDefault(), ULocale.getDefault()).timeInMillis
     }
 
+    fun Boolean.assertIfFalse(throwable: Throwable) {
+        if (!this) throw throwable
+    }
+
+    fun Boolean.assertIfTrue(throwable: Throwable) {
+        if (this) throw throwable
+    }
+
     @JvmStatic
     fun getActionBarSize(context: Context): Int {
         val typedValue = TypedValue()
