@@ -24,3 +24,5 @@
 -keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.glide.** {<init>(...);public <methods>;}
 -keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.settings.** {public <methods>;}
 -keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.notification.** {public <methods>;}
+
+-keepclassmembernames,allowoptimization class player.phonograph.provider.DatabaseManger
