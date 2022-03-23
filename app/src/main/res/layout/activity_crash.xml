@@ -40,7 +40,7 @@
                 android:layout_gravity="top"
                 android:text="@string/copy_to_clipboard" />
             <Button
-                android:id="@+id/clear_all_preference"
+                android:id="@id/action_clear_all_preference"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
                 android:layout_gravity="bottom"

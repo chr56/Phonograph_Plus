@@ -72,7 +72,7 @@ class CrashActivity : ToolbarActivity() {
         }
 
         // button "clear all preference"
-        val buttonReset = findViewById<Button>(R.id.clear_all_preference)
+        val buttonReset = findViewById<Button>(R.id.action_clear_all_preference)
         buttonReset.setOnClickListener {
             val dialog: MaterialDialog = MaterialDialog(this)
                 .title(R.string.clear_all_preference)

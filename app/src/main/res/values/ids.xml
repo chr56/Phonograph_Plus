@@ -3,6 +3,9 @@
     <item name="action_new_playlist" type="id" />
     <item name="action_show_lyrics" type="id" />
 
+
+    <item name="action_clear_all_preference" type="id" />
+
     <!-- main activity menu items id-->
     <item name="action_main_popup_window_menu" type="id" />
     <item name="action_search" type="id" />
