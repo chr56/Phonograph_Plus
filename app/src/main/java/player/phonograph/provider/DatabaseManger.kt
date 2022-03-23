@@ -23,7 +23,9 @@ class DatabaseManger(var context: Context) {
 
     fun exportDatabases(uri: Uri) {
         context.contentResolver.openFileDescriptor(uri, "w")?.fileDescriptor?.let { fileDescriptor ->
-            exportDatabasesImpl(FileOutputStream(fileDescriptor))
+            FileOutputStream(fileDescriptor).use {
+                exportDatabasesImpl(it)
+            }
         }
     }
 
@@ -37,8 +39,8 @@ class DatabaseManger(var context: Context) {
 
     private fun exportDatabasesImpl(fileOutputStream: FileOutputStream) {
         ZipOutputStream(fileOutputStream).use { zipOut ->
-            addToZipFile(zipOut, context.getDatabasePath(BLACKLIST_DB), BLACKLIST_DB)
             addToZipFile(zipOut, context.getDatabasePath(FAVORITE_DB), FAVORITE_DB)
+            addToZipFile(zipOut, context.getDatabasePath(BLACKLIST_DB), BLACKLIST_DB)
             addToZipFile(zipOut, context.getDatabasePath(HISTORY_DB), HISTORY_DB)
             addToZipFile(zipOut, context.getDatabasePath(SONG_PLAY_COUNT_DB), SONG_PLAY_COUNT_DB)
             addToZipFile(zipOut, context.getDatabasePath(MUSIC_PLAYBACK_STATE_DB), MUSIC_PLAYBACK_STATE_DB)
@@ -47,7 +49,9 @@ class DatabaseManger(var context: Context) {
 
     fun importDatabases(uri: Uri) {
         context.contentResolver.openFileDescriptor(uri, "r")?.fileDescriptor?.let { fd ->
-            importDatabaseImpl(FileInputStream(fd), context.cacheDir)
+            FileInputStream(fd).use {
+                importDatabaseImpl(it, context.cacheDir)
+            }
         }
     }
 
@@ -64,8 +68,8 @@ class DatabaseManger(var context: Context) {
 
     private fun replaceDatabaseFile(sourceDir: File) {
         if (sourceDir.exists() && sourceDir.isDirectory) {
-            moveFile(from = File(sourceDir, BLACKLIST_DB), to = context.getDatabasePath(BLACKLIST_DB))
             moveFile(from = File(sourceDir, FAVORITE_DB), to = context.getDatabasePath(FAVORITE_DB))
+            moveFile(from = File(sourceDir, BLACKLIST_DB), to = context.getDatabasePath(BLACKLIST_DB))
             moveFile(from = File(sourceDir, HISTORY_DB), to = context.getDatabasePath(HISTORY_DB))
             moveFile(from = File(sourceDir, SONG_PLAY_COUNT_DB), to = context.getDatabasePath(SONG_PLAY_COUNT_DB))
             moveFile(from = File(sourceDir, MUSIC_PLAYBACK_STATE_DB), to = context.getDatabasePath(MUSIC_PLAYBACK_STATE_DB))
@@ -74,8 +78,10 @@ class DatabaseManger(var context: Context) {
 
     private fun moveFile(from: File, to: File) {
         if (from.isDirectory || to.isDirectory) throw IllegalArgumentException("move dirs")
-        to.delete().assertIfFalse(IOException("Can't delete $BLACKLIST_DB"))
-        from.renameTo(to).assertIfFalse(IOException("Can't replace file"))
+        if (from.exists() && from.canWrite()) {
+            to.delete().assertIfFalse(IOException("Can't delete $BLACKLIST_DB"))
+            from.renameTo(to).assertIfFalse(IOException("Can't replace file $BLACKLIST_DB"))
+        }
     }
 
     private fun addToZipFile(destination: ZipOutputStream, file: File, entryName: String) {
@@ -92,10 +98,11 @@ class DatabaseManger(var context: Context) {
     }
 
     private fun extractZipFile(source: ZipInputStream, destinationDir: File) {
-        var entry: ZipEntry
+        var entry: ZipEntry?
         while (source.nextEntry.also { entry = it } != null) {
-            if (! entry.isDirectory) {
-                val file = File(destinationDir, entry.name)
+            if (entry == null) throw IOException("Zip file has no entry")
+            if (!entry!!.isDirectory) {
+                val file = File(destinationDir, entry!!.name)
                 FileOutputStream(file).use { fos ->
                     BufferedOutputStream(fos).use { outputStream ->
                         var len: Int
