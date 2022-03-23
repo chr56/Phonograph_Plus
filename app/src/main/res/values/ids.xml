@@ -15,5 +15,6 @@
 
     <!-- Menu Items -->
     <item name="action_export_data" type="id" />
+    <item name="action_import_data" type="id" />
 
 </resources>

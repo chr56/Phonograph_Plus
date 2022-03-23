@@ -15,6 +15,7 @@ import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.provider.DatabaseManger
 import player.phonograph.ui.fragments.SettingsFragment
+import player.phonograph.util.OpenDocumentContract
 import player.phonograph.util.Util
 import player.phonograph.util.Util.currentTimestamp
 import util.mdcolor.pref.ThemeColor
@@ -51,6 +52,9 @@ class SettingsActivity : ToolbarActivity() {
             m.add(NONE, R.id.action_export_data, 0, "Export...").also {
                 it.setShowAsAction(SHOW_AS_ACTION_NEVER)
             }
+            m.add(NONE, R.id.action_import_data, 0, "Import...").also {
+                it.setShowAsAction(SHOW_AS_ACTION_NEVER)
+            }
         }
 
         return true
@@ -63,17 +67,29 @@ class SettingsActivity : ToolbarActivity() {
                 return true
             }
             R.id.action_export_data -> {
-                launcher.launch("phonograph_plus_databases_$currentTimestamp.zip")
+                createLauncher.launch("phonograph_plus_databases_$currentTimestamp.zip")
+                return true
+            }
+            R.id.action_import_data -> {
+                openLauncher.launch(OpenDocumentContract.Cfg(null, arrayOf("application/zip")))
                 return true
             }
         }
         return super.onOptionsItemSelected(item)
     }
 
-    private val launcher = registerForActivityResult(ActivityResultContracts.CreateDocument()) {
+    private val createLauncher = registerForActivityResult(ActivityResultContracts.CreateDocument()) {
         it?.let { uri ->
             CoroutineScope(Dispatchers.IO).launch {
                 DatabaseManger(App.instance).exportDatabases(uri)
+                Util.coroutineToast(App.instance, R.string.success)
+            }
+        }
+    }
+    private val openLauncher = registerForActivityResult(OpenDocumentContract()) {
+        it?.let { uri ->
+            CoroutineScope(Dispatchers.IO).launch {
+                DatabaseManger(App.instance).importDatabases(uri)
                 Util.coroutineToast(App.instance, R.string.success)
             }
         }
