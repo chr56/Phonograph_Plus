@@ -49,10 +49,10 @@ class SettingsActivity : ToolbarActivity() {
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menu?.let { m ->
-            m.add(NONE, R.id.action_export_data, 0, "Export...").also {
+            m.add(NONE, R.id.action_export_data, 0, "${getString(R.string.export_)}${getString(R.string.databases)}").also {
                 it.setShowAsAction(SHOW_AS_ACTION_NEVER)
             }
-            m.add(NONE, R.id.action_import_data, 0, "Import...").also {
+            m.add(NONE, R.id.action_import_data, 0, "${getString(R.string.import_)}${getString(R.string.databases)}").also {
                 it.setShowAsAction(SHOW_AS_ACTION_NEVER)
             }
         }

@@ -365,6 +365,9 @@
     <string name="pref_header_compatibility">兼容性</string>
     <string name="pref_title_use_legacy_favorite_playlist_impl">使用旧式歌曲收藏机制</string>
     <string name="pref_summary_use_legacy_favorite_playlist_impl">开启后，收藏的歌曲将加至外部的m3u播放列表，而不是存于应用内部（需要手动导出）</string>
+    <string name="export_">导出</string>
+    <string name="import_">导入</string>
+    <string name="databases">数据库</string>
     <plurals name="msg_deletion_result">
         <item quantity="other">%1$d / %2$d 个项目删除成功</item>
     </plurals>

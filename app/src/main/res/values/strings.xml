@@ -379,6 +379,9 @@
     <string name="pref_header_compatibility">Compatibility</string>
     <string name="pref_title_use_legacy_favorite_playlist_impl">Use legacy favorite playlist mechanism</string>
     <string name="pref_summary_use_legacy_favorite_playlist_impl">If enable this, app will save favorite songs to a m3u playlist in Storage instead of saving favorite songs into the internal database of app.(You can  export the list manually.)</string>
+    <string name="export_">Export </string>
+    <string name="import_">Import </string>
+    <string name="databases">Databases</string>
     <plurals name="msg_deletion_result">
         <item quantity="one">%1$d / %2$d item was successfully deleted.</item>>
         <item quantity="other">%1$d / %2$d items were successfully deleted.</item>
