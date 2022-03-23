@@ -44,11 +44,14 @@ class ListSheetAdapter<I : Displayable>(
         set(value) {
             field = value
             notifyDataSetChanged()
-            dashboard.count = dataset.size
-            dashboard.duration = when (dataset[0]) {
-                is Song -> { MusicUtil.getTotalDuration(activity, dataset as List<Song>) }
-                else -> 0
-            } // todo
+            dashboard.count = value.size
+            if (value.isNotEmpty()) {
+                @Suppress("UNCHECKED_CAST")
+                dashboard.duration = when (value[0]) {
+                    is Song -> { MusicUtil.getTotalDuration(activity, dataset as List<Song>) }
+                    else -> 0
+                } // todo
+            }
         }
 
     var dashboard: Dashboard = dashboard
