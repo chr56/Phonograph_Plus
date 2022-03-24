@@ -101,7 +101,7 @@ class OpenDocumentContract : ActivityResultContract<OpenDocumentContract.Cfg, Ur
             }
         }
     }
-    override fun getSynchronousResult(context: Context, input: Cfg?): SynchronousResult<Uri?>? = null
+    override fun getSynchronousResult(context: Context, input: Cfg): SynchronousResult<Uri?>? = null
     override fun parseResult(resultCode: Int, intent: Intent?): Uri? {
         return if (intent == null || resultCode != Activity.RESULT_OK) null else intent.data
     }

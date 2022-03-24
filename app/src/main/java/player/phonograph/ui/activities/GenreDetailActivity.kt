@@ -96,7 +96,7 @@ class GenreDetailActivity :
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_genre_detail, menu)
         return super.onCreateOptionsMenu(menu)
     }

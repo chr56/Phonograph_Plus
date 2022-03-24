@@ -96,8 +96,8 @@ class CrashActivity : ToolbarActivity() {
         }
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menu?.let { m ->
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menu.let { m ->
             m.add(NONE, R.id.nav_settings, 0, getString(R.string.action_settings)).also {
                 it.setShowAsAction(SHOW_AS_ACTION_NEVER)
             }

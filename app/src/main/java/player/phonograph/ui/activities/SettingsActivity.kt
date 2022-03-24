@@ -54,8 +54,8 @@ class SettingsActivity : ToolbarActivity() {
         }
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menu?.let { m ->
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menu.let { m ->
             m.add(NONE, R.id.action_export_data, 1, "${getString(R.string.export_)}${getString(R.string.databases)}").also {
                 it.setShowAsAction(SHOW_AS_ACTION_NEVER)
             }

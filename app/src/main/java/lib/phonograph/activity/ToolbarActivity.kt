@@ -62,7 +62,7 @@ abstract class ToolbarActivity : PermissionActivity() {
     //
     // Menu (Tint)
     //
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
 //        MenuTinter.setMenuColor(this, getToolbar(), menu!!, MaterialColor.White._1000.asColor) //todo
         return super.onCreateOptionsMenu(menu)
     }

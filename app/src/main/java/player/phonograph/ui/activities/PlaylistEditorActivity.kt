@@ -149,7 +149,7 @@ class PlaylistEditorActivity : AbsSlidingMusicPanelActivity() {
         checkIsEmpty()
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_playlist_editor, menu)
         return super.onCreateOptionsMenu(menu)
     }
