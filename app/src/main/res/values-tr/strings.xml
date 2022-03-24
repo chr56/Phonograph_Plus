@@ -287,4 +287,47 @@
     <string name="finish_current_music_sleep_timer">Son şarkıyı bitir</string>
     <string name="dialog_ringtone_title">Zil sesi olarak ayarla</string>
     <string name="dialog_ringtone_message">Phonograph\'ın ses ayarlarını değiştirmesine izin ver</string>
+    <string name="night_mode">Gece Modu</string>
+    <string name="auto_mode_on">Otomatik Mod açık, lütfen kapatın ve tekrar deneyin!</string>
+    <string name="Permission_denied">İzin reddedildi!</string>
+    <string name="err_permission_storage">Depolama izni</string>
+    <string name="add_blacklist">Bunu kara listeye eklemek ister misin?</string>
+    <string name="minutes_short">%1$d dk</string>
+    <!-- use for tag -->
+    <string name="other_information">Diğer</string>
+    <string name="more_actions">Daha fazla</string>
+    <string name="crash">Uygulama çöktü!!</string>
+    <string name="copy_to_clipboard">panoya kopyala</string>
+    <string name="clear_all_preference">tüm uygulama ayarlarını temizle</string>
+    <string name="failed_to_delete">Silinemedi</string>
+    <string name="retry">Yeniden dene</string>
+    <string name="not_available_now">şuan kullanılamıyor</string>
+    <string name="check_upgrade">Check upgrade</string>
+    <string name="no_newer_version">Güncelleme yok!</string>
+    <string name="new_version">Yeni Sürüm!</string>
+    <string name="new_version_code">sürüm</string>
+    <string name="new_version_log">değişiklikler</string>
+    <string name="download">İndir</string>
+    <string name="tg_channel">Telegram Kanalı</string>
+    <string name="auto_check_upgrade">Güncellemeyi otomatik kontrol et</string>
+    <string name="auto_check_upgrade_summary">Daha yeni bir sürüm mevcutsa anında bir yükseltme iletişim kutusu açılır.</string>
+    <string name="edit">Düzenle…</string>
+    <string name="move_to_top">En üste çık</string>
+    <string name="move_to_bottom">En aşağıya taşı</string>
+    <string name="move_up">Yukarı taşı</string>
+    <string name="move_down">Aşağı indir</string>
+    <string name="refresh">Yenile</string>
+    <string name="upgrade_notification_name">Yükselt</string>
+    <string name="action_add_to_black_list">Kara listeye ekle</string>
+    <string name="sort_order_song">Şarkı</string>
+    <string name="sort_order_duration">Süre</string>
+    <string name="loading">Yükleniyor</string>
+    <string name="delete_with_saf">SAF ile sil</string>
+    <string name="file_incorrect">Dosya yanlış!</string>
+    <string name="pref_header_appearance">Görünüm</string>
+    <string name="pref_title_reset_home_pages_tab_config">Tüm sekmeleri sıfırla</string>
+    <string name="pref_summary_reset_home_pages_tab_config">Tüm kitaplık kategorileri varsayılana sıfırlanır.</string>
+    <string name="are_you_sure">Emin misin?</string>
+    <string name="original_author">Orijinal Yazar</string>
+
 </resources>
