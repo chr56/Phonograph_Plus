@@ -70,13 +70,6 @@
     <string name="deleted_x_songs">Видалено %1$d пісень.</string>
     <string name="playlist_exists">Список відтворення %1$s вже існує.</string>
     <string name="could_not_create_playlist">\u041d\u0435 \u0432\u0434\u0430\u043b\u043e\u0441\u044f \u0441\u0442\u0432\u043e\u0440\u0438\u0442\u0438 \u0441\u043f\u0438\u0441\u043e\u043a \u0432\u0456\u0434\u0442\u0432\u043e\u0440\u0435\u043d\u043d\u044f.</string>
-    <string name="delete_playlist_x"><![CDATA[Видалити список відтворення <b>%1$s</b>?]]></string>
-    <string name="clear_playlist_x"><![CDATA[\u041e\u0447\u0438\u0441\u0442\u0438\u0442\u0438 \u0441\u043f\u0438\u0441\u043e\u043a \u0432\u0456\u0434\u0442\u0432\u043e\u0440\u0435\u043d\u043d\u044f <b>%1$s</b>? \u0414\u0456\u044e \u043d\u0435 \u043c\u043e\u0436\u043d\u0430 \u0431\u0443\u0434\u0435 \u0441\u043a\u0430\u0441\u0443\u0432\u0430\u0442\u0438!]]></string>
-    <string name="delete_x_playlists"><![CDATA[Видалити списки відтворення <b>%1$d</b>?]]></string>
-    <string name="delete_song_x"><![CDATA[Видалити пісню <b>%1$s</b>?]]></string>
-    <string name="delete_x_songs"><![CDATA[Видалити <b>%1$d</b> пісень?]]></string>
-    <string name="remove_song_x_from_playlist"><![CDATA[Видалити пісню <b>%1$s</b> зі списку відтворення?]]></string>
-    <string name="remove_x_songs_from_playlist"><![CDATA[Видалити <b>%1$d</b> пісень зі списку відтворення?]]></string>
     <string name="delete_song_title">Видалити пісню</string>
     <string name="delete_songs_title">Видалити пісні</string>
     <string name="remove_song_from_playlist_title">Видалити пісню зі списку відтворення</string>
@@ -147,10 +140,6 @@
     <string name="update_image">Оновити зображення</string>
     <string name="playlist_empty_text">Порожній список відтворення</string>
     <string name="no_playlists">Немає списків відтворення</string>
-    <string name="no_albums">Немає альбомів</string>
-    <string name="no_songs">Немає пісень</string>
-    <string name="no_artists">Немає виконавців</string>
-    <string name="no_genres">Немає жанрів</string>
     <string name="empty">Порожньо</string>
     <string name="playlist_name_empty">Назва списку відтворення</string>
     <string name="song">Пісня</string>

@@ -70,13 +70,6 @@
     <string name="deleted_x_songs">נמחקו %1$d שירים</string>
     <string name="playlist_exists">רשימת ההשמעה %1$s כבר קיימת.</string>
     <string name="could_not_create_playlist">\u05dc\u05d0 \u05e0\u05d9\u05ea\u05df \u05dc\u05d9\u05e6\u05d5\u05e8 \u05e8\u05e9\u05d9\u05de\u05ea \u05e9\u05de\u05d9\u05e2\u05d4.</string>
-    <string name="delete_playlist_x"><![CDATA[האם ברצונך למחוק את רשימת השמיעה <b>%1$s</b>?]]></string>
-    <string name="clear_playlist_x"><![CDATA[\u05d4\u05d0\u05dd \u05dc\u05e0\u05e7\u05d5\u05ea \u05d0\u05ea \u05e8\u05e9\u05d9\u05de\u05ea \u05d4\u05e9\u05de\u05d9\u05e2\u05d4 <b>%1$s</b>? \u05dc\u05d0\u05d7\u05e8 \u05ea\u05d4\u05dc\u05d9\u05da \u05d6\u05d4 \u05dc\u05d0 \u05ea\u05d5\u05db\u05dc/\u05d9 \u05dc\u05d4\u05d7\u05d6\u05d9\u05e8 \u05d0\u05ea \u05d4\u05de\u05e6\u05d1 \u05dc\u05e7\u05d3\u05de\u05d5\u05ea\u05d5!]]></string>
-    <string name="delete_x_playlists"><![CDATA[האם ברצונך למחוק  <b>%1$d</b> רשימות השמיעה?]]></string>
-    <string name="delete_song_x"><![CDATA[למחוק את השיר <b>%1$s</b>?]]></string>
-    <string name="delete_x_songs"><![CDATA[למחוק <b>%1$d</b> שירים?]]></string>
-    <string name="remove_song_x_from_playlist"><![CDATA[למחוק את השיר <b>%1$s</b> מרשימת ההשמעה?]]></string>
-    <string name="remove_x_songs_from_playlist"><![CDATA[למחוק את השירים <b>%1$d</b> מרשימת ההשמעה?]]></string>
     <string name="delete_song_title">מחק שיר</string>
     <string name="delete_songs_title">מחק שירים</string>
     <string name="remove_song_from_playlist_title">מחיקת שיר מרשימת ההשמעה</string>
@@ -149,10 +142,6 @@
     <string name="update_image">עדכון תמונה</string>
     <string name="playlist_empty_text">רשימת השמעה ריקה</string>
     <string name="no_playlists">אין רשימות השמעה</string>
-    <string name="no_albums">אין אלבומים</string>
-    <string name="no_songs">אין שירים</string>
-    <string name="no_artists">אין אמנים</string>
-    <string name="no_genres">אין סגנונות</string>
     <string name="empty">ריק</string>
     <string name="playlist_name_empty">שם רשימת השמעה</string>
     <string name="song">שיר</string>

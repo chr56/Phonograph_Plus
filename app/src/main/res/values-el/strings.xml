@@ -70,14 +70,6 @@
     <string name="deleted_x_songs">Διεγράφησαν %1$d τραγούδια</string>
     <string name="playlist_exists">Η λίστα αναπαραγωγής %1$s υπάρχει ήδη.</string>
     <string name="could_not_create_playlist">\u0394\u03b5\u03bd \u03b5\u03af\u03bd\u03b1\u03b9 \u03b4\u03c5\u03bd\u03b1\u03c4\u03ae \u03b7 \u03b4\u03b7\u03bc\u03b9\u03bf\u03c5\u03c1\u03b3\u03af\u03b1 \u03bb\u03af\u03c3\u03c4\u03b1\u03c2 \u03b1\u03bd\u03b1\u03c0\u03b1\u03c1\u03b1\u03b3\u03c9\u03b3\u03ae\u03c2</string>
-    <string name="delete_playlist_x"><![CDATA[Διαγραφή της λίστας <b>%1$s</b>;]]></string>
-    <string name="clear_playlist_x"><![CDATA[\u0395\u03ba\u03ba\u03b1\u03b8\u03ac\u03c1\u03b9\u03c3\u03b7 \u03c4\u03b7\u03c2 \u03bb\u03af\u03c3\u03c4\u03b1\u03c2  <b>%1$s</b> ; (\u039c\u03b7 \u03b1\u03bd\u03b1\u03c3\u03c4\u03c1\u03ad\u03c8\u03b9\u03bc\u03bf!)]]></string>
-    <string name="delete_x_playlists"><![CDATA[Θα θέλατε να διαγράψετε <b>%1$d</b> λίστες αναπαραγωγής; 
-    ]]></string>
-    <string name="delete_song_x"><![CDATA[Θέλετε να διαγράψετε το τραγούδι <b>%1$s</b>;]]></string>
-    <string name="delete_x_songs"><![CDATA[Θέλετε να διαγράψετε <b>%1$d</b> τραγούδια;]]></string>
-    <string name="remove_song_x_from_playlist"><![CDATA[Να αφαιρεθεί το τραγούδι <b>%1$s</b> από τη λίστα αναπαραγωγής;]]></string>
-    <string name="remove_x_songs_from_playlist"><![CDATA[Να αφαιρεθούν <b>%1$d</b> τα τραγούδια από την λίστα αναπαραγωγής;]]></string>
     <string name="delete_song_title">Διαγραφή τραγουδιού</string>
     <string name="delete_songs_title">Διαγραφή τραγουδιών</string>
     <string name="remove_song_from_playlist_title">Διαγραφή από την λίστα</string>
@@ -143,9 +135,6 @@
     <string name="update_image">Ανανέωση εικόνας</string>
     <string name="playlist_empty_text">Άδεια λίστα αναπαραγωγής</string>
     <string name="no_playlists">Καμία λίστα</string>
-    <string name="no_albums">Δεν υπάρχουν άλμπουμ</string>
-    <string name="no_songs">Δεν υπάρχουν τραγούδια</string>
-    <string name="no_artists">Δεν υπάρχουν καλλιτέχνες</string>
     <string name="empty">Κενό</string>
     <string name="playlist_name_empty">Όνομα λίστας</string>
     <string name="song">Τραγούδι</string>

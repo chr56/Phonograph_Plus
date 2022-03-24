@@ -54,15 +54,6 @@
     <string name="updating">Uppdaterar ...</string>
     <string name="added_title_to_playing_queue">"Lagt till 1 titel till spellistan."</string>
     <string name="created_playlist_x">Spellista %1$s skapad</string>
-    <string name="delete_playlist_x"><![CDATA[
-Vill du radera spellistan <b>%1$s</b>?
-    ]]></string>
-    <string name="delete_song_x"><![CDATA[
-Vill du radera låten <b>%1$s</b>?
-    ]]></string>
-    <string name="delete_x_songs"><![CDATA[
-Vill du radera <b>%1$d</b> låtar?
-    ]]></string>
     <string name="delete_song_title">Radera låt</string>
     <string name="delete_songs_title">Radera låtar</string>
     <string name="rename_playlist_title">Döp om spellista</string>

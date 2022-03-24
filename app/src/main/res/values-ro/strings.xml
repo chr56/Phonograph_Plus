@@ -70,13 +70,6 @@
     <string name="deleted_x_songs">%1$d melodii șterse.</string>
     <string name="playlist_exists">Lista de redare %1$s există deja.</string>
     <string name="could_not_create_playlist">Nu s-a putut crea lista de redare.</string>
-    <string name="delete_playlist_x"><![CDATA[Doriți să ștergeți lista de redare <b>%1$s</b>?]]></string>
-    <string name="clear_playlist_x"><![CDATA[Sunte\u021bi sigur ca dori\u021bi s\u0103 \u015fterge\u0163i lista  <b>%1$s</b>? Aceasta ac\u021biune este ireversibil\u0103!]]></string>
-    <string name="delete_x_playlists"><![CDATA[Ştergeți <b>%1$d</b> liste?]]></string>
-    <string name="delete_song_x"><![CDATA[Ştergeți melodia <b>%1$s</b> ?]]></string>
-    <string name="delete_x_songs"><![CDATA[Ştergeți <b>%1$d</b> melodii?]]></string>
-    <string name="remove_song_x_from_playlist"><![CDATA[Ştergeți melodia <b>%1$s</b> din listă?]]></string>
-    <string name="remove_x_songs_from_playlist"><![CDATA[Scoateți <b>%1$d</b> melodii din playlist?]]></string>
     <string name="delete_song_title">Ștergeţi melodia</string>
     <string name="delete_songs_title">Ștergeţi melodiile</string>
     <string name="remove_song_from_playlist_title">Scoatere melodie din playlist</string>
@@ -146,10 +139,6 @@
     <string name="update_image">Actualizare imagine</string>
     <string name="playlist_empty_text">Listă goală</string>
     <string name="no_playlists">Nu sunt liste de redare</string>
-    <string name="no_albums">Nu sunt albume</string>
-    <string name="no_songs">Nu sunt melodii</string>
-    <string name="no_artists">Nu sunt artiști</string>
-    <string name="no_genres">Niciun gen</string>
     <string name="empty">Gol</string>
     <string name="playlist_name_empty">Nume listă</string>
     <string name="song">Melodie</string>

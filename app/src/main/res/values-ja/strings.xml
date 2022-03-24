@@ -70,13 +70,6 @@
     <string name="deleted_x_songs">%1$d曲削除しました</string>
     <string name="playlist_exists">%1$sは既に存在します</string>
     <string name="could_not_create_playlist">\u30d7\u30ec\u30a4\u30ea\u30b9\u30c8\u306e\u4f5c\u6210\u306b\u5931\u6557\u3057\u307e\u3057\u305f</string>
-    <string name="delete_playlist_x"><![CDATA[<b>%1$s</b> を削除してもよろしいですか？]]></string>
-    <string name="clear_playlist_x"><![CDATA[\u672c\u5f53\u306b\u30d7\u30ec\u30a4\u30ea\u30b9\u30c8 <b>%1$s</b> \u3092\u6d88\u53bb\u3057\u3066\u3082\u3088\u308d\u3057\u3044\u3067\u3059\u304b\uff1f\u3053\u306e\u64cd\u4f5c\u306f\u53d6\u308a\u6d88\u305b\u307e\u305b\u3093\uff01]]></string>
-    <string name="delete_x_playlists"><![CDATA[選択された<b>%1$d</b>つのプレイリストを削除してもよろしいですか？]]></string>
-    <string name="delete_song_x"><![CDATA[<b>%1$s</b> を削除してもよろしいですか？]]></string>
-    <string name="delete_x_songs"><![CDATA[選択された<b>%1$d</b>曲を削除してもよろしいですか？]]></string>
-    <string name="remove_song_x_from_playlist"><![CDATA[プレイリストから <b>%1$s</b> を除去してもよろしいですか？]]></string>
-    <string name="remove_x_songs_from_playlist"><![CDATA[選択された<b>%1$d</b>曲をプレイリストから除去してもよろしいですか？]]></string>
     <string name="delete_song_title">楽曲の削除</string>
     <string name="delete_songs_title">楽曲の複数削除</string>
     <string name="remove_song_from_playlist_title">プレイリストから曲を除去</string>
@@ -149,10 +142,6 @@
     <string name="update_image">アルバムアートを更新</string>
     <string name="playlist_empty_text">空のプレイリスト</string>
     <string name="no_playlists">プレイリストなし</string>
-    <string name="no_albums">アルバムなし</string>
-    <string name="no_songs">楽曲なし</string>
-    <string name="no_artists">アーティストなし</string>
-    <string name="no_genres">ジャンルなし</string>
     <string name="empty">空</string>
     <string name="playlist_name_empty">名前を入力…</string>
     <string name="song">タイトル</string>

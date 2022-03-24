@@ -73,11 +73,6 @@
     <string name="playlist_exists">Playlist %1$s already exists.</string>
     <string name="could_not_create_playlist">Couldn\u2019t create playlist.</string>
 
-    <string name="delete_playlist_x"><![CDATA[Delete the playlist <b>%1$s</b>?]]></string>
-    <string name="clear_playlist_x"><![CDATA[Clear the playlist <b>%1$s</b>? This can\u2019t be undone!]]></string>
-    <string name="delete_x_playlists"><![CDATA[Delete <b>%1$d</b> playlists?]]></string>
-    <string name="delete_song_x"><![CDATA[Delete the song <b>%1$s</b>?<br/>]]></string>
-    <string name="delete_x_songs"><![CDATA[Delete <b>%1$d</b> songs?]]></string>
     <plurals name="msg_song_deletion_summary">
         <item quantity="one"><![CDATA[Delete <b>%1$d</b> song from the device?<br/>]]></item>
         <item quantity="other"><![CDATA[Delete <b>%1$d</b> songs from the device?<br/>]]></item>
@@ -90,8 +85,6 @@
         <item quantity="one"><![CDATA[Delete <b>%1$d</b> playlist from the device?<br/>]]></item>
         <item quantity="other"><![CDATA[Delete <b>%1$d</b> playlist from the device?<br/>]]></item>
     </plurals>
-    <string name="remove_song_x_from_playlist"><![CDATA[Remove the song <b>%1$s</b> from the playlist?]]></string>
-    <string name="remove_x_songs_from_playlist"><![CDATA[Remove <b>%1$d</b> songs from the playlist?]]></string>
     <string name="delete_song_title">Delete song</string>
     <string name="delete_songs_title">Delete songs</string>
     <string name="remove_song_from_playlist_title">Remove song from playlist</string>
@@ -165,10 +158,6 @@
     <string name="update_image">Update image</string>
     <string name="playlist_empty_text">Empty playlist</string>
     <string name="no_playlists">No playlists</string>
-    <string name="no_albums">No albums</string>
-    <string name="no_songs">No songs</string>
-    <string name="no_artists">No artists</string>
-    <string name="no_genres">No genres</string>
     <string name="empty">Empty</string>
     <string name="playlist_name_empty">Playlist name</string>
     <string name="song">Song</string>

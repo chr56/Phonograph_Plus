@@ -32,7 +32,4 @@
             white-space: pre-wrap;
         }
     </string>
-    <string name="icon_base64" translatable="false">
-        UklGRhQDAABXRUJQVlA4TAgDAAAvX8AXEK+FoG3bhD/pK3umUZj/+ScQoAwpKHLbtkF2T+w3IG+AM0AdXuCtaYBQKACTEFV98AjseqChgTFBl0tmdNCRDUWTZqGf4Ts8to+r6w5wq4B8YhF2QLJt26bt7Gfbtm3bRmzbtp2ny7zYtuYXZu+DvVYtlYj+T4D4DzjpRipzHbiTzts4MJfO2hYAzjzODgOAJ5+xc//AW8BWwJIE3nyuYl/J4MlnquCHAp48ntph0J3H0iojcOdxdMgQ3Ln8+Nw0BlcuOwlvTcCVw00nTDtzmDlkDs4cViKfWABHDidtsNSRzchBa+DIYiP8kUVYyuKiBZY7cpjYbx3cOSyELdsAVw4HjX/tgDObgb2w15lNLsRjExxZ1Or/2gVHFrFdsH8pk1SQQwMsZlCq+a0DFjMI7YCeC+lkAhc0wUI6larfumA+nchW6DufRiLgvkaYS6NQ+UsnzKUS2Ay953K087+jGVy5ulX81A3OXM02QX9XrlZ+twjAkalT6Q8KWMrTaD1o3tHH96ZOP957b58+sXvTuomONH2Kv2vy8e6hFa2FycE+Qvu10HH5yECmnyDqe922X/e2N4QLwnlf7fl6fX1FgKC9AjZ+uLa6SJD3uWLHRsFh7hc7XhZyMAvDH5cdj78bwaUAej4XjZwdyAz1jyyauWMAg/RyP6sedgll8MpPqnvB5NZAOZcljDa9UaCZms9VxesCYbz7l+IAtZQPiklh9ohiIZBYM+TuUFPFX2Sf0oitUOwQ5i/LUEvsmKLLgm2KXmJXZX8rLZhQDBE7IftTbsGooofYlAxNFmxU1BFrUKyx4KTsazaxxLeya76mEl7LHEHExAXZ7yZTGyA/JKiPyXAnwkThG0ULufjnMhwNMJR4G/LbQeTEJgVOpRioug9lv6Af7VTg6ZqMf/zK9nyC8lIAA6LxmwJ4f/3IvmN3v0P9rkSwOGPA9O9BweROq35OCzZnv1ryolMw2jJnwfkSwWr0umUTS5OBgtu4sTPPfkq+PTjeEyVYTqweHFk13FcZI/5bBg==
-    </string>
 </resources>

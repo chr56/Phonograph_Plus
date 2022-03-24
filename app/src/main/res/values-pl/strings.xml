@@ -70,13 +70,6 @@
     <string name="deleted_x_songs">Usunięto %1$d utworów</string>
     <string name="playlist_exists">Lista %1$s już istnieje</string>
     <string name="could_not_create_playlist">Nie mo\u017cna utworzy\u0107 listy odtwarzania</string>
-    <string name="delete_playlist_x"><![CDATA[Usunąć listę odtwarzania <b>%1$s</b>?]]></string>
-    <string name="clear_playlist_x"><![CDATA[Wyczy\u015bci\u0107 list\u0119 odtwarzania <b>%1$s</b>? Operacja nie mo\u017ce zosta\u0107 cofni\u0119ta!]]></string>
-    <string name="delete_x_playlists"><![CDATA[Usunąć <b>%1$d</b> listy odtwarzania?]]></string>
-    <string name="delete_song_x"><![CDATA[Usunąć utwór <b>%1$s</b>?]]></string>
-    <string name="delete_x_songs"><![CDATA[Usunąć <b>%1$d</b> utworów?]]></string>
-    <string name="remove_song_x_from_playlist"><![CDATA[Usunąć <b>%1$s</b> z listy odtwarzania?]]></string>
-    <string name="remove_x_songs_from_playlist"><![CDATA[Usunąć <b>%1$d</b> z listy odtwarzania?]]></string>
     <string name="delete_song_title">Usuń utwór</string>
     <string name="delete_songs_title">Usuń utwory</string>
     <string name="remove_song_from_playlist_title">Usuń utwór z listy odtwarzania</string>
@@ -146,10 +139,6 @@
     <string name="update_image">Zmiana obrazu</string>
     <string name="playlist_empty_text">Lista odtwarzania jest pusta</string>
     <string name="no_playlists">Brak list odtwarzania</string>
-    <string name="no_albums">Brak albumów</string>
-    <string name="no_songs">Brak utworów</string>
-    <string name="no_artists">Brak wykonawców</string>
-    <string name="no_genres">Brak gatunków</string>
     <string name="empty">Pusto</string>
     <string name="playlist_name_empty">Nazwa listy odtwarzania</string>
     <string name="song">Utwór</string>

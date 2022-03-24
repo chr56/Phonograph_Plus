@@ -41,18 +41,6 @@
     <string name="added_title_to_playing_queue">"La 1 tittel til songkøen."</string>
     <string name="added_x_titles_to_playing_queue">La %1$d titlar til songkøen.</string>
     <string name="created_playlist_x">Oppretta speleliste %1$s</string>
-    <string name="delete_playlist_x"><![CDATA[
-        Ynskjer du å slette spelelista <b>%1$s</b>? 
-    ]]></string>
-    <string name="delete_x_playlists"><![CDATA[
-        Ynskjer du å slette spelelistene <b>%1$d</b>? 
-    ]]></string>
-    <string name="delete_song_x"><![CDATA[
-        Ynskjer du å slette songen <b>%1$s</b>? 
-    ]]></string>
-    <string name="delete_x_songs"><![CDATA[
-        Ynskjer du å slette <b>%1$d</b> songar? 
-    ]]></string>
     <string name="delete_song_title">Slett song</string>
     <string name="delete_songs_title">Slett songar</string>
     <string name="rename_playlist_title">Gje nytt namn til speleliste</string>

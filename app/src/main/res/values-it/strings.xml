@@ -70,13 +70,6 @@
     <string name="deleted_x_songs">%1$d brani eliminati.</string>
     <string name="playlist_exists">La playlist %1$s esiste già.</string>
     <string name="could_not_create_playlist">Impossibile creare la playlist.</string>
-    <string name="delete_playlist_x"><![CDATA[Eliminare la playlist <b>%1$s</b>?]]></string>
-    <string name="clear_playlist_x"><![CDATA[Vuoi svuotare la playlist <b>%1$s</b>? L\'operazione non pu\u00f2 essere annullata!]]></string>
-    <string name="delete_x_playlists"><![CDATA[Eliminare <b>%1$d</b> playlist?]]></string>
-    <string name="delete_song_x"><![CDATA[Eliminare il brano <b>%1$s</b>?]]></string>
-    <string name="delete_x_songs"><![CDATA[Eliminare <b>%1$d</b> brani?]]></string>
-    <string name="remove_song_x_from_playlist"><![CDATA[Rimuovere il brano <b>%1$s</b> dalla playlist?]]></string>
-    <string name="remove_x_songs_from_playlist"><![CDATA[Rimuovere <b>%1$d</b> brani dalla playlist?]]></string>
     <string name="delete_song_title">Elimina brano</string>
     <string name="delete_songs_title">Elimina brani</string>
     <string name="remove_song_from_playlist_title">Rimuovi brano dalla playlist</string>
@@ -149,10 +142,6 @@
     <string name="update_image">Aggiorna immagine</string>
     <string name="playlist_empty_text">Playlist vuota</string>
     <string name="no_playlists">Nessuna playlist</string>
-    <string name="no_albums">Nessun album</string>
-    <string name="no_songs">Nessun brano</string>
-    <string name="no_artists">Nessun artista</string>
-    <string name="no_genres">Nessun genere</string>
     <string name="empty">Vuoto</string>
     <string name="playlist_name_empty">Nome playlist</string>
     <string name="song">Brano</string>

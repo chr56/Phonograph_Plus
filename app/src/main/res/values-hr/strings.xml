@@ -70,13 +70,6 @@
     <string name="deleted_x_songs">Izbrisano %1$d pjesama.</string>
     <string name="playlist_exists">Popis naslova %1$s već postoji.</string>
     <string name="could_not_create_playlist">Nije mogu\u0107e stvoriti popis naslova.</string>
-    <string name="delete_playlist_x"><![CDATA[Izbrisati popis naslova <b>%1$s</b>?]]></string>
-    <string name="clear_playlist_x"><![CDATA[O\u010distiti popis naslova <b>%1$s</b>? Ovaj postupak se ne mo\u017ee poni\u0161titi!]]></string>
-    <string name="delete_x_playlists"><![CDATA[Izbrisati <b>%1$d</b> popisa naslova?]]></string>
-    <string name="delete_song_x"><![CDATA[Izbrisati pjesmu <b>%1$s</b>?]]></string>
-    <string name="delete_x_songs"><![CDATA[Izbrisati <b>%1$d</b> pjesme?]]></string>
-    <string name="remove_song_x_from_playlist"><![CDATA[Ukloniti pjesmu <b>%1$s</b> s popisa naslova?]]></string>
-    <string name="remove_x_songs_from_playlist"><![CDATA[Ukloniti pjesme <b>%1$d</b> s popisa naslova?]]></string>
     <string name="delete_song_title">Izbriši pjesmu</string>
     <string name="delete_songs_title">Izbriši pjesme</string>
     <string name="remove_song_from_playlist_title">Ukloni pjesmu s popisa naslova</string>
@@ -149,10 +142,6 @@
     <string name="update_image">Ažuriraj sliku</string>
     <string name="playlist_empty_text">Prazan popis naslova</string>
     <string name="no_playlists">Nema popisa naslova</string>
-    <string name="no_albums">Nema albuma</string>
-    <string name="no_songs">Nema pjesama</string>
-    <string name="no_artists">Nema izvođača</string>
-    <string name="no_genres">Nema žanrova</string>
     <string name="empty">Prazno</string>
     <string name="playlist_name_empty">Naziv popisa naslova</string>
     <string name="song">Pjesma</string>

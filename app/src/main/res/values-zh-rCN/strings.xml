@@ -71,11 +71,6 @@
     <string name="deleted_x_playlists">%1$d 个播放列表已删除</string>
     <string name="playlist_exists">播放列表 %1$s 已存在</string>
     <string name="could_not_create_playlist">无法创建播放列表</string>
-    <string name="delete_playlist_x"><![CDATA[是否删除播放列表 <b>%1$s</b>？]]></string>
-    <string name="clear_playlist_x"><![CDATA[是否清空播放列表 <b>%1$s</b> ？此操作无法撤销！]]></string>
-    <string name="delete_x_playlists"><![CDATA[是否删除 <b>%1$d</b> 个播放列表？]]></string>
-    <string name="delete_song_x"><![CDATA[是否删除歌曲 <b>%1$s</b>？]]></string>
-    <string name="delete_x_songs"><![CDATA[是否删除 <b>%1$d</b> 首歌曲？]]></string>
     <plurals name="msg_song_deletion_summary">
         <item quantity="other"><![CDATA[是否删除 <b>%1$d</b> 首歌曲?<br/>]]></item>
     </plurals>
@@ -85,8 +80,6 @@
     <plurals name="msg_playlist_deletion_summary">
         <item quantity="other"><![CDATA[是否删除 <b>%1$d</b> 个播放列表?<br/>]]></item>
     </plurals>
-    <string name="remove_song_x_from_playlist"><![CDATA[是否从播放列表中移除 <b>%1$s</b>？]]></string>
-    <string name="remove_x_songs_from_playlist"><![CDATA[是否从播放列表中移除 <b>%1$d</b> 首歌曲？]]></string>
     <string name="delete_song_title">删除歌曲</string>
     <string name="delete_songs_title">删除多首歌曲</string>
     <string name="remove_song_from_playlist_title">从播放列表中移除歌曲</string>
@@ -159,10 +152,6 @@
     <string name="update_image">更新图片</string>
     <string name="playlist_empty_text">播放列表为空</string>
     <string name="no_playlists">没有播放列表</string>
-    <string name="no_albums">没有专辑</string>
-    <string name="no_songs">没有歌曲</string>
-    <string name="no_artists">没有艺术家</string>
-    <string name="no_genres">没有流派</string>
     <string name="empty">空</string>
     <string name="playlist_name_empty">播放列表名称</string>
     <string name="song">歌曲</string>

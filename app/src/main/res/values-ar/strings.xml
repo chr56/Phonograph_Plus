@@ -70,13 +70,6 @@
     <string name="deleted_x_songs">تم حذف %1$d أغاني.</string>
     <string name="playlist_exists">قائمة التشغيل %1$s موجودة بالفعل.</string>
     <string name="could_not_create_playlist">\u0644\u0645 \u064a\u062a\u0645 \u0627\u0644\u062a\u0645\u0643\u0646 \u0645\u0646 \u0625\u0646\u0634\u0627\u0621 \u0642\u0627\u0626\u0645\u0629 \u0627\u0644\u062a\u0634\u063a\u064a\u0644.</string>
-    <string name="delete_playlist_x"><![CDATA[حذف قائمة التشغيل <b>%1$s</b>؟]]></string>
-    <string name="clear_playlist_x"><![CDATA[\u0645\u0633\u062d \u0642\u0627\u0626\u0645\u0629 \u0627\u0644\u062a\u0634\u063a\u064a\u0644 <b>%1$s</b>\u061f \u0644\u0627 \u064a\u0645\u0643\u0646 \u0627\u0644\u062a\u0631\u0627\u062c\u0639 \u0639\u0646 \u0630\u0644\u0643!]]></string>
-    <string name="delete_x_playlists"><![CDATA[حذف <b>%1$d</b> قوائم تشغيل؟]]></string>
-    <string name="delete_song_x"><![CDATA[حذف الأغنية <b>%1$s</b>؟]]></string>
-    <string name="delete_x_songs"><![CDATA[حذف <b>%1$d</b> أغاني؟]]></string>
-    <string name="remove_song_x_from_playlist"><![CDATA[إزالة الأغنية <b>%1$s</b> من قائمة التشغيل؟]]></string>
-    <string name="remove_x_songs_from_playlist"><![CDATA[إزالة <b>%1$d</b> أغاني من قائمة التشغيل؟]]></string>
     <string name="delete_song_title">حذف الأغنية</string>
     <string name="delete_songs_title">حذف الأغاني</string>
     <string name="remove_song_from_playlist_title">إزالة الأغنية من قائمة التشغيل</string>
@@ -149,10 +142,6 @@
     <string name="update_image">تحديث الصورة</string>
     <string name="playlist_empty_text">قائمة تشغيل فارغة</string>
     <string name="no_playlists">لا توجد قوائم تشغيل</string>
-    <string name="no_albums">لا توجد ألبومات</string>
-    <string name="no_songs">لا توجد أغاني</string>
-    <string name="no_artists">لا يوجد فنانون</string>
-    <string name="no_genres">لا توجد أنواع</string>
     <string name="empty">فارغ</string>
     <string name="playlist_name_empty">اسم قائمة التشغيل</string>
     <string name="song">الأغنية</string>
