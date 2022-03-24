@@ -92,7 +92,7 @@ class FavoriteSongsStore(context: Context = App.instance) : SQLiteOpenHelper(con
             values.put(COLUMNS_ID, song.id)
             values.put(COLUMNS_PATH, song.data)
             values.put(COLUMNS_TITLE, song.title)
-            values.put(COLUMNS_TIMESTAMP, currentTimestamp)
+            values.put(COLUMNS_TIMESTAMP, currentTimestamp())
 
             database.insert(TABLE_NAME, null, values)
 

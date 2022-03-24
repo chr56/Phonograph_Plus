@@ -77,7 +77,7 @@ class SettingsActivity : ToolbarActivity() {
                 return true
             }
             R.id.action_export_data -> {
-                createLauncher.launch("phonograph_plus_databases_$currentTimestamp.zip")
+                createLauncher.launch("phonograph_plus_databases_${currentTimestamp()}.zip")
                 return true
             }
             R.id.action_import_data -> {

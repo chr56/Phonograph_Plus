@@ -7,12 +7,11 @@ import android.content.Intent
 import android.content.res.Configuration
 import android.content.res.Resources
 import android.graphics.Point
-import android.icu.util.Calendar
-import android.icu.util.TimeZone
-import android.icu.util.ULocale
 import android.os.Build
 import android.util.TypedValue
-import android.view.*
+import android.view.View
+import android.view.Window
+import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.annotation.StringRes
@@ -22,6 +21,7 @@ import kotlinx.coroutines.withContext
 import player.phonograph.App
 import player.phonograph.BROADCAST_PLAYLISTS_CHANGED
 import player.phonograph.R
+import java.util.*
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
@@ -48,9 +48,8 @@ object Util {
     fun sentPlaylistChangedLocalBoardCast() =
         LocalBroadcastManager.getInstance(App.instance).sendBroadcast(Intent(BROADCAST_PLAYLISTS_CHANGED))
 
-    val currentTimestamp: Long by lazy {
-        Calendar.getInstance(TimeZone.getDefault(), ULocale.getDefault()).timeInMillis
-    }
+    fun currentDate(): Date = Calendar.getInstance(TimeZone.getDefault(), Locale.getDefault()).time
+    fun currentTimestamp(): Long = currentDate().time
 
     fun Boolean.assertIfFalse(throwable: Throwable) {
         if (!this) throw throwable

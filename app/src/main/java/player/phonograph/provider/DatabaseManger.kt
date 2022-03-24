@@ -31,7 +31,7 @@ class DatabaseManger(var context: Context) {
 
     fun exportDatabases(folder: String = "exported") {
         context.getExternalFilesDir(folder)?.let {
-            FileOutputStream(File(it, "phonograph_plus_databases_$currentTimestamp.zip")).use { fileOutputStream ->
+            FileOutputStream(File(it, "phonograph_plus_databases_${currentTimestamp()}.zip")).use { fileOutputStream ->
                 exportDatabasesImpl(fileOutputStream)
             }
         }

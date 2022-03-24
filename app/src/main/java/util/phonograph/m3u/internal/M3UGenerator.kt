@@ -11,9 +11,9 @@ import kotlinx.coroutines.launch
 import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.loader.PlaylistSongLoader
-import player.phonograph.model.playlist.SmartPlaylist
-import player.phonograph.model.playlist.Playlist
 import player.phonograph.model.Song
+import player.phonograph.model.playlist.Playlist
+import player.phonograph.model.playlist.SmartPlaylist
 import player.phonograph.util.Util
 import java.io.*
 import java.lang.StringBuilder
@@ -34,9 +34,7 @@ object M3UGenerator {
         val filename: String = playlist.name +
             if (playlist is SmartPlaylist) {
                 // Since AbsCustomPlaylists are dynamic, we add a timestamp after their names.
-                SimpleDateFormat("_yy-MM-dd_HH-mm", Locale.getDefault()).format(
-                    Calendar.getInstance().time
-                )
+                SimpleDateFormat("_yy-MM-dd_HH-mm", Locale.getDefault()).format(Util.currentDate())
             } else ""
 
         val file = File(dir, "$filename.$EXTENSION")
