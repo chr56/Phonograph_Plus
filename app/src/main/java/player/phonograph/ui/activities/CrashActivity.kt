@@ -4,12 +4,14 @@ import android.annotation.SuppressLint
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
-import android.os.Build
-import android.os.Bundle
-import android.os.Handler
-import android.os.Process
+import android.os.*
+import android.view.Menu
+import android.view.Menu.NONE
+import android.view.MenuItem
+import android.view.MenuItem.SHOW_AS_ACTION_NEVER
 import android.view.View
 import android.widget.Button
 import android.widget.TextView
@@ -17,11 +19,11 @@ import androidx.annotation.IntRange
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.WhichButton
 import com.afollestad.materialdialogs.actions.getActionButton
+import lib.phonograph.activity.ToolbarActivity
 import player.phonograph.App
 import player.phonograph.BuildConfig
 import player.phonograph.R
 import player.phonograph.settings.Setting
-import lib.phonograph.activity.ToolbarActivity
 import java.util.*
 import kotlin.system.exitProcess
 
@@ -94,6 +96,26 @@ class CrashActivity : ToolbarActivity() {
         }
     }
 
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menu?.let { m ->
+            m.add(NONE, R.id.nav_settings, 0, getString(R.string.action_settings)).also {
+                it.setShowAsAction(SHOW_AS_ACTION_NEVER)
+            }
+        }
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.nav_settings -> {
+                Handler(Looper.getMainLooper()).postDelayed({
+                    startActivity(Intent(this, SettingsActivity::class.java))
+                }, 80)
+                return true
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
     @Deprecated("abandoned")
     private fun collectData(): String {
         val pm: PackageManager = this.packageManager
@@ -176,7 +198,7 @@ class CrashActivity : ToolbarActivity() {
         fun getOsString(): String {
             val buffer: StringBuffer = StringBuffer()
 
-            // 
+            //
             // OS Name&version
             //
             System.getProperty("os.name")?.let { buffer.append(it).append(" ") }
