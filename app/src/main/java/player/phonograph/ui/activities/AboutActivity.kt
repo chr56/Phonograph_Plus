@@ -15,12 +15,7 @@ import android.widget.Toast
 import androidx.annotation.Keep
 import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.Toolbar
-import com.afollestad.materialdialogs.MaterialDialog
-import com.afollestad.materialdialogs.list.listItemsSingleChoice
 import de.psdev.licensesdialog.LicensesDialog
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import lib.phonograph.activity.ToolbarActivity
 import player.phonograph.App.Companion.instance
 import player.phonograph.BuildConfig
@@ -28,9 +23,8 @@ import player.phonograph.R
 import player.phonograph.Updater
 import player.phonograph.databinding.ActivityAboutBinding
 import player.phonograph.dialogs.ChangelogDialog
+import player.phonograph.dialogs.DebugDialog
 import player.phonograph.dialogs.UpgradeDialog
-import player.phonograph.notification.UpgradeNotification
-import player.phonograph.provider.DatabaseManger
 import player.phonograph.settings.Setting
 import player.phonograph.ui.activities.bugreport.BugReportActivity
 import player.phonograph.ui.activities.intro.AppIntroActivity
@@ -154,40 +148,6 @@ class AboutActivity : ToolbarActivity(), View.OnClickListener {
     }
 
     private fun setUpOnClickListeners() {
-        val debugMenuItem = listOf<String>("Crash the app", "Export DataBase", "Check Upgrade (Dialog)", "Check Upgrade (Notification)")
-        appIcon.setOnLongClickListener {
-            MaterialDialog(this)
-                .title(text = "Debug Menu")
-                .listItemsSingleChoice(items = debugMenuItem) { dialog: MaterialDialog, index: Int, text: CharSequence ->
-                    when (index) {
-                        0 -> throw Exception("Crash Test")
-                        1->{
-                            CoroutineScope(Dispatchers.IO).launch{
-                                DatabaseManger(this@AboutActivity).exportDatabases()
-                            }
-                        }
-                        2 -> {
-                            Updater.checkUpdate(callback = {
-                                UpgradeDialog.create(it).show(supportFragmentManager, "DebugDialog")
-                                if (Setting.instance.ignoreUpgradeVersionCode >= it.getInt(Updater.VERSIONCODE)) {
-                                    toast(getString(R.string.upgrade_ignored))
-                                }
-                            }, force = true)
-                        }
-                        3 -> {
-                            Updater.checkUpdate(callback = {
-                                UpgradeNotification.sendUpgradeNotification(it)
-                                if (Setting.instance.ignoreUpgradeVersionCode >= it.getInt(Updater.VERSIONCODE)) {
-                                    toast(getString(R.string.upgrade_ignored))
-                                }
-                            }, force = true)
-                        }
-                        else -> dialog.dismiss()
-                    }
-                }
-                .show()
-            return@setOnLongClickListener true
-        } // debug Menu
 
         changelog.setOnClickListener(this)
         checkUpgrade.setOnClickListener(this)
@@ -207,6 +167,11 @@ class AboutActivity : ToolbarActivity(), View.OnClickListener {
         eugeneCheungGitHub.setOnClickListener(this)
         eugeneCheungWebsite.setOnClickListener(this)
         adrianTwitter.setOnClickListener(this)
+
+        appIcon.setOnLongClickListener {
+            DebugDialog().show(supportFragmentManager, "DebugDialog")
+            return@setOnLongClickListener true
+        } // debug Menu
 
         binding.activityAboutMainContent.cardAuthorLayoutModifier.github.setOnClickListener(this)
     }
