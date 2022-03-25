@@ -60,7 +60,7 @@ android {
         release {
             minifyEnabled true
             shrinkResources true
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'old-proguard-rules.pro'
+            proguardFiles 'proguard-rules-base.pro','proguard-rules-app.pro'
 
             if (signing_file_exist) signingConfig signingConfigs.release
             applicationIdSuffix '.plus'
