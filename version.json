@@ -1,21 +1,21 @@
 {
-    "version": "0.1.1",
-    "versionCode": 105,
-    "logSummary": "\n<b>v0.1.1 2022.3.18\n</b>\n1. 修复 收藏(最爱)的播放列表导致的崩溃\n2. 修复 更新日志夜间模式失效\n3. 修复 快捷添加黑名单后卡死\n4. 新增 直接重置媒体库类别的设置条目\n5. 新增 分离简体中文和英语的更新日志与更新提示弹窗\n6. 改进 作者信息与翻译入口\n\n1. Fix: crashes caused by the favorite playlist\n2. Fix: changelog's night mode not working\n3. Fix: it gets stuck after adding a blacklist via shortcut\n4. Add: a setting entry for directly resetting the media library category\n5. Add: split changelog and update popup into Simplified Chinese version and English version\n6. Improve: author information and translation entrance in About",
+    "version": "0.1.2",
+    "versionCode": 106,
+    "logSummary": "\n<b>请更新至新版本,该日志即将不再提供给此版本\nUpdate Please! This log would no longer provided to this version.</b>\n<b>v0.1.2 2022.3.25\n</b>\n1. 新增 使用内部数据库存储最喜爱的歌曲（也可手动切换回原先以m3u播放列表文件形式存储在外置存储的方式）\n2. 新增 支持内部数据库导出与导入（实验性，位于设置页面右上角菜单）\n3. 新增 支持清除所有设置\n4. 新增 崩溃页面内可新增打开设置页面\n5. 改进 播放列表批量删除\n6. 翻译 更新土耳其翻译（由@TolDYuThad提供）\n7. 开发 清理代码&资源文件\n\n1. Add: Store favorite songs in internal databases (you can switch back to the original way of storing in external storage as m3u playlist files as well)\n2. Add: Internal databases export and import (experimental, in the upper right menu of the settings page)\n3. Add: Reset all settings\n4. Add: Directly open settings page in the crash page\n5. Improve: batch delete of playlists\n6. Translation: Update Turkish translation (by @TolDYuThad)\n7. Development: Cleanup code & resources",
     "downloadSources": [
         "LTS Github(v0.0.8.1)",
-        "Stable Github(v0.1.1)",
-        "Stable Github(v0.1.0)"
+        "Stable Github(v0.1.2)",
+        "Stable Github(v0.1.1)"
     ],
     "downloadUris": [
         "https://github.com/chr56/Phonograph_Plus/releases/tag/v0.0.8.1",
-        "https://github.com/chr56/Phonograph_Plus/releases/tag/v0.1.1",
-        "https://github.com/chr56/Phonograph_Plus/releases/tag/v0.1.0"
+        "https://github.com/chr56/Phonograph_Plus/releases/tag/v0.1.2",
+        "https://github.com/chr56/Phonograph_Plus/releases/tag/v0.1.1"
     ],
     "zh-cn": {
-        "logSummary": "\n<b>v0.1.1 2022.3.18\n</b>\n1. 修复 收藏(最爱)的播放列表导致的崩溃\n2. 修复 更新日志夜间模式失效\n3. 修复 快捷添加黑名单后卡死\n4. 新增 直接重置媒体库类别的设置条目\n5. 新增 分离简体中文和英语的更新日志与更新提示弹窗\n6. 改进 作者信息与翻译入口\n"
+        "logSummary": "\n<b>v0.1.2 2022.3.25\n</b>\n1. 新增 使用内部数据库存储最喜爱的歌曲（也可手动切换回原先以m3u播放列表文件形式存储在外置存储的方式）\n2. 新增 支持内部数据库导出与导入（实验性，位于设置页面右上角菜单）\n3. 新增 支持清除所有设置\n4. 新增 崩溃页面内可新增打开设置页面\n5. 改进 播放列表批量删除\n6. 翻译 更新土耳其翻译（由@TolDYuThad提供）\n7. 开发 清理代码&资源文件"
     },
     "en": {
-        "logSummary": "\n<b>v0.1.1 2022.3.18\n</b>\n1. Fix: crashes caused by the favorite playlist\n2. Fix: changelog's night mode not working\n3. Fix: it gets stuck after adding a blacklist via shortcut\n4. Add: a setting entry for directly resetting the media library category\n5. Add: split changelog and update popup into Simplified Chinese version and English version\n6. Improve: author information and translation entrance in About"
+        "logSummary": "\n<b>v0.1.2 2022.3.25\n</b>\n1. Add: Store favorite songs in internal databases (you can switch back to the original way of storing in external storage as m3u playlist files as well)\n2. Add: Internal databases export and import (experimental, in the upper right menu of the settings page)\n3. Add: Reset all settings\n4. Add: Directly open settings page in the crash page\n5. Improve: batch delete of playlists\n6. Translation: Update Turkish translation (by @TolDYuThad)\n7. Development: Cleanup code & resources"
     }
 }
