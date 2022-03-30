@@ -1,7 +1,6 @@
 package player.phonograph.dialogs
 
 import android.app.Dialog
-import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -19,40 +18,43 @@ import player.phonograph.model.lyrics2.DEFAULT_TITLE
  * @author Karim Abou Zeid (kabouzeid)
  */
 class LyricsDialog : DialogFragment() {
+    private lateinit var song: Song
+    private lateinit var lyrics: AbsLyrics
+
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        requireArguments().let {
+            song = it.getParcelable(SONG)!!
+            lyrics = it.getParcelable(LYRICS)!!
+        }
+        val title: String = if (lyrics.getTitle() != DEFAULT_TITLE) lyrics.getTitle() else song.title
 
-        val lines: Array<CharSequence> = requireArguments().getCharSequenceArray(LINE_ARRAY)!!
-        val timeStamps: IntArray = requireArguments().getIntArray(TIME_ARRAY)!!
-        var title: String = requireArguments().getString(TITTLE)!!
-        if (title.equals(DEFAULT_TITLE)) title = requireArguments().getString(SONG)!!
-
-        val dialog = MaterialDialog(activity as Context)
+        val dialog = MaterialDialog(requireActivity())
             .title(text = title)
             .positiveButton { dismiss() }
             .customView(R.layout.dialog_lyrics, horizontalPadding = true)
-        val recyclerView = dialog.getCustomView().findViewById<RecyclerView>(R.id.recycler_view_lyrics)
-        recyclerView.layoutManager = LinearLayoutManager(activity, RecyclerView.VERTICAL, false)
-        recyclerView.adapter = LyricsAdapter(requireActivity(), timeStamps, lines, dialog)
+
+        dialog.getCustomView()
+            .findViewById<RecyclerView>(R.id.recycler_view_lyrics)
+            .apply {
+                layoutManager = LinearLayoutManager(requireActivity(), RecyclerView.VERTICAL, false)
+                adapter = LyricsAdapter(requireActivity(), lyrics.getLyricsTimeArray(), lyrics.getLyricsLineArray(), dialog)
+            }
 
         return dialog
     }
 
     companion object {
-        private const val LINE_ARRAY = "lyrics lines array"
-        private const val TIME_ARRAY = "lyrics time stamp array"
-        private const val TITTLE = "title"
         private const val SONG = "song"
+        private const val LYRICS = "lyrics"
 
         @JvmStatic
-        fun create(lyrics: AbsLyrics, song: Song): LyricsDialog {
-            val dialog = LyricsDialog()
-            val args = Bundle()
-            args.putString(TITTLE, lyrics.getTitle() as String)
-            args.putString(SONG, song.title)
-            args.putIntArray(TIME_ARRAY, lyrics.getLyricsTimeArray())
-            args.putCharSequenceArray(LINE_ARRAY, lyrics.getLyricsLineArray())
-            dialog.arguments = args
-            return dialog
-        }
+        fun create(lyrics: AbsLyrics, song: Song): LyricsDialog =
+            LyricsDialog()
+                .apply {
+                    arguments = Bundle().apply {
+                        putParcelable(SONG, song)
+                        putParcelable(LYRICS, lyrics)
+                    }
+                }
     }
 }

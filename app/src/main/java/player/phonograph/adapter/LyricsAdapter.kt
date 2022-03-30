@@ -13,7 +13,7 @@ import player.phonograph.settings.Setting
 import player.phonograph.util.MusicUtil
 import java.util.regex.Pattern
 
-class LyricsAdapter(private val context: Activity, stamps: IntArray, lines: Array<CharSequence>, private val callbackDialog: Dialog? = null) :
+class LyricsAdapter(private val context: Activity, stamps: IntArray, lines: Array<String>, private val callbackDialog: Dialog? = null) :
     RecyclerView.Adapter<LyricsAdapter.VH>() {
     private var lyrics = lines
     private var timeStamps = stamps
