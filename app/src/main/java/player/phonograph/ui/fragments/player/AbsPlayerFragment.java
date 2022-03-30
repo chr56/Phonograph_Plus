@@ -54,27 +54,27 @@ public abstract class AbsPlayerFragment extends AbsMusicServiceFragment implemen
         final Song song = MusicPlayerRemote.getCurrentSong();
         switch (item.getItemId()) {
             case R.id.action_sleep_timer:
-                new SleepTimerDialog().show(getFragmentManager(), "SET_SLEEP_TIMER");
+                new SleepTimerDialog().show(requireActivity().getSupportFragmentManager(), "SET_SLEEP_TIMER");
                 return true;
             case R.id.action_toggle_favorite:
                 toggleFavorite(song);
                 return true;
             case R.id.action_share:
-                SongShareDialog.create(song).show(getFragmentManager(), "SHARE_SONG");
+                SongShareDialog.create(song).show(requireActivity().getSupportFragmentManager(), "SHARE_SONG");
                 return true;
             case R.id.action_equalizer:
-                NavigationUtil.openEqualizer(getActivity());
+                NavigationUtil.openEqualizer(requireActivity());
                 return true;
             case R.id.action_add_to_playlist:
-                List<Song> songs = new ArrayList<Song>();
+                List<Song> songs = new ArrayList<>();
                 songs.add(song);
-                AddToPlaylistDialog.create(songs).show(getFragmentManager(), "ADD_PLAYLIST");
+                AddToPlaylistDialog.create(songs).show(requireActivity().getSupportFragmentManager(), "ADD_PLAYLIST");
                 return true;
             case R.id.action_clear_playing_queue:
                 MusicPlayerRemote.clearQueue();
                 return true;
             case R.id.action_save_playing_queue:
-                CreatePlaylistDialog.create(MusicPlayerRemote.getPlayingQueue()).show(getActivity().getSupportFragmentManager(), "ADD_TO_PLAYLIST");
+                CreatePlaylistDialog.create(MusicPlayerRemote.getPlayingQueue()).show(requireActivity().getSupportFragmentManager(), "ADD_TO_PLAYLIST");
                 return true;
             case R.id.action_tag_editor:
                 Intent intent = new Intent(getActivity(), SongTagEditorActivity.class);
@@ -82,20 +82,20 @@ public abstract class AbsPlayerFragment extends AbsMusicServiceFragment implemen
                 startActivity(intent);
                 return true;
             case R.id.action_details:
-                SongDetailDialog.create(song).show(getFragmentManager(), "SONG_DETAIL");
+                SongDetailDialog.create(song).show(requireActivity().getSupportFragmentManager(), "SONG_DETAIL");
                 return true;
             case R.id.action_go_to_album:
-                NavigationUtil.goToAlbum(getActivity(), song.albumId);
+                NavigationUtil.goToAlbum(requireActivity(), song.albumId);
                 return true;
             case R.id.action_go_to_artist:
-                NavigationUtil.goToArtist(getActivity(), song.artistId);
+                NavigationUtil.goToArtist(requireActivity(), song.artistId);
                 return true;
         }
         return false;
     }
 
     protected void toggleFavorite(Song song) {
-        FavoriteUtil.toggleFavorite(getActivity(), song);
+        FavoriteUtil.toggleFavorite(requireActivity(), song);
     }
 
     protected boolean isToolbarShown() {

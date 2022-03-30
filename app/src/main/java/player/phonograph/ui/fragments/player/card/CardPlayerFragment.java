@@ -219,7 +219,7 @@ public class CardPlayerFragment extends AbsPlayerFragment implements PlayerAlbum
         switch (item.getItemId()) {
             case R.id.action_show_lyrics:
                 if (lyrics != null)
-                    LyricsDialog.create(lyrics, MusicPlayerRemote.getCurrentSong()).show(getFragmentManager(), "LYRICS");
+                    LyricsDialog.create(lyrics, MusicPlayerRemote.getCurrentSong()).show(requireActivity().getSupportFragmentManager(), "LYRICS");
                 return true;
         }
         return super.onMenuItemClick(item);
@@ -230,7 +230,7 @@ public class CardPlayerFragment extends AbsPlayerFragment implements PlayerAlbum
         final GeneralItemAnimator animator = new RefactoredDefaultItemAnimator();
 
         playingQueueAdapter = new PlayingQueueAdapter(
-                ((AppCompatActivity) getActivity()),
+                ((AppCompatActivity) requireActivity()),
                 MusicPlayerRemote.getPlayingQueue(),
                 MusicPlayerRemote.getPosition(),
                 R.layout.item_list,
@@ -340,7 +340,7 @@ public class CardPlayerFragment extends AbsPlayerFragment implements PlayerAlbum
     protected void toggleFavorite(Song song) {
         super.toggleFavorite(song);
         if (song.id == MusicPlayerRemote.getCurrentSong().id) {
-            if (FavoriteUtil.isFavorite(getActivity(), song)) {
+            if (FavoriteUtil.isFavorite(requireActivity(), song)) {
                 playerAlbumCoverFragment.showHeartAnimation();
             }
             updateIsFavorite();
@@ -506,13 +506,14 @@ public class CardPlayerFragment extends AbsPlayerFragment implements PlayerAlbum
                 }
             });
             currentSongViewHolder.menu.setOnClickListener(new SongMenuHelper.ClickMenuListener((AppCompatActivity) fragment.getActivity(), R.menu.menu_item_playing_queue_song) {
+                @NonNull
                 @Override
                 public Song getSong() {
                     return currentSong;
                 }
 
                 @Override
-                public boolean onMenuItemClick(MenuItem item) {
+                public boolean onMenuItemClick(@NonNull MenuItem item) {
                     switch (item.getItemId()) {
                         case R.id.action_remove_from_playing_queue:
                             MusicPlayerRemote.removeFromQueue(MusicPlayerRemote.getPosition());
