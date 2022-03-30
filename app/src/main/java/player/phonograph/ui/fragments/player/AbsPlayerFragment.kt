@@ -159,4 +159,11 @@ abstract class AbsPlayerFragment :
     companion object {
         private var isToolbarShown = true
     }
+
+    internal interface Impl {
+        fun init()
+        fun updateCurrentSong(song: Song)
+        fun animateColorChange(newColor: Int)
+        fun setUpPanelAndAlbumCoverHeight()
+    }
 }

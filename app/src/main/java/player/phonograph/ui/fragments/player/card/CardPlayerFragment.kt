@@ -361,13 +361,6 @@ class CardPlayerFragment :
         layoutManager!!.scrollToPositionWithOffset(MusicPlayerRemote.getPosition() + 1, 0)
     }
 
-    internal interface Impl {
-        fun init()
-        fun updateCurrentSong(song: Song)
-        fun animateColorChange(newColor: Int)
-        fun setUpPanelAndAlbumCoverHeight()
-    }
-
     private abstract class BaseImpl(protected var fragment: CardPlayerFragment) : Impl {
         fun createDefaultColorChangeAnimatorSet(newColor: Int): AnimatorSet {
             val backgroundAnimator: Animator = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
