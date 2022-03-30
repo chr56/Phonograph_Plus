@@ -33,6 +33,7 @@ import player.phonograph.helper.menu.SongMenuHelper.ClickMenuListener
 import player.phonograph.model.Song
 import player.phonograph.model.lyrics2.AbsLyrics
 import player.phonograph.model.lyrics2.LyricsLoader.loadLyrics
+import player.phonograph.model.lyrics2.getLyrics
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
 import player.phonograph.ui.fragments.player.AbsPlayerFragment
 import player.phonograph.ui.fragments.player.PlayerAlbumCoverFragment
@@ -41,7 +42,6 @@ import player.phonograph.util.ImageUtil
 import player.phonograph.util.MusicUtil
 import player.phonograph.util.Util.isLandscape
 import player.phonograph.util.ViewUtil
-import player.phonograph.util.getLyrics
 import player.phonograph.views.WidthFitSquareLayout
 import util.mdcolor.ColorUtil
 import util.mdcolor.pref.ThemeColor

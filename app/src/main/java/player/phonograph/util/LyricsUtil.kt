@@ -15,6 +15,7 @@ import player.phonograph.model.lyrics2.AbsLyrics
 import player.phonograph.model.lyrics2.LrcLyrics
 import player.phonograph.model.lyrics2.LyricsLoader.loadLyrics
 import player.phonograph.model.lyrics2.LyricsPack
+import player.phonograph.model.lyrics2.getLrcLyrics
 import player.phonograph.settings.Setting
 import java.io.File
 
@@ -40,32 +41,7 @@ class LyricsFetcher {
     }
 }
 
-// todo
-private fun getLrcLyrics(pack: LyricsPack): LrcLyrics? {
-    pack.embedded?.let {
-        if (it is LrcLyrics) return it
-    }
-    pack.external?.let {
-        if (it is LrcLyrics) return it
-    }
-    pack.externalWithSuffix?.let {
-        if (it is LrcLyrics) return it
-    }
-    return null
-}
-// todo
-fun getLyrics(pack: LyricsPack): AbsLyrics? {
-    pack.embedded?.let {
-        return it
-    }
-    pack.external?.let {
-        return it
-    }
-    pack.externalWithSuffix?.let {
-        return it
-    }
-    return null
-}
+
 
 /**
  * broadcast for "MIUI StatusBar Lyrics" Xposed module
