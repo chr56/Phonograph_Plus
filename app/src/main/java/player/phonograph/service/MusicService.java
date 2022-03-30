@@ -64,7 +64,7 @@ import player.phonograph.provider.MusicPlaybackQueueStore;
 import player.phonograph.provider.SongPlayCountStore;
 import player.phonograph.service.playback.Playback;
 import player.phonograph.settings.Setting;
-import player.phonograph.util.LyricsUtil;
+import player.phonograph.util.LyricsRefresher;
 import player.phonograph.util.MusicUtil;
 import player.phonograph.util.Util;
 
@@ -174,7 +174,7 @@ public class MusicService extends Service implements SharedPreferences.OnSharedP
 
     private Handler uiThreadHandler;
 
-    private LyricsUtil.LyricsRefresher refresher;
+    private LyricsRefresher refresher;
 
 
     private static String getTrackUri(@NonNull Song song) {
@@ -233,7 +233,7 @@ public class MusicService extends Service implements SharedPreferences.OnSharedP
 
         sendBroadcast(new Intent("player.phonograph.PHONOGRAPH_MUSIC_SERVICE_CREATED"));
 
-        refresher = new LyricsUtil.LyricsRefresher(Looper.myLooper(), this, Song.EMPTY_SONG);
+        refresher = new LyricsRefresher(Looper.myLooper(), this, Song.EMPTY_SONG);
     }
 
     private AudioManager getAudioManager() {

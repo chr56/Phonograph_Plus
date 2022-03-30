@@ -33,21 +33,23 @@ import player.phonograph.dialogs.SongShareDialog
 import player.phonograph.helper.MusicPlayerRemote
 import player.phonograph.helper.menu.SongMenuHelper.ClickMenuListener
 import player.phonograph.model.Song
-import player.phonograph.model.lyrics.AbsLyrics
+import player.phonograph.model.lyrics2.AbsLyrics
+import player.phonograph.model.lyrics2.LyricsLoader.loadLyrics
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
 import player.phonograph.ui.fragments.player.AbsPlayerFragment
 import player.phonograph.ui.fragments.player.PlayerAlbumCoverFragment
 import player.phonograph.util.FavoriteUtil.isFavorite
 import player.phonograph.util.ImageUtil
-import player.phonograph.util.LyricsUtil.fetchLyrics
 import player.phonograph.util.MusicUtil
 import player.phonograph.util.Util.isLandscape
 import player.phonograph.util.ViewUtil
+import player.phonograph.util.getLyrics
 import player.phonograph.views.WidthFitSquareLayout
 import util.mdcolor.ColorUtil
 import util.mdcolor.pref.ThemeColor
 import util.mddesign.util.ToolbarColorUtil
 import util.mddesign.util.Util
+import java.io.File
 
 class CardPlayerFragment :
     AbsPlayerFragment(),
@@ -255,7 +257,8 @@ class CardPlayerFragment :
             }
 
             override fun doInBackground(vararg params: Void): AbsLyrics? {
-                return fetchLyrics(song)
+                val pack = loadLyrics(File(song.data), song.title)
+                return getLyrics(pack)
             }
 
             override fun onPostExecute(l: AbsLyrics?) {

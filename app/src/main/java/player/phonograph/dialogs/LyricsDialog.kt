@@ -12,7 +12,8 @@ import com.afollestad.materialdialogs.customview.getCustomView
 import player.phonograph.R
 import player.phonograph.adapter.LyricsAdapter
 import player.phonograph.model.Song
-import player.phonograph.model.lyrics.AbsLyrics
+import player.phonograph.model.lyrics2.AbsLyrics
+import player.phonograph.model.lyrics2.DEFAULT_TITLE
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
@@ -23,7 +24,7 @@ class LyricsDialog : DialogFragment() {
         val lines: Array<CharSequence> = requireArguments().getCharSequenceArray(LINE_ARRAY)!!
         val timeStamps: IntArray = requireArguments().getIntArray(TIME_ARRAY)!!
         var title: String = requireArguments().getString(TITTLE)!!
-        if (title.equals(AbsLyrics.DEFAULT_TITLE)) title = requireArguments().getString(SONG)!!
+        if (title.equals(DEFAULT_TITLE)) title = requireArguments().getString(SONG)!!
 
         val dialog = MaterialDialog(activity as Context)
             .title(text = title)

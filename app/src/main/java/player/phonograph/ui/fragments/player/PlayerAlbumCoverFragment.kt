@@ -19,8 +19,8 @@ import player.phonograph.adapter.AlbumCoverPagerAdapter.AlbumCoverFragment.Color
 import player.phonograph.helper.MusicPlayerRemote
 import player.phonograph.helper.MusicProgressViewUpdateHelper
 import player.phonograph.misc.SimpleAnimatorListener
-import player.phonograph.model.lyrics.AbsLyrics
-import player.phonograph.model.lyrics.LyricsParsedSynchronized
+import player.phonograph.model.lyrics2.AbsLyrics
+import player.phonograph.model.lyrics2.LrcLyrics
 import player.phonograph.ui.fragments.AbsMusicServiceFragment
 import player.phonograph.settings.Setting
 import player.phonograph.util.ViewUtil
@@ -181,13 +181,13 @@ class PlayerAlbumCoverFragment :
     fun setCallbacks(listener: Callbacks) { callbacks = listener }
 
     override fun onUpdateProgressViews(progress: Int, total: Int) {
-        if ((!isLyricsLayoutVisible()) || (lyrics !is LyricsParsedSynchronized)) {
+        if ((!isLyricsLayoutVisible()) || (lyrics !is LrcLyrics)) {
             hideLyricsLayout()
             return
         }
 
         // Synchronized lyrics begin
-        val lyrics = lyrics as LyricsParsedSynchronized
+        val lyrics = lyrics as LrcLyrics
         lyricsLayout.visibility = View.VISIBLE
         lyricsLayout.alpha = 1f
 

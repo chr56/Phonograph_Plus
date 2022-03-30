@@ -31,19 +31,23 @@ import player.phonograph.dialogs.SongShareDialog
 import player.phonograph.helper.MusicPlayerRemote
 import player.phonograph.helper.menu.SongMenuHelper.ClickMenuListener
 import player.phonograph.model.Song
-import player.phonograph.model.lyrics.AbsLyrics
+import player.phonograph.model.lyrics2.AbsLyrics
+import player.phonograph.model.lyrics2.LyricsLoader.loadLyrics
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
 import player.phonograph.ui.fragments.player.AbsPlayerFragment
 import player.phonograph.ui.fragments.player.PlayerAlbumCoverFragment
-import player.phonograph.util.*
 import player.phonograph.util.FavoriteUtil.isFavorite
-import player.phonograph.util.LyricsUtil.fetchLyrics
+import player.phonograph.util.ImageUtil
+import player.phonograph.util.MusicUtil
 import player.phonograph.util.Util.isLandscape
+import player.phonograph.util.ViewUtil
+import player.phonograph.util.getLyrics
 import player.phonograph.views.WidthFitSquareLayout
 import util.mdcolor.ColorUtil
 import util.mdcolor.pref.ThemeColor
 import util.mddesign.util.ToolbarColorUtil
 import util.mddesign.util.Util
+import java.io.File
 
 class FlatPlayerFragment :
     AbsPlayerFragment(),
@@ -59,8 +63,8 @@ class FlatPlayerFragment :
 
     private lateinit var impl: Impl
 
-    private lateinit var playbackControlsFragment: FlatPlayerPlaybackControlsFragment //setUpSubFragments()
-    private lateinit var playerAlbumCoverFragment: PlayerAlbumCoverFragment //setUpSubFragments()
+    private lateinit var playbackControlsFragment: FlatPlayerPlaybackControlsFragment // setUpSubFragments()
+    private lateinit var playerAlbumCoverFragment: PlayerAlbumCoverFragment // setUpSubFragments()
     private var layoutManager: LinearLayoutManager? = null
     private var playingQueueAdapter: PlayingQueueAdapter? = null
     private var wrappedAdapter: RecyclerView.Adapter<*>? = null
@@ -247,7 +251,8 @@ class FlatPlayerFragment :
             }
 
             override fun doInBackground(vararg params: Void): AbsLyrics? {
-                return fetchLyrics(song)
+                val pack = loadLyrics(File(song.data), song.title)
+                return getLyrics(pack)
             }
 
             override fun onPostExecute(l: AbsLyrics?) {
@@ -344,7 +349,7 @@ class FlatPlayerFragment :
     private abstract class BaseImpl(protected var fragment: FlatPlayerFragment) : Impl {
         fun createDefaultColorChangeAnimatorSet(newColor: Int): AnimatorSet {
             val backgroundAnimator =
-                ViewUtil.createBackgroundColorTransition(fragment.playbackControlsFragment .view, fragment.paletteColor, newColor)
+                ViewUtil.createBackgroundColorTransition(fragment.playbackControlsFragment.view, fragment.paletteColor, newColor)
             val statusBarAnimator =
                 ViewUtil.createBackgroundColorTransition(fragment.viewBinding.playerStatusBar, fragment.paletteColor, newColor)
             val animatorSet = AnimatorSet()

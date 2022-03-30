@@ -70,7 +70,7 @@ object LyricsLoader {
                     false
                 }?.also { allMatchedFiles ->
 
-                    Log.v(TAG, allMatchedFiles.map { it.path }.fold("All lyrics found:") { acc, str -> "$acc$str;" })
+                    Log.v(TAG, allMatchedFiles.map { it.path }.fold("All lyrics found:") { acc, str -> "$acc$str;" }.toString())
 
                     try {
                         // precise first
@@ -95,17 +95,22 @@ object LyricsLoader {
         return LyricsPack(embedded, external, externalWithSuffix)
     }
 
-    private val regex: Regex by lazy { "(\\[.+\\])+.*".toRegex(RegexOption.MULTILINE) }
+//    private val regex: Regex by lazy { "(\\[.+\\])+.*".toRegex(RegexOption.MULTILINE) }
+    private val pattern: Pattern by lazy { Pattern.compile("(\\[.+\\])+.*", Pattern.MULTILINE) }
     fun parse(raw: String): AbsLyrics {
-        regex.matches(
-            raw.take(60) /* sample string */
-        ).also { result ->
-            return if (result) {
-                LrcLyrics.from(raw)
-            } else {
-                TextLyrics.from(raw)
+
+        pattern.matcher(
+            raw.take(80) /* sample string */
+        ).find()
+            .also { result ->
+                return if (result) {
+                    Log.v(TAG, "using LrcLyrics")
+                    LrcLyrics.from(raw)
+                } else {
+                    Log.v(TAG, "using TextLyrics")
+                    TextLyrics.from(raw)
+                }
             }
-        }
     }
     private const val TAG = "LyricsLoader"
 }
