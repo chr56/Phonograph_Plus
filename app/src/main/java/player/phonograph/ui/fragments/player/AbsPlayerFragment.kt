@@ -9,6 +9,7 @@ import kotlinx.coroutines.*
 import player.phonograph.R
 import player.phonograph.dialogs.*
 import player.phonograph.helper.MusicPlayerRemote
+import player.phonograph.helper.menu.SongMenuHelper
 import player.phonograph.interfaces.PaletteColorHolder
 import player.phonograph.model.Song
 import player.phonograph.model.lyrics2.AbsLyrics
@@ -46,29 +47,18 @@ abstract class AbsPlayerFragment :
     }
 
     override fun onMenuItemClick(item: MenuItem): Boolean {
-        val song = MusicPlayerRemote.getCurrentSong()
 
+        // toolbar
         when (item.itemId) {
-            R.id.action_sleep_timer -> {
-                SleepTimerDialog().show(requireActivity().supportFragmentManager, "SET_SLEEP_TIMER")
+            R.id.action_show_lyrics -> {
+                if (currentLyrics != null) {
+                    LyricsDialog.create(currentLyrics!!, MusicPlayerRemote.getCurrentSong())
+                        .show(requireActivity().supportFragmentManager, "LYRICS")
+                }
                 return true
             }
             R.id.action_toggle_favorite -> {
-                toggleFavorite(song)
-                return true
-            }
-            R.id.action_share -> {
-                SongShareDialog.create(song)
-                    .show(requireActivity().supportFragmentManager, "SHARE_SONG")
-                return true
-            }
-            R.id.action_equalizer -> {
-                openEqualizer(requireActivity())
-                return true
-            }
-            R.id.action_add_to_playlist -> {
-                AddToPlaylistDialog.create(MutableList(1) { song })
-                    .show(requireActivity().supportFragmentManager, "ADD_PLAYLIST")
+                toggleFavorite(MusicPlayerRemote.getCurrentSong())
                 return true
             }
             R.id.action_clear_playing_queue -> {
@@ -77,19 +67,30 @@ abstract class AbsPlayerFragment :
             }
             R.id.action_save_playing_queue -> {
                 CreatePlaylistDialog.create(MusicPlayerRemote.getPlayingQueue())
-                    .show(requireActivity().supportFragmentManager, "ADD_TO_PLAYLIST")
+                    .show(childFragmentManager, "ADD_TO_PLAYLIST")
                 return true
             }
-            R.id.action_tag_editor -> {
-                startActivity(
-                    Intent(activity, SongTagEditorActivity::class.java)
-                        .apply { putExtra(AbsTagEditorActivity.EXTRA_ID, song.id) }
-                )
+            R.id.action_sleep_timer -> {
+                SleepTimerDialog().show(childFragmentManager, "SET_SLEEP_TIMER")
+                return true
+            }
+            R.id.action_equalizer -> {
+                openEqualizer(requireActivity())
+                return true
+            }
+        }
+
+        // current song
+        val song = MusicPlayerRemote.getCurrentSong()
+        when (item.itemId) {
+            R.id.action_add_to_playlist -> {
+                AddToPlaylistDialog.create(List(1) { song })
+                    .show(childFragmentManager, "ADD_PLAYLIST")
                 return true
             }
             R.id.action_details -> {
                 SongDetailDialog.create(song)
-                    .show(requireActivity().supportFragmentManager, "SONG_DETAIL")
+                    .show(childFragmentManager, "SONG_DETAIL")
                 return true
             }
             R.id.action_go_to_album -> {
@@ -100,6 +101,19 @@ abstract class AbsPlayerFragment :
                 goToArtist(requireActivity(), song.artistId)
                 return true
             }
+            R.id.action_tag_editor -> {
+                startActivity(
+                    Intent(activity, SongTagEditorActivity::class.java)
+                        .apply { putExtra(AbsTagEditorActivity.EXTRA_ID, song.id) }
+                )
+                return true
+            }
+            R.id.action_share -> {
+                SongShareDialog.create(song)
+                    .show(childFragmentManager, "SHARE_SONG")
+                return true
+            }
+            else -> SongMenuHelper.handleMenuClick(requireActivity(), song, item.itemId)
         }
         return false
     }

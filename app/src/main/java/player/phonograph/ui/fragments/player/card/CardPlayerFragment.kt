@@ -25,8 +25,6 @@ import player.phonograph.R
 import player.phonograph.adapter.base.MediaEntryViewHolder
 import player.phonograph.adapter.song.PlayingQueueAdapter
 import player.phonograph.databinding.FragmentCardPlayerBinding
-import player.phonograph.dialogs.LyricsDialog
-import player.phonograph.dialogs.SongShareDialog
 import player.phonograph.helper.MusicPlayerRemote
 import player.phonograph.helper.menu.SongMenuHelper.ClickMenuListener
 import player.phonograph.model.Song
@@ -174,19 +172,6 @@ class CardPlayerFragment :
         viewBinding.playerToolbar.setNavigationIcon(R.drawable.ic_close_white_24dp)
         viewBinding.playerToolbar.setNavigationOnClickListener { requireActivity().onBackPressed() }
         viewBinding.playerToolbar.setOnMenuItemClickListener(this)
-    }
-
-    override fun onMenuItemClick(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.action_show_lyrics -> {
-                if (currentLyrics != null) {
-                    LyricsDialog.create(currentLyrics!!, MusicPlayerRemote.getCurrentSong())
-                        .show(requireActivity().supportFragmentManager, "LYRICS")
-                }
-                return true
-            }
-        }
-        return super.onMenuItemClick(item)
     }
 
     private fun setUpRecyclerView() {
@@ -394,12 +379,8 @@ class CardPlayerFragment :
                                 MusicPlayerRemote.removeFromQueue(MusicPlayerRemote.getPosition())
                                 return true
                             }
-                            R.id.action_share -> {
-                                SongShareDialog.create(song).show(fragment.requireFragmentManager(), "SONG_SHARE_DIALOG")
-                                return true
-                            }
                         }
-                        return super.onMenuItemClick(item)
+                        return fragment.onMenuItemClick(item)
                     }
                 })
         }
