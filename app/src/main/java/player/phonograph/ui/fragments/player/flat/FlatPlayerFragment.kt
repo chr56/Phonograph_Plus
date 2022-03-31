@@ -4,7 +4,6 @@ package player.phonograph.ui.fragments.player.flat
 
 import android.animation.AnimatorSet
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.graphics.Color
 import android.graphics.PorterDuff
 import android.os.AsyncTask
@@ -31,9 +30,6 @@ import player.phonograph.dialogs.SongShareDialog
 import player.phonograph.helper.MusicPlayerRemote
 import player.phonograph.helper.menu.SongMenuHelper.ClickMenuListener
 import player.phonograph.model.Song
-import player.phonograph.model.lyrics2.AbsLyrics
-import player.phonograph.model.lyrics2.LyricsLoader.loadLyrics
-import player.phonograph.model.lyrics2.getLyrics
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
 import player.phonograph.ui.fragments.player.AbsPlayerFragment
 import player.phonograph.ui.fragments.player.PlayerAlbumCoverFragment
@@ -47,7 +43,6 @@ import util.mdcolor.ColorUtil
 import util.mdcolor.pref.ThemeColor
 import util.mddesign.util.ToolbarColorUtil
 import util.mddesign.util.Util
-import java.io.File
 
 class FlatPlayerFragment :
     AbsPlayerFragment(),
@@ -64,15 +59,11 @@ class FlatPlayerFragment :
     private lateinit var impl: Impl
 
     private lateinit var playbackControlsFragment: FlatPlayerPlaybackControlsFragment // setUpSubFragments()
-    private lateinit var playerAlbumCoverFragment: PlayerAlbumCoverFragment // setUpSubFragments()
     private var layoutManager: LinearLayoutManager? = null
     private var playingQueueAdapter: PlayingQueueAdapter? = null
     private var wrappedAdapter: RecyclerView.Adapter<*>? = null
     private var recyclerViewDragDropManager: RecyclerViewDragDropManager? = null
     private var updateIsFavoriteTask: AsyncTask<*, *, *>? = null
-    private var updateLyricsAsyncTask: AsyncTask<*, *, *>? = null
-
-    private var lyrics: AbsLyrics? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _viewBinding = FragmentFlatPlayerBinding.inflate(inflater)
@@ -132,14 +123,14 @@ class FlatPlayerFragment :
         updateQueue()
         updateCurrentSong()
         updateIsFavorite()
-        updateLyrics()
+        loadAndRefreshLyrics(MusicPlayerRemote.getCurrentSong())
     }
 
     override fun onPlayingMetaChanged() {
         updateCurrentSong()
         updateIsFavorite()
         updateQueuePosition()
-        updateLyrics()
+        loadAndRefreshLyrics(MusicPlayerRemote.getCurrentSong())
     }
 
     override fun onQueueChanged() {
@@ -187,8 +178,8 @@ class FlatPlayerFragment :
     override fun onMenuItemClick(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.action_show_lyrics -> {
-                if (lyrics != null) {
-                    LyricsDialog.create(lyrics!!, MusicPlayerRemote.getCurrentSong())
+                if (currentLyrics != null) {
+                    LyricsDialog.create(currentLyrics!!, MusicPlayerRemote.getCurrentSong())
                         .show(requireActivity().supportFragmentManager, "LYRICS")
                 }
                 return true
@@ -238,45 +229,19 @@ class FlatPlayerFragment :
         }.execute(MusicPlayerRemote.getCurrentSong())
     }
 
-    @SuppressLint("StaticFieldLeak") // TODO StaticFieldLeak
-    private fun updateLyrics() {
-        if (updateLyricsAsyncTask != null) updateLyricsAsyncTask!!.cancel(false)
-        val song = MusicPlayerRemote.getCurrentSong()
-        updateLyricsAsyncTask = object : AsyncTask<Void, Void, AbsLyrics?>() {
-            override fun onPreExecute() {
-                super.onPreExecute()
-                lyrics = null
-                playerAlbumCoverFragment.setLyrics(null)
-                viewBinding.playerToolbar.menu.removeItem(R.id.action_show_lyrics)
-            }
+    override fun hideLyricsMenuItem() {
+        viewBinding.playerToolbar.menu.removeItem(R.id.action_show_lyrics)
+    }
 
-            override fun doInBackground(vararg params: Void): AbsLyrics? {
-                val pack = loadLyrics(File(song.data), song.title)
-                return getLyrics(pack)
+    override fun showLyricsMenuItem() {
+        activity?.let { activity ->
+            if (viewBinding.playerToolbar.menu.findItem(R.id.action_show_lyrics) == null) {
+                viewBinding.playerToolbar.menu
+                    .add(Menu.NONE, R.id.action_show_lyrics, Menu.NONE, R.string.action_show_lyrics)
+                    .setIcon(ImageUtil.getTintedVectorDrawable(activity, R.drawable.ic_comment_text_outline_white_24dp, ToolbarColorUtil.toolbarContentColor(activity, Color.TRANSPARENT)))
+                    .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM)
             }
-
-            override fun onPostExecute(l: AbsLyrics?) {
-                lyrics = l
-                playerAlbumCoverFragment.setLyrics(lyrics)
-                if (lyrics == null) {
-                    viewBinding.playerToolbar.menu.removeItem(R.id.action_show_lyrics)
-                } else {
-                    val activity: Activity? = activity
-                    if (activity != null) if (viewBinding.playerToolbar.menu.findItem(R.id.action_show_lyrics) == null) {
-                        val color = ToolbarColorUtil.toolbarContentColor(activity, Color.TRANSPARENT)
-                        val drawable = ImageUtil.getTintedVectorDrawable(activity, R.drawable.ic_comment_text_outline_white_24dp, color)
-                        viewBinding.playerToolbar.menu
-                            .add(Menu.NONE, R.id.action_show_lyrics, Menu.NONE, R.string.action_show_lyrics)
-                            .setIcon(drawable)
-                            .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM)
-                    }
-                }
-            }
-
-            override fun onCancelled(s: AbsLyrics?) {
-                onPostExecute(null)
-            }
-        }.execute()
+        }
     }
 
     private fun animateColorChange(newColor: Int) {

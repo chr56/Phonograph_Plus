@@ -5,15 +5,16 @@ import android.content.Intent
 import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.widget.Toolbar
+import kotlinx.coroutines.*
 import player.phonograph.R
-import player.phonograph.dialogs.AddToPlaylistDialog
-import player.phonograph.dialogs.CreatePlaylistDialog
-import player.phonograph.dialogs.SleepTimerDialog
-import player.phonograph.dialogs.SongDetailDialog
-import player.phonograph.dialogs.SongShareDialog
+import player.phonograph.dialogs.*
 import player.phonograph.helper.MusicPlayerRemote
 import player.phonograph.interfaces.PaletteColorHolder
 import player.phonograph.model.Song
+import player.phonograph.model.lyrics2.AbsLyrics
+import player.phonograph.model.lyrics2.LyricsLoader
+import player.phonograph.model.lyrics2.LyricsPack
+import player.phonograph.model.lyrics2.getLyrics
 import player.phonograph.ui.fragments.AbsMusicServiceFragment
 import player.phonograph.util.FavoriteUtil.toggleFavorite
 import player.phonograph.util.MusicUtil
@@ -22,8 +23,7 @@ import player.phonograph.util.NavigationUtil.goToArtist
 import player.phonograph.util.NavigationUtil.openEqualizer
 import util.phonograph.tageditor.AbsTagEditorActivity
 import util.phonograph.tageditor.SongTagEditorActivity
-import java.lang.ClassCastException
-import java.lang.RuntimeException
+import java.io.File
 
 abstract class AbsPlayerFragment :
     AbsMusicServiceFragment(),
@@ -32,6 +32,7 @@ abstract class AbsPlayerFragment :
 
     protected var callbacks: Callbacks? = null
         private set
+    protected lateinit var playerAlbumCoverFragment: PlayerAlbumCoverFragment // setUpSubFragments() in derived class //todo make sure field gets inited
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -101,6 +102,52 @@ abstract class AbsPlayerFragment :
         }
         return false
     }
+
+    protected val backgroundCoroutine: CoroutineScope by lazy { CoroutineScope(Dispatchers.IO) }
+
+    protected var lyricsPack: LyricsPack? = null
+    protected var currentLyrics: AbsLyrics? = null
+
+    private var loadLyricsJob: Job? = null
+    private fun loadLyrics(song: Song) {
+        // cancel old song's lyrics after switching
+        loadLyricsJob?.cancel()
+        currentLyrics = null
+        lyricsPack = null
+        // load new lyrics
+        loadLyricsJob = backgroundCoroutine.launch {
+            lyricsPack = LyricsLoader.loadLyrics(File(song.data), song.title)
+            currentLyrics = getLyrics(lyricsPack!!)
+        }
+    }
+
+    private fun updateLyrics(lyrics: AbsLyrics) = runBlocking(Dispatchers.Main) {
+        playerAlbumCoverFragment.setLyrics(lyrics)
+        showLyricsMenuItem()
+    }
+    private fun clearLyrics() = backgroundCoroutine.launch(Dispatchers.Main) {
+        playerAlbumCoverFragment.setLyrics(null)
+        currentLyrics = null
+        hideLyricsMenuItem()
+    }
+
+    protected fun loadAndRefreshLyrics(song: Song) {
+        loadLyrics(song)
+        clearLyrics()
+        backgroundCoroutine.launch {
+            // wait
+            var timeout = 10
+            while (lyricsPack == null || timeout <= 0) {
+                delay(320)
+                timeout -= 1
+            }
+            // refresh anyway
+            currentLyrics?.let { updateLyrics(it) }
+        }
+    }
+
+    protected abstract fun hideLyricsMenuItem()
+    protected abstract fun showLyricsMenuItem()
 
     protected open fun toggleFavorite(song: Song) = toggleFavorite(requireActivity(), song)
 
