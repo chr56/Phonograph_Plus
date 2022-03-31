@@ -16,6 +16,7 @@ import player.phonograph.model.lyrics2.LyricsLoader
 import player.phonograph.model.lyrics2.LyricsPack
 import player.phonograph.model.lyrics2.getLyrics
 import player.phonograph.ui.fragments.AbsMusicServiceFragment
+import player.phonograph.util.FavoriteUtil
 import player.phonograph.util.FavoriteUtil.toggleFavorite
 import player.phonograph.util.MusicUtil
 import player.phonograph.util.NavigationUtil.goToAlbum
@@ -150,6 +151,14 @@ abstract class AbsPlayerFragment :
     protected abstract fun showLyricsMenuItem()
 
     protected open fun toggleFavorite(song: Song) = toggleFavorite(requireActivity(), song)
+
+    protected fun updateFavoriteState(song: Song) {
+        backgroundCoroutine.launch {
+            val state = FavoriteUtil.isFavorite(this@AbsPlayerFragment.requireContext(), song)
+            withContext(Dispatchers.Main) { updateFavoriteIcon(state) }
+        }
+    }
+    protected abstract fun updateFavoriteIcon(isFavorite: Boolean)
 
     protected var isToolbarShown: Boolean
         get() = Companion.isToolbarShown

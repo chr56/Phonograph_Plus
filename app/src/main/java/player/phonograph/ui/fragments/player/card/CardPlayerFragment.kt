@@ -4,10 +4,8 @@ package player.phonograph.ui.fragments.player.card
 
 import android.animation.Animator
 import android.animation.AnimatorSet
-import android.annotation.SuppressLint
 import android.graphics.Color
 import android.graphics.PorterDuff
-import android.os.AsyncTask
 import android.os.Build
 import android.os.Bundle
 import android.view.*
@@ -65,7 +63,6 @@ class CardPlayerFragment :
     private var playingQueueAdapter: PlayingQueueAdapter? = null
     private var wrappedAdapter: RecyclerView.Adapter<*>? = null
     private var recyclerViewDragDropManager: RecyclerViewDragDropManager? = null
-    private var updateIsFavoriteTask: AsyncTask<*, *, *>? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         impl = (if (isLandscape(resources)) LandscapeImpl(this) else PortraitImpl(this))
@@ -126,13 +123,13 @@ class CardPlayerFragment :
     override fun onServiceConnected() {
         updateQueue()
         updateCurrentSong()
-        updateIsFavorite()
+        updateFavoriteState(MusicPlayerRemote.getCurrentSong())
         loadAndRefreshLyrics(MusicPlayerRemote.getCurrentSong())
     }
 
     override fun onPlayingMetaChanged() {
         updateCurrentSong()
-        updateIsFavorite()
+        updateFavoriteState(MusicPlayerRemote.getCurrentSong())
         updateQueuePosition()
         loadAndRefreshLyrics(MusicPlayerRemote.getCurrentSong())
     }
@@ -143,7 +140,7 @@ class CardPlayerFragment :
 
     override fun onMediaStoreChanged() {
         updateQueue()
-        updateIsFavorite()
+        updateFavoriteState(MusicPlayerRemote.getCurrentSong())
     }
 
     private fun updateQueue() {
@@ -212,27 +209,14 @@ class CardPlayerFragment :
         layoutManager!!.scrollToPositionWithOffset(MusicPlayerRemote.getPosition() + 1, 0)
     }
 
-    @SuppressLint("StaticFieldLeak") // TODO StaticFieldLeak
-    private fun updateIsFavorite() {
-
-        if (updateIsFavoriteTask != null) updateIsFavoriteTask!!.cancel(false)
-
-        updateIsFavoriteTask = object : AsyncTask<Song, Void, Boolean>() {
-            override fun doInBackground(vararg params: Song): Boolean {
-                return isFavorite(requireActivity(), params[0])
-            }
-
-            override fun onPostExecute(isFavorite: Boolean) {
-                if (activity != null) {
-                    val res = if (isFavorite) R.drawable.ic_favorite_white_24dp else R.drawable.ic_favorite_border_white_24dp
-                    val color = ToolbarColorUtil.toolbarContentColor(requireActivity(), Color.TRANSPARENT)
-                    val drawable = ImageUtil.getTintedVectorDrawable(requireActivity(), res, color)
-                    viewBinding.playerToolbar.menu.findItem(R.id.action_toggle_favorite)
-                        .setIcon(drawable).title =
-                        if (isFavorite) getString(R.string.action_remove_from_favorites) else getString(R.string.action_add_to_favorites)
-                }
-            }
-        }.execute(MusicPlayerRemote.getCurrentSong())
+    override fun updateFavoriteIcon(isFavorite: Boolean) {
+        val res = if (isFavorite) R.drawable.ic_favorite_white_24dp else R.drawable.ic_favorite_border_white_24dp
+        val color = ToolbarColorUtil.toolbarContentColor(requireActivity(), Color.TRANSPARENT)
+        val drawable = ImageUtil.getTintedVectorDrawable(requireActivity(), res, color)
+        viewBinding.playerToolbar.menu
+            .findItem(R.id.action_toggle_favorite)
+            .setIcon(drawable)
+            .title = if (isFavorite) getString(R.string.action_remove_from_favorites) else getString(R.string.action_add_to_favorites)
     }
 
     override fun hideLyricsMenuItem() {
@@ -261,7 +245,7 @@ class CardPlayerFragment :
             if (isFavorite(requireActivity(), song)) {
                 playerAlbumCoverFragment.showHeartAnimation()
             }
-            updateIsFavorite()
+            updateFavoriteState(song)
         }
     }
 
