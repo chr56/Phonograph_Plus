@@ -8,13 +8,14 @@ import android.content.Context
 import android.os.Handler
 import android.os.Looper
 import android.os.Message
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import player.phonograph.App
 import player.phonograph.helper.MusicPlayerRemote
 import player.phonograph.model.Song
-import player.phonograph.model.lyrics2.AbsLyrics
 import player.phonograph.model.lyrics2.LrcLyrics
 import player.phonograph.model.lyrics2.LyricsLoader.loadLyrics
-import player.phonograph.model.lyrics2.LyricsPack
 import player.phonograph.model.lyrics2.getLrcLyrics
 import player.phonograph.settings.Setting
 import java.io.File
@@ -29,8 +30,11 @@ class LyricsFetcher {
     constructor(song: Song) {
         this.lyrics = null
         File(song.data).also { file ->
-            loadLyrics(file, song.title).let {
-                this.lyrics = getLrcLyrics(it)
+            if (!file.exists()) return@also
+            CoroutineScope(Dispatchers.IO).launch {
+                loadLyrics(file, song.title).let {
+                    this@LyricsFetcher.lyrics = getLrcLyrics(it)
+                }
             }
         }
     }
@@ -40,8 +44,6 @@ class LyricsFetcher {
         return lyrics?.getLine(offsetTime)
     }
 }
-
-
 
 /**
  * broadcast for "MIUI StatusBar Lyrics" Xposed module
