@@ -18,20 +18,17 @@ import player.phonograph.model.lyrics2.*
  */
 class LyricsDialog : DialogFragment() {
     private lateinit var song: Song
-    private lateinit var lyrics: AbsLyrics
     private lateinit var lyricsPack: LyricsPack
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         requireArguments().let {
             song = it.getParcelable(SONG)!!
-            val p = it.getParcelable<LyricsPack>(LYRICS_PACK)
-            if (p != null) {
-                lyricsPack = p
-                lyrics = getLyrics(p)!!
-            } else {
-                lyrics = it.getParcelable(LYRICS)!!
-            }
+            lyricsPack = it.getParcelable(LYRICS_PACK)!!
+            if (lyricsPack.isEmpty()) return MaterialDialog(requireActivity()).message(text = getString(R.string.empty))
         }
+
+        val lyrics = getLyrics(lyricsPack)!!
+
         val title: String = if (lyrics.getTitle() != DEFAULT_TITLE) lyrics.getTitle() else song.title
 
         val dialog = MaterialDialog(requireActivity())
@@ -60,15 +57,6 @@ class LyricsDialog : DialogFragment() {
                     arguments = Bundle().apply {
                         putParcelable(SONG, song)
                         putParcelable(LYRICS_PACK, lyricsPack)
-                    }
-                }
-
-        fun create(lyrics: AbsLyrics, song: Song): LyricsDialog =
-            LyricsDialog()
-                .apply {
-                    arguments = Bundle().apply {
-                        putParcelable(SONG, song)
-                        putParcelable(LYRICS, lyrics)
                     }
                 }
     }

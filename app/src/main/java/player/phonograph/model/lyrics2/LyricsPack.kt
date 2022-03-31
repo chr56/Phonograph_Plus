@@ -9,6 +9,8 @@ import android.os.Parcelable
 
 data class LyricsPack(val embedded: AbsLyrics?, val external: AbsLyrics?, val externalWithSuffix: AbsLyrics?) : Parcelable {
 
+    fun isEmpty(): Boolean = embedded == null && external == null && externalWithSuffix == null
+
     constructor(parcel: Parcel) : this(
         parcel.readParcelable(AbsLyrics::class.java.classLoader),
         parcel.readParcelable(AbsLyrics::class.java.classLoader),

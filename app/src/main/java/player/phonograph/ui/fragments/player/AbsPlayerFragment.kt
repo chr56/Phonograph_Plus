@@ -50,9 +50,9 @@ abstract class AbsPlayerFragment :
         // toolbar
         when (item.itemId) {
             R.id.action_show_lyrics -> {
-                val currentLyrics = viewModel.currentLyrics
-                if (currentLyrics != null) {
-                    LyricsDialog.create(currentLyrics, MusicPlayerRemote.getCurrentSong())
+                val lyricsPack = viewModel.lyricsPack
+                if (lyricsPack != null) {
+                    LyricsDialog.create(lyricsPack, MusicPlayerRemote.getCurrentSong())
                         .show(requireActivity().supportFragmentManager, "LYRICS")
                 }
                 return true
