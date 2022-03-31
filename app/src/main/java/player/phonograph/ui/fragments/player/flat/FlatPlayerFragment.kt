@@ -1,4 +1,3 @@
-@file:Suppress("DEPRECATION")
 
 package player.phonograph.ui.fragments.player.flat
 
