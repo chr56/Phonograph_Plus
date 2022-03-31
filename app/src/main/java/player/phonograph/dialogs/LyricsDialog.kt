@@ -11,8 +11,7 @@ import com.afollestad.materialdialogs.customview.getCustomView
 import player.phonograph.R
 import player.phonograph.adapter.LyricsAdapter
 import player.phonograph.model.Song
-import player.phonograph.model.lyrics2.AbsLyrics
-import player.phonograph.model.lyrics2.DEFAULT_TITLE
+import player.phonograph.model.lyrics2.*
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
@@ -20,11 +19,18 @@ import player.phonograph.model.lyrics2.DEFAULT_TITLE
 class LyricsDialog : DialogFragment() {
     private lateinit var song: Song
     private lateinit var lyrics: AbsLyrics
+    private lateinit var lyricsPack: LyricsPack
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         requireArguments().let {
             song = it.getParcelable(SONG)!!
-            lyrics = it.getParcelable(LYRICS)!!
+            val p = it.getParcelable<LyricsPack>(LYRICS_PACK)
+            if (p != null) {
+                lyricsPack = p
+                lyrics = getLyrics(p)!!
+            } else {
+                lyrics = it.getParcelable(LYRICS)!!
+            }
         }
         val title: String = if (lyrics.getTitle() != DEFAULT_TITLE) lyrics.getTitle() else song.title
 
@@ -46,8 +52,17 @@ class LyricsDialog : DialogFragment() {
     companion object {
         private const val SONG = "song"
         private const val LYRICS = "lyrics"
+        private const val LYRICS_PACK = "lyrics_pack"
 
-        @JvmStatic
+        fun create(lyricsPack: LyricsPack, song: Song): LyricsDialog =
+            LyricsDialog()
+                .apply {
+                    arguments = Bundle().apply {
+                        putParcelable(SONG, song)
+                        putParcelable(LYRICS_PACK, lyricsPack)
+                    }
+                }
+
         fun create(lyrics: AbsLyrics, song: Song): LyricsDialog =
             LyricsDialog()
                 .apply {
