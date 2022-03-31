@@ -20,6 +20,9 @@ class LyricsDialog : DialogFragment() {
     private lateinit var song: Song
     private lateinit var lyricsPack: LyricsPack
 
+    private lateinit var adapter: LyricsAdapter
+    private lateinit var layoutManager: LinearLayoutManager
+
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         requireArguments().let {
             song = it.getParcelable(SONG)!!
@@ -36,14 +39,21 @@ class LyricsDialog : DialogFragment() {
             .positiveButton { dismiss() }
             .customView(R.layout.dialog_lyrics, horizontalPadding = true)
 
-        dialog.getCustomView()
-            .findViewById<RecyclerView>(R.id.recycler_view_lyrics)
-            .apply {
-                layoutManager = LinearLayoutManager(requireActivity(), RecyclerView.VERTICAL, false)
-                adapter = LyricsAdapter(requireActivity(), lyrics.getLyricsTimeArray(), lyrics.getLyricsLineArray(), dialog)
-            }
+        setUpRecycleView(
+            lyrics, dialog.getCustomView().findViewById(R.id.recycler_view_lyrics)
+        )
 
         return dialog
+    }
+
+    private fun setUpRecycleView(lyrics: AbsLyrics, recyclerView: RecyclerView) {
+        layoutManager = LinearLayoutManager(requireActivity(), RecyclerView.VERTICAL, false)
+        adapter = LyricsAdapter(requireActivity(), lyrics.getLyricsTimeArray(), lyrics.getLyricsLineArray(), dialog)
+        recyclerView
+            .apply {
+                layoutManager = this.layoutManager
+                adapter = this.adapter
+            }
     }
 
     companion object {
