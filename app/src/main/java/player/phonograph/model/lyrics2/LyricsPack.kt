@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 chr_56 & Abou Zeid (kabouzeid) (original author)
+ * Copyright (c) 2022 chr_56
  */
 
 package player.phonograph.model.lyrics2
@@ -10,6 +10,31 @@ import android.os.Parcelable
 data class LyricsPack(val embedded: AbsLyrics?, val external: AbsLyrics?, val externalWithSuffix: AbsLyrics?) : Parcelable {
 
     fun isEmpty(): Boolean = embedded == null && external == null && externalWithSuffix == null
+
+    fun getLyrics(): AbsLyrics? {
+        embedded?.let {
+            return it
+        }
+        external?.let {
+            return it
+        }
+        externalWithSuffix?.let {
+            return it
+        }
+        return null
+    }
+    fun getLrcLyrics(): LrcLyrics? {
+        embedded?.let {
+            if (it is LrcLyrics) return it
+        }
+        external?.let {
+            if (it is LrcLyrics) return it
+        }
+        externalWithSuffix?.let {
+            if (it is LrcLyrics) return it
+        }
+        return null
+    }
 
     constructor(parcel: Parcel) : this(
         parcel.readParcelable(AbsLyrics::class.java.classLoader),
@@ -34,32 +59,4 @@ data class LyricsPack(val embedded: AbsLyrics?, val external: AbsLyrics?, val ex
             }
         }
     }
-}
-
-// todo
-fun getLrcLyrics(pack: LyricsPack): LrcLyrics? {
-    pack.embedded?.let {
-        if (it is LrcLyrics) return it
-    }
-    pack.external?.let {
-        if (it is LrcLyrics) return it
-    }
-    pack.externalWithSuffix?.let {
-        if (it is LrcLyrics) return it
-    }
-    return null
-}
-
-// todo
-fun getLyrics(pack: LyricsPack): AbsLyrics? {
-    pack.embedded?.let {
-        return it
-    }
-    pack.external?.let {
-        return it
-    }
-    pack.externalWithSuffix?.let {
-        return it
-    }
-    return null
 }

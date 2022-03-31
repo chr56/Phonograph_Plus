@@ -15,7 +15,6 @@ import player.phonograph.helper.MusicPlayerRemote
 import player.phonograph.model.Song
 import player.phonograph.model.lyrics2.LrcLyrics
 import player.phonograph.model.lyrics2.LyricsLoader.loadLyrics
-import player.phonograph.model.lyrics2.getLrcLyrics
 import player.phonograph.settings.Setting
 import java.io.File
 
@@ -32,7 +31,7 @@ class LyricsFetcher {
             if (!file.exists()) return@also
             CoroutineScope(Dispatchers.IO).launch(exceptionHandler) {
                 loadLyrics(file, song.title).let {
-                    this@LyricsFetcher.lyrics = getLrcLyrics(it)
+                    this@LyricsFetcher.lyrics = it.getLrcLyrics()
                 }
             }
         }

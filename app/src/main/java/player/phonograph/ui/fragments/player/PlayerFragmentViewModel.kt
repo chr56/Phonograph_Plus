@@ -11,7 +11,6 @@ import player.phonograph.model.Song
 import player.phonograph.model.lyrics2.AbsLyrics
 import player.phonograph.model.lyrics2.LyricsLoader
 import player.phonograph.model.lyrics2.LyricsPack
-import player.phonograph.model.lyrics2.getLyrics
 import java.io.File
 
 class PlayerFragmentViewModel : ViewModel() {
@@ -35,7 +34,7 @@ class PlayerFragmentViewModel : ViewModel() {
         // load new lyrics
         loadLyricsJob = backgroundCoroutine.launch(exceptionHandler) {
             lyricsPack = LyricsLoader.loadLyrics(File(song.data), song.title)
-            currentLyrics = getLyrics(lyricsPack!!)
+            currentLyrics = lyricsPack!!.getLyrics()
         }
     }
 }

@@ -27,7 +27,7 @@ class LyricsDialog : DialogFragment() {
             if (lyricsPack.isEmpty()) return MaterialDialog(requireActivity()).message(text = getString(R.string.empty))
         }
 
-        val lyrics = getLyrics(lyricsPack)!!
+        val lyrics = lyricsPack.getLyrics()!!
 
         val title: String = if (lyrics.getTitle() != DEFAULT_TITLE) lyrics.getTitle() else song.title
 
