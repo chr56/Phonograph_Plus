@@ -15,8 +15,6 @@ import player.phonograph.util.FileUtil
 import java.io.File
 import java.util.regex.Pattern
 
-data class LyricsPack(val embedded: AbsLyrics?, val external: AbsLyrics?, val externalWithSuffix: AbsLyrics?)
-
 object LyricsLoader {
 
     private val backgroundCoroutine: CoroutineScope by lazy { CoroutineScope(Dispatchers.IO) }
@@ -129,31 +127,4 @@ object LyricsLoader {
             }
     }
     private const val TAG = "LyricsLoader"
-}
-
-// todo
-fun getLrcLyrics(pack: LyricsPack): LrcLyrics? {
-    pack.embedded?.let {
-        if (it is LrcLyrics) return it
-    }
-    pack.external?.let {
-        if (it is LrcLyrics) return it
-    }
-    pack.externalWithSuffix?.let {
-        if (it is LrcLyrics) return it
-    }
-    return null
-}
-// todo
-fun getLyrics(pack: LyricsPack): AbsLyrics? {
-    pack.embedded?.let {
-        return it
-    }
-    pack.external?.let {
-        return it
-    }
-    pack.externalWithSuffix?.let {
-        return it
-    }
-    return null
 }
