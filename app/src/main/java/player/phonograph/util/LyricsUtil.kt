@@ -8,9 +8,8 @@ import android.content.Context
 import android.os.Handler
 import android.os.Looper
 import android.os.Message
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import android.util.Log
+import kotlinx.coroutines.*
 import player.phonograph.App
 import player.phonograph.helper.MusicPlayerRemote
 import player.phonograph.model.Song
@@ -31,7 +30,7 @@ class LyricsFetcher {
         this.lyrics = null
         File(song.data).also { file ->
             if (!file.exists()) return@also
-            CoroutineScope(Dispatchers.IO).launch {
+            CoroutineScope(Dispatchers.IO).launch(exceptionHandler) {
                 loadLyrics(file, song.title).let {
                     this@LyricsFetcher.lyrics = getLrcLyrics(it)
                 }
@@ -42,6 +41,11 @@ class LyricsFetcher {
     fun getLine(time: Int): String? {
         val offsetTime = if (time > 100) time - 100 else time
         return lyrics?.getLine(offsetTime)
+    }
+    private val exceptionHandler by lazy {
+        CoroutineExceptionHandler { _, throwable ->
+            Log.w("LyricsFetcher", "Exception while fetching lyrics!\n${throwable.message}")
+        }
     }
 }
 

@@ -2,6 +2,7 @@ package player.phonograph.ui.fragments.player
 
 import android.content.Context
 import android.content.Intent
+import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.widget.Toolbar
@@ -120,6 +121,12 @@ abstract class AbsPlayerFragment :
 
     protected val backgroundCoroutine: CoroutineScope by lazy { CoroutineScope(Dispatchers.IO) }
 
+    protected val exceptionHandler by lazy {
+        CoroutineExceptionHandler { _, throwable ->
+            Log.w("LyricsFetcher", "Exception while fetching lyrics!\n${throwable.message}")
+        }
+    }
+
     protected var lyricsPack: LyricsPack? = null
     protected var currentLyrics: AbsLyrics? = null
 
@@ -130,7 +137,7 @@ abstract class AbsPlayerFragment :
         currentLyrics = null
         lyricsPack = null
         // load new lyrics
-        loadLyricsJob = backgroundCoroutine.launch {
+        loadLyricsJob = backgroundCoroutine.launch(exceptionHandler) {
             lyricsPack = LyricsLoader.loadLyrics(File(song.data), song.title)
             currentLyrics = getLyrics(lyricsPack!!)
         }
@@ -167,7 +174,7 @@ abstract class AbsPlayerFragment :
     protected open fun toggleFavorite(song: Song) = toggleFavorite(requireActivity(), song)
 
     protected fun updateFavoriteState(song: Song) {
-        backgroundCoroutine.launch {
+        backgroundCoroutine.launch(exceptionHandler) {
             val state = FavoriteUtil.isFavorite(this@AbsPlayerFragment.requireContext(), song)
             withContext(Dispatchers.Main) { updateFavoriteIcon(state) }
         }
