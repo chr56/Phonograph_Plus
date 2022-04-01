@@ -23,7 +23,23 @@ class PlayerFragmentViewModel : ViewModel() {
     }
 
     var lyricsPack: LyricsPack? = null
+        private set
     var currentLyrics: AbsLyrics? = null
+        private set
+
+    var songLocked: Song? = null
+        private set
+    var lockLyricForSong: Boolean = false
+        private set
+
+    fun lockLyricsWithSong(song: Song) {
+        songLocked = song
+        lockLyricForSong = true
+    }
+    fun unlockLyrics() {
+        songLocked = null
+        lockLyricForSong = false
+    }
 
     private var loadLyricsJob: Job? = null
     fun loadLyrics(song: Song) {

@@ -121,6 +121,7 @@ class CardPlayerFragment :
         updateQueue()
         updateCurrentSong()
         updateFavoriteState(MusicPlayerRemote.getCurrentSong())
+        viewModel.unlockLyrics()
         loadAndRefreshLyrics(MusicPlayerRemote.getCurrentSong())
     }
 
@@ -128,6 +129,7 @@ class CardPlayerFragment :
         updateCurrentSong()
         updateFavoriteState(MusicPlayerRemote.getCurrentSong())
         updateQueuePosition()
+        viewModel.unlockLyrics()
         loadAndRefreshLyrics(MusicPlayerRemote.getCurrentSong())
     }
 
@@ -143,7 +145,6 @@ class CardPlayerFragment :
     override fun onPlayStateChanged() {
         loadAndRefreshLyrics(MusicPlayerRemote.getCurrentSong())
     }
-
 
     private fun updateQueue() {
         playingQueueAdapter!!.swapDataSet(MusicPlayerRemote.getPlayingQueue(), MusicPlayerRemote.getPosition())

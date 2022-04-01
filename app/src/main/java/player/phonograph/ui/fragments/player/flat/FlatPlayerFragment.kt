@@ -117,6 +117,7 @@ class FlatPlayerFragment :
         updateQueue()
         updateCurrentSong()
         updateFavoriteState(MusicPlayerRemote.getCurrentSong())
+        viewModel.unlockLyrics()
         loadAndRefreshLyrics(MusicPlayerRemote.getCurrentSong())
     }
 
@@ -124,6 +125,7 @@ class FlatPlayerFragment :
         updateCurrentSong()
         updateFavoriteState(MusicPlayerRemote.getCurrentSong())
         updateQueuePosition()
+        viewModel.unlockLyrics()
         loadAndRefreshLyrics(MusicPlayerRemote.getCurrentSong())
     }
 

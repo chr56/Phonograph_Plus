@@ -43,9 +43,11 @@ abstract class AbsPlayerFragment :
         super.onAttach(context)
         callbacks = try { context as Callbacks } catch (e: ClassCastException) { throw RuntimeException("${context.javaClass.simpleName} must implement ${Callbacks::class.java.simpleName}") }
         handler = Handler(Looper.getMainLooper()) { msg ->
-            if (msg.what == UPDATE_LYRICS){
-               playerAlbumCoverFragment.setLyrics(msg.data.get(LYRICS) as AbsLyrics)
+            if (msg.what == UPDATE_LYRICS) {
+                playerAlbumCoverFragment.setLyrics(msg.data.get(LYRICS) as AbsLyrics)
             }
+            // then lock
+            viewModel.lockLyricsWithSong(MusicPlayerRemote.getCurrentSong())
             false
         }
     }
@@ -142,10 +144,14 @@ abstract class AbsPlayerFragment :
     }
     protected fun clearLyrics() = backgroundCoroutine.launch(Dispatchers.Main) {
         playerAlbumCoverFragment.setLyrics(null)
-        viewModel.currentLyrics = null
         hideLyricsMenuItem()
     }
     protected fun loadAndRefreshLyrics(song: Song) {
+        if (song == viewModel.songLocked) {
+            // do not load
+            return
+        }
+
         viewModel.loadLyrics(song)
         clearLyrics()
         backgroundCoroutine.launch {
@@ -158,12 +164,6 @@ abstract class AbsPlayerFragment :
             viewModel.currentLyrics?.let { updateLyrics(it) }
         }
     }
-
-    fun replaceLyrics(lyrics: AbsLyrics) =
-        backgroundCoroutine.launch(Dispatchers.Main) {
-            viewModel.currentLyrics = lyrics
-            updateLyrics(lyrics)
-        }
 
     protected abstract fun hideLyricsMenuItem()
     protected abstract fun showLyricsMenuItem()
