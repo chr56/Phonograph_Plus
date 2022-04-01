@@ -2,15 +2,22 @@ package player.phonograph.ui.fragments.player
 
 import android.content.Context
 import android.content.Intent
+import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import android.view.MenuItem
 import android.view.View
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.viewModels
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.h6ah4i.android.widget.advrecyclerview.draggable.RecyclerViewDragDropManager
+import com.h6ah4i.android.widget.advrecyclerview.utils.WrapperAdapterUtils
 import kotlinx.coroutines.*
 import player.phonograph.R
+import player.phonograph.adapter.song.PlayingQueueAdapter
 import player.phonograph.dialogs.*
 import player.phonograph.helper.MusicPlayerRemote
 import player.phonograph.helper.menu.SongMenuHelper
@@ -39,6 +46,12 @@ abstract class AbsPlayerFragment :
 
     lateinit var handler: Handler
 
+    // recycle view
+    protected lateinit var layoutManager: LinearLayoutManager
+    protected lateinit var playingQueueAdapter: PlayingQueueAdapter
+    protected lateinit var wrappedAdapter: RecyclerView.Adapter<*>
+    protected lateinit var recyclerViewDragDropManager: RecyclerViewDragDropManager
+
     override fun onAttach(context: Context) {
         super.onAttach(context)
         callbacks = try { context as Callbacks } catch (e: ClassCastException) { throw RuntimeException("${context.javaClass.simpleName} must implement ${Callbacks::class.java.simpleName}") }
@@ -55,6 +68,34 @@ abstract class AbsPlayerFragment :
     override fun onDetach() {
         super.onDetach()
         callbacks = null
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        initRecyclerView()
+        implementRecyclerView()
+    }
+
+    protected abstract fun implementRecyclerView()
+
+    private fun initRecyclerView() {
+        layoutManager = LinearLayoutManager(requireActivity())
+        playingQueueAdapter = PlayingQueueAdapter(
+            (requireActivity() as AppCompatActivity),
+            MusicPlayerRemote.getPlayingQueue(),
+            MusicPlayerRemote.getPosition(),
+            R.layout.item_list,
+            false,
+            null
+        )
+        recyclerViewDragDropManager = RecyclerViewDragDropManager()
+        wrappedAdapter = recyclerViewDragDropManager.createWrappedAdapter(playingQueueAdapter)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        recyclerViewDragDropManager.release()
+        WrapperAdapterUtils.releaseAll(wrappedAdapter)
     }
 
     override fun onMenuItemClick(item: MenuItem): Boolean {

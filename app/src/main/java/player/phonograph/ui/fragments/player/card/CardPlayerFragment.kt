@@ -12,8 +12,6 @@ import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import android.widget.ImageView
 import androidx.annotation.ColorInt
 import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.h6ah4i.android.widget.advrecyclerview.animator.GeneralItemAnimator
 import com.h6ah4i.android.widget.advrecyclerview.animator.RefactoredDefaultItemAnimator
 import com.h6ah4i.android.widget.advrecyclerview.draggable.RecyclerViewDragDropManager
@@ -22,7 +20,6 @@ import com.sothree.slidinguppanel.SlidingUpPanelLayout
 import com.sothree.slidinguppanel.SlidingUpPanelLayout.PanelState
 import player.phonograph.R
 import player.phonograph.adapter.base.MediaEntryViewHolder
-import player.phonograph.adapter.song.PlayingQueueAdapter
 import player.phonograph.databinding.FragmentCardPlayerBinding
 import player.phonograph.helper.MusicPlayerRemote
 import player.phonograph.helper.menu.SongMenuHelper.ClickMenuListener
@@ -56,10 +53,6 @@ class CardPlayerFragment :
     private lateinit var impl: Impl
 
     private lateinit var playbackControlsFragment: CardPlayerPlaybackControlsFragment // setUpSubFragments()
-    private var layoutManager: LinearLayoutManager? = null
-    private var playingQueueAdapter: PlayingQueueAdapter? = null
-    private var wrappedAdapter: RecyclerView.Adapter<*>? = null
-    private var recyclerViewDragDropManager: RecyclerViewDragDropManager? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         impl = (if (isLandscape(resources)) LandscapeImpl(this) else PortraitImpl(this))
@@ -72,7 +65,6 @@ class CardPlayerFragment :
         impl.init()
         setUpPlayerToolbar()
         setUpSubFragments()
-        setUpRecyclerView()
 
         viewBinding.playerSlidingLayout.let { slidingLayout ->
             slidingLayout.addPanelSlideListener(this)
@@ -90,18 +82,8 @@ class CardPlayerFragment :
     }
 
     override fun onDestroyView() {
-        if (recyclerViewDragDropManager != null) {
-            recyclerViewDragDropManager!!.release()
-            recyclerViewDragDropManager = null
-        }
         viewBinding.playerRecyclerView.itemAnimator = null
         viewBinding.playerRecyclerView.adapter = null
-        if (wrappedAdapter != null) {
-            WrapperAdapterUtils.releaseAll(wrappedAdapter)
-            wrappedAdapter = null
-        }
-        playingQueueAdapter = null
-        layoutManager = null
         super.onDestroyView()
     }
 
@@ -179,19 +161,8 @@ class CardPlayerFragment :
         viewBinding.playerToolbar.setOnMenuItemClickListener(this)
     }
 
-    private fun setUpRecyclerView() {
-        recyclerViewDragDropManager = RecyclerViewDragDropManager()
+    override fun implementRecyclerView() {
         val animator: GeneralItemAnimator = RefactoredDefaultItemAnimator()
-        playingQueueAdapter = PlayingQueueAdapter(
-            (requireActivity() as AppCompatActivity),
-            MusicPlayerRemote.getPlayingQueue(),
-            MusicPlayerRemote.getPosition(),
-            R.layout.item_list,
-            false,
-            null
-        )
-        wrappedAdapter = recyclerViewDragDropManager!!.createWrappedAdapter(playingQueueAdapter!!)
-        layoutManager = LinearLayoutManager(activity)
         viewBinding.playerRecyclerView.layoutManager = layoutManager
         viewBinding.playerRecyclerView.adapter = wrappedAdapter
         viewBinding.playerRecyclerView.itemAnimator = animator
