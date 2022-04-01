@@ -18,6 +18,7 @@ import player.phonograph.model.Song
 import player.phonograph.model.lyrics2.AbsLyrics
 import player.phonograph.model.lyrics2.DEFAULT_TITLE
 import player.phonograph.model.lyrics2.LyricsPack
+import player.phonograph.model.lyrics2.TextLyrics
 import util.mdcolor.ColorUtil
 import util.mdcolor.pref.ThemeColor
 
@@ -53,7 +54,7 @@ class LyricsDialog : DialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val lyrics = lyricsPack.getLyrics()!!
+        val lyrics = lyricsPack.getLyrics()?:TextLyrics.from("Empty Lyrics!")
         val title: String = if (lyrics.getTitle() != DEFAULT_TITLE) lyrics.getTitle() else song.title
         binding.title.text = title
 
@@ -72,32 +73,6 @@ class LyricsDialog : DialogFragment() {
         )
     }
 
-/*
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        requireArguments().let {
-            song = it.getParcelable(SONG)!!
-            lyricsPack = it.getParcelable(LYRICS_PACK)!!
-            if (lyricsPack.isEmpty()) return MaterialDialog(requireActivity()).message(text = getString(R.string.empty))
-        }
-
-        val lyrics = lyricsPack.getLyrics()!!
-
-        val title: String = if (lyrics.getTitle() != DEFAULT_TITLE) lyrics.getTitle() else song.title
-
-        _viewBinding = DialogLyricsBinding.inflate(layoutInflater)
-
-        val dialog = MaterialDialog(requireActivity())
-            .title(text = title)
-            .positiveButton { dismiss() }
-            .customView(view = binding.root, horizontalPadding = true)
-
-        setUpRecycleView(
-            lyrics, dialog.getCustomView().findViewById(R.id.recycler_view_lyrics)
-        )
-
-        return dialog
-    }
-*/
     private fun setUpRecycleView(lyrics: AbsLyrics) {
         linearLayoutManager = LinearLayoutManager(requireActivity(), RecyclerView.VERTICAL, false)
         lyricsAdapter = LyricsAdapter(requireActivity(), lyrics.getLyricsTimeArray(), lyrics.getLyricsLineArray(), dialog)
@@ -119,9 +94,9 @@ class LyricsDialog : DialogFragment() {
         binding.chipExternalWithSuffixLyrics.chipBackgroundColor = backgroundCsl
     }
 
-    val accentColor by lazy { ThemeColor.accentColor(App.instance) }
-    val primaryColor by lazy { ThemeColor.primaryColor(App.instance) }
-    val textColor by lazy { ThemeColor.textColorSecondary(App.instance) }
+    private val accentColor by lazy { ThemeColor.accentColor(App.instance) }
+    private val primaryColor by lazy { ThemeColor.primaryColor(App.instance) }
+    private val textColor by lazy { ThemeColor.textColorSecondary(App.instance) }
 
     private val backgroundCsl: ColorStateList by lazy {
         ColorStateList(
@@ -134,6 +109,7 @@ class LyricsDialog : DialogFragment() {
     }
 
     override fun onStart() {
+        // set up size
         requireDialog().window!!.attributes =
             requireDialog().window!!.let { window ->
                 window.attributes.apply {
@@ -152,7 +128,6 @@ class LyricsDialog : DialogFragment() {
 
     companion object {
         private const val SONG = "song"
-        private const val LYRICS = "lyrics"
         private const val LYRICS_PACK = "lyrics_pack"
 
         fun create(lyricsPack: LyricsPack, song: Song): LyricsDialog =
