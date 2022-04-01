@@ -1,5 +1,7 @@
 package player.phonograph.dialogs
 
+import android.content.res.ColorStateList
+import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,6 +10,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.adapter.LyricsAdapter
 import player.phonograph.databinding.DialogLyricsBinding
@@ -15,6 +18,7 @@ import player.phonograph.model.Song
 import player.phonograph.model.lyrics2.AbsLyrics
 import player.phonograph.model.lyrics2.DEFAULT_TITLE
 import player.phonograph.model.lyrics2.LyricsPack
+import util.mdcolor.pref.ThemeColor
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
@@ -59,6 +63,7 @@ class LyricsDialog : DialogFragment() {
                 setColor(requireContext().theme.obtainStyledAttributes(intArrayOf(R.attr.colorBackgroundFloating)).getColor(0, 0))
             }
         )
+        initChip()
     }
 /*
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -94,6 +99,32 @@ class LyricsDialog : DialogFragment() {
                 layoutManager = this@LyricsDialog.linearLayoutManager
                 adapter = this@LyricsDialog.lyricsAdapter
             }
+    }
+
+    private fun initChip() {
+        binding.chipEmbeddedLyrics.chipStrokeColor = ColorStateList.valueOf(accentColor)
+        binding.chipExternalLyrics.chipStrokeColor = ColorStateList.valueOf(accentColor)
+        binding.chipExternalWithSuffixLyrics.chipStrokeColor = ColorStateList.valueOf(accentColor)
+
+        binding.chipEmbeddedLyrics.chipBackgroundColor = backgroundCsl
+        binding.chipExternalLyrics.chipBackgroundColor = backgroundCsl
+        binding.chipExternalWithSuffixLyrics.chipBackgroundColor = backgroundCsl
+    }
+
+    val accentColor by lazy { ThemeColor.accentColor(App.instance) }
+    val primaryColor by lazy { ThemeColor.primaryColor(App.instance) }
+    val textColor by lazy { ThemeColor.textColorSecondary(App.instance) }
+
+    private val backgroundCsl: ColorStateList by lazy {
+        ColorStateList(
+            arrayOf(
+                intArrayOf(android.R.attr.state_enabled),
+                intArrayOf(-android.R.attr.state_enabled),
+                intArrayOf(android.R.attr.state_selected),
+                intArrayOf()
+            ),
+            intArrayOf(Color.TRANSPARENT, Color.TRANSPARENT, accentColor, Color.TRANSPARENT)
+        )
     }
 
     override fun onStart() {

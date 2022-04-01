@@ -25,6 +25,41 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@id/constraint_layout" />
 
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/types"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:singleLine="true"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/title">
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chip_embedded_lyrics"
+                style="@style/Widget.MaterialComponents.Chip.Choice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="false"
+                android:text="embedded" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chip_external_lyrics"
+                style="@style/Widget.MaterialComponents.Chip.Choice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="false"
+                android:text="external" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chip_externalWithSuffix_lyrics"
+                style="@style/Widget.MaterialComponents.Chip.Choice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="false"
+                android:text="externalWithSuffix" />
+
+        </com.google.android.material.chip.ChipGroup>
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_view_lyrics"
             android:layout_width="0dp"
@@ -33,7 +68,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/title" />
+            app:layout_constraintTop_toBottomOf="@id/types" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -50,7 +85,7 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/ok"
+            app:layout_constraintEnd_toStartOf="@id/ok"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
