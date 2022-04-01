@@ -12,10 +12,9 @@ import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import android.widget.ImageView
 import androidx.annotation.ColorInt
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import com.h6ah4i.android.widget.advrecyclerview.animator.GeneralItemAnimator
 import com.h6ah4i.android.widget.advrecyclerview.animator.RefactoredDefaultItemAnimator
-import com.h6ah4i.android.widget.advrecyclerview.draggable.RecyclerViewDragDropManager
-import com.h6ah4i.android.widget.advrecyclerview.utils.WrapperAdapterUtils
 import com.sothree.slidinguppanel.SlidingUpPanelLayout
 import com.sothree.slidinguppanel.SlidingUpPanelLayout.PanelState
 import player.phonograph.R
@@ -63,7 +62,6 @@ class CardPlayerFragment :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         impl.init()
-        setUpPlayerToolbar()
         setUpSubFragments()
 
         viewBinding.playerSlidingLayout.let { slidingLayout ->
@@ -154,12 +152,7 @@ class CardPlayerFragment :
             .apply { setCallbacks(this@CardPlayerFragment) }
     }
 
-    private fun setUpPlayerToolbar() {
-        viewBinding.playerToolbar.inflateMenu(R.menu.menu_player)
-        viewBinding.playerToolbar.setNavigationIcon(R.drawable.ic_close_white_24dp)
-        viewBinding.playerToolbar.setNavigationOnClickListener { requireActivity().onBackPressed() }
-        viewBinding.playerToolbar.setOnMenuItemClickListener(this)
-    }
+    override fun getImplToolbar(): Toolbar = viewBinding.playerToolbar
 
     override fun implementRecyclerView() {
         val animator: GeneralItemAnimator = RefactoredDefaultItemAnimator()

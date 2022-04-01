@@ -10,6 +10,7 @@ import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import android.widget.ImageView
 import androidx.annotation.ColorInt
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import com.h6ah4i.android.widget.advrecyclerview.animator.GeneralItemAnimator
 import com.h6ah4i.android.widget.advrecyclerview.animator.RefactoredDefaultItemAnimator
 import com.sothree.slidinguppanel.SlidingUpPanelLayout
@@ -59,7 +60,6 @@ class FlatPlayerFragment :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         impl.init()
-        setUpPlayerToolbar()
         setUpSubFragments()
 
         viewBinding.playerSlidingLayout?.let { slidingLayout ->
@@ -148,12 +148,7 @@ class FlatPlayerFragment :
             .apply { setCallbacks(this@FlatPlayerFragment) }
     }
 
-    private fun setUpPlayerToolbar() {
-        viewBinding.playerToolbar.inflateMenu(R.menu.menu_player)
-        viewBinding.playerToolbar.setNavigationIcon(R.drawable.ic_close_white_24dp)
-        viewBinding.playerToolbar.setNavigationOnClickListener { requireActivity().onBackPressed() }
-        viewBinding.playerToolbar.setOnMenuItemClickListener(this)
-    }
+    override fun getImplToolbar(): Toolbar = viewBinding.playerToolbar
 
     override fun implementRecyclerView() {
         val animator: GeneralItemAnimator = RefactoredDefaultItemAnimator()

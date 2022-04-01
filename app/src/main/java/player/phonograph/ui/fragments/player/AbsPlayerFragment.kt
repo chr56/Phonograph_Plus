@@ -52,6 +52,9 @@ abstract class AbsPlayerFragment :
     protected lateinit var wrappedAdapter: RecyclerView.Adapter<*>
     protected lateinit var recyclerViewDragDropManager: RecyclerViewDragDropManager
 
+    // toolbar
+    protected lateinit var playerToolbar: Toolbar
+
     override fun onAttach(context: Context) {
         super.onAttach(context)
         callbacks = try { context as Callbacks } catch (e: ClassCastException) { throw RuntimeException("${context.javaClass.simpleName} must implement ${Callbacks::class.java.simpleName}") }
@@ -74,7 +77,17 @@ abstract class AbsPlayerFragment :
         super.onViewCreated(view, savedInstanceState)
         initRecyclerView()
         implementRecyclerView()
+        initToolbar()
     }
+
+    private fun initToolbar() {
+        playerToolbar = getImplToolbar()
+        playerToolbar.inflateMenu(R.menu.menu_player)
+        playerToolbar.setNavigationIcon(R.drawable.ic_close_white_24dp)
+        playerToolbar.setNavigationOnClickListener { requireActivity().onBackPressed() }
+        playerToolbar.setOnMenuItemClickListener(this)
+    }
+    abstract fun getImplToolbar(): Toolbar
 
     protected abstract fun implementRecyclerView()
 
