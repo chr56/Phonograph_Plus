@@ -4,6 +4,7 @@ import android.content.res.ColorStateList
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
+import android.os.Message
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -21,6 +22,8 @@ import player.phonograph.model.lyrics2.AbsLyrics
 import player.phonograph.model.lyrics2.DEFAULT_TITLE
 import player.phonograph.model.lyrics2.LyricsPack
 import player.phonograph.model.lyrics2.TextLyrics
+import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
+import player.phonograph.ui.fragments.player.AbsPlayerFragment
 import util.mdcolor.ColorUtil
 import util.mdcolor.pref.ThemeColor
 
@@ -102,15 +105,28 @@ class LyricsDialog : DialogFragment() {
         for (chip in binding.types) {
             chip.setOnClickListener {
                 (chip as Chip).isChecked = true
-                when (chip.id) {
+                val lyrics = when (chip.id) {
                     R.id.chip_embedded_lyrics -> {
-                        lyricsPack.embedded!!.let { lyricsAdapter.update(it.getLyricsTimeArray(), it.getLyricsLineArray()) }
+                        lyricsPack.embedded!!
                     }
                     R.id.chip_external_lyrics -> {
-                        lyricsPack.external!!.let { lyricsAdapter.update(it.getLyricsTimeArray(), it.getLyricsLineArray()) }
+                        lyricsPack.external!!
                     }
                     R.id.chip_externalWithSuffix_lyrics -> {
-                        lyricsPack.externalWithSuffix!!.let { lyricsAdapter.update(it.getLyricsTimeArray(), it.getLyricsLineArray()) }
+                        lyricsPack.externalWithSuffix!!
+                    }
+                    else -> null
+                }
+                if (lyrics != null) {
+                    lyricsAdapter.update(lyrics.getLyricsTimeArray(), lyrics.getLyricsLineArray())
+                    val fragment = activity?.supportFragmentManager?.findFragmentByTag(AbsSlidingMusicPanelActivity.NOW_PLAYING_FRAGMENT)
+                    if (fragment != null && fragment is AbsPlayerFragment) {
+                        fragment.handler.sendMessage(
+                            Message.obtain(fragment.handler, AbsPlayerFragment.UPDATE_LYRICS).apply {
+                                what = AbsPlayerFragment.UPDATE_LYRICS
+                                data = Bundle().apply { putParcelable(AbsPlayerFragment.LYRICS, lyrics) }
+                            }
+                        )
                     }
                 }
             }

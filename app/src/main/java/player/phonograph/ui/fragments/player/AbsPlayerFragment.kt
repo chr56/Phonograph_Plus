@@ -2,6 +2,8 @@ package player.phonograph.ui.fragments.player
 
 import android.content.Context
 import android.content.Intent
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.view.MenuItem
 import android.view.View
@@ -35,9 +37,17 @@ abstract class AbsPlayerFragment :
     protected lateinit var playerAlbumCoverFragment: PlayerAlbumCoverFragment // setUpSubFragments() in derived class //todo make sure field gets inited
     protected val viewModel: PlayerFragmentViewModel by viewModels()
 
+    lateinit var handler: Handler
+
     override fun onAttach(context: Context) {
         super.onAttach(context)
         callbacks = try { context as Callbacks } catch (e: ClassCastException) { throw RuntimeException("${context.javaClass.simpleName} must implement ${Callbacks::class.java.simpleName}") }
+        handler = Handler(Looper.getMainLooper()) { msg ->
+            if (msg.what == UPDATE_LYRICS){
+               playerAlbumCoverFragment.setLyrics(msg.data.get(LYRICS) as AbsLyrics)
+            }
+            false
+        }
     }
 
     override fun onDetach() {
@@ -149,6 +159,12 @@ abstract class AbsPlayerFragment :
         }
     }
 
+    fun replaceLyrics(lyrics: AbsLyrics) =
+        backgroundCoroutine.launch(Dispatchers.Main) {
+            viewModel.currentLyrics = lyrics
+            updateLyrics(lyrics)
+        }
+
     protected abstract fun hideLyricsMenuItem()
     protected abstract fun showLyricsMenuItem()
 
@@ -216,6 +232,9 @@ abstract class AbsPlayerFragment :
 
     companion object {
         private var isToolbarShown = true
+
+        const val UPDATE_LYRICS = 1001
+        const val LYRICS = "lyrics"
     }
 
     internal interface Impl {

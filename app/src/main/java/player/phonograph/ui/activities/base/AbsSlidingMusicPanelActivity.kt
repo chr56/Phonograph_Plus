@@ -69,7 +69,7 @@ abstract class AbsSlidingMusicPanelActivity :
                 else -> CardPlayerFragment()
             } // must implement AbsPlayerFragment
 
-        supportFragmentManager.beginTransaction().replace(R.id.player_fragment_container, fragment).commit()
+        supportFragmentManager.beginTransaction().replace(R.id.player_fragment_container, fragment, NOW_PLAYING_FRAGMENT).commit()
         supportFragmentManager.executePendingTransactions()
 
         playerFragment = supportFragmentManager.findFragmentById(R.id.player_fragment_container) as AbsPlayerFragment?
@@ -268,4 +268,8 @@ abstract class AbsSlidingMusicPanelActivity :
 
     override val snackBarContainer: View
         protected get() = findViewById(R.id.content_container)
+
+    companion object {
+        const val NOW_PLAYING_FRAGMENT = "NowPlayingPlayerFragment"
+    }
 }
