@@ -52,15 +52,14 @@ class FlatPlayerFragment :
     private lateinit var playbackControlsFragment: FlatPlayerPlaybackControlsFragment // setUpSubFragments()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        _viewBinding = FragmentFlatPlayerBinding.inflate(inflater)
         impl = (if (isLandscape(resources)) LandscapeImpl(this) else PortraitImpl(this))
+        _viewBinding = FragmentFlatPlayerBinding.inflate(inflater)
         return viewBinding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         impl.init()
-        setUpSubFragments()
 
         viewBinding.playerSlidingLayout?.let { slidingLayout ->
             slidingLayout.addPanelSlideListener(this)
@@ -142,7 +141,7 @@ class FlatPlayerFragment :
         impl.updateCurrentSong(MusicPlayerRemote.getCurrentSong())
     }
 
-    private fun setUpSubFragments() {
+    override fun setUpSubFragments() {
         playbackControlsFragment = childFragmentManager.findFragmentById(R.id.playback_controls_fragment) as FlatPlayerPlaybackControlsFragment
         playerAlbumCoverFragment = (childFragmentManager.findFragmentById(R.id.player_album_cover_fragment) as PlayerAlbumCoverFragment)
             .apply { setCallbacks(this@FlatPlayerFragment) }

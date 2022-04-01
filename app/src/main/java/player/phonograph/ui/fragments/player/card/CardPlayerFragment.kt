@@ -62,7 +62,6 @@ class CardPlayerFragment :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         impl.init()
-        setUpSubFragments()
 
         viewBinding.playerSlidingLayout.let { slidingLayout ->
             slidingLayout.addPanelSlideListener(this)
@@ -146,7 +145,7 @@ class CardPlayerFragment :
         impl.updateCurrentSong(MusicPlayerRemote.getCurrentSong())
     }
 
-    private fun setUpSubFragments() {
+    override fun setUpSubFragments() {
         playbackControlsFragment = childFragmentManager.findFragmentById(R.id.playback_controls_fragment) as CardPlayerPlaybackControlsFragment
         playerAlbumCoverFragment = (childFragmentManager.findFragmentById(R.id.player_album_cover_fragment) as PlayerAlbumCoverFragment)
             .apply { setCallbacks(this@CardPlayerFragment) }

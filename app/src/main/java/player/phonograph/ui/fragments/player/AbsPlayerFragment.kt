@@ -41,7 +41,7 @@ abstract class AbsPlayerFragment :
 
     protected var callbacks: Callbacks? = null
         private set
-    protected lateinit var playerAlbumCoverFragment: PlayerAlbumCoverFragment // setUpSubFragments() in derived class //todo make sure field gets inited
+    protected lateinit var playerAlbumCoverFragment: PlayerAlbumCoverFragment // [this#setUpSubFragments()]
     protected val viewModel: PlayerFragmentViewModel by viewModels()
 
     lateinit var handler: Handler
@@ -76,20 +76,9 @@ abstract class AbsPlayerFragment :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initRecyclerView()
-        implementRecyclerView()
         initToolbar()
+        setUpSubFragments()
     }
-
-    private fun initToolbar() {
-        playerToolbar = getImplToolbar()
-        playerToolbar.inflateMenu(R.menu.menu_player)
-        playerToolbar.setNavigationIcon(R.drawable.ic_close_white_24dp)
-        playerToolbar.setNavigationOnClickListener { requireActivity().onBackPressed() }
-        playerToolbar.setOnMenuItemClickListener(this)
-    }
-    abstract fun getImplToolbar(): Toolbar
-
-    protected abstract fun implementRecyclerView()
 
     private fun initRecyclerView() {
         layoutManager = LinearLayoutManager(requireActivity())
@@ -103,7 +92,11 @@ abstract class AbsPlayerFragment :
         )
         recyclerViewDragDropManager = RecyclerViewDragDropManager()
         wrappedAdapter = recyclerViewDragDropManager.createWrappedAdapter(playingQueueAdapter)
+        implementRecyclerView()
     }
+    protected abstract fun implementRecyclerView()
+
+    abstract fun setUpSubFragments()
 
     override fun onDestroy() {
         super.onDestroy()
@@ -232,25 +225,20 @@ abstract class AbsPlayerFragment :
     }
     protected abstract fun updateFavoriteIcon(isFavorite: Boolean)
 
-    protected var isToolbarShown: Boolean
-        get() = Companion.isToolbarShown
-        set(toolbarShown) {
-            Companion.isToolbarShown = toolbarShown
-        }
+    //
+    // Toolbar
+    //
 
-    protected fun showToolbar(toolbar: View?) {
-        if (toolbar == null) return
-        isToolbarShown = true
-        toolbar.visibility = View.VISIBLE
-        toolbar.animate().alpha(1f).duration = PlayerAlbumCoverFragment.VISIBILITY_ANIM_DURATION.toLong()
+    private fun initToolbar() {
+        playerToolbar = getImplToolbar()
+        playerToolbar.inflateMenu(R.menu.menu_player)
+        playerToolbar.setNavigationIcon(R.drawable.ic_close_white_24dp)
+        playerToolbar.setNavigationOnClickListener { requireActivity().onBackPressed() }
+        playerToolbar.setOnMenuItemClickListener(this)
     }
+    abstract fun getImplToolbar(): Toolbar
 
-    protected fun hideToolbar(toolbar: View?) {
-        if (toolbar == null) return
-        isToolbarShown = false
-        toolbar.animate().alpha(0f).setDuration(PlayerAlbumCoverFragment.VISIBILITY_ANIM_DURATION.toLong())
-            .withEndAction { toolbar.visibility = View.GONE }
-    }
+    private var isToolbarShown: Boolean = true
 
     protected fun toggleToolbar(toolbar: View?) {
         if (isToolbarShown) {
@@ -259,11 +247,24 @@ abstract class AbsPlayerFragment :
             showToolbar(toolbar)
         }
     }
+    private fun showToolbar(toolbar: View?) {
+        if (toolbar == null) return
+        isToolbarShown = true
+        toolbar.visibility = View.VISIBLE
+        toolbar.animate().alpha(1f).duration = PlayerAlbumCoverFragment.VISIBILITY_ANIM_DURATION.toLong()
+    }
+    private fun hideToolbar(toolbar: View?) {
+        if (toolbar == null) return
+        isToolbarShown = false
+        toolbar.animate().alpha(0f).setDuration(PlayerAlbumCoverFragment.VISIBILITY_ANIM_DURATION.toLong())
+            .withEndAction { toolbar.visibility = View.GONE }
+    }
 
     protected fun checkToggleToolbar(toolbar: View?) {
-        if (toolbar != null && !isToolbarShown && toolbar.visibility != View.GONE) {
+        if (toolbar == null)return
+        if (!isToolbarShown && toolbar.visibility != View.GONE) {
             hideToolbar(toolbar)
-        } else if (toolbar != null && isToolbarShown && toolbar.visibility != View.VISIBLE) {
+        } else if (isToolbarShown && toolbar.visibility != View.VISIBLE) {
             showToolbar(toolbar)
         }
     }
@@ -271,9 +272,7 @@ abstract class AbsPlayerFragment :
     protected val upNextAndQueueTime: String
         get() {
             val duration = MusicPlayerRemote.getQueueDurationMillis(MusicPlayerRemote.getPosition())
-            return MusicUtil.buildInfoString(
-                resources.getString(R.string.up_next), MusicUtil.getReadableDurationString(duration)
-            )
+            return MusicUtil.buildInfoString(resources.getString(R.string.up_next), MusicUtil.getReadableDurationString(duration))
         }
 
     abstract fun onShow()
@@ -285,8 +284,6 @@ abstract class AbsPlayerFragment :
     }
 
     companion object {
-        private var isToolbarShown = true
-
         const val UPDATE_LYRICS = 1001
         const val LYRICS = "lyrics"
     }
