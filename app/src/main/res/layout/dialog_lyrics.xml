@@ -29,30 +29,33 @@
             android:id="@+id/types"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            app:singleLine="true"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/title">
+            app:layout_constraintTop_toBottomOf="@id/title"
+            app:singleLine="true"
+            app:singleSelection="true">
 
             <com.google.android.material.chip.Chip
                 android:id="@+id/chip_embedded_lyrics"
-                style="@style/Widget.MaterialComponents.Chip.Choice"
+                style="@style/Widget.Phonograph.Chip.Choice"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:checked="false"
-                android:text="embedded" />
+                android:text="embedded"
+                app:chipBackgroundColor="@color/defaultFooterColor" />
 
             <com.google.android.material.chip.Chip
                 android:id="@+id/chip_external_lyrics"
-                style="@style/Widget.MaterialComponents.Chip.Choice"
+                style="@style/Widget.Phonograph.Chip.Choice"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:checked="false"
-                android:text="external" />
+                android:text="external"
+                app:chipBackgroundColor="@color/defaultFooterColor" />
 
             <com.google.android.material.chip.Chip
                 android:id="@+id/chip_externalWithSuffix_lyrics"
-                style="@style/Widget.MaterialComponents.Chip.Choice"
+                style="@style/Widget.Phonograph.Chip.Choice"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:checked="false"

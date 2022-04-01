@@ -3,6 +3,18 @@
 <!-- Copyright (c) 2022 chr_56  -->
 
 <resources>
+
+    <style name="Widget.Phonograph.Chip.Choice" parent="Widget.MaterialComponents.Chip.Choice">
+        <item name="chipBackgroundColor">@color/defaultFooterColor</item>
+        <item name="android:textColor">@color/dialog_button_color</item>
+        <item name="chipStrokeWidth">2dp</item>
+        <item name="materialThemeOverlay">@style/ThemeOverlay.Phonograph.Chip.Choice</item>
+    </style>
+
+    <style name="ThemeOverlay.Phonograph.Chip.Choice" parent="">
+        <item name="elevationOverlayEnabled">false</item>
+    </style>
+
     <style name="Phonograph_TextButton">
         <item name="android:background">@null</item>
         <item name="android:textSize">14sp</item>

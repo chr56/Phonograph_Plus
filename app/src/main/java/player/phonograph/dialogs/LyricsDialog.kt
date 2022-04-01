@@ -18,6 +18,7 @@ import player.phonograph.model.Song
 import player.phonograph.model.lyrics2.AbsLyrics
 import player.phonograph.model.lyrics2.DEFAULT_TITLE
 import player.phonograph.model.lyrics2.LyricsPack
+import util.mdcolor.ColorUtil
 import util.mdcolor.pref.ThemeColor
 
 /**
@@ -34,6 +35,16 @@ class LyricsDialog : DialogFragment() {
     private lateinit var lyricsAdapter: LyricsAdapter
     private lateinit var linearLayoutManager: LinearLayoutManager
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        requireArguments().let {
+            song = it.getParcelable(SONG)!!
+            lyricsPack = it.getParcelable(LYRICS_PACK)!!
+//            if (lyricsPack.isEmpty())
+        }
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _viewBinding = DialogLyricsBinding.inflate(layoutInflater)
         return binding.root
@@ -42,17 +53,13 @@ class LyricsDialog : DialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        requireArguments().let {
-            song = it.getParcelable(SONG)!!
-            lyricsPack = it.getParcelable(LYRICS_PACK)!!
-            if (lyricsPack.isEmpty()) return // todo
-        }
-
         val lyrics = lyricsPack.getLyrics()!!
         val title: String = if (lyrics.getTitle() != DEFAULT_TITLE) lyrics.getTitle() else song.title
         binding.title.text = title
 
         setUpRecycleView(lyrics)
+
+        initChip()
 
         binding.ok.setOnClickListener { requireDialog().dismiss() }
         binding.viewStub.setOnClickListener { requireDialog().dismiss() }
@@ -63,8 +70,8 @@ class LyricsDialog : DialogFragment() {
                 setColor(requireContext().theme.obtainStyledAttributes(intArrayOf(R.attr.colorBackgroundFloating)).getColor(0, 0))
             }
         )
-        initChip()
     }
+
 /*
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         requireArguments().let {
@@ -102,9 +109,10 @@ class LyricsDialog : DialogFragment() {
     }
 
     private fun initChip() {
-        binding.chipEmbeddedLyrics.chipStrokeColor = ColorStateList.valueOf(accentColor)
-        binding.chipExternalLyrics.chipStrokeColor = ColorStateList.valueOf(accentColor)
-        binding.chipExternalWithSuffixLyrics.chipStrokeColor = ColorStateList.valueOf(accentColor)
+        val primaryColorTransparent = ColorUtil.withAlpha(primaryColor, 0.75f)
+        binding.chipEmbeddedLyrics.chipStrokeColor = ColorStateList.valueOf(primaryColorTransparent)
+        binding.chipExternalLyrics.chipStrokeColor = ColorStateList.valueOf(primaryColorTransparent)
+        binding.chipExternalWithSuffixLyrics.chipStrokeColor = ColorStateList.valueOf(primaryColorTransparent)
 
         binding.chipEmbeddedLyrics.chipBackgroundColor = backgroundCsl
         binding.chipExternalLyrics.chipBackgroundColor = backgroundCsl
@@ -119,11 +127,9 @@ class LyricsDialog : DialogFragment() {
         ColorStateList(
             arrayOf(
                 intArrayOf(android.R.attr.state_enabled),
-                intArrayOf(-android.R.attr.state_enabled),
-                intArrayOf(android.R.attr.state_selected),
                 intArrayOf()
             ),
-            intArrayOf(Color.TRANSPARENT, Color.TRANSPARENT, accentColor, Color.TRANSPARENT)
+            intArrayOf(Color.TRANSPARENT, Color.TRANSPARENT)
         )
     }
 
