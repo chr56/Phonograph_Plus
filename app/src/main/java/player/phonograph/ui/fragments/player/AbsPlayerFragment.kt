@@ -126,11 +126,11 @@ abstract class AbsPlayerFragment :
         }
     }
 
-    private fun updateLyrics(lyrics: AbsLyrics) = runBlocking(Dispatchers.Main) {
+    protected fun updateLyrics(lyrics: AbsLyrics) = runBlocking(Dispatchers.Main) {
         playerAlbumCoverFragment.setLyrics(lyrics)
         showLyricsMenuItem()
     }
-    private fun clearLyrics() = backgroundCoroutine.launch(Dispatchers.Main) {
+    protected fun clearLyrics() = backgroundCoroutine.launch(Dispatchers.Main) {
         playerAlbumCoverFragment.setLyrics(null)
         viewModel.currentLyrics = null
         hideLyricsMenuItem()
@@ -140,11 +140,10 @@ abstract class AbsPlayerFragment :
         clearLyrics()
         backgroundCoroutine.launch {
             // wait
-            var timeout = 10
-            while (viewModel.lyricsPack == null || timeout <= 0) {
-                delay(320)
-                timeout -= 1
+            withTimeout(6000) {
+                while (viewModel.lyricsPack == null) delay(120)
             }
+            delay(100)
             // refresh anyway
             viewModel.currentLyrics?.let { updateLyrics(it) }
         }
