@@ -23,6 +23,12 @@ class LyricsAdapter(private val context: Activity, stamps: IntArray, lines: Arra
         val time: TextView = itemView.findViewById(R.id.dialog_lyrics_times)
     }
 
+    fun update(stamps: IntArray, lines: Array<String>) {
+        lyrics = lines
+        timeStamps = stamps
+        notifyDataSetChanged()
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH {
         return VH(LayoutInflater.from(parent.context).inflate(R.layout.item_lyrics, parent, false))
     }

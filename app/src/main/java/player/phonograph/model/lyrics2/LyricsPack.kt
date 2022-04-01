@@ -35,6 +35,14 @@ data class LyricsPack(val embedded: AbsLyrics?, val external: AbsLyrics?, val ex
         }
         return null
     }
+    fun getByType(type: Int): AbsLyrics? {
+        return when (type) {
+            EMBEDDED -> embedded
+            EXTERNAL -> external
+            EXTERNAL_WITH_SUFFIX -> externalWithSuffix
+            else -> null
+        }
+    }
 
     constructor(parcel: Parcel) : this(
         parcel.readParcelable(AbsLyrics::class.java.classLoader),
@@ -58,5 +66,10 @@ data class LyricsPack(val embedded: AbsLyrics?, val external: AbsLyrics?, val ex
                 return arrayOfNulls(size)
             }
         }
+        const val EMBEDDED = 0
+        const val EXTERNAL = 1
+        const val EXTERNAL_WITH_SUFFIX = 2
+
+        const val NO_LYRICS = -1
     }
 }

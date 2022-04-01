@@ -363,4 +363,6 @@
     <plurals name="msg_files_deletion_summary">
         <item quantity="other"><![CDATA[是否删除 <b>%1$d</b> 个文件?<br/> <b>此操作不能撤销！</b> <br/>]]></item>
     </plurals>
+    <string name="embedded_lyrics">内嵌歌词</string>
+    <string name="external_lyrics">外部歌词</string>
 </resources>

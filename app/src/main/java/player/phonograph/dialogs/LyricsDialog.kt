@@ -7,9 +7,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.iterator
 import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.chip.Chip
 import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.adapter.LyricsAdapter
@@ -32,7 +34,9 @@ class LyricsDialog : DialogFragment() {
 
     private lateinit var song: Song
     private lateinit var lyricsPack: LyricsPack
-
+    private lateinit var lyricsDisplay: AbsLyrics
+    private var lyricsDisplayType: Int = LyricsPack.NO_LYRICS
+    private val availableLyricTypes: MutableSet<Int> = HashSet(1)
     private lateinit var lyricsAdapter: LyricsAdapter
     private lateinit var linearLayoutManager: LinearLayoutManager
 
@@ -52,28 +56,24 @@ class LyricsDialog : DialogFragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+        handleLyrics()
 
-        val lyrics = lyricsPack.getLyrics()?:TextLyrics.from("Empty Lyrics!")
-        val title: String = if (lyrics.getTitle() != DEFAULT_TITLE) lyrics.getTitle() else song.title
-        binding.title.text = title
+        binding.title.text = if (lyricsDisplay.getTitle() != DEFAULT_TITLE) lyricsDisplay.getTitle() else song.title
+        setupChips()
+        initRecycleView(lyricsDisplay)
 
-        setUpRecycleView(lyrics)
-
-        initChip()
-
-        binding.ok.setOnClickListener { requireDialog().dismiss() }
-        binding.viewStub.setOnClickListener { requireDialog().dismiss() }
-
+        // corner
         requireDialog().window!!.setBackgroundDrawable(
             GradientDrawable().apply {
                 this.cornerRadius = 0f
                 setColor(requireContext().theme.obtainStyledAttributes(intArrayOf(R.attr.colorBackgroundFloating)).getColor(0, 0))
             }
         )
+        binding.ok.setOnClickListener { requireDialog().dismiss() }
+        binding.viewStub.setOnClickListener { requireDialog().dismiss() }
     }
 
-    private fun setUpRecycleView(lyrics: AbsLyrics) {
+    private fun initRecycleView(lyrics: AbsLyrics) {
         linearLayoutManager = LinearLayoutManager(requireActivity(), RecyclerView.VERTICAL, false)
         lyricsAdapter = LyricsAdapter(requireActivity(), lyrics.getLyricsTimeArray(), lyrics.getLyricsLineArray(), dialog)
         binding.recyclerViewLyrics
@@ -83,7 +83,39 @@ class LyricsDialog : DialogFragment() {
             }
     }
 
-    private fun initChip() {
+    private fun handleLyrics() {
+        if (lyricsPack.external != null) { availableLyricTypes.add(LyricsPack.EXTERNAL) }
+        if (lyricsPack.embedded != null) { availableLyricTypes.add(LyricsPack.EMBEDDED) }
+        if (lyricsPack.externalWithSuffix != null) { availableLyricTypes.add(LyricsPack.EXTERNAL_WITH_SUFFIX) }
+        if (lyricsPack.isEmpty()) { availableLyricTypes.add(LyricsPack.NO_LYRICS) }
+
+        lyricsDisplayType = availableLyricTypes.first()
+        lyricsDisplay = lyricsPack.getByType(availableLyricTypes.first()) ?: TextLyrics.from("Empty Lyrics!")
+    }
+
+    private fun setupChips() {
+        for (type in availableLyricTypes) {
+            changeChipVisibility(type, View.VISIBLE)
+        }
+        setCheckStatus(lyricsDisplayType, true)
+
+        for (chip in binding.types) {
+            chip.setOnClickListener {
+                (chip as Chip).isChecked = true
+                when (chip.id) {
+                    R.id.chip_embedded_lyrics -> {
+                        lyricsPack.embedded!!.let { lyricsAdapter.update(it.getLyricsTimeArray(), it.getLyricsLineArray()) }
+                    }
+                    R.id.chip_external_lyrics -> {
+                        lyricsPack.external!!.let { lyricsAdapter.update(it.getLyricsTimeArray(), it.getLyricsLineArray()) }
+                    }
+                    R.id.chip_externalWithSuffix_lyrics -> {
+                        lyricsPack.externalWithSuffix!!.let { lyricsAdapter.update(it.getLyricsTimeArray(), it.getLyricsLineArray()) }
+                    }
+                }
+            }
+        }
+
         val primaryColorTransparent = ColorUtil.withAlpha(primaryColor, 0.75f)
         binding.chipEmbeddedLyrics.chipStrokeColor = ColorStateList.valueOf(primaryColorTransparent)
         binding.chipExternalLyrics.chipStrokeColor = ColorStateList.valueOf(primaryColorTransparent)
@@ -106,6 +138,33 @@ class LyricsDialog : DialogFragment() {
             ),
             intArrayOf(Color.TRANSPARENT, Color.TRANSPARENT)
         )
+    }
+
+    private fun changeChipVisibility(type: Int, visibility: Int) {
+        when (type) {
+            LyricsPack.EMBEDDED -> {
+                binding.chipEmbeddedLyrics.visibility = visibility
+            }
+            LyricsPack.EXTERNAL -> {
+                binding.chipExternalLyrics.visibility = visibility
+            }
+            LyricsPack.EXTERNAL_WITH_SUFFIX -> {
+                binding.chipExternalWithSuffixLyrics.visibility = visibility
+            }
+        }
+    }
+    private fun setCheckStatus(type: Int, state: Boolean) {
+        when (type) {
+            LyricsPack.EMBEDDED -> {
+                binding.chipEmbeddedLyrics.isChecked = state
+            }
+            LyricsPack.EXTERNAL -> {
+                binding.chipExternalLyrics.isChecked = state
+            }
+            LyricsPack.EXTERNAL_WITH_SUFFIX -> {
+                binding.chipExternalWithSuffixLyrics.isChecked = state
+            }
+        }
     }
 
     override fun onStart() {

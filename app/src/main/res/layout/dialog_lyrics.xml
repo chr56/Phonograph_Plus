@@ -41,7 +41,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:checked="false"
-                android:text="embedded"
+                android:text="@string/embedded_lyrics"
+                android:visibility="gone"
                 app:chipBackgroundColor="@color/defaultFooterColor" />
 
             <com.google.android.material.chip.Chip
@@ -50,7 +51,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:checked="false"
-                android:text="external"
+                android:text="@string/external_lyrics"
+                android:visibility="gone"
                 app:chipBackgroundColor="@color/defaultFooterColor" />
 
             <com.google.android.material.chip.Chip
@@ -59,7 +61,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:checked="false"
-                android:text="externalWithSuffix" />
+                android:text="@string/external_lyrics"
+                android:visibility="gone" />
 
         </com.google.android.material.chip.ChipGroup>
 

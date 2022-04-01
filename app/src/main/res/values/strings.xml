@@ -379,4 +379,6 @@
         <item quantity="one"><![CDATA[Delete <b>%1$d</b> file from the device?<br/> <b>This action can not be retracted!</b> <br/>]]></item>
         <item quantity="other"><![CDATA[Delete <b>%1$d</b> files from the device?<br/> <b>This action can not be retracted!</b> <br/>]]></item>
     </plurals>
+    <string name="embedded_lyrics">embedded lyrics</string>
+    <string name="external_lyrics">external lyrics</string>
 </resources>
