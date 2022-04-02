@@ -6,11 +6,15 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />
+    <uses-permission
+        android:name="android.permission.MANAGE_EXTERNAL_STORAGE"
+        tools:ignore="ScopedStorage" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.BROADCAST_STICKY" />
-    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
+    <uses-permission
+        android:name="android.permission.WRITE_SETTINGS"
+        tools:ignore="ProtectedPermissions" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
@@ -21,12 +25,13 @@
         android:hasFragileUserData="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
+        android:requestLegacyExternalStorage="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Phonograph.Auto"
-        android:requestLegacyExternalStorage="true"
         tools:ignore="UnusedAttribute">
-        <activity android:name=".ui.activities.MainActivity"
+        <activity
+            android:name=".ui.activities.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -127,21 +132,20 @@
             android:name=".appshortcuts.AppShortcutLauncherActivity"
             android:launchMode="singleInstance"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
-        <activity android:name=".ui.activities.CrashActivity"
-            android:process="player.phonograph.crash"
+
+        <activity
+            android:name=".ui.activities.CrashActivity"
+            android:exported="true"
             android:launchMode="singleInstance"
-            android:exported="true">
-<!--            <intent-filter>-->
-<!--                <action android:name="player.phonograph.CRASH_HANDLER"/>-->
-<!--                <category android:name="android.intent.category.DEFAULT" />-->
-<!--            </intent-filter>-->
-        </activity>
+            android:process="player.phonograph.crash" />
+
         <service
             android:name=".service.MusicService"
             android:enabled="true"
             android:foregroundServiceType="mediaPlayback" />
 
-        <receiver android:name=".service.MediaButtonIntentReceiver"
+        <receiver
+            android:name=".service.MediaButtonIntentReceiver"
             android:exported="false">
             <intent-filter>
                 <action android:name="android.intent.action.MEDIA_BUTTON" />
@@ -165,7 +169,8 @@
             android:value="true" />
 
         <!-- Widgets -->
-        <receiver android:name=".appwidgets.BootReceiver"
+        <receiver
+            android:name=".appwidgets.BootReceiver"
             android:exported="false">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
