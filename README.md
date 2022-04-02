@@ -56,6 +56,8 @@ This is a fork! -> [原仓库/Original Project Repo](https://github.com/kabouzei
 
 * 适配" [墨·状态栏歌词](https://github.com/577fkj/StatusBarLyric) "Xposed模块 | Co-work-with/Support
   StatusBar Lyric Xposed Module (api)
+  
+* 支持导出内部数据库以供备份 | Export internal databases for the need of backup.
 
 * // todo
 
@@ -74,14 +76,16 @@ Translate Phonograph Plus into your language -> [crowdin](https://crowdin.com/pr
 **TO-DO list**
 
 - [ ] 完成 Readme . md
+
+- [ ] 重构后台音乐服务
+
+- [x] 重构歌词系统
   
 - [ ] 将歌曲“详情” 迁移至 Compose ❗WIP (基本信息显示)
   
 - [ ] 重构歌曲封面加载Glide模块
   
 - [ ] 重构更新对话框
-  
-- [ ] 重构歌词系统
   
 - [ ] 重构媒体库UI ❗WIP
 
