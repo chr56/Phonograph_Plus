@@ -23,7 +23,6 @@ class PlayingNotificationImpl24(service: MusicService) : PlayingNotification(ser
 
     @Synchronized
     override fun update() {
-        stopped = false
 
         val song = service.currentSong
         val isPlaying = service.isPlaying
@@ -107,7 +106,8 @@ class PlayingNotificationImpl24(service: MusicService) : PlayingNotification(ser
                                 }
                             }
 
-                        if (!stopped) updateNotifyModeAndPostNotification(notificationBuilder.build()) // notification has been stopped before loading was finished
+
+                        updateNotification(notificationBuilder.build()) // notification has been stopped before loading was finished
                     }
                 })
         }

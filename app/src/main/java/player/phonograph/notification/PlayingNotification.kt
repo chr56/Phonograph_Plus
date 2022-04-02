@@ -37,19 +37,22 @@ abstract class PlayingNotification {
 
     private val currentMode
         get() = if (service.isPlaying) MODE_FOREGROUND else MODE_BACKGROUND
+    private val availability
+        get() = !service.isIdle
     abstract fun update()
-
-    @JvmField
-    protected var stopped = false
 
     @Synchronized
     fun stop() {
-        stopped = true
         service.stopForeground(true)
         notificationManager.cancel(NOTIFICATION_ID)
     }
 
-    protected fun updateNotifyModeAndPostNotification(notification: Notification) {
+    protected fun updateNotification(notification: Notification) {
+        if (!availability){
+            // service available/stopped
+            stop()
+            return
+        }
         when (currentMode) {
             MODE_FOREGROUND -> {
                 service.stopForeground(false)

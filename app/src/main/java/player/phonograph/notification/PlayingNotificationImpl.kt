@@ -29,7 +29,6 @@ class PlayingNotificationImpl(service: MusicService) : PlayingNotification(servi
     private var target: Target<BitmapPaletteWrapper>? = null
     @Synchronized
     override fun update() {
-        stopped = false
 
         val song = service.currentSong
         val isPlaying = service.isPlaying
@@ -110,7 +109,8 @@ class PlayingNotificationImpl(service: MusicService) : PlayingNotification(servi
                         }
                         setBackgroundColor(bfColor)
                         setNotificationContent(ColorUtil.isColorLight(bfColor))
-                        if (!stopped) updateNotifyModeAndPostNotification(notification) // notification has been stopped before loading was finished
+
+                        updateNotification(notification) // notification has been stopped before loading was finished
                     }
 
                     private fun setBackgroundColor(color: Int) {

@@ -470,6 +470,7 @@ public class MusicService extends Service implements SharedPreferences.OnSharedP
 
     private void quit() {
         pause();
+        isQuit = true;
         playingNotification.stop();
 
         closeAudioEffectSession();
@@ -498,6 +499,11 @@ public class MusicService extends Service implements SharedPreferences.OnSharedP
     public boolean isPlaying() {
         return playback != null && playback.isPlaying();
     }
+    private boolean isQuit = false;
+    public boolean isIdle(){
+        return isQuit;
+    }
+
 
     public int getPosition() {
         return position;
@@ -889,6 +895,7 @@ public class MusicService extends Service implements SharedPreferences.OnSharedP
                         playSongAt(getPosition());
                     } else {
                         playback.start();
+                        isQuit = false;
                         if (!becomingNoisyReceiverRegistered) {
                             registerReceiver(becomingNoisyReceiver, becomingNoisyReceiverIntentFilter);
                             becomingNoisyReceiverRegistered = true;
@@ -1127,8 +1134,10 @@ public class MusicService extends Service implements SharedPreferences.OnSharedP
                 updateMediaSessionMetaData(); // because playing queue size might have changed
                 saveState();
                 if (playingQueue.size() > 0) {
+                    isQuit = false;
                     prepareNext();
                 } else {
+                    isQuit = true;
                     playingNotification.stop();
                 }
                 break;
