@@ -55,8 +55,9 @@ import player.phonograph.glide.BlurTransformation;
 import player.phonograph.glide.SongGlideRequest;
 import player.phonograph.helper.ShuffleHelper;
 import player.phonograph.helper.StopWatch;
-import player.phonograph.model.playlist.Playlist;
 import player.phonograph.model.Song;
+import player.phonograph.model.lyrics2.LrcLyrics;
+import player.phonograph.model.playlist.Playlist;
 import player.phonograph.notification.PlayingNotification;
 import player.phonograph.notification.PlayingNotificationImpl;
 import player.phonograph.notification.PlayingNotificationImpl24;
@@ -382,6 +383,7 @@ public class MusicService extends Service implements SharedPreferences.OnSharedP
         Setting.Companion.getInstance().unregisterOnSharedPreferenceChangedListener(this);
         wakeLock.release();
 
+        refresher = null;
         sendBroadcast(new Intent("player.phonograph.PHONOGRAPH_MUSIC_SERVICE_DESTROYED"));
     }
 
@@ -1457,5 +1459,14 @@ public class MusicService extends Service implements SharedPreferences.OnSharedP
      */
     private void broadcastStopLyric() {
         App.getInstance().getLyricsService().stopLyric();
+    }
+
+    public void replaceLyrics(LrcLyrics lyrics) {
+        if (lyrics != null) {
+            refresher.replaceLyrics(lyrics);
+            refresher.start();
+        } else {
+            refresher.stop();
+        }
     }
 }
