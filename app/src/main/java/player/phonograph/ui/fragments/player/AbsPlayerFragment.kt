@@ -60,14 +60,16 @@ abstract class AbsPlayerFragment :
     override fun onAttach(context: Context) {
         super.onAttach(context)
         callbacks = try { context as Callbacks } catch (e: ClassCastException) { throw RuntimeException("${context.javaClass.simpleName} must implement ${Callbacks::class.java.simpleName}") }
-        handler = Handler(Looper.getMainLooper()) { msg ->
-            if (msg.what == UPDATE_LYRICS) {
-                val lyrics = msg.data.get(LYRICS) as AbsLyrics
-                playerAlbumCoverFragment.setLyrics(lyrics)
-                viewModel.forceReplaceLyrics(lyrics)
-            }
-            false
+        handler = Handler(Looper.getMainLooper(), handlerCallbacks)
+    }
+
+    private val handlerCallbacks = Handler.Callback { msg ->
+        if (msg.what == UPDATE_LYRICS) {
+            val lyrics = msg.data.get(LYRICS) as AbsLyrics
+            playerAlbumCoverFragment.setLyrics(lyrics)
+            viewModel.forceReplaceLyrics(lyrics)
         }
+        false
     }
 
     override fun onDetach() {
@@ -201,12 +203,6 @@ abstract class AbsPlayerFragment :
         playerAlbumCoverFragment.clearLyrics()
         hideLyricsMenuItem()
     }
-//    protected fun refreshLyrics() {
-//        viewModel.currentLyrics.also {
-//            if (it == null) hideLyrics()
-//            else showLyrics(it)
-//        }
-//    }
 
     protected fun monitorLyricsState() {
         backgroundCoroutine.launch {
@@ -237,7 +233,6 @@ abstract class AbsPlayerFragment :
     //
     // Toolbar
     //
-
     private fun initToolbar() {
         playerToolbar = getImplToolbar()
         playerToolbar.inflateMenu(R.menu.menu_player)
