@@ -55,7 +55,7 @@ abstract class PlayingNotification {
         }
         when (currentMode) {
             MODE_FOREGROUND -> {
-                service.stopForeground(false)
+                // service.stopForeground(false)
                 notificationManager.notify(NOTIFICATION_ID, notification)
                 service.startForeground(NOTIFICATION_ID, notification)
             }
