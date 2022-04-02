@@ -121,10 +121,6 @@ class CardPlayerFragment :
         updateFavoriteState(MusicPlayerRemote.getCurrentSong())
     }
 
-    override fun onPlayStateChanged() {
-        loadAndRefreshLyrics(MusicPlayerRemote.getCurrentSong())
-    }
-
     private fun updateQueue() {
         playingQueueAdapter!!.swapDataSet(MusicPlayerRemote.getPlayingQueue(), MusicPlayerRemote.getPosition())
         viewBinding.playerQueueSubHeader.text = upNextAndQueueTime
