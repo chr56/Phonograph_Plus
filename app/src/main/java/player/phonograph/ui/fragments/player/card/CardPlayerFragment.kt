@@ -136,8 +136,8 @@ class CardPlayerFragment :
     }
 
     private fun updateCurrentSong() {
-        impl.updateCurrentSong(MusicPlayerRemote.getCurrentSong())
         viewModel.currentSong = MusicPlayerRemote.getCurrentSong()
+        impl.onCurrentSongChanged()
     }
 
     override fun setUpSubFragments() {
@@ -308,7 +308,6 @@ class CardPlayerFragment :
 
     private class PortraitImpl(fragment: CardPlayerFragment) : BaseImpl(fragment) {
         var currentSongViewHolder: MediaEntryViewHolder? = null
-        var song: Song = Song.EMPTY_SONG
         override fun init() {
             currentSongViewHolder = MediaEntryViewHolder(fragment.requireView().findViewById(R.id.current_song))
             currentSongViewHolder!!.separator!!.visibility = View.VISIBLE
@@ -365,10 +364,9 @@ class CardPlayerFragment :
             (fragment.activity as AbsSlidingMusicPanelActivity?)!!.setAntiDragView(fragment.viewBinding.playerSlidingLayout.findViewById(R.id.player_panel))
         }
 
-        override fun updateCurrentSong(song: Song) {
-            this.song = song
-            currentSongViewHolder!!.title!!.text = song.title
-            currentSongViewHolder!!.text!!.text = MusicUtil.getSongInfoString(song)
+        override fun onCurrentSongChanged() {
+            currentSongViewHolder!!.title!!.text = fragment.viewModel.currentSong.title
+            currentSongViewHolder!!.text!!.text = MusicUtil.getSongInfoString(fragment.viewModel.currentSong)
         }
 
         override fun animateColorChange(newColor: Int) {
@@ -387,9 +385,9 @@ class CardPlayerFragment :
             (fragment.activity as AbsSlidingMusicPanelActivity?)!!.setAntiDragView(fragment.viewBinding.playerSlidingLayout.findViewById(R.id.player_panel))
         }
 
-        override fun updateCurrentSong(song: Song) {
-            fragment.viewBinding.playerToolbar.title = song.title
-            fragment.viewBinding.playerToolbar.subtitle = MusicUtil.getSongInfoString(song)
+        override fun onCurrentSongChanged() {
+            fragment.viewBinding.playerToolbar.title = fragment.viewModel.currentSong.title
+            fragment.viewBinding.playerToolbar.subtitle = MusicUtil.getSongInfoString(fragment.viewModel.currentSong)
         }
 
         override fun animateColorChange(newColor: Int) {

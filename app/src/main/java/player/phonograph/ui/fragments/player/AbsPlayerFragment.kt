@@ -291,7 +291,7 @@ abstract class AbsPlayerFragment :
 
     internal interface Impl {
         fun init()
-        fun updateCurrentSong(song: Song)
+        fun onCurrentSongChanged()
         fun animateColorChange(newColor: Int)
         fun setUpPanelAndAlbumCoverHeight()
     }
