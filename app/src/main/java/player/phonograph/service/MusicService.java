@@ -45,6 +45,7 @@ import java.util.List;
 import java.util.Random;
 
 import player.phonograph.App;
+import player.phonograph.BuildConfig;
 import player.phonograph.R;
 import player.phonograph.appwidgets.AppWidgetBig;
 import player.phonograph.appwidgets.AppWidgetCard;
@@ -251,7 +252,7 @@ public class MusicService extends Service implements SharedPreferences.OnSharedP
 
         PendingIntent mediaButtonReceiverPendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, mediaButtonIntent, PendingIntent.FLAG_IMMUTABLE);
 
-        mediaSession = new MediaSessionCompat(this, "Phonograph", mediaButtonReceiverComponentName, mediaButtonReceiverPendingIntent);
+        mediaSession = new MediaSessionCompat(this, BuildConfig.APPLICATION_ID, mediaButtonReceiverComponentName, mediaButtonReceiverPendingIntent);
         mediaSession.setCallback(new MediaSessionCompat.Callback() {
             @Override
             public void onPlay() {

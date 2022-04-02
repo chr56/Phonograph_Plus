@@ -19,8 +19,8 @@ abstract class PlayingNotification {
     companion object {
         const val NOTIFICATION_CHANNEL_ID = "playing_notification"
         private const val NOTIFICATION_ID = 1
-        private const val NOTIFY_MODE_FOREGROUND = 1
-        private const val NOTIFY_MODE_BACKGROUND = 0
+        private const val MODE_FOREGROUND = 1
+        private const val MODE_BACKGROUND = 0
     }
 
     private var notificationManager: NotificationManager
@@ -35,7 +35,8 @@ abstract class PlayingNotification {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) createNotificationChannel()
     }
 
-    private var notifyMode = NOTIFY_MODE_BACKGROUND
+    private val currentMode
+        get() = if (service.isPlaying) MODE_FOREGROUND else MODE_BACKGROUND
     abstract fun update()
 
     @JvmField
@@ -48,21 +49,17 @@ abstract class PlayingNotification {
         notificationManager.cancel(NOTIFICATION_ID)
     }
 
-    protected fun updateNotifyModeAndPostNotification(notification: Notification?) {
-        val newNotifyMode: Int = if (service.isPlaying) NOTIFY_MODE_FOREGROUND else NOTIFY_MODE_BACKGROUND
-
-        if (notifyMode != newNotifyMode && newNotifyMode == NOTIFY_MODE_BACKGROUND) {
-            service.stopForeground(false)
-        }
-        when (newNotifyMode) {
-            NOTIFY_MODE_FOREGROUND -> {
+    protected fun updateNotifyModeAndPostNotification(notification: Notification) {
+        when (currentMode) {
+            MODE_FOREGROUND -> {
+                service.stopForeground(false)
+                notificationManager.notify(NOTIFICATION_ID, notification)
                 service.startForeground(NOTIFICATION_ID, notification)
             }
-            NOTIFY_MODE_BACKGROUND -> {
+            MODE_BACKGROUND -> {
                 notificationManager.notify(NOTIFICATION_ID, notification)
             }
         }
-        notifyMode = newNotifyMode
     }
 
     @RequiresApi(26)
