@@ -5,7 +5,6 @@ on:
       - "test_*"
     paths-ignore:
       - "README.md"
-      - "version"
       - "version.json"
   workflow_dispatch:
 

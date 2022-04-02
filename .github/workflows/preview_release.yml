@@ -5,8 +5,10 @@ on:
       - "preview_*"
     paths-ignore:
       - "README.md"
-      - "version"
       - "version.json"
+      - '.github/workflows/preview_release.yml'
+      - '.github/workflows/action_test.yml'
+      - '.github/ISSUE_TEMPLATE/**'
 
 jobs:
   build:
