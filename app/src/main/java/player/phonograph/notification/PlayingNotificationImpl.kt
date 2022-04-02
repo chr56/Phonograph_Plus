@@ -1,8 +1,6 @@
 package player.phonograph.notification
 
 import android.app.PendingIntent
-import android.content.ComponentName
-import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Color
@@ -26,17 +24,18 @@ import player.phonograph.util.PhonographColorUtil
 import util.mdcolor.ColorUtil
 import util.mddesign.util.MaterialColorHelper
 
-class PlayingNotificationImpl : PlayingNotification() {
+class PlayingNotificationImpl(service: MusicService) : PlayingNotification(service) {
+
     private var target: Target<BitmapPaletteWrapper>? = null
     @Synchronized
     override fun update() {
         stopped = false
 
-        val song = service!!.currentSong
-        val isPlaying = service!!.isPlaying
+        val song = service.currentSong
+        val isPlaying = service.isPlaying
 
-        val notificationLayout = RemoteViews(service!!.packageName, R.layout.notification)
-        val notificationLayoutBig = RemoteViews(service!!.packageName, R.layout.notification_big)
+        val notificationLayout = RemoteViews(service.packageName, R.layout.notification)
+        val notificationLayoutBig = RemoteViews(service.packageName, R.layout.notification_big)
 
         if (TextUtils.isEmpty(song.title) && TextUtils.isEmpty(song.artistName)) {
             notificationLayout.setViewVisibility(R.id.media_titles, View.INVISIBLE)
@@ -63,9 +62,9 @@ class PlayingNotificationImpl : PlayingNotification() {
             PendingIntent.FLAG_IMMUTABLE
         )
 
-        val deleteIntent = buildPlaybackPendingIntent(service!!, MusicService.ACTION_QUIT, null)
+        val deleteIntent = buildPlaybackPendingIntent(MusicService.ACTION_QUIT)
 
-        val notification = NotificationCompat.Builder(service!!, NOTIFICATION_CHANNEL_ID)
+        val notification = NotificationCompat.Builder(service, NOTIFICATION_CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_notification)
             .setContentIntent(clickIntent)
             .setDeleteIntent(deleteIntent)
@@ -76,14 +75,15 @@ class PlayingNotificationImpl : PlayingNotification() {
             .setCustomBigContentView(notificationLayoutBig)
             .setOngoing(isPlaying)
             .build()
-        val bigNotificationImageSize = service!!.resources.getDimensionPixelSize(R.dimen.notification_big_image_size)
 
-        service!!.runOnUiThread {
+        val bigNotificationImageSize = service.resources.getDimensionPixelSize(R.dimen.notification_big_image_size)
+
+        service.runOnUiThread {
             if (target != null) {
-                Glide.with(service!!).clear(target)
+                Glide.with(service).clear(target)
             }
-            target = SongGlideRequest.Builder.from(Glide.with(service!!), song)
-                .checkIgnoreMediaStore(service!!).generatePalette(service!!).build()
+            target = SongGlideRequest.Builder.from(Glide.with(service), song)
+                .checkIgnoreMediaStore(service).generatePalette(service).build()
                 .into(object : CustomTarget<BitmapPaletteWrapper>(bigNotificationImageSize, bigNotificationImageSize) {
 
                     override fun onResourceReady(resource: BitmapPaletteWrapper, transition: Transition<in BitmapPaletteWrapper>?) {
@@ -123,13 +123,13 @@ class PlayingNotificationImpl : PlayingNotification() {
                         val secondary = MaterialColorHelper.getSecondaryTextColor(service, dark)
 
                         val prev = ImageUtil.createBitmap(
-                            ImageUtil.getTintedVectorDrawable(service!!, R.drawable.ic_skip_previous_white_24dp, primary), 1.5f
+                            ImageUtil.getTintedVectorDrawable(service, R.drawable.ic_skip_previous_white_24dp, primary), 1.5f
                         )
                         val next = ImageUtil.createBitmap(
-                            ImageUtil.getTintedVectorDrawable(service!!, R.drawable.ic_skip_next_white_24dp, primary), 1.5f
+                            ImageUtil.getTintedVectorDrawable(service, R.drawable.ic_skip_next_white_24dp, primary), 1.5f
                         )
                         val playPause = ImageUtil.createBitmap(
-                            ImageUtil.getTintedVectorDrawable(service!!, if (isPlaying) R.drawable.ic_pause_white_24dp else R.drawable.ic_play_arrow_white_24dp, primary), 1.5f
+                            ImageUtil.getTintedVectorDrawable(service, if (isPlaying) R.drawable.ic_pause_white_24dp else R.drawable.ic_play_arrow_white_24dp, primary), 1.5f
                         )
 
                         notificationLayout.setTextColor(R.id.title, primary)
@@ -152,29 +152,23 @@ class PlayingNotificationImpl : PlayingNotification() {
     }
 
     private fun linkButtons(notificationLayout: RemoteViews, notificationLayoutBig: RemoteViews) {
+
+        @Suppress("JoinDeclarationAndAssignment")
         var pendingIntent: PendingIntent
-        val serviceName = ComponentName(service!!, MusicService::class.java)
 
         // Previous track
-        pendingIntent = buildPlaybackPendingIntent(service!!, MusicService.ACTION_REWIND, serviceName)
+        pendingIntent = buildPlaybackPendingIntent(MusicService.ACTION_REWIND)
         notificationLayout.setOnClickPendingIntent(R.id.action_prev, pendingIntent)
         notificationLayoutBig.setOnClickPendingIntent(R.id.action_prev, pendingIntent)
 
         // Play and pause
-        pendingIntent = buildPlaybackPendingIntent(service!!, MusicService.ACTION_TOGGLE_PAUSE, serviceName)
+        pendingIntent = buildPlaybackPendingIntent(MusicService.ACTION_TOGGLE_PAUSE)
         notificationLayout.setOnClickPendingIntent(R.id.action_play_pause, pendingIntent)
         notificationLayoutBig.setOnClickPendingIntent(R.id.action_play_pause, pendingIntent)
 
         // Next track
-        pendingIntent = buildPlaybackPendingIntent(service!!, MusicService.ACTION_SKIP, serviceName)
+        pendingIntent = buildPlaybackPendingIntent(MusicService.ACTION_SKIP)
         notificationLayout.setOnClickPendingIntent(R.id.action_next, pendingIntent)
         notificationLayoutBig.setOnClickPendingIntent(R.id.action_next, pendingIntent)
     }
-
-    private fun buildPlaybackPendingIntent(context: Context, action: String, serviceName: ComponentName?): PendingIntent =
-        PendingIntent.getService(
-            context, 0,
-            Intent(action).apply { component = serviceName },
-            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_CANCEL_CURRENT
-        )
 }

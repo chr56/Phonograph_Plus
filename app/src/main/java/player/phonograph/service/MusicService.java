@@ -557,12 +557,11 @@ public class MusicService extends Service implements SharedPreferences.OnSharedP
     }
 
     public void initNotification() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N && !Setting.Companion.getInstance().getClassicNotification()) {
-            playingNotification = new PlayingNotificationImpl24();
+        if (!Setting.Companion.getInstance().getClassicNotification() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            playingNotification = new PlayingNotificationImpl24(this);
         } else {
-            playingNotification = new PlayingNotificationImpl();
+            playingNotification = new PlayingNotificationImpl(this);
         }
-        playingNotification.init(this);
     }
 
     public void updateNotification() {

@@ -3,7 +3,10 @@ package player.phonograph.notification
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.app.PendingIntent
+import android.content.ComponentName
 import android.content.Context
+import android.content.Intent
 import android.os.Build
 import androidx.annotation.RequiresApi
 import player.phonograph.App
@@ -20,14 +23,14 @@ abstract class PlayingNotification {
         private const val NOTIFY_MODE_BACKGROUND = 0
     }
 
-    private lateinit var notificationManager: NotificationManager
+    private var notificationManager: NotificationManager
 
-    @JvmField
-    protected var service: MusicService? = null
+    private var _service: MusicService? = null
+    protected val service: MusicService get() = _service!!
 
-    @Synchronized
-    fun init(service: MusicService) {
-        this.service = service
+    @Suppress("ConvertSecondaryConstructorToPrimary")
+    constructor(service: MusicService) {
+        _service = service
         notificationManager = service.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) createNotificationChannel()
     }
@@ -36,24 +39,24 @@ abstract class PlayingNotification {
     abstract fun update()
 
     @JvmField
-    var stopped = false
+    protected var stopped = false
 
     @Synchronized
     fun stop() {
         stopped = true
-        service!!.stopForeground(true)
+        service.stopForeground(true)
         notificationManager.cancel(NOTIFICATION_ID)
     }
 
     protected fun updateNotifyModeAndPostNotification(notification: Notification?) {
-        val newNotifyMode: Int = if (service!!.isPlaying) NOTIFY_MODE_FOREGROUND else NOTIFY_MODE_BACKGROUND
+        val newNotifyMode: Int = if (service.isPlaying) NOTIFY_MODE_FOREGROUND else NOTIFY_MODE_BACKGROUND
 
         if (notifyMode != newNotifyMode && newNotifyMode == NOTIFY_MODE_BACKGROUND) {
-            service!!.stopForeground(false)
+            service.stopForeground(false)
         }
         when (newNotifyMode) {
             NOTIFY_MODE_FOREGROUND -> {
-                service!!.startForeground(NOTIFICATION_ID, notification)
+                service.startForeground(NOTIFICATION_ID, notification)
             }
             NOTIFY_MODE_BACKGROUND -> {
                 notificationManager.notify(NOTIFICATION_ID, notification)
@@ -77,4 +80,16 @@ abstract class PlayingNotification {
                 )
         }
     }
+
+    /**
+     * PendingIntent for Playback control buttons
+     * @param action actions in [MusicService]
+     * @return PendingIntent to operation action
+     */
+    protected fun buildPlaybackPendingIntent(action: String): PendingIntent =
+        PendingIntent.getService(
+            service, 0,
+            Intent(action).apply { component = ComponentName(service, MusicService::class.java) },
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_CANCEL_CURRENT
+        )
 }
