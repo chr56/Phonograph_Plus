@@ -60,10 +60,10 @@ abstract class AbsPlayerFragment :
         callbacks = try { context as Callbacks } catch (e: ClassCastException) { throw RuntimeException("${context.javaClass.simpleName} must implement ${Callbacks::class.java.simpleName}") }
         handler = Handler(Looper.getMainLooper()) { msg ->
             if (msg.what == UPDATE_LYRICS) {
-                playerAlbumCoverFragment.setLyrics(msg.data.get(LYRICS) as AbsLyrics)
+                val lyrics = msg.data.get(LYRICS) as AbsLyrics
+                playerAlbumCoverFragment.setLyrics(lyrics)
+                viewModel.forceReplaceLyrics(lyrics)
             }
-            // then lock
-            viewModel.lockLyricsWithSong(MusicPlayerRemote.getCurrentSong())
             false
         }
     }
@@ -185,30 +185,31 @@ abstract class AbsPlayerFragment :
         }
     }
 
-    protected fun updateLyrics(lyrics: AbsLyrics) = runBlocking(Dispatchers.Main) {
+    private fun showLyrics(lyrics: AbsLyrics) = runBlocking(Dispatchers.Main) {
         playerAlbumCoverFragment.setLyrics(lyrics)
         showLyricsMenuItem()
     }
-    protected fun clearLyrics() = backgroundCoroutine.launch(Dispatchers.Main) {
+    private fun hideLyrics() = backgroundCoroutine.launch(Dispatchers.Main) {
         playerAlbumCoverFragment.setLyrics(null)
         hideLyricsMenuItem()
     }
-    protected fun loadAndRefreshLyrics(song: Song) {
-        if (song == viewModel.songLocked) {
-            // do not load
-            return
-        }
+//    protected fun refreshLyrics() {
+//        viewModel.currentLyrics.also {
+//            if (it == null) hideLyrics()
+//            else showLyrics(it)
+//        }
+//    }
 
-        viewModel.loadLyrics(song)
-        clearLyrics()
+    protected fun monitorLyricsState() {
         backgroundCoroutine.launch {
+            hideLyrics()
             // wait
-            withTimeout(6000) {
-                while (viewModel.lyricsPack == null) delay(120)
+            withTimeout(8000) {
+                while (viewModel.lyricsPack == null) delay(150)
             }
             delay(100)
             // refresh anyway
-            viewModel.currentLyrics?.let { updateLyrics(it) }
+            viewModel.currentLyrics?.let { showLyrics(it) }
         }
     }
 
@@ -261,7 +262,7 @@ abstract class AbsPlayerFragment :
     }
 
     protected fun checkToggleToolbar(toolbar: View?) {
-        if (toolbar == null)return
+        if (toolbar == null) return
         if (!isToolbarShown && toolbar.visibility != View.GONE) {
             hideToolbar(toolbar)
         } else if (isToolbarShown && toolbar.visibility != View.VISIBLE) {

@@ -22,27 +22,22 @@ class PlayerFragmentViewModel : ViewModel() {
         }
     }
 
+    var currentSong: Song = Song.EMPTY_SONG
+        set(value) {
+            field = value
+            loadLyrics(value)
+        }
     var lyricsPack: LyricsPack? = null
         private set
     var currentLyrics: AbsLyrics? = null
         private set
-
-    var songLocked: Song? = null
-        private set
-    var lockLyricForSong: Boolean = false
-        private set
-
-    fun lockLyricsWithSong(song: Song) {
-        songLocked = song
-        lockLyricForSong = true
-    }
-    fun unlockLyrics() {
-        songLocked = null
-        lockLyricForSong = false
+    fun forceReplaceLyrics(lyrics: AbsLyrics) {
+        currentLyrics = lyrics
     }
 
     private var loadLyricsJob: Job? = null
-    fun loadLyrics(song: Song) {
+    private fun loadLyrics(song: Song) {
+        if (song == Song.EMPTY_SONG) return
         // cancel old song's lyrics after switching
         loadLyricsJob?.cancel()
         currentLyrics = null
