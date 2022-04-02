@@ -198,7 +198,7 @@ abstract class AbsPlayerFragment :
         showLyricsMenuItem()
     }
     private fun hideLyrics() = backgroundCoroutine.launch(Dispatchers.Main) {
-        playerAlbumCoverFragment.setLyrics(null)
+        playerAlbumCoverFragment.clearLyrics()
         hideLyricsMenuItem()
     }
 //    protected fun refreshLyrics() {

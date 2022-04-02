@@ -6,7 +6,7 @@
     android:layout_height="match_parent">
 
     <androidx.viewpager.widget.ViewPager
-        android:id="@+id/player_album_cover_viewpager"
+        android:id="@+id/player_cover_viewpager"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
