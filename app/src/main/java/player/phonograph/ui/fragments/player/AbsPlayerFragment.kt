@@ -49,8 +49,10 @@ abstract class AbsPlayerFragment :
     // recycle view
     protected lateinit var layoutManager: LinearLayoutManager
     protected lateinit var playingQueueAdapter: PlayingQueueAdapter
-    protected lateinit var wrappedAdapter: RecyclerView.Adapter<*>
-    protected lateinit var recyclerViewDragDropManager: RecyclerViewDragDropManager
+    private var _wrappedAdapter: RecyclerView.Adapter<*>? = null
+    protected val wrappedAdapter: RecyclerView.Adapter<*> get() = _wrappedAdapter!!
+    private var _recyclerViewDragDropManager: RecyclerViewDragDropManager? = null
+    protected val recyclerViewDragDropManager: RecyclerViewDragDropManager get() = _recyclerViewDragDropManager!!
 
     // toolbar
     protected lateinit var playerToolbar: Toolbar
@@ -90,8 +92,8 @@ abstract class AbsPlayerFragment :
             false,
             null
         )
-        recyclerViewDragDropManager = RecyclerViewDragDropManager()
-        wrappedAdapter = recyclerViewDragDropManager.createWrappedAdapter(playingQueueAdapter)
+        _recyclerViewDragDropManager = RecyclerViewDragDropManager()
+        _wrappedAdapter = recyclerViewDragDropManager.createWrappedAdapter(playingQueueAdapter)
         implementRecyclerView()
     }
     protected abstract fun implementRecyclerView()
@@ -100,8 +102,14 @@ abstract class AbsPlayerFragment :
 
     override fun onDestroy() {
         super.onDestroy()
-        recyclerViewDragDropManager.release()
-        WrapperAdapterUtils.releaseAll(wrappedAdapter)
+        _recyclerViewDragDropManager?.let {
+            recyclerViewDragDropManager.release()
+            _recyclerViewDragDropManager = null
+        }
+        _wrappedAdapter?.let {
+            WrapperAdapterUtils.releaseAll(wrappedAdapter)
+            _wrappedAdapter = null
+        }
     }
 
     override fun onMenuItemClick(item: MenuItem): Boolean {
