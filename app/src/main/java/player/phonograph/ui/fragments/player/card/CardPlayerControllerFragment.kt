@@ -28,7 +28,7 @@ class CardPlayerControllerFragment : AbsPlayerControllerFragment() {
 
     private var _playerPlayPauseFab: FloatingActionButton? = null
     val playerPlayPauseFab: FloatingActionButton get() =  _playerPlayPauseFab!!
-    var progressSliderHeight: Int = 0
+    var progressSliderHeight: Int = -1
         private set
 
     override fun bindView(inflater: LayoutInflater): View {

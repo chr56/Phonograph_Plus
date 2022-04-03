@@ -23,6 +23,7 @@ import player.phonograph.databinding.FragmentCardPlayerBinding
 import player.phonograph.helper.MusicPlayerRemote
 import player.phonograph.helper.menu.SongMenuHelper.ClickMenuListener
 import player.phonograph.model.Song
+import player.phonograph.notification.ErrorNotification
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
 import player.phonograph.ui.fragments.player.AbsPlayerFragment
 import player.phonograph.ui.fragments.player.PlayerAlbumCoverFragment
@@ -36,6 +37,7 @@ import util.mdcolor.ColorUtil
 import util.mdcolor.pref.ThemeColor
 import util.mddesign.util.ToolbarColorUtil
 import util.mddesign.util.Util
+import java.lang.IllegalStateException
 import kotlin.math.max
 
 class CardPlayerFragment :
@@ -270,6 +272,10 @@ class CardPlayerFragment :
         fun createDefaultColorChangeAnimatorSet(newColor: Int): AnimatorSet {
             val fab = (fragment.playbackControlsFragment as CardPlayerControllerFragment).playerPlayPauseFab
             val progressSliderHeight = (fragment.playbackControlsFragment as CardPlayerControllerFragment).progressSliderHeight
+            if (progressSliderHeight < 0) {
+                ErrorNotification.init()
+                ErrorNotification.postErrorNotification(IllegalStateException("CardPlayer's progressSliderHeight is less than 0: $progressSliderHeight").also { it.stackTrace = Thread.currentThread().stackTrace }, "UI ERROR")
+            }
 
             val backgroundAnimator: Animator =
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
