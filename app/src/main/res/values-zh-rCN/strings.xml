@@ -365,5 +365,6 @@
     </plurals>
     <string name="embedded_lyrics">内嵌歌词</string>
     <string name="external_lyrics">外部歌词</string>
+    <string name="lyrics_following">歌词滚动</string>
     <string name="error_notification_name">错误报告</string>
 </resources>

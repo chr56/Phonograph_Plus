@@ -381,5 +381,6 @@
     </plurals>
     <string name="embedded_lyrics">embedded lyrics</string>
     <string name="external_lyrics">external lyrics</string>
+    <string name="lyrics_following">Lyrics Following</string>
     <string name="error_notification_name">Error Reports</string>
 </resources>

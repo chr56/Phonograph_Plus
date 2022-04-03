@@ -61,6 +61,12 @@ class LrcLyrics : AbsLyrics, Parcelable {
         get() = lyrics
 
     fun getLine(timeStamp: Int): String {
+        val index = getPosition(timeStamp)
+        // Todo '\n' detect
+        return lyrics.valueAt(index) as String
+    }
+
+    fun getPosition(timeStamp: Int): Int {
         if (totalTime != -1L) { // -1 means " no length info in lyrics"
             if (timeStamp >= totalTime) throw Exception("TimeStamp is over the total lyrics length: lyrics might be mismatched")
         }
@@ -75,9 +81,7 @@ class LrcLyrics : AbsLyrics, Parcelable {
                 break
             }
         }
-
-        // Todo '\n' detect
-        return lyrics.valueAt(index) as String
+        return index
     }
 
     companion object {

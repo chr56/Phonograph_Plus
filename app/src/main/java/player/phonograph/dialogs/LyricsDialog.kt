@@ -7,6 +7,7 @@ import android.os.Message
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.CompoundButton
 import androidx.core.view.iterator
 import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -16,11 +17,9 @@ import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.adapter.LyricsAdapter
 import player.phonograph.databinding.DialogLyricsBinding
+import player.phonograph.helper.MusicProgressViewUpdateHelper
 import player.phonograph.model.Song
-import player.phonograph.model.lyrics2.AbsLyrics
-import player.phonograph.model.lyrics2.DEFAULT_TITLE
-import player.phonograph.model.lyrics2.LyricsPack
-import player.phonograph.model.lyrics2.TextLyrics
+import player.phonograph.model.lyrics2.*
 import player.phonograph.notification.ErrorNotification
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
 import player.phonograph.ui.fragments.player.AbsPlayerFragment
@@ -32,7 +31,7 @@ import java.lang.IllegalStateException
 /**
  * @author Karim Abou Zeid (kabouzeid)
  */
-class LyricsDialog : DialogFragment() {
+class LyricsDialog : DialogFragment(), MusicProgressViewUpdateHelper.Callback {
 
     private var _viewBinding: DialogLyricsBinding? = null
     val binding: DialogLyricsBinding get() = _viewBinding!!
@@ -76,6 +75,8 @@ class LyricsDialog : DialogFragment() {
         )
         binding.ok.setOnClickListener { requireDialog().dismiss() }
         binding.viewStub.setOnClickListener { requireDialog().dismiss() }
+        setupFollowing()
+//        scrollingOffset = binding.root.height / 4
     }
 
     private fun initRecycleView(lyrics: AbsLyrics) {
@@ -182,6 +183,15 @@ class LyricsDialog : DialogFragment() {
         )
     }
 
+    private fun setupFollowing() {
+        binding.lyricsFollowing.apply {
+            buttonTintList = backgroundCsl
+            setOnCheckedChangeListener { _: CompoundButton, b: Boolean ->
+                if (b) progressViewUpdateHelper.start() else progressViewUpdateHelper.stop()
+            }
+        }
+    }
+
     private fun changeChipVisibility(type: Int, visibility: Int) {
         when (type) {
             LyricsPack.EMBEDDED -> {
@@ -244,6 +254,25 @@ class LyricsDialog : DialogFragment() {
     override fun onDestroy() {
         super.onDestroy()
         _viewBinding = null
+    }
+
+    private val progressViewUpdateHelper: MusicProgressViewUpdateHelper by lazy(LazyThreadSafetyMode.NONE) {
+        MusicProgressViewUpdateHelper(this, 500, 1000)
+    }
+
+    private var scrollingOffset: Int = 0
+    override fun onUpdateProgressViews(progress: Int, total: Int) {
+        if (this.isHidden || this.isDetached) {
+            progressViewUpdateHelper.stop()
+        } else {
+            scrollingTo(progress)
+        }
+    }
+    private fun scrollingTo(timeStamp: Int) {
+        if (lyricsDisplay is LrcLyrics) {
+            val line = (lyricsDisplay as LrcLyrics).getPosition(timeStamp)
+            linearLayoutManager.scrollToPositionWithOffset(line, scrollingOffset)
+        }
     }
 
     companion object {
