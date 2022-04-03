@@ -186,8 +186,16 @@ class LyricsDialog : DialogFragment(), MusicProgressViewUpdateHelper.Callback {
     private fun setupFollowing() {
         binding.lyricsFollowing.apply {
             buttonTintList = backgroundCsl
-            setOnCheckedChangeListener { _: CompoundButton, b: Boolean ->
-                if (b) progressViewUpdateHelper.start() else progressViewUpdateHelper.stop()
+            setOnCheckedChangeListener { button: CompoundButton, b: Boolean ->
+                if (lyricsDisplay is LrcLyrics) {
+                    if (_progressViewUpdateHelper == null) {
+                        // init
+                        _progressViewUpdateHelper = MusicProgressViewUpdateHelper(this@LyricsDialog, 500, 1000)
+                    }
+                    if (b) progressViewUpdateHelper.start() else progressViewUpdateHelper.stop()
+                } else {
+                    button.isChecked = false
+                }
             }
         }
     }
@@ -251,22 +259,22 @@ class LyricsDialog : DialogFragment(), MusicProgressViewUpdateHelper.Callback {
         super.onStart()
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onDestroyView() {
+        super.onDestroyView()
         _viewBinding = null
     }
 
-    private val progressViewUpdateHelper: MusicProgressViewUpdateHelper by lazy(LazyThreadSafetyMode.NONE) {
-        MusicProgressViewUpdateHelper(this, 500, 1000)
+    override fun onDestroy() {
+        super.onDestroy()
+        _progressViewUpdateHelper = null
     }
+
+    private var _progressViewUpdateHelper: MusicProgressViewUpdateHelper? = null
+    private val progressViewUpdateHelper: MusicProgressViewUpdateHelper get() = _progressViewUpdateHelper!!
 
     private var scrollingOffset: Int = 0
     override fun onUpdateProgressViews(progress: Int, total: Int) {
-        if (this.isHidden || this.isDetached) {
-            progressViewUpdateHelper.stop()
-        } else {
-            scrollingTo(progress)
-        }
+        scrollingTo(progress)
     }
     private fun scrollingTo(timeStamp: Int) {
         if (lyricsDisplay is LrcLyrics) {
