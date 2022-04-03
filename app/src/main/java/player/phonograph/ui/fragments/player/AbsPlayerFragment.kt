@@ -88,7 +88,8 @@ abstract class AbsPlayerFragment :
         super.onViewCreated(view, savedInstanceState)
         initRecyclerView()
         initToolbar()
-        setUpSubFragments()
+        setUpControllerFragment()
+        setUpCoverFragment()
     }
 
     private fun initRecyclerView() {
@@ -107,7 +108,9 @@ abstract class AbsPlayerFragment :
     }
     protected abstract fun implementRecyclerView()
 
-    abstract fun setUpSubFragments()
+    abstract fun setUpControllerFragment()
+
+    abstract fun setUpCoverFragment()
 
     override fun onDestroyView() {
         super.onDestroyView()

@@ -142,8 +142,11 @@ class CardPlayerFragment :
         impl.onCurrentSongChanged()
     }
 
-    override fun setUpSubFragments() {
+    override fun setUpControllerFragment() {
         playbackControlsFragment = childFragmentManager.findFragmentById(R.id.playback_controls_fragment) as CardPlayerPlaybackControlsFragment
+    }
+
+    override fun setUpCoverFragment() {
         playerAlbumCoverFragment = (childFragmentManager.findFragmentById(R.id.player_album_cover_fragment) as PlayerAlbumCoverFragment)
             .apply { setCallbacks(this@CardPlayerFragment) }
     }
