@@ -27,7 +27,7 @@ class CardPlayerControllerFragment : AbsPlayerControllerFragment() {
     private val v: FragmentCardPlayerPlaybackControlsBinding get() = viewBinding!!
 
     private var _playerPlayPauseFab: FloatingActionButton? = null
-    val playerPlayPauseFab: FloatingActionButton = _playerPlayPauseFab!!
+    val playerPlayPauseFab: FloatingActionButton get() =  _playerPlayPauseFab!!
     var progressSliderHeight: Int = 0
         private set
 
