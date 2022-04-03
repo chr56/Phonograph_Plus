@@ -109,8 +109,8 @@ abstract class AbsPlayerFragment :
 
     abstract fun setUpSubFragments()
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onDestroyView() {
+        super.onDestroyView()
         _recyclerViewDragDropManager?.let {
             recyclerViewDragDropManager.release()
             _recyclerViewDragDropManager = null
