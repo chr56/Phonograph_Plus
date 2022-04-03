@@ -1,7 +1,6 @@
 package player.phonograph.dialogs
 
 import android.content.res.ColorStateList
-import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
 import android.os.Message
@@ -22,10 +21,12 @@ import player.phonograph.model.lyrics2.AbsLyrics
 import player.phonograph.model.lyrics2.DEFAULT_TITLE
 import player.phonograph.model.lyrics2.LyricsPack
 import player.phonograph.model.lyrics2.TextLyrics
+import player.phonograph.notification.ErrorNotification
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
 import player.phonograph.ui.fragments.player.AbsPlayerFragment
 import util.mdcolor.ColorUtil
 import util.mdcolor.pref.ThemeColor
+import java.lang.IllegalStateException
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
@@ -87,10 +88,18 @@ class LyricsDialog : DialogFragment() {
     }
 
     private fun handleLyrics() {
-        if (lyricsPack.external != null) { availableLyricTypes.add(LyricsPack.EXTERNAL) }
-        if (lyricsPack.embedded != null) { availableLyricTypes.add(LyricsPack.EMBEDDED) }
-        if (lyricsPack.externalWithSuffix != null) { availableLyricTypes.add(LyricsPack.EXTERNAL_WITH_SUFFIX) }
-        if (lyricsPack.isEmpty()) { availableLyricTypes.add(LyricsPack.NO_LYRICS) }
+        if (lyricsPack.external != null) {
+            availableLyricTypes.add(LyricsPack.EXTERNAL)
+        }
+        if (lyricsPack.embedded != null) {
+            availableLyricTypes.add(LyricsPack.EMBEDDED)
+        }
+        if (lyricsPack.externalWithSuffix != null) {
+            availableLyricTypes.add(LyricsPack.EXTERNAL_WITH_SUFFIX)
+        }
+        if (lyricsPack.isEmpty()) {
+            availableLyricTypes.add(LyricsPack.NO_LYRICS)
+        }
 
         lyricsDisplayType = availableLyricTypes.first()
         lyricsDisplay = lyricsPack.getByType(availableLyricTypes.first()) ?: TextLyrics.from("Empty Lyrics!")
@@ -100,11 +109,13 @@ class LyricsDialog : DialogFragment() {
         for (type in availableLyricTypes) {
             changeChipVisibility(type, View.VISIBLE)
         }
-        setCheckStatus(lyricsDisplayType, true)
+        binding.types.check(getBindingID(lyricsDisplayType))
 
         for (chip in binding.types) {
+            chip as Chip
+            chip.setTextColor(textColorCsl)
+            chip.chipStrokeColor = backgroundCsl
             chip.setOnClickListener {
-                (chip as Chip).isChecked = true
                 val lyrics = when (chip.id) {
                     R.id.chip_embedded_lyrics -> {
                         lyricsPack.embedded!!
@@ -131,15 +142,7 @@ class LyricsDialog : DialogFragment() {
                 }
             }
         }
-
-        val primaryColorTransparent = ColorUtil.withAlpha(primaryColor, 0.75f)
-        binding.chipEmbeddedLyrics.chipStrokeColor = ColorStateList.valueOf(primaryColorTransparent)
-        binding.chipExternalLyrics.chipStrokeColor = ColorStateList.valueOf(primaryColorTransparent)
-        binding.chipExternalWithSuffixLyrics.chipStrokeColor = ColorStateList.valueOf(primaryColorTransparent)
-
-        binding.chipEmbeddedLyrics.chipBackgroundColor = backgroundCsl
-        binding.chipExternalLyrics.chipBackgroundColor = backgroundCsl
-        binding.chipExternalWithSuffixLyrics.chipBackgroundColor = backgroundCsl
+        binding.types.isSelectionRequired = true
     }
 
     private val accentColor by lazy { ThemeColor.accentColor(App.instance) }
@@ -149,10 +152,20 @@ class LyricsDialog : DialogFragment() {
     private val backgroundCsl: ColorStateList by lazy {
         ColorStateList(
             arrayOf(
-                intArrayOf(android.R.attr.state_enabled),
-                intArrayOf()
+                intArrayOf(android.R.attr.state_selected),
+                intArrayOf(android.R.attr.state_checked),
+                intArrayOf(),
             ),
-            intArrayOf(Color.TRANSPARENT, Color.TRANSPARENT)
+            intArrayOf(ColorUtil.lightenColor(primaryColor), ColorUtil.lightenColor(primaryColor), resources.getColor(R.color.defaultFooterColor, requireContext().theme))
+        )
+    }
+    private val textColorCsl: ColorStateList by lazy {
+        ColorStateList(
+            arrayOf(
+                intArrayOf(android.R.attr.state_checked),
+                intArrayOf(),
+            ),
+            intArrayOf(primaryColor, textColor)
         )
     }
 
@@ -169,6 +182,25 @@ class LyricsDialog : DialogFragment() {
             }
         }
     }
+    private fun getBindingID(lyricsDisplayType: Int): Int =
+        when (lyricsDisplayType) {
+            LyricsPack.EMBEDDED -> {
+                binding.chipEmbeddedLyrics.id
+            }
+            LyricsPack.EXTERNAL -> {
+                binding.chipExternalLyrics.id
+            }
+            LyricsPack.EXTERNAL_WITH_SUFFIX -> {
+                binding.chipExternalWithSuffixLyrics.id
+            }
+            else -> {
+                ErrorNotification.postErrorNotification(
+                    IllegalStateException("Unknown lyricsDisplayType($lyricsDisplayType)").apply { stackTrace = Thread.currentThread().stackTrace }, null
+                )
+                binding.chipEmbeddedLyrics.id
+            }
+        }
+
     private fun setCheckStatus(type: Int, state: Boolean) {
         when (type) {
             LyricsPack.EMBEDDED -> {
