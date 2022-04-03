@@ -51,7 +51,7 @@ class CardPlayerFragment :
 
     private lateinit var impl: Impl
 
-    private lateinit var playbackControlsFragment: CardPlayerPlaybackControlsFragment // setUpSubFragments()
+    private lateinit var playbackControlsFragment: CardPlayerControllerFragment // setUpSubFragments()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         impl = (if (isLandscape(resources)) LandscapeImpl(this) else PortraitImpl(this))
@@ -143,7 +143,7 @@ class CardPlayerFragment :
     }
 
     override fun setUpControllerFragment() {
-        playbackControlsFragment = childFragmentManager.findFragmentById(R.id.playback_controls_fragment) as CardPlayerPlaybackControlsFragment
+        playbackControlsFragment = childFragmentManager.findFragmentById(R.id.playback_controls_fragment) as CardPlayerControllerFragment
     }
 
     override fun setUpCoverFragment() {
@@ -239,7 +239,7 @@ class CardPlayerFragment :
             viewBinding.playingQueueCard.cardElevation = cardElevation
             val buttonElevation = (2 * Math.max(0f, 1 - slide * 16) + 2) * density
             if (!isValidElevation(buttonElevation)) return
-            playbackControlsFragment.viewBinding.playerPlayPauseFab.elevation = buttonElevation
+            playbackControlsFragment.playerPlayPauseFab.elevation = buttonElevation
         }
     }
 
@@ -271,17 +271,17 @@ class CardPlayerFragment :
             val backgroundAnimator: Animator = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 val x =
                     (
-                        fragment.playbackControlsFragment.viewBinding.playerPlayPauseFab.x + fragment.playbackControlsFragment.viewBinding.playerPlayPauseFab.width / 2 + fragment.playbackControlsFragment.requireView()
+                        fragment.playbackControlsFragment.playerPlayPauseFab.x + fragment.playbackControlsFragment.playerPlayPauseFab.width / 2 + fragment.playbackControlsFragment.requireView()
                             .x
                         ).toInt()
                 val y =
                     (
-                        fragment.playbackControlsFragment.viewBinding.playerPlayPauseFab.y + fragment.playbackControlsFragment.viewBinding.playerPlayPauseFab.height / 2 + fragment.playbackControlsFragment.requireView()
-                            .y + fragment.playbackControlsFragment.viewBinding.playerProgressSlider.height
+                        fragment.playbackControlsFragment.playerPlayPauseFab.y + fragment.playbackControlsFragment.playerPlayPauseFab.height / 2 + fragment.playbackControlsFragment.requireView()
+                            .y + fragment.playbackControlsFragment.progressSliderHeight
                         ).toInt()
                 val startRadius = Math.max(
-                    fragment.playbackControlsFragment.viewBinding.playerPlayPauseFab.width / 2,
-                    fragment.playbackControlsFragment.viewBinding.playerPlayPauseFab.height / 2
+                    fragment.playbackControlsFragment.playerPlayPauseFab.width / 2,
+                    fragment.playbackControlsFragment.playerPlayPauseFab.height / 2
                 ).toFloat()
                 val endRadius =
                     Math.max(fragment.viewBinding.colorBackground.width, fragment.viewBinding.colorBackground.height).toFloat()

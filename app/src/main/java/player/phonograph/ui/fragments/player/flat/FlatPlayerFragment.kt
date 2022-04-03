@@ -49,7 +49,7 @@ class FlatPlayerFragment :
 
     private lateinit var impl: Impl
 
-    private lateinit var playbackControlsFragment: FlatPlayerPlaybackControlsFragment // setUpSubFragments()
+    private lateinit var playbackControlsFragment: FlatPlayerControllerFragment // setUpSubFragments()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         impl = (if (isLandscape(resources)) LandscapeImpl(this) else PortraitImpl(this))
@@ -139,7 +139,7 @@ class FlatPlayerFragment :
     }
 
     override fun setUpControllerFragment() {
-        playbackControlsFragment = childFragmentManager.findFragmentById(R.id.playback_controls_fragment) as FlatPlayerPlaybackControlsFragment
+        playbackControlsFragment = childFragmentManager.findFragmentById(R.id.playback_controls_fragment) as FlatPlayerControllerFragment
     }
 
     override fun setUpCoverFragment() {

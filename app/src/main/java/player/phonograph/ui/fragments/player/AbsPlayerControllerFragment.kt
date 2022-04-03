@@ -198,6 +198,6 @@ abstract class AbsPlayerControllerFragment : AbsMusicServiceFragment(), MusicPro
         }
     }
 
-    protected abstract fun show()
-    protected abstract fun hide()
+    abstract fun show()
+    abstract fun hide()
 }

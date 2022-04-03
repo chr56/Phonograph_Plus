@@ -5,11 +5,13 @@
 package player.phonograph.ui.fragments.player.card
 
 import android.graphics.Color
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.animation.DecelerateInterpolator
 import androidx.core.graphics.BlendModeColorFilterCompat
 import androidx.core.graphics.BlendModeCompat
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import player.phonograph.databinding.FragmentCardPlayerPlaybackControlsBinding
 import player.phonograph.helper.MusicPlayerRemote
 import player.phonograph.helper.PlayPauseButtonOnClickHandler
@@ -24,8 +26,14 @@ class CardPlayerControllerFragment : AbsPlayerControllerFragment() {
     private var viewBinding: FragmentCardPlayerPlaybackControlsBinding? = null
     private val v: FragmentCardPlayerPlaybackControlsBinding get() = viewBinding!!
 
+    private var _playerPlayPauseFab: FloatingActionButton? = null
+    val playerPlayPauseFab: FloatingActionButton = _playerPlayPauseFab!!
+    var progressSliderHeight: Int = 0
+        private set
+
     override fun bindView(inflater: LayoutInflater): View {
         viewBinding = FragmentCardPlayerPlaybackControlsBinding.inflate(inflater)
+        _playerPlayPauseFab = v.playerPlayPauseFab
         prevButton = v.playerPrevButton
         nextButton = v.playerNextButton
         repeatButton = v.playerRepeatButton
@@ -36,8 +44,15 @@ class CardPlayerControllerFragment : AbsPlayerControllerFragment() {
         return v.root
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        progressSliderHeight = v.playerProgressSlider.height
+        super.onViewCreated(view, savedInstanceState)
+    }
+
     override fun unbindView() {
         viewBinding = null
+        _playerPlayPauseFab = null
+        progressSliderHeight = -1
     }
 
     override fun setUpPlayPauseButton() {
