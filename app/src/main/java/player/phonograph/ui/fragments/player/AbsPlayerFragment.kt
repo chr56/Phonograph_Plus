@@ -44,7 +44,7 @@ abstract class AbsPlayerFragment :
         private set
 
     protected lateinit var playerAlbumCoverFragment: PlayerAlbumCoverFragment
-    protected lateinit var playbackControlsFragment:AbsPlayerControllerFragment
+    protected lateinit var playbackControlsFragment: AbsPlayerControllerFragment
     protected val viewModel: PlayerFragmentViewModel by viewModels()
 
     lateinit var handler: Handler
@@ -69,7 +69,8 @@ abstract class AbsPlayerFragment :
     private val handlerCallbacks = Handler.Callback { msg ->
         if (msg.what == UPDATE_LYRICS) {
             val lyrics = msg.data.get(LYRICS) as AbsLyrics
-            viewModel.forceReplaceLyrics(lyrics)
+            val source = msg.data.getInt(LYRICS_SOURCE)
+            viewModel.forceReplaceLyrics(lyrics, source)
             if (lyrics is LrcLyrics) {
                 playerAlbumCoverFragment.setLyrics(lyrics)
                 MusicPlayerRemote.musicService?.replaceLyrics(lyrics)
@@ -133,7 +134,7 @@ abstract class AbsPlayerFragment :
             R.id.action_show_lyrics -> {
                 val lyricsPack = viewModel.lyricsPack
                 if (lyricsPack != null) {
-                    LyricsDialog.create(lyricsPack, MusicPlayerRemote.getCurrentSong())
+                    LyricsDialog.create(lyricsPack, MusicPlayerRemote.getCurrentSong(), viewModel.currentLyricsSource)
                         .show(requireActivity().supportFragmentManager, "LYRICS")
                 }
                 return true
@@ -302,6 +303,7 @@ abstract class AbsPlayerFragment :
     companion object {
         const val UPDATE_LYRICS = 1001
         const val LYRICS = "lyrics"
+        const val LYRICS_SOURCE = "source"
     }
 
     internal interface Impl {

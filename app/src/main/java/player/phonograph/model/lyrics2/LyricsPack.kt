@@ -11,18 +11,22 @@ data class LyricsPack(val embedded: AbsLyrics?, val external: AbsLyrics?, val ex
 
     fun isEmpty(): Boolean = embedded == null && external == null && externalWithSuffix == null
 
-    fun getLyrics(): AbsLyrics? {
+    /**
+     * @return Pair of (lyrics,lyrics_source)
+     */
+    fun getAvailableLyrics(): Pair<AbsLyrics?, Int> {
         embedded?.let {
-            return it
+            return Pair(it, EMBEDDED)
         }
         external?.let {
-            return it
+            return Pair(it, EXTERNAL)
         }
         externalWithSuffix?.let {
-            return it
+            return Pair(it, EXTERNAL_WITH_SUFFIX)
         }
-        return null
+        return Pair(null, UNKNOWN_SOURCE)
     }
+
     fun getLrcLyrics(): LrcLyrics? {
         embedded?.let {
             if (it is LrcLyrics) return it
@@ -70,6 +74,6 @@ data class LyricsPack(val embedded: AbsLyrics?, val external: AbsLyrics?, val ex
         const val EXTERNAL = 1
         const val EXTERNAL_WITH_SUFFIX = 2
 
-        const val NO_LYRICS = -1
+        const val UNKNOWN_SOURCE = -1
     }
 }

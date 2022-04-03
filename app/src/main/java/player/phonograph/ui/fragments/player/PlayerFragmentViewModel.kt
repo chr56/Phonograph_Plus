@@ -31,8 +31,11 @@ class PlayerFragmentViewModel : ViewModel() {
         private set
     var currentLyrics: AbsLyrics? = null
         private set
-    fun forceReplaceLyrics(lyrics: AbsLyrics) {
+    var currentLyricsSource: Int = LyricsPack.UNKNOWN_SOURCE
+        private set
+    fun forceReplaceLyrics(lyrics: AbsLyrics, source: Int) {
         currentLyrics = lyrics
+        currentLyricsSource = source
     }
 
     private var loadLyricsJob: Job? = null
@@ -45,7 +48,10 @@ class PlayerFragmentViewModel : ViewModel() {
         // load new lyrics
         loadLyricsJob = backgroundCoroutine.launch(exceptionHandler) {
             lyricsPack = LyricsLoader.loadLyrics(File(song.data), song.title)
-            currentLyrics = lyricsPack!!.getLyrics()
+            lyricsPack!!.getAvailableLyrics().let {
+                currentLyrics = it.first
+                currentLyricsSource = it.second
+            }
         }
     }
 }

@@ -39,7 +39,7 @@ class LyricsDialog : DialogFragment() {
     private lateinit var song: Song
     private lateinit var lyricsPack: LyricsPack
     private lateinit var lyricsDisplay: AbsLyrics
-    private var lyricsDisplayType: Int = LyricsPack.NO_LYRICS
+    private var lyricsDisplayType: Int = LyricsPack.UNKNOWN_SOURCE
     private val availableLyricTypes: MutableSet<Int> = HashSet(1)
     private lateinit var lyricsAdapter: LyricsAdapter
     private lateinit var linearLayoutManager: LinearLayoutManager
@@ -50,7 +50,7 @@ class LyricsDialog : DialogFragment() {
         requireArguments().let {
             song = it.getParcelable(SONG)!!
             lyricsPack = it.getParcelable(LYRICS_PACK)!!
-//            if (lyricsPack.isEmpty())
+            lyricsDisplayType = it.getInt(CURRENT_TYPE)
         }
     }
 
@@ -98,11 +98,13 @@ class LyricsDialog : DialogFragment() {
             availableLyricTypes.add(LyricsPack.EXTERNAL_WITH_SUFFIX)
         }
         if (lyricsPack.isEmpty()) {
-            availableLyricTypes.add(LyricsPack.NO_LYRICS)
+            availableLyricTypes.add(LyricsPack.UNKNOWN_SOURCE)
         }
 
-        lyricsDisplayType = availableLyricTypes.first()
-        lyricsDisplay = lyricsPack.getByType(availableLyricTypes.first()) ?: TextLyrics.from("Empty Lyrics!")
+        if (lyricsDisplayType == LyricsPack.UNKNOWN_SOURCE) {
+            lyricsDisplayType = availableLyricTypes.first() // default
+        }
+        lyricsDisplay = lyricsPack.getByType(lyricsDisplayType) ?: TextLyrics.from("Empty Lyrics!")
     }
 
     private fun setupChips() {
@@ -118,15 +120,21 @@ class LyricsDialog : DialogFragment() {
             chip.setOnClickListener {
                 val lyrics = when (chip.id) {
                     R.id.chip_embedded_lyrics -> {
+                        lyricsDisplayType = LyricsPack.EMBEDDED
                         lyricsPack.embedded!!
                     }
                     R.id.chip_external_lyrics -> {
+                        lyricsDisplayType = LyricsPack.EXTERNAL
                         lyricsPack.external!!
                     }
                     R.id.chip_externalWithSuffix_lyrics -> {
+                        lyricsDisplayType = LyricsPack.EXTERNAL_WITH_SUFFIX
                         lyricsPack.externalWithSuffix!!
                     }
-                    else -> null
+                    else -> {
+                        lyricsDisplayType = LyricsPack.UNKNOWN_SOURCE
+                        null
+                    }
                 }
                 if (lyrics != null) {
                     lyricsAdapter.update(lyrics.getLyricsTimeArray(), lyrics.getLyricsLineArray())
@@ -135,7 +143,10 @@ class LyricsDialog : DialogFragment() {
                         fragment.handler.sendMessage(
                             Message.obtain(fragment.handler, AbsPlayerFragment.UPDATE_LYRICS).apply {
                                 what = AbsPlayerFragment.UPDATE_LYRICS
-                                data = Bundle().apply { putParcelable(AbsPlayerFragment.LYRICS, lyrics) }
+                                data = Bundle().apply {
+                                    putParcelable(AbsPlayerFragment.LYRICS, lyrics)
+                                    putInt(AbsPlayerFragment.LYRICS_SOURCE, lyricsDisplayType)
+                                }
                             }
                         )
                     }
@@ -236,13 +247,15 @@ class LyricsDialog : DialogFragment() {
     companion object {
         private const val SONG = "song"
         private const val LYRICS_PACK = "lyrics_pack"
+        private const val CURRENT_TYPE = "current_type"
 
-        fun create(lyricsPack: LyricsPack, song: Song): LyricsDialog =
+        fun create(lyricsPack: LyricsPack, song: Song, currentType: Int = LyricsPack.UNKNOWN_SOURCE): LyricsDialog =
             LyricsDialog()
                 .apply {
                     arguments = Bundle().apply {
                         putParcelable(SONG, song)
                         putParcelable(LYRICS_PACK, lyricsPack)
+                        putInt(CURRENT_TYPE, currentType)
                     }
                 }
     }
