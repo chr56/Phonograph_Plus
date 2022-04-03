@@ -49,8 +49,6 @@ class FlatPlayerFragment :
 
     private lateinit var impl: Impl
 
-    private lateinit var playbackControlsFragment: FlatPlayerControllerFragment // setUpSubFragments()
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         impl = (if (isLandscape(resources)) LandscapeImpl(this) else PortraitImpl(this))
         _viewBinding = FragmentFlatPlayerBinding.inflate(inflater)

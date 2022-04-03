@@ -42,7 +42,9 @@ abstract class AbsPlayerFragment :
 
     protected var callbacks: Callbacks? = null
         private set
-    protected lateinit var playerAlbumCoverFragment: PlayerAlbumCoverFragment // [this#setUpSubFragments()]
+
+    protected lateinit var playerAlbumCoverFragment: PlayerAlbumCoverFragment
+    protected lateinit var playbackControlsFragment:AbsPlayerControllerFragment
     protected val viewModel: PlayerFragmentViewModel by viewModels()
 
     lateinit var handler: Handler

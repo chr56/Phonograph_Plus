@@ -36,6 +36,7 @@ import util.mdcolor.ColorUtil
 import util.mdcolor.pref.ThemeColor
 import util.mddesign.util.ToolbarColorUtil
 import util.mddesign.util.Util
+import kotlin.math.max
 
 class CardPlayerFragment :
     AbsPlayerFragment(),
@@ -50,8 +51,6 @@ class CardPlayerFragment :
         private set
 
     private lateinit var impl: Impl
-
-    private lateinit var playbackControlsFragment: CardPlayerControllerFragment // setUpSubFragments()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         impl = (if (isLandscape(resources)) LandscapeImpl(this) else PortraitImpl(this))
@@ -239,7 +238,7 @@ class CardPlayerFragment :
             viewBinding.playingQueueCard.cardElevation = cardElevation
             val buttonElevation = (2 * Math.max(0f, 1 - slide * 16) + 2) * density
             if (!isValidElevation(buttonElevation)) return
-            playbackControlsFragment.playerPlayPauseFab.elevation = buttonElevation
+            (playbackControlsFragment as CardPlayerControllerFragment).playerPlayPauseFab.elevation = buttonElevation
         }
     }
 
@@ -267,40 +266,38 @@ class CardPlayerFragment :
     }
 
     private abstract class BaseImpl(protected var fragment: CardPlayerFragment) : Impl {
+
         fun createDefaultColorChangeAnimatorSet(newColor: Int): AnimatorSet {
-            val backgroundAnimator: Animator = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                val x =
-                    (
-                        fragment.playbackControlsFragment.playerPlayPauseFab.x + fragment.playbackControlsFragment.playerPlayPauseFab.width / 2 + fragment.playbackControlsFragment.requireView()
-                            .x
-                        ).toInt()
-                val y =
-                    (
-                        fragment.playbackControlsFragment.playerPlayPauseFab.y + fragment.playbackControlsFragment.playerPlayPauseFab.height / 2 + fragment.playbackControlsFragment.requireView()
-                            .y + fragment.playbackControlsFragment.progressSliderHeight
-                        ).toInt()
-                val startRadius = Math.max(
-                    fragment.playbackControlsFragment.playerPlayPauseFab.width / 2,
-                    fragment.playbackControlsFragment.playerPlayPauseFab.height / 2
-                ).toFloat()
-                val endRadius =
-                    Math.max(fragment.viewBinding.colorBackground.width, fragment.viewBinding.colorBackground.height).toFloat()
-                fragment.viewBinding.colorBackground.setBackgroundColor(newColor)
-                ViewAnimationUtils.createCircularReveal(fragment.viewBinding.colorBackground, x, y, startRadius, endRadius)
-            } else {
-                ViewUtil.createBackgroundColorTransition(fragment.viewBinding.colorBackground, fragment.paletteColor, newColor)
-            }
-            val animatorSet = AnimatorSet()
-            animatorSet.play(backgroundAnimator)
-            if (!Util.isWindowBackgroundDark(fragment.activity)) {
-                val adjustedLastColor =
-                    if (ColorUtil.isColorLight(fragment.paletteColor)) ColorUtil.darkenColor(fragment.paletteColor) else fragment.paletteColor
-                val adjustedNewColor = if (ColorUtil.isColorLight(newColor)) ColorUtil.darkenColor(newColor) else newColor
-                val subHeaderAnimator =
-                    ViewUtil.createTextColorTransition(fragment.viewBinding.playerQueueSubHeader, adjustedLastColor, adjustedNewColor)
-                animatorSet.play(subHeaderAnimator)
-            }
-            animatorSet.duration = ViewUtil.PHONOGRAPH_ANIM_TIME.toLong()
+            val fab = (fragment.playbackControlsFragment as CardPlayerControllerFragment).playerPlayPauseFab
+            val progressSliderHeight = (fragment.playbackControlsFragment as CardPlayerControllerFragment).progressSliderHeight
+
+            val backgroundAnimator: Animator =
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    val x = fab.x + fab.width / 2 + fragment.playbackControlsFragment.requireView().x
+                    val y = fab.y + fab.height / 2 + fragment.playbackControlsFragment.requireView().y + progressSliderHeight
+                    val startRadius = max(fab.width / 2, fab.height / 2)
+                    val endRadius = max(fragment.viewBinding.colorBackground.width, fragment.viewBinding.colorBackground.height)
+                    fragment.viewBinding.colorBackground.setBackgroundColor(newColor)
+                    ViewAnimationUtils.createCircularReveal(fragment.viewBinding.colorBackground, x.toInt(), y.toInt(), startRadius.toFloat(), endRadius.toFloat())
+                } else {
+                    ViewUtil.createBackgroundColorTransition(fragment.viewBinding.colorBackground, fragment.paletteColor, newColor)
+                }
+
+            val animatorSet =
+                AnimatorSet()
+                    .apply {
+                        play(backgroundAnimator)
+                        if (!Util.isWindowBackgroundDark(fragment.activity)) {
+                            play(
+                                ViewUtil.createTextColorTransition(
+                                    fragment.viewBinding.playerQueueSubHeader,
+                                    if (ColorUtil.isColorLight(fragment.paletteColor)) ColorUtil.darkenColor(fragment.paletteColor) else fragment.paletteColor,
+                                    if (ColorUtil.isColorLight(newColor)) ColorUtil.darkenColor(newColor) else newColor
+                                )
+                            )
+                        }
+                        duration = ViewUtil.PHONOGRAPH_ANIM_TIME.toLong()
+                    }
             return animatorSet
         }
 
