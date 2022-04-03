@@ -2,6 +2,7 @@ package player.phonograph.glide;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 
@@ -14,6 +15,7 @@ import com.bumptech.glide.module.AppGlideModule;
 import com.bumptech.glide.request.RequestOptions;
 
 import java.io.InputStream;
+import java.util.logging.Logger;
 
 import player.phonograph.glide.artistimage.ArtistImage;
 import player.phonograph.glide.artistimage.ArtistImageLoader;
@@ -31,6 +33,7 @@ public class PhonographGlideModule extends AppGlideModule {
     @Override
     public void applyOptions(@NonNull Context context, @NonNull GlideBuilder builder) {
         builder.setDefaultRequestOptions(new RequestOptions().format(DecodeFormat.PREFER_RGB_565));
+        builder.setLogLevel(Log.WARN);
     }
     @Override
     public boolean isManifestParsingEnabled() {

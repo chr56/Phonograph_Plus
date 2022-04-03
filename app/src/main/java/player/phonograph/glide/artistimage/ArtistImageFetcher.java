@@ -43,8 +43,6 @@ public class ArtistImageFetcher implements DataFetcher<InputStream> {
 
     @Override
     public void loadData(@NonNull Priority priority, @NonNull DataCallback<? super InputStream> callback) {
-        if (BuildConfig.DEBUG)
-            Log.d("MOSAIC", "load data for " + model.artistName);
 
         try {
             stream = getMosaic(model.albumCovers);
@@ -52,11 +50,10 @@ public class ArtistImageFetcher implements DataFetcher<InputStream> {
             return;
         } catch (FileNotFoundException e) {
             if (BuildConfig.DEBUG)
-                Log.d(TAG, "No Available Photo for " + model.artistName);
+                Log.v(TAG, "No cover for " + model.artistName + " in MediaStore");
         }
 
         callback.onLoadFailed(new Exception("No Available Photo For " + model.artistName));
-
     }
 
     private InputStream getMosaic(final List<AlbumCover> albumCovers) throws FileNotFoundException {
@@ -156,7 +153,7 @@ public class ArtistImageFetcher implements DataFetcher<InputStream> {
                     stream.close();
                 }
             } catch (IOException e) {
-                e.printStackTrace();
+                Log.v(TAG, "Error" + e.getClass().getSimpleName());
             }
 
         }

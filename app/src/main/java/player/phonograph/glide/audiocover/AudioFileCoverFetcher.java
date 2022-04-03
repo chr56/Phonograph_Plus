@@ -47,8 +47,7 @@ public class AudioFileCoverFetcher implements DataFetcher<InputStream> {
             callback.onDataReady(stream);
             return;
         } else {
-            if (BuildConfig.DEBUG)
-                Log.d(TAG, "No Media Store Embedded Picture for " + model.filePath);
+            if (BuildConfig.DEBUG) Log.v(TAG, "No cover for " + model + " in MediaStore");
         }
 
         // use fallback
@@ -57,13 +56,12 @@ public class AudioFileCoverFetcher implements DataFetcher<InputStream> {
             callback.onDataReady(stream);
             return;
         } catch (FileNotFoundException e) {
-            if (BuildConfig.DEBUG)
-                Log.d(TAG, "No Available Cover Picture for " + model.filePath);
+            if (BuildConfig.DEBUG) Log.v(TAG, "No cover for" + model + "in File");
         }
 
 
         // so onLoadFailed
-        callback.onLoadFailed(new Exception("No Available Cover Picture For " + model.filePath));
+        callback.onLoadFailed(new Exception("No Available Cover Picture For " + model));
 
     }
 
