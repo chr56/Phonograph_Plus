@@ -17,6 +17,7 @@ import kotlinx.coroutines.launch
 import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.Updater
+import player.phonograph.notification.ErrorNotification
 import player.phonograph.notification.UpgradeNotification
 import player.phonograph.settings.Setting
 import player.phonograph.util.Util.coroutineToast
@@ -29,6 +30,7 @@ class DebugDialog : DialogFragment() {
 
         val debugMenuItem = listOf(
             "Crash the app",
+            "Send Crash Notification",
             "Check Upgrade (Dialog)",
             "Check Upgrade (Notification)",
         )
@@ -38,7 +40,8 @@ class DebugDialog : DialogFragment() {
             .listItemsSingleChoice(items = debugMenuItem) { dialog: MaterialDialog, index: Int, _: CharSequence ->
                 when (index) {
                     0 -> throw Exception("Crash Test!!! Crash Test!!! Crash Test!!! Crash Test!!! Crash Test!!! ")
-                    1 -> {
+                    1 -> ErrorNotification.postErrorNotification(Exception("Test"), "Crash Notification Test!!")
+                    2 -> {
                         Updater.checkUpdate(callback = {
                             CoroutineScope(Dispatchers.Main).launch {
                                 try {
@@ -52,7 +55,7 @@ class DebugDialog : DialogFragment() {
                             }
                         }, force = true)
                     }
-                    2 -> {
+                    3 -> {
                         Updater.checkUpdate(callback = {
                             UpgradeNotification.sendUpgradeNotification(it)
                             CoroutineScope(Dispatchers.Main).launch {
