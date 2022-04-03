@@ -37,7 +37,7 @@ abstract class AbsPlayerControllerFragment : AbsMusicServiceFragment(), MusicPro
     protected lateinit var songTotalTime: TextView
     protected lateinit var songCurrentProgress: TextView
 
-    private var lastPlaybackControlsColor = 0
+    protected var lastPlaybackControlsColor = 0
     private var lastDisabledPlaybackControlsColor = 0
 
     private var _progressViewUpdateHelper: MusicProgressViewUpdateHelper? = null

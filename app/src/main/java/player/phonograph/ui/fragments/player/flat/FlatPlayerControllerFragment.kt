@@ -8,6 +8,7 @@ import android.animation.Animator
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.animation.TimeInterpolator
+import android.graphics.PorterDuff
 import android.view.LayoutInflater
 import android.view.View
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
@@ -56,6 +57,10 @@ class FlatPlayerControllerFragment : AbsPlayerControllerFragment() {
         } else {
             playPauseDrawable.setPlay(animate)
         }
+    }
+
+    override fun updatePlayPauseColor() {
+        v.playerPlayPauseButton.setColorFilter(lastPlaybackControlsColor, PorterDuff.Mode.SRC_IN)
     }
 
     private var hidden = false
