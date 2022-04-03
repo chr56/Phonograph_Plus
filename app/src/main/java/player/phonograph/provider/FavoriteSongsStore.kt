@@ -129,7 +129,7 @@ class FavoriteSongsStore(context: Context = App.instance) : SQLiteOpenHelper(con
 
         return result
     }
-    fun remove(song: Song): Boolean = remove(song.id, song.data)
+    fun remove(song: Song): Boolean = remove(song.id, song.data!!)
 
     private fun notifyMediaStoreChanged() { App.instance.sendBroadcast(Intent(MusicService.MEDIA_STORE_CHANGED)) }
 

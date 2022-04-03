@@ -100,8 +100,8 @@ class SongDetailDialog : DialogFragment() {
                     samplingRate.text = makeTextWithTitle(context, R.string.label_sampling_rate, audioHeader.sampleRate + " Hz")
                     // tags of the song
                     title.text = makeTextWithTitle(context, R.string.title, song.title)
-                    artist.text = makeTextWithTitle(context, R.string.artist, song.artistName)
-                    album.text = makeTextWithTitle(context, R.string.album, song.albumName)
+                    artist.text = makeTextWithTitle(context, R.string.artist, song.artistName!!)
+                    album.text = makeTextWithTitle(context, R.string.album, song.albumName!!)
                     albumArtist.text = makeTextWithTitle(context, R.string.album_artist, audioFile.tag.getFirst(FieldKey.ALBUM_ARTIST))
                     if (song.year != 0) year.text = makeTextWithTitle(context, R.string.year, song.year.toString())
                     val songGenre = audioFile.tag.getFirst(FieldKey.GENRE)
