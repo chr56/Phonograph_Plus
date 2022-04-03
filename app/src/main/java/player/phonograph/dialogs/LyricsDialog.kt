@@ -26,6 +26,7 @@ import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
 import player.phonograph.ui.fragments.player.AbsPlayerFragment
 import util.mdcolor.ColorUtil
 import util.mdcolor.pref.ThemeColor
+import util.mddesign.util.MaterialColorHelper
 import java.lang.IllegalStateException
 
 /**
@@ -116,6 +117,7 @@ class LyricsDialog : DialogFragment() {
         for (chip in binding.types) {
             chip as Chip
             chip.setTextColor(textColorCsl)
+            chip.chipBackgroundColor = backgroundCsl
             chip.chipStrokeColor = backgroundCsl
             chip.setOnClickListener {
                 val lyrics = when (chip.id) {
@@ -176,7 +178,7 @@ class LyricsDialog : DialogFragment() {
                 intArrayOf(android.R.attr.state_checked),
                 intArrayOf(),
             ),
-            intArrayOf(primaryColor, textColor)
+            intArrayOf(MaterialColorHelper.getPrimaryTextColor(requireContext(), ColorUtil.isColorLight(primaryColor)), textColor)
         )
     }
 
