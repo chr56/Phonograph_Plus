@@ -83,10 +83,6 @@ class CardPlayerFragment :
         viewBinding.playerRecyclerView.adapter = null
         viewBinding.playerRecyclerView.layoutManager = null
         super.onDestroyView()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
         _viewBinding = null
     }
 
