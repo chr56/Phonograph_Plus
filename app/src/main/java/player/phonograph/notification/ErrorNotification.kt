@@ -53,6 +53,12 @@ object ErrorNotification {
                     .setVisibility(NotificationCompat.VISIBILITY_PRIVATE)
                     .setContentTitle(context.getString(R.string.error_notification_name))
                     .setContentText(msg)
+                    .setStyle(
+                        NotificationCompat.BigTextStyle()
+                            .setBigContentTitle(context.getString(R.string.error_notification_name))
+                            .setSummaryText("${e::class.simpleName}\n$note")
+                            .bigText(msg)
+                    )
                     .setContentIntent(clickIntent)
                     .setAutoCancel(true)
                     .build()
