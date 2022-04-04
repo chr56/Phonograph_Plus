@@ -116,7 +116,8 @@ class FlatPlayerFragment :
     }
 
     private fun updateQueue() {
-        playingQueueAdapter!!.swapDataSet(MusicPlayerRemote.getPlayingQueue(), MusicPlayerRemote.getPosition())
+        playingQueueAdapter!!.dataSet = MusicPlayerRemote.getPlayingQueue()
+        playingQueueAdapter!!.current = MusicPlayerRemote.getPosition()
         viewBinding.playerQueueSubHeader.text = upNextAndQueueTime
         if (viewBinding.playerSlidingLayout == null || viewBinding.playerSlidingLayout!!.panelState == PanelState.COLLAPSED) {
             resetToCurrentPosition()
@@ -124,7 +125,7 @@ class FlatPlayerFragment :
     }
 
     private fun updateQueuePosition() {
-        playingQueueAdapter!!.setCurrent(MusicPlayerRemote.getPosition())
+        playingQueueAdapter!!.current = MusicPlayerRemote.getPosition()
         viewBinding.playerQueueSubHeader.text = upNextAndQueueTime
         if (viewBinding.playerSlidingLayout == null || viewBinding.playerSlidingLayout!!.panelState == PanelState.COLLAPSED) {
             resetToCurrentPosition()

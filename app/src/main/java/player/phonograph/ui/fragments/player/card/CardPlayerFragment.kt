@@ -123,7 +123,8 @@ class CardPlayerFragment :
     }
 
     private fun updateQueue() {
-        playingQueueAdapter!!.swapDataSet(MusicPlayerRemote.getPlayingQueue(), MusicPlayerRemote.getPosition())
+        playingQueueAdapter!!.dataSet = MusicPlayerRemote.getPlayingQueue()
+        playingQueueAdapter!!.current = MusicPlayerRemote.getPosition()
         viewBinding.playerQueueSubHeader.text = upNextAndQueueTime
         if (viewBinding.playerSlidingLayout.panelState == PanelState.COLLAPSED) {
             resetToCurrentPosition()
@@ -131,7 +132,7 @@ class CardPlayerFragment :
     }
 
     private fun updateQueuePosition() {
-        playingQueueAdapter!!.setCurrent(MusicPlayerRemote.getPosition())
+        playingQueueAdapter!!.current = MusicPlayerRemote.getPosition()
         viewBinding.playerQueueSubHeader.text = upNextAndQueueTime
         if (viewBinding.playerSlidingLayout.panelState == PanelState.COLLAPSED) {
             resetToCurrentPosition()

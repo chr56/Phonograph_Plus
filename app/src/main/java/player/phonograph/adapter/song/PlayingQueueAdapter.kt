@@ -1,5 +1,6 @@
 package player.phonograph.adapter.song
 
+import android.annotation.SuppressLint
 import android.view.MenuItem
 import android.view.View
 import androidx.annotation.LayoutRes
@@ -21,7 +22,7 @@ import player.phonograph.util.ViewUtil
 class PlayingQueueAdapter(
     activity: AppCompatActivity,
     dataSet: List<Song>,
-    private var current: Int,
+    current: Int,
     @LayoutRes itemLayoutRes: Int,
     usePalette: Boolean,
     cabHolder: CabHolder?
@@ -36,78 +37,64 @@ class PlayingQueueAdapter(
 
     override fun onBindViewHolder(holder: SongAdapter.ViewHolder, position: Int) {
         super.onBindViewHolder(holder, position)
-        if (holder.imageText != null) {
-            holder.imageText!!.text = (position - current).toString()
-        }
+        holder.imageText?.text = (position - current).toString()
         if (holder.itemViewType == HISTORY || holder.itemViewType == CURRENT) {
             setAlpha(holder, 0.5f)
         }
     }
 
-    override fun getItemViewType(position: Int): Int {
-        if (position < current) {
-            return HISTORY
-        } else if (position > current) {
-            return UP_NEXT
+    var current: Int = current
+        @SuppressLint("NotifyDataSetChanged") // number 0 is moving, meaning all items' number is changing
+        set(value) {
+            field = value
+            notifyDataSetChanged()
         }
-        return CURRENT
-    }
+
+    override fun getItemViewType(position: Int): Int =
+        when {
+            position < current -> HISTORY
+            position > current -> UP_NEXT
+            else -> CURRENT
+        }
 
     override fun loadAlbumCover(song: Song, holder: SongAdapter.ViewHolder) {
         // We don't want to load it in this adapter
     }
 
-    fun swapDataSet(dataSet: List<Song?>, position: Int) {
-        this.dataSet = dataSet as List<Song>
-        current = position
-        notifyDataSetChanged()
-    }
-
-    fun setCurrent(current: Int) {
-        this.current = current
-        notifyDataSetChanged()
-    }
-
     private fun setAlpha(holder: SongAdapter.ViewHolder, alpha: Float) {
-        if (holder.image != null) {
-            holder.image!!.alpha = alpha
-        }
-        if (holder.title != null) {
-            holder.title!!.alpha = alpha
-        }
-        if (holder.text != null) {
-            holder.text!!.alpha = alpha
-        }
-        if (holder.imageText != null) {
-            holder.imageText!!.alpha = alpha
-        }
-        if (holder.paletteColorContainer != null) {
-            holder.paletteColorContainer!!.alpha = alpha
-        }
+        holder.image?.alpha = alpha
+        holder.title?.alpha = alpha
+        holder.text?.alpha = alpha
+        holder.imageText?.alpha = alpha
+        holder.paletteColorContainer?.alpha = alpha
     }
 
-    override fun onCheckCanStartDrag(holder: ViewHolder, position: Int, x: Int, y: Int): Boolean {
-        return ViewUtil.hitTest(holder.imageText, x, y)
-    }
+    override fun onCheckCanStartDrag(holder: ViewHolder, position: Int, x: Int, y: Int): Boolean =
+        ViewUtil.hitTest(holder.imageText, x, y)
 
-    override fun onGetItemDraggableRange(holder: ViewHolder, position: Int): ItemDraggableRange? {
-        return null
-    }
+    override fun onGetItemDraggableRange(holder: ViewHolder, position: Int): ItemDraggableRange? = null
 
     override fun onMoveItem(fromPosition: Int, toPosition: Int) {
         MusicPlayerRemote.moveSong(fromPosition, toPosition)
     }
 
-    override fun onCheckCanDrop(draggingPosition: Int, dropPosition: Int): Boolean {
-        return true
-    }
+    override fun onCheckCanDrop(draggingPosition: Int, dropPosition: Int): Boolean = true
 
-    override fun onItemDragStarted(position: Int) {
-        notifyDataSetChanged()
-    }
+    override fun onItemDragStarted(position: Int) { }
 
+    @SuppressLint("NotifyDataSetChanged")
     override fun onItemDragFinished(fromPosition: Int, toPosition: Int, result: Boolean) {
-        notifyDataSetChanged()
+        if (current in fromPosition..toPosition) {
+            // number 0 is moving
+            notifyDataSetChanged()
+        } else {
+            // number 0 is not moved
+            when {
+                fromPosition < toPosition -> notifyItemRangeChanged(fromPosition, toPosition)
+                fromPosition > toPosition -> notifyItemRangeChanged(toPosition, fromPosition)
+                else -> notifyItemChanged(fromPosition)
+            }
+        }
     }
 
     inner class ViewHolder(itemView: View) :
@@ -115,20 +102,11 @@ class PlayingQueueAdapter(
         DraggableItemViewHolder {
 
         init {
-            imageText?.let {
-                it.visibility = View.VISIBLE
-            }
-            image?.let {
-                it.visibility = View.GONE
-            }
+            imageText?.visibility = View.VISIBLE
+            image?.visibility = View.GONE
         }
 
-        override val menuRes: Int
-            get() = R.menu.menu_item_playing_queue_song
-//            get() = R.menu.menu_item_playing_queue_song
-
-        @DraggableItemStateFlags
-        private var mDragStateFlags = 0
+        override val menuRes: Int get() = R.menu.menu_item_playing_queue_song
 
         override fun onSongMenuItemClick(item: MenuItem): Boolean {
             when (item.itemId) {
@@ -140,13 +118,10 @@ class PlayingQueueAdapter(
             return super.onSongMenuItemClick(item)
         }
 
+        @DraggableItemStateFlags private var mDragStateFlags = 0
+        @DraggableItemStateFlags override fun getDragStateFlags(): Int = mDragStateFlags
         override fun setDragStateFlags(@DraggableItemStateFlags flags: Int) {
             mDragStateFlags = flags
-        }
-
-        @DraggableItemStateFlags
-        override fun getDragStateFlags(): Int {
-            return mDragStateFlags
         }
 
         override fun getDragState(): DraggableItemState {
