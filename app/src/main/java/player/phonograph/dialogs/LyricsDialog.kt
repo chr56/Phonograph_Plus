@@ -266,6 +266,7 @@ class LyricsDialog : DialogFragment(), MusicProgressViewUpdateHelper.Callback {
 
     override fun onDestroy() {
         super.onDestroy()
+        _progressViewUpdateHelper?.destroy()
         _progressViewUpdateHelper = null
     }
 
@@ -274,12 +275,18 @@ class LyricsDialog : DialogFragment(), MusicProgressViewUpdateHelper.Callback {
 
     private var scrollingOffset: Int = 0
     override fun onUpdateProgressViews(progress: Int, total: Int) {
-        scrollingTo(progress)
+        if (_viewBinding != null) {
+            scrollingTo(progress)
+        } else {
+            _progressViewUpdateHelper?.destroy()
+            _progressViewUpdateHelper = null
+        }
     }
     private fun scrollingTo(timeStamp: Int) {
         if (lyricsDisplay is LrcLyrics) {
             val line = (lyricsDisplay as LrcLyrics).getPosition(timeStamp)
-            linearLayoutManager.scrollToPositionWithOffset(line, scrollingOffset)
+            linearLayoutManager.smoothScrollToPosition(binding.recyclerViewLyrics, null, line)
+//            linearLayoutManager.scrollToPositionWithOffset(line, scrollingOffset)
         }
     }
 

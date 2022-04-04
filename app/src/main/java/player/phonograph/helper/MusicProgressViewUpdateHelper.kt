@@ -1,13 +1,14 @@
 package player.phonograph.helper
 
 import android.os.Handler
+import android.os.Looper
 import android.os.Message
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
  */
 class MusicProgressViewUpdateHelper : Handler {
-    private var callback: Callback
+    private var callback: Callback?
     private var intervalPlaying: Int
     private var intervalPaused: Int
 
@@ -17,13 +18,18 @@ class MusicProgressViewUpdateHelper : Handler {
     fun stop() {
         removeMessages(CMD_REFRESH_PROGRESS_VIEWS)
     }
+    fun destroy() {
+        stop()
+        if (looper != Looper.getMainLooper()) looper.quit()
+        callback = null
+    }
 
-    constructor(callback: Callback) {
+    constructor(callback: Callback, looper: Looper = Looper.getMainLooper()) : super(looper) {
         this.callback = callback
         intervalPlaying = UPDATE_INTERVAL_PLAYING
         intervalPaused = UPDATE_INTERVAL_PAUSED
     }
-    constructor(callback: Callback, intervalPlaying: Int, intervalPaused: Int) {
+    constructor(callback: Callback, intervalPlaying: Int, intervalPaused: Int, looper: Looper = Looper.getMainLooper()) : super(looper) {
         this.callback = callback
         this.intervalPlaying = intervalPlaying
         this.intervalPaused = intervalPaused
@@ -40,7 +46,7 @@ class MusicProgressViewUpdateHelper : Handler {
     private fun refreshProgressViews(): Int {
         val progressMillis = MusicPlayerRemote.getSongProgressMillis()
         val totalMillis = MusicPlayerRemote.getSongDurationMillis()
-        callback.onUpdateProgressViews(progressMillis, totalMillis)
+        callback?.onUpdateProgressViews(progressMillis, totalMillis)
         if (!MusicPlayerRemote.isPlaying()) {
             return intervalPaused
         }
