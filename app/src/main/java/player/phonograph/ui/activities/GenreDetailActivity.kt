@@ -11,8 +11,6 @@ import androidx.loader.app.LoaderManager
 import androidx.loader.content.Loader
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import util.mdcolor.pref.ThemeColor
-import util.mddesign.core.Themer
 import com.afollestad.materialcab.*
 import com.afollestad.materialcab.attached.AttachedCab
 import com.afollestad.materialcab.attached.destroy
@@ -27,10 +25,12 @@ import player.phonograph.loader.GenreLoader
 import player.phonograph.misc.WrappedAsyncTaskLoader
 import player.phonograph.model.Genre
 import player.phonograph.model.Song
+import player.phonograph.settings.Setting
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
 import player.phonograph.util.PhonographColorUtil
-import player.phonograph.settings.Setting
 import player.phonograph.util.ViewUtil
+import util.mdcolor.pref.ThemeColor
+import util.mddesign.core.Themer
 
 class GenreDetailActivity :
     AbsSlidingMusicPanelActivity(), CabHolder, LoaderManager.LoaderCallbacks<List<Song>> {
@@ -127,7 +127,7 @@ class GenreDetailActivity :
         }
         cab = createCab(R.id.cab_stub) {
             menu(menuRes)
-            popupTheme(Setting.instance.generalTheme);
+            popupTheme(Setting.instance.generalTheme)
             closeDrawable(R.drawable.ic_close_white_24dp)
             backgroundColor(literal = PhonographColorUtil.shiftBackgroundColorForLightText(ThemeColor.primaryColor(this@GenreDetailActivity)))
             onCreate(createCallback)
@@ -164,11 +164,11 @@ class GenreDetailActivity :
     }
 
     override fun onLoadFinished(loader: Loader<List<Song>>, data: List<Song>) {
-        adapter.swapDataSet(data)
+        adapter.dataSet = data
     }
 
     override fun onLoaderReset(loader: Loader<List<Song>>) {
-        adapter.swapDataSet(ArrayList())
+        adapter.dataSet = ArrayList()
     }
 
     private class AsyncGenreSongLoader(context: Context, private val genre: Genre) :

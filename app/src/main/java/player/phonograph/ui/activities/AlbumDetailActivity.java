@@ -415,7 +415,7 @@ public class AlbumDetailActivity extends AbsSlidingMusicPanelActivity implements
         viewBinding.durationText.setText(MusicUtil.getReadableDurationString(MusicUtil.getTotalDuration(this, album.songs)));
         viewBinding.albumYearText.setText(MusicUtil.getYearString(album.getYear()));
 
-        adapter.swapDataSet(album.songs);
+        adapter.setDataSet(album.songs);
     }
 
     private Album getAlbum() {
@@ -436,7 +436,7 @@ public class AlbumDetailActivity extends AbsSlidingMusicPanelActivity implements
     @Override
     public void onLoaderReset(Loader<Album> loader) {
         this.album = new Album();
-        adapter.swapDataSet(album.songs);
+        adapter.setDataSet(album.songs);
     }
 
     private static class AsyncAlbumLoader extends WrappedAsyncTaskLoader<Album> {

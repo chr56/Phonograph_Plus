@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.util.Pair
 import com.bumptech.glide.Glide
@@ -30,10 +29,10 @@ import util.mddesign.util.MaterialColorHelper
 /**
  * @author Karim Abou Zeid (kabouzeid)
  */
-open class SongAdapter @JvmOverloads constructor(
-    @JvmField protected val activity: AppCompatActivity,
+open class SongAdapter constructor(
+    protected val activity: AppCompatActivity,
     dataSet: List<Song>,
-    @LayoutRes protected var itemLayoutRes: Int,
+    protected var itemLayoutRes: Int,
     protected var usePalette: Boolean = false,
     cabHolder: CabHolder?,
     protected var showSectionName: Boolean = true
@@ -48,28 +47,20 @@ open class SongAdapter @JvmOverloads constructor(
     }
 
     var dataSet: List<Song> = dataSet
-        get() = field
-        protected set(dataSet: List<Song>) {
+        set(dataSet) {
             field = dataSet
+            notifyDataSetChanged()
         }
-
-    fun swapDataSet(dataSet: List<Song>) {
-        this.dataSet = dataSet
-        notifyDataSetChanged()
-    }
 
     fun usePalette(usePalette: Boolean) {
         this.usePalette = usePalette
         notifyDataSetChanged()
     }
 
-    override fun getItemId(position: Int): Long {
-        return dataSet[position].id
-    }
+    override fun getItemId(position: Int): Long = dataSet[position].id
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(activity).inflate(itemLayoutRes, parent, false)
-        return createViewHolder(view)
+        return createViewHolder(LayoutInflater.from(activity).inflate(itemLayoutRes, parent, false))
     }
     protected open fun createViewHolder(view: View): ViewHolder {
         return ViewHolder(view)
@@ -77,45 +68,25 @@ open class SongAdapter @JvmOverloads constructor(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val song = dataSet[position]
-        val isChecked = isChecked(song)
-        holder.itemView.isActivated = isChecked
-        if (holder.bindingAdapterPosition == itemCount - 1) {
-            if (holder.shortSeparator != null) {
-                holder.shortSeparator!!.visibility = View.GONE
-            }
-        } else {
-            if (holder.shortSeparator != null) {
-                holder.shortSeparator!!.visibility = View.VISIBLE
-            }
-        }
-        if (holder.title != null) {
-            holder.title!!.text = song.title
-        }
-        if (holder.text != null) {
-            holder.text!!.text = getSongText(song)
-        }
+
+        holder.itemView.isActivated = isChecked(song)
+        holder.title?.text = song.title
+        holder.text?.text = getSongText(song)
+
         loadAlbumCover(song, holder)
+
+        holder.shortSeparator?.visibility = if (holder.bindingAdapterPosition == itemCount - 1) View.GONE else View.VISIBLE
     }
 
     private fun setColors(color: Int, holder: ViewHolder) {
-        if (holder.paletteColorContainer != null) {
-            holder.paletteColorContainer!!.setBackgroundColor(color)
-            if (holder.title != null) {
-                holder.title!!.setTextColor(
-                    MaterialColorHelper.getPrimaryTextColor(
-                        activity,
-                        ColorUtil.isColorLight(color)
-                    )
-                )
-            }
-            if (holder.text != null) {
-                holder.text!!.setTextColor(
-                    MaterialColorHelper.getSecondaryTextColor(
-                        activity,
-                        ColorUtil.isColorLight(color)
-                    )
-                )
-            }
+        holder.paletteColorContainer?.let {
+            it.setBackgroundColor(color)
+            holder.title?.setTextColor(
+                MaterialColorHelper.getPrimaryTextColor(activity, ColorUtil.isColorLight(color))
+            )
+            holder.text?.setTextColor(
+                MaterialColorHelper.getSecondaryTextColor(activity, ColorUtil.isColorLight(color))
+            )
         }
     }
 
@@ -125,44 +96,36 @@ open class SongAdapter @JvmOverloads constructor(
             .checkIgnoreMediaStore(activity)
             .generatePalette(activity).build()
             .into(object : PhonographColoredTarget(holder.image) {
+
                 override fun onLoadCleared(placeholder: Drawable?) {
                     super.onLoadCleared(placeholder)
                     setColors(defaultFooterColor, holder)
                 }
 
                 override fun onColorReady(color: Int) {
-                    if (usePalette) setColors(color, holder) else setColors(
-                        defaultFooterColor,
+                    setColors(
+                        if (usePalette) color else defaultFooterColor,
                         holder
                     )
                 }
             })
     }
 
-    protected open fun getSongText(song: Song): String {
-        return MusicUtil.getSongInfoString(song)
-    }
+    protected open fun getSongText(song: Song): String = MusicUtil.getSongInfoString(song)
 
-    override fun getItemCount(): Int {
-        return dataSet.size
-    }
+    override fun getItemCount(): Int = dataSet.size
 
-    override fun getIdentifier(position: Int): Song {
-        return dataSet[position]
-    }
+    override fun getIdentifier(position: Int): Song = dataSet[position]
 
-    override fun getName(obj: Song): String {
-        return obj.title
-    }
+    override fun getName(obj: Song): String = obj.title
 
     override fun onMultipleItemAction(menuItem: MenuItem, selection: List<Song>) {
         handleMenuClick(activity, selection, menuItem.itemId)
     }
 
     override fun getSectionName(position: Int): String {
-        if (!showSectionName) {
-            return ""
-        }
+        if (!showSectionName) return ""
+
         var sectionName: String? = null
         when (Setting.instance.songSortOrder) {
             SortOrder.SongSortOrder.SONG_A_Z, SortOrder.SongSortOrder.SONG_Z_A ->
@@ -172,9 +135,9 @@ open class SongAdapter @JvmOverloads constructor(
             SortOrder.SongSortOrder.SONG_ARTIST ->
                 sectionName = dataSet[position].artistName
             SortOrder.SongSortOrder.SONG_YEAR ->
-//                sectionName = if (dataSet[position].year > 1000) dataSet[position].year.toString() else "-"
                 return MusicUtil.getYearString(dataSet[position].year)
         }
+
         return MusicUtil.getSectionName(sectionName)
     }
 
@@ -189,20 +152,7 @@ open class SongAdapter @JvmOverloads constructor(
         init {
             setImageTransitionName(activity.getString(R.string.transition_album_art))
             setupMenuListener()
-//            setupMenu()
         }
-//        protected open fun setupMenu(@Nullable @MenuRes menuRes: Int?) {
-//            val realMenuRes: Int = menuRes ?: R.menu.menu_item_song // default
-//
-//            menu?.setOnClickListener(object : SongMenuHelper.ClickMenuListener(activity, realMenuRes) {
-//                override val song: Song
-//                    get() = this@ViewHolder.song
-//
-//                override fun onMenuItemClick(item: MenuItem): Boolean {
-//                    return onSongMenuItemClick(item) || super.onMenuItemClick(item)
-//                }
-//            })
-//        }
 
         private fun setupMenuListener() {
             menu?.setOnClickListener(object : SongMenuHelper.ClickMenuListener(activity, menuRes) {
@@ -220,10 +170,7 @@ open class SongAdapter @JvmOverloads constructor(
                 when (item.itemId) {
                     R.id.action_go_to_album -> {
                         val albumPairs = arrayOf<Pair<*, *>>(
-                            Pair.create(
-                                image,
-                                activity.resources.getString(R.string.transition_album_art)
-                            )
+                            Pair.create(image, activity.resources.getString(R.string.transition_album_art))
                         )
                         NavigationUtil.goToAlbum(activity, song.albumId, *albumPairs)
                         return true
@@ -241,7 +188,7 @@ open class SongAdapter @JvmOverloads constructor(
             }
         }
 
-        override fun onLongClick(view: View): Boolean {
+        override fun onLongClick(v: View): Boolean {
             return toggleChecked(bindingAdapterPosition)
         }
     }
