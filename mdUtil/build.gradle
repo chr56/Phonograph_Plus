@@ -12,7 +12,6 @@ android {
         versionCode 2
         versionName "1.0"
 
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
     }
 
@@ -27,7 +26,7 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 
-    buildFeatures{
+    buildFeatures {
         buildConfig = false
     }
 
@@ -42,7 +41,9 @@ android {
 dependencies {
     implementation project(path: ':mdColor')
 
-    implementation 'androidx.appcompat:appcompat:1.4.0'
+    implementation 'androidx.appcompat:appcompat:1.4.1'
+    implementation 'androidx.core:core:1.7.0'
+
     implementation 'com.google.android.material:material:1.4.0'
 
 }
