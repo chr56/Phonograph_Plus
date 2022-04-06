@@ -1,6 +1,9 @@
 plugins {
     id 'com.android.library'
+    id "maven-publish"
 }
+
+def libVersion = "0.0.1"
 
 android {
     compileSdkVersion 31
@@ -13,6 +16,10 @@ android {
         versionName "1.0"
 
         consumerProguardFiles "consumer-rules.pro"
+    }
+    sourceSets {
+        main.java.srcDir("scr/main/java")
+        main.res.srcDir("scr/main/res")
     }
 
     buildTypes {
@@ -38,6 +45,11 @@ android {
 
 }
 
+tasks.create(name: "sourceJar", type: Jar) {
+    from(android.sourceSets.main.java.srcDirs).setArchiveClassifier("sources")
+}
+
+
 dependencies {
     implementation project(path: ':mdColor')
 
@@ -46,4 +58,20 @@ dependencies {
 
     implementation 'com.google.android.material:material:1.4.0'
 
+}
+
+publishing {
+    publications {
+        release(MavenPublication) {
+
+            artifact(sourceJar)
+            afterEvaluate {
+                artifact(tasks.getByName("bundleReleaseAar"))
+            }
+
+            groupId = "com.github.chr56"
+            artifactId = "mdUtil"
+            version = libVersion
+        }
+    }
 }
