@@ -17,9 +17,11 @@ import player.phonograph.helper.MusicProgressViewUpdateHelper
 import player.phonograph.misc.SimpleAnimatorListener
 import player.phonograph.model.lyrics2.AbsLyrics
 import player.phonograph.model.lyrics2.LrcLyrics
+import player.phonograph.notification.ErrorNotification
 import player.phonograph.settings.Setting
 import player.phonograph.ui.fragments.AbsMusicServiceFragment
 import player.phonograph.util.ViewUtil
+import java.lang.IllegalStateException
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
@@ -36,7 +38,9 @@ class PlayerAlbumCoverFragment :
     private var currentPosition = 0
     private var lyrics: LrcLyrics? = null
 
-    private lateinit var progressViewUpdateHelper: MusicProgressViewUpdateHelper /**[onViewCreated]*/
+    private lateinit var progressViewUpdateHelper: MusicProgressViewUpdateHelper
+
+    /**[onViewCreated]*/
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _viewBinding = FragmentPlayerAlbumCoverBinding.inflate(inflater)
@@ -62,6 +66,7 @@ class PlayerAlbumCoverFragment :
                         }
                     }
                 )
+
                 override fun onTouch(v: View, event: MotionEvent): Boolean {
                     return gestureDetector.onTouchEvent(event)
                 }
@@ -107,7 +112,9 @@ class PlayerAlbumCoverFragment :
     private val colorReceiver by lazy(LazyThreadSafetyMode.NONE) {
         object : ColorReceiver {
             override fun onColorReady(color: Int, request: Int) {
-                if (currentPosition == request) { notifyColorChange(color) }
+                if (currentPosition == request) {
+                    notifyColorChange(color)
+                }
             }
         }
     }
@@ -153,9 +160,19 @@ class PlayerAlbumCoverFragment :
         binding.playerLyrics
             .animate().alpha(0f).setDuration(VISIBILITY_ANIM_DURATION)
             .withEndAction {
-                binding.playerLyrics.visibility = View.GONE
-                binding.playerLyricsLine1.text = null
-                binding.playerLyricsLine2.text = null
+                if (_viewBinding != null) {
+                    binding.playerLyrics.visibility = View.GONE
+                    binding.playerLyricsLine1.text = null
+                    binding.playerLyricsLine2.text = null
+                } else {
+                    ErrorNotification.init()
+                    ErrorNotification.postErrorNotification(
+                        IllegalStateException("_viewBinding of PlayerAlbumCoverFragment is null."),
+                        "This may happen when playing lyrics animation after Fragment destroying already.\n${
+                        Thread.currentThread().stackTrace.map { it.toString() }.fold("StackTrace:\n") { acc: String, s: String -> "$acc \n$s" }
+                        }"
+                    )
+                }
             }
     }
 
@@ -174,14 +191,19 @@ class PlayerAlbumCoverFragment :
             hideLyricsLayout()
         }
     }
+
     fun clearLyrics() {
         lyrics = null
         hideLyricsLayout()
     }
 
-    private fun notifyColorChange(color: Int) { callbacks?.onColorChanged(color) }
+    private fun notifyColorChange(color: Int) {
+        callbacks?.onColorChanged(color)
+    }
 
-    fun setCallbacks(listener: Callbacks) { callbacks = listener }
+    fun setCallbacks(listener: Callbacks) {
+        callbacks = listener
+    }
 
     override fun onUpdateProgressViews(progress: Int, total: Int) {
         if (!isLyricsLayoutVisible()) {
