@@ -135,10 +135,6 @@ android {
             isDebuggable = true
         }
     }
-    packagingOptions {
-        exclude("META-INF/LICENSE")
-        exclude("META-INF/NOTICE")
-    }
     lint {
         abortOnError = false
         disable.add("MissingTranslation")
