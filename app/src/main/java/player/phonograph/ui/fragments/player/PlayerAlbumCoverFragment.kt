@@ -160,23 +160,16 @@ class PlayerAlbumCoverFragment :
         binding.playerLyrics
             .animate().alpha(0f).setDuration(VISIBILITY_ANIM_DURATION)
             .withEndAction {
-                if (_viewBinding != null) {
+                if (isBindingAccessible()) {
                     binding.playerLyrics.visibility = View.GONE
                     binding.playerLyricsLine1.text = null
                     binding.playerLyricsLine2.text = null
-                } else {
-                    ErrorNotification.init()
-                    ErrorNotification.postErrorNotification(
-                        IllegalStateException("_viewBinding of PlayerAlbumCoverFragment is null."),
-                        "This may happen when playing lyrics animation after Fragment destroying already.\n${
-                        Thread.currentThread().stackTrace.map { it.toString() }.fold("StackTrace:\n") { acc: String, s: String -> "$acc \n$s" }
-                        }"
-                    )
                 }
             }
     }
 
     fun setLyrics(l: AbsLyrics) {
+        if (!isBindingAccessible()) return
         if (l is LrcLyrics && Setting.instance.synchronizedLyricsShow) {
             lyrics = l
             binding.playerLyricsLine1.text = null
@@ -187,12 +180,12 @@ class PlayerAlbumCoverFragment :
             }
             return
         } else {
-            lyrics = null
-            hideLyricsLayout()
+            clearLyrics()
         }
     }
 
     fun clearLyrics() {
+        if (!isBindingAccessible()) return
         lyrics = null
         hideLyricsLayout()
     }
@@ -206,6 +199,8 @@ class PlayerAlbumCoverFragment :
     }
 
     override fun onUpdateProgressViews(progress: Int, total: Int) {
+        if (!isBindingAccessible()) return
+
         if (!isLyricsLayoutVisible()) {
             hideLyricsLayout()
             return
@@ -252,6 +247,19 @@ class PlayerAlbumCoverFragment :
         fun onColorChanged(color: Int)
         fun onFavoriteToggled()
         fun onToolbarToggled()
+    }
+
+    private fun isBindingAccessible(): Boolean {
+        return if (_viewBinding == null) {
+            ErrorNotification.init()
+            ErrorNotification.postErrorNotification(
+                IllegalStateException("_viewBinding of PlayerAlbumCoverFragment is null."),
+                Thread.currentThread().stackTrace.map { it.toString() }.fold("StackTrace:") { acc: String, s: String -> "$acc \n$s" }
+            )
+            false
+        } else {
+            true
+        }
     }
 
     companion object {
