@@ -42,7 +42,7 @@ object ErrorNotification {
             putExtra(App.KEY_STACK_TRACE, msg)
         }
 
-        val clickIntent: PendingIntent = PendingIntent.getActivity(context, 0, action, PendingIntent.FLAG_IMMUTABLE)
+        val clickIntent: PendingIntent = PendingIntent.getActivity(context, 0, action, PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT)
 
         notificationManager?.let { notificationManager ->
             val notification: Notification =
