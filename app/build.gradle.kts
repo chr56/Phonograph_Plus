@@ -1,3 +1,4 @@
+
 import java.io.ByteArrayOutputStream
 import java.io.FileInputStream
 import java.util.Properties
@@ -163,6 +164,7 @@ android {
     */
 }
 
+@Suppress("SpellCheckingInspection")
 dependencies {
 
     implementation("androidx.core:core-ktx:1.7.0")
@@ -180,7 +182,6 @@ dependencies {
     implementation("androidx.recyclerview:recyclerview:1.2.1")
     implementation("androidx.annotation:annotation:1.3.0")
     implementation("com.google.android.material:material:1.4.0")
-
 
     implementation("com.github.chr56:mdUtil:0.0.1")
     implementation("com.github.chr56:mdColor:0.0.1")
