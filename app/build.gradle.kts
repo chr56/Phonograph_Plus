@@ -164,8 +164,6 @@ android {
 }
 
 dependencies {
-    implementation(project(path = ":mdUtil"))
-    implementation(project(path = ":mdColor"))
 
     implementation("androidx.core:core-ktx:1.7.0")
     implementation("androidx.appcompat:appcompat:1.4.1")
@@ -182,6 +180,10 @@ dependencies {
     implementation("androidx.recyclerview:recyclerview:1.2.1")
     implementation("androidx.annotation:annotation:1.3.0")
     implementation("com.google.android.material:material:1.4.0")
+
+
+    implementation("com.github.chr56:mdUtil:0.0.1")
+    implementation("com.github.chr56:mdColor:0.0.1")
 
     implementation("com.github.kabouzeid:RecyclerView-FastScroll:1.0.16-kmod")
     implementation("com.github.chr56:SeekArc:c5ae37866e")
