@@ -29,17 +29,17 @@ android {
     compileSdk = 31
     buildToolsVersion = "31.0.0"
     defaultConfig {
-        minSdk = (24)
-        targetSdk = (31)
+        minSdk = 24
+        targetSdk = 31
 
         renderscriptTargetApi = 29
         vectorDrawables.useSupportLibrary = true
 
         applicationId = "player.phonograph"
-        versionCode = 201
-        versionName = "0.2.0-RC1"
+        versionCode = 202
+        versionName = "0.2.0-RC2"
 
-        //proguardFiles(File("proguard-rules-base.pro"), File("proguard-rules-app.pro"))
+        // proguardFiles(File("proguard-rules-base.pro"), File("proguard-rules-app.pro"))
 
         buildConfigField("String", "GIT_COMMIT_HASH", "\"${getGitHash(1)}\"")
         setProperty("archivesBaseName", "PhonographPlus_$versionName")
@@ -89,7 +89,6 @@ android {
             isShrinkResources = true
 
             proguardFiles(File("proguard-rules-base.pro"), File("proguard-rules-app.pro"))
-
 
             if (isSigningFileExist) signingConfig = signingConfigs.getByName("release")
 
