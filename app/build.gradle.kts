@@ -1,4 +1,3 @@
-
 import java.io.ByteArrayOutputStream
 import java.io.FileInputStream
 import java.util.Properties
@@ -40,6 +39,8 @@ android {
         versionCode = 201
         versionName = "0.2.0-RC1"
 
+        //proguardFiles(File("proguard-rules-base.pro"), File("proguard-rules-app.pro"))
+
         buildConfigField("String", "GIT_COMMIT_HASH", "\"${getGitHash(1)}\"")
         setProperty("archivesBaseName", "PhonographPlus_$versionName")
     }
@@ -71,10 +72,8 @@ android {
         release {
             isMinifyEnabled = true
             isShrinkResources = true
-            proguardFiles.apply {
-                add(File("proguard-rules-base.pro"))
-                add(File("proguard-rules-app.pro"))
-            }
+            proguardFiles(File("proguard-rules-base.pro"), File("proguard-rules-app.pro"))
+
             if (isSigningFileExist) signingConfig = signingConfigs.getByName("release")
             applicationIdSuffix = ".plus"
             resValue("string", "app_name", "Phonograph Plus")
@@ -89,10 +88,8 @@ android {
             isMinifyEnabled = true
             isShrinkResources = true
 
-            proguardFiles.apply {
-                add(File("proguard-rules-base.pro"))
-                add(File("proguard-rules-app.pro"))
-            }
+            proguardFiles(File("proguard-rules-base.pro"), File("proguard-rules-app.pro"))
+
 
             if (isSigningFileExist) signingConfig = signingConfigs.getByName("release")
 
@@ -102,10 +99,8 @@ android {
         }
         create("proguard") {
             isMinifyEnabled = true
-            proguardFiles.apply {
-                add(File("proguard-rules-base.pro"))
-                add(File("proguard-rules-app.pro"))
-            }
+            proguardFiles(File("proguard-rules-base.pro"), File("proguard-rules-app.pro"))
+
             if (isSigningFileExist) signingConfig = signingConfigs.getByName("release")
 
             resValue("string", "app_name", "Phonograph Plus Proguard")
@@ -118,10 +113,8 @@ android {
             if (isSigningFileExist) signingConfig = signingConfigs.getByName("release")
 
             isMinifyEnabled = true
-            proguardFiles.apply {
-                add(File("proguard-rules-base.pro"))
-                add(File("proguard-rules-app.pro"))
-            }
+            proguardFiles(File("proguard-rules-base.pro"), File("proguard-rules-app.pro"))
+
             resValue("string", "app_name", "Phonograph Plus Checkout")
             applicationIdSuffix = ".plus.checkout"
             matchingFallbacks.add("release")
