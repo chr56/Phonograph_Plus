@@ -21,8 +21,7 @@ import player.phonograph.settings.Setting
  */
 class MultiPlayer(private val context: Context) : Playback, MediaPlayer.OnErrorListener, OnCompletionListener {
 
-    private var mCurrentMediaPlayer =
-        MediaPlayer().also { it.setWakeMode(context, PowerManager.PARTIAL_WAKE_LOCK) }
+    private var mCurrentMediaPlayer = MediaPlayer().also { it.setWakeMode(context, PowerManager.PARTIAL_WAKE_LOCK) }
     private var mNextMediaPlayer: MediaPlayer? = null
 
     private var callbacks: PlaybackCallbacks? = null
@@ -267,11 +266,9 @@ class MultiPlayer(private val context: Context) : Playback, MediaPlayer.OnErrorL
     /**
      * Returns the audio session ID.
      *
-     * @return The current audio session ID.
      */
-    override fun getAudioSessionId(): Int {
-        return mCurrentMediaPlayer.audioSessionId
-    }
+    override val audioSessionId: Int
+        get() = mCurrentMediaPlayer.audioSessionId
 
     /**
      * {@inheritDoc}
