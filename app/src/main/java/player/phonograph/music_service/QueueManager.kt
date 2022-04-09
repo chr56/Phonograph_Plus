@@ -9,6 +9,7 @@ import android.os.Handler
 import android.os.HandlerThread
 import android.os.Message
 import android.os.Process
+import androidx.preference.PreferenceManager
 import player.phonograph.App
 import player.phonograph.model.Song
 import player.phonograph.provider.MusicPlaybackQueueStore
@@ -42,47 +43,127 @@ class QueueManager {
         _context = null
     }
 
+    var playingQueue: MutableList<Song> = ArrayList()
+    var originalPlayingQueue: MutableList<Song> = ArrayList()
+    var currentQueueCursor = -1
+        @Synchronized
+        private set
+    var mode: QueueMode = QueueMode.ORIGINAL
+        @Synchronized
+        private set
+
+    fun modifyQueue(type: QueueMode, action: (MutableList<Song>) -> Unit) {
+        handler.post {
+            modifyQueueIml(type, action)
+        }
+    }
+
+    @Synchronized
+    private fun modifyQueueIml(type: QueueMode, action: (MutableList<Song>) -> Unit) {
+        when (type) {
+            QueueMode.RANDOM -> {
+                action(playingQueue)
+            }
+            QueueMode.ORIGINAL -> {
+                action(originalPlayingQueue)
+            }
+        }
+    }
+
+    fun setQueueCursor(position: Int) {
+        handler.post {
+            currentQueueCursor = position
+        }
+    }
+    fun switchMode(queueMode: QueueMode) {
+        handler.post {
+            mode = queueMode
+        }
+    }
+
     private fun handleMessage(msg: Message): Boolean {
         when (msg.what) {
             MSG_STOP -> {
                 return true
+            }
+            MSG_STATE_SAVE_ALL -> {
+                saveAll()
+            }
+            MSG_SAVE_QUEUE -> {
+                saveQueue()
+            }
+            MSG_SAVE_MODE -> {
+                saveMode()
+            }
+            MSG_SAVE_CURSOR -> {
+                saveCursor()
+            }
+            MSG_STATE_RESTORE -> {
+                restoreState()
             }
         }
         return false
     }
 
     fun postMessage(msg: Message) {
+        if (msg.what == MSG_STOP)return // stop via [this#destroy()]
         handler.sendMessage(msg)
     }
 
-    val playingQueue: List<Song> = ArrayList()
-    val originalPlayingQueue: List<Song> = ArrayList()
-    var currentQueueCursor = -1
-        private set
-    var originalQueueCursor = -1
-        private set
-    var mode: QueueMode = QueueMode.ORIGINAL
-        private set
-
-    fun restoreState() {
+    private fun restoreState() {
+        handler.post {
+            val restoredQueue = MusicPlaybackQueueStore.getInstance(context).savedPlayingQueue
+            val restoredOriginalQueue = MusicPlaybackQueueStore.getInstance(context).savedOriginalPlayingQueue
+            val restoredPosition = PreferenceManager.getDefaultSharedPreferences(context).getInt(PREF_POSITION, -1)
+            if (restoredQueue.size > 0 && restoredQueue.size == restoredOriginalQueue.size && restoredPosition != -1) {
+                originalPlayingQueue = restoredOriginalQueue
+                playingQueue = restoredQueue
+                currentQueueCursor = restoredPosition
+            }
+            PreferenceManager.getDefaultSharedPreferences(context).getInt(PREF_SHUFFLE_MODE, 0).let {
+                mode = when (it) {
+                    SHUFFLE_MODE_SHUFFLE -> QueueMode.RANDOM
+                    SHUFFLE_MODE_NONE -> QueueMode.ORIGINAL
+                    else -> throw Exception("invalid shuffle mode")
+                }
+            }
+        }
     }
 
-    fun saveQueue() {
+    private fun saveQueue() {
         MusicPlaybackQueueStore.getInstance(context).saveQueues(playingQueue, originalPlayingQueue)
     }
-    fun saveCursor() {}
-    fun saveCurrentTime() {}
-    fun saveMode() {}
+    private fun saveCursor() {
+        PreferenceManager.getDefaultSharedPreferences(context).edit().putInt(PREF_POSITION, currentQueueCursor).apply()
+    }
+    private fun saveMode() {
+        val value = when (mode) {
+            QueueMode.RANDOM -> SHUFFLE_MODE_SHUFFLE
+            QueueMode.ORIGINAL -> SHUFFLE_MODE_NONE
+        }
+        PreferenceManager.getDefaultSharedPreferences(context).edit().putInt(PREF_SHUFFLE_MODE, value).apply()
+    }
 
-    fun saveAll() {
+    private fun saveAll() {
         saveQueue()
         saveCursor()
-        saveCurrentTime()
         saveMode()
     }
 
     companion object {
         private const val MSG_STOP = -1
+        const val MSG_STATE_RESTORE = 1
+        const val MSG_SAVE_QUEUE = 2
+        const val MSG_SAVE_CURSOR = 4
+        const val MSG_SAVE_MODE = 8
+//        const val MSG_SAVE_CURRENT_TIME = 16
+        const val MSG_STATE_SAVE_ALL = 32
+
+        const val PREF_POSITION = "POSITION"
+        const val PREF_SHUFFLE_MODE = "SHUFFLE_MODE"
+
+        const val SHUFFLE_MODE_NONE = 0
+        const val SHUFFLE_MODE_SHUFFLE = 1
     }
 }
 enum class QueueMode {
