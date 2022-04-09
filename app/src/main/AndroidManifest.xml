@@ -144,6 +144,10 @@
             android:enabled="true"
             android:foregroundServiceType="mediaPlayback" />
 
+        <service
+            android:name=".music_service.MusicService"
+            android:foregroundServiceType="mediaPlayback" />
+
         <receiver
             android:name=".service.MediaButtonIntentReceiver"
             android:exported="false">
