@@ -8,6 +8,8 @@ import android.app.PendingIntent
 import android.content.ComponentName
 import android.content.Intent
 import android.os.Bundle
+import android.os.PowerManager
+import android.os.PowerManager.WakeLock
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
@@ -16,13 +18,20 @@ import player.phonograph.App
 import player.phonograph.service.MediaButtonIntentReceiver // todo
 
 class MusicService : MediaBrowserServiceCompat() {
+    private var wakeLock: WakeLock? = null
+
     private lateinit var mediaSession: MediaSessionCompat
     private lateinit var mediaSessionCallback: MediaSessionCallback
 
     override fun onCreate() {
         super.onCreate()
+        // init wake lock
+        wakeLock = (getSystemService(POWER_SERVICE) as PowerManager).newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "Phonograph:wake_lock")
+        wakeLock?.setReferenceCounted(false)
+
         // init media session callback
         mediaSessionCallback = MediaSessionCallback()
+
         // setup media session
         mediaSession = MediaSessionCompat(
             this,
@@ -46,6 +55,7 @@ class MusicService : MediaBrowserServiceCompat() {
 
         // setup notification
         // todo
+
         // setup session token
         this.sessionToken = mediaSession.sessionToken
     }
@@ -53,6 +63,7 @@ class MusicService : MediaBrowserServiceCompat() {
     override fun onDestroy() {
         super.onDestroy()
         mediaSession.release()
+        wakeLock?.release()
     }
 
     override fun onGetRoot(clientPackageName: String, clientUid: Int, rootHints: Bundle?): BrowserRoot? {
