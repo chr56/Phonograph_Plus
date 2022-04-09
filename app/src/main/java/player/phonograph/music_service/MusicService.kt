@@ -23,12 +23,17 @@ class MusicService : MediaBrowserServiceCompat() {
     private lateinit var mediaSession: MediaSessionCompat
     private lateinit var mediaSessionCallback: MediaSessionCallback
 
+    private var _queueManager: QueueManager? = null
+    val queueManager: QueueManager get() = _queueManager!!
+
     override fun onCreate() {
         super.onCreate()
         // init wake lock
         wakeLock = (getSystemService(POWER_SERVICE) as PowerManager).newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "Phonograph:wake_lock")
         wakeLock?.setReferenceCounted(false)
 
+        // init queue manager
+        _queueManager = QueueManager(this)
         // init media session callback
         mediaSessionCallback = MediaSessionCallback()
 
@@ -64,6 +69,8 @@ class MusicService : MediaBrowserServiceCompat() {
         super.onDestroy()
         mediaSession.release()
         wakeLock?.release()
+        _queueManager?.release()
+        _queueManager = null
     }
 
     override fun onGetRoot(clientPackageName: String, clientUid: Int, rootHints: Bundle?): BrowserRoot? {
