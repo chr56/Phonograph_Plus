@@ -41,16 +41,27 @@ class QueueManager {
         handler.looper.quit()
         thread.quitSafely()
         _context = null
+        observers.clear()
     }
 
     var playingQueue: MutableList<Song> = ArrayList()
     var originalPlayingQueue: MutableList<Song> = ArrayList()
     var currentQueueCursor = -1
         @Synchronized
-        private set
+        private set(value) {
+            field = value
+            observers.executeForEach {
+                onQueueCursorChanged(value)
+            }
+        }
     var mode: QueueMode = QueueMode.ORIGINAL
         @Synchronized
-        private set
+        private set(value) {
+            field = value
+            observers.executeForEach {
+                onQueueModeChanged(value)
+            }
+        }
 
     fun modifyQueue(type: QueueMode, action: (MutableList<Song>) -> Unit) {
         handler.post {
@@ -67,6 +78,9 @@ class QueueManager {
             QueueMode.ORIGINAL -> {
                 action(originalPlayingQueue)
             }
+        }
+        observers.executeForEach {
+            onQueueChanged(type, playingQueue, originalPlayingQueue)
         }
     }
 
@@ -111,22 +125,23 @@ class QueueManager {
     }
 
     private fun restoreState() {
-        handler.post {
-            val restoredQueue = MusicPlaybackQueueStore.getInstance(context).savedPlayingQueue
-            val restoredOriginalQueue = MusicPlaybackQueueStore.getInstance(context).savedOriginalPlayingQueue
-            val restoredPosition = PreferenceManager.getDefaultSharedPreferences(context).getInt(PREF_POSITION, -1)
-            if (restoredQueue.size > 0 && restoredQueue.size == restoredOriginalQueue.size && restoredPosition != -1) {
-                originalPlayingQueue = restoredOriginalQueue.toMutableList()
-                playingQueue = restoredQueue.toMutableList()
-                currentQueueCursor = restoredPosition
+        val restoredQueue = MusicPlaybackQueueStore.getInstance(context).savedPlayingQueue
+        val restoredOriginalQueue = MusicPlaybackQueueStore.getInstance(context).savedOriginalPlayingQueue
+        val restoredPosition = PreferenceManager.getDefaultSharedPreferences(context).getInt(PREF_POSITION, -1)
+        if (restoredQueue.size > 0 && restoredQueue.size == restoredOriginalQueue.size && restoredPosition != -1) {
+            originalPlayingQueue = restoredOriginalQueue.toMutableList()
+            playingQueue = restoredQueue.toMutableList()
+            currentQueueCursor = restoredPosition
+        }
+        PreferenceManager.getDefaultSharedPreferences(context).getInt(PREF_SHUFFLE_MODE, 0).let {
+            mode = when (it) {
+                SHUFFLE_MODE_SHUFFLE -> QueueMode.RANDOM
+                SHUFFLE_MODE_NONE -> QueueMode.ORIGINAL
+                else -> throw Exception("invalid shuffle mode")
             }
-            PreferenceManager.getDefaultSharedPreferences(context).getInt(PREF_SHUFFLE_MODE, 0).let {
-                mode = when (it) {
-                    SHUFFLE_MODE_SHUFFLE -> QueueMode.RANDOM
-                    SHUFFLE_MODE_NONE -> QueueMode.ORIGINAL
-                    else -> throw Exception("invalid shuffle mode")
-                }
-            }
+        }
+        observers.executeForEach {
+            onStateRestored()
         }
     }
 
@@ -148,7 +163,14 @@ class QueueManager {
         saveQueue()
         saveCursor()
         saveMode()
+        observers.executeForEach {
+            onStateSaved()
+        }
     }
+
+    private val observers: MutableList<QueueChangeObserver> = ArrayList()
+    fun addObserver(observer: QueueChangeObserver) = observers.add(observer)
+    fun removeObserver(observer: QueueChangeObserver): Boolean = observers.remove(observer)
 
     companion object {
         private const val MSG_STOP = -1
@@ -168,4 +190,19 @@ class QueueManager {
 }
 enum class QueueMode {
     RANDOM, ORIGINAL
+}
+interface QueueChangeObserver {
+    fun onStateRestored() {}
+    fun onStateSaved() {}
+    fun onQueueCursorChanged(newPosition: Int) {}
+    fun onQueueChanged(queueChanged: QueueMode, newPlayingQueue: List<Song>, newOriginalQueue: List<Song>) {}
+    fun onQueueModeChanged(newMode: QueueMode) {}
+}
+
+private fun MutableList<QueueChangeObserver>.executeForEach(
+    action: QueueChangeObserver.() -> Unit
+) {
+    for (observer in this) {
+        action(observer)
+    }
 }
