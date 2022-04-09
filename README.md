@@ -87,17 +87,19 @@ Translate Phonograph Plus into your language -> [crowdin](https://crowdin.com/pr
   
 - [ ] 重构更新对话框
   
-- [ ] 重构媒体库UI ❗WIP
+- [ ] 重构媒体库UI ❗WIP  
+  
+- [ ] 重构文件视图
 
 - [ ] 整理设置页
 
-- [ ] 部分重构(所谓的)"主题引擎"
+- [ ] <del>部分重构(所谓的)"主题引擎"</del>
 
 - [ ] <del>优化歌曲“详情”</del>
 
-- [ ] 重构并优化歌词系统, 解析歌词中的 "\n", 尝试适配 FlyMe / exTHmUI(等一系类原生)状态栏歌词
+- [ ] 解析歌词中的 "\n", 尝试适配 FlyMe / EvolutionX(等一系类原生)状态栏歌词
 
-- [ ] 万能歌曲 Adapter ⭕
+- [ ] <del>万能歌曲 Adapter ⭕</del>
 
 - [ ] 自建本地媒体数据库(使用 AndroidX Room) ⭕, 并解析 Tag 中 ‘;’, '&', '/', '\', ',' , 改进搜索
 
@@ -111,7 +113,7 @@ Translate Phonograph Plus into your language -> [crowdin](https://crowdin.com/pr
 
 - [ ] 打开 .m3u (使用"播放列表详情")
 
-- [ ] 全屏滚动歌词页面
+- [ ] 全屏滚动歌词页面⭕
 
 - [ ] 桌面歌词(?)
 
