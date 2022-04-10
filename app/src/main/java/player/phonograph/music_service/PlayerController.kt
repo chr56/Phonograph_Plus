@@ -108,6 +108,7 @@ class PlayerController(musicService: MusicService) : Playback.PlaybackCallbacks 
     }
 
     fun isPlaying() = audioPlayer.isReady && audioPlayer.isPlaying()
+    val currentTimeAxis: Int = if (audioPlayer.isReady) { audioPlayer.processTimeAxis() } else { -1 }
 
     /**
      * Jump to beginning of this song
@@ -139,6 +140,14 @@ class PlayerController(musicService: MusicService) : Playback.PlaybackCallbacks 
      */
     fun jumpForward() {
         playFrom(service.queueManager.previousSongPosition)
+    }
+
+    /**
+     * Move current time to [position]
+     * @param position time in millisecond
+     */
+    fun seek(position: Long) {
+        audioPlayer.seek(position.toInt())
     }
 
     fun stop() {

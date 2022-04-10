@@ -26,6 +26,9 @@ class MusicService : MediaBrowserServiceCompat() {
     private var _queueManager: QueueManager? = null
     val queueManager: QueueManager get() = _queueManager!!
 
+    private var _playerController: PlayerController? = null
+    private val playerController: PlayerController get() = _playerController!!
+
     val audioFocusManager: AudioFocusManager = AudioFocusManager()
 
     override fun onCreate() {
@@ -47,7 +50,9 @@ class MusicService : MediaBrowserServiceCompat() {
             PendingIntent.getBroadcast(
                 applicationContext,
                 1,
-                Intent(Intent.ACTION_MEDIA_BUTTON).apply { component = ComponentName(applicationContext, MediaButtonIntentReceiver::class.java) },
+                Intent(Intent.ACTION_MEDIA_BUTTON).apply {
+                    component = ComponentName(applicationContext, MediaButtonIntentReceiver::class.java)
+                },
                 PendingIntent.FLAG_IMMUTABLE
             )
         ).apply {
@@ -73,6 +78,12 @@ class MusicService : MediaBrowserServiceCompat() {
         wakeLock?.release()
         _queueManager?.release()
         _queueManager = null
+        _playerController?.destroy()
+        _playerController = null
+    }
+
+    private fun checkPlayerController() {
+        if (_playerController == null) _playerController = PlayerController(this)
     }
 
     override fun onGetRoot(clientPackageName: String, clientUid: Int, rootHints: Bundle?): BrowserRoot? {
@@ -86,22 +97,41 @@ class MusicService : MediaBrowserServiceCompat() {
     }
 
     private inner class MediaSessionCallback : MediaSessionCompat.Callback() {
+
         override fun onPlay() {
-            TODO()
+            checkPlayerController()
+            playerController.play()
         }
+
         override fun onPause() {
-            TODO()
+            checkPlayerController()
+            playerController.pause()
         }
+
         override fun onSkipToNext() {
-            TODO()
+            checkPlayerController()
+            playerController.jumpForward()
         }
+
         override fun onSkipToPrevious() {
-            TODO()
+            checkPlayerController()
+            playerController.back()
         }
+
         override fun onSeekTo(pos: Long) {
-            TODO()
+            checkPlayerController()
+            playerController.seek(position = pos)
         }
     }
+
+    fun isPlaying(): Boolean =
+        if (_playerController != null) {
+            playerController.isPlaying()
+        } else {
+            false
+        }
+
+    val currentTimeAxis: Int = if (_playerController != null) playerController.currentTimeAxis else -1
 
     companion object {
         private const val MEDIA_SESSION_TAG = "${App.ACTUAL_PACKAGE_NAME}.MediaSession"
