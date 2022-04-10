@@ -84,6 +84,7 @@ class PlayerController(musicService: MusicService) : Playback.PlaybackCallbacks 
                 audioPlayer.start()
                 playerState = PlayerState.PLAYING
                 // todo update
+                service.requireWakelock(service.queueManager.currentSong.duration - audioPlayer.processTimeAxis() + 1000L)
             }
         } else {
             Toast.makeText(service, service.resources.getString(R.string.audio_focus_denied), Toast.LENGTH_SHORT).show()
@@ -113,6 +114,7 @@ class PlayerController(musicService: MusicService) : Playback.PlaybackCallbacks 
                 audioPlayer.pause()
                 playerState = PlayerState.PAUSED
             }
+            service.releaseWakelock()
         }
     }
 
@@ -188,20 +190,16 @@ class PlayerController(musicService: MusicService) : Playback.PlaybackCallbacks 
         // todo send message
     }
 
+    // todo rename callback
     override fun onTrackWentToNext() {
-        handler.post {
-            audioPlayer.pause()
-            if (!service.queueManager.lastTrack) {
-                prepareSong(service.queueManager.currentSongPosition + 1)
-                audioPlayer.start()
-            }
+        pause()
+        if (!service.queueManager.lastTrack) {
+            playFrom(service.queueManager.currentSongPosition + 1)
         }
     }
 
     override fun onTrackEnded() {
-        handler.post {
-            audioPlayer.pause()
-        }
+        pause()
     }
 
     companion object {
