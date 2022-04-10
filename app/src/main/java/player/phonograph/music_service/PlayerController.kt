@@ -5,6 +5,10 @@
 package player.phonograph.music_service
 
 import android.net.Uri
+import android.os.Handler
+import android.os.HandlerThread
+import android.os.Looper
+import android.os.Message
 import android.widget.Toast
 import player.phonograph.R
 import player.phonograph.model.Song
@@ -19,8 +23,16 @@ class PlayerController(musicService: MusicService) : Playback.PlaybackCallbacks 
     private var _audioPlayer: AudioPlayer? = null
     private val audioPlayer: AudioPlayer get() = _audioPlayer!!
 
+    private var _handler: MessageHandler? = null
+    val handler: Handler get() = _handler!!
+    private var thread: HandlerThread? = null
+
     init {
         _audioPlayer = AudioPlayer(musicService, this)
+
+        thread = HandlerThread("player_controller_handler_thread")
+        thread!!.start()
+        _handler = MessageHandler(thread!!.looper)
     }
 
     /**
@@ -30,6 +42,9 @@ class PlayerController(musicService: MusicService) : Playback.PlaybackCallbacks 
         stop()
         _audioPlayer = null
         _service = null
+        thread?.quitSafely()
+        _handler?.looper?.quitSafely()
+        _handler = null
     }
 
     var playerState: PlayerState = PlayerState.PREPARING
@@ -106,7 +121,11 @@ class PlayerController(musicService: MusicService) : Playback.PlaybackCallbacks 
     }
 
     fun isPlaying() = audioPlayer.isReady && audioPlayer.isPlaying()
-    val currentTimeAxis: Int = if (audioPlayer.isReady) { audioPlayer.processTimeAxis() } else { -1 }
+    val currentTimeAxis: Int = if (audioPlayer.isReady) {
+        audioPlayer.processTimeAxis()
+    } else {
+        -1
+    }
 
     /**
      * Jump to beginning of this song
@@ -171,9 +190,18 @@ class PlayerController(musicService: MusicService) : Playback.PlaybackCallbacks 
         const val PAUSE_FOR_QUEUE_ENDED = 4
         const val PAUSE_FOR_AUDIO_BECOMING_NOISY = 8
         const val PAUSE_ERROR = -2
+
         private fun getTrackUri(songId: Long): Uri = MusicUtil.getSongFileUri(songId)
     }
+
+    inner class MessageHandler(looper: Looper) : Handler(looper) {
+        override fun handleMessage(msg: Message) {
+            when (msg.what) {
+            }
+        }
+    }
 }
+
 enum class PlayerState {
     PLAYING, PAUSED, STOPPED, PREPARING
 }
