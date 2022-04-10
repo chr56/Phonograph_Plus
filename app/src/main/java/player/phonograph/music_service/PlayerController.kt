@@ -49,8 +49,11 @@ class PlayerController(musicService: MusicService) : Playback.PlaybackCallbacks 
 
     var playerState: PlayerState = PlayerState.PREPARING
         @Synchronized
-        private set
-    // todo observer model
+        private set(value) {
+            val old = field
+            field = value
+            observers.executeForEach { onPlayerStateChanged(old, value) }
+        }
 
     /**
      * prepare player and set queue cursor(position)
@@ -186,7 +189,7 @@ class PlayerController(musicService: MusicService) : Playback.PlaybackCallbacks 
 
     fun stop() {
         pause()
-        playerState = PlayerState.STOPPED
+        handler.post { playerState = PlayerState.STOPPED }
         // todo send message
     }
 
@@ -212,6 +215,10 @@ class PlayerController(musicService: MusicService) : Playback.PlaybackCallbacks 
         private fun getTrackUri(songId: Long): Uri = MusicUtil.getSongFileUri(songId)
     }
 
+    private val observers: MutableList<PlayerStateObserver> = ArrayList()
+    fun addObserver(observer: PlayerStateObserver) = observers.add(observer)
+    fun removeObserver(observer: PlayerStateObserver): Boolean = observers.remove(observer)
+
     inner class MessageHandler(looper: Looper) : Handler(looper) {
         override fun handleMessage(msg: Message) {
             when (msg.what) {
@@ -222,4 +229,15 @@ class PlayerController(musicService: MusicService) : Playback.PlaybackCallbacks 
 
 enum class PlayerState {
     PLAYING, PAUSED, STOPPED, PREPARING
+}
+
+interface PlayerStateObserver {
+    fun onPlayerStateChanged(oldState: PlayerState, newState: PlayerState)
+}
+private fun MutableList<PlayerStateObserver>.executeForEach(
+    action: PlayerStateObserver.() -> Unit
+) {
+    for (observer in this) {
+        action(observer)
+    }
 }
