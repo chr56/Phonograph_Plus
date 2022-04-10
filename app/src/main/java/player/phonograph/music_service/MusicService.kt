@@ -7,8 +7,7 @@ package player.phonograph.music_service
 import android.app.PendingIntent
 import android.content.*
 import android.media.AudioManager
-import android.os.Bundle
-import android.os.PowerManager
+import android.os.*
 import android.os.PowerManager.WakeLock
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.session.MediaSessionCompat
@@ -31,6 +30,10 @@ class MusicService : MediaBrowserServiceCompat() {
 
     val audioFocusManager: AudioFocusManager = AudioFocusManager()
 
+    private var _handler: MessageHandler? = null
+    val messageHandler: Handler get() = _handler!!
+    private lateinit var handlerThread: HandlerThread
+
     override fun onCreate() {
         super.onCreate()
         // init wake lock
@@ -41,6 +44,10 @@ class MusicService : MediaBrowserServiceCompat() {
         _queueManager = QueueManager(this)
         // init media session callback
         mediaSessionCallback = MediaSessionCallback()
+        // init handler
+        handlerThread = HandlerThread("music_message_handler_thread")
+        handlerThread.start()
+        _handler = MessageHandler(handlerThread.looper, this)
 
         // setup media session
         mediaSession = MediaSessionCompat(
@@ -80,6 +87,10 @@ class MusicService : MediaBrowserServiceCompat() {
         _queueManager = null
         _playerController?.destroy()
         _playerController = null
+        handlerThread.quitSafely()
+        _handler?.looper?.quitSafely()
+        _handler?.releaseContext()
+        _handler = null
     }
 
     private fun checkPlayerController() {
@@ -158,6 +169,21 @@ class MusicService : MediaBrowserServiceCompat() {
                     playerController.pauseReason = PlayerController.PAUSE_FOR_AUDIO_BECOMING_NOISY
                 }
             }
+        }
+    }
+
+    private class MessageHandler(looper: Looper, musicService: MusicService) : Handler(looper) {
+        private var service: MusicService? = null
+
+        init {
+            service = musicService
+        }
+
+        fun releaseContext() {
+            service = null
+        }
+
+        override fun handleMessage(msg: Message) {
         }
     }
 
