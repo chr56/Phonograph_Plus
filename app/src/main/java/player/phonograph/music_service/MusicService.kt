@@ -26,6 +26,8 @@ class MusicService : MediaBrowserServiceCompat() {
     private var _queueManager: QueueManager? = null
     val queueManager: QueueManager get() = _queueManager!!
 
+    val audioFocusManager: AudioFocusManager = AudioFocusManager()
+
     override fun onCreate() {
         super.onCreate()
         // init wake lock
