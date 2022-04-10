@@ -47,7 +47,12 @@ class PlayerController(musicService: MusicService) : Playback.PlaybackCallbacks 
         val next = service.queueManager.nextSong
         if (current == Song.EMPTY_SONG) return false
         val result = audioPlayer.setDataSource(getTrackUri(current.id).toString())
-        if (result) audioPlayer.setNextDataSource(getTrackUri(next.id).toString())
+        // prepare next
+        if (next != Song.EMPTY_SONG) {
+            if (result) audioPlayer.setNextDataSource(getTrackUri(next.id).toString())
+        } else {
+            audioPlayer.setNextDataSource(null)
+        }
         // todo update META
         return result
     }
