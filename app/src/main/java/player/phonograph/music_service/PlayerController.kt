@@ -114,7 +114,7 @@ class PlayerController(musicService: MusicService) : Playback.PlaybackCallbacks 
      * Return to previous song
      */
     fun jumpBackward() {
-        playFrom(service.queueManager.nextSongPosition)
+        playFrom(service.queueManager.previousSongPosition)
     }
 
     /**
@@ -132,7 +132,7 @@ class PlayerController(musicService: MusicService) : Playback.PlaybackCallbacks 
      * Skip and jump to next song
      */
     fun jumpForward() {
-        playFrom(service.queueManager.previousSongPosition)
+        playFrom(service.queueManager.nextSongPosition)
     }
 
     /**
