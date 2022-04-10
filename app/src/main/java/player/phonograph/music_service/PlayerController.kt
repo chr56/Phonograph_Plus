@@ -16,6 +16,7 @@ import player.phonograph.model.Song
 import player.phonograph.util.MusicUtil
 
 // todo lyrics
+// todo sleep timer
 class PlayerController(musicService: MusicService) : Playback.PlaybackCallbacks {
     private var _service: MusicService? = musicService
     private val service: MusicService get() = _service!!
@@ -41,6 +42,7 @@ class PlayerController(musicService: MusicService) : Playback.PlaybackCallbacks 
     // todo observer model
 
     /**
+     * prepare player and set queue cursor(position)
      * @param position where to start in queue
      * @return true if it is ready
      */
@@ -163,11 +165,14 @@ class PlayerController(musicService: MusicService) : Playback.PlaybackCallbacks 
     }
 
     override fun onTrackWentToNext() {
-        TODO("Not yet implemented")
+        // todo handle queue ended
+        audioPlayer.pause()
+        prepareSong(service.queueManager.currentSongPosition + 1)
+        audioPlayer.start()
     }
 
     override fun onTrackEnded() {
-        TODO("Not yet implemented")
+        audioPlayer.pause()
     }
 
     companion object {
