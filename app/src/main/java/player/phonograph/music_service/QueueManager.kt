@@ -134,6 +134,8 @@ class QueueManager {
         }
     }
 
+    val lastTrack: Boolean = currentSongPosition == playingQueue.size - 1
+
     private fun modifyQueueIml(modifyWhat: ShuffleMode, action: (MutableList<Song>) -> Unit) {
         when (modifyWhat) {
             ShuffleMode.SHUFFLE -> {

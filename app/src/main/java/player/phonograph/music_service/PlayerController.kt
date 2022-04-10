@@ -165,7 +165,11 @@ class PlayerController(musicService: MusicService) : Playback.PlaybackCallbacks 
      * Skip and jump to next song
      */
     fun jumpForward() {
-        playFrom(service.queueManager.nextSongPosition)
+        if (!service.queueManager.lastTrack) {
+            playFrom(service.queueManager.nextSongPosition)
+        } else {
+            // todo send message
+        }
     }
 
     /**
@@ -185,11 +189,12 @@ class PlayerController(musicService: MusicService) : Playback.PlaybackCallbacks 
     }
 
     override fun onTrackWentToNext() {
-        // todo handle queue ended
         handler.post {
             audioPlayer.pause()
-            prepareSong(service.queueManager.currentSongPosition + 1)
-            audioPlayer.start()
+            if (!service.queueManager.lastTrack) {
+                prepareSong(service.queueManager.currentSongPosition + 1)
+                audioPlayer.start()
+            }
         }
     }
 
