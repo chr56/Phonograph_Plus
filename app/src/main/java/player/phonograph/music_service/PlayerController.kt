@@ -4,11 +4,6 @@
 
 package player.phonograph.music_service
 
-import android.content.BroadcastReceiver
-import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
-import android.media.AudioManager
 import android.net.Uri
 import android.widget.Toast
 import player.phonograph.R
@@ -66,7 +61,6 @@ class PlayerController(musicService: MusicService) : Playback.PlaybackCallbacks 
             prepareSong(position)
             audioPlayer.start()
             playerState = PlayerState.PLAYING
-            checkNoisyReceiver()
             // todo update
         } else {
             Toast.makeText(service, service.resources.getString(R.string.audio_focus_denied), Toast.LENGTH_SHORT).show()
@@ -86,7 +80,6 @@ class PlayerController(musicService: MusicService) : Playback.PlaybackCallbacks 
     }
 
     var pauseReason: Int = NOT_PAUSED
-        private set
 
     /**
      * Pause
@@ -154,23 +147,6 @@ class PlayerController(musicService: MusicService) : Playback.PlaybackCallbacks 
         pause()
         playerState = PlayerState.STOPPED
         // todo send message
-    }
-
-    private var noisyReceiverRegistered = false
-    private fun checkNoisyReceiver() {
-        if (!noisyReceiverRegistered) {
-            service.registerReceiver(becomingNoisyReceiver, becomingNoisyReceiverIntentFilter)
-            noisyReceiverRegistered = true
-        }
-    }
-    private val becomingNoisyReceiverIntentFilter = IntentFilter(AudioManager.ACTION_AUDIO_BECOMING_NOISY)
-    private val becomingNoisyReceiver: BroadcastReceiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context, intent: Intent) {
-            if (intent.action == AudioManager.ACTION_AUDIO_BECOMING_NOISY) {
-                pause()
-                pauseReason = PAUSE_FOR_AUDIO_BECOMING_NOISY
-            }
-        }
     }
 
     override fun onTrackWentToNext() {

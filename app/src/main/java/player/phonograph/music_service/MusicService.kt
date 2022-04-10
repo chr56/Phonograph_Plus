@@ -5,8 +5,8 @@
 package player.phonograph.music_service
 
 import android.app.PendingIntent
-import android.content.ComponentName
-import android.content.Intent
+import android.content.*
+import android.media.AudioManager
 import android.os.Bundle
 import android.os.PowerManager
 import android.os.PowerManager.WakeLock
@@ -106,15 +106,21 @@ class MusicService : MediaBrowserServiceCompat() {
                 // todo update metadata
                 // mediaSession.setMetadata()
                 // todo notification
+                if (!noisyReceiverRegistered) {
+                    registerReceiver(becomingNoisyReceiver, becomingNoisyReceiverIntentFilter)
+                    noisyReceiverRegistered = true
+                }
             }
         }
 
         override fun onPause() {
             checkPlayerController()
             playerController.pause()
+            playerController.pauseReason = PlayerController.PAUSE_BY_MANUAL_ACTION
             // todo update metadata
             // mediaSession.setMetadata()
             audioFocusManager.abandonAudioFocus()
+            unregisterReceiver(becomingNoisyReceiver)
         }
 
         override fun onSkipToNext() {
@@ -140,6 +146,18 @@ class MusicService : MediaBrowserServiceCompat() {
             onPause()
             mediaSession.isActive = false
             stopSelf()
+        }
+
+        private var noisyReceiverRegistered = false
+        private val becomingNoisyReceiverIntentFilter = IntentFilter(AudioManager.ACTION_AUDIO_BECOMING_NOISY)
+        private val becomingNoisyReceiver: BroadcastReceiver = object : BroadcastReceiver() {
+            override fun onReceive(context: Context, intent: Intent) {
+                if (intent.action == AudioManager.ACTION_AUDIO_BECOMING_NOISY) {
+                    onPause()
+                    checkPlayerController()
+                    playerController.pauseReason = PlayerController.PAUSE_FOR_AUDIO_BECOMING_NOISY
+                }
+            }
         }
     }
 
