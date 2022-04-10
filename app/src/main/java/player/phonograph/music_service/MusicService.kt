@@ -12,6 +12,7 @@ import android.os.PowerManager.WakeLock
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
+import android.view.KeyEvent
 import androidx.media.MediaBrowserServiceCompat
 import player.phonograph.App
 import player.phonograph.service.MediaButtonIntentReceiver // todo
@@ -157,6 +158,42 @@ class MusicService : MediaBrowserServiceCompat() {
             onPause()
             mediaSession.isActive = false
             stopSelf()
+        }
+
+        override fun onMediaButtonEvent(mediaButtonEvent: Intent?): Boolean {
+            val event = mediaButtonEvent?.getParcelableExtra<KeyEvent>(Intent.EXTRA_KEY_EVENT) ?: return false
+            val keycode = event.keyCode
+            val action = event.action
+            val eventTime = if (event.eventTime != 0L) event.eventTime else System.currentTimeMillis()
+            // Fallback to system time if event time was not available.
+            when (keycode) {
+                KeyEvent.KEYCODE_MEDIA_STOP -> {
+                    onStop()
+                    return true
+                }
+                KeyEvent.KEYCODE_MEDIA_PAUSE -> {
+                    onPause()
+                    return true
+                }
+                KeyEvent.KEYCODE_MEDIA_PLAY -> {
+                    onPlay()
+                    return true
+                }
+                KeyEvent.KEYCODE_MEDIA_NEXT -> {
+                    onSkipToNext()
+                    return true
+                }
+                KeyEvent.KEYCODE_MEDIA_PREVIOUS -> {
+                    onSkipToPrevious()
+                    return true
+                }
+                KeyEvent.KEYCODE_HEADSETHOOK, KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE -> {
+                    checkPlayerController()
+                    if (playerController.isPlaying()) onPause() else onPlay()
+                    return true
+                }
+            }
+            return false
         }
 
         private var noisyReceiverRegistered = false
