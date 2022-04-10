@@ -58,7 +58,7 @@ class MusicService : MediaBrowserServiceCompat() {
         ).apply {
             setPlaybackState(
                 PlaybackStateCompat.Builder().setActions(
-                    PlaybackStateCompat.ACTION_PLAY or PlaybackStateCompat.ACTION_PAUSE or PlaybackStateCompat.ACTION_PLAY_PAUSE or PlaybackStateCompat.ACTION_SEEK_TO or PlaybackStateCompat.ACTION_SKIP_TO_NEXT or PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS
+                    PlaybackStateCompat.ACTION_PLAY or PlaybackStateCompat.ACTION_PAUSE or PlaybackStateCompat.ACTION_PLAY_PAUSE or PlaybackStateCompat.ACTION_STOP or PlaybackStateCompat.ACTION_SEEK_TO or PlaybackStateCompat.ACTION_SKIP_TO_NEXT or PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS
                 ).build()
             )
             setCallback(mediaSessionCallback)
@@ -100,27 +100,46 @@ class MusicService : MediaBrowserServiceCompat() {
 
         override fun onPlay() {
             checkPlayerController()
-            playerController.play()
+            if (audioFocusManager.requestAudioFocus()) {
+                playerController.play()
+                mediaSession.isActive = true
+                // todo update metadata
+                // mediaSession.setMetadata()
+                // todo notification
+            }
         }
 
         override fun onPause() {
             checkPlayerController()
             playerController.pause()
+            // todo update metadata
+            // mediaSession.setMetadata()
+            audioFocusManager.abandonAudioFocus()
         }
 
         override fun onSkipToNext() {
             checkPlayerController()
             playerController.jumpForward()
+            // todo update metadata
+            // mediaSession.setMetadata()
         }
 
         override fun onSkipToPrevious() {
             checkPlayerController()
             playerController.back()
+            // todo update metadata
+            // mediaSession.setMetadata()
         }
 
         override fun onSeekTo(pos: Long) {
             checkPlayerController()
             playerController.seek(position = pos)
+        }
+
+        override fun onStop() {
+            onPause()
+            mediaSession.isActive = false
+            stopSelf()
         }
     }
 
