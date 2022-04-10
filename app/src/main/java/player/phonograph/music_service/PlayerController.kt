@@ -48,6 +48,7 @@ class PlayerController(musicService: MusicService) : Playback.PlaybackCallbacks 
     }
 
     var playerState: PlayerState = PlayerState.PREPARING
+        @Synchronized
         private set
     // todo observer model
 
@@ -77,11 +78,13 @@ class PlayerController(musicService: MusicService) : Playback.PlaybackCallbacks 
      */
     fun playFrom(position: Int) {
         if (service.audioFocusManager.requestAudioFocus()) {
-            if (audioPlayer.isPlaying()) audioPlayer.pause()
-            prepareSong(position)
-            audioPlayer.start()
-            playerState = PlayerState.PLAYING
-            // todo update
+            handler.post {
+                if (audioPlayer.isPlaying()) audioPlayer.pause()
+                prepareSong(position)
+                audioPlayer.start()
+                playerState = PlayerState.PLAYING
+                // todo update
+            }
         } else {
             Toast.makeText(service, service.resources.getString(R.string.audio_focus_denied), Toast.LENGTH_SHORT).show()
         }
@@ -105,18 +108,22 @@ class PlayerController(musicService: MusicService) : Playback.PlaybackCallbacks 
      * Pause
      */
     fun pause() {
-        if (audioPlayer.isPlaying()) {
-            audioPlayer.pause()
-            playerState = PlayerState.PAUSED
+        handler.post {
+            if (audioPlayer.isPlaying()) {
+                audioPlayer.pause()
+                playerState = PlayerState.PAUSED
+            }
         }
     }
 
     fun togglePlayPause() {
-        if (audioPlayer.isPlaying()) {
-            pause()
-            pauseReason = PAUSE_BY_MANUAL_ACTION
-        } else {
-            play()
+        handler.post {
+            if (audioPlayer.isPlaying()) {
+                pause()
+                pauseReason = PAUSE_BY_MANUAL_ACTION
+            } else {
+                play()
+            }
         }
     }
 
@@ -131,7 +138,9 @@ class PlayerController(musicService: MusicService) : Playback.PlaybackCallbacks 
      * Jump to beginning of this song
      */
     fun rewindToBeginning() {
-        audioPlayer.seek(0)
+        handler.post {
+            audioPlayer.seek(0)
+        }
     }
 
     /**
@@ -164,7 +173,9 @@ class PlayerController(musicService: MusicService) : Playback.PlaybackCallbacks 
      * @param position time in millisecond
      */
     fun seek(position: Long) {
-        audioPlayer.seek(position.toInt())
+        handler.post {
+            audioPlayer.seek(position.toInt())
+        }
     }
 
     fun stop() {
@@ -175,13 +186,17 @@ class PlayerController(musicService: MusicService) : Playback.PlaybackCallbacks 
 
     override fun onTrackWentToNext() {
         // todo handle queue ended
-        audioPlayer.pause()
-        prepareSong(service.queueManager.currentSongPosition + 1)
-        audioPlayer.start()
+        handler.post {
+            audioPlayer.pause()
+            prepareSong(service.queueManager.currentSongPosition + 1)
+            audioPlayer.start()
+        }
     }
 
     override fun onTrackEnded() {
-        audioPlayer.pause()
+        handler.post {
+            audioPlayer.pause()
+        }
     }
 
     companion object {
