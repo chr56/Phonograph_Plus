@@ -21,12 +21,14 @@ class QueueManager {
     constructor(context: Context) {
         _context = context
     }
+
     constructor() {
         _context = App.instance
     }
 
     private val handler: Handler
     private val thread: HandlerThread = HandlerThread("QueueManagerHandler", Process.THREAD_PRIORITY_BACKGROUND)
+
     init {
         thread.start()
         handler = Handler(thread.looper) { handleMessage(it) }
@@ -46,22 +48,7 @@ class QueueManager {
 
     var playingQueue: MutableList<Song> = ArrayList()
     var originalPlayingQueue: MutableList<Song> = ArrayList()
-    var currentQueueCursor = -1
-        @Synchronized
-        private set(value) {
-            field = value
-            observers.executeForEach {
-                onQueueCursorChanged(value)
-            }
-        }
-    val previousSongCursor: Int get() {
-        val result = currentQueueCursor - 1
-        return if (result < 0) 0 else result
-    }
-    val nextSongCursor: Int get() {
-        val result = currentQueueCursor + 1
-        return if (result < 0) 0 else result
-    }
+
     var shuffleMode: ShuffleMode = ShuffleMode.NONE
         @Synchronized
         private set(value) {
@@ -79,16 +66,64 @@ class QueueManager {
             }
         }
 
-    private fun getSongAt(position: Int): Song =
+    var currentSongPosition = -1
+        @Synchronized
+        private set(value) {
+            field = value
+            observers.executeForEach {
+                onQueueCursorChanged(value)
+            }
+        }
+
+    /**
+     * get previous position song in CURRENT Repeat mode behavior
+     */
+    val previousSongPosition: Int
+        get() {
+            val result = currentSongPosition - 1
+            return when (repeatMode) {
+                RepeatMode.NONE -> {
+                    if (result < 0) 0 else result
+                }
+                RepeatMode.REPEAT_QUEUE -> {
+                    if (result <= 0) playingQueue.size - 1 else result
+                }
+                RepeatMode.REPEAT_SINGLE_SONG -> {
+                    currentSongPosition
+                }
+            }
+        }
+    /**
+     * get next song position in CURRENT Repeat mode behavior
+     */
+    val nextSongPosition: Int
+        get() {
+            val result = currentSongPosition + 1
+            return when (repeatMode) {
+                RepeatMode.NONE -> {
+                    if (result >= playingQueue.size) -1 else result
+                }
+                RepeatMode.REPEAT_QUEUE -> {
+                    if (result >= playingQueue.size) 0 else result
+                }
+                RepeatMode.REPEAT_SINGLE_SONG -> {
+                    currentSongPosition
+                }
+            }
+        }
+
+    /**
+     * Get a song safely in current queue
+     */
+    fun getSongAt(position: Int): Song =
         if (position >= 0 && position < playingQueue.size) {
             playingQueue[position]
         } else {
             Song.EMPTY_SONG
         }
-
-    fun getCurrentSong(): Song = getSongAt(currentQueueCursor)
-    fun getNextSong(): Song = getSongAt(nextSongCursor)
-    fun getPreviousSong(): Song = getSongAt(previousSongCursor)
+    val currentSong: Song get() = getSongAt(currentSongPosition)
+    val nextSong: Song get() = getSongAt(nextSongPosition)
+    val previousSong: Song get() = getSongAt(previousSongPosition)
 
     fun modifyQueue(modifyWhat: ShuffleMode, action: (MutableList<Song>) -> Unit) {
         handler.post {
@@ -116,14 +151,16 @@ class QueueManager {
 
     fun setQueueCursor(position: Int) {
         handler.post {
-            currentQueueCursor = position
+            currentSongPosition = position
         }
     }
+
     fun switchShuffleMode(shuffleMode: ShuffleMode) {
         handler.post {
             this.shuffleMode = shuffleMode
         }
     }
+
     fun switchRepeatMode(repeatMode: RepeatMode) {
         handler.post {
             this.repeatMode = repeatMode
@@ -155,7 +192,7 @@ class QueueManager {
     }
 
     fun postMessage(msg: Message) {
-        if (msg.what == MSG_STOP)return // stop via [this#destroy()]
+        if (msg.what == MSG_STOP) return // stop via [this#destroy()]
         handler.sendMessage(msg)
     }
 
@@ -166,7 +203,7 @@ class QueueManager {
         if (restoredQueue.size > 0 && restoredQueue.size == restoredOriginalQueue.size && restoredPosition != -1) {
             originalPlayingQueue = restoredOriginalQueue.toMutableList()
             playingQueue = restoredQueue.toMutableList()
-            currentQueueCursor = restoredPosition
+            currentSongPosition = restoredPosition
         }
         PreferenceManager.getDefaultSharedPreferences(context).getInt(PREF_SHUFFLE_MODE, 0).let {
             shuffleMode = when (it) {
@@ -191,9 +228,11 @@ class QueueManager {
     private fun saveQueue() {
         MusicPlaybackQueueStore.getInstance(context).saveQueues(playingQueue, originalPlayingQueue)
     }
+
     private fun saveCursor() {
-        PreferenceManager.getDefaultSharedPreferences(context).edit().putInt(PREF_POSITION, currentQueueCursor).apply()
+        PreferenceManager.getDefaultSharedPreferences(context).edit().putInt(PREF_POSITION, currentSongPosition).apply()
     }
+
     private fun saveMode() {
         val value = when (shuffleMode) {
             ShuffleMode.SHUFFLE -> SHUFFLE_MODE_SHUFFLE
@@ -235,12 +274,15 @@ class QueueManager {
         const val REPEAT_MODE_THIS = 2
     }
 }
+
 enum class ShuffleMode {
     SHUFFLE, NONE
 }
+
 enum class RepeatMode {
     NONE, REPEAT_QUEUE, REPEAT_SINGLE_SONG
 }
+
 interface QueueChangeObserver {
     fun onStateRestored() {}
     fun onStateSaved() {}

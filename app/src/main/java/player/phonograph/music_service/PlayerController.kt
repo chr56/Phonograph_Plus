@@ -42,8 +42,8 @@ class PlayerController(musicService: MusicService) : Playback.PlaybackCallbacks 
      */
     private fun prepareSong(position: Int): Boolean {
         service.queueManager.setQueueCursor(position)
-        val current = service.queueManager.getCurrentSong()
-        val next = service.queueManager.getNextSong()
+        val current = service.queueManager.currentSong
+        val next = service.queueManager.nextSong
         if (current == Song.EMPTY_SONG) return false
         val result = audioPlayer.setDataSource(getTrackUri(current.id).toString())
         if (result) audioPlayer.setNextDataSource(getTrackUri(next.id).toString())
@@ -73,7 +73,7 @@ class PlayerController(musicService: MusicService) : Playback.PlaybackCallbacks 
     fun play() {
         pauseReason = NOT_PAUSED
         if (service.queueManager.playingQueue.isNotEmpty()) {
-            playFrom(service.queueManager.currentQueueCursor)
+            playFrom(service.queueManager.currentSongPosition)
         } else {
             // todo
         }
@@ -114,7 +114,7 @@ class PlayerController(musicService: MusicService) : Playback.PlaybackCallbacks 
      * Return to previous song
      */
     fun jumpBackward() {
-        playFrom(service.queueManager.nextSongCursor)
+        playFrom(service.queueManager.nextSongPosition)
     }
 
     /**
@@ -132,7 +132,7 @@ class PlayerController(musicService: MusicService) : Playback.PlaybackCallbacks 
      * Skip and jump to next song
      */
     fun jumpForward() {
-        playFrom(service.queueManager.previousSongCursor)
+        playFrom(service.queueManager.previousSongPosition)
     }
 
     private var noisyReceiverRegistered = false
