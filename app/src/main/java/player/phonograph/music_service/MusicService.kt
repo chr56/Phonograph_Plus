@@ -15,7 +15,6 @@ import android.support.v4.media.session.PlaybackStateCompat
 import android.view.KeyEvent
 import androidx.media.MediaBrowserServiceCompat
 import player.phonograph.App
-import player.phonograph.service.MediaButtonIntentReceiver // todo
 
 class MusicService : MediaBrowserServiceCompat() {
     private var wakeLock: WakeLock? = null
@@ -209,6 +208,32 @@ class MusicService : MediaBrowserServiceCompat() {
         }
     }
 
+    // todo remove
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        val action = intent?.action
+        if (action != null) {
+            when (action) {
+                ACTION_TOGGLE_PAUSE ->
+                    if (isPlaying()) {
+                        mediaSessionCallback.onPause()
+                    } else {
+                        mediaSessionCallback.onPlay()
+                    }
+                ACTION_PAUSE ->
+                    mediaSessionCallback.onPause()
+                ACTION_PLAY ->
+                    mediaSessionCallback.onPlay()
+                ACTION_REWIND ->
+                    mediaSessionCallback.onSkipToPrevious()
+                ACTION_SKIP ->
+                    mediaSessionCallback.onSkipToNext()
+                ACTION_STOP ->
+                    mediaSessionCallback.onStop()
+            }
+        }
+        return START_NOT_STICKY
+    }
+
     private class MessageHandler(looper: Looper, musicService: MusicService) : Handler(looper) {
         private var service: MusicService? = null
 
@@ -249,5 +274,12 @@ class MusicService : MediaBrowserServiceCompat() {
         private const val MEDIA_SESSION_TAG = "${App.ACTUAL_PACKAGE_NAME}.MediaSession"
 
         const val MSG_QUEUE_ENDED = 8
+
+        const val ACTION_TOGGLE_PAUSE = App.ACTUAL_PACKAGE_NAME + ".togglepause"
+        const val ACTION_PLAY = App.ACTUAL_PACKAGE_NAME + ".play"
+        const val ACTION_PAUSE = App.ACTUAL_PACKAGE_NAME + ".pause"
+        const val ACTION_STOP = App.ACTUAL_PACKAGE_NAME + ".stop"
+        const val ACTION_SKIP = App.ACTUAL_PACKAGE_NAME + ".skip"
+        const val ACTION_REWIND = App.ACTUAL_PACKAGE_NAME + ".rewind"
     }
 }
