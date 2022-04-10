@@ -27,7 +27,11 @@ class PlayerController(musicService: MusicService) : Playback.PlaybackCallbacks 
         _audioPlayer = AudioPlayer(musicService, this)
     }
 
+    /**
+     * release all resource and destroy
+     */
     fun destroy() {
+        stop()
         _audioPlayer = null
         _service = null
     }
@@ -133,6 +137,12 @@ class PlayerController(musicService: MusicService) : Playback.PlaybackCallbacks 
      */
     fun jumpForward() {
         playFrom(service.queueManager.previousSongPosition)
+    }
+
+    fun stop() {
+        pause()
+        playerState = PlayerState.STOPPED
+        // todo send message
     }
 
     private var noisyReceiverRegistered = false
