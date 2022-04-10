@@ -201,6 +201,13 @@ class MusicService : MediaBrowserServiceCompat() {
 
     val currentTimeAxis: Int = if (_playerController != null) playerController.currentTimeAxis else -1
 
+    fun requireWakelock(time: Long) {
+        wakeLock?.acquire(time)
+    }
+    fun releaseWakelock() {
+        wakeLock?.release()
+    }
+
     companion object {
         private const val MEDIA_SESSION_TAG = "${App.ACTUAL_PACKAGE_NAME}.MediaSession"
 
