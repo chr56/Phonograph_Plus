@@ -62,12 +62,20 @@ class QueueManager {
         val result = currentQueueCursor + 1
         return if (result < 0) 0 else result
     }
-    var mode: QueueMode = QueueMode.ORIGINAL
+    var shuffleMode: ShuffleMode = ShuffleMode.NONE
         @Synchronized
         private set(value) {
             field = value
             observers.executeForEach {
-                onQueueModeChanged(value)
+                onShuffleModeChanged(value)
+            }
+        }
+    var repeatMode: RepeatMode = RepeatMode.NONE
+        @Synchronized
+        private set(value) {
+            field = value
+            observers.executeForEach {
+                onRepeatModeChanged(value)
             }
         }
 
@@ -82,24 +90,27 @@ class QueueManager {
     fun getNextSong(): Song = getSongAt(nextSongCursor)
     fun getPreviousSong(): Song = getSongAt(previousSongCursor)
 
-    fun modifyQueue(type: QueueMode, action: (MutableList<Song>) -> Unit) {
+    fun modifyQueue(modifyWhat: ShuffleMode, action: (MutableList<Song>) -> Unit) {
         handler.post {
-            modifyQueueIml(type, action)
+            modifyQueueIml(modifyWhat, action)
         }
     }
 
-    @Synchronized
-    private fun modifyQueueIml(type: QueueMode, action: (MutableList<Song>) -> Unit) {
-        when (type) {
-            QueueMode.RANDOM -> {
-                action(playingQueue)
+    private fun modifyQueueIml(modifyWhat: ShuffleMode, action: (MutableList<Song>) -> Unit) {
+        when (modifyWhat) {
+            ShuffleMode.SHUFFLE -> {
+                synchronized(playingQueue) {
+                    action(playingQueue)
+                }
             }
-            QueueMode.ORIGINAL -> {
-                action(originalPlayingQueue)
+            ShuffleMode.NONE -> {
+                synchronized(originalPlayingQueue) {
+                    action(originalPlayingQueue)
+                }
             }
         }
         observers.executeForEach {
-            onQueueChanged(type, playingQueue, originalPlayingQueue)
+            onQueueChanged(modifyWhat, playingQueue, originalPlayingQueue)
         }
     }
 
@@ -108,9 +119,14 @@ class QueueManager {
             currentQueueCursor = position
         }
     }
-    fun switchMode(queueMode: QueueMode) {
+    fun switchShuffleMode(shuffleMode: ShuffleMode) {
         handler.post {
-            mode = queueMode
+            this.shuffleMode = shuffleMode
+        }
+    }
+    fun switchRepeatMode(repeatMode: RepeatMode) {
+        handler.post {
+            this.repeatMode = repeatMode
         }
     }
 
@@ -153,10 +169,18 @@ class QueueManager {
             currentQueueCursor = restoredPosition
         }
         PreferenceManager.getDefaultSharedPreferences(context).getInt(PREF_SHUFFLE_MODE, 0).let {
-            mode = when (it) {
-                SHUFFLE_MODE_SHUFFLE -> QueueMode.RANDOM
-                SHUFFLE_MODE_NONE -> QueueMode.ORIGINAL
+            shuffleMode = when (it) {
+                SHUFFLE_MODE_SHUFFLE -> ShuffleMode.SHUFFLE
+                SHUFFLE_MODE_NONE -> ShuffleMode.NONE
                 else -> throw Exception("invalid shuffle mode")
+            }
+        }
+        PreferenceManager.getDefaultSharedPreferences(context).getInt(PREF_REPEAT_MODE, 0).let {
+            repeatMode = when (it) {
+                REPEAT_MODE_NONE -> RepeatMode.NONE
+                REPEAT_MODE_ALL -> RepeatMode.REPEAT_QUEUE
+                REPEAT_MODE_THIS -> RepeatMode.REPEAT_SINGLE_SONG
+                else -> throw Exception("invalid repeat mode")
             }
         }
         observers.executeForEach {
@@ -171,9 +195,9 @@ class QueueManager {
         PreferenceManager.getDefaultSharedPreferences(context).edit().putInt(PREF_POSITION, currentQueueCursor).apply()
     }
     private fun saveMode() {
-        val value = when (mode) {
-            QueueMode.RANDOM -> SHUFFLE_MODE_SHUFFLE
-            QueueMode.ORIGINAL -> SHUFFLE_MODE_NONE
+        val value = when (shuffleMode) {
+            ShuffleMode.SHUFFLE -> SHUFFLE_MODE_SHUFFLE
+            ShuffleMode.NONE -> SHUFFLE_MODE_NONE
         }
         PreferenceManager.getDefaultSharedPreferences(context).edit().putInt(PREF_SHUFFLE_MODE, value).apply()
     }
@@ -197,25 +221,33 @@ class QueueManager {
         const val MSG_SAVE_QUEUE = 2
         const val MSG_SAVE_CURSOR = 4
         const val MSG_SAVE_MODE = 8
-//        const val MSG_SAVE_CURRENT_TIME = 16
         const val MSG_STATE_SAVE_ALL = 32
 
         const val PREF_POSITION = "POSITION"
         const val PREF_SHUFFLE_MODE = "SHUFFLE_MODE"
+        const val PREF_REPEAT_MODE = "REPEAT_MODE"
 
         const val SHUFFLE_MODE_NONE = 0
         const val SHUFFLE_MODE_SHUFFLE = 1
+
+        const val REPEAT_MODE_NONE = 0
+        const val REPEAT_MODE_ALL = 1
+        const val REPEAT_MODE_THIS = 2
     }
 }
-enum class QueueMode {
-    RANDOM, ORIGINAL
+enum class ShuffleMode {
+    SHUFFLE, NONE
+}
+enum class RepeatMode {
+    NONE, REPEAT_QUEUE, REPEAT_SINGLE_SONG
 }
 interface QueueChangeObserver {
     fun onStateRestored() {}
     fun onStateSaved() {}
     fun onQueueCursorChanged(newPosition: Int) {}
-    fun onQueueChanged(queueChanged: QueueMode, newPlayingQueue: List<Song>, newOriginalQueue: List<Song>) {}
-    fun onQueueModeChanged(newMode: QueueMode) {}
+    fun onQueueChanged(shuffleChanged: ShuffleMode, newPlayingQueue: List<Song>, newOriginalQueue: List<Song>) {}
+    fun onShuffleModeChanged(newMode: ShuffleMode) {}
+    fun onRepeatModeChanged(newMode: RepeatMode) {}
 }
 
 private fun MutableList<QueueChangeObserver>.executeForEach(
