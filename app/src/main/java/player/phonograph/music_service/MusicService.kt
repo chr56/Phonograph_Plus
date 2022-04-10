@@ -184,6 +184,11 @@ class MusicService : MediaBrowserServiceCompat() {
         }
 
         override fun handleMessage(msg: Message) {
+            when (msg.what) {
+                MSG_QUEUE_ENDED -> {
+                    // todo
+                }
+            }
         }
     }
 
@@ -198,5 +203,7 @@ class MusicService : MediaBrowserServiceCompat() {
 
     companion object {
         private const val MEDIA_SESSION_TAG = "${App.ACTUAL_PACKAGE_NAME}.MediaSession"
+
+        const val MSG_QUEUE_ENDED = 8
     }
 }
