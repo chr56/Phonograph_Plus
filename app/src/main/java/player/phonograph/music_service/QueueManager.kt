@@ -54,6 +54,14 @@ class QueueManager {
                 onQueueCursorChanged(value)
             }
         }
+    val previousSongCursor: Int get() {
+        val result = currentQueueCursor - 1
+        return if (result < 0) 0 else result
+    }
+    val nextSongCursor: Int get() {
+        val result = currentQueueCursor + 1
+        return if (result < 0) 0 else result
+    }
     var mode: QueueMode = QueueMode.ORIGINAL
         @Synchronized
         private set(value) {
@@ -62,6 +70,17 @@ class QueueManager {
                 onQueueModeChanged(value)
             }
         }
+
+    private fun getSongAt(position: Int): Song =
+        if (position >= 0 && position < playingQueue.size) {
+            playingQueue[position]
+        } else {
+            Song.EMPTY_SONG
+        }
+
+    fun getCurrentSong(): Song = getSongAt(currentQueueCursor)
+    fun getNextSong(): Song = getSongAt(nextSongCursor)
+    fun getPreviousSong(): Song = getSongAt(previousSongCursor)
 
     fun modifyQueue(type: QueueMode, action: (MutableList<Song>) -> Unit) {
         handler.post {
