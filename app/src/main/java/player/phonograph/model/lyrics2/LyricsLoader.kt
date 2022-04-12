@@ -44,7 +44,16 @@ object LyricsLoader {
         val jobExternal = backgroundCoroutine.launch(Dispatchers.IO) {
             songFile.absoluteFile.parentFile?.let { dir ->
                 if (dir.exists() && dir.isDirectory) {
-                    val filename = Pattern.quote(FileUtil.stripExtension(songFile.name))
+                    val filename =
+                        FileUtil.stripExtension(songFile.name).let { str ->
+                            str.replace("[", "\\[")
+                                .replace("]", "\\]")
+                        }
+                    val songName =
+                        songTitle.let { str ->
+                            str.replace("[", "\\[")
+                                .replace("]", "\\]")
+                        }
 
                     // precise pattern
                     val preciseFormat = "%s\\.(lrc|txt)"
@@ -54,7 +63,7 @@ object LyricsLoader {
                     val vagueFormat = ".*[-;]?%s[-;]?.*\\.(lrc|txt)"
                     val vaguePatterns = listOf<Pattern>(
                         Pattern.compile(String.format(vagueFormat, filename), Pattern.CASE_INSENSITIVE or Pattern.UNICODE_CASE),
-                        Pattern.compile(String.format(vagueFormat, songTitle), Pattern.CASE_INSENSITIVE or Pattern.UNICODE_CASE)
+                        Pattern.compile(String.format(vagueFormat, songName), Pattern.CASE_INSENSITIVE or Pattern.UNICODE_CASE)
                     )
                     val preciseFiles: MutableList<File> = ArrayList(2)
                     val vagueFiles: MutableList<File> = ArrayList(6)
