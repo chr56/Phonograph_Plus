@@ -20,13 +20,11 @@ import player.phonograph.databinding.DialogLyricsBinding
 import player.phonograph.helper.MusicProgressViewUpdateHelper
 import player.phonograph.model.Song
 import player.phonograph.model.lyrics2.*
-import player.phonograph.notification.ErrorNotification
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
 import player.phonograph.ui.fragments.player.AbsPlayerFragment
 import util.mdcolor.ColorUtil
 import util.mdcolor.pref.ThemeColor
 import util.mddesign.util.MaterialColorHelper
-import java.lang.IllegalStateException
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
@@ -63,7 +61,7 @@ class LyricsDialog : DialogFragment(), MusicProgressViewUpdateHelper.Callback {
         handleLyrics()
 
         binding.title.text = if (lyricsDisplay.content.getTitle() != DEFAULT_TITLE) lyricsDisplay.content.getTitle() else song.title
-        setupChips()
+        initChip()
         initRecycleView(lyricsDisplay.content)
 
         // corner
@@ -101,6 +99,58 @@ class LyricsDialog : DialogFragment(), MusicProgressViewUpdateHelper.Callback {
         lyricsDisplay = lyricsList.list.first()
     }
 
+    private fun createChip(text: String, index: Int, checked: Boolean = false, callback: (Chip, Int) -> Unit): Chip {
+        val chip = Chip(requireContext(), null, R.style.Widget_MaterialComponents_Chip_Choice)
+        chip.text = text
+        chip.isChecked = checked
+        chip.setTextColor(textColorCsl)
+        chip.chipBackgroundColor = backgroundCsl
+        chip.chipStrokeColor = backgroundCsl
+        chip.setOnClickListener {
+            callback(it as Chip, index)
+        }
+        return chip
+    }
+
+    private fun initChip() {
+        binding.types.isSingleSelection = true
+        lyricsList.list.forEachIndexed { index, lyrics ->
+            val chip = createChip(
+                getLocalizedTypeName(lyrics.source), index, lyricsDisplayType == lyrics.source, this::onChipClicked
+            )
+            binding.types.addView(chip)
+        }
+        binding.types.isSelectionRequired = true
+    }
+
+    private fun onChipClicked(chip: Chip, index: Int) {
+        if (lyricsList.list[index].source == lyricsDisplayType) return // do not change
+        switchLyrics(index)
+        chip.isChecked = true
+    }
+    private fun switchLyrics(index: Int) {
+        val lyrics = lyricsList.list[index]
+        lyricsDisplayType = lyrics.source
+        lyricsAdapter.update(lyrics.content.getLyricsTimeArray(), lyrics.content.getLyricsLineArray())
+        val fragment = activity?.supportFragmentManager?.findFragmentByTag(AbsSlidingMusicPanelActivity.NOW_PLAYING_FRAGMENT)
+        if (fragment != null && fragment is AbsPlayerFragment) {
+            fragment.handler.sendMessage(
+                Message.obtain(fragment.handler, AbsPlayerFragment.UPDATE_LYRICS).apply {
+                    what = AbsPlayerFragment.UPDATE_LYRICS
+                    data = Bundle().apply { putParcelable(AbsPlayerFragment.LYRICS, lyrics) }
+                }
+            )
+        }
+    }
+
+    private fun getLocalizedTypeName(t: LyricsSource): String =
+        when (t.type) {
+            LyricsSource.EMBEDDED -> getString(R.string.embedded_lyrics)
+            LyricsSource.EXTERNAL_DECORATED, LyricsSource.EXTERNAL_PRECISE -> getString(R.string.external_lyrics)
+            else -> "unknown"
+        }
+
+    /*
     private fun setupChips() {
         for (type in availableLyricTypes) {
             changeChipVisibility(type, View.VISIBLE)
@@ -167,6 +217,7 @@ class LyricsDialog : DialogFragment(), MusicProgressViewUpdateHelper.Callback {
         }
         binding.types.isSelectionRequired = true
     }
+     */
 
     private val accentColor by lazy { ThemeColor.accentColor(App.instance) }
     private val primaryColor by lazy { ThemeColor.primaryColor(App.instance) }
@@ -209,6 +260,7 @@ class LyricsDialog : DialogFragment(), MusicProgressViewUpdateHelper.Callback {
         }
     }
 
+    /*
     private fun changeChipVisibility(type: LyricsSource, visibility: Int) {
         when (type) {
             LyricsSource.Embedded() -> {
@@ -254,6 +306,7 @@ class LyricsDialog : DialogFragment(), MusicProgressViewUpdateHelper.Callback {
             }
         }
     }
+     */
 
     override fun onStart() {
         // set up size

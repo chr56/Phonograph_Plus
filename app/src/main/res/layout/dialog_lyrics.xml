@@ -36,34 +36,34 @@
             app:singleLine="true"
             app:singleSelection="true">
 
-            <com.google.android.material.chip.Chip
-                android:id="@+id/chip_embedded_lyrics"
-                style="@style/Widget.Phonograph.Chip.Choice"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:checked="false"
-                android:text="@string/embedded_lyrics"
-                android:visibility="gone"
-                app:chipBackgroundColor="@color/defaultFooterColor" />
+<!--            <com.google.android.material.chip.Chip-->
+<!--                android:id="@+id/chip_embedded_lyrics"-->
+<!--                style="@style/Widget.Phonograph.Chip.Choice"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:checked="false"-->
+<!--                android:text="@string/embedded_lyrics"-->
+<!--                android:visibility="gone"-->
+<!--                app:chipBackgroundColor="@color/defaultFooterColor" />-->
 
-            <com.google.android.material.chip.Chip
-                android:id="@+id/chip_external_lyrics"
-                style="@style/Widget.Phonograph.Chip.Choice"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:checked="false"
-                android:text="@string/external_lyrics"
-                android:visibility="gone"
-                app:chipBackgroundColor="@color/defaultFooterColor" />
+<!--            <com.google.android.material.chip.Chip-->
+<!--                android:id="@+id/chip_external_lyrics"-->
+<!--                style="@style/Widget.Phonograph.Chip.Choice"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:checked="false"-->
+<!--                android:text="@string/external_lyrics"-->
+<!--                android:visibility="gone"-->
+<!--                app:chipBackgroundColor="@color/defaultFooterColor" />-->
 
-            <com.google.android.material.chip.Chip
-                android:id="@+id/chip_externalWithSuffix_lyrics"
-                style="@style/Widget.Phonograph.Chip.Choice"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:checked="false"
-                android:text="@string/external_lyrics"
-                android:visibility="gone" />
+<!--            <com.google.android.material.chip.Chip-->
+<!--                android:id="@+id/chip_externalWithSuffix_lyrics"-->
+<!--                style="@style/Widget.Phonograph.Chip.Choice"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:checked="false"-->
+<!--                android:text="@string/external_lyrics"-->
+<!--                android:visibility="gone" />-->
 
         </com.google.android.material.chip.ChipGroup>
 
