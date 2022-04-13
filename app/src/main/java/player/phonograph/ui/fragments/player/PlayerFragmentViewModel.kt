@@ -10,7 +10,7 @@ import kotlinx.coroutines.*
 import player.phonograph.model.Song
 import player.phonograph.model.lyrics2.LyricsLoader
 import player.phonograph.model.lyrics2.LyricsSet
-import player.phonograph.model.lyrics2.LyricsWithSource
+import player.phonograph.model.lyrics2.Lyrics
 import java.io.File
 
 class PlayerFragmentViewModel : ViewModel() {
@@ -29,9 +29,9 @@ class PlayerFragmentViewModel : ViewModel() {
         }
     var lyricsSet: LyricsSet? = null
         private set
-    var currentLyrics: LyricsWithSource? = null
+    var currentLyrics: Lyrics? = null
         private set
-    fun forceReplaceLyrics(lyrics: LyricsWithSource) {
+    fun forceReplaceLyrics(lyrics: Lyrics) {
         currentLyrics = lyrics
     }
 

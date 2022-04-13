@@ -38,7 +38,7 @@ class LyricsDialog : DialogFragment(), MusicProgressViewUpdateHelper.Callback {
 
     private lateinit var song: Song
     private lateinit var lyricsSet: LyricsSet
-    private lateinit var lyricsDisplay: LyricsWithSource
+    private lateinit var lyricsDisplay: Lyrics
     private var lyricsDisplayType: LyricsSource = LyricsSource.Unknown()
     private val availableLyricTypes: MutableSet<LyricsSource> = HashSet(1)
     private lateinit var lyricsAdapter: LyricsAdapter
@@ -62,9 +62,9 @@ class LyricsDialog : DialogFragment(), MusicProgressViewUpdateHelper.Callback {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         handleLyrics()
 
-        binding.title.text = if (lyricsDisplay.lyrics.getTitle() != DEFAULT_TITLE) lyricsDisplay.lyrics.getTitle() else song.title
+        binding.title.text = if (lyricsDisplay.content.getTitle() != DEFAULT_TITLE) lyricsDisplay.content.getTitle() else song.title
         setupChips()
-        initRecycleView(lyricsDisplay.lyrics)
+        initRecycleView(lyricsDisplay.content)
 
         // corner
         requireDialog().window!!.setBackgroundDrawable(
@@ -103,7 +103,7 @@ class LyricsDialog : DialogFragment(), MusicProgressViewUpdateHelper.Callback {
         if (lyricsDisplayType == LyricsSource.Unknown()) {
             lyricsDisplayType = availableLyricTypes.first() // default
         }
-        lyricsDisplay = LyricsWithSource(lyricsSet.getByType(lyricsDisplayType) ?: TextLyrics.from("Empty Lyrics!"), lyricsDisplayType)
+        lyricsDisplay = Lyrics(lyricsSet.getByType(lyricsDisplayType) ?: TextLyrics.from("Empty Lyrics!"), lyricsDisplayType)
     }
 
     private fun setupChips() {
@@ -121,14 +121,14 @@ class LyricsDialog : DialogFragment(), MusicProgressViewUpdateHelper.Callback {
                 val lyrics: AbsLyrics? = when (chip.id) {
                     R.id.chip_embedded_lyrics -> {
                         lyricsDisplayType = LyricsSource.Embedded()
-                        lyricsSet.embedded!!.lyrics
+                        lyricsSet.embedded!!.content
                     }
                     R.id.chip_external_lyrics -> {
                         lyricsDisplayType = LyricsSource.ExternalPrecise()
                         lyricsSet.external!!.let {
                             if (it.isNotEmpty()) {
                                 var ret: AbsLyrics? = null
-                                for (l in it) { if (l.source.type == LyricsSource.EXTERNAL_PRECISE) ret = l.lyrics }
+                                for (l in it) { if (l.source.type == LyricsSource.EXTERNAL_PRECISE) ret = l.content }
                                 ret
                             } else null
                         }
@@ -138,7 +138,7 @@ class LyricsDialog : DialogFragment(), MusicProgressViewUpdateHelper.Callback {
                         lyricsSet.external!!.let {
                             if (it.isNotEmpty()) {
                                 var ret: AbsLyrics? = null
-                                for (l in it) { if (l.source.type == LyricsSource.EXTERNAL_DECORATED) ret = l.lyrics }
+                                for (l in it) { if (l.source.type == LyricsSource.EXTERNAL_DECORATED) ret = l.content }
                                 ret
                             } else null
                         }
@@ -156,7 +156,7 @@ class LyricsDialog : DialogFragment(), MusicProgressViewUpdateHelper.Callback {
                             Message.obtain(fragment.handler, AbsPlayerFragment.UPDATE_LYRICS).apply {
                                 what = AbsPlayerFragment.UPDATE_LYRICS
                                 data = Bundle().apply {
-                                    putParcelable(AbsPlayerFragment.LYRICS, LyricsWithSource(lyrics, lyricsDisplayType))
+                                    putParcelable(AbsPlayerFragment.LYRICS, Lyrics(lyrics, lyricsDisplayType))
                                 }
                             }
                         )
@@ -195,7 +195,7 @@ class LyricsDialog : DialogFragment(), MusicProgressViewUpdateHelper.Callback {
         binding.lyricsFollowing.apply {
             buttonTintList = backgroundCsl
             setOnCheckedChangeListener { button: CompoundButton, b: Boolean ->
-                if (lyricsDisplay.lyrics is LrcLyrics) {
+                if (lyricsDisplay.content is LrcLyrics) {
                     if (_progressViewUpdateHelper == null) {
                         // init
                         _progressViewUpdateHelper = MusicProgressViewUpdateHelper(this@LyricsDialog, 500, 1000)
@@ -291,8 +291,8 @@ class LyricsDialog : DialogFragment(), MusicProgressViewUpdateHelper.Callback {
         }
     }
     private fun scrollingTo(timeStamp: Int) {
-        if (lyricsDisplay.lyrics is LrcLyrics) {
-            val line = (lyricsDisplay.lyrics as LrcLyrics).getPosition(timeStamp)
+        if (lyricsDisplay.content is LrcLyrics) {
+            val line = (lyricsDisplay.content as LrcLyrics).getPosition(timeStamp)
             linearLayoutManager.smoothScrollToPosition(binding.recyclerViewLyrics, null, line)
 //            linearLayoutManager.scrollToPositionWithOffset(line, scrollingOffset)
         }

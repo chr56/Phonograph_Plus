@@ -8,17 +8,17 @@ import android.os.Parcel
 import android.os.Parcelable
 import java.lang.IllegalStateException
 
-data class LyricsWithSource(val lyrics: AbsLyrics, val source: LyricsSource) : Parcelable {
+data class Lyrics(val content: AbsLyrics, val source: LyricsSource) : Parcelable {
 
     companion object {
 
         @JvmField
-        val CREATOR = object : Parcelable.Creator<LyricsWithSource> {
-            override fun createFromParcel(parcel: Parcel): LyricsWithSource {
-                return LyricsWithSource(parcel)
+        val CREATOR = object : Parcelable.Creator<Lyrics> {
+            override fun createFromParcel(parcel: Parcel): Lyrics {
+                return Lyrics(parcel)
             }
 
-            override fun newArray(size: Int): Array<LyricsWithSource?> {
+            override fun newArray(size: Int): Array<Lyrics?> {
                 return arrayOfNulls(size)
             }
         }
@@ -29,7 +29,7 @@ data class LyricsWithSource(val lyrics: AbsLyrics, val source: LyricsSource) : P
         LyricsSource(parcel.readInt())
     )
     override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeParcelable(lyrics, flags)
+        parcel.writeParcelable(content, flags)
         parcel.writeInt(source.type)
     }
     override fun describeContents(): Int = 0

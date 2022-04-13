@@ -10,12 +10,12 @@ import player.phonograph.model.lyrics2.LyricsSource.Companion.EMBEDDED
 import player.phonograph.model.lyrics2.LyricsSource.Companion.EXTERNAL_DECORATED
 import player.phonograph.model.lyrics2.LyricsSource.Companion.EXTERNAL_PRECISE
 
-data class LyricsSet(val embedded: LyricsWithSource? = null, val external: List<LyricsWithSource>? = null) : Parcelable {
+data class LyricsSet(val embedded: Lyrics? = null, val external: List<Lyrics>? = null) : Parcelable {
 
     fun isEmpty(): Boolean =
         embedded == null && external.isNullOrEmpty()
 
-    fun getAvailableLyrics(): LyricsWithSource? {
+    fun getAvailableLyrics(): Lyrics? {
         embedded?.let {
             return embedded
         }
@@ -27,28 +27,28 @@ data class LyricsSet(val embedded: LyricsWithSource? = null, val external: List<
 
     fun getLrcLyrics(): LrcLyrics? {
         embedded?.let {
-            if (it.lyrics is LrcLyrics) return it.lyrics
+            if (it.content is LrcLyrics) return it.content
         }
         if (!external.isNullOrEmpty()) {
             for (l in external) {
-                if (l.lyrics is LrcLyrics) return l.lyrics
+                if (l.content is LrcLyrics) return l.content
             }
         }
         return null
     }
     fun getByType(type: LyricsSource): AbsLyrics? {
         return when (type.type) {
-            EMBEDDED -> embedded?.lyrics
+            EMBEDDED -> embedded?.content
             EXTERNAL_PRECISE, EXTERNAL_DECORATED -> { // todo
-                if (external.isNullOrEmpty()) null else external[0].lyrics
+                if (external.isNullOrEmpty()) null else external[0].content
             }
             else -> null
         }
     }
 
     constructor(parcel: Parcel) : this(
-        parcel.readParcelable(LyricsWithSource::class.java.classLoader),
-        parcel.createTypedArrayList(LyricsWithSource.CREATOR)
+        parcel.readParcelable(Lyrics::class.java.classLoader),
+        parcel.createTypedArrayList(Lyrics.CREATOR)
     )
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeParcelable(embedded, flags)

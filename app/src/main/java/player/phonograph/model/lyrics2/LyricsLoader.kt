@@ -105,15 +105,15 @@ object LyricsLoader {
 
         // todo
         val embeddedPack =
-            if (embedded != null) LyricsWithSource(embedded!!, LyricsSource.Embedded()) else null
-        val externalPack: MutableList<LyricsWithSource> = ArrayList()
+            if (embedded != null) Lyrics(embedded!!, LyricsSource.Embedded()) else null
+        val externalPack: MutableList<Lyrics> = ArrayList()
         if (external != null)
             externalPack.add(
-                LyricsWithSource(external!!, LyricsSource.ExternalPrecise())
+                Lyrics(external!!, LyricsSource.ExternalPrecise())
             )
         if (externalWithSuffix != null)
             externalPack.add(
-                LyricsWithSource(externalWithSuffix!!, LyricsSource.ExternalDecorated())
+                Lyrics(externalWithSuffix!!, LyricsSource.ExternalDecorated())
             )
 
         // end of fetching
