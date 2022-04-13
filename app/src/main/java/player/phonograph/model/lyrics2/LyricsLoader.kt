@@ -47,10 +47,10 @@ object LyricsLoader {
                     val songName = Regex.escape(songTitle)
 
                     // precise pattern
-                    val preciseRegex = Regex("$filename\\.(lrc|txt)", RegexOption.IGNORE_CASE)
+                    val preciseRegex = Regex("""$filename\.(lrc|txt)""", RegexOption.IGNORE_CASE)
                     // vague pattern
-                    val vagueRegex1 = Regex(".*[-;]?$filename[-;]?.*\\.(lrc|txt)", RegexOption.IGNORE_CASE)
-                    val vagueRegex2 = Regex(".*[-;]?$songName[-;]?.*\\.(lrc|txt)", RegexOption.IGNORE_CASE)
+                    val vagueRegex1 = Regex(""".*[-;]?$filename[-;]?.*\.(lrc|txt)""", RegexOption.IGNORE_CASE)
+                    val vagueRegex2 = Regex(""".*[-;]?$songName[-;]?.*\.(lrc|txt)""", RegexOption.IGNORE_CASE)
 
                     val preciseFiles: MutableList<File> = ArrayList(2)
                     val vagueFiles: MutableList<File> = ArrayList(6)
@@ -109,7 +109,7 @@ object LyricsLoader {
 
     fun parse(raw: String): AbsLyrics {
         val lines = raw.take(80).lines()
-        val regex = Regex("(\\[.+\\])+.*")
+        val regex = Regex("""(\[.+])+.*""")
 
         for (line in lines) {
             if (regex.matches(line)) {
