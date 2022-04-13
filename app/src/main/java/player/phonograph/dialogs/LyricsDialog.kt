@@ -103,33 +103,51 @@ class LyricsDialog : DialogFragment(), MusicProgressViewUpdateHelper.Callback {
         val chip = Chip(requireContext(), null, R.style.Widget_MaterialComponents_Chip_Choice)
         chip.text = text
         chip.isChecked = checked
-        chip.setTextColor(textColorCsl)
-        chip.chipBackgroundColor = backgroundCsl
-        chip.chipStrokeColor = backgroundCsl
+        chip.setTextColor(getChipTextColor(checked))
+        chip.chipBackgroundColor = getChipBackgroundColor(checked)
         chip.setOnClickListener {
             callback(it as Chip, index)
         }
         return chip
     }
+    private fun getChipBackgroundColor(checked: Boolean): ColorStateList {
+        return ColorStateList.valueOf(
+            if (checked) ColorUtil.lightenColor(primaryColor)
+            else resources.getColor(R.color.defaultFooterColor, requireContext().theme)
+        )
+    }
+    private fun getChipTextColor(checked: Boolean): ColorStateList {
+        return ColorStateList.valueOf(
+            if (checked) MaterialColorHelper.getPrimaryTextColor(requireContext(), ColorUtil.isColorLight(primaryColor))
+            else textColor
+        )
+    }
 
+    private var chipSelected: Chip? = null
     private fun initChip() {
         binding.types.isSingleSelection = true
         lyricsList.list.forEachIndexed { index, lyrics ->
             val chip = createChip(
-                getLocalizedTypeName(lyrics.source), index, lyricsDisplayType == lyrics.source, this::onChipClicked
+                getLocalizedTypeName(lyrics.source), index, lyricsDisplay == lyrics, this::onChipClicked
             )
             binding.types.addView(chip)
+            if (lyricsDisplay == lyrics) chipSelected = chip
         }
         binding.types.isSelectionRequired = true
     }
 
     private fun onChipClicked(chip: Chip, index: Int) {
-        if (lyricsList.list[index].source == lyricsDisplayType) return // do not change
+        if (lyricsList.list[index] == lyricsDisplay) return // do not change
         switchLyrics(index)
         chip.isChecked = true
+        chip.chipBackgroundColor = getChipBackgroundColor(true)
+        chip.setTextColor(getChipTextColor(true))
+        chipSelected?.chipBackgroundColor = getChipBackgroundColor(false)
+        chipSelected?.setTextColor(getChipTextColor(false))
     }
     private fun switchLyrics(index: Int) {
         val lyrics = lyricsList.list[index]
+        lyricsDisplay = lyrics
         lyricsDisplayType = lyrics.source
         lyricsAdapter.update(lyrics.content.getLyricsTimeArray(), lyrics.content.getLyricsLineArray())
         val fragment = activity?.supportFragmentManager?.findFragmentByTag(AbsSlidingMusicPanelActivity.NOW_PLAYING_FRAGMENT)
