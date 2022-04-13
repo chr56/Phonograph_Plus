@@ -16,16 +16,17 @@ import java.util.regex.Pattern
 class LrcLyrics : AbsLyrics, Parcelable {
     override val type: Int = LRC
 
-    private constructor(lyrics: SparseArray<String>) {
+    private constructor(lyrics: SparseArray<String>, source: LyricsSource) {
         this.lyrics = lyrics.also {
             if (it.isEmpty()) Log.w(TAG, "$this has no lyrics")
         }
         this.title = DEFAULT_TITLE
         this.offset = 0
         this.totalTime = -1
+        this.source = source
     }
-    private constructor(lyrics: SparseArray<String>, title: String?, offset: Long = 0, totalTime: Long = -1) :
-        this(lyrics) {
+    private constructor(lyrics: SparseArray<String>, title: String?, offset: Long = 0, totalTime: Long = -1, source: LyricsSource) :
+        this(lyrics, source) {
         this.title = title ?: DEFAULT_TITLE
         this.offset = offset
         this.totalTime = totalTime
@@ -84,9 +85,11 @@ class LrcLyrics : AbsLyrics, Parcelable {
         return index
     }
 
+    override val source: LyricsSource
+
     companion object {
         private const val TAG = "LrcLyrics"
-        fun from(raw: String): LrcLyrics { // raw data:
+        fun from(raw: String, source: LyricsSource = LyricsSource.Unknown()): LrcLyrics { // raw data:
             //
             val rawLines: List<String> = raw.split(Pattern.compile("\r?\n"))
             var offset: Long = 0
@@ -150,7 +153,7 @@ class LrcLyrics : AbsLyrics, Parcelable {
             } // loop_end
 
             // create lyrics
-            return LrcLyrics(lyrics, title, offset, totalTime)
+            return LrcLyrics(lyrics, title, offset, totalTime, source)
         }
 
         private val LRC_LINE_PATTERN = Pattern.compile("((?:\\[.*?\\])+)(.*)")
@@ -178,6 +181,7 @@ class LrcLyrics : AbsLyrics, Parcelable {
         parcel.writeString(title)
         parcel.writeLong(offset)
         parcel.writeLong(totalTime)
+        parcel.writeInt(source.type)
     }
     constructor(parcel: Parcel) {
         parcel.readInt().let { if (it != LRC) throw IllegalStateException("incorrect parcel received") }
@@ -185,6 +189,7 @@ class LrcLyrics : AbsLyrics, Parcelable {
         this.title = parcel.readString() ?: DEFAULT_TITLE
         this.offset = parcel.readLong()
         this.totalTime = parcel.readLong()
+        this.source = LyricsSource(parcel.readInt())
     }
     override fun describeContents(): Int = 0
 }

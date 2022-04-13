@@ -15,6 +15,8 @@ sealed class AbsLyrics : Parcelable {
     abstract fun getLyricsLineArray(): Array<String>
     abstract fun getLyricsTimeArray(): IntArray
 
+    abstract val source: LyricsSource
+
     // Parcelable
     abstract override fun writeToParcel(parcel: Parcel, flags: Int)
     abstract override fun describeContents(): Int
@@ -41,3 +43,20 @@ sealed class AbsLyrics : Parcelable {
 const val LRC: Int = 2
 const val TXT: Int = 1
 const val DEFAULT_TITLE = "Lyrics"
+
+@JvmInline
+value class LyricsSource(val type: Int = UNKNOWN_SOURCE) {
+    @Suppress("FunctionName")
+    companion object {
+        fun Embedded() = LyricsSource(EMBEDDED)
+        fun ExternalPrecise() = LyricsSource(EXTERNAL_PRECISE)
+        fun ExternalDecorated() = LyricsSource(EXTERNAL_DECORATED)
+
+        const val EMBEDDED = 0
+        const val EXTERNAL_PRECISE = 1
+        const val EXTERNAL_DECORATED = 2
+
+        fun Unknown() = LyricsSource(UNKNOWN_SOURCE)
+        const val UNKNOWN_SOURCE = -1
+    }
+}
