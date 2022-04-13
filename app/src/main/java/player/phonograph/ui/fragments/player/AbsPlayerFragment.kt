@@ -25,7 +25,6 @@ import player.phonograph.interfaces.PaletteColorHolder
 import player.phonograph.model.Song
 import player.phonograph.model.lyrics2.AbsLyrics
 import player.phonograph.model.lyrics2.LrcLyrics
-import player.phonograph.model.lyrics2.LyricsSource
 import player.phonograph.model.lyrics2.Lyrics
 import player.phonograph.ui.fragments.AbsMusicServiceFragment
 import player.phonograph.util.FavoriteUtil
@@ -135,7 +134,7 @@ abstract class AbsPlayerFragment :
             R.id.action_show_lyrics -> {
                 val lyricsPack = viewModel.lyricsList
                 if (lyricsPack != null) {
-                    LyricsDialog.create(lyricsPack, MusicPlayerRemote.getCurrentSong(), viewModel.currentLyrics?.source?.type ?: LyricsSource.UNKNOWN_SOURCE)
+                    LyricsDialog.create(lyricsPack, MusicPlayerRemote.getCurrentSong(), viewModel.currentLyrics ?: lyricsPack.getAvailableLyrics()!!)
                         .show(requireActivity().supportFragmentManager, "LYRICS")
                 }
                 return true

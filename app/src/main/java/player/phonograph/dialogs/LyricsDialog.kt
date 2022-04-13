@@ -8,7 +8,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CompoundButton
-import androidx.core.view.iterator
 import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -37,7 +36,6 @@ class LyricsDialog : DialogFragment(), MusicProgressViewUpdateHelper.Callback {
     private lateinit var song: Song
     private lateinit var lyricsList: LyricsList
     private lateinit var lyricsDisplay: Lyrics
-    private var lyricsDisplayType: LyricsSource = LyricsSource.Unknown()
     private val availableLyricTypes: MutableSet<LyricsSource> = HashSet(1)
     private lateinit var lyricsAdapter: LyricsAdapter
     private lateinit var linearLayoutManager: LinearLayoutManager
@@ -48,7 +46,10 @@ class LyricsDialog : DialogFragment(), MusicProgressViewUpdateHelper.Callback {
         requireArguments().let {
             song = it.getParcelable(SONG)!!
             lyricsList = it.getParcelable(LYRICS_PACK)!!
-            lyricsDisplayType = LyricsSource(it.getInt(CURRENT_TYPE))
+            lyricsDisplay = it.getParcelable(CURRENT_LYRICS)!!
+        }
+        if (lyricsList.list.isEmpty()) {
+            throw IllegalStateException("No lyrics?!")
         }
     }
 
@@ -58,7 +59,7 @@ class LyricsDialog : DialogFragment(), MusicProgressViewUpdateHelper.Callback {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        handleLyrics()
+        availableLyricTypes.addAll(lyricsList.getAvailableTypes().orEmpty())
 
         binding.title.text = if (lyricsDisplay.content.getTitle() != DEFAULT_TITLE) lyricsDisplay.content.getTitle() else song.title
         initChip()
@@ -85,18 +86,6 @@ class LyricsDialog : DialogFragment(), MusicProgressViewUpdateHelper.Callback {
                 layoutManager = this@LyricsDialog.linearLayoutManager
                 adapter = this@LyricsDialog.lyricsAdapter
             }
-    }
-
-    private fun handleLyrics() {
-        if (lyricsList.isEmpty()) return
-
-        availableLyricTypes.addAll(lyricsList.getAvailableTypes().orEmpty())
-
-        if (lyricsDisplayType == LyricsSource.Unknown()) {
-            lyricsDisplayType = availableLyricTypes.first() // default
-        }
-
-        lyricsDisplay = lyricsList.list.first()
     }
 
     private fun createChip(text: String, index: Int, checked: Boolean = false, callback: (Chip, Int) -> Unit): Chip {
@@ -133,7 +122,7 @@ class LyricsDialog : DialogFragment(), MusicProgressViewUpdateHelper.Callback {
             binding.types.addView(chip)
             if (lyricsDisplay == lyrics) chipSelected = chip
         }
-        binding.types.isSelectionRequired = true
+        // binding.types.isSelectionRequired = true
     }
 
     private fun onChipClicked(chip: Chip, index: Int) {
@@ -142,13 +131,14 @@ class LyricsDialog : DialogFragment(), MusicProgressViewUpdateHelper.Callback {
         chip.isChecked = true
         chip.chipBackgroundColor = getChipBackgroundColor(true)
         chip.setTextColor(getChipTextColor(true))
+        chipSelected?.isChecked = false
         chipSelected?.chipBackgroundColor = getChipBackgroundColor(false)
         chipSelected?.setTextColor(getChipTextColor(false))
+        chipSelected = chip
     }
     private fun switchLyrics(index: Int) {
         val lyrics = lyricsList.list[index]
         lyricsDisplay = lyrics
-        lyricsDisplayType = lyrics.source
         lyricsAdapter.update(lyrics.content.getLyricsTimeArray(), lyrics.content.getLyricsLineArray())
         val fragment = activity?.supportFragmentManager?.findFragmentByTag(AbsSlidingMusicPanelActivity.NOW_PLAYING_FRAGMENT)
         if (fragment != null && fragment is AbsPlayerFragment) {
@@ -167,75 +157,6 @@ class LyricsDialog : DialogFragment(), MusicProgressViewUpdateHelper.Callback {
             LyricsSource.EXTERNAL_DECORATED, LyricsSource.EXTERNAL_PRECISE -> getString(R.string.external_lyrics)
             else -> "unknown"
         }
-
-    /*
-    private fun setupChips() {
-        for (type in availableLyricTypes) {
-            changeChipVisibility(type, View.VISIBLE)
-        }
-        binding.types.check(getBindingID(lyricsDisplayType))
-
-        for (chip in binding.types) {
-            chip as Chip
-            chip.setTextColor(textColorCsl)
-            chip.chipBackgroundColor = backgroundCsl
-            chip.chipStrokeColor = backgroundCsl
-            chip.setOnClickListener {
-                val lyrics: AbsLyrics? = when (chip.id) {
-                    R.id.chip_embedded_lyrics -> {
-                        lyricsDisplayType = LyricsSource.Embedded()
-                        lyricsList.list.let {
-                            if (it.isNotEmpty()) {
-                                var ret: AbsLyrics? = null
-                                for (l in it) { if (l.source.type == LyricsSource.EMBEDDED) ret = l.content }
-                                ret
-                            } else null
-                        }
-                    }
-                    R.id.chip_external_lyrics -> {
-                        lyricsDisplayType = LyricsSource.ExternalPrecise()
-                        lyricsList.list.let {
-                            if (it.isNotEmpty()) {
-                                var ret: AbsLyrics? = null
-                                for (l in it) { if (l.source.type == LyricsSource.EXTERNAL_PRECISE) ret = l.content }
-                                ret
-                            } else null
-                        }
-                    }
-                    R.id.chip_externalWithSuffix_lyrics -> {
-                        lyricsDisplayType = LyricsSource.ExternalDecorated()
-                        lyricsList.list.let {
-                            if (it.isNotEmpty()) {
-                                var ret: AbsLyrics? = null
-                                for (l in it) { if (l.source.type == LyricsSource.EXTERNAL_DECORATED) ret = l.content }
-                                ret
-                            } else null
-                        }
-                    }
-                    else -> {
-                        lyricsDisplayType = LyricsSource.Unknown()
-                        null
-                    }
-                }
-                if (lyrics != null) {
-                    lyricsAdapter.update(lyrics.getLyricsTimeArray(), lyrics.getLyricsLineArray())
-                    val fragment = activity?.supportFragmentManager?.findFragmentByTag(AbsSlidingMusicPanelActivity.NOW_PLAYING_FRAGMENT)
-                    if (fragment != null && fragment is AbsPlayerFragment) {
-                        fragment.handler.sendMessage(
-                            Message.obtain(fragment.handler, AbsPlayerFragment.UPDATE_LYRICS).apply {
-                                what = AbsPlayerFragment.UPDATE_LYRICS
-                                data = Bundle().apply {
-                                    putParcelable(AbsPlayerFragment.LYRICS, Lyrics(lyrics, lyricsDisplayType))
-                                }
-                            }
-                        )
-                    }
-                }
-            }
-        }
-        binding.types.isSelectionRequired = true
-    }
-     */
 
     private val accentColor by lazy { ThemeColor.accentColor(App.instance) }
     private val primaryColor by lazy { ThemeColor.primaryColor(App.instance) }
@@ -277,54 +198,6 @@ class LyricsDialog : DialogFragment(), MusicProgressViewUpdateHelper.Callback {
             }
         }
     }
-
-    /*
-    private fun changeChipVisibility(type: LyricsSource, visibility: Int) {
-        when (type) {
-            LyricsSource.Embedded() -> {
-                binding.chipEmbeddedLyrics.visibility = visibility
-            }
-            LyricsSource.ExternalPrecise() -> {
-                binding.chipExternalLyrics.visibility = visibility
-            }
-            LyricsSource.ExternalDecorated() -> {
-                binding.chipExternalWithSuffixLyrics.visibility = visibility
-            }
-        }
-    }
-    private fun getBindingID(lyricsDisplayType: LyricsSource): Int =
-        when (lyricsDisplayType.type) {
-            LyricsSource.EMBEDDED -> {
-                binding.chipEmbeddedLyrics.id
-            }
-            LyricsSource.EXTERNAL_PRECISE -> {
-                binding.chipExternalLyrics.id
-            }
-            LyricsSource.EXTERNAL_DECORATED -> {
-                binding.chipExternalWithSuffixLyrics.id
-            }
-            else -> {
-                ErrorNotification.postErrorNotification(
-                    IllegalStateException("Unknown lyricsDisplayType($lyricsDisplayType)").apply { stackTrace = Thread.currentThread().stackTrace }, null
-                )
-                binding.chipEmbeddedLyrics.id
-            }
-        }
-
-    private fun setCheckStatus(type: LyricsSource, state: Boolean) {
-        when (type) {
-            LyricsSource.Embedded() -> {
-                binding.chipEmbeddedLyrics.isChecked = state
-            }
-            LyricsSource.Embedded() -> {
-                binding.chipExternalLyrics.isChecked = state
-            }
-            LyricsSource.ExternalDecorated() -> {
-                binding.chipExternalWithSuffixLyrics.isChecked = state
-            }
-        }
-    }
-     */
 
     override fun onStart() {
         // set up size
@@ -373,15 +246,15 @@ class LyricsDialog : DialogFragment(), MusicProgressViewUpdateHelper.Callback {
     companion object {
         private const val SONG = "song"
         private const val LYRICS_PACK = "lyrics_pack"
-        private const val CURRENT_TYPE = "current_type"
+        private const val CURRENT_LYRICS = "current_lyrics"
 
-        fun create(lyricsList: LyricsList, song: Song, currentType: Int = LyricsSource.UNKNOWN_SOURCE): LyricsDialog =
+        fun create(lyricsList: LyricsList, song: Song, currentLyrics: Lyrics): LyricsDialog =
             LyricsDialog()
                 .apply {
                     arguments = Bundle().apply {
                         putParcelable(SONG, song)
                         putParcelable(LYRICS_PACK, lyricsList)
-                        putInt(CURRENT_TYPE, currentType)
+                        putParcelable(CURRENT_LYRICS, currentLyrics)
                     }
                 }
     }
