@@ -36,8 +36,8 @@ android {
         vectorDrawables.useSupportLibrary = true
 
         applicationId = "player.phonograph"
-        versionCode = 202
-        versionName = "0.2.0-RC2"
+        versionCode = 203
+        versionName = "0.2.1"
 
         // proguardFiles(File("proguard-rules-base.pro"), File("proguard-rules-app.pro"))
 
