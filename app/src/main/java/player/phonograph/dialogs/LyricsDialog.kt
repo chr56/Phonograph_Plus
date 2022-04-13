@@ -37,7 +37,7 @@ class LyricsDialog : DialogFragment(), MusicProgressViewUpdateHelper.Callback {
     val binding: DialogLyricsBinding get() = _viewBinding!!
 
     private lateinit var song: Song
-    private lateinit var lyricsSet: LyricsSet
+    private lateinit var lyricsList: LyricsList
     private lateinit var lyricsDisplay: Lyrics
     private var lyricsDisplayType: LyricsSource = LyricsSource.Unknown()
     private val availableLyricTypes: MutableSet<LyricsSource> = HashSet(1)
@@ -49,7 +49,7 @@ class LyricsDialog : DialogFragment(), MusicProgressViewUpdateHelper.Callback {
 
         requireArguments().let {
             song = it.getParcelable(SONG)!!
-            lyricsSet = it.getParcelable(LYRICS_PACK)!!
+            lyricsList = it.getParcelable(LYRICS_PACK)!!
             lyricsDisplayType = LyricsSource(it.getInt(CURRENT_TYPE))
         }
     }
@@ -90,20 +90,15 @@ class LyricsDialog : DialogFragment(), MusicProgressViewUpdateHelper.Callback {
     }
 
     private fun handleLyrics() {
-        if (!lyricsSet.external.isNullOrEmpty()) {
-            availableLyricTypes.add(LyricsSource.ExternalPrecise())
-        }
-        if (lyricsSet.embedded != null) {
-            availableLyricTypes.add(LyricsSource.Embedded())
-        }
-        if (lyricsSet.isEmpty()) {
-            availableLyricTypes.add(LyricsSource.Unknown())
-        }
+        if (lyricsList.isEmpty()) return
+
+        availableLyricTypes.addAll(lyricsList.getAvailableTypes().orEmpty())
 
         if (lyricsDisplayType == LyricsSource.Unknown()) {
             lyricsDisplayType = availableLyricTypes.first() // default
         }
-        lyricsDisplay = Lyrics(lyricsSet.getByType(lyricsDisplayType) ?: TextLyrics.from("Empty Lyrics!"), lyricsDisplayType)
+
+        lyricsDisplay = lyricsList.list.first()
     }
 
     private fun setupChips() {
@@ -121,11 +116,17 @@ class LyricsDialog : DialogFragment(), MusicProgressViewUpdateHelper.Callback {
                 val lyrics: AbsLyrics? = when (chip.id) {
                     R.id.chip_embedded_lyrics -> {
                         lyricsDisplayType = LyricsSource.Embedded()
-                        lyricsSet.embedded!!.content
+                        lyricsList.list.let {
+                            if (it.isNotEmpty()) {
+                                var ret: AbsLyrics? = null
+                                for (l in it) { if (l.source.type == LyricsSource.EMBEDDED) ret = l.content }
+                                ret
+                            } else null
+                        }
                     }
                     R.id.chip_external_lyrics -> {
                         lyricsDisplayType = LyricsSource.ExternalPrecise()
-                        lyricsSet.external!!.let {
+                        lyricsList.list.let {
                             if (it.isNotEmpty()) {
                                 var ret: AbsLyrics? = null
                                 for (l in it) { if (l.source.type == LyricsSource.EXTERNAL_PRECISE) ret = l.content }
@@ -135,7 +136,7 @@ class LyricsDialog : DialogFragment(), MusicProgressViewUpdateHelper.Callback {
                     }
                     R.id.chip_externalWithSuffix_lyrics -> {
                         lyricsDisplayType = LyricsSource.ExternalDecorated()
-                        lyricsSet.external!!.let {
+                        lyricsList.list.let {
                             if (it.isNotEmpty()) {
                                 var ret: AbsLyrics? = null
                                 for (l in it) { if (l.source.type == LyricsSource.EXTERNAL_DECORATED) ret = l.content }
@@ -303,12 +304,12 @@ class LyricsDialog : DialogFragment(), MusicProgressViewUpdateHelper.Callback {
         private const val LYRICS_PACK = "lyrics_pack"
         private const val CURRENT_TYPE = "current_type"
 
-        fun create(lyricsSet: LyricsSet, song: Song, currentType: Int = LyricsSource.UNKNOWN_SOURCE): LyricsDialog =
+        fun create(lyricsList: LyricsList, song: Song, currentType: Int = LyricsSource.UNKNOWN_SOURCE): LyricsDialog =
             LyricsDialog()
                 .apply {
                     arguments = Bundle().apply {
                         putParcelable(SONG, song)
-                        putParcelable(LYRICS_PACK, lyricsSet)
+                        putParcelable(LYRICS_PACK, lyricsList)
                         putInt(CURRENT_TYPE, currentType)
                     }
                 }

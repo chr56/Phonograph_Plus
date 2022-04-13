@@ -18,7 +18,7 @@ object LyricsLoader {
 
     private val backgroundCoroutine: CoroutineScope by lazy { CoroutineScope(Dispatchers.IO) }
 
-    suspend fun loadLyrics(songFile: File, songTitle: String): LyricsSet {
+    suspend fun loadLyrics(songFile: File, songTitle: String): LyricsList {
 
         // embedded
         var embedded: AbsLyrics? = null
@@ -37,8 +37,8 @@ object LyricsLoader {
         }
 
         // external
-        var external: AbsLyrics? = null
-        var externalWithSuffix: AbsLyrics? = null
+        val preciseLyrics: MutableList<Lyrics> = ArrayList(1)
+        val vagueLyrics: MutableList<Lyrics> = ArrayList(3)
 
         val jobExternal = backgroundCoroutine.launch(Dispatchers.IO) {
             songFile.absoluteFile.parentFile?.let { dir ->
@@ -52,8 +52,8 @@ object LyricsLoader {
                     val vagueRegex1 = Regex(""".*[-;]?$filename[-;]?.*\.(lrc|txt)""", RegexOption.IGNORE_CASE)
                     val vagueRegex2 = Regex(""".*[-;]?$songName[-;]?.*\.(lrc|txt)""", RegexOption.IGNORE_CASE)
 
-                    val preciseFiles: MutableList<File> = ArrayList(2)
-                    val vagueFiles: MutableList<File> = ArrayList(6)
+                    val preciseFiles: MutableList<File> = ArrayList(1)
+                    val vagueFiles: MutableList<File> = ArrayList(3)
 
                     // start list file under the same dir
                     val result = dir.listFiles { f: File ->
@@ -82,16 +82,16 @@ object LyricsLoader {
                     Log.v(TAG, result.map { it.path }.fold("All lyrics found:") { acc, str -> "$acc$str;" }.toString())
 
                     try {
-                        // precise first
+                        // precise
                         for (f in preciseFiles) {
-                            FileUtil.read(f).also { str ->
-                                if (str.isNotEmpty()) external = parse(str)
+                            FileUtil.read(f).also { raw ->
+                                if (raw.isNotEmpty()) preciseLyrics.add(Lyrics(parse(raw), LyricsSource.ExternalPrecise()))
                             }
                         }
-                        // then vague
+                        // vague
                         for (f in vagueFiles) {
-                            FileUtil.read(f).also { str ->
-                                if (str.isNotEmpty()) externalWithSuffix = parse(str)
+                            FileUtil.read(f).also { raw ->
+                                if (raw.isNotEmpty()) vagueLyrics.add(Lyrics(parse(raw), LyricsSource.ExternalPrecise()))
                             }
                         }
                     } catch (e: Exception) { Log.e(TAG, "Failed to read lyrics files\n${e.message}") }
@@ -103,21 +103,15 @@ object LyricsLoader {
         jobExternal.join()
         jobEmbedded.join()
 
-        // todo
-        val embeddedPack =
-            if (embedded != null) Lyrics(embedded!!, LyricsSource.Embedded()) else null
-        val externalPack: MutableList<Lyrics> = ArrayList()
-        if (external != null)
-            externalPack.add(
-                Lyrics(external!!, LyricsSource.ExternalPrecise())
-            )
-        if (externalWithSuffix != null)
-            externalPack.add(
-                Lyrics(externalWithSuffix!!, LyricsSource.ExternalDecorated())
-            )
+        val resultList: ArrayList<Lyrics> = ArrayList(4)
+        resultList.apply {
+            if (embedded != null) add(Lyrics(embedded!!, LyricsSource.Embedded()))
+            addAll(preciseLyrics)
+            addAll(vagueLyrics)
+        }
 
         // end of fetching
-        return LyricsSet(embeddedPack, if (externalPack.isEmpty()) null else externalPack)
+        return LyricsList(resultList)
     }
 
     fun parse(raw: String): AbsLyrics {

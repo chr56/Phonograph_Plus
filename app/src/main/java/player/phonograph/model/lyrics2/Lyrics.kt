@@ -8,10 +8,10 @@ import android.os.Parcel
 import android.os.Parcelable
 import java.lang.IllegalStateException
 
+// todo move to AbsLyrics
 data class Lyrics(val content: AbsLyrics, val source: LyricsSource) : Parcelable {
 
     companion object {
-
         @JvmField
         val CREATOR = object : Parcelable.Creator<Lyrics> {
             override fun createFromParcel(parcel: Parcel): Lyrics {
@@ -35,7 +35,8 @@ data class Lyrics(val content: AbsLyrics, val source: LyricsSource) : Parcelable
     override fun describeContents(): Int = 0
 }
 
-data class LyricsSource(val type: Int = UNKNOWN_SOURCE) {
+@JvmInline
+value class LyricsSource(val type: Int = UNKNOWN_SOURCE) {
     @Suppress("FunctionName")
     companion object {
         fun Embedded() = LyricsSource(EMBEDDED)
