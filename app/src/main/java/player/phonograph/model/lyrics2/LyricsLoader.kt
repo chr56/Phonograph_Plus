@@ -27,7 +27,7 @@ object LyricsLoader {
             try {
                 AudioFileIO.read(songFile).tag?.getFirst(FieldKey.LYRICS).also { str ->
                     if (str != null && str.trim().isNotBlank()) {
-                        embedded = parse(str)
+                        embedded = parse(str, LyricsSource.Embedded())
                     }
                 }
             } catch (e: Exception) {
@@ -85,13 +85,13 @@ object LyricsLoader {
                         // precise
                         for (f in preciseFiles) {
                             FileUtil.read(f).also { raw ->
-                                if (raw.isNotEmpty()) preciseLyrics.add(Lyrics(parse(raw), LyricsSource.ExternalPrecise()))
+                                if (raw.isNotEmpty()) preciseLyrics.add(Lyrics(parse(raw, LyricsSource.ExternalPrecise()), LyricsSource.ExternalPrecise()))
                             }
                         }
                         // vague
                         for (f in vagueFiles) {
                             FileUtil.read(f).also { raw ->
-                                if (raw.isNotEmpty()) vagueLyrics.add(Lyrics(parse(raw), LyricsSource.ExternalPrecise()))
+                                if (raw.isNotEmpty()) vagueLyrics.add(Lyrics(parse(raw, LyricsSource.ExternalDecorated()), LyricsSource.ExternalPrecise()))
                             }
                         }
                     } catch (e: Exception) { Log.e(TAG, "Failed to read lyrics files\n${e.message}") }
@@ -114,18 +114,18 @@ object LyricsLoader {
         return LyricsList(resultList)
     }
 
-    fun parse(raw: String): AbsLyrics {
+    fun parse(raw: String, lyricsSource: LyricsSource = LyricsSource.Unknown()): AbsLyrics {
         val lines = raw.take(80).lines()
         val regex = Regex("""(\[.+])+.*""")
 
         for (line in lines) {
             if (regex.matches(line)) {
                 Log.v(TAG, "using LrcLyrics")
-                return LrcLyrics.from(raw)
+                return LrcLyrics.from(raw, lyricsSource)
             }
         }
         Log.v(TAG, "using TextLyrics")
-        return TextLyrics.from(raw)
+        return TextLyrics.from(raw, lyricsSource)
     }
 
     private const val TAG = "LyricsLoader"
