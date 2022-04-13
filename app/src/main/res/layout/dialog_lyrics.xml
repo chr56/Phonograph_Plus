@@ -26,8 +26,9 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@id/constraint_layout" />
 
-        <com.google.android.material.chip.ChipGroup
-            android:id="@+id/types"
+
+        <HorizontalScrollView
+            android:id="@+id/scrollView"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             app:layout_constraintEnd_toEndOf="parent"
@@ -36,9 +37,15 @@
             app:singleLine="true"
             app:singleSelection="true">
 
-            <!-- add chip dynamically-->
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/types"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:singleLine="true"
+                app:singleSelection="true"/>
 
-        </com.google.android.material.chip.ChipGroup>
+        </HorizontalScrollView>
+
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_view_lyrics"
@@ -48,7 +55,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/types" />
+            app:layout_constraintTop_toBottomOf="@id/scrollView" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
