@@ -10,7 +10,7 @@ import player.phonograph.model.lyrics2.LyricsSource.Companion.EMBEDDED
 import player.phonograph.model.lyrics2.LyricsSource.Companion.EXTERNAL_DECORATED
 import player.phonograph.model.lyrics2.LyricsSource.Companion.EXTERNAL_PRECISE
 
-data class LyricsPack(val embedded: LyricsWithSource? = null, val external: List<LyricsWithSource>? = null) : Parcelable {
+data class LyricsSet(val embedded: LyricsWithSource? = null, val external: List<LyricsWithSource>? = null) : Parcelable {
 
     fun isEmpty(): Boolean =
         embedded == null && external.isNullOrEmpty()
@@ -57,12 +57,12 @@ data class LyricsPack(val embedded: LyricsWithSource? = null, val external: List
     override fun describeContents(): Int = 0
     companion object {
         @JvmField
-        val CREATOR = object : Parcelable.Creator<LyricsPack> {
-            override fun createFromParcel(parcel: Parcel): LyricsPack {
-                return LyricsPack(parcel)
+        val CREATOR = object : Parcelable.Creator<LyricsSet> {
+            override fun createFromParcel(parcel: Parcel): LyricsSet {
+                return LyricsSet(parcel)
             }
 
-            override fun newArray(size: Int): Array<LyricsPack?> {
+            override fun newArray(size: Int): Array<LyricsSet?> {
                 return arrayOfNulls(size)
             }
         }

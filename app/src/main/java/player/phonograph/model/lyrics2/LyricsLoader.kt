@@ -18,7 +18,7 @@ object LyricsLoader {
 
     private val backgroundCoroutine: CoroutineScope by lazy { CoroutineScope(Dispatchers.IO) }
 
-    suspend fun loadLyrics(songFile: File, songTitle: String): LyricsPack {
+    suspend fun loadLyrics(songFile: File, songTitle: String): LyricsSet {
 
         // embedded
         var embedded: AbsLyrics? = null
@@ -117,7 +117,7 @@ object LyricsLoader {
             )
 
         // end of fetching
-        return LyricsPack(embeddedPack, if (externalPack.isEmpty()) null else externalPack)
+        return LyricsSet(embeddedPack, if (externalPack.isEmpty()) null else externalPack)
     }
 
     fun parse(raw: String): AbsLyrics {

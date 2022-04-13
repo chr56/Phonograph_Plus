@@ -133,7 +133,7 @@ abstract class AbsPlayerFragment :
         // toolbar
         when (item.itemId) {
             R.id.action_show_lyrics -> {
-                val lyricsPack = viewModel.lyricsPack
+                val lyricsPack = viewModel.lyricsSet
                 if (lyricsPack != null) {
                     LyricsDialog.create(lyricsPack, MusicPlayerRemote.getCurrentSong(), viewModel.currentLyrics?.source?.type ?: LyricsSource.UNKNOWN_SOURCE)
                         .show(requireActivity().supportFragmentManager, "LYRICS")
@@ -223,7 +223,7 @@ abstract class AbsPlayerFragment :
             hideLyrics()
             // wait
             withTimeout(8000) {
-                while (viewModel.lyricsPack == null) delay(150)
+                while (viewModel.lyricsSet == null) delay(150)
             }
             delay(100)
             // refresh anyway

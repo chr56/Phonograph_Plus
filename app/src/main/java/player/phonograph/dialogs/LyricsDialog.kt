@@ -37,7 +37,7 @@ class LyricsDialog : DialogFragment(), MusicProgressViewUpdateHelper.Callback {
     val binding: DialogLyricsBinding get() = _viewBinding!!
 
     private lateinit var song: Song
-    private lateinit var lyricsPack: LyricsPack
+    private lateinit var lyricsSet: LyricsSet
     private lateinit var lyricsDisplay: LyricsWithSource
     private var lyricsDisplayType: LyricsSource = LyricsSource.Unknown()
     private val availableLyricTypes: MutableSet<LyricsSource> = HashSet(1)
@@ -49,7 +49,7 @@ class LyricsDialog : DialogFragment(), MusicProgressViewUpdateHelper.Callback {
 
         requireArguments().let {
             song = it.getParcelable(SONG)!!
-            lyricsPack = it.getParcelable(LYRICS_PACK)!!
+            lyricsSet = it.getParcelable(LYRICS_PACK)!!
             lyricsDisplayType = LyricsSource(it.getInt(CURRENT_TYPE))
         }
     }
@@ -90,20 +90,20 @@ class LyricsDialog : DialogFragment(), MusicProgressViewUpdateHelper.Callback {
     }
 
     private fun handleLyrics() {
-        if (!lyricsPack.external.isNullOrEmpty()) {
+        if (!lyricsSet.external.isNullOrEmpty()) {
             availableLyricTypes.add(LyricsSource.ExternalPrecise())
         }
-        if (lyricsPack.embedded != null) {
+        if (lyricsSet.embedded != null) {
             availableLyricTypes.add(LyricsSource.Embedded())
         }
-        if (lyricsPack.isEmpty()) {
+        if (lyricsSet.isEmpty()) {
             availableLyricTypes.add(LyricsSource.Unknown())
         }
 
         if (lyricsDisplayType == LyricsSource.Unknown()) {
             lyricsDisplayType = availableLyricTypes.first() // default
         }
-        lyricsDisplay = LyricsWithSource(lyricsPack.getByType(lyricsDisplayType) ?: TextLyrics.from("Empty Lyrics!"), lyricsDisplayType)
+        lyricsDisplay = LyricsWithSource(lyricsSet.getByType(lyricsDisplayType) ?: TextLyrics.from("Empty Lyrics!"), lyricsDisplayType)
     }
 
     private fun setupChips() {
@@ -121,11 +121,11 @@ class LyricsDialog : DialogFragment(), MusicProgressViewUpdateHelper.Callback {
                 val lyrics: AbsLyrics? = when (chip.id) {
                     R.id.chip_embedded_lyrics -> {
                         lyricsDisplayType = LyricsSource.Embedded()
-                        lyricsPack.embedded!!.lyrics
+                        lyricsSet.embedded!!.lyrics
                     }
                     R.id.chip_external_lyrics -> {
                         lyricsDisplayType = LyricsSource.ExternalPrecise()
-                        lyricsPack.external!!.let {
+                        lyricsSet.external!!.let {
                             if (it.isNotEmpty()) {
                                 var ret: AbsLyrics? = null
                                 for (l in it) { if (l.source.type == LyricsSource.EXTERNAL_PRECISE) ret = l.lyrics }
@@ -135,7 +135,7 @@ class LyricsDialog : DialogFragment(), MusicProgressViewUpdateHelper.Callback {
                     }
                     R.id.chip_externalWithSuffix_lyrics -> {
                         lyricsDisplayType = LyricsSource.ExternalDecorated()
-                        lyricsPack.external!!.let {
+                        lyricsSet.external!!.let {
                             if (it.isNotEmpty()) {
                                 var ret: AbsLyrics? = null
                                 for (l in it) { if (l.source.type == LyricsSource.EXTERNAL_DECORATED) ret = l.lyrics }
@@ -303,12 +303,12 @@ class LyricsDialog : DialogFragment(), MusicProgressViewUpdateHelper.Callback {
         private const val LYRICS_PACK = "lyrics_pack"
         private const val CURRENT_TYPE = "current_type"
 
-        fun create(lyricsPack: LyricsPack, song: Song, currentType: Int = LyricsSource.UNKNOWN_SOURCE): LyricsDialog =
+        fun create(lyricsSet: LyricsSet, song: Song, currentType: Int = LyricsSource.UNKNOWN_SOURCE): LyricsDialog =
             LyricsDialog()
                 .apply {
                     arguments = Bundle().apply {
                         putParcelable(SONG, song)
-                        putParcelable(LYRICS_PACK, lyricsPack)
+                        putParcelable(LYRICS_PACK, lyricsSet)
                         putInt(CURRENT_TYPE, currentType)
                     }
                 }

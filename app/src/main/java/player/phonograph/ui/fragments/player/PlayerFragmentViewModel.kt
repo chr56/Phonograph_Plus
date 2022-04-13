@@ -9,7 +9,7 @@ import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.*
 import player.phonograph.model.Song
 import player.phonograph.model.lyrics2.LyricsLoader
-import player.phonograph.model.lyrics2.LyricsPack
+import player.phonograph.model.lyrics2.LyricsSet
 import player.phonograph.model.lyrics2.LyricsWithSource
 import java.io.File
 
@@ -27,7 +27,7 @@ class PlayerFragmentViewModel : ViewModel() {
             field = value
             loadLyrics(value)
         }
-    var lyricsPack: LyricsPack? = null
+    var lyricsSet: LyricsSet? = null
         private set
     var currentLyrics: LyricsWithSource? = null
         private set
@@ -41,11 +41,11 @@ class PlayerFragmentViewModel : ViewModel() {
         // cancel old song's lyrics after switching
         loadLyricsJob?.cancel()
         currentLyrics = null
-        lyricsPack = null
+        lyricsSet = null
         // load new lyrics
         loadLyricsJob = backgroundCoroutine.launch(exceptionHandler) {
-            lyricsPack = LyricsLoader.loadLyrics(File(song.data), song.title)
-            currentLyrics = lyricsPack!!.getAvailableLyrics()
+            lyricsSet = LyricsLoader.loadLyrics(File(song.data), song.title)
+            currentLyrics = lyricsSet!!.getAvailableLyrics()
         }
     }
 }
