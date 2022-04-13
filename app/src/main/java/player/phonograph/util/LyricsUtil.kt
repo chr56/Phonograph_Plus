@@ -31,7 +31,7 @@ class LyricsFetcher {
         File(song.data).also { file ->
             if (!file.exists()) return@also
             CoroutineScope(Dispatchers.IO).launch(exceptionHandler) {
-                loadLyrics(file, song.title).let {
+                loadLyrics(file, song).let {
                     this@LyricsFetcher.lyrics = it.getLrcLyrics()
                 }
             }

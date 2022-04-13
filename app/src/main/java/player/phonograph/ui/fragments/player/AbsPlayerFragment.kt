@@ -25,7 +25,6 @@ import player.phonograph.interfaces.PaletteColorHolder
 import player.phonograph.model.Song
 import player.phonograph.model.lyrics2.AbsLyrics
 import player.phonograph.model.lyrics2.LrcLyrics
-import player.phonograph.model.lyrics2.Lyrics
 import player.phonograph.ui.fragments.AbsMusicServiceFragment
 import player.phonograph.util.FavoriteUtil
 import player.phonograph.util.FavoriteUtil.toggleFavorite
@@ -69,11 +68,11 @@ abstract class AbsPlayerFragment :
 
     private val handlerCallbacks = Handler.Callback { msg ->
         if (msg.what == UPDATE_LYRICS) {
-            val lyrics = msg.data.get(LYRICS) as Lyrics
+            val lyrics = msg.data.get(LYRICS) as AbsLyrics
             viewModel.forceReplaceLyrics(lyrics)
-            if (lyrics.content is LrcLyrics) {
-                playerAlbumCoverFragment.setLyrics(lyrics.content)
-                MusicPlayerRemote.musicService?.replaceLyrics(lyrics.content)
+            if (lyrics is LrcLyrics) {
+                playerAlbumCoverFragment.setLyrics(lyrics)
+                MusicPlayerRemote.musicService?.replaceLyrics(lyrics)
             } else {
                 playerAlbumCoverFragment.clearLyrics()
                 MusicPlayerRemote.musicService?.replaceLyrics(null)
@@ -226,7 +225,7 @@ abstract class AbsPlayerFragment :
             }
             delay(100)
             // refresh anyway
-            viewModel.currentLyrics?.let { showLyrics(it.content) }
+            viewModel.currentLyrics?.let { showLyrics(it) }
         }
     }
 

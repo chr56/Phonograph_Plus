@@ -6,15 +6,16 @@ package player.phonograph.model.lyrics2
 
 import android.os.Parcel
 import android.os.Parcelable
+import player.phonograph.model.Song
 import player.phonograph.model.lyrics2.LyricsSource.Companion.EMBEDDED
 import player.phonograph.model.lyrics2.LyricsSource.Companion.EXTERNAL_DECORATED
 import player.phonograph.model.lyrics2.LyricsSource.Companion.EXTERNAL_PRECISE
 
-data class LyricsList(val list: ArrayList<Lyrics> = ArrayList()) : Parcelable {
+data class LyricsList(val list: ArrayList<AbsLyrics> = ArrayList(), val song: Song = Song.EMPTY_SONG) : Parcelable {
 
     fun isEmpty(): Boolean = list.isEmpty()
 
-    fun getAvailableLyrics(): Lyrics? {
+    fun getAvailableLyrics(): AbsLyrics? {
         if (list.isNotEmpty()) return list[0]
         return null
     }
@@ -22,7 +23,7 @@ data class LyricsList(val list: ArrayList<Lyrics> = ArrayList()) : Parcelable {
     fun getLrcLyrics(): LrcLyrics? {
         if (!list.isNullOrEmpty()) {
             for (l in list) {
-                if (l.content is LrcLyrics) return l.content
+                if (l is LrcLyrics) return l
             }
         }
         return null
@@ -32,17 +33,17 @@ data class LyricsList(val list: ArrayList<Lyrics> = ArrayList()) : Parcelable {
             EMBEDDED -> {
                 return list.firstOrNull {
                     it.source.type == EMBEDDED
-                }?.content
+                }
             }
             EXTERNAL_PRECISE -> {
                 return list.firstOrNull {
                     it.source.type == EXTERNAL_PRECISE
-                }?.content
+                }
             }
-            EXTERNAL_DECORATED -> { // todo
+            EXTERNAL_DECORATED -> {
                 return list.firstOrNull {
                     it.source.type == EXTERNAL_DECORATED
-                }?.content
+                }
             }
             else -> null
         }
@@ -65,9 +66,14 @@ data class LyricsList(val list: ArrayList<Lyrics> = ArrayList()) : Parcelable {
             }
         }
     }
-    constructor(parcel: Parcel) : this(parcel.createTypedArrayList(Lyrics.CREATOR) as ArrayList<Lyrics>)
+
+    constructor(parcel: Parcel) : this(
+        parcel.createTypedArrayList(AbsLyrics.CREATOR) as ArrayList<AbsLyrics>,
+        parcel.readParcelable(Song::class.java.classLoader)!!
+    )
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeTypedList(list)
+        parcel.writeParcelable(song, flags)
     }
     override fun describeContents(): Int = 0
 }

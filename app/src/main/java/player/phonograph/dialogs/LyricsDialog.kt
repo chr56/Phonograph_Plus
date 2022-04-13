@@ -35,7 +35,7 @@ class LyricsDialog : DialogFragment(), MusicProgressViewUpdateHelper.Callback {
 
     private lateinit var song: Song
     private lateinit var lyricsList: LyricsList
-    private lateinit var lyricsDisplay: Lyrics
+    private lateinit var lyricsDisplay: AbsLyrics
     private val availableLyricTypes: MutableSet<LyricsSource> = HashSet(1)
     private lateinit var lyricsAdapter: LyricsAdapter
     private lateinit var linearLayoutManager: LinearLayoutManager
@@ -61,9 +61,9 @@ class LyricsDialog : DialogFragment(), MusicProgressViewUpdateHelper.Callback {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         availableLyricTypes.addAll(lyricsList.getAvailableTypes().orEmpty())
 
-        binding.title.text = if (lyricsDisplay.content.getTitle() != DEFAULT_TITLE) lyricsDisplay.content.getTitle() else song.title
+        binding.title.text = if (lyricsDisplay.getTitle() != DEFAULT_TITLE) lyricsDisplay.getTitle() else song.title
         initChip()
-        initRecycleView(lyricsDisplay.content)
+        initRecycleView(lyricsDisplay)
 
         // corner
         requireDialog().window!!.setBackgroundDrawable(
@@ -139,7 +139,7 @@ class LyricsDialog : DialogFragment(), MusicProgressViewUpdateHelper.Callback {
     private fun switchLyrics(index: Int) {
         val lyrics = lyricsList.list[index]
         lyricsDisplay = lyrics
-        lyricsAdapter.update(lyrics.content.getLyricsTimeArray(), lyrics.content.getLyricsLineArray())
+        lyricsAdapter.update(lyrics.getLyricsTimeArray(), lyrics.getLyricsLineArray())
         val fragment = activity?.supportFragmentManager?.findFragmentByTag(AbsSlidingMusicPanelActivity.NOW_PLAYING_FRAGMENT)
         if (fragment != null && fragment is AbsPlayerFragment) {
             fragment.handler.sendMessage(
@@ -186,7 +186,7 @@ class LyricsDialog : DialogFragment(), MusicProgressViewUpdateHelper.Callback {
         binding.lyricsFollowing.apply {
             buttonTintList = backgroundCsl
             setOnCheckedChangeListener { button: CompoundButton, b: Boolean ->
-                if (lyricsDisplay.content is LrcLyrics) {
+                if (lyricsDisplay is LrcLyrics) {
                     if (_progressViewUpdateHelper == null) {
                         // init
                         _progressViewUpdateHelper = MusicProgressViewUpdateHelper(this@LyricsDialog, 500, 1000)
@@ -236,8 +236,8 @@ class LyricsDialog : DialogFragment(), MusicProgressViewUpdateHelper.Callback {
         }
     }
     private fun scrollingTo(timeStamp: Int) {
-        if (lyricsDisplay.content is LrcLyrics) {
-            val line = (lyricsDisplay.content as LrcLyrics).getPosition(timeStamp)
+        if (lyricsDisplay is LrcLyrics) {
+            val line = (lyricsDisplay as LrcLyrics).getPosition(timeStamp)
             linearLayoutManager.smoothScrollToPosition(binding.recyclerViewLyrics, null, line)
 //            linearLayoutManager.scrollToPositionWithOffset(line, scrollingOffset)
         }
@@ -248,7 +248,7 @@ class LyricsDialog : DialogFragment(), MusicProgressViewUpdateHelper.Callback {
         private const val LYRICS_PACK = "lyrics_pack"
         private const val CURRENT_LYRICS = "current_lyrics"
 
-        fun create(lyricsList: LyricsList, song: Song, currentLyrics: Lyrics): LyricsDialog =
+        fun create(lyricsList: LyricsList, song: Song, currentLyrics: AbsLyrics): LyricsDialog =
             LyricsDialog()
                 .apply {
                     arguments = Bundle().apply {
