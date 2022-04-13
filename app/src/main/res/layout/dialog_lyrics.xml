@@ -36,34 +36,7 @@
             app:singleLine="true"
             app:singleSelection="true">
 
-<!--            <com.google.android.material.chip.Chip-->
-<!--                android:id="@+id/chip_embedded_lyrics"-->
-<!--                style="@style/Widget.Phonograph.Chip.Choice"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:checked="false"-->
-<!--                android:text="@string/embedded_lyrics"-->
-<!--                android:visibility="gone"-->
-<!--                app:chipBackgroundColor="@color/defaultFooterColor" />-->
-
-<!--            <com.google.android.material.chip.Chip-->
-<!--                android:id="@+id/chip_external_lyrics"-->
-<!--                style="@style/Widget.Phonograph.Chip.Choice"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:checked="false"-->
-<!--                android:text="@string/external_lyrics"-->
-<!--                android:visibility="gone"-->
-<!--                app:chipBackgroundColor="@color/defaultFooterColor" />-->
-
-<!--            <com.google.android.material.chip.Chip-->
-<!--                android:id="@+id/chip_externalWithSuffix_lyrics"-->
-<!--                style="@style/Widget.Phonograph.Chip.Choice"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:checked="false"-->
-<!--                android:text="@string/external_lyrics"-->
-<!--                android:visibility="gone" />-->
+            <!-- add chip dynamically-->
 
         </com.google.android.material.chip.ChipGroup>
 
@@ -91,8 +64,8 @@
             android:id="@+id/lyrics_following"
             android:layout_width="wrap_content"
             android:layout_height="0dp"
-            android:text="@string/lyrics_following"
             android:maxWidth="128dp"
+            android:text="@string/lyrics_following"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
