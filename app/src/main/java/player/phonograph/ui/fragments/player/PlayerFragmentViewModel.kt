@@ -8,9 +8,9 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.*
 import player.phonograph.model.Song
-import player.phonograph.model.lyrics2.AbsLyrics
 import player.phonograph.model.lyrics2.LyricsLoader
 import player.phonograph.model.lyrics2.LyricsPack
+import player.phonograph.model.lyrics2.LyricsWithSource
 import java.io.File
 
 class PlayerFragmentViewModel : ViewModel() {
@@ -29,13 +29,10 @@ class PlayerFragmentViewModel : ViewModel() {
         }
     var lyricsPack: LyricsPack? = null
         private set
-    var currentLyrics: AbsLyrics? = null
+    var currentLyrics: LyricsWithSource? = null
         private set
-    var currentLyricsSource: Int = LyricsPack.UNKNOWN_SOURCE
-        private set
-    fun forceReplaceLyrics(lyrics: AbsLyrics, source: Int) {
+    fun forceReplaceLyrics(lyrics: LyricsWithSource) {
         currentLyrics = lyrics
-        currentLyricsSource = source
     }
 
     private var loadLyricsJob: Job? = null
@@ -48,10 +45,7 @@ class PlayerFragmentViewModel : ViewModel() {
         // load new lyrics
         loadLyricsJob = backgroundCoroutine.launch(exceptionHandler) {
             lyricsPack = LyricsLoader.loadLyrics(File(song.data), song.title)
-            lyricsPack!!.getAvailableLyrics().let {
-                currentLyrics = it.first
-                currentLyricsSource = it.second
-            }
+            currentLyrics = lyricsPack!!.getAvailableLyrics()
         }
     }
 }

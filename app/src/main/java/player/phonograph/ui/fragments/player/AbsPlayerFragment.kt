@@ -25,6 +25,8 @@ import player.phonograph.interfaces.PaletteColorHolder
 import player.phonograph.model.Song
 import player.phonograph.model.lyrics2.AbsLyrics
 import player.phonograph.model.lyrics2.LrcLyrics
+import player.phonograph.model.lyrics2.LyricsSource
+import player.phonograph.model.lyrics2.LyricsWithSource
 import player.phonograph.ui.fragments.AbsMusicServiceFragment
 import player.phonograph.util.FavoriteUtil
 import player.phonograph.util.FavoriteUtil.toggleFavorite
@@ -68,12 +70,11 @@ abstract class AbsPlayerFragment :
 
     private val handlerCallbacks = Handler.Callback { msg ->
         if (msg.what == UPDATE_LYRICS) {
-            val lyrics = msg.data.get(LYRICS) as AbsLyrics
-            val source = msg.data.getInt(LYRICS_SOURCE)
-            viewModel.forceReplaceLyrics(lyrics, source)
-            if (lyrics is LrcLyrics) {
-                playerAlbumCoverFragment.setLyrics(lyrics)
-                MusicPlayerRemote.musicService?.replaceLyrics(lyrics)
+            val lyrics = msg.data.get(LYRICS) as LyricsWithSource
+            viewModel.forceReplaceLyrics(lyrics)
+            if (lyrics.lyrics is LrcLyrics) {
+                playerAlbumCoverFragment.setLyrics(lyrics.lyrics)
+                MusicPlayerRemote.musicService?.replaceLyrics(lyrics.lyrics)
             } else {
                 playerAlbumCoverFragment.clearLyrics()
                 MusicPlayerRemote.musicService?.replaceLyrics(null)
@@ -134,7 +135,7 @@ abstract class AbsPlayerFragment :
             R.id.action_show_lyrics -> {
                 val lyricsPack = viewModel.lyricsPack
                 if (lyricsPack != null) {
-                    LyricsDialog.create(lyricsPack, MusicPlayerRemote.getCurrentSong(), viewModel.currentLyricsSource)
+                    LyricsDialog.create(lyricsPack, MusicPlayerRemote.getCurrentSong(), viewModel.currentLyrics?.source?.type ?: LyricsSource.UNKNOWN_SOURCE)
                         .show(requireActivity().supportFragmentManager, "LYRICS")
                 }
                 return true
@@ -226,7 +227,7 @@ abstract class AbsPlayerFragment :
             }
             delay(100)
             // refresh anyway
-            viewModel.currentLyrics?.let { showLyrics(it) }
+            viewModel.currentLyrics?.let { showLyrics(it.lyrics) }
         }
     }
 

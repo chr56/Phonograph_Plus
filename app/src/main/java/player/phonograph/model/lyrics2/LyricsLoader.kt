@@ -103,8 +103,21 @@ object LyricsLoader {
         jobExternal.join()
         jobEmbedded.join()
 
+        // todo
+        val embeddedPack =
+            if (embedded != null) LyricsWithSource(embedded!!, LyricsSource.Embedded()) else null
+        val externalPack: MutableList<LyricsWithSource> = ArrayList()
+        if (external != null)
+            externalPack.add(
+                LyricsWithSource(external!!, LyricsSource.ExternalPrecise())
+            )
+        if (externalWithSuffix != null)
+            externalPack.add(
+                LyricsWithSource(externalWithSuffix!!, LyricsSource.ExternalDecorated())
+            )
+
         // end of fetching
-        return LyricsPack(embedded, external, externalWithSuffix)
+        return LyricsPack(embeddedPack, if (externalPack.isEmpty()) null else externalPack)
     }
 
     fun parse(raw: String): AbsLyrics {

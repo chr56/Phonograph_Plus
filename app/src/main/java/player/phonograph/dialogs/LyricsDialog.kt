@@ -38,9 +38,9 @@ class LyricsDialog : DialogFragment(), MusicProgressViewUpdateHelper.Callback {
 
     private lateinit var song: Song
     private lateinit var lyricsPack: LyricsPack
-    private lateinit var lyricsDisplay: AbsLyrics
-    private var lyricsDisplayType: Int = LyricsPack.UNKNOWN_SOURCE
-    private val availableLyricTypes: MutableSet<Int> = HashSet(1)
+    private lateinit var lyricsDisplay: LyricsWithSource
+    private var lyricsDisplayType: LyricsSource = LyricsSource.Unknown()
+    private val availableLyricTypes: MutableSet<LyricsSource> = HashSet(1)
     private lateinit var lyricsAdapter: LyricsAdapter
     private lateinit var linearLayoutManager: LinearLayoutManager
 
@@ -50,7 +50,7 @@ class LyricsDialog : DialogFragment(), MusicProgressViewUpdateHelper.Callback {
         requireArguments().let {
             song = it.getParcelable(SONG)!!
             lyricsPack = it.getParcelable(LYRICS_PACK)!!
-            lyricsDisplayType = it.getInt(CURRENT_TYPE)
+            lyricsDisplayType = LyricsSource(it.getInt(CURRENT_TYPE))
         }
     }
 
@@ -62,9 +62,9 @@ class LyricsDialog : DialogFragment(), MusicProgressViewUpdateHelper.Callback {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         handleLyrics()
 
-        binding.title.text = if (lyricsDisplay.getTitle() != DEFAULT_TITLE) lyricsDisplay.getTitle() else song.title
+        binding.title.text = if (lyricsDisplay.lyrics.getTitle() != DEFAULT_TITLE) lyricsDisplay.lyrics.getTitle() else song.title
         setupChips()
-        initRecycleView(lyricsDisplay)
+        initRecycleView(lyricsDisplay.lyrics)
 
         // corner
         requireDialog().window!!.setBackgroundDrawable(
@@ -90,23 +90,20 @@ class LyricsDialog : DialogFragment(), MusicProgressViewUpdateHelper.Callback {
     }
 
     private fun handleLyrics() {
-        if (lyricsPack.external != null) {
-            availableLyricTypes.add(LyricsPack.EXTERNAL)
+        if (!lyricsPack.external.isNullOrEmpty()) {
+            availableLyricTypes.add(LyricsSource.ExternalPrecise())
         }
         if (lyricsPack.embedded != null) {
-            availableLyricTypes.add(LyricsPack.EMBEDDED)
-        }
-        if (lyricsPack.externalWithSuffix != null) {
-            availableLyricTypes.add(LyricsPack.EXTERNAL_WITH_SUFFIX)
+            availableLyricTypes.add(LyricsSource.Embedded())
         }
         if (lyricsPack.isEmpty()) {
-            availableLyricTypes.add(LyricsPack.UNKNOWN_SOURCE)
+            availableLyricTypes.add(LyricsSource.Unknown())
         }
 
-        if (lyricsDisplayType == LyricsPack.UNKNOWN_SOURCE) {
+        if (lyricsDisplayType == LyricsSource.Unknown()) {
             lyricsDisplayType = availableLyricTypes.first() // default
         }
-        lyricsDisplay = lyricsPack.getByType(lyricsDisplayType) ?: TextLyrics.from("Empty Lyrics!")
+        lyricsDisplay = LyricsWithSource(lyricsPack.getByType(lyricsDisplayType) ?: TextLyrics.from("Empty Lyrics!"), lyricsDisplayType)
     }
 
     private fun setupChips() {
@@ -121,21 +118,33 @@ class LyricsDialog : DialogFragment(), MusicProgressViewUpdateHelper.Callback {
             chip.chipBackgroundColor = backgroundCsl
             chip.chipStrokeColor = backgroundCsl
             chip.setOnClickListener {
-                val lyrics = when (chip.id) {
+                val lyrics: AbsLyrics? = when (chip.id) {
                     R.id.chip_embedded_lyrics -> {
-                        lyricsDisplayType = LyricsPack.EMBEDDED
-                        lyricsPack.embedded!!
+                        lyricsDisplayType = LyricsSource.Embedded()
+                        lyricsPack.embedded!!.lyrics
                     }
                     R.id.chip_external_lyrics -> {
-                        lyricsDisplayType = LyricsPack.EXTERNAL
-                        lyricsPack.external!!
+                        lyricsDisplayType = LyricsSource.ExternalPrecise()
+                        lyricsPack.external!!.let {
+                            if (it.isNotEmpty()) {
+                                var ret: AbsLyrics? = null
+                                for (l in it) { if (l.source.type == LyricsSource.EXTERNAL_PRECISE) ret = l.lyrics }
+                                ret
+                            } else null
+                        }
                     }
                     R.id.chip_externalWithSuffix_lyrics -> {
-                        lyricsDisplayType = LyricsPack.EXTERNAL_WITH_SUFFIX
-                        lyricsPack.externalWithSuffix!!
+                        lyricsDisplayType = LyricsSource.ExternalDecorated()
+                        lyricsPack.external!!.let {
+                            if (it.isNotEmpty()) {
+                                var ret: AbsLyrics? = null
+                                for (l in it) { if (l.source.type == LyricsSource.EXTERNAL_DECORATED) ret = l.lyrics }
+                                ret
+                            } else null
+                        }
                     }
                     else -> {
-                        lyricsDisplayType = LyricsPack.UNKNOWN_SOURCE
+                        lyricsDisplayType = LyricsSource.Unknown()
                         null
                     }
                 }
@@ -147,8 +156,7 @@ class LyricsDialog : DialogFragment(), MusicProgressViewUpdateHelper.Callback {
                             Message.obtain(fragment.handler, AbsPlayerFragment.UPDATE_LYRICS).apply {
                                 what = AbsPlayerFragment.UPDATE_LYRICS
                                 data = Bundle().apply {
-                                    putParcelable(AbsPlayerFragment.LYRICS, lyrics)
-                                    putInt(AbsPlayerFragment.LYRICS_SOURCE, lyricsDisplayType)
+                                    putParcelable(AbsPlayerFragment.LYRICS, LyricsWithSource(lyrics, lyricsDisplayType))
                                 }
                             }
                         )
@@ -187,7 +195,7 @@ class LyricsDialog : DialogFragment(), MusicProgressViewUpdateHelper.Callback {
         binding.lyricsFollowing.apply {
             buttonTintList = backgroundCsl
             setOnCheckedChangeListener { button: CompoundButton, b: Boolean ->
-                if (lyricsDisplay is LrcLyrics) {
+                if (lyricsDisplay.lyrics is LrcLyrics) {
                     if (_progressViewUpdateHelper == null) {
                         // init
                         _progressViewUpdateHelper = MusicProgressViewUpdateHelper(this@LyricsDialog, 500, 1000)
@@ -200,28 +208,28 @@ class LyricsDialog : DialogFragment(), MusicProgressViewUpdateHelper.Callback {
         }
     }
 
-    private fun changeChipVisibility(type: Int, visibility: Int) {
+    private fun changeChipVisibility(type: LyricsSource, visibility: Int) {
         when (type) {
-            LyricsPack.EMBEDDED -> {
+            LyricsSource.Embedded() -> {
                 binding.chipEmbeddedLyrics.visibility = visibility
             }
-            LyricsPack.EXTERNAL -> {
+            LyricsSource.ExternalPrecise() -> {
                 binding.chipExternalLyrics.visibility = visibility
             }
-            LyricsPack.EXTERNAL_WITH_SUFFIX -> {
+            LyricsSource.ExternalDecorated() -> {
                 binding.chipExternalWithSuffixLyrics.visibility = visibility
             }
         }
     }
-    private fun getBindingID(lyricsDisplayType: Int): Int =
-        when (lyricsDisplayType) {
-            LyricsPack.EMBEDDED -> {
+    private fun getBindingID(lyricsDisplayType: LyricsSource): Int =
+        when (lyricsDisplayType.type) {
+            LyricsSource.EMBEDDED -> {
                 binding.chipEmbeddedLyrics.id
             }
-            LyricsPack.EXTERNAL -> {
+            LyricsSource.EXTERNAL_PRECISE -> {
                 binding.chipExternalLyrics.id
             }
-            LyricsPack.EXTERNAL_WITH_SUFFIX -> {
+            LyricsSource.EXTERNAL_DECORATED -> {
                 binding.chipExternalWithSuffixLyrics.id
             }
             else -> {
@@ -232,15 +240,15 @@ class LyricsDialog : DialogFragment(), MusicProgressViewUpdateHelper.Callback {
             }
         }
 
-    private fun setCheckStatus(type: Int, state: Boolean) {
+    private fun setCheckStatus(type: LyricsSource, state: Boolean) {
         when (type) {
-            LyricsPack.EMBEDDED -> {
+            LyricsSource.Embedded() -> {
                 binding.chipEmbeddedLyrics.isChecked = state
             }
-            LyricsPack.EXTERNAL -> {
+            LyricsSource.Embedded() -> {
                 binding.chipExternalLyrics.isChecked = state
             }
-            LyricsPack.EXTERNAL_WITH_SUFFIX -> {
+            LyricsSource.ExternalDecorated() -> {
                 binding.chipExternalWithSuffixLyrics.isChecked = state
             }
         }
@@ -283,8 +291,8 @@ class LyricsDialog : DialogFragment(), MusicProgressViewUpdateHelper.Callback {
         }
     }
     private fun scrollingTo(timeStamp: Int) {
-        if (lyricsDisplay is LrcLyrics) {
-            val line = (lyricsDisplay as LrcLyrics).getPosition(timeStamp)
+        if (lyricsDisplay.lyrics is LrcLyrics) {
+            val line = (lyricsDisplay.lyrics as LrcLyrics).getPosition(timeStamp)
             linearLayoutManager.smoothScrollToPosition(binding.recyclerViewLyrics, null, line)
 //            linearLayoutManager.scrollToPositionWithOffset(line, scrollingOffset)
         }
@@ -295,7 +303,7 @@ class LyricsDialog : DialogFragment(), MusicProgressViewUpdateHelper.Callback {
         private const val LYRICS_PACK = "lyrics_pack"
         private const val CURRENT_TYPE = "current_type"
 
-        fun create(lyricsPack: LyricsPack, song: Song, currentType: Int = LyricsPack.UNKNOWN_SOURCE): LyricsDialog =
+        fun create(lyricsPack: LyricsPack, song: Song, currentType: Int = LyricsSource.UNKNOWN_SOURCE): LyricsDialog =
             LyricsDialog()
                 .apply {
                     arguments = Bundle().apply {

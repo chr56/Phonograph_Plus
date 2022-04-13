@@ -6,74 +6,65 @@ package player.phonograph.model.lyrics2
 
 import android.os.Parcel
 import android.os.Parcelable
+import player.phonograph.model.lyrics2.LyricsSource.Companion.EMBEDDED
+import player.phonograph.model.lyrics2.LyricsSource.Companion.EXTERNAL_DECORATED
+import player.phonograph.model.lyrics2.LyricsSource.Companion.EXTERNAL_PRECISE
 
-data class LyricsPack(val embedded: AbsLyrics?, val external: AbsLyrics?, val externalWithSuffix: AbsLyrics?) : Parcelable {
+data class LyricsPack(val embedded: LyricsWithSource? = null, val external: List<LyricsWithSource>? = null) : Parcelable {
 
-    fun isEmpty(): Boolean = embedded == null && external == null && externalWithSuffix == null
+    fun isEmpty(): Boolean =
+        embedded == null && external.isNullOrEmpty()
 
-    /**
-     * @return Pair of (lyrics,lyrics_source)
-     */
-    fun getAvailableLyrics(): Pair<AbsLyrics?, Int> {
+    fun getAvailableLyrics(): LyricsWithSource? {
         embedded?.let {
-            return Pair(it, EMBEDDED)
+            return embedded
         }
         external?.let {
-            return Pair(it, EXTERNAL)
+            if (external.isNotEmpty()) return external[0]
         }
-        externalWithSuffix?.let {
-            return Pair(it, EXTERNAL_WITH_SUFFIX)
-        }
-        return Pair(null, UNKNOWN_SOURCE)
+        return null
     }
 
     fun getLrcLyrics(): LrcLyrics? {
         embedded?.let {
-            if (it is LrcLyrics) return it
+            if (it.lyrics is LrcLyrics) return it.lyrics
         }
-        external?.let {
-            if (it is LrcLyrics) return it
-        }
-        externalWithSuffix?.let {
-            if (it is LrcLyrics) return it
+        if (!external.isNullOrEmpty()) {
+            for (l in external) {
+                if (l.lyrics is LrcLyrics) return l.lyrics
+            }
         }
         return null
     }
-    fun getByType(type: Int): AbsLyrics? {
-        return when (type) {
-            EMBEDDED -> embedded
-            EXTERNAL -> external
-            EXTERNAL_WITH_SUFFIX -> externalWithSuffix
+    fun getByType(type: LyricsSource): AbsLyrics? {
+        return when (type.type) {
+            EMBEDDED -> embedded?.lyrics
+            EXTERNAL_PRECISE, EXTERNAL_DECORATED -> { // todo
+                if (external.isNullOrEmpty()) null else external[0].lyrics
+            }
             else -> null
         }
     }
 
     constructor(parcel: Parcel) : this(
-        parcel.readParcelable(AbsLyrics::class.java.classLoader),
-        parcel.readParcelable(AbsLyrics::class.java.classLoader),
-        parcel.readParcelable(AbsLyrics::class.java.classLoader)
-    ) override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.readParcelable(LyricsWithSource::class.java.classLoader),
+        parcel.createTypedArrayList(LyricsWithSource.CREATOR)
+    )
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeParcelable(embedded, flags)
-        parcel.writeParcelable(external, flags)
-        parcel.writeParcelable(externalWithSuffix, flags)
+        parcel.writeTypedList(external)
     }
-
     override fun describeContents(): Int = 0
-
     companion object {
         @JvmField
         val CREATOR = object : Parcelable.Creator<LyricsPack> {
             override fun createFromParcel(parcel: Parcel): LyricsPack {
                 return LyricsPack(parcel)
             }
+
             override fun newArray(size: Int): Array<LyricsPack?> {
                 return arrayOfNulls(size)
             }
         }
-        const val EMBEDDED = 0
-        const val EXTERNAL = 1
-        const val EXTERNAL_WITH_SUFFIX = 2
-
-        const val UNKNOWN_SOURCE = -1
     }
 }
