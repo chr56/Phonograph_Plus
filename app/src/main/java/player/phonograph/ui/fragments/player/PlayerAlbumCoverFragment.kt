@@ -160,7 +160,7 @@ class PlayerAlbumCoverFragment :
         binding.playerLyrics
             .animate().alpha(0f).setDuration(VISIBILITY_ANIM_DURATION)
             .withEndAction {
-                if (isBindingAccessible()) {
+                if (_viewBinding != null) {
                     binding.playerLyrics.visibility = View.GONE
                     binding.playerLyricsLine1.text = null
                     binding.playerLyricsLine2.text = null
