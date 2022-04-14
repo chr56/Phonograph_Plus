@@ -53,7 +53,7 @@ class LyricsUpdateThread(song: Song? = null) : Thread() {
 
             sleep(sleepTime)
             if (!MusicPlayerRemote.isPlaying() || !Setting.instance.broadcastSynchronizedLyrics || lyricsFetcher.lyrics == null) { // sending only when playing
-                sleepTime = 3000 // todo
+                sleepTime = 1000 // todo
                 App.instance.lyricsService.stopLyric()
                 continue
             } else {
@@ -62,9 +62,11 @@ class LyricsUpdateThread(song: Song? = null) : Thread() {
 
             val newLine = lyricsFetcher.getLine(MusicPlayerRemote.getSongProgressMillis())
 
-            if (newLine != null && newLine != cache) {
-                cache = newLine // update cache
-                App.instance.lyricsService.updateLyric(newLine)
+            if (newLine != null) {
+                if (newLine != cache) {
+                    cache = newLine // update cache
+                    App.instance.lyricsService.updateLyric(newLine)
+                }
             } else {
                 cache = ""
                 App.instance.lyricsService.stopLyric()
