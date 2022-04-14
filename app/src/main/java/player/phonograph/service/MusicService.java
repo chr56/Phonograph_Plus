@@ -55,6 +55,7 @@ import player.phonograph.glide.BlurTransformation;
 import player.phonograph.glide.SongGlideRequest;
 import player.phonograph.helper.ShuffleHelper;
 import player.phonograph.helper.StopWatch;
+import player.phonograph.misc.LyricsUpdateThread;
 import player.phonograph.model.Song;
 import player.phonograph.model.lyrics2.LrcLyrics;
 import player.phonograph.model.playlist.Playlist;
@@ -176,7 +177,7 @@ public class MusicService extends Service implements SharedPreferences.OnSharedP
 
     private Handler uiThreadHandler;
 
-    private LyricsRefresher refresher;
+//    private LyricsRefresher refresher;
 
 
     private static String getTrackUri(@NonNull Song song) {
@@ -235,7 +236,8 @@ public class MusicService extends Service implements SharedPreferences.OnSharedP
 
         sendBroadcast(new Intent("player.phonograph.PHONOGRAPH_MUSIC_SERVICE_CREATED"));
 
-        refresher = new LyricsRefresher(musicPlayerHandlerThread.getLooper(), this, Song.EMPTY_SONG);
+//        refresher = new LyricsRefresher(musicPlayerHandlerThread.getLooper(), this, Song.EMPTY_SONG);
+        App.getInstance().getLyricsUpdateThread().start();
     }
 
     private AudioManager getAudioManager() {
@@ -484,8 +486,8 @@ public class MusicService extends Service implements SharedPreferences.OnSharedP
         musicPlayerHandlerThread.quitSafely();
         queueSaveHandler.removeCallbacksAndMessages(null);
         queueSaveHandlerThread.quitSafely();
-        refresher.destroy();
-        refresher = null;
+        App.getInstance().getLyricsUpdateThread().setCurrentSong(null);
+        App.getInstance().getLyricsUpdateThread().interrupt();
         playback.release();
         playback = null;
         mediaSession.release();
@@ -836,8 +838,7 @@ public class MusicService extends Service implements SharedPreferences.OnSharedP
         setPosition(-1);
         notifyChange(QUEUE_CHANGED);
 
-        refresher.replaceSong(Song.EMPTY_SONG);
-        refresher.stop();
+        App.getInstance().getLyricsUpdateThread().setCurrentSong(null);
     }
 
     public void playSongAt(final int position) {
@@ -847,8 +848,7 @@ public class MusicService extends Service implements SharedPreferences.OnSharedP
 
         broadcastStopLyric(); // clear lyrics on switching
 
-        refresher.replaceSong(getSongAt(position));
-        refresher.start();
+        App.getInstance().getLyricsUpdateThread().setCurrentSong(getSongAt(position));
     }
 
     public void setPosition(final int position) {
@@ -856,7 +856,7 @@ public class MusicService extends Service implements SharedPreferences.OnSharedP
         playerHandler.removeMessages(SET_POSITION);
         playerHandler.obtainMessage(SET_POSITION, position, 0).sendToTarget();
 
-        refresher.replaceSong(getSongAt(position));
+        App.getInstance().getLyricsUpdateThread().setCurrentSong(getSongAt(position));
     }
 
     private void playSongAtImpl(int position) {
@@ -880,7 +880,6 @@ public class MusicService extends Service implements SharedPreferences.OnSharedP
             playback.pause();
             notifyChange(PLAY_STATE_CHANGED);
             broadcastStopLyric(); // clear lyrics on pause/stop
-            refresher.stop();
         }
     }
 
@@ -909,8 +908,7 @@ public class MusicService extends Service implements SharedPreferences.OnSharedP
 
                         broadcastStopLyric(); // clear lyrics on staring
 
-                        refresher.replaceSong(getSongAt(getPosition()));
-                        refresher.start();
+                        App.getInstance().getLyricsUpdateThread().setCurrentSong(getSongAt(getPosition()));
                     }
                 }
             } else {
@@ -1457,11 +1455,11 @@ public class MusicService extends Service implements SharedPreferences.OnSharedP
     }
 
     public void replaceLyrics(LrcLyrics lyrics) {
+        LyricsUpdateThread t = App.getInstance().getLyricsUpdateThread();
         if (lyrics != null) {
-            refresher.replaceLyrics(lyrics);
-            refresher.start();
+            t.forceReplaceLyrics(lyrics);
         } else {
-            refresher.stop();
+            t.setCurrentSong(null);
         }
     }
 }

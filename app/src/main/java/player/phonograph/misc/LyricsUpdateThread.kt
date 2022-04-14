@@ -52,9 +52,10 @@ class LyricsUpdateThread(song: Song? = null) : Thread() {
         while (!quit) {
 
             sleep(sleepTime)
-            if (!MusicPlayerRemote.isPlaying() || !Setting.instance.broadcastSynchronizedLyrics) {
+            if (!MusicPlayerRemote.isPlaying() || !Setting.instance.broadcastSynchronizedLyrics || lyricsFetcher.lyrics == null) { // sending only when playing
                 sleepTime = 3000 // todo
-                continue // sending only when playing
+                App.instance.lyricsService.stopLyric()
+                continue
             } else {
                 sleepTime = 50
             }
@@ -91,6 +92,11 @@ class LyricsUpdateThread(song: Song? = null) : Thread() {
                 }
             }
         }
+    }
+
+    @Synchronized
+    fun forceReplaceLyrics(lyrics: LrcLyrics) {
+        lyricsFetcher = LyricsFetcher(lyrics)
     }
 
     private val exceptionHandler by lazy {
