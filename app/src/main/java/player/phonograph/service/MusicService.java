@@ -235,7 +235,7 @@ public class MusicService extends Service implements SharedPreferences.OnSharedP
 
         sendBroadcast(new Intent("player.phonograph.PHONOGRAPH_MUSIC_SERVICE_CREATED"));
 
-        refresher = new LyricsRefresher(Looper.myLooper(), this, Song.EMPTY_SONG);
+        refresher = new LyricsRefresher(musicPlayerHandlerThread.getLooper(), this, Song.EMPTY_SONG);
     }
 
     private AudioManager getAudioManager() {
@@ -383,7 +383,6 @@ public class MusicService extends Service implements SharedPreferences.OnSharedP
         Setting.Companion.getInstance().unregisterOnSharedPreferenceChangedListener(this);
         wakeLock.release();
 
-        refresher = null;
         sendBroadcast(new Intent("player.phonograph.PHONOGRAPH_MUSIC_SERVICE_DESTROYED"));
     }
 
@@ -482,17 +481,11 @@ public class MusicService extends Service implements SharedPreferences.OnSharedP
 
     private void releaseResources() {
         playerHandler.removeCallbacksAndMessages(null);
-        if (Build.VERSION.SDK_INT >= 18) {
-            musicPlayerHandlerThread.quitSafely();
-        } else {
-            musicPlayerHandlerThread.quit();
-        }
+        musicPlayerHandlerThread.quitSafely();
         queueSaveHandler.removeCallbacksAndMessages(null);
-        if (Build.VERSION.SDK_INT >= 18) {
-            queueSaveHandlerThread.quitSafely();
-        } else {
-            queueSaveHandlerThread.quit();
-        }
+        queueSaveHandlerThread.quitSafely();
+        refresher.destroy();
+        refresher = null;
         playback.release();
         playback = null;
         mediaSession.release();
@@ -501,8 +494,10 @@ public class MusicService extends Service implements SharedPreferences.OnSharedP
     public boolean isPlaying() {
         return playback != null && playback.isPlaying();
     }
+
     private boolean isQuit = false;
-    public boolean isIdle(){
+
+    public boolean isIdle() {
         return isQuit;
     }
 

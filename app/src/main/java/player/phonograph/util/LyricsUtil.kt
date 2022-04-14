@@ -68,6 +68,11 @@ class LyricsRefresher(looper: Looper, private var context: Context, private var 
         App.instance.lyricsService.stopLyric()
     }
 
+    fun destroy() {
+        stop()
+        removeCallbacksAndMessages(null)
+    }
+
     fun replaceFetcher(fetcher: LyricsFetcher) { this.fetcher = fetcher }
     fun replaceLyrics(lyrics: LrcLyrics) {
         fetcher.lyrics = lyrics
