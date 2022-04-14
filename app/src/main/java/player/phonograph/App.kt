@@ -7,16 +7,19 @@ import android.os.Build
 import android.os.Process
 import android.util.Log
 import androidx.appcompat.content.res.AppCompatResources
-import util.mdcolor.pref.ThemeColor
 import player.phonograph.appshortcuts.DynamicShortcutManager
+import player.phonograph.misc.LyricsUpdateThread
 import player.phonograph.ui.activities.CrashActivity
+import util.mdcolor.pref.ThemeColor
 import kotlin.system.exitProcess
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
  */
 class App : Application() {
+
     lateinit var lyricsService: StatusBarLyric.API.StatusBarLyric
+    val lyricsUpdateThread: LyricsUpdateThread by lazy { LyricsUpdateThread() }
 
     override fun onCreate() {
         super.onCreate()
