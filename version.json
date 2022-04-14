@@ -1,21 +1,21 @@
 {
-    "version": "0.2.0-RC2",
-    "versionCode": 202,
-    "logSummary": "\n<b>请更新至新版本,该日志即将不再提供给此版本\nUpdate Please! This log would no longer provided to this version.</b>\n\n<b>0.2.0-RC1 2022.4.7\n</b>\n1. 开发 重构大量歌词相关代码\n2. 开发 清理主播放器UI代码, 改进性能\n3. 变更 重写歌词对话框\n4. 变更 增大歌词对话框大小\n5. 变更 更新繁中翻译(OpenCC)\n6. 新增 歌词对话框支持选择歌词源(内嵌或外部)\n7. 新增 歌词对话框支持歌词随歌曲播放滚动(实验性)\n8. 修复 通知栏通知偶现的刷新不及时或信息错误(存疑)\n9. 新增 错误报告通知,仅记录并通知非紧要的内部错误以便调试\n10. 开发 尝试记录卡片式主播放器偶现的卡片错位现象\n11. 开发 关闭Glide部分无关紧要的日志输出\n12. 开发 更新Gradle至7.4,更新AGP至7.1.2\n13. 开发 更新kotlin至1.6.10并在build.gradle中使用kotlin DSL\n14. 开发 清理代码\n\n<b>0.2.0-RC2 2022.4.8</b>\n修复 因混淆配置错误而导致的播放某些类型文件时崩溃\n\n<b>0.2.0-RC1 2022.4.7\n</b>\n1. Development: refactor most lyrics related code\n2. Development: Clean up the main player UI code, and improve its performance\n3. Change: rewrite lyrics dialog UI\n4. Change: increase size of the lyrics dialog\n5. Change: update Chinese Traditional translation(by me via OpenCC)\n6. New: manually select lyrics source (embedded or external) in lyrics dialog\n7. New: automatically lyrics scrolling along with song playback (experimental support)\n8. Fix: occasionally now-playing notification hasn't been refreshed in time or display incorrect song information in the notification bar (suspecting)\n9. New: error report notifications, only record and notify non-critical internal errors for better debugging\n10. Development: try to record occasionally error layout of playing queue card in the card main player\n11. Development: partially turns off annoying Glide irrelevant log output\n12. Development: upgrade gradle to 7.4, upgrade AGP to 7.1.2\n13. Development: upgrade kotlin 1.6.10, and use kotlin DSL in build.gradle\n14. Development: cleanup code\n\n<b>0.2.0-RC2 2022.4.8</b>\nFix: Crash when playing some types of media files due to misconfiguration of Proguard",
+    "version": "0.2.2",
+    "versionCode": 204,
+    "logSummary": "\n<b>请更新至新版本,该日志即将不再提供给此版本\nUpdate Please! This log would no longer provided to this version.</b>\n\n<b>0.2.1 2022.4.13</b>\n1. 修复 加载含有特殊字符的歌曲歌词时崩溃\n2. 变更 优化歌词加载\n3. 变更 支持显示所有匹配到的歌词\n\n<b>0.2.2 2022.4.14</b>\n1. 修复 横屏时崩溃\n2. 变更 关闭一个无意义的错误通知\n\n<b>0.2.1 2022.4.13\n</b>\n1. Fix: crash when loading some song lyrics with special characters\n2. Change: optimize lyrics loading\n3. Change: display all matching lyrics\n<b>0.2.2 2022.4.14</b>\n1. Fix: crash in landscape or when switching orientation\n2. Change: turn off a meaningless error report notification\n",
     "downloadSources": [
-        "Release Candidate Github(v0.2.0-RC2)",
-        "Release Candidate Github(v0.2.0-RC1)",
+        "Stable Github(v0.2.2)",
+        "Stable Github(v0.2.1)",
         "Stable Github(v0.1.2)"
     ],
     "downloadUris": [
-        "https://github.com/chr56/Phonograph_Plus/releases/tag/v0.2.0-RC2",
-        "https://github.com/chr56/Phonograph_Plus/releases/tag/v0.2.0-RC1",
+        "https://github.com/chr56/Phonograph_Plus/releases/tag/v0.2.2",
+        "https://github.com/chr56/Phonograph_Plus/releases/tag/v0.2.1",
         "https://github.com/chr56/Phonograph_Plus/releases/tag/v0.1.2"
     ],
     "zh-cn": {
-        "logSummary": "\n<b>0.2.0-RC1 2022.4.7\n</b>\n1. 开发 重构大量歌词相关代码\n2. 开发 清理主播放器UI代码, 改进性能\n3. 变更 重写歌词对话框\n4. 变更 增大歌词对话框大小\n5. 变更 更新繁中翻译(OpenCC)\n6. 新增 歌词对话框支持选择歌词源(内嵌或外部)\n7. 新增 歌词对话框支持歌词随歌曲播放滚动(实验性)\n8. 修复 通知栏通知偶现的刷新不及时或信息错误(存疑)\n9. 新增 错误报告通知,仅记录并通知非紧要的内部错误以便调试\n10. 开发 尝试记录卡片式主播放器偶现的卡片错位现象\n11. 开发 关闭Glide部分无关紧要的日志输出\n12. 开发 更新Gradle至7.4,更新AGP至7.1.2\n13. 开发 更新kotlin至1.6.10并在build.gradle中使用kotlin DSL\n14. 开发 清理代码\n\n<b>0.2.0-RC2 2022.4.8</b>\n修复 因混淆配置错误而导致的播放某些类型文件时崩溃"
+        "logSummary": "\n\n<b>0.2.1 2022.4.13</b>\n1. 修复 加载含有特殊字符的歌曲歌词时崩溃\n2. 变更 优化歌词加载\n3. 变更 支持显示所有匹配到的歌词\n\n<b>0.2.2 2022.4.14</b>\n1. 修复 横屏时崩溃\n2. 变更 关闭一个无意义的错误通知\n"
     },
     "en": {
-        "logSummary": "\n<b>0.2.0-RC1 2022.4.7\n</b>\n1. Development: refactor most lyrics related code\n2. Development: Clean up the main player UI code, and improve its performance\n3. Change: rewrite lyrics dialog UI\n4. Change: increase size of the lyrics dialog\n5. Change: update Chinese Traditional translation(by me via OpenCC)\n6. New: manually select lyrics source (embedded or external) in lyrics dialog\n7. New: automatically lyrics scrolling along with song playback (experimental support)\n8. Fix: occasionally now-playing notification hasn't been refreshed in time or display incorrect song information in the notification bar (suspecting)\n9. New: error report notifications, only record and notify non-critical internal errors for better debugging\n10. Development: try to record occasionally error layout of playing queue card in the card main player\n11. Development: partially turns off annoying Glide irrelevant log output\n12. Development: upgrade gradle to 7.4, upgrade AGP to 7.1.2\n13. Development: upgrade kotlin 1.6.10, and use kotlin DSL in build.gradle\n14. Development: cleanup code\n\n<b>0.2.0-RC2 2022.4.8</b>\nFix: Crash when playing some types of media files due to misconfiguration of Proguard"
+        "logSummary": "\n<b>0.2.1 2022.4.13\n</b>\n1. Fix: crash when loading some song lyrics with special characters\n2. Change: optimize lyrics loading\n3. Change: display all matching lyrics\n<b>0.2.2 2022.4.14</b>\n1. Fix: crash in landscape or when switching orientation\n2. Change: turn off a meaningless error report notification\n"
     }
 }
