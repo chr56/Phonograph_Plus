@@ -54,7 +54,7 @@
 
             <fragment
                 android:id="@+id/playback_controls_fragment"
-                class="player.phonograph.ui.fragments.player.flat.FlatPlayerPlaybackControlsFragment"
+                class="player.phonograph.ui.fragments.player.flat.FlatPlayerControllerFragment"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 

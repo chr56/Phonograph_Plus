@@ -63,7 +63,7 @@
 
                     <fragment
                         android:id="@+id/playback_controls_fragment"
-                        class="player.phonograph.ui.fragments.player.card.CardPlayerPlaybackControlsFragment"
+                        class="player.phonograph.ui.fragments.player.card.CardPlayerControllerFragment"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content" />
 
