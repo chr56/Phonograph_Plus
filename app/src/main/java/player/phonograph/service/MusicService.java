@@ -177,7 +177,7 @@ public class MusicService extends Service implements SharedPreferences.OnSharedP
 
     private Handler uiThreadHandler;
 
-//    private LyricsRefresher refresher;
+    private LyricsUpdateThread lyricsUpdateThread;
 
 
     private static String getTrackUri(@NonNull Song song) {
@@ -236,8 +236,8 @@ public class MusicService extends Service implements SharedPreferences.OnSharedP
 
         sendBroadcast(new Intent("player.phonograph.PHONOGRAPH_MUSIC_SERVICE_CREATED"));
 
-//        refresher = new LyricsRefresher(musicPlayerHandlerThread.getLooper(), this, Song.EMPTY_SONG);
-        App.getInstance().getLyricsUpdateThread().start();
+        lyricsUpdateThread = new LyricsUpdateThread(getCurrentSong());
+        lyricsUpdateThread.start();
     }
 
     private AudioManager getAudioManager() {
@@ -486,8 +486,9 @@ public class MusicService extends Service implements SharedPreferences.OnSharedP
         musicPlayerHandlerThread.quitSafely();
         queueSaveHandler.removeCallbacksAndMessages(null);
         queueSaveHandlerThread.quitSafely();
-        App.getInstance().getLyricsUpdateThread().setCurrentSong(null);
-        App.getInstance().getLyricsUpdateThread().interrupt();
+        lyricsUpdateThread.setCurrentSong(null);
+        lyricsUpdateThread.interrupt();
+        lyricsUpdateThread = null;
         playback.release();
         playback = null;
         mediaSession.release();
@@ -838,7 +839,7 @@ public class MusicService extends Service implements SharedPreferences.OnSharedP
         setPosition(-1);
         notifyChange(QUEUE_CHANGED);
 
-        App.getInstance().getLyricsUpdateThread().setCurrentSong(null);
+        lyricsUpdateThread.setCurrentSong(null);
     }
 
     public void playSongAt(final int position) {
@@ -848,7 +849,7 @@ public class MusicService extends Service implements SharedPreferences.OnSharedP
 
         broadcastStopLyric(); // clear lyrics on switching
 
-        App.getInstance().getLyricsUpdateThread().setCurrentSong(getSongAt(position));
+        lyricsUpdateThread.setCurrentSong(getSongAt(position));
     }
 
     public void setPosition(final int position) {
@@ -856,7 +857,7 @@ public class MusicService extends Service implements SharedPreferences.OnSharedP
         playerHandler.removeMessages(SET_POSITION);
         playerHandler.obtainMessage(SET_POSITION, position, 0).sendToTarget();
 
-        App.getInstance().getLyricsUpdateThread().setCurrentSong(getSongAt(position));
+        lyricsUpdateThread.setCurrentSong(getSongAt(position));
     }
 
     private void playSongAtImpl(int position) {
@@ -908,7 +909,7 @@ public class MusicService extends Service implements SharedPreferences.OnSharedP
 
                         broadcastStopLyric(); // clear lyrics on staring
 
-                        App.getInstance().getLyricsUpdateThread().setCurrentSong(getSongAt(getPosition()));
+                        lyricsUpdateThread.setCurrentSong(getSongAt(getPosition()));
                     }
                 }
             } else {
@@ -1455,11 +1456,10 @@ public class MusicService extends Service implements SharedPreferences.OnSharedP
     }
 
     public void replaceLyrics(LrcLyrics lyrics) {
-        LyricsUpdateThread t = App.getInstance().getLyricsUpdateThread();
         if (lyrics != null) {
-            t.forceReplaceLyrics(lyrics);
+            lyricsUpdateThread.forceReplaceLyrics(lyrics);
         } else {
-            t.setCurrentSong(null);
+            lyricsUpdateThread.setCurrentSong(null);
         }
     }
 }
