@@ -53,13 +53,13 @@ class HomeTabConfigAdapter(private val config: PageConfig) : RecyclerView.Adapte
             )
             restAvailableTabs.removeFirst()
         }
-        holder.title.text = PAGERS.getDisplayName(tabs.get(position)?.name, App.instance)
+        holder.title.text = PAGERS.getDisplayName(tabs.get(position).name, App.instance)
 
-        setupBehavior(holder, position)
+        setupBehavior(holder)
     }
 
     @SuppressLint("ClickableViewAccessibility")
-    private fun setupBehavior(holder: ViewHolder, position: Int) {
+    private fun setupBehavior(holder: ViewHolder) {
         holder.itemView.setOnClickListener { view ->
             val checkBox = view.findViewById<CheckBox>(R.id.checkbox)
             when {
@@ -68,16 +68,16 @@ class HomeTabConfigAdapter(private val config: PageConfig) : RecyclerView.Adapte
                         Toast.makeText(holder.itemView.context, R.string.you_have_to_select_at_least_one_category, Toast.LENGTH_SHORT).show()
                     } else {
                         checkBox.isChecked = false
-                        tabs.toggle(position)
+                        tabs.toggle(holder.bindingAdapterPosition)
                     }
                 }
                 !checkBox.isChecked -> {
                     checkBox.isChecked = true
-                    tabs.toggle(position)
+                    tabs.toggle(holder.bindingAdapterPosition)
                 }
             }
         }
-        holder.dragView.setOnTouchListener { view, event ->
+        holder.dragView.setOnTouchListener { _, event ->
             if (event.actionMasked == MotionEvent.ACTION_DOWN) {
                 touchHelper.startDrag(holder)
             }
@@ -131,7 +131,7 @@ class HomeTabConfigAdapter(private val config: PageConfig) : RecyclerView.Adapte
                     var index = 0
                     tabItems.forEach {
                         if (it.visibility) {
-                            hashMap.put(index, it.name)
+                            hashMap[index] = it.name
                             index++
                         }
                     }
@@ -141,7 +141,8 @@ class HomeTabConfigAdapter(private val config: PageConfig) : RecyclerView.Adapte
         fun print(): String {
             return tabItems.map { " [name=${it.name},visibility=${it.visibility}]" }
                 .fold("TabItems:") {
-                        acc, s -> "$acc$s"
+                        acc, s ->
+                    "$acc$s"
                 }
         }
     }
@@ -149,6 +150,7 @@ class HomeTabConfigAdapter(private val config: PageConfig) : RecyclerView.Adapte
     fun getState(): String = tabs.print()
 
     companion object {
+        @Suppress("unused")
         private const val TAG = "HomeTabConfigAdapter"
     }
 }
