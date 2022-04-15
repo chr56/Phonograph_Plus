@@ -4,7 +4,6 @@
 
 package player.phonograph.adapter
 
-import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -55,15 +54,10 @@ class HomeTabConfigAdapter(private val config: PageConfig) : RecyclerView.Adapte
         }
         holder.title.text = PAGERS.getDisplayName(tabs.get(position).name, App.instance)
 
-        setupBehavior(holder)
-    }
-
-    @SuppressLint("ClickableViewAccessibility")
-    private fun setupBehavior(holder: ViewHolder) {
         holder.itemView.setOnClickListener { view ->
             val checkBox = view.findViewById<CheckBox>(R.id.checkbox)
-            when {
-                checkBox.isChecked -> {
+            when (checkBox.isChecked) {
+                true -> {
                     if (isLastCheckedOne()) {
                         Toast.makeText(holder.itemView.context, R.string.you_have_to_select_at_least_one_category, Toast.LENGTH_SHORT).show()
                     } else {
@@ -71,12 +65,13 @@ class HomeTabConfigAdapter(private val config: PageConfig) : RecyclerView.Adapte
                         tabs.toggle(holder.bindingAdapterPosition)
                     }
                 }
-                !checkBox.isChecked -> {
+                false -> {
                     checkBox.isChecked = true
                     tabs.toggle(holder.bindingAdapterPosition)
                 }
             }
         }
+        /* noinspection ClickableViewAccessibility */
         holder.dragView.setOnTouchListener { _, event ->
             if (event.actionMasked == MotionEvent.ACTION_DOWN) {
                 touchHelper.startDrag(holder)
@@ -85,9 +80,7 @@ class HomeTabConfigAdapter(private val config: PageConfig) : RecyclerView.Adapte
         }
     }
 
-    private fun isLastCheckedOne(): Boolean {
-        return tabs.checkedItemNumbers() <= 1
-    }
+    private fun isLastCheckedOne(): Boolean = tabs.checkedItemNumbers() <= 1
 
     fun attachToRecyclerView(recyclerView: RecyclerView?) = touchHelper.attachToRecyclerView(recyclerView)
 
