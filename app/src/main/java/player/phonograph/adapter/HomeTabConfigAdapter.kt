@@ -18,8 +18,6 @@ import player.phonograph.App
 import player.phonograph.R
 import util.phonograph.misc.SwipeAndDragHelper
 import util.phonograph.misc.SwipeAndDragHelper.ActionCompletionContract
-import java.lang.IllegalStateException
-import java.lang.StringBuilder
 
 class HomeTabConfigAdapter(private val config: PageConfig) : RecyclerView.Adapter<HomeTabConfigAdapter.ViewHolder>(), ActionCompletionContract {
     private val touchHelper = ItemTouchHelper(SwipeAndDragHelper(this))
@@ -43,7 +41,7 @@ class HomeTabConfigAdapter(private val config: PageConfig) : RecyclerView.Adapte
             holder.checkBox.isChecked = true
             tabs.tabItems.add(
                 position,
-                TabItem(position, config.get(position), true)
+                TabItem(config.get(position), true)
             )
             restAvailableTabs.remove(config.get(position))
                 .also { if (!it) throw IllegalStateException("InvalidTab: ${config.get(position)} in ${tabs.print()}") }
@@ -51,7 +49,7 @@ class HomeTabConfigAdapter(private val config: PageConfig) : RecyclerView.Adapte
             holder.checkBox.isChecked = false
             tabs.tabItems.add(
                 position,
-                TabItem(position, restAvailableTabs.first(), false)
+                TabItem(restAvailableTabs.first(), false)
             )
             restAvailableTabs.removeFirst()
         }
@@ -70,12 +68,12 @@ class HomeTabConfigAdapter(private val config: PageConfig) : RecyclerView.Adapte
                         Toast.makeText(holder.itemView.context, R.string.you_have_to_select_at_least_one_category, Toast.LENGTH_SHORT).show()
                     } else {
                         checkBox.isChecked = false
-                        tabs.toggle(tabs.get(position) ?: throw IllegalStateException("position$position is invalid!"))
+                        tabs.toggle(position)
                     }
                 }
                 !checkBox.isChecked -> {
                     checkBox.isChecked = true
-                    tabs.toggle(tabs.get(position) ?: throw IllegalStateException("position$position is invalid!"))
+                    tabs.toggle(position)
                 }
             }
         }
@@ -106,23 +104,19 @@ class HomeTabConfigAdapter(private val config: PageConfig) : RecyclerView.Adapte
         var dragView: View = view.findViewById(R.id.drag_view)
     }
 
-    private data class TabItem(var order: Int, var name: String, var visibility: Boolean)
+    private data class TabItem(var name: String, var visibility: Boolean)
     private class TabList(val tabItems: MutableList<TabItem>) {
-        fun get(position: Int): TabItem? {
-            for (tab in tabItems) {
-                if (tab.order == position) return tab
-            }
-            return null
+        fun get(position: Int): TabItem {
+            return tabItems[position]
         }
-        fun toggle(item: TabItem) {
-            val m = item.copy().apply { visibility = visibility.not() }
-            tabItems.remove(item)
-            tabItems.add(m.order, m)
+        fun toggle(position: Int) {
+            get(position).apply { visibility = visibility.not() }
         }
         fun move(oldPosition: Int, newPosition: Int) {
-            val m = get(oldPosition)!!.copy().apply { order = newPosition }
-            tabItems.remove(get(oldPosition)!!)
-            tabItems.add(newPosition, m)
+            if (oldPosition == newPosition) return // do nothing
+            val item = get(oldPosition)
+            tabItems.remove(item)
+            tabItems.add(newPosition, item)
         }
         fun checkedItemNumbers(): Int {
             var count = 0
@@ -145,11 +139,10 @@ class HomeTabConfigAdapter(private val config: PageConfig) : RecyclerView.Adapte
             )
         }
         fun print(): String {
-            return StringBuilder().also { s ->
-                tabItems.forEach {
-                    s.append("{${it.order},${it.name},${it.visibility}},")
+            return tabItems.map { " [name=${it.name},visibility=${it.visibility}]" }
+                .fold("TabItems:") {
+                        acc, s -> "$acc$s"
                 }
-            }.toString()
         }
     }
     val currentConfig: PageConfig get() = tabs.toPageConfig()
