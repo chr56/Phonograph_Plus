@@ -132,6 +132,6 @@ class LyricsFetcher(lyrics: LrcLyrics? = null) {
 
     fun getLine(time: Int): String? {
         val offsetTime = if (time > 100) time - 100 else time
-        return lyrics?.getLine(offsetTime)
+        return lyrics?.getLine(offsetTime)?.first
     }
 }

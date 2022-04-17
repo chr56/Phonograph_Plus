@@ -214,7 +214,7 @@ class PlayerAlbumCoverFragment :
         }
 
         val oldLine = binding.playerLyricsLine2.text.toString()
-        val line = lyrics.getLine(progress)
+        val line = lyrics.getLine(progress).first
 
         if (oldLine != line || oldLine.isEmpty()) {
 

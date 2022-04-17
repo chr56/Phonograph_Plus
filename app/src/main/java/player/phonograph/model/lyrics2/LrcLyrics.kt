@@ -10,6 +10,7 @@ import android.util.Log
 import android.util.SparseArray
 import androidx.core.util.forEach
 import androidx.core.util.isEmpty
+import player.phonograph.notification.ErrorNotification
 import java.util.*
 import java.util.regex.Pattern
 
@@ -61,19 +62,42 @@ class LrcLyrics : AbsLyrics, Parcelable {
     val rawLyrics: SparseArray<String>
         get() = lyrics
 
-    fun getLine(timeStamp: Int): String {
+    /**
+     * get a line of lyrics
+     * @param timeStamp current rime in millisecond
+     * @return Pair<LyricsLine:[String],Length:[Long]>
+     */
+    fun getLine(timeStamp: Int): Pair<String, Long> {
         val index = getPosition(timeStamp)
-        // Todo '\n' detect
-        return lyrics.valueAt(index) as String
+        if (index in 0..lyrics.size()) {
+            val currentLine = lyrics.valueAt(index)
+                .replace(Regex("""\\[nNrR]"""), "\n")
+            val length: Long =
+                if (index + 1 != lyrics.size()) {
+                    // not last line
+                    lyrics.keyAt(index + 1).toLong() - lyrics.keyAt(index)
+                } else {
+                    // last line
+                    totalTime - lyrics.keyAt(index)
+                }
+            return Pair(
+                currentLine, if (length in 1..totalTime) length else -1
+            )
+        }
+        return Pair("", -1)
     }
 
     fun getPosition(timeStamp: Int): Int {
+        var index = -1
         if (totalTime != -1L) { // -1 means " no length info in lyrics"
-            if (timeStamp >= totalTime) throw Exception("TimeStamp is over the total lyrics length: lyrics might be mismatched")
+            if (timeStamp >= totalTime) {
+                ErrorNotification.init()
+                ErrorNotification.postErrorNotification(IllegalStateException("TimeStamp is over the total lyrics length: lyrics might be mismatched"), "Incorrect lyrics, please check up.")
+                return index
+            }
         }
 
         val ms = timeStamp + offset + TIME_OFFSET_MS
-        var index = 0
         // Todo performance improve
         for (i in 0 until lyrics.size()) {
             if (ms >= lyrics.keyAt(i)) {
@@ -84,7 +108,6 @@ class LrcLyrics : AbsLyrics, Parcelable {
         }
         return index
     }
-
     override val source: LyricsSource
 
     companion object {
