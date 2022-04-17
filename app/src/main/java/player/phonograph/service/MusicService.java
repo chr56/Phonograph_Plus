@@ -67,7 +67,6 @@ import player.phonograph.provider.MusicPlaybackQueueStore;
 import player.phonograph.provider.SongPlayCountStore;
 import player.phonograph.service.playback.Playback;
 import player.phonograph.settings.Setting;
-import player.phonograph.util.LyricsRefresher;
 import player.phonograph.util.MusicUtil;
 import player.phonograph.util.Util;
 
