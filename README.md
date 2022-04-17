@@ -77,35 +77,29 @@ Translate Phonograph Plus into your language -> [crowdin](https://crowdin.com/pr
 
 - [ ] 完成 Readme . md
 
-- [ ] 重构后台音乐服务
-
-- [x] 重构歌词系统
+- [ ] 重构后台音乐服务 (❗WIP)
   
 - [ ] 将歌曲“详情” 迁移至 Compose ❗WIP (基本信息显示)
   
 - [ ] 重构歌曲封面加载Glide模块
-  
+
+- [ ] 重构文件视图 
+
+- [ ] 重构媒体库UI ⭕
+
 - [ ] 重构更新对话框
-  
-- [ ] 重构媒体库UI ❗WIP  
-  
-- [ ] 重构文件视图
 
 - [ ] 整理设置页
-
-- [ ] <del>部分重构(所谓的)"主题引擎"</del>
-
-- [ ] <del>优化歌曲“详情”</del>
-
-- [ ] 解析歌词中的 "\n", 尝试适配 FlyMe / EvolutionX(等一系类原生)状态栏歌词
-
-- [ ] <del>万能歌曲 Adapter ⭕</del>
+  
+- [ ] 尝试适配 FlyMe / EvolutionX(等一系类原生)状态栏歌词
 
 - [ ] 自建本地媒体数据库(使用 AndroidX Room) ⭕, 并解析 Tag 中 ‘;’, '&', '/', '\', ',' , 改进搜索
 
 - [ ] 实现更好的播放频率计数, 统计听歌频率
 
 - [ ] 增强“播放列表详情”(信息展示✔, 支持搜索❌, 更好的修改本地列表方式 ❗WIP)
+
+- [ ] <del>部分重构(所谓的)"主题引擎"</del>
 
 - [ ]  ...
 
@@ -124,6 +118,14 @@ Translate Phonograph Plus into your language -> [crowdin](https://crowdin.com/pr
 - [ ] 完美适配 Android11+ 的文件访问(❌)
 
 - [ ] ???
+
+- [x] 解析歌词中的 "\n"
+
+- [x] 重构歌词系统
+
+- [ ] <del>优化歌曲“详情”</del>
+
+- [ ] <del>万能歌曲 Adapter ⭕</del>
 
 <br/>
 <br/>
