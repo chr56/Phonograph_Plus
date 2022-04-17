@@ -19,7 +19,8 @@ class LyricsUpdateThread(song: Song? = null) : Thread() {
     /**
      * update this in [updateLyrics]
      */
-    private lateinit var lyricsFetcher: LyricsFetcher
+    private var _lyricsFetcher: LyricsFetcher? = null
+    private val lyricsFetcher: LyricsFetcher get() = _lyricsFetcher!!
 
     init {
         updateLyrics()
@@ -52,6 +53,9 @@ class LyricsUpdateThread(song: Song? = null) : Thread() {
         while (!quit) {
 
             sleep(sleepTime)
+
+            if (!checkFetcher()) continue
+
             if (!MusicPlayerRemote.isPlaying() || !Setting.instance.broadcastSynchronizedLyrics || lyricsFetcher.lyrics == null) { // sending only when playing
                 sleepTime = 1000 // todo
                 App.instance.lyricsService.stopLyric()
@@ -90,7 +94,7 @@ class LyricsUpdateThread(song: Song? = null) : Thread() {
             if (!file.exists()) return@also
             runBlocking(exceptionHandler) {
                 LyricsLoader.loadLyrics(file, currentSong!!).let {
-                    lyricsFetcher = LyricsFetcher(it.getLrcLyrics())
+                    _lyricsFetcher = LyricsFetcher(it.getLrcLyrics())
                 }
             }
         }
@@ -98,7 +102,14 @@ class LyricsUpdateThread(song: Song? = null) : Thread() {
 
     @Synchronized
     fun forceReplaceLyrics(lyrics: LrcLyrics) {
-        lyricsFetcher = LyricsFetcher(lyrics)
+        _lyricsFetcher = LyricsFetcher(lyrics)
+    }
+
+    private fun checkFetcher(): Boolean {
+        if (_lyricsFetcher == null)return false
+        if (_lyricsFetcher?.lyrics == null) return false
+
+        return true
     }
 
     private val exceptionHandler by lazy {
@@ -123,25 +134,4 @@ class LyricsFetcher(lyrics: LrcLyrics? = null) {
         val offsetTime = if (time > 100) time - 100 else time
         return lyrics?.getLine(offsetTime)
     }
-
-//        constructor(song: Song) {
-//        this.lyrics = null
-//        File(song.data).also { file ->
-//            if (!file.exists()) return@also
-//            CoroutineScope(Dispatchers.IO).launch(exceptionHandler) {
-//                LyricsLoader.loadLyrics(file, song).let {
-//                    this@LyricsFetcher.lyrics = it.getLrcLyrics()
-//                }
-//            }
-//        }
-//    }
-
-//    private val exceptionHandler by lazy {
-//        CoroutineExceptionHandler { _, throwable ->
-//            val msg = "Exception while fetching lyrics!"
-//            Log.w("LyricsFetcher", "${msg}\n${throwable.message}")
-//            ErrorNotification.init()
-//            ErrorNotification.postErrorNotification(throwable, note = msg)
-//        }
-//    }
 }
