@@ -98,16 +98,44 @@ class LrcLyrics : AbsLyrics, Parcelable {
         }
 
         val ms = timeStamp + offset + TIME_OFFSET_MS
-        // Todo performance improve
-        for (i in 0 until lyrics.size()) {
-            if (ms >= lyrics.keyAt(i)) {
-                index = i
-            } else {
-                break
-            }
-        }
+        index = binSearch(ms, 0, lyrics.size())
+//        for (i in 0 until lyrics.size()) {
+//            if (ms >= lyrics.keyAt(i)) {
+//                index = i
+//            } else {
+//                break
+//            }
+//        }
         return index
     }
+
+    private tailrec fun binSearch(time: Long, down: Int, up: Int): Int {
+        val mid = (down + up) / 2
+        when {
+            time < lyrics.keyAt(mid) -> {
+                return if (mid <= 0) {
+                    // first line
+                    -1
+                } else {
+                    // not first line
+                    binSearch(time, down, mid)
+                }
+            }
+            time == lyrics.keyAt(mid).toLong() -> return mid
+            time > lyrics.keyAt(mid) -> {
+                if (mid < lyrics.size() - 1) {
+                    // not last line
+                    return if (time < lyrics.keyAt(mid + 1)) mid
+                    else binSearch(time, mid, up)
+                } else {
+                    // last line
+                    return lyrics.size() - 1
+                }
+            }
+            else -> return -1 // what!?
+        }
+    }
+
     override val source: LyricsSource
 
     companion object {
