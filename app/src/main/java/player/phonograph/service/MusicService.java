@@ -73,7 +73,7 @@ import player.phonograph.util.Util;
 /**
  * @author Karim Abou Zeid (kabouzeid), Andrew Neal
  */
-public class MusicService extends Service implements SharedPreferences.OnSharedPreferenceChangeListener, Playback.PlaybackCallbacks {
+public class MusicService extends Service implements SharedPreferences.OnSharedPreferenceChangeListener, Playback.PlaybackCallbacks,LyricsUpdateThread.ProgressMillsUpdateCallback {
 
     public static final String PHONOGRAPH_PACKAGE_NAME = App.ACTUAL_PACKAGE_NAME;
     public static final String MUSIC_PACKAGE_NAME = "com.android.music";
@@ -235,7 +235,7 @@ public class MusicService extends Service implements SharedPreferences.OnSharedP
 
         sendBroadcast(new Intent("player.phonograph.PHONOGRAPH_MUSIC_SERVICE_CREATED"));
 
-        lyricsUpdateThread = new LyricsUpdateThread(getCurrentSong());
+        lyricsUpdateThread = new LyricsUpdateThread(getCurrentSong(),this);
         lyricsUpdateThread.start();
     }
 
@@ -390,6 +390,16 @@ public class MusicService extends Service implements SharedPreferences.OnSharedP
     @Override
     public IBinder onBind(Intent intent) {
         return musicBind;
+    }
+
+    @Override
+    public int getProgressTimeMills() {
+        return getSongProgressMillis();
+    }
+
+    @Override
+    public boolean isRunning() {
+        return isPlaying();
     }
 
     private static final class QueueSaveHandler extends Handler {

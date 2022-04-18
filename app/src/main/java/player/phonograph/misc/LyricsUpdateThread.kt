@@ -8,7 +8,6 @@ import android.util.Log
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.runBlocking
 import player.phonograph.App
-import player.phonograph.helper.MusicPlayerRemote
 import player.phonograph.model.Song
 import player.phonograph.model.lyrics2.LrcLyrics
 import player.phonograph.model.lyrics2.LyricsLoader
@@ -16,7 +15,7 @@ import player.phonograph.notification.ErrorNotification
 import player.phonograph.settings.Setting
 import java.io.File
 
-class LyricsUpdateThread(song: Song? = null) : Thread() {
+class LyricsUpdateThread(song: Song? = null, callback: ProgressMillsUpdateCallback) : Thread() {
     /**
      * update this in [updateLyrics]
      */
@@ -37,6 +36,9 @@ class LyricsUpdateThread(song: Song? = null) : Thread() {
             updateLyrics()
         }
 
+    private var _serviceCallback: ProgressMillsUpdateCallback? = callback
+    private val serviceCallback: ProgressMillsUpdateCallback get() = _serviceCallback!!
+
     private var quit: Boolean = false
 
     /**
@@ -52,7 +54,10 @@ class LyricsUpdateThread(song: Song? = null) : Thread() {
     override fun run() {
         super.run()
         loop()
+        // clear lyrics
         App.instance.lyricsService.stopLyric()
+        // remove callback
+        _serviceCallback = null
     }
 
     /**
@@ -82,7 +87,7 @@ class LyricsUpdateThread(song: Song? = null) : Thread() {
 
             if (!checkFetcher()) continue
 
-            if (!MusicPlayerRemote.isPlaying() || !Setting.instance.broadcastSynchronizedLyrics || lyricsFetcher.lyrics == null) { // sending only when playing
+            if (!serviceCallback.isRunning() || !Setting.instance.broadcastSynchronizedLyrics || lyricsFetcher.lyrics == null) { // sending only when playing
                 sleepTime = 1000 // todo
                 Log.v("LyricsUpdateThread", "Stop lyrics broadcast!")
                 App.instance.lyricsService.stopLyric()
@@ -91,7 +96,7 @@ class LyricsUpdateThread(song: Song? = null) : Thread() {
                 sleepTime = 50
             }
 
-            val newLine = lyricsFetcher.getLine(MusicPlayerRemote.getSongProgressMillis())
+            val newLine = lyricsFetcher.getLine(serviceCallback.getProgressTimeMills())
 
             if (newLine != null) {
                 if (newLine != cache) {
@@ -125,6 +130,10 @@ class LyricsUpdateThread(song: Song? = null) : Thread() {
             ErrorNotification.init()
             ErrorNotification.postErrorNotification(throwable, note = msg)
         }
+    }
+    interface ProgressMillsUpdateCallback {
+        fun getProgressTimeMills(): Int
+        fun isRunning(): Boolean
     }
 }
 
