@@ -5,8 +5,6 @@ import android.view.View
 import android.view.ViewGroup.MarginLayoutParams
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
-import util.mdcolor.ColorUtil
-import util.mddesign.util.MaterialColorHelper
 import com.bumptech.glide.Glide
 import player.phonograph.glide.PhonographColoredTarget
 import player.phonograph.glide.SongGlideRequest
@@ -14,6 +12,8 @@ import player.phonograph.helper.HorizontalAdapterHelper
 import player.phonograph.interfaces.CabHolder
 import player.phonograph.model.Album
 import player.phonograph.util.MusicUtil
+import util.mdcolor.ColorUtil
+import util.mddesign.util.MaterialColorHelper
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
@@ -24,6 +24,7 @@ class HorizontalAlbumAdapter(
     usePalette: Boolean,
     cabHolder: CabHolder?
 ) : AlbumAdapter(activity, dataSet, HorizontalAdapterHelper.LAYOUT_RES, usePalette, cabHolder) {
+
     override fun createViewHolder(view: View, viewType: Int): ViewHolder {
         val params = view.layoutParams as MarginLayoutParams
         HorizontalAdapterHelper.applyMarginToLayoutParams(activity, params, viewType)
@@ -78,6 +79,6 @@ class HorizontalAlbumAdapter(
     }
 
     override fun getItemViewType(position: Int): Int {
-        return HorizontalAdapterHelper.getItemViewtype(position, itemCount)
+        return HorizontalAdapterHelper.getItemViewType(position, itemCount)
     }
 }
