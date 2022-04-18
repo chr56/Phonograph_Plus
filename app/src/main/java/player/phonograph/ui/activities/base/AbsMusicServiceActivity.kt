@@ -20,10 +20,9 @@ import java.lang.ref.WeakReference
 /**
  * @author Karim Abou Zeid (kabouzeid)
  */
-@Suppress("UNNECESSARY_SAFE_CALL")
 abstract class AbsMusicServiceActivity : ToolbarActivity(), MusicServiceEventListener {
 
-    private lateinit var serviceToken: ServiceToken
+    private var serviceToken: ServiceToken? = null
 
     private val mMusicServiceEventListeners: MutableList<MusicServiceEventListener> = ArrayList()
     private var musicStateReceiver: MusicStateReceiver? = null
@@ -32,18 +31,19 @@ abstract class AbsMusicServiceActivity : ToolbarActivity(), MusicServiceEventLis
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        serviceToken = MusicPlayerRemote.bindToService(
-            this,
-            object : ServiceConnection {
-                override fun onServiceConnected(name: ComponentName, service: IBinder) {
-                    this@AbsMusicServiceActivity.onServiceConnected()
-                }
+        serviceToken =
+            MusicPlayerRemote.bindToService(
+                this,
+                object : ServiceConnection {
+                    override fun onServiceConnected(name: ComponentName, service: IBinder) {
+                        this@AbsMusicServiceActivity.onServiceConnected()
+                    }
 
-                override fun onServiceDisconnected(name: ComponentName) {
-                    this@AbsMusicServiceActivity.onServiceDisconnected()
+                    override fun onServiceDisconnected(name: ComponentName) {
+                        this@AbsMusicServiceActivity.onServiceDisconnected()
+                    }
                 }
-            }
-        )
+            )
         volumeControlStream = AudioManager.STREAM_MUSIC
         permissionDeniedMessage = getString(R.string.permission_external_storage_denied)
     }
@@ -87,7 +87,7 @@ abstract class AbsMusicServiceActivity : ToolbarActivity(), MusicServiceEventLis
             receiverRegistered = true
         }
         for (listener in mMusicServiceEventListeners) {
-            listener?.onServiceConnected()
+            listener.onServiceConnected()
         }
     }
 
@@ -97,43 +97,43 @@ abstract class AbsMusicServiceActivity : ToolbarActivity(), MusicServiceEventLis
             receiverRegistered = false
         }
         for (listener in mMusicServiceEventListeners) {
-            listener?.onServiceDisconnected()
+            listener.onServiceDisconnected()
         }
     }
 
     override fun onPlayingMetaChanged() {
         for (listener in mMusicServiceEventListeners) {
-            listener?.onPlayingMetaChanged()
+            listener.onPlayingMetaChanged()
         }
     }
 
     override fun onQueueChanged() {
         for (listener in mMusicServiceEventListeners) {
-            listener?.onQueueChanged()
+            listener.onQueueChanged()
         }
     }
 
     override fun onPlayStateChanged() {
         for (listener in mMusicServiceEventListeners) {
-            listener?.onPlayStateChanged()
+            listener.onPlayStateChanged()
         }
     }
 
     override fun onMediaStoreChanged() {
         for (listener in mMusicServiceEventListeners) {
-            listener?.onMediaStoreChanged()
+            listener.onMediaStoreChanged()
         }
     }
 
     override fun onRepeatModeChanged() {
         for (listener in mMusicServiceEventListeners) {
-            listener?.onRepeatModeChanged()
+            listener.onRepeatModeChanged()
         }
     }
 
     override fun onShuffleModeChanged() {
         for (listener in mMusicServiceEventListeners) {
-            listener?.onShuffleModeChanged()
+            listener.onShuffleModeChanged()
         }
     }
 

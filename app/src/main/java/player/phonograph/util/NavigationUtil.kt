@@ -70,7 +70,7 @@ object NavigationUtil {
 
     @JvmStatic
     fun openEqualizer(activity: Activity) {
-        val sessionId = MusicPlayerRemote.getAudioSessionId()
+        val sessionId = MusicPlayerRemote.audioSessionId
         if (sessionId == AudioEffect.ERROR_BAD_VALUE) {
             Toast.makeText(activity, activity.resources.getString(R.string.no_audio_ID), Toast.LENGTH_LONG).show()
         } else {

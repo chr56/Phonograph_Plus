@@ -52,7 +52,7 @@ class FlatPlayerControllerFragment : AbsPlayerControllerFragment() {
     }
 
     override fun updatePlayPauseDrawableState(animate: Boolean) {
-        if (MusicPlayerRemote.isPlaying()) {
+        if (MusicPlayerRemote.isPlaying) {
             playPauseDrawable.setPause(animate)
         } else {
             playPauseDrawable.setPlay(animate)

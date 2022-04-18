@@ -66,7 +66,7 @@ class MiniPlayerFragment : AbsMusicServiceFragment(), MusicProgressViewUpdateHel
     }
 
     private fun updateSongTitle() {
-        binding.miniPlayerTitle.text = MusicPlayerRemote.getCurrentSong().title
+        binding.miniPlayerTitle.text = MusicPlayerRemote.currentSong.title
     }
 
     override fun onServiceConnected() {
@@ -126,7 +126,7 @@ class MiniPlayerFragment : AbsMusicServiceFragment(), MusicProgressViewUpdateHel
     }
 
     protected fun updatePlayPauseDrawableState(animate: Boolean) {
-        if (MusicPlayerRemote.isPlaying()) {
+        if (MusicPlayerRemote.isPlaying) {
             miniPlayerPlayPauseDrawable!!.setPause(animate)
         } else {
             miniPlayerPlayPauseDrawable!!.setPlay(animate)

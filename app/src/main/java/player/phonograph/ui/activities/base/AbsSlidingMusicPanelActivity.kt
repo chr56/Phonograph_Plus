@@ -106,7 +106,7 @@ abstract class AbsSlidingMusicPanelActivity :
 
     override fun onServiceConnected() {
         super.onServiceConnected()
-        if (MusicPlayerRemote.getPlayingQueue().isNotEmpty()) {
+        if (MusicPlayerRemote.playingQueue.isNotEmpty()) {
             slidingUpPanelLayout.viewTreeObserver.addOnGlobalLayoutListener(object : OnGlobalLayoutListener {
                 override fun onGlobalLayout() {
                     slidingUpPanelLayout.viewTreeObserver.removeOnGlobalLayoutListener(this)
@@ -118,7 +118,7 @@ abstract class AbsSlidingMusicPanelActivity :
 
     override fun onQueueChanged() {
         super.onQueueChanged()
-        hideBottomBar(MusicPlayerRemote.getPlayingQueue().isEmpty())
+        hideBottomBar(MusicPlayerRemote.playingQueue.isEmpty())
     }
 
     override fun onPanelSlide(panel: View, @FloatRange(from = 0.0, to = 1.0) slideOffset: Float) {

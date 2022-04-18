@@ -102,13 +102,13 @@ class CardPlayerFragment :
     override fun onServiceConnected() {
         updateQueue()
         updateCurrentSong()
-        updateFavoriteState(MusicPlayerRemote.getCurrentSong())
+        updateFavoriteState(MusicPlayerRemote.currentSong)
         monitorLyricsState()
     }
 
     override fun onPlayingMetaChanged() {
         updateCurrentSong()
-        updateFavoriteState(MusicPlayerRemote.getCurrentSong())
+        updateFavoriteState(MusicPlayerRemote.currentSong)
         updateQueuePosition()
         monitorLyricsState()
     }
@@ -119,12 +119,12 @@ class CardPlayerFragment :
 
     override fun onMediaStoreChanged() {
         updateQueue()
-        updateFavoriteState(MusicPlayerRemote.getCurrentSong())
+        updateFavoriteState(MusicPlayerRemote.currentSong)
     }
 
     private fun updateQueue() {
-        playingQueueAdapter!!.dataSet = MusicPlayerRemote.getPlayingQueue()
-        playingQueueAdapter!!.current = MusicPlayerRemote.getPosition()
+        playingQueueAdapter!!.dataSet = MusicPlayerRemote.playingQueue
+        playingQueueAdapter!!.current = MusicPlayerRemote.position
         viewBinding.playerQueueSubHeader.text = upNextAndQueueTime
         if (viewBinding.playerSlidingLayout.panelState == PanelState.COLLAPSED) {
             resetToCurrentPosition()
@@ -132,7 +132,7 @@ class CardPlayerFragment :
     }
 
     private fun updateQueuePosition() {
-        playingQueueAdapter!!.current = MusicPlayerRemote.getPosition()
+        playingQueueAdapter!!.current = MusicPlayerRemote.position
         viewBinding.playerQueueSubHeader.text = upNextAndQueueTime
         if (viewBinding.playerSlidingLayout.panelState == PanelState.COLLAPSED) {
             resetToCurrentPosition()
@@ -140,7 +140,7 @@ class CardPlayerFragment :
     }
 
     private fun updateCurrentSong() {
-        viewModel.currentSong = MusicPlayerRemote.getCurrentSong()
+        viewModel.currentSong = MusicPlayerRemote.currentSong
         impl.onCurrentSongChanged()
     }
 
@@ -161,7 +161,7 @@ class CardPlayerFragment :
         viewBinding.playerRecyclerView.adapter = wrappedAdapter
         viewBinding.playerRecyclerView.itemAnimator = animator
         recyclerViewDragDropManager!!.attachRecyclerView(viewBinding.playerRecyclerView)
-        layoutManager!!.scrollToPositionWithOffset(MusicPlayerRemote.getPosition() + 1, 0)
+        layoutManager!!.scrollToPositionWithOffset(MusicPlayerRemote.position + 1, 0)
     }
 
     override fun updateFavoriteIcon(isFavorite: Boolean) {
@@ -196,7 +196,7 @@ class CardPlayerFragment :
 
     override fun toggleFavorite(song: Song) {
         super.toggleFavorite(song)
-        if (song.id == MusicPlayerRemote.getCurrentSong().id) {
+        if (song.id == MusicPlayerRemote.currentSong.id) {
             if (isFavorite(requireActivity(), song)) {
                 playerAlbumCoverFragment.showHeartAnimation()
             }
@@ -226,7 +226,7 @@ class CardPlayerFragment :
     }
 
     override fun onFavoriteToggled() {
-        toggleFavorite(MusicPlayerRemote.getCurrentSong())
+        toggleFavorite(MusicPlayerRemote.currentSong)
     }
 
     override fun onToolbarToggled() {
@@ -265,7 +265,7 @@ class CardPlayerFragment :
 
     private fun resetToCurrentPosition() {
         viewBinding.playerRecyclerView.stopScroll()
-        layoutManager!!.scrollToPositionWithOffset(MusicPlayerRemote.getPosition() + 1, 0)
+        layoutManager!!.scrollToPositionWithOffset(MusicPlayerRemote.position + 1, 0)
     }
 
     private abstract class BaseImpl(protected var fragment: CardPlayerFragment) : Impl {
@@ -342,12 +342,12 @@ class CardPlayerFragment :
             }
             currentSongViewHolder!!.menu!!.setOnClickListener(object :
                     ClickMenuListener((fragment.activity as AppCompatActivity), R.menu.menu_item_playing_queue_song) {
-                    override val song: Song = MusicPlayerRemote.getCurrentSong()
+                    override val song: Song = MusicPlayerRemote.currentSong
 
                     override fun onMenuItemClick(item: MenuItem): Boolean {
                         when (item.itemId) {
                             R.id.action_remove_from_playing_queue -> {
-                                MusicPlayerRemote.removeFromQueue(MusicPlayerRemote.getPosition())
+                                MusicPlayerRemote.removeFromQueue(MusicPlayerRemote.position)
                                 return true
                             }
                         }

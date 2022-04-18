@@ -189,8 +189,8 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
     }
 
     private fun updateNavigationDrawerHeader() {
-        if (MusicPlayerRemote.getPlayingQueue().isNotEmpty()) {
-            val song = MusicPlayerRemote.getCurrentSong()
+        if (MusicPlayerRemote.playingQueue.isNotEmpty()) {
+            val song = MusicPlayerRemote.currentSong
 
             if (navigationDrawerHeader == null) {
                 navigationDrawerHeader =
@@ -255,7 +255,7 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
         intent.action?.let {
             if (it == MediaStore.INTENT_ACTION_MEDIA_PLAY_FROM_SEARCH) {
                 val songs = SearchQueryHelper.getSongs(this, intent.extras!!)
-                if (MusicPlayerRemote.getShuffleMode() == MusicService.SHUFFLE_MODE_SHUFFLE) {
+                if (MusicPlayerRemote.shuffleMode == MusicService.SHUFFLE_MODE_SHUFFLE) {
                     MusicPlayerRemote.openAndShuffleQueue(songs, true)
                 } else {
                     MusicPlayerRemote.openQueue(songs, 0, true)

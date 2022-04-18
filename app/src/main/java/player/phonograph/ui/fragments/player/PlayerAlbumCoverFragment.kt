@@ -87,7 +87,7 @@ class PlayerAlbumCoverFragment :
     }
 
     override fun onPlayingMetaChanged() {
-        binding.playerCoverViewpager.currentItem = MusicPlayerRemote.getPosition()
+        binding.playerCoverViewpager.currentItem = MusicPlayerRemote.position
     }
 
     override fun onQueueChanged() {
@@ -95,16 +95,16 @@ class PlayerAlbumCoverFragment :
     }
 
     private fun updatePlayingQueue() {
-        binding.playerCoverViewpager.adapter = AlbumCoverPagerAdapter(parentFragmentManager, MusicPlayerRemote.getPlayingQueue())
-        binding.playerCoverViewpager.currentItem = MusicPlayerRemote.getPosition()
-        onPageSelected(MusicPlayerRemote.getPosition())
+        binding.playerCoverViewpager.adapter = AlbumCoverPagerAdapter(parentFragmentManager, MusicPlayerRemote.playingQueue)
+        binding.playerCoverViewpager.currentItem = MusicPlayerRemote.position
+        onPageSelected(MusicPlayerRemote.position)
     }
 
     override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
     override fun onPageSelected(position: Int) {
         currentPosition = position
         (binding.playerCoverViewpager.adapter as AlbumCoverPagerAdapter).receiveColor(colorReceiver, position)
-        if (position != MusicPlayerRemote.getPosition()) {
+        if (position != MusicPlayerRemote.position) {
             MusicPlayerRemote.playSongAt(position)
         }
     }

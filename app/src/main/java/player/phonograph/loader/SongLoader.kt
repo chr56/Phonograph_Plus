@@ -29,7 +29,7 @@ object SongLoader {
     )
 
     @JvmStatic
-    fun getAllSongs(context: Context): List<Song?> = MediaStoreUtil.getAllSongs(context)
+    fun getAllSongs(context: Context): List<Song> = MediaStoreUtil.getAllSongs(context)
 
     @JvmStatic
     fun getSongs(context: Context, query: String): List<Song> = MediaStoreUtil.getSongs(context, query)

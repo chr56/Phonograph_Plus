@@ -5,29 +5,29 @@ import android.os.Parcel
 import android.os.Parcelable
 import androidx.annotation.Keep
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.util.Pair
 import androidx.fragment.app.FragmentActivity
 import player.phonograph.App.Companion.instance
 import player.phonograph.helper.menu.SongsMenuHelper.handleMenuClick
 import player.phonograph.interfaces.Displayable
 import player.phonograph.util.MusicUtil
 import player.phonograph.util.NavigationUtil
+import java.lang.Exception
 import java.util.ArrayList
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
  */
 class Album : Parcelable, Displayable {
-    @JvmField val songs: List<Song>?
+    @JvmField val songs: List<Song>
 
-    constructor(songs: List<Song>?) {
+    constructor(songs: List<Song>) {
         this.songs = songs
     }
     constructor() {
         songs = ArrayList()
     }
 
-    fun getSongCount(): Int = songs?.size ?: -1
+    fun getSongCount(): Int = songs.size
 
     val id: Long
         get() = safeGetFirstSong().albumId
@@ -48,10 +48,10 @@ class Album : Parcelable, Displayable {
         if (this === other) return true
         if (other == null || javaClass != other.javaClass) return false
         val that = other as Album
-        return if (songs != null) songs == that.songs else that.songs == null
+        return songs == that.songs
     }
 
-    override fun hashCode(): Int = songs?.hashCode() ?: -1
+    override fun hashCode(): Int = songs.hashCode()
     override fun toString(): String = "Album{name=$title,id=$id,artist=$artistName}"
 
     override fun describeContents(): Int = 0
@@ -59,19 +59,19 @@ class Album : Parcelable, Displayable {
         dest.writeTypedList(songs)
     }
 
-    protected constructor(parcel: Parcel) {
-        songs = parcel.createTypedArrayList(Song.CREATOR)
+    constructor(parcel: Parcel) {
+        songs = parcel.createTypedArrayList(Song.CREATOR) ?: throw Exception("Fail to recreate Album from song")
     }
 
     override fun getItemID(): Long = artistId
 
     override fun getDisplayTitle(): CharSequence = title
 
-    override fun getDescription(): CharSequence = MusicUtil.buildInfoString(artistName, MusicUtil.getSongCountString(instance, songs!!.size))
+    override fun getDescription(): CharSequence = MusicUtil.buildInfoString(artistName, MusicUtil.getSongCountString(instance, songs.size))
 
     override fun getPic(): Uri? = null // todo
 
-    override fun getSortOrderReference(): String? = title // todo
+    override fun getSortOrderReference(): String = title // todo
 
     override fun menuRes(): Int = 0 // todo
 
@@ -86,7 +86,7 @@ class Album : Parcelable, Displayable {
         } // todo more variety
 
     override fun clickHandler(): (FragmentActivity, Displayable, List<Displayable>?) -> Unit {
-        return { fragmentActivity: FragmentActivity?, displayable: Displayable, queue: List<Displayable>? ->
+        return { fragmentActivity: FragmentActivity?, displayable: Displayable, _: List<Displayable>? ->
             NavigationUtil.goToAlbum(
                 fragmentActivity!!, (displayable as Album).id
             ) // todo animate

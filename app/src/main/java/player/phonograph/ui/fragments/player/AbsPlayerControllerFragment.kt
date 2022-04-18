@@ -101,7 +101,7 @@ abstract class AbsPlayerControllerFragment : AbsMusicServiceFragment(), MusicPro
             override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
                 if (fromUser) {
                     MusicPlayerRemote.seekTo(progress)
-                    onUpdateProgressViews(MusicPlayerRemote.getSongProgressMillis(), MusicPlayerRemote.getSongDurationMillis())
+                    onUpdateProgressViews(MusicPlayerRemote.songProgressMillis, MusicPlayerRemote.songDurationMillis)
                 }
             }
         })
@@ -172,7 +172,7 @@ abstract class AbsPlayerControllerFragment : AbsMusicServiceFragment(), MusicPro
         songCurrentProgress.setTextColor(color)
     }
     private fun updateRepeatState() {
-        when (MusicPlayerRemote.getRepeatMode()) {
+        when (MusicPlayerRemote.repeatMode) {
             MusicService.REPEAT_MODE_NONE -> {
                 repeatButton.setImageResource(R.drawable.ic_repeat_white_24dp)
                 repeatButton.setColorFilter(lastDisabledPlaybackControlsColor, PorterDuff.Mode.SRC_IN)
@@ -188,7 +188,7 @@ abstract class AbsPlayerControllerFragment : AbsMusicServiceFragment(), MusicPro
         }
     }
     private fun updateShuffleState() {
-        when (MusicPlayerRemote.getShuffleMode()) {
+        when (MusicPlayerRemote.shuffleMode) {
             MusicService.SHUFFLE_MODE_SHUFFLE ->
                 shuffleButton.setColorFilter(
                     lastPlaybackControlsColor,

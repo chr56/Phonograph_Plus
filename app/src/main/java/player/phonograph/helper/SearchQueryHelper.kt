@@ -17,7 +17,7 @@ object SearchQueryHelper {
     private const val ARTIST_SELECTION = "lower(" + MediaStore.Audio.AudioColumns.ARTIST + ") = ?"
     private const val AND = " AND "
 
-    fun getSongs(context: Context, extras: Bundle): List<Song?> {
+    fun getSongs(context: Context, extras: Bundle): List<Song> {
         val query = extras.getString(SearchManager.QUERY, null)
         val artistName = extras.getString(MediaStore.EXTRA_MEDIA_ARTIST, null)
         val albumName = extras.getString(MediaStore.EXTRA_MEDIA_ALBUM, null)
@@ -142,8 +142,6 @@ object SearchQueryHelper {
                 arrayOf(query.lowercase(Locale.getDefault()).trim { it <= ' ' })
             )
         )
-        return if (songs.isNotEmpty()) {
-            songs
-        } else SongLoader.getSongs(context, query)
+        return songs.ifEmpty { SongLoader.getSongs(context, query) }
     }
 }

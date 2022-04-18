@@ -157,14 +157,14 @@ open class Song : Parcelable, Displayable {
     override fun multiMenuHandler(): ((AppCompatActivity, List<Displayable>, Int) -> Boolean)? {
         return { appCompatActivity: AppCompatActivity?, list: List<Displayable>?, integer: Int? ->
             handleMenuClick(
-                appCompatActivity!!, (list as List<Song>)!!, integer!!
+                appCompatActivity!!, (list as List<Song>), integer!!
             )
         }
     }
 
     override fun clickHandler(): (FragmentActivity, Displayable, List<Displayable>?) -> Unit {
         return { _: FragmentActivity?, displayable: Displayable?, queue: List<Displayable>? ->
-            MusicPlayerRemote.openQueue(queue as List<Song>?, queue!!.indexOf(displayable), true)
+            MusicPlayerRemote.openQueue(queue as List<Song>, queue.indexOf(displayable), true)
         }
     }
 

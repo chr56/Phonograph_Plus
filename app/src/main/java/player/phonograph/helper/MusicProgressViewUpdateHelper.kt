@@ -44,10 +44,10 @@ class MusicProgressViewUpdateHelper : Handler {
 
     @Suppress("ReplaceJavaStaticMethodWithKotlinAnalog")
     private fun refreshProgressViews(): Int {
-        val progressMillis = MusicPlayerRemote.getSongProgressMillis()
-        val totalMillis = MusicPlayerRemote.getSongDurationMillis()
+        val progressMillis = MusicPlayerRemote.songProgressMillis
+        val totalMillis = MusicPlayerRemote.songDurationMillis
         callback?.onUpdateProgressViews(progressMillis, totalMillis)
-        if (!MusicPlayerRemote.isPlaying()) {
+        if (!MusicPlayerRemote.isPlaying) {
             return intervalPaused
         }
         val remainingMillis = intervalPlaying - progressMillis % intervalPlaying

@@ -98,8 +98,8 @@ abstract class AbsPlayerFragment :
         layoutManager = LinearLayoutManager(requireActivity())
         playingQueueAdapter = PlayingQueueAdapter(
             (requireActivity() as AppCompatActivity),
-            MusicPlayerRemote.getPlayingQueue(),
-            MusicPlayerRemote.getPosition(),
+            MusicPlayerRemote.playingQueue,
+            MusicPlayerRemote.position,
             R.layout.item_list,
             false,
             null
@@ -133,13 +133,13 @@ abstract class AbsPlayerFragment :
             R.id.action_show_lyrics -> {
                 val lyricsPack = viewModel.lyricsList
                 if (lyricsPack != null) {
-                    LyricsDialog.create(lyricsPack, MusicPlayerRemote.getCurrentSong(), viewModel.currentLyrics ?: lyricsPack.getAvailableLyrics()!!)
+                    LyricsDialog.create(lyricsPack, MusicPlayerRemote.currentSong, viewModel.currentLyrics ?: lyricsPack.getAvailableLyrics()!!)
                         .show(requireActivity().supportFragmentManager, "LYRICS")
                 }
                 return true
             }
             R.id.action_toggle_favorite -> {
-                toggleFavorite(MusicPlayerRemote.getCurrentSong())
+                toggleFavorite(MusicPlayerRemote.currentSong)
                 return true
             }
             R.id.action_clear_playing_queue -> {
@@ -147,7 +147,7 @@ abstract class AbsPlayerFragment :
                 return true
             }
             R.id.action_save_playing_queue -> {
-                CreatePlaylistDialog.create(MusicPlayerRemote.getPlayingQueue())
+                CreatePlaylistDialog.create(MusicPlayerRemote.playingQueue)
                     .show(childFragmentManager, "ADD_TO_PLAYLIST")
                 return true
             }
@@ -162,7 +162,7 @@ abstract class AbsPlayerFragment :
         }
 
         // current song
-        val song = MusicPlayerRemote.getCurrentSong()
+        val song = MusicPlayerRemote.currentSong
         when (item.itemId) {
             R.id.action_add_to_playlist -> {
                 AddToPlaylistDialog.create(List(1) { song })
@@ -287,7 +287,7 @@ abstract class AbsPlayerFragment :
 
     protected val upNextAndQueueTime: String
         get() {
-            val duration = MusicPlayerRemote.getQueueDurationMillis(MusicPlayerRemote.getPosition())
+            val duration = MusicPlayerRemote.getQueueDurationMillis(MusicPlayerRemote.position)
             return MusicUtil.buildInfoString(resources.getString(R.string.up_next), MusicUtil.getReadableDurationString(duration))
         }
 

@@ -9,7 +9,7 @@ import androidx.annotation.Keep
 @Keep
 class PlayPauseButtonOnClickHandler : View.OnClickListener {
     override fun onClick(v: View) {
-        if (MusicPlayerRemote.isPlaying()) {
+        if (MusicPlayerRemote.isPlaying) {
             MusicPlayerRemote.pauseSong()
         } else {
             MusicPlayerRemote.resumePlaying()

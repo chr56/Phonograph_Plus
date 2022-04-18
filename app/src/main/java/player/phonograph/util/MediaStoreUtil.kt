@@ -31,7 +31,7 @@ object MediaStoreUtil {
      **           Songs          **
      *****************************/
 
-    fun getAllSongs(context: Context): List<Song?> {
+    fun getAllSongs(context: Context): List<Song> {
         val cursor = querySongs(context, null, null)
         return getSongs(cursor)
     }
