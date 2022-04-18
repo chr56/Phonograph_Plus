@@ -11,7 +11,7 @@ import player.phonograph.R
 import player.phonograph.dialogs.AddToPlaylistDialog
 import player.phonograph.dialogs.DeleteSongsDialog
 import player.phonograph.dialogs.SongDetailDialog
-import player.phonograph.helper.MusicPlayerRemote
+import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.interfaces.PaletteColorHolder
 import player.phonograph.model.Song
 import util.phonograph.tageditor.AbsTagEditorActivity

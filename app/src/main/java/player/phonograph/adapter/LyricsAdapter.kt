@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import player.phonograph.R
-import player.phonograph.helper.MusicPlayerRemote
+import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.settings.Setting
 import player.phonograph.util.MusicUtil
 import java.util.regex.Pattern

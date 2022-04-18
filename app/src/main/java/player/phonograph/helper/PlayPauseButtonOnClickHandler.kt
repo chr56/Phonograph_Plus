@@ -2,6 +2,7 @@ package player.phonograph.helper
 
 import android.view.View
 import androidx.annotation.Keep
+import player.phonograph.service.MusicPlayerRemote
 
 /**
  * @author Karim Abou Zeid (kabouzeid)

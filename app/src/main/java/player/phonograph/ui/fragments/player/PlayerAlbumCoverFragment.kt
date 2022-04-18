@@ -12,7 +12,7 @@ import androidx.viewpager.widget.ViewPager.OnPageChangeListener
 import player.phonograph.adapter.AlbumCoverPagerAdapter
 import player.phonograph.adapter.AlbumCoverPagerAdapter.AlbumCoverFragment.ColorReceiver
 import player.phonograph.databinding.FragmentPlayerAlbumCoverBinding
-import player.phonograph.helper.MusicPlayerRemote
+import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.helper.MusicProgressViewUpdateHelper
 import player.phonograph.misc.SimpleAnimatorListener
 import player.phonograph.model.lyrics2.AbsLyrics

@@ -9,7 +9,7 @@ import android.widget.Toast
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.util.Pair
 import player.phonograph.R
-import player.phonograph.helper.MusicPlayerRemote
+import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.model.Genre
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.ui.activities.AlbumDetailActivity

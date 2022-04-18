@@ -14,7 +14,7 @@ import android.widget.ImageButton
 import android.widget.SeekBar
 import android.widget.TextView
 import player.phonograph.R
-import player.phonograph.helper.MusicPlayerRemote
+import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.helper.MusicProgressViewUpdateHelper
 import player.phonograph.misc.SimpleOnSeekbarChangeListener
 import player.phonograph.service.MusicService

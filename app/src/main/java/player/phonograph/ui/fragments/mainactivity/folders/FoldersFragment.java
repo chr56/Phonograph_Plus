@@ -56,7 +56,7 @@ import player.phonograph.App;
 import player.phonograph.R;
 import player.phonograph.adapter.SongFileAdapter;
 import player.phonograph.databinding.FragmentFolderBinding;
-import player.phonograph.helper.MusicPlayerRemote;
+import player.phonograph.service.MusicPlayerRemote;
 import player.phonograph.helper.menu.SongMenuHelper;
 import player.phonograph.helper.menu.SongsMenuHelper;
 import player.phonograph.interfaces.CabHolder;

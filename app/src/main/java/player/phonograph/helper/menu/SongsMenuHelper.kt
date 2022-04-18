@@ -4,7 +4,7 @@ import androidx.fragment.app.FragmentActivity
 import player.phonograph.R
 import player.phonograph.dialogs.AddToPlaylistDialog
 import player.phonograph.dialogs.DeleteSongsDialog
-import player.phonograph.helper.MusicPlayerRemote
+import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.model.Song
 
 /**

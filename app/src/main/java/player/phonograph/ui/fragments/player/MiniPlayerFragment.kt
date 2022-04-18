@@ -9,7 +9,7 @@ import util.mdcolor.pref.ThemeColor
 import util.mddesign.util.Util
 import player.phonograph.R
 import player.phonograph.databinding.FragmentMiniPlayerBinding
-import player.phonograph.helper.MusicPlayerRemote
+import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.helper.MusicProgressViewUpdateHelper
 import player.phonograph.helper.PlayPauseButtonOnClickHandler
 import player.phonograph.ui.fragments.AbsMusicServiceFragment

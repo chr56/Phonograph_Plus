@@ -11,8 +11,8 @@ import android.os.Bundle
 import android.os.IBinder
 import lib.phonograph.activity.ToolbarActivity
 import player.phonograph.R
-import player.phonograph.helper.MusicPlayerRemote
-import player.phonograph.helper.MusicPlayerRemote.ServiceToken
+import player.phonograph.service.MusicPlayerRemote
+import player.phonograph.service.MusicPlayerRemote.ServiceToken
 import player.phonograph.interfaces.MusicServiceEventListener
 import player.phonograph.service.MusicService
 import java.lang.ref.WeakReference

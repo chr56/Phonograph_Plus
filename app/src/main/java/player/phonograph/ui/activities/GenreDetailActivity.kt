@@ -18,7 +18,7 @@ import com.afollestad.materialcab.attached.isActive
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView
 import player.phonograph.R
 import player.phonograph.adapter.song.SongAdapter
-import player.phonograph.helper.MusicPlayerRemote
+import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.interfaces.CabHolder
 import player.phonograph.interfaces.LoaderIds
 import player.phonograph.loader.GenreLoader

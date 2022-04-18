@@ -31,7 +31,7 @@ import player.phonograph.adapter.display.ListSheetAdapter
 import player.phonograph.databinding.ActivityPlaylistDetailBinding
 import player.phonograph.glide.PhonographColoredTarget
 import player.phonograph.glide.SongGlideRequest
-import player.phonograph.helper.MusicPlayerRemote
+import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.helper.menu.PlaylistMenuHelper.handleMenuClick
 import player.phonograph.interfaces.MultiSelectionCabProvider
 import player.phonograph.model.Song

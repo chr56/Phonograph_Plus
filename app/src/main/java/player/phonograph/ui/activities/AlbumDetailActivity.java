@@ -43,7 +43,7 @@ import player.phonograph.dialogs.DeleteSongsDialog;
 import player.phonograph.dialogs.SleepTimerDialog;
 import player.phonograph.glide.PhonographColoredTarget;
 import player.phonograph.glide.SongGlideRequest;
-import player.phonograph.helper.MusicPlayerRemote;
+import player.phonograph.service.MusicPlayerRemote;
 import player.phonograph.interfaces.CabHolder;
 import player.phonograph.interfaces.LoaderIds;
 import player.phonograph.interfaces.PaletteColorHolder;

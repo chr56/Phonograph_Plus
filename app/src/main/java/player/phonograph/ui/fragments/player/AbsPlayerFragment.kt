@@ -19,7 +19,7 @@ import kotlinx.coroutines.*
 import player.phonograph.R
 import player.phonograph.adapter.song.PlayingQueueAdapter
 import player.phonograph.dialogs.*
-import player.phonograph.helper.MusicPlayerRemote
+import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.helper.menu.SongMenuHelper
 import player.phonograph.interfaces.PaletteColorHolder
 import player.phonograph.model.Song

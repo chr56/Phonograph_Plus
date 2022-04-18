@@ -20,7 +20,7 @@ import com.sothree.slidinguppanel.SlidingUpPanelLayout.PanelState
 import player.phonograph.R
 import player.phonograph.adapter.base.MediaEntryViewHolder
 import player.phonograph.databinding.FragmentCardPlayerBinding
-import player.phonograph.helper.MusicPlayerRemote
+import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.helper.menu.SongMenuHelper.ClickMenuListener
 import player.phonograph.model.Song
 import player.phonograph.notification.ErrorNotification

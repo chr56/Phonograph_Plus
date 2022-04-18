@@ -6,13 +6,10 @@ import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
 import android.net.Uri;
 import android.os.Environment;
-import android.provider.BaseColumns;
 import android.provider.MediaStore;
 import android.text.TextUtils;
-import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -27,9 +24,7 @@ import java.util.Locale;
 
 import player.phonograph.App;
 import player.phonograph.R;
-import player.phonograph.helper.MusicPlayerRemote;
 import player.phonograph.loader.GenreLoader;
-import player.phonograph.loader.SongLoader;
 import player.phonograph.model.Album;
 import player.phonograph.model.Artist;
 import player.phonograph.model.Genre;

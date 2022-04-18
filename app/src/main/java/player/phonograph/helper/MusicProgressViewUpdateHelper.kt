@@ -3,6 +3,7 @@ package player.phonograph.helper
 import android.os.Handler
 import android.os.Looper
 import android.os.Message
+import player.phonograph.service.MusicPlayerRemote
 
 /**
  * @author Karim Abou Zeid (kabouzeid)

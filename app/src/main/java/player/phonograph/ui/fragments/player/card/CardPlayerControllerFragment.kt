@@ -13,7 +13,7 @@ import androidx.core.graphics.BlendModeColorFilterCompat
 import androidx.core.graphics.BlendModeCompat
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import player.phonograph.databinding.FragmentCardPlayerPlaybackControlsBinding
-import player.phonograph.helper.MusicPlayerRemote
+import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.helper.PlayPauseButtonOnClickHandler
 import player.phonograph.ui.fragments.player.AbsPlayerControllerFragment
 import player.phonograph.views.PlayPauseDrawable

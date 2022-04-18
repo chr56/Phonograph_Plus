@@ -1,5 +1,8 @@
+/*
+ * Copyright (c) 2022 chr_56 & Abou Zeid (kabouzeid) (original author)
+ */
 
-package player.phonograph.helper
+package player.phonograph.service
 
 import android.app.Activity
 import android.content.*
@@ -19,7 +22,6 @@ import player.phonograph.loader.SongLoader.getSongs
 import player.phonograph.loader.SongLoader.makeSongCursor
 import player.phonograph.model.Song
 import player.phonograph.notification.ErrorNotification
-import player.phonograph.service.MusicService
 import player.phonograph.service.MusicService.MusicBinder
 import player.phonograph.settings.Setting.Companion.instance
 import java.io.File
@@ -385,11 +387,11 @@ object MusicPlayerRemote {
     val isServiceConnected: Boolean get() = musicService != null
 
     const val TAG = "MusicPlayerRemote"
-}
 
-private fun MusicService?.tryExecute(p: (obj: MusicService) -> Unit): Boolean {
-    return if (this != null) {
-        p(this)
-        true
-    } else false
+    private fun MusicService?.tryExecute(p: (obj: MusicService) -> Unit): Boolean {
+        return if (this != null) {
+            p(this)
+            true
+        } else false
+    }
 }

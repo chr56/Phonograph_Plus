@@ -24,7 +24,7 @@ import player.phonograph.dialogs.ChangelogDialog.Companion.setChangelogRead
 import player.phonograph.dialogs.ScanMediaFolderDialog
 import player.phonograph.dialogs.UpgradeDialog
 import player.phonograph.glide.SongGlideRequest
-import player.phonograph.helper.MusicPlayerRemote
+import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.helper.SearchQueryHelper
 import player.phonograph.loader.AlbumLoader
 import player.phonograph.loader.ArtistLoader

@@ -14,7 +14,7 @@ import player.phonograph.adapter.base.AbsMultiSelectAdapter
 import player.phonograph.adapter.base.MediaEntryViewHolder
 import player.phonograph.glide.PhonographColoredTarget
 import player.phonograph.glide.SongGlideRequest
-import player.phonograph.helper.MusicPlayerRemote
+import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.helper.SortOrder
 import player.phonograph.helper.menu.SongMenuHelper
 import player.phonograph.helper.menu.SongsMenuHelper.handleMenuClick

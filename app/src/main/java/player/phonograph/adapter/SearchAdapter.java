@@ -14,7 +14,7 @@ import player.phonograph.R;
 import player.phonograph.adapter.base.MediaEntryViewHolder;
 import player.phonograph.glide.ArtistGlideRequest;
 import player.phonograph.glide.SongGlideRequest;
-import player.phonograph.helper.MusicPlayerRemote;
+import player.phonograph.service.MusicPlayerRemote;
 import player.phonograph.helper.menu.SongMenuHelper;
 import player.phonograph.model.Album;
 import player.phonograph.model.Artist;

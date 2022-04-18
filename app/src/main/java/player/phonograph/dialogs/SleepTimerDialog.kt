@@ -21,7 +21,7 @@ import com.afollestad.materialdialogs.customview.getCustomView
 import com.triggertrap.seekarc.SeekArc
 import lib.phonograph.view.CheckBoxX
 import player.phonograph.R
-import player.phonograph.helper.MusicPlayerRemote
+import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.MusicService
 import player.phonograph.settings.Setting
 import player.phonograph.util.MusicUtil

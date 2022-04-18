@@ -12,7 +12,7 @@ import com.afollestad.materialcab.attached.isActive
 import com.bumptech.glide.Glide
 import player.phonograph.R
 import player.phonograph.glide.SongGlideRequest
-import player.phonograph.helper.MusicPlayerRemote
+import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.helper.menu.SongMenuHelper.ClickMenuListener
 import player.phonograph.helper.menu.SongsMenuHelper.handleMenuClick
 import player.phonograph.interfaces.CabHolder
