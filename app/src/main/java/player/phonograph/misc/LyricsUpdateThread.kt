@@ -5,7 +5,8 @@
 package player.phonograph.misc
 
 import android.util.Log
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.runBlocking
 import player.phonograph.App
 import player.phonograph.helper.MusicPlayerRemote
 import player.phonograph.model.Song
@@ -50,33 +51,8 @@ class LyricsUpdateThread(song: Song? = null) : Thread() {
 
     override fun run() {
         super.run()
-        while (!quit) {
-
-            sleep(sleepTime)
-
-            if (!checkFetcher()) continue
-
-            if (!MusicPlayerRemote.isPlaying() || !Setting.instance.broadcastSynchronizedLyrics || lyricsFetcher.lyrics == null) { // sending only when playing
-                sleepTime = 1000 // todo
-                App.instance.lyricsService.stopLyric()
-                continue
-            } else {
-                sleepTime = 50
-            }
-
-            val newLine = lyricsFetcher.getLine(MusicPlayerRemote.getSongProgressMillis())
-
-            if (newLine != null) {
-                if (newLine != cache) {
-                    cache = newLine // update cache
-                    App.instance.lyricsService.updateLyric(newLine)
-                }
-            } else {
-                cache = ""
-                App.instance.lyricsService.stopLyric()
-            }
-            sleep(intervalTime)
-        }
+        loop()
+        App.instance.lyricsService.stopLyric()
     }
 
     /**
@@ -97,6 +73,36 @@ class LyricsUpdateThread(song: Song? = null) : Thread() {
                     _lyricsFetcher = LyricsFetcher(it.getLrcLyrics())
                 }
             }
+        }
+    }
+    private fun loop() {
+        while (!quit) {
+
+            sleep(sleepTime)
+
+            if (!checkFetcher()) continue
+
+            if (!MusicPlayerRemote.isPlaying() || !Setting.instance.broadcastSynchronizedLyrics || lyricsFetcher.lyrics == null) { // sending only when playing
+                sleepTime = 1000 // todo
+                Log.v("LyricsUpdateThread", "Stop lyrics broadcast!")
+                App.instance.lyricsService.stopLyric()
+                continue
+            } else {
+                sleepTime = 50
+            }
+
+            val newLine = lyricsFetcher.getLine(MusicPlayerRemote.getSongProgressMillis())
+
+            if (newLine != null) {
+                if (newLine != cache) {
+                    cache = newLine // update cache
+                    App.instance.lyricsService.updateLyric(newLine)
+                }
+            } else {
+                cache = ""
+                App.instance.lyricsService.stopLyric()
+            }
+            sleep(intervalTime)
         }
     }
 
