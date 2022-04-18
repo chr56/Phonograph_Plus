@@ -131,7 +131,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
                     // Set the new theme so that updateAppShortcuts can pull it
                     requireActivity().setTheme(Setting.getThemeResFromPrefValue(themeName))
-                    DynamicShortcutManager(activity).updateDynamicShortcuts()
+                    DynamicShortcutManager(requireContext()).updateDynamicShortcuts()
                 }
                 requireActivity().recreate()
                 true
@@ -214,7 +214,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
                     // Save preference
                     Setting.instance.coloredAppShortcuts = newValue as Boolean
                     // Update app shortcuts
-                    DynamicShortcutManager(activity).updateDynamicShortcuts()
+                    DynamicShortcutManager(requireContext()).updateDynamicShortcuts()
                     true
                 }
         }
