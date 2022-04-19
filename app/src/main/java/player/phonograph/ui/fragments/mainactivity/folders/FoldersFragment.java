@@ -21,6 +21,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.content.res.AppCompatResources;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.loader.app.LoaderManager;
 import androidx.loader.content.Loader;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -89,6 +90,8 @@ public class FoldersFragment extends AbsMainActivityFragment implements MainActi
 
     private RecyclerView.AdapterDataObserver dataObserver;
 
+    private FolderFragmentViewModel model;
+
     public FoldersFragment() {
     }
 
@@ -133,6 +136,12 @@ public class FoldersFragment extends AbsMainActivityFragment implements MainActi
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putParcelable(CRUMBS, viewBinding.breadCrumbs.getStateWrapper());
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        model = new ViewModelProvider(this).get(FolderFragmentViewModel.class);
     }
 
     @Override
