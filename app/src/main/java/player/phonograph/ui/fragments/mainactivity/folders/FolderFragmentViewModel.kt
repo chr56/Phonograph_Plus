@@ -21,6 +21,7 @@ import java.io.File
 import java.io.FileFilter
 import java.lang.IllegalStateException
 import java.util.*
+import kotlin.collections.ArrayList
 
 class FolderFragmentViewModel : ViewModel() {
     var isRecyclerViewPrepared: Boolean = false
@@ -94,7 +95,7 @@ class FolderFragmentViewModel : ViewModel() {
             val directory: File? = crumb?.file
             val files =
                 if (directory != null) {
-                    val files: MutableList<File> = FileUtil.listFiles(directory, FileScanner.audioFileFilter)
+                    val files = FileUtil.listFiles(directory, FileScanner.audioFileFilter)?.toMutableList() ?: ArrayList()
                     if (!isActive) return@launch
                     Collections.sort(files, fileComparator)
                     files
