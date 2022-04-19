@@ -5,26 +5,24 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.TextView
-import androidx.appcompat.widget.Toolbar
-import androidx.loader.app.LoaderManager
-import androidx.loader.content.Loader
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.afollestad.materialcab.*
+import com.afollestad.materialcab.CreateCallback
+import com.afollestad.materialcab.DestroyCallback
+import com.afollestad.materialcab.SelectCallback
 import com.afollestad.materialcab.attached.AttachedCab
 import com.afollestad.materialcab.attached.destroy
 import com.afollestad.materialcab.attached.isActive
-import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView
+import com.afollestad.materialcab.createCab
+import kotlinx.coroutines.*
 import player.phonograph.R
 import player.phonograph.adapter.song.SongAdapter
-import player.phonograph.service.MusicPlayerRemote
+import player.phonograph.databinding.ActivityGenreDetailBinding
 import player.phonograph.interfaces.CabHolder
-import player.phonograph.interfaces.LoaderIds
 import player.phonograph.loader.GenreLoader
-import player.phonograph.misc.WrappedAsyncTaskLoader
 import player.phonograph.model.Genre
 import player.phonograph.model.Song
+import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.settings.Setting
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
 import player.phonograph.util.PhonographColorUtil
@@ -33,72 +31,80 @@ import util.mdcolor.pref.ThemeColor
 import util.mddesign.core.Themer
 
 class GenreDetailActivity :
-    AbsSlidingMusicPanelActivity(), CabHolder, LoaderManager.LoaderCallbacks<List<Song>> {
+    AbsSlidingMusicPanelActivity(), CabHolder {
 
-    private lateinit var recyclerView: RecyclerView
-    private lateinit var mToolbar: Toolbar
-    private lateinit var empty: TextView
+    private var _viewBinding: ActivityGenreDetailBinding? = null
+    private val binding: ActivityGenreDetailBinding get() = _viewBinding!!
 
     private lateinit var genre: Genre
-
     private lateinit var adapter: SongAdapter
 
     private var cab: AttachedCab? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        genre = intent.extras?.getParcelable(EXTRA_GENRE) ?: throw Exception("No genre in the intent!")
+        loadDataSet(this)
+        _viewBinding = ActivityGenreDetailBinding.inflate(layoutInflater)
+
         super.onCreate(savedInstanceState)
+
         setDrawUnderStatusbar()
-
-        // todo: viewBinding
-        recyclerView = findViewById(R.id.recycler_view)
-        mToolbar = findViewById(R.id.toolbar)
-        empty = findViewById(android.R.id.empty)
-
-        Themer.setActivityToolbarColorAuto(this, mToolbar)
-
         setStatusbarColorAuto()
         setNavigationbarColorAuto()
         setTaskDescriptionColorAuto()
 
-        genre = intent.extras?.getParcelable(EXTRA_GENRE) ?: throw Exception("No genre in the intent!")
-
-        setUpRecyclerView()
         setUpToolBar()
-
-        LoaderManager.getInstance(this).initLoader(LOADER_ID, null, this)
+        setUpRecyclerView()
     }
 
     override fun createContentView(): View {
-        return wrapSlidingMusicPanel(R.layout.activity_genre_detail)
+        return wrapSlidingMusicPanel(binding.root)
+    }
+
+    private val loaderCoroutineScope: CoroutineScope = CoroutineScope(Dispatchers.IO)
+
+    private var isRecyclerViewPrepared: Boolean = false
+
+    private fun loadDataSet(context: Context) {
+        loaderCoroutineScope.launch {
+
+            val list: List<Song> = GenreLoader.getSongs(context, genre.id)
+
+            while (!isRecyclerViewPrepared) yield() // wait until ready
+
+            withContext(Dispatchers.Main) {
+                if (isRecyclerViewPrepared) adapter.dataSet = list
+            }
+        }
     }
 
     private fun setUpRecyclerView() {
-        ViewUtil.setUpFastScrollRecyclerViewColor(
-            this, recyclerView as FastScrollRecyclerView, ThemeColor.accentColor(this)
-        )
-
-        recyclerView.layoutManager = LinearLayoutManager(this)
         adapter = SongAdapter(this, ArrayList(), R.layout.item_list, false, this)
-        recyclerView.adapter = adapter
-
+        binding.recyclerView.apply {
+            layoutManager = LinearLayoutManager(this@GenreDetailActivity)
+            adapter = this@GenreDetailActivity.adapter
+        }
+        ViewUtil.setUpFastScrollRecyclerViewColor(this, binding.recyclerView, ThemeColor.accentColor(this))
         adapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
             override fun onChanged() {
                 super.onChanged()
                 checkIsEmpty()
             }
         })
+        isRecyclerViewPrepared = true
     }
 
     private fun setUpToolBar() {
-        mToolbar.setBackgroundColor(ThemeColor.primaryColor(this))
-        setSupportActionBar(mToolbar)
+        binding.toolbar.setBackgroundColor(ThemeColor.primaryColor(this))
+        Themer.setActivityToolbarColorAuto(this, binding.toolbar)
+        setSupportActionBar(binding.toolbar)
         supportActionBar!!.title = genre.name
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_genre_detail, menu)
-        return super.onCreateOptionsMenu(menu)
+        return true
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -140,46 +146,28 @@ class GenreDetailActivity :
 
     override fun onBackPressed() {
         if (cab != null && cab.isActive()) cab.destroy() else {
-            recyclerView.stopScroll()
+            binding.recyclerView.stopScroll()
             super.onBackPressed()
         }
     }
 
     override fun onMediaStoreChanged() {
         super.onMediaStoreChanged()
-        LoaderManager.getInstance(this).restartLoader(LOADER_ID, null, this)
+        loadDataSet(this)
     }
 
     private fun checkIsEmpty() {
-        empty.visibility = if (adapter.itemCount == 0) View.VISIBLE else View.GONE
+        binding.empty.visibility = if (adapter.itemCount == 0) View.VISIBLE else View.GONE
     }
 
     override fun onDestroy() {
-        recyclerView.adapter = null
+        binding.recyclerView.adapter = null
         super.onDestroy()
-    }
-
-    override fun onCreateLoader(id: Int, args: Bundle?): Loader<List<Song>> {
-        return AsyncGenreSongLoader(this, genre)
-    }
-
-    override fun onLoadFinished(loader: Loader<List<Song>>, data: List<Song>) {
-        adapter.dataSet = data
-    }
-
-    override fun onLoaderReset(loader: Loader<List<Song>>) {
-        adapter.dataSet = ArrayList()
-    }
-
-    private class AsyncGenreSongLoader(context: Context, private val genre: Genre) :
-        WrappedAsyncTaskLoader<List<Song>>(context) {
-        override fun loadInBackground(): List<Song> {
-            return GenreLoader.getSongs(context, genre.id)
-        }
+        loaderCoroutineScope.cancel()
+        _viewBinding = null
     }
 
     companion object {
-        private const val LOADER_ID = LoaderIds.GENRE_DETAIL_ACTIVITY
         const val EXTRA_GENRE = "extra_genre"
     }
 }
