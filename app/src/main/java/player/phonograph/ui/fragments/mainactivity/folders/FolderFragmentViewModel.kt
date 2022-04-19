@@ -4,6 +4,7 @@
 
 package player.phonograph.ui.fragments.mainactivity.folders
 
+import android.util.Log
 import android.webkit.MimeTypeMap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -23,30 +24,11 @@ class FolderFragmentViewModel : ViewModel() {
         onPathsListedCallback = onPathsListed
         listPathsJob = viewModelScope.launch(Dispatchers.IO) {
 
-            val paths: Array<String?>
-            if (!isActive) return@launch
-            try {
-                if (loadingInfos.file.isDirectory) {
-                    val files = FileUtil.listFilesDeep(loadingInfos.file, loadingInfos.fileFilter)
-                    if (!isActive) return@launch
+            val paths = FileScanner.scanPaths(loadingInfos, this)
 
-                    paths = arrayOfNulls(files.size)
-                    for (i in files.indices) {
-                        if (!isActive) return@launch
-                        val f = files[i]
-                        paths[i] = FileUtil.safeGetCanonicalPath(f)
-                    }
-                } else {
-                    paths = arrayOfNulls(1)
-                    paths[0] = FileUtil.safeGetCanonicalPath(loadingInfos.file)
-                }
-            } catch (e: Exception) {
-                ErrorNotification.postErrorNotification(e, "Fail to Load files!")
-                e.printStackTrace()
-                return@launch
-            }
             withContext(Dispatchers.Main) {
-                onPathsListedCallback?.invoke(paths)
+                if (paths != null)
+                    onPathsListedCallback?.invoke(paths)
             }
         }
     }
@@ -56,17 +38,45 @@ class FolderFragmentViewModel : ViewModel() {
         onPathsListedCallback = null
         super.onCleared()
     }
+}
 
-    companion object {
-        @JvmField
-        val audioFileFilter: FileFilter =
-            FileFilter { file: File ->
-                !file.isHidden && (
-                    file.isDirectory ||
-                        FileUtil.fileIsMimeType(file, "audio/*", MimeTypeMap.getSingleton()) ||
-                        FileUtil.fileIsMimeType(file, "application/ogg", MimeTypeMap.getSingleton())
-                    )
+class LoadingInfo(val file: File, val fileFilter: FileFilter)
+
+object FileScanner {
+    fun scanPaths(loadingInfos: LoadingInfo, scope: CoroutineScope): Array<String?>? {
+        val paths: Array<String?>
+        if (!scope.isActive) return null
+        try {
+            if (loadingInfos.file.isDirectory) {
+                val files = FileUtil.listFilesDeep(loadingInfos.file, loadingInfos.fileFilter)
+                if (!scope.isActive) return null
+
+                paths = arrayOfNulls(files.size)
+                for (i in files.indices) {
+                    if (!scope.isActive) return null
+                    val f = files[i]
+                    paths[i] = FileUtil.safeGetCanonicalPath(f)
+                }
+            } else {
+                paths = arrayOfNulls(1)
+                paths[0] = FileUtil.safeGetCanonicalPath(loadingInfos.file)
             }
+            Log.v("FileScanner", "success")
+        } catch (e: Exception) {
+            ErrorNotification.postErrorNotification(e, "Fail to Load files!")
+            e.printStackTrace()
+            return null
+        }
+        return paths
     }
-    class LoadingInfo(val file: File, val fileFilter: FileFilter)
+
+    @JvmField
+    val audioFileFilter: FileFilter =
+        FileFilter { file: File ->
+            !file.isHidden && (
+                file.isDirectory ||
+                    FileUtil.fileIsMimeType(file, "audio/*", MimeTypeMap.getSingleton()) ||
+                    FileUtil.fileIsMimeType(file, "application/ogg", MimeTypeMap.getSingleton())
+                )
+        }
 }
