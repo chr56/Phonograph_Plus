@@ -1,36 +1,35 @@
 package player.phonograph.dialogs
 
 import android.Manifest
-import android.app.Activity
 import android.app.Dialog
-import android.content.Context
 import android.content.pm.PackageManager
 import android.media.MediaScannerConnection
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
-import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.DialogFragment
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.WhichButton
 import com.afollestad.materialdialogs.actions.getActionButton
 import com.afollestad.materialdialogs.files.folderChooser
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.misc.UpdateToastMediaScannerCompletionListener
+import player.phonograph.notification.ErrorNotification
 import player.phonograph.settings.Setting
-import player.phonograph.ui.fragments.mainactivity.folders.FoldersFragment
-import player.phonograph.ui.fragments.mainactivity.folders.FoldersFragment.ArrayListPathsAsyncTask
+import player.phonograph.ui.fragments.mainactivity.folders.FileScanner
+import player.phonograph.ui.fragments.mainactivity.folders.LoadingInfo
+import player.phonograph.util.Util
 import util.mdcolor.pref.ThemeColor
 import java.io.File
-import java.lang.ref.WeakReference
 
 class ScanMediaFolderDialog : DialogFragment() {
-//    private lateinit var arg: Bundle
-//    private lateinit var selected: File
-//    private lateinit var initialPath: String
     private lateinit var initial: File
-//    private var mode: Int = 0
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         // Storage permission check
@@ -48,28 +47,31 @@ class ScanMediaFolderDialog : DialogFragment() {
 
         // init Default Path
         initial = Setting.instance.startDirectory
-//        initialPath = Setting.instance().startDirectory.absolutePath
-//        var mSavedInstanceState = savedInstanceState
-//        if (mSavedInstanceState == null) {
-//            mSavedInstanceState = Bundle()
-//        }
-//        if (!savedInstanceState!!.containsKey("current_path")) {
-//            mSavedInstanceState.putString("current_path", initialPath)
-//        }
 
         // FileChooser
         val dialog = MaterialDialog(requireContext())
             .folderChooser(context = requireContext(), waitForPositiveButton = true, emptyTextRes = R.string.empty, initialDirectory = initial,) {
                     _, file ->
-//                selected = file
-                val applicationContext = requireActivity().applicationContext
-                val activityWeakReference = WeakReference<Activity?>(activity)
-                Log.d(null, file.absolutePath)
-
                 dismiss()
-                ArrayListPathsAsyncTask(activity) { paths: Array<String>? ->
-                    scanPaths(activityWeakReference, applicationContext, paths)
-                }.execute(ArrayListPathsAsyncTask.LoadingInfo(file, FoldersFragment.AUDIO_FILE_FILTER))
+                runCatching {
+                    CoroutineScope(Dispatchers.IO).launch {
+                        val paths = FileScanner.scanPaths(LoadingInfo(file, FileScanner.audioFileFilter), this)
+                        if (!paths.isNullOrEmpty()) {
+                            withContext(Dispatchers.Main) {
+                                scanPaths(paths)
+                            }
+                        } else {
+                            Util.coroutineToast(App.instance, R.string.nothing_to_scan)
+                        }
+                    }
+                }.also {
+                    if (it.isFailure) {
+                        it.exceptionOrNull()?.let { e ->
+                            ErrorNotification.postErrorNotification(e, "Scan Fail")
+                            Log.w("ScanMediaFolderDialog", e)
+                        }
+                    }
+                }
             }
             .noAutoDismiss()
             .positiveButton(android.R.string.ok)
@@ -81,27 +83,9 @@ class ScanMediaFolderDialog : DialogFragment() {
         return dialog
     }
 
-//    override fun onCreate(savedInstanceState: Bundle?) {
-//        super.onCreate(savedInstanceState)
-//        arg = requireArguments()
-//    }
-
-    companion object {
-//        @JvmStatic
-//        fun Create(mode: Int) {
-//        }
-
-        private fun scanPaths(
-            activityWeakReference: WeakReference<Activity?>,
-            applicationContext: Context,
-            toBeScanned: Array<String>?
-        ) {
-            val activity = activityWeakReference.get()
-            if (toBeScanned == null || toBeScanned.isEmpty()) {
-                Toast.makeText(applicationContext, R.string.nothing_to_scan, Toast.LENGTH_SHORT).show()
-            } else {
-                MediaScannerConnection.scanFile(applicationContext, toBeScanned, null, activity?.let { UpdateToastMediaScannerCompletionListener(it, toBeScanned) })
-            }
-        }
+    fun scanPaths(toBeScanned: Array<String?>) {
+        MediaScannerConnection.scanFile(
+            App.instance, toBeScanned, null, activity?.let { UpdateToastMediaScannerCompletionListener(it, toBeScanned as Array<String>) }
+        )
     }
 }

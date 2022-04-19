@@ -329,7 +329,12 @@ public class FoldersFragment extends AbsMainActivityFragment implements MainActi
             case R.id.action_scan:
                 BreadCrumbLayout.Crumb crumb = getActiveCrumb();
                 if (crumb != null) {
-                    new ArrayListPathsAsyncTask(getMainActivity(), this::scanPaths).execute(new ArrayListPathsAsyncTask.LoadingInfo(crumb.getFile(), AUDIO_FILE_FILTER));
+                    model.listPaths(
+                            new LoadingInfo(crumb.getFile(), FileScanner.audioFileFilter),
+                            paths -> {
+                                scanPaths(paths);
+                                return Unit.INSTANCE;
+                            });
                 }
                 return true;
         }
@@ -429,7 +434,12 @@ public class FoldersFragment extends AbsMainActivityFragment implements MainActi
                         Toast.makeText(getMainActivity(), String.format(getString(R.string.new_start_directory), file.getPath()), Toast.LENGTH_SHORT).show();
                         return true;
                     case R.id.action_scan:
-                        new ArrayListPathsAsyncTask(getMainActivity(), this::scanPaths).execute(new ArrayListPathsAsyncTask.LoadingInfo(file, AUDIO_FILE_FILTER));
+                        model.listPaths(
+                                new LoadingInfo(file, FileScanner.audioFileFilter),
+                                paths -> {
+                                    scanPaths(paths);
+                                    return Unit.INSTANCE;
+                                });
                         return true;
                     case R.id.action_add_to_black_list:
                         BlacklistUtil.INSTANCE.addToBlacklist(requireActivity(), file);
@@ -625,86 +635,6 @@ public class FoldersFragment extends AbsMainActivityFragment implements MainActi
 
         public interface OnSongsListedCallback {
             void onSongsListed(@NonNull List<Song> songs, Object extra);
-        }
-    }
-
-    public static class ArrayListPathsAsyncTask extends ListingFilesDialogAsyncTask<ArrayListPathsAsyncTask.LoadingInfo, String, String[]> {
-        private WeakReference<OnPathsListedCallback> onPathsListedCallbackWeakReference;
-
-        public ArrayListPathsAsyncTask(Context context, OnPathsListedCallback callback) {
-            super(context, 500);
-            onPathsListedCallbackWeakReference = new WeakReference<>(callback);
-        }
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            checkCallbackReference();
-        }
-
-        @Override
-        protected String[] doInBackground(LoadingInfo... params) {
-            try {
-                if (isCancelled() || checkCallbackReference() == null) return null;
-
-                LoadingInfo info = params[0];
-
-                final String[] paths;
-
-                if (info.file.isDirectory()) {
-                    List<File> files = FileUtil.listFilesDeep(info.file, info.fileFilter);
-
-                    if (isCancelled() || checkCallbackReference() == null) return null;
-
-                    paths = new String[files.size()];
-                    for (int i = 0; i < files.size(); i++) {
-                        File f = files.get(i);
-                        paths[i] = FileUtil.safeGetCanonicalPath(f);
-
-                        if (isCancelled() || checkCallbackReference() == null) return null;
-                    }
-                } else {
-                    paths = new String[1];
-                    paths[0] = FileUtil.safeGetCanonicalPath(info.file);
-                }
-
-                return paths;
-            } catch (Exception e) {
-                e.printStackTrace();
-                cancel(false);
-                return null;
-            }
-        }
-
-        @Override
-        protected void onPostExecute(String[] paths) {
-            super.onPostExecute(paths);
-            OnPathsListedCallback callback = checkCallbackReference();
-            if (callback != null && paths != null) {
-                callback.onPathsListed(paths);
-            }
-        }
-
-        private OnPathsListedCallback checkCallbackReference() {
-            OnPathsListedCallback callback = onPathsListedCallbackWeakReference.get();
-            if (callback == null) {
-                cancel(false);
-            }
-            return callback;
-        }
-
-        public static class LoadingInfo {
-            public final File file;
-            public final FileFilter fileFilter;
-
-            public LoadingInfo(File file, FileFilter fileFilter) {
-                this.file = file;
-                this.fileFilter = fileFilter;
-            }
-        }
-
-        public interface OnPathsListedCallback {
-            void onPathsListed(@NonNull String[] paths);
         }
     }
 
