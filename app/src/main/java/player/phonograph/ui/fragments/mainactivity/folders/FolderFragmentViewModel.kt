@@ -39,8 +39,10 @@ class FolderFragmentViewModel : ViewModel() {
 
     // todo
     var scanSongsJob: Job? = null
-    var onSongsListedCallback: ((List<Song>) -> Unit)? = null
-    fun scanSongs(fileInfo: FileInfo, onSongsListed: ((List<Song>) -> Unit)) {
+    var onSongsListedCallback: ((List<Song?>, Any?) -> Unit)? = null
+    @JvmOverloads
+    fun scanSongs(fileInfo: FileInfo, onSongsListed: ((List<Song?>, Any?) -> Unit), extra: Any? = null) {
+        onSongsListedCallback = onSongsListed
         scanSongsJob = viewModelScope.launch(Dispatchers.IO) {
             val songs = try {
                 val files = FileUtil.listFilesDeep(fileInfo.files, fileInfo.fileFilter)
@@ -56,8 +58,8 @@ class FolderFragmentViewModel : ViewModel() {
             }
             if (!isActive) return@launch
             withContext(Dispatchers.Main) {
-                if (!songs.isNullOrEmpty())
-                    onSongsListedCallback?.invoke(songs)
+                if (songs != null)
+                    onSongsListedCallback?.invoke(songs, extra)
                 else {
                     ErrorNotification.postErrorNotification(IllegalStateException("'songs' are empty!"), "Fail to find Song!")
                 }
