@@ -4,13 +4,16 @@
 
 package player.phonograph.ui.fragments.mainactivity.folders
 
+import android.os.SystemClock
 import android.util.Log
 import android.webkit.MimeTypeMap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.*
 import player.phonograph.App
+import player.phonograph.R
 import player.phonograph.model.Song
+import player.phonograph.notification.BackgroundNotification
 import player.phonograph.notification.ErrorNotification
 import player.phonograph.util.FileUtil
 import player.phonograph.views.BreadCrumbLayout
@@ -44,17 +47,33 @@ class FolderFragmentViewModel : ViewModel() {
     fun scanSongs(fileInfo: FileInfo, onSongsListed: ((List<Song?>, Any?) -> Unit), extra: Any? = null) {
         onSongsListedCallback = onSongsListed
         scanSongsJob = viewModelScope.launch(Dispatchers.IO) {
+            val notificationId = SystemClock.currentThreadTimeMillis().div(888887).toInt()
+
+            BackgroundNotification.post(
+                App.instance.getString(R.string.listing_files),
+                fileInfo.files.map { file: File -> file.absolutePath }.reduce { acc, s -> "$acc\n$s" },
+                notificationId
+            )
+
             val songs = try {
                 val files = FileUtil.listFilesDeep(fileInfo.files, fileInfo.fileFilter)
-                if (!isActive) return@launch
+                if (!isActive) {
+                    BackgroundNotification.remove(notificationId)
+                    return@launch
+                }
                 Collections.sort(files, fileInfo.fileComparator)
-                if (!isActive) return@launch else {
+                if (!isActive) {
+                    BackgroundNotification.remove(notificationId)
+                    return@launch
+                } else {
                     FileUtil.matchFilesWithMediaStore(App.instance, files)
                 }
             } catch (e: Exception) {
                 ErrorNotification.postErrorNotification(e, "Fail to find Song!")
                 e.printStackTrace()
                 null
+            } finally {
+                BackgroundNotification.remove(notificationId)
             }
             if (!isActive) return@launch
             withContext(Dispatchers.Main) {
