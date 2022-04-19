@@ -2,7 +2,6 @@ package player.phonograph.ui.fragments.mainactivity.folders;
 
 
 import android.annotation.SuppressLint;
-import android.app.Dialog;
 import android.content.Context;
 import android.media.MediaScannerConnection;
 import android.os.Bundle;
@@ -27,18 +26,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.afollestad.materialcab.MaterialCabKt;
 import com.afollestad.materialcab.attached.AttachedCab;
 import com.afollestad.materialcab.attached.AttachedCabKt;
-import com.afollestad.materialdialogs.MaterialDialog;
-import com.afollestad.materialdialogs.WhichButton;
-import com.afollestad.materialdialogs.actions.DialogActionExtKt;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.io.File;
 import java.io.FileFilter;
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -52,9 +45,7 @@ import player.phonograph.databinding.FragmentFolderBinding;
 import player.phonograph.helper.menu.SongMenuHelper;
 import player.phonograph.helper.menu.SongsMenuHelper;
 import player.phonograph.interfaces.CabHolder;
-import player.phonograph.misc.DialogAsyncTask;
 import player.phonograph.misc.UpdateToastMediaScannerCompletionListener;
-import player.phonograph.model.Song;
 import player.phonograph.service.MusicPlayerRemote;
 import player.phonograph.settings.Setting;
 import player.phonograph.ui.activities.MainActivity;
@@ -249,6 +240,7 @@ public class FoldersFragment extends AbsMainActivityFragment implements MainActi
     }
 
 
+    @NonNull
     public AttachedCab showCab(int menuRes,
                                @NonNull Function2<? super AttachedCab, ? super Menu, Unit> createCallback,
                                @NonNull Function1<? super MenuItem, Boolean> selectCallback,
@@ -510,111 +502,4 @@ public class FoldersFragment extends AbsMainActivityFragment implements MainActi
         }
     }
 
-
-    private static class ListSongsAsyncTask extends ListingFilesDialogAsyncTask<ListSongsAsyncTask.LoadingInfo, Void, List<Song>> {
-        private WeakReference<Context> contextWeakReference;
-        private WeakReference<OnSongsListedCallback> callbackWeakReference;
-        private final Object extra;
-
-        public ListSongsAsyncTask(Context context, Object extra, OnSongsListedCallback callback) {
-            super(context, 500);
-            this.extra = extra;
-            contextWeakReference = new WeakReference<>(context);
-            callbackWeakReference = new WeakReference<>(callback);
-        }
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            checkCallbackReference();
-            checkContextReference();
-        }
-
-        @Override
-        protected List<Song> doInBackground(LoadingInfo... params) {
-            try {
-                LoadingInfo info = params[0];
-                List<File> files = FileUtil.listFilesDeep(info.files, info.fileFilter);
-
-                if (isCancelled() || checkContextReference() == null || checkCallbackReference() == null)
-                    return null;
-
-                Collections.sort(files, info.fileComparator);
-
-                Context context = checkContextReference();
-                if (isCancelled() || context == null || checkCallbackReference() == null)
-                    return null;
-
-                return FileUtil.matchFilesWithMediaStore(context, files);
-            } catch (Exception e) {
-                e.printStackTrace();
-                cancel(false);
-                return null;
-            }
-        }
-
-        @Override
-        protected void onPostExecute(List<Song> songs) {
-            super.onPostExecute(songs);
-            OnSongsListedCallback callback = checkCallbackReference();
-            if (songs != null && callback != null)
-                callback.onSongsListed(songs, extra);
-        }
-
-        private Context checkContextReference() {
-            Context context = contextWeakReference.get();
-            if (context == null) {
-                cancel(false);
-            }
-            return context;
-        }
-
-        private OnSongsListedCallback checkCallbackReference() {
-            OnSongsListedCallback callback = callbackWeakReference.get();
-            if (callback == null) {
-                cancel(false);
-            }
-            return callback;
-        }
-
-        public static class LoadingInfo {
-            public final Comparator<File> fileComparator;
-            public final FileFilter fileFilter;
-            public final List<File> files;
-
-            public LoadingInfo(@NonNull List<File> files, @NonNull FileFilter fileFilter, @NonNull Comparator<File> fileComparator) {
-                this.fileComparator = fileComparator;
-                this.fileFilter = fileFilter;
-                this.files = files;
-            }
-        }
-
-        public interface OnSongsListedCallback {
-            void onSongsListed(@NonNull List<Song> songs, Object extra);
-        }
-    }
-
-    private static abstract class ListingFilesDialogAsyncTask<Params, Progress, Result> extends DialogAsyncTask<Params, Progress, Result> {
-        public ListingFilesDialogAsyncTask(Context context) {
-            super(context);
-        }
-
-        public ListingFilesDialogAsyncTask(Context context, int showDelay) {
-            super(context, showDelay);
-        }
-
-        @Override
-        protected Dialog createDialog(@NonNull Context context) {
-            MaterialDialog dialog = new MaterialDialog(context, MaterialDialog.getDEFAULT_BEHAVIOR());
-            dialog.title(R.string.listing_files, null);
-            dialog.cancelable(true);
-            dialog.negativeButton(android.R.string.cancel, null, dialog1 -> {
-                cancel(false);
-                return null;
-            });
-            //set button color
-            DialogActionExtKt.getActionButton(dialog, WhichButton.POSITIVE).updateTextColor(ThemeColor.accentColor(context));
-            return dialog;
-        }
-    }
 }
