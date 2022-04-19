@@ -173,6 +173,7 @@ public class FoldersFragment extends AbsMainActivityFragment implements MainActi
         setUpRecyclerView();
         setUpAdapter();
 
+        model.setRecyclerViewPrepared(true);
     }
 
     private void setUpAppbarColor() {
