@@ -26,14 +26,15 @@ import util.mddesign.util.Util
  */
 class SearchAdapter(
     private val activity: AppCompatActivity,
-    private var dataSet: List<Any>,
+    dataSet: List<Any>
 ) :
     RecyclerView.Adapter<SearchAdapter.ViewHolder>() {
 
-    fun swapDataSet(dataSet: List<Any>) {
-        this.dataSet = dataSet
-        notifyDataSetChanged()
-    }
+    var dataSet: List<Any> = dataSet
+        set(value) {
+            field = value
+            notifyDataSetChanged()
+        }
 
     override fun getItemViewType(position: Int): Int =
         when (dataSet[position]) {
