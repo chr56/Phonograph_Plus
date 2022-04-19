@@ -72,6 +72,10 @@ class SearchAdapter(
                 val song = dataSet[position] as Song
                 holder.title?.text = song.title
                 holder.text?.text = MusicUtil.getSongInfoString(song)
+                SongGlideRequest.Builder.from(Glide.with(activity), song)
+                    .checkIgnoreMediaStore(activity)
+                    .build()
+                    .into(holder.image!!)
             }
             else -> holder.title?.text = dataSet[position].toString()
         }
@@ -103,7 +107,7 @@ class SearchAdapter(
             when (itemViewType) {
                 ALBUM -> setImageTransitionName(activity.getString(R.string.transition_album_art))
                 ARTIST -> setImageTransitionName(activity.getString(R.string.transition_artist_image))
-                else -> itemView.findViewById<View>(R.id.image_container)?.visibility = View.GONE
+                // else -> itemView.findViewById<View>(R.id.image_container)?.visibility = View.GONE
             }
         }
         override fun onClick(v: View) {
