@@ -1,6 +1,5 @@
 package player.phonograph.ui.activities;
 
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.ColorFilter;
 import android.os.Bundle;
@@ -16,8 +15,6 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.content.res.AppCompatResources;
 import androidx.core.graphics.BlendModeColorFilterCompat;
 import androidx.core.graphics.BlendModeCompat;
-import androidx.loader.app.LoaderManager;
-import androidx.loader.content.Loader;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -43,44 +40,38 @@ import player.phonograph.dialogs.DeleteSongsDialog;
 import player.phonograph.dialogs.SleepTimerDialog;
 import player.phonograph.glide.PhonographColoredTarget;
 import player.phonograph.glide.SongGlideRequest;
-import player.phonograph.service.MusicPlayerRemote;
 import player.phonograph.interfaces.CabHolder;
-import player.phonograph.interfaces.LoaderIds;
 import player.phonograph.interfaces.PaletteColorHolder;
-import util.phonograph.lastfm.rest.LastFMRestClient;
-import util.phonograph.lastfm.rest.model.LastFmAlbum;
-import player.phonograph.loader.AlbumLoader;
 import player.phonograph.misc.SimpleObservableScrollViewCallbacks;
-import player.phonograph.misc.WrappedAsyncTaskLoader;
 import player.phonograph.model.Album;
 import player.phonograph.model.Song;
+import player.phonograph.service.MusicPlayerRemote;
 import player.phonograph.settings.Setting;
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity;
-import util.phonograph.tageditor.AbsTagEditorActivity;
-import util.phonograph.tageditor.AlbumTagEditorActivity;
 import player.phonograph.util.MusicUtil;
 import player.phonograph.util.NavigationUtil;
 import player.phonograph.util.PhonographColorUtil;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import util.mdcolor.ColorUtil;
 import util.mdcolor.pref.ThemeColor;
 import util.mddesign.core.Themer;
-import util.mdcolor.ColorUtil;
 import util.mddesign.util.MaterialColorHelper;
 import util.mddesign.util.Util;
+import util.phonograph.lastfm.rest.LastFMRestClient;
+import util.phonograph.lastfm.rest.model.LastFmAlbum;
+import util.phonograph.tageditor.AbsTagEditorActivity;
+import util.phonograph.tageditor.AlbumTagEditorActivity;
 
 /**
  * Be careful when changing things in this Activity!
  */
-public class AlbumDetailActivity extends AbsSlidingMusicPanelActivity implements PaletteColorHolder, CabHolder, LoaderManager.LoaderCallbacks<Album> {
+public class AlbumDetailActivity extends AbsSlidingMusicPanelActivity implements PaletteColorHolder, CabHolder {
 
     private static final int TAG_EDITOR_REQUEST = 2001;
-    private static final int LOADER_ID = LoaderIds.ALBUM_DETAIL_ACTIVITY;
 
     public static final String EXTRA_ALBUM_ID = "extra_album_id";
-
-    private Album album;
 
     private ActivityAlbumDetailBinding viewBinding;
 
@@ -96,8 +87,13 @@ public class AlbumDetailActivity extends AbsSlidingMusicPanelActivity implements
     private MaterialDialog wikiDialog;
     private LastFMRestClient lastFMRestClient;
 
+    private AlbumDetailActivityLoader loader;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        long albumID = getIntent().getExtras().getLong(EXTRA_ALBUM_ID);
+        loader = new AlbumDetailActivityLoader(albumID);
+        load();
         viewBinding = ActivityAlbumDetailBinding.inflate(getLayoutInflater());
 
         super.onCreate(savedInstanceState);
@@ -110,11 +106,10 @@ public class AlbumDetailActivity extends AbsSlidingMusicPanelActivity implements
         setUpObservableListViewParams();
         setUpToolBar();
         setUpViews();
-
-        getSupportLoaderManager().initLoader(LOADER_ID, getIntent().getExtras(), this);
     }
 
 
+    @NonNull
     @Override
     protected View createContentView() {
         return wrapSlidingMusicPanel(viewBinding.getRoot());
@@ -143,10 +138,10 @@ public class AlbumDetailActivity extends AbsSlidingMusicPanelActivity implements
     private void setUpViews() {
         setUpRecyclerView();
         setUpSongsAdapter();
+        loader.setRecyclerViewPrepared(true);
         viewBinding.artistText.setOnClickListener(v -> {
-            if (album != null) {
-                NavigationUtil.goToArtist(AlbumDetailActivity.this, album.getArtistId());
-            }
+            getAlbum();
+            NavigationUtil.goToArtist(AlbumDetailActivity.this, getAlbum().getArtistId());
         });
         setColors(Util.resolveColor(this, R.attr.defaultFooterColor));
     }
@@ -232,12 +227,19 @@ public class AlbumDetailActivity extends AbsSlidingMusicPanelActivity implements
         });
     }
 
-    private void reload() {
-        getSupportLoaderManager().restartLoader(LOADER_ID, getIntent().getExtras(), this);
+    private void load() {
+        loader.loadDataSet(this,
+                album -> {
+                    setAlbum(album);
+                    return Unit.INSTANCE;
+                }, songs -> {
+                    adapter.setDataSet(songs);
+                    return Unit.INSTANCE;
+                });
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
+    public boolean onCreateOptionsMenu(@NonNull Menu menu) {
         getMenuInflater().inflate(R.menu.menu_album_detail, menu);
         return super.onCreateOptionsMenu(menu);
     }
@@ -258,7 +260,7 @@ public class AlbumDetailActivity extends AbsSlidingMusicPanelActivity implements
                         if (lastFmAlbum != null && lastFmAlbum.getAlbum() != null && lastFmAlbum.getAlbum().getWiki() != null) {
                             final String wikiContent = lastFmAlbum.getAlbum().getWiki().getContent();
                             if (wikiContent != null && !wikiContent.trim().isEmpty()) {
-                                wiki = Html.fromHtml(wikiContent);
+                                wiki = Html.fromHtml(wikiContent,Html.FROM_HTML_MODE_LEGACY);
                             }
                         }
 
@@ -289,60 +291,59 @@ public class AlbumDetailActivity extends AbsSlidingMusicPanelActivity implements
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
         final List<Song> songs = adapter.getDataSet();
-        switch (id) {
-            case R.id.action_sleep_timer:
-                new SleepTimerDialog().show(getSupportFragmentManager(), "SET_SLEEP_TIMER");
-                return true;
-            case R.id.action_equalizer:
-                NavigationUtil.openEqualizer(this);
-                return true;
-            case R.id.action_shuffle_album:
-                MusicPlayerRemote.openAndShuffleQueue(songs, true);
-                return true;
-            case R.id.action_play_next:
-                MusicPlayerRemote.playNext(songs);
-                return true;
-            case R.id.action_add_to_current_playing:
-                MusicPlayerRemote.enqueue(songs);
-                return true;
-            case R.id.action_add_to_playlist:
-                AddToPlaylistDialog.create(songs).show(getSupportFragmentManager(), "ADD_PLAYLIST");
-                return true;
-            case R.id.action_delete_from_device:
-                DeleteSongsDialog.create(songs).show(getSupportFragmentManager(), "DELETE_SONGS");
-                return true;
-            case android.R.id.home:
-                super.onBackPressed();
-                return true;
-            case R.id.action_tag_editor:
-                Intent intent = new Intent(this, AlbumTagEditorActivity.class);
-                intent.putExtra(AbsTagEditorActivity.EXTRA_ID, getAlbum().getId());
-                startActivityForResult(intent, TAG_EDITOR_REQUEST);
-                return true;
-            case R.id.action_go_to_artist:
-                NavigationUtil.goToArtist(this, getAlbum().getArtistId());
-                return true;
-            case R.id.action_wiki:
-                if (wikiDialog == null) {
-                    wikiDialog = new MaterialDialog(this, MaterialDialog.getDEFAULT_BEHAVIOR())
-                            .title(null, album.getTitle())
-                            .positiveButton(android.R.string.ok, null, null);
-                    // set button color
-                    DialogActionExtKt.getActionButton(wikiDialog, WhichButton.POSITIVE).updateTextColor(ThemeColor.accentColor(this));
+        if (id == R.id.action_sleep_timer) {
+            new SleepTimerDialog().show(getSupportFragmentManager(), "SET_SLEEP_TIMER");
+            return true;
+        } else if (id == R.id.action_equalizer) {
+            NavigationUtil.openEqualizer(this);
+            return true;
+        } else if (id == R.id.action_shuffle_album) {
+            MusicPlayerRemote.openAndShuffleQueue(songs, true);
+            return true;
+        } else if (id == R.id.action_play_next) {
+            MusicPlayerRemote.playNext(songs);
+            return true;
+        } else if (id == R.id.action_add_to_current_playing) {
+            MusicPlayerRemote.enqueue(songs);
+            return true;
+        } else if (id == R.id.action_add_to_playlist) {
+            AddToPlaylistDialog.create(songs).show(getSupportFragmentManager(), "ADD_PLAYLIST");
+            return true;
+        } else if (id == R.id.action_delete_from_device) {
+            DeleteSongsDialog.create(songs).show(getSupportFragmentManager(), "DELETE_SONGS");
+            return true;
+        } else if (id == android.R.id.home) {
+            super.onBackPressed();
+            return true;
+        } else if (id == R.id.action_tag_editor) {
+            Intent intent = new Intent(this, AlbumTagEditorActivity.class);
+            intent.putExtra(AbsTagEditorActivity.EXTRA_ID, getAlbum().getId());
+            startActivityForResult(intent, TAG_EDITOR_REQUEST);
+            return true;
+        } else if (id == R.id.action_go_to_artist) {
+            NavigationUtil.goToArtist(this, getAlbum().getArtistId());
+            return true;
+        } else if (id == R.id.action_wiki) {
+            if (wikiDialog == null) {
+                wikiDialog = new MaterialDialog(this, MaterialDialog.getDEFAULT_BEHAVIOR())
+                        .title(null, getAlbum().getTitle())
+                        .positiveButton(android.R.string.ok, null, null);
+                // set button color
+                DialogActionExtKt.getActionButton(wikiDialog, WhichButton.POSITIVE).updateTextColor(ThemeColor.accentColor(this));
 
-                }
-                if (Setting.isAllowedToDownloadMetadata(this)) {
-                    if (wiki != null) {
-                        wikiDialog.message(null, wiki, null);
-                        wikiDialog.show();
-                    } else {
-                        Toast.makeText(this, getResources().getString(R.string.wiki_unavailable), Toast.LENGTH_SHORT).show();
-                    }
-                } else {
+            }
+            if (Setting.isAllowedToDownloadMetadata(this)) {
+                if (wiki != null) {
+                    wikiDialog.message(null, wiki, null);
                     wikiDialog.show();
-                    loadWiki();
+                } else {
+                    Toast.makeText(this, getResources().getString(R.string.wiki_unavailable), Toast.LENGTH_SHORT).show();
                 }
-                return true;
+            } else {
+                wikiDialog.show();
+                loadWiki();
+            }
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -351,7 +352,7 @@ public class AlbumDetailActivity extends AbsSlidingMusicPanelActivity implements
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == TAG_EDITOR_REQUEST) {
-            reload();
+            load();
             setResult(RESULT_OK);
         }
     }
@@ -366,15 +367,15 @@ public class AlbumDetailActivity extends AbsSlidingMusicPanelActivity implements
         if (cab != null && AttachedCabKt.isActive(cab)) AttachedCabKt.destroy(cab);
 
         cab = MaterialCabKt.createCab(this, R.id.cab_stub, attachedCab -> {
-            attachedCab.popupTheme(Setting.instance().getGeneralTheme());
-            attachedCab.menu(menuRes);
-            attachedCab.closeDrawable(R.drawable.ic_close_white_24dp);
-            attachedCab.backgroundColor(null,PhonographColorUtil.shiftBackgroundColorForLightText(getPaletteColor()));
-            attachedCab.onCreate(createCallback);
-            attachedCab.onSelection(selectCallback);
-            attachedCab.onDestroy(destroyCallback);
-            return null;
-        }
+                    attachedCab.popupTheme(Setting.instance().getGeneralTheme());
+                    attachedCab.menu(menuRes);
+                    attachedCab.closeDrawable(R.drawable.ic_close_white_24dp);
+                    attachedCab.backgroundColor(null, PhonographColorUtil.shiftBackgroundColorForLightText(getPaletteColor()));
+                    attachedCab.onCreate(createCallback);
+                    attachedCab.onSelection(selectCallback);
+                    attachedCab.onDestroy(destroyCallback);
+                    return null;
+                }
 
         );
         return cab;
@@ -392,7 +393,7 @@ public class AlbumDetailActivity extends AbsSlidingMusicPanelActivity implements
     @Override
     public void onMediaStoreChanged() {
         super.onMediaStoreChanged();
-        reload();
+        load();
     }
 
     @Override
@@ -402,7 +403,6 @@ public class AlbumDetailActivity extends AbsSlidingMusicPanelActivity implements
     }
 
     private void setAlbum(Album album) {
-        this.album = album;
         loadAlbumCover();
 
         if (Setting.isAllowedToDownloadMetadata(this)) {
@@ -415,41 +415,14 @@ public class AlbumDetailActivity extends AbsSlidingMusicPanelActivity implements
         viewBinding.durationText.setText(MusicUtil.getReadableDurationString(MusicUtil.getTotalDuration(this, album.songs)));
         viewBinding.albumYearText.setText(MusicUtil.getYearString(album.getYear()));
 
-        adapter.setDataSet(album.songs);
+        //adapter.setDataSet(album.songs);
     }
 
     private Album getAlbum() {
-        if (album == null) album = new Album();
-        return album;
+        if (loader.get_album() != null)
+            return loader.getAlbum();
+        else return new Album();
     }
 
-    @Override
-    public Loader<Album> onCreateLoader(int id, Bundle args) {
-        return new AsyncAlbumLoader(this, args.getLong(EXTRA_ALBUM_ID));
-    }
 
-    @Override
-    public void onLoadFinished(Loader<Album> loader, Album data) {
-        setAlbum(data);
-    }
-
-    @Override
-    public void onLoaderReset(Loader<Album> loader) {
-        this.album = new Album();
-        adapter.setDataSet(album.songs);
-    }
-
-    private static class AsyncAlbumLoader extends WrappedAsyncTaskLoader<Album> {
-        private final long albumId;
-
-        public AsyncAlbumLoader(Context context, long albumId) {
-            super(context);
-            this.albumId = albumId;
-        }
-
-        @Override
-        public Album loadInBackground() {
-            return AlbumLoader.getAlbum(getContext(), albumId);
-        }
-    }
 }
