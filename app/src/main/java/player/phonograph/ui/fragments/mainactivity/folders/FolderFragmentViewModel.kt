@@ -9,11 +9,14 @@ import android.webkit.MimeTypeMap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.*
+import player.phonograph.App
+import player.phonograph.model.Song
 import player.phonograph.notification.ErrorNotification
 import player.phonograph.util.FileUtil
 import player.phonograph.views.BreadCrumbLayout
 import java.io.File
 import java.io.FileFilter
+import java.lang.IllegalStateException
 import java.util.*
 
 class FolderFragmentViewModel : ViewModel() {
@@ -34,6 +37,34 @@ class FolderFragmentViewModel : ViewModel() {
         }
     }
 
+    // todo
+    var scanSongsJob: Job? = null
+    var onSongsListedCallback: ((List<Song>) -> Unit)? = null
+    fun scanSongs(fileInfo: FileInfo, onSongsListed: ((List<Song>) -> Unit)) {
+        scanSongsJob = viewModelScope.launch(Dispatchers.IO) {
+            val songs = try {
+                val files = FileUtil.listFilesDeep(fileInfo.files, fileInfo.fileFilter)
+                if (!isActive) return@launch
+                Collections.sort(files, fileInfo.fileComparator)
+                if (!isActive) return@launch else {
+                    FileUtil.matchFilesWithMediaStore(App.instance, files)
+                }
+            } catch (e: Exception) {
+                ErrorNotification.postErrorNotification(e, "Fail to find Song!")
+                e.printStackTrace()
+                null
+            }
+            if (!isActive) return@launch
+            withContext(Dispatchers.Main) {
+                if (!songs.isNullOrEmpty())
+                    onSongsListedCallback?.invoke(songs)
+                else {
+                    ErrorNotification.postErrorNotification(IllegalStateException("'songs' are empty!"), "Fail to find Song!")
+                }
+            }
+        }
+    }
+
     var loadFilesJob: Job? = null
     private var onFilesReadyCallback: ((List<File>) -> Unit)? = null
     fun loadFiles(crumb: BreadCrumbLayout.Crumb?, onFilesReady: (List<File>) -> Unit) {
@@ -42,7 +73,7 @@ class FolderFragmentViewModel : ViewModel() {
             val directory: File? = crumb?.file
             val files =
                 if (directory != null) {
-                    val files: MutableList<File> = FileUtil.listFiles(directory, FoldersFragment.AUDIO_FILE_FILTER)
+                    val files: MutableList<File> = FileUtil.listFiles(directory, FileScanner.audioFileFilter)
                     if (!isActive) return@launch
                     Collections.sort(files, fileComparator)
                     files
@@ -72,10 +103,14 @@ class FolderFragmentViewModel : ViewModel() {
         listPathsJob?.cancel()
         onPathsListedCallback = null
         loadFilesJob?.cancel()
+        onFilesReadyCallback = null
+        scanSongsJob?.cancel()
+        onSongsListedCallback = null
         super.onCleared()
     }
 }
 
+class FileInfo(val files: List<File>, val fileFilter: FileFilter = FileScanner.audioFileFilter, val fileComparator: Comparator<File>)
 class DirectoryInfo(val file: File, val fileFilter: FileFilter)
 
 object FileScanner {
