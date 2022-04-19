@@ -1,6 +1,5 @@
 package player.phonograph.ui.activities;
 
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.ColorFilter;
 import android.graphics.PorterDuff;
@@ -18,8 +17,6 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.content.res.AppCompatResources;
 import androidx.core.graphics.BlendModeColorFilterCompat;
 import androidx.core.graphics.BlendModeCompat;
-import androidx.loader.app.LoaderManager;
-import androidx.loader.content.Loader;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -45,17 +42,12 @@ import player.phonograph.dialogs.AddToPlaylistDialog;
 import player.phonograph.dialogs.SleepTimerDialog;
 import player.phonograph.glide.ArtistGlideRequest;
 import player.phonograph.glide.PhonographColoredTarget;
-import player.phonograph.service.MusicPlayerRemote;
 import player.phonograph.interfaces.CabHolder;
-import player.phonograph.interfaces.LoaderIds;
 import player.phonograph.interfaces.PaletteColorHolder;
-import util.phonograph.lastfm.rest.LastFMRestClient;
-import util.phonograph.lastfm.rest.model.LastFmArtist;
-import player.phonograph.loader.ArtistLoader;
 import player.phonograph.misc.SimpleObservableScrollViewCallbacks;
-import player.phonograph.misc.WrappedAsyncTaskLoader;
 import player.phonograph.model.Artist;
 import player.phonograph.model.Song;
+import player.phonograph.service.MusicPlayerRemote;
 import player.phonograph.settings.Setting;
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity;
 import player.phonograph.util.CustomArtistImageUtil;
@@ -65,18 +57,19 @@ import player.phonograph.util.PhonographColorUtil;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import util.mdcolor.pref.ThemeColor;
 import util.mdcolor.ColorUtil;
+import util.mdcolor.pref.ThemeColor;
 import util.mddesign.util.MaterialColorHelper;
 import util.mddesign.util.ToolbarColorUtil;
 import util.mddesign.util.Util;
+import util.phonograph.lastfm.rest.LastFMRestClient;
+import util.phonograph.lastfm.rest.model.LastFmArtist;
 
 /**
  * Be careful when changing things in this Activity!
  */
-public class ArtistDetailActivity extends AbsSlidingMusicPanelActivity implements PaletteColorHolder, CabHolder, LoaderManager.LoaderCallbacks<Artist> {
+public class ArtistDetailActivity extends AbsSlidingMusicPanelActivity implements PaletteColorHolder, CabHolder {
 
-    private static final int LOADER_ID = LoaderIds.ARTIST_DETAIL_ACTIVITY;
     private static final int REQUEST_CODE_SELECT_IMAGE = 1000;
 
     public static final String EXTRA_ARTIST_ID = "extra_artist_id";
@@ -90,7 +83,6 @@ public class ArtistDetailActivity extends AbsSlidingMusicPanelActivity implement
     private int headerViewHeight;
     private int toolbarColor;
 
-    private Artist artist;
     @Nullable
     private Spanned biography;
     private MaterialDialog biographyDialog;
@@ -98,6 +90,8 @@ public class ArtistDetailActivity extends AbsSlidingMusicPanelActivity implement
     private ArtistSongAdapter songAdapter;
 
     private LastFMRestClient lastFMRestClient;
+
+    private ArtistDetailActivityLoader loader;
 
     private final SimpleObservableScrollViewCallbacks observableScrollViewCallbacks = new SimpleObservableScrollViewCallbacks() {
         @Override
@@ -117,6 +111,9 @@ public class ArtistDetailActivity extends AbsSlidingMusicPanelActivity implement
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        long artistID = getIntent().getExtras().getLong(EXTRA_ARTIST_ID);
+        loader = new ArtistDetailActivityLoader(artistID);
+        load();
         viewBinding = ActivityArtistDetailBinding.inflate(getLayoutInflater());
 
         super.onCreate(savedInstanceState);
@@ -130,9 +127,9 @@ public class ArtistDetailActivity extends AbsSlidingMusicPanelActivity implement
         setUpToolbar();
         setUpViews();
 
-        getSupportLoaderManager().initLoader(LOADER_ID, getIntent().getExtras(), this);
     }
 
+    @NonNull
     @Override
     protected View createContentView() {
         return wrapSlidingMusicPanel(viewBinding.getRoot());
@@ -152,6 +149,7 @@ public class ArtistDetailActivity extends AbsSlidingMusicPanelActivity implement
     private void setUpViews() {
         setUpSongListView();
         setUpAlbumRecyclerView();
+        loader.setRecyclerViewPrepared(true);
         setColors(Util.resolveColor(this, R.attr.defaultFooterColor));
     }
 
@@ -190,8 +188,20 @@ public class ArtistDetailActivity extends AbsSlidingMusicPanelActivity implement
         this.usePalette = usePalette;
     }
 
-    private void reload() {
-        getSupportLoaderManager().restartLoader(LOADER_ID, getIntent().getExtras(), this);
+    private void load() {
+        loader.loadDataSet(this
+                , artist -> {
+                    setUpArtist(artist);
+                    return Unit.INSTANCE;
+                }, songs -> {
+                    songAdapter.swapDataSet(songs);
+                    return Unit.INSTANCE;
+                },
+                albums -> {
+                    albumAdapter.swapDataSet(albums);
+                    return Unit.INSTANCE;
+                }
+        );
     }
 
     private void loadBiography() {
@@ -210,7 +220,7 @@ public class ArtistDetailActivity extends AbsSlidingMusicPanelActivity implement
                         if (lastFmArtist != null && lastFmArtist.getArtist() != null) {
                             final String bioContent = lastFmArtist.getArtist().getBio().getContent();
                             if (bioContent != null && !bioContent.trim().isEmpty()) {
-                                biography = Html.fromHtml(bioContent);
+                                biography = Html.fromHtml(bioContent, Html.FROM_HTML_MODE_LEGACY);
                             }
                         }
 
@@ -239,7 +249,7 @@ public class ArtistDetailActivity extends AbsSlidingMusicPanelActivity implement
     }
 
     private void loadArtistImage() {
-        ArtistGlideRequest.Builder.from(Glide.with(this), artist)
+        ArtistGlideRequest.Builder.from(Glide.with(this), getArtist())
                 .generatePalette(this).build()
                 .dontAnimate()
                 .into(new PhonographColoredTarget(viewBinding.image) {
@@ -256,12 +266,12 @@ public class ArtistDetailActivity extends AbsSlidingMusicPanelActivity implement
         switch (requestCode) {
             case REQUEST_CODE_SELECT_IMAGE:
                 if (resultCode == RESULT_OK) {
-                    CustomArtistImageUtil.getInstance(this).setCustomArtistImage(artist, data.getData());
+                    CustomArtistImageUtil.getInstance(this).setCustomArtistImage(getArtist(), data.getData());
                 }
                 break;
             default:
                 if (resultCode == RESULT_OK) {
-                    reload();
+                    load();
                 }
                 break;
         }
@@ -313,7 +323,7 @@ public class ArtistDetailActivity extends AbsSlidingMusicPanelActivity implement
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
+    public boolean onCreateOptionsMenu(@NonNull Menu menu) {
         getMenuInflater().inflate(R.menu.menu_artist_detail, menu);
         menu.findItem(R.id.action_colored_footers).setChecked(usePalette);
         return super.onCreateOptionsMenu(menu);
@@ -323,61 +333,60 @@ public class ArtistDetailActivity extends AbsSlidingMusicPanelActivity implement
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
         final List<Song> songs = songAdapter.getDataSet();
-        switch (id) {
-            case R.id.action_sleep_timer:
-                new SleepTimerDialog().show(getSupportFragmentManager(), "SET_SLEEP_TIMER");
-                return true;
-            case R.id.action_equalizer:
-                NavigationUtil.openEqualizer(this);
-                return true;
-            case R.id.action_shuffle_artist:
-                MusicPlayerRemote.openAndShuffleQueue(songs, true);
-                return true;
-            case R.id.action_play_next:
-                MusicPlayerRemote.playNext(songs);
-                return true;
-            case R.id.action_add_to_current_playing:
-                MusicPlayerRemote.enqueue(songs);
-                return true;
-            case R.id.action_add_to_playlist:
-                AddToPlaylistDialog.create(songs).show(getSupportFragmentManager(), "ADD_PLAYLIST");
-                return true;
-            case android.R.id.home:
-                super.onBackPressed();
-                return true;
-            case R.id.action_biography:
-                if (biographyDialog == null) {
-                    biographyDialog = new MaterialDialog(this, MaterialDialog.getDEFAULT_BEHAVIOR())
-                            .title(null, artist.getName())
-                            .positiveButton(android.R.string.ok, null, null);
-                    //set button color
-                    DialogActionExtKt.getActionButton(biographyDialog, WhichButton.POSITIVE).updateTextColor(ThemeColor.accentColor(this));
-                }
-                if (Setting.isAllowedToDownloadMetadata(ArtistDetailActivity.this)) { // wiki should've been already downloaded
-                    if (biography != null) {
-                        biographyDialog.message(null, biography, null);
-                        biographyDialog.show();
-                    } else {
-                        Toast.makeText(ArtistDetailActivity.this, getResources().getString(R.string.biography_unavailable), Toast.LENGTH_SHORT).show();
-                    }
-                } else { // force download
+        if (id == R.id.action_sleep_timer) {
+            new SleepTimerDialog().show(getSupportFragmentManager(), "SET_SLEEP_TIMER");
+            return true;
+        } else if (id == R.id.action_equalizer) {
+            NavigationUtil.openEqualizer(this);
+            return true;
+        } else if (id == R.id.action_shuffle_artist) {
+            MusicPlayerRemote.openAndShuffleQueue(songs, true);
+            return true;
+        } else if (id == R.id.action_play_next) {
+            MusicPlayerRemote.playNext(songs);
+            return true;
+        } else if (id == R.id.action_add_to_current_playing) {
+            MusicPlayerRemote.enqueue(songs);
+            return true;
+        } else if (id == R.id.action_add_to_playlist) {
+            AddToPlaylistDialog.create(songs).show(getSupportFragmentManager(), "ADD_PLAYLIST");
+            return true;
+        } else if (id == android.R.id.home) {
+            super.onBackPressed();
+            return true;
+        } else if (id == R.id.action_biography) {
+            if (biographyDialog == null) {
+                biographyDialog = new MaterialDialog(this, MaterialDialog.getDEFAULT_BEHAVIOR())
+                        .title(null, getArtist().getName())
+                        .positiveButton(android.R.string.ok, null, null);
+                //set button color
+                DialogActionExtKt.getActionButton(biographyDialog, WhichButton.POSITIVE).updateTextColor(ThemeColor.accentColor(this));
+            }
+            if (Setting.isAllowedToDownloadMetadata(ArtistDetailActivity.this)) { // wiki should've been already downloaded
+                if (biography != null) {
+                    biographyDialog.message(null, biography, null);
                     biographyDialog.show();
-                    loadBiography();
+                } else {
+                    Toast.makeText(ArtistDetailActivity.this, getResources().getString(R.string.biography_unavailable), Toast.LENGTH_SHORT).show();
                 }
-                return true;
-            case R.id.action_set_artist_image:
-                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-                intent.setType("image/*");
-                startActivityForResult(Intent.createChooser(intent, getString(R.string.pick_from_local_storage)), REQUEST_CODE_SELECT_IMAGE);
-                return true;
-            case R.id.action_reset_artist_image:
-                Toast.makeText(ArtistDetailActivity.this, getResources().getString(R.string.updating), Toast.LENGTH_SHORT).show();
-                CustomArtistImageUtil.getInstance(ArtistDetailActivity.this).resetCustomArtistImage(artist);
-                return true;
-            case R.id.action_colored_footers:
-                item.setChecked(!item.isChecked());
-                setUsePalette(item.isChecked());
-                return true;
+            } else { // force download
+                biographyDialog.show();
+                loadBiography();
+            }
+            return true;
+        } else if (id == R.id.action_set_artist_image) {
+            Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+            intent.setType("image/*");
+            startActivityForResult(Intent.createChooser(intent, getString(R.string.pick_from_local_storage)), REQUEST_CODE_SELECT_IMAGE);
+            return true;
+        } else if (id == R.id.action_reset_artist_image) {
+            Toast.makeText(ArtistDetailActivity.this, getResources().getString(R.string.updating), Toast.LENGTH_SHORT).show();
+            CustomArtistImageUtil.getInstance(ArtistDetailActivity.this).resetCustomArtistImage(getArtist());
+            return true;
+        } else if (id == R.id.action_colored_footers) {
+            item.setChecked(!item.isChecked());
+            setUsePalette(item.isChecked());
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -417,7 +426,7 @@ public class ArtistDetailActivity extends AbsSlidingMusicPanelActivity implement
     @Override
     public void onMediaStoreChanged() {
         super.onMediaStoreChanged();
-        reload();
+        load();
     }
 
     @Override
@@ -426,8 +435,7 @@ public class ArtistDetailActivity extends AbsSlidingMusicPanelActivity implement
         setLightStatusbar(false);
     }
 
-    private void setArtist(Artist artist) {
-        this.artist = artist;
+    private void setUpArtist(Artist artist) {
         loadArtistImage();
 
         if (Setting.isAllowedToDownloadMetadata(this)) {
@@ -439,43 +447,14 @@ public class ArtistDetailActivity extends AbsSlidingMusicPanelActivity implement
         viewBinding.albumCountText.setText(MusicUtil.getAlbumCountString(this, artist.getAlbumCount()));
         viewBinding.durationText.setText(MusicUtil.getReadableDurationString(MusicUtil.getTotalDuration(this, artist.getSongs())));
 
-        songAdapter.swapDataSet(artist.getSongs());
-        albumAdapter.swapDataSet(artist.albums);
+        //songAdapter.swapDataSet(artist.getSongs());
+        //albumAdapter.swapDataSet(artist.albums);
     }
 
     private Artist getArtist() {
-        if (artist == null) artist = new Artist();
-        return artist;
+        if (loader.get_artist() != null)
+            return loader.getArtist();
+        else return new Artist();
     }
 
-    @Override
-    public Loader<Artist> onCreateLoader(int id, Bundle args) {
-        return new AsyncArtistDataLoader(this, args.getLong(EXTRA_ARTIST_ID));
-    }
-
-    @Override
-    public void onLoadFinished(Loader<Artist> loader, Artist data) {
-        setArtist(data);
-    }
-
-    @Override
-    public void onLoaderReset(Loader<Artist> loader) {
-        this.artist = new Artist();
-        songAdapter.swapDataSet(artist.getSongs());
-        albumAdapter.swapDataSet(artist.albums);
-    }
-
-    private static class AsyncArtistDataLoader extends WrappedAsyncTaskLoader<Artist> {
-        private final long artistId;
-
-        public AsyncArtistDataLoader(Context context, long artistId) {
-            super(context);
-            this.artistId = artistId;
-        }
-
-        @Override
-        public Artist loadInBackground() {
-            return ArtistLoader.getArtist(getContext(), artistId);
-        }
-    }
 }
