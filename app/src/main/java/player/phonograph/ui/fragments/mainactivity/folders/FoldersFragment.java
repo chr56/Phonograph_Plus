@@ -295,9 +295,6 @@ public class FoldersFragment extends AbsMainActivityFragment implements MainActi
 
     }
 
-    public static final FileFilter AUDIO_FILE_FILTER = file -> !file.isHidden() && (file.isDirectory() ||
-            FileUtil.fileIsMimeType(file, "audio/*", MimeTypeMap.getSingleton()) ||
-            FileUtil.fileIsMimeType(file, "application/ogg", MimeTypeMap.getSingleton()));
 
     @Override
     public void onCrumbSelection(BreadCrumbLayout.Crumb crumb, int index) {
@@ -347,7 +344,7 @@ public class FoldersFragment extends AbsMainActivityFragment implements MainActi
         if (canonicalFile.isDirectory()) {
             setCrumb(new BreadCrumbLayout.Crumb(canonicalFile), true);
         } else {
-            FileFilter fileFilter = pathname -> !pathname.isDirectory() && AUDIO_FILE_FILTER.accept(pathname);
+            FileFilter fileFilter = pathname -> !pathname.isDirectory() &&  FileScanner.audioFileFilter.accept(pathname);
             new ListSongsAsyncTask(getMainActivity(), null, (songs, extra) -> {
                 int startIndex = -1;
                 for (int i = 0; i < songs.size(); i++) {
@@ -387,7 +384,7 @@ public class FoldersFragment extends AbsMainActivityFragment implements MainActi
                         .setActionTextColor(ThemeColor.accentColor(getMainActivity()))
                         .show();
             }
-        }).execute(new ListSongsAsyncTask.LoadingInfo((List<File>) files, AUDIO_FILE_FILTER, model.getFileComparator()));
+        }).execute(new ListSongsAsyncTask.LoadingInfo((List<File>) files,  FileScanner.audioFileFilter, model.getFileComparator()));
     }
 
     private List<File> toList(File file) {
@@ -427,7 +424,7 @@ public class FoldersFragment extends AbsMainActivityFragment implements MainActi
                             if (!songs.isEmpty()) {
                                 SongsMenuHelper.handleMenuClick(getMainActivity(), songs, itemId);
                             }
-                        }).execute(new ListSongsAsyncTask.LoadingInfo(toList(file), AUDIO_FILE_FILTER, model.getFileComparator()));
+                        }).execute(new ListSongsAsyncTask.LoadingInfo(toList(file), FileScanner.audioFileFilter, model.getFileComparator()));
                         return true;
                     case R.id.action_set_as_start_directory:
                         Setting.instance().setStartDirectory(file);
@@ -472,7 +469,7 @@ public class FoldersFragment extends AbsMainActivityFragment implements MainActi
                                         .setActionTextColor(ThemeColor.accentColor(getMainActivity()))
                                         .show();
                             }
-                        }).execute(new ListSongsAsyncTask.LoadingInfo(toList(file), AUDIO_FILE_FILTER, model.getFileComparator()));
+                        }).execute(new ListSongsAsyncTask.LoadingInfo(toList(file),  FileScanner.audioFileFilter, model.getFileComparator()));
                         return true;
                     case R.id.action_scan:
                         scanPaths(new String[]{FileUtil.safeGetCanonicalPath(file)});
