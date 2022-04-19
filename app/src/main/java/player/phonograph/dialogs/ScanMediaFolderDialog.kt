@@ -23,7 +23,7 @@ import player.phonograph.misc.UpdateToastMediaScannerCompletionListener
 import player.phonograph.notification.ErrorNotification
 import player.phonograph.settings.Setting
 import player.phonograph.ui.fragments.mainactivity.folders.FileScanner
-import player.phonograph.ui.fragments.mainactivity.folders.LoadingInfo
+import player.phonograph.ui.fragments.mainactivity.folders.DirectoryInfo
 import player.phonograph.util.Util
 import util.mdcolor.pref.ThemeColor
 import java.io.File
@@ -55,7 +55,7 @@ class ScanMediaFolderDialog : DialogFragment() {
                 dismiss()
                 runCatching {
                     CoroutineScope(Dispatchers.IO).launch {
-                        val paths = FileScanner.scanPaths(LoadingInfo(file, FileScanner.audioFileFilter), this)
+                        val paths = FileScanner.scanPaths(DirectoryInfo(file, FileScanner.audioFileFilter), this)
                         if (!paths.isNullOrEmpty()) {
                             withContext(Dispatchers.Main) {
                                 scanPaths(paths)

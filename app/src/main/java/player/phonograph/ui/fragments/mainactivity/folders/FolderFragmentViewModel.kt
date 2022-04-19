@@ -15,18 +15,17 @@ import player.phonograph.views.BreadCrumbLayout
 import java.io.File
 import java.io.FileFilter
 import java.util.*
-import kotlin.collections.ArrayList
 
 class FolderFragmentViewModel : ViewModel() {
     var isRecyclerViewPrepared: Boolean = false
 
     var listPathsJob: Job? = null
     private var onPathsListedCallback: ((Array<String?>) -> Unit)? = null
-    fun listPaths(loadingInfos: LoadingInfo, onPathsListed: (Array<String?>) -> Unit) {
+    fun listPaths(directoryInfos: DirectoryInfo, onPathsListed: (Array<String?>) -> Unit) {
         onPathsListedCallback = onPathsListed
         listPathsJob = viewModelScope.launch(Dispatchers.IO) {
 
-            val paths = FileScanner.scanPaths(loadingInfos, this)
+            val paths = FileScanner.scanPaths(directoryInfos, this)
 
             withContext(Dispatchers.Main) {
                 if (paths != null)
@@ -77,15 +76,15 @@ class FolderFragmentViewModel : ViewModel() {
     }
 }
 
-class LoadingInfo(val file: File, val fileFilter: FileFilter)
+class DirectoryInfo(val file: File, val fileFilter: FileFilter)
 
 object FileScanner {
-    fun scanPaths(loadingInfos: LoadingInfo, scope: CoroutineScope): Array<String?>? {
+    fun scanPaths(directoryInfos: DirectoryInfo, scope: CoroutineScope): Array<String?>? {
         val paths: Array<String?>
         if (!scope.isActive) return null
         try {
-            if (loadingInfos.file.isDirectory) {
-                val files = FileUtil.listFilesDeep(loadingInfos.file, loadingInfos.fileFilter)
+            if (directoryInfos.file.isDirectory) {
+                val files = FileUtil.listFilesDeep(directoryInfos.file, directoryInfos.fileFilter)
                 if (!scope.isActive) return null
 
                 paths = arrayOfNulls(files.size)
@@ -96,7 +95,7 @@ object FileScanner {
                 }
             } else {
                 paths = arrayOfNulls(1)
-                paths[0] = FileUtil.safeGetCanonicalPath(loadingInfos.file)
+                paths[0] = FileUtil.safeGetCanonicalPath(directoryInfos.file)
             }
             Log.v("FileScanner", "success")
         } catch (e: Exception) {

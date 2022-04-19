@@ -330,7 +330,7 @@ public class FoldersFragment extends AbsMainActivityFragment implements MainActi
                 BreadCrumbLayout.Crumb crumb = getActiveCrumb();
                 if (crumb != null) {
                     model.listPaths(
-                            new LoadingInfo(crumb.getFile(), FileScanner.audioFileFilter),
+                            new DirectoryInfo(crumb.getFile(), FileScanner.audioFileFilter),
                             paths -> {
                                 scanPaths(paths);
                                 return Unit.INSTANCE;
@@ -435,7 +435,7 @@ public class FoldersFragment extends AbsMainActivityFragment implements MainActi
                         return true;
                     case R.id.action_scan:
                         model.listPaths(
-                                new LoadingInfo(file, FileScanner.audioFileFilter),
+                                new DirectoryInfo(file, FileScanner.audioFileFilter),
                                 paths -> {
                                     scanPaths(paths);
                                     return Unit.INSTANCE;
