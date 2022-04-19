@@ -22,8 +22,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.content.res.AppCompatResources;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.loader.app.LoaderManager;
-import androidx.loader.content.Loader;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -45,11 +43,6 @@ import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 
-import player.phonograph.settings.Setting;
-import util.mdcolor.ColorUtil;
-import util.mddesign.util.MaterialColorHelper;
-import util.mddesign.util.TintHelper;
-import util.mddesign.util.ToolbarColorUtil;
 import kotlin.Unit;
 import kotlin.jvm.functions.Function1;
 import kotlin.jvm.functions.Function2;
@@ -57,15 +50,14 @@ import player.phonograph.App;
 import player.phonograph.R;
 import player.phonograph.adapter.SongFileAdapter;
 import player.phonograph.databinding.FragmentFolderBinding;
-import player.phonograph.service.MusicPlayerRemote;
 import player.phonograph.helper.menu.SongMenuHelper;
 import player.phonograph.helper.menu.SongsMenuHelper;
 import player.phonograph.interfaces.CabHolder;
-import player.phonograph.interfaces.LoaderIds;
 import player.phonograph.misc.DialogAsyncTask;
 import player.phonograph.misc.UpdateToastMediaScannerCompletionListener;
-import player.phonograph.misc.WrappedAsyncTaskLoader;
 import player.phonograph.model.Song;
+import player.phonograph.service.MusicPlayerRemote;
+import player.phonograph.settings.Setting;
 import player.phonograph.ui.activities.MainActivity;
 import player.phonograph.ui.fragments.mainactivity.AbsMainActivityFragment;
 import player.phonograph.util.BlacklistUtil;
@@ -73,12 +65,14 @@ import player.phonograph.util.FileUtil;
 import player.phonograph.util.PhonographColorUtil;
 import player.phonograph.util.ViewUtil;
 import player.phonograph.views.BreadCrumbLayout;
+import util.mdcolor.ColorUtil;
 import util.mdcolor.pref.ThemeColor;
+import util.mddesign.util.MaterialColorHelper;
+import util.mddesign.util.TintHelper;
+import util.mddesign.util.ToolbarColorUtil;
 
 @SuppressLint("NonConstantResourceId")
-public class FoldersFragment extends AbsMainActivityFragment implements MainActivity.MainActivityFragmentCallbacks, CabHolder, BreadCrumbLayout.SelectionCallback, SongFileAdapter.Callbacks, AppBarLayout.OnOffsetChangedListener, LoaderManager.LoaderCallbacks<List<File>> {
-
-    private static final int LOADER_ID = LoaderIds.FOLDERS_FRAGMENT;
+public class FoldersFragment extends AbsMainActivityFragment implements MainActivity.MainActivityFragmentCallbacks, CabHolder, BreadCrumbLayout.SelectionCallback, SongFileAdapter.Callbacks, AppBarLayout.OnOffsetChangedListener {
 
     protected static final String PATH = "path";
     protected static final String CRUMBS = "crumbs";
@@ -114,7 +108,10 @@ public class FoldersFragment extends AbsMainActivityFragment implements MainActi
         if (addToHistory) {
             viewBinding.breadCrumbs.addHistory(crumb);
         }
-        LoaderManager.getInstance(this).restartLoader(LOADER_ID, null, this);
+        model.loadFiles(crumb,files -> {
+            updateAdapter((List<File>) files);
+            return Unit.INSTANCE;
+        });
     }
 
     private void saveScrollPosition() {
@@ -151,7 +148,10 @@ public class FoldersFragment extends AbsMainActivityFragment implements MainActi
             setCrumb(new BreadCrumbLayout.Crumb(FileUtil.safeGetCanonicalFile((File) getArguments().getSerializable(PATH))), true);
         } else {
             viewBinding.breadCrumbs.restoreFromStateWrapper(savedInstanceState.getParcelable(CRUMBS));
-            LoaderManager.getInstance(this).initLoader(LOADER_ID, null, this);
+            model.loadFiles(getActiveCrumb(),files -> {
+                updateAdapter((List<File>) files);
+                return Unit.INSTANCE;
+            });
         }
     }
 
@@ -364,7 +364,7 @@ public class FoldersFragment extends AbsMainActivityFragment implements MainActi
                             .setActionTextColor(ThemeColor.accentColor(getMainActivity()))
                             .show();
                 }
-            }).execute(new ListSongsAsyncTask.LoadingInfo(toList(canonicalFile.getParentFile()), fileFilter, getFileComparator()));
+            }).execute(new ListSongsAsyncTask.LoadingInfo(toList(canonicalFile.getParentFile()), fileFilter, model.getFileComparator()));
         }
     }
 
@@ -387,7 +387,7 @@ public class FoldersFragment extends AbsMainActivityFragment implements MainActi
                         .setActionTextColor(ThemeColor.accentColor(getMainActivity()))
                         .show();
             }
-        }).execute(new ListSongsAsyncTask.LoadingInfo((List<File>) files, AUDIO_FILE_FILTER, getFileComparator()));
+        }).execute(new ListSongsAsyncTask.LoadingInfo((List<File>) files, AUDIO_FILE_FILTER, model.getFileComparator()));
     }
 
     private List<File> toList(File file) {
@@ -396,20 +396,20 @@ public class FoldersFragment extends AbsMainActivityFragment implements MainActi
         return files;
     }
 
-    Comparator<File> fileComparator = (lhs, rhs) -> {
-        if (lhs.isDirectory() && !rhs.isDirectory()) {
-            return -1;
-        } else if (!lhs.isDirectory() && rhs.isDirectory()) {
-            return 1;
-        } else {
-            return lhs.getName().compareToIgnoreCase
-                    (rhs.getName());
-        }
-    };
-
-    private Comparator<File> getFileComparator() {
-        return fileComparator;
-    }
+//    Comparator<File> fileComparator = (lhs, rhs) -> {
+//        if (lhs.isDirectory() && !rhs.isDirectory()) {
+//            return -1;
+//        } else if (!lhs.isDirectory() && rhs.isDirectory()) {
+//            return 1;
+//        } else {
+//            return lhs.getName().compareToIgnoreCase
+//                    (rhs.getName());
+//        }
+//    };
+//
+//    private Comparator<File> getFileComparator() {
+//        return fileComparator;
+//    }
 
     @Override
     public void onFileMenuClicked(final File file, View view) {
@@ -427,7 +427,7 @@ public class FoldersFragment extends AbsMainActivityFragment implements MainActi
                             if (!songs.isEmpty()) {
                                 SongsMenuHelper.handleMenuClick(getMainActivity(), songs, itemId);
                             }
-                        }).execute(new ListSongsAsyncTask.LoadingInfo(toList(file), AUDIO_FILE_FILTER, getFileComparator()));
+                        }).execute(new ListSongsAsyncTask.LoadingInfo(toList(file), AUDIO_FILE_FILTER, model.getFileComparator()));
                         return true;
                     case R.id.action_set_as_start_directory:
                         Setting.instance().setStartDirectory(file);
@@ -472,7 +472,7 @@ public class FoldersFragment extends AbsMainActivityFragment implements MainActi
                                         .setActionTextColor(ThemeColor.accentColor(getMainActivity()))
                                         .show();
                             }
-                        }).execute(new ListSongsAsyncTask.LoadingInfo(toList(file), AUDIO_FILE_FILTER, getFileComparator()));
+                        }).execute(new ListSongsAsyncTask.LoadingInfo(toList(file), AUDIO_FILE_FILTER, model.getFileComparator()));
                         return true;
                     case R.id.action_scan:
                         scanPaths(new String[]{FileUtil.safeGetCanonicalPath(file)});
@@ -494,64 +494,18 @@ public class FoldersFragment extends AbsMainActivityFragment implements MainActi
     }
 
     private void scanPaths(@Nullable String[] toBeScanned) {
-        if (getMainActivity() == null) return;
         if (toBeScanned == null || toBeScanned.length < 1) {
-            Toast.makeText(getMainActivity(), R.string.nothing_to_scan, Toast.LENGTH_SHORT).show();
+            Toast.makeText(requireActivity(), R.string.nothing_to_scan, Toast.LENGTH_SHORT).show();
         } else {
             MediaScannerConnection.scanFile(App.getInstance(), toBeScanned, null, new UpdateToastMediaScannerCompletionListener(requireActivity(), toBeScanned));
         }
     }
 
     private void updateAdapter(@NonNull List<File> files) {
-        adapter.swapDataSet(files);
+        adapter.setDataSet(files);
         BreadCrumbLayout.Crumb crumb = getActiveCrumb();
         if (crumb != null) {
             ((LinearLayoutManager) viewBinding.recyclerView.getLayoutManager()).scrollToPositionWithOffset(crumb.getScrollPosition(), 0);
-        }
-    }
-
-    @NonNull
-    @Override
-    public Loader<List<File>> onCreateLoader(int id, Bundle args) {
-        return new AsyncFileLoader(this);
-    }
-
-    @Override
-    public void onLoadFinished(@NonNull Loader<List<File>> loader, List<File> data) {
-        updateAdapter(data);
-    }
-
-    @Override
-    public void onLoaderReset(@NonNull Loader<List<File>> loader) {
-        updateAdapter(new LinkedList<>());
-    }
-
-
-    private static class AsyncFileLoader extends WrappedAsyncTaskLoader<List<File>> {
-        private WeakReference<FoldersFragment> fragmentWeakReference;
-
-        public AsyncFileLoader(FoldersFragment foldersFragment) {
-            super(foldersFragment.getActivity());
-            fragmentWeakReference = new WeakReference<>(foldersFragment);
-        }
-
-        @Override
-        public List<File> loadInBackground() {
-            FoldersFragment foldersFragment = fragmentWeakReference.get();
-            File directory = null;
-            if (foldersFragment != null) {
-                BreadCrumbLayout.Crumb crumb = foldersFragment.getActiveCrumb();
-                if (crumb != null) {
-                    directory = crumb.getFile();
-                }
-            }
-            if (directory != null) {
-                List<File> files = FileUtil.listFiles(directory, AUDIO_FILE_FILTER);
-                Collections.sort(files, foldersFragment.getFileComparator());
-                return files;
-            } else {
-                return new LinkedList<>();
-            }
         }
     }
 

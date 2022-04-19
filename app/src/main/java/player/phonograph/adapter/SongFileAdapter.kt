@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
-import util.mddesign.util.Util
 import com.bumptech.glide.Glide
 import com.bumptech.glide.signature.MediaStoreSignature
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView.SectionedAdapter
@@ -18,6 +17,7 @@ import player.phonograph.glide.SongGlideRequest
 import player.phonograph.glide.audiocover.AudioFileCover
 import player.phonograph.interfaces.CabHolder
 import player.phonograph.util.ImageUtil
+import util.mddesign.util.Util
 import java.io.File
 import java.text.DecimalFormat
 import java.util.Locale
@@ -48,11 +48,6 @@ class SongFileAdapter(
     override fun getItemViewType(position: Int): Int = if (dataSet[position].isDirectory) FOLDER else FILE
 
     override fun getItemId(position: Int): Long = dataSet[position].hashCode().toLong()
-
-    @Deprecated("use getter")
-    fun swapDataSet(songFiles: List<File>) {
-        dataSet = songFiles
-    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(LayoutInflater.from(activity).inflate(itemLayoutRes, parent, false))

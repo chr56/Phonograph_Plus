@@ -11,9 +11,11 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.*
 import player.phonograph.notification.ErrorNotification
 import player.phonograph.util.FileUtil
+import player.phonograph.views.BreadCrumbLayout
 import java.io.File
 import java.io.FileFilter
-import java.lang.Exception
+import java.util.*
+import kotlin.collections.ArrayList
 
 class FolderFragmentViewModel : ViewModel() {
     var isRecyclerViewPrepared: Boolean = false
@@ -33,9 +35,44 @@ class FolderFragmentViewModel : ViewModel() {
         }
     }
 
+    var loadFilesJob: Job? = null
+    private var onFilesReadyCallback: ((List<File>) -> Unit)? = null
+    fun loadFiles(crumb: BreadCrumbLayout.Crumb?, onFilesReady: (List<File>) -> Unit) {
+        onFilesReadyCallback = onFilesReady
+        loadFilesJob = viewModelScope.launch(Dispatchers.IO) {
+            val directory: File? = crumb?.file
+            val files =
+                if (directory != null) {
+                    val files: MutableList<File> = FileUtil.listFiles(directory, FoldersFragment.AUDIO_FILE_FILTER)
+                    if (!isActive) return@launch
+                    Collections.sort(files, fileComparator)
+                    files
+                } else {
+                    ArrayList()
+                }
+            if (!isActive) return@launch
+            withContext(Dispatchers.Main) {
+                onFilesReadyCallback?.invoke(files)
+            }
+        }
+    }
+
+    val fileComparator: Comparator<File> by lazy {
+        Comparator { lhs: File, rhs: File ->
+            if (lhs.isDirectory && !rhs.isDirectory) {
+                return@Comparator -1
+            } else if (!lhs.isDirectory && rhs.isDirectory) {
+                return@Comparator 1
+            } else {
+                return@Comparator lhs.name.compareTo(rhs.name, ignoreCase = true)
+            }
+        }
+    }
+
     override fun onCleared() {
         listPathsJob?.cancel()
         onPathsListedCallback = null
+        loadFilesJob?.cancel()
         super.onCleared()
     }
 }
