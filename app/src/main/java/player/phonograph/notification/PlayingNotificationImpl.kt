@@ -52,6 +52,12 @@ class PlayingNotificationImpl(service: MusicService) : PlayingNotification(servi
 
             linkButtons(notificationLayout, notificationLayoutBig)
 
+            // set default cover
+            notificationLayout.setImageViewResource(R.id.image, R.drawable.default_album_art)
+            notificationLayoutBig.setImageViewResource(R.id.image, R.drawable.default_album_art)
+            setBackgroundColor(Color.WHITE, notificationLayout, notificationLayoutBig)
+            setNotificationContent(true, notificationLayout, notificationLayoutBig)
+
             notificationBuilder
                 .setContent(notificationLayout)
                 .setCustomBigContentView(notificationLayoutBig)
@@ -83,62 +89,60 @@ class PlayingNotificationImpl(service: MusicService) : PlayingNotification(servi
                         }
 
                         private fun updateCover(bitmap: Bitmap?, backgroundColor: Int) {
-                            val color = if (Setting.instance.coloredNotification) backgroundColor else Color.WHITE
                             if (bitmap != null) {
                                 notificationLayout.setImageViewBitmap(R.id.image, bitmap)
                                 notificationLayoutBig.setImageViewBitmap(R.id.image, bitmap)
-                            } else {
-                                notificationLayout.setImageViewResource(R.id.image, R.drawable.default_album_art)
-                                notificationLayoutBig.setImageViewResource(R.id.image, R.drawable.default_album_art)
                             }
-                            setBackgroundColor(color)
-                            setNotificationContent(ColorUtil.isColorLight(color))
+                            if (Setting.instance.coloredNotification) {
+                                setBackgroundColor(backgroundColor, notificationLayout, notificationLayoutBig)
+                                setNotificationContent(ColorUtil.isColorLight(backgroundColor), notificationLayout, notificationLayoutBig)
+                            }
 
                             updateNotification(notificationBuilder.build())
-                        }
-
-                        private fun setBackgroundColor(color: Int) {
-                            notificationLayout.setInt(R.id.root, "setBackgroundColor", color)
-                            notificationLayoutBig.setInt(R.id.root, "setBackgroundColor", color)
-                        }
-
-                        private fun setNotificationContent(dark: Boolean) {
-                            val primary = MaterialColorHelper.getPrimaryTextColor(service, dark)
-                            val secondary = MaterialColorHelper.getSecondaryTextColor(service, dark)
-
-                            val prev = ImageUtil.createBitmap(
-                                ImageUtil.getTintedVectorDrawable(service, R.drawable.ic_skip_previous_white_24dp, primary), 1.5f
-                            )
-                            val next = ImageUtil.createBitmap(
-                                ImageUtil.getTintedVectorDrawable(service, R.drawable.ic_skip_next_white_24dp, primary), 1.5f
-                            )
-                            val playPause = ImageUtil.createBitmap(
-                                ImageUtil.getTintedVectorDrawable(
-                                    service,
-                                    if (isPlaying) R.drawable.ic_pause_white_24dp else R.drawable.ic_play_arrow_white_24dp,
-                                    primary
-                                ),
-                                1.5f
-                            )
-
-                            notificationLayout.setTextColor(R.id.title, primary)
-                            notificationLayout.setTextColor(R.id.text, secondary)
-
-                            notificationLayout.setImageViewBitmap(R.id.action_prev, prev)
-                            notificationLayout.setImageViewBitmap(R.id.action_next, next)
-                            notificationLayout.setImageViewBitmap(R.id.action_play_pause, playPause)
-
-                            notificationLayoutBig.setTextColor(R.id.title, primary)
-                            notificationLayoutBig.setTextColor(R.id.text, secondary)
-                            notificationLayoutBig.setTextColor(R.id.text2, secondary)
-
-                            notificationLayoutBig.setImageViewBitmap(R.id.action_prev, prev)
-                            notificationLayoutBig.setImageViewBitmap(R.id.action_next, next)
-                            notificationLayoutBig.setImageViewBitmap(R.id.action_play_pause, playPause)
                         }
                     })
             }
         }
+    }
+
+    private fun setBackgroundColor(color: Int, notificationLayout: RemoteViews, notificationLayoutBig: RemoteViews) {
+        notificationLayout.setInt(R.id.root, "setBackgroundColor", color)
+        notificationLayoutBig.setInt(R.id.root, "setBackgroundColor", color)
+    }
+
+    private fun setNotificationContent(dark: Boolean, notificationLayout: RemoteViews, notificationLayoutBig: RemoteViews) {
+        val primary = MaterialColorHelper.getPrimaryTextColor(service, dark)
+        val secondary = MaterialColorHelper.getSecondaryTextColor(service, dark)
+
+        val prev = ImageUtil.createBitmap(
+            ImageUtil.getTintedVectorDrawable(service, R.drawable.ic_skip_previous_white_24dp, primary), 1.5f
+        )
+        val next = ImageUtil.createBitmap(
+            ImageUtil.getTintedVectorDrawable(service, R.drawable.ic_skip_next_white_24dp, primary), 1.5f
+        )
+        val playPause = ImageUtil.createBitmap(
+            ImageUtil.getTintedVectorDrawable(
+                service,
+                if (service.isPlaying) R.drawable.ic_pause_white_24dp else R.drawable.ic_play_arrow_white_24dp,
+                primary
+            ),
+            1.5f
+        )
+
+        notificationLayout.setTextColor(R.id.title, primary)
+        notificationLayout.setTextColor(R.id.text, secondary)
+
+        notificationLayout.setImageViewBitmap(R.id.action_prev, prev)
+        notificationLayout.setImageViewBitmap(R.id.action_next, next)
+        notificationLayout.setImageViewBitmap(R.id.action_play_pause, playPause)
+
+        notificationLayoutBig.setTextColor(R.id.title, primary)
+        notificationLayoutBig.setTextColor(R.id.text, secondary)
+        notificationLayoutBig.setTextColor(R.id.text2, secondary)
+
+        notificationLayoutBig.setImageViewBitmap(R.id.action_prev, prev)
+        notificationLayoutBig.setImageViewBitmap(R.id.action_next, next)
+        notificationLayoutBig.setImageViewBitmap(R.id.action_play_pause, playPause)
     }
 
     private fun linkButtons(notificationLayout: RemoteViews, notificationLayoutBig: RemoteViews) {
