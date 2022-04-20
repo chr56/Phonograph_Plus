@@ -582,7 +582,7 @@ public class MusicService extends Service implements SharedPreferences.OnSharedP
 
     public void updateNotification() {
         if (playingNotification != null && getCurrentSong().id != -1) {
-            playingNotification.update();
+            playingNotification.setMetaData(new PlayingNotification.SongMetaData(getCurrentSong()));
         }
     }
 
