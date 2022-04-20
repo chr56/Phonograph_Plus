@@ -48,19 +48,19 @@ abstract class PlayingNotification {
     }
 
     protected fun updateNotification(notification: Notification) {
-        if (!availability){
+        if (!availability) {
             // service available/stopped
             stop()
             return
         }
         when (currentMode) {
             MODE_FOREGROUND -> {
-                // service.stopForeground(false)
                 notificationManager.notify(NOTIFICATION_ID, notification)
                 service.startForeground(NOTIFICATION_ID, notification)
             }
             MODE_BACKGROUND -> {
                 notificationManager.notify(NOTIFICATION_ID, notification)
+                service.stopForeground(false)
             }
         }
     }
