@@ -4,6 +4,8 @@ import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
@@ -32,32 +34,28 @@ import util.mddesign.util.MaterialColorHelper
 open class AlbumAdapter(
     protected val activity: AppCompatActivity,
     dataSet: List<Album>,
-    @LayoutRes protected var itemLayoutRes: Int,
-    protected var usePalette: Boolean = false,
-    cabHolder: CabHolder?
+    @LayoutRes protected val itemLayoutRes: Int,
+    usePalette: Boolean = false,
+    cabHolder: CabHolder? = null,
 ) : AbsMultiSelectAdapter<AlbumAdapter.ViewHolder, Album>(
     activity, cabHolder, R.menu.menu_media_selection
 ),
     SectionedAdapter {
 
     var dataSet: List<Album> = dataSet
-        get() = field
-        protected set(dataSet: List<Album>) {
+        set(dataSet) {
             field = dataSet
+            notifyDataSetChanged()
+        }
+
+    var usePalette: Boolean = usePalette
+        set(value) {
+            field = value
+            notifyDataSetChanged()
         }
 
     init {
         setHasStableIds(true)
-    }
-
-    fun usePalette(usePalette: Boolean) {
-        this.usePalette = usePalette
-        notifyDataSetChanged()
-    }
-
-    fun swapDataSet(dataSet: List<Album>) {
-        this.dataSet = dataSet
-        notifyDataSetChanged()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -65,62 +63,36 @@ open class AlbumAdapter(
         return createViewHolder(view, viewType)
     }
 
-    protected open fun createViewHolder(view: View, viewType: Int): ViewHolder {
-        return ViewHolder(view)
-    }
+    protected open fun createViewHolder(view: View, viewType: Int): ViewHolder = ViewHolder(view)
 
-    protected fun getAlbumTitle(album: Album): String {
-        return album.title
-    }
+    protected fun getAlbumTitle(album: Album): String =
+        album.title
 
-    protected open fun getAlbumText(album: Album): String {
-        return MusicUtil.buildInfoString(
-            album.artistName,
-            MusicUtil.getSongCountString(activity, album.songs?.size ?: -1)
+    protected open fun getAlbumText(album: Album): String =
+        MusicUtil.buildInfoString(
+            album.artistName, MusicUtil.getSongCountString(activity, album.songs.size)
         )
-    }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val album = dataSet[position]
-        val isChecked = isChecked(album)
-        holder.itemView.isActivated = isChecked
-        if (holder.bindingAdapterPosition == itemCount - 1) {
-            if (holder.shortSeparator != null) {
-                holder.shortSeparator!!.visibility = View.GONE
-            }
-        } else {
-            if (holder.shortSeparator != null) {
-                holder.shortSeparator!!.visibility = View.VISIBLE
-            }
-        }
-        if (holder.title != null) {
-            holder.title!!.text = getAlbumTitle(album)
-        }
-        if (holder.text != null) {
-            holder.text!!.text = getAlbumText(album)
-        }
+        holder.itemView.isActivated = isChecked(album)
+        holder.shortSeparator?.visibility =
+            if (holder.bindingAdapterPosition == itemCount - 1) GONE else VISIBLE
+        holder.title?.text = getAlbumTitle(album)
+        holder.text?.text = getAlbumText(album)
         loadAlbumCover(album, holder)
     }
 
     protected open fun setColors(color: Int, holder: ViewHolder) {
-        if (holder.paletteColorContainer != null) {
-            holder.paletteColorContainer!!.setBackgroundColor(color)
-            if (holder.title != null) {
-                holder.title!!.setTextColor(
-                    MaterialColorHelper.getPrimaryTextColor(
-                        activity,
-                        ColorUtil.isColorLight(color)
-                    )
-                )
-            }
-            if (holder.text != null) {
-                holder.text!!.setTextColor(
-                    MaterialColorHelper.getSecondaryTextColor(
-                        activity,
-                        ColorUtil.isColorLight(color)
-                    )
-                )
-            }
+        holder.paletteColorContainer?.let { container ->
+            container.setBackgroundColor(color)
+            holder.title?.setTextColor(
+                MaterialColorHelper.getPrimaryTextColor(activity, ColorUtil.isColorLight(color))
+            )
+
+            holder.text?.setTextColor(
+                MaterialColorHelper.getSecondaryTextColor(activity, ColorUtil.isColorLight(color))
+            )
         }
     }
 
@@ -144,32 +116,22 @@ open class AlbumAdapter(
             })
     }
 
-    override fun getItemCount(): Int {
-        return dataSet.size
-    }
+    override fun getItemCount(): Int = dataSet.size
 
     override fun getItemId(position: Int): Long {
         return dataSet[position].id
     }
 
-    override fun getIdentifier(position: Int): Album {
-        return dataSet[position]
-    }
+    override fun getIdentifier(position: Int): Album = dataSet[position]
 
-    override fun getName(obj: Album): String {
-        return obj.title
-    }
+    override fun getName(obj: Album): String = obj.title
 
     override fun onMultipleItemAction(menuItem: MenuItem, selection: List<Album>) {
         handleMenuClick(activity, getSongList(selection), menuItem.itemId)
     } // todo
 
     private fun getSongList(albums: List<Album>): List<Song> {
-        val songs: MutableList<Song> = ArrayList()
-        for (album in albums) {
-            album.songs?.let { songs.addAll(it) }
-        }
-        return songs
+        return albums.flatMap { album -> album.songs }
     }
 
     override fun getSectionName(position: Int): String {
@@ -191,26 +153,22 @@ open class AlbumAdapter(
             if (isInQuickSelectMode) {
                 toggleChecked(bindingAdapterPosition)
             } else {
-                val albumPairs = arrayOf<Pair<*, *>>(
-                    Pair.create(
-                        image,
-                        activity.resources.getString(R.string.transition_album_art)
-                    )
+                NavigationUtil.goToAlbum(
+                    activity,
+                    dataSet[bindingAdapterPosition].id,
+                    Pair.create(image, activity.resources.getString(R.string.transition_album_art))
                 )
-                NavigationUtil.goToAlbum(activity, dataSet[bindingAdapterPosition].id, *albumPairs)
             }
         }
 
-        override fun onLongClick(view: View): Boolean {
+        override fun onLongClick(v: View): Boolean {
             toggleChecked(bindingAdapterPosition)
             return true
         }
 
         init {
             setImageTransitionName(activity.getString(R.string.transition_album_art))
-            if (menu != null) {
-                menu!!.visibility = View.GONE
-            }
+            menu?.visibility = GONE
         }
     }
 }

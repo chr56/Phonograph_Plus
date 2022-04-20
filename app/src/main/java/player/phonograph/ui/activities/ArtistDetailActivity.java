@@ -183,7 +183,7 @@ public class ArtistDetailActivity extends AbsSlidingMusicPanelActivity implement
     }
 
     protected void setUsePalette(boolean usePalette) {
-        albumAdapter.usePalette(usePalette);
+        albumAdapter.setUsePalette(usePalette);
         Setting.instance().setAlbumArtistColoredFooters(usePalette);
         this.usePalette = usePalette;
     }
@@ -198,7 +198,7 @@ public class ArtistDetailActivity extends AbsSlidingMusicPanelActivity implement
                     return Unit.INSTANCE;
                 },
                 albums -> {
-                    albumAdapter.swapDataSet(albums);
+                    albumAdapter.setDataSet(albums);
                     return Unit.INSTANCE;
                 }
         );
