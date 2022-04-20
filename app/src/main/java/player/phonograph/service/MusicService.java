@@ -496,7 +496,7 @@ public class MusicService extends Service implements SharedPreferences.OnSharedP
         queueSaveHandler.removeCallbacksAndMessages(null);
         queueSaveHandlerThread.quitSafely();
         lyricsUpdateThread.setCurrentSong(null);
-        lyricsUpdateThread.interrupt();
+        lyricsUpdateThread.quit();
         lyricsUpdateThread = null;
         playback.release();
         playback = null;
