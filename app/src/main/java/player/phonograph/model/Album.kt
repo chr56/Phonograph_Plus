@@ -63,7 +63,7 @@ class Album : Parcelable, Displayable {
         songs = parcel.createTypedArrayList(Song.CREATOR) ?: throw Exception("Fail to recreate Album from song")
     }
 
-    override fun getItemID(): Long = artistId
+    override fun getItemID(): Long = id
 
     override fun getDisplayTitle(): CharSequence = title
 
