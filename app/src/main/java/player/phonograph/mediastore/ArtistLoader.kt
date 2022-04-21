@@ -7,9 +7,9 @@ package player.phonograph.mediastore
 import android.content.Context
 import android.provider.MediaStore.Audio.AudioColumns
 import android.util.ArrayMap
-import player.phonograph.helper.SortOrder
 import player.phonograph.mediastore.SongLoader.getSongs
 import player.phonograph.mediastore.SongLoader.makeSongCursor
+import player.phonograph.mediastore.sort.SortRef
 import player.phonograph.model.Album
 import player.phonograph.model.Artist
 import player.phonograph.model.Song
@@ -64,15 +64,22 @@ object ArtistLoader {
             AlbumLoader.splitIntoAlbums(artistSongs)
         }
 
-        return artistAlbumsList.map { Artist(it) }.sort()
+        return artistAlbumsList.map { Artist(it) }.sortAll()
     }
 
-    // todo
-    private fun List<Artist>.sort(): List<Artist> {
-        return when (Setting.instance.artistSortOrder) {
-            SortOrder.ArtistSortOrder.ARTIST_A_Z -> this.sortedBy { it.name.lowercase() }
-            SortOrder.ArtistSortOrder.ARTIST_Z_A -> this.sortedByDescending { it.name.lowercase() }
-            else -> { this }
+    private fun List<Artist>.sortAll(): List<Artist> {
+        val revert = Setting.instance.artistSortMode.revert
+        return when (Setting.instance.artistSortMode.sortRef) {
+            SortRef.ARTIST_NAME -> this.sort(revert) { it.name.lowercase() }
+            else -> this
         }
+    }
+
+    private inline fun List<Artist>.sort(
+        revert: Boolean,
+        crossinline selector: (Artist) -> Comparable<*>?
+    ): List<Artist> {
+        return if (revert) this.sortedWith(compareByDescending(selector))
+        else this.sortedWith(compareBy(selector))
     }
 }

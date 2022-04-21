@@ -24,6 +24,7 @@ import player.phonograph.adapter.PageConfig
 import player.phonograph.adapter.PageConfigUtil
 import player.phonograph.helper.SortOrder
 import player.phonograph.mediastore.sort.SortMode
+import player.phonograph.mediastore.sort.SortRef
 import player.phonograph.ui.fragments.mainactivity.folders.FoldersFragment
 import player.phonograph.ui.fragments.player.NowPlayingScreen
 import player.phonograph.util.CalendarUtil
@@ -35,11 +36,15 @@ class Setting(context: Context) {
     private val mPreferences: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
     private val editor: SharedPreferences.Editor = mPreferences.edit()
 
-    fun registerOnSharedPreferenceChangedListener(sharedPreferenceChangeListener: SharedPreferences.OnSharedPreferenceChangeListener?) {
+    fun registerOnSharedPreferenceChangedListener(
+        sharedPreferenceChangeListener: SharedPreferences.OnSharedPreferenceChangeListener?
+    ) {
         mPreferences.registerOnSharedPreferenceChangeListener(sharedPreferenceChangeListener)
     }
 
-    fun unregisterOnSharedPreferenceChangedListener(sharedPreferenceChangeListener: SharedPreferences.OnSharedPreferenceChangeListener?) {
+    fun unregisterOnSharedPreferenceChangedListener(
+        sharedPreferenceChangeListener: SharedPreferences.OnSharedPreferenceChangeListener?
+    ) {
         mPreferences.unregisterOnSharedPreferenceChangeListener(sharedPreferenceChangeListener)
     }
 
@@ -167,11 +172,18 @@ class Setting(context: Context) {
     var genreSortOrder: String by StringPref(GENRE_SORT_ORDER, SortOrder.GenreSortOrder.GENRE_A_Z)
 
     // List-SortOrder2
-    private var _albumSortMode: String by StringPref(ALBUM_SORT_MODE, "")
+    private var _albumSortMode: String by StringPref(ALBUM_SORT_MODE, SortMode(SortRef.ID, false).serialize())
     var albumSortMode: SortMode
         get() = SortMode.deserialize(_albumSortMode)
         set(value) {
             _albumSortMode = value.serialize()
+        }
+
+    private var _artistSortMode: String by StringPref(ARTIST_SORT_MODE, SortMode(SortRef.ID, false).serialize())
+    var artistSortMode: SortMode
+        get() = SortMode.deserialize(_artistSortMode)
+        set(value) {
+            _artistSortMode = value.serialize()
         }
 
     // List-Appearance
@@ -282,6 +294,7 @@ class Setting(context: Context) {
 
         // List-SortOrder2
         private const val ALBUM_SORT_MODE = "album_sort_mode"
+        private const val ARTIST_SORT_MODE = "artist_sort_mode"
 
         // List-Appearance
         private const val ALBUM_GRID_SIZE = "album_grid_size"

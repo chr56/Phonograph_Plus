@@ -317,6 +317,9 @@ class DisplayUtil(private val page: AbsDisplayPage<*, *, *>) {
                 is AlbumPage -> {
                     pref.albumSortMode
                 }
+                is ArtistPage -> {
+                    pref.artistSortMode
+                }
                 else -> SortMode(SortRef.ID)
             }
         }
@@ -325,6 +328,9 @@ class DisplayUtil(private val page: AbsDisplayPage<*, *, *>) {
             when (page) {
                 is AlbumPage -> {
                     pref.albumSortMode = value
+                }
+                is ArtistPage -> {
+                    pref.artistSortMode = value
                 }
                 else -> {}
             }

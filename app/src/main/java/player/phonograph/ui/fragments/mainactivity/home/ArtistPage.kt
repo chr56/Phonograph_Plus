@@ -18,8 +18,9 @@ import player.phonograph.R
 import player.phonograph.adapter.display.ArtistDisplayAdapter
 import player.phonograph.adapter.display.DisplayAdapter
 import player.phonograph.databinding.PopupWindowMainBinding
-import player.phonograph.helper.SortOrder
 import player.phonograph.mediastore.ArtistLoader
+import player.phonograph.mediastore.sort.SortMode
+import player.phonograph.mediastore.sort.SortRef
 import player.phonograph.model.Artist
 import player.phonograph.util.Util
 
@@ -90,23 +91,19 @@ class ArtistPage : AbsDisplayPage<Artist, DisplayAdapter<Artist>, GridLayoutMana
         popup.textSortOrderContent.visibility = View.VISIBLE
         for (i in 0 until popup.sortOrderContent.childCount) popup.sortOrderContent.getChildAt(i).visibility = View.GONE
 
-        val currentSortOrder = displayUtil.sortOrder
-        Log.d(TAG, "Read cfg: $currentSortOrder")
+        val currentSortMode = displayUtil.sortMode
+        Log.d(AlbumPage.TAG, "Read cfg: sortMode $currentSortMode")
 
-        // todo
-        when (currentSortOrder) {
-            SortOrder.SongSortOrder.SONG_Z_A, SortOrder.AlbumSortOrder.ALBUM_Z_A, SortOrder.ArtistSortOrder.ARTIST_Z_A,
-            SortOrder.SongSortOrder.SONG_DURATION_REVERT, SortOrder.AlbumSortOrder.ALBUM_ARTIST_REVERT,
-            SortOrder.SongSortOrder.SONG_YEAR_REVERT, SortOrder.SongSortOrder.SONG_DATE_REVERT, SortOrder.SongSortOrder.SONG_DATE_MODIFIED_REVERT,
-            -> popup.sortOrderBasic.check(R.id.sort_order_z_a)
-            else
-            -> popup.sortOrderBasic.check(R.id.sort_order_a_z)
+        popup.sortOrderContent.clearCheck()
+        popup.sortOrderArtist.visibility = View.VISIBLE
+        when (currentSortMode.sortRef) {
+            SortRef.ARTIST_NAME -> popup.sortOrderContent.check(R.id.sort_order_artist)
+            else -> { popup.sortOrderContent.clearCheck() }
         }
 
-        popup.sortOrderArtist.visibility = View.VISIBLE
-        when (currentSortOrder) {
-            SortOrder.ArtistSortOrder.ARTIST_A_Z, SortOrder.ArtistSortOrder.ARTIST_Z_A -> popup.sortOrderContent.check(R.id.sort_order_artist)
-            else -> { popup.sortOrderContent.clearCheck() }
+        when (currentSortMode.revert) {
+            false -> popup.sortOrderBasic.check(R.id.sort_order_a_z)
+            true -> popup.sortOrderBasic.check(R.id.sort_order_z_a)
         }
     }
 
@@ -145,23 +142,20 @@ class ArtistPage : AbsDisplayPage<Artist, DisplayAdapter<Artist>, GridLayoutMana
             }
 
             // sort order
-            val basicSelected = popup.sortOrderBasic.checkedRadioButtonId
-            val sortOrderSelected: String =
-
-                when (popup.sortOrderContent.checkedRadioButtonId) {
-                    R.id.sort_order_artist ->
-                        when (basicSelected) {
-                            R.id.sort_order_a_z -> SortOrder.ArtistSortOrder.ARTIST_A_Z
-                            R.id.sort_order_z_a -> SortOrder.ArtistSortOrder.ARTIST_Z_A
-                            else -> ""
-                        }
-                    else -> ""
-                }
-
-            if (sortOrderSelected.isNotBlank() && displayUtil.sortOrder != sortOrderSelected) {
-                displayUtil.sortOrder = sortOrderSelected
+            val revert = when (popup.sortOrderBasic.checkedRadioButtonId) {
+                R.id.sort_order_z_a -> true
+                R.id.sort_order_a_z -> false
+                else -> false
+            }
+            val sortRef = when (popup.sortOrderContent.checkedRadioButtonId) {
+                R.id.sort_order_artist -> SortRef.ARTIST_NAME
+                else -> SortRef.ID
+            }
+            val selected = SortMode(sortRef, revert)
+            if (displayUtil.sortMode != selected) {
+                displayUtil.sortMode = selected
                 loadDataSet()
-                Log.d(TAG, "Write cfg: $sortOrderSelected")
+                Log.d(AlbumPage.TAG, "Write cfg: sortMode $selected")
             }
         }
     }
