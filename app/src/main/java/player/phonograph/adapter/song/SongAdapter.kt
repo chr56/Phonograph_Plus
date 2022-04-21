@@ -9,17 +9,19 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.util.Pair
 import com.bumptech.glide.Glide
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView.SectionedAdapter
+import java.text.SimpleDateFormat
+import java.util.*
 import player.phonograph.R
 import player.phonograph.adapter.base.AbsMultiSelectAdapter
 import player.phonograph.adapter.base.MediaEntryViewHolder
 import player.phonograph.glide.PhonographColoredTarget
 import player.phonograph.glide.SongGlideRequest
-import player.phonograph.service.MusicPlayerRemote
-import player.phonograph.helper.SortOrder
 import player.phonograph.helper.menu.SongMenuHelper
 import player.phonograph.helper.menu.SongsMenuHelper.handleMenuClick
 import player.phonograph.interfaces.CabHolder
+import player.phonograph.mediastore.sort.SortRef
 import player.phonograph.model.Song
+import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.settings.Setting
 import player.phonograph.util.MusicUtil
 import player.phonograph.util.NavigationUtil
@@ -125,20 +127,19 @@ open class SongAdapter constructor(
 
     override fun getSectionName(position: Int): String {
         if (!showSectionName) return ""
-
-        var sectionName: String? = null
-        when (Setting.instance.songSortOrder) {
-            SortOrder.SongSortOrder.SONG_A_Z, SortOrder.SongSortOrder.SONG_Z_A ->
-                sectionName = dataSet[position].title
-            SortOrder.SongSortOrder.SONG_ALBUM ->
-                sectionName = dataSet[position].albumName
-            SortOrder.SongSortOrder.SONG_ARTIST ->
-                sectionName = dataSet[position].artistName
-            SortOrder.SongSortOrder.SONG_YEAR ->
-                return MusicUtil.getYearString(dataSet[position].year)
-        }
-
-        return MusicUtil.getSectionName(sectionName)
+        val song = dataSet[position]
+        val sectionName: String =
+            when (Setting.instance.songSortMode.sortRef) {
+                SortRef.SONG_NAME -> MusicUtil.getSectionName(song.title)
+                SortRef.ARTIST_NAME -> MusicUtil.getSectionName(song.artistName)
+                SortRef.ALBUM_NAME -> MusicUtil.getSectionName(song.albumName)
+                SortRef.YEAR -> MusicUtil.getYearString(song.year)
+                SortRef.SONG_DURATION -> MusicUtil.getReadableDurationString(song.duration)
+                SortRef.MODIFIED_DATE -> SimpleDateFormat("yy.MM.dd", Locale.getDefault()).format(song.dateModified * 1000)
+                SortRef.ADDED_DATE -> "" // todo
+                else -> ""
+            }
+        return sectionName
     }
 
     open inner class ViewHolder(itemView: View) : MediaEntryViewHolder(itemView) {

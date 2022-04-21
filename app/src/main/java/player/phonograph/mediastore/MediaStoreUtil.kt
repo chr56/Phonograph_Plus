@@ -99,7 +99,7 @@ object MediaStoreUtil {
         selectionValues: Array<String>?
     ): Cursor? {
         return querySongs(
-            context, selection, selectionValues, Setting.instance.songSortOrder
+            context, selection, selectionValues, Setting.instance.songSortMode.SQLQuerySortOrder
         )
     }
     /**

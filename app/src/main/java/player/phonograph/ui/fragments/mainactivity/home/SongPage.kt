@@ -18,9 +18,10 @@ import player.phonograph.R
 import player.phonograph.adapter.display.DisplayAdapter
 import player.phonograph.adapter.display.SongDisplayAdapter
 import player.phonograph.databinding.PopupWindowMainBinding
-import player.phonograph.helper.SortOrder
-import player.phonograph.model.Song
 import player.phonograph.mediastore.MediaStoreUtil
+import player.phonograph.mediastore.sort.SortMode
+import player.phonograph.mediastore.sort.SortRef
+import player.phonograph.model.Song
 import player.phonograph.util.Util
 
 class SongPage : AbsDisplayPage<Song, DisplayAdapter<Song>, GridLayoutManager>() {
@@ -90,18 +91,8 @@ class SongPage : AbsDisplayPage<Song, DisplayAdapter<Song>, GridLayoutManager>()
         popup.textSortOrderContent.visibility = View.VISIBLE
         for (i in 0 until popup.sortOrderContent.childCount) popup.sortOrderContent.getChildAt(i).visibility = View.GONE
 
-        val currentSortOrder = displayUtil.sortOrder
-        Log.d(TAG, "Read cfg: $currentSortOrder")
-
-        // todo
-        when (currentSortOrder) {
-            SortOrder.SongSortOrder.SONG_Z_A, SortOrder.AlbumSortOrder.ALBUM_Z_A, SortOrder.ArtistSortOrder.ARTIST_Z_A,
-            SortOrder.SongSortOrder.SONG_DURATION_REVERT, SortOrder.AlbumSortOrder.ALBUM_ARTIST_REVERT,
-            SortOrder.SongSortOrder.SONG_YEAR_REVERT, SortOrder.SongSortOrder.SONG_DATE_REVERT, SortOrder.SongSortOrder.SONG_DATE_MODIFIED_REVERT,
-            -> popup.sortOrderBasic.check(R.id.sort_order_z_a)
-            else
-            -> popup.sortOrderBasic.check(R.id.sort_order_a_z)
-        }
+        val currentSortMode = displayUtil.sortMode
+        Log.d(TAG, "Read cfg: sortMode $currentSortMode")
 
         popup.sortOrderContent.clearCheck()
         popup.sortOrderSong.visibility = View.VISIBLE
@@ -111,15 +102,19 @@ class SongPage : AbsDisplayPage<Song, DisplayAdapter<Song>, GridLayoutManager>()
         popup.sortOrderDateAdded.visibility = View.VISIBLE
         popup.sortOrderDateModified.visibility = View.VISIBLE
         popup.sortOrderDuration.visibility = View.VISIBLE
-        when (currentSortOrder) {
-            SortOrder.SongSortOrder.SONG_A_Z, SortOrder.SongSortOrder.SONG_Z_A -> popup.sortOrderContent.check(R.id.sort_order_song)
-            SortOrder.SongSortOrder.SONG_ALBUM, SortOrder.SongSortOrder.SONG_ALBUM_REVERT -> popup.sortOrderContent.check(R.id.sort_order_album)
-            SortOrder.SongSortOrder.SONG_ARTIST, SortOrder.SongSortOrder.SONG_ARTIST_REVERT -> popup.sortOrderContent.check(R.id.sort_order_artist)
-            SortOrder.SongSortOrder.SONG_YEAR, SortOrder.SongSortOrder.SONG_YEAR_REVERT -> popup.sortOrderContent.check(R.id.sort_order_year)
-            SortOrder.SongSortOrder.SONG_DATE, SortOrder.SongSortOrder.SONG_DATE_REVERT -> popup.sortOrderContent.check(R.id.sort_order_date_added)
-            SortOrder.SongSortOrder.SONG_DATE_MODIFIED, SortOrder.SongSortOrder.SONG_DATE_MODIFIED_REVERT -> popup.sortOrderContent.check(R.id.sort_order_date_modified)
-            SortOrder.SongSortOrder.SONG_DURATION, SortOrder.SongSortOrder.SONG_DURATION_REVERT -> popup.sortOrderContent.check(R.id.sort_order_duration)
+        when (currentSortMode.sortRef) {
+            SortRef.SONG_NAME -> popup.sortOrderContent.check(R.id.sort_order_song)
+            SortRef.ALBUM_NAME -> popup.sortOrderContent.check(R.id.sort_order_album)
+            SortRef.ARTIST_NAME -> popup.sortOrderContent.check(R.id.sort_order_artist)
+            SortRef.YEAR -> popup.sortOrderContent.check(R.id.sort_order_year)
+            SortRef.ADDED_DATE -> popup.sortOrderContent.check(R.id.sort_order_date_added)
+            SortRef.MODIFIED_DATE -> popup.sortOrderContent.check(R.id.sort_order_date_modified)
+            SortRef.SONG_DURATION -> popup.sortOrderContent.check(R.id.sort_order_duration)
             else -> { popup.sortOrderContent.clearCheck() }
+        }
+        when (currentSortMode.revert) {
+            false -> popup.sortOrderBasic.check(R.id.sort_order_a_z)
+            true -> popup.sortOrderBasic.check(R.id.sort_order_z_a)
         }
     }
 
@@ -158,57 +153,28 @@ class SongPage : AbsDisplayPage<Song, DisplayAdapter<Song>, GridLayoutManager>()
             }
 
             // sort order
-            val basicSelected = popup.sortOrderBasic.checkedRadioButtonId
-            val sortOrderSelected: String =
-                when (popup.sortOrderContent.checkedRadioButtonId) {
-                    R.id.sort_order_song ->
-                        when (basicSelected) {
-                            R.id.sort_order_a_z -> SortOrder.SongSortOrder.SONG_A_Z
-                            R.id.sort_order_z_a -> SortOrder.SongSortOrder.SONG_Z_A
-                            else -> ""
-                        }
-                    R.id.sort_order_album ->
-                        when (basicSelected) {
-                            R.id.sort_order_a_z -> SortOrder.SongSortOrder.SONG_ALBUM
-                            R.id.sort_order_z_a -> SortOrder.SongSortOrder.SONG_ALBUM_REVERT
-                            else -> ""
-                        }
-                    R.id.sort_order_artist ->
-                        when (basicSelected) {
-                            R.id.sort_order_a_z -> SortOrder.SongSortOrder.SONG_ARTIST
-                            R.id.sort_order_z_a -> SortOrder.SongSortOrder.SONG_ARTIST_REVERT
-                            else -> ""
-                        }
-                    R.id.sort_order_year ->
-                        when (basicSelected) {
-                            R.id.sort_order_a_z -> SortOrder.SongSortOrder.SONG_YEAR
-                            R.id.sort_order_z_a -> SortOrder.SongSortOrder.SONG_YEAR_REVERT
-                            else -> ""
-                        }
-                    R.id.sort_order_date_added ->
-                        when (basicSelected) {
-                            R.id.sort_order_a_z -> SortOrder.SongSortOrder.SONG_DATE
-                            R.id.sort_order_z_a -> SortOrder.SongSortOrder.SONG_DATE_REVERT
-                            else -> ""
-                        }
-                    R.id.sort_order_date_modified ->
-                        when (basicSelected) {
-                            R.id.sort_order_a_z -> SortOrder.SongSortOrder.SONG_DATE_MODIFIED
-                            R.id.sort_order_z_a -> SortOrder.SongSortOrder.SONG_DATE_MODIFIED_REVERT
-                            else -> ""
-                        }
-                    R.id.sort_order_duration ->
-                        when (basicSelected) {
-                            R.id.sort_order_a_z -> SortOrder.SongSortOrder.SONG_DURATION
-                            R.id.sort_order_z_a -> SortOrder.SongSortOrder.SONG_DURATION_REVERT
-                            else -> ""
-                        }
-                    else -> ""
-                }
-            if (sortOrderSelected.isNotBlank() && displayUtil.sortOrder != sortOrderSelected) {
-                displayUtil.sortOrder = sortOrderSelected
+
+            val revert = when (popup.sortOrderBasic.checkedRadioButtonId) {
+                R.id.sort_order_z_a -> true
+                R.id.sort_order_a_z -> false
+                else -> false
+            }
+            val sortRef: SortRef = when (popup.sortOrderContent.checkedRadioButtonId) {
+                R.id.sort_order_song -> SortRef.SONG_NAME
+                R.id.sort_order_album -> SortRef.ALBUM_NAME
+                R.id.sort_order_artist -> SortRef.ARTIST_NAME
+                R.id.sort_order_year -> SortRef.YEAR
+                R.id.sort_order_date_added -> SortRef.ADDED_DATE
+                R.id.sort_order_date_modified -> SortRef.MODIFIED_DATE
+                R.id.sort_order_duration -> SortRef.SONG_DURATION
+                else -> SortRef.ID
+            }
+
+            val selected = SortMode(sortRef, revert)
+            if (displayUtil.sortMode != selected) {
+                displayUtil.sortMode = selected
                 loadDataSet()
-                Log.d(TAG, "Write cfg: $sortOrderSelected")
+                Log.d(AlbumPage.TAG, "Write cfg: sortMode $selected")
             }
         }
     }

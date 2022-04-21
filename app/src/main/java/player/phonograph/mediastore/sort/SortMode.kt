@@ -6,6 +6,7 @@ package player.phonograph.mediastore.sort
 
 import android.provider.MediaStore.Audio
 import java.lang.IllegalArgumentException
+import java.lang.IllegalStateException
 import kotlin.jvm.Throws
 
 data class SortMode(val sortRef: SortRef, val revert: Boolean = false) {
@@ -35,9 +36,10 @@ data class SortMode(val sortRef: SortRef, val revert: Boolean = false) {
                 SortRef.MODIFIED_DATE -> Audio.Media.DATE_MODIFIED
                 SortRef.SONG_DURATION -> Audio.Media.DURATION
                 SortRef.YEAR -> Audio.Media.YEAR
-                SortRef.GENRE_NAME -> Audio.Genres.DEFAULT_SORT_ORDER // todo
-                SortRef.SONG_COUNT -> "" // todo
-                SortRef.ALBUM_COUNT -> "" // todo
+//                SortRef.GENRE_NAME -> Audio.Genres.DEFAULT_SORT_ORDER // todo
+//                SortRef.SONG_COUNT -> "" // todo
+//                SortRef.ALBUM_COUNT -> "" // todo
+                else -> throw IllegalStateException("invalid sort mode")
             }
             val second = if (revert) "DESC" else "ASC"
 

@@ -22,7 +22,6 @@ import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.adapter.PageConfig
 import player.phonograph.adapter.PageConfigUtil
-import player.phonograph.helper.SortOrder
 import player.phonograph.mediastore.sort.SortMode
 import player.phonograph.mediastore.sort.SortRef
 import player.phonograph.ui.fragments.mainactivity.folders.FoldersFragment
@@ -162,10 +161,14 @@ class Setting(context: Context) {
     // Upgrade
     var checkUpgradeAtStartup: Boolean by BooleanPref(CHECK_UPGRADE_AT_STARTUP, true)
 
-    // List-SortOrder legacy
-    var songSortOrder: String by StringPref(SONG_SORT_ORDER, SortOrder.SongSortOrder.SONG_A_Z)
-
     // List-SortMode
+    private var _songSortMode: String by StringPref(SONG_SORT_MODE, SortMode(SortRef.ID, false).serialize())
+    var songSortMode: SortMode // todo
+        get() = SortMode.deserialize(_songSortMode)
+        set(value) {
+            _songSortMode = value.serialize()
+        }
+
     private var _albumSortMode: String by StringPref(ALBUM_SORT_MODE, SortMode(SortRef.ID, false).serialize())
     var albumSortMode: SortMode
         get() = SortMode.deserialize(_albumSortMode)
@@ -284,16 +287,8 @@ class Setting(context: Context) {
         // Upgrade
         private const val CHECK_UPGRADE_AT_STARTUP = "check_upgrade_at_startup"
 
-        // List-SortOrder
-        private const val ARTIST_SORT_ORDER = "artist_sort_order"
-        private const val ARTIST_SONG_SORT_ORDER = "artist_song_sort_order"
-        private const val ARTIST_ALBUM_SORT_ORDER = "artist_album_sort_order"
-        private const val ALBUM_SORT_ORDER = "album_sort_order"
-        private const val ALBUM_SONG_SORT_ORDER = "album_song_sort_order"
-        private const val SONG_SORT_ORDER = "song_sort_order"
-        private const val GENRE_SORT_ORDER = "genre_sort_order"
-
-        // List-SortOrder2
+        // List-SortMode
+        private const val SONG_SORT_MODE = "song_sort_mode"
         private const val ALBUM_SORT_MODE = "album_sort_mode"
         private const val ARTIST_SORT_MODE = "artist_sort_mode"
         private const val GENRE_SORT_MODE = "genre_sort_mode"

@@ -7,15 +7,15 @@ package player.phonograph.adapter.display
 import android.graphics.drawable.Drawable
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
-import player.phonograph.glide.PhonographColoredTarget
-import player.phonograph.glide.SongGlideRequest
-import player.phonograph.helper.SortOrder
-import player.phonograph.interfaces.MultiSelectionCabProvider
-import player.phonograph.model.Song
-import player.phonograph.util.MusicUtil
-import player.phonograph.settings.Setting
 import java.text.SimpleDateFormat
 import java.util.*
+import player.phonograph.glide.PhonographColoredTarget
+import player.phonograph.glide.SongGlideRequest
+import player.phonograph.interfaces.MultiSelectionCabProvider
+import player.phonograph.mediastore.sort.SortRef
+import player.phonograph.model.Song
+import player.phonograph.settings.Setting
+import player.phonograph.util.MusicUtil
 
 class SongDisplayAdapter(
     activity: AppCompatActivity,
@@ -45,21 +45,17 @@ class SongDisplayAdapter(
     }
 
     override fun getSectionNameImp(position: Int): String {
+        val song = dataset[position]
         val sectionName: String =
-            when (Setting.instance.songSortOrder) {
-                SortOrder.SongSortOrder.SONG_A_Z, SortOrder.SongSortOrder.SONG_Z_A ->
-                    MusicUtil.getSectionName(dataset[position].title)
-                SortOrder.SongSortOrder.SONG_ALBUM, SortOrder.SongSortOrder.SONG_ALBUM_REVERT ->
-                    MusicUtil.getSectionName(dataset[position].albumName)
-                SortOrder.SongSortOrder.SONG_ARTIST, SortOrder.SongSortOrder.SONG_ARTIST_REVERT ->
-                    MusicUtil.getSectionName(dataset[position].artistName)
-                SortOrder.SongSortOrder.SONG_DURATION, SortOrder.SongSortOrder.SONG_DURATION_REVERT ->
-                    MusicUtil.getReadableDurationString(dataset[position].duration)
-                SortOrder.SongSortOrder.SONG_DATE_MODIFIED, SortOrder.SongSortOrder.SONG_DATE_MODIFIED_REVERT ->
-                    SimpleDateFormat("yy.MM.dd", Locale.getDefault()).format(dataset[position].dateModified * 1000)
-                SortOrder.SongSortOrder.SONG_YEAR, SortOrder.SongSortOrder.SONG_YEAR_REVERT ->
-                    MusicUtil.getYearString(dataset[position].year)
-                else -> { "" }
+            when (Setting.instance.songSortMode.sortRef) {
+                SortRef.SONG_NAME -> MusicUtil.getSectionName(song.title)
+                SortRef.ARTIST_NAME -> MusicUtil.getSectionName(song.artistName)
+                SortRef.ALBUM_NAME -> MusicUtil.getSectionName(song.albumName)
+                SortRef.YEAR -> MusicUtil.getYearString(song.year)
+                SortRef.SONG_DURATION -> MusicUtil.getReadableDurationString(song.duration)
+                SortRef.MODIFIED_DATE -> SimpleDateFormat("yy.MM.dd", Locale.getDefault()).format(song.dateModified * 1000)
+                SortRef.ADDED_DATE -> "" // todo
+                else -> ""
             }
         return sectionName
     }
