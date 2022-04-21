@@ -320,6 +320,9 @@ class DisplayUtil(private val page: AbsDisplayPage<*, *, *>) {
                 is ArtistPage -> {
                     pref.artistSortMode
                 }
+                is GenrePage -> {
+                    pref.genreSortMode
+                }
                 else -> SortMode(SortRef.ID)
             }
         }
@@ -332,19 +335,20 @@ class DisplayUtil(private val page: AbsDisplayPage<*, *, *>) {
                 is ArtistPage -> {
                     pref.artistSortMode = value
                 }
+                is GenrePage -> {
+                    pref.genreSortMode = value
+                }
                 else -> {}
             }
         }
 
+    // legacy
     var sortOrder: String
         get() {
             val pref = Setting.instance
             return when (page) {
                 is SongPage -> {
                     pref.songSortOrder
-                }
-                is GenrePage -> {
-                    pref.genreSortOrder
                 }
                 else -> ""
             }
@@ -357,9 +361,6 @@ class DisplayUtil(private val page: AbsDisplayPage<*, *, *>) {
             when (page) {
                 is SongPage -> {
                     pref.songSortOrder = value
-                }
-                is GenrePage -> {
-                    pref.genreSortOrder = value
                 }
                 else -> {}
             }

@@ -164,9 +164,8 @@ class Setting(context: Context) {
 
     // List-SortOrder legacy
     var songSortOrder: String by StringPref(SONG_SORT_ORDER, SortOrder.SongSortOrder.SONG_A_Z)
-    var genreSortOrder: String by StringPref(GENRE_SORT_ORDER, SortOrder.GenreSortOrder.GENRE_A_Z)
 
-    // List-SortOrder2
+    // List-SortMode
     private var _albumSortMode: String by StringPref(ALBUM_SORT_MODE, SortMode(SortRef.ID, false).serialize())
     var albumSortMode: SortMode
         get() = SortMode.deserialize(_albumSortMode)
@@ -179,6 +178,13 @@ class Setting(context: Context) {
         get() = SortMode.deserialize(_artistSortMode)
         set(value) {
             _artistSortMode = value.serialize()
+        }
+
+    private var _genreSortMode: String by StringPref(GENRE_SORT_MODE, SortMode(SortRef.ID, false).serialize())
+    var genreSortMode: SortMode
+        get() = SortMode.deserialize(_genreSortMode)
+        set(value) {
+            _genreSortMode = value.serialize()
         }
 
     // List-Appearance
@@ -290,6 +296,7 @@ class Setting(context: Context) {
         // List-SortOrder2
         private const val ALBUM_SORT_MODE = "album_sort_mode"
         private const val ARTIST_SORT_MODE = "artist_sort_mode"
+        private const val GENRE_SORT_MODE = "genre_sort_mode"
 
         // List-Appearance
         private const val ALBUM_GRID_SIZE = "album_grid_size"

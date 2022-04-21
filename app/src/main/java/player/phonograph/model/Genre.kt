@@ -55,7 +55,7 @@ class Genre : Parcelable, Displayable {
 
     override fun getPic(): Uri? = null
 
-    override fun getSortOrderReference(): String = name ?: "UNKNOWN GENRE $id"
+    override fun getSortOrderReference(): String? = null
 
     override fun menuRes(): Int = 0
 

@@ -9,14 +9,16 @@ import android.content.Context
 import android.database.Cursor
 import android.os.Build
 import android.provider.MediaStore
+import player.phonograph.mediastore.sort.SortRef
 import player.phonograph.model.Genre
 import player.phonograph.model.Song
+import player.phonograph.settings.Setting
 
 @SuppressLint("Recycle")
 object GenreLoader {
 
     fun getAllGenres(context: Context): List<Genre> {
-        return getGenresFromCursor(context, makeGenreCursor(context))
+        return getGenresFromCursor(context, makeGenreCursor(context)).sortAll()
     }
 
     fun getSongs(context: Context, genreId: Long): List<Song> {
@@ -24,7 +26,7 @@ object GenreLoader {
     }
 
     private fun getGenresFromCursor(context: Context, cursor: Cursor?): List<Genre> {
-        if (cursor == null)return ArrayList()
+        if (cursor == null) return ArrayList()
 
         val genres: MutableList<Genre> = ArrayList()
 
@@ -76,6 +78,7 @@ object GenreLoader {
             null
         }
     }
+
     private fun removeEmptyGenre(context: Context, genre: Genre) {
         // try to remove the empty genre from the media store
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
@@ -90,5 +93,22 @@ object GenreLoader {
                 // nothing we can do then
             }
         }
+    }
+
+    private fun List<Genre>.sortAll(): List<Genre> {
+        val revert = Setting.instance.genreSortMode.revert
+        return when (Setting.instance.genreSortMode.sortRef) {
+            SortRef.GENRE_NAME -> this.sort(revert) { it.name }
+            SortRef.SONG_COUNT -> this.sort(revert) { it.songCount }
+            else -> this
+        }
+    }
+
+    private inline fun List<Genre>.sort(
+        revert: Boolean,
+        crossinline selector: (Genre) -> Comparable<*>?,
+    ): List<Genre> {
+        return if (revert) this.sortedWith(compareByDescending(selector))
+        else this.sortedWith(compareBy(selector))
     }
 }

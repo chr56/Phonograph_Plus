@@ -16,9 +16,11 @@ import kotlinx.coroutines.yield
 import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.adapter.display.DisplayAdapter
+import player.phonograph.adapter.display.GenreDisplayAdapter
 import player.phonograph.databinding.PopupWindowMainBinding
-import player.phonograph.helper.SortOrder
 import player.phonograph.mediastore.GenreLoader
+import player.phonograph.mediastore.sort.SortMode
+import player.phonograph.mediastore.sort.SortRef
 import player.phonograph.model.Genre
 import player.phonograph.util.Util
 
@@ -30,7 +32,7 @@ class GenrePage : AbsDisplayPage<Genre, DisplayAdapter<Genre>, GridLayoutManager
     }
 
     override fun initAdapter(): DisplayAdapter<Genre> {
-        return DisplayAdapter(
+        return GenreDisplayAdapter(
             hostFragment.mainActivity,
             hostFragment,
             ArrayList(), // empty until Genre loaded
@@ -72,27 +74,26 @@ class GenrePage : AbsDisplayPage<Genre, DisplayAdapter<Genre>, GridLayoutManager
         // sort order
         popup.sortOrderBasic.visibility = View.VISIBLE
         popup.textSortOrderBasic.visibility = View.VISIBLE
-//        popup.sortOrderContent.visibility = View.VISIBLE
-//        popup.textSortOrderContent.visibility = View.VISIBLE
-//        for (i in 0 until popup.sortOrderContent.childCount) popup.sortOrderContent.getChildAt(i).visibility = View.GONE
+        popup.sortOrderContent.visibility = View.VISIBLE
+        popup.textSortOrderContent.visibility = View.VISIBLE
+        for (i in 0 until popup.sortOrderContent.childCount) popup.sortOrderContent.getChildAt(i).visibility = View.GONE
 
-        val currentSortOrder = displayUtil.sortOrder
-        Log.d(TAG, "Read cfg: $currentSortOrder")
+        val currentSortMode = displayUtil.sortMode
+        Log.d(AlbumPage.TAG, "Read cfg: sortMode $currentSortMode")
 
-        // todo
-        when (currentSortOrder) {
-            SortOrder.GenreSortOrder.GENRE_Z_A
-            -> popup.sortOrderBasic.check(R.id.sort_order_z_a)
-            SortOrder.GenreSortOrder.GENRE_A_Z
-            -> popup.sortOrderBasic.check(R.id.sort_order_a_z)
-            else -> popup.sortOrderBasic.clearCheck()
+        popup.sortOrderContent.clearCheck()
+        popup.sortOrderNamePlain.visibility = View.VISIBLE
+        popup.sortOrderSongCount.visibility = View.VISIBLE
+        when (currentSortMode.sortRef) {
+            SortRef.GENRE_NAME -> popup.sortOrderContent.check(R.id.sort_order_name_plain)
+            SortRef.SONG_COUNT -> popup.sortOrderContent.check(R.id.sort_order_song_count)
+            else -> { popup.sortOrderContent.clearCheck() }
         }
 
-//        popup.sortOrder__.visibility = View.VISIBLE
-//        when (currentSortOrder) {
-//            SortOrder.GenreSortOrder.GENRE_A_Z,SortOrder.GenreSortOrder.GENRE_Z_A -> popup.sortOrderContent.check(R.id.sort_order_)
-//            else -> { popup.sortOrderContent.clearCheck() }
-//        }
+        when (currentSortMode.revert) {
+            false -> popup.sortOrderBasic.check(R.id.sort_order_a_z)
+            true -> popup.sortOrderBasic.check(R.id.sort_order_z_a)
+        }
     }
 
     override fun initOnDismissListener(
@@ -119,17 +120,21 @@ class GenrePage : AbsDisplayPage<Genre, DisplayAdapter<Genre>, GridLayoutManager
             }
 
             // sort order
-            val sortOrderSelected: String =
-                when (popup.sortOrderBasic.checkedRadioButtonId) {
-                    R.id.sort_order_a_z -> SortOrder.GenreSortOrder.GENRE_A_Z
-                    R.id.sort_order_z_a -> SortOrder.GenreSortOrder.GENRE_Z_A
-                    else -> ""
-                }
-
-            if (sortOrderSelected.isNotBlank() && displayUtil.sortOrder != sortOrderSelected) {
-                displayUtil.sortOrder = sortOrderSelected
+            val revert = when (popup.sortOrderBasic.checkedRadioButtonId) {
+                R.id.sort_order_z_a -> true
+                R.id.sort_order_a_z -> false
+                else -> false
+            }
+            val sortRef = when (popup.sortOrderContent.checkedRadioButtonId) {
+                R.id.sort_order_name_plain -> SortRef.GENRE_NAME
+                R.id.sort_order_song_count -> SortRef.SONG_COUNT
+                else -> SortRef.ID
+            }
+            val selected = SortMode(sortRef, revert)
+            if (displayUtil.sortMode != selected) {
+                displayUtil.sortMode = selected
                 loadDataSet()
-                Log.d(TAG, "Write cfg: $sortOrderSelected")
+                Log.d(AlbumPage.TAG, "Write cfg: sortMode $selected")
             }
         }
     }
