@@ -6,7 +6,7 @@ package player.phonograph.ui.activities
 
 import android.content.Context
 import kotlinx.coroutines.*
-import player.phonograph.loader.AlbumLoader
+import player.phonograph.mediastore.AlbumLoader
 import player.phonograph.model.Album
 import player.phonograph.model.Song
 

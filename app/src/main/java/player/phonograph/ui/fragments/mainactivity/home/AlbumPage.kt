@@ -19,7 +19,7 @@ import player.phonograph.adapter.display.AlbumDisplayAdapter
 import player.phonograph.adapter.display.DisplayAdapter
 import player.phonograph.databinding.PopupWindowMainBinding
 import player.phonograph.helper.SortOrder
-import player.phonograph.loader.AlbumLoader
+import player.phonograph.mediastore.AlbumLoader
 import player.phonograph.model.Album
 import player.phonograph.util.Util
 

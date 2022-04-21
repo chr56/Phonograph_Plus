@@ -13,8 +13,8 @@ import kotlinx.coroutines.*
 import player.phonograph.R
 import player.phonograph.adapter.SearchAdapter
 import player.phonograph.databinding.ActivitySearchBinding
-import player.phonograph.loader.AlbumLoader
-import player.phonograph.loader.ArtistLoader
+import player.phonograph.mediastore.AlbumLoader
+import player.phonograph.mediastore.ArtistLoader
 import player.phonograph.mediastore.SongLoader
 import player.phonograph.ui.activities.base.AbsMusicServiceActivity
 import player.phonograph.util.Util

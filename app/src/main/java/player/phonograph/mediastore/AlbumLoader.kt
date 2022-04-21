@@ -1,4 +1,8 @@
-package player.phonograph.loader
+/*
+ * Copyright (c) 2022 chr_56 & Abou Zeid (kabouzeid) (original author)
+ */
+
+package player.phonograph.mediastore
 
 import android.content.Context
 import android.provider.MediaStore.Audio.AudioColumns
@@ -7,7 +11,7 @@ import player.phonograph.mediastore.SongLoader.getSongs
 import player.phonograph.mediastore.SongLoader.makeSongCursor
 import player.phonograph.model.Album
 import player.phonograph.model.Song
-import player.phonograph.settings.Setting.Companion.instance
+import player.phonograph.settings.Setting
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
@@ -66,6 +70,6 @@ object AlbumLoader {
     }
 
     val sortOrder: String by lazy {
-        instance().albumSortOrder + ", " + instance().albumSongSortOrder
+        "${Setting.instance.albumSortOrder}, ${Setting.instance.albumSongSortOrder}"
     }
 }

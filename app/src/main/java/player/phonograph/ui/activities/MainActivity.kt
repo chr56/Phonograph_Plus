@@ -26,8 +26,8 @@ import player.phonograph.dialogs.UpgradeDialog
 import player.phonograph.glide.SongGlideRequest
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.helper.SearchQueryHelper
-import player.phonograph.loader.AlbumLoader
-import player.phonograph.loader.ArtistLoader
+import player.phonograph.mediastore.AlbumLoader
+import player.phonograph.mediastore.ArtistLoader
 import player.phonograph.loader.PlaylistSongLoader
 import player.phonograph.mediastore.SongLoader
 import player.phonograph.model.Song
