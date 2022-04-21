@@ -22,9 +22,9 @@ import player.phonograph.dialogs.AddToPlaylistDialog
 import player.phonograph.helper.menu.SongMenuHelper
 import player.phonograph.interfaces.CabHolder
 import player.phonograph.loader.PlaylistSongLoader
-import player.phonograph.model.playlist.Playlist
 import player.phonograph.model.PlaylistSong
 import player.phonograph.model.Song
+import player.phonograph.model.playlist.Playlist
 import player.phonograph.util.MusicUtil
 import player.phonograph.util.ViewUtil
 
@@ -38,7 +38,7 @@ class PlaylistEditorAdapter(
     var playlistSongs: MutableList<PlaylistSong>
 
     init {
-        playlistSongs = PlaylistSongLoader.getPlaylistSongList(activity, playlist.id)
+        playlistSongs = PlaylistSongLoader.getPlaylistSongList(activity, playlist.id).toMutableList()
         setHasStableIds(true)
     }
 

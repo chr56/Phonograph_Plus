@@ -210,6 +210,6 @@ class PlaylistEditorActivity : AbsSlidingMusicPanelActivity() {
         }
 
         // refresh playlist content
-        adapter.playlistSongs = PlaylistSongLoader.getPlaylistSongList(this, playlist.id)
+        adapter.playlistSongs = PlaylistSongLoader.getPlaylistSongList(this, playlist.id).toMutableList()
     }
 }
