@@ -19,18 +19,20 @@ import androidx.core.graphics.BlendModeColorFilterCompat
 import androidx.core.graphics.BlendModeCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.AppBarLayout
+import java.lang.ref.WeakReference
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.databinding.FragmentDisplayPageBinding
 import player.phonograph.databinding.PopupWindowMainBinding
+import player.phonograph.mediastore.sort.SortMode
+import player.phonograph.mediastore.sort.SortRef
 import player.phonograph.settings.Setting
 import player.phonograph.util.PhonographColorUtil
 import player.phonograph.util.Util
 import player.phonograph.util.ViewUtil
 import util.mdcolor.pref.ThemeColor
-import java.lang.ref.WeakReference
 
 /**
  * @param IT the model type that this fragment displays
@@ -307,6 +309,26 @@ class DisplayUtil(private val page: AbsDisplayPage<*, *, *>) {
     val maxGridSizeForList: Int
         get() = if (isLandscape) App.instance.resources.getInteger(R.integer.default_list_columns_land) else
             App.instance.resources.getInteger(R.integer.default_list_columns)
+
+    var sortMode: SortMode
+        get() {
+            val pref = Setting.instance
+            return when (page) {
+                is AlbumPage -> {
+                    pref.albumSortMode
+                }
+                else -> SortMode(SortRef.ID)
+            }
+        }
+        set(value) {
+            val pref = Setting.instance
+            when (page) {
+                is AlbumPage -> {
+                    pref.albumSortMode = value
+                }
+                else -> {}
+            }
+        }
 
     var sortOrder: String
         get() {

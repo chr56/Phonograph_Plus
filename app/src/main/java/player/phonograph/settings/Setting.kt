@@ -13,6 +13,9 @@ import android.util.Log
 import android.widget.Toast
 import androidx.annotation.StyleRes
 import androidx.preference.PreferenceManager
+import java.io.File
+import kotlin.properties.ReadWriteProperty
+import kotlin.reflect.KProperty
 import org.json.JSONException
 import org.json.JSONObject
 import player.phonograph.App
@@ -20,14 +23,12 @@ import player.phonograph.R
 import player.phonograph.adapter.PageConfig
 import player.phonograph.adapter.PageConfigUtil
 import player.phonograph.helper.SortOrder
+import player.phonograph.mediastore.sort.SortMode
 import player.phonograph.ui.fragments.mainactivity.folders.FoldersFragment
 import player.phonograph.ui.fragments.player.NowPlayingScreen
 import player.phonograph.util.CalendarUtil
 import player.phonograph.util.FileUtil
 import util.mdcolor.pref.ThemeColor
-import java.io.File
-import kotlin.properties.ReadWriteProperty
-import kotlin.reflect.KProperty
 
 class Setting(context: Context) {
 
@@ -165,6 +166,14 @@ class Setting(context: Context) {
     var songSortOrder: String by StringPref(SONG_SORT_ORDER, SortOrder.SongSortOrder.SONG_A_Z)
     var genreSortOrder: String by StringPref(GENRE_SORT_ORDER, SortOrder.GenreSortOrder.GENRE_A_Z)
 
+    // List-SortOrder2
+    private var _albumSortMode: String by StringPref(ALBUM_SORT_MODE, "")
+    var albumSortMode: SortMode
+        get() = SortMode.deserialize(_albumSortMode)
+        set(value) {
+            _albumSortMode = value.serialize()
+        }
+
     // List-Appearance
     var albumGridSize: Int by IntPref(
         ALBUM_GRID_SIZE, App.instance.resources.getInteger(R.integer.default_grid_columns)
@@ -270,6 +279,9 @@ class Setting(context: Context) {
         private const val ALBUM_SONG_SORT_ORDER = "album_song_sort_order"
         private const val SONG_SORT_ORDER = "song_sort_order"
         private const val GENRE_SORT_ORDER = "genre_sort_order"
+
+        // List-SortOrder2
+        private const val ALBUM_SORT_MODE = "album_sort_mode"
 
         // List-Appearance
         private const val ALBUM_GRID_SIZE = "album_grid_size"

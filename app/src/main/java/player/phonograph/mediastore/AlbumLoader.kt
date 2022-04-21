@@ -7,9 +7,9 @@ package player.phonograph.mediastore
 import android.content.Context
 import android.provider.MediaStore.Audio.AudioColumns
 import android.util.ArrayMap
-import player.phonograph.helper.SortOrder
 import player.phonograph.mediastore.SongLoader.getSongs
 import player.phonograph.mediastore.SongLoader.makeSongCursor
+import player.phonograph.mediastore.sort.SortRef
 import player.phonograph.model.Album
 import player.phonograph.model.Song
 import player.phonograph.settings.Setting
@@ -68,14 +68,20 @@ object AlbumLoader {
 
     // todo
     private fun List<Album>.sort(): List<Album> {
-        return when (Setting.instance.albumSortOrder) {
-            SortOrder.AlbumSortOrder.ALBUM_A_Z -> this.sortedBy { it.title.lowercase() }
-            SortOrder.AlbumSortOrder.ALBUM_Z_A -> this.sortedByDescending { it.title.lowercase() }
-            SortOrder.AlbumSortOrder.ALBUM_ARTIST -> this.sortedBy { it.artistName.lowercase() }
-            SortOrder.AlbumSortOrder.ALBUM_ARTIST_REVERT -> this.sortedByDescending { it.artistName.lowercase() }
-            SortOrder.AlbumSortOrder.ALBUM_YEAR -> this.sortedBy { it.year }
-            SortOrder.AlbumSortOrder.ALBUM_YEAR_REVERT -> { this.sortedByDescending { it.year } }
-            else -> { this }
+        val revert = Setting.instance.albumSortMode.revert
+        return when (Setting.instance.albumSortMode.sortRef) {
+            SortRef.ALBUM_NAME -> this.sort(revert) { it.title }
+            SortRef.ARTIST_NAME -> this.sort(revert) { it.artistName }
+            SortRef.YEAR -> this.sort(revert) { it.year }
+            else -> this
         }
+    }
+
+    private inline fun List<Album>.sort(
+        revert: Boolean,
+        crossinline selector: (Album) -> Comparable<*>?
+    ): List<Album> {
+        return if (revert) this.sortedWith(compareByDescending(selector))
+        else this.sortedWith(compareByDescending(selector))
     }
 }
