@@ -12,7 +12,6 @@ import player.phonograph.mediastore.SongLoader.getSongs
 import player.phonograph.mediastore.SongLoader.makeSongCursor
 import player.phonograph.model.Album
 import player.phonograph.model.Song
-import player.phonograph.settings.Setting
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
@@ -21,21 +20,21 @@ object AlbumLoader {
 
     fun getAllAlbums(context: Context): List<Album> {
         val songs = getSongs(
-            makeSongCursor(context, null, null, sortOrder)
+            makeSongCursor(context, null, null, null)
         )
         return splitIntoAlbums(songs)
     }
 
     fun getAlbums(context: Context, query: String): List<Album> {
         val songs = getSongs(
-            makeSongCursor(context, "${AudioColumns.ALBUM} LIKE ?", arrayOf("%$query%"), sortOrder)
+            makeSongCursor(context, "${AudioColumns.ALBUM} LIKE ?", arrayOf("%$query%"), null)
         )
         return splitIntoAlbums(songs)
     }
 
     fun getAlbum(context: Context, albumId: Long): Album {
         val songs =
-            getSongs(makeSongCursor(context, "${AudioColumns.ALBUM_ID}=?", arrayOf(albumId.toString()), sortOrder))
+            getSongs(makeSongCursor(context, "${AudioColumns.ALBUM_ID}=?", arrayOf(albumId.toString()), null))
         return Album(songs.toMutableList().sortedBy { it.trackNumber })
     }
 
@@ -64,9 +63,5 @@ object AlbumLoader {
                 }
             )
         }
-    }
-
-    val sortOrder: String by lazy {
-        "${Setting.instance.albumSortOrder}, ${Setting.instance.albumSongSortOrder}"
     }
 }

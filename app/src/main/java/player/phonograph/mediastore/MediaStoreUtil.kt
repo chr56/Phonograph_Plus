@@ -17,12 +17,12 @@ import android.provider.MediaStore.Audio.AudioColumns
 import android.util.Log
 import android.widget.Toast
 import com.afollestad.materialdialogs.MaterialDialog
+import java.util.*
+import kotlin.collections.ArrayList
 import player.phonograph.R
 import player.phonograph.model.Song
 import player.phonograph.provider.BlacklistStore
 import player.phonograph.settings.Setting
-import java.util.*
-import kotlin.collections.ArrayList
 
 object MediaStoreUtil {
     private const val TAG: String = "MediaStoreUtil"
@@ -109,7 +109,7 @@ object MediaStoreUtil {
         context: Context,
         selection: String?,
         selectionValues: Array<String>?,
-        sortOrder: String
+        sortOrder: String?
     ): Cursor? {
         var realSelection =
             if (selection != null && selection.trim { it <= ' ' } != "") {

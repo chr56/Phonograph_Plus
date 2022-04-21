@@ -37,5 +37,5 @@ object SongLoader {
         selectionValues: Array<String>?,
         sortOrder: String?
     ): Cursor? =
-        querySongs(context, selection, selectionValues, sortOrder!!)
+        querySongs(context, selection, selectionValues, sortOrder)
 }
