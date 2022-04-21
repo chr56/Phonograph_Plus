@@ -69,12 +69,12 @@ object AlbumLoader {
     // todo
     private fun List<Album>.sort(): List<Album> {
         return when (Setting.instance.albumSortOrder) {
-            SortOrder.AlbumSortOrder.ALBUM_A_Z -> this.sortedBy { it.title }
-            SortOrder.AlbumSortOrder.ALBUM_Z_A -> this.sortedByDescending { it.title }
-            SortOrder.AlbumSortOrder.ALBUM_ARTIST -> this.sortedBy { it.artistName }
-            SortOrder.AlbumSortOrder.ALBUM_ARTIST_REVERT -> this.sortedByDescending { it.artistName }
+            SortOrder.AlbumSortOrder.ALBUM_A_Z -> this.sortedBy { it.title.lowercase() }
+            SortOrder.AlbumSortOrder.ALBUM_Z_A -> this.sortedByDescending { it.title.lowercase() }
+            SortOrder.AlbumSortOrder.ALBUM_ARTIST -> this.sortedBy { it.artistName.lowercase() }
+            SortOrder.AlbumSortOrder.ALBUM_ARTIST_REVERT -> this.sortedByDescending { it.artistName.lowercase() }
             SortOrder.AlbumSortOrder.ALBUM_YEAR -> this.sortedBy { it.year }
-            SortOrder.AlbumSortOrder.ALBUM_YEAR_REVERT -> { this.sortedByDescending { it.id } }
+            SortOrder.AlbumSortOrder.ALBUM_YEAR_REVERT -> { this.sortedByDescending { it.year } }
             else -> { this }
         }
     }

@@ -70,8 +70,8 @@ object ArtistLoader {
     // todo
     private fun List<Artist>.sort(): List<Artist> {
         return when (Setting.instance.artistSortOrder) {
-            SortOrder.ArtistSortOrder.ARTIST_A_Z -> this.sortedBy { it.name }
-            SortOrder.ArtistSortOrder.ARTIST_Z_A -> this.sortedByDescending { it.name }
+            SortOrder.ArtistSortOrder.ARTIST_A_Z -> this.sortedBy { it.name.lowercase() }
+            SortOrder.ArtistSortOrder.ARTIST_Z_A -> this.sortedByDescending { it.name.lowercase() }
             else -> { this }
         }
     }
