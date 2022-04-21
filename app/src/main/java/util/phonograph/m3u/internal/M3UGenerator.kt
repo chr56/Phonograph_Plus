@@ -10,7 +10,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import player.phonograph.App
 import player.phonograph.R
-import player.phonograph.loader.PlaylistSongLoader
+import player.phonograph.mediastore.PlaylistSongLoader
 import player.phonograph.model.Song
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.model.playlist.SmartPlaylist

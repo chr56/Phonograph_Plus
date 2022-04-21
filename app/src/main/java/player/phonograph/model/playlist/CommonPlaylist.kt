@@ -12,7 +12,7 @@ import androidx.annotation.Keep
 import legacy.phonograph.LegacyPlaylistsUtil
 import player.phonograph.PlaylistType
 import player.phonograph.R
-import player.phonograph.loader.PlaylistSongLoader
+import player.phonograph.mediastore.PlaylistSongLoader
 import player.phonograph.model.Song
 import player.phonograph.util.PlaylistsUtil
 import util.phonograph.m3u.PlaylistsManager

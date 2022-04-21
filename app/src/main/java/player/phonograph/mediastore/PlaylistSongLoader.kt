@@ -1,10 +1,13 @@
-package player.phonograph.loader
+/*
+ * Copyright (c) 2022 chr_56 & Abou Zeid (kabouzeid) (original author)
+ */
+
+package player.phonograph.mediastore
 
 import android.content.Context
 import android.database.Cursor
 import android.provider.MediaStore
 import android.provider.MediaStore.Audio.AudioColumns
-import player.phonograph.mediastore.MediaStoreUtil
 import player.phonograph.model.PlaylistSong
 
 object PlaylistSongLoader {

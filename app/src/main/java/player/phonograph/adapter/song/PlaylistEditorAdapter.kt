@@ -21,7 +21,7 @@ import player.phonograph.adapter.base.MediaEntryViewHolder
 import player.phonograph.dialogs.AddToPlaylistDialog
 import player.phonograph.helper.menu.SongMenuHelper
 import player.phonograph.interfaces.CabHolder
-import player.phonograph.loader.PlaylistSongLoader
+import player.phonograph.mediastore.PlaylistSongLoader
 import player.phonograph.model.PlaylistSong
 import player.phonograph.model.Song
 import player.phonograph.model.playlist.Playlist

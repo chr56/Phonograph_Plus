@@ -28,7 +28,7 @@ import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.helper.SearchQueryHelper
 import player.phonograph.mediastore.AlbumLoader
 import player.phonograph.mediastore.ArtistLoader
-import player.phonograph.loader.PlaylistSongLoader
+import player.phonograph.mediastore.PlaylistSongLoader
 import player.phonograph.mediastore.SongLoader
 import player.phonograph.model.Song
 import player.phonograph.notification.UpgradeNotification

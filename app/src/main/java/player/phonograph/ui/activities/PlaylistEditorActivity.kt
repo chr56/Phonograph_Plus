@@ -31,7 +31,7 @@ import player.phonograph.adapter.song.PlaylistEditorAdapter
 import player.phonograph.databinding.ActivityPlaylistEditorBinding
 import player.phonograph.helper.menu.PlaylistMenuHelper
 import player.phonograph.interfaces.CabHolder
-import player.phonograph.loader.PlaylistSongLoader
+import player.phonograph.mediastore.PlaylistSongLoader
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.settings.Setting
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
