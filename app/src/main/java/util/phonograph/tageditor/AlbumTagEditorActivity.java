@@ -40,7 +40,7 @@ import player.phonograph.R;
 import player.phonograph.databinding.ActivityAlbumTagEditorBinding;
 import player.phonograph.glide.SongGlideRequest;
 import player.phonograph.glide.palette.BitmapPaletteWrapper;
-import player.phonograph.loader.AlbumLoader;
+import player.phonograph.mediastore.AlbumLoader;
 import player.phonograph.model.Song;
 import player.phonograph.util.ImageUtil;
 import util.phonograph.lastfm.rest.LastFMUtil;
@@ -223,7 +223,7 @@ public class AlbumTagEditorActivity extends AbsTagEditorActivity implements Text
     @NonNull
     @Override
     protected List<String> getSongPaths() {
-        List<Song> songs = AlbumLoader.getAlbum(this, getId()).songs;
+        List<Song> songs = AlbumLoader.INSTANCE.getAlbum(this, getId()).songs;
         List<String> paths = new ArrayList<>(songs.size());
         for (Song song : songs) {
             paths.add(song.data);

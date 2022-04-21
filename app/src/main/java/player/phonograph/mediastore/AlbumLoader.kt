@@ -6,7 +6,8 @@ package player.phonograph.mediastore
 
 import android.content.Context
 import android.provider.MediaStore.Audio.AudioColumns
-import java.util.*
+import android.util.ArrayMap
+import kotlin.collections.ArrayList
 import player.phonograph.mediastore.SongLoader.getSongs
 import player.phonograph.mediastore.SongLoader.makeSongCursor
 import player.phonograph.model.Album
@@ -32,41 +33,37 @@ object AlbumLoader {
         return splitIntoAlbums(songs)
     }
 
-    @JvmStatic
     fun getAlbum(context: Context, albumId: Long): Album {
         val songs =
             getSongs(makeSongCursor(context, "${AudioColumns.ALBUM_ID}=?", arrayOf(albumId.toString()), sortOrder))
-        val album = Album(songs)
-        sortSongsByTrackNumber(album)
-        return album
+        return Album(songs.toMutableList().sortedBy { it.trackNumber })
     }
 
     fun splitIntoAlbums(songs: List<Song>?): List<Album> {
-        val albums: MutableList<Album> = ArrayList()
-        if (songs != null) {
-            for (song in songs) {
-                getOrCreateAlbum(albums, song.albumId).songs.toMutableList().add(song)
+        if (songs == null) return ArrayList()
+
+        // AlbumID <-> List of song
+        val idMap: MutableMap<Long, MutableList<Song>> = ArrayMap()
+        for (song in songs) {
+            if (idMap[song.albumId] == null) {
+                // create new
+                idMap[song.albumId] = ArrayList<Song>(1).apply { add(song) }
+            } else {
+                // add to existed
+                idMap[song.albumId]!!.add(song)
             }
         }
-        for (album in albums) {
-            sortSongsByTrackNumber(album)
-        }
-        return albums
-    }
 
-    private fun getOrCreateAlbum(albums: MutableList<Album>, albumId: Long): Album {
-        for (album in albums) {
-            if (album.songs.isNotEmpty() && album.songs[0].albumId == albumId) {
-                return album
-            }
+        // map to list
+        return idMap.map { entry ->
+            // create album from songs
+            Album(
+                // list of song
+                entry.value.apply {
+                    sortBy { it.trackNumber } // sort songs before create album
+                }
+            )
         }
-        val album = Album()
-        albums.add(album)
-        return album
-    }
-
-    private fun sortSongsByTrackNumber(album: Album) {
-        album.songs.toMutableList().sortWith { o1: Song, o2: Song -> o1.trackNumber - o2.trackNumber }
     }
 
     val sortOrder: String by lazy {
