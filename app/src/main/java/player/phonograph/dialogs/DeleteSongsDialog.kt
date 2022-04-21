@@ -19,7 +19,7 @@ import com.afollestad.materialdialogs.WhichButton
 import com.afollestad.materialdialogs.actions.getActionButton
 import player.phonograph.R
 import player.phonograph.model.Song
-import player.phonograph.util.MediaStoreUtil
+import player.phonograph.mediastore.MediaStoreUtil
 /**
  * @author Karim Abou Zeid (kabouzeid), Aidan Follestad (afollestad), chr_56<modify>
  */

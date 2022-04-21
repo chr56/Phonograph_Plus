@@ -16,7 +16,7 @@
 -keep,allowoptimization,allowshrinking class player.phonograph.ui.activities.** {public <methods>;public <fields>;}
 -keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.ui.fragments.** {public <methods>;public <fields>;}
 
-
+-keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.mediastore.** {public <methods>;}
 -keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.service.** {public <methods>;public <fields>;}
 -keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.adapter.** {public <methods>;<fields>;}
 -keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.dialogs.** {public <methods>;}

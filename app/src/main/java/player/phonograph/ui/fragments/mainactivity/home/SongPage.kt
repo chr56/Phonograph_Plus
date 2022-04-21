@@ -20,7 +20,7 @@ import player.phonograph.adapter.display.SongDisplayAdapter
 import player.phonograph.databinding.PopupWindowMainBinding
 import player.phonograph.helper.SortOrder
 import player.phonograph.model.Song
-import player.phonograph.util.MediaStoreUtil
+import player.phonograph.mediastore.MediaStoreUtil
 import player.phonograph.util.Util
 
 class SongPage : AbsDisplayPage<Song, DisplayAdapter<Song>, GridLayoutManager>() {

@@ -1,8 +1,8 @@
 /*
- * Copyright (c) 2021 chr_56
+ * Copyright (c) 2022 chr_56 & Abou Zeid (kabouzeid) (original author)
  */
 
-package player.phonograph.util
+package player.phonograph.mediastore
 
 import android.app.Activity
 import android.app.PendingIntent

@@ -5,8 +5,8 @@ import android.database.Cursor
 import android.provider.BaseColumns
 import android.provider.MediaStore
 import player.phonograph.model.Song
-import player.phonograph.util.MediaStoreUtil
-import player.phonograph.util.MediaStoreUtil.querySongs
+import player.phonograph.mediastore.MediaStoreUtil
+import player.phonograph.mediastore.MediaStoreUtil.querySongs
 
 /**
  * @author Karim Abou Zeid (kabouzeid)

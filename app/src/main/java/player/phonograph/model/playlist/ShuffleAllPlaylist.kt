@@ -11,7 +11,7 @@ import androidx.annotation.Keep
 import player.phonograph.PlaylistType
 import player.phonograph.R
 import player.phonograph.model.Song
-import player.phonograph.util.MediaStoreUtil
+import player.phonograph.mediastore.MediaStoreUtil
 
 class ShuffleAllPlaylist : SmartPlaylist {
     constructor(context: Context) : super(
