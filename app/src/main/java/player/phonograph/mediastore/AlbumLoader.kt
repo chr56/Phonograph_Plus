@@ -7,11 +7,12 @@ package player.phonograph.mediastore
 import android.content.Context
 import android.provider.MediaStore.Audio.AudioColumns
 import android.util.ArrayMap
-import kotlin.collections.ArrayList
+import player.phonograph.helper.SortOrder
 import player.phonograph.mediastore.SongLoader.getSongs
 import player.phonograph.mediastore.SongLoader.makeSongCursor
 import player.phonograph.model.Album
 import player.phonograph.model.Song
+import player.phonograph.settings.Setting
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
@@ -62,6 +63,19 @@ object AlbumLoader {
                     sortBy { it.trackNumber } // sort songs before create album
                 }
             )
+        }.sort()
+    }
+
+    // todo
+    private fun List<Album>.sort(): List<Album> {
+        return when (Setting.instance.albumSortOrder) {
+            SortOrder.AlbumSortOrder.ALBUM_A_Z -> this.sortedBy { it.title }
+            SortOrder.AlbumSortOrder.ALBUM_Z_A -> this.sortedByDescending { it.title }
+            SortOrder.AlbumSortOrder.ALBUM_ARTIST -> this.sortedBy { it.artistName }
+            SortOrder.AlbumSortOrder.ALBUM_ARTIST_REVERT -> this.sortedByDescending { it.artistName }
+            SortOrder.AlbumSortOrder.ALBUM_YEAR -> this.sortedBy { it.year }
+            SortOrder.AlbumSortOrder.ALBUM_YEAR_REVERT -> { this.sortedByDescending { it.id } }
+            else -> { this }
         }
     }
 }
