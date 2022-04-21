@@ -34,9 +34,10 @@ object AlbumLoader {
     }
 
     fun getAlbum(context: Context, albumId: Long): Album {
-        val songs =
-            getSongs(makeSongCursor(context, "${AudioColumns.ALBUM_ID}=?", arrayOf(albumId.toString()), null))
-        return Album(albumId, songs.toMutableList().sortedBy { it.trackNumber })
+        val songs = getSongs(
+            makeSongCursor(context, "${AudioColumns.ALBUM_ID}=?", arrayOf(albumId.toString()), null)
+        )
+        return Album(albumId, getAlbumTitle(songs), songs.toMutableList().sortedBy { it.trackNumber })
     }
 
     fun splitIntoAlbums(songs: List<Song>?): List<Album> {
@@ -60,15 +61,20 @@ object AlbumLoader {
             Album(
                 id = entry.key,
                 // list of song
+                title = getAlbumTitle(entry.value),
                 songs = entry.value.apply {
                     sortBy { it.trackNumber } // sort songs before create album
                 }
             )
-        }.sort()
+        }.sortAll()
     }
 
-    // todo
-    private fun List<Album>.sort(): List<Album> {
+    private fun getAlbumTitle(list: List<Song>): String? {
+        if (list.isEmpty()) return null
+        return list[0].albumName
+    }
+
+    private fun List<Album>.sortAll(): List<Album> {
         val revert = Setting.instance.albumSortMode.revert
         return when (Setting.instance.albumSortMode.sortRef) {
             SortRef.ALBUM_NAME -> this.sort(revert) { it.title }

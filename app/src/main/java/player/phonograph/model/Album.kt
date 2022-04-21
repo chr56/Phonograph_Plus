@@ -6,7 +6,6 @@ import android.os.Parcelable
 import androidx.annotation.Keep
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentActivity
-import java.lang.Exception
 import java.util.ArrayList
 import player.phonograph.App.Companion.instance
 import player.phonograph.helper.menu.SongsMenuHelper.handleMenuClick
@@ -20,25 +19,26 @@ import player.phonograph.util.NavigationUtil
 class Album : Parcelable, Displayable {
 
     val id: Long
+    val title: String
     @JvmField val songs: List<Song>
 
-    constructor(id: Long, songs: List<Song>) {
+    constructor(id: Long, title: String?, songs: List<Song>) {
         this.id = id
+        this.title = title ?: "UNKNOWN"
         this.songs = songs
     }
     constructor() {
-        songs = ArrayList()
         this.id = -1
+        this.title = "UNKNOWN"
+        this.songs = ArrayList()
     }
 
     fun getSongCount(): Int = songs.size
 
-    val title: String
-        get() = safeGetFirstSong().albumName!!
     val artistId: Long
         get() = safeGetFirstSong().artistId
     val artistName: String
-        get() = safeGetFirstSong().artistName!!
+        get() = safeGetFirstSong().artistName ?: "UNKNOWN"
     val year: Int
         get() = safeGetFirstSong().year
     val dateModified: Long
@@ -55,17 +55,6 @@ class Album : Parcelable, Displayable {
 
     override fun hashCode(): Int = songs.hashCode()
     override fun toString(): String = "Album{name=$title,id=$id,artist=$artistName}"
-
-    override fun describeContents(): Int = 0
-    override fun writeToParcel(dest: Parcel, flags: Int) {
-        dest.writeTypedList(songs)
-        dest.writeLong(id)
-    }
-
-    constructor(parcel: Parcel) {
-        songs = parcel.createTypedArrayList(Song.CREATOR) ?: throw Exception("Fail to recreate Album from song")
-        id = parcel.readLong()
-    }
 
     override fun getItemID(): Long = id
 
@@ -109,5 +98,17 @@ class Album : Parcelable, Displayable {
                 return arrayOfNulls(size)
             }
         }
+    }
+    override fun describeContents(): Int = 0
+    override fun writeToParcel(dest: Parcel, flags: Int) {
+        dest.writeTypedList(songs)
+        dest.writeLong(id)
+        dest.writeString(title)
+    }
+
+    constructor(parcel: Parcel) {
+        songs = parcel.createTypedArrayList(Song.CREATOR) ?: throw Exception("Fail to recreate Album from song")
+        id = parcel.readLong()
+        title = parcel.readString() ?: "UNKNOWN"
     }
 }
