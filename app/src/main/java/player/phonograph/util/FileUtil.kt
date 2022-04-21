@@ -11,7 +11,7 @@ import android.provider.MediaStore.Audio.AudioColumns.DATA
 import android.webkit.MimeTypeMap
 import player.phonograph.mediastore.SongLoader.getSongs
 import player.phonograph.mediastore.SongLoader.makeSongCursor
-import player.phonograph.loader.SortedCursor
+import player.phonograph.misc.SortedCursor
 import player.phonograph.model.Song
 import java.io.*
 import java.util.*

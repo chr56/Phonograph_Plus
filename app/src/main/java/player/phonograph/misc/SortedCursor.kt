@@ -13,7 +13,7 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-package player.phonograph.loader
+package player.phonograph.misc
 
 import android.database.AbstractCursor
 import android.database.Cursor
