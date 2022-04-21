@@ -42,9 +42,11 @@ class ArtistDisplayAdapter(
     }
     override fun getSectionNameImp(position: Int): String {
         val artist = dataset[position]
-        val sectionName =
+        val sectionName: String =
             when (Setting.instance.artistSortMode.sortRef) {
                 SortRef.ARTIST_NAME -> artist.name
+                SortRef.ALBUM_COUNT -> artist.albumCount.toString()
+                SortRef.SONG_COUNT -> artist.songCount.toString()
                 else -> { "" }
             }
         return MusicUtil.getSectionName(sectionName)

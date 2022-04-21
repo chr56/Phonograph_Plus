@@ -71,6 +71,8 @@ object ArtistLoader {
         val revert = Setting.instance.artistSortMode.revert
         return when (Setting.instance.artistSortMode.sortRef) {
             SortRef.ARTIST_NAME -> this.sort(revert) { it.name.lowercase() }
+            SortRef.ALBUM_COUNT -> this.sort(revert) { it.albumCount }
+            SortRef.SONG_COUNT -> this.sort(revert) { it.songCount }
             else -> this
         }
     }

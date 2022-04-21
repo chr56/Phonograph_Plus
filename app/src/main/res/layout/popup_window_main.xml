@@ -114,20 +114,29 @@
                 android:visibility="gone" />
 
             <RadioButton
-                android:id="@+id/sort_order_song_count"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:minHeight="32dp"
-                android:text="@string/sort_order_song_numbers"
-                android:visibility="gone" />
-
-            <RadioButton
                 android:id="@+id/sort_order_name_plain"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:minHeight="32dp"
                 android:text="@string/name"
                 android:visibility="gone" />
+
+            <RadioButton
+                android:id="@+id/sort_order_song_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minHeight="32dp"
+                android:text="@string/sort_order_song_count"
+                android:visibility="gone" />
+
+            <RadioButton
+                android:id="@+id/sort_order_album_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minHeight="32dp"
+                android:text="@string/sort_order_album_count"
+                android:visibility="gone" />
+
 
         </RadioGroup>
 

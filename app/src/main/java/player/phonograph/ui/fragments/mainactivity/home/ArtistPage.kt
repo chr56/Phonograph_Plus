@@ -96,8 +96,12 @@ class ArtistPage : AbsDisplayPage<Artist, DisplayAdapter<Artist>, GridLayoutMana
 
         popup.sortOrderContent.clearCheck()
         popup.sortOrderArtist.visibility = View.VISIBLE
+        popup.sortOrderAlbumCount.visibility = View.VISIBLE
+        popup.sortOrderSongCount.visibility = View.VISIBLE
         when (currentSortMode.sortRef) {
             SortRef.ARTIST_NAME -> popup.sortOrderContent.check(R.id.sort_order_artist)
+            SortRef.ALBUM_COUNT -> popup.sortOrderContent.check(R.id.sort_order_album_count)
+            SortRef.SONG_COUNT -> popup.sortOrderContent.check(R.id.sort_order_song_count)
             else -> { popup.sortOrderContent.clearCheck() }
         }
 
@@ -149,6 +153,8 @@ class ArtistPage : AbsDisplayPage<Artist, DisplayAdapter<Artist>, GridLayoutMana
             }
             val sortRef = when (popup.sortOrderContent.checkedRadioButtonId) {
                 R.id.sort_order_artist -> SortRef.ARTIST_NAME
+                R.id.sort_order_album_count -> SortRef.ALBUM_COUNT
+                R.id.sort_order_song_count -> SortRef.SONG_COUNT
                 else -> SortRef.ID
             }
             val selected = SortMode(sortRef, revert)
