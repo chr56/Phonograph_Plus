@@ -34,14 +34,14 @@ object PlaylistSongLoader {
             year = cursor.getInt(3),
             duration = cursor.getLong(4),
             data = cursor.getString(5),
-            dateAdded = 0,
-            dateModified = cursor.getLong(6),
-            albumId = cursor.getLong(7),
-            albumName = cursor.getString(8),
-            artistId = cursor.getLong(9),
-            artistName = cursor.getString(10),
+            dateAdded = cursor.getLong(6),
+            dateModified = cursor.getLong(7),
+            albumId = cursor.getLong(8),
+            albumName = cursor.getString(9),
+            artistId = cursor.getLong(10),
+            artistName = cursor.getString(11),
             playlistId = playlistId,
-            idInPlayList = cursor.getLong(11),
+            idInPlayList = cursor.getLong(12),
         )
 
     @Suppress("DEPRECATION")
@@ -56,12 +56,13 @@ object PlaylistSongLoader {
                     AudioColumns.YEAR, // 3
                     AudioColumns.DURATION, // 4
                     AudioColumns.DATA, // 5
-                    AudioColumns.DATE_MODIFIED, // 6
-                    AudioColumns.ALBUM_ID, // 7
-                    AudioColumns.ALBUM, // 8
-                    AudioColumns.ARTIST_ID, // 9
-                    AudioColumns.ARTIST, // 10
-                    MediaStore.Audio.Playlists.Members._ID // 11
+                    AudioColumns.DATE_ADDED, // 6
+                    AudioColumns.DATE_MODIFIED, // 7
+                    AudioColumns.ALBUM_ID, // 8
+                    AudioColumns.ALBUM, // 9
+                    AudioColumns.ARTIST_ID, // 10
+                    AudioColumns.ARTIST, // 11
+                    MediaStore.Audio.Playlists.Members._ID // 12
                 ),
                 MediaStoreUtil.SongConst.BASE_AUDIO_SELECTION, null,
                 MediaStore.Audio.Playlists.Members.DEFAULT_SORT_ORDER

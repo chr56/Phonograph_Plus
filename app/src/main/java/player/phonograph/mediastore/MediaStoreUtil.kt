@@ -80,11 +80,12 @@ object MediaStoreUtil {
         val year = cursor.getInt(3)
         val duration = cursor.getLong(4)
         val data = cursor.getString(5)
-        val dateModified = cursor.getLong(6)
-        val albumId = cursor.getLong(7)
-        val albumName = cursor.getString(8)
-        val artistId = cursor.getLong(9)
-        val artistName = cursor.getString(10)
+        val dateAdded = cursor.getLong(6)
+        val dateModified = cursor.getLong(7)
+        val albumId = cursor.getLong(8)
+        val albumName = cursor.getString(9)
+        val artistId = cursor.getLong(10)
+        val artistName = cursor.getString(11)
         return Song(
             id = id,
             title = title,
@@ -92,7 +93,7 @@ object MediaStoreUtil {
             year = year,
             duration = duration,
             data = data,
-            dateAdded = 0,
+            dateAdded = dateAdded,
             dateModified = dateModified,
             albumId = albumId,
             albumName = albumName,
@@ -265,11 +266,12 @@ object MediaStoreUtil {
             AudioColumns.YEAR, // 3
             AudioColumns.DURATION, // 4
             AudioColumns.DATA, // 5
-            AudioColumns.DATE_MODIFIED, // 6
-            AudioColumns.ALBUM_ID, // 7
-            AudioColumns.ALBUM, // 8
-            AudioColumns.ARTIST_ID, // 9
-            AudioColumns.ARTIST, // 10
+            AudioColumns.DATE_ADDED, // 6
+            AudioColumns.DATE_MODIFIED, // 7
+            AudioColumns.ALBUM_ID, // 8
+            AudioColumns.ALBUM, // 9
+            AudioColumns.ARTIST_ID, // 10
+            AudioColumns.ARTIST, // 11
         )
     }
 }
