@@ -23,6 +23,7 @@ import android.provider.BaseColumns
 import android.provider.MediaStore.Audio.AudioColumns
 import player.phonograph.mediastore.SongLoader.getSongs
 import player.phonograph.model.Song
+import player.phonograph.notification.ErrorNotification
 
 /**
  * @author Andrew Neal, modified for Phonograph by Karim Abou Zeid
@@ -68,8 +69,56 @@ class MusicPlaybackQueueStore(context: Context?) : SQLiteOpenHelper(context, Dat
     }
 
     private fun migrate4to5(db: SQLiteDatabase) {
-        db.execSQL("ALTER TABLE $PLAYING_QUEUE_TABLE_NAME ADD ${AudioColumns.DATE_ADDED} LONG NOT NULL DEFAULT 0")
-        db.execSQL("ALTER TABLE $ORIGINAL_PLAYING_QUEUE_TABLE_NAME ADD ${AudioColumns.DATE_ADDED} LONG NOT NULL DEFAULT 0")
+        alterTable4to5(db, PLAYING_QUEUE_TABLE_NAME)
+        alterTable4to5(db, ORIGINAL_PLAYING_QUEUE_TABLE_NAME)
+    }
+
+    private fun alterTable4to5(db: SQLiteDatabase, tableName: String) {
+        db.beginTransaction()
+        try {
+            val temp = tableName + "_new"
+            // Thread.sleep(2_000)
+            db.execSQL("DROP TABLE IF EXISTS $temp")
+            db.execSQL(
+                "CREATE TABLE $temp" +
+                    "(" +
+                    "${BaseColumns._ID} LONG NOT NULL," +
+                    "${AudioColumns.TITLE} TEXT NOT NULL," +
+                    "${AudioColumns.TRACK} INT NOT NULL," +
+                    "${AudioColumns.YEAR} INT NOT NULL," +
+                    "${AudioColumns.DURATION} LONG NOT NULL," +
+                    "${AudioColumns.DATA} TEXT NOT NULL," +
+                    "${AudioColumns.DATE_ADDED} LONG NOT NULL DEFAULT 0," +
+                    "${AudioColumns.DATE_MODIFIED} LONG NOT NULL," +
+                    "${AudioColumns.ALBUM_ID} LONG NOT NULL," +
+                    "${AudioColumns.ALBUM} TEXT NOT NULL," +
+                    "${AudioColumns.ARTIST_ID} LONG NOT NULL," +
+                    "${AudioColumns.ARTIST} TEXT NOT NULL" +
+                    ");"
+            )
+            db.execSQL(
+                "INSERT INTO $temp(${BaseColumns._ID},${AudioColumns.TITLE},${AudioColumns.TRACK},${AudioColumns.YEAR},${AudioColumns.DURATION},${AudioColumns.DATA},${AudioColumns.DATE_MODIFIED},${AudioColumns.ALBUM_ID},${AudioColumns.ALBUM},${AudioColumns.ARTIST_ID},${AudioColumns.ARTIST}) " +
+                    "SELECT ${BaseColumns._ID},${AudioColumns.TITLE},${AudioColumns.TRACK},${AudioColumns.YEAR},${AudioColumns.DURATION},${AudioColumns.DATA},${AudioColumns.DATE_MODIFIED},${AudioColumns.ALBUM_ID},${AudioColumns.ALBUM},${AudioColumns.ARTIST_ID},${AudioColumns.ARTIST}" +
+                    " FROM $tableName"
+            )
+            db.execSQL("DROP TABLE IF EXISTS $tableName ")
+            db.execSQL("ALTER TABLE $temp RENAME TO $tableName")
+            db.setTransactionSuccessful()
+        } catch (e: Exception) {
+            ErrorNotification.postErrorNotification(e, "Fail to transaction playback database, playing queue now corrupted  ")
+
+            try {
+                // fallback
+                db.execSQL("ALTER TABLE $PLAYING_QUEUE_TABLE_NAME ADD ${AudioColumns.DATE_ADDED} LONG NOT NULL DEFAULT 0")
+                db.execSQL("ALTER TABLE $ORIGINAL_PLAYING_QUEUE_TABLE_NAME ADD ${AudioColumns.DATE_ADDED} LONG NOT NULL DEFAULT 0")
+            } catch (e: Exception) {} finally {
+                db.setTransactionSuccessful()
+            }
+
+            throw e
+        } finally {
+            db.endTransaction()
+        }
     }
 
     override fun onDowngrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
