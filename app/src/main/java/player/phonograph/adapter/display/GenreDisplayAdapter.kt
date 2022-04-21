@@ -9,6 +9,7 @@ import player.phonograph.interfaces.MultiSelectionCabProvider
 import player.phonograph.mediastore.sort.SortRef
 import player.phonograph.model.Genre
 import player.phonograph.settings.Setting
+import player.phonograph.util.MusicUtil
 
 class GenreDisplayAdapter(
     activity: AppCompatActivity,
@@ -24,7 +25,7 @@ class GenreDisplayAdapter(
 
     override fun getSectionNameImp(position: Int): String {
         return when (Setting.instance.genreSortMode.sortRef) {
-            SortRef.GENRE_NAME -> dataset[position].name ?: "UNKNOWN"
+            SortRef.GENRE_NAME -> MusicUtil.getSectionName(dataset[position].name)
             SortRef.SONG_COUNT -> dataset[position].songCount.toString()
             else -> ""
         }

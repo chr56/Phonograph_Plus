@@ -138,8 +138,8 @@ open class AlbumAdapter(
         val album = dataSet[position]
         val sectionName: String =
             when (Setting.instance.albumSortMode.sortRef) {
-                SortRef.ALBUM_NAME -> album.title
-                SortRef.ARTIST_NAME -> album.artistName
+                SortRef.ALBUM_NAME -> MusicUtil.getSectionName(album.title)
+                SortRef.ARTIST_NAME -> MusicUtil.getSectionName(album.artistName)
                 SortRef.YEAR -> MusicUtil.getYearString(album.year)
                 SortRef.SONG_COUNT -> album.songCount.toString()
                 else -> ""

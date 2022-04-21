@@ -163,7 +163,7 @@ class Setting(context: Context) {
 
     // List-SortMode
     private var _songSortMode: String by StringPref(SONG_SORT_MODE, SortMode(SortRef.ID, false).serialize())
-    var songSortMode: SortMode // todo
+    var songSortMode: SortMode
         get() = SortMode.deserialize(_songSortMode)
         set(value) {
             _songSortMode = value.serialize()

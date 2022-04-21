@@ -92,7 +92,7 @@ class ArtistPage : AbsDisplayPage<Artist, DisplayAdapter<Artist>, GridLayoutMana
         for (i in 0 until popup.sortOrderContent.childCount) popup.sortOrderContent.getChildAt(i).visibility = View.GONE
 
         val currentSortMode = displayUtil.sortMode
-        Log.d(AlbumPage.TAG, "Read cfg: sortMode $currentSortMode")
+        Log.d(TAG, "Read cfg: sortMode $currentSortMode")
 
         popup.sortOrderContent.clearCheck()
         popup.sortOrderArtist.visibility = View.VISIBLE
@@ -161,7 +161,7 @@ class ArtistPage : AbsDisplayPage<Artist, DisplayAdapter<Artist>, GridLayoutMana
             if (displayUtil.sortMode != selected) {
                 displayUtil.sortMode = selected
                 loadDataSet()
-                Log.d(AlbumPage.TAG, "Write cfg: sortMode $selected")
+                Log.d(TAG, "Write cfg: sortMode $selected")
             }
         }
     }

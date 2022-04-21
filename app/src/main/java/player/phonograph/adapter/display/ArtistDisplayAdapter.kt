@@ -44,7 +44,7 @@ class ArtistDisplayAdapter(
         val artist = dataset[position]
         val sectionName: String =
             when (Setting.instance.artistSortMode.sortRef) {
-                SortRef.ARTIST_NAME -> artist.name
+                SortRef.ARTIST_NAME -> MusicUtil.getSectionName(artist.name)
                 SortRef.ALBUM_COUNT -> artist.albumCount.toString()
                 SortRef.SONG_COUNT -> artist.songCount.toString()
                 else -> { "" }
