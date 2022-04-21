@@ -8,23 +8,23 @@ import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.util.Pair
-import util.mdcolor.ColorUtil
-import util.mddesign.util.MaterialColorHelper
 import com.bumptech.glide.Glide
+import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView.SectionedAdapter
 import player.phonograph.R
 import player.phonograph.adapter.base.AbsMultiSelectAdapter
 import player.phonograph.adapter.base.MediaEntryViewHolder
 import player.phonograph.glide.ArtistGlideRequest
 import player.phonograph.glide.PhonographColoredTarget
-import player.phonograph.helper.SortOrder
 import player.phonograph.helper.menu.SongsMenuHelper.handleMenuClick
 import player.phonograph.interfaces.CabHolder
+import player.phonograph.mediastore.sort.SortRef
 import player.phonograph.model.Artist
 import player.phonograph.model.Song
+import player.phonograph.settings.Setting
 import player.phonograph.util.MusicUtil
 import player.phonograph.util.NavigationUtil
-import player.phonograph.settings.Setting
-import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView.SectionedAdapter
+import util.mdcolor.ColorUtil
+import util.mddesign.util.MaterialColorHelper
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
@@ -54,10 +54,9 @@ class ArtistAdapter(
         notifyDataSetChanged()
     }
 
-    fun getDataSet(): List<Artist>{
+    fun getDataSet(): List<Artist> {
         return dataSet
     }
-
 
     override fun getItemId(position: Int): Long {
         return dataSet[position].id
@@ -161,12 +160,11 @@ class ArtistAdapter(
     }
 
     override fun getSectionName(position: Int): String {
-        var sectionName: String? = null
-        when (Setting.instance.artistSortOrder) {
-            SortOrder.ArtistSortOrder.ARTIST_A_Z, SortOrder.ArtistSortOrder.ARTIST_Z_A ->
-                sectionName = dataSet[position].name
+        val artist = dataSet[position]
+        return when (Setting.instance.artistSortMode.sortRef) {
+            SortRef.ARTIST_NAME -> artist.name
+            else -> ""
         }
-        return MusicUtil.getSectionName(sectionName)
     }
 
     inner class ViewHolder(itemView: View) : MediaEntryViewHolder(itemView) {

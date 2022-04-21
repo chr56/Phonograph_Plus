@@ -17,9 +17,9 @@ import player.phonograph.adapter.base.AbsMultiSelectAdapter
 import player.phonograph.adapter.base.MediaEntryViewHolder
 import player.phonograph.glide.PhonographColoredTarget
 import player.phonograph.glide.SongGlideRequest
-import player.phonograph.helper.SortOrder
 import player.phonograph.helper.menu.SongsMenuHelper.handleMenuClick
 import player.phonograph.interfaces.CabHolder
+import player.phonograph.mediastore.sort.SortRef
 import player.phonograph.model.Album
 import player.phonograph.model.Song
 import player.phonograph.settings.Setting
@@ -135,17 +135,16 @@ open class AlbumAdapter(
     }
 
     override fun getSectionName(position: Int): String {
-        var sectionName: String? = null
-        when (Setting.instance.albumSortOrder) {
-            SortOrder.AlbumSortOrder.ALBUM_A_Z, SortOrder.AlbumSortOrder.ALBUM_Z_A ->
-                sectionName =
-                    dataSet[position].title
-            SortOrder.AlbumSortOrder.ALBUM_ARTIST -> sectionName = dataSet[position].artistName
-            SortOrder.AlbumSortOrder.ALBUM_YEAR -> return MusicUtil.getYearString(
-                dataSet[position].year
-            )
-        }
-        return MusicUtil.getSectionName(sectionName)
+        val album = dataSet[position]
+        val sectionName: String =
+            when (Setting.instance.albumSortMode.sortRef) {
+                SortRef.ALBUM_NAME -> album.title
+                SortRef.ARTIST_NAME -> album.artistName
+                SortRef.YEAR -> MusicUtil.getYearString(album.year)
+                SortRef.SONG_COUNT -> album.songCount.toString()
+                else -> ""
+            }
+        return sectionName
     }
 
     inner class ViewHolder(itemView: View) : MediaEntryViewHolder(itemView) {
