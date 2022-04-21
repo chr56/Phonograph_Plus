@@ -343,12 +343,6 @@ class DisplayUtil(private val page: AbsDisplayPage<*, *, *>) {
                 is SongPage -> {
                     pref.songSortOrder
                 }
-                is AlbumPage -> {
-                    pref.albumSortOrder
-                }
-                is ArtistPage -> {
-                    pref.artistSortOrder
-                }
                 is GenrePage -> {
                     pref.genreSortOrder
                 }
@@ -364,15 +358,10 @@ class DisplayUtil(private val page: AbsDisplayPage<*, *, *>) {
                 is SongPage -> {
                     pref.songSortOrder = value
                 }
-                is AlbumPage -> {
-                    pref.albumSortOrder = value
-                }
-                is ArtistPage -> {
-                    pref.artistSortOrder = value
-                }
                 is GenrePage -> {
                     pref.genreSortOrder = value
                 }
+                else -> {}
             }
         }
 

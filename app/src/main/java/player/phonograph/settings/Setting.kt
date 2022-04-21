@@ -162,12 +162,7 @@ class Setting(context: Context) {
     // Upgrade
     var checkUpgradeAtStartup: Boolean by BooleanPref(CHECK_UPGRADE_AT_STARTUP, true)
 
-    // List-SortOrder
-    var artistSortOrder: String by StringPref(ARTIST_SORT_ORDER, SortOrder.ArtistSortOrder.ARTIST_A_Z)
-    val artistSongSortOrder: String by StringPref(ARTIST_SONG_SORT_ORDER, SortOrder.ArtistSongSortOrder.SONG_A_Z)
-    val artistAlbumSortOrder: String by StringPref(ARTIST_ALBUM_SORT_ORDER, SortOrder.ArtistAlbumSortOrder.ALBUM_YEAR)
-    var albumSortOrder: String by StringPref(ALBUM_SORT_ORDER, SortOrder.AlbumSortOrder.ALBUM_A_Z)
-    val albumSongSortOrder: String by StringPref(ALBUM_SONG_SORT_ORDER, SortOrder.AlbumSongSortOrder.SONG_TRACK_LIST)
+    // List-SortOrder legacy
     var songSortOrder: String by StringPref(SONG_SORT_ORDER, SortOrder.SongSortOrder.SONG_A_Z)
     var genreSortOrder: String by StringPref(GENRE_SORT_ORDER, SortOrder.GenreSortOrder.GENRE_A_Z)
 
