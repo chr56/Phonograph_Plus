@@ -90,6 +90,6 @@ object AlbumLoader {
         crossinline selector: (Album) -> Comparable<*>?
     ): List<Album> {
         return if (revert) this.sortedWith(compareByDescending(selector))
-        else this.sortedWith(compareByDescending(selector))
+        else this.sortedWith(compareBy(selector))
     }
 }
