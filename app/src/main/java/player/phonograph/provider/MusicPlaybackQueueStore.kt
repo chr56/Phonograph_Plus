@@ -37,21 +37,23 @@ class MusicPlaybackQueueStore(context: Context?) : SQLiteOpenHelper(context, Dat
         createTable(db, ORIGINAL_PLAYING_QUEUE_TABLE_NAME)
     }
 
+    private val mainTable: String = "(" +
+        "${BaseColumns._ID} LONG NOT NULL," +
+        "${AudioColumns.TITLE} TEXT NOT NULL," +
+        "${AudioColumns.TRACK} INT NOT NULL," +
+        "${AudioColumns.YEAR} INT NOT NULL," +
+        "${AudioColumns.DURATION} LONG NOT NULL," +
+        "${AudioColumns.DATA} TEXT NOT NULL," +
+        "${AudioColumns.DATE_ADDED} LONG NOT NULL," +
+        "${AudioColumns.DATE_MODIFIED} LONG NOT NULL," +
+        "${AudioColumns.ALBUM_ID} LONG NOT NULL," +
+        "${AudioColumns.ALBUM} TEXT NOT NULL," +
+        "${AudioColumns.ARTIST_ID} LONG NOT NULL," +
+        "${AudioColumns.ARTIST} TEXT NOT NULL" +
+        ")"
+
     private fun createTable(db: SQLiteDatabase, tableName: String) {
-        val str = "CREATE TABLE IF NOT EXISTS $tableName" +
-            "(${BaseColumns._ID} LONG NOT NULL," +
-            "${AudioColumns.TITLE} TEXT NOT NULL," +
-            "${AudioColumns.TRACK} INT NOT NULL," +
-            "${AudioColumns.YEAR} INT NOT NULL," +
-            "${AudioColumns.DURATION} LONG NOT NULL," +
-            "${AudioColumns.DATA} TEXT NOT NULL," +
-            "${AudioColumns.DATE_ADDED} LONG NOT NULL," +
-            "${AudioColumns.DATE_MODIFIED} LONG NOT NULL," +
-            "${AudioColumns.ALBUM_ID} LONG NOT NULL," +
-            "${AudioColumns.ALBUM} TEXT NOT NULL," +
-            "${AudioColumns.ARTIST_ID} LONG NOT NULL," +
-            "${AudioColumns.ARTIST} TEXT NOT NULL);"
-        db.execSQL(str)
+        db.execSQL("CREATE TABLE IF NOT EXISTS $tableName $mainTable;")
     }
 
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
