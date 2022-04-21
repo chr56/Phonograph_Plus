@@ -6,31 +6,33 @@ import android.os.Parcelable
 import androidx.annotation.Keep
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentActivity
+import java.lang.Exception
+import java.util.ArrayList
 import player.phonograph.App.Companion.instance
 import player.phonograph.helper.menu.SongsMenuHelper.handleMenuClick
 import player.phonograph.interfaces.Displayable
 import player.phonograph.util.MusicUtil
 import player.phonograph.util.NavigationUtil
-import java.lang.Exception
-import java.util.ArrayList
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
  */
 class Album : Parcelable, Displayable {
+
+    val id: Long
     @JvmField val songs: List<Song>
 
-    constructor(songs: List<Song>) {
+    constructor(id: Long, songs: List<Song>) {
+        this.id = id
         this.songs = songs
     }
     constructor() {
         songs = ArrayList()
+        this.id = -1
     }
 
     fun getSongCount(): Int = songs.size
 
-    val id: Long
-        get() = safeGetFirstSong().albumId
     val title: String
         get() = safeGetFirstSong().albumName!!
     val artistId: Long
@@ -57,10 +59,12 @@ class Album : Parcelable, Displayable {
     override fun describeContents(): Int = 0
     override fun writeToParcel(dest: Parcel, flags: Int) {
         dest.writeTypedList(songs)
+        dest.writeLong(id)
     }
 
     constructor(parcel: Parcel) {
         songs = parcel.createTypedArrayList(Song.CREATOR) ?: throw Exception("Fail to recreate Album from song")
+        id = parcel.readLong()
     }
 
     override fun getItemID(): Long = id

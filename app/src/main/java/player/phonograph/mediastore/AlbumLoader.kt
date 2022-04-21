@@ -36,7 +36,7 @@ object AlbumLoader {
     fun getAlbum(context: Context, albumId: Long): Album {
         val songs =
             getSongs(makeSongCursor(context, "${AudioColumns.ALBUM_ID}=?", arrayOf(albumId.toString()), null))
-        return Album(songs.toMutableList().sortedBy { it.trackNumber })
+        return Album(albumId, songs.toMutableList().sortedBy { it.trackNumber })
     }
 
     fun splitIntoAlbums(songs: List<Song>?): List<Album> {
@@ -58,8 +58,9 @@ object AlbumLoader {
         return idMap.map { entry ->
             // create album from songs
             Album(
+                id = entry.key,
                 // list of song
-                entry.value.apply {
+                songs = entry.value.apply {
                     sortBy { it.trackNumber } // sort songs before create album
                 }
             )
