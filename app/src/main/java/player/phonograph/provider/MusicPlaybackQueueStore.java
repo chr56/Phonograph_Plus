@@ -25,7 +25,7 @@ import android.provider.MediaStore.Audio.AudioColumns;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import player.phonograph.loader.SongLoader;
+import player.phonograph.mediastore.SongLoader;
 import player.phonograph.model.Song;
 
 import java.util.List;

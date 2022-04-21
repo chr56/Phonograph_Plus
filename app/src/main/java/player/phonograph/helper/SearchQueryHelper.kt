@@ -4,7 +4,7 @@ import android.app.SearchManager
 import android.content.Context
 import android.os.Bundle
 import android.provider.MediaStore
-import player.phonograph.loader.SongLoader
+import player.phonograph.mediastore.SongLoader
 import player.phonograph.model.Song
 import java.util.*
 

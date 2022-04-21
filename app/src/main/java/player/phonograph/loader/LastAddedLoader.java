@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.provider.MediaStore;
 import androidx.annotation.NonNull;
 
+import player.phonograph.mediastore.SongLoader;
 import player.phonograph.model.Song;
 import player.phonograph.settings.Setting;
 

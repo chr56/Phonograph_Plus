@@ -15,7 +15,7 @@ import player.phonograph.adapter.SearchAdapter
 import player.phonograph.databinding.ActivitySearchBinding
 import player.phonograph.loader.AlbumLoader
 import player.phonograph.loader.ArtistLoader
-import player.phonograph.loader.SongLoader
+import player.phonograph.mediastore.SongLoader
 import player.phonograph.ui.activities.base.AbsMusicServiceActivity
 import player.phonograph.util.Util
 import util.mdcolor.pref.ThemeColor

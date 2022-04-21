@@ -23,7 +23,7 @@ import java.util.Map;
 import util.mddesign.util.ToolbarColorUtil;
 import player.phonograph.R;
 import player.phonograph.databinding.ActivitySongTagEditorBinding;
-import player.phonograph.loader.SongLoader;
+import player.phonograph.mediastore.SongLoader;
 
 public class SongTagEditorActivity extends AbsTagEditorActivity implements TextWatcher {
 

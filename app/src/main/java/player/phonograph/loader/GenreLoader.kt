@@ -8,6 +8,7 @@ import android.provider.MediaStore
 import java.lang.Exception
 import java.util.ArrayList
 import player.phonograph.mediastore.MediaStoreUtil
+import player.phonograph.mediastore.SongLoader
 import player.phonograph.model.Genre
 import player.phonograph.model.Song
 import player.phonograph.settings.Setting

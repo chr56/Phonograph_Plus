@@ -9,8 +9,8 @@ package player.phonograph.util
 import android.content.Context
 import android.provider.MediaStore.Audio.AudioColumns.DATA
 import android.webkit.MimeTypeMap
-import player.phonograph.loader.SongLoader.getSongs
-import player.phonograph.loader.SongLoader.makeSongCursor
+import player.phonograph.mediastore.SongLoader.getSongs
+import player.phonograph.mediastore.SongLoader.makeSongCursor
 import player.phonograph.loader.SortedCursor
 import player.phonograph.model.Song
 import java.io.*

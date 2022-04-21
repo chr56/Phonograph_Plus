@@ -18,8 +18,8 @@ import android.util.Log
 import android.widget.Toast
 import android.widget.Toast.LENGTH_SHORT
 import player.phonograph.R
-import player.phonograph.loader.SongLoader.getSongs
-import player.phonograph.loader.SongLoader.makeSongCursor
+import player.phonograph.mediastore.SongLoader.getSongs
+import player.phonograph.mediastore.SongLoader.makeSongCursor
 import player.phonograph.model.Song
 import player.phonograph.notification.ErrorNotification
 import player.phonograph.service.MusicService.MusicBinder

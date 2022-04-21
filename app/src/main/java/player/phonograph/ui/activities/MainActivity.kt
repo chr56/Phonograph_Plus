@@ -29,7 +29,7 @@ import player.phonograph.helper.SearchQueryHelper
 import player.phonograph.loader.AlbumLoader
 import player.phonograph.loader.ArtistLoader
 import player.phonograph.loader.PlaylistSongLoader
-import player.phonograph.loader.SongLoader
+import player.phonograph.mediastore.SongLoader
 import player.phonograph.model.Song
 import player.phonograph.notification.UpgradeNotification
 import player.phonograph.service.MusicService

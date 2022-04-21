@@ -1,4 +1,4 @@
-package player.phonograph.loader
+package player.phonograph.mediastore
 
 import android.content.Context
 import android.database.Cursor
