@@ -5,11 +5,12 @@ import android.content.Context
 import android.database.Cursor
 import android.os.Build
 import android.provider.MediaStore
+import java.lang.Exception
+import java.util.ArrayList
+import player.phonograph.mediastore.MediaStoreUtil
 import player.phonograph.model.Genre
 import player.phonograph.model.Song
 import player.phonograph.settings.Setting
-import java.lang.Exception
-import java.util.ArrayList
 
 @SuppressLint("Recycle")
 object GenreLoader {
@@ -63,8 +64,8 @@ object GenreLoader {
         return try {
             context.contentResolver.query(
                 MediaStore.Audio.Genres.Members.getContentUri("external", genreId),
-                SongLoader.BASE_PROJECTION,
-                SongLoader.BASE_SELECTION,
+                MediaStoreUtil.SongConst.BASE_PROJECTION,
+                MediaStoreUtil.SongConst.BASE_AUDIO_SELECTION,
                 null,
                 Setting.instance.songSortOrder
             )

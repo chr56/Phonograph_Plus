@@ -6,6 +6,7 @@ import android.provider.MediaStore;
 import android.provider.MediaStore.Audio.AudioColumns;
 import androidx.annotation.NonNull;
 
+import player.phonograph.mediastore.MediaStoreUtil;
 import player.phonograph.model.PlaylistSong;
 
 import java.util.ArrayList;
@@ -64,7 +65,7 @@ public class PlaylistSongLoader {
                             AudioColumns.ARTIST_ID,// 9
                             AudioColumns.ARTIST,// 10
                             MediaStore.Audio.Playlists.Members._ID // 11
-                    }, SongLoader.BASE_SELECTION, null,
+                    }, MediaStoreUtil.SongConst.BASE_AUDIO_SELECTION, null,
                     MediaStore.Audio.Playlists.Members.DEFAULT_SORT_ORDER);
         } catch (SecurityException e) {
             return null;
