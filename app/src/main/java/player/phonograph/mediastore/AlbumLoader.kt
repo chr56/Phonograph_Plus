@@ -80,6 +80,7 @@ object AlbumLoader {
             SortRef.ALBUM_NAME -> this.sort(revert) { it.title }
             SortRef.ARTIST_NAME -> this.sort(revert) { it.artistName }
             SortRef.YEAR -> this.sort(revert) { it.year }
+            SortRef.SONG_COUNT -> this.sort(revert) { it.songCount }
             else -> this
         }
     }

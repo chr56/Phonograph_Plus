@@ -384,4 +384,5 @@
     <string name="lyrics_following">Lyrics Following</string>
     <string name="error_notification_name">Error Reports</string>
     <string name="background_notification_name">Background Work</string>
+    <string name="sort_order_song_numbers">Song Count</string>
 </resources>

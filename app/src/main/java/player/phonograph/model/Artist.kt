@@ -5,7 +5,6 @@ import android.os.Parcel
 import android.os.Parcelable
 import androidx.annotation.Keep
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.util.Pair
 import androidx.fragment.app.FragmentActivity
 import player.phonograph.App.Companion.instance
 import player.phonograph.helper.menu.SongsMenuHelper.handleMenuClick
@@ -48,7 +47,7 @@ class Artist : Parcelable, Displayable {
         get() {
             var songCount = 0
             for (album in albums!!) {
-                songCount += album.getSongCount()
+                songCount += album.songCount
             }
             return songCount
         }

@@ -98,10 +98,12 @@ class AlbumPage : AbsDisplayPage<Album, DisplayAdapter<Album>, GridLayoutManager
         popup.sortOrderAlbum.visibility = View.VISIBLE
         popup.sortOrderArtist.visibility = View.VISIBLE
         popup.sortOrderYear.visibility = View.VISIBLE
+        popup.sortOrderSongCount.visibility = View.VISIBLE
         when (currentSortMode.sortRef) {
             SortRef.ALBUM_NAME -> popup.sortOrderContent.check(R.id.sort_order_album)
             SortRef.ARTIST_NAME -> popup.sortOrderContent.check(R.id.sort_order_artist)
             SortRef.YEAR -> popup.sortOrderContent.check(R.id.sort_order_year)
+            SortRef.SONG_COUNT -> popup.sortOrderContent.check(R.id.sort_order_song_count)
             else -> { popup.sortOrderContent.clearCheck() }
         }
 
@@ -155,6 +157,7 @@ class AlbumPage : AbsDisplayPage<Album, DisplayAdapter<Album>, GridLayoutManager
                 R.id.sort_order_album -> SortRef.ALBUM_NAME
                 R.id.sort_order_year -> SortRef.YEAR
                 R.id.sort_order_artist -> SortRef.ARTIST_NAME
+                R.id.sort_order_song_count -> SortRef.SONG_COUNT
                 else -> SortRef.ID
             }
             val selected = SortMode(sortRef, revert)

@@ -113,6 +113,14 @@
                 android:text="@string/sort_order_duration"
                 android:visibility="gone" />
 
+            <RadioButton
+                android:id="@+id/sort_order_song_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minHeight="32dp"
+                android:text="@string/sort_order_song_numbers"
+                android:visibility="gone" />
+
         </RadioGroup>
 
         <TextView

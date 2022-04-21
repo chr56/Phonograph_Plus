@@ -33,7 +33,8 @@ class Album : Parcelable, Displayable {
         this.songs = ArrayList()
     }
 
-    fun getSongCount(): Int = songs.size
+    val songCount: Int
+        get() = songs.size
 
     val artistId: Long
         get() = safeGetFirstSong().artistId
