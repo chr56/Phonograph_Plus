@@ -7,10 +7,10 @@ import androidx.annotation.Keep
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentActivity
 import player.phonograph.R
-import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.helper.menu.SongMenuHelper.handleMenuClick
 import player.phonograph.helper.menu.SongsMenuHelper.handleMenuClick
 import player.phonograph.interfaces.Displayable
+import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.util.MusicUtil
 
 /**
@@ -30,6 +30,8 @@ open class Song : Parcelable, Displayable {
     @JvmField
     val data: String
     @JvmField
+    val dateAdded: Long
+    @JvmField
     val dateModified: Long
     @JvmField
     val albumId: Long
@@ -47,6 +49,7 @@ open class Song : Parcelable, Displayable {
         year: Int,
         duration: Long,
         data: String,
+        dateAdded: Long,
         dateModified: Long,
         albumId: Long,
         albumName: String?,
@@ -59,6 +62,7 @@ open class Song : Parcelable, Displayable {
         this.year = year
         this.duration = duration
         this.data = data
+        this.dateAdded = dateAdded
         this.dateModified = dateModified
         this.albumId = albumId
         this.albumName = albumName
@@ -74,6 +78,7 @@ open class Song : Parcelable, Displayable {
         if (trackNumber != song.trackNumber) return false
         if (year != song.year) return false
         if (duration != song.duration) return false
+        if (dateAdded != song.dateAdded) return false
         if (dateModified != song.dateModified) return false
         if (albumId != song.albumId) return false
         if (artistId != song.artistId) return false
@@ -91,6 +96,7 @@ open class Song : Parcelable, Displayable {
         result = 31 * result + (duration xor (duration ushr 32)).toInt()
         result = 31 * result + data.hashCode()
         result = 31 * result + (dateModified xor (dateModified ushr 32)).toInt()
+        result = 31 * result + (dateAdded xor (dateAdded ushr 32)).toInt()
         result = 31 * result + albumId.toInt()
         result = 31 * result + (albumName?.hashCode() ?: 0)
         result = 31 * result + artistId.toInt()
@@ -111,6 +117,7 @@ open class Song : Parcelable, Displayable {
         dest.writeInt(year)
         dest.writeLong(duration)
         dest.writeString(data)
+        dest.writeLong(dateAdded)
         dest.writeLong(dateModified)
         dest.writeLong(albumId)
         dest.writeString(albumName)
@@ -125,6 +132,7 @@ open class Song : Parcelable, Displayable {
         year = parcel.readInt()
         duration = parcel.readLong()
         data = parcel.readString()!!
+        dateAdded = parcel.readLong()
         dateModified = parcel.readLong()
         albumId = parcel.readLong()
         albumName = parcel.readString()
@@ -134,7 +142,7 @@ open class Song : Parcelable, Displayable {
 
     override fun getItemID(): Long = id
 
-    override fun getDisplayTitle(): CharSequence = title ?: "NO_TITTLE"
+    override fun getDisplayTitle(): CharSequence = title
 
     override fun getDescription(): CharSequence? = MusicUtil.getSongInfoString(this)
 
@@ -170,7 +178,20 @@ open class Song : Parcelable, Displayable {
 
     companion object {
         @JvmField
-        val EMPTY_SONG = Song(-1, "", -1, -1, -1, "", -1, -1, "", -1, "")
+        val EMPTY_SONG = Song(
+            id = -1,
+            title = "",
+            trackNumber = -1,
+            year = -1,
+            duration = -1,
+            data = "",
+            dateAdded = -1,
+            dateModified = -1,
+            albumId = -1,
+            albumName = "",
+            artistId = -1,
+            artistName = ""
+        )
 
         @Keep
         @JvmField

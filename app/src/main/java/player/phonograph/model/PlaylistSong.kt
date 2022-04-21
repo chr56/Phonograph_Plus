@@ -15,14 +15,15 @@ open class PlaylistSong : Song {
         year: Int,
         duration: Long,
         data: String,
-        dateModified: Int,
+        dateAdded: Long,
+        dateModified: Long,
         albumId: Long,
         albumName: String?,
         artistId: Long,
         artistName: String?,
         playlistId: Long,
         idInPlayList: Long
-    ) : super(id, title, trackNumber, year, duration, data, dateModified.toLong(), albumId, albumName, artistId, artistName) {
+    ) : super(id, title, trackNumber, year, duration, data, dateAdded, dateModified, albumId, albumName, artistId, artistName) {
         this.playlistId = playlistId
         this.idInPlayList = idInPlayList
     }
@@ -70,6 +71,21 @@ open class PlaylistSong : Song {
                 return arrayOfNulls(size)
             }
         }
-        val EMPTY_PLAYLIST_SONG = PlaylistSong(-1, "", -1, -1, -1, "", -1, -1, "", -1, "", -1, -1)
+        val EMPTY_PLAYLIST_SONG = PlaylistSong(
+            id = -1,
+            title = "",
+            trackNumber = -1,
+            year = -1,
+            duration = -1,
+            data = "",
+            dateAdded = -1,
+            dateModified = -1,
+            albumId = -1,
+            albumName = "",
+            artistId = -1,
+            artistName = "",
+            playlistId = -1,
+            idInPlayList = -1
+        )
     }
 }

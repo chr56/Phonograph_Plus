@@ -86,7 +86,18 @@ object MediaStoreUtil {
         val artistId = cursor.getLong(9)
         val artistName = cursor.getString(10)
         return Song(
-            id, title, trackNumber, year, duration, data, dateModified, albumId, albumName, artistId, artistName
+            id = id,
+            title = title,
+            trackNumber = trackNumber,
+            year = year,
+            duration = duration,
+            data = data,
+            dateAdded = 0,
+            dateModified = dateModified,
+            albumId = albumId,
+            albumName = albumName,
+            artistId = artistId,
+            artistName = artistName
         )
     }
 
