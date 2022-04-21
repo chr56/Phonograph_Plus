@@ -7,6 +7,7 @@ package player.phonograph.mediastore
 import android.content.Context
 import android.provider.MediaStore.Audio.AudioColumns
 import android.util.ArrayMap
+import player.phonograph.helper.SortOrder
 import player.phonograph.mediastore.SongLoader.getSongs
 import player.phonograph.mediastore.SongLoader.makeSongCursor
 import player.phonograph.model.Album
@@ -21,21 +22,21 @@ object ArtistLoader {
 
     fun getAllArtists(context: Context): List<Artist> {
         val songs = getSongs(
-            makeSongCursor(context, null, null, sortOrder)
+            makeSongCursor(context, null, null, null)
         )
         return splitIntoArtists(songs)
     }
 
     fun getArtists(context: Context, query: String): List<Artist> {
         val songs = getSongs(
-            makeSongCursor(context, "${AudioColumns.ARTIST} LIKE ?", arrayOf("%$query%"), sortOrder)
+            makeSongCursor(context, "${AudioColumns.ARTIST} LIKE ?", arrayOf("%$query%"), null)
         )
         return splitIntoArtists(songs)
     }
 
     fun getArtist(context: Context, artistId: Long): Artist {
         val songs = getSongs(
-            makeSongCursor(context, "${AudioColumns.ARTIST_ID}=?", arrayOf(artistId.toString()), sortOrder)
+            makeSongCursor(context, "${AudioColumns.ARTIST_ID}=?", arrayOf(artistId.toString()), null)
         )
         return Artist(AlbumLoader.splitIntoAlbums(songs))
     }
@@ -63,10 +64,15 @@ object ArtistLoader {
             AlbumLoader.splitIntoAlbums(artistSongs)
         }
 
-        return artistAlbumsList.map { Artist(it) }
+        return artistAlbumsList.map { Artist(it) }.sort()
     }
 
-    val sortOrder: String by lazy {
-        "${Setting.instance.artistSortOrder}, ${Setting.instance.artistAlbumSortOrder}, ${Setting.instance.albumSongSortOrder}"
+    // todo
+    private fun List<Artist>.sort(): List<Artist> {
+        return when (Setting.instance.artistSortOrder) {
+            SortOrder.ArtistSortOrder.ARTIST_A_Z -> this.sortedBy { it.name }
+            SortOrder.ArtistSortOrder.ARTIST_Z_A -> this.sortedByDescending { it.name }
+            else -> { this }
+        }
     }
 }
