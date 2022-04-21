@@ -24,7 +24,7 @@ import java.util.Locale;
 
 import player.phonograph.App;
 import player.phonograph.R;
-import player.phonograph.loader.GenreLoader;
+import player.phonograph.mediastore.GenreLoader;
 import player.phonograph.model.Album;
 import player.phonograph.model.Artist;
 import player.phonograph.model.Genre;

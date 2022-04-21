@@ -1,4 +1,8 @@
-package player.phonograph.loader
+/*
+ * Copyright (c) 2022 chr_56 & Abou Zeid (kabouzeid) (original author)
+ */
+
+package player.phonograph.mediastore
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -7,8 +11,6 @@ import android.os.Build
 import android.provider.MediaStore
 import java.lang.Exception
 import java.util.ArrayList
-import player.phonograph.mediastore.MediaStoreUtil
-import player.phonograph.mediastore.SongLoader
 import player.phonograph.model.Genre
 import player.phonograph.model.Song
 import player.phonograph.settings.Setting

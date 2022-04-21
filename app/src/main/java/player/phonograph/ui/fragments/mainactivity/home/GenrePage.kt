@@ -18,7 +18,7 @@ import player.phonograph.R
 import player.phonograph.adapter.display.DisplayAdapter
 import player.phonograph.databinding.PopupWindowMainBinding
 import player.phonograph.helper.SortOrder
-import player.phonograph.loader.GenreLoader
+import player.phonograph.mediastore.GenreLoader
 import player.phonograph.model.Genre
 import player.phonograph.util.Util
 

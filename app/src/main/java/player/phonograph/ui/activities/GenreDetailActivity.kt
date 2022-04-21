@@ -19,7 +19,7 @@ import player.phonograph.R
 import player.phonograph.adapter.song.SongAdapter
 import player.phonograph.databinding.ActivityGenreDetailBinding
 import player.phonograph.interfaces.CabHolder
-import player.phonograph.loader.GenreLoader
+import player.phonograph.mediastore.GenreLoader
 import player.phonograph.model.Genre
 import player.phonograph.model.Song
 import player.phonograph.service.MusicPlayerRemote
