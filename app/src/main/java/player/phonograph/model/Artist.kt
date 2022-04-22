@@ -16,30 +16,30 @@ import player.phonograph.util.NavigationUtil
  * @author Karim Abou Zeid (kabouzeid)
  */
 class Artist : Parcelable, Displayable {
+
+    val id: Long
+    val name: String
     @JvmField val albums: List<Album>?
 
-    constructor(albums: List<Album>?) {
+    constructor(id: Long, name: String?, albums: List<Album>?) {
         this.albums = albums
+        this.id = id
+        this.name = name ?: UNKNOWN_ARTIST_DISPLAY_NAME
     }
 
     constructor() {
-        albums = ArrayList()
+        this.id = -1
+        this.name = UNKNOWN_ARTIST_DISPLAY_NAME
+        this.albums = ArrayList()
     }
 
-    val name: String
-        get() {
-            val name = safeGetFirstAlbum().artistName
-            return if (MusicUtil.isArtistNameUnknown(name)) {
-                UNKNOWN_ARTIST_DISPLAY_NAME
-            } else name
-        }
-    val id: Long
-        get() = safeGetFirstAlbum().artistId
+    val albumCount: Int get() = albums?.size ?: -1
+
     val songs: List<Song>
         get() {
             val songs: MutableList<Song> = ArrayList()
             for (album in albums!!) {
-                songs.addAll(album.songs!!)
+                songs.addAll(album.songs)
             }
             return songs
         }
@@ -51,12 +51,8 @@ class Artist : Parcelable, Displayable {
             }
             return songCount
         }
-    val albumCount: Int
-        get() = albums?.size ?: -1
 
-    fun safeGetFirstAlbum(): Album {
-        return if (albums!!.isEmpty()) Album() else albums[0]
-    }
+    fun safeGetFirstAlbum(): Album = if (albums!!.isEmpty()) Album() else albums[0]
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -67,14 +63,7 @@ class Artist : Parcelable, Displayable {
 
     override fun hashCode(): Int = albums?.hashCode() ?: 0
 
-    override fun toString(): String = "Artist{name=$name,albums=$albums}"
-
-    override fun describeContents(): Int = 0
-    override fun writeToParcel(dest: Parcel, flags: Int) = dest.writeTypedList(albums)
-
-    protected constructor(parcel: Parcel) {
-        albums = parcel.createTypedArrayList(Album.CREATOR)
-    }
+    override fun toString(): String = "Artist{name=$name,id =$id,albums=$albums}"
 
     override fun getItemID(): Long = id
 
@@ -119,5 +108,18 @@ class Artist : Parcelable, Displayable {
                 return arrayOfNulls(size)
             }
         }
+    }
+
+    override fun describeContents(): Int = 0
+    override fun writeToParcel(dest: Parcel, flags: Int) {
+        dest.writeLong(id)
+        dest.writeString(name)
+        dest.writeTypedList(albums)
+    }
+
+    constructor(parcel: Parcel) {
+        id = parcel.readLong()
+        name = parcel.readString() ?: UNKNOWN_ARTIST_DISPLAY_NAME
+        albums = parcel.createTypedArrayList(Album.CREATOR)
     }
 }

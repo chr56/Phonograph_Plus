@@ -38,14 +38,14 @@ object ArtistLoader {
         val songs = getSongs(
             makeSongCursor(context, "${AudioColumns.ARTIST_ID}=?", arrayOf(artistId.toString()), null)
         )
-        return Artist(AlbumLoader.splitIntoAlbums(songs))
+        return if (songs.isEmpty()) Artist(artistId, Artist.UNKNOWN_ARTIST_DISPLAY_NAME, ArrayList())
+        else Artist(artistId, songs[0].artistName, AlbumLoader.splitIntoAlbums(songs))
     }
 
     fun splitIntoArtists(songs: List<Song>): List<Artist> {
         if (songs.isEmpty()) return ArrayList()
 
-        // split artists
-
+        // group by artists:
         // artistID <-> List of song
         val idMap: MutableMap<Long, MutableList<Song>> = ArrayMap()
         for (song in songs) {
@@ -58,13 +58,21 @@ object ArtistLoader {
             }
         }
 
-        // to albums
+        // to albums:
         // list of every artists' list of albums
-        val artistAlbumsList: List<List<Album>> = idMap.values.map { artistSongs ->
-            AlbumLoader.splitIntoAlbums(artistSongs)
+        val artistAlbumsList: List<List<Album>> = idMap.map { entry ->
+            AlbumLoader.splitIntoAlbums(entry.value)
         }
+        val artistNameList: List<String> = artistAlbumsList.map {
+            it[0].artistName
+        }
+        val artistIDList: List<Long> = idMap.keys.map { it }
 
-        return artistAlbumsList.map { Artist(it) }.sortAll()
+        val artistList: List<Artist> = List(idMap.size) {
+            Artist(artistIDList[it], artistNameList[it], artistAlbumsList[it])
+        }.sortAll()
+
+        return artistList
     }
 
     private fun List<Artist>.sortAll(): List<Artist> {
