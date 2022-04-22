@@ -10,7 +10,7 @@ import android.os.Parcelable
 import androidx.annotation.Keep
 import player.phonograph.PlaylistType
 import player.phonograph.R
-import player.phonograph.loader.LastAddedLoader
+import player.phonograph.mediastore.LastAddedLoader
 import player.phonograph.model.Song
 
 class LastAddedPlaylist : SmartPlaylist {

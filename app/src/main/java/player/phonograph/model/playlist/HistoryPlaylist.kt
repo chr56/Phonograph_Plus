@@ -10,7 +10,7 @@ import android.os.Parcelable
 import androidx.annotation.Keep
 import player.phonograph.PlaylistType
 import player.phonograph.R
-import player.phonograph.loader.TopAndRecentlyPlayedTracksLoader
+import player.phonograph.mediastore.TopAndRecentlyPlayedTracksLoader
 import player.phonograph.model.Song
 import player.phonograph.provider.HistoryStore
 

@@ -1,9 +1,12 @@
-package player.phonograph.loader
+/*
+ * Copyright (c) 2022 chr_56 & Abou Zeid (kabouzeid) (original author)
+ */
+
+package player.phonograph.mediastore
 
 import android.content.Context
 import android.database.Cursor
 import android.provider.MediaStore
-import player.phonograph.mediastore.SongLoader
 import player.phonograph.mediastore.SongLoader.getSongs
 import player.phonograph.model.Song
 import player.phonograph.settings.Setting
