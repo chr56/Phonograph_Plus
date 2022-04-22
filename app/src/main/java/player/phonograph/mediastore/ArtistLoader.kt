@@ -7,6 +7,7 @@ package player.phonograph.mediastore
 import android.content.Context
 import android.provider.MediaStore.Audio.AudioColumns
 import android.util.ArrayMap
+import kotlinx.coroutines.*
 import player.phonograph.mediastore.SongLoader.getSongs
 import player.phonograph.mediastore.SongLoader.makeSongCursor
 import player.phonograph.mediastore.sort.SortRef
@@ -45,34 +46,41 @@ object ArtistLoader {
     fun splitIntoArtists(songs: List<Song>): List<Artist> {
         if (songs.isEmpty()) return ArrayList()
 
-        // group by artists:
-        // artistID <-> List of song
-        val idMap: MutableMap<Long, MutableList<Song>> = ArrayMap()
-        for (song in songs) {
-            if (idMap[song.artistId] == null) {
-                // create new
-                idMap[song.artistId] = ArrayList<Song>(1).apply { add(song) }
-            } else {
-                // add to existed
-                idMap[song.artistId]!!.add(song)
+        val artists = CoroutineScope(Dispatchers.Default).async {
+
+            // group by artists:
+            // artistID <-> List of song
+            val idMap: MutableMap<Long, MutableList<Song>> = ArrayMap()
+            for (song in songs) {
+                if (idMap[song.artistId] == null) {
+                    // create new
+                    idMap[song.artistId] = ArrayList<Song>(1).apply { add(song) }
+                } else {
+                    // add to existed
+                    idMap[song.artistId]!!.add(song)
+                }
             }
+
+            // to albums:
+            // list of every artists' list of albums
+            val artistAlbumsList: List<List<Album>> = idMap.map { entry ->
+                AlbumLoader.splitIntoAlbums(entry.value)
+            }
+            val artistNameList: List<String> = artistAlbumsList.map {
+                it[0].artistName
+            }
+            val artistIDList: List<Long> = idMap.keys.map { it }
+
+            val artistList: List<Artist> = List(idMap.size) {
+                Artist(artistIDList[it], artistNameList[it], artistAlbumsList[it])
+            }.sortAll()
+
+            return@async artistList
         }
 
-        // to albums:
-        // list of every artists' list of albums
-        val artistAlbumsList: List<List<Album>> = idMap.map { entry ->
-            AlbumLoader.splitIntoAlbums(entry.value)
+        return runBlocking {
+            return@runBlocking artists.await()
         }
-        val artistNameList: List<String> = artistAlbumsList.map {
-            it[0].artistName
-        }
-        val artistIDList: List<Long> = idMap.keys.map { it }
-
-        val artistList: List<Artist> = List(idMap.size) {
-            Artist(artistIDList[it], artistNameList[it], artistAlbumsList[it])
-        }.sortAll()
-
-        return artistList
     }
 
     private fun List<Artist>.sortAll(): List<Artist> {

@@ -19,9 +19,9 @@ class Artist : Parcelable, Displayable {
 
     val id: Long
     val name: String
-    @JvmField val albums: List<Album>?
+    @JvmField val albums: List<Album>
 
-    constructor(id: Long, name: String?, albums: List<Album>?) {
+    constructor(id: Long, name: String?, albums: List<Album>) {
         this.albums = albums
         this.id = id
         this.name = name ?: UNKNOWN_ARTIST_DISPLAY_NAME
@@ -33,35 +33,21 @@ class Artist : Parcelable, Displayable {
         this.albums = ArrayList()
     }
 
-    val albumCount: Int get() = albums?.size ?: -1
+    val albumCount: Int get() = albums.size
 
     val songs: List<Song>
-        get() {
-            val songs: MutableList<Song> = ArrayList()
-            for (album in albums!!) {
-                songs.addAll(album.songs)
-            }
-            return songs
-        }
+        get() = albums.flatMap { it.songs }
     val songCount: Int
-        get() {
-            var songCount = 0
-            for (album in albums!!) {
-                songCount += album.songCount
-            }
-            return songCount
-        }
-
-    fun safeGetFirstAlbum(): Album = if (albums!!.isEmpty()) Album() else albums[0]
+        get() = albums.fold(0) { i: Int, album: Album -> i + album.songCount }
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other == null || javaClass != other.javaClass) return false
         val artist = other as Artist
-        return if (albums != null) albums == artist.albums else artist.albums == null
+        return albums == artist.albums
     }
 
-    override fun hashCode(): Int = albums?.hashCode() ?: 0
+    override fun hashCode(): Int = albums.hashCode()
 
     override fun toString(): String = "Artist{name=$name,id =$id,albums=$albums}"
 
@@ -120,6 +106,6 @@ class Artist : Parcelable, Displayable {
     constructor(parcel: Parcel) {
         id = parcel.readLong()
         name = parcel.readString() ?: UNKNOWN_ARTIST_DISPLAY_NAME
-        albums = parcel.createTypedArrayList(Album.CREATOR)
+        albums = parcel.createTypedArrayList(Album.CREATOR) ?: ArrayList()
     }
 }
