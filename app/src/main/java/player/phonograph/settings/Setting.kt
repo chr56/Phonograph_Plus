@@ -145,15 +145,14 @@ class Setting(context: Context) {
     // List-Cutoff
     val lastAddedCutoff: Long
         get() {
-            val calendarUtil = CalendarUtil()
             val interval: Long = when (mPreferences.getString(LAST_ADDED_CUTOFF, "")) {
-                "today" -> calendarUtil.elapsedToday
-                "this_week" -> calendarUtil.elapsedWeek
-                "past_seven_days" -> calendarUtil.getElapsedDays(7)
-                "past_three_months" -> calendarUtil.getElapsedMonths(3)
-                "this_year" -> calendarUtil.elapsedYear
-                "this_month" -> calendarUtil.elapsedMonth
-                else -> calendarUtil.elapsedMonth
+                "today" -> CalendarUtil.elapsedToday
+                "this_week" -> CalendarUtil.elapsedWeek
+                "past_seven_days" -> CalendarUtil.getElapsedDays(7)
+                "past_three_months" -> CalendarUtil.getElapsedMonths(3)
+                "this_year" -> CalendarUtil.elapsedYear
+                "this_month" -> CalendarUtil.elapsedMonth
+                else -> CalendarUtil.elapsedMonth
             }
             return (System.currentTimeMillis() - interval) / 1000
         }
