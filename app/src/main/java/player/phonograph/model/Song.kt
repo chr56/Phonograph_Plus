@@ -82,8 +82,8 @@ open class Song : Parcelable, Displayable {
         if (dateModified != song.dateModified) return false
         if (albumId != song.albumId) return false
         if (artistId != song.artistId) return false
-        if (if (title != null) title != song.title else song.title != null) return false
-        if (if (data != null) data != song.data else song.data != null) return false
+        if (title != song.title) return false
+        if (data != song.data) return false
         if (if (albumName != null) albumName != song.albumName else song.albumName != null) return false
         return if (artistName != null) artistName == song.artistName else song.artistName == null
     }
@@ -105,7 +105,7 @@ open class Song : Parcelable, Displayable {
     }
 
     override fun toString(): String {
-        return "Song{id=$id, title='$title', trackNumber=$trackNumber, year=$year, duration=$duration, data='$data', dateModified=$dateModified, albumId=$albumId, albumName='$albumName', artistId=$artistId, artistName='$artistName'}"
+        return "Song{id=$id, title='$title', trackNumber=$trackNumber, year=$year, duration=$duration, data='$data', dateModified=$dateModified, dataAdded=$dateAdded, albumId=$albumId, albumName='$albumName', artistId=$artistId, artistName='$artistName'}"
     }
 
     override fun describeContents(): Int = 0

@@ -54,7 +54,7 @@ class SongDisplayAdapter(
                 SortRef.YEAR -> MusicUtil.getYearString(song.year)
                 SortRef.SONG_DURATION -> MusicUtil.getReadableDurationString(song.duration)
                 SortRef.MODIFIED_DATE -> SimpleDateFormat("yy.MM.dd", Locale.getDefault()).format(song.dateModified * 1000)
-                SortRef.ADDED_DATE -> "" // todo
+                SortRef.ADDED_DATE -> SimpleDateFormat("yy.MM.dd", Locale.getDefault()).format(song.dateAdded * 1000)
                 else -> ""
             }
         return sectionName
