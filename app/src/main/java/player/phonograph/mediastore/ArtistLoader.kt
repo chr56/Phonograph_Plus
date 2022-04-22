@@ -8,6 +8,8 @@ import android.content.Context
 import android.provider.MediaStore.Audio.AudioColumns
 import android.util.ArrayMap
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.collect
 import player.phonograph.mediastore.SongLoader.getSongs
 import player.phonograph.mediastore.SongLoader.makeSongCursor
 import player.phonograph.mediastore.sort.SortRef
@@ -48,38 +50,84 @@ object ArtistLoader {
 
         val artists = CoroutineScope(Dispatchers.Default).async {
 
-            // group by artists:
-            // artistID <-> List of song
-            val idMap: MutableMap<Long, MutableList<Song>> = ArrayMap()
-            for (song in songs) {
-                if (idMap[song.artistId] == null) {
-                    // create new
-                    idMap[song.artistId] = ArrayList<Song>(1).apply { add(song) }
-                } else {
-                    // add to existed
-                    idMap[song.artistId]!!.add(song)
+            val innerCoroutineScope = CoroutineScope(Dispatchers.Default)
+
+            val flow = songs.asFlow()
+            var completed = false
+
+            // artistID <-> List of songs which are grouped by song
+            val table: MutableMap<Long, MutableMap<Long, MutableList<Song>>> = ArrayMap()
+
+            // artistID <-> artistName
+            val artistName: MutableMap<Long, String?> = ArrayMap()
+            // albumID <-> albumName
+            val albumName: MutableMap<Long, String?> = ArrayMap()
+
+            // process data
+            innerCoroutineScope.launch {
+                delay(100)
+                try {
+                    flow.collect { song ->
+                        // check artist
+                        if (table[song.artistId] == null) {
+                            // create new artist
+                            artistName[song.artistId] = song.artistName
+                            table[song.artistId] = ArrayMap()
+                            // check album
+                            if (table[song.artistId]!![song.albumId] == null) {
+                                // create new album
+                                albumName[song.albumId] = song.albumName
+                                table[song.artistId]!![song.albumId] = ArrayList<Song>(1).apply { add(song) }
+                            } else {
+                                // add to existed album
+                                table[song.artistId]!![song.albumId]!!.add(song)
+                            }
+                            //
+                        } else {
+                            // add to existed artist
+                            // (no ops)
+                            // check album
+                            if (table[song.artistId]!![song.albumId] == null) {
+                                // create new album
+                                albumName[song.albumId] = song.albumName
+                                table[song.artistId]!![song.albumId] = ArrayList<Song>(1).apply { add(song) }
+                            } else {
+                                // add to existed album
+                                table[song.artistId]!![song.albumId]!!.add(song)
+                            }
+                            //
+                        }
+                    }
+                } finally {
+                    completed = true
                 }
             }
 
-            // to albums:
-            // list of every artists' list of albums
-            val artistAlbumsList: List<List<Album>> = idMap.map { entry ->
-                AlbumLoader.splitIntoAlbums(entry.value)
-            }
-            val artistNameList: List<String> = artistAlbumsList.map {
-                it[0].artistName
-            }
-            val artistIDList: List<Long> = idMap.keys.map { it }
+            while (!completed) yield() // wait until result is ready
 
-            val artistList: List<Artist> = List(idMap.size) {
-                Artist(artistIDList[it], artistNameList[it], artistAlbumsList[it])
-            }.sortAll()
+            // handle result
+            // todo: use flow
+            val result: MutableList<Artist> = ArrayList(table.size)
+            table.forEach { (artistId, albumMap) ->
+                // create album
+                val albums = albumMap
+                    .map { (albumId, songList) ->
+                        Album(albumId, albumName[albumId], songList)
+                    }
 
-            return@async artistList
+                // create artist & add
+                result.add(
+                    Artist(
+                        artistId, artistName[artistId], albums
+                    )
+                )
+            }
+
+            return@async result
         }
 
         return runBlocking {
-            return@runBlocking artists.await()
+            return@runBlocking artists.await().sortAll()
         }
     }
 
