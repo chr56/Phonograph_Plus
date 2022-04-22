@@ -11,7 +11,7 @@ import player.phonograph.dialogs.ClearPlaylistDialog
 import player.phonograph.dialogs.RenamePlaylistDialog
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.model.playlist.Playlist
-import player.phonograph.util.SAFCallbackHandlerActivity
+import player.phonograph.misc.SAFCallbackHandlerActivity
 import util.phonograph.m3u.PlaylistsManager
 
 /**

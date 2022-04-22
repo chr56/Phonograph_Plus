@@ -10,7 +10,7 @@ import com.afollestad.materialdialogs.list.listItemsSingleChoice
 import player.phonograph.R
 import player.phonograph.model.Song
 import player.phonograph.util.PlaylistsUtil
-import player.phonograph.util.SAFCallbackHandlerActivity
+import player.phonograph.misc.SAFCallbackHandlerActivity
 import util.phonograph.m3u.PlaylistsManager
 
 /**

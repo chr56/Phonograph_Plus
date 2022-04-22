@@ -21,7 +21,7 @@ import player.phonograph.R
 import player.phonograph.provider.DatabaseManger
 import player.phonograph.settings.Setting
 import player.phonograph.ui.fragments.SettingsFragment
-import player.phonograph.util.OpenDocumentContract
+import player.phonograph.misc.OpenDocumentContract
 import player.phonograph.util.Util
 import player.phonograph.util.Util.currentTimestamp
 import util.mdcolor.pref.ThemeColor

@@ -19,7 +19,7 @@ import player.phonograph.model.Song
 import player.phonograph.model.playlist.*
 import player.phonograph.util.FavoriteUtil
 import player.phonograph.util.NavigationUtil
-import player.phonograph.util.SAFCallbackHandlerActivity
+import player.phonograph.misc.SAFCallbackHandlerActivity
 import util.mddesign.util.Util
 import util.phonograph.m3u.PlaylistsManager
 

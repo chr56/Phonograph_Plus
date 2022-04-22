@@ -25,7 +25,7 @@ import player.phonograph.model.playlist.FilePlaylist
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.model.playlist.ResettablePlaylist
 import player.phonograph.model.playlist.SmartPlaylist
-import player.phonograph.util.SAFCallbackHandlerActivity
+import player.phonograph.misc.SAFCallbackHandlerActivity
 import util.mdcolor.pref.ThemeColor
 import util.phonograph.m3u.PlaylistsManager
 import java.lang.StringBuilder

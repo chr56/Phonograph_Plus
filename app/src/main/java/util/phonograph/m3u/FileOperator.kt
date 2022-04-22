@@ -23,10 +23,10 @@ import player.phonograph.R
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.model.playlist.FilePlaylist
 import player.phonograph.model.Song
-import player.phonograph.util.OpenDocumentContract
+import player.phonograph.misc.OpenDocumentContract
 import player.phonograph.util.PlaylistsUtil
-import player.phonograph.util.SafLauncher
-import player.phonograph.util.UriCallback
+import player.phonograph.misc.SafLauncher
+import player.phonograph.misc.UriCallback
 import player.phonograph.util.Util.coroutineToast
 import player.phonograph.util.Util.sentPlaylistChangedLocalBoardCast
 import util.phonograph.m3u.internal.M3UGenerator
