@@ -18,9 +18,9 @@ import com.sothree.slidinguppanel.SlidingUpPanelLayout.PanelState
 import player.phonograph.R
 import player.phonograph.adapter.base.MediaEntryViewHolder
 import player.phonograph.databinding.FragmentFlatPlayerBinding
-import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.helper.menu.SongMenuHelper.ClickMenuListener
 import player.phonograph.model.Song
+import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
 import player.phonograph.ui.fragments.player.AbsPlayerFragment
 import player.phonograph.ui.fragments.player.PlayerAlbumCoverFragment
@@ -49,7 +49,11 @@ class FlatPlayerFragment :
 
     private lateinit var impl: Impl
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         impl = (if (isLandscape(resources)) LandscapeImpl(this) else PortraitImpl(this))
         _viewBinding = FragmentFlatPlayerBinding.inflate(inflater)
         return viewBinding.root
@@ -250,9 +254,10 @@ class FlatPlayerFragment :
     }
 
     private abstract class BaseImpl(protected var fragment: FlatPlayerFragment) : Impl {
-        fun createDefaultColorChangeAnimatorSet(newColor: Int): AnimatorSet {
+        fun createDefaultColorChangeAnimatorSet(newColor: Int): AnimatorSet? {
+            if (fragment.playbackControlsFragment.view == null) return null // todo
             val backgroundAnimator =
-                ViewUtil.createBackgroundColorTransition(fragment.playbackControlsFragment.view, fragment.paletteColor, newColor)
+                ViewUtil.createBackgroundColorTransition(fragment.playbackControlsFragment.requireView(), fragment.paletteColor, newColor)
             val statusBarAnimator =
                 ViewUtil.createBackgroundColorTransition(fragment.viewBinding.playerStatusBar, fragment.paletteColor, newColor)
             val animatorSet = AnimatorSet()
@@ -346,7 +351,7 @@ class FlatPlayerFragment :
 
         override fun animateColorChange(newColor: Int) {
             super.animateColorChange(newColor)
-            createDefaultColorChangeAnimatorSet(newColor).start()
+            createDefaultColorChangeAnimatorSet(newColor)?.start()
         }
     }
 
@@ -364,14 +369,16 @@ class FlatPlayerFragment :
         override fun animateColorChange(newColor: Int) {
             super.animateColorChange(newColor)
             val animatorSet = createDefaultColorChangeAnimatorSet(newColor)
-            animatorSet.play(
-                ViewUtil.createBackgroundColorTransition(
-                    fragment.viewBinding.playerToolbar,
-                    fragment.paletteColor,
-                    newColor
+            animatorSet?.let {
+                animatorSet.play(
+                    ViewUtil.createBackgroundColorTransition(
+                        fragment.viewBinding.playerToolbar,
+                        fragment.paletteColor,
+                        newColor
+                    )
                 )
-            )
-            animatorSet.start()
+                animatorSet.start()
+            }
         }
     }
 }

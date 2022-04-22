@@ -1,98 +1,104 @@
-package player.phonograph.util;
+@file:Suppress("unused")
 
-import android.animation.Animator;
-import android.animation.ArgbEvaluator;
-import android.animation.ObjectAnimator;
-import android.content.Context;
-import android.content.res.ColorStateList;
-import android.content.res.Resources;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.RippleDrawable;
-import android.graphics.drawable.StateListDrawable;
-import android.os.Build;
-import androidx.annotation.ColorInt;
-import android.util.DisplayMetrics;
-import android.view.View;
-import android.view.animation.PathInterpolator;
-import android.widget.TextView;
+package player.phonograph.util
 
-import player.phonograph.R;
-import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView;
-
-import util.mdcolor.ColorUtil;
-import util.mddesign.util.MaterialColorHelper;
+import android.animation.Animator
+import android.animation.ArgbEvaluator
+import android.animation.ObjectAnimator
+import android.content.Context
+import android.content.res.ColorStateList
+import android.content.res.Resources
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
+import android.graphics.drawable.Drawable
+import android.graphics.drawable.RippleDrawable
+import android.graphics.drawable.StateListDrawable
+import android.os.Build
+import android.view.View
+import android.view.animation.PathInterpolator
+import android.widget.TextView
+import androidx.annotation.ColorInt
+import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView
+import player.phonograph.R
+import util.mdcolor.ColorUtil
+import util.mddesign.util.MaterialColorHelper
+import util.mddesign.util.Util
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
  */
-public class ViewUtil {
+object ViewUtil {
+    
+    const val PHONOGRAPH_ANIM_TIME = 1000
 
-    public final static int PHONOGRAPH_ANIM_TIME = 1000;
-
-    public static Animator createBackgroundColorTransition(final View v, @ColorInt final int startColor, @ColorInt final int endColor) {
-        return createColorAnimator(v, "backgroundColor", startColor, endColor);
+    fun createBackgroundColorTransition(v: View, @ColorInt startColor: Int, @ColorInt endColor: Int): Animator {
+        return createColorAnimator(v, "backgroundColor", startColor, endColor)
     }
 
-    public static Animator createTextColorTransition(final TextView v, @ColorInt final int startColor, @ColorInt final int endColor) {
-        return createColorAnimator(v, "textColor", startColor, endColor);
+    fun createTextColorTransition(v: TextView, @ColorInt startColor: Int, @ColorInt endColor: Int): Animator {
+        return createColorAnimator(v, "textColor", startColor, endColor)
     }
 
-    private static Animator createColorAnimator(Object target, String propertyName, @ColorInt int startColor, @ColorInt int endColor) {
-        ObjectAnimator animator;
+    private fun createColorAnimator(
+        target: Any,
+        propertyName: String,
+        @ColorInt startColor: Int,
+        @ColorInt endColor: Int
+    ): Animator {
+        val animator: ObjectAnimator
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            animator = ObjectAnimator.ofArgb(target, propertyName, startColor, endColor);
+            animator = ObjectAnimator.ofArgb(target, propertyName, startColor, endColor)
         } else {
-            animator = ObjectAnimator.ofInt(target, propertyName, startColor, endColor);
-            animator.setEvaluator(new ArgbEvaluator());
+            animator = ObjectAnimator.ofInt(target, propertyName, startColor, endColor)
+            animator.setEvaluator(ArgbEvaluator())
         }
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            animator.setInterpolator(new PathInterpolator(0.4f, 0f, 1f, 1f));
+            animator.interpolator = PathInterpolator(0.4f, 0f, 1f, 1f)
         }
-        animator.setDuration(PHONOGRAPH_ANIM_TIME);
-        return animator;
+        animator.duration = PHONOGRAPH_ANIM_TIME.toLong()
+        return animator
     }
 
-    public static Drawable createSelectorDrawable(Context context, @ColorInt int color) {
-        final StateListDrawable baseSelector = new StateListDrawable();
-        baseSelector.addState(new int[]{android.R.attr.state_activated}, new ColorDrawable(color));
-
+    fun createSelectorDrawable(context: Context?, @ColorInt color: Int): Drawable {
+        val baseSelector = StateListDrawable()
+        baseSelector.addState(intArrayOf(android.R.attr.state_activated), ColorDrawable(color))
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            return new RippleDrawable(ColorStateList.valueOf(color), baseSelector, new ColorDrawable(Color.WHITE));
+            return RippleDrawable(ColorStateList.valueOf(color), baseSelector, ColorDrawable(Color.WHITE))
         }
-
-        baseSelector.addState(new int[]{}, new ColorDrawable(Color.TRANSPARENT));
-        baseSelector.addState(new int[]{android.R.attr.state_pressed}, new ColorDrawable(color));
-        return baseSelector;
+        baseSelector.addState(intArrayOf(), ColorDrawable(Color.TRANSPARENT))
+        baseSelector.addState(intArrayOf(android.R.attr.state_pressed), ColorDrawable(color))
+        return baseSelector
     }
 
-    public static boolean hitTest(View v, int x, int y) {
-        final int tx = (int) (v.getTranslationX() + 0.5f);
-        final int ty = (int) (v.getTranslationY() + 0.5f);
-        final int left = v.getLeft() + tx;
-        final int right = v.getRight() + tx;
-        final int top = v.getTop() + ty;
-        final int bottom = v.getBottom() + ty;
-
-        return (x >= left) && (x <= right) && (y >= top) && (y <= bottom);
+    fun hitTest(v: View, x: Int, y: Int): Boolean {
+        val tx = (v.translationX + 0.5f).toInt()
+        val ty = (v.translationY + 0.5f).toInt()
+        val left = v.left + tx
+        val right = v.right + tx
+        val top = v.top + ty
+        val bottom = v.bottom + ty
+        return x in left..right && y >= top && y <= bottom
     }
 
-    public static void setUpFastScrollRecyclerViewColor(Context context, FastScrollRecyclerView recyclerView, int accentColor) {
-        recyclerView.setPopupBgColor(accentColor);
-        recyclerView.setPopupTextColor(MaterialColorHelper.getPrimaryTextColor(context, ColorUtil.isColorLight(accentColor)));
-        recyclerView.setThumbColor(accentColor);
-        recyclerView.setTrackColor(ColorUtil.withAlpha(util.mddesign.util.Util.resolveColor(context, R.attr.colorControlNormal), 0.12f));//todo
+    @JvmStatic
+    fun setUpFastScrollRecyclerViewColor(
+        context: Context?,
+        recyclerView: FastScrollRecyclerView,
+        accentColor: Int
+    ) {
+        recyclerView.setPopupBgColor(accentColor)
+        recyclerView.setPopupTextColor(MaterialColorHelper.getPrimaryTextColor(context, ColorUtil.isColorLight(accentColor)))
+        recyclerView.setThumbColor(accentColor)
+        recyclerView.setTrackColor(ColorUtil.withAlpha(Util.resolveColor(context, R.attr.colorControlNormal), 0.12f)) // todo
     }
 
-    public static float convertDpToPixel(float dp, Resources resources) {
-        DisplayMetrics metrics = resources.getDisplayMetrics();
-        return dp * metrics.density;
+    fun convertDpToPixel(dp: Float, resources: Resources): Float {
+        val metrics = resources.displayMetrics
+        return dp * metrics.density
     }
 
-    public static float convertPixelsToDp(float px, Resources resources) {
-        DisplayMetrics metrics = resources.getDisplayMetrics();
-        return px / metrics.density;
+    fun convertPixelsToDp(px: Float, resources: Resources): Float {
+        val metrics = resources.displayMetrics
+        return px / metrics.density
     }
 }

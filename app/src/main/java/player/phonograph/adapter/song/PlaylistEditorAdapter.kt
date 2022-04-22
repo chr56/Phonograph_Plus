@@ -138,7 +138,7 @@ class PlaylistEditorAdapter(
 
     override fun onCheckCanStartDrag(holder: ViewHolder, position: Int, x: Int, y: Int): Boolean =
         position >= 0 &&
-            (ViewUtil.hitTest(holder.dragView, x, y) || ViewUtil.hitTest(holder.imageText, x, y))
+            (ViewUtil.hitTest(holder.dragView!!, x, y) || ViewUtil.hitTest(holder.imageText!!, x, y))
 
     override fun onGetItemDraggableRange(holder: ViewHolder, position: Int): ItemDraggableRange = ItemDraggableRange(0, playlistSongs.size - 1)
 

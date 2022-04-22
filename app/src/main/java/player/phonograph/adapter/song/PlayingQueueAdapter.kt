@@ -11,9 +11,9 @@ import com.h6ah4i.android.widget.advrecyclerview.draggable.DraggableItemViewHold
 import com.h6ah4i.android.widget.advrecyclerview.draggable.ItemDraggableRange
 import com.h6ah4i.android.widget.advrecyclerview.draggable.annotation.DraggableItemStateFlags
 import player.phonograph.R
-import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.interfaces.CabHolder
 import player.phonograph.model.Song
+import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.util.ViewUtil
 
 /**
@@ -70,7 +70,7 @@ class PlayingQueueAdapter(
     }
 
     override fun onCheckCanStartDrag(holder: ViewHolder, position: Int, x: Int, y: Int): Boolean =
-        ViewUtil.hitTest(holder.imageText, x, y)
+        ViewUtil.hitTest(holder.imageText as View, x, y)
 
     override fun onGetItemDraggableRange(holder: ViewHolder, position: Int): ItemDraggableRange? = null
 
