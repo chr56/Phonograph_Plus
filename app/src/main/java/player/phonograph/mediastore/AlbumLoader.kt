@@ -7,6 +7,9 @@ package player.phonograph.mediastore
 import android.content.Context
 import android.provider.MediaStore.Audio.AudioColumns
 import android.util.ArrayMap
+import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.collect
 import player.phonograph.mediastore.SongLoader.getSongs
 import player.phonograph.mediastore.SongLoader.makeSongCursor
 import player.phonograph.mediastore.sort.SortRef
@@ -43,30 +46,54 @@ object AlbumLoader {
     fun splitIntoAlbums(songs: List<Song>?): List<Album> {
         if (songs == null) return ArrayList()
 
-        // AlbumID <-> List of song
-        val idMap: MutableMap<Long, MutableList<Song>> = ArrayMap()
-        for (song in songs) {
-            if (idMap[song.albumId] == null) {
-                // create new
-                idMap[song.albumId] = ArrayList<Song>(1).apply { add(song) }
-            } else {
-                // add to existed
-                idMap[song.albumId]!!.add(song)
+        val albums = CoroutineScope(Dispatchers.Default).async {
+            val innerCoroutineScope = CoroutineScope(Dispatchers.Default)
+
+            val flow = songs.asFlow()
+            var completed = false
+
+            // AlbumID <-> List of song
+            val table: MutableMap<Long, MutableList<Song>> = ArrayMap()
+
+            // AlbumID <-> albumName
+            val albumName: MutableMap<Long, String?> = ArrayMap()
+
+            innerCoroutineScope.launch {
+                delay(100)
+                try {
+                    flow.collect { song -> // check album
+                        if (table[song.albumId] == null) {
+                            // create new album
+                            albumName[song.albumId] = song.albumName
+                            table[song.albumId] = ArrayList<Song>(1).apply { add(song) }
+                        } else {
+                            // add to existed album
+                            table[song.albumId]!!.add(song)
+                        }
+                    }
+                } finally {
+                    completed = true
+                }
             }
+
+            while (!completed) yield() // wait until result is ready
+
+            // handle result
+            // todo: use flow
+            val result: MutableList<Album> = ArrayList(table.size)
+            table.forEach { (albumId, songList) ->
+                // create album & add
+                result.add(
+                    Album(albumId, albumName[albumId], songList)
+                )
+            }
+
+            return@async result
         }
 
-        // map to list
-        return idMap.map { entry ->
-            // create album from songs
-            Album(
-                id = entry.key,
-                // list of song
-                title = getAlbumTitle(entry.value),
-                songs = entry.value.apply {
-                    sortBy { it.trackNumber } // sort songs before create album
-                }
-            )
-        }.sortAll()
+        return runBlocking {
+            return@runBlocking albums.await().sortAll()
+        }
     }
 
     private fun getAlbumTitle(list: List<Song>): String? {
@@ -87,7 +114,7 @@ object AlbumLoader {
 
     private inline fun List<Album>.sort(
         revert: Boolean,
-        crossinline selector: (Album) -> Comparable<*>?
+        crossinline selector: (Album) -> Comparable<*>?,
     ): List<Album> {
         return if (revert) this.sortedWith(compareByDescending(selector))
         else this.sortedWith(compareBy(selector))
