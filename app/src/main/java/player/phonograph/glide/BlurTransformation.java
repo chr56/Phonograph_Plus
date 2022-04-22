@@ -71,7 +71,7 @@ public class BlurTransformation extends BitmapTransformation {
     protected Bitmap transform(@NonNull BitmapPool pool, @NonNull Bitmap toTransform, int outWidth, int outHeight) {
         int sampling;
         if (this.sampling == 0) {
-            sampling = ImageUtil.calculateInSampleSize(toTransform.getWidth(), toTransform.getHeight(), 100);
+            sampling = ImageUtil.INSTANCE.calculateInSampleSize(toTransform.getWidth(), toTransform.getHeight(), 100);
         } else {
             sampling = this.sampling;
         }

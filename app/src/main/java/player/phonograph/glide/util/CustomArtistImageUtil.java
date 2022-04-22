@@ -117,7 +117,7 @@ public class CustomArtistImageUtil {
                                 boolean succesful = false;
                                 try {
                                     OutputStream os = new BufferedOutputStream(new FileOutputStream(file));
-                                    succesful = ImageUtil.resizeBitmap(resource, 2048).compress(Bitmap.CompressFormat.JPEG, 100, os);
+                                    succesful = ImageUtil.INSTANCE.resizeBitmap(resource, 2048).compress(Bitmap.CompressFormat.JPEG, 100, os);
                                     os.close();
                                 } catch (IOException e) {
                                     Toast.makeText(App.getInstance(), e.toString(), Toast.LENGTH_LONG).show();

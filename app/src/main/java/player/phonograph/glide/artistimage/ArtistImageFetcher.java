@@ -111,7 +111,7 @@ public class ArtistImageFetcher implements DataFetcher<InputStream> {
                 int y = 0;
 
                 for (int i = 0; i < streams.size() && i < nbTiles; ++i) {
-                    final Bitmap bitmap1 = ImageUtil.resize(streams.get(i), resize, resize);
+                    final Bitmap bitmap1 = ImageUtil.INSTANCE.resize(streams.get(i), resize, resize);
                     canvas.drawBitmap(bitmap1, x, y, null);
                     x += resize;
 

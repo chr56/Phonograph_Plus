@@ -104,7 +104,10 @@ class AppWidgetBig : BaseAppWidget() {
                 .checkIgnoreMediaStore(appContext)
                 .asBitmap().build()
                 .into(object : SimpleTarget<Bitmap?>(widgetImageSize, widgetImageSize) {
-                    override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap?>?) {
+                    override fun onResourceReady(
+                        resource: Bitmap,
+                        transition: Transition<in Bitmap?>?
+                    ) {
                         update(resource)
                     }
 

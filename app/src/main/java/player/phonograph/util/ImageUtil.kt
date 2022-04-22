@@ -1,121 +1,116 @@
-package player.phonograph.util;
+package player.phonograph.util
 
-import android.content.Context;
-import android.content.res.Resources;
-import android.content.res.TypedArray;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.drawable.Drawable;
-import android.os.Build;
-import androidx.annotation.AttrRes;
-import androidx.annotation.ColorInt;
-import androidx.annotation.DrawableRes;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat;
-
-import java.io.InputStream;
-
-import util.mddesign.util.TintHelper;
+import android.content.Context
+import android.content.res.Resources
+import android.content.res.Resources.Theme
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.Canvas
+import android.graphics.drawable.Drawable
+import android.os.Build
+import androidx.annotation.AttrRes
+import androidx.annotation.ColorInt
+import androidx.annotation.DrawableRes
+import androidx.core.content.res.ResourcesCompat
+import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
+import java.io.InputStream
+import kotlin.math.roundToInt
+import util.mddesign.util.TintHelper
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
  */
-public class ImageUtil {
+object ImageUtil {
 
-    public static int calculateInSampleSize(int width, int height, int reqWidth) {
+    fun calculateInSampleSize(width: Int, height: Int, reqWidth: Int): Int {
         // setting reqWidth matching to desired 1:1 ratio and screen-size
-        if (width < height) {
-            reqWidth = (height / width) * reqWidth;
-        } else {
-            reqWidth = (width / height) * reqWidth;
-        }
-
-        int inSampleSize = 1;
-
-        if (height > reqWidth || width > reqWidth) {
-            final int halfHeight = height / 2;
-            final int halfWidth = width / 2;
+        val w: Int =
+            if (width < height) {
+                height / width * reqWidth
+            } else {
+                width / height * reqWidth
+            }
+        var inSampleSize = 1
+        if (height > w || width > w) {
+            val halfHeight = height / 2
+            val halfWidth = width / 2
 
             // Calculate the largest inSampleSize value that is a power of 2 and keeps both
             // height and width larger than the requested height and width.
-            while ((halfHeight / inSampleSize) > reqWidth
-                    && (halfWidth / inSampleSize) > reqWidth) {
-                inSampleSize *= 2;
+            while (halfHeight / inSampleSize > w &&
+                halfWidth / inSampleSize > w
+            ) {
+                inSampleSize *= 2
             }
         }
-
-        return inSampleSize;
+        return inSampleSize
     }
 
-    public static Bitmap resizeBitmap(@NonNull Bitmap src, int maxForSmallerSize) {
-        int width = src.getWidth();
-        int height = src.getHeight();
-
-        final int dstWidth;
-        final int dstHeight;
-
+    fun resizeBitmap(src: Bitmap, maxForSmallerSize: Int): Bitmap {
+        val width = src.width
+        val height = src.height
+        val dstWidth: Int
+        val dstHeight: Int
         if (width < height) {
             if (maxForSmallerSize >= width) {
-                return src;
+                return src
             }
-            float ratio = (float) height / width;
-            dstWidth = maxForSmallerSize;
-            dstHeight = Math.round(maxForSmallerSize * ratio);
+            val ratio = height.toFloat() / width
+            dstWidth = maxForSmallerSize
+            dstHeight = (maxForSmallerSize * ratio).roundToInt()
         } else {
             if (maxForSmallerSize >= height) {
-                return src;
+                return src
             }
-            float ratio = (float) width / height;
-            dstWidth = Math.round(maxForSmallerSize * ratio);
-            dstHeight = maxForSmallerSize;
+            val ratio = width.toFloat() / height
+            dstWidth = (maxForSmallerSize * ratio).roundToInt()
+            dstHeight = maxForSmallerSize
         }
-
-        return Bitmap.createScaledBitmap(src, dstWidth, dstHeight, false);
+        return Bitmap.createScaledBitmap(src, dstWidth, dstHeight, false)
     }
 
-    public static Bitmap createBitmap(Drawable drawable) {
-        return createBitmap(drawable, 1f);
+    @JvmOverloads
+    fun createBitmap(drawable: Drawable, sizeMultiplier: Float = 1f): Bitmap {
+        val bitmap = Bitmap.createBitmap(
+            (drawable.intrinsicWidth * sizeMultiplier).toInt(),
+            (drawable.intrinsicHeight * sizeMultiplier).toInt(),
+            Bitmap.Config.ARGB_8888
+        )
+        val c = Canvas(bitmap)
+        drawable.setBounds(0, 0, c.width, c.height)
+        drawable.draw(c)
+        return bitmap
     }
 
-    public static Bitmap createBitmap(Drawable drawable, float sizeMultiplier) {
-        Bitmap bitmap = Bitmap.createBitmap((int) (drawable.getIntrinsicWidth() * sizeMultiplier), (int) (drawable.getIntrinsicHeight() * sizeMultiplier), Bitmap.Config.ARGB_8888);
-        Canvas c = new Canvas(bitmap);
-        drawable.setBounds(0, 0, c.getWidth(), c.getHeight());
-        drawable.draw(c);
-        return bitmap;
+    fun getVectorDrawable(res: Resources, @DrawableRes resId: Int, theme: Theme?): Drawable {
+        return if (Build.VERSION.SDK_INT >= 21) {
+            ResourcesCompat.getDrawable(res, resId, theme)!!
+        } else VectorDrawableCompat.create(res, resId, theme)!!
     }
 
-    public static Drawable getVectorDrawable(@NonNull Resources res, @DrawableRes int resId, @Nullable Resources.Theme theme) {
-        if (Build.VERSION.SDK_INT >= 21) {
-            return res.getDrawable(resId, theme);
-        }
-        return VectorDrawableCompat.create(res, resId, theme);
+    fun getTintedVectorDrawable(
+        res: Resources,
+        @DrawableRes resId: Int,
+        theme: Theme?,
+        @ColorInt color: Int,
+    ): Drawable? =
+        TintHelper.createTintedDrawable(getVectorDrawable(res, resId, theme), color)
+
+    fun getTintedVectorDrawable(context: Context, @DrawableRes id: Int, @ColorInt color: Int): Drawable {
+        return TintHelper.createTintedDrawable(getVectorDrawable(context.resources, id, context.theme), color)!!
     }
 
-    public static Drawable getTintedVectorDrawable(@NonNull Resources res, @DrawableRes int resId, @Nullable Resources.Theme theme, @ColorInt int color) {
-        return TintHelper.createTintedDrawable(getVectorDrawable(res, resId, theme), color);
+    fun getVectorDrawable(context: Context, @DrawableRes id: Int): Drawable =
+        getVectorDrawable(context.resources, id, context.theme)
+
+    fun resolveDrawable(context: Context, @AttrRes drawableAttr: Int): Drawable {
+        val a = context.obtainStyledAttributes(intArrayOf(drawableAttr))
+        val drawable = a.getDrawable(0)
+        a.recycle()
+        return drawable!!
     }
 
-    public static Drawable getTintedVectorDrawable(@NonNull Context context, @DrawableRes int id, @ColorInt int color) {
-        return TintHelper.createTintedDrawable(getVectorDrawable(context.getResources(), id, context.getTheme()), color);
-    }
-
-    public static Drawable getVectorDrawable(@NonNull Context context, @DrawableRes int id) {
-        return getVectorDrawable(context.getResources(), id, context.getTheme());
-    }
-
-    public static Drawable resolveDrawable(@NonNull Context context, @AttrRes int drawableAttr) {
-        TypedArray a = context.obtainStyledAttributes(new int[]{drawableAttr});
-        Drawable drawable = a.getDrawable(0);
-        a.recycle();
-        return drawable;
-    }
-
-    public static Bitmap resize(InputStream stream, int scaledWidth, int scaledHeight) {
-        final Bitmap bitmap = BitmapFactory.decodeStream(stream);
-        return Bitmap.createScaledBitmap(bitmap, scaledWidth, scaledHeight, true);
-
+    fun resize(stream: InputStream?, scaledWidth: Int, scaledHeight: Int): Bitmap {
+        return Bitmap.createScaledBitmap(BitmapFactory.decodeStream(stream), scaledWidth, scaledHeight, true)
     }
 }

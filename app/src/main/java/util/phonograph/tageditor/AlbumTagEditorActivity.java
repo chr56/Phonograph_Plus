@@ -160,7 +160,7 @@ public class AlbumTagEditorActivity extends AbsTagEditorActivity implements Text
 
                                     @Override
                                     public void onResourceReady(@NonNull BitmapPaletteWrapper resource, @Nullable Transition<? super BitmapPaletteWrapper> transition) {
-                                        albumArtBitmap = ImageUtil.resizeBitmap(resource.getBitmap(), 2048);
+                                        albumArtBitmap = ImageUtil.INSTANCE.resizeBitmap(resource.getBitmap(), 2048);
                                         setImageBitmap(albumArtBitmap, PhonographColorUtil.getColor(resource.getPalette(), Util.resolveColor(AlbumTagEditorActivity.this, R.attr.defaultFooterColor)));
                                         deleteAlbumArt = false;
                                         dataChanged();
@@ -263,7 +263,7 @@ public class AlbumTagEditorActivity extends AbsTagEditorActivity implements Text
                     @Override
                     public void onResourceReady(@NonNull BitmapPaletteWrapper resource, @Nullable Transition<? super BitmapPaletteWrapper> transition) {
                         PhonographColorUtil.getColor(resource.getPalette(), Color.TRANSPARENT);
-                        albumArtBitmap = ImageUtil.resizeBitmap(resource.getBitmap(), 2048);
+                        albumArtBitmap = ImageUtil.INSTANCE.resizeBitmap(resource.getBitmap(), 2048);
                         setImageBitmap(albumArtBitmap, PhonographColorUtil.getColor(resource.getPalette(), Util.resolveColor(AlbumTagEditorActivity.this, R.attr.defaultFooterColor)));
                         deleteAlbumArt = false;
                         dataChanged();
