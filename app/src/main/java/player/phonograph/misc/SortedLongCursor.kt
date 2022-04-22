@@ -13,43 +13,43 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-package player.phonograph.loader;
+package player.phonograph.misc
 
-import android.database.AbstractCursor;
-import android.database.Cursor;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
+import android.database.AbstractCursor
+import android.database.Cursor
 
 /**
  * This cursor basically wraps a song cursor and is given a list of the order of the ids of the
  * contents of the cursor. It wraps the Cursor and simulates the internal cursor being sorted
  * by moving the point to the appropriate spot
  */
-public class SortedLongCursor extends AbstractCursor {
-    // cursor to wrap
-    private final Cursor mCursor;
-    // the map of external indices to internal indices
-    private List<Integer> mOrderedPositions;
-    // this contains the ids that weren't found in the underlying cursor
-    private List<Long> mMissingIds;
-    // this contains the mapped cursor positions and afterwards the extra ids that weren't found
-    private HashMap<Long, Integer> mMapCursorPositions;
+class SortedLongCursor : AbstractCursor {
 
     /**
      * @param cursor     to wrap
      * @param order      the list of unique ids in sorted order to display
      * @param columnName the column name of the id to look up in the internal cursor
      */
-    public SortedLongCursor(final Cursor cursor, final long[] order, final String columnName) {
-
-        mCursor = cursor;
-        mMissingIds = buildCursorPositionMapping(order, columnName);
+    constructor(cursor: Cursor, order: LongArray?, columnName: String) : super() {
+        this.mCursor = cursor
+        missingIds = buildCursorPositionMapping(order, columnName)
     }
+
+    // cursor to wrap
+    private val mCursor: Cursor
+
+    // the map of external indices to internal indices
+    private var mOrderedPositions: MutableList<Int?>? = null
+
+    // this contains the ids that weren't found in the underlying cursor
+    val missingIds: List<Long>
+        /**
+         * @return the list of ids that weren't found in the underlying cursor
+         */
+        get
+
+    // this contains the mapped cursor positions and afterwards the extra ids that weren't found
+    private var mMapCursorPositions: HashMap<Long, Int>? = null
 
     /**
      * This function populates mOrderedPositions with the cursor positions in the order based
@@ -58,113 +58,69 @@ public class SortedLongCursor extends AbstractCursor {
      * @param order the target order of the internal cursor
      * @return returns the ids that aren't found in the underlying cursor
      */
-    @NonNull
-    private List<Long> buildCursorPositionMapping(@Nullable final long[] order, final String columnName) {
-        List<Long> missingIds = new ArrayList<>();
-
-        mOrderedPositions = new ArrayList<>(mCursor.getCount());
-
-        mMapCursorPositions = new HashMap<>(mCursor.getCount());
-        final int idPosition = mCursor.getColumnIndex(columnName);
-
+    private fun buildCursorPositionMapping(order: LongArray?, columnName: String): List<Long> {
+        val missingIds: MutableList<Long> = ArrayList()
+        mOrderedPositions = ArrayList(mCursor.count)
+        mMapCursorPositions = HashMap(mCursor.count)
+        val idPosition = mCursor.getColumnIndex(columnName)
         if (mCursor.moveToFirst()) {
             // first figure out where each of the ids are in the cursor
             do {
-                mMapCursorPositions.put(mCursor.getLong(idPosition), mCursor.getPosition());
-            } while (mCursor.moveToNext());
+                mMapCursorPositions!![mCursor.getLong(idPosition)] = mCursor.position
+            } while (mCursor.moveToNext())
 
             // now create the ordered positions to map to the internal cursor given the
             // external sort order
-            for (int i = 0; order != null && i < order.length; i++) {
-                final long id = order[i];
-                if (mMapCursorPositions.containsKey(id)) {
-                    mOrderedPositions.add(mMapCursorPositions.get(id));
-                    mMapCursorPositions.remove(id);
+            var i = 0
+            while (order != null && i < order.size) {
+                val id = order[i]
+                if (mMapCursorPositions!!.containsKey(id)) {
+                    mOrderedPositions!!.add(mMapCursorPositions!![id])
+                    mMapCursorPositions!!.remove(id)
                 } else {
-                    missingIds.add(id);
+                    missingIds.add(id)
                 }
+                i++
             }
-
-            mCursor.moveToFirst();
+            mCursor.moveToFirst()
         }
-
-        return missingIds;
-    }
-
-    /**
-     * @return the list of ids that weren't found in the underlying cursor
-     */
-    public List<Long> getMissingIds() {
-        return mMissingIds;
+        return missingIds
     }
 
     /**
      * @return the list of ids that were in the underlying cursor but not part of the ordered list
      */
-    @NonNull
-    public Collection<Long> getExtraIds() {
-        return mMapCursorPositions.keySet();
+    val extraIds: Collection<Long>
+        get() = mMapCursorPositions!!.keys
+
+    override fun close() {
+        mCursor.close()
+        super.close()
     }
 
-    @Override
-    public void close() {
-        mCursor.close();
+    override fun getCount(): Int = mOrderedPositions!!.size
 
-        super.close();
-    }
+    override fun getColumnNames(): Array<String> = mCursor.columnNames
 
-    @Override
-    public int getCount() {
-        return mOrderedPositions.size();
-    }
+    override fun getString(column: Int): String = mCursor.getString(column)
 
-    @Override
-    public String[] getColumnNames() {
-        return mCursor.getColumnNames();
-    }
+    override fun getShort(column: Int): Short = mCursor.getShort(column)
 
-    @Override
-    public String getString(int column) {
-        return mCursor.getString(column);
-    }
+    override fun getInt(column: Int): Int = mCursor.getInt(column)
 
-    @Override
-    public short getShort(int column) {
-        return mCursor.getShort(column);
-    }
+    override fun getLong(column: Int): Long = mCursor.getLong(column)
 
-    @Override
-    public int getInt(int column) {
-        return mCursor.getInt(column);
-    }
+    override fun getFloat(column: Int): Float = mCursor.getFloat(column)
 
-    @Override
-    public long getLong(int column) {
-        return mCursor.getLong(column);
-    }
+    override fun getDouble(column: Int): Double = mCursor.getDouble(column)
 
-    @Override
-    public float getFloat(int column) {
-        return mCursor.getFloat(column);
-    }
+    override fun isNull(column: Int): Boolean = mCursor.isNull(column)
 
-    @Override
-    public double getDouble(int column) {
-        return mCursor.getDouble(column);
-    }
-
-    @Override
-    public boolean isNull(int column) {
-        return mCursor.isNull(column);
-    }
-
-    @Override
-    public boolean onMove(int oldPosition, int newPosition) {
-        if (newPosition >= 0 && newPosition < getCount()) {
-            mCursor.moveToPosition(mOrderedPositions.get(newPosition));
-            return true;
+    override fun onMove(oldPosition: Int, newPosition: Int): Boolean {
+        if (newPosition in 0 until count) {
+            mCursor.moveToPosition(mOrderedPositions!![newPosition]!!)
+            return true
         }
-
-        return false;
+        return false
     }
 }

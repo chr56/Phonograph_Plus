@@ -24,6 +24,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import player.phonograph.mediastore.SongLoader;
+import player.phonograph.misc.SortedLongCursor;
 import player.phonograph.model.Song;
 import player.phonograph.provider.HistoryStore;
 import player.phonograph.provider.SongPlayCountStore;
