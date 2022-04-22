@@ -23,7 +23,7 @@ import java.lang.IllegalStateException
 import java.util.*
 import kotlin.collections.ArrayList
 
-class FolderFragmentViewModel : ViewModel() {
+class FoldersFragmentViewModel : ViewModel() {
     var isRecyclerViewPrepared: Boolean = false
 
     var listPathsJob: Job? = null

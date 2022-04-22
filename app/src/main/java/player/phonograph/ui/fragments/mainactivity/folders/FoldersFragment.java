@@ -74,7 +74,7 @@ public class FoldersFragment extends AbsMainActivityFragment implements MainActi
 
     private RecyclerView.AdapterDataObserver dataObserver;
 
-    private FolderFragmentViewModel model;
+    private FoldersFragmentViewModel model;
 
     public FoldersFragment() {
     }
@@ -128,7 +128,7 @@ public class FoldersFragment extends AbsMainActivityFragment implements MainActi
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        model = new ViewModelProvider(this).get(FolderFragmentViewModel.class);
+        model = new ViewModelProvider(this).get(FoldersFragmentViewModel.class);
     }
 
     @Override
