@@ -66,7 +66,6 @@ class HomeTabConfigDialog : DialogFragment() {
 
     companion object {
         private const val TAG = "HomeTabConfigDialog"
-        @JvmStatic
         fun newInstance(): HomeTabConfigDialog = HomeTabConfigDialog()
     }
 }

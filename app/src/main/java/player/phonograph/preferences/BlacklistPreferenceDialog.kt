@@ -67,7 +67,6 @@ class BlacklistPreferenceDialog : DialogFragment() {
     }
 
     companion object {
-        @JvmStatic
         fun newInstance(): BlacklistPreferenceDialog {
             return BlacklistPreferenceDialog()
         }

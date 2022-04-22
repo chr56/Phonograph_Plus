@@ -28,7 +28,6 @@ import util.mdcolor.pref.ThemeColor
  * @author Karim Abou Zeid (kabouzeid)
  */
 class NowPlayingScreenPreferenceDialog : DialogFragment(), OnPageChangeListener {
-//    private var whichButtonClicked: DialogAction? = null
     private var viewPagerPosition = 0
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         @SuppressLint("InflateParams") val view = LayoutInflater.from(context).inflate(R.layout.preference_dialog_now_playing_screen, null)
@@ -46,24 +45,12 @@ class NowPlayingScreenPreferenceDialog : DialogFragment(), OnPageChangeListener 
                 Setting.instance.nowPlayingScreen = NowPlayingScreen.values()[viewPagerPosition]
             }
             .negativeButton(android.R.string.cancel)
-//                .onAny(this)
             .customView(view = view, dialogWrapContent = false)
         // set button color
         dialog.getActionButton(WhichButton.POSITIVE).updateTextColor(ThemeColor.accentColor(requireActivity()))
         dialog.getActionButton(WhichButton.NEGATIVE).updateTextColor(ThemeColor.accentColor(requireActivity()))
         return dialog
     }
-
-//    fun onClick(dialog: MaterialDialog, which: DialogAction) {
-//        whichButtonClicked = which
-//    }
-
-//    override fun onDismiss(dialog: DialogInterface) {
-//        super.onDismiss(dialog)
-//        if (whichButtonClicked === DialogAction.POSITIVE) {
-//            Setting.instance.nowPlayingScreen = NowPlayingScreen.values()[viewPagerPosition]
-//        }
-//    }
 
     override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
     override fun onPageSelected(position: Int) {
@@ -96,13 +83,12 @@ class NowPlayingScreenPreferenceDialog : DialogFragment(), OnPageChangeListener 
             return view === `object`
         }
 
-        override fun getPageTitle(position: Int): CharSequence? {
+        override fun getPageTitle(position: Int): CharSequence {
             return context!!.getString(NowPlayingScreen.values()[position].titleRes)
         }
     }
 
     companion object {
-        @JvmStatic
         fun newInstance(): NowPlayingScreenPreferenceDialog {
             return NowPlayingScreenPreferenceDialog()
         }
