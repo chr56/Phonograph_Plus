@@ -11,15 +11,15 @@ import player.phonograph.R
 import player.phonograph.dialogs.AddToPlaylistDialog
 import player.phonograph.dialogs.DeleteSongsDialog
 import player.phonograph.dialogs.SongDetailDialog
-import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.interfaces.PaletteColorHolder
 import player.phonograph.model.Song
-import util.phonograph.tageditor.AbsTagEditorActivity
-import util.phonograph.tageditor.SongTagEditorActivity
+import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.util.BlacklistUtil
 import player.phonograph.util.MusicUtil
 import player.phonograph.util.NavigationUtil
 import player.phonograph.util.RingtoneManager
+import util.phonograph.tageditor.AbsTagEditorActivity
+import util.phonograph.tageditor.SongTagEditorActivity
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
@@ -76,8 +76,7 @@ object SongMenuHelper {
                 if (RingtoneManager.requiresDialog(activity)) {
                     RingtoneManager.showDialog(activity)
                 } else {
-                    val ringtoneManager = RingtoneManager()
-                    ringtoneManager.setRingtone(activity, song.id)
+                    RingtoneManager.setRingtone(activity, song.id)
                 }
                 return true
             }
@@ -99,7 +98,10 @@ object SongMenuHelper {
 
     const val menuResDefault = R.menu.menu_item_song
 
-    abstract class ClickMenuListener(private val activity: AppCompatActivity, @MenuRes menuRes: Int?) : View.OnClickListener, PopupMenu.OnMenuItemClickListener {
+    abstract class ClickMenuListener(
+        private val activity: AppCompatActivity,
+        @MenuRes menuRes: Int?
+    ) : View.OnClickListener, PopupMenu.OnMenuItemClickListener {
 
         abstract val song: Song
         protected open var realRes = menuRes ?: menuResDefault
