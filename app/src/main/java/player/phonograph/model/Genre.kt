@@ -64,7 +64,7 @@ class Genre : Parcelable, Displayable {
     @Suppress("UNCHECKED_CAST")
     override fun multiMenuHandler(): (AppCompatActivity, List<Displayable>, Int) -> Boolean =
         { appCompatActivity: AppCompatActivity?, list: List<Displayable>?, integer: Int? ->
-            handleMenuClick(appCompatActivity!!, MusicUtil.getGenreSongList(list as List<Genre>?), integer!!)
+            handleMenuClick(appCompatActivity!!, MusicUtil.getGenreSongList(list as List<Genre>), integer!!)
             true
         }
 

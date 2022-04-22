@@ -114,7 +114,7 @@ public class SongGlideRequest {
         if (ignoreMediaStore) {
             return requestManager.as(type).load(new AudioFileCover(song.data));
         } else {
-            return requestManager.as(type).load(MusicUtil.getMediaStoreAlbumCoverUri(song.albumId));
+            return requestManager.as(type).load(MusicUtil.INSTANCE.getMediaStoreAlbumCoverUri(song.albumId));
         }
     }
 

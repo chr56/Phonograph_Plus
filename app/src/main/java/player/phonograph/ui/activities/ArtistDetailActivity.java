@@ -443,9 +443,9 @@ public class ArtistDetailActivity extends AbsSlidingMusicPanelActivity implement
         }
 
         getSupportActionBar().setTitle(artist.getName());
-        viewBinding.songCountText.setText(MusicUtil.getSongCountString(this, artist.getSongCount()));
-        viewBinding.albumCountText.setText(MusicUtil.getAlbumCountString(this, artist.getAlbumCount()));
-        viewBinding.durationText.setText(MusicUtil.getReadableDurationString(MusicUtil.getTotalDuration(this, artist.getSongs())));
+        viewBinding.songCountText.setText(MusicUtil.INSTANCE.getSongCountString(this, artist.getSongCount()));
+        viewBinding.albumCountText.setText(MusicUtil.INSTANCE.getAlbumCountString(this, artist.getAlbumCount()));
+        viewBinding.durationText.setText(MusicUtil.INSTANCE.getReadableDurationString(MusicUtil.INSTANCE.getTotalDuration(this, artist.getSongs())));
 
         //songAdapter.swapDataSet(artist.getSongs());
         //albumAdapter.swapDataSet(artist.albums);

@@ -75,7 +75,7 @@ class Album : Parcelable, Displayable {
     override fun multiMenuHandler(): (AppCompatActivity, List<Displayable>, Int) -> Boolean =
         { appCompatActivity: AppCompatActivity?, list: List<Displayable>?, integer: Int? ->
             handleMenuClick(
-                appCompatActivity!!, MusicUtil.getAlbumSongList(list as List<Album>?), integer!!
+                appCompatActivity!!, MusicUtil.getAlbumSongList(list as List<Album>), integer!!
             )
         } // todo more variety
 

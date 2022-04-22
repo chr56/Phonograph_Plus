@@ -309,7 +309,7 @@ public abstract class AbsTagEditorActivity extends ToolbarActivity {
                 File albumArtFile = null;
                 if (info.artworkInfo != null && info.artworkInfo.artwork != null) {
                     try {
-                        albumArtFile = MusicUtil.createAlbumArtFile().getCanonicalFile();
+                        albumArtFile = MusicUtil.INSTANCE.createAlbumArtFile().getCanonicalFile();
                         info.artworkInfo.artwork.compress(Bitmap.CompressFormat.PNG, 0, new FileOutputStream(albumArtFile));
                         artwork = ArtworkFactory.createArtworkFromFile(albumArtFile);
                     } catch (IOException e) {
@@ -356,9 +356,9 @@ public abstract class AbsTagEditorActivity extends ToolbarActivity {
                 Context context = getContext();
                 if (context != null) {
                     if (wroteArtwork) {
-                        MusicUtil.insertAlbumArt(context, info.artworkInfo.albumId, albumArtFile.getPath());
+                        MusicUtil.INSTANCE.insertAlbumArt(context, info.artworkInfo.albumId, albumArtFile.getPath());
                     } else if (deletedArtwork) {
-                        MusicUtil.deleteAlbumArt(context, info.artworkInfo.albumId);
+                        MusicUtil.INSTANCE.deleteAlbumArt(context, info.artworkInfo.albumId);
                     }
                 }
 

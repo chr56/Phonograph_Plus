@@ -5,12 +5,12 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.DialogFragment
-import util.mdcolor.pref.ThemeColor
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.list.listItemsSingleChoice
 import player.phonograph.R
 import player.phonograph.model.Song
 import player.phonograph.util.MusicUtil
+import util.mdcolor.pref.ThemeColor
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
@@ -25,7 +25,7 @@ class SongShareDialog : DialogFragment() {
             // getString(R.string.the_audio_file), "\u201C" + currentlyListening + "\u201D"
             .listItemsSingleChoice(items = options, checkedColor = ThemeColor.accentColor(activity as Context)) { _: MaterialDialog, i: Int, _: CharSequence ->
                 when (i) {
-                    0 -> startActivity(Intent.createChooser(MusicUtil.createShareSongFileIntent(song, context), null))
+                    0 -> startActivity(Intent.createChooser(MusicUtil.createShareSongFileIntent(song, requireContext()), null))
                     1 -> requireActivity().startActivity(
                         Intent.createChooser(
                             Intent()

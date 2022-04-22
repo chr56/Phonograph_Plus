@@ -180,7 +180,7 @@ public class MusicService extends Service implements SharedPreferences.OnSharedP
 
 
     private static String getTrackUri(@NonNull Song song) {
-        return MusicUtil.getSongFileUri(song.id).toString();
+        return MusicUtil.INSTANCE.getSongFileUri(song.id).toString();
     }
 
     @Override

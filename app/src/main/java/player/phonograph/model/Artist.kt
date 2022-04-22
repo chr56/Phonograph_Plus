@@ -69,12 +69,12 @@ class Artist : Parcelable, Displayable {
     override fun multiMenuHandler(): ((AppCompatActivity, List<Displayable>, Int) -> Boolean) =
         { appCompatActivity: AppCompatActivity?, list: List<Displayable>?, integer: Int? ->
             handleMenuClick(
-                appCompatActivity!!, MusicUtil.getArtistSongList(list as List<Artist>?), integer!!
+                appCompatActivity!!, MusicUtil.getArtistSongList(list as List<Artist>), integer!!
             )
         } // todo more variety
 
     override fun clickHandler(): (FragmentActivity, Displayable, List<Displayable>?) -> Unit =
-        { fragmentActivity: FragmentActivity?, displayable: Displayable, queue: List<Displayable>? ->
+        { fragmentActivity: FragmentActivity?, displayable: Displayable, _: List<Displayable>? ->
             NavigationUtil.goToArtist(
                 fragmentActivity!!, (displayable as Artist).id
             ) // todo animate
