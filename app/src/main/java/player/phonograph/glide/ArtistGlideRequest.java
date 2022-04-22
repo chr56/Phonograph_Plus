@@ -24,11 +24,11 @@ import player.phonograph.R;
 import player.phonograph.glide.artistimage.AlbumCover;
 import player.phonograph.glide.artistimage.ArtistImage;
 import player.phonograph.glide.palette.BitmapPaletteWrapper;
+import player.phonograph.glide.util.ArtistSignatureUtil;
+import player.phonograph.glide.util.CustomArtistImageUtil;
 import player.phonograph.model.Album;
 import player.phonograph.model.Artist;
 import player.phonograph.model.Song;
-import player.phonograph.util.ArtistSignatureUtil;
-import player.phonograph.util.CustomArtistImageUtil;
 
 /**
  * @author Karim Abou Zeid (kabouzeid)

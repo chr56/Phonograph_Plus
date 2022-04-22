@@ -50,7 +50,7 @@ import player.phonograph.model.Song;
 import player.phonograph.service.MusicPlayerRemote;
 import player.phonograph.settings.Setting;
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity;
-import player.phonograph.util.CustomArtistImageUtil;
+import player.phonograph.glide.util.CustomArtistImageUtil;
 import player.phonograph.util.MusicUtil;
 import player.phonograph.util.NavigationUtil;
 import player.phonograph.util.PhonographColorUtil;

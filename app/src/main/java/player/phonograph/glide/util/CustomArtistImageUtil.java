@@ -1,4 +1,8 @@
-package player.phonograph.util;
+/*
+ * Copyright (c) 2022 chr_56 & Abou Zeid (kabouzeid) (original author)
+ */
+
+package player.phonograph.glide.util;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -32,6 +36,7 @@ import java.util.Locale;
 import player.phonograph.App;
 import player.phonograph.glide.SongGlideRequest;
 import player.phonograph.model.Artist;
+import player.phonograph.util.ImageUtil;
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
