@@ -15,6 +15,8 @@ import android.widget.Toast
 import androidx.drawerlayout.widget.DrawerLayout
 import com.bumptech.glide.Glide
 import com.sothree.slidinguppanel.SlidingUpPanelLayout
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import legacy.phonograph.JunkCleaner
 import player.phonograph.*
 import player.phonograph.Updater.checkUpdate
@@ -24,14 +26,16 @@ import player.phonograph.dialogs.ChangelogDialog.Companion.setChangelogRead
 import player.phonograph.dialogs.ScanMediaFolderDialog
 import player.phonograph.dialogs.UpgradeDialog
 import player.phonograph.glide.SongGlideRequest
-import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.helper.SearchQueryHelper
 import player.phonograph.mediastore.AlbumLoader
 import player.phonograph.mediastore.ArtistLoader
 import player.phonograph.mediastore.PlaylistSongLoader
 import player.phonograph.mediastore.SongLoader
+import player.phonograph.misc.SAFCallbackHandlerActivity
+import player.phonograph.misc.SafLauncher
 import player.phonograph.model.Song
 import player.phonograph.notification.UpgradeNotification
+import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.MusicService
 import player.phonograph.settings.Setting
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
@@ -40,8 +44,6 @@ import player.phonograph.ui.fragments.mainactivity.AbsMainActivityFragment
 import player.phonograph.ui.fragments.mainactivity.folders.FoldersFragment
 import player.phonograph.ui.fragments.mainactivity.home.HomeFragment
 import player.phonograph.util.MusicUtil
-import player.phonograph.misc.SAFCallbackHandlerActivity
-import player.phonograph.misc.SafLauncher
 import util.mdcolor.pref.ThemeColor
 import util.mddesign.util.NavigationViewUtil
 import util.mddesign.util.Util as MDthemerUtil
@@ -352,7 +354,7 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
             val currentVersion = pInfo.versionCode
             if (currentVersion != Setting.instance.lastChangeLogVersion) {
                 create().show(supportFragmentManager, "CHANGE_LOG_DIALOG")
-                JunkCleaner(App.instance).clear(currentVersion)
+                JunkCleaner(App.instance).clear(currentVersion, CoroutineScope(Dispatchers.IO))
             }
         } catch (e: PackageManager.NameNotFoundException) {
             e.printStackTrace()

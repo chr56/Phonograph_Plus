@@ -326,9 +326,6 @@ class Setting(context: Context) {
         // unused & deprecated
         const val FORCE_SQUARE_ALBUM_COVER = "force_square_album_art"
 
-        @Deprecated("removed since version code 101")
-        const val LIBRARY_CATEGORIES = "library_categories"
-
         //
         // Singleton
         //
@@ -341,14 +338,6 @@ class Setting(context: Context) {
 
         @JvmStatic
         fun instance(): Setting = instance
-
-        /*
-        @JvmStatic
-        fun edit(): Setting {
-            if (singleton == null) singleton = Setting(App.instance)
-            return singleton!!
-        }
-        */
 
         @JvmStatic
         fun isAllowedToDownloadMetadata(context: Context): Boolean {
