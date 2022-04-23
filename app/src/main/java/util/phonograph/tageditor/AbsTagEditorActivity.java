@@ -390,7 +390,6 @@ public abstract class AbsTagEditorActivity extends ToolbarActivity {
         protected Dialog createDialog(@NonNull Context context) {
             MaterialDialog dialog = new MaterialDialog(context, MaterialDialog.getDEFAULT_BEHAVIOR())
                     .title(R.string.saving_changes, null)
-//                    .progress(false, 0)//TODO
                     .cancelable(false);
             //set button color
             DialogActionExtKt.getActionButton(dialog, WhichButton.POSITIVE).updateTextColor(ThemeColor.accentColor(context));
@@ -400,8 +399,6 @@ public abstract class AbsTagEditorActivity extends ToolbarActivity {
         @Override
         protected void onProgressUpdate(@NonNull Dialog dialog, Integer... values) {
             super.onProgressUpdate(dialog, values);
-//            ((MaterialDialog) dialog).setMaxProgress(values[1]);
-//            ((MaterialDialog) dialog).setProgress(values[0]);Todo
         }
 
         public static class LoadingInfo {
