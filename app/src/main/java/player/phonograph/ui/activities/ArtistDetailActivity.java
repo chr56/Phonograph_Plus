@@ -42,6 +42,7 @@ import player.phonograph.dialogs.AddToPlaylistDialog;
 import player.phonograph.dialogs.SleepTimerDialog;
 import player.phonograph.glide.ArtistGlideRequest;
 import player.phonograph.glide.PhonographColoredTarget;
+import player.phonograph.glide.util.CustomArtistImageUtilKt;
 import player.phonograph.interfaces.CabHolder;
 import player.phonograph.interfaces.PaletteColorHolder;
 import player.phonograph.misc.SimpleObservableScrollViewCallbacks;
@@ -381,7 +382,7 @@ public class ArtistDetailActivity extends AbsSlidingMusicPanelActivity implement
             return true;
         } else if (id == R.id.action_reset_artist_image) {
             Toast.makeText(ArtistDetailActivity.this, getResources().getString(R.string.updating), Toast.LENGTH_SHORT).show();
-            CustomArtistImageUtil.getInstance(ArtistDetailActivity.this).resetCustomArtistImage(getArtist());
+            CustomArtistImageUtilKt.INSTANCE.resetCustomArtistImage(getArtist());
             return true;
         } else if (id == R.id.action_colored_footers) {
             item.setChecked(!item.isChecked());
