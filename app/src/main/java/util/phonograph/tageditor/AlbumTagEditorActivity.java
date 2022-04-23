@@ -97,15 +97,15 @@ public class AlbumTagEditorActivity extends AbsTagEditorActivity implements Text
 
 
     private void fillViewsWithFileTags() {
-        albumTitle.setText(getAlbumTitle());
-        albumArtist.setText(getAlbumArtistName());
-        genre.setText(getGenreName());
-        year.setText(getSongYear());
+        albumTitle.setText(model.getAlbumTitle());
+        albumArtist.setText(model.getAlbumArtistName());
+        genre.setText(model.getGenreName());
+        year.setText(model.getSongYear());
     }
 
     @Override
     protected void loadCurrentImage() {
-        Bitmap bitmap = getAlbumArt();
+        Bitmap bitmap = model.getAlbumArt();
         if (bitmap != null) {
             setImageBitmap(
                     bitmap,
@@ -137,9 +137,6 @@ public class AlbumTagEditorActivity extends AbsTagEditorActivity implements Text
                                 .listener(new RequestListener<BitmapPaletteWrapper>() {
                                     @Override
                                     public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<BitmapPaletteWrapper> target, boolean isFirstResource) {
-//                                        if (e != null) {
-//                                            e.printStackTrace();
-//                                        }
                                         Log.w(TAG, "Fail to load image cover:");
                                         Log.i(TAG, "   Album      :" + albumTitleStr);
                                         Log.i(TAG, "   AlbumArtist:" + albumArtistNameStr);

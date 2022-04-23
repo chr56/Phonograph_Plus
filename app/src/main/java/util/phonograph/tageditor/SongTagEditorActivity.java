@@ -73,13 +73,13 @@ public class SongTagEditorActivity extends AbsTagEditorActivity implements TextW
     }
 
     private void fillViewsWithFileTags() {
-        songTitle.setText(getSongTitle());
-        albumTitle.setText(getAlbumTitle());
-        artist.setText(getArtistName());
-        genre.setText(getGenreName());
-        year.setText(getSongYear());
-        trackNumber.setText(getTrackNumber());
-        lyrics.setText(getLyrics());
+        songTitle.setText(model.getSongTitle());
+        albumTitle.setText(model.getAlbumTitle());
+        artist.setText(model.getArtistName());
+        genre.setText(model.getGenreName());
+        year.setText(model.getSongYear());
+        trackNumber.setText(model.getTrackNumber());
+        lyrics.setText(model.getLyrics());
     }
 
     @Override
