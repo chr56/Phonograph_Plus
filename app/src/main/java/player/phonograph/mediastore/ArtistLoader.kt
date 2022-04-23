@@ -7,15 +7,16 @@ package player.phonograph.mediastore
 import android.content.Context
 import android.provider.MediaStore.Audio.AudioColumns
 import android.util.ArrayMap
+import android.util.Log
 import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.asFlow
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.*
 import player.phonograph.mediastore.SongLoader.getSongs
 import player.phonograph.mediastore.SongLoader.makeSongCursor
 import player.phonograph.mediastore.sort.SortRef
 import player.phonograph.model.Album
 import player.phonograph.model.Artist
 import player.phonograph.model.Song
+import player.phonograph.notification.ErrorNotification
 import player.phonograph.settings.Setting
 
 /**
@@ -50,80 +51,79 @@ object ArtistLoader {
 
         val artists = CoroutineScope(Dispatchers.Default).async {
 
-            val innerCoroutineScope = CoroutineScope(Dispatchers.Default)
-
-            val flow = songs.asFlow()
             var completed = false
+
+            val flow = flow {
+                for (song in songs) emit(song)
+            }.catch { e ->
+                Log.e("Loader", e.message.orEmpty())
+                ErrorNotification.postErrorNotification(e, "Fail to load albums")
+            }
 
             // artistID <-> List of songs which are grouped by song
             val table: MutableMap<Long, MutableMap<Long, MutableList<Song>>> = ArrayMap()
 
             // artistID <-> artistName
-            val artistName: MutableMap<Long, String?> = ArrayMap()
+            val artistNames: MutableMap<Long, String?> = ArrayMap()
             // albumID <-> albumName
-            val albumName: MutableMap<Long, String?> = ArrayMap()
+            val albumNames: MutableMap<Long, String?> = ArrayMap()
 
-            // process data
-            innerCoroutineScope.launch {
-                delay(100)
-                try {
-                    flow.collect { song ->
-                        // check artist
-                        if (table[song.artistId] == null) {
-                            // create new artist
-                            artistName[song.artistId] = song.artistName
-                            table[song.artistId] = ArrayMap()
-                            // check album
-                            if (table[song.artistId]!![song.albumId] == null) {
-                                // create new album
-                                albumName[song.albumId] = song.albumName
-                                table[song.artistId]!![song.albumId] = ArrayList<Song>(1).apply { add(song) }
-                            } else {
-                                // add to existed album
-                                table[song.artistId]!![song.albumId]!!.add(song)
-                            }
-                            //
+            flow.onCompletion { completed = true }
+                .collect { song -> // check artist
+                    if (table[song.artistId] == null) {
+                        // create new artist
+                        artistNames[song.artistId] = song.artistName
+                        table[song.artistId] = ArrayMap()
+                        // check album
+                        if (table[song.artistId]!![song.albumId] == null) {
+                            // create new album
+                            albumNames[song.albumId] = song.albumName
+                            table[song.artistId]!![song.albumId] = ArrayList<Song>(1).apply { add(song) }
                         } else {
-                            // add to existed artist
-                            // (no ops)
-                            // check album
-                            if (table[song.artistId]!![song.albumId] == null) {
-                                // create new album
-                                albumName[song.albumId] = song.albumName
-                                table[song.artistId]!![song.albumId] = ArrayList<Song>(1).apply { add(song) }
-                            } else {
-                                // add to existed album
-                                table[song.artistId]!![song.albumId]!!.add(song)
-                            }
-                            //
+                            // add to existed album
+                            table[song.artistId]!![song.albumId]!!.add(song)
                         }
+                        //
+                    } else {
+                        // add to existed artist
+                        // (no ops)
+                        // check album
+                        if (table[song.artistId]!![song.albumId] == null) {
+                            // create new album
+                            albumNames[song.albumId] = song.albumName
+                            table[song.artistId]!![song.albumId] = ArrayList<Song>(1).apply { add(song) }
+                        } else {
+                            // add to existed album
+                            table[song.artistId]!![song.albumId]!!.add(song)
+                        }
+                        //
                     }
-                } finally {
-                    completed = true
                 }
-            }
 
             while (!completed) yield() // wait until result is ready
 
             // handle result
-            // todo: use flow
-            val result: MutableList<Artist> = ArrayList(table.size)
-            table.forEach { (artistId, albumMap) ->
-                // create album
-                val albums = albumMap
-                    .map { (albumId, songList) ->
-                        Album(albumId, albumName[albumId], songList)
+            return@async flow {
+                for ((id, map) in table) {
+                    emit(Pair(id, map))
+                }
+            }.map { (artistId, map) ->
+                val albumList = flow {
+                    for ((id, list) in map) {
+                        emit(Pair(id, list))
                     }
+                }.map { (id, list) ->
+                    Album(id, albumNames[id], list)
+                }.catch { e ->
+                    Log.e("Loader", e.message.orEmpty())
+                    ErrorNotification.postErrorNotification(e, "Fail to load albums")
+                }.toList()
 
-                // create artist & add
-                result.add(
-                    Artist(
-                        artistId, artistName[artistId], albums
-                    )
-                )
-            }
-
-            return@async result
+                Artist(artistId, artistNames[artistId], albumList)
+            }.catch { e ->
+                Log.e("Loader", e.message.orEmpty())
+                ErrorNotification.postErrorNotification(e, "Fail to load albums")
+            }.toList()
         }
 
         return runBlocking {
@@ -143,7 +143,7 @@ object ArtistLoader {
 
     private inline fun List<Artist>.sort(
         revert: Boolean,
-        crossinline selector: (Artist) -> Comparable<*>?
+        crossinline selector: (Artist) -> Comparable<*>?,
     ): List<Artist> {
         return if (revert) this.sortedWith(compareByDescending(selector))
         else this.sortedWith(compareBy(selector))
