@@ -116,8 +116,8 @@ class QueueManager {
             val restoredOriginalQueue = MusicPlaybackQueueStore.getInstance(context).savedOriginalPlayingQueue
             val restoredPosition = PreferenceManager.getDefaultSharedPreferences(context).getInt(PREF_POSITION, -1)
             if (restoredQueue.size > 0 && restoredQueue.size == restoredOriginalQueue.size && restoredPosition != -1) {
-                originalPlayingQueue = restoredOriginalQueue
-                playingQueue = restoredQueue
+                originalPlayingQueue = restoredOriginalQueue.toMutableList()
+                playingQueue = restoredQueue.toMutableList()
                 currentQueueCursor = restoredPosition
             }
             PreferenceManager.getDefaultSharedPreferences(context).getInt(PREF_SHUFFLE_MODE, 0).let {
