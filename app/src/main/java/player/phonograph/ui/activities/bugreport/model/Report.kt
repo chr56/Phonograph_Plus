@@ -8,19 +8,19 @@ import player.phonograph.ui.activities.bugreport.model.github.ExtraInfo
 
 class Report(
     val title: String,
-    description: String,
+    val description: String,
     private val deviceInfo: DeviceInfo,
     private val extraInfo: ExtraInfo
 ) {
-    val description: String = description
+    val body: String
         get() {
             return """
-            $field
+            $description
             
             -
             
             ${deviceInfo.toMarkdown()}
-            
+            -
             ${extraInfo.toMarkdown()}
             """.trimIndent()
         }

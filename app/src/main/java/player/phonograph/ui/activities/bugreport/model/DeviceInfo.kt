@@ -6,15 +6,32 @@ import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.os.Build
 import androidx.annotation.IntRange
-import player.phonograph.BuildConfig
 import java.util.Arrays
+import player.phonograph.BuildConfig
 
 class DeviceInfo(context: Context) {
+
     private var versionCode = 0
     private var versionName: String? = null
     private val buildVersion = Build.VERSION.INCREMENTAL
     private val releaseVersion = Build.VERSION.RELEASE
     private val packageName = BuildConfig.APPLICATION_ID
+
+    init {
+        val packageInfo: PackageInfo? = try {
+            context.packageManager
+                .getPackageInfo(context.packageName, 0)
+        } catch (e: PackageManager.NameNotFoundException) {
+            null
+        }
+        if (packageInfo != null) {
+            versionCode = packageInfo.versionCode
+            versionName = packageInfo.versionName
+        } else {
+            versionCode = -1
+            versionName = null
+        }
+    }
 
     @IntRange(from = 0)
     private val sdkVersion = Build.VERSION.SDK_INT
@@ -86,21 +103,5 @@ class DeviceInfo(context: Context) {
             ABIs (32bit): ${Arrays.toString(abis32Bits)}
             ABIs (64bit): ${Arrays.toString(abis64Bits)}
         """.trimIndent()
-    }
-
-    init {
-        val packageInfo: PackageInfo? = try {
-            context.packageManager
-                .getPackageInfo(context.packageName, 0)
-        } catch (e: PackageManager.NameNotFoundException) {
-            null
-        }
-        if (packageInfo != null) {
-            versionCode = packageInfo.versionCode
-            versionName = packageInfo.versionName
-        } else {
-            versionCode = -1
-            versionName = null
-        }
     }
 }

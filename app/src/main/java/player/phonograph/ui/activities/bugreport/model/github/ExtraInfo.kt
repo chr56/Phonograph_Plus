@@ -1,6 +1,7 @@
 package player.phonograph.ui.activities.bugreport.model.github
 
 class ExtraInfo {
+
     private val extraInfo: MutableMap<String, String> = LinkedHashMap()
 
     fun put(key: String, value: String) {
@@ -36,27 +37,17 @@ class ExtraInfo {
     }
 
     fun toMarkdown(): String {
+
         if (extraInfo.isEmpty()) return ""
 
-        val output = StringBuilder()
-        output.append(
-            """
-    Extra info:
-    ---
-    <table>
-    
-            """.trimIndent()
-        )
-
-        for (key in extraInfo.keys) {
-            output.append("<tr><td>")
-                .append(key)
-                .append("</td><td>")
-                .append(extraInfo[key])
-                .append("</td></tr>\n")
-        }
-
-        output.append("</table>\n")
-        return output.toString()
+        return """
+            Extra info:
+            ---
+            <table>
+            ${ extraInfo.keys.reduce { acc, key ->
+            "$acc<tr><td>$key</td><td>${extraInfo[key]}</td></tr>\n"
+        } }
+            </table>
+        """.trimIndent()
     }
 }

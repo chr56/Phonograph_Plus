@@ -16,12 +16,12 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.StringDef
 import androidx.annotation.StringRes
-import util.mdcolor.pref.ThemeColor
-import util.mddesign.util.TintHelper
 import com.afollestad.materialdialogs.MaterialDialog
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.floatingactionbutton.FloatingActionButton.OnVisibilityChangedListener
 import com.google.android.material.textfield.TextInputLayout
+import java.io.IOException
+import lib.phonograph.activity.ToolbarActivity
 import org.eclipse.egit.github.core.Issue
 import org.eclipse.egit.github.core.client.GitHubClient
 import org.eclipse.egit.github.core.client.RequestException
@@ -29,13 +29,13 @@ import org.eclipse.egit.github.core.service.IssueService
 import player.phonograph.R
 import player.phonograph.databinding.ActivityBugReportBinding
 import player.phonograph.misc.DialogAsyncTask
-import lib.phonograph.activity.ToolbarActivity
 import player.phonograph.ui.activities.bugreport.model.DeviceInfo
 import player.phonograph.ui.activities.bugreport.model.Report
 import player.phonograph.ui.activities.bugreport.model.github.ExtraInfo
-import player.phonograph.ui.activities.bugreport.model.github.GithubLogin
+import player.phonograph.ui.activities.bugreport.model.github.GithubLoginInfo
 import player.phonograph.ui.activities.bugreport.model.github.GithubTarget
-import java.io.IOException
+import util.mdcolor.pref.ThemeColor
+import util.mddesign.util.TintHelper
 
 class BugReportActivity : ToolbarActivity() {
 
@@ -43,12 +43,6 @@ class BugReportActivity : ToolbarActivity() {
 
     private var activityBinding: ActivityBugReportBinding? = null
     private val binding get() = activityBinding!!
-//
-//    private var viewBinding: BugReportCardReportBinding? = null
-//    private val v get() = viewBinding!!
-//
-//    private var viewBindingInfoCard: BugReportCardDeviceInfoBinding? = null
-//    private val infoCard get() = viewBindingInfoCard!!
 
     @StringDef(RESULT_OK, RESULT_BAD_CREDENTIALS, RESULT_INVALID_TOKEN, RESULT_ISSUES_NOT_ENABLED, RESULT_UNKNOWN)
     @kotlin.annotation.Retention(AnnotationRetention.SOURCE)
@@ -56,8 +50,6 @@ class BugReportActivity : ToolbarActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-//        viewBinding = BugReportCardReportBinding.inflate(layoutInflater)
-//        viewBindingInfoCard = BugReportCardDeviceInfoBinding.inflate(layoutInflater)
         activityBinding = ActivityBugReportBinding.inflate(layoutInflater)
 
         setContentView(binding.root)
@@ -140,7 +132,7 @@ class BugReportActivity : ToolbarActivity() {
             if (!validateInput()) return
             val username = binding.v.inputUsername.text.toString()
             val password = binding.v.inputPassword.text.toString()
-            sendBugReport(GithubLogin(username, password))
+            sendBugReport(GithubLoginInfo(username, password))
         } else {
             copyDeviceInfoToClipBoard()
             startActivity(
@@ -154,7 +146,7 @@ class BugReportActivity : ToolbarActivity() {
 
     private fun copyDeviceInfoToClipBoard() {
         val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-        val clip = ClipData.newPlainText(getString(R.string.device_info), deviceInfo!!.toMarkdown())
+        val clip = ClipData.newPlainText(getString(R.string.device_info), deviceInfo.toMarkdown())
         clipboard.setPrimaryClip(clip)
         Toast.makeText(
             this@BugReportActivity,
@@ -202,7 +194,7 @@ class BugReportActivity : ToolbarActivity() {
         editTextLayout!!.error = null
     }
 
-    private fun sendBugReport(login: GithubLogin) {
+    private fun sendBugReport(login: GithubLoginInfo) {
         if (!validateInput()) return
         val bugTitle = binding.v.inputTitle.text.toString()
         val bugDescription = binding.v.inputDescription.text.toString()
@@ -222,7 +214,7 @@ class BugReportActivity : ToolbarActivity() {
         activity: Activity,
         private val report: Report,
         private val target: GithubTarget,
-        private val login: GithubLogin
+        private val login: GithubLoginInfo
     ) : DialogAsyncTask<Void?, Void?, String?>(activity) {
         override fun createDialog(context: Context): Dialog {
             return MaterialDialog(context).title(R.string.bug_report_uploading, null)
@@ -235,7 +227,7 @@ class BugReportActivity : ToolbarActivity() {
             } else {
                 GitHubClient().setCredentials(login.username, login.password)
             }
-            val issue = Issue().setTitle(report.title).setBody(report.description)
+            val issue = Issue().setTitle(report.title).setBody(report.body)
             return try {
                 IssueService(client).createIssue(target.username, target.repository, issue)
                 RESULT_OK
@@ -301,7 +293,7 @@ class BugReportActivity : ToolbarActivity() {
                 activity: Activity,
                 report: Report,
                 target: GithubTarget,
-                login: GithubLogin
+                login: GithubLoginInfo
             ) {
                 ReportIssueAsyncTask(activity, report, target, login).execute()
             }
@@ -311,11 +303,13 @@ class BugReportActivity : ToolbarActivity() {
     companion object {
         private const val STATUS_BAD_CREDENTIALS = 401
         private const val STATUS_ISSUES_NOT_ENABLED = 410
+
         private const val RESULT_OK = "RESULT_OK"
         private const val RESULT_BAD_CREDENTIALS = "RESULT_BAD_CREDENTIALS"
         private const val RESULT_INVALID_TOKEN = "RESULT_INVALID_TOKEN"
         private const val RESULT_ISSUES_NOT_ENABLED = "RESULT_ISSUES_NOT_ENABLED"
         private const val RESULT_UNKNOWN = "RESULT_UNKNOWN"
+
         private const val ISSUE_TRACKER_LINK = "https://github.com/chr56/Phonograph_Plus/issues"
     }
 }
