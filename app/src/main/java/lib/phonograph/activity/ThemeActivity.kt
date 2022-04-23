@@ -14,11 +14,9 @@ import androidx.appcompat.app.AppCompatDelegate
 import player.phonograph.R
 import player.phonograph.settings.Setting
 import player.phonograph.util.Util
+import util.mdcolor.ColorUtil
 import util.mdcolor.pref.ThemeColor
 import util.mddesign.core.Themer
-import util.mdcolor.ColorUtil
-
-// todo remove Platform check
 
 /**
  * An abstract class providing material activity (no toolbar)
@@ -52,8 +50,6 @@ abstract class ThemeActivity : AppCompatActivity() {
     //
     protected open fun setDrawUnderStatusbar() {
         Util.setAllowDrawUnderStatusBar(window)
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) Util.setAllowDrawUnderStatusBar(window)
-//        else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) Util.setStatusBarTranslucent(window)
     }
 
     //
@@ -66,19 +62,13 @@ abstract class ThemeActivity : AppCompatActivity() {
      * @param color the new statusbar color (will be shifted down on Lollipop and above)
      */
     open fun setStatusbarColor(color: Int) {
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
         val statusBar = window.decorView.rootView.findViewById<View>(R.id.status_bar)
         if (statusBar != null) {
-//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             statusBar.setBackgroundColor(ColorUtil.darkenColor(color))
-//                } else {
-//                    statusBar.setBackgroundColor(color)
-//                }
         } else /* if (Build.VERSION.SDK_INT >= 21) */ {
             window.statusBarColor = ColorUtil.darkenColor(color)
         }
         setLightStatusbarAuto(color)
-//        }
     }
     open fun setStatusbarColorAuto() {
         // we don't want to use statusbar color because we are doing the color darkening on our own to support KitKat
