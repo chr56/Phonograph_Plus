@@ -1,27 +1,29 @@
-**Preview 0.2.0 2022.4.?**
+**Preview 0.2.4-beta 2022.4.23**
 
 **CN**
-开发 重构大量歌词相关代码
-开发 清理主播放器UI代码, 改进性能
-变更 重写歌词对话框
-变更 增大歌词对话框大小
-新增 歌词对话框支持选择歌词源(内嵌或外部)
-新增 歌词对话框支持歌词随歌曲播放滚动(实验性)
-修复 通知栏通知偶现的刷新不及时或信息错误(存疑)
-新增 错误报告通知,仅记录并通知非紧要的内部错误以便调试
-开发 尝试记录卡片式主播放器偶现的卡片错位现象
-开发 关闭Glide部分无关紧要的日志输出
-开发 清理代码
+修复 专辑与艺术家页面下,歌曲与专辑或艺术家(在同一专辑但艺术家不同的情况下)配对(解析)错误
+优化 专辑与艺术家解析机制(加载时间可能会延长)
+新增 专辑与艺术家以及流派支持按歌曲(或专辑)数量排序
+修复 歌曲在使用"添加日期"的排序依据下,滚动条不提示日期
+改进 使用通知提示大多数耗时操作而不是各种对话框
+改进 使用通知提示更多内部错误
+开发 增强混淆
+开发 清理代码, 替换所有AsyncTask
+**注意**
+1.此次更新涉及存储播放队列数据库的改动,若发现当前播放队列异常,请清除数据
+2.此次更新涉及排序方式设置的改动,需要重新设置排序方式
+
+
 
 **EN**
-Development: refactor most lyrics related code
-Development: Clean up the main player UI code, and improve its performance
-Change: rewrite lyrics dialog UI
-Change: increase size of the lyrics dialog
-New: manually select lyrics source (embedded or external) in lyrics dialog
-New: automatically lyrics scrolling along with song playback (experimental support)
-Fix: occasionally now-playing notification hasn't been refreshed in time or display incorrect song information in the notification bar (suspecting)
-New: error report notifications, only record and notify non-critical internal errors for better debugging
-Development: try to record occasionally error layout of playing queue card in the card main player
-Development: partially turns off annoying Glide irrelevant log output
-Development: cleanup code
+Fix: an error in pairing (parsing) between songs and albums or artists (in the case of the same album but different artists) under the album and artist page
+Optimize: album and artist parsing mechanism (loading time may be extended)
+Add: albums and artists and genres to support sorting by number of songs (or albums)
+Fix: that the scroll bar does not prompt the date when the song is sorted by "Add Date"
+Improve: notifications for most time-consuming operations instead of various dialogs
+Improve: notification for more internal errors
+Development: Enhanced Obfuscation
+Development: clean up code, replace all AsyncTask
+**Note**
+This update involves changes to the storage play queue database. If you find that the current play queue is abnormal, please clear the data
+This update involves changes to the sorting method settings, and the sorting method needs to be reset
