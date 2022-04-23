@@ -25,6 +25,7 @@ import android.widget.LinearLayout;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.WhichButton;
@@ -61,8 +62,8 @@ import player.phonograph.misc.SimpleObservableScrollViewCallbacks;
 import player.phonograph.misc.UpdateToastMediaScannerCompletionListener;
 import player.phonograph.util.MusicUtil;
 import player.phonograph.util.Util;
-import util.mdcolor.pref.ThemeColor;
 import util.mdcolor.ColorUtil;
+import util.mdcolor.pref.ThemeColor;
 import util.mddesign.util.TintHelper;
 import util.mddesign.util.ToolbarColorUtil;
 
@@ -81,6 +82,7 @@ public abstract class AbsTagEditorActivity extends ToolbarActivity {
     Toolbar toolbar;
     ImageView image;
     LinearLayout header;
+    TagEditorViewModel model;
 
     private long id;
     private int headerVariableSpace;
@@ -104,6 +106,8 @@ public abstract class AbsTagEditorActivity extends ToolbarActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        model = new ViewModelProvider(this).get(TagEditorViewModel.class);
+
         super.onCreate(savedInstanceState);
         setContentView(getContentViewLayout());
 
