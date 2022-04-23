@@ -10,6 +10,7 @@ import android.util.ArrayMap
 import android.util.Log
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
+import player.phonograph.mediastore.AlbumLoader.toAlbumList
 import player.phonograph.mediastore.SongLoader.getSongs
 import player.phonograph.mediastore.SongLoader.makeSongCursor
 import player.phonograph.mediastore.sort.SortRef
@@ -28,14 +29,14 @@ object ArtistLoader {
         val songs = getSongs(
             makeSongCursor(context, null, null, null)
         )
-        return splitIntoArtists(songs)
+        return if (songs.isNullOrEmpty()) return emptyList() else songs.toArtistList()
     }
 
     fun getArtists(context: Context, query: String): List<Artist> {
         val songs = getSongs(
             makeSongCursor(context, "${AudioColumns.ARTIST} LIKE ?", arrayOf("%$query%"), null)
         )
-        return splitIntoArtists(songs)
+        return if (songs.isNullOrEmpty()) return emptyList() else songs.toArtistList()
     }
 
     fun getArtist(context: Context, artistId: Long): Artist {
@@ -43,11 +44,11 @@ object ArtistLoader {
             makeSongCursor(context, "${AudioColumns.ARTIST_ID}=?", arrayOf(artistId.toString()), null)
         )
         return if (songs.isEmpty()) Artist(artistId, Artist.UNKNOWN_ARTIST_DISPLAY_NAME, ArrayList())
-        else Artist(artistId, songs[0].artistName, AlbumLoader.splitIntoAlbums(songs))
+        else Artist(artistId, songs[0].artistName, songs.toAlbumList())
     }
 
-    fun splitIntoArtists(songs: List<Song>): List<Artist> {
-        if (songs.isEmpty()) return ArrayList()
+    fun List<Song>.toArtistList(): List<Artist> {
+        val songs = this
 
         val artists = CoroutineScope(Dispatchers.Default).async {
 

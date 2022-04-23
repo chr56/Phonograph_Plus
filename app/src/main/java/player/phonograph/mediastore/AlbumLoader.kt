@@ -10,6 +10,7 @@ import android.util.ArrayMap
 import android.util.Log
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
+import player.phonograph.mediastore.AlbumLoader.sortAll
 import player.phonograph.mediastore.SongLoader.getSongs
 import player.phonograph.mediastore.SongLoader.makeSongCursor
 import player.phonograph.mediastore.sort.SortRef
@@ -27,14 +28,14 @@ object AlbumLoader {
         val songs = getSongs(
             makeSongCursor(context, null, null, null)
         )
-        return splitIntoAlbums(songs)
+        return if (songs.isNullOrEmpty()) return emptyList() else songs.toAlbumList()
     }
 
     fun getAlbums(context: Context, query: String): List<Album> {
         val songs = getSongs(
             makeSongCursor(context, "${AudioColumns.ALBUM} LIKE ?", arrayOf("%$query%"), null)
         )
-        return splitIntoAlbums(songs)
+        return if (songs.isNullOrEmpty()) return emptyList() else songs.toAlbumList()
     }
 
     fun getAlbum(context: Context, albumId: Long): Album {
@@ -44,9 +45,8 @@ object AlbumLoader {
         return Album(albumId, getAlbumTitle(songs), songs.toMutableList().sortedBy { it.trackNumber })
     }
 
-    fun splitIntoAlbums(songs: List<Song>?): List<Album> {
-        if (songs == null) return ArrayList()
-
+    fun List<Song>.toAlbumList(): List<Album> {
+        val songs = this
         val albums = CoroutineScope(Dispatchers.Default).async {
 
             var completed = false
