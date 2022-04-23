@@ -102,7 +102,6 @@ public abstract class AbsTagEditorActivity extends ToolbarActivity {
             image.setTranslationY(scrollY / 2);
         }
     };
-    private List<String> songPaths;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -119,8 +118,10 @@ public abstract class AbsTagEditorActivity extends ToolbarActivity {
 
         getIntentExtras();
 
-        songPaths = getSongPaths();
-        if (songPaths.isEmpty()) {
+        model.setSongPaths(
+                getSongPaths()
+        );
+        if (model.getSongPaths() != null && model.getSongPaths().isEmpty()) {
             finish();
             return;
         }
@@ -449,20 +450,11 @@ public abstract class AbsTagEditorActivity extends ToolbarActivity {
 
     protected abstract void loadImageFromFile(Uri selectedFile);
 
-    @NonNull
-    private AudioFile getAudioFile(@NonNull String path) {
-        try {
-            return AudioFileIO.read(new File(path));
-        } catch (Exception e) {
-            Log.e(TAG, "Could not read audio file " + path, e);
-            return new AudioFile();
-        }
-    }
 
     @Nullable
     protected String getSongTitle() {
         try {
-            return getAudioFile(songPaths.get(0)).getTagOrCreateAndSetDefault().getFirst(FieldKey.TITLE);
+            return model.getAudioFile(model.getSongPaths().get(0)).getTagOrCreateAndSetDefault().getFirst(FieldKey.TITLE);
         } catch (Exception ignored) {
             return null;
         }
@@ -471,7 +463,7 @@ public abstract class AbsTagEditorActivity extends ToolbarActivity {
     @Nullable
     protected String getAlbumTitle() {
         try {
-            return getAudioFile(songPaths.get(0)).getTagOrCreateAndSetDefault().getFirst(FieldKey.ALBUM);
+            return model.getAudioFile(model.getSongPaths().get(0)).getTagOrCreateAndSetDefault().getFirst(FieldKey.ALBUM);
         } catch (Exception ignored) {
             return null;
         }
@@ -480,7 +472,7 @@ public abstract class AbsTagEditorActivity extends ToolbarActivity {
     @Nullable
     protected String getArtistName() {
         try {
-            return getAudioFile(songPaths.get(0)).getTagOrCreateAndSetDefault().getFirst(FieldKey.ARTIST);
+            return model.getAudioFile(model.getSongPaths().get(0)).getTagOrCreateAndSetDefault().getFirst(FieldKey.ARTIST);
         } catch (Exception ignored) {
             return null;
         }
@@ -489,7 +481,7 @@ public abstract class AbsTagEditorActivity extends ToolbarActivity {
     @Nullable
     protected String getAlbumArtistName() {
         try {
-            return getAudioFile(songPaths.get(0)).getTagOrCreateAndSetDefault().getFirst(FieldKey.ALBUM_ARTIST);
+            return model.getAudioFile(model.getSongPaths().get(0)).getTagOrCreateAndSetDefault().getFirst(FieldKey.ALBUM_ARTIST);
         } catch (Exception ignored) {
             return null;
         }
@@ -498,7 +490,7 @@ public abstract class AbsTagEditorActivity extends ToolbarActivity {
     @Nullable
     protected String getGenreName() {
         try {
-            return getAudioFile(songPaths.get(0)).getTagOrCreateAndSetDefault().getFirst(FieldKey.GENRE);
+            return model.getAudioFile(model.getSongPaths().get(0)).getTagOrCreateAndSetDefault().getFirst(FieldKey.GENRE);
         } catch (Exception ignored) {
             return null;
         }
@@ -507,7 +499,7 @@ public abstract class AbsTagEditorActivity extends ToolbarActivity {
     @Nullable
     protected String getSongYear() {
         try {
-            return getAudioFile(songPaths.get(0)).getTagOrCreateAndSetDefault().getFirst(FieldKey.YEAR);
+            return model.getAudioFile(model.getSongPaths().get(0)).getTagOrCreateAndSetDefault().getFirst(FieldKey.YEAR);
         } catch (Exception ignored) {
             return null;
         }
@@ -516,7 +508,7 @@ public abstract class AbsTagEditorActivity extends ToolbarActivity {
     @Nullable
     protected String getTrackNumber() {
         try {
-            return getAudioFile(songPaths.get(0)).getTagOrCreateAndSetDefault().getFirst(FieldKey.TRACK);
+            return model.getAudioFile(model.getSongPaths().get(0)).getTagOrCreateAndSetDefault().getFirst(FieldKey.TRACK);
         } catch (Exception ignored) {
             return null;
         }
@@ -525,7 +517,7 @@ public abstract class AbsTagEditorActivity extends ToolbarActivity {
     @Nullable
     protected String getLyrics() {
         try {
-            return getAudioFile(songPaths.get(0)).getTagOrCreateAndSetDefault().getFirst(FieldKey.LYRICS);
+            return model.getAudioFile(model.getSongPaths().get(0)).getTagOrCreateAndSetDefault().getFirst(FieldKey.LYRICS);
         } catch (Exception ignored) {
             return null;
         }
@@ -534,7 +526,7 @@ public abstract class AbsTagEditorActivity extends ToolbarActivity {
     @Nullable
     protected Bitmap getAlbumArt() {
         try {
-            Artwork artworkTag = getAudioFile(songPaths.get(0)).getTagOrCreateAndSetDefault().getFirstArtwork();
+            Artwork artworkTag = model.getAudioFile(model.getSongPaths().get(0)).getTagOrCreateAndSetDefault().getFirstArtwork();
             if (artworkTag != null) {
                 byte[] artworkBinaryData = artworkTag.getBinaryData();
                 return BitmapFactory.decodeByteArray(artworkBinaryData, 0, artworkBinaryData.length);
