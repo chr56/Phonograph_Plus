@@ -42,7 +42,7 @@ import player.phonograph.dialogs.AddToPlaylistDialog;
 import player.phonograph.dialogs.SleepTimerDialog;
 import player.phonograph.glide.ArtistGlideRequest;
 import player.phonograph.glide.PhonographColoredTarget;
-import player.phonograph.glide.util.CustomArtistImageUtilKt;
+import player.phonograph.glide.util.CustomArtistImageUtil;
 import player.phonograph.interfaces.CabHolder;
 import player.phonograph.interfaces.PaletteColorHolder;
 import player.phonograph.misc.SimpleObservableScrollViewCallbacks;
@@ -51,7 +51,6 @@ import player.phonograph.model.Song;
 import player.phonograph.service.MusicPlayerRemote;
 import player.phonograph.settings.Setting;
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity;
-import player.phonograph.glide.util.CustomArtistImageUtil;
 import player.phonograph.util.MusicUtil;
 import player.phonograph.util.NavigationUtil;
 import player.phonograph.util.PhonographColorUtil;
@@ -267,7 +266,7 @@ public class ArtistDetailActivity extends AbsSlidingMusicPanelActivity implement
         switch (requestCode) {
             case REQUEST_CODE_SELECT_IMAGE:
                 if (resultCode == RESULT_OK) {
-                    CustomArtistImageUtil.getInstance(this).setCustomArtistImage(getArtist(), data.getData());
+                    CustomArtistImageUtil.INSTANCE.setCustomArtistImage(getArtist(), data.getData());
                 }
                 break;
             default:
@@ -382,7 +381,7 @@ public class ArtistDetailActivity extends AbsSlidingMusicPanelActivity implement
             return true;
         } else if (id == R.id.action_reset_artist_image) {
             Toast.makeText(ArtistDetailActivity.this, getResources().getString(R.string.updating), Toast.LENGTH_SHORT).show();
-            CustomArtistImageUtilKt.INSTANCE.resetCustomArtistImage(getArtist());
+            CustomArtistImageUtil.INSTANCE.resetCustomArtistImage(getArtist());
             return true;
         } else if (id == R.id.action_colored_footers) {
             item.setChecked(!item.isChecked());

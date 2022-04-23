@@ -120,7 +120,7 @@ public class ArtistGlideRequest {
     }
 
     public static <T> RequestBuilder<T> createBaseRequest(Class<T> type, RequestManager requestManager, Artist artist, boolean noCustomImage) {
-        boolean hasCustomImage = CustomArtistImageUtil.getInstance(App.getInstance()).hasCustomArtistImage(artist);
+        boolean hasCustomImage = CustomArtistImageUtil.INSTANCE.hasCustomArtistImage(artist);
 
         if (noCustomImage || !hasCustomImage) {
             final List<AlbumCover> songs = new ArrayList<>();
@@ -131,7 +131,7 @@ public class ArtistGlideRequest {
 
             return requestManager.as(type).load(new ArtistImage(artist.getName(), songs)); //todo
         } else {
-            return requestManager.as(type).load(CustomArtistImageUtil.getFile(artist));
+            return requestManager.as(type).load(CustomArtistImageUtil.INSTANCE.getFile(artist));
         }
     }
 
