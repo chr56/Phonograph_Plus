@@ -110,3 +110,5 @@ class TagEditorViewModel : ViewModel() {
         super.onCleared()
     }
 }
+
+class ArtworkInfo(val albumId: Long, val artwork: Bitmap?)

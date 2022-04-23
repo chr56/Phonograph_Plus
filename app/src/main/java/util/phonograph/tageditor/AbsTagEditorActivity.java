@@ -11,11 +11,9 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.OvershootInterpolator;
@@ -312,10 +310,10 @@ public abstract class AbsTagEditorActivity extends ToolbarActivity {
 
                 Artwork artwork = null;
                 File albumArtFile = null;
-                if (info.artworkInfo != null && info.artworkInfo.artwork != null) {
+                if (info.artworkInfo != null && info.artworkInfo.getArtwork() != null) {
                     try {
                         albumArtFile = MusicUtil.INSTANCE.createAlbumArtFile().getCanonicalFile();
-                        info.artworkInfo.artwork.compress(Bitmap.CompressFormat.PNG, 0, new FileOutputStream(albumArtFile));
+                        info.artworkInfo.getArtwork().compress(Bitmap.CompressFormat.PNG, 0, new FileOutputStream(albumArtFile));
                         artwork = ArtworkFactory.createArtworkFromFile(albumArtFile);
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -342,7 +340,7 @@ public abstract class AbsTagEditorActivity extends ToolbarActivity {
                         }
 
                         if (info.artworkInfo != null) {
-                            if (info.artworkInfo.artwork == null) {
+                            if (info.artworkInfo.getArtwork() == null) {
                                 tag.deleteArtworkField();
                                 deletedArtwork = true;
                             } else if (artwork != null) {
@@ -361,9 +359,9 @@ public abstract class AbsTagEditorActivity extends ToolbarActivity {
                 Context context = getContext();
                 if (context != null) {
                     if (wroteArtwork) {
-                        MusicUtil.INSTANCE.insertAlbumArt(context, info.artworkInfo.albumId, albumArtFile.getPath());
+                        MusicUtil.INSTANCE.insertAlbumArt(context, info.artworkInfo.getAlbumId(), albumArtFile.getPath());
                     } else if (deletedArtwork) {
-                        MusicUtil.INSTANCE.deleteAlbumArt(context, info.artworkInfo.albumId);
+                        MusicUtil.INSTANCE.deleteAlbumArt(context, info.artworkInfo.getAlbumId());
                     }
                 }
 
@@ -418,16 +416,6 @@ public abstract class AbsTagEditorActivity extends ToolbarActivity {
                 this.fieldKeyValueMap = fieldKeyValueMap;
                 this.artworkInfo = artworkInfo;
             }
-        }
-    }
-
-    public static class ArtworkInfo {
-        public final long albumId;
-        public final Bitmap artwork;
-
-        public ArtworkInfo(long albumId, Bitmap artwork) {
-            this.albumId = albumId;
-            this.artwork = artwork;
         }
     }
 
