@@ -1,35 +1,24 @@
 package player.phonograph.ui.activities.bugreport.model
 
 import android.annotation.SuppressLint
-import android.content.Context
-import android.content.pm.PackageInfo
-import android.content.pm.PackageManager
 import android.os.Build
 import androidx.annotation.IntRange
 import java.util.Arrays
+import player.phonograph.App
 import player.phonograph.BuildConfig
 
-class DeviceInfo(context: Context) {
+class DeviceInfo {
 
-    private var versionCode = 0
+    private var versionCode = -1
     private var versionName: String? = null
     private val buildVersion = Build.VERSION.INCREMENTAL
     private val releaseVersion = Build.VERSION.RELEASE
     private val packageName = BuildConfig.APPLICATION_ID
 
     init {
-        val packageInfo: PackageInfo? = try {
-            context.packageManager
-                .getPackageInfo(context.packageName, 0)
-        } catch (e: PackageManager.NameNotFoundException) {
-            null
-        }
-        if (packageInfo != null) {
-            versionCode = packageInfo.versionCode
-            versionName = packageInfo.versionName
-        } else {
-            versionCode = -1
-            versionName = null
+        App.instance.packageManager.getPackageInfo(App.instance.packageName, 0)?.let {
+            versionCode = it.versionCode
+            versionName = it.versionName
         }
     }
 

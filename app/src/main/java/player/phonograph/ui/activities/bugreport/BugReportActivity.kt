@@ -1,7 +1,6 @@
 package player.phonograph.ui.activities.bugreport
 
 import android.app.Activity
-import android.app.Dialog
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
@@ -9,26 +8,30 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
+import android.util.Log
 import android.view.KeyEvent
 import android.view.MenuItem
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView
 import android.widget.Toast
-import androidx.annotation.StringDef
 import androidx.annotation.StringRes
 import com.afollestad.materialdialogs.MaterialDialog
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.floatingactionbutton.FloatingActionButton.OnVisibilityChangedListener
 import com.google.android.material.textfield.TextInputLayout
 import java.io.IOException
+import java.lang.ref.WeakReference
+import kotlinx.coroutines.*
 import lib.phonograph.activity.ToolbarActivity
 import org.eclipse.egit.github.core.Issue
 import org.eclipse.egit.github.core.client.GitHubClient
 import org.eclipse.egit.github.core.client.RequestException
 import org.eclipse.egit.github.core.service.IssueService
+import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.databinding.ActivityBugReportBinding
-import player.phonograph.misc.DialogAsyncTask
+import player.phonograph.notification.BackgroundNotification
+import player.phonograph.notification.ErrorNotification
 import player.phonograph.ui.activities.bugreport.model.DeviceInfo
 import player.phonograph.ui.activities.bugreport.model.Report
 import player.phonograph.ui.activities.bugreport.model.github.ExtraInfo
@@ -39,14 +42,8 @@ import util.mddesign.util.TintHelper
 
 class BugReportActivity : ToolbarActivity() {
 
-    private lateinit var deviceInfo: DeviceInfo
-
     private var activityBinding: ActivityBugReportBinding? = null
     private val binding get() = activityBinding!!
-
-    @StringDef(RESULT_OK, RESULT_BAD_CREDENTIALS, RESULT_INVALID_TOKEN, RESULT_ISSUES_NOT_ENABLED, RESULT_UNKNOWN)
-    @kotlin.annotation.Retention(AnnotationRetention.SOURCE)
-    private annotation class Result
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -61,11 +58,9 @@ class BugReportActivity : ToolbarActivity() {
         initViews()
 
         if (TextUtils.isEmpty(title)) setTitle(R.string.report_an_issue)
-
-        deviceInfo = DeviceInfo(this)
-
-        binding.infoCard.airTextDeviceInfo.text = deviceInfo.toString()
     }
+
+    private val deviceInfo: DeviceInfo by lazy { DeviceInfo() }
 
     private fun initViews() {
         val accentColor = ThemeColor.accentColor(this)
@@ -125,6 +120,12 @@ class BugReportActivity : ToolbarActivity() {
         TintHelper.setTintAuto(binding.v.inputDescription, accentColor, false)
         TintHelper.setTintAuto(binding.v.inputUsername, accentColor, false)
         TintHelper.setTintAuto(binding.v.inputPassword, accentColor, false)
+
+        binding.infoCard.airTextDeviceInfo.text = deviceInfo.toString()
+    }
+
+    private val backgroundScope: CoroutineScope by lazy {
+        CoroutineScope(Dispatchers.Default)
     }
 
     private fun reportIssue() {
@@ -148,11 +149,7 @@ class BugReportActivity : ToolbarActivity() {
         val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
         val clip = ClipData.newPlainText(getString(R.string.device_info), deviceInfo.toMarkdown())
         clipboard.setPrimaryClip(clip)
-        Toast.makeText(
-            this@BugReportActivity,
-            R.string.copied_device_info_to_clipboard,
-            Toast.LENGTH_LONG
-        ).show()
+        Toast.makeText(this@BugReportActivity, R.string.copied_device_info_to_clipboard, Toast.LENGTH_LONG).show()
     }
 
     private fun validateInput(): Boolean {
@@ -190,8 +187,8 @@ class BugReportActivity : ToolbarActivity() {
         editTextLayout!!.error = getString(errorRes)
     }
 
-    private fun removeError(editTextLayout: TextInputLayout?) {
-        editTextLayout!!.error = null
+    private fun removeError(editTextLayout: TextInputLayout) {
+        editTextLayout.error = null
     }
 
     private fun sendBugReport(login: GithubLoginInfo) {
@@ -200,107 +197,106 @@ class BugReportActivity : ToolbarActivity() {
         val bugDescription = binding.v.inputDescription.text.toString()
         val report = Report(bugTitle, bugDescription, deviceInfo, ExtraInfo())
         val target = GithubTarget("chr56", "Phonograph_Plus")
-        ReportIssueAsyncTask.report(this, report, target, login)
+
+        backgroundScope.launch {
+            reportToGithub(this, report, target, login)
+        }
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == android.R.id.home) {
-            onBackPressed()
-        }
-        return super.onOptionsItemSelected(item)
-    }
+    private fun reportToGithub(
+        coroutineScope: CoroutineScope,
+        report: Report,
+        target: GithubTarget,
+        login: GithubLoginInfo,
+    ) {
 
-    private class ReportIssueAsyncTask private constructor(
-        activity: Activity,
-        private val report: Report,
-        private val target: GithubTarget,
-        private val login: GithubLoginInfo
-    ) : DialogAsyncTask<Void?, Void?, String?>(activity) {
-        override fun createDialog(context: Context): Dialog {
-            return MaterialDialog(context).title(R.string.bug_report_uploading, null)
-        }
+        val resultCode: Deferred<String> = coroutineScope.async(Dispatchers.IO) {
 
-        @Result
-        override fun doInBackground(vararg params: Void?): String? {
+            BackgroundNotification.post(App.instance.getString(R.string.bug_report_uploading), "", NOTIFICATION_CODE)
+
             val client: GitHubClient = if (login.shouldUseApiToken()) {
                 GitHubClient().setOAuth2Token(login.apiToken)
             } else {
                 GitHubClient().setCredentials(login.username, login.password)
             }
+
             val issue = Issue().setTitle(report.title).setBody(report.body)
-            return try {
+
+            return@async try {
                 IssueService(client).createIssue(target.username, target.repository, issue)
                 RESULT_OK
             } catch (e: RequestException) {
-                when (e.status) {
+                val resultCode = when (e.status) {
                     STATUS_BAD_CREDENTIALS -> {
                         if (login.shouldUseApiToken()) RESULT_INVALID_TOKEN else RESULT_BAD_CREDENTIALS
                     }
                     STATUS_ISSUES_NOT_ENABLED -> RESULT_ISSUES_NOT_ENABLED
                     else -> {
-                        e.printStackTrace()
                         RESULT_UNKNOWN
                     }
                 }
+                ErrorNotification.postErrorNotification(e, "Fail to create issue:\n$resultCode")
+                Log.w("BugReport", e)
+                resultCode
             } catch (e: IOException) {
-                e.printStackTrace()
+                ErrorNotification.postErrorNotification(e, "Fail to create issue:\n")
+                Log.w("BugReport", e)
                 RESULT_UNKNOWN
+            } finally {
+                BackgroundNotification.remove(NOTIFICATION_CODE)
             }
         }
 
-        override fun onPostExecute(@Result result: String?) {
-            super.onPostExecute(result)
-            val context = context ?: return
-            when (result) {
-                RESULT_OK -> tryToFinishActivity()
-                RESULT_BAD_CREDENTIALS -> MaterialDialog(context)
-                    .title(R.string.bug_report_failed, null)
-                    .message(R.string.bug_report_failed_wrong_credentials, null, null)
-                    .positiveButton(android.R.string.ok, null, null)
-                    .show()
-                RESULT_INVALID_TOKEN -> MaterialDialog(context)
-                    .title(R.string.bug_report_failed, null)
-                    .message(R.string.bug_report_failed_invalid_token, null, null)
-                    .positiveButton(android.R.string.ok, null, null)
-                    .show()
-                RESULT_ISSUES_NOT_ENABLED -> MaterialDialog(context)
-                    .title(R.string.bug_report_failed, null)
-                    .message(R.string.bug_report_failed_issues_not_available, null, null)
-                    .positiveButton(android.R.string.ok, null, null)
-                    .show()
-                else -> MaterialDialog(context)
-                    .title(R.string.bug_report_failed, null)
-                    .message(R.string.bug_report_failed_unknown, null, null)
-                    .positiveButton(android.R.string.ok, null) {
-                        tryToFinishActivity()
+        val contextWrapper = WeakReference<Context>(this)
+
+        coroutineScope.launch(Dispatchers.Default) {
+            resultCode.await().let { result ->
+                val context = contextWrapper.get() ?: return@let
+
+                val tryToFinishActivity: () -> Unit = {
+                    if (context is Activity && !context.isFinishing) {
+                        context.finish()
                     }
-                    .negativeButton(android.R.string.cancel, null) {
-                        tryToFinishActivity()
+                }
+                withContext(Dispatchers.Main) {
+                    when (result) {
+                        RESULT_OK -> tryToFinishActivity()
+                        RESULT_BAD_CREDENTIALS -> MaterialDialog(context)
+                            .title(R.string.bug_report_failed)
+                            .message(R.string.bug_report_failed_wrong_credentials)
+                            .positiveButton(android.R.string.ok)
+                            .show()
+                        RESULT_INVALID_TOKEN -> MaterialDialog(context)
+                            .title(R.string.bug_report_failed)
+                            .message(R.string.bug_report_failed_invalid_token)
+                            .positiveButton(android.R.string.ok)
+                            .show()
+                        RESULT_ISSUES_NOT_ENABLED -> MaterialDialog(context)
+                            .title(R.string.bug_report_failed)
+                            .message(R.string.bug_report_failed_issues_not_available)
+                            .positiveButton(android.R.string.ok)
+                            .show()
+                        else -> MaterialDialog(context)
+                            .title(R.string.bug_report_failed)
+                            .message(R.string.bug_report_failed_unknown)
+                            .positiveButton(android.R.string.ok)
+                            .negativeButton(android.R.string.cancel)
+                            .show()
                     }
-                    .show()
-            }
-        }
-
-        private fun tryToFinishActivity() {
-            val context = context
-            if (context is Activity && !context.isFinishing) {
-                context.finish()
-            }
-        }
-
-        companion object {
-            fun report(
-                activity: Activity,
-                report: Report,
-                target: GithubTarget,
-                login: GithubLoginInfo
-            ) {
-                ReportIssueAsyncTask(activity, report, target, login).execute()
+                }
             }
         }
     }
 
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == android.R.id.home) onBackPressed()
+        return super.onOptionsItemSelected(item)
+    }
+
     companion object {
+
+        private const val NOTIFICATION_CODE = 100
+
         private const val STATUS_BAD_CREDENTIALS = 401
         private const val STATUS_ISSUES_NOT_ENABLED = 410
 
