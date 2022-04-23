@@ -6,9 +6,9 @@ on:
     paths-ignore:
       - "README.md"
       - "version.json"
-      - '.github/workflows/preview_release.yml'
-      - '.github/workflows/action_test.yml'
-      - '.github/ISSUE_TEMPLATE/**'
+      - ".github/workflows/preview_release.yml"
+      - ".github/workflows/action_test.yml"
+      - ".github/ISSUE_TEMPLATE/**"
 
 jobs:
   build:
@@ -33,12 +33,6 @@ jobs:
           distribution: "adopt"
           cache: gradle
 
-#      # now we are use Android Gradle Plugin 7.0.*
-#
-#      - name: Create DX links for BuildTools
-#        run: ln -s $ANDROID_HOME/build-tools/31.0.0/d8 $ANDROID_HOME/build-tools/31.0.0/dx && ln -s $ANDROID_HOME/build-tools/31.0.0/lib/d8.jar $ANDROID_HOME/build-tools/31.0.0/lib/dx.jar
-#        # we are using Android Gradle Plugin 4.x.x, which can not find 'dx' in SDK31
-#
 
       - name: Build with Gradle
         run: ./gradlew assemblePreview --stacktrace
@@ -62,7 +56,6 @@ jobs:
           path: ${{steps.sign_app.outputs.signedReleaseFile}}
           retention-days: 30
 
-
       - name: Upload mapping.txt
         uses: actions/upload-artifact@v2
         with:
@@ -75,7 +68,7 @@ jobs:
 
         if: startsWith(github.ref, 'refs/tags/preview_')
         with:
-          name: "[Preview] ${{ github.ref_name }}"
+          name: "${{ github.ref_name }}"
           files: |
             ${{steps.sign_app.outputs.signedReleaseFile}}
             ${{ github.workspace }}/app/build/outputs/mapping/preview/mapping.txt
@@ -94,12 +87,10 @@ jobs:
           to: ${{ secrets.TG_CHAT_ID }}
           token: ${{ secrets.TG_BOT_TOKEN }}
           message: |
-            <b>New Preview Version!</b>
-            <b>${{ github.ref_name }}</b> (<pre>${{ github.sha }}</pre>)
-            <b>Preview版本更新!</b>
-
+            <b>Preview Version: ${{ github.ref_name }}</b>(<pre>${{ github.sha }}</pre>)
+            Preview versions might have potential bugs.
+            <b>Preview版本更新!</b> 注意可能存在潜在问题!</br>
             <a href="https://github.com/chr56/Phonograph_Plus/releases/tag/${{ github.ref_name }}"> GitHub Link </a>
-            <pre>${{ github.action_path }}</pre>
           format: html
           document: ${{ github.workspace }}/${{steps.sign_app.outputs.signedReleaseFile}}
           disable_notification: true
