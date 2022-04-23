@@ -15,7 +15,7 @@
 -keep class player.phonograph.views.** {*;}
 -keep class player.phonograph.model.** {public <fields>; <init>(...);}
 
--keep,allowoptimization,allowshrinking class player.phonograph.ui.activities.** {public <methods>;public <fields>;}
+-keepclasseswithmembernames,allowoptimization,allowshrinking class player.phonograph.ui.activities.** extends android.app.Activity {public <methods>;public <fields>;}
 -keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.ui.fragments.** {public <methods>;public <fields>;}
 
 -keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.mediastore.MediaStoreUtil {public <methods>;}
@@ -29,4 +29,5 @@
 -keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.settings.** {public <methods>;}
 -keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.notification.** {public <methods>;}
 
+-keepclassmembernames,allowoptimization class player.phonograph.Updater
 -keepclassmembernames,allowoptimization class player.phonograph.provider.DatabaseManger
