@@ -38,7 +38,6 @@ class JunkCleaner(context: Context) : FileCleaner(context) {
         }
     }
 
-    // todo use when bumping version
     fun removePreferenceFile(versionCode: Int) {
         if (versionCode >= 100) deletePreferenceFile(context, name = pref_ath)
     }
