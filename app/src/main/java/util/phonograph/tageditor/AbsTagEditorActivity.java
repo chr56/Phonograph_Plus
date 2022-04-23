@@ -61,7 +61,6 @@ public abstract class AbsTagEditorActivity extends ToolbarActivity {
     LinearLayout header;
     TagEditorViewModel model;
 
-    private long id;
     private int headerVariableSpace;
     private int paletteColorPrimary;
     private boolean isInNoImageMode;
@@ -79,6 +78,9 @@ public abstract class AbsTagEditorActivity extends ToolbarActivity {
             image.setTranslationY(scrollY / 2);
         }
     };
+
+    protected AbsTagEditorActivity() {
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -172,7 +174,7 @@ public abstract class AbsTagEditorActivity extends ToolbarActivity {
     private void getIntentExtras() {
         Bundle intentExtras = getIntent().getExtras();
         if (intentExtras != null) {
-            id = intentExtras.getLong(EXTRA_ID);
+            model.setId(intentExtras.getLong(EXTRA_ID));
         }
     }
 
@@ -274,9 +276,6 @@ public abstract class AbsTagEditorActivity extends ToolbarActivity {
     }
 
 
-    protected long getId() {
-        return id;
-    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @NonNull Intent imageReturnedIntent) {
@@ -292,6 +291,5 @@ public abstract class AbsTagEditorActivity extends ToolbarActivity {
     }
 
     protected abstract void loadImageFromFile(Uri selectedFile);
-
 
 }

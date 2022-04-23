@@ -209,7 +209,7 @@ public class AlbumTagEditorActivity extends AbsTagEditorActivity implements Text
         fieldKeyValueMap.put(FieldKey.GENRE, genre.getText().toString());
         fieldKeyValueMap.put(FieldKey.YEAR, year.getText().toString());
 
-        writeValuesToFiles(fieldKeyValueMap, deleteAlbumArt ? new ArtworkInfo(getId(), null) : albumArtBitmap == null ? null : new ArtworkInfo(getId(), albumArtBitmap));
+        writeValuesToFiles(fieldKeyValueMap, deleteAlbumArt ? new ArtworkInfo(model.getId(), null) : albumArtBitmap == null ? null : new ArtworkInfo(model.getId(), albumArtBitmap));
     }
 
     @Override
@@ -220,7 +220,7 @@ public class AlbumTagEditorActivity extends AbsTagEditorActivity implements Text
     @NonNull
     @Override
     protected List<String> getSongPaths() {
-        List<Song> songs = AlbumLoader.INSTANCE.getAlbum(this, getId()).songs;
+        List<Song> songs = AlbumLoader.INSTANCE.getAlbum(this, model.getId()).songs;
         List<String> paths = new ArrayList<>(songs.size());
         for (Song song : songs) {
             paths.add(song.data);

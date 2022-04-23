@@ -40,6 +40,8 @@ import player.phonograph.util.MusicUtil.createAlbumArtFile
 
 class TagEditorViewModel : ViewModel() {
 
+    var id: Long = -1
+
     fun getAudioFile(path: String): AudioFile {
         return try {
             AudioFileIO.read(File(path))
