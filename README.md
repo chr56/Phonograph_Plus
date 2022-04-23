@@ -16,9 +16,9 @@ This is a fork! -> [原仓库/Original Project Repo](https://github.com/kabouzei
 <br/>
 <br/>
 
-**Phonograph Plus** is (partially) migrating to 🚀 Jetpack Compose
+**Phonograph Plus** is (partially) migrating to 🚀 Jetpack Compose -> see Branch [Compose](https://github.com/chr56/Phonograph_Plus/tree/Compose)
 
-**Phonograph Plus** 正在（部分）迁移至 🚀 Jetpack Compose
+**Phonograph Plus** 正在（部分）迁移至 🚀 Jetpack Compose -> 参见 [Compose](https://github.com/chr56/Phonograph_Plus/tree/Compose)
 
 <br/>
 <br/>
