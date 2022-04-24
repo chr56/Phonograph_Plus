@@ -14,6 +14,7 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import player.phonograph.App
+import player.phonograph.KEY_STACK_TRACE
 import player.phonograph.NOTIFICATION_CHANNEL_ID_ERROR
 import player.phonograph.R
 import player.phonograph.ui.activities.CrashActivity
@@ -39,7 +40,7 @@ object ErrorNotification {
         if (!isReady) init()
 
         val action = Intent(context, CrashActivity::class.java).apply {
-            putExtra(App.KEY_STACK_TRACE, msg)
+            putExtra(KEY_STACK_TRACE, msg)
         }
 
         val clickIntent: PendingIntent = PendingIntent.getActivity(context, 0, action, PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT)

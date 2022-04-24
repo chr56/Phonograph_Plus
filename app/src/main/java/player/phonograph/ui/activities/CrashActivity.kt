@@ -19,6 +19,7 @@ import com.afollestad.materialdialogs.WhichButton
 import com.afollestad.materialdialogs.actions.getActionButton
 import lib.phonograph.activity.ToolbarActivity
 import player.phonograph.App
+import player.phonograph.KEY_STACK_TRACE
 import player.phonograph.R
 import player.phonograph.settings.Setting
 import player.phonograph.util.DeviceInfoUtil.getDeviceInfo
@@ -49,7 +50,7 @@ class CrashActivity : ToolbarActivity() {
         textView = findViewById(R.id.crash_text)
 
         // stack trace text
-        val stackTraceText: String = intent.getStringExtra(App.KEY_STACK_TRACE) ?: getString(R.string.empty)
+        val stackTraceText: String = intent.getStringExtra(KEY_STACK_TRACE) ?: getString(R.string.empty)
         // device data
         val deviceInfo: String = getDeviceInfo(this)
         // appended string

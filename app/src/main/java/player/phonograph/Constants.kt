@@ -4,6 +4,8 @@
 
 package player.phonograph
 
+const val KEY_STACK_TRACE = "stack_trace"
+
 object PlaylistType {
     const val FILE = 0
     const val ABS_SMART = 1

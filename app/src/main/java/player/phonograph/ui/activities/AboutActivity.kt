@@ -280,9 +280,9 @@ class AboutActivity : ToolbarActivity(), View.OnClickListener {
             .setTitle(R.string.licenses)
             .setNoticesCssStyle(
                 getString(R.string.license_dialog_style)
-                    .replace("{bg-color}", if (app.nightmode()) "424242" else "ffffff")
-                    .replace("{text-color}", if (app.nightmode()) "ffffff" else "000000")
-                    .replace("{license-bg-color}", if (app.nightmode()) "535353" else "eeeeee")
+                    .replace("{bg-color}", if (app.nightMode) "424242" else "ffffff")
+                    .replace("{text-color}", if (app.nightMode) "ffffff" else "000000")
+                    .replace("{license-bg-color}", if (app.nightMode) "535353" else "eeeeee")
             )
             .setIncludeOwnLicense(true)
             .build()

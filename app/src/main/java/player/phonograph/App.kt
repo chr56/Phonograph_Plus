@@ -7,10 +7,10 @@ import android.os.Build
 import android.os.Process
 import android.util.Log
 import androidx.appcompat.content.res.AppCompatResources
+import kotlin.system.exitProcess
 import player.phonograph.appshortcuts.DynamicShortcutManager
 import player.phonograph.ui.activities.CrashActivity
 import util.mdcolor.pref.ThemeColor
-import kotlin.system.exitProcess
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
@@ -25,13 +25,13 @@ class App : Application() {
 
         // Exception Handler
         Thread.setDefaultUncaughtExceptionHandler { _, exception ->
-            val intent: Intent = Intent(this, CrashActivity::class.java)
-            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-            intent.putExtra(KEY_STACK_TRACE, Log.getStackTraceString(exception))
-//            intent.action = "$PACKAGE_NAME.CRASH_HANDLER"
-
-            this.startActivity(intent)
-
+            this.startActivity(
+                Intent(this, CrashActivity::class.java)
+                    .apply {
+                        flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                        putExtra(KEY_STACK_TRACE, Log.getStackTraceString(exception))
+                    }
+            )
             Process.killProcess(Process.myPid())
             exitProcess(1)
         }
@@ -52,32 +52,25 @@ class App : Application() {
         // StatusBar Lyrics API
         lyricsService =
             StatusBarLyric.API.StatusBarLyric(
-                this,
-                AppCompatResources.getDrawable(this, R.drawable.ic_notification),
+                this@App,
+                AppCompatResources.getDrawable(this@App, R.drawable.ic_notification),
                 PACKAGE_NAME,
                 false
             )
     }
 
-    fun nightmode(): Boolean {
-        val currentNightMode = (
-            resources.configuration.uiMode
-                and Configuration.UI_MODE_NIGHT_MASK
-            )
-        return when (currentNightMode) {
+    val nightMode: Boolean
+        get() = when (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) {
             Configuration.UI_MODE_NIGHT_YES -> true
             Configuration.UI_MODE_NIGHT_NO -> false
             else -> false
         }
-    }
 
     companion object {
         @JvmStatic
-        lateinit var instance: App
-            private set
+        lateinit var instance: App private set
 
-        const val PACKAGE_NAME = "player.phonograph" // todo
+        const val PACKAGE_NAME = "player.phonograph"
         const val ACTUAL_PACKAGE_NAME = BuildConfig.APPLICATION_ID
-        const val KEY_STACK_TRACE = "stack_trace"
     }
 }
