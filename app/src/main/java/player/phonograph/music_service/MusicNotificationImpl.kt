@@ -17,6 +17,7 @@ import kotlinx.coroutines.withContext
 import player.phonograph.R
 import player.phonograph.glide.SongGlideRequest
 import player.phonograph.glide.palette.BitmapPaletteWrapper
+import player.phonograph.model.Song
 import player.phonograph.settings.Setting
 import player.phonograph.util.PhonographColorUtil
 
@@ -26,7 +27,8 @@ class MusicNotificationImpl(service: MusicService) : MusicNotification(service) 
     override fun update() {
 
         CoroutineScope(Dispatchers.Default).launch {
-            val song = metaData?.song ?: return@launch
+            val song = service.queueManager.currentSong
+            if (song == Song.EMPTY_SONG) return@launch
 
             val bigNotificationImageSize = service.resources.getDimensionPixelSize(R.dimen.notification_big_image_size)
 

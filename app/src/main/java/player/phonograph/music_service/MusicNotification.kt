@@ -12,7 +12,6 @@ import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat as XNotificationCompat
 import player.phonograph.App
 import player.phonograph.R
-import player.phonograph.model.Song
 import player.phonograph.ui.activities.MainActivity
 
 abstract class MusicNotification {
@@ -53,11 +52,7 @@ abstract class MusicNotification {
 
     protected abstract fun update()
 
-    var metaData: SongMetaData? = null
-        set(value) {
-            field = value
-            update()
-        }
+    fun refresh() = update()
 
     @Synchronized
     fun stop() {
@@ -122,6 +117,4 @@ abstract class MusicNotification {
      * PendingIntent to quit/stop
      */
     val deletePendingIntent get() = buildPlaybackPendingIntent(MusicService.ACTION_STOP)
-
-    data class SongMetaData(val song: Song)
 }
