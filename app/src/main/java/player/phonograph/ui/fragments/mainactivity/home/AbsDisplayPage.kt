@@ -17,14 +17,17 @@ import androidx.annotation.StringRes
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.graphics.BlendModeColorFilterCompat
 import androidx.core.graphics.BlendModeCompat
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.AppBarLayout
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import player.phonograph.App
 import player.phonograph.R
+import player.phonograph.adapter.display.DisplayAdapter
 import player.phonograph.databinding.FragmentDisplayPageBinding
 import player.phonograph.databinding.PopupWindowMainBinding
+import player.phonograph.interfaces.Displayable
 import player.phonograph.util.PhonographColorUtil
 import player.phonograph.util.Util
 import player.phonograph.util.ViewUtil
@@ -36,7 +39,7 @@ import java.lang.ref.WeakReference
  * @param A relevant Adapter
  * @param LM relevant LayoutManager
  */
-sealed class AbsDisplayPage<IT, A : RecyclerView.Adapter<*>, LM : RecyclerView.LayoutManager> :
+sealed class AbsDisplayPage<IT, A : DisplayAdapter<out Displayable>, LM : GridLayoutManager> :
     AbsPage() {
 
     private var _viewBinding: FragmentDisplayPageBinding? = null
@@ -44,6 +47,11 @@ sealed class AbsDisplayPage<IT, A : RecyclerView.Adapter<*>, LM : RecyclerView.L
 
     abstract fun getDataSet(): List<IT>
     abstract fun loadDataSet()
+
+    /**
+     * Notify every [Displayable] items changes, do not reload dataset
+     */
+    abstract fun refreshDataSet()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -257,11 +265,56 @@ sealed class AbsDisplayPage<IT, A : RecyclerView.Adapter<*>, LM : RecyclerView.L
         popupView.actionColoredFooters.visibility = View.GONE
     }
 
-    abstract fun initOnDismissListener(
+    fun initOnDismissListener(
         popupMenu: PopupWindow,
         popup: PopupWindowMainBinding,
-    ): PopupWindow.OnDismissListener?
+    ): PopupWindow.OnDismissListener {
+        val displayUtil = DisplayUtil(this)
 
+        return PopupWindow.OnDismissListener {
+
+            //  Grid Size
+            var gridSizeSelected = 0
+            for (i in 0 until displayUtil.maxGridSize) {
+                if ((popup.gridSize.getChildAt(i) as RadioButton).isChecked) {
+                    gridSizeSelected = i + 1
+                    break
+                }
+            }
+
+            if (gridSizeSelected > 0 && gridSizeSelected != displayUtil.gridSize) {
+
+                displayUtil.gridSize = gridSizeSelected
+                val itemLayoutRes =
+                    if (gridSizeSelected > displayUtil.maxGridSizeForList) R.layout.item_grid else R.layout.item_list
+
+                if (adapter.layoutRes != itemLayoutRes) {
+                    loadDataSet()
+                    initRecyclerView() // again
+                }
+                layoutManager.spanCount = gridSizeSelected
+            }
+
+            if (this !is GenrePage) {
+                // color footer
+                val coloredFootersSelected = popup.actionColoredFooters.isChecked
+                if (displayUtil.colorFooter != coloredFootersSelected) {
+                    displayUtil.colorFooter = coloredFootersSelected
+                    adapter.usePalette = coloredFootersSelected
+                    refreshDataSet()
+                }
+            }
+
+            // sort order
+            saveSortOrderImpl(displayUtil, popupMenu, popup)
+        }
+    }
+
+    abstract fun saveSortOrderImpl(
+        displayUtil: DisplayUtil,
+        popupMenu: PopupWindow,
+        popup: PopupWindowMainBinding,
+    )
 
     fun configPopup(popupMenu: PopupWindow, popup: PopupWindowMainBinding) {
         val displayUtil = DisplayUtil(this)
@@ -295,7 +348,11 @@ sealed class AbsDisplayPage<IT, A : RecyclerView.Adapter<*>, LM : RecyclerView.L
         setupSortOrderImpl(displayUtil, popupMenu, popup)
     }
 
-    abstract fun setupSortOrderImpl(displayUtil: DisplayUtil, popupMenu: PopupWindow, popup: PopupWindowMainBinding)
+    abstract fun setupSortOrderImpl(
+        displayUtil: DisplayUtil,
+        popupMenu: PopupWindow,
+        popup: PopupWindowMainBinding
+    )
 
     protected open val emptyMessage: Int @StringRes get() = R.string.empty
     protected fun checkEmpty() {
@@ -322,10 +379,8 @@ sealed class AbsDisplayPage<IT, A : RecyclerView.Adapter<*>, LM : RecyclerView.L
 
         binding.innerAppBar.addOnOffsetChangedListener(innerAppbarOffsetListener)
         hostFragment.removeOnAppBarOffsetChangedListener(outerAppbarOffsetListener)
-//        _bindingPopup = null
         _viewBinding = null
     }
 
     protected val loaderCoroutineScope: CoroutineScope = CoroutineScope(Dispatchers.IO)
 }
-

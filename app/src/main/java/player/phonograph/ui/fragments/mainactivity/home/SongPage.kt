@@ -4,10 +4,10 @@
 
 package player.phonograph.ui.fragments.mainactivity.home
 
+import android.annotation.SuppressLint
 import android.util.Log
 import android.view.View
 import android.widget.PopupWindow
-import android.widget.RadioButton
 import androidx.recyclerview.widget.GridLayoutManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -52,7 +52,7 @@ class SongPage : AbsDisplayPage<Song, DisplayAdapter<Song>, GridLayoutManager>()
 
     override fun loadDataSet() {
         loaderCoroutineScope.launch {
-            val temp = MediaStoreUtil.getAllSongs(App.instance) as List<Song>
+            val temp = MediaStoreUtil.getAllSongs(App.instance)
             while (!isRecyclerViewPrepared) yield() // wait until ready
 
             withContext(Dispatchers.Main) {
@@ -61,11 +61,20 @@ class SongPage : AbsDisplayPage<Song, DisplayAdapter<Song>, GridLayoutManager>()
         }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
+    override fun refreshDataSet() {
+        adapter.notifyDataSetChanged()
+    }
+
     override fun getDataSet(): List<Song> {
         return if (isRecyclerViewPrepared) adapter.dataset else emptyList()
     }
 
-    override fun setupSortOrderImpl(displayUtil: DisplayUtil, popupMenu: PopupWindow, popup: PopupWindowMainBinding) {
+    override fun setupSortOrderImpl(
+        displayUtil: DisplayUtil,
+        popupMenu: PopupWindow,
+        popup: PopupWindowMainBinding
+    ) {
 
         val currentSortMode = displayUtil.sortMode
         Log.d(TAG, "Read cfg: sortMode $currentSortMode")
@@ -94,64 +103,35 @@ class SongPage : AbsDisplayPage<Song, DisplayAdapter<Song>, GridLayoutManager>()
         }
     }
 
-    override fun initOnDismissListener(popupMenu: PopupWindow, popup: PopupWindowMainBinding): PopupWindow.OnDismissListener {
-        val displayUtil = DisplayUtil(this)
-        return PopupWindow.OnDismissListener {
+    override fun saveSortOrderImpl(
+        displayUtil: DisplayUtil,
+        popupMenu: PopupWindow,
+        popup: PopupWindowMainBinding
+    ) {
 
-            //  Grid Size
-            var gridSizeSelected = 0
-            for (i in 0 until displayUtil.maxGridSize) {
-                if ((popup.gridSize.getChildAt(i) as RadioButton).isChecked) {
-                    gridSizeSelected = i + 1
-                    break
-                }
-            }
+        // sort order
 
-            if (gridSizeSelected > 0 && gridSizeSelected != displayUtil.gridSize) {
+        val revert = when (popup.sortOrderBasic.checkedRadioButtonId) {
+            R.id.sort_order_z_a -> true
+            R.id.sort_order_a_z -> false
+            else -> false
+        }
+        val sortRef: SortRef = when (popup.sortOrderContent.checkedRadioButtonId) {
+            R.id.sort_order_song -> SortRef.SONG_NAME
+            R.id.sort_order_album -> SortRef.ALBUM_NAME
+            R.id.sort_order_artist -> SortRef.ARTIST_NAME
+            R.id.sort_order_year -> SortRef.YEAR
+            R.id.sort_order_date_added -> SortRef.ADDED_DATE
+            R.id.sort_order_date_modified -> SortRef.MODIFIED_DATE
+            R.id.sort_order_duration -> SortRef.SONG_DURATION
+            else -> SortRef.ID
+        }
 
-                displayUtil.gridSize = gridSizeSelected
-                val itemLayoutRes =
-                    if (gridSizeSelected > displayUtil.maxGridSizeForList) R.layout.item_grid else R.layout.item_list
-
-                if (adapter.layoutRes != itemLayoutRes) {
-                    loadDataSet()
-                    initRecyclerView() // again
-                }
-                layoutManager.spanCount = gridSizeSelected
-            }
-
-            // color footer
-            val coloredFootersSelected = popup.actionColoredFooters.isChecked
-            if (displayUtil.colorFooter != coloredFootersSelected) {
-                displayUtil.colorFooter = coloredFootersSelected
-                adapter.usePalette = coloredFootersSelected
-                adapter.dataset = getDataSet() // just refresh
-            }
-
-            // sort order
-
-            val revert = when (popup.sortOrderBasic.checkedRadioButtonId) {
-                R.id.sort_order_z_a -> true
-                R.id.sort_order_a_z -> false
-                else -> false
-            }
-            val sortRef: SortRef = when (popup.sortOrderContent.checkedRadioButtonId) {
-                R.id.sort_order_song -> SortRef.SONG_NAME
-                R.id.sort_order_album -> SortRef.ALBUM_NAME
-                R.id.sort_order_artist -> SortRef.ARTIST_NAME
-                R.id.sort_order_year -> SortRef.YEAR
-                R.id.sort_order_date_added -> SortRef.ADDED_DATE
-                R.id.sort_order_date_modified -> SortRef.MODIFIED_DATE
-                R.id.sort_order_duration -> SortRef.SONG_DURATION
-                else -> SortRef.ID
-            }
-
-            val selected = SortMode(sortRef, revert)
-            if (displayUtil.sortMode != selected) {
-                displayUtil.sortMode = selected
-                loadDataSet()
-                Log.d(AlbumPage.TAG, "Write cfg: sortMode $selected")
-            }
+        val selected = SortMode(sortRef, revert)
+        if (displayUtil.sortMode != selected) {
+            displayUtil.sortMode = selected
+            loadDataSet()
+            Log.d(AlbumPage.TAG, "Write cfg: sortMode $selected")
         }
     }
 
