@@ -51,7 +51,7 @@ sealed class AbsDisplayPage<IT, A : RecyclerView.Adapter<*>, LM : RecyclerView.L
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         loadDataSet()
         _viewBinding = FragmentDisplayPageBinding.inflate(inflater, container, false)
@@ -262,10 +262,43 @@ sealed class AbsDisplayPage<IT, A : RecyclerView.Adapter<*>, LM : RecyclerView.L
 
     abstract fun initOnDismissListener(
         popupMenu: PopupWindow,
-        popup: PopupWindowMainBinding
+        popup: PopupWindowMainBinding,
     ): PopupWindow.OnDismissListener?
 
-    abstract fun configPopup(popupMenu: PopupWindow, popup: PopupWindowMainBinding)
+
+    fun configPopup(popupMenu: PopupWindow, popup: PopupWindowMainBinding) {
+        val displayUtil = DisplayUtil(this)
+
+        // grid size
+        popup.textGridSize.visibility = View.VISIBLE
+        popup.gridSize.visibility = View.VISIBLE
+        if (Util.isLandscape(resources)) popup.textGridSize.text = resources.getText(R.string.action_grid_size_land)
+        val current = displayUtil.gridSize
+        val max = displayUtil.maxGridSize
+        for (i in 0 until max) popup.gridSize.getChildAt(i).visibility = View.VISIBLE
+        popup.gridSize.clearCheck()
+        (popup.gridSize.getChildAt(current - 1) as RadioButton).isChecked = true
+
+        // color footer
+        if (this !is GenrePage) { // Genre Page never colored
+            popup.actionColoredFooters.visibility = View.VISIBLE
+            popup.actionColoredFooters.isChecked = displayUtil.colorFooter
+            popup.actionColoredFooters.isEnabled = displayUtil.gridSize > displayUtil.maxGridSizeForList
+        }
+
+        // sort order
+
+        // clear existed
+        popup.sortOrderBasic.visibility = View.VISIBLE
+        popup.textSortOrderBasic.visibility = View.VISIBLE
+        popup.sortOrderContent.visibility = View.VISIBLE
+        popup.textSortOrderContent.visibility = View.VISIBLE
+        for (i in 0 until popup.sortOrderContent.childCount) popup.sortOrderContent.getChildAt(i).visibility = View.GONE
+
+        setupSortOrderImpl(displayUtil, popupMenu, popup)
+    }
+
+    abstract fun setupSortOrderImpl(displayUtil: DisplayUtil, popupMenu: PopupWindow, popup: PopupWindowMainBinding)
 
     protected open val emptyMessage: Int @StringRes get() = R.string.empty
     protected fun checkEmpty() {

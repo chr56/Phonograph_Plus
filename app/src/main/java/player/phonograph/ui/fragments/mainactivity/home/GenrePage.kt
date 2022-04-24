@@ -22,7 +22,6 @@ import player.phonograph.mediastore.GenreLoader
 import player.phonograph.mediastore.sort.SortMode
 import player.phonograph.mediastore.sort.SortRef
 import player.phonograph.model.Genre
-import player.phonograph.util.Util
 
 class GenrePage : AbsDisplayPage<Genre, DisplayAdapter<Genre>, GridLayoutManager>() {
 
@@ -57,26 +56,7 @@ class GenrePage : AbsDisplayPage<Genre, DisplayAdapter<Genre>, GridLayoutManager
         return if (isRecyclerViewPrepared) adapter.dataset else emptyList()
     }
 
-    override fun configPopup(popupMenu: PopupWindow, popup: PopupWindowMainBinding) {
-        val displayUtil = DisplayUtil(this)
-
-        // grid size
-        popup.textGridSize.visibility = View.VISIBLE
-        popup.gridSize.visibility = View.VISIBLE
-        if (Util.isLandscape(resources)) popup.textGridSize.text =
-            resources.getText(R.string.action_grid_size_land)
-        val current = displayUtil.gridSize
-        val max = displayUtil.maxGridSize
-        for (i in 0 until max) popup.gridSize.getChildAt(i).visibility = View.VISIBLE
-        popup.gridSize.clearCheck()
-        (popup.gridSize.getChildAt(current - 1) as RadioButton).isChecked = true
-
-        // sort order
-        popup.sortOrderBasic.visibility = View.VISIBLE
-        popup.textSortOrderBasic.visibility = View.VISIBLE
-        popup.sortOrderContent.visibility = View.VISIBLE
-        popup.textSortOrderContent.visibility = View.VISIBLE
-        for (i in 0 until popup.sortOrderContent.childCount) popup.sortOrderContent.getChildAt(i).visibility = View.GONE
+    override fun setupSortOrderImpl(displayUtil: DisplayUtil, popupMenu: PopupWindow, popup: PopupWindowMainBinding) {
 
         val currentSortMode = displayUtil.sortMode
         Log.d(TAG, "Read cfg: sortMode $currentSortMode")
@@ -87,7 +67,7 @@ class GenrePage : AbsDisplayPage<Genre, DisplayAdapter<Genre>, GridLayoutManager
         when (currentSortMode.sortRef) {
             SortRef.GENRE_NAME -> popup.sortOrderContent.check(R.id.sort_order_name_plain)
             SortRef.SONG_COUNT -> popup.sortOrderContent.check(R.id.sort_order_song_count)
-            else -> { popup.sortOrderContent.clearCheck() }
+            else -> popup.sortOrderContent.clearCheck()
         }
 
         when (currentSortMode.revert) {
@@ -98,7 +78,7 @@ class GenrePage : AbsDisplayPage<Genre, DisplayAdapter<Genre>, GridLayoutManager
 
     override fun initOnDismissListener(
         popupMenu: PopupWindow,
-        popup: PopupWindowMainBinding
+        popup: PopupWindowMainBinding,
     ): PopupWindow.OnDismissListener {
         val displayUtil = DisplayUtil(this)
         return PopupWindow.OnDismissListener {
