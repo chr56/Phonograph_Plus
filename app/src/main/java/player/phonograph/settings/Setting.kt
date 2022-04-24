@@ -228,7 +228,7 @@ class Setting(context: Context) {
     var startDirectory: File
         get() = File(
             mPreferences.getString(
-                START_DIRECTORY, FoldersFragment.getDefaultStartDirectory().path
+                START_DIRECTORY, FoldersFragment.defaultStartDirectory.path
             )!!
         )
         set(value) {

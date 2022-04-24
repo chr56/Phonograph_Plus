@@ -115,7 +115,7 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
         when (key) {
             FOLDERS -> {
                 mainBinding.navigationView.setCheckedItem(R.id.nav_folders)
-                setCurrentFragment(FoldersFragment.newInstance(this))
+                setCurrentFragment(FoldersFragment.newInstance())
             }
             HOME -> {
                 mainBinding.navigationView.setCheckedItem(R.id.nav_home)

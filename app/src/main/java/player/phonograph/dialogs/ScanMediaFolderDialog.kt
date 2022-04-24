@@ -83,7 +83,7 @@ class ScanMediaFolderDialog : DialogFragment() {
         return dialog
     }
 
-    fun scanPaths(toBeScanned: Array<String?>) {
+    fun scanPaths(toBeScanned: Array<String>) {
         MediaScannerConnection.scanFile(
             App.instance, toBeScanned, null, activity?.let { UpdateToastMediaScannerCompletionListener(it, toBeScanned as Array<String>) }
         )

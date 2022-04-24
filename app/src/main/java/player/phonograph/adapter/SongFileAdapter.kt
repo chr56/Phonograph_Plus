@@ -145,9 +145,9 @@ class SongFileAdapter(
     }
 
     interface Callbacks {
-        fun onFileSelected(file: File?)
-        fun onFileMenuClicked(file: File?, view: View?)
-        fun onMultipleItemAction(item: MenuItem?, files: List<File>?)
+        fun onFileSelected(file: File)
+        fun onFileMenuClicked(file: File, view: View?)
+        fun onMultipleItemAction(item: MenuItem, files: List<File>)
     }
 
     companion object {

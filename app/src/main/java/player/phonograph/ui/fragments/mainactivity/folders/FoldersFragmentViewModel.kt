@@ -9,6 +9,11 @@ import android.util.Log
 import android.webkit.MimeTypeMap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import java.io.File
+import java.io.FileFilter
+import java.lang.IllegalStateException
+import java.util.*
+import kotlin.collections.ArrayList
 import kotlinx.coroutines.*
 import player.phonograph.App
 import player.phonograph.R
@@ -17,18 +22,13 @@ import player.phonograph.notification.BackgroundNotification
 import player.phonograph.notification.ErrorNotification
 import player.phonograph.util.FileUtil
 import player.phonograph.views.BreadCrumbLayout
-import java.io.File
-import java.io.FileFilter
-import java.lang.IllegalStateException
-import java.util.*
-import kotlin.collections.ArrayList
 
 class FoldersFragmentViewModel : ViewModel() {
     var isRecyclerViewPrepared: Boolean = false
 
     var listPathsJob: Job? = null
-    private var onPathsListedCallback: ((Array<String?>) -> Unit)? = null
-    fun listPaths(directoryInfos: DirectoryInfo, onPathsListed: (Array<String?>) -> Unit) {
+    private var onPathsListedCallback: ((Array<String>) -> Unit)? = null
+    fun listPaths(directoryInfos: DirectoryInfo, onPathsListed: (Array<String>) -> Unit) {
         onPathsListedCallback = onPathsListed
         listPathsJob = viewModelScope.launch(Dispatchers.IO) {
 
@@ -43,9 +43,13 @@ class FoldersFragmentViewModel : ViewModel() {
 
     // todo
     var scanSongsJob: Job? = null
-    var onSongsListedCallback: ((List<Song?>, Any?) -> Unit)? = null
+    var onSongsListedCallback: ((List<Song>?, Any?) -> Unit)? = null
     @JvmOverloads
-    fun scanSongs(fileInfo: FileInfo, onSongsListed: ((List<Song?>, Any?) -> Unit), extra: Any? = null) {
+    fun scanSongs(
+        fileInfo: FileInfo,
+        onSongsListed: ((List<Song>?, Any?) -> Unit),
+        extra: Any? = null
+    ) {
         onSongsListedCallback = onSongsListed
         scanSongsJob = viewModelScope.launch(Dispatchers.IO) {
             val notificationId = SystemClock.currentThreadTimeMillis().div(888887).toInt()
@@ -132,34 +136,37 @@ class FoldersFragmentViewModel : ViewModel() {
     }
 }
 
-class FileInfo(val files: List<File>, val fileFilter: FileFilter = FileScanner.audioFileFilter, val fileComparator: Comparator<File>)
+class FileInfo(
+    val files: List<File>,
+    val fileFilter: FileFilter = FileScanner.audioFileFilter,
+    val fileComparator: Comparator<File>
+)
 class DirectoryInfo(val file: File, val fileFilter: FileFilter)
 
 object FileScanner {
-    fun scanPaths(directoryInfos: DirectoryInfo, scope: CoroutineScope): Array<String?>? {
-        val paths: Array<String?>
+    fun scanPaths(directoryInfos: DirectoryInfo, scope: CoroutineScope): Array<String>? {
         if (!scope.isActive) return null
-        try {
-            if (directoryInfos.file.isDirectory) {
-                val files = FileUtil.listFilesDeep(directoryInfos.file, directoryInfos.fileFilter)
-                if (!scope.isActive) return null
 
-                paths = arrayOfNulls(files.size)
-                for (i in files.indices) {
+        val paths: Array<String>? =
+            try {
+                if (directoryInfos.file.isDirectory) {
                     if (!scope.isActive) return null
-                    val f = files[i]
-                    paths[i] = FileUtil.safeGetCanonicalPath(f)
+                    val files = FileUtil.listFilesDeep(directoryInfos.file, directoryInfos.fileFilter)
+
+                    Array(files.size) { i ->
+                        if (!scope.isActive) return null
+                        FileUtil.safeGetCanonicalPath(files[i])
+                    }
+                } else {
+                    arrayOf(FileUtil.safeGetCanonicalPath(directoryInfos.file))
+                }.also {
+                    Log.v("FileScanner", "success")
                 }
-            } else {
-                paths = arrayOfNulls(1)
-                paths[0] = FileUtil.safeGetCanonicalPath(directoryInfos.file)
+            } catch (e: Exception) {
+                ErrorNotification.postErrorNotification(e, "Fail to Load files!")
+                Log.w("FolderFragment", e)
+                null
             }
-            Log.v("FileScanner", "success")
-        } catch (e: Exception) {
-            ErrorNotification.postErrorNotification(e, "Fail to Load files!")
-            e.printStackTrace()
-            return null
-        }
         return paths
     }
 
