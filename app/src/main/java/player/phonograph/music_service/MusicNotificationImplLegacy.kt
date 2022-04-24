@@ -24,7 +24,7 @@ import player.phonograph.util.PhonographColorUtil
 import util.mdcolor.ColorUtil
 import util.mddesign.util.MaterialColorHelper
 
-class PlayingNotificationImpl(service: MusicService) : PlayingNotification(service) {
+class MusicNotificationImplLegacy(service: MusicService) : MusicNotification(service) {
 
     private var target: Target<BitmapPaletteWrapper>? = null
 

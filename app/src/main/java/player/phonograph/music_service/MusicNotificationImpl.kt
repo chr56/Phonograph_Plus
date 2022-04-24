@@ -20,7 +20,7 @@ import player.phonograph.glide.palette.BitmapPaletteWrapper
 import player.phonograph.settings.Setting
 import player.phonograph.util.PhonographColorUtil
 
-class PlayingNotificationImpl24(service: MusicService) : PlayingNotification(service) {
+class MusicNotificationImpl(service: MusicService) : MusicNotification(service) {
 
     @Synchronized
     override fun update() {

@@ -15,7 +15,7 @@ import player.phonograph.R
 import player.phonograph.model.Song
 import player.phonograph.ui.activities.MainActivity
 
-abstract class PlayingNotification {
+abstract class MusicNotification {
 
     companion object {
         const val NOTIFICATION_CHANNEL_ID = "playing_notification"
