@@ -64,7 +64,7 @@ sealed class AbsDisplayPage<IT, A : DisplayAdapter<out Displayable>, LM : GridLa
     }
 
     // for mini player bar
-    protected var outerAppbarOffsetListener =
+    private var outerAppbarOffsetListener =
         AppBarLayout.OnOffsetChangedListener { _, verticalOffset ->
             binding.container.setPadding(
                 binding.container.paddingLeft,
@@ -74,7 +74,7 @@ sealed class AbsDisplayPage<IT, A : DisplayAdapter<out Displayable>, LM : GridLa
             )
         }
 
-    protected var innerAppbarOffsetListener =
+    private var innerAppbarOffsetListener =
         AppBarLayout.OnOffsetChangedListener { _, verticalOffset ->
             binding.container.setPadding(
                 binding.container.paddingLeft,
@@ -104,9 +104,9 @@ sealed class AbsDisplayPage<IT, A : DisplayAdapter<out Displayable>, LM : GridLa
 
     protected var isRecyclerViewPrepared: Boolean = false
 
-    protected lateinit var adapterDataObserver: RecyclerView.AdapterDataObserver
+    private lateinit var adapterDataObserver: RecyclerView.AdapterDataObserver
 
-    protected fun initRecyclerView() {
+    private fun initRecyclerView() {
 
         layoutManager = initLayoutManager()
         adapter = initAdapter()
@@ -131,7 +131,7 @@ sealed class AbsDisplayPage<IT, A : DisplayAdapter<out Displayable>, LM : GridLa
         isRecyclerViewPrepared = true
     }
 
-    protected fun initAppBar() {
+    private fun initAppBar() {
 
         binding.innerAppBar.setExpanded(false)
         binding.innerAppBar.addOnOffsetChangedListener(innerAppbarOffsetListener)
@@ -151,7 +151,7 @@ sealed class AbsDisplayPage<IT, A : DisplayAdapter<out Displayable>, LM : GridLa
     }
 
     // all pages share/re-used one popup on host fragment
-    val popupWindow: PopupWindow
+    private val popupWindow: PopupWindow
         get() {
             if (hostFragment.displayPopup.get() == null) {
                 hostFragment.displayPopup = WeakReference(createPopup())
@@ -165,9 +165,9 @@ sealed class AbsDisplayPage<IT, A : DisplayAdapter<out Displayable>, LM : GridLa
                     WeakReference(PopupWindowMainBinding.inflate(LayoutInflater.from(hostFragment.mainActivity)))
             return hostFragment.displayPopupView.get()!!
         }
-    val popupView get() = _bindingPopup!!
+    private val popupView get() = _bindingPopup!!
 
-    protected fun createPopup(): PopupWindow {
+    private fun createPopup(): PopupWindow {
         val mainActivity = hostFragment.mainActivity // context
 
         // todo move to util or view model
@@ -227,7 +227,7 @@ sealed class AbsDisplayPage<IT, A : DisplayAdapter<out Displayable>, LM : GridLa
         )
     }
 
-    protected fun onPopupShow() {
+    private fun onPopupShow() {
         // first, hide all items
         hideAllPopupItems()
 
@@ -265,7 +265,7 @@ sealed class AbsDisplayPage<IT, A : DisplayAdapter<out Displayable>, LM : GridLa
         popupView.actionColoredFooters.visibility = View.GONE
     }
 
-    fun initOnDismissListener(
+    private fun initOnDismissListener(
         popupMenu: PopupWindow,
         popup: PopupWindowMainBinding,
     ): PopupWindow.OnDismissListener {
@@ -310,13 +310,13 @@ sealed class AbsDisplayPage<IT, A : DisplayAdapter<out Displayable>, LM : GridLa
         }
     }
 
-    abstract fun saveSortOrderImpl(
+    abstract protected fun saveSortOrderImpl(
         displayUtil: DisplayUtil,
         popupMenu: PopupWindow,
         popup: PopupWindowMainBinding,
     )
 
-    fun configPopup(popupMenu: PopupWindow, popup: PopupWindowMainBinding) {
+    private fun configPopup(popupMenu: PopupWindow, popup: PopupWindowMainBinding) {
         val displayUtil = DisplayUtil(this)
 
         // grid size
@@ -348,7 +348,7 @@ sealed class AbsDisplayPage<IT, A : DisplayAdapter<out Displayable>, LM : GridLa
         setupSortOrderImpl(displayUtil, popupMenu, popup)
     }
 
-    abstract fun setupSortOrderImpl(
+    abstract protected fun setupSortOrderImpl(
         displayUtil: DisplayUtil,
         popupMenu: PopupWindow,
         popup: PopupWindowMainBinding
