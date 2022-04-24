@@ -20,6 +20,7 @@ class App : Application() {
     lateinit var lyricsService: StatusBarLyric.API.StatusBarLyric
 
     override fun onCreate() {
+        if (BuildConfig.DEBUG) Log.v("Metrics", "${System.currentTimeMillis().mod(10000000)} App.onCreate()")
         super.onCreate()
         instance = this
 

@@ -89,6 +89,11 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
         showChangelog()
     }
 
+    override fun onResume() {
+        super.onResume()
+        if (BuildConfig.DEBUG) Log.v("Metrics", "${System.currentTimeMillis().mod(10000000)} MainActivity.onResume()")
+    }
+
     override fun createContentView(): View {
 
         activityMainPageBinding = ActivityMainPageBinding.inflate(layoutInflater)
