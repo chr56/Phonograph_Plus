@@ -261,7 +261,12 @@ class MusicService : MediaBrowserServiceCompat() {
             false
         }
 
+    val currentState: PlayerState
+        get() = _playerController?.playerState ?: PlayerState.STOPPED
+
     val currentTimeAxis: Int = if (_playerController != null) playerController.currentTimeAxis else -1
+
+    val mediaSessionToken: MediaSessionCompat.Token get() = mediaSession.sessionToken
 
     fun requireWakelock(time: Long) {
         wakeLock?.acquire(time)

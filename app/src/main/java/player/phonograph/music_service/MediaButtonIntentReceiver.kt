@@ -47,7 +47,7 @@ class MediaButtonIntentReceiver : BroadcastReceiver() {
     }
 
     companion object {
-        private const val DEBUG = BuildConfig.DEBUG
+        private val DEBUG = BuildConfig.DEBUG
         const val TAG: String = "MediaButtonIntentReceiver"
 
         private const val MSG_HEADSET_DOUBLE_CLICK_TIMEOUT = 2
