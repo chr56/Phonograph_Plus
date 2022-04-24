@@ -16,6 +16,7 @@ import android.support.v4.media.session.PlaybackStateCompat
 import android.view.KeyEvent
 import androidx.media.MediaBrowserServiceCompat
 import player.phonograph.App
+import player.phonograph.settings.Setting.Companion.instance
 
 class MusicService : MediaBrowserServiceCompat() {
     private var wakeLock: WakeLock? = null
@@ -28,6 +29,8 @@ class MusicService : MediaBrowserServiceCompat() {
 
     private var _playerController: PlayerController? = null
     private val playerController: PlayerController get() = _playerController!!
+
+    private lateinit var notificationManager: MusicNotification
 
     val audioFocusManager: AudioFocusManager = AudioFocusManager()
 
@@ -73,8 +76,13 @@ class MusicService : MediaBrowserServiceCompat() {
             // mediaSession.setFlags(MediaSessionCompat.FLAG_HANDLES_QUEUE_COMMANDS)
         }
 
-        // setup notification
-        // todo
+        /* noinspection ObsoleteSdkInt*/
+        notificationManager =
+            if (!instance.classicNotification && Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                MusicNotificationImpl(this)
+            } else {
+                MusicNotificationImplLegacy(this)
+            }
 
         // setup session token
         this.sessionToken = mediaSession.sessionToken
@@ -129,7 +137,7 @@ class MusicService : MediaBrowserServiceCompat() {
                 playerController.play()
                 mediaSession.isActive = true
                 mediaSession.setMetadata(generateMetaData())
-                // todo notification
+                notificationManager.refresh()
                 if (!noisyReceiverRegistered) {
                     registerReceiver(becomingNoisyReceiver, becomingNoisyReceiverIntentFilter)
                     noisyReceiverRegistered = true
@@ -142,6 +150,7 @@ class MusicService : MediaBrowserServiceCompat() {
             playerController.pause()
             playerController.pauseReason = PlayerController.PAUSE_BY_MANUAL_ACTION
             mediaSession.setMetadata(generateMetaData())
+            notificationManager.refresh()
             audioFocusManager.abandonAudioFocus()
             unregisterReceiver(becomingNoisyReceiver)
         }
@@ -150,14 +159,14 @@ class MusicService : MediaBrowserServiceCompat() {
             checkPlayerController()
             playerController.jumpForward()
             mediaSession.setMetadata(generateMetaData())
-
+            notificationManager.refresh()
         }
 
         override fun onSkipToPrevious() {
             checkPlayerController()
             playerController.back()
             mediaSession.setMetadata(generateMetaData())
-
+            notificationManager.refresh()
         }
 
         override fun onSeekTo(pos: Long) {
