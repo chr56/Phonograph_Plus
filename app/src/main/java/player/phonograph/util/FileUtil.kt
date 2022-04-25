@@ -9,16 +9,15 @@ package player.phonograph.util
 import android.content.Context
 import android.provider.MediaStore.Audio.AudioColumns.DATA
 import android.webkit.MimeTypeMap
+import java.io.*
+import java.text.DecimalFormat
+import java.util.*
+import kotlin.math.log10
+import kotlin.math.pow
 import player.phonograph.mediastore.SongLoader.getSongs
 import player.phonograph.mediastore.SongLoader.makeSongCursor
 import player.phonograph.misc.SortedCursor
 import player.phonograph.model.Song
-import java.io.*
-import java.text.DecimalFormat
-import java.util.*
-import kotlin.collections.ArrayList
-import kotlin.math.log10
-import kotlin.math.pow
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
@@ -55,33 +54,33 @@ object FileUtil {
         return directory.listFiles(fileFilter)?.toList()
     }
 
-    fun listFilesDeep(directory: File, fileFilter: FileFilter?): List<File> =
+    fun listFilesDeep(directory: File, fileFilter: FileFilter?): List<File>? =
         rListFilesDeep(directory, fileFilter)
 
-    fun listFilesDeep(files: Collection<File>, fileFilter: FileFilter?): List<File> {
+    fun listFilesDeep(files: Collection<File>, fileFilter: FileFilter?): List<File>? {
         val resFiles: MutableList<File> = LinkedList()
         for (file in files) {
             if (file.isDirectory) {
-                resFiles.addAll(rListFilesDeep(file, fileFilter))
+                resFiles.addAll(rListFilesDeep(file, fileFilter).orEmpty())
             } else if (fileFilter == null || fileFilter.accept(file)) {
                 resFiles.add(file)
             }
         }
-        return resFiles
+        return if (resFiles.isEmpty()) null else resFiles
     }
 
-    private fun rListFilesDeep(directory: File, fileFilter: FileFilter?): List<File> {
-        val result: MutableList<File> = ArrayList()
+    private fun rListFilesDeep(directory: File, fileFilter: FileFilter?): List<File>? {
+        val result: MutableList<File> = LinkedList()
         directory.listFiles(fileFilter)?.let { files ->
             for (file in files) {
                 if (file.isDirectory) {
-                    result.addAll(rListFilesDeep(file, fileFilter))
+                    result.addAll(rListFilesDeep(file, fileFilter).orEmpty())
                 } else {
                     result.add(file)
                 }
             }
         }
-        return result
+        return if (result.isEmpty()) null else result
     }
 
     fun fileIsMimeType(file: File, mimeType: String?, mimeTypeMap: MimeTypeMap): Boolean {

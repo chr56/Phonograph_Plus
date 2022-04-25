@@ -32,7 +32,7 @@ class FoldersFragmentViewModel : ViewModel() {
         onPathsListedCallback = onPathsListed
         listPathsJob = viewModelScope.launch(Dispatchers.IO) {
 
-            val paths = FileScanner.scanPaths(directoryInfos, this)
+            val paths = FileScanner.scanPaths(directoryInfos, this, recursive = true)
 
             withContext(Dispatchers.Main) {
                 if (paths != null)
@@ -44,11 +44,11 @@ class FoldersFragmentViewModel : ViewModel() {
     // todo
     var scanSongsJob: Job? = null
     var onSongsListedCallback: ((List<Song>?, Any?) -> Unit)? = null
-    @JvmOverloads
+
     fun scanSongs(
         fileInfo: FileInfo,
         onSongsListed: ((List<Song>?, Any?) -> Unit),
-        extra: Any? = null
+        extra: Any? = null,
     ) {
         onSongsListedCallback = onSongsListed
         scanSongsJob = viewModelScope.launch(Dispatchers.IO) {
@@ -62,7 +62,7 @@ class FoldersFragmentViewModel : ViewModel() {
 
             val songs = try {
                 val files = FileUtil.listFilesDeep(fileInfo.files, fileInfo.fileFilter)
-                if (!isActive) {
+                if (!isActive || files.isNullOrEmpty()) {
                     BackgroundNotification.remove(notificationId)
                     return@launch
                 }
@@ -74,7 +74,7 @@ class FoldersFragmentViewModel : ViewModel() {
                     FileUtil.matchFilesWithMediaStore(App.instance, files)
                 }
             } catch (e: Exception) {
-                ErrorNotification.postErrorNotification(e, "Fail to find Song!")
+                ErrorNotification.postErrorNotification(e, "Failed to find Song!")
                 e.printStackTrace()
                 null
             } finally {
@@ -139,20 +139,26 @@ class FoldersFragmentViewModel : ViewModel() {
 class FileInfo(
     val files: List<File>,
     val fileFilter: FileFilter = FileScanner.audioFileFilter,
-    val fileComparator: Comparator<File>
+    val fileComparator: Comparator<File>,
 )
+
 class DirectoryInfo(val file: File, val fileFilter: FileFilter)
 
 object FileScanner {
-    fun scanPaths(directoryInfos: DirectoryInfo, scope: CoroutineScope): Array<String>? {
+    fun scanPaths(directoryInfos: DirectoryInfo, scope: CoroutineScope, recursive: Boolean = false): Array<String>? {
         if (!scope.isActive) return null
 
         val paths: Array<String>? =
             try {
                 if (directoryInfos.file.isDirectory) {
                     if (!scope.isActive) return null
-                    val files = FileUtil.listFilesDeep(directoryInfos.file, directoryInfos.fileFilter)
+                    val files =
+                        if (recursive)
+                            FileUtil.listFilesDeep(directoryInfos.file, directoryInfos.fileFilter)
+                        else
+                            FileUtil.listFiles(directoryInfos.file, directoryInfos.fileFilter)
 
+                    if (files.isNullOrEmpty()) return null
                     Array(files.size) { i ->
                         if (!scope.isActive) return null
                         FileUtil.safeGetCanonicalPath(files[i])
