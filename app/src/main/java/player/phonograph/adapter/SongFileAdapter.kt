@@ -16,6 +16,7 @@ import player.phonograph.adapter.base.MediaEntryViewHolder
 import player.phonograph.glide.SongGlideRequest
 import player.phonograph.glide.audiocover.AudioFileCover
 import player.phonograph.interfaces.CabHolder
+import player.phonograph.util.FileUtil.getReadableFileSize
 import player.phonograph.util.ImageUtil
 import util.mddesign.util.Util
 import java.io.File
@@ -79,7 +80,7 @@ class SongFileAdapter(
 
     private fun getFileTitle(file: File): String = file.name
 
-    private fun getFileText(file: File): String? = if (file.isDirectory) null else readableFileSize(file.length())
+    private fun getFileText(file: File): String? = if (file.isDirectory) null else getReadableFileSize(file.length())
 
     private fun loadFileImage(file: File, holder: ViewHolder) {
         val iconColor = Util.resolveColor(activity, R.attr.iconColor)
@@ -154,15 +155,6 @@ class SongFileAdapter(
         private const val FILE = 0
         private const val FOLDER = 1
 
-        fun readableFileSize(size: Long): String {
-            if (size <= 0) return "$size B"
 
-            val units = arrayOf("B", "KB", "MB", "GB", "TB")
-            val digitGroups =
-                (log10(size.toDouble()) / log10(1024.0)).toInt()
-            return DecimalFormat("#,##0.##").format(
-                size / 1024.0.pow(digitGroups.toDouble())
-            ) + " " + units[digitGroups]
-        }
     }
 }

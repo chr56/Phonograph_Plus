@@ -14,8 +14,11 @@ import player.phonograph.mediastore.SongLoader.makeSongCursor
 import player.phonograph.misc.SortedCursor
 import player.phonograph.model.Song
 import java.io.*
+import java.text.DecimalFormat
 import java.util.*
 import kotlin.collections.ArrayList
+import kotlin.math.log10
+import kotlin.math.pow
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
@@ -162,5 +165,16 @@ object FileUtil {
             e.printStackTrace()
             file.absoluteFile
         }
+    }
+
+    fun getReadableFileSize(size: Long): String {
+        if (size <= 0) return "$size B"
+
+        val units = arrayOf("B", "KB", "MB", "GB", "TB")
+        val digitGroups =
+            (log10(size.toDouble()) / log10(1024.0)).toInt()
+        return DecimalFormat("#,##0.##").format(
+            size / 1024.0.pow(digitGroups.toDouble())
+        ) + " " + units[digitGroups]
     }
 }
