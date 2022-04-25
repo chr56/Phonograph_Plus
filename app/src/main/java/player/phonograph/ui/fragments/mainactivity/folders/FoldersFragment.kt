@@ -67,7 +67,7 @@ class FoldersFragment :
 
         viewBinding.breadCrumbs.setActiveOrAdd(crumb, false)
         if (addToHistory) viewBinding.breadCrumbs.addHistory(crumb)
-        model.loadFiles(crumb) { files: List<File> ->
+        model.listDirectoriesAndFiles(crumb) { files: List<File> ->
             updateAdapter(files)
         }
     }
@@ -98,7 +98,7 @@ class FoldersFragment :
             setCrumb(Crumb(safeGetCanonicalFile((requireArguments().getSerializable(PATH) as File))), true)
         } else {
             viewBinding.breadCrumbs.restoreFromStateWrapper(savedInstanceState.getParcelable(CRUMBS))
-            model.loadFiles(activeCrumb) { files: List<File> ->
+            model.listDirectoriesAndFiles(activeCrumb) { files: List<File> ->
                 updateAdapter(files)
             }
         }
@@ -245,7 +245,7 @@ class FoldersFragment :
             }
             R.id.action_scan -> {
                 activeCrumb?.let {
-                    model.listPaths(DirectoryInfo(it.file, FileScanner.audioFileFilter)) { paths: Array<String>? ->
+                    model.scanPaths(DirectoryInfo(it.file, FileScanner.audioFileFilter)) { paths: Array<String>? ->
                         model.scanSongFiles(requireActivity(), paths)
                     }
                 }
@@ -262,7 +262,7 @@ class FoldersFragment :
         } else {
             val fileFilter = FileFilter { pathname: File -> !pathname.isDirectory && FileScanner.audioFileFilter.accept(pathname) }
             canonicalFile.parentFile?.let {
-                model.scanSongs(
+                model.searchSongs(
                     FileInfo(listOf(it), fileFilter, model.fileComparator), { songs: List<Song>?, _: Any? ->
                     val makeSnackBar: () -> Unit = {
                         Snackbar.make(
@@ -280,7 +280,7 @@ class FoldersFragment :
 
                     if (songs == null) {
                         makeSnackBar()
-                        return@scanSongs
+                        return@searchSongs
                     }
                     var startIndex = -1
                     for (index in songs.indices) {
@@ -302,7 +302,7 @@ class FoldersFragment :
 
     override fun onMultipleItemAction(item: MenuItem, files: List<File>) {
         val itemId = item.itemId
-        model.scanSongs(
+        model.searchSongs(
             FileInfo(files, FileScanner.audioFileFilter, model.fileComparator), { songs: List<Song>?, _: Any? ->
             if (!songs.isNullOrEmpty()) {
                 SongsMenuHelper.handleMenuClick(mainActivity, songs, itemId)
@@ -332,7 +332,7 @@ class FoldersFragment :
             popupMenu.setOnMenuItemClickListener { item: MenuItem ->
                 when (val itemId = item.itemId) {
                     R.id.action_play_next, R.id.action_add_to_current_playing, R.id.action_add_to_playlist, R.id.action_delete_from_device -> {
-                        model.scanSongs(
+                        model.searchSongs(
                             FileInfo(listOf(file), FileScanner.audioFileFilter, model.fileComparator),
                             { songs: List<Song>?, _: Any? ->
                                 if (!songs.isNullOrEmpty()) {
@@ -350,9 +350,7 @@ class FoldersFragment :
                         return@setOnMenuItemClickListener true
                     }
                     R.id.action_scan -> {
-                        model.listPaths(
-                            DirectoryInfo(file, FileScanner.audioFileFilter)
-                        ) { paths: Array<String>? ->
+                        model.scanPaths(DirectoryInfo(file, FileScanner.audioFileFilter)) { paths: Array<String>? ->
                             if (!paths.isNullOrEmpty()) model.scanSongFiles(requireActivity(), paths)
                         }
                         return@setOnMenuItemClickListener true
@@ -369,7 +367,7 @@ class FoldersFragment :
             popupMenu.setOnMenuItemClickListener { item: MenuItem ->
                 when (val itemId = item.itemId) {
                     R.id.action_play_next, R.id.action_add_to_current_playing, R.id.action_add_to_playlist, R.id.action_go_to_album, R.id.action_go_to_artist, R.id.action_share, R.id.action_tag_editor, R.id.action_details, R.id.action_set_as_ringtone, R.id.action_add_to_black_list, R.id.action_delete_from_device -> {
-                        model.scanSongs(
+                        model.searchSongs(
                             FileInfo(listOf(file), FileScanner.audioFileFilter, model.fileComparator),
                             { songs: List<Song>?, _: Any? ->
                                 if (!songs.isNullOrEmpty()) {

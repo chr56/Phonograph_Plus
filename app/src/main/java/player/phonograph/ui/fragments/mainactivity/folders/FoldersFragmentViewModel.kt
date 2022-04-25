@@ -32,7 +32,7 @@ class FoldersFragmentViewModel : ViewModel() {
 
     var listPathsJob: Job? = null
     private var onPathsListedCallback: ((Array<String>) -> Unit)? = null
-    fun listPaths(directoryInfos: DirectoryInfo, onPathsListed: (Array<String>) -> Unit) {
+    fun scanPaths(directoryInfos: DirectoryInfo, onPathsListed: (Array<String>) -> Unit) {
         onPathsListedCallback = onPathsListed
         listPathsJob = viewModelScope.launch(Dispatchers.IO) {
 
@@ -45,11 +45,9 @@ class FoldersFragmentViewModel : ViewModel() {
         }
     }
 
-    // todo
     var scanSongsJob: Job? = null
     var onSongsListedCallback: ((List<Song>?, Any?) -> Unit)? = null
-
-    fun scanSongs(
+    fun searchSongs(
         fileInfo: FileInfo,
         onSongsListed: ((List<Song>?, Any?) -> Unit),
         extra: Any? = null,
@@ -97,7 +95,7 @@ class FoldersFragmentViewModel : ViewModel() {
 
     var loadFilesJob: Job? = null
     private var onFilesReadyCallback: ((List<File>) -> Unit)? = null
-    fun loadFiles(crumb: BreadCrumbLayout.Crumb?, onFilesReady: (List<File>) -> Unit) {
+    fun listDirectoriesAndFiles(crumb: BreadCrumbLayout.Crumb?, onFilesReady: (List<File>) -> Unit) {
         onFilesReadyCallback = onFilesReady
         loadFilesJob = viewModelScope.launch(Dispatchers.IO) {
             val directory: File? = crumb?.file
