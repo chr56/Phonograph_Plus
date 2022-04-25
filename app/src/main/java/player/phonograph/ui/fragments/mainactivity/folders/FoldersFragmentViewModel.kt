@@ -4,9 +4,12 @@
 
 package player.phonograph.ui.fragments.mainactivity.folders
 
+import android.app.Activity
+import android.media.MediaScannerConnection
 import android.os.SystemClock
 import android.util.Log
 import android.webkit.MimeTypeMap
+import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import java.io.File
@@ -17,6 +20,7 @@ import kotlin.collections.ArrayList
 import kotlinx.coroutines.*
 import player.phonograph.App
 import player.phonograph.R
+import player.phonograph.misc.UpdateToastMediaScannerCompletionListener
 import player.phonograph.model.Song
 import player.phonograph.notification.BackgroundNotification
 import player.phonograph.notification.ErrorNotification
@@ -110,6 +114,19 @@ class FoldersFragmentViewModel : ViewModel() {
             withContext(Dispatchers.Main) {
                 onFilesReadyCallback?.invoke(files)
             }
+        }
+    }
+
+    fun scanSongFiles(activity: Activity, toBeScanned: Array<String>?) {
+        if (toBeScanned.isNullOrEmpty()) {
+            Toast.makeText(activity, R.string.nothing_to_scan, Toast.LENGTH_SHORT).show()
+        } else {
+            MediaScannerConnection.scanFile(
+                App.instance,
+                toBeScanned,
+                null,
+                UpdateToastMediaScannerCompletionListener(activity, toBeScanned)
+            )
         }
     }
 

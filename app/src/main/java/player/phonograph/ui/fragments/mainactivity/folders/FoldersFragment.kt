@@ -1,6 +1,5 @@
 package player.phonograph.ui.fragments.mainactivity.folders
 
-import android.media.MediaScannerConnection
 import android.os.Bundle
 import android.os.Environment
 import android.text.Html
@@ -26,7 +25,6 @@ import player.phonograph.adapter.SongFileAdapter
 import player.phonograph.databinding.FragmentFolderBinding
 import player.phonograph.helper.menu.SongsMenuHelper
 import player.phonograph.interfaces.CabHolder
-import player.phonograph.misc.UpdateToastMediaScannerCompletionListener
 import player.phonograph.model.Song
 import player.phonograph.service.MusicPlayerRemote.openQueue
 import player.phonograph.settings.Setting
@@ -248,7 +246,7 @@ class FoldersFragment :
             R.id.action_scan -> {
                 activeCrumb?.let {
                     model.listPaths(DirectoryInfo(it.file, FileScanner.audioFileFilter)) { paths: Array<String>? ->
-                        scanPaths(paths)
+                        model.scanSongFiles(requireActivity(), paths)
                     }
                 }
                 return true
@@ -275,7 +273,7 @@ class FoldersFragment :
                             ),
                             Snackbar.LENGTH_LONG
                         )
-                            .setAction(R.string.action_scan) { scanPaths(arrayOf(canonicalFile.path)) }
+                            .setAction(R.string.action_scan) { model.scanSongFiles(requireActivity(), arrayOf(canonicalFile.path)) }
                             .setActionTextColor(ThemeColor.accentColor(mainActivity))
                             .show()
                     }
@@ -317,7 +315,7 @@ class FoldersFragment :
                 )
                     .setAction(R.string.action_scan) {
                         val paths = files.map { safeGetCanonicalPath(it) }.toTypedArray()
-                        scanPaths(paths)
+                        model.scanSongFiles(requireActivity(), paths)
                     }
                     .setActionTextColor(ThemeColor.accentColor(mainActivity))
                     .show()
@@ -355,7 +353,7 @@ class FoldersFragment :
                         model.listPaths(
                             DirectoryInfo(file, FileScanner.audioFileFilter)
                         ) { paths: Array<String>? ->
-                            if (!paths.isNullOrEmpty()) scanPaths(paths)
+                            if (!paths.isNullOrEmpty()) model.scanSongFiles(requireActivity(), paths)
                         }
                         return@setOnMenuItemClickListener true
                     }
@@ -386,10 +384,9 @@ class FoldersFragment :
                                         Snackbar.LENGTH_LONG
                                     )
                                         .setAction(R.string.action_scan) {
-                                            scanPaths(
-                                                arrayOf(
-                                                    safeGetCanonicalPath(file)
-                                                )
+                                            model.scanSongFiles(
+                                                requireActivity(),
+                                                arrayOf(safeGetCanonicalPath(file))
                                             )
                                         }
                                         .setActionTextColor(ThemeColor.accentColor(mainActivity))
@@ -401,7 +398,7 @@ class FoldersFragment :
                         return@setOnMenuItemClickListener true
                     }
                     R.id.action_scan -> {
-                        scanPaths(arrayOf(safeGetCanonicalPath(file)))
+                        model.scanSongFiles(requireActivity(), arrayOf(safeGetCanonicalPath(file)))
                         return@setOnMenuItemClickListener true
                     }
                 }
@@ -422,19 +419,6 @@ class FoldersFragment :
 
     private fun checkIsEmpty() {
         viewBinding.empty.visibility = if (adapter.itemCount == 0) View.VISIBLE else View.GONE
-    }
-
-    private fun scanPaths(toBeScanned: Array<String>?) {
-        if (toBeScanned.isNullOrEmpty()) {
-            Toast.makeText(requireActivity(), R.string.nothing_to_scan, Toast.LENGTH_SHORT).show()
-        } else {
-            MediaScannerConnection.scanFile(
-                App.instance,
-                toBeScanned,
-                null,
-                UpdateToastMediaScannerCompletionListener(requireActivity(), toBeScanned)
-            )
-        }
     }
 
     private fun updateAdapter(files: List<File>) {
