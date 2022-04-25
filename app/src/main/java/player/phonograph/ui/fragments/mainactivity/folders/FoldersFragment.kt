@@ -67,7 +67,7 @@ class FoldersFragment :
 
         viewBinding.breadCrumbs.setActiveOrAdd(crumb, false)
         if (addToHistory) viewBinding.breadCrumbs.addHistory(crumb)
-        model.listDirectoriesAndFiles(crumb) { files: List<File> ->
+        model.listDirectoriesAndFiles(crumb) { files: Array<File>? ->
             updateAdapter(files)
         }
     }
@@ -98,7 +98,7 @@ class FoldersFragment :
             setCrumb(Crumb(safeGetCanonicalFile((requireArguments().getSerializable(PATH) as File))), true)
         } else {
             viewBinding.breadCrumbs.restoreFromStateWrapper(savedInstanceState.getParcelable(CRUMBS))
-            model.listDirectoriesAndFiles(activeCrumb) { files: List<File> ->
+            model.listDirectoriesAndFiles(activeCrumb) { files: Array<File>? ->
                 updateAdapter(files)
             }
         }
@@ -263,7 +263,7 @@ class FoldersFragment :
             val fileFilter = FileFilter { pathname: File -> !pathname.isDirectory && FileScanner.audioFileFilter.accept(pathname) }
             canonicalFile.parentFile?.let {
                 model.searchSongs(
-                    FileInfo(listOf(it), fileFilter, model.fileComparator), { songs: List<Song>?, _: Any? ->
+                    FileInfo(listOf(it), fileFilter), { songs: List<Song>?, _: Any? ->
                     val makeSnackBar: () -> Unit = {
                         Snackbar.make(
                             viewBinding.coordinatorLayout,
@@ -303,7 +303,7 @@ class FoldersFragment :
     override fun onMultipleItemAction(item: MenuItem, files: List<File>) {
         val itemId = item.itemId
         model.searchSongs(
-            FileInfo(files, FileScanner.audioFileFilter, model.fileComparator), { songs: List<Song>?, _: Any? ->
+            FileInfo(files, FileScanner.audioFileFilter), { songs: List<Song>?, _: Any? ->
             if (!songs.isNullOrEmpty()) {
                 SongsMenuHelper.handleMenuClick(mainActivity, songs, itemId)
             }
@@ -333,7 +333,7 @@ class FoldersFragment :
                 when (val itemId = item.itemId) {
                     R.id.action_play_next, R.id.action_add_to_current_playing, R.id.action_add_to_playlist, R.id.action_delete_from_device -> {
                         model.searchSongs(
-                            FileInfo(listOf(file), FileScanner.audioFileFilter, model.fileComparator),
+                            FileInfo(listOf(file), FileScanner.audioFileFilter),
                             { songs: List<Song>?, _: Any? ->
                                 if (!songs.isNullOrEmpty()) {
                                     SongsMenuHelper.handleMenuClick(mainActivity, songs, itemId)
@@ -368,7 +368,7 @@ class FoldersFragment :
                 when (val itemId = item.itemId) {
                     R.id.action_play_next, R.id.action_add_to_current_playing, R.id.action_add_to_playlist, R.id.action_go_to_album, R.id.action_go_to_artist, R.id.action_share, R.id.action_tag_editor, R.id.action_details, R.id.action_set_as_ringtone, R.id.action_add_to_black_list, R.id.action_delete_from_device -> {
                         model.searchSongs(
-                            FileInfo(listOf(file), FileScanner.audioFileFilter, model.fileComparator),
+                            FileInfo(listOf(file), FileScanner.audioFileFilter),
                             { songs: List<Song>?, _: Any? ->
                                 if (!songs.isNullOrEmpty()) {
                                     SongsMenuHelper.handleMenuClick(mainActivity, songs, itemId)
@@ -419,8 +419,8 @@ class FoldersFragment :
         viewBinding.empty.visibility = if (adapter.itemCount == 0) View.VISIBLE else View.GONE
     }
 
-    private fun updateAdapter(files: List<File>) {
-        adapter.dataSet = files
+    private fun updateAdapter(files: Array<File>?) {
+        adapter.dataSet = files?.toList() ?: emptyList()
         activeCrumb?.let {
             (viewBinding.recyclerView.layoutManager as LinearLayoutManager).scrollToPositionWithOffset(it.scrollPosition, 0)
         }

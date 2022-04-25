@@ -55,7 +55,7 @@ class ScanMediaFolderDialog : DialogFragment() {
                 dismiss()
                 runCatching {
                     CoroutineScope(Dispatchers.IO).launch {
-                        val paths = FileScanner.scanPaths(DirectoryInfo(file, FileScanner.audioFileFilter), this)
+                        val paths = FileScanner.listPaths(DirectoryInfo(file, FileScanner.audioFileFilter), this)
                         if (!paths.isNullOrEmpty()) {
                             withContext(Dispatchers.Main) {
                                 scanPaths(paths)

@@ -14,9 +14,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import java.io.File
 import java.io.FileFilter
-import java.lang.IllegalStateException
 import java.util.*
-import kotlin.collections.ArrayList
 import kotlinx.coroutines.*
 import player.phonograph.App
 import player.phonograph.R
@@ -36,7 +34,7 @@ class FoldersFragmentViewModel : ViewModel() {
         onPathsListedCallback = onPathsListed
         listPathsJob = viewModelScope.launch(Dispatchers.IO) {
 
-            val paths = FileScanner.scanPaths(directoryInfos, this, recursive = true)
+            val paths = FileScanner.listPaths(directoryInfos, this, recursive = true)
 
             withContext(Dispatchers.Main) {
                 if (paths != null)
@@ -68,7 +66,7 @@ class FoldersFragmentViewModel : ViewModel() {
                     BackgroundNotification.remove(notificationId)
                     return@launch
                 }
-                Collections.sort(files, fileInfo.fileComparator)
+                files.apply { (this as MutableList).sortWith(comparator = fileComparator) }
                 if (!isActive) {
                     BackgroundNotification.remove(notificationId)
                     return@launch
@@ -94,19 +92,24 @@ class FoldersFragmentViewModel : ViewModel() {
     }
 
     var loadFilesJob: Job? = null
-    private var onFilesReadyCallback: ((List<File>) -> Unit)? = null
-    fun listDirectoriesAndFiles(crumb: BreadCrumbLayout.Crumb?, onFilesReady: (List<File>) -> Unit) {
+    private var onFilesReadyCallback: ((Array<File>?) -> Unit)? = null
+    fun listDirectoriesAndFiles(
+        crumb: BreadCrumbLayout.Crumb?,
+        onFilesReady: (Array<File>?) -> Unit
+    ) {
         onFilesReadyCallback = onFilesReady
         loadFilesJob = viewModelScope.launch(Dispatchers.IO) {
             val directory: File? = crumb?.file
             val files =
-                if (directory != null) {
-                    val files = FileUtil.listFiles(directory, FileScanner.audioFileFilter)?.toMutableList() ?: ArrayList()
-                    if (!isActive) return@launch
-                    Collections.sort(files, fileComparator)
-                    files
+                if (directory != null && directory.isDirectory) {
+                    val files = FileUtil.listFiles(directory, FileScanner.audioFileFilter)
+                    if (!files.isNullOrEmpty() && isActive) {
+                        files.apply { sortWith(fileComparator) }
+                    } else {
+                        null
+                    }
                 } else {
-                    ArrayList()
+                    null
                 }
             if (!isActive) return@launch
             withContext(Dispatchers.Main) {
@@ -128,7 +131,7 @@ class FoldersFragmentViewModel : ViewModel() {
         }
     }
 
-    val fileComparator: Comparator<File> by lazy {
+    private val fileComparator: Comparator<File> by lazy {
         Comparator { lhs: File, rhs: File ->
             if (lhs.isDirectory && !rhs.isDirectory) {
                 return@Comparator -1
@@ -154,24 +157,24 @@ class FoldersFragmentViewModel : ViewModel() {
 class FileInfo(
     val files: List<File>,
     val fileFilter: FileFilter = FileScanner.audioFileFilter,
-    val fileComparator: Comparator<File>,
 )
 
 class DirectoryInfo(val file: File, val fileFilter: FileFilter)
 
 object FileScanner {
-    fun scanPaths(directoryInfos: DirectoryInfo, scope: CoroutineScope, recursive: Boolean = false): Array<String>? {
+    fun listPaths(directoryInfos: DirectoryInfo, scope: CoroutineScope, recursive: Boolean = false): Array<String>? {
         if (!scope.isActive) return null
 
         val paths: Array<String>? =
             try {
                 if (directoryInfos.file.isDirectory) {
                     if (!scope.isActive) return null
+                    // todo
                     val files =
                         if (recursive)
                             FileUtil.listFilesDeep(directoryInfos.file, directoryInfos.fileFilter)
                         else
-                            FileUtil.listFiles(directoryInfos.file, directoryInfos.fileFilter)
+                            FileUtil.listFiles(directoryInfos.file, directoryInfos.fileFilter)?.toList()
 
                     if (files.isNullOrEmpty()) return null
                     Array(files.size) { i ->

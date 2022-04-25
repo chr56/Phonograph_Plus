@@ -50,8 +50,8 @@ object FileUtil {
     private fun toPathArray(files: List<File>): Array<String> =
         files.map { safeGetCanonicalPath(it) }.toTypedArray()
 
-    fun listFiles(directory: File, fileFilter: FileFilter?): List<File>? {
-        return directory.listFiles(fileFilter)?.toList()
+    fun listFiles(directory: File, fileFilter: FileFilter?): Array<File>? {
+        return directory.listFiles(fileFilter)
     }
 
     fun listFilesDeep(directory: File, fileFilter: FileFilter?): List<File>? =
