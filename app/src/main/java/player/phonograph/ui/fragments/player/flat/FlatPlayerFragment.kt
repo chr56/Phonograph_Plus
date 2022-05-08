@@ -172,7 +172,8 @@ class FlatPlayerFragment :
     }
 
     override fun hideLyricsMenuItem() {
-        viewBinding.playerToolbar.menu.removeItem(R.id.action_show_lyrics)
+        if (_viewBinding != null)
+            viewBinding.playerToolbar.menu.removeItem(R.id.action_show_lyrics)
     }
 
     override fun showLyricsMenuItem() {

@@ -19,12 +19,12 @@ import kotlinx.coroutines.*
 import player.phonograph.R
 import player.phonograph.adapter.song.PlayingQueueAdapter
 import player.phonograph.dialogs.*
-import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.helper.menu.SongMenuHelper
 import player.phonograph.interfaces.PaletteColorHolder
 import player.phonograph.model.Song
 import player.phonograph.model.lyrics2.AbsLyrics
 import player.phonograph.model.lyrics2.LrcLyrics
+import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.ui.fragments.AbsMusicServiceFragment
 import player.phonograph.util.FavoriteUtil
 import player.phonograph.util.FavoriteUtil.toggleFavorite
@@ -207,14 +207,16 @@ abstract class AbsPlayerFragment :
         }
     }
 
-    private fun showLyrics(lyrics: AbsLyrics) = runBlocking(Dispatchers.Main) {
-        playerAlbumCoverFragment.setLyrics(lyrics)
-        showLyricsMenuItem()
-    }
-    private fun hideLyrics() = backgroundCoroutine.launch(Dispatchers.Main) {
-        playerAlbumCoverFragment.clearLyrics()
-        hideLyricsMenuItem()
-    }
+    private fun showLyrics(lyrics: AbsLyrics) =
+        runBlocking(Dispatchers.Main) {
+            playerAlbumCoverFragment.setLyrics(lyrics)
+            showLyricsMenuItem()
+        }
+    private fun hideLyrics() =
+        backgroundCoroutine.launch(Dispatchers.Main) {
+            playerAlbumCoverFragment.clearLyrics()
+            hideLyricsMenuItem()
+        }
 
     protected fun monitorLyricsState() {
         backgroundCoroutine.launch {

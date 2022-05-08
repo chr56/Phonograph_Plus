@@ -17,13 +17,15 @@ import com.h6ah4i.android.widget.advrecyclerview.animator.GeneralItemAnimator
 import com.h6ah4i.android.widget.advrecyclerview.animator.RefactoredDefaultItemAnimator
 import com.sothree.slidinguppanel.SlidingUpPanelLayout
 import com.sothree.slidinguppanel.SlidingUpPanelLayout.PanelState
+import java.lang.IllegalStateException
+import kotlin.math.max
 import player.phonograph.R
 import player.phonograph.adapter.base.MediaEntryViewHolder
 import player.phonograph.databinding.FragmentCardPlayerBinding
-import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.helper.menu.SongMenuHelper.ClickMenuListener
 import player.phonograph.model.Song
 import player.phonograph.notification.ErrorNotification
+import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
 import player.phonograph.ui.fragments.player.AbsPlayerFragment
 import player.phonograph.ui.fragments.player.PlayerAlbumCoverFragment
@@ -37,8 +39,6 @@ import util.mdcolor.ColorUtil
 import util.mdcolor.pref.ThemeColor
 import util.mddesign.util.ToolbarColorUtil
 import util.mddesign.util.Util
-import java.lang.IllegalStateException
-import kotlin.math.max
 
 class CardPlayerFragment :
     AbsPlayerFragment(),
@@ -54,7 +54,11 @@ class CardPlayerFragment :
 
     private lateinit var impl: Impl
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         impl = (if (isLandscape(resources)) LandscapeImpl(this) else PortraitImpl(this))
         _viewBinding = FragmentCardPlayerBinding.inflate(inflater)
         return viewBinding.root
@@ -175,7 +179,8 @@ class CardPlayerFragment :
     }
 
     override fun hideLyricsMenuItem() {
-        viewBinding.playerToolbar.menu.removeItem(R.id.action_show_lyrics)
+        if (_viewBinding != null)
+            viewBinding.playerToolbar.menu.removeItem(R.id.action_show_lyrics)
     }
 
     override fun showLyricsMenuItem() {
