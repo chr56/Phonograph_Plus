@@ -54,19 +54,20 @@ android {
             }
         }
     }
-//    afterEvaluate {
-//        applicationVariants.forEach { variant ->
-//            if (variant.name == "release") {
-//                variant.outputs.all {
-//                    this.outputFileName = "PhonographPlus_${variant.versionName}.apk"
-//                }
-//            } else {
-//                variant.outputs.all {
-//                    this.outputFileName = "${variant.name}_${variant.versionName}_${Calendar.getInstance().time}.apk" // todo
-//                }
-//            }
-//        }
-//    }
+    afterEvaluate {
+        val productsDirectory = File(rootDir, "products").apply { mkdir() }
+        applicationVariants.forEach { variant ->
+            val variantDirectory: File = File(productsDirectory, variant.name).apply { mkdir() }
+            val apkName =
+                when (variant.name.toLowerCase()) {
+                    "release" -> "PhonographPlus_${variant.versionName}.apk"
+                    else -> "PhonographPlus_${variant.versionName}_${System.currentTimeMillis()}.apk"
+                }
+            variant.outputs.all {
+                this.outputFile.renameTo(File(variantDirectory, apkName))
+            }
+        }
+    }
 
     buildTypes {
         release {
