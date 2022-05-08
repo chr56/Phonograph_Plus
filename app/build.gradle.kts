@@ -58,13 +58,16 @@ android {
         val productsDirectory = File(rootDir, "products").apply { mkdir() }
         applicationVariants.forEach { variant ->
             val variantDirectory: File = File(productsDirectory, variant.name).apply { mkdir() }
-            val apkName =
-                when (variant.name.toLowerCase()) {
-                    "release" -> "PhonographPlus_${variant.versionName}.apk"
-                    else -> "PhonographPlus_${variant.versionName}_${System.currentTimeMillis()}.apk"
+            variant.assembleProvider.orNull?.doLast {
+                // rename apk
+                val apkName =
+                    when (variant.name.toLowerCase()) {
+                        "release" -> "PhonographPlus_${variant.versionName}.apk"
+                        else -> "PhonographPlus_${variant.versionName}_${System.currentTimeMillis()}.apk"
+                    }
+                variant.outputs.all {
+                    this.outputFile.copyTo(File(variantDirectory, apkName), true)
                 }
-            variant.outputs.all {
-                this.outputFile.renameTo(File(variantDirectory, apkName))
             }
         }
     }
