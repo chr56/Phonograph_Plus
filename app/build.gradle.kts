@@ -1,6 +1,8 @@
 import com.android.build.gradle.internal.tasks.R8Task
 import java.io.ByteArrayOutputStream
 import java.io.FileInputStream
+import java.text.SimpleDateFormat
+import java.util.Calendar
 import java.util.Properties
 
 plugins {
@@ -55,16 +57,20 @@ android {
             }
         }
     }
+
+    val productsDirectory = File(rootDir, "products").apply { mkdir() }
+
     afterEvaluate {
-        val productsDirectory = File(rootDir, "products").apply { mkdir() }
         applicationVariants.forEach { variant ->
             val variantDirectory: File = File(productsDirectory, variant.name).apply { mkdir() }
             variant.assembleProvider.orNull?.doLast {
+
                 // rename apk
+                val currentTimeString = SimpleDateFormat("yyMMddHHmmss").format(Calendar.getInstance().time)
                 val apkName =
                     when (variant.name.toLowerCase()) {
                         "release" -> "PhonographPlus_${variant.versionName}.apk"
-                        else -> "PhonographPlus_${variant.versionName}_${System.currentTimeMillis()}.apk"
+                        else -> "PhonographPlus_${variant.versionName}_$currentTimeString.apk"
                     }
                 variant.outputs.all {
                     this.outputFile.copyTo(File(variantDirectory, apkName), true)
