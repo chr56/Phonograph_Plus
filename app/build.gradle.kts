@@ -1,3 +1,4 @@
+import com.android.build.gradle.internal.tasks.R8Task
 import java.io.ByteArrayOutputStream
 import java.io.FileInputStream
 import java.util.Properties
@@ -68,6 +69,13 @@ android {
                 variant.outputs.all {
                     this.outputFile.copyTo(File(variantDirectory, apkName), true)
                 }
+                // copy shrink output file if available
+                tasks.filterIsInstance<R8Task>()
+                    .firstOrNull { it.name.contains(variant.name, ignoreCase = true) && it.enabled }
+                    ?.also {
+                        it.mappingFile.asFile.orNull
+                            ?.copyTo(File(variantDirectory, "mapping.txt"))
+                    }
             }
         }
     }
