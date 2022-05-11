@@ -189,7 +189,7 @@ class ListSheetAdapter<I : Displayable>(
                 override fun onClick(v: View) {
                     when (isInQuickSelectMode) {
                         true -> toggleChecked(bindingAdapterPosition - 1) // dashboard
-                        false -> dataset[0].clickHandler().invoke(activity, dataset[bindingAdapterPosition - 1], dataset)
+                        false -> dataset[0].clickHandler().invoke(activity, dataset[bindingAdapterPosition - 1], dataset, null)
                     }
                 }
             })

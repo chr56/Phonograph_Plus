@@ -12,11 +12,11 @@ import com.afollestad.materialcab.attached.isActive
 import com.bumptech.glide.Glide
 import player.phonograph.R
 import player.phonograph.glide.SongGlideRequest
-import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.helper.menu.SongMenuHelper.ClickMenuListener
 import player.phonograph.helper.menu.SongsMenuHelper.handleMenuClick
 import player.phonograph.interfaces.CabHolder
 import player.phonograph.model.Song
+import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.util.NavigationUtil
 
 // Todo: use AbsMultiSelectAdapter
@@ -79,11 +79,8 @@ class ArtistSongAdapter(
 
             override fun onMenuItemClick(item: MenuItem): Boolean {
                 if (item.itemId == R.id.action_go_to_album) {
-                    val albumPairs = arrayOf<Pair<*, *>>(
-                        Pair.create(
-                            albumArt,
-                            activity.resources.getString(R.string.transition_album_art)
-                        )
+                    val albumPairs = arrayOf<Pair<View, String>>(
+                        Pair.create(albumArt, activity.resources.getString(R.string.transition_album_art))
                     )
                     NavigationUtil.goToAlbum(activity, song.albumId, *albumPairs)
                     return true

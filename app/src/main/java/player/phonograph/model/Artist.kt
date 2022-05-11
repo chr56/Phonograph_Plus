@@ -3,10 +3,13 @@ package player.phonograph.model
 import android.net.Uri
 import android.os.Parcel
 import android.os.Parcelable
+import android.widget.ImageView
 import androidx.annotation.Keep
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.util.Pair
 import androidx.fragment.app.FragmentActivity
-import player.phonograph.App.Companion.instance
+import player.phonograph.App
+import player.phonograph.R
 import player.phonograph.helper.menu.SongsMenuHelper.handleMenuClick
 import player.phonograph.interfaces.Displayable
 import player.phonograph.util.MusicUtil
@@ -55,7 +58,7 @@ class Artist : Parcelable, Displayable {
 
     override fun getDisplayTitle(): CharSequence = name
 
-    override fun getDescription(): CharSequence = MusicUtil.getArtistInfoString(instance, this)
+    override fun getDescription(): CharSequence = MusicUtil.getArtistInfoString(App.instance, this)
 
     override fun getPic(): Uri? = null // todo
 
@@ -73,11 +76,17 @@ class Artist : Parcelable, Displayable {
             )
         } // todo more variety
 
-    override fun clickHandler(): (FragmentActivity, Displayable, List<Displayable>?) -> Unit =
-        { fragmentActivity: FragmentActivity?, displayable: Displayable, _: List<Displayable>? ->
-            NavigationUtil.goToArtist(
-                fragmentActivity!!, (displayable as Artist).id
-            ) // todo animate
+    override fun clickHandler(): (FragmentActivity, Displayable, List<Displayable>?, image: ImageView?) -> Unit =
+        { fragmentActivity: FragmentActivity?, displayable: Displayable, _: List<Displayable>?, image: ImageView? ->
+            if (image != null) {
+                NavigationUtil.goToArtist(
+                    fragmentActivity!!, (displayable as Artist).id, Pair(image, App.instance.resources.getString(R.string.transition_artist_image))
+                )
+            } else {
+                NavigationUtil.goToArtist(
+                    fragmentActivity!!, (displayable as Artist).id
+                )
+            }
         }
 
     companion object {

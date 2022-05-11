@@ -3,6 +3,7 @@ package player.phonograph.model
 import android.net.Uri
 import android.os.Parcel
 import android.os.Parcelable
+import android.widget.ImageView
 import androidx.annotation.Keep
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentActivity
@@ -170,9 +171,9 @@ open class Song : Parcelable, Displayable {
         }
     }
 
-    override fun clickHandler(): (FragmentActivity, Displayable, List<Displayable>?) -> Unit {
-        return { _: FragmentActivity?, displayable: Displayable?, queue: List<Displayable>? ->
-            MusicPlayerRemote.openQueue(queue as List<Song>, queue.indexOf(displayable), true)
+    override fun clickHandler(): (FragmentActivity, Displayable, List<Displayable>?, image: ImageView?) -> Unit {
+        return { _: FragmentActivity?, displayable: Displayable?, queue: List<Displayable>?, image: ImageView? ->
+            queue?.let { MusicPlayerRemote.openQueue(it as List<Song>, queue.indexOf(displayable), true) }
         }
     }
 

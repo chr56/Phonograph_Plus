@@ -170,7 +170,7 @@ open class SongAdapter constructor(
             if (image != null && image!!.visibility == View.VISIBLE) {
                 when (item.itemId) {
                     R.id.action_go_to_album -> {
-                        val albumPairs = arrayOf<Pair<*, *>>(
+                        val albumPairs = arrayOf<Pair<View, String>>(
                             Pair.create(image, activity.resources.getString(R.string.transition_album_art))
                         )
                         NavigationUtil.goToAlbum(activity, song.albumId, *albumPairs)

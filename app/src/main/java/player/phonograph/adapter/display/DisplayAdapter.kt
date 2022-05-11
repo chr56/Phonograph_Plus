@@ -12,8 +12,6 @@ import android.widget.PopupMenu
 import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
-import util.mdcolor.ColorUtil
-import util.mddesign.util.MaterialColorHelper
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView
 import player.phonograph.R
 import player.phonograph.adapter.base.MediaEntryViewClickListener
@@ -22,6 +20,8 @@ import player.phonograph.adapter.base.UniversalMediaEntryViewHolder
 import player.phonograph.interfaces.Displayable
 import player.phonograph.interfaces.MultiSelectionCabProvider
 import player.phonograph.model.Artist
+import util.mdcolor.ColorUtil
+import util.mddesign.util.MaterialColorHelper
 
 open class DisplayAdapter<I : Displayable>(
     protected val activity: AppCompatActivity,
@@ -116,7 +116,7 @@ open class DisplayAdapter<I : Displayable>(
                 override fun onClick(v: View) {
                     when (isInQuickSelectMode) {
                         true -> toggleChecked(bindingAdapterPosition)
-                        false -> dataset[0].clickHandler().invoke(activity, dataset[bindingAdapterPosition], dataset)
+                        false -> dataset[0].clickHandler().invoke(activity, dataset[bindingAdapterPosition], dataset, image)
                     }
                 }
             })

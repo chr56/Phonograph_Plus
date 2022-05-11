@@ -3,11 +3,13 @@ package player.phonograph.model
 import android.net.Uri
 import android.os.Parcel
 import android.os.Parcelable
+import android.widget.ImageView
 import androidx.annotation.Keep
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.util.Pair
 import androidx.fragment.app.FragmentActivity
-import java.util.ArrayList
-import player.phonograph.App.Companion.instance
+import player.phonograph.App
+import player.phonograph.R
 import player.phonograph.helper.menu.SongsMenuHelper.handleMenuClick
 import player.phonograph.interfaces.Displayable
 import player.phonograph.util.MusicUtil
@@ -20,13 +22,15 @@ class Album : Parcelable, Displayable {
 
     val id: Long
     val title: String
-    @JvmField val songs: List<Song>
+    @JvmField
+    val songs: List<Song>
 
     constructor(id: Long, title: String?, songs: List<Song>) {
         this.id = id
         this.title = title ?: "UNKNOWN"
         this.songs = songs
     }
+
     constructor() {
         this.id = -1
         this.title = "UNKNOWN"
@@ -61,7 +65,7 @@ class Album : Parcelable, Displayable {
 
     override fun getDisplayTitle(): CharSequence = title
 
-    override fun getDescription(): CharSequence = MusicUtil.buildInfoString(artistName, MusicUtil.getSongCountString(instance, songs.size))
+    override fun getDescription(): CharSequence = MusicUtil.buildInfoString(artistName, MusicUtil.getSongCountString(App.instance, songs.size))
 
     override fun getPic(): Uri? = null // todo
 
@@ -79,11 +83,17 @@ class Album : Parcelable, Displayable {
             )
         } // todo more variety
 
-    override fun clickHandler(): (FragmentActivity, Displayable, List<Displayable>?) -> Unit {
-        return { fragmentActivity: FragmentActivity?, displayable: Displayable, _: List<Displayable>? ->
-            NavigationUtil.goToAlbum(
-                fragmentActivity!!, (displayable as Album).id
-            ) // todo animate
+    override fun clickHandler(): (FragmentActivity, Displayable, List<Displayable>?, image: ImageView?) -> Unit {
+        return { fragmentActivity: FragmentActivity?, displayable: Displayable, _: List<Displayable>?, image: ImageView? ->
+            if (image != null) {
+                NavigationUtil.goToAlbum(
+                    fragmentActivity!!, (displayable as Album).id, Pair(image, App.instance.resources.getString(R.string.transition_album_art))
+                )
+            } else {
+                NavigationUtil.goToAlbum(
+                    fragmentActivity!!, (displayable as Album).id
+                )
+            }
         }
     }
 
@@ -100,6 +110,7 @@ class Album : Parcelable, Displayable {
             }
         }
     }
+
     override fun describeContents(): Int = 0
     override fun writeToParcel(dest: Parcel, flags: Int) {
         dest.writeTypedList(songs)

@@ -3,6 +3,7 @@ package player.phonograph.model
 import android.net.Uri
 import android.os.Parcel
 import android.os.Parcelable
+import android.widget.ImageView
 import androidx.annotation.Keep
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentActivity
@@ -68,8 +69,8 @@ class Genre : Parcelable, Displayable {
             true
         }
 
-    override fun clickHandler(): (FragmentActivity, Displayable, List<Displayable>?) -> Unit =
-        { fragmentActivity: FragmentActivity?, displayable: Displayable?, list: List<Displayable>? ->
+    override fun clickHandler(): (FragmentActivity, Displayable, List<Displayable>?, image: ImageView?) -> Unit =
+        { fragmentActivity: FragmentActivity?, displayable: Displayable?, list: List<Displayable>?, image: ImageView? ->
             NavigationUtil.goToGenre(
                 fragmentActivity!!, displayable as Genre?
             )

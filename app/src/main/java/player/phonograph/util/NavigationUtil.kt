@@ -9,9 +9,9 @@ import android.widget.Toast
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.util.Pair
 import player.phonograph.R
-import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.model.Genre
 import player.phonograph.model.playlist.Playlist
+import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.ui.activities.AlbumDetailActivity
 import player.phonograph.ui.activities.ArtistDetailActivity
 import player.phonograph.ui.activities.GenreDetailActivity
@@ -23,16 +23,18 @@ import player.phonograph.ui.activities.PlaylistDetailActivity
 object NavigationUtil {
     @JvmStatic
     fun goToArtist(activity: Activity, artistId: Long) {
-        val intent = Intent(activity, ArtistDetailActivity::class.java)
-        intent.putExtra(ArtistDetailActivity.EXTRA_ARTIST_ID, artistId)
-        activity.startActivity(intent)
+        activity.startActivity(
+            Intent(activity, ArtistDetailActivity::class.java)
+                .apply { putExtra(ArtistDetailActivity.EXTRA_ARTIST_ID, artistId) }
+        )
     }
     @JvmStatic
-    fun goToArtist(activity: Activity, artistId: Long, vararg sharedElements: Pair<*, *>) {
-        val intent = Intent(activity, ArtistDetailActivity::class.java)
-        intent.putExtra(ArtistDetailActivity.EXTRA_ARTIST_ID, artistId)
+    fun goToArtist(activity: Activity, artistId: Long, vararg sharedElements: Pair<View, String>) {
+        val intent =
+            Intent(activity, ArtistDetailActivity::class.java)
+                .apply { putExtra(ArtistDetailActivity.EXTRA_ARTIST_ID, artistId) }
         if (sharedElements.isNotEmpty()) {
-            activity.startActivity(intent, ActivityOptionsCompat.makeSceneTransitionAnimation(activity, *sharedElements as Array<out Pair<View, String>>).toBundle())
+            activity.startActivity(intent, ActivityOptionsCompat.makeSceneTransitionAnimation(activity, *sharedElements).toBundle())
         } else {
             activity.startActivity(intent)
         }
@@ -40,17 +42,19 @@ object NavigationUtil {
 
     @JvmStatic
     fun goToAlbum(activity: Activity, albumId: Long) {
-        val intent = Intent(activity, AlbumDetailActivity::class.java)
-        intent.putExtra(AlbumDetailActivity.EXTRA_ALBUM_ID, albumId)
-        activity.startActivity(intent)
+        activity.startActivity(
+            Intent(activity, AlbumDetailActivity::class.java)
+                .apply { putExtra(AlbumDetailActivity.EXTRA_ALBUM_ID, albumId) }
+        )
     }
 
     @JvmStatic
-    fun goToAlbum(activity: Activity, albumId: Long, vararg sharedElements: Pair<*, *>) {
-        val intent = Intent(activity, AlbumDetailActivity::class.java)
-        intent.putExtra(AlbumDetailActivity.EXTRA_ALBUM_ID, albumId)
+    fun goToAlbum(activity: Activity, albumId: Long, vararg sharedElements: Pair<View, String>) {
+        val intent =
+            Intent(activity, AlbumDetailActivity::class.java)
+                .apply { putExtra(AlbumDetailActivity.EXTRA_ALBUM_ID, albumId) }
         if (sharedElements.isNotEmpty()) {
-            activity.startActivity(intent, ActivityOptionsCompat.makeSceneTransitionAnimation(activity, *sharedElements as Array<out Pair<View, String>>).toBundle())
+            activity.startActivity(intent, ActivityOptionsCompat.makeSceneTransitionAnimation(activity, *sharedElements).toBundle())
         } else {
             activity.startActivity(intent)
         }

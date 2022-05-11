@@ -5,6 +5,7 @@
 package player.phonograph.interfaces
 
 import android.net.Uri
+import android.widget.ImageView
 import androidx.annotation.MenuRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentActivity
@@ -27,5 +28,5 @@ interface Displayable {
     fun multiMenuHandler():
         ((activity: AppCompatActivity, selection: List<Displayable>, menuItemId: Int) -> Boolean)?
 
-    fun clickHandler(): (FragmentActivity, Displayable, List<Displayable>?) -> Unit
+    fun clickHandler(): (FragmentActivity, Displayable, List<Displayable>?, image: ImageView?) -> Unit
 }
