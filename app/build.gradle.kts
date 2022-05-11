@@ -160,6 +160,7 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
+    namespace = "player.phonograph"
     /*
     afterEvaluate {
         tasks.withType(JavaCompile::class) {
