@@ -10,7 +10,7 @@ plugins {
     id("kotlin-android")
 }
 
-val composeVersion by extra { "1.1.1" }
+val composeVersion by extra { "1.2.0-rc02" }
 
 fun getGitHash(shortHash: Boolean): String {
     val stdout = ByteArrayOutputStream()
@@ -44,6 +44,10 @@ android {
 
     kotlinOptions {
         jvmTarget = "1.8"
+        freeCompilerArgs = listOf(
+            "-P",
+            "plugin:androidx.compose.compiler.plugins.kotlin:suppressKotlinVersionCompatibilityCheck=true"
+        )
     }
 
     buildFeatures {
