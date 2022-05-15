@@ -1,9 +1,9 @@
-# Phonograph Modified Version
+# Phonograph Modified Version / Phonograph 修改版
 
-# Phonograph 修改版
 
-[<img src="https://github.com/chr56/Phonograph/workflows/ci/badge.svg" alt="CI Status">](https://github.com/chr56/Phonograph_Plus/actions/workflows/ci.yml)
 [![Crowdin](https://badges.crowdin.net/phonograph-plus/localized.svg)](https://crowdin.com/project/phonograph-plus)
+[![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://github.com/chr56/Phonograph_Plus/blob/release/LICENSE.txt)
+[<img src="https://github.com/chr56/Phonograph/workflows/ci/badge.svg" alt="CI Status">](https://github.com/chr56/Phonograph_Plus/actions/workflows/ci.yml)
 
 **Phonograph 第三方修改版**
 
@@ -11,20 +11,9 @@
 
 <br/>
 
-This is a fork! -> [原仓库/Original Project Repo](https://github.com/kabouzeid/Phonograph)
+This is a fork of [Phonograph](https://github.com/kabouzeid/Phonograph), with some extra additional features.
 
-<br/>
-<br/>
-
-**Phonograph Plus** is (partially) migrating to 🚀 Jetpack Compose -> see Branch [Compose](https://github.com/chr56/Phonograph_Plus/tree/Compose)
-
-**Phonograph Plus** 正在（部分）迁移至 🚀 Jetpack Compose -> 参见 [Compose](https://github.com/chr56/Phonograph_Plus/tree/Compose)
-
-<br/>
-<br/>
-
-**特性**
-**feature**
+# **特性** / **features**
 
 * 解锁 Pro | Unlock pro.
 
@@ -59,21 +48,27 @@ This is a fork! -> [原仓库/Original Project Repo](https://github.com/kabouzei
   
 * 支持导出内部数据库以供备份 | Export internal databases for the need of backup.
 
-* // todo
-
 * 优化界面 | Optimus UI.
 
 * 以及更多细小特性 | and more small features/fixes.
 
-// todo
-
-
-**Translation**
+# **翻译**/**Translation**
 
 Translate Phonograph Plus into your language -> [crowdin](https://crowdin.com/project/phonograph-plus)
 
 
-**TO-DO list**
+# **开发计划**/**Development Plan (or Road Map?)**
+<br/>
+
+**Phonograph Plus** is (partially) migrating to 🚀 Jetpack Compose -> see Branch [Compose](https://github.com/chr56/Phonograph_Plus/tree/Compose)
+
+**Phonograph Plus** 正在（部分）迁移至 🚀 Jetpack Compose -> 参见 [Compose](https://github.com/chr56/Phonograph_Plus/tree/Compose)
+
+<br/>
+
+## **TO-DO list**
+
+**2022**
 
 - [ ] 完成 Readme . md
 
@@ -97,17 +92,15 @@ Translate Phonograph Plus into your language -> [crowdin](https://crowdin.com/pr
 
 - [ ] 实现更好的播放频率计数, 统计听歌频率
 
-- [ ] 增强“播放列表详情”(信息展示✔, 支持搜索❌, 更好的修改本地列表方式 ❗WIP)
-
-- [ ] <del>部分重构(所谓的)"主题引擎"</del>
-
 - [ ]  ...
+
+**2023~2024(?)**
+
+- [ ] 增强“播放列表详情”(信息展示✔, 支持搜索❌, 更好的修改本地列表方式 ❗WIP)
 
 - [ ] 检查文件
 
 - [ ] 打开 .m3u (使用"播放列表详情")
-
-- [ ] 全屏滚动歌词页面⭕
 
 - [ ] 桌面歌词(?)
 
@@ -115,17 +108,11 @@ Translate Phonograph Plus into your language -> [crowdin](https://crowdin.com/pr
 
 - [ ] 重构音乐标签编辑
 
-- [ ] 完美适配 Android11+ 的文件访问(❌)
+- [ ] <del>完美适配 Android11+ 的文件访问(❌)</del>
 
-- [ ] ???
+- [ ] <del>部分重构(所谓的)"主题引擎"</del>
 
-- [x] 解析歌词中的 "\n"
-
-- [x] 重构歌词系统
-
-- [ ] <del>优化歌曲“详情”</del>
-
-- [ ] <del>万能歌曲 Adapter ⭕</del>
+- [ ] ...
 
 <br/>
 <br/>
