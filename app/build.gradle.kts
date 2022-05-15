@@ -10,13 +10,13 @@ plugins {
     id("kotlin-android")
 }
 
-fun getGitHash(type: Int): String {
+fun getGitHash(shortHash: Boolean): String {
     val stdout = ByteArrayOutputStream()
-    if (type == 1) exec {
-        commandLine("git", "rev-parse", "HEAD")
-        standardOutput = stdout
-    } else exec {
-        commandLine("git", "rev-parse", "--short", "HEAD")
+    exec {
+        if (shortHash)
+            commandLine("git", "rev-parse", "--short", "HEAD")
+        else
+            commandLine("git", "rev-parse", "HEAD")
         standardOutput = stdout
     }
     return stdout.toString().trim()
@@ -44,7 +44,7 @@ android {
 
         // proguardFiles(File("proguard-rules-base.pro"), File("proguard-rules-app.pro"))
 
-        buildConfigField("String", "GIT_COMMIT_HASH", "\"${getGitHash(1)}\"")
+        buildConfigField("String", "GIT_COMMIT_HASH", "\"${getGitHash(false)}\"")
         setProperty("archivesBaseName", "PhonographPlus_$versionName")
     }
     signingConfigs {
@@ -70,7 +70,7 @@ android {
                 val apkName =
                     when (variant.name.toLowerCase()) {
                         "release" -> "PhonographPlus_${variant.versionName}.apk"
-                        else -> "PhonographPlus_${variant.versionName}_$currentTimeString.apk"
+                        else -> "PhonographPlus_${variant.versionName}_${getGitHash(true)}_$currentTimeString.apk"
                     }
                 variant.outputs.all {
                     this.outputFile.copyTo(File(variantDirectory, apkName), true)
@@ -80,7 +80,7 @@ android {
                     .firstOrNull { it.name.contains(variant.name, ignoreCase = true) && it.enabled }
                     ?.also {
                         it.mappingFile.asFile.orNull
-                            ?.copyTo(File(variantDirectory, "mapping.txt"))
+                            ?.copyTo(File(variantDirectory, "mapping_${getGitHash(true)}.txt"))
                     }
             }
         }
