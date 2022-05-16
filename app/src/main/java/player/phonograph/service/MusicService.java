@@ -288,7 +288,7 @@ public class MusicService extends Service implements SharedPreferences.OnSharedP
 
             @Override
             public boolean onMediaButtonEvent(Intent mediaButtonEvent) {
-                return MediaButtonIntentReceiver.handleIntent(MusicService.this, mediaButtonEvent);
+                return MediaButtonIntentReceiver.Companion.handleIntent(MusicService.this, mediaButtonEvent);
             }
         });
 
