@@ -30,6 +30,8 @@ import kotlinx.coroutines.launch
 import player.phonograph.R
 import player.phonograph.glide.palette.BitmapPaletteWrapper
 import player.phonograph.model.Song
+import player.phonograph.ui.compose.base.Title
+import player.phonograph.ui.compose.base.VerticalTextItem
 import player.phonograph.ui.compose.theme.PhonographTheme
 import player.phonograph.util.MusicUtil
 import player.phonograph.util.SongDetailUtil.SongInfo

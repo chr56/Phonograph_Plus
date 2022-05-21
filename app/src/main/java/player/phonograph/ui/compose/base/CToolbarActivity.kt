@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 chr_56
+ * Copyright (c) 2022 chr_56 & Abou Zeid (kabouzeid) (original author)
  */
 
 package player.phonograph.ui.compose
