@@ -6,18 +6,19 @@ package player.phonograph.ui.compose.base
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.selection.SelectionContainer
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.material.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import player.phonograph.R
 
 // @Preview(showBackground = true)
 // @Composable
@@ -80,6 +81,26 @@ fun Title(
     )
 }
 
+@Composable
+fun BaseListEntry(
+    image: @Composable () -> Unit,
+    content: @Composable () -> Unit,
+    showMenu: Boolean,
+    onMenuClick: () -> Unit
+) {
+    Column {
+        Row {
+            Box(Modifier.width(40.dp).fillMaxHeight()) { image() }
+            Box(Modifier.fillMaxHeight()) { content() }
+            if (showMenu) {
+                Button(onClick = onMenuClick, modifier = Modifier.size(48.dp).padding(8.dp).fillMaxHeight()) {
+                    Icon(painter = painterResource(id = R.drawable.ic_more_vert_white_24dp), contentDescription = "Menu", tint = MaterialTheme.colors.onSurface)
+                }
+            }
+        }
+        // todo: separator line
+    }
+}
 // @Composable
 // fun TextFieldItem(tag: String = "KeyName", value: String = "KeyValue") {
 //    BaseTextFieldItem(tag, value, false)
@@ -88,6 +109,33 @@ fun Title(
 // fun ReadonlyTextFieldItem(tag: String = "KeyName", value: String = "KeyValue") {
 //    BaseTextFieldItem(tag, value, true)
 // }
+//
+
+@Preview(showBackground = true)
+@Composable
+fun TailTextField(hint: String = "New Value", onValueChange: (String) -> Unit = {}) {
+    var value by remember { mutableStateOf("") }
+    TextField(
+        value = value,
+        placeholder = {
+            Text(text = hint)
+        },
+        onValueChange = {
+            value = it
+            onValueChange(it)
+        },
+        colors = TextFieldDefaults.textFieldColors(
+            backgroundColor = MaterialTheme.colors.background,
+            textColor = MaterialTheme.colors.onSurface,
+            focusedIndicatorColor = MaterialTheme.colors.onSurface.copy(alpha = TextFieldDefaults.IconOpacity),
+            unfocusedIndicatorColor = Color.Transparent,
+
+        ),
+        modifier = Modifier
+            .padding(horizontal = 8.dp, vertical = 8.dp)
+            .fillMaxWidth()
+    )
+}
 //
 // @Preview(showBackground = true)
 // @Composable
