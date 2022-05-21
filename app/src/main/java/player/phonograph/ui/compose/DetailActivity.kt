@@ -12,19 +12,21 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.MaterialTheme
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.painter.BitmapPainter
-import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -33,6 +35,9 @@ import mt.util.color.darkenColor
 import player.phonograph.R
 import player.phonograph.model.Song
 import player.phonograph.model.getReadableDurationString
+import player.phonograph.ui.compose.base.ComposeToolbarActivity
+import player.phonograph.ui.compose.base.Title
+import player.phonograph.ui.compose.base.VerticalTextItem
 import player.phonograph.ui.compose.theme.PhonographTheme
 import player.phonograph.util.SongDetailUtil
 import player.phonograph.util.SongDetailUtil.SongInfo
@@ -40,22 +45,21 @@ import player.phonograph.util.SongDetailUtil.getFileSizeString
 import player.phonograph.util.SongDetailUtil.loadArtwork
 import player.phonograph.util.SongDetailUtil.loadSong
 
-class DetailActivity : ToolbarActivity() {
+class DetailActivity : ComposeToolbarActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        val song = intent.extras?.getParcelable<Song>("song")
-
         val model: DetailModel by viewModels()
 
-        song?.let {
-            model.info = loadSong(song)
-            model.artwork = loadArtwork(this, song = song, this::updateBarsColor)
-        }
+        super.onCreate(savedInstanceState)
+
+        val song = intent.extras?.getParcelable<Song>("song") ?: Song.EMPTY_SONG
+
+        model.info = loadSong(song)
+        model.artwork = loadArtwork(this, song = song, this::updateBarsColor)
     }
 
     @Composable
-    override fun Content() {
+    override fun SetUpContent() {
         PhonographTheme {
             val model: DetailModel by viewModels()
             DetailActivityContent(model)
@@ -81,7 +85,7 @@ class DetailActivity : ToolbarActivity() {
         model.artwork.value?.paletteColor?.let { color ->
             if (color != 0) {
                 val colorInt = darkenColor(color)
-                appBarColor.value = Color(colorInt)
+                appbarColor.value = Color(colorInt)
                 window.statusBarColor = darkenColor(colorInt)
                 if (ThemeColor.coloredNavigationBar(this)) {
                     window.navigationBarColor = darkenColor(colorInt)
@@ -138,7 +142,6 @@ private fun DetailActivityContent(viewModel: DetailModel) {
                 .align(Alignment.CenterHorizontally)
                 .background(paletteColor)
         ) {
-
             Image(
                 painter = painter,
                 contentDescription = "Cover",
@@ -158,11 +161,20 @@ private fun DetailActivityContent(viewModel: DetailModel) {
             Title(stringResource(R.string.file), color = paletteColor)
             Item(stringResource(id = R.string.label_file_name), info.fileName ?: "-")
             Item(stringResource(id = R.string.label_file_path), info.filePath ?: "-")
-            Item(stringResource(id = R.string.label_track_length), getReadableDurationString(info.trackLength ?: -1))
+            Item(
+                stringResource(id = R.string.label_track_length),
+                getReadableDurationString(info.trackLength ?: -1)
+            )
             Item(stringResource(id = R.string.label_file_format), info.fileFormat ?: "-")
-            Item(stringResource(id = R.string.label_file_size), getFileSizeString(info.fileSize ?: -1))
-            Item(stringResource(id = R.string.label_bit_rate), info.bitRate ?: "-" + " kb/s")
-            Item(stringResource(id = R.string.label_sampling_rate), info.samplingRate ?: "-" + " Hz")
+            Item(
+                stringResource(id = R.string.label_file_size),
+                getFileSizeString(info.fileSize ?: -1)
+            )
+            Item(stringResource(id = R.string.label_bit_rate), "${info.bitRate ?: "-"} kb/s")
+            Item(
+                stringResource(id = R.string.label_sampling_rate),
+                "${info.samplingRate ?: "-"} Hz"
+            )
             // Common Tag
             Spacer(modifier = Modifier.height(16.dp))
             Title(stringResource(R.string.music_tags), color = paletteColor)
