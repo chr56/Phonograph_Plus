@@ -13,8 +13,8 @@ import android.view.LayoutInflater
 import android.view.View
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import player.phonograph.databinding.FragmentFlatPlayerPlaybackControlsBinding
-import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.helper.PlayPauseButtonOnClickHandler
+import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.ui.fragments.player.AbsPlayerControllerFragment
 import player.phonograph.views.PlayPauseDrawable
 import java.util.*
@@ -46,8 +46,11 @@ class FlatPlayerControllerFragment : AbsPlayerControllerFragment() {
         updatePlayPauseColor()
         v.playerPlayPauseButton.setOnClickListener(PlayPauseButtonOnClickHandler())
         v.playerPlayPauseButton.post {
-            v.playerPlayPauseButton.pivotX = v.playerPlayPauseButton.width.toFloat() / 2
-            v.playerPlayPauseButton.pivotY = v.playerPlayPauseButton.height.toFloat() / 2
+            // viewBinding might be null, such as when resizing windows
+            viewBinding?.let { binding ->
+                binding.playerPlayPauseButton.pivotX = binding.playerPlayPauseButton.width.toFloat() / 2
+                binding.playerPlayPauseButton.pivotY = binding.playerPlayPauseButton.height.toFloat() / 2
+            }
         }
     }
 

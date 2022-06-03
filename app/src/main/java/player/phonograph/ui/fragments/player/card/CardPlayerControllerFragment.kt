@@ -69,8 +69,11 @@ class CardPlayerControllerFragment : AbsPlayerControllerFragment() {
 
         v.playerPlayPauseFab.setOnClickListener(PlayPauseButtonOnClickHandler())
         v.playerPlayPauseFab.post {
-            v.playerPlayPauseFab.pivotX = v.playerPlayPauseFab.width.toFloat() / 2
-            v.playerPlayPauseFab.pivotY = v.playerPlayPauseFab.height.toFloat() / 2
+            // viewBinding might be null, such as when resizing windows
+            viewBinding?.let { binding ->
+                binding.playerPlayPauseFab.pivotX = binding.playerPlayPauseFab.width.toFloat() / 2
+                binding.playerPlayPauseFab.pivotY = binding.playerPlayPauseFab.height.toFloat() / 2
+            }
         }
     }
 
