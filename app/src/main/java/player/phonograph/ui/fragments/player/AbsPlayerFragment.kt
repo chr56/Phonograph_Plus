@@ -24,6 +24,7 @@ import player.phonograph.interfaces.PaletteColorHolder
 import player.phonograph.model.Song
 import player.phonograph.model.lyrics2.AbsLyrics
 import player.phonograph.model.lyrics2.LrcLyrics
+import player.phonograph.notification.ErrorNotification
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.ui.fragments.AbsMusicServiceFragment
 import player.phonograph.util.FavoriteUtil
@@ -199,21 +200,22 @@ abstract class AbsPlayerFragment :
         return false
     }
 
-    protected val backgroundCoroutine: CoroutineScope by lazy { CoroutineScope(Dispatchers.IO) }
+    protected val backgroundCoroutine: CoroutineScope by lazy { CoroutineScope(Dispatchers.IO + exceptionHandler) }
 
     protected val exceptionHandler by lazy {
         CoroutineExceptionHandler { _, throwable ->
-            Log.w("LyricsFetcher", "Exception while fetching lyrics!\n${throwable.message}")
+            Log.w("AbsPlayerFragment", "Exception:\n${throwable.message}")
+            ErrorNotification.postErrorNotification(throwable, null)
         }
     }
 
-    private fun showLyrics(lyrics: AbsLyrics) =
-        runBlocking(Dispatchers.Main) {
+    private fun showLyrics(lyrics: LrcLyrics) =
+        runBlocking(Dispatchers.Main + exceptionHandler) {
             playerAlbumCoverFragment.setLyrics(lyrics)
             showLyricsMenuItem()
         }
     private fun hideLyrics() =
-        backgroundCoroutine.launch(Dispatchers.Main) {
+        backgroundCoroutine.launch(Dispatchers.Main + exceptionHandler) {
             playerAlbumCoverFragment.clearLyrics()
             hideLyricsMenuItem()
         }
@@ -227,7 +229,9 @@ abstract class AbsPlayerFragment :
             }
             delay(100)
             // refresh anyway
-            viewModel.currentLyrics?.let { showLyrics(it) }
+            viewModel.currentLyrics?.let {
+                if (it is LrcLyrics) showLyrics(it)
+            }
         }
     }
 

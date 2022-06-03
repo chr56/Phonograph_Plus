@@ -12,16 +12,13 @@ import androidx.viewpager.widget.ViewPager.OnPageChangeListener
 import player.phonograph.adapter.AlbumCoverPagerAdapter
 import player.phonograph.adapter.AlbumCoverPagerAdapter.AlbumCoverFragment.ColorReceiver
 import player.phonograph.databinding.FragmentPlayerAlbumCoverBinding
-import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.helper.MusicProgressViewUpdateHelper
 import player.phonograph.misc.SimpleAnimatorListener
-import player.phonograph.model.lyrics2.AbsLyrics
 import player.phonograph.model.lyrics2.LrcLyrics
-import player.phonograph.notification.ErrorNotification
+import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.settings.Setting
 import player.phonograph.ui.fragments.AbsMusicServiceFragment
 import player.phonograph.util.ViewUtil
-import java.lang.IllegalStateException
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
@@ -38,11 +35,13 @@ class PlayerAlbumCoverFragment :
     private var currentPosition = 0
     private var lyrics: LrcLyrics? = null
 
-    private lateinit var progressViewUpdateHelper: MusicProgressViewUpdateHelper
+    private lateinit var progressViewUpdateHelper: MusicProgressViewUpdateHelper /**[onViewCreated]*/
 
-    /**[onViewCreated]*/
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         _viewBinding = FragmentPlayerAlbumCoverBinding.inflate(inflater)
         return binding.root
     }
@@ -154,23 +153,23 @@ class PlayerAlbumCoverFragment :
         }
     }
 
-    private fun isLyricsLayoutVisible(): Boolean = lyrics != null && Setting.instance.synchronizedLyricsShow
+    private fun isLyricsAvailable(): Boolean = lyrics != null && Setting.instance.synchronizedLyricsShow
 
     private fun hideLyricsLayout() {
-        binding.playerLyrics
-            .animate().alpha(0f).setDuration(VISIBILITY_ANIM_DURATION)
-            .withEndAction {
-                if (_viewBinding != null) {
-                    binding.playerLyrics.visibility = View.GONE
-                    binding.playerLyricsLine1.text = null
-                    binding.playerLyricsLine2.text = null
+        if (isBindingAccessible() && isVisible)
+            binding.playerLyrics
+                .animate().alpha(0f).setDuration(VISIBILITY_ANIM_DURATION)
+                .withEndAction {
+                    if (isBindingAccessible()) {
+                        binding.playerLyrics.visibility = View.GONE
+                        binding.playerLyricsLine1.text = null
+                        binding.playerLyricsLine2.text = null
+                    }
                 }
-            }
     }
 
-    fun setLyrics(l: AbsLyrics) {
-        if (!isBindingAccessible()) return
-        if (l is LrcLyrics && Setting.instance.synchronizedLyricsShow) {
+    fun setLyrics(l: LrcLyrics) {
+        if (Setting.instance.synchronizedLyricsShow && this.isVisible) {
             lyrics = l
             binding.playerLyricsLine1.text = null
             binding.playerLyricsLine2.text = null
@@ -178,14 +177,12 @@ class PlayerAlbumCoverFragment :
                 visibility = View.VISIBLE
                 animate().alpha(1f).duration = VISIBILITY_ANIM_DURATION
             }
-            return
         } else {
             clearLyrics()
         }
     }
 
     fun clearLyrics() {
-        if (!isBindingAccessible()) return
         lyrics = null
         hideLyricsLayout()
     }
@@ -201,7 +198,7 @@ class PlayerAlbumCoverFragment :
     override fun onUpdateProgressViews(progress: Int, total: Int) {
         if (!isBindingAccessible()) return
 
-        if (!isLyricsLayoutVisible()) {
+        if (!isLyricsAvailable()) {
             hideLyricsLayout()
             return
         }
@@ -249,18 +246,7 @@ class PlayerAlbumCoverFragment :
         fun onToolbarToggled()
     }
 
-    private fun isBindingAccessible(): Boolean {
-        return if (_viewBinding == null) {
-            ErrorNotification.init()
-            ErrorNotification.postErrorNotification(
-                IllegalStateException("_viewBinding of PlayerAlbumCoverFragment is null."),
-                Thread.currentThread().stackTrace.map { it.toString() }.fold("StackTrace:") { acc: String, s: String -> "$acc \n$s" }
-            )
-            false
-        } else {
-            true
-        }
-    }
+    private fun isBindingAccessible(): Boolean = _viewBinding != null
 
     companion object {
         const val VISIBILITY_ANIM_DURATION = 300L
