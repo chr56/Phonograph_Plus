@@ -35,7 +35,7 @@ jobs:
 
 
       - name: Build with Gradle
-        run: ./gradlew assemblePreview --stacktrace
+        run: ./gradlew assemblePreviewRelease --parallel --stacktrace
 
       - name: signing apk
         uses: r0adkll/sign-android-release@v1.0.4
@@ -43,7 +43,7 @@ jobs:
         env:
           BUILD_TOOLS_VERSION: 30.0.3
         with:
-          releaseDirectory: ./app/build/outputs/apk/preview
+          releaseDirectory: ./app/build/outputs/apk/preview/release
           signingKeyBase64: ${{ secrets.KEY }}
           keyStorePassword: ${{ secrets.STORE_PASSWORD }}
           alias: ${{ secrets.KEY_ALIAS }}
@@ -60,7 +60,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: mapping
-          path: "app/build/outputs/mapping/preview/mapping.txt"
+          path: "app/build/outputs/mapping/preview/release/mapping.txt"
 
       - name: Release New Version
         uses: softprops/action-gh-release@v1
@@ -71,7 +71,7 @@ jobs:
           name: "${{ github.ref_name }}"
           files: |
             ${{steps.sign_app.outputs.signedReleaseFile}}
-            ${{ github.workspace }}/app/build/outputs/mapping/preview/mapping.txt
+            ${{ github.workspace }}/app/build/outputs/mapping/preview/release/mapping.txt
           prerelease: true
           draft: false
           tag_name: ${{ github.ref }}
@@ -89,7 +89,7 @@ jobs:
           message: |
             <b>Preview Version: ${{ github.ref_name }}</b>(<pre>${{ github.sha }}</pre>)
             Preview versions might have potential bugs.
-            <b>Preview版本更新!</b> 注意可能存在潜在问题!</br>
+            <b>Preview版本更新!</b> 注意可能存在潜在问题!
             <a href="https://github.com/chr56/Phonograph_Plus/releases/tag/${{ github.ref_name }}"> GitHub Link </a>
           format: html
           document: ${{ github.workspace }}/${{steps.sign_app.outputs.signedReleaseFile}}
