@@ -6,6 +6,12 @@ package player.phonograph.provider
 
 import android.content.Context
 import android.net.Uri
+import java.io.*
+import java.lang.IllegalArgumentException
+import java.util.zip.ZipEntry
+import java.util.zip.ZipInputStream
+import java.util.zip.ZipOutputStream
+import player.phonograph.notification.ErrorNotification
 import player.phonograph.provider.DatabaseConstants.BLACKLIST_DB
 import player.phonograph.provider.DatabaseConstants.FAVORITE_DB
 import player.phonograph.provider.DatabaseConstants.HISTORY_DB
@@ -13,20 +19,15 @@ import player.phonograph.provider.DatabaseConstants.MUSIC_PLAYBACK_STATE_DB
 import player.phonograph.provider.DatabaseConstants.SONG_PLAY_COUNT_DB
 import player.phonograph.util.Util.assertIfFalse
 import player.phonograph.util.Util.currentTimestamp
-import java.io.*
-import java.lang.IllegalArgumentException
-import java.util.zip.ZipEntry
-import java.util.zip.ZipInputStream
-import java.util.zip.ZipOutputStream
 
 class DatabaseManger(var context: Context) {
 
-    fun exportDatabases(uri: Uri) {
-        context.contentResolver.openFileDescriptor(uri, "w")?.fileDescriptor?.let { fileDescriptor ->
+    fun exportDatabases(uri: Uri): Boolean {
+        return context.contentResolver.openFileDescriptor(uri, "w")?.fileDescriptor?.let { fileDescriptor ->
             FileOutputStream(fileDescriptor).use {
                 exportDatabasesImpl(it)
             }
-        }
+        } ?: false
     }
 
     fun exportDatabases(folder: String = "exported") {
@@ -37,7 +38,7 @@ class DatabaseManger(var context: Context) {
         }
     }
 
-    private fun exportDatabasesImpl(fileOutputStream: FileOutputStream) {
+    private fun exportDatabasesImpl(fileOutputStream: FileOutputStream): Boolean {
         ZipOutputStream(fileOutputStream).use { zipOut ->
             addToZipFile(zipOut, context.getDatabasePath(FAVORITE_DB), FAVORITE_DB)
             addToZipFile(zipOut, context.getDatabasePath(BLACKLIST_DB), BLACKLIST_DB)
@@ -45,17 +46,18 @@ class DatabaseManger(var context: Context) {
             addToZipFile(zipOut, context.getDatabasePath(SONG_PLAY_COUNT_DB), SONG_PLAY_COUNT_DB)
             addToZipFile(zipOut, context.getDatabasePath(MUSIC_PLAYBACK_STATE_DB), MUSIC_PLAYBACK_STATE_DB)
         }
+        return true // todo
     }
 
-    fun importDatabases(uri: Uri) {
-        context.contentResolver.openFileDescriptor(uri, "r")?.fileDescriptor?.let { fd ->
+    fun importDatabases(uri: Uri): Boolean {
+        return context.contentResolver.openFileDescriptor(uri, "r")?.fileDescriptor?.let { fd ->
             FileInputStream(fd).use {
                 importDatabaseImpl(it, context.cacheDir)
             }
-        }
+        } ?: false
     }
 
-    private fun importDatabaseImpl(fileInputStream: FileInputStream, cacheDir: File) {
+    private fun importDatabaseImpl(fileInputStream: FileInputStream, cacheDir: File): Boolean {
         if (!cacheDir.exists() && !cacheDir.isDirectory && !cacheDir.canWrite())
             throw FileNotFoundException("Output dirs unavailable!")
         ZipInputStream(fileInputStream).use { zipIn ->
@@ -64,6 +66,7 @@ class DatabaseManger(var context: Context) {
         if (cacheDir.exists()) {
             replaceDatabaseFile(cacheDir)
         }
+        return true // todo
     }
 
     private fun replaceDatabaseFile(sourceDir: File) {
@@ -84,17 +87,26 @@ class DatabaseManger(var context: Context) {
         }
     }
 
-    private fun addToZipFile(destination: ZipOutputStream, file: File, entryName: String) {
-        if (file.exists() && file.isFile) {
-            destination.putNextEntry(ZipEntry(entryName))
-            BufferedInputStream(FileInputStream(file)).use { fs ->
-                val buffer = ByteArray(1024)
-                var len: Int
-                while (fs.read(buffer).also { len = it } != -1) {
-                    destination.write(buffer, 0, len)
+    private fun addToZipFile(destination: ZipOutputStream, file: File, entryName: String): Boolean {
+        runCatching {
+            if (file.exists() && file.isFile) {
+                destination.putNextEntry(ZipEntry(entryName))
+                BufferedInputStream(FileInputStream(file)).use { fs ->
+                    val buffer = ByteArray(1024)
+                    var len: Int
+                    while (fs.read(buffer).also { len = it } != -1) {
+                        destination.write(buffer, 0, len)
+                    }
                 }
+            } else {
+                ErrorNotification.postErrorNotification(IllegalStateException(), "File ${file.name} is a directory or something!")
             }
-        } // todo else
+        }.let {
+            if (it.isFailure) ErrorNotification.postErrorNotification(
+                it.exceptionOrNull() ?: Exception(), "Failed to add ${file.name} to current archive file ($destination)"
+            )
+            return it.isSuccess
+        }
     }
 
     private fun extractZipFile(source: ZipInputStream, destinationDir: File) {

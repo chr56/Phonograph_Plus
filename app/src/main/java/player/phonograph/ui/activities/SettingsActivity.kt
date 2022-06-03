@@ -125,38 +125,37 @@ class SettingsActivity : ToolbarActivity() {
         return super.onOptionsItemSelected(item)
     }
 
-    private lateinit var createAction: suspend (Uri) -> Unit
-    private lateinit var openAction: suspend (Uri) -> Unit
+    private lateinit var createAction: (Uri) -> Boolean
+    private lateinit var openAction: (Uri) -> Boolean
 
     private val createLauncher = registerForActivityResult(ActivityResultContracts.CreateDocument()) {
         it?.let { uri ->
             CoroutineScope(Dispatchers.IO).launch {
-                createAction(uri)
+                createAction(uri).andReport()
             }
         }
     }
     private val openLauncher = registerForActivityResult(OpenDocumentContract()) {
         it?.let { uri ->
             CoroutineScope(Dispatchers.IO).launch {
-                openAction(uri)
+                openAction(uri).andReport()
             }
         }
     }
 
-    private suspend fun exportDatabase(uri: Uri) {
-        DatabaseManger(App.instance).exportDatabases(uri)
-        Util.coroutineToast(App.instance, R.string.success)
+    private fun exportDatabase(uri: Uri): Boolean {
+        return DatabaseManger(App.instance).exportDatabases(uri)
     }
-    private suspend fun importDatabase(uri: Uri) {
-        DatabaseManger(App.instance).importDatabases(uri)
-        Util.coroutineToast(App.instance, R.string.success)
+    private fun importDatabase(uri: Uri): Boolean {
+        return DatabaseManger(App.instance).importDatabases(uri)
     }
-    private suspend fun exportSetting(uri: Uri) {
-        SettingManager(App.instance).exportSettings(uri)
-        Util.coroutineToast(App.instance, R.string.success)
+    private fun exportSetting(uri: Uri): Boolean {
+        return SettingManager(App.instance).exportSettings(uri)
     }
-    private suspend fun importSetting(uri: Uri) {
-         SettingManager(App.instance).importSetting(uri)
-        Util.coroutineToast(App.instance, R.string.success)
+    private fun importSetting(uri: Uri): Boolean {
+        return SettingManager(App.instance).importSetting(uri)
+    }
+    private suspend fun Boolean.andReport() {
+        Util.coroutineToast(App.instance, if (this) R.string.success else R.string.failed)
     }
 }

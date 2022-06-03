@@ -14,7 +14,7 @@ import player.phonograph.notification.ErrorNotification
 
 class SettingManager(var context: Context) {
 
-    fun exportSettings(uri: Uri) {
+    fun exportSettings(uri: Uri): Boolean {
         runCatching {
             val map = Setting.instance.export()
             val json = map.toJson()
@@ -26,6 +26,7 @@ class SettingManager(var context: Context) {
             )else {
                 saveToFile(uri, r.getOrNull()!!)
             }
+            return r.isSuccess
         }
     }
 
@@ -41,15 +42,15 @@ class SettingManager(var context: Context) {
         }
     }
 
-    fun importSetting(uri: Uri) {
-        context.contentResolver.openFileDescriptor(uri, "r")?.fileDescriptor?.let { fd ->
+    fun importSetting(uri: Uri): Boolean {
+        return context.contentResolver.openFileDescriptor(uri, "r")?.fileDescriptor?.let { fd ->
             FileInputStream(fd).use {
                 loadSettings(it)
             }
-        }
+        } ?: false
     }
 
-    private fun loadSettings(fileInputStream: FileInputStream) {
+    private fun loadSettings(fileInputStream: FileInputStream): Boolean {
         runCatching {
             val json: JSONObject
             fileInputStream.use {
@@ -80,6 +81,7 @@ class SettingManager(var context: Context) {
                 r.exceptionOrNull() ?: Exception(),
                 "Failed to import Setting"
             )
+            return r.isSuccess
         }
     }
 
