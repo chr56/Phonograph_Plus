@@ -19,5 +19,7 @@
     <!-- Menu Items -->
     <item name="action_export_data" type="id" />
     <item name="action_import_data" type="id" />
+    <item name="action_export_preferences" type="id" />
+    <item name="action_import_preferences" type="id" />
 
 </resources>

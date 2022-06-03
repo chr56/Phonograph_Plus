@@ -368,4 +368,5 @@
     <string name="external_lyrics">外部歌詞</string>
     <string name="lyrics_following">歌詞滾動</string>
     <string name="error_notification_name">錯誤報告</string>
+    <string name="preferences">首選項</string>
 </resources>

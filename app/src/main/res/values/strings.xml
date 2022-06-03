@@ -387,4 +387,5 @@
     <string name="sort_order_song_count">Song Count</string>
     <string name="sort_order_album_count">Album Count</string>
     <string name="name">Name</string>
+    <string name="preferences">Preferences</string>
 </resources>

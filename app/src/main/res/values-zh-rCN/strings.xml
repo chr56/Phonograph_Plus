@@ -371,4 +371,5 @@
     <string name="sort_order_song_count">歌曲数量</string>
     <string name="sort_order_album_count">专辑数量</string>
     <string name="name">名称</string>
+    <string name="preferences">设置</string>
 </resources>

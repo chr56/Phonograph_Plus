@@ -8,6 +8,7 @@ import android.content.res.Configuration
 import android.content.res.Resources
 import android.graphics.Point
 import android.os.Build
+import android.text.format.DateFormat
 import android.util.TypedValue
 import android.view.View
 import android.view.Window
@@ -16,12 +17,12 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.annotation.StringRes
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import java.util.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import player.phonograph.App
 import player.phonograph.BROADCAST_PLAYLISTS_CHANGED
 import player.phonograph.R
-import java.util.*
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
@@ -50,6 +51,8 @@ object Util {
 
     fun currentDate(): Date = Calendar.getInstance(TimeZone.getDefault(), Locale.getDefault()).time
     fun currentTimestamp(): Long = currentDate().time
+
+    fun currentDateTime(): CharSequence = DateFormat.format("yyMMdd_HHmmss", currentDate())
 
     fun Boolean.assertIfFalse(throwable: Throwable) {
         if (!this) throw throwable

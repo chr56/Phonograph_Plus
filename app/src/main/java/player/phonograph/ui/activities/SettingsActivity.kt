@@ -1,5 +1,6 @@
 package player.phonograph.ui.activities
 
+import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Process
@@ -12,21 +13,22 @@ import androidx.appcompat.widget.Toolbar
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.WhichButton
 import com.afollestad.materialdialogs.actions.getActionButton
+import kotlin.system.exitProcess
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import lib.phonograph.activity.ToolbarActivity
 import player.phonograph.App
 import player.phonograph.R
+import player.phonograph.misc.OpenDocumentContract
 import player.phonograph.provider.DatabaseManger
 import player.phonograph.settings.Setting
+import player.phonograph.settings.SettingManager
 import player.phonograph.ui.fragments.SettingsFragment
-import player.phonograph.misc.OpenDocumentContract
 import player.phonograph.util.Util
-import player.phonograph.util.Util.currentTimestamp
+import player.phonograph.util.Util.currentDateTime
 import util.mdcolor.pref.ThemeColor
 import util.mddesign.core.Themer
-import kotlin.system.exitProcess
 
 class SettingsActivity : ToolbarActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -62,7 +64,13 @@ class SettingsActivity : ToolbarActivity() {
             m.add(NONE, R.id.action_import_data, 2, "${getString(R.string.import_)}${getString(R.string.databases)}").also {
                 it.setShowAsAction(SHOW_AS_ACTION_NEVER)
             }
-            m.add(NONE, R.id.action_clear_all_preference, 3, getString(R.string.clear_all_preference)).also {
+            m.add(NONE, R.id.action_export_preferences, 3, "${getString(R.string.export_)}${getString(R.string.preferences)}").also {
+                it.setShowAsAction(SHOW_AS_ACTION_NEVER)
+            }
+            m.add(NONE, R.id.action_import_preferences, 4, "${getString(R.string.import_)}${getString(R.string.preferences)}").also {
+                it.setShowAsAction(SHOW_AS_ACTION_NEVER)
+            }
+            m.add(NONE, R.id.action_clear_all_preference, NONE, getString(R.string.clear_all_preference)).also {
                 it.setShowAsAction(SHOW_AS_ACTION_NEVER)
             }
         }
@@ -77,11 +85,23 @@ class SettingsActivity : ToolbarActivity() {
                 return true
             }
             R.id.action_export_data -> {
-                createLauncher.launch("phonograph_plus_databases_${currentTimestamp()}.zip")
+                createAction = { uri -> exportDatabase(uri) }
+                createLauncher.launch("phonograph_plus_databases_${currentDateTime()}.zip")
                 return true
             }
             R.id.action_import_data -> {
+                openAction = { uri -> importDatabase(uri) }
                 openLauncher.launch(OpenDocumentContract.Cfg(null, arrayOf("application/zip")))
+                return true
+            }
+            R.id.action_export_preferences -> {
+                createAction = { uri -> exportSetting(uri) }
+                createLauncher.launch("phonograph_plus_settings_${currentDateTime()}.json")
+                return true
+            }
+            R.id.action_import_preferences -> {
+                openAction = { uri -> importSetting(uri) }
+                openLauncher.launch(OpenDocumentContract.Cfg(null, arrayOf("application/json")))
                 return true
             }
             R.id.action_clear_all_preference -> {
@@ -105,20 +125,38 @@ class SettingsActivity : ToolbarActivity() {
         return super.onOptionsItemSelected(item)
     }
 
+    private lateinit var createAction: suspend (Uri) -> Unit
+    private lateinit var openAction: suspend (Uri) -> Unit
+
     private val createLauncher = registerForActivityResult(ActivityResultContracts.CreateDocument()) {
         it?.let { uri ->
             CoroutineScope(Dispatchers.IO).launch {
-                DatabaseManger(App.instance).exportDatabases(uri)
-                Util.coroutineToast(App.instance, R.string.success)
+                createAction(uri)
             }
         }
     }
     private val openLauncher = registerForActivityResult(OpenDocumentContract()) {
         it?.let { uri ->
             CoroutineScope(Dispatchers.IO).launch {
-                DatabaseManger(App.instance).importDatabases(uri)
-                Util.coroutineToast(App.instance, R.string.success)
+                openAction(uri)
             }
         }
+    }
+
+    private suspend fun exportDatabase(uri: Uri) {
+        DatabaseManger(App.instance).exportDatabases(uri)
+        Util.coroutineToast(App.instance, R.string.success)
+    }
+    private suspend fun importDatabase(uri: Uri) {
+        DatabaseManger(App.instance).importDatabases(uri)
+        Util.coroutineToast(App.instance, R.string.success)
+    }
+    private suspend fun exportSetting(uri: Uri) {
+        SettingManager(App.instance).exportSettings(uri)
+        Util.coroutineToast(App.instance, R.string.success)
+    }
+    private suspend fun importSetting(uri: Uri) {
+         SettingManager(App.instance).importSetting(uri)
+        Util.coroutineToast(App.instance, R.string.success)
     }
 }
