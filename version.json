@@ -1,21 +1,21 @@
 {
-    "version": "0.2.4-RC1",
-    "versionCode": 222,
+    "version": "0.2.5",
+    "versionCode": 223,
     "zh-cn": {
-        "logSummary": "\n<b>0.2.4-RC1 2022.5.15</b>\n<b>注意</b>1. 此次更新涉及存储播放队列数据库的改动,若发现当前播放队列异常,请清除数据\n2. 此次更新涉及排序方式设置的改动,需要重新设置排序方式\n3.建议做好备份\n\n更新日志\n1. 修复 打开或关闭系统深色模式时播放器崩溃\n2. 修复 自 v0.2.0 起专辑详情与艺术家详情元素过渡转场动画丢失\n3. 修复 专辑与艺术家页面下,歌曲与专辑或艺术家(在同一专辑但艺术家不同的情况下)配对(解析)错误\n4. 优化 专辑与艺术家解析机制(加载时间可能会延长)\n5. 新增 专辑与艺术家以及流派支持按歌曲(或专辑)数量排序\n6. 修复 歌曲在使用\"添加日期\"的排序依据下,滚动条不提示日期\n7. 改进 使用通知提示大多数耗时操作而不是各种对话框\n8. 改进 使用通知提示更多内部错误\n9. 开发 增强混淆\n10. 开发 清理代码, 替换所有AsyncTask\n11. 开发 更新 AGP 至 7.2.0，更新 Kotlin 至 1.6.20"
+        "logSummary": "\n<b>0.2.5 2022.6.3</b>\n\n1. 新增 支持备份与恢复设置(实验性)\n2. 修复 调整窗口大小时崩溃\n3. 改进 避免正在播放崩溃以及报告错误通知\n4. 开发 使用 productFlavors\n5. 开发 对 Debug 构建版本使用白低矢量轮廓图标"
     },
     "en": {
-        "logSummary": "\n<b>0.2.4-RC1 2022.5.15</b>\n<b>Note</b>1. This update involves changes to the storage play queue database. If you find that the current play queue is abnormal, please clear the data\n2. This update involves changes to the sorting method settings, and the sorting method needs to be reset\n3. Backup if available\n\nChangeLog:\n1. Fix: crashes after toggling system dark mode\n2. Fix: elements transition animations for album details and artist details have been lost since v0.2.0\n3. Fix: an error in pairing (parsing) between songs and albums or artists (in the case of the same album but different artists) under the album and artist page\n4. Optimize: album and artist parsing mechanism (loading time may be extended)\n5. Add: albums and artists and genres to support sorting by number of songs (or albums)\n6. Fix: that the scroll bar does not prompt the date when the song is sorted by \"Add Date\"\n7. Improve: notifications for most time-consuming operations instead of various dialogs\n8. Improve: notification for more internal errors\n9. Development: Enhanced Obfuscation\n10. Development: clean up code, replace all AsyncTask\n11. Development: upgrade AGP to 7.2.0，upgrade kotlin to 1.6.20"
+        "logSummary": "\n<b>0.2.5 2022.6.3</b>\n\n1. Add: backup and restore settings (experimental)\n2. Fix: crash when resizing window\n3. Improve: avoid now-playing page crashes or constantly reporting error notifications\n4. Development: use productFlavors in building project\n5. Development: use white-background vector outline icons for all Debug builds"
     },
     "downloadSources": [
+        "Release Candidate: Github(v0.2.5)",
         "Release Candidate: Github(v0.2.4-RC1)",
-        "Release Candidate: Github(v0.2.3-RC2)",
-        "Release Candidate: Github(v0.2.3-RC1)"
+        "Release Candidate: Github(v0.2.3-RC2)"
     ],
     "downloadUris": [
+        "https://github.com/chr56/Phonograph_Plus/releases/tag/v0.2.5",
         "https://github.com/chr56/Phonograph_Plus/releases/tag/v0.2.4-RC1",
-        "https://github.com/chr56/Phonograph_Plus/releases/tag/v0.2.3-RC2",
-        "https://github.com/chr56/Phonograph_Plus/releases/tag/v0.2.3-RC1"
+        "https://github.com/chr56/Phonograph_Plus/releases/tag/v0.2.3-RC2"
     ],
-    "logSummary": "\n<b>请更新至新版本,该日志即将不再提供给此版本\nUpdate Please! This log would no longer provided to this version.</b>\n<b>0.2.3-RC2 2022.4.21</b>\n\n<b>0.2.4-RC1 2022.5.15</b>\n<b>注意</b>1. 此次更新涉及存储播放队列数据库的改动,若发现当前播放队列异常,请清除数据\n2. 此次更新涉及排序方式设置的改动,需要重新设置排序方式\n3.建议做好备份\n\n更新日志\n1. 修复 打开或关闭系统深色模式时播放器崩溃\n2. 修复 自 v0.2.0 起专辑详情与艺术家详情元素过渡转场动画丢失\n3. 修复 专辑与艺术家页面下,歌曲与专辑或艺术家(在同一专辑但艺术家不同的情况下)配对(解析)错误\n4. 优化 专辑与艺术家解析机制(加载时间可能会延长)\n5. 新增 专辑与艺术家以及流派支持按歌曲(或专辑)数量排序\n6. 修复 歌曲在使用\"添加日期\"的排序依据下,滚动条不提示日期\n7. 改进 使用通知提示大多数耗时操作而不是各种对话框\n8. 改进 使用通知提示更多内部错误\n9. 开发 增强混淆\n10. 开发 清理代码, 替换所有AsyncTask\n11. 开发 更新 AGP 至 7.2.0，更新 Kotlin 至 1.6.20\n\n<b>0.2.4-RC1 2022.5.15</b>\n<b>Note</b>1. This update involves changes to the storage play queue database. If you find that the current play queue is abnormal, please clear the data\n2. This update involves changes to the sorting method settings, and the sorting method needs to be reset\n3.Backup if available\n\nLog:\n1. Fix: crashes after toggling system dark mode\n2. Fix: elements transition animations for album details and artist details have been lost since v0.2.0\n3. Fix: an error in pairing (parsing) between songs and albums or artists (in the case of the same album but different artists) under the album and artist page\n4. Optimize: album and artist parsing mechanism (loading time may be extended)\n5. Add: albums and artists and genres to support sorting by number of songs (or albums)\n6. Fix: that the scroll bar does not prompt the date when the song is sorted by \"Add Date\"\n7. Improve: notifications for most time-consuming operations instead of various dialogs\n8. Improve: notification for more internal errors\n9. Development: Enhanced Obfuscation\n10. Development: clean up code, replace all AsyncTask\n11. Development: upgrade AGP to 7.2.0，upgrade kotlin to 1.6.20"
+    "logSummary": "\n<b>请更新至新版本,该日志即将不再提供给此版本\nUpdate Please! This log would no longer provided to this version.</b>\n\n<b>0.2.5 2022.6.3</b>\n\n1. 新增 支持备份与恢复设置(实验性)\n2. 修复 调整窗口大小时崩溃\n3. 改进 避免正在播放崩溃以及报告错误通知\n4. 开发 使用 productFlavors\n5. 开发 对 Debug 构建版本使用白低矢量轮廓图标\n\n<b>0.2.5 2022.6.3</b>\n\n1. Add: backup and restore settings (experimental)\n2. Fix: crash when resizing window\n3. Improve: avoid now-playing page crashes or constantly reporting error notifications\n4. Development: use productFlavors in building project\n5. Development: use white-background vector outline icons for all Debug builds"
 }
