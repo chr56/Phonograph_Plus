@@ -68,7 +68,7 @@ android {
                 // rename apk
                 val currentTimeString = SimpleDateFormat("yyMMddHHmmss").format(Calendar.getInstance().time)
                 val apkName =
-                    when (variant.name.toLowerCase()) {
+                    when (variant.buildType.name.toLowerCase()) {
                         "release" -> "PhonographPlus_${variant.versionName}.apk"
                         else -> "PhonographPlus_${variant.versionName}_${getGitHash(true)}_$currentTimeString.apk"
                     }
@@ -87,80 +87,106 @@ android {
     }
 
     buildTypes {
-        release {
+        getByName("release") {
+            // signing
+            if (isSigningFileExist) signingConfig = signingConfigs.getByName("release")
+
+            // shrink
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(File("proguard-rules-base.pro"), File("proguard-rules-app.pro"))
-
+        }
+        getByName("debug") {
+            // signing
             if (isSigningFileExist) signingConfig = signingConfigs.getByName("release")
+
+            // package name
+            applicationIdSuffix = ".debug"
+        }
+    }
+
+    flavorDimensions += listOf("purpose")
+    productFlavors {
+        create("common") {
+            dimension = "purpose"
+
             applicationIdSuffix = ".plus"
             resValue("string", "app_name", "Phonograph Plus")
         }
-        debug {
-            if (isSigningFileExist) signingConfig = signingConfigs.getByName("release")
-
-            applicationIdSuffix = ".plus.debug"
-            resValue("string", "app_name", "Phonograph Plus Debug")
-        }
         create("preview") {
-            isMinifyEnabled = true
-            isShrinkResources = true
-
-            proguardFiles(File("proguard-rules-base.pro"), File("proguard-rules-app.pro"))
-
-            if (isSigningFileExist) signingConfig = signingConfigs.getByName("release")
+            dimension = "purpose"
+            matchingFallbacks.add("common")
 
             resValue("string", "app_name", "Phonograph Plus Preview")
             applicationIdSuffix = ".plus.preview"
-            matchingFallbacks.add("release")
         }
-        create("proguard") {
-            isMinifyEnabled = true
-            proguardFiles(File("proguard-rules-base.pro"), File("proguard-rules-app.pro"))
+        // test Proguard
+        create("proguardTest") {
+            dimension = "purpose"
+            matchingFallbacks.add("common")
 
-            if (isSigningFileExist) signingConfig = signingConfigs.getByName("release")
-
-            resValue("string", "app_name", "Phonograph Plus Proguard")
+            resValue("string", "app_name", "Phonograph Plus ProguardTest")
             applicationIdSuffix = ".plus.proguard"
-            matchingFallbacks.add("release")
-            isDebuggable = true
         }
+        // for checkout to locate a bug etc.
         create("checkout") {
-            // for checkout
-            if (isSigningFileExist) signingConfig = signingConfigs.getByName("release")
-
-            isMinifyEnabled = true
-            proguardFiles(File("proguard-rules-base.pro"), File("proguard-rules-app.pro"))
+            dimension = "purpose"
+            matchingFallbacks.add("common")
 
             resValue("string", "app_name", "Phonograph Plus Checkout")
             applicationIdSuffix = ".plus.checkout"
-            matchingFallbacks.add("release")
-            isDebuggable = true
         }
         // for ci
         create("ci") {
+            dimension = "purpose"
+            matchingFallbacks.add("common")
+
             applicationIdSuffix = ".plus.ci"
             resValue("string", "app_name", "Phonograph Plus CI Build")
-            matchingFallbacks.add("release")
-            isDebuggable = true
         }
     }
+    androidComponents {
+        beforeVariants { variantBuilder ->
+            val type = variantBuilder.buildType.toString()
+            val favors = variantBuilder.productFlavors
+            when (type) {
+                // no "release" type
+                "release" -> {
+                    if (favors.contains("purpose" to "checkout") || favors.contains("purpose" to "ci")) {
+                        variantBuilder.enable = false
+                    }
+                }
+                // no "debug" type
+                "debug" -> {
+                    if (favors.contains("purpose" to "proguardTest")) {
+                        variantBuilder.enable = false
+                    }
+                }
+            }
+        }
+    }
+
     lint {
         abortOnError = false
         disable.add("MissingTranslation")
         disable.add("InvalidPackage")
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
+
     buildFeatures {
         viewBinding = true
     }
+
     kotlinOptions {
         jvmTarget = "1.8"
     }
+
     namespace = "player.phonograph"
+
     /*
     afterEvaluate {
         tasks.withType(JavaCompile::class) {
