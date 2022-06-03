@@ -14,6 +14,8 @@ import android.widget.Toast
 import androidx.annotation.StyleRes
 import androidx.preference.PreferenceManager
 import java.io.File
+import java.lang.NullPointerException
+import kotlin.jvm.Throws
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 import org.json.JSONException
@@ -46,6 +48,9 @@ class Setting(context: Context) {
     ) {
         mPreferences.unregisterOnSharedPreferenceChangeListener(sharedPreferenceChangeListener)
     }
+
+    @Throws(NullPointerException::class)
+    internal fun export(): Map<String, Any?> = mPreferences.all
 
     /**
      * **WARNING**! to reset all SharedPreferences!
