@@ -34,9 +34,14 @@ object ErrorNotification {
         isReady = true
     }
 
-    fun postErrorNotification(e: Throwable, note: String?) {
-        val msg = "$note\n${e::class.simpleName}\n${e.message}"
-        val context = App.instance
+    fun postErrorNotification(e: Throwable, note: String? = null, context: Context = App.instance) {
+        send(msg = "$note\n${e::class.simpleName}\n${e.message}", title = "${e::class.simpleName}\n$note", context = context)
+    }
+    fun postErrorNotification(note: String, context: Context = App.instance) {
+        send(msg = note, title = App.instance.getString(R.string.error_notification_name), context = context)
+    }
+
+    private fun send(msg: String, title: String? = null, context: Context = App.instance) {
         if (!isReady) init()
 
         val action = Intent(context, CrashActivity::class.java).apply {
@@ -57,7 +62,7 @@ object ErrorNotification {
                     .setStyle(
                         NotificationCompat.BigTextStyle()
                             .setBigContentTitle(context.getString(R.string.error_notification_name))
-                            .setSummaryText("${e::class.simpleName}\n$note")
+                            .setSummaryText(title)
                             .bigText(msg)
                     )
                     .setContentIntent(clickIntent)
