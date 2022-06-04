@@ -16,66 +16,70 @@ import com.afollestad.materialdialogs.DialogCallback
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.WhichButton
 import com.afollestad.materialdialogs.actions.getActionButton
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import java.io.File
+import java.io.IOException
+import kotlinx.coroutines.*
 import legacy.phonograph.LegacyPlaylistsUtil
 import player.phonograph.App
 import player.phonograph.R
-import player.phonograph.model.playlist.Playlist
-import player.phonograph.model.playlist.FilePlaylist
-import player.phonograph.model.Song
-import player.phonograph.util.PlaylistsUtil
 import player.phonograph.misc.SAFCallbackHandlerActivity
 import player.phonograph.misc.SafLauncher
+import player.phonograph.model.Song
+import player.phonograph.model.playlist.FilePlaylist
+import player.phonograph.model.playlist.Playlist
+import player.phonograph.notification.ErrorNotification
+import player.phonograph.util.PlaylistsUtil
 import player.phonograph.util.Util.coroutineToast
 import util.mdcolor.pref.ThemeColor
 import util.phonograph.m3u.internal.M3UGenerator
 import util.phonograph.m3u.internal.appendTimestampSuffix
-import java.io.File
-import java.io.IOException
 
 class PlaylistsManager(private val context: Context, requester: SAFCallbackHandlerActivity?) {
     private val activity: ComponentActivity? = requester as ComponentActivity?
     private val safLauncher: SafLauncher? = requester?.getSafLauncher()
 
     fun createPlaylist(name: String, songs: List<Song>? = null, path: String? = null) {
-        GlobalScope.launch(Dispatchers.Default) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && activity != null && safLauncher != null) {
-                FileOperator.createPlaylistViaSAF(name, songs, safLauncher, activity)
-            } else {
-                // legacy ways
-                LegacyPlaylistsUtil.createPlaylist(context, name).also { id ->
-                    if (PlaylistsUtil.doesPlaylistExist(context, id)) {
-                        songs?.let {
-                            LegacyPlaylistsUtil.addToPlaylist(context, it, id, true)
+        CoroutineScope(SupervisorJob())
+            .launch(Dispatchers.Default) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && activity != null && safLauncher != null) {
+                    FileOperator.createPlaylistViaSAF(name, songs, safLauncher, activity)
+                } else {
+                    // legacy ways
+                    LegacyPlaylistsUtil.createPlaylist(context, name).also { id ->
+                        if (PlaylistsUtil.doesPlaylistExist(context, id)) {
+                            songs?.let {
+                                LegacyPlaylistsUtil.addToPlaylist(context, it, id, true)
+                                coroutineToast(context, R.string.success)
+                            }
+                        } else {
+                            coroutineToast(context, R.string.failed)
+                            ErrorNotification.postErrorNotification(Exception("Failed to save playlist (id=$id)"), null)
                         }
-                    } else {
-                        coroutineToast(context, R.string.failed)
                     }
                 }
             }
-        }
     }
 
     fun appendPlaylist(songs: List<Song>, filePlaylist: FilePlaylist) {
-        GlobalScope.launch(Dispatchers.Default) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && safLauncher != null && activity != null) {
-                coroutineToast(activity, R.string.direction_open_file_with_saf)
-                FileOperator.appendToPlaylistViaSAF(songs, filePlaylist, false, context, safLauncher)
-            } else {
-                LegacyPlaylistsUtil.addToPlaylist(context, songs, filePlaylist.id, true)
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) coroutineToast(context, R.string.failed)
+        CoroutineScope(SupervisorJob())
+            .launch(Dispatchers.Default) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && safLauncher != null && activity != null) {
+                    coroutineToast(activity, R.string.direction_open_file_with_saf)
+                    FileOperator.appendToPlaylistViaSAF(songs, filePlaylist, false, context, safLauncher)
+                } else {
+                    LegacyPlaylistsUtil.addToPlaylist(context, songs, filePlaylist.id, true)
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) coroutineToast(context, R.string.failed)
+                }
             }
-        }
     }
+
     fun appendPlaylist(songs: List<Song>, playlistId: Long) {
         appendPlaylist(songs, PlaylistsUtil.getPlaylist(context, playlistId))
     }
 
     fun deletePlaylistWithGuide(filePlaylists: List<FilePlaylist>) {
-        GlobalScope.launch(Dispatchers.Default) {
+        val scope = CoroutineScope(SupervisorJob())
+        scope.launch(Dispatchers.Default) {
             // try to deleted
             val failList = LegacyPlaylistsUtil.deletePlaylists(context, filePlaylists)
 
@@ -91,7 +95,7 @@ class PlaylistsManager(private val context: Context, requester: SAFCallbackHandl
 
                 // setup delete with saf callback
                 val callback: DialogCallback = {
-                    GlobalScope.launch(Dispatchers.IO) {
+                    scope.launch(Dispatchers.IO) {
                         if (safLauncher != null && activity != null) {
                             // todo remove hardcode
                             val regex = "/(sdcard)|(storage/emulated)/\\d+/".toRegex()
@@ -132,7 +136,7 @@ class PlaylistsManager(private val context: Context, requester: SAFCallbackHandl
     }
 
     fun duplicatePlaylistsViaSaf(filePlaylists: List<Playlist>) {
-        GlobalScope.launch(Dispatchers.Default) {
+        CoroutineScope(SupervisorJob()).launch(Dispatchers.Default) {
 
             if (activity != null && safLauncher != null) {
                 FileOperator.createPlaylistsViaSAF(filePlaylists, context, safLauncher)
