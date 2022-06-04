@@ -18,7 +18,11 @@ import androidx.documentfile.provider.DocumentFile
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.WhichButton
 import com.afollestad.materialdialogs.actions.getActionButton
+import java.io.File
+import java.io.FileNotFoundException
+import java.io.IOException
 import kotlinx.coroutines.*
+import lib.phonograph.storage.getAbsolutePath
 import player.phonograph.R
 import player.phonograph.misc.OpenDocumentContract
 import player.phonograph.misc.SafLauncher
@@ -32,8 +36,6 @@ import player.phonograph.util.Util.coroutineToast
 import player.phonograph.util.Util.sentPlaylistChangedLocalBoardCast
 import util.phonograph.m3u.internal.M3UGenerator
 import util.phonograph.m3u.internal.appendTimestampSuffix
-import java.io.FileNotFoundException
-import java.io.IOException
 
 object FileOperator {
 
@@ -118,34 +120,28 @@ object FileOperator {
     ) {
         if (songs.isEmpty()) return
 
-        val rawPath = PlaylistsUtil.getPlaylistPath(context, filePlaylist)
+        val playlistPath = PlaylistsUtil.getPlaylistPath(context, filePlaylist)
+        val playlistDocumentFile = DocumentFile.fromFile(File(playlistPath)).parentFile ?: DocumentFile.fromFile(Environment.getExternalStorageDirectory())
 
-        val regex = "/(sdcard)|(storage/emulated)/\\d+/".toRegex()
-        val path = regex.replace(rawPath.removePrefix(Environment.getExternalStorageDirectory().absolutePath), "")
-
-        @Suppress("SpellCheckingInspection")
-        val parentFolderUri = Uri.parse(
-            "content://com.android.externalstorage.documents/document/primary:" + Uri.encode(path)
-        )
-
-        val cfg = OpenDocumentContract.Cfg(parentFolderUri, arrayOf("audio/x-mpegurl", MediaStore.Audio.Playlists.CONTENT_TYPE, MediaStore.Audio.Playlists.ENTRY_CONTENT_TYPE), false)
+        val cfg = OpenDocumentContract.Cfg(playlistDocumentFile.uri, arrayOf("audio/x-mpegurl", MediaStore.Audio.Playlists.CONTENT_TYPE, MediaStore.Audio.Playlists.ENTRY_CONTENT_TYPE), false)
         safLauncher.openFile(cfg) { uri: Uri? ->
             if (uri != null) {
                 CoroutineScope(SupervisorJob()).launch(Dispatchers.IO) {
                     try {
-                        // valid uri
-                        val parsedUriPath = uri.path!!.substringAfter("/document/").substringAfter(":").substringAfter(":")
-                        if (!parsedUriPath.contains(path.substringAfter('/'))) {
-                            val errorMsg = "${ context.getString(R.string.failed_to_save_playlist, filePlaylist.name) }: ${context.getString(R.string.file_incorrect)}" +
-                                " $path -> $parsedUriPath "
-                            Log.e("appendToPlaylist", errorMsg)
+
+                        if (!assertUri(context, filePlaylist, uri)) {
+                            val returningPath = DocumentFile.fromSingleUri(context, uri)?.getAbsolutePath(context)
+                            val errorMsg =
+                                "${ context.getString(R.string.failed_to_save_playlist, filePlaylist.name) }: ${context.getString(R.string.file_incorrect)}" +
+                                    "Playlist($playlistPath) -> File($returningPath) "
+                            Log.e("AppendToPlaylist", errorMsg)
                             coroutineToast(context, errorMsg, true)
-                            ErrorNotification.postErrorNotification(IllegalStateException(), errorMsg)
+                            ErrorNotification.postErrorNotification(IllegalStateException("Write for Playlist($playlistPath) but we got File($returningPath) "), "SAF uri: $uri, Playlist:$playlistPath")
                             return@launch
                         }
 
                         val outputStream = context.contentResolver.openOutputStream(uri, "wa")
-                        outputStream?.let {
+                        outputStream?.use {
                             M3UGenerator.generate(outputStream, songs, false)
                             coroutineToast(context, context.getString(R.string.success))
                         }
@@ -157,6 +153,12 @@ object FileOperator {
                 }
             }
         }
+    }
+
+    fun assertUri(context: Context, target: FilePlaylist, uri: Uri): Boolean {
+        val playlistPath = PlaylistsUtil.getPlaylistPath(context, target)
+        val documentFile = DocumentFile.fromSingleUri(context, uri) ?: return false
+        return documentFile.getAbsolutePath(context) == playlistPath
     }
 
     fun deletePlaylistsViaSAF(activity: Activity, filePlaylists: List<FilePlaylist>, treeUri: Uri) {
@@ -276,7 +278,7 @@ object FileOperator {
                                 coroutineToast(
                                     context, context.getString(R.string.failed) + ":${treeUri.path} is not available"
                                 )
-                                ErrorNotification.postErrorNotification(e,"${treeUri.path} is not available")
+                                ErrorNotification.postErrorNotification(e, "${treeUri.path} is not available")
                             }
                         }
                     }
@@ -295,7 +297,7 @@ object FileOperator {
                 safLauncher.openDir(parentFolderUri, uriCallback)
             } catch (e: Exception) {
                 coroutineToast(context, context.getString(R.string.failed) + ": unknown")
-                ErrorNotification.postErrorNotification(e,"unknown")
+                ErrorNotification.postErrorNotification(e, "unknown")
                 Log.w("CreatePlaylistDialog", "SaveFail: \n${e.message}")
             }
         }
