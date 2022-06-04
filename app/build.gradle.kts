@@ -29,8 +29,8 @@ if (isSigningFileExist) {
 }
 
 android {
-    compileSdk = 31
-    buildToolsVersion = "31.0.0"
+    compileSdk = 32
+    buildToolsVersion = "32.0.0"
     namespace = "player.phonograph"
 
     val appName = "Phonograph Plus"
@@ -50,7 +50,7 @@ android {
 
     defaultConfig {
         minSdk = 24
-        targetSdk = 31
+        targetSdk = 32
 
         renderscriptTargetApi = 29
         vectorDrawables.useSupportLibrary = true
