@@ -14,6 +14,7 @@ import android.provider.MediaStore
 import android.text.Html
 import android.util.Log
 import androidx.activity.ComponentActivity
+import androidx.core.provider.DocumentsContractCompat
 import androidx.documentfile.provider.DocumentFile
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.WhichButton
@@ -110,7 +111,6 @@ object FileOperator {
         appendToPlaylistViaSAF(songs, playlist, removeDuplicated, context, safLauncher)
     }
 
-    // todo remove hardcode
     fun appendToPlaylistViaSAF(
         songs: List<Song>,
         filePlaylist: FilePlaylist,
@@ -164,43 +164,37 @@ object FileOperator {
     fun deletePlaylistsViaSAF(activity: Activity, filePlaylists: List<FilePlaylist>, treeUri: Uri) {
 
         CoroutineScope(SupervisorJob()).launch(Dispatchers.IO) {
-            val folder = DocumentFile.fromTreeUri(activity, treeUri)
+            val folder =
+                if (DocumentsContractCompat.isTreeUri(treeUri))
+                    DocumentFile.fromTreeUri(activity, treeUri)
+                else null
+
             if (folder != null) {
                 val coroutineScope = CoroutineScope(Dispatchers.IO)
 
                 // get given playlist paths
                 val mediaStorePaths = coroutineScope.async {
-                    val paths: MutableList<String> = ArrayList(filePlaylists.size)
-                    filePlaylists.forEach {
-                        paths.add(PlaylistsUtil.getPlaylistPath(activity, it))
-                    }
-                    return@async paths
+                    return@async filePlaylists.map { PlaylistsUtil.getPlaylistPath(activity, it) }
                 }
                 // search playlist in folder
                 val playlistInFolder = coroutineScope.async {
-                    val deleteList: MutableList<DocumentFile> = ArrayList()
-                    deleteList.addAll(
-                        PlaylistsUtil.searchPlaylist(activity, folder, filePlaylists)
-                    )
-                    return@async deleteList
+                    return@async PlaylistsUtil.searchPlaylist(activity, folder, filePlaylists).toMutableList()
                 }
 
                 val prepareList: MutableList<DocumentFile> = playlistInFolder.await()
                 val deleteList: MutableList<DocumentFile> = ArrayList(prepareList.size / 2)
 
-                if (prepareList.isNullOrEmpty()) {
+                if (prepareList.isEmpty()) {
                     // no playlist found in folder?
                     coroutineToast(activity, R.string.failed_to_delete)
                 } else {
                     val playlistPaths = mediaStorePaths.await()
                     // valid playlists
                     prepareList.forEach { file ->
-                        // todo remove hardcode
-                        val fileUriPath = file.uri.path!!.substringAfter("/document/")
-                        if (fileUriPath.endsWith("m3u", ignoreCase = true) or fileUriPath.endsWith("m3u8", ignoreCase = true)) {
-                            val path = fileUriPath.substringAfter(":").substringAfter(":")
-                            playlistPaths.forEach {
-                                if (it.contains(path, ignoreCase = true)) deleteList.add(file)
+                        val filePath = file.getAbsolutePath(activity)
+                        if (filePath.endsWith("m3u", ignoreCase = true) or filePath.endsWith("m3u8", ignoreCase = true)) {
+                            for (p in playlistPaths) {
+                                if (p == filePath) deleteList.add(file)
                             }
                         }
                     }
@@ -208,7 +202,7 @@ object FileOperator {
                     // confirm to delete
                     val m = StringBuffer().append(Html.fromHtml(activity.resources.getQuantityString(R.plurals.msg_files_deletion_summary, deleteList.size, deleteList.size), Html.FROM_HTML_MODE_LEGACY))
                     deleteList.forEach { file ->
-                        m.append(file.uri.path!!.substringAfter("/document/").substringAfter(":").substringAfter(":")).appendLine()
+                        m.append(file.getAbsolutePath(activity)).appendLine()
                         Log.i("FileDelete", "DeleteList:")
                         Log.i("FileDelete", "${file.name}@${file.uri}")
                     }
@@ -235,6 +229,7 @@ object FileOperator {
             } else {
                 // folder unavailable
                 coroutineToast(activity, R.string.failed_to_delete)
+                ErrorNotification.postErrorNotification(IllegalStateException("$treeUri is invalid"), "Select correct folder!")
             }
         }
     }
@@ -284,17 +279,11 @@ object FileOperator {
                     }
                 }
 
-                // todo remove hardcode
-                val regex = "/(sdcard)|(storage/emulated)/\\d+/".toRegex()
-                val rawPath = PlaylistsUtil.getPlaylistPath(context, playlists[0] as FilePlaylist)
-                val path = regex.replace(rawPath.removePrefix(Environment.getExternalStorageDirectory().absolutePath), "")
-
-                val parentFolderUri = Uri.parse(
-                    "content://com.android.externalstorage.documents/document/primary:" + Uri.encode(path)
-                )
+                val parent = DocumentFile.fromFile(File(PlaylistsUtil.getPlaylistPath(context, playlists[0] as FilePlaylist))).parentFile
+                    ?: DocumentFile.fromFile(Environment.getExternalStorageDirectory())
 
                 coroutineToast(context, context.getString(R.string.direction_open_folder_with_saf), true)
-                safLauncher.openDir(parentFolderUri, uriCallback)
+                safLauncher.openDir(parent.uri, uriCallback)
             } catch (e: Exception) {
                 coroutineToast(context, context.getString(R.string.failed) + ": unknown")
                 ErrorNotification.postErrorNotification(e, "unknown")
