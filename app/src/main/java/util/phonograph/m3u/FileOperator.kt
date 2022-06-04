@@ -20,29 +20,34 @@ import com.afollestad.materialdialogs.WhichButton
 import com.afollestad.materialdialogs.actions.getActionButton
 import kotlinx.coroutines.*
 import player.phonograph.R
-import player.phonograph.model.playlist.Playlist
-import player.phonograph.model.playlist.FilePlaylist
-import player.phonograph.model.Song
 import player.phonograph.misc.OpenDocumentContract
-import player.phonograph.util.PlaylistsUtil
 import player.phonograph.misc.SafLauncher
 import player.phonograph.misc.UriCallback
+import player.phonograph.model.Song
+import player.phonograph.model.playlist.FilePlaylist
+import player.phonograph.model.playlist.Playlist
+import player.phonograph.notification.ErrorNotification
+import player.phonograph.util.PlaylistsUtil
 import player.phonograph.util.Util.coroutineToast
 import player.phonograph.util.Util.sentPlaylistChangedLocalBoardCast
 import util.phonograph.m3u.internal.M3UGenerator
 import util.phonograph.m3u.internal.appendTimestampSuffix
 import java.io.FileNotFoundException
 import java.io.IOException
-import kotlin.collections.ArrayList
 
 object FileOperator {
 
-    fun createPlaylistViaSAF(name: String, songs: List<Song>?, safLauncher: SafLauncher, activity: ComponentActivity) {
+    fun createPlaylistViaSAF(
+        name: String,
+        songs: List<Song>?,
+        safLauncher: SafLauncher,
+        activity: ComponentActivity
+    ) {
 
         // prepare callback
         val uriCallback: UriCallback = { uri ->
             // callback start
-            GlobalScope.launch(Dispatchers.IO) {
+            CoroutineScope(SupervisorJob()).launch(Dispatchers.IO) {
                 if (uri == null) {
                     coroutineToast(activity, R.string.failed)
                 } else {
@@ -57,6 +62,10 @@ object FileOperator {
                                 coroutineToast(
                                     activity, activity.getString(R.string.failed) + ":${uri.path} can not be written", true
                                 )
+                                ErrorNotification.postErrorNotification(
+                                    e,
+                                    "${uri.path} can not be written.\nSongs:${songs?.map { it.data }?.reduce { acc, s -> "$acc,$s" }}\nActivity:$activity"
+                                )
                             } finally {
                                 outputStream.close()
                             }
@@ -65,31 +74,48 @@ object FileOperator {
                         coroutineToast(
                             activity, activity.getString(R.string.failed) + ":${uri.path} is not available"
                         )
+                        ErrorNotification.postErrorNotification(
+                            e,
+                            "${uri.path} is not available.\nSongs:${songs?.map { it.data }?.reduce { acc, s -> "$acc,$s" }}\nActivity:$activity"
+                        )
                     }
                 }
             }
             // callback end
         }
 
-        GlobalScope.launch(Dispatchers.IO) {
+        CoroutineScope(SupervisorJob()).launch(Dispatchers.IO) {
             while (safLauncher.createCallbackInUse) yield()
             try {
                 safLauncher.createFile("$name.m3u", uriCallback)
             } catch (e: Exception) {
                 coroutineToast(activity, activity.getString(R.string.failed) + ": unknown")
-                Log.i("CreatePlaylistDialog", "SaveFail: \n${e.message}")
+                ErrorNotification.postErrorNotification(e, "Unknown")
+                Log.w("CreatePlaylistDialog", "SaveFail: \n${e.message}")
             }
         }
     }
 
-    fun appendToPlaylistViaSAF(songs: List<Song>, playlistId: Long, removeDuplicated: Boolean, context: Context, safLauncher: SafLauncher) {
+    fun appendToPlaylistViaSAF(
+        songs: List<Song>,
+        playlistId: Long,
+        removeDuplicated: Boolean,
+        context: Context,
+        safLauncher: SafLauncher
+    ) {
         if (songs.isEmpty()) return
         val playlist = PlaylistsUtil.getPlaylist(context, playlistId)
         appendToPlaylistViaSAF(songs, playlist, removeDuplicated, context, safLauncher)
     }
 
     // todo remove hardcode
-    fun appendToPlaylistViaSAF(songs: List<Song>, filePlaylist: FilePlaylist, removeDuplicated: Boolean, context: Context, safLauncher: SafLauncher) {
+    fun appendToPlaylistViaSAF(
+        songs: List<Song>,
+        filePlaylist: FilePlaylist,
+        removeDuplicated: Boolean,
+        context: Context,
+        safLauncher: SafLauncher
+    ) {
         if (songs.isEmpty()) return
 
         val rawPath = PlaylistsUtil.getPlaylistPath(context, filePlaylist)
@@ -105,7 +131,7 @@ object FileOperator {
         val cfg = OpenDocumentContract.Cfg(parentFolderUri, arrayOf("audio/x-mpegurl", MediaStore.Audio.Playlists.CONTENT_TYPE, MediaStore.Audio.Playlists.ENTRY_CONTENT_TYPE), false)
         safLauncher.openFile(cfg) { uri: Uri? ->
             if (uri != null) {
-                GlobalScope.launch(Dispatchers.IO) {
+                CoroutineScope(SupervisorJob()).launch(Dispatchers.IO) {
                     try {
                         // valid uri
                         val parsedUriPath = uri.path!!.substringAfter("/document/").substringAfter(":").substringAfter(":")
@@ -114,6 +140,7 @@ object FileOperator {
                                 " $path -> $parsedUriPath "
                             Log.e("appendToPlaylist", errorMsg)
                             coroutineToast(context, errorMsg, true)
+                            ErrorNotification.postErrorNotification(IllegalStateException(), errorMsg)
                             return@launch
                         }
 
@@ -134,7 +161,7 @@ object FileOperator {
 
     fun deletePlaylistsViaSAF(activity: Activity, filePlaylists: List<FilePlaylist>, treeUri: Uri) {
 
-        GlobalScope.launch(Dispatchers.IO) {
+        CoroutineScope(SupervisorJob()).launch(Dispatchers.IO) {
             val folder = DocumentFile.fromTreeUri(activity, treeUri)
             if (folder != null) {
                 val coroutineScope = CoroutineScope(Dispatchers.IO)
@@ -212,12 +239,12 @@ object FileOperator {
 
     fun createPlaylistsViaSAF(playlists: List<Playlist>, context: Context, safLauncher: SafLauncher) {
 
-        GlobalScope.launch(Dispatchers.IO) {
+        CoroutineScope(SupervisorJob()).launch(Dispatchers.IO) {
             while (safLauncher.openCallbackInUse) yield()
             try {
                 // callback
                 val uriCallback: UriCallback = { treeUri ->
-                    GlobalScope.launch(Dispatchers.IO) {
+                    CoroutineScope(SupervisorJob()).launch(Dispatchers.IO) {
                         if (treeUri == null) {
                             coroutineToast(context, R.string.failed)
                         } else {
@@ -249,6 +276,7 @@ object FileOperator {
                                 coroutineToast(
                                     context, context.getString(R.string.failed) + ":${treeUri.path} is not available"
                                 )
+                                ErrorNotification.postErrorNotification(e,"${treeUri.path} is not available")
                             }
                         }
                     }
@@ -267,7 +295,8 @@ object FileOperator {
                 safLauncher.openDir(parentFolderUri, uriCallback)
             } catch (e: Exception) {
                 coroutineToast(context, context.getString(R.string.failed) + ": unknown")
-                Log.i("CreatePlaylistDialog", "SaveFail: \n${e.message}")
+                ErrorNotification.postErrorNotification(e,"unknown")
+                Log.w("CreatePlaylistDialog", "SaveFail: \n${e.message}")
             }
         }
     }
