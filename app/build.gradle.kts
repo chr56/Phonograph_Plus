@@ -186,6 +186,8 @@ android {
         abortOnError = false
         disable.add("MissingTranslation")
         disable.add("InvalidPackage")
+
+        checkReleaseBuilds = false
     }
 
     /*
