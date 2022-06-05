@@ -1,7 +1,6 @@
 package player.phonograph.ui.fragments.mainactivity.folders
 
 import android.os.Bundle
-import android.os.Environment
 import android.text.Html
 import android.view.*
 import android.widget.PopupMenu
@@ -19,7 +18,6 @@ import com.google.android.material.snackbar.Snackbar
 import java.io.File
 import java.io.FileFilter
 import java.util.*
-import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.adapter.SongFileAdapter
 import player.phonograph.databinding.FragmentFolderBinding
@@ -438,22 +436,5 @@ class FoldersFragment :
         fun newInstance(directory: File): FoldersFragment {
             return FoldersFragment().apply { arguments = Bundle().apply { putSerializable(PATH, directory) } }
         }
-
-        // root
-        val defaultStartDirectory: File
-            get() {
-                val musicDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC)
-
-                return if (musicDir != null && musicDir.exists() && musicDir.isDirectory) {
-                    musicDir
-                } else {
-                    val externalStorage = Environment.getExternalStorageDirectory()
-                    if (externalStorage.exists() && externalStorage.isDirectory) {
-                        externalStorage
-                    } else {
-                        App.instance.getExternalFilesDir(Environment.DIRECTORY_MUSIC) ?: File("/") // root
-                    }
-                }
-            }
     }
 }

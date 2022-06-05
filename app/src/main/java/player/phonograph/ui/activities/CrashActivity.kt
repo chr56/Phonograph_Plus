@@ -22,6 +22,7 @@ import player.phonograph.App
 import player.phonograph.KEY_STACK_TRACE
 import player.phonograph.R
 import player.phonograph.settings.Setting
+import player.phonograph.settings.SettingManager
 import player.phonograph.util.DeviceInfoUtil.getDeviceInfo
 import kotlin.system.exitProcess
 
@@ -75,7 +76,7 @@ class CrashActivity : ToolbarActivity() {
                 .message(R.string.clear_all_preference_msg)
                 .negativeButton(android.R.string.cancel)
                 .positiveButton(R.string.clear_all_preference) {
-                    Setting.instance.clearAllPreference()
+                    SettingManager(this).clearAllPreference()
 
                     Handler(Looper.getMainLooper()).postDelayed({
                         Process.killProcess(Process.myPid())

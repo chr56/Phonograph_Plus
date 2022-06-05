@@ -4,19 +4,25 @@
 
 package player.phonograph.settings
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.net.Uri
+import android.widget.Toast
+import androidx.core.content.edit
 import androidx.preference.PreferenceManager
 import java.io.*
 import org.json.JSONArray
 import org.json.JSONObject
+import player.phonograph.App
+import player.phonograph.R
 import player.phonograph.notification.ErrorNotification
+import util.mdcolor.pref.ThemeColor
 
 class SettingManager(var context: Context) {
 
     fun exportSettings(uri: Uri): Boolean {
         runCatching {
-            val map = Setting.instance.export()
+            val map = Setting.instance.rawMainPreference.all
             val json = map.toJson()
             return@runCatching json.toString(2)
         }.let { r ->
@@ -133,4 +139,15 @@ class SettingManager(var context: Context) {
                 "Failed to save ${glitchList.reduce { acc, s: String -> acc + s }}"
             )
         }
+
+    /**
+     * **WARNING**! to reset all SharedPreferences!
+     */
+    @SuppressLint("ApplySharedPref") // must do immediately!
+    fun clearAllPreference() {
+        Setting.instance.rawMainPreference.edit().clear().commit()
+        ThemeColor.editTheme(App.instance).clearAllPreference() // lib
+
+        Toast.makeText(App.instance, R.string.success, Toast.LENGTH_SHORT).show()
+    }
 }

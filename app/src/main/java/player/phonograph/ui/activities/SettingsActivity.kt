@@ -110,7 +110,7 @@ class SettingsActivity : ToolbarActivity() {
                     message(R.string.clear_all_preference_msg)
                     negativeButton(android.R.string.cancel)
                     positiveButton(R.string.clear_all_preference) {
-                        Setting.instance.clearAllPreference()
+                        SettingManager(this@SettingsActivity.applicationContext).clearAllPreference()
 
                         Handler().postDelayed({
                             Process.killProcess(Process.myPid())

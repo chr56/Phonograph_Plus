@@ -4,20 +4,14 @@
 
 package player.phonograph.settings
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
+import android.os.Environment
 import android.util.Log
-import android.widget.Toast
 import androidx.annotation.StyleRes
 import androidx.preference.PreferenceManager
-import java.io.File
-import java.lang.NullPointerException
-import kotlin.jvm.Throws
-import kotlin.properties.ReadWriteProperty
-import kotlin.reflect.KProperty
 import org.json.JSONException
 import org.json.JSONObject
 import player.phonograph.App
@@ -26,16 +20,22 @@ import player.phonograph.adapter.PageConfig
 import player.phonograph.adapter.PageConfigUtil
 import player.phonograph.mediastore.sort.SortMode
 import player.phonograph.mediastore.sort.SortRef
-import player.phonograph.ui.fragments.mainactivity.folders.FoldersFragment
 import player.phonograph.ui.fragments.player.NowPlayingScreen
 import player.phonograph.util.CalendarUtil
 import player.phonograph.util.FileUtil
-import util.mdcolor.pref.ThemeColor
+import java.io.File
+import kotlin.properties.ReadWriteProperty
+import kotlin.reflect.KProperty
 
 class Setting(context: Context) {
 
     private val mPreferences: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
     private val editor: SharedPreferences.Editor = mPreferences.edit()
+
+    /**
+     * @return main SharedPreferences
+     */
+    val rawMainPreference get() = mPreferences
 
     fun registerOnSharedPreferenceChangedListener(
         sharedPreferenceChangeListener: SharedPreferences.OnSharedPreferenceChangeListener?
@@ -47,20 +47,6 @@ class Setting(context: Context) {
         sharedPreferenceChangeListener: SharedPreferences.OnSharedPreferenceChangeListener?
     ) {
         mPreferences.unregisterOnSharedPreferenceChangeListener(sharedPreferenceChangeListener)
-    }
-
-    @Throws(NullPointerException::class)
-    internal fun export(): Map<String, Any?> = mPreferences.all
-
-    /**
-     * **WARNING**! to reset all SharedPreferences!
-     */
-    @SuppressLint("ApplySharedPref") // must do immediately!
-    fun clearAllPreference() {
-        editor.clear().commit()
-        // lib
-        ThemeColor.editTheme(App.instance).clearAllPreference()
-        Toast.makeText(App.instance, R.string.success, Toast.LENGTH_SHORT).show()
     }
 
     // Theme and Color
@@ -233,7 +219,7 @@ class Setting(context: Context) {
     var startDirectory: File
         get() = File(
             mPreferences.getString(
-                START_DIRECTORY, FoldersFragment.defaultStartDirectory.path
+                START_DIRECTORY, defaultStartDirectory.path
             )!!
         )
         set(value) {
@@ -373,6 +359,23 @@ class Setting(context: Context) {
                 else -> R.style.Theme_Phonograph_Auto
             }
         }
+
+        // root
+        val defaultStartDirectory: File
+            get() {
+                val musicDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC)
+
+                return if (musicDir != null && musicDir.exists() && musicDir.isDirectory) {
+                    musicDir
+                } else {
+                    val externalStorage = Environment.getExternalStorageDirectory()
+                    if (externalStorage.exists() && externalStorage.isDirectory) {
+                        externalStorage
+                    } else {
+                        App.instance.getExternalFilesDir(Environment.DIRECTORY_MUSIC) ?: File("/") // root
+                    }
+                }
+            }
     }
 
     // Delegates
