@@ -12,6 +12,9 @@ import android.os.Environment
 import android.util.Log
 import androidx.annotation.StyleRes
 import androidx.preference.PreferenceManager
+import java.io.File
+import kotlin.properties.ReadWriteProperty
+import kotlin.reflect.KProperty
 import org.json.JSONException
 import org.json.JSONObject
 import player.phonograph.App
@@ -23,9 +26,6 @@ import player.phonograph.mediastore.sort.SortRef
 import player.phonograph.ui.fragments.player.NowPlayingScreen
 import player.phonograph.util.CalendarUtil
 import player.phonograph.util.FileUtil
-import java.io.File
-import kotlin.properties.ReadWriteProperty
-import kotlin.reflect.KProperty
 
 class Setting(context: Context) {
 
@@ -232,6 +232,7 @@ class Setting(context: Context) {
 
     // Compatibility
     var useLegacyFavoritePlaylistImpl: Boolean by BooleanPref(USE_LEGACY_FAVORITE_PLAYLIST_IMPL, false)
+    var playlistFilesOperationBehaviour: String by StringPref(PLAYLIST_FILES_OPERATION_BEHAVIOUR, PLAYLIST_OPS_BEHAVIOUR_AUTO)
 
     // Changelog
     var lastChangeLogVersion: Int by IntPref(LAST_CHANGELOG_VERSION, -1)
@@ -309,6 +310,7 @@ class Setting(context: Context) {
 
         // compatibility
         private const val USE_LEGACY_FAVORITE_PLAYLIST_IMPL = "use_legacy_favorite_playlist_impl"
+        private const val PLAYLIST_FILES_OPERATION_BEHAVIOUR = "playlist_files_operation_behaviour"
 
         // Changelog
         private const val LAST_CHANGELOG_VERSION = "last_changelog_version"
@@ -359,6 +361,10 @@ class Setting(context: Context) {
                 else -> R.style.Theme_Phonograph_Auto
             }
         }
+
+        const val PLAYLIST_OPS_BEHAVIOUR_AUTO = "auto"
+        const val PLAYLIST_OPS_BEHAVIOUR_FORCE_SAF = "force_saf"
+        const val PLAYLIST_OPS_BEHAVIOUR_FORCE_LEGACY = "force_legacy"
 
         // root
         val defaultStartDirectory: File

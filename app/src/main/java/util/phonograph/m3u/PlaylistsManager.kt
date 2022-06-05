@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 chr_56 & Abou Zeid (kabouzeid) (original author)
+ * Copyright (c) 2022 chr_56
  */
 
 @file:Suppress("MemberVisibilityCanBePrivate")
@@ -18,6 +18,7 @@ import com.afollestad.materialdialogs.WhichButton
 import com.afollestad.materialdialogs.actions.getActionButton
 import java.io.File
 import java.io.IOException
+import java.lang.IllegalStateException
 import kotlinx.coroutines.*
 import legacy.phonograph.LegacyPlaylistsUtil
 import player.phonograph.App
@@ -28,6 +29,7 @@ import player.phonograph.model.Song
 import player.phonograph.model.playlist.FilePlaylist
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.notification.ErrorNotification
+import player.phonograph.settings.Setting
 import player.phonograph.util.PlaylistsUtil
 import player.phonograph.util.Util.coroutineToast
 import util.mdcolor.pref.ThemeColor
@@ -41,7 +43,7 @@ class PlaylistsManager(private val context: Context, requester: SAFCallbackHandl
     fun createPlaylist(name: String, songs: List<Song>? = null, path: String? = null) {
         CoroutineScope(SupervisorJob())
             .launch(Dispatchers.Default) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && activity != null && safLauncher != null) {
+                if (shouldUseSAF && activity != null && safLauncher != null) {
                     FileOperator.createPlaylistViaSAF(name, songs, safLauncher, activity)
                 } else {
                     // legacy ways
@@ -63,7 +65,7 @@ class PlaylistsManager(private val context: Context, requester: SAFCallbackHandl
     fun appendPlaylist(songs: List<Song>, filePlaylist: FilePlaylist) {
         CoroutineScope(SupervisorJob())
             .launch(Dispatchers.Default) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && safLauncher != null && activity != null) {
+                if (shouldUseSAF && safLauncher != null && activity != null) {
                     coroutineToast(activity, R.string.direction_open_file_with_saf)
                     FileOperator.appendToPlaylistViaSAF(songs, filePlaylist, false, context, safLauncher)
                 } else {
@@ -90,7 +92,14 @@ class PlaylistsManager(private val context: Context, requester: SAFCallbackHandl
                 for (playlist in failList) {
                     list.append(playlist.name).append("\n")
                 }
-                val msg = "${ context.resources.getQuantityString(R.plurals.msg_deletion_result, filePlaylists.size, filePlaylists.size - failList.size, filePlaylists.size) }\n" +
+                val msg = "${
+                context.resources.getQuantityString(
+                    R.plurals.msg_deletion_result,
+                    filePlaylists.size,
+                    filePlaylists.size - failList.size,
+                    filePlaylists.size
+                )
+                }\n" +
                     " ${context.getString(R.string.failed_to_delete)}: \n $list "
 
                 // setup delete with saf callback
@@ -135,6 +144,19 @@ class PlaylistsManager(private val context: Context, requester: SAFCallbackHandl
         }
     }
 
+    private val shouldUseSAF: Boolean
+        get() {
+            return when (val behavior = Setting.instance.playlistFilesOperationBehaviour) {
+                Setting.PLAYLIST_OPS_BEHAVIOUR_FORCE_SAF -> true
+                Setting.PLAYLIST_OPS_BEHAVIOUR_FORCE_LEGACY -> false
+                Setting.PLAYLIST_OPS_BEHAVIOUR_AUTO -> Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q
+                else -> {
+                    Setting.instance.playlistFilesOperationBehaviour = Setting.PLAYLIST_OPS_BEHAVIOUR_AUTO // reset to default
+                    throw IllegalStateException("$behavior is not a valid option")
+                }
+            }
+        }
+
     fun duplicatePlaylistsViaSaf(filePlaylists: List<Playlist>) {
         CoroutineScope(SupervisorJob()).launch(Dispatchers.Default) {
 
@@ -148,6 +170,7 @@ class PlaylistsManager(private val context: Context, requester: SAFCallbackHandl
             }
         }
     }
+
     fun duplicatePlaylistViaSaf(playlist: Playlist) {
         val songs: List<Song> = playlist.getSongs(activity ?: App.instance)
 
