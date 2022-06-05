@@ -9,22 +9,24 @@ import android.content.Context
 import android.content.Intent
 import android.database.Cursor
 import android.os.Build
+import android.os.Looper
 import android.provider.MediaStore
 import android.util.Log
 import android.widget.Toast
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import player.phonograph.App
 import player.phonograph.BROADCAST_PLAYLISTS_CHANGED
 import player.phonograph.R
-import player.phonograph.model.playlist.FilePlaylist
 import player.phonograph.model.PlaylistSong
 import player.phonograph.model.Song
+import player.phonograph.model.playlist.FilePlaylist
 import player.phonograph.util.PlaylistsUtil
+import player.phonograph.util.Util
 import java.util.*
-import kotlin.collections.ArrayList
 
 object LegacyPlaylistsUtil {
 
@@ -47,7 +49,9 @@ object LegacyPlaylistsUtil {
                     if (uri != null) {
                         // Necessary because somehow the MediaStoreObserver doesn't work for playlists
                         context.contentResolver.notifyChange(uri, null)
+                        Looper.prepare()
                         Toast.makeText(context, context.resources.getString(R.string.created_playlist_x, name), Toast.LENGTH_SHORT).show()
+                        Looper.loop()
                         id = uri.lastPathSegment!!.toLong()
                     }
                 } else {
@@ -58,7 +62,9 @@ object LegacyPlaylistsUtil {
             } catch (ignored: SecurityException) { }
         }
         if (id == -1L) {
+            Looper.prepare()
             Toast.makeText(context, context.resources.getString(R.string.could_not_create_playlist), Toast.LENGTH_SHORT).show()
+            Looper.loop()
         }
         return id
     }
@@ -94,10 +100,10 @@ object LegacyPlaylistsUtil {
             }
             result += output
         }
-        GlobalScope.launch(Dispatchers.Main) {
-            Toast.makeText(
-                context, String.format(Locale.getDefault(), context.getString(R.string.deleted_x_playlists), result), Toast.LENGTH_SHORT
-            ).show()
+        CoroutineScope(SupervisorJob()).launch(Dispatchers.Main) {
+            Util.coroutineToast(
+                context, String.format(Locale.getDefault(), context.getString(R.string.deleted_x_playlists), result)
+            )
         }
 
         LocalBroadcastManager.getInstance(App.instance).sendBroadcast(Intent(BROADCAST_PLAYLISTS_CHANGED))
@@ -121,7 +127,12 @@ object LegacyPlaylistsUtil {
             "legacy.phonograph.LegacyPlaylistsUtil.addToPlaylist"
         )
     )
-    fun addToPlaylist(context: Context, songs: List<Song>, playlistId: Long, showToastOnFinish: Boolean) {
+    fun addToPlaylist(
+        context: Context,
+        songs: List<Song>,
+        playlistId: Long,
+        showToastOnFinish: Boolean
+    ) {
 
         val uri = MediaStore.Audio.Playlists.Members.getContentUri("external", playlistId)
         var cursor: Cursor? = null
@@ -150,6 +161,7 @@ object LegacyPlaylistsUtil {
             // Necessary because somehow the MediaStoreObserver doesn't work for playlists
             context.contentResolver.notifyChange(uri, null)
             if (showToastOnFinish) {
+                Looper.prepare()
                 Toast.makeText(
                     context,
                     context.resources.getString(
@@ -158,6 +170,7 @@ object LegacyPlaylistsUtil {
                     ),
                     Toast.LENGTH_SHORT
                 ).show()
+                Looper.loop()
             }
         } catch (ignored: SecurityException) { }
     }
