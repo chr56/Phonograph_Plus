@@ -372,4 +372,9 @@
     <string name="sort_order_album_count">专辑数量</string>
     <string name="name">名称</string>
     <string name="preferences">设置</string>
+    <string name="pref_title_playlist_files_operation_behaviour">操作播放列表文件时行为</string>
+    <string name="pref_summary_playlist_files_operation_behaviour">新建或修改播放列表的操作行为</string>
+    <string name="behaviour_auto">自动</string>
+    <string name="behaviour_force_saf">强制使用SAF</string>
+    <string name="behaviour_force_legacy">强制使用旧方式</string>
 </resources>

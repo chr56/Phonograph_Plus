@@ -369,4 +369,9 @@
     <string name="lyrics_following">歌詞滾動</string>
     <string name="error_notification_name">錯誤報告</string>
     <string name="preferences">首選項</string>
+    <string name="pref_title_playlist_files_operation_behaviour">操作播放列表文件時行爲</string>
+    <string name="pref_summary_playlist_files_operation_behaviour">新建或修改播放列表的操作行爲</string>
+    <string name="behaviour_auto">自動</string>
+    <string name="behaviour_force_saf">強制使用SAF</string>
+    <string name="behaviour_force_legacy">強制使用舊方式</string>
 </resources>

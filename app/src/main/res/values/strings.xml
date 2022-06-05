@@ -388,4 +388,9 @@
     <string name="sort_order_album_count">Album Count</string>
     <string name="name">Name</string>
     <string name="preferences">Preferences</string>
+    <string name="pref_title_playlist_files_operation_behaviour">Operational Behaviour for playlist files</string>
+    <string name="pref_summary_playlist_files_operation_behaviour">Behaviours about how to operate playlist files when creating, amending etc. for file playlists.</string>
+    <string name="behaviour_auto">Automatic</string>
+    <string name="behaviour_force_saf">Force to use Storage Access Framework</string>
+    <string name="behaviour_force_legacy">Force to use legacy ways</string>
 </resources>

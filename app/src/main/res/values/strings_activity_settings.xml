@@ -44,4 +44,16 @@
         <item>this_year</item>
     </string-array>
 
+    <string-array name="pref_playlist_files_operation_behaviour_values">
+        <item>auto</item>
+        <item>force_saf</item>
+        <item>force_legacy</item>
+    </string-array>
+
+    <string-array name="pref_playlist_files_operation_behaviour_titles">
+        <item>@string/behaviour_auto</item>
+        <item>@string/behaviour_force_saf</item>
+        <item>@string/behaviour_force_legacy</item>
+    </string-array>
+
 </resources>

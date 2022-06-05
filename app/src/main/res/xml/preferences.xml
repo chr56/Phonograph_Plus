@@ -3,7 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
 
-
     <lib.phonograph.preference.PreferenceCategoryX android:title="@string/pref_header_appearance">
 
         <lib.phonograph.preference.ListPreferenceX
@@ -56,8 +55,8 @@
 
         <Preference
             android:key="reset_home_pages_tab_config"
-            android:title="@string/pref_title_reset_home_pages_tab_config"
             android:summary="@string/pref_summary_reset_home_pages_tab_config"
+            android:title="@string/pref_title_reset_home_pages_tab_config"
             app:iconSpaceReserved="false" />
 
         <lib.phonograph.preference.SwitchPreferenceX
@@ -74,7 +73,6 @@
             android:title="@string/perf_title_fixed_tab_layout"
             app:iconSpaceReserved="false" />
     </lib.phonograph.preference.PreferenceCategoryX>
-
 
 
     <lib.phonograph.preference.PreferenceCategoryX android:title="@string/pref_header_notification">
@@ -223,9 +221,21 @@
         <lib.phonograph.preference.SwitchPreferenceX
             android:defaultValue="false"
             android:key="use_legacy_favorite_playlist_impl"
-            android:title="@string/pref_title_use_legacy_favorite_playlist_impl"
             android:summary="@string/pref_summary_use_legacy_favorite_playlist_impl"
+            android:title="@string/pref_title_use_legacy_favorite_playlist_impl"
             app:iconSpaceReserved="false" />
+
+        <lib.phonograph.preference.ListPreferenceX
+            android:defaultValue="auto"
+            android:entries="@array/pref_playlist_files_operation_behaviour_titles"
+            android:entryValues="@array/pref_playlist_files_operation_behaviour_values"
+            android:key="playlist_files_operation_behaviour"
+            android:negativeButtonText="@null"
+            android:positiveButtonText="@null"
+            android:summary="@string/pref_summary_playlist_files_operation_behaviour"
+            android:title="@string/pref_title_playlist_files_operation_behaviour"
+            app:iconSpaceReserved="false" />
+
     </lib.phonograph.preference.PreferenceCategoryX>
 
     <lib.phonograph.preference.PreferenceCategoryX android:title="@string/check_upgrade">
