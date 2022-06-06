@@ -1,5 +1,5 @@
 buildscript {
-    val kotlinVersion by extra { "1.6.20" }
+    val kotlinVersion by extra { "1.6.21" }
     @Suppress("JcenterRepositoryObsolete")
     repositories {
         mavenCentral()
