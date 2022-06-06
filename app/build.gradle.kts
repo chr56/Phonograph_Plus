@@ -1,4 +1,4 @@
-import com.android.build.gradle.internal.tasks.R8Task
+import com.android.build.api.artifact.SingleArtifact
 import java.io.ByteArrayOutputStream
 import java.io.FileInputStream
 import java.text.SimpleDateFormat
@@ -148,35 +148,68 @@ android {
                 variantBuilder.enable = false
             }
         }
-    }
+        onVariants { variant ->
+            val productsDirectory = File(rootDir, "products").apply { mkdir() }
+            val variantDirectory = File(productsDirectory, variant.name).apply { mkdir() }
 
-    val productsDirectory = File(rootDir, "products").apply { mkdir() }
-
-    afterEvaluate {
-        applicationVariants.forEach { variant ->
-            val variantDirectory: File = File(productsDirectory, variant.name).apply { mkdir() }
-            variant.assembleProvider.orNull?.doLast {
-
-                // rename apk
-                val currentTimeString = SimpleDateFormat("yyMMddHHmmss").format(Calendar.getInstance().time)
-                val apkName =
-                    when (variant.buildType.name.toLowerCase()) {
-                        "release" -> "PhonographPlus_${variant.versionName}.apk"
-                        else -> "PhonographPlus_${variant.versionName}_${getGitHash(true)}_$currentTimeString.apk"
-                    }
-                variant.outputs.all {
-                    this.outputFile.copyTo(File(variantDirectory, apkName), true)
+            val version = android.defaultConfig.versionName
+            val currentTimeString = SimpleDateFormat("yyMMddHHmmss").format(Calendar.getInstance().time)
+            val gitHash = getGitHash(true)
+            val apkName =
+                when (variant.buildType) {
+                    "release" -> "PhonographPlus_$version.apk"
+                    else -> "PhonographPlus_${version}_${getGitHash(true)}_$currentTimeString.apk"
                 }
-                // copy shrink output file if available
-                tasks.filterIsInstance<R8Task>()
-                    .firstOrNull { it.name.contains(variant.name, ignoreCase = true) && it.enabled }
-                    ?.also {
-                        it.mappingFile.asFile.orNull
-                            ?.copyTo(File(variantDirectory, "mapping_${getGitHash(true)}.txt"))
+
+            val loader = variant.artifacts.getBuiltArtifactsLoader()
+
+            val apkOutputDirectory = variant.artifacts.get(SingleArtifact.APK)
+            val mappingFile = variant.artifacts.get(SingleArtifact.OBFUSCATION_MAPPING_FILE)
+
+            afterEvaluate {
+                loader.load(apkOutputDirectory.get())?.apply {
+                    elements.forEach {
+                        File(it.outputFile).copyTo(
+                            File(variantDirectory, apkName), true
+                        )
                     }
+                }
+                mappingFile.orNull?.asFile?.apply {
+                    if (exists()) copyTo(
+                        File(variantDirectory, "mapping_$gitHash.txt"), true
+                    )
+                }
             }
         }
     }
+
+//    val productsDirectory = File(rootDir, "products").apply { mkdir() }
+//
+//    afterEvaluate {
+//        applicationVariants.forEach { variant ->
+//            val variantDirectory: File = File(productsDirectory, variant.name).apply { mkdir() }
+//            variant.assembleProvider.orNull?.doLast {
+//
+//                // rename apk
+//                val currentTimeString = SimpleDateFormat("yyMMddHHmmss").format(Calendar.getInstance().time)
+//                val apkName =
+//                    when (variant.buildType.name.toLowerCase()) {
+//                        "release" -> "PhonographPlus_${variant.versionName}.apk"
+//                        else -> "PhonographPlus_${variant.versionName}_${getGitHash(true)}_$currentTimeString.apk"
+//                    }
+//                variant.outputs.all {
+//                    this.outputFile.copyTo(File(variantDirectory, apkName), true)
+//                }
+//                // copy shrink output file if available
+//                tasks.filterIsInstance<R8Task>()
+//                    .firstOrNull { it.name.contains(variant.name, ignoreCase = true) && it.enabled }
+//                    ?.also {
+//                        it.mappingFile.asFile.orNull
+//                            ?.copyTo(File(variantDirectory, "mapping_${getGitHash(true)}.txt"))
+//                    }
+//            }
+//        }
+//    }
 
     lint {
         abortOnError = false
