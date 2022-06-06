@@ -19,7 +19,7 @@ import androidx.core.graphics.BlendModeCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.afollestad.materialdialogs.MaterialDialog
-import com.afollestad.materialdialogs.list.listItems
+import com.afollestad.materialdialogs.list.listItemsSingleChoice
 import com.afollestad.materialdialogs.utils.MDUtil.getStringArray
 import com.bumptech.glide.Glide
 import com.h6ah4i.android.widget.advrecyclerview.animator.GeneralItemAnimator
@@ -96,12 +96,15 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandle
         setUpRecyclerView()
     }
 
+    private val primaryColor: Int get() = ThemeColor.primaryColor(this)
+    private val accentColor: Int get() = ThemeColor.accentColor(this)
+
     override fun createContentView(): View {
         return wrapSlidingMusicPanel(binding.root)
     }
 
     private fun setUpToolbar() {
-        binding.toolbar.setBackgroundColor(ThemeColor.primaryColor(this))
+        binding.toolbar.setBackgroundColor(primaryColor)
         setSupportActionBar(binding.toolbar)
         setToolbarTitle(playlist.name)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
@@ -109,9 +112,7 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandle
 
     private var isRecyclerViewReady = false
     private fun setUpRecyclerView() {
-        ViewUtil.setUpFastScrollRecyclerViewColor(
-            this, binding.recyclerView, ThemeColor.accentColor(this)
-        )
+        ViewUtil.setUpFastScrollRecyclerViewColor(this, binding.recyclerView, accentColor)
         binding.recyclerView.layoutManager = LinearLayoutManager(this)
 
         // Init (song)adapter
@@ -187,13 +188,16 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandle
                 return true
             }
             R.id.action_setting_last_added_interval -> {
+                val prefValue = App.instance.getStringArray(R.array.pref_playlists_last_added_interval_values)
+                val currentChoice = prefValue.indexOf(Setting.instance.lastAddedCutoffPref)
                 MaterialDialog(this)
-                    .listItems(
-                        R.array.pref_playlists_last_added_interval_titles
+                    .listItemsSingleChoice(
+                        res = R.array.pref_playlists_last_added_interval_titles,
+                        initialSelection = currentChoice.let { if (it == -1) 0 else it },
+                        checkedColor = accentColor
                     ) { dialog, index, _ ->
                         runCatching {
-                            Setting.instance.lastAddedCutoffPref =
-                                App.instance.getStringArray(R.array.pref_playlists_last_added_interval_values)[index]
+                            Setting.instance.lastAddedCutoffPref = prefValue[index]
                         }.apply {
                             if (isSuccess) {
                                 loadSongs()
