@@ -6,7 +6,7 @@
 
     <item name="action_clear_all_preference" type="id" />
 
-    <!-- main activity menu items id-->
+    <!-- Main Activity Menu Items-->
     <item name="action_main_popup_window_menu" type="id" />
     <item name="action_search" type="id" />
     <item name="action_scan" type="id" />
@@ -15,8 +15,10 @@
     <item name="action_multi_select_adapter_check_all" type="id" />
     <item name="multi_selection_cab" type="id" />
 
+    <!-- Playlist Detail Activity Menu Items-->
+    <item name="action_setting_last_added_interval" type="id" />
 
-    <!-- Menu Items -->
+    <!-- Setting Activity Menu Items -->
     <item name="action_export_data" type="id" />
     <item name="action_import_data" type="id" />
     <item name="action_export_preferences" type="id" />

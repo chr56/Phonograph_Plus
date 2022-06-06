@@ -136,7 +136,7 @@ class Setting(context: Context) {
     // List-Cutoff
     val lastAddedCutoff: Long
         get() {
-            val interval: Long = when (mPreferences.getString(LAST_ADDED_CUTOFF, "past_one_months")) {
+            val interval: Long = when (lastAddedCutoffPref) {
                 "today" -> CalendarUtil.elapsedToday
                 "past_seven_days" -> CalendarUtil.getElapsedDays(7)
                 "past_fourteen_days" -> CalendarUtil.getElapsedDays(14)
@@ -149,6 +149,7 @@ class Setting(context: Context) {
             }
             return (System.currentTimeMillis() - interval) / 1000
         }
+    var lastAddedCutoffPref: String by StringPref(LAST_ADDED_CUTOFF, "past_one_months")
 
     // Upgrade
     var checkUpgradeAtStartup: Boolean by BooleanPref(CHECK_UPGRADE_AT_STARTUP, true)

@@ -18,6 +18,9 @@ import androidx.core.graphics.BlendModeColorFilterCompat
 import androidx.core.graphics.BlendModeCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.afollestad.materialdialogs.MaterialDialog
+import com.afollestad.materialdialogs.list.listItems
+import com.afollestad.materialdialogs.utils.MDUtil.getStringArray
 import com.bumptech.glide.Glide
 import com.h6ah4i.android.widget.advrecyclerview.animator.GeneralItemAnimator
 import com.h6ah4i.android.widget.advrecyclerview.animator.RefactoredDefaultItemAnimator
@@ -25,13 +28,14 @@ import com.h6ah4i.android.widget.advrecyclerview.draggable.RecyclerViewDragDropM
 import com.h6ah4i.android.widget.advrecyclerview.utils.WrapperAdapterUtils
 import kotlinx.coroutines.*
 import lib.phonograph.cab.*
+import player.phonograph.App
+import player.phonograph.PlaylistType
 import player.phonograph.R
 import player.phonograph.adapter.display.Dashboard
 import player.phonograph.adapter.display.ListSheetAdapter
 import player.phonograph.databinding.ActivityPlaylistDetailBinding
 import player.phonograph.glide.PhonographColoredTarget
 import player.phonograph.glide.SongGlideRequest
-import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.helper.menu.PlaylistMenuHelper.handleMenuClick
 import player.phonograph.interfaces.MultiSelectionCabProvider
 import player.phonograph.misc.SAFCallbackHandlerActivity
@@ -40,8 +44,12 @@ import player.phonograph.model.Song
 import player.phonograph.model.playlist.FilePlaylist
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.model.playlist.SmartPlaylist
+import player.phonograph.service.MusicPlayerRemote
+import player.phonograph.settings.Setting
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
-import player.phonograph.util.*
+import player.phonograph.util.PhonographColorUtil
+import player.phonograph.util.PlaylistsUtil
+import player.phonograph.util.ViewUtil
 import util.mdcolor.pref.ThemeColor
 import util.mddesign.core.Themer
 
@@ -87,6 +95,7 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandle
         setUpToolbar()
         setUpRecyclerView()
     }
+
     override fun createContentView(): View {
         return wrapSlidingMusicPanel(binding.root)
     }
@@ -144,6 +153,7 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandle
     private fun checkIsEmpty() {
         binding.empty.visibility = if (adapter.dataset.isEmpty()) View.VISIBLE else View.GONE
     }
+
     private fun setToolbarTitle(title: String) {
         supportActionBar!!.title = title
     }
@@ -152,8 +162,11 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandle
         menuInflater.inflate(
             if (playlist is SmartPlaylist) R.menu.menu_smart_playlist_detail else R.menu.menu_playlist_detail, menu
         )
+        if (playlist.type == PlaylistType.LAST_ADDED)
+            menu.add(Menu.NONE, R.id.action_setting_last_added_interval, Menu.NONE, R.string.pref_title_last_added_interval)
         return super.onCreateOptionsMenu(menu)
     }
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.action_shuffle_playlist -> {
@@ -171,6 +184,25 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandle
             }
             R.id.action_refresh -> {
                 onMediaStoreChanged()
+                return true
+            }
+            R.id.action_setting_last_added_interval -> {
+                MaterialDialog(this)
+                    .listItems(
+                        R.array.pref_playlists_last_added_interval_titles
+                    ) { dialog, index, _ ->
+                        runCatching {
+                            Setting.instance.lastAddedCutoffPref =
+                                App.instance.getStringArray(R.array.pref_playlists_last_added_interval_values)[index]
+                        }.apply {
+                            if (isSuccess) {
+                                loadSongs()
+                            }
+                        }
+                        dialog.dismiss()
+                    }
+                    .title(R.string.pref_title_last_added_interval)
+                    .show()
                 return true
             }
             android.R.id.home -> {
@@ -226,7 +258,11 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandle
     }
 
     override fun onDestroy() {
-        try { loaderCoroutineScope.coroutineContext[Job]?.cancel() } catch (e: java.lang.Exception) { Log.i("BackgroundCoroutineScope", e.message.orEmpty()) }
+        try {
+            loaderCoroutineScope.coroutineContext[Job]?.cancel()
+        } catch (e: java.lang.Exception) {
+            Log.i("BackgroundCoroutineScope", e.message.orEmpty())
+        }
         super.onDestroy()
         multiSelectionCab?.destroy()
         multiSelectionCab = null
@@ -236,7 +272,7 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandle
         }
         binding.recyclerView.itemAnimator = null
         binding.recyclerView.adapter = null
-        wrappedAdapter?. let {
+        wrappedAdapter?.let {
             WrapperAdapterUtils.releaseAll(it)
             wrappedAdapter = null
         }
@@ -281,7 +317,7 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandle
         showCallback: ShowCallback?,
         selectCallback: SelectCallback?,
         hideCallback: HideCallback?,
-        destroyCallback: lib.phonograph.cab.DestroyCallback?
+        destroyCallback: lib.phonograph.cab.DestroyCallback?,
     ): MultiSelectionCab {
         val cfg: CabCfg = {
             val primaryColor = ThemeColor.primaryColor(this@PlaylistDetailActivity)
@@ -323,6 +359,7 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandle
             cab.show()
         }
     }
+
     override fun dismissCab() {
         multiSelectionCab?.hide()
         binding.toolbar.visibility = View.VISIBLE
