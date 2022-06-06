@@ -134,22 +134,18 @@ android {
         }
     }
     androidComponents {
-        beforeVariants { variantBuilder ->
-            val type = variantBuilder.buildType.toString()
+        beforeVariants(selector().withBuildType("release")) { variantBuilder ->
             val favors = variantBuilder.productFlavors
-            when (type) {
-                // no "release" type
-                "release" -> {
-                    if (favors.contains("purpose" to "checkout") || favors.contains("purpose" to "ci")) {
-                        variantBuilder.enable = false
-                    }
-                }
-                // no "debug" type
-                "debug" -> {
-                    if (favors.contains("purpose" to "proguardTest")) {
-                        variantBuilder.enable = false
-                    }
-                }
+            // no "release" type
+            if (favors.contains("purpose" to "checkout") || favors.contains("purpose" to "ci")) {
+                variantBuilder.enable = false
+            }
+        }
+        beforeVariants(selector().withBuildType("debug")) { variantBuilder ->
+            val favors = variantBuilder.productFlavors
+            // no "debug" type
+            if (favors.contains("purpose" to "proguardTest")) {
+                variantBuilder.enable = false
             }
         }
     }
