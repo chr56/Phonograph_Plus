@@ -148,7 +148,7 @@ android {
                 variantBuilder.enable = false
             }
         }
-        onVariants { variant ->
+        onVariants(selector().withBuildType("release")) { variant ->
             val productsDirectory = File(rootDir, "products").apply { mkdir() }
             val variantDirectory = File(productsDirectory, variant.name).apply { mkdir() }
 
