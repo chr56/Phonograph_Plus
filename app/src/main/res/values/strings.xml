@@ -113,10 +113,12 @@
     <string name="only_on_wifi">Only on Wi-Fi</string>
     <string name="never">Never</string>
     <string name="today">Today</string>
-    <string name="this_week">This week</string>
     <string name="past_seven_days">Past 7 days</string>
-    <string name="this_month">This month</string>
+    <string name="past_fourteen_days">Past 14 days</string>
+    <string name="past_one_month">Past one month</string>
     <string name="past_three_months">Past 3 months</string>
+    <string name="this_week">This week</string>
+    <string name="this_month">This month</string>
     <string name="this_year">This year</string>
     <string name="equalizer">Equalizer</string>
     <string name="pref_header_colors">Colors</string>

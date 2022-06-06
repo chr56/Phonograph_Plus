@@ -109,10 +109,12 @@
     <string name="only_on_wifi">只在有 Wi-Fi 連接時</string>
     <string name="never">永不</string>
     <string name="today">今日</string>
-    <string name="this_week">本周</string>
-    <string name="past_seven_days">過去7天</string>
-    <string name="this_month">這個月</string>
+    <string name="past_seven_days">過去 7 天</string>
+    <string name="past_fourteen_days">過去 14 天</string>
+    <string name="past_one_month">過去 1 個月</string>
     <string name="past_three_months">過去 3 個月</string>
+    <string name="this_week">本周</string>
+    <string name="this_month">本月</string>
     <string name="this_year">今年</string>
     <string name="equalizer">等化器</string>
     <string name="pref_header_colors">色彩</string>
