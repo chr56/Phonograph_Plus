@@ -104,6 +104,7 @@
     <string name="dark_theme_name">暗色</string>
     <string name="black_theme_name">黑色（AMOLED）</string>
     <string name="auto_theme_name">自动</string>
+    <string name="always">始终</string>
     <string name="only_on_wifi">仅在 WiFi 下</string>
     <string name="never">从不</string>
     <string name="today">今日</string>
