@@ -62,11 +62,12 @@ class FilesPage : AbsPage() {
                 BlendModeCompat.SRC_IN
             )
         binding.buttonPageHeader.setImageDrawable(actionDrawable)
-        binding.buttonPageHeader.setOnClickListener{
+        binding.buttonPageHeader.setOnClickListener {
             model.loadFiles {
                 adapter.dataSet = model.currentFileList
             }
         }
+        binding.textPageHeader.text = model.currentLocation.let { "${it.storageVolume} : ${it.basePath}" }
 
         layoutManager = LinearLayoutManager(hostFragment.mainActivity)
         adapter = FileAdapter(hostFragment.mainActivity, model.currentFileList, {
