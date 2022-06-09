@@ -31,7 +31,7 @@ class HomePagerAdapter(fragment: Fragment, var cfg: PageConfig) : FragmentStateA
                 PAGERS.ARTIST -> ArtistPage::class.java
                 PAGERS.PLAYLIST -> PlaylistPage::class.java
                 PAGERS.GENRE -> GenrePage::class.java
-                PAGERS.FOLDER -> EmptyPage::class.java
+                PAGERS.FOLDER -> FilesPage::class.java
                 else -> EmptyPage::class.java
             }
         var fragment: Fragment? = null
