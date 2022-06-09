@@ -4,14 +4,16 @@
 
 package player.phonograph.model
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.util.Log
+import java.io.File
 import lib.phonograph.storage.externalStoragePath
 import lib.phonograph.storage.getBasePath
 import lib.phonograph.storage.getStorageId
 import player.phonograph.App
+import player.phonograph.BuildConfig.DEBUG
 import player.phonograph.settings.Setting
-import java.io.File
 
 /**
  * Presenting a path
@@ -33,9 +35,19 @@ class Location(val basePath: String, val storageVolume: String?) {
          */
         fun fromAbsolutePath(path: String, context: Context = App.instance): Location {
             val f = File(path)
-            Log.d("Location", "From ${f.getBasePath(context)} @ ${f.getStorageId(context)}")
-            return Location(f.getStorageId(context), f.getBasePath(context))
+            if (DEBUG) Log.w("Location", "From /${f.getBasePath(context)} @ ${f.getStorageId(context)}")
+            return Location("/${f.getBasePath(context)}", getStorageVolume(path))
         }
+        @SuppressLint("SdCardPath")
+        private fun getStorageVolume(absolutePath: String): String? =
+            when {
+                absolutePath.startsWith("/sdcard/") -> null
+                absolutePath.startsWith("/storage/emulated/") -> {
+                    val s = absolutePath.substringAfter("/storage/").split('/')
+                    "${s[0]}/${s[1]}"
+                }
+                else -> absolutePath.substringAfter("/storage/").substringBefore('/')
+            }
 
         val HOME: Location = fromAbsolutePath(Setting.defaultStartDirectory.absolutePath)
     }

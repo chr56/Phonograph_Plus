@@ -57,12 +57,12 @@ class FilesViewModel : ViewModel() {
             return if (currentRelativePath.contains('/')) {
                 // folder
                 FileEntity.Folder(
-                    Location("${currentLocation.basePath}/${currentLocation.basePath.substringBefore('/')}", currentLocation.storageVolume)
+                    Location("${currentLocation.basePath}/${currentRelativePath.substringBefore('/')}", currentLocation.storageVolume)
                 )
             } else {
                 // file
                 FileEntity.File(
-                    Location("${currentLocation.basePath}/$currentLocation", currentLocation.storageVolume)
+                    Location("${currentLocation.basePath}/$currentRelativePath", currentLocation.storageVolume)
                 )
             }
         }
