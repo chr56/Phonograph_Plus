@@ -31,7 +31,7 @@ class FilesPage : AbsPage() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        model.loadFiles()
+        model.loadFiles { }
         _viewBinding = FragmentFolderBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -52,7 +52,9 @@ class FilesPage : AbsPage() {
         adapter = FileAdapter(hostFragment.mainActivity, model.currentFileList, {
             if (it.isFolder) {
                 model.currentLocation = it.path
-                model.loadFiles()
+                model.loadFiles {
+                    adapter.dataSet = model.currentFileList
+                }
             } else {
                 MusicPlayerRemote.playNext((it as FileEntity.File).linkedSong)
             }

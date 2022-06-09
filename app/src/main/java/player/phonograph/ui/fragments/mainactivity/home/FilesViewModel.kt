@@ -20,9 +20,17 @@ class FilesViewModel : ViewModel() {
         private set
 
     private var listFileJob: Job? = null
-    fun loadFiles(location: Location = currentLocation, context: Context = App.instance) {
+    fun loadFiles(
+        location: Location = currentLocation,
+        context: Context = App.instance,
+        onFinished: () -> Unit,
+    ) {
         listFileJob?.cancel() // cancel current
-        listFileJob = viewModelScope.launch(Dispatchers.IO + SupervisorJob()) { listFiles(location, context, this) }
+        listFileJob =
+            viewModelScope.launch(Dispatchers.IO + SupervisorJob()) {
+                listFiles(location, context, this)
+                onFinished()
+            }
     }
 
     @Synchronized
