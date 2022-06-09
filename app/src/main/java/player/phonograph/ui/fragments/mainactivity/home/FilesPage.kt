@@ -14,6 +14,7 @@ import androidx.core.graphics.BlendModeCompat
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.appbar.AppBarLayout
 import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.adapter.FileAdapter
@@ -95,5 +96,19 @@ class FilesPage : AbsPage() {
             layoutManager = this@FilesPage.layoutManager
             adapter = this@FilesPage.adapter
         }
+
+        binding.innerAppBar.setExpanded(false)
+        binding.innerAppBar.addOnOffsetChangedListener(innerAppbarOffsetListener)
     }
+
+    private var innerAppbarOffsetListener =
+        AppBarLayout.OnOffsetChangedListener { _, verticalOffset ->
+            binding.container.setPadding(
+                binding.container.paddingLeft,
+                binding.innerAppBar.totalScrollRange + verticalOffset,
+                binding.container.paddingRight,
+                binding.container.paddingBottom
+
+            )
+        }
 }
