@@ -232,15 +232,15 @@ android {
 @Suppress("SpellCheckingInspection")
 dependencies {
 
-    implementation("androidx.core:core-ktx:1.7.0")
-    implementation("androidx.appcompat:appcompat:1.4.1")
+    implementation("androidx.core:core-ktx:1.8.0")
+    implementation("androidx.appcompat:appcompat:1.4.2")
     implementation("androidx.activity:activity-ktx:1.4.0")
     implementation("androidx.fragment:fragment-ktx:1.4.1")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.4.1")
 
     implementation("androidx.cardview:cardview:1.0.0")
-    implementation("androidx.constraintlayout:constraintlayout:2.1.3")
-    implementation("androidx.media:media:1.5.0")
+    implementation("androidx.constraintlayout:constraintlayout:2.1.4")
+    implementation("androidx.media:media:1.6.0")
     implementation("androidx.palette:palette-ktx:1.0.0")
     implementation("androidx.percentlayout:percentlayout:1.0.0")
     implementation("androidx.preference:preference-ktx:1.2.0")
