@@ -36,7 +36,6 @@ class FilesPage : AbsPage() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        model.loadFiles { }
         _viewBinding = FragmentDisplayPageBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -90,6 +89,7 @@ class FilesPage : AbsPage() {
             layoutManager = this@FilesPage.layoutManager
             adapter = this@FilesPage.adapter
         }
+        model.loadFiles { reload() }
 
         binding.innerAppBar.setExpanded(false)
         binding.innerAppBar.addOnOffsetChangedListener(innerAppbarOffsetListener)
