@@ -27,6 +27,10 @@ class Location(val basePath: String, val storageVolume: String?) {
             val prefix = if (storageVolume != null) "/storage/$storageVolume" else externalStoragePath
             return "$prefix$basePath"
         }
+    val parent: Location get() {
+        val parentPath = basePath.dropLastWhile { it != '/' }.removeSuffix("/")
+        return Location(parentPath, storageVolume)
+    }
 
     companion object {
 

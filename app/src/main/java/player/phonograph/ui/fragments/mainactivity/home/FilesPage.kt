@@ -68,6 +68,12 @@ class FilesPage : AbsPage() {
             }
         }
         binding.textPageHeader.text = model.currentLocation.let { "${it.storageVolume} : ${it.basePath}" }
+        binding.textPageHeader.setOnClickListener {
+            model.currentLocation = model.currentLocation.parent
+            model.loadFiles {
+                adapter.dataSet = model.currentFileList
+            }
+        }
 
         layoutManager = LinearLayoutManager(hostFragment.mainActivity)
         adapter = FileAdapter(hostFragment.mainActivity, model.currentFileList, {
