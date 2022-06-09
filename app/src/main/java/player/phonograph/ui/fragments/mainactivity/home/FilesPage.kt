@@ -15,6 +15,7 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.AppBarLayout
+import com.google.android.material.snackbar.Snackbar
 import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.adapter.FileAdapter
@@ -67,8 +68,14 @@ class FilesPage : AbsPage() {
         }
         binding.textPageHeader.text = model.currentLocation.let { "${it.storageVolume} : ${it.basePath}" }
         binding.textPageHeader.setOnClickListener {
-            model.currentLocation = model.currentLocation.parent
-            reload()
+            val parent = model.currentLocation.parent
+            if (parent != null) {
+                model.currentLocation = parent
+                reload()
+            } else {
+                Snackbar.make(binding.root, getString(R.string.reached_to_root), Snackbar.LENGTH_SHORT).show()
+                // todo volume selector
+            }
         }
 
         layoutManager = LinearLayoutManager(hostFragment.mainActivity)
