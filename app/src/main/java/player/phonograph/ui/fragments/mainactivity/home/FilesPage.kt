@@ -64,25 +64,19 @@ class FilesPage : AbsPage() {
             )
         binding.buttonPageHeader.setImageDrawable(actionDrawable)
         binding.buttonPageHeader.setOnClickListener {
-            model.loadFiles {
-                adapter.dataSet = model.currentFileList.toMutableList()
-            }
+            reload()
         }
         binding.textPageHeader.text = model.currentLocation.let { "${it.storageVolume} : ${it.basePath}" }
         binding.textPageHeader.setOnClickListener {
             model.currentLocation = model.currentLocation.parent
-            model.loadFiles {
-                adapter.dataSet = model.currentFileList.toMutableList()
-            }
+            reload()
         }
 
         layoutManager = LinearLayoutManager(hostFragment.mainActivity)
         adapter = FileAdapter(hostFragment.mainActivity, model.currentFileList.toMutableList(), {
             if (it.isFolder) {
                 model.currentLocation = it.path
-                model.loadFiles {
-                    adapter.dataSet = model.currentFileList.toMutableList()
-                }
+                reload()
             } else {
                 MusicPlayerRemote.playNext((it as FileEntity.File).linkedSong)
             }
@@ -99,6 +93,13 @@ class FilesPage : AbsPage() {
 
         binding.innerAppBar.setExpanded(false)
         binding.innerAppBar.addOnOffsetChangedListener(innerAppbarOffsetListener)
+    }
+
+    private fun reload() {
+        model.loadFiles {
+            adapter.dataSet = model.currentFileList.toMutableList()
+            binding.textPageHeader.text = model.currentLocation.let { "${it.storageVolume} : ${it.basePath}" }
+        }
     }
 
     private var innerAppbarOffsetListener =
