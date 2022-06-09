@@ -14,11 +14,12 @@ import android.os.Build
 import android.provider.BaseColumns
 import android.provider.MediaStore
 import android.provider.MediaStore.Audio.AudioColumns
+import android.provider.MediaStore.MediaColumns.DATA
 import android.util.Log
 import android.widget.Toast
 import com.afollestad.materialdialogs.MaterialDialog
+import java.io.File
 import java.util.*
-import kotlin.collections.ArrayList
 import player.phonograph.R
 import player.phonograph.model.Song
 import player.phonograph.provider.BlacklistStore
@@ -35,12 +36,14 @@ object MediaStoreUtil {
         val cursor = querySongs(context, null, null)
         return getSongs(cursor)
     }
+
     fun getSongs(context: Context, query: String): List<Song> {
         val cursor = querySongs(
             context, "${AudioColumns.TITLE} LIKE ?", arrayOf("%$query%")
         )
         return getSongs(cursor)
     }
+
     fun getSongs(cursor: Cursor?): List<Song> {
         val songs: MutableList<Song> = java.util.ArrayList()
         if (cursor != null && cursor.moveToFirst()) {
@@ -59,6 +62,7 @@ object MediaStoreUtil {
             )
         return getSong(cursor)
     }
+
     fun getSong(cursor: Cursor?): Song {
         if (cursor != null) {
             val song: Song =
@@ -108,12 +112,13 @@ object MediaStoreUtil {
     fun querySongs(
         context: Context,
         selection: String?,
-        selectionValues: Array<String>?
+        selectionValues: Array<String>?,
     ): Cursor? {
         return querySongs(
             context, selection, selectionValues, Setting.instance.songSortMode.SQLQuerySortOrder
         )
     }
+
     /**
      * query audio file via MediaStore
      */
@@ -121,7 +126,7 @@ object MediaStoreUtil {
         context: Context,
         selection: String?,
         selectionValues: Array<String>?,
-        sortOrder: String?
+        sortOrder: String?,
     ): Cursor? {
         var realSelection =
             if (selection != null && selection.trim { it <= ' ' } != "") {
@@ -193,7 +198,7 @@ object MediaStoreUtil {
             MaterialDialog(context)
                 .title(R.string.failed_to_delete)
                 .message(
-                    text = "${context.resources.getQuantityString(R.plurals.msg_deletion_result,total,result,total)}\n" +
+                    text = "${context.resources.getQuantityString(R.plurals.msg_deletion_result, total, result, total)}\n" +
                         "${context.getString(R.string.failed_to_delete)}: \n" +
                         "$list "
                 )
@@ -225,6 +230,31 @@ object MediaStoreUtil {
         ).show()
     }
 
+    fun getSong(context: Context, file: File): Song? {
+        return querySongs(context, "$DATA LIKE ?", arrayOf(file.path))?.use { cursor ->
+            cursor.moveToFirst()
+            getSongFromCursor(cursor)
+        }
+    }
+
+    fun searchSongFiles(context: Context, pathPrefix: String): List<String>? {
+        querySongs(
+            context,
+            "$DATA LIKE ?",
+            arrayOf("$pathPrefix%")
+        )?.use { cursor ->
+            cursor.moveToFirst()
+            if (cursor.count <= 0) return null
+            val column = cursor.getColumnIndex(DATA).let { if (it == -1) return null else it }
+            val list = ArrayList<String>()
+            do {
+                list.add(cursor.getString(column))
+            } while (cursor.moveToNext())
+            return list
+        }
+        return null
+    }
+
     fun scanFiles(context: Context, paths: Array<String>, mimeTypes: Array<String>) {
         var failed: Int = 0
         var scanned: Int = 0
@@ -235,7 +265,8 @@ object MediaStoreUtil {
                 scanned++
             }
             val text = "${context.resources.getString(R.string.scanned_files, scanned, scanned + failed)} ${
-            if (failed > 0) String.format(context.resources.getString(R.string.could_not_scan_files, failed)) else ""}"
+            if (failed > 0) String.format(context.resources.getString(R.string.could_not_scan_files, failed)) else ""
+            }"
             Toast.makeText(context, text, Toast.LENGTH_SHORT).show()
         }
     }
@@ -243,7 +274,7 @@ object MediaStoreUtil {
     fun searchSong(context: Context, fileName: String): Song {
         val cursor = querySongs(
             context,
-            selection = "${MediaStore.MediaColumns.DATA} LIKE ? OR ${MediaStore.MediaColumns.DISPLAY_NAME} LIKE ? ",
+            selection = "$DATA LIKE ? OR ${MediaStore.MediaColumns.DISPLAY_NAME} LIKE ? ",
             selectionValues = arrayOf(fileName, fileName)
         )
         return getSong(cursor)
@@ -256,6 +287,7 @@ object MediaStoreUtil {
         // just select only songs
         const val BASE_AUDIO_SELECTION =
             "${AudioColumns.IS_MUSIC} =1 AND ${AudioColumns.TITLE} != '' "
+
         // just select only named playlist
         const val BASE_PLAYLIST_SELECTION =
             "${MediaStore.Audio.PlaylistsColumns.NAME} != '' "
