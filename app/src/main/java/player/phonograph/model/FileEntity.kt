@@ -25,4 +25,14 @@ sealed class FileEntity {
 
     val name: String get() = path.basePath.takeLastWhile { it != '/' }
     abstract val isFolder: Boolean
+
+    override fun hashCode(): Int = path.hashCode()
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is FileEntity) return false
+
+        if (path != other.path) return false
+
+        return true
+    }
 }
