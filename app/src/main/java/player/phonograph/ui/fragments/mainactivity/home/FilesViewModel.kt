@@ -29,7 +29,7 @@ class FilesViewModel : ViewModel() {
         listFileJob =
             viewModelScope.launch(Dispatchers.IO + SupervisorJob()) {
                 listFiles(location, context, this)
-                onFinished()
+                withContext(Dispatchers.Main) { onFinished() }
             }
     }
 
