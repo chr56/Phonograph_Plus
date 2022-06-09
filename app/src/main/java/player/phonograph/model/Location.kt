@@ -22,6 +22,7 @@ import player.phonograph.settings.Setting
  * @param storageVolume the location of Storage, such as Internal(`emulated/0`) or physical storage devices (`69F4-242C`)
  */
 class Location(val basePath: String, val storageVolume: String?) {
+
     val absolutePath: String
         get() {
             val prefix = if (storageVolume != null) "/storage/$storageVolume" else externalStoragePath
@@ -54,5 +55,16 @@ class Location(val basePath: String, val storageVolume: String?) {
             }
 
         val HOME: Location = fromAbsolutePath(Setting.defaultStartDirectory.absolutePath)
+    }
+
+    override fun hashCode(): Int = storageVolume.hashCode() * 31 + basePath.hashCode()
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is Location) return false
+
+        if (basePath != other.basePath) return false
+        if (storageVolume != other.storageVolume) return false
+
+        return true
     }
 }
