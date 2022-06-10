@@ -6,23 +6,31 @@ package player.phonograph.ui.fragments.mainactivity.home
 
 import android.graphics.drawable.Drawable
 import android.os.Bundle
+import android.os.storage.StorageManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.annotation.DrawableRes
 import androidx.appcompat.content.res.AppCompatResources
+import androidx.core.content.getSystemService
 import androidx.core.graphics.BlendModeColorFilterCompat
 import androidx.core.graphics.BlendModeCompat
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.afollestad.materialdialogs.MaterialDialog
+import com.afollestad.materialdialogs.list.listItemsSingleChoice
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.snackbar.Snackbar
+import lib.phonograph.storage.StorageManagerCompat
 import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.adapter.FileAdapter
 import player.phonograph.databinding.FragmentFolderPageBinding
 import player.phonograph.model.FileEntity
+import player.phonograph.model.Location
+import player.phonograph.notification.ErrorNotification
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.util.ViewUtil
 import util.mdcolor.pref.ThemeColor
@@ -96,7 +104,29 @@ class FilesPage : AbsPage() {
             reload()
         } else {
             Snackbar.make(binding.root, getString(R.string.reached_to_root), Snackbar.LENGTH_SHORT).show()
-            // todo volume selector
+            val ssm = hostFragment.mainActivity.getSystemService<StorageManager>()
+            val volumes = StorageManagerCompat.getStorageVolumes(ssm)
+            if (volumes.isEmpty()) {
+                ErrorNotification.postErrorNotification("No volumes found! Your system might be not supported!")
+                return
+            }
+            MaterialDialog(hostFragment.mainActivity)
+                .listItemsSingleChoice(
+                    items = volumes.map { "${it.getDescription(requireContext())}\n(${it.directory?.path ?: "UNMOUNTED"})" },
+                    waitForPositiveButton = true,
+                ) { materialDialog: MaterialDialog, i: Int, _: CharSequence ->
+                    materialDialog.dismiss()
+                    val path = volumes[i].directory?.absolutePath
+                    if (path == null) {
+                        Toast.makeText(hostFragment.mainActivity, "Unmounted volume", Toast.LENGTH_SHORT).show()
+                    } else { // todo
+                        model.currentLocation = Location.fromAbsolutePath("$path/")
+                        reload()
+                    }
+                }
+                .title(R.string.folders)
+                .positiveButton(android.R.string.ok)
+                .show()
         }
     }
 
