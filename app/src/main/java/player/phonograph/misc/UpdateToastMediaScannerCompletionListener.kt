@@ -14,7 +14,7 @@ import player.phonograph.notification.ErrorNotification
  */
 class UpdateToastMediaScannerCompletionListener(
     activity: Activity,
-    paths: Array<String>
+    paths: Array<String>,
 ) :
     OnScanCompletedListener {
 
@@ -22,6 +22,7 @@ class UpdateToastMediaScannerCompletionListener(
     private val toast = Toast.makeText(activity.applicationContext, "", Toast.LENGTH_SHORT)
 
     private val notificationId = paths.hashCode()
+
     // Strings
     private val scannedFiles = activity.getString(R.string.scanned_files)
     private val couldNotScanFiles = activity.getString(R.string.could_not_scan_files)
@@ -29,17 +30,16 @@ class UpdateToastMediaScannerCompletionListener(
     private val title = activity.getString(R.string.background_notification_name)
 
     val total: Int = paths.size
-    val rest = paths.toMutableList()
     var fail = ArrayList<String>()
+    var success = 0
     override fun onScanCompleted(path: String, uri: Uri?) {
-        rest.remove(path)
-        if (uri == null) fail.add(path)
+        if (uri == null) fail.add(path) else success++
         checkAndToast()
     }
 
     private fun checkAndToast() {
-        BackgroundNotification.post(title, text, notificationId, total - rest.size, total)
-        if (rest.size == 0) {
+        BackgroundNotification.post(title, text, notificationId, success, total)
+        if (success + fail.size >= total) {
             BackgroundNotification.remove(notificationId)
             if (fail.size > 0) {
                 ErrorNotification.postErrorNotification("Couldn't scan:\n${fail.reduce { acc, s -> "$acc\n$s" }}")
@@ -50,6 +50,7 @@ class UpdateToastMediaScannerCompletionListener(
             }
         }
     }
-    private val text: String get() = " ${String.format(scannedFiles, total - fail.size, total)} "
+
+    private val text: String get() = " ${String.format(scannedFiles,success, total)} "
     private val textFail: String get() = if (fail.size > 0) String.format(couldNotScanFiles, fail.size) else ""
 }
