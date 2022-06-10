@@ -1,11 +1,11 @@
-**Preview 0.2.6-beta 2022.6.5**
+**Preview 2022.6.10**
 
 **CN**
-- 改进 播放列表的保存，并尝试修复无法保存位于实体存储卡的播放列表
-- 新增 支持修改播放列表的操作方式(位于设置->兼容性->操作播放列表文件行为)，可强制使用SAF(或旧方法)操作播放列表
-- 开发 升级 targetSdk 至 32 (Android12.1)
+- 新增 全新的文件夹视图: 与媒体库其他视图并列; 从MediaStore读取歌曲文件(大幅改善在Android10以上的性能); 尝试完全支持浏览外部可移除存储设备(如SD卡等); 但目前存在少量不影响使用的缺陷或Bug
+- 翻译 更新意大利语翻译（由@gdonisi提供）
+- 开发 更新依赖
 
 **EN**
-- Improve: saving of playlists, and try to fix playlists on PHYSICAL SD cards that could not be saved
-- Add: allow to modify the operation behaviour of playlist files (located in Settings -> Compatibility -> Operational Behaviour for playlist files), which can force to use SAF (or the legacy method) to operate the playlist files
-- Development: upgrade targetSdk to 32 (Android12.1)
+- Add: a brand new Folders Page: Among with other pages of the Library; Read song files from MediaStore (significantly better performance on Android 10 and above); (Try to) fully support browsing external removable storage devices (such as SD cards, etc.); However, there are currently some defects or bugs which do not affect the user experience
+- Translation: Updated Italian translation (by @gdonisi)
+- Development update dependencies
