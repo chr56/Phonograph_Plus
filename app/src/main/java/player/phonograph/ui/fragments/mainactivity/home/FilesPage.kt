@@ -4,10 +4,12 @@
 
 package player.phonograph.ui.fragments.mainactivity.home
 
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.DrawableRes
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.graphics.BlendModeColorFilterCompat
 import androidx.core.graphics.BlendModeCompat
@@ -57,39 +59,12 @@ class FilesPage : AbsPage() {
         binding.innerAppBar.addOnOffsetChangedListener(innerAppbarOffsetListener)
 
         // header
-        val refreshDrawable = AppCompatResources.getDrawable(
-            hostFragment.mainActivity,
-            R.drawable.ic_refresh_white_24dp
-        )
-        refreshDrawable?.colorFilter = BlendModeColorFilterCompat
-            .createBlendModeColorFilterCompat(
-                binding.textPageHeader.currentTextColor,
-                BlendModeCompat.SRC_IN
-            )
-        val backDrawable = AppCompatResources.getDrawable(
-            hostFragment.mainActivity,
-            R.drawable.icon_back_white
-        )
-        backDrawable?.colorFilter = BlendModeColorFilterCompat
-            .createBlendModeColorFilterCompat(
-                binding.textPageHeader.currentTextColor,
-                BlendModeCompat.SRC_IN
-            )
-        binding.buttonPageHeader.setImageDrawable(refreshDrawable)
+        binding.buttonPageHeader.setImageDrawable(getDrawable(R.drawable.ic_refresh_white_24dp))
         binding.buttonPageHeader.setOnClickListener {
             reload()
         }
-        binding.buttonBack.setImageDrawable(backDrawable)
-        binding.buttonBack.setOnClickListener {
-            val parent = model.currentLocation.parent
-            if (parent != null) {
-                model.currentLocation = parent
-                reload()
-            } else {
-                Snackbar.make(binding.root, getString(R.string.reached_to_root), Snackbar.LENGTH_SHORT).show()
-                // todo volume selector
-            }
-        }
+        binding.buttonBack.setImageDrawable(getDrawable(R.drawable.icon_back_white))
+        binding.buttonBack.setOnClickListener { gotoTopLevel() }
         binding.textPageHeader.text = model.currentLocation.let { "${it.storageVolume} : ${it.basePath}" }
 
         // recycle view
@@ -114,10 +89,37 @@ class FilesPage : AbsPage() {
         model.loadFiles { reload() }
     }
 
+    private fun gotoTopLevel() {
+        val parent = model.currentLocation.parent
+        if (parent != null) {
+            model.currentLocation = parent
+            reload()
+        } else {
+            Snackbar.make(binding.root, getString(R.string.reached_to_root), Snackbar.LENGTH_SHORT).show()
+            // todo volume selector
+        }
+    }
+
     private fun reload() {
         model.loadFiles {
             adapter.dataSet = model.currentFileList.toMutableList()
             binding.textPageHeader.text = model.currentLocation.let { "${it.storageVolume} : ${it.basePath}" }
+            binding.buttonBack.setImageDrawable(
+                if (model.currentLocation.parent == null)
+                    getDrawable(R.drawable.ic_library_music_white_24dp)
+                else
+                    getDrawable(R.drawable.icon_back_white)
+            )
+        }
+    }
+
+    private fun getDrawable(@DrawableRes resId: Int): Drawable? {
+        return AppCompatResources.getDrawable(hostFragment.mainActivity, resId)?.also {
+            it.colorFilter = BlendModeColorFilterCompat
+                .createBlendModeColorFilterCompat(
+                    binding.textPageHeader.currentTextColor,
+                    BlendModeCompat.SRC_IN
+                )
         }
     }
 
