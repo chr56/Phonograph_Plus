@@ -40,6 +40,7 @@ class FilesViewModel : ViewModel() {
         context: Context = App.instance,
         scope: CoroutineScope?,
     ) {
+        currentFileList.clear()
         val paths = MediaStoreUtil.searchSongFiles(context, location.absolutePath) ?: return
         val list: MutableSet<FileEntity> = TreeSet<FileEntity>()
         for (path in paths) {
@@ -48,7 +49,6 @@ class FilesViewModel : ViewModel() {
                 parsePath(currentLocation, path)
             )
         }
-        currentFileList.clear()
         currentFileList.addAll(list)
     }
 
