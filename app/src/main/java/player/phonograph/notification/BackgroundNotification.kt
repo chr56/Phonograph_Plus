@@ -28,6 +28,9 @@ object BackgroundNotification {
         isReady = true
     }
 
+    /**
+     * Post a common notification
+     */
     fun post(title: String, msg: String, id: Int, onGoing: Boolean = true) {
         val context = App.instance
         if (!isReady) init()
@@ -42,6 +45,28 @@ object BackgroundNotification {
                     .setContentTitle(title)
                     .setContentText(msg)
                     .setOngoing(onGoing)
+                    .build()
+            notificationManager.notify(id, notification)
+        }
+    }
+
+    /**
+     * Post notification with process
+     */
+    fun post(title: String, msg: String, id: Int, process: Int, maxProcess: Int) {
+        val context = App.instance
+        if (!isReady) init()
+        notificationManager?.let { notificationManager ->
+            val notification: Notification =
+                NotificationCompat.Builder(context, NOTIFICATION_CHANNEL_ID_BACKGROUND)
+                    .setSmallIcon(R.drawable.ic_notification)
+                    .setCategory(NotificationCompat.CATEGORY_SERVICE)
+                    .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                    .setVisibility(NotificationCompat.VISIBILITY_PRIVATE)
+                    .setContentTitle(title)
+                    .setContentText(msg)
+                    .setOngoing(true)
+                    .setProgress(maxProcess, process, false)
                     .build()
             notificationManager.notify(id, notification)
         }
