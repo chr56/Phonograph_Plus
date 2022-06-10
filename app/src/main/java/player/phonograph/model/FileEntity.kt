@@ -4,15 +4,23 @@
 
 package player.phonograph.model
 
+import java.io.File
 import player.phonograph.App
 import player.phonograph.mediastore.MediaStoreUtil
-import java.io.File
 
 /**
  * Presenting a file
  */
-sealed class FileEntity {
+sealed class FileEntity : Comparable<FileEntity> {
     abstract val path: Location
+
+    override fun compareTo(other: FileEntity): Int {
+        return if (isFolder xor other.isFolder) {
+            if (isFolder) -1 else 1
+        } else {
+            name.compareTo(other.name)
+        }
+    }
 
     class File(override val path: Location) : FileEntity() {
         val linkedSong: Song get() = MediaStoreUtil.getSong(App.instance, File(path.absolutePath)) ?: Song.EMPTY_SONG
