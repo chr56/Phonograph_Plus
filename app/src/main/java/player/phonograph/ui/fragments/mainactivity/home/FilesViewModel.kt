@@ -55,15 +55,16 @@ class FilesViewModel : ViewModel() {
     companion object {
         fun parsePath(currentLocation: Location, absolutePath: String): FileEntity {
             val currentRelativePath = absolutePath.substringAfter(currentLocation.absolutePath).removePrefix("/")
+            val basePath = currentLocation.basePath.let { if (it == "/") "" else it } // root //todo
             return if (currentRelativePath.contains('/')) {
                 // folder
                 FileEntity.Folder(
-                    Location("${currentLocation.basePath}/${currentRelativePath.substringBefore('/')}", currentLocation.storageVolume)
+                    Location("$basePath/${currentRelativePath.substringBefore('/')}", currentLocation.storageVolume)
                 )
             } else {
                 // file
                 FileEntity.File(
-                    Location("${currentLocation.basePath}/$currentRelativePath", currentLocation.storageVolume)
+                    Location("$basePath/$currentRelativePath", currentLocation.storageVolume)
                 )
             }
         }
