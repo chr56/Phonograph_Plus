@@ -35,7 +35,7 @@ class FilesPage : AbsPage() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         _viewBinding = FragmentFolderPageBinding.inflate(inflater, container, false)
         return binding.root
@@ -53,21 +53,34 @@ class FilesPage : AbsPage() {
         super.onViewCreated(view, savedInstanceState)
         binding.empty.visibility = View.GONE
 
-        val actionDrawable = AppCompatResources.getDrawable(
+        binding.innerAppBar.setExpanded(false)
+        binding.innerAppBar.addOnOffsetChangedListener(innerAppbarOffsetListener)
+
+        // header
+        val refreshDrawable = AppCompatResources.getDrawable(
             hostFragment.mainActivity,
             R.drawable.ic_refresh_white_24dp
         )
-        actionDrawable?.colorFilter = BlendModeColorFilterCompat
+        refreshDrawable?.colorFilter = BlendModeColorFilterCompat
             .createBlendModeColorFilterCompat(
                 binding.textPageHeader.currentTextColor,
                 BlendModeCompat.SRC_IN
             )
-        binding.buttonPageHeader.setImageDrawable(actionDrawable)
+        val backDrawable = AppCompatResources.getDrawable(
+            hostFragment.mainActivity,
+            R.drawable.icon_back_white
+        )
+        backDrawable?.colorFilter = BlendModeColorFilterCompat
+            .createBlendModeColorFilterCompat(
+                binding.textPageHeader.currentTextColor,
+                BlendModeCompat.SRC_IN
+            )
+        binding.buttonPageHeader.setImageDrawable(refreshDrawable)
         binding.buttonPageHeader.setOnClickListener {
             reload()
         }
-        binding.textPageHeader.text = model.currentLocation.let { "${it.storageVolume} : ${it.basePath}" }
-        binding.textPageHeader.setOnClickListener {
+        binding.buttonBack.setImageDrawable(backDrawable)
+        binding.buttonBack.setOnClickListener {
             val parent = model.currentLocation.parent
             if (parent != null) {
                 model.currentLocation = parent
@@ -77,7 +90,9 @@ class FilesPage : AbsPage() {
                 // todo volume selector
             }
         }
+        binding.textPageHeader.text = model.currentLocation.let { "${it.storageVolume} : ${it.basePath}" }
 
+        // recycle view
         layoutManager = LinearLayoutManager(hostFragment.mainActivity)
         adapter = FileAdapter(hostFragment.mainActivity, model.currentFileList.toMutableList(), {
             if (it.isFolder) {
@@ -97,9 +112,6 @@ class FilesPage : AbsPage() {
             adapter = this@FilesPage.adapter
         }
         model.loadFiles { reload() }
-
-        binding.innerAppBar.setExpanded(false)
-        binding.innerAppBar.addOnOffsetChangedListener(innerAppbarOffsetListener)
     }
 
     private fun reload() {
