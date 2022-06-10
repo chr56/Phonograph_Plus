@@ -101,6 +101,8 @@
     <string name="never">Mai</string>
     <string name="today">Oggi</string>
     <string name="past_seven_days">Ultimi 7 giorni</string>
+    <string name="past_fourteen_days">Ultimi 14 giorni</string>
+    <string name="past_one_month">Ultimo mese</string>
     <string name="past_three_months">Ultimi 3 mesi</string>
     <string name="this_week">Questa settimana</string>
     <string name="this_month">Questo mese</string>
@@ -352,4 +354,13 @@
     <string name="external_lyrics">testi esterni</string>
     <string name="lyrics_following">Testi seguenti</string>
     <string name="error_notification_name">Segnalazioni di errore</string>
+    <string name="sort_order_song_count">Numero di brani</string>
+    <string name="sort_order_album_count">Numero di album</string>
+    <string name="name">Nome</string>
+    <string name="preferences">Preferenze</string>
+    <string name="pref_title_playlist_files_operation_behaviour">Comportamento operativo per i file di playlist</string>
+    <string name="pref_summary_playlist_files_operation_behaviour">Comportamenti su come utilizzare i file di playlist durante la creazione, la modifica, ecc. per le playlist di file.</string>
+    <string name="behaviour_auto">Automatico</string>
+    <string name="behaviour_force_saf">Forza l\'uso di Storage Access Framework</string>
+    <string name="behaviour_force_legacy">Forzare l\'uso di modalità legacy</string>
 </resources>
