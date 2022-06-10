@@ -7,17 +7,17 @@ package player.phonograph.ui.fragments.mainactivity.home
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import java.util.HashSet
 import kotlinx.coroutines.*
 import player.phonograph.App
 import player.phonograph.mediastore.MediaStoreUtil
 import player.phonograph.model.FileEntity
 import player.phonograph.model.Location
+import java.util.*
 
 class FilesViewModel : ViewModel() {
     var currentLocation: Location = Location.HOME
 
-    var currentFileList: MutableSet<FileEntity> = HashSet<FileEntity>(1)
+    var currentFileList: MutableSet<FileEntity> = TreeSet<FileEntity>()
         private set
 
     private var listFileJob: Job? = null
@@ -41,7 +41,7 @@ class FilesViewModel : ViewModel() {
         scope: CoroutineScope?,
     ) {
         val paths = MediaStoreUtil.searchSongFiles(context, location.absolutePath) ?: return
-        val list: MutableSet<FileEntity> = HashSet<FileEntity>(0)
+        val list: MutableSet<FileEntity> = TreeSet<FileEntity>()
         for (path in paths) {
             if (scope != null && !scope.isActive) return
             list.add(
