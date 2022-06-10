@@ -73,6 +73,11 @@ class FilesPage : AbsPage() {
         }
         binding.buttonBack.setImageDrawable(getDrawable(R.drawable.icon_back_white))
         binding.buttonBack.setOnClickListener { gotoTopLevel() }
+        binding.buttonBack.setOnLongClickListener{
+            model.currentLocation = Location.HOME
+            reload()
+            true
+        }
         binding.textPageHeader.text = model.currentLocation.let { "${it.storageVolume} : ${it.basePath}" }
 
         // recycle view

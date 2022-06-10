@@ -59,7 +59,7 @@ class Location(val basePath: String, val storageVolume: String?) {
                 else -> absolutePath.substringAfter("/storage/").substringBefore('/')
             }
 
-        val HOME: Location = fromAbsolutePath(Setting.defaultStartDirectory.absolutePath)
+        val HOME: Location get() = fromAbsolutePath(Setting.defaultStartDirectory.absolutePath)
     }
 
     override fun hashCode(): Int = storageVolume.hashCode() * 31 + basePath.hashCode()
