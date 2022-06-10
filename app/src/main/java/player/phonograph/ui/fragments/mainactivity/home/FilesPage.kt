@@ -19,7 +19,7 @@ import com.google.android.material.snackbar.Snackbar
 import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.adapter.FileAdapter
-import player.phonograph.databinding.FragmentDisplayPageBinding
+import player.phonograph.databinding.FragmentFolderPageBinding
 import player.phonograph.model.FileEntity
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.util.ViewUtil
@@ -29,7 +29,7 @@ class FilesPage : AbsPage() {
 
     private val model: FilesViewModel by viewModels()
 
-    private var _viewBinding: FragmentDisplayPageBinding? = null
+    private var _viewBinding: FragmentFolderPageBinding? = null
     private val binding get() = _viewBinding!!
 
     override fun onCreateView(
@@ -37,7 +37,7 @@ class FilesPage : AbsPage() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _viewBinding = FragmentDisplayPageBinding.inflate(inflater, container, false)
+        _viewBinding = FragmentFolderPageBinding.inflate(inflater, container, false)
         return binding.root
     }
 
