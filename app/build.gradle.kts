@@ -251,7 +251,7 @@ dependencies {
     implementation("com.github.chr56:mdUtil:0.0.1")
     implementation("com.github.chr56:mdColor:0.0.1")
 
-    implementation("com.github.kabouzeid:RecyclerView-FastScroll:1.0.16-kmod")
+    implementation("com.simplecityapps:recyclerview-fastscroll:2.0.1")
     implementation("com.github.chr56:SeekArc:c5ae37866e")
     implementation("com.github.kabouzeid:AndroidSlidingUpPanel:6")
     implementation("com.afollestad.material-dialogs:core:3.3.0")
