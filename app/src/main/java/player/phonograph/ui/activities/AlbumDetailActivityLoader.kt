@@ -31,6 +31,6 @@ class AlbumDetailActivityLoader(var albumId: Long) {
         }
     }
 
-    var _album: Album? = null
-    val album: Album get() = _album!!
+    private var _album: Album? = null
+    val album: Album get() = _album ?: Album()
 }
