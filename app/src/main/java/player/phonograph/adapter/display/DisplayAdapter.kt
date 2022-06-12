@@ -19,7 +19,10 @@ import player.phonograph.adapter.base.MultiSelectAdapter
 import player.phonograph.adapter.base.UniversalMediaEntryViewHolder
 import player.phonograph.interfaces.Displayable
 import player.phonograph.interfaces.MultiSelectionCabProvider
+import player.phonograph.model.Album
 import player.phonograph.model.Artist
+import player.phonograph.model.Song
+import player.phonograph.util.MusicUtil
 import util.mdcolor.ColorUtil
 import util.mddesign.util.MaterialColorHelper
 
@@ -45,6 +48,10 @@ open class DisplayAdapter<I : Displayable>(
 
     var usePalette: Boolean = false
 
+    var useImageText: Boolean = false
+
+    var showDuration: Boolean = false
+
     var showSectionName: Boolean = true
 
     override var multiSelectMenuRes: Int = R.menu.menu_media_selection
@@ -69,18 +76,51 @@ open class DisplayAdapter<I : Displayable>(
 
     override fun onBindViewHolder(holder: DisplayViewHolder, position: Int) {
         val item: I = dataset[position]
+        holder.shortSeparator?.visibility = View.VISIBLE
         holder.itemView.isActivated = isChecked(item)
         holder.title?.text = item.getDisplayTitle()
-        holder.text?.text = item.getDescription()
-        holder.shortSeparator?.visibility = View.VISIBLE
-        setImage(holder, position)
+        holder.text?.text = if (showDuration) {
+            // todo
+            val song = (item as? Song) ?: Song.EMPTY_SONG
+            "${MusicUtil.getReadableDurationString(song.duration)} · ${song.artistName}"
+        } else {
+            item.getDescription()
+        }
+        if (useImageText) {
+            setImageText(holder, getRelativeOrdinalText(item))
+        } else {
+            setImage(holder, position)
+        }
     }
 
     protected open fun setImage(holder: DisplayViewHolder, position: Int) {
         holder.image?.also {
+            it.visibility = View.VISIBLE
             it.setImageDrawable(defaultIcon)
         }
     }
+
+    protected open fun setImageText(holder: DisplayViewHolder, text: String) {
+        holder.imageText?.also {
+            it.visibility = View.VISIBLE
+            it.text = text
+        }
+    }
+
+    private fun getRelativeOrdinalText(item: I): String =
+        when (item) {
+            is Song -> {
+                val num = MusicUtil.getFixedTrackNumber(item.trackNumber)
+                if (num > 0) num.toString() else "-"
+            }
+            is Album -> {
+                item.songCount.toString()
+            }
+            is Artist -> {
+                item.songCount.toString()
+            }
+            else -> "-"
+        }
 
     override fun getItemCount(): Int = dataset.size
 

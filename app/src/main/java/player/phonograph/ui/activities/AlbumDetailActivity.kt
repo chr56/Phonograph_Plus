@@ -24,6 +24,7 @@ import kotlin.math.max
 import kotlin.math.min
 import lib.phonograph.cab.*
 import player.phonograph.R
+import player.phonograph.adapter.display.DisplayAdapter
 import player.phonograph.adapter.display.SongDisplayAdapter
 import player.phonograph.databinding.ActivityAlbumDetailBinding
 import player.phonograph.dialogs.AddToPlaylistDialog
@@ -109,7 +110,9 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity(), MultiSelectionCabPro
 
         // setUpSongsAdapter
         adapter = SongDisplayAdapter(this, this, album.songs, R.layout.item_list) {
-            this.usePalette = false
+            showDuration = true
+            useImageText = true
+            usePalette = false
         }
         viewBinding.recyclerView.layoutManager = GridLayoutManager(this, 1)
         viewBinding.recyclerView.adapter = adapter
