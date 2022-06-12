@@ -33,6 +33,7 @@ import player.phonograph.model.Location
 import player.phonograph.notification.ErrorNotification
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.util.ViewUtil
+import player.phonograph.util.ViewUtil.setUpFastScrollRecyclerViewColor
 import util.mdcolor.pref.ThemeColor
 
 class FilesPage : AbsPage() {
@@ -91,8 +92,8 @@ class FilesPage : AbsPage() {
             }
         }, hostFragment)
 
-        ViewUtil.setUpFastScrollRecyclerViewColor(
-            hostFragment.mainActivity, binding.recyclerView,
+        binding.recyclerView.setUpFastScrollRecyclerViewColor(
+            hostFragment.mainActivity,
             ThemeColor.accentColor(App.instance.applicationContext)
         )
         binding.recyclerView.apply {

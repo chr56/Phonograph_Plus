@@ -37,7 +37,7 @@ import player.phonograph.settings.Setting
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
 import player.phonograph.util.PhonographColorUtil
 import player.phonograph.util.PlaylistsUtil
-import player.phonograph.util.ViewUtil
+import player.phonograph.util.ViewUtil.setUpFastScrollRecyclerViewColor
 import util.mdcolor.pref.ThemeColor
 import util.mddesign.core.Themer
 
@@ -45,7 +45,7 @@ class PlaylistEditorActivity : AbsSlidingMusicPanelActivity() {
     private lateinit var binding: ActivityPlaylistEditorBinding // init in OnCreate()
 
     // init/bind in OnCreate() -> bindingView()
-    private lateinit var recyclerView: RecyclerView
+    private lateinit var recyclerView: FastScrollRecyclerView
     private lateinit var mToolbar: Toolbar
     private lateinit var empty: TextView
     private lateinit var cabStub: ViewStub
@@ -106,9 +106,7 @@ class PlaylistEditorActivity : AbsSlidingMusicPanelActivity() {
     }
 
     private fun setUpRecyclerView() {
-        ViewUtil.setUpFastScrollRecyclerViewColor(
-            this, recyclerView as FastScrollRecyclerView, ThemeColor.accentColor(this)
-        )
+        recyclerView.setUpFastScrollRecyclerViewColor(this, ThemeColor.accentColor(this))
         recyclerView.layoutManager = LinearLayoutManager(this)
 
         recyclerViewDragDropManager = RecyclerViewDragDropManager()

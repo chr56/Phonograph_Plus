@@ -33,6 +33,7 @@ import player.phonograph.interfaces.Displayable
 import player.phonograph.util.PhonographColorUtil
 import player.phonograph.util.Util
 import player.phonograph.util.ViewUtil
+import player.phonograph.util.ViewUtil.setUpFastScrollRecyclerViewColor
 import util.mdcolor.pref.ThemeColor
 import java.lang.ref.WeakReference
 
@@ -122,8 +123,8 @@ sealed class AbsDisplayPage<IT, A : DisplayAdapter<out Displayable>, LM : GridLa
         }
         adapter.registerAdapterDataObserver(adapterDataObserver)
 
-        ViewUtil.setUpFastScrollRecyclerViewColor(
-            hostFragment.mainActivity, binding.recyclerView,
+        binding.recyclerView.setUpFastScrollRecyclerViewColor(
+            hostFragment.mainActivity,
             ThemeColor.accentColor(App.instance.applicationContext)
         )
         binding.recyclerView.also {

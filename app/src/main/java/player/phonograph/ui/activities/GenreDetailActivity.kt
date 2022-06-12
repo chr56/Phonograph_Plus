@@ -26,7 +26,7 @@ import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.settings.Setting
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
 import player.phonograph.util.PhonographColorUtil
-import player.phonograph.util.ViewUtil
+import player.phonograph.util.ViewUtil.setUpFastScrollRecyclerViewColor
 import util.mdcolor.pref.ThemeColor
 import util.mddesign.core.Themer
 
@@ -84,7 +84,7 @@ class GenreDetailActivity :
             layoutManager = LinearLayoutManager(this@GenreDetailActivity)
             adapter = this@GenreDetailActivity.adapter
         }
-        ViewUtil.setUpFastScrollRecyclerViewColor(this, binding.recyclerView, ThemeColor.accentColor(this))
+        binding.recyclerView.setUpFastScrollRecyclerViewColor(this, ThemeColor.accentColor(this))
         adapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
             override fun onChanged() {
                 super.onChanged()

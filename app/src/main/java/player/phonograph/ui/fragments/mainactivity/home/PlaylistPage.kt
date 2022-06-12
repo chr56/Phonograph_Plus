@@ -13,6 +13,7 @@ import android.view.ViewGroup
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import java.util.ArrayList
 import kotlinx.coroutines.*
 import player.phonograph.App
 import player.phonograph.BROADCAST_PLAYLISTS_CHANGED
@@ -21,17 +22,16 @@ import player.phonograph.adapter.PlaylistAdapter
 import player.phonograph.databinding.FragmentDisplayPageBinding
 import player.phonograph.dialogs.CreatePlaylistDialog
 import player.phonograph.misc.PlaylistsModifiedReceiver
-import player.phonograph.model.playlist.Playlist
 import player.phonograph.model.playlist.FavoriteSongsPlaylist
 import player.phonograph.model.playlist.HistoryPlaylist
 import player.phonograph.model.playlist.LastAddedPlaylist
 import player.phonograph.model.playlist.MyTopTracksPlaylist
+import player.phonograph.model.playlist.Playlist
 import player.phonograph.settings.Setting
 import player.phonograph.util.PlaylistsUtil
-import player.phonograph.util.ViewUtil
+import player.phonograph.util.ViewUtil.setUpFastScrollRecyclerViewColor
 import util.mdcolor.ColorUtil
 import util.mdcolor.pref.ThemeColor
-import java.util.ArrayList
 
 class PlaylistPage : AbsPage() {
 
@@ -66,9 +66,8 @@ class PlaylistPage : AbsPage() {
             hostFragment
         )
 
-        ViewUtil.setUpFastScrollRecyclerViewColor(
+        binding.recyclerView.setUpFastScrollRecyclerViewColor(
             requireActivity(),
-            binding.recyclerView,
             ThemeColor.accentColor(requireActivity())
         )
         binding.recyclerView.apply {

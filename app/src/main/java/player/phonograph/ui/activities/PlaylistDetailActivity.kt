@@ -50,6 +50,7 @@ import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
 import player.phonograph.util.PhonographColorUtil
 import player.phonograph.util.PlaylistsUtil
 import player.phonograph.util.ViewUtil
+import player.phonograph.util.ViewUtil.setUpFastScrollRecyclerViewColor
 import util.mdcolor.pref.ThemeColor
 import util.mddesign.core.Themer
 
@@ -112,7 +113,7 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandle
 
     private var isRecyclerViewReady = false
     private fun setUpRecyclerView() {
-        ViewUtil.setUpFastScrollRecyclerViewColor(this, binding.recyclerView, accentColor)
+        binding.recyclerView.setUpFastScrollRecyclerViewColor(this, accentColor)
         binding.recyclerView.layoutManager = LinearLayoutManager(this)
 
         // Init (song)adapter

@@ -149,10 +149,10 @@ class FoldersFragment :
     }
 
     private fun setUpRecyclerView() {
-        setUpFastScrollRecyclerViewColor(mainActivity, viewBinding.recyclerView, ThemeColor.accentColor(mainActivity))
 
         viewBinding.recyclerView.layoutManager = LinearLayoutManager(mainActivity)
         viewBinding.appbar.addOnOffsetChangedListener(this)
+        viewBinding.recyclerView.setUpFastScrollRecyclerViewColor(mainActivity, ThemeColor.accentColor(mainActivity))
 
         adapter = SongFileAdapter(mainActivity, LinkedList(), R.layout.item_list, this, this)
         dataObserver = object : AdapterDataObserver() {

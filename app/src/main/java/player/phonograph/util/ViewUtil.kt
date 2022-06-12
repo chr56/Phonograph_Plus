@@ -28,7 +28,7 @@ import util.mddesign.util.Util
  * @author Karim Abou Zeid (kabouzeid)
  */
 object ViewUtil {
-    
+
     const val PHONOGRAPH_ANIM_TIME = 1000
 
     fun createBackgroundColorTransition(v: View, @ColorInt startColor: Int, @ColorInt endColor: Int): Animator {
@@ -80,16 +80,11 @@ object ViewUtil {
         return x in left..right && y >= top && y <= bottom
     }
 
-    @JvmStatic
-    fun setUpFastScrollRecyclerViewColor(
-        context: Context?,
-        recyclerView: FastScrollRecyclerView,
-        accentColor: Int
-    ) {
-        recyclerView.setPopupBgColor(accentColor)
-        recyclerView.setPopupTextColor(MaterialColorHelper.getPrimaryTextColor(context, ColorUtil.isColorLight(accentColor)))
-        recyclerView.setThumbColor(accentColor)
-        recyclerView.setTrackColor(ColorUtil.withAlpha(Util.resolveColor(context, R.attr.colorControlNormal), 0.12f)) // todo
+    fun FastScrollRecyclerView.setUpFastScrollRecyclerViewColor(context: Context?, accentColor: Int) {
+        setPopupBgColor(accentColor)
+        setPopupTextColor(MaterialColorHelper.getPrimaryTextColor(context, ColorUtil.isColorLight(accentColor)))
+        setThumbColor(accentColor)
+        setTrackColor(ColorUtil.withAlpha(Util.resolveColor(context, R.attr.colorControlNormal), 0.12f)) // todo
     }
 
     fun convertDpToPixel(dp: Float, resources: Resources): Float {
