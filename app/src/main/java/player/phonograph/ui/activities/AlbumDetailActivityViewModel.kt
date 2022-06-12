@@ -5,16 +5,15 @@
 package player.phonograph.ui.activities
 
 import android.content.Context
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.*
 import player.phonograph.mediastore.AlbumLoader
 import player.phonograph.model.Album
 import player.phonograph.model.Song
 
 class AlbumDetailActivityViewModel : ViewModel() {
-    private val loaderCoroutineScope: CoroutineScope = CoroutineScope(Dispatchers.IO)
 
     var isRecyclerViewPrepared: Boolean = false
 
@@ -24,10 +23,9 @@ class AlbumDetailActivityViewModel : ViewModel() {
 
     fun loadDataSet(
         context: Context,
-        albumCallback: (Album) -> Unit,
-        songCallback: (List<Song>) -> Unit
+        callback: (Album, List<Song>) -> Unit,
     ) {
-        loaderCoroutineScope.launch {
+        viewModelScope.launch(Dispatchers.IO + SupervisorJob()) {
 
             _album = AlbumLoader.getAlbum(context, albumId)
 
@@ -36,12 +34,11 @@ class AlbumDetailActivityViewModel : ViewModel() {
             while (!isRecyclerViewPrepared) yield() // wait until ready
             withContext(Dispatchers.Main) {
                 if (isRecyclerViewPrepared) {
-                    albumCallback(album)
-                    songCallback(songs)
+                    callback(album, songs)
                 }
             }
         }
     }
 
-    var paletteColor: MutableLiveData<Int> = MutableLiveData(0)
+    val paletteColor: MutableLiveData<Int> = MutableLiveData(0)
 }

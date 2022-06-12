@@ -31,7 +31,7 @@
         android:layout_height="match_parent">
 
         <com.github.ksoichiro.android.observablescrollview.ObservableRecyclerView
-            android:id="@+id/list"
+            android:id="@+id/recycler_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:clipToPadding="false"
@@ -62,8 +62,8 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginBottom="16dp"
                     android:layout_marginTop="16dp"
+                    android:layout_marginBottom="16dp"
                     android:orientation="vertical">
 
                     <LinearLayout
@@ -72,27 +72,27 @@
                         android:layout_weight="2"
                         android:gravity="center_vertical"
                         android:orientation="horizontal"
-                        android:paddingEnd="16dp"
+                        android:paddingStart="0dp"
                         android:paddingLeft="0dp"
-                        android:paddingRight="16dp"
-                        android:paddingStart="0dp">
+                        android:paddingEnd="16dp"
+                        android:paddingRight="16dp">
 
                         <ImageView
                             android:id="@+id/artist_icon"
                             android:layout_width="24dp"
                             android:layout_height="24dp"
-                            android:layout_marginEnd="8dp"
-                            android:layout_marginLeft="0dp"
-                            android:layout_marginRight="8dp"
                             android:layout_marginStart="0dp"
+                            android:layout_marginLeft="0dp"
+                            android:layout_marginEnd="8dp"
+                            android:layout_marginRight="8dp"
                             tools:ignore="ContentDescription,UnusedAttribute" />
 
                         <TextView
-                            android:ellipsize="end"
-                            android:maxLines="@integer/detail_header_tile_maxLines"
                             android:id="@+id/artist_text"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:ellipsize="end"
+                            android:maxLines="@integer/detail_header_tile_maxLines"
                             android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
 
                     </LinearLayout>
@@ -103,19 +103,19 @@
                         android:layout_weight="1"
                         android:gravity="center_vertical"
                         android:orientation="horizontal"
-                        android:paddingEnd="16dp"
+                        android:paddingStart="0dp"
                         android:paddingLeft="0dp"
-                        android:paddingRight="16dp"
-                        android:paddingStart="0dp">
+                        android:paddingEnd="16dp"
+                        android:paddingRight="16dp">
 
                         <ImageView
                             android:id="@+id/song_count_icon"
                             android:layout_width="24dp"
                             android:layout_height="24dp"
-                            android:layout_marginEnd="8dp"
-                            android:layout_marginLeft="0dp"
-                            android:layout_marginRight="8dp"
                             android:layout_marginStart="0dp"
+                            android:layout_marginLeft="0dp"
+                            android:layout_marginEnd="8dp"
+                            android:layout_marginRight="8dp"
                             tools:ignore="ContentDescription,UnusedAttribute" />
 
                         <TextView
@@ -132,19 +132,19 @@
                         android:layout_weight="1"
                         android:gravity="center_vertical"
                         android:orientation="horizontal"
-                        android:paddingEnd="16dp"
+                        android:paddingStart="0dp"
                         android:paddingLeft="0dp"
-                        android:paddingRight="16dp"
-                        android:paddingStart="0dp">
+                        android:paddingEnd="16dp"
+                        android:paddingRight="16dp">
 
                         <ImageView
                             android:id="@+id/duration_icon"
                             android:layout_width="24dp"
                             android:layout_height="24dp"
-                            android:layout_marginEnd="8dp"
-                            android:layout_marginLeft="0dp"
-                            android:layout_marginRight="8dp"
                             android:layout_marginStart="0dp"
+                            android:layout_marginLeft="0dp"
+                            android:layout_marginEnd="8dp"
+                            android:layout_marginRight="8dp"
                             tools:ignore="ContentDescription,UnusedAttribute" />
 
                         <TextView
@@ -161,19 +161,19 @@
                         android:layout_weight="1"
                         android:gravity="center_vertical"
                         android:orientation="horizontal"
-                        android:paddingEnd="16dp"
+                        android:paddingStart="0dp"
                         android:paddingLeft="0dp"
-                        android:paddingRight="16dp"
-                        android:paddingStart="0dp">
+                        android:paddingEnd="16dp"
+                        android:paddingRight="16dp">
 
                         <ImageView
                             android:id="@+id/album_year_icon"
                             android:layout_width="24dp"
                             android:layout_height="24dp"
-                            android:layout_marginEnd="8dp"
-                            android:layout_marginLeft="0dp"
-                            android:layout_marginRight="8dp"
                             android:layout_marginStart="0dp"
+                            android:layout_marginLeft="0dp"
+                            android:layout_marginEnd="8dp"
+                            android:layout_marginRight="8dp"
                             tools:ignore="ContentDescription,UnusedAttribute" />
 
                         <TextView

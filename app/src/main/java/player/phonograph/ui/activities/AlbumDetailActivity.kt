@@ -77,13 +77,12 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity(), CabHolder {
 
     private lateinit var viewBinding: ActivityAlbumDetailBinding
     private val model: AlbumDetailActivityViewModel by viewModels()
-    private lateinit var lastFMRestClient: LastFMRestClient
 
     private lateinit var adapter: AlbumSongAdapter
-    private var headerViewHeight = 0
 
     private var cab: AttachedCab? = null
 
+    private val lastFMRestClient: LastFMRestClient by lazy { LastFMRestClient(this) }
     private var wiki: Spanned? = null
     private var wikiDialog: MaterialDialog? = null
 
@@ -95,59 +94,43 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity(), CabHolder {
         viewBinding = ActivityAlbumDetailBinding.inflate(layoutInflater)
         super.onCreate(savedInstanceState)
 
+        // activity
         setDrawUnderStatusbar()
         Themer.setActivityToolbarColorAuto(this, viewBinding.toolbar)
-        lastFMRestClient = LastFMRestClient(this)
-        setUpObservableListViewParams()
-        setUpToolBar()
+        setSupportActionBar(viewBinding.toolbar)
+        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+
+        // content
         setUpViews()
-        setUpPaletteColor()
     }
 
     override fun createContentView(): View = wrapSlidingMusicPanel(viewBinding.root)
 
-    private val observableScrollViewCallbacks: SimpleObservableScrollViewCallbacks = object : SimpleObservableScrollViewCallbacks() {
-        override fun onScrollChanged(i: Int, b: Boolean, b2: Boolean) {
-            val scrollY = i + headerViewHeight
-
-            // Change alpha of overlay
-            val headerAlpha = max(0f, min(1f, 2f * scrollY / headerViewHeight))
-            viewBinding.headerOverlay.setBackgroundColor(ColorUtil.withAlpha(model.paletteColor.value!!, headerAlpha))
-
-            // Translate name text
-            viewBinding.header.translationY = max(-scrollY, -headerViewHeight).toFloat()
-            viewBinding.headerOverlay.translationY = max(-scrollY, -headerViewHeight).toFloat()
-            viewBinding.image.translationY = max(-scrollY, -headerViewHeight).toFloat()
-        }
-    }
-
-    private fun setUpObservableListViewParams() {
-        headerViewHeight = resources.getDimensionPixelSize(R.dimen.detail_header_height)
-    }
-
+    private var headerViewHeight = 0
     private fun setUpViews() {
-        setUpRecyclerView()
-        setUpSongsAdapter()
+        headerViewHeight = resources.getDimensionPixelSize(R.dimen.detail_header_height)
+        // setUpRecyclerView
+        viewBinding.recyclerView.setPadding(0, headerViewHeight, 0, 0)
+        viewBinding.recyclerView.setScrollViewCallbacks(observableScrollViewCallbacks)
+        window.decorView.findViewById<View>(android.R.id.content)
+            .post { observableScrollViewCallbacks.onScrollChanged(-headerViewHeight, b = false, b2 = false) }
+
+        // setUpSongsAdapter
+        adapter = AlbumSongAdapter(this, album.songs, R.layout.item_list, false, this)
+        viewBinding.recyclerView.layoutManager = GridLayoutManager(this, 1)
+        viewBinding.recyclerView.adapter = adapter
+        adapter.registerAdapterDataObserver(object : AdapterDataObserver() {
+            override fun onChanged() {
+                super.onChanged()
+                if (adapter.itemCount == 0) finish()
+            }
+        })
         model.isRecyclerViewPrepared = true
+        // jump
         viewBinding.artistText.setOnClickListener {
-            album
             goToArtist(this@AlbumDetailActivity, album.artistId)
         }
-    }
-
-    private fun loadAlbumCover() {
-        SongGlideRequest.Builder.from(Glide.with(this), album.safeGetFirstSong())
-            .checkIgnoreMediaStore(this)
-            .generatePalette(this).build()
-            .dontAnimate()
-            .into(object : PhonographColoredTarget(viewBinding.image) {
-                override fun onColorReady(color: Int) {
-                    model.paletteColor.postValue(color)
-                }
-            })
-    }
-
-    private fun setUpPaletteColor() {
+        // paletteColor
         model.paletteColor.observe(this) {
             updateColors(it)
         }
@@ -178,33 +161,48 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity(), CabHolder {
         viewBinding.albumYearText.setTextColor(secondaryTextColor)
     }
 
-    private fun setUpRecyclerView() {
-        setUpRecyclerViewPadding()
-        viewBinding.list.setScrollViewCallbacks(observableScrollViewCallbacks)
-        val contentView = window.decorView.findViewById<View>(android.R.id.content)
-        contentView.post { observableScrollViewCallbacks.onScrollChanged(-headerViewHeight, b = false, b2 = false) }
+    private val album: Album get() = model.album
+
+    private fun load() {
+        model.loadDataSet(
+            this
+        ) { album, songs ->
+            updateAlbumsInfo(album)
+            adapter.dataSet = songs
+            SongGlideRequest.Builder.from(Glide.with(this), album.safeGetFirstSong())
+                .checkIgnoreMediaStore(this)
+                .generatePalette(this).build()
+                .dontAnimate()
+                .into(object : PhonographColoredTarget(viewBinding.image) {
+                    override fun onColorReady(color: Int) {
+                        model.paletteColor.postValue(color)
+                    }
+                })
+            if (isAllowedToDownloadMetadata(this)) loadWiki()
+        }
     }
 
-    private fun setUpRecyclerViewPadding() {
-        viewBinding.list.setPadding(0, headerViewHeight, 0, 0)
+    private fun updateAlbumsInfo(album: Album) {
+        supportActionBar!!.title = album.title
+        viewBinding.artistText.text = album.artistName
+        viewBinding.songCountText.text = getSongCountString(this, album.songCount)
+        viewBinding.durationText.text = getReadableDurationString(getTotalDuration(this, album.songs))
+        viewBinding.albumYearText.text = getYearString(album.year)
     }
 
-    private fun setUpToolBar() {
-        setSupportActionBar(viewBinding.toolbar)
-        supportActionBar!!.title = null
-        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-    }
+    private val observableScrollViewCallbacks: SimpleObservableScrollViewCallbacks = object : SimpleObservableScrollViewCallbacks() {
+        override fun onScrollChanged(i: Int, b: Boolean, b2: Boolean) {
+            val scrollY = i + headerViewHeight
 
-    private fun setUpSongsAdapter() {
-        adapter = AlbumSongAdapter(this, album.songs, R.layout.item_list, false, this)
-        viewBinding.list.layoutManager = GridLayoutManager(this, 1)
-        viewBinding.list.adapter = adapter
-        adapter.registerAdapterDataObserver(object : AdapterDataObserver() {
-            override fun onChanged() {
-                super.onChanged()
-                if (adapter.itemCount == 0) finish()
-            }
-        })
+            // Change alpha of overlay
+            val headerAlpha = max(0f, min(1f, 2f * scrollY / headerViewHeight))
+            viewBinding.headerOverlay.setBackgroundColor(ColorUtil.withAlpha(model.paletteColor.value!!, headerAlpha))
+
+            // Translate name text
+            viewBinding.header.translationY = max(-scrollY, -headerViewHeight).toFloat()
+            viewBinding.headerOverlay.translationY = max(-scrollY, -headerViewHeight).toFloat()
+            viewBinding.image.translationY = max(-scrollY, -headerViewHeight).toFloat()
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -346,7 +344,7 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity(), CabHolder {
 
     override fun onBackPressed() {
         if (cab != null && cab.isActive()) cab.destroy() else {
-            viewBinding.list.stopScroll()
+            viewBinding.recyclerView.stopScroll()
             super.onBackPressed()
         }
     }
@@ -359,29 +357,5 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity(), CabHolder {
     override fun setStatusbarColor(color: Int) {
         super.setStatusbarColor(color)
         setLightStatusbar(false)
-    }
-
-    private var album: Album
-        get() = model.album
-        set(album) {
-            loadAlbumCover()
-            if (isAllowedToDownloadMetadata(this)) loadWiki()
-            supportActionBar!!.title = album.title
-            viewBinding.artistText.text = album.artistName
-            viewBinding.songCountText.text = getSongCountString(this, album.songCount)
-            viewBinding.durationText.text = getReadableDurationString(getTotalDuration(this, album.songs))
-            viewBinding.albumYearText.text = getYearString(album.year)
-        }
-
-    private fun load() {
-        model.loadDataSet(
-            this,
-            { album ->
-                this.album = album
-            },
-            { songs ->
-                adapter.dataSet = songs
-            }
-        )
     }
 }
