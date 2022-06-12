@@ -5,6 +5,8 @@
 package player.phonograph.ui.activities
 
 import android.content.Context
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.*
 import player.phonograph.mediastore.AlbumLoader
@@ -41,5 +43,5 @@ class AlbumDetailActivityViewModel : ViewModel() {
         }
     }
 
-    var paletteColor: Int = 0
+    var paletteColor: MutableLiveData<Int> = MutableLiveData(0)
 }

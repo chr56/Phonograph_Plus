@@ -98,15 +98,13 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity(), CabHolder {
         setDrawUnderStatusbar()
         Themer.setActivityToolbarColorAuto(this, viewBinding.toolbar)
         lastFMRestClient = LastFMRestClient(this)
-        model.paletteColor = Util.resolveColor(this, R.attr.defaultFooterColor)
         setUpObservableListViewParams()
         setUpToolBar()
         setUpViews()
+        setUpPaletteColor()
     }
 
-    override fun createContentView(): View {
-        return wrapSlidingMusicPanel(viewBinding.root)
-    }
+    override fun createContentView(): View = wrapSlidingMusicPanel(viewBinding.root)
 
     private val observableScrollViewCallbacks: SimpleObservableScrollViewCallbacks = object : SimpleObservableScrollViewCallbacks() {
         override fun onScrollChanged(i: Int, b: Boolean, b2: Boolean) {
@@ -114,7 +112,7 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity(), CabHolder {
 
             // Change alpha of overlay
             val headerAlpha = max(0f, min(1f, 2f * scrollY / headerViewHeight))
-            viewBinding.headerOverlay.setBackgroundColor(ColorUtil.withAlpha(model.paletteColor, headerAlpha))
+            viewBinding.headerOverlay.setBackgroundColor(ColorUtil.withAlpha(model.paletteColor.value!!, headerAlpha))
 
             // Translate name text
             viewBinding.header.translationY = max(-scrollY, -headerViewHeight).toFloat()
@@ -135,7 +133,6 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity(), CabHolder {
             album
             goToArtist(this@AlbumDetailActivity, album.artistId)
         }
-        updateColors()
     }
 
     private fun loadAlbumCover() {
@@ -145,13 +142,19 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity(), CabHolder {
             .dontAnimate()
             .into(object : PhonographColoredTarget(viewBinding.image) {
                 override fun onColorReady(color: Int) {
-                    model.paletteColor = color
-                    updateColors()
+                    model.paletteColor.postValue(color)
                 }
             })
     }
-    private fun updateColors() {
-        val color = model.paletteColor
+
+    private fun setUpPaletteColor() {
+        model.paletteColor.observe(this) {
+            updateColors(it)
+        }
+        model.paletteColor.value = Util.resolveColor(this, R.attr.defaultFooterColor)
+    }
+
+    private fun updateColors(color: Int) {
         viewBinding.header.setBackgroundColor(color)
         setNavigationbarColor(color)
         setTaskDescriptionColor(color)
@@ -333,7 +336,7 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity(), CabHolder {
             popupTheme(instance().generalTheme)
             menu(menuRes)
             closeDrawable(R.drawable.ic_close_white_24dp)
-            backgroundColor(null, shiftBackgroundColorForLightText(model.paletteColor))
+            backgroundColor(null, shiftBackgroundColorForLightText(model.paletteColor.value!!))
             onCreate(createCallback)
             onSelection(selectCallback)
             onDestroy(destroyCallback)
