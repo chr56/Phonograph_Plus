@@ -8,6 +8,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.graphics.BlendModeColorFilterCompat
 import androidx.core.graphics.BlendModeCompat
@@ -36,7 +37,6 @@ import player.phonograph.dialogs.SleepTimerDialog
 import player.phonograph.glide.PhonographColoredTarget
 import player.phonograph.glide.SongGlideRequest
 import player.phonograph.interfaces.CabHolder
-import player.phonograph.interfaces.PaletteColorHolder
 import player.phonograph.misc.SimpleObservableScrollViewCallbacks
 import player.phonograph.model.Album
 import player.phonograph.service.MusicPlayerRemote.enqueue
@@ -68,7 +68,7 @@ import util.phonograph.tageditor.AlbumTagEditorActivity
 /**
  * Be careful when changing things in this Activity!
  */
-class AlbumDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorHolder, CabHolder {
+class AlbumDetailActivity : AbsSlidingMusicPanelActivity(), CabHolder {
 
     companion object {
         private const val TAG_EDITOR_REQUEST = 2001
@@ -76,13 +76,11 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorHolder, 
     }
 
     private lateinit var viewBinding: ActivityAlbumDetailBinding
-    private lateinit var loader: AlbumDetailActivityLoader
+    private val model: AlbumDetailActivityViewModel by viewModels()
     private lateinit var lastFMRestClient: LastFMRestClient
 
     private lateinit var adapter: AlbumSongAdapter
     private var headerViewHeight = 0
-    override var paletteColor = 0
-        private set
 
     private var cab: AttachedCab? = null
 
@@ -91,7 +89,7 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorHolder, 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         val albumID = intent.extras!!.getLong(EXTRA_ALBUM_ID)
-        loader = AlbumDetailActivityLoader(albumID)
+        model.albumId = albumID
         load()
 
         viewBinding = ActivityAlbumDetailBinding.inflate(layoutInflater)
@@ -100,6 +98,7 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorHolder, 
         setDrawUnderStatusbar()
         Themer.setActivityToolbarColorAuto(this, viewBinding.toolbar)
         lastFMRestClient = LastFMRestClient(this)
+        model.paletteColor = Util.resolveColor(this, R.attr.defaultFooterColor)
         setUpObservableListViewParams()
         setUpToolBar()
         setUpViews()
@@ -115,7 +114,7 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorHolder, 
 
             // Change alpha of overlay
             val headerAlpha = max(0f, min(1f, 2f * scrollY / headerViewHeight))
-            viewBinding.headerOverlay.setBackgroundColor(ColorUtil.withAlpha(paletteColor, headerAlpha))
+            viewBinding.headerOverlay.setBackgroundColor(ColorUtil.withAlpha(model.paletteColor, headerAlpha))
 
             // Translate name text
             viewBinding.header.translationY = max(-scrollY, -headerViewHeight).toFloat()
@@ -131,12 +130,12 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorHolder, 
     private fun setUpViews() {
         setUpRecyclerView()
         setUpSongsAdapter()
-        loader.isRecyclerViewPrepared = true
+        model.isRecyclerViewPrepared = true
         viewBinding.artistText.setOnClickListener {
             album
             goToArtist(this@AlbumDetailActivity, album.artistId)
         }
-        setColors(Util.resolveColor(this, R.attr.defaultFooterColor))
+        updateColors()
     }
 
     private fun loadAlbumCover() {
@@ -146,13 +145,13 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorHolder, 
             .dontAnimate()
             .into(object : PhonographColoredTarget(viewBinding.image) {
                 override fun onColorReady(color: Int) {
-                    setColors(color)
+                    model.paletteColor = color
+                    updateColors()
                 }
             })
     }
-
-    private fun setColors(color: Int) {
-        paletteColor = color
+    private fun updateColors() {
+        val color = model.paletteColor
         viewBinding.header.setBackgroundColor(color)
         setNavigationbarColor(color)
         setTaskDescriptionColor(color)
@@ -203,18 +202,6 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorHolder, 
                 if (adapter.itemCount == 0) finish()
             }
         })
-    }
-
-    private fun load() {
-        loader.loadDataSet(
-            this,
-            { album ->
-                this.album = album
-            },
-            { songs ->
-                adapter.dataSet = songs
-            }
-        )
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -346,7 +333,7 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorHolder, 
             popupTheme(instance().generalTheme)
             menu(menuRes)
             closeDrawable(R.drawable.ic_close_white_24dp)
-            backgroundColor(null, shiftBackgroundColorForLightText(paletteColor))
+            backgroundColor(null, shiftBackgroundColorForLightText(model.paletteColor))
             onCreate(createCallback)
             onSelection(selectCallback)
             onDestroy(destroyCallback)
@@ -372,7 +359,7 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorHolder, 
     }
 
     private var album: Album
-        get() = loader.album
+        get() = model.album
         set(album) {
             loadAlbumCover()
             if (isAllowedToDownloadMetadata(this)) loadWiki()
@@ -382,4 +369,16 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorHolder, 
             viewBinding.durationText.text = getReadableDurationString(getTotalDuration(this, album.songs))
             viewBinding.albumYearText.text = getYearString(album.year)
         }
+
+    private fun load() {
+        model.loadDataSet(
+            this,
+            { album ->
+                this.album = album
+            },
+            { songs ->
+                adapter.dataSet = songs
+            }
+        )
+    }
 }
