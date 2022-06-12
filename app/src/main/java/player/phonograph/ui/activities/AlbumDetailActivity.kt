@@ -1,6 +1,7 @@
 package player.phonograph.ui.activities
 
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.text.Html
 import android.text.Spanned
@@ -14,13 +15,6 @@ import androidx.core.graphics.BlendModeColorFilterCompat
 import androidx.core.graphics.BlendModeCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView.AdapterDataObserver
-import com.afollestad.materialcab.CreateCallback
-import com.afollestad.materialcab.DestroyCallback
-import com.afollestad.materialcab.SelectCallback
-import com.afollestad.materialcab.attached.AttachedCab
-import com.afollestad.materialcab.attached.destroy
-import com.afollestad.materialcab.attached.isActive
-import com.afollestad.materialcab.createCab
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.WhichButton
 import com.afollestad.materialdialogs.actions.getActionButton
@@ -28,21 +22,21 @@ import com.bumptech.glide.Glide
 import java.util.*
 import kotlin.math.max
 import kotlin.math.min
+import lib.phonograph.cab.*
 import player.phonograph.R
-import player.phonograph.adapter.song.AlbumSongAdapter
+import player.phonograph.adapter.display.SongDisplayAdapter
 import player.phonograph.databinding.ActivityAlbumDetailBinding
 import player.phonograph.dialogs.AddToPlaylistDialog
 import player.phonograph.dialogs.DeleteSongsDialog
 import player.phonograph.dialogs.SleepTimerDialog
 import player.phonograph.glide.PhonographColoredTarget
 import player.phonograph.glide.SongGlideRequest
-import player.phonograph.interfaces.CabHolder
+import player.phonograph.interfaces.MultiSelectionCabProvider
 import player.phonograph.misc.SimpleObservableScrollViewCallbacks
 import player.phonograph.model.Album
 import player.phonograph.service.MusicPlayerRemote.enqueue
 import player.phonograph.service.MusicPlayerRemote.openAndShuffleQueue
 import player.phonograph.service.MusicPlayerRemote.playNext
-import player.phonograph.settings.Setting.Companion.instance
 import player.phonograph.settings.Setting.Companion.isAllowedToDownloadMetadata
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
 import player.phonograph.util.MusicUtil.getReadableDurationString
@@ -68,7 +62,7 @@ import util.phonograph.tageditor.AlbumTagEditorActivity
 /**
  * Be careful when changing things in this Activity!
  */
-class AlbumDetailActivity : AbsSlidingMusicPanelActivity(), CabHolder {
+class AlbumDetailActivity : AbsSlidingMusicPanelActivity(), MultiSelectionCabProvider {
 
     companion object {
         private const val TAG_EDITOR_REQUEST = 2001
@@ -78,9 +72,7 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity(), CabHolder {
     private lateinit var viewBinding: ActivityAlbumDetailBinding
     private val model: AlbumDetailActivityViewModel by viewModels()
 
-    private lateinit var adapter: AlbumSongAdapter
-
-    private var cab: AttachedCab? = null
+    private lateinit var adapter: SongDisplayAdapter
 
     private val lastFMRestClient: LastFMRestClient by lazy { LastFMRestClient(this) }
     private var wiki: Spanned? = null
@@ -116,7 +108,9 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity(), CabHolder {
             .post { observableScrollViewCallbacks.onScrollChanged(-headerViewHeight, b = false, b2 = false) }
 
         // setUpSongsAdapter
-        adapter = AlbumSongAdapter(this, album.songs, R.layout.item_list, false, this)
+        adapter = SongDisplayAdapter(this, this, album.songs, R.layout.item_list) {
+            this.usePalette = false
+        }
         viewBinding.recyclerView.layoutManager = GridLayoutManager(this, 1)
         viewBinding.recyclerView.adapter = adapter
         adapter.registerAdapterDataObserver(object : AdapterDataObserver() {
@@ -168,7 +162,7 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity(), CabHolder {
             this
         ) { album, songs ->
             updateAlbumsInfo(album)
-            adapter.dataSet = songs
+            adapter.dataset = songs
             SongGlideRequest.Builder.from(Glide.with(this), album.safeGetFirstSong())
                 .checkIgnoreMediaStore(this)
                 .generatePalette(this).build()
@@ -257,23 +251,23 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity(), CabHolder {
                 return true
             }
             R.id.action_shuffle_album -> {
-                openAndShuffleQueue(adapter.dataSet, true)
+                openAndShuffleQueue(adapter.dataset, true)
                 return true
             }
             R.id.action_play_next -> {
-                playNext(adapter.dataSet)
+                playNext(adapter.dataset)
                 return true
             }
             R.id.action_add_to_current_playing -> {
-                enqueue(adapter.dataSet)
+                enqueue(adapter.dataset)
                 return true
             }
             R.id.action_add_to_playlist -> {
-                AddToPlaylistDialog.create(adapter.dataSet).show(supportFragmentManager, "ADD_PLAYLIST")
+                AddToPlaylistDialog.create(adapter.dataset).show(supportFragmentManager, "ADD_PLAYLIST")
                 return true
             }
             R.id.action_delete_from_device -> {
-                DeleteSongsDialog.create(adapter.dataSet).show(supportFragmentManager, "DELETE_SONGS")
+                DeleteSongsDialog.create(adapter.dataset).show(supportFragmentManager, "DELETE_SONGS")
                 return true
             }
             android.R.id.home -> {
@@ -323,27 +317,63 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity(), CabHolder {
         }
     }
 
-    override fun showCab(
+    private var multiSelectionCab: MultiSelectionCab? = null
+    override fun getCab(): MultiSelectionCab? = multiSelectionCab
+
+    override fun deployCab(
         menuRes: Int,
-        createCallback: CreateCallback,
-        selectCallback: SelectCallback,
-        destroyCallback: DestroyCallback
-    ): AttachedCab {
-        if (cab != null && cab.isActive()) cab.destroy()
-        cab = this.createCab(R.id.cab_stub) {
-            popupTheme(instance().generalTheme)
-            menu(menuRes)
-            closeDrawable(R.drawable.ic_close_white_24dp)
-            backgroundColor(null, shiftBackgroundColorForLightText(model.paletteColor.value!!))
-            onCreate(createCallback)
+        initCallback: InitCallback?,
+        showCallback: ShowCallback?,
+        selectCallback: SelectCallback?,
+        hideCallback: HideCallback?,
+        destroyCallback: DestroyCallback?,
+    ): MultiSelectionCab {
+        val cfg: CabCfg = {
+            val textColor = Color.BLACK
+
+            backgroundColor = shiftBackgroundColorForLightText(model.paletteColor.value!!)
+            titleTextColor = textColor
+
+            closeDrawable = AppCompatResources.getDrawable(this@AlbumDetailActivity, R.drawable.ic_close_white_24dp)!!.also {
+                it.colorFilter = BlendModeColorFilterCompat.createBlendModeColorFilterCompat(textColor, BlendModeCompat.SRC_IN)
+            }
+
+            this.menuRes = menuRes
+
+            onInit(initCallback)
+            onShow(showCallback)
             onSelection(selectCallback)
+            onHide(hideCallback)
+            onClose { dismissCab() }
             onDestroy(destroyCallback)
         }
-        return cab!!
+        if (multiSelectionCab == null) multiSelectionCab =
+            createMultiSelectionCab(this@AlbumDetailActivity, R.id.cab_stub, R.id.multi_selection_cab, cfg)
+        else {
+            multiSelectionCab!!.applyCfg = cfg
+            multiSelectionCab!!.refresh()
+        }
+
+        return multiSelectionCab!!
+    }
+
+    override fun showCab() {
+        multiSelectionCab?.let { cab ->
+            viewBinding.toolbar.visibility = View.INVISIBLE
+            cab.refresh()
+            cab.show()
+        }
+    }
+
+    override fun dismissCab() {
+        multiSelectionCab?.hide()
+        viewBinding.toolbar.visibility = View.VISIBLE
     }
 
     override fun onBackPressed() {
-        if (cab != null && cab.isActive()) cab.destroy() else {
+        if (multiSelectionCab != null && multiSelectionCab!!.status == CabStatus.STATUS_ACTIVE) {
+            dismissCab()
+        } else {
             viewBinding.recyclerView.stopScroll()
             super.onBackPressed()
         }

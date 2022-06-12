@@ -12,12 +12,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:elevation="@dimen/toolbar_elevation"
+        app:layout_scrollFlags="scroll|enterAlways"
         tools:ignore="UnusedAttribute">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             style="@style/Toolbar"
-            android:background="@android:color/transparent" />
+            android:background="@android:color/transparent"
+            android:elevation="0dp" />
 
         <ViewStub
             android:id="@+id/cab_stub"
