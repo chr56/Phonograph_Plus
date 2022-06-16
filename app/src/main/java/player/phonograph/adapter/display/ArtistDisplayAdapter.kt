@@ -6,7 +6,9 @@ package player.phonograph.adapter.display
 
 import android.graphics.drawable.Drawable
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.content.res.AppCompatResources
 import com.bumptech.glide.Glide
+import player.phonograph.R
 import player.phonograph.glide.ArtistGlideRequest
 import player.phonograph.glide.PhonographColoredTarget
 import player.phonograph.interfaces.MultiSelectionCabProvider
@@ -53,4 +55,7 @@ class ArtistDisplayAdapter(
     }
 
     override fun getRelativeOrdinalText(item: Artist): String = item.songCount.toString()
+
+    override val defaultIcon: Drawable?
+        get() =  AppCompatResources.getDrawable(activity, R.drawable.default_artist_image)
 }

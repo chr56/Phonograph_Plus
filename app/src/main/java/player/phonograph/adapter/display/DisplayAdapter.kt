@@ -19,7 +19,6 @@ import player.phonograph.adapter.base.MultiSelectAdapter
 import player.phonograph.adapter.base.UniversalMediaEntryViewHolder
 import player.phonograph.interfaces.Displayable
 import player.phonograph.interfaces.MultiSelectionCabProvider
-import player.phonograph.model.Artist
 import util.mdcolor.ColorUtil
 import util.mddesign.util.MaterialColorHelper
 
@@ -64,10 +63,7 @@ open class DisplayAdapter<I : Displayable>(
         )
     }
 
-    private val defaultIcon = when (dataset.getOrNull(0)) {
-        is Artist -> AppCompatResources.getDrawable(activity, R.drawable.default_artist_image)
-        else -> AppCompatResources.getDrawable(activity, R.drawable.default_album_art)
-    }
+    protected open val defaultIcon = AppCompatResources.getDrawable(activity, R.drawable.default_album_art)
 
     override fun onBindViewHolder(holder: DisplayViewHolder, position: Int) {
         val item: I = dataset[position]
