@@ -78,6 +78,7 @@ class FilesPage : AbsPage() {
             true
         }
         binding.headerTitle.text = model.currentLocation.let { "${it.storageVolume.getDescription(requireContext())} : ${it.basePath}" }
+        binding.header.smoothScrollBy((binding.headerTitle.width * 0.3).toInt(), 0)
 
         // recycle view
         layoutManager = LinearLayoutManager(hostFragment.mainActivity)
@@ -139,6 +140,7 @@ class FilesPage : AbsPage() {
         model.loadFiles {
             adapter.dataSet = model.currentFileList.toMutableList()
             binding.headerTitle.text = model.currentLocation.let { "${it.storageVolume.getDescription(requireContext())} : ${it.basePath}" }
+            binding.header.smoothScrollBy((binding.headerTitle.width * 0.6).toInt(), 0)
             binding.buttonBack.setImageDrawable(
                 if (model.currentLocation.parent == null)
                     getDrawable(R.drawable.ic_library_music_white_24dp)
