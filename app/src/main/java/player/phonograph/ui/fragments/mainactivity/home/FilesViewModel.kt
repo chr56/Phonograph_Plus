@@ -10,7 +10,7 @@ import androidx.lifecycle.viewModelScope
 import java.util.*
 import kotlinx.coroutines.*
 import player.phonograph.App
-import player.phonograph.mediastore.MediaStoreUtil
+import player.phonograph.mediastore.MediaStoreUtil.searchSongFiles
 import player.phonograph.model.FileEntity
 import player.phonograph.model.Location
 
@@ -41,33 +41,8 @@ class FilesViewModel : ViewModel() {
         scope: CoroutineScope?,
     ) {
         currentFileList.clear()
-        val paths = MediaStoreUtil.searchSongFiles(context, location.absolutePath) ?: return
-        val list: MutableSet<FileEntity> = TreeSet<FileEntity>()
-        for (path in paths) {
-            if (scope != null && !scope.isActive) return
-            list.add(
-                parsePath(currentLocation, path)
-            )
-        }
-        currentFileList.addAll(list)
-    }
-
-    companion object {
-        fun parsePath(currentLocation: Location, absolutePath: String): FileEntity {
-            val currentRelativePath = absolutePath.substringAfter(currentLocation.absolutePath).removePrefix("/")
-            val basePath = currentLocation.basePath.let { if (it == "/") "" else it } // root //todo
-            return if (currentRelativePath.contains('/')) {
-                // folder
-                FileEntity.Folder(
-                    currentLocation.changeTo("$basePath/${currentRelativePath.substringBefore('/')}")
-                )
-            } else {
-                // file
-                FileEntity.File(
-                    currentLocation.changeTo("$basePath/$currentRelativePath")
-                )
-            }
-        }
+        val set = searchSongFiles(context, location, scope) ?: return
+        currentFileList.addAll(set)
     }
 
     override fun onCleared() {

@@ -111,8 +111,8 @@ class FileAdapter(
                     return when (val itemId = item.itemId) {
                         R.id.action_play_next, R.id.action_add_to_current_playing, R.id.action_add_to_playlist, R.id.action_delete_from_device -> {
                             CoroutineScope(SupervisorJob()).launch(Dispatchers.IO) {
-                                val songs = MediaStoreUtil.searchSongFiles(context, path)
-                                    ?.mapNotNull { MediaStoreUtil.getSong(context, File(it)) } ?: return@launch
+                                val songs = MediaStoreUtil.searchSongFiles(context, fileItem.path)
+                                    ?.mapNotNull { if (it is FileEntity.File) it.linkedSong else null } ?: return@launch
                                 withContext(Dispatchers.Main) { SongsMenuHelper.handleMenuClick(context, songs, itemId) }
                             }
                             true

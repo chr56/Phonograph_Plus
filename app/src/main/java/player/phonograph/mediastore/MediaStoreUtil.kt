@@ -20,7 +20,11 @@ import android.widget.Toast
 import com.afollestad.materialdialogs.MaterialDialog
 import java.io.File
 import java.util.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.isActive
 import player.phonograph.R
+import player.phonograph.model.FileEntity
+import player.phonograph.model.Location
 import player.phonograph.model.Song
 import player.phonograph.provider.BlacklistStore
 import player.phonograph.settings.Setting
@@ -237,22 +241,45 @@ object MediaStoreUtil {
         }
     }
 
-    fun searchSongFiles(context: Context, pathPrefix: String): List<String>? {
+    /**
+     * @param location the location you want to query
+     * @return the ordered TreeSet containing songs and folders in this location
+     */
+    fun searchSongFiles(context: Context, location: Location, scope: CoroutineScope? = null): Set<FileEntity>? {
         querySongs(
             context,
             "$DATA LIKE ?",
-            arrayOf("$pathPrefix%")
+            arrayOf("${location.absolutePath}%")
         )?.use { cursor ->
-            cursor.moveToFirst()
-            if (cursor.count <= 0) return null
-            val column = cursor.getColumnIndex(DATA).let { if (it == -1) return null else it }
-            val list = ArrayList<String>()
-            do {
-                list.add(cursor.getString(column))
-            } while (cursor.moveToNext())
-            return list
+            if (cursor.moveToFirst()) {
+                val songs = getSongs(cursor)
+                val set: MutableSet<FileEntity> = TreeSet<FileEntity>()
+                for (song in songs) {
+                    if (scope != null && !scope.isActive) break
+                    set.add(
+                        parsePath(location, song.data)
+                    )
+                }
+                return set
+            }
         }
         return null
+    }
+
+    private fun parsePath(currentLocation: Location, absolutePath: String): FileEntity {
+        val currentRelativePath = absolutePath.substringAfter(currentLocation.absolutePath).removePrefix("/")
+        val basePath = currentLocation.basePath.let { if (it == "/") "" else it } // root //todo
+        return if (currentRelativePath.contains('/')) {
+            // folder
+            FileEntity.Folder(
+                currentLocation.changeTo("$basePath/${currentRelativePath.substringBefore('/')}")
+            )
+        } else {
+            // file
+            FileEntity.File(
+                currentLocation.changeTo("$basePath/$currentRelativePath")
+            )
+        }
     }
 
     fun scanFiles(context: Context, paths: Array<String>, mimeTypes: Array<String>) {
