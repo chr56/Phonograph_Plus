@@ -41,22 +41,11 @@ object MediaStoreUtil {
         return getSongs(cursor)
     }
 
-    fun getSongs(context: Context, query: String): List<Song> {
+    fun getSongs(context: Context, title: String): List<Song> {
         val cursor = querySongs(
-            context, "${AudioColumns.TITLE} LIKE ?", arrayOf("%$query%")
+            context, "${AudioColumns.TITLE} LIKE ?", arrayOf("%$title%")
         )
         return getSongs(cursor)
-    }
-
-    fun getSongs(cursor: Cursor?): List<Song> {
-        val songs: MutableList<Song> = java.util.ArrayList()
-        if (cursor != null && cursor.moveToFirst()) {
-            do {
-                songs.add(getSongFromCursor(cursor))
-            } while (cursor.moveToNext())
-            cursor.close()
-        }
-        return songs
     }
 
     fun getSong(context: Context, id: Long): Song {
@@ -65,6 +54,17 @@ object MediaStoreUtil {
                 context, "${AudioColumns._ID} =? ", arrayOf(id.toString())
             )
         return getSong(cursor)
+    }
+
+    fun getSongs(cursor: Cursor?): List<Song> {
+        val songs: MutableList<Song> = ArrayList()
+        if (cursor != null && cursor.moveToFirst()) {
+            do {
+                songs.add(getSongFromCursor(cursor))
+            } while (cursor.moveToNext())
+            cursor.close()
+        }
+        return songs
     }
 
     fun getSong(cursor: Cursor?): Song {
@@ -79,6 +79,56 @@ object MediaStoreUtil {
             return song
         }
         return Song.EMPTY_SONG
+    }
+
+    fun getSong(context: Context, file: File): Song? {
+        return querySongs(context, "$DATA LIKE ?", arrayOf(file.path))?.use { cursor ->
+            if (cursor.moveToFirst()) {
+                getSongFromCursor(cursor)
+            } else null
+        }
+    }
+
+    /**
+     * @param location the location you want to query
+     * @return the ordered TreeSet containing songs and folders in this location
+     */
+    fun searchSongFiles(context: Context, location: Location, scope: CoroutineScope? = null): Set<FileEntity>? {
+        querySongs(
+            context,
+            "$DATA LIKE ?",
+            arrayOf("${location.absolutePath}%"),
+            null
+        )?.use { cursor ->
+            if (cursor.moveToFirst()) {
+                val songs = getSongs(cursor)
+                val set: MutableSet<FileEntity> = TreeSet<FileEntity>()
+                for (song in songs) {
+                    if (scope != null && !scope.isActive) break
+                    set.add(
+                        parsePath(location, song)
+                    )
+                }
+                return set
+            }
+        }
+        return null
+    }
+
+    private fun parsePath(currentLocation: Location, song: Song): FileEntity {
+        val songRelativePath = song.data.substringAfter(currentLocation.absolutePath).removePrefix("/")
+        val basePath = currentLocation.basePath.let { if (it == "/") "" else it } // root //todo
+        return if (songRelativePath.contains('/')) {
+            // folder
+            FileEntity.Folder(
+                currentLocation.changeTo("$basePath/${songRelativePath.substringBefore('/')}")
+            )
+        } else {
+            // file
+            FileEntity.File(
+                currentLocation.changeTo("$basePath/$songRelativePath"), song
+            )
+        }
     }
 
     private fun getSongFromCursor(cursor: Cursor): Song {
@@ -113,24 +163,12 @@ object MediaStoreUtil {
     /**
      * query audio file via MediaStore
      */
+    @JvmOverloads
     fun querySongs(
         context: Context,
         selection: String?,
         selectionValues: Array<String>?,
-    ): Cursor? {
-        return querySongs(
-            context, selection, selectionValues, Setting.instance.songSortMode.SQLQuerySortOrder
-        )
-    }
-
-    /**
-     * query audio file via MediaStore
-     */
-    fun querySongs(
-        context: Context,
-        selection: String?,
-        selectionValues: Array<String>?,
-        sortOrder: String?,
+        sortOrder: String? = Setting.instance.songSortMode.SQLQuerySortOrder,
     ): Cursor? {
         var realSelection =
             if (selection != null && selection.trim { it <= ' ' } != "") {
@@ -234,55 +272,6 @@ object MediaStoreUtil {
         ).show()
     }
 
-    fun getSong(context: Context, file: File): Song? {
-        return querySongs(context, "$DATA LIKE ?", arrayOf(file.path))?.use { cursor ->
-            if (cursor.moveToFirst()) {
-                getSongFromCursor(cursor)
-            } else null
-        }
-    }
-
-    /**
-     * @param location the location you want to query
-     * @return the ordered TreeSet containing songs and folders in this location
-     */
-    fun searchSongFiles(context: Context, location: Location, scope: CoroutineScope? = null): Set<FileEntity>? {
-        querySongs(
-            context,
-            "$DATA LIKE ?",
-            arrayOf("${location.absolutePath}%")
-        )?.use { cursor ->
-            if (cursor.moveToFirst()) {
-                val songs = getSongs(cursor)
-                val set: MutableSet<FileEntity> = TreeSet<FileEntity>()
-                for (song in songs) {
-                    if (scope != null && !scope.isActive) break
-                    set.add(
-                        parsePath(location, song)
-                    )
-                }
-                return set
-            }
-        }
-        return null
-    }
-
-    private fun parsePath(currentLocation: Location, song: Song): FileEntity {
-        val songRelativePath = song.data.substringAfter(currentLocation.absolutePath).removePrefix("/")
-        val basePath = currentLocation.basePath.let { if (it == "/") "" else it } // root //todo
-        return if (songRelativePath.contains('/')) {
-            // folder
-            FileEntity.Folder(
-                currentLocation.changeTo("$basePath/${songRelativePath.substringBefore('/')}")
-            )
-        } else {
-            // file
-            FileEntity.File(
-                currentLocation.changeTo("$basePath/$songRelativePath"), song
-            )
-        }
-    }
-
     fun scanFiles(context: Context, paths: Array<String>, mimeTypes: Array<String>) {
         var failed: Int = 0
         var scanned: Int = 0
@@ -332,6 +321,7 @@ object MediaStoreUtil {
             AudioColumns.ALBUM, // 9
             AudioColumns.ARTIST_ID, // 10
             AudioColumns.ARTIST, // 11
+            AudioColumns.DISPLAY_NAME
         )
     }
 }

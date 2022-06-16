@@ -2,7 +2,6 @@ package player.phonograph.mediastore
 
 import android.content.Context
 import android.database.Cursor
-import player.phonograph.mediastore.MediaStoreUtil
 import player.phonograph.mediastore.MediaStoreUtil.querySongs
 import player.phonograph.model.Song
 
@@ -15,7 +14,7 @@ object SongLoader {
     fun getAllSongs(context: Context): List<Song> = MediaStoreUtil.getAllSongs(context)
 
     @JvmStatic
-    fun getSongs(context: Context, query: String): List<Song> = MediaStoreUtil.getSongs(context, query)
+    fun getSongs(context: Context, title: String): List<Song> = MediaStoreUtil.getSongs(context, title)
 
     @JvmStatic
     fun getSong(context: Context, queryId: Long): Song = MediaStoreUtil.getSong(context, queryId)
