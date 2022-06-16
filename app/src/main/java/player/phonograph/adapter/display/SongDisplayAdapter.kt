@@ -17,7 +17,7 @@ import player.phonograph.model.Song
 import player.phonograph.settings.Setting
 import player.phonograph.util.MusicUtil
 
-class SongDisplayAdapter(
+open class SongDisplayAdapter(
     activity: AppCompatActivity,
     host: MultiSelectionCabProvider?,
     dataSet: List<Song>,

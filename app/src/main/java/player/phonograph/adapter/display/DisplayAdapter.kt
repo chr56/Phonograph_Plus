@@ -50,8 +50,6 @@ open class DisplayAdapter<I : Displayable>(
 
     var useImageText: Boolean = false
 
-    var showDuration: Boolean = false
-
     var showSectionName: Boolean = true
 
     override var multiSelectMenuRes: Int = R.menu.menu_media_selection
@@ -79,19 +77,15 @@ open class DisplayAdapter<I : Displayable>(
         holder.shortSeparator?.visibility = View.VISIBLE
         holder.itemView.isActivated = isChecked(item)
         holder.title?.text = item.getDisplayTitle()
-        holder.text?.text = if (showDuration) {
-            // todo
-            val song = (item as? Song) ?: Song.EMPTY_SONG
-            "${MusicUtil.getReadableDurationString(song.duration)} · ${song.artistName}"
-        } else {
-            item.getDescription()
-        }
+        holder.text?.text = getDescription(item)
         if (useImageText) {
             setImageText(holder, getRelativeOrdinalText(item))
         } else {
             setImage(holder, position)
         }
     }
+
+    protected open fun getDescription(item: I): CharSequence? = item.getDescription()
 
     protected open fun setImage(holder: DisplayViewHolder, position: Int) {
         holder.image?.also {
