@@ -78,7 +78,7 @@ class FilesPage : AbsPage() {
             reload()
             true
         }
-        binding.textPageHeader.text = model.currentLocation.let { "${it.storageVolume.getDescription(requireContext())} : ${it.basePath}" }
+        binding.headerTitle.text = model.currentLocation.let { "${it.storageVolume.getDescription(requireContext())} : ${it.basePath}" }
 
         // recycle view
         layoutManager = LinearLayoutManager(hostFragment.mainActivity)
@@ -88,7 +88,7 @@ class FilesPage : AbsPage() {
                     model.currentLocation = it.location
                     reload()
                 }
-                is FileEntity.File -> { MusicPlayerRemote.playNext((it as FileEntity.File).linkedSong) }
+                is FileEntity.File -> { MusicPlayerRemote.playNext(it.linkedSong) }
             }
         }, hostFragment)
 
@@ -139,7 +139,7 @@ class FilesPage : AbsPage() {
     private fun reload() {
         model.loadFiles {
             adapter.dataSet = model.currentFileList.toMutableList()
-            binding.textPageHeader.text = model.currentLocation.let { "${it.storageVolume.getDescription(requireContext())} : ${it.basePath}" }
+            binding.headerTitle.text = model.currentLocation.let { "${it.storageVolume.getDescription(requireContext())} : ${it.basePath}" }
             binding.buttonBack.setImageDrawable(
                 if (model.currentLocation.parent == null)
                     getDrawable(R.drawable.ic_library_music_white_24dp)
@@ -153,7 +153,7 @@ class FilesPage : AbsPage() {
         return AppCompatResources.getDrawable(hostFragment.mainActivity, resId)?.also {
             it.colorFilter = BlendModeColorFilterCompat
                 .createBlendModeColorFilterCompat(
-                    binding.textPageHeader.currentTextColor,
+                    binding.headerTitle.currentTextColor,
                     BlendModeCompat.SRC_IN
                 )
         }

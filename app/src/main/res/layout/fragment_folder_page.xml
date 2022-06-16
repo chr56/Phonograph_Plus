@@ -26,17 +26,34 @@
                 app:layout_constraintTop_toTopOf="@+id/button_page_header"
                 tools:ignore="SpeakableTextPresentCheck" />
 
-            <TextView
-                android:id="@+id/text_page_header"
-                style="@style/TextAppearance.AppCompat.Medium"
-                android:layout_width="wrap_content"
+            <HorizontalScrollView
+                android:id="@+id/header"
+                android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_marginStart="24dp"
-                android:layout_marginEnd="24dp"
-                android:gravity="start|center_vertical"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:orientation="horizontal"
                 app:layout_constraintEnd_toStartOf="@id/button_page_header"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toEndOf="@id/button_back" />
+                app:layout_constraintStart_toEndOf="@id/button_back">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="start|center_vertical">
+
+                    <TextView
+                        android:id="@+id/header_title"
+                        style="@style/TextAppearance.AppCompat.Medium"
+
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="start|center_vertical"
+                        android:text="HEADER"
+                        tools:ignore="HardcodedText" />
+                </LinearLayout>
+
+
+            </HorizontalScrollView>
 
 
             <ImageButton
