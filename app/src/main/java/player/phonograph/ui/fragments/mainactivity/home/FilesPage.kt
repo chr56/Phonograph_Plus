@@ -32,7 +32,6 @@ import player.phonograph.model.FileEntity
 import player.phonograph.model.Location
 import player.phonograph.notification.ErrorNotification
 import player.phonograph.service.MusicPlayerRemote
-import player.phonograph.util.ViewUtil
 import player.phonograph.util.ViewUtil.setUpFastScrollRecyclerViewColor
 import util.mdcolor.pref.ThemeColor
 
@@ -74,12 +73,12 @@ class FilesPage : AbsPage() {
         }
         binding.buttonBack.setImageDrawable(getDrawable(R.drawable.icon_back_white))
         binding.buttonBack.setOnClickListener { gotoTopLevel() }
-        binding.buttonBack.setOnLongClickListener{
+        binding.buttonBack.setOnLongClickListener {
             model.currentLocation = Location.HOME
             reload()
             true
         }
-        binding.textPageHeader.text = model.currentLocation.let { "${it.storageVolume} : ${it.basePath}" }
+        binding.textPageHeader.text = model.currentLocation.let { "${it.storageVolume.getDescription(requireContext())} : ${it.basePath}" }
 
         // recycle view
         layoutManager = LinearLayoutManager(hostFragment.mainActivity)
@@ -139,7 +138,7 @@ class FilesPage : AbsPage() {
     private fun reload() {
         model.loadFiles {
             adapter.dataSet = model.currentFileList.toMutableList()
-            binding.textPageHeader.text = model.currentLocation.let { "${it.storageVolume} : ${it.basePath}" }
+            binding.textPageHeader.text = model.currentLocation.let { "${it.storageVolume.getDescription(requireContext())} : ${it.basePath}" }
             binding.buttonBack.setImageDrawable(
                 if (model.currentLocation.parent == null)
                     getDrawable(R.drawable.ic_library_music_white_24dp)

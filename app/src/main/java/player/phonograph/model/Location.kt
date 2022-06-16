@@ -4,13 +4,12 @@
 
 package player.phonograph.model
 
-import android.annotation.SuppressLint
 import android.content.Context
+import android.os.storage.StorageManager
+import android.os.storage.StorageVolume
 import android.util.Log
 import java.io.File
-import lib.phonograph.storage.externalStoragePath
-import lib.phonograph.storage.getBasePath
-import lib.phonograph.storage.getStorageId
+import lib.phonograph.storage.*
 import player.phonograph.App
 import player.phonograph.BuildConfig.DEBUG
 import player.phonograph.settings.Setting
@@ -19,47 +18,74 @@ import player.phonograph.settings.Setting
  * Presenting a path
  * @param basePath the path without prefix likes /storage/emulated/0 or /storage/69F4-242C,
  *  **starting with '/', ending without '/'**
- * @param storageVolume the location of Storage, such as Internal(`emulated/0`) or physical storage devices (`69F4-242C`)
+ * @param storageVolume StorageVolume where file locate
  */
-class Location(val basePath: String, val storageVolume: String?) {
+class Location private constructor(val basePath: String, val storageVolume: StorageVolume) {
 
     val absolutePath: String
         get() {
-            val prefix = if (storageVolume != null) "/storage/$storageVolume" else externalStoragePath
+            val prefix = storageVolume.root()?.path ?: externalStoragePath
             return "$prefix$basePath"
         }
 
     /**
      *  null if no parent (already be top / root of this volume)
      */
-    val parent: Location? get() {
-        if (basePath.isBlank()) return null
-        val parentPath = basePath.dropLastWhile { it != '/' }.removeSuffix("/")
-        return Location(parentPath, storageVolume)
-    }
+    val parent: Location?
+        get() {
+            if (basePath == "/") return null // root
+            val parentPath = basePath.dropLastWhile { it != '/' }.removeSuffix("/")
+            return changeTo(parentPath)
+        }
+
+    /**
+     * another base path on same volume
+     */
+    fun changeTo(basePath: String): Location = from(basePath, storageVolume)
 
     companion object {
+        private const val TAG = "Location"
 
+        fun from(basePath: String, storageVolume: StorageVolume): Location {
+            return Location(basePath.ifBlank { "/" }, storageVolume)
+        }
         /**
          * @param path absolute path
          */
         fun fromAbsolutePath(path: String, context: Context = App.instance): Location {
-            val f = File(path)
-            if (DEBUG) Log.w("Location", "From /${f.getBasePath(context)} @ ${f.getStorageId(context)}")
-            return Location("/${f.getBasePath(context)}", getStorageVolume(path))
+            val file = File(path)
+            val storageManager = context.getSystemService(StorageManager::class.java)
+
+            val storageVolume = file.getStorageVolume(storageManager)
+            val basePath = file.getBasePath(storageVolume.root() ?: throw IllegalStateException("unavailable for $storageManager"))
+            // path.substringAfter(storageVolume.root()?.path ?: file.getBasePath(context))
+
+            if (DEBUG) Log.w(TAG, "Location Created! path = $path, storageVolume = $storageVolume(${storageVolume.root()})")
+            return from(basePath, storageVolume)
         }
-        @SuppressLint("SdCardPath")
-        private fun getStorageVolume(absolutePath: String): String? =
-            when {
-                absolutePath.startsWith("/sdcard/") -> null
-                absolutePath.startsWith("/storage/emulated/") -> {
-                    val s = absolutePath.substringAfter("/storage/").split('/')
-                    "${s[0]}/${s[1]}"
-                }
-                else -> absolutePath.substringAfter("/storage/").substringBefore('/')
-            }
 
         val HOME: Location get() = fromAbsolutePath(Setting.defaultStartDirectory.absolutePath)
+
+        private fun File.getStorageVolume(storageManager: StorageManager): StorageVolume {
+            val volume = storageManager.getStorageVolume(this)
+            return if (volume != null) {
+                volume
+            } else {
+                Log.e(TAG, "can't find storage volume for file $path")
+                storageManager.primaryStorageVolume
+            }
+        }
+        private fun File.getBasePath(root: File): String {
+            return path.substringAfter(root.path)
+        }
+    }
+
+    init {
+        if (basePath.isBlank()) {
+            Log.e(TAG, "base path is null!")
+        }
+        // debug only
+        if (DEBUG) Log.w(TAG, "Location Created! path = $basePath, storageVolume = ${storageVolume.getDescription(App.instance)}(${storageVolume.root()})")
     }
 
     override fun hashCode(): Int = storageVolume.hashCode() * 31 + basePath.hashCode()

@@ -7,12 +7,12 @@ package player.phonograph.ui.fragments.mainactivity.home
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import java.util.*
 import kotlinx.coroutines.*
 import player.phonograph.App
 import player.phonograph.mediastore.MediaStoreUtil
 import player.phonograph.model.FileEntity
 import player.phonograph.model.Location
-import java.util.*
 
 class FilesViewModel : ViewModel() {
     var currentLocation: Location = Location.HOME
@@ -59,12 +59,12 @@ class FilesViewModel : ViewModel() {
             return if (currentRelativePath.contains('/')) {
                 // folder
                 FileEntity.Folder(
-                    Location("$basePath/${currentRelativePath.substringBefore('/')}", currentLocation.storageVolume)
+                    currentLocation.changeTo("$basePath/${currentRelativePath.substringBefore('/')}")
                 )
             } else {
                 // file
                 FileEntity.File(
-                    Location("$basePath/$currentRelativePath", currentLocation.storageVolume)
+                    currentLocation.changeTo("$basePath/$currentRelativePath")
                 )
             }
         }
