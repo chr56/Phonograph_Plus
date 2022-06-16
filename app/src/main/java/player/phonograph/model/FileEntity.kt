@@ -12,7 +12,7 @@ import player.phonograph.mediastore.MediaStoreUtil
  * Presenting a file
  */
 sealed class FileEntity : Comparable<FileEntity> {
-    abstract val path: Location
+    abstract val location: Location
 
     override fun compareTo(other: FileEntity): Int {
         return if (isFolder xor other.isFolder) {
@@ -22,24 +22,25 @@ sealed class FileEntity : Comparable<FileEntity> {
         }
     }
 
-    class File(override val path: Location) : FileEntity() {
-        val linkedSong: Song get() = MediaStoreUtil.getSong(App.instance, File(path.absolutePath)) ?: Song.EMPTY_SONG
+    class File(override val location: Location, private val mSong: Song? = null) : FileEntity() {
+        val linkedSong: Song get() =
+            mSong ?: MediaStoreUtil.getSong(App.instance, File(location.absolutePath)) ?: Song.EMPTY_SONG
         override val isFolder: Boolean = false
     }
 
-    class Folder(override val path: Location) : FileEntity() {
+    class Folder(override val location: Location) : FileEntity() {
         override val isFolder: Boolean = true
     }
 
-    val name: String get() = path.basePath.takeLastWhile { it != '/' }
+    val name: String get() = location.basePath.takeLastWhile { it != '/' }
     abstract val isFolder: Boolean
 
-    override fun hashCode(): Int = path.hashCode()
+    override fun hashCode(): Int = location.hashCode()
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other !is FileEntity) return false
 
-        if (path != other.path) return false
+        if (location != other.location) return false
 
         return true
     }

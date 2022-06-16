@@ -68,7 +68,7 @@ class FileAdapter(
         ) {
             with(binding) {
                 title.text = item.name
-                text.text = item.path.basePath
+                text.text = item.location.basePath
 
                 shortSeparator.visibility = if (position == dataSet.size - 1) View.GONE else View.VISIBLE
 
@@ -107,11 +107,11 @@ class FileAdapter(
                     SongMenuHelper.handleMenuClick(context, song, item.itemId)
                 }
                 is FileEntity.Folder -> {
-                    val path = fileItem.path.absolutePath
+                    val path = fileItem.location.absolutePath
                     return when (val itemId = item.itemId) {
                         R.id.action_play_next, R.id.action_add_to_current_playing, R.id.action_add_to_playlist, R.id.action_delete_from_device -> {
                             CoroutineScope(SupervisorJob()).launch(Dispatchers.IO) {
-                                val songs = MediaStoreUtil.searchSongFiles(context, fileItem.path)
+                                val songs = MediaStoreUtil.searchSongFiles(context, fileItem.location)
                                     ?.mapNotNull { if (it is FileEntity.File) it.linkedSong else null } ?: return@launch
                                 withContext(Dispatchers.Main) { SongsMenuHelper.handleMenuClick(context, songs, itemId) }
                             }

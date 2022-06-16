@@ -236,8 +236,9 @@ object MediaStoreUtil {
 
     fun getSong(context: Context, file: File): Song? {
         return querySongs(context, "$DATA LIKE ?", arrayOf(file.path))?.use { cursor ->
-            cursor.moveToFirst()
-            getSongFromCursor(cursor)
+            if (cursor.moveToFirst()) {
+                getSongFromCursor(cursor)
+            } else null
         }
     }
 
@@ -257,7 +258,7 @@ object MediaStoreUtil {
                 for (song in songs) {
                     if (scope != null && !scope.isActive) break
                     set.add(
-                        parsePath(location, song.data)
+                        parsePath(location, song)
                     )
                 }
                 return set
@@ -266,18 +267,18 @@ object MediaStoreUtil {
         return null
     }
 
-    private fun parsePath(currentLocation: Location, absolutePath: String): FileEntity {
-        val currentRelativePath = absolutePath.substringAfter(currentLocation.absolutePath).removePrefix("/")
+    private fun parsePath(currentLocation: Location, song: Song): FileEntity {
+        val songRelativePath = song.data.substringAfter(currentLocation.absolutePath).removePrefix("/")
         val basePath = currentLocation.basePath.let { if (it == "/") "" else it } // root //todo
-        return if (currentRelativePath.contains('/')) {
+        return if (songRelativePath.contains('/')) {
             // folder
             FileEntity.Folder(
-                currentLocation.changeTo("$basePath/${currentRelativePath.substringBefore('/')}")
+                currentLocation.changeTo("$basePath/${songRelativePath.substringBefore('/')}")
             )
         } else {
             // file
             FileEntity.File(
-                currentLocation.changeTo("$basePath/$currentRelativePath")
+                currentLocation.changeTo("$basePath/$songRelativePath"), song
             )
         }
     }

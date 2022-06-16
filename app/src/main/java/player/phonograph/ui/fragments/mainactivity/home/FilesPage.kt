@@ -84,7 +84,7 @@ class FilesPage : AbsPage() {
         layoutManager = LinearLayoutManager(hostFragment.mainActivity)
         adapter = FileAdapter(hostFragment.mainActivity, model.currentFileList.toMutableList(), {
             if (it.isFolder) {
-                model.currentLocation = it.path
+                model.currentLocation = it.location
                 reload()
             } else {
                 MusicPlayerRemote.playNext((it as FileEntity.File).linkedSong)
