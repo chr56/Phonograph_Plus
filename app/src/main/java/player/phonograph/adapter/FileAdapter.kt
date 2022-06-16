@@ -74,13 +74,13 @@ class FileAdapter(
 
                 val iconColor = Util.resolveColor(context, R.attr.iconColor)
                 image.setColorFilter(iconColor, PorterDuff.Mode.SRC_IN)
-                image.setImageResource(if (item.isFolder) R.drawable.ic_folder_white_24dp else R.drawable.ic_file_music_white_24dp)
+                image.setImageResource(if (item is FileEntity.File) R.drawable.ic_file_music_white_24dp else R.drawable.ic_folder_white_24dp)
             }
             binding.menu.setOnClickListener {
                 PopupMenu(context, binding.menu)
                     .apply {
                         inflate(
-                            if (item.isFolder) R.menu.menu_item_directory_entity else R.menu.menu_item_file_entity
+                            if (item is FileEntity.File) R.menu.menu_item_file_entity else R.menu.menu_item_directory_entity
                         )
                         setOnMenuItemClickListener { onMenuClick(it, item) }
                         show()

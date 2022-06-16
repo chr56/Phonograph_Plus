@@ -83,11 +83,12 @@ class FilesPage : AbsPage() {
         // recycle view
         layoutManager = LinearLayoutManager(hostFragment.mainActivity)
         adapter = FileAdapter(hostFragment.mainActivity, model.currentFileList.toMutableList(), {
-            if (it.isFolder) {
-                model.currentLocation = it.location
-                reload()
-            } else {
-                MusicPlayerRemote.playNext((it as FileEntity.File).linkedSong)
+            when (it) {
+                is FileEntity.Folder -> {
+                    model.currentLocation = it.location
+                    reload()
+                }
+                is FileEntity.File -> { MusicPlayerRemote.playNext((it as FileEntity.File).linkedSong) }
             }
         }, hostFragment)
 
