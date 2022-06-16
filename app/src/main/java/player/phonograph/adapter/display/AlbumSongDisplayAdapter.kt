@@ -24,4 +24,9 @@ class AlbumSongDisplayAdapter(
         val song = (item as? Song) ?: Song.EMPTY_SONG
         return "${MusicUtil.getReadableDurationString(song.duration)} · ${song.artistName}"
     }
+
+    override fun getRelativeOrdinalText(item: Song): String {
+        val num = MusicUtil.getFixedTrackNumber(item.trackNumber)
+        return if (num > 0) num.toString() else "-"
+    }
 }

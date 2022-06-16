@@ -51,4 +51,6 @@ class ArtistDisplayAdapter(
             }
         return MusicUtil.getSectionName(sectionName)
     }
+
+    override fun getRelativeOrdinalText(item: Artist): String = item.songCount.toString()
 }

@@ -19,10 +19,7 @@ import player.phonograph.adapter.base.MultiSelectAdapter
 import player.phonograph.adapter.base.UniversalMediaEntryViewHolder
 import player.phonograph.interfaces.Displayable
 import player.phonograph.interfaces.MultiSelectionCabProvider
-import player.phonograph.model.Album
 import player.phonograph.model.Artist
-import player.phonograph.model.Song
-import player.phonograph.util.MusicUtil
 import util.mdcolor.ColorUtil
 import util.mddesign.util.MaterialColorHelper
 
@@ -31,7 +28,7 @@ open class DisplayAdapter<I : Displayable>(
     host: MultiSelectionCabProvider?,
     dataSet: List<I>,
     @LayoutRes var layoutRes: Int,
-    cfg: (DisplayAdapter<I>.() -> Unit)?
+    cfg: (DisplayAdapter<I>.() -> Unit)?,
 ) :
     MultiSelectAdapter<DisplayAdapter<I>.DisplayViewHolder, I>(activity, host), FastScrollRecyclerView.SectionedAdapter {
 
@@ -101,20 +98,7 @@ open class DisplayAdapter<I : Displayable>(
         }
     }
 
-    private fun getRelativeOrdinalText(item: I): String =
-        when (item) {
-            is Song -> {
-                val num = MusicUtil.getFixedTrackNumber(item.trackNumber)
-                if (num > 0) num.toString() else "-"
-            }
-            is Album -> {
-                item.songCount.toString()
-            }
-            is Artist -> {
-                item.songCount.toString()
-            }
-            else -> "-"
-        }
+    protected open fun getRelativeOrdinalText(item: I): String = "-"
 
     override fun getItemCount(): Int = dataset.size
 
@@ -147,6 +131,7 @@ open class DisplayAdapter<I : Displayable>(
                 override fun onLongClick(v: View): Boolean {
                     return toggleChecked(bindingAdapterPosition)
                 }
+
                 override fun onClick(v: View) {
                     when (isInQuickSelectMode) {
                         true -> toggleChecked(bindingAdapterPosition)

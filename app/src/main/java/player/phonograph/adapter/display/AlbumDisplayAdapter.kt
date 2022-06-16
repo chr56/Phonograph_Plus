@@ -54,4 +54,6 @@ class AlbumDisplayAdapter(
             }
         return sectionName
     }
+
+    override fun getRelativeOrdinalText(item: Album): String = item.songCount.toString()
 }
