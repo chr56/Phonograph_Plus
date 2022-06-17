@@ -4,6 +4,7 @@
 
 package player.phonograph.mediastore
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.PendingIntent
 import android.content.Context
@@ -21,7 +22,6 @@ import com.afollestad.materialdialogs.MaterialDialog
 import java.io.File
 import java.util.*
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.isActive
 import player.phonograph.R
 import player.phonograph.model.FileEntity
 import player.phonograph.model.Location
@@ -92,30 +92,29 @@ object MediaStoreUtil {
      * @param location the location you want to query
      * @return the ordered TreeSet containing songs and folders in this location
      */
+    @SuppressLint("Range") // todo
     fun searchSongFiles(context: Context, location: Location, scope: CoroutineScope? = null): Set<FileEntity>? {
-        querySongs(
+        queryFiles(
             context,
             "$DATA LIKE ?",
             arrayOf("${location.absolutePath}%"),
-            null
         )?.use { cursor ->
             if (cursor.moveToFirst()) {
-                val songs = getSongs(cursor)
                 val set: MutableSet<FileEntity> = TreeSet<FileEntity>()
-                for (song in songs) {
-                    if (scope != null && !scope.isActive) break
+                do {
+                    val path = cursor.getString(cursor.getColumnIndex(AudioColumns.DATA))
                     set.add(
-                        parsePath(location, song)
+                        parsePath(location, path)
                     )
-                }
+                } while (cursor.moveToNext())
                 return set
             }
         }
         return null
     }
 
-    private fun parsePath(currentLocation: Location, song: Song): FileEntity {
-        val songRelativePath = song.data.substringAfter(currentLocation.absolutePath).removePrefix("/")
+    private fun parsePath(currentLocation: Location, absolutePath: String): FileEntity {
+        val songRelativePath = absolutePath.substringAfter(currentLocation.absolutePath).removePrefix("/")
         val basePath = currentLocation.basePath.let { if (it == "/") "" else it } // root //todo
         return if (songRelativePath.contains('/')) {
             // folder
@@ -125,7 +124,7 @@ object MediaStoreUtil {
         } else {
             // file
             FileEntity.File(
-                currentLocation.changeTo("$basePath/$songRelativePath"), song
+                currentLocation.changeTo("$basePath/$songRelativePath")
             )
         }
     }
@@ -185,6 +184,33 @@ object MediaStoreUtil {
             cursor = context.contentResolver.query(
                 MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
                 SongConst.BASE_SONG_PROJECTION, realSelection, realSelectionValues, sortOrder
+            )
+        } catch (e: SecurityException) {
+        }
+
+        return cursor
+    }
+
+    fun queryFiles(
+        context: Context,
+        selection: String = "",
+        selectionValues: Array<String> = emptyArray(),
+    ): Cursor? {
+        val (realSelection, realSelectionValues) =
+            Pair(
+                first = if (selection.trim { it <= ' ' } != "") {
+                    "${SongConst.BASE_AUDIO_SELECTION} AND $selection "
+                } else {
+                    SongConst.BASE_AUDIO_SELECTION
+                },
+                second = selectionValues
+            ).generateBlacklistFilter(context)
+
+        var cursor: Cursor? = null
+        try {
+            cursor = context.contentResolver.query(
+                MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
+                SongConst.BASE_FILE_PROJECTION, realSelection, realSelectionValues, null
             )
         } catch (e: SecurityException) {
         }
@@ -303,6 +329,15 @@ object MediaStoreUtil {
             AudioColumns.ALBUM, // 9
             AudioColumns.ARTIST_ID, // 10
             AudioColumns.ARTIST, // 11
+        )
+
+        val BASE_FILE_PROJECTION = arrayOf(
+            BaseColumns._ID, // 0
+            AudioColumns.DISPLAY_NAME, // 1
+            AudioColumns.DATA, // 2
+            AudioColumns.SIZE, // 3
+            AudioColumns.DATE_ADDED, // 4
+            AudioColumns.DATE_MODIFIED, // 5
         )
     }
 }
