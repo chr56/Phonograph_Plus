@@ -7,13 +7,13 @@ package player.phonograph.adapter
 import android.content.Context
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
+import java.lang.ref.WeakReference
+import kotlin.jvm.Throws
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
 import player.phonograph.R
 import player.phonograph.ui.fragments.mainactivity.home.*
-import java.lang.ref.WeakReference
-import kotlin.jvm.Throws
 
 class HomePagerAdapter(fragment: Fragment, var cfg: PageConfig) : FragmentStateAdapter(fragment) {
 
@@ -24,25 +24,7 @@ class HomePagerAdapter(fragment: Fragment, var cfg: PageConfig) : FragmentStateA
     }
 
     override fun createFragment(position: Int): Fragment {
-        val fragmentClass =
-            when (cfg.get(position)) {
-                PAGERS.SONG -> SongPage::class.java
-                PAGERS.ALBUM -> AlbumPage::class.java
-                PAGERS.ARTIST -> ArtistPage::class.java
-                PAGERS.PLAYLIST -> PlaylistPage::class.java
-                PAGERS.GENRE -> GenrePage::class.java
-                PAGERS.FOLDER -> FilesPage::class.java
-                else -> EmptyPage::class.java
-            }
-        var fragment: Fragment? = null
-
-        try {
-            fragment = fragmentClass.getConstructor().newInstance()
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-
-        return fragment ?: EmptyPage()
+        return cfg.getAsPage(position)
     }
 }
 
@@ -54,10 +36,18 @@ class PageConfig(var tabMap: MutableMap<Int, String>) {
         return tabMap[index] ?: "EMPTY"
     }
 
+    fun getAsPage(index: Int): AbsPage =
+        when (get(index)) {
+            PAGERS.SONG -> SongPage()
+            PAGERS.ALBUM -> AlbumPage()
+            PAGERS.ARTIST -> ArtistPage()
+            PAGERS.PLAYLIST -> PlaylistPage()
+            PAGERS.GENRE -> GenrePage()
+            PAGERS.FOLDER -> FilesPage()
+            else -> EmptyPage()
+        }
+
     companion object {
-        /**
-         *  TODO Not yet implemented
-         */
         val DEFAULT_CONFIG = PageConfig(
             HashMap<Int, String>(6).also {
                 it[0] = PAGERS.SONG
@@ -118,6 +108,7 @@ object PageConfigUtil {
     }
 
     private const val KEY = "PageCfg"
+
     /**
      *  TODO Not yet implemented
      */
