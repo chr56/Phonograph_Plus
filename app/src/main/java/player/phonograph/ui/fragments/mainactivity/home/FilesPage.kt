@@ -80,6 +80,14 @@ class FilesPage : AbsPage() {
         binding.headerTitle.text = model.currentLocation.let { "${it.storageVolume.getDescription(requireContext())} : ${it.basePath}" }
         binding.header.smoothScrollBy((binding.headerTitle.width * 0.3).toInt(), 0)
 
+        binding.container.apply {
+            setColorSchemeColors(ThemeColor.accentColor(requireContext()))
+            setProgressViewOffset(false, 0,180 )
+            setOnRefreshListener {
+                reload()
+            }
+        }
+
         // recycle view
         layoutManager = LinearLayoutManager(hostFragment.mainActivity)
         adapter = FileAdapter(hostFragment.mainActivity, model.currentFileList.toMutableList(), {
@@ -137,6 +145,7 @@ class FilesPage : AbsPage() {
     }
 
     private fun reload() {
+        binding.container.isRefreshing = true
         model.loadFiles {
             adapter.dataSet = model.currentFileList.toMutableList()
             binding.headerTitle.text = model.currentLocation.let { "${it.storageVolume.getDescription(requireContext())} : ${it.basePath}" }
@@ -147,6 +156,7 @@ class FilesPage : AbsPage() {
                 else
                     getDrawable(R.drawable.icon_back_white)
             )
+            binding.container.isRefreshing = false
         }
     }
 
