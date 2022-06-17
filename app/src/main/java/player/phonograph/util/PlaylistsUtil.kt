@@ -18,9 +18,8 @@ import android.provider.MediaStore.Audio.Playlists
 import android.provider.MediaStore.Audio.PlaylistsColumns
 import android.util.Log
 import androidx.documentfile.provider.DocumentFile
-import player.phonograph.mediastore.MediaStoreUtil
+import player.phonograph.mediastore.generateBlacklistFilter
 import player.phonograph.model.playlist.FilePlaylist
-import player.phonograph.provider.BlacklistStore
 
 object PlaylistsUtil {
     private const val TAG: String = "PlaylistUtil"
@@ -75,31 +74,16 @@ object PlaylistsUtil {
         selection: String?,
         selectionValues: Array<String>?
     ): Cursor? {
-        var realSelection =
-            if (selection != null && selection.trim { it <= ' ' } != "") {
-                "${MediaStoreUtil.SongConst.BASE_PLAYLIST_SELECTION} AND $selection "
-            } else {
-                MediaStoreUtil.SongConst.BASE_PLAYLIST_SELECTION
-            }
-        var realSelectionValues = selectionValues
 
-        // Blacklist
-        val paths: List<String> = BlacklistStore.getInstance(context).paths
-        if (paths.isNotEmpty()) {
-
-            realSelection += " AND ${MediaStore.MediaColumns.DATA} NOT LIKE ?"
-            for (i in 0 until paths.size - 1) {
-                realSelection += " AND ${MediaStore.MediaColumns.DATA} NOT LIKE ?"
-            }
-            Log.i(TAG, "playlist selection: $realSelection")
-
-            realSelectionValues =
-                Array<String>((selectionValues?.size ?: 0) + paths.size) { index ->
-                    // Todo: Check
-                    if (index < (selectionValues?.size ?: 0)) selectionValues?.get(index) ?: ""
-                    else paths[index - (selectionValues?.size ?: 0)] + "%"
-                }
-        }
+        val (realSelection, realSelectionValues) =
+            Pair(
+                first = if ((selection ?: "").trim { it <= ' ' } != "") {
+                    "$BASE_PLAYLIST_SELECTION AND $selection "
+                } else {
+                    BASE_PLAYLIST_SELECTION
+                },
+                second = selectionValues ?: emptyArray()
+            ).generateBlacklistFilter(context)
 
         val cursor: Cursor? = try {
             context.contentResolver.query(
@@ -254,4 +238,7 @@ object PlaylistsUtil {
         }
         return result
     }
+
+    // select only named playlist
+    const val BASE_PLAYLIST_SELECTION = "${PlaylistsColumns.NAME} != '' "
 }

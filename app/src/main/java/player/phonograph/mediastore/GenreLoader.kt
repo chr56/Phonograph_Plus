@@ -56,7 +56,7 @@ object GenreLoader {
         return try {
             context.contentResolver.query(
                 MediaStore.Audio.Genres.Members.getContentUri("external", genreId),
-                MediaStoreUtil.SongConst.BASE_PROJECTION,
+                MediaStoreUtil.SongConst.BASE_SONG_PROJECTION,
                 MediaStoreUtil.SongConst.BASE_AUDIO_SELECTION,
                 null, null
             )

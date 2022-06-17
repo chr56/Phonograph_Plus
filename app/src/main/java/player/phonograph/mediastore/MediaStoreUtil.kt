@@ -26,7 +26,6 @@ import player.phonograph.R
 import player.phonograph.model.FileEntity
 import player.phonograph.model.Location
 import player.phonograph.model.Song
-import player.phonograph.provider.BlacklistStore
 import player.phonograph.settings.Setting
 
 object MediaStoreUtil {
@@ -171,37 +170,26 @@ object MediaStoreUtil {
         sortOrder: String? = Setting.instance.songSortMode.SQLQuerySortOrder,
     ): Cursor? {
 
-        // Blacklist
         val (realSelection, realSelectionValues) =
-            createSelection(context, selection = selection ?: "", selectionValues = selectionValues ?: emptyArray())
+            Pair(
+                first = if ((selection ?: "").trim { it <= ' ' } != "") {
+                    "${SongConst.BASE_AUDIO_SELECTION} AND $selection "
+                } else {
+                    SongConst.BASE_AUDIO_SELECTION
+                },
+                second = selectionValues ?: emptyArray()
+            ).generateBlacklistFilter(context)
 
         var cursor: Cursor? = null
         try {
             cursor = context.contentResolver.query(
                 MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
-                SongConst.BASE_PROJECTION, realSelection, realSelectionValues, sortOrder
+                SongConst.BASE_SONG_PROJECTION, realSelection, realSelectionValues, sortOrder
             )
         } catch (e: SecurityException) {
         }
 
         return cursor
-    }
-
-    private fun createSelection(context: Context, selection: String, selectionValues: Array<String>): Pair<String, Array<String>> {
-        val paths: List<String> = BlacklistStore.getInstance(context).paths
-        return if (paths.isNotEmpty()) {
-            val realSelection = paths.fold(
-                if (selection.trim { it <= ' ' } != "") {
-                    "${SongConst.BASE_AUDIO_SELECTION} AND $selection "
-                } else {
-                    SongConst.BASE_AUDIO_SELECTION
-                }
-            ) { acc, _ -> "$acc AND ${AudioColumns.DATA} NOT LIKE ? " }
-            val realSelectionValues = selectionValues.plus(paths)
-            Pair(realSelection, realSelectionValues)
-        } else {
-            Pair(selection, selectionValues)
-        }
     }
 
     /**
@@ -302,10 +290,7 @@ object MediaStoreUtil {
         const val BASE_AUDIO_SELECTION =
             "${AudioColumns.IS_MUSIC} =1 AND ${AudioColumns.TITLE} != '' "
 
-        // just select only named playlist
-        const val BASE_PLAYLIST_SELECTION =
-            "${MediaStore.Audio.PlaylistsColumns.NAME} != '' "
-        val BASE_PROJECTION = arrayOf(
+        val BASE_SONG_PROJECTION = arrayOf(
             BaseColumns._ID, // 0
             AudioColumns.TITLE, // 1
             AudioColumns.TRACK, // 2
@@ -318,7 +303,6 @@ object MediaStoreUtil {
             AudioColumns.ALBUM, // 9
             AudioColumns.ARTIST_ID, // 10
             AudioColumns.ARTIST, // 11
-            AudioColumns.DISPLAY_NAME
         )
     }
 }
