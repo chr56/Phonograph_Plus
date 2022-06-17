@@ -121,6 +121,8 @@ object MediaStoreUtil {
                         FileEntity.Folder(
                             location = currentLocation.changeTo("$basePath/$folderName"),
                             name = folderName,
+                            dateAdded = dateAdded,
+                            dateModified = dateModified
                         )
                     } else {
                         // file
@@ -240,7 +242,7 @@ object MediaStoreUtil {
         try {
             cursor = context.contentResolver.query(
                 MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
-                SongConst.BASE_FILE_PROJECTION, realSelection, realSelectionValues, null
+                SongConst.BASE_FILE_PROJECTION, realSelection, realSelectionValues, AudioColumns.DATE_MODIFIED
             )
         } catch (e: SecurityException) {
         }
