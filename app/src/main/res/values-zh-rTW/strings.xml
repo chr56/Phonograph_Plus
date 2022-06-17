@@ -377,4 +377,7 @@
     <string name="behaviour_force_saf">強制使用SAF</string>
     <string name="behaviour_force_legacy">強制使用舊方式</string>
     <string name="reached_to_root">已到達此卷的根目錄</string>
+    <plurals name="x_songs">
+        <item quantity="other">%1$d 首</item>
+    </plurals>
 </resources>

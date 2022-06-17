@@ -396,4 +396,8 @@
     <string name="behaviour_force_saf">Force to use Storage Access Framework</string>
     <string name="behaviour_force_legacy">Force to use legacy ways</string>
     <string name="reached_to_root">You have reached to root folder of this storage volume</string>
+    <plurals name="x_songs">
+        <item quantity="one">%1$d song</item>
+        <item quantity="other">%1$d songs</item>
+    </plurals>
 </resources>

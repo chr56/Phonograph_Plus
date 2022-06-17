@@ -7,6 +7,7 @@ package player.phonograph.adapter
 import android.annotation.SuppressLint
 import android.graphics.PorterDuff
 import android.media.MediaScannerConnection
+import android.text.format.Formatter.formatFileSize
 import android.view.*
 import android.widget.PopupMenu
 import android.widget.Toast
@@ -68,7 +69,10 @@ class FileAdapter(
         ) {
             with(binding) {
                 title.text = item.name
-                text.text = item.location.basePath
+                text.text = when (item) {
+                    is FileEntity.File -> formatFileSize(context, item.size)
+                    is FileEntity.Folder -> context.resources.getQuantityString(R.plurals.x_songs, item.songCount, item.songCount)
+                }
 
                 shortSeparator.visibility = if (position == dataSet.size - 1) View.GONE else View.VISIBLE
 
