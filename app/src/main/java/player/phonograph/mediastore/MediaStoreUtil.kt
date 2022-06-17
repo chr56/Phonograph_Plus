@@ -21,6 +21,7 @@ import android.widget.Toast
 import com.afollestad.materialdialogs.MaterialDialog
 import java.io.File
 import java.util.*
+import kotlin.collections.ArrayList
 import kotlinx.coroutines.CoroutineScope
 import player.phonograph.R
 import player.phonograph.model.FileEntity
@@ -89,43 +90,72 @@ object MediaStoreUtil {
     }
 
     /**
-     * @param location the location you want to query
+     * This might be time-consuming
+     * @param currentLocation the location you want to query
+     * @param scope CoroutineScope (Optional)
      * @return the ordered TreeSet containing songs and folders in this location
      */
     @SuppressLint("Range") // todo
-    fun searchSongFiles(context: Context, location: Location, scope: CoroutineScope? = null): Set<FileEntity>? {
+    fun searchSongFiles(context: Context, currentLocation: Location, scope: CoroutineScope? = null): Set<FileEntity>? {
         queryFiles(
             context,
             "$DATA LIKE ?",
-            arrayOf("${location.absolutePath}%"),
+            arrayOf("${currentLocation.absolutePath}%"),
         )?.use { cursor ->
             if (cursor.moveToFirst()) {
-                val set: MutableSet<FileEntity> = TreeSet<FileEntity>()
+                val list: MutableList<FileEntity> = ArrayList()
                 do {
-                    val path = cursor.getString(cursor.getColumnIndex(AudioColumns.DATA))
-                    set.add(
-                        parsePath(location, path)
-                    )
+                    val id = cursor.getLong(cursor.getColumnIndex(AudioColumns._ID))
+                    val displayName = cursor.getString(cursor.getColumnIndex(AudioColumns.DISPLAY_NAME))
+                    val absolutePath = cursor.getString(cursor.getColumnIndex(AudioColumns.DATA))
+                    val size = cursor.getLong(cursor.getColumnIndex(AudioColumns.SIZE))
+                    val dateAdded = cursor.getLong(cursor.getColumnIndex(AudioColumns.DATE_ADDED))
+                    val dateModified = cursor.getLong(cursor.getColumnIndex(AudioColumns.DATE_MODIFIED))
+
+                    val songRelativePath = absolutePath.substringAfter(currentLocation.absolutePath).removePrefix("/")
+                    val basePath = currentLocation.basePath.let { if (it == "/") "" else it } // root //todo
+
+                    val item = if (songRelativePath.contains('/')) {
+                        val folderName = songRelativePath.substringBefore('/')
+                        // folder
+                        FileEntity.Folder(
+                            location = currentLocation.changeTo("$basePath/$folderName"),
+                            name = folderName,
+                        )
+                    } else {
+                        // file
+                        FileEntity.File(
+                            location = currentLocation.changeTo("$basePath/$songRelativePath"),
+                            name = displayName,
+                            id = id,
+                            size = size,
+                            dateAdded = dateAdded,
+                            dateModified = dateModified
+                        )
+                    }
+
+                    list.put(item)
                 } while (cursor.moveToNext())
-                return set
+                return list.toSortedSet()
             }
         }
         return null
     }
 
-    private fun parsePath(currentLocation: Location, absolutePath: String): FileEntity {
-        val songRelativePath = absolutePath.substringAfter(currentLocation.absolutePath).removePrefix("/")
-        val basePath = currentLocation.basePath.let { if (it == "/") "" else it } // root //todo
-        return if (songRelativePath.contains('/')) {
-            // folder
-            FileEntity.Folder(
-                currentLocation.changeTo("$basePath/${songRelativePath.substringBefore('/')}")
-            )
-        } else {
-            // file
-            FileEntity.File(
-                currentLocation.changeTo("$basePath/$songRelativePath")
-            )
+    internal fun MutableList<FileEntity>.put(item: FileEntity) {
+        when (item) {
+            is FileEntity.File -> {
+                this.add(item)
+            }
+            is FileEntity.Folder -> {
+                // count songs for folder
+                val i = this.indexOf(item)
+                if (i < 0) {
+                    this.add(item.apply { songCount = 1 })
+                } else {
+                    (this[i] as FileEntity.Folder).songCount ++
+                }
+            }
         }
     }
 

@@ -4,15 +4,18 @@
 
 package player.phonograph.model
 
-import java.io.File
 import player.phonograph.App
 import player.phonograph.mediastore.MediaStoreUtil
 
 /**
  * Presenting a file
  */
-sealed class FileEntity : Comparable<FileEntity> {
-    abstract val location: Location
+sealed class FileEntity(
+    val location: Location,
+    name: String? = null,
+    val dateAdded: Long = -1,
+    val dateModified: Long = -1
+) : Comparable<FileEntity> {
 
     override fun compareTo(other: FileEntity): Int {
         return if ((this is Folder) xor (other is Folder)) {
@@ -22,14 +25,30 @@ sealed class FileEntity : Comparable<FileEntity> {
         }
     }
 
-    class File(override val location: Location, private val mSong: Song? = null) : FileEntity() {
-        val linkedSong: Song get() =
-            mSong ?: MediaStoreUtil.getSong(App.instance, File(location.absolutePath)) ?: Song.EMPTY_SONG
+    val name: String = name ?: location.basePath.takeLastWhile { it != '/' }
+
+    class File(
+        location: Location,
+        name: String?,
+        val id: Long = -1,
+        val size: Long = -1,
+        dateAdded: Long = -1,
+        dateModified: Long = -1,
+    ) : FileEntity(location, name, dateAdded, dateModified) {
+        val linkedSong: Song get() = MediaStoreUtil.getSong(App.instance, id)
     }
 
-    class Folder(override val location: Location) : FileEntity()
+    class Folder(
+        location: Location,
+        name: String?,
+        dateAdded: Long = -1,
+        dateModified: Long = -1,
+    ) : FileEntity(location, name, dateAdded, dateModified) {
+        @JvmSynthetic
+        var songCount: Int = 0
+    }
 
-    val name: String by lazy(LazyThreadSafetyMode.NONE) { location.basePath.takeLastWhile { it != '/' } }
+    // only location matters
 
     override fun hashCode(): Int = location.hashCode()
     override fun equals(other: Any?): Boolean {
