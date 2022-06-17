@@ -82,7 +82,7 @@ class FilesPage : AbsPage() {
 
         binding.container.apply {
             setColorSchemeColors(ThemeColor.accentColor(requireContext()))
-            setProgressViewOffset(false, 0,180 )
+            setProgressViewOffset(false, 0, 180)
             setOnRefreshListener {
                 reload()
             }
@@ -111,18 +111,24 @@ class FilesPage : AbsPage() {
         model.loadFiles { reload() }
     }
 
-    private fun gotoTopLevel() {
+    /**
+     * @param allowToChangeVolume false if do not intend to change volume
+     * @return success or not
+     */
+    private fun gotoTopLevel(allowToChangeVolume: Boolean = true): Boolean {
         val parent = model.currentLocation.parent
         if (parent != null) {
             model.currentLocation = parent
             reload()
+            return true
         } else {
+            if (!allowToChangeVolume) return false
             Snackbar.make(binding.root, getString(R.string.reached_to_root), Snackbar.LENGTH_SHORT).show()
             val ssm = hostFragment.mainActivity.getSystemService<StorageManager>()
             val volumes = StorageManagerCompat.getStorageVolumes(ssm)
             if (volumes.isEmpty()) {
                 ErrorNotification.postErrorNotification("No volumes found! Your system might be not supported!")
-                return
+                return false
             }
             MaterialDialog(hostFragment.mainActivity)
                 .listItemsSingleChoice(
@@ -141,6 +147,7 @@ class FilesPage : AbsPage() {
                 .title(R.string.folders)
                 .positiveButton(android.R.string.ok)
                 .show()
+            return true
         }
     }
 
@@ -180,4 +187,8 @@ class FilesPage : AbsPage() {
 
             )
         }
+
+    override fun onBackPress(): Boolean {
+        return gotoTopLevel(false)
+    }
 }
