@@ -170,30 +170,10 @@ object MediaStoreUtil {
         selectionValues: Array<String>?,
         sortOrder: String? = Setting.instance.songSortMode.SQLQuerySortOrder,
     ): Cursor? {
-        var realSelection =
-            if (selection != null && selection.trim { it <= ' ' } != "") {
-                "${SongConst.BASE_AUDIO_SELECTION} AND $selection "
-            } else {
-                SongConst.BASE_AUDIO_SELECTION
-            }
-        var realSelectionValues = selectionValues
 
         // Blacklist
-        val paths: List<String> = BlacklistStore.getInstance(context).paths
-        if (paths.isNotEmpty()) {
-
-            realSelection += "AND ${AudioColumns.DATA} NOT LIKE ?"
-            for (i in 0 until paths.size - 1) {
-                realSelection += " AND ${AudioColumns.DATA} NOT LIKE ?"
-            }
-
-            realSelectionValues =
-                Array<String>((selectionValues?.size ?: 0) + paths.size) { index ->
-                    // Todo: Check
-                    if (index < (selectionValues?.size ?: 0)) selectionValues?.get(index) ?: ""
-                    else paths[index - (selectionValues?.size ?: 0)] + "%"
-                }
-        }
+        val (realSelection, realSelectionValues) =
+            createSelection(context, selection = selection ?: "", selectionValues = selectionValues ?: emptyArray())
 
         var cursor: Cursor? = null
         try {
@@ -205,6 +185,23 @@ object MediaStoreUtil {
         }
 
         return cursor
+    }
+
+    private fun createSelection(context: Context, selection: String, selectionValues: Array<String>): Pair<String, Array<String>> {
+        val paths: List<String> = BlacklistStore.getInstance(context).paths
+        return if (paths.isNotEmpty()) {
+            val realSelection = paths.fold(
+                if (selection.trim { it <= ' ' } != "") {
+                    "${SongConst.BASE_AUDIO_SELECTION} AND $selection "
+                } else {
+                    SongConst.BASE_AUDIO_SELECTION
+                }
+            ) { acc, _ -> "$acc AND ${AudioColumns.DATA} NOT LIKE ? " }
+            val realSelectionValues = selectionValues.plus(paths)
+            Pair(realSelection, realSelectionValues)
+        } else {
+            Pair(selection, selectionValues)
+        }
     }
 
     /**
