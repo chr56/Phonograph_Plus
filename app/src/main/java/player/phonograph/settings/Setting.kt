@@ -21,6 +21,8 @@ import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.adapter.PageConfig
 import player.phonograph.adapter.PageConfigUtil
+import player.phonograph.mediastore.sort.FileRef
+import player.phonograph.mediastore.sort.FileSortMode
 import player.phonograph.mediastore.sort.SortMode
 import player.phonograph.mediastore.sort.SortRef
 import player.phonograph.ui.fragments.player.NowPlayingScreen
@@ -183,6 +185,13 @@ class Setting(context: Context) {
             _genreSortMode = value.serialize()
         }
 
+    private var _fileSortMode: String by StringPref(FILE_SORT_MODE, FileSortMode(FileRef.ID, false).serialize())
+    var fileSortMode: FileSortMode
+        get() = FileSortMode.deserialize(_fileSortMode)
+        set(value) {
+            _fileSortMode = value.serialize()
+        }
+
     // List-Appearance
     var albumGridSize: Int by IntPref(
         ALBUM_GRID_SIZE, App.instance.resources.getInteger(R.integer.default_grid_columns)
@@ -286,6 +295,8 @@ class Setting(context: Context) {
         private const val ALBUM_SORT_MODE = "album_sort_mode"
         private const val ARTIST_SORT_MODE = "artist_sort_mode"
         private const val GENRE_SORT_MODE = "genre_sort_mode"
+
+        private const val FILE_SORT_MODE = "file_sort_mode"
 
         // List-Appearance
         private const val ALBUM_GRID_SIZE = "album_grid_size"
