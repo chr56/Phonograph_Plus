@@ -6,6 +6,7 @@ package player.phonograph.ui.fragments.mainactivity.home
 
 import android.graphics.drawable.Drawable
 import android.os.Bundle
+import android.os.Environment
 import android.os.storage.StorageManager
 import android.view.LayoutInflater
 import android.view.View
@@ -23,7 +24,7 @@ import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.list.listItemsSingleChoice
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.snackbar.Snackbar
-import lib.phonograph.storage.StorageManagerCompat
+import lib.phonograph.storage.root
 import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.adapter.FileAdapter
@@ -117,38 +118,48 @@ class FilesPage : AbsPage() {
      */
     private fun gotoTopLevel(allowToChangeVolume: Boolean = true): Boolean {
         val parent = model.currentLocation.parent
-        if (parent != null) {
+        return if (parent != null) {
             model.currentLocation = parent
             reload()
-            return true
+            true
         } else {
-            if (!allowToChangeVolume) return false
             Snackbar.make(binding.root, getString(R.string.reached_to_root), Snackbar.LENGTH_SHORT).show()
-            val ssm = hostFragment.mainActivity.getSystemService<StorageManager>()
-            val volumes = StorageManagerCompat.getStorageVolumes(ssm)
-            if (volumes.isEmpty()) {
-                ErrorNotification.postErrorNotification("No volumes found! Your system might be not supported!")
-                return false
+            if (!allowToChangeVolume) {
+                false
+            } else {
+                changeVolume()
             }
-            MaterialDialog(hostFragment.mainActivity)
-                .listItemsSingleChoice(
-                    items = volumes.map { "${it.getDescription(requireContext())}\n(${it.directory?.path ?: "UNMOUNTED"})" },
-                    waitForPositiveButton = true,
-                ) { materialDialog: MaterialDialog, i: Int, _: CharSequence ->
-                    materialDialog.dismiss()
-                    val path = volumes[i].directory?.absolutePath
-                    if (path == null) {
-                        Toast.makeText(hostFragment.mainActivity, "Unmounted volume", Toast.LENGTH_SHORT).show()
-                    } else { // todo
-                        model.currentLocation = Location.fromAbsolutePath("$path/")
-                        reload()
-                    }
-                }
-                .title(R.string.folders)
-                .positiveButton(android.R.string.ok)
-                .show()
-            return true
         }
+    }
+
+    private fun changeVolume(): Boolean {
+        val storageManager = hostFragment.mainActivity.getSystemService<StorageManager>()
+        val volumes = storageManager?.storageVolumes
+            ?.filter { it.state == Environment.MEDIA_MOUNTED || it.state == Environment.MEDIA_MOUNTED_READ_ONLY }
+            ?: emptyList()
+        if (volumes.isEmpty()) {
+            ErrorNotification.postErrorNotification("No volumes found! Your system might be not supported!")
+            return false
+        }
+        MaterialDialog(hostFragment.mainActivity)
+            .listItemsSingleChoice(
+                items = volumes.map { "${it.getDescription(requireContext())}\n(${it.root()?.path ?: "N/A"})" },
+                initialSelection = volumes.indexOf(model.currentLocation.storageVolume),
+                waitForPositiveButton = true,
+            ) { materialDialog: MaterialDialog, i: Int, _: CharSequence ->
+                materialDialog.dismiss()
+                val path = volumes[i].root()?.absolutePath
+                if (path == null) {
+                    Toast.makeText(hostFragment.mainActivity, "Unmounted volume", Toast.LENGTH_SHORT).show()
+                } else { // todo
+                    model.currentLocation = Location.fromAbsolutePath("$path/")
+                    reload()
+                }
+            }
+            .title(R.string.folders)
+            .positiveButton(android.R.string.ok)
+            .show()
+        return true
     }
 
     private fun reload() {
