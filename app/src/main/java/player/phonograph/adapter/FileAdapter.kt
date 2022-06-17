@@ -17,7 +17,7 @@ import java.io.File
 import kotlinx.coroutines.*
 import player.phonograph.R
 import player.phonograph.adapter.base.MultiSelectAdapter
-import player.phonograph.databinding.ItemListBinding
+import player.phonograph.databinding.ItemListMultiTextBinding
 import player.phonograph.helper.menu.SongMenuHelper
 import player.phonograph.helper.menu.SongsMenuHelper
 import player.phonograph.interfaces.MultiSelectionCabProvider
@@ -26,6 +26,7 @@ import player.phonograph.misc.UpdateToastMediaScannerCompletionListener
 import player.phonograph.model.FileEntity
 import player.phonograph.settings.Setting
 import player.phonograph.util.BlacklistUtil
+import player.phonograph.util.MusicUtil
 import util.mddesign.util.Util
 
 class FileAdapter(
@@ -44,7 +45,7 @@ class FileAdapter(
     override fun getItem(datasetPosition: Int): FileEntity = dataSet[datasetPosition]
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder(ItemListBinding.inflate(LayoutInflater.from(context), parent, false))
+        return ViewHolder(ItemListMultiTextBinding.inflate(LayoutInflater.from(context), parent, false))
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
@@ -61,15 +62,27 @@ class FileAdapter(
         SongsMenuHelper.handleMenuClick(context as AppCompatActivity, songs, menuItem.itemId)
     }
 
-    inner class ViewHolder(var binding: ItemListBinding) : RecyclerView.ViewHolder(binding.root) {
+    inner class ViewHolder(var binding: ItemListMultiTextBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(
             item: FileEntity,
             position: Int,
         ) {
             with(binding) {
                 title.text = item.name
-                text.text = item.location.basePath
-
+                when (item) {
+                    is FileEntity.File -> {
+                        text1.text = item.linkedSong.title
+                        text2.text = item.linkedSong.artistName
+                        text3.text = item.linkedSong.albumName
+                        text2.visibility = View.VISIBLE
+                        text3.visibility = View.VISIBLE
+                    }
+                    is FileEntity.Folder -> {
+                        text1.text = item.location.basePath
+                        text2.visibility = View.INVISIBLE
+                        text3.visibility = View.GONE
+                    }
+                }
                 shortSeparator.visibility = if (position == dataSet.size - 1) View.GONE else View.VISIBLE
 
                 val iconColor = Util.resolveColor(context, R.attr.iconColor)
