@@ -381,6 +381,7 @@
     <string name="behaviour_force_saf">强制使用SAF</string>
     <string name="behaviour_force_legacy">强制使用旧方式</string>
     <string name="reached_to_root">已到达此卷的根目录</string>
+    <string name="sort_order_size">文件大小</string>
     <plurals name="x_songs">
         <item quantity="other">%1$d 首</item>
     </plurals>

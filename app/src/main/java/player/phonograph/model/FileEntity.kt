@@ -26,6 +26,11 @@ sealed class FileEntity(
             when (Setting.instance.fileSortMode.sortRef) {
                 FileRef.MODIFIED_DATE -> dateModified.compareTo(other.dateModified)
                 FileRef.ADDED_DATE -> dateAdded.compareTo(other.dateAdded)
+                FileRef.SIZE -> {
+                    if (this is File && other is File) size.compareTo(other.size)
+                    else if (this is Folder && other is Folder) songCount.compareTo(other.songCount) else
+                        name.compareTo(other.name)
+                }
                 else -> name.compareTo(other.name)
             }.let {
                 if (Setting.instance.fileSortMode.revert) -it else it
