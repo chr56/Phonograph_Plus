@@ -6,6 +6,8 @@ package player.phonograph.model
 
 import player.phonograph.App
 import player.phonograph.mediastore.MediaStoreUtil
+import player.phonograph.mediastore.sort.FileRef
+import player.phonograph.settings.Setting
 
 /**
  * Presenting a file
@@ -21,7 +23,13 @@ sealed class FileEntity(
         return if ((this is Folder) xor (other is Folder)) {
             if (this is Folder) -1 else 1
         } else {
-            name.compareTo(other.name)
+            when (Setting.instance.fileSortMode.sortRef) {
+                FileRef.MODIFIED_DATE -> dateModified.compareTo(other.dateModified)
+                FileRef.ADDED_DATE -> dateAdded.compareTo(other.dateAdded)
+                else -> name.compareTo(other.name)
+            }.let {
+                if (Setting.instance.fileSortMode.revert) -it else it
+            }
         }
     }
 
