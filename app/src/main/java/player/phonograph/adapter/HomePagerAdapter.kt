@@ -5,6 +5,7 @@
 package player.phonograph.adapter
 
 import android.content.Context
+import android.util.ArrayMap
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import java.lang.ref.WeakReference
@@ -16,16 +17,13 @@ import player.phonograph.R
 import player.phonograph.ui.fragments.mainactivity.home.*
 
 class HomePagerAdapter(fragment: Fragment, var cfg: PageConfig) : FragmentStateAdapter(fragment) {
+    val map: MutableMap<Int, WeakReference<AbsPage>> = ArrayMap(cfg.getSize())
 
-    private val parentFragmentReference: WeakReference<Fragment> = WeakReference(fragment)
+    override fun getItemCount(): Int = cfg.getSize()
 
-    override fun getItemCount(): Int {
-        return cfg.getSize()
-    }
-
-    override fun createFragment(position: Int): Fragment {
-        return cfg.getAsPage(position)
-    }
+    override fun createFragment(position: Int): Fragment =
+        cfg.getAsPage(position)
+            .also { fragment -> map[position] = WeakReference(fragment) } // registry
 }
 
 class PageConfig(var tabMap: MutableMap<Int, String>) {
