@@ -30,8 +30,8 @@ import player.phonograph.ui.activities.MainActivity
 import player.phonograph.ui.activities.SearchActivity
 import player.phonograph.ui.fragments.mainactivity.AbsMainActivityFragment
 import player.phonograph.util.PhonographColorUtil
-import util.mdcolor.pref.ThemeColor
 import util.mdcolor.ColorUtil
+import util.mdcolor.pref.ThemeColor
 import util.mddesign.util.MaterialColorHelper
 import java.lang.ref.WeakReference
 
@@ -43,7 +43,7 @@ class HomeFragment : AbsMainActivityFragment(), MainActivity.MainActivityFragmen
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         _viewBinding = FragmentHomeBinding.inflate(layoutInflater, container, false)
         return binding.root
@@ -113,18 +113,24 @@ class HomeFragment : AbsMainActivityFragment(), MainActivity.MainActivityFragmen
     private fun setUpViewPager() {
         pagerAdapter = HomePagerAdapter(this, cfg)
 
-        binding.pager.orientation = ViewPager2.ORIENTATION_HORIZONTAL
-        binding.pager.adapter = pagerAdapter
+        binding.pager.apply {
+            orientation = ViewPager2.ORIENTATION_HORIZONTAL
+            adapter = pagerAdapter
+            offscreenPageLimit = if (pagerAdapter.itemCount > 1) pagerAdapter.itemCount - 1 else 1
+            if (Setting.instance.rememberLastTab) {
+                currentItem = Setting.instance.lastPage
+            }
+            registerOnPageChangeCallback(pageChangeListener)
+        }
+
         TabLayoutMediator(binding.tabs, binding.pager) { tab: TabLayout.Tab, i: Int ->
             tab.text = PAGERS.getDisplayName(cfg.get(i), requireContext())
         }.attach()
-        binding.pager.offscreenPageLimit = if (pagerAdapter.itemCount> 1) pagerAdapter.itemCount - 1 else 1
         updateTabVisibility()
-        if (Setting.instance.rememberLastTab) {
-            binding.pager.currentItem = Setting.instance.lastPage
-        }
-        binding.pager.registerOnPageChangeCallback(pageChangeListener)
     }
+
+    private val currentPage: AbsPage?
+        get() = pagerAdapter.map[binding.pager.currentItem]?.get()
 
     private val pageChangeListener = object : ViewPager2.OnPageChangeCallback() {
         override fun onPageSelected(position: Int) {
@@ -141,7 +147,7 @@ class HomeFragment : AbsMainActivityFragment(), MainActivity.MainActivityFragmen
             multiSelectionCab!!.destroy()
             multiSelectionCab = null
         }
-        return false
+        return currentPage?.onBackPress() ?: false
     }
 
     /**
@@ -166,6 +172,7 @@ class HomeFragment : AbsMainActivityFragment(), MainActivity.MainActivityFragmen
 
         search.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS)
     }
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.action_search -> {
@@ -176,18 +183,23 @@ class HomeFragment : AbsMainActivityFragment(), MainActivity.MainActivityFragmen
         return super.onOptionsItemSelected(item)
     }
 
-    fun addOnAppBarOffsetChangedListener(onOffsetChangedListener: AppBarLayout.OnOffsetChangedListener) {
+    fun addOnAppBarOffsetChangedListener(
+        onOffsetChangedListener: AppBarLayout.OnOffsetChangedListener,
+    ) {
         binding.appbar.addOnOffsetChangedListener(onOffsetChangedListener)
     }
 
-    fun removeOnAppBarOffsetChangedListener(onOffsetChangedListener: AppBarLayout.OnOffsetChangedListener) {
+    fun removeOnAppBarOffsetChangedListener(
+        onOffsetChangedListener: AppBarLayout.OnOffsetChangedListener,
+    ) {
         binding.appbar.removeOnOffsetChangedListener(onOffsetChangedListener)
     }
 
     val totalAppBarScrollingRange: Int get() = binding.appbar.totalScrollRange
 
-    val totalHeaderHeight: Int get() =
-        totalAppBarScrollingRange + if (binding.tabs.visibility == View.VISIBLE) binding.tabs.height else 0
+    val totalHeaderHeight: Int
+        get() =
+            totalAppBarScrollingRange + if (binding.tabs.visibility == View.VISIBLE) binding.tabs.height else 0
 
     private var multiSelectionCab: MultiSelectionCab? = null
     override fun getCab(): MultiSelectionCab? = multiSelectionCab
@@ -198,7 +210,7 @@ class HomeFragment : AbsMainActivityFragment(), MainActivity.MainActivityFragmen
         showCallback: ShowCallback?,
         selectCallback: SelectCallback?,
         hideCallback: HideCallback?,
-        destroyCallback: DestroyCallback?
+        destroyCallback: DestroyCallback?,
     ): MultiSelectionCab {
 
         val cfg: CabCfg = {
@@ -222,7 +234,8 @@ class HomeFragment : AbsMainActivityFragment(), MainActivity.MainActivityFragmen
             onDestroy(destroyCallback)
         }
 
-        if (multiSelectionCab == null) multiSelectionCab = createMultiSelectionCab(mainActivity, R.id.cab_stub, R.id.multi_selection_cab, cfg)
+        if (multiSelectionCab == null) multiSelectionCab =
+            createMultiSelectionCab(mainActivity, R.id.cab_stub, R.id.multi_selection_cab, cfg)
         else {
             multiSelectionCab!!.applyCfg = cfg
             multiSelectionCab!!.refresh()
@@ -230,6 +243,7 @@ class HomeFragment : AbsMainActivityFragment(), MainActivity.MainActivityFragmen
 
         return multiSelectionCab!!
     }
+
     override fun showCab() {
         multiSelectionCab?.let { cab ->
             binding.toolbar.visibility = View.INVISIBLE
@@ -239,6 +253,7 @@ class HomeFragment : AbsMainActivityFragment(), MainActivity.MainActivityFragmen
             cab.show()
         }
     }
+
     override fun dismissCab() {
         multiSelectionCab?.hide()
         binding.toolbar.visibility = View.VISIBLE
@@ -276,6 +291,7 @@ class HomeFragment : AbsMainActivityFragment(), MainActivity.MainActivityFragmen
             }
         }
     }
+
     private fun updateTabVisibility() {
         // hide the tab bar when only a single tab is visible
         binding.tabs.visibility = if (pagerAdapter.itemCount == 1) View.GONE else View.VISIBLE

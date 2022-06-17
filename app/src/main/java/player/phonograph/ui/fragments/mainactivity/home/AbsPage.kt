@@ -27,4 +27,6 @@ abstract class AbsPage : AbsMusicServiceFragment() {
             }
         )
     }
+
+    open fun onBackPress(): Boolean = false
 }
