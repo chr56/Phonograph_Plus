@@ -27,6 +27,7 @@ import player.phonograph.R
 import player.phonograph.model.FileEntity
 import player.phonograph.model.Location
 import player.phonograph.model.Song
+import player.phonograph.model.put
 import player.phonograph.settings.Setting
 
 object MediaStoreUtil {
@@ -107,7 +108,7 @@ object MediaStoreUtil {
                 do {
                     val id = cursor.getLong(cursor.getColumnIndex(AudioColumns._ID))
                     val displayName = cursor.getString(cursor.getColumnIndex(AudioColumns.DISPLAY_NAME))
-                    val absolutePath = cursor.getString(cursor.getColumnIndex(AudioColumns.DATA))
+                    val absolutePath = cursor.getString(cursor.getColumnIndex(DATA))
                     val size = cursor.getLong(cursor.getColumnIndex(AudioColumns.SIZE))
                     val dateAdded = cursor.getLong(cursor.getColumnIndex(AudioColumns.DATE_ADDED))
                     val dateModified = cursor.getLong(cursor.getColumnIndex(AudioColumns.DATE_MODIFIED))
@@ -142,23 +143,6 @@ object MediaStoreUtil {
             }
         }
         return null
-    }
-
-    internal fun MutableList<FileEntity>.put(item: FileEntity) {
-        when (item) {
-            is FileEntity.File -> {
-                this.add(item)
-            }
-            is FileEntity.Folder -> {
-                // count songs for folder
-                val i = this.indexOf(item)
-                if (i < 0) {
-                    this.add(item.apply { songCount = 1 })
-                } else {
-                    (this[i] as FileEntity.Folder).songCount ++
-                }
-            }
-        }
     }
 
     private fun getSongFromCursor(cursor: Cursor): Song {
