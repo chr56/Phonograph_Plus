@@ -167,10 +167,10 @@ sealed class AbsDisplayPage<IT, A : DisplayAdapter<out Displayable>, LM : GridLa
         (popup.viewBinding.groupGridSize.getChildAt(current - 1) as RadioButton).isChecked = true
 
         // color footer
-        if (this !is GenrePage) { // Genre Page never colored
-            popup.viewBinding.actionColoredFooters.visibility = View.VISIBLE
-            popup.viewBinding.actionColoredFooters.isChecked = displayUtil.colorFooter
-            popup.viewBinding.actionColoredFooters.isEnabled = displayUtil.gridSize > displayUtil.maxGridSizeForList
+        if (this !is GenrePage) { // Genre Page never is colored
+            popup.colorFooterVisibility = true
+            popup.colorFooterEnability = displayUtil.gridSize > displayUtil.maxGridSizeForList
+            popup.colorFooter = displayUtil.colorFooter
         }
 
         // sort order

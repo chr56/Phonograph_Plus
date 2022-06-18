@@ -179,6 +179,21 @@ class ListOptionsPopup private constructor(
             for (ref in value) findSortOrderButton(ref)?.visibility = VISIBLE // show selected
         }
 
+    var colorFooter: Boolean
+        get() = viewBinding.actionColoredFooters.isChecked
+        set(value) { viewBinding.actionColoredFooters.isChecked = value }
+
+    var colorFooterVisibility: Boolean
+        get() = viewBinding.actionColoredFooters.visibility == VISIBLE
+        set(value) {
+            viewBinding.actionColoredFooters.visibility = if (value) VISIBLE else GONE
+        }
+    var colorFooterEnability: Boolean
+        get() = viewBinding.actionColoredFooters.isEnabled
+        set(value) {
+            viewBinding.actionColoredFooters.isEnabled = value
+        }
+
     /*
     * Utils
     */
