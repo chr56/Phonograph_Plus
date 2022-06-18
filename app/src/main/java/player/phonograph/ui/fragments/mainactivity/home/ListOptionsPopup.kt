@@ -14,6 +14,7 @@ import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.PopupWindow
 import android.widget.RadioButton
+import androidx.core.view.iterator
 import player.phonograph.R
 import player.phonograph.databinding.PopupWindowMainBinding
 import player.phonograph.mediastore.sort.SortRef
@@ -142,6 +143,19 @@ class ListOptionsPopup private constructor(
                 )
             }
         }
+    var sortMethodAvailability: Boolean
+        get() = viewBinding.sortMethodAZ.visibility == VISIBLE && viewBinding.sortMethodZA.visibility == VISIBLE
+        set(value) {
+            with(viewBinding) {
+                if (value) {
+                    sortMethodAZ.visibility = VISIBLE
+                    sortMethodZA.visibility = VISIBLE
+                } else {
+                    sortMethodAZ.visibility = GONE
+                    sortMethodZA.visibility = GONE
+                }
+            }
+        }
 
     var sortRef: SortRef
         get() =
@@ -180,6 +194,30 @@ class ListOptionsPopup private constructor(
                         else -> null
                     }
                 )
+            }
+        }
+
+    var sortRefAvailable: Array<SortRef> = emptyArray()
+        set(value) {
+            field = value
+            if (value.isNotEmpty()) viewBinding.groupSortOrderRef.visibility = VISIBLE
+            for (v in viewBinding.groupSortOrderRef.iterator()) v.visibility = GONE // hide all
+            for (ref in value) with(viewBinding) {
+                val v = when (ref) {
+                    SortRef.SONG_NAME -> sortOrderSong
+                    SortRef.ALBUM_NAME -> sortOrderAlbum
+                    SortRef.ARTIST_NAME -> sortOrderArtist
+                    SortRef.YEAR -> sortOrderYear
+                    SortRef.ADDED_DATE -> sortOrderDateAdded
+                    SortRef.MODIFIED_DATE -> sortOrderDateModified
+                    SortRef.DURATION -> sortOrderDuration
+                    SortRef.DISPLAY_NAME -> sortOrderNamePlain
+                    SortRef.SONG_COUNT -> sortOrderSongCount
+                    SortRef.ALBUM_COUNT -> sortOrderAlbumCount
+                    SortRef.SIZE -> sortOrderSize
+                    else -> return
+                }
+                v.visibility = VISIBLE
             }
         }
 
