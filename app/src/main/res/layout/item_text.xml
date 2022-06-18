@@ -8,6 +8,7 @@
         android:id="@+id/text"
         android:singleLine="true"
         android:padding="4dp"
+        style="@style/TextAppearance.AppCompat.Medium"
         android:layout_width="wrap_content"
         android:layout_height="match_parent" />
 

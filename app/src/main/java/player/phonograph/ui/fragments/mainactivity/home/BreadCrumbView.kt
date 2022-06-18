@@ -6,7 +6,6 @@ package player.phonograph.ui.fragments.mainactivity.home
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.graphics.Color
 import android.util.AttributeSet
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -27,7 +26,11 @@ class BreadCrumbView : FrameLayout {
         context, attrs, defStyleAttr, defStyleRes
     )
 
-    var callBack: (Location) -> Unit = {}
+    var callBack: (Location) -> Unit
+        get() = adapter.callBack
+        set(value) {
+            adapter.callBack = value
+        }
 
     var location: Location = Location.HOME
         set(value) {
@@ -41,7 +44,7 @@ class BreadCrumbView : FrameLayout {
 
     init {
         recyclerView = RecyclerView(context)
-        adapter = BreadCrumbAdapter(context, location, callBack)
+        adapter = BreadCrumbAdapter(context, location)
         layoutManager = LinearLayoutManager(context).apply { orientation = LinearLayoutManager.HORIZONTAL }
         recyclerView.adapter = adapter
         recyclerView.layoutManager = layoutManager
@@ -77,12 +80,12 @@ class BreadCrumbView : FrameLayout {
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
             with(holder.viewBinding.text) {
                 text = if (position == 0) volumeName else crumbs[position - 1]
-                setTextColor(ThemeColor.textColorPrimary(context)) // todo
+                setTextColor(ThemeColor.textColorPrimary(context))
             }
             holder.itemView.setOnClickListener {
                 callBack(
                     Location.from(
-                        "/" + crumbs.subList(0, position).reduce { acc, s -> "$acc/$s" },
+                        crumbs.subList(0, position).fold("") { acc, s -> "$acc/$s" },
                         location.storageVolume
                     )
                 )
