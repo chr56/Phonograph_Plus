@@ -133,48 +133,16 @@ class FilesPage : AbsPage() {
     }
 
     private fun configPopup(popup: PopupWindowMainBinding) {
-        // clear existed
-        popup.groupSortOrderMethod.visibility = View.VISIBLE
-        popup.titleSortOrderMethod.visibility = View.VISIBLE
-        popup.groupSortOrderRef.visibility = View.VISIBLE
-        popup.titleSortOrderRef.visibility = View.VISIBLE
-        for (i in 0 until popup.groupSortOrderRef.childCount) popup.groupSortOrderRef.getChildAt(i).visibility = View.GONE
-
-        popup.groupSortOrderRef.clearCheck()
-        popup.sortOrderNamePlain.visibility = View.VISIBLE
-        popup.sortOrderDateAdded.visibility = View.VISIBLE
-        popup.sortOrderDateModified.visibility = View.VISIBLE
-        popup.sortOrderSize.visibility = View.VISIBLE
-
         val currentSortMode = Setting.instance.fileSortMode
-        when (currentSortMode.sortRef) {
-            SortRef.DISPLAY_NAME -> popup.groupSortOrderRef.check(R.id.sort_order_name_plain)
-            SortRef.ADDED_DATE -> popup.groupSortOrderRef.check(R.id.sort_order_date_added)
-            SortRef.MODIFIED_DATE -> popup.groupSortOrderRef.check(R.id.sort_order_date_modified)
-            SortRef.SIZE -> popup.groupSortOrderRef.check(R.id.sort_order_size)
-            else -> popup.groupSortOrderRef.clearCheck()
-        }
+        this.popup.sortMethodAvailability = true
+        this.popup.sortMethod = !currentSortMode.revert
 
-        when (currentSortMode.revert) {
-            false -> popup.groupSortOrderMethod.check(R.id.sort_method_a_z)
-            true -> popup.groupSortOrderMethod.check(R.id.sort_method_z_a)
-        }
+        this.popup.sortRef = currentSortMode.sortRef
+        this.popup.sortRefAvailable = arrayOf(SortRef.DISPLAY_NAME, SortRef.ADDED_DATE, SortRef.MODIFIED_DATE, SortRef.SIZE)
     }
 
     private fun dismissPopup(popUpView: PopupWindowMainBinding) {
-        val revert = when (popUpView.groupSortOrderMethod.checkedRadioButtonId) {
-            R.id.sort_method_z_a -> true
-            R.id.sort_method_a_z -> false
-            else -> false
-        }
-        val sortRef = when (popUpView.groupSortOrderRef.checkedRadioButtonId) {
-            R.id.sort_order_name_plain -> SortRef.DISPLAY_NAME
-            R.id.sort_order_date_added -> SortRef.ADDED_DATE
-            R.id.sort_order_date_modified -> SortRef.MODIFIED_DATE
-            R.id.sort_order_size -> SortRef.SIZE
-            else -> SortRef.ID
-        }
-        Setting.instance.fileSortMode = FileSortMode(sortRef, revert)
+        Setting.instance.fileSortMode = FileSortMode(popup.sortRef, !popup.sortMethod)
         reload()
     }
 
