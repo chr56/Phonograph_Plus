@@ -10,7 +10,6 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.RadioButton
 import androidx.annotation.StringRes
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.graphics.BlendModeColorFilterCompat
@@ -157,14 +156,9 @@ sealed class AbsDisplayPage<IT, A : DisplayAdapter<out Displayable>, LM : GridLa
         val displayUtil = DisplayUtil(this)
 
         // grid size
-        popup.viewBinding.titleGridSize.visibility = View.VISIBLE
-        popup.viewBinding.groupGridSize.visibility = View.VISIBLE
         if (Util.isLandscape(resources)) popup.viewBinding.titleGridSize.text = resources.getText(R.string.action_grid_size_land)
-        val current = displayUtil.gridSize
-        val max = displayUtil.maxGridSize
-        for (i in 0 until max) popup.viewBinding.groupGridSize.getChildAt(i).visibility = View.VISIBLE
-        popup.viewBinding.groupGridSize.clearCheck()
-        (popup.viewBinding.groupGridSize.getChildAt(current - 1) as RadioButton).isChecked = true
+        popup.maxGridSize = displayUtil.maxGridSize
+        popup.gridSize = displayUtil.gridSize
 
         // color footer
         if (this !is GenrePage) { // Genre Page never is colored
@@ -195,13 +189,7 @@ sealed class AbsDisplayPage<IT, A : DisplayAdapter<out Displayable>, LM : GridLa
         val displayUtil = DisplayUtil(this)
 
         //  Grid Size
-        var gridSizeSelected = 0
-        for (i in 0 until displayUtil.maxGridSize) {
-            if ((popup.viewBinding.groupGridSize.getChildAt(i) as RadioButton).isChecked) {
-                gridSizeSelected = i + 1
-                break
-            }
-        }
+        val gridSizeSelected = popup.gridSize
 
         if (gridSizeSelected > 0 && gridSizeSelected != displayUtil.gridSize) {
 
@@ -218,7 +206,7 @@ sealed class AbsDisplayPage<IT, A : DisplayAdapter<out Displayable>, LM : GridLa
 
         if (this !is GenrePage) {
             // color footer
-            val coloredFootersSelected = popup.viewBinding.actionColoredFooters.isChecked
+            val coloredFootersSelected = popup.colorFooter
             if (displayUtil.colorFooter != coloredFootersSelected) {
                 displayUtil.colorFooter = coloredFootersSelected
                 adapter.usePalette = coloredFootersSelected

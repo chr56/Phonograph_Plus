@@ -15,6 +15,8 @@ import android.view.ViewGroup
 import android.widget.PopupWindow
 import android.widget.RadioButton
 import androidx.annotation.IdRes
+import androidx.core.view.forEachIndexed
+import androidx.core.view.get
 import androidx.core.view.iterator
 import player.phonograph.R
 import player.phonograph.databinding.PopupWindowMainBinding
@@ -177,6 +179,37 @@ class ListOptionsPopup private constructor(
             if (value.isNotEmpty()) viewBinding.groupSortOrderRef.visibility = VISIBLE // container
             for (v in viewBinding.groupSortOrderRef.iterator()) v.visibility = GONE // hide all
             for (ref in value) findSortOrderButton(ref)?.visibility = VISIBLE // show selected
+        }
+
+    var gridSize: Int
+        get() {
+            var gridSizeSelected = 0
+            for (i in 0 until maxGridSize) {
+                if ((viewBinding.groupGridSize.getChildAt(i) as RadioButton).isChecked) {
+                    gridSizeSelected = i + 1
+                    break
+                }
+            }
+            return gridSizeSelected
+        }
+        set(value) {
+            (viewBinding.groupGridSize[value - 1] as RadioButton).isChecked = true
+        }
+
+    var maxGridSize: Int
+        get() {
+            viewBinding.groupGridSize.forEachIndexed { index, view ->
+                if ((view as RadioButton).visibility == GONE) return index
+            }
+            return 0
+        }
+        set(max) {
+            val visibility = if (max <= 0) GONE else VISIBLE
+            viewBinding.groupGridSize.visibility = visibility
+            viewBinding.titleGridSize.visibility = visibility
+            viewBinding.groupGridSize.clearCheck()
+            if (max > 0)
+                for (i in 0 until max) viewBinding.groupGridSize.getChildAt(i).visibility = VISIBLE
         }
 
     var colorFooter: Boolean
