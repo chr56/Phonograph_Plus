@@ -183,34 +183,6 @@ android {
         }
     }
 
-//    val productsDirectory = File(rootDir, "products").apply { mkdir() }
-//
-//    afterEvaluate {
-//        applicationVariants.forEach { variant ->
-//            val variantDirectory: File = File(productsDirectory, variant.name).apply { mkdir() }
-//            variant.assembleProvider.orNull?.doLast {
-//
-//                // rename apk
-//                val currentTimeString = SimpleDateFormat("yyMMddHHmmss").format(Calendar.getInstance().time)
-//                val apkName =
-//                    when (variant.buildType.name.toLowerCase()) {
-//                        "release" -> "PhonographPlus_${variant.versionName}.apk"
-//                        else -> "PhonographPlus_${variant.versionName}_${getGitHash(true)}_$currentTimeString.apk"
-//                    }
-//                variant.outputs.all {
-//                    this.outputFile.copyTo(File(variantDirectory, apkName), true)
-//                }
-//                // copy shrink output file if available
-//                tasks.filterIsInstance<R8Task>()
-//                    .firstOrNull { it.name.contains(variant.name, ignoreCase = true) && it.enabled }
-//                    ?.also {
-//                        it.mappingFile.asFile.orNull
-//                            ?.copyTo(File(variantDirectory, "mapping_${getGitHash(true)}.txt"))
-//                    }
-//            }
-//        }
-//    }
-
     lint {
         abortOnError = false
         disable.add("MissingTranslation")
@@ -218,15 +190,6 @@ android {
 
         checkReleaseBuilds = false
     }
-
-    /*
-    afterEvaluate {
-        tasks.withType(JavaCompile::class) {
-            options.compilerArgs.add(" -Xlint:deprecation")
-            options.compilerArgs.add(" -Xlint:unchecked")
-        }
-    }
-    */
 }
 
 @Suppress("SpellCheckingInspection")
