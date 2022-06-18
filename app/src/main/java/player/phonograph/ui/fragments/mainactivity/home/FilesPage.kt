@@ -81,7 +81,7 @@ class FilesPage : AbsPage() {
                     hostFragment.totalHeaderHeight + binding.innerAppBar.height
             )
         }
-        binding.buttonBack.setImageDrawable(getDrawable(R.drawable.icon_back_white))
+        binding.buttonBack.setImageDrawable(getDrawable(R.drawable.md_nav_back))
         binding.buttonBack.setOnClickListener { gotoTopLevel() }
         binding.buttonBack.setOnLongClickListener {
             model.currentLocation = Location.HOME
