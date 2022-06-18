@@ -14,6 +14,7 @@ import player.phonograph.App
 import player.phonograph.mediastore.MediaStoreUtil.searchSongFiles
 import player.phonograph.model.FileEntity
 import player.phonograph.model.Location
+import player.phonograph.settings.Setting
 import player.phonograph.ui.fragments.mainactivity.folders.FileScanner
 
 class FilesPageViewModel : ViewModel() {
@@ -32,15 +33,17 @@ class FilesPageViewModel : ViewModel() {
         listFileJob?.cancel() // cancel current
         listFileJob =
             viewModelScope.launch(Dispatchers.IO + SupervisorJob()) {
-                if (useMediaStore)
-                    listFilesMediaStore(location, context, this)
-                else
+                if (useLegacyListFile)
                     listFilesLegacy(location, context, this)
+                else
+                    listFilesMediaStore(location, context, this)
                 withContext(Dispatchers.Main) { onFinished() }
             }
     }
 
-    var useMediaStore = true
+    var useLegacyListFile: Boolean
+        get() = Setting.instance.useLegacyListFilesImpl
+        set(value) { Setting.instance.useLegacyListFilesImpl = value }
 
     @Synchronized
     private fun listFilesMediaStore(

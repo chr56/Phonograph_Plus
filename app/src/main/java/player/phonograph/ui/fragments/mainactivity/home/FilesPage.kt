@@ -140,11 +140,12 @@ class FilesPage : AbsPage() {
         popup.sortRefAvailable = arrayOf(SortRef.DISPLAY_NAME, SortRef.ADDED_DATE, SortRef.MODIFIED_DATE, SortRef.SIZE)
 
         popup.showFileOption = true
+        popup.useLegacyListFiles = model.useLegacyListFile
     }
 
     private fun dismissPopup(popup: ListOptionsPopup) {
         Setting.instance.fileSortMode = FileSortMode(popup.sortRef, popup.revert)
-        model.useMediaStore = !popup.useLegacyListFiles
+        model.useLegacyListFile = popup.useLegacyListFiles
         reload()
     }
 

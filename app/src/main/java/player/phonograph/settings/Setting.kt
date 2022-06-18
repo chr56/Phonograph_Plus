@@ -243,6 +243,7 @@ class Setting(context: Context) {
 
     // Compatibility
     var useLegacyFavoritePlaylistImpl: Boolean by BooleanPref(USE_LEGACY_FAVORITE_PLAYLIST_IMPL, false)
+    var useLegacyListFilesImpl: Boolean by BooleanPref(USE_LEGACY_LIST_FILES_IMPL, false)
     var playlistFilesOperationBehaviour: String by StringPref(PLAYLIST_FILES_OPERATION_BEHAVIOUR, PLAYLIST_OPS_BEHAVIOUR_AUTO)
 
     // Changelog
@@ -323,6 +324,7 @@ class Setting(context: Context) {
 
         // compatibility
         private const val USE_LEGACY_FAVORITE_PLAYLIST_IMPL = "use_legacy_favorite_playlist_impl"
+        private const val USE_LEGACY_LIST_FILES_IMPL = "use_legacy_list_files_impl"
         private const val PLAYLIST_FILES_OPERATION_BEHAVIOUR = "playlist_files_operation_behaviour"
 
         // Changelog

@@ -225,6 +225,12 @@
             android:title="@string/pref_title_use_legacy_favorite_playlist_impl"
             app:iconSpaceReserved="false" />
 
+        <lib.phonograph.preference.SwitchPreferenceX
+            android:defaultValue="false"
+            android:key="use_legacy_list_files_impl"
+            android:title="@string/use_legacy_list_Files"
+            app:iconSpaceReserved="false" />
+
         <lib.phonograph.preference.ListPreferenceX
             android:defaultValue="auto"
             android:entries="@array/pref_playlist_files_operation_behaviour_titles"
