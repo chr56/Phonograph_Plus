@@ -6,7 +6,7 @@ package player.phonograph.model
 
 import player.phonograph.App
 import player.phonograph.mediastore.MediaStoreUtil
-import player.phonograph.mediastore.sort.FileRef
+import player.phonograph.mediastore.sort.SortRef
 import player.phonograph.settings.Setting
 
 /**
@@ -24,9 +24,9 @@ sealed class FileEntity(
             if (this is Folder) -1 else 1
         } else {
             when (Setting.instance.fileSortMode.sortRef) {
-                FileRef.MODIFIED_DATE -> dateModified.compareTo(other.dateModified)
-                FileRef.ADDED_DATE -> dateAdded.compareTo(other.dateAdded)
-                FileRef.SIZE -> {
+                SortRef.MODIFIED_DATE -> dateModified.compareTo(other.dateModified)
+                SortRef.ADDED_DATE -> dateAdded.compareTo(other.dateAdded)
+                SortRef.SIZE -> {
                     if (this is File && other is File) size.compareTo(other.size)
                     else if (this is Folder && other is Folder) songCount.compareTo(other.songCount) else
                         name.compareTo(other.name)

@@ -92,7 +92,7 @@ class SongPage : AbsDisplayPage<Song, DisplayAdapter<Song>, GridLayoutManager>()
             SortRef.YEAR -> popup.groupSortOrderRef.check(R.id.sort_order_year)
             SortRef.ADDED_DATE -> popup.groupSortOrderRef.check(R.id.sort_order_date_added)
             SortRef.MODIFIED_DATE -> popup.groupSortOrderRef.check(R.id.sort_order_date_modified)
-            SortRef.SONG_DURATION -> popup.groupSortOrderRef.check(R.id.sort_order_duration)
+            SortRef.DURATION -> popup.groupSortOrderRef.check(R.id.sort_order_duration)
             else -> popup.groupSortOrderRef.clearCheck()
         }
         when (currentSortMode.revert) {
@@ -120,7 +120,7 @@ class SongPage : AbsDisplayPage<Song, DisplayAdapter<Song>, GridLayoutManager>()
             R.id.sort_order_year -> SortRef.YEAR
             R.id.sort_order_date_added -> SortRef.ADDED_DATE
             R.id.sort_order_date_modified -> SortRef.MODIFIED_DATE
-            R.id.sort_order_duration -> SortRef.SONG_DURATION
+            R.id.sort_order_duration -> SortRef.DURATION
             else -> SortRef.ID
         }
 

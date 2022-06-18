@@ -21,7 +21,6 @@ import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.adapter.PageConfig
 import player.phonograph.adapter.PageConfigUtil
-import player.phonograph.mediastore.sort.FileRef
 import player.phonograph.mediastore.sort.FileSortMode
 import player.phonograph.mediastore.sort.SortMode
 import player.phonograph.mediastore.sort.SortRef
@@ -185,7 +184,7 @@ class Setting(context: Context) {
             _genreSortMode = value.serialize()
         }
 
-    private var _fileSortMode: String by StringPref(FILE_SORT_MODE, FileSortMode(FileRef.ID, false).serialize())
+    private var _fileSortMode: String by StringPref(FILE_SORT_MODE, FileSortMode(SortRef.ID, false).serialize())
     var fileSortMode: FileSortMode
         get() = FileSortMode.deserialize(_fileSortMode)
         set(value) {

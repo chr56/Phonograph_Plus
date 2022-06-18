@@ -16,6 +16,7 @@ import android.widget.PopupWindow
 import android.widget.RadioButton
 import player.phonograph.R
 import player.phonograph.databinding.PopupWindowMainBinding
+import player.phonograph.mediastore.sort.SortRef
 import player.phonograph.util.PhonographColorUtil
 import util.mdcolor.pref.ThemeColor
 
@@ -142,21 +143,21 @@ class ListOptionsPopup private constructor(
             }
         }
 
-    var sortRef: Ref
+    var sortRef: SortRef
         get() =
             when (viewBinding.groupSortOrderRef.checkedRadioButtonId) {
-                R.id.sort_order_song -> Ref.SONG
-                R.id.sort_order_album -> Ref.ALBUM
-                R.id.sort_order_artist -> Ref.ARTIST
-                R.id.sort_order_year -> Ref.YEAR
-                R.id.sort_order_date_added -> Ref.DADE_ADDED
-                R.id.sort_order_date_modified -> Ref.DATE_MODIFIED
-                R.id.sort_order_duration -> Ref.DURATION
-                R.id.sort_order_name_plain -> Ref.NAME_PLAIN
-                R.id.sort_order_song_count -> Ref.SONG_COUNT
-                R.id.sort_order_album_count -> Ref.ALBUM_COUNT
-                R.id.sort_order_size -> Ref.SIZE
-                else -> { Ref.NA }
+                R.id.sort_order_song -> SortRef.SONG_NAME
+                R.id.sort_order_album -> SortRef.ALBUM_NAME
+                R.id.sort_order_artist -> SortRef.ARTIST_NAME
+                R.id.sort_order_year -> SortRef.YEAR
+                R.id.sort_order_date_added -> SortRef.ADDED_DATE
+                R.id.sort_order_date_modified -> SortRef.MODIFIED_DATE
+                R.id.sort_order_duration -> SortRef.DURATION
+                R.id.sort_order_name_plain -> SortRef.DISPLAY_NAME
+                R.id.sort_order_song_count -> SortRef.SONG_COUNT
+                R.id.sort_order_album_count -> SortRef.ALBUM_COUNT
+                R.id.sort_order_size -> SortRef.SIZE
+                else -> { SortRef.ID }
             }
         set(ref) {
             viewBinding.apply {
@@ -165,28 +166,22 @@ class ListOptionsPopup private constructor(
                 groupSortOrderRef.clearCheck()
                 check(
                     when (ref) {
-                        Ref.SONG -> sortOrderSong
-                        Ref.ALBUM -> sortOrderAlbum
-                        Ref.ARTIST -> sortOrderArtist
-                        Ref.YEAR -> sortOrderYear
-                        Ref.DADE_ADDED -> sortOrderDateAdded
-                        Ref.DATE_MODIFIED -> sortOrderDateModified
-                        Ref.DURATION -> sortOrderDuration
-                        Ref.NAME_PLAIN -> sortOrderNamePlain
-                        Ref.SONG_COUNT -> sortOrderSongCount
-                        Ref.ALBUM_COUNT -> sortOrderAlbumCount
-                        Ref.SIZE -> sortOrderSize
-                        Ref.NA -> {
-                            null
-                        }
+                        SortRef.SONG_NAME -> sortOrderSong
+                        SortRef.ALBUM_NAME -> sortOrderAlbum
+                        SortRef.ARTIST_NAME -> sortOrderArtist
+                        SortRef.YEAR -> sortOrderYear
+                        SortRef.ADDED_DATE -> sortOrderDateAdded
+                        SortRef.MODIFIED_DATE -> sortOrderDateModified
+                        SortRef.DURATION -> sortOrderDuration
+                        SortRef.DISPLAY_NAME -> sortOrderNamePlain
+                        SortRef.SONG_COUNT -> sortOrderSongCount
+                        SortRef.ALBUM_COUNT -> sortOrderAlbumCount
+                        SortRef.SIZE -> sortOrderSize
+                        else -> null
                     }
                 )
             }
         }
-
-    enum class Ref {
-        NA, SONG, ALBUM, ARTIST, YEAR, DADE_ADDED, DATE_MODIFIED, DURATION, NAME_PLAIN, SONG_COUNT, ALBUM_COUNT, SIZE,
-    }
 
     private fun check(radioButton: RadioButton?) {
         radioButton?.isChecked = true

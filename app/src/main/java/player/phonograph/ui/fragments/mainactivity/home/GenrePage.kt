@@ -72,7 +72,7 @@ class GenrePage : AbsDisplayPage<Genre, DisplayAdapter<Genre>, GridLayoutManager
         popup.sortOrderNamePlain.visibility = View.VISIBLE
         popup.sortOrderSongCount.visibility = View.VISIBLE
         when (currentSortMode.sortRef) {
-            SortRef.GENRE_NAME -> popup.groupSortOrderRef.check(R.id.sort_order_name_plain)
+            SortRef.DISPLAY_NAME -> popup.groupSortOrderRef.check(R.id.sort_order_name_plain)
             SortRef.SONG_COUNT -> popup.groupSortOrderRef.check(R.id.sort_order_song_count)
             else -> popup.groupSortOrderRef.clearCheck()
         }
@@ -94,7 +94,7 @@ class GenrePage : AbsDisplayPage<Genre, DisplayAdapter<Genre>, GridLayoutManager
             else -> false
         }
         val sortRef = when (popup.groupSortOrderRef.checkedRadioButtonId) {
-            R.id.sort_order_name_plain -> SortRef.GENRE_NAME
+            R.id.sort_order_name_plain -> SortRef.DISPLAY_NAME
             R.id.sort_order_song_count -> SortRef.SONG_COUNT
             else -> SortRef.ID
         }

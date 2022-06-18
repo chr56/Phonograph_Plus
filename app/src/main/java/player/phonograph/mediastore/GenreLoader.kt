@@ -98,7 +98,7 @@ object GenreLoader {
     private fun List<Genre>.sortAll(): List<Genre> {
         val revert = Setting.instance.genreSortMode.revert
         return when (Setting.instance.genreSortMode.sortRef) {
-            SortRef.GENRE_NAME -> this.sort(revert) { it.name }
+            SortRef.DISPLAY_NAME -> this.sort(revert) { it.name }
             SortRef.SONG_COUNT -> this.sort(revert) { it.songCount }
             else -> this
         }

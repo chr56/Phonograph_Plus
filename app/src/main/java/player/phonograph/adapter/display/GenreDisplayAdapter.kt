@@ -25,7 +25,7 @@ class GenreDisplayAdapter(
 
     override fun getSectionNameImp(position: Int): String {
         return when (Setting.instance.genreSortMode.sortRef) {
-            SortRef.GENRE_NAME -> MusicUtil.getSectionName(dataset[position].name)
+            SortRef.DISPLAY_NAME -> MusicUtil.getSectionName(dataset[position].name)
             SortRef.SONG_COUNT -> dataset[position].songCount.toString()
             else -> ""
         }

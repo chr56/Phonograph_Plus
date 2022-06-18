@@ -31,8 +31,8 @@ import player.phonograph.R
 import player.phonograph.adapter.FileAdapter
 import player.phonograph.databinding.FragmentFolderPageBinding
 import player.phonograph.databinding.PopupWindowMainBinding
-import player.phonograph.mediastore.sort.FileRef
 import player.phonograph.mediastore.sort.FileSortMode
+import player.phonograph.mediastore.sort.SortRef
 import player.phonograph.model.FileEntity
 import player.phonograph.model.Location
 import player.phonograph.notification.ErrorNotification
@@ -148,10 +148,10 @@ class FilesPage : AbsPage() {
 
         val currentSortMode = Setting.instance.fileSortMode
         when (currentSortMode.sortRef) {
-            FileRef.DISPLAY_NAME -> popup.groupSortOrderRef.check(R.id.sort_order_name_plain)
-            FileRef.ADDED_DATE -> popup.groupSortOrderRef.check(R.id.sort_order_date_added)
-            FileRef.MODIFIED_DATE -> popup.groupSortOrderRef.check(R.id.sort_order_date_modified)
-            FileRef.SIZE -> popup.groupSortOrderRef.check(R.id.sort_order_size)
+            SortRef.DISPLAY_NAME -> popup.groupSortOrderRef.check(R.id.sort_order_name_plain)
+            SortRef.ADDED_DATE -> popup.groupSortOrderRef.check(R.id.sort_order_date_added)
+            SortRef.MODIFIED_DATE -> popup.groupSortOrderRef.check(R.id.sort_order_date_modified)
+            SortRef.SIZE -> popup.groupSortOrderRef.check(R.id.sort_order_size)
             else -> popup.groupSortOrderRef.clearCheck()
         }
 
@@ -168,11 +168,11 @@ class FilesPage : AbsPage() {
             else -> false
         }
         val sortRef = when (popUpView.groupSortOrderRef.checkedRadioButtonId) {
-            R.id.sort_order_name_plain -> FileRef.DISPLAY_NAME
-            R.id.sort_order_date_added -> FileRef.ADDED_DATE
-            R.id.sort_order_date_modified -> FileRef.MODIFIED_DATE
-            R.id.sort_order_size -> FileRef.SIZE
-            else -> FileRef.ID
+            R.id.sort_order_name_plain -> SortRef.DISPLAY_NAME
+            R.id.sort_order_date_added -> SortRef.ADDED_DATE
+            R.id.sort_order_date_modified -> SortRef.MODIFIED_DATE
+            R.id.sort_order_size -> SortRef.SIZE
+            else -> SortRef.ID
         }
         Setting.instance.fileSortMode = FileSortMode(sortRef, revert)
         reload()
