@@ -7,7 +7,6 @@ package player.phonograph.ui.fragments.mainactivity.home
 import android.annotation.SuppressLint
 import android.util.Log
 import android.view.View
-import android.widget.PopupWindow
 import androidx.recyclerview.widget.GridLayoutManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -72,7 +71,6 @@ class ArtistPage : AbsDisplayPage<Artist, DisplayAdapter<Artist>, GridLayoutMana
 
     override fun setupSortOrderImpl(
         displayUtil: DisplayUtil,
-        popupMenu: PopupWindow,
         popup: PopupWindowMainBinding
     ) {
 
@@ -98,7 +96,6 @@ class ArtistPage : AbsDisplayPage<Artist, DisplayAdapter<Artist>, GridLayoutMana
 
     override fun saveSortOrderImpl(
         displayUtil: DisplayUtil,
-        popupMenu: PopupWindow,
         popup: PopupWindowMainBinding
     ) {
 

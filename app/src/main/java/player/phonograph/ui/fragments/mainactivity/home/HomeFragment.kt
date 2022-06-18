@@ -17,6 +17,7 @@ import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
+import java.lang.ref.WeakReference
 import lib.phonograph.cab.*
 import player.phonograph.R
 import player.phonograph.adapter.HomePagerAdapter
@@ -33,7 +34,6 @@ import player.phonograph.util.PhonographColorUtil
 import util.mdcolor.ColorUtil
 import util.mdcolor.pref.ThemeColor
 import util.mddesign.util.MaterialColorHelper
-import java.lang.ref.WeakReference
 
 class HomeFragment : AbsMainActivityFragment(), MainActivity.MainActivityFragmentCallbacks, SharedPreferences.OnSharedPreferenceChangeListener, MultiSelectionCabProvider {
 
@@ -153,6 +153,15 @@ class HomeFragment : AbsMainActivityFragment(), MainActivity.MainActivityFragmen
     /**
      *     the popup window for [AbsDisplayPage]
      */
+
+    private var _popup: ListOptionsPopup? = null
+    val popup: ListOptionsPopup
+        get() {
+            if (_popup == null) _popup =
+                ListOptionsPopup(mainActivity)
+            return _popup!!
+        }
+
     var displayPopup: WeakReference<PopupWindow?> = WeakReference(null)
     var displayPopupView: WeakReference<PopupWindowMainBinding?> = WeakReference(null)
 
