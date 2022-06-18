@@ -6,9 +6,10 @@ package player.phonograph.ui.fragments.mainactivity.home
 
 import android.content.Intent
 import android.content.SharedPreferences
-import android.graphics.Color
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.*
+import androidx.annotation.DrawableRes
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.graphics.BlendModeColorFilterCompat
 import androidx.core.graphics.BlendModeCompat
@@ -46,63 +47,39 @@ class HomeFragment : AbsMainActivityFragment(), MainActivity.MainActivityFragmen
         return binding.root
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        binding.pager.unregisterOnPageChangeCallback(pageChangeListener)
-        _viewBinding = null
-        multiSelectionCab?.destroy()
-        multiSelectionCab = null
-
-        Setting.instance.unregisterOnSharedPreferenceChangedListener(this)
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        // todo move these to main activity
-        mainActivity.setStatusbarColorAuto()
-        mainActivity.setNavigationbarColorAuto()
-        mainActivity.setTaskDescriptionColorAuto()
 
         setupToolbar()
         setUpViewPager()
 
         Setting.instance.registerOnSharedPreferenceChangedListener(this)
     }
-    private val primaryColor by lazy(LazyThreadSafetyMode.NONE) { ThemeColor.primaryColor(requireActivity()) }
-    private val accentColor by lazy(LazyThreadSafetyMode.NONE) { ThemeColor.accentColor(requireActivity()) }
-    private val primaryTextColor by lazy(LazyThreadSafetyMode.NONE) {
-        MaterialColorHelper.getPrimaryTextColor(
-            requireActivity(),
-            ColorUtil.isColorLight(primaryColor)
-        )
-    }
-    private val secondaryTextColor by lazy(LazyThreadSafetyMode.NONE) {
-        MaterialColorHelper.getSecondaryTextColor(
-            requireActivity(),
-            ColorUtil.isColorLight(primaryColor)
-        )
+    override fun onDestroyView() {
+        super.onDestroyView()
+        binding.pager.unregisterOnPageChangeCallback(pageChangeListener)
+        Setting.instance.unregisterOnSharedPreferenceChangedListener(this)
+        multiSelectionCab?.destroy()
+        multiSelectionCab = null
+        _viewBinding = null
     }
 
     private fun setupToolbar() {
-        val navigationIcon =
-            AppCompatResources.getDrawable(requireActivity(), R.drawable.ic_menu_white_24dp)!!
-        val colorFilter = BlendModeColorFilterCompat.createBlendModeColorFilterCompat(
-            primaryTextColor,
-            BlendModeCompat.SRC_IN
-        )
-        navigationIcon.colorFilter = colorFilter
 
         binding.appbar.setBackgroundColor(primaryColor)
-        binding.toolbar.navigationIcon = navigationIcon
-        binding.toolbar.setBackgroundColor(primaryColor)
-        binding.toolbar.setTitleTextColor(primaryTextColor)
-        binding.toolbar.title = requireActivity().getString(R.string.app_name)
-        mainActivity.setSupportActionBar(binding.toolbar)
+        with(binding.toolbar) {
+            setBackgroundColor(primaryColor)
+            navigationIcon = getDrawable(R.drawable.ic_menu_white_24dp)!!
+            setTitleTextColor(primaryTextColor)
+            title = requireActivity().getString(R.string.app_name)
+        }
 
-        binding.tabs.tabMode = if (Setting.instance.fixedTabLayout) TabLayout.MODE_FIXED else TabLayout.MODE_SCROLLABLE
-        binding.tabs.setTabTextColors(secondaryTextColor, primaryTextColor)
-        binding.tabs.setSelectedTabIndicatorColor(accentColor)
+        mainActivity.setSupportActionBar(binding.toolbar)
+        with(binding.tabs) {
+            tabMode = if (Setting.instance.fixedTabLayout) TabLayout.MODE_FIXED else TabLayout.MODE_SCROLLABLE
+            setTabTextColors(secondaryTextColor, primaryTextColor)
+            setSelectedTabIndicatorColor(accentColor)
+        }
     }
 
     private fun readConfig(): PageConfig = Setting.instance.homeTabConfig
@@ -159,19 +136,10 @@ class HomeFragment : AbsMainActivityFragment(), MainActivity.MainActivityFragmen
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
-
-        val primaryColor = ThemeColor.primaryColor(mainActivity)
-        val primaryTextColor = MaterialColorHelper.getPrimaryTextColor(mainActivity, ColorUtil.isColorLight(primaryColor))
-
-        val f = BlendModeColorFilterCompat
-            .createBlendModeColorFilterCompat(primaryTextColor, BlendModeCompat.SRC_IN)
-
-        val search = menu.add(0, R.id.action_search, 0, R.string.action_search)
-        search.icon =
-            AppCompatResources.getDrawable(requireActivity(), R.drawable.ic_search_white_24dp)
-                .also { it?.colorFilter = f }
-
-        search.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS)
+        menu.add(0, R.id.action_search, 0, R.string.action_search).also {
+            it.icon = getDrawable(R.drawable.ic_search_white_24dp)
+            it.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS)
+        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -219,9 +187,7 @@ class HomeFragment : AbsMainActivityFragment(), MainActivity.MainActivityFragmen
             backgroundColor = PhonographColorUtil.shiftBackgroundColorForLightText(primaryColor)
             titleTextColor = primaryTextColor
 
-            closeDrawable = AppCompatResources.getDrawable(mainActivity, R.drawable.ic_close_white_24dp)!!.also {
-                it.colorFilter = BlendModeColorFilterCompat.createBlendModeColorFilterCompat(primaryTextColor, BlendModeCompat.SRC_IN)
-            }
+            closeDrawable = getDrawable(R.drawable.ic_close_white_24dp)!!
 
             this.menuRes = menuRes
 
@@ -294,6 +260,26 @@ class HomeFragment : AbsMainActivityFragment(), MainActivity.MainActivityFragmen
     private fun updateTabVisibility() {
         // hide the tab bar when only a single tab is visible
         binding.tabs.visibility = if (pagerAdapter.itemCount == 1) View.GONE else View.VISIBLE
+    }
+
+    private fun getDrawable(@DrawableRes resId: Int): Drawable? {
+        return AppCompatResources.getDrawable(mainActivity, resId)?.also {
+            it.colorFilter = BlendModeColorFilterCompat
+                .createBlendModeColorFilterCompat(primaryTextColor, BlendModeCompat.SRC_IN)
+        }
+    }
+
+    private val primaryColor by lazy(LazyThreadSafetyMode.NONE) { ThemeColor.primaryColor(requireActivity()) }
+    private val accentColor by lazy(LazyThreadSafetyMode.NONE) { ThemeColor.accentColor(requireActivity()) }
+    private val primaryTextColor by lazy(LazyThreadSafetyMode.NONE) {
+        MaterialColorHelper.getPrimaryTextColor(
+            mainActivity, ColorUtil.isColorLight(primaryColor)
+        )
+    }
+    private val secondaryTextColor by lazy(LazyThreadSafetyMode.NONE) {
+        MaterialColorHelper.getSecondaryTextColor(
+            mainActivity, ColorUtil.isColorLight(primaryColor)
+        )
     }
 
     companion object {
