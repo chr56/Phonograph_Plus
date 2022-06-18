@@ -9,13 +9,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import java.io.File
 import java.util.*
-import kotlin.collections.ArrayList
 import kotlinx.coroutines.*
 import player.phonograph.App
 import player.phonograph.mediastore.MediaStoreUtil.searchSongFiles
 import player.phonograph.model.FileEntity
 import player.phonograph.model.Location
-import player.phonograph.model.put
 import player.phonograph.ui.fragments.mainactivity.folders.FileScanner
 
 class FilesPageViewModel : ViewModel() {
@@ -65,7 +63,7 @@ class FilesPageViewModel : ViewModel() {
         // todo
         val directory = File(location.absolutePath).also { if (!it.isDirectory) return }
         val files = directory.listFiles(FileScanner.audioFileFilter) ?: return
-        val list: MutableList<FileEntity> = ArrayList()
+        val set = TreeSet<FileEntity>()
         for (file in files) {
             val l = Location.fromAbsolutePath(file.absolutePath)
             if (scope?.isActive == false) break
@@ -77,7 +75,7 @@ class FilesPageViewModel : ViewModel() {
                             name = file.name,
                             dateAdded = file.lastModified(),
                             dateModified = file.lastModified()
-                        )
+                        ).also { it.songCount = 0 }
                     }
                     file.isFile -> {
                         FileEntity.File(
@@ -90,9 +88,9 @@ class FilesPageViewModel : ViewModel() {
                     }
                     else -> null
                 }
-            item?.let { list.put(it) }
+            item?.let { set.add(it) }
         }
-        currentFileList.addAll(list)
+        currentFileList.addAll(set)
     }
 
     override fun onCleared() {

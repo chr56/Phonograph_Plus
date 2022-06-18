@@ -144,7 +144,7 @@ class FilesPage : AbsPage() {
 
     private fun dismissPopup(popup: ListOptionsPopup) {
         Setting.instance.fileSortMode = FileSortMode(popup.sortRef, popup.revert)
-        model.useMediaStore = false
+        model.useMediaStore = !popup.useLegacyListFiles
         reload()
     }
 

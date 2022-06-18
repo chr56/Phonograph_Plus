@@ -28,8 +28,7 @@ sealed class FileEntity(
                 SortRef.ADDED_DATE -> dateAdded.compareTo(other.dateAdded)
                 SortRef.SIZE -> {
                     if (this is File && other is File) size.compareTo(other.size)
-                    else if (this is Folder && other is Folder) songCount.compareTo(other.songCount) else
-                        name.compareTo(other.name)
+                    else name.compareTo(other.name)
                 }
                 else -> name.compareTo(other.name)
             }.let {
