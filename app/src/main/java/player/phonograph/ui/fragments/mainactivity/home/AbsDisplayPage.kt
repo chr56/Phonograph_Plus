@@ -168,14 +168,6 @@ sealed class AbsDisplayPage<IT, A : DisplayAdapter<out Displayable>, LM : GridLa
         }
 
         // sort order
-
-        // clear existed
-        popup.viewBinding.groupSortOrderMethod.visibility = View.VISIBLE
-        popup.viewBinding.titleSortOrderMethod.visibility = View.VISIBLE
-        popup.viewBinding.groupSortOrderRef.visibility = View.VISIBLE
-        popup.viewBinding.titleSortOrderRef.visibility = View.VISIBLE
-        for (i in 0 until popup.viewBinding.groupSortOrderRef.childCount) popup.viewBinding.groupSortOrderRef.getChildAt(i).visibility = View.GONE
-
         setupSortOrderImpl(displayUtil, popup)
     }
 

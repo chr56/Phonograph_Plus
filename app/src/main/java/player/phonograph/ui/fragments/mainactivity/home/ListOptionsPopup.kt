@@ -176,7 +176,10 @@ class ListOptionsPopup private constructor(
     var sortRefAvailable: Array<SortRef> = emptyArray()
         set(value) {
             field = value
-            if (value.isNotEmpty()) viewBinding.groupSortOrderRef.visibility = VISIBLE // container
+            if (value.isNotEmpty()) {
+                viewBinding.groupSortOrderRef.visibility = VISIBLE // container
+                viewBinding.titleSortOrderRef.visibility = VISIBLE // title
+            }
             for (v in viewBinding.groupSortOrderRef.iterator()) v.visibility = GONE // hide all
             for (ref in value) findSortOrderButton(ref)?.visibility = VISIBLE // show selected
         }
