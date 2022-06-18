@@ -134,15 +134,15 @@ class FilesPage : AbsPage() {
 
     private fun configPopup(popup: PopupWindowMainBinding) {
         val currentSortMode = Setting.instance.fileSortMode
-        this.popup.sortMethodAvailability = true
-        this.popup.sortMethod = !currentSortMode.revert
+        this.popup.allowRevert = true
+        this.popup.revert = currentSortMode.revert
 
         this.popup.sortRef = currentSortMode.sortRef
         this.popup.sortRefAvailable = arrayOf(SortRef.DISPLAY_NAME, SortRef.ADDED_DATE, SortRef.MODIFIED_DATE, SortRef.SIZE)
     }
 
     private fun dismissPopup(popUpView: PopupWindowMainBinding) {
-        Setting.instance.fileSortMode = FileSortMode(popup.sortRef, !popup.sortMethod)
+        Setting.instance.fileSortMode = FileSortMode(popup.sortRef, popup.revert)
         reload()
     }
 

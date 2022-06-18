@@ -125,11 +125,11 @@ class ListOptionsPopup private constructor(
         }
     }
 
-    var sortMethod: Boolean
+    var revert: Boolean
         get() =
             when (viewBinding.groupSortOrderMethod.checkedRadioButtonId) {
-                R.id.sort_method_a_z -> true
-                R.id.sort_method_z_a -> false
+                R.id.sort_method_a_z -> false
+                R.id.sort_method_z_a -> true
                 else -> true
             }
         set(value) {
@@ -138,12 +138,12 @@ class ListOptionsPopup private constructor(
                 titleSortOrderMethod.visibility = VISIBLE
                 groupSortOrderMethod.clearCheck()
                 check(
-                    if (value) sortMethodAZ
-                    else sortMethodZA
+                    if (value) sortMethodZA
+                    else sortMethodAZ
                 )
             }
         }
-    var sortMethodAvailability: Boolean
+    var allowRevert: Boolean
         get() = viewBinding.sortMethodAZ.visibility == VISIBLE && viewBinding.sortMethodZA.visibility == VISIBLE
         set(value) {
             with(viewBinding) {
