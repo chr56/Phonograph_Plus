@@ -125,16 +125,12 @@ class FilesPage : AbsPage() {
         model.loadFiles { reload() }
     }
 
-    private var _popup: ListOptionsPopup? = null
-    private val popup: ListOptionsPopup
-        get() {
-            if (_popup == null) _popup =
-                ListOptionsPopup(hostFragment.mainActivity).apply {
-                    onShow = this@FilesPage::configPopup
-                    onDismiss = this@FilesPage::dismissPopup
-                }
-            return _popup!!
+    private val popup: ListOptionsPopup by lazy(LazyThreadSafetyMode.NONE) {
+        ListOptionsPopup(hostFragment.mainActivity).apply {
+            onShow = this@FilesPage::configPopup
+            onDismiss = this@FilesPage::dismissPopup
         }
+    }
 
     private fun configPopup(popup: PopupWindowMainBinding) {
         // clear existed
