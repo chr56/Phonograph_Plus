@@ -88,8 +88,14 @@ class FilesPage : AbsPage() {
             reload()
             true
         }
-        binding.headerTitle.text = model.currentLocation.let { "${it.storageVolume.getDescription(requireContext())} : ${it.basePath}" }
-        binding.header.smoothScrollBy((binding.headerTitle.width * 0.3).toInt(), 0)
+        // bread crumb
+        binding.header.apply {
+            location = model.currentLocation
+            callBack = {
+                model.currentLocation = it
+                reload()
+            }
+        }
 
         binding.container.apply {
             setColorSchemeColors(ThemeColor.accentColor(requireContext()))
@@ -203,8 +209,10 @@ class FilesPage : AbsPage() {
         binding.container.isRefreshing = true
         model.loadFiles {
             adapter.dataSet = model.currentFileList.toMutableList()
-            binding.headerTitle.text = model.currentLocation.let { "${it.storageVolume.getDescription(requireContext())} : ${it.basePath}" }
-            binding.header.smoothScrollBy((binding.headerTitle.width * 0.6).toInt(), 0)
+            binding.header.apply {
+                location = model.currentLocation
+                layoutManager.scrollHorizontallyBy(binding.header.width / 4, recyclerView.Recycler(), RecyclerView.State())
+            }
             binding.buttonBack.setImageDrawable(
                 if (model.currentLocation.parent == null)
                     getDrawable(R.drawable.ic_library_music_white_24dp)
@@ -219,7 +227,7 @@ class FilesPage : AbsPage() {
         return AppCompatResources.getDrawable(hostFragment.mainActivity, resId)?.also {
             it.colorFilter = BlendModeColorFilterCompat
                 .createBlendModeColorFilterCompat(
-                    binding.headerTitle.currentTextColor,
+                    ThemeColor.textColorPrimary(hostFragment.mainActivity),
                     BlendModeCompat.SRC_IN
                 )
         }
