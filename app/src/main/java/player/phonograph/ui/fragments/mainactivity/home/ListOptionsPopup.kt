@@ -166,7 +166,7 @@ class ListOptionsPopup private constructor(
                 titleSortOrderRef.visibility = VISIBLE
                 groupSortOrderRef.clearCheck()
                 check(
-                    findSortOrderButton(sortRef)
+                    findSortOrderButton(ref)
                 )
             }
         }
@@ -199,7 +199,7 @@ class ListOptionsPopup private constructor(
     */
 
     private fun getSortOrderById(@IdRes id: Int): SortRef =
-        when (viewBinding.groupSortOrderRef.checkedRadioButtonId) {
+        when (id) {
             R.id.sort_order_song -> SortRef.SONG_NAME
             R.id.sort_order_album -> SortRef.ALBUM_NAME
             R.id.sort_order_artist -> SortRef.ARTIST_NAME
