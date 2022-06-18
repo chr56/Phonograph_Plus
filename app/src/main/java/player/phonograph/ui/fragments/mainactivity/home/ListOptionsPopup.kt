@@ -28,8 +28,8 @@ class ListOptionsPopup private constructor(
     height: Int,
 ) : PopupWindow(viewBinding.root, width, height, true) {
 
-    var onDismiss: (PopupWindowMainBinding) -> Unit = { }
-    var onShow: (PopupWindowMainBinding) -> Unit = { }
+    var onDismiss: (ListOptionsPopup) -> Unit = { }
+    var onShow: (ListOptionsPopup) -> Unit = { }
 
     constructor(
         context: Context,
@@ -53,7 +53,7 @@ class ListOptionsPopup private constructor(
 
     override fun dismiss() {
         super.dismiss()
-        onDismiss(viewBinding)
+        onDismiss(this)
     }
 
     override fun showAtLocation(parent: View?, gravity: Int, x: Int, y: Int) {
@@ -68,7 +68,7 @@ class ListOptionsPopup private constructor(
 
     private fun onShow() {
         hideAllPopupItems()
-        onShow(viewBinding)
+        onShow(this)
         setBackgroundDrawable(
             ColorDrawable(PhonographColorUtil.getCorrectBackgroundColor(context))
         )

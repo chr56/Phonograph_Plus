@@ -16,7 +16,6 @@ import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.adapter.display.DisplayAdapter
 import player.phonograph.adapter.display.SongDisplayAdapter
-import player.phonograph.databinding.PopupWindowMainBinding
 import player.phonograph.mediastore.MediaStoreUtil
 import player.phonograph.mediastore.sort.SortMode
 import player.phonograph.mediastore.sort.SortRef
@@ -71,49 +70,51 @@ class SongPage : AbsDisplayPage<Song, DisplayAdapter<Song>, GridLayoutManager>()
 
     override fun setupSortOrderImpl(
         displayUtil: DisplayUtil,
-        popup: PopupWindowMainBinding
+        popup: ListOptionsPopup
     ) {
 
         val currentSortMode = displayUtil.sortMode
         Log.d(TAG, "Read cfg: sortMode $currentSortMode")
 
-        popup.groupSortOrderRef.clearCheck()
-        popup.sortOrderSong.visibility = View.VISIBLE
-        popup.sortOrderAlbum.visibility = View.VISIBLE
-        popup.sortOrderArtist.visibility = View.VISIBLE
-        popup.sortOrderYear.visibility = View.VISIBLE
-        popup.sortOrderDateAdded.visibility = View.VISIBLE
-        popup.sortOrderDateModified.visibility = View.VISIBLE
-        popup.sortOrderDuration.visibility = View.VISIBLE
-        when (currentSortMode.sortRef) {
-            SortRef.SONG_NAME -> popup.groupSortOrderRef.check(R.id.sort_order_song)
-            SortRef.ALBUM_NAME -> popup.groupSortOrderRef.check(R.id.sort_order_album)
-            SortRef.ARTIST_NAME -> popup.groupSortOrderRef.check(R.id.sort_order_artist)
-            SortRef.YEAR -> popup.groupSortOrderRef.check(R.id.sort_order_year)
-            SortRef.ADDED_DATE -> popup.groupSortOrderRef.check(R.id.sort_order_date_added)
-            SortRef.MODIFIED_DATE -> popup.groupSortOrderRef.check(R.id.sort_order_date_modified)
-            SortRef.DURATION -> popup.groupSortOrderRef.check(R.id.sort_order_duration)
-            else -> popup.groupSortOrderRef.clearCheck()
-        }
-        when (currentSortMode.revert) {
-            false -> popup.groupSortOrderMethod.check(R.id.sort_method_a_z)
-            true -> popup.groupSortOrderMethod.check(R.id.sort_method_z_a)
+        with(popup.viewBinding) {
+            groupSortOrderRef.clearCheck()
+            sortOrderSong.visibility = View.VISIBLE
+            sortOrderAlbum.visibility = View.VISIBLE
+            sortOrderArtist.visibility = View.VISIBLE
+            sortOrderYear.visibility = View.VISIBLE
+            sortOrderDateAdded.visibility = View.VISIBLE
+            sortOrderDateModified.visibility = View.VISIBLE
+            sortOrderDuration.visibility = View.VISIBLE
+            when (currentSortMode.sortRef) {
+                SortRef.SONG_NAME -> groupSortOrderRef.check(R.id.sort_order_song)
+                SortRef.ALBUM_NAME -> groupSortOrderRef.check(R.id.sort_order_album)
+                SortRef.ARTIST_NAME -> groupSortOrderRef.check(R.id.sort_order_artist)
+                SortRef.YEAR -> groupSortOrderRef.check(R.id.sort_order_year)
+                SortRef.ADDED_DATE -> groupSortOrderRef.check(R.id.sort_order_date_added)
+                SortRef.MODIFIED_DATE -> groupSortOrderRef.check(R.id.sort_order_date_modified)
+                SortRef.DURATION -> groupSortOrderRef.check(R.id.sort_order_duration)
+                else -> groupSortOrderRef.clearCheck()
+            }
+            when (currentSortMode.revert) {
+                false -> groupSortOrderMethod.check(R.id.sort_method_a_z)
+                true -> groupSortOrderMethod.check(R.id.sort_method_z_a)
+            }
         }
     }
 
     override fun saveSortOrderImpl(
         displayUtil: DisplayUtil,
-        popup: PopupWindowMainBinding
+        popup: ListOptionsPopup
     ) {
 
         // sort order
 
-        val revert = when (popup.groupSortOrderMethod.checkedRadioButtonId) {
+        val revert = when (popup.viewBinding.groupSortOrderMethod.checkedRadioButtonId) {
             R.id.sort_method_z_a -> true
             R.id.sort_method_a_z -> false
             else -> false
         }
-        val sortRef: SortRef = when (popup.groupSortOrderRef.checkedRadioButtonId) {
+        val sortRef: SortRef = when (popup.viewBinding.groupSortOrderRef.checkedRadioButtonId) {
             R.id.sort_order_song -> SortRef.SONG_NAME
             R.id.sort_order_album -> SortRef.ALBUM_NAME
             R.id.sort_order_artist -> SortRef.ARTIST_NAME

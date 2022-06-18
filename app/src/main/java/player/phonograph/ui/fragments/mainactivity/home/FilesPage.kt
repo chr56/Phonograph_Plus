@@ -30,7 +30,6 @@ import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.adapter.FileAdapter
 import player.phonograph.databinding.FragmentFolderPageBinding
-import player.phonograph.databinding.PopupWindowMainBinding
 import player.phonograph.mediastore.sort.FileSortMode
 import player.phonograph.mediastore.sort.SortRef
 import player.phonograph.model.FileEntity
@@ -132,16 +131,16 @@ class FilesPage : AbsPage() {
         }
     }
 
-    private fun configPopup(popup: PopupWindowMainBinding) {
+    private fun configPopup(popup: ListOptionsPopup) {
         val currentSortMode = Setting.instance.fileSortMode
-        this.popup.allowRevert = true
-        this.popup.revert = currentSortMode.revert
+        popup.allowRevert = true
+        popup.revert = currentSortMode.revert
 
-        this.popup.sortRef = currentSortMode.sortRef
-        this.popup.sortRefAvailable = arrayOf(SortRef.DISPLAY_NAME, SortRef.ADDED_DATE, SortRef.MODIFIED_DATE, SortRef.SIZE)
+        popup.sortRef = currentSortMode.sortRef
+        popup.sortRefAvailable = arrayOf(SortRef.DISPLAY_NAME, SortRef.ADDED_DATE, SortRef.MODIFIED_DATE, SortRef.SIZE)
     }
 
-    private fun dismissPopup(popUpView: PopupWindowMainBinding) {
+    private fun dismissPopup(popup: ListOptionsPopup) {
         Setting.instance.fileSortMode = FileSortMode(popup.sortRef, popup.revert)
         reload()
     }

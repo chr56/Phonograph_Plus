@@ -25,7 +25,6 @@ import player.phonograph.BuildConfig
 import player.phonograph.R
 import player.phonograph.adapter.display.DisplayAdapter
 import player.phonograph.databinding.FragmentDisplayPageBinding
-import player.phonograph.databinding.PopupWindowMainBinding
 import player.phonograph.interfaces.Displayable
 import player.phonograph.util.Util
 import player.phonograph.util.ViewUtil.setUpFastScrollRecyclerViewColor
@@ -154,51 +153,51 @@ sealed class AbsDisplayPage<IT, A : DisplayAdapter<out Displayable>, LM : GridLa
         hostFragment.addOnAppBarOffsetChangedListener(outerAppbarOffsetListener)
     }
 
-    private fun configPopup(popup: PopupWindowMainBinding) {
+    private fun configPopup(popup: ListOptionsPopup) {
         val displayUtil = DisplayUtil(this)
 
         // grid size
-        popup.titleGridSize.visibility = View.VISIBLE
-        popup.groupGridSize.visibility = View.VISIBLE
-        if (Util.isLandscape(resources)) popup.titleGridSize.text = resources.getText(R.string.action_grid_size_land)
+        popup.viewBinding.titleGridSize.visibility = View.VISIBLE
+        popup.viewBinding.groupGridSize.visibility = View.VISIBLE
+        if (Util.isLandscape(resources)) popup.viewBinding.titleGridSize.text = resources.getText(R.string.action_grid_size_land)
         val current = displayUtil.gridSize
         val max = displayUtil.maxGridSize
-        for (i in 0 until max) popup.groupGridSize.getChildAt(i).visibility = View.VISIBLE
-        popup.groupGridSize.clearCheck()
-        (popup.groupGridSize.getChildAt(current - 1) as RadioButton).isChecked = true
+        for (i in 0 until max) popup.viewBinding.groupGridSize.getChildAt(i).visibility = View.VISIBLE
+        popup.viewBinding.groupGridSize.clearCheck()
+        (popup.viewBinding.groupGridSize.getChildAt(current - 1) as RadioButton).isChecked = true
 
         // color footer
         if (this !is GenrePage) { // Genre Page never colored
-            popup.actionColoredFooters.visibility = View.VISIBLE
-            popup.actionColoredFooters.isChecked = displayUtil.colorFooter
-            popup.actionColoredFooters.isEnabled = displayUtil.gridSize > displayUtil.maxGridSizeForList
+            popup.viewBinding.actionColoredFooters.visibility = View.VISIBLE
+            popup.viewBinding.actionColoredFooters.isChecked = displayUtil.colorFooter
+            popup.viewBinding.actionColoredFooters.isEnabled = displayUtil.gridSize > displayUtil.maxGridSizeForList
         }
 
         // sort order
 
         // clear existed
-        popup.groupSortOrderMethod.visibility = View.VISIBLE
-        popup.titleSortOrderMethod.visibility = View.VISIBLE
-        popup.groupSortOrderRef.visibility = View.VISIBLE
-        popup.titleSortOrderRef.visibility = View.VISIBLE
-        for (i in 0 until popup.groupSortOrderRef.childCount) popup.groupSortOrderRef.getChildAt(i).visibility = View.GONE
+        popup.viewBinding.groupSortOrderMethod.visibility = View.VISIBLE
+        popup.viewBinding.titleSortOrderMethod.visibility = View.VISIBLE
+        popup.viewBinding.groupSortOrderRef.visibility = View.VISIBLE
+        popup.viewBinding.titleSortOrderRef.visibility = View.VISIBLE
+        for (i in 0 until popup.viewBinding.groupSortOrderRef.childCount) popup.viewBinding.groupSortOrderRef.getChildAt(i).visibility = View.GONE
 
         setupSortOrderImpl(displayUtil, popup)
     }
 
     protected abstract fun setupSortOrderImpl(
         displayUtil: DisplayUtil,
-        popup: PopupWindowMainBinding
+        popup: ListOptionsPopup
     )
 
-    protected fun dismissPopup(popup: PopupWindowMainBinding) {
+    protected fun dismissPopup(popup: ListOptionsPopup) {
 
         val displayUtil = DisplayUtil(this)
 
         //  Grid Size
         var gridSizeSelected = 0
         for (i in 0 until displayUtil.maxGridSize) {
-            if ((popup.groupGridSize.getChildAt(i) as RadioButton).isChecked) {
+            if ((popup.viewBinding.groupGridSize.getChildAt(i) as RadioButton).isChecked) {
                 gridSizeSelected = i + 1
                 break
             }
@@ -219,7 +218,7 @@ sealed class AbsDisplayPage<IT, A : DisplayAdapter<out Displayable>, LM : GridLa
 
         if (this !is GenrePage) {
             // color footer
-            val coloredFootersSelected = popup.actionColoredFooters.isChecked
+            val coloredFootersSelected = popup.viewBinding.actionColoredFooters.isChecked
             if (displayUtil.colorFooter != coloredFootersSelected) {
                 displayUtil.colorFooter = coloredFootersSelected
                 adapter.usePalette = coloredFootersSelected
@@ -233,7 +232,7 @@ sealed class AbsDisplayPage<IT, A : DisplayAdapter<out Displayable>, LM : GridLa
 
     protected abstract fun saveSortOrderImpl(
         displayUtil: DisplayUtil,
-        popup: PopupWindowMainBinding,
+        popup: ListOptionsPopup,
     )
 
     protected open val emptyMessage: Int @StringRes get() = R.string.empty

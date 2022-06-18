@@ -16,7 +16,6 @@ import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.adapter.display.DisplayAdapter
 import player.phonograph.adapter.display.GenreDisplayAdapter
-import player.phonograph.databinding.PopupWindowMainBinding
 import player.phonograph.mediastore.GenreLoader
 import player.phonograph.mediastore.sort.SortMode
 import player.phonograph.mediastore.sort.SortRef
@@ -62,38 +61,38 @@ class GenrePage : AbsDisplayPage<Genre, DisplayAdapter<Genre>, GridLayoutManager
 
     override fun setupSortOrderImpl(
         displayUtil: DisplayUtil,
-        popup: PopupWindowMainBinding
+        popup: ListOptionsPopup
     ) {
 
         val currentSortMode = displayUtil.sortMode
         Log.d(TAG, "Read cfg: sortMode $currentSortMode")
 
-        popup.groupSortOrderRef.clearCheck()
-        popup.sortOrderNamePlain.visibility = View.VISIBLE
-        popup.sortOrderSongCount.visibility = View.VISIBLE
+        popup.viewBinding.groupSortOrderRef.clearCheck()
+        popup.viewBinding.sortOrderNamePlain.visibility = View.VISIBLE
+        popup.viewBinding.sortOrderSongCount.visibility = View.VISIBLE
         when (currentSortMode.sortRef) {
-            SortRef.DISPLAY_NAME -> popup.groupSortOrderRef.check(R.id.sort_order_name_plain)
-            SortRef.SONG_COUNT -> popup.groupSortOrderRef.check(R.id.sort_order_song_count)
-            else -> popup.groupSortOrderRef.clearCheck()
+            SortRef.DISPLAY_NAME -> popup.viewBinding.groupSortOrderRef.check(R.id.sort_order_name_plain)
+            SortRef.SONG_COUNT -> popup.viewBinding.groupSortOrderRef.check(R.id.sort_order_song_count)
+            else -> popup.viewBinding.groupSortOrderRef.clearCheck()
         }
 
         when (currentSortMode.revert) {
-            false -> popup.groupSortOrderMethod.check(R.id.sort_method_a_z)
-            true -> popup.groupSortOrderMethod.check(R.id.sort_method_z_a)
+            false -> popup.viewBinding.groupSortOrderMethod.check(R.id.sort_method_a_z)
+            true -> popup.viewBinding.groupSortOrderMethod.check(R.id.sort_method_z_a)
         }
     }
 
     override fun saveSortOrderImpl(
         displayUtil: DisplayUtil,
-        popup: PopupWindowMainBinding,
+        popup: ListOptionsPopup,
     ) {
         // sort order
-        val revert = when (popup.groupSortOrderMethod.checkedRadioButtonId) {
+        val revert = when (popup.viewBinding.groupSortOrderMethod.checkedRadioButtonId) {
             R.id.sort_method_z_a -> true
             R.id.sort_method_a_z -> false
             else -> false
         }
-        val sortRef = when (popup.groupSortOrderRef.checkedRadioButtonId) {
+        val sortRef = when (popup.viewBinding.groupSortOrderRef.checkedRadioButtonId) {
             R.id.sort_order_name_plain -> SortRef.DISPLAY_NAME
             R.id.sort_order_song_count -> SortRef.SONG_COUNT
             else -> SortRef.ID
