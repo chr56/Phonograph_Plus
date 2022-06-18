@@ -118,6 +118,7 @@ class ListOptionsPopup private constructor(
             this.titleSortOrderRef.setTextColor(accentColor)
             // checkbox color
             this.actionColoredFooters.buttonTintList = widgetColor
+            this.useLegacyListFiles.buttonTintList = widgetColor
             // radioButton
             for (i in 0 until this.groupGridSize.childCount) (this.groupGridSize.getChildAt(i) as RadioButton).buttonTintList =
                 widgetColor
@@ -230,6 +231,17 @@ class ListOptionsPopup private constructor(
             viewBinding.actionColoredFooters.isEnabled = value
         }
 
+    var useLegacyListFiles: Boolean
+        get() = viewBinding.useLegacyListFiles.isChecked
+        set(value) {
+            viewBinding.useLegacyListFiles.isChecked = value
+        }
+
+    var showFileOption: Boolean
+        get() = viewBinding.useLegacyListFiles.visibility == VISIBLE
+        set(value) {
+            viewBinding.useLegacyListFiles.visibility = if (value) VISIBLE else GONE
+        }
     /*
     * Utils
     */

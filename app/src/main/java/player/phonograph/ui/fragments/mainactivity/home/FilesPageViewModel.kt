@@ -42,7 +42,7 @@ class FilesPageViewModel : ViewModel() {
             }
     }
 
-    val useMediaStore = true // TODO
+    var useMediaStore = true
 
     @Synchronized
     private fun listFilesMediaStore(

@@ -138,10 +138,13 @@ class FilesPage : AbsPage() {
 
         popup.sortRef = currentSortMode.sortRef
         popup.sortRefAvailable = arrayOf(SortRef.DISPLAY_NAME, SortRef.ADDED_DATE, SortRef.MODIFIED_DATE, SortRef.SIZE)
+
+        popup.showFileOption = true
     }
 
     private fun dismissPopup(popup: ListOptionsPopup) {
         Setting.instance.fileSortMode = FileSortMode(popup.sortRef, popup.revert)
+        model.useMediaStore = false
         reload()
     }
 

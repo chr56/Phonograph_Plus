@@ -378,6 +378,7 @@
     <string name="behaviour_force_legacy">強制使用舊方式</string>
     <string name="reached_to_root">已到達此卷的根目錄</string>
     <string name="sort_order_size">文件大小</string>
+    <string name="use_legacy_list_Files">使用舊式方法讀取文件</string>
     <plurals name="x_songs">
         <item quantity="other">%1$d 首</item>
     </plurals>

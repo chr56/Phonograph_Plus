@@ -397,6 +397,7 @@
     <string name="behaviour_force_legacy">Force to use legacy ways</string>
     <string name="reached_to_root">You have reached to root folder of this storage volume</string>
     <string name="sort_order_size">File Size</string>
+    <string name="use_legacy_list_Files">Use legacy way to read files</string>
     <plurals name="x_songs">
         <item quantity="one">%1$d song</item>
         <item quantity="other">%1$d songs</item>
