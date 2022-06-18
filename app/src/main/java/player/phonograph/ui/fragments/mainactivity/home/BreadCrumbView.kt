@@ -6,13 +6,21 @@ package player.phonograph.ui.fragments.mainactivity.home
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.Canvas
+import android.graphics.Rect
+import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.view.Gravity
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import androidx.appcompat.content.res.AppCompatResources
+import androidx.core.graphics.BlendModeColorFilterCompat
+import androidx.core.graphics.BlendModeCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import player.phonograph.R
 import player.phonograph.databinding.ItemTextBinding
 import player.phonograph.model.Location
 import util.mdcolor.pref.ThemeColor
@@ -48,6 +56,15 @@ class BreadCrumbView : FrameLayout {
         layoutManager = LinearLayoutManager(context).apply { orientation = LinearLayoutManager.HORIZONTAL }
         recyclerView.adapter = adapter
         recyclerView.layoutManager = layoutManager
+
+        val drawable = AppCompatResources.getDrawable(context, R.drawable.ic_keyboard_arrow_right_white_24dp)?.also {
+            it.colorFilter = BlendModeColorFilterCompat
+                .createBlendModeColorFilterCompat(
+                    ThemeColor.textColorPrimary(context),
+                    BlendModeCompat.SRC_IN
+                )
+        }
+        recyclerView.addItemDecoration(ItemDecorator(drawable!!))
 
         addView(
             recyclerView,
@@ -100,5 +117,30 @@ class BreadCrumbView : FrameLayout {
         class ViewHolder constructor(
             val viewBinding: ItemTextBinding
         ) : RecyclerView.ViewHolder(viewBinding.root)
+    }
+
+    class ItemDecorator(val drawable: Drawable) : RecyclerView.ItemDecoration() {
+
+        override fun getItemOffsets(
+            outRect: Rect,
+            view: View,
+            parent: RecyclerView,
+            state: RecyclerView.State
+        ) {
+            outRect.left = drawable.intrinsicWidth
+        }
+
+        override fun onDraw(c: Canvas, parent: RecyclerView, state: RecyclerView.State) {
+            val centerHorizontal = parent.height / 2
+            val top = centerHorizontal - drawable.intrinsicHeight / 2
+            val bottom = centerHorizontal + drawable.intrinsicHeight / 2
+            for (i in 1 until parent.childCount) {
+                val item = parent.getChildAt(i)
+                val left = item.left - drawable.intrinsicWidth
+                val right = item.left
+                drawable.setBounds(left, top, right, bottom)
+                drawable.draw(c)
+            }
+        }
     }
 }
