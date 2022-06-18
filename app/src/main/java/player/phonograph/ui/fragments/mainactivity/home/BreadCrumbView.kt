@@ -127,6 +127,7 @@ class BreadCrumbView : FrameLayout {
             parent: RecyclerView,
             state: RecyclerView.State
         ) {
+            if (parent.getChildAdapterPosition(view) == 0) return
             outRect.left = drawable.intrinsicWidth
         }
 
