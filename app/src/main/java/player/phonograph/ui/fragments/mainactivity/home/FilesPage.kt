@@ -49,7 +49,7 @@ import util.mdcolor.pref.ThemeColor
 
 class FilesPage : AbsPage() {
 
-    private val model: FilesViewModel by viewModels()
+    private val model: FilesPageViewModel by viewModels()
 
     private var _viewBinding: FragmentFolderPageBinding? = null
     private val binding get() = _viewBinding!!

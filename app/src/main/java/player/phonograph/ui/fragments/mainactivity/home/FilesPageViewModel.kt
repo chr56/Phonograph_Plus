@@ -14,7 +14,7 @@ import player.phonograph.mediastore.MediaStoreUtil.searchSongFiles
 import player.phonograph.model.FileEntity
 import player.phonograph.model.Location
 
-class FilesViewModel : ViewModel() {
+class FilesPageViewModel : ViewModel() {
     var currentLocation: Location = Location.HOME
 
     var currentFileList: MutableSet<FileEntity> = TreeSet<FileEntity>()
