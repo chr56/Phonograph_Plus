@@ -6,13 +6,13 @@ package player.phonograph.ui.fragments.mainactivity.home
 
 import android.annotation.SuppressLint
 import android.util.Log
-import android.view.View
 import androidx.recyclerview.widget.GridLayoutManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.yield
 import player.phonograph.App
+import player.phonograph.BuildConfig
 import player.phonograph.R
 import player.phonograph.adapter.display.AlbumDisplayAdapter
 import player.phonograph.adapter.display.DisplayAdapter
@@ -72,28 +72,19 @@ class AlbumPage : AbsDisplayPage<Album, DisplayAdapter<Album>, GridLayoutManager
         displayUtil: DisplayUtil,
         popup: ListOptionsPopup
     ) {
-
         val currentSortMode = displayUtil.sortMode
-        Log.d(TAG, "Read cfg: sortMode $currentSortMode")
+        if (BuildConfig.DEBUG) Log.d(GenrePage.TAG, "Read cfg: sortMode $currentSortMode")
 
-        with(popup.viewBinding){
-        groupSortOrderRef.clearCheck()
-        sortOrderAlbum.visibility = View.VISIBLE
-        sortOrderArtist.visibility = View.VISIBLE
-        sortOrderYear.visibility = View.VISIBLE
-        sortOrderSongCount.visibility = View.VISIBLE
-        when (currentSortMode.sortRef) {
-            SortRef.ALBUM_NAME -> groupSortOrderRef.check(R.id.sort_order_album)
-            SortRef.ARTIST_NAME -> groupSortOrderRef.check(R.id.sort_order_artist)
-            SortRef.YEAR -> groupSortOrderRef.check(R.id.sort_order_year)
-            SortRef.SONG_COUNT -> groupSortOrderRef.check(R.id.sort_order_song_count)
-            else -> groupSortOrderRef.clearCheck()
-        }
+        popup.allowRevert = true
+        popup.revert = currentSortMode.revert
 
-        when (currentSortMode.revert) {
-            false -> groupSortOrderMethod.check(R.id.sort_method_a_z)
-            true -> groupSortOrderMethod.check(R.id.sort_method_z_a)
-        }}
+        popup.sortRef = currentSortMode.sortRef
+        popup.sortRefAvailable = arrayOf(
+            SortRef.ALBUM_NAME,
+            SortRef.ARTIST_NAME,
+            SortRef.YEAR,
+            SortRef.SONG_COUNT,
+        )
     }
 
     override fun saveSortOrderImpl(
@@ -101,20 +92,7 @@ class AlbumPage : AbsDisplayPage<Album, DisplayAdapter<Album>, GridLayoutManager
         popup: ListOptionsPopup
     ) {
 
-        // sort order
-        val revert = when (popup.viewBinding.groupSortOrderMethod.checkedRadioButtonId) {
-            R.id.sort_method_z_a -> true
-            R.id.sort_method_a_z -> false
-            else -> false
-        }
-        val sortRef = when (popup.viewBinding.groupSortOrderRef.checkedRadioButtonId) {
-            R.id.sort_order_album -> SortRef.ALBUM_NAME
-            R.id.sort_order_year -> SortRef.YEAR
-            R.id.sort_order_artist -> SortRef.ARTIST_NAME
-            R.id.sort_order_song_count -> SortRef.SONG_COUNT
-            else -> SortRef.ID
-        }
-        val selected = SortMode(sortRef, revert)
+        val selected = SortMode(popup.sortRef, popup.revert)
         if (displayUtil.sortMode != selected) {
             displayUtil.sortMode = selected
             loadDataSet()
