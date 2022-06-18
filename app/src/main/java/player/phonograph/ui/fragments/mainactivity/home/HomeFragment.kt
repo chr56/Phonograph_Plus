@@ -69,18 +69,22 @@ class HomeFragment : AbsMainActivityFragment(), MainActivity.MainActivityFragmen
 
         Setting.instance.registerOnSharedPreferenceChangedListener(this)
     }
-    private fun setupToolbar() {
-        val primaryColor = ThemeColor.primaryColor(requireActivity())
-        val accentColor = ThemeColor.accentColor(requireActivity())
-        val primaryTextColor = MaterialColorHelper.getPrimaryTextColor(
+    private val primaryColor by lazy(LazyThreadSafetyMode.NONE) { ThemeColor.primaryColor(requireActivity()) }
+    private val accentColor by lazy(LazyThreadSafetyMode.NONE) { ThemeColor.accentColor(requireActivity()) }
+    private val primaryTextColor by lazy(LazyThreadSafetyMode.NONE) {
+        MaterialColorHelper.getPrimaryTextColor(
             requireActivity(),
             ColorUtil.isColorLight(primaryColor)
         )
-        val secondaryTextColor = MaterialColorHelper.getSecondaryTextColor(
+    }
+    private val secondaryTextColor by lazy(LazyThreadSafetyMode.NONE) {
+        MaterialColorHelper.getSecondaryTextColor(
             requireActivity(),
             ColorUtil.isColorLight(primaryColor)
         )
+    }
 
+    private fun setupToolbar() {
         val navigationIcon =
             AppCompatResources.getDrawable(requireActivity(), R.drawable.ic_menu_white_24dp)!!
         val colorFilter = BlendModeColorFilterCompat.createBlendModeColorFilterCompat(
@@ -211,14 +215,12 @@ class HomeFragment : AbsMainActivityFragment(), MainActivity.MainActivityFragmen
     ): MultiSelectionCab {
 
         val cfg: CabCfg = {
-            val primaryColor = ThemeColor.primaryColor(requireActivity())
-            val textColor = Color.WHITE
 
             backgroundColor = PhonographColorUtil.shiftBackgroundColorForLightText(primaryColor)
-            titleTextColor = textColor
+            titleTextColor = primaryTextColor
 
             closeDrawable = AppCompatResources.getDrawable(mainActivity, R.drawable.ic_close_white_24dp)!!.also {
-                it.colorFilter = BlendModeColorFilterCompat.createBlendModeColorFilterCompat(textColor, BlendModeCompat.SRC_IN)
+                it.colorFilter = BlendModeColorFilterCompat.createBlendModeColorFilterCompat(primaryTextColor, BlendModeCompat.SRC_IN)
             }
 
             this.menuRes = menuRes
