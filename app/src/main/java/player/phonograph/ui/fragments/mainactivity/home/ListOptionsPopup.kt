@@ -72,17 +72,17 @@ class ListOptionsPopup private constructor(
     @Suppress("MemberVisibilityCanBePrivate")
     fun hideAllPopupItems() {
         viewBinding.apply {
-            sortOrderBasic.visibility = View.GONE
-            sortOrderBasic.clearCheck()
-            textSortOrderBasic.visibility = View.GONE
+            groupSortOrderMethod.visibility = View.GONE
+            groupSortOrderMethod.clearCheck()
+            titleSortOrderMethod.visibility = View.GONE
 
-            sortOrderContent.visibility = View.GONE
-            sortOrderContent.clearCheck()
-            textSortOrderContent.visibility = View.GONE
+            groupSortOrderRef.visibility = View.GONE
+            groupSortOrderRef.clearCheck()
+            titleSortOrderRef.visibility = View.GONE
 
-            textGridSize.visibility = View.GONE
-            gridSize.clearCheck()
-            gridSize.visibility = View.GONE
+            groupGridSize.visibility = View.GONE
+            groupGridSize.clearCheck()
+            titleGridSize.visibility = View.GONE
 
             actionColoredFooters.visibility = View.GONE
         }
@@ -105,17 +105,17 @@ class ListOptionsPopup private constructor(
         )
         viewBinding.apply {
             // text color
-            this.textGridSize.setTextColor(accentColor)
-            this.textSortOrderBasic.setTextColor(accentColor)
-            this.textSortOrderContent.setTextColor(accentColor)
+            this.titleGridSize.setTextColor(accentColor)
+            this.titleSortOrderMethod.setTextColor(accentColor)
+            this.titleSortOrderRef.setTextColor(accentColor)
             // checkbox color
             this.actionColoredFooters.buttonTintList = widgetColor
             // radioButton
-            for (i in 0 until this.gridSize.childCount) (this.gridSize.getChildAt(i) as RadioButton).buttonTintList =
+            for (i in 0 until this.groupGridSize.childCount) (this.groupGridSize.getChildAt(i) as RadioButton).buttonTintList =
                 widgetColor
-            for (i in 0 until this.sortOrderContent.childCount) (this.sortOrderContent.getChildAt(i) as RadioButton).buttonTintList =
+            for (i in 0 until this.groupSortOrderRef.childCount) (this.groupSortOrderRef.getChildAt(i) as RadioButton).buttonTintList =
                 widgetColor
-            for (i in 0 until this.sortOrderBasic.childCount) (this.sortOrderBasic.getChildAt(i) as RadioButton).buttonTintList =
+            for (i in 0 until this.groupSortOrderMethod.childCount) (this.groupSortOrderMethod.getChildAt(i) as RadioButton).buttonTintList =
                 widgetColor
         }
     }

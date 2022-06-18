@@ -134,13 +134,13 @@ class FilesPage : AbsPage() {
 
     private fun configPopup(popup: PopupWindowMainBinding) {
         // clear existed
-        popup.sortOrderBasic.visibility = View.VISIBLE
-        popup.textSortOrderBasic.visibility = View.VISIBLE
-        popup.sortOrderContent.visibility = View.VISIBLE
-        popup.textSortOrderContent.visibility = View.VISIBLE
-        for (i in 0 until popup.sortOrderContent.childCount) popup.sortOrderContent.getChildAt(i).visibility = View.GONE
+        popup.groupSortOrderMethod.visibility = View.VISIBLE
+        popup.titleSortOrderMethod.visibility = View.VISIBLE
+        popup.groupSortOrderRef.visibility = View.VISIBLE
+        popup.titleSortOrderRef.visibility = View.VISIBLE
+        for (i in 0 until popup.groupSortOrderRef.childCount) popup.groupSortOrderRef.getChildAt(i).visibility = View.GONE
 
-        popup.sortOrderContent.clearCheck()
+        popup.groupSortOrderRef.clearCheck()
         popup.sortOrderNamePlain.visibility = View.VISIBLE
         popup.sortOrderDateAdded.visibility = View.VISIBLE
         popup.sortOrderDateModified.visibility = View.VISIBLE
@@ -148,26 +148,26 @@ class FilesPage : AbsPage() {
 
         val currentSortMode = Setting.instance.fileSortMode
         when (currentSortMode.sortRef) {
-            FileRef.DISPLAY_NAME -> popup.sortOrderContent.check(R.id.sort_order_name_plain)
-            FileRef.ADDED_DATE -> popup.sortOrderContent.check(R.id.sort_order_date_added)
-            FileRef.MODIFIED_DATE -> popup.sortOrderContent.check(R.id.sort_order_date_modified)
-            FileRef.SIZE -> popup.sortOrderContent.check(R.id.sort_order_size)
-            else -> popup.sortOrderContent.clearCheck()
+            FileRef.DISPLAY_NAME -> popup.groupSortOrderRef.check(R.id.sort_order_name_plain)
+            FileRef.ADDED_DATE -> popup.groupSortOrderRef.check(R.id.sort_order_date_added)
+            FileRef.MODIFIED_DATE -> popup.groupSortOrderRef.check(R.id.sort_order_date_modified)
+            FileRef.SIZE -> popup.groupSortOrderRef.check(R.id.sort_order_size)
+            else -> popup.groupSortOrderRef.clearCheck()
         }
 
         when (currentSortMode.revert) {
-            false -> popup.sortOrderBasic.check(R.id.sort_order_a_z)
-            true -> popup.sortOrderBasic.check(R.id.sort_order_z_a)
+            false -> popup.groupSortOrderMethod.check(R.id.sort_method_a_z)
+            true -> popup.groupSortOrderMethod.check(R.id.sort_method_z_a)
         }
     }
 
     private fun dismissPopup(popUpView: PopupWindowMainBinding) {
-        val revert = when (popUpView.sortOrderBasic.checkedRadioButtonId) {
-            R.id.sort_order_z_a -> true
-            R.id.sort_order_a_z -> false
+        val revert = when (popUpView.groupSortOrderMethod.checkedRadioButtonId) {
+            R.id.sort_method_z_a -> true
+            R.id.sort_method_a_z -> false
             else -> false
         }
-        val sortRef = when (popUpView.sortOrderContent.checkedRadioButtonId) {
+        val sortRef = when (popUpView.groupSortOrderRef.checkedRadioButtonId) {
             R.id.sort_order_name_plain -> FileRef.DISPLAY_NAME
             R.id.sort_order_date_added -> FileRef.ADDED_DATE
             R.id.sort_order_date_modified -> FileRef.MODIFIED_DATE

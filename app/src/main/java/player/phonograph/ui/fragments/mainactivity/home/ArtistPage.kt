@@ -77,20 +77,20 @@ class ArtistPage : AbsDisplayPage<Artist, DisplayAdapter<Artist>, GridLayoutMana
         val currentSortMode = displayUtil.sortMode
         Log.d(TAG, "Read cfg: sortMode $currentSortMode")
 
-        popup.sortOrderContent.clearCheck()
+        popup.groupSortOrderRef.clearCheck()
         popup.sortOrderArtist.visibility = View.VISIBLE
         popup.sortOrderAlbumCount.visibility = View.VISIBLE
         popup.sortOrderSongCount.visibility = View.VISIBLE
         when (currentSortMode.sortRef) {
-            SortRef.ARTIST_NAME -> popup.sortOrderContent.check(R.id.sort_order_artist)
-            SortRef.ALBUM_COUNT -> popup.sortOrderContent.check(R.id.sort_order_album_count)
-            SortRef.SONG_COUNT -> popup.sortOrderContent.check(R.id.sort_order_song_count)
-            else -> popup.sortOrderContent.clearCheck()
+            SortRef.ARTIST_NAME -> popup.groupSortOrderRef.check(R.id.sort_order_artist)
+            SortRef.ALBUM_COUNT -> popup.groupSortOrderRef.check(R.id.sort_order_album_count)
+            SortRef.SONG_COUNT -> popup.groupSortOrderRef.check(R.id.sort_order_song_count)
+            else -> popup.groupSortOrderRef.clearCheck()
         }
 
         when (currentSortMode.revert) {
-            false -> popup.sortOrderBasic.check(R.id.sort_order_a_z)
-            true -> popup.sortOrderBasic.check(R.id.sort_order_z_a)
+            false -> popup.groupSortOrderMethod.check(R.id.sort_method_a_z)
+            true -> popup.groupSortOrderMethod.check(R.id.sort_method_z_a)
         }
     }
 
@@ -100,12 +100,12 @@ class ArtistPage : AbsDisplayPage<Artist, DisplayAdapter<Artist>, GridLayoutMana
     ) {
 
         // sort order
-        val revert = when (popup.sortOrderBasic.checkedRadioButtonId) {
-            R.id.sort_order_z_a -> true
-            R.id.sort_order_a_z -> false
+        val revert = when (popup.groupSortOrderMethod.checkedRadioButtonId) {
+            R.id.sort_method_z_a -> true
+            R.id.sort_method_a_z -> false
             else -> false
         }
-        val sortRef = when (popup.sortOrderContent.checkedRadioButtonId) {
+        val sortRef = when (popup.groupSortOrderRef.checkedRadioButtonId) {
             R.id.sort_order_artist -> SortRef.ARTIST_NAME
             R.id.sort_order_album_count -> SortRef.ALBUM_COUNT
             R.id.sort_order_song_count -> SortRef.SONG_COUNT

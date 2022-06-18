@@ -77,22 +77,22 @@ class AlbumPage : AbsDisplayPage<Album, DisplayAdapter<Album>, GridLayoutManager
         val currentSortMode = displayUtil.sortMode
         Log.d(TAG, "Read cfg: sortMode $currentSortMode")
 
-        popup.sortOrderContent.clearCheck()
+        popup.groupSortOrderRef.clearCheck()
         popup.sortOrderAlbum.visibility = View.VISIBLE
         popup.sortOrderArtist.visibility = View.VISIBLE
         popup.sortOrderYear.visibility = View.VISIBLE
         popup.sortOrderSongCount.visibility = View.VISIBLE
         when (currentSortMode.sortRef) {
-            SortRef.ALBUM_NAME -> popup.sortOrderContent.check(R.id.sort_order_album)
-            SortRef.ARTIST_NAME -> popup.sortOrderContent.check(R.id.sort_order_artist)
-            SortRef.YEAR -> popup.sortOrderContent.check(R.id.sort_order_year)
-            SortRef.SONG_COUNT -> popup.sortOrderContent.check(R.id.sort_order_song_count)
-            else -> popup.sortOrderContent.clearCheck()
+            SortRef.ALBUM_NAME -> popup.groupSortOrderRef.check(R.id.sort_order_album)
+            SortRef.ARTIST_NAME -> popup.groupSortOrderRef.check(R.id.sort_order_artist)
+            SortRef.YEAR -> popup.groupSortOrderRef.check(R.id.sort_order_year)
+            SortRef.SONG_COUNT -> popup.groupSortOrderRef.check(R.id.sort_order_song_count)
+            else -> popup.groupSortOrderRef.clearCheck()
         }
 
         when (currentSortMode.revert) {
-            false -> popup.sortOrderBasic.check(R.id.sort_order_a_z)
-            true -> popup.sortOrderBasic.check(R.id.sort_order_z_a)
+            false -> popup.groupSortOrderMethod.check(R.id.sort_method_a_z)
+            true -> popup.groupSortOrderMethod.check(R.id.sort_method_z_a)
         }
     }
 
@@ -102,12 +102,12 @@ class AlbumPage : AbsDisplayPage<Album, DisplayAdapter<Album>, GridLayoutManager
     ) {
 
         // sort order
-        val revert = when (popup.sortOrderBasic.checkedRadioButtonId) {
-            R.id.sort_order_z_a -> true
-            R.id.sort_order_a_z -> false
+        val revert = when (popup.groupSortOrderMethod.checkedRadioButtonId) {
+            R.id.sort_method_z_a -> true
+            R.id.sort_method_a_z -> false
             else -> false
         }
-        val sortRef = when (popup.sortOrderContent.checkedRadioButtonId) {
+        val sortRef = when (popup.groupSortOrderRef.checkedRadioButtonId) {
             R.id.sort_order_album -> SortRef.ALBUM_NAME
             R.id.sort_order_year -> SortRef.YEAR
             R.id.sort_order_artist -> SortRef.ARTIST_NAME

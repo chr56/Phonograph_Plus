@@ -158,14 +158,14 @@ sealed class AbsDisplayPage<IT, A : DisplayAdapter<out Displayable>, LM : GridLa
         val displayUtil = DisplayUtil(this)
 
         // grid size
-        popup.textGridSize.visibility = View.VISIBLE
-        popup.gridSize.visibility = View.VISIBLE
-        if (Util.isLandscape(resources)) popup.textGridSize.text = resources.getText(R.string.action_grid_size_land)
+        popup.titleGridSize.visibility = View.VISIBLE
+        popup.groupGridSize.visibility = View.VISIBLE
+        if (Util.isLandscape(resources)) popup.titleGridSize.text = resources.getText(R.string.action_grid_size_land)
         val current = displayUtil.gridSize
         val max = displayUtil.maxGridSize
-        for (i in 0 until max) popup.gridSize.getChildAt(i).visibility = View.VISIBLE
-        popup.gridSize.clearCheck()
-        (popup.gridSize.getChildAt(current - 1) as RadioButton).isChecked = true
+        for (i in 0 until max) popup.groupGridSize.getChildAt(i).visibility = View.VISIBLE
+        popup.groupGridSize.clearCheck()
+        (popup.groupGridSize.getChildAt(current - 1) as RadioButton).isChecked = true
 
         // color footer
         if (this !is GenrePage) { // Genre Page never colored
@@ -177,11 +177,11 @@ sealed class AbsDisplayPage<IT, A : DisplayAdapter<out Displayable>, LM : GridLa
         // sort order
 
         // clear existed
-        popup.sortOrderBasic.visibility = View.VISIBLE
-        popup.textSortOrderBasic.visibility = View.VISIBLE
-        popup.sortOrderContent.visibility = View.VISIBLE
-        popup.textSortOrderContent.visibility = View.VISIBLE
-        for (i in 0 until popup.sortOrderContent.childCount) popup.sortOrderContent.getChildAt(i).visibility = View.GONE
+        popup.groupSortOrderMethod.visibility = View.VISIBLE
+        popup.titleSortOrderMethod.visibility = View.VISIBLE
+        popup.groupSortOrderRef.visibility = View.VISIBLE
+        popup.titleSortOrderRef.visibility = View.VISIBLE
+        for (i in 0 until popup.groupSortOrderRef.childCount) popup.groupSortOrderRef.getChildAt(i).visibility = View.GONE
 
         setupSortOrderImpl(displayUtil, popup)
     }
@@ -198,7 +198,7 @@ sealed class AbsDisplayPage<IT, A : DisplayAdapter<out Displayable>, LM : GridLa
         //  Grid Size
         var gridSizeSelected = 0
         for (i in 0 until displayUtil.maxGridSize) {
-            if ((popup.gridSize.getChildAt(i) as RadioButton).isChecked) {
+            if ((popup.groupGridSize.getChildAt(i) as RadioButton).isChecked) {
                 gridSizeSelected = i + 1
                 break
             }
