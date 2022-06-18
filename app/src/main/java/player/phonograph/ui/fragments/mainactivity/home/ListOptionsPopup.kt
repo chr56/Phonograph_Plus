@@ -14,6 +14,7 @@ import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.PopupWindow
 import android.widget.RadioButton
+import androidx.annotation.IdRes
 import androidx.core.view.iterator
 import player.phonograph.R
 import player.phonograph.databinding.PopupWindowMainBinding
@@ -158,41 +159,14 @@ class ListOptionsPopup private constructor(
         }
 
     var sortRef: SortRef
-        get() =
-            when (viewBinding.groupSortOrderRef.checkedRadioButtonId) {
-                R.id.sort_order_song -> SortRef.SONG_NAME
-                R.id.sort_order_album -> SortRef.ALBUM_NAME
-                R.id.sort_order_artist -> SortRef.ARTIST_NAME
-                R.id.sort_order_year -> SortRef.YEAR
-                R.id.sort_order_date_added -> SortRef.ADDED_DATE
-                R.id.sort_order_date_modified -> SortRef.MODIFIED_DATE
-                R.id.sort_order_duration -> SortRef.DURATION
-                R.id.sort_order_name_plain -> SortRef.DISPLAY_NAME
-                R.id.sort_order_song_count -> SortRef.SONG_COUNT
-                R.id.sort_order_album_count -> SortRef.ALBUM_COUNT
-                R.id.sort_order_size -> SortRef.SIZE
-                else -> { SortRef.ID }
-            }
+        get() = getSortOrderById(viewBinding.groupSortOrderRef.checkedRadioButtonId)
         set(ref) {
             viewBinding.apply {
                 titleSortOrderRef.visibility = VISIBLE
                 titleSortOrderRef.visibility = VISIBLE
                 groupSortOrderRef.clearCheck()
                 check(
-                    when (ref) {
-                        SortRef.SONG_NAME -> sortOrderSong
-                        SortRef.ALBUM_NAME -> sortOrderAlbum
-                        SortRef.ARTIST_NAME -> sortOrderArtist
-                        SortRef.YEAR -> sortOrderYear
-                        SortRef.ADDED_DATE -> sortOrderDateAdded
-                        SortRef.MODIFIED_DATE -> sortOrderDateModified
-                        SortRef.DURATION -> sortOrderDuration
-                        SortRef.DISPLAY_NAME -> sortOrderNamePlain
-                        SortRef.SONG_COUNT -> sortOrderSongCount
-                        SortRef.ALBUM_COUNT -> sortOrderAlbumCount
-                        SortRef.SIZE -> sortOrderSize
-                        else -> null
-                    }
+                    findSortOrderButton(sortRef)
                 )
             }
         }
@@ -200,25 +174,45 @@ class ListOptionsPopup private constructor(
     var sortRefAvailable: Array<SortRef> = emptyArray()
         set(value) {
             field = value
-            if (value.isNotEmpty()) viewBinding.groupSortOrderRef.visibility = VISIBLE
+            if (value.isNotEmpty()) viewBinding.groupSortOrderRef.visibility = VISIBLE // container
             for (v in viewBinding.groupSortOrderRef.iterator()) v.visibility = GONE // hide all
-            for (ref in value) with(viewBinding) {
-                val v = when (ref) {
-                    SortRef.SONG_NAME -> sortOrderSong
-                    SortRef.ALBUM_NAME -> sortOrderAlbum
-                    SortRef.ARTIST_NAME -> sortOrderArtist
-                    SortRef.YEAR -> sortOrderYear
-                    SortRef.ADDED_DATE -> sortOrderDateAdded
-                    SortRef.MODIFIED_DATE -> sortOrderDateModified
-                    SortRef.DURATION -> sortOrderDuration
-                    SortRef.DISPLAY_NAME -> sortOrderNamePlain
-                    SortRef.SONG_COUNT -> sortOrderSongCount
-                    SortRef.ALBUM_COUNT -> sortOrderAlbumCount
-                    SortRef.SIZE -> sortOrderSize
-                    else -> return
-                }
-                v.visibility = VISIBLE
-            }
+            for (ref in value) findSortOrderButton(ref)?.visibility = VISIBLE // show selected
+        }
+
+    /*
+    * Utils
+    */
+
+    private fun getSortOrderById(@IdRes id: Int): SortRef =
+        when (viewBinding.groupSortOrderRef.checkedRadioButtonId) {
+            R.id.sort_order_song -> SortRef.SONG_NAME
+            R.id.sort_order_album -> SortRef.ALBUM_NAME
+            R.id.sort_order_artist -> SortRef.ARTIST_NAME
+            R.id.sort_order_year -> SortRef.YEAR
+            R.id.sort_order_date_added -> SortRef.ADDED_DATE
+            R.id.sort_order_date_modified -> SortRef.MODIFIED_DATE
+            R.id.sort_order_duration -> SortRef.DURATION
+            R.id.sort_order_name_plain -> SortRef.DISPLAY_NAME
+            R.id.sort_order_song_count -> SortRef.SONG_COUNT
+            R.id.sort_order_album_count -> SortRef.ALBUM_COUNT
+            R.id.sort_order_size -> SortRef.SIZE
+            else -> { SortRef.ID }
+        }
+
+    private fun findSortOrderButton(ref: SortRef): RadioButton? =
+        when (ref) {
+            SortRef.SONG_NAME -> viewBinding.sortOrderSong
+            SortRef.ALBUM_NAME -> viewBinding.sortOrderAlbum
+            SortRef.ARTIST_NAME -> viewBinding.sortOrderArtist
+            SortRef.YEAR -> viewBinding.sortOrderYear
+            SortRef.ADDED_DATE -> viewBinding.sortOrderDateAdded
+            SortRef.MODIFIED_DATE -> viewBinding.sortOrderDateModified
+            SortRef.DURATION -> viewBinding.sortOrderDuration
+            SortRef.DISPLAY_NAME -> viewBinding.sortOrderNamePlain
+            SortRef.SONG_COUNT -> viewBinding.sortOrderSongCount
+            SortRef.ALBUM_COUNT -> viewBinding.sortOrderAlbumCount
+            SortRef.SIZE -> viewBinding.sortOrderSize
+            else -> null
         }
 
     private fun check(radioButton: RadioButton?) {
