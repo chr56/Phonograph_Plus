@@ -4,8 +4,6 @@
 
 package player.phonograph.ui.fragments.mainactivity.home
 
-import android.content.res.ColorStateList
-import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.os.Environment
@@ -14,8 +12,6 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.PopupWindow
-import android.widget.RadioButton
 import android.widget.Toast
 import androidx.annotation.DrawableRes
 import androidx.appcompat.content.res.AppCompatResources
@@ -29,7 +25,6 @@ import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.list.listItemsSingleChoice
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.snackbar.Snackbar
-import java.lang.ref.WeakReference
 import lib.phonograph.storage.root
 import player.phonograph.App
 import player.phonograph.R
@@ -43,7 +38,6 @@ import player.phonograph.model.Location
 import player.phonograph.notification.ErrorNotification
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.settings.Setting
-import player.phonograph.util.PhonographColorUtil
 import player.phonograph.util.ViewUtil.setUpFastScrollRecyclerViewColor
 import util.mdcolor.pref.ThemeColor
 
@@ -80,7 +74,13 @@ class FilesPage : AbsPage() {
         // header
         binding.buttonPageHeader.setImageDrawable(getDrawable(R.drawable.ic_sort_variant_white_24dp))
         binding.buttonPageHeader.setOnClickListener {
-            onPopupShow()
+            popup.showAtLocation(
+                binding.root, Gravity.TOP or Gravity.END, 0,
+                (
+                    hostFragment.mainActivity.findViewById<player.phonograph.views.StatusBarView>(R.id.status_bar)?.height ?: 8
+                    ) +
+                    hostFragment.totalHeaderHeight + binding.innerAppBar.height
+            )
         }
         binding.buttonBack.setImageDrawable(getDrawable(R.drawable.icon_back_white))
         binding.buttonBack.setOnClickListener { gotoTopLevel() }
@@ -108,7 +108,9 @@ class FilesPage : AbsPage() {
                     model.currentLocation = it.location
                     reload()
                 }
-                is FileEntity.File -> { MusicPlayerRemote.playNext(it.linkedSong) }
+                is FileEntity.File -> {
+                    MusicPlayerRemote.playNext(it.linkedSong)
+                }
             }
         }, hostFragment)
 
@@ -123,96 +125,18 @@ class FilesPage : AbsPage() {
         model.loadFiles { reload() }
     }
 
-    // all pages share/re-used one popup on host fragment
-    private val popupWindow: PopupWindow
+    private var _popup: ListOptionsPopup? = null
+    private val popup: ListOptionsPopup
         get() {
-            if (hostFragment.displayPopup.get() == null) {
-                hostFragment.displayPopup = WeakReference(createPopup())
-            }
-            return hostFragment.displayPopup.get()!!
-        }
-    private val _bindingPopup: PopupWindowMainBinding?
-        get() {
-            if (hostFragment.displayPopupView.get() == null)
-                hostFragment.displayPopupView =
-                    WeakReference(PopupWindowMainBinding.inflate(LayoutInflater.from(hostFragment.mainActivity)))
-            return hostFragment.displayPopupView.get()!!
-        }
-    private val popupView get() = _bindingPopup!!
-
-    private fun createPopup(): PopupWindow {
-
-        val accentColor = ThemeColor.accentColor(hostFragment.mainActivity)
-        val textColor = ThemeColor.textColorSecondary(hostFragment.mainActivity)
-        val widgetColor = ColorStateList(
-            arrayOf(
-                intArrayOf(android.R.attr.state_enabled),
-                intArrayOf(android.R.attr.state_selected),
-                intArrayOf()
-            ),
-            intArrayOf(accentColor, accentColor, textColor)
-        )
-        //
-        // init content color
-        //
-        popupView.apply {
-            // text color
-            this.textGridSize.setTextColor(accentColor)
-            this.textSortOrderBasic.setTextColor(accentColor)
-            this.textSortOrderContent.setTextColor(accentColor)
-            // checkbox color
-            this.actionColoredFooters.buttonTintList = widgetColor
-            // radioButton
-            for (i in 0 until this.gridSize.childCount) (this.gridSize.getChildAt(i) as RadioButton).buttonTintList =
-                widgetColor
-            for (i in 0 until this.sortOrderContent.childCount) (this.sortOrderContent.getChildAt(i) as RadioButton).buttonTintList =
-                widgetColor
-            for (i in 0 until this.sortOrderBasic.childCount) (this.sortOrderBasic.getChildAt(i) as RadioButton).buttonTintList =
-                widgetColor
+            if (_popup == null) _popup =
+                ListOptionsPopup(hostFragment.mainActivity).apply {
+                    onShow = this@FilesPage::configPopup
+                    onDismiss = this@FilesPage::dismissPopup
+                }
+            return _popup!!
         }
 
-        return PopupWindow(
-            popupView.root,
-            ViewGroup.LayoutParams.WRAP_CONTENT,
-            ViewGroup.LayoutParams.WRAP_CONTENT,
-            true
-        ).apply {
-            this.animationStyle = android.R.style.Animation_Dialog
-            resetPopupMenuBackgroundColor(this)
-        }
-    }
-
-    private fun resetPopupMenuBackgroundColor(popupWindow: PopupWindow) {
-        popupWindow.setBackgroundDrawable(
-            ColorDrawable(
-                PhonographColorUtil.getCorrectBackgroundColor(
-                    hostFragment.mainActivity
-                )
-            )
-        )
-    }
-    private fun onPopupShow() {
-        // first, hide all items
-        hideAllPopupItems()
-
-        // display available items
-        configPopup(popupWindow, popupView)
-        popupWindow.setOnDismissListener(initOnDismissListener(popupWindow, popupView))
-
-        // show popup
-        popupWindow.showAtLocation(
-            binding.root, Gravity.TOP or Gravity.END, 0,
-            (
-                hostFragment.mainActivity.findViewById<player.phonograph.views.StatusBarView>(R.id.status_bar)?.height
-                    ?: 8
-                ) +
-                hostFragment.totalHeaderHeight + binding.innerAppBar.height
-        )
-
-        // then valid background color
-        resetPopupMenuBackgroundColor(popupWindow)
-    }
-    private fun configPopup(popupMenu: PopupWindow, popup: PopupWindowMainBinding) {
+    private fun configPopup(popup: PopupWindowMainBinding) {
         // clear existed
         popup.sortOrderBasic.visibility = View.VISIBLE
         popup.textSortOrderBasic.visibility = View.VISIBLE
@@ -241,42 +165,21 @@ class FilesPage : AbsPage() {
         }
     }
 
-    protected fun hideAllPopupItems() {
-        popupView.sortOrderBasic.visibility = View.GONE
-        popupView.sortOrderBasic.clearCheck()
-        popupView.textSortOrderBasic.visibility = View.GONE
-
-        popupView.sortOrderContent.visibility = View.GONE
-        popupView.sortOrderContent.clearCheck()
-        popupView.textSortOrderContent.visibility = View.GONE
-
-        popupView.textGridSize.visibility = View.GONE
-        popupView.gridSize.clearCheck()
-        popupView.gridSize.visibility = View.GONE
-
-        popupView.actionColoredFooters.visibility = View.GONE
-    }
-
-    private fun initOnDismissListener(
-        popupMenu: PopupWindow,
-        popup: PopupWindowMainBinding,
-    ): PopupWindow.OnDismissListener {
-        return PopupWindow.OnDismissListener {
-            val revert = when (popup.sortOrderBasic.checkedRadioButtonId) {
-                R.id.sort_order_z_a -> true
-                R.id.sort_order_a_z -> false
-                else -> false
-            }
-            val sortRef = when (popup.sortOrderContent.checkedRadioButtonId) {
-                R.id.sort_order_name_plain -> FileRef.DISPLAY_NAME
-                R.id.sort_order_date_added -> FileRef.ADDED_DATE
-                R.id.sort_order_date_modified -> FileRef.MODIFIED_DATE
-                R.id.sort_order_size -> FileRef.SIZE
-                else -> FileRef.ID
-            }
-            Setting.instance.fileSortMode = FileSortMode(sortRef, revert)
-            reload()
+    private fun dismissPopup(popUpView: PopupWindowMainBinding) {
+        val revert = when (popUpView.sortOrderBasic.checkedRadioButtonId) {
+            R.id.sort_order_z_a -> true
+            R.id.sort_order_a_z -> false
+            else -> false
         }
+        val sortRef = when (popUpView.sortOrderContent.checkedRadioButtonId) {
+            R.id.sort_order_name_plain -> FileRef.DISPLAY_NAME
+            R.id.sort_order_date_added -> FileRef.ADDED_DATE
+            R.id.sort_order_date_modified -> FileRef.MODIFIED_DATE
+            R.id.sort_order_size -> FileRef.SIZE
+            else -> FileRef.ID
+        }
+        Setting.instance.fileSortMode = FileSortMode(sortRef, revert)
+        reload()
     }
 
     /**
