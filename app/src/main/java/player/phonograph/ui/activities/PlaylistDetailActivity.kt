@@ -13,9 +13,6 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.ImageView
-import androidx.appcompat.content.res.AppCompatResources
-import androidx.core.graphics.BlendModeColorFilterCompat
-import androidx.core.graphics.BlendModeCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.afollestad.materialdialogs.MaterialDialog
@@ -47,9 +44,9 @@ import player.phonograph.model.playlist.SmartPlaylist
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.settings.Setting
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
+import player.phonograph.util.ImageUtil.getTintedDrawable
 import player.phonograph.util.PhonographColorUtil
 import player.phonograph.util.PlaylistsUtil
-import player.phonograph.util.ViewUtil
 import player.phonograph.util.ViewUtil.setUpFastScrollRecyclerViewColor
 import util.mdcolor.pref.ThemeColor
 import util.mddesign.core.Themer
@@ -322,7 +319,7 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandle
         showCallback: ShowCallback?,
         selectCallback: SelectCallback?,
         hideCallback: HideCallback?,
-        destroyCallback: lib.phonograph.cab.DestroyCallback?,
+        destroyCallback: DestroyCallback?,
     ): MultiSelectionCab {
         val cfg: CabCfg = {
             val primaryColor = ThemeColor.primaryColor(this@PlaylistDetailActivity)
@@ -331,9 +328,7 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandle
             backgroundColor = PhonographColorUtil.shiftBackgroundColorForLightText(primaryColor)
             titleTextColor = textColor
 
-            closeDrawable = AppCompatResources.getDrawable(this@PlaylistDetailActivity, R.drawable.ic_close_white_24dp)!!.also {
-                it.colorFilter = BlendModeColorFilterCompat.createBlendModeColorFilterCompat(textColor, BlendModeCompat.SRC_IN)
-            }
+            closeDrawable = getTintedDrawable(R.drawable.ic_close_white_24dp, textColor)!!
 
             this.menuRes = menuRes
 
