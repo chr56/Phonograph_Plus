@@ -28,6 +28,7 @@ import player.phonograph.settings.Setting
 import player.phonograph.ui.activities.MainActivity
 import player.phonograph.ui.activities.SearchActivity
 import player.phonograph.ui.fragments.mainactivity.AbsMainActivityFragment
+import player.phonograph.util.ImageUtil.getTintedDrawable
 import player.phonograph.util.PhonographColorUtil
 import util.mdcolor.ColorUtil
 import util.mdcolor.pref.ThemeColor
@@ -187,7 +188,7 @@ class HomeFragment : AbsMainActivityFragment(), MainActivity.MainActivityFragmen
             backgroundColor = PhonographColorUtil.shiftBackgroundColorForLightText(primaryColor)
             titleTextColor = primaryTextColor
 
-            closeDrawable = getDrawable(R.drawable.ic_close_white_24dp)!!
+            closeDrawable = mainActivity.getTintedDrawable(R.drawable.ic_close_white_24dp, primaryTextColor)!!
 
             this.menuRes = menuRes
 
