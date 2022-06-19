@@ -32,187 +32,177 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.github.ksoichiro.android.observablescrollview.ObservableRecyclerView
-            android:id="@+id/recycler_view"
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/inner_app_bar"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:clipToPadding="false"
-            android:divider="@null"
-            android:dividerHeight="0dp"
-            android:scrollbars="none" />
+            android:layout_height="wrap_content">
 
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
 
-            <LinearLayout
-                android:id="@+id/header"
+            <com.google.android.material.appbar.CollapsingToolbarLayout
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/detail_header_height"
-                android:background="?attr/defaultFooterColor"
-                android:elevation="@dimen/toolbar_elevation"
-                android:orientation="horizontal"
-                tools:ignore="UnusedAttribute">
-
-                <!--placeholder image view, the actual image view can't go here or the shared element transition won't work right-->
-                <View
-                    android:layout_width="@dimen/detail_header_image_height"
-                    android:layout_height="@dimen/detail_header_image_height"
-                    android:layout_margin="16dp" />
+                android:layout_height="wrap_content"
+                app:layout_scrollFlags="scroll">
 
                 <LinearLayout
+                    android:id="@+id/header"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginBottom="16dp"
-                    android:orientation="vertical">
+                    android:layout_height="@dimen/detail_header_height"
+                    android:background="?attr/defaultFooterColor"
+                    android:elevation="@dimen/toolbar_elevation"
+                    android:orientation="horizontal"
+                    tools:ignore="UnusedAttribute">
+
+
+                    <ImageView
+                        android:id="@+id/image"
+                        android:layout_width="@dimen/detail_header_image_height"
+                        android:layout_height="@dimen/detail_header_image_height"
+                        android:layout_margin="16dp"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/default_album_art"
+                        android:transitionName="@string/transition_album_art"
+                        tools:ignore="ContentDescription,UnusedAttribute" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="2"
-                        android:gravity="center_vertical"
-                        android:orientation="horizontal"
-                        android:paddingStart="0dp"
-                        android:paddingLeft="0dp"
-                        android:paddingEnd="16dp"
-                        android:paddingRight="16dp">
+                        android:layout_height="match_parent"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginBottom="16dp"
+                        android:orientation="vertical">
 
-                        <ImageView
-                            android:id="@+id/artist_icon"
-                            android:layout_width="24dp"
-                            android:layout_height="24dp"
-                            android:layout_marginStart="0dp"
-                            android:layout_marginLeft="0dp"
-                            android:layout_marginEnd="8dp"
-                            android:layout_marginRight="8dp"
-                            tools:ignore="ContentDescription,UnusedAttribute" />
-
-                        <TextView
-                            android:id="@+id/artist_text"
-                            android:layout_width="wrap_content"
+                        <LinearLayout
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:ellipsize="end"
-                            android:maxLines="@integer/detail_header_tile_maxLines"
-                            android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
+                            android:layout_weight="2"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal"
+                            android:paddingStart="0dp"
+                            android:paddingLeft="0dp"
+                            android:paddingEnd="16dp"
+                            android:paddingRight="16dp">
 
-                    </LinearLayout>
+                            <ImageView
+                                android:id="@+id/artist_icon"
+                                android:layout_width="24dp"
+                                android:layout_height="24dp"
+                                android:layout_marginStart="0dp"
+                                android:layout_marginLeft="0dp"
+                                android:layout_marginEnd="8dp"
+                                android:layout_marginRight="8dp"
+                                tools:ignore="ContentDescription,UnusedAttribute" />
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:gravity="center_vertical"
-                        android:orientation="horizontal"
-                        android:paddingStart="0dp"
-                        android:paddingLeft="0dp"
-                        android:paddingEnd="16dp"
-                        android:paddingRight="16dp">
+                            <TextView
+                                android:id="@+id/artist_text"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:ellipsize="end"
+                                android:maxLines="@integer/detail_header_tile_maxLines"
+                                android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
 
-                        <ImageView
-                            android:id="@+id/song_count_icon"
-                            android:layout_width="24dp"
-                            android:layout_height="24dp"
-                            android:layout_marginStart="0dp"
-                            android:layout_marginLeft="0dp"
-                            android:layout_marginEnd="8dp"
-                            android:layout_marginRight="8dp"
-                            tools:ignore="ContentDescription,UnusedAttribute" />
+                        </LinearLayout>
 
-                        <TextView
-                            android:id="@+id/song_count_text"
-                            android:layout_width="wrap_content"
+                        <LinearLayout
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+                            android:layout_weight="1"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal"
+                            android:paddingStart="0dp"
+                            android:paddingLeft="0dp"
+                            android:paddingEnd="16dp"
+                            android:paddingRight="16dp">
 
-                    </LinearLayout>
+                            <ImageView
+                                android:id="@+id/song_count_icon"
+                                android:layout_width="24dp"
+                                android:layout_height="24dp"
+                                android:layout_marginStart="0dp"
+                                android:layout_marginLeft="0dp"
+                                android:layout_marginEnd="8dp"
+                                android:layout_marginRight="8dp"
+                                tools:ignore="ContentDescription,UnusedAttribute" />
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:gravity="center_vertical"
-                        android:orientation="horizontal"
-                        android:paddingStart="0dp"
-                        android:paddingLeft="0dp"
-                        android:paddingEnd="16dp"
-                        android:paddingRight="16dp">
+                            <TextView
+                                android:id="@+id/song_count_text"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
-                        <ImageView
-                            android:id="@+id/duration_icon"
-                            android:layout_width="24dp"
-                            android:layout_height="24dp"
-                            android:layout_marginStart="0dp"
-                            android:layout_marginLeft="0dp"
-                            android:layout_marginEnd="8dp"
-                            android:layout_marginRight="8dp"
-                            tools:ignore="ContentDescription,UnusedAttribute" />
+                        </LinearLayout>
 
-                        <TextView
-                            android:id="@+id/duration_text"
-                            android:layout_width="wrap_content"
+                        <LinearLayout
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+                            android:layout_weight="1"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal"
+                            android:paddingStart="0dp"
+                            android:paddingLeft="0dp"
+                            android:paddingEnd="16dp"
+                            android:paddingRight="16dp">
 
-                    </LinearLayout>
+                            <ImageView
+                                android:id="@+id/duration_icon"
+                                android:layout_width="24dp"
+                                android:layout_height="24dp"
+                                android:layout_marginStart="0dp"
+                                android:layout_marginLeft="0dp"
+                                android:layout_marginEnd="8dp"
+                                android:layout_marginRight="8dp"
+                                tools:ignore="ContentDescription,UnusedAttribute" />
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:gravity="center_vertical"
-                        android:orientation="horizontal"
-                        android:paddingStart="0dp"
-                        android:paddingLeft="0dp"
-                        android:paddingEnd="16dp"
-                        android:paddingRight="16dp">
+                            <TextView
+                                android:id="@+id/duration_text"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
-                        <ImageView
-                            android:id="@+id/album_year_icon"
-                            android:layout_width="24dp"
-                            android:layout_height="24dp"
-                            android:layout_marginStart="0dp"
-                            android:layout_marginLeft="0dp"
-                            android:layout_marginEnd="8dp"
-                            android:layout_marginRight="8dp"
-                            tools:ignore="ContentDescription,UnusedAttribute" />
+                        </LinearLayout>
 
-                        <TextView
-                            android:id="@+id/album_year_text"
-                            android:layout_width="wrap_content"
+                        <LinearLayout
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+                            android:layout_weight="1"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal"
+                            android:paddingStart="0dp"
+                            android:paddingLeft="0dp"
+                            android:paddingEnd="16dp"
+                            android:paddingRight="16dp">
+
+                            <ImageView
+                                android:id="@+id/album_year_icon"
+                                android:layout_width="24dp"
+                                android:layout_height="24dp"
+                                android:layout_marginStart="0dp"
+                                android:layout_marginLeft="0dp"
+                                android:layout_marginEnd="8dp"
+                                android:layout_marginRight="8dp"
+                                tools:ignore="ContentDescription,UnusedAttribute" />
+
+                            <TextView
+                                android:id="@+id/album_year_text"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+
+                        </LinearLayout>
 
                     </LinearLayout>
 
                 </LinearLayout>
 
-            </LinearLayout>
+            </com.google.android.material.appbar.CollapsingToolbarLayout>
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@android:color/transparent" />
+        </com.google.android.material.appbar.AppBarLayout>
 
-        </FrameLayout>
 
-        <ImageView
-            android:id="@+id/image"
-            android:layout_width="@dimen/detail_header_image_height"
-            android:layout_height="@dimen/detail_header_image_height"
-            android:layout_margin="16dp"
-            android:scaleType="centerCrop"
-            android:src="@drawable/default_album_art"
-            android:transitionName="@string/transition_album_art"
-            tools:ignore="ContentDescription,UnusedAttribute" />
-
-        <View
-            android:id="@+id/header_overlay"
+        <com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView
+            android:id="@+id/recycler_view"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/detail_header_height"
-            android:elevation="@dimen/toolbar_elevation"
-            tools:ignore="UnusedAttribute" />
+            android:layout_height="match_parent"
+            android:clipToPadding="false"/>
+
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
 </LinearLayout>

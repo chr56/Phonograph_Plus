@@ -13,15 +13,14 @@ import androidx.activity.viewModels
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.graphics.BlendModeColorFilterCompat
 import androidx.core.graphics.BlendModeCompat
-import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView.AdapterDataObserver
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.WhichButton
 import com.afollestad.materialdialogs.actions.getActionButton
 import com.bumptech.glide.Glide
+import com.google.android.material.appbar.AppBarLayout
 import java.util.*
-import kotlin.math.max
-import kotlin.math.min
 import lib.phonograph.cab.*
 import player.phonograph.R
 import player.phonograph.adapter.display.AlbumSongDisplayAdapter
@@ -33,7 +32,6 @@ import player.phonograph.dialogs.SleepTimerDialog
 import player.phonograph.glide.PhonographColoredTarget
 import player.phonograph.glide.SongGlideRequest
 import player.phonograph.interfaces.MultiSelectionCabProvider
-import player.phonograph.misc.SimpleObservableScrollViewCallbacks
 import player.phonograph.model.Album
 import player.phonograph.service.MusicPlayerRemote.enqueue
 import player.phonograph.service.MusicPlayerRemote.openAndShuffleQueue
@@ -47,6 +45,7 @@ import player.phonograph.util.MusicUtil.getYearString
 import player.phonograph.util.NavigationUtil.goToArtist
 import player.phonograph.util.NavigationUtil.openEqualizer
 import player.phonograph.util.PhonographColorUtil.shiftBackgroundColorForLightText
+import player.phonograph.util.ViewUtil.setUpFastScrollRecyclerViewColor
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -99,21 +98,23 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity(), MultiSelectionCabPro
 
     override fun createContentView(): View = wrapSlidingMusicPanel(viewBinding.root)
 
-    private var headerViewHeight = 0
     private fun setUpViews() {
-        headerViewHeight = resources.getDimensionPixelSize(R.dimen.detail_header_height)
-        // setUpRecyclerView
-        viewBinding.recyclerView.setPadding(0, headerViewHeight, 0, 0)
-        viewBinding.recyclerView.setScrollViewCallbacks(observableScrollViewCallbacks)
-        window.decorView.findViewById<View>(android.R.id.content)
-            .post { observableScrollViewCallbacks.onScrollChanged(-headerViewHeight, b = false, b2 = false) }
-
+        viewBinding.innerAppBar.addOnOffsetChangedListener(
+            AppBarLayout.OnOffsetChangedListener { _, verticalOffset ->
+                viewBinding.recyclerView.setPadding(
+                    viewBinding.recyclerView.paddingLeft,
+                    viewBinding.innerAppBar.totalScrollRange + verticalOffset,
+                    viewBinding.recyclerView.paddingRight,
+                    viewBinding.recyclerView.paddingBottom
+                )
+            }
+        )
         // setUpSongsAdapter
         adapter = AlbumSongDisplayAdapter(this, this, album.songs, R.layout.item_list) {
             useImageText = true
             usePalette = false
         }
-        viewBinding.recyclerView.layoutManager = GridLayoutManager(this, 1)
+        viewBinding.recyclerView.layoutManager = LinearLayoutManager(this)
         viewBinding.recyclerView.adapter = adapter
         adapter.registerAdapterDataObserver(object : AdapterDataObserver() {
             override fun onChanged() {
@@ -134,6 +135,7 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity(), MultiSelectionCabPro
     }
 
     private fun updateColors(color: Int) {
+        viewBinding.recyclerView.setUpFastScrollRecyclerViewColor(this, color)
         viewBinding.header.setBackgroundColor(color)
         setNavigationbarColor(color)
         setTaskDescriptionColor(color)
@@ -184,21 +186,6 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity(), MultiSelectionCabPro
         viewBinding.songCountText.text = getSongCountString(this, album.songCount)
         viewBinding.durationText.text = getReadableDurationString(getTotalDuration(this, album.songs))
         viewBinding.albumYearText.text = getYearString(album.year)
-    }
-
-    private val observableScrollViewCallbacks: SimpleObservableScrollViewCallbacks = object : SimpleObservableScrollViewCallbacks() {
-        override fun onScrollChanged(i: Int, b: Boolean, b2: Boolean) {
-            val scrollY = i + headerViewHeight
-
-            // Change alpha of overlay
-            val headerAlpha = max(0f, min(1f, 2f * scrollY / headerViewHeight))
-            viewBinding.headerOverlay.setBackgroundColor(ColorUtil.withAlpha(model.paletteColor.value!!, headerAlpha))
-
-            // Translate name text
-            viewBinding.header.translationY = max(-scrollY, -headerViewHeight).toFloat()
-            viewBinding.headerOverlay.translationY = max(-scrollY, -headerViewHeight).toFloat()
-            viewBinding.image.translationY = max(-scrollY, -headerViewHeight).toFloat()
-        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
