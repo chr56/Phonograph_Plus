@@ -43,154 +43,165 @@
                 android:layout_height="wrap_content"
                 app:layout_scrollFlags="scroll">
 
-                <LinearLayout
+                <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/header"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/detail_header_height"
                     android:background="?attr/defaultFooterColor"
-                    android:elevation="@dimen/toolbar_elevation"
-                    android:orientation="horizontal"
-                    tools:ignore="UnusedAttribute">
-
+                    android:elevation="@dimen/toolbar_elevation">
 
                     <ImageView
                         android:id="@+id/image"
                         android:layout_width="@dimen/detail_header_image_height"
                         android:layout_height="@dimen/detail_header_image_height"
-                        android:layout_margin="16dp"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginBottom="16dp"
                         android:scaleType="centerCrop"
                         android:src="@drawable/default_album_art"
                         android:transitionName="@string/transition_album_art"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
                         tools:ignore="ContentDescription,UnusedAttribute" />
 
                     <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:id="@+id/header_line_1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
                         android:layout_marginTop="16dp"
+                        android:layout_marginEnd="16dp"
                         android:layout_marginBottom="16dp"
-                        android:orientation="vertical">
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        app:layout_constraintBottom_toTopOf="@id/header_line_2"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.0"
+                        app:layout_constraintStart_toEndOf="@+id/image"
+                        app:layout_constraintTop_toTopOf="parent">
 
-                        <LinearLayout
-                            android:layout_width="match_parent"
+                        <ImageView
+                            android:id="@+id/artist_icon"
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:layout_marginStart="0dp"
+                            android:layout_marginLeft="0dp"
+                            android:layout_marginEnd="8dp"
+                            android:layout_marginRight="8dp"
+                            tools:ignore="ContentDescription,UnusedAttribute" />
+
+                        <TextView
+                            android:id="@+id/artist_text"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_weight="2"
-                            android:gravity="center_vertical"
-                            android:orientation="horizontal"
-                            android:paddingStart="0dp"
-                            android:paddingLeft="0dp"
-                            android:paddingEnd="16dp"
-                            android:paddingRight="16dp">
-
-                            <ImageView
-                                android:id="@+id/artist_icon"
-                                android:layout_width="24dp"
-                                android:layout_height="24dp"
-                                android:layout_marginStart="0dp"
-                                android:layout_marginLeft="0dp"
-                                android:layout_marginEnd="8dp"
-                                android:layout_marginRight="8dp"
-                                tools:ignore="ContentDescription,UnusedAttribute" />
-
-                            <TextView
-                                android:id="@+id/artist_text"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:ellipsize="end"
-                                android:maxLines="@integer/detail_header_tile_maxLines"
-                                android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
-
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:gravity="center_vertical"
-                            android:orientation="horizontal"
-                            android:paddingStart="0dp"
-                            android:paddingLeft="0dp"
-                            android:paddingEnd="16dp"
-                            android:paddingRight="16dp">
-
-                            <ImageView
-                                android:id="@+id/song_count_icon"
-                                android:layout_width="24dp"
-                                android:layout_height="24dp"
-                                android:layout_marginStart="0dp"
-                                android:layout_marginLeft="0dp"
-                                android:layout_marginEnd="8dp"
-                                android:layout_marginRight="8dp"
-                                tools:ignore="ContentDescription,UnusedAttribute" />
-
-                            <TextView
-                                android:id="@+id/song_count_text"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
-
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:gravity="center_vertical"
-                            android:orientation="horizontal"
-                            android:paddingStart="0dp"
-                            android:paddingLeft="0dp"
-                            android:paddingEnd="16dp"
-                            android:paddingRight="16dp">
-
-                            <ImageView
-                                android:id="@+id/duration_icon"
-                                android:layout_width="24dp"
-                                android:layout_height="24dp"
-                                android:layout_marginStart="0dp"
-                                android:layout_marginLeft="0dp"
-                                android:layout_marginEnd="8dp"
-                                android:layout_marginRight="8dp"
-                                tools:ignore="ContentDescription,UnusedAttribute" />
-
-                            <TextView
-                                android:id="@+id/duration_text"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
-
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:gravity="center_vertical"
-                            android:orientation="horizontal"
-                            android:paddingStart="0dp"
-                            android:paddingLeft="0dp"
-                            android:paddingEnd="16dp"
-                            android:paddingRight="16dp">
-
-                            <ImageView
-                                android:id="@+id/album_year_icon"
-                                android:layout_width="24dp"
-                                android:layout_height="24dp"
-                                android:layout_marginStart="0dp"
-                                android:layout_marginLeft="0dp"
-                                android:layout_marginEnd="8dp"
-                                android:layout_marginRight="8dp"
-                                tools:ignore="ContentDescription,UnusedAttribute" />
-
-                            <TextView
-                                android:id="@+id/album_year_text"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
-
-                        </LinearLayout>
+                            android:ellipsize="end"
+                            android:maxLines="@integer/detail_header_tile_maxLines"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
 
                     </LinearLayout>
 
-                </LinearLayout>
+                    <LinearLayout
+                        android:id="@+id/header_line_2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginEnd="16dp"
+                        android:layout_marginBottom="16dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        app:layout_constraintBottom_toTopOf="@+id/header_line_3"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.0"
+                        app:layout_constraintStart_toEndOf="@+id/image"
+                        app:layout_constraintTop_toBottomOf="@id/header_line_1">
+
+                        <ImageView
+                            android:id="@+id/song_count_icon"
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:layout_marginStart="0dp"
+                            android:layout_marginLeft="0dp"
+                            android:layout_marginEnd="8dp"
+                            android:layout_marginRight="8dp"
+                            tools:ignore="ContentDescription,UnusedAttribute" />
+
+                        <TextView
+                            android:id="@+id/song_count_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/header_line_3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginEnd="16dp"
+                        android:layout_marginBottom="16dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        app:layout_constraintBottom_toTopOf="@+id/header_line_4"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.0"
+                        app:layout_constraintStart_toEndOf="@+id/image"
+                        app:layout_constraintTop_toBottomOf="@id/header_line_2">
+
+                        <ImageView
+                            android:id="@+id/duration_icon"
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:layout_marginStart="0dp"
+                            android:layout_marginLeft="0dp"
+                            android:layout_marginEnd="8dp"
+                            android:layout_marginRight="8dp"
+                            tools:ignore="ContentDescription,UnusedAttribute" />
+
+                        <TextView
+                            android:id="@+id/duration_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/header_line_4"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginEnd="16dp"
+                        android:layout_marginBottom="16dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.0"
+                        app:layout_constraintStart_toEndOf="@+id/image"
+                        app:layout_constraintTop_toBottomOf="@+id/header_line_3">
+
+                        <ImageView
+                            android:id="@+id/album_year_icon"
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:layout_marginStart="0dp"
+                            android:layout_marginLeft="0dp"
+                            android:layout_marginEnd="8dp"
+                            android:layout_marginRight="8dp"
+                            tools:ignore="ContentDescription,UnusedAttribute" />
+
+                        <TextView
+                            android:id="@+id/album_year_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+
+                    </LinearLayout>
+
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
             </com.google.android.material.appbar.CollapsingToolbarLayout>
 
@@ -201,7 +212,7 @@
             android:id="@+id/recycler_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:clipToPadding="false"/>
+            android:clipToPadding="false" />
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
