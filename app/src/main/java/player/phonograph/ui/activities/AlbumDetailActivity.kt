@@ -1,6 +1,7 @@
 package player.phonograph.ui.activities
 
 import android.content.Intent
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.text.Html
 import android.text.Spanned
@@ -16,6 +17,7 @@ import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.WhichButton
 import com.afollestad.materialdialogs.actions.getActionButton
 import com.bumptech.glide.Glide
+import com.bumptech.glide.request.transition.Transition
 import com.google.android.material.appbar.AppBarLayout
 import lib.phonograph.cab.*
 import player.phonograph.R
@@ -25,8 +27,9 @@ import player.phonograph.databinding.ActivityAlbumDetailBinding
 import player.phonograph.dialogs.AddToPlaylistDialog
 import player.phonograph.dialogs.DeleteSongsDialog
 import player.phonograph.dialogs.SleepTimerDialog
-import player.phonograph.glide.PhonographColoredTarget
 import player.phonograph.glide.SongGlideRequest
+import player.phonograph.glide.palette.BitmapPaletteTarget
+import player.phonograph.glide.palette.BitmapPaletteWrapper
 import player.phonograph.interfaces.MultiSelectionCabProvider
 import player.phonograph.model.Album
 import player.phonograph.service.MusicPlayerRemote.enqueue
@@ -41,6 +44,7 @@ import player.phonograph.util.MusicUtil.getTotalDuration
 import player.phonograph.util.MusicUtil.getYearString
 import player.phonograph.util.NavigationUtil.goToArtist
 import player.phonograph.util.NavigationUtil.openEqualizer
+import player.phonograph.util.PhonographColorUtil.getColor
 import player.phonograph.util.PhonographColorUtil.shiftBackgroundColorForLightText
 import player.phonograph.util.ViewUtil.setUpFastScrollRecyclerViewColor
 import retrofit2.Call
@@ -50,7 +54,6 @@ import util.mdcolor.ColorUtil
 import util.mdcolor.pref.ThemeColor
 import util.mddesign.core.Themer
 import util.mddesign.util.MaterialColorHelper
-import util.mddesign.util.Util
 import util.phonograph.lastfm.rest.LastFMRestClient
 import util.phonograph.lastfm.rest.model.LastFmAlbum
 import util.phonograph.tageditor.AbsTagEditorActivity
@@ -124,7 +127,6 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity(), MultiSelectionCabPro
         model.paletteColor.observe(this) {
             updateColors(it)
         }
-        model.paletteColor.value = Util.resolveColor(this, R.attr.defaultFooterColor)
     }
 
     private fun RecyclerView.setPaddingTop(top: Int) = setPadding(paddingLeft, top, paddingRight, paddingBottom)
@@ -172,9 +174,20 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity(), MultiSelectionCabPro
                 .checkIgnoreMediaStore(this)
                 .generatePalette(this).build()
                 .dontAnimate()
-                .into(object : PhonographColoredTarget(viewBinding.image) {
-                    override fun onColorReady(color: Int) {
-                        model.paletteColor.postValue(color)
+                .into(object : BitmapPaletteTarget(viewBinding.image) {
+                    val defaultColor = ThemeColor.primaryColor(this@AlbumDetailActivity)
+
+                    override fun onLoadFailed(errorDrawable: Drawable?) {
+                        super.onLoadFailed(errorDrawable)
+                        model.paletteColor.postValue(defaultColor)
+                    }
+
+                    override fun onResourceReady(
+                        resource: BitmapPaletteWrapper,
+                        transition: Transition<in BitmapPaletteWrapper>?
+                    ) {
+                        super.onResourceReady(resource, transition)
+                        model.paletteColor.postValue(getColor(resource.palette, defaultColor))
                     }
                 })
             if (isAllowedToDownloadMetadata(this)) loadWiki()
