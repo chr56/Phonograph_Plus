@@ -65,112 +65,63 @@
                         app:layout_constraintTop_toTopOf="parent"
                         tools:ignore="ContentDescription,UnusedAttribute" />
 
-                    <LinearLayout
-                        android:id="@+id/header_line_1"
+                    <TextView
+                        android:id="@+id/artist_text"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
                         android:layout_marginTop="16dp"
                         android:layout_marginEnd="16dp"
                         android:layout_marginBottom="16dp"
+                        android:ellipsize="end"
                         android:gravity="center_vertical"
+                        android:maxLines="@integer/detail_header_tile_maxLines"
                         android:orientation="horizontal"
-                        app:layout_constraintBottom_toTopOf="@id/header_line_2"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                        app:layout_constraintBottom_toTopOf="@id/song_count_text"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.0"
                         app:layout_constraintStart_toEndOf="@+id/image"
-                        app:layout_constraintTop_toTopOf="parent">
+                        app:layout_constraintTop_toTopOf="parent" />
 
-                        <ImageView
-                            android:id="@+id/artist_icon"
-                            android:layout_width="24dp"
-                            android:layout_height="24dp"
-                            android:layout_marginStart="0dp"
-                            android:layout_marginLeft="0dp"
-                            android:layout_marginEnd="8dp"
-                            android:layout_marginRight="8dp"
-                            tools:ignore="ContentDescription,UnusedAttribute" />
-
-                        <TextView
-                            android:id="@+id/artist_text"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:ellipsize="end"
-                            android:maxLines="@integer/detail_header_tile_maxLines"
-                            android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:id="@+id/header_line_2"
+                    <TextView
+                        android:id="@+id/song_count_text"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
                         android:layout_marginStart="16dp"
                         android:layout_marginEnd="16dp"
                         android:layout_marginBottom="16dp"
                         android:gravity="center_vertical"
                         android:orientation="horizontal"
-                        app:layout_constraintBottom_toTopOf="@+id/header_line_3"
+                        app:layout_constraintBottom_toTopOf="@+id/duration_text"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.0"
                         app:layout_constraintStart_toEndOf="@+id/image"
-                        app:layout_constraintTop_toBottomOf="@id/header_line_1">
+                        app:layout_constraintTop_toBottomOf="@id/artist_text"/>
 
-                        <ImageView
-                            android:id="@+id/song_count_icon"
-                            android:layout_width="24dp"
-                            android:layout_height="24dp"
-                            android:layout_marginStart="0dp"
-                            android:layout_marginLeft="0dp"
-                            android:layout_marginEnd="8dp"
-                            android:layout_marginRight="8dp"
-                            tools:ignore="ContentDescription,UnusedAttribute" />
-
-                        <TextView
-                            android:id="@+id/song_count_text"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:id="@+id/header_line_3"
+                    <TextView
+                        android:id="@+id/duration_text"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
                         android:layout_marginStart="16dp"
                         android:layout_marginEnd="16dp"
                         android:layout_marginBottom="16dp"
                         android:gravity="center_vertical"
                         android:orientation="horizontal"
-                        app:layout_constraintBottom_toTopOf="@+id/header_line_4"
+                        app:layout_constraintBottom_toTopOf="@+id/album_year_text"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.0"
                         app:layout_constraintStart_toEndOf="@+id/image"
-                        app:layout_constraintTop_toBottomOf="@id/header_line_2">
+                        app:layout_constraintTop_toBottomOf="@id/song_count_text"/>
 
-                        <ImageView
-                            android:id="@+id/duration_icon"
-                            android:layout_width="24dp"
-                            android:layout_height="24dp"
-                            android:layout_marginStart="0dp"
-                            android:layout_marginLeft="0dp"
-                            android:layout_marginEnd="8dp"
-                            android:layout_marginRight="8dp"
-                            tools:ignore="ContentDescription,UnusedAttribute" />
+                    <TextView
 
-                        <TextView
-                            android:id="@+id/duration_text"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:id="@+id/header_line_4"
+                        android:id="@+id/album_year_text"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
                         android:layout_marginStart="16dp"
                         android:layout_marginEnd="16dp"
                         android:layout_marginBottom="16dp"
@@ -180,26 +131,7 @@
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.0"
                         app:layout_constraintStart_toEndOf="@+id/image"
-                        app:layout_constraintTop_toBottomOf="@+id/header_line_3">
-
-                        <ImageView
-                            android:id="@+id/album_year_icon"
-                            android:layout_width="24dp"
-                            android:layout_height="24dp"
-                            android:layout_marginStart="0dp"
-                            android:layout_marginLeft="0dp"
-                            android:layout_marginEnd="8dp"
-                            android:layout_marginRight="8dp"
-                            tools:ignore="ContentDescription,UnusedAttribute" />
-
-                        <TextView
-                            android:id="@+id/album_year_text"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
-
-                    </LinearLayout>
-
+                        app:layout_constraintTop_toBottomOf="@+id/duration_text"/>
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 

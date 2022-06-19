@@ -38,6 +38,7 @@ import player.phonograph.service.MusicPlayerRemote.openAndShuffleQueue
 import player.phonograph.service.MusicPlayerRemote.playNext
 import player.phonograph.settings.Setting.Companion.isAllowedToDownloadMetadata
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
+import player.phonograph.util.ImageUtil.getTintedDrawable
 import player.phonograph.util.MusicUtil.getReadableDurationString
 import player.phonograph.util.MusicUtil.getSongCountString
 import player.phonograph.util.MusicUtil.getTotalDuration
@@ -143,20 +144,26 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity(), MultiSelectionCabPro
         setSupportActionBar(viewBinding.toolbar) // needed to auto readjust the toolbar content color
         setStatusbarColor(color)
         val secondaryTextColor = MaterialColorHelper.getSecondaryTextColor(this, ColorUtil.isColorLight(color))
-        val f = BlendModeColorFilterCompat
-            .createBlendModeColorFilterCompat(secondaryTextColor, BlendModeCompat.SRC_IN)
-        viewBinding.artistIcon.setImageDrawable(AppCompatResources.getDrawable(this, R.drawable.ic_person_white_24dp))
-        viewBinding.artistIcon.colorFilter = f
-        viewBinding.durationIcon.setImageDrawable(AppCompatResources.getDrawable(this, R.drawable.ic_timer_white_24dp))
-        viewBinding.durationIcon.colorFilter = f
-        viewBinding.songCountIcon.setImageDrawable(AppCompatResources.getDrawable(this, R.drawable.ic_music_note_white_24dp))
-        viewBinding.songCountIcon.colorFilter = f
-        viewBinding.albumYearIcon.setImageDrawable(AppCompatResources.getDrawable(this, R.drawable.ic_event_white_24dp))
-        viewBinding.albumYearIcon.colorFilter = f
+
+        val artistIcon = getTintedDrawable(R.drawable.ic_person_white_24dp, secondaryTextColor)!!
+        viewBinding.artistText.setCompoundDrawablesWithIntrinsicBounds(artistIcon, null, null, null)
         viewBinding.artistText.setTextColor(MaterialColorHelper.getPrimaryTextColor(this, ColorUtil.isColorLight(color)))
-        viewBinding.durationText.setTextColor(secondaryTextColor)
+        viewBinding.artistText.compoundDrawablePadding = 16
+
+        val songCountIcon = getTintedDrawable(R.drawable.ic_music_note_white_24dp, secondaryTextColor)!!
         viewBinding.songCountText.setTextColor(secondaryTextColor)
+        viewBinding.songCountText.setCompoundDrawablesWithIntrinsicBounds(songCountIcon, null, null, null)
+        viewBinding.songCountText.compoundDrawablePadding = 16
+
+        val durationIcon = getTintedDrawable(R.drawable.ic_timer_white_24dp, secondaryTextColor)!!
+        viewBinding.durationText.setTextColor(secondaryTextColor)
+        viewBinding.durationText.setCompoundDrawablesWithIntrinsicBounds(durationIcon, null, null, null)
+        viewBinding.durationText.compoundDrawablePadding = 16
+
+        val albumYearIcon = getTintedDrawable(R.drawable.ic_event_white_24dp, secondaryTextColor)!!
         viewBinding.albumYearText.setTextColor(secondaryTextColor)
+        viewBinding.albumYearText.setCompoundDrawablesWithIntrinsicBounds(albumYearIcon, null, null, null)
+        viewBinding.albumYearText.compoundDrawablePadding = 16
     }
 
     private val album: Album get() = model.album
