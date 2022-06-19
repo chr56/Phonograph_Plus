@@ -14,13 +14,13 @@ import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.graphics.BlendModeColorFilterCompat
 import androidx.core.graphics.BlendModeCompat
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.AdapterDataObserver
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.WhichButton
 import com.afollestad.materialdialogs.actions.getActionButton
 import com.bumptech.glide.Glide
 import com.google.android.material.appbar.AppBarLayout
-import java.util.*
 import lib.phonograph.cab.*
 import player.phonograph.R
 import player.phonograph.adapter.display.AlbumSongDisplayAdapter
@@ -59,6 +59,7 @@ import util.phonograph.lastfm.rest.LastFMRestClient
 import util.phonograph.lastfm.rest.model.LastFmAlbum
 import util.phonograph.tageditor.AbsTagEditorActivity
 import util.phonograph.tageditor.AlbumTagEditorActivity
+import java.util.*
 
 /**
  * Be careful when changing things in this Activity!
@@ -102,14 +103,10 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity(), MultiSelectionCabPro
     private fun setUpViews() {
         viewBinding.innerAppBar.addOnOffsetChangedListener(
             AppBarLayout.OnOffsetChangedListener { _, verticalOffset ->
-                viewBinding.recyclerView.setPadding(
-                    viewBinding.recyclerView.paddingLeft,
-                    viewBinding.innerAppBar.totalScrollRange + verticalOffset,
-                    viewBinding.recyclerView.paddingRight,
-                    viewBinding.recyclerView.paddingBottom
-                )
+                viewBinding.recyclerView.setPaddingTop(viewBinding.innerAppBar.totalScrollRange + verticalOffset)
             }
         )
+        viewBinding.recyclerView.setPaddingTop(viewBinding.innerAppBar.totalScrollRange)
         // setUpSongsAdapter
         adapter = AlbumSongDisplayAdapter(this, this, album.songs, R.layout.item_list) {
             useImageText = true
@@ -134,6 +131,8 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity(), MultiSelectionCabPro
         }
         model.paletteColor.value = Util.resolveColor(this, R.attr.defaultFooterColor)
     }
+
+    private fun RecyclerView.setPaddingTop(top: Int) = setPadding(paddingLeft, top, paddingRight, paddingBottom)
 
     private fun updateColors(color: Int) {
         viewBinding.recyclerView.setUpFastScrollRecyclerViewColor(this, color)
@@ -371,7 +370,7 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity(), MultiSelectionCabPro
             dismissCab()
         } else {
             viewBinding.recyclerView.stopScroll()
-            super.onBackPressed()
+            finish()
         }
     }
 
