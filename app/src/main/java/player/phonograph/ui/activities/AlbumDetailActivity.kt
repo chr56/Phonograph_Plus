@@ -102,7 +102,6 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity(), MultiSelectionCabPro
                 viewBinding.recyclerView.setPaddingTop(viewBinding.innerAppBar.totalScrollRange + verticalOffset)
             }
         )
-        viewBinding.recyclerView.setPaddingTop(viewBinding.innerAppBar.totalScrollRange)
         // setUpSongsAdapter
         adapter = AlbumSongDisplayAdapter(this, this, album.songs, R.layout.item_list) {
             useImageText = true
@@ -364,7 +363,7 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity(), MultiSelectionCabPro
             dismissCab()
         } else {
             viewBinding.recyclerView.stopScroll()
-            finish()
+            super.onBackPressed()
         }
     }
 
