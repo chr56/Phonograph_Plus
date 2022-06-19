@@ -1,7 +1,6 @@
 package player.phonograph.ui.activities
 
 import android.content.Intent
-import android.graphics.Color
 import android.os.Bundle
 import android.text.Html
 import android.text.Spanned
@@ -10,9 +9,6 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
-import androidx.appcompat.content.res.AppCompatResources
-import androidx.core.graphics.BlendModeColorFilterCompat
-import androidx.core.graphics.BlendModeCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.AdapterDataObserver
@@ -324,14 +320,12 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity(), MultiSelectionCabPro
         destroyCallback: DestroyCallback?,
     ): MultiSelectionCab {
         val cfg: CabCfg = {
-            val textColor = Color.BLACK
+            val textColor = ThemeColor.textColorPrimary(this@AlbumDetailActivity)
 
             backgroundColor = shiftBackgroundColorForLightText(model.paletteColor.value!!)
             titleTextColor = textColor
 
-            closeDrawable = AppCompatResources.getDrawable(this@AlbumDetailActivity, R.drawable.ic_close_white_24dp)!!.also {
-                it.colorFilter = BlendModeColorFilterCompat.createBlendModeColorFilterCompat(textColor, BlendModeCompat.SRC_IN)
-            }
+            closeDrawable = getTintedDrawable(R.drawable.ic_close_white_24dp, textColor)!!
 
             this.menuRes = menuRes
 
