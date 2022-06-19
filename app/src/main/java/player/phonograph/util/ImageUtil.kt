@@ -12,6 +12,8 @@ import androidx.annotation.AttrRes
 import androidx.annotation.ColorInt
 import androidx.annotation.DrawableRes
 import androidx.core.content.res.ResourcesCompat
+import androidx.core.graphics.BlendModeColorFilterCompat
+import androidx.core.graphics.BlendModeCompat
 import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
 import java.io.InputStream
 import kotlin.math.roundToInt
@@ -112,5 +114,11 @@ object ImageUtil {
 
     fun resize(stream: InputStream?, scaledWidth: Int, scaledHeight: Int): Bitmap {
         return Bitmap.createScaledBitmap(BitmapFactory.decodeStream(stream), scaledWidth, scaledHeight, true)
+    }
+
+    fun Context.getTintedDrawable(@DrawableRes id: Int, @ColorInt color: Int): Drawable? {
+        val drawable = ResourcesCompat.getDrawable(this.resources, id, theme)
+        drawable?.colorFilter = BlendModeColorFilterCompat.createBlendModeColorFilterCompat(color, BlendModeCompat.SRC_IN)
+        return drawable
     }
 }
