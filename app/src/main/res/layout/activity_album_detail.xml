@@ -32,6 +32,13 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView
+            android:id="@+id/recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:paddingTop="@dimen/detail_header_height" />
+
         <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/inner_app_bar"
             android:layout_width="match_parent"
@@ -140,12 +147,6 @@
         </com.google.android.material.appbar.AppBarLayout>
 
 
-        <com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView
-            android:id="@+id/recycler_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:clipToPadding="false"
-            android:paddingTop="@dimen/detail_header_height" />
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
