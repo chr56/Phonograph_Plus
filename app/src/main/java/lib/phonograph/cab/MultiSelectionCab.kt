@@ -20,6 +20,7 @@ import androidx.annotation.StyleRes
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
+import androidx.core.view.iterator
 import player.phonograph.R
 
 fun createMultiSelectionCab(
@@ -106,7 +107,10 @@ class MultiSelectionCab internal constructor(
             inflateMenu(menuRes)
             if (autoTintMenuIcon) {
                 overflowIcon =
-                    AppCompatResources.getDrawable(activity, androidx.appcompat.R.drawable.abc_ic_menu_overflow_material)?.let { it.setTint(titleTextColor); it }
+                    AppCompatResources.getDrawable(activity, androidx.appcompat.R.drawable.abc_ic_menu_overflow_material)?.apply { setTint(titleTextColor) }
+                for (item in menu) {
+                    item.icon = item.icon?.apply { setTint(titleTextColor) }
+                }
             }
             setOnMenuItemClickListener(menuClickListener)
         } else {
@@ -130,9 +134,8 @@ class MultiSelectionCab internal constructor(
 
     /** use [closeDrawableColor] to set color first **/
     var closeDrawable: Drawable =
-        ContextCompat.getDrawable(activity, R.drawable.ic_close_white_24dp)!!.let {
-            if (autoTintMenuIcon) it.setTint(closeDrawableColor)
-            it
+        ContextCompat.getDrawable(activity, R.drawable.ic_close_white_24dp)!!.apply {
+            if (autoTintMenuIcon) setTint(closeDrawableColor)
         }
 
     @ColorInt
