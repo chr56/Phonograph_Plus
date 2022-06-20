@@ -1,24 +1,20 @@
-**Preview 2022.6.16**
+**Preview 2022.6.20**
 
 **CN**
 与前一预览版相比:
-更新 葡萄牙语(巴西)翻译 (Luiz-bro), 印度尼西亚语翻译 (Raven Ell (@ ravenel))
-改进 改进新版文件夹视图, 包括:
-- 使用下拉刷新
-- 歌曲文件现在提示文件大小
-- 文件夹现在提示内含歌曲数量
-- 拦截返回键, 新文件夹视图下, 按下返回键后将返回上一级而不会退出应用
-- 防止进入无效存储设备
-- 允许按照文件名,文件大小,添加日期,修改日期排序
+- 修复 黑名单失效（上一预览版开始）
+- 新增 文件夹视图现在使用可点击切换路径的路径导航条
+- 新增 现在可以使用旧式方法获取文件列表
+- 修复 多选时菜单图标颜色错误
+- 改进 小幅度重构专辑页面（过度动画目前暂时失效）
+- 改进 小幅度重构排序与网格设置UI
 
 
 **EN**
 Compared to the previous preview:
-Translations: Update Portuguese (Brazil) (by Luiz-bro), Indonesian (by Raven Ell (@ ravenel))
-Improvements: The new Folder Page, including:
-- Use sweep-down-refresh
-- Song files indicate file size now
-- Folders indicate the number of songs they contain now
-- Intercept the back key: in the new Folder Page, pressing the back key will return to the previous level without exiting the application
-- Prevent access to invalid storage devices
-- Allow sorting files by file name, file size, date added, date modified
+- Fix: invalid blacklist (starting from last preview)
+- New: the Folder Page now uses a path navigation bar (or Bread-Crumb Bar) that can be clicked to switch paths
+- Add: the old method to get the file list now
+- Fix: wrong color of context menu icon when multiple selection
+- Improve: minor refactoring of the album page (BUG: transition animation is currently "temporarily" glitch)
+- Improve: minor refactoring of sort order and grid settings UI
