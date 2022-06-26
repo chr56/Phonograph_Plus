@@ -220,8 +220,8 @@ class SongPlayCountStore(context: Context) : SQLiteOpenHelper(context, DatabaseC
      * accurate list of the top played results
      */
     @Synchronized
-    private fun updateResults() {
-        if (mDatabaseUpdated) {
+    private fun updateResults(force: Boolean = false) {
+        if (mDatabaseUpdated && !force) {
             return
         }
         val database = writableDatabase
@@ -249,6 +249,10 @@ class SongPlayCountStore(context: Context) : SQLiteOpenHelper(context, DatabaseC
         mDatabaseUpdated = true
         database.setTransactionSuccessful()
         database.endTransaction()
+    }
+
+    fun forceUpdate() {
+        updateResults(true)
     }
 
     /**
