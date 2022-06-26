@@ -70,6 +70,10 @@ Translate Phonograph Plus into your language -> [crowdin](https://crowdin.com/pr
 
 **2022**
 
+- [x] 重构文件视图
+
+- [x] 重构媒体库UI ⭕
+
 - [ ] 完成 Readme . md
 
 - [ ] 重构后台音乐服务 (❗WIP)
@@ -77,10 +81,6 @@ Translate Phonograph Plus into your language -> [crowdin](https://crowdin.com/pr
 - [ ] 将歌曲“详情” 迁移至 Compose ❗WIP (基本信息显示)
   
 - [ ] 重构歌曲封面加载Glide模块
-
-- [ ] 重构文件视图 
-
-- [ ] 重构媒体库UI ⭕
 
 - [ ] 重构更新对话框
 
