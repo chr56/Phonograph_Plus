@@ -22,6 +22,7 @@ import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import android.view.animation.AccelerateInterpolator
 import android.view.animation.Interpolator
+import java.lang.IllegalStateException
 import kotlin.math.abs
 import kotlin.math.min
 import player.phonograph.provider.SongPlayCountStore.SongPlayCountColumns.Companion.ID
@@ -117,8 +118,8 @@ class SongPlayCountStore(context: Context) : SQLiteOpenHelper(context, DatabaseC
         // if we have a result
         if (cursor != null && cursor.moveToFirst()) {
             // figure how many weeks since we last updated
-            val lastUpdatedIndex = cursor.getColumnIndex(LAST_UPDATED_WEEK_INDEX)
-            val lastUpdatedWeek = cursor.getInt(lastUpdatedIndex)
+
+            val lastUpdatedWeek = cursor.getInt(cursor.getColumnIndex(LAST_UPDATED_WEEK_INDEX).requireNotNegative())
             val weekDiff = mNumberOfWeeksSinceEpoch - lastUpdatedWeek
 
             // if it's more than the number of weeks we track, delete it and create a new entry
@@ -172,18 +173,20 @@ class SongPlayCountStore(context: Context) : SQLiteOpenHelper(context, DatabaseC
                 }
             } else if (bumpCount) {
                 // else no shifting, just update the scores
-                val values = ContentValues(2)
-
-                // increase the score by a single score amount
-                val scoreIndex = cursor.getColumnIndex(PLAY_COUNT_SCORE)
-                val score = cursor.getFloat(scoreIndex) + getScoreMultiplierForWeek(0)
-                values.put(PLAY_COUNT_SCORE, score)
-
-                // increase the play count by 1
-                values.put(getColumnNameForWeek(0), cursor.getInt(getColumnIndexForWeek(0)) + 1)
-
                 // update the entry
-                database.update(NAME, values, WHERE_ID_EQUALS, arrayOf(stringId))
+                database.update(
+                    NAME,
+                    ContentValues(2).apply {
+                        // increase the score by a single score amount
+                        put(
+                            PLAY_COUNT_SCORE,
+                            cursor.getFloat(cursor.getColumnIndex(PLAY_COUNT_SCORE).requireNotNegative()) +
+                                getScoreMultiplierForWeek(0)
+                        )
+                        put(getColumnNameForWeek(0), cursor.getInt(getColumnIndexForWeek(0)) + 1) // increase the play count by 1
+                    },
+                    WHERE_ID_EQUALS, arrayOf(stringId)
+                )
             }
             cursor.close()
         } else if (bumpCount) {
