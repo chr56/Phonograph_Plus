@@ -1129,7 +1129,7 @@ public class MusicService extends Service implements SharedPreferences.OnSharedP
                 savePosition();
                 savePositionInTrack();
                 final Song currentSong = getCurrentSong();
-                HistoryStore.getInstance(this).addSongId(currentSong.id);
+                HistoryStore.Companion.getInstance(this).addSongId(currentSong.id);
                 if (songPlayCountHelper.shouldBumpPlayCount()) {
                     SongPlayCountStore.getInstance(this).bumpPlayCount(songPlayCountHelper.getSong().id);
                 }
