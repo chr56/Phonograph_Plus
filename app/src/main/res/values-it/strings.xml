@@ -43,7 +43,7 @@
     <string name="genre">Genere</string>
     <string name="album_artist">Artista dell\'album</string>
     <string name="year">Anno</string>
-    <string name="track">Numero traccia</string>
+    <string name="track">\"Numero traccia</string>
     <string name="track_hint">"Traccia (2 per traccia 2, o 3004 per CD3 traccia 4)"</string>
     <string name="lyrics">Testi</string>
     <string name="album_or_artist_empty">Il titolo o l\'artista sono vuoti.</string>
@@ -72,6 +72,18 @@
     <string name="deleted_x_playlists">Eliminate %1$d playlist.</string>
     <string name="playlist_exists">La playlist %1$s esiste già.</string>
     <string name="could_not_create_playlist">Impossibile creare la playlist.</string>
+    <plurals name="msg_song_deletion_summary">
+        <item quantity="one"><![CDATA[Eliminare <b>%1$d</b> brano dal dispositivo?<br/>]]></item>
+        <item quantity="other"><![CDATA[Eliminare <b>%1$d</b> brani dal dispositivo?<br/>]]></item>
+    </plurals>
+    <plurals name="msg_song_removal_summary">
+        <item quantity="one"><![CDATA[Rimuovere <b>%1$d</b> brano dalla playlist?]]></item>
+        <item quantity="other"><![CDATA[Rimuovere <b>%1$d</b> brani dalla playlist?]]></item>
+    </plurals>
+    <plurals name="msg_playlist_deletion_summary">
+        <item quantity="one"><![CDATA[Eliminare <b>%1$d</b> playlist dal dispositivo?<br/>]]></item>
+        <item quantity="other"><![CDATA[Eliminare <b>%1$d</b> playlist dal dispositivo?<br/>]]></item>
+    </plurals>
     <string name="delete_song_title">Elimina brano</string>
     <string name="delete_songs_title">Elimina brani</string>
     <string name="remove_song_from_playlist_title">Rimuovi brano dalla playlist</string>
@@ -350,6 +362,14 @@
     <string name="export_">Esporta: </string>
     <string name="import_">Importa: </string>
     <string name="databases">Database</string>
+    <plurals name="msg_deletion_result">
+        <item quantity="one">%1$d / %2$d elemento è stato eliminato con successo.</item>
+        <item quantity="other">%1$d / %2$d elementi sono stati eliminati con successo.</item>
+    </plurals>
+    <plurals name="msg_files_deletion_summary">
+        <item quantity="one"><![CDATA[Eliminare <b>%1$d</b> file dal dispositivo?<br/><b>Questa azione non può essere annullata!</b><br/>]]></item>
+        <item quantity="other"><![CDATA[Eliminare <b>%1$d</b> file dal dispositivo?<br/><b>Questa azione non può essere annullata!</b><br/>]]></item>
+    </plurals>
     <string name="embedded_lyrics">testi integrati</string>
     <string name="external_lyrics">testi esterni</string>
     <string name="lyrics_following">Testi seguenti</string>
@@ -363,4 +383,9 @@
     <string name="behaviour_auto">Automatico</string>
     <string name="behaviour_force_saf">Forza l\'uso di Storage Access Framework</string>
     <string name="behaviour_force_legacy">Forzare l\'uso di modalità legacy</string>
+    <string name="reached_to_root">Hai raggiunto la cartella principale di questo volume di archiviazione</string>
+    <plurals name="x_songs">
+        <item quantity="one">%1$d brano</item>
+        <item quantity="other">%1$d brani</item>
+    </plurals>
 </resources>
