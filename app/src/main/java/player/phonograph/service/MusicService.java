@@ -1131,7 +1131,7 @@ public class MusicService extends Service implements SharedPreferences.OnSharedP
                 final Song currentSong = getCurrentSong();
                 HistoryStore.Companion.getInstance(this).addSongId(currentSong.id);
                 if (songPlayCountHelper.shouldBumpPlayCount()) {
-                    SongPlayCountStore.getInstance(this).bumpPlayCount(songPlayCountHelper.getSong().id);
+                    SongPlayCountStore.Companion.getInstance(this).bumpPlayCount(songPlayCountHelper.getSong().id);
                 }
                 songPlayCountHelper.notifySongChanged(currentSong);
                 break;
