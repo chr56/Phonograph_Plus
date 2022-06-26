@@ -103,12 +103,14 @@ class SongPlayCountStore(context: Context) : SQLiteOpenHelper(context, DatabaseC
      * @param cursor    cursor that CURRENT point to the entry you want to change
      * @param songId    the id of the track to bump
      * @param bumpCount whether to bump the current's week play count by 1 and adjust the score
-     */
+     * @param reCalculate re-calculate scores
+     * */
     private fun updateExistedPlayedEntry(
         database: SQLiteDatabase,
         cursor: Cursor,
         songId: Long,
         bumpCount: Boolean,
+        reCalculate: Boolean = false
     ) {
         // figure how many weeks since we last updated
         val lastUpdatedWeek = cursor.getInt(cursor.getColumnIndex(LAST_UPDATED_WEEK_INDEX).requireNotNegative())
@@ -124,27 +126,37 @@ class SongPlayCountStore(context: Context) : SQLiteOpenHelper(context, DatabaseC
                 }
             }
             // shift the weeks if week changes
-            weekDiff != 0 -> {
+            // or force refresh score required
+            weekDiff != 0 || reCalculate -> {
                 val playCounts = IntArray(NUM_WEEKS)
-                if (weekDiff > 0) {
-                    // time is shifted forwards
-                    for (i in 0 until NUM_WEEKS - weekDiff) {
-                        playCounts[i + weekDiff] = cursor.getInt(getColumnIndexForWeek(i))
+                when {
+                    weekDiff > 0 -> {
+                        // time is shifted forwards
+                        for (i in 0 until NUM_WEEKS - weekDiff) {
+                            playCounts[i + weekDiff] = cursor.getInt(getColumnIndexForWeek(i))
+                        }
                     }
-                } else if (weekDiff < 0) {
-                    // time is shifted backwards (by user) - nor typical behavior but we
-                    // will still handle it
+                    weekDiff < 0 -> {
+                        // time is shifted backwards (by user) - nor typical behavior but we
+                        // will still handle it
 
-                    // since weekDiff is -ve, NUM_WEEKS + weekDiff is the real # of weeks we have to
-                    // transfer.  Then we transfer the old week i - weekDiff to week i
-                    // for example if the user shifted back 2 weeks, ie -2, then for 0 to
-                    // NUM_WEEKS + (-2) we set the new week i = old week i - (-2) or i+2
-                    for (i in 0 until NUM_WEEKS + weekDiff) {
-                        playCounts[i] = cursor.getInt(getColumnIndexForWeek(i - weekDiff))
+                        // since weekDiff is -ve, NUM_WEEKS + weekDiff is the real # of weeks we have to
+                        // transfer.  Then we transfer the old week i - weekDiff to week i
+                        // for example if the user shifted back 2 weeks, ie -2, then for 0 to
+                        // NUM_WEEKS + (-2) we set the new week i = old week i - (-2) or i+2
+                        for (i in 0 until NUM_WEEKS + weekDiff) {
+                            playCounts[i] = cursor.getInt(getColumnIndexForWeek(i - weekDiff))
+                        }
+                    }
+                    weekDiff == 0 -> {
+                        // occurs when reCalculate is true
+                        for (i in 0 until NUM_WEEKS) {
+                            playCounts[i] = cursor.getInt(getColumnIndexForWeek(i))
+                        }
                     }
                 }
 
-                // bump the count
+                // bump the count if need
                 if (bumpCount) {
                     playCounts[0]++
                 }
@@ -200,7 +212,12 @@ class SongPlayCountStore(context: Context) : SQLiteOpenHelper(context, DatabaseC
      * @param id        the id of the track to bump
      * @param bumpCount whether to bump the current's week play count by 1 and adjust the score
      */
-    private fun updateExistingRow(database: SQLiteDatabase, id: Long, bumpCount: Boolean) {
+    private fun updateExistingRow(
+        database: SQLiteDatabase,
+        id: Long,
+        bumpCount: Boolean,
+        force: Boolean = false
+    ) {
 
         // begin the transaction
         database.beginTransaction()
@@ -210,7 +227,7 @@ class SongPlayCountStore(context: Context) : SQLiteOpenHelper(context, DatabaseC
         try {
             // if target existed
             if (cursor != null && cursor.moveToFirst()) {
-                updateExistedPlayedEntry(readableDatabase, cursor, id, bumpCount)
+                updateExistedPlayedEntry(readableDatabase, cursor, id, bumpCount, force)
             } else {
                 // if we have no existing results, create a new one
                 if (bumpCount) createNewPlayedEntry(database, id)
@@ -284,10 +301,19 @@ class SongPlayCountStore(context: Context) : SQLiteOpenHelper(context, DatabaseC
     }
 
     /**
-     * refresh database
+     * re-calculate-score
      */
-    fun refresh() {
-        updateResults(true)
+    fun reCalculateScore() {
+        readableDatabase.query(NAME, arrayOf(ID), null, null, null, null, null)?.use { cursor ->
+            cursor.moveToFirst()
+            try {
+                do {
+                    updateExistingRow(readableDatabase, cursor.getLong(0), bumpCount = false, force = true)
+                } while (cursor.moveToNext())
+            } catch (e: Exception) {
+                ErrorNotification.postErrorNotification(e, "Fail")
+            }
+        }
     }
 
     /**

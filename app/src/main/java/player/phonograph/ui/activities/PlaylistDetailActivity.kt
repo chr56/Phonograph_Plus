@@ -185,6 +185,7 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandle
             R.id.action_refresh -> {
                 if (playlist is GeneratedPlaylist) {
                     (playlist as GeneratedPlaylist).refresh(this)
+                    adapter.dataset = emptyList()
                     loadSongs()
                 } else {
                     onMediaStoreChanged()
