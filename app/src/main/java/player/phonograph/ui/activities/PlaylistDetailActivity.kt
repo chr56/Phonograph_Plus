@@ -39,6 +39,7 @@ import player.phonograph.misc.SAFCallbackHandlerActivity
 import player.phonograph.misc.SafLauncher
 import player.phonograph.model.Song
 import player.phonograph.model.playlist.FilePlaylist
+import player.phonograph.model.playlist.GeneratedPlaylist
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.model.playlist.SmartPlaylist
 import player.phonograph.service.MusicPlayerRemote
@@ -182,7 +183,12 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandle
                 return true
             }
             R.id.action_refresh -> {
-                onMediaStoreChanged()
+                if (playlist is GeneratedPlaylist) {
+                    (playlist as GeneratedPlaylist).refresh(this)
+                    loadSongs()
+                } else {
+                    onMediaStoreChanged()
+                }
                 return true
             }
             R.id.action_setting_last_added_interval -> {

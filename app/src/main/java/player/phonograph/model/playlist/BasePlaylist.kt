@@ -8,9 +8,9 @@ import android.content.Context
 import android.os.Parcel
 import android.os.Parcelable
 import androidx.annotation.Keep
+import java.lang.IllegalStateException
 import player.phonograph.PlaylistType
 import player.phonograph.model.Song
-import java.lang.IllegalStateException
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
@@ -103,4 +103,6 @@ interface ResettablePlaylist {
     fun clear(context: Context)
 }
 
-interface GeneratedPlaylist
+interface GeneratedPlaylist {
+    fun refresh(context: Context) {}
+}
