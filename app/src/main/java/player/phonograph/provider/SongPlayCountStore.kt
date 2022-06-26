@@ -23,6 +23,7 @@ import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import kotlin.math.abs
 import kotlin.math.min
+import player.phonograph.notification.ErrorNotification
 import player.phonograph.provider.SongPlayCountStore.SongPlayCountColumns.Companion.ID
 import player.phonograph.provider.SongPlayCountStore.SongPlayCountColumns.Companion.LAST_UPDATED_WEEK_INDEX
 import player.phonograph.provider.SongPlayCountStore.SongPlayCountColumns.Companion.NAME
@@ -215,6 +216,8 @@ class SongPlayCountStore(context: Context) : SQLiteOpenHelper(context, DatabaseC
                 if (bumpCount) createNewPlayedEntry(database, id)
             }
             database.setTransactionSuccessful()
+        } catch (e: Exception) {
+            ErrorNotification.postErrorNotification(e, "Failed to update song play count in SongPlayCountDatabase (songId=$id)")
         } finally {
             cursor?.close()
             database.endTransaction()
