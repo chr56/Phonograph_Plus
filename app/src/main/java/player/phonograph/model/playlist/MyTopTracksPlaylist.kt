@@ -34,7 +34,7 @@ class MyTopTracksPlaylist : SmartPlaylist, ResettablePlaylist {
     }
 
     override fun refresh(context: Context) {
-        SongPlayCountStore.getInstance(context).forceUpdate()
+        SongPlayCountStore.getInstance(context).refresh()
     }
 
     override fun toString(): String = "MyTopTracksPlaylist"

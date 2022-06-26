@@ -13,6 +13,7 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
+
 package player.phonograph.provider
 
 import android.content.ContentValues
@@ -20,7 +21,6 @@ import android.content.Context
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
-import java.lang.IllegalStateException
 import kotlin.math.abs
 import kotlin.math.min
 import player.phonograph.provider.SongPlayCountStore.SongPlayCountColumns.Companion.ID
@@ -36,7 +36,7 @@ import player.phonograph.provider.SongPlayCountStore.SongPlayCountColumns.Compan
 class SongPlayCountStore(context: Context) : SQLiteOpenHelper(context, DatabaseConstants.SONG_PLAY_COUNT_DB, null, VERSION) {
 
     /** number of weeks since epoch time **/
-    private val mNumberOfWeeksSinceEpoch: Int = (System.currentTimeMillis() / ONE_WEEK_IN_MS).toInt()
+    private val mCurrentWeekNumber: Int get() = (System.currentTimeMillis() / ONE_WEEK_IN_MS).toInt()
 
     /** used to track if we've walked through the db and updated all the rows **/
     private var mDatabaseUpdated: Boolean = false
@@ -90,45 +90,40 @@ class SongPlayCountStore(context: Context) : SQLiteOpenHelper(context, DatabaseC
             ContentValues(3).also { values ->
                 values.put(ID, songId)
                 values.put(PLAY_COUNT_SCORE, getScoreMultiplierForWeek(0))
-                values.put(LAST_UPDATED_WEEK_INDEX, mNumberOfWeeksSinceEpoch)
+                values.put(LAST_UPDATED_WEEK_INDEX, mCurrentWeekNumber)
                 values.put(getColumnNameForWeek(0), 1)
             }
         )
     }
 
     /**
-     * This function will take a song entry and update it to the latest week and increase the count
-     * for the current week by 1 if necessary
-     *
-     * @param database  a writeable database
-     * @param id        the id of the track to bump
+     * This update existing entry
+     * @param database  a write able database
+     * @param cursor    cursor that CURRENT point to the entry you want to change
+     * @param songId    the id of the track to bump
      * @param bumpCount whether to bump the current's week play count by 1 and adjust the score
      */
-    private fun updateExistingRow(database: SQLiteDatabase, id: Long, bumpCount: Boolean) {
-        val stringId = id.toString()
+    private fun updateExistedPlayedEntry(
+        database: SQLiteDatabase,
+        cursor: Cursor,
+        songId: Long,
+        bumpCount: Boolean,
+    ) {
+        // figure how many weeks since we last updated
+        val lastUpdatedWeek = cursor.getInt(cursor.getColumnIndex(LAST_UPDATED_WEEK_INDEX).requireNotNegative())
+        val weekDiff = mCurrentWeekNumber - lastUpdatedWeek
 
-        // begin the transaction
-        database.beginTransaction()
-
-        // get the cursor of this content inside the transaction
-        val cursor = database.query(NAME, null, WHERE_ID_EQUALS, arrayOf(stringId), null, null, null)
-
-        // if we have a result
-        if (cursor != null && cursor.moveToFirst()) {
-            // figure how many weeks since we last updated
-
-            val lastUpdatedWeek = cursor.getInt(cursor.getColumnIndex(LAST_UPDATED_WEEK_INDEX).requireNotNegative())
-            val weekDiff = mNumberOfWeeksSinceEpoch - lastUpdatedWeek
-
-            // if it's more than the number of weeks we track, delete it and create a new entry
-            if (abs(weekDiff) >= NUM_WEEKS) {
-                // this entry needs to be dropped since it is too outdated
-                deleteEntry(database, stringId)
+        when {
+            // remove outdated (beyond NUM_WEEKS)
+            abs(weekDiff) >= NUM_WEEKS -> {
+                // delete it and create a new entry
+                deleteEntry(database, songId.toString())
                 if (bumpCount) {
-                    createNewPlayedEntry(database, id)
+                    createNewPlayedEntry(database, songId)
                 }
-            } else if (weekDiff != 0) {
-                // else, shift the weeks
+            }
+            // shift the weeks if week changes
+            weekDiff != 0 -> {
                 val playCounts = IntArray(NUM_WEEKS)
                 if (weekDiff > 0) {
                     // time is shifted forwards
@@ -152,47 +147,78 @@ class SongPlayCountStore(context: Context) : SQLiteOpenHelper(context, DatabaseC
                 if (bumpCount) {
                     playCounts[0]++
                 }
+
+                // calculate
                 val score = calculateScore(playCounts)
 
-                // if the score is non-existent, then delete it
+                // update table
                 if (score < .01f) {
-                    deleteEntry(database, stringId)
+                    // if the score is non-existent, then delete it
+                    deleteEntry(database, songId.toString())
                 } else {
-                    // create the content values
-                    val values = ContentValues(NUM_WEEKS + 2)
-                    values.put(LAST_UPDATED_WEEK_INDEX, mNumberOfWeeksSinceEpoch)
-                    values.put(PLAY_COUNT_SCORE, score)
-                    for (i in 0 until NUM_WEEKS) {
-                        values.put(getColumnNameForWeek(i), playCounts[i])
-                    }
-
-                    // update the entry
-                    database.update(NAME, values, WHERE_ID_EQUALS, arrayOf(stringId))
+                    database.update(
+                        NAME,
+                        ContentValues(NUM_WEEKS + 2).apply {
+                            put(LAST_UPDATED_WEEK_INDEX, mCurrentWeekNumber)
+                            put(PLAY_COUNT_SCORE, score)
+                            for (i in 0 until NUM_WEEKS) {
+                                put(getColumnNameForWeek(i), playCounts[i])
+                            }
+                        },
+                        WHERE_ID_EQUALS, arrayOf(songId.toString())
+                    )
                 }
-            } else if (bumpCount) {
-                // else no shifting, just update the scores
-                // update the entry
-                database.update(
-                    NAME,
-                    ContentValues(2).apply {
-                        // increase the score by a single score amount
-                        put(
-                            PLAY_COUNT_SCORE,
-                            cursor.getFloat(cursor.getColumnIndex(PLAY_COUNT_SCORE).requireNotNegative()) +
-                                getScoreMultiplierForWeek(0)
-                        )
-                        put(getColumnNameForWeek(0), cursor.getInt(getColumnIndexForWeek(0)) + 1) // increase the play count by 1
-                    },
-                    WHERE_ID_EQUALS, arrayOf(stringId)
-                )
             }
-            cursor.close()
-        } else if (bumpCount) {
-            // if we have no existing results, create a new one
-            createNewPlayedEntry(database, id)
+            // same week, no need for shifting, so just update the scores
+            weekDiff == 0 -> {
+                if (bumpCount) {
+                    // update the entry
+                    database.update(
+                        NAME,
+                        ContentValues(2).apply {
+                            // increase the score by a single score amount
+                            put(
+                                PLAY_COUNT_SCORE,
+                                cursor.getFloat(cursor.getColumnIndex(PLAY_COUNT_SCORE).requireNotNegative()) +
+                                    getScoreMultiplierForWeek(0)
+                            )
+                            put(getColumnNameForWeek(0), cursor.getInt(getColumnIndexForWeek(0)) + 1) // increase the play count by 1
+                        },
+                        WHERE_ID_EQUALS, arrayOf(songId.toString())
+                    )
+                } // else // do nothing!
+            }
         }
-        database.setTransactionSuccessful()
-        database.endTransaction()
+    }
+
+    /**
+     * This function will take a song entry and update it to the latest week and increase the count
+     * for the current week by 1 if necessary
+     *
+     * @param database  a writeable database
+     * @param id        the id of the track to bump
+     * @param bumpCount whether to bump the current's week play count by 1 and adjust the score
+     */
+    private fun updateExistingRow(database: SQLiteDatabase, id: Long, bumpCount: Boolean) {
+
+        // begin the transaction
+        database.beginTransaction()
+
+        // get the cursor of this content inside the transaction
+        val cursor = database.query(NAME, null, WHERE_ID_EQUALS, arrayOf(id.toString()), null, null, null)
+        try {
+            // if target existed
+            if (cursor != null && cursor.moveToFirst()) {
+                updateExistedPlayedEntry(readableDatabase, cursor, id, bumpCount)
+            } else {
+                // if we have no existing results, create a new one
+                if (bumpCount) createNewPlayedEntry(database, id)
+            }
+            database.setTransactionSuccessful()
+        } finally {
+            cursor?.close()
+            database.endTransaction()
+        }
     }
 
     fun clear() {
@@ -208,8 +234,7 @@ class SongPlayCountStore(context: Context) : SQLiteOpenHelper(context, DatabaseC
      */
     fun getTopPlayedResults(numResults: Int): Cursor {
         updateResults()
-        val database = readableDatabase
-        return database.query(
+        return readableDatabase.query(
             NAME, arrayOf(ID),
             null, null, null, null, "$PLAY_COUNT_SCORE DESC",
             if (numResults <= 0) null else numResults.toString()
@@ -227,32 +252,38 @@ class SongPlayCountStore(context: Context) : SQLiteOpenHelper(context, DatabaseC
         }
         val database = writableDatabase
         database.beginTransaction()
-        val oldestWeekWeCareAbout = mNumberOfWeeksSinceEpoch - NUM_WEEKS + 1
-        // delete rows we don't care about anymore
-        database.delete(
-            NAME,
-            "$LAST_UPDATED_WEEK_INDEX < $oldestWeekWeCareAbout",
-            null
-        )
+        try {
+            // clean outdated weeks
+            val oldestWeekWeCareAbout = mCurrentWeekNumber - NUM_WEEKS + 1
+            database.delete(
+                NAME,
+                "$LAST_UPDATED_WEEK_INDEX < $oldestWeekWeCareAbout",
+                null
+            ) // delete rows we don't care about anymore
 
-        // get the remaining rows
-        val cursor = database.query(
-            NAME, arrayOf(ID),
-            null, null, null, null, null
-        )
-        if (cursor != null && cursor.moveToFirst()) {
-            // for each row, update it
-            do {
-                updateExistingRow(database, cursor.getLong(0), false)
-            } while (cursor.moveToNext())
-            cursor.close()
+            // get the remaining rows
+            database.query(
+                NAME, arrayOf(ID),
+                null, null, null, null, null
+            )?.use { cursor ->
+                if (cursor.moveToFirst()) {
+                    // for each row, update it
+                    do {
+                        updateExistingRow(database, cursor.getLong(0), false)
+                    } while (cursor.moveToNext())
+                }
+            }
+            mDatabaseUpdated = true
+            database.setTransactionSuccessful()
+        } finally {
+            database.endTransaction()
         }
-        mDatabaseUpdated = true
-        database.setTransactionSuccessful()
-        database.endTransaction()
     }
 
-    fun forceUpdate() {
+    /**
+     * refresh database
+     */
+    fun refresh() {
         updateResults(true)
     }
 
