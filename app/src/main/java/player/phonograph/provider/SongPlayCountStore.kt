@@ -20,8 +20,6 @@ import android.content.Context
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
-import android.view.animation.AccelerateInterpolator
-import android.view.animation.Interpolator
 import java.lang.IllegalStateException
 import kotlin.math.abs
 import kotlin.math.min
@@ -29,7 +27,7 @@ import player.phonograph.provider.SongPlayCountStore.SongPlayCountColumns.Compan
 import player.phonograph.provider.SongPlayCountStore.SongPlayCountColumns.Companion.LAST_UPDATED_WEEK_INDEX
 import player.phonograph.provider.SongPlayCountStore.SongPlayCountColumns.Companion.NAME
 import player.phonograph.provider.SongPlayCountStore.SongPlayCountColumns.Companion.PLAY_COUNT_SCORE
-import player.phonograph.provider.SongPlayCountStore.SongPlayCountColumns.Companion.WEEK_PLAY_COUNT
+import player.phonograph.provider.SongPlayCountStore.SongPlayCountColumns.Companion.WEEK
 
 /**
  * This database tracks the number of play counts for an individual song.  This is used to drive
@@ -279,7 +277,7 @@ class SongPlayCountStore(context: Context) : SQLiteOpenHelper(context, DatabaseC
         companion object {
             const val NAME = "song_play_count"
             const val ID = "song_id"
-            const val WEEK_PLAY_COUNT = "week"
+            const val WEEK = "week"
             const val LAST_UPDATED_WEEK_INDEX = "week_index"
             const val PLAY_COUNT_SCORE = "play_count_score"
         }
@@ -324,10 +322,7 @@ class SongPlayCountStore(context: Context) : SQLiteOpenHelper(context, DatabaseC
          * @param week number
          * @return the column name
          */
-        private fun getColumnNameForWeek(week: Int): String = WEEK_PLAY_COUNT + week.toString()
-
-        /** interpolator curve applied for measuring the curve */
-        private val sInterpolator: Interpolator = AccelerateInterpolator(1.5f)
+        private fun getColumnNameForWeek(week: Int): String = WEEK + week.toString()
 
         /**
          * Gets the score multiplier for each week
@@ -335,8 +330,7 @@ class SongPlayCountStore(context: Context) : SQLiteOpenHelper(context, DatabaseC
          * @param week number
          * @return the multiplier to apply
          */
-        private fun getScoreMultiplierForWeek(week: Int): Float =
-            sInterpolator.getInterpolation(1 - week / NUM_WEEKS.toFloat()) * INTERPOLATOR_HEIGHT + INTERPOLATOR_BASE
+        private fun getScoreMultiplierForWeek(week: Int): Float = week * ratio[week] * 10 + 25
 
         /**
          * For some performance gain, return a static value for the column index for a week
@@ -352,12 +346,70 @@ class SongPlayCountStore(context: Context) : SQLiteOpenHelper(context, DatabaseC
         /** how many weeks worth of playback to track */
         private const val NUM_WEEKS = 52
 
-        /** how high to multiply the interpolation curve */
-        private const val INTERPOLATOR_HEIGHT = 50
-
-        // how high the base value is. The ratio of the Height to Base is what really matters
-        private const val INTERPOLATOR_BASE = 25
         private const val ONE_WEEK_IN_MS = 1000 * 60 * 60 * 24 * 7
         private const val WHERE_ID_EQUALS = "$ID=?"
+
+        /**
+         * Multiplier factor
+         * result of 5 * exp (-0.05 * x ), x = 0 to 51
+         */
+        private val ratio: FloatArray by lazy {
+            floatArrayOf(
+                5.0000000F,
+                4.7561471F,
+                4.5241870F,
+                4.3035398F,
+                4.0936537F,
+                3.8940039F,
+                3.7040911F,
+                3.5234404F,
+                3.3516002F,
+                3.1881407F,
+                3.0326532F,
+                2.8847490F,
+                2.7440581F,
+                2.6102288F,
+                2.4829265F,
+                2.3618327F,
+                2.2466448F,
+                2.1370746F,
+                2.0328482F,
+                1.9337051F,
+                1.8393972F,
+                1.7496887F,
+                1.6643554F,
+                1.5831838F,
+                1.5059710F,
+                1.4325239F,
+                1.3626589F,
+                1.2962013F,
+                1.2329848F,
+                1.1728514F,
+                1.1156508F,
+                1.0612398F,
+                1.0094825F,
+                0.96024954F,
+                0.91341762F,
+                0.86886971F,
+                0.82649444F,
+                0.78618583F,
+                0.74784309F,
+                0.71137035F,
+                0.67667641F,
+                0.64367451F,
+                0.61228214F,
+                0.58242078F,
+                0.55401579F,
+                0.52699612F,
+                0.50129421F,
+                0.47684581F,
+                0.45358976F,
+                0.43146793F,
+                0.41042499F,
+                0.39040833F
+            )
+        }
+
+        fun Int.requireNotNegative(): Int = if (this < 0) throw IllegalStateException("Must be non-negative!") else this
     }
 }
