@@ -23,6 +23,8 @@ import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import kotlin.math.abs
 import kotlin.math.min
+import player.phonograph.R
+import player.phonograph.notification.BackgroundNotification
 import player.phonograph.notification.ErrorNotification
 import player.phonograph.provider.SongPlayCountStore.SongPlayCountColumns.Companion.ID
 import player.phonograph.provider.SongPlayCountStore.SongPlayCountColumns.Companion.LAST_UPDATED_WEEK_INDEX
@@ -303,15 +305,26 @@ class SongPlayCountStore(context: Context) : SQLiteOpenHelper(context, DatabaseC
     /**
      * re-calculate-score
      */
-    fun reCalculateScore() {
+    fun reCalculateScore(context: Context) {
         readableDatabase.query(NAME, arrayOf(ID), null, null, null, null, null)?.use { cursor ->
             cursor.moveToFirst()
+            val totalCount = cursor.count
             try {
+                var i = 0
                 do {
+                    i++
                     updateExistingRow(readableDatabase, cursor.getLong(0), bumpCount = false, force = true)
+                    if (i.mod(31) == 0)
+                        BackgroundNotification.post(
+                            context.getString(R.string.refresh),
+                            context.getString(R.string.my_top_tracks),
+                            NOTIFICATION_ID, i, totalCount
+                        )
                 } while (cursor.moveToNext())
             } catch (e: Exception) {
                 ErrorNotification.postErrorNotification(e, "Fail")
+            } finally {
+                BackgroundNotification.remove(NOTIFICATION_ID)
             }
         }
     }
@@ -471,5 +484,7 @@ class SongPlayCountStore(context: Context) : SQLiteOpenHelper(context, DatabaseC
         }
 
         fun Int.requireNotNegative(): Int = if (this < 0) throw IllegalStateException("Must be non-negative!") else this
+
+        private const val NOTIFICATION_ID = 7727
     }
 }
