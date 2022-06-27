@@ -119,7 +119,7 @@ open class DisplayAdapter<I : Displayable>(
     // for inheriting
     open fun getSectionNameImp(position: Int): String = dataset[position].getSortOrderReference()?.substring(0..1) ?: ""
 
-    inner class DisplayViewHolder(itemView: View) : UniversalMediaEntryViewHolder(itemView), MediaEntryViewClickListener {
+    open inner class DisplayViewHolder(itemView: View) : UniversalMediaEntryViewHolder(itemView), MediaEntryViewClickListener {
 
         init {
             // Item Click
