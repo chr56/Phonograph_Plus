@@ -1,20 +1,20 @@
-**Preview 2022.6.20**
+**Preview 2022.6.27**
 
 **CN**
-与前一预览版相比:
-- 修复 黑名单失效（上一预览版开始）
-- 新增 文件夹视图现在使用可点击切换路径的路径导航条
-- 新增 现在可以使用旧式方法获取文件列表
-- 修复 多选时菜单图标颜色错误
-- 改进 小幅度重构专辑页面（过度动画目前暂时失效）
-- 改进 小幅度重构排序与网格设置UI
 
+与前一预览版相比:
+- 翻译 更新荷兰语翻译 (Blinkin), 意大利语翻译 (gdonisi)
+- 改进 重构播放列表详情, 简化编辑
+- 改进 "最常听的歌曲"计算方法
+- 新增 支持刷新并重新计算"最常听的歌曲"播放列表
+
+注意: 由于更改了 "最常听的歌曲"计算方法 , 建议备份数据库后再更新,
 
 **EN**
 Compared to the previous preview:
-- Fix: invalid blacklist (starting from last preview)
-- New: the Folder Page now uses a path navigation bar (or Bread-Crumb Bar) that can be clicked to switch paths
-- Add: the old method to get the file list now
-- Fix: wrong color of context menu icon when multiple selection
-- Improve: minor refactoring of the album page (BUG: transition animation is currently "temporarily" glitch)
-- Improve: minor refactoring of sort order and grid settings UI
+- Translation: Update Dutch (Blinkin), Italian (gdonisi) 
+- Improve: refactor Playlist Detail and simplify editing
+- Improve: calculation for "My Top Tracks"
+- Add: support for force to refresh and recalculate "My Top Tracks" playlists
+
+Note: Due to the major change of the calculation of "Most Listened Songs", it is recommended to BACKUP the database and then UPDATE it.
