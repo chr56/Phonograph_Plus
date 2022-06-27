@@ -4,9 +4,7 @@
 
 package player.phonograph.ui.activities
 
-import android.content.Intent
 import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -14,10 +12,14 @@ import android.view.View
 import androidx.activity.viewModels
 import androidx.core.graphics.BlendModeCompat
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.list.listItemsSingleChoice
 import com.afollestad.materialdialogs.utils.MDUtil.getStringArray
 import com.google.android.material.appbar.AppBarLayout
+import com.h6ah4i.android.widget.advrecyclerview.animator.RefactoredDefaultItemAnimator
+import com.h6ah4i.android.widget.advrecyclerview.draggable.RecyclerViewDragDropManager
+import com.h6ah4i.android.widget.advrecyclerview.utils.WrapperAdapterUtils
 import com.simplecityapps.recyclerview_fastscroll.interfaces.OnFastScrollStateChangeListener
 import lib.phonograph.cab.*
 import player.phonograph.App
@@ -54,6 +56,11 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandle
     private val model: PlaylistModel by viewModels()
 
     private lateinit var adapter: PlaylistSongAdapter // init in OnCreate() -> setUpRecyclerView()
+
+    // drag & edit
+    private var editMode: Boolean = false
+    private var recyclerViewDragDropManager: RecyclerViewDragDropManager? = null
+    private var wrappedAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>? = null
 
     // for saf callback
     private lateinit var safLauncher: SafLauncher
@@ -128,6 +135,7 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandle
 
     private fun setUpDashBroad() {
         with(binding) {
+            dashBroad.setBackgroundColor(primaryColor)
             dashBroad.addOnOffsetChangedListener(
                 AppBarLayout.OnOffsetChangedListener { _, verticalOffset ->
                     recyclerView.setPadding(
@@ -162,8 +170,6 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandle
         val textColor = MaterialColorHelper.getSecondaryTextColor(this, ColorUtil.isColorLight(primaryColor))
         val iconColor = MaterialColorHelper.getSecondaryDisabledTextColor(this, ColorUtil.isColorLight(primaryColor))
         with(binding) {
-
-            dashBroad.background = ColorDrawable(primaryColor)
 
             nameIcon.setImageDrawable(getTintedDrawable(R.drawable.ic_description_white_24dp, iconColor, BlendModeCompat.SRC_ATOP))
             songCountIcon.setImageDrawable(getTintedDrawable(R.drawable.ic_music_note_white_24dp, iconColor, BlendModeCompat.SRC_ATOP))
@@ -210,12 +216,17 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandle
                 true
             }
             R.id.action_edit_playlist -> {
-                startActivityForResult(
-                    Intent(this, PlaylistEditorActivity::class.java).apply {
-                        putExtra(EXTRA_PLAYLIST, model.playlist.value!!)
-                    },
-                    EDIT_PLAYLIST
-                )
+                with(binding) {
+                    toolbar.setBackgroundColor(accentColor)
+                    dashBroad.setBackgroundColor(accentColor)
+
+                    recyclerViewDragDropManager = RecyclerViewDragDropManager()
+                    wrappedAdapter = recyclerViewDragDropManager!!.createWrappedAdapter(adapter)
+                    recyclerView.itemAnimator = RefactoredDefaultItemAnimator()
+                    recyclerView.adapter = wrappedAdapter
+                    recyclerViewDragDropManager!!.attachRecyclerView(binding.recyclerView)
+                }
+                editMode = true
                 true
             }
             R.id.action_refresh -> {
@@ -258,6 +269,16 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandle
     }
 
     override fun onBackPressed() {
+        if (editMode) {
+            editMode = false
+            setUpRecyclerView()
+            model.triggerUpdate()
+            with(binding) {
+                toolbar.setBackgroundColor(primaryColor)
+                dashBroad.setBackgroundColor(primaryColor)
+            }
+            return
+        }
         if (multiSelectionCab != null && multiSelectionCab!!.status == CabStatus.STATUS_ACTIVE) {
             dismissCab()
             return
@@ -284,7 +305,16 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandle
         super.onDestroy()
         multiSelectionCab?.destroy()
         multiSelectionCab = null
+        wrappedAdapter?.let {
+            WrapperAdapterUtils.releaseAll(it)
+            wrappedAdapter = null
+        }
         binding.recyclerView.adapter = null
+    }
+
+    override fun onPause() {
+        super.onPause()
+        recyclerViewDragDropManager?.cancelDrag()
     }
 
     /* *******************
