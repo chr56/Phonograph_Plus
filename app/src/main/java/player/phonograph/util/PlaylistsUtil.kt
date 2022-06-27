@@ -29,12 +29,13 @@ object PlaylistsUtil {
             queryPlaylists(context, null, null)
         )
     }
+
     fun getAllPlaylists(cursor: Cursor?): List<FilePlaylist> {
         val filePlaylists: MutableList<FilePlaylist> = ArrayList()
         if (cursor != null && cursor.moveToFirst()) {
             do {
                 filePlaylists.add(
-                    FilePlaylist(cursor.getLong(0), cursor.getString(1), "") // todo
+                    FilePlaylist(cursor.getLong(0), cursor.getString(1), cursor.getString(2))
                 )
             } while (cursor.moveToNext())
         }
@@ -49,6 +50,7 @@ object PlaylistsUtil {
             )
         )
     }
+
     fun getPlaylist(context: Context, playlistName: String): FilePlaylist {
         return getPlaylist(
             queryPlaylists(
@@ -56,11 +58,17 @@ object PlaylistsUtil {
             )
         )
     }
+
     fun getPlaylist(cursor: Cursor?): FilePlaylist {
-        var playlist = FilePlaylist()
-        if (cursor != null && cursor.moveToFirst()) {
-            playlist = FilePlaylist(cursor.getLong(0), cursor.getString(1), "") // todo
-        }
+        val playlist =
+            if (cursor != null && cursor.moveToFirst())
+                FilePlaylist(
+                    id = cursor.getLong(0),
+                    name = cursor.getString(1),
+                    path = cursor.getString(2)
+                )
+            else
+                FilePlaylist()
         cursor?.close()
         return playlist
     }
@@ -72,7 +80,7 @@ object PlaylistsUtil {
     fun queryPlaylists(
         context: Context,
         selection: String?,
-        selectionValues: Array<String>?
+        selectionValues: Array<String>?,
     ): Cursor? {
 
         val (realSelection, realSelectionValues) =
@@ -90,7 +98,8 @@ object PlaylistsUtil {
                 Playlists.EXTERNAL_CONTENT_URI,
                 arrayOf(
                     BaseColumns._ID, /* 0 */
-                    PlaylistsColumns.NAME /* 1 */
+                    PlaylistsColumns.NAME, /* 1 */
+                    PlaylistsColumns.DATA /* 2 */
                 ),
                 realSelection, realSelectionValues, Playlists.DEFAULT_SORT_ORDER
             )
@@ -123,6 +132,7 @@ object PlaylistsUtil {
     fun doesPlaylistExist(context: Context, name: String): Boolean {
         return doesPlaylistExistImp(context, PlaylistsColumns.NAME + "=?", arrayOf(name))
     }
+
     fun doesPlaylistExist(context: Context, playlistId: Long): Boolean =
         playlistId != -1L && doesPlaylistExistImp(context, Playlists._ID + "=?", arrayOf(playlistId.toString()))
 
@@ -146,7 +156,8 @@ object PlaylistsUtil {
             if (cursor != null && cursor.moveToFirst()) {
                 cursor.use { return it.getString(0).orEmpty() }
             }
-        } catch (ignored: SecurityException) { }
+        } catch (ignored: SecurityException) {
+        }
         return ""
     }
 

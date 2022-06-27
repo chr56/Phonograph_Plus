@@ -30,7 +30,7 @@ sealed class Playlist : Parcelable {
 
     constructor() {
         id = -1
-        name = ""
+        name = "N/A"
     }
 
     abstract val type: Int

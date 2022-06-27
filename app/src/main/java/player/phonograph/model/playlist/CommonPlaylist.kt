@@ -25,7 +25,7 @@ class FilePlaylist : Playlist, EditablePlaylist {
         associatedFilePath = path
     }
     constructor() : super() {
-        associatedFilePath = ""
+        associatedFilePath = "-"
     }
 
     override fun getSongs(context: Context): List<Song> =
