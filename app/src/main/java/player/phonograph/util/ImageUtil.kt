@@ -116,9 +116,13 @@ object ImageUtil {
         return Bitmap.createScaledBitmap(BitmapFactory.decodeStream(stream), scaledWidth, scaledHeight, true)
     }
 
-    fun Context.getTintedDrawable(@DrawableRes id: Int, @ColorInt color: Int): Drawable? {
+    fun Context.getTintedDrawable(
+        @DrawableRes id: Int,
+        @ColorInt color: Int,
+        mode: BlendModeCompat = BlendModeCompat.SRC_IN
+    ): Drawable? {
         val drawable = ResourcesCompat.getDrawable(this.resources, id, theme)
-        drawable?.colorFilter = BlendModeColorFilterCompat.createBlendModeColorFilterCompat(color, BlendModeCompat.SRC_IN)
+        drawable?.colorFilter = BlendModeColorFilterCompat.createBlendModeColorFilterCompat(color, mode)
         return drawable
     }
 }
