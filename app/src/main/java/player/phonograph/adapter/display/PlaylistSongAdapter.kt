@@ -4,16 +4,18 @@
 
 package player.phonograph.adapter.display
 
-import android.content.Context
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.widget.PopupMenu
 import androidx.appcompat.app.AppCompatActivity
 import com.h6ah4i.android.widget.advrecyclerview.draggable.DraggableItemAdapter
 import com.h6ah4i.android.widget.advrecyclerview.draggable.DraggableItemState
 import com.h6ah4i.android.widget.advrecyclerview.draggable.DraggableItemViewHolder
 import com.h6ah4i.android.widget.advrecyclerview.draggable.ItemDraggableRange
 import com.h6ah4i.android.widget.advrecyclerview.draggable.annotation.DraggableItemStateFlags
+import player.phonograph.R
 import player.phonograph.interfaces.MultiSelectionCabProvider
 import player.phonograph.model.Song
 import player.phonograph.util.ViewUtil.hitTest
@@ -22,9 +24,8 @@ class PlaylistSongAdapter(
     activity: AppCompatActivity,
     host: MultiSelectionCabProvider?,
     dataSet: List<Song>,
-    layoutRes: Int,
     cfg: (DisplayAdapter<Song>.() -> Unit)?
-) : DisplayAdapter<Song>(activity, host, dataSet, layoutRes, cfg), DraggableItemAdapter<PlaylistSongAdapter.ViewHolder> {
+) : DisplayAdapter<Song>(activity, host, dataSet, R.layout.item_list, cfg), DraggableItemAdapter<PlaylistSongAdapter.ViewHolder> {
 
     override fun getSectionNameImp(position: Int): String = (position + 1).toString()
 
@@ -33,11 +34,14 @@ class PlaylistSongAdapter(
     }
 
     override fun onBindViewHolder(holder: DisplayViewHolder, position: Int) {
-        holder.dragView?.visibility = View.VISIBLE
+        if (editMode) holder.dragView?.visibility = View.VISIBLE
         super.onBindViewHolder(holder, position)
     }
 
-    var onMove: (Context, fromPosition: Int, toPosition: Int) -> Boolean = { _, _, _ -> true }
+    var editMode: Boolean = false
+
+    var onMove: (fromPosition: Int, toPosition: Int) -> Boolean = { _, _ -> true }
+    var onDelete: (position: Int) -> Unit = {}
 
     override fun onCheckCanStartDrag(holder: ViewHolder, position: Int, x: Int, y: Int): Boolean =
         position >= 0 &&
@@ -47,7 +51,7 @@ class PlaylistSongAdapter(
 
     override fun onMoveItem(fromPosition: Int, toPosition: Int) {
         if (fromPosition != toPosition) {
-            if (onMove(activity, fromPosition, toPosition)
+            if (onMove(fromPosition, toPosition)
             ) {
                 // update dataset(playlistSongs)
                 val newSongs: MutableList<Song> = dataset.toMutableList()
@@ -55,6 +59,69 @@ class PlaylistSongAdapter(
                 newSongs.add(toPosition, song)
                 dataset = newSongs
             }
+        }
+    }
+
+    override fun onMenuClick(menuButtonView: View, bindingAdapterPosition: Int) {
+        if (editMode) {
+            val popupMenu = PopupMenu(activity, menuButtonView)
+            popupMenu.inflate(R.menu.menu_item_playlist_editor)
+            popupMenu.setOnMenuItemClickListener { menuItem ->
+                if (menuItem != null) {
+                    onItemClick(menuItem, bindingAdapterPosition)
+                } else
+                    false
+            }
+            popupMenu.show()
+        } else {
+            super.onMenuClick(menuButtonView, bindingAdapterPosition)
+        }
+    }
+
+    private fun onItemClick(menuItem: MenuItem, bindingAdapterPosition: Int): Boolean {
+        val song = dataset[bindingAdapterPosition]
+        return when (menuItem.itemId) {
+            R.id.action_remove_from_playlist -> {
+                onDelete(bindingAdapterPosition)
+                (dataset as MutableList).removeAt(bindingAdapterPosition)
+                notifyItemRangeChanged(bindingAdapterPosition, dataset.size - 1) // so we can reorder the items behind removed one
+                true
+            }
+            R.id.action_move_to_top -> {
+                if (onMove(bindingAdapterPosition, 0)) {
+                    (dataset as MutableList).removeAt(bindingAdapterPosition)
+                    (dataset as MutableList).add(0, song)
+                    notifyItemRangeChanged(0, bindingAdapterPosition + 1) // so we can reorder the items affected
+                }
+                true
+            }
+            R.id.action_move_to_bottom -> {
+                if (onMove(bindingAdapterPosition, dataset.size - 1)) {
+                    (dataset as MutableList).removeAt(bindingAdapterPosition)
+                    (dataset as MutableList).add(song)
+                    notifyItemRangeChanged(bindingAdapterPosition - 1, dataset.size - 1) // so we can reorder the items affected
+                }
+                true
+            }
+            R.id.action_move_up -> {
+                if (bindingAdapterPosition == 0) return false
+                if (onMove(bindingAdapterPosition, bindingAdapterPosition - 1)) {
+                    (dataset as MutableList).removeAt(bindingAdapterPosition)
+                    (dataset as MutableList).add(bindingAdapterPosition - 1, song)
+                    notifyItemRangeChanged(bindingAdapterPosition - 1, bindingAdapterPosition)
+                }
+                true
+            }
+            R.id.action_move_down -> {
+                if (bindingAdapterPosition == dataset.size - 1) return false
+                if (onMove(bindingAdapterPosition, bindingAdapterPosition + 1)) {
+                    (dataset as MutableList).removeAt(bindingAdapterPosition)
+                    (dataset as MutableList).add(bindingAdapterPosition + 1, song)
+                    notifyItemRangeChanged(bindingAdapterPosition, bindingAdapterPosition + 1)
+                }
+                true
+            }
+            else -> false
         }
     }
 

@@ -4,7 +4,6 @@
 
 package player.phonograph.ui.activities
 
-import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
 import android.view.Menu
@@ -127,8 +126,7 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandle
         model.playlist.value ?: FilePlaylist()
         // Init adapter
         adapter = PlaylistSongAdapter(
-            this, this, ArrayList(),
-            R.layout.item_list
+            this, this, ArrayList()
         ) {}
         binding.recyclerView.adapter = adapter
 
@@ -219,12 +217,17 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandle
             }
             R.id.action_edit_playlist -> {
                 val playlist = model.playlist.value
-                if (playlist !is FilePlaylist){
+                if (playlist !is FilePlaylist) {
                     return false
                 }
-                adapter.onMove = { context: Context, fromPosition: Int, toPosition: Int ->
-                    LegacyPlaylistsUtil.moveItem(context, playlist.id, fromPosition, toPosition)
+
+                adapter.onMove = { fromPosition: Int, toPosition: Int ->
+                    LegacyPlaylistsUtil.moveItem(this, playlist.id, fromPosition, toPosition)
                 }
+                adapter.onDelete = {
+                    LegacyPlaylistsUtil.removeFromPlaylist(this, adapter.dataset[it], playlist.id)
+                }
+
                 with(binding) {
                     toolbar.setBackgroundColor(accentColor)
                     dashBroad.setBackgroundColor(accentColor)
@@ -236,6 +239,7 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandle
                     recyclerViewDragDropManager!!.attachRecyclerView(binding.recyclerView)
                 }
                 editMode = true
+                adapter.editMode = true
                 true
             }
             R.id.action_refresh -> {
@@ -280,6 +284,7 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandle
     override fun onBackPressed() {
         if (editMode) {
             editMode = false
+            adapter.editMode = false
             setUpRecyclerView()
             model.triggerUpdate()
             with(binding) {
