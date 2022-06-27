@@ -4,6 +4,7 @@
 
 package player.phonograph.ui.activities
 
+import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
 import android.view.Menu
@@ -21,6 +22,7 @@ import com.h6ah4i.android.widget.advrecyclerview.animator.RefactoredDefaultItemA
 import com.h6ah4i.android.widget.advrecyclerview.draggable.RecyclerViewDragDropManager
 import com.h6ah4i.android.widget.advrecyclerview.utils.WrapperAdapterUtils
 import com.simplecityapps.recyclerview_fastscroll.interfaces.OnFastScrollStateChangeListener
+import legacy.phonograph.LegacyPlaylistsUtil
 import lib.phonograph.cab.*
 import player.phonograph.App
 import player.phonograph.PlaylistType
@@ -216,6 +218,13 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandle
                 true
             }
             R.id.action_edit_playlist -> {
+                val playlist = model.playlist.value
+                if (playlist !is FilePlaylist){
+                    return false
+                }
+                adapter.onMove = { context: Context, fromPosition: Int, toPosition: Int ->
+                    LegacyPlaylistsUtil.moveItem(context, playlist.id, fromPosition, toPosition)
+                }
                 with(binding) {
                     toolbar.setBackgroundColor(accentColor)
                     dashBroad.setBackgroundColor(accentColor)
