@@ -6,23 +6,25 @@ package player.phonograph.ui.activities
 
 import android.content.Intent
 import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.ImageView
 import androidx.activity.viewModels
+import androidx.core.graphics.BlendModeCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.list.listItemsSingleChoice
 import com.afollestad.materialdialogs.utils.MDUtil.getStringArray
 import com.bumptech.glide.Glide
+import com.google.android.material.appbar.AppBarLayout
 import lib.phonograph.cab.*
 import player.phonograph.App
 import player.phonograph.PlaylistType
 import player.phonograph.R
-import player.phonograph.adapter.display.Dashboard
-import player.phonograph.adapter.display.ListSheetAdapter
+import player.phonograph.adapter.display.SongDisplayAdapter
 import player.phonograph.databinding.ActivityPlaylistDetailBinding
 import player.phonograph.glide.SongGlideRequest
 import player.phonograph.helper.menu.PlaylistMenuHelper.handleMenuClick
@@ -38,11 +40,14 @@ import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.settings.Setting
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
 import player.phonograph.util.ImageUtil.getTintedDrawable
+import player.phonograph.util.MusicUtil
 import player.phonograph.util.PhonographColorUtil
 import player.phonograph.util.PlaylistsUtil
 import player.phonograph.util.ViewUtil.setUpFastScrollRecyclerViewColor
+import util.mdcolor.ColorUtil
 import util.mdcolor.pref.ThemeColor
 import util.mddesign.core.Themer
+import util.mddesign.util.MaterialColorHelper
 
 class PlaylistDetailActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity, MultiSelectionCabProvider {
 
@@ -50,7 +55,7 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandle
 
     private val model: PlaylistModel by viewModels()
 
-    private lateinit var adapter: ListSheetAdapter<Song> // init in OnCreate() -> setUpRecyclerView()
+    private lateinit var adapter: SongDisplayAdapter // init in OnCreate() -> setUpRecyclerView()
 
     // for saf callback
     private lateinit var safLauncher: SafLauncher
@@ -84,6 +89,7 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandle
 
         setUpToolbar()
         setUpRecyclerView()
+        setUpDashBroad()
     }
 
     private val primaryColor: Int get() = ThemeColor.primaryColor(this)
@@ -103,34 +109,81 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandle
 
         val playlist: Playlist = model.playlist.value ?: FilePlaylist()
         // Init adapter
-        adapter = ListSheetAdapter(
-            this, this,
-            ArrayList(),
-            Dashboard(playlist.name),
-            R.layout.item_list,
-            R.layout.item_header_playlist,
-        ) { loadImageImpl = loadImage }
-
-        if (playlist !is SmartPlaylist) {
-            adapter.dashboard = Dashboard(playlist.name, path = PlaylistsUtil.getPlaylistPath(this, playlist as FilePlaylist))
-        }
+        adapter = SongDisplayAdapter(
+            this, this, ArrayList(),
+            R.layout.item_list
+        ) {}
         binding.recyclerView.adapter = adapter
 
         model.isRecyclerViewReady = true
     }
 
+    private fun setUpDashBroad() {
+        with(binding) {
+            dashBroad.addOnOffsetChangedListener(
+                AppBarLayout.OnOffsetChangedListener { _, verticalOffset ->
+                    recyclerView.setPadding(
+                        recyclerView.paddingLeft,
+                        dashBroad.totalScrollRange + verticalOffset,
+                        recyclerView.paddingRight,
+                        recyclerView.paddingBottom
+                    )
+                }
+            )
+            recyclerView.setPadding(
+                recyclerView.paddingLeft, recyclerView.paddingTop + dashBroad.height, recyclerView.paddingRight, recyclerView.paddingBottom
+            )
+        }
+    }
     private val playlistCallBack: PlaylistCallback
         get() = { playlist: Playlist, songs: List<Song> ->
             adapter.dataset = songs
-            adapter.dashboard.name = playlist.name
-            adapter.updateDashboardText()
             binding.empty.visibility = if (songs.isEmpty()) View.VISIBLE else View.GONE
             supportActionBar!!.title = playlist.name
             if (playlist !is SmartPlaylist && !PlaylistsUtil.doesPlaylistExist(this, playlist.id)) {
                 // File Playlist was deleted
                 finish()
             }
+            updateDashboard()
         }
+
+    private fun updateDashboard() {
+
+        // colors
+
+        val textColor = MaterialColorHelper.getSecondaryTextColor(this, ColorUtil.isColorLight(primaryColor))
+        val iconColor = MaterialColorHelper.getSecondaryDisabledTextColor(this, ColorUtil.isColorLight(primaryColor))
+        with(binding) {
+
+            dashBroad.background = ColorDrawable(primaryColor)
+
+            nameIcon.setImageDrawable(getTintedDrawable(R.drawable.ic_description_white_24dp, iconColor, BlendModeCompat.SRC_ATOP))
+            songCountIcon.setImageDrawable(getTintedDrawable(R.drawable.ic_music_note_white_24dp, iconColor, BlendModeCompat.SRC_ATOP))
+            durationIcon.setImageDrawable(getTintedDrawable(R.drawable.ic_timer_white_24dp, iconColor, BlendModeCompat.SRC_ATOP))
+            pathIcon.setImageDrawable(getTintedDrawable(R.drawable.ic_file_music_white_24dp, iconColor, BlendModeCompat.SRC_ATOP))
+
+            icon.setImageDrawable(getTintedDrawable(R.drawable.ic_queue_music_white_24dp, textColor))
+
+            nameText.setTextColor(textColor)
+            songCountText.setTextColor(textColor)
+            durationText.setTextColor(textColor)
+            pathText.setTextColor(textColor)
+        }
+        // text
+
+        val playlist = model.playlist.value
+        with(binding) {
+            nameText.text = playlist?.name ?: "-"
+            songCountText.text = adapter.dataset.size.toString()
+            durationText.text = MusicUtil.getReadableDurationString(MusicUtil.getTotalDuration(this@PlaylistDetailActivity, adapter.dataset))
+            if (playlist is FilePlaylist) {
+                pathText.text = playlist.associatedFilePath
+            } else {
+                pathText.visibility = View.INVISIBLE
+                pathIcon.visibility = View.INVISIBLE
+            }
+        }
+    }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         val playlist: Playlist = model.playlist.value ?: FilePlaylist()
