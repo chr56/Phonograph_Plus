@@ -19,6 +19,10 @@ class PlaylistModel : ViewModel() {
 
     var playlist: MutableLiveData<Playlist> = MutableLiveData()
 
+    fun triggerUpdate() {
+        playlist.postValue(playlist.value)
+    }
+
     var isRecyclerViewReady = false
 
     fun fetchPlaylist(context: Context, callback: PlaylistCallback) {
@@ -30,7 +34,6 @@ class PlaylistModel : ViewModel() {
             }
         }
     }
-
 }
 
 typealias PlaylistCallback = ((playlist: Playlist, List<Song>) -> Unit)?
