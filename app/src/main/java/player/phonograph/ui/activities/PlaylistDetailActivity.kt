@@ -8,22 +8,20 @@ import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.ImageView
+import androidx.activity.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.list.listItemsSingleChoice
 import com.afollestad.materialdialogs.utils.MDUtil.getStringArray
 import com.bumptech.glide.Glide
-import com.h6ah4i.android.widget.advrecyclerview.animator.GeneralItemAnimator
 import com.h6ah4i.android.widget.advrecyclerview.animator.RefactoredDefaultItemAnimator
 import com.h6ah4i.android.widget.advrecyclerview.draggable.RecyclerViewDragDropManager
 import com.h6ah4i.android.widget.advrecyclerview.utils.WrapperAdapterUtils
-import kotlinx.coroutines.*
 import lib.phonograph.cab.*
 import player.phonograph.App
 import player.phonograph.PlaylistType
@@ -54,10 +52,9 @@ import util.mddesign.core.Themer
 
 class PlaylistDetailActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity, MultiSelectionCabProvider {
 
-    private var _binding: ActivityPlaylistDetailBinding? = null
-    private val binding: ActivityPlaylistDetailBinding get() = _binding!!
+    private lateinit var binding: ActivityPlaylistDetailBinding
 
-    private lateinit var playlist: Playlist // init in OnCreate()
+    private val model: PlaylistModel by viewModels()
 
     private lateinit var adapter: ListSheetAdapter<Song> // init in OnCreate() -> setUpRecyclerView()
     private var wrappedAdapter: RecyclerView.Adapter<*>? = null
@@ -74,7 +71,7 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandle
      * ********************/
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        _binding = ActivityPlaylistDetailBinding.inflate(layoutInflater)
+        binding = ActivityPlaylistDetailBinding.inflate(layoutInflater)
         super.onCreate(savedInstanceState)
 
         setDrawUnderStatusbar()
@@ -85,8 +82,10 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandle
 
         Themer.setActivityToolbarColorAuto(this, binding.toolbar)
 
-        playlist = intent.extras!!.getParcelable(EXTRA_PLAYLIST)!!
-        loadSongs()
+        model.playlist.observe(this) {
+            model.fetchPlaylist(this, playlistCallBack)
+        }
+        model.playlist.value = intent.extras!!.getParcelable(EXTRA_PLAYLIST)!!
 
         safLauncher = SafLauncher(activityResultRegistry)
         lifecycle.addObserver(safLauncher)
@@ -98,67 +97,60 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandle
     private val primaryColor: Int get() = ThemeColor.primaryColor(this)
     private val accentColor: Int get() = ThemeColor.accentColor(this)
 
-    override fun createContentView(): View {
-        return wrapSlidingMusicPanel(binding.root)
-    }
+    override fun createContentView(): View = wrapSlidingMusicPanel(binding.root)
 
     private fun setUpToolbar() {
         binding.toolbar.setBackgroundColor(primaryColor)
         setSupportActionBar(binding.toolbar)
-        setToolbarTitle(playlist.name)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
     }
 
-    private var isRecyclerViewReady = false
     private fun setUpRecyclerView() {
         binding.recyclerView.setUpFastScrollRecyclerViewColor(this, accentColor)
         binding.recyclerView.layoutManager = LinearLayoutManager(this)
 
-        // Init (song)adapter
+        val playlist: Playlist = model.playlist.value!! // todo
+        // Init adapter
+        adapter = ListSheetAdapter(
+            this, this,
+            ArrayList(),
+            Dashboard(playlist.name),
+            R.layout.item_list,
+            R.layout.item_header_playlist,
+        ) { loadImageImpl = loadImage }
+
         if (playlist is SmartPlaylist) {
-            adapter = ListSheetAdapter(
-                this, this,
-                ArrayList(),
-                Dashboard(playlist.name),
-                R.layout.item_list,
-                R.layout.item_header_playlist,
-            ) { loadImageImpl = loadImage }
             binding.recyclerView.adapter = adapter
         } else {
             recyclerViewDragDropManager = RecyclerViewDragDropManager()
-            val animator: GeneralItemAnimator = RefactoredDefaultItemAnimator()
 
-            adapter = ListSheetAdapter(
-                this, this,
-                ArrayList(),
-                Dashboard(playlist.name, path = PlaylistsUtil.getPlaylistPath(this, playlist as FilePlaylist)),
-                R.layout.item_list,
-                R.layout.item_header_playlist,
-            ) { loadImageImpl = loadImage }
+            adapter.dashboard = Dashboard(playlist.name, path = PlaylistsUtil.getPlaylistPath(this, playlist as FilePlaylist))
             wrappedAdapter = recyclerViewDragDropManager!!.createWrappedAdapter(adapter)
+
+            binding.recyclerView.itemAnimator = RefactoredDefaultItemAnimator()
             binding.recyclerView.adapter = wrappedAdapter
-            binding.recyclerView.itemAnimator = animator
+
             recyclerViewDragDropManager!!.attachRecyclerView(binding.recyclerView)
         }
 
-        adapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
-            override fun onChanged() {
-                super.onChanged()
-                checkIsEmpty()
+        model.isRecyclerViewReady = true
+    }
+
+    private val playlistCallBack: PlaylistCallback
+        get() = { playlist: Playlist, songs: List<Song> ->
+            adapter.dataset = songs
+            adapter.dashboard.name = playlist.name
+            adapter.updateDashboardText()
+            binding.empty.visibility = if (songs.isEmpty()) View.VISIBLE else View.GONE
+            supportActionBar!!.title = playlist.name
+            if (playlist !is SmartPlaylist && !PlaylistsUtil.doesPlaylistExist(this, playlist.id)) {
+                // File Playlist was deleted
+                finish()
             }
-        })
-        isRecyclerViewReady = true
-    }
-
-    private fun checkIsEmpty() {
-        binding.empty.visibility = if (adapter.dataset.isEmpty()) View.VISIBLE else View.GONE
-    }
-
-    private fun setToolbarTitle(title: String) {
-        supportActionBar!!.title = title
-    }
+        }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        val playlist: Playlist = model.playlist.value!! // todo
         menuInflater.inflate(
             if (playlist is SmartPlaylist) R.menu.menu_smart_playlist_detail else R.menu.menu_playlist_detail, menu
         )
@@ -168,29 +160,28 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandle
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
+        return when (item.itemId) {
             R.id.action_shuffle_playlist -> {
                 MusicPlayerRemote.openAndShuffleQueue(adapter.dataset, true)
-                return true
+                true
             }
             R.id.action_edit_playlist -> {
                 startActivityForResult(
                     Intent(this, PlaylistEditorActivity::class.java).apply {
-                        putExtra(EXTRA_PLAYLIST, playlist)
+                        putExtra(EXTRA_PLAYLIST, model.playlist.value!!)
                     },
                     EDIT_PLAYLIST
                 )
-                return true
+                true
             }
             R.id.action_refresh -> {
+                val playlist: Playlist = model.playlist.value!! // todo
+                adapter.dataset = emptyList()
                 if (playlist is GeneratedPlaylist) {
                     (playlist as GeneratedPlaylist).refresh(this)
-                    adapter.dataset = emptyList()
-                    loadSongs()
-                } else {
-                    onMediaStoreChanged()
                 }
-                return true
+                model.playlist.postValue(playlist)
+                true
             }
             R.id.action_setting_last_added_interval -> {
                 val prefValue = App.instance.getStringArray(R.array.pref_playlists_last_added_interval_values)
@@ -205,21 +196,21 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandle
                             Setting.instance.lastAddedCutoffPref = prefValue[index]
                         }.apply {
                             if (isSuccess) {
-                                loadSongs()
+                                model.playlist.postValue(model.playlist.value)
                             }
                         }
                         dialog.dismiss()
                     }
                     .title(R.string.pref_title_last_added_interval)
                     .show()
-                return true
+                true
             }
             android.R.id.home -> {
                 onBackPressed()
-                return true
+                true
             }
+            else -> handleMenuClick(this, model.playlist.value!!, item)
         }
-        return handleMenuClick(this, playlist, item)
     }
 
     override fun onBackPressed() {
@@ -242,23 +233,7 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandle
 
     override fun onMediaStoreChanged() {
         super.onMediaStoreChanged()
-        loadSongs()
-        if (playlist !is SmartPlaylist) {
-            // Playlist deleted
-            if (!PlaylistsUtil.doesPlaylistExist(this, playlist.id)) {
-                finish()
-                return
-            }
-
-            // Playlist renamed
-            val playlistName = PlaylistsUtil.getNameForPlaylist(this, playlist.id)
-            if (playlistName != playlist.name) {
-                playlist = PlaylistsUtil.getPlaylist(this, playlist.id)
-                setToolbarTitle(playlist.name)
-                adapter.dashboard.name = playlist.name
-                adapter.updateDashboardText()
-            }
-        }
+        model.playlist.postValue(PlaylistsUtil.getPlaylist(this, model.playlist.value!!.id))
     }
 
     override fun onPause() {
@@ -267,11 +242,6 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandle
     }
 
     override fun onDestroy() {
-        try {
-            loaderCoroutineScope.coroutineContext[Job]?.cancel()
-        } catch (e: java.lang.Exception) {
-            Log.i("BackgroundCoroutineScope", e.message.orEmpty())
-        }
         super.onDestroy()
         multiSelectionCab?.destroy()
         multiSelectionCab = null
@@ -284,31 +254,6 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandle
         wrappedAdapter?.let {
             WrapperAdapterUtils.releaseAll(it)
             wrappedAdapter = null
-        }
-        _binding = null
-    }
-
-    /* *******************
-     *
-     *   Load Playlist
-     *
-     * *******************/
-
-    private val loaderCoroutineScope: CoroutineScope = CoroutineScope(Dispatchers.IO)
-    fun loadSongs() {
-        fetchPlaylist(playlist)
-    }
-
-    private fun fetchPlaylist(list: Playlist) {
-        loaderCoroutineScope.launch {
-            val songs = list.getSongs(this@PlaylistDetailActivity)
-
-            while (!isRecyclerViewReady) yield()
-            withContext(Dispatchers.Main) {
-                if (isRecyclerViewReady) {
-                    adapter.dataset = songs
-                }
-            }
         }
     }
 
