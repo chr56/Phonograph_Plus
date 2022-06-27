@@ -9,6 +9,7 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.view.View.*
 import androidx.activity.viewModels
 import androidx.core.graphics.BlendModeCompat
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -154,7 +155,7 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandle
     private val playlistCallBack: PlaylistCallback
         get() = { playlist: Playlist, songs: List<Song> ->
             adapter.dataset = songs
-            binding.empty.visibility = if (songs.isEmpty()) View.VISIBLE else View.GONE
+            binding.empty.visibility = if (songs.isEmpty()) VISIBLE else GONE
             supportActionBar!!.title = playlist.name
             if (playlist !is SmartPlaylist && !PlaylistsUtil.doesPlaylistExist(this, playlist.id)) {
                 // File Playlist was deleted
@@ -193,8 +194,8 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandle
             if (playlist is FilePlaylist) {
                 pathText.text = playlist.associatedFilePath
             } else {
-                pathText.visibility = View.GONE
-                pathIcon.visibility = View.GONE
+                pathText.visibility = GONE
+                pathIcon.visibility = GONE
             }
         }
     }
@@ -216,31 +217,12 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandle
                 true
             }
             R.id.action_edit_playlist -> {
-                val playlist = model.playlist.value
-                if (playlist !is FilePlaylist) {
-                    return false
+                if (model.playlist.value is FilePlaylist) {
+                    enterEditMode()
+                    true
+                } else {
+                    false
                 }
-
-                adapter.onMove = { fromPosition: Int, toPosition: Int ->
-                    LegacyPlaylistsUtil.moveItem(this, playlist.id, fromPosition, toPosition)
-                }
-                adapter.onDelete = {
-                    LegacyPlaylistsUtil.removeFromPlaylist(this, adapter.dataset[it], playlist.id)
-                }
-
-                with(binding) {
-                    toolbar.setBackgroundColor(accentColor)
-                    dashBroad.setBackgroundColor(accentColor)
-
-                    recyclerViewDragDropManager = RecyclerViewDragDropManager()
-                    wrappedAdapter = recyclerViewDragDropManager!!.createWrappedAdapter(adapter)
-                    recyclerView.itemAnimator = RefactoredDefaultItemAnimator()
-                    recyclerView.adapter = wrappedAdapter
-                    recyclerViewDragDropManager!!.attachRecyclerView(binding.recyclerView)
-                }
-                editMode = true
-                adapter.editMode = true
-                true
             }
             R.id.action_refresh -> {
                 val playlist: Playlist = model.playlist.value ?: FilePlaylist()
@@ -281,16 +263,41 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandle
         }
     }
 
+    private fun enterEditMode() {
+        val playlist = model.playlist.value ?: return
+
+        editMode = true
+        adapter.editMode = true
+
+        adapter.onMove = { fromPosition: Int, toPosition: Int ->
+            LegacyPlaylistsUtil.moveItem(this, playlist.id, fromPosition, toPosition)
+        }
+        adapter.onDelete = {
+            LegacyPlaylistsUtil.removeFromPlaylist(this, adapter.dataset[it], playlist.id)
+        }
+
+        with(binding) {
+            supportActionBar!!.title = "${playlist.name} [${getString(R.string.edit)}]"
+
+            recyclerViewDragDropManager = RecyclerViewDragDropManager()
+            wrappedAdapter = recyclerViewDragDropManager!!.createWrappedAdapter(adapter)
+            recyclerView.itemAnimator = RefactoredDefaultItemAnimator()
+            recyclerView.adapter = wrappedAdapter
+            recyclerViewDragDropManager!!.attachRecyclerView(binding.recyclerView)
+        }
+    }
+
+    private fun exitEditMode() {
+        editMode = false
+        adapter.editMode = false
+
+        setUpRecyclerView()
+        model.triggerUpdate()
+    }
+
     override fun onBackPressed() {
         if (editMode) {
-            editMode = false
-            adapter.editMode = false
-            setUpRecyclerView()
-            model.triggerUpdate()
-            with(binding) {
-                toolbar.setBackgroundColor(primaryColor)
-                dashBroad.setBackgroundColor(primaryColor)
-            }
+            exitEditMode()
             return
         }
         if (multiSelectionCab != null && multiSelectionCab!!.status == CabStatus.STATUS_ACTIVE) {
@@ -380,7 +387,7 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandle
 
     override fun showCab() {
         multiSelectionCab?.let { cab ->
-            binding.toolbar.visibility = View.INVISIBLE
+            binding.toolbar.visibility = INVISIBLE
             cab.refresh()
             cab.show()
         }
@@ -388,7 +395,7 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandle
 
     override fun dismissCab() {
         multiSelectionCab?.hide()
-        binding.toolbar.visibility = View.VISIBLE
+        binding.toolbar.visibility = VISIBLE
     }
 
     /* *******************
