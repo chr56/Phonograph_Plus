@@ -119,6 +119,21 @@ open class DisplayAdapter<I : Displayable>(
     // for inheriting
     open fun getSectionNameImp(position: Int): String = dataset[position].getSortOrderReference()?.substring(0..1) ?: ""
 
+    protected open fun onMenuClick(menuButtonView: View, bindingAdapterPosition: Int) {
+        if (dataset.isNotEmpty()) {
+            val menuRes = dataset[0].menuRes()
+            val popupMenu = PopupMenu(activity, menuButtonView)
+            popupMenu.inflate(menuRes)
+            popupMenu.setOnMenuItemClickListener { menuItem ->
+                if (menuItem != null)
+                    return@setOnMenuItemClickListener dataset[0].menuHandler()
+                        ?.invoke(activity, dataset[bindingAdapterPosition], menuItem.itemId) ?: false
+                else return@setOnMenuItemClickListener false
+            }
+            popupMenu.show()
+        }
+    }
+
     open inner class DisplayViewHolder(itemView: View) : UniversalMediaEntryViewHolder(itemView), MediaEntryViewClickListener {
 
         init {
@@ -139,19 +154,8 @@ open class DisplayAdapter<I : Displayable>(
             if (dataset[0].menuRes() == 0 || dataset[0].menuHandler() == null) {
                 menu?.visibility = View.GONE
             } else {
-                menu?.setOnClickListener { view ->
-                    if (dataset.isNotEmpty()) {
-                        val menuRes = dataset[0].menuRes()
-                        val popupMenu = PopupMenu(activity, view)
-                        popupMenu.inflate(menuRes)
-                        popupMenu.setOnMenuItemClickListener { menuItem ->
-                            if (menuItem != null)
-                                return@setOnMenuItemClickListener dataset[0].menuHandler()
-                                    ?.invoke(activity, dataset[bindingAdapterPosition], menuItem.itemId) ?: false
-                            else return@setOnMenuItemClickListener false
-                        }
-                        popupMenu.show()
-                    }
+                menu?.setOnClickListener {
+                    onMenuClick(it, bindingAdapterPosition)
                 }
             }
         }
