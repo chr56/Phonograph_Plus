@@ -1,45 +1,38 @@
 package player.phonograph.ui.activities
 
 import android.content.Context
+import android.graphics.Color
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.afollestad.materialcab.CreateCallback
-import com.afollestad.materialcab.DestroyCallback
-import com.afollestad.materialcab.SelectCallback
-import com.afollestad.materialcab.attached.AttachedCab
-import com.afollestad.materialcab.attached.destroy
-import com.afollestad.materialcab.attached.isActive
-import com.afollestad.materialcab.createCab
 import kotlinx.coroutines.*
+import lib.phonograph.cab.*
 import player.phonograph.R
-import player.phonograph.adapter.song.SongAdapter
+import player.phonograph.adapter.display.SongDisplayAdapter
 import player.phonograph.databinding.ActivityGenreDetailBinding
-import player.phonograph.interfaces.CabHolder
+import player.phonograph.interfaces.MultiSelectionCabProvider
 import player.phonograph.mediastore.GenreLoader
 import player.phonograph.model.Genre
 import player.phonograph.model.Song
 import player.phonograph.service.MusicPlayerRemote
-import player.phonograph.settings.Setting
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
+import player.phonograph.util.ImageUtil.getTintedDrawable
 import player.phonograph.util.PhonographColorUtil
 import player.phonograph.util.ViewUtil.setUpFastScrollRecyclerViewColor
 import util.mdcolor.pref.ThemeColor
 import util.mddesign.core.Themer
 
 class GenreDetailActivity :
-    AbsSlidingMusicPanelActivity(), CabHolder {
+    AbsSlidingMusicPanelActivity(), MultiSelectionCabProvider {
 
     private var _viewBinding: ActivityGenreDetailBinding? = null
     private val binding: ActivityGenreDetailBinding get() = _viewBinding!!
 
     private lateinit var genre: Genre
-    private lateinit var adapter: SongAdapter
-
-    private var cab: AttachedCab? = null
+    private lateinit var adapter: SongDisplayAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         genre = intent.extras?.getParcelable(EXTRA_GENRE) ?: throw Exception("No genre in the intent!")
@@ -73,13 +66,16 @@ class GenreDetailActivity :
             while (!isRecyclerViewPrepared) yield() // wait until ready
 
             withContext(Dispatchers.Main) {
-                if (isRecyclerViewPrepared) adapter.dataSet = list
+                if (isRecyclerViewPrepared) adapter.dataset = list
             }
         }
     }
 
     private fun setUpRecyclerView() {
-        adapter = SongAdapter(this, ArrayList(), R.layout.item_list, false, this)
+        adapter =
+            SongDisplayAdapter(this, this, ArrayList(), R.layout.item_list) {
+                showSectionName = false
+            }
         binding.recyclerView.apply {
             layoutManager = LinearLayoutManager(this@GenreDetailActivity)
             adapter = this@GenreDetailActivity.adapter
@@ -110,7 +106,7 @@ class GenreDetailActivity :
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.action_shuffle_genre -> {
-                MusicPlayerRemote.openAndShuffleQueue(adapter.dataSet, true)
+                MusicPlayerRemote.openAndShuffleQueue(adapter.dataset, true)
                 return true
             }
             android.R.id.home -> {
@@ -121,34 +117,15 @@ class GenreDetailActivity :
         return super.onOptionsItemSelected(item)
     }
 
-    override fun showCab(
-        menuRes: Int,
-        createCallback: CreateCallback,
-        selectCallback: SelectCallback,
-        destroyCallback: DestroyCallback
-    ): AttachedCab {
-
-        cab?.let {
-            if (it.isActive()) it.destroy()
-        }
-        cab = createCab(R.id.cab_stub) {
-            menu(menuRes)
-            popupTheme(Setting.instance.generalTheme)
-            closeDrawable(R.drawable.ic_close_white_24dp)
-            backgroundColor(literal = PhonographColorUtil.shiftBackgroundColorForLightText(ThemeColor.primaryColor(this@GenreDetailActivity)))
-            onCreate(createCallback)
-            onSelection(selectCallback)
-            onDestroy(destroyCallback)
-        }
-
-        return cab as AttachedCab
-    }
-
     override fun onBackPressed() {
-        if (cab != null && cab.isActive()) cab.destroy() else {
-            binding.recyclerView.stopScroll()
-            super.onBackPressed()
+        if (multiSelectionCab != null && multiSelectionCab!!.status == CabStatus.STATUS_ACTIVE) {
+            dismissCab()
+            return
+        } else if (multiSelectionCab != null) {
+            multiSelectionCab!!.destroy()
+            multiSelectionCab = null
         }
+        super.onBackPressed()
     }
 
     override fun onMediaStoreChanged() {
@@ -162,9 +139,71 @@ class GenreDetailActivity :
 
     override fun onDestroy() {
         binding.recyclerView.adapter = null
+        multiSelectionCab?.destroy()
+        multiSelectionCab = null
         super.onDestroy()
         loaderCoroutineScope.cancel()
         _viewBinding = null
+    }
+
+    /* *******************
+     *
+     *     cabCallBack
+     *
+     * *******************/
+
+    private var multiSelectionCab: MultiSelectionCab? = null
+
+    override fun deployCab(
+        menuRes: Int,
+        initCallback: InitCallback?,
+        showCallback: ShowCallback?,
+        selectCallback: SelectCallback?,
+        hideCallback: HideCallback?,
+        destroyCallback: DestroyCallback?,
+    ): MultiSelectionCab {
+        val cfg: CabCfg = {
+            val primaryColor = ThemeColor.primaryColor(this@GenreDetailActivity)
+            val textColor = Color.WHITE
+
+            backgroundColor = PhonographColorUtil.shiftBackgroundColorForLightText(primaryColor)
+            titleTextColor = textColor
+
+            closeDrawable = getTintedDrawable(R.drawable.ic_close_white_24dp, textColor)!!
+
+            this.menuRes = menuRes
+
+            onInit(initCallback)
+            onShow(showCallback)
+            onSelection(selectCallback)
+            onHide(hideCallback)
+            onClose { dismissCab() }
+            onDestroy(destroyCallback)
+        }
+
+        if (multiSelectionCab == null) multiSelectionCab =
+            createMultiSelectionCab(this, R.id.cab_stub, R.id.multi_selection_cab, cfg)
+        else {
+            multiSelectionCab!!.applyCfg = cfg
+            multiSelectionCab!!.refresh()
+        }
+
+        return multiSelectionCab!!
+    }
+
+    override fun getCab(): MultiSelectionCab? = multiSelectionCab
+
+    override fun showCab() {
+        multiSelectionCab?.let { cab ->
+            binding.toolbar.visibility = View.INVISIBLE
+            cab.refresh()
+            cab.show()
+        }
+    }
+
+    override fun dismissCab() {
+        multiSelectionCab?.hide()
+        binding.toolbar.visibility = View.VISIBLE
     }
 
     companion object {
