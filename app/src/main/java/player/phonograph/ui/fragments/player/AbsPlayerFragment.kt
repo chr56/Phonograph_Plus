@@ -17,7 +17,7 @@ import com.h6ah4i.android.widget.advrecyclerview.draggable.RecyclerViewDragDropM
 import com.h6ah4i.android.widget.advrecyclerview.utils.WrapperAdapterUtils
 import kotlinx.coroutines.*
 import player.phonograph.R
-import player.phonograph.adapter.song.PlayingQueueAdapter
+import player.phonograph.adapter.display.PlayingQueueAdapter
 import player.phonograph.dialogs.*
 import player.phonograph.helper.menu.SongMenuHelper
 import player.phonograph.interfaces.PaletteColorHolder
@@ -98,13 +98,10 @@ abstract class AbsPlayerFragment :
     private fun initRecyclerView() {
         layoutManager = LinearLayoutManager(requireActivity())
         playingQueueAdapter = PlayingQueueAdapter(
-            (requireActivity() as AppCompatActivity),
+            requireActivity() as AppCompatActivity,
             MusicPlayerRemote.playingQueue,
-            MusicPlayerRemote.position,
-            R.layout.item_list,
-            false,
-            null
-        )
+            MusicPlayerRemote.position
+        ) {}
         _recyclerViewDragDropManager = RecyclerViewDragDropManager()
         _wrappedAdapter = recyclerViewDragDropManager.createWrappedAdapter(playingQueueAdapter)
         implementRecyclerView()

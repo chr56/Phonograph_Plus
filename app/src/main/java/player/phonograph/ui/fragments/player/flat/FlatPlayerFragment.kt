@@ -120,7 +120,7 @@ class FlatPlayerFragment :
     }
 
     private fun updateQueue() {
-        playingQueueAdapter!!.dataSet = MusicPlayerRemote.playingQueue
+        playingQueueAdapter!!.dataset = MusicPlayerRemote.playingQueue
         playingQueueAdapter!!.current = MusicPlayerRemote.position
         viewBinding.playerQueueSubHeader.text = upNextAndQueueTime
         if (viewBinding.playerSlidingLayout == null || viewBinding.playerSlidingLayout!!.panelState == PanelState.COLLAPSED) {

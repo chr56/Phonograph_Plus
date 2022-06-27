@@ -127,7 +127,7 @@ class CardPlayerFragment :
     }
 
     private fun updateQueue() {
-        playingQueueAdapter!!.dataSet = MusicPlayerRemote.playingQueue
+        playingQueueAdapter!!.dataset = MusicPlayerRemote.playingQueue
         playingQueueAdapter!!.current = MusicPlayerRemote.position
         viewBinding.playerQueueSubHeader.text = upNextAndQueueTime
         if (viewBinding.playerSlidingLayout.panelState == PanelState.COLLAPSED) {
