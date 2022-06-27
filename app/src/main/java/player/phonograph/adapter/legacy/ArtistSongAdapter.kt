@@ -1,4 +1,4 @@
-package player.phonograph.adapter.song
+package player.phonograph.adapter.legacy
 
 import android.view.*
 import android.widget.ArrayAdapter
