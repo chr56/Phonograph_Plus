@@ -11,22 +11,20 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.ImageView
 import androidx.activity.viewModels
 import androidx.core.graphics.BlendModeCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.list.listItemsSingleChoice
 import com.afollestad.materialdialogs.utils.MDUtil.getStringArray
-import com.bumptech.glide.Glide
 import com.google.android.material.appbar.AppBarLayout
+import com.simplecityapps.recyclerview_fastscroll.interfaces.OnFastScrollStateChangeListener
 import lib.phonograph.cab.*
 import player.phonograph.App
 import player.phonograph.PlaylistType
 import player.phonograph.R
-import player.phonograph.adapter.display.SongDisplayAdapter
+import player.phonograph.adapter.display.PlaylistSongAdapter
 import player.phonograph.databinding.ActivityPlaylistDetailBinding
-import player.phonograph.glide.SongGlideRequest
 import player.phonograph.helper.menu.PlaylistMenuHelper.handleMenuClick
 import player.phonograph.interfaces.MultiSelectionCabProvider
 import player.phonograph.misc.SAFCallbackHandlerActivity
@@ -55,7 +53,7 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandle
 
     private val model: PlaylistModel by viewModels()
 
-    private lateinit var adapter: SongDisplayAdapter // init in OnCreate() -> setUpRecyclerView()
+    private lateinit var adapter: PlaylistSongAdapter // init in OnCreate() -> setUpRecyclerView()
 
     // for saf callback
     private lateinit var safLauncher: SafLauncher
@@ -107,9 +105,19 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandle
         binding.recyclerView.setUpFastScrollRecyclerViewColor(this, accentColor)
         binding.recyclerView.layoutManager = LinearLayoutManager(this)
 
-        val playlist: Playlist = model.playlist.value ?: FilePlaylist()
+        binding.recyclerView.setOnFastScrollStateChangeListener(
+            object : OnFastScrollStateChangeListener {
+                override fun onFastScrollStart() {
+                    binding.dashBroad.setExpanded(false, false)
+                    // hide dashboard instantly
+                }
+                override fun onFastScrollStop() { }
+            }
+        )
+
+        model.playlist.value ?: FilePlaylist()
         // Init adapter
-        adapter = SongDisplayAdapter(
+        adapter = PlaylistSongAdapter(
             this, this, ArrayList(),
             R.layout.item_list
         ) {}
@@ -179,8 +187,8 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandle
             if (playlist is FilePlaylist) {
                 pathText.text = playlist.associatedFilePath
             } else {
-                pathText.visibility = View.INVISIBLE
-                pathIcon.visibility = View.INVISIBLE
+                pathText.visibility = View.GONE
+                pathIcon.visibility = View.GONE
             }
         }
     }
@@ -348,11 +356,4 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandle
         const val EXTRA_PLAYLIST = "extra_playlist"
         const val EDIT_PLAYLIST: Int = 100
     }
-
-    private val loadImage: (ImageView, Song) -> Unit
-        get() = { image: ImageView, song: Song ->
-            SongGlideRequest.Builder.from(Glide.with(this), song)
-                .checkIgnoreMediaStore(this)
-                .build().into(image)
-        }
 }
