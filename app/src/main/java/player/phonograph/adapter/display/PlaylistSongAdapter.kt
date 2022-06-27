@@ -10,12 +10,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupMenu
 import androidx.appcompat.app.AppCompatActivity
+import com.bumptech.glide.Glide
 import com.h6ah4i.android.widget.advrecyclerview.draggable.DraggableItemAdapter
 import com.h6ah4i.android.widget.advrecyclerview.draggable.DraggableItemState
 import com.h6ah4i.android.widget.advrecyclerview.draggable.DraggableItemViewHolder
 import com.h6ah4i.android.widget.advrecyclerview.draggable.ItemDraggableRange
 import com.h6ah4i.android.widget.advrecyclerview.draggable.annotation.DraggableItemStateFlags
 import player.phonograph.R
+import player.phonograph.glide.SongGlideRequest
 import player.phonograph.interfaces.MultiSelectionCabProvider
 import player.phonograph.model.Song
 import player.phonograph.util.ViewUtil.hitTest
@@ -28,6 +30,11 @@ class PlaylistSongAdapter(
 ) : DisplayAdapter<Song>(activity, host, dataSet, R.layout.item_list, cfg), DraggableItemAdapter<PlaylistSongAdapter.ViewHolder> {
 
     override fun getSectionNameImp(position: Int): String = (position + 1).toString()
+
+    override fun setImage(holder: DisplayViewHolder, position: Int) {
+        SongGlideRequest.Builder.from(Glide.with(context), dataset[position])
+            .checkIgnoreMediaStore(activity).build().into(holder.image!!)
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DisplayViewHolder {
         return ViewHolder(LayoutInflater.from(activity).inflate(layoutRes, parent, false))
