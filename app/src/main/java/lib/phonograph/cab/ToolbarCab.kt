@@ -52,7 +52,7 @@ class ToolbarCab internal constructor(
     applyCfg: CabCfg2
 ) {
 
-    var status: ToolbarCabStatus2 = ToolbarCabStatus2.STATUS_INACTIVE // default
+    var status: CabStatus = CabStatus.STATUS_INACTIVE // default
         private set
 
     init {
@@ -168,13 +168,13 @@ class ToolbarCab internal constructor(
     fun show() = toolbar.run {
         visibility = View.VISIBLE
         bringToFront()
-        status = ToolbarCabStatus2.STATUS_ACTIVE
+        status = CabStatus.STATUS_ACTIVE
     }
 
     @Synchronized
     fun hide() = toolbar.run {
         visibility = View.INVISIBLE
-        status = ToolbarCabStatus2.STATUS_INACTIVE
+        status = CabStatus.STATUS_INACTIVE
     }
 
     val menu: Menu? get() = toolbar.menu
@@ -183,22 +183,22 @@ class ToolbarCab internal constructor(
     /** call this function in cab's host OnDestroy **/
     @Synchronized
     fun destroy(): Boolean {
-        if (status == ToolbarCabStatus2.STATUS_DESTROYED) return false
-        status = ToolbarCabStatus2.STATUS_DESTROYING
+        if (status == CabStatus.STATUS_DESTROYED) return false
+        status = CabStatus.STATUS_DESTROYING
 
         toolbar.visibility = View.GONE
 
-        status = ToolbarCabStatus2.STATUS_DESTROYED
+        status = CabStatus.STATUS_DESTROYED
         return true
     }
 }
 
 @Suppress("ClassName")
-sealed class ToolbarCabStatus2 { // todo
+sealed class CabStatus { // todo
 
-    object STATUS_INACTIVE : ToolbarCabStatus2()
-    object STATUS_ACTIVE : ToolbarCabStatus2()
+    object STATUS_INACTIVE : CabStatus()
+    object STATUS_ACTIVE : CabStatus()
 
-    object STATUS_DESTROYING : ToolbarCabStatus2()
-    object STATUS_DESTROYED : ToolbarCabStatus2()
+    object STATUS_DESTROYING : CabStatus()
+    object STATUS_DESTROYED : CabStatus()
 }

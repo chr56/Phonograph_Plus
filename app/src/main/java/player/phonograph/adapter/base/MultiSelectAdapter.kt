@@ -7,7 +7,7 @@ import android.content.Context
 import android.view.MenuItem
 import androidx.recyclerview.widget.RecyclerView
 import java.util.*
-import lib.phonograph.cab.ToolbarCabStatus2
+import lib.phonograph.cab.CabStatus
 import player.phonograph.R
 
 /**
@@ -63,7 +63,7 @@ abstract class MultiSelectAdapter<VH : RecyclerView.ViewHolder, I>(
     protected fun isChecked(identifier: I): Boolean = checkedList.contains(identifier)
 
     protected val isInQuickSelectMode: Boolean
-        get() = cabController?.cab != null && cabController.cab.status == ToolbarCabStatus2.STATUS_ACTIVE
+        get() = cabController?.cab != null && cabController.cab.status == CabStatus.STATUS_ACTIVE
 
     protected open fun getName(obj: I): String = obj.toString()
 

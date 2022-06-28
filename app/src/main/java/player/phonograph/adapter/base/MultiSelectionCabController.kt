@@ -7,14 +7,14 @@ package player.phonograph.adapter.base
 import android.content.Context
 import androidx.annotation.MenuRes
 import lib.phonograph.cab.ToolbarCab
-import lib.phonograph.cab.ToolbarCabStatus2
+import lib.phonograph.cab.CabStatus
 import player.phonograph.R
 import player.phonograph.util.PhonographColorUtil
 import util.mdcolor.pref.ThemeColor
 
 class MultiSelectionCabController(val cab: ToolbarCab) {
     fun showContent(context: Context, checkedListSize: Int, @MenuRes menuRes: Int): Boolean {
-        return if (cab.status != ToolbarCabStatus2.STATUS_DESTROYED || cab.status != ToolbarCabStatus2.STATUS_DESTROYING) {
+        return if (cab.status != CabStatus.STATUS_DESTROYED || cab.status != CabStatus.STATUS_DESTROYING) {
             if (checkedListSize < 1) cab.hide()
 
             cab.backgroundColor = PhonographColorUtil.shiftBackgroundColorForLightText(ThemeColor.primaryColor(context))
@@ -30,7 +30,7 @@ class MultiSelectionCabController(val cab: ToolbarCab) {
     }
 
     fun dismiss(): Boolean {
-        if (cab.status == ToolbarCabStatus2.STATUS_ACTIVE) {
+        if (cab.status == CabStatus.STATUS_ACTIVE) {
             cab.hide()
             return true
         }
