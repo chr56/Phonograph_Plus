@@ -4,6 +4,7 @@
 
 package lib.phonograph.activity
 
+import android.content.SharedPreferences
 import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
@@ -25,7 +26,15 @@ import util.mddesign.core.Themer
 abstract class ThemeActivity : AppCompatActivity() {
     private var createTime: Long = -1
 
+    protected var primaryColor: Int = 0
+    protected var accentColor: Int = 0
+    protected var textColorPrimary: Int = 0
+    protected var textColorSecondary: Int = 0
+
     override fun onCreate(savedInstanceState: Bundle?) {
+        updateColor()
+        ThemeColor.mPreferences(this).registerOnSharedPreferenceChangeListener(onSharedPreferenceChangeListener)
+
         super.onCreate(savedInstanceState)
         createTime = System.currentTimeMillis()
 
@@ -60,6 +69,21 @@ abstract class ThemeActivity : AppCompatActivity() {
     /** Must call before super */
     protected var autoSetTaskDescriptionColor: Boolean = true
 
+    private fun updateColor() {
+        primaryColor = ThemeColor.primaryColor(this)
+        accentColor = ThemeColor.accentColor(this)
+        textColorPrimary = ThemeColor.textColorPrimary(this)
+        textColorSecondary = ThemeColor.textColorSecondary(this)
+    }
+
+    private val onSharedPreferenceChangeListener = SharedPreferences.OnSharedPreferenceChangeListener {
+            _: SharedPreferences, key: String ->
+        when (key) {
+            ThemeColor.KEY_PRIMARY_COLOR -> primaryColor = ThemeColor.primaryColor(this)
+            ThemeColor.KEY_ACCENT_COLOR -> primaryColor = ThemeColor.accentColor(this)
+        }
+    }
+
     override fun onResume() {
         super.onResume()
         if (Themer.didThemeValuesChange(this, createTime)) {
@@ -71,6 +95,11 @@ abstract class ThemeActivity : AppCompatActivity() {
         // hack to prevent java.lang.RuntimeException: Performing pause of activity that is not resumed
         // makes sure recreate() is called right after and not in onResume()
         Handler(Looper.getMainLooper()).post { recreate() }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        ThemeColor.mPreferences(this).unregisterOnSharedPreferenceChangeListener(onSharedPreferenceChangeListener)
     }
 
     //

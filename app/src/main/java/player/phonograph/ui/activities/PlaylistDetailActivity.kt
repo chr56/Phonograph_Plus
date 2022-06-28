@@ -93,9 +93,6 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandle
         setUpDashBroad()
     }
 
-    private val primaryColor: Int get() = ThemeColor.primaryColor(this)
-    private val accentColor: Int get() = ThemeColor.accentColor(this)
-
     override fun createContentView(): View = wrapSlidingMusicPanel(binding.root)
 
     private fun setUpToolbar() {
