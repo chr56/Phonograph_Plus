@@ -9,13 +9,13 @@ import android.content.*
 import android.media.AudioManager
 import android.os.Bundle
 import android.os.IBinder
+import java.lang.ref.WeakReference
 import lib.phonograph.activity.ToolbarActivity
 import player.phonograph.R
+import player.phonograph.interfaces.MusicServiceEventListener
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.MusicPlayerRemote.ServiceToken
-import player.phonograph.interfaces.MusicServiceEventListener
 import player.phonograph.service.MusicService
-import java.lang.ref.WeakReference
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
@@ -45,7 +45,6 @@ abstract class AbsMusicServiceActivity : ToolbarActivity(), MusicServiceEventLis
                 }
             )
         volumeControlStream = AudioManager.STREAM_MUSIC
-        permissionDeniedMessage = getString(R.string.permission_external_storage_denied)
     }
 
     override fun onDestroy() {
@@ -159,18 +158,19 @@ abstract class AbsMusicServiceActivity : ToolbarActivity(), MusicServiceEventLis
         }
     }
 
-    //
-    // Implement Permissions
-    //
-
-    override fun onHasPermissionsChanged(hasPermissions: Boolean) {
-        super.onHasPermissionsChanged(hasPermissions)
-        val intent = Intent(MusicService.MEDIA_STORE_CHANGED)
-        intent.putExtra("from_permissions_changed", true) // just in case we need to know this at some point
-        sendBroadcast(intent)
+    override fun missingPermissionCallback() {
+        super.missingPermissionCallback()
+        sendBroadcast(
+            Intent(MusicService.MEDIA_STORE_CHANGED).apply {
+                putExtra("from_permissions_changed", true) // just in case we need to know this at some point
+            }
+        )
     }
 
     override fun getPermissionsToRequest(): Array<String>? {
         return arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE)
     }
+
+    override val permissionDeniedMessage: String
+        get() = getString(R.string.permission_external_storage_denied)
 }

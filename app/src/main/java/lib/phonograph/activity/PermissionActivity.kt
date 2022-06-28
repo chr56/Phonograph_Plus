@@ -23,53 +23,49 @@ open class PermissionActivity : ThemeActivity() {
     private var permissions: Array<String>? = null
     protected open fun getPermissionsToRequest(): Array<String>? = null
 
-    private var hadPermissions = false
-    protected fun hasPermissions(): Boolean {
-        permissions?.let {
-// if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            for (permission in permissions!!) {
-                if (checkSelfPermission(permission) != PackageManager.PERMISSION_GRANTED) {
-                    return false
+    val hasPermissions: Boolean
+        get() {
+            permissions?.let {
+                for (permission in permissions!!) {
+                    if (checkSelfPermission(permission) != PackageManager.PERMISSION_GRANTED) {
+                        return false
+                    }
                 }
             }
-// }
+            return true
         }
-        return true
-    }
 
     protected open fun requestPermissions() {
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
         permissions?.let { requestPermissions(it, PERMISSION_REQUEST) }
-//        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         permissions = getPermissionsToRequest()
-        hadPermissions = hasPermissions()
     }
 
     override fun onPostCreate(savedInstanceState: Bundle?) {
         super.onPostCreate(savedInstanceState)
-        if (!hasPermissions()) {
+        if (!hasPermissions) {
             requestPermissions()
         }
     }
 
     override fun onResume() {
         super.onResume()
-        val hasPermissions = hasPermissions()
-        if (hasPermissions != hadPermissions) {
-            hadPermissions = hasPermissions
-//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            onHasPermissionsChanged(hasPermissions) // callback
-//            }
+        if (!hasPermissions) {
+            missingPermissionCallback() // callback
         }
     }
-    protected open fun onHasPermissionsChanged(hasPermissions: Boolean) { /*implemented by sub classes */ }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+    // todo
+    protected open fun missingPermissionCallback() { /*implemented by sub classes */ }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResults: IntArray
+    ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
 
         if (requestCode == PERMISSION_REQUEST) {
@@ -82,7 +78,7 @@ open class PermissionActivity : ThemeActivity() {
                     ) {
                         // User has deny from permission dialog
                         Snackbar.make(
-                            snackBarContainer, permissionDeniedMessage!!,
+                            snackBarContainer, permissionDeniedMessage,
                             Snackbar.LENGTH_INDEFINITE
                         )
                             .setAction(R.string.action_grant) { requestPermissions() }
@@ -91,15 +87,16 @@ open class PermissionActivity : ThemeActivity() {
                     } else {
                         // User has deny permission and checked never show permission dialog so you can redirect to Application settings page
                         Snackbar.make(
-                            snackBarContainer, permissionDeniedMessage!!,
+                            snackBarContainer, permissionDeniedMessage,
                             Snackbar.LENGTH_INDEFINITE
                         )
                             .setAction(R.string.action_settings) {
-                                val intent = Intent()
-                                intent.action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
-                                val uri = Uri.fromParts("package", this@PermissionActivity.packageName, null)
-                                intent.data = uri
-                                startActivity(intent)
+                                startActivity(
+                                    Intent().apply {
+                                        action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
+                                        data = Uri.fromParts("package", this@PermissionActivity.packageName, null)
+                                    }
+                                )
                             }
                             .setActionTextColor(ThemeColor.accentColor(this))
                             .show()
@@ -107,14 +104,12 @@ open class PermissionActivity : ThemeActivity() {
                     return
                 }
             }
-            hadPermissions = true
-            onHasPermissionsChanged(true)
+            missingPermissionCallback()
         }
     }
 
-    protected var permissionDeniedMessage: String? = null
-        get() =
-            if (field == null) getString(R.string.permissions_denied) else field
+    protected open val permissionDeniedMessage: String
+        get() = getString(R.string.permissions_denied)
 
     companion object {
         const val PERMISSION_REQUEST = 100
