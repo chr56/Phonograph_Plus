@@ -7,9 +7,8 @@ import android.content.Context
 import android.view.MenuItem
 import androidx.recyclerview.widget.RecyclerView
 import java.util.*
-import lib.phonograph.cab.CabStatus
-import lib.phonograph.cab.MultiSelectionCab
 import lib.phonograph.cab.MultiSelectionCabController
+import lib.phonograph.cab.ToolbarCabStatus2
 import player.phonograph.R
 
 /**
@@ -22,7 +21,6 @@ abstract class MultiSelectAdapter<VH : RecyclerView.ViewHolder, I>(
 
     abstract var multiSelectMenuRes: Int
 
-    private var cab: MultiSelectionCab? = null
     private var checkedList: MutableList<I> = ArrayList()
 
     private fun updateCab() {
@@ -66,7 +64,7 @@ abstract class MultiSelectAdapter<VH : RecyclerView.ViewHolder, I>(
     protected fun isChecked(identifier: I): Boolean = checkedList.contains(identifier)
 
     protected val isInQuickSelectMode: Boolean
-        get() = cab != null && cab!!.status == CabStatus.STATUS_ACTIVE
+        get() = cabController?.cab != null && cabController.cab.status == ToolbarCabStatus2.STATUS_ACTIVE
 
     protected open fun getName(obj: I): String = obj.toString()
 
@@ -80,9 +78,5 @@ abstract class MultiSelectAdapter<VH : RecyclerView.ViewHolder, I>(
         return true
     }
 
-    private fun onCabCancel(cab: MultiSelectionCab): Boolean {
-        clearChecked()
-        return true
-    }
     protected abstract fun onMultipleItemAction(menuItem: MenuItem, selection: List<I>)
 }
