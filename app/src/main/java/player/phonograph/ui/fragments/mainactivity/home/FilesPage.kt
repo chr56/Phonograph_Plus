@@ -117,7 +117,7 @@ class FilesPage : AbsPage() {
                     MusicPlayerRemote.playNext(it.linkedSong)
                 }
             }
-        }, hostFragment)
+        }, hostFragment.cabController)
 
         binding.recyclerView.setUpFastScrollRecyclerViewColor(
             hostFragment.mainActivity,

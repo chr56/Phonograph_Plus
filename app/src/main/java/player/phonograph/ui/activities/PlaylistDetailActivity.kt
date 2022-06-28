@@ -4,7 +4,6 @@
 
 package player.phonograph.ui.activities
 
-import android.graphics.Color
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -30,7 +29,6 @@ import player.phonograph.R
 import player.phonograph.adapter.display.PlaylistSongAdapter
 import player.phonograph.databinding.ActivityPlaylistDetailBinding
 import player.phonograph.helper.menu.PlaylistMenuHelper.handleMenuClick
-import player.phonograph.interfaces.MultiSelectionCabProvider
 import player.phonograph.misc.SAFCallbackHandlerActivity
 import player.phonograph.misc.SafLauncher
 import player.phonograph.model.Song
@@ -43,15 +41,13 @@ import player.phonograph.settings.Setting
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
 import player.phonograph.util.ImageUtil.getTintedDrawable
 import player.phonograph.util.MusicUtil
-import player.phonograph.util.PhonographColorUtil
 import player.phonograph.util.PlaylistsUtil
 import player.phonograph.util.ViewUtil.setUpFastScrollRecyclerViewColor
 import util.mdcolor.ColorUtil
-import util.mdcolor.pref.ThemeColor
 import util.mddesign.core.Themer
 import util.mddesign.util.MaterialColorHelper
 
-class PlaylistDetailActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity, MultiSelectionCabProvider {
+class PlaylistDetailActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity {
 
     private lateinit var binding: ActivityPlaylistDetailBinding
 
@@ -85,6 +81,10 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandle
         }
         model.playlist.value = intent.extras!!.getParcelable(EXTRA_PLAYLIST)!!
 
+        // multiselect cab
+        cab = createToolbarCab(this, R.id.cab_stub, R.id.multi_selection_cab)
+        cabController = MultiSelectionCabController(cab)
+
         safLauncher = SafLauncher(activityResultRegistry)
         lifecycle.addObserver(safLauncher)
 
@@ -92,6 +92,9 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandle
         setUpRecyclerView()
         setUpDashBroad()
     }
+
+    lateinit var cab: ToolbarCab
+    lateinit var cabController: MultiSelectionCabController
 
     override fun createContentView(): View = wrapSlidingMusicPanel(binding.root)
 
@@ -118,7 +121,7 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandle
         model.playlist.value ?: FilePlaylist()
         // Init adapter
         adapter = PlaylistSongAdapter(
-            this, this, ArrayList()
+            this, cabController, ArrayList()
         ) {}
         binding.recyclerView.adapter = adapter
 
@@ -291,15 +294,7 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandle
             exitEditMode()
             return
         }
-        if (multiSelectionCab != null && multiSelectionCab!!.status == CabStatus.STATUS_ACTIVE) {
-            dismissCab()
-            return
-        } else if (multiSelectionCab != null) {
-            multiSelectionCab!!.destroy()
-            multiSelectionCab = null
-        }
-        binding.recyclerView.stopScroll()
-        super.onBackPressed()
+        if (cabController.dismiss()) return else super.onBackPressed()
     }
 
     /* *******************
@@ -315,8 +310,7 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandle
 
     override fun onDestroy() {
         super.onDestroy()
-        multiSelectionCab?.destroy()
-        multiSelectionCab = null
+        cabController.distroy()
         wrappedAdapter?.let {
             WrapperAdapterUtils.releaseAll(it)
             wrappedAdapter = null
@@ -327,66 +321,6 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandle
     override fun onPause() {
         super.onPause()
         recyclerViewDragDropManager?.cancelDrag()
-    }
-
-    /* *******************
-     *
-     *     cabCallBack
-     *
-     * *******************/
-
-    private var multiSelectionCab: MultiSelectionCab? = null
-
-    override fun deployCab(
-        menuRes: Int,
-        initCallback: InitCallback?,
-        showCallback: ShowCallback?,
-        selectCallback: SelectCallback?,
-        hideCallback: HideCallback?,
-        destroyCallback: DestroyCallback?,
-    ): MultiSelectionCab {
-        val cfg: CabCfg = {
-            val primaryColor = ThemeColor.primaryColor(this@PlaylistDetailActivity)
-            val textColor = Color.WHITE
-
-            backgroundColor = PhonographColorUtil.shiftBackgroundColorForLightText(primaryColor)
-            titleTextColor = textColor
-
-            closeDrawable = getTintedDrawable(R.drawable.ic_close_white_24dp, textColor)!!
-
-            this.menuRes = menuRes
-
-            onInit(initCallback)
-            onShow(showCallback)
-            onSelection(selectCallback)
-            onHide(hideCallback)
-            onClose { dismissCab() }
-            onDestroy(destroyCallback)
-        }
-
-        if (multiSelectionCab == null) multiSelectionCab =
-            createMultiSelectionCab(this, R.id.cab_stub, R.id.multi_selection_cab, cfg)
-        else {
-            multiSelectionCab!!.applyCfg = cfg
-            multiSelectionCab!!.refresh()
-        }
-
-        return multiSelectionCab!!
-    }
-
-    override fun getCab(): MultiSelectionCab? = multiSelectionCab
-
-    override fun showCab() {
-        multiSelectionCab?.let { cab ->
-            binding.toolbar.visibility = INVISIBLE
-            cab.refresh()
-            cab.show()
-        }
-    }
-
-    override fun dismissCab() {
-        multiSelectionCab?.hide()
-        binding.toolbar.visibility = VISIBLE
     }
 
     /* *******************

@@ -31,7 +31,6 @@ import player.phonograph.dialogs.SleepTimerDialog
 import player.phonograph.glide.SongGlideRequest
 import player.phonograph.glide.palette.BitmapPaletteTarget
 import player.phonograph.glide.palette.BitmapPaletteWrapper
-import player.phonograph.interfaces.MultiSelectionCabProvider
 import player.phonograph.model.Album
 import player.phonograph.service.MusicPlayerRemote.enqueue
 import player.phonograph.service.MusicPlayerRemote.openAndShuffleQueue
@@ -46,7 +45,6 @@ import player.phonograph.util.MusicUtil.getYearString
 import player.phonograph.util.NavigationUtil.goToArtist
 import player.phonograph.util.NavigationUtil.openEqualizer
 import player.phonograph.util.PhonographColorUtil.getColor
-import player.phonograph.util.PhonographColorUtil.shiftBackgroundColorForLightText
 import player.phonograph.util.ViewUtil.setUpFastScrollRecyclerViewColor
 import retrofit2.Call
 import retrofit2.Callback
@@ -63,7 +61,7 @@ import util.phonograph.tageditor.AlbumTagEditorActivity
 /**
  * Be careful when changing things in this Activity!
  */
-class AlbumDetailActivity : AbsSlidingMusicPanelActivity(), MultiSelectionCabProvider {
+class AlbumDetailActivity : AbsSlidingMusicPanelActivity() {
 
     companion object {
         private const val TAG_EDITOR_REQUEST = 2001
@@ -91,6 +89,10 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity(), MultiSelectionCabPro
         autoSetTaskDescriptionColor = false
         super.onCreate(savedInstanceState)
 
+        // multiselect cab
+        cab = createToolbarCab(this, R.id.cab_stub, R.id.multi_selection_cab)
+        cabController = MultiSelectionCabController(cab)
+
         // activity
         Themer.setActivityToolbarColorAuto(this, viewBinding.toolbar)
         setSupportActionBar(viewBinding.toolbar)
@@ -99,6 +101,9 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity(), MultiSelectionCabPro
         // content
         setUpViews()
     }
+
+    lateinit var cab: ToolbarCab
+    lateinit var cabController: MultiSelectionCabController
 
     override fun createContentView(): View = wrapSlidingMusicPanel(viewBinding.root)
 
@@ -109,7 +114,7 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity(), MultiSelectionCabPro
             }
         )
         // setUpSongsAdapter
-        adapter = AlbumSongDisplayAdapter(this, this, album.songs, R.layout.item_list) {
+        adapter = AlbumSongDisplayAdapter(this, cabController, album.songs, R.layout.item_list) {
             useImageText = true
             usePalette = false
         }
@@ -323,61 +328,8 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity(), MultiSelectionCabPro
         }
     }
 
-    private var multiSelectionCab: MultiSelectionCab? = null
-    override fun getCab(): MultiSelectionCab? = multiSelectionCab
-
-    override fun deployCab(
-        menuRes: Int,
-        initCallback: InitCallback?,
-        showCallback: ShowCallback?,
-        selectCallback: SelectCallback?,
-        hideCallback: HideCallback?,
-        destroyCallback: DestroyCallback?,
-    ): MultiSelectionCab {
-        val cfg: CabCfg = {
-            val textColor = ThemeColor.textColorPrimary(this@AlbumDetailActivity)
-
-            backgroundColor = shiftBackgroundColorForLightText(model.paletteColor.value!!)
-            titleTextColor = textColor
-
-            closeDrawable = getTintedDrawable(R.drawable.ic_close_white_24dp, textColor)!!
-
-            this.menuRes = menuRes
-
-            onInit(initCallback)
-            onShow(showCallback)
-            onSelection(selectCallback)
-            onHide(hideCallback)
-            onClose { dismissCab() }
-            onDestroy(destroyCallback)
-        }
-        if (multiSelectionCab == null) multiSelectionCab =
-            createMultiSelectionCab(this@AlbumDetailActivity, R.id.cab_stub, R.id.multi_selection_cab, cfg)
-        else {
-            multiSelectionCab!!.applyCfg = cfg
-            multiSelectionCab!!.refresh()
-        }
-
-        return multiSelectionCab!!
-    }
-
-    override fun showCab() {
-        multiSelectionCab?.let { cab ->
-            viewBinding.toolbar.visibility = View.INVISIBLE
-            cab.refresh()
-            cab.show()
-        }
-    }
-
-    override fun dismissCab() {
-        multiSelectionCab?.hide()
-        viewBinding.toolbar.visibility = View.VISIBLE
-    }
-
     override fun onBackPressed() {
-        if (multiSelectionCab != null && multiSelectionCab!!.status == CabStatus.STATUS_ACTIVE) {
-            dismissCab()
-        } else {
+        if (cabController.dismiss()) return else {
             viewBinding.recyclerView.stopScroll()
             super.onBackPressed()
         }

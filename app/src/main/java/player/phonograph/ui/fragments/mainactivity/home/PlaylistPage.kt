@@ -63,7 +63,7 @@ class PlaylistPage : AbsPage() {
         adapter = PlaylistAdapter(
             hostFragment.mainActivity,
             ArrayList<Playlist>(), R.layout.item_list_single_row,
-            hostFragment
+            hostFragment.cabController
         )
 
         binding.recyclerView.setUpFastScrollRecyclerViewColor(

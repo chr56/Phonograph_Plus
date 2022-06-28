@@ -23,18 +23,15 @@ import player.phonograph.adapter.HomePagerAdapter
 import player.phonograph.adapter.PAGERS
 import player.phonograph.adapter.PageConfig
 import player.phonograph.databinding.FragmentHomeBinding
-import player.phonograph.interfaces.MultiSelectionCabProvider
 import player.phonograph.settings.Setting
 import player.phonograph.ui.activities.MainActivity
 import player.phonograph.ui.activities.SearchActivity
 import player.phonograph.ui.fragments.mainactivity.AbsMainActivityFragment
-import player.phonograph.util.ImageUtil.getTintedDrawable
-import player.phonograph.util.PhonographColorUtil
 import util.mdcolor.ColorUtil
 import util.mdcolor.pref.ThemeColor
 import util.mddesign.util.MaterialColorHelper
 
-class HomeFragment : AbsMainActivityFragment(), MainActivity.MainActivityFragmentCallbacks, SharedPreferences.OnSharedPreferenceChangeListener, MultiSelectionCabProvider {
+class HomeFragment : AbsMainActivityFragment(), MainActivity.MainActivityFragmentCallbacks, SharedPreferences.OnSharedPreferenceChangeListener {
 
     private var _viewBinding: FragmentHomeBinding? = null
     private val binding: FragmentHomeBinding get() = _viewBinding!!
@@ -60,8 +57,7 @@ class HomeFragment : AbsMainActivityFragment(), MainActivity.MainActivityFragmen
         super.onDestroyView()
         binding.pager.unregisterOnPageChangeCallback(pageChangeListener)
         Setting.instance.unregisterOnSharedPreferenceChangedListener(this)
-        multiSelectionCab?.destroy()
-        multiSelectionCab = null
+        cabController.distroy()
         _viewBinding = null
     }
 
@@ -81,7 +77,13 @@ class HomeFragment : AbsMainActivityFragment(), MainActivity.MainActivityFragmen
             setTabTextColors(secondaryTextColor, primaryTextColor)
             setSelectedTabIndicatorColor(accentColor)
         }
+
+        cab = createToolbarCab(mainActivity, R.id.cab_stub, R.id.multi_selection_cab)
+        cabController = MultiSelectionCabController(cab)
     }
+
+    lateinit var cab: ToolbarCab
+    lateinit var cabController: MultiSelectionCabController
 
     private fun readConfig(): PageConfig = Setting.instance.homeTabConfig
 
@@ -119,14 +121,9 @@ class HomeFragment : AbsMainActivityFragment(), MainActivity.MainActivityFragmen
     }
 
     override fun handleBackPress(): Boolean {
-        if (multiSelectionCab != null && multiSelectionCab!!.status == CabStatus.STATUS_ACTIVE) {
-            dismissCab()
-            return true
-        } else if (multiSelectionCab != null) {
-            multiSelectionCab!!.destroy()
-            multiSelectionCab = null
+        return if (cabController.dismiss()) true else {
+            currentPage?.onBackPress() ?: false
         }
-        return currentPage?.onBackPress() ?: false
     }
 
     /**
@@ -170,62 +167,6 @@ class HomeFragment : AbsMainActivityFragment(), MainActivity.MainActivityFragmen
     val totalHeaderHeight: Int
         get() =
             totalAppBarScrollingRange + if (binding.tabs.visibility == View.VISIBLE) binding.tabs.height else 0
-
-    private var multiSelectionCab: MultiSelectionCab? = null
-    override fun getCab(): MultiSelectionCab? = multiSelectionCab
-
-    override fun deployCab(
-        menuRes: Int,
-        initCallback: InitCallback?,
-        showCallback: ShowCallback?,
-        selectCallback: SelectCallback?,
-        hideCallback: HideCallback?,
-        destroyCallback: DestroyCallback?,
-    ): MultiSelectionCab {
-
-        val cfg: CabCfg = {
-
-            backgroundColor = PhonographColorUtil.shiftBackgroundColorForLightText(primaryColor)
-            titleTextColor = primaryTextColor
-
-            closeDrawable = mainActivity.getTintedDrawable(R.drawable.ic_close_white_24dp, primaryTextColor)!!
-
-            this.menuRes = menuRes
-
-            onInit(initCallback)
-            onShow(showCallback)
-            onSelection(selectCallback)
-            onHide(hideCallback)
-            onClose { dismissCab() }
-            onDestroy(destroyCallback)
-        }
-
-        if (multiSelectionCab == null) multiSelectionCab =
-            createMultiSelectionCab(mainActivity, R.id.cab_stub, R.id.multi_selection_cab, cfg)
-        else {
-            multiSelectionCab!!.applyCfg = cfg
-            multiSelectionCab!!.refresh()
-        }
-
-        return multiSelectionCab!!
-    }
-
-    override fun showCab() {
-        multiSelectionCab?.let { cab ->
-            binding.toolbar.visibility = View.INVISIBLE
-            binding.tabs.visibility = View.GONE
-            binding.pager.isUserInputEnabled = false
-            cab.refresh()
-            cab.show()
-        }
-    }
-
-    override fun dismissCab() {
-        multiSelectionCab?.hide()
-        binding.toolbar.visibility = View.VISIBLE
-        binding.tabs.visibility = View.VISIBLE
-        binding.pager.isUserInputEnabled = true
-    }
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
         when (key) {

@@ -40,7 +40,7 @@ class ArtistPage : AbsDisplayPage<Artist, DisplayAdapter<Artist>, GridLayoutMana
 
         return ArtistDisplayAdapter(
             hostFragment.mainActivity,
-            hostFragment,
+            hostFragment.cabController,
             ArrayList(), // empty until Artist loaded
             layoutRes
         ) {

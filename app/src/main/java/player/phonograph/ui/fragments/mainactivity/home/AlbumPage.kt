@@ -40,7 +40,7 @@ class AlbumPage : AbsDisplayPage<Album, DisplayAdapter<Album>, GridLayoutManager
 
         return AlbumDisplayAdapter(
             hostFragment.mainActivity,
-            hostFragment,
+            hostFragment.cabController,
             ArrayList(), // empty until Albums loaded
             layoutRes
         ) {
