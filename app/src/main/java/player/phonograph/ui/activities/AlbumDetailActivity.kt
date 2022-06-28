@@ -88,6 +88,7 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity(), MultiSelectionCabPro
 
         autoSetStatusBarColor = false
         autoSetNavigationBarColor = false
+        autoSetTaskDescriptionColor = false
         super.onCreate(savedInstanceState)
 
         // activity

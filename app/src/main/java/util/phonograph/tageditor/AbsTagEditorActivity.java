@@ -87,6 +87,7 @@ public abstract class AbsTagEditorActivity extends ToolbarActivity {
 
         setAutoSetStatusBarColor(false);
         setAutoSetNavigationBarColor(false);
+        setAutoSetTaskDescriptionColor(false);
         super.onCreate(savedInstanceState);
         setContentView(getContentViewLayout());
 

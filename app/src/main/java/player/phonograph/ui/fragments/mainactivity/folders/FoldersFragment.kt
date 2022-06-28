@@ -113,8 +113,6 @@ class FoldersFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
-        mainActivity.setTaskDescriptionColorAuto()
-
         setUpAppbarColor()
         setUpToolbar()
         setUpBreadCrumbs()

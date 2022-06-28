@@ -41,8 +41,6 @@ class GenreDetailActivity :
 
         super.onCreate(savedInstanceState)
 
-        setTaskDescriptionColorAuto()
-
         setUpToolBar()
         setUpRecyclerView()
     }

@@ -41,8 +41,6 @@ class SearchActivity :
 
         Themer.setActivityToolbarColorAuto(this, binding.toolbar)
 
-        setTaskDescriptionColorAuto()
-
         binding.recyclerView.layoutManager = LinearLayoutManager(this)
 
         adapter = SearchAdapter(this, emptyList())

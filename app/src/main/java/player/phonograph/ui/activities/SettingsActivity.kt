@@ -35,8 +35,6 @@ class SettingsActivity : ToolbarActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_preferences)
 
-        setTaskDescriptionColorAuto()
-
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         toolbar.setBackgroundColor(ThemeColor.primaryColor(this))
         setSupportActionBar(toolbar)

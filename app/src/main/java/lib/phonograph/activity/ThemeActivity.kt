@@ -41,6 +41,7 @@ abstract class ThemeActivity : AppCompatActivity() {
         // color
         if (autoSetStatusBarColor) setStatusbarColorAuto()
         if (autoSetNavigationBarColor) setNavigationbarColorAuto()
+        if (autoSetTaskDescriptionColor) setTaskDescriptionColorAuto()
     }
 
     /** Must call before super */
@@ -55,6 +56,9 @@ abstract class ThemeActivity : AppCompatActivity() {
 
     /** Must call before super */
     protected var autoSetNavigationBarColor: Boolean = true
+
+    /** Must call before super */
+    protected var autoSetTaskDescriptionColor: Boolean = true
 
     override fun onResume() {
         super.onResume()
@@ -128,7 +132,7 @@ abstract class ThemeActivity : AppCompatActivity() {
     open fun setTaskDescriptionColor(@ColorInt color: Int) {
         Themer.setTaskDescriptionColor(this, color)
     }
-    open fun setTaskDescriptionColorAuto() {
+    private fun setTaskDescriptionColorAuto() {
         setTaskDescriptionColor(ThemeColor.primaryColor(this))
     }
 

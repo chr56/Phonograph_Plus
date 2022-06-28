@@ -78,9 +78,6 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandle
         binding = ActivityPlaylistDetailBinding.inflate(layoutInflater)
         super.onCreate(savedInstanceState)
 
-
-        setTaskDescriptionColorAuto()
-
         Themer.setActivityToolbarColorAuto(this, binding.toolbar)
 
         model.playlist.observe(this) {

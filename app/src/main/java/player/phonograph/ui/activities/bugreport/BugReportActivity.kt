@@ -51,8 +51,6 @@ class BugReportActivity : ToolbarActivity() {
 
         setContentView(binding.root)
 
-        setTaskDescriptionColorAuto()
-
         initViews()
 
         if (TextUtils.isEmpty(title)) setTitle(R.string.report_an_issue)

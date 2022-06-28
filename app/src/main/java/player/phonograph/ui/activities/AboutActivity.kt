@@ -72,9 +72,6 @@ class AboutActivity : ToolbarActivity(), View.OnClickListener {
 
         setContentView(binding.root)
 
-
-        setTaskDescriptionColorAuto()
-
         setUpViews()
     }
 
