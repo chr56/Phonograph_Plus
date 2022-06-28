@@ -22,18 +22,17 @@ abstract class ToolbarActivity : PermissionActivity() {
     //
     // Toolbar & Actionbar
     //
-    protected var toolbar: Toolbar? = null
+    protected var supportToolbar: Toolbar? = null
         private set(value) {
             field = value
             super.setSupportActionBar(value)
         }
         get() {
-            return getSupportActionBarView(supportActionBar)
+            return getSupportActionBarView(supportActionBar) ?: field
         }
 
     override fun setSupportActionBar(toolbar: Toolbar?) {
-        this.toolbar = toolbar
-        super.setSupportActionBar(toolbar)
+        this.supportToolbar = toolbar
     }
 
 //    fun getToolbarBackgroundColor(toolbar: Toolbar?): Int {
@@ -68,7 +67,7 @@ abstract class ToolbarActivity : PermissionActivity() {
     }
 
     override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
-        MenuTinter.applyOverflowMenuTint(this, toolbar, ThemeColor.accentColor(this))
+        MenuTinter.applyOverflowMenuTint(this, supportToolbar, ThemeColor.accentColor(this))
         return super.onPrepareOptionsMenu(menu)
     }
 
