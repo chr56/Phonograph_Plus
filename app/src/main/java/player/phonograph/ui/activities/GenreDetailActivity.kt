@@ -41,7 +41,6 @@ class GenreDetailActivity :
 
         super.onCreate(savedInstanceState)
 
-        setNavigationbarColorAuto()
         setTaskDescriptionColorAuto()
 
         setUpToolBar()

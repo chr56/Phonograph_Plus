@@ -35,7 +35,6 @@ class SettingsActivity : ToolbarActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_preferences)
 
-        setNavigationbarColorAuto()
         setTaskDescriptionColorAuto()
 
         val toolbar = findViewById<Toolbar>(R.id.toolbar)

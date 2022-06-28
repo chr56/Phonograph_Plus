@@ -113,7 +113,6 @@ class FoldersFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
-        mainActivity.setNavigationbarColorAuto()
         mainActivity.setTaskDescriptionColorAuto()
 
         setUpAppbarColor()

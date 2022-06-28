@@ -79,7 +79,6 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandle
         super.onCreate(savedInstanceState)
 
 
-        setNavigationbarColorAuto()
         setTaskDescriptionColorAuto()
 
         Themer.setActivityToolbarColorAuto(this, binding.toolbar)

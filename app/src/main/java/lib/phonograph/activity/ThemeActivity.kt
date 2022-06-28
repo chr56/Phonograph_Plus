@@ -40,6 +40,7 @@ abstract class ThemeActivity : AppCompatActivity() {
 
         // color
         if (autoSetStatusBarColor) setStatusbarColorAuto()
+        if (autoSetNavigationBarColor) setNavigationbarColorAuto()
     }
 
     /** Must call before super */
@@ -51,6 +52,9 @@ abstract class ThemeActivity : AppCompatActivity() {
 
     /** Must call before super */
     protected var autoSetStatusBarColor: Boolean = true
+
+    /** Must call before super */
+    protected var autoSetNavigationBarColor: Boolean = true
 
     override fun onResume() {
         super.onResume()
@@ -114,7 +118,7 @@ abstract class ThemeActivity : AppCompatActivity() {
             Themer.setNavigationbarColor(this, Color.BLACK)
         }
     }
-    open fun setNavigationbarColorAuto() {
+    private fun setNavigationbarColorAuto() {
         setNavigationbarColor(ThemeColor.navigationBarColor(this))
     }
 

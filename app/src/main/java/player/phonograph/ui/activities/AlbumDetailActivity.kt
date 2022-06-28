@@ -87,6 +87,7 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity(), MultiSelectionCabPro
         viewBinding = ActivityAlbumDetailBinding.inflate(layoutInflater)
 
         autoSetStatusBarColor = false
+        autoSetNavigationBarColor = false
         super.onCreate(savedInstanceState)
 
         // activity

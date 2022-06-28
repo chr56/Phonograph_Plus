@@ -118,6 +118,7 @@ public class ArtistDetailActivity extends AbsSlidingMusicPanelActivity implement
 
 
         setAutoSetStatusBarColor(false);
+        setAutoSetNavigationBarColor(false);
         super.onCreate(savedInstanceState);
 
         lastFMRestClient = new LastFMRestClient(this);
