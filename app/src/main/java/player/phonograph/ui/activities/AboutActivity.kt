@@ -72,7 +72,6 @@ class AboutActivity : ToolbarActivity(), View.OnClickListener {
 
         setContentView(binding.root)
 
-        setDrawUnderStatusbar()
 
         setStatusbarColorAuto()
         setNavigationbarColorAuto()

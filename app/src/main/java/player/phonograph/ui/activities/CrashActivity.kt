@@ -35,7 +35,6 @@ class CrashActivity : ToolbarActivity() {
     private fun setupTheme() {
         // statusbar theme
         setStatusbarColor(resources.getColor(R.color.md_grey_800, theme))
-        setDrawUnderStatusbar()
 
         // toolbar theme
         val toolbar = findViewById<androidx.appcompat.widget.Toolbar>(R.id.toolbar)

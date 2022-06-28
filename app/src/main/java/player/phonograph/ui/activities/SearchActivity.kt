@@ -39,8 +39,6 @@ class SearchActivity :
         viewBinding = ActivitySearchBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        setDrawUnderStatusbar()
-
         Themer.setActivityToolbarColorAuto(this, binding.toolbar)
 
         setStatusbarColorAuto()

@@ -78,7 +78,6 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandle
         binding = ActivityPlaylistDetailBinding.inflate(layoutInflater)
         super.onCreate(savedInstanceState)
 
-        setDrawUnderStatusbar()
 
         setStatusbarColorAuto()
         setNavigationbarColorAuto()

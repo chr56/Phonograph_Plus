@@ -117,7 +117,6 @@ public class ArtistDetailActivity extends AbsSlidingMusicPanelActivity implement
         viewBinding = ActivityArtistDetailBinding.inflate(getLayoutInflater());
 
         super.onCreate(savedInstanceState);
-        setDrawUnderStatusbar();
 
         lastFMRestClient = new LastFMRestClient(this);
         usePalette = Setting.instance().getAlbumArtistColoredFooters();

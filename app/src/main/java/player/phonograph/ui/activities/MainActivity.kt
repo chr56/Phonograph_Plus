@@ -72,7 +72,6 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
         setNavigationbarColorAuto()
         setTaskDescriptionColorAuto()
 
-        setDrawUnderStatusbar()
         setUpDrawer()
 
         if (savedInstanceState == null) {

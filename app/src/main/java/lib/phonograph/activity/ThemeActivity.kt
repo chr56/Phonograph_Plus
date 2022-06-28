@@ -7,13 +7,13 @@ package lib.phonograph.activity
 import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import android.view.View
 import androidx.annotation.ColorInt
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import player.phonograph.R
 import player.phonograph.settings.Setting
-import player.phonograph.util.Util
 import util.mdcolor.ColorUtil
 import util.mdcolor.pref.ThemeColor
 import util.mddesign.core.Themer
@@ -28,9 +28,22 @@ abstract class ThemeActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         createTime = System.currentTimeMillis()
+
+        // theme
         setTheme(Setting.instance.generalTheme)
+
+        // night mode
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+
+        // immersive status bar
+        if (useCustomStatusBar) setFullScreenAndIncludeStatusBar()
     }
+
+    protected var useCustomStatusBar: Boolean = true
+        set(value) {
+            field = value
+            setFullScreenAndIncludeStatusBar()
+        }
 
     override fun onResume() {
         super.onResume()
@@ -42,14 +55,15 @@ abstract class ThemeActivity : AppCompatActivity() {
     protected fun postRecreate() {
         // hack to prevent java.lang.RuntimeException: Performing pause of activity that is not resumed
         // makes sure recreate() is called right after and not in onResume()
-        Handler().post { recreate() }
+        Handler(Looper.getMainLooper()).post { recreate() }
     }
 
     //
     // User Interface
     //
-    protected open fun setDrawUnderStatusbar() {
-        Util.setAllowDrawUnderStatusBar(window)
+    private fun setFullScreenAndIncludeStatusBar() {
+        window.decorView.systemUiVisibility =
+            (View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN)
     }
 
     //

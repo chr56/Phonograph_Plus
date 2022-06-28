@@ -88,7 +88,6 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity(), MultiSelectionCabPro
         super.onCreate(savedInstanceState)
 
         // activity
-        setDrawUnderStatusbar()
         Themer.setActivityToolbarColorAuto(this, viewBinding.toolbar)
         setSupportActionBar(viewBinding.toolbar)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
