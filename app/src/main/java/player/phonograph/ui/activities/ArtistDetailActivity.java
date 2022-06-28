@@ -116,6 +116,8 @@ public class ArtistDetailActivity extends AbsSlidingMusicPanelActivity implement
         load();
         viewBinding = ActivityArtistDetailBinding.inflate(getLayoutInflater());
 
+
+        setAutoSetStatusBarColor(false);
         super.onCreate(savedInstanceState);
 
         lastFMRestClient = new LastFMRestClient(this);

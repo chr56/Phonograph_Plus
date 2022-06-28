@@ -85,6 +85,7 @@ public abstract class AbsTagEditorActivity extends ToolbarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         model = new ViewModelProvider(this).get(TagEditorViewModel.class);
 
+        setAutoSetStatusBarColor(false);
         super.onCreate(savedInstanceState);
         setContentView(getContentViewLayout());
 

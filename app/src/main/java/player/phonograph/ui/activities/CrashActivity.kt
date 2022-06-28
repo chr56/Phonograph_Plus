@@ -17,14 +17,12 @@ import android.widget.TextView
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.WhichButton
 import com.afollestad.materialdialogs.actions.getActionButton
+import kotlin.system.exitProcess
 import lib.phonograph.activity.ToolbarActivity
-import player.phonograph.App
 import player.phonograph.KEY_STACK_TRACE
 import player.phonograph.R
-import player.phonograph.settings.Setting
 import player.phonograph.settings.SettingManager
 import player.phonograph.util.DeviceInfoUtil.getDeviceInfo
-import kotlin.system.exitProcess
 
 class CrashActivity : ToolbarActivity() {
 
@@ -44,6 +42,7 @@ class CrashActivity : ToolbarActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        autoSetStatusBarColor = false
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_crash)
         setupTheme()

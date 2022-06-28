@@ -37,13 +37,20 @@ abstract class ThemeActivity : AppCompatActivity() {
 
         // immersive status bar
         if (useCustomStatusBar) setFullScreenAndIncludeStatusBar()
+
+        // color
+        if (autoSetStatusBarColor) setStatusbarColorAuto()
     }
 
+    /** Must call before super */
     protected var useCustomStatusBar: Boolean = true
         set(value) {
             field = value
             setFullScreenAndIncludeStatusBar()
         }
+
+    /** Must call before super */
+    protected var autoSetStatusBarColor: Boolean = true
 
     override fun onResume() {
         super.onResume()
@@ -77,14 +84,15 @@ abstract class ThemeActivity : AppCompatActivity() {
      */
     open fun setStatusbarColor(color: Int) {
         val statusBar = window.decorView.rootView.findViewById<View>(R.id.status_bar)
+        val darkColor = ColorUtil.darkenColor(color)
         if (statusBar != null) {
-            statusBar.setBackgroundColor(ColorUtil.darkenColor(color))
+            statusBar.setBackgroundColor(darkColor)
         } else /* if (Build.VERSION.SDK_INT >= 21) */ {
-            window.statusBarColor = ColorUtil.darkenColor(color)
+            window.statusBarColor = darkColor
         }
         setLightStatusbarAuto(color)
     }
-    open fun setStatusbarColorAuto() {
+    private fun setStatusbarColorAuto() {
         // we don't want to use statusbar color because we are doing the color darkening on our own to support KitKat
         setStatusbarColor(ThemeColor.primaryColor(this))
     }

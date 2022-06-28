@@ -41,7 +41,6 @@ class SearchActivity :
 
         Themer.setActivityToolbarColorAuto(this, binding.toolbar)
 
-        setStatusbarColorAuto()
         setNavigationbarColorAuto()
         setTaskDescriptionColorAuto()
 

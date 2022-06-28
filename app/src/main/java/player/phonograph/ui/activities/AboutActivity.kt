@@ -73,7 +73,6 @@ class AboutActivity : ToolbarActivity(), View.OnClickListener {
         setContentView(binding.root)
 
 
-        setStatusbarColorAuto()
         setNavigationbarColorAuto()
         setTaskDescriptionColorAuto()
 

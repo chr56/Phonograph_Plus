@@ -51,7 +51,6 @@ class BugReportActivity : ToolbarActivity() {
 
         setContentView(binding.root)
 
-        setStatusbarColorAuto()
         setNavigationbarColorAuto()
         setTaskDescriptionColorAuto()
 

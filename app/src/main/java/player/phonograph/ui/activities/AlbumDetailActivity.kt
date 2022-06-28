@@ -19,6 +19,7 @@ import com.afollestad.materialdialogs.actions.getActionButton
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.transition.Transition
 import com.google.android.material.appbar.AppBarLayout
+import java.util.*
 import lib.phonograph.cab.*
 import player.phonograph.R
 import player.phonograph.adapter.display.AlbumSongDisplayAdapter
@@ -58,7 +59,6 @@ import util.phonograph.lastfm.rest.LastFMRestClient
 import util.phonograph.lastfm.rest.model.LastFmAlbum
 import util.phonograph.tageditor.AbsTagEditorActivity
 import util.phonograph.tageditor.AlbumTagEditorActivity
-import java.util.*
 
 /**
  * Be careful when changing things in this Activity!
@@ -85,6 +85,8 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity(), MultiSelectionCabPro
         load()
 
         viewBinding = ActivityAlbumDetailBinding.inflate(layoutInflater)
+
+        autoSetStatusBarColor = false
         super.onCreate(savedInstanceState)
 
         // activity
