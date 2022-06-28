@@ -7,9 +7,9 @@ package player.phonograph.adapter.display
 import android.graphics.drawable.Drawable
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
+import lib.phonograph.cab.MultiSelectionCabController
 import player.phonograph.glide.PhonographColoredTarget
 import player.phonograph.glide.SongGlideRequest
-import player.phonograph.interfaces.MultiSelectionCabProvider
 import player.phonograph.mediastore.sort.SortRef
 import player.phonograph.model.Album
 import player.phonograph.settings.Setting
@@ -17,11 +17,11 @@ import player.phonograph.util.MusicUtil
 
 class AlbumDisplayAdapter(
     activity: AppCompatActivity,
-    host: MultiSelectionCabProvider?,
+    cabController: MultiSelectionCabController?,
     dataSet: List<Album>,
     layoutRes: Int,
     cfg: (DisplayAdapter<Album>.() -> Unit)?,
-) : DisplayAdapter<Album>(activity, host, dataSet, layoutRes, cfg) {
+) : DisplayAdapter<Album>(activity, cabController, dataSet, layoutRes, cfg) {
 
     override fun setImage(holder: DisplayViewHolder, position: Int) {
         holder.image?.let {

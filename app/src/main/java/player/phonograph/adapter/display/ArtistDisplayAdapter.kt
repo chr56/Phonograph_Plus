@@ -8,10 +8,10 @@ import android.graphics.drawable.Drawable
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
 import com.bumptech.glide.Glide
+import lib.phonograph.cab.MultiSelectionCabController
 import player.phonograph.R
 import player.phonograph.glide.ArtistGlideRequest
 import player.phonograph.glide.PhonographColoredTarget
-import player.phonograph.interfaces.MultiSelectionCabProvider
 import player.phonograph.mediastore.sort.SortRef
 import player.phonograph.model.Artist
 import player.phonograph.settings.Setting
@@ -19,11 +19,11 @@ import player.phonograph.util.MusicUtil
 
 class ArtistDisplayAdapter(
     activity: AppCompatActivity,
-    host: MultiSelectionCabProvider?,
+    cabController: MultiSelectionCabController?,
     dataSet: List<Artist>,
     layoutRes: Int,
     cfg: (DisplayAdapter<Artist>.() -> Unit)?
-) : DisplayAdapter<Artist>(activity, host, dataSet, layoutRes, cfg) {
+) : DisplayAdapter<Artist>(activity, cabController, dataSet, layoutRes, cfg) {
 
     override fun setImage(holder: DisplayViewHolder, position: Int) {
         holder.image?.let {
@@ -57,5 +57,5 @@ class ArtistDisplayAdapter(
     override fun getRelativeOrdinalText(item: Artist): String = item.songCount.toString()
 
     override val defaultIcon: Drawable?
-        get() =  AppCompatResources.getDrawable(activity, R.drawable.default_artist_image)
+        get() = AppCompatResources.getDrawable(activity, R.drawable.default_artist_image)
 }

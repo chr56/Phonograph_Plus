@@ -9,9 +9,9 @@ import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import java.text.SimpleDateFormat
 import java.util.*
+import lib.phonograph.cab.MultiSelectionCabController
 import player.phonograph.glide.PhonographColoredTarget
 import player.phonograph.glide.SongGlideRequest
-import player.phonograph.interfaces.MultiSelectionCabProvider
 import player.phonograph.mediastore.sort.SortRef
 import player.phonograph.model.Song
 import player.phonograph.settings.Setting
@@ -19,11 +19,11 @@ import player.phonograph.util.MusicUtil
 
 open class SongDisplayAdapter(
     activity: AppCompatActivity,
-    host: MultiSelectionCabProvider?,
+    cabController: MultiSelectionCabController?,
     dataSet: List<Song>,
     layoutRes: Int,
     cfg: (DisplayAdapter<Song>.() -> Unit)?
-) : DisplayAdapter<Song>(activity, host, dataSet, layoutRes, cfg) {
+) : DisplayAdapter<Song>(activity, cabController, dataSet, layoutRes, cfg) {
 
     override fun setImage(holder: DisplayViewHolder, position: Int) {
         holder.image?.let {

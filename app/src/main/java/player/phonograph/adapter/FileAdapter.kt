@@ -16,12 +16,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView.SectionedAdapter
 import java.io.File
 import kotlinx.coroutines.*
+import lib.phonograph.cab.MultiSelectionCabController
 import player.phonograph.R
 import player.phonograph.adapter.base.MultiSelectAdapter
 import player.phonograph.databinding.ItemListBinding
 import player.phonograph.helper.menu.SongMenuHelper
 import player.phonograph.helper.menu.SongsMenuHelper
-import player.phonograph.interfaces.MultiSelectionCabProvider
 import player.phonograph.mediastore.MediaStoreUtil
 import player.phonograph.misc.UpdateToastMediaScannerCompletionListener
 import player.phonograph.model.FileEntity
@@ -33,8 +33,8 @@ class FileAdapter(
     activity: AppCompatActivity,
     dataset: MutableList<FileEntity>,
     private val callback: (FileEntity) -> Unit,
-    cabProvider: MultiSelectionCabProvider?,
-) : MultiSelectAdapter<FileAdapter.ViewHolder, FileEntity>(activity, cabProvider), SectionedAdapter {
+    cabController: MultiSelectionCabController?,
+) : MultiSelectAdapter<FileAdapter.ViewHolder, FileEntity>(activity, cabController), SectionedAdapter {
     var dataSet: MutableList<FileEntity> = dataset
         @SuppressLint("NotifyDataSetChanged")
         set(value) {

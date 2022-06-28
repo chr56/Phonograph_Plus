@@ -6,19 +6,18 @@ package player.phonograph.adapter.base
 import android.content.Context
 import android.view.MenuItem
 import androidx.recyclerview.widget.RecyclerView
-import util.mdcolor.pref.ThemeColor
+import java.util.*
 import lib.phonograph.cab.CabStatus
 import lib.phonograph.cab.MultiSelectionCab
+import lib.phonograph.cab.MultiSelectionCabController
 import player.phonograph.R
-import player.phonograph.interfaces.MultiSelectionCabProvider
-import java.util.*
 
 /**
  * @author chr_56 & Karim Abou Zeid (kabouzeid)
  */
 abstract class MultiSelectAdapter<VH : RecyclerView.ViewHolder, I>(
     protected val context: Context,
-    private val cabProvider: MultiSelectionCabProvider?,
+    private val cabController: MultiSelectionCabController?,
 ) : RecyclerView.Adapter<VH>() {
 
     abstract var multiSelectMenuRes: Int
@@ -27,23 +26,7 @@ abstract class MultiSelectAdapter<VH : RecyclerView.ViewHolder, I>(
     private var checkedList: MutableList<I> = ArrayList()
 
     private fun updateCab() {
-        if (cabProvider != null) {
-            cab = cabProvider.getCab() ?: cabProvider.deployCab(multiSelectMenuRes, null, null, this::onCabItemClicked, this::onCabCancel,  this::onCabCancel)
-            when (cab!!.status) {
-                CabStatus.STATUS_DESTROYING -> return
-                CabStatus.STATUS_DESTROYED -> {
-                    cab = cabProvider.deployCab(multiSelectMenuRes, null, null, this::onCabItemClicked, this::onCabCancel,  this::onCabCancel)
-                }
-                else -> {}
-            }
-
-            if (checkedList.size <= 0) cabProvider.dismissCab()
-            else {
-                cab!!.titleText = context.getString(R.string.x_selected, checkedList.size)
-                cab!!.titleTextColor = ThemeColor.textColorPrimary(context)
-                cabProvider.showCab()
-            }
-        }
+        cabController?.showContent(context, checkedList.size, multiSelectMenuRes)
     }
 
     /** must return a real item **/
@@ -53,7 +36,7 @@ abstract class MultiSelectAdapter<VH : RecyclerView.ViewHolder, I>(
     abstract fun updateItemCheckStatus(datasetPosition: Int)
 
     protected fun toggleChecked(datasetPosition: Int): Boolean {
-        if (cabProvider != null) {
+        if (cabController != null) {
             val item = getItem(datasetPosition) ?: return false
             if (!checkedList.remove(item)) checkedList.add(item)
             updateItemCheckStatus(datasetPosition)
@@ -64,7 +47,7 @@ abstract class MultiSelectAdapter<VH : RecyclerView.ViewHolder, I>(
     }
 
     protected fun checkAll() {
-        if (cabProvider != null) {
+        if (cabController != null) {
             checkedList.clear()
             for (i in 0 until itemCount) {
                 val item = getItem(i)
@@ -92,7 +75,7 @@ abstract class MultiSelectAdapter<VH : RecyclerView.ViewHolder, I>(
             checkAll()
         } else {
             onMultipleItemAction(menuItem, ArrayList(checkedList))
-            cabProvider?.dismissCab()
+            cabController?.dismiss()
         }
         return true
     }

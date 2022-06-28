@@ -16,18 +16,18 @@ import com.h6ah4i.android.widget.advrecyclerview.draggable.DraggableItemState
 import com.h6ah4i.android.widget.advrecyclerview.draggable.DraggableItemViewHolder
 import com.h6ah4i.android.widget.advrecyclerview.draggable.ItemDraggableRange
 import com.h6ah4i.android.widget.advrecyclerview.draggable.annotation.DraggableItemStateFlags
+import lib.phonograph.cab.MultiSelectionCabController
 import player.phonograph.R
 import player.phonograph.glide.SongGlideRequest
-import player.phonograph.interfaces.MultiSelectionCabProvider
 import player.phonograph.model.Song
 import player.phonograph.util.ViewUtil.hitTest
 
 class PlaylistSongAdapter(
     activity: AppCompatActivity,
-    host: MultiSelectionCabProvider?,
+    cabController: MultiSelectionCabController?,
     dataSet: List<Song>,
     cfg: (DisplayAdapter<Song>.() -> Unit)?
-) : DisplayAdapter<Song>(activity, host, dataSet, R.layout.item_list, cfg), DraggableItemAdapter<PlaylistSongAdapter.ViewHolder> {
+) : DisplayAdapter<Song>(activity, cabController, dataSet, R.layout.item_list, cfg), DraggableItemAdapter<PlaylistSongAdapter.ViewHolder> {
 
     override fun getSectionNameImp(position: Int): String = (position + 1).toString()
 

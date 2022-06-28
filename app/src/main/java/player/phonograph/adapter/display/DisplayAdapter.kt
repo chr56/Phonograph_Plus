@@ -13,23 +13,23 @@ import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView
+import lib.phonograph.cab.MultiSelectionCabController
 import player.phonograph.R
 import player.phonograph.adapter.base.MediaEntryViewClickListener
 import player.phonograph.adapter.base.MultiSelectAdapter
 import player.phonograph.adapter.base.UniversalMediaEntryViewHolder
 import player.phonograph.interfaces.Displayable
-import player.phonograph.interfaces.MultiSelectionCabProvider
 import util.mdcolor.ColorUtil
 import util.mddesign.util.MaterialColorHelper
 
 open class DisplayAdapter<I : Displayable>(
     protected val activity: AppCompatActivity,
-    host: MultiSelectionCabProvider?,
+    cabController: MultiSelectionCabController?,
     dataSet: List<I>,
     @LayoutRes var layoutRes: Int,
     cfg: (DisplayAdapter<I>.() -> Unit)?,
 ) :
-    MultiSelectAdapter<DisplayAdapter<I>.DisplayViewHolder, I>(activity, host), FastScrollRecyclerView.SectionedAdapter {
+    MultiSelectAdapter<DisplayAdapter<I>.DisplayViewHolder, I>(activity, cabController), FastScrollRecyclerView.SectionedAdapter {
 
     var dataset: List<I> = dataSet
         set(value) {

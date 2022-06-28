@@ -5,7 +5,7 @@
 package player.phonograph.adapter.display
 
 import androidx.appcompat.app.AppCompatActivity
-import player.phonograph.interfaces.MultiSelectionCabProvider
+import lib.phonograph.cab.MultiSelectionCabController
 import player.phonograph.mediastore.sort.SortRef
 import player.phonograph.model.Genre
 import player.phonograph.settings.Setting
@@ -13,12 +13,12 @@ import player.phonograph.util.MusicUtil
 
 class GenreDisplayAdapter(
     activity: AppCompatActivity,
-    host: MultiSelectionCabProvider?,
+    cabController: MultiSelectionCabController?,
     dataSet: List<Genre>,
     layoutRes: Int,
     cfg: (DisplayAdapter<Genre>.() -> Unit)?
 ) : DisplayAdapter<Genre>(
-    activity, host,
+    activity, cabController,
     dataSet,
     layoutRes, cfg
 ) {
