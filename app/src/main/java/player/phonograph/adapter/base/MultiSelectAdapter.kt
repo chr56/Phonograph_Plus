@@ -24,6 +24,9 @@ abstract class MultiSelectAdapter<VH : RecyclerView.ViewHolder, I>(
 
     private fun updateCab() {
         cabController?.showContent(context, checkedList.size, multiSelectMenuRes)
+        // todo
+        cabController?.onDismiss = ::clearChecked
+        cabController?.onMenuItemClick = ::onCabItemClicked
     }
 
     /** must return a real item **/
