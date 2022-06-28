@@ -7,9 +7,10 @@ package player.phonograph.adapter.base
 import android.content.Context
 import android.graphics.Color
 import androidx.annotation.MenuRes
-import lib.phonograph.cab.ToolbarCab
 import lib.phonograph.cab.CabStatus
+import lib.phonograph.cab.ToolbarCab
 import player.phonograph.R
+import player.phonograph.util.ImageUtil.getTintedDrawable
 import player.phonograph.util.PhonographColorUtil
 import util.mdcolor.pref.ThemeColor
 
@@ -21,6 +22,8 @@ class MultiSelectionCabController(val cab: ToolbarCab) {
             cab.backgroundColor = PhonographColorUtil.shiftBackgroundColorForLightText(ThemeColor.primaryColor(context))
             cab.titleText = context.getString(R.string.x_selected, checkedListSize)
             cab.titleTextColor = Color.WHITE
+            cab.navigationIcon = context.getTintedDrawable(R.drawable.ic_close_white_24dp, Color.WHITE)!!
+
             cab.menuRes = menuRes
 
             cab.show()

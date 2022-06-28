@@ -62,7 +62,7 @@ class ToolbarCab internal constructor(
 
             setBackgroundColor(backgroundColor)
 
-            navigationIcon = navigationIcon
+            navigationIcon = this@ToolbarCab.navigationIcon
             setNavigationOnClickListener(closeClickListener)
 
             title = titleText
