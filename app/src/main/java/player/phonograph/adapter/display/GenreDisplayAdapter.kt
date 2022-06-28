@@ -5,7 +5,7 @@
 package player.phonograph.adapter.display
 
 import androidx.appcompat.app.AppCompatActivity
-import lib.phonograph.cab.MultiSelectionCabController
+import player.phonograph.adapter.base.MultiSelectionCabController
 import player.phonograph.mediastore.sort.SortRef
 import player.phonograph.model.Genre
 import player.phonograph.settings.Setting

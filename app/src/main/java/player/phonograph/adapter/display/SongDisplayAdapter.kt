@@ -9,7 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import java.text.SimpleDateFormat
 import java.util.*
-import lib.phonograph.cab.MultiSelectionCabController
+import player.phonograph.adapter.base.MultiSelectionCabController
 import player.phonograph.glide.PhonographColoredTarget
 import player.phonograph.glide.SongGlideRequest
 import player.phonograph.mediastore.sort.SortRef

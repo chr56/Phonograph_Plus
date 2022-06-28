@@ -26,6 +26,7 @@ import lib.phonograph.cab.*
 import player.phonograph.App
 import player.phonograph.PlaylistType
 import player.phonograph.R
+import player.phonograph.adapter.base.MultiSelectionCabController
 import player.phonograph.adapter.display.PlaylistSongAdapter
 import player.phonograph.databinding.ActivityPlaylistDetailBinding
 import player.phonograph.helper.menu.PlaylistMenuHelper.handleMenuClick

@@ -16,7 +16,7 @@ import com.h6ah4i.android.widget.advrecyclerview.draggable.DraggableItemState
 import com.h6ah4i.android.widget.advrecyclerview.draggable.DraggableItemViewHolder
 import com.h6ah4i.android.widget.advrecyclerview.draggable.ItemDraggableRange
 import com.h6ah4i.android.widget.advrecyclerview.draggable.annotation.DraggableItemStateFlags
-import lib.phonograph.cab.MultiSelectionCabController
+import player.phonograph.adapter.base.MultiSelectionCabController
 import player.phonograph.R
 import player.phonograph.glide.SongGlideRequest
 import player.phonograph.model.Song

@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import android.widget.PopupMenu
 import androidx.annotation.LayoutRes
 import androidx.fragment.app.FragmentActivity
-import lib.phonograph.cab.MultiSelectionCabController
+import player.phonograph.adapter.base.MultiSelectionCabController
 import player.phonograph.R
 import player.phonograph.adapter.base.MediaEntryViewHolder
 import player.phonograph.adapter.base.MultiSelectAdapter

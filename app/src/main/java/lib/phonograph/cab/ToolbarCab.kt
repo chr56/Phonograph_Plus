@@ -7,7 +7,6 @@
 package lib.phonograph.cab
 
 import android.app.Activity
-import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.view.Menu
@@ -22,8 +21,6 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.core.view.iterator
 import player.phonograph.R
-import player.phonograph.util.PhonographColorUtil
-import util.mdcolor.pref.ThemeColor
 
 fun createToolbarCab(
     activity: Activity,
@@ -204,32 +201,4 @@ sealed class ToolbarCabStatus2 { // todo
 
     object STATUS_DESTROYING : ToolbarCabStatus2()
     object STATUS_DESTROYED : ToolbarCabStatus2()
-}
-
-class MultiSelectionCabController(val cab: ToolbarCab) {
-    fun showContent(context: Context, checkedListSize: Int, @MenuRes menuRes: Int): Boolean {
-        return if (cab.status != ToolbarCabStatus2.STATUS_DESTROYED || cab.status != ToolbarCabStatus2.STATUS_DESTROYING) {
-            if (checkedListSize < 1) cab.hide()
-
-            cab.backgroundColor = PhonographColorUtil.shiftBackgroundColorForLightText(ThemeColor.primaryColor(context))
-            cab.titleText = context.getString(R.string.x_selected, checkedListSize)
-            cab.titleTextColor = ThemeColor.textColorPrimary(context)
-            cab.menuRes = menuRes
-
-            cab.show()
-            true
-        } else {
-            false
-        }
-    }
-
-    fun dismiss(): Boolean {
-        if (cab.status == ToolbarCabStatus2.STATUS_ACTIVE) {
-            cab.hide()
-            return true
-        }
-        return false
-    }
-
-    fun distroy(): Boolean = cab.destroy()
 }

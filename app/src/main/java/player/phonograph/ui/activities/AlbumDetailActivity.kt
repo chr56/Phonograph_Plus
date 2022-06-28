@@ -22,6 +22,7 @@ import com.google.android.material.appbar.AppBarLayout
 import java.util.*
 import lib.phonograph.cab.*
 import player.phonograph.R
+import player.phonograph.adapter.base.MultiSelectionCabController
 import player.phonograph.adapter.display.AlbumSongDisplayAdapter
 import player.phonograph.adapter.display.SongDisplayAdapter
 import player.phonograph.databinding.ActivityAlbumDetailBinding

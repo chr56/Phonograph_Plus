@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import kotlinx.coroutines.*
 import lib.phonograph.cab.*
 import player.phonograph.R
+import player.phonograph.adapter.base.MultiSelectionCabController
 import player.phonograph.adapter.display.SongDisplayAdapter
 import player.phonograph.databinding.ActivityGenreDetailBinding
 import player.phonograph.mediastore.GenreLoader

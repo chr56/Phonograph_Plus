@@ -8,7 +8,7 @@ import android.graphics.drawable.Drawable
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
 import com.bumptech.glide.Glide
-import lib.phonograph.cab.MultiSelectionCabController
+import player.phonograph.adapter.base.MultiSelectionCabController
 import player.phonograph.R
 import player.phonograph.glide.ArtistGlideRequest
 import player.phonograph.glide.PhonographColoredTarget

@@ -13,7 +13,7 @@ import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView
-import lib.phonograph.cab.MultiSelectionCabController
+import player.phonograph.adapter.base.MultiSelectionCabController
 import player.phonograph.R
 import player.phonograph.adapter.base.MediaEntryViewClickListener
 import player.phonograph.adapter.base.MultiSelectAdapter

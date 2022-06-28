@@ -22,6 +22,7 @@ import player.phonograph.R
 import player.phonograph.adapter.HomePagerAdapter
 import player.phonograph.adapter.PAGERS
 import player.phonograph.adapter.PageConfig
+import player.phonograph.adapter.base.MultiSelectionCabController
 import player.phonograph.databinding.FragmentHomeBinding
 import player.phonograph.settings.Setting
 import player.phonograph.ui.activities.MainActivity

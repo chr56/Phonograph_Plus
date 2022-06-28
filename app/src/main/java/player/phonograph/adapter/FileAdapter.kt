@@ -16,7 +16,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView.SectionedAdapter
 import java.io.File
 import kotlinx.coroutines.*
-import lib.phonograph.cab.MultiSelectionCabController
+import player.phonograph.adapter.base.MultiSelectionCabController
 import player.phonograph.R
 import player.phonograph.adapter.base.MultiSelectAdapter
 import player.phonograph.databinding.ItemListBinding
