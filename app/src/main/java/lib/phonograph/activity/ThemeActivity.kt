@@ -126,13 +126,9 @@ abstract class ThemeActivity : AppCompatActivity() {
      * @param color the new statusbar color (will be shifted down on Lollipop and above)
      */
     open fun setStatusbarColor(color: Int) {
-        val statusBar = window.decorView.rootView.findViewById<View>(R.id.status_bar)
         val darkColor = ColorUtil.darkenColor(color)
-        if (statusBar != null) {
-            statusBar.setBackgroundColor(darkColor)
-        } else /* if (Build.VERSION.SDK_INT >= 21) */ {
-            window.statusBarColor = darkColor
-        }
+        window.decorView.rootView.findViewById<View>(R.id.status_bar)?.setBackgroundColor(darkColor)
+        window.statusBarColor = darkColor
         setLightStatusbarAuto(color)
     }
     private fun setStatusbarColorAuto() {
