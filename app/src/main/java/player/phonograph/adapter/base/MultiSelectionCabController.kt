@@ -7,6 +7,7 @@ package player.phonograph.adapter.base
 import android.content.Context
 import android.graphics.Color
 import android.view.MenuItem
+import android.view.View
 import androidx.annotation.MenuRes
 import androidx.appcompat.widget.Toolbar
 import lib.phonograph.cab.CabStatus
@@ -32,6 +33,9 @@ class MultiSelectionCabController(val cab: ToolbarCab) {
                 cab.menuRes = menuRes
                 cab.menuItemClickListener = Toolbar.OnMenuItemClickListener {
                     onMenuItemClick(it)
+                }
+                cab.closeClickListener = View.OnClickListener {
+                    dismiss()
                 }
                 cab.show()
             }
