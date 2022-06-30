@@ -1,14 +1,15 @@
 package player.phonograph.adapter.legacy
 
+import android.content.Context
 import android.graphics.drawable.Drawable
 import android.view.View
 import android.view.ViewGroup.MarginLayoutParams
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import com.bumptech.glide.Glide
+import player.phonograph.R
 import player.phonograph.glide.PhonographColoredTarget
 import player.phonograph.glide.SongGlideRequest
-import player.phonograph.helper.HorizontalAdapterHelper
 import player.phonograph.interfaces.CabHolder
 import player.phonograph.model.Album
 import player.phonograph.util.MusicUtil
@@ -23,34 +24,31 @@ class HorizontalAlbumAdapter(
     dataSet: List<Album>,
     usePalette: Boolean,
     cabHolder: CabHolder?
-) : AlbumAdapter(activity, dataSet, HorizontalAdapterHelper.LAYOUT_RES, usePalette, cabHolder) {
+) : AlbumAdapter(activity, dataSet, LAYOUT_RES, usePalette, cabHolder) {
 
     override fun createViewHolder(view: View, viewType: Int): ViewHolder {
-        val params = view.layoutParams as MarginLayoutParams
-        HorizontalAdapterHelper.applyMarginToLayoutParams(activity, params, viewType)
+        (view.layoutParams as MarginLayoutParams).applyMarginToLayoutParams(activity, viewType)
         return ViewHolder(view)
     }
 
     override fun setColors(color: Int, holder: ViewHolder) {
-        if (holder.itemView != null) {
-            val card = holder.itemView as CardView
-            card.setCardBackgroundColor(color)
-            if (holder.title != null) {
-                holder.title!!.setTextColor(
-                    MaterialColorHelper.getPrimaryTextColor(
-                        activity,
-                        ColorUtil.isColorLight(color)
-                    )
+        val card = holder.itemView as CardView
+        card.setCardBackgroundColor(color)
+        if (holder.title != null) {
+            holder.title!!.setTextColor(
+                MaterialColorHelper.getPrimaryTextColor(
+                    activity,
+                    ColorUtil.isColorLight(color)
                 )
-            }
-            if (holder.text != null) {
-                holder.text!!.setTextColor(
-                    MaterialColorHelper.getSecondaryTextColor(
-                        activity,
-                        ColorUtil.isColorLight(color)
-                    )
+            )
+        }
+        if (holder.text != null) {
+            holder.text!!.setTextColor(
+                MaterialColorHelper.getSecondaryTextColor(
+                    activity,
+                    ColorUtil.isColorLight(color)
                 )
-            }
+            )
         }
     }
 
@@ -78,7 +76,30 @@ class HorizontalAlbumAdapter(
         return MusicUtil.getYearString(album.year)
     }
 
-    override fun getItemViewType(position: Int): Int {
-        return HorizontalAdapterHelper.getItemViewType(position, itemCount)
+    override fun getItemViewType(position: Int): Int = when (position) {
+        0 -> {
+            TYPE_FIRST
+        }
+        itemCount - 1 -> {
+            TYPE_LAST
+        }
+        else -> TYPE_MIDDLE
+    }
+
+    fun MarginLayoutParams.applyMarginToLayoutParams(context: Context, viewType: Int) {
+        val listMargin = context.resources.getDimensionPixelSize(R.dimen.default_item_margin)
+
+        if (viewType == TYPE_FIRST) {
+            leftMargin = listMargin
+        } else if (viewType == TYPE_LAST) {
+            rightMargin = listMargin
+        }
+    }
+
+    companion object {
+        const val LAYOUT_RES = R.layout.item_grid_card_horizontal
+        const val TYPE_FIRST = 1
+        const val TYPE_MIDDLE = 2
+        const val TYPE_LAST = 3
     }
 }
