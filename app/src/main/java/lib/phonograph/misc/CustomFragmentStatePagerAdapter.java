@@ -1,4 +1,4 @@
-package player.phonograph.misc;
+package lib.phonograph.misc;
 
 /*
  * Copyright (C) 2011 The Android Open Source Project

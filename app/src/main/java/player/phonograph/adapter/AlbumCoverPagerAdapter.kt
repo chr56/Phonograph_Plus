@@ -13,7 +13,7 @@ import player.phonograph.R
 import player.phonograph.adapter.AlbumCoverPagerAdapter.AlbumCoverFragment.ColorReceiver
 import player.phonograph.glide.PhonographColoredTarget
 import player.phonograph.glide.SongGlideRequest
-import player.phonograph.misc.CustomFragmentStatePagerAdapter
+import lib.phonograph.misc.CustomFragmentStatePagerAdapter
 import player.phonograph.model.Song
 import player.phonograph.settings.Setting
 
