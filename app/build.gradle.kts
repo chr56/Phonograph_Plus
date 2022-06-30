@@ -222,7 +222,6 @@ dependencies {
     implementation("com.afollestad.material-dialogs:input:3.3.0")
     implementation("com.afollestad.material-dialogs:color:3.3.0")
     implementation("com.afollestad.material-dialogs:files:3.3.0")
-    implementation("com.afollestad:material-cab:2.0.1")
 
     implementation("com.github.ksoichiro:android-observablescrollview:1.6.0")
     implementation("com.heinrichreimersoftware:material-intro:2.0.0")
