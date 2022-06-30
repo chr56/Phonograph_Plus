@@ -57,4 +57,6 @@ class MultiSelectionCabController(val cab: ToolbarCab) {
     }
 
     fun distroy(): Boolean = cab.destroy()
+
+    fun isActive(): Boolean = cab.status == CabStatus.STATUS_ACTIVE
 }

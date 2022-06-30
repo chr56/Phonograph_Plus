@@ -120,7 +120,7 @@ open class ArtistSongAdapter(
     protected fun isChecked(song: Song): Boolean = checked.contains(song)
 
     val isInQuickSelectMode: Boolean
-        get() = cabController?.cab != null && cabController.cab.status == CabStatus.STATUS_ACTIVE
+        get() = cabController != null && cabController.isActive()
 
     fun onCabItemClicked(menuItem: MenuItem): Boolean {
         onMultipleItemAction(menuItem, ArrayList(checked))
