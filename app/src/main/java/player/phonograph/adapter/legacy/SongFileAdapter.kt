@@ -1,4 +1,4 @@
-package player.phonograph.adapter
+package player.phonograph.adapter.legacy
 
 import android.graphics.PorterDuff
 import android.view.LayoutInflater

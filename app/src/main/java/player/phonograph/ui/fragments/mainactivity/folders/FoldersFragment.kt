@@ -17,7 +17,7 @@ import java.util.*
 import lib.phonograph.cab.ToolbarCab
 import lib.phonograph.cab.createToolbarCab
 import player.phonograph.R
-import player.phonograph.adapter.SongFileAdapter
+import player.phonograph.adapter.legacy.SongFileAdapter
 import player.phonograph.adapter.base.MultiSelectionCabController
 import player.phonograph.databinding.FragmentFolderBinding
 import player.phonograph.helper.menu.SongsMenuHelper
