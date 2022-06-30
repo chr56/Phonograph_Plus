@@ -19,13 +19,19 @@ import util.mdcolor.pref.ThemeColor
 
 class MultiSelectionCabController(val cab: ToolbarCab) {
 
+    var cabColor: Int = PhonographColorUtil.shiftBackgroundColorForLightText(ThemeColor.primaryColor(cab.activity))
+        set(value) {
+            field = value
+            cab.backgroundColor = value
+        }
+
     fun showContent(context: Context, checkedListSize: Int, @MenuRes menuRes: Int): Boolean {
         return if (cab.status != CabStatus.STATUS_DESTROYED || cab.status != CabStatus.STATUS_DESTROYING) {
             if (checkedListSize < 1) {
                 cab.hide()
             } else {
 
-                cab.backgroundColor = PhonographColorUtil.shiftBackgroundColorForLightText(ThemeColor.primaryColor(context))
+                cab.backgroundColor = cabColor
                 cab.titleText = context.getString(R.string.x_selected, checkedListSize)
                 cab.titleTextColor = Color.WHITE
                 cab.navigationIcon = context.getTintedDrawable(R.drawable.ic_close_white_24dp, Color.WHITE)!!
