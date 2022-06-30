@@ -1,4 +1,4 @@
-package player.phonograph.misc
+package lib.phonograph.misc
 
 import android.animation.Animator
 

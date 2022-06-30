@@ -13,7 +13,7 @@ import player.phonograph.adapter.AlbumCoverPagerAdapter
 import player.phonograph.adapter.AlbumCoverPagerAdapter.AlbumCoverFragment.ColorReceiver
 import player.phonograph.databinding.FragmentPlayerAlbumCoverBinding
 import player.phonograph.helper.MusicProgressViewUpdateHelper
-import player.phonograph.misc.SimpleAnimatorListener
+import lib.phonograph.misc.SimpleAnimatorListener
 import player.phonograph.model.lyrics2.LrcLyrics
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.settings.Setting
