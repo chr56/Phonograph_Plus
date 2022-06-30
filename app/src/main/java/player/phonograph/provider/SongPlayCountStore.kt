@@ -307,24 +307,25 @@ class SongPlayCountStore(context: Context) : SQLiteOpenHelper(context, DatabaseC
      */
     fun reCalculateScore(context: Context) {
         readableDatabase.query(NAME, arrayOf(ID), null, null, null, null, null)?.use { cursor ->
-            cursor.moveToFirst()
-            val totalCount = cursor.count
-            try {
-                var i = 0
-                do {
-                    i++
-                    updateExistingRow(readableDatabase, cursor.getLong(0), bumpCount = false, force = true)
-                    if (i.mod(31) == 0)
-                        BackgroundNotification.post(
-                            context.getString(R.string.refresh),
-                            context.getString(R.string.my_top_tracks),
-                            NOTIFICATION_ID, i, totalCount
-                        )
-                } while (cursor.moveToNext())
-            } catch (e: Exception) {
-                ErrorNotification.postErrorNotification(e, "Fail")
-            } finally {
-                BackgroundNotification.remove(NOTIFICATION_ID)
+            if (cursor.moveToFirst()) {
+                val totalCount = cursor.count
+                try {
+                    var i = 0
+                    do {
+                        i++
+                        updateExistingRow(readableDatabase, cursor.getLong(0), bumpCount = false, force = true)
+                        if (i.mod(31) == 0)
+                            BackgroundNotification.post(
+                                context.getString(R.string.refresh),
+                                context.getString(R.string.my_top_tracks),
+                                NOTIFICATION_ID, i, totalCount
+                            )
+                    } while (cursor.moveToNext())
+                } catch (e: Exception) {
+                    ErrorNotification.postErrorNotification(e, "${context.getString(R.string.failed)}:\n${Thread.currentThread().stackTrace}")
+                } finally {
+                    BackgroundNotification.remove(NOTIFICATION_ID)
+                }
             }
         }
     }
