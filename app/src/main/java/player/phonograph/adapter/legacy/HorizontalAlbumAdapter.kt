@@ -8,9 +8,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import com.bumptech.glide.Glide
 import player.phonograph.R
+import player.phonograph.adapter.base.MultiSelectionCabController
 import player.phonograph.glide.PhonographColoredTarget
 import player.phonograph.glide.SongGlideRequest
-import player.phonograph.interfaces.CabHolder
 import player.phonograph.model.Album
 import player.phonograph.util.MusicUtil
 import util.mdcolor.ColorUtil
@@ -23,8 +23,8 @@ class HorizontalAlbumAdapter(
     activity: AppCompatActivity,
     dataSet: List<Album>,
     usePalette: Boolean,
-    cabHolder: CabHolder?
-) : AlbumAdapter(activity, dataSet, LAYOUT_RES, usePalette, cabHolder) {
+    cabController: MultiSelectionCabController
+) : AlbumAdapter(activity, dataSet, LAYOUT_RES, usePalette, cabController) {
 
     override fun createViewHolder(view: View, viewType: Int): ViewHolder {
         (view.layoutParams as MarginLayoutParams).applyMarginToLayoutParams(activity, viewType)
@@ -95,6 +95,8 @@ class HorizontalAlbumAdapter(
             rightMargin = listMargin
         }
     }
+
+    override fun getItemId(position: Int): Long = dataSet[position].id
 
     companion object {
         const val LAYOUT_RES = R.layout.item_grid_card_horizontal

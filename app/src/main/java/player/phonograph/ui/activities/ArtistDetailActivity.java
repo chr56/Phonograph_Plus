@@ -20,9 +20,6 @@ import androidx.core.graphics.BlendModeCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.afollestad.materialcab.MaterialCabKt;
-import com.afollestad.materialcab.attached.AttachedCab;
-import com.afollestad.materialcab.attached.AttachedCabKt;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.WhichButton;
 import com.afollestad.materialdialogs.actions.DialogActionExtKt;
@@ -32,18 +29,18 @@ import java.util.List;
 import java.util.Locale;
 
 import kotlin.Unit;
-import kotlin.jvm.functions.Function1;
-import kotlin.jvm.functions.Function2;
+import lib.phonograph.cab.ToolbarCab;
+import lib.phonograph.cab.ToolbarCabKt;
 import player.phonograph.R;
-import player.phonograph.adapter.legacy.HorizontalAlbumAdapter;
+import player.phonograph.adapter.base.MultiSelectionCabController;
 import player.phonograph.adapter.legacy.ArtistSongAdapter;
+import player.phonograph.adapter.legacy.HorizontalAlbumAdapter;
 import player.phonograph.databinding.ActivityArtistDetailBinding;
 import player.phonograph.dialogs.AddToPlaylistDialog;
 import player.phonograph.dialogs.SleepTimerDialog;
 import player.phonograph.glide.ArtistGlideRequest;
 import player.phonograph.glide.PhonographColoredTarget;
 import player.phonograph.glide.util.CustomArtistImageUtil;
-import player.phonograph.interfaces.CabHolder;
 import player.phonograph.interfaces.PaletteColorHolder;
 import player.phonograph.misc.SimpleObservableScrollViewCallbacks;
 import player.phonograph.model.Artist;
@@ -53,7 +50,6 @@ import player.phonograph.settings.Setting;
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity;
 import player.phonograph.util.MusicUtil;
 import player.phonograph.util.NavigationUtil;
-import player.phonograph.util.PhonographColorUtil;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -68,7 +64,7 @@ import util.phonograph.lastfm.rest.model.LastFmArtist;
 /**
  * Be careful when changing things in this Activity!
  */
-public class ArtistDetailActivity extends AbsSlidingMusicPanelActivity implements PaletteColorHolder, CabHolder {
+public class ArtistDetailActivity extends AbsSlidingMusicPanelActivity implements PaletteColorHolder {
 
     private static final int REQUEST_CODE_SELECT_IMAGE = 1000;
 
@@ -79,7 +75,6 @@ public class ArtistDetailActivity extends AbsSlidingMusicPanelActivity implement
     View songListHeader;
     RecyclerView albumRecyclerView;
 
-    private AttachedCab cab;
     private int headerViewHeight;
     private int toolbarColor;
 
@@ -109,6 +104,9 @@ public class ArtistDetailActivity extends AbsSlidingMusicPanelActivity implement
         }
     };
 
+    private ToolbarCab cab;
+    private MultiSelectionCabController cabController;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         long artistID = getIntent().getExtras().getLong(EXTRA_ARTIST_ID);
@@ -124,6 +122,9 @@ public class ArtistDetailActivity extends AbsSlidingMusicPanelActivity implement
 
         lastFMRestClient = new LastFMRestClient(this);
         usePalette = Setting.instance().getAlbumArtistColoredFooters();
+
+        cab = ToolbarCabKt.createToolbarCab(this, R.id.cab_stub, R.id.multi_selection_cab, toolbarCab -> null);
+        cabController = new MultiSelectionCabController(cab);
 
         initViews();
         setUpObservableListViewParams();
@@ -161,7 +162,7 @@ public class ArtistDetailActivity extends AbsSlidingMusicPanelActivity implement
         viewBinding.list.setScrollViewCallbacks(observableScrollViewCallbacks);
         viewBinding.list.addHeaderView(songListHeader);
 
-        songAdapter = new ArtistSongAdapter(this, getArtist().getSongs(), this);
+        songAdapter = new ArtistSongAdapter(this, cabController, getArtist().getSongs());
         viewBinding.list.setAdapter(songAdapter);
 
         final View contentView = getWindow().getDecorView().findViewById(android.R.id.content);
@@ -174,7 +175,7 @@ public class ArtistDetailActivity extends AbsSlidingMusicPanelActivity implement
 
     private void setUpAlbumRecyclerView() {
         albumRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
-        albumAdapter = new HorizontalAlbumAdapter(this, getArtist().albums, usePalette, this);
+        albumAdapter = new HorizontalAlbumAdapter(this, getArtist().albums, usePalette, cabController);
         albumRecyclerView.setAdapter(albumAdapter);
         albumAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
             @Override
@@ -197,7 +198,7 @@ public class ArtistDetailActivity extends AbsSlidingMusicPanelActivity implement
                     setUpArtist(artist);
                     return Unit.INSTANCE;
                 }, songs -> {
-                    songAdapter.swapDataSet(songs);
+                    songAdapter.setDataSet(songs);
                     return Unit.INSTANCE;
                 },
                 albums -> {
@@ -394,33 +395,9 @@ public class ArtistDetailActivity extends AbsSlidingMusicPanelActivity implement
         return super.onOptionsItemSelected(item);
     }
 
-    @NonNull
-    @Override
-    public AttachedCab showCab(int menuRes,
-                               @NonNull Function2<? super AttachedCab, ? super Menu, Unit> createCallback,
-                               @NonNull Function1<? super MenuItem, Boolean> selectCallback,
-                               @NonNull Function1<? super AttachedCab, Boolean> destroyCallback) {
-
-        if (cab != null && AttachedCabKt.isActive(cab)) AttachedCabKt.destroy(cab);
-
-        cab = MaterialCabKt.createCab(this, R.id.cab_stub, attachedCab -> {
-            attachedCab.popupTheme(Setting.instance().getGeneralTheme());
-            attachedCab.menu(menuRes);
-            attachedCab.closeDrawable(R.drawable.ic_close_white_24dp);
-            attachedCab.backgroundColor(null, PhonographColorUtil.shiftBackgroundColorForLightText(getPaletteColor()));
-            attachedCab.onCreate(createCallback);
-            attachedCab.onSelection(selectCallback);
-            attachedCab.onDestroy(destroyCallback);
-            return null;
-        });
-
-        return cab;
-    }
-
     @Override
     public void onBackPressed() {
-        if (cab != null && AttachedCabKt.isActive(cab)) AttachedCabKt.destroy(cab);
-        else {
+        if (!cabController.dismiss()) {
             albumRecyclerView.stopScroll();
             super.onBackPressed();
         }

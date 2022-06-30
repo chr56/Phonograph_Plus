@@ -13,12 +13,12 @@ import androidx.core.util.Pair
 import com.bumptech.glide.Glide
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView.SectionedAdapter
 import player.phonograph.R
-import player.phonograph.adapter.base.AbsMultiSelectAdapter
 import player.phonograph.adapter.base.MediaEntryViewHolder
+import player.phonograph.adapter.base.MultiSelectAdapter
+import player.phonograph.adapter.base.MultiSelectionCabController
 import player.phonograph.glide.PhonographColoredTarget
 import player.phonograph.glide.SongGlideRequest
 import player.phonograph.helper.menu.SongsMenuHelper.handleMenuClick
-import player.phonograph.interfaces.CabHolder
 import player.phonograph.mediastore.sort.SortRef
 import player.phonograph.model.Album
 import player.phonograph.model.Song
@@ -36,11 +36,11 @@ open class AlbumAdapter(
     dataSet: List<Album>,
     @LayoutRes protected val itemLayoutRes: Int,
     usePalette: Boolean = false,
-    cabHolder: CabHolder? = null,
-) : AbsMultiSelectAdapter<AlbumAdapter.ViewHolder, Album>(
-    activity, cabHolder, R.menu.menu_media_selection
-),
-    SectionedAdapter {
+    cabController: MultiSelectionCabController? = null,
+) :
+    MultiSelectAdapter<AlbumAdapter.ViewHolder, Album>(activity, cabController), SectionedAdapter {
+
+    override var multiSelectMenuRes: Int = R.menu.menu_media_selection
 
     var dataSet: List<Album> = dataSet
         set(dataSet) {
@@ -118,11 +118,7 @@ open class AlbumAdapter(
 
     override fun getItemCount(): Int = dataSet.size
 
-    override fun getItemId(position: Int): Long {
-        return dataSet[position].id
-    }
-
-    override fun getIdentifier(position: Int): Album = dataSet[position]
+    override fun getItem(datasetPosition: Int): Album = dataSet[datasetPosition]
 
     override fun getName(obj: Album): String = obj.title
 
@@ -170,4 +166,7 @@ open class AlbumAdapter(
             menu?.visibility = GONE
         }
     }
+
+    override fun updateItemCheckStatusForAll() = notifyDataSetChanged()
+    override fun updateItemCheckStatus(datasetPosition: Int) = notifyItemChanged(datasetPosition)
 }
