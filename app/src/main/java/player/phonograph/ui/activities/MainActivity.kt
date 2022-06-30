@@ -49,14 +49,13 @@ import util.mddesign.util.NavigationViewUtil
 import util.mddesign.util.Util as MDthemerUtil
 
 class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity {
-    var activityMainPageBinding: ActivityMainPageBinding? = null
-    val pageBinding get() = activityMainPageBinding!!
 
-    var activityDrawerBinding: ActivityMainBinding? = null
-    val drawerBinding get() = activityDrawerBinding!!
+    private lateinit var mainBinding: ActivityMainBinding
+    private lateinit var drawerBinding: LayoutDrawerBinding
 
     private lateinit var currentFragment: MainActivityFragmentCallbacks
     private var navigationDrawerHeader: View? = null
+
     private var blockRequestPermissions = false
 
     private lateinit var safLauncher: SafLauncher
@@ -94,19 +93,11 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
     }
 
     override fun createContentView(): View {
-
-        activityMainPageBinding = ActivityMainPageBinding.inflate(layoutInflater)
-        activityDrawerBinding = ActivityMainBinding.inflate(layoutInflater)
-
-        drawerBinding.drawerContentContainer.addView(wrapSlidingMusicPanel(pageBinding.root))
+        mainBinding = ActivityMainBinding.inflate(layoutInflater)
+        drawerBinding = LayoutDrawerBinding.inflate(layoutInflater)
+        drawerBinding.drawerContentContainer.addView(wrapSlidingMusicPanel(mainBinding.root))
 
         return drawerBinding.root
-    }
-
-    override fun onDestroy() {
-        activityMainPageBinding = null
-        activityDrawerBinding = null
-        super.onDestroy()
     }
 
     private fun setMusicChooser(key: Int) {
@@ -147,7 +138,7 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
 
     private fun setUpDrawer() {
         with(drawerBinding.drawerLayout) {
-            setPadding(paddingLeft, paddingTop + pageBinding.statusBarLayout.statusBar.height, paddingRight, paddingBottom)
+            setPadding(paddingLeft, paddingTop + mainBinding.statusBarLayout.statusBar.height, paddingRight, paddingBottom)
         }
 
         NavigationViewUtil.setItemIconColors(
