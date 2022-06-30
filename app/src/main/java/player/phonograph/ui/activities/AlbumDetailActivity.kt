@@ -169,6 +169,8 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity() {
         viewBinding.albumYearText.setTextColor(secondaryTextColor)
         viewBinding.albumYearText.setCompoundDrawablesWithIntrinsicBounds(albumYearIcon, null, null, null)
         viewBinding.albumYearText.compoundDrawablePadding = 16
+
+        cabController.cabColor = color
     }
 
     private val album: Album get() = model.album
