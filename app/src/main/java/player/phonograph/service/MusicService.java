@@ -745,7 +745,7 @@ public class MusicService extends Service implements SharedPreferences.OnSharedP
 
             int position = startPosition;
             if (shuffleMode == SHUFFLE_MODE_SHUFFLE) {
-                ShuffleHelper.makeShuffleList(this.playingQueue, startPosition);
+                ShuffleHelper.shuffleAt(this.playingQueue, startPosition);
                 position = 0;
             }
             if (startPlaying) {
@@ -1044,7 +1044,7 @@ public class MusicService extends Service implements SharedPreferences.OnSharedP
         switch (shuffleMode) {
             case SHUFFLE_MODE_SHUFFLE:
                 this.shuffleMode = shuffleMode;
-                ShuffleHelper.makeShuffleList(this.getPlayingQueue(), getPosition());
+                ShuffleHelper.shuffleAt(this.getPlayingQueue(), getPosition());
                 position = 0;
                 break;
             case SHUFFLE_MODE_NONE:
