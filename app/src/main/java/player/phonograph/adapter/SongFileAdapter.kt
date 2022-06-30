@@ -10,32 +10,29 @@ import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.bumptech.glide.signature.MediaStoreSignature
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView.SectionedAdapter
+import java.io.File
+import java.util.Locale
 import player.phonograph.R
-import player.phonograph.adapter.base.AbsMultiSelectAdapter
 import player.phonograph.adapter.base.MediaEntryViewHolder
+import player.phonograph.adapter.base.MultiSelectAdapter
+import player.phonograph.adapter.base.MultiSelectionCabController
 import player.phonograph.glide.SongGlideRequest
 import player.phonograph.glide.audiocover.AudioFileCover
-import player.phonograph.interfaces.CabHolder
 import player.phonograph.util.FileUtil.getReadableFileSize
 import player.phonograph.util.ImageUtil
 import util.mddesign.util.Util
-import java.io.File
-import java.text.DecimalFormat
-import java.util.Locale
-import kotlin.math.log10
-import kotlin.math.pow
 
 class SongFileAdapter(
     private val activity: AppCompatActivity,
     dataSet: List<File>,
-    @LayoutRes
-    private val itemLayoutRes: Int,
+    @LayoutRes private val itemLayoutRes: Int,
     private val callbacks: Callbacks?,
-    cabHolder: CabHolder?
+    cabController: MultiSelectionCabController?,
 ) :
-    AbsMultiSelectAdapter<SongFileAdapter.ViewHolder, File>(activity, cabHolder, R.menu.menu_media_selection),
+    MultiSelectAdapter<SongFileAdapter.ViewHolder, File>(activity, cabController),
     SectionedAdapter {
 
+    override var multiSelectMenuRes: Int = R.menu.menu_media_selection
     init {
         setHasStableIds(true)
     }
@@ -103,7 +100,7 @@ class SongFileAdapter(
 
     override fun getItemCount(): Int = dataSet.size
 
-    override fun getIdentifier(position: Int): File = dataSet[position]
+    override fun getItem(datasetPosition: Int): File = dataSet[datasetPosition]
 
     override fun getName(obj: File): String = getFileTitle(obj)
 
@@ -154,7 +151,8 @@ class SongFileAdapter(
     companion object {
         private const val FILE = 0
         private const val FOLDER = 1
-
-
     }
+
+    override fun updateItemCheckStatusForAll() = notifyDataSetChanged()
+    override fun updateItemCheckStatus(datasetPosition: Int) = notifyItemChanged(datasetPosition)
 }

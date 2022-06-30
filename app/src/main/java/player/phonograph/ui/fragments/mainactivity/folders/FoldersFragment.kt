@@ -9,20 +9,18 @@ import androidx.appcompat.content.res.AppCompatResources
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView.AdapterDataObserver
-import com.afollestad.materialcab.attached.AttachedCab
-import com.afollestad.materialcab.attached.destroy
-import com.afollestad.materialcab.attached.isActive
-import com.afollestad.materialcab.createCab
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.snackbar.Snackbar
 import java.io.File
 import java.io.FileFilter
 import java.util.*
+import lib.phonograph.cab.ToolbarCab
+import lib.phonograph.cab.createToolbarCab
 import player.phonograph.R
 import player.phonograph.adapter.SongFileAdapter
+import player.phonograph.adapter.base.MultiSelectionCabController
 import player.phonograph.databinding.FragmentFolderBinding
 import player.phonograph.helper.menu.SongsMenuHelper
-import player.phonograph.interfaces.CabHolder
 import player.phonograph.model.Song
 import player.phonograph.service.MusicPlayerRemote.openQueue
 import player.phonograph.settings.Setting
@@ -31,7 +29,6 @@ import player.phonograph.ui.fragments.mainactivity.AbsMainActivityFragment
 import player.phonograph.util.BlacklistUtil
 import player.phonograph.util.FileUtil.safeGetCanonicalFile
 import player.phonograph.util.FileUtil.safeGetCanonicalPath
-import player.phonograph.util.PhonographColorUtil.shiftBackgroundColorForLightText
 import player.phonograph.util.ViewUtil.setUpFastScrollRecyclerViewColor
 import player.phonograph.views.BreadCrumbLayout
 import player.phonograph.views.BreadCrumbLayout.Crumb
@@ -44,10 +41,12 @@ import util.mddesign.util.ToolbarColorUtil
 class FoldersFragment :
     AbsMainActivityFragment(),
     MainActivityFragmentCallbacks,
-    CabHolder,
     BreadCrumbLayout.SelectionCallback,
     SongFileAdapter.Callbacks,
     AppBarLayout.OnOffsetChangedListener {
+
+    private lateinit var cab: ToolbarCab
+    private lateinit var cabController: MultiSelectionCabController
 
     private var _viewBinding: FragmentFolderBinding? = null
     private val viewBinding: FragmentFolderBinding get() = _viewBinding!!
@@ -56,8 +55,6 @@ class FoldersFragment :
 
     private lateinit var adapter: SongFileAdapter
     private lateinit var dataObserver: AdapterDataObserver
-
-    private var cab: AttachedCab? = null
 
     private fun setCrumb(crumb: Crumb, addToHistory: Boolean) {
 
@@ -138,6 +135,9 @@ class FoldersFragment :
         )
         mainActivity.setTitle(R.string.app_name)
         mainActivity.setSupportActionBar(viewBinding.toolbar)
+
+        cab = createToolbarCab(mainActivity, R.id.cab_stub, R.id.multi_selection_cab)
+        cabController = MultiSelectionCabController(cab)
     }
 
     private fun setUpBreadCrumbs() {
@@ -150,7 +150,7 @@ class FoldersFragment :
         viewBinding.appbar.addOnOffsetChangedListener(this)
         viewBinding.recyclerView.setUpFastScrollRecyclerViewColor(mainActivity, ThemeColor.accentColor(mainActivity))
 
-        adapter = SongFileAdapter(mainActivity, LinkedList(), R.layout.item_list, this, this)
+        adapter = SongFileAdapter(mainActivity, LinkedList(), R.layout.item_list, this, cabController)
         dataObserver = object : AdapterDataObserver() {
             override fun onChanged() {
                 super.onChanged()
@@ -176,36 +176,14 @@ class FoldersFragment :
     }
 
     override fun handleBackPress(): Boolean {
-        if (cab != null && cab.isActive()) {
-            cab.destroy()
-            return true
+        return when {
+            cabController.dismiss() -> true
+            viewBinding.breadCrumbs.popHistory() -> {
+                setCrumb(viewBinding.breadCrumbs.lastHistory(), false)
+                true
+            }
+            else -> false
         }
-        if (viewBinding.breadCrumbs.popHistory()) {
-            setCrumb(viewBinding.breadCrumbs.lastHistory(), false)
-            return true
-        }
-        return false
-    }
-
-    override fun showCab(
-        menuRes: Int,
-        createCallback: Function2<AttachedCab, Menu, Unit>,
-        selectCallback: Function1<MenuItem, Boolean>,
-        destroyCallback: Function1<AttachedCab, Boolean>,
-    ): AttachedCab {
-        if (cab != null && cab.isActive()) cab.destroy()
-
-        cab = this.createCab(R.id.cab_stub) {
-            popupTheme(Setting.instance().generalTheme)
-            menu(menuRes)
-            closeDrawable(R.drawable.ic_close_white_24dp)
-            backgroundColor(null, shiftBackgroundColorForLightText(ThemeColor.primaryColor(mainActivity)))
-            onCreate(createCallback)
-            onSelection(selectCallback)
-            onDestroy(destroyCallback)
-        }
-
-        return cab!!
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
