@@ -319,6 +319,7 @@ public class ArtistDetailActivity extends AbsSlidingMusicPanelActivity implement
         viewBinding.albumCountText.setTextColor(secondaryTextColor);
 
         cabController.setCabColor(color);
+        setActivityColor(color);
     }
 
     private void setUpToolbar() {

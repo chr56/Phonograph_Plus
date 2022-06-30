@@ -44,7 +44,8 @@ abstract class AbsSlidingMusicPanelActivity :
     private var colorChangeAnimator: ValueAnimator? = null
     private val argbEvaluator = ArgbEvaluator()
 
-    private var themeColor: Int = 0
+    private var playerColor: Int = 0
+    protected var activityColor: Int = 0 // original color of this activity
 
     protected abstract fun createContentView(): View
 
@@ -71,7 +72,8 @@ abstract class AbsSlidingMusicPanelActivity :
         miniPlayerFragment = supportFragmentManager.findFragmentById(R.id.mini_player_fragment) as MiniPlayerFragment
         miniPlayerFragment.requireView().setOnClickListener { expandPanel() }
 
-        themeColor = if (playerFragment.paletteColor != 0) playerFragment.paletteColor else getColor(R.color.defaultFooterColor)
+        playerColor = if (playerFragment.paletteColor != 0) playerFragment.paletteColor else getColor(R.color.defaultFooterColor)
+        activityColor = primaryColor
 
         // set panel
         slidingUpPanelLayout =
@@ -124,7 +126,7 @@ abstract class AbsSlidingMusicPanelActivity :
     override fun onPanelSlide(panel: View, @FloatRange(from = 0.0, to = 1.0) slideOffset: Float) {
         setMiniPlayerAlphaProgress(slideOffset)
         colorChangeAnimator?.cancel()
-        val color: Int = argbEvaluator.evaluate(slideOffset, primaryColor, playerFragment.paletteColor) as Int
+        val color: Int = argbEvaluator.evaluate(slideOffset, activityColor, playerFragment.paletteColor) as Int
         super.setStatusbarColor(color)
         super.setNavigationbarColor(color)
     }
@@ -203,8 +205,8 @@ abstract class AbsSlidingMusicPanelActivity :
 
     override fun onPaletteColorChanged() {
         if (panelState == PanelState.EXPANDED) {
-            animateColorChange(themeColor, playerFragment.paletteColor)
-            themeColor = playerFragment.paletteColor
+            animateColorChange(playerColor, playerFragment.paletteColor)
+            playerColor = playerFragment.paletteColor
         }
     }
 
