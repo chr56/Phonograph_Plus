@@ -102,10 +102,10 @@ abstract class ThemeActivity : AppCompatActivity() {
         ThemeColor.mPreferences(this).unregisterOnSharedPreferenceChangeListener(onSharedPreferenceChangeListener)
     }
 
-    protected fun updateAllColors() {
-        setStatusbarColorAuto()
-        setNavigationbarColorAuto()
-        setTaskDescriptionColorAuto()
+    protected fun updateAllColors(color: Int) {
+        setStatusbarColor(color)
+        setNavigationbarColor(color)
+        setTaskDescriptionColor(color)
     }
 
     //

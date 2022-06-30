@@ -22,6 +22,7 @@ import player.phonograph.ui.fragments.player.card.CardPlayerFragment
 import player.phonograph.ui.fragments.player.flat.FlatPlayerFragment
 import player.phonograph.util.ViewUtil
 
+// TODO: Move smooth AnimateColorChange to ThemeActivity
 /**
  * @author Karim Abou Zeid (kabouzeid)
  *
@@ -40,8 +41,10 @@ abstract class AbsSlidingMusicPanelActivity :
 
     private var slidingUpPanelLayout: SlidingUpPanelLayout? = null
 
-    private var navigationBarColorAnimator: ValueAnimator? = null
+    private var colorChangeAnimator: ValueAnimator? = null
     private val argbEvaluator = ArgbEvaluator()
+
+    private var themeColor: Int = 0
 
     protected abstract fun createContentView(): View
 
@@ -66,8 +69,9 @@ abstract class AbsSlidingMusicPanelActivity :
 
         playerFragment = supportFragmentManager.findFragmentById(R.id.player_fragment_container) as AbsPlayerFragment
         miniPlayerFragment = supportFragmentManager.findFragmentById(R.id.mini_player_fragment) as MiniPlayerFragment
-
         miniPlayerFragment.requireView().setOnClickListener { expandPanel() }
+
+        themeColor = if (playerFragment.paletteColor != 0) playerFragment.paletteColor else getColor(R.color.defaultFooterColor)
 
         // set panel
         slidingUpPanelLayout =
@@ -119,8 +123,10 @@ abstract class AbsSlidingMusicPanelActivity :
 
     override fun onPanelSlide(panel: View, @FloatRange(from = 0.0, to = 1.0) slideOffset: Float) {
         setMiniPlayerAlphaProgress(slideOffset)
-        if (navigationBarColorAnimator != null) navigationBarColorAnimator!!.cancel()
-        super.setNavigationbarColor(argbEvaluator.evaluate(slideOffset, primaryColor, playerFragment.paletteColor) as Int)
+        colorChangeAnimator?.cancel()
+        val color: Int = argbEvaluator.evaluate(slideOffset, primaryColor, playerFragment.paletteColor) as Int
+        super.setStatusbarColor(color)
+        super.setNavigationbarColor(color)
     }
 
     override fun onPanelStateChanged(panel: View, previousState: PanelState, newState: PanelState) {
@@ -134,7 +140,6 @@ abstract class AbsSlidingMusicPanelActivity :
 
     open fun onPanelCollapsed(panel: View?) {
         // restore values
-        updateAllColors()
         playerFragment.setMenuVisibility(false)
         playerFragment.userVisibleHint = false
         playerFragment.onHide()
@@ -142,7 +147,6 @@ abstract class AbsSlidingMusicPanelActivity :
 
     open fun onPanelExpanded(panel: View?) {
         // setting fragments values
-        updateAllColors()
         playerFragment.setMenuVisibility(true)
         playerFragment.userVisibleHint = true
         playerFragment.onShow()
@@ -199,53 +203,30 @@ abstract class AbsSlidingMusicPanelActivity :
 
     override fun onPaletteColorChanged() {
         if (panelState == PanelState.EXPANDED) {
-            val playerFragmentColor = playerFragment.paletteColor
-            updateAllColors()
-            animateNavigationBarColor(playerFragmentColor)
+            animateColorChange(themeColor, playerFragment.paletteColor)
+            themeColor = playerFragment.paletteColor
         }
     }
 
-    private fun animateNavigationBarColor(color: Int) {
-        navigationBarColorAnimator?.cancel()
-        navigationBarColorAnimator =
-            ValueAnimator
-                .ofArgb(window.navigationBarColor, color)
-                .setDuration(ViewUtil.PHONOGRAPH_ANIM_TIME.toLong())
-                .also { animator ->
-                    animator.interpolator = PathInterpolator(0.4f, 0f, 1f, 1f)
-                    animator.addUpdateListener { animation: ValueAnimator ->
-                        super@AbsSlidingMusicPanelActivity.setNavigationbarColor(
-                            (animation.animatedValue as Int)
-                        )
-                    }
-                    animator.start()
+    private fun animateColorChange(oldColor: Int, newColor: Int) {
+        colorChangeAnimator?.cancel()
+        colorChangeAnimator = ValueAnimator
+            .ofArgb(oldColor, newColor)
+            .setDuration(ViewUtil.PHONOGRAPH_ANIM_TIME.toLong())
+            .also { animator ->
+                animator.interpolator = PathInterpolator(0.4f, 0f, 1f, 1f)
+                animator.addUpdateListener { animation: ValueAnimator ->
+                    setStatusbarColor(animation.animatedValue as Int)
+                    setNavigationbarColor(animation.animatedValue as Int)
                 }
+                animator.start()
+            }
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        if (navigationBarColorAnimator != null) navigationBarColorAnimator!!.cancel() // just in case
-    }
-
-    override fun setStatusbarColor(color: Int) {
-        when (panelState) {
-            PanelState.EXPANDED -> {
-                super.setStatusbarColor(playerFragment.paletteColor)
-            }
-            else -> super.setStatusbarColor(color)
-        }
-    }
-
-    override fun setNavigationbarColor(color: Int) {
-        when (panelState) {
-            PanelState.EXPANDED -> {
-                super.setNavigationbarColor(playerFragment.paletteColor)
-            }
-            else -> {
-                navigationBarColorAnimator?.cancel()
-                super.setNavigationbarColor(color)
-            }
-        }
+        colorChangeAnimator?.cancel() // just in case
+        colorChangeAnimator = null
     }
 
     override fun setTaskDescriptionColor(@ColorInt color: Int) {
