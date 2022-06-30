@@ -16,7 +16,7 @@ import kotlin.math.log10
 import kotlin.math.pow
 import player.phonograph.mediastore.SongLoader.getSongs
 import player.phonograph.mediastore.SongLoader.makeSongCursor
-import player.phonograph.misc.SortedCursor
+import lib.phonograph.misc.SortedCursor
 import player.phonograph.model.Song
 
 /**
