@@ -52,8 +52,8 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
     var activityMainPageBinding: ActivityMainPageBinding? = null
     val pageBinding get() = activityMainPageBinding!!
 
-    var activityMainBinding: ActivityMainBinding? = null
-    val mainBinding get() = activityMainBinding!!
+    var activityDrawerBinding: ActivityMainBinding? = null
+    val drawerBinding get() = activityDrawerBinding!!
 
     private lateinit var currentFragment: MainActivityFragmentCallbacks
     private var navigationDrawerHeader: View? = null
@@ -96,16 +96,16 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
     override fun createContentView(): View {
 
         activityMainPageBinding = ActivityMainPageBinding.inflate(layoutInflater)
-        activityMainBinding = ActivityMainBinding.inflate(layoutInflater)
+        activityDrawerBinding = ActivityMainBinding.inflate(layoutInflater)
 
-        mainBinding.drawerContentContainer.addView(wrapSlidingMusicPanel(pageBinding.root))
+        drawerBinding.drawerContentContainer.addView(wrapSlidingMusicPanel(pageBinding.root))
 
-        return mainBinding.root
+        return drawerBinding.root
     }
 
     override fun onDestroy() {
         activityMainPageBinding = null
-        activityMainBinding = null
+        activityDrawerBinding = null
         super.onDestroy()
     }
 
@@ -113,11 +113,11 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
         Setting.instance.lastMusicChooser = key
         when (key) {
             FOLDERS -> {
-                mainBinding.navigationView.setCheckedItem(R.id.nav_folders)
+                drawerBinding.navigationView.setCheckedItem(R.id.nav_folders)
                 setCurrentFragment(FoldersFragment.newInstance())
             }
             HOME -> {
-                mainBinding.navigationView.setCheckedItem(R.id.nav_home)
+                drawerBinding.navigationView.setCheckedItem(R.id.nav_home)
                 setCurrentFragment(HomeFragment.newInstance())
             }
         }
@@ -146,28 +146,31 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
     }
 
     private fun setUpDrawer() {
-        val accentColor = ThemeColor.accentColor(this)
+        with(drawerBinding.drawerLayout) {
+            setPadding(paddingLeft, paddingTop + pageBinding.statusBarLayout.statusBar.height, paddingRight, paddingBottom)
+        }
+
         NavigationViewUtil.setItemIconColors(
-            mainBinding.navigationView, MDthemerUtil.resolveColor(this, R.attr.iconColor, ThemeColor.textColorSecondary(this)), accentColor
+            drawerBinding.navigationView, MDthemerUtil.resolveColor(this, R.attr.iconColor, ThemeColor.textColorSecondary(this)), accentColor
         )
         NavigationViewUtil.setItemTextColors(
-            mainBinding.navigationView, ThemeColor.textColorPrimary(this), accentColor
+            drawerBinding.navigationView, ThemeColor.textColorPrimary(this), accentColor
         )
 
-        mainBinding.navigationView.setNavigationItemSelectedListener { menuItem: MenuItem ->
-            mainBinding.drawerLayout.closeDrawers()
+        drawerBinding.navigationView.setNavigationItemSelectedListener { menuItem: MenuItem ->
+            drawerBinding.drawerLayout.closeDrawers()
 
             when (menuItem.itemId) {
-                R.id.nav_folders -> Handler().postDelayed({ setMusicChooser(FOLDERS) }, 200)
-                R.id.nav_home -> Handler().postDelayed({ setMusicChooser(HOME) }, 200)
+                R.id.nav_folders -> Handler(Looper.getMainLooper()).postDelayed({ setMusicChooser(FOLDERS) }, 200)
+                R.id.nav_home -> Handler(Looper.getMainLooper()).postDelayed({ setMusicChooser(HOME) }, 200)
 
-                R.id.action_shuffle_all -> Handler().postDelayed({
+                R.id.action_shuffle_all -> Handler(Looper.getMainLooper()).postDelayed({
                     MusicPlayerRemote.openAndShuffleQueue(SongLoader.getAllSongs(this), true)
                 }, 350)
-                R.id.action_scan -> Handler().postDelayed({
+                R.id.action_scan -> Handler(Looper.getMainLooper()).postDelayed({
                     ScanMediaFolderDialog().show(supportFragmentManager, "SCAN_MEDIA_FOLDER_CHOOSER")
                 }, 200)
-                R.id.theme_toggle -> Handler().postDelayed({
+                R.id.theme_toggle -> Handler(Looper.getMainLooper()).postDelayed({
                     val themeSetting = Setting.instance.generalTheme
 
                     if (themeSetting == R.style.Theme_Phonograph_Auto) {
@@ -183,10 +186,10 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
                     }
                 }, 200)
 
-                R.id.nav_settings -> Handler().postDelayed({
+                R.id.nav_settings -> Handler(Looper.getMainLooper()).postDelayed({
                     startActivity(Intent(this, SettingsActivity::class.java))
                 }, 200)
-                R.id.nav_about -> Handler().postDelayed({
+                R.id.nav_about -> Handler(Looper.getMainLooper()).postDelayed({
                     startActivity(Intent(this, AboutActivity::class.java))
                 }, 200)
             }
@@ -200,9 +203,9 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
 
             if (navigationDrawerHeader == null) {
                 navigationDrawerHeader =
-                    mainBinding.navigationView.inflateHeaderView(R.layout.navigation_drawer_header)
+                    drawerBinding.navigationView.inflateHeaderView(R.layout.navigation_drawer_header)
                 (navigationDrawerHeader as View).setOnClickListener {
-                    mainBinding.drawerLayout.closeDrawers()
+                    drawerBinding.drawerLayout.closeDrawers()
                     if (panelState == SlidingUpPanelLayout.PanelState.COLLAPSED) {
                         expandPanel()
                     }
@@ -217,7 +220,7 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
                 .into(navigationDrawerHeader!!.findViewById<View>(R.id.image) as ImageView)
         } else {
             if (navigationDrawerHeader != null) {
-                mainBinding.navigationView.removeHeaderView(navigationDrawerHeader!!)
+                drawerBinding.navigationView.removeHeaderView(navigationDrawerHeader!!)
                 navigationDrawerHeader = null
             }
         }
@@ -237,10 +240,10 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == android.R.id.home) {
-            if (mainBinding.drawerLayout.isDrawerOpen(mainBinding.navigationView)) {
-                mainBinding.drawerLayout.closeDrawer(mainBinding.navigationView)
+            if (drawerBinding.drawerLayout.isDrawerOpen(drawerBinding.navigationView)) {
+                drawerBinding.drawerLayout.closeDrawer(drawerBinding.navigationView)
             } else {
-                mainBinding.drawerLayout.openDrawer(mainBinding.navigationView)
+                drawerBinding.drawerLayout.openDrawer(drawerBinding.navigationView)
             }
             return true
         }
@@ -248,8 +251,8 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
     }
 
     override fun handleBackPress(): Boolean {
-        if (mainBinding.drawerLayout.isDrawerOpen(mainBinding.navigationView)) {
-            mainBinding.drawerLayout.closeDrawers()
+        if (drawerBinding.drawerLayout.isDrawerOpen(drawerBinding.navigationView)) {
+            drawerBinding.drawerLayout.closeDrawers()
             return true
         }
         return super.handleBackPress() || currentFragment.handleBackPress()
@@ -325,12 +328,12 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
 
     override fun onPanelExpanded(panel: View?) {
         super.onPanelExpanded(panel)
-        mainBinding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
+        drawerBinding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
     }
 
     override fun onPanelCollapsed(panel: View?) {
         super.onPanelCollapsed(panel)
-        mainBinding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
+        drawerBinding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
     }
 
     private fun showIntro() {
@@ -340,7 +343,7 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
 
             blockRequestPermissions = true
 
-            Handler().postDelayed({
+            Handler(Looper.getMainLooper()).postDelayed({
                 startActivityForResult(Intent(this@MainActivity, AppIntroActivity::class.java), APP_INTRO_REQUEST)
             }, 50)
         }

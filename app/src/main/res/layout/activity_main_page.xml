@@ -11,7 +11,7 @@
         android:elevation="0dp"
         tools:ignore="UnusedAttribute">
 
-        <include layout="@layout/status_bar" />
+        <include layout="@layout/status_bar" android:id="@+id/status_bar_layout"/>
 
     </FrameLayout>
 
