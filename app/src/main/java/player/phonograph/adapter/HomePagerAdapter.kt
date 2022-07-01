@@ -107,8 +107,5 @@ object PageConfigUtil {
 
     private const val KEY = "PageCfg"
 
-    /**
-     *  TODO Not yet implemented
-     */
     val DEFAULT_CONFIG = toJson(PageConfig.DEFAULT_CONFIG)
 }

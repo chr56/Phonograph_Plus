@@ -73,7 +73,7 @@ class SleepTimerDialog : DialogFragment() {
                     Toast.makeText(requireActivity(), requireActivity().resources.getString(R.string.sleep_timer_canceled), Toast.LENGTH_SHORT).show()
                 }
             }
-            .customView(viewRes = R.layout.dialog_sleep_timer, noVerticalPadding = true) // Todo
+            .customView(viewRes = R.layout.dialog_sleep_timer, noVerticalPadding = true)
 
         // set dialog button color
         dialog.getActionButton(WhichButton.POSITIVE).updateTextColor(ThemeColor.accentColor(requireActivity()))
