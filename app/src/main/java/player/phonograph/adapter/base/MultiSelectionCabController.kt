@@ -25,15 +25,20 @@ class MultiSelectionCabController(val cab: ToolbarCab) {
             cab.backgroundColor = value
         }
 
+    var textColor: Int = Color.WHITE
+        set(value) {
+            field = value
+            cab.titleTextColor = value
+        }
+
     fun showContent(context: Context, checkedListSize: Int, @MenuRes menuRes: Int): Boolean {
-        return if (cab.status != CabStatus.STATUS_DESTROYED || cab.status != CabStatus.STATUS_DESTROYING) {
+        return run {
             if (checkedListSize < 1) {
                 cab.hide()
             } else {
-
                 cab.backgroundColor = cabColor
                 cab.titleText = context.getString(R.string.x_selected, checkedListSize)
-                cab.titleTextColor = Color.WHITE
+                cab.titleTextColor = textColor
                 cab.navigationIcon = context.getTintedDrawable(R.drawable.ic_close_white_24dp, Color.WHITE)!!
 
                 cab.menuRes = menuRes
@@ -46,8 +51,6 @@ class MultiSelectionCabController(val cab: ToolbarCab) {
                 cab.show()
             }
             true
-        } else {
-            false
         }
     }
 
@@ -61,8 +64,6 @@ class MultiSelectionCabController(val cab: ToolbarCab) {
         }
         return false
     }
-
-    fun distroy(): Boolean = cab.destroy()
 
     fun isActive(): Boolean = cab.status == CabStatus.STATUS_ACTIVE
 }

@@ -311,7 +311,6 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandle
 
     override fun onDestroy() {
         super.onDestroy()
-        cabController.distroy()
         wrappedAdapter?.let {
             WrapperAdapterUtils.releaseAll(it)
             wrappedAdapter = null

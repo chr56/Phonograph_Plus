@@ -26,7 +26,7 @@ fun createToolbarCab(
     activity: Activity,
     @IdRes stubId: Int,
     @IdRes inflatedId: Int,
-    cfg: CabCfg2 = {}
+    cfg: CabCfg = {}
 ): ToolbarCab {
     val toolbar: Toolbar =
         when (val stub = activity.findViewById<View>(stubId)) {
@@ -44,12 +44,12 @@ fun createToolbarCab(
     toolbar.visibility = View.GONE
     return ToolbarCab(activity, toolbar, cfg)
 }
-typealias CabCfg2 = ToolbarCab.() -> Unit
+typealias CabCfg = ToolbarCab.() -> Unit
 
 class ToolbarCab internal constructor(
     val activity: Activity,
     val toolbar: Toolbar,
-    applyCfg: CabCfg2
+    applyCfg: CabCfg
 ) {
 
     var status: CabStatus = CabStatus.STATUS_INACTIVE // default
@@ -178,27 +178,10 @@ class ToolbarCab internal constructor(
     }
 
     val menu: Menu? get() = toolbar.menu
-
-    // todo
-    /** call this function in cab's host OnDestroy **/
-    @Synchronized
-    fun destroy(): Boolean {
-        if (status == CabStatus.STATUS_DESTROYED) return false
-        status = CabStatus.STATUS_DESTROYING
-
-        toolbar.visibility = View.GONE
-
-        status = CabStatus.STATUS_DESTROYED
-        return true
-    }
 }
 
 @Suppress("ClassName")
-sealed class CabStatus { // todo
-
+sealed class CabStatus {
     object STATUS_INACTIVE : CabStatus()
     object STATUS_ACTIVE : CabStatus()
-
-    object STATUS_DESTROYING : CabStatus()
-    object STATUS_DESTROYED : CabStatus()
 }

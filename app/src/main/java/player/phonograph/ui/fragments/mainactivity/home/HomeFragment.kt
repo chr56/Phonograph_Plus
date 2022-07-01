@@ -58,7 +58,6 @@ class HomeFragment : AbsMainActivityFragment(), MainActivity.MainActivityFragmen
         super.onDestroyView()
         binding.pager.unregisterOnPageChangeCallback(pageChangeListener)
         Setting.instance.unregisterOnSharedPreferenceChangedListener(this)
-        cabController.distroy()
         _viewBinding = null
     }
 

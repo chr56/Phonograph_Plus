@@ -130,7 +130,6 @@ class GenreDetailActivity :
 
     override fun onDestroy() {
         binding.recyclerView.adapter = null
-        cabController.distroy()
         super.onDestroy()
         loaderCoroutineScope.cancel()
         _viewBinding = null
