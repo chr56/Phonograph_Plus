@@ -5,17 +5,23 @@
 package player.phonograph.ui.activities
 
 import android.content.Context
+import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.*
 import player.phonograph.mediastore.ArtistLoader
 import player.phonograph.model.Album
 import player.phonograph.model.Artist
 import player.phonograph.model.Song
 
-class ArtistDetailActivityLoader(var artistId: Long) {
+class ArtistDetailActivityViewModel(var artistId: Long) : ViewModel() {
     private val loaderCoroutineScope: CoroutineScope = CoroutineScope(Dispatchers.IO)
 
     var isRecyclerViewPrepared: Boolean = false
-    fun loadDataSet(context: Context, artistCallback: (Artist) -> Unit, songCallback: (List<Song>) -> Unit, albumCallback: (List<Album>) -> Unit) {
+    fun loadDataSet(
+        context: Context,
+        artistCallback: (Artist) -> Unit,
+        songCallback: (List<Song>) -> Unit,
+        albumCallback: (List<Album>) -> Unit
+    ) {
         loaderCoroutineScope.launch {
 
             _artist = ArtistLoader.getArtist(context, artistId)
@@ -35,5 +41,5 @@ class ArtistDetailActivityLoader(var artistId: Long) {
     }
 
     var _artist: Artist? = null
-    val artist: Artist get() = _artist!!
+    val artist: Artist get() = if (_artist != null) _artist!! else Artist()
 }

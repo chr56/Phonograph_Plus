@@ -30,7 +30,7 @@ import player.phonograph.adapter.base.MultiSelectionCabController
 import player.phonograph.adapter.legacy.ArtistSongAdapter
 import player.phonograph.adapter.legacy.HorizontalAlbumAdapter
 import player.phonograph.databinding.ActivityArtistDetailBinding
-import player.phonograph.dialogs.AddToPlaylistDialog.Companion.create
+import player.phonograph.dialogs.AddToPlaylistDialog
 import player.phonograph.dialogs.SleepTimerDialog
 import player.phonograph.glide.ArtistGlideRequest
 import player.phonograph.glide.PhonographColoredTarget
@@ -41,10 +41,11 @@ import player.phonograph.misc.SimpleObservableScrollViewCallbacks
 import player.phonograph.model.Album
 import player.phonograph.model.Artist
 import player.phonograph.model.Song
+import player.phonograph.notification.ErrorNotification
 import player.phonograph.service.MusicPlayerRemote.enqueue
 import player.phonograph.service.MusicPlayerRemote.openAndShuffleQueue
 import player.phonograph.service.MusicPlayerRemote.playNext
-import player.phonograph.settings.Setting.Companion.instance
+import player.phonograph.settings.Setting
 import player.phonograph.settings.Setting.Companion.isAllowedToDownloadMetadata
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
 import player.phonograph.util.MusicUtil.getAlbumCountString
@@ -56,7 +57,6 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import util.mdcolor.ColorUtil
-import util.mdcolor.pref.ThemeColor
 import util.mddesign.util.MaterialColorHelper
 import util.mddesign.util.ToolbarColorUtil
 import util.mddesign.util.Util
@@ -67,123 +67,121 @@ import util.phonograph.lastfm.rest.model.LastFmArtist
  * Be careful when changing things in this Activity!
  */
 class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorHolder {
-    private lateinit var viewBinding: ActivityArtistDetailBinding
 
-    private var songListHeader: View? = null
-    private var albumRecyclerView: RecyclerView? = null
+    private lateinit var viewBinding: ActivityArtistDetailBinding
+    private lateinit var model: ArtistDetailActivityViewModel
+
+    private lateinit var songListHeader: View
+    private lateinit var albumRecyclerView: RecyclerView
 
     private var headerViewHeight = 0
 
-    override var paletteColor = 0
-        private set
-
     private var biography: Spanned? = null
     private var biographyDialog: MaterialDialog? = null
-    private var albumAdapter: HorizontalAlbumAdapter? = null
-    private var songAdapter: ArtistSongAdapter? = null
-    private var lastFMRestClient: LastFMRestClient? = null
-    private var loader: ArtistDetailActivityLoader? = null
 
-    private var cab: ToolbarCab? = null
-    private var cabController: MultiSelectionCabController? = null
+    private lateinit var albumAdapter: HorizontalAlbumAdapter
+    private lateinit var songAdapter: ArtistSongAdapter
+
+    private val lastFMRestClient: LastFMRestClient by lazy { LastFMRestClient(this) }
+
+    override var paletteColor = 0
+        private set
+    private var usePalette = Setting.instance.albumArtistColoredFooters
+        set(value) {
+            field = value
+            Setting.instance.albumArtistColoredFooters = usePalette
+            albumAdapter.usePalette = usePalette
+        }
+
+    private lateinit var cab: ToolbarCab
+    private lateinit var cabController: MultiSelectionCabController
+
     override fun onCreate(savedInstanceState: Bundle?) {
-        val artistID = intent.extras!!.getLong(EXTRA_ARTIST_ID)
-        loader = ArtistDetailActivityLoader(artistID)
-        load()
+        model = ArtistDetailActivityViewModel(intent.extras!!.getLong(EXTRA_ARTIST_ID))
         viewBinding = ActivityArtistDetailBinding.inflate(layoutInflater)
+        load()
+
         autoSetStatusBarColor = false
         autoSetNavigationBarColor = false
         autoSetTaskDescriptionColor = false
+
         super.onCreate(savedInstanceState)
-        lastFMRestClient = LastFMRestClient(this)
-        usePalette = instance().albumArtistColoredFooters
-        cab = createToolbarCab(this, R.id.cab_stub, R.id.multi_selection_cab)
-        cabController = MultiSelectionCabController(cab!!)
-        initViews()
-        setUpObservableListViewParams()
+
+        songListHeader = LayoutInflater.from(this).inflate(R.layout.artist_detail_header, viewBinding.list, false)
+        albumRecyclerView = songListHeader.findViewById(R.id.recycler_view)
+
+        // ObservableListViewParams
+        headerViewHeight = resources.getDimensionPixelSize(R.dimen.detail_header_height)
+
         setUpToolbar()
         setUpViews()
     }
 
-    override fun createContentView(): View {
-        return wrapSlidingMusicPanel(viewBinding.root)
-    }
-
-    private var usePalette = false
-    private fun setUpObservableListViewParams() {
-        headerViewHeight = resources.getDimensionPixelSize(R.dimen.detail_header_height)
-    }
-
-    private fun initViews() {
-        songListHeader = LayoutInflater.from(this).inflate(R.layout.artist_detail_header, viewBinding.list, false)
-        albumRecyclerView = songListHeader!!.findViewById(R.id.recycler_view)
-    }
+    override fun createContentView(): View = wrapSlidingMusicPanel(viewBinding.root)
 
     private fun setUpViews() {
         setUpSongListView()
         setUpAlbumRecyclerView()
-        loader!!.isRecyclerViewPrepared = true
+        model.isRecyclerViewPrepared = true
         setColors(Util.resolveColor(this, R.attr.defaultFooterColor))
     }
 
     private fun setUpSongListView() {
-        setUpSongListPadding()
-        viewBinding.list.setScrollViewCallbacks(observableScrollViewCallbacks)
-        viewBinding.list.addHeaderView(songListHeader)
-        songAdapter = ArtistSongAdapter(this, cabController, artist.songs)
-        viewBinding.list.adapter = songAdapter
-        val contentView = window.decorView.findViewById<View>(android.R.id.content)
-        contentView.post { observableScrollViewCallbacks.onScrollChanged(-headerViewHeight, b = false, b2 = false) }
-    }
-
-    private fun setUpSongListPadding() {
-        viewBinding.list.setPadding(0, headerViewHeight, 0, 0)
+        songAdapter = ArtistSongAdapter(this@ArtistDetailActivity, cabController, artist.songs)
+        with(viewBinding.list) {
+            setPadding(0, headerViewHeight, 0, 0)
+            setScrollViewCallbacks(observableScrollViewCallbacks)
+            addHeaderView(songListHeader)
+            adapter = songAdapter
+        }
+        window.decorView.findViewById<View>(android.R.id.content).post {
+            observableScrollViewCallbacks.onScrollChanged(-headerViewHeight, b = false, b2 = false)
+        }
     }
 
     private fun setUpAlbumRecyclerView() {
-        albumRecyclerView!!.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
-        albumAdapter = HorizontalAlbumAdapter(this, artist.albums, usePalette, cabController!!)
-        albumRecyclerView!!.adapter = albumAdapter
-        albumAdapter!!.registerAdapterDataObserver(object : AdapterDataObserver() {
+        albumRecyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+        albumAdapter = HorizontalAlbumAdapter(this, artist.albums, usePalette, cabController)
+        albumRecyclerView.adapter = albumAdapter
+        albumAdapter.registerAdapterDataObserver(object : AdapterDataObserver() {
             override fun onChanged() {
                 super.onChanged()
-                if (albumAdapter!!.itemCount == 0) finish()
+                if (albumAdapter.itemCount == 0) finish()
             }
         })
     }
 
-    private fun setUsePalette(usePalette: Boolean) {
-        albumAdapter!!.usePalette = usePalette
-        instance().albumArtistColoredFooters = usePalette
-        this.usePalette = usePalette
-    }
-
     private fun load() {
-        loader!!.loadDataSet(
-            this, { artist: Artist ->
-            setUpArtist(artist)
-        }, { songs: List<Song> ->
-            songAdapter!!.dataSet = songs
-        }
-        ) { albums: List<Album> ->
-            albumAdapter!!.dataSet = albums
-        }
+        model.loadDataSet(
+            this,
+            { artist: Artist ->
+                setUpArtist(artist)
+            },
+            { songs: List<Song> ->
+                songAdapter.dataSet = songs
+            },
+            { albums: List<Album> ->
+                albumAdapter.dataSet = albums
+            }
+        )
     }
 
     private fun loadBiography(lang: String? = Locale.getDefault().language) {
         biography = null
-        lastFMRestClient!!.apiService
+        lastFMRestClient.apiService
             .getArtistInfo(artist.name, lang, null)
             .enqueue(object : Callback<LastFmArtist?> {
                 override fun onResponse(
                     call: Call<LastFmArtist?>,
-                    response: Response<LastFmArtist?>
+                    response: Response<LastFmArtist?>,
                 ) {
-                    val lastFmArtist = response.body()
-                    if (lastFmArtist != null && lastFmArtist.artist != null) {
-                        val bioContent = lastFmArtist.artist.bio.content
-                        if (bioContent != null && bioContent.trim { it <= ' ' }.isNotEmpty()) {
-                            biography = Html.fromHtml(bioContent, Html.FROM_HTML_MODE_LEGACY)
+
+                    response.body()?.let { lastFmArtist ->
+                        if (lastFmArtist.artist != null) {
+                            val bioContent = lastFmArtist.artist.bio.content
+                            if (bioContent != null && bioContent.trim { it <= ' ' }.isNotEmpty()) {
+                                biography = Html.fromHtml(bioContent, Html.FROM_HTML_MODE_LEGACY)
+                            }
                         }
                     }
 
@@ -207,7 +205,7 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorHolder 
                 }
 
                 override fun onFailure(call: Call<LastFmArtist?>, t: Throwable) {
-                    t.printStackTrace()
+                    ErrorNotification.postErrorNotification(t, "Load ${artist.name} Fail")
                     biography = null
                 }
             })
@@ -260,7 +258,7 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorHolder 
         viewBinding.durationText.setTextColor(secondaryTextColor)
         viewBinding.songCountText.setTextColor(secondaryTextColor)
         viewBinding.albumCountText.setTextColor(secondaryTextColor)
-        cabController!!.cabColor = color
+        cabController.cabColor = color
         activityColor = color
     }
 
@@ -268,6 +266,9 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorHolder 
         setSupportActionBar(viewBinding.toolbar)
         supportActionBar?.title = null
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        // MultiSelectionCab
+        cab = createToolbarCab(this, R.id.cab_stub, R.id.multi_selection_cab)
+        cabController = MultiSelectionCabController(cab)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -278,7 +279,7 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorHolder 
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         val id = item.itemId
-        val songs = songAdapter!!.dataSet
+        val songs = songAdapter.dataSet
         when (id) {
             R.id.action_sleep_timer -> {
                 SleepTimerDialog().show(supportFragmentManager, "SET_SLEEP_TIMER")
@@ -301,7 +302,7 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorHolder 
                 return true
             }
             R.id.action_add_to_playlist -> {
-                create(songs).show(supportFragmentManager, "ADD_PLAYLIST")
+                AddToPlaylistDialog.create(songs).show(supportFragmentManager, "ADD_PLAYLIST")
                 return true
             }
             android.R.id.home -> {
@@ -313,8 +314,9 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorHolder 
                     biographyDialog = MaterialDialog(this)
                         .title(null, artist.name)
                         .positiveButton(android.R.string.ok, null, null)
-                    // set button color
-                    biographyDialog!!.getActionButton(WhichButton.POSITIVE).updateTextColor(ThemeColor.accentColor(this))
+                        .apply {
+                            getActionButton(WhichButton.POSITIVE).updateTextColor(accentColor)
+                        }
                 }
                 if (isAllowedToDownloadMetadata(this@ArtistDetailActivity)) { // wiki should've been already downloaded
                     if (biography != null) {
@@ -343,7 +345,7 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorHolder 
             }
             R.id.action_colored_footers -> {
                 item.isChecked = !item.isChecked
-                setUsePalette(item.isChecked)
+                usePalette = item.isChecked
                 return true
             }
             else -> return super.onOptionsItemSelected(item)
@@ -351,8 +353,8 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorHolder 
     }
 
     override fun onBackPressed() {
-        if (!cabController!!.dismiss()) {
-            albumRecyclerView!!.stopScroll()
+        if (!cabController.dismiss()) {
+            albumRecyclerView.stopScroll()
             super.onBackPressed()
         }
     }
@@ -381,8 +383,7 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorHolder 
         // albumAdapter.swapDataSet(artist.albums);
     }
 
-    private val artist: Artist
-        get() = if (loader!!._artist != null) loader!!.artist else Artist()
+    private val artist: Artist get() = model.artist
 
     private val observableScrollViewCallbacks: SimpleObservableScrollViewCallbacks = object : SimpleObservableScrollViewCallbacks() {
         override fun onScrollChanged(i: Int, b: Boolean, b2: Boolean) {
