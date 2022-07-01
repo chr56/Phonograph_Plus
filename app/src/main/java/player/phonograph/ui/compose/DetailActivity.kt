@@ -46,42 +46,30 @@ import player.phonograph.util.SongDetailUtil.loadArtwork
 import player.phonograph.util.SongDetailUtil.loadSong
 
 class DetailActivity : ComposeToolbarActivity() {
+    val model: DetailModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        val model: DetailModel by viewModels()
-
         super.onCreate(savedInstanceState)
-
-        val song = intent.extras?.getParcelable<Song>("song") ?: Song.EMPTY_SONG
-
-        model.info = loadSong(song)
-        model.artwork = loadArtwork(this, song = song, this::updateBarsColor)
+        model.song = intent.extras?.getParcelable("song") ?: Song.EMPTY_SONG
+        with(model) {
+            info = loadSong(song)
+            artwork = loadArtwork(this@DetailActivity, song = song) {
+                updateBarsColor()
+                model.isDefaultArtwork.value = false
+            }
+        }
     }
 
     @Composable
     override fun SetUpContent() {
         PhonographTheme {
-            val model: DetailModel by viewModels()
             DetailActivityContent(model)
         }
     }
 
-    override val title: String
-        get() = getString(R.string.label_details)
+    override val title: String get() = getString(R.string.label_details)
 
-    private val coroutines: CoroutineScope by lazy {
-        CoroutineScope(Dispatchers.IO)
-    }
-
-    private fun load(song: Song) {
-        coroutines.launch {
-            val model: DetailModel by viewModels()
-            model.info = loadSong(song)
-        }
-    }
-
-    fun updateBarsColor() {
-        val model: DetailModel by viewModels()
+    private fun updateBarsColor() {
         model.artwork.value?.paletteColor?.let { color ->
             if (color != 0) {
                 val colorInt = darkenColor(color)
@@ -96,63 +84,54 @@ class DetailActivity : ComposeToolbarActivity() {
 }
 
 class DetailModel : ViewModel() {
-    var info: SongInfo = SongInfo()
+    lateinit var song: Song
+    lateinit var info: SongInfo
     var artwork: MutableState<SongDetailUtil.BitmapPaletteWrapper?> = mutableStateOf(null)
+    var isDefaultArtwork = mutableStateOf(true)
 }
 
 @Composable
 private fun DetailActivityContent(viewModel: DetailModel) {
     val info by remember { mutableStateOf(viewModel.info) }
     val wrapper by remember { viewModel.artwork }
-
-    var (painter, paletteColor) = if (wrapper != null) {
-        Pair(
-            BitmapPainter(wrapper!!.bitmap.asImageBitmap()),
+    val isDefaultArtwork by remember { viewModel.isDefaultArtwork }
+    var paletteColor =
+        if (wrapper != null) {
             Color(wrapper!!.paletteColor)
-        )
-    } else {
-        Pair(
-            painterResource(R.drawable.default_album_art),
+        } else {
             MaterialTheme.colors.primaryVariant
-        )
-    }
+        }
 
     if (ColorTools.isColorRelevant(MaterialTheme.colors.surface, paletteColor)) {
         paletteColor = paletteColor.getReverseColor()
     }
-//    MaterialTheme.colors.surface.let { surfaceColor: Color ->
-//        if (surfaceColor.isColorLight()) {
-//            if (paletteColor.isColorLight()) paletteColor = paletteColor.getReverseColor()
-//        } else {
-//            if (!paletteColor.isColorLight()) paletteColor = paletteColor.getReverseColor()
-//        }
-//    }
 
-    val scrollState = rememberScrollState()
     Column(
         modifier = Modifier
-            .verticalScroll(state = scrollState)
+            .verticalScroll(state = rememberScrollState())
             .fillMaxSize()
     ) {
-        // Cover Artwork
-
         BoxWithConstraints(
             modifier = Modifier
                 .fillMaxSize()
                 .align(Alignment.CenterHorizontally)
                 .background(paletteColor)
         ) {
-            Image(
-                painter = painter,
-                contentDescription = "Cover",
-                modifier = Modifier
-                    .align(Alignment.Center)
-                    .sizeIn(
-                        maxWidth = maxWidth,
-                        maxHeight = maxWidth,
-                        minHeight = maxWidth.div(3)
-                    )
-            )
+            if (!isDefaultArtwork) {
+                // Cover Artwork
+                Image(
+                    painter = BitmapPainter(wrapper!!.bitmap.asImageBitmap()),
+                    contentDescription = "Cover",
+                    modifier = Modifier
+                        .align(Alignment.Center)
+                        .sizeIn(
+                            maxWidth = maxWidth,
+                            maxHeight = maxWidth,
+                            minHeight = maxWidth.div(3)
+                        )
+                )
+
+            }
         }
         // Text Information
         Column(modifier = Modifier.padding(horizontal = 8.dp)) {
@@ -161,20 +140,11 @@ private fun DetailActivityContent(viewModel: DetailModel) {
             Title(stringResource(R.string.file), color = paletteColor)
             Item(stringResource(id = R.string.label_file_name), info.fileName ?: "-")
             Item(stringResource(id = R.string.label_file_path), info.filePath ?: "-")
-            Item(
-                stringResource(id = R.string.label_track_length),
-                getReadableDurationString(info.trackLength ?: -1)
-            )
+            Item(stringResource(id = R.string.label_track_length), getReadableDurationString(info.trackLength ?: -1))
             Item(stringResource(id = R.string.label_file_format), info.fileFormat ?: "-")
-            Item(
-                stringResource(id = R.string.label_file_size),
-                getFileSizeString(info.fileSize ?: -1)
-            )
+            Item(stringResource(id = R.string.label_file_size), getFileSizeString(info.fileSize ?: -1))
             Item(stringResource(id = R.string.label_bit_rate), "${info.bitRate ?: "-"} kb/s")
-            Item(
-                stringResource(id = R.string.label_sampling_rate),
-                "${info.samplingRate ?: "-"} Hz"
-            )
+            Item(stringResource(id = R.string.label_sampling_rate), "${info.samplingRate ?: "-"} Hz")
             // Common Tag
             Spacer(modifier = Modifier.height(16.dp))
             Title(stringResource(R.string.music_tags), color = paletteColor)

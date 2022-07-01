@@ -23,4 +23,8 @@ object ColorTools {
             (abs(a.red - b.red) <= 0.08) and (abs(a.green - b.green) <= 0.08) and (abs(a.blue - b.blue) <= 0.08)
             )
     }
+
+    fun Color.makeHighContrastWith(other: Color): Color {
+        return if (isColorRelevant(this, other)) this.getReverseColor() else this
+    }
 }
