@@ -7,12 +7,14 @@ package player.phonograph.ui.activities
 import android.content.Context
 import android.text.Html
 import android.text.Spanned
+import android.text.SpannedString
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import java.util.*
 import kotlinx.coroutines.*
 import player.phonograph.App
+import player.phonograph.R
 import player.phonograph.mediastore.AlbumLoader
 import player.phonograph.model.Album
 import player.phonograph.model.Song
@@ -59,29 +61,32 @@ class AlbumDetailActivityViewModel : ViewModel() {
     fun loadWiki(
         context: Context,
         lang: String? = Locale.getDefault().language,
-        resultCallback: ((Spanned?) -> Unit)?
+        resultCallback: ((Spanned?, String?) -> Unit)?
     ) {
-        wikiText = null
         lastFMRestClient.apiService
             .getAlbumInfo(album.title, album.artistName, lang)
             .enqueue(object : Callback<LastFmAlbum?> {
                 override fun onResponse(call: Call<LastFmAlbum?>, response: Response<LastFmAlbum?>) {
                     response.body()?.let { lastFmAlbum ->
+                        // clear
+                        lastFMUrl = null
+                        wikiText = null
+                        // parse
                         lastFMUrl = lastFmAlbum.album?.url
-
-                        val wikiContent = lastFmAlbum.album?.wiki?.content
-                        if (wikiContent != null && wikiContent.trim { it <= ' ' }.isNotEmpty()) {
-                            wikiText = Html.fromHtml(wikiContent, Html.FROM_HTML_MODE_LEGACY)
+                        wikiText = lastFmAlbum.album?.wiki?.content?.trim().let { text: String? ->
+                            if (!text.isNullOrEmpty()) {
+                                Html.fromHtml(text, Html.FROM_HTML_MODE_LEGACY)
+                            } else {
+                                // If the "lang" parameter is set and no wiki is given, retry with default language
+                                if (lang != null) {
+                                    loadWiki(context, null, resultCallback)
+                                    return
+                                }
+                                SpannedString(context.getString(R.string.failed))
+                            }
                         }
                     }
-
-                    // If the "lang" parameter is set and no wiki is given, retry with default language
-                    if (wikiText == null && lang != null) {
-                        loadWiki(context, null, resultCallback)
-                        return
-                    }
-
-                    resultCallback?.invoke(wikiText)
+                    resultCallback?.invoke(wikiText, lastFMUrl)
                 }
 
                 override fun onFailure(call: Call<LastFmAlbum?>, t: Throwable) {

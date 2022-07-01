@@ -67,8 +67,6 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity() {
 
     private lateinit var adapter: SongDisplayAdapter
 
-    var wikiDialog: MaterialDialog? = null
-
     override fun onCreate(savedInstanceState: Bundle?) {
         val albumID = intent.extras!!.getLong(EXTRA_ALBUM_ID)
         model.albumId = albumID
@@ -187,13 +185,15 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity() {
 
                     override fun onResourceReady(
                         resource: BitmapPaletteWrapper,
-                        transition: Transition<in BitmapPaletteWrapper>?
+                        transition: Transition<in BitmapPaletteWrapper>?,
                     ) {
                         super.onResourceReady(resource, transition)
                         model.paletteColor.postValue(getColor(resource.palette, defaultColor))
                     }
                 })
-            if (isAllowedToDownloadMetadata(this)) model.loadWiki(context = this, lang = null, resultCallback = null)
+            if (isAllowedToDownloadMetadata(this)) model.loadWiki(context = this) { _, _ ->
+                isWikiPreLoaded = true
+            }
         }
     }
 
@@ -255,59 +255,50 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity() {
                 return true
             }
             R.id.action_wiki -> {
-                // init dialog
-                if (wikiDialog == null) {
-                    wikiDialog = MaterialDialog(this)
-                        .title(null, album.title)
-                        .message(R.string.loading)
-                        .positiveButton(android.R.string.ok, null, null)
-                        .apply {
-                            getActionButton(WhichButton.POSITIVE).updateTextColor(accentColor)
-                            getActionButton(WhichButton.NEGATIVE).updateTextColor(accentColor)
-                        }
-                }
-                // try to load
-                if (isAllowedToDownloadMetadata(this)) {
-                    // load from online
-                    model.loadWiki(this) { wiki: Spanned? ->
-                        // show dialog
-                        wikiDialog?.show {
-                            if (wiki != null) {
-                                message(text = wiki)
-                            } else {
-                                message(R.string.wiki_unavailable)
-                            }
-                            negativeButton(text = "Last.FM") {
-                                startActivity(
-                                    Intent(Intent.ACTION_VIEW).apply {
-                                        data = Uri.parse(model.lastFMUrl)
-                                        flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                                    }
-                                )
-                            }
-                        }
-                    }
+                if (isWikiPreLoaded) {
+                    showWikiDialog()
                 } else {
-                    // load locally
-                    wikiDialog?.show { // show dialog
-                        if (model.wikiText != null) {
-                            message(text = model.wikiText)
-                        } else {
-                            message(R.string.wiki_unavailable)
-                        }
-                        negativeButton(text = "Last.FM") {
-                            startActivity(
-                                Intent(Intent.ACTION_VIEW).apply {
-                                    data = Uri.parse(model.lastFMUrl)
-                                    flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                                }
-                            )
-                        }
+                    model.loadWiki(this) { wikiText: Spanned?, url: String? ->
+                        showWikiDialog(wikiText, url)
                     }
                 }
                 return true
             }
             else -> return super.onOptionsItemSelected(item)
+        }
+    }
+
+    private var isWikiPreLoaded = false
+    private val wikiDialog: MaterialDialog by lazy(LazyThreadSafetyMode.NONE) {
+        MaterialDialog(this)
+            .title(null, album.title)
+            .message(R.string.loading)
+            .positiveButton(android.R.string.ok, null, null)
+            .apply {
+                getActionButton(WhichButton.POSITIVE).updateTextColor(accentColor)
+                getActionButton(WhichButton.NEGATIVE).updateTextColor(accentColor)
+            }
+    }
+    private fun showWikiDialog(
+        wikiText: Spanned? = model.wikiText,
+        lastFMUrl: String? = model.lastFMUrl
+    ) {
+        wikiDialog.show {
+            if (lastFMUrl != null) {
+                negativeButton(text = "Last.FM") {
+                    startActivity(
+                        Intent(Intent.ACTION_VIEW).apply {
+                            data = Uri.parse(lastFMUrl)
+                            flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                        }
+                    )
+                }
+            }
+            if (wikiText != null) {
+                message(text = wikiText)
+            } else {
+                message(R.string.wiki_unavailable)
+            }
         }
     }
 
