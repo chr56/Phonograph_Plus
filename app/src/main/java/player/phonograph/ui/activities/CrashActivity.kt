@@ -12,8 +12,7 @@ import android.view.Menu
 import android.view.Menu.NONE
 import android.view.MenuItem
 import android.view.MenuItem.SHOW_AS_ACTION_NEVER
-import android.widget.Button
-import android.widget.TextView
+import androidx.appcompat.widget.Toolbar
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.WhichButton
 import com.afollestad.materialdialogs.actions.getActionButton
@@ -21,32 +20,33 @@ import kotlin.system.exitProcess
 import lib.phonograph.activity.ToolbarActivity
 import player.phonograph.KEY_STACK_TRACE
 import player.phonograph.R
+import player.phonograph.databinding.ActivityCrashBinding
 import player.phonograph.settings.SettingManager
 import player.phonograph.util.DeviceInfoUtil.getDeviceInfo
 
 class CrashActivity : ToolbarActivity() {
 
-    private lateinit var textView: TextView
-    private lateinit var copyButton: Button
-    private lateinit var resetAllButton: Button
+    private lateinit var binding: ActivityCrashBinding
 
     private fun setupTheme() {
         // statusbar theme
-        setStatusbarColor(resources.getColor(R.color.md_grey_800, theme))
+        updateAllColors(resources.getColor(R.color.md_grey_800, theme))
 
         // toolbar theme
-        val toolbar = findViewById<androidx.appcompat.widget.Toolbar>(R.id.toolbar)
-        toolbar.setBackgroundColor(resources.getColor(R.color.md_grey_700, theme))
-        toolbar.title = getString(R.string.crash)
-        setSupportActionBar(toolbar)
+        findViewById<Toolbar>(R.id.toolbar).apply {
+            setBackgroundColor(resources.getColor(R.color.md_grey_700, theme))
+            title = getString(R.string.crash)
+            setSupportActionBar(this)
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         autoSetStatusBarColor = false
+        autoSetNavigationBarColor = false
+        binding = ActivityCrashBinding.inflate(layoutInflater)
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_crash)
+        setContentView(binding.root)
         setupTheme()
-        textView = findViewById(R.id.crash_text)
 
         // stack trace text
         val stackTraceText: String = intent.getStringExtra(KEY_STACK_TRACE) ?: getString(R.string.empty)
@@ -56,44 +56,40 @@ class CrashActivity : ToolbarActivity() {
         val displayText = "Crash Report:\n\n$deviceInfo\n$stackTraceText\n"
 
         // display textview
-        textView.text = displayText
+        binding.crashText.text = displayText
 
         // button "copy to clipboard"
-        copyButton = findViewById(R.id.copy_to_clipboard)
-        copyButton.setOnClickListener {
+        binding.copyToClipboard.setOnClickListener {
             val clipboardManager = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
             val clipData = ClipData.newPlainText("CRASH", displayText)
             clipboardManager.setPrimaryClip(clipData)
         }
 
         // button "clear all preference"
-        resetAllButton = findViewById(R.id.action_clear_all_preference)
-        resetAllButton.setOnClickListener {
-            val dialog: MaterialDialog = MaterialDialog(this)
-                .title(R.string.clear_all_preference)
-                .message(R.string.clear_all_preference_msg)
-                .negativeButton(android.R.string.cancel)
-                .positiveButton(R.string.clear_all_preference) {
-                    SettingManager(this).clearAllPreference()
-
+        binding.actionClearAllPreference.setOnClickListener {
+            MaterialDialog(this).show {
+                title(R.string.clear_all_preference)
+                message(R.string.clear_all_preference_msg)
+                cancelOnTouchOutside(true)
+                negativeButton(android.R.string.cancel)
+                positiveButton(R.string.clear_all_preference) {
+                    SettingManager(this@CrashActivity).clearAllPreference()
                     Handler(Looper.getMainLooper()).postDelayed({
                         Process.killProcess(Process.myPid())
                         exitProcess(1)
                     }, 4000)
                 }
-                .cancelOnTouchOutside(true)
-                .apply {
+                apply {
                     getActionButton(WhichButton.POSITIVE).updateTextColor(getColor(R.color.md_red_A700))
                 }
-
-            dialog.show()
+            }
         }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menu.let { m ->
-            m.add(NONE, R.id.nav_settings, 0, getString(R.string.action_settings)).also {
-                it.setShowAsAction(SHOW_AS_ACTION_NEVER)
+        with(menu) {
+            add(NONE, R.id.nav_settings, 0, getString(R.string.action_settings)).apply {
+                setShowAsAction(SHOW_AS_ACTION_NEVER)
             }
         }
         return true
