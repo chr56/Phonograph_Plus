@@ -9,6 +9,9 @@ class LastFmArtist {
 
     class Artist {
         @Expose
+        var url: String? = null
+
+        @Expose
         var image: List<Image> = ArrayList()
 
         @Expose

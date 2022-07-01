@@ -2,6 +2,7 @@ package player.phonograph.ui.activities
 
 import android.content.Intent
 import android.graphics.PorterDuff
+import android.net.Uri
 import android.os.Bundle
 import android.text.Html
 import android.text.Spanned
@@ -78,6 +79,7 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorHolder 
 
     private var biography: Spanned? = null
     private var biographyDialog: MaterialDialog? = null
+    private var lastFmUrl: String? = null
 
     private lateinit var albumAdapter: HorizontalAlbumAdapter
     private lateinit var songAdapter: ArtistSongAdapter
@@ -177,6 +179,7 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorHolder 
                 ) {
 
                     response.body()?.let { lastFmArtist ->
+                        lastFmUrl = lastFmArtist.artist?.url
                         val bioContent = lastFmArtist.artist?.bio?.content
                         if (bioContent != null && bioContent.trim { it <= ' ' }.isNotEmpty()) {
                             biography = Html.fromHtml(bioContent, Html.FROM_HTML_MODE_LEGACY)
@@ -189,15 +192,20 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorHolder 
                         return
                     }
                     if (!isAllowedToDownloadMetadata(this@ArtistDetailActivity)) {
-                        if (biography != null) {
-                            biographyDialog!!.message(null, biography, null)
-                        } else {
-                            biographyDialog!!.dismiss()
-                            Toast.makeText(
-                                this@ArtistDetailActivity,
-                                resources.getString(R.string.biography_unavailable),
-                                Toast.LENGTH_SHORT
-                            ).show()
+                        with(biographyDialog!!) {
+                            if (biography != null) {
+                                message(text = biography)
+                            } else {
+                                message(R.string.biography_unavailable)
+                            }
+                            negativeButton(text = "Last.FM") {
+                                startActivity(
+                                    Intent(Intent.ACTION_VIEW).apply {
+                                        data = Uri.parse(lastFmUrl)
+                                        flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                                    }
+                                )
+                            }
                         }
                     }
                 }
@@ -314,15 +322,24 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorHolder 
                         .positiveButton(android.R.string.ok, null, null)
                         .apply {
                             getActionButton(WhichButton.POSITIVE).updateTextColor(accentColor)
+                            getActionButton(WhichButton.NEGATIVE).updateTextColor(accentColor)
                         }
                 }
                 if (isAllowedToDownloadMetadata(this@ArtistDetailActivity)) { // wiki should've been already downloaded
-                    if (biography != null) {
-                        biographyDialog!!.message(null, biography, null)
-                        biographyDialog!!.show()
-                    } else {
-                        Toast.makeText(this@ArtistDetailActivity, resources.getString(R.string.biography_unavailable), Toast.LENGTH_SHORT)
-                            .show()
+                    biographyDialog!!.show {
+                        if (biography != null) {
+                            message(text = biography)
+                        } else {
+                            message(R.string.biography_unavailable)
+                        }
+                        negativeButton(text = "Last.FM") {
+                            startActivity(
+                                Intent(Intent.ACTION_VIEW).apply {
+                                    data = Uri.parse(lastFmUrl)
+                                    flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                                }
+                            )
+                        }
                     }
                 } else { // force download
                     biographyDialog!!.show()
