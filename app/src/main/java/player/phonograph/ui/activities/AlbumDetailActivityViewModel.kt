@@ -7,15 +7,12 @@ package player.phonograph.ui.activities
 import android.content.Context
 import android.text.Html
 import android.text.Spanned
-import android.widget.Toast
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.afollestad.materialdialogs.MaterialDialog
 import java.util.*
 import kotlinx.coroutines.*
 import player.phonograph.App
-import player.phonograph.R
 import player.phonograph.mediastore.AlbumLoader
 import player.phonograph.model.Album
 import player.phonograph.model.Song
@@ -58,9 +55,12 @@ class AlbumDetailActivityViewModel : ViewModel() {
 
     private val lastFMRestClient: LastFMRestClient by lazy { LastFMRestClient(App.instance) }
     var wiki: Spanned? = null
-    var wikiDialog: MaterialDialog? = null
 
-    fun loadWiki(context: Context, lang: String? = Locale.getDefault().language) {
+    fun loadWiki(
+        context: Context,
+        lang: String? = Locale.getDefault().language,
+        resultCallback: ((Spanned?) -> Unit)?
+    ) {
         wiki = null
         lastFMRestClient.apiService
             .getAlbumInfo(album.title, album.artistName, lang)
@@ -77,18 +77,12 @@ class AlbumDetailActivityViewModel : ViewModel() {
 
                     // If the "lang" parameter is set and no wiki is given, retry with default language
                     if (wiki == null && lang != null) {
-                        loadWiki(context, null)
+                        loadWiki(context, null, resultCallback)
                         return
                     }
 
                     if (!Setting.isAllowedToDownloadMetadata(context)) {
-                        if (wiki != null) {
-                            wikiDialog!!.message(null, wiki, null)
-                        } else {
-                            wikiDialog!!.dismiss()
-                            Toast.makeText(context, context.getString(R.string.wiki_unavailable), Toast.LENGTH_SHORT)
-                                .show()
-                        }
+                        resultCallback?.invoke(wiki)
                     }
                 }
 

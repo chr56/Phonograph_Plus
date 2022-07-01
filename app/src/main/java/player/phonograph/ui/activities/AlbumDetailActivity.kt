@@ -3,6 +3,7 @@ package player.phonograph.ui.activities
 import android.content.Intent
 import android.graphics.drawable.Drawable
 import android.os.Bundle
+import android.text.Spanned
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -66,6 +67,8 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity() {
     private val model: AlbumDetailActivityViewModel by viewModels()
 
     private lateinit var adapter: SongDisplayAdapter
+
+    var wikiDialog: MaterialDialog? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         val albumID = intent.extras!!.getLong(EXTRA_ALBUM_ID)
@@ -191,7 +194,7 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity() {
                         model.paletteColor.postValue(getColor(resource.palette, defaultColor))
                     }
                 })
-            if (isAllowedToDownloadMetadata(this)) model.loadWiki(context = this)
+            if (isAllowedToDownloadMetadata(this)) model.loadWiki(context = this, lang = null, resultCallback = null)
         }
     }
 
@@ -253,24 +256,40 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity() {
                 return true
             }
             R.id.action_wiki -> {
-                if (model.wikiDialog == null) {
-                    model.wikiDialog = MaterialDialog(this)
+                // init dialog
+                if (wikiDialog == null) {
+                    wikiDialog = MaterialDialog(this)
                         .title(null, album.title)
+                        .message(R.string.loading)
                         .positiveButton(android.R.string.ok, null, null)
                         .apply {
                             getActionButton(WhichButton.POSITIVE).updateTextColor(accentColor)
                         }
                 }
+                // try to load
                 if (isAllowedToDownloadMetadata(this)) {
-                    model.wiki?.let { wiki ->
-                        with(model.wikiDialog!!) {
-                            message(null, wiki, null)
-                            show()
+                    // load from online
+                    model.loadWiki(this) { wiki: Spanned? ->
+                        // show dialog
+                        wikiDialog?.show {
+                            if (wiki != null) {
+                                message(text = wiki)
+                            } else {
+                                dismiss()
+                                Toast.makeText(this@AlbumDetailActivity, getString(R.string.wiki_unavailable), Toast.LENGTH_SHORT).show()
+                            }
                         }
-                    } ?: Toast.makeText(this, resources.getString(R.string.wiki_unavailable), Toast.LENGTH_SHORT).show()
+                    }
                 } else {
-                    model.wikiDialog!!.show()
-                    model.loadWiki(this)
+                    // load locally
+                    wikiDialog?.show { // show dialog
+                        if (model.wiki != null) {
+                            message(text = model.wiki)
+                        } else {
+                            dismiss()
+                            Toast.makeText(this@AlbumDetailActivity, resources.getString(R.string.wiki_unavailable), Toast.LENGTH_SHORT).show()
+                        }
+                    }
                 }
                 return true
             }
