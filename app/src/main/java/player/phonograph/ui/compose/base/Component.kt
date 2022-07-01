@@ -6,11 +6,8 @@ package player.phonograph.ui.compose.base
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.selection.SelectionContainer
-import androidx.compose.material.Button
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.material.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -112,6 +109,33 @@ fun BaseListEntry(
 // fun ReadonlyTextFieldItem(tag: String = "KeyName", value: String = "KeyValue") {
 //    BaseTextFieldItem(tag, value, true)
 // }
+//
+
+@Preview(showBackground = true)
+@Composable
+fun TailTextField(hint: String = "New Value", onValueChange: (String) -> Unit = {}) {
+    var value by remember { mutableStateOf("") }
+    TextField(
+        value = value,
+        placeholder = {
+            Text(text = hint)
+        },
+        onValueChange = {
+            value = it
+            onValueChange(it)
+        },
+        colors = TextFieldDefaults.textFieldColors(
+            backgroundColor = MaterialTheme.colors.background,
+            textColor = MaterialTheme.colors.onSurface,
+            focusedIndicatorColor = MaterialTheme.colors.onSurface.copy(alpha = TextFieldDefaults.IconOpacity),
+            unfocusedIndicatorColor = Color.Transparent,
+
+        ),
+        modifier = Modifier
+            .padding(horizontal = 8.dp, vertical = 8.dp)
+            .fillMaxWidth()
+    )
+}
 //
 // @Preview(showBackground = true)
 // @Composable
