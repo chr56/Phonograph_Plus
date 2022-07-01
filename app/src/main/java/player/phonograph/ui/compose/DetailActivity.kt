@@ -11,10 +11,16 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.compose.ui.res.stringResource
@@ -25,6 +31,7 @@ import player.phonograph.R
 import player.phonograph.glide.palette.BitmapPaletteWrapper
 import player.phonograph.model.Song
 import player.phonograph.ui.compose.base.ComposeToolbarActivity
+import player.phonograph.ui.compose.base.TailTextField
 import player.phonograph.ui.compose.base.Title
 import player.phonograph.ui.compose.base.VerticalTextItem
 import player.phonograph.ui.compose.theme.PhonographTheme
@@ -73,6 +80,22 @@ class DetailActivity : ComposeToolbarActivity() {
             appBarColor = Color(colorInt)
         }
     }
+
+    @Composable
+    override fun ToolbarActions(rowScope: RowScope) {
+        Button(
+            onClick = {
+                model.editMode.value = !model.editMode.value
+            },
+            elevation = ButtonDefaults.elevation(0.dp),
+            colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent)
+        ) {
+            Image(
+                imageVector = Icons.Filled.Edit, contentDescription = "Edit",
+                colorFilter = ColorFilter.tint(MaterialTheme.colors.surface)
+            )
+        }
+    }
 }
 
 class DetailModel : ViewModel() {
@@ -81,6 +104,8 @@ class DetailModel : ViewModel() {
     lateinit var artwork: MutableState<BitmapPaletteWrapper>
     lateinit var paletteColor: MutableState<Color>
     var isDefaultArtwork = mutableStateOf(true)
+
+    var editMode = mutableStateOf(false)
 }
 
 @Composable
@@ -89,6 +114,8 @@ private fun DetailActivityContent(viewModel: DetailModel) {
     val wrapper by remember { viewModel.artwork }
     val isDefaultArtwork by remember { viewModel.isDefaultArtwork }
     val paletteColor by remember { viewModel.paletteColor }
+
+    val editMode by remember { viewModel.editMode }
 
     Column(
         modifier = Modifier
@@ -130,22 +157,22 @@ private fun DetailActivityContent(viewModel: DetailModel) {
             // Common Tag
             Spacer(modifier = Modifier.height(16.dp))
             Title(stringResource(R.string.music_tags), color = paletteColor)
-            Item(stringResource(id = R.string.title), info.title ?: "-")
-            Item(stringResource(id = R.string.artist), info.artist ?: "-")
-            Item(stringResource(id = R.string.album), info.album ?: "-")
-            Item(stringResource(id = R.string.album_artist), info.albumArtist ?: "-")
-            Item(stringResource(id = R.string.composer), info.composer ?: "-")
-            Item(stringResource(id = R.string.lyricist), info.lyricist ?: "-")
-            Item(stringResource(id = R.string.year), info.year ?: "-")
-            Item(stringResource(id = R.string.genre), info.genre ?: "-")
-            Item(stringResource(id = R.string.track), info.track ?: "-")
+            Item(stringResource(id = R.string.title), info.title ?: "-", editMode)
+            Item(stringResource(id = R.string.artist), info.artist ?: "-", editMode)
+            Item(stringResource(id = R.string.album), info.album ?: "-", editMode)
+            Item(stringResource(id = R.string.album_artist), info.albumArtist ?: "-", editMode)
+            Item(stringResource(id = R.string.composer), info.composer ?: "-", editMode)
+            Item(stringResource(id = R.string.lyricist), info.lyricist ?: "-", editMode)
+            Item(stringResource(id = R.string.year), info.year ?: "-", editMode)
+            Item(stringResource(id = R.string.genre), info.genre ?: "-", editMode)
+            Item(stringResource(id = R.string.track), info.track ?: "-", editMode)
             // Other Tag
             Spacer(modifier = Modifier.height(8.dp))
             Title(stringResource(R.string.other_information))
             Item(stringResource(id = R.string.comment), info.comment ?: "-")
             info.otherTags?.let { tags ->
                 for (tag in tags) {
-                    Item(tag.key, tag.value)
+                    Item(tag.key, tag.value, editMode)
                 }
             }
             // Lyrics
@@ -158,8 +185,10 @@ private fun DetailActivityContent(viewModel: DetailModel) {
 
 @Preview(showBackground = true)
 @Composable
-fun Item(tag: String = "KeyName", value: String = "KeyValue") {
+fun Item(tag: String = "KeyName", value: String = "KeyValue", withEditor: Boolean = false) {
     VerticalTextItem(tag, value)
+    if (withEditor)
+        TailTextField(hint = value) { }
 }
 
 @Preview(showBackground = true)

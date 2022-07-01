@@ -40,7 +40,9 @@ abstract class ComposeToolbarActivity : ThemeActivity() {
                     PhonographAppBar(
                         title = { Text(text = title) },
                         backClick = backClick,
-                        actions = toolbarActions,
+                        actions = {
+                            ToolbarActions(this)
+                        },
                         backgroundColor = backgroundColor,
                     )
                     Surface(color = MaterialTheme.colors.background) {
@@ -59,7 +61,7 @@ abstract class ComposeToolbarActivity : ThemeActivity() {
     protected abstract val title: String
 
     protected open val backClick: (() -> (Unit)) = { onBackPressed() }
-    protected open val toolbarActions: @Composable (RowScope.() -> Unit) = {}
+    @Composable protected open fun ToolbarActions(rowScope: RowScope) {}
 
     protected open var appBarColor: Color
         get() = toolbarViewModel.appbarColor.value
