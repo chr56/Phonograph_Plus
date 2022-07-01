@@ -35,13 +35,6 @@ abstract class ToolbarActivity : PermissionActivity() {
         this.supportToolbar = toolbar
     }
 
-//    fun getToolbarBackgroundColor(toolbar: Toolbar?): Int {
-//        toolbar?.let {
-//            if (toolbar.background is ColorDrawable) return (toolbar.background as ColorDrawable).color
-//        }
-//        return 0
-//    }
-
     protected open fun getSupportActionBarView(ab: ActionBar?): Toolbar? {
         return if (ab == null || ab !is WindowDecorActionBar) null else try {
             var field = WindowDecorActionBar::class.java.getDeclaredField("mDecorToolbar")
@@ -51,21 +44,13 @@ abstract class ToolbarActivity : PermissionActivity() {
             field.isAccessible = true
             field[wrapper] as Toolbar
         } catch (t: Throwable) {
-            throw RuntimeException(
-                "Failed to retrieve Toolbar from AppCompat support ActionBar: " + t.message,
-                t
-            )
+            throw RuntimeException("Failed to retrieve Toolbar from AppCompat support ActionBar: ${t.message}", t)
         }
     }
 
     //
     // Menu (Tint)
     //
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-//        MenuTinter.setMenuColor(this, getToolbar(), menu!!, MaterialColor.White._1000.asColor) //todo
-        return super.onCreateOptionsMenu(menu)
-    }
-
     override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
         MenuTinter.applyOverflowMenuTint(this, supportToolbar, ThemeColor.accentColor(this))
         return super.onPrepareOptionsMenu(menu)
@@ -82,5 +67,6 @@ abstract class ToolbarActivity : PermissionActivity() {
         }
         return super.dispatchKeyEvent(event)
     }
+
     protected open fun showOverflowMenu() {}
 }
