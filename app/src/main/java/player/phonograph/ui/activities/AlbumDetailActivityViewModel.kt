@@ -67,8 +67,8 @@ class AlbumDetailActivityViewModel : ViewModel() {
             .enqueue(object : Callback<LastFmAlbum?> {
                 override fun onResponse(call: Call<LastFmAlbum?>, response: Response<LastFmAlbum?>) {
                     response.body()?.let { lastFmAlbum ->
-                        if (lastFmAlbum.album != null && lastFmAlbum.album.wiki != null) {
-                            val wikiContent = lastFmAlbum.album.wiki.content
+                        if (lastFmAlbum.album?.wiki != null) {
+                            val wikiContent = lastFmAlbum.album?.wiki?.content
                             if (wikiContent != null && wikiContent.trim { it <= ' ' }.isNotEmpty()) {
                                 wiki = Html.fromHtml(wikiContent, Html.FROM_HTML_MODE_LEGACY)
                             }
