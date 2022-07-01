@@ -2,12 +2,12 @@ package player.phonograph.ui.activities
 
 import android.content.Intent
 import android.graphics.drawable.Drawable
+import android.net.Uri
 import android.os.Bundle
 import android.text.Spanned
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -18,7 +18,6 @@ import com.afollestad.materialdialogs.actions.getActionButton
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.transition.Transition
 import com.google.android.material.appbar.AppBarLayout
-import java.util.*
 import lib.phonograph.cab.*
 import player.phonograph.R
 import player.phonograph.adapter.base.MultiSelectionCabController
@@ -264,6 +263,7 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity() {
                         .positiveButton(android.R.string.ok, null, null)
                         .apply {
                             getActionButton(WhichButton.POSITIVE).updateTextColor(accentColor)
+                            getActionButton(WhichButton.NEGATIVE).updateTextColor(accentColor)
                         }
                 }
                 // try to load
@@ -275,19 +275,33 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity() {
                             if (wiki != null) {
                                 message(text = wiki)
                             } else {
-                                dismiss()
-                                Toast.makeText(this@AlbumDetailActivity, getString(R.string.wiki_unavailable), Toast.LENGTH_SHORT).show()
+                                message(R.string.wiki_unavailable)
+                            }
+                            negativeButton(text = "Last.FM") {
+                                startActivity(
+                                    Intent(Intent.ACTION_VIEW).apply {
+                                        data = Uri.parse(model.lastFMUrl)
+                                        flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                                    }
+                                )
                             }
                         }
                     }
                 } else {
                     // load locally
                     wikiDialog?.show { // show dialog
-                        if (model.wiki != null) {
-                            message(text = model.wiki)
+                        if (model.wikiText != null) {
+                            message(text = model.wikiText)
                         } else {
-                            dismiss()
-                            Toast.makeText(this@AlbumDetailActivity, resources.getString(R.string.wiki_unavailable), Toast.LENGTH_SHORT).show()
+                            message(R.string.wiki_unavailable)
+                        }
+                        negativeButton(text = "Last.FM") {
+                            startActivity(
+                                Intent(Intent.ACTION_VIEW).apply {
+                                    data = Uri.parse(model.lastFMUrl)
+                                    flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                                }
+                            )
                         }
                     }
                 }
