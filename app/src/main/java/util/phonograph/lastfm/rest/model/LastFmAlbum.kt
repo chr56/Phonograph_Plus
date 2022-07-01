@@ -8,6 +8,10 @@ class LastFmAlbum {
     var album: Album? = null
 
     class Album {
+
+        @Expose
+        var url: String? = null
+
         @Expose
         var image: List<Image> = ArrayList()
 
