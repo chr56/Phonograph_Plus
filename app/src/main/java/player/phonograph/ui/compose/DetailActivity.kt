@@ -19,19 +19,16 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.compose.ui.graphics.toArgb
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import player.phonograph.R
 import player.phonograph.glide.palette.BitmapPaletteWrapper
 import player.phonograph.model.Song
-import player.phonograph.ui.compose.base.Title
+import player.phonograph.ui.compose.ColorTools.makeHighContrastWith
 import player.phonograph.ui.compose.base.ComposeToolbarActivity
+import player.phonograph.ui.compose.base.Title
 import player.phonograph.ui.compose.base.VerticalTextItem
 import player.phonograph.ui.compose.theme.PhonographTheme
 import player.phonograph.util.MusicUtil
@@ -43,112 +40,88 @@ import util.mdcolor.ColorUtil
 import util.mdcolor.pref.ThemeColor
 
 class DetailActivity : ComposeToolbarActivity() {
+    val model: DetailModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val song = intent.extras?.getParcelable<Song>("song")
-
-        val model: DetailModel by viewModels()
-
-        song?.let {
-            model.info = loadSong(song)
-            model.artwork = loadArtwork(this, song = song, this::updateBarsColor)
+        model.song = intent.extras?.getParcelable("song")!!
+        with(model) {
+            info = loadSong(song)
+            artwork = loadArtwork(this@DetailActivity, song = song) {
+                updateBarsColor()
+                model.isDefaultArtwork.value = false
+            }
         }
     }
 
     @Composable
     override fun SetUpContent() {
         PhonographTheme {
-            val model: DetailModel by viewModels()
             DetailActivityContent(model)
         }
     }
 
-    override val title: String
-        get() = getString(R.string.label_details)
+    override val title: String get() = getString(R.string.label_details)
 
-    private val coroutines: CoroutineScope by lazy {
-        CoroutineScope(Dispatchers.IO)
-    }
-    private fun load(song: Song) {
-        coroutines.launch {
-            val model: DetailModel by viewModels()
-            model.info = loadSong(song)
-        }
-    }
-
-    fun updateBarsColor() {
+    private fun updateBarsColor() {
         val model: DetailModel by viewModels()
-        model.artwork.value?.palette?.let { palette ->
+        model.artwork.value.palette.let { palette ->
             val colorInt = palette
                 .getVibrantColor(ThemeColor.primaryColor(this)).let { ColorUtil.darkenColor(it) }
+            val darkColorInt = ColorUtil.darkenColor(colorInt)
+            setNavigationbarColor(darkColorInt)
+            setStatusbarColor(darkColorInt)
             appBarColor = Color(colorInt)
-            window.statusBarColor = ColorUtil.darkenColor(colorInt)
-            if (ThemeColor.coloredNavigationBar(this)) {
-                window.navigationBarColor = ColorUtil.darkenColor(colorInt)
-            }
         }
     }
 }
 
 class DetailModel : ViewModel() {
-    var info: SongInfo = SongInfo()
-    var artwork: MutableState<BitmapPaletteWrapper?> = mutableStateOf(null)
+    lateinit var song: Song
+    lateinit var info: SongInfo
+    lateinit var artwork: MutableState<BitmapPaletteWrapper>
+    var isDefaultArtwork = mutableStateOf(true)
 }
 
 @Composable
 private fun DetailActivityContent(viewModel: DetailModel) {
     val info by remember { mutableStateOf(viewModel.info) }
     val wrapper by remember { viewModel.artwork }
+    val isDefaultArtwork by remember { viewModel.isDefaultArtwork }
 
-    var (painter, paletteColor) = if (wrapper != null) {
-        Pair(
-            BitmapPainter(wrapper!!.bitmap.asImageBitmap()),
-            Color(wrapper!!.palette.getVibrantColor(MaterialTheme.colors.primaryVariant.toArgb()))
-        )
-    } else {
-        Pair(
-            painterResource(R.drawable.default_album_art),
-            MaterialTheme.colors.primaryVariant
+    val shiftedColor = MaterialTheme.colors.primaryVariant.makeHighContrastWith(MaterialTheme.colors.surface)
+
+    val paletteColor: Color by remember {
+        mutableStateOf(
+            if (!viewModel.isDefaultArtwork.value) Color(wrapper.palette.getVibrantColor(shiftedColor.toArgb()))
+            else shiftedColor
         )
     }
 
-    if (ColorTools.isColorRelevant(MaterialTheme.colors.surface, paletteColor)) {
-        paletteColor = paletteColor.getReverseColor()
-    }
-//    MaterialTheme.colors.surface.let { surfaceColor: Color ->
-//        if (surfaceColor.isColorLight()) {
-//            if (paletteColor.isColorLight()) paletteColor = paletteColor.getReverseColor()
-//        } else {
-//            if (!paletteColor.isColorLight()) paletteColor = paletteColor.getReverseColor()
-//        }
-//    }
-
-    val scrollState = rememberScrollState()
     Column(
         modifier = Modifier
-            .verticalScroll(state = scrollState)
+            .verticalScroll(state = rememberScrollState())
             .fillMaxSize()
     ) {
         // Cover Artwork
-
-        BoxWithConstraints(
-            modifier = Modifier
-                .fillMaxSize()
-                .align(Alignment.CenterHorizontally)
-                .background(paletteColor)
-        ) {
-
-            Image(
-                painter = painter,
-                contentDescription = "Cover",
-                modifier = Modifier.align(Alignment.Center)
-                    .sizeIn(
-                        maxWidth = maxWidth,
-                        maxHeight = maxWidth,
-                        minHeight = maxWidth.div(3)
-                    )
-            )
+        if (!isDefaultArtwork) {
+            BoxWithConstraints(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .align(Alignment.CenterHorizontally)
+                    .background(paletteColor)
+            ) {
+                Image(
+                    painter = BitmapPainter(wrapper.bitmap.asImageBitmap()),
+                    contentDescription = "Cover",
+                    modifier = Modifier.align(Alignment.Center)
+                        .sizeIn(
+                            maxWidth = maxWidth,
+                            maxHeight = maxWidth,
+                            minHeight = maxWidth.div(3)
+                        )
+                )
+            }
         }
         // Text Information
         Column(modifier = Modifier.padding(horizontal = 8.dp)) {
