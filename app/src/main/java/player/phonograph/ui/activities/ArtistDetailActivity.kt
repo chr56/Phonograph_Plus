@@ -177,11 +177,9 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorHolder 
                 ) {
 
                     response.body()?.let { lastFmArtist ->
-                        if (lastFmArtist.artist != null) {
-                            val bioContent = lastFmArtist.artist.bio.content
-                            if (bioContent != null && bioContent.trim { it <= ' ' }.isNotEmpty()) {
-                                biography = Html.fromHtml(bioContent, Html.FROM_HTML_MODE_LEGACY)
-                            }
+                        val bioContent = lastFmArtist.artist?.bio?.content
+                        if (bioContent != null && bioContent.trim { it <= ' ' }.isNotEmpty()) {
+                            biography = Html.fromHtml(bioContent, Html.FROM_HTML_MODE_LEGACY)
                         }
                     }
 

@@ -27,7 +27,7 @@ object LastFMUtil {
                 }
             }
             if (size != null) {
-                imageUrls[size] = image.text
+                imageUrls[size] = image.text!!
             }
         }
         return getLargestImageUrl(imageUrls)
