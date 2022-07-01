@@ -11,14 +11,12 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.painter.BitmapPainter
-import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -26,7 +24,6 @@ import androidx.lifecycle.ViewModel
 import player.phonograph.R
 import player.phonograph.glide.palette.BitmapPaletteWrapper
 import player.phonograph.model.Song
-import player.phonograph.ui.compose.ColorTools.makeHighContrastWith
 import player.phonograph.ui.compose.base.ComposeToolbarActivity
 import player.phonograph.ui.compose.base.Title
 import player.phonograph.ui.compose.base.VerticalTextItem
@@ -45,11 +42,13 @@ class DetailActivity : ComposeToolbarActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         model.song = intent.extras?.getParcelable("song")!!
+        model.paletteColor = mutableStateOf(Color(primaryColor))
         with(model) {
             info = loadSong(song)
             artwork = loadArtwork(this@DetailActivity, song = song) {
                 updateBarsColor()
-                model.isDefaultArtwork.value = false
+                isDefaultArtwork.value = false
+                paletteColor.value = Color(it.palette.getVibrantColor(primaryColor))
             }
         }
     }
@@ -80,6 +79,7 @@ class DetailModel : ViewModel() {
     lateinit var song: Song
     lateinit var info: SongInfo
     lateinit var artwork: MutableState<BitmapPaletteWrapper>
+    lateinit var paletteColor: MutableState<Color>
     var isDefaultArtwork = mutableStateOf(true)
 }
 
@@ -88,15 +88,7 @@ private fun DetailActivityContent(viewModel: DetailModel) {
     val info by remember { mutableStateOf(viewModel.info) }
     val wrapper by remember { viewModel.artwork }
     val isDefaultArtwork by remember { viewModel.isDefaultArtwork }
-
-    val shiftedColor = MaterialTheme.colors.primaryVariant.makeHighContrastWith(MaterialTheme.colors.surface)
-
-    val paletteColor: Color by remember {
-        mutableStateOf(
-            if (!viewModel.isDefaultArtwork.value) Color(wrapper.palette.getVibrantColor(shiftedColor.toArgb()))
-            else shiftedColor
-        )
-    }
+    val paletteColor by remember { viewModel.paletteColor }
 
     Column(
         modifier = Modifier
