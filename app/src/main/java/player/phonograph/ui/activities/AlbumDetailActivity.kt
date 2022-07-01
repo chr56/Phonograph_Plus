@@ -3,8 +3,6 @@ package player.phonograph.ui.activities
 import android.content.Intent
 import android.graphics.drawable.Drawable
 import android.os.Bundle
-import android.text.Html
-import android.text.Spanned
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -47,15 +45,10 @@ import player.phonograph.util.NavigationUtil.goToArtist
 import player.phonograph.util.NavigationUtil.openEqualizer
 import player.phonograph.util.PhonographColorUtil.getColor
 import player.phonograph.util.ViewUtil.setUpFastScrollRecyclerViewColor
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import util.mdcolor.ColorUtil
 import util.mdcolor.pref.ThemeColor
 import util.mddesign.core.Themer
 import util.mddesign.util.MaterialColorHelper
-import util.phonograph.lastfm.rest.LastFMRestClient
-import util.phonograph.lastfm.rest.model.LastFmAlbum
 import util.phonograph.tageditor.AbsTagEditorActivity
 import util.phonograph.tageditor.AlbumTagEditorActivity
 
@@ -73,10 +66,6 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity() {
     private val model: AlbumDetailActivityViewModel by viewModels()
 
     private lateinit var adapter: SongDisplayAdapter
-
-    private val lastFMRestClient: LastFMRestClient by lazy { LastFMRestClient(this) }
-    private var wiki: Spanned? = null
-    private var wikiDialog: MaterialDialog? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         val albumID = intent.extras!!.getLong(EXTRA_ALBUM_ID)
@@ -202,7 +191,7 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity() {
                         model.paletteColor.postValue(getColor(resource.palette, defaultColor))
                     }
                 })
-            if (isAllowedToDownloadMetadata(this)) loadWiki()
+            if (isAllowedToDownloadMetadata(this)) model.loadWiki(context = this)
         }
     }
 
@@ -217,42 +206,6 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity() {
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_album_detail, menu)
         return super.onCreateOptionsMenu(menu)
-    }
-
-    private fun loadWiki(lang: String? = Locale.getDefault().language) {
-        wiki = null
-        lastFMRestClient.apiService
-            .getAlbumInfo(album.title, album.artistName, lang)
-            .enqueue(object : Callback<LastFmAlbum?> {
-                override fun onResponse(call: Call<LastFmAlbum?>, response: Response<LastFmAlbum?>) {
-                    val lastFmAlbum = response.body()
-                    if (lastFmAlbum != null && lastFmAlbum.album != null && lastFmAlbum.album.wiki != null) {
-                        val wikiContent = lastFmAlbum.album.wiki.content
-                        if (wikiContent != null && wikiContent.trim { it <= ' ' }.isNotEmpty()) {
-                            wiki = Html.fromHtml(wikiContent, Html.FROM_HTML_MODE_LEGACY)
-                        }
-                    }
-
-                    // If the "lang" parameter is set and no wiki is given, retry with default language
-                    if (wiki == null && lang != null) {
-                        loadWiki(null)
-                        return
-                    }
-                    if (!isAllowedToDownloadMetadata(this@AlbumDetailActivity)) {
-                        if (wiki != null) {
-                            wikiDialog!!.message(null, wiki, null)
-                        } else {
-                            wikiDialog!!.dismiss()
-                            Toast.makeText(this@AlbumDetailActivity, resources.getString(R.string.wiki_unavailable), Toast.LENGTH_SHORT)
-                                .show()
-                        }
-                    }
-                }
-
-                override fun onFailure(call: Call<LastFmAlbum?>, t: Throwable) {
-                    t.printStackTrace()
-                }
-            })
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -300,23 +253,24 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity() {
                 return true
             }
             R.id.action_wiki -> {
-                if (wikiDialog == null) {
-                    wikiDialog = MaterialDialog(this)
+                if (model.wikiDialog == null) {
+                    model.wikiDialog = MaterialDialog(this)
                         .title(null, album.title)
                         .positiveButton(android.R.string.ok, null, null)
-                    // set button color
-                    wikiDialog!!.getActionButton(WhichButton.POSITIVE).updateTextColor(ThemeColor.accentColor(this))
+                        .apply {
+                            getActionButton(WhichButton.POSITIVE).updateTextColor(accentColor)
+                        }
                 }
                 if (isAllowedToDownloadMetadata(this)) {
-                    if (wiki != null) {
-                        wikiDialog!!.message(null, wiki, null)
-                        wikiDialog!!.show()
-                    } else {
-                        Toast.makeText(this, resources.getString(R.string.wiki_unavailable), Toast.LENGTH_SHORT).show()
-                    }
+                    model.wiki?.let { wiki ->
+                        with(model.wikiDialog!!) {
+                            message(null, wiki, null)
+                            show()
+                        }
+                    } ?: Toast.makeText(this, resources.getString(R.string.wiki_unavailable), Toast.LENGTH_SHORT).show()
                 } else {
-                    wikiDialog!!.show()
-                    loadWiki()
+                    model.wikiDialog!!.show()
+                    model.loadWiki(this)
                 }
                 return true
             }

@@ -5,13 +5,27 @@
 package player.phonograph.ui.activities
 
 import android.content.Context
+import android.text.Html
+import android.text.Spanned
+import android.widget.Toast
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.afollestad.materialdialogs.MaterialDialog
+import java.util.*
 import kotlinx.coroutines.*
+import player.phonograph.App
+import player.phonograph.R
 import player.phonograph.mediastore.AlbumLoader
 import player.phonograph.model.Album
 import player.phonograph.model.Song
+import player.phonograph.notification.ErrorNotification
+import player.phonograph.settings.Setting
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import util.phonograph.lastfm.rest.LastFMRestClient
+import util.phonograph.lastfm.rest.model.LastFmAlbum
 
 class AlbumDetailActivityViewModel : ViewModel() {
 
@@ -41,4 +55,46 @@ class AlbumDetailActivityViewModel : ViewModel() {
     }
 
     val paletteColor: MutableLiveData<Int> = MutableLiveData(0)
+
+    private val lastFMRestClient: LastFMRestClient by lazy { LastFMRestClient(App.instance) }
+    var wiki: Spanned? = null
+    var wikiDialog: MaterialDialog? = null
+
+    fun loadWiki(context: Context, lang: String? = Locale.getDefault().language) {
+        wiki = null
+        lastFMRestClient.apiService
+            .getAlbumInfo(album.title, album.artistName, lang)
+            .enqueue(object : Callback<LastFmAlbum?> {
+                override fun onResponse(call: Call<LastFmAlbum?>, response: Response<LastFmAlbum?>) {
+                    response.body()?.let { lastFmAlbum ->
+                        if (lastFmAlbum.album != null && lastFmAlbum.album.wiki != null) {
+                            val wikiContent = lastFmAlbum.album.wiki.content
+                            if (wikiContent != null && wikiContent.trim { it <= ' ' }.isNotEmpty()) {
+                                wiki = Html.fromHtml(wikiContent, Html.FROM_HTML_MODE_LEGACY)
+                            }
+                        }
+                    }
+
+                    // If the "lang" parameter is set and no wiki is given, retry with default language
+                    if (wiki == null && lang != null) {
+                        loadWiki(context, null)
+                        return
+                    }
+
+                    if (!Setting.isAllowedToDownloadMetadata(context)) {
+                        if (wiki != null) {
+                            wikiDialog!!.message(null, wiki, null)
+                        } else {
+                            wikiDialog!!.dismiss()
+                            Toast.makeText(context, context.getString(R.string.wiki_unavailable), Toast.LENGTH_SHORT)
+                                .show()
+                        }
+                    }
+                }
+
+                override fun onFailure(call: Call<LastFmAlbum?>, t: Throwable) {
+                    ErrorNotification.postErrorNotification(t, "Load ${album.title} Fail")
+                }
+            })
+    }
 }
