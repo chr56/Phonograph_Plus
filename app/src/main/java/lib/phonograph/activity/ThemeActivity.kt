@@ -10,6 +10,8 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.view.View
+import android.view.View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+import android.view.View.SYSTEM_UI_FLAG_LAYOUT_STABLE
 import androidx.annotation.ColorInt
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
@@ -57,7 +59,7 @@ abstract class ThemeActivity : AppCompatActivity() {
     protected var useCustomStatusBar: Boolean = true
         set(value) {
             field = value
-            setFullScreenAndIncludeStatusBar()
+            if (value) setFullScreenAndIncludeStatusBar()
         }
 
     /** Must call before super */
@@ -112,8 +114,14 @@ abstract class ThemeActivity : AppCompatActivity() {
     // User Interface
     //
     private fun setFullScreenAndIncludeStatusBar() {
+        @Suppress("DEPRECATION")
         window.decorView.systemUiVisibility =
-            (View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN)
+            (SYSTEM_UI_FLAG_LAYOUT_STABLE or SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN)
+    }
+    protected fun restoreNotFullsScreen() {
+        @Suppress("DEPRECATION")
+        window.decorView.systemUiVisibility -=
+            (SYSTEM_UI_FLAG_LAYOUT_STABLE or SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN)
     }
 
     //
