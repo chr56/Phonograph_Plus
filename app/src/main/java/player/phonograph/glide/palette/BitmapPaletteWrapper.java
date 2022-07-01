@@ -25,4 +25,8 @@ public class BitmapPaletteWrapper {
     public Palette getPalette() {
         return mPalette;
     }
+
+    public static BitmapPaletteWrapper from(@NonNull Bitmap bitmap) {
+        return new BitmapPaletteWrapper(bitmap, Palette.from(bitmap).generate());
+    }
 }
