@@ -31,6 +31,7 @@ import player.phonograph.R
 import player.phonograph.glide.palette.BitmapPaletteWrapper
 import player.phonograph.model.Song
 import player.phonograph.ui.compose.base.Title
+import player.phonograph.ui.compose.base.ComposeToolbarActivity
 import player.phonograph.ui.compose.base.VerticalTextItem
 import player.phonograph.ui.compose.theme.PhonographTheme
 import player.phonograph.util.MusicUtil
@@ -41,7 +42,7 @@ import player.phonograph.util.SongDetailUtil.loadSong
 import util.mdcolor.ColorUtil
 import util.mdcolor.pref.ThemeColor
 
-class DetailActivity : ToolbarActivity() {
+class DetailActivity : ComposeToolbarActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,7 +57,7 @@ class DetailActivity : ToolbarActivity() {
     }
 
     @Composable
-    override fun Content() {
+    override fun SetUpContent() {
         PhonographTheme {
             val model: DetailModel by viewModels()
             DetailActivityContent(model)

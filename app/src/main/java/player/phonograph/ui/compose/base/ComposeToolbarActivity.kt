@@ -1,11 +1,10 @@
 /*
- * Copyright (c) 2022 chr_56 & Abou Zeid (kabouzeid) (original author)
+ * Copyright (c) 2022 chr_56
  */
 
-package player.phonograph.ui.compose
+package player.phonograph.ui.compose.base
 
 import android.os.Bundle
-import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.Column
@@ -22,50 +21,49 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
+import lib.phonograph.activity.ThemeActivity
 import player.phonograph.App
 import player.phonograph.ui.compose.theme.PhonographTheme
 import util.mdcolor.ColorUtil
 import util.mdcolor.pref.ThemeColor
 
-abstract class ToolbarActivity : ComponentActivity() {
+abstract class ComposeToolbarActivity : ThemeActivity() {
+    private val toolbarViewModel: ToolbarViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
+        useCustomStatusBar = false
         super.onCreate(savedInstanceState)
-
-        window.statusBarColor = ColorUtil.darkenColor(ThemeColor.statusBarColor(this))
-        window.navigationBarColor = ThemeColor.navigationBarColor(this)
 
         setContent {
             PhonographTheme {
-                val model: ToolbarViewModel by viewModels()
-                val backgroundColor by remember {
-                    model.appbarColor
-                }
+                val backgroundColor by remember { toolbarViewModel.appbarColor }
                 Column(modifier = Modifier.fillMaxSize()) {
                     PhonographAppBar(
-                        title = title,
+                        title = { Text(text = title) },
                         backClick = backClick,
                         actions = toolbarActions,
                         backgroundColor = backgroundColor,
                     )
                     Surface(color = MaterialTheme.colors.background) {
-                        Content()
+                        SetUpContent()
                     }
                 }
             }
         }
     }
 
+    /**
+     * Compose the main user interface (except Toolbar)
+     */
     @Composable
-    protected abstract fun Content()
+    protected abstract fun SetUpContent()
     protected abstract val title: String
 
     protected open val backClick: (() -> (Unit)) = { onBackPressed() }
     protected open val toolbarActions: @Composable (RowScope.() -> Unit) = {}
 
     protected open var appBarColor: Color
-        get() = ViewModelProvider(this).get(ToolbarViewModel::class.java).appbarColor.value
-        set(value) { ViewModelProvider(this).get(ToolbarViewModel::class.java).appbarColor.value = value }
+        get() = toolbarViewModel.appbarColor.value
+        set(value) { toolbarViewModel.appbarColor.value = value }
 }
 
 class ToolbarViewModel : ViewModel() {
@@ -74,7 +72,7 @@ class ToolbarViewModel : ViewModel() {
 
 @Composable
 private fun PhonographAppBar(
-    title: String,
+    title: @Composable () -> Unit,
     backgroundColor: Color,
     backClick: (() -> Unit) = { /* Empty*/ },
     actions: @Composable (RowScope.() -> Unit) = { /* Empty*/ }
@@ -86,7 +84,7 @@ private fun PhonographAppBar(
         )
     }
     TopAppBar(
-        title = { Text(title) },
+        title = title,
         navigationIcon = {
             IconButton(onClick = backClick) {
                 Icon(Icons.Default.ArrowBack, contentDescription = null)
