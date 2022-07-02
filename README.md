@@ -72,13 +72,19 @@ Translate Phonograph Plus into your language -> [crowdin](https://crowdin.com/pr
 
 - [x] 重构文件视图
 
-- [x] 重构媒体库UI ⭕
+- [x] 重构媒体库UI
+
+- [x] 实现更好的播放频率计数
 
 - [ ] 完成 Readme . md
 
-- [ ] 重构后台音乐服务 (❗WIP)
-  
 - [ ] 将歌曲“详情” 迁移至 Compose ❗WIP (基本信息显示)
+
+- [ ] 支持白名单机制
+
+- [ ] 自定义歌曲点击行为
+
+- [ ] 重构后台音乐服务 (❗WIP)
   
 - [ ] 重构歌曲封面加载Glide模块
 
@@ -89,8 +95,6 @@ Translate Phonograph Plus into your language -> [crowdin](https://crowdin.com/pr
 - [ ] 尝试适配 FlyMe / EvolutionX(等一系类原生)状态栏歌词
 
 - [ ] 自建本地媒体数据库(使用 AndroidX Room) ⭕, 并解析 Tag 中 ‘;’, '&', '/', '\', ',' , 改进搜索
-
-- [ ] 实现更好的播放频率计数, 统计听歌频率
 
 - [ ]  ...
 
@@ -111,6 +115,8 @@ Translate Phonograph Plus into your language -> [crowdin](https://crowdin.com/pr
 - [ ] <del>完美适配 Android11+ 的文件访问(❌)</del>
 
 - [ ] <del>部分重构(所谓的)"主题引擎"</del>
+
+- [ ] <del>统计听歌频率</del>
 
 - [ ] ...
 
