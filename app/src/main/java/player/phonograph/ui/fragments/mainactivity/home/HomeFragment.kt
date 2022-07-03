@@ -15,6 +15,7 @@ import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.graphics.BlendModeColorFilterCompat
 import androidx.core.graphics.BlendModeCompat
 import androidx.viewpager2.widget.ViewPager2
+import com.github.chr56.android.menu_dsl.MenuContext
 import com.github.chr56.android.menu_dsl.MenuItemCfg
 import com.github.chr56.android.menu_dsl.add
 import com.google.android.material.appbar.AppBarLayout
@@ -137,12 +138,12 @@ class HomeFragment : AbsMainActivityFragment(), MainActivity.MainActivityFragmen
     val popup: ListOptionsPopup by lazy { ListOptionsPopup(mainActivity) }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        menu.add {
+        menu.add(MenuContext(rootMenu = menu, context), fun MenuItemCfg.() {
             itemId = R.id.action_search
             titleRes(R.string.action_search, mainActivity)
             icon = mainActivity.getTintedDrawable(R.drawable.ic_search_white_24dp, Color.WHITE)
             showAsActionFlag = MenuItemCfg.SHOW_AS_ACTION_ALWAYS
-        }
+        })
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

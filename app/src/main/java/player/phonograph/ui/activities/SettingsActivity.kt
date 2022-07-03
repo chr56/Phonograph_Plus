@@ -12,7 +12,7 @@ import androidx.appcompat.widget.Toolbar
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.WhichButton
 import com.afollestad.materialdialogs.actions.getActionButton
-import com.github.chr56.android.menu_dsl.menu
+import com.github.chr56.android.menu_dsl.attach
 import com.github.chr56.android.menu_dsl.menuItem
 import kotlin.system.exitProcess
 import kotlinx.coroutines.CoroutineScope
@@ -52,7 +52,7 @@ class SettingsActivity : ToolbarActivity() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menu(from = menu) {
+        attach(from = menu) {
             menuItem {
                 itemId = R.id.action_export_data
                 title = "${getString(R.string.export_)}${getString(R.string.databases)}"

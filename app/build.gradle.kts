@@ -214,7 +214,7 @@ dependencies {
 
     implementation("com.github.chr56:mdUtil:0.0.1")
     implementation("com.github.chr56:mdColor:0.0.1")
-    implementation("com.github.chr56:Android-Menu-DSL:0.0.2")
+    implementation("com.github.chr56:Android-Menu-DSL:0.0.3")
 
     implementation("com.simplecityapps:recyclerview-fastscroll:2.0.1")
     implementation("com.github.chr56:SeekArc:c5ae37866e")

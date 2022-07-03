@@ -17,6 +17,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.list.listItemsSingleChoice
 import com.afollestad.materialdialogs.utils.MDUtil.getStringArray
+import com.github.chr56.android.menu_dsl.MenuContext
+import com.github.chr56.android.menu_dsl.MenuItemCfg
 import com.github.chr56.android.menu_dsl.add
 import com.google.android.material.appbar.AppBarLayout
 import com.h6ah4i.android.widget.advrecyclerview.animator.RefactoredDefaultItemAnimator
@@ -203,11 +205,11 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandle
             if (playlist is SmartPlaylist) R.menu.menu_smart_playlist_detail else R.menu.menu_playlist_detail, menu
         )
         if (playlist.type == PlaylistType.LAST_ADDED)
-            menu.add {
+            menu.add(MenuContext(rootMenu = menu, this), fun MenuItemCfg.() {
                 itemId = R.id.action_setting_last_added_interval
                 titleRes(R.string.pref_title_last_added_interval, this@PlaylistDetailActivity)
                 icon = getTintedDrawable(R.drawable.ic_timer_white_24dp, Color.WHITE)
-            }
+            })
         return super.onCreateOptionsMenu(menu)
     }
 

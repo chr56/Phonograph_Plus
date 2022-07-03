@@ -15,7 +15,7 @@ import androidx.appcompat.widget.Toolbar
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.WhichButton
 import com.afollestad.materialdialogs.actions.getActionButton
-import com.github.chr56.android.menu_dsl.menu
+import com.github.chr56.android.menu_dsl.attach
 import com.github.chr56.android.menu_dsl.menuItem
 import kotlin.system.exitProcess
 import lib.phonograph.activity.ToolbarActivity
@@ -89,7 +89,7 @@ class CrashActivity : ToolbarActivity() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menu(menu) {
+        attach(menu) {
             menuItem {
                 itemId = R.id.nav_settings
                 title = getString(R.string.action_settings)
