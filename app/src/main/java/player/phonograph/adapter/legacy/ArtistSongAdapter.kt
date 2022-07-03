@@ -11,7 +11,7 @@ import player.phonograph.R
 import player.phonograph.adapter.base.MultiSelectionCabController
 import player.phonograph.glide.SongGlideRequest
 import player.phonograph.helper.menu.MenuClickListener
-import player.phonograph.helper.menu.SongsMenuHelper.handleMenuClick
+import player.phonograph.helper.menu.onMultiSongMenuItemClick
 import player.phonograph.model.Song
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.util.NavigationUtil
@@ -93,7 +93,7 @@ open class ArtistSongAdapter(
     }
 
     private fun onMultipleItemAction(menuItem: MenuItem, selection: List<Song>) {
-        handleMenuClick(activity, selection, menuItem.itemId)
+        onMultiSongMenuItemClick(activity, selection, menuItem.itemId)
     }
 
     protected fun toggleChecked(song: Song) {

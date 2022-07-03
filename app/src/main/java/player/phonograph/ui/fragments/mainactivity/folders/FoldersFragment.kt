@@ -20,7 +20,7 @@ import player.phonograph.R
 import player.phonograph.adapter.legacy.SongFileAdapter
 import player.phonograph.adapter.base.MultiSelectionCabController
 import player.phonograph.databinding.FragmentFolderBinding
-import player.phonograph.helper.menu.SongsMenuHelper
+import player.phonograph.helper.menu.onMultiSongMenuItemClick
 import player.phonograph.model.Song
 import player.phonograph.service.MusicPlayerRemote.openQueue
 import player.phonograph.settings.Setting
@@ -277,7 +277,7 @@ class FoldersFragment :
         model.searchSongs(
             FileInfo(files, FileScanner.audioFileFilter), { songs: List<Song>?, _: Any? ->
             if (!songs.isNullOrEmpty()) {
-                SongsMenuHelper.handleMenuClick(mainActivity, songs, itemId)
+                onMultiSongMenuItemClick(mainActivity, songs, itemId)
             }
             if (songs?.size ?: 0 != files.size) {
                 Snackbar.make(
@@ -308,7 +308,7 @@ class FoldersFragment :
                             FileInfo(listOf(file), FileScanner.audioFileFilter),
                             { songs: List<Song>?, _: Any? ->
                                 if (!songs.isNullOrEmpty()) {
-                                    SongsMenuHelper.handleMenuClick(mainActivity, songs, itemId)
+                                    onMultiSongMenuItemClick(mainActivity, songs, itemId)
                                 }
                                 Unit
                             }
@@ -343,7 +343,7 @@ class FoldersFragment :
                             FileInfo(listOf(file), FileScanner.audioFileFilter),
                             { songs: List<Song>?, _: Any? ->
                                 if (!songs.isNullOrEmpty()) {
-                                    SongsMenuHelper.handleMenuClick(mainActivity, songs, itemId)
+                                    onMultiSongMenuItemClick(mainActivity, songs, itemId)
                                 } else {
                                     Snackbar.make(
                                         viewBinding.coordinatorLayout,

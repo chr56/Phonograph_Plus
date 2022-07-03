@@ -20,7 +20,7 @@ import player.phonograph.adapter.base.MultiSelectionCabController
 import player.phonograph.R
 import player.phonograph.adapter.base.MultiSelectAdapter
 import player.phonograph.databinding.ItemListBinding
-import player.phonograph.helper.menu.SongsMenuHelper
+import player.phonograph.helper.menu.onMultiSongMenuItemClick
 import player.phonograph.helper.menu.onSongMenuItemClick
 import player.phonograph.mediastore.MediaStoreUtil
 import player.phonograph.misc.UpdateToastMediaScannerCompletionListener
@@ -59,7 +59,7 @@ class FileAdapter(
     override var multiSelectMenuRes: Int = R.menu.menu_item_file_entities
     override fun onMultipleItemAction(menuItem: MenuItem, selection: List<FileEntity>) {
         val songs = selection.mapNotNull { (it as? FileEntity.File)?.linkedSong }
-        SongsMenuHelper.handleMenuClick(context as AppCompatActivity, songs, menuItem.itemId)
+        onMultiSongMenuItemClick(context as AppCompatActivity, songs, menuItem.itemId)
     }
 
     inner class ViewHolder(var binding: ItemListBinding) : RecyclerView.ViewHolder(binding.root) {
@@ -117,7 +117,7 @@ class FileAdapter(
                             CoroutineScope(SupervisorJob()).launch(Dispatchers.IO) {
                                 val songs = MediaStoreUtil.searchSongFiles(context, fileItem.location)
                                     ?.mapNotNull { if (it is FileEntity.File) it.linkedSong else null } ?: return@launch
-                                withContext(Dispatchers.Main) { SongsMenuHelper.handleMenuClick(context, songs, itemId) }
+                                withContext(Dispatchers.Main) { onMultiSongMenuItemClick(context, songs, itemId) }
                             }
                             true
                         }

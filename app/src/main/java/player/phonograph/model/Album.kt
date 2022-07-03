@@ -10,7 +10,7 @@ import androidx.core.util.Pair
 import androidx.fragment.app.FragmentActivity
 import player.phonograph.App
 import player.phonograph.R
-import player.phonograph.helper.menu.SongsMenuHelper.handleMenuClick
+import player.phonograph.helper.menu.onMultiSongMenuItemClick
 import player.phonograph.interfaces.Displayable
 import player.phonograph.util.MusicUtil
 import player.phonograph.util.NavigationUtil
@@ -78,7 +78,7 @@ class Album : Parcelable, Displayable {
     @Suppress("UNCHECKED_CAST")
     override fun multiMenuHandler(): (AppCompatActivity, List<Displayable>, Int) -> Boolean =
         { appCompatActivity: AppCompatActivity?, list: List<Displayable>?, integer: Int? ->
-            handleMenuClick(
+            onMultiSongMenuItemClick(
                 appCompatActivity!!, MusicUtil.getAlbumSongList(list as List<Album>), integer!!
             )
         } // todo more variety

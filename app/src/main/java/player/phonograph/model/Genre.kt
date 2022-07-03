@@ -8,7 +8,7 @@ import androidx.annotation.Keep
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentActivity
 import player.phonograph.App.Companion.instance
-import player.phonograph.helper.menu.SongsMenuHelper.handleMenuClick
+import player.phonograph.helper.menu.onMultiSongMenuItemClick
 import player.phonograph.interfaces.Displayable
 import player.phonograph.util.MusicUtil
 import player.phonograph.util.NavigationUtil
@@ -65,7 +65,7 @@ class Genre : Parcelable, Displayable {
     @Suppress("UNCHECKED_CAST")
     override fun multiMenuHandler(): (AppCompatActivity, List<Displayable>, Int) -> Boolean =
         { appCompatActivity: AppCompatActivity?, list: List<Displayable>?, integer: Int? ->
-            handleMenuClick(appCompatActivity!!, MusicUtil.getGenreSongList(list as List<Genre>), integer!!)
+            onMultiSongMenuItemClick(appCompatActivity!!, MusicUtil.getGenreSongList(list as List<Genre>), integer!!)
             true
         }
 

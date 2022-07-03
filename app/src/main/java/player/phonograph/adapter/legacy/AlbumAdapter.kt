@@ -18,7 +18,7 @@ import player.phonograph.adapter.base.MultiSelectAdapter
 import player.phonograph.adapter.base.MultiSelectionCabController
 import player.phonograph.glide.PhonographColoredTarget
 import player.phonograph.glide.SongGlideRequest
-import player.phonograph.helper.menu.SongsMenuHelper.handleMenuClick
+import player.phonograph.helper.menu.onMultiSongMenuItemClick
 import player.phonograph.mediastore.sort.SortRef
 import player.phonograph.model.Album
 import player.phonograph.model.Song
@@ -123,7 +123,7 @@ open class AlbumAdapter(
     override fun getName(obj: Album): String = obj.title
 
     override fun onMultipleItemAction(menuItem: MenuItem, selection: List<Album>) {
-        handleMenuClick(activity, getSongList(selection), menuItem.itemId)
+        onMultiSongMenuItemClick(activity, getSongList(selection), menuItem.itemId)
     } // todo
 
     private fun getSongList(albums: List<Album>): List<Song> {

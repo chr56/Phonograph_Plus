@@ -9,7 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentActivity
 import player.phonograph.R
 import player.phonograph.helper.menu.onSongMenuItemClick
-import player.phonograph.helper.menu.SongsMenuHelper.handleMenuClick
+import player.phonograph.helper.menu.onMultiSongMenuItemClick
 import player.phonograph.interfaces.Displayable
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.util.MusicUtil
@@ -165,7 +165,7 @@ open class Song : Parcelable, Displayable {
 
     override fun multiMenuHandler(): ((AppCompatActivity, List<Displayable>, Int) -> Boolean)? {
         return { appCompatActivity: AppCompatActivity?, list: List<Displayable>?, integer: Int? ->
-            handleMenuClick(
+            onMultiSongMenuItemClick(
                 appCompatActivity!!, (list as List<Song>), integer!!
             )
         }

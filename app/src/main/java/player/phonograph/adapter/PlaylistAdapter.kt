@@ -14,7 +14,7 @@ import player.phonograph.adapter.base.MediaEntryViewHolder
 import player.phonograph.adapter.base.MultiSelectAdapter
 import player.phonograph.dialogs.ClearPlaylistDialog
 import player.phonograph.helper.menu.PlaylistMenuHelper
-import player.phonograph.helper.menu.SongsMenuHelper
+import player.phonograph.helper.menu.onMultiSongMenuItemClick
 import player.phonograph.misc.SAFCallbackHandlerActivity
 import player.phonograph.model.Song
 import player.phonograph.model.playlist.*
@@ -112,7 +112,7 @@ class PlaylistAdapter(
                 }
             else ->
                 // default, handle common items
-                SongsMenuHelper.handleMenuClick(activity, getSongList(selection), menuItem.itemId)
+                onMultiSongMenuItemClick(activity, getSongList(selection), menuItem.itemId)
         }
     }
 
