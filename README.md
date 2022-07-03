@@ -56,6 +56,26 @@ This is a fork of [Phonograph](https://github.com/kabouzeid/Phonograph), with so
 
 Translate Phonograph Plus into your language -> [crowdin](https://crowdin.com/project/phonograph-plus)
 
+# **截图**/**Screenshot**
+
+仅供参考， 以实际为准
+
+For reference only, actual app might be different
+
+| Card Player | Flat Player |  Song Menu |
+| :---------: | :---------: | :--------: |
+| ![Screenshots](./art/05.jpg?raw=true) |![Screenshots](./art/08.jpg?raw=true) | ![Screenshots](./art/02.jpg?raw=true) 
+
+
+Songs | Folders | Artists | Playlists |
+:---: | :-----: | :-----: | :-------: |
+| ![Screenshots](./art/09.jpg?raw=true) | ![Screenshots](./art/10.jpg?raw=true) | ![Screenshots](./art/07.jpg?raw=true) | ![Screenshots](./art/06.jpg?raw=true)|
+
+| Drawer | Setting | Tag Editor (Deprecated) |
+| :----: |:------: | :---------------------: |
+| ![Screenshots](./art/03.jpg?raw=true)| ![Screenshots](./art/01.jpg?raw=true) | ![Screenshots](./art/04.jpg?raw=true) |
+
+
 
 # **开发计划**/**Development Plan (or Road Map?)**
 <br/>
@@ -122,12 +142,4 @@ Translate Phonograph Plus into your language -> [crowdin](https://crowdin.com/pr
 <br/>
 <br/>
 <br/>
-
-# Phonograph
-
-[![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://github.com/chr56/Phonograph_Plus/blob/release/LICENSE.txt)
-
-**A material designed local music player for Android.**
-
-![Screenshots](./art/art.jpg?raw=true)
 
