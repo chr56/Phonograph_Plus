@@ -47,7 +47,7 @@ It is suggested to browser the [Changelog](app/src/main/assets/phonograph-change
 
 * 在歌曲(或文件)弹出菜单中, 快速添加黑名单 | Add song menu shortcut to add new items to blacklist.
 
-* 适配" [墨·状态栏歌词](https://github.com/577fkj/StatusBarLyric) "Xposed模块 | Co-work-with/Support
+* 适配" [墨·状态栏歌词](https://github.com/Block-Network/StatusBarLyric) "Xposed模块 | Co-work-with/Support
   StatusBar Lyric Xposed Module (api)
   
 * 支持导出内部数据库以供备份 | Export internal databases for the need of backup.
