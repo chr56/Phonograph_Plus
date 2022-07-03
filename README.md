@@ -5,9 +5,12 @@
 [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://github.com/chr56/Phonograph_Plus/blob/release/LICENSE.txt)
 [<img src="https://github.com/chr56/Phonograph/workflows/ci/badge.svg" alt="CI Status">](https://github.com/chr56/Phonograph_Plus/actions/workflows/ci.yml)
 
-**Phonograph 第三方修改版**
+**Phonograph 第三方维护版**
 
-**A third-party modified version of Phonograph**
+**A fork of Phonograph under maintenance and development**
+
+
+A material designed local music player for Android.
 
 <br/>
 
@@ -19,14 +22,12 @@ This is a fork of [Phonograph](https://github.com/kabouzeid/Phonograph), with so
 
 * 自动夜间模式 | Automatic & adaptive dark mode.
 
-* 更新对话框样式 | Update dialogs style.
-
-* 允许标签固定并平铺 | Allow tabs fixed.
+* 更改界面 | Many changes to UI.
 
 * 详情对话框内显示Tag信息 | Show tag information in "Detail" Dialog
 
-* 歌词对话框内显示歌词时间轴信息, 并可以通过长按进行快速转跳 | Show Time Axis in "Lyrics" Dialog and allow seeking basing
-  lyric's time axis.
+* 歌词对话框内显示歌词时间轴信息, 并可以通过长按进行快速转跳与自动滚动 | Show Time Axis in "Lyrics" Dialog and allow seeking basing
+  lyric's time axis and support lyrics following.
 
 * 适配 Android 11 分区存储 （部分） | Fix Android 11 Scope Storage.(WIP)
 
@@ -48,7 +49,9 @@ This is a fork of [Phonograph](https://github.com/kabouzeid/Phonograph), with so
   
 * 支持导出内部数据库以供备份 | Export internal databases for the need of backup.
 
-* 优化界面 | Optimus UI.
+* 允许标签固定并平铺 | Allow tabs fixed.
+
+* 更新对话框样式 | Update dialogs style.
 
 * 以及更多细小特性 | and more small features/fixes.
 
