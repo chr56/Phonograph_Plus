@@ -29,7 +29,7 @@ import player.phonograph.R
 import player.phonograph.adapter.base.MultiSelectionCabController
 import player.phonograph.adapter.display.PlaylistSongAdapter
 import player.phonograph.databinding.ActivityPlaylistDetailBinding
-import player.phonograph.helper.menu.PlaylistMenuHelper.handleMenuClick
+import player.phonograph.helper.menu.onPlaylistMenuItemClick
 import player.phonograph.misc.SAFCallbackHandlerActivity
 import player.phonograph.misc.SafLauncher
 import player.phonograph.model.Song
@@ -254,7 +254,7 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandle
                 onBackPressed()
                 true
             }
-            else -> handleMenuClick(this, model.playlist.value!!, item)
+            else -> onPlaylistMenuItemClick(this, model.playlist.value!!, item.itemId)
         }
     }
 
