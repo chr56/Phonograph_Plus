@@ -4,18 +4,20 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.os.Process
 import android.view.Menu
-import android.view.Menu.NONE
 import android.view.MenuItem
-import android.view.MenuItem.SHOW_AS_ACTION_NEVER
+import android.view.MenuItem.SHOW_AS_ACTION_IF_ROOM
 import androidx.appcompat.widget.Toolbar
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.WhichButton
 import com.afollestad.materialdialogs.actions.getActionButton
+import com.github.chr56.android.menu_dsl.menu
+import com.github.chr56.android.menu_dsl.menuItem
 import kotlin.system.exitProcess
 import lib.phonograph.activity.ToolbarActivity
 import player.phonograph.KEY_STACK_TRACE
@@ -23,6 +25,7 @@ import player.phonograph.R
 import player.phonograph.databinding.ActivityCrashBinding
 import player.phonograph.settings.SettingManager
 import player.phonograph.util.DeviceInfoUtil.getDeviceInfo
+import player.phonograph.util.ImageUtil.getTintedDrawable
 
 class CrashActivity : ToolbarActivity() {
 
@@ -87,23 +90,25 @@ class CrashActivity : ToolbarActivity() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        with(menu) {
-            add(NONE, R.id.nav_settings, 0, getString(R.string.action_settings)).apply {
-                setShowAsAction(SHOW_AS_ACTION_NEVER)
+        menu(menu) {
+            menuItem {
+                itemId = R.id.nav_settings
+                title = getString(R.string.action_settings)
+                icon = getTintedDrawable(R.drawable.ic_settings_white_24dp, Color.WHITE)
+                showAsActionFlag = SHOW_AS_ACTION_IF_ROOM
+                menuItemClickListener = MenuItem.OnMenuItemClickListener {
+                    when (it.itemId) {
+                        R.id.nav_settings -> {
+                            Handler(Looper.getMainLooper()).postDelayed({
+                                startActivity(Intent(this@CrashActivity, SettingsActivity::class.java))
+                            }, 80)
+                            return@OnMenuItemClickListener true
+                        }
+                    }
+                    false
+                }
             }
         }
         return true
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.nav_settings -> {
-                Handler(Looper.getMainLooper()).postDelayed({
-                    startActivity(Intent(this, SettingsActivity::class.java))
-                }, 80)
-                return true
-            }
-        }
-        return super.onOptionsItemSelected(item)
     }
 }
