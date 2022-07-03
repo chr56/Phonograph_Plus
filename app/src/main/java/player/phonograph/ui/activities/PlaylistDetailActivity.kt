@@ -4,6 +4,7 @@
 
 package player.phonograph.ui.activities
 
+import android.graphics.Color
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -16,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.list.listItemsSingleChoice
 import com.afollestad.materialdialogs.utils.MDUtil.getStringArray
+import com.github.chr56.android.menu_dsl.add
 import com.google.android.material.appbar.AppBarLayout
 import com.h6ah4i.android.widget.advrecyclerview.animator.RefactoredDefaultItemAnimator
 import com.h6ah4i.android.widget.advrecyclerview.draggable.RecyclerViewDragDropManager
@@ -29,7 +31,6 @@ import player.phonograph.R
 import player.phonograph.adapter.base.MultiSelectionCabController
 import player.phonograph.adapter.display.PlaylistSongAdapter
 import player.phonograph.databinding.ActivityPlaylistDetailBinding
-import player.phonograph.util.menu.onPlaylistMenuItemClick
 import player.phonograph.misc.SAFCallbackHandlerActivity
 import player.phonograph.misc.SafLauncher
 import player.phonograph.model.Song
@@ -44,6 +45,7 @@ import player.phonograph.util.ImageUtil.getTintedDrawable
 import player.phonograph.util.MusicUtil
 import player.phonograph.util.PlaylistsUtil
 import player.phonograph.util.ViewUtil.setUpFastScrollRecyclerViewColor
+import player.phonograph.util.menu.onPlaylistMenuItemClick
 import util.mdcolor.ColorUtil
 import util.mddesign.core.Themer
 import util.mddesign.util.MaterialColorHelper
@@ -201,7 +203,11 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandle
             if (playlist is SmartPlaylist) R.menu.menu_smart_playlist_detail else R.menu.menu_playlist_detail, menu
         )
         if (playlist.type == PlaylistType.LAST_ADDED)
-            menu.add(Menu.NONE, R.id.action_setting_last_added_interval, Menu.NONE, R.string.pref_title_last_added_interval)
+            menu.add {
+                itemId = R.id.action_setting_last_added_interval
+                titleRes(R.string.pref_title_last_added_interval, this@PlaylistDetailActivity)
+                icon = getTintedDrawable(R.drawable.ic_timer_white_24dp, Color.WHITE)
+            }
         return super.onCreateOptionsMenu(menu)
     }
 
