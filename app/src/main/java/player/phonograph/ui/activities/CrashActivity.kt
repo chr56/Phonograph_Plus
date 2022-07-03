@@ -10,7 +10,6 @@ import android.os.Handler
 import android.os.Looper
 import android.os.Process
 import android.view.Menu
-import android.view.MenuItem
 import android.view.MenuItem.SHOW_AS_ACTION_IF_ROOM
 import androidx.appcompat.widget.Toolbar
 import com.afollestad.materialdialogs.MaterialDialog
@@ -96,16 +95,16 @@ class CrashActivity : ToolbarActivity() {
                 title = getString(R.string.action_settings)
                 icon = getTintedDrawable(R.drawable.ic_settings_white_24dp, Color.WHITE)
                 showAsActionFlag = SHOW_AS_ACTION_IF_ROOM
-                menuItemClickListener = MenuItem.OnMenuItemClickListener {
+                onClick {
                     when (it.itemId) {
                         R.id.nav_settings -> {
                             Handler(Looper.getMainLooper()).postDelayed({
                                 startActivity(Intent(this@CrashActivity, SettingsActivity::class.java))
                             }, 80)
-                            return@OnMenuItemClickListener true
+                            true
                         }
+                        else -> false
                     }
-                    false
                 }
             }
         }
