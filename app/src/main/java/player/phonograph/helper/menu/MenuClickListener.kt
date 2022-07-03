@@ -44,7 +44,7 @@ abstract class MenuClickListener(
 
     // handle action
     override fun onMenuItemClick(item: MenuItem): Boolean {
-        return SongMenuHelper.handleMenuClick(
+        return onSongMenuItemClick(
             activity ?: throw RuntimeException("MenuClickListener: activity is null!"),
             song,
             item.itemId

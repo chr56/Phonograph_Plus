@@ -20,8 +20,8 @@ import player.phonograph.adapter.base.MultiSelectionCabController
 import player.phonograph.R
 import player.phonograph.adapter.base.MultiSelectAdapter
 import player.phonograph.databinding.ItemListBinding
-import player.phonograph.helper.menu.SongMenuHelper
 import player.phonograph.helper.menu.SongsMenuHelper
+import player.phonograph.helper.menu.onSongMenuItemClick
 import player.phonograph.mediastore.MediaStoreUtil
 import player.phonograph.misc.UpdateToastMediaScannerCompletionListener
 import player.phonograph.model.FileEntity
@@ -108,7 +108,7 @@ class FileAdapter(
             return when (fileItem) {
                 is FileEntity.File -> {
                     val song = fileItem.linkedSong
-                    SongMenuHelper.handleMenuClick(context, song, item.itemId)
+                    onSongMenuItemClick(context, song, item.itemId)
                 }
                 is FileEntity.Folder -> {
                     val path = fileItem.location.absolutePath

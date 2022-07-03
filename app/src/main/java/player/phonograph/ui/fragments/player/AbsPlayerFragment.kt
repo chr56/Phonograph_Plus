@@ -19,7 +19,7 @@ import kotlinx.coroutines.*
 import player.phonograph.R
 import player.phonograph.adapter.display.PlayingQueueAdapter
 import player.phonograph.dialogs.*
-import player.phonograph.helper.menu.SongMenuHelper
+import player.phonograph.helper.menu.onSongMenuItemClick
 import player.phonograph.interfaces.PaletteColorHolder
 import player.phonograph.model.Song
 import player.phonograph.model.lyrics2.AbsLyrics
@@ -192,7 +192,7 @@ abstract class AbsPlayerFragment :
                     .show(childFragmentManager, "SHARE_SONG")
                 return true
             }
-            else -> SongMenuHelper.handleMenuClick(requireActivity(), song, item.itemId)
+            else -> onSongMenuItemClick(requireActivity(), song, item.itemId)
         }
         return false
     }

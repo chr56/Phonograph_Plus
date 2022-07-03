@@ -19,7 +19,7 @@ import com.h6ah4i.android.widget.advrecyclerview.draggable.DraggableItemViewHold
 import com.h6ah4i.android.widget.advrecyclerview.draggable.ItemDraggableRange
 import com.h6ah4i.android.widget.advrecyclerview.draggable.annotation.DraggableItemStateFlags
 import player.phonograph.R
-import player.phonograph.helper.menu.SongMenuHelper.handleMenuClick
+import player.phonograph.helper.menu.onSongMenuItemClick
 import player.phonograph.model.Song
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.util.MusicUtil
@@ -88,7 +88,7 @@ class PlayingQueueAdapter(
                 MusicPlayerRemote.removeFromQueue(position)
                 return true
             }
-            else -> handleMenuClick(activity, dataset[position], menuItem.itemId)
+            else -> onSongMenuItemClick(activity, dataset[position], menuItem.itemId)
         }
     }
 
