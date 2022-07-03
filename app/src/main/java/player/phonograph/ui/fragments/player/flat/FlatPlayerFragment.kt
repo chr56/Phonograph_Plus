@@ -18,7 +18,7 @@ import com.sothree.slidinguppanel.SlidingUpPanelLayout.PanelState
 import player.phonograph.R
 import player.phonograph.adapter.base.MediaEntryViewHolder
 import player.phonograph.databinding.FragmentFlatPlayerBinding
-import player.phonograph.helper.menu.SongMenuHelper.ClickMenuListener
+import player.phonograph.helper.menu.MenuClickListener
 import player.phonograph.model.Song
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
@@ -309,7 +309,7 @@ class FlatPlayerFragment :
             }
             currentSongViewHolder!!.menu!!.setOnClickListener(
 
-                object : ClickMenuListener(fragment.requireActivity() as AppCompatActivity, R.menu.menu_item_playing_queue_song) {
+                object : MenuClickListener(fragment.requireActivity() as AppCompatActivity, R.menu.menu_item_playing_queue_song) {
 
                     override val song: Song = MusicPlayerRemote.currentSong
 

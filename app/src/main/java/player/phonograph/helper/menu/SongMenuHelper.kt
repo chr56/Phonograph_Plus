@@ -1,11 +1,6 @@
 package player.phonograph.helper.menu
 
 import android.content.Intent
-import android.view.MenuItem
-import android.view.View
-import android.widget.PopupMenu
-import androidx.annotation.MenuRes
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentActivity
 import player.phonograph.R
 import player.phonograph.dialogs.AddToPlaylistDialog
@@ -94,30 +89,5 @@ object SongMenuHelper {
             }
         }
         return false
-    }
-
-    const val menuResDefault = R.menu.menu_item_song
-
-    abstract class ClickMenuListener(
-        private val activity: AppCompatActivity,
-        @MenuRes menuRes: Int?
-    ) : View.OnClickListener, PopupMenu.OnMenuItemClickListener {
-
-        abstract val song: Song
-        protected open var realRes = menuRes ?: menuResDefault
-
-        override fun onClick(v: View) {
-            handleMenuButtonClick(v)
-        }
-        private fun handleMenuButtonClick(v: View) {
-            val popupMenu = PopupMenu(activity, v)
-            popupMenu.inflate(realRes)
-            popupMenu.setOnMenuItemClickListener(this)
-            popupMenu.show()
-        }
-
-        override fun onMenuItemClick(item: MenuItem): Boolean {
-            return handleMenuClick(activity, song, item.itemId)
-        }
     }
 }

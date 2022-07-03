@@ -22,7 +22,7 @@ import kotlin.math.max
 import player.phonograph.R
 import player.phonograph.adapter.base.MediaEntryViewHolder
 import player.phonograph.databinding.FragmentCardPlayerBinding
-import player.phonograph.helper.menu.SongMenuHelper.ClickMenuListener
+import player.phonograph.helper.menu.MenuClickListener
 import player.phonograph.model.Song
 import player.phonograph.notification.ErrorNotification
 import player.phonograph.service.MusicPlayerRemote
@@ -346,7 +346,7 @@ class CardPlayerFragment :
                 }
             }
             currentSongViewHolder!!.menu!!.setOnClickListener(object :
-                    ClickMenuListener((fragment.activity as AppCompatActivity), R.menu.menu_item_playing_queue_song) {
+                    MenuClickListener((fragment.activity as AppCompatActivity), R.menu.menu_item_playing_queue_song) {
                     override val song: Song = MusicPlayerRemote.currentSong
 
                     override fun onMenuItemClick(item: MenuItem): Boolean {

@@ -11,7 +11,7 @@ import player.phonograph.R
 import player.phonograph.adapter.base.MediaEntryViewHolder
 import player.phonograph.glide.ArtistGlideRequest
 import player.phonograph.glide.SongGlideRequest
-import player.phonograph.helper.menu.SongMenuHelper.ClickMenuListener
+import player.phonograph.helper.menu.MenuClickListener
 import player.phonograph.model.Album
 import player.phonograph.model.Artist
 import player.phonograph.model.Song
@@ -98,7 +98,7 @@ class SearchAdapter(
                 if (itemViewType == SONG) {
                     visibility = View.VISIBLE
 
-                    setOnClickListener(object : ClickMenuListener(activity, null) {
+                    setOnClickListener(object : MenuClickListener(activity, null) {
                         override val song: Song get() = dataSet[bindingAdapterPosition] as Song
                     })
                 } else {

@@ -7,11 +7,10 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.util.Pair
 import com.bumptech.glide.Glide
-import lib.phonograph.cab.CabStatus
 import player.phonograph.R
 import player.phonograph.adapter.base.MultiSelectionCabController
 import player.phonograph.glide.SongGlideRequest
-import player.phonograph.helper.menu.SongMenuHelper.ClickMenuListener
+import player.phonograph.helper.menu.MenuClickListener
 import player.phonograph.helper.menu.SongsMenuHelper.handleMenuClick
 import player.phonograph.model.Song
 import player.phonograph.service.MusicPlayerRemote
@@ -63,7 +62,7 @@ open class ArtistSongAdapter(
             .into(albumArt)
         albumArt.transitionName = activity.getString(R.string.transition_album_art)
         val overflowButton = convertView.findViewById<ImageView>(R.id.menu)
-        overflowButton.setOnClickListener(object : ClickMenuListener(activity, R.menu.menu_item_song_short) {
+        overflowButton.setOnClickListener(object : MenuClickListener(activity, R.menu.menu_item_song_short) {
             override val song: Song
                 get() = song
 
