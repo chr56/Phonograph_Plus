@@ -20,7 +20,7 @@ import player.phonograph.R
 import player.phonograph.adapter.legacy.SongFileAdapter
 import player.phonograph.adapter.base.MultiSelectionCabController
 import player.phonograph.databinding.FragmentFolderBinding
-import player.phonograph.helper.menu.onMultiSongMenuItemClick
+import player.phonograph.util.menu.onMultiSongMenuItemClick
 import player.phonograph.model.Song
 import player.phonograph.service.MusicPlayerRemote.openQueue
 import player.phonograph.settings.Setting

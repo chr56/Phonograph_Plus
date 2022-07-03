@@ -20,8 +20,8 @@ import player.phonograph.adapter.base.MultiSelectionCabController
 import player.phonograph.R
 import player.phonograph.adapter.base.MultiSelectAdapter
 import player.phonograph.databinding.ItemListBinding
-import player.phonograph.helper.menu.onMultiSongMenuItemClick
-import player.phonograph.helper.menu.onSongMenuItemClick
+import player.phonograph.util.menu.onMultiSongMenuItemClick
+import player.phonograph.util.menu.onSongMenuItemClick
 import player.phonograph.mediastore.MediaStoreUtil
 import player.phonograph.misc.UpdateToastMediaScannerCompletionListener
 import player.phonograph.model.FileEntity

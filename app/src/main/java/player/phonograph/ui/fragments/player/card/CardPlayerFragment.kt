@@ -22,7 +22,7 @@ import kotlin.math.max
 import player.phonograph.R
 import player.phonograph.adapter.base.MediaEntryViewHolder
 import player.phonograph.databinding.FragmentCardPlayerBinding
-import player.phonograph.helper.menu.MenuClickListener
+import player.phonograph.util.menu.MenuClickListener
 import player.phonograph.model.Song
 import player.phonograph.notification.ErrorNotification
 import player.phonograph.service.MusicPlayerRemote

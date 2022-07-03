@@ -10,7 +10,7 @@ import androidx.core.util.Pair
 import androidx.fragment.app.FragmentActivity
 import player.phonograph.App
 import player.phonograph.R
-import player.phonograph.helper.menu.onMultiSongMenuItemClick
+import player.phonograph.util.menu.onMultiSongMenuItemClick
 import player.phonograph.interfaces.Displayable
 import player.phonograph.util.MusicUtil
 import player.phonograph.util.NavigationUtil

@@ -19,7 +19,7 @@ import kotlinx.coroutines.*
 import player.phonograph.R
 import player.phonograph.adapter.display.PlayingQueueAdapter
 import player.phonograph.dialogs.*
-import player.phonograph.helper.menu.onSongMenuItemClick
+import player.phonograph.util.menu.onSongMenuItemClick
 import player.phonograph.interfaces.PaletteColorHolder
 import player.phonograph.model.Song
 import player.phonograph.model.lyrics2.AbsLyrics

@@ -2,7 +2,7 @@
  * Copyright (c) 2022 chr_56 & Abou Zeid (kabouzeid) (original author)
  */
 
-package player.phonograph.helper.menu
+package player.phonograph.util.menu
 
 import androidx.fragment.app.FragmentActivity
 import player.phonograph.R

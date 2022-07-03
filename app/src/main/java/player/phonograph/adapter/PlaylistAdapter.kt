@@ -13,8 +13,8 @@ import player.phonograph.R
 import player.phonograph.adapter.base.MediaEntryViewHolder
 import player.phonograph.adapter.base.MultiSelectAdapter
 import player.phonograph.dialogs.ClearPlaylistDialog
-import player.phonograph.helper.menu.onPlaylistMenuItemClick
-import player.phonograph.helper.menu.onMultiSongMenuItemClick
+import player.phonograph.util.menu.onPlaylistMenuItemClick
+import player.phonograph.util.menu.onMultiSongMenuItemClick
 import player.phonograph.misc.SAFCallbackHandlerActivity
 import player.phonograph.model.Song
 import player.phonograph.model.playlist.*

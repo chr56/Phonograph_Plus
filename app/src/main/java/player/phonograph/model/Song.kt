@@ -8,8 +8,8 @@ import androidx.annotation.Keep
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentActivity
 import player.phonograph.R
-import player.phonograph.helper.menu.onSongMenuItemClick
-import player.phonograph.helper.menu.onMultiSongMenuItemClick
+import player.phonograph.util.menu.onSongMenuItemClick
+import player.phonograph.util.menu.onMultiSongMenuItemClick
 import player.phonograph.interfaces.Displayable
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.util.MusicUtil

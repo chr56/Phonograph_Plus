@@ -10,8 +10,8 @@ import com.bumptech.glide.Glide
 import player.phonograph.R
 import player.phonograph.adapter.base.MultiSelectionCabController
 import player.phonograph.glide.SongGlideRequest
-import player.phonograph.helper.menu.MenuClickListener
-import player.phonograph.helper.menu.onMultiSongMenuItemClick
+import player.phonograph.util.menu.MenuClickListener
+import player.phonograph.util.menu.onMultiSongMenuItemClick
 import player.phonograph.model.Song
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.util.NavigationUtil
