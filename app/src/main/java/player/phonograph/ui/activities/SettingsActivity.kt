@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Process
 import android.view.Menu
-import android.view.Menu.NONE
 import android.view.MenuItem
 import android.view.MenuItem.SHOW_AS_ACTION_NEVER
 import androidx.activity.result.contract.ActivityResultContracts
@@ -13,6 +12,8 @@ import androidx.appcompat.widget.Toolbar
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.WhichButton
 import com.afollestad.materialdialogs.actions.getActionButton
+import com.github.chr56.android.menu_dsl.menu
+import com.github.chr56.android.menu_dsl.menuItem
 import kotlin.system.exitProcess
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -22,7 +23,6 @@ import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.misc.OpenDocumentContract
 import player.phonograph.provider.DatabaseManger
-import player.phonograph.settings.Setting
 import player.phonograph.settings.SettingManager
 import player.phonograph.ui.fragments.SettingsFragment
 import player.phonograph.util.Util
@@ -52,24 +52,33 @@ class SettingsActivity : ToolbarActivity() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menu.let { m ->
-            m.add(NONE, R.id.action_export_data, 1, "${getString(R.string.export_)}${getString(R.string.databases)}").also {
-                it.setShowAsAction(SHOW_AS_ACTION_NEVER)
+        menu(from = menu) {
+            menuItem {
+                itemId = R.id.action_export_data
+                title = "${getString(R.string.export_)}${getString(R.string.databases)}"
+                showAsActionFlag = SHOW_AS_ACTION_NEVER
             }
-            m.add(NONE, R.id.action_import_data, 2, "${getString(R.string.import_)}${getString(R.string.databases)}").also {
-                it.setShowAsAction(SHOW_AS_ACTION_NEVER)
+            menuItem {
+                itemId = R.id.action_import_data
+                title = "${getString(R.string.import_)}${getString(R.string.databases)}"
+                showAsActionFlag = SHOW_AS_ACTION_NEVER
             }
-            m.add(NONE, R.id.action_export_preferences, 3, "${getString(R.string.export_)}${getString(R.string.preferences)}").also {
-                it.setShowAsAction(SHOW_AS_ACTION_NEVER)
+            menuItem {
+                itemId = R.id.action_export_preferences
+                title = "${getString(R.string.export_)}${getString(R.string.preferences)}"
+                showAsActionFlag = SHOW_AS_ACTION_NEVER
             }
-            m.add(NONE, R.id.action_import_preferences, 4, "${getString(R.string.import_)}${getString(R.string.preferences)}").also {
-                it.setShowAsAction(SHOW_AS_ACTION_NEVER)
+            menuItem {
+                itemId = R.id.action_import_preferences
+                title = "${getString(R.string.import_)}${getString(R.string.preferences)}"
+                showAsActionFlag = SHOW_AS_ACTION_NEVER
             }
-            m.add(NONE, R.id.action_clear_all_preference, NONE, getString(R.string.clear_all_preference)).also {
-                it.setShowAsAction(SHOW_AS_ACTION_NEVER)
+            menuItem {
+                itemId = R.id.action_clear_all_preference
+                title = getString(R.string.clear_all_preference)
+                showAsActionFlag = SHOW_AS_ACTION_NEVER
             }
         }
-
         return true
     }
 
