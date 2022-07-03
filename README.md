@@ -1,5 +1,4 @@
-# Phonograph Modified Version / Phonograph 修改版
-
+# Phonograph Plus
 
 [![Crowdin](https://badges.crowdin.net/phonograph-plus/localized.svg)](https://crowdin.com/project/phonograph-plus)
 [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://github.com/chr56/Phonograph_Plus/blob/release/LICENSE.txt)
@@ -16,7 +15,7 @@ A material designed local music player for Android.
 
 This is a fork of [Phonograph](https://github.com/kabouzeid/Phonograph), with some extra additional features.
 
-# **特性** / **Features**
+## **特性** / **Features**
 
 建议直接看[更新日志](app/src/main/assets/phonograph-changelog-zh-rCN.html)!
 
@@ -59,11 +58,11 @@ It is suggested to browser the [Changelog](app/src/main/assets/phonograph-change
 
 * 以及更多细小特性 | and more small features/fixes.
 
-# **翻译**/**Translation**
+## **翻译**/**Translation**
 
 Translate Phonograph Plus into your language -> [crowdin](https://crowdin.com/project/phonograph-plus)
 
-# **截图**/**Screenshot**
+## **截图**/**Screenshot**
 
 仅供参考， 以实际为准
 
@@ -84,7 +83,7 @@ Songs | Folders | Artists | Playlists |
 
 
 
-# **开发计划**/**Development Plan (or Road Map?)**
+## **开发计划**/**Development Plan (or Road Map?)**
 <br/>
 
 **Phonograph Plus** is (partially) migrating to 🚀 Jetpack Compose -> see Branch [Compose](https://github.com/chr56/Phonograph_Plus/tree/Compose)
