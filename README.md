@@ -16,7 +16,11 @@ A material designed local music player for Android.
 
 This is a fork of [Phonograph](https://github.com/kabouzeid/Phonograph), with some extra additional features.
 
-# **特性** / **features**
+# **特性** / **Features**
+
+建议直接看[更新日志](app/src/main/assets/phonograph-changelog-zh-rCN.html)!
+
+It is suggested to browser the [Changelog](app/src/main/assets/phonograph-changelog.html) to learn all of features completely.
 
 * 解锁 Pro | Unlock pro.
 
