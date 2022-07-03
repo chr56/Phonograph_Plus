@@ -6,6 +6,7 @@ package player.phonograph.ui.fragments.mainactivity.home
 
 import android.content.Intent
 import android.content.SharedPreferences
+import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.*
@@ -14,6 +15,8 @@ import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.graphics.BlendModeColorFilterCompat
 import androidx.core.graphics.BlendModeCompat
 import androidx.viewpager2.widget.ViewPager2
+import com.github.chr56.android.menu_dsl.MenuItemCfg
+import com.github.chr56.android.menu_dsl.add
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
@@ -28,6 +31,7 @@ import player.phonograph.settings.Setting
 import player.phonograph.ui.activities.MainActivity
 import player.phonograph.ui.activities.SearchActivity
 import player.phonograph.ui.fragments.mainactivity.AbsMainActivityFragment
+import player.phonograph.util.ImageUtil.getTintedDrawable
 import util.mdcolor.ColorUtil
 import util.mdcolor.pref.ThemeColor
 import util.mddesign.util.MaterialColorHelper
@@ -133,10 +137,11 @@ class HomeFragment : AbsMainActivityFragment(), MainActivity.MainActivityFragmen
     val popup: ListOptionsPopup by lazy { ListOptionsPopup(mainActivity) }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        super.onCreateOptionsMenu(menu, inflater)
-        menu.add(0, R.id.action_search, 0, R.string.action_search).also {
-            it.icon = getDrawable(R.drawable.ic_search_white_24dp)
-            it.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS)
+        menu.add {
+            itemId = R.id.action_search
+            titleRes(R.string.action_search, mainActivity)
+            icon = mainActivity.getTintedDrawable(R.drawable.ic_search_white_24dp, Color.WHITE)
+            showAsActionFlag = MenuItemCfg.SHOW_AS_ACTION_ALWAYS
         }
     }
 
