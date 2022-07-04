@@ -15,6 +15,7 @@ import player.phonograph.dialogs.RenamePlaylistDialog
 import player.phonograph.misc.SAFCallbackHandlerActivity
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.service.MusicPlayerRemote
+import player.phonograph.settings.Setting
 import util.phonograph.m3u.PlaylistsManager
 
 /**
@@ -22,12 +23,15 @@ import util.phonograph.m3u.PlaylistsManager
  * @param playlist   Playlist to process
  * @param menuItemId ItemId in menu as well as `Unique Action ID`
  */
-fun onPlaylistMenuItemClick(activity: FragmentActivity, playlist: Playlist, menuItemId:Int): Boolean {
+fun onPlaylistMenuItemClick(activity: FragmentActivity, playlist: Playlist, menuItemId: Int): Boolean {
     when (menuItemId) {
         R.id.action_play -> {
-            MusicPlayerRemote.openQueue(
-                ArrayList(playlist.getSongs(activity)), 0, true
-            )
+            if (Setting.instance.keepPlayingQueueIntact)
+                MusicPlayerRemote.playNow(
+                    playlist.getSongs(activity)
+                )
+            else
+                MusicPlayerRemote.openQueue(playlist.getSongs(activity), 0, true)
             return true
         }
         R.id.action_play_next -> {

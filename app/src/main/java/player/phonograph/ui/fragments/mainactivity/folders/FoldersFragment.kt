@@ -17,12 +17,11 @@ import java.util.*
 import lib.phonograph.cab.ToolbarCab
 import lib.phonograph.cab.createToolbarCab
 import player.phonograph.R
-import player.phonograph.adapter.legacy.SongFileAdapter
 import player.phonograph.adapter.base.MultiSelectionCabController
+import player.phonograph.adapter.legacy.SongFileAdapter
 import player.phonograph.databinding.FragmentFolderBinding
-import player.phonograph.util.menu.onMultiSongMenuItemClick
 import player.phonograph.model.Song
-import player.phonograph.service.MusicPlayerRemote.openQueue
+import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.settings.Setting
 import player.phonograph.ui.activities.MainActivity.MainActivityFragmentCallbacks
 import player.phonograph.ui.fragments.mainactivity.AbsMainActivityFragment
@@ -30,6 +29,7 @@ import player.phonograph.util.BlacklistUtil
 import player.phonograph.util.FileUtil.safeGetCanonicalFile
 import player.phonograph.util.FileUtil.safeGetCanonicalPath
 import player.phonograph.util.ViewUtil.setUpFastScrollRecyclerViewColor
+import player.phonograph.util.menu.onMultiSongMenuItemClick
 import player.phonograph.views.BreadCrumbLayout
 import player.phonograph.views.BreadCrumbLayout.Crumb
 import util.mdcolor.ColorUtil
@@ -262,7 +262,10 @@ class FoldersFragment :
                         }
                     }
                     if (startIndex > -1) {
-                        openQueue(songs, startIndex, true)
+                        if (Setting.instance.keepPlayingQueueIntact)
+                            MusicPlayerRemote.playNow(songs)
+                        else
+                            MusicPlayerRemote.openQueue(songs, startIndex, true)
                     } else {
                         makeSnackBar()
                     }

@@ -19,12 +19,13 @@ import com.h6ah4i.android.widget.advrecyclerview.draggable.DraggableItemViewHold
 import com.h6ah4i.android.widget.advrecyclerview.draggable.ItemDraggableRange
 import com.h6ah4i.android.widget.advrecyclerview.draggable.annotation.DraggableItemStateFlags
 import player.phonograph.R
-import player.phonograph.util.menu.onSongMenuItemClick
 import player.phonograph.model.Song
 import player.phonograph.service.MusicPlayerRemote
+import player.phonograph.settings.Setting
 import player.phonograph.util.MusicUtil
 import player.phonograph.util.NavigationUtil
 import player.phonograph.util.ViewUtil
+import player.phonograph.util.menu.onSongMenuItemClick
 
 class PlayingQueueAdapter(
     activity: AppCompatActivity,
@@ -62,7 +63,10 @@ class PlayingQueueAdapter(
     override fun setImage(holder: DisplayViewHolder, position: Int) { }
 
     fun onClick(view: View, bindingAdapterPosition: Int) {
-        MusicPlayerRemote.openQueue(dataset, bindingAdapterPosition, true)
+        if (Setting.instance.keepPlayingQueueIntact)
+            MusicPlayerRemote.playNow(dataset)
+        else
+            MusicPlayerRemote.openQueue(dataset, bindingAdapterPosition, true)
     }
 
     override fun onMenuClick(menuButtonView: View, bindingAdapterPosition: Int) {

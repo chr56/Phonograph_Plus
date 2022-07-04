@@ -10,11 +10,12 @@ import com.bumptech.glide.Glide
 import player.phonograph.R
 import player.phonograph.adapter.base.MultiSelectionCabController
 import player.phonograph.glide.SongGlideRequest
-import player.phonograph.util.menu.MenuClickListener
-import player.phonograph.util.menu.onMultiSongMenuItemClick
 import player.phonograph.model.Song
 import player.phonograph.service.MusicPlayerRemote
+import player.phonograph.settings.Setting
 import player.phonograph.util.NavigationUtil
+import player.phonograph.util.menu.MenuClickListener
+import player.phonograph.util.menu.onMultiSongMenuItemClick
 
 // Todo: use AbsMultiSelectAdapter
 /**
@@ -82,7 +83,10 @@ open class ArtistSongAdapter(
             if (isInQuickSelectMode) {
                 toggleChecked(song)
             } else {
-                MusicPlayerRemote.openQueue(dataSet, position, true)
+                if (Setting.instance.keepPlayingQueueIntact)
+                    MusicPlayerRemote.playNow(dataSet)
+                else
+                    MusicPlayerRemote.openQueue(dataSet, position, true)
             }
         }
         convertView.setOnLongClickListener {

@@ -8,11 +8,12 @@ import androidx.annotation.Keep
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentActivity
 import player.phonograph.R
-import player.phonograph.util.menu.onSongMenuItemClick
-import player.phonograph.util.menu.onMultiSongMenuItemClick
 import player.phonograph.interfaces.Displayable
 import player.phonograph.service.MusicPlayerRemote
+import player.phonograph.settings.Setting
 import player.phonograph.util.MusicUtil
+import player.phonograph.util.menu.onMultiSongMenuItemClick
+import player.phonograph.util.menu.onSongMenuItemClick
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
@@ -171,9 +172,18 @@ open class Song : Parcelable, Displayable {
         }
     }
 
-    override fun clickHandler(): (FragmentActivity, Displayable, List<Displayable>?, image: ImageView?) -> Unit {
+    override fun clickHandler(): (
+        FragmentActivity,
+        Displayable,
+        List<Displayable>?,
+        image: ImageView?
+    ) -> Unit {
         return { _: FragmentActivity?, displayable: Displayable?, queue: List<Displayable>?, image: ImageView? ->
-            queue?.let { MusicPlayerRemote.openQueue(it as List<Song>, queue.indexOf(displayable), true) }
+            queue?.let {
+                if (Setting.instance.keepPlayingQueueIntact)
+                    MusicPlayerRemote.playNow((it as List<Song>)[it.indexOf(displayable)])
+                else
+                    MusicPlayerRemote.openQueue(it as List<Song>, queue.indexOf(displayable), true) }
         }
     }
 

@@ -258,7 +258,10 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
                 if (MusicPlayerRemote.shuffleMode == MusicService.SHUFFLE_MODE_SHUFFLE) {
                     MusicPlayerRemote.openAndShuffleQueue(songs, true)
                 } else {
-                    MusicPlayerRemote.openQueue(songs, 0, true)
+                    if (Setting.instance.keepPlayingQueueIntact)
+                        MusicPlayerRemote.playNow(songs)
+                    else
+                        MusicPlayerRemote.openQueue(songs, 0, true)
                 }
                 handled = true
             }
@@ -276,7 +279,10 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
                         val position = intent.getIntExtra("position", 0)
                         val songs: List<Song> =
                             ArrayList<Song>(PlaylistSongLoader.getPlaylistSongList(this, id))
-                        MusicPlayerRemote.openQueue(songs, position, true)
+                        if (Setting.instance.keepPlayingQueueIntact)
+                            MusicPlayerRemote.playNow(songs)
+                        else
+                            MusicPlayerRemote.openQueue(songs, 0, true)
                         handled = true
                     }
                 }
@@ -284,7 +290,11 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
                     val id = parseIdFromIntent(intent, "albumId", "album")
                     if (id >= 0) {
                         val position = intent.getIntExtra("position", 0)
-                        MusicPlayerRemote.openQueue(AlbumLoader.getAlbum(this, id).songs, position, true)
+                        val songs = AlbumLoader.getAlbum(this, id).songs
+                        if (Setting.instance.keepPlayingQueueIntact)
+                            MusicPlayerRemote.playNow(songs)
+                        else
+                            MusicPlayerRemote.openQueue(songs, 0, true)
                         handled = true
                     }
                 }
@@ -292,7 +302,12 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
                     val id = parseIdFromIntent(intent, "artistId", "artist")
                     if (id >= 0) {
                         val position = intent.getIntExtra("position", 0)
-                        MusicPlayerRemote.openQueue(ArtistLoader.getArtist(this, id).songs, position, true)
+                        val songs = ArtistLoader.getArtist(this, id).songs
+                        if (Setting.instance.keepPlayingQueueIntact)
+                            MusicPlayerRemote.playNow(songs)
+                        else
+                            MusicPlayerRemote.openQueue(songs, 0, true)
+
                         handled = true
                     }
                 }

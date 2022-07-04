@@ -11,14 +11,15 @@ import player.phonograph.R
 import player.phonograph.adapter.base.MediaEntryViewHolder
 import player.phonograph.glide.ArtistGlideRequest
 import player.phonograph.glide.SongGlideRequest
-import player.phonograph.util.menu.MenuClickListener
 import player.phonograph.model.Album
 import player.phonograph.model.Artist
 import player.phonograph.model.Song
-import player.phonograph.service.MusicPlayerRemote.openQueue
+import player.phonograph.service.MusicPlayerRemote
+import player.phonograph.settings.Setting
 import player.phonograph.util.MusicUtil
 import player.phonograph.util.NavigationUtil.goToAlbum
 import player.phonograph.util.NavigationUtil.goToArtist
+import player.phonograph.util.menu.MenuClickListener
 import util.mddesign.util.Util
 
 /**
@@ -128,7 +129,10 @@ class SearchAdapter(
                     )
                 )
                 SONG -> {
-                    openQueue(listOf(item as Song), 0, true)
+                    if (Setting.instance.keepPlayingQueueIntact)
+                        MusicPlayerRemote.playNow(item as Song)
+                    else
+                        MusicPlayerRemote.openQueue(listOf(item as Song), 0, true)
                 }
             }
         }
