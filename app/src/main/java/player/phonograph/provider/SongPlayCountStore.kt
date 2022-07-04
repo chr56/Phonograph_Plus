@@ -53,7 +53,7 @@ class SongPlayCountStore(context: Context) : SQLiteOpenHelper(context, DatabaseC
                 "($ID LONG UNIQUE," +
                 (0 until NUM_WEEKS).fold("") { x, i -> "$x ${getColumnNameForWeek(i)} INT DEFAULT 0," } +
                 "$LAST_UPDATED_WEEK_INDEX INT NOT NULL," +
-                "$PLAY_COUNT_SCORE REAL DEFAULT 0;"
+                "$PLAY_COUNT_SCORE REAL DEFAULT 0);"
         )
     }
 
