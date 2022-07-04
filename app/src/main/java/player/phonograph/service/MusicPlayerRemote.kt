@@ -17,6 +17,8 @@ import android.provider.MediaStore.Audio.AudioColumns._ID
 import android.util.Log
 import android.widget.Toast
 import android.widget.Toast.LENGTH_SHORT
+import java.io.File
+import java.util.*
 import player.phonograph.R
 import player.phonograph.mediastore.SongLoader.getSongs
 import player.phonograph.mediastore.SongLoader.makeSongCursor
@@ -24,8 +26,6 @@ import player.phonograph.model.Song
 import player.phonograph.notification.ErrorNotification
 import player.phonograph.service.MusicService.MusicBinder
 import player.phonograph.settings.Setting.Companion.instance
-import java.io.File
-import java.util.*
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
@@ -151,7 +151,11 @@ object MusicPlayerRemote {
         }
     }
 
-    private fun tryToHandleOpenPlayingQueue(queue: List<Song>, startPosition: Int, startPlaying: Boolean): Boolean {
+    private fun tryToHandleOpenPlayingQueue(
+        queue: List<Song>,
+        startPosition: Int,
+        startPlaying: Boolean
+    ): Boolean {
         if (playingQueue === queue) {
             if (startPlaying) {
                 playSongAt(startPosition)
@@ -209,6 +213,37 @@ object MusicPlayerRemote {
     fun setShuffleMode(shuffleMode: Int): Boolean {
         return musicService.tryExecute {
             it.shuffleMode = shuffleMode
+        }
+    }
+
+    fun playNow(song: Song): Boolean {
+        return musicService.tryExecute {
+            if (playingQueue.isEmpty()) {
+                openQueue(listOf(song), 0, false)
+            } else {
+                it.addSong(position, song)
+                it.playSongAt(position)
+            }
+            Toast.makeText(musicService, it.resources.getString(R.string.added_title_to_playing_queue), LENGTH_SHORT)
+                .show()
+        }
+    }
+
+    fun playNow(songs: List<Song>): Boolean {
+        return musicService.tryExecute {
+            if (playingQueue.isEmpty()) {
+                openQueue(songs, 0, false)
+                it.play()
+            } else {
+                it.addSongs(position, songs)
+                it.playSongAt(position)
+            }
+            Toast.makeText(
+                musicService,
+                if (songs.size == 1) it.resources.getString(R.string.added_title_to_playing_queue)
+                else it.resources.getString(R.string.added_x_titles_to_playing_queue, songs.size),
+                LENGTH_SHORT
+            ).show()
         }
     }
 
