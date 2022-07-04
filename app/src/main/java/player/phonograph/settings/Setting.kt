@@ -125,6 +125,7 @@ class Setting(context: Context) {
     var autoDownloadImagesPolicy: String by StringPref(AUTO_DOWNLOAD_IMAGES_POLICY, "never")
 
     // Behavior-Playing
+    var keepPlayingQueueIntact: Boolean by BooleanPref(KEEP_PLAYING_QUEUE_INTACT, true)
     var rememberShuffle: Boolean by BooleanPref(REMEMBER_SHUFFLE, true)
     var gaplessPlayback: Boolean by BooleanPref(GAPLESS_PLAYBACK, false)
     var audioDucking: Boolean by BooleanPref(AUDIO_DUCKING, true)
@@ -275,6 +276,7 @@ class Setting(context: Context) {
         private const val AUTO_DOWNLOAD_IMAGES_POLICY = "auto_download_images_policy"
 
         // Behavior-Playing
+        const val KEEP_PLAYING_QUEUE_INTACT = "keep_playing_queue_intact"
         private const val REMEMBER_SHUFFLE = "remember_shuffle"
         private const val AUDIO_DUCKING = "audio_ducking"
         const val GAPLESS_PLAYBACK = "gapless_playback"

@@ -383,6 +383,8 @@
     <string name="reached_to_root">已到达此卷的根目录</string>
     <string name="sort_order_size">文件大小</string>
     <string name="use_legacy_list_Files">使用旧式方法读取文件</string>
+    <string name="pref_title_keep_playing_queue_intact">保护播放列表不被肆意更改</string>
+    <string name="pref_summary_keep_playing_queue_intact">启用后，Phonograph Plus 将就可能保持播放列表而不会被意外清空</string>
     <plurals name="x_songs">
         <item quantity="other">%1$d 首</item>
     </plurals>

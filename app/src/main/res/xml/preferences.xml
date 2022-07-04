@@ -181,6 +181,13 @@
 
         <lib.phonograph.preference.SwitchPreferenceX
             android:defaultValue="true"
+            android:key="keep_playing_queue_intact"
+            android:summary="@string/pref_summary_keep_playing_queue_intact"
+            android:title="@string/pref_title_keep_playing_queue_intact"
+            app:iconSpaceReserved="false" />
+
+        <lib.phonograph.preference.SwitchPreferenceX
+            android:defaultValue="true"
             android:key="remember_shuffle"
             android:summary="@string/pref_summary_remember_shuffle"
             android:title="@string/pref_title_remember_shuffle"
