@@ -10,11 +10,10 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
 import com.bumptech.glide.Glide
-import player.phonograph.R
 import player.phonograph.adapter.AlbumCoverPagerAdapter.AlbumCoverFragment.ColorReceiver
+import player.phonograph.databinding.FragmentAlbumCoverBinding
 import player.phonograph.glide.PhonographColoredTarget
 import player.phonograph.glide.SongGlideRequest
-import lib.phonograph.misc.CustomFragmentStatePagerAdapter
 import player.phonograph.model.Song
 import player.phonograph.settings.Setting
 
@@ -46,12 +45,11 @@ class AlbumCoverPagerAdapter(fm: FragmentManager, private val dataSet: List<Song
      * Only the latest passed [AlbumCoverFragment.ColorReceiver] is guaranteed to receive a response
      */
     fun receiveColor(colorReceiver: ColorReceiver, position: Int) {
-        var fragment = getFragment(position)
+        val fragment = getFragment(position)
         if (fragment != null) {
-            fragment = getFragment(position) as AlbumCoverFragment
             currentColorReceiver = null
             currentColorReceiverPosition = -1
-            fragment.receiveColor(colorReceiver, position)
+            (fragment as AlbumCoverFragment).receiveColor(colorReceiver, position)
         } else {
             currentColorReceiver = colorReceiver
             currentColorReceiverPosition = position
@@ -59,13 +57,17 @@ class AlbumCoverPagerAdapter(fm: FragmentManager, private val dataSet: List<Song
     }
 
     class AlbumCoverFragment : Fragment(), SharedPreferences.OnSharedPreferenceChangeListener {
-        @JvmField
-        var albumCover: ImageView? = null
+
+        var _binding: FragmentAlbumCoverBinding? = null
+        val binding get() = _binding!!
+
         private var isColorReady = false
         private var color = 0
+
         private var song: Song? = null
         private var colorReceiver: ColorReceiver? = null
         private var request = 0
+
         override fun onCreate(savedInstanceState: Bundle?) {
             super.onCreate(savedInstanceState)
             song = requireArguments().getParcelable(SONG_ARG)
@@ -75,23 +77,23 @@ class AlbumCoverPagerAdapter(fm: FragmentManager, private val dataSet: List<Song
             inflater: LayoutInflater,
             container: ViewGroup?,
             savedInstanceState: Bundle?
-        ): View? {
-            val view = inflater.inflate(R.layout.fragment_album_cover, container, false)
-            albumCover = view.findViewById(R.id.player_image)
-            return view
+        ): View {
+            _binding = FragmentAlbumCoverBinding.inflate(LayoutInflater.from(context))
+            return binding.root
         }
 
         override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
             super.onViewCreated(view, savedInstanceState)
             forceSquareAlbumCover(false)
+            // forceSquareAlbumCover(Setting.instance.forceSquareAlbumCover);
             // TODO
-//            forceSquareAlbumCover(Setting.instance.forceSquareAlbumCover);
             Setting.instance.registerOnSharedPreferenceChangedListener(this)
             loadAlbumCover()
         }
 
         override fun onDestroyView() {
             super.onDestroyView()
+            _binding = null
             Setting.instance.unregisterOnSharedPreferenceChangedListener(this)
             colorReceiver = null
         }
@@ -100,7 +102,7 @@ class AlbumCoverPagerAdapter(fm: FragmentManager, private val dataSet: List<Song
             SongGlideRequest.Builder.from(Glide.with(this), song)
                 .checkIgnoreMediaStore(requireActivity())
                 .generatePalette(requireActivity()).build()
-                .into(object : PhonographColoredTarget(albumCover) {
+                .into(object : PhonographColoredTarget(binding.playerImage) {
                     override fun onColorReady(color: Int) {
                         setColor(color)
                     }
@@ -116,15 +118,15 @@ class AlbumCoverPagerAdapter(fm: FragmentManager, private val dataSet: List<Song
         }
 
         fun forceSquareAlbumCover(forceSquareAlbumCover: Boolean) {
-            albumCover!!.scaleType =
+            binding.playerImage.scaleType =
                 if (forceSquareAlbumCover) ImageView.ScaleType.FIT_CENTER else ImageView.ScaleType.CENTER_CROP
         }
 
         private fun setColor(color: Int) {
             this.color = color
-            isColorReady = true
-            if (colorReceiver != null) {
-                colorReceiver!!.onColorReady(color, request)
+            this.isColorReady = true
+            colorReceiver?.let {
+                it.onColorReady(color, request)
                 colorReceiver = null
             }
         }
@@ -145,11 +147,11 @@ class AlbumCoverPagerAdapter(fm: FragmentManager, private val dataSet: List<Song
         companion object {
             private const val SONG_ARG = "song"
             fun newInstance(song: Song?): AlbumCoverFragment {
-                val frag = AlbumCoverFragment()
-                val args = Bundle()
-                args.putParcelable(SONG_ARG, song)
-                frag.arguments = args
-                return frag
+                return AlbumCoverFragment().apply {
+                    arguments = Bundle().apply {
+                        putParcelable(SONG_ARG, song)
+                    }
+                }
             }
         }
     }
