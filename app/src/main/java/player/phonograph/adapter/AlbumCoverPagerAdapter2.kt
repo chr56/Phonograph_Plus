@@ -19,23 +19,23 @@ import player.phonograph.glide.SongGlideRequest
 import player.phonograph.model.Song
 
 class AlbumCoverPagerAdapter2(
-    dataSet: ArrayList<Song>,
+    dataSet: List<Song>,
     fragmentManager: FragmentManager,
     hostFragment: Fragment,
     var onColorReadyCallback: ((color: Int, songId: Long) -> Unit)?
 ) :
     FragmentStateAdapter(fragmentManager, hostFragment.lifecycle) {
 
-    var dataset: MutableList<Song> = dataSet
+    var dataset: MutableList<Song> = dataSet.toMutableList()
         set(value) {
-            if (value.size > 3) throw IllegalArgumentException("No more than 3 songs")
             field = value
             coversFragment.clear()
             notifyDataSetChanged()
         }
-    override fun getItemCount(): Int = 3
 
-    var coversFragment: MutableMap<Int, AlbumCoverFragment> = ArrayMap(3)
+    override fun getItemCount(): Int = dataset.size
+
+    var coversFragment: MutableMap<Int, AlbumCoverFragment> = ArrayMap(dataSet.size)
 
     override fun createFragment(position: Int): Fragment {
         return AlbumCoverFragment.newInstance(dataset[position]).also { newFragment ->

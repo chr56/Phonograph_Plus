@@ -3,8 +3,6 @@ package player.phonograph.ui.fragments.player
 import android.animation.Animator
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.view.*
 import android.view.GestureDetector.SimpleOnGestureListener
 import android.view.View.OnTouchListener
@@ -17,7 +15,6 @@ import player.phonograph.R
 import player.phonograph.adapter.AlbumCoverPagerAdapter2
 import player.phonograph.databinding.FragmentPlayerAlbumCoverBinding
 import player.phonograph.helper.MusicProgressViewUpdateHelper
-import player.phonograph.model.Song
 import player.phonograph.model.lyrics2.LrcLyrics
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.settings.Setting
@@ -54,19 +51,18 @@ class PlayerAlbumCoverFragment :
     @SuppressLint("ClickableViewAccessibility")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        colors = HashMap(3)
+        colors = HashMap()
         pagerAdapter =
             AlbumCoverPagerAdapter2(
-                generateSongSet(),
+                MusicPlayerRemote.playingQueue,
                 this@PlayerAlbumCoverFragment.childFragmentManager,
-                this@PlayerAlbumCoverFragment
-            ) { color: Int, songId: Long ->
-                colors[songId] = color
-                if (MusicPlayerRemote.currentSong.id == songId)
-                    notifyColorChange(color)
-            }
+                this@PlayerAlbumCoverFragment,
+                this::onColorReady
+            )
+
         binding.playerCoverViewpager.apply {
             adapter = pagerAdapter
+            offscreenPageLimit = 1
             registerOnPageChangeCallback(onPageChangeCallback)
             setOnTouchListener(object : OnTouchListener {
                 val gestureDetector = GestureDetector(
@@ -85,9 +81,15 @@ class PlayerAlbumCoverFragment :
                     return gestureDetector.onTouchEvent(event)
                 }
             })
-            currentItem = 1
+            currentItem = MusicPlayerRemote.position
         }
         progressViewUpdateHelper = MusicProgressViewUpdateHelper(this, 500, 1000).apply { start() }
+    }
+
+    private fun onColorReady(color: Int, songId: Long) {
+        colors[songId] = color
+        if (MusicPlayerRemote.currentSong.id == songId)
+            notifyColorChange(color)
     }
 
     override fun onDestroyView() {
@@ -102,7 +104,7 @@ class PlayerAlbumCoverFragment :
     }
 
     override fun onPlayingMetaChanged() {
-        updateDataSet()
+        binding.playerCoverViewpager.currentItem = MusicPlayerRemote.position
     }
 
     override fun onQueueChanged() {
@@ -110,32 +112,16 @@ class PlayerAlbumCoverFragment :
     }
 
     private fun updateDataSet() {
-        pagerAdapter.dataset = generateSongSet()
+        pagerAdapter.dataset = MusicPlayerRemote.playingQueue.toMutableList()
         notifyColorChange(colors[MusicPlayerRemote.currentSong.id] ?: resources.getColor(R.color.defaultFooterColor))
     }
 
     private val onPageChangeCallback = object : ViewPager2.OnPageChangeCallback() {
         override fun onPageSelected(position: Int) {
-            when (position) {
-                1 -> {
-                    MusicPlayerRemote.playPreviousSong()
-                    pagerAdapter.dataset = generateSongSet()
-                    Handler(Looper.getMainLooper()).postDelayed({
-                        binding.playerCoverViewpager.setCurrentItem(1, false)
-                    }, 1000)
-                }
-                2 -> {
-                    pagerAdapter.notifyItemChanged(1)
-                }
-                3 -> {
-                    MusicPlayerRemote.playNextSong()
-                    pagerAdapter.dataset = generateSongSet()
-                    Handler(Looper.getMainLooper()).postDelayed({
-                        binding.playerCoverViewpager.setCurrentItem(1, false)
-                    }, 1000)
-                }
+            if (position == binding.playerCoverViewpager.currentItem) {
+                pagerAdapter.notifyItemChanged(position)
             }
-            // todo
+            MusicPlayerRemote.playSongAt(position)
         }
     }
 
@@ -270,11 +256,4 @@ class PlayerAlbumCoverFragment :
     companion object {
         const val VISIBILITY_ANIM_DURATION = 300L
     }
-
-    private fun generateSongSet(): ArrayList<Song> =
-        arrayListOf<Song>(
-            MusicPlayerRemote.previousSong,
-            MusicPlayerRemote.currentSong,
-            MusicPlayerRemote.nextSong
-        )
 }
