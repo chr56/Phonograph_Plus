@@ -5,11 +5,14 @@
 package player.phonograph.adapter.display
 
 import android.graphics.drawable.Drawable
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
 import com.bumptech.glide.Glide
-import player.phonograph.adapter.base.MultiSelectionCabController
 import player.phonograph.R
+import player.phonograph.adapter.base.MultiSelectionCabController
 import player.phonograph.glide.ArtistGlideRequest
 import player.phonograph.glide.PhonographColoredTarget
 import player.phonograph.mediastore.sort.SortRef
@@ -58,4 +61,16 @@ class ArtistDisplayAdapter(
 
     override val defaultIcon: Drawable?
         get() = AppCompatResources.getDrawable(activity, R.drawable.default_artist_image)
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DisplayViewHolder {
+        return ArtistViewHolder(
+            LayoutInflater.from(activity).inflate(layoutRes, parent, false)
+        )
+    }
+
+    inner class ArtistViewHolder(itemView: View) : DisplayViewHolder(itemView) {
+        init {
+            setImageTransitionName(itemView.context.getString(R.string.transition_artist_image))
+        }
+    }
 }
