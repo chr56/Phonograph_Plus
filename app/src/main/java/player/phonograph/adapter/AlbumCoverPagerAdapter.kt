@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentStatePagerAdapter
 import com.bumptech.glide.Glide
 import player.phonograph.R
 import player.phonograph.adapter.AlbumCoverPagerAdapter.AlbumCoverFragment.ColorReceiver
@@ -20,8 +21,8 @@ import player.phonograph.settings.Setting
 /**
  * @author Karim Abou Zeid (kabouzeid)
  */
-class AlbumCoverPagerAdapter(fm: FragmentManager?, private val dataSet: List<Song>) :
-    CustomFragmentStatePagerAdapter(fm) {
+class AlbumCoverPagerAdapter(fm: FragmentManager, private val dataSet: List<Song>) :
+    FragmentStatePagerAdapter(fm) {
 
     private var currentColorReceiver: ColorReceiver? = null
     private var currentColorReceiverPosition = -1
@@ -151,5 +152,12 @@ class AlbumCoverPagerAdapter(fm: FragmentManager?, private val dataSet: List<Son
                 return frag
             }
         }
+    }
+
+    private fun FragmentStatePagerAdapter.getFragment(position: Int): Fragment? {
+        if (position < dataSet.size && position >= 0) {
+            return getItem(position)
+        }
+        return null
     }
 }
