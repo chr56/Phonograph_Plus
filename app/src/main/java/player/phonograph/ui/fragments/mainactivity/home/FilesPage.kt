@@ -114,7 +114,7 @@ class FilesPage : AbsPage() {
                     reload()
                 }
                 is FileEntity.File -> {
-                    MusicPlayerRemote.playNext(it.linkedSong)
+                    MusicPlayerRemote.playNow(it.linkedSong)
                 }
             }
         }, hostFragment.cabController)
