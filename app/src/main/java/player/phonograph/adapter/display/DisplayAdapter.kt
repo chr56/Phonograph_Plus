@@ -134,13 +134,13 @@ open class DisplayAdapter<I : Displayable>(
         }
     }
 
-    protected fun onClickItem(bindingAdapterPosition: Int, view: View, image: ImageView?) {
+    protected open fun onClickItem(bindingAdapterPosition: Int, view: View, image: ImageView?) {
         when (isInQuickSelectMode) {
             true -> toggleChecked(bindingAdapterPosition)
             false -> dataset[0].clickHandler().invoke(activity, dataset[bindingAdapterPosition], dataset, image)
         }
     }
-    protected fun onLongClickItem(bindingAdapterPosition: Int, view: View): Boolean {
+    protected open fun onLongClickItem(bindingAdapterPosition: Int, view: View): Boolean {
         return toggleChecked(bindingAdapterPosition)
     }
 
@@ -156,7 +156,7 @@ open class DisplayAdapter<I : Displayable>(
                 this@DisplayAdapter.onLongClickItem(bindingAdapterPosition, it)
             }
             // Menu Click
-            val onClickListener = menu?.setOnClickListener {
+            menu?.setOnClickListener {
                 onMenuClick(bindingAdapterPosition, it)
             }
             // Hide Menu if not available

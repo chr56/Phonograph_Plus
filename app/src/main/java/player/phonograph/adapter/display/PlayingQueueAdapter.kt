@@ -11,6 +11,7 @@ import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.PopupMenu
 import androidx.appcompat.app.AppCompatActivity
 import com.h6ah4i.android.widget.advrecyclerview.draggable.DraggableItemAdapter
@@ -21,7 +22,6 @@ import com.h6ah4i.android.widget.advrecyclerview.draggable.annotation.DraggableI
 import player.phonograph.R
 import player.phonograph.model.Song
 import player.phonograph.service.MusicPlayerRemote
-import player.phonograph.settings.Setting
 import player.phonograph.util.MusicUtil
 import player.phonograph.util.NavigationUtil
 import player.phonograph.util.ViewUtil
@@ -62,13 +62,6 @@ class PlayingQueueAdapter(
 
     override fun setImage(holder: DisplayViewHolder, position: Int) { }
 
-    fun onClick(view: View, bindingAdapterPosition: Int) {
-        if (Setting.instance.keepPlayingQueueIntact)
-            MusicPlayerRemote.playNow(dataset)
-        else
-            MusicPlayerRemote.openQueue(dataset, bindingAdapterPosition, true)
-    }
-
     override fun onMenuClick(bindingAdapterPosition: Int, menuButtonView: View) {
         if (dataset.isNotEmpty()) {
             val popupMenu = PopupMenu(activity, menuButtonView)
@@ -96,22 +89,13 @@ class PlayingQueueAdapter(
         }
     }
 
+    override fun onClickItem(bindingAdapterPosition: Int, view: View, image: ImageView?) {
+        MusicPlayerRemote.openQueue(dataset, bindingAdapterPosition, true)
+    }
+
+    override fun onLongClickItem(bindingAdapterPosition: Int, view: View): Boolean = true
+
     inner class ViewHolder(itemView: View) : DisplayViewHolder(itemView), DraggableItemViewHolder {
-
-        init {
-            itemView.setOnClickListener {
-                onClick(it, bindingAdapterPosition)
-            }
-            itemView.setOnLongClickListener { true }
-
-            image?.visibility = GONE
-
-            imageText?.visibility = VISIBLE
-
-            menu?.setOnClickListener {
-                onMenuClick(bindingAdapterPosition, it)
-            }
-        }
 
         fun bind(position: Int) {
             val song = dataset[position]
@@ -119,6 +103,8 @@ class PlayingQueueAdapter(
             itemView.isActivated = false
             title?.text = song.title
             text?.text = MusicUtil.getSongInfoString(song)
+            image?.visibility = GONE
+            imageText?.visibility = VISIBLE
             imageText?.text = (position - current).toString()
 
             shortSeparator?.visibility = if (bindingAdapterPosition == itemCount - 1) GONE else VISIBLE
