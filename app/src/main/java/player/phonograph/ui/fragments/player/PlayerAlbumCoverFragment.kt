@@ -3,17 +3,21 @@ package player.phonograph.ui.fragments.player
 import android.animation.Animator
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.*
 import android.view.GestureDetector.SimpleOnGestureListener
 import android.view.View.OnTouchListener
 import android.view.animation.AccelerateInterpolator
 import android.view.animation.DecelerateInterpolator
-import androidx.viewpager.widget.ViewPager.OnPageChangeListener
-import player.phonograph.adapter.AlbumCoverPagerAdapter
-import player.phonograph.adapter.AlbumCoverPagerAdapter.AlbumCoverFragment.ColorReceiver
+import androidx.viewpager2.widget.ViewPager2
+import java.util.HashMap
+import lib.phonograph.misc.SimpleAnimatorListener
+import player.phonograph.R
+import player.phonograph.adapter.AlbumCoverPagerAdapter2
 import player.phonograph.databinding.FragmentPlayerAlbumCoverBinding
 import player.phonograph.helper.MusicProgressViewUpdateHelper
-import lib.phonograph.misc.SimpleAnimatorListener
+import player.phonograph.model.Song
 import player.phonograph.model.lyrics2.LrcLyrics
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.settings.Setting
@@ -25,15 +29,16 @@ import player.phonograph.util.ViewUtil
  */
 class PlayerAlbumCoverFragment :
     AbsMusicServiceFragment(),
-    OnPageChangeListener,
     MusicProgressViewUpdateHelper.Callback {
 
     private var _viewBinding: FragmentPlayerAlbumCoverBinding? = null
     private val binding: FragmentPlayerAlbumCoverBinding get() = _viewBinding!!
 
     private var callbacks: Callbacks? = null
-    private var currentPosition = 0
     private var lyrics: LrcLyrics? = null
+
+    private lateinit var colors: MutableMap<Long, Int>
+    private lateinit var pagerAdapter: AlbumCoverPagerAdapter2
 
     private lateinit var progressViewUpdateHelper: MusicProgressViewUpdateHelper /**[onViewCreated]*/
 
@@ -49,9 +54,20 @@ class PlayerAlbumCoverFragment :
     @SuppressLint("ClickableViewAccessibility")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        colors = HashMap(3)
+        pagerAdapter =
+            AlbumCoverPagerAdapter2(
+                generateSongSet(),
+                this@PlayerAlbumCoverFragment.childFragmentManager,
+                this@PlayerAlbumCoverFragment
+            ) { color: Int, songId: Long ->
+                colors[songId] = color
+                if (MusicPlayerRemote.currentSong.id == songId)
+                    notifyColorChange(color)
+            }
         binding.playerCoverViewpager.apply {
-            addOnPageChangeListener(this@PlayerAlbumCoverFragment)
+            adapter = pagerAdapter
+            registerOnPageChangeCallback(onPageChangeCallback)
             setOnTouchListener(object : OnTouchListener {
                 val gestureDetector = GestureDetector(
                     activity,
@@ -65,60 +81,63 @@ class PlayerAlbumCoverFragment :
                         }
                     }
                 )
-
                 override fun onTouch(v: View, event: MotionEvent): Boolean {
                     return gestureDetector.onTouchEvent(event)
                 }
             })
+            currentItem = 1
         }
         progressViewUpdateHelper = MusicProgressViewUpdateHelper(this, 500, 1000).apply { start() }
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        binding.playerCoverViewpager.removeOnPageChangeListener(this)
         progressViewUpdateHelper.stop()
+        binding.playerCoverViewpager.unregisterOnPageChangeCallback(onPageChangeCallback)
         _viewBinding = null
     }
 
     override fun onServiceConnected() {
-        updatePlayingQueue()
+        updateDataSet()
     }
 
     override fun onPlayingMetaChanged() {
-        binding.playerCoverViewpager.currentItem = MusicPlayerRemote.position
+        updateDataSet()
     }
 
     override fun onQueueChanged() {
-        updatePlayingQueue()
+        updateDataSet()
     }
 
-    private fun updatePlayingQueue() {
-        binding.playerCoverViewpager.adapter = AlbumCoverPagerAdapter(parentFragmentManager, MusicPlayerRemote.playingQueue)
-        binding.playerCoverViewpager.currentItem = MusicPlayerRemote.position
-        onPageSelected(MusicPlayerRemote.position)
+    private fun updateDataSet() {
+        pagerAdapter.dataset = generateSongSet()
+        notifyColorChange(colors[MusicPlayerRemote.currentSong.id] ?: resources.getColor(R.color.defaultFooterColor))
     }
 
-    override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
-    override fun onPageSelected(position: Int) {
-        currentPosition = position
-        (binding.playerCoverViewpager.adapter as AlbumCoverPagerAdapter).receiveColor(colorReceiver, position)
-        if (position != MusicPlayerRemote.position) {
-            MusicPlayerRemote.playSongAt(position)
-        }
-    }
-
-    private val colorReceiver by lazy(LazyThreadSafetyMode.NONE) {
-        object : ColorReceiver {
-            override fun onColorReady(color: Int, request: Int) {
-                if (currentPosition == request) {
-                    notifyColorChange(color)
+    private val onPageChangeCallback = object : ViewPager2.OnPageChangeCallback() {
+        override fun onPageSelected(position: Int) {
+            when (position) {
+                1 -> {
+                    MusicPlayerRemote.playPreviousSong()
+                    pagerAdapter.dataset = generateSongSet()
+                    Handler(Looper.getMainLooper()).postDelayed({
+                        binding.playerCoverViewpager.setCurrentItem(1, false)
+                    }, 1000)
+                }
+                2 -> {
+                    pagerAdapter.notifyItemChanged(1)
+                }
+                3 -> {
+                    MusicPlayerRemote.playNextSong()
+                    pagerAdapter.dataset = generateSongSet()
+                    Handler(Looper.getMainLooper()).postDelayed({
+                        binding.playerCoverViewpager.setCurrentItem(1, false)
+                    }, 1000)
                 }
             }
+            // todo
         }
     }
-
-    override fun onPageScrollStateChanged(state: Int) {}
 
     fun showHeartAnimation() {
         binding.playerFavoriteIcon.apply {
@@ -251,4 +270,11 @@ class PlayerAlbumCoverFragment :
     companion object {
         const val VISIBILITY_ANIM_DURATION = 300L
     }
+
+    private fun generateSongSet(): ArrayList<Song> =
+        arrayListOf<Song>(
+            MusicPlayerRemote.previousSong,
+            MusicPlayerRemote.currentSong,
+            MusicPlayerRemote.nextSong
+        )
 }

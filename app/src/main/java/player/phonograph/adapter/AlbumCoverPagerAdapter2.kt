@@ -5,12 +5,12 @@
 package player.phonograph.adapter
 
 import android.os.Bundle
+import android.util.ArrayMap
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.bumptech.glide.Glide
 import player.phonograph.databinding.FragmentAlbumCoverBinding
@@ -21,10 +21,10 @@ import player.phonograph.model.Song
 class AlbumCoverPagerAdapter2(
     dataSet: ArrayList<Song>,
     fragmentManager: FragmentManager,
-    lifecycle: Lifecycle,
+    hostFragment: Fragment,
     var onColorReadyCallback: ((color: Int, songId: Long) -> Unit)?
 ) :
-    FragmentStateAdapter(fragmentManager, lifecycle) {
+    FragmentStateAdapter(fragmentManager, hostFragment.lifecycle) {
 
     var dataset: MutableList<Song> = dataSet
         set(value) {
@@ -35,11 +35,11 @@ class AlbumCoverPagerAdapter2(
         }
     override fun getItemCount(): Int = 3
 
-    var coversFragment: MutableList<AlbumCoverFragment> = ArrayList(3)
+    var coversFragment: MutableMap<Int, AlbumCoverFragment> = ArrayMap(3)
 
     override fun createFragment(position: Int): Fragment {
         return AlbumCoverFragment.newInstance(dataset[position]).also { newFragment ->
-            coversFragment.add(newFragment)
+            coversFragment[position] = newFragment
             newFragment.onColorReady = { color: Int, id: Long ->
                 onColorReadyCallback?.invoke(color, id)
             }
