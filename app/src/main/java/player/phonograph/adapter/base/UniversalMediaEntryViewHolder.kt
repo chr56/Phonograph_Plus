@@ -1,6 +1,5 @@
 package player.phonograph.adapter.base
 
-import android.os.Build
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
@@ -36,8 +35,7 @@ open class UniversalMediaEntryViewHolder(itemView: View) :
     }
 
     protected fun setImageTransitionName(transitionName: String) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            image?.transitionName = transitionName
-        }
+        // if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+        image?.transitionName = transitionName
     }
 }

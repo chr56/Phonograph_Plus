@@ -5,8 +5,12 @@
 package player.phonograph.adapter.display
 
 import android.graphics.drawable.Drawable
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
+import player.phonograph.R
 import player.phonograph.adapter.base.MultiSelectionCabController
 import player.phonograph.glide.PhonographColoredTarget
 import player.phonograph.glide.SongGlideRequest
@@ -56,4 +60,16 @@ class AlbumDisplayAdapter(
     }
 
     override fun getRelativeOrdinalText(item: Album): String = item.songCount.toString()
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DisplayViewHolder {
+        return AlbumViewHolder(
+            LayoutInflater.from(activity).inflate(layoutRes, parent, false)
+        )
+    }
+
+    inner class AlbumViewHolder(itemView: View) : DisplayViewHolder(itemView) {
+        init {
+            setImageTransitionName(itemView.context.getString(R.string.transition_album_art))
+        }
+    }
 }
