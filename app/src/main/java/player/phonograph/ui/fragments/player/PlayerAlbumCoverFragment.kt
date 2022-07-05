@@ -5,7 +5,6 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.*
 import android.view.GestureDetector.SimpleOnGestureListener
-import android.view.View.OnTouchListener
 import android.view.animation.AccelerateInterpolator
 import android.view.animation.DecelerateInterpolator
 import androidx.viewpager2.widget.ViewPager2
@@ -60,27 +59,44 @@ class PlayerAlbumCoverFragment :
                 this::onColorReady
             )
 
+        val gestureDetector = GestureDetector(
+            activity,
+            object : SimpleOnGestureListener() {
+                override fun onSingleTapConfirmed(e: MotionEvent): Boolean {
+                    callbacks?.let { callbacks ->
+                        callbacks.onToolbarToggled()
+                        return true
+                    }
+                    return super.onSingleTapConfirmed(e)
+                }
+
+                override fun onScroll(
+                    e1: MotionEvent,
+                    e2: MotionEvent,
+                    distanceX: Float,
+                    distanceY: Float
+                ): Boolean {
+                    return if (distanceX > (activity?.window?.decorView?.width ?: 20) / 2) {
+                        when {
+                            e1.rawX > e2.rawX -> {
+                                MusicPlayerRemote.playNextSong()
+                            }
+                            e1.rawX < e2.rawX -> {
+                                MusicPlayerRemote.playPreviousSong()
+                            }
+                        }
+                        true
+                    } else false
+                }
+            }
+        )
+
+        binding.root.setOnTouchListener { _, event -> gestureDetector.onTouchEvent(event) }
+
         binding.playerCoverViewpager.apply {
             adapter = pagerAdapter
             offscreenPageLimit = 1
             registerOnPageChangeCallback(onPageChangeCallback)
-            setOnTouchListener(object : OnTouchListener {
-                val gestureDetector = GestureDetector(
-                    activity,
-                    object : SimpleOnGestureListener() {
-                        override fun onSingleTapConfirmed(e: MotionEvent): Boolean {
-                            callbacks?.let { callbacks ->
-                                callbacks.onToolbarToggled()
-                                return true
-                            }
-                            return super.onSingleTapConfirmed(e)
-                        }
-                    }
-                )
-                override fun onTouch(v: View, event: MotionEvent): Boolean {
-                    return gestureDetector.onTouchEvent(event)
-                }
-            })
             currentItem = MusicPlayerRemote.position
         }
         progressViewUpdateHelper = MusicProgressViewUpdateHelper(this, 500, 1000).apply { start() }
