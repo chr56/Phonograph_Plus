@@ -20,18 +20,22 @@ import player.phonograph.settings.Setting
 /**
  * @author Karim Abou Zeid (kabouzeid)
  */
-class AlbumCoverPagerAdapter(fm: FragmentManager, private val dataSet: List<Song>) :
+class AlbumCoverPagerAdapter(fm: FragmentManager, dataSet: List<Song>) :
     FragmentStatePagerAdapter(fm) {
+
+    var dataSet = dataSet
+        set(value) {
+            field = value
+            notifyDataSetChanged()
+        }
 
     private var currentColorReceiver: ColorReceiver? = null
     private var currentColorReceiverPosition = -1
-    override fun getItem(position: Int): Fragment {
-        return AlbumCoverFragment.newInstance(dataSet[position])
-    }
 
-    override fun getCount(): Int {
-        return dataSet.size
-    }
+    override fun getItem(position: Int): Fragment =
+        AlbumCoverFragment.newInstance(dataSet[position])
+
+    override fun getCount(): Int = dataSet.size
 
     override fun instantiateItem(container: ViewGroup, position: Int): Any {
         val o = super.instantiateItem(container, position)
@@ -142,6 +146,7 @@ class AlbumCoverPagerAdapter(fm: FragmentManager, private val dataSet: List<Song
 
         interface ColorReceiver {
             fun onColorReady(color: Int, request: Int)
+            fun onColorReady(color: Int, songId: Long){}
         }
 
         companion object {
