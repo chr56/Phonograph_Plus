@@ -69,7 +69,7 @@ class PlaylistSongAdapter(
         }
     }
 
-    override fun onMenuClick(menuButtonView: View, bindingAdapterPosition: Int) {
+    override fun onMenuClick(bindingAdapterPosition: Int, menuButtonView: View) {
         if (editMode) {
             val popupMenu = PopupMenu(activity, menuButtonView)
             popupMenu.inflate(R.menu.menu_item_playlist_editor)
@@ -81,7 +81,7 @@ class PlaylistSongAdapter(
             }
             popupMenu.show()
         } else {
-            super.onMenuClick(menuButtonView, bindingAdapterPosition)
+            super.onMenuClick(bindingAdapterPosition, menuButtonView)
         }
     }
 

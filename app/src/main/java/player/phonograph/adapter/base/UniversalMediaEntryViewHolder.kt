@@ -2,7 +2,6 @@ package player.phonograph.adapter.base
 
 import android.os.Build
 import android.view.View
-import android.view.View.OnLongClickListener
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
@@ -25,15 +24,6 @@ open class UniversalMediaEntryViewHolder(itemView: View) :
     var paletteColorContainer: View? = null
 
     init {
-        bindingViews()
-    }
-
-    protected fun setClickListener(clickListener: MediaEntryViewClickListener) {
-        itemView.setOnClickListener(clickListener)
-        itemView.setOnLongClickListener(clickListener)
-    }
-
-    private fun bindingViews() {
         // todo: use viewBinding
         image = itemView.findViewById(R.id.image)
         imageText = itemView.findViewById(R.id.image_text)
@@ -50,14 +40,4 @@ open class UniversalMediaEntryViewHolder(itemView: View) :
             image?.transitionName = transitionName
         }
     }
-}
-
-interface MediaEntryViewClickListener :
-    View.OnClickListener,
-    OnLongClickListener {
-    override fun onLongClick(v: View): Boolean {
-        return false
-    }
-
-    override fun onClick(v: View) {}
 }

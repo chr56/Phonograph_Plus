@@ -8,15 +8,15 @@ import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.PopupMenu
 import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView
-import player.phonograph.adapter.base.MultiSelectionCabController
 import player.phonograph.R
-import player.phonograph.adapter.base.MediaEntryViewClickListener
 import player.phonograph.adapter.base.MultiSelectAdapter
+import player.phonograph.adapter.base.MultiSelectionCabController
 import player.phonograph.adapter.base.UniversalMediaEntryViewHolder
 import player.phonograph.interfaces.Displayable
 import util.mdcolor.ColorUtil
@@ -119,7 +119,7 @@ open class DisplayAdapter<I : Displayable>(
     // for inheriting
     open fun getSectionNameImp(position: Int): String = dataset[position].getSortOrderReference()?.substring(0..1) ?: ""
 
-    protected open fun onMenuClick(menuButtonView: View, bindingAdapterPosition: Int) {
+    protected open fun onMenuClick(bindingAdapterPosition: Int, menuButtonView: View) {
         if (dataset.isNotEmpty()) {
             val menuRes = dataset[0].menuRes()
             val popupMenu = PopupMenu(activity, menuButtonView)
@@ -134,29 +134,34 @@ open class DisplayAdapter<I : Displayable>(
         }
     }
 
-    open inner class DisplayViewHolder(itemView: View) : UniversalMediaEntryViewHolder(itemView), MediaEntryViewClickListener {
+    protected fun onClickItem(bindingAdapterPosition: Int, view: View, image: ImageView?) {
+        when (isInQuickSelectMode) {
+            true -> toggleChecked(bindingAdapterPosition)
+            false -> dataset[0].clickHandler().invoke(activity, dataset[bindingAdapterPosition], dataset, image)
+        }
+    }
+    protected fun onLongClickItem(bindingAdapterPosition: Int, view: View): Boolean {
+        return toggleChecked(bindingAdapterPosition)
+    }
+
+    open inner class DisplayViewHolder(itemView: View) : UniversalMediaEntryViewHolder(itemView) {
 
         init {
             // Item Click
-            setClickListener(object : MediaEntryViewClickListener {
-                override fun onLongClick(v: View): Boolean {
-                    return toggleChecked(bindingAdapterPosition)
-                }
-
-                override fun onClick(v: View) {
-                    when (isInQuickSelectMode) {
-                        true -> toggleChecked(bindingAdapterPosition)
-                        false -> dataset[0].clickHandler().invoke(activity, dataset[bindingAdapterPosition], dataset, image)
-                    }
-                }
-            })
+            itemView.setOnClickListener {
+                this@DisplayAdapter.onClickItem(bindingAdapterPosition, it, image)
+            }
+            // Item Long Click
+            itemView.setOnLongClickListener {
+                this@DisplayAdapter.onLongClickItem(bindingAdapterPosition, it)
+            }
             // Menu Click
+            val onClickListener = menu?.setOnClickListener {
+                onMenuClick(bindingAdapterPosition, it)
+            }
+            // Hide Menu if not available
             if (dataset[0].menuRes() == 0 || dataset[0].menuHandler() == null) {
                 menu?.visibility = View.GONE
-            } else {
-                menu?.setOnClickListener {
-                    onMenuClick(it, bindingAdapterPosition)
-                }
             }
         }
     }

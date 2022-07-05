@@ -69,7 +69,7 @@ class PlayingQueueAdapter(
             MusicPlayerRemote.openQueue(dataset, bindingAdapterPosition, true)
     }
 
-    override fun onMenuClick(menuButtonView: View, bindingAdapterPosition: Int) {
+    override fun onMenuClick(bindingAdapterPosition: Int, menuButtonView: View) {
         if (dataset.isNotEmpty()) {
             val popupMenu = PopupMenu(activity, menuButtonView)
             popupMenu.inflate(R.menu.menu_item_playing_queue_song)
@@ -109,7 +109,7 @@ class PlayingQueueAdapter(
             imageText?.visibility = VISIBLE
 
             menu?.setOnClickListener {
-                onMenuClick(it, bindingAdapterPosition)
+                onMenuClick(bindingAdapterPosition, it)
             }
         }
 
