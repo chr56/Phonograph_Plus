@@ -168,6 +168,20 @@ object MusicPlayerRemote {
     }
 
     val currentSong: Song get() = musicService?.currentSong ?: Song.EMPTY_SONG
+    val previousSong: Song get() {
+        return when (musicService?.position ?: -1) {
+            -1 -> Song.EMPTY_SONG
+            0 -> musicService!!.playingQueue!!.last()
+            else -> musicService!!.playingQueue[musicService?.position!! - 1]
+        }
+    }
+    val nextSong: Song get() {
+        return when (musicService?.position ?: -1) {
+            -1 -> Song.EMPTY_SONG
+            musicService!!.playingQueue.size - 1 -> musicService!!.playingQueue!!.first()
+            else -> musicService!!.playingQueue[musicService!!.position + 1]
+        }
+    }
 
     /**
      * Async
