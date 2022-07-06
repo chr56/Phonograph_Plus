@@ -4,11 +4,13 @@ import android.app.Application
 import android.content.Intent
 import android.content.res.Configuration
 import android.os.Build
+import android.os.Message
 import android.os.Process
 import android.util.Log
 import androidx.appcompat.content.res.AppCompatResources
 import kotlin.system.exitProcess
 import player.phonograph.appshortcuts.DynamicShortcutManager
+import player.phonograph.service.queue.QueueManager
 import player.phonograph.ui.activities.CrashActivity
 import util.mdcolor.pref.ThemeColor
 
@@ -26,6 +28,8 @@ class App : Application() {
             false
         )
     }
+
+    lateinit var queueManager: QueueManager
 
     override fun onCreate() {
         if (BuildConfig.DEBUG) Log.v("Metrics", "${System.currentTimeMillis().mod(10000000)} App.onCreate()")
@@ -57,6 +61,14 @@ class App : Application() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
             DynamicShortcutManager(this).initDynamicShortcuts()
         }
+        // QueueManager
+        queueManager = QueueManager(this)
+        queueManager.postMessage(Message.obtain().apply { what = QueueManager.MSG_STATE_RESTORE })
+    }
+
+    override fun onTerminate() {
+        queueManager.release()
+        super.onTerminate()
     }
 
     val nightMode: Boolean
