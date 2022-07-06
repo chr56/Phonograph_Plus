@@ -10,6 +10,8 @@ import android.os.HandlerThread
 import android.os.Message
 import android.os.Process
 import androidx.preference.PreferenceManager
+import java.util.concurrent.CopyOnWriteArrayList
+import kotlin.collections.ArrayList
 import player.phonograph.model.Song
 import player.phonograph.provider.MusicPlaybackQueueStore
 
@@ -34,8 +36,11 @@ class QueueManager(val context: Application) {
         observers.clear()
     }
 
-    var playingQueue: MutableList<Song> = ArrayList()
-    var originalPlayingQueue: MutableList<Song> = ArrayList()
+    private var _playingQueue: MutableList<Song> = CopyOnWriteArrayList()
+    private var _originalPlayingQueue: MutableList<Song> = CopyOnWriteArrayList()
+
+    val playingQueue: List<Song> get() = _playingQueue
+    val originalPlayingQueue: List<Song> get() = _originalPlayingQueue
 
     var shuffleMode: ShuffleMode = ShuffleMode.NONE
         @Synchronized
@@ -74,7 +79,7 @@ class QueueManager(val context: Application) {
                     if (result < 0) 0 else result
                 }
                 RepeatMode.REPEAT_QUEUE -> {
-                    if (result <= 0) playingQueue.size - 1 else result
+                    if (result <= 0) _playingQueue.size - 1 else result
                 }
                 RepeatMode.REPEAT_SINGLE_SONG -> {
                     currentSongPosition
@@ -90,7 +95,7 @@ class QueueManager(val context: Application) {
             val result = currentSongPosition + 1
             return when (repeatMode) {
                 RepeatMode.NONE -> {
-                    if (result >= playingQueue.size) {
+                    if (result >= _playingQueue.size) {
                         // todo
 //                        service.queueSaveHandlerThread sendMessage(
 //                            Message.obtain().apply { what = MusicService.TRACK_ENDED }
@@ -101,7 +106,7 @@ class QueueManager(val context: Application) {
                     }
                 }
                 RepeatMode.REPEAT_QUEUE -> {
-                    if (result >= playingQueue.size) 0 else result
+                    if (result >= _playingQueue.size) 0 else result
                 }
                 RepeatMode.REPEAT_SINGLE_SONG -> {
                     currentSongPosition
@@ -113,8 +118,8 @@ class QueueManager(val context: Application) {
      * Get a song safely in current queue
      */
     fun getSongAt(position: Int): Song =
-        if (position >= 0 && position < playingQueue.size) {
-            playingQueue[position]
+        if (position >= 0 && position < _playingQueue.size) {
+            _playingQueue[position]
         } else {
             Song.EMPTY_SONG
         }
@@ -129,23 +134,23 @@ class QueueManager(val context: Application) {
         }
     }
 
-    val lastTrack: Boolean = currentSongPosition == playingQueue.size - 1
+    val lastTrack: Boolean = currentSongPosition == _playingQueue.size - 1
 
     private fun modifyQueueIml(modifyWhat: ShuffleMode, action: (MutableList<Song>) -> Unit) {
         when (modifyWhat) {
             ShuffleMode.SHUFFLE -> {
-                synchronized(playingQueue) {
-                    action(playingQueue)
+                synchronized(_playingQueue) {
+                    action(_playingQueue)
                 }
             }
             ShuffleMode.NONE -> {
-                synchronized(originalPlayingQueue) {
-                    action(originalPlayingQueue)
+                synchronized(_originalPlayingQueue) {
+                    action(_originalPlayingQueue)
                 }
             }
         }
         observers.executeForEach {
-            onQueueChanged(modifyWhat, playingQueue, originalPlayingQueue)
+            onQueueChanged(modifyWhat, _playingQueue, _originalPlayingQueue)
         }
     }
 
@@ -204,8 +209,8 @@ class QueueManager(val context: Application) {
         val restoredOriginalQueue = MusicPlaybackQueueStore.getInstance(context).savedOriginalPlayingQueue
         val restoredPosition = PreferenceManager.getDefaultSharedPreferences(context).getInt(PREF_POSITION, -1)
         if (restoredQueue.size > 0 && restoredQueue.size == restoredOriginalQueue.size && restoredPosition != -1) {
-            originalPlayingQueue = restoredOriginalQueue.toMutableList()
-            playingQueue = restoredQueue.toMutableList()
+            _originalPlayingQueue = restoredOriginalQueue.toMutableList()
+            _playingQueue = restoredQueue.toMutableList()
             currentSongPosition = restoredPosition
         }
         PreferenceManager.getDefaultSharedPreferences(context).getInt(PREF_SHUFFLE_MODE, 0).let {
@@ -229,7 +234,7 @@ class QueueManager(val context: Application) {
     }
 
     private fun saveQueue() {
-        MusicPlaybackQueueStore.getInstance(context).saveQueues(playingQueue, originalPlayingQueue)
+        MusicPlaybackQueueStore.getInstance(context).saveQueues(_playingQueue, _originalPlayingQueue)
     }
 
     private fun saveCursor() {
