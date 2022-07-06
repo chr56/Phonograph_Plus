@@ -11,7 +11,6 @@ interface QueueChangeObserver {
     fun onStateSaved() {}
     fun onQueueCursorChanged(newPosition: Int) {}
     fun onQueueChanged(
-        shuffleChanged: ShuffleMode,
         newPlayingQueue: List<Song>,
         newOriginalQueue: List<Song>
     ) {}
