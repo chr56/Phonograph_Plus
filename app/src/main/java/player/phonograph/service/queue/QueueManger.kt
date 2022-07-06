@@ -274,32 +274,3 @@ class QueueManager(val context: Application) {
         const val REPEAT_MODE_THIS = 2
     }
 }
-
-enum class ShuffleMode {
-    SHUFFLE, NONE
-}
-
-enum class RepeatMode {
-    NONE, REPEAT_QUEUE, REPEAT_SINGLE_SONG
-}
-
-interface QueueChangeObserver {
-    fun onStateRestored() {}
-    fun onStateSaved() {}
-    fun onQueueCursorChanged(newPosition: Int) {}
-    fun onQueueChanged(
-        shuffleChanged: ShuffleMode,
-        newPlayingQueue: List<Song>,
-        newOriginalQueue: List<Song>
-    ) {}
-    fun onShuffleModeChanged(newMode: ShuffleMode) {}
-    fun onRepeatModeChanged(newMode: RepeatMode) {}
-}
-
-private fun MutableList<QueueChangeObserver>.executeForEach(
-    action: QueueChangeObserver.() -> Unit
-) {
-    for (observer in this) {
-        action(observer)
-    }
-}
