@@ -12,6 +12,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.SimpleTarget
 import com.bumptech.glide.request.target.Target
 import com.bumptech.glide.request.transition.Transition
+import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.appwidgets.base.BaseAppWidget
 import player.phonograph.glide.SongGlideRequest
@@ -46,7 +47,7 @@ class AppWidgetBig : BaseAppWidget() {
     override fun performUpdate(service: MusicService, appWidgetIds: IntArray?) {
         val appWidgetView = RemoteViews(service.packageName, R.layout.app_widget_big)
         val isPlaying = service.isPlaying
-        val song = service.currentSong
+        val song = App.instance.queueManager.currentSong
 
         // Set the titles and artwork
         if (TextUtils.isEmpty(song.title) && TextUtils.isEmpty(song.artistName)) {

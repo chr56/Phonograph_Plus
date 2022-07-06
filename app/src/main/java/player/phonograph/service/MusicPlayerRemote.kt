@@ -17,15 +17,19 @@ import android.provider.MediaStore.Audio.AudioColumns._ID
 import android.util.Log
 import android.widget.Toast
 import android.widget.Toast.LENGTH_SHORT
-import java.io.File
-import java.util.*
+import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.mediastore.SongLoader.getSongs
 import player.phonograph.mediastore.SongLoader.makeSongCursor
 import player.phonograph.model.Song
 import player.phonograph.notification.ErrorNotification
 import player.phonograph.service.MusicService.MusicBinder
-import player.phonograph.settings.Setting.Companion.instance
+import player.phonograph.service.queue.QueueManager
+import player.phonograph.service.queue.RepeatMode
+import player.phonograph.service.queue.ShuffleMode
+import player.phonograph.settings.Setting
+import java.io.File
+import java.util.*
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
@@ -35,6 +39,8 @@ object MusicPlayerRemote {
     var musicService: MusicService? = null
         private set
     private val mConnectionMap = WeakHashMap<Context, ServiceBinder>()
+
+    val queueManager: QueueManager get() = App.instance.queueManager
 
     fun bindToService(
         context: Context,
@@ -130,8 +136,8 @@ object MusicPlayerRemote {
     fun openQueue(queue: List<Song>, startPosition: Int, startPlaying: Boolean) {
         if (!tryToHandleOpenPlayingQueue(queue, startPosition, startPlaying) && musicService != null) {
             musicService!!.openQueue(queue, startPosition, startPlaying)
-            if (!instance().rememberShuffle) {
-                setShuffleMode(MusicService.SHUFFLE_MODE_NONE)
+            if (!Setting.instance.rememberShuffle) {
+                setShuffleMode(ShuffleMode.NONE)
             }
         }
     }
@@ -147,7 +153,7 @@ object MusicPlayerRemote {
         }
         if (!tryToHandleOpenPlayingQueue(queue, startPosition, startPlaying) && musicService != null) {
             openQueue(queue, startPosition, startPlaying)
-            setShuffleMode(MusicService.SHUFFLE_MODE_SHUFFLE)
+            setShuffleMode(ShuffleMode.SHUFFLE)
         }
     }
 
@@ -167,67 +173,53 @@ object MusicPlayerRemote {
         return false
     }
 
-    val currentSong: Song get() = musicService?.currentSong ?: Song.EMPTY_SONG
-    val previousSong: Song get() {
-        return when (musicService?.position ?: -1) {
-            -1 -> Song.EMPTY_SONG
-            0 -> musicService!!.playingQueue!!.last()
-            else -> musicService!!.playingQueue[musicService?.position!! - 1]
-        }
-    }
-    val nextSong: Song get() {
-        return when (musicService?.position ?: -1) {
-            -1 -> Song.EMPTY_SONG
-            musicService!!.playingQueue.size - 1 -> musicService!!.playingQueue!!.first()
-            else -> musicService!!.playingQueue[musicService!!.position + 1]
-        }
-    }
+    val currentSong: Song get() = queueManager.currentSong
+    val previousSong: Song get() = queueManager.previousSong
+    val nextSong: Song get() = queueManager.nextSong
 
     /**
      * Async
      */
     var position: Int
-        get() = musicService?.position ?: -1
+        get() = queueManager.currentSongPosition
         set(position) {
-            musicService?.position = position
+            queueManager.setQueueCursor(position)
         }
 
     val playingQueue: List<Song>
-        get() = musicService?.playingQueue ?: ArrayList()
+        get() = queueManager.playingQueue
     val songProgressMillis: Int
         get() = musicService?.songProgressMillis ?: -1
     val songDurationMillis: Int
         get() = musicService?.songDurationMillis ?: -1
 
-    fun getQueueDurationMillis(position: Int): Long {
-        return musicService?.getQueueDurationMillis(position) ?: -1
-    }
+    fun getQueueDurationMillis(position: Int): Long = queueManager.getAllSongsDuration()
 
     fun seekTo(millis: Int): Int {
         return musicService?.seek(millis) ?: -1
     }
 
-    val repeatMode: Int
-        get() = musicService?.repeatMode ?: MusicService.REPEAT_MODE_NONE
-    val shuffleMode: Int
-        get() = musicService?.shuffleMode ?: MusicService.SHUFFLE_MODE_NONE
+    val repeatMode: RepeatMode
+        get() = queueManager.repeatMode
+    val shuffleMode: ShuffleMode
+        get() = queueManager.shuffleMode
 
     fun cycleRepeatMode(): Boolean {
-        return musicService.tryExecute {
-            it.cycleRepeatMode()
-        }
+        return runCatching {
+            queueManager.cycleRepeatMode()
+        }.isSuccess
     }
 
     fun toggleShuffleMode(): Boolean {
-        return musicService.tryExecute {
-            it.toggleShuffle()
-        }
+        return runCatching {
+            queueManager.toggleShuffle()
+        }.isSuccess
     }
 
-    fun setShuffleMode(shuffleMode: Int): Boolean {
-        return musicService.tryExecute {
-            it.shuffleMode = shuffleMode
-        }
+    fun setShuffleMode(shuffleMode: ShuffleMode): Boolean {
+        return runCatching {
+            queueManager.switchShuffleMode(shuffleMode)
+        }.isSuccess
     }
 
     fun playNow(song: Song): Boolean {
@@ -235,7 +227,7 @@ object MusicPlayerRemote {
             if (playingQueue.isEmpty()) {
                 openQueue(listOf(song), 0, false)
             } else {
-                it.addSong(position, song)
+                queueManager.addSong(song, position)
                 it.playSongAt(position)
             }
             Toast.makeText(musicService, it.resources.getString(R.string.added_title_to_playing_queue), LENGTH_SHORT)
@@ -249,7 +241,7 @@ object MusicPlayerRemote {
                 openQueue(songs, 0, false)
                 it.play()
             } else {
-                it.addSongs(position, songs)
+                queueManager.addSongs(songs, position)
                 it.playSongAt(position)
             }
             Toast.makeText(
@@ -266,7 +258,7 @@ object MusicPlayerRemote {
             if (playingQueue.isEmpty()) {
                 openQueue(listOf(song), 0, false)
             } else {
-                it.addSong(position + 1, song)
+                queueManager.addSong(song, position + 1)
             }
             Toast.makeText(musicService, it.resources.getString(R.string.added_title_to_playing_queue), LENGTH_SHORT)
                 .show()
@@ -279,7 +271,7 @@ object MusicPlayerRemote {
             if (playingQueue.isEmpty()) {
                 openQueue(songs, 0, false)
             } else {
-                it.addSongs(position + 1, songs)
+                queueManager.addSongs(songs, position + 1)
             }
 
             Toast.makeText(
@@ -296,7 +288,7 @@ object MusicPlayerRemote {
             if (playingQueue.isEmpty()) {
                 openQueue(listOf(song), 0, false)
             } else {
-                it.addSong(song)
+                queueManager.addSong(song)
             }
 
             Toast.makeText(musicService, it.resources.getString(R.string.added_title_to_playing_queue), LENGTH_SHORT)
@@ -310,7 +302,7 @@ object MusicPlayerRemote {
             if (playingQueue.isEmpty()) {
                 openQueue(songs, 0, false)
             } else {
-                it.addSongs(songs)
+                queueManager.addSongs(songs)
             }
 
             Toast.makeText(
@@ -324,26 +316,26 @@ object MusicPlayerRemote {
 
     fun removeFromQueue(song: Song): Boolean {
         return musicService.tryExecute {
-            it.removeSong(song)
+            queueManager.removeSong(song)
         }
     }
 
     fun removeFromQueue(position: Int): Boolean {
         return musicService.tryExecute {
-            if (position in 0..playingQueue.size) it.removeSong(position)
+            if (position in 0..playingQueue.size) queueManager.removeSongAt(position)
         }
     }
 
     fun moveSong(from: Int, to: Int): Boolean {
         return musicService.tryExecute {
-            if (from in 0..playingQueue.size && to in 0..playingQueue.size) it.moveSong(from, to)
+            if (from in 0..playingQueue.size && to in 0..playingQueue.size) queueManager.moveSong(from, to)
         }
     }
 
     fun clearQueue(): Boolean {
-        return musicService.tryExecute {
-            it.clearQueue()
-        }
+        return runCatching {
+            queueManager.clearQueue()
+        }.isSuccess
     }
 
     val audioSessionId: Int get() = musicService?.audioSessionId ?: -1

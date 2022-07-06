@@ -12,6 +12,8 @@ import player.phonograph.model.playlist.MyTopTracksPlaylist
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.model.playlist.ShuffleAllPlaylist
 import player.phonograph.service.MusicService
+import player.phonograph.service.queue.SHUFFLE_MODE_NONE
+import player.phonograph.service.queue.SHUFFLE_MODE_SHUFFLE
 
 /**
  * @author Adrian Campos
@@ -28,21 +30,21 @@ class AppShortcutLauncherActivity : Activity() {
         when (shortcutType) {
             SHORTCUT_TYPE_SHUFFLE_ALL -> {
                 startServiceWithPlaylist(
-                    MusicService.SHUFFLE_MODE_SHUFFLE,
+                    SHUFFLE_MODE_SHUFFLE,
                     ShuffleAllPlaylist(applicationContext)
                 )
                 reportShortcutUsed(this, ShuffleAllShortcutType.id)
             }
             SHORTCUT_TYPE_TOP_TRACKS -> {
                 startServiceWithPlaylist(
-                    MusicService.SHUFFLE_MODE_NONE,
+                    SHUFFLE_MODE_NONE,
                     MyTopTracksPlaylist(applicationContext)
                 )
                 reportShortcutUsed(this, TopTracksShortcutType.id)
             }
             SHORTCUT_TYPE_LAST_ADDED -> {
                 startServiceWithPlaylist(
-                    MusicService.SHUFFLE_MODE_NONE,
+                    SHUFFLE_MODE_NONE,
                     LastAddedPlaylist(applicationContext)
                 )
                 reportShortcutUsed(this, LastAddedShortcutType.id)

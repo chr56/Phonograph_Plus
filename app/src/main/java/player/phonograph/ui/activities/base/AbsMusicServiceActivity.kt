@@ -85,14 +85,17 @@ abstract class AbsMusicServiceActivity : ToolbarActivity(), MusicServiceEventLis
     override fun onServiceConnected() {
         if (!receiverRegistered) {
             musicStateReceiver = MusicStateReceiver(this)
-            val filter = IntentFilter()
-            filter.addAction(MusicService.PLAY_STATE_CHANGED)
-            filter.addAction(MusicService.SHUFFLE_MODE_CHANGED)
-            filter.addAction(MusicService.REPEAT_MODE_CHANGED)
-            filter.addAction(MusicService.META_CHANGED)
-            filter.addAction(MusicService.QUEUE_CHANGED)
-            filter.addAction(MusicService.MEDIA_STORE_CHANGED)
-            registerReceiver(musicStateReceiver, filter)
+            registerReceiver(
+                musicStateReceiver,
+                IntentFilter().apply {
+                    addAction(MusicService.PLAY_STATE_CHANGED)
+                    addAction(MusicService.SHUFFLE_MODE_CHANGED)
+                    addAction(MusicService.REPEAT_MODE_CHANGED)
+                    addAction(MusicService.META_CHANGED)
+                    addAction(MusicService.QUEUE_CHANGED)
+                    addAction(MusicService.MEDIA_STORE_CHANGED)
+                }
+            )
             receiverRegistered = true
         }
         for (listener in mMusicServiceEventListeners) {
@@ -154,8 +157,7 @@ abstract class AbsMusicServiceActivity : ToolbarActivity(), MusicServiceEventLis
         private val reference: WeakReference<AbsMusicServiceActivity> = WeakReference(activity)
         override fun onReceive(context: Context, intent: Intent) {
             val action = intent.action
-            val activity = reference.get()
-            if (activity != null) {
+            reference.get()?.also { activity ->
                 when (action) {
                     MusicService.META_CHANGED -> activity.onPlayingMetaChanged()
                     MusicService.QUEUE_CHANGED -> activity.onQueueChanged()
