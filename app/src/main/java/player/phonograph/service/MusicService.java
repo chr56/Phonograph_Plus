@@ -607,11 +607,6 @@ public class MusicService extends Service implements SharedPreferences.OnSharedP
         uiThreadHandler.post(runnable);
     }
 
-    public void setRepeatMode(final RepeatMode repeatMode) {
-        queueManager.switchRepeatMode(repeatMode);
-        prepareNext();
-    }
-
     public void openQueue(@Nullable final List<Song> playingQueue, final int startPosition, final boolean startPlaying) {
         if (playingQueue != null && !playingQueue.isEmpty() && startPosition >= 0 && startPosition < playingQueue.size()) {
             queueManager.swapQueue(playingQueue, startPosition);
