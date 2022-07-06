@@ -42,6 +42,7 @@ import java.lang.ref.WeakReference;
 import java.util.List;
 import java.util.Random;
 
+import kotlin.Unit;
 import player.phonograph.App;
 import player.phonograph.BuildConfig;
 import player.phonograph.R;
@@ -147,7 +148,7 @@ public class MusicService extends Service implements SharedPreferences.OnSharedP
             }
         }
     };
-    private ContentObserver mediaStoreObserver;
+
     private boolean notHandledMetaChangedForCurrentTrack = true;
 
     private Handler uiThreadHandler;
@@ -181,21 +182,11 @@ public class MusicService extends Service implements SharedPreferences.OnSharedP
 
         initNotification();
 
-        mediaStoreObserver = new MediaStoreObserver(playerHandler);
+        musicServiceKt.setUpMediaStoreObserver(this, playerHandler, (String s) ->{
+            handleAndSendChangeInternal(s);
+            return Unit.INSTANCE;
+        });
         throttledSeekHandler = new ThrottledSeekHandler(playerHandler);
-
-        getContentResolver().registerContentObserver(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, true, mediaStoreObserver);
-        getContentResolver().registerContentObserver(MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI, true, mediaStoreObserver);
-        getContentResolver().registerContentObserver(MediaStore.Audio.Artists.EXTERNAL_CONTENT_URI, true, mediaStoreObserver);
-        getContentResolver().registerContentObserver(MediaStore.Audio.Genres.EXTERNAL_CONTENT_URI, true, mediaStoreObserver);
-        getContentResolver().registerContentObserver(MediaStore.Audio.Playlists.EXTERNAL_CONTENT_URI, true, mediaStoreObserver);
-
-        getContentResolver().registerContentObserver(MediaStore.Audio.Media.INTERNAL_CONTENT_URI, true, mediaStoreObserver);
-        getContentResolver().registerContentObserver(MediaStore.Audio.Albums.INTERNAL_CONTENT_URI, true, mediaStoreObserver);
-        getContentResolver().registerContentObserver(MediaStore.Audio.Artists.INTERNAL_CONTENT_URI, true, mediaStoreObserver);
-        getContentResolver().registerContentObserver(MediaStore.Audio.Genres.INTERNAL_CONTENT_URI, true, mediaStoreObserver);
-        getContentResolver().registerContentObserver(MediaStore.Audio.Playlists.INTERNAL_CONTENT_URI, true, mediaStoreObserver);
-
 
         Setting.Companion.getInstance().registerOnSharedPreferenceChangedListener(this);
 
@@ -366,7 +357,7 @@ public class MusicService extends Service implements SharedPreferences.OnSharedP
         mediaSession.setActive(false);
         quit();
         releaseResources();
-        getContentResolver().unregisterContentObserver(mediaStoreObserver);
+        musicServiceKt.unregisterMediaStoreObserver(this);
         Setting.Companion.getInstance().unregisterOnSharedPreferenceChangedListener(this);
         wakeLock.release();
 
@@ -987,33 +978,6 @@ public class MusicService extends Service implements SharedPreferences.OnSharedP
         @NonNull
         public MusicService getService() {
             return MusicService.this;
-        }
-    }
-
-    private class MediaStoreObserver extends ContentObserver implements Runnable {
-        // milliseconds to delay before calling refresh to aggregate events
-        private static final long REFRESH_DELAY = 500;
-        private Handler mHandler;
-
-        public MediaStoreObserver(Handler handler) {
-            super(handler);
-            mHandler = handler;
-        }
-
-        @Override
-        public void onChange(boolean selfChange) {
-            // if a change is detected, remove any scheduled callback
-            // then post a new one. This is intended to prevent closely
-            // spaced events from generating multiple refresh calls
-            mHandler.removeCallbacks(this);
-            mHandler.postDelayed(this, REFRESH_DELAY);
-        }
-
-        @Override
-        public void run() {
-            // actually call refresh when the delayed callback fires
-            // do not send a sticky broadcast here
-            handleAndSendChangeInternal(MEDIA_STORE_CHANGED);
         }
     }
 
