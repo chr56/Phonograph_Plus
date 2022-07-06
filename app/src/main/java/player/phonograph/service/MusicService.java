@@ -118,11 +118,6 @@ public class MusicService extends Service implements SharedPreferences.OnSharedP
 
     public boolean pendingQuit = false;
 
-    private AppWidgetBig appWidgetBig = AppWidgetBig.getInstance();
-    private AppWidgetClassic appWidgetClassic = AppWidgetClassic.getInstance();
-    private AppWidgetSmall appWidgetSmall = AppWidgetSmall.getInstance();
-    private AppWidgetCard appWidgetCard = AppWidgetCard.getInstance();
-
     private Playback playback;
     private QueueManager queueManager;
     private QueueChangeObserver queueChangeObserver;
@@ -159,6 +154,8 @@ public class MusicService extends Service implements SharedPreferences.OnSharedP
 
     private LyricsUpdateThread lyricsUpdateThread;
 
+    private MusicServiceKt musicServiceKt;
+
 
     @Override
     public void onCreate() {
@@ -179,7 +176,8 @@ public class MusicService extends Service implements SharedPreferences.OnSharedP
 
         uiThreadHandler = new Handler();
 
-        registerReceiver(widgetIntentReceiver, new IntentFilter(APP_WIDGET_UPDATE));
+        musicServiceKt = new MusicServiceKt(this);
+        registerReceiver(musicServiceKt.widgetIntentReceiver, new IntentFilter(APP_WIDGET_UPDATE));
 
         initNotification();
 
@@ -360,7 +358,7 @@ public class MusicService extends Service implements SharedPreferences.OnSharedP
 
     @Override
     public void onDestroy() {
-        unregisterReceiver(widgetIntentReceiver);
+        unregisterReceiver(musicServiceKt.widgetIntentReceiver);
         if (becomingNoisyReceiverRegistered) {
             unregisterReceiver(becomingNoisyReceiver);
             becomingNoisyReceiverRegistered = false;
@@ -747,10 +745,10 @@ public class MusicService extends Service implements SharedPreferences.OnSharedP
 
     private void sendChangeInternal(final String what) {
         sendBroadcast(new Intent(what));
-        appWidgetBig.notifyChange(this, what);
-        appWidgetClassic.notifyChange(this, what);
-        appWidgetSmall.notifyChange(this, what);
-        appWidgetCard.notifyChange(this, what);
+        musicServiceKt.appWidgetBig.notifyChange(this, what);
+        musicServiceKt.appWidgetClassic.notifyChange(this, what);
+        musicServiceKt.appWidgetSmall.notifyChange(this, what);
+        musicServiceKt.appWidgetCard.notifyChange(this, what);
     }
 
     private static final long MEDIA_SESSION_ACTIONS = PlaybackStateCompat.ACTION_PLAY
@@ -991,33 +989,6 @@ public class MusicService extends Service implements SharedPreferences.OnSharedP
             return MusicService.this;
         }
     }
-
-    private final BroadcastReceiver widgetIntentReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(final Context context, final Intent intent) {
-            final String command = intent.getStringExtra(EXTRA_APP_WIDGET_NAME);
-
-            final int[] ids = intent.getIntArrayExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS);
-            switch (command) {
-                case AppWidgetClassic.NAME: {
-                    appWidgetClassic.performUpdate(MusicService.this, ids);
-                    break;
-                }
-                case AppWidgetSmall.NAME: {
-                    appWidgetSmall.performUpdate(MusicService.this, ids);
-                    break;
-                }
-                case AppWidgetBig.NAME: {
-                    appWidgetBig.performUpdate(MusicService.this, ids);
-                    break;
-                }
-                case AppWidgetCard.NAME: {
-                    appWidgetCard.performUpdate(MusicService.this, ids);
-                    break;
-                }
-            }
-        }
-    };
 
     private class MediaStoreObserver extends ContentObserver implements Runnable {
         // milliseconds to delay before calling refresh to aggregate events
