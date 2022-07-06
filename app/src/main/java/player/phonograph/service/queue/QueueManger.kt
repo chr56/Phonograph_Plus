@@ -20,7 +20,7 @@ class QueueManager(val context: Application) {
 
     init {
         thread.start()
-        handler = Handler(thread.looper) { handleMessage(it) }
+        handler = Handler(thread.looper, this::handleMessage)
         restoreState()
     }
 
@@ -167,6 +167,9 @@ class QueueManager(val context: Application) {
         }
     }
 
+    /**
+     * [Handler.Callback] for QueueManager's [handler]
+     */
     private fun handleMessage(msg: Message): Boolean {
         when (msg.what) {
             MSG_STOP -> {
@@ -192,7 +195,7 @@ class QueueManager(val context: Application) {
     }
 
     fun postMessage(msg: Message) {
-        if (msg.what == MSG_STOP) return // stop via [this#destroy()]
+        if (msg.what == MSG_STOP) return /** stop via [release]**/
         handler.sendMessage(msg)
     }
 
