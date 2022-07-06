@@ -4,6 +4,7 @@
 
 package player.phonograph.service.queue
 
+import android.app.Application
 import android.os.Handler
 import android.os.HandlerThread
 import android.os.Message
@@ -11,15 +12,8 @@ import android.os.Process
 import androidx.preference.PreferenceManager
 import player.phonograph.model.Song
 import player.phonograph.provider.MusicPlaybackQueueStore
-import player.phonograph.service.MusicService
 
-class QueueManager {
-    private var _service: MusicService?
-    private val service: MusicService get() = _service!!
-
-    constructor(musicService: MusicService) {
-        _service = musicService
-    }
+class QueueManager(val context: Application) {
 
     private val handler: Handler
     private val thread: HandlerThread = HandlerThread("QueueManagerHandler", Process.THREAD_PRIORITY_BACKGROUND)
@@ -37,7 +31,6 @@ class QueueManager {
         handler.sendMessage(Message.obtain().apply { what = MSG_STOP })
         handler.looper.quit()
         thread.quitSafely()
-        _service = null
         observers.clear()
     }
 
@@ -204,22 +197,22 @@ class QueueManager {
     }
 
     private fun restoreState() {
-        val restoredQueue = MusicPlaybackQueueStore.getInstance(service).savedPlayingQueue
-        val restoredOriginalQueue = MusicPlaybackQueueStore.getInstance(service).savedOriginalPlayingQueue
-        val restoredPosition = PreferenceManager.getDefaultSharedPreferences(service).getInt(PREF_POSITION, -1)
+        val restoredQueue = MusicPlaybackQueueStore.getInstance(context).savedPlayingQueue
+        val restoredOriginalQueue = MusicPlaybackQueueStore.getInstance(context).savedOriginalPlayingQueue
+        val restoredPosition = PreferenceManager.getDefaultSharedPreferences(context).getInt(PREF_POSITION, -1)
         if (restoredQueue.size > 0 && restoredQueue.size == restoredOriginalQueue.size && restoredPosition != -1) {
             originalPlayingQueue = restoredOriginalQueue.toMutableList()
             playingQueue = restoredQueue.toMutableList()
             currentSongPosition = restoredPosition
         }
-        PreferenceManager.getDefaultSharedPreferences(service).getInt(PREF_SHUFFLE_MODE, 0).let {
+        PreferenceManager.getDefaultSharedPreferences(context).getInt(PREF_SHUFFLE_MODE, 0).let {
             shuffleMode = when (it) {
                 SHUFFLE_MODE_SHUFFLE -> ShuffleMode.SHUFFLE
                 SHUFFLE_MODE_NONE -> ShuffleMode.NONE
                 else -> throw Exception("invalid shuffle mode")
             }
         }
-        PreferenceManager.getDefaultSharedPreferences(service).getInt(PREF_REPEAT_MODE, 0).let {
+        PreferenceManager.getDefaultSharedPreferences(context).getInt(PREF_REPEAT_MODE, 0).let {
             repeatMode = when (it) {
                 REPEAT_MODE_NONE -> RepeatMode.NONE
                 REPEAT_MODE_ALL -> RepeatMode.REPEAT_QUEUE
@@ -233,11 +226,11 @@ class QueueManager {
     }
 
     private fun saveQueue() {
-        MusicPlaybackQueueStore.getInstance(service).saveQueues(playingQueue, originalPlayingQueue)
+        MusicPlaybackQueueStore.getInstance(context).saveQueues(playingQueue, originalPlayingQueue)
     }
 
     private fun saveCursor() {
-        PreferenceManager.getDefaultSharedPreferences(service).edit().putInt(PREF_POSITION, currentSongPosition).apply()
+        PreferenceManager.getDefaultSharedPreferences(context).edit().putInt(PREF_POSITION, currentSongPosition).apply()
     }
 
     private fun saveMode() {
@@ -245,7 +238,7 @@ class QueueManager {
             ShuffleMode.SHUFFLE -> SHUFFLE_MODE_SHUFFLE
             ShuffleMode.NONE -> SHUFFLE_MODE_NONE
         }
-        PreferenceManager.getDefaultSharedPreferences(service).edit().putInt(PREF_SHUFFLE_MODE, value).apply()
+        PreferenceManager.getDefaultSharedPreferences(context).edit().putInt(PREF_SHUFFLE_MODE, value).apply()
     }
 
     private fun saveAll() {
