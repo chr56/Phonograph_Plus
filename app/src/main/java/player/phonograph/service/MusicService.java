@@ -67,7 +67,6 @@ import player.phonograph.service.queue.QueueManager;
 import player.phonograph.service.queue.RepeatMode;
 import player.phonograph.service.queue.ShuffleMode;
 import player.phonograph.settings.Setting;
-import player.phonograph.util.MusicUtil;
 import player.phonograph.util.Util;
 
 /**
@@ -154,7 +153,7 @@ public class MusicService extends Service implements SharedPreferences.OnSharedP
         }
     };
     private ContentObserver mediaStoreObserver;
-    private boolean notHandledMetaChangedForCurrentTrack;
+    private boolean notHandledMetaChangedForCurrentTrack = true;
 
     private Handler uiThreadHandler;
 
@@ -336,30 +335,7 @@ public class MusicService extends Service implements SharedPreferences.OnSharedP
                         play();
                         break;
                     case ACTION_PLAY_PLAYLIST:
-                        Playlist playlist = intent.getParcelableExtra(INTENT_EXTRA_PLAYLIST);
-                        ShuffleMode shuffleMode =
-                                ShuffleMode.Companion.deserialize(
-                                        intent.getIntExtra(INTENT_EXTRA_SHUFFLE_MODE, 0)
-                                );
-                        if (playlist != null) {
-                            List<Song> playlistSongs = playlist.getSongs(App.getInstance());
-                            if (!playlistSongs.isEmpty()) {
-                                if (queueManager.getShuffleMode() == ShuffleMode.SHUFFLE) {
-                                    int startPosition = 0;
-                                    if (!playlistSongs.isEmpty()) {
-                                        startPosition = new Random().nextInt(playlistSongs.size());
-                                    }
-                                    openQueue(playlistSongs, startPosition, true);
-                                    queueManager.switchShuffleMode(shuffleMode);
-                                } else {
-                                    openQueue(playlistSongs, 0, true);
-                                }
-                            } else {
-                                Toast.makeText(getApplicationContext(), R.string.playlist_is_empty, Toast.LENGTH_LONG).show();
-                            }
-                        } else {
-                            Toast.makeText(getApplicationContext(), R.string.playlist_is_empty, Toast.LENGTH_LONG).show();
-                        }
+                        MusicServiceKt.parsePlaylistAndPlay(intent, this);
                         break;
                     case ACTION_REWIND:
                         back(true);
@@ -436,7 +412,6 @@ public class MusicService extends Service implements SharedPreferences.OnSharedP
             openCurrent();
             prepareNext();
             if (restoredPositionInTrack > 0) seek(restoredPositionInTrack);
-            notHandledMetaChangedForCurrentTrack = true;//todo
             sendChangeInternal(META_CHANGED);
             queuesRestored = true;
         }
