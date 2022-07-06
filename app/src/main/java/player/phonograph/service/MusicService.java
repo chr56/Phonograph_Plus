@@ -461,7 +461,7 @@ public class MusicService extends Service implements SharedPreferences.OnSharedP
             if (prepared) prepareNextImpl();
             notifyChange(META_CHANGED);
             notHandledMetaChangedForCurrentTrack = false;
-            log("-openTrackAndPrepareNextAt:AfterSet:" + "  currentSong:" + queueManager.getCurrentSong().title);
+            log( "※currentSong:" + queueManager.getCurrentSong().title+"(openTrackAndPrepareNextAt)");
             return prepared;
         }
     }
@@ -632,7 +632,7 @@ public class MusicService extends Service implements SharedPreferences.OnSharedP
     }
 
     private void playSongAtImpl(int position) {
-        log("playSongAtImpl:BeforeSongChange:" + queueManager.getCurrentSong().title);
+        //log("playSongAtImpl:BeforeSongChange:" + queueManager.getCurrentSong().title);
         if (openTrackAndPrepareNextAt(position)) {
             play();
         } else {
@@ -645,7 +645,7 @@ public class MusicService extends Service implements SharedPreferences.OnSharedP
                 playNextSong(true);
             }
         }
-        log("playSongAtImpl:AfterSongChange:" + queueManager.getCurrentSong().title);
+        //log("playSongAtImpl:AfterSongChange:" + queueManager.getCurrentSong().title);
     }
 
     public void pause() {
@@ -664,7 +664,7 @@ public class MusicService extends Service implements SharedPreferences.OnSharedP
                     if (!playback.isInitialized()) {
                         playSongAt(queueManager.getCurrentSongPosition());
                     } else {
-                        log("play:currentSong:" + queueManager.getCurrentSong().title);
+                        //log("play:currentSong:" + queueManager.getCurrentSong().title);
                         playback.start();
                         isQuit = false;
                         if (!becomingNoisyReceiverRegistered) {
