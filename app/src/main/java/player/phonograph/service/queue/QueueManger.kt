@@ -11,6 +11,7 @@ import android.os.Message
 import android.os.Process
 import androidx.preference.PreferenceManager
 import java.util.concurrent.CopyOnWriteArrayList
+import player.phonograph.helper.ShuffleHelper.shuffleAt
 import player.phonograph.model.Song
 import player.phonograph.notification.ErrorNotification
 import player.phonograph.provider.MusicPlaybackQueueStore
@@ -100,8 +101,12 @@ class QueueManager(val context: Application) {
         @Synchronized
         private set(value) {
             field = value
+            applyNewShuffleMode(value)
             observers.executeForEach {
                 onShuffleModeChanged(value)
+            }
+            handler.post {
+                saveShuffleMode()
             }
         }
     var repeatMode: RepeatMode = RepeatMode.NONE
@@ -111,7 +116,33 @@ class QueueManager(val context: Application) {
             observers.executeForEach {
                 onRepeatModeChanged(value)
             }
+            // todo notify player
+            handler.post {
+                saveRepeatMode()
+            }
         }
+
+    private fun applyNewShuffleMode(newShuffleMode: ShuffleMode) {
+        synchronized(shuffleMode) {
+            when (newShuffleMode) {
+                ShuffleMode.SHUFFLE -> {
+                    _playingQueue.shuffleAt(currentSongPosition)
+                    currentSongPosition = 0
+                }
+                ShuffleMode.NONE -> {
+                    val currentSongId = currentSong.id
+                    _playingQueue.clear()
+                    _playingQueue.addAll(_originalPlayingQueue)
+                    for (song in _playingQueue) {
+                        if (song.id == currentSongId) {
+                            currentSongPosition = _playingQueue.indexOf(song)
+                            break
+                        }
+                    }
+                }
+            }
+        }
+    }
 
     /**
      * Get a song safely in current queue
@@ -244,7 +275,14 @@ class QueueManager(val context: Application) {
             observers.executeForEach {
                 onQueueChanged(_playingQueue, _originalPlayingQueue)
             }
+            updateMeta()
+            saveQueue()
+            saveCursor()
         }
+    }
+
+    private fun updateMeta() {
+        // todo
     }
 
     fun setQueueCursor(position: Int) {
@@ -280,7 +318,7 @@ class QueueManager(val context: Application) {
                 saveQueue()
             }
             MSG_SAVE_MODE -> {
-                saveMode()
+                saveShuffleMode()
             }
             MSG_SAVE_CURSOR -> {
                 saveCursor()
@@ -305,7 +343,7 @@ class QueueManager(val context: Application) {
         val restoredQueue = MusicPlaybackQueueStore.getInstance(context).savedPlayingQueue
         val restoredOriginalQueue = MusicPlaybackQueueStore.getInstance(context).savedOriginalPlayingQueue
         val restoredPosition = PreferenceManager.getDefaultSharedPreferences(context).getInt(PREF_POSITION, -1)
-        if (restoredQueue.size > 0 && restoredQueue.size == restoredOriginalQueue.size && restoredPosition != -1) {
+        if (restoredQueue.isNotEmpty() && restoredQueue.size == restoredOriginalQueue.size && restoredPosition != -1) {
             _originalPlayingQueue = restoredOriginalQueue.toMutableList()
             _playingQueue = restoredQueue.toMutableList()
             currentSongPosition = restoredPosition
@@ -338,7 +376,7 @@ class QueueManager(val context: Application) {
         PreferenceManager.getDefaultSharedPreferences(context).edit().putInt(PREF_POSITION, currentSongPosition).apply()
     }
 
-    private fun saveMode() {
+    private fun saveShuffleMode() {
         val value = when (shuffleMode) {
             ShuffleMode.SHUFFLE -> SHUFFLE_MODE_SHUFFLE
             ShuffleMode.NONE -> SHUFFLE_MODE_NONE
@@ -346,14 +384,27 @@ class QueueManager(val context: Application) {
         PreferenceManager.getDefaultSharedPreferences(context).edit().putInt(PREF_SHUFFLE_MODE, value).apply()
     }
 
+    private fun saveRepeatMode() {
+        val value = when (repeatMode) {
+            RepeatMode.NONE -> REPEAT_MODE_NONE
+            RepeatMode.REPEAT_QUEUE -> REPEAT_MODE_ALL
+            RepeatMode.REPEAT_SINGLE_SONG -> REPEAT_MODE_THIS
+        }
+        PreferenceManager.getDefaultSharedPreferences(context).edit().putInt(PREF_REPEAT_MODE, value).apply()
+    }
+
     private fun saveAll() {
         saveQueue()
         saveCursor()
-        saveMode()
+        saveShuffleMode()
+        saveRepeatMode()
         observers.executeForEach {
             onStateSaved()
         }
     }
+
+    fun getAllSongsDuration(): Long =
+        _originalPlayingQueue.fold(0L) { acc, song: Song -> acc + song.duration }
 
     private val observers: MutableList<QueueChangeObserver> = ArrayList()
     fun addObserver(observer: QueueChangeObserver) = observers.add(observer)
