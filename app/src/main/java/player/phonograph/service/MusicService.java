@@ -237,7 +237,7 @@ public class MusicService extends Service implements SharedPreferences.OnSharedP
 
             @Override
             public void onQueueCursorChanged(int newPosition) {
-                // notifyChange(QUEUE_CHANGED);
+                notifyChange(META_CHANGED);
             }
 
             @Override
@@ -479,9 +479,12 @@ public class MusicService extends Service implements SharedPreferences.OnSharedP
 
     public void playNextSong(boolean force) {
         if (force) {
-            int nextPosition = queueManager.getCurrentSongPosition() + 1;
-            if (nextPosition >= queueManager.getPlayingQueue().size()) return;
-            playSongAt(nextPosition);
+            int pos = queueManager.getNextSongPositionInList();
+            if (pos < 0) {
+                onTrackEnded();
+                return;
+            }
+            playSongAt(pos);
         } else {
             playSongAt(queueManager.getNextSongPosition());
         }
@@ -727,9 +730,7 @@ public class MusicService extends Service implements SharedPreferences.OnSharedP
 
     public void playPreviousSong(boolean force) {
         if (force) {
-            int previousPosition = queueManager.getCurrentSongPosition() - 1;
-            if (previousPosition < 0) return;
-            playSongAt(previousPosition);
+            playSongAt(queueManager.getPreviousSongPositionInList());
         } else
             playSongAt(queueManager.getPreviousSongPosition());
     }
@@ -942,9 +943,7 @@ public class MusicService extends Service implements SharedPreferences.OnSharedP
                             break;
                         }
                     } else {
-                        service.queueManager.setQueueCursor(
-                                service.queueManager.getNextSongPosition()
-                        );
+                        service.queueManager.moveToNextSong();
                         service.prepareNextImpl();
                         service.notifyChange(META_CHANGED);
                     }
