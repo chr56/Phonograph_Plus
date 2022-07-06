@@ -4,7 +4,6 @@ import android.app.Application
 import android.content.Intent
 import android.content.res.Configuration
 import android.os.Build
-import android.os.Message
 import android.os.Process
 import android.util.Log
 import androidx.appcompat.content.res.AppCompatResources
@@ -29,7 +28,16 @@ class App : Application() {
         )
     }
 
-    lateinit var queueManager: QueueManager
+    var _queueManager: QueueManager? = null
+    val queueManager: QueueManager get() {
+        if (_queueManager == null) {
+            // QueueManager
+            _queueManager = QueueManager(this).apply {
+                postMessage(QueueManager.MSG_STATE_RESTORE)
+            }
+        }
+        return _queueManager!!
+    }
 
     override fun onCreate() {
         if (BuildConfig.DEBUG) Log.v("Metrics", "${System.currentTimeMillis().mod(10000000)} App.onCreate()")
@@ -61,9 +69,6 @@ class App : Application() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
             DynamicShortcutManager(this).initDynamicShortcuts()
         }
-        // QueueManager
-        queueManager = QueueManager(this)
-        queueManager.postMessage(Message.obtain().apply { what = QueueManager.MSG_STATE_RESTORE })
     }
 
     override fun onTerminate() {
