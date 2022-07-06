@@ -208,7 +208,7 @@ public class MusicService extends Service implements SharedPreferences.OnSharedP
 
         Setting.Companion.getInstance().registerOnSharedPreferenceChangedListener(this);
 
-        queueManager = App.getInstance().queueManager;
+        queueManager = App.getInstance().getQueueManager();
 
         // notify manually for first setting up queueManager
         sendChangeInternal(META_CHANGED);
