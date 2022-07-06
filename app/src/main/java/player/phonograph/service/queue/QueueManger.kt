@@ -52,7 +52,7 @@ class QueueManager(val context: Application) {
         }
 
     /**
-     * get previous position song in CURRENT Repeat mode behavior
+     * get previous song position in CURRENT Repeat Mode behavior
      */
     val previousSongPosition: Int
         get() {
@@ -71,6 +71,15 @@ class QueueManager(val context: Application) {
         }
 
     /**
+     * get previous song position in order of list no mater what Repeat Mode is
+     */
+    val previousSongPositionInList: Int
+        get() {
+            val result = currentSongPosition - 1
+            return if (result < 0) 0 else result
+        }
+
+    /**
      * get next song position in CURRENT Repeat mode behavior
      */
     val nextSongPosition: Int
@@ -79,10 +88,7 @@ class QueueManager(val context: Application) {
             return when (repeatMode) {
                 RepeatMode.NONE -> {
                     if (result >= _playingQueue.size) {
-                        // todo
-//                        service.queueSaveHandlerThread sendMessage(
-//                            Message.obtain().apply { what = MusicService.TRACK_ENDED }
-//                            )
+                        // todo notify that no more songs
                         -1
                     } else {
                         result
@@ -95,6 +101,15 @@ class QueueManager(val context: Application) {
                     currentSongPosition
                 }
             }
+        }
+
+    /**
+     * get next song position in order of list no mater what Repeat Mode is
+     */
+    val nextSongPositionInList: Int
+        get() {
+            val result = currentSongPosition + 1
+            return if (result >= _playingQueue.size) -1 else result
         }
 
     var shuffleMode: ShuffleMode = ShuffleMode.NONE
@@ -172,6 +187,7 @@ class QueueManager(val context: Application) {
             }
         }
     }
+
     @JvmOverloads
     fun addSongs(songs: List<Song>, position: Int = -1) {
         modifyQueue { _playingQueue, _originalPlayingQueue ->
@@ -306,6 +322,12 @@ class QueueManager(val context: Application) {
     fun setQueueCursor(position: Int) {
         handler.post {
             currentSongPosition = position
+        }
+    }
+
+    fun moveToNextSong() {
+        handler.post {
+            currentSongPosition = nextSongPosition
         }
     }
 
