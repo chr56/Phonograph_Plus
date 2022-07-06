@@ -39,7 +39,6 @@ import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.transition.Transition;
 
 import java.lang.ref.WeakReference;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -52,7 +51,6 @@ import player.phonograph.appwidgets.AppWidgetClassic;
 import player.phonograph.appwidgets.AppWidgetSmall;
 import player.phonograph.glide.BlurTransformation;
 import player.phonograph.glide.SongGlideRequest;
-import player.phonograph.helper.ShuffleHelper;
 import player.phonograph.helper.StopWatch;
 import player.phonograph.misc.LyricsUpdateThread;
 import player.phonograph.model.Song;
@@ -356,7 +354,7 @@ public class MusicService extends Service implements SharedPreferences.OnSharedP
                                         startPosition = new Random().nextInt(playlistSongs.size());
                                     }
                                     openQueue(playlistSongs, startPosition, true);
-                                    setShuffleMode(shuffleMode);
+                                    queueManager.switchShuffleMode(shuffleMode);
                                 } else {
                                     openQueue(playlistSongs, 0, true);
                                 }
@@ -764,11 +762,6 @@ public class MusicService extends Service implements SharedPreferences.OnSharedP
                 return -1;
             }
         }
-    }
-
-
-    public void setShuffleMode(final ShuffleMode shuffleMode) {
-        queueManager.switchShuffleMode(shuffleMode); //todo
     }
 
     private void notifyChange(@NonNull final String what) {
