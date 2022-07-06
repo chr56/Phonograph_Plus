@@ -28,6 +28,7 @@ import android.provider.MediaStore;
 import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -182,7 +183,7 @@ public class MusicService extends Service implements SharedPreferences.OnSharedP
 
         initNotification();
 
-        musicServiceKt.setUpMediaStoreObserver(this, playerHandler, (String s) ->{
+        musicServiceKt.setUpMediaStoreObserver(this, playerHandler, (String s) -> {
             handleAndSendChangeInternal(s);
             return Unit.INSTANCE;
         });
@@ -438,6 +439,7 @@ public class MusicService extends Service implements SharedPreferences.OnSharedP
     }
 
     public void playNextSong(boolean force) {
+        log("playNextSong:BeforeSongChange:" + queueManager.getCurrentSong().title);
         if (force) {
             int pos = queueManager.getNextSongPositionInList();
             if (pos < 0) {
@@ -448,6 +450,8 @@ public class MusicService extends Service implements SharedPreferences.OnSharedP
         } else {
             playSongAt(queueManager.getNextSongPosition());
         }
+        log("playNextSong:AfterSongChange:" + queueManager.getCurrentSong().title);
+
     }
 
     private boolean openTrackAndPrepareNextAt(int position) {
@@ -457,6 +461,7 @@ public class MusicService extends Service implements SharedPreferences.OnSharedP
             if (prepared) prepareNextImpl();
             notifyChange(META_CHANGED);
             notHandledMetaChangedForCurrentTrack = false;
+            log("-openTrackAndPrepareNextAt:AfterSet:" + "  currentSong:" + queueManager.getCurrentSong().title);
             return prepared;
         }
     }
@@ -464,6 +469,7 @@ public class MusicService extends Service implements SharedPreferences.OnSharedP
     private boolean openCurrent() {
         synchronized (this) {
             try {
+                log("---setDataSource:" + queueManager.getCurrentSong().title);
                 return playback.setDataSource(MusicServiceKt.getTrackUri(queueManager.getCurrentSong()).toString());
             } catch (Exception e) {
                 return false;
@@ -479,6 +485,7 @@ public class MusicService extends Service implements SharedPreferences.OnSharedP
     private boolean prepareNextImpl() {
         synchronized (this) {
             try {
+                log("---setNextDataSource:" + queueManager.getNextSong().title);
                 playback.setNextDataSource(MusicServiceKt.getTrackUri(queueManager.getNextSong()).toString());
                 return true;
             } catch (Exception e) {
@@ -625,6 +632,7 @@ public class MusicService extends Service implements SharedPreferences.OnSharedP
     }
 
     private void playSongAtImpl(int position) {
+        log("playSongAtImpl:BeforeSongChange:" + queueManager.getCurrentSong().title);
         if (openTrackAndPrepareNextAt(position)) {
             play();
         } else {
@@ -637,6 +645,7 @@ public class MusicService extends Service implements SharedPreferences.OnSharedP
                 playNextSong(true);
             }
         }
+        log("playSongAtImpl:AfterSongChange:" + queueManager.getCurrentSong().title);
     }
 
     public void pause() {
@@ -655,6 +664,7 @@ public class MusicService extends Service implements SharedPreferences.OnSharedP
                     if (!playback.isInitialized()) {
                         playSongAt(queueManager.getCurrentSongPosition());
                     } else {
+                        log("play:currentSong:" + queueManager.getCurrentSong().title);
                         playback.start();
                         isQuit = false;
                         if (!becomingNoisyReceiverRegistered) {
@@ -1050,5 +1060,10 @@ public class MusicService extends Service implements SharedPreferences.OnSharedP
         } else {
             lyricsUpdateThread.setCurrentSong(null);
         }
+    }
+
+    static void log(@NonNull String msg) {
+        if (BuildConfig.DEBUG)
+            Log.i("MusicServiceDebug", msg);
     }
 }
