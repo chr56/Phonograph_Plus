@@ -11,8 +11,8 @@ import android.os.Message
 import android.os.Process
 import androidx.preference.PreferenceManager
 import java.util.concurrent.CopyOnWriteArrayList
-import kotlin.collections.ArrayList
 import player.phonograph.model.Song
+import player.phonograph.notification.ErrorNotification
 import player.phonograph.provider.MusicPlaybackQueueStore
 
 class QueueManager(val context: Application) {
@@ -40,23 +40,6 @@ class QueueManager(val context: Application) {
 
     val playingQueue: List<Song> get() = _playingQueue
     val originalPlayingQueue: List<Song> get() = _originalPlayingQueue
-
-    var shuffleMode: ShuffleMode = ShuffleMode.NONE
-        @Synchronized
-        private set(value) {
-            field = value
-            observers.executeForEach {
-                onShuffleModeChanged(value)
-            }
-        }
-    var repeatMode: RepeatMode = RepeatMode.NONE
-        @Synchronized
-        private set(value) {
-            field = value
-            observers.executeForEach {
-                onRepeatModeChanged(value)
-            }
-        }
 
     var currentSongPosition = -1
         @Synchronized
@@ -113,12 +96,29 @@ class QueueManager(val context: Application) {
             }
         }
 
+    var shuffleMode: ShuffleMode = ShuffleMode.NONE
+        @Synchronized
+        private set(value) {
+            field = value
+            observers.executeForEach {
+                onShuffleModeChanged(value)
+            }
+        }
+    var repeatMode: RepeatMode = RepeatMode.NONE
+        @Synchronized
+        private set(value) {
+            field = value
+            observers.executeForEach {
+                onRepeatModeChanged(value)
+            }
+        }
+
     /**
      * Get a song safely in current queue
      */
     fun getSongAt(position: Int): Song =
         if (position >= 0 && position < _playingQueue.size) {
-            _playingQueue[position]
+            playingQueue[position]
         } else {
             Song.EMPTY_SONG
         }
@@ -127,29 +127,123 @@ class QueueManager(val context: Application) {
     val nextSong: Song get() = getSongAt(nextSongPosition)
     val previousSong: Song get() = getSongAt(previousSongPosition)
 
-    fun modifyQueue(modifyWhat: ShuffleMode, action: (MutableList<Song>) -> Unit) {
-        handler.post {
-            modifyQueueIml(modifyWhat, action)
+    val lastTrack: Boolean = currentSongPosition == _playingQueue.size - 1
+
+    @JvmOverloads
+    fun addSong(song: Song, position: Int = -1) {
+        modifyQueue { _playingQueue, _originalPlayingQueue ->
+            if (position < 0) {
+                _playingQueue.add(song)
+                _originalPlayingQueue.add(song)
+            } else {
+                _playingQueue.add(position, song)
+                _originalPlayingQueue.add(position, song)
+            }
+        }
+    }
+    @JvmOverloads
+    fun addSongs(songs: List<Song>, position: Int = -1) {
+        modifyQueue { _playingQueue, _originalPlayingQueue ->
+            if (position < 0) {
+                _playingQueue.addAll(songs)
+                _originalPlayingQueue.addAll(songs)
+            } else {
+                _playingQueue.addAll(position, songs)
+                _originalPlayingQueue.addAll(position, songs)
+            }
         }
     }
 
-    val lastTrack: Boolean = currentSongPosition == _playingQueue.size - 1
-
-    private fun modifyQueueIml(modifyWhat: ShuffleMode, action: (MutableList<Song>) -> Unit) {
-        when (modifyWhat) {
-            ShuffleMode.SHUFFLE -> {
-                synchronized(_playingQueue) {
-                    action(_playingQueue)
+    fun removeSongAt(position: Int) {
+        modifyQueue { _playingQueue, _originalPlayingQueue ->
+            if (position in _originalPlayingQueue.indices) {
+                if (shuffleMode == ShuffleMode.NONE) {
+                    _playingQueue.removeAt(position)
+                    _originalPlayingQueue.removeAt(position)
+                } else {
+                    _originalPlayingQueue.remove(_playingQueue.removeAt(position))
                 }
-            }
-            ShuffleMode.NONE -> {
-                synchronized(_originalPlayingQueue) {
-                    action(_originalPlayingQueue)
-                }
+                rePosition(position)
+            } else {
+                ErrorNotification.postErrorNotification("Warning: removing song at position$position,but we only have ${_originalPlayingQueue.size} songs")
             }
         }
-        observers.executeForEach {
-            onQueueChanged(modifyWhat, _playingQueue, _originalPlayingQueue)
+    }
+    fun removeSong(song: Song) {
+        modifyQueue { _playingQueue, _originalPlayingQueue ->
+            for (i in _playingQueue.indices) {
+                if (_playingQueue[i].id == song.id) {
+                    _playingQueue.removeAt(i)
+                    rePosition(i)
+                }
+            }
+            for (i in playingQueue.indices) {
+                if (_originalPlayingQueue[i].id == song.id) {
+                    _originalPlayingQueue.removeAt(i)
+                }
+            }
+            _playingQueue.remove(song)
+            _originalPlayingQueue.remove(song)
+        }
+    }
+
+    /**
+     * Change current position after deletion
+     */
+    private fun rePosition(deletedSongPosition: Int) {
+        if (deletedSongPosition < currentSongPosition) {
+            currentSongPosition -= 1
+        } else if (deletedSongPosition == currentSongPosition) {
+            // todo
+            if (playingQueue.size > deletedSongPosition) {
+                currentSongPosition = currentSongPosition
+            } else {
+                currentSongPosition -= 1
+            }
+        }
+    }
+
+    fun moveSong(from: Int, to: Int) {
+        if (from == to) return
+        if (from !in _originalPlayingQueue.indices || to !in _originalPlayingQueue.indices) {
+            ErrorNotification.postErrorNotification("Warning: from $from to $to is outrage ")
+            return
+        }
+        // start moving
+        modifyQueue { _playingQueue, _originalPlayingQueue ->
+            val currentPosition: Int = currentSongPosition
+            val songToMove: Song = _playingQueue.removeAt(from)
+            _playingQueue.add(to, songToMove)
+            if (shuffleMode == ShuffleMode.NONE) {
+                val tmpSong: Song = _originalPlayingQueue.removeAt(from)
+                _originalPlayingQueue.add(to, tmpSong)
+            }
+            currentSongPosition =
+                when {
+                    currentPosition in to until from -> currentPosition + 1
+                    currentPosition in (from + 1)..to -> currentPosition - 1
+                    from == currentPosition -> to
+                    else -> from
+                }
+        }
+    }
+
+    fun clearQueue() {
+        modifyQueue { _playingQueue, _originalPlayingQueue ->
+            _playingQueue.clear()
+            _originalPlayingQueue.clear()
+            rePosition(-1)
+        }
+    }
+
+    fun modifyQueue(action: (MutableList<Song>, MutableList<Song>) -> Unit) {
+        handler.post {
+            synchronized(_playingQueue) {
+                action(_playingQueue, _originalPlayingQueue)
+            }
+            observers.executeForEach {
+                onQueueChanged(_playingQueue, _originalPlayingQueue)
+            }
         }
     }
 
@@ -196,6 +290,10 @@ class QueueManager(val context: Application) {
             }
         }
         return false
+    }
+
+    fun postMessage(what: Int) {
+        postMessage(Message.obtain(handler, what))
     }
 
     fun postMessage(msg: Message) {
