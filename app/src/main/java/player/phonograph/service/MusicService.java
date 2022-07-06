@@ -228,6 +228,7 @@ public class MusicService extends Service implements SharedPreferences.OnSharedP
             @Override
             public void onQueueChanged(@NonNull List<? extends Song> newPlayingQueue, @NonNull List<? extends Song> newOriginalQueue) {
                 notifyChange(QUEUE_CHANGED);
+                notifyChange(META_CHANGED);
             }
 
             @Override
