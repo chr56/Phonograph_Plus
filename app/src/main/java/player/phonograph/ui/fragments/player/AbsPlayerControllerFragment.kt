@@ -14,10 +14,11 @@ import android.widget.ImageButton
 import android.widget.SeekBar
 import android.widget.TextView
 import player.phonograph.R
-import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.helper.MusicProgressViewUpdateHelper
 import player.phonograph.misc.SimpleOnSeekbarChangeListener
-import player.phonograph.service.MusicService
+import player.phonograph.service.MusicPlayerRemote
+import player.phonograph.service.queue.RepeatMode
+import player.phonograph.service.queue.ShuffleMode
 import player.phonograph.ui.fragments.AbsMusicServiceFragment
 import player.phonograph.util.MusicUtil
 import player.phonograph.views.PlayPauseDrawable
@@ -54,7 +55,11 @@ abstract class AbsPlayerControllerFragment : AbsMusicServiceFragment(), MusicPro
     }
 
     protected abstract fun bindView(inflater: LayoutInflater): View
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         return bindView(inflater)
     }
 
@@ -173,15 +178,15 @@ abstract class AbsPlayerControllerFragment : AbsMusicServiceFragment(), MusicPro
     }
     private fun updateRepeatState() {
         when (MusicPlayerRemote.repeatMode) {
-            MusicService.REPEAT_MODE_NONE -> {
+            RepeatMode.NONE -> {
                 repeatButton.setImageResource(R.drawable.ic_repeat_white_24dp)
                 repeatButton.setColorFilter(lastDisabledPlaybackControlsColor, PorterDuff.Mode.SRC_IN)
             }
-            MusicService.REPEAT_MODE_ALL -> {
+            RepeatMode.REPEAT_QUEUE -> {
                 repeatButton.setImageResource(R.drawable.ic_repeat_white_24dp)
                 repeatButton.setColorFilter(lastPlaybackControlsColor, PorterDuff.Mode.SRC_IN)
             }
-            MusicService.REPEAT_MODE_THIS -> {
+            RepeatMode.REPEAT_SINGLE_SONG -> {
                 repeatButton.setImageResource(R.drawable.ic_repeat_one_white_24dp)
                 repeatButton.setColorFilter(lastPlaybackControlsColor, PorterDuff.Mode.SRC_IN)
             }
@@ -189,12 +194,10 @@ abstract class AbsPlayerControllerFragment : AbsMusicServiceFragment(), MusicPro
     }
     private fun updateShuffleState() {
         when (MusicPlayerRemote.shuffleMode) {
-            MusicService.SHUFFLE_MODE_SHUFFLE ->
-                shuffleButton.setColorFilter(
-                    lastPlaybackControlsColor,
-                    PorterDuff.Mode.SRC_IN
-                )
-            else -> shuffleButton.setColorFilter(lastDisabledPlaybackControlsColor, PorterDuff.Mode.SRC_IN)
+            ShuffleMode.SHUFFLE ->
+                shuffleButton.setColorFilter(lastPlaybackControlsColor, PorterDuff.Mode.SRC_IN)
+            ShuffleMode.NONE ->
+                shuffleButton.setColorFilter(lastDisabledPlaybackControlsColor, PorterDuff.Mode.SRC_IN)
         }
     }
 

@@ -38,6 +38,7 @@ import player.phonograph.model.Song
 import player.phonograph.notification.UpgradeNotification
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.MusicService
+import player.phonograph.service.queue.ShuffleMode
 import player.phonograph.settings.Setting
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
 import player.phonograph.ui.activities.intro.AppIntroActivity
@@ -262,7 +263,7 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
         intent.action?.let {
             if (it == MediaStore.INTENT_ACTION_MEDIA_PLAY_FROM_SEARCH) {
                 val songs = SearchQueryHelper.getSongs(this, intent.extras!!)
-                if (MusicPlayerRemote.shuffleMode == MusicService.SHUFFLE_MODE_SHUFFLE) {
+                if (MusicPlayerRemote.shuffleMode == ShuffleMode.SHUFFLE) {
                     MusicPlayerRemote.openAndShuffleQueue(songs, true)
                 } else {
                     if (Setting.instance.keepPlayingQueueIntact)
