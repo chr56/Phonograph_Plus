@@ -367,19 +367,10 @@ class QueueManager(val context: Application) {
             currentSongPosition = restoredPosition
         }
         PreferenceManager.getDefaultSharedPreferences(context).getInt(PREF_SHUFFLE_MODE, 0).let {
-            shuffleMode = when (it) {
-                SHUFFLE_MODE_SHUFFLE -> ShuffleMode.SHUFFLE
-                SHUFFLE_MODE_NONE -> ShuffleMode.NONE
-                else -> throw Exception("invalid shuffle mode")
-            }
+            shuffleMode = ShuffleMode.deserialize(it)
         }
         PreferenceManager.getDefaultSharedPreferences(context).getInt(PREF_REPEAT_MODE, 0).let {
-            repeatMode = when (it) {
-                REPEAT_MODE_NONE -> RepeatMode.NONE
-                REPEAT_MODE_ALL -> RepeatMode.REPEAT_QUEUE
-                REPEAT_MODE_THIS -> RepeatMode.REPEAT_SINGLE_SONG
-                else -> throw Exception("invalid repeat mode")
-            }
+            repeatMode = RepeatMode.deserialize(it)
         }
         observers.executeForEach {
             onStateRestored()
@@ -395,20 +386,11 @@ class QueueManager(val context: Application) {
     }
 
     private fun saveShuffleMode() {
-        val value = when (shuffleMode) {
-            ShuffleMode.SHUFFLE -> SHUFFLE_MODE_SHUFFLE
-            ShuffleMode.NONE -> SHUFFLE_MODE_NONE
-        }
-        PreferenceManager.getDefaultSharedPreferences(context).edit().putInt(PREF_SHUFFLE_MODE, value).apply()
+        PreferenceManager.getDefaultSharedPreferences(context).edit().putInt(PREF_SHUFFLE_MODE, shuffleMode.serialize()).apply()
     }
 
     private fun saveRepeatMode() {
-        val value = when (repeatMode) {
-            RepeatMode.NONE -> REPEAT_MODE_NONE
-            RepeatMode.REPEAT_QUEUE -> REPEAT_MODE_ALL
-            RepeatMode.REPEAT_SINGLE_SONG -> REPEAT_MODE_THIS
-        }
-        PreferenceManager.getDefaultSharedPreferences(context).edit().putInt(PREF_REPEAT_MODE, value).apply()
+        PreferenceManager.getDefaultSharedPreferences(context).edit().putInt(PREF_REPEAT_MODE, repeatMode.serialize()).apply()
     }
 
     private fun saveAll() {
@@ -462,12 +444,5 @@ class QueueManager(val context: Application) {
         const val PREF_POSITION = "POSITION"
         const val PREF_SHUFFLE_MODE = "SHUFFLE_MODE"
         const val PREF_REPEAT_MODE = "REPEAT_MODE"
-
-        const val SHUFFLE_MODE_NONE = 0
-        const val SHUFFLE_MODE_SHUFFLE = 1
-
-        const val REPEAT_MODE_NONE = 0
-        const val REPEAT_MODE_ALL = 1
-        const val REPEAT_MODE_THIS = 2
     }
 }
