@@ -161,10 +161,6 @@ public class MusicService extends Service implements SharedPreferences.OnSharedP
     private LyricsUpdateThread lyricsUpdateThread;
 
 
-    private static String getTrackUri(@NonNull Song song) {
-        return MusicUtil.INSTANCE.getSongFileUri(song.id).toString();
-    }
-
     @Override
     public void onCreate() {
         super.onCreate();
@@ -504,7 +500,7 @@ public class MusicService extends Service implements SharedPreferences.OnSharedP
     private boolean openCurrent() {
         synchronized (this) {
             try {
-                return playback.setDataSource(getTrackUri(queueManager.getCurrentSong()));
+                return playback.setDataSource(MusicServiceKt.getTrackUri(queueManager.getCurrentSong()).toString());
             } catch (Exception e) {
                 return false;
             }
@@ -519,8 +515,7 @@ public class MusicService extends Service implements SharedPreferences.OnSharedP
     private boolean prepareNextImpl() {
         synchronized (this) {
             try {
-                int nextPosition = queueManager.getNextSongPosition();
-                playback.setNextDataSource(getTrackUri(queueManager.getSongAt(nextPosition)));
+                playback.setNextDataSource(MusicServiceKt.getTrackUri(queueManager.getNextSong()).toString());
                 return true;
             } catch (Exception e) {
                 return false;

@@ -5,8 +5,10 @@
 package player.phonograph.service
 
 import android.content.Intent
+import android.net.Uri
 import player.phonograph.App
 import player.phonograph.model.Song
+import player.phonograph.util.MusicUtil.getSongFileUri
 
 object MusicServiceKt {
     private const val ANDROID_MUSIC_PACKAGE_NAME = "com.android.music"
@@ -26,5 +28,10 @@ object MusicServiceKt {
                 putExtra("scrobbling_source", MusicService.PHONOGRAPH_PACKAGE_NAME)
             }
         )
+    }
+
+    @JvmStatic
+    fun getTrackUri(song: Song): Uri {
+        return getSongFileUri(song.id)
     }
 }
