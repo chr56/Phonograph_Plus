@@ -428,6 +428,25 @@ class QueueManager(val context: Application) {
     fun getAllSongsDuration(): Long =
         _originalPlayingQueue.fold(0L) { acc, song: Song -> acc + song.duration }
 
+    fun cycleRepeatMode() {
+        switchRepeatMode(
+            when (repeatMode) {
+                RepeatMode.NONE -> RepeatMode.REPEAT_QUEUE
+                RepeatMode.REPEAT_QUEUE -> RepeatMode.REPEAT_SINGLE_SONG
+                RepeatMode.REPEAT_SINGLE_SONG -> RepeatMode.NONE
+            }
+        )
+    }
+
+    fun toggleShuffle() {
+        switchShuffleMode(
+            when (shuffleMode) {
+                ShuffleMode.NONE -> ShuffleMode.SHUFFLE
+                ShuffleMode.SHUFFLE -> ShuffleMode.NONE
+            }
+        )
+    }
+
     private val observers: MutableList<QueueChangeObserver> = ArrayList()
     fun addObserver(observer: QueueChangeObserver) = observers.add(observer)
     fun removeObserver(observer: QueueChangeObserver): Boolean = observers.remove(observer)
