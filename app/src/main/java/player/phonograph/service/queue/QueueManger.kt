@@ -23,7 +23,6 @@ class QueueManager(val context: Application) {
     init {
         thread.start()
         handler = Handler(thread.looper, this::handleMessage)
-        restoreState()
     }
 
     /**
