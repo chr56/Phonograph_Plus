@@ -421,6 +421,10 @@ class QueueManager(val context: Application) {
         }
     }
 
+    fun isLastTrack(): Boolean {
+        return currentSongPosition == playingQueue.size - 1
+    }
+
     fun getAllSongsDuration(): Long =
         _originalPlayingQueue.fold(0L) { acc, song: Song -> acc + song.duration }
 
