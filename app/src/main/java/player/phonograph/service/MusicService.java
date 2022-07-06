@@ -343,7 +343,10 @@ public class MusicService extends Service implements SharedPreferences.OnSharedP
                         break;
                     case ACTION_PLAY_PLAYLIST:
                         Playlist playlist = intent.getParcelableExtra(INTENT_EXTRA_PLAYLIST);
-                        ShuffleMode shuffleMode = ShuffleMode.NONE;//todo handle intent
+                        ShuffleMode shuffleMode =
+                                ShuffleMode.Companion.deserialize(
+                                        intent.getIntExtra(INTENT_EXTRA_SHUFFLE_MODE, 0)
+                                );
                         if (playlist != null) {
                             List<Song> playlistSongs = playlist.getSongs(App.getInstance());
                             if (!playlistSongs.isEmpty()) {
