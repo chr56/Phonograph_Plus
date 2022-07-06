@@ -17,7 +17,15 @@ import util.mdcolor.pref.ThemeColor
  */
 class App : Application() {
 
-    lateinit var lyricsService: StatusBarLyric.API.StatusBarLyric
+    val lyricsService: StatusBarLyric.API.StatusBarLyric by lazy {
+        // StatusBar Lyrics API
+        StatusBarLyric.API.StatusBarLyric(
+            this@App,
+            AppCompatResources.getDrawable(this@App, R.drawable.ic_notification),
+            PACKAGE_NAME,
+            false
+        )
+    }
 
     override fun onCreate() {
         if (BuildConfig.DEBUG) Log.v("Metrics", "${System.currentTimeMillis().mod(10000000)} App.onCreate()")
@@ -49,15 +57,6 @@ class App : Application() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
             DynamicShortcutManager(this).initDynamicShortcuts()
         }
-
-        // StatusBar Lyrics API
-        lyricsService =
-            StatusBarLyric.API.StatusBarLyric(
-                this@App,
-                AppCompatResources.getDrawable(this@App, R.drawable.ic_notification),
-                PACKAGE_NAME,
-                false
-            )
     }
 
     val nightMode: Boolean
