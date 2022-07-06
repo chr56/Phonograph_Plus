@@ -267,6 +267,24 @@ class QueueManager(val context: Application) {
         }
     }
 
+    fun swapQueue(newQueue: List<Song>, newPosition: Int) {
+        if (newQueue.isNotEmpty() && newPosition in newQueue.indices) {
+            modifyQueue { _playingQueue, _originalPlayingQueue ->
+                _originalPlayingQueue.clear()
+                _originalPlayingQueue.addAll(newQueue)
+                _playingQueue.clear()
+                _playingQueue.addAll(newQueue)
+                if (shuffleMode == ShuffleMode.SHUFFLE) {
+                    _playingQueue.shuffleAt(newPosition)
+                    currentSongPosition = 0
+                } else {
+                    currentSongPosition = newPosition
+                }
+                // todo notify player
+            }
+        }
+    }
+
     fun modifyQueue(action: (MutableList<Song>, MutableList<Song>) -> Unit) {
         handler.post {
             synchronized(_playingQueue) {
