@@ -1,4 +1,8 @@
-package player.phonograph.service
+/*
+ * Copyright (c) 2022 chr_56 & Abou Zeid (kabouzeid) (original author)
+ */
+
+package player.phonograph.service.player
 
 import android.content.Context
 import android.content.Intent
@@ -12,7 +16,6 @@ import android.os.PowerManager
 import android.util.Log
 import android.widget.Toast
 import player.phonograph.R
-import player.phonograph.service.player.Playback
 import player.phonograph.service.player.Playback.PlaybackCallbacks
 import player.phonograph.settings.Setting
 
