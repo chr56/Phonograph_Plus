@@ -12,8 +12,8 @@ import android.os.PowerManager
 import android.util.Log
 import android.widget.Toast
 import player.phonograph.R
-import player.phonograph.service.playback.Playback
-import player.phonograph.service.playback.Playback.PlaybackCallbacks
+import player.phonograph.service.player.Playback
+import player.phonograph.service.player.Playback.PlaybackCallbacks
 import player.phonograph.settings.Setting
 
 /**
