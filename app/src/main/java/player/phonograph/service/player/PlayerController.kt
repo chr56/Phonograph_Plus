@@ -397,6 +397,10 @@ class PlayerController(musicService: MusicService) : Playback.PlaybackCallbacks,
         }
     }
 
+    fun setVolume(vol: Float) = handler.request { playerController ->
+        playerController.audioPlayer.setVolume(vol)
+    }
+
     private val observers: MutableList<PlayerStateObserver> = ArrayList()
     fun addObserver(observer: PlayerStateObserver) = observers.add(observer)
     fun removeObserver(observer: PlayerStateObserver): Boolean = observers.remove(observer)
