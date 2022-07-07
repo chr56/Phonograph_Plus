@@ -109,13 +109,19 @@ class PlayerController(musicService: MusicService) : Playback.PlaybackCallbacks,
      * @return true if it is ready
      */
     private fun prepareSongsImp(position: Int): Boolean {
-        // todo change STATE
+        // todo: change STATE if possible
         queueManager.setQueueCursor(position)
         return prepareCurrentPlayer(queueManager.currentSong).also { setCurrentSuccess ->
             if (setCurrentSuccess) prepareNextPlayer(queueManager.nextSong)
             else prepareNextPlayer(null)
+
+            notifyNowPlayingChanged()
         }
-        // todo update META
+    }
+    private fun notifyNowPlayingChanged() {
+        observers.executeForEach {
+            onReceivingMessage(MSG_NOW_PLAYING_CHANGED)
+        }
     }
 
     /**
@@ -182,7 +188,6 @@ class PlayerController(musicService: MusicService) : Playback.PlaybackCallbacks,
 
                         playerState = PlayerState.PLAYING
                         pauseReason = NOT_PAUSED
-                        // todo notify META
                         acquireWakeLock(
                             queueManager.currentSong.duration - audioPlayer.position() + 1000L
                         )
@@ -292,7 +297,9 @@ class PlayerController(musicService: MusicService) : Playback.PlaybackCallbacks,
                 playAtImp(queueManager.nextSongPosition)
             } else {
                 pauseImp(true)
-                // todo notify queue ended
+                observers.executeForEach {
+                    onReceivingMessage(MSG_NO_MORE_SONGS)
+                }
             }
         }
     }
@@ -314,12 +321,15 @@ class PlayerController(musicService: MusicService) : Playback.PlaybackCallbacks,
     private fun stopImp() {
         pauseImp(true)
         playerState = PlayerState.STOPPED
-        // todo send message
+        observers.executeForEach {
+            onReceivingMessage(MSG_PLAYER_STOPPED)
+        }
     }
 
     override fun onTrackWentToNext() {
         handler.request {
             queueManager.moveToNextSong()
+            notifyNowPlayingChanged()
             prepareNextPlayer(queueManager.nextSong)
         }
     }
@@ -327,6 +337,9 @@ class PlayerController(musicService: MusicService) : Playback.PlaybackCallbacks,
     override fun onTrackEnded() {
         handler.request {
             pauseImp(true)
+        }
+        observers.executeForEach {
+            onReceivingMessage(MSG_NO_MORE_SONGS)
         }
     }
 
