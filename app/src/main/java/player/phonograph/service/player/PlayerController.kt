@@ -9,15 +9,18 @@ import android.net.Uri
 import android.os.*
 import android.os.PowerManager.WakeLock
 import android.util.ArrayMap
+import android.util.Log
 import android.widget.Toast
 import java.lang.ref.WeakReference
 import player.phonograph.App
+import player.phonograph.BuildConfig.DEBUG
 import player.phonograph.R
 import player.phonograph.misc.LyricsUpdateThread
 import player.phonograph.model.Song
 import player.phonograph.model.lyrics2.LrcLyrics
 import player.phonograph.notification.ErrorNotification
 import player.phonograph.service.MusicService
+import player.phonograph.service.queue.RepeatMode
 import player.phonograph.util.MusicUtil
 
 // todo sleep timer
@@ -109,9 +112,11 @@ class PlayerController(musicService: MusicService) : Playback.PlaybackCallbacks,
     private fun prepareSongImp(position: Int): Boolean {
         // todo change STATE
         queueManager.setQueueCursor(position)
+
         val current = queueManager.currentSong
         val next = queueManager.nextSong
         if (current == Song.EMPTY_SONG) return false
+
         val result = audioPlayer.setDataSource(getTrackUri(current.id).toString())
         // prepare next
         if (next != Song.EMPTY_SONG) {
@@ -120,7 +125,7 @@ class PlayerController(musicService: MusicService) : Playback.PlaybackCallbacks,
             audioPlayer.setNextDataSource(null)
         }
         // todo update META
-        lyricsUpdateThread.currentSong = queueManager.getSongAt(position)
+
         return result
     }
 
@@ -128,28 +133,24 @@ class PlayerController(musicService: MusicService) : Playback.PlaybackCallbacks,
      * Play songs from a certain position
      */
     fun playAt(position: Int) = handler.request {
-        it.playFrom(position)
+        it.playAtImp(position)
     }
-    private fun playFrom(position: Int) {
-        if (audioFocusManager.requestAudioFocus()) {
-            checkAndRegisterBecomingNoisyReceiver(service)
-            if (!audioPlayer.isPlaying()) {
-                if (!audioPlayer.isInitialized) prepareSongImp(position)
-                audioPlayer.start()
-                playerState = PlayerState.PLAYING
-                // todo update
-                acquireWakeLock(
-                    queueManager.currentSong.duration - audioPlayer.position() + 1000L
-                )
-                lyricsUpdateThread.currentSong = queueManager.getSongAt(position)
-            }
+    private fun playAtImp(position: Int) {
+        if (prepareSongImp(position)) {
+            playImp()
         } else {
             Toast.makeText(
                 service,
-                service.resources.getString(R.string.audio_focus_denied),
+                service.resources.getString(R.string.unplayable_file),
                 Toast.LENGTH_SHORT
             ).show()
+            if (!queueManager.isLastTrack() && queueManager.repeatMode !== RepeatMode.REPEAT_SINGLE_SONG) {
+                // todo add a preference to control this behavior
+                jumpForwardImp()
+            }
         }
+        lyricsUpdateThread.currentSong = queueManager.getSongAt(position)
+        log("playAtImp", "current: at $position song(${queueManager.currentSong})")
     }
 
     /**
@@ -159,11 +160,37 @@ class PlayerController(musicService: MusicService) : Playback.PlaybackCallbacks,
         it.playImp()
     }
     private fun playImp() {
-        pauseReason = NOT_PAUSED
         if (queueManager.playingQueue.isNotEmpty()) {
-            playFrom(queueManager.currentSongPosition)
+            if (audioFocusManager.requestAudioFocus()) {
+                checkAndRegisterBecomingNoisyReceiver(service)
+                if (!audioPlayer.isPlaying()) {
+                    // Actual Logics Start
+                    if (!audioPlayer.isInitialized) {
+                        playAtImp(queueManager.currentSongPosition)
+                    } else {
+                        audioPlayer.start()
+                        log("playImp", "start playing: ${queueManager.currentSong.title}")
+
+                        playerState = PlayerState.PLAYING
+                        pauseReason = NOT_PAUSED
+                        // todo notify META
+                        acquireWakeLock(
+                            queueManager.currentSong.duration - audioPlayer.position() + 1000L
+                        )
+                    }
+                    // Actual Logics End
+                } else {
+                    log("playImp", "Already Playing!", true)
+                }
+            } else {
+                Toast.makeText(
+                    service,
+                    service.resources.getString(R.string.audio_focus_denied),
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
         } else {
-            // todo
+            pauseImp(true)
         }
     }
 
@@ -175,12 +202,12 @@ class PlayerController(musicService: MusicService) : Playback.PlaybackCallbacks,
     fun pause() = handler.request {
         it.pauseImp()
     }
-    private fun pauseImp() {
-        if (audioPlayer.isPlaying()) {
+    private fun pauseImp(force: Boolean = false) {
+        if (audioPlayer.isPlaying() || force) {
             audioPlayer.pause()
             playerState = PlayerState.PAUSED
+            releaseWakeLock()
         }
-        releaseWakeLock()
     }
 
     fun togglePlayPause() = handler.request {
@@ -221,7 +248,7 @@ class PlayerController(musicService: MusicService) : Playback.PlaybackCallbacks,
         it.jumpBackwardImp()
     }
     private fun jumpBackwardImp() {
-        playFrom(queueManager.previousSongPosition)
+        playAtImp(queueManager.previousSongPosition)
     }
 
     /**
@@ -246,9 +273,10 @@ class PlayerController(musicService: MusicService) : Playback.PlaybackCallbacks,
     }
     private fun jumpForwardImp() {
         if (!queueManager.lastTrack) {
-            playFrom(queueManager.nextSongPosition)
+            playAtImp(queueManager.nextSongPosition)
         } else {
-            // todo send message
+            pauseImp(true)
+            // todo update
         }
     }
 
@@ -267,7 +295,7 @@ class PlayerController(musicService: MusicService) : Playback.PlaybackCallbacks,
         it.stopImp()
     }
     private fun stopImp() {
-        pauseImp()
+        pauseImp(true)
         playerState = PlayerState.STOPPED
         // todo send message
     }
@@ -277,14 +305,14 @@ class PlayerController(musicService: MusicService) : Playback.PlaybackCallbacks,
         handler.request {
             pauseImp()
             if (!queueManager.lastTrack) {
-                playFrom(queueManager.currentSongPosition + 1)
+                playAtImp(queueManager.currentSongPosition + 1)
             }
         }
     }
 
     override fun onTrackEnded() {
         handler.request {
-            pauseImp()
+            pauseImp(true)
         }
     }
 
@@ -387,5 +415,9 @@ class PlayerController(musicService: MusicService) : Playback.PlaybackCallbacks,
         } else {
             lyricsUpdateThread.currentSong = null
         }
+    }
+
+    fun log(where: String, msg: String, force: Boolean = false) {
+        if (DEBUG || force) Log.d("PlayerController", "@$where ※$msg")
     }
 }
