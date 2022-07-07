@@ -54,6 +54,7 @@ import player.phonograph.notification.PlayingNotificationImpl;
 import player.phonograph.notification.PlayingNotificationImpl24;
 import player.phonograph.provider.HistoryStore;
 import player.phonograph.provider.SongPlayCountStore;
+import player.phonograph.service.player.MultiPlayer;
 import player.phonograph.service.player.Playback;
 import player.phonograph.service.queue.QueueChangeObserver;
 import player.phonograph.service.queue.QueueManager;
