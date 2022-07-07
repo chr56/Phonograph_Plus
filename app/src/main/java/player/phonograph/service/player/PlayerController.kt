@@ -433,6 +433,9 @@ class PlayerController(musicService: MusicService) : Playback.PlaybackCallbacks,
         }
     }
 
+    fun getSongProgressMillis(): Int = audioPlayer.position()
+    fun getSongDurationMillis(): Int = audioPlayer.duration()
+
     /**
      * API for "StatusBar Lyrics" Xposed Module
      */
