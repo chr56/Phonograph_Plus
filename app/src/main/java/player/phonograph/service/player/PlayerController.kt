@@ -11,7 +11,6 @@ import android.os.PowerManager.WakeLock
 import android.util.ArrayMap
 import android.util.Log
 import android.widget.Toast
-import java.lang.ref.WeakReference
 import player.phonograph.App
 import player.phonograph.BuildConfig.DEBUG
 import player.phonograph.R
@@ -21,6 +20,7 @@ import player.phonograph.model.lyrics2.LrcLyrics
 import player.phonograph.notification.ErrorNotification
 import player.phonograph.service.MusicService
 import player.phonograph.util.MusicUtil
+import java.lang.ref.WeakReference
 
 // todo sleep timer
 /**
@@ -122,6 +122,9 @@ class PlayerController(musicService: MusicService) : Playback.PlaybackCallbacks,
         observers.executeForEach {
             onReceivingMessage(MSG_NOW_PLAYING_CHANGED)
         }
+        handler.post {
+            lyricsUpdateThread.currentSong = queueManager.currentSong
+        }
     }
 
     /**
@@ -164,7 +167,6 @@ class PlayerController(musicService: MusicService) : Playback.PlaybackCallbacks,
             ).show()
             jumpForwardImp(false)
         }
-        lyricsUpdateThread.currentSong = queueManager.getSongAt(position)
         log("playAtImp", "current: at $position song(${queueManager.currentSong})")
     }
 
@@ -338,6 +340,7 @@ class PlayerController(musicService: MusicService) : Playback.PlaybackCallbacks,
         handler.request {
             pauseImp(true)
         }
+        broadcastStopLyric()
         observers.executeForEach {
             onReceivingMessage(MSG_NO_MORE_SONGS)
         }
