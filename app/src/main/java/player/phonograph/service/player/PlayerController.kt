@@ -11,6 +11,7 @@ import android.os.PowerManager.WakeLock
 import android.util.ArrayMap
 import android.util.Log
 import android.widget.Toast
+import androidx.preference.PreferenceManager
 import java.lang.ref.WeakReference
 import player.phonograph.App
 import player.phonograph.BuildConfig.DEBUG
@@ -152,6 +153,20 @@ class PlayerController(musicService: MusicService) : Playback.PlaybackCallbacks,
         audioPlayer.setNextDataSource(
             if (song != null && song != Song.EMPTY_SONG) getTrackUri(song.id).toString() else null
         )
+    }
+
+    var restored = false
+    fun restoreIfNecessary() {
+        if (!restored) {
+            val restoredPositionInTrack =
+                PreferenceManager.getDefaultSharedPreferences(service).getInt(
+                    MusicService.SAVED_POSITION_IN_TRACK,
+                    -1
+                )
+            prepareSongsImp(queueManager.currentSongPosition)
+            if (restoredPositionInTrack > 0) seekTo(restoredPositionInTrack.toLong())
+            restored = true
+        }
     }
 
     /**
