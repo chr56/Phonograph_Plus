@@ -20,6 +20,7 @@ import player.phonograph.model.Song
 import player.phonograph.model.lyrics2.LrcLyrics
 import player.phonograph.notification.ErrorNotification
 import player.phonograph.service.MusicService
+import player.phonograph.settings.Setting
 import player.phonograph.util.MusicUtil
 
 // todo sleep timer
@@ -38,12 +39,13 @@ class PlayerController(musicService: MusicService) : Playback.PlaybackCallbacks,
     private val audioPlayer: AudioPlayer get() = _audioPlayer!!
 
     private val wakeLock: WakeLock
-    private val audioFocusManager: AudioFocusManager = AudioFocusManager()
+    private val audioFocusManager: AudioFocusManager =
+        AudioFocusManager(this)
 
     val handler: ControllerHandler
     private var thread: HandlerThread
 
-    private lateinit var lyricsUpdateThread: LyricsUpdateThread
+    private var lyricsUpdateThread: LyricsUpdateThread
 
     init {
         _audioPlayer = AudioPlayer(musicService, this)
@@ -80,6 +82,7 @@ class PlayerController(musicService: MusicService) : Playback.PlaybackCallbacks,
         lyricsUpdateThread.currentSong = null
         lyricsUpdateThread.quit()
 
+        audioFocusManager.abandonAudioFocus()
         _service = null
     }
 
@@ -208,6 +211,8 @@ class PlayerController(musicService: MusicService) : Playback.PlaybackCallbacks,
                         acquireWakeLock(
                             queueManager.currentSong.duration - audioPlayer.position() + 1000L
                         )
+                        handler.removeMessages(ControllerHandler.DUCK)
+                        handler.sendEmptyMessage(ControllerHandler.UNDUCK)
                     }
                     // Actual Logics End
                 } else {
@@ -366,6 +371,7 @@ class PlayerController(musicService: MusicService) : Playback.PlaybackCallbacks,
         const val PAUSE_BY_MANUAL_ACTION = 2
         const val PAUSE_FOR_QUEUE_ENDED = 4
         const val PAUSE_FOR_AUDIO_BECOMING_NOISY = 8
+        const val PAUSE_FOR_TRANSIENT_LOSS_OF_FOCUS = 16
         const val PAUSE_ERROR = -2
 
         private fun getTrackUri(songId: Long): Uri = MusicUtil.getSongFileUri(songId)
@@ -425,6 +431,12 @@ class PlayerController(musicService: MusicService) : Playback.PlaybackCallbacks,
             }
         }
 
+        fun command(what: Int, arg1: Int, arg2: Int) {
+            sendMessage(
+                Message.obtain(this, what, arg1, arg2)
+            )
+        }
+
         override fun handleMessage(msg: Message) {
             when (msg.what) {
                 HANDLER_EXECUTE_REQUEST -> {
@@ -443,12 +455,47 @@ class PlayerController(musicService: MusicService) : Playback.PlaybackCallbacks,
                         }
                     }
                 }
+                DUCK -> {
+                    controllerRef.get()?.let {
+                        if (Setting.instance.audioDucking) {
+                            currentDuckVolume -= .05f
+                            if (currentDuckVolume > .2f) {
+                                sendEmptyMessageDelayed(DUCK, 10)
+                            } else {
+                                currentDuckVolume = .2f
+                            }
+                        } else {
+                            currentDuckVolume = 1f
+                        }
+                        it.audioPlayer.setVolume(currentDuckVolume)
+                    }
+                }
+                UNDUCK -> {
+                    controllerRef.get()?.let {
+                        if (Setting.instance.audioDucking) {
+                            currentDuckVolume += .03f
+                            if (currentDuckVolume < 1f) {
+                                sendEmptyMessageDelayed(UNDUCK, 10)
+                            } else {
+                                currentDuckVolume = 1f
+                            }
+                        } else {
+                            currentDuckVolume = 1f
+                        }
+                        it.audioPlayer.setVolume(currentDuckVolume)
+                    }
+                }
             }
         }
+
+        private var currentDuckVolume = 1.0f
 
         companion object {
             // MSG WHAT
             private const val HANDLER_EXECUTE_REQUEST = 10
+
+            const val DUCK = 20
+            const val UNDUCK = 30
         }
     }
 
