@@ -85,12 +85,15 @@ class PlayerController(musicService: MusicService) : Playback.PlaybackCallbacks,
         }
     }
 
-    var playerState: PlayerState = PlayerState.PREPARING
-        @Synchronized
+    private var _playerState: PlayerState = PlayerState.PREPARING
+    var playerState: PlayerState
+        get() = _playerState
         private set(value) {
-            val old = field
-            field = value
-            observers.executeForEach { onPlayerStateChanged(old, value) }
+            val oldState = _playerState
+            synchronized(_playerState) {
+                _playerState = value
+            }
+            observers.executeForEach { onPlayerStateChanged(oldState, value) }
         }
 
     /**
