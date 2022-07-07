@@ -1,11 +1,7 @@
-/*
- * Copyright (c) 2022 chr_56 & Abou Zeid (kabouzeid) (original author)
- */
-
-package player.phonograph.service.playback
+package player.phonograph.service.player
 
 /**
- * @author Karim Abou Zeid (kabouzeid)
+ * @author chr_56 & Karim Abou Zeid (kabouzeid) (original author)
  */
 interface Playback {
     fun setDataSource(path: String): Boolean
