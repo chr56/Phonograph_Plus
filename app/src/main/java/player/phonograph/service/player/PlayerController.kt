@@ -347,11 +347,11 @@ class PlayerController(musicService: MusicService) : Playback.PlaybackCallbacks,
      * Move current time to [position]
      * @param position time in millisecond
      */
-    fun seekTo(position: Long) = handler.request {
-        it.seekToImp(position)
+    fun seekTo(position: Long): Int = synchronized(audioPlayer) {
+        seekToImp(position)
     }
-    private fun seekToImp(position: Long) {
-        audioPlayer.seek(position.toInt())
+    private fun seekToImp(position: Long): Int {
+        return audioPlayer.seek(position.toInt())
     }
 
     fun stop() = handler.request {
