@@ -12,7 +12,6 @@ import android.util.ArrayMap
 import android.util.Log
 import android.widget.Toast
 import androidx.preference.PreferenceManager
-import java.lang.ref.WeakReference
 import player.phonograph.App
 import player.phonograph.BuildConfig.DEBUG
 import player.phonograph.R
@@ -23,6 +22,7 @@ import player.phonograph.notification.ErrorNotification
 import player.phonograph.service.MusicService
 import player.phonograph.settings.Setting
 import player.phonograph.util.MusicUtil
+import java.lang.ref.WeakReference
 
 // todo sleep timer
 // todo cleanup queueManager.setQueueCursor
@@ -419,6 +419,8 @@ class PlayerController(musicService: MusicService) : Playback.PlaybackCallbacks,
             }
         }
     }
+
+    val audioSessionId: Int = audioPlayer.audioSessionId
 
     fun setVolume(vol: Float) = handler.request { playerController ->
         playerController.audioPlayer.setVolume(vol)
