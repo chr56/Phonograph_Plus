@@ -20,7 +20,6 @@ import player.phonograph.model.Song
 import player.phonograph.model.lyrics2.LrcLyrics
 import player.phonograph.notification.ErrorNotification
 import player.phonograph.service.MusicService
-import player.phonograph.service.queue.RepeatMode
 import player.phonograph.util.MusicUtil
 
 // todo sleep timer
@@ -105,28 +104,41 @@ class PlayerController(musicService: MusicService) : Playback.PlaybackCallbacks,
         }
 
     /**
-     * prepare player and set queue cursor(position)
+     * prepare current and next player and set queue cursor(position)
      * @param position where to start in queue
      * @return true if it is ready
      */
-    private fun prepareSongImp(position: Int): Boolean {
+    private fun prepareSongsImp(position: Int): Boolean {
         // todo change STATE
         queueManager.setQueueCursor(position)
-
-        val current = queueManager.currentSong
-        val next = queueManager.nextSong
-        if (current == Song.EMPTY_SONG) return false
-
-        val result = audioPlayer.setDataSource(getTrackUri(current.id).toString())
-        // prepare next
-        if (next != Song.EMPTY_SONG) {
-            if (result) audioPlayer.setNextDataSource(getTrackUri(next.id).toString())
-        } else {
-            audioPlayer.setNextDataSource(null)
+        return prepareCurrentPlayer(queueManager.currentSong).also { setCurrentSuccess ->
+            if (setCurrentSuccess) prepareNextPlayer(queueManager.nextSong)
+            else prepareNextPlayer(null)
         }
         // todo update META
+    }
 
-        return result
+    /**
+     * prepare current player data source safely
+     * @param song what to play now
+     * @return true if success
+     */
+    private fun prepareCurrentPlayer(song: Song): Boolean {
+        return if (song != Song.EMPTY_SONG) audioPlayer.setDataSource(
+            getTrackUri(song.id).toString()
+        ) else {
+            false
+        }
+    }
+
+    /**
+     * prepare next player data source safely
+     * @param song what to play now
+     */
+    private fun prepareNextPlayer(song: Song?) {
+        audioPlayer.setNextDataSource(
+            if (song != null && song != Song.EMPTY_SONG) getTrackUri(song.id).toString() else null
+        )
     }
 
     /**
@@ -136,7 +148,7 @@ class PlayerController(musicService: MusicService) : Playback.PlaybackCallbacks,
         it.playAtImp(position)
     }
     private fun playAtImp(position: Int) {
-        if (prepareSongImp(position)) {
+        if (prepareSongsImp(position)) {
             playImp()
         } else {
             Toast.makeText(
@@ -144,10 +156,7 @@ class PlayerController(musicService: MusicService) : Playback.PlaybackCallbacks,
                 service.resources.getString(R.string.unplayable_file),
                 Toast.LENGTH_SHORT
             ).show()
-            if (!queueManager.isLastTrack() && queueManager.repeatMode !== RepeatMode.REPEAT_SINGLE_SONG) {
-                // todo add a preference to control this behavior
-                jumpForwardImp()
-            }
+            jumpForwardImp(false)
         }
         lyricsUpdateThread.currentSong = queueManager.getSongAt(position)
         log("playAtImp", "current: at $position song(${queueManager.currentSong})")
@@ -244,39 +253,47 @@ class PlayerController(musicService: MusicService) : Playback.PlaybackCallbacks,
     /**
      * Return to previous song
      */
-    fun jumpBackward() = handler.request {
-        it.jumpBackwardImp()
+    fun jumpBackward(force: Boolean) = handler.request {
+        it.jumpBackwardImp(force)
     }
-    private fun jumpBackwardImp() {
-        playAtImp(queueManager.previousSongPosition)
+    private fun jumpBackwardImp(force: Boolean) {
+        if (force) {
+            playAtImp(queueManager.previousSongPositionInList)
+        } else {
+            playAtImp(queueManager.previousSongPosition)
+        }
     }
 
     /**
      * [rewindToBeginningImp] or [jumpBackwardImp]
      */
-    fun back() = handler.request {
-        it.backImp()
+    fun back(force: Boolean) = handler.request {
+        it.backImp(force)
     }
-    private fun backImp() {
+    private fun backImp(force: Boolean) {
         if (audioPlayer.position() > 5000) {
             rewindToBeginningImp()
         } else {
-            jumpBackwardImp()
+            jumpBackwardImp(force)
         }
     }
 
     /**
      * Skip and jump to next song
      */
-    fun jumpForward() = handler.request {
-        it.jumpForwardImp()
+    fun jumpForward(force: Boolean) = handler.request {
+        it.jumpForwardImp(force)
     }
-    private fun jumpForwardImp() {
-        if (!queueManager.lastTrack) {
-            playAtImp(queueManager.nextSongPosition)
+    private fun jumpForwardImp(force: Boolean) {
+        if (force) {
+            playAtImp(queueManager.nextSongPositionInList)
         } else {
-            pauseImp(true)
-            // todo update
+            if (!queueManager.lastTrack) {
+                playAtImp(queueManager.nextSongPosition)
+            } else {
+                pauseImp(true)
+                // todo notify queue ended
+            }
         }
     }
 
@@ -300,13 +317,10 @@ class PlayerController(musicService: MusicService) : Playback.PlaybackCallbacks,
         // todo send message
     }
 
-    // todo rename callback
     override fun onTrackWentToNext() {
         handler.request {
-            pauseImp()
-            if (!queueManager.lastTrack) {
-                playAtImp(queueManager.currentSongPosition + 1)
-            }
+            queueManager.moveToNextSong()
+            prepareNextPlayer(queueManager.nextSong)
         }
     }
 
