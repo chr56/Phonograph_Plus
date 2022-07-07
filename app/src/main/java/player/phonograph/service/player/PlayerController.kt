@@ -1,6 +1,10 @@
 package player.phonograph.service.player
 
+import android.content.BroadcastReceiver
 import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
+import android.media.AudioManager
 import android.net.Uri
 import android.os.*
 import android.os.PowerManager.WakeLock
@@ -64,6 +68,7 @@ class PlayerController(musicService: MusicService) : Playback.PlaybackCallbacks,
      */
     fun destroy() {
         stop()
+        unregisterBecomingNoisyReceiver(service)
         _audioPlayer = null
         wakeLock.release()
         thread.quitSafely()
@@ -127,15 +132,17 @@ class PlayerController(musicService: MusicService) : Playback.PlaybackCallbacks,
     }
     private fun playFrom(position: Int) {
         if (audioFocusManager.requestAudioFocus()) {
-            if (audioPlayer.isPlaying()) audioPlayer.pause()
-            prepareSongImp(position)
-            audioPlayer.start()
-            playerState = PlayerState.PLAYING
-            // todo update
-            acquireWakeLock(
-                queueManager.currentSong.duration - audioPlayer.position() + 1000L
-            )
-            lyricsUpdateThread.currentSong = queueManager.getSongAt(position)
+            checkAndRegisterBecomingNoisyReceiver(service)
+            if (!audioPlayer.isPlaying()) {
+                if (!audioPlayer.isInitialized) prepareSongImp(position)
+                audioPlayer.start()
+                playerState = PlayerState.PLAYING
+                // todo update
+                acquireWakeLock(
+                    queueManager.currentSong.duration - audioPlayer.position() + 1000L
+                )
+                lyricsUpdateThread.currentSong = queueManager.getSongAt(position)
+            }
         } else {
             Toast.makeText(
                 service,
@@ -289,6 +296,32 @@ class PlayerController(musicService: MusicService) : Playback.PlaybackCallbacks,
         const val PAUSE_ERROR = -2
 
         private fun getTrackUri(songId: Long): Uri = MusicUtil.getSongFileUri(songId)
+    }
+
+    private var becomingNoisyReceiverRegistered = false
+    private fun checkAndRegisterBecomingNoisyReceiver(context: Context) {
+        if (!becomingNoisyReceiverRegistered) {
+            context.registerReceiver(
+                becomingNoisyReceiver,
+                IntentFilter(
+                    AudioManager.ACTION_AUDIO_BECOMING_NOISY
+                )
+            )
+            becomingNoisyReceiverRegistered = true
+        }
+    }
+    private fun unregisterBecomingNoisyReceiver(context: Context) {
+        if (becomingNoisyReceiverRegistered) {
+            context.unregisterReceiver(becomingNoisyReceiver)
+            becomingNoisyReceiverRegistered = false
+        }
+    }
+    private val becomingNoisyReceiver: BroadcastReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            if (intent.action == AudioManager.ACTION_AUDIO_BECOMING_NOISY) {
+                pause()
+            }
+        }
     }
 
     private val observers: MutableList<PlayerStateObserver> = ArrayList()
