@@ -7,16 +7,17 @@ import android.os.PowerManager.WakeLock
 import android.widget.Toast
 import player.phonograph.App
 import player.phonograph.R
+import player.phonograph.misc.LyricsUpdateThread
 import player.phonograph.model.Song
+import player.phonograph.model.lyrics2.LrcLyrics
 import player.phonograph.service.MusicService
 import player.phonograph.util.MusicUtil
 
-// todo lyrics
 // todo sleep timer
 /**
  * @author chr_56 & Abou Zeid (kabouzeid) (original author)
  */
-class PlayerController(musicService: MusicService) : Playback.PlaybackCallbacks {
+class PlayerController(musicService: MusicService) : Playback.PlaybackCallbacks, LyricsUpdateThread.ProgressMillsUpdateCallback {
 
     private var _service: MusicService? = musicService
     private val service: MusicService get() = _service!!
@@ -31,6 +32,8 @@ class PlayerController(musicService: MusicService) : Playback.PlaybackCallbacks 
 
     var handler: Handler
     private var thread: HandlerThread
+
+    private lateinit var lyricsUpdateThread: LyricsUpdateThread
 
     init {
         _audioPlayer = AudioPlayer(musicService, this)
@@ -48,6 +51,9 @@ class PlayerController(musicService: MusicService) : Playback.PlaybackCallbacks 
         thread = HandlerThread("player_controller_handler_thread")
         thread.start()
         handler = MessageHandler(thread.looper)
+
+        lyricsUpdateThread = LyricsUpdateThread(queueManager.currentSong, this)
+        lyricsUpdateThread.start()
     }
 
     /**
@@ -59,6 +65,10 @@ class PlayerController(musicService: MusicService) : Playback.PlaybackCallbacks 
         wakeLock.release()
         thread.quitSafely()
         handler.looper.quitSafely()
+
+        lyricsUpdateThread.currentSong = null
+        lyricsUpdateThread.quit()
+
         _service = null
     }
 
@@ -85,6 +95,7 @@ class PlayerController(musicService: MusicService) : Playback.PlaybackCallbacks 
      * @return true if it is ready
      */
     private fun prepareSong(position: Int): Boolean {
+        // todo change STATE
         queueManager.setQueueCursor(position)
         val current = queueManager.currentSong
         val next = queueManager.nextSong
@@ -97,6 +108,7 @@ class PlayerController(musicService: MusicService) : Playback.PlaybackCallbacks 
             audioPlayer.setNextDataSource(null)
         }
         // todo update META
+        lyricsUpdateThread.currentSong = queueManager.getSongAt(position)
         return result
     }
 
@@ -114,6 +126,7 @@ class PlayerController(musicService: MusicService) : Playback.PlaybackCallbacks 
                 acquireWakeLock(
                     queueManager.currentSong.duration - audioPlayer.position() + 1000L
                 )
+                lyricsUpdateThread.currentSong = queueManager.getSongAt(position)
             }
         } else {
             Toast.makeText(
@@ -254,6 +267,20 @@ class PlayerController(musicService: MusicService) : Playback.PlaybackCallbacks 
         override fun handleMessage(msg: Message) {
             when (msg.what) {
             }
+        }
+    }
+
+    /**
+     * API for "StatusBar Lyrics" Xposed Module
+     */
+    override fun getProgressTimeMills(): Int = audioPlayer.position()
+    override fun isRunning(): Boolean = isPlaying()
+    private fun broadcastStopLyric() = App.instance.lyricsService.stopLyric()
+    fun replaceLyrics(lyrics: LrcLyrics?) {
+        if (lyrics != null) {
+            lyricsUpdateThread.forceReplaceLyrics(lyrics)
+        } else {
+            lyricsUpdateThread.currentSong = null
         }
     }
 }
