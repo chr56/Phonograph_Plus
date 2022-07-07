@@ -5,10 +5,11 @@
 package player.phonograph.service.player
 
 interface PlayerStateObserver {
-    fun onPlayerStateChanged(oldState: PlayerState, newState: PlayerState)
+    fun onPlayerStateChanged(oldState: PlayerState, newState: PlayerState) {}
+    fun onReceivingMessage(msg: Int)
 }
 
-fun MutableList<PlayerStateObserver>.executeForEach(
+inline fun MutableList<PlayerStateObserver>.executeForEach(
     action: PlayerStateObserver.() -> Unit
 ) {
     for (observer in this) {
