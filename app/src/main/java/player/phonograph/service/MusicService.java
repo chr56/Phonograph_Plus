@@ -454,7 +454,7 @@ public class MusicService extends Service implements SharedPreferences.OnSharedP
             if (prepared) prepareNextImpl();
             notifyChange(META_CHANGED);
             notHandledMetaChangedForCurrentTrack = false;
-            log( "※currentSong:" + queueManager.getCurrentSong().title+"(openTrackAndPrepareNextAt)");
+            log("※currentSong:" + queueManager.getCurrentSong().title + "(openTrackAndPrepareNextAt)");
             return prepared;
         }
     }
@@ -563,7 +563,7 @@ public class MusicService extends Service implements SharedPreferences.OnSharedP
 
                         @Override
                         public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
-                            metaData.putBitmap(MediaMetadataCompat.METADATA_KEY_ALBUM_ART, copy(resource));
+                            metaData.putBitmap(MediaMetadataCompat.METADATA_KEY_ALBUM_ART, MusicServiceKt.copy(resource));
                             mediaSession.setMetadata(metaData.build());
                         }
 
@@ -579,18 +579,6 @@ public class MusicService extends Service implements SharedPreferences.OnSharedP
         }
     }
 
-    private static Bitmap copy(Bitmap bitmap) {
-        Bitmap.Config config = bitmap.getConfig();
-        if (config == null) {
-            config = Bitmap.Config.RGB_565;
-        }
-        try {
-            return bitmap.copy(config, false);
-        } catch (OutOfMemoryError e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
 
     public void runOnUiThread(Runnable runnable) {
         uiThreadHandler.post(runnable);

@@ -9,6 +9,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.database.ContentObserver
+import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Handler
 import android.provider.MediaStore
@@ -195,6 +196,20 @@ class MusicServiceKt(val musicService: MusicService) {
                 val queue =
                     if (shuffleMode == ShuffleMode.SHUFFLE) playlistSongs.toMutableList().apply { shuffle() } else playlistSongs
                 service.openQueue(queue, 0, true)
+            }
+        }
+
+        @JvmStatic
+        fun copy(bitmap: Bitmap): Bitmap? {
+            var config = bitmap.config
+            if (config == null) {
+                config = Bitmap.Config.RGB_565
+            }
+            return try {
+                bitmap.copy(config, false)
+            } catch (e: OutOfMemoryError) {
+                e.printStackTrace()
+                null
             }
         }
     }
