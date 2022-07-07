@@ -45,7 +45,6 @@ import player.phonograph.BuildConfig;
 import player.phonograph.R;
 import player.phonograph.glide.BlurTransformation;
 import player.phonograph.glide.SongGlideRequest;
-import player.phonograph.helper.StopWatch;
 import player.phonograph.misc.LyricsUpdateThread;
 import player.phonograph.model.Song;
 import player.phonograph.model.lyrics2.LrcLyrics;
@@ -60,6 +59,7 @@ import player.phonograph.service.queue.QueueChangeObserver;
 import player.phonograph.service.queue.QueueManager;
 import player.phonograph.service.queue.RepeatMode;
 import player.phonograph.service.queue.ShuffleMode;
+import player.phonograph.service.util.SongPlayCountHelper;
 import player.phonograph.settings.Setting;
 import player.phonograph.util.Util;
 
@@ -69,7 +69,6 @@ import player.phonograph.util.Util;
 public class MusicService extends Service implements SharedPreferences.OnSharedPreferenceChangeListener, Playback.PlaybackCallbacks, LyricsUpdateThread.ProgressMillsUpdateCallback {
 
     public static final String PHONOGRAPH_PACKAGE_NAME = App.ACTUAL_PACKAGE_NAME;
-    public static final String MUSIC_PACKAGE_NAME = "com.android.music";
 
     public static final String ACTION_TOGGLE_PAUSE = PHONOGRAPH_PACKAGE_NAME + ".togglepause";
     public static final String ACTION_PLAY = PHONOGRAPH_PACKAGE_NAME + ".play";
@@ -993,38 +992,6 @@ public class MusicService extends Service implements SharedPreferences.OnSharedP
         public void run() {
             savePositionInTrack();
             sendPublicIntent(PLAY_STATE_CHANGED); // for musixmatch synced lyrics
-        }
-    }
-
-    private static class SongPlayCountHelper {
-        public static final String TAG = SongPlayCountHelper.class.getSimpleName();
-
-        private StopWatch stopWatch = new StopWatch();
-        private Song song = Song.EMPTY_SONG;
-
-        public Song getSong() {
-            return song;
-        }
-
-        boolean shouldBumpPlayCount() {
-            return song.duration * 0.5d < stopWatch.getElapsedTime();
-        }
-
-        void notifySongChanged(Song song) {
-            synchronized (this) {
-                stopWatch.reset();
-                this.song = song;
-            }
-        }
-
-        void notifyPlayStateChanged(boolean isPlaying) {
-            synchronized (this) {
-                if (isPlaying) {
-                    stopWatch.start();
-                } else {
-                    stopWatch.pause();
-                }
-            }
         }
     }
 
