@@ -200,19 +200,21 @@ class PlayerController(musicService: MusicService) : Playback.PlaybackCallbacks,
                 checkAndRegisterBecomingNoisyReceiver(service)
                 if (!audioPlayer.isPlaying()) {
                     // Actual Logics Start
-                    if (!audioPlayer.isInitialized) {
-                        playAtImp(queueManager.currentSongPosition)
-                    } else {
-                        audioPlayer.start()
-                        log("playImp", "start playing: ${queueManager.currentSong.title}")
+                    synchronized(this) {
+                        if (!audioPlayer.isInitialized) {
+                            playAtImp(queueManager.currentSongPosition)
+                        } else {
+                            audioPlayer.start()
+                            log("playImp", "start playing: ${queueManager.currentSong.title}")
 
-                        playerState = PlayerState.PLAYING
-                        pauseReason = NOT_PAUSED
-                        acquireWakeLock(
-                            queueManager.currentSong.duration - audioPlayer.position() + 1000L
-                        )
-                        handler.removeMessages(ControllerHandler.DUCK)
-                        handler.sendEmptyMessage(ControllerHandler.UNDUCK)
+                            playerState = PlayerState.PLAYING
+                            pauseReason = NOT_PAUSED
+                            acquireWakeLock(
+                                queueManager.currentSong.duration - audioPlayer.position() + 1000L
+                            )
+                            handler.removeMessages(ControllerHandler.DUCK)
+                            handler.sendEmptyMessage(ControllerHandler.UNDUCK)
+                        }
                     }
                     // Actual Logics End
                 } else {
