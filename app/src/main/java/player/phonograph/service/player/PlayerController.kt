@@ -36,8 +36,7 @@ class PlayerController(musicService: MusicService) : Playback.PlaybackCallbacks,
 
     private val queueManager = App.instance.queueManager
 
-    private var _audioPlayer: AudioPlayer? = null
-    private val audioPlayer: AudioPlayer get() = _audioPlayer!!
+    private val audioPlayer: AudioPlayer
 
     private val wakeLock: WakeLock
     private val audioFocusManager: AudioFocusManager =
@@ -49,7 +48,7 @@ class PlayerController(musicService: MusicService) : Playback.PlaybackCallbacks,
     private var lyricsUpdateThread: LyricsUpdateThread
 
     init {
-        _audioPlayer = AudioPlayer(musicService, this)
+        audioPlayer = AudioPlayer(musicService, this)
 
         wakeLock =
             (App.instance.getSystemService(Context.POWER_SERVICE) as PowerManager)
@@ -75,7 +74,7 @@ class PlayerController(musicService: MusicService) : Playback.PlaybackCallbacks,
     fun destroy() {
         stop()
         unregisterBecomingNoisyReceiver(service)
-        _audioPlayer = null
+        audioPlayer.release()
         wakeLock.release()
         thread.quitSafely()
         handler.looper.quitSafely()
