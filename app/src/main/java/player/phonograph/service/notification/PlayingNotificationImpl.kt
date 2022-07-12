@@ -1,4 +1,4 @@
-package player.phonograph.notification
+package player.phonograph.service.notification
 
 import android.app.PendingIntent
 import android.graphics.Bitmap
@@ -41,7 +41,9 @@ class PlayingNotificationImpl(service: MusicService) : PlayingNotification(servi
                 notificationLayout.setTextViewText(R.id.text, song.artistName)
             }
 
-            if (TextUtils.isEmpty(song.title) && TextUtils.isEmpty(song.artistName) && TextUtils.isEmpty(song.albumName)) {
+            if (TextUtils.isEmpty(song.title) && TextUtils.isEmpty(song.artistName) && TextUtils.isEmpty(
+                    song.albumName
+                )) {
                 notificationLayoutBig.setViewVisibility(R.id.media_titles, View.INVISIBLE)
             } else {
                 notificationLayoutBig.setViewVisibility(R.id.media_titles, View.VISIBLE)
@@ -74,51 +76,82 @@ class PlayingNotificationImpl(service: MusicService) : PlayingNotification(servi
 
                 target = SongGlideRequest.Builder.from(Glide.with(service), song)
                     .checkIgnoreMediaStore(service).generatePalette(service).build()
-                    .into(object : CustomTarget<BitmapPaletteWrapper>(bigNotificationImageSize, bigNotificationImageSize) {
+                    .into(object : CustomTarget<BitmapPaletteWrapper>(
+                        bigNotificationImageSize,
+                        bigNotificationImageSize
+                    ) {
 
-                        override fun onResourceReady(resource: BitmapPaletteWrapper, transition: Transition<in BitmapPaletteWrapper>?) {
-                            updateCover(resource.bitmap, PhonographColorUtil.getColor(resource.palette, Color.TRANSPARENT))
-                        }
-
-                        override fun onLoadFailed(errorDrawable: Drawable?) {
-                            updateCover(null, Color.WHITE)
-                        }
-
-                        override fun onLoadCleared(placeholder: Drawable?) {
-                            updateCover(null, Color.WHITE)
-                        }
-
-                        private fun updateCover(bitmap: Bitmap?, backgroundColor: Int) {
-                            if (bitmap != null) {
-                                notificationLayout.setImageViewBitmap(R.id.image, bitmap)
-                                notificationLayoutBig.setImageViewBitmap(R.id.image, bitmap)
-                            }
-                            if (Setting.instance.coloredNotification) {
-                                setBackgroundColor(backgroundColor, notificationLayout, notificationLayoutBig)
-                                setNotificationContent(ColorUtil.isColorLight(backgroundColor), notificationLayout, notificationLayoutBig)
+                            override fun onResourceReady(
+                                resource: BitmapPaletteWrapper,
+                                transition: Transition<in BitmapPaletteWrapper>?
+                            ) {
+                                updateCover(
+                                    resource.bitmap,
+                                    PhonographColorUtil.getColor(resource.palette, Color.TRANSPARENT)
+                                )
                             }
 
-                            updateNotification(notificationBuilder.build())
-                        }
-                    })
+                            override fun onLoadFailed(errorDrawable: Drawable?) {
+                                updateCover(null, Color.WHITE)
+                            }
+
+                            override fun onLoadCleared(placeholder: Drawable?) {
+                                updateCover(null, Color.WHITE)
+                            }
+
+                            private fun updateCover(bitmap: Bitmap?, backgroundColor: Int) {
+                                if (bitmap != null) {
+                                    notificationLayout.setImageViewBitmap(R.id.image, bitmap)
+                                    notificationLayoutBig.setImageViewBitmap(R.id.image, bitmap)
+                                }
+                                if (Setting.instance.coloredNotification) {
+                                    setBackgroundColor(
+                                        backgroundColor,
+                                        notificationLayout,
+                                        notificationLayoutBig
+                                    )
+                                    setNotificationContent(
+                                        ColorUtil.isColorLight(backgroundColor),
+                                        notificationLayout,
+                                        notificationLayoutBig
+                                    )
+                                }
+
+                                updateNotification(notificationBuilder.build())
+                            }
+                        })
             }
         }
     }
 
-    private fun setBackgroundColor(color: Int, notificationLayout: RemoteViews, notificationLayoutBig: RemoteViews) {
+    private fun setBackgroundColor(
+        color: Int,
+        notificationLayout: RemoteViews,
+        notificationLayoutBig: RemoteViews
+    ) {
         notificationLayout.setInt(R.id.root, "setBackgroundColor", color)
         notificationLayoutBig.setInt(R.id.root, "setBackgroundColor", color)
     }
 
-    private fun setNotificationContent(dark: Boolean, notificationLayout: RemoteViews, notificationLayoutBig: RemoteViews) {
+    private fun setNotificationContent(
+        dark: Boolean,
+        notificationLayout: RemoteViews,
+        notificationLayoutBig: RemoteViews
+    ) {
         val primary = MaterialColorHelper.getPrimaryTextColor(service, dark)
         val secondary = MaterialColorHelper.getSecondaryTextColor(service, dark)
 
         val prev = ImageUtil.createBitmap(
-            ImageUtil.getTintedVectorDrawable(service, R.drawable.ic_skip_previous_white_24dp, primary), 1.5f
+            ImageUtil.getTintedVectorDrawable(
+                service,
+                R.drawable.ic_skip_previous_white_24dp,
+                primary
+            ),
+            1.5f
         )
         val next = ImageUtil.createBitmap(
-            ImageUtil.getTintedVectorDrawable(service, R.drawable.ic_skip_next_white_24dp, primary), 1.5f
+            ImageUtil.getTintedVectorDrawable(service, R.drawable.ic_skip_next_white_24dp, primary),
+            1.5f
         )
         val playPause = ImageUtil.createBitmap(
             ImageUtil.getTintedVectorDrawable(
@@ -146,7 +179,6 @@ class PlayingNotificationImpl(service: MusicService) : PlayingNotification(servi
     }
 
     private fun linkButtons(notificationLayout: RemoteViews, notificationLayoutBig: RemoteViews) {
-
         @Suppress("JoinDeclarationAndAssignment")
         var pendingIntent: PendingIntent
 
@@ -166,5 +198,7 @@ class PlayingNotificationImpl(service: MusicService) : PlayingNotification(servi
         notificationLayoutBig.setOnClickPendingIntent(R.id.action_next, pendingIntent)
     }
 
-    val bigNotificationImageSize by lazy { service.resources.getDimensionPixelSize(R.dimen.notification_big_image_size) }
+    val bigNotificationImageSize by lazy { service.resources.getDimensionPixelSize(
+        R.dimen.notification_big_image_size
+    ) }
 }

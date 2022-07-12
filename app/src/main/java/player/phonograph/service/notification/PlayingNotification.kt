@@ -1,4 +1,8 @@
-package player.phonograph.notification
+/*
+ * Copyright (c) 2022 chr_56 & Abou Zeid (kabouzeid) (original author)
+ */
+
+package player.phonograph.service.notification
 
 import android.app.NotificationChannel
 import android.app.NotificationManager

@@ -33,9 +33,9 @@ import player.phonograph.glide.SongGlideRequest
 import player.phonograph.model.Song
 import player.phonograph.model.lyrics2.LrcLyrics
 import player.phonograph.model.playlist.Playlist
-import player.phonograph.notification.PlayingNotification
-import player.phonograph.notification.PlayingNotificationImpl
-import player.phonograph.notification.PlayingNotificationImpl24
+import player.phonograph.service.notification.PlayingNotification
+import player.phonograph.service.notification.PlayingNotificationImpl
+import player.phonograph.service.notification.PlayingNotificationImpl24
 import player.phonograph.provider.HistoryStore
 import player.phonograph.provider.SongPlayCountStore
 import player.phonograph.service.player.MSG_NOW_PLAYING_CHANGED
