@@ -4,8 +4,6 @@
 
 package player.phonograph.service
 
-import android.appwidget.AppWidgetManager
-import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.database.ContentObserver
@@ -16,17 +14,13 @@ import android.provider.MediaStore
 import android.widget.Toast
 import player.phonograph.App
 import player.phonograph.R
-import player.phonograph.appwidgets.AppWidgetBig
-import player.phonograph.appwidgets.AppWidgetCard
-import player.phonograph.appwidgets.AppWidgetClassic
-import player.phonograph.appwidgets.AppWidgetSmall
 import player.phonograph.model.Song
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.service.queue.SHUFFLE_MODE_NONE
 import player.phonograph.service.queue.ShuffleMode
 import player.phonograph.util.MusicUtil.getSongFileUri
 
-class MusicServiceKt(val musicService: MusicService) {
+class MusicServiceUtil {
 
     var mediaStoreObserver: MediaStoreObserver? = null
 
@@ -120,33 +114,6 @@ class MusicServiceKt(val musicService: MusicService) {
         }
     }
 
-    val appWidgetBig = AppWidgetBig.instance
-    val appWidgetClassic = AppWidgetClassic.instance
-    val appWidgetSmall = AppWidgetSmall.instance
-    val appWidgetCard = AppWidgetCard.instance
-
-    val widgetIntentReceiver: BroadcastReceiver =
-        object : BroadcastReceiver() {
-            override fun onReceive(context: Context, intent: Intent) {
-                val command = intent.getStringExtra(MusicService.EXTRA_APP_WIDGET_NAME)
-                val ids = intent.getIntArrayExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS)
-                when (command) {
-                    AppWidgetClassic.NAME -> {
-                        appWidgetClassic.performUpdate(musicService, ids)
-                    }
-                    AppWidgetSmall.NAME -> {
-                        appWidgetSmall.performUpdate(musicService, ids)
-                    }
-                    AppWidgetBig.NAME -> {
-                        appWidgetBig.performUpdate(musicService, ids)
-                    }
-                    AppWidgetCard.NAME -> {
-                        appWidgetCard.performUpdate(musicService, ids)
-                    }
-                }
-            }
-        }
-
     companion object {
         private const val ANDROID_MUSIC_PACKAGE_NAME = "com.android.music"
 
@@ -194,13 +161,13 @@ class MusicServiceKt(val musicService: MusicService) {
         }
 
         @JvmStatic
-        fun copy(bitmap: Bitmap): Bitmap? {
-            var config = bitmap.config
+        internal fun Bitmap.copy(): Bitmap? {
+            var config = this.config
             if (config == null) {
                 config = Bitmap.Config.RGB_565
             }
             return try {
-                bitmap.copy(config, false)
+                this.copy(config, false)
             } catch (e: OutOfMemoryError) {
                 e.printStackTrace()
                 null
