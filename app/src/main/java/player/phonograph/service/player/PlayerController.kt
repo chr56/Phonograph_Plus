@@ -123,7 +123,7 @@ class PlayerController(internal val service: MusicService) : Playback.PlaybackCa
             "prepareSongsImp:Before",
             "current:${queueManager.currentSong.title} ,next:${queueManager.nextSong.title}"
         )
-        queueManager.setQueueCursor(position)
+        queueManager.setSongPosition(position, false)
         return prepareCurrentPlayer(queueManager.currentSong).also { setCurrentSuccess ->
             if (setCurrentSuccess) prepareNextPlayer(queueManager.nextSong)
             else prepareNextPlayer(null)
@@ -211,7 +211,7 @@ class PlayerController(internal val service: MusicService) : Playback.PlaybackCa
     }
     private fun setPositionImp(position: Int) {
         if (playerState == PlayerState.PAUSED) {
-            queueManager.setQueueCursor(position)
+            queueManager.setSongPosition(position)
             prepareSongsImp(position)
         }
     }

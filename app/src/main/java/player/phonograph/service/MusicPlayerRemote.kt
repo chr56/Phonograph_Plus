@@ -183,7 +183,7 @@ object MusicPlayerRemote {
     var position: Int
         get() = queueManager.currentSongPosition
         set(position) {
-            queueManager.setQueueCursor(position)
+            queueManager.setSongPosition(position)
         }
 
     val playingQueue: List<Song>
