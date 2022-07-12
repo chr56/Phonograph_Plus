@@ -103,6 +103,51 @@ class QueueManager(val context: Application) {
             }
         }
 
+    @Synchronized fun modifyQueue(
+        async: Boolean = true,
+        action: (MutableList<Song>, MutableList<Song>) -> Unit
+    ) {
+        if (async) {
+            handler.request {
+                modifyQueueImp(action)
+            }
+        } else {
+            modifyQueueImp(action)
+        }
+    }
+
+    private fun modifyQueueImp(
+        action: (MutableList<Song>, MutableList<Song>) -> Unit
+    ) {
+        synchronized(this::class.java) {
+            action(_playingQueue, _originalPlayingQueue)
+        }
+        observers.executeForEach {
+            onQueueChanged(_playingQueue, _originalPlayingQueue)
+        }
+        updateMeta()
+        saveQueue()
+        saveCursor()
+    }
+
+    fun swapQueue(newQueue: List<Song>, newPosition: Int, async: Boolean = true) {
+        if (newQueue.isNotEmpty() && newPosition in newQueue.indices) {
+            modifyQueue(async) { _playingQueue, _originalPlayingQueue ->
+                _originalPlayingQueue.clear()
+                _originalPlayingQueue.addAll(newQueue)
+                _playingQueue.clear()
+                _playingQueue.addAll(newQueue)
+                if (shuffleMode == ShuffleMode.SHUFFLE) {
+                    _playingQueue.shuffleAt(newPosition)
+                    currentSongPosition = 0
+                } else {
+                    currentSongPosition = newPosition
+                }
+                // todo notify player
+            }
+        }
+    }
+
     /**
      * get previous song position in CURRENT Repeat Mode behavior
      */
@@ -214,7 +259,7 @@ class QueueManager(val context: Application) {
     /**
      * Get a song safely in current queue
      */
-    fun getSongAt(position: Int): Song =
+    @Synchronized fun getSongAt(position: Int): Song =
         if (position >= 0 && position < _playingQueue.size) {
             playingQueue[position]
         } else {
@@ -226,8 +271,8 @@ class QueueManager(val context: Application) {
     val previousSong: Song get() = getSongAt(previousSongPosition)
 
     @JvmOverloads
-    fun addSong(song: Song, position: Int = -1) {
-        modifyQueue { _playingQueue, _originalPlayingQueue ->
+    fun addSong(song: Song, position: Int = -1, async: Boolean = true) {
+        modifyQueue(async) { _playingQueue, _originalPlayingQueue ->
             if (position < 0) {
                 _playingQueue.add(song)
                 _originalPlayingQueue.add(song)
@@ -239,8 +284,8 @@ class QueueManager(val context: Application) {
     }
 
     @JvmOverloads
-    fun addSongs(songs: List<Song>, position: Int = -1) {
-        modifyQueue { _playingQueue, _originalPlayingQueue ->
+    fun addSongs(songs: List<Song>, position: Int = -1, async: Boolean = true) {
+        modifyQueue(async) { _playingQueue, _originalPlayingQueue ->
             if (position < 0) {
                 _playingQueue.addAll(songs)
                 _originalPlayingQueue.addAll(songs)
@@ -251,8 +296,8 @@ class QueueManager(val context: Application) {
         }
     }
 
-    fun removeSongAt(position: Int) {
-        modifyQueue { _playingQueue, _originalPlayingQueue ->
+    fun removeSongAt(position: Int, async: Boolean = true) {
+        modifyQueue(async) { _playingQueue, _originalPlayingQueue ->
             if (position in _originalPlayingQueue.indices) {
                 if (shuffleMode == ShuffleMode.NONE) {
                     _playingQueue.removeAt(position)
@@ -268,8 +313,8 @@ class QueueManager(val context: Application) {
             }
         }
     }
-    fun removeSong(song: Song) {
-        modifyQueue { _playingQueue, _originalPlayingQueue ->
+    fun removeSong(song: Song, async: Boolean = true) {
+        modifyQueue(async) { _playingQueue, _originalPlayingQueue ->
             for (i in _playingQueue.indices) {
                 if (_playingQueue[i].id == song.id) {
                     _playingQueue.removeAt(i)
@@ -302,14 +347,14 @@ class QueueManager(val context: Application) {
         }
     }
 
-    fun moveSong(from: Int, to: Int) {
+    fun moveSong(from: Int, to: Int, async: Boolean = true) {
         if (from == to) return
         if (from !in _originalPlayingQueue.indices || to !in _originalPlayingQueue.indices) {
             ErrorNotification.postErrorNotification("Warning: from $from to $to is outrage ")
             return
         }
         // start moving
-        modifyQueue { _playingQueue, _originalPlayingQueue ->
+        modifyQueue(async) { _playingQueue, _originalPlayingQueue ->
             val currentPosition: Int = currentSongPosition
             val songToMove: Song = _playingQueue.removeAt(from)
             _playingQueue.add(to, songToMove)
@@ -327,43 +372,11 @@ class QueueManager(val context: Application) {
         }
     }
 
-    fun clearQueue() {
-        modifyQueue { _playingQueue, _originalPlayingQueue ->
+    fun clearQueue(async: Boolean = true) {
+        modifyQueue(async) { _playingQueue, _originalPlayingQueue ->
             _playingQueue.clear()
             _originalPlayingQueue.clear()
             rePosition(-1)
-        }
-    }
-
-    fun swapQueue(newQueue: List<Song>, newPosition: Int) {
-        if (newQueue.isNotEmpty() && newPosition in newQueue.indices) {
-            modifyQueue { _playingQueue, _originalPlayingQueue ->
-                _originalPlayingQueue.clear()
-                _originalPlayingQueue.addAll(newQueue)
-                _playingQueue.clear()
-                _playingQueue.addAll(newQueue)
-                if (shuffleMode == ShuffleMode.SHUFFLE) {
-                    _playingQueue.shuffleAt(newPosition)
-                    currentSongPosition = 0
-                } else {
-                    currentSongPosition = newPosition
-                }
-                // todo notify player
-            }
-        }
-    }
-
-    fun modifyQueue(action: (MutableList<Song>, MutableList<Song>) -> Unit) {
-        handler.post {
-            synchronized(_playingQueue) {
-                action(_playingQueue, _originalPlayingQueue)
-            }
-            observers.executeForEach {
-                onQueueChanged(_playingQueue, _originalPlayingQueue)
-            }
-            updateMeta()
-            saveQueue()
-            saveCursor()
         }
     }
 

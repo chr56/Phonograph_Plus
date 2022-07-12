@@ -461,7 +461,7 @@ public class MusicService extends Service implements SharedPreferences.OnSharedP
 
     public void openQueue(@Nullable final List<Song> playingQueue, final int startPosition, final boolean startPlaying) {
         if (playingQueue != null && !playingQueue.isEmpty() && startPosition >= 0 && startPosition < playingQueue.size()) {
-            queueManager.swapQueue(playingQueue, startPosition);
+            queueManager.swapQueue(playingQueue, startPosition,false);
             if (startPlaying) {
                 playSongAt(queueManager.getCurrentSongPosition());
             }
