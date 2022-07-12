@@ -371,9 +371,10 @@ class PlayerController(internal val service: MusicService) : Playback.PlaybackCa
         it.stopImp()
     }
     private fun stopImp() {
-        pauseImp(true)
+        audioPlayer.stop()
         broadcastStopLyric()
         playerState = PlayerState.STOPPED
+        releaseTakenResources()
         observers.executeForEach {
             onReceivingMessage(MSG_PLAYER_STOPPED)
         }
