@@ -5,10 +5,8 @@
 package player.phonograph.service.queue
 
 import android.app.Application
-import android.os.Handler
-import android.os.HandlerThread
-import android.os.Message
-import android.os.Process
+import android.os.*
+import android.util.ArrayMap
 import androidx.preference.PreferenceManager
 import java.util.concurrent.CopyOnWriteArrayList
 import player.phonograph.helper.ShuffleHelper.shuffleAt
@@ -18,22 +16,76 @@ import player.phonograph.provider.MusicPlaybackQueueStore
 
 class QueueManager(val context: Application) {
 
-    private val handler: Handler
-    private val thread: HandlerThread = HandlerThread("QueueManagerHandler", Process.THREAD_PRIORITY_BACKGROUND)
+    private val handler: QueueManagerHandler
+    private val thread: HandlerThread = HandlerThread(
+        "QueueManagerHandler",
+        Process.THREAD_PRIORITY_BACKGROUND
+    )
 
     init {
         thread.start()
-        handler = Handler(thread.looper, this::handleMessage)
+        handler = QueueManagerHandler(thread.looper)
     }
 
     /**
      * stop internal thread and release resource
      */
     fun release() {
-        handler.sendMessage(Message.obtain().apply { what = MSG_STOP })
+        handler.looper.quitSafely()
+        thread.quitSafely()
         handler.looper.quit()
         thread.quitSafely()
         observers.clear()
+    }
+
+    inner class QueueManagerHandler(looper: Looper) : Handler(looper) {
+        private var requestIdCumulator = 0
+        private val requestList: ArrayMap<Int, Runnable> = ArrayMap(1)
+
+        /**
+         * Request running in the handler thread
+         * @param request RunnableRequest: (PlayerController) -> Unit
+         */
+        fun request(request: Runnable) {
+            val requestId = requestIdCumulator++
+            synchronized(requestList) {
+                requestList[requestId] = request
+                sendMessage(
+                    Message.obtain(this, MSG_EXECUTE_REQUEST, requestId, 0)
+                )
+            }
+        }
+
+        override fun handleMessage(msg: Message) {
+            when (msg.what) {
+                MSG_EXECUTE_REQUEST -> {
+                    val requestId = msg.arg1
+                    requestList[requestId]?.let { runnableRequest ->
+                        synchronized(this) {
+                            runnableRequest.run()
+                        }
+                        synchronized(requestList) {
+                            requestList.remove(requestId)
+                        }
+                    }
+                }
+                MSG_STATE_SAVE_ALL -> {
+                    saveAll()
+                }
+                MSG_SAVE_QUEUE -> {
+                    saveQueue()
+                }
+                MSG_SAVE_MODE -> {
+                    saveShuffleMode()
+                }
+                MSG_SAVE_CURSOR -> {
+                    saveCursor()
+                }
+                MSG_STATE_RESTORE -> {
+                    restoreState()
+                }
+            }
+        }
     }
 
     private var _playingQueue: MutableList<Song> = CopyOnWriteArrayList()
@@ -343,46 +395,17 @@ class QueueManager(val context: Application) {
         }
     }
 
-    /**
-     * [Handler.Callback] for QueueManager's [handler]
-     */
-    private fun handleMessage(msg: Message): Boolean {
-        when (msg.what) {
-            MSG_STOP -> {
-                return true
-            }
-            MSG_STATE_SAVE_ALL -> {
-                saveAll()
-            }
-            MSG_SAVE_QUEUE -> {
-                saveQueue()
-            }
-            MSG_SAVE_MODE -> {
-                saveShuffleMode()
-            }
-            MSG_SAVE_CURSOR -> {
-                saveCursor()
-            }
-            MSG_STATE_RESTORE -> {
-                restoreState()
-            }
-        }
-        return false
-    }
-
     fun postMessage(what: Int) {
-        postMessage(Message.obtain(handler, what))
-    }
-
-    fun postMessage(msg: Message) {
-        if (msg.what == MSG_STOP) return /** stop via [release]**/
-        handler.sendMessage(msg)
+        handler.sendEmptyMessage(what)
     }
 
     private fun restoreState() {
         val restoredQueue = MusicPlaybackQueueStore.getInstance(context).savedPlayingQueue
         val restoredOriginalQueue = MusicPlaybackQueueStore.getInstance(context).savedOriginalPlayingQueue
-        val restoredPosition = PreferenceManager.getDefaultSharedPreferences(context).getInt(PREF_POSITION, -1)
+        val restoredPosition = PreferenceManager.getDefaultSharedPreferences(context).getInt(
+            PREF_POSITION,
+            -1
+        )
         if (restoredQueue.isNotEmpty() && restoredQueue.size == restoredOriginalQueue.size && restoredPosition != -1) {
             _originalPlayingQueue = restoredOriginalQueue.toMutableList()
             _playingQueue = restoredQueue.toMutableList()
@@ -400,19 +423,31 @@ class QueueManager(val context: Application) {
     }
 
     private fun saveQueue() {
-        MusicPlaybackQueueStore.getInstance(context).saveQueues(_playingQueue, _originalPlayingQueue)
+        MusicPlaybackQueueStore.getInstance(context).saveQueues(
+            _playingQueue,
+            _originalPlayingQueue
+        )
     }
 
     private fun saveCursor() {
-        PreferenceManager.getDefaultSharedPreferences(context).edit().putInt(PREF_POSITION, currentSongPosition).apply()
+        PreferenceManager.getDefaultSharedPreferences(context).edit().putInt(
+            PREF_POSITION,
+            currentSongPosition
+        ).apply()
     }
 
     private fun saveShuffleMode() {
-        PreferenceManager.getDefaultSharedPreferences(context).edit().putInt(PREF_SHUFFLE_MODE, shuffleMode.serialize()).apply()
+        PreferenceManager.getDefaultSharedPreferences(context).edit().putInt(
+            PREF_SHUFFLE_MODE,
+            shuffleMode.serialize()
+        ).apply()
     }
 
     private fun saveRepeatMode() {
-        PreferenceManager.getDefaultSharedPreferences(context).edit().putInt(PREF_REPEAT_MODE, repeatMode.serialize()).apply()
+        PreferenceManager.getDefaultSharedPreferences(context).edit().putInt(
+            PREF_REPEAT_MODE,
+            repeatMode.serialize()
+        ).apply()
     }
 
     private fun saveAll() {
@@ -456,7 +491,6 @@ class QueueManager(val context: Application) {
     fun removeObserver(observer: QueueChangeObserver): Boolean = observers.remove(observer)
 
     companion object {
-        private const val MSG_STOP = -1
         const val MSG_STATE_RESTORE = 1
         const val MSG_SAVE_QUEUE = 2
         const val MSG_SAVE_CURSOR = 4
@@ -466,5 +500,7 @@ class QueueManager(val context: Application) {
         const val PREF_POSITION = "POSITION"
         const val PREF_SHUFFLE_MODE = "SHUFFLE_MODE"
         const val PREF_REPEAT_MODE = "REPEAT_MODE"
+
+        const val MSG_EXECUTE_REQUEST = 10
     }
 }
