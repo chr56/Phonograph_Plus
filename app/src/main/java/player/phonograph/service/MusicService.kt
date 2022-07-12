@@ -1,25 +1,18 @@
 package player.phonograph.service
 
-import android.annotation.SuppressLint
-import android.app.PendingIntent
 import android.app.Service
 import android.appwidget.AppWidgetManager
 import android.content.*
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener
-import android.graphics.Bitmap
-import android.graphics.drawable.Drawable
-import android.media.MediaMetadata.*
 import android.media.audiofx.AudioEffect
-import android.os.*
-import android.support.v4.media.MediaMetadataCompat
+import android.os.Binder
+import android.os.Handler
+import android.os.IBinder
+import android.os.Looper
 import android.support.v4.media.session.MediaSessionCompat
-import android.support.v4.media.session.PlaybackStateCompat
 import android.util.Log
 import android.widget.Toast
 import androidx.preference.PreferenceManager
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.target.CustomTarget
-import com.bumptech.glide.request.transition.Transition
 import player.phonograph.App
 import player.phonograph.App.Companion.ACTUAL_PACKAGE_NAME
 import player.phonograph.BuildConfig
@@ -28,16 +21,12 @@ import player.phonograph.appwidgets.AppWidgetBig
 import player.phonograph.appwidgets.AppWidgetCard
 import player.phonograph.appwidgets.AppWidgetClassic
 import player.phonograph.appwidgets.AppWidgetSmall
-import player.phonograph.glide.BlurTransformation
-import player.phonograph.glide.SongGlideRequest
 import player.phonograph.model.Song
 import player.phonograph.model.lyrics2.LrcLyrics
 import player.phonograph.model.playlist.Playlist
-import player.phonograph.service.notification.PlayingNotification
-import player.phonograph.service.notification.PlayingNotificationImpl
-import player.phonograph.service.notification.PlayingNotificationImpl24
 import player.phonograph.provider.HistoryStore
 import player.phonograph.provider.SongPlayCountStore
+import player.phonograph.service.notification.PlayingNotificationManger
 import player.phonograph.service.player.MSG_NOW_PLAYING_CHANGED
 import player.phonograph.service.player.PlayerController
 import player.phonograph.service.player.PlayerState
@@ -48,8 +37,6 @@ import player.phonograph.service.util.MediaStoreObserverUtil
 import player.phonograph.service.util.MusicServiceUtil
 import player.phonograph.service.util.SongPlayCountHelper
 import player.phonograph.settings.Setting
-import player.phonograph.util.ImageUtil.copy
-import player.phonograph.util.Util.getScreenSize
 
 /**
  * @author Karim Abou Zeid (kabouzeid), Andrew Neal
@@ -60,13 +47,13 @@ class MusicService : Service(), OnSharedPreferenceChangeListener {
 
     var pendingQuit = false // todo sleeptimer
 
-    private val queueManager: QueueManager get() = App.instance.queueManager
+    val queueManager: QueueManager get() = App.instance.queueManager
     private val queueChangeObserver: QueueChangeObserver = initQueueChangeObserver()
 
     private lateinit var controller: PlayerController
-    private lateinit var playerStateObserver: PlayerStateObserver
+    private var playerStateObserver: PlayerStateObserver = initPlayerStateObserver()
 
-    private lateinit var playingNotification: PlayingNotification
+    private lateinit var playNotificationManager: PlayingNotificationManger
 
     private lateinit var throttledTimer: ThrottledTimer
 
@@ -77,29 +64,34 @@ class MusicService : Service(), OnSharedPreferenceChangeListener {
     override fun onCreate() {
         super.onCreate()
 
+        // controller
         controller = PlayerController(this)
-        setupMediaSession()
-        uiThreadHandler = Handler(Looper.getMainLooper())
-        registerReceiver(widgetIntentReceiver, IntentFilter(APP_WIDGET_UPDATE))
-        initNotification()
+        controller.restoreIfNecessary()
 
-        // todo use other handler
+        // observers & messages
+        sendChangeInternal(META_CHANGED) // notify manually for first setting up queueManager
+        sendChangeInternal(QUEUE_CHANGED) // notify manually for first setting up queueManager
+        queueManager.addObserver(queueChangeObserver)
+        controller.addObserver(playerStateObserver)
+
+        // notifications & media session
+        playNotificationManager = PlayingNotificationManger(this)
+        playNotificationManager.setupMediaSession(initMediaSessionCallback())
+        playNotificationManager.setUpNotification()
+        playNotificationManager.mediaSession.isActive = true
+
+        // process updater
+        throttledTimer = ThrottledTimer(controller.handler)
+
+        // misc
+        uiThreadHandler = Handler(Looper.getMainLooper())
         mediaStoreObserverUtil.setUpMediaStoreObserver(
             this,
-            controller.handler,
+            controller.handler, // todo use other handler
             this@MusicService::handleAndSendChangeInternal
         )
-        throttledTimer = ThrottledTimer(controller.handler)
+        registerReceiver(widgetIntentReceiver, IntentFilter(APP_WIDGET_UPDATE))
         Setting.instance().registerOnSharedPreferenceChangedListener(this)
-
-        // notify manually for first setting up queueManager
-        sendChangeInternal(META_CHANGED)
-        sendChangeInternal(QUEUE_CHANGED)
-        controller.restoreIfNecessary()
-        mediaSession.isActive = true
-        queueManager.addObserver(queueChangeObserver)
-        playerStateObserver = initPlayerStateObserver()
-        controller.addObserver(playerStateObserver)
         sendBroadcast(Intent("player.phonograph.PHONOGRAPH_MUSIC_SERVICE_CREATED"))
     }
 
@@ -170,39 +162,6 @@ class MusicService : Service(), OnSharedPreferenceChangeListener {
         }
     }
 
-    lateinit var mediaSession: MediaSessionCompat private set
-    private fun setupMediaSession() {
-        val mediaButtonReceiverComponentName = ComponentName(
-            applicationContext,
-            MediaButtonIntentReceiver::class.java
-        )
-        val mediaButtonIntent = Intent(Intent.ACTION_MEDIA_BUTTON)
-        mediaButtonIntent.component = mediaButtonReceiverComponentName
-        val mediaButtonReceiverPendingIntent =
-            PendingIntent.getBroadcast(
-                applicationContext,
-                0,
-                mediaButtonIntent,
-                PendingIntent.FLAG_IMMUTABLE
-            )
-        mediaSession =
-            MediaSessionCompat(
-                this,
-                BuildConfig.APPLICATION_ID,
-                mediaButtonReceiverComponentName,
-                mediaButtonReceiverPendingIntent
-            )
-        mediaSession.setCallback(initMediaSessionCallback())
-
-        // fixme remove deprecation
-        @Suppress("DEPRECATION")
-        mediaSession.setFlags(
-            MediaSessionCompat.FLAG_HANDLES_TRANSPORT_CONTROLS
-                or MediaSessionCompat.FLAG_HANDLES_MEDIA_BUTTONS
-        )
-        mediaSession.setMediaButtonReceiver(mediaButtonReceiverPendingIntent)
-    }
-
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         if (intent != null) {
             if (intent.action != null) {
@@ -234,10 +193,10 @@ class MusicService : Service(), OnSharedPreferenceChangeListener {
 
     override fun onDestroy() {
         isIdle = true
-        mediaSession.isActive = false
-        playingNotification.stop()
+        playNotificationManager.mediaSession.isActive = false
+        playNotificationManager.removeNotification()
         closeAudioEffectSession()
-        mediaSession.release()
+        playNotificationManager.mediaSession.release()
         unregisterReceiver(widgetIntentReceiver)
         mediaStoreObserverUtil.unregisterMediaStoreObserver(this)
         Setting.instance.unregisterOnSharedPreferenceChangedListener(this)
@@ -279,101 +238,6 @@ class MusicService : Service(), OnSharedPreferenceChangeListener {
         )
     }
 
-    private fun initNotification() {
-        playingNotification =
-            if (!Setting.instance.classicNotification && Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                PlayingNotificationImpl24(this)
-            } else {
-                PlayingNotificationImpl(this)
-            }
-    }
-
-    private fun updateNotification() {
-        val song = queueManager.currentSong
-        if (song.id != -1L) {
-            playingNotification.metaData = PlayingNotification.SongMetaData(song)
-        }
-    }
-
-    private fun updateMediaSessionPlaybackState() {
-        mediaSession.setPlaybackState(
-            PlaybackStateCompat.Builder()
-                .setActions(
-                    PlaybackStateCompat.ACTION_PLAY
-                        or PlaybackStateCompat.ACTION_PAUSE
-                        or PlaybackStateCompat.ACTION_PLAY_PAUSE
-                        or PlaybackStateCompat.ACTION_SKIP_TO_NEXT
-                        or PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS
-                        or PlaybackStateCompat.ACTION_STOP
-                        or PlaybackStateCompat.ACTION_SEEK_TO
-                )
-                .setState(
-                    if (isPlaying) PlaybackStateCompat.STATE_PLAYING else PlaybackStateCompat.STATE_PAUSED,
-                    songProgressMillis.toLong(),
-                    1f
-                )
-                .build()
-        )
-    }
-
-    @SuppressLint("CheckResult")
-    private fun updateMediaSessionMetaData() {
-        val song = queueManager.currentSong
-        if (song.id == -1L) {
-            mediaSession.setMetadata(null)
-            return
-        }
-        val metaData =
-            MediaMetadataCompat.Builder().apply {
-                putString(METADATA_KEY_ARTIST, song.artistName)
-                putString(METADATA_KEY_ALBUM_ARTIST, song.artistName)
-                putString(METADATA_KEY_ALBUM, song.albumName)
-                putString(METADATA_KEY_TITLE, song.title)
-                putLong(METADATA_KEY_DURATION, song.duration)
-                putLong(METADATA_KEY_TRACK_NUMBER, (queueManager.currentSongPosition + 1).toLong())
-                putLong(METADATA_KEY_YEAR, song.year.toLong())
-                putBitmap(METADATA_KEY_ALBUM_ART, null)
-                putLong(METADATA_KEY_NUM_TRACKS, queueManager.playingQueue.size.toLong())
-            }
-
-        if (Setting.instance.albumArtOnLockscreen) {
-            val screenSize = getScreenSize(this@MusicService)
-            val request = SongGlideRequest.Builder.from(Glide.with(this@MusicService), song)
-                .checkIgnoreMediaStore(this@MusicService)
-                .asBitmap().build().also {
-                    if (Setting.instance.blurredAlbumArt) it.transform(
-                        BlurTransformation.Builder(this@MusicService).build()
-                    )
-                }
-
-            runOnUiThread {
-                request.into(
-                    object : CustomTarget<Bitmap>(screenSize.x, screenSize.y) {
-
-                        override fun onLoadFailed(errorDrawable: Drawable?) {
-                            super.onLoadFailed(errorDrawable)
-                            mediaSession.setMetadata(metaData.build())
-                        }
-
-                        override fun onResourceReady(
-                            resource: Bitmap,
-                            transition: Transition<in Bitmap>?
-                        ) {
-                            metaData.putBitmap(METADATA_KEY_ALBUM_ART, resource.copy())
-                            mediaSession.setMetadata(metaData.build())
-                        }
-
-                        override fun onLoadCleared(placeholder: Drawable?) {
-                            mediaSession.setMetadata(metaData.build()) // todo check leakage
-                        }
-                    }
-                )
-            }
-        } else {
-            mediaSession.setMetadata(metaData.build())
-        }
-    }
-
     fun runOnUiThread(runnable: Runnable) {
         uiThreadHandler.post(runnable)
     }
@@ -395,6 +259,8 @@ class MusicService : Service(), OnSharedPreferenceChangeListener {
     val songDurationMillis: Int get() = controller.getSongDurationMillis()
 
     val audioSessionId: Int get() = controller.audioSessionId
+
+    val mediaSession get() = playNotificationManager.mediaSession
 
     // todo check
     fun seek(millis: Int): Int = synchronized(this) {
@@ -430,8 +296,8 @@ class MusicService : Service(), OnSharedPreferenceChangeListener {
     private fun handleChangeInternal(what: String) {
         when (what) {
             PLAY_STATE_CHANGED -> {
-                updateNotification()
-                updateMediaSessionPlaybackState()
+                playNotificationManager.updateNotification()
+                playNotificationManager.updateMediaSessionPlaybackState()
                 val isPlaying = isPlaying
                 if (!isPlaying && songProgressMillis > 0) {
                     savePositionInTrack()
@@ -439,8 +305,8 @@ class MusicService : Service(), OnSharedPreferenceChangeListener {
                 songPlayCountHelper.notifyPlayStateChanged(isPlaying)
             }
             META_CHANGED -> {
-                updateNotification()
-                updateMediaSessionMetaData()
+                playNotificationManager.updateNotification()
+                playNotificationManager.updateMediaSessionMetaData()
                 queueManager.postMessage(QueueManager.MSG_SAVE_CURSOR)
                 savePositionInTrack()
                 val currentSong = queueManager.currentSong
@@ -451,7 +317,7 @@ class MusicService : Service(), OnSharedPreferenceChangeListener {
                 songPlayCountHelper.notifySongChanged(currentSong)
             }
             QUEUE_CHANGED -> {
-                updateMediaSessionMetaData() // because playing queue size might have changed
+                playNotificationManager.updateMediaSessionMetaData() // because playing queue size might have changed
                 saveState()
                 if (queueManager.playingQueue.isNotEmpty()) {
                     controller.handler.removeMessages(
@@ -462,7 +328,7 @@ class MusicService : Service(), OnSharedPreferenceChangeListener {
                     )
                 } else {
                     controller.stop()
-                    playingNotification.stop()
+                    playNotificationManager.removeNotification()
                 }
             }
         }
@@ -515,11 +381,11 @@ class MusicService : Service(), OnSharedPreferenceChangeListener {
                         PlayerController.ControllerHandler.CLEAN_NEXT_PLAYER
                     )
                 }
-            Setting.ALBUM_ART_ON_LOCKSCREEN, Setting.BLURRED_ALBUM_ART -> updateMediaSessionMetaData()
-            Setting.COLORED_NOTIFICATION -> updateNotification()
+            Setting.ALBUM_ART_ON_LOCKSCREEN, Setting.BLURRED_ALBUM_ART -> playNotificationManager.updateMediaSessionMetaData()
+            Setting.COLORED_NOTIFICATION -> playNotificationManager.updateNotification()
             Setting.CLASSIC_NOTIFICATION -> {
-                initNotification()
-                updateNotification()
+                playNotificationManager.setUpNotification()
+                playNotificationManager.updateNotification()
             }
         }
     }
@@ -528,8 +394,8 @@ class MusicService : Service(), OnSharedPreferenceChangeListener {
 
     private inner class ThrottledTimer(private val mHandler: Handler) : Runnable {
         fun notifySeek() {
-            updateMediaSessionMetaData()
-            updateMediaSessionPlaybackState()
+            playNotificationManager.updateMediaSessionMetaData()
+            playNotificationManager.updateMediaSessionPlaybackState()
             mHandler.removeCallbacks(this)
             mHandler.postDelayed(this, THROTTLE)
         }
@@ -540,6 +406,7 @@ class MusicService : Service(), OnSharedPreferenceChangeListener {
         }
     }
 
+    @Suppress("SpellCheckingInspection")
     companion object {
         const val ACTION_TOGGLE_PAUSE = "$ACTUAL_PACKAGE_NAME.togglepause"
         const val ACTION_PLAY = "$ACTUAL_PACKAGE_NAME.play"
