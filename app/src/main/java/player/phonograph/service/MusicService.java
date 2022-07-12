@@ -212,7 +212,7 @@ public class MusicService extends Service implements SharedPreferences.OnSharedP
                         //todo
                         break;
                     case MSG_PLAYER_STOPPED:
-                        quit();
+                        // quit();
                         break;
                 }
             }
