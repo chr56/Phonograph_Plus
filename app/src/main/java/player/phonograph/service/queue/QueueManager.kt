@@ -384,8 +384,12 @@ class QueueManager(val context: Application) {
         // todo
     }
 
-    fun setQueueCursor(position: Int) {
-        handler.post {
+    fun setSongPosition(position: Int, async: Boolean = false) {
+        if (async) {
+            handler.request {
+                currentSongPosition = position
+            }
+        } else {
             currentSongPosition = position
         }
     }
