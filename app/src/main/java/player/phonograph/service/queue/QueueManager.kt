@@ -173,8 +173,6 @@ class QueueManager(val context: Application) {
     val nextSong: Song get() = getSongAt(nextSongPosition)
     val previousSong: Song get() = getSongAt(previousSongPosition)
 
-    val lastTrack: Boolean = currentSongPosition == _playingQueue.size - 1
-
     @JvmOverloads
     fun addSong(song: Song, position: Int = -1) {
         modifyQueue { _playingQueue, _originalPlayingQueue ->
@@ -212,7 +210,9 @@ class QueueManager(val context: Application) {
                 }
                 rePosition(position)
             } else {
-                ErrorNotification.postErrorNotification("Warning: removing song at position$position,but we only have ${_originalPlayingQueue.size} songs")
+                ErrorNotification.postErrorNotification(
+                    "Warning: removing song at position$position,but we only have ${_originalPlayingQueue.size} songs"
+                )
             }
         }
     }
@@ -425,9 +425,9 @@ class QueueManager(val context: Application) {
         }
     }
 
-    fun isLastTrack(): Boolean {
-        return currentSongPosition == playingQueue.size - 1
-    }
+    fun isLastTrack(): Boolean = currentSongPosition == playingQueue.size - 1
+
+    fun isQueueEnded(): Boolean = nextSongPosition == -1 && isLastTrack()
 
     fun getAllSongsDuration(): Long =
         _originalPlayingQueue.fold(0L) { acc, song: Song -> acc + song.duration }

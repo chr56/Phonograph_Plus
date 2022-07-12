@@ -332,7 +332,7 @@ class PlayerController(musicService: MusicService) : Playback.PlaybackCallbacks,
         if (force) {
             playAtImp(queueManager.nextSongPositionInList)
         } else {
-            if (!queueManager.lastTrack) {
+            if (!queueManager.isLastTrack()) {
                 playAtImp(queueManager.nextSongPosition)
             } else {
                 pauseImp(true)
