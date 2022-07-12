@@ -337,13 +337,11 @@ public class MusicService extends Service implements SharedPreferences.OnSharedP
 
     //todo
     private void quit() {
-        controller.pause();
-        pause();
+        controller.destroy();
         isQuit = true;
         playingNotification.stop();
 
         closeAudioEffectSession();
-        controller.destroy();
         stopSelf();
     }
 
