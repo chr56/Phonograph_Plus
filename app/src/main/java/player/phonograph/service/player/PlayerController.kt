@@ -12,6 +12,7 @@ import android.util.ArrayMap
 import android.util.Log
 import android.widget.Toast
 import androidx.preference.PreferenceManager
+import java.lang.ref.WeakReference
 import player.phonograph.App
 import player.phonograph.BuildConfig.DEBUG
 import player.phonograph.R
@@ -22,7 +23,6 @@ import player.phonograph.notification.ErrorNotification
 import player.phonograph.service.MusicService
 import player.phonograph.settings.Setting
 import player.phonograph.util.MusicUtil
-import java.lang.ref.WeakReference
 
 // todo sleep timer
 // todo cleanup queueManager.setQueueCursor
@@ -374,12 +374,25 @@ class PlayerController(musicService: MusicService) : Playback.PlaybackCallbacks,
     }
 
     override fun onTrackEnded() {
-        handler.request {
-            pauseImp(true)
-        }
-        broadcastStopLyric()
-        observers.executeForEach {
-            onReceivingMessage(MSG_NO_MORE_SONGS)
+        if (queueManager.isQueueEnded()) {
+            handler.request {
+                pauseImp(true)
+            }
+            broadcastStopLyric()
+            observers.executeForEach {
+                onReceivingMessage(MSG_NO_MORE_SONGS)
+            }
+        } else {
+            ErrorNotification.postErrorNotification(
+                "Queue was ended, but there are more songs. Continue to play anyway.(Please report this!):\n" +
+                    queueManager.playingQueue.foldIndexed("Queue:") { index, acc, s ->
+                        "$acc\n$index:${s.title}"
+                    }
+            )
+            handler.request {
+                queueManager.moveToNextSong()
+                prepareSongsImp(queueManager.currentSongPosition)
+            }
         }
     }
 
