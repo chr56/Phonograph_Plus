@@ -517,6 +517,16 @@ class PlayerController(musicService: MusicService) : Playback.PlaybackCallbacks,
                         it.audioPlayer.setVolume(currentDuckVolume)
                     }
                 }
+                RE_PREPARE_NEXT_PLAYER -> controllerRef.get()?.let {
+                    synchronized(it.audioPlayer){
+                        it.prepareNextPlayer(it.queueManager.nextSong)
+                    }
+                }
+                CLEAN_NEXT_PLAYER -> controllerRef.get()?.let {
+                    synchronized(it.audioPlayer){
+                        it.prepareNextPlayer(null)
+                    }
+                }
             }
         }
 
@@ -528,6 +538,9 @@ class PlayerController(musicService: MusicService) : Playback.PlaybackCallbacks,
 
             const val DUCK = 20
             const val UNDUCK = 30
+
+            const val RE_PREPARE_NEXT_PLAYER = 40
+            const val CLEAN_NEXT_PLAYER = 41
         }
     }
 
