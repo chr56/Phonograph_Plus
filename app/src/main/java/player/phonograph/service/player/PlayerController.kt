@@ -570,4 +570,12 @@ class PlayerController(internal val service: MusicService) : Playback.PlaybackCa
     fun log(where: String, msg: String, force: Boolean = false) {
         if (DEBUG || force) Log.d("PlayerController", "@$where ※$msg")
     }
+
+    /*  debug */
+    fun dumpPlayingQueue(where: String) {
+        val msg = "${queueManager.playingQueue.foldIndexed("PlayingQueue:") { index, acc, s ->
+            "$acc\n ${if (index == queueManager.currentSongPosition) "#" else " "}$index:${s.title}"
+        }}\n--CurrentPosition: ${queueManager.currentSongPosition}--"
+        log(where, msg)
+    }
 }
