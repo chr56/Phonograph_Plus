@@ -15,6 +15,7 @@ import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import android.util.Log
+import android.widget.Toast
 import androidx.preference.PreferenceManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
@@ -22,6 +23,7 @@ import com.bumptech.glide.request.transition.Transition
 import player.phonograph.App
 import player.phonograph.App.Companion.ACTUAL_PACKAGE_NAME
 import player.phonograph.BuildConfig
+import player.phonograph.R
 import player.phonograph.appwidgets.AppWidgetBig
 import player.phonograph.appwidgets.AppWidgetCard
 import player.phonograph.appwidgets.AppWidgetClassic
@@ -30,23 +32,22 @@ import player.phonograph.glide.BlurTransformation
 import player.phonograph.glide.SongGlideRequest
 import player.phonograph.model.Song
 import player.phonograph.model.lyrics2.LrcLyrics
+import player.phonograph.model.playlist.Playlist
 import player.phonograph.notification.PlayingNotification
 import player.phonograph.notification.PlayingNotificationImpl
 import player.phonograph.notification.PlayingNotificationImpl24
 import player.phonograph.provider.HistoryStore
 import player.phonograph.provider.SongPlayCountStore
-import player.phonograph.service.MusicServiceUtil.Companion.copy
-import player.phonograph.service.MusicServiceUtil.Companion.parsePlaylistAndPlay
 import player.phonograph.service.player.MSG_NOW_PLAYING_CHANGED
 import player.phonograph.service.player.PlayerController
 import player.phonograph.service.player.PlayerState
 import player.phonograph.service.player.PlayerStateObserver
-import player.phonograph.service.queue.QueueChangeObserver
-import player.phonograph.service.queue.QueueManager
-import player.phonograph.service.queue.RepeatMode
-import player.phonograph.service.queue.ShuffleMode
+import player.phonograph.service.queue.*
+import player.phonograph.service.util.MediaStoreObserverUtil
+import player.phonograph.service.util.MusicServiceUtil
 import player.phonograph.service.util.SongPlayCountHelper
 import player.phonograph.settings.Setting
+import player.phonograph.util.ImageUtil.copy
 import player.phonograph.util.Util.getScreenSize
 
 /**
@@ -66,11 +67,11 @@ class MusicService : Service(), OnSharedPreferenceChangeListener {
 
     private lateinit var playingNotification: PlayingNotification
 
-    private lateinit var throttledSeekHandler: ThrottledSeekHandler
+    private lateinit var throttledTimer: ThrottledTimer
 
     private lateinit var uiThreadHandler: Handler
 
-    private val musicServiceUtil: MusicServiceUtil = MusicServiceUtil()
+    private val mediaStoreObserverUtil = MediaStoreObserverUtil()
 
     override fun onCreate() {
         super.onCreate()
@@ -82,12 +83,12 @@ class MusicService : Service(), OnSharedPreferenceChangeListener {
         initNotification()
 
         // todo use other handler
-        musicServiceUtil.setUpMediaStoreObserver(
+        mediaStoreObserverUtil.setUpMediaStoreObserver(
             this,
             controller.handler,
             this@MusicService::handleAndSendChangeInternal
         )
-        throttledSeekHandler = ThrottledSeekHandler(controller.handler)
+        throttledTimer = ThrottledTimer(controller.handler)
         Setting.instance().registerOnSharedPreferenceChangedListener(this)
 
         // notify manually for first setting up queueManager
@@ -237,7 +238,7 @@ class MusicService : Service(), OnSharedPreferenceChangeListener {
         closeAudioEffectSession()
         mediaSession.release()
         unregisterReceiver(widgetIntentReceiver)
-        musicServiceUtil.unregisterMediaStoreObserver(this)
+        mediaStoreObserverUtil.unregisterMediaStoreObserver(this)
         Setting.instance.unregisterOnSharedPreferenceChangedListener(this)
         controller.stopAndDestroy()
         controller.removeObserver(playerStateObserver)
@@ -398,7 +399,7 @@ class MusicService : Service(), OnSharedPreferenceChangeListener {
     fun seek(millis: Int): Int = synchronized(this) {
         return try {
             val newPosition = controller.seekTo(millis.toLong())
-            throttledSeekHandler.notifySeek()
+            throttledTimer.notifySeek()
             newPosition
         } catch (e: Exception) {
             -1
@@ -469,7 +470,7 @@ class MusicService : Service(), OnSharedPreferenceChangeListener {
     private val widgetIntentReceiver: BroadcastReceiver =
         object : BroadcastReceiver() {
             override fun onReceive(context: Context, intent: Intent) {
-                val command = intent.getStringExtra(MusicService.EXTRA_APP_WIDGET_NAME)
+                val command = intent.getStringExtra(EXTRA_APP_WIDGET_NAME)
                 val ids = intent.getIntArrayExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS)
                 when (command) {
                     AppWidgetClassic.NAME -> {
@@ -524,7 +525,7 @@ class MusicService : Service(), OnSharedPreferenceChangeListener {
 
     fun replaceLyrics(lyrics: LrcLyrics?) = controller.replaceLyrics(lyrics)
 
-    private inner class ThrottledSeekHandler(private val mHandler: Handler) : Runnable {
+    private inner class ThrottledTimer(private val mHandler: Handler) : Runnable {
         fun notifySeek() {
             updateMediaSessionMetaData()
             updateMediaSessionPlaybackState()
@@ -570,6 +571,26 @@ class MusicService : Service(), OnSharedPreferenceChangeListener {
 
         fun log(msg: String, force: Boolean) {
             if (force || BuildConfig.DEBUG) Log.i("MusicServiceDebug", msg)
+        }
+
+        fun parsePlaylistAndPlay(intent: Intent, service: MusicService) {
+            val playlist: Playlist? = intent.getParcelableExtra(
+                INTENT_EXTRA_PLAYLIST
+            )
+            val playlistSongs = playlist?.getSongs(service)
+            val shuffleMode = ShuffleMode.deserialize(
+                intent.getIntExtra(INTENT_EXTRA_SHUFFLE_MODE, SHUFFLE_MODE_NONE)
+            )
+            if (playlistSongs.isNullOrEmpty()) {
+                Toast.makeText(service, R.string.playlist_is_empty, Toast.LENGTH_LONG).show()
+            } else {
+                val queueManager = App.instance.queueManager
+                queueManager.switchShuffleMode(shuffleMode)
+                // TODO: keep the queue intact
+                val queue =
+                    if (shuffleMode == ShuffleMode.SHUFFLE) playlistSongs.toMutableList().apply { shuffle() } else playlistSongs
+                service.openQueue(queue, 0, true)
+            }
         }
     }
 
