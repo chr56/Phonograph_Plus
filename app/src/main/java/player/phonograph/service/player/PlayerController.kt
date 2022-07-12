@@ -119,12 +119,21 @@ class PlayerController(internal val service: MusicService) : Playback.PlaybackCa
     private fun prepareSongsImp(position: Int): Boolean {
         // todo: change STATE if possible
         broadcastStopLyric()
+        log(
+            "prepareSongsImp:Before",
+            "current:${queueManager.currentSong.title} ,next:${queueManager.nextSong.title}"
+        )
         queueManager.setQueueCursor(position)
         return prepareCurrentPlayer(queueManager.currentSong).also { setCurrentSuccess ->
             if (setCurrentSuccess) prepareNextPlayer(queueManager.nextSong)
             else prepareNextPlayer(null)
 
             notifyNowPlayingChanged()
+
+            log(
+                "prepareSongsImp:After",
+                "current:${queueManager.currentSong.title} ,next:${queueManager.nextSong.title}"
+            )
         }
     }
     private fun notifyNowPlayingChanged() {
@@ -190,7 +199,7 @@ class PlayerController(internal val service: MusicService) : Playback.PlaybackCa
             ).show()
             jumpForwardImp(false)
         }
-        log("playAtImp", "current: at $position song(${queueManager.currentSong})")
+        log("playAtImp", "current: at $position song(${queueManager.currentSong.title})")
     }
 
     /**
@@ -224,7 +233,6 @@ class PlayerController(internal val service: MusicService) : Playback.PlaybackCa
                             playAtImp(queueManager.currentSongPosition)
                         } else {
                             audioPlayer.start()
-                            log("playImp", "start playing: ${queueManager.currentSong.title}")
 
                             playerState = PlayerState.PLAYING
                             pauseReason = NOT_PAUSED
@@ -568,7 +576,7 @@ class PlayerController(internal val service: MusicService) : Playback.PlaybackCa
     }
 
     fun log(where: String, msg: String, force: Boolean = false) {
-        if (DEBUG || force) Log.d("PlayerController", "@$where ※$msg")
+        if (DEBUG || force) Log.i("PlayerController", "※$msg @$where")
     }
 
     /*  debug */
