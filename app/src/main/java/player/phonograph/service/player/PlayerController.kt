@@ -29,10 +29,7 @@ import player.phonograph.util.MusicUtil
 /**
  * @author chr_56 & Abou Zeid (kabouzeid) (original author)
  */
-class PlayerController(musicService: MusicService) : Playback.PlaybackCallbacks, LyricsUpdateThread.ProgressMillsUpdateCallback {
-
-    private var _service: MusicService? = musicService
-    private val service: MusicService get() = _service!!
+class PlayerController(internal val service: MusicService) : Playback.PlaybackCallbacks, LyricsUpdateThread.ProgressMillsUpdateCallback {
 
     private val queueManager = App.instance.queueManager
 
@@ -48,7 +45,7 @@ class PlayerController(musicService: MusicService) : Playback.PlaybackCallbacks,
     private var lyricsUpdateThread: LyricsUpdateThread
 
     init {
-        audioPlayer = AudioPlayer(musicService, this)
+        audioPlayer = AudioPlayer(service, this)
 
         wakeLock =
             (App.instance.getSystemService(Context.POWER_SERVICE) as PowerManager)
@@ -83,7 +80,6 @@ class PlayerController(musicService: MusicService) : Playback.PlaybackCallbacks,
         lyricsUpdateThread.quit()
 
         audioFocusManager.abandonAudioFocus()
-        _service = null
     }
 
     fun acquireWakeLock(milli: Long) {
@@ -520,12 +516,12 @@ class PlayerController(musicService: MusicService) : Playback.PlaybackCallbacks,
                     }
                 }
                 RE_PREPARE_NEXT_PLAYER -> controllerRef.get()?.let {
-                    synchronized(it.audioPlayer){
+                    synchronized(it.audioPlayer) {
                         it.prepareNextPlayer(it.queueManager.nextSong)
                     }
                 }
                 CLEAN_NEXT_PLAYER -> controllerRef.get()?.let {
-                    synchronized(it.audioPlayer){
+                    synchronized(it.audioPlayer) {
                         it.prepareNextPlayer(null)
                     }
                 }
