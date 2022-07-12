@@ -2,25 +2,15 @@
  * Copyright (c) 2022 chr_56 & Abou Zeid (kabouzeid) (original author)
  */
 
-package player.phonograph.service
+package player.phonograph.service.util
 
 import android.content.Context
-import android.content.Intent
 import android.database.ContentObserver
-import android.graphics.Bitmap
-import android.net.Uri
 import android.os.Handler
 import android.provider.MediaStore
-import android.widget.Toast
-import player.phonograph.App
-import player.phonograph.R
-import player.phonograph.model.Song
-import player.phonograph.model.playlist.Playlist
-import player.phonograph.service.queue.SHUFFLE_MODE_NONE
-import player.phonograph.service.queue.ShuffleMode
-import player.phonograph.util.MusicUtil.getSongFileUri
+import player.phonograph.service.MusicService
 
-class MusicServiceUtil {
+class MediaStoreObserverUtil {
 
     var mediaStoreObserver: MediaStoreObserver? = null
 
@@ -111,67 +101,6 @@ class MusicServiceUtil {
         companion object {
             // milliseconds to delay before calling refresh to aggregate events
             private const val REFRESH_DELAY: Long = 500
-        }
-    }
-
-    companion object {
-        private const val ANDROID_MUSIC_PACKAGE_NAME = "com.android.music"
-
-        @JvmStatic
-        fun sendPublicIntent(service: MusicService, what: String) {
-            service.sendStickyBroadcast(
-                Intent(
-                    what.replace(App.ACTUAL_PACKAGE_NAME, ANDROID_MUSIC_PACKAGE_NAME)
-                ).apply {
-                    val song: Song = App.instance.queueManager.currentSong
-                    putExtra("id", song.id)
-                    putExtra("artist", song.artistName)
-                    putExtra("album", song.albumName)
-                    putExtra("track", song.title)
-                    putExtra("duration", song.duration)
-                    putExtra("position", service.songProgressMillis.toLong())
-                    putExtra("playing", service.isPlaying)
-                    putExtra("scrobbling_source", App.ACTUAL_PACKAGE_NAME)
-                }
-            )
-        }
-
-        @JvmStatic
-        fun getTrackUri(song: Song): Uri = getSongFileUri(song.id)
-
-        @JvmStatic
-        fun parsePlaylistAndPlay(intent: Intent, service: MusicService) {
-            val playlist: Playlist? = intent.getParcelableExtra(
-                MusicService.INTENT_EXTRA_PLAYLIST
-            )
-            val playlistSongs = playlist?.getSongs(service)
-            val shuffleMode = ShuffleMode.deserialize(
-                intent.getIntExtra(MusicService.INTENT_EXTRA_SHUFFLE_MODE, SHUFFLE_MODE_NONE)
-            )
-            if (playlistSongs.isNullOrEmpty()) {
-                Toast.makeText(service, R.string.playlist_is_empty, Toast.LENGTH_LONG).show()
-            } else {
-                val queueManager = App.instance.queueManager
-                queueManager.switchShuffleMode(shuffleMode)
-                // TODO: keep the queue intact
-                val queue =
-                    if (shuffleMode == ShuffleMode.SHUFFLE) playlistSongs.toMutableList().apply { shuffle() } else playlistSongs
-                service.openQueue(queue, 0, true)
-            }
-        }
-
-        @JvmStatic
-        internal fun Bitmap.copy(): Bitmap? {
-            var config = this.config
-            if (config == null) {
-                config = Bitmap.Config.RGB_565
-            }
-            return try {
-                this.copy(config, false)
-            } catch (e: OutOfMemoryError) {
-                e.printStackTrace()
-                null
-            }
         }
     }
 }
