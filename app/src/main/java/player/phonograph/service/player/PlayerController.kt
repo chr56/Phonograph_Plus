@@ -115,6 +115,7 @@ class PlayerController(musicService: MusicService) : Playback.PlaybackCallbacks,
      */
     private fun prepareSongsImp(position: Int): Boolean {
         // todo: change STATE if possible
+        broadcastStopLyric()
         queueManager.setQueueCursor(position)
         return prepareCurrentPlayer(queueManager.currentSong).also { setCurrentSuccess ->
             if (setCurrentSuccess) prepareNextPlayer(queueManager.nextSong)
@@ -258,6 +259,7 @@ class PlayerController(musicService: MusicService) : Playback.PlaybackCallbacks,
     private fun pauseImp(force: Boolean = false) {
         if (audioPlayer.isPlaying() || force) {
             audioPlayer.pause()
+            broadcastStopLyric()
             playerState = PlayerState.PAUSED
             releaseWakeLock()
         }
@@ -359,6 +361,7 @@ class PlayerController(musicService: MusicService) : Playback.PlaybackCallbacks,
     }
     private fun stopImp() {
         pauseImp(true)
+        broadcastStopLyric()
         playerState = PlayerState.STOPPED
         observers.executeForEach {
             onReceivingMessage(MSG_PLAYER_STOPPED)
