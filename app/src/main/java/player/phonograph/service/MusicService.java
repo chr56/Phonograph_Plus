@@ -572,11 +572,10 @@ public class MusicService extends Service implements SharedPreferences.OnSharedP
                 updateMediaSessionMetaData(); // because playing queue size might have changed
                 saveState();
                 if (queueManager.getPlayingQueue().size() > 0) {
-                    isQuit = false;
                     controller.getHandler().removeMessages(PlayerController.ControllerHandler.RE_PREPARE_NEXT_PLAYER);
                     controller.getHandler().sendEmptyMessage(PlayerController.ControllerHandler.RE_PREPARE_NEXT_PLAYER);
                 } else {
-                    isQuit = true;
+                    controller.stop();
                     playingNotification.stop();
                 }
                 break;
