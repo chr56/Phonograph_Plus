@@ -66,20 +66,28 @@ class PlayerController(internal val service: MusicService) : Playback.PlaybackCa
     }
 
     /**
-     * release all resource and destroy
+     * release taken resources but not vitals
+     */
+    fun releaseTakenResources() {
+        releaseWakeLock()
+        audioFocusManager.abandonAudioFocus()
+    }
+
+    /**
+     * release vital resources
      */
     fun destroy() {
-        stop()
         unregisterBecomingNoisyReceiver(service)
         audioPlayer.release()
-        wakeLock.release()
         thread.quitSafely()
         handler.looper.quitSafely()
-
         lyricsUpdateThread.currentSong = null
         lyricsUpdateThread.quit()
+    }
 
-        audioFocusManager.abandonAudioFocus()
+    fun stopAndDestroy() {
+        stopImp()
+        destroy()
     }
 
     fun acquireWakeLock(milli: Long) {
@@ -256,7 +264,7 @@ class PlayerController(internal val service: MusicService) : Playback.PlaybackCa
             audioPlayer.pause()
             broadcastStopLyric()
             playerState = PlayerState.PAUSED
-            releaseWakeLock()
+            releaseTakenResources()
         }
     }
 

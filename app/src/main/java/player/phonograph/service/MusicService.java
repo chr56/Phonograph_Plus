@@ -251,7 +251,7 @@ public class MusicService extends Service implements SharedPreferences.OnSharedP
 
             @Override
             public void onStop() {
-                quit();
+                stopSelf();
             }
 
             @Override
@@ -306,7 +306,7 @@ public class MusicService extends Service implements SharedPreferences.OnSharedP
                     case ACTION_STOP:
                     case ACTION_QUIT:
                         pendingQuit = false;
-                        quit();
+                        stopSelf();
                         break;
                     case ACTION_PENDING_QUIT:
                         pendingQuit = true;
@@ -320,29 +320,23 @@ public class MusicService extends Service implements SharedPreferences.OnSharedP
 
     @Override
     public void onDestroy() {
-        unregisterReceiver(musicServiceKt.widgetIntentReceiver);
+        isQuit = true;
 
         mediaSession.setActive(false);
-        quit();
+        playingNotification.stop();
+        closeAudioEffectSession();
         mediaSession.release();
+
+        unregisterReceiver(musicServiceKt.widgetIntentReceiver);
         musicServiceKt.unregisterMediaStoreObserver(this);
+
         Setting.Companion.getInstance().unregisterOnSharedPreferenceChangedListener(this);
 
-        controller.destroy();
+        controller.stopAndDestroy();
         controller.removeObserver(playerStateObserver);
         queueManager.removeObserver(queueChangeObserver);
 
         sendBroadcast(new Intent("player.phonograph.PHONOGRAPH_MUSIC_SERVICE_DESTROYED"));
-    }
-
-    //todo
-    private void quit() {
-        controller.destroy();
-        isQuit = true;
-        playingNotification.stop();
-
-        closeAudioEffectSession();
-        stopSelf();
     }
 
     public boolean isPlaying() {
