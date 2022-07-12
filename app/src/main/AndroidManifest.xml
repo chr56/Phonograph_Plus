@@ -143,7 +143,7 @@
             android:foregroundServiceType="mediaPlayback" />
 
         <receiver
-            android:name=".service.MediaButtonIntentReceiver"
+            android:name=".service.util.MediaButtonIntentReceiver"
             android:exported="false">
             <intent-filter>
                 <action android:name="android.intent.action.MEDIA_BUTTON" />

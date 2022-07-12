@@ -10,7 +10,7 @@
  */
 
 // Modified for Phonograph by Karim Abou Zeid (kabouzeid).
-package player.phonograph.service
+package player.phonograph.service.util
 
 import android.annotation.SuppressLint
 import android.content.BroadcastReceiver
@@ -25,6 +25,7 @@ import android.util.Log
 import android.view.KeyEvent
 import androidx.core.content.ContextCompat
 import player.phonograph.BuildConfig
+import player.phonograph.service.MusicService
 
 /**
  * Used to control headset playback.
