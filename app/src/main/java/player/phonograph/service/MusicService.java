@@ -18,6 +18,7 @@ import android.os.Binder;
 import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
+import android.os.Looper;
 import android.preference.PreferenceManager;
 import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.MediaSessionCompat;
@@ -90,63 +91,31 @@ public class MusicService extends Service implements SharedPreferences.OnSharedP
     public static final String MEDIA_STORE_CHANGED = PHONOGRAPH_PACKAGE_NAME + ".mediastorechanged";
 
     public static final String SAVED_POSITION_IN_TRACK = "POSITION_IN_TRACK";
-
-//    public static final int RELEASE_WAKELOCK = 0;
-//    public static final int TRACK_ENDED = 1;
-//    public static final int TRACK_WENT_TO_NEXT = 2;
-//    public static final int PLAY_SONG = 3;
-//    public static final int PREPARE_NEXT = 4;
-//    public static final int SET_POSITION = 5;
-//    private static final int FOCUS_CHANGE = 6;
-//    private static final int DUCK = 7;
-//    private static final int UNDUCK = 8;
-
+    private static final long MEDIA_SESSION_ACTIONS = PlaybackStateCompat.ACTION_PLAY
+            | PlaybackStateCompat.ACTION_PAUSE
+            | PlaybackStateCompat.ACTION_PLAY_PAUSE
+            | PlaybackStateCompat.ACTION_SKIP_TO_NEXT
+            | PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS
+            | PlaybackStateCompat.ACTION_STOP
+            | PlaybackStateCompat.ACTION_SEEK_TO;
     private final IBinder musicBind = new MusicBinder();
-
+    private final SongPlayCountHelper songPlayCountHelper = new SongPlayCountHelper();
     public boolean pendingQuit = false;
-
-//    private Playback playback;
-
+    private MusicServiceKt musicServiceKt;
     private QueueManager queueManager;
     private QueueChangeObserver queueChangeObserver;
-
     private PlayerController controller;
     private PlayerStateObserver playerStateObserver;
-
-    //    private boolean pausedByTransientLossOfFocus;
     private PlayingNotification playingNotification;
-    //    private AudioManager audioManager;
     private MediaSessionCompat mediaSession;
-    //    private PowerManager.WakeLock wakeLock;
-//    private PlaybackHandler playerHandler;
-//    private final AudioManager.OnAudioFocusChangeListener audioFocusListener = new AudioManager.OnAudioFocusChangeListener() {
-//        @Override
-//        public void onAudioFocusChange(final int focusChange) {
-//            playerHandler.obtainMessage(FOCUS_CHANGE, focusChange, 0).sendToTarget();
-//        }
-//    };
-//    private HandlerThread musicPlayerHandlerThread;
-    private final SongPlayCountHelper songPlayCountHelper = new SongPlayCountHelper();
     private ThrottledSeekHandler throttledSeekHandler;
-//    private boolean becomingNoisyReceiverRegistered;
-//    private IntentFilter becomingNoisyReceiverIntentFilter = new IntentFilter(AudioManager.ACTION_AUDIO_BECOMING_NOISY);
-//    private final BroadcastReceiver becomingNoisyReceiver = new BroadcastReceiver() {
-//        @Override
-//        public void onReceive(Context context, @NonNull Intent intent) {
-//            if (intent.getAction().equals(AudioManager.ACTION_AUDIO_BECOMING_NOISY)) {
-//                pause();
-//            }
-//        }
-//    };
-//
-//    private boolean notHandledMetaChangedForCurrentTrack = true;
-
     private Handler uiThreadHandler;
+    private boolean isQuit = false; // todo sleeptimer
 
-//    private LyricsUpdateThread lyricsUpdateThread;
-
-    private MusicServiceKt musicServiceKt;
-
+    static void log(@NonNull String msg) {
+        if (BuildConfig.DEBUG)
+            Log.i("MusicServiceDebug", msg);
+    }
 
     @Override
     public void onCreate() {
@@ -154,20 +123,10 @@ public class MusicService extends Service implements SharedPreferences.OnSharedP
 
         queueManager = App.getInstance().getQueueManager();
         controller = new PlayerController(this);
-//        final PowerManager powerManager = (PowerManager) getSystemService(Context.POWER_SERVICE);
-//        wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, getClass().getName());
-//        wakeLock.setReferenceCounted(false);
-//
-//        musicPlayerHandlerThread = new HandlerThread("PlaybackHandler");
-//        musicPlayerHandlerThread.start();
-//        playerHandler = new PlaybackHandler(this, musicPlayerHandlerThread.getLooper());
-//
-//        playback = new AudioPlayer(this);
-//        playback.setCallbacks(this);
 
         setupMediaSession();
 
-        uiThreadHandler = new Handler();
+        uiThreadHandler = new Handler(Looper.getMainLooper());
 
         musicServiceKt = new MusicServiceKt(this);
         registerReceiver(musicServiceKt.widgetIntentReceiver, new IntentFilter(APP_WIDGET_UPDATE));
@@ -181,7 +140,7 @@ public class MusicService extends Service implements SharedPreferences.OnSharedP
         });
         throttledSeekHandler = new ThrottledSeekHandler(controller.getHandler());
 
-        Setting.Companion.getInstance().registerOnSharedPreferenceChangedListener(this);
+        Setting.instance().registerOnSharedPreferenceChangedListener(this);
 
 
         // notify manually for first setting up queueManager
@@ -192,18 +151,14 @@ public class MusicService extends Service implements SharedPreferences.OnSharedP
 
         mediaSession.setActive(true);
 
-        sendBroadcast(new Intent("player.phonograph.PHONOGRAPH_MUSIC_SERVICE_CREATED"));
-
-//        lyricsUpdateThread = new LyricsUpdateThread(queueManager.getCurrentSong(), this);
-//        lyricsUpdateThread.start();
-
         queueChangeObserver = initQueueChangeObserver();
         queueManager.addObserver(queueChangeObserver);
 
         playerStateObserver = initPlayerStateObserver();
         controller.addObserver(playerStateObserver);
-    }
 
+        sendBroadcast(new Intent("player.phonograph.PHONOGRAPH_MUSIC_SERVICE_CREATED"));
+    }
 
     private QueueChangeObserver initQueueChangeObserver() {
         return new QueueChangeObserver() {
@@ -264,7 +219,6 @@ public class MusicService extends Service implements SharedPreferences.OnSharedP
         };
     }
 
-
     private void setupMediaSession() {
         ComponentName mediaButtonReceiverComponentName = new ComponentName(getApplicationContext(), MediaButtonIntentReceiver.class);
 
@@ -311,10 +265,11 @@ public class MusicService extends Service implements SharedPreferences.OnSharedP
             }
         });
 
-        // noinspection deprecation
+        // noinspection deprecation // fixme remove deprecation
         mediaSession.setFlags(MediaSessionCompat.FLAG_HANDLES_TRANSPORT_CONTROLS
                 | MediaSessionCompat.FLAG_HANDLES_MEDIA_BUTTONS
-        ); // fixme remove deprecation
+        );
+
 
         mediaSession.setMediaButtonReceiver(mediaButtonReceiverPendingIntent);
     }
@@ -380,36 +335,6 @@ public class MusicService extends Service implements SharedPreferences.OnSharedP
         sendBroadcast(new Intent("player.phonograph.PHONOGRAPH_MUSIC_SERVICE_DESTROYED"));
     }
 
-    @Override
-    public IBinder onBind(Intent intent) {
-        return musicBind;
-    }
-
-
-    private void savePositionInTrack() {
-        PreferenceManager.getDefaultSharedPreferences(this).edit().putInt(SAVED_POSITION_IN_TRACK, getSongProgressMillis()).apply();
-    }
-
-    public void saveState() {
-        queueManager.postMessage(QueueManager.MSG_SAVE_QUEUE);
-        queueManager.postMessage(QueueManager.MSG_SAVE_CURSOR);
-        savePositionInTrack();
-    }
-
-
-//    private Boolean queuesRestored = false;
-
-//    private synchronized void restoreTrackPositionIfNecessary() {
-//        if (!queuesRestored) {
-//            int restoredPositionInTrack = PreferenceManager.getDefaultSharedPreferences(this).getInt(SAVED_POSITION_IN_TRACK, -1);
-//            openCurrent();
-//            prepareNext();
-//            if (restoredPositionInTrack > 0) seek(restoredPositionInTrack);
-//            sendChangeInternal(META_CHANGED);
-//            queuesRestored = true;
-//        }
-//    }
-
     //todo
     private void quit() {
         controller.pause();
@@ -426,28 +351,27 @@ public class MusicService extends Service implements SharedPreferences.OnSharedP
         return controller.isPlaying();
     }
 
-    private boolean isQuit = false;
-
     public boolean isIdle() {
         return isQuit;
     }
 
+    @Override
+    public IBinder onBind(Intent intent) {
+        return musicBind;
+    }
+
+    private void savePositionInTrack() {
+        PreferenceManager.getDefaultSharedPreferences(this).edit().putInt(SAVED_POSITION_IN_TRACK, getSongProgressMillis()).apply();
+    }
+
+    public void saveState() {
+        queueManager.postMessage(QueueManager.MSG_SAVE_QUEUE);
+        queueManager.postMessage(QueueManager.MSG_SAVE_CURSOR);
+        savePositionInTrack();
+    }
+
     public void playNextSong(boolean force) {
         controller.jumpForward(force);
-
-//        log("playNextSong:BeforeSongChange:" + queueManager.getCurrentSong().title);
-//        if (force) {
-//            int pos = queueManager.getNextSongPositionInList();
-//            if (pos < 0) {
-//                onTrackEnded();
-//                return;
-//            }
-//            playSongAt(pos);
-//        } else {
-//            playSongAt(queueManager.getNextSongPosition());
-//        }
-//        log("playNextSong:AfterSongChange:" + queueManager.getCurrentSong().title);
-
     }
 
     //todo
@@ -539,7 +463,6 @@ public class MusicService extends Service implements SharedPreferences.OnSharedP
         }
     }
 
-
     public void runOnUiThread(Runnable runnable) {
         uiThreadHandler.post(runnable);
     }
@@ -556,67 +479,18 @@ public class MusicService extends Service implements SharedPreferences.OnSharedP
 
     public void playSongAt(final int position) {
         controller.playAt(position);
-//        // handle this on the handlers thread to avoid blocking the ui thread
-//        playerHandler.removeMessages(PLAY_SONG);
-//        playerHandler.obtainMessage(PLAY_SONG, position, 0).sendToTarget();
-//
-//        broadcastStopLyric(); // clear lyrics on switching
-//
-//        lyricsUpdateThread.setCurrentSong(queueManager.getSongAt(position));
     }
 
     public void pause() {
         controller.pause();
-//        pausedByTransientLossOfFocus = false;
-//        if (playback.isPlaying()) {
-//            playback.pause();
-//            notifyChange(PLAY_STATE_CHANGED);
-//            broadcastStopLyric(); // clear lyrics on pause/stop
-//        }
     }
 
     public void play() {
         controller.play();
-//        synchronized (this) {
-//            if (requestFocus()) {
-//                if (!playback.isPlaying()) {
-//                    if (!playback.isInitialized()) {
-//                        playSongAt(queueManager.getCurrentSongPosition());
-//                    } else {
-//                        //log("play:currentSong:" + queueManager.getCurrentSong().title);
-//                        playback.start();
-//                        isQuit = false;
-//                        if (!becomingNoisyReceiverRegistered) {
-//                            registerReceiver(becomingNoisyReceiver, becomingNoisyReceiverIntentFilter);
-//                            becomingNoisyReceiverRegistered = true;
-//                        }
-//                        if (notHandledMetaChangedForCurrentTrack) {
-//                            handleChangeInternal(META_CHANGED);
-//                            notHandledMetaChangedForCurrentTrack = false;
-//                        }
-//                        notifyChange(PLAY_STATE_CHANGED);
-//
-//                        // fixes a bug where the volume would stay ducked because the AudioManager.AUDIOFOCUS_GAIN event is not sent
-//                        playerHandler.removeMessages(DUCK);
-//                        playerHandler.sendEmptyMessage(UNDUCK);
-//
-//                        broadcastStopLyric(); // clear lyrics on staring
-//
-//                        lyricsUpdateThread.setCurrentSong(queueManager.getSongAt(queueManager.getCurrentSongPosition()));
-//                    }
-//                }
-//            } else {
-//                Toast.makeText(this, getResources().getString(R.string.audio_focus_denied), Toast.LENGTH_SHORT).show();
-//            }
-//        }
     }
 
     public void playPreviousSong(boolean force) {
         controller.jumpBackward(force);
-//        if (force) {
-//            playSongAt(queueManager.getPreviousSongPositionInList());
-//        } else
-//            playSongAt(queueManager.getPreviousSongPosition());
     }
 
     public void back(boolean force) {
@@ -627,7 +501,6 @@ public class MusicService extends Service implements SharedPreferences.OnSharedP
         }
     }
 
-
     public int getSongProgressMillis() {
         return controller.getSongProgressMillis();
     }
@@ -635,7 +508,6 @@ public class MusicService extends Service implements SharedPreferences.OnSharedP
     public int getSongDurationMillis() {
         return controller.getSongDurationMillis();
     }
-
 
     // todo check
     public int seek(int millis) {
@@ -672,14 +544,6 @@ public class MusicService extends Service implements SharedPreferences.OnSharedP
         musicServiceKt.appWidgetSmall.notifyChange(this, what);
         musicServiceKt.appWidgetCard.notifyChange(this, what);
     }
-
-    private static final long MEDIA_SESSION_ACTIONS = PlaybackStateCompat.ACTION_PLAY
-            | PlaybackStateCompat.ACTION_PAUSE
-            | PlaybackStateCompat.ACTION_PLAY_PAUSE
-            | PlaybackStateCompat.ACTION_SKIP_TO_NEXT
-            | PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS
-            | PlaybackStateCompat.ACTION_STOP
-            | PlaybackStateCompat.ACTION_SEEK_TO;
 
     private void handleChangeInternal(@NonNull final String what) {
         switch (what) {
@@ -754,150 +618,9 @@ public class MusicService extends Service implements SharedPreferences.OnSharedP
         }
     }
 
-//    @Override
-//    public void onTrackWentToNext() {
-//        playerHandler.sendEmptyMessage(TRACK_WENT_TO_NEXT);
-//    }
-//
-//    @Override
-//    public void onTrackEnded() {
-//        acquireWakeLock(30000);
-//        broadcastStopLyric(); // clear lyrics on ending
-//        playerHandler.sendEmptyMessage(TRACK_ENDED);
-//    }
-
-//    private static final class PlaybackHandler extends Handler {
-//        @NonNull
-//        private final WeakReference<MusicService> mService;
-//        private float currentDuckVolume = 1.0f;
-//
-//        public PlaybackHandler(final MusicService service, @NonNull final Looper looper) {
-//            super(looper);
-//            mService = new WeakReference<>(service);
-//        }
-//
-//        @Override
-//        public void handleMessage(@NonNull final Message msg) {
-//            final MusicService service = mService.get();
-//            if (service == null) {
-//                return;
-//            }
-//
-//            switch (msg.what) {
-//                case DUCK:
-//                    if (Setting.instance().getAudioDucking()) {
-//                        currentDuckVolume -= .05f;
-//                        if (currentDuckVolume > .2f) {
-//                            sendEmptyMessageDelayed(DUCK, 10);
-//                        } else {
-//                            currentDuckVolume = .2f;
-//                        }
-//                    } else {
-//                        currentDuckVolume = 1f;
-//                    }
-//                    service.playback.setVolume(currentDuckVolume);
-//                    break;
-//
-//                case UNDUCK:
-//                    if (Setting.instance().getAudioDucking()) {
-//                        currentDuckVolume += .03f;
-//                        if (currentDuckVolume < 1f) {
-//                            sendEmptyMessageDelayed(UNDUCK, 10);
-//                        } else {
-//                            currentDuckVolume = 1f;
-//                        }
-//                    } else {
-//                        currentDuckVolume = 1f;
-//                    }
-//                    service.playback.setVolume(currentDuckVolume);
-//                    break;
-//
-//                case TRACK_WENT_TO_NEXT:
-//                    if (service.pendingQuit || service.queueManager.getShuffleMode() == ShuffleMode.NONE && service.queueManager.isLastTrack()) {
-//                        service.pause();
-//                        service.seek(0);
-//                        if (service.pendingQuit) {
-//                            service.pendingQuit = false;
-//                            service.quit();
-//                            break;
-//                        }
-//                    } else {
-//                        service.queueManager.moveToNextSong();
-//                        service.prepareNextImpl();
-//                        service.notifyChange(META_CHANGED);
-//                    }
-//                    break;
-//
-//                case TRACK_ENDED:
-//                    // if there is a timer finished, don't continue
-//                    if (service.pendingQuit ||
-//                            service.queueManager.getShuffleMode() == ShuffleMode.NONE && service.queueManager.isLastTrack()) {
-//                        service.notifyChange(PLAY_STATE_CHANGED);
-//                        service.seek(0);
-//                        if (service.pendingQuit) {
-//                            service.pendingQuit = false;
-//                            service.quit();
-//                            break;
-//                        }
-//                    } else {
-//                        service.playNextSong(false);
-//                    }
-//                    sendEmptyMessage(RELEASE_WAKELOCK);
-//                    break;
-//
-//                case RELEASE_WAKELOCK:
-//                    service.releaseWakeLock();
-//                    break;
-//
-//                case PLAY_SONG:
-//                    service.playSongAtImpl(msg.arg1);
-//                    break;
-//
-//                case SET_POSITION:
-//                    service.openTrackAndPrepareNextAt(msg.arg1);
-//                    service.notifyChange(PLAY_STATE_CHANGED);
-//                    break;
-//
-//                case PREPARE_NEXT:
-//                    service.prepareNextImpl();
-//                    break;
-//
-//                case FOCUS_CHANGE:
-//                    switch (msg.arg1) {
-//                        case AudioManager.AUDIOFOCUS_GAIN:
-//                            if (!service.isPlaying() && service.pausedByTransientLossOfFocus) {
-//                                service.play();
-//                                service.pausedByTransientLossOfFocus = false;
-//                            }
-//                            removeMessages(DUCK);
-//                            sendEmptyMessage(UNDUCK);
-//                            break;
-//
-//                        case AudioManager.AUDIOFOCUS_LOSS:
-//                            // Lost focus for an unbounded amount of time: stop playback and release media playback
-//                            service.pause();
-//                            break;
-//
-//                        case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT:
-//                            // Lost focus for a short time, but we have to stop
-//                            // playback. We don't release the media playback because playback
-//                            // is likely to resume
-//                            boolean wasPlaying = service.isPlaying();
-//                            service.pause();
-//                            service.pausedByTransientLossOfFocus = wasPlaying;
-//                            break;
-//
-//                        case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK:
-//                            // Lost focus for a short time, but it's ok to keep playing
-//                            // at an attenuated level
-//                            removeMessages(UNDUCK);
-//                            sendEmptyMessage(DUCK);
-//                            break;
-//                    }
-//                    break;
-//            }
-//        }
-//    }
+    public void replaceLyrics(LrcLyrics lyrics) {
+        controller.replaceLyrics(lyrics);
+    }
 
     public class MusicBinder extends Binder {
         @NonNull
@@ -909,7 +632,7 @@ public class MusicService extends Service implements SharedPreferences.OnSharedP
     private class ThrottledSeekHandler implements Runnable {
         // milliseconds to throttle before calling run() to aggregate events
         private static final long THROTTLE = 500;
-        private Handler mHandler;
+        private final Handler mHandler;
 
         public ThrottledSeekHandler(Handler handler) {
             mHandler = handler;
@@ -928,14 +651,5 @@ public class MusicService extends Service implements SharedPreferences.OnSharedP
             savePositionInTrack();
             sendPublicIntent(PLAY_STATE_CHANGED); // for musixmatch synced lyrics
         }
-    }
-
-    public void replaceLyrics(LrcLyrics lyrics) {
-        controller.replaceLyrics(lyrics);
-    }
-
-    static void log(@NonNull String msg) {
-        if (BuildConfig.DEBUG)
-            Log.i("MusicServiceDebug", msg);
     }
 }
