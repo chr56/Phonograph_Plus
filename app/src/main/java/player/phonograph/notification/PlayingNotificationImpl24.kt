@@ -62,7 +62,7 @@ class PlayingNotificationImpl24(service: MusicService) : PlayingNotification(ser
                         builder
                             .setStyle(
                                 MediaNotificationCompat.MediaStyle()
-                                    .setMediaSession(service.mediaSession.sessionToken)
+                                    .setMediaSession(service.mediaSession!!.sessionToken)
                                     .setShowActionsInCompactView(0, 1, 2)
                             )
                     }

@@ -120,15 +120,11 @@ class MusicServiceKt(val musicService: MusicService) {
         }
     }
 
-    @JvmField val appWidgetBig = AppWidgetBig.instance
+    val appWidgetBig = AppWidgetBig.instance
+    val appWidgetClassic = AppWidgetClassic.instance
+    val appWidgetSmall = AppWidgetSmall.instance
+    val appWidgetCard = AppWidgetCard.instance
 
-    @JvmField val appWidgetClassic = AppWidgetClassic.instance
-
-    @JvmField val appWidgetSmall = AppWidgetSmall.instance
-
-    @JvmField val appWidgetCard = AppWidgetCard.instance
-
-    @JvmField
     val widgetIntentReceiver: BroadcastReceiver =
         object : BroadcastReceiver() {
             override fun onReceive(context: Context, intent: Intent) {
@@ -158,7 +154,7 @@ class MusicServiceKt(val musicService: MusicService) {
         fun sendPublicIntent(service: MusicService, what: String) {
             service.sendStickyBroadcast(
                 Intent(
-                    what.replace(MusicService.PHONOGRAPH_PACKAGE_NAME, ANDROID_MUSIC_PACKAGE_NAME)
+                    what.replace(App.ACTUAL_PACKAGE_NAME, ANDROID_MUSIC_PACKAGE_NAME)
                 ).apply {
                     val song: Song = App.instance.queueManager.currentSong
                     putExtra("id", song.id)
@@ -168,15 +164,13 @@ class MusicServiceKt(val musicService: MusicService) {
                     putExtra("duration", song.duration)
                     putExtra("position", service.songProgressMillis.toLong())
                     putExtra("playing", service.isPlaying)
-                    putExtra("scrobbling_source", MusicService.PHONOGRAPH_PACKAGE_NAME)
+                    putExtra("scrobbling_source", App.ACTUAL_PACKAGE_NAME)
                 }
             )
         }
 
         @JvmStatic
-        fun getTrackUri(song: Song): Uri {
-            return getSongFileUri(song.id)
-        }
+        fun getTrackUri(song: Song): Uri = getSongFileUri(song.id)
 
         @JvmStatic
         fun parsePlaylistAndPlay(intent: Intent, service: MusicService) {
