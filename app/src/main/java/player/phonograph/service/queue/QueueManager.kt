@@ -88,6 +88,16 @@ class QueueManager(val context: Application) {
         }
     }
 
+    private inline fun request(async: Boolean, crossinline r: () -> Unit) {
+        if (async) {
+            handler.request {
+                r()
+            }
+        } else {
+            r()
+        }
+    }
+
     private var _playingQueue: MutableList<Song> = CopyOnWriteArrayList()
     private var _originalPlayingQueue: MutableList<Song> = CopyOnWriteArrayList()
 
@@ -106,14 +116,8 @@ class QueueManager(val context: Application) {
     @Synchronized fun modifyQueue(
         async: Boolean = true,
         action: (MutableList<Song>, MutableList<Song>) -> Unit
-    ) {
-        if (async) {
-            handler.request {
-                modifyQueueImp(action)
-            }
-        } else {
-            modifyQueueImp(action)
-        }
+    ) = request(async) {
+        modifyQueueImp(action)
     }
 
     private fun modifyQueueImp(
@@ -125,7 +129,6 @@ class QueueManager(val context: Application) {
         observers.executeForEach {
             onQueueChanged(_playingQueue, _originalPlayingQueue)
         }
-        updateMeta()
         saveQueue()
         saveCursor()
     }
@@ -380,46 +383,35 @@ class QueueManager(val context: Application) {
         }
     }
 
-    private fun updateMeta() {
-        // todo
-    }
-
-    fun setSongPosition(position: Int, async: Boolean = false) {
-        if (async) {
-            handler.request {
-                currentSongPosition = position
-            }
-        } else {
+    fun setSongPosition(position: Int, async: Boolean = false) =
+        request(async) {
             currentSongPosition = position
         }
-    }
 
-    fun moveToNextSong(async: Boolean = false) {
-        if (async) {
-            handler.request {
-                currentSongPosition = nextSongPosition
-            }
-        } else {
+    fun moveToNextSong(async: Boolean = false) =
+        request(async) {
             currentSongPosition = nextSongPosition
         }
-    }
 
-    fun switchShuffleMode(shuffleMode: ShuffleMode) {
-        handler.post {
+    fun switchShuffleMode(shuffleMode: ShuffleMode, async: Boolean = false) =
+        request(async) {
             this.shuffleMode = shuffleMode
         }
-    }
 
-    fun switchRepeatMode(repeatMode: RepeatMode) {
-        handler.post {
+    fun switchRepeatMode(repeatMode: RepeatMode, async: Boolean = false) =
+        request(async) {
             this.repeatMode = repeatMode
         }
-    }
 
-    fun postMessage(what: Int) {
+    /**
+     * send empty message to Handler
+     */
+    fun postMessage(what: Int): Boolean =
         handler.sendEmptyMessage(what)
-    }
 
+    /**
+     * synchronized
+     */
     private fun restoreState() {
         val restoredQueue = MusicPlaybackQueueStore.getInstance(context).savedPlayingQueue
         val restoredOriginalQueue = MusicPlaybackQueueStore.getInstance(context).savedOriginalPlayingQueue
@@ -443,6 +435,9 @@ class QueueManager(val context: Application) {
         }
     }
 
+    /**
+     * synchronized
+     */
     private fun saveQueue() {
         MusicPlaybackQueueStore.getInstance(context).saveQueues(
             _playingQueue,
@@ -450,6 +445,9 @@ class QueueManager(val context: Application) {
         )
     }
 
+    /**
+     * synchronized
+     */
     private fun saveCursor() {
         PreferenceManager.getDefaultSharedPreferences(context).edit().putInt(
             PREF_POSITION,
@@ -457,6 +455,9 @@ class QueueManager(val context: Application) {
         ).apply()
     }
 
+    /**
+     * synchronized
+     */
     private fun saveShuffleMode() {
         PreferenceManager.getDefaultSharedPreferences(context).edit().putInt(
             PREF_SHUFFLE_MODE,
@@ -464,6 +465,9 @@ class QueueManager(val context: Application) {
         ).apply()
     }
 
+    /**
+     * synchronized
+     */
     private fun saveRepeatMode() {
         PreferenceManager.getDefaultSharedPreferences(context).edit().putInt(
             PREF_REPEAT_MODE,
@@ -471,6 +475,9 @@ class QueueManager(val context: Application) {
         ).apply()
     }
 
+    /**
+     * synchronized
+     */
     private fun saveAll() {
         saveQueue()
         saveCursor()
@@ -488,6 +495,9 @@ class QueueManager(val context: Application) {
     fun getAllSongsDuration(): Long =
         _originalPlayingQueue.fold(0L) { acc, song: Song -> acc + song.duration }
 
+    /**
+     * synchronized
+     */
     fun cycleRepeatMode() {
         switchRepeatMode(
             when (repeatMode) {
@@ -498,6 +508,9 @@ class QueueManager(val context: Application) {
         )
     }
 
+    /**
+     * synchronized
+     */
     fun toggleShuffle() {
         switchShuffleMode(
             when (shuffleMode) {
