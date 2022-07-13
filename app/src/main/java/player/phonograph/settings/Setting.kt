@@ -224,7 +224,7 @@ class Setting(context: Context) {
 
     // SleepTimer
     var lastSleepTimerValue: Int by IntPref(LAST_SLEEP_TIMER_VALUE, 30)
-    var nextSleepTimerElapsedRealTime: Long by LongPref(NEXT_SLEEP_TIMER_ELAPSED_REALTIME, -1)
+    var nextSleepTimerElapsedRealTime: Long by LongPref(NEXT_SLEEP_TIMER_ELAPSED_REALTIME, -1L)
     var sleepTimerFinishMusic: Boolean by BooleanPref(SLEEP_TIMER_FINISH_SONG, false)
 
     // Misc
