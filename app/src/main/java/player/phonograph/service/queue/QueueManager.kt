@@ -394,8 +394,12 @@ class QueueManager(val context: Application) {
         }
     }
 
-    fun moveToNextSong() {
-        handler.post {
+    fun moveToNextSong(async: Boolean = false) {
+        if (async) {
+            handler.request {
+                currentSongPosition = nextSongPosition
+            }
+        } else {
             currentSongPosition = nextSongPosition
         }
     }
