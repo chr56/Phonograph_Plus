@@ -398,15 +398,16 @@ class PlayerController(internal val service: MusicService) : Playback.PlaybackCa
                 onReceivingMessage(MSG_NO_MORE_SONGS)
             }
         } else {
-            ErrorNotification.postErrorNotification(
+            log(
+                "onTrackEnded",
                 "Queue was ended, but there are more songs. Continue to play anyway.(Please report this!):\n" +
                     queueManager.playingQueue.foldIndexed("Queue:") { index, acc, s ->
                         "$acc\n$index:${s.title}"
                     }
             )
             handler.request {
-                queueManager.moveToNextSong()
-                prepareSongsImp(queueManager.currentSongPosition)
+                queueManager.moveToNextSong(false)
+                playAtImp(queueManager.currentSongPosition)
             }
         }
     }
