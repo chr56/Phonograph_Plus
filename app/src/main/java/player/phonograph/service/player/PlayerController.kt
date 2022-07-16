@@ -449,6 +449,16 @@ class PlayerController(internal val service: MusicService) : Playback.PlaybackCa
         }
     }
 
+    fun saveCurrentMills() = handler.request {
+        saveCurrentMillsImp()
+    }
+    private fun saveCurrentMillsImp() {
+        PreferenceManager.getDefaultSharedPreferences(service).edit().putInt(
+            MusicService.SAVED_POSITION_IN_TRACK,
+            audioPlayer.position()
+        ).apply()
+    }
+
     val audioSessionId: Int = audioPlayer.audioSessionId
 
     fun setVolume(vol: Float) = handler.request { playerController ->
