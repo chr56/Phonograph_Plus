@@ -207,12 +207,6 @@ class MusicService : Service(), OnSharedPreferenceChangeListener {
         sendBroadcast(Intent("player.phonograph.PHONOGRAPH_MUSIC_SERVICE_DESTROYED"))
     }
 
-    override fun onBind(intent: Intent): IBinder = musicBind
-
-    fun playNextSong(force: Boolean) {
-        controller.jumpForward(force)
-    }
-
     // todo
     private fun closeAudioEffectSession() {
         sendBroadcast(
@@ -239,15 +233,10 @@ class MusicService : Service(), OnSharedPreferenceChangeListener {
     fun play() = controller.play()
     fun playPreviousSong(force: Boolean) = controller.jumpBackward(force)
     fun back(force: Boolean) = controller.back(force)
-
+    fun playNextSong(force: Boolean) = controller.jumpForward(force)
     val songProgressMillis: Int get() = controller.getSongProgressMillis()
     val songDurationMillis: Int get() = controller.getSongDurationMillis()
 
-    val audioSessionId: Int get() = controller.audioSessionId
-
-    val mediaSession get() = playNotificationManager.mediaSession
-
-    // todo check
     fun seek(millis: Int): Int = synchronized(this) {
         return try {
             val newPosition = controller.seekTo(millis.toLong())
@@ -258,19 +247,17 @@ class MusicService : Service(), OnSharedPreferenceChangeListener {
         }
     }
 
+    val audioSessionId: Int get() = controller.audioSessionId
+    val mediaSession get() = playNotificationManager.mediaSession
+
     private fun notifyChange(what: String) {
         handleAndSendChangeInternal(what)
-        sendPublicIntent(what)
+        MusicServiceUtil.sendPublicIntent(this, what)
     }
 
     private fun handleAndSendChangeInternal(what: String) {
         handleChangeInternal(what)
         sendChangeInternal(what)
-    }
-
-    // to let other apps know whats playing. i.E. last.fm (scrobbling) or musixmatch
-    private fun sendPublicIntent(what: String) {
-        MusicServiceUtil.sendPublicIntent(this, what)
     }
 
     private fun sendChangeInternal(what: String) {
@@ -388,7 +375,7 @@ class MusicService : Service(), OnSharedPreferenceChangeListener {
 
         override fun run() {
             controller.saveCurrentMills()
-            sendPublicIntent(PLAY_STATE_CHANGED) // for musixmatch synced lyrics
+            MusicServiceUtil.sendPublicIntent(this@MusicService, PLAY_STATE_CHANGED) // for musixmatch synced lyrics
         }
     }
 
@@ -448,6 +435,7 @@ class MusicService : Service(), OnSharedPreferenceChangeListener {
         }
     }
 
+    override fun onBind(intent: Intent): IBinder = musicBind
     private val musicBind: IBinder = MusicBinder()
     inner class MusicBinder : Binder() {
         val service: MusicService get() = this@MusicService
