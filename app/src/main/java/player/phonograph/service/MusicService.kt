@@ -24,7 +24,6 @@ import player.phonograph.model.Song
 import player.phonograph.model.lyrics2.LrcLyrics
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.provider.HistoryStore
-import player.phonograph.provider.SongPlayCountStore
 import player.phonograph.service.notification.PlayingNotificationManger
 import player.phonograph.service.player.MSG_NOW_PLAYING_CHANGED
 import player.phonograph.service.player.PlayerController
@@ -268,30 +267,42 @@ class MusicService : Service(), OnSharedPreferenceChangeListener {
     private fun handleChangeInternal(what: String) {
         when (what) {
             PLAY_STATE_CHANGED -> {
+                // update playing notification
                 playNotificationManager.updateNotification()
                 playNotificationManager.updateMediaSessionPlaybackState()
-                val isPlaying = isPlaying
+
+                // save state
                 if (!isPlaying && songProgressMillis > 0) {
                     controller.saveCurrentMills()
                 }
+
                 songPlayCountHelper.notifyPlayStateChanged(isPlaying)
             }
             META_CHANGED -> {
+                // update playing notification
                 playNotificationManager.updateNotification()
                 playNotificationManager.updateMediaSessionMetaData()
+
+                // save state
                 queueManager.postMessage(QueueManager.MSG_SAVE_CURSOR)
                 controller.saveCurrentMills()
-                val currentSong = queueManager.currentSong
-                HistoryStore.getInstance(this).addSongId(currentSong.id)
-                if (songPlayCountHelper.shouldBumpPlayCount()) {
-                    SongPlayCountStore.getInstance(this).bumpPlayCount(songPlayCountHelper.song.id)
-                }
-                songPlayCountHelper.notifySongChanged(currentSong)
+
+                // add to history
+                HistoryStore.getInstance(this).addSongId(queueManager.currentSong.id)
+
+                // check for bumping
+                songPlayCountHelper.checkForBumpingPlayCount(this) // old
+                songPlayCountHelper.songMonitored = queueManager.currentSong // new
             }
             QUEUE_CHANGED -> {
+                // update playing notification
                 playNotificationManager.updateMediaSessionMetaData() // because playing queue size might have changed
+
+                // save state
                 queueManager.postMessage(QueueManager.MSG_SAVE_QUEUE)
                 queueManager.postMessage(QueueManager.MSG_SAVE_CURSOR)
+
+                // notify controller
                 if (queueManager.playingQueue.isNotEmpty()) {
                     controller.handler.removeMessages(
                         PlayerController.ControllerHandler.RE_PREPARE_NEXT_PLAYER
