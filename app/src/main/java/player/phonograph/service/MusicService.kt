@@ -12,7 +12,6 @@ import android.os.Looper
 import android.support.v4.media.session.MediaSessionCompat
 import android.util.Log
 import android.widget.Toast
-import androidx.preference.PreferenceManager
 import player.phonograph.App
 import player.phonograph.App.Companion.ACTUAL_PACKAGE_NAME
 import player.phonograph.BuildConfig
@@ -211,19 +210,6 @@ class MusicService : Service(), OnSharedPreferenceChangeListener {
 
     override fun onBind(intent: Intent): IBinder = musicBind
 
-    private fun savePositionInTrack() {
-        PreferenceManager.getDefaultSharedPreferences(this).edit().putInt(
-            SAVED_POSITION_IN_TRACK,
-            songProgressMillis
-        ).apply()
-    }
-
-    private fun saveState() {
-        queueManager.postMessage(QueueManager.MSG_SAVE_QUEUE)
-        queueManager.postMessage(QueueManager.MSG_SAVE_CURSOR)
-        savePositionInTrack()
-    }
-
     fun playNextSong(force: Boolean) {
         controller.jumpForward(force)
     }
@@ -300,7 +286,7 @@ class MusicService : Service(), OnSharedPreferenceChangeListener {
                 playNotificationManager.updateMediaSessionPlaybackState()
                 val isPlaying = isPlaying
                 if (!isPlaying && songProgressMillis > 0) {
-                    savePositionInTrack()
+                    controller.saveCurrentMills()
                 }
                 songPlayCountHelper.notifyPlayStateChanged(isPlaying)
             }
@@ -308,7 +294,7 @@ class MusicService : Service(), OnSharedPreferenceChangeListener {
                 playNotificationManager.updateNotification()
                 playNotificationManager.updateMediaSessionMetaData()
                 queueManager.postMessage(QueueManager.MSG_SAVE_CURSOR)
-                savePositionInTrack()
+                controller.saveCurrentMills()
                 val currentSong = queueManager.currentSong
                 HistoryStore.getInstance(this).addSongId(currentSong.id)
                 if (songPlayCountHelper.shouldBumpPlayCount()) {
@@ -318,7 +304,8 @@ class MusicService : Service(), OnSharedPreferenceChangeListener {
             }
             QUEUE_CHANGED -> {
                 playNotificationManager.updateMediaSessionMetaData() // because playing queue size might have changed
-                saveState()
+                queueManager.postMessage(QueueManager.MSG_SAVE_QUEUE)
+                queueManager.postMessage(QueueManager.MSG_SAVE_CURSOR)
                 if (queueManager.playingQueue.isNotEmpty()) {
                     controller.handler.removeMessages(
                         PlayerController.ControllerHandler.RE_PREPARE_NEXT_PLAYER
@@ -401,7 +388,7 @@ class MusicService : Service(), OnSharedPreferenceChangeListener {
         }
 
         override fun run() {
-            savePositionInTrack()
+            controller.saveCurrentMills()
             sendPublicIntent(PLAY_STATE_CHANGED) // for musixmatch synced lyrics
         }
     }
