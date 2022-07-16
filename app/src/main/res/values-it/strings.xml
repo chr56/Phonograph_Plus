@@ -296,6 +296,7 @@
     <string name="dialog_ringtone_title">Imposta suoneria</string>
     <string name="dialog_ringtone_message">Consenti a Phonograph di modificare le impostazioni audio</string>
     <string name="perf_title_fixed_tab_layout">Fissa tutte le schede</string>
+    <string name="pref_summary_fixed_tab_layout">Le schede in alto non saranno scrollabili, ma verranno affiancate senza alcun margine.</string>
     <string name="night_mode">Modalità notte</string>
     <string name="auto_mode_on">La modalità automatica è attiva, si prega di disattivarla e riprovare!</string>
     <string name="Permission_denied">Permesso negato!</string>
@@ -374,6 +375,7 @@
     <string name="external_lyrics">testi esterni</string>
     <string name="lyrics_following">Testi seguenti</string>
     <string name="error_notification_name">Segnalazioni di errore</string>
+    <string name="background_notification_name">Lavoro di fondo</string>
     <string name="sort_order_song_count">Numero di brani</string>
     <string name="sort_order_album_count">Numero di album</string>
     <string name="name">Nome</string>
