@@ -70,8 +70,6 @@ class PlayingNotificationManger(private val service: MusicService) {
 
     private val currentMode
         get() = if (service.isPlaying) MODE_FOREGROUND else MODE_BACKGROUND
-    private val availability
-        get() = !service.isIdle
 
     private lateinit var impl: Impl
 
@@ -100,8 +98,8 @@ class PlayingNotificationManger(private val service: MusicService) {
     }
 
     private fun postNotification(notification: OSNotification) {
-        if (!availability) {
-            // service available/stopped
+        if (service.isDestroyed) {
+            // service stopped
             removeNotification()
             return
         }

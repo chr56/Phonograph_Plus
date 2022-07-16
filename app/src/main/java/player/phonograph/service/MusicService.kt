@@ -187,11 +187,13 @@ class MusicService : Service(), OnSharedPreferenceChangeListener {
         return START_NOT_STICKY
     }
 
-    var isIdle = false
+    val isPlaying: Boolean get() = controller.isPlaying()
+
+    var isDestroyed = false
         private set
 
     override fun onDestroy() {
-        isIdle = true
+        isDestroyed = true
         playNotificationManager.mediaSession.isActive = false
         playNotificationManager.removeNotification()
         closeAudioEffectSession()
@@ -204,9 +206,6 @@ class MusicService : Service(), OnSharedPreferenceChangeListener {
         queueManager.removeObserver(queueChangeObserver)
         sendBroadcast(Intent("player.phonograph.PHONOGRAPH_MUSIC_SERVICE_DESTROYED"))
     }
-
-    val isPlaying: Boolean
-        get() = controller.isPlaying()
 
     override fun onBind(intent: Intent): IBinder = musicBind
 
