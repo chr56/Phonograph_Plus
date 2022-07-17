@@ -17,6 +17,8 @@ import android.provider.MediaStore.Audio.AudioColumns._ID
 import android.util.Log
 import android.widget.Toast
 import android.widget.Toast.LENGTH_SHORT
+import java.io.File
+import java.util.*
 import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.mediastore.SongLoader.getSongs
@@ -28,8 +30,6 @@ import player.phonograph.service.queue.QueueManager
 import player.phonograph.service.queue.RepeatMode
 import player.phonograph.service.queue.ShuffleMode
 import player.phonograph.settings.Setting
-import java.io.File
-import java.util.*
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
@@ -38,29 +38,33 @@ import java.util.*
 object MusicPlayerRemote {
     var musicService: MusicService? = null
         private set
-    private val mConnectionMap = WeakHashMap<Context, ServiceBinder>()
+    private val mConnectionMap = WeakHashMap<Context, MusicServiceConnection>()
 
     val queueManager: QueueManager get() = App.instance.queueManager
 
     fun bindToService(
-        context: Context,
+        activity: Activity,
         callback: ServiceConnection?
     ): ServiceToken? {
-        val realActivity = (context as Activity).parent ?: context
-        val contextWrapper = ContextWrapper(realActivity)
-
+        val contextWrapper = ContextWrapper(
+            activity.parent ?: activity // try to use parent activity
+        )
+        // start service
         contextWrapper.startService(Intent(contextWrapper, MusicService::class.java))
 
-        val binder = ServiceBinder(callback)
+        val serviceConnection = MusicServiceConnection(callback)
 
-        if (
-            contextWrapper.bindService(Intent().setClass(contextWrapper, MusicService::class.java), binder, BIND_AUTO_CREATE)
+        // bind service
+        return if (
+            contextWrapper.bindService(
+                Intent().setClass(contextWrapper, MusicService::class.java),
+                serviceConnection,
+                BIND_AUTO_CREATE
+            )
         ) {
-            mConnectionMap[contextWrapper] = binder
-            return ServiceToken(contextWrapper)
-        }
-
-        return null
+            mConnectionMap[contextWrapper] = serviceConnection
+            ServiceToken(contextWrapper)
+        } else null
     }
 
     fun unbindFromService(token: ServiceToken?) {
@@ -76,7 +80,7 @@ object MusicPlayerRemote {
         }
     }
 
-    class ServiceBinder(private val mCallback: ServiceConnection?) : ServiceConnection {
+    class MusicServiceConnection(private val mCallback: ServiceConnection?) : ServiceConnection {
 
         override fun onServiceConnected(className: ComponentName, service: IBinder) {
             musicService = (service as MusicBinder).service
@@ -230,7 +234,11 @@ object MusicPlayerRemote {
                 queueManager.addSong(song, position)
                 it.playSongAt(position)
             }
-            Toast.makeText(musicService, it.resources.getString(R.string.added_title_to_playing_queue), LENGTH_SHORT)
+            Toast.makeText(
+                musicService,
+                it.resources.getString(R.string.added_title_to_playing_queue),
+                LENGTH_SHORT
+            )
                 .show()
         }
     }
@@ -260,7 +268,11 @@ object MusicPlayerRemote {
             } else {
                 queueManager.addSong(song, position + 1)
             }
-            Toast.makeText(musicService, it.resources.getString(R.string.added_title_to_playing_queue), LENGTH_SHORT)
+            Toast.makeText(
+                musicService,
+                it.resources.getString(R.string.added_title_to_playing_queue),
+                LENGTH_SHORT
+            )
                 .show()
         }
     }
@@ -291,7 +303,11 @@ object MusicPlayerRemote {
                 queueManager.addSong(song)
             }
 
-            Toast.makeText(musicService, it.resources.getString(R.string.added_title_to_playing_queue), LENGTH_SHORT)
+            Toast.makeText(
+                musicService,
+                it.resources.getString(R.string.added_title_to_playing_queue),
+                LENGTH_SHORT
+            )
                 .show()
         }
     }
@@ -328,7 +344,10 @@ object MusicPlayerRemote {
 
     fun moveSong(from: Int, to: Int): Boolean {
         return musicService.tryExecute {
-            if (from in 0..playingQueue.size && to in 0..playingQueue.size) queueManager.moveSong(from, to)
+            if (from in 0..playingQueue.size && to in 0..playingQueue.size) queueManager.moveSong(
+                from,
+                to
+            )
         }
     }
 
@@ -343,7 +362,6 @@ object MusicPlayerRemote {
     @Suppress("DEPRECATION")
     fun playFromUri(uri: Uri) {
         musicService.tryExecute {
-
             var songs: List<Song>? = null
 
             if (uri.scheme != null && uri.authority != null) {
@@ -365,10 +383,12 @@ object MusicPlayerRemote {
             }
 
             if (songs == null) {
-
                 val file: File? =
                     if (uri.authority != null && uri.authority == "com.android.externalstorage.documents") {
-                        File(Environment.getExternalStorageDirectory(), uri.path!!.split(Regex("^.*:.*$"), 2)[1])
+                        File(
+                            Environment.getExternalStorageDirectory(),
+                            uri.path!!.split(Regex("^.*:.*$"), 2)[1]
+                        )
                     } else {
                         val path = getFilePathFromUri(it, uri)
                         when {
@@ -395,13 +415,16 @@ object MusicPlayerRemote {
     }
 
     private fun getFilePathFromUri(context: Context, uri: Uri): String? {
-
         val column = "_data"
         val projection = arrayOf(column)
 
         val cursor: Cursor? =
             context.contentResolver.query(
-                uri, projection, null, null, null
+                uri,
+                projection,
+                null,
+                null,
+                null
             )
 
         runCatching {
@@ -423,7 +446,9 @@ object MusicPlayerRemote {
         return null
     }
 
-    private fun getSongIdFromMediaProvider(uri: Uri): String = DocumentsContract.getDocumentId(uri).split(":")[1]
+    private fun getSongIdFromMediaProvider(uri: Uri): String = DocumentsContract.getDocumentId(uri).split(
+        ":"
+    )[1]
 
     val isServiceConnected: Boolean get() = musicService != null
 
