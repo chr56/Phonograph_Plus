@@ -24,7 +24,6 @@ import player.phonograph.service.MusicService
 import player.phonograph.settings.Setting
 import player.phonograph.util.MusicUtil
 
-// todo sleep timer
 // todo cleanup queueManager.setQueueCursor
 /**
  * @author chr_56 & Abou Zeid (kabouzeid) (original author)
@@ -380,8 +379,24 @@ class PlayerController(internal val service: MusicService) : Playback.PlaybackCa
         }
     }
 
+    /**
+     * true if you want to stop player when current track is ended
+     * Used by Sleep Timer
+     */
+    internal var quitAfterFinishCurrentSong: Boolean = false
+        set(value) {
+            synchronized(this) {
+                field = value
+            }
+        }
+
     override fun onTrackWentToNext() {
         handler.request {
+            // check sleep timer
+            if (quitAfterFinishCurrentSong){
+                stopImp()
+                return@request
+            }
             queueManager.moveToNextSong()
             notifyNowPlayingChanged()
             prepareNextPlayer(queueManager.nextSong)
@@ -389,6 +404,11 @@ class PlayerController(internal val service: MusicService) : Playback.PlaybackCa
     }
 
     override fun onTrackEnded() {
+        // check sleep timer
+        if (quitAfterFinishCurrentSong){
+            stop()
+            return
+        }
         if (queueManager.isQueueEnded()) {
             handler.request {
                 pauseImp(true)

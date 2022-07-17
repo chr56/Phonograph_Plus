@@ -43,8 +43,6 @@ class MusicService : Service(), OnSharedPreferenceChangeListener {
 
     private val songPlayCountHelper = SongPlayCountHelper()
 
-    var pendingQuit = false // todo sleeptimer
-
     val queueManager: QueueManager get() = App.instance.queueManager
     private val queueChangeObserver: QueueChangeObserver = initQueueChangeObserver()
 
@@ -175,11 +173,19 @@ class MusicService : Service(), OnSharedPreferenceChangeListener {
                     ACTION_PLAY_PLAYLIST -> parsePlaylistAndPlay(intent, this)
                     ACTION_REWIND -> back(true)
                     ACTION_SKIP -> playNextSong(true)
-                    ACTION_STOP, ACTION_QUIT -> {
-                        pendingQuit = false
+                    ACTION_STOP -> {
+                        controller.stop()
+                    }
+                    ACTION_STOP_AND_QUIT_NOW -> {
+                        controller.stop()
                         stopSelf()
                     }
-                    ACTION_PENDING_QUIT -> pendingQuit = true
+                    ACTION_STOP_AND_QUIT_PENDING -> {
+                        controller.quitAfterFinishCurrentSong = true
+                    }
+                    ACTION_CANCEL_PENDING_QUIT ->{
+                        controller.quitAfterFinishCurrentSong = false
+                    }
                 }
             }
         }
@@ -399,8 +405,10 @@ class MusicService : Service(), OnSharedPreferenceChangeListener {
         const val ACTION_STOP = "$ACTUAL_PACKAGE_NAME.stop"
         const val ACTION_SKIP = "$ACTUAL_PACKAGE_NAME.skip"
         const val ACTION_REWIND = "$ACTUAL_PACKAGE_NAME.rewind"
-        const val ACTION_QUIT = "$ACTUAL_PACKAGE_NAME.quitservice"
-        const val ACTION_PENDING_QUIT = "$ACTUAL_PACKAGE_NAME.pendingquitservice"
+
+        const val ACTION_STOP_AND_QUIT_NOW = "$ACTUAL_PACKAGE_NAME.stop_and_quit_now"
+        const val ACTION_STOP_AND_QUIT_PENDING = "$ACTUAL_PACKAGE_NAME.stop_and_quit_pending"
+        const val ACTION_CANCEL_PENDING_QUIT = "$ACTUAL_PACKAGE_NAME.cancel_pending_quit"
 
         const val INTENT_EXTRA_PLAYLIST = ACTUAL_PACKAGE_NAME + "intentextra.playlist"
         const val INTENT_EXTRA_SHUFFLE_MODE = "$ACTUAL_PACKAGE_NAME.intentextra.shufflemode"
