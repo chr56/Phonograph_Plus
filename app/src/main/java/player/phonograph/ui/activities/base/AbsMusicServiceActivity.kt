@@ -26,7 +26,6 @@ abstract class AbsMusicServiceActivity : ToolbarActivity(), MusicServiceEventLis
 
     private var serviceToken: ServiceToken? = null
 
-    private val mMusicServiceEventListeners: MutableList<MusicServiceEventListener> = ArrayList()
     private var musicStateReceiver: MusicStateReceiver? = null
     private var receiverRegistered = false
 
@@ -70,12 +69,14 @@ abstract class AbsMusicServiceActivity : ToolbarActivity(), MusicServiceEventLis
     // Register
     //
 
-    fun addMusicServiceEventListener(listener: MusicServiceEventListener?) {
-        if (listener != null) mMusicServiceEventListeners.add(listener)
+    private val mMusicServiceEventListeners: MutableList<MusicServiceEventListener> = ArrayList()
+
+    fun addMusicServiceEventListener(listener: MusicServiceEventListener) {
+        mMusicServiceEventListeners.add(listener)
     }
 
-    fun removeMusicServiceEventListener(listener: MusicServiceEventListener?) {
-        if (listener != null) mMusicServiceEventListeners.remove(listener)
+    fun removeMusicServiceEventListener(listener: MusicServiceEventListener) {
+        mMusicServiceEventListeners.remove(listener)
     }
 
     //
@@ -180,9 +181,13 @@ abstract class AbsMusicServiceActivity : ToolbarActivity(), MusicServiceEventLis
     }
 
     override fun getPermissionsToRequest(): Array<String>? {
-        return arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+        return arrayOf(
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE
+        )
     }
 
-    override val permissionDeniedMessage: String
-        get() = getString(R.string.permission_external_storage_denied)
+    override val permissionDeniedMessage: String get() = getString(
+        R.string.permission_external_storage_denied
+    )
 }
