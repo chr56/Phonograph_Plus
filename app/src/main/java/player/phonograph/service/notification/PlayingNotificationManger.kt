@@ -579,7 +579,7 @@ class PlayingNotificationManger(private val service: MusicService) {
     /**
      * PendingIntent to quit/stop
      */
-    private val deletePendingIntent get() = buildPlaybackPendingIntent(MusicService.ACTION_QUIT)
+    private val deletePendingIntent get() = buildPlaybackPendingIntent(MusicService.ACTION_STOP_AND_QUIT_NOW)
 
     companion object {
         const val NOTIFICATION_CHANNEL_ID = "playing_notification"
