@@ -212,7 +212,6 @@ class MusicService : Service(), OnSharedPreferenceChangeListener {
         sendBroadcast(Intent("player.phonograph.PHONOGRAPH_MUSIC_SERVICE_DESTROYED"))
     }
 
-    // todo
     private fun closeAudioEffectSession() {
         sendBroadcast(
             Intent(AudioEffect.ACTION_CLOSE_AUDIO_EFFECT_CONTROL_SESSION).apply {
@@ -355,7 +354,7 @@ class MusicService : Service(), OnSharedPreferenceChangeListener {
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String) {
         when (key) {
-            Setting.GAPLESS_PLAYBACK -> // todo
+            Setting.GAPLESS_PLAYBACK ->
                 if (sharedPreferences.getBoolean(key, false)) {
                     controller.handler.removeMessages(
                         PlayerController.ControllerHandler.RE_PREPARE_NEXT_PLAYER
@@ -418,7 +417,7 @@ class MusicService : Service(), OnSharedPreferenceChangeListener {
 
         // do not change these three strings as it will break support with other apps (e.g. last.fm scrobbling)
         const val META_CHANGED = "$ACTUAL_PACKAGE_NAME.metachanged"
-        const val QUEUE_CHANGED = "$ACTUAL_PACKAGE_NAME.queuechanged" // todo
+        const val QUEUE_CHANGED = "$ACTUAL_PACKAGE_NAME.queuechanged"
         const val PLAY_STATE_CHANGED = "$ACTUAL_PACKAGE_NAME.playstatechanged"
 
         const val REPEAT_MODE_CHANGED = "$ACTUAL_PACKAGE_NAME.repeatmodechanged"
