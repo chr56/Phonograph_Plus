@@ -146,7 +146,6 @@ class QueueManager(val context: Application) {
                 } else {
                     currentSongPosition = newPosition
                 }
-                // todo notify player
             }
         }
     }
@@ -188,7 +187,6 @@ class QueueManager(val context: Application) {
             return when (repeatMode) {
                 RepeatMode.NONE -> {
                     if (result >= _playingQueue.size) {
-                        // todo notify that no more songs
                         -1
                     } else {
                         result
@@ -231,7 +229,6 @@ class QueueManager(val context: Application) {
             observers.executeForEach {
                 onRepeatModeChanged(value)
             }
-            // todo notify player
             handler.post {
                 saveRepeatMode()
             }
@@ -341,7 +338,6 @@ class QueueManager(val context: Application) {
         if (deletedSongPosition < currentSongPosition) {
             currentSongPosition -= 1
         } else if (deletedSongPosition == currentSongPosition) {
-            // todo
             if (playingQueue.size > deletedSongPosition) {
                 currentSongPosition = currentSongPosition
             } else {
