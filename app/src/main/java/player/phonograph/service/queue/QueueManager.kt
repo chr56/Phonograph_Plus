@@ -366,7 +366,7 @@ class QueueManager(val context: Application) {
                     currentPosition in to until from -> currentPosition + 1
                     currentPosition in (from + 1)..to -> currentPosition - 1
                     from == currentPosition -> to
-                    else -> from
+                    else -> currentPosition
                 }
         }
     }
