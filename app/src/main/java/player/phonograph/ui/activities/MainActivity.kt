@@ -37,7 +37,6 @@ import player.phonograph.misc.SafLauncher
 import player.phonograph.model.Song
 import player.phonograph.notification.UpgradeNotification
 import player.phonograph.service.MusicPlayerRemote
-import player.phonograph.service.MusicService
 import player.phonograph.service.queue.ShuffleMode
 import player.phonograph.settings.Setting
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
@@ -78,14 +77,15 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
                 supportFragmentManager.findFragmentById(R.id.fragment_container) as MainActivityFragmentCallbacks
         }
 
-        if (intent.getBooleanExtra(UPGRADABLE, false)) {
-            Log.d("Updater", "receive upgradable notification intent!")
-            showUpgradeDialog(intent.getBundleExtra(VERSION_INFO)!!)
-        }
-
         showIntro()
-        checkUpdate()
-        showChangelog()
+        Handler(Looper.getMainLooper()).postDelayed({
+            if (intent.getBooleanExtra(UPGRADABLE, false)) {
+                showUpgradeDialog(intent.getBundleExtra(VERSION_INFO)!!)
+            }
+            checkUpdate()
+            showChangelog()
+        }, 900)
+
         if (DEBUG) Log.v(
             "Metrics",
             "${System.currentTimeMillis().mod(10000000)} MainActivity.onCreate()"
@@ -358,15 +358,16 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
             blockRequestPermissions = true
 
             Handler(Looper.getMainLooper()).postDelayed({
-                startActivityForResult(Intent(this@MainActivity, AppIntroActivity::class.java), APP_INTRO_REQUEST)
+                startActivityForResult(
+                    Intent(this@MainActivity, AppIntroActivity::class.java),
+                    APP_INTRO_REQUEST
+                )
             }, 50)
         }
     }
 
     private fun checkUpdate() {
-        Handler(Looper.getMainLooper()).postDelayed(
-            { checkUpdate(callback = { UpgradeNotification.sendUpgradeNotification(it) }, false) }, 3000
-        )
+        checkUpdate(callback = { UpgradeNotification.sendUpgradeNotification(it) })
     }
 
     private fun showChangelog() {
