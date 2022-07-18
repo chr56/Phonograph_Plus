@@ -163,7 +163,7 @@
 
     </lib.phonograph.preference.PreferenceCategoryX>
 
-    <lib.phonograph.preference.PreferenceCategoryX android:title="@string/pref_header_audio">
+    <lib.phonograph.preference.PreferenceCategoryX android:title="@string/pref_header_player_behaviour">
 
         <lib.phonograph.preference.SwitchPreferenceX
             android:defaultValue="true"
