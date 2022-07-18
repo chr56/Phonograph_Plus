@@ -354,7 +354,7 @@ class QueueManager(val context: Application) {
         }
         // start moving
         modifyQueue(async) { _playingQueue, _originalPlayingQueue ->
-            val currentPosition: Int = currentSongPosition
+            val oldPosition: Int = currentSongPosition
             val songToMove: Song = _playingQueue.removeAt(from)
             _playingQueue.add(to, songToMove)
             if (shuffleMode == ShuffleMode.NONE) {
@@ -363,10 +363,10 @@ class QueueManager(val context: Application) {
             }
             currentSongPosition =
                 when {
-                    currentPosition in to until from -> currentPosition + 1
-                    currentPosition in (from + 1)..to -> currentPosition - 1
-                    from == currentPosition -> to
-                    else -> currentPosition
+                    from == oldPosition -> to
+                    oldPosition in to until from -> oldPosition + 1
+                    oldPosition in (from + 1)..to -> oldPosition - 1
+                    else -> oldPosition
                 }
         }
     }
