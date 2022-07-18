@@ -183,7 +183,7 @@ class MusicService : Service(), OnSharedPreferenceChangeListener {
                     ACTION_STOP_AND_QUIT_PENDING -> {
                         controller.quitAfterFinishCurrentSong = true
                     }
-                    ACTION_CANCEL_PENDING_QUIT ->{
+                    ACTION_CANCEL_PENDING_QUIT -> {
                         controller.quitAfterFinishCurrentSong = false
                     }
                 }
@@ -265,7 +265,7 @@ class MusicService : Service(), OnSharedPreferenceChangeListener {
     }
 
     private fun sendChangeInternal(what: String) {
-        sendBroadcast(Intent(what))
+        sendBroadcast(Intent(what).apply { `package` = ACTUAL_PACKAGE_NAME })
         notifyWidget(what)
     }
 
