@@ -382,6 +382,7 @@ class MusicService : Service(), OnSharedPreferenceChangeListener {
     fun replaceLyrics(lyrics: LrcLyrics?) = controller.replaceLyrics(lyrics)
 
     private inner class ThrottledTimer(private val mHandler: Handler) : Runnable {
+        private val broadcastCurrentPlayerState: Boolean = Setting.instance.broadcastCurrentPlayerState
         fun notifySeek() {
             playNotificationManager.updateMediaSessionMetaData()
             playNotificationManager.updateMediaSessionPlaybackState()
@@ -391,7 +392,9 @@ class MusicService : Service(), OnSharedPreferenceChangeListener {
 
         override fun run() {
             controller.saveCurrentMills()
-            MusicServiceUtil.sendPublicIntent(this@MusicService, PLAY_STATE_CHANGED) // for musixmatch synced lyrics
+            if (broadcastCurrentPlayerState) {
+                MusicServiceUtil.sendPublicIntent(this@MusicService, PLAY_STATE_CHANGED) // for musixmatch synced lyrics
+            }
         }
     }
 
