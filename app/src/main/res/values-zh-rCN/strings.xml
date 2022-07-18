@@ -335,6 +335,8 @@
     <string name="refresh">刷新</string>
     <string name="pref_title_send_lyrics">实时发送歌词</string>
     <string name="pref_summary_send_lyrics">广播歌词至MIUI状态栏歌词Xposed模块</string>
+    <string name="pref_title_broadcast_current_player_state">公开广播当前播放状态给其他应用</string>
+    <string name="pref_summary_broadcast_current_player_state">公开广播当前播放状态，以提供给其他应用，如 Musixmatch</string>
     <string name="pref_title_display_lyrics_time_axis">显示歌词时间轴</string>
     <string name="pref_summary_display_lyrics_time_axis">在歌词对话框中显示同步歌词时间轴</string>
     <string name="upgrade_notification_name">更新</string>

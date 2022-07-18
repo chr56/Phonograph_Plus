@@ -30,7 +30,9 @@ import player.phonograph.util.FileUtil
 
 class Setting(context: Context) {
 
-    private val mPreferences: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+    private val mPreferences: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(
+        context
+    )
     private val editor: SharedPreferences.Editor = mPreferences.edit()
 
     /**
@@ -129,11 +131,12 @@ class Setting(context: Context) {
     var rememberShuffle: Boolean by BooleanPref(REMEMBER_SHUFFLE, true)
     var gaplessPlayback: Boolean by BooleanPref(GAPLESS_PLAYBACK, false)
     var audioDucking: Boolean by BooleanPref(AUDIO_DUCKING, true)
+    var broadcastSynchronizedLyrics: Boolean by BooleanPref(BROADCAST_SYNCHRONIZED_LYRICS, true)
+    var broadcastCurrentPlayerState: Boolean by BooleanPref(BROADCAST_CURRENT_PLAYER_STATE, true)
 
     // Behavior-Lyrics
     var synchronizedLyricsShow: Boolean by BooleanPref(SYNCHRONIZED_LYRICS_SHOW, true)
     var displaySynchronizedLyricsTimeAxis: Boolean by BooleanPref(DISPLAY_LYRICS_TIME_AXIS, true)
-    var broadcastSynchronizedLyrics: Boolean by BooleanPref(BROADCAST_SYNCHRONIZED_LYRICS, true)
 
     // List-Cutoff
     val lastAddedCutoff: Long
@@ -157,35 +160,50 @@ class Setting(context: Context) {
     var checkUpgradeAtStartup: Boolean by BooleanPref(CHECK_UPGRADE_AT_STARTUP, true)
 
     // List-SortMode
-    private var _songSortMode: String by StringPref(SONG_SORT_MODE, SortMode(SortRef.ID, false).serialize())
+    private var _songSortMode: String by StringPref(
+        SONG_SORT_MODE,
+        SortMode(SortRef.ID, false).serialize()
+    )
     var songSortMode: SortMode
         get() = SortMode.deserialize(_songSortMode)
         set(value) {
             _songSortMode = value.serialize()
         }
 
-    private var _albumSortMode: String by StringPref(ALBUM_SORT_MODE, SortMode(SortRef.ID, false).serialize())
+    private var _albumSortMode: String by StringPref(
+        ALBUM_SORT_MODE,
+        SortMode(SortRef.ID, false).serialize()
+    )
     var albumSortMode: SortMode
         get() = SortMode.deserialize(_albumSortMode)
         set(value) {
             _albumSortMode = value.serialize()
         }
 
-    private var _artistSortMode: String by StringPref(ARTIST_SORT_MODE, SortMode(SortRef.ID, false).serialize())
+    private var _artistSortMode: String by StringPref(
+        ARTIST_SORT_MODE,
+        SortMode(SortRef.ID, false).serialize()
+    )
     var artistSortMode: SortMode
         get() = SortMode.deserialize(_artistSortMode)
         set(value) {
             _artistSortMode = value.serialize()
         }
 
-    private var _genreSortMode: String by StringPref(GENRE_SORT_MODE, SortMode(SortRef.ID, false).serialize())
+    private var _genreSortMode: String by StringPref(
+        GENRE_SORT_MODE,
+        SortMode(SortRef.ID, false).serialize()
+    )
     var genreSortMode: SortMode
         get() = SortMode.deserialize(_genreSortMode)
         set(value) {
             _genreSortMode = value.serialize()
         }
 
-    private var _fileSortMode: String by StringPref(FILE_SORT_MODE, FileSortMode(SortRef.ID, false).serialize())
+    private var _fileSortMode: String by StringPref(
+        FILE_SORT_MODE,
+        FileSortMode(SortRef.ID, false).serialize()
+    )
     var fileSortMode: FileSortMode
         get() = FileSortMode.deserialize(_fileSortMode)
         set(value) {
@@ -194,28 +212,36 @@ class Setting(context: Context) {
 
     // List-Appearance
     var albumGridSize: Int by IntPref(
-        ALBUM_GRID_SIZE, App.instance.resources.getInteger(R.integer.default_grid_columns)
+        ALBUM_GRID_SIZE,
+        App.instance.resources.getInteger(R.integer.default_grid_columns)
     )
     var songGridSize: Int by IntPref(
-        SONG_GRID_SIZE, App.instance.resources.getInteger(R.integer.default_list_columns)
+        SONG_GRID_SIZE,
+        App.instance.resources.getInteger(R.integer.default_list_columns)
     )
     var artistGridSize: Int by IntPref(
-        ARTIST_GRID_SIZE, App.instance.resources.getInteger(R.integer.default_list_columns)
+        ARTIST_GRID_SIZE,
+        App.instance.resources.getInteger(R.integer.default_list_columns)
     )
     var genreGridSize: Int by IntPref(
-        GENRE_GRID_SIZE, App.instance.resources.getInteger(R.integer.default_list_columns)
+        GENRE_GRID_SIZE,
+        App.instance.resources.getInteger(R.integer.default_list_columns)
     )
     var albumGridSizeLand: Int by IntPref(
-        ALBUM_GRID_SIZE_LAND, App.instance.resources.getInteger(R.integer.default_grid_columns_land)
+        ALBUM_GRID_SIZE_LAND,
+        App.instance.resources.getInteger(R.integer.default_grid_columns_land)
     )
     var songGridSizeLand: Int by IntPref(
-        SONG_GRID_SIZE_LAND, App.instance.resources.getInteger(R.integer.default_grid_columns_land)
+        SONG_GRID_SIZE_LAND,
+        App.instance.resources.getInteger(R.integer.default_grid_columns_land)
     )
     var artistGridSizeLand: Int by IntPref(
-        ARTIST_GRID_SIZE_LAND, App.instance.resources.getInteger(R.integer.default_grid_columns_land)
+        ARTIST_GRID_SIZE_LAND,
+        App.instance.resources.getInteger(R.integer.default_grid_columns_land)
     )
     var genreGridSizeLand: Int by IntPref(
-        GENRE_GRID_SIZE_LAND, App.instance.resources.getInteger(R.integer.default_grid_columns_land)
+        GENRE_GRID_SIZE_LAND,
+        App.instance.resources.getInteger(R.integer.default_grid_columns_land)
     )
     var albumColoredFooters by BooleanPref(ALBUM_COLORED_FOOTERS, true)
     var albumArtistColoredFooters by BooleanPref(ALBUM_ARTIST_COLORED_FOOTERS, true)
@@ -231,7 +257,8 @@ class Setting(context: Context) {
     var startDirectory: File
         get() = File(
             mPreferences.getString(
-                START_DIRECTORY, defaultStartDirectory.path
+                START_DIRECTORY,
+                defaultStartDirectory.path
             )!!
         )
         set(value) {
@@ -243,9 +270,15 @@ class Setting(context: Context) {
     var ignoreUpgradeVersionCode: Int by IntPref(IGNORE_UPGRADE_VERSION_CODE, 0)
 
     // Compatibility
-    var useLegacyFavoritePlaylistImpl: Boolean by BooleanPref(USE_LEGACY_FAVORITE_PLAYLIST_IMPL, false)
+    var useLegacyFavoritePlaylistImpl: Boolean by BooleanPref(
+        USE_LEGACY_FAVORITE_PLAYLIST_IMPL,
+        false
+    )
     var useLegacyListFilesImpl: Boolean by BooleanPref(USE_LEGACY_LIST_FILES_IMPL, false)
-    var playlistFilesOperationBehaviour: String by StringPref(PLAYLIST_FILES_OPERATION_BEHAVIOUR, PLAYLIST_OPS_BEHAVIOUR_AUTO)
+    var playlistFilesOperationBehaviour: String by StringPref(
+        PLAYLIST_FILES_OPERATION_BEHAVIOUR,
+        PLAYLIST_OPS_BEHAVIOUR_AUTO
+    )
 
     // Changelog
     var lastChangeLogVersion: Int by IntPref(LAST_CHANGELOG_VERSION, -1)
@@ -280,11 +313,12 @@ class Setting(context: Context) {
         private const val REMEMBER_SHUFFLE = "remember_shuffle"
         private const val AUDIO_DUCKING = "audio_ducking"
         const val GAPLESS_PLAYBACK = "gapless_playback"
+        const val BROADCAST_SYNCHRONIZED_LYRICS = "synchronized_lyrics_send"
+        const val BROADCAST_CURRENT_PLAYER_STATE = "broadcast_current_player_state"
 
         // Behavior-Lyrics
         private const val SYNCHRONIZED_LYRICS_SHOW = "synchronized_lyrics_show"
         private const val DISPLAY_LYRICS_TIME_AXIS = "display_lyrics_time_axis"
-        const val BROADCAST_SYNCHRONIZED_LYRICS = "synchronized_lyrics_send"
 
         // List-Cutoff
         private const val LAST_ADDED_CUTOFF = "last_added_interval"
@@ -386,7 +420,9 @@ class Setting(context: Context) {
         // root
         val defaultStartDirectory: File
             get() {
-                val musicDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC)
+                val musicDir = Environment.getExternalStoragePublicDirectory(
+                    Environment.DIRECTORY_MUSIC
+                )
 
                 return if (musicDir != null && musicDir.exists() && musicDir.isDirectory) {
                     musicDir
