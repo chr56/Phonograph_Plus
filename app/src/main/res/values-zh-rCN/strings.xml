@@ -120,6 +120,7 @@
     <string name="pref_header_now_playing_screen">正在播放界面</string>
     <string name="pref_title_general_theme">全局主题</string>
     <string name="pref_header_audio">声音</string>
+    <string name="pref_header_player_behaviour">播放器行为</string>
     <string name="pref_header_library">媒体库</string>
     <string name="pref_header_images">图片</string>
     <string name="pref_header_lockscreen">锁屏</string>
