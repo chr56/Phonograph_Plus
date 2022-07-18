@@ -383,7 +383,7 @@
     <string name="sort_order_size">文件大小</string>
     <string name="use_legacy_list_Files">使用舊式方法讀取文件</string>
     <string name="pref_title_keep_playing_queue_intact">保護播放列表不被肆意更改</string>
-    <string name="pref_summary_keep_playing_queue_intact">啟用後，Phonograph Plus 將就可能保持播放列表而不會被意外清空</string>
+    <string name="pref_summary_keep_playing_queue_intact">啟用後，Phonograph Plus 將儘可能保持播放列表而不會被意外清空</string>
     <plurals name="x_songs">
         <item quantity="other">%1$d 首</item>
     </plurals>
