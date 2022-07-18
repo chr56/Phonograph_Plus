@@ -19,6 +19,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import legacy.phonograph.JunkCleaner
 import player.phonograph.*
+import player.phonograph.BuildConfig.DEBUG
 import player.phonograph.Updater.checkUpdate
 import player.phonograph.databinding.*
 import player.phonograph.dialogs.ChangelogDialog.Companion.create
@@ -76,7 +77,6 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
                 supportFragmentManager.findFragmentById(R.id.fragment_container) as MainActivityFragmentCallbacks
         }
 
-        Log.d("MainActivity", "StartIntent:$intent: UPGRADABLE-${intent.getBooleanExtra(UPGRADABLE, false)}")
         if (intent.getBooleanExtra(UPGRADABLE, false)) {
             Log.d("Updater", "receive upgradable notification intent!")
             showUpgradeDialog(intent.getBundleExtra(VERSION_INFO)!!)
@@ -85,11 +85,18 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
         showIntro()
         checkUpdate()
         showChangelog()
+        if (DEBUG) Log.v(
+            "Metrics",
+            "${System.currentTimeMillis().mod(10000000)} MainActivity.onCreate()"
+        )
     }
 
     override fun onResume() {
         super.onResume()
-        if (BuildConfig.DEBUG) Log.v("Metrics", "${System.currentTimeMillis().mod(10000000)} MainActivity.onResume()")
+        if (DEBUG) Log.v(
+            "Metrics",
+            "${System.currentTimeMillis().mod(10000000)} MainActivity.onResume()"
+        )
     }
 
     override fun createContentView(): View {

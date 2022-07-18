@@ -9,8 +9,10 @@ import android.content.*
 import android.media.AudioManager
 import android.os.Bundle
 import android.os.IBinder
+import android.util.Log
 import java.lang.ref.WeakReference
 import lib.phonograph.activity.ToolbarActivity
+import player.phonograph.BuildConfig.DEBUG
 import player.phonograph.R
 import player.phonograph.interfaces.MusicServiceEventListener
 import player.phonograph.service.MusicPlayerRemote
@@ -31,6 +33,10 @@ abstract class AbsMusicServiceActivity : ToolbarActivity(), MusicServiceEventLis
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        if (DEBUG) Log.v(
+            "Metrics",
+            "${System.currentTimeMillis().mod(10000000)} AbsMusicServiceActivity start Music Service"
+        )
         serviceToken =
             MusicPlayerRemote.bindToService(
                 this,
@@ -44,6 +50,10 @@ abstract class AbsMusicServiceActivity : ToolbarActivity(), MusicServiceEventLis
                     }
                 }
             )
+        if (DEBUG) Log.v(
+            "Metrics",
+            "${System.currentTimeMillis().mod(10000000)} AbsMusicServiceActivity Music Service is started"
+        )
         volumeControlStream = AudioManager.STREAM_MUSIC
     }
 

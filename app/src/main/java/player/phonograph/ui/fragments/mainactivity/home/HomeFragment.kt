@@ -9,6 +9,7 @@ import android.content.SharedPreferences
 import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import androidx.annotation.DrawableRes
 import androidx.appcompat.content.res.AppCompatResources
@@ -22,6 +23,7 @@ import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import lib.phonograph.cab.*
+import player.phonograph.BuildConfig.DEBUG
 import player.phonograph.R
 import player.phonograph.adapter.HomePagerAdapter
 import player.phonograph.adapter.PAGERS
@@ -47,6 +49,10 @@ class HomeFragment : AbsMainActivityFragment(), MainActivity.MainActivityFragmen
         container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
+        if (DEBUG) Log.v(
+            "Metrics",
+            "${System.currentTimeMillis().mod(10000000)} HomeFragment.onCreateView()"
+        )
         _viewBinding = FragmentHomeBinding.inflate(layoutInflater, container, false)
         return binding.root
     }
@@ -58,6 +64,10 @@ class HomeFragment : AbsMainActivityFragment(), MainActivity.MainActivityFragmen
         setUpViewPager()
 
         Setting.instance.registerOnSharedPreferenceChangedListener(this)
+        if (DEBUG) Log.v(
+            "Metrics",
+            "${System.currentTimeMillis().mod(10000000)} HomeFragment.onViewCreated()"
+        )
     }
     override fun onDestroyView() {
         super.onDestroyView()
