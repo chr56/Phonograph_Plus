@@ -98,12 +98,12 @@ class MusicService : Service(), OnSharedPreferenceChangeListener {
         }
 
         override fun onQueueChanged(newPlayingQueue: List<Song>, newOriginalQueue: List<Song>) {
-            notifyChange(QUEUE_CHANGED)
+            handleAndSendChangeInternal(QUEUE_CHANGED)
             notifyChange(META_CHANGED)
         }
 
         override fun onShuffleModeChanged(newMode: ShuffleMode) {
-            notifyChange(SHUFFLE_MODE_CHANGED)
+            handleAndSendChangeInternal(SHUFFLE_MODE_CHANGED)
         }
 
         override fun onRepeatModeChanged(newMode: RepeatMode) {
@@ -113,7 +113,7 @@ class MusicService : Service(), OnSharedPreferenceChangeListener {
             controller.handler.sendEmptyMessage(
                 PlayerController.ControllerHandler.RE_PREPARE_NEXT_PLAYER
             )
-            notifyChange(REPEAT_MODE_CHANGED)
+            handleAndSendChangeInternal(REPEAT_MODE_CHANGED)
         }
     }
 
