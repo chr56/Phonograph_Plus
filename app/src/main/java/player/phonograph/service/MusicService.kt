@@ -20,6 +20,7 @@ import player.phonograph.appwidgets.AppWidgetBig
 import player.phonograph.appwidgets.AppWidgetCard
 import player.phonograph.appwidgets.AppWidgetClassic
 import player.phonograph.appwidgets.AppWidgetSmall
+import player.phonograph.misc.LyricsUpdater
 import player.phonograph.model.Song
 import player.phonograph.model.lyrics2.LrcLyrics
 import player.phonograph.model.playlist.Playlist

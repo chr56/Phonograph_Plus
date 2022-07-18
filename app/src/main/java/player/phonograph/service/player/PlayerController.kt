@@ -16,7 +16,7 @@ import java.lang.ref.WeakReference
 import player.phonograph.App
 import player.phonograph.BuildConfig.DEBUG
 import player.phonograph.R
-import player.phonograph.misc.LyricsUpdateThread
+import player.phonograph.misc.LyricsUpdater
 import player.phonograph.model.Song
 import player.phonograph.model.lyrics2.LrcLyrics
 import player.phonograph.notification.ErrorNotification
@@ -28,7 +28,7 @@ import player.phonograph.util.MusicUtil
 /**
  * @author chr_56 & Abou Zeid (kabouzeid) (original author)
  */
-class PlayerController(internal val service: MusicService) : Playback.PlaybackCallbacks, LyricsUpdateThread.ProgressMillsUpdateCallback {
+class PlayerController(internal val service: MusicService) : Playback.PlaybackCallbacks {
 
     private val queueManager = App.instance.queueManager
 
@@ -41,7 +41,7 @@ class PlayerController(internal val service: MusicService) : Playback.PlaybackCa
     val handler: ControllerHandler
     private var thread: HandlerThread
 
-    private var lyricsUpdateThread: LyricsUpdateThread
+    private var lyricsUpdater: LyricsUpdater
 
     init {
         audioPlayer = AudioPlayer(service, this)
@@ -60,8 +60,7 @@ class PlayerController(internal val service: MusicService) : Playback.PlaybackCa
         thread.start()
         handler = ControllerHandler(this, thread.looper)
 
-        lyricsUpdateThread = LyricsUpdateThread(queueManager.currentSong, this)
-        lyricsUpdateThread.start()
+        lyricsUpdater = LyricsUpdater(queueManager.currentSong)
     }
 
     /**
@@ -80,8 +79,7 @@ class PlayerController(internal val service: MusicService) : Playback.PlaybackCa
         audioPlayer.release()
         thread.quitSafely()
         handler.looper.quitSafely()
-        lyricsUpdateThread.currentSong = null
-        lyricsUpdateThread.quit()
+        lyricsUpdater.clear()
     }
 
     fun stopAndDestroy() {
@@ -140,7 +138,7 @@ class PlayerController(internal val service: MusicService) : Playback.PlaybackCa
             onReceivingMessage(MSG_NOW_PLAYING_CHANGED)
         }
         handler.post {
-            lyricsUpdateThread.currentSong = queueManager.currentSong
+            lyricsUpdater.currentSong = queueManager.currentSong
         }
     }
 
@@ -240,6 +238,7 @@ class PlayerController(internal val service: MusicService) : Playback.PlaybackCa
                             )
                             handler.removeMessages(ControllerHandler.DUCK)
                             handler.sendEmptyMessage(ControllerHandler.UNDUCK)
+                            handler.lyricsLoop() // start broadcast lyrics loop
                         }
                     }
                     // Actual Logics End
@@ -393,7 +392,7 @@ class PlayerController(internal val service: MusicService) : Playback.PlaybackCa
     override fun onTrackWentToNext() {
         handler.request {
             // check sleep timer
-            if (quitAfterFinishCurrentSong){
+            if (quitAfterFinishCurrentSong) {
                 stopImp()
                 return@request
             }
@@ -405,7 +404,7 @@ class PlayerController(internal val service: MusicService) : Playback.PlaybackCa
 
     override fun onTrackEnded() {
         // check sleep timer
-        if (quitAfterFinishCurrentSong){
+        if (quitAfterFinishCurrentSong) {
             stop()
             return
         }
@@ -578,6 +577,30 @@ class PlayerController(internal val service: MusicService) : Playback.PlaybackCa
 
         private var currentDuckVolume = 1.0f
 
+        /**
+         * @return true if continue
+         */
+        private fun broadcastLyrics(): Boolean {
+            val controller = controllerRef.get() ?: return false
+            if (controller.playerState != PlayerState.PLAYING ||
+                !Setting.instance.broadcastSynchronizedLyrics ){
+                controller.broadcastStopLyric()
+                return false
+            }
+
+            controller.lyricsUpdater.broadcast(controller.getSongProgressMillis())
+            return true
+        }
+
+        /**
+         * start loop to broadcast lyrics
+         */
+        fun lyricsLoop() {
+            postDelayed({
+                if (broadcastLyrics()) lyricsLoop()
+            }, 750)
+        }
+
         companion object {
             // MSG WHAT
             private const val HANDLER_EXECUTE_REQUEST = 10
@@ -593,17 +616,12 @@ class PlayerController(internal val service: MusicService) : Playback.PlaybackCa
     fun getSongProgressMillis(): Int = audioPlayer.position()
     fun getSongDurationMillis(): Int = audioPlayer.duration()
 
-    /**
-     * API for "StatusBar Lyrics" Xposed Module
-     */
-    override fun getProgressTimeMills(): Int = audioPlayer.position()
-    override fun isRunning(): Boolean = isPlaying()
     private fun broadcastStopLyric() = App.instance.lyricsService.stopLyric()
     fun replaceLyrics(lyrics: LrcLyrics?) {
         if (lyrics != null) {
-            lyricsUpdateThread.forceReplaceLyrics(lyrics)
+            lyricsUpdater.forceReplaceLyrics(lyrics)
         } else {
-            lyricsUpdateThread.currentSong = null
+            lyricsUpdater.clear()
         }
     }
 
