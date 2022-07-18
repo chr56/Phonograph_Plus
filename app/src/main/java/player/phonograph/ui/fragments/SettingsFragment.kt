@@ -11,6 +11,8 @@ import android.content.pm.PackageManager
 import android.media.audiofx.AudioEffect
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.View
 import androidx.fragment.app.DialogFragment
 import androidx.preference.*
@@ -54,6 +56,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
             else -> null
         }
     }
+
     // todo
     @SuppressLint("RestrictedApi")
     override fun onDisplayPreferenceDialog(preference: Preference) {
@@ -67,12 +70,16 @@ class SettingsFragment : PreferenceFragmentCompat() {
                 .onPreferenceDisplayDialog(this, preference)
             return
         }
-        if (this.parentFragmentManager.findFragmentByTag("androidx.preference.PreferenceFragmentCompat.DIALOG") == null) {
+        if (this.parentFragmentManager.findFragmentByTag(
+                "androidx.preference.PreferenceFragmentCompat.DIALOG"
+            ) == null
+        ) {
             val dialogFragment = onCreatePreferenceDialog(preference)
             if (dialogFragment != null) {
                 dialogFragment.setTargetFragment(this, 0)
                 dialogFragment.show(
-                    this.parentFragmentManager, "androidx.preference.PreferenceFragmentCompat.DIALOG"
+                    this.parentFragmentManager,
+                    "androidx.preference.PreferenceFragmentCompat.DIALOG"
                 )
                 return
             }
@@ -89,7 +96,9 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        Setting.instance.unregisterOnSharedPreferenceChangedListener(SharedPreferenceChangeListener())
+        Setting.instance.unregisterOnSharedPreferenceChangedListener(
+            SharedPreferenceChangeListener()
+        )
     }
 
     override fun onPreferenceTreeClick(preference: Preference): Boolean {
@@ -97,7 +106,9 @@ class SettingsFragment : PreferenceFragmentCompat() {
             MaterialDialog(requireContext())
                 .title(R.string.pref_title_reset_home_pages_tab_config)
                 .message(
-                    text = "${getString(R.string.pref_summary_reset_home_pages_tab_config)}\n${getString(R.string.are_you_sure)}"
+                    text = "${getString(R.string.pref_summary_reset_home_pages_tab_config)}\n${getString(
+                        R.string.are_you_sure
+                    )}"
                 )
                 .positiveButton {
                     Setting.instance.resetHomeTabConfig()
@@ -116,7 +127,6 @@ class SettingsFragment : PreferenceFragmentCompat() {
     }
 
     fun invalidateSettings() {
-
         //
         val generalTheme = findPreference<Preference>("general_theme")!!
         setSummary(generalTheme)
@@ -153,12 +163,20 @@ class SettingsFragment : PreferenceFragmentCompat() {
         val primaryColorPref = findPreference<Preference>("primary_color") as ColorPreferenceX?
         primaryColorPref!!.setColor(primaryColor, ColorUtil.darkenColor(primaryColor))
         primaryColorPref.onPreferenceClickListener =
-            ColorChooserListener(requireActivity(), primaryColor, ColorChooserListener.MODE_PRIMARY_COLOR)
+            ColorChooserListener(
+                requireActivity(),
+                primaryColor,
+                ColorChooserListener.MODE_PRIMARY_COLOR
+            )
 
         val accentColorPref = findPreference<Preference>("accent_color") as ColorPreferenceX?
         accentColorPref!!.setColor(accentColor, ColorUtil.darkenColor(accentColor))
         accentColorPref.onPreferenceClickListener =
-            ColorChooserListener(requireActivity(), accentColor, ColorChooserListener.MODE_ACCENT_COLOR)
+            ColorChooserListener(
+                requireActivity(),
+                accentColor,
+                ColorChooserListener.MODE_ACCENT_COLOR
+            )
 
         //
         val colorNavBar = findPreference<Preference>("should_color_navigation_bar") as TwoStatePreference?
@@ -277,7 +295,12 @@ class SettingsFragment : PreferenceFragmentCompat() {
                     }
                 Setting.BROADCAST_SYNCHRONIZED_LYRICS ->
                     // clear lyrics displaying on the statusbar now
-                    player.phonograph.App.instance.lyricsService.stopLyric()
+                    Handler(Looper.getMainLooper()).postDelayed(
+                        {
+                            player.phonograph.App.instance.lyricsService.stopLyric()
+                        },
+                        1000
+                    )
             }
         }
     }
