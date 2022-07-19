@@ -228,7 +228,7 @@ class MusicService : Service(), OnSharedPreferenceChangeListener {
 
     fun openQueue(playingQueue: List<Song>?, startPosition: Int, startPlaying: Boolean) {
         if (playingQueue != null && playingQueue.isNotEmpty() && startPosition >= 0 && startPosition < playingQueue.size) {
-            queueManager.swapQueue(playingQueue, startPosition, false)
+            queueManager.swapQueue(playingQueue, startPosition, true)
             if (startPlaying) playSongAt(queueManager.currentSongPosition)
         }
     }
