@@ -10,10 +10,11 @@ import android.view.GestureDetector.SimpleOnGestureListener
 import android.view.View.OnTouchListener
 import android.view.animation.AccelerateInterpolator
 import android.view.animation.DecelerateInterpolator
-import androidx.viewpager.widget.ViewPager.OnPageChangeListener
+import androidx.viewpager2.widget.ViewPager2
+import kotlinx.coroutines.*
 import lib.phonograph.misc.SimpleAnimatorListener
+import player.phonograph.R
 import player.phonograph.adapter.AlbumCoverPagerAdapter
-import player.phonograph.adapter.AlbumCoverPagerAdapter.AlbumCoverFragment.ColorReceiver
 import player.phonograph.databinding.FragmentPlayerAlbumCoverBinding
 import player.phonograph.helper.MusicProgressViewUpdateHelper
 import player.phonograph.model.Song
@@ -22,13 +23,13 @@ import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.settings.Setting
 import player.phonograph.ui.fragments.AbsMusicServiceFragment
 import player.phonograph.util.ViewUtil
+import util.mddesign.util.Util
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
  */
 class PlayerAlbumCoverFragment :
     AbsMusicServiceFragment(),
-    OnPageChangeListener,
     MusicProgressViewUpdateHelper.Callback {
 
     private var _viewBinding: FragmentPlayerAlbumCoverBinding? = null
@@ -57,7 +58,7 @@ class PlayerAlbumCoverFragment :
         super.onViewCreated(view, savedInstanceState)
 
         binding.playerCoverViewpager.apply {
-            addOnPageChangeListener(this@PlayerAlbumCoverFragment)
+            registerOnPageChangeCallback(pageChangeListener)
             setOnTouchListener(object : OnTouchListener {
                 val gestureDetector = GestureDetector(
                     activity,
@@ -82,7 +83,7 @@ class PlayerAlbumCoverFragment :
 
     override fun onDestroyView() {
         super.onDestroyView()
-        binding.playerCoverViewpager.removeOnPageChangeListener(this)
+        binding.playerCoverViewpager.unregisterOnPageChangeCallback(pageChangeListener)
         progressViewUpdateHelper.stop()
         _viewBinding = null
     }
@@ -105,7 +106,7 @@ class PlayerAlbumCoverFragment :
         val adapter = albumCoverPagerAdapter
         if (adapter == null) {
             this.albumCoverPagerAdapter =
-                AlbumCoverPagerAdapter(parentFragmentManager, queue)
+                AlbumCoverPagerAdapter(this, queue)
             binding.playerCoverViewpager.adapter = this.albumCoverPagerAdapter
         } else {
             adapter.dataSet = queue
@@ -130,26 +131,29 @@ class PlayerAlbumCoverFragment :
         handler.sendEmptyMessage(MSG_UPDATE_QUEUE)
     }
 
-    override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
-    override fun onPageSelected(position: Int) {
-        currentPosition = position
-        albumCoverPagerAdapter?.receiveColor(colorReceiver, position)
-        if (position != MusicPlayerRemote.position) {
-            MusicPlayerRemote.playSongAt(position)
+    private val pageChangeListener = object : ViewPager2.OnPageChangeCallback() {
+        override fun onPageSelected(position: Int) {
+            this@PlayerAlbumCoverFragment.onPageSelected(position)
         }
     }
 
-    private val colorReceiver by lazy(LazyThreadSafetyMode.NONE) {
-        object : ColorReceiver {
-            override fun onColorReady(color: Int, request: Int) {
-                if (currentPosition == request) {
+    private fun onPageSelected(position: Int) {
+        currentPosition = position
+        if (position != MusicPlayerRemote.position) {
+            MusicPlayerRemote.playSongAt(position)
+        }
+        val queue = MusicPlayerRemote.playingQueue
+        if (queue.isNotEmpty()) {
+            coroutineScope.launch {
+                val color =
+                    albumCoverPagerAdapter?.getColor(queue[position].id)
+                        ?: Util.resolveColor(requireContext(), R.attr.defaultFooterColor)
+                withContext(Dispatchers.Main) {
                     notifyColorChange(color)
                 }
             }
         }
     }
-
-    override fun onPageScrollStateChanged(state: Int) {}
 
     fun showHeartAnimation() {
         binding.playerFavoriteIcon.apply {
@@ -281,6 +285,8 @@ class PlayerAlbumCoverFragment :
     }
 
     private fun isBindingAccessible(): Boolean = _viewBinding != null
+
+    private val coroutineScope = CoroutineScope(SupervisorJob())
 
     companion object {
         const val VISIBILITY_ANIM_DURATION = 300L
