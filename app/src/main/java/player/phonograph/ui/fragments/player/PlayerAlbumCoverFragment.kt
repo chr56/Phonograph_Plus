@@ -9,11 +9,11 @@ import android.view.View.OnTouchListener
 import android.view.animation.AccelerateInterpolator
 import android.view.animation.DecelerateInterpolator
 import androidx.viewpager.widget.ViewPager.OnPageChangeListener
+import lib.phonograph.misc.SimpleAnimatorListener
 import player.phonograph.adapter.AlbumCoverPagerAdapter
 import player.phonograph.adapter.AlbumCoverPagerAdapter.AlbumCoverFragment.ColorReceiver
 import player.phonograph.databinding.FragmentPlayerAlbumCoverBinding
 import player.phonograph.helper.MusicProgressViewUpdateHelper
-import lib.phonograph.misc.SimpleAnimatorListener
 import player.phonograph.model.lyrics2.LrcLyrics
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.settings.Setting
@@ -35,7 +35,10 @@ class PlayerAlbumCoverFragment :
     private var currentPosition = 0
     private var lyrics: LrcLyrics? = null
 
-    private lateinit var progressViewUpdateHelper: MusicProgressViewUpdateHelper /**[onViewCreated]*/
+    private var adapter: AlbumCoverPagerAdapter? = null
+
+    /**[onViewCreated]*/
+    private lateinit var progressViewUpdateHelper: MusicProgressViewUpdateHelper
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -94,15 +97,20 @@ class PlayerAlbumCoverFragment :
     }
 
     private fun updatePlayingQueue() {
-        binding.playerCoverViewpager.adapter = AlbumCoverPagerAdapter(parentFragmentManager, MusicPlayerRemote.playingQueue)
-        binding.playerCoverViewpager.currentItem = MusicPlayerRemote.position
+        if (adapter == null) {
+            adapter = AlbumCoverPagerAdapter(parentFragmentManager,  MusicPlayerRemote.playingQueue)
+            binding.playerCoverViewpager.adapter = adapter
+        } else {
+            adapter?.dataSet = MusicPlayerRemote.playingQueue
+        }
+        binding.playerCoverViewpager.setCurrentItem(MusicPlayerRemote.position, false)
         onPageSelected(MusicPlayerRemote.position)
     }
 
     override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
     override fun onPageSelected(position: Int) {
         currentPosition = position
-        (binding.playerCoverViewpager.adapter as AlbumCoverPagerAdapter).receiveColor(colorReceiver, position)
+        adapter?.receiveColor(colorReceiver, position)
         if (position != MusicPlayerRemote.position) {
             MusicPlayerRemote.playSongAt(position)
         }
@@ -156,7 +164,7 @@ class PlayerAlbumCoverFragment :
     private fun isLyricsAvailable(): Boolean = lyrics != null && Setting.instance.synchronizedLyricsShow
 
     private fun hideLyricsLayout() {
-        if (isBindingAccessible() && isVisible)
+        if (isBindingAccessible() && isVisible) {
             binding.playerLyrics
                 .animate().alpha(0f).setDuration(VISIBILITY_ANIM_DURATION)
                 .withEndAction {
@@ -166,6 +174,7 @@ class PlayerAlbumCoverFragment :
                         binding.playerLyricsLine2.text = null
                     }
                 }
+        }
     }
 
     fun setLyrics(l: LrcLyrics) {
@@ -214,14 +223,16 @@ class PlayerAlbumCoverFragment :
         val line = lyrics.getLine(progress).first
 
         if (oldLine != line || oldLine.isEmpty()) {
-
             binding.playerLyricsLine1.text = oldLine
             binding.playerLyricsLine2.text = line
             binding.playerLyricsLine1.visibility = View.VISIBLE
             binding.playerLyricsLine2.visibility = View.VISIBLE
 
             binding.playerLyricsLine2.measure(
-                View.MeasureSpec.makeMeasureSpec(binding.playerLyricsLine2.measuredWidth, View.MeasureSpec.EXACTLY),
+                View.MeasureSpec.makeMeasureSpec(
+                    binding.playerLyricsLine2.measuredWidth,
+                    View.MeasureSpec.EXACTLY
+                ),
                 View.MeasureSpec.UNSPECIFIED
             )
 
