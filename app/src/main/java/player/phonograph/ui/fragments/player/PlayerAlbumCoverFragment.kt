@@ -3,6 +3,8 @@ package player.phonograph.ui.fragments.player
 import android.animation.Animator
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.*
 import android.view.GestureDetector.SimpleOnGestureListener
 import android.view.View.OnTouchListener
@@ -14,6 +16,7 @@ import player.phonograph.adapter.AlbumCoverPagerAdapter
 import player.phonograph.adapter.AlbumCoverPagerAdapter.AlbumCoverFragment.ColorReceiver
 import player.phonograph.databinding.FragmentPlayerAlbumCoverBinding
 import player.phonograph.helper.MusicProgressViewUpdateHelper
+import player.phonograph.model.Song
 import player.phonograph.model.lyrics2.LrcLyrics
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.settings.Setting
@@ -35,7 +38,7 @@ class PlayerAlbumCoverFragment :
     private var currentPosition = 0
     private var lyrics: LrcLyrics? = null
 
-    private var adapter: AlbumCoverPagerAdapter? = null
+    private var albumCoverPagerAdapter: AlbumCoverPagerAdapter? = null
 
     /**[onViewCreated]*/
     private lateinit var progressViewUpdateHelper: MusicProgressViewUpdateHelper
@@ -88,29 +91,49 @@ class PlayerAlbumCoverFragment :
         updatePlayingQueue()
     }
 
-    override fun onPlayingMetaChanged() {
-        binding.playerCoverViewpager.currentItem = MusicPlayerRemote.position
-    }
-
     override fun onQueueChanged() {
         updatePlayingQueue()
     }
+    override fun onPlayingMetaChanged() {
+        handler.sendEmptyMessage(MSG_UPDATE_POSITION)
+    }
+
+    /**
+     * Set queue to adapter (existing or to crate a new)
+     */
+    private fun setAdapter(queue: List<Song>) {
+        val adapter = albumCoverPagerAdapter
+        if (adapter == null) {
+            this.albumCoverPagerAdapter =
+                AlbumCoverPagerAdapter(parentFragmentManager, queue)
+            binding.playerCoverViewpager.adapter = this.albumCoverPagerAdapter
+        } else {
+            adapter.dataSet = queue
+        }
+    }
+
+    private val handler: Handler = Handler(Looper.getMainLooper()) { message ->
+        when (message.what) {
+            MSG_UPDATE_QUEUE -> {
+                setAdapter(MusicPlayerRemote.playingQueue)
+                binding.playerCoverViewpager.setCurrentItem(MusicPlayerRemote.position, false)
+                onPageSelected(MusicPlayerRemote.position)
+            }
+            MSG_UPDATE_POSITION -> {
+                binding.playerCoverViewpager.setCurrentItem(MusicPlayerRemote.position, false)
+            }
+        }
+        false
+    }
 
     private fun updatePlayingQueue() {
-        if (adapter == null) {
-            adapter = AlbumCoverPagerAdapter(parentFragmentManager,  MusicPlayerRemote.playingQueue)
-            binding.playerCoverViewpager.adapter = adapter
-        } else {
-            adapter?.dataSet = MusicPlayerRemote.playingQueue
-        }
-        binding.playerCoverViewpager.setCurrentItem(MusicPlayerRemote.position, false)
-        onPageSelected(MusicPlayerRemote.position)
+        handler.sendEmptyMessage(MSG_UPDATE_QUEUE)
     }
 
     override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
     override fun onPageSelected(position: Int) {
         currentPosition = position
-        adapter?.receiveColor(colorReceiver, position)
+        albumCoverPagerAdapter?.receiveColor(colorReceiver, position)
         if (position != MusicPlayerRemote.position) {
             MusicPlayerRemote.playSongAt(position)
         }
@@ -261,5 +284,8 @@ class PlayerAlbumCoverFragment :
 
     companion object {
         const val VISIBILITY_ANIM_DURATION = 300L
+
+        private const val MSG_UPDATE_QUEUE = 2
+        private const val MSG_UPDATE_POSITION = 4
     }
 }
