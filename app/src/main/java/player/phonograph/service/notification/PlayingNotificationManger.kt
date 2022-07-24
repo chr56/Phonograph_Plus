@@ -68,9 +68,6 @@ class PlayingNotificationManger(private val service: MusicService) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) createNotificationChannel()
     }
 
-    private val currentMode
-        get() = if (service.isPlaying) MODE_FOREGROUND else MODE_BACKGROUND
-
     private lateinit var impl: Impl
 
     @SuppressLint("ObsoleteSdkInt")
@@ -98,19 +95,20 @@ class PlayingNotificationManger(private val service: MusicService) {
     }
 
     private fun postNotification(notification: OSNotification) {
-        if (service.isDestroyed) {
-            // service stopped
-            removeNotification()
-            return
-        }
-        when (currentMode) {
-            MODE_FOREGROUND -> {
-                notificationManager.notify(NOTIFICATION_ID, notification)
-                service.startForeground(NOTIFICATION_ID, notification)
+        when {
+            service.isDestroyed -> {
+                // service stopped
+                removeNotification()
             }
-            MODE_BACKGROUND -> {
+            !service.isDestroyed && !service.isPlaying -> {
+                // pause
                 notificationManager.notify(NOTIFICATION_ID, notification)
                 service.stopForeground(false)
+            }
+            !service.isDestroyed && service.isPlaying -> {
+                // playing
+                notificationManager.notify(NOTIFICATION_ID, notification)
+                service.startForeground(NOTIFICATION_ID, notification)
             }
         }
     }
@@ -579,7 +577,9 @@ class PlayingNotificationManger(private val service: MusicService) {
     /**
      * PendingIntent to quit/stop
      */
-    private val deletePendingIntent get() = buildPlaybackPendingIntent(MusicService.ACTION_STOP_AND_QUIT_NOW)
+    private val deletePendingIntent get() = buildPlaybackPendingIntent(
+        MusicService.ACTION_STOP_AND_QUIT_NOW
+    )
 
     companion object {
         const val NOTIFICATION_CHANNEL_ID = "playing_notification"
