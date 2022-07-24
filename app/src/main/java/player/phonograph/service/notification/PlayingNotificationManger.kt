@@ -63,7 +63,7 @@ class PlayingNotificationManger(private val service: MusicService) {
             .setVisibility(XNotificationCompat.VISIBILITY_PUBLIC)
             .setShowWhen(false)
             .setPriority(XNotificationCompat.PRIORITY_MAX)
-            .setCategory(XNotificationCompat.CATEGORY_SERVICE)
+            .setCategory(XNotificationCompat.CATEGORY_TRANSPORT)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) createNotificationChannel()
     }
