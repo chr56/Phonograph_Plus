@@ -87,7 +87,7 @@ class MediaButtonIntentReceiver : BroadcastReceiver() {
                 // Fallback to system time if event time was not available.
                 var command: String? = null
                 when (keycode) {
-                    KeyEvent.KEYCODE_MEDIA_STOP -> command = MusicService.ACTION_STOP
+                    KeyEvent.KEYCODE_MEDIA_STOP -> command = MusicService.ACTION_STOP_AND_QUIT_NOW
                     KeyEvent.KEYCODE_HEADSETHOOK, KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE ->
                         command = MusicService.ACTION_TOGGLE_PAUSE
                     KeyEvent.KEYCODE_MEDIA_NEXT -> command = MusicService.ACTION_SKIP
