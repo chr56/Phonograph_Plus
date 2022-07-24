@@ -270,6 +270,7 @@ class MusicService : Service(), OnSharedPreferenceChangeListener {
             PLAY_STATE_CHANGED -> {
                 // update playing notification
                 playNotificationManager.updateNotification()
+                playNotificationManager.updateMediaSessionMetaData()
                 playNotificationManager.updateMediaSessionPlaybackState()
 
                 // save state
@@ -283,6 +284,7 @@ class MusicService : Service(), OnSharedPreferenceChangeListener {
                 // update playing notification
                 playNotificationManager.updateNotification()
                 playNotificationManager.updateMediaSessionMetaData()
+                playNotificationManager.updateMediaSessionPlaybackState()
 
                 // save state
                 queueManager.postMessage(QueueManager.MSG_SAVE_CURSOR)
