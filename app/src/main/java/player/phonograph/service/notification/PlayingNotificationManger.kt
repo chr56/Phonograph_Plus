@@ -461,18 +461,22 @@ class PlayingNotificationManger(private val service: MusicService) {
         mediaSession.setMediaButtonReceiver(mediaButtonReceiverPendingIntent)
     }
 
+    private val sessionPlaybackStateBuilder by lazy {
+        PlaybackStateCompat.Builder()
+            .setActions(
+                PlaybackStateCompat.ACTION_PLAY
+                    or PlaybackStateCompat.ACTION_PAUSE
+                    or PlaybackStateCompat.ACTION_PLAY_PAUSE
+                    or PlaybackStateCompat.ACTION_SKIP_TO_NEXT
+                    or PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS
+                    or PlaybackStateCompat.ACTION_STOP
+                    or PlaybackStateCompat.ACTION_SEEK_TO
+            )
+    }
+
     fun updateMediaSessionPlaybackState() {
         mediaSession.setPlaybackState(
-            PlaybackStateCompat.Builder()
-                .setActions(
-                    PlaybackStateCompat.ACTION_PLAY
-                        or PlaybackStateCompat.ACTION_PAUSE
-                        or PlaybackStateCompat.ACTION_PLAY_PAUSE
-                        or PlaybackStateCompat.ACTION_SKIP_TO_NEXT
-                        or PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS
-                        or PlaybackStateCompat.ACTION_STOP
-                        or PlaybackStateCompat.ACTION_SEEK_TO
-                )
+            sessionPlaybackStateBuilder
                 .setState(
                     if (service.isPlaying) PlaybackStateCompat.STATE_PLAYING else PlaybackStateCompat.STATE_PAUSED,
                     service.songProgressMillis.toLong(),
