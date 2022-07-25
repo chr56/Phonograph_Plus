@@ -13,7 +13,6 @@ import android.view.animation.DecelerateInterpolator
 import androidx.viewpager2.widget.ViewPager2
 import kotlinx.coroutines.*
 import lib.phonograph.misc.SimpleAnimatorListener
-import player.phonograph.R
 import player.phonograph.adapter.AlbumCoverPagerAdapter
 import player.phonograph.databinding.FragmentPlayerAlbumCoverBinding
 import player.phonograph.helper.MusicProgressViewUpdateHelper
@@ -23,7 +22,6 @@ import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.settings.Setting
 import player.phonograph.ui.fragments.AbsMusicServiceFragment
 import player.phonograph.util.ViewUtil
-import util.mddesign.util.Util
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
@@ -106,10 +104,18 @@ class PlayerAlbumCoverFragment :
         val adapter = albumCoverPagerAdapter
         if (adapter == null) {
             this.albumCoverPagerAdapter =
-                AlbumCoverPagerAdapter(this, queue)
+                AlbumCoverPagerAdapter(this, queue, ::deployColor)
             binding.playerCoverViewpager.adapter = this.albumCoverPagerAdapter
         } else {
             adapter.dataSet = queue
+        }
+    }
+
+    private fun deployColor(songId: Long, color: Int) {
+        if (songId == MusicPlayerRemote.currentSong.id) {
+            notifyColorChange(color)
+        } else {
+            albumCoverPagerAdapter?.requestLoadCover(currentPosition)
         }
     }
 
@@ -141,17 +147,6 @@ class PlayerAlbumCoverFragment :
         currentPosition = position
         if (position != MusicPlayerRemote.position) {
             MusicPlayerRemote.playSongAt(position)
-        }
-        val queue = MusicPlayerRemote.playingQueue
-        if (queue.isNotEmpty()) {
-            coroutineScope.launch {
-                val color =
-                    albumCoverPagerAdapter?.getColor(queue[position].id)
-                        ?: Util.resolveColor(requireContext(), R.attr.defaultFooterColor)
-                withContext(Dispatchers.Main) {
-                    notifyColorChange(color)
-                }
-            }
         }
     }
 
@@ -285,8 +280,6 @@ class PlayerAlbumCoverFragment :
     }
 
     private fun isBindingAccessible(): Boolean = _viewBinding != null
-
-    private val coroutineScope = CoroutineScope(SupervisorJob())
 
     companion object {
         const val VISIBILITY_ANIM_DURATION = 300L

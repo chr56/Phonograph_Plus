@@ -1,89 +1,57 @@
 package player.phonograph.adapter
 
+import android.content.Context
 import android.content.SharedPreferences
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.os.Bundle
-import android.util.Log
-import android.util.SparseIntArray
+import android.util.SparseArray
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import androidx.annotation.ColorInt
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.bumptech.glide.Glide
-import player.phonograph.BuildConfig.DEBUG
-import player.phonograph.R
 import player.phonograph.databinding.FragmentAlbumCoverBinding
 import player.phonograph.glide.PhonographColoredTarget
 import player.phonograph.glide.SongGlideRequest
-import player.phonograph.glide.audiocover.AudioFileCover
-import player.phonograph.glide.audiocover.AudioFileCoverFetchLogics
 import player.phonograph.model.Song
 import player.phonograph.settings.Setting
-import player.phonograph.util.PhonographColorUtil
-import player.phonograph.util.PhonographColorUtil.generatePalette
-import util.mddesign.util.Util
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
  */
-class AlbumCoverPagerAdapter(val fragment: Fragment, dataSet: List<Song>) :
+class AlbumCoverPagerAdapter(
+    val fragment: Fragment,
+    dataSet: List<Song>,
+    var onColorReady: (Long, Int) -> Unit
+) :
     FragmentStateAdapter(fragment) {
 
     var dataSet: List<Song> = dataSet
         set(value) {
+            fragments.clear()
             field = value
             notifyDataSetChanged()
-            songColorCacheMap.clear()
         }
 
-    private val songColorCacheMap: SparseIntArray = SparseIntArray(1)
-
-    @ColorInt
-    fun getColor(songId: Long): Int {
-        val cache = songColorCacheMap[songIdToKey(songId)]
-        return if (cache != 0) {
-            cache
-        } else {
-            // fetch instantly
-            fetchColor(songId)
-        }
-    }
-
-    internal fun putColorCache(songId: Long, @ColorInt color: Int) =
-        songColorCacheMap.put(songIdToKey(songId), color)
-
-    @ColorInt
-    private fun fetchColor(songId: Long): Int {
-        val color: Int = fetchColorInstantly(songId)
-        putColorCache(songId, color)
-        return color
-    }
-
-    @ColorInt
-    private fun fetchColorInstantly(songId: Long): Int {
-        if (DEBUG) Log.i("AlbumCoverPagerAdapter", "directly fetching palette!!")
-        val palette = runCatching {
-            val song = dataSet.first { it.id == songId }
-            val resultStream = AudioFileCoverFetchLogics(AudioFileCover(song.data)).fetch(null)
-            val bitmap =
-                Bitmap.createScaledBitmap(BitmapFactory.decodeStream(resultStream), 512, 512, true)
-            return@runCatching generatePalette(bitmap)
-        }.getOrNull()
-
-        return PhonographColorUtil.getColor(
-            palette,
-            Util.resolveColor(fragment.requireContext(), R.attr.defaultFooterColor)
-        )
-    }
+    private val fragments = SparseArray<AlbumCoverFragment>(dataSet.size)
 
     override fun createFragment(position: Int): Fragment =
-        AlbumCoverFragment.newInstance(dataSet[position], ::putColorCache)
+        AlbumCoverFragment.newInstance(dataSet[position], onColorReady).also {
+            fragments.put(
+                position,
+                it
+            )
+        }
 
     override fun getItemCount(): Int = dataSet.size
+
+    /**
+     * request load album manually
+     */
+    fun requestLoadCover(position: Int) {
+        fragments[position].loadAlbumCover()
+    }
 
     class AlbumCoverFragment : Fragment(), SharedPreferences.OnSharedPreferenceChangeListener {
 
@@ -126,16 +94,13 @@ class AlbumCoverPagerAdapter(val fragment: Fragment, dataSet: List<Song>) :
             Setting.instance.unregisterOnSharedPreferenceChangedListener(this)
         }
 
-        private fun loadAlbumCover() {
-            val song = song ?: return
-            SongGlideRequest.Builder.from(Glide.with(this), song)
-                .checkIgnoreMediaStore(requireActivity())
-                .generatePalette(requireActivity()).build()
-                .into(object : PhonographColoredTarget(binding.playerImage) {
-                    override fun onColorReady(color: Int) {
-                        setColor(song.id, color)
-                    }
-                })
+        fun loadAlbumCover() {
+            loadImage(
+                requireContext(),
+                song ?: return,
+                binding.playerImage,
+                ::setColor
+            )
         }
 
         override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String) {
@@ -167,9 +132,22 @@ class AlbumCoverPagerAdapter(val fragment: Fragment, dataSet: List<Song>) :
                     onColorReadyCallback = callback
                 }
             }
+
+            fun loadImage(
+                context: Context,
+                song: Song,
+                target: ImageView,
+                colorCallback: (Long, Int) -> Unit
+            ) {
+                SongGlideRequest.Builder.from(Glide.with(context), song)
+                    .checkIgnoreMediaStore(context)
+                    .generatePalette(context).build()
+                    .into(object : PhonographColoredTarget(target) {
+                        override fun onColorReady(color: Int) {
+                            colorCallback(song.id, color)
+                        }
+                    })
+            }
         }
-    }
-    companion object {
-        private fun songIdToKey(songId: Long): Int = (songId % Int.MAX_VALUE).toInt()
     }
 }
