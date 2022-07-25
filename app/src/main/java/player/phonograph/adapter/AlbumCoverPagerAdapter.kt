@@ -11,11 +11,13 @@ import android.widget.ImageView
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.bumptech.glide.Glide
+import player.phonograph.BuildConfig.DEBUG
 import player.phonograph.databinding.FragmentAlbumCoverBinding
 import player.phonograph.glide.CustomPaletteTarget
 import player.phonograph.glide.SongGlideRequest
 import player.phonograph.glide.palette.BitmapPaletteWrapper
 import player.phonograph.model.Song
+import player.phonograph.notification.ErrorNotification
 import player.phonograph.settings.Setting
 
 /**
@@ -53,7 +55,12 @@ class AlbumCoverPagerAdapter(
     fun requestLoadCover(position: Int) {
         try {
             fragments[position].loadAlbumCover()
-        } catch (e: NullPointerException) {} catch (e: IllegalStateException) {}
+        } catch (exception: Exception) {
+            if (DEBUG) ErrorNotification.postErrorNotification(
+                exception,
+                "Failed to load cover in position $position (${dataSet[position].title})"
+            )
+        }
     }
 
     class AlbumCoverFragment : Fragment(), SharedPreferences.OnSharedPreferenceChangeListener {
