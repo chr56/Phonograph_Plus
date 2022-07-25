@@ -1,4 +1,4 @@
-package player.phonograph.views
+package lib.phonograph.view
 
 import android.widget.FrameLayout
 import android.annotation.TargetApi

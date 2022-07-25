@@ -24,7 +24,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <player.phonograph.views.HeightFitSquareLayout
+            <lib.phonograph.view.HeightFitSquareLayout
                 android:id="@+id/cover_container"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
@@ -35,7 +35,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent" />
 
-            </player.phonograph.views.HeightFitSquareLayout>
+            </lib.phonograph.view.HeightFitSquareLayout>
 
             <com.sothree.slidinguppanel.SlidingUpPanelLayout xmlns:sothree="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/player_sliding_layout"

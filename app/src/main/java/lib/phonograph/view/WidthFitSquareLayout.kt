@@ -1,4 +1,4 @@
-package player.phonograph.views
+package lib.phonograph.view
 
 import android.annotation.TargetApi
 import android.content.Context
