@@ -28,7 +28,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
 
-            <RelativeLayout
+            <LinearLayout
                 android:id="@+id/player_content"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -44,10 +44,9 @@
                     android:id="@+id/playback_controls_fragment"
                     android:name="player.phonograph.ui.fragments.player.card.CardPlayerControllerFragment"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/playback_controls_fragment" />
+                    android:layout_height="wrap_content"/>
 
-            </RelativeLayout>
+            </LinearLayout>
 
             <FrameLayout
                 android:id="@+id/toolbar_container"
