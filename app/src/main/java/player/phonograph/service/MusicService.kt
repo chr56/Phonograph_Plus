@@ -30,6 +30,9 @@ import player.phonograph.service.player.PlayerController
 import player.phonograph.service.player.PlayerState
 import player.phonograph.service.player.PlayerStateObserver
 import player.phonograph.service.queue.*
+import player.phonograph.service.queue.QueueManager.Companion.MSG_SAVE_CURSOR
+import player.phonograph.service.queue.QueueManager.Companion.MSG_SAVE_MODE
+import player.phonograph.service.queue.QueueManager.Companion.MSG_SAVE_QUEUE
 import player.phonograph.service.util.MediaButtonIntentReceiver
 import player.phonograph.service.util.MediaStoreObserverUtil
 import player.phonograph.service.util.MusicServiceUtil
@@ -205,6 +208,11 @@ class MusicService : Service(), OnSharedPreferenceChangeListener {
         controller.stopAndDestroy()
         controller.removeObserver(playerStateObserver)
         queueManager.removeObserver(queueChangeObserver)
+        queueManager.apply {
+            postMessage(MSG_SAVE_QUEUE)
+            postMessage(MSG_SAVE_CURSOR)
+            postMessage(MSG_SAVE_MODE)
+        }
         sendBroadcast(Intent("player.phonograph.PHONOGRAPH_MUSIC_SERVICE_DESTROYED"))
     }
 
