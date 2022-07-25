@@ -54,11 +54,14 @@
             </li>
             <li>Add: responding last.fm link in Artist&Album Detail(Note: Currently, wiki of last.fm is still working, there is no plan to maintain.).</li>
             <li>Add: Preference Item "Please do NOT touch my playing queue arbitrarily", which would make app try not to clear or override playing queue without user's specific request (instead, just add songs to queue) if preference enabled. (Known issue: if you click items to add to queue too quickly (around clicking more than one time per second), the app might crash!)</li>
+            <li>New: Added a menu item to change the current Now Playing Screen in the Now Playing Screen</li>
             <li>Fix: crash when opening sleep timer dialog for first time</li>
             <li>Fix: wrong color of context menu icon when multiple selection</li>
             <li>Improve: minor refactoring of the album page (BUG: transition animation is currently "temporarily" glitch)</li>
             <li>Improve: minor refactoring of sort order and grid settings UI</li>
             <li>Development: update dependencies (This causes a little distinct appearance of scrollbar)</li>
+            <li>Development: Refactor MusicService (there could be a HUGE number of potential bugs related to music playing, such as fails of playback controls, incorresponding current playing song with ui, notification glitches, ghostly playing... and crashes.)</li>
+            <li>Development: Use ViewPager2 for song cover in the playing song interface</li>
             <li>Development: clean up code</li>
         </ol>
     </div>
