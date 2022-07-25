@@ -11,6 +11,7 @@ import android.widget.ImageView
 import androidx.annotation.ColorInt
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.fragment.app.FragmentContainerView
 import com.h6ah4i.android.widget.advrecyclerview.animator.GeneralItemAnimator
 import com.h6ah4i.android.widget.advrecyclerview.animator.RefactoredDefaultItemAnimator
 import com.sothree.slidinguppanel.SlidingUpPanelLayout
@@ -18,7 +19,6 @@ import com.sothree.slidinguppanel.SlidingUpPanelLayout.PanelState
 import player.phonograph.R
 import player.phonograph.adapter.base.MediaEntryViewHolder
 import player.phonograph.databinding.FragmentFlatPlayerBinding
-import player.phonograph.util.menu.MenuClickListener
 import player.phonograph.model.Song
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
@@ -29,7 +29,7 @@ import player.phonograph.util.ImageUtil
 import player.phonograph.util.MusicUtil
 import player.phonograph.util.Util.isLandscape
 import player.phonograph.util.ViewUtil
-import player.phonograph.views.WidthFitSquareLayout
+import player.phonograph.util.menu.MenuClickListener
 import util.mdcolor.ColorUtil
 import util.mdcolor.pref.ThemeColor
 import util.mddesign.util.ToolbarColorUtil
@@ -142,11 +142,17 @@ class FlatPlayerFragment :
     }
 
     override fun setUpControllerFragment() {
-        playbackControlsFragment = childFragmentManager.findFragmentById(R.id.playback_controls_fragment) as FlatPlayerControllerFragment
+        playbackControlsFragment = childFragmentManager.findFragmentById(
+            R.id.playback_controls_fragment
+        ) as FlatPlayerControllerFragment
     }
 
     override fun setUpCoverFragment() {
-        playerAlbumCoverFragment = (childFragmentManager.findFragmentById(R.id.player_album_cover_fragment) as PlayerAlbumCoverFragment)
+        playerAlbumCoverFragment = (
+            childFragmentManager.findFragmentById(
+                R.id.player_album_cover_fragment
+            ) as PlayerAlbumCoverFragment
+            )
             .apply { setCallbacks(this@FlatPlayerFragment) }
     }
 
@@ -168,12 +174,15 @@ class FlatPlayerFragment :
         viewBinding.playerToolbar.menu
             .findItem(R.id.action_toggle_favorite)
             .setIcon(drawable)
-            .title = if (isFavorite) getString(R.string.action_remove_from_favorites) else getString(R.string.action_add_to_favorites)
+            .title = if (isFavorite) getString(R.string.action_remove_from_favorites) else getString(
+            R.string.action_add_to_favorites
+        )
     }
 
     override fun hideLyricsMenuItem() {
-        if (_viewBinding != null)
+        if (_viewBinding != null) {
             viewBinding.playerToolbar.menu.removeItem(R.id.action_show_lyrics)
+        }
     }
 
     override fun showLyricsMenuItem() {
@@ -181,7 +190,13 @@ class FlatPlayerFragment :
             if (viewBinding.playerToolbar.menu.findItem(R.id.action_show_lyrics) == null) {
                 viewBinding.playerToolbar.menu
                     .add(Menu.NONE, R.id.action_show_lyrics, Menu.NONE, R.string.action_show_lyrics)
-                    .setIcon(ImageUtil.getTintedVectorDrawable(activity, R.drawable.ic_comment_text_outline_white_24dp, ToolbarColorUtil.toolbarContentColor(activity, Color.TRANSPARENT)))
+                    .setIcon(
+                        ImageUtil.getTintedVectorDrawable(
+                            activity,
+                            R.drawable.ic_comment_text_outline_white_24dp,
+                            ToolbarColorUtil.toolbarContentColor(activity, Color.TRANSPARENT)
+                        )
+                    )
                     .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM)
             }
         }
@@ -258,17 +273,33 @@ class FlatPlayerFragment :
         fun createDefaultColorChangeAnimatorSet(newColor: Int): AnimatorSet? {
             if (fragment.playbackControlsFragment.view == null) return null // todo
             val backgroundAnimator =
-                ViewUtil.createBackgroundColorTransition(fragment.playbackControlsFragment.requireView(), fragment.paletteColor, newColor)
+                ViewUtil.createBackgroundColorTransition(
+                    fragment.playbackControlsFragment.requireView(),
+                    fragment.paletteColor,
+                    newColor
+                )
             val statusBarAnimator =
-                ViewUtil.createBackgroundColorTransition(fragment.viewBinding.playerStatusBar, fragment.paletteColor, newColor)
+                ViewUtil.createBackgroundColorTransition(
+                    fragment.viewBinding.playerStatusBar,
+                    fragment.paletteColor,
+                    newColor
+                )
             val animatorSet = AnimatorSet()
             animatorSet.playTogether(backgroundAnimator, statusBarAnimator)
             if (!Util.isWindowBackgroundDark(fragment.activity)) {
                 val adjustedLastColor =
-                    if (ColorUtil.isColorLight(fragment.paletteColor)) ColorUtil.darkenColor(fragment.paletteColor) else fragment.paletteColor
-                val adjustedNewColor = if (ColorUtil.isColorLight(newColor)) ColorUtil.darkenColor(newColor) else newColor
+                    if (ColorUtil.isColorLight(fragment.paletteColor)) ColorUtil.darkenColor(
+                        fragment.paletteColor
+                    ) else fragment.paletteColor
+                val adjustedNewColor = if (ColorUtil.isColorLight(newColor)) ColorUtil.darkenColor(
+                    newColor
+                ) else newColor
                 val subHeaderAnimator =
-                    ViewUtil.createTextColorTransition(fragment.viewBinding.playerQueueSubHeader, adjustedLastColor, adjustedNewColor)
+                    ViewUtil.createTextColorTransition(
+                        fragment.viewBinding.playerQueueSubHeader,
+                        adjustedLastColor,
+                        adjustedNewColor
+                    )
                 animatorSet.play(subHeaderAnimator)
             }
             animatorSet.duration = ViewUtil.PHONOGRAPH_ANIM_TIME.toLong()
@@ -277,7 +308,9 @@ class FlatPlayerFragment :
 
         override fun animateColorChange(newColor: Int) {
             if (Util.isWindowBackgroundDark(fragment.activity)) {
-                fragment.viewBinding.playerQueueSubHeader.setTextColor(ThemeColor.textColorSecondary(fragment.requireActivity()))
+                fragment.viewBinding.playerQueueSubHeader.setTextColor(
+                    ThemeColor.textColorSecondary(fragment.requireActivity())
+                )
             }
         }
     }
@@ -285,13 +318,16 @@ class FlatPlayerFragment :
     private class PortraitImpl(fragment: FlatPlayerFragment) : BaseImpl(fragment) {
         var currentSongViewHolder: MediaEntryViewHolder? = null
         override fun init() {
-            currentSongViewHolder = MediaEntryViewHolder(fragment.requireView().findViewById(R.id.current_song))
+            currentSongViewHolder = MediaEntryViewHolder(
+                fragment.requireView().findViewById(R.id.current_song)
+            )
             currentSongViewHolder!!.separator!!.visibility = View.VISIBLE
             currentSongViewHolder!!.shortSeparator!!.visibility = View.GONE
             currentSongViewHolder!!.image!!.scaleType = ImageView.ScaleType.CENTER
             currentSongViewHolder!!.image!!.setColorFilter(
                 Util.resolveColor(
-                    fragment.activity, R.attr.iconColor,
+                    fragment.activity,
+                    R.attr.iconColor,
                     ThemeColor.textColorSecondary(
                         fragment.requireActivity()
                     )
@@ -309,7 +345,10 @@ class FlatPlayerFragment :
             }
             currentSongViewHolder!!.menu!!.setOnClickListener(
 
-                object : MenuClickListener(fragment.requireActivity() as AppCompatActivity, R.menu.menu_item_playing_queue_song) {
+                object : MenuClickListener(
+                    fragment.requireActivity() as AppCompatActivity,
+                    R.menu.menu_item_playing_queue_song
+                ) {
 
                     override val song: Song = MusicPlayerRemote.currentSong
 
@@ -322,22 +361,35 @@ class FlatPlayerFragment :
                         }
                         return fragment.onMenuItemClick(item)
                     }
-                })
+                }
+            )
         }
 
         override fun setUpPanelAndAlbumCoverHeight() {
-            val albumCoverContainer: WidthFitSquareLayout = fragment.requireView().findViewById(R.id.album_cover_container)
+            val albumCoverContainer: FragmentContainerView = fragment.requireView().findViewById(
+                R.id.player_album_cover_fragment
+            )
             val availablePanelHeight =
-                fragment.viewBinding.playerSlidingLayout!!.height - fragment.requireView().findViewById<View>(R.id.player_content).height
-            val minPanelHeight = ViewUtil.convertDpToPixel((8 + 72 + 24).toFloat(), fragment.resources)
-                .toInt() + fragment.resources.getDimensionPixelSize(R.dimen.progress_container_height) + fragment.resources.getDimensionPixelSize(
+                fragment.viewBinding.playerSlidingLayout!!.height - fragment.requireView().findViewById<View>(
+                    R.id.player_content
+                ).height
+            val minPanelHeight = ViewUtil.convertDpToPixel(
+                (8 + 72 + 24).toFloat(),
+                fragment.resources
+            )
+                .toInt() + fragment.resources.getDimensionPixelSize(
+                R.dimen.progress_container_height
+            ) + fragment.resources.getDimensionPixelSize(
                 R.dimen.media_controller_container_height
             )
             if (availablePanelHeight < minPanelHeight) {
                 albumCoverContainer.layoutParams.height = albumCoverContainer.height - (minPanelHeight - availablePanelHeight)
-                albumCoverContainer.forceSquare(false)
+                // albumCoverContainer.forceSquare(false)
             }
-            fragment.viewBinding.playerSlidingLayout!!.panelHeight = Math.max(minPanelHeight, availablePanelHeight)
+            fragment.viewBinding.playerSlidingLayout!!.panelHeight = Math.max(
+                minPanelHeight,
+                availablePanelHeight
+            )
             (fragment.activity as AbsSlidingMusicPanelActivity?)!!.setAntiDragView(
                 fragment.viewBinding.playerSlidingLayout!!.findViewById(
                     R.id.player_panel
@@ -347,7 +399,9 @@ class FlatPlayerFragment :
 
         override fun onCurrentSongChanged() {
             currentSongViewHolder!!.title!!.text = fragment.viewModel.currentSong.title
-            currentSongViewHolder!!.text!!.text = MusicUtil.getSongInfoString(fragment.viewModel.currentSong)
+            currentSongViewHolder!!.text!!.text = MusicUtil.getSongInfoString(
+                fragment.viewModel.currentSong
+            )
         }
 
         override fun animateColorChange(newColor: Int) {
@@ -359,12 +413,16 @@ class FlatPlayerFragment :
     private class LandscapeImpl(fragment: FlatPlayerFragment) : BaseImpl(fragment) {
         override fun init() {}
         override fun setUpPanelAndAlbumCoverHeight() {
-            (fragment.activity as AbsSlidingMusicPanelActivity?)!!.setAntiDragView(fragment.requireView().findViewById(R.id.player_panel))
+            (fragment.activity as AbsSlidingMusicPanelActivity?)!!.setAntiDragView(
+                fragment.requireView().findViewById(R.id.player_panel)
+            )
         }
 
         override fun onCurrentSongChanged() {
             fragment.viewBinding.playerToolbar.title = fragment.viewModel.currentSong.title
-            fragment.viewBinding.playerToolbar.subtitle = MusicUtil.getSongInfoString(fragment.viewModel.currentSong)
+            fragment.viewBinding.playerToolbar.subtitle = MusicUtil.getSongInfoString(
+                fragment.viewModel.currentSong
+            )
         }
 
         override fun animateColorChange(newColor: Int) {

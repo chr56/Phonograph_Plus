@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<player.phonograph.views.WidthFitSquareLayout
+
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -15,22 +17,22 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="bottom"
+        android:alpha="0"
         android:background="@drawable/shadow_up"
-        android:padding="16dp"
         android:clipToPadding="false"
-        android:visibility="gone"
-        android:alpha="0">
+        android:padding="16dp"
+        android:visibility="gone">
 
         <TextView
             android:id="@+id/player_lyrics_line1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
-            android:textAlignment="center"
-            android:textSize="22sp"
-            android:textColor="@color/md_white_1000"
             android:shadowColor="@color/md_black_1000"
             android:shadowRadius="4"
+            android:textAlignment="center"
+            android:textColor="@color/md_white_1000"
+            android:textSize="22sp"
             android:visibility="gone" />
 
         <TextView
@@ -38,11 +40,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
-            android:textAlignment="center"
-            android:textSize="22sp"
-            android:textColor="@color/md_white_1000"
             android:shadowColor="@color/md_black_1000"
-            android:shadowRadius="4" />
+            android:shadowRadius="4"
+            android:textAlignment="center"
+            android:textColor="@color/md_white_1000"
+            android:textSize="22sp" />
 
     </FrameLayout>
 
@@ -59,4 +61,4 @@
         app:srcCompat="@drawable/ic_favorite_white_24dp"
         tools:ignore="ContentDescription,UnusedAttribute" />
 
-</FrameLayout>
+</player.phonograph.views.WidthFitSquareLayout>

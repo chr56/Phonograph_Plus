@@ -34,26 +34,18 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <player.phonograph.views.WidthFitSquareLayout
-                    android:id="@+id/album_cover_container"
+                <androidx.fragment.app.FragmentContainerView
+                    android:id="@+id/player_album_cover_fragment"
+                    android:name="player.phonograph.ui.fragments.player.PlayerAlbumCoverFragment"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentTop="true">
+                    android:layout_height="wrap_content" />
 
-                    <fragment
-                        android:id="@+id/player_album_cover_fragment"
-                        class="player.phonograph.ui.fragments.player.PlayerAlbumCoverFragment"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
-
-                </player.phonograph.views.WidthFitSquareLayout>
-
-                <fragment
+                <androidx.fragment.app.FragmentContainerView
                     android:id="@+id/playback_controls_fragment"
-                    class="player.phonograph.ui.fragments.player.card.CardPlayerControllerFragment"
+                    android:name="player.phonograph.ui.fragments.player.card.CardPlayerControllerFragment"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/album_cover_container" />
+                    android:layout_below="@id/playback_controls_fragment" />
 
             </RelativeLayout>
 
@@ -96,10 +88,10 @@
                 android:id="@+id/playing_queue_card"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="-8dp"
                 android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
                 android:layout_marginTop="8dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginBottom="-8dp"
                 app:cardBackgroundColor="?cardBackgroundColor"
                 app:cardElevation="@dimen/card_elevation"
                 app:cardUseCompatPadding="false">
@@ -113,8 +105,8 @@
                         android:id="@+id/draggable_area"
                         android:layout_width="72dp"
                         android:layout_height="wrap_content"
-                        android:layout_alignBottom="@+id/card_content"
                         android:layout_alignTop="@+id/card_content"
+                        android:layout_alignBottom="@+id/card_content"
                         android:layout_marginTop="120dp" />
 
                     <LinearLayout

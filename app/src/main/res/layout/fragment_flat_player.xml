@@ -41,18 +41,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <player.phonograph.views.WidthFitSquareLayout
-                    android:id="@+id/album_cover_container"
+                <androidx.fragment.app.FragmentContainerView
+                    android:id="@+id/player_album_cover_fragment"
+                    android:name="player.phonograph.ui.fragments.player.PlayerAlbumCoverFragment"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                    <fragment
-                        android:id="@+id/player_album_cover_fragment"
-                        class="player.phonograph.ui.fragments.player.PlayerAlbumCoverFragment"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
-
-                </player.phonograph.views.WidthFitSquareLayout>
+                    android:layout_height="wrap_content" />
 
             </FrameLayout>
 

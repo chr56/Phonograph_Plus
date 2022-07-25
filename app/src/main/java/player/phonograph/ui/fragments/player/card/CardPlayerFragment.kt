@@ -13,6 +13,7 @@ import android.widget.ImageView
 import androidx.annotation.ColorInt
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.fragment.app.FragmentContainerView
 import com.h6ah4i.android.widget.advrecyclerview.animator.GeneralItemAnimator
 import com.h6ah4i.android.widget.advrecyclerview.animator.RefactoredDefaultItemAnimator
 import com.sothree.slidinguppanel.SlidingUpPanelLayout
@@ -22,7 +23,6 @@ import kotlin.math.max
 import player.phonograph.R
 import player.phonograph.adapter.base.MediaEntryViewHolder
 import player.phonograph.databinding.FragmentCardPlayerBinding
-import player.phonograph.util.menu.MenuClickListener
 import player.phonograph.model.Song
 import player.phonograph.notification.ErrorNotification
 import player.phonograph.service.MusicPlayerRemote
@@ -34,7 +34,7 @@ import player.phonograph.util.ImageUtil
 import player.phonograph.util.MusicUtil
 import player.phonograph.util.Util.isLandscape
 import player.phonograph.util.ViewUtil
-import player.phonograph.views.WidthFitSquareLayout
+import player.phonograph.util.menu.MenuClickListener
 import util.mdcolor.ColorUtil
 import util.mdcolor.pref.ThemeColor
 import util.mddesign.util.ToolbarColorUtil
@@ -80,7 +80,9 @@ class CardPlayerFragment :
         })
 
         // for some reason the xml attribute doesn't get applied here.
-        viewBinding.playingQueueCard.setCardBackgroundColor(Util.resolveColor(activity, R.attr.cardBackgroundColor))
+        viewBinding.playingQueueCard.setCardBackgroundColor(
+            Util.resolveColor(activity, R.attr.cardBackgroundColor)
+        )
     }
 
     override fun onDestroyView() {
@@ -149,11 +151,15 @@ class CardPlayerFragment :
     }
 
     override fun setUpControllerFragment() {
-        playbackControlsFragment = childFragmentManager.findFragmentById(R.id.playback_controls_fragment) as CardPlayerControllerFragment
+        playbackControlsFragment = childFragmentManager.findFragmentById(
+            R.id.playback_controls_fragment
+        ) as CardPlayerControllerFragment
     }
 
     override fun setUpCoverFragment() {
-        playerAlbumCoverFragment = (childFragmentManager.findFragmentById(R.id.player_album_cover_fragment) as PlayerAlbumCoverFragment)
+        playerAlbumCoverFragment = (childFragmentManager.findFragmentById(
+            R.id.player_album_cover_fragment
+        ) as PlayerAlbumCoverFragment)
             .apply { setCallbacks(this@CardPlayerFragment) }
     }
 
@@ -175,12 +181,15 @@ class CardPlayerFragment :
         viewBinding.playerToolbar.menu
             .findItem(R.id.action_toggle_favorite)
             .setIcon(drawable)
-            .title = if (isFavorite) getString(R.string.action_remove_from_favorites) else getString(R.string.action_add_to_favorites)
+            .title = if (isFavorite) getString(R.string.action_remove_from_favorites) else getString(
+            R.string.action_add_to_favorites
+        )
     }
 
     override fun hideLyricsMenuItem() {
-        if (_viewBinding != null)
+        if (_viewBinding != null) {
             viewBinding.playerToolbar.menu.removeItem(R.id.action_show_lyrics)
+        }
     }
 
     override fun showLyricsMenuItem() {
@@ -188,7 +197,13 @@ class CardPlayerFragment :
             if (viewBinding.playerToolbar.menu.findItem(R.id.action_show_lyrics) == null) {
                 viewBinding.playerToolbar.menu
                     .add(Menu.NONE, R.id.action_show_lyrics, Menu.NONE, R.string.action_show_lyrics)
-                    .setIcon(ImageUtil.getTintedVectorDrawable(activity, R.drawable.ic_comment_text_outline_white_24dp, ToolbarColorUtil.toolbarContentColor(activity, Color.TRANSPARENT)))
+                    .setIcon(
+                        ImageUtil.getTintedVectorDrawable(
+                            activity,
+                            R.drawable.ic_comment_text_outline_white_24dp,
+                            ToolbarColorUtil.toolbarContentColor(activity, Color.TRANSPARENT)
+                        )
+                    )
                     .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM)
             }
         }
@@ -280,7 +295,12 @@ class CardPlayerFragment :
             val progressSliderHeight = (fragment.playbackControlsFragment as CardPlayerControllerFragment).progressSliderHeight
             if (progressSliderHeight < 0) {
                 ErrorNotification.init()
-                ErrorNotification.postErrorNotification(IllegalStateException("CardPlayer's progressSliderHeight is less than 0: $progressSliderHeight").also { it.stackTrace = Thread.currentThread().stackTrace }, "UI ERROR")
+                ErrorNotification.postErrorNotification(
+                    IllegalStateException(
+                        "CardPlayer's progressSliderHeight is less than 0: $progressSliderHeight"
+                    ).also { it.stackTrace = Thread.currentThread().stackTrace },
+                    "UI ERROR"
+                )
             }
 
             val backgroundAnimator: Animator =
@@ -288,11 +308,24 @@ class CardPlayerFragment :
                     val x = fab.x + fab.width / 2 + fragment.playbackControlsFragment.requireView().x
                     val y = fab.y + fab.height / 2 + fragment.playbackControlsFragment.requireView().y + progressSliderHeight
                     val startRadius = max(fab.width / 2, fab.height / 2)
-                    val endRadius = max(fragment.viewBinding.colorBackground.width, fragment.viewBinding.colorBackground.height)
+                    val endRadius = max(
+                        fragment.viewBinding.colorBackground.width,
+                        fragment.viewBinding.colorBackground.height
+                    )
                     fragment.viewBinding.colorBackground.setBackgroundColor(newColor)
-                    ViewAnimationUtils.createCircularReveal(fragment.viewBinding.colorBackground, x.toInt(), y.toInt(), startRadius.toFloat(), endRadius.toFloat())
+                    ViewAnimationUtils.createCircularReveal(
+                        fragment.viewBinding.colorBackground,
+                        x.toInt(),
+                        y.toInt(),
+                        startRadius.toFloat(),
+                        endRadius.toFloat()
+                    )
                 } else {
-                    ViewUtil.createBackgroundColorTransition(fragment.viewBinding.colorBackground, fragment.paletteColor, newColor)
+                    ViewUtil.createBackgroundColorTransition(
+                        fragment.viewBinding.colorBackground,
+                        fragment.paletteColor,
+                        newColor
+                    )
                 }
 
             val animatorSet =
@@ -303,8 +336,12 @@ class CardPlayerFragment :
                             play(
                                 ViewUtil.createTextColorTransition(
                                     fragment.viewBinding.playerQueueSubHeader,
-                                    if (ColorUtil.isColorLight(fragment.paletteColor)) ColorUtil.darkenColor(fragment.paletteColor) else fragment.paletteColor,
-                                    if (ColorUtil.isColorLight(newColor)) ColorUtil.darkenColor(newColor) else newColor
+                                    if (ColorUtil.isColorLight(fragment.paletteColor)) ColorUtil.darkenColor(
+                                        fragment.paletteColor
+                                    ) else fragment.paletteColor,
+                                    if (ColorUtil.isColorLight(newColor)) ColorUtil.darkenColor(
+                                        newColor
+                                    ) else newColor
                                 )
                             )
                         }
@@ -315,7 +352,9 @@ class CardPlayerFragment :
 
         override fun animateColorChange(newColor: Int) {
             if (Util.isWindowBackgroundDark(fragment.activity)) {
-                fragment.viewBinding.playerQueueSubHeader.setTextColor(ThemeColor.textColorSecondary(fragment.requireActivity()))
+                fragment.viewBinding.playerQueueSubHeader.setTextColor(
+                    ThemeColor.textColorSecondary(fragment.requireActivity())
+                )
             }
         }
     }
@@ -323,13 +362,16 @@ class CardPlayerFragment :
     private class PortraitImpl(fragment: CardPlayerFragment) : BaseImpl(fragment) {
         var currentSongViewHolder: MediaEntryViewHolder? = null
         override fun init() {
-            currentSongViewHolder = MediaEntryViewHolder(fragment.requireView().findViewById(R.id.current_song))
+            currentSongViewHolder = MediaEntryViewHolder(
+                fragment.requireView().findViewById(R.id.current_song)
+            )
             currentSongViewHolder!!.separator!!.visibility = View.VISIBLE
             currentSongViewHolder!!.shortSeparator!!.visibility = View.GONE
             currentSongViewHolder!!.image!!.scaleType = ImageView.ScaleType.CENTER
             currentSongViewHolder!!.image!!.setColorFilter(
                 Util.resolveColor(
-                    fragment.activity, R.attr.iconColor,
+                    fragment.activity,
+                    R.attr.iconColor,
                     ThemeColor.textColorSecondary(
                         fragment.requireActivity()
                     )
@@ -346,7 +388,10 @@ class CardPlayerFragment :
                 }
             }
             currentSongViewHolder!!.menu!!.setOnClickListener(object :
-                    MenuClickListener((fragment.activity as AppCompatActivity), R.menu.menu_item_playing_queue_song) {
+                    MenuClickListener(
+                        (fragment.activity as AppCompatActivity),
+                        R.menu.menu_item_playing_queue_song
+                    ) {
                     override val song: Song = MusicPlayerRemote.currentSong
 
                     override fun onMenuItemClick(item: MenuItem): Boolean {
@@ -362,9 +407,13 @@ class CardPlayerFragment :
         }
 
         override fun setUpPanelAndAlbumCoverHeight() {
-            val albumCoverContainer: WidthFitSquareLayout = fragment.requireView().findViewById(R.id.album_cover_container)
+            val albumCoverContainer: FragmentContainerView = fragment.requireView().findViewById(
+                R.id.player_album_cover_fragment
+            )
             val availablePanelHeight =
-                fragment.viewBinding.playerSlidingLayout.height - fragment.requireView().findViewById<View>(R.id.player_content).height + ViewUtil.convertDpToPixel(
+                fragment.viewBinding.playerSlidingLayout.height - fragment.requireView().findViewById<View>(
+                    R.id.player_content
+                ).height + ViewUtil.convertDpToPixel(
                     8f,
                     fragment.resources
                 )
@@ -372,15 +421,22 @@ class CardPlayerFragment :
             val minPanelHeight = ViewUtil.convertDpToPixel((72 + 24).toFloat(), fragment.resources).toInt()
             if (availablePanelHeight < minPanelHeight) {
                 albumCoverContainer.layoutParams.height = albumCoverContainer.height - (minPanelHeight - availablePanelHeight)
-                albumCoverContainer.forceSquare(false)
+                // albumCoverContainer.forceSquare(false)
             }
-            fragment.viewBinding.playerSlidingLayout.panelHeight = Math.max(minPanelHeight, availablePanelHeight)
-            (fragment.activity as AbsSlidingMusicPanelActivity?)!!.setAntiDragView(fragment.viewBinding.playerSlidingLayout.findViewById(R.id.player_panel))
+            fragment.viewBinding.playerSlidingLayout.panelHeight = Math.max(
+                minPanelHeight,
+                availablePanelHeight
+            )
+            (fragment.activity as AbsSlidingMusicPanelActivity?)!!.setAntiDragView(
+                fragment.viewBinding.playerSlidingLayout.findViewById(R.id.player_panel)
+            )
         }
 
         override fun onCurrentSongChanged() {
             currentSongViewHolder!!.title!!.text = fragment.viewModel.currentSong.title
-            currentSongViewHolder!!.text!!.text = MusicUtil.getSongInfoString(fragment.viewModel.currentSong)
+            currentSongViewHolder!!.text!!.text = MusicUtil.getSongInfoString(
+                fragment.viewModel.currentSong
+            )
         }
 
         override fun animateColorChange(newColor: Int) {
@@ -396,12 +452,16 @@ class CardPlayerFragment :
             val panelHeight = fragment.viewBinding.playerSlidingLayout.height - fragment.playbackControlsFragment.requireView()
                 .height
             fragment.viewBinding.playerSlidingLayout.panelHeight = panelHeight
-            (fragment.activity as AbsSlidingMusicPanelActivity?)!!.setAntiDragView(fragment.viewBinding.playerSlidingLayout.findViewById(R.id.player_panel))
+            (fragment.activity as AbsSlidingMusicPanelActivity?)!!.setAntiDragView(
+                fragment.viewBinding.playerSlidingLayout.findViewById(R.id.player_panel)
+            )
         }
 
         override fun onCurrentSongChanged() {
             fragment.viewBinding.playerToolbar.title = fragment.viewModel.currentSong.title
-            fragment.viewBinding.playerToolbar.subtitle = MusicUtil.getSongInfoString(fragment.viewModel.currentSong)
+            fragment.viewBinding.playerToolbar.subtitle = MusicUtil.getSongInfoString(
+                fragment.viewModel.currentSong
+            )
         }
 
         override fun animateColorChange(newColor: Int) {
