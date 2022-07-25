@@ -75,6 +75,7 @@ class PlayerAlbumCoverFragment :
                     return gestureDetector.onTouchEvent(event)
                 }
             })
+            offscreenPageLimit = 1
         }
         progressViewUpdateHelper = MusicProgressViewUpdateHelper(this, 500, 1000).apply { start() }
     }
