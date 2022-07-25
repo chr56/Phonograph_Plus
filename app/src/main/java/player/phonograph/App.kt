@@ -33,7 +33,8 @@ class App : Application() {
         if (_queueManager == null) {
             // QueueManager
             _queueManager = QueueManager(this).apply {
-                postMessage(QueueManager.MSG_STATE_RESTORE)
+                // restore all
+                postMessage(QueueManager.MSG_STATE_RESTORE_ALL)
             }
         }
         return _queueManager!!

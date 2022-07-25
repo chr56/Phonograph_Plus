@@ -69,9 +69,6 @@ class QueueManager(val context: Application) {
                         }
                     }
                 }
-                MSG_STATE_SAVE_ALL -> {
-                    saveAll()
-                }
                 MSG_SAVE_QUEUE -> {
                     saveQueue()
                 }
@@ -81,8 +78,8 @@ class QueueManager(val context: Application) {
                 MSG_SAVE_CURSOR -> {
                     saveCursor()
                 }
-                MSG_STATE_RESTORE -> {
-                    restoreState()
+                MSG_STATE_RESTORE_ALL -> {
+                    restoreAllState()
                 }
             }
         }
@@ -408,24 +405,25 @@ class QueueManager(val context: Application) {
     /**
      * synchronized
      */
-    private fun restoreState() {
+    private fun restoreAllState() {
         val restoredQueue = MusicPlaybackQueueStore.getInstance(context).savedPlayingQueue
         val restoredOriginalQueue = MusicPlaybackQueueStore.getInstance(context).savedOriginalPlayingQueue
-        val restoredPosition = PreferenceManager.getDefaultSharedPreferences(context).getInt(
-            PREF_POSITION,
-            -1
-        )
+        val restoredPosition = PreferenceManager
+            .getDefaultSharedPreferences(context).getInt(PREF_POSITION, -1)
+
         if (restoredQueue.isNotEmpty() && restoredQueue.size == restoredOriginalQueue.size && restoredPosition != -1) {
             _originalPlayingQueue = restoredOriginalQueue.toMutableList()
             _playingQueue = restoredQueue.toMutableList()
             currentSongPosition = restoredPosition
         }
+
         PreferenceManager.getDefaultSharedPreferences(context).getInt(PREF_SHUFFLE_MODE, 0).let {
             shuffleMode = ShuffleMode.deserialize(it)
         }
         PreferenceManager.getDefaultSharedPreferences(context).getInt(PREF_REPEAT_MODE, 0).let {
             repeatMode = RepeatMode.deserialize(it)
         }
+
         observers.executeForEach {
             onStateRestored()
         }
@@ -521,11 +519,10 @@ class QueueManager(val context: Application) {
     fun removeObserver(observer: QueueChangeObserver): Boolean = observers.remove(observer)
 
     companion object {
-        const val MSG_STATE_RESTORE = 1
+        const val MSG_STATE_RESTORE_ALL = 1
         const val MSG_SAVE_QUEUE = 2
         const val MSG_SAVE_CURSOR = 4
         const val MSG_SAVE_MODE = 8
-        const val MSG_STATE_SAVE_ALL = 32
 
         const val PREF_POSITION = "POSITION"
         const val PREF_SHUFFLE_MODE = "SHUFFLE_MODE"
