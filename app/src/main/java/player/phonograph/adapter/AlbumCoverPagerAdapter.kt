@@ -12,8 +12,9 @@ import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.bumptech.glide.Glide
 import player.phonograph.databinding.FragmentAlbumCoverBinding
-import player.phonograph.glide.PhonographColoredTarget
+import player.phonograph.glide.CustomPaletteTarget
 import player.phonograph.glide.SongGlideRequest
+import player.phonograph.glide.palette.BitmapPaletteWrapper
 import player.phonograph.model.Song
 import player.phonograph.settings.Setting
 
@@ -142,7 +143,10 @@ class AlbumCoverPagerAdapter(
                 SongGlideRequest.Builder.from(Glide.with(context), song)
                     .checkIgnoreMediaStore(context)
                     .generatePalette(context).build()
-                    .into(object : PhonographColoredTarget(target) {
+                    .into(object : CustomPaletteTarget(context) {
+                        override fun onResourceReady(resource: BitmapPaletteWrapper) {
+                            target.setImageBitmap(resource.bitmap)
+                        }
                         override fun onColorReady(color: Int) {
                             colorCallback(song.id, color)
                         }
