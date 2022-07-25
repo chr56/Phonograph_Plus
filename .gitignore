@@ -49,3 +49,5 @@ gen-external-apklibs
 
 products/**/mapping.txt
 products/
+
+ReleaseNote.url.txt
