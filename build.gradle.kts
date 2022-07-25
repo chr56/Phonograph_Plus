@@ -22,7 +22,3 @@ allprojects {
         maven(url = "https://jitpack.io")
     }
 }
-
-tasks.create("cleanProject", type = Delete::class) {
-    delete(rootProject.buildDir)
-}
