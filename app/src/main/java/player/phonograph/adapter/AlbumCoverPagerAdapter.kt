@@ -51,7 +51,9 @@ class AlbumCoverPagerAdapter(
      * request load album manually
      */
     fun requestLoadCover(position: Int) {
-        fragments[position].loadAlbumCover()
+        try {
+            fragments[position].loadAlbumCover()
+        } catch (e: NullPointerException) {} catch (e: IllegalStateException) {}
     }
 
     class AlbumCoverFragment : Fragment(), SharedPreferences.OnSharedPreferenceChangeListener {
