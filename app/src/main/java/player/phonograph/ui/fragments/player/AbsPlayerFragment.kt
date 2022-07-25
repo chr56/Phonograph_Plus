@@ -19,20 +19,22 @@ import kotlinx.coroutines.*
 import player.phonograph.R
 import player.phonograph.adapter.display.PlayingQueueAdapter
 import player.phonograph.dialogs.*
-import player.phonograph.util.menu.onSongMenuItemClick
 import player.phonograph.interfaces.PaletteColorHolder
 import player.phonograph.model.Song
 import player.phonograph.model.lyrics2.AbsLyrics
 import player.phonograph.model.lyrics2.LrcLyrics
 import player.phonograph.notification.ErrorNotification
+import player.phonograph.preferences.NowPlayingScreenPreferenceDialog
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.ui.fragments.AbsMusicServiceFragment
+import player.phonograph.ui.fragments.player.PlayerAlbumCoverFragment.Companion.VISIBILITY_ANIM_DURATION
 import player.phonograph.util.FavoriteUtil
 import player.phonograph.util.FavoriteUtil.toggleFavorite
 import player.phonograph.util.MusicUtil
 import player.phonograph.util.NavigationUtil.goToAlbum
 import player.phonograph.util.NavigationUtil.goToArtist
 import player.phonograph.util.NavigationUtil.openEqualizer
+import player.phonograph.util.menu.onSongMenuItemClick
 import util.phonograph.tageditor.AbsTagEditorActivity
 import util.phonograph.tageditor.SongTagEditorActivity
 
@@ -63,7 +65,12 @@ abstract class AbsPlayerFragment :
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        callbacks = try { context as Callbacks } catch (e: ClassCastException) { throw RuntimeException("${context.javaClass.simpleName} must implement ${Callbacks::class.java.simpleName}") }
+        callbacks =
+            try { context as Callbacks } catch (e: ClassCastException) {
+                throw RuntimeException(
+                    "${context.javaClass.simpleName} must implement ${Callbacks::class.java.simpleName}"
+                )
+            }
         handler = Handler(Looper.getMainLooper(), handlerCallbacks)
     }
 
@@ -125,13 +132,16 @@ abstract class AbsPlayerFragment :
     }
 
     override fun onMenuItemClick(item: MenuItem): Boolean {
-
         // toolbar
         when (item.itemId) {
             R.id.action_show_lyrics -> {
                 val lyricsPack = viewModel.lyricsList
                 if (lyricsPack != null) {
-                    LyricsDialog.create(lyricsPack, MusicPlayerRemote.currentSong, viewModel.currentLyrics ?: lyricsPack.getAvailableLyrics()!!)
+                    LyricsDialog.create(
+                        lyricsPack,
+                        MusicPlayerRemote.currentSong,
+                        viewModel.currentLyrics ?: lyricsPack.getAvailableLyrics()!!
+                    )
                         .show(requireActivity().supportFragmentManager, "LYRICS")
                 }
                 return true
@@ -155,6 +165,10 @@ abstract class AbsPlayerFragment :
             }
             R.id.action_equalizer -> {
                 openEqualizer(requireActivity())
+                return true
+            }
+            R.id.action_change_now_playing_screen -> {
+                NowPlayingScreenPreferenceDialog().show(parentFragmentManager, "NOW_PLAYING_SCREEN")
                 return true
             }
         }
@@ -197,7 +211,9 @@ abstract class AbsPlayerFragment :
         return false
     }
 
-    protected val backgroundCoroutine: CoroutineScope by lazy { CoroutineScope(Dispatchers.IO + exceptionHandler) }
+    protected val backgroundCoroutine: CoroutineScope by lazy {
+        CoroutineScope(Dispatchers.IO + exceptionHandler)
+    }
 
     protected val exceptionHandler by lazy {
         CoroutineExceptionHandler { _, throwable ->
@@ -270,12 +286,12 @@ abstract class AbsPlayerFragment :
         if (toolbar == null) return
         isToolbarShown = true
         toolbar.visibility = View.VISIBLE
-        toolbar.animate().alpha(1f).duration = PlayerAlbumCoverFragment.VISIBILITY_ANIM_DURATION.toLong()
+        toolbar.animate().alpha(1f).duration = VISIBILITY_ANIM_DURATION
     }
     private fun hideToolbar(toolbar: View?) {
         if (toolbar == null) return
         isToolbarShown = false
-        toolbar.animate().alpha(0f).setDuration(PlayerAlbumCoverFragment.VISIBILITY_ANIM_DURATION.toLong())
+        toolbar.animate().alpha(0f).setDuration(VISIBILITY_ANIM_DURATION)
             .withEndAction { toolbar.visibility = View.GONE }
     }
 
@@ -291,7 +307,10 @@ abstract class AbsPlayerFragment :
     protected val upNextAndQueueTime: String
         get() {
             val duration = MusicPlayerRemote.getQueueDurationMillis(MusicPlayerRemote.position)
-            return MusicUtil.buildInfoString(resources.getString(R.string.up_next), MusicUtil.getReadableDurationString(duration))
+            return MusicUtil.buildInfoString(
+                resources.getString(R.string.up_next),
+                MusicUtil.getReadableDurationString(duration)
+            )
         }
 
     abstract fun onShow()
@@ -305,7 +324,6 @@ abstract class AbsPlayerFragment :
     companion object {
         const val UPDATE_LYRICS = 1001
         const val LYRICS = "lyrics"
-        const val LYRICS_SOURCE = "source"
     }
 
     internal interface Impl {

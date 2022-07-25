@@ -3,6 +3,7 @@ package player.phonograph.ui.activities.base
 import android.animation.ArgbEvaluator
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
@@ -35,7 +36,6 @@ abstract class AbsSlidingMusicPanelActivity :
     SlidingUpPanelLayout.PanelSlideListener,
     AbsPlayerFragment.Callbacks {
 
-    private lateinit var currentNowPlayingScreen: NowPlayingScreen
     private lateinit var playerFragment: AbsPlayerFragment
     private lateinit var miniPlayerFragment: MiniPlayerFragment
 
@@ -53,13 +53,11 @@ abstract class AbsSlidingMusicPanelActivity :
         super.onCreate(savedInstanceState)
         setContentView(createContentView())
 
-        currentNowPlayingScreen = Setting.instance.nowPlayingScreen
-
         // add fragment
         supportFragmentManager.apply {
             beginTransaction().replace(
                 R.id.player_fragment_container,
-                when (currentNowPlayingScreen) {
+                when (Setting.instance.nowPlayingScreen) {
                     NowPlayingScreen.FLAT -> FlatPlayerFragment()
                     NowPlayingScreen.CARD -> CardPlayerFragment()
                 },
@@ -72,7 +70,9 @@ abstract class AbsSlidingMusicPanelActivity :
         miniPlayerFragment = supportFragmentManager.findFragmentById(R.id.mini_player_fragment) as MiniPlayerFragment
         miniPlayerFragment.requireView().setOnClickListener { expandPanel() }
 
-        playerColor = if (playerFragment.paletteColor != 0) playerFragment.paletteColor else getColor(R.color.defaultFooterColor)
+        playerColor =
+            if (playerFragment.paletteColor != 0) playerFragment.paletteColor
+            else getColor(R.color.defaultFooterColor)
         activityColor = primaryColor
 
         // set panel
@@ -93,13 +93,11 @@ abstract class AbsSlidingMusicPanelActivity :
                 })
                 layout.addPanelSlideListener(this)
             }
-    }
 
-    override fun onResume() {
-        super.onResume()
-        if (currentNowPlayingScreen != Setting.instance.nowPlayingScreen) {
-            postRecreate()
-        }
+        // preference
+        Setting.instance.registerOnSharedPreferenceChangedListener(
+            sharedPreferenceChangeListener
+        )
     }
 
     fun setAntiDragView(antiDragView: View?) {
@@ -126,7 +124,8 @@ abstract class AbsSlidingMusicPanelActivity :
     override fun onPanelSlide(panel: View, @FloatRange(from = 0.0, to = 1.0) slideOffset: Float) {
         setMiniPlayerAlphaProgress(slideOffset)
         colorChangeAnimator?.cancel()
-        val color: Int = argbEvaluator.evaluate(slideOffset, activityColor, playerFragment.paletteColor) as Int
+        val color: Int =
+            argbEvaluator.evaluate(slideOffset, activityColor, playerFragment.paletteColor) as Int
         super.setStatusbarColor(color)
         super.setNavigationbarColor(color)
     }
@@ -178,13 +177,20 @@ abstract class AbsSlidingMusicPanelActivity :
             slidingUpPanelLayout?.panelHeight = 0
             collapsePanel()
         } else {
-            slidingUpPanelLayout?.panelHeight = resources.getDimensionPixelSize(R.dimen.mini_player_height)
+            slidingUpPanelLayout?.panelHeight =
+                resources.getDimensionPixelSize(R.dimen.mini_player_height)
         }
     }
 
     protected fun wrapSlidingMusicPanel(view: View?): View {
-        @SuppressLint("InflateParams") val slidingMusicPanelLayout = layoutInflater.inflate(R.layout.sliding_music_panel_layout, null)
-        val contentContainer = slidingMusicPanelLayout.findViewById<ViewGroup>(R.id.content_container)
+        @SuppressLint("InflateParams")
+        val slidingMusicPanelLayout = layoutInflater.inflate(
+            R.layout.sliding_music_panel_layout,
+            null
+        )
+        val contentContainer = slidingMusicPanelLayout.findViewById<ViewGroup>(
+            R.id.content_container
+        )
         contentContainer.addView(view)
         //        getLayoutInflater().inflate(resId, contentContainer);
         return slidingMusicPanelLayout
@@ -229,6 +235,10 @@ abstract class AbsSlidingMusicPanelActivity :
         super.onDestroy()
         colorChangeAnimator?.cancel() // just in case
         colorChangeAnimator = null
+        // preference
+        Setting.instance.unregisterOnSharedPreferenceChangedListener(
+            sharedPreferenceChangeListener
+        )
     }
 
     override fun setTaskDescriptionColor(@ColorInt color: Int) {
@@ -241,6 +251,13 @@ abstract class AbsSlidingMusicPanelActivity :
             }
         }
     }
+
+    private val sharedPreferenceChangeListener =
+        SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
+            when (key) {
+                Setting.NOW_PLAYING_SCREEN_ID -> recreate()
+            }
+        }
 
     override val snackBarContainer: View get() = findViewById(R.id.content_container)
 
