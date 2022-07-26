@@ -11,6 +11,7 @@ fun createPhonographImageLoader(context: Context): ImageLoader {
     return ImageLoader.Builder(context)
         .allowHardware(false)
         .components {
+            add(AudioFileKeyer())
             add(AudioFileMapper())
             add(AudioFileFetcher.Factory())
         }
