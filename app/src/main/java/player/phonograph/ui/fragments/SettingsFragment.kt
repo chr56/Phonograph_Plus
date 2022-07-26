@@ -91,13 +91,13 @@ class SettingsFragment : PreferenceFragmentCompat() {
         super.onViewCreated(requireView(), savedInstanceState)
         listView.setPadding(0, 0, 0, 0)
         invalidateSettings()
-        Setting.instance.registerOnSharedPreferenceChangedListener(SharedPreferenceChangeListener())
+        Setting.instance.registerOnSharedPreferenceChangedListener(sharedPreferenceChangeListener)
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         Setting.instance.unregisterOnSharedPreferenceChangedListener(
-            SharedPreferenceChangeListener()
+            sharedPreferenceChangeListener
         )
     }
 
@@ -282,26 +282,22 @@ class SettingsFragment : PreferenceFragmentCompat() {
         }
     }
 
-    private inner class SharedPreferenceChangeListener :
-        SharedPreferences.OnSharedPreferenceChangeListener {
-
-        override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String?) {
-            when (key) {
-                Setting.NOW_PLAYING_SCREEN_ID -> updateNowPlayingScreenSummary()
-                Setting.CLASSIC_NOTIFICATION ->
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                        findPreference<Preference>("colored_notification")!!.isEnabled =
-                            sharedPreferences.getBoolean(key, false)
-                    }
-                Setting.BROADCAST_SYNCHRONIZED_LYRICS ->
-                    // clear lyrics displaying on the statusbar now
-                    Handler(Looper.getMainLooper()).postDelayed(
-                        {
-                            player.phonograph.App.instance.lyricsService.stopLyric()
-                        },
-                        1000
-                    )
-            }
+    private val sharedPreferenceChangeListener = SharedPreferences.OnSharedPreferenceChangeListener { sharedPreferences, key ->
+        when (key) {
+            Setting.NOW_PLAYING_SCREEN_ID -> updateNowPlayingScreenSummary()
+            Setting.CLASSIC_NOTIFICATION ->
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    findPreference<Preference>("colored_notification")!!.isEnabled =
+                        sharedPreferences.getBoolean(key, false)
+                }
+            Setting.BROADCAST_SYNCHRONIZED_LYRICS ->
+                // clear lyrics displaying on the statusbar now
+                Handler(Looper.getMainLooper()).postDelayed(
+                    {
+                        player.phonograph.App.instance.lyricsService.stopLyric()
+                    },
+                    1000
+                )
         }
     }
 }
