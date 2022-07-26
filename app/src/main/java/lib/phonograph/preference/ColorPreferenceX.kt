@@ -1,72 +1,68 @@
 /*
  * Copyright (c) 2022 chr_56 & Abou Zeid (kabouzeid) (original author)
  */
+package lib.phonograph.preference
 
-package lib.phonograph.preference;
-
-import android.content.Context;
-import android.util.AttributeSet;
-import android.view.View;
-
-import androidx.preference.Preference;
-import androidx.preference.PreferenceViewHolder;
-
-import player.phonograph.R;
-import lib.phonograph.view.BorderCircleView;
+import android.content.Context
+import android.util.AttributeSet
+import android.view.View
+import androidx.preference.Preference
+import androidx.preference.PreferenceViewHolder
+import lib.phonograph.view.BorderCircleView
+import player.phonograph.R
 
 /**
  * @author Aidan Follestad (afollestad)
  */
-public class ColorPreferenceX extends Preference {
+class ColorPreferenceX : Preference {
 
-    private View mView;
-    private int color;
-    private int border;
-
-    public ColorPreferenceX(Context context) {
-        this(context, null, 0);
-        init(context, null);
+    constructor(context: Context?) : this(context, null, 0) {
+        init(context, null)
     }
 
-    public ColorPreferenceX(Context context, AttributeSet attrs) {
-        this(context, attrs, 0);
-        init(context, attrs);
+    constructor(context: Context?, attrs: AttributeSet?) : this(context, attrs, 0) {
+        init(context, attrs)
     }
 
-    public ColorPreferenceX(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-        init(context, attrs);
-
+    constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(
+        context!!,
+        attrs,
+        defStyleAttr
+    ) {
+        init(context, attrs)
     }
 
-    private void init(Context context, AttributeSet attrs) {
-        setLayoutResource(R.layout.x_preference);
-        setWidgetLayoutResource(R.layout.x_preference_color);
-        setPersistent(false);
+    private fun init(context: Context?, attrs: AttributeSet?) {
+        layoutResource = R.layout.x_preference
+        widgetLayoutResource = R.layout.x_preference_color
+        isPersistent = false
     }
 
-    @Override
-    public void onBindViewHolder(PreferenceViewHolder holder) {
-        super.onBindViewHolder(holder);
-        mView = holder.itemView;
-        invalidateColor();
+    private var mView: View? = null
+
+    private var color = 0
+    private var border = 0
+
+    override fun onBindViewHolder(holder: PreferenceViewHolder) {
+        super.onBindViewHolder(holder)
+        mView = holder.itemView
+        invalidateColor()
     }
 
-    public void setColor(int color, int border) {
-        this.color = color;
-        this.border = border;
-        invalidateColor();
+    fun setColor(color: Int, border: Int) {
+        this.color = color
+        this.border = border
+        invalidateColor()
     }
 
-    private void invalidateColor() {
-        if (mView != null) {
-            BorderCircleView circle = (BorderCircleView) mView.findViewById(R.id.circle);
-            if (this.color != 0) {
-                circle.setVisibility(View.VISIBLE);
-                circle.setBackgroundColor(color);
-                circle.setBorderColor(border);
+    private fun invalidateColor() {
+        mView?.findViewById<BorderCircleView>(R.id.circle)?.apply {
+            if (color != 0) {
+                visibility = View.VISIBLE
+                setBackgroundColor(color)
+                setBorderColor(border)
             } else {
-                circle.setVisibility(View.GONE);
+                visibility = View.GONE
             }
         }
     }

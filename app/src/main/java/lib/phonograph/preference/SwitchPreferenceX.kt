@@ -1,46 +1,41 @@
 /*
  * Copyright (c) 2022 chr_56 & Abou Zeid (kabouzeid) (original author)
  */
+package lib.phonograph.preference
 
-package lib.phonograph.preference;
-
-import android.annotation.TargetApi;
-import android.content.Context;
-import android.os.Build;
-import android.util.AttributeSet;
-
-import androidx.preference.CheckBoxPreference;
-
-import player.phonograph.R;
+import android.annotation.TargetApi
+import android.content.Context
+import android.os.Build
+import android.util.AttributeSet
+import androidx.preference.CheckBoxPreference
+import player.phonograph.R
 
 /**
  * @author Aidan Follestad (afollestad)
  */
-public class SwitchPreferenceX extends CheckBoxPreference {
-
-    public SwitchPreferenceX(Context context) {
-        super(context);
-        init(context, null);
+class SwitchPreferenceX : CheckBoxPreference {
+    constructor(context: Context) : super(context) {
+        init(context, null)
     }
 
-    public SwitchPreferenceX(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        init(context, attrs);
+    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
+        init(context, attrs)
     }
 
-    public SwitchPreferenceX(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-        init(context, attrs);
+    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
+        init(context, attrs)
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    public SwitchPreferenceX(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        super(context, attrs, defStyleAttr, defStyleRes);
-        init(context, attrs);
+    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int) : super(context,
+        attrs,
+        defStyleAttr,
+        defStyleRes) {
+        init(context, attrs)
     }
 
-    private void init(Context context, AttributeSet attrs) {
-        setLayoutResource(R.layout.x_preference);
-        setWidgetLayoutResource(R.layout.x_preference_switch);
+    private fun init(context: Context, attrs: AttributeSet?) {
+        layoutResource = R.layout.x_preference
+        widgetLayoutResource = R.layout.x_preference_switch
     }
 }
