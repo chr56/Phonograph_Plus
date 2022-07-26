@@ -23,5 +23,5 @@ abstract class PhonographColoredTarget : ColoredTarget() {
     abstract fun onReady(drawable: Drawable, color: Int)
 
     protected open val defaultFooterColor: Int =
-        Util.resolveColor(App.instance, R.attr.defaultFooterColor)
+        App.instance.getColor(R.color.defaultFooterColor)
 }
