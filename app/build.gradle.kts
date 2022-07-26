@@ -186,6 +186,7 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
+
 }
 
 /**
@@ -232,6 +233,8 @@ dependencies {
     implementation(Deps.retrofit2)
     implementation(Deps.retrofit2_converter_gson)
     implementation(Deps.gson)
+
+    implementation(Deps.coil)
 
     implementation(Deps.glide)
     annotationProcessor(Deps.glide_compiler)
