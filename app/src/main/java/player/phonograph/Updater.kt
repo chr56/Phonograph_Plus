@@ -119,16 +119,13 @@ object Updater {
     }
 
     private fun logFails(call: Call) =
-        Log.w(TAG, "Fail to check new version! callUri = ${call.request().url()}")
+        Log.w(TAG, "Fail to check new version! callUri = ${call.request().url}")
 
     private fun logIgnored(call: Call) =
-        Log.i(
-            TAG,
-            "Succeed to check new version, but it was blocked by an early successful call! callUri = ${call.request().url()}"
-        )
+        Log.i(TAG, "Succeed to check new version, but it was blocked by an early successful call! callUri = ${call.request().url}")
 
     private fun logSucceed(call: Call) =
-        Log.i(TAG, "Succeed to check new version! callUri = ${call.request().url()}")
+        Log.i(TAG, "Succeed to check new version! callUri = ${call.request().url}")
 
     var blockLock: Boolean = false
     var blockLockHolder: String = ""
@@ -140,12 +137,12 @@ object Updater {
         response: Response
     ) {
         blockLock = true // block other successful call
-        blockLockHolder = call.request().url().host()
-        if (DEBUG) Log.v(TAG, "blockLockHolder:$blockLockHolder")
+        blockLockHolder = call.request().url.host
+        if (DEBUG) Log.d(TAG, "blockLockHolder:$blockLockHolder")
 
         logSucceed(call)
 
-        val responseBody = response.body() ?: return
+        val responseBody = response.body ?: return
 
         var versionJson: VersionJson? = null
         try {
