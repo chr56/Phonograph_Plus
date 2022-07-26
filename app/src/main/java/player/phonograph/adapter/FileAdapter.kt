@@ -76,7 +76,11 @@ class FileAdapter(
                 title.text = item.name
                 text.text = when (item) {
                     is FileEntity.File -> formatFileSize(context, item.size)
-                    is FileEntity.Folder -> context.resources.getQuantityString(R.plurals.x_songs, item.songCount, item.songCount)
+                    is FileEntity.Folder -> context.resources.getQuantityString(
+                        R.plurals.x_songs,
+                        item.songCount,
+                        item.songCount
+                    )
                 }
 
                 shortSeparator.visibility = if (position == dataSet.size - 1) View.GONE else View.VISIBLE
@@ -108,16 +112,22 @@ class FileAdapter(
         }
 
         private fun setImage(image: ImageView, item: FileEntity) {
-            if (loadCover) {
-                if (item is FileEntity.File) {
+            if (item is FileEntity.File) {
+                if (loadCover) {
                     SongGlideRequest.Builder.from(Glide.with(image), item.linkedSong)
                         .checkIgnoreMediaStore(image.context)
                         .asBitmap().build()
                         .into(image)
+                } else {
+                    image.setImageResource(
+                        R.drawable.ic_file_music_white_24dp
+                    )
+                    val iconColor = Util.resolveColor(context, R.attr.iconColor)
+                    image.setColorFilter(iconColor, PorterDuff.Mode.SRC_IN)
                 }
             } else {
                 image.setImageResource(
-                    if (item is FileEntity.File) R.drawable.ic_file_music_white_24dp else R.drawable.ic_folder_white_24dp
+                    R.drawable.ic_folder_white_24dp
                 )
                 val iconColor = Util.resolveColor(context, R.attr.iconColor)
                 image.setColorFilter(iconColor, PorterDuff.Mode.SRC_IN)
@@ -147,7 +157,11 @@ class FileAdapter(
                         }
                         R.id.action_set_as_start_directory -> {
                             Setting.instance().startDirectory = File(path)
-                            Toast.makeText(context, String.format(context.getString(R.string.new_start_directory), path), Toast.LENGTH_SHORT).show()
+                            Toast.makeText(
+                                context,
+                                String.format(context.getString(R.string.new_start_directory), path),
+                                Toast.LENGTH_SHORT
+                            ).show()
                             true
                         }
                         R.id.action_scan -> {
