@@ -147,11 +147,13 @@ class FilesPage : AbsPage() {
 
         popup.showFileOption = true
         popup.useLegacyListFiles = model.useLegacyListFile
+        popup.showFilesImages = model.showFilesImages
     }
 
     private fun dismissPopup(popup: ListOptionsPopup) {
         Setting.instance.fileSortMode = FileSortMode(popup.sortRef, popup.revert)
         model.useLegacyListFile = popup.useLegacyListFiles
+        model.showFilesImages = popup.showFilesImages
         reload()
     }
 

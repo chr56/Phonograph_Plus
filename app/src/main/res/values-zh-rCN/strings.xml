@@ -389,6 +389,7 @@
     <string name="pref_title_keep_playing_queue_intact">保护播放列表不被肆意更改</string>
     <string name="pref_summary_keep_playing_queue_intact">启用后，Phonograph Plus 将尽可能保持播放列表而不会被意外清空</string>
     <string name="change_now_playing_screen">更改正在播放界面</string>
+    <string name="load_images_for_files">加载封面</string>
     <plurals name="x_songs">
         <item quantity="other">%1$d 首</item>
     </plurals>

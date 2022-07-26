@@ -119,6 +119,7 @@ class ListOptionsPopup private constructor(
             // checkbox color
             this.actionColoredFooters.buttonTintList = widgetColor
             this.useLegacyListFiles.buttonTintList = widgetColor
+            this.showFileImagines.buttonTintList = widgetColor
             // radioButton
             for (i in 0 until this.groupGridSize.childCount) (this.groupGridSize.getChildAt(i) as RadioButton).buttonTintList =
                 widgetColor
@@ -212,8 +213,9 @@ class ListOptionsPopup private constructor(
             viewBinding.groupGridSize.visibility = visibility
             viewBinding.titleGridSize.visibility = visibility
             viewBinding.groupGridSize.clearCheck()
-            if (max > 0)
+            if (max > 0) {
                 for (i in 0 until max) viewBinding.groupGridSize.getChildAt(i).visibility = VISIBLE
+            }
         }
 
     var colorFooter: Boolean
@@ -237,10 +239,17 @@ class ListOptionsPopup private constructor(
             viewBinding.useLegacyListFiles.isChecked = value
         }
 
+    var showFilesImages: Boolean
+        get() = viewBinding.showFileImagines.isChecked
+        set(value) {
+            viewBinding.showFileImagines.isChecked = value
+        }
+
     var showFileOption: Boolean
         get() = viewBinding.useLegacyListFiles.visibility == VISIBLE
         set(value) {
             viewBinding.useLegacyListFiles.visibility = if (value) VISIBLE else GONE
+            viewBinding.showFileImagines.visibility = if (value) VISIBLE else GONE
         }
     /*
     * Utils

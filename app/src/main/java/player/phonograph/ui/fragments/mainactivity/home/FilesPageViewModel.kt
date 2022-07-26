@@ -45,6 +45,10 @@ class FilesPageViewModel : ViewModel() {
         get() = Setting.instance.useLegacyListFilesImpl
         set(value) { Setting.instance.useLegacyListFilesImpl = value }
 
+    var showFilesImages: Boolean
+        get() = Setting.instance.showFileImages
+        set(value) { Setting.instance.showFileImages = value }
+
     @Synchronized
     private fun listFilesMediaStore(
         location: Location,

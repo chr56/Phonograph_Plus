@@ -404,6 +404,7 @@
     <string name="pref_title_keep_playing_queue_intact">Please do NOT touch my playing queue arbitrarily.</string>
     <string name="pref_summary_keep_playing_queue_intact">If enabled, Phonograph Plus would not try to clear playing queue unless you ask so, your playing queue would be kept intact.</string>
     <string name="change_now_playing_screen">Change now playing screen</string>
+    <string name="load_images_for_files">Load images for files</string>
     <plurals name="x_songs">
         <item quantity="one">%1$d song</item>
         <item quantity="other">%1$d songs</item>
