@@ -9,31 +9,34 @@ import android.graphics.PorterDuff
 import android.media.MediaScannerConnection
 import android.text.format.Formatter.formatFileSize
 import android.view.*
+import android.widget.ImageView
 import android.widget.PopupMenu
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView.SectionedAdapter
 import java.io.File
 import kotlinx.coroutines.*
-import player.phonograph.adapter.base.MultiSelectionCabController
 import player.phonograph.R
 import player.phonograph.adapter.base.MultiSelectAdapter
+import player.phonograph.adapter.base.MultiSelectionCabController
 import player.phonograph.databinding.ItemListBinding
-import player.phonograph.util.menu.onMultiSongMenuItemClick
-import player.phonograph.util.menu.onSongMenuItemClick
+import player.phonograph.glide.SongGlideRequest
 import player.phonograph.mediastore.MediaStoreUtil
 import player.phonograph.misc.UpdateToastMediaScannerCompletionListener
 import player.phonograph.model.FileEntity
 import player.phonograph.settings.Setting
 import player.phonograph.util.BlacklistUtil
+import player.phonograph.util.menu.onMultiSongMenuItemClick
+import player.phonograph.util.menu.onSongMenuItemClick
 import util.mddesign.util.Util
 
 class FileAdapter(
     activity: AppCompatActivity,
     dataset: MutableList<FileEntity>,
     private val callback: (FileEntity) -> Unit,
-    cabController: MultiSelectionCabController?,
+    cabController: MultiSelectionCabController?
 ) : MultiSelectAdapter<FileAdapter.ViewHolder, FileEntity>(activity, cabController), SectionedAdapter {
     var dataSet: MutableList<FileEntity> = dataset
         @SuppressLint("NotifyDataSetChanged")
@@ -65,7 +68,7 @@ class FileAdapter(
     inner class ViewHolder(var binding: ItemListBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(
             item: FileEntity,
-            position: Int,
+            position: Int
         ) {
             with(binding) {
                 title.text = item.name
@@ -76,9 +79,7 @@ class FileAdapter(
 
                 shortSeparator.visibility = if (position == dataSet.size - 1) View.GONE else View.VISIBLE
 
-                val iconColor = Util.resolveColor(context, R.attr.iconColor)
-                image.setColorFilter(iconColor, PorterDuff.Mode.SRC_IN)
-                image.setImageResource(if (item is FileEntity.File) R.drawable.ic_file_music_white_24dp else R.drawable.ic_folder_white_24dp)
+                setImage(image, item)
             }
             binding.menu.setOnClickListener {
                 PopupMenu(context, binding.menu)
@@ -92,16 +93,36 @@ class FileAdapter(
             }
 
             itemView.setOnClickListener {
-                if (isInQuickSelectMode)
+                if (isInQuickSelectMode) {
                     toggleChecked(bindingAdapterPosition)
-                else
+                } else {
                     callback(item)
+                }
             }
             itemView.setOnLongClickListener {
                 toggleChecked(bindingAdapterPosition)
             }
             itemView.isActivated = isChecked(item)
         }
+
+        private fun setImage(image: ImageView, item: FileEntity) {
+            if (loadCover) {
+                if (item is FileEntity.File) {
+                    SongGlideRequest.Builder.from(Glide.with(image), item.linkedSong)
+                        .checkIgnoreMediaStore(image.context)
+                        .asBitmap().build()
+                        .into(image)
+                }
+            } else {
+                image.setImageResource(
+                    if (item is FileEntity.File) R.drawable.ic_file_music_white_24dp else R.drawable.ic_folder_white_24dp
+                )
+                val iconColor = Util.resolveColor(context, R.attr.iconColor)
+                image.setColorFilter(iconColor, PorterDuff.Mode.SRC_IN)
+            }
+        }
+
+        var loadCover: Boolean = false
 
         private fun onMenuClick(item: MenuItem, fileItem: FileEntity): Boolean {
             context as AppCompatActivity
@@ -115,9 +136,12 @@ class FileAdapter(
                     return when (val itemId = item.itemId) {
                         R.id.action_play_next, R.id.action_add_to_current_playing, R.id.action_add_to_playlist, R.id.action_delete_from_device -> {
                             CoroutineScope(SupervisorJob()).launch(Dispatchers.IO) {
-                                val songs = MediaStoreUtil.searchSongFiles(context, fileItem.location)
+                                val songs =
+                                    MediaStoreUtil.searchSongFiles(context, fileItem.location)
                                     ?.mapNotNull { if (it is FileEntity.File) it.linkedSong else null } ?: return@launch
-                                withContext(Dispatchers.Main) { onMultiSongMenuItemClick(context, songs, itemId) }
+                                withContext(Dispatchers.Main) {
+                                    onMultiSongMenuItemClick(context, songs, itemId)
+                                }
                             }
                             true
                         }
