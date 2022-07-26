@@ -248,6 +248,8 @@ class Setting(context: Context) {
     var songColoredFooters by BooleanPref(SONG_COLORED_FOOTERS, true)
     var artistColoredFooters by BooleanPref(ARTIST_COLORED_FOOTERS, true)
 
+    var showFileImages by BooleanPref(SHOW_FILE_IMAGINES, false)
+
     // SleepTimer
     var lastSleepTimerValue: Int by IntPref(LAST_SLEEP_TIMER_VALUE, 30)
     var nextSleepTimerElapsedRealTime: Long by LongPref(NEXT_SLEEP_TIMER_ELAPSED_REALTIME, -1L)
@@ -347,6 +349,7 @@ class Setting(context: Context) {
         private const val SONG_COLORED_FOOTERS = "song_colored_footers"
         private const val ARTIST_COLORED_FOOTERS = "artist_colored_footers"
         private const val ALBUM_ARTIST_COLORED_FOOTERS = "album_artist_colored_footers"
+        private const val SHOW_FILE_IMAGINES = "show_file_imagines"
 
         // SleepTimer
         private const val LAST_SLEEP_TIMER_VALUE = "last_sleep_timer_value"

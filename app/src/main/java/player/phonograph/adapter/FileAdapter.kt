@@ -122,7 +122,7 @@ class FileAdapter(
             }
         }
 
-        var loadCover: Boolean = false
+        var loadCover: Boolean = Setting.instance.showFileImages
 
         private fun onMenuClick(item: MenuItem, fileItem: FileEntity): Boolean {
             context as AppCompatActivity
