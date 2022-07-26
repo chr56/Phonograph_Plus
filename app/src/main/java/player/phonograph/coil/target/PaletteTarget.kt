@@ -10,10 +10,12 @@ import android.graphics.drawable.Drawable
 import android.util.Log
 import androidx.palette.graphics.Palette
 import coil.target.Target
+import kotlinx.coroutines.Deferred
+import player.phonograph.coil.PaletteFactory.toPaletteAsync
 
 abstract class PaletteTarget : Target {
 
-    var palette: Palette? = null
+    var palette: Deferred<Palette>? = null
     var bitmap: Bitmap? = null
 
     override fun onStart(placeholder: Drawable?) {
@@ -22,7 +24,7 @@ abstract class PaletteTarget : Target {
     override fun onSuccess(result: Drawable) {
         if (result is BitmapDrawable) {
             bitmap = result.bitmap
-            palette = Palette.from(result.bitmap).generate()
+            palette = result.bitmap.toPaletteAsync()
         } else {
             Log.v("Palette", "Not Bitmap drawable: $result")
         }

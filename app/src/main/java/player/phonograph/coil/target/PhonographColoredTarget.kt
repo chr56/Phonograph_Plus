@@ -6,21 +6,20 @@ package player.phonograph.coil.target
 
 import android.graphics.drawable.Drawable
 import androidx.palette.graphics.Palette
+import kotlinx.coroutines.Deferred
 import player.phonograph.App
 import player.phonograph.R
-import player.phonograph.util.PhonographColorUtil
-import util.mddesign.util.Util
+import player.phonograph.coil.PaletteFactory.getColor
 
 abstract class PhonographColoredTarget : ColoredTarget() {
 
-    override fun onReady(drawable: Drawable, palette: Palette?) {
-        onReady(drawable, PhonographColorUtil.getColor(palette, defaultFooterColor))
+    override fun onReady(drawable: Drawable, palette: Deferred<Palette>?) {
+        onResourcesReady(drawable)
+        palette?.getColor(defaultFooterColor, ::onColorReady)
     }
 
-    /**
-     * more specific
-     */
-    abstract fun onReady(drawable: Drawable, color: Int)
+    abstract fun onResourcesReady(drawable: Drawable)
+    abstract fun onColorReady(color: Int)
 
     protected open val defaultFooterColor: Int =
         App.instance.getColor(R.color.defaultFooterColor)

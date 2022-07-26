@@ -6,6 +6,7 @@ package player.phonograph.coil.target
 
 import android.graphics.drawable.Drawable
 import androidx.palette.graphics.Palette
+import kotlinx.coroutines.Deferred
 
 abstract class ColoredTarget : PaletteTarget() {
 
@@ -19,5 +20,5 @@ abstract class ColoredTarget : PaletteTarget() {
      * @param drawable fetched result by coil
      * @param palette null if drawable can not generate to palette
      */
-    abstract fun onReady(drawable: Drawable, palette: Palette?)
+    abstract fun onReady(drawable: Drawable, palette: Deferred<Palette>?)
 }
