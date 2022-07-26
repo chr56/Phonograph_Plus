@@ -65,6 +65,8 @@ class FileAdapter(
         onMultiSongMenuItemClick(context as AppCompatActivity, songs, menuItem.itemId)
     }
 
+    var loadCover: Boolean = Setting.instance.showFileImages
+
     inner class ViewHolder(var binding: ItemListBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(
             item: FileEntity,
@@ -122,8 +124,6 @@ class FileAdapter(
             }
         }
 
-        var loadCover: Boolean = Setting.instance.showFileImages
-
         private fun onMenuClick(item: MenuItem, fileItem: FileEntity): Boolean {
             context as AppCompatActivity
             return when (fileItem) {
@@ -138,7 +138,7 @@ class FileAdapter(
                             CoroutineScope(SupervisorJob()).launch(Dispatchers.IO) {
                                 val songs =
                                     MediaStoreUtil.searchSongFiles(context, fileItem.location)
-                                    ?.mapNotNull { if (it is FileEntity.File) it.linkedSong else null } ?: return@launch
+                                        ?.mapNotNull { if (it is FileEntity.File) it.linkedSong else null } ?: return@launch
                                 withContext(Dispatchers.Main) {
                                     onMultiSongMenuItemClick(context, songs, itemId)
                                 }

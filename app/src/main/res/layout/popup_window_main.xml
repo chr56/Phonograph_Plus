@@ -227,19 +227,19 @@
             android:visibility="gone" />
 
         <CheckBox
-            android:id="@+id/use_legacy_list_Files"
-            android:checked="false"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="@string/use_legacy_list_Files"
-            android:visibility="gone" />
-
-        <CheckBox
             android:id="@+id/show_file_imagines"
             android:checked="false"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:text="@string/load_images_for_files"
+            android:visibility="gone" />
+
+        <CheckBox
+            android:id="@+id/use_legacy_list_Files"
+            android:checked="false"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="@string/use_legacy_list_Files"
             android:visibility="gone" />
 
     </LinearLayout>

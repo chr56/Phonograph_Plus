@@ -153,7 +153,11 @@ class FilesPage : AbsPage() {
     private fun dismissPopup(popup: ListOptionsPopup) {
         Setting.instance.fileSortMode = FileSortMode(popup.sortRef, popup.revert)
         model.useLegacyListFile = popup.useLegacyListFiles
-        model.showFilesImages = popup.showFilesImages
+        if (model.showFilesImages != popup.showFilesImages) {
+            model.showFilesImages = popup.showFilesImages
+            adapter.loadCover = model.showFilesImages
+            adapter.notifyDataSetChanged()
+        }
         reload()
     }
 
@@ -213,13 +217,18 @@ class FilesPage : AbsPage() {
             adapter.dataSet = model.currentFileList.toMutableList()
             binding.header.apply {
                 location = model.currentLocation
-                layoutManager.scrollHorizontallyBy(binding.header.width / 4, recyclerView.Recycler(), RecyclerView.State())
+                layoutManager.scrollHorizontallyBy(
+                    binding.header.width / 4,
+                    recyclerView.Recycler(),
+                    RecyclerView.State()
+                )
             }
             binding.buttonBack.setImageDrawable(
-                if (model.currentLocation.parent == null)
+                if (model.currentLocation.parent == null) {
                     getDrawable(R.drawable.ic_library_music_white_24dp)
-                else
+                } else {
                     getDrawable(R.drawable.icon_back_white)
+                }
             )
             binding.container.isRefreshing = false
         }
