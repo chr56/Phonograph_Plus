@@ -12,7 +12,6 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
-import androidx.core.view.get
 import androidx.drawerlayout.widget.DrawerLayout
 import com.bumptech.glide.Glide
 import com.github.chr56.android.menu_dsl.attach
@@ -39,6 +38,7 @@ import player.phonograph.mediastore.AlbumLoader
 import player.phonograph.mediastore.ArtistLoader
 import player.phonograph.mediastore.PlaylistSongLoader
 import player.phonograph.mediastore.SongLoader
+import player.phonograph.mediastore.SongLoader.getAllSongs
 import player.phonograph.misc.SAFCallbackHandlerActivity
 import player.phonograph.misc.SafLauncher
 import player.phonograph.model.Song
@@ -140,7 +140,7 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
 
     private fun setUpDrawer() {
         attach(this, drawerBinding.navigationView.menu) {
-            val context = this@MainActivity
+            val activity = this@MainActivity
 
             val groupIds = intArrayOf(0, 1, 2, 3)
 
@@ -148,33 +148,70 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
                 groupId = groupIds[1]
                 itemId = R.id.action_shuffle_all
                 icon = getTintedDrawable(R.drawable.ic_shuffle_white_24dp, textColorPrimary)
-                titleRes(R.string.action_shuffle_all, context)
+                titleRes(R.string.action_shuffle_all, activity)
+                onClick {
+                    Handler(Looper.getMainLooper()).postDelayed({
+                        MusicPlayerRemote.openAndShuffleQueue(getAllSongs(activity), true)
+                    }, 350)
+                }
             }
             menuItem {
                 groupId = groupIds[1]
                 itemId = R.id.action_scan
                 icon = getTintedDrawable(R.drawable.ic_scanner_white_24dp, textColorPrimary)
-                titleRes(R.string.scan_media, context)
+                titleRes(R.string.scan_media, activity)
+                onClick {
+                    Handler(Looper.getMainLooper()).postDelayed({
+                        ScanMediaFolderDialog().show(supportFragmentManager, "scan_media")
+                    }, 200)
+                }
             }
 
             menuItem {
                 groupId = groupIds[2]
                 itemId = R.id.theme_toggle
                 icon = getTintedDrawable(R.drawable.ic_theme_switch_white_24dp, textColorPrimary)
-                titleRes(R.string.theme_switch, context)
+                titleRes(R.string.theme_switch, activity)
+                onClick {
+                    Handler(Looper.getMainLooper()).postDelayed({
+                        val themeSetting = Setting.instance.generalTheme
+
+                        if (themeSetting == R.style.Theme_Phonograph_Auto) {
+                            Toast.makeText(activity, R.string.auto_mode_on, Toast.LENGTH_SHORT).show()
+                        } else {
+                            when (themeSetting) {
+                                R.style.Theme_Phonograph_Light ->
+                                    Setting.instance.setGeneralTheme("dark")
+                                R.style.Theme_Phonograph_Dark, R.style.Theme_Phonograph_Black ->
+                                    Setting.instance.setGeneralTheme("light")
+                            }
+                            recreate()
+                        }
+                    }, 200)
+                }
             }
 
             menuItem {
                 groupId = groupIds[3]
                 itemId = R.id.nav_settings
                 icon = getTintedDrawable(R.drawable.ic_settings_white_24dp, textColorPrimary)
-                titleRes(R.string.action_settings, context)
+                titleRes(R.string.action_settings, activity)
+                onClick {
+                    Handler(Looper.getMainLooper()).postDelayed({
+                        startActivity(Intent(activity, SettingsActivity::class.java))
+                    }, 200)
+                }
             }
             menuItem {
                 groupId = groupIds[3]
                 itemId = R.id.nav_about
                 icon = getTintedDrawable(R.drawable.ic_help_white_24dp, textColorPrimary)
-                titleRes(R.string.action_about, context)
+                titleRes(R.string.action_about, activity)
+                onClick {
+                    Handler(Looper.getMainLooper()).postDelayed({
+                        startActivity(Intent(activity, AboutActivity::class.java))
+                    }, 200)
+                }
             }
 
             for (id in groupIds) {
@@ -200,42 +237,8 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
             setItemTextColors(this, textColorPrimary, accentColor)
         }
 
-        drawerBinding.navigationView.setNavigationItemSelectedListener { menuItem: MenuItem ->
+        drawerBinding.navigationView.setNavigationItemSelectedListener {
             drawerBinding.drawerLayout.closeDrawers()
-
-            when (menuItem.itemId) {
-                R.id.action_shuffle_all -> Handler(Looper.getMainLooper()).postDelayed({
-                    MusicPlayerRemote.openAndShuffleQueue(SongLoader.getAllSongs(this), true)
-                }, 350)
-                R.id.action_scan -> Handler(Looper.getMainLooper()).postDelayed({
-                    ScanMediaFolderDialog().show(
-                        supportFragmentManager,
-                        "SCAN_MEDIA_FOLDER_CHOOSER"
-                    )
-                }, 200)
-                R.id.theme_toggle -> Handler(Looper.getMainLooper()).postDelayed({
-                    val themeSetting = Setting.instance.generalTheme
-
-                    if (themeSetting == R.style.Theme_Phonograph_Auto) {
-                        Toast.makeText(this, R.string.auto_mode_on, Toast.LENGTH_SHORT).show()
-                    } else {
-                        when (themeSetting) {
-                            R.style.Theme_Phonograph_Light ->
-                                Setting.instance.setGeneralTheme("dark")
-                            R.style.Theme_Phonograph_Dark, R.style.Theme_Phonograph_Black ->
-                                Setting.instance.setGeneralTheme("light")
-                        }
-                        recreate()
-                    }
-                }, 200)
-
-                R.id.nav_settings -> Handler(Looper.getMainLooper()).postDelayed({
-                    startActivity(Intent(this, SettingsActivity::class.java))
-                }, 200)
-                R.id.nav_about -> Handler(Looper.getMainLooper()).postDelayed({
-                    startActivity(Intent(this, AboutActivity::class.java))
-                }, 200)
-            }
             true
         }
     }
