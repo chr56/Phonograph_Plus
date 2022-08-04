@@ -49,7 +49,6 @@ import player.phonograph.service.queue.ShuffleMode
 import player.phonograph.settings.Setting
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
 import player.phonograph.ui.activities.intro.AppIntroActivity
-import player.phonograph.ui.fragments.mainactivity.AbsMainActivityFragment
 import player.phonograph.ui.fragments.mainactivity.home.HomeFragment
 import player.phonograph.util.ImageUtil.getTintedDrawable
 import player.phonograph.util.MusicUtil
@@ -141,14 +140,14 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
 
             val groupIds = intArrayOf(0, 1, 2, 3)
 
-            for (tab in Setting.instance.homeTabConfig) {
+            for ((page, tab) in Setting.instance.homeTabConfig.withIndex()) {
                 menuItem {
                     groupId = groupIds[0]
                     icon = PAGERS.getTintedIcon(tab, textColorPrimary, activity)
                     title = PAGERS.getDisplayName(tab, activity)
                     onClick {
                         Handler(Looper.getMainLooper()).postDelayed({
-                            // todo
+                            currentFragment.requestSelectPage(page)
                         }, 150)
                     }
                 }
@@ -457,6 +456,6 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
 
     interface MainActivityFragmentCallbacks {
         fun handleBackPress(): Boolean
-        fun requestSelectPage(page: Int) {}
+        fun requestSelectPage(page: Int)
     }
 }
