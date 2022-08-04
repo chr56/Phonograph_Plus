@@ -1,11 +1,11 @@
-**Preview 2022.7.25**
+**Beta01 2022.8.4**
 
 **CN**
 与前一预览版相比:
-- 新增 支持在`文件夹`视图页面上加载歌曲文件封面
-- 开发 清理代码
+- 移除 旧的`文件夹`视图
+- 变更 更新抽屉
 
 **EN**
 Compared to the previous preview:
-- New: support to load song's images in `Folders` Page
-- Development: cleanup code
+- Remove: the legacy `Folders` Page
+- Change: update drawers 
