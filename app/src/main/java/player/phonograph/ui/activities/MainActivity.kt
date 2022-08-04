@@ -12,8 +12,11 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.view.get
 import androidx.drawerlayout.widget.DrawerLayout
 import com.bumptech.glide.Glide
+import com.github.chr56.android.menu_dsl.attach
+import com.github.chr56.android.menu_dsl.menuItem
 import com.sothree.slidinguppanel.SlidingUpPanelLayout
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -48,9 +51,11 @@ import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
 import player.phonograph.ui.activities.intro.AppIntroActivity
 import player.phonograph.ui.fragments.mainactivity.AbsMainActivityFragment
 import player.phonograph.ui.fragments.mainactivity.home.HomeFragment
+import player.phonograph.util.ImageUtil.getTintedDrawable
 import player.phonograph.util.MusicUtil
 import util.mdcolor.pref.ThemeColor
-import util.mddesign.util.NavigationViewUtil
+import util.mddesign.util.NavigationViewUtil.setItemIconColors
+import util.mddesign.util.NavigationViewUtil.setItemTextColors
 import util.mddesign.util.Util as MDthemerUtil
 
 class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity {
@@ -75,7 +80,7 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
         setUpDrawer()
 
         if (savedInstanceState == null) {
-            setCurrentFragment(HomeFragment.newInstance())
+            setBasicFragment(HomeFragment.newInstance())
         } else {
             currentFragment =
                 supportFragmentManager.findFragmentById(R.id.fragment_container) as MainActivityFragmentCallbacks
@@ -111,7 +116,7 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
         return drawerBinding.root
     }
 
-    private fun setCurrentFragment(fragment: AbsMainActivityFragment) {
+    private fun setBasicFragment(fragment: AbsMainActivityFragment) {
         supportFragmentManager.beginTransaction()
             .replace(R.id.fragment_container, fragment, null)
             .commit()
@@ -134,6 +139,50 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
     }
 
     private fun setUpDrawer() {
+        attach(this, drawerBinding.navigationView.menu) {
+            val context = this@MainActivity
+
+            val groupIds = intArrayOf(0, 1, 2, 3)
+
+            menuItem {
+                groupId = groupIds[1]
+                itemId = R.id.action_shuffle_all
+                icon = getTintedDrawable(R.drawable.ic_shuffle_white_24dp, textColorPrimary)
+                titleRes(R.string.action_shuffle_all, context)
+            }
+            menuItem {
+                groupId = groupIds[1]
+                itemId = R.id.action_scan
+                icon = getTintedDrawable(R.drawable.ic_scanner_white_24dp, textColorPrimary)
+                titleRes(R.string.scan_media, context)
+            }
+
+            menuItem {
+                groupId = groupIds[2]
+                itemId = R.id.theme_toggle
+                icon = getTintedDrawable(R.drawable.ic_theme_switch_white_24dp, textColorPrimary)
+                titleRes(R.string.theme_switch, context)
+            }
+
+            menuItem {
+                groupId = groupIds[3]
+                itemId = R.id.nav_settings
+                icon = getTintedDrawable(R.drawable.ic_settings_white_24dp, textColorPrimary)
+                titleRes(R.string.action_settings, context)
+            }
+            menuItem {
+                groupId = groupIds[3]
+                itemId = R.id.nav_about
+                icon = getTintedDrawable(R.drawable.ic_help_white_24dp, textColorPrimary)
+                titleRes(R.string.action_about, context)
+            }
+
+            for (id in groupIds) {
+                rootMenu.setGroupEnabled(id, true)
+                rootMenu.setGroupCheckable(id, false, false)
+            }
+        }
+
         with(drawerBinding.drawerLayout) {
             setPadding(
                 paddingLeft,
@@ -143,16 +192,13 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
             )
         }
 
-        NavigationViewUtil.setItemIconColors(
-            drawerBinding.navigationView,
-            MDthemerUtil.resolveColor(this, R.attr.iconColor, ThemeColor.textColorSecondary(this)),
-            accentColor
-        )
-        NavigationViewUtil.setItemTextColors(
-            drawerBinding.navigationView,
-            ThemeColor.textColorPrimary(this),
-            accentColor
-        )
+        val iconColor =
+            MDthemerUtil.resolveColor(this, R.attr.iconColor, ThemeColor.textColorSecondary(this))
+
+        with(drawerBinding.navigationView) {
+            setItemIconColors(this, iconColor, accentColor)
+            setItemTextColors(this, textColorPrimary, accentColor)
+        }
 
         drawerBinding.navigationView.setNavigationItemSelectedListener { menuItem: MenuItem ->
             drawerBinding.drawerLayout.closeDrawers()
