@@ -181,7 +181,7 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
 
             menuItem {
                 groupId = groupIds[2]
-                itemId = R.id.theme_toggle
+                itemId = R.id.action_theme_toggle
                 icon = getTintedDrawable(R.drawable.ic_theme_switch_white_24dp, textColorPrimary)
                 titleRes(R.string.theme_switch, activity)
                 onClick {

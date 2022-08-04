@@ -7,6 +7,10 @@
     <item name="action_clear_all_preference" type="id" />
 
     <!-- Main Activity Menu Items-->
+    <item name="nav_settings" type="id"/>
+    <item name="nav_about" type="id"/>
+    <item name="action_theme_toggle" type="id"/>
+    <item name="action_shuffle_all" type="id"/>
     <item name="action_main_popup_window_menu" type="id" />
     <item name="action_search" type="id" />
     <item name="action_scan" type="id" />
