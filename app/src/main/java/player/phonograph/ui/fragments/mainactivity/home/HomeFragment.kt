@@ -30,6 +30,7 @@ import player.phonograph.adapter.PAGERS
 import player.phonograph.adapter.PageConfig
 import player.phonograph.adapter.base.MultiSelectionCabController
 import player.phonograph.databinding.FragmentHomeBinding
+import player.phonograph.notification.ErrorNotification
 import player.phonograph.settings.Setting
 import player.phonograph.ui.activities.MainActivity
 import player.phonograph.ui.activities.SearchActivity
@@ -138,6 +139,14 @@ class HomeFragment : AbsMainActivityFragment(), MainActivity.MainActivityFragmen
     override fun handleBackPress(): Boolean {
         return if (cabController.dismiss()) true else {
             currentPage?.onBackPress() ?: false
+        }
+    }
+
+    override fun requestSelectPage(page: Int) {
+        try {
+            binding.pager.currentItem = page
+        } catch (e: Exception) {
+            ErrorNotification.postErrorNotification(e, "Failed to select page $page")
         }
     }
 

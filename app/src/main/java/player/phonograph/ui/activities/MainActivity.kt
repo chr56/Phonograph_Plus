@@ -77,14 +77,18 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
         safLauncher = SafLauncher(activityResultRegistry)
         lifecycle.addObserver(safLauncher)
 
-        setUpDrawer()
-
-        if (savedInstanceState == null) {
-            setBasicFragment(HomeFragment.newInstance())
-        } else {
-            currentFragment =
+        currentFragment =
+            if (savedInstanceState == null) {
+                HomeFragment.newInstance().apply {
+                    supportFragmentManager.beginTransaction()
+                        .replace(R.id.fragment_container, this, "home")
+                        .commit()
+                }
+            } else {
                 supportFragmentManager.findFragmentById(R.id.fragment_container) as MainActivityFragmentCallbacks
-        }
+            }
+
+        setUpDrawer()
 
         showIntro()
         Handler(Looper.getMainLooper()).postDelayed({
@@ -114,13 +118,6 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
         drawerBinding.drawerContentContainer.addView(wrapSlidingMusicPanel(mainBinding.root))
 
         return drawerBinding.root
-    }
-
-    private fun setBasicFragment(fragment: AbsMainActivityFragment) {
-        supportFragmentManager.beginTransaction()
-            .replace(R.id.fragment_container, fragment, null)
-            .commit()
-        currentFragment = fragment as MainActivityFragmentCallbacks
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -460,5 +457,6 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
 
     interface MainActivityFragmentCallbacks {
         fun handleBackPress(): Boolean
+        fun requestSelectPage(page: Int) {}
     }
 }
