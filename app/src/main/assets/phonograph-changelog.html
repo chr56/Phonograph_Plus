@@ -39,31 +39,47 @@
 
     <p>Translate Phonograph Plus into your language -> <a href="https://crowdin.com/project/phonograph-plus">crowdin</a></p>
 
-    <h4><b>Preview</b> 2022.6.20</h4>
+    <h4><b>0.3.0 Beta01</b> 2022.8.4</h4>
     <div>
         <ol>
-            <li>Translations: Update Portuguese (Brazil) (by Luiz-bro), Indonesian (by Raven Ell (@ ravenel)), Dutch (Blinkin), Italian (gdonisi) </li>
-            <li>Improve: refactor Playlist Detail and simplify editing</li>
-            <li>Improve: calculation for "My Top Tracks"</li>
-            <li>Add: support for force to refresh and recalculate "My Top Tracks" playlists </li>
-            <li>Add: a brand new Folders Page:
-                Among with other pages of the Library;
-                Read song files from MediaStore (significantly better performance on Android 10 and above);
-                (Try to) fully support browsing external removable storage devices (such as SD cards, etc.);
-                However, there are currently some defects or bugs which do not affect the user experience
-            </li>
-            <li>Add: responding last.fm link in Artist&Album Detail(Note: Currently, wiki of last.fm is still working, there is no plan to maintain.).</li>
-            <li>Add: Preference Item "Please do NOT touch my playing queue arbitrarily", which would make app try not to clear or override playing queue without user's specific request (instead, just add songs to queue) if preference enabled. (Known issue: if you click items to add to queue too quickly (around clicking more than one time per second), the app might crash!)</li>
-            <li>New: Added a menu item to change the current Now Playing Screen in the Now Playing Screen</li>
-            <li>Fix: crash when opening sleep timer dialog for first time</li>
+            <li>Add: a brand new <code>Folders Page</code>:<br/>
+                ├ Among with other pages of the Library; <br/>
+                ├ Read song files from <code>MediaStore</code> (significantly better performance on Android 10 and above), but you can still use old method to read song files; <br/>
+                ├ (Try to) fully support browsing external removable storage devices (such as SD cards, etc.);<br/>
+                ├ Use sweep-down-refresh;<br/>
+                └ Allow sorting files by file name, file size, date added, date modified;</li>
+            <li>Remove: the legacy <code>Folders Page</code>, and update drawer</li>
+            <li>Improve: refactor <code>Playlist Detail</code> and simplify editing</li>
+            <li>Improve: calculation for &quot;My Top Tracks&quot;</li>
+            <li>Add: support for force to refresh and recalculate &quot;My Top Tracks&quot; playlists</li>
+            <li>Add: responding <code>last.fm</code> link in Artist&amp;Album Detail(Note: Currently, wiki of last.fm is still working, there is no plan to maintain.).</li>
+            <li>Add: Preference Item &quot;Please do NOT touch my playing queue arbitrarily&quot;, which would make app try not to clear or override playing queue without user's specific request (instead, just add songs to queue) if preference enabled.</li>
+            <li>Add: a menu item to change the current Now Playing Screen in the Now Playing Screen</li>
+            <li>Fix: crash when opening sleep timer dialog for first time.</li>
             <li>Fix: wrong color of context menu icon when multiple selection</li>
-            <li>Improve: minor refactoring of the album page (BUG: transition animation is currently "temporarily" glitch)</li>
-            <li>Improve: minor refactoring of sort order and grid settings UI</li>
-            <li>Development: update dependencies (This causes a little distinct appearance of scrollbar)</li>
-            <li>Development: Refactor MusicService (there could be a HUGE number of potential bugs related to music playing, such as fails of playback controls, incorresponding current playing song with ui, notification glitches, ghostly playing... and crashes.)</li>
-            <li>Development: Use ViewPager2 for song cover in the playing song interface</li>
-            <li>Development: clean up code</li>
+            <li>Improve: minor refactoring of the album page</li>
+            <li>Development: clean up the code of Album Details Page, and begin to handle with the plan about redesigning</li>
+            <li>Development: refactoring of plenty of historical codes, including<br/>
+                ├ Background Music Service (possibly a HUGE number of potential bugs related to music playing)<br/>
+                ├ Album Detail<br/>
+                ├ Playlist Detail<br/>
+                ├ Now Playing Screen / Player (about Song Cover Images)<br/>
+                ├ File Scanning<br/>
+                ├ Sort Order<br/>
+                ├ List Appearance Popup Menu<br/>
+                ├ Theme (may have bugs such as abnormal status bar color)<br/>
+                ├ Multi-selection (may have glitch behavior)<br/>
+                └ Sliding Player Panel</li>
         </ol>
+        <p>Known Issues:</p>
+        <ol>
+            <li>Glitch Album Detail Transition Animation</li>
+            <li>Multi-selection conflict in Artist Detail</li>
+            <li>No path history for brand new File Page (currently)</li>
+            <li>Glitch song cover in the main player (sometimes)</li>
+            <li>If you click items to add to queue too quickly (around clicking more than one time per second), the app might crash! (fixed in alpha08)</li>
+        </ol>
+
     </div>
 
     <h4><b>0.2.6</b> 2022.6.6</h4>
