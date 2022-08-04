@@ -154,33 +154,9 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
                 }
             }
 
-            menuItem {
-                groupId = groupIds[1]
-                itemId = R.id.action_shuffle_all
-                icon = getTintedDrawable(R.drawable.ic_shuffle_white_24dp, textColorPrimary)
-                titleRes(R.string.action_shuffle_all, activity)
-                onClick {
-                    drawerBinding.drawerLayout.closeDrawers()
-                    Handler(Looper.getMainLooper()).postDelayed({
-                        MusicPlayerRemote.openAndShuffleQueue(getAllSongs(activity), true)
-                    }, 350)
-                }
-            }
-            menuItem {
-                groupId = groupIds[1]
-                itemId = R.id.action_scan
-                icon = getTintedDrawable(R.drawable.ic_scanner_white_24dp, textColorPrimary)
-                titleRes(R.string.scan_media, activity)
-                onClick {
-                    drawerBinding.drawerLayout.closeDrawers()
-                    Handler(Looper.getMainLooper()).postDelayed({
-                        ScanMediaFolderDialog().show(supportFragmentManager, "scan_media")
-                    }, 200)
-                }
-            }
 
             menuItem {
-                groupId = groupIds[2]
+                groupId = groupIds[1]
                 itemId = R.id.action_theme_toggle
                 icon = getTintedDrawable(R.drawable.ic_theme_switch_white_24dp, textColorPrimary)
                 titleRes(R.string.theme_switch, activity)
@@ -202,6 +178,32 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
                     }, 200)
                 }
             }
+
+            menuItem {
+                groupId = groupIds[2]
+                itemId = R.id.action_shuffle_all
+                icon = getTintedDrawable(R.drawable.ic_shuffle_white_24dp, textColorPrimary)
+                titleRes(R.string.action_shuffle_all, activity)
+                onClick {
+                    drawerBinding.drawerLayout.closeDrawers()
+                    Handler(Looper.getMainLooper()).postDelayed({
+                        MusicPlayerRemote.openAndShuffleQueue(getAllSongs(activity), true)
+                    }, 350)
+                }
+            }
+            menuItem {
+                groupId = groupIds[2]
+                itemId = R.id.action_scan
+                icon = getTintedDrawable(R.drawable.ic_scanner_white_24dp, textColorPrimary)
+                titleRes(R.string.scan_media, activity)
+                onClick {
+                    drawerBinding.drawerLayout.closeDrawers()
+                    Handler(Looper.getMainLooper()).postDelayed({
+                        ScanMediaFolderDialog().show(supportFragmentManager, "scan_media")
+                    }, 200)
+                }
+            }
+
 
             menuItem {
                 groupId = groupIds[3]
