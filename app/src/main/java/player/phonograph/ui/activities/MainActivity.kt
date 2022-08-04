@@ -1,12 +1,14 @@
 package player.phonograph.ui.activities
 
 import android.content.Intent
+import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.provider.MediaStore
 import android.util.Log
+import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.ImageView
@@ -96,6 +98,7 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
             }
             checkUpdate()
             showChangelog()
+            Setting.instance.registerOnSharedPreferenceChangedListener(sharedPreferenceChangeListener)
         }, 900)
 
         if (DEBUG) {
@@ -109,6 +112,11 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
             "Metrics",
             "${System.currentTimeMillis().mod(10000000)} MainActivity.onResume()"
         )
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Setting.instance.unregisterOnSharedPreferenceChangedListener(sharedPreferenceChangeListener)
     }
 
     override fun createContentView(): View {
@@ -134,9 +142,8 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
         if (!blockRequestPermissions) super.requestPermissions()
     }
 
-    private fun setUpDrawer() {
-        // inflate & setup drawer menu item
-        attach(this, drawerBinding.navigationView.menu) {
+    private fun inflateDrawerMenu(menu: Menu) {
+        attach(this, menu) {
             val activity = this@MainActivity
 
             // page chooser
@@ -236,6 +243,11 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
             }
             rootMenu.setGroupCheckable(mainGroup, true, true)
         }
+    }
+
+    private fun setUpDrawer() {
+        // inflate & setup drawer menu item
+        inflateDrawerMenu(drawerBinding.navigationView.menu)
 
         // padding
         with(drawerBinding.drawerLayout) {
@@ -258,6 +270,17 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
 
     fun switchPageChooserTo(page: Int) {
         drawerBinding.navigationView.setCheckedItem(1000 + page)
+    }
+
+    private val sharedPreferenceChangeListener = SharedPreferences.OnSharedPreferenceChangeListener { sharedPreferences, key ->
+        when (key) {
+            Setting.HOME_TAB_CONFIG -> {
+                with(drawerBinding.navigationView.menu) {
+                    clear()
+                    inflateDrawerMenu(this)
+                }
+            }
+        }
     }
 
     private fun updateNavigationDrawerHeader() {
