@@ -18,10 +18,14 @@ import com.sothree.slidinguppanel.SlidingUpPanelLayout
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import legacy.phonograph.JunkCleaner
-import player.phonograph.*
+import player.phonograph.App
 import player.phonograph.BuildConfig.DEBUG
+import player.phonograph.R
+import player.phonograph.UPGRADABLE
 import player.phonograph.Updater.checkUpdate
-import player.phonograph.databinding.*
+import player.phonograph.VERSION_INFO
+import player.phonograph.databinding.ActivityMainBinding
+import player.phonograph.databinding.LayoutDrawerBinding
 import player.phonograph.dialogs.ChangelogDialog.Companion.create
 import player.phonograph.dialogs.ChangelogDialog.Companion.setChangelogRead
 import player.phonograph.dialogs.ScanMediaFolderDialog
@@ -35,6 +39,7 @@ import player.phonograph.mediastore.SongLoader
 import player.phonograph.misc.SAFCallbackHandlerActivity
 import player.phonograph.misc.SafLauncher
 import player.phonograph.model.Song
+import player.phonograph.notification.ErrorNotification
 import player.phonograph.notification.UpgradeNotification
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.queue.ShuffleMode
@@ -70,7 +75,7 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
         setUpDrawer()
 
         if (savedInstanceState == null) {
-            setMusicChooser(Setting.instance.lastMusicChooser)
+            setCurrentFragment(HomeFragment.newInstance())
         } else {
             currentFragment =
                 supportFragmentManager.findFragmentById(R.id.fragment_container) as MainActivityFragmentCallbacks
@@ -85,10 +90,9 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
             showChangelog()
         }, 900)
 
-        if (DEBUG) Log.v(
-            "Metrics",
-            "${System.currentTimeMillis().mod(10000000)} MainActivity.onCreate()"
-        )
+        if (DEBUG) {
+            Log.v("Metrics", "${System.currentTimeMillis().mod(10000000)} MainActivity.onCreate()")
+        }
     }
 
     override fun onResume() {
@@ -105,20 +109,6 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
         drawerBinding.drawerContentContainer.addView(wrapSlidingMusicPanel(mainBinding.root))
 
         return drawerBinding.root
-    }
-
-    private fun setMusicChooser(key: Int) {
-        Setting.instance.lastMusicChooser = key
-        when (key) {
-//            FOLDERS -> {
-//                drawerBinding.navigationView.setCheckedItem(R.id.nav_folders)
-//                setCurrentFragment(FoldersFragment.newInstance())
-//            }
-            HOME -> {
-                drawerBinding.navigationView.setCheckedItem(R.id.nav_home)
-                setCurrentFragment(HomeFragment.newInstance())
-            }
-        }
     }
 
     private fun setCurrentFragment(fragment: AbsMainActivityFragment) {
@@ -145,28 +135,37 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
 
     private fun setUpDrawer() {
         with(drawerBinding.drawerLayout) {
-            setPadding(paddingLeft, paddingTop + mainBinding.statusBarLayout.statusBar.height, paddingRight, paddingBottom)
+            setPadding(
+                paddingLeft,
+                paddingTop + mainBinding.statusBarLayout.statusBar.height,
+                paddingRight,
+                paddingBottom
+            )
         }
 
         NavigationViewUtil.setItemIconColors(
-            drawerBinding.navigationView, MDthemerUtil.resolveColor(this, R.attr.iconColor, ThemeColor.textColorSecondary(this)), accentColor
+            drawerBinding.navigationView,
+            MDthemerUtil.resolveColor(this, R.attr.iconColor, ThemeColor.textColorSecondary(this)),
+            accentColor
         )
         NavigationViewUtil.setItemTextColors(
-            drawerBinding.navigationView, ThemeColor.textColorPrimary(this), accentColor
+            drawerBinding.navigationView,
+            ThemeColor.textColorPrimary(this),
+            accentColor
         )
 
         drawerBinding.navigationView.setNavigationItemSelectedListener { menuItem: MenuItem ->
             drawerBinding.drawerLayout.closeDrawers()
 
             when (menuItem.itemId) {
-                R.id.nav_folders -> Handler(Looper.getMainLooper()).postDelayed({ setMusicChooser(FOLDERS) }, 200)
-                R.id.nav_home -> Handler(Looper.getMainLooper()).postDelayed({ setMusicChooser(HOME) }, 200)
-
                 R.id.action_shuffle_all -> Handler(Looper.getMainLooper()).postDelayed({
                     MusicPlayerRemote.openAndShuffleQueue(SongLoader.getAllSongs(this), true)
                 }, 350)
                 R.id.action_scan -> Handler(Looper.getMainLooper()).postDelayed({
-                    ScanMediaFolderDialog().show(supportFragmentManager, "SCAN_MEDIA_FOLDER_CHOOSER")
+                    ScanMediaFolderDialog().show(
+                        supportFragmentManager,
+                        "SCAN_MEDIA_FOLDER_CHOOSER"
+                    )
                 }, 200)
                 R.id.theme_toggle -> Handler(Looper.getMainLooper()).postDelayed({
                     val themeSetting = Setting.instance.generalTheme
@@ -201,7 +200,9 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
 
             if (navigationDrawerHeader == null) {
                 navigationDrawerHeader =
-                    drawerBinding.navigationView.inflateHeaderView(R.layout.navigation_drawer_header)
+                    drawerBinding.navigationView.inflateHeaderView(
+                        R.layout.navigation_drawer_header
+                    )
                 (navigationDrawerHeader as View).setOnClickListener {
                     drawerBinding.drawerLayout.closeDrawers()
                     if (panelState == SlidingUpPanelLayout.PanelState.COLLAPSED) {
@@ -265,10 +266,11 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
                 if (MusicPlayerRemote.shuffleMode == ShuffleMode.SHUFFLE) {
                     MusicPlayerRemote.openAndShuffleQueue(songs, true)
                 } else {
-                    if (Setting.instance.keepPlayingQueueIntact)
+                    if (Setting.instance.keepPlayingQueueIntact) {
                         MusicPlayerRemote.playNow(songs)
-                    else
+                    } else {
                         MusicPlayerRemote.openQueue(songs, 0, true)
+                    }
                 }
                 handled = true
             }
@@ -286,10 +288,11 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
                         val position = intent.getIntExtra("position", 0)
                         val songs: List<Song> =
                             ArrayList<Song>(PlaylistSongLoader.getPlaylistSongList(this, id))
-                        if (Setting.instance.keepPlayingQueueIntact)
+                        if (Setting.instance.keepPlayingQueueIntact) {
                             MusicPlayerRemote.playNow(songs)
-                        else
+                        } else {
                             MusicPlayerRemote.openQueue(songs, 0, true)
+                        }
                         handled = true
                     }
                 }
@@ -298,10 +301,11 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
                     if (id >= 0) {
                         val position = intent.getIntExtra("position", 0)
                         val songs = AlbumLoader.getAlbum(this, id).songs
-                        if (Setting.instance.keepPlayingQueueIntact)
+                        if (Setting.instance.keepPlayingQueueIntact) {
                             MusicPlayerRemote.playNow(songs)
-                        else
+                        } else {
                             MusicPlayerRemote.openQueue(songs, 0, true)
+                        }
                         handled = true
                     }
                 }
@@ -310,10 +314,11 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
                     if (id >= 0) {
                         val position = intent.getIntExtra("position", 0)
                         val songs = ArtistLoader.getArtist(this, id).songs
-                        if (Setting.instance.keepPlayingQueueIntact)
+                        if (Setting.instance.keepPlayingQueueIntact) {
                             MusicPlayerRemote.playNow(songs)
-                        else
+                        } else {
                             MusicPlayerRemote.openQueue(songs, 0, true)
+                        }
 
                         handled = true
                     }
@@ -378,7 +383,7 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
                 JunkCleaner(App.instance).clear(currentVersion, CoroutineScope(Dispatchers.IO))
             }
         } catch (e: PackageManager.NameNotFoundException) {
-            e.printStackTrace()
+            ErrorNotification.postErrorNotification(e, "Package Name Can't Be Found!")
         }
     }
 
@@ -386,16 +391,12 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
         UpgradeDialog.create(versionInfo).show(supportFragmentManager, "UpgradeDialog")
     }
 
-    interface MainActivityFragmentCallbacks {
-        fun handleBackPress(): Boolean
+    companion object {
+        private const val TAG = "MainActivity"
+        private const val APP_INTRO_REQUEST = 100
     }
 
-    companion object {
-
-        const val TAG = "MainActivity"
-        const val APP_INTRO_REQUEST = 100
-
-        private const val HOME = 0
-        private const val FOLDERS = 1
+    interface MainActivityFragmentCallbacks {
+        fun handleBackPress(): Boolean
     }
 }
