@@ -15,7 +15,7 @@ import player.phonograph.mediastore.MediaStoreUtil.searchSongFiles
 import player.phonograph.model.FileEntity
 import player.phonograph.model.Location
 import player.phonograph.settings.Setting
-import player.phonograph.ui.fragments.mainactivity.folders.FileScanner
+import player.phonograph.util.FileUtil.FileScanner
 
 class FilesPageViewModel : ViewModel() {
 

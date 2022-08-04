@@ -14,18 +14,19 @@ import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.WhichButton
 import com.afollestad.materialdialogs.actions.getActionButton
 import com.afollestad.materialdialogs.files.folderChooser
-import java.io.File
-import java.lang.ref.WeakReference
 import kotlinx.coroutines.*
 import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.misc.UpdateToastMediaScannerCompletionListener
 import player.phonograph.notification.ErrorNotification
 import player.phonograph.settings.Setting
-import player.phonograph.ui.fragments.mainactivity.folders.DirectoryInfo
-import player.phonograph.ui.fragments.mainactivity.folders.FileScanner
+import player.phonograph.util.FileUtil
+import player.phonograph.util.FileUtil.FileScanner
+import player.phonograph.util.FileUtil.DirectoryInfo
 import player.phonograph.util.Util
 import util.mdcolor.pref.ThemeColor
+import java.io.File
+import java.lang.ref.WeakReference
 
 class ScanMediaFolderDialog : DialogFragment() {
     private lateinit var initial: File

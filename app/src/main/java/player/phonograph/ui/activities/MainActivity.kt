@@ -42,7 +42,6 @@ import player.phonograph.settings.Setting
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
 import player.phonograph.ui.activities.intro.AppIntroActivity
 import player.phonograph.ui.fragments.mainactivity.AbsMainActivityFragment
-import player.phonograph.ui.fragments.mainactivity.folders.FoldersFragment
 import player.phonograph.ui.fragments.mainactivity.home.HomeFragment
 import player.phonograph.util.MusicUtil
 import util.mdcolor.pref.ThemeColor
@@ -111,10 +110,10 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
     private fun setMusicChooser(key: Int) {
         Setting.instance.lastMusicChooser = key
         when (key) {
-            FOLDERS -> {
-                drawerBinding.navigationView.setCheckedItem(R.id.nav_folders)
-                setCurrentFragment(FoldersFragment.newInstance())
-            }
+//            FOLDERS -> {
+//                drawerBinding.navigationView.setCheckedItem(R.id.nav_folders)
+//                setCurrentFragment(FoldersFragment.newInstance())
+//            }
             HOME -> {
                 drawerBinding.navigationView.setCheckedItem(R.id.nav_home)
                 setCurrentFragment(HomeFragment.newInstance())

@@ -8,16 +8,20 @@ package player.phonograph.util
 
 import android.content.Context
 import android.provider.MediaStore.Audio.AudioColumns.DATA
+import android.util.Log
 import android.webkit.MimeTypeMap
 import java.io.*
 import java.text.DecimalFormat
 import java.util.*
 import kotlin.math.log10
 import kotlin.math.pow
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.isActive
+import lib.phonograph.misc.SortedCursor
 import player.phonograph.mediastore.SongLoader.getSongs
 import player.phonograph.mediastore.SongLoader.makeSongCursor
-import lib.phonograph.misc.SortedCursor
 import player.phonograph.model.Song
+import player.phonograph.notification.ErrorNotification
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
@@ -175,5 +179,62 @@ object FileUtil {
         return DecimalFormat("#,##0.##").format(
             size / 1024.0.pow(digitGroups.toDouble())
         ) + " " + units[digitGroups]
+    }
+
+    class DirectoryInfo(val file: File, val fileFilter: FileFilter)
+    object FileScanner {
+        fun listPaths(
+            directoryInfos: DirectoryInfo,
+            scope: CoroutineScope,
+            recursive: Boolean = false
+        ): Array<String>? {
+            if (!scope.isActive) return null
+
+            val paths: Array<String>? =
+                try {
+                    if (directoryInfos.file.isDirectory) {
+                        if (!scope.isActive) return null
+                        // todo
+                        val files =
+                            if (recursive) {
+                                FileUtil.listFilesDeep(
+                                    directoryInfos.file,
+                                    directoryInfos.fileFilter
+                                )
+                            } else {
+                                FileUtil.listFiles(directoryInfos.file, directoryInfos.fileFilter)?.toList()
+                            }
+
+                        if (files.isNullOrEmpty()) return null
+                        Array(files.size) { i ->
+                            if (!scope.isActive) return null
+                            FileUtil.safeGetCanonicalPath(files[i])
+                        }
+                    } else {
+                        arrayOf(FileUtil.safeGetCanonicalPath(directoryInfos.file))
+                    }.also {
+                        Log.v("FileScanner", "success")
+                    }
+                } catch (e: Exception) {
+                    ErrorNotification.postErrorNotification(e, "Fail to Load files!")
+                    Log.w("FolderFragment", e)
+                    null
+                }
+            return paths
+        }
+
+        @JvmField
+        val audioFileFilter: FileFilter =
+            FileFilter { file: File ->
+                !file.isHidden && (
+                    file.isDirectory ||
+                        FileUtil.fileIsMimeType(file, "audio/*", MimeTypeMap.getSingleton()) ||
+                        FileUtil.fileIsMimeType(
+                            file,
+                            "application/ogg",
+                            MimeTypeMap.getSingleton()
+                        )
+                    )
+            }
     }
 }
