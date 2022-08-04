@@ -26,7 +26,7 @@ class HomePagerAdapter(fragment: Fragment, var cfg: PageConfig) : FragmentStateA
             .also { fragment -> map[position] = WeakReference(fragment) } // registry
 }
 
-class PageConfig(var tabMap: MutableMap<Int, String>) {
+class PageConfig(var tabMap: MutableMap<Int, String>) : Iterable<String> {
 
     fun getSize(): Int = tabMap.size
 
@@ -57,6 +57,13 @@ class PageConfig(var tabMap: MutableMap<Int, String>) {
             }
         )
     }
+
+    override fun iterator(): Iterator<String> =
+        object : Iterator<String> {
+            var current = 0
+            override fun hasNext(): Boolean = current < tabMap.size
+            override fun next(): String = tabMap[current++] ?: PAGERS.EMPTY
+        }
 }
 
 interface PAGERS {
@@ -100,7 +107,11 @@ object PageConfigUtil {
 
         val cfg = HashMap<Int, String>()
         for (i in 0 until array.length()) {
-            cfg[i] = array.optString(i).also { if (it.isBlank()) throw JSONException("Empty String at index $i") }
+            cfg[i] = array.optString(i).also {
+                if (it.isBlank()) throw JSONException(
+                    "Empty String at index $i"
+                )
+            }
         }
         return PageConfig(cfg)
     }
