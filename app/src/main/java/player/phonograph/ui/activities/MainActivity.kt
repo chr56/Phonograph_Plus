@@ -146,6 +146,7 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
                     icon = PAGERS.getTintedIcon(tab, textColorPrimary, activity)
                     title = PAGERS.getDisplayName(tab, activity)
                     onClick {
+                        drawerBinding.drawerLayout.closeDrawers()
                         Handler(Looper.getMainLooper()).postDelayed({
                             currentFragment.requestSelectPage(page)
                         }, 150)
@@ -159,6 +160,7 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
                 icon = getTintedDrawable(R.drawable.ic_shuffle_white_24dp, textColorPrimary)
                 titleRes(R.string.action_shuffle_all, activity)
                 onClick {
+                    drawerBinding.drawerLayout.closeDrawers()
                     Handler(Looper.getMainLooper()).postDelayed({
                         MusicPlayerRemote.openAndShuffleQueue(getAllSongs(activity), true)
                     }, 350)
@@ -170,6 +172,7 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
                 icon = getTintedDrawable(R.drawable.ic_scanner_white_24dp, textColorPrimary)
                 titleRes(R.string.scan_media, activity)
                 onClick {
+                    drawerBinding.drawerLayout.closeDrawers()
                     Handler(Looper.getMainLooper()).postDelayed({
                         ScanMediaFolderDialog().show(supportFragmentManager, "scan_media")
                     }, 200)
@@ -244,11 +247,6 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
         with(drawerBinding.navigationView) {
             setItemIconColors(this, iconColor, accentColor)
             setItemTextColors(this, textColorPrimary, accentColor)
-        }
-
-        drawerBinding.navigationView.setNavigationItemSelectedListener {
-            drawerBinding.drawerLayout.closeDrawers()
-            true
         }
     }
 
