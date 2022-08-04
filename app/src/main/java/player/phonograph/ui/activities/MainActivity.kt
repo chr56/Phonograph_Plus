@@ -135,14 +135,15 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
     }
 
     private fun setUpDrawer() {
+        // inflate & setup drawer menu item
         attach(this, drawerBinding.navigationView.menu) {
             val activity = this@MainActivity
 
-            val groupIds = intArrayOf(0, 1, 2, 3)
-
+            // page chooser
+            val mainGroup = 999999
             for ((page, tab) in Setting.instance.homeTabConfig.withIndex()) {
                 menuItem {
-                    groupId = groupIds[0]
+                    groupId = mainGroup
                     icon = PAGERS.getTintedIcon(tab, textColorPrimary, activity)
                     title = PAGERS.getDisplayName(tab, activity)
                     onClick {
@@ -151,10 +152,20 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
                             currentFragment.requestSelectPage(page)
                         }, 150)
                     }
+                    /*
+                    checked =
+                        if (Setting.instance.rememberLastTab) {
+                            page == Setting.instance.lastPage
+                        } else {
+                            page == 0
+                        }
+
+                     */
                 }
             }
 
-
+            // normal items
+            val groupIds = intArrayOf(0, 1, 2, 3)
             menuItem {
                 groupId = groupIds[1]
                 itemId = R.id.action_theme_toggle
@@ -204,7 +215,6 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
                 }
             }
 
-
             menuItem {
                 groupId = groupIds[3]
                 itemId = R.id.nav_settings
@@ -232,8 +242,10 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
                 rootMenu.setGroupEnabled(id, true)
                 rootMenu.setGroupCheckable(id, false, false)
             }
+            rootMenu.setGroupCheckable(mainGroup, true, true)
         }
 
+        // padding
         with(drawerBinding.drawerLayout) {
             setPadding(
                 paddingLeft,
@@ -243,9 +255,9 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
             )
         }
 
+        // color
         val iconColor =
             MDthemerUtil.resolveColor(this, R.attr.iconColor, ThemeColor.textColorSecondary(this))
-
         with(drawerBinding.navigationView) {
             setItemIconColors(this, iconColor, accentColor)
             setItemTextColors(this, textColorPrimary, accentColor)
