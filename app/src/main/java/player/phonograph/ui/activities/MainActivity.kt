@@ -26,6 +26,7 @@ import player.phonograph.R
 import player.phonograph.UPGRADABLE
 import player.phonograph.Updater.checkUpdate
 import player.phonograph.VERSION_INFO
+import player.phonograph.adapter.PAGERS
 import player.phonograph.databinding.ActivityMainBinding
 import player.phonograph.databinding.LayoutDrawerBinding
 import player.phonograph.dialogs.ChangelogDialog.Companion.create
@@ -37,7 +38,6 @@ import player.phonograph.helper.SearchQueryHelper
 import player.phonograph.mediastore.AlbumLoader
 import player.phonograph.mediastore.ArtistLoader
 import player.phonograph.mediastore.PlaylistSongLoader
-import player.phonograph.mediastore.SongLoader
 import player.phonograph.mediastore.SongLoader.getAllSongs
 import player.phonograph.misc.SAFCallbackHandlerActivity
 import player.phonograph.misc.SafLauncher
@@ -143,6 +143,19 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
             val activity = this@MainActivity
 
             val groupIds = intArrayOf(0, 1, 2, 3)
+
+            for (tab in Setting.instance.homeTabConfig) {
+                menuItem {
+                    groupId = groupIds[0]
+                    icon = PAGERS.getTintedIcon(tab, textColorPrimary, activity)
+                    title = PAGERS.getDisplayName(tab, activity)
+                    onClick {
+                        Handler(Looper.getMainLooper()).postDelayed({
+                            // todo
+                        }, 150)
+                    }
+                }
+            }
 
             menuItem {
                 groupId = groupIds[1]
