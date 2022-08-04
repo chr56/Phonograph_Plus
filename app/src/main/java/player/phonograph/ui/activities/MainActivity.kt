@@ -146,21 +146,13 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
                     groupId = mainGroup
                     icon = PAGERS.getTintedIcon(tab, textColorPrimary, activity)
                     title = PAGERS.getDisplayName(tab, activity)
+                    itemId = 1000 + page
                     onClick {
                         drawerBinding.drawerLayout.closeDrawers()
                         Handler(Looper.getMainLooper()).postDelayed({
                             currentFragment.requestSelectPage(page)
                         }, 150)
                     }
-                    /*
-                    checked =
-                        if (Setting.instance.rememberLastTab) {
-                            page == Setting.instance.lastPage
-                        } else {
-                            page == 0
-                        }
-
-                     */
                 }
             }
 
@@ -262,6 +254,10 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
             setItemIconColors(this, iconColor, accentColor)
             setItemTextColors(this, textColorPrimary, accentColor)
         }
+    }
+
+    fun switchPageChooserTo(page: Int) {
+        drawerBinding.navigationView.setCheckedItem(1000 + page)
     }
 
     private fun updateNavigationDrawerHeader() {

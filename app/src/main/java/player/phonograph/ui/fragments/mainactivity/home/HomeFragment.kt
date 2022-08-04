@@ -115,7 +115,9 @@ class HomeFragment : AbsMainActivityFragment(), MainActivity.MainActivityFragmen
             adapter = pagerAdapter
             offscreenPageLimit = if (pagerAdapter.itemCount > 1) pagerAdapter.itemCount - 1 else 1
             if (Setting.instance.rememberLastTab) {
-                currentItem = Setting.instance.lastPage
+                val last = Setting.instance.lastPage
+                currentItem = last
+                mainActivity.switchPageChooserTo(last)
             }
             registerOnPageChangeCallback(pageChangeListener)
         }
@@ -132,6 +134,7 @@ class HomeFragment : AbsMainActivityFragment(), MainActivity.MainActivityFragmen
     private val pageChangeListener = object : ViewPager2.OnPageChangeCallback() {
         override fun onPageSelected(position: Int) {
             Setting.instance.lastPage = position
+            mainActivity.switchPageChooserTo(position)
             super.onPageSelected(position)
         }
     }
