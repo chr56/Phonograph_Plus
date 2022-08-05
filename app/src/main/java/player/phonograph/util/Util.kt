@@ -16,6 +16,7 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import java.util.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import kotlinx.coroutines.yield
 import player.phonograph.App
 import player.phonograph.BROADCAST_PLAYLISTS_CHANGED
 import player.phonograph.R
@@ -35,15 +36,21 @@ object Util {
     suspend fun coroutineToast(context: Context, text: String, longToast: Boolean = false) {
         withContext(Dispatchers.Main) {
             Toast.makeText(
-                context, text,
+                context,
+                text,
                 if (longToast) Toast.LENGTH_LONG else Toast.LENGTH_SHORT
             ).show()
         }
     }
-    suspend fun coroutineToast(context: Context, @StringRes res: Int) = coroutineToast(context, context.getString(res))
+    suspend fun coroutineToast(context: Context, @StringRes res: Int) = coroutineToast(
+        context,
+        context.getString(res)
+    )
 
     fun sentPlaylistChangedLocalBoardCast() =
-        LocalBroadcastManager.getInstance(App.instance).sendBroadcast(Intent(BROADCAST_PLAYLISTS_CHANGED))
+        LocalBroadcastManager.getInstance(App.instance).sendBroadcast(
+            Intent(BROADCAST_PLAYLISTS_CHANGED)
+        )
 
     fun currentDate(): Date = Calendar.getInstance(TimeZone.getDefault(), Locale.getDefault()).time
     fun currentTimestamp(): Long = currentDate().time
@@ -95,5 +102,18 @@ object Util {
     @JvmStatic
     fun isLandscape(resources: Resources): Boolean {
         return resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
+    }
+
+    /**
+     * a class to help convert callback-style function to async-coroutine-style function
+     */
+    class Executor<R>(val block: (Wrapper<R?>) -> Unit) {
+        private var holder: Wrapper<R?> = Wrapper(null)
+        suspend fun execute(): R {
+            block(holder)
+            while (holder.content == null) yield()
+            return holder.content!!
+        }
+        class Wrapper<T>(var content: T?)
     }
 }
