@@ -145,7 +145,8 @@ class PlayerAlbumCoverFragment :
         }
         coroutineScope.launch {
             albumCoverPagerAdapter?.let { adapter ->
-                val color = adapter.getPaletteColor(adapter.dataSet[position])
+                val song = adapter.dataSet.getOrElse(position) { return@launch } // return if empty
+                val color = adapter.getPaletteColor(song)
                 withContext(Dispatchers.Main) {
                     notifyColorChange(color)
                 }
