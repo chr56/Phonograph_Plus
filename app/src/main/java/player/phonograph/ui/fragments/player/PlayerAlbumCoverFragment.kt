@@ -16,7 +16,6 @@ import lib.phonograph.misc.SimpleAnimatorListener
 import player.phonograph.adapter.AlbumCoverPagerAdapter
 import player.phonograph.databinding.FragmentPlayerAlbumCoverBinding
 import player.phonograph.helper.MusicProgressViewUpdateHelper
-import player.phonograph.model.Song
 import player.phonograph.model.lyrics2.LrcLyrics
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.settings.Setting
@@ -98,28 +97,17 @@ class PlayerAlbumCoverFragment :
         handler.sendEmptyMessage(MSG_UPDATE_POSITION)
     }
 
-    /**
-     * Set queue to adapter (existing or to crate a new)
-     */
-    private fun setAdapter(queue: List<Song>) {
-        val adapter = albumCoverPagerAdapter
-        if (adapter == null) {
-            this.albumCoverPagerAdapter =
-                AlbumCoverPagerAdapter(this, queue)
-            binding.playerCoverViewpager.adapter = this.albumCoverPagerAdapter
-        } else {
-            adapter.dataSet = queue
-        }
-    }
-
     private val coroutineScope = CoroutineScope(SupervisorJob())
 
     private val handler: Handler = Handler(Looper.getMainLooper()) { message ->
         when (message.what) {
             MSG_UPDATE_QUEUE -> {
-                setAdapter(MusicPlayerRemote.playingQueue)
-                binding.playerCoverViewpager.setCurrentItem(MusicPlayerRemote.position, false)
-                onPageSelected(MusicPlayerRemote.position)
+                val queue = MusicPlayerRemote.playingQueue
+                val position = MusicPlayerRemote.position
+                albumCoverPagerAdapter = AlbumCoverPagerAdapter(this, queue)
+                binding.playerCoverViewpager.adapter = albumCoverPagerAdapter
+                binding.playerCoverViewpager.setCurrentItem(position, false)
+                onPageSelected(position)
             }
             MSG_UPDATE_POSITION -> {
                 binding.playerCoverViewpager.setCurrentItem(MusicPlayerRemote.position, false)
