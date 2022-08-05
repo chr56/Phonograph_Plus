@@ -12,6 +12,7 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
 import org.json.JSONObject
+import player.phonograph.BuildConfig.DEBUG
 import player.phonograph.settings.Setting
 import java.io.IOException
 import java.util.concurrent.TimeUnit
@@ -25,7 +26,7 @@ object Updater {
      */
     fun checkUpdate(callback: (Bundle) -> Unit, force: Boolean = false) {
         if (!force && !Setting.instance.checkUpgradeAtStartup) {
-            Log.w(TAG, "ignore upgrade check!"); return
+            Log.d(TAG, "ignore upgrade check!"); return
         }
 
         val okHttpClient = OkHttpClient.Builder()
@@ -45,7 +46,8 @@ object Updater {
             .url(requestUriFastGit).get().build()
 
         sendRequest(
-            okHttpClient, requestGithub,
+            okHttpClient,
+            requestGithub,
             { call: Call, _: IOException ->
                 logFails(call)
                 canAccessGitHub = false
@@ -56,30 +58,45 @@ object Updater {
             }
         )
         sendRequest(
-            okHttpClient, requestBitBucket,
+            okHttpClient,
+            requestBitBucket,
             { call: Call, _: IOException ->
                 logFails(call)
             },
             { call: Call, response: Response ->
-                if (!blockLock || blockLockHolder.contains("jsdelivr.net")) handleResponse(callback, force, call, response) else logIgnored(call)
+                if (!blockLock || blockLockHolder.contains("jsdelivr.net")) handleResponse(
+                    callback,
+                    force,
+                    call,
+                    response
+                ) else logIgnored(call)
             }
         )
         sendRequest(
-            okHttpClient, requestJsdelivr,
+            okHttpClient,
+            requestJsdelivr,
             { call: Call, _: IOException ->
                 logFails(call)
             },
             { call: Call, response: Response ->
-                if (!blockLock) handleResponse(callback, force, call, response) else logIgnored(call)
+                if (!blockLock) handleResponse(callback, force, call, response) else logIgnored(
+                    call
+                )
             }
         )
         sendRequest(
-            okHttpClient, requestFastGit,
+            okHttpClient,
+            requestFastGit,
             { call: Call, _: IOException ->
                 logFails(call)
             },
             { call: Call, response: Response ->
-                if (!blockLock || blockLockHolder.contains("jsdelivr.net")) handleResponse(callback, force, call, response) else logIgnored(call)
+                if (!blockLock || blockLockHolder.contains("jsdelivr.net")) handleResponse(
+                    callback,
+                    force,
+                    call,
+                    response
+                ) else logIgnored(call)
             }
         )
     }
@@ -102,10 +119,13 @@ object Updater {
     }
 
     private fun logFails(call: Call) =
-        Log.e(TAG, "Fail to check new version! callUri = ${call.request().url()}")
+        Log.w(TAG, "Fail to check new version! callUri = ${call.request().url()}")
 
     private fun logIgnored(call: Call) =
-        Log.i(TAG, "Succeed to check new version, but it was blocked by an early successful call! callUri = ${call.request().url()}")
+        Log.i(
+            TAG,
+            "Succeed to check new version, but it was blocked by an early successful call! callUri = ${call.request().url()}"
+        )
 
     private fun logSucceed(call: Call) =
         Log.i(TAG, "Succeed to check new version! callUri = ${call.request().url()}")
@@ -113,9 +133,15 @@ object Updater {
     var blockLock: Boolean = false
     var blockLockHolder: String = ""
 
-    private fun handleResponse(callback: (Bundle) -> Unit, force: Boolean, call: Call, response: Response) {
+    private fun handleResponse(
+        callback: (Bundle) -> Unit,
+        force: Boolean,
+        call: Call,
+        response: Response
+    ) {
         blockLock = true // block other successful call
-        blockLockHolder = call.request().url().host() ; Log.d(TAG, "blockLockHolder:$blockLockHolder")
+        blockLockHolder = call.request().url().host()
+        if (DEBUG) Log.v(TAG, "blockLockHolder:$blockLockHolder")
 
         logSucceed(call)
 
@@ -132,10 +158,16 @@ object Updater {
         }
 
         versionJson?.let { json: VersionJson ->
-            Log.v(TAG, "versionCode: ${json.versionCode}, version: ${json.version}, logSummary-zh: ${json.logSummaryZH}, logSummary-en: ${json.logSummaryEN}")
+            if (DEBUG) Log.v(
+                TAG,
+                "versionCode: ${json.versionCode}, version: ${json.version}, logSummary-zh: ${json.logSummaryZH}, logSummary-en: ${json.logSummaryEN}"
+            )
 
             val ignoreUpgradeVersionCode = Setting.instance.ignoreUpgradeVersionCode
-            Log.v(TAG, "current state: force:$force, ignoreUpgradeVersionCode:$ignoreUpgradeVersionCode, canAccessGitHub:$canAccessGitHub ")
+            if (DEBUG) Log.v(
+                TAG,
+                "current state: force:$force, ignoreUpgradeVersionCode:$ignoreUpgradeVersionCode, canAccessGitHub:$canAccessGitHub "
+            )
 
             // stop if version code is lower ignore version code level and not force to execute
             if (
@@ -150,8 +182,8 @@ object Updater {
                 it.putInt(VERSIONCODE, json.versionCode)
                 it.putString(VERSION, json.version)
 //                it.putString(LOG_SUMMARY, json.logSummary)
-                it.putString("$ZH_CN$separator$LOG_SUMMARY",json.logSummaryZH)
-                it.putString("$EN$separator$LOG_SUMMARY",json.logSummaryEN)
+                it.putString("$ZH_CN$separator$LOG_SUMMARY", json.logSummaryZH)
+                it.putString("$EN$separator$LOG_SUMMARY", json.logSummaryEN)
                 it.putBoolean(CAN_ACCESS_GITHUB, canAccessGitHub)
                 if (json.downloadUris != null && json.downloadSources != null) {
                     it.putStringArray(DOWNLOAD_URIS, json.downloadUris)
@@ -161,12 +193,12 @@ object Updater {
 
             when {
                 json.versionCode > BuildConfig.VERSION_CODE -> {
-                    Log.i(TAG, "updatable!")
+                    Log.v(TAG, "updatable!")
                     result.putBoolean(UPGRADABLE, true)
                     callback.invoke(result)
                 }
                 json.versionCode == BuildConfig.VERSION_CODE -> {
-                    Log.i(TAG, "no update, latest version!")
+                    Log.v(TAG, "no update, latest version!")
                     if (force) {
                         result.putBoolean(UPGRADABLE, false)
                         callback.invoke(result)
