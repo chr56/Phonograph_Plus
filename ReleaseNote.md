@@ -2,10 +2,8 @@
 
 **CN**
 与前一预览版相比:
-- 移除 旧的`文件夹`视图
-- 变更 更新抽屉
+- 修复 部分情况下主播放器歌曲封面错误
 
 **EN**
 Compared to the previous preview:
-- Remove: the legacy `Folders` Page
-- Change: update drawers 
+- Fix: Glitch song covers in the main player in MOST circumstances
