@@ -2,7 +2,7 @@
  * Copyright (c) 2022 chr_56 & Abou Zeid (kabouzeid) (original author)
  */
 
-package player.phonograph.ui.fragments.mainactivity.home
+package player.phonograph.ui.fragments.home
 
 import android.annotation.SuppressLint
 import android.util.Log

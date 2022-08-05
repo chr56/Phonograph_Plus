@@ -16,7 +16,7 @@ import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
 import player.phonograph.R
-import player.phonograph.ui.fragments.mainactivity.home.*
+import player.phonograph.ui.fragments.home.*
 import player.phonograph.util.ImageUtil.getTintedDrawable
 
 class HomePagerAdapter(fragment: Fragment, var cfg: PageConfig) : FragmentStateAdapter(fragment) {

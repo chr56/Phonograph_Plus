@@ -1,4 +1,4 @@
-package player.phonograph.ui.fragments.mainactivity
+package player.phonograph.ui.fragments
 
 import android.os.Bundle
 import android.util.Log

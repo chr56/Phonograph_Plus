@@ -26,7 +26,7 @@
                 app:layout_constraintTop_toTopOf="@+id/button_page_header"
                 tools:ignore="SpeakableTextPresentCheck" />
 
-            <player.phonograph.ui.fragments.mainactivity.home.BreadCrumbView
+            <player.phonograph.views.BreadCrumbView
                 android:id="@+id/header"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
@@ -36,7 +36,7 @@
                 app:layout_constraintEnd_toStartOf="@id/button_page_header"
                 app:layout_constraintStart_toEndOf="@id/button_back">
 
-            </player.phonograph.ui.fragments.mainactivity.home.BreadCrumbView>
+            </player.phonograph.views.BreadCrumbView>
 
 
             <ImageButton
