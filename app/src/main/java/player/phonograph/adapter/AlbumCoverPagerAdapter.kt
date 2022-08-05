@@ -20,7 +20,7 @@ import player.phonograph.glide.SongGlideRequest
 import player.phonograph.glide.palette.BitmapPaletteWrapper
 import player.phonograph.model.Song
 import player.phonograph.settings.Setting
-import player.phonograph.util.Util
+import player.phonograph.util.CoroutineUtil
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
@@ -143,7 +143,7 @@ class AlbumCoverPagerAdapter(
             ): Pair<Song, Int> =
                 withContext(SupervisorJob()) {
                     async {
-                        Util.Executor<Pair<Song, Int>> { tmp ->
+                        CoroutineUtil.Executor<Pair<Song, Int>> { tmp ->
                             loadImage(context, song, target) { song, color ->
                                 tmp.content = Pair(song, color)
                             }

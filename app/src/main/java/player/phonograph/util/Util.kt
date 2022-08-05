@@ -33,20 +33,6 @@ object Util {
         return if (result)outValue.resourceId else 0
     }
 
-    suspend fun coroutineToast(context: Context, text: String, longToast: Boolean = false) {
-        withContext(Dispatchers.Main) {
-            Toast.makeText(
-                context,
-                text,
-                if (longToast) Toast.LENGTH_LONG else Toast.LENGTH_SHORT
-            ).show()
-        }
-    }
-    suspend fun coroutineToast(context: Context, @StringRes res: Int) = coroutineToast(
-        context,
-        context.getString(res)
-    )
-
     fun sentPlaylistChangedLocalBoardCast() =
         LocalBroadcastManager.getInstance(App.instance).sendBroadcast(
             Intent(BROADCAST_PLAYLISTS_CHANGED)

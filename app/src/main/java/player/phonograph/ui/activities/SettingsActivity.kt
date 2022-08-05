@@ -25,6 +25,7 @@ import player.phonograph.misc.OpenDocumentContract
 import player.phonograph.provider.DatabaseManger
 import player.phonograph.settings.SettingManager
 import player.phonograph.ui.fragments.SettingsFragment
+import player.phonograph.util.CoroutineUtil
 import player.phonograph.util.Util
 import player.phonograph.util.Util.currentDateTime
 import util.mdcolor.pref.ThemeColor
@@ -160,6 +161,6 @@ class SettingsActivity : ToolbarActivity() {
         return SettingManager(App.instance).importSetting(uri)
     }
     private suspend fun Boolean.andReport() {
-        Util.coroutineToast(App.instance, if (this) R.string.success else R.string.failed)
+        CoroutineUtil.coroutineToast(App.instance, if (this) R.string.success else R.string.failed)
     }
 }

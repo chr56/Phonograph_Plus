@@ -24,6 +24,7 @@ import player.phonograph.R
 import player.phonograph.model.PlaylistSong
 import player.phonograph.model.Song
 import player.phonograph.model.playlist.FilePlaylist
+import player.phonograph.util.CoroutineUtil
 import player.phonograph.util.PlaylistsUtil
 import player.phonograph.util.Util
 import java.util.*
@@ -101,7 +102,7 @@ object LegacyPlaylistsUtil {
             result += output
         }
         CoroutineScope(SupervisorJob()).launch(Dispatchers.Main) {
-            Util.coroutineToast(
+            CoroutineUtil.coroutineToast(
                 context, String.format(Locale.getDefault(), context.getString(R.string.deleted_x_playlists), result)
             )
         }

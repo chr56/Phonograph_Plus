@@ -20,7 +20,7 @@ import legacy.phonograph.DeprecatedPreference.SortOrder.SONG_SORT_ORDER
 import player.phonograph.R
 import player.phonograph.notification.BackgroundNotification
 import player.phonograph.notification.ErrorNotification
-import player.phonograph.util.Util
+import player.phonograph.util.CoroutineUtil
 
 class JunkCleaner(context: Context) : FileCleaner(context) {
     companion object {
@@ -109,8 +109,8 @@ abstract class FileCleaner(val context: Context) {
 
     protected fun logFail(str: String) {
         Log.e(TAG, "Failed to clean $str ...")
-        GlobalScope.launch {
-            Util.coroutineToast(context, R.string.failed_to_delete)
+        CoroutineScope(SupervisorJob()).launch {
+            CoroutineUtil.coroutineToast(context, R.string.failed_to_delete)
         }
     }
 

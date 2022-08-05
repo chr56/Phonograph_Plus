@@ -20,10 +20,9 @@ import player.phonograph.R
 import player.phonograph.misc.UpdateToastMediaScannerCompletionListener
 import player.phonograph.notification.ErrorNotification
 import player.phonograph.settings.Setting
-import player.phonograph.util.FileUtil
-import player.phonograph.util.FileUtil.FileScanner
+import player.phonograph.util.CoroutineUtil.coroutineToast
 import player.phonograph.util.FileUtil.DirectoryInfo
-import player.phonograph.util.Util
+import player.phonograph.util.FileUtil.FileScanner
 import util.mdcolor.pref.ThemeColor
 import java.io.File
 import java.lang.ref.WeakReference
@@ -75,7 +74,7 @@ class ScanMediaFolderDialog : DialogFragment() {
                                 )
                             }
                         } else {
-                            Util.coroutineToast(App.instance, R.string.nothing_to_scan)
+                            coroutineToast(App.instance, R.string.nothing_to_scan)
                         }
                     }
                 }.apply {

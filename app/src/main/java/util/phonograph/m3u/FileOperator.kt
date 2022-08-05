@@ -33,7 +33,7 @@ import player.phonograph.model.playlist.FilePlaylist
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.notification.ErrorNotification
 import player.phonograph.util.PlaylistsUtil
-import player.phonograph.util.Util.coroutineToast
+import player.phonograph.util.CoroutineUtil.coroutineToast
 import player.phonograph.util.Util.sentPlaylistChangedLocalBoardCast
 import util.phonograph.m3u.internal.M3UGenerator
 import util.phonograph.m3u.internal.appendTimestampSuffix

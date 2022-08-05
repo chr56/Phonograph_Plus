@@ -17,6 +17,7 @@ import player.phonograph.model.Song
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.model.playlist.SmartPlaylist
 import player.phonograph.notification.ErrorNotification
+import player.phonograph.util.CoroutineUtil
 import player.phonograph.util.Util
 
 object M3UGenerator {
@@ -70,7 +71,7 @@ object M3UGenerator {
                     try {
                         generate(outputStream, songs, addHeader)
                     } catch (e: IOException) {
-                        Util.coroutineToast(context ?: App.instance, R.string.failed)
+                        CoroutineUtil.coroutineToast(context ?: App.instance, R.string.failed)
                         ErrorNotification.postErrorNotification(e, "Failed to write playlist!")
                     }
                 }
