@@ -3,64 +3,52 @@ package player.phonograph.adapter
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.util.SparseArray
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import androidx.collection.LruCache
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.bumptech.glide.Glide
-import player.phonograph.BuildConfig.DEBUG
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.async
+import kotlinx.coroutines.withContext
 import player.phonograph.databinding.FragmentAlbumCoverBinding
 import player.phonograph.glide.CustomPaletteTarget
 import player.phonograph.glide.SongGlideRequest
 import player.phonograph.glide.palette.BitmapPaletteWrapper
 import player.phonograph.model.Song
-import player.phonograph.notification.ErrorNotification
 import player.phonograph.settings.Setting
+import player.phonograph.util.Util
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
  */
 class AlbumCoverPagerAdapter(
     val fragment: Fragment,
-    dataSet: List<Song>,
-    var onColorReady: (Long, Int) -> Unit
+    dataSet: List<Song>
 ) :
     FragmentStateAdapter(fragment) {
 
     var dataSet: List<Song> = dataSet
         set(value) {
-            fragments.clear()
             field = value
             notifyDataSetChanged()
         }
 
-    private val fragments = SparseArray<AlbumCoverFragment>(dataSet.size)
-
     override fun createFragment(position: Int): Fragment =
-        AlbumCoverFragment.newInstance(dataSet[position], onColorReady).also {
-            fragments.put(
-                position,
-                it
-            )
-        }
-
+        AlbumCoverFragment.newInstance(dataSet[position], ::putColor)
     override fun getItemCount(): Int = dataSet.size
 
-    /**
-     * request load album manually
-     */
-    fun requestLoadCover(position: Int) {
-        try {
-            fragments[position].loadAlbumCover()
-        } catch (exception: Exception) {
-            if (DEBUG) ErrorNotification.postErrorNotification(
-                exception,
-                "Failed to load cover in position $position (${dataSet[position].title})"
-            )
-        }
+    private val colorCache: LruCache<Song, Int> = LruCache(6)
+    internal fun putColor(song: Song, color: Int) {
+        colorCache.put(song, color)
+    }
+
+    suspend fun getPaletteColor(song: Song): Int {
+        return colorCache.get(song)
+            ?: AlbumCoverFragment.loadImage(fragment.requireContext(), song, null).second
     }
 
     class AlbumCoverFragment : Fragment(), SharedPreferences.OnSharedPreferenceChangeListener {
@@ -68,16 +56,13 @@ class AlbumCoverPagerAdapter(
         private var _binding: FragmentAlbumCoverBinding? = null
         val binding get() = _binding!!
 
-        private var isColorReady = false
-        private var color = 0
+        private lateinit var song: Song
 
-        private var song: Song? = null
-
-        var onColorReadyCallback: ((Long, Int) -> Unit)? = null
+        lateinit var onColorReadyCallback: (Song, Int) -> Unit
 
         override fun onCreate(savedInstanceState: Bundle?) {
             super.onCreate(savedInstanceState)
-            song = requireArguments().getParcelable(SONG_ARG)
+            song = requireArguments().getParcelable(SONG_ARG)!!
         }
 
         override fun onCreateView(
@@ -105,12 +90,7 @@ class AlbumCoverPagerAdapter(
         }
 
         fun loadAlbumCover() {
-            loadImage(
-                requireContext(),
-                song ?: return,
-                binding.playerImage,
-                ::setColor
-            )
+            loadImage(requireContext(), song, binding.playerImage, onColorReadyCallback)
         }
 
         override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String) {
@@ -126,15 +106,9 @@ class AlbumCoverPagerAdapter(
                 if (forceSquareAlbumCover) ImageView.ScaleType.FIT_CENTER else ImageView.ScaleType.CENTER_CROP
         }
 
-        private fun setColor(songId: Long, color: Int) {
-            this.color = color
-            this.isColorReady = true
-            onColorReadyCallback?.let { it(songId, color) }
-        }
-
         companion object {
             private const val SONG_ARG = "song"
-            fun newInstance(song: Song?, callback: (Long, Int) -> Unit): AlbumCoverFragment {
+            fun newInstance(song: Song?, callback: (Song, Int) -> Unit): AlbumCoverFragment {
                 return AlbumCoverFragment().apply {
                     arguments = Bundle().apply {
                         putParcelable(SONG_ARG, song)
@@ -146,21 +120,36 @@ class AlbumCoverPagerAdapter(
             fun loadImage(
                 context: Context,
                 song: Song,
-                target: ImageView,
-                colorCallback: (Long, Int) -> Unit
+                target: ImageView?,
+                colorCallback: (Song, Int) -> Unit
             ) {
                 SongGlideRequest.Builder.from(Glide.with(context), song)
                     .checkIgnoreMediaStore(context)
                     .generatePalette(context).build()
                     .into(object : CustomPaletteTarget(context) {
                         override fun onResourceReady(resource: BitmapPaletteWrapper) {
-                            target.setImageBitmap(resource.bitmap)
+                            target?.setImageBitmap(resource.bitmap)
                         }
                         override fun onColorReady(color: Int) {
-                            colorCallback(song.id, color)
+                            colorCallback(song, color)
                         }
                     })
             }
+
+            suspend fun loadImage(
+                context: Context,
+                song: Song,
+                target: ImageView?
+            ): Pair<Song, Int> =
+                withContext(SupervisorJob()) {
+                    async {
+                        Util.Executor<Pair<Song, Int>> { tmp ->
+                            loadImage(context, song, target) { song, color ->
+                                tmp.content = Pair(song, color)
+                            }
+                        }.execute()
+                    }
+                }.await()
         }
     }
 }

@@ -105,20 +105,14 @@ class PlayerAlbumCoverFragment :
         val adapter = albumCoverPagerAdapter
         if (adapter == null) {
             this.albumCoverPagerAdapter =
-                AlbumCoverPagerAdapter(this, queue, ::deployColor)
+                AlbumCoverPagerAdapter(this, queue)
             binding.playerCoverViewpager.adapter = this.albumCoverPagerAdapter
         } else {
             adapter.dataSet = queue
         }
     }
 
-    private fun deployColor(songId: Long, color: Int) {
-        if (songId == MusicPlayerRemote.currentSong.id) {
-            notifyColorChange(color)
-        } else {
-            albumCoverPagerAdapter?.requestLoadCover(currentPosition)
-        }
-    }
+    private val coroutineScope = CoroutineScope(SupervisorJob())
 
     private val handler: Handler = Handler(Looper.getMainLooper()) { message ->
         when (message.what) {
@@ -148,6 +142,14 @@ class PlayerAlbumCoverFragment :
         currentPosition = position
         if (position != MusicPlayerRemote.position) {
             MusicPlayerRemote.playSongAt(position)
+        }
+        coroutineScope.launch {
+            albumCoverPagerAdapter?.let { adapter ->
+                val color = adapter.getPaletteColor(adapter.dataSet[position])
+                withContext(Dispatchers.Main) {
+                    notifyColorChange(color)
+                }
+            }
         }
     }
 
