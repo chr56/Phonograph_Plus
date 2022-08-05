@@ -60,7 +60,7 @@ class ColorPreferenceX : Preference {
             if (color != 0) {
                 visibility = View.VISIBLE
                 setBackgroundColor(color)
-                setBorderColor(border)
+                borderColor = border
             } else {
                 visibility = View.GONE
             }
