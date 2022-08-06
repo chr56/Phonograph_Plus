@@ -12,6 +12,7 @@ class ArtistImageMapper : Mapper<Artist, ArtistImage> {
     override fun map(data: Artist, options: Options): ArtistImage? =
         ArtistImage(
             data.name,
+            data.id,
             data.albums.map { ArtistImage.AlbumCover(it.id, it.year, it.safeGetFirstSong().data) }
         ).takeIf { it.albumCovers.isNotEmpty() }
 }
