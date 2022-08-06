@@ -7,6 +7,7 @@ package player.phonograph.coil.artist
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
+import android.media.MediaMetadataRetriever
 import android.util.Log
 import coil.ImageLoader
 import coil.decode.DataSource
@@ -48,11 +49,12 @@ class ArtistImageFetcher(val data: ArtistImage, val context: Context, val size: 
         //
         // 1: From Android MediaMetadataRetriever
         //
-        for (cover in data.albumCovers) {
-            bitmap = retrieveFromMediaMetadataRetriever(cover.filePath)
-            if (bitmap != null) break
+        MediaMetadataRetriever().use { retriever ->
+            for (cover in data.albumCovers) {
+                bitmap = retrieveFromMediaMetadataRetriever(cover.filePath, retriever)
+                if (bitmap != null) break
+            }
         }
-
         //
         // 2: Use JAudioTagger to get embedded high resolution album art if there is any
         //

@@ -35,8 +35,7 @@ internal fun readFromMediaStore(albumId: Long, context: Context, size: Size): So
     }.getOrNull()
 }
 
-internal fun retrieveFromMediaMetadataRetriever(filepath: String): Bitmap? {
-    val retriever = MediaMetadataRetriever()
+internal fun retrieveFromMediaMetadataRetriever(filepath: String, retriever: MediaMetadataRetriever): Bitmap? {
     val embeddedPicture: ByteArray? =
         runCatching {
             retriever.setDataSource(filepath)

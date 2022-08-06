@@ -7,6 +7,7 @@ package player.phonograph.coil.audiofile
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
+import android.media.MediaMetadataRetriever
 import android.util.Log
 import coil.ImageLoader
 import coil.decode.DataSource
@@ -51,9 +52,11 @@ class AudioFileFetcher private constructor(
         //
         // 1: From Android MediaMetadataRetriever
         //
-        bitmap = retrieveFromMediaMetadataRetriever(audioFile.path)
-        if (DEBUG && bitmap == null) {
-            Log.v(TAG, "No cover for $audioFile from Android naive MediaMetadataRetriever")
+        MediaMetadataRetriever().use { retriever ->
+            bitmap = retrieveFromMediaMetadataRetriever(audioFile.path, retriever)
+            if (DEBUG && bitmap == null) {
+                Log.v(TAG, "No cover for $audioFile from Android naive MediaMetadataRetriever")
+            }
         }
 
         //
