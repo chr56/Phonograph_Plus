@@ -11,7 +11,7 @@ import android.util.Log
 import androidx.palette.graphics.Palette
 import coil.target.Target
 import kotlinx.coroutines.Deferred
-import player.phonograph.coil.PaletteUtil.toPaletteAsync
+import player.phonograph.util.PaletteUtil.toPaletteAsync
 
 abstract class PaletteTarget : Target {
 

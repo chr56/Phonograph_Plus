@@ -2,13 +2,12 @@
  * Copyright (c) 2022 chr_56
  */
 
-package player.phonograph.coil
+package player.phonograph.util
 
 import android.graphics.Bitmap
 import androidx.annotation.ColorInt
 import androidx.palette.graphics.Palette
 import kotlinx.coroutines.*
-import player.phonograph.util.PhonographColorUtil
 
 object PaletteUtil {
     private val coroutineScope = CoroutineScope(Dispatchers.Default + SupervisorJob())
