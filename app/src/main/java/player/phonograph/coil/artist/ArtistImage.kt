@@ -8,9 +8,7 @@ data class ArtistImage(
     override fun toString(): String =
         "ArtistImage{artistName:$artistName,albumCovers:{${albumCovers.fold(""){ acc, albumCover -> "$acc$albumCover," }}}}"
 
-    class AlbumCover(var year: Int, var filePath: String) {
-        override fun toString(): String {
-            return "[$filePath,$year]"
-        }
+    data class AlbumCover(val id: Long, val year: Int, val filePath: String) {
+        override fun toString(): String = "[$id($filePath),year:$year]"
     }
 }
