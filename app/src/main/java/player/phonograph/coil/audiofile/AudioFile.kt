@@ -13,8 +13,7 @@ class AudioFile private constructor(val songId: Long, val path: String, val albu
             AudioFile(song.id, song.data, song.albumId)
     }
 
-    override fun toString(): String =
-        "SongFIleWrapper: id:$songId path:$path "
+    override fun toString(): String = "AudioFile{songId:$songId,path:$path}"
 
     override fun equals(other: Any?): Boolean {
         if (other == null) return false
