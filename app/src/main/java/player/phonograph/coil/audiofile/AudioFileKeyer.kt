@@ -1,8 +1,8 @@
 /*
- * Copyright (c) 2022 chr_56 & Abou Zeid (kabouzeid) (original author)
+ * Copyright (c) 2022 chr_56
  */
 
-package player.phonograph.coil
+package player.phonograph.coil.audiofile
 
 import coil.key.Keyer
 import coil.request.Options

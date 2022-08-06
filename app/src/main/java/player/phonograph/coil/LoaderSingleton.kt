@@ -6,6 +6,9 @@ package player.phonograph.coil
 
 import android.content.Context
 import coil.ImageLoader
+import player.phonograph.coil.audiofile.AudioFileFetcher
+import player.phonograph.coil.audiofile.AudioFileKeyer
+import player.phonograph.coil.audiofile.AudioFileMapper
 
 fun createPhonographImageLoader(context: Context): ImageLoader {
     return ImageLoader.Builder(context)

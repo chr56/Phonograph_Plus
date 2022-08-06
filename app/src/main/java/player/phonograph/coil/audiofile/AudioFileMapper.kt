@@ -2,7 +2,7 @@
  * Copyright (c) 2022 chr_56
  */
 
-package player.phonograph.coil
+package player.phonograph.coil.audiofile
 
 import coil.map.Mapper
 import coil.request.Options

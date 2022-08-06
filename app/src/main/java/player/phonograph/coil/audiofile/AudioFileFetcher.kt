@@ -2,7 +2,7 @@
  * Copyright (c) 2022 chr_56
  */
 
-package player.phonograph.coil
+package player.phonograph.coil.audiofile
 
 import android.content.ContentResolver
 import android.content.Context
@@ -33,6 +33,7 @@ import okio.buffer
 import okio.source
 import org.jaudiotagger.audio.mp3.MP3File
 import player.phonograph.BuildConfig
+import player.phonograph.coil.IgnoreMediaStorePreference
 import player.phonograph.util.MusicUtil
 
 class AudioFileFetcher private constructor(
