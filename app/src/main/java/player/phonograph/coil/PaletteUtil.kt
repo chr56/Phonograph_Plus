@@ -10,7 +10,7 @@ import androidx.palette.graphics.Palette
 import kotlinx.coroutines.*
 import player.phonograph.util.PhonographColorUtil
 
-object PaletteFactory {
+object PaletteUtil {
     private val coroutineScope = CoroutineScope(Dispatchers.Default + SupervisorJob())
 
     fun Bitmap.toPaletteAsync(): Deferred<Palette> =

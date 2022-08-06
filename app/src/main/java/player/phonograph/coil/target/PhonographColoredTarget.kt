@@ -9,7 +9,7 @@ import androidx.palette.graphics.Palette
 import kotlinx.coroutines.Deferred
 import player.phonograph.App
 import player.phonograph.R
-import player.phonograph.coil.PaletteFactory.getColor
+import player.phonograph.coil.PaletteUtil.getColor
 
 abstract class PhonographColoredTarget : ColoredTarget() {
 
