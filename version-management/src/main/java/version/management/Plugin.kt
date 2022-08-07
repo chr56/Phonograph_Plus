@@ -6,9 +6,15 @@ package version.management
 
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import version.management.Util.encodeReleaseNoteToUrl
 
 class Plugin : Plugin<Project> {
     override fun apply(target: Project) {
-
+        target.tasks.create("encodeReleaseNoteToUrl") {
+            encodeReleaseNoteToUrl(
+                inputReleaseNote,
+                outputReleaseNote
+            )
+        }
     }
 }
