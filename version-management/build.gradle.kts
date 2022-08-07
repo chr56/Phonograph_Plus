@@ -8,11 +8,12 @@ repositories {
 }
 
 plugins {
-    id("org.jetbrains.kotlin.jvm")  version "1.6.21"
+    id("org.jetbrains.kotlin.jvm") version "1.6.21"
     id("java-gradle-plugin")
 }
 
 java {
+    sourceSets["main"].java.srcDirs("src/java")
     sourceCompatibility = JavaVersion.VERSION_1_8
     targetCompatibility = JavaVersion.VERSION_1_8
 }
