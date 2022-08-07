@@ -1,27 +1,15 @@
 import com.android.build.api.artifact.SingleArtifact
-import java.io.ByteArrayOutputStream
 import java.io.FileInputStream
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Properties
 import version.management.Deps
+import version.management.Util.getGitHash
 
 plugins {
     id("com.android.application")
     id("kotlin-android")
     id("version.management") // Phonograph Plus's dependency management
-}
-
-fun getGitHash(shortHash: Boolean): String {
-    val stdout = ByteArrayOutputStream()
-    exec {
-        if (shortHash)
-            commandLine("git", "rev-parse", "--short", "HEAD")
-        else
-            commandLine("git", "rev-parse", "HEAD")
-        standardOutput = stdout
-    }
-    return stdout.toString().trim()
 }
 
 val isSigningFileExist: Boolean = rootProject.file("signing.properties").exists()
