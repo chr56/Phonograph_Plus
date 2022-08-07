@@ -2,16 +2,6 @@
  * Copyright (c) 2022 chr_56
  */
 
-buildscript {
-    repositories {
-        mavenCentral()
-        google()
-    }
-    dependencies {
-        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.6.21")
-    }
-}
-
 repositories {
     mavenCentral()
     google()

@@ -1,5 +1,4 @@
 buildscript {
-    val kotlinVersion by extra { "1.6.21" }
     @Suppress("JcenterRepositoryObsolete")
     repositories {
         mavenCentral()
@@ -9,7 +8,7 @@ buildscript {
     }
     dependencies {
         classpath("com.android.tools.build:gradle:7.2.1")
-        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion")
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.6.21")
     }
 }
 

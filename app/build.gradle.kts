@@ -1,5 +1,4 @@
 import com.android.build.api.artifact.SingleArtifact
-import java.io.FileInputStream
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Properties
@@ -15,7 +14,9 @@ plugins {
 val isSigningFileExist: Boolean = rootProject.file("signing.properties").exists()
 var signingProperties = Properties()
 if (isSigningFileExist) {
-    signingProperties.load(FileInputStream(rootProject.file("signing.properties")))
+    rootProject.file("signing.properties").inputStream().use {
+        signingProperties.load(it)
+    }
 }
 
 android {
@@ -184,6 +185,8 @@ android {
 
 @Suppress("SpellCheckingInspection")
 dependencies {
+
+    // see composing-build-module: version-management
 
     implementation(Deps.AndroidX.core)
     implementation(Deps.AndroidX.appcompat)
