@@ -144,7 +144,9 @@ android {
             val variantDirectory = File(productsDirectory, variant.name).apply { mkdir() }
 
             val version = android.defaultConfig.versionName
-            val currentTimeString = SimpleDateFormat("yyMMddHHmmss").format(Calendar.getInstance().time)
+            val currentTimeString = SimpleDateFormat("yyMMddHHmmss").format(
+                Calendar.getInstance().time
+            )
             val gitHash = getGitHash(true)
             val apkName =
                 when (variant.buildType) {
@@ -161,13 +163,15 @@ android {
                 loader.load(apkOutputDirectory.get())?.apply {
                     elements.forEach {
                         File(it.outputFile).copyTo(
-                            File(variantDirectory, apkName), true
+                            File(variantDirectory, apkName),
+                            true
                         )
                     }
                 }
                 mappingFile.orNull?.asFile?.apply {
                     if (exists()) copyTo(
-                        File(variantDirectory, "mapping_$gitHash.txt"), true
+                        File(variantDirectory, "mapping_$gitHash.txt"),
+                        true
                     )
                 }
             }
@@ -183,10 +187,10 @@ android {
     }
 }
 
-@Suppress("SpellCheckingInspection")
+/**
+ * see composing-build-module: [version.management.Deps]
+ */
 dependencies {
-
-    // see composing-build-module: version-management
 
     implementation(Deps.AndroidX.core)
     implementation(Deps.AndroidX.appcompat)
@@ -209,34 +213,33 @@ dependencies {
 
     implementation(Deps.google_material)
 
-    implementation("com.github.chr56:mdUtil:0.0.1")
-    implementation("com.github.chr56:mdColor:0.0.1")
-    implementation("com.github.chr56:Android-Menu-DSL:0.0.3")
+    implementation(Deps.mdColor)
+    implementation(Deps.mdUtil)
 
-    implementation("com.simplecityapps:recyclerview-fastscroll:2.0.1")
-    implementation("com.github.chr56:SeekArc:c5ae37866e")
-    implementation("com.github.kabouzeid:AndroidSlidingUpPanel:6")
-    implementation("com.afollestad.material-dialogs:core:3.3.0")
-    implementation("com.afollestad.material-dialogs:input:3.3.0")
-    implementation("com.afollestad.material-dialogs:color:3.3.0")
-    implementation("com.afollestad.material-dialogs:files:3.3.0")
+    implementation(Deps.Android_Menu_DSL)
+    implementation(Deps.SeekArc)
+    implementation(Deps.AndroidSlidingUpPanel_kabouzeid)
 
-    implementation("com.github.ksoichiro:android-observablescrollview:1.6.0")
-    implementation("com.heinrichreimersoftware:material-intro:2.0.0")
-    implementation("com.h6ah4i.android.widget.advrecyclerview:advrecyclerview:1.0.0")
+    implementation(Deps.recyclerview_fastscroll)
 
-    implementation("com.squareup.retrofit2:retrofit:2.9.0")
-    implementation("com.squareup.retrofit2:converter-gson:2.5.0")
-    implementation("com.google.code.gson:gson:2.8.6")
+    implementation(Deps.material_dialogs_core)
+    implementation(Deps.material_dialogs_input)
+    implementation(Deps.material_dialogs_color)
+    implementation(Deps.material_dialogs_files)
 
-    implementation("de.psdev.licensesdialog:licensesdialog:2.1.0")
+    implementation(Deps.okhttp3)
+    implementation(Deps.retrofit2)
+    implementation(Deps.retrofit2_converter_gson)
+    implementation(Deps.gson)
 
-    implementation("com.squareup.okhttp3:okhttp:4.9.3")
+    implementation(Deps.glide)
+    annotationProcessor(Deps.glide_compiler)
+    implementation(Deps.glide_okhttp3_integration)
 
-    implementation("com.github.bumptech.glide:glide:4.12.0")
-    annotationProcessor("com.github.bumptech.glide:compiler:4.12.0")
-    implementation("com.github.bumptech.glide:okhttp3-integration:4.12.0")
-    implementation("org.eclipse.mylyn.github:org.eclipse.egit.github.core:2.1.5")
-
-    implementation("com.github.AdrienPoupa:jaudiotagger:2.2.3")
+    implementation(Deps.licensesdialog)
+    implementation(Deps.jaudiotagger)
+    implementation(Deps.observablescrollview)
+    implementation(Deps.material_intro)
+    implementation(Deps.advrecyclerview)
+    implementation(Deps.org_eclipse_egit_github)
 }
