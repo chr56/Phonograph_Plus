@@ -197,22 +197,26 @@ android {
 @Suppress("SpellCheckingInspection")
 dependencies {
 
-    implementation("androidx.core:core-ktx:1.8.0")
-    implementation("androidx.appcompat:appcompat:1.4.2")
-    implementation("androidx.activity:activity-ktx:1.5.1")
-    implementation("androidx.fragment:fragment-ktx:1.5.1")
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.5.1")
+    implementation(Deps.AndroidX.core)
+    implementation(Deps.AndroidX.appcompat)
+    implementation(Deps.AndroidX.activity)
+    implementation(Deps.AndroidX.fragment)
+    implementation(Deps.AndroidX.lifecycle_runtime)
 
-    implementation("androidx.cardview:cardview:1.0.0")
-    implementation("androidx.constraintlayout:constraintlayout:2.1.4")
-    implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
-    implementation("androidx.media:media:1.6.0")
-    implementation("androidx.palette:palette-ktx:1.0.0")
-    implementation("androidx.percentlayout:percentlayout:1.0.0")
-    implementation("androidx.preference:preference-ktx:1.2.0")
-    implementation("androidx.recyclerview:recyclerview:1.2.1")
-    implementation("androidx.annotation:annotation:1.4.0")
-    implementation("com.google.android.material:material:1.6.1")
+    implementation(Deps.AndroidX.annotation)
+    implementation(Deps.AndroidX.preference)
+
+    implementation(Deps.AndroidX.recyclerview)
+
+    implementation(Deps.AndroidX.constraintlayout)
+    implementation(Deps.AndroidX.percentlayout)
+    implementation(Deps.AndroidX.swiperefreshlayout)
+
+    implementation(Deps.AndroidX.media)
+    implementation(Deps.AndroidX.cardview)
+    implementation(Deps.AndroidX.palette)
+
+    implementation(Deps.google_material)
 
     implementation("com.github.chr56:mdUtil:0.0.1")
     implementation("com.github.chr56:mdColor:0.0.1")
