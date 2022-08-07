@@ -4,10 +4,12 @@ import java.io.FileInputStream
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Properties
+import version.management.Deps
 
 plugins {
     id("com.android.application")
     id("kotlin-android")
+    id("version.management") // Phonograph Plus's dependency management
 }
 
 fun getGitHash(shortHash: Boolean): String {
