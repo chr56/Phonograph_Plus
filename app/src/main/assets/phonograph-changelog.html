@@ -39,11 +39,10 @@
 
     <p>Translate Phonograph Plus into your language -> <a href="https://crowdin.com/project/phonograph-plus">crowdin</a></p>
 
-    <h4><b>0.3.0 Beta02</b> 2022.8.5</h4>
+    <h4><b>0.3.0-RC02</b> 2022.8.8</h4>
     <div>
         <ol>
             <li>Add: a brand new <code>Folders Page</code>:<br/>
-                ├ Among with other pages of the Library; <br/>
                 ├ Read song files from <code>MediaStore</code> (significantly better performance on Android 10 and above), but you can still use old method to read song files; <br/>
                 ├ (Try to) fully support browsing external removable storage devices (such as SD cards, etc.);<br/>
                 ├ Use sweep-down-refresh;<br/>
@@ -57,19 +56,19 @@
             <li>Add: a menu item to change the current Now Playing Screen in the Now Playing Screen</li>
             <li>Fix: crash when opening sleep timer dialog for first time.</li>
             <li>Fix: wrong color of context menu icon when multiple selection</li>
-            <li>Improve: minor refactoring of the album page</li>
             <li>Development: clean up the code of Album Details Page, and begin to handle with the plan about redesigning</li>
             <li>Development: refactoring of plenty of historical codes, including<br/>
                 ├ Background Music Service (possibly a HUGE number of potential bugs related to music playing)<br/>
                 ├ Album Detail<br/>
                 ├ Playlist Detail<br/>
-                ├ Now Playing Screen / Player (about Song Cover Images)<br/>
+                ├ Now Playing Screen / Main Player (about Song Cover Images)<br/>
                 ├ File Scanning<br/>
                 ├ Sort Order<br/>
                 ├ List Appearance Popup Menu<br/>
-                ├ Theme (may have bugs such as abnormal status bar color)<br/>
-                ├ Multi-selection (may have glitch behavior)<br/>
+                ├ Theme<br/>
+                ├ Multi-selection<br/>
                 └ Sliding Player Panel</li>
+            <li>Development: cleanup Gradle build script and project structure</li>
         </ol>
         <p>Known Issues:</p>
         <ol>
@@ -77,9 +76,7 @@
             <li>Multi-selection conflict in Artist Detail</li>
             <li>No path history for brand new File Page (currently)</li>
             <li><del>Glitch song cover in the main player (most circumstances were fix in beta02)</del></li>
-            <li><del>If you click items to add to queue too quickly (around clicking more than one time per second), the app might crash! (fixed in alpha08)</del></li>
         </ol>
-
     </div>
 
     <h4><b>0.2.6</b> 2022.6.6</h4>
