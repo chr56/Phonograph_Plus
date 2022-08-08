@@ -1,9 +1,10 @@
 import com.android.build.api.artifact.SingleArtifact
-import java.text.SimpleDateFormat
-import java.util.Calendar
-import java.util.Properties
+import java.util.*
+import version.management.CopyArtifactsTask
+import version.management.CopyArtifactsTask.Config as CopyConfig
 import version.management.Deps
 import version.management.Util.getGitHash
+import version.management.Util.shiftFirstLetter
 
 plugins {
     id("com.android.application")
@@ -139,42 +140,42 @@ android {
                 variantBuilder.enable = false
             }
         }
-        onVariants(selector().withBuildType("release")) { variant ->
-            val productsDirectory = File(rootDir, "products").apply { mkdir() }
-            val variantDirectory = File(productsDirectory, variant.name).apply { mkdir() }
 
-            val version = android.defaultConfig.versionName
-            val currentTimeString = SimpleDateFormat("yyMMddHHmmss").format(
-                Calendar.getInstance().time
-            )
-            val gitHash = getGitHash(true)
-            val apkName =
-                when (variant.buildType) {
-                    "release" -> "PhonographPlus_$version.apk"
-                    else -> "PhonographPlus_${version}_${getGitHash(true)}_$currentTimeString.apk"
-                }
+        onVariants(selector().withBuildType("release")) { variant ->
 
             val loader = variant.artifacts.getBuiltArtifactsLoader()
 
             val apkOutputDirectory = variant.artifacts.get(SingleArtifact.APK)
             val mappingFile = variant.artifacts.get(SingleArtifact.OBFUSCATION_MAPPING_FILE)
 
+            val fileList = ArrayList<File>()
+
             afterEvaluate {
                 loader.load(apkOutputDirectory.get())?.apply {
                     elements.forEach {
-                        File(it.outputFile).copyTo(
-                            File(variantDirectory, apkName),
-                            true
-                        )
+                        fileList.add(File(it.outputFile))
                     }
                 }
                 mappingFile.orNull?.asFile?.apply {
-                    if (exists()) copyTo(
-                        File(variantDirectory, "mapping_$gitHash.txt"),
-                        true
-                    )
+                    fileList.add(this)
                 }
             }
+
+            val cfg = CopyConfig(
+                variant.name,
+                variant.buildType == "release",
+                appName,
+                android.defaultConfig.versionName ?: "N/A",
+                getGitHash(true),
+                fileList
+            )
+
+            tasks.register(
+                "copyArtifactsFor${variant.name.shiftFirstLetter()}",
+                CopyArtifactsTask::class.java,
+                cfg
+            )
+
         }
     }
 
