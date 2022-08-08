@@ -4,11 +4,14 @@
 
 package version.management
 
-import org.gradle.api.Project
 import java.io.ByteArrayOutputStream
 import java.io.File
+import java.text.SimpleDateFormat
+import java.util.*
+import org.gradle.api.Project
 
 object Util {
+
     fun Project.getGitHash(shortHash: Boolean): String =
         ByteArrayOutputStream().use { stdout ->
             exec {
@@ -19,6 +22,7 @@ object Util {
                 }
                 it.standardOutput = stdout
             }
+            stdout
         }.toString().trim()
 
     fun encodeReleaseNoteToUrl(inputFile: File, outputFile: File) {
@@ -32,5 +36,13 @@ object Util {
                 }
             }
         }
+    }
+    val currentTimeString get() =
+        SimpleDateFormat("yyMMddHHmmss", Locale.ENGLISH)
+            .format(Calendar.getInstance().time)
+
+    fun String.shiftFirstLetter(): String {
+        if (isBlank()) return this
+        return this[0].uppercaseChar() + this.substring(1)
     }
 }
