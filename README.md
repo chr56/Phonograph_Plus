@@ -104,15 +104,15 @@ Songs | Folders | Artists | Playlists |
 
 - [x] 完成 Readme | Complete README
 
+- [x] 重构后台音乐服务 (❗WIP) | Refactor MusicService
+
+- [ ] 迁移 Glide 至 Coil ❗WIP | Migrate Glide to Coil ❗WIP
+
+- [ ] 自定义歌曲点击行为 ⭕ | User-defined click behavior for songs ⭕
+
 - [ ] 将歌曲“详情” 迁移至 Compose ❗WIP (基本完成) | Migrate Song Detail to Jetpack Compose (❗WIP: Almost Done)
 
 - [ ] 支持白名单机制 | Whitelist
-
-- [ ] 自定义歌曲点击行为 | User-defined click behavior for songs
-
-- [ ] 重构后台音乐服务 (❗WIP) | Refactor MusicService (❗WIP)
-  
-- [ ] 重构歌曲封面加载Glide模块 | Refactor Glide Module
 
 - [ ] 重构更新对话框 | Refactor Update Dialog
 
