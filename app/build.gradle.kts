@@ -27,15 +27,6 @@ android {
 
     val appName = "Phonograph Plus"
 
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
-    }
-
-    kotlinOptions {
-        jvmTarget = "1.8"
-    }
-
     buildFeatures {
         viewBinding = true
     }
@@ -142,40 +133,40 @@ android {
         }
 
         onVariants(selector().withBuildType("release")) { variant ->
+            val canonicalName = variant.name.shiftFirstLetter()
 
             val loader = variant.artifacts.getBuiltArtifactsLoader()
 
             val apkOutputDirectory = variant.artifacts.get(SingleArtifact.APK)
             val mappingFile = variant.artifacts.get(SingleArtifact.OBFUSCATION_MAPPING_FILE)
 
-            val fileList = ArrayList<File>()
+            val fileListToCopy = ArrayList<File>()
 
             afterEvaluate {
-                loader.load(apkOutputDirectory.get())?.apply {
-                    elements.forEach {
-                        fileList.add(File(it.outputFile))
-                    }
+                loader.load(apkOutputDirectory.get())?.also { builtArtifacts ->
+                    fileListToCopy.addAll(
+                        builtArtifacts.elements.map { File(it.outputFile) }
+                    )
                 }
-                mappingFile.orNull?.asFile?.apply {
-                    fileList.add(this)
+                mappingFile.orNull?.asFile?.let {
+                    fileListToCopy.add(it)
                 }
             }
 
             val cfg = CopyConfig(
-                variant.name,
-                variant.buildType == "release",
-                appName,
-                android.defaultConfig.versionName ?: "N/A",
-                getGitHash(true),
-                fileList
+                variantName = variant.name,
+                isRelease = variant.buildType == "release",
+                appName = appName,
+                versionName = android.defaultConfig.versionName ?: "N/A",
+                gitHash = getGitHash(true),
+                artifactsFiles = fileListToCopy
             )
 
-            tasks.register(
-                "copyArtifactsFor${variant.name.shiftFirstLetter()}",
-                CopyArtifactsTask::class.java,
-                cfg
-            )
+            tasks.register("copyArtifactsFor$canonicalName", CopyArtifactsTask::class.java, cfg)
 
+            tasks.register("Publish$canonicalName", CopyArtifactsTask::class.java, cfg).configure {
+                dependsOn("assemble$canonicalName")
+            }
         }
     }
 
@@ -185,6 +176,15 @@ android {
         disable.add("InvalidPackage")
 
         checkReleaseBuilds = false
+    }
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
+    }
+
+    kotlinOptions {
+        jvmTarget = "1.8"
     }
 }
 
