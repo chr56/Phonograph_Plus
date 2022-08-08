@@ -10,13 +10,6 @@ import version.management.Util.encodeReleaseNoteToUrl
 
 class Plugin : Plugin<Project> {
     override fun apply(target: Project) {
-        target.tasks.register("encodeReleaseNoteToUrl") {
-            it.doLast {
-                encodeReleaseNoteToUrl(
-                    inputReleaseNote,
-                    outputReleaseNote
-                )
-            }
-        }
+        target.tasks.register("encodeReleaseNoteToUrl", EncodeReleaseNoteToUrlTask::class.java)
     }
 }
