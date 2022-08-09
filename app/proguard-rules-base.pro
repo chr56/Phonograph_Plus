@@ -224,10 +224,9 @@
 
 
 # jaudiotagger
-#-keepclassmembers,allowoptimization class org.jaudiotagger.audio.** {<init>(...);public <methods>;public <fields>;}
--keep class org.jaudiotagger.tag.** implements org.jaudiotagger.tag.Tag{<init>(...);<methods>;}
--keep class org.jaudiotagger.tag.** extends org.jaudiotagger.tag.id3.AbstractTagItem{<init>(...);<methods>;}
--keep class org.jaudiotagger.tag.** extends org.jaudiotagger.tag.datatype.AbstractDataType{<init>(...);<methods>;}
+-keepclasseswithmembers class org.jaudiotagger.tag.id3.framebody.Framebody** {<init>(...);}
+-keepclasseswithmembers class org.jaudiotagger.tag.** extends org.jaudiotagger.tag.id3.AbstractTagItem {<init>(...);}
+-keepclasseswithmembers class org.jaudiotagger.tag.datatype.** extends org.jaudiotagger.tag.datatype.AbstractDataType {<init>(...);}
 #
 
 
