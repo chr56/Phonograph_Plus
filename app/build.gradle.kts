@@ -195,6 +195,8 @@ android {
  */
 dependencies {
 
+    implementation(project(":libCommon"))
+
     implementation(Deps.AndroidX.core)
     implementation(Deps.AndroidX.appcompat)
     implementation(Deps.AndroidX.activity)

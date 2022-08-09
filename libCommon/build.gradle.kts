@@ -1,3 +1,4 @@
+import version.management.Deps
 plugins {
     id("com.android.library")
     id("kotlin-android")
@@ -34,4 +35,7 @@ android {
 }
 
 dependencies {
+
+    implementation(Deps.AndroidX.core)
+    implementation(Deps.AndroidX.appcompat)
 }
