@@ -25,7 +25,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v2
 #      - uses: gradle/wrapper-validation-action@v1 # its timeout fails the action
@@ -39,14 +39,6 @@ jobs:
           java-version: '11'
           distribution: 'adopt'
           cache: gradle
-
-#      # now we are use Android Gradle Plugin 7.0.*
-#
-#      - name: Create DX links for BuildTools
-#        run: ln -s $ANDROID_HOME/build-tools/31.0.0/d8 $ANDROID_HOME/build-tools/31.0.0/dx && ln -s $ANDROID_HOME/build-tools/31.0.0/lib/d8.jar $ANDROID_HOME/build-tools/31.0.0/lib/dx.jar
-#        # we are using Android Gradle Plugin 4.x.x, which can not find 'dx' in SDK31
-#
-
 
       - name: Build with Gradle
         run: ./gradlew assembleCiDebug --stacktrace --parallel

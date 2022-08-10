@@ -11,51 +11,10 @@ on:
 jobs:
   build:
     name: test
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     permissions:
       contents: write
 
     steps:
       - name: checkout
         uses: actions/checkout@v2.2.0
-
-
-#      - name: Read release note
-#        run: |
-#          echo 'RELEASE_NOTE<<FILE' >> $GITHUB_ENV
-#          cat ./ReleaseNote.md >> $GITHUB_ENV
-#          echo FILE >> $GITHUB_ENV
-
-#
-#      - name: Release New Version
-#        uses: softprops/action-gh-release@v1
-#        id: release_github
-#
-#        with:
-#          name: "[CI]TEST ${{ github.ref_name }}"
-#          prerelease: true
-#          draft: true
-#          tag_name: ${{ github.ref }}
-#          body: |
-#            TEST
-#            测试
-#          body_path: ${{ github.workspace }}/ReleaseNote.md
-#          token: ${{ secrets.TOKEN }}
-
-      - name: Upload to TG
-        uses: appleboy/telegram-action@master
-        env:
-          RELEASE_NOTE: ${{ $(cat ./ReleaseNote.md) }}
-
-        with:
-          to: ${{ secrets.TG_CHAT_ID }}
-          token: ${{ secrets.TG_BOT_TOKEN }}
-          message: |
-            BOT TEST 测试
-            Please ignore 请无视
-            [GitHub Link](https://github.com/chr56/Phonograph_Plus/releases/tag/${{ github.ref_name }})
-            ${{ env.RELEASE_NOTE }}
-
-          format: markdown
-          disable_notification: true
-          disable_web_page_preview: true
