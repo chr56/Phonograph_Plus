@@ -48,7 +48,7 @@ object Deps {
     const val mdUtil = "com.github.chr56:mdUtil:0.0.1"
     const val mdColor = "com.github.chr56:mdColor:0.0.1"
     const val Android_Menu_DSL = "com.github.chr56:Android-Menu-DSL:0.0.3"
-    const val SeekArc = "com.github.chr56:SeekArc:c5ae37866e"
+    const val SeekArc = "com.github.chr56:SeekArc:1.0"
     const val AndroidSlidingUpPanel_kabouzeid = "com.github.kabouzeid:AndroidSlidingUpPanel:6"
     
     
