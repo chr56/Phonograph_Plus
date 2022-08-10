@@ -28,10 +28,10 @@ import org.jaudiotagger.audio.AudioHeader
 import org.jaudiotagger.audio.exceptions.CannotReadException
 import org.jaudiotagger.audio.exceptions.InvalidAudioFrameException
 import org.jaudiotagger.audio.exceptions.ReadOnlyFileException
-import org.jaudiotagger.tag.FieldKey
-import org.jaudiotagger.tag.TagException
+import org.jaudiotagger.tag.*
 import org.jaudiotagger.tag.datatype.DataTypes
 import org.jaudiotagger.tag.id3.AbstractID3v2Frame
+import player.phonograph.notification.ErrorNotification
 
 /**
  * @author Karim Abou Zeid (kabouzeid), Aidan Follestad (afollestad), chr_56<modify>
@@ -43,9 +43,15 @@ class SongDetailDialog : DialogFragment() {
         val dialog = MaterialDialog(context as Context)
             .title(R.string.label_details)
             .positiveButton(android.R.string.ok)
-            .customView(viewRes = R.layout.dialog_file_details, horizontalPadding = true, scrollable = true)
-        // set button color
-        dialog.getActionButton(WhichButton.POSITIVE).updateTextColor(ThemeColor.accentColor(context))
+            .customView(
+                viewRes = R.layout.dialog_file_details,
+                horizontalPadding = true,
+                scrollable = true
+            ).apply {
+                getActionButton(WhichButton.POSITIVE).updateTextColor(
+                    ThemeColor.accentColor(context)
+                )
+            }
 
         val dialogView: View = dialog.getCustomView()
 
@@ -83,76 +89,85 @@ class SongDetailDialog : DialogFragment() {
         track.text = makeTextWithTitle(context, R.string.track, "-")
         other.text = makeTextWithTitle(context, R.string.other_information, "-")
 
-        if (song != null) {
-            val songFile = File(song.data)
-            if (songFile.exists()) {
-                fileName.text = makeTextWithTitle(context, R.string.label_file_name, songFile.name)
-                filePath.text = makeTextWithTitle(context, R.string.label_file_path, songFile.absolutePath)
-                fileSize.text = makeTextWithTitle(context, R.string.label_file_size, getFileSizeString(songFile.length()))
-                try {
-                    val audioFile: AudioFile = AudioFileIO.read(songFile)
+        val songFile = File(song.data)
+        fileName.text = makeTextWithTitle(context, R.string.label_file_name, "N/A")
+        trackLength.text = makeTextWithTitle(context, R.string.label_track_length, MusicUtil.getReadableDurationString(song.duration))
+        if (songFile.exists()) {
+            fileName.text = makeTextWithTitle(context, R.string.label_file_name, songFile.name)
+            filePath.text = makeTextWithTitle(context, R.string.label_file_path, songFile.absolutePath)
+            fileSize.text = makeTextWithTitle(context, R.string.label_file_size, getFileSizeString(songFile.length()))
+            runCatching {
+                val audioFile: AudioFile = AudioFileIO.read(songFile)
 
-                    // files of the song
-                    val audioHeader: AudioHeader = audioFile.audioHeader
-                    fileFormat.text = makeTextWithTitle(context, R.string.label_file_format, audioHeader.format)
-                    trackLength.text = makeTextWithTitle(context, R.string.label_track_length, MusicUtil.getReadableDurationString((audioHeader.trackLength * 1000).toLong()))
-                    bitRate.text = makeTextWithTitle(context, R.string.label_bit_rate, audioHeader.bitRate + " kb/s")
-                    samplingRate.text = makeTextWithTitle(context, R.string.label_sampling_rate, audioHeader.sampleRate + " Hz")
-                    // tags of the song
-                    title.text = makeTextWithTitle(context, R.string.title, song.title)
-                    artist.text = makeTextWithTitle(context, R.string.artist, song.artistName!!)
-                    album.text = makeTextWithTitle(context, R.string.album, song.albumName!!)
-                    albumArtist.text = makeTextWithTitle(context, R.string.album_artist, audioFile.tag.getFirst(FieldKey.ALBUM_ARTIST))
-                    if (song.year != 0) year.text = makeTextWithTitle(context, R.string.year, song.year.toString())
-                    val songGenre = audioFile.tag.getFirst(FieldKey.GENRE)
-                    genre.text = makeTextWithTitle(context, R.string.genre, songGenre)
-                    if (song.trackNumber != 0) track.text = makeTextWithTitle(context, R.string.track, song.trackNumber.toString())
+                // files of the song
+                val audioHeader: AudioHeader = audioFile.audioHeader
+                fileFormat.text = makeTextWithTitle(context, R.string.label_file_format, audioHeader.format)
+                trackLength.text = makeTextWithTitle(context, R.string.label_track_length, MusicUtil.getReadableDurationString((audioHeader.trackLength * 1000).toLong()))
+                bitRate.text = makeTextWithTitle(context, R.string.label_bit_rate, audioHeader.bitRate + " kb/s")
+                samplingRate.text = makeTextWithTitle(context, R.string.label_sampling_rate, audioHeader.sampleRate + " Hz")
+                // tags of the song
+                title.text = makeTextWithTitle(context, R.string.title, song.title)
+                artist.text = makeTextWithTitle(context, R.string.artist, song.artistName!!)
+                album.text = makeTextWithTitle(context, R.string.album, song.albumName!!)
+                albumArtist.text = makeTextWithTitle(context, R.string.album_artist, audioFile.tag.getFirst(FieldKey.ALBUM_ARTIST))
+                if (song.year != 0) year.text = makeTextWithTitle(context, R.string.year, song.year.toString())
+                val songGenre = audioFile.tag.getFirst(FieldKey.GENRE)
+                genre.text = makeTextWithTitle(context, R.string.genre, songGenre)
+                if (song.trackNumber != 0) track.text = makeTextWithTitle(context, R.string.track, song.trackNumber.toString())
 
-                    val custInfoField = audioFile.tag.getFields("TXXX")
-                    var custInfo: String = "-"
-                    if (custInfoField != null && custInfoField.size > 0) {
-                        custInfo = "<br />"
-                        if (custInfoField.size <= 128) {
-                            custInfoField.forEach { TagField ->
-                                val frame = TagField as AbstractID3v2Frame
-                                custInfo += frame.body.getObjectValue(DataTypes.OBJ_DESCRIPTION)
-                                custInfo += ":<br />"
-                                custInfo += frame.body.getObjectValue(DataTypes.OBJ_TEXT)
-                                custInfo += "<br />"
-                            }
-                        } else {
-                            Toast.makeText(requireContext(),"Other tags in this song is too many, only show the first 128 entries",Toast.LENGTH_LONG).show()
-                            for (index in 0 until 127){
-                                val frame = custInfoField[index] as AbstractID3v2Frame
-                                custInfo += frame.body.getObjectValue(DataTypes.OBJ_DESCRIPTION)
-                                custInfo += ":<br />"
-                                custInfo += frame.body.getObjectValue(DataTypes.OBJ_TEXT)
-                                custInfo += "<br />"
-                            }
-                        }
+                val custInfoField = audioFile.tag.getFields("TXXX")
+                var custInfo = "-"
+                if (custInfoField != null && custInfoField.size > 0) {
+                custInfo = "<br />"
+                if (custInfoField.size <= 128) {
+                    custInfoField.forEach { TagField ->
+                        val frame = TagField as AbstractID3v2Frame
+                        custInfo += frame.body.getObjectValue(DataTypes.OBJ_DESCRIPTION)
+                        custInfo += ":<br />"
+                        custInfo += frame.body.getObjectValue(DataTypes.OBJ_TEXT)
+                        custInfo += "<br />"
                     }
-                    other.text = makeTextWithTitle(context, R.string.other_information, custInfo)
-                } catch (e: CannotReadException) {
-                    Log.e(TAG, "error while reading the song file", e)
-                    // fallback
-                    trackLength.text = makeTextWithTitle(context, R.string.label_track_length, MusicUtil.getReadableDurationString(song.duration))
-                } catch (e: IOException) {
-                    Log.e(TAG, "error while reading the song file", e)
-                    trackLength.text = makeTextWithTitle(context, R.string.label_track_length, MusicUtil.getReadableDurationString(song.duration))
-                } catch (e: TagException) {
-                    Log.e(TAG, "error while reading the song file", e)
-                    trackLength.text = makeTextWithTitle(context, R.string.label_track_length, MusicUtil.getReadableDurationString(song.duration))
-                } catch (e: ReadOnlyFileException) {
-                    Log.e(TAG, "error while reading the song file", e)
-                    trackLength.text = makeTextWithTitle(context, R.string.label_track_length, MusicUtil.getReadableDurationString(song.duration))
-                } catch (e: InvalidAudioFrameException) {
-                    Log.e(TAG, "error while reading the song file", e)
-                    trackLength.text = makeTextWithTitle(context, R.string.label_track_length, MusicUtil.getReadableDurationString(song.duration))
+                } else {
+                    Toast.makeText(requireContext(),"Other tags in this song is too many, only show the first 128 entries",Toast.LENGTH_LONG).show()
+                    for (index in 0 until 127){
+                        val frame = custInfoField[index] as AbstractID3v2Frame
+                        custInfo += frame.body.getObjectValue(DataTypes.OBJ_DESCRIPTION)
+                        custInfo += ":<br />"
+                        custInfo += frame.body.getObjectValue(DataTypes.OBJ_TEXT)
+                        custInfo += "<br />"
+                    }
                 }
-            } else {
-                // fallback
-                fileName.text = makeTextWithTitle(context, R.string.label_file_name, song.title)
-                trackLength.text = makeTextWithTitle(context, R.string.label_track_length, MusicUtil.getReadableDurationString(song.duration))
+                }
+                other.text = makeTextWithTitle(context, R.string.other_information, custInfo)
+            }.apply {
+                if (isFailure){
+                    val errorMsg = when(val e = exceptionOrNull()){
+                        is CannotReadException ->
+                            "Can not read the song file $songFile"
+                        is IOException ->
+                            "IOException occurs when reading file"
+                        is InvalidAudioFrameException ->
+                            "AudioFrame not found"
+                        is TagException -> {
+                            val msg = when(e){
+                                is TagNotFoundException -> "Tag not found: ${e.message}"
+                                is FieldDataInvalidException -> "FieldDataInvalid: ${e.message}"
+                                is EmptyFrameException -> "Find a Frame but it contains no data: ${e.message}"
+                                is InvalidDataTypeException -> "InvalidDataType: ${e.message}"
+                                is InvalidFrameIdentifierException -> "Frame Identifier is invalid: ${e.message}"
+                                else -> "Unknown"
+                            }
+                            "Tag Error: $msg"
+                        }
+                        else ->
+                            "Unknown"
+                    }
+                    Log.w(TAG, errorMsg)
+                    ErrorNotification.postErrorNotification(
+                        exceptionOrNull()?: Exception(),
+                        "Error while reading the song file:\n$errorMsg",
+                    )
+                }
             }
         }
         return dialog
