@@ -56,8 +56,6 @@ class MusicService : Service(), OnSharedPreferenceChangeListener {
 
     private lateinit var throttledTimer: ThrottledTimer
 
-    private lateinit var uiThreadHandler: Handler
-
     private val mediaStoreObserverUtil = MediaStoreObserverUtil()
 
     override fun onCreate() {
@@ -83,7 +81,6 @@ class MusicService : Service(), OnSharedPreferenceChangeListener {
         throttledTimer = ThrottledTimer(controller.handler)
 
         // misc
-        uiThreadHandler = Handler(Looper.getMainLooper())
         mediaStoreObserverUtil.setUpMediaStoreObserver(
             this,
             controller.handler, // todo use other handler
@@ -225,9 +222,6 @@ class MusicService : Service(), OnSharedPreferenceChangeListener {
         )
     }
 
-    fun runOnUiThread(runnable: Runnable) {
-        uiThreadHandler.post(runnable)
-    }
 
     fun openQueue(playingQueue: List<Song>?, startPosition: Int, startPlaying: Boolean) {
         if (playingQueue != null && playingQueue.isNotEmpty() && startPosition >= 0 && startPosition < playingQueue.size) {

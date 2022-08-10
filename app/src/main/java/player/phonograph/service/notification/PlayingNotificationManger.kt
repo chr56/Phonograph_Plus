@@ -18,6 +18,8 @@ import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.media.MediaMetadata.*
 import android.os.Build
+import android.os.Handler
+import android.os.Looper
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
@@ -173,7 +175,7 @@ class PlayingNotificationManger(private val service: MusicService) {
 
             // then try to load cover image
 
-            service.runOnUiThread {
+            uiHandler.post {
                 SongGlideRequest.Builder.from(Glide.with(service), song)
                     .checkIgnoreMediaStore(service)
                     .generatePalette(service).build()
@@ -264,7 +266,7 @@ class PlayingNotificationManger(private val service: MusicService) {
 
             // then try to load cover image
 
-            service.runOnUiThread {
+            uiHandler.post {
                 if (target != null) {
                     Glide.with(service).clear(target)
                 }
@@ -520,7 +522,7 @@ class PlayingNotificationManger(private val service: MusicService) {
                     )
                 }
 
-            service.runOnUiThread {
+            uiHandler.post {
                 request.into(
                     object : CustomTarget<Bitmap>(screenSize.x, screenSize.y) {
 
@@ -584,6 +586,8 @@ class PlayingNotificationManger(private val service: MusicService) {
     private val deletePendingIntent get() = buildPlaybackPendingIntent(
         MusicService.ACTION_STOP_AND_QUIT_NOW
     )
+
+    private val uiHandler: Handler by lazy { Handler(Looper.getMainLooper()) }
 
     companion object {
         const val NOTIFICATION_CHANNEL_ID = "playing_notification"
