@@ -120,6 +120,8 @@ class PlayingNotificationManger(private val service: MusicService) {
     }
 
     inner class Impl24 : Impl {
+        private var target: CustomTarget<BitmapPaletteWrapper>? = null
+
         @Synchronized
         override fun update(song: Song) {
             val isPlaying = service.isPlaying
@@ -176,7 +178,11 @@ class PlayingNotificationManger(private val service: MusicService) {
             // then try to load cover image
 
             uiHandler.post {
-                SongGlideRequest.Builder.from(Glide.with(service), song)
+                if (target != null) {
+                    Glide.with(service).clear(target)
+                }
+                target = SongGlideRequest.Builder
+                    .from(Glide.with(service), song)
                     .checkIgnoreMediaStore(service)
                     .generatePalette(service).build()
                     .into(object : CustomTarget<BitmapPaletteWrapper>(
