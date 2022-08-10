@@ -28,6 +28,18 @@ object Deps {
         const val palette = "androidx.palette:palette-ktx:1.0.0"
     }
 
+    object Compose {
+        const val comilerVersion = "1.3.1"
+        const val libVersion = "1.2.1"
+
+        const val ui = "androidx.compose.ui:ui:$libVersion"
+        const val ui_tooling = "androidx.compose.ui:ui-tooling:$libVersion"
+        const val foundation = "androidx.compose.foundation:foundation:$libVersion"
+        const val material = "androidx.compose.material:material:$libVersion"
+
+        const val activity = "androidx.activity:activity-compose:1.4.0"
+    }
+
     const val google_material = "com.google.android.material:material:1.6.1"
 
     const val okhttp3 = "com.squareup.okhttp3:okhttp:4.10.0"
