@@ -5,6 +5,8 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
+import android.os.Handler
+import android.os.Looper
 import android.text.TextUtils
 import android.view.View
 import android.widget.RemoteViews
@@ -63,25 +65,36 @@ class AppWidgetClassic : BaseAppWidget() {
         setupDefaultPhonographWidgetButtons(service, appWidgetView)
         setupAdditionalWidgetButtons(service, appWidgetView)
 
-        if (imageSize == 0) imageSize = service.resources.getDimensionPixelSize(R.dimen.app_widget_classic_image_size)
-        if (cardRadius == 0f) cardRadius = service.resources.getDimension(R.dimen.app_widget_card_radius)
+        if (imageSize == 0) imageSize = service.resources.getDimensionPixelSize(
+            R.dimen.app_widget_classic_image_size
+        )
+        if (cardRadius == 0f) cardRadius = service.resources.getDimension(
+            R.dimen.app_widget_card_radius
+        )
 
         // Load the album cover async and push the update on completion
-        val appContext = service.applicationContext
-        service.runOnUiThread {
+        uiHandler.post {
+            val appContext = service.applicationContext
             if (target != null) {
-                Glide.with(service).clear(target)
+                Glide.with(appContext).clear(target)
             }
             target = SongGlideRequest.Builder.from(Glide.with(appContext), song)
                 .checkIgnoreMediaStore(appContext)
-                .generatePalette(service).build()
+                .generatePalette(appContext).build()
                 .centerCrop()
                 .into(object : SimpleTarget<BitmapPaletteWrapper?>(imageSize, imageSize) {
-                    override fun onResourceReady(resource: BitmapPaletteWrapper, transition: Transition<in BitmapPaletteWrapper?>?) {
+                    override fun onResourceReady(
+                        resource: BitmapPaletteWrapper,
+                        transition: Transition<in BitmapPaletteWrapper?>?
+                    ) {
                         val palette = resource.palette
                         update(
                             resource.bitmap,
-                            palette.getVibrantColor(palette.getMutedColor(MaterialColorHelper.getSecondaryTextColor(appContext, true)))
+                            palette.getVibrantColor(
+                                palette.getMutedColor(
+                                    MaterialColorHelper.getSecondaryTextColor(appContext, true)
+                                )
+                            )
                         )
                     }
 
@@ -97,7 +110,9 @@ class AppWidgetClassic : BaseAppWidget() {
                             R.id.button_toggle_play_pause,
                             ImageUtil.createBitmap(
                                 ImageUtil.getTintedVectorDrawable(
-                                    service, playPauseRes, color
+                                    service,
+                                    playPauseRes,
+                                    color
                                 )
                             )
                         )
@@ -107,7 +122,9 @@ class AppWidgetClassic : BaseAppWidget() {
                             R.id.button_next,
                             ImageUtil.createBitmap(
                                 ImageUtil.getTintedVectorDrawable(
-                                    service, R.drawable.ic_skip_next_white_24dp, color
+                                    service,
+                                    R.drawable.ic_skip_next_white_24dp,
+                                    color
                                 )
                             )
                         )
@@ -115,12 +132,22 @@ class AppWidgetClassic : BaseAppWidget() {
                             R.id.button_prev,
                             ImageUtil.createBitmap(
                                 ImageUtil.getTintedVectorDrawable(
-                                    service, R.drawable.ic_skip_previous_white_24dp, color
+                                    service,
+                                    R.drawable.ic_skip_previous_white_24dp,
+                                    color
                                 )
                             )
                         )
                         val image = getAlbumArtDrawable(service.resources, bitmap)
-                        val roundedBitmap = createRoundedBitmap(image, imageSize, imageSize, cardRadius, 0f, cardRadius, 0f)
+                        val roundedBitmap = createRoundedBitmap(
+                            image,
+                            imageSize,
+                            imageSize,
+                            cardRadius,
+                            0f,
+                            cardRadius,
+                            0f
+                        )
                         appWidgetView.setImageViewBitmap(R.id.image, roundedBitmap)
                         pushUpdate(appContext, appWidgetIds, appWidgetView)
                     }
@@ -132,10 +159,17 @@ class AppWidgetClassic : BaseAppWidget() {
         // Home
         val action = Intent(context, MainActivity::class.java)
             .apply { flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP }
-        val pendingIntent = PendingIntent.getActivity(context, 0, action, PendingIntent.FLAG_IMMUTABLE)
+        val pendingIntent = PendingIntent.getActivity(
+            context,
+            0,
+            action,
+            PendingIntent.FLAG_IMMUTABLE
+        )
         view.setOnClickPendingIntent(R.id.image, pendingIntent)
         view.setOnClickPendingIntent(R.id.media_titles, pendingIntent)
     }
+
+    private val uiHandler: Handler by lazy { Handler(Looper.getMainLooper()) }
 
     companion object {
         const val NAME = "app_widget_classic"

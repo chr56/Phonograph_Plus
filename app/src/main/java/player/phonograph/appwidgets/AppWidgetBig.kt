@@ -5,6 +5,8 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
+import android.os.Handler
+import android.os.Looper
 import android.text.TextUtils
 import android.view.View
 import android.widget.RemoteViews
@@ -64,7 +66,9 @@ class AppWidgetBig : BaseAppWidget() {
             R.id.button_toggle_play_pause,
             ImageUtil.createBitmap(
                 ImageUtil.getTintedVectorDrawable(
-                    service, playPauseRes, MaterialColorHelper.getPrimaryTextColor(service, false)
+                    service,
+                    playPauseRes,
+                    MaterialColorHelper.getPrimaryTextColor(service, false)
                 )
             )
         )
@@ -74,7 +78,9 @@ class AppWidgetBig : BaseAppWidget() {
             R.id.button_next,
             ImageUtil.createBitmap(
                 ImageUtil.getTintedVectorDrawable(
-                    service, R.drawable.ic_skip_next_white_24dp, MaterialColorHelper.getPrimaryTextColor(service, false)
+                    service,
+                    R.drawable.ic_skip_next_white_24dp,
+                    MaterialColorHelper.getPrimaryTextColor(service, false)
                 )
             )
         )
@@ -82,7 +88,9 @@ class AppWidgetBig : BaseAppWidget() {
             R.id.button_prev,
             ImageUtil.createBitmap(
                 ImageUtil.getTintedVectorDrawable(
-                    service, R.drawable.ic_skip_previous_white_24dp, MaterialColorHelper.getPrimaryTextColor(service, false)
+                    service,
+                    R.drawable.ic_skip_previous_white_24dp,
+                    MaterialColorHelper.getPrimaryTextColor(service, false)
                 )
             )
         )
@@ -94,10 +102,10 @@ class AppWidgetBig : BaseAppWidget() {
         // Load the album cover async and push the update on completion
         val p = getScreenSize(service)
         val widgetImageSize = p.x.coerceAtMost(p.y)
-        val appContext = service.applicationContext
-        service.runOnUiThread {
+        uiHandler.post {
+            val appContext = service.applicationContext
             if (target != null) {
-                Glide.with(service).clear(target)
+                Glide.with(service.applicationContext).clear(target)
             }
             target =
                 SongGlideRequest.Builder
@@ -119,7 +127,10 @@ class AppWidgetBig : BaseAppWidget() {
 
                     private fun update(bitmap: Bitmap?) {
                         if (bitmap == null) {
-                            appWidgetView.setImageViewResource(R.id.image, R.drawable.default_album_art)
+                            appWidgetView.setImageViewResource(
+                                R.id.image,
+                                R.drawable.default_album_art
+                            )
                         } else {
                             appWidgetView.setImageViewBitmap(R.id.image, bitmap)
                         }
@@ -133,9 +144,16 @@ class AppWidgetBig : BaseAppWidget() {
         // Home
         val action = Intent(context, MainActivity::class.java)
             .apply { flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP }
-        val pendingIntent = PendingIntent.getActivity(context, 0, action, PendingIntent.FLAG_IMMUTABLE)
+        val pendingIntent = PendingIntent.getActivity(
+            context,
+            0,
+            action,
+            PendingIntent.FLAG_IMMUTABLE
+        )
         view.setOnClickPendingIntent(R.id.clickable_area, pendingIntent)
     }
+
+    private val uiHandler: Handler by lazy { Handler(Looper.getMainLooper()) }
 
     companion object {
         const val NAME = "app_widget_big"
