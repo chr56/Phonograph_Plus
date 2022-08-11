@@ -1,12 +1,15 @@
 package player.phonograph.ui.activities
 
 import android.content.Context
+import android.graphics.Color
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.github.chr56.android.menu_dsl.attach
+import com.github.chr56.android.menu_dsl.menuItem
 import kotlinx.coroutines.*
 import lib.phonograph.cab.*
 import player.phonograph.R
@@ -17,7 +20,9 @@ import player.phonograph.mediastore.GenreLoader
 import player.phonograph.model.Genre
 import player.phonograph.model.Song
 import player.phonograph.service.MusicPlayerRemote
+import player.phonograph.settings.Setting
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
+import player.phonograph.util.ImageUtil.getTintedDrawable
 import player.phonograph.util.ViewUtil.setUpFastScrollRecyclerViewColor
 import util.mdcolor.pref.ThemeColor
 import util.mddesign.core.Themer
@@ -32,7 +37,9 @@ class GenreDetailActivity :
     private lateinit var adapter: SongDisplayAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        genre = intent.extras?.getParcelable(EXTRA_GENRE) ?: throw Exception("No genre in the intent!")
+        genre = intent.extras?.getParcelable(EXTRA_GENRE) ?: throw Exception(
+            "No genre in the intent!"
+        )
         loadDataSet(this)
         _viewBinding = ActivityGenreDetailBinding.inflate(layoutInflater)
 
@@ -52,7 +59,6 @@ class GenreDetailActivity :
 
     private fun loadDataSet(context: Context) {
         loaderCoroutineScope.launch {
-
             val list: List<Song> = GenreLoader.getSongs(context, genre.id)
 
             while (!isRecyclerViewPrepared) yield() // wait until ready
@@ -97,16 +103,36 @@ class GenreDetailActivity :
     lateinit var cabController: MultiSelectionCabController
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.menu_genre_detail, menu)
+        attach(menu) {
+            menuItem {
+                title = getString(R.string.action_shuffle_playlist)
+                icon = getTintedDrawable(R.drawable.ic_shuffle_white_24dp, Color.WHITE)
+                showAsActionFlag = MenuItem.SHOW_AS_ACTION_ALWAYS
+                onClick {
+                    MusicPlayerRemote.openAndShuffleQueue(adapter.dataset, true)
+                    true
+                }
+            }
+
+            menuItem {
+                title = getString(R.string.action_play)
+                icon = getTintedDrawable(R.drawable.ic_play_arrow_white_24dp, Color.WHITE)
+                showAsActionFlag = MenuItem.SHOW_AS_ACTION_ALWAYS
+                onClick {
+                    if (Setting.instance.keepPlayingQueueIntact) {
+                        MusicPlayerRemote.playNow(adapter.dataset)
+                    } else {
+                        MusicPlayerRemote.openQueue(adapter.dataset, 0, true)
+                        true
+                    }
+                }
+            }
+        }
         return true
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.action_shuffle_genre -> {
-                MusicPlayerRemote.openAndShuffleQueue(adapter.dataset, true)
-                return true
-            }
             android.R.id.home -> {
                 onBackPressed()
                 return true
