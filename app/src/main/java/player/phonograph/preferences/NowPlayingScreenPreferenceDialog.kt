@@ -20,7 +20,7 @@ import com.afollestad.materialdialogs.customview.customView
 import com.heinrichreimersoftware.materialintro.view.InkPageIndicator
 import player.phonograph.R
 import player.phonograph.settings.Setting
-import player.phonograph.ui.fragments.player.NowPlayingScreen
+import player.phonograph.model.NowPlayingScreen
 import player.phonograph.util.ViewUtil
 import util.mdcolor.pref.ThemeColor
 

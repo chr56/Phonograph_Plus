@@ -27,7 +27,7 @@ import lib.phonograph.cab.createToolbarCab
 import player.phonograph.BuildConfig.DEBUG
 import player.phonograph.R
 import player.phonograph.adapter.HomePagerAdapter
-import player.phonograph.adapter.PAGERS
+import player.phonograph.model.pages.Pages
 import player.phonograph.adapter.PageConfig
 import player.phonograph.adapter.base.MultiSelectionCabController
 import player.phonograph.databinding.FragmentHomeBinding
@@ -124,7 +124,7 @@ class HomeFragment : AbsMainActivityFragment(), MainActivity.MainActivityFragmen
         }
 
         TabLayoutMediator(binding.tabs, binding.pager) { tab: TabLayout.Tab, i: Int ->
-            tab.text = PAGERS.getDisplayName(cfg.get(i), requireContext())
+            tab.text = Pages.getDisplayName(cfg.get(i), requireContext())
         }.attach()
         updateTabVisibility()
     }

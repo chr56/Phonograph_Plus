@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import player.phonograph.App
 import player.phonograph.R
+import player.phonograph.model.pages.Pages
 import util.phonograph.misc.SwipeAndDragHelper
 import util.phonograph.misc.SwipeAndDragHelper.ActionCompletionContract
 
@@ -52,7 +53,7 @@ class HomeTabConfigAdapter(private val config: PageConfig) : RecyclerView.Adapte
             )
             restAvailableTabs.removeFirst()
         }
-        holder.title.text = PAGERS.getDisplayName(tabs.get(position).name, App.instance)
+        holder.title.text = Pages.getDisplayName(tabs.get(position).name, App.instance)
 
         holder.itemView.setOnClickListener { view ->
             val checkBox = view.findViewById<CheckBox>(R.id.checkbox)

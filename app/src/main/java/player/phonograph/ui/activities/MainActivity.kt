@@ -28,7 +28,7 @@ import player.phonograph.R
 import player.phonograph.UPGRADABLE
 import player.phonograph.Updater.checkUpdate
 import player.phonograph.VERSION_INFO
-import player.phonograph.adapter.PAGERS
+import player.phonograph.model.pages.Pages
 import player.phonograph.databinding.ActivityMainBinding
 import player.phonograph.databinding.LayoutDrawerBinding
 import player.phonograph.dialogs.ChangelogDialog.Companion.create
@@ -151,8 +151,8 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
             for ((page, tab) in Setting.instance.homeTabConfig.withIndex()) {
                 menuItem {
                     groupId = mainGroup
-                    icon = PAGERS.getTintedIcon(tab, textColorPrimary, activity)
-                    title = PAGERS.getDisplayName(tab, activity)
+                    icon = Pages.getTintedIcon(tab, textColorPrimary, activity)
+                    title = Pages.getDisplayName(tab, activity)
                     itemId = 1000 + page
                     onClick {
                         drawerBinding.drawerLayout.closeDrawers()

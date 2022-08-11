@@ -1,4 +1,4 @@
-package player.phonograph.ui.fragments.player
+package player.phonograph.model
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes

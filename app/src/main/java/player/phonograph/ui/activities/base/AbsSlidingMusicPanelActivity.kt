@@ -18,7 +18,7 @@ import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.settings.Setting
 import player.phonograph.ui.fragments.player.AbsPlayerFragment
 import player.phonograph.ui.fragments.player.MiniPlayerFragment
-import player.phonograph.ui.fragments.player.NowPlayingScreen
+import player.phonograph.model.NowPlayingScreen
 import player.phonograph.ui.fragments.player.card.CardPlayerFragment
 import player.phonograph.ui.fragments.player.flat.FlatPlayerFragment
 import player.phonograph.util.ViewUtil

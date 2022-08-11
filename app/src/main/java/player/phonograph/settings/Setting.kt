@@ -24,7 +24,7 @@ import player.phonograph.adapter.PageConfigUtil
 import player.phonograph.model.sort.FileSortMode
 import player.phonograph.model.sort.SortMode
 import player.phonograph.model.sort.SortRef
-import player.phonograph.ui.fragments.player.NowPlayingScreen
+import player.phonograph.model.NowPlayingScreen
 import player.phonograph.util.CalendarUtil
 import player.phonograph.util.FileUtil
 

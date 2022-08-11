@@ -4,10 +4,7 @@
 
 package player.phonograph.adapter
 
-import android.content.Context
-import android.graphics.drawable.Drawable
 import android.util.ArrayMap
-import androidx.core.graphics.BlendModeCompat
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import java.lang.ref.WeakReference
@@ -15,9 +12,8 @@ import kotlin.jvm.Throws
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
-import player.phonograph.R
+import player.phonograph.model.pages.Pages
 import player.phonograph.ui.fragments.home.*
-import player.phonograph.util.ImageUtil.getTintedDrawable
 
 class HomePagerAdapter(fragment: Fragment, var cfg: PageConfig) : FragmentStateAdapter(fragment) {
     val map: MutableMap<Int, WeakReference<AbsPage>> = ArrayMap(cfg.getSize())
@@ -39,24 +35,24 @@ class PageConfig(var tabMap: MutableMap<Int, String>) : Iterable<String> {
 
     fun getAsPage(index: Int): AbsPage =
         when (get(index)) {
-            PAGERS.SONG -> SongPage()
-            PAGERS.ALBUM -> AlbumPage()
-            PAGERS.ARTIST -> ArtistPage()
-            PAGERS.PLAYLIST -> PlaylistPage()
-            PAGERS.GENRE -> GenrePage()
-            PAGERS.FOLDER -> FilesPage()
+            Pages.SONG -> SongPage()
+            Pages.ALBUM -> AlbumPage()
+            Pages.ARTIST -> ArtistPage()
+            Pages.PLAYLIST -> PlaylistPage()
+            Pages.GENRE -> GenrePage()
+            Pages.FOLDER -> FilesPage()
             else -> EmptyPage()
         }
 
     companion object {
         val DEFAULT_CONFIG = PageConfig(
             HashMap<Int, String>(6).also {
-                it[0] = PAGERS.SONG
-                it[1] = PAGERS.ALBUM
-                it[2] = PAGERS.ARTIST
-                it[3] = PAGERS.PLAYLIST
-                it[4] = PAGERS.GENRE
-                it[5] = PAGERS.FOLDER
+                it[0] = Pages.SONG
+                it[1] = Pages.ALBUM
+                it[2] = Pages.ARTIST
+                it[3] = Pages.PLAYLIST
+                it[4] = Pages.GENRE
+                it[5] = Pages.FOLDER
             }
         )
     }
@@ -65,49 +61,8 @@ class PageConfig(var tabMap: MutableMap<Int, String>) : Iterable<String> {
         object : Iterator<String> {
             var current = 0
             override fun hasNext(): Boolean = current < tabMap.size
-            override fun next(): String = tabMap[current++] ?: PAGERS.EMPTY
+            override fun next(): String = tabMap[current++] ?: Pages.EMPTY
         }
-}
-
-object PAGERS {
-    const val EMPTY = "EMPTY"
-    const val SONG = "SONG"
-    const val ALBUM = "ALBUM"
-    const val ARTIST = "ARTIST"
-    const val PLAYLIST = "PLAYLIST"
-    const val GENRE = "GENRE"
-    const val FOLDER = "FOLDER"
-
-    fun getDisplayName(pager: String?, context: Context): String {
-        return when (pager) {
-            SONG -> context.getString(R.string.songs)
-            ALBUM -> context.getString(R.string.albums)
-            ARTIST -> context.getString(R.string.artists)
-            PLAYLIST -> context.getString(R.string.playlists)
-            GENRE -> context.getString(R.string.genres)
-            FOLDER -> context.getString(R.string.folders)
-            EMPTY -> context.getString(R.string.empty)
-            else -> "UNKNOWN"
-        }
-    }
-
-    fun getTintedIcon(
-        pager: String?,
-        color: Int,
-        context: Context,
-        mode: BlendModeCompat = BlendModeCompat.SRC_IN
-    ): Drawable? {
-        val id = when (pager) {
-            SONG -> R.drawable.ic_music_note_white_24dp
-            ALBUM -> R.drawable.ic_album_white_24dp
-            ARTIST -> R.drawable.ic_person_white_24dp
-            PLAYLIST -> R.drawable.ic_queue_music_white_24dp
-            GENRE -> R.drawable.ic_bookmark_music_white_24dp
-            FOLDER -> R.drawable.ic_folder_white_24dp
-            else -> R.drawable.ic_library_music_white_24dp
-        }
-        return context.getTintedDrawable(id, color, mode)
-    }
 }
 
 object PageConfigUtil {
