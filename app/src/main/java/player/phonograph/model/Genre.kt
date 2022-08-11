@@ -4,7 +4,6 @@ import android.os.Parcel
 import android.os.Parcelable
 import androidx.annotation.Keep
 import player.phonograph.App.Companion.instance
-import player.phonograph.interfaces.Displayable
 import player.phonograph.util.MusicUtil
 
 class Genre : Parcelable, Displayable {

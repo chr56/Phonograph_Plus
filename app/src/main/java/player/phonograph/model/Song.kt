@@ -3,7 +3,6 @@ package player.phonograph.model
 import android.os.Parcel
 import android.os.Parcelable
 import androidx.annotation.Keep
-import player.phonograph.interfaces.Displayable
 import player.phonograph.util.MusicUtil
 
 /**

@@ -12,7 +12,7 @@ import androidx.annotation.MenuRes
 import androidx.core.util.Pair
 import androidx.fragment.app.FragmentActivity
 import player.phonograph.R
-import player.phonograph.interfaces.Displayable
+import player.phonograph.model.Displayable
 import player.phonograph.model.Album
 import player.phonograph.model.Artist
 import player.phonograph.model.Genre

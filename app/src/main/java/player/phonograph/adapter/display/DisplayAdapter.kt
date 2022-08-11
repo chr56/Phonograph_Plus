@@ -18,7 +18,7 @@ import player.phonograph.R
 import player.phonograph.adapter.base.MultiSelectAdapter
 import player.phonograph.adapter.base.MultiSelectionCabController
 import player.phonograph.adapter.base.UniversalMediaEntryViewHolder
-import player.phonograph.interfaces.Displayable
+import player.phonograph.model.Displayable
 import util.mdcolor.ColorUtil
 import util.mddesign.util.MaterialColorHelper
 

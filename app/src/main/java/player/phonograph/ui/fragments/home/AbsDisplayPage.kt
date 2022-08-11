@@ -24,7 +24,7 @@ import player.phonograph.BuildConfig
 import player.phonograph.R
 import player.phonograph.adapter.display.DisplayAdapter
 import player.phonograph.databinding.FragmentDisplayPageBinding
-import player.phonograph.interfaces.Displayable
+import player.phonograph.model.Displayable
 import player.phonograph.util.Util
 import player.phonograph.util.ViewUtil.setUpFastScrollRecyclerViewColor
 import player.phonograph.views.StatusBarView
