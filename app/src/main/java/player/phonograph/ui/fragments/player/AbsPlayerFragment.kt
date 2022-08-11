@@ -22,6 +22,7 @@ import player.phonograph.dialogs.*
 import player.phonograph.interfaces.PaletteColorHolder
 import player.phonograph.model.Song
 import player.phonograph.model.buildInfoString
+import player.phonograph.model.getReadableDurationString
 import player.phonograph.model.lyrics2.AbsLyrics
 import player.phonograph.model.lyrics2.LrcLyrics
 import player.phonograph.notification.ErrorNotification
@@ -31,7 +32,6 @@ import player.phonograph.ui.fragments.AbsMusicServiceFragment
 import player.phonograph.ui.fragments.player.PlayerAlbumCoverFragment.Companion.VISIBILITY_ANIM_DURATION
 import player.phonograph.util.FavoriteUtil
 import player.phonograph.util.FavoriteUtil.toggleFavorite
-import player.phonograph.util.MusicUtil
 import player.phonograph.util.NavigationUtil.goToAlbum
 import player.phonograph.util.NavigationUtil.goToArtist
 import player.phonograph.util.NavigationUtil.openEqualizer
@@ -310,7 +310,7 @@ abstract class AbsPlayerFragment :
             val duration = MusicPlayerRemote.getQueueDurationMillis(MusicPlayerRemote.position)
             return buildInfoString(
                 resources.getString(R.string.up_next),
-                MusicUtil.getReadableDurationString(duration)
+                getReadableDurationString(duration)
             )
         }
 

@@ -7,6 +7,7 @@ package player.phonograph.model
 
 import android.content.Context
 import player.phonograph.R
+import java.util.*
 
 fun Song.infoString(): String =
     buildInfoString(artistName, albumName)
@@ -51,3 +52,15 @@ fun buildInfoString(string1: String?, string2: String?): String =
         !string1.isNullOrEmpty() && !string2.isNullOrEmpty() -> "$string1  •  $string2"
         else -> ""
     }
+
+fun getReadableDurationString(songDurationMillis: Long): String {
+    var minutes = songDurationMillis / 1000 / 60
+    val seconds = songDurationMillis / 1000 % 60
+    return if (minutes < 60) {
+        String.format(Locale.getDefault(), "%01d:%02d", minutes, seconds)
+    } else {
+        val hours = minutes / 60
+        minutes %= 60
+        String.format(Locale.getDefault(), "%d:%02d:%02d", hours, minutes, seconds)
+    }
+}

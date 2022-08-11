@@ -46,18 +46,6 @@ object MusicUtil {
     fun getTotalDuration(context: Context, songs: List<Song>): Long =
         songs.fold(0L) { acc: Long, song: Song -> acc + song.duration }
 
-    fun getReadableDurationString(songDurationMillis: Long): String {
-        var minutes = songDurationMillis / 1000 / 60
-        val seconds = songDurationMillis / 1000 % 60
-        return if (minutes < 60) {
-            String.format(Locale.getDefault(), "%01d:%02d", minutes, seconds)
-        } else {
-            val hours = minutes / 60
-            minutes %= 60
-            String.format(Locale.getDefault(), "%d:%02d:%02d", hours, minutes, seconds)
-        }
-    }
-
     // iTunes uses for example 1002 for track 2 CD1 or 3011 for track 11 CD3.
     // this method converts those values to normal track numbers
     fun getFixedTrackNumber(trackNumberToFix: Int): Int = trackNumberToFix % 1000

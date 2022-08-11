@@ -36,6 +36,7 @@ import player.phonograph.databinding.ActivityPlaylistDetailBinding
 import player.phonograph.misc.SAFCallbackHandlerActivity
 import player.phonograph.misc.SafLauncher
 import player.phonograph.model.Song
+import player.phonograph.model.getReadableDurationString
 import player.phonograph.model.playlist.FilePlaylist
 import player.phonograph.model.playlist.GeneratedPlaylist
 import player.phonograph.model.playlist.Playlist
@@ -45,6 +46,7 @@ import player.phonograph.settings.Setting
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
 import player.phonograph.util.ImageUtil.getTintedDrawable
 import player.phonograph.util.MusicUtil
+import player.phonograph.util.MusicUtil.getTotalDuration
 import player.phonograph.util.PlaylistsUtil
 import player.phonograph.util.ViewUtil.setUpFastScrollRecyclerViewColor
 import player.phonograph.util.menu.onPlaylistMenuItemClick
@@ -189,7 +191,7 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandle
         with(binding) {
             nameText.text = playlist?.name ?: "-"
             songCountText.text = adapter.dataset.size.toString()
-            durationText.text = MusicUtil.getReadableDurationString(MusicUtil.getTotalDuration(this@PlaylistDetailActivity, adapter.dataset))
+            durationText.text = getReadableDurationString(getTotalDuration(this@PlaylistDetailActivity, adapter.dataset))
             if (playlist is FilePlaylist) {
                 pathText.text = playlist.associatedFilePath
             } else {

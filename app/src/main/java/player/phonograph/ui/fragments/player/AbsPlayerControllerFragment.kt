@@ -16,6 +16,7 @@ import android.widget.TextView
 import player.phonograph.R
 import player.phonograph.helper.MusicProgressViewUpdateHelper
 import player.phonograph.misc.SimpleOnSeekbarChangeListener
+import player.phonograph.model.getReadableDurationString
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.queue.RepeatMode
 import player.phonograph.service.queue.ShuffleMode
@@ -167,8 +168,8 @@ abstract class AbsPlayerControllerFragment : AbsMusicServiceFragment(), MusicPro
     override fun onUpdateProgressViews(progress: Int, total: Int) {
         progressSlider.max = total
         progressSlider.progress = progress
-        songTotalTime.text = MusicUtil.getReadableDurationString(total.toLong())
-        songCurrentProgress.text = MusicUtil.getReadableDurationString(progress.toLong())
+        songTotalTime.text = getReadableDurationString(total.toLong())
+        songCurrentProgress.text = getReadableDurationString(progress.toLong())
     }
 
     private fun updateProgressTextColor() {

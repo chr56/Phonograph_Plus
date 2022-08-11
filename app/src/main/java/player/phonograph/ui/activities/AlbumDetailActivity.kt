@@ -31,6 +31,7 @@ import player.phonograph.glide.SongGlideRequest
 import player.phonograph.glide.palette.BitmapPaletteTarget
 import player.phonograph.glide.palette.BitmapPaletteWrapper
 import player.phonograph.model.Album
+import player.phonograph.model.getReadableDurationString
 import player.phonograph.model.songCountString
 import player.phonograph.service.MusicPlayerRemote.enqueue
 import player.phonograph.service.MusicPlayerRemote.openAndShuffleQueue
@@ -38,7 +39,6 @@ import player.phonograph.service.MusicPlayerRemote.playNext
 import player.phonograph.settings.Setting.Companion.isAllowedToDownloadMetadata
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
 import player.phonograph.util.ImageUtil.getTintedDrawable
-import player.phonograph.util.MusicUtil.getReadableDurationString
 import player.phonograph.util.MusicUtil.getTotalDuration
 import player.phonograph.util.MusicUtil.getYearString
 import player.phonograph.util.NavigationUtil.goToArtist

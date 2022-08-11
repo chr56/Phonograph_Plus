@@ -47,7 +47,6 @@ import player.phonograph.service.MusicPlayerRemote.playNext
 import player.phonograph.settings.Setting
 import player.phonograph.settings.Setting.Companion.isAllowedToDownloadMetadata
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
-import player.phonograph.util.MusicUtil.getReadableDurationString
 import player.phonograph.util.MusicUtil.getTotalDuration
 import player.phonograph.util.NavigationUtil.openEqualizer
 import retrofit2.Call

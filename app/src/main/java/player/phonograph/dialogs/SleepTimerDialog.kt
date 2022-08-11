@@ -17,10 +17,10 @@ import com.afollestad.materialdialogs.customview.getCustomView
 import com.triggertrap.seekarc.SeekArc
 import lib.phonograph.view.CheckBoxX
 import player.phonograph.R
+import player.phonograph.model.getReadableDurationString
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.util.SleepTimer
 import player.phonograph.settings.Setting
-import player.phonograph.util.MusicUtil.getReadableDurationString
 import util.mdcolor.pref.ThemeColor
 
 /**

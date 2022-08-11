@@ -11,6 +11,7 @@ import androidx.annotation.Keep
 import player.phonograph.PlaylistType
 import player.phonograph.model.Song
 import player.phonograph.model.buildInfoString
+import player.phonograph.model.getReadableDurationString
 import player.phonograph.model.songCountString
 import player.phonograph.util.MusicUtil
 
@@ -114,6 +115,6 @@ fun Playlist.infoString(context: Context): String {
     val duration = MusicUtil.getTotalDuration(context, songs)
     return buildInfoString(
         songCountString(context, songs.size),
-        MusicUtil.getReadableDurationString(duration)
+        getReadableDurationString(duration)
     )
 }

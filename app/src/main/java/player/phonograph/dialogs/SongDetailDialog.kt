@@ -11,27 +11,27 @@ import android.view.View
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.DialogFragment
-import util.mdcolor.pref.ThemeColor
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.WhichButton
 import com.afollestad.materialdialogs.actions.getActionButton
 import com.afollestad.materialdialogs.customview.customView
 import com.afollestad.materialdialogs.customview.getCustomView
-import player.phonograph.R
-import player.phonograph.model.Song
-import player.phonograph.util.MusicUtil
-import java.io.File
-import java.io.IOException
 import org.jaudiotagger.audio.AudioFile
 import org.jaudiotagger.audio.AudioFileIO
 import org.jaudiotagger.audio.AudioHeader
 import org.jaudiotagger.audio.exceptions.CannotReadException
 import org.jaudiotagger.audio.exceptions.InvalidAudioFrameException
-import org.jaudiotagger.audio.exceptions.ReadOnlyFileException
 import org.jaudiotagger.tag.*
 import org.jaudiotagger.tag.datatype.DataTypes
 import org.jaudiotagger.tag.id3.AbstractID3v2Frame
+import player.phonograph.R
+import player.phonograph.model.Song
+import player.phonograph.model.getReadableDurationString
 import player.phonograph.notification.ErrorNotification
+import player.phonograph.util.MusicUtil
+import util.mdcolor.pref.ThemeColor
+import java.io.File
+import java.io.IOException
 
 /**
  * @author Karim Abou Zeid (kabouzeid), Aidan Follestad (afollestad), chr_56<modify>
@@ -91,7 +91,7 @@ class SongDetailDialog : DialogFragment() {
 
         val songFile = File(song.data)
         fileName.text = makeTextWithTitle(context, R.string.label_file_name, "N/A")
-        trackLength.text = makeTextWithTitle(context, R.string.label_track_length, MusicUtil.getReadableDurationString(song.duration))
+        trackLength.text = makeTextWithTitle(context, R.string.label_track_length, getReadableDurationString(song.duration))
         if (songFile.exists()) {
             fileName.text = makeTextWithTitle(context, R.string.label_file_name, songFile.name)
             filePath.text = makeTextWithTitle(context, R.string.label_file_path, songFile.absolutePath)
@@ -102,7 +102,7 @@ class SongDetailDialog : DialogFragment() {
                 // files of the song
                 val audioHeader: AudioHeader = audioFile.audioHeader
                 fileFormat.text = makeTextWithTitle(context, R.string.label_file_format, audioHeader.format)
-                trackLength.text = makeTextWithTitle(context, R.string.label_track_length, MusicUtil.getReadableDurationString((audioHeader.trackLength * 1000).toLong()))
+                trackLength.text = makeTextWithTitle(context, R.string.label_track_length, getReadableDurationString((audioHeader.trackLength * 1000).toLong()))
                 bitRate.text = makeTextWithTitle(context, R.string.label_bit_rate, audioHeader.bitRate + " kb/s")
                 samplingRate.text = makeTextWithTitle(context, R.string.label_sampling_rate, audioHeader.sampleRate + " Hz")
                 // tags of the song
