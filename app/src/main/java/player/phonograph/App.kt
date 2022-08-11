@@ -9,6 +9,7 @@ import android.util.Log
 import androidx.appcompat.content.res.AppCompatResources
 import kotlin.system.exitProcess
 import player.phonograph.appshortcuts.DynamicShortcutManager
+import player.phonograph.notification.ErrorNotification
 import player.phonograph.service.queue.QueueManager
 import player.phonograph.ui.activities.CrashActivity
 import util.mdcolor.pref.ThemeColor
@@ -46,6 +47,7 @@ class App : Application() {
         instance = this
 
         // Exception Handler
+        ErrorNotification.crashActivity = CrashActivity::class.java
         Thread.setDefaultUncaughtExceptionHandler { _, exception ->
             this.startActivity(
                 Intent(this, CrashActivity::class.java)

@@ -4,10 +4,7 @@
 
 package player.phonograph.notification
 
-import android.app.Notification
-import android.app.NotificationChannel
-import android.app.NotificationManager
-import android.app.PendingIntent
+import android.app.*
 import android.content.Context
 import android.content.Intent
 import android.os.Build
@@ -17,9 +14,13 @@ import player.phonograph.App
 import player.phonograph.KEY_STACK_TRACE
 import player.phonograph.NOTIFICATION_CHANNEL_ID_ERROR
 import player.phonograph.R
-import player.phonograph.ui.activities.CrashActivity
 
 object ErrorNotification {
+    /**
+     * Target Error Report Activity, which can handler extra [KEY_STACK_TRACE] in start intent
+     */
+    lateinit var crashActivity: Class<out Activity>
+
     private var notificationManager: NotificationManager? = null
     private var isReady: Boolean = false
 
@@ -44,7 +45,7 @@ object ErrorNotification {
     private fun send(msg: String, title: String? = null, context: Context = App.instance) {
         if (!isReady) init()
 
-        val action = Intent(context, CrashActivity::class.java).apply {
+        val action = Intent(context, crashActivity).apply {
             putExtra(KEY_STACK_TRACE, msg)
         }
 
