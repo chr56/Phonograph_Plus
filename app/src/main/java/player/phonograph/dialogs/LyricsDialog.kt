@@ -18,7 +18,7 @@ import player.phonograph.adapter.LyricsAdapter
 import player.phonograph.databinding.DialogLyricsBinding
 import player.phonograph.helper.MusicProgressViewUpdateHelper
 import player.phonograph.model.Song
-import player.phonograph.model.lyrics2.*
+import player.phonograph.model.lyrics.*
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
 import player.phonograph.ui.fragments.player.AbsPlayerFragment
 import util.mdcolor.ColorUtil

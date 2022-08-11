@@ -8,7 +8,6 @@ import android.media.audiofx.AudioEffect
 import android.os.Binder
 import android.os.Handler
 import android.os.IBinder
-import android.os.Looper
 import android.support.v4.media.session.MediaSessionCompat
 import android.util.Log
 import android.widget.Toast
@@ -21,7 +20,7 @@ import player.phonograph.appwidgets.AppWidgetCard
 import player.phonograph.appwidgets.AppWidgetClassic
 import player.phonograph.appwidgets.AppWidgetSmall
 import player.phonograph.model.Song
-import player.phonograph.model.lyrics2.LrcLyrics
+import player.phonograph.model.lyrics.LrcLyrics
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.provider.HistoryStore
 import player.phonograph.service.notification.PlayingNotificationManger

@@ -18,7 +18,7 @@ import player.phonograph.BuildConfig.DEBUG
 import player.phonograph.R
 import player.phonograph.misc.LyricsUpdater
 import player.phonograph.model.Song
-import player.phonograph.model.lyrics2.LrcLyrics
+import player.phonograph.model.lyrics.LrcLyrics
 import player.phonograph.notification.ErrorNotification
 import player.phonograph.service.MusicService
 import player.phonograph.settings.Setting

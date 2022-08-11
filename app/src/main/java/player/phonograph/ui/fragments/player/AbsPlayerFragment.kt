@@ -23,8 +23,8 @@ import player.phonograph.interfaces.PaletteColorHolder
 import player.phonograph.model.Song
 import player.phonograph.model.buildInfoString
 import player.phonograph.model.getReadableDurationString
-import player.phonograph.model.lyrics2.AbsLyrics
-import player.phonograph.model.lyrics2.LrcLyrics
+import player.phonograph.model.lyrics.AbsLyrics
+import player.phonograph.model.lyrics.LrcLyrics
 import player.phonograph.notification.ErrorNotification
 import player.phonograph.preferences.NowPlayingScreenPreferenceDialog
 import player.phonograph.service.MusicPlayerRemote

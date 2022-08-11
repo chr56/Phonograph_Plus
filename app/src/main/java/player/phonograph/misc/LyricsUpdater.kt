@@ -9,8 +9,8 @@ import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.runBlocking
 import player.phonograph.App
 import player.phonograph.model.Song
-import player.phonograph.model.lyrics2.LrcLyrics
-import player.phonograph.model.lyrics2.LyricsLoader
+import player.phonograph.model.lyrics.LrcLyrics
+import player.phonograph.model.lyrics.LyricsLoader
 import player.phonograph.notification.ErrorNotification
 import java.io.File
 

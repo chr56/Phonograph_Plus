@@ -2,14 +2,14 @@
  * Copyright (c) 2022 chr_56
  */
 
-package player.phonograph.model.lyrics2
+package player.phonograph.model.lyrics
 
 import android.os.Parcel
 import android.os.Parcelable
 import player.phonograph.model.Song
-import player.phonograph.model.lyrics2.LyricsSource.Companion.EMBEDDED
-import player.phonograph.model.lyrics2.LyricsSource.Companion.EXTERNAL_DECORATED
-import player.phonograph.model.lyrics2.LyricsSource.Companion.EXTERNAL_PRECISE
+import player.phonograph.model.lyrics.LyricsSource.Companion.EMBEDDED
+import player.phonograph.model.lyrics.LyricsSource.Companion.EXTERNAL_DECORATED
+import player.phonograph.model.lyrics.LyricsSource.Companion.EXTERNAL_PRECISE
 
 data class LyricsList(val list: ArrayList<AbsLyrics> = ArrayList(), val song: Song = Song.EMPTY_SONG) : Parcelable {
 

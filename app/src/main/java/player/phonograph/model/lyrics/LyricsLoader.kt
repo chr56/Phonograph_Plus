@@ -2,7 +2,7 @@
  * Copyright (c) 2022 chr_56
  */
 
-package player.phonograph.model.lyrics2
+package player.phonograph.model.lyrics
 
 import android.util.Log
 import kotlinx.coroutines.CoroutineScope

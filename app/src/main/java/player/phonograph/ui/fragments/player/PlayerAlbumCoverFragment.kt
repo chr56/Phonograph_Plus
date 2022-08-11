@@ -16,7 +16,7 @@ import lib.phonograph.misc.SimpleAnimatorListener
 import player.phonograph.adapter.AlbumCoverPagerAdapter
 import player.phonograph.databinding.FragmentPlayerAlbumCoverBinding
 import player.phonograph.helper.MusicProgressViewUpdateHelper
-import player.phonograph.model.lyrics2.LrcLyrics
+import player.phonograph.model.lyrics.LrcLyrics
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.settings.Setting
 import player.phonograph.ui.fragments.AbsMusicServiceFragment

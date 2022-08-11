@@ -2,7 +2,7 @@
  * Copyright (c) 2022 chr_56
  */
 
-package player.phonograph.model.lyrics2
+package player.phonograph.model.lyrics
 
 import android.os.Parcel
 import android.os.Parcelable
@@ -79,8 +79,4 @@ class TextLyrics : AbsLyrics, Parcelable {
         parcel.writeInt(source.type)
     }
     override fun describeContents(): Int = 0
-}
-
-private fun Array<*>?.castToStringMutableList(): MutableList<String> {
-    return this?.let { it.toMutableList() as MutableList<String> } ?: ArrayList<String>() as MutableList<String>
 }

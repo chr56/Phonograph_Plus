@@ -8,9 +8,9 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.*
 import player.phonograph.model.Song
-import player.phonograph.model.lyrics2.AbsLyrics
-import player.phonograph.model.lyrics2.LyricsList
-import player.phonograph.model.lyrics2.LyricsLoader
+import player.phonograph.model.lyrics.AbsLyrics
+import player.phonograph.model.lyrics.LyricsList
+import player.phonograph.model.lyrics.LyricsLoader
 import player.phonograph.notification.ErrorNotification
 import java.io.File
 
