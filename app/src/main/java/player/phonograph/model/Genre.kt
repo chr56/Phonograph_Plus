@@ -54,8 +54,6 @@ class Genre : Parcelable, Displayable {
 
     override fun getDescription(): CharSequence = MusicUtil.getGenreInfoString(instance, this)
 
-    override fun getSortOrderReference(): String? = null
-
     companion object {
         @Keep
         @JvmField

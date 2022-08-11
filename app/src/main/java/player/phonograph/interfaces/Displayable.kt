@@ -9,6 +9,4 @@ interface Displayable {
 
     fun getDisplayTitle(): CharSequence
     fun getDescription(): CharSequence?
-
-    fun getSortOrderReference(): String?
 }

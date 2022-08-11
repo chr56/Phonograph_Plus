@@ -157,4 +157,16 @@ object DisplayableItemRegistry {
             false
         }
     }
+
+    /**
+     * for fast-scroll recycler-view's bar hint
+     */
+    fun defaultSortOrderReference(item: Displayable?): String? =
+        when (item) {
+            is Song -> item.title
+            is Album -> item.title
+            is Artist -> item.name
+            is Genre -> item.name
+            else -> null
+        }
 }

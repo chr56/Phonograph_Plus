@@ -148,8 +148,6 @@ open class Song : Parcelable, Displayable {
 
     override fun getDescription(): CharSequence? = MusicUtil.getSongInfoString(this)
 
-    override fun getSortOrderReference(): String? = title // todo
-
     companion object {
         @JvmField
         val EMPTY_SONG = Song(

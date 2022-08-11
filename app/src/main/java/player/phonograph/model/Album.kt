@@ -67,9 +67,6 @@ class Album : Parcelable, Displayable {
 
     override fun getDescription(): CharSequence = MusicUtil.buildInfoString(artistName, MusicUtil.getSongCountString(App.instance, songs.size))
 
-    override fun getSortOrderReference(): String = title // todo
-
-
     companion object {
         @Keep
         @JvmField

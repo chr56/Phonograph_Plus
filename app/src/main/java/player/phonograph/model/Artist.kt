@@ -60,8 +60,6 @@ class Artist : Parcelable, Displayable {
 
     override fun getDescription(): CharSequence = MusicUtil.getArtistInfoString(App.instance, this)
 
-    override fun getSortOrderReference(): String = name // todo
-
     companion object {
         const val UNKNOWN_ARTIST_DISPLAY_NAME = "Unknown Artist"
 

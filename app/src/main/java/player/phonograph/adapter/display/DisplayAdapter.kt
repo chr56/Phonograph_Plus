@@ -121,7 +121,7 @@ open class DisplayAdapter<I : Displayable>(
     }
 
     // for inheriting
-    open fun getSectionNameImp(position: Int): String = dataset[position].getSortOrderReference()?.substring(0..1) ?: ""
+    open fun getSectionNameImp(position: Int): String = DisplayableItemRegistry.defaultSortOrderReference(dataset[position])?.substring(0..1) ?: ""
 
     protected open fun onMenuClick(bindingAdapterPosition: Int, menuButtonView: View) {
         if (dataset.isNotEmpty()) {
