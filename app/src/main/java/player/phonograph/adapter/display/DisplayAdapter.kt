@@ -65,7 +65,7 @@ open class DisplayAdapter<I : Displayable>(
         val item: I = dataset[position]
         holder.shortSeparator?.visibility = View.VISIBLE
         holder.itemView.isActivated = isChecked(item)
-        holder.title?.text = item.getDisplayTitle()
+        holder.title?.text = item.getDisplayTitle(context = activity)
         holder.text?.text = getDescription(item)
         if (useImageText) {
             setImageText(holder, getRelativeOrdinalText(item))
@@ -74,7 +74,8 @@ open class DisplayAdapter<I : Displayable>(
         }
     }
 
-    protected open fun getDescription(item: I): CharSequence? = item.getDescription()
+    protected open fun getDescription(item: I): CharSequence? =
+        item.getDescription(context = activity)
 
     protected open fun setImage(holder: DisplayViewHolder, position: Int) {
         holder.image?.also {

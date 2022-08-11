@@ -4,9 +4,11 @@
 
 package player.phonograph.model
 
+import android.content.Context
+
 interface Displayable {
     fun getItemID(): Long
 
-    fun getDisplayTitle(): CharSequence
-    fun getDescription(): CharSequence?
+    fun getDisplayTitle(context: Context): CharSequence
+    fun getDescription(context: Context): CharSequence?
 }

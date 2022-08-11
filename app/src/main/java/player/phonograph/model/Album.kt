@@ -1,10 +1,11 @@
 package player.phonograph.model
 
+import android.content.Context
 import android.os.Parcel
 import android.os.Parcelable
 import androidx.annotation.Keep
-import player.phonograph.App
-import player.phonograph.util.MusicUtil
+import player.phonograph.util.MusicUtil.buildInfoString
+import player.phonograph.util.MusicUtil.getSongCountString
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
@@ -54,9 +55,9 @@ class Album : Parcelable, Displayable {
 
     override fun getItemID(): Long = id
 
-    override fun getDisplayTitle(): CharSequence = title
+    override fun getDisplayTitle(context: Context): CharSequence = title
 
-    override fun getDescription(): CharSequence = MusicUtil.buildInfoString(artistName, MusicUtil.getSongCountString(App.instance, songs.size))
+    override fun getDescription(context: Context): CharSequence = buildInfoString(artistName, getSongCountString(context, songs.size))
 
     companion object {
         @Keep

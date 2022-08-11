@@ -1,10 +1,10 @@
 package player.phonograph.model
 
+import android.content.Context
 import android.os.Parcel
 import android.os.Parcelable
 import androidx.annotation.Keep
-import player.phonograph.App
-import player.phonograph.util.MusicUtil
+import player.phonograph.util.MusicUtil.getArtistInfoString
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
@@ -47,9 +47,9 @@ class Artist : Parcelable, Displayable {
 
     override fun getItemID(): Long = id
 
-    override fun getDisplayTitle(): CharSequence = name
+    override fun getDisplayTitle(context: Context): CharSequence = name
 
-    override fun getDescription(): CharSequence = MusicUtil.getArtistInfoString(App.instance, this)
+    override fun getDescription(context: Context): CharSequence = getArtistInfoString(context, this)
 
     companion object {
         const val UNKNOWN_ARTIST_DISPLAY_NAME = "Unknown Artist"

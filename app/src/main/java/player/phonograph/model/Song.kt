@@ -1,9 +1,10 @@
 package player.phonograph.model
 
+import android.content.Context
 import android.os.Parcel
 import android.os.Parcelable
 import androidx.annotation.Keep
-import player.phonograph.util.MusicUtil
+import player.phonograph.util.MusicUtil.getSongInfoString
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
@@ -134,9 +135,9 @@ open class Song : Parcelable, Displayable {
 
     override fun getItemID(): Long = id
 
-    override fun getDisplayTitle(): CharSequence = title
+    override fun getDisplayTitle(context: Context): CharSequence = title
 
-    override fun getDescription(): CharSequence? = MusicUtil.getSongInfoString(this)
+    override fun getDescription(context: Context): CharSequence? = getSongInfoString(this)
 
     companion object {
         @JvmField
