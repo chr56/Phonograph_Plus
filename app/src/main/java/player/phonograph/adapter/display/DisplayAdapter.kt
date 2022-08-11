@@ -18,11 +18,6 @@ import player.phonograph.R
 import player.phonograph.adapter.base.MultiSelectAdapter
 import player.phonograph.adapter.base.MultiSelectionCabController
 import player.phonograph.adapter.base.UniversalMediaEntryViewHolder
-import player.phonograph.adapter.display.DisplayableItemRegistry.multiMenuClick
-import player.phonograph.adapter.display.DisplayableItemRegistry.menuRes
-import player.phonograph.adapter.display.DisplayableItemRegistry.defaultSortOrderReference
-import player.phonograph.adapter.display.DisplayableItemRegistry.menuClick
-import player.phonograph.adapter.display.DisplayableItemRegistry.clickHandler
 import player.phonograph.interfaces.Displayable
 import util.mdcolor.ColorUtil
 import util.mddesign.util.MaterialColorHelper
@@ -103,11 +98,7 @@ open class DisplayAdapter<I : Displayable>(
     override fun updateItemCheckStatus(datasetPosition: Int) = notifyItemChanged(datasetPosition)
 
     override fun onMultipleItemAction(menuItem: MenuItem, selection: List<I>) {
-        multiMenuClick(
-            list = selection,
-            actionId = menuItem.itemId,
-            activity = activity
-        )
+        selection.multiMenuClick(actionId = menuItem.itemId, activity)
     }
 
     override fun getSectionName(position: Int): String =
@@ -128,15 +119,14 @@ open class DisplayAdapter<I : Displayable>(
 
     // for inheriting
     open fun getSectionNameImp(position: Int): String =
-        defaultSortOrderReference(dataset[position])?.substring(0..1) ?: ""
+        dataset[position].defaultSortOrderReference()?.substring(0..1) ?: ""
 
     protected open fun onMenuClick(bindingAdapterPosition: Int, menuButtonView: View) {
         if (dataset.isNotEmpty()) {
             PopupMenu(activity, menuButtonView).apply {
-                inflate(menuRes(dataset[0]))
+                inflate(dataset[0].menuRes())
                 setOnMenuItemClickListener { menuItem ->
-                    menuClick(
-                        item = dataset[bindingAdapterPosition],
+                    dataset[bindingAdapterPosition].menuClick(
                         actionId = menuItem.itemId,
                         activity = activity
                     )
@@ -145,16 +135,12 @@ open class DisplayAdapter<I : Displayable>(
         }
     }
 
-    protected open fun onClickItem(bindingAdapterPosition: Int, view: View, image: ImageView?) {
+    protected open fun onClickItem(bindingAdapterPosition: Int, view: View, imageView: ImageView?) {
         when (isInQuickSelectMode) {
             true -> toggleChecked(bindingAdapterPosition)
             false -> {
-                clickHandler(
-                    dataset[bindingAdapterPosition],
-                    dataset,
-                    activity,
-                    image
-                )
+                dataset[bindingAdapterPosition]
+                    .clickHandler(list = dataset, activity, imageView)
             }
         }
     }
@@ -180,7 +166,7 @@ open class DisplayAdapter<I : Displayable>(
             // Hide Menu if not available
             val item = dataset.getOrNull(0)
             if (item != null) {
-                menu?.visibility = if (menuRes(item) == 0) View.GONE else View.VISIBLE
+                menu?.visibility = if (item.menuRes() == 0) View.GONE else View.VISIBLE
             }
         }
     }

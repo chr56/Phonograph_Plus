@@ -89,7 +89,7 @@ class PlayingQueueAdapter(
         }
     }
 
-    override fun onClickItem(bindingAdapterPosition: Int, view: View, image: ImageView?) {
+    override fun onClickItem(bindingAdapterPosition: Int, view: View, imageView: ImageView?) {
         MusicPlayerRemote.openQueue(dataset, bindingAdapterPosition, true)
     }
 
