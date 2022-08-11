@@ -10,6 +10,7 @@ import player.phonograph.R
 import player.phonograph.dialogs.AddToPlaylistDialog
 import player.phonograph.dialogs.DeleteSongsDialog
 import player.phonograph.dialogs.SongDetailDialog
+import player.phonograph.dialogs.SongShareDialog.Companion.createShareSongFileIntent
 import player.phonograph.interfaces.PaletteColorHolder
 import player.phonograph.model.Song
 import player.phonograph.service.MusicPlayerRemote
@@ -81,7 +82,7 @@ fun onSongMenuItemClick(activity: FragmentActivity, song: Song, menuItemId: Int)
         R.id.action_share -> {
             activity.startActivity(
                 Intent.createChooser(
-                    MusicUtil.createShareSongFileIntent(
+                    createShareSongFileIntent(
                         song,
                         activity
                     ),

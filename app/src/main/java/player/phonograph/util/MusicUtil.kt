@@ -26,20 +26,6 @@ object MusicUtil {
         return ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, songId)
     }
 
-    fun createShareSongFileIntent(song: Song, context: Context): Intent {
-        return try {
-            Intent()
-                .setAction(Intent.ACTION_SEND)
-                .putExtra(Intent.EXTRA_STREAM, FileProvider.getUriForFile(context, context.applicationContext.packageName, File(song.data)))
-                .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-                .setType("audio/*")
-        } catch (e: IllegalArgumentException) {
-            // the path is most likely not like /storage/emulated/0/... but something like /storage/28C7-75B0/...
-            ErrorNotification.postErrorNotification(e, "Physical external SD card is not fully support!")
-            Intent()
-        }
-    }
-
     fun getYearString(year: Int): String = if (year > 0) year.toString() else "-"
 
     // iTunes uses for example 1002 for track 2 CD1 or 3011 for track 11 CD3.
