@@ -102,7 +102,11 @@ open class DisplayAdapter<I : Displayable>(
     override fun updateItemCheckStatus(datasetPosition: Int) = notifyItemChanged(datasetPosition)
 
     override fun onMultipleItemAction(menuItem: MenuItem, selection: List<I>) {
-        if (dataset.isNotEmpty()) dataset[0].multiMenuHandler()?.invoke(activity, selection, menuItem.itemId)
+        DisplayableItemRegistry.multiMenuClick(
+            list = selection,
+            actionId = menuItem.itemId,
+            activity = activity
+        )
     }
 
     override fun getSectionName(position: Int): String = if (showSectionName) getSectionNameImp(position) else ""
@@ -121,14 +125,15 @@ open class DisplayAdapter<I : Displayable>(
 
     protected open fun onMenuClick(bindingAdapterPosition: Int, menuButtonView: View) {
         if (dataset.isNotEmpty()) {
-            val menuRes = dataset[0].menuRes()
+            val menuRes = DisplayableItemRegistry.menuRes(dataset[0])
             val popupMenu = PopupMenu(activity, menuButtonView)
             popupMenu.inflate(menuRes)
             popupMenu.setOnMenuItemClickListener { menuItem ->
-                if (menuItem != null)
-                    return@setOnMenuItemClickListener dataset[0].menuHandler()
-                        ?.invoke(activity, dataset[bindingAdapterPosition], menuItem.itemId) ?: false
-                else return@setOnMenuItemClickListener false
+                DisplayableItemRegistry.menuClick(
+                    item = dataset[bindingAdapterPosition],
+                    actionId = menuItem.itemId,
+                    activity = activity
+                )
             }
             popupMenu.show()
         }
@@ -137,7 +142,14 @@ open class DisplayAdapter<I : Displayable>(
     protected open fun onClickItem(bindingAdapterPosition: Int, view: View, image: ImageView?) {
         when (isInQuickSelectMode) {
             true -> toggleChecked(bindingAdapterPosition)
-            false -> dataset[0].clickHandler().invoke(activity, dataset[bindingAdapterPosition], dataset, image)
+            false -> {
+                DisplayableItemRegistry.clickHandler(
+                    dataset[bindingAdapterPosition],
+                    dataset,
+                    activity,
+                    image
+                )
+            }
         }
     }
     protected open fun onLongClickItem(bindingAdapterPosition: Int, view: View): Boolean {
@@ -160,8 +172,9 @@ open class DisplayAdapter<I : Displayable>(
                 onMenuClick(bindingAdapterPosition, it)
             }
             // Hide Menu if not available
-            if (dataset[0].menuRes() == 0 || dataset[0].menuHandler() == null) {
-                menu?.visibility = View.GONE
+            val item = dataset.getOrNull(0)
+            if (item != null) {
+                menu?.visibility = if (DisplayableItemRegistry.menuRes(item) == 0) View.GONE else View.VISIBLE
             }
         }
     }
