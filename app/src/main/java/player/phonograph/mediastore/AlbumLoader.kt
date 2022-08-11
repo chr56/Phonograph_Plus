@@ -41,4 +41,7 @@ object AlbumLoader {
         if (list.isEmpty()) return null
         return list[0].albumName
     }
+
+    fun List<Album>.allSongs(): List<Song> =
+        this.flatMap { it.songs }
 }

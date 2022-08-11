@@ -9,6 +9,7 @@ import android.provider.MediaStore.Audio.AudioColumns
 import player.phonograph.mediastore.SongLoader.getSongs
 import player.phonograph.mediastore.SongLoader.makeSongCursor
 import player.phonograph.model.Artist
+import player.phonograph.model.Song
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
@@ -36,4 +37,7 @@ object ArtistLoader {
         return if (songs.isEmpty()) Artist(artistId, Artist.UNKNOWN_ARTIST_DISPLAY_NAME, ArrayList())
         else Artist(artistId, songs[0].artistName, songs.toAlbumList())
     }
+
+    fun List<Artist>.allArtistSongs(): List<Song> =
+        this.flatMap { it.songs }
 }

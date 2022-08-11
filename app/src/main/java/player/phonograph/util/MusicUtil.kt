@@ -8,17 +8,15 @@ import android.net.Uri
 import android.os.Environment
 import android.provider.MediaStore
 import androidx.core.content.FileProvider
-import java.io.File
-import java.io.IOException
-import java.util.*
-import player.phonograph.App
 import player.phonograph.R
-import player.phonograph.mediastore.GenreLoader
 import player.phonograph.model.Album
 import player.phonograph.model.Artist
 import player.phonograph.model.Genre
 import player.phonograph.model.Song
 import player.phonograph.notification.ErrorNotification
+import java.io.File
+import java.io.IOException
+import java.util.*
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
@@ -186,13 +184,4 @@ object MusicUtil {
         val m = (t - s * 1000 - ms) / (1000 * 60)
         return String.format("%d:%02d.%03d", m, s, ms)
     }
-
-    fun getAlbumSongList(albums: List<Album>): List<Song> =
-        albums.flatMap { it.songs }
-
-    fun getArtistSongList(artists: List<Artist>): List<Song> =
-        artists.flatMap { it.songs }
-
-    fun getGenreSongList(genres: List<Genre>): List<Song> =
-        genres.flatMap { GenreLoader.getSongs(App.instance, it.id) }
 }

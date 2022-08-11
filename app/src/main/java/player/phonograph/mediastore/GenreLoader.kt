@@ -9,6 +9,7 @@ import android.content.Context
 import android.database.Cursor
 import android.os.Build
 import android.provider.MediaStore
+import player.phonograph.App
 import player.phonograph.mediastore.sort.SortRef
 import player.phonograph.model.Genre
 import player.phonograph.model.Song
@@ -94,6 +95,9 @@ object GenreLoader {
             }
         }
     }
+
+    fun List<Genre>.allGenreSongs(): List<Song> =
+        this.flatMap { getSongs(App.instance, it.id) }
 
     private fun List<Genre>.sortAll(): List<Genre> {
         val revert = Setting.instance.genreSortMode.revert

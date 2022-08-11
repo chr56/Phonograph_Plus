@@ -12,6 +12,9 @@ import androidx.annotation.MenuRes
 import androidx.core.util.Pair
 import androidx.fragment.app.FragmentActivity
 import player.phonograph.R
+import player.phonograph.mediastore.AlbumLoader.allSongs
+import player.phonograph.mediastore.ArtistLoader.allArtistSongs
+import player.phonograph.mediastore.GenreLoader.allGenreSongs
 import player.phonograph.model.Displayable
 import player.phonograph.model.Album
 import player.phonograph.model.Artist
@@ -19,7 +22,6 @@ import player.phonograph.model.Genre
 import player.phonograph.model.Song
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.settings.Setting
-import player.phonograph.util.MusicUtil
 import player.phonograph.util.NavigationUtil
 import player.phonograph.util.menu.onMultiSongMenuItemClick
 import player.phonograph.util.menu.onSongMenuItemClick
@@ -138,9 +140,9 @@ fun Displayable.menuClick(actionId: Int, activity: FragmentActivity): Boolean {
 fun List<Displayable>.multiMenuClick(actionId: Int, activity: FragmentActivity): Boolean {
     val songs = when (val sample = this.getOrNull(0)) {
         is Song -> this.filterIsInstance<Song>()
-        is Album -> MusicUtil.getAlbumSongList(this.filterIsInstance<Album>())
-        is Artist -> MusicUtil.getArtistSongList(this.filterIsInstance<Artist>())
-        is Genre -> MusicUtil.getGenreSongList(this.filterIsInstance<Genre>())
+        is Album -> this.filterIsInstance<Album>().allSongs()
+        is Artist -> this.filterIsInstance<Artist>().allArtistSongs()
+        is Genre -> this.filterIsInstance<Genre>().allGenreSongs()
         else -> emptyList()
     }
     return if (songs.isNotEmpty()) {
