@@ -2,6 +2,7 @@ package player.phonograph.util
 
 import android.app.Activity
 import android.content.ActivityNotFoundException
+import android.content.Context
 import android.content.Intent
 import android.media.audiofx.AudioEffect
 import android.view.View
@@ -60,10 +61,10 @@ object NavigationUtil {
         }
     }
 
-    fun goToGenre(activity: Activity, genre: Genre?, vararg sharedElements: Pair<*, *>?) {
-        val intent = Intent(activity, GenreDetailActivity::class.java)
+    fun goToGenre(context: Context, genre: Genre?, vararg sharedElements: Pair<*, *>?) {
+        val intent = Intent(context, GenreDetailActivity::class.java)
         intent.putExtra(GenreDetailActivity.EXTRA_GENRE, genre)
-        activity.startActivity(intent)
+        context.startActivity(intent)
     }
 
     fun goToPlaylist(activity: Activity, playlist: Playlist?, vararg sharedElements: Pair<*, *>?) {
