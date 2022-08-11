@@ -18,13 +18,15 @@ import player.phonograph.adapter.base.MultiSelectAdapter
 import player.phonograph.adapter.base.MultiSelectionCabController
 import player.phonograph.glide.PhonographColoredTarget
 import player.phonograph.glide.SongGlideRequest
-import player.phonograph.util.menu.onMultiSongMenuItemClick
 import player.phonograph.mediastore.sort.SortRef
 import player.phonograph.model.Album
 import player.phonograph.model.Song
+import player.phonograph.model.buildInfoString
+import player.phonograph.model.songCountString
 import player.phonograph.settings.Setting
 import player.phonograph.util.MusicUtil
 import player.phonograph.util.NavigationUtil
+import player.phonograph.util.menu.onMultiSongMenuItemClick
 import util.mdcolor.ColorUtil
 import util.mddesign.util.MaterialColorHelper
 
@@ -69,8 +71,8 @@ open class AlbumAdapter(
         album.title
 
     protected open fun getAlbumText(album: Album): String =
-        MusicUtil.buildInfoString(
-            album.artistName, MusicUtil.getSongCountString(activity, album.songs.size)
+        buildInfoString(
+            album.artistName, songCountString(activity, album.songs.size)
         )
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {

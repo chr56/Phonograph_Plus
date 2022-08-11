@@ -15,9 +15,9 @@ import android.widget.RemoteViews
 import androidx.core.content.res.ResourcesCompat
 import player.phonograph.R
 import player.phonograph.model.Song
+import player.phonograph.model.infoString
 import player.phonograph.service.MusicService
 import player.phonograph.util.ImageUtil
-import player.phonograph.util.MusicUtil
 import util.mddesign.util.MaterialColorHelper
 
 abstract class BaseAppWidget : AppWidgetProvider() {
@@ -134,7 +134,7 @@ abstract class BaseAppWidget : AppWidgetProvider() {
         bitmap?.let { BitmapDrawable(resources, it) }
             ?: ResourcesCompat.getDrawable(resources!!, R.drawable.default_album_art, null)
 
-    protected fun getSongArtistAndAlbum(song: Song): String = MusicUtil.getSongInfoString(song)
+    protected fun getSongArtistAndAlbum(song: Song): String = song.infoString()
 
     companion object {
         const val NAME = "app_widget"

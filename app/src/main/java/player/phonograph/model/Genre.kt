@@ -4,7 +4,6 @@ import android.content.Context
 import android.os.Parcel
 import android.os.Parcelable
 import androidx.annotation.Keep
-import player.phonograph.util.MusicUtil.getGenreInfoString
 
 class Genre : Parcelable, Displayable {
 
@@ -45,7 +44,7 @@ class Genre : Parcelable, Displayable {
 
     override fun getDisplayTitle(context: Context): CharSequence = name ?: "UNKNOWN GENRE $id"
 
-    override fun getDescription(context: Context): CharSequence = getGenreInfoString(context, this)
+    override fun getDescription(context: Context): CharSequence = infoString(context)
 
     companion object {
         @Keep

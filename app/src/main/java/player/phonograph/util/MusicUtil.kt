@@ -9,10 +9,7 @@ import android.os.Environment
 import android.provider.MediaStore
 import androidx.core.content.FileProvider
 import player.phonograph.R
-import player.phonograph.model.Album
-import player.phonograph.model.Artist
-import player.phonograph.model.Genre
-import player.phonograph.model.Song
+import player.phonograph.model.*
 import player.phonograph.notification.ErrorNotification
 import java.io.File
 import java.io.IOException
@@ -21,7 +18,6 @@ import java.util.*
 /**
  * @author Karim Abou Zeid (kabouzeid)
  */
-@Suppress("unused")
 object MusicUtil {
 
     fun getMediaStoreAlbumCoverUri(albumId: Long): Uri =
@@ -45,42 +41,12 @@ object MusicUtil {
         }
     }
 
-    fun getArtistInfoString(context: Context, artist: Artist): String =
-        buildInfoString(
-            getAlbumCountString(context, artist.albumCount),
-            getSongCountString(context, artist.songCount)
-        )
-
-    fun getAlbumInfoString(context: Context, album: Album): String =
-        buildInfoString(
-            album.artistName,
-            getSongCountString(context, album.songCount)
-        )
-
-    fun getSongInfoString(song: Song): String {
-        return buildInfoString(
-            song.artistName,
-            song.albumName
-        )
-    }
-
-    fun getGenreInfoString(context: Context, genre: Genre): String =
-        getSongCountString(context, genre.songCount)
-
     fun getPlaylistInfoString(context: Context, songs: List<Song>): String {
         val duration = getTotalDuration(context, songs)
         return buildInfoString(
-            getSongCountString(context, songs.size),
+            songCountString(context, songs.size),
             getReadableDurationString(duration)
         )
-    }
-
-    fun getSongCountString(context: Context, songCount: Int): String =
-        "$songCount ${if (songCount == 1) context.resources.getString(R.string.song) else context.resources.getString(R.string.songs)}"
-
-    fun getAlbumCountString(context: Context, albumCount: Int): String {
-        val albumString = if (albumCount == 1) context.resources.getString(R.string.album) else context.resources.getString(R.string.albums)
-        return "$albumCount $albumString"
     }
 
     fun getYearString(year: Int): String = if (year > 0) year.toString() else "-"
@@ -99,20 +65,6 @@ object MusicUtil {
             String.format(Locale.getDefault(), "%d:%02d:%02d", hours, minutes, seconds)
         }
     }
-
-    /**
-     * Build a concatenated string from the provided arguments
-     * The intended purpose is to show extra annotations
-     * to a music library item.
-     * Ex: for a given album --> buildInfoString(album.artist, album.songCount)
-     */
-    fun buildInfoString(string1: String?, string2: String?): String =
-        when {
-            string1.isNullOrEmpty() && !string2.isNullOrEmpty() -> string2
-            !string1.isNullOrEmpty() && string2.isNullOrEmpty() -> string1
-            !string1.isNullOrEmpty() && !string2.isNullOrEmpty() -> "$string1  •  $string2"
-            else -> ""
-        }
 
     // iTunes uses for example 1002 for track 2 CD1 or 3011 for track 11 CD3.
     // this method converts those values to normal track numbers

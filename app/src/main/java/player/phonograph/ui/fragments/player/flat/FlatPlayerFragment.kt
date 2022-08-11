@@ -20,13 +20,13 @@ import player.phonograph.R
 import player.phonograph.adapter.base.MediaEntryViewHolder
 import player.phonograph.databinding.FragmentFlatPlayerBinding
 import player.phonograph.model.Song
+import player.phonograph.model.infoString
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
 import player.phonograph.ui.fragments.player.AbsPlayerFragment
 import player.phonograph.ui.fragments.player.PlayerAlbumCoverFragment
 import player.phonograph.util.FavoriteUtil.isFavorite
 import player.phonograph.util.ImageUtil
-import player.phonograph.util.MusicUtil
 import player.phonograph.util.Util.isLandscape
 import player.phonograph.util.ViewUtil
 import player.phonograph.util.menu.MenuClickListener
@@ -399,9 +399,8 @@ class FlatPlayerFragment :
 
         override fun onCurrentSongChanged() {
             currentSongViewHolder!!.title!!.text = fragment.viewModel.currentSong.title
-            currentSongViewHolder!!.text!!.text = MusicUtil.getSongInfoString(
-                fragment.viewModel.currentSong
-            )
+            currentSongViewHolder!!.text!!.text =
+                fragment.viewModel.currentSong.infoString()
         }
 
         override fun animateColorChange(newColor: Int) {
@@ -420,9 +419,8 @@ class FlatPlayerFragment :
 
         override fun onCurrentSongChanged() {
             fragment.viewBinding.playerToolbar.title = fragment.viewModel.currentSong.title
-            fragment.viewBinding.playerToolbar.subtitle = MusicUtil.getSongInfoString(
-                fragment.viewModel.currentSong
-            )
+            fragment.viewBinding.playerToolbar.subtitle =
+                fragment.viewModel.currentSong.infoString()
         }
 
         override fun animateColorChange(newColor: Int) {

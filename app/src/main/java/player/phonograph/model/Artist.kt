@@ -4,7 +4,6 @@ import android.content.Context
 import android.os.Parcel
 import android.os.Parcelable
 import androidx.annotation.Keep
-import player.phonograph.util.MusicUtil.getArtistInfoString
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
@@ -49,7 +48,7 @@ class Artist : Parcelable, Displayable {
 
     override fun getDisplayTitle(context: Context): CharSequence = name
 
-    override fun getDescription(context: Context): CharSequence = getArtistInfoString(context, this)
+    override fun getDescription(context: Context): CharSequence = infoString(context)
 
     companion object {
         const val UNKNOWN_ARTIST_DISPLAY_NAME = "Unknown Artist"

@@ -39,9 +39,7 @@ import player.phonograph.glide.util.CustomArtistImageUtil.resetCustomArtistImage
 import player.phonograph.glide.util.CustomArtistImageUtil.setCustomArtistImage
 import player.phonograph.interfaces.PaletteColorHolder
 import player.phonograph.misc.SimpleObservableScrollViewCallbacks
-import player.phonograph.model.Album
-import player.phonograph.model.Artist
-import player.phonograph.model.Song
+import player.phonograph.model.*
 import player.phonograph.notification.ErrorNotification
 import player.phonograph.service.MusicPlayerRemote.enqueue
 import player.phonograph.service.MusicPlayerRemote.openAndShuffleQueue
@@ -49,9 +47,7 @@ import player.phonograph.service.MusicPlayerRemote.playNext
 import player.phonograph.settings.Setting
 import player.phonograph.settings.Setting.Companion.isAllowedToDownloadMetadata
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
-import player.phonograph.util.MusicUtil.getAlbumCountString
 import player.phonograph.util.MusicUtil.getReadableDurationString
-import player.phonograph.util.MusicUtil.getSongCountString
 import player.phonograph.util.MusicUtil.getTotalDuration
 import player.phonograph.util.NavigationUtil.openEqualizer
 import retrofit2.Call
@@ -390,8 +386,8 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorHolder 
             loadBiography()
         }
         supportActionBar!!.title = artist.name
-        viewBinding.songCountText.text = getSongCountString(this, artist.songCount)
-        viewBinding.albumCountText.text = getAlbumCountString(this, artist.albumCount)
+        viewBinding.songCountText.text = songCountString(this, artist.songCount)
+        viewBinding.albumCountText.text = albumCountString(this, artist.albumCount)
         viewBinding.durationText.text = getReadableDurationString(getTotalDuration(this, artist.songs))
 
         // songAdapter.swapDataSet(artist.getSongs());

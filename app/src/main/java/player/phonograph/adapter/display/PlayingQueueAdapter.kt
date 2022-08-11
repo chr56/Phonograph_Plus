@@ -21,8 +21,8 @@ import com.h6ah4i.android.widget.advrecyclerview.draggable.ItemDraggableRange
 import com.h6ah4i.android.widget.advrecyclerview.draggable.annotation.DraggableItemStateFlags
 import player.phonograph.R
 import player.phonograph.model.Song
+import player.phonograph.model.infoString
 import player.phonograph.service.MusicPlayerRemote
-import player.phonograph.util.MusicUtil
 import player.phonograph.util.NavigationUtil
 import player.phonograph.util.ViewUtil
 import player.phonograph.util.menu.onSongMenuItemClick
@@ -102,7 +102,7 @@ class PlayingQueueAdapter(
 
             itemView.isActivated = false
             title?.text = song.title
-            text?.text = MusicUtil.getSongInfoString(song)
+            text?.text = song.infoString()
             image?.visibility = GONE
             imageText?.visibility = VISIBLE
             imageText?.text = (position - current).toString()

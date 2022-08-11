@@ -21,6 +21,7 @@ import player.phonograph.adapter.display.PlayingQueueAdapter
 import player.phonograph.dialogs.*
 import player.phonograph.interfaces.PaletteColorHolder
 import player.phonograph.model.Song
+import player.phonograph.model.buildInfoString
 import player.phonograph.model.lyrics2.AbsLyrics
 import player.phonograph.model.lyrics2.LrcLyrics
 import player.phonograph.notification.ErrorNotification
@@ -307,7 +308,7 @@ abstract class AbsPlayerFragment :
     protected val upNextAndQueueTime: String
         get() {
             val duration = MusicPlayerRemote.getQueueDurationMillis(MusicPlayerRemote.position)
-            return MusicUtil.buildInfoString(
+            return buildInfoString(
                 resources.getString(R.string.up_next),
                 MusicUtil.getReadableDurationString(duration)
             )

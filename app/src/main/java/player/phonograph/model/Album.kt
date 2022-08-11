@@ -4,8 +4,6 @@ import android.content.Context
 import android.os.Parcel
 import android.os.Parcelable
 import androidx.annotation.Keep
-import player.phonograph.util.MusicUtil.buildInfoString
-import player.phonograph.util.MusicUtil.getSongCountString
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
@@ -14,6 +12,7 @@ class Album : Parcelable, Displayable {
 
     val id: Long
     val title: String
+
     @JvmField
     val songs: List<Song>
 
@@ -57,7 +56,7 @@ class Album : Parcelable, Displayable {
 
     override fun getDisplayTitle(context: Context): CharSequence = title
 
-    override fun getDescription(context: Context): CharSequence = buildInfoString(artistName, getSongCountString(context, songs.size))
+    override fun getDescription(context: Context): CharSequence = infoString(context)
 
     companion object {
         @Keep
@@ -81,7 +80,9 @@ class Album : Parcelable, Displayable {
     }
 
     constructor(parcel: Parcel) {
-        songs = parcel.createTypedArrayList(Song.CREATOR) ?: throw Exception("Fail to recreate Album from song")
+        songs = parcel.createTypedArrayList(Song.CREATOR) ?: throw Exception(
+            "Fail to recreate Album from song"
+        )
         id = parcel.readLong()
         title = parcel.readString() ?: "UNKNOWN"
     }

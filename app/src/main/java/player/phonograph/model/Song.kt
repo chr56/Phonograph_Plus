@@ -4,7 +4,6 @@ import android.content.Context
 import android.os.Parcel
 import android.os.Parcelable
 import androidx.annotation.Keep
-import player.phonograph.util.MusicUtil.getSongInfoString
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
@@ -137,7 +136,7 @@ open class Song : Parcelable, Displayable {
 
     override fun getDisplayTitle(context: Context): CharSequence = title
 
-    override fun getDescription(context: Context): CharSequence? = getSongInfoString(this)
+    override fun getDescription(context: Context): CharSequence? = infoString()
 
     companion object {
         @JvmField

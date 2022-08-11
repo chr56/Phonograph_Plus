@@ -11,12 +11,9 @@ import player.phonograph.R
 import player.phonograph.adapter.base.MediaEntryViewHolder
 import player.phonograph.glide.ArtistGlideRequest
 import player.phonograph.glide.SongGlideRequest
-import player.phonograph.model.Album
-import player.phonograph.model.Artist
-import player.phonograph.model.Song
+import player.phonograph.model.*
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.settings.Setting
-import player.phonograph.util.MusicUtil
 import player.phonograph.util.NavigationUtil.goToAlbum
 import player.phonograph.util.NavigationUtil.goToArtist
 import player.phonograph.util.menu.MenuClickListener
@@ -56,7 +53,7 @@ class SearchAdapter(
             ALBUM -> {
                 val album = dataSet[position] as Album
                 holder.title?.text = album.title
-                holder.text?.text = MusicUtil.getAlbumInfoString(activity, album)
+                holder.text?.text = album.infoString(activity)
                 SongGlideRequest.Builder.from(Glide.with(activity), album.safeGetFirstSong())
                     .checkIgnoreMediaStore(activity)
                     .build()
@@ -65,7 +62,7 @@ class SearchAdapter(
             ARTIST -> {
                 val artist = dataSet[position] as Artist
                 holder.title?.text = artist.name
-                holder.text?.text = MusicUtil.getArtistInfoString(activity, artist)
+                holder.text?.text = artist.infoString(activity)
                 ArtistGlideRequest.Builder.from(Glide.with(activity), artist)
                     .build()
                     .into(holder.image!!)
@@ -73,7 +70,7 @@ class SearchAdapter(
             SONG -> {
                 val song = dataSet[position] as Song
                 holder.title?.text = song.title
-                holder.text?.text = MusicUtil.getSongInfoString(song)
+                holder.text?.text = song.infoString()
                 SongGlideRequest.Builder.from(Glide.with(activity), song)
                     .checkIgnoreMediaStore(activity)
                     .build()

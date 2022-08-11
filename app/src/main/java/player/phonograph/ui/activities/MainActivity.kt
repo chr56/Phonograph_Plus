@@ -44,6 +44,7 @@ import player.phonograph.mediastore.SongLoader.getAllSongs
 import player.phonograph.misc.SAFCallbackHandlerActivity
 import player.phonograph.misc.SafLauncher
 import player.phonograph.model.Song
+import player.phonograph.model.infoString
 import player.phonograph.notification.ErrorNotification
 import player.phonograph.notification.UpgradeNotification
 import player.phonograph.service.MusicPlayerRemote
@@ -53,7 +54,6 @@ import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
 import player.phonograph.ui.activities.intro.AppIntroActivity
 import player.phonograph.ui.fragments.home.HomeFragment
 import player.phonograph.util.ImageUtil.getTintedDrawable
-import player.phonograph.util.MusicUtil
 import util.mdcolor.pref.ThemeColor
 import util.mddesign.util.NavigationViewUtil.setItemIconColors
 import util.mddesign.util.NavigationViewUtil.setItemTextColors
@@ -302,7 +302,7 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
 
             (navigationDrawerHeader!!.findViewById<View>(R.id.title) as TextView).text = song.title
             (navigationDrawerHeader!!.findViewById<View>(R.id.text) as TextView).text =
-                MusicUtil.getSongInfoString(song)
+                song.infoString()
             SongGlideRequest.Builder.from(Glide.with(this), song)
                 .checkIgnoreMediaStore(this).build()
                 .into(navigationDrawerHeader!!.findViewById<View>(R.id.image) as ImageView)
