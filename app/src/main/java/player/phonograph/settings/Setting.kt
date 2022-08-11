@@ -21,6 +21,8 @@ import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.adapter.PageConfig
 import player.phonograph.adapter.PageConfigUtil
+import player.phonograph.adapter.PageConfigUtil.fromJson
+import player.phonograph.adapter.PageConfigUtil.toJson
 import player.phonograph.model.sort.FileSortMode
 import player.phonograph.model.sort.SortMode
 import player.phonograph.model.sort.SortRef
@@ -69,7 +71,7 @@ class Setting(context: Context) {
         get() {
             val rawString = mPreferences.getString(HOME_TAB_CONFIG, null)
             val config: PageConfig = try {
-                PageConfigUtil.fromJson(JSONObject(rawString ?: ""))
+                JSONObject(rawString ?: "").fromJson()
             } catch (e: JSONException) {
                 Log.e("Preference", "home tab config string $rawString")
                 Log.e("Preference", "Fail to parse home tab config string\n ${e.message}")
@@ -82,7 +84,7 @@ class Setting(context: Context) {
         set(value) {
             val json =
                 try {
-                    PageConfigUtil.toJson(value)
+                    value.toJson()
                 } catch (e: JSONException) {
                     Log.e("Preference", "Save home tab config failed, use default. \n${e.message}")
                     // return default

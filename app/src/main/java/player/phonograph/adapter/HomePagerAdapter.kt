@@ -68,14 +68,14 @@ class PageConfig(var tabMap: MutableMap<Int, String>) : Iterable<String> {
 object PageConfigUtil {
 
     @Throws(JSONException::class)
-    fun toJson(cfg: PageConfig): JSONObject {
-        val array: Array<String> = Array(cfg.getSize()) { i -> cfg.get(i) }
+    fun PageConfig.toJson(): JSONObject {
+        val array: Array<String> = Array(this.getSize()) { i -> this.get(i) }
         return JSONObject().put(KEY, JSONArray(array))
     }
 
     @Throws(JSONException::class)
-    fun fromJson(json: JSONObject): PageConfig {
-        val array = json.optJSONArray(KEY) ?: throw JSONException("KEY(\"PageCfg\") doesn't exist")
+    fun JSONObject.fromJson(): PageConfig {
+        val array = this.optJSONArray(KEY) ?: throw JSONException("KEY(\"PageCfg\") doesn't exist")
 
         if (array.length() <= 0) throw JSONException("No Value")
 
@@ -92,5 +92,5 @@ object PageConfigUtil {
 
     private const val KEY = "PageCfg"
 
-    val DEFAULT_CONFIG = toJson(PageConfig.DEFAULT_CONFIG)
+    val DEFAULT_CONFIG = PageConfig.DEFAULT_CONFIG.toJson()
 }
