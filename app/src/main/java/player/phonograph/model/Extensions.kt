@@ -6,8 +6,8 @@
 package player.phonograph.model
 
 import android.content.Context
-import player.phonograph.R
 import java.util.*
+import player.phonograph.R
 
 fun Song.infoString(): String =
     buildInfoString(artistName, albumName)
@@ -22,6 +22,14 @@ fun Artist.infoString(context: Context): String =
         albumCountString(context, albumCount),
         songCountString(context, songCount)
     )
+
+fun isArtistNameUnknown(artistName: String?): Boolean = when {
+    artistName.isNullOrBlank() -> false // not certain
+    artistName == Artist.UNKNOWN_ARTIST_DISPLAY_NAME -> true
+    artistName.trim().lowercase() == "unknown" -> true
+    artistName.trim().lowercase() == "<unknown>" -> true
+    else -> false
+}
 
 fun albumCountString(context: Context, albumCount: Int): String {
     val albumString = if (albumCount == 1) context.resources.getString(R.string.album) else context.resources.getString(

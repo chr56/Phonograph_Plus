@@ -3,14 +3,9 @@ package player.phonograph.util
 import android.content.ContentUris
 import android.content.ContentValues
 import android.content.Context
-import android.content.Intent
 import android.net.Uri
 import android.os.Environment
 import android.provider.MediaStore
-import androidx.core.content.FileProvider
-import player.phonograph.model.Artist
-import player.phonograph.model.Song
-import player.phonograph.notification.ErrorNotification
 import java.io.File
 import java.io.IOException
 
@@ -65,14 +60,6 @@ object MusicUtil {
             }
         }
         return albumArtDir
-    }
-
-    fun isArtistNameUnknown(artistName: String?): Boolean = when {
-        artistName.isNullOrBlank() -> false // not certain
-        artistName == Artist.UNKNOWN_ARTIST_DISPLAY_NAME -> true
-        artistName.trim().lowercase() == "unknown" -> true
-        artistName.trim().lowercase() == "<unknown>" -> true
-        else -> false
     }
 
     fun getSectionName(reference: String?): String {
