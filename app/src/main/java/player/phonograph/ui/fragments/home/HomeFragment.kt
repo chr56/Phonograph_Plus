@@ -28,7 +28,7 @@ import player.phonograph.BuildConfig.DEBUG
 import player.phonograph.R
 import player.phonograph.adapter.HomePagerAdapter
 import player.phonograph.model.pages.Pages
-import player.phonograph.adapter.PageConfig
+import player.phonograph.model.pages.PageConfig
 import player.phonograph.adapter.base.MultiSelectionCabController
 import player.phonograph.databinding.FragmentHomeBinding
 import player.phonograph.notification.ErrorNotification

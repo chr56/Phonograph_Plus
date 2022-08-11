@@ -19,10 +19,10 @@ import org.json.JSONException
 import org.json.JSONObject
 import player.phonograph.App
 import player.phonograph.R
-import player.phonograph.adapter.PageConfig
-import player.phonograph.adapter.PageConfigUtil
-import player.phonograph.adapter.PageConfigUtil.fromJson
-import player.phonograph.adapter.PageConfigUtil.toJson
+import player.phonograph.model.pages.PageConfig
+import player.phonograph.model.pages.PageConfigUtil
+import player.phonograph.model.pages.PageConfigUtil.fromJson
+import player.phonograph.model.pages.PageConfigUtil.toJson
 import player.phonograph.model.sort.FileSortMode
 import player.phonograph.model.sort.SortMode
 import player.phonograph.model.sort.SortRef

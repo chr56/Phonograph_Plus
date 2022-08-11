@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import player.phonograph.App
 import player.phonograph.R
+import player.phonograph.model.pages.PageConfig
 import player.phonograph.model.pages.Pages
 import util.phonograph.misc.SwipeAndDragHelper
 import util.phonograph.misc.SwipeAndDragHelper.ActionCompletionContract

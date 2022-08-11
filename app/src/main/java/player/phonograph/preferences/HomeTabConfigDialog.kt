@@ -17,7 +17,7 @@ import com.afollestad.materialdialogs.actions.getActionButton
 import com.afollestad.materialdialogs.customview.customView
 import player.phonograph.R
 import player.phonograph.adapter.HomeTabConfigAdapter
-import player.phonograph.adapter.PageConfig
+import player.phonograph.model.pages.PageConfig
 import player.phonograph.settings.Setting
 
 class HomeTabConfigDialog : DialogFragment() {
