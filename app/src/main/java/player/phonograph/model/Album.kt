@@ -67,35 +67,8 @@ class Album : Parcelable, Displayable {
 
     override fun getDescription(): CharSequence = MusicUtil.buildInfoString(artistName, MusicUtil.getSongCountString(App.instance, songs.size))
 
-    override fun getPic(): Uri? = null // todo
-
     override fun getSortOrderReference(): String = title // todo
 
-    override fun menuRes(): Int = 0 // todo
-
-    override fun menuHandler(): ((AppCompatActivity, Displayable, Int) -> Boolean)? = null // todo album menu action
-
-    @Suppress("UNCHECKED_CAST")
-    override fun multiMenuHandler(): (AppCompatActivity, List<Displayable>, Int) -> Boolean =
-        { appCompatActivity: AppCompatActivity?, list: List<Displayable>?, integer: Int? ->
-            onMultiSongMenuItemClick(
-                appCompatActivity!!, MusicUtil.getAlbumSongList(list as List<Album>), integer!!
-            )
-        } // todo more variety
-
-    override fun clickHandler(): (FragmentActivity, Displayable, List<Displayable>?, image: ImageView?) -> Unit {
-        return { fragmentActivity: FragmentActivity?, displayable: Displayable, _: List<Displayable>?, image: ImageView? ->
-            if (image != null) {
-                NavigationUtil.goToAlbum(
-                    fragmentActivity!!, (displayable as Album).id, Pair(image, App.instance.resources.getString(R.string.transition_album_art))
-                )
-            } else {
-                NavigationUtil.goToAlbum(
-                    fragmentActivity!!, (displayable as Album).id
-                )
-            }
-        }
-    }
 
     companion object {
         @Keep

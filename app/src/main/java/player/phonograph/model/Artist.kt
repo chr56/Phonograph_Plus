@@ -60,34 +60,7 @@ class Artist : Parcelable, Displayable {
 
     override fun getDescription(): CharSequence = MusicUtil.getArtistInfoString(App.instance, this)
 
-    override fun getPic(): Uri? = null // todo
-
     override fun getSortOrderReference(): String = name // todo
-
-    override fun menuRes(): Int = 0 // todo
-
-    override fun menuHandler(): ((AppCompatActivity, Displayable, Int) -> Boolean)? = null // todo artist menu action
-
-    @Suppress("UNCHECKED_CAST")
-    override fun multiMenuHandler(): ((AppCompatActivity, List<Displayable>, Int) -> Boolean) =
-        { appCompatActivity: AppCompatActivity?, list: List<Displayable>?, integer: Int? ->
-            onMultiSongMenuItemClick(
-                appCompatActivity!!, MusicUtil.getArtistSongList(list as List<Artist>), integer!!
-            )
-        } // todo more variety
-
-    override fun clickHandler(): (FragmentActivity, Displayable, List<Displayable>?, image: ImageView?) -> Unit =
-        { fragmentActivity: FragmentActivity?, displayable: Displayable, _: List<Displayable>?, image: ImageView? ->
-            if (image != null) {
-                NavigationUtil.goToArtist(
-                    fragmentActivity!!, (displayable as Artist).id, Pair(image, App.instance.resources.getString(R.string.transition_artist_image))
-                )
-            } else {
-                NavigationUtil.goToArtist(
-                    fragmentActivity!!, (displayable as Artist).id
-                )
-            }
-        }
 
     companion object {
         const val UNKNOWN_ARTIST_DISPLAY_NAME = "Unknown Artist"

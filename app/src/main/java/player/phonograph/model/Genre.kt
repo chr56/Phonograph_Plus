@@ -54,27 +54,7 @@ class Genre : Parcelable, Displayable {
 
     override fun getDescription(): CharSequence = MusicUtil.getGenreInfoString(instance, this)
 
-    override fun getPic(): Uri? = null
-
     override fun getSortOrderReference(): String? = null
-
-    override fun menuRes(): Int = 0
-
-    override fun menuHandler(): ((AppCompatActivity, Displayable, Int) -> Boolean)? = null
-
-    @Suppress("UNCHECKED_CAST")
-    override fun multiMenuHandler(): (AppCompatActivity, List<Displayable>, Int) -> Boolean =
-        { appCompatActivity: AppCompatActivity?, list: List<Displayable>?, integer: Int? ->
-            onMultiSongMenuItemClick(appCompatActivity!!, MusicUtil.getGenreSongList(list as List<Genre>), integer!!)
-            true
-        }
-
-    override fun clickHandler(): (FragmentActivity, Displayable, List<Displayable>?, image: ImageView?) -> Unit =
-        { fragmentActivity: FragmentActivity?, displayable: Displayable?, list: List<Displayable>?, image: ImageView? ->
-            NavigationUtil.goToGenre(
-                fragmentActivity!!, displayable as Genre?
-            )
-        }
 
     companion object {
         @Keep

@@ -148,44 +148,7 @@ open class Song : Parcelable, Displayable {
 
     override fun getDescription(): CharSequence? = MusicUtil.getSongInfoString(this)
 
-    override fun getPic(): Uri? {
-        return null // todo
-    }
-
     override fun getSortOrderReference(): String? = title // todo
-
-    override fun menuRes(): Int = R.menu.menu_item_song_short
-
-    override fun menuHandler(): ((AppCompatActivity, Displayable, Int) -> Boolean)? {
-        return { appCompatActivity: AppCompatActivity?, displayable: Displayable?, integer: Int? ->
-            onSongMenuItemClick(
-                appCompatActivity!!, (displayable as Song?)!!, integer!!
-            )
-        }
-    }
-
-    override fun multiMenuHandler(): ((AppCompatActivity, List<Displayable>, Int) -> Boolean)? {
-        return { appCompatActivity: AppCompatActivity?, list: List<Displayable>?, integer: Int? ->
-            onMultiSongMenuItemClick(
-                appCompatActivity!!, (list as List<Song>), integer!!
-            )
-        }
-    }
-
-    override fun clickHandler(): (
-        FragmentActivity,
-        Displayable,
-        List<Displayable>?,
-        image: ImageView?
-    ) -> Unit {
-        return { _: FragmentActivity?, displayable: Displayable?, queue: List<Displayable>?, image: ImageView? ->
-            queue?.let {
-                if (Setting.instance.keepPlayingQueueIntact)
-                    MusicPlayerRemote.playNow((it as List<Song>)[it.indexOf(displayable)])
-                else
-                    MusicPlayerRemote.openQueue(it as List<Song>, queue.indexOf(displayable), true) }
-        }
-    }
 
     companion object {
         @JvmField
