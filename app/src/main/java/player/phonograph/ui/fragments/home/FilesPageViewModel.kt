@@ -10,8 +10,8 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.*
 import player.phonograph.App
 import player.phonograph.mediastore.MediaStoreUtil.searchSongFiles
-import player.phonograph.model.FileEntity
-import player.phonograph.model.Location
+import player.phonograph.model.file.FileEntity
+import player.phonograph.model.file.Location
 import player.phonograph.settings.Setting
 import player.phonograph.util.FileUtil.FileScanner
 import java.io.File

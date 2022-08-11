@@ -22,7 +22,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import player.phonograph.R
 import player.phonograph.databinding.ItemTextBinding
-import player.phonograph.model.Location
+import player.phonograph.model.file.Location
 import util.mdcolor.pref.ThemeColor
 
 @Suppress("JoinDeclarationAndAssignment")

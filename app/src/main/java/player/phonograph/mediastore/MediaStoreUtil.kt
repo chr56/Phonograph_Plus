@@ -24,10 +24,10 @@ import java.util.*
 import kotlin.collections.ArrayList
 import kotlinx.coroutines.CoroutineScope
 import player.phonograph.R
-import player.phonograph.model.FileEntity
-import player.phonograph.model.Location
+import player.phonograph.model.file.FileEntity
+import player.phonograph.model.file.Location
 import player.phonograph.model.Song
-import player.phonograph.model.put
+import player.phonograph.model.file.put
 import player.phonograph.settings.Setting
 
 object MediaStoreUtil {

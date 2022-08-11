@@ -32,8 +32,8 @@ import player.phonograph.adapter.FileAdapter
 import player.phonograph.databinding.FragmentFolderPageBinding
 import player.phonograph.mediastore.sort.FileSortMode
 import player.phonograph.mediastore.sort.SortRef
-import player.phonograph.model.FileEntity
-import player.phonograph.model.Location
+import player.phonograph.model.file.FileEntity
+import player.phonograph.model.file.Location
 import player.phonograph.notification.ErrorNotification
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.settings.Setting

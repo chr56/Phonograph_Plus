@@ -25,7 +25,7 @@ import player.phonograph.databinding.ItemListBinding
 import player.phonograph.glide.SongGlideRequest
 import player.phonograph.mediastore.MediaStoreUtil
 import player.phonograph.misc.UpdateToastMediaScannerCompletionListener
-import player.phonograph.model.FileEntity
+import player.phonograph.model.file.FileEntity
 import player.phonograph.settings.Setting
 import player.phonograph.util.BlacklistUtil
 import player.phonograph.util.menu.onMultiSongMenuItemClick

@@ -2,7 +2,7 @@
  * Copyright (c) 2022 chr_56
  */
 
-package player.phonograph.model
+package player.phonograph.model.file
 
 import android.content.Context
 import android.os.storage.StorageManager
