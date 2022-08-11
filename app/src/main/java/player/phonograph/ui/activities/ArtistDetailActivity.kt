@@ -21,9 +21,6 @@ import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.WhichButton
 import com.afollestad.materialdialogs.actions.getActionButton
 import com.bumptech.glide.Glide
-import java.util.*
-import kotlin.math.max
-import kotlin.math.min
 import lib.phonograph.cab.ToolbarCab
 import lib.phonograph.cab.createToolbarCab
 import player.phonograph.R
@@ -47,7 +44,6 @@ import player.phonograph.service.MusicPlayerRemote.playNext
 import player.phonograph.settings.Setting
 import player.phonograph.settings.Setting.Companion.isAllowedToDownloadMetadata
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
-import player.phonograph.util.MusicUtil.getTotalDuration
 import player.phonograph.util.NavigationUtil.openEqualizer
 import retrofit2.Call
 import retrofit2.Callback
@@ -58,6 +54,9 @@ import util.mddesign.util.ToolbarColorUtil
 import util.mddesign.util.Util
 import util.phonograph.lastfm.rest.LastFMRestClient
 import util.phonograph.lastfm.rest.model.LastFmArtist
+import java.util.*
+import kotlin.math.max
+import kotlin.math.min
 
 /**
  * Be careful when changing things in this Activity!
@@ -387,7 +386,7 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorHolder 
         supportActionBar!!.title = artist.name
         viewBinding.songCountText.text = songCountString(this, artist.songCount)
         viewBinding.albumCountText.text = albumCountString(this, artist.albumCount)
-        viewBinding.durationText.text = getReadableDurationString(getTotalDuration(this, artist.songs))
+        viewBinding.durationText.text = getReadableDurationString(artist.songs.totalDuration())
 
         // songAdapter.swapDataSet(artist.getSongs());
         // albumAdapter.swapDataSet(artist.albums);

@@ -9,11 +9,7 @@ import android.os.Parcel
 import android.os.Parcelable
 import androidx.annotation.Keep
 import player.phonograph.PlaylistType
-import player.phonograph.model.Song
-import player.phonograph.model.buildInfoString
-import player.phonograph.model.getReadableDurationString
-import player.phonograph.model.songCountString
-import player.phonograph.util.MusicUtil
+import player.phonograph.model.*
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
@@ -112,7 +108,7 @@ interface GeneratedPlaylist {
 
 fun Playlist.infoString(context: Context): String {
     val songs = getSongs(context)
-    val duration = MusicUtil.getTotalDuration(context, songs)
+    val duration = songs.totalDuration()
     return buildInfoString(
         songCountString(context, songs.size),
         getReadableDurationString(duration)

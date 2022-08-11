@@ -64,3 +64,6 @@ fun getReadableDurationString(songDurationMillis: Long): String {
         String.format(Locale.getDefault(), "%d:%02d:%02d", hours, minutes, seconds)
     }
 }
+
+fun List<Song>.totalDuration(): Long =
+    fold(0L) { acc: Long, song: Song -> acc + song.duration }

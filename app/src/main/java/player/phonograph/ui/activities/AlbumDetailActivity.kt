@@ -18,7 +18,8 @@ import com.afollestad.materialdialogs.actions.getActionButton
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.transition.Transition
 import com.google.android.material.appbar.AppBarLayout
-import lib.phonograph.cab.*
+import lib.phonograph.cab.ToolbarCab
+import lib.phonograph.cab.createToolbarCab
 import player.phonograph.R
 import player.phonograph.adapter.base.MultiSelectionCabController
 import player.phonograph.adapter.display.AlbumSongDisplayAdapter
@@ -32,6 +33,7 @@ import player.phonograph.glide.palette.BitmapPaletteTarget
 import player.phonograph.glide.palette.BitmapPaletteWrapper
 import player.phonograph.model.Album
 import player.phonograph.model.getReadableDurationString
+import player.phonograph.model.totalDuration
 import player.phonograph.model.songCountString
 import player.phonograph.service.MusicPlayerRemote.enqueue
 import player.phonograph.service.MusicPlayerRemote.openAndShuffleQueue
@@ -39,7 +41,6 @@ import player.phonograph.service.MusicPlayerRemote.playNext
 import player.phonograph.settings.Setting.Companion.isAllowedToDownloadMetadata
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
 import player.phonograph.util.ImageUtil.getTintedDrawable
-import player.phonograph.util.MusicUtil.getTotalDuration
 import player.phonograph.util.MusicUtil.getYearString
 import player.phonograph.util.NavigationUtil.goToArtist
 import player.phonograph.util.NavigationUtil.openEqualizer
@@ -201,7 +202,7 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity() {
         supportActionBar!!.title = album.title
         viewBinding.artistText.text = album.artistName
         viewBinding.songCountText.text = songCountString(this, album.songCount)
-        viewBinding.durationText.text = getReadableDurationString(getTotalDuration(this, album.songs))
+        viewBinding.durationText.text = getReadableDurationString(album.songs.totalDuration())
         viewBinding.albumYearText.text = getYearString(album.year)
     }
 

@@ -8,12 +8,11 @@ import android.net.Uri
 import android.os.Environment
 import android.provider.MediaStore
 import androidx.core.content.FileProvider
-import player.phonograph.R
-import player.phonograph.model.*
+import player.phonograph.model.Artist
+import player.phonograph.model.Song
 import player.phonograph.notification.ErrorNotification
 import java.io.File
 import java.io.IOException
-import java.util.*
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
@@ -42,9 +41,6 @@ object MusicUtil {
     }
 
     fun getYearString(year: Int): String = if (year > 0) year.toString() else "-"
-
-    fun getTotalDuration(context: Context, songs: List<Song>): Long =
-        songs.fold(0L) { acc: Long, song: Song -> acc + song.duration }
 
     // iTunes uses for example 1002 for track 2 CD1 or 3011 for track 11 CD3.
     // this method converts those values to normal track numbers

@@ -9,7 +9,8 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.view.View.*
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import androidx.activity.viewModels
 import androidx.core.graphics.BlendModeCompat
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -26,7 +27,8 @@ import com.h6ah4i.android.widget.advrecyclerview.draggable.RecyclerViewDragDropM
 import com.h6ah4i.android.widget.advrecyclerview.utils.WrapperAdapterUtils
 import com.simplecityapps.recyclerview_fastscroll.interfaces.OnFastScrollStateChangeListener
 import legacy.phonograph.LegacyPlaylistsUtil
-import lib.phonograph.cab.*
+import lib.phonograph.cab.ToolbarCab
+import lib.phonograph.cab.createToolbarCab
 import player.phonograph.App
 import player.phonograph.PlaylistType
 import player.phonograph.R
@@ -37,6 +39,7 @@ import player.phonograph.misc.SAFCallbackHandlerActivity
 import player.phonograph.misc.SafLauncher
 import player.phonograph.model.Song
 import player.phonograph.model.getReadableDurationString
+import player.phonograph.model.totalDuration
 import player.phonograph.model.playlist.FilePlaylist
 import player.phonograph.model.playlist.GeneratedPlaylist
 import player.phonograph.model.playlist.Playlist
@@ -45,8 +48,6 @@ import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.settings.Setting
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
 import player.phonograph.util.ImageUtil.getTintedDrawable
-import player.phonograph.util.MusicUtil
-import player.phonograph.util.MusicUtil.getTotalDuration
 import player.phonograph.util.PlaylistsUtil
 import player.phonograph.util.ViewUtil.setUpFastScrollRecyclerViewColor
 import player.phonograph.util.menu.onPlaylistMenuItemClick
@@ -191,7 +192,7 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandle
         with(binding) {
             nameText.text = playlist?.name ?: "-"
             songCountText.text = adapter.dataset.size.toString()
-            durationText.text = getReadableDurationString(getTotalDuration(this@PlaylistDetailActivity, adapter.dataset))
+            durationText.text = getReadableDurationString(adapter.dataset.totalDuration())
             if (playlist is FilePlaylist) {
                 pathText.text = playlist.associatedFilePath
             } else {
