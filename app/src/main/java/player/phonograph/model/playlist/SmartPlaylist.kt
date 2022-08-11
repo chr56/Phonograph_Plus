@@ -5,7 +5,6 @@
 package player.phonograph.model.playlist
 
 import android.os.Parcel
-import player.phonograph.PlaylistType
 
 
 abstract class SmartPlaylist : Playlist, GeneratedPlaylist {

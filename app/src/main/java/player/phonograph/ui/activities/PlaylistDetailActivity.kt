@@ -30,7 +30,6 @@ import legacy.phonograph.LegacyPlaylistsUtil
 import lib.phonograph.cab.ToolbarCab
 import lib.phonograph.cab.createToolbarCab
 import player.phonograph.App
-import player.phonograph.PlaylistType
 import player.phonograph.R
 import player.phonograph.adapter.base.MultiSelectionCabController
 import player.phonograph.adapter.display.PlaylistSongAdapter
@@ -39,11 +38,8 @@ import player.phonograph.misc.SAFCallbackHandlerActivity
 import player.phonograph.misc.SafLauncher
 import player.phonograph.model.Song
 import player.phonograph.model.getReadableDurationString
+import player.phonograph.model.playlist.*
 import player.phonograph.model.totalDuration
-import player.phonograph.model.playlist.FilePlaylist
-import player.phonograph.model.playlist.GeneratedPlaylist
-import player.phonograph.model.playlist.Playlist
-import player.phonograph.model.playlist.SmartPlaylist
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.settings.Setting
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity

@@ -10,7 +10,6 @@ import android.os.Parcelable
 import androidx.annotation.DrawableRes
 import androidx.annotation.Keep
 import legacy.phonograph.LegacyPlaylistsUtil
-import player.phonograph.PlaylistType
 import player.phonograph.R
 import player.phonograph.mediastore.PlaylistSongLoader
 import player.phonograph.model.Song
