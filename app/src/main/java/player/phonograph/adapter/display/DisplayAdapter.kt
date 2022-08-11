@@ -18,6 +18,11 @@ import player.phonograph.R
 import player.phonograph.adapter.base.MultiSelectAdapter
 import player.phonograph.adapter.base.MultiSelectionCabController
 import player.phonograph.adapter.base.UniversalMediaEntryViewHolder
+import player.phonograph.adapter.display.DisplayableItemRegistry.multiMenuClick
+import player.phonograph.adapter.display.DisplayableItemRegistry.menuRes
+import player.phonograph.adapter.display.DisplayableItemRegistry.defaultSortOrderReference
+import player.phonograph.adapter.display.DisplayableItemRegistry.menuClick
+import player.phonograph.adapter.display.DisplayableItemRegistry.clickHandler
 import player.phonograph.interfaces.Displayable
 import util.mdcolor.ColorUtil
 import util.mddesign.util.MaterialColorHelper
@@ -27,7 +32,7 @@ open class DisplayAdapter<I : Displayable>(
     cabController: MultiSelectionCabController?,
     dataSet: List<I>,
     @LayoutRes var layoutRes: Int,
-    cfg: (DisplayAdapter<I>.() -> Unit)?,
+    cfg: (DisplayAdapter<I>.() -> Unit)?
 ) :
     MultiSelectAdapter<DisplayAdapter<I>.DisplayViewHolder, I>(activity, cabController), FastScrollRecyclerView.SectionedAdapter {
 
@@ -50,20 +55,16 @@ open class DisplayAdapter<I : Displayable>(
 
     override var multiSelectMenuRes: Int = R.menu.menu_media_selection
 
-    override fun getItemId(position: Int): Long =
-        dataset[position].getItemID()
+    override fun getItemId(position: Int): Long = dataset[position].getItemID()
+    override fun getItem(datasetPosition: Int): I = dataset[datasetPosition]
 
-    override fun getItem(datasetPosition: Int): I {
-        return dataset[datasetPosition]
-    }
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DisplayViewHolder {
-        return DisplayViewHolder(
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DisplayViewHolder =
+        DisplayViewHolder(
             LayoutInflater.from(activity).inflate(layoutRes, parent, false)
         )
-    }
 
-    protected open val defaultIcon = AppCompatResources.getDrawable(activity, R.drawable.default_album_art)
+    protected open val defaultIcon =
+        AppCompatResources.getDrawable(activity, R.drawable.default_album_art)
 
     override fun onBindViewHolder(holder: DisplayViewHolder, position: Int) {
         val item: I = dataset[position]
@@ -102,40 +103,45 @@ open class DisplayAdapter<I : Displayable>(
     override fun updateItemCheckStatus(datasetPosition: Int) = notifyItemChanged(datasetPosition)
 
     override fun onMultipleItemAction(menuItem: MenuItem, selection: List<I>) {
-        DisplayableItemRegistry.multiMenuClick(
+        multiMenuClick(
             list = selection,
             actionId = menuItem.itemId,
             activity = activity
         )
     }
 
-    override fun getSectionName(position: Int): String = if (showSectionName) getSectionNameImp(position) else ""
+    override fun getSectionName(position: Int): String =
+        if (showSectionName) getSectionNameImp(position) else ""
 
     // for inheriting
     protected fun setPaletteColors(color: Int, holder: DisplayViewHolder) {
         holder.paletteColorContainer?.let { paletteColorContainer ->
             paletteColorContainer.setBackgroundColor(color)
-            holder.title?.setTextColor(MaterialColorHelper.getPrimaryTextColor(activity, ColorUtil.isColorLight(color)))
-            holder.text?.setTextColor(MaterialColorHelper.getSecondaryTextColor(activity, ColorUtil.isColorLight(color)))
+            holder.title?.setTextColor(
+                MaterialColorHelper.getPrimaryTextColor(activity, ColorUtil.isColorLight(color))
+            )
+            holder.text?.setTextColor(
+                MaterialColorHelper.getSecondaryTextColor(activity, ColorUtil.isColorLight(color))
+            )
         }
     }
 
     // for inheriting
-    open fun getSectionNameImp(position: Int): String = DisplayableItemRegistry.defaultSortOrderReference(dataset[position])?.substring(0..1) ?: ""
+    open fun getSectionNameImp(position: Int): String =
+        defaultSortOrderReference(dataset[position])?.substring(0..1) ?: ""
 
     protected open fun onMenuClick(bindingAdapterPosition: Int, menuButtonView: View) {
         if (dataset.isNotEmpty()) {
-            val menuRes = DisplayableItemRegistry.menuRes(dataset[0])
-            val popupMenu = PopupMenu(activity, menuButtonView)
-            popupMenu.inflate(menuRes)
-            popupMenu.setOnMenuItemClickListener { menuItem ->
-                DisplayableItemRegistry.menuClick(
-                    item = dataset[bindingAdapterPosition],
-                    actionId = menuItem.itemId,
-                    activity = activity
-                )
-            }
-            popupMenu.show()
+            PopupMenu(activity, menuButtonView).apply {
+                inflate(menuRes(dataset[0]))
+                setOnMenuItemClickListener { menuItem ->
+                    menuClick(
+                        item = dataset[bindingAdapterPosition],
+                        actionId = menuItem.itemId,
+                        activity = activity
+                    )
+                }
+            }.show()
         }
     }
 
@@ -143,7 +149,7 @@ open class DisplayAdapter<I : Displayable>(
         when (isInQuickSelectMode) {
             true -> toggleChecked(bindingAdapterPosition)
             false -> {
-                DisplayableItemRegistry.clickHandler(
+                clickHandler(
                     dataset[bindingAdapterPosition],
                     dataset,
                     activity,
@@ -174,7 +180,7 @@ open class DisplayAdapter<I : Displayable>(
             // Hide Menu if not available
             val item = dataset.getOrNull(0)
             if (item != null) {
-                menu?.visibility = if (DisplayableItemRegistry.menuRes(item) == 0) View.GONE else View.VISIBLE
+                menu?.visibility = if (menuRes(item) == 0) View.GONE else View.VISIBLE
             }
         }
     }
