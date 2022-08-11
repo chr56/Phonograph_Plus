@@ -1,19 +1,10 @@
 package player.phonograph.model
 
-import android.net.Uri
 import android.os.Parcel
 import android.os.Parcelable
-import android.widget.ImageView
 import androidx.annotation.Keep
-import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.FragmentActivity
-import player.phonograph.R
 import player.phonograph.interfaces.Displayable
-import player.phonograph.service.MusicPlayerRemote
-import player.phonograph.settings.Setting
 import player.phonograph.util.MusicUtil
-import player.phonograph.util.menu.onMultiSongMenuItemClick
-import player.phonograph.util.menu.onSongMenuItemClick
 
 /**
  * @author Karim Abou Zeid (kabouzeid)

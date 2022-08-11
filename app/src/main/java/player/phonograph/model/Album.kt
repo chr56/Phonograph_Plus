@@ -1,19 +1,11 @@
 package player.phonograph.model
 
-import android.net.Uri
 import android.os.Parcel
 import android.os.Parcelable
-import android.widget.ImageView
 import androidx.annotation.Keep
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.util.Pair
-import androidx.fragment.app.FragmentActivity
 import player.phonograph.App
-import player.phonograph.R
-import player.phonograph.util.menu.onMultiSongMenuItemClick
 import player.phonograph.interfaces.Displayable
 import player.phonograph.util.MusicUtil
-import player.phonograph.util.NavigationUtil
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
@@ -49,7 +41,7 @@ class Album : Parcelable, Displayable {
     val dateModified: Long
         get() = safeGetFirstSong().dateModified
 
-    fun safeGetFirstSong(): Song = if (songs.isNullOrEmpty()) Song.EMPTY_SONG else songs[0]
+    fun safeGetFirstSong(): Song = if (songs.isEmpty()) Song.EMPTY_SONG else songs[0]
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
