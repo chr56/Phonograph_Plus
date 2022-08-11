@@ -41,14 +41,6 @@ object MusicUtil {
         }
     }
 
-    fun getPlaylistInfoString(context: Context, songs: List<Song>): String {
-        val duration = getTotalDuration(context, songs)
-        return buildInfoString(
-            songCountString(context, songs.size),
-            getReadableDurationString(duration)
-        )
-    }
-
     fun getYearString(year: Int): String = if (year > 0) year.toString() else "-"
 
     fun getTotalDuration(context: Context, songs: List<Song>): Long =

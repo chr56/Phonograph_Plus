@@ -8,9 +8,11 @@ import android.content.Context
 import android.os.Parcel
 import android.os.Parcelable
 import androidx.annotation.Keep
-import java.lang.IllegalStateException
 import player.phonograph.PlaylistType
 import player.phonograph.model.Song
+import player.phonograph.model.buildInfoString
+import player.phonograph.model.songCountString
+import player.phonograph.util.MusicUtil
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
@@ -105,4 +107,13 @@ interface ResettablePlaylist {
 
 interface GeneratedPlaylist {
     fun refresh(context: Context) {}
+}
+
+fun Playlist.infoString(context: Context): String {
+    val songs = getSongs(context)
+    val duration = MusicUtil.getTotalDuration(context, songs)
+    return buildInfoString(
+        songCountString(context, songs.size),
+        MusicUtil.getReadableDurationString(duration)
+    )
 }
