@@ -141,6 +141,77 @@ fun injectPlaylistDetail(menu: Menu, context: Context, playlist: Playlist) = con
     }
 }
 
+fun injectPlaylistAdapter(menu: Menu, context: Context, playlist: Playlist) = context.run {
+    attach(menu) {
+        menuItem {
+            title = getString(R.string.action_play)
+            onClick { playlist.play(context) }
+        }
+        menuItem {
+            title = getString(R.string.action_play_next)
+            onClick { playlist.playNext(context) }
+        }
+        menuItem {
+            title = getString(R.string.action_add_to_playing_queue)
+            onClick { playlist.addToCurrentQueue(context) }
+        }
+        menuItem {
+            title = getString(R.string.add_playlist_title)
+            onClick {
+                val activity = context as? FragmentActivity
+                if (activity != null) {
+                    playlist.addToPlaylist(activity)
+                    true
+                } else {
+                    false
+                }
+            }
+        }
+        if (playlist is FilePlaylist) {
+            menuItem {
+                title = getString(R.string.rename_action)
+                onClick {
+                    val activity = context as? FragmentActivity
+                    if (activity != null) {
+                        playlist.renamePlaylist(activity)
+                        true
+                    } else {
+                        false
+                    }
+                }
+            }
+        }
+        if (playlist is ResettablePlaylist) {
+            menuItem {
+                title =
+                    if (playlist is FilePlaylist) getString(R.string.delete_action)
+                    else getString(R.string.clear_action)
+                onClick {
+                    val activity = context as? FragmentActivity
+                    if (activity != null) {
+                        playlist.deletePlaylist(activity)
+                        true
+                    } else {
+                        false
+                    }
+                }
+            }
+        }
+        menuItem {
+            title = getString(R.string.save_playlist_title)
+            onClick {
+                val activity = context as? FragmentActivity
+                if (activity != null) {
+                    playlist.savePlaylist(activity)
+                    true
+                } else {
+                    false
+                }
+            }
+        }
+    }
+}
+
 fun Playlist.play(context: Context): Boolean =
     if (Setting.instance.keepPlayingQueueIntact) {
         MusicPlayerRemote.playNow(getSongs(context))

@@ -8,18 +8,19 @@ import android.view.ViewGroup
 import android.widget.PopupMenu
 import androidx.annotation.LayoutRes
 import androidx.fragment.app.FragmentActivity
-import player.phonograph.adapter.base.MultiSelectionCabController
 import player.phonograph.R
+import player.phonograph.actions.injectPlaylistAdapter
 import player.phonograph.adapter.base.MediaEntryViewHolder
 import player.phonograph.adapter.base.MultiSelectAdapter
+import player.phonograph.adapter.base.MultiSelectionCabController
 import player.phonograph.dialogs.ClearPlaylistDialog
-import player.phonograph.util.menu.onPlaylistMenuItemClick
-import player.phonograph.util.menu.onMultiSongMenuItemClick
 import player.phonograph.misc.SAFCallbackHandlerActivity
 import player.phonograph.model.Song
-import player.phonograph.model.playlist.*
+import player.phonograph.model.playlist.Playlist
+import player.phonograph.model.playlist.SmartPlaylist
 import player.phonograph.util.FavoriteUtil
 import player.phonograph.util.NavigationUtil
+import player.phonograph.util.menu.onMultiSongMenuItemClick
 import util.mddesign.util.Util
 import util.phonograph.m3u.PlaylistsManager
 
@@ -147,17 +148,9 @@ class PlaylistAdapter(
             if (menu != null) {
                 menu!!.setOnClickListener { view: View? ->
                     val playlist = dataSet[bindingAdapterPosition]
-                    val popupMenu = PopupMenu(activity, view)
-                    popupMenu.inflate(if (getItemViewType() == SMART_PLAYLIST) R.menu.menu_item_smart_playlist else R.menu.menu_item_playlist)
-                    if (playlist is LastAddedPlaylist) {
-                        popupMenu.menu.findItem(R.id.action_clear_playlist).isVisible = false
-                    }
-                    popupMenu.setOnMenuItemClickListener { item: MenuItem ->
-                        onPlaylistMenuItemClick(
-                            activity, dataSet[bindingAdapterPosition], item.itemId
-                        )
-                    }
-                    popupMenu.show()
+                    PopupMenu(activity, view).apply {
+                        injectPlaylistAdapter(menu, activity, playlist)
+                    }.show()
                 }
             }
         }
