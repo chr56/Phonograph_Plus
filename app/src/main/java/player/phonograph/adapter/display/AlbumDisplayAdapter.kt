@@ -16,6 +16,7 @@ import player.phonograph.glide.PhonographColoredTarget
 import player.phonograph.glide.SongGlideRequest
 import player.phonograph.mediastore.sort.SortRef
 import player.phonograph.model.Album
+import player.phonograph.model.getYearString
 import player.phonograph.settings.Setting
 import player.phonograph.util.MusicUtil
 
@@ -52,7 +53,7 @@ class AlbumDisplayAdapter(
             when (Setting.instance.albumSortMode.sortRef) {
                 SortRef.ALBUM_NAME -> MusicUtil.getSectionName(album.title)
                 SortRef.ARTIST_NAME -> MusicUtil.getSectionName(album.artistName)
-                SortRef.YEAR -> MusicUtil.getYearString(album.year)
+                SortRef.YEAR -> getYearString(album.year)
                 SortRef.SONG_COUNT -> album.songCount.toString()
                 else -> ""
             }

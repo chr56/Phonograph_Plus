@@ -7,16 +7,17 @@ package player.phonograph.adapter.display
 import android.graphics.drawable.Drawable
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
-import java.text.SimpleDateFormat
-import java.util.*
 import player.phonograph.adapter.base.MultiSelectionCabController
 import player.phonograph.glide.PhonographColoredTarget
 import player.phonograph.glide.SongGlideRequest
 import player.phonograph.mediastore.sort.SortRef
 import player.phonograph.model.Song
 import player.phonograph.model.getReadableDurationString
+import player.phonograph.model.getYearString
 import player.phonograph.settings.Setting
 import player.phonograph.util.MusicUtil
+import java.text.SimpleDateFormat
+import java.util.*
 
 open class SongDisplayAdapter(
     activity: AppCompatActivity,
@@ -52,7 +53,7 @@ open class SongDisplayAdapter(
                 SortRef.SONG_NAME -> MusicUtil.getSectionName(song.title)
                 SortRef.ARTIST_NAME -> MusicUtil.getSectionName(song.artistName)
                 SortRef.ALBUM_NAME -> MusicUtil.getSectionName(song.albumName)
-                SortRef.YEAR -> MusicUtil.getYearString(song.year)
+                SortRef.YEAR -> getYearString(song.year)
                 SortRef.DURATION -> getReadableDurationString(song.duration)
                 SortRef.MODIFIED_DATE -> SimpleDateFormat("yy.MM.dd", Locale.getDefault()).format(song.dateModified * 1000)
                 SortRef.ADDED_DATE -> SimpleDateFormat("yy.MM.dd", Locale.getDefault()).format(song.dateAdded * 1000)

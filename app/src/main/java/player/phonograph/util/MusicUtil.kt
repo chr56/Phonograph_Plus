@@ -21,8 +21,6 @@ object MusicUtil {
         return ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, songId)
     }
 
-    fun getYearString(year: Int): String = if (year > 0) year.toString() else "-"
-
     // iTunes uses for example 1002 for track 2 CD1 or 3011 for track 11 CD3.
     // this method converts those values to normal track numbers
     fun getFixedTrackNumber(trackNumberToFix: Int): Int = trackNumberToFix % 1000

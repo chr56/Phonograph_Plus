@@ -75,3 +75,5 @@ fun getReadableDurationString(songDurationMillis: Long): String {
 
 fun List<Song>.totalDuration(): Long =
     fold(0L) { acc: Long, song: Song -> acc + song.duration }
+
+fun getYearString(year: Int): String = if (year > 0) year.toString() else "-"

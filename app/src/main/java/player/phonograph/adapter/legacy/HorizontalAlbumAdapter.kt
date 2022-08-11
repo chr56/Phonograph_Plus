@@ -12,7 +12,7 @@ import player.phonograph.adapter.base.MultiSelectionCabController
 import player.phonograph.glide.PhonographColoredTarget
 import player.phonograph.glide.SongGlideRequest
 import player.phonograph.model.Album
-import player.phonograph.util.MusicUtil
+import player.phonograph.model.getYearString
 import util.mdcolor.ColorUtil
 import util.mddesign.util.MaterialColorHelper
 
@@ -72,9 +72,8 @@ class HorizontalAlbumAdapter(
             })
     }
 
-    override fun getAlbumText(album: Album): String {
-        return MusicUtil.getYearString(album.year)
-    }
+    override fun getAlbumText(album: Album): String =
+        getYearString(album.year)
 
     override fun getItemViewType(position: Int): Int = when (position) {
         0 -> {
