@@ -17,8 +17,8 @@ import player.phonograph.R
 import player.phonograph.adapter.display.DisplayAdapter
 import player.phonograph.adapter.display.GenreDisplayAdapter
 import player.phonograph.mediastore.GenreLoader
-import player.phonograph.mediastore.sort.SortMode
-import player.phonograph.mediastore.sort.SortRef
+import player.phonograph.model.sort.SortMode
+import player.phonograph.model.sort.SortRef
 import player.phonograph.model.Genre
 
 class GenrePage : AbsDisplayPage<Genre, DisplayAdapter<Genre>, GridLayoutManager>() {

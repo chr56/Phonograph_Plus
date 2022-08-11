@@ -30,8 +30,8 @@ import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.adapter.FileAdapter
 import player.phonograph.databinding.FragmentFolderPageBinding
-import player.phonograph.mediastore.sort.FileSortMode
-import player.phonograph.mediastore.sort.SortRef
+import player.phonograph.model.sort.FileSortMode
+import player.phonograph.model.sort.SortRef
 import player.phonograph.model.file.FileEntity
 import player.phonograph.model.file.Location
 import player.phonograph.notification.ErrorNotification

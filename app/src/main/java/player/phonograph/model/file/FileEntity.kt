@@ -6,7 +6,7 @@ package player.phonograph.model.file
 
 import player.phonograph.App
 import player.phonograph.mediastore.MediaStoreUtil
-import player.phonograph.mediastore.sort.SortRef
+import player.phonograph.model.sort.SortRef
 import player.phonograph.model.Song
 import player.phonograph.settings.Setting
 

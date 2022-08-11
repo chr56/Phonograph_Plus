@@ -10,7 +10,7 @@ import android.database.Cursor
 import android.os.Build
 import android.provider.MediaStore
 import player.phonograph.App
-import player.phonograph.mediastore.sort.SortRef
+import player.phonograph.model.sort.SortRef
 import player.phonograph.model.Genre
 import player.phonograph.model.Song
 import player.phonograph.settings.Setting

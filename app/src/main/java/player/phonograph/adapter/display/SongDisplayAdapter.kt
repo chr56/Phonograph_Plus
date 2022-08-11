@@ -10,7 +10,7 @@ import com.bumptech.glide.Glide
 import player.phonograph.adapter.base.MultiSelectionCabController
 import player.phonograph.glide.PhonographColoredTarget
 import player.phonograph.glide.SongGlideRequest
-import player.phonograph.mediastore.sort.SortRef
+import player.phonograph.model.sort.SortRef
 import player.phonograph.model.Song
 import player.phonograph.model.getReadableDurationString
 import player.phonograph.model.getYearString

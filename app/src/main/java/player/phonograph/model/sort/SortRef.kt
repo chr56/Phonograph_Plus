@@ -2,7 +2,7 @@
  * Copyright (c) 2022 chr_56
  */
 
-package player.phonograph.mediastore.sort
+package player.phonograph.model.sort
 
 import java.lang.IllegalArgumentException
 import kotlin.jvm.Throws

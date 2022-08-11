@@ -21,9 +21,9 @@ import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.adapter.PageConfig
 import player.phonograph.adapter.PageConfigUtil
-import player.phonograph.mediastore.sort.FileSortMode
-import player.phonograph.mediastore.sort.SortMode
-import player.phonograph.mediastore.sort.SortRef
+import player.phonograph.model.sort.FileSortMode
+import player.phonograph.model.sort.SortMode
+import player.phonograph.model.sort.SortRef
 import player.phonograph.ui.fragments.player.NowPlayingScreen
 import player.phonograph.util.CalendarUtil
 import player.phonograph.util.FileUtil

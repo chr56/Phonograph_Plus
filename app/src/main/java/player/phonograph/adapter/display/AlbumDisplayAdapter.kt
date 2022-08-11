@@ -14,7 +14,7 @@ import player.phonograph.R
 import player.phonograph.adapter.base.MultiSelectionCabController
 import player.phonograph.glide.PhonographColoredTarget
 import player.phonograph.glide.SongGlideRequest
-import player.phonograph.mediastore.sort.SortRef
+import player.phonograph.model.sort.SortRef
 import player.phonograph.model.Album
 import player.phonograph.model.getYearString
 import player.phonograph.settings.Setting

@@ -20,7 +20,7 @@ import androidx.core.view.get
 import androidx.core.view.iterator
 import player.phonograph.R
 import player.phonograph.databinding.PopupWindowMainBinding
-import player.phonograph.mediastore.sort.SortRef
+import player.phonograph.model.sort.SortRef
 import player.phonograph.util.PhonographColorUtil
 import util.mdcolor.pref.ThemeColor
 

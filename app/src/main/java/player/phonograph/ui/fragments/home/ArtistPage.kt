@@ -17,8 +17,8 @@ import player.phonograph.R
 import player.phonograph.adapter.display.ArtistDisplayAdapter
 import player.phonograph.adapter.display.DisplayAdapter
 import player.phonograph.mediastore.ArtistLoader
-import player.phonograph.mediastore.sort.SortMode
-import player.phonograph.mediastore.sort.SortRef
+import player.phonograph.model.sort.SortMode
+import player.phonograph.model.sort.SortRef
 import player.phonograph.model.Artist
 
 class ArtistPage : AbsDisplayPage<Artist, DisplayAdapter<Artist>, GridLayoutManager>() {

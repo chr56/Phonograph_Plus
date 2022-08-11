@@ -12,7 +12,7 @@ import android.util.ArrayMap
 import android.util.Log
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
-import player.phonograph.mediastore.sort.SortRef
+import player.phonograph.model.sort.SortRef
 import player.phonograph.model.Album
 import player.phonograph.model.Artist
 import player.phonograph.model.Song

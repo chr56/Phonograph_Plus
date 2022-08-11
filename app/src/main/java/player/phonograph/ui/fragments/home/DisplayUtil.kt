@@ -6,13 +6,9 @@ package player.phonograph.ui.fragments.home
 
 import player.phonograph.App
 import player.phonograph.R
-import player.phonograph.mediastore.sort.SortMode
-import player.phonograph.mediastore.sort.SortRef
+import player.phonograph.model.sort.SortMode
+import player.phonograph.model.sort.SortRef
 import player.phonograph.settings.Setting
-import player.phonograph.ui.fragments.home.AbsDisplayPage
-import player.phonograph.ui.fragments.home.AlbumPage
-import player.phonograph.ui.fragments.home.ArtistPage
-import player.phonograph.ui.fragments.home.SongPage
 import player.phonograph.util.Util
 
 class DisplayUtil(private val page: AbsDisplayPage<*, *, *>) {

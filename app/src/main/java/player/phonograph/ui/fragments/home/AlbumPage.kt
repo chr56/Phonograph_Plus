@@ -17,8 +17,8 @@ import player.phonograph.R
 import player.phonograph.adapter.display.AlbumDisplayAdapter
 import player.phonograph.adapter.display.DisplayAdapter
 import player.phonograph.mediastore.AlbumLoader
-import player.phonograph.mediastore.sort.SortMode
-import player.phonograph.mediastore.sort.SortRef
+import player.phonograph.model.sort.SortMode
+import player.phonograph.model.sort.SortRef
 import player.phonograph.model.Album
 
 class AlbumPage : AbsDisplayPage<Album, DisplayAdapter<Album>, GridLayoutManager>() {
