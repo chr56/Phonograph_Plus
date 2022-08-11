@@ -19,7 +19,9 @@
     <item name="action_multi_select_adapter_check_all" type="id" />
     <item name="multi_selection_cab" type="id" />
 
-    <!-- Playlist Detail Activity Menu Items-->
+    <!-- Playlist Menu Items-->
+    <item name="action_refresh" type="id" />
+    <item name="action_edit_playlist" type="id" />
     <item name="action_setting_last_added_interval" type="id" />
 
     <!-- Setting Activity Menu Items -->

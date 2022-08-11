@@ -4,7 +4,6 @@
 
 package player.phonograph.ui.activities
 
-import android.graphics.Color
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -18,9 +17,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.list.listItemsSingleChoice
 import com.afollestad.materialdialogs.utils.MDUtil.getStringArray
-import com.github.chr56.android.menu_dsl.MenuContext
-import com.github.chr56.android.menu_dsl.MenuItemCfg
-import com.github.chr56.android.menu_dsl.add
 import com.google.android.material.appbar.AppBarLayout
 import com.h6ah4i.android.widget.advrecyclerview.animator.RefactoredDefaultItemAnimator
 import com.h6ah4i.android.widget.advrecyclerview.draggable.RecyclerViewDragDropManager
@@ -29,8 +25,8 @@ import com.simplecityapps.recyclerview_fastscroll.interfaces.OnFastScrollStateCh
 import legacy.phonograph.LegacyPlaylistsUtil
 import lib.phonograph.cab.ToolbarCab
 import lib.phonograph.cab.createToolbarCab
-import player.phonograph.App
 import player.phonograph.R
+import player.phonograph.actions.injectPlaylistDetail
 import player.phonograph.adapter.base.MultiSelectionCabController
 import player.phonograph.adapter.display.PlaylistSongAdapter
 import player.phonograph.databinding.ActivityPlaylistDetailBinding
@@ -38,15 +34,16 @@ import player.phonograph.misc.SAFCallbackHandlerActivity
 import player.phonograph.misc.SafLauncher
 import player.phonograph.model.Song
 import player.phonograph.model.getReadableDurationString
-import player.phonograph.model.playlist.*
+import player.phonograph.model.playlist.FilePlaylist
+import player.phonograph.model.playlist.GeneratedPlaylist
+import player.phonograph.model.playlist.Playlist
+import player.phonograph.model.playlist.SmartPlaylist
 import player.phonograph.model.totalDuration
-import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.settings.Setting
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
 import player.phonograph.util.ImageUtil.getTintedDrawable
 import player.phonograph.util.PlaylistsUtil
 import player.phonograph.util.ViewUtil.setUpFastScrollRecyclerViewColor
-import player.phonograph.util.menu.onPlaylistMenuItemClick
 import util.mdcolor.ColorUtil
 import util.mddesign.core.Themer
 import util.mddesign.util.MaterialColorHelper
@@ -200,24 +197,12 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandle
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         val playlist: Playlist = model.playlist.value ?: FilePlaylist()
-        menuInflater.inflate(
-            if (playlist is SmartPlaylist) R.menu.menu_smart_playlist_detail else R.menu.menu_playlist_detail, menu
-        )
-        if (playlist.type == PlaylistType.LAST_ADDED)
-            menu.add(MenuContext(rootMenu = menu, this), fun MenuItemCfg.() {
-                itemId = R.id.action_setting_last_added_interval
-                titleRes(R.string.pref_title_last_added_interval, this@PlaylistDetailActivity)
-                icon = getTintedDrawable(R.drawable.ic_timer_white_24dp, Color.WHITE)
-            })
+        injectPlaylistDetail(menu, this, playlist)
         return super.onCreateOptionsMenu(menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
-            R.id.action_shuffle_playlist -> {
-                MusicPlayerRemote.openAndShuffleQueue(adapter.dataset, true)
-                true
-            }
             R.id.action_edit_playlist -> {
                 if (model.playlist.value is FilePlaylist) {
                     enterEditMode()
@@ -236,7 +221,7 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandle
                 true
             }
             R.id.action_setting_last_added_interval -> {
-                val prefValue = App.instance.getStringArray(R.array.pref_playlists_last_added_interval_values)
+                val prefValue = getStringArray(R.array.pref_playlists_last_added_interval_values)
                 val currentChoice = prefValue.indexOf(Setting.instance.lastAddedCutoffPref)
                 MaterialDialog(this)
                     .listItemsSingleChoice(
@@ -261,7 +246,7 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandle
                 onBackPressed()
                 true
             }
-            else -> onPlaylistMenuItemClick(this, model.playlist.value!!, item.itemId)
+            else -> false
         }
     }
 
