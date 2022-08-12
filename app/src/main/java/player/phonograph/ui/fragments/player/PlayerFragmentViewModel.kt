@@ -4,10 +4,12 @@
 
 package player.phonograph.ui.fragments.player
 
+import android.app.Application
 import android.content.Context
 import android.graphics.Color
 import android.view.MenuItem
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.ViewModelProvider
 import java.io.File
 import kotlinx.coroutines.*
 import player.phonograph.R
@@ -21,7 +23,8 @@ import player.phonograph.util.FavoriteUtil.isFavorite
 import player.phonograph.util.ImageUtil.getTintedDrawable
 import util.mddesign.util.ToolbarColorUtil
 
-class PlayerFragmentViewModel : ViewModel() {
+class PlayerFragmentViewModel(application: Application) : AndroidViewModel(application) {
+
     val backgroundCoroutine: CoroutineScope by lazy { CoroutineScope(Dispatchers.IO) }
 
     var currentSong: Song = Song.EMPTY_SONG
@@ -86,6 +89,12 @@ class PlayerFragmentViewModel : ViewModel() {
     private val exceptionHandler by lazy {
         CoroutineExceptionHandler { _, throwable ->
             ErrorNotification.postErrorNotification(throwable)
+        }
+    }
+
+    companion object {
+        fun from(application: Application): ViewModelProvider.Factory {
+            return ViewModelProvider.AndroidViewModelFactory(application)
         }
     }
 }

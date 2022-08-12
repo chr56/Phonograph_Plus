@@ -1,5 +1,6 @@
 package player.phonograph.ui.fragments.player
 
+import android.app.Application
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -47,7 +48,10 @@ abstract class AbsPlayerFragment :
 
     protected lateinit var playerAlbumCoverFragment: PlayerAlbumCoverFragment
     protected lateinit var playbackControlsFragment: AbsPlayerControllerFragment
-    protected val viewModel: PlayerFragmentViewModel by viewModels()
+    protected val viewModel: PlayerFragmentViewModel
+        by viewModels {
+            PlayerFragmentViewModel.from(requireContext().applicationContext as Application)
+        }
 
     lateinit var handler: Handler
 
