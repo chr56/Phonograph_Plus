@@ -66,38 +66,19 @@ class PlayerFragmentViewModel(application: Application) : AndroidViewModel(appli
         }
     }
 
-    var favoriteMenuItem: MenuItem? = null
-
-    private var favoriteState: Pair<Song, Boolean> = Song.EMPTY_SONG to false
+    private var _favoriteState: MutableStateFlow<Pair<Song, Boolean>> =
+        MutableStateFlow(Song.EMPTY_SONG to false)
+    val favoriteState = _favoriteState.asStateFlow()
 
     private var loadFavoriteStateJob: Job? = null
     fun updateFavoriteState(song: Song) {
         loadFavoriteStateJob?.cancel()
-        favoriteState = Song.EMPTY_SONG to false
+        _favoriteState.value = Song.EMPTY_SONG to false
         loadFavoriteStateJob = backgroundCoroutine.launch(exceptionHandler) {
             if (song == Song.EMPTY_SONG) return@launch
-            favoriteState = song to isFavorite(context, song)
-
-            // update ui
-            favoriteMenuItem?.let {
-                withContext(Dispatchers.Main) {
-                    updateFavoriteIcon(favoriteState.second)
-                }
-            }
+            _favoriteState.emit(song to isFavorite(context, song))
         }
     }
-
-    fun updateFavoriteIcon(isFavorite: Boolean) =
-        context.run {
-            val res = if (isFavorite) R.drawable.ic_favorite_white_24dp else R.drawable.ic_favorite_border_white_24dp
-            val color = ToolbarColorUtil.toolbarContentColor(context, Color.TRANSPARENT)
-            favoriteMenuItem?.apply {
-                icon = getTintedDrawable(res, color)
-                title =
-                    if (isFavorite) getString(R.string.action_remove_from_favorites)
-                    else getString(R.string.action_add_to_favorites)
-            }
-        }
 
     var favoriteAnimateCallback: ((Boolean) -> Unit)? = null
     fun toggleFavorite(context: Context, song: Song) {

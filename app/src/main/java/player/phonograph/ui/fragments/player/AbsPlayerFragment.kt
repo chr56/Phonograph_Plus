@@ -20,7 +20,6 @@ import com.github.chr56.android.menu_dsl.attach
 import com.h6ah4i.android.widget.advrecyclerview.draggable.RecyclerViewDragDropManager
 import com.h6ah4i.android.widget.advrecyclerview.utils.WrapperAdapterUtils
 import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import player.phonograph.R
 import player.phonograph.actions.injectPlayerToolbar
@@ -41,6 +40,7 @@ import player.phonograph.util.ImageUtil.getTintedDrawable
 import player.phonograph.util.NavigationUtil.goToAlbum
 import player.phonograph.util.NavigationUtil.goToArtist
 import player.phonograph.util.menu.onSongMenuItemClick
+import util.mddesign.util.ToolbarColorUtil
 import util.phonograph.tageditor.AbsTagEditorActivity
 import util.phonograph.tageditor.SongTagEditorActivity
 
@@ -109,6 +109,8 @@ abstract class AbsPlayerFragment :
         initToolbar()
         setUpControllerFragment()
         setUpCoverFragment()
+
+        addFavoriteSateObserver()
         addLyricsObserver()
     }
 
@@ -131,9 +133,8 @@ abstract class AbsPlayerFragment :
 
     override fun onDestroyView() {
         viewModel.favoriteAnimateCallback = null
-        viewModel.favoriteMenuItem = null
+        favoriteMenuItem = null
         viewModel.lyricsMenuItem = null
-        removeLyricsObserver()
         super.onDestroyView()
         _recyclerViewDragDropManager?.let {
             recyclerViewDragDropManager.release()
@@ -188,7 +189,7 @@ abstract class AbsPlayerFragment :
         viewModel.backgroundCoroutine.launch {
             viewModel.lyricsList.collectLatest {
                 val lyrics = viewModel.currentLyrics
-                viewModel.backgroundCoroutine.launch(Dispatchers.Main + viewModel.exceptionHandler) {
+                withContext(Dispatchers.Main + viewModel.exceptionHandler) {
                     if (lyrics != null && lyrics is LrcLyrics) {
                         playerAlbumCoverFragment.setLyrics(lyrics)
                     } else {
@@ -199,8 +200,6 @@ abstract class AbsPlayerFragment :
                 }
             }
         }
-    }
-    private fun removeLyricsObserver() {
     }
 
     //
@@ -288,8 +287,33 @@ abstract class AbsPlayerFragment :
                     true
                 }
             }.apply {
-                viewModel.favoriteMenuItem = this
+                favoriteMenuItem = this
             }
+        }
+    }
+
+    var favoriteMenuItem: MenuItem? = null
+
+    fun addFavoriteSateObserver() {
+        viewModel.backgroundCoroutine.launch {
+            viewModel.favoriteState.collectLatest {
+                if (it.first == viewModel.currentSong) {
+                    withContext(Dispatchers.Main + viewModel.exceptionHandler) {
+                        updateFavoriteIcon(it.second)
+                    }
+                }
+            }
+        }
+    }
+
+    fun updateFavoriteIcon(isFavorite: Boolean) {
+        val res = if (isFavorite) R.drawable.ic_favorite_white_24dp else R.drawable.ic_favorite_border_white_24dp
+        val color = ToolbarColorUtil.toolbarContentColor(requireContext(), Color.TRANSPARENT)
+        favoriteMenuItem?.apply {
+            icon = requireContext().getTintedDrawable(res, color)
+            title =
+                if (isFavorite) getString(R.string.action_remove_from_favorites)
+                else getString(R.string.action_add_to_favorites)
         }
     }
 
