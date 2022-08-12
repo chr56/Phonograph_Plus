@@ -3,9 +3,11 @@ package player.phonograph.ui.fragments.player
 import android.app.Application
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
@@ -13,6 +15,8 @@ import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.github.chr56.android.menu_dsl.add
+import com.github.chr56.android.menu_dsl.attach
 import com.h6ah4i.android.widget.advrecyclerview.draggable.RecyclerViewDragDropManager
 import com.h6ah4i.android.widget.advrecyclerview.utils.WrapperAdapterUtils
 import kotlinx.coroutines.*
@@ -20,6 +24,7 @@ import player.phonograph.R
 import player.phonograph.actions.injectPlayerToolbar
 import player.phonograph.adapter.display.PlayingQueueAdapter
 import player.phonograph.dialogs.AddToPlaylistDialog
+import player.phonograph.dialogs.LyricsDialog
 import player.phonograph.dialogs.SongDetailDialog
 import player.phonograph.dialogs.SongShareDialog
 import player.phonograph.interfaces.PaletteColorHolder
@@ -30,6 +35,7 @@ import player.phonograph.model.lyrics.LrcLyrics
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.ui.fragments.AbsMusicServiceFragment
 import player.phonograph.ui.fragments.player.PlayerAlbumCoverFragment.Companion.VISIBILITY_ANIM_DURATION
+import player.phonograph.util.ImageUtil.getTintedDrawable
 import player.phonograph.util.NavigationUtil.goToAlbum
 import player.phonograph.util.NavigationUtil.goToArtist
 import player.phonograph.util.menu.onSongMenuItemClick
@@ -195,7 +201,8 @@ abstract class AbsPlayerFragment :
         playerToolbar = getImplToolbar()
         playerToolbar.setNavigationIcon(R.drawable.ic_close_white_24dp)
         playerToolbar.setNavigationOnClickListener { requireActivity().onBackPressed() }
-        injectPlayerToolbar(playerToolbar.menu, this, viewModel)
+        attachSpecialMenuItem(playerToolbar.menu)
+        injectPlayerToolbar(playerToolbar.menu, this)
         viewModel.favoriteAnimateCallback = favoriteAnimateCallback
     }
     abstract fun getImplToolbar(): Toolbar
@@ -228,6 +235,52 @@ abstract class AbsPlayerFragment :
             hideToolbar(toolbar)
         } else if (isToolbarShown && toolbar.visibility != View.VISIBLE) {
             showToolbar(toolbar)
+        }
+    }
+
+    private fun attachSpecialMenuItem(menu: Menu) {
+        requireActivity().attach(menu) {
+            // todo
+            rootMenu.add(this) {
+                order = 0
+                title = getString(R.string.lyrics)
+                icon = requireContext()
+                    .getTintedDrawable(R.drawable.ic_comment_text_outline_white_24dp, Color.WHITE)
+                showAsActionFlag = MenuItem.SHOW_AS_ACTION_ALWAYS
+                visible = false
+                itemId = R.id.action_show_lyrics
+                onClick {
+                    val lyricsPack = viewModel.lyricsList
+                    if (lyricsPack != null) {
+                        LyricsDialog.create(
+                            lyricsPack,
+                            viewModel.currentSong,
+                            viewModel.currentLyrics ?: lyricsPack.getAvailableLyrics()!!
+                        ).show(childFragmentManager, "LYRICS")
+                    }
+                    true
+                }
+            }.apply {
+                viewModel.lyricsMenuItem = this
+            }
+
+            rootMenu.add(this) {
+                order = 1
+                title = getString(R.string.action_add_to_favorites)
+                icon = requireContext()
+                    .getTintedDrawable(R.drawable.ic_favorite_border_white_24dp, Color.WHITE) // default state
+                showAsActionFlag = MenuItem.SHOW_AS_ACTION_ALWAYS
+                itemId = R.id.action_toggle_favorite
+                onClick {
+                    requireContext().run {
+                        viewModel.toggleFavorite(this, viewModel.currentSong)
+                        viewModel.updateFavoriteState(viewModel.currentSong)
+                    }
+                    true
+                }
+            }.apply {
+                viewModel.favoriteMenuItem = this
+            }
         }
     }
 
