@@ -4,15 +4,22 @@
 
 package player.phonograph.ui.fragments.player
 
-import android.util.Log
+import android.content.Context
+import android.graphics.Color
+import android.view.MenuItem
 import androidx.lifecycle.ViewModel
+import java.io.File
 import kotlinx.coroutines.*
+import player.phonograph.R
 import player.phonograph.model.Song
 import player.phonograph.model.lyrics.AbsLyrics
 import player.phonograph.model.lyrics.LyricsList
 import player.phonograph.model.lyrics.LyricsLoader
 import player.phonograph.notification.ErrorNotification
-import java.io.File
+import player.phonograph.util.FavoriteUtil
+import player.phonograph.util.FavoriteUtil.isFavorite
+import player.phonograph.util.ImageUtil.getTintedDrawable
+import util.mddesign.util.ToolbarColorUtil
 
 class PlayerFragmentViewModel : ViewModel() {
     val backgroundCoroutine: CoroutineScope by lazy { CoroutineScope(Dispatchers.IO) }
@@ -44,12 +51,39 @@ class PlayerFragmentViewModel : ViewModel() {
         }
     }
 
+    var favoriteMenuItem: MenuItem? = null
+    fun updateFavoriteState(context: Context, song: Song) {
+        backgroundCoroutine.launch(exceptionHandler) {
+            val state = isFavorite(context, song)
+            favoriteMenuItem?.let {
+                withContext(Dispatchers.Main) {
+                    updateFavoriteIcon(context, state)
+                }
+            }
+        }
+    }
+
+    fun updateFavoriteIcon(context: Context, isFavorite: Boolean) =
+        context.run {
+            val res = if (isFavorite) R.drawable.ic_favorite_white_24dp else R.drawable.ic_favorite_border_white_24dp
+            val color = ToolbarColorUtil.toolbarContentColor(context, Color.TRANSPARENT)
+            favoriteMenuItem?.apply {
+                icon = getTintedDrawable(res, color)
+                title =
+                    if (isFavorite) getString(R.string.action_remove_from_favorites)
+                    else getString(R.string.action_add_to_favorites)
+            }
+        }
+
+    var favoriteAnimateCallback: ((Boolean) -> Unit)? = null
+    fun toggleFavorite(context: Context, song: Song) {
+        FavoriteUtil.toggleFavorite(context, song)
+        favoriteAnimateCallback?.invoke(isFavorite(context, song))
+    }
+
     private val exceptionHandler by lazy {
         CoroutineExceptionHandler { _, throwable ->
-            val msg = "Exception while fetching lyrics!"
-            Log.w("LyricsFetcher", "${msg}\n${throwable.message}")
-            ErrorNotification.init()
-            ErrorNotification.postErrorNotification(throwable, note = msg)
+            ErrorNotification.postErrorNotification(throwable)
         }
     }
 }

@@ -7,18 +7,26 @@ package player.phonograph.actions
 import android.graphics.Color
 import android.view.Menu
 import android.view.MenuItem
+import com.github.chr56.android.menu_dsl.add
 import com.github.chr56.android.menu_dsl.attach
 import com.github.chr56.android.menu_dsl.menuItem
 import player.phonograph.R
 import player.phonograph.dialogs.CreatePlaylistDialog
+import player.phonograph.dialogs.LyricsDialog
 import player.phonograph.dialogs.SleepTimerDialog
 import player.phonograph.preferences.NowPlayingScreenPreferenceDialog
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.ui.fragments.player.AbsPlayerFragment
+import player.phonograph.ui.fragments.player.PlayerFragmentViewModel
+import player.phonograph.util.FavoriteUtil.isFavorite
 import player.phonograph.util.ImageUtil.getTintedDrawable
 import player.phonograph.util.NavigationUtil.openEqualizer
 
-fun injectPlayerToolbar(menu: Menu, playerFragment: AbsPlayerFragment) = playerFragment.requireActivity().run {
+fun injectPlayerToolbar(
+    menu: Menu,
+    playerFragment: AbsPlayerFragment,
+    viewModel: PlayerFragmentViewModel
+) = playerFragment.requireActivity().run {
     attach(menu) {
         menuItem {
             order = 0
@@ -27,14 +35,37 @@ fun injectPlayerToolbar(menu: Menu, playerFragment: AbsPlayerFragment) = playerF
             showAsActionFlag = MenuItem.SHOW_AS_ACTION_ALWAYS
             visible = false
             itemId = R.id.action_show_lyrics
+            onClick {
+                val lyricsPack = viewModel.lyricsList
+                if (lyricsPack != null) {
+                    LyricsDialog.create(
+                        lyricsPack,
+                        viewModel.currentSong,
+                        viewModel.currentLyrics ?: lyricsPack.getAvailableLyrics()!!
+                    ).show(playerFragment.childFragmentManager, "LYRICS")
+                }
+                true
+            }
         }
-        menuItem {
+
+        // todo
+        rootMenu.add(this) {
             order = 1
             title = getString(R.string.action_add_to_favorites)
-            icon = getTintedDrawable(R.drawable.ic_favorite_border_white_24dp, Color.WHITE)
+            icon = getTintedDrawable(R.drawable.ic_favorite_border_white_24dp, Color.WHITE) // default state
             showAsActionFlag = MenuItem.SHOW_AS_ACTION_ALWAYS
             itemId = R.id.action_toggle_favorite
+            onClick {
+                playerFragment.requireContext().run {
+                    viewModel.toggleFavorite(this, viewModel.currentSong)
+                    viewModel.updateFavoriteIcon(this, isFavorite(this, viewModel.currentSong))
+                }
+                true
+            }
+        }.apply {
+            viewModel.favoriteMenuItem = this
         }
+
         menuItem {
             order = 2
             title = getString(R.string.action_clear_playing_queue)

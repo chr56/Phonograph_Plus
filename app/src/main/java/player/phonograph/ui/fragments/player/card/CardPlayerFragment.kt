@@ -18,6 +18,7 @@ import com.h6ah4i.android.widget.advrecyclerview.animator.GeneralItemAnimator
 import com.h6ah4i.android.widget.advrecyclerview.animator.RefactoredDefaultItemAnimator
 import com.sothree.slidinguppanel.SlidingUpPanelLayout
 import com.sothree.slidinguppanel.SlidingUpPanelLayout.PanelState
+import kotlin.math.max
 import player.phonograph.R
 import player.phonograph.adapter.base.MediaEntryViewHolder
 import player.phonograph.databinding.FragmentCardPlayerBinding
@@ -28,7 +29,6 @@ import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
 import player.phonograph.ui.fragments.player.AbsPlayerFragment
 import player.phonograph.ui.fragments.player.PlayerAlbumCoverFragment
-import player.phonograph.util.FavoriteUtil.isFavorite
 import player.phonograph.util.ImageUtil
 import player.phonograph.util.Util.isLandscape
 import player.phonograph.util.ViewUtil
@@ -37,7 +37,6 @@ import util.mdcolor.ColorUtil
 import util.mdcolor.pref.ThemeColor
 import util.mddesign.util.ToolbarColorUtil
 import util.mddesign.util.Util
-import kotlin.math.max
 
 class CardPlayerFragment :
     AbsPlayerFragment(),
@@ -107,13 +106,13 @@ class CardPlayerFragment :
     override fun onServiceConnected() {
         updateQueue()
         updateCurrentSong()
-        updateFavoriteState(MusicPlayerRemote.currentSong)
+        viewModel.updateFavoriteState(requireContext(), MusicPlayerRemote.currentSong)
         monitorLyricsState()
     }
 
     override fun onPlayingMetaChanged() {
         updateCurrentSong()
-        updateFavoriteState(MusicPlayerRemote.currentSong)
+        viewModel.updateFavoriteState(requireContext(), MusicPlayerRemote.currentSong)
         updateQueuePosition()
         monitorLyricsState()
     }
@@ -124,7 +123,7 @@ class CardPlayerFragment :
 
     override fun onMediaStoreChanged() {
         updateQueue()
-        updateFavoriteState(MusicPlayerRemote.currentSong)
+        viewModel.updateFavoriteState(requireContext(), MusicPlayerRemote.currentSong)
     }
 
     private fun updateQueue() {
@@ -156,9 +155,11 @@ class CardPlayerFragment :
     }
 
     override fun setUpCoverFragment() {
-        playerAlbumCoverFragment = (childFragmentManager.findFragmentById(
-            R.id.player_album_cover_fragment
-        ) as PlayerAlbumCoverFragment)
+        playerAlbumCoverFragment = (
+            childFragmentManager.findFragmentById(
+                R.id.player_album_cover_fragment
+            ) as PlayerAlbumCoverFragment
+            )
             .apply { setCallbacks(this@CardPlayerFragment) }
     }
 
@@ -171,18 +172,6 @@ class CardPlayerFragment :
         viewBinding.playerRecyclerView.itemAnimator = animator
         recyclerViewDragDropManager!!.attachRecyclerView(viewBinding.playerRecyclerView)
         layoutManager!!.scrollToPositionWithOffset(MusicPlayerRemote.position + 1, 0)
-    }
-
-    override fun updateFavoriteIcon(isFavorite: Boolean) {
-        val res = if (isFavorite) R.drawable.ic_favorite_white_24dp else R.drawable.ic_favorite_border_white_24dp
-        val color = ToolbarColorUtil.toolbarContentColor(requireActivity(), Color.TRANSPARENT)
-        val drawable = ImageUtil.getTintedVectorDrawable(requireActivity(), res, color)
-        viewBinding.playerToolbar.menu
-            .findItem(R.id.action_toggle_favorite)
-            .setIcon(drawable)
-            .title = if (isFavorite) getString(R.string.action_remove_from_favorites) else getString(
-            R.string.action_add_to_favorites
-        )
     }
 
     override fun hideLyricsMenuItem() {
@@ -213,16 +202,6 @@ class CardPlayerFragment :
         paletteColor = newColor
     }
 
-    override fun toggleFavorite(song: Song) {
-        super.toggleFavorite(song)
-        if (song.id == MusicPlayerRemote.currentSong.id) {
-            if (isFavorite(requireActivity(), song)) {
-                playerAlbumCoverFragment.showHeartAnimation()
-            }
-            updateFavoriteState(song)
-        }
-    }
-
     override fun onShow() {
         playbackControlsFragment.show()
     }
@@ -242,10 +221,6 @@ class CardPlayerFragment :
         animateColorChange(color)
         playbackControlsFragment.setDark(ColorUtil.isColorLight(color))
         callbacks!!.onPaletteColorChanged()
-    }
-
-    override fun onFavoriteToggled() {
-        toggleFavorite(MusicPlayerRemote.currentSong)
     }
 
     override fun onToolbarToggled() {

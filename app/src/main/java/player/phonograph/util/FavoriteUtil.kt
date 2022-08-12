@@ -20,7 +20,6 @@ import player.phonograph.util.PlaylistsUtil.getPlaylist
 
 object FavoriteUtil {
 
-    @JvmStatic
     fun isFavorite(context: Context, song: Song): Boolean =
         if (Setting.instance.useLegacyFavoritePlaylistImpl) {
             isFavoriteLegacyImpl(context, song)
@@ -34,7 +33,6 @@ object FavoriteUtil {
     private fun isFavoriteDatabaseImpl(song: Song): Boolean =
         FavoriteSongsStore.instance.contains(song)
 
-    @JvmStatic
     fun toggleFavorite(context: Context, song: Song) {
         if (Setting.instance.useLegacyFavoritePlaylistImpl) {
             toggleFavoriteLegacyImpl(context, song)

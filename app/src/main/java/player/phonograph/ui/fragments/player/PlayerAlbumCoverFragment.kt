@@ -267,7 +267,6 @@ class PlayerAlbumCoverFragment :
 
     interface Callbacks {
         fun onColorChanged(color: Int)
-        fun onFavoriteToggled()
         fun onToolbarToggled()
     }
 

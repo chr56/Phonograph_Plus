@@ -20,11 +20,9 @@ import player.phonograph.R
 import player.phonograph.actions.injectPlayerToolbar
 import player.phonograph.adapter.display.PlayingQueueAdapter
 import player.phonograph.dialogs.AddToPlaylistDialog
-import player.phonograph.dialogs.LyricsDialog
 import player.phonograph.dialogs.SongDetailDialog
 import player.phonograph.dialogs.SongShareDialog
 import player.phonograph.interfaces.PaletteColorHolder
-import player.phonograph.model.Song
 import player.phonograph.model.buildInfoString
 import player.phonograph.model.getReadableDurationString
 import player.phonograph.model.lyrics.AbsLyrics
@@ -33,8 +31,6 @@ import player.phonograph.notification.ErrorNotification
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.ui.fragments.AbsMusicServiceFragment
 import player.phonograph.ui.fragments.player.PlayerAlbumCoverFragment.Companion.VISIBILITY_ANIM_DURATION
-import player.phonograph.util.FavoriteUtil
-import player.phonograph.util.FavoriteUtil.toggleFavorite
 import player.phonograph.util.NavigationUtil.goToAlbum
 import player.phonograph.util.NavigationUtil.goToArtist
 import player.phonograph.util.menu.onSongMenuItemClick
@@ -103,6 +99,10 @@ abstract class AbsPlayerFragment :
         initToolbar()
         setUpControllerFragment()
         setUpCoverFragment()
+
+        viewModel.favoriteAnimateCallback = {
+            if (viewModel.currentSong.id == MusicPlayerRemote.currentSong.id && it) playerAlbumCoverFragment.showHeartAnimation()
+        }
     }
 
     private fun initRecyclerView() {
@@ -123,6 +123,8 @@ abstract class AbsPlayerFragment :
     abstract fun setUpCoverFragment()
 
     override fun onDestroyView() {
+        viewModel.favoriteAnimateCallback = null
+        viewModel.favoriteMenuItem = null
         super.onDestroyView()
         _recyclerViewDragDropManager?.let {
             recyclerViewDragDropManager.release()
@@ -135,26 +137,6 @@ abstract class AbsPlayerFragment :
     }
 
     override fun onMenuItemClick(item: MenuItem): Boolean {
-        // toolbar
-        when (item.itemId) {
-            R.id.action_show_lyrics -> {
-                val lyricsPack = viewModel.lyricsList
-                if (lyricsPack != null) {
-                    LyricsDialog.create(
-                        lyricsPack,
-                        MusicPlayerRemote.currentSong,
-                        viewModel.currentLyrics ?: lyricsPack.getAvailableLyrics()!!
-                    )
-                        .show(requireActivity().supportFragmentManager, "LYRICS")
-                }
-                return true
-            }
-            R.id.action_toggle_favorite -> {
-                toggleFavorite(MusicPlayerRemote.currentSong)
-                return true
-            }
-        }
-
         // current song
         val song = MusicPlayerRemote.currentSong
         when (item.itemId) {
@@ -233,16 +215,6 @@ abstract class AbsPlayerFragment :
     protected abstract fun hideLyricsMenuItem()
     protected abstract fun showLyricsMenuItem()
 
-    protected open fun toggleFavorite(song: Song) = toggleFavorite(requireActivity(), song)
-
-    protected fun updateFavoriteState(song: Song) {
-        backgroundCoroutine.launch(exceptionHandler) {
-            val state = FavoriteUtil.isFavorite(this@AbsPlayerFragment.requireContext(), song)
-            withContext(Dispatchers.Main) { updateFavoriteIcon(state) }
-        }
-    }
-    protected abstract fun updateFavoriteIcon(isFavorite: Boolean)
-
     //
     // Toolbar
     //
@@ -250,8 +222,7 @@ abstract class AbsPlayerFragment :
         playerToolbar = getImplToolbar()
         playerToolbar.setNavigationIcon(R.drawable.ic_close_white_24dp)
         playerToolbar.setNavigationOnClickListener { requireActivity().onBackPressed() }
-        injectPlayerToolbar(playerToolbar.menu, this)
-        playerToolbar.setOnMenuItemClickListener(this)
+        injectPlayerToolbar(playerToolbar.menu, this, viewModel)
     }
     abstract fun getImplToolbar(): Toolbar
 
