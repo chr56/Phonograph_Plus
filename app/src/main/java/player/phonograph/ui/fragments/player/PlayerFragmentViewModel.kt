@@ -23,9 +23,14 @@ class PlayerFragmentViewModel(application: Application) : AndroidViewModel(appli
 
     val context get() = getApplication<Application>()
 
-    val backgroundCoroutine: CoroutineScope by lazy { CoroutineScope(
-        Dispatchers.IO + exceptionHandler
-    ) }
+    val backgroundCoroutine: CoroutineScope by lazy {
+        CoroutineScope(
+            Dispatchers.IO +
+                CoroutineExceptionHandler { _, throwable ->
+                    ErrorNotification.postErrorNotification(throwable)
+                }
+        )
+    }
 
     var currentSong: Song = Song.EMPTY_SONG
         set(value) {
@@ -73,12 +78,6 @@ class PlayerFragmentViewModel(application: Application) : AndroidViewModel(appli
         loadFavoriteStateJob = backgroundCoroutine.launch {
             if (song == Song.EMPTY_SONG) return@launch
             _favoriteState.emit(song to isFavorite(context, song))
-        }
-    }
-
-    private val exceptionHandler by lazy {
-        CoroutineExceptionHandler { _, throwable ->
-            ErrorNotification.postErrorNotification(throwable)
         }
     }
 
