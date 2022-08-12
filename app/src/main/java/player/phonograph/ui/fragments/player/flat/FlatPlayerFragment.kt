@@ -2,7 +2,6 @@
 package player.phonograph.ui.fragments.player.flat
 
 import android.animation.AnimatorSet
-import android.graphics.Color
 import android.graphics.PorterDuff
 import android.os.Bundle
 import android.view.*
@@ -25,13 +24,11 @@ import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
 import player.phonograph.ui.fragments.player.AbsPlayerFragment
 import player.phonograph.ui.fragments.player.PlayerAlbumCoverFragment
-import player.phonograph.util.ImageUtil
 import player.phonograph.util.Util.isLandscape
 import player.phonograph.util.ViewUtil
 import player.phonograph.util.menu.MenuClickListener
 import util.mdcolor.ColorUtil
 import util.mdcolor.pref.ThemeColor
-import util.mddesign.util.ToolbarColorUtil
 import util.mddesign.util.Util
 
 class FlatPlayerFragment :
@@ -98,13 +95,13 @@ class FlatPlayerFragment :
     override fun onServiceConnected() {
         updateQueue()
         updateCurrentSong()
-        viewModel.updateFavoriteState(requireContext(), MusicPlayerRemote.currentSong)
+        viewModel.updateFavoriteState(MusicPlayerRemote.currentSong)
         monitorLyricsState()
     }
 
     override fun onPlayingMetaChanged() {
         updateCurrentSong()
-        viewModel.updateFavoriteState(requireContext(), MusicPlayerRemote.currentSong)
+        viewModel.updateFavoriteState(MusicPlayerRemote.currentSong)
         updateQueuePosition()
         monitorLyricsState()
     }
@@ -115,7 +112,7 @@ class FlatPlayerFragment :
 
     override fun onMediaStoreChanged() {
         updateQueue()
-        viewModel.updateFavoriteState(requireContext(), MusicPlayerRemote.currentSong)
+        viewModel.updateFavoriteState(MusicPlayerRemote.currentSong)
     }
 
     private fun updateQueue() {

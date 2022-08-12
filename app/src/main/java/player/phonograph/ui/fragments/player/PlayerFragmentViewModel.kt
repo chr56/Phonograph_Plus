@@ -25,6 +25,8 @@ import util.mddesign.util.ToolbarColorUtil
 
 class PlayerFragmentViewModel(application: Application) : AndroidViewModel(application) {
 
+    val context get() = getApplication<Application>()
+
     val backgroundCoroutine: CoroutineScope by lazy { CoroutineScope(Dispatchers.IO) }
 
     var currentSong: Song = Song.EMPTY_SONG
@@ -55,18 +57,18 @@ class PlayerFragmentViewModel(application: Application) : AndroidViewModel(appli
     }
 
     var favoriteMenuItem: MenuItem? = null
-    fun updateFavoriteState(context: Context, song: Song) {
+    fun updateFavoriteState(song: Song) {
         backgroundCoroutine.launch(exceptionHandler) {
             val state = isFavorite(context, song)
             favoriteMenuItem?.let {
                 withContext(Dispatchers.Main) {
-                    updateFavoriteIcon(context, state)
+                    updateFavoriteIcon(state)
                 }
             }
         }
     }
 
-    fun updateFavoriteIcon(context: Context, isFavorite: Boolean) =
+    fun updateFavoriteIcon(isFavorite: Boolean) =
         context.run {
             val res = if (isFavorite) R.drawable.ic_favorite_white_24dp else R.drawable.ic_favorite_border_white_24dp
             val color = ToolbarColorUtil.toolbarContentColor(context, Color.TRANSPARENT)

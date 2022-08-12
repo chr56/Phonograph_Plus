@@ -60,7 +60,7 @@ fun injectPlayerToolbar(
             onClick {
                 playerFragment.requireContext().run {
                     viewModel.toggleFavorite(this, viewModel.currentSong)
-                    viewModel.updateFavoriteIcon(this, isFavorite(this, viewModel.currentSong))
+                    viewModel.updateFavoriteIcon(isFavorite(this, viewModel.currentSong))
                 }
                 true
             }
