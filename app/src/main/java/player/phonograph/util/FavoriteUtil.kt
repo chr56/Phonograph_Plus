@@ -10,8 +10,8 @@ import legacy.phonograph.LegacyPlaylistsUtil.createPlaylist
 import legacy.phonograph.LegacyPlaylistsUtil.removeFromPlaylist
 import player.phonograph.App
 import player.phonograph.R
-import player.phonograph.model.playlist.Playlist
 import player.phonograph.model.Song
+import player.phonograph.model.playlist.Playlist
 import player.phonograph.provider.FavoriteSongsStore
 import player.phonograph.service.MusicService
 import player.phonograph.settings.Setting
@@ -33,32 +33,49 @@ object FavoriteUtil {
     private fun isFavoriteDatabaseImpl(song: Song): Boolean =
         FavoriteSongsStore.instance.contains(song)
 
-    fun toggleFavorite(context: Context, song: Song) {
-        if (Setting.instance.useLegacyFavoritePlaylistImpl) {
+    /**
+     * @return new state
+     */
+    fun toggleFavorite(context: Context, song: Song): Boolean {
+        return if (Setting.instance.useLegacyFavoritePlaylistImpl) {
             toggleFavoriteLegacyImpl(context, song)
         } else {
             toggleFavoriteDatabaseImpl(context, song)
+        }.also {
+            notifyMediaStoreChanged()
         }
-        notifyMediaStoreChanged()
     }
 
-    private fun toggleFavoriteLegacyImpl(context: Context, song: Song) {
-        if (isFavorite(context, song)) {
+    /**
+     * @return new state
+     */
+    private fun toggleFavoriteLegacyImpl(context: Context, song: Song): Boolean {
+        return if (isFavorite(context, song)) {
             removeFromPlaylist(context, song, getFavoritesPlaylist(context).id)
+            false
         } else {
             addToPlaylist(context, song, getOrCreateFavoritesPlaylist(context).id, false)
+            true
         }
     }
-    private fun toggleFavoriteDatabaseImpl(context: Context, song: Song) {
-        if (isFavorite(context, song)) {
-            FavoriteSongsStore.instance.remove(song)
+
+    /**
+     * @return new state
+     */
+    private fun toggleFavoriteDatabaseImpl(context: Context, song: Song): Boolean {
+        return if (isFavorite(context, song)) {
+            !FavoriteSongsStore.instance.remove(song)
         } else {
             FavoriteSongsStore.instance.add(song)
         }
     }
 
     @Deprecated(
-        "use DatabaseImpl", ReplaceWith("playlist.name != null && playlist.name == context.getString(R.string.favorites)", "player.phonograph.R")
+        "use DatabaseImpl",
+        ReplaceWith(
+            "playlist.name != null && playlist.name == context.getString(R.string.favorites)",
+            "player.phonograph.R"
+        )
     )
     fun isFavoritePlaylist(context: Context, playlist: Playlist): Boolean {
         return playlist.name != null && playlist.name == context.getString(R.string.favorites)
@@ -70,6 +87,9 @@ object FavoriteUtil {
     private fun getOrCreateFavoritesPlaylist(context: Context): Playlist {
         return getPlaylist(context, createPlaylist(context, context.getString(R.string.favorites))).also { notifyMediaStoreChanged() }
     }
-    private fun notifyMediaStoreChanged() { App.instance.sendBroadcast(Intent(MusicService.MEDIA_STORE_CHANGED)) }
-
+    private fun notifyMediaStoreChanged() {
+        App.instance.sendBroadcast(
+            Intent(MusicService.MEDIA_STORE_CHANGED)
+        )
+    }
 }

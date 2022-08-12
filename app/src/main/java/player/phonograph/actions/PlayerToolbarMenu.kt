@@ -18,7 +18,6 @@ import player.phonograph.preferences.NowPlayingScreenPreferenceDialog
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.ui.fragments.player.AbsPlayerFragment
 import player.phonograph.ui.fragments.player.PlayerFragmentViewModel
-import player.phonograph.util.FavoriteUtil.isFavorite
 import player.phonograph.util.ImageUtil.getTintedDrawable
 import player.phonograph.util.NavigationUtil.openEqualizer
 
@@ -60,7 +59,7 @@ fun injectPlayerToolbar(
             onClick {
                 playerFragment.requireContext().run {
                     viewModel.toggleFavorite(this, viewModel.currentSong)
-                    viewModel.updateFavoriteIcon(isFavorite(this, viewModel.currentSong))
+                    viewModel.updateFavoriteState(viewModel.currentSong)
                 }
                 true
             }

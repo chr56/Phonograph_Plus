@@ -33,7 +33,11 @@ class PlayerFragmentViewModel(application: Application) : AndroidViewModel(appli
         set(value) {
             field = value
             loadLyrics(value)
+            updateFavoriteState(value)
         }
+
+    var lyricsMenuItem: MenuItem? = null
+
     var lyricsList: LyricsList? = null
         private set
     var currentLyrics: AbsLyrics? = null
@@ -42,27 +46,42 @@ class PlayerFragmentViewModel(application: Application) : AndroidViewModel(appli
         currentLyrics = lyrics
     }
 
+    var onLyricsReadyCallback: ((AbsLyrics?) -> Unit)? = null
+
     private var loadLyricsJob: Job? = null
-    private fun loadLyrics(song: Song) {
-        if (song == Song.EMPTY_SONG) return
+    fun loadLyrics(song: Song) {
         // cancel old song's lyrics after switching
         loadLyricsJob?.cancel()
         currentLyrics = null
         lyricsList = null
+        lyricsMenuItem?.isVisible = false
         // load new lyrics
         loadLyricsJob = backgroundCoroutine.launch(exceptionHandler) {
+            if (song == Song.EMPTY_SONG) return@launch
             lyricsList = LyricsLoader.loadLyrics(File(song.data), song)
             currentLyrics = lyricsList!!.getAvailableLyrics()
+
+            // update ui
+            onLyricsReadyCallback?.invoke(currentLyrics)
         }
     }
 
     var favoriteMenuItem: MenuItem? = null
+
+    private var favoriteState: Pair<Song, Boolean> = Song.EMPTY_SONG to false
+
+    private var loadFavoriteStateJob: Job? = null
     fun updateFavoriteState(song: Song) {
-        backgroundCoroutine.launch(exceptionHandler) {
-            val state = isFavorite(context, song)
+        loadFavoriteStateJob?.cancel()
+        favoriteState = Song.EMPTY_SONG to false
+        loadFavoriteStateJob = backgroundCoroutine.launch(exceptionHandler) {
+            if (song == Song.EMPTY_SONG) return@launch
+            favoriteState = song to isFavorite(context, song)
+
+            // update ui
             favoriteMenuItem?.let {
                 withContext(Dispatchers.Main) {
-                    updateFavoriteIcon(state)
+                    updateFavoriteIcon(favoriteState.second)
                 }
             }
         }
@@ -82,13 +101,11 @@ class PlayerFragmentViewModel(application: Application) : AndroidViewModel(appli
 
     var favoriteAnimateCallback: ((Boolean) -> Unit)? = null
     fun toggleFavorite(context: Context, song: Song) {
-        FavoriteUtil.toggleFavorite(context, song)
-        favoriteAnimateCallback?.invoke(isFavorite(context, song))
+        val result = FavoriteUtil.toggleFavorite(context, song)
+        favoriteAnimateCallback?.invoke(result)
     }
 
-    var lyricsMenuItem: MenuItem? = null
-
-    private val exceptionHandler by lazy {
+    val exceptionHandler by lazy {
         CoroutineExceptionHandler { _, throwable ->
             ErrorNotification.postErrorNotification(throwable)
         }

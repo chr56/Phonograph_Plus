@@ -96,14 +96,14 @@ class FlatPlayerFragment :
         updateQueue()
         updateCurrentSong()
         viewModel.updateFavoriteState(MusicPlayerRemote.currentSong)
-        monitorLyricsState()
+        viewModel.loadLyrics(MusicPlayerRemote.currentSong)
     }
 
     override fun onPlayingMetaChanged() {
         updateCurrentSong()
-        viewModel.updateFavoriteState(MusicPlayerRemote.currentSong)
         updateQueuePosition()
-        monitorLyricsState()
+        viewModel.updateFavoriteState(MusicPlayerRemote.currentSong)
+        viewModel.loadLyrics(MusicPlayerRemote.currentSong)
     }
 
     override fun onQueueChanged() {

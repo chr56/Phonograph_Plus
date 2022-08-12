@@ -6,7 +6,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
@@ -28,7 +27,6 @@ import player.phonograph.model.buildInfoString
 import player.phonograph.model.getReadableDurationString
 import player.phonograph.model.lyrics.AbsLyrics
 import player.phonograph.model.lyrics.LrcLyrics
-import player.phonograph.notification.ErrorNotification
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.ui.fragments.AbsMusicServiceFragment
 import player.phonograph.ui.fragments.player.PlayerAlbumCoverFragment.Companion.VISIBILITY_ANIM_DURATION
@@ -103,10 +101,7 @@ abstract class AbsPlayerFragment :
         initToolbar()
         setUpControllerFragment()
         setUpCoverFragment()
-
-        viewModel.favoriteAnimateCallback = {
-            if (viewModel.currentSong.id == MusicPlayerRemote.currentSong.id && it) playerAlbumCoverFragment.showHeartAnimation()
-        }
+        viewModel.onLyricsReadyCallback = this::notifyLyricsUpdated
     }
 
     private fun initRecyclerView() {
@@ -130,6 +125,7 @@ abstract class AbsPlayerFragment :
         viewModel.favoriteAnimateCallback = null
         viewModel.favoriteMenuItem = null
         viewModel.lyricsMenuItem = null
+        viewModel.onLyricsReadyCallback = null
         super.onDestroyView()
         _recyclerViewDragDropManager?.let {
             recyclerViewDragDropManager.release()
@@ -180,40 +176,15 @@ abstract class AbsPlayerFragment :
         return false
     }
 
-    protected val backgroundCoroutine: CoroutineScope by lazy {
-        CoroutineScope(Dispatchers.IO + exceptionHandler)
-    }
-
-    protected val exceptionHandler by lazy {
-        CoroutineExceptionHandler { _, throwable ->
-            Log.w("AbsPlayerFragment", "Exception:\n${throwable.message}")
-            ErrorNotification.postErrorNotification(throwable, null)
-        }
-    }
-
-    private fun showLyrics(lyrics: LrcLyrics) =
-        runBlocking(Dispatchers.Main + exceptionHandler) {
-            playerAlbumCoverFragment.setLyrics(lyrics)
-            viewModel.lyricsMenuItem?.isVisible = true
-        }
-    private fun hideLyrics() =
-        backgroundCoroutine.launch(Dispatchers.Main + exceptionHandler) {
-            playerAlbumCoverFragment.clearLyrics()
-            viewModel.lyricsMenuItem?.isVisible = false
-        }
-
-    protected fun monitorLyricsState() {
-        backgroundCoroutine.launch {
-            hideLyrics()
-            // wait
-            withTimeout(8000) {
-                while (viewModel.lyricsList == null) delay(150)
+    protected fun notifyLyricsUpdated(lyrics: AbsLyrics?) {
+        viewModel.backgroundCoroutine.launch(Dispatchers.Main + viewModel.exceptionHandler) {
+            if (lyrics != null && lyrics is LrcLyrics) {
+                playerAlbumCoverFragment.setLyrics(lyrics)
+            } else {
+                playerAlbumCoverFragment.clearLyrics()
             }
-            delay(100)
-            // refresh anyway
-            viewModel.currentLyrics?.let {
-                if (it is LrcLyrics) showLyrics(it)
-            }
+            viewModel.lyricsMenuItem?.isVisible =
+                (viewModel.currentLyrics != null)
         }
     }
 
@@ -225,6 +196,7 @@ abstract class AbsPlayerFragment :
         playerToolbar.setNavigationIcon(R.drawable.ic_close_white_24dp)
         playerToolbar.setNavigationOnClickListener { requireActivity().onBackPressed() }
         injectPlayerToolbar(playerToolbar.menu, this, viewModel)
+        viewModel.favoriteAnimateCallback = favoriteAnimateCallback
     }
     abstract fun getImplToolbar(): Toolbar
 
@@ -267,6 +239,10 @@ abstract class AbsPlayerFragment :
                 getReadableDurationString(duration)
             )
         }
+
+    private val favoriteAnimateCallback: (Boolean) -> Unit get() = {
+        if (viewModel.currentSong.id == MusicPlayerRemote.currentSong.id && it) playerAlbumCoverFragment.showHeartAnimation()
+    }
 
     abstract fun onShow()
     abstract fun onHide()
