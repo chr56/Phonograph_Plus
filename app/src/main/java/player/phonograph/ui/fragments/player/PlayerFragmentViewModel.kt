@@ -81,6 +81,8 @@ class PlayerFragmentViewModel : ViewModel() {
         favoriteAnimateCallback?.invoke(isFavorite(context, song))
     }
 
+    var lyricsMenuItem: MenuItem? = null
+
     private val exceptionHandler by lazy {
         CoroutineExceptionHandler { _, throwable ->
             ErrorNotification.postErrorNotification(throwable)

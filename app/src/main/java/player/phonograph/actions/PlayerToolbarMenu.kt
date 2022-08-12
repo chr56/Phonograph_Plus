@@ -28,7 +28,7 @@ fun injectPlayerToolbar(
     viewModel: PlayerFragmentViewModel
 ) = playerFragment.requireActivity().run {
     attach(menu) {
-        menuItem {
+        rootMenu.add(this) {
             order = 0
             title = getString(R.string.lyrics)
             icon = getTintedDrawable(R.drawable.ic_comment_text_outline_white_24dp, Color.WHITE)
@@ -46,6 +46,8 @@ fun injectPlayerToolbar(
                 }
                 true
             }
+        }.apply {
+            viewModel.lyricsMenuItem = this
         }
 
         // todo

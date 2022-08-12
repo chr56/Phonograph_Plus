@@ -125,6 +125,7 @@ abstract class AbsPlayerFragment :
     override fun onDestroyView() {
         viewModel.favoriteAnimateCallback = null
         viewModel.favoriteMenuItem = null
+        viewModel.lyricsMenuItem = null
         super.onDestroyView()
         _recyclerViewDragDropManager?.let {
             recyclerViewDragDropManager.release()
@@ -189,12 +190,12 @@ abstract class AbsPlayerFragment :
     private fun showLyrics(lyrics: LrcLyrics) =
         runBlocking(Dispatchers.Main + exceptionHandler) {
             playerAlbumCoverFragment.setLyrics(lyrics)
-            showLyricsMenuItem()
+            viewModel.lyricsMenuItem?.isVisible = true
         }
     private fun hideLyrics() =
         backgroundCoroutine.launch(Dispatchers.Main + exceptionHandler) {
             playerAlbumCoverFragment.clearLyrics()
-            hideLyricsMenuItem()
+            viewModel.lyricsMenuItem?.isVisible = false
         }
 
     protected fun monitorLyricsState() {
@@ -211,9 +212,6 @@ abstract class AbsPlayerFragment :
             }
         }
     }
-
-    protected abstract fun hideLyricsMenuItem()
-    protected abstract fun showLyricsMenuItem()
 
     //
     // Toolbar

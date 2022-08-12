@@ -166,29 +166,6 @@ class FlatPlayerFragment :
         layoutManager!!.scrollToPositionWithOffset(MusicPlayerRemote.position + 1, 0)
     }
 
-    override fun hideLyricsMenuItem() {
-        if (_viewBinding != null) {
-            viewBinding.playerToolbar.menu.removeItem(R.id.action_show_lyrics)
-        }
-    }
-
-    override fun showLyricsMenuItem() {
-        activity?.let { activity ->
-            if (viewBinding.playerToolbar.menu.findItem(R.id.action_show_lyrics) == null) {
-                viewBinding.playerToolbar.menu
-                    .add(Menu.NONE, R.id.action_show_lyrics, Menu.NONE, R.string.action_show_lyrics)
-                    .setIcon(
-                        ImageUtil.getTintedVectorDrawable(
-                            activity,
-                            R.drawable.ic_comment_text_outline_white_24dp,
-                            ToolbarColorUtil.toolbarContentColor(activity, Color.TRANSPARENT)
-                        )
-                    )
-                    .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM)
-            }
-        }
-    }
-
     private fun animateColorChange(newColor: Int) {
         impl.animateColorChange(newColor)
         paletteColor = newColor
