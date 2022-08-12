@@ -161,7 +161,7 @@ class HomeFragment : AbsMainActivityFragment(), MainActivity.MainActivityFragmen
     val popup: ListOptionsPopup by lazy { ListOptionsPopup(mainActivity) }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        menu.add(MenuContext(rootMenu = menu, context), fun MenuItemCfg.() {
+        menu.add(MenuContext(rootMenu = menu, requireContext()), fun MenuItemCfg.() {
             itemId = R.id.action_search
             titleRes(R.string.action_search, mainActivity)
             icon = mainActivity.getTintedDrawable(R.drawable.ic_search_white_24dp, Color.WHITE)
