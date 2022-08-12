@@ -191,7 +191,7 @@ abstract class AbsPlayerFragment :
         viewModel.backgroundCoroutine.launch {
             viewModel.lyricsList.collectLatest {
                 val lyrics = viewModel.currentLyrics
-                withContext(Dispatchers.Main + viewModel.exceptionHandler) {
+                withContext(Dispatchers.Main) {
                     if (lyrics != null && lyrics is LrcLyrics) {
                         playerAlbumCoverFragment.setLyrics(lyrics)
                     } else {
@@ -300,7 +300,7 @@ abstract class AbsPlayerFragment :
         viewModel.backgroundCoroutine.launch {
             viewModel.favoriteState.collectLatest {
                 if (it.first == viewModel.currentSong) {
-                    withContext(Dispatchers.Main + viewModel.exceptionHandler) {
+                    withContext(Dispatchers.Main) {
                         updateFavoriteIcon(it.second)
                     }
                 }

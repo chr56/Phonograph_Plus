@@ -8,6 +8,7 @@ import android.app.Application
 import android.view.MenuItem
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModelProvider
+import java.io.File
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -17,13 +18,14 @@ import player.phonograph.model.lyrics.LyricsList
 import player.phonograph.model.lyrics.LyricsLoader
 import player.phonograph.notification.ErrorNotification
 import player.phonograph.util.FavoriteUtil.isFavorite
-import java.io.File
 
 class PlayerFragmentViewModel(application: Application) : AndroidViewModel(application) {
 
     val context get() = getApplication<Application>()
 
-    val backgroundCoroutine: CoroutineScope by lazy { CoroutineScope(Dispatchers.IO) }
+    val backgroundCoroutine: CoroutineScope by lazy { CoroutineScope(
+        Dispatchers.IO + exceptionHandler
+    ) }
 
     var currentSong: Song = Song.EMPTY_SONG
         set(value) {
@@ -51,7 +53,7 @@ class PlayerFragmentViewModel(application: Application) : AndroidViewModel(appli
         _lyricsList.value = LyricsList()
         lyricsMenuItem?.isVisible = false
         // load new lyrics
-        loadLyricsJob = backgroundCoroutine.launch(exceptionHandler) {
+        loadLyricsJob = backgroundCoroutine.launch {
             if (song == Song.EMPTY_SONG) return@launch
             _lyricsList.emit(
                 LyricsLoader.loadLyrics(File(song.data), song)
@@ -68,13 +70,13 @@ class PlayerFragmentViewModel(application: Application) : AndroidViewModel(appli
     fun updateFavoriteState(song: Song) {
         loadFavoriteStateJob?.cancel()
         _favoriteState.value = Song.EMPTY_SONG to false
-        loadFavoriteStateJob = backgroundCoroutine.launch(exceptionHandler) {
+        loadFavoriteStateJob = backgroundCoroutine.launch {
             if (song == Song.EMPTY_SONG) return@launch
             _favoriteState.emit(song to isFavorite(context, song))
         }
     }
 
-    val exceptionHandler by lazy {
+    private val exceptionHandler by lazy {
         CoroutineExceptionHandler { _, throwable ->
             ErrorNotification.postErrorNotification(throwable)
         }
