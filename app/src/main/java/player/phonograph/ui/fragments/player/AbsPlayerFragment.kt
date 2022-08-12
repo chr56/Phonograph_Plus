@@ -17,8 +17,12 @@ import com.h6ah4i.android.widget.advrecyclerview.draggable.RecyclerViewDragDropM
 import com.h6ah4i.android.widget.advrecyclerview.utils.WrapperAdapterUtils
 import kotlinx.coroutines.*
 import player.phonograph.R
+import player.phonograph.actions.injectPlayerToolbar
 import player.phonograph.adapter.display.PlayingQueueAdapter
-import player.phonograph.dialogs.*
+import player.phonograph.dialogs.AddToPlaylistDialog
+import player.phonograph.dialogs.LyricsDialog
+import player.phonograph.dialogs.SongDetailDialog
+import player.phonograph.dialogs.SongShareDialog
 import player.phonograph.interfaces.PaletteColorHolder
 import player.phonograph.model.Song
 import player.phonograph.model.buildInfoString
@@ -26,7 +30,6 @@ import player.phonograph.model.getReadableDurationString
 import player.phonograph.model.lyrics.AbsLyrics
 import player.phonograph.model.lyrics.LrcLyrics
 import player.phonograph.notification.ErrorNotification
-import player.phonograph.preferences.NowPlayingScreenPreferenceDialog
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.ui.fragments.AbsMusicServiceFragment
 import player.phonograph.ui.fragments.player.PlayerAlbumCoverFragment.Companion.VISIBILITY_ANIM_DURATION
@@ -34,7 +37,6 @@ import player.phonograph.util.FavoriteUtil
 import player.phonograph.util.FavoriteUtil.toggleFavorite
 import player.phonograph.util.NavigationUtil.goToAlbum
 import player.phonograph.util.NavigationUtil.goToArtist
-import player.phonograph.util.NavigationUtil.openEqualizer
 import player.phonograph.util.menu.onSongMenuItemClick
 import util.phonograph.tageditor.AbsTagEditorActivity
 import util.phonograph.tageditor.SongTagEditorActivity
@@ -151,27 +153,6 @@ abstract class AbsPlayerFragment :
                 toggleFavorite(MusicPlayerRemote.currentSong)
                 return true
             }
-            R.id.action_clear_playing_queue -> {
-                MusicPlayerRemote.clearQueue()
-                return true
-            }
-            R.id.action_save_playing_queue -> {
-                CreatePlaylistDialog.create(MusicPlayerRemote.playingQueue)
-                    .show(childFragmentManager, "ADD_TO_PLAYLIST")
-                return true
-            }
-            R.id.action_sleep_timer -> {
-                SleepTimerDialog().show(childFragmentManager, "SET_SLEEP_TIMER")
-                return true
-            }
-            R.id.action_equalizer -> {
-                openEqualizer(requireActivity())
-                return true
-            }
-            R.id.action_change_now_playing_screen -> {
-                NowPlayingScreenPreferenceDialog().show(parentFragmentManager, "NOW_PLAYING_SCREEN")
-                return true
-            }
         }
 
         // current song
@@ -267,9 +248,9 @@ abstract class AbsPlayerFragment :
     //
     private fun initToolbar() {
         playerToolbar = getImplToolbar()
-        playerToolbar.inflateMenu(R.menu.menu_player)
         playerToolbar.setNavigationIcon(R.drawable.ic_close_white_24dp)
         playerToolbar.setNavigationOnClickListener { requireActivity().onBackPressed() }
+        injectPlayerToolbar(playerToolbar.menu, this)
         playerToolbar.setOnMenuItemClickListener(this)
     }
     abstract fun getImplToolbar(): Toolbar

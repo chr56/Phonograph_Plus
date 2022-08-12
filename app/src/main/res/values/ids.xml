@@ -1,16 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <item name="action_new_playlist" type="id" />
-    <item name="action_show_lyrics" type="id" />
-
 
     <item name="action_clear_all_preference" type="id" />
 
     <!-- Main Activity Menu Items-->
-    <item name="nav_settings" type="id"/>
-    <item name="nav_about" type="id"/>
-    <item name="action_theme_toggle" type="id"/>
-    <item name="action_shuffle_all" type="id"/>
+    <item name="nav_settings" type="id" />
+    <item name="nav_about" type="id" />
+    <item name="action_theme_toggle" type="id" />
+    <item name="action_shuffle_all" type="id" />
     <item name="action_main_popup_window_menu" type="id" />
     <item name="action_search" type="id" />
     <item name="action_scan" type="id" />
@@ -18,6 +16,13 @@
 
     <item name="action_multi_select_adapter_check_all" type="id" />
     <item name="multi_selection_cab" type="id" />
+
+    <!-- Main Player Toolbar Menu Items  -->
+    <item name="action_show_lyrics" type="id" />
+    <item name="action_toggle_favorite" type="id" />
+
+    <item name="action_sleep_timer" type="id" />
+    <item name="action_equalizer" type="id" />
 
     <!-- Playlist Menu Items-->
     <item name="action_refresh" type="id" />
