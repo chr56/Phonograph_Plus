@@ -12,6 +12,8 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModelProvider
 import java.io.File
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import player.phonograph.R
 import player.phonograph.model.Song
 import player.phonograph.model.lyrics.AbsLyrics
@@ -38,31 +40,29 @@ class PlayerFragmentViewModel(application: Application) : AndroidViewModel(appli
 
     var lyricsMenuItem: MenuItem? = null
 
-    var lyricsList: LyricsList? = null
-        private set
+    private var _lyricsList: MutableStateFlow<LyricsList> = MutableStateFlow(LyricsList())
+    val lyricsList get() = _lyricsList.asStateFlow()
+
     var currentLyrics: AbsLyrics? = null
         private set
     fun forceReplaceLyrics(lyrics: AbsLyrics) {
         currentLyrics = lyrics
     }
 
-    var onLyricsReadyCallback: ((AbsLyrics?) -> Unit)? = null
-
     private var loadLyricsJob: Job? = null
     fun loadLyrics(song: Song) {
         // cancel old song's lyrics after switching
         loadLyricsJob?.cancel()
         currentLyrics = null
-        lyricsList = null
+        _lyricsList.value = LyricsList()
         lyricsMenuItem?.isVisible = false
         // load new lyrics
         loadLyricsJob = backgroundCoroutine.launch(exceptionHandler) {
             if (song == Song.EMPTY_SONG) return@launch
-            lyricsList = LyricsLoader.loadLyrics(File(song.data), song)
-            currentLyrics = lyricsList!!.getAvailableLyrics()
-
-            // update ui
-            onLyricsReadyCallback?.invoke(currentLyrics)
+            _lyricsList.emit(
+                LyricsLoader.loadLyrics(File(song.data), song)
+            )
+            currentLyrics = _lyricsList.value.getAvailableLyrics()
         }
     }
 

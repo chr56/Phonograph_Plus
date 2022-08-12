@@ -20,6 +20,8 @@ import com.github.chr56.android.menu_dsl.attach
 import com.h6ah4i.android.widget.advrecyclerview.draggable.RecyclerViewDragDropManager
 import com.h6ah4i.android.widget.advrecyclerview.utils.WrapperAdapterUtils
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
 import player.phonograph.R
 import player.phonograph.actions.injectPlayerToolbar
 import player.phonograph.adapter.display.PlayingQueueAdapter
@@ -107,7 +109,7 @@ abstract class AbsPlayerFragment :
         initToolbar()
         setUpControllerFragment()
         setUpCoverFragment()
-        viewModel.onLyricsReadyCallback = this::notifyLyricsUpdated
+        addLyricsObserver()
     }
 
     private fun initRecyclerView() {
@@ -131,7 +133,7 @@ abstract class AbsPlayerFragment :
         viewModel.favoriteAnimateCallback = null
         viewModel.favoriteMenuItem = null
         viewModel.lyricsMenuItem = null
-        viewModel.onLyricsReadyCallback = null
+        removeLyricsObserver()
         super.onDestroyView()
         _recyclerViewDragDropManager?.let {
             recyclerViewDragDropManager.release()
@@ -182,16 +184,23 @@ abstract class AbsPlayerFragment :
         return false
     }
 
-    protected fun notifyLyricsUpdated(lyrics: AbsLyrics?) {
-        viewModel.backgroundCoroutine.launch(Dispatchers.Main + viewModel.exceptionHandler) {
-            if (lyrics != null && lyrics is LrcLyrics) {
-                playerAlbumCoverFragment.setLyrics(lyrics)
-            } else {
-                playerAlbumCoverFragment.clearLyrics()
+    private fun addLyricsObserver() {
+        viewModel.backgroundCoroutine.launch {
+            viewModel.lyricsList.collectLatest {
+                val lyrics = viewModel.currentLyrics
+                viewModel.backgroundCoroutine.launch(Dispatchers.Main + viewModel.exceptionHandler) {
+                    if (lyrics != null && lyrics is LrcLyrics) {
+                        playerAlbumCoverFragment.setLyrics(lyrics)
+                    } else {
+                        playerAlbumCoverFragment.clearLyrics()
+                    }
+                    viewModel.lyricsMenuItem?.isVisible =
+                        (viewModel.currentLyrics != null)
+                }
             }
-            viewModel.lyricsMenuItem?.isVisible =
-                (viewModel.currentLyrics != null)
         }
+    }
+    private fun removeLyricsObserver() {
     }
 
     //
@@ -250,8 +259,8 @@ abstract class AbsPlayerFragment :
                 visible = false
                 itemId = R.id.action_show_lyrics
                 onClick {
-                    val lyricsPack = viewModel.lyricsList
-                    if (lyricsPack != null) {
+                    val lyricsPack = viewModel.lyricsList.value
+                    if (!lyricsPack.isEmpty()) {
                         LyricsDialog.create(
                             lyricsPack,
                             viewModel.currentSong,
