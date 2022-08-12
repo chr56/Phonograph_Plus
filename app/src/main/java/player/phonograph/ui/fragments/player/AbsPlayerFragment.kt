@@ -19,8 +19,10 @@ import com.github.chr56.android.menu_dsl.add
 import com.github.chr56.android.menu_dsl.attach
 import com.h6ah4i.android.widget.advrecyclerview.draggable.RecyclerViewDragDropManager
 import com.h6ah4i.android.widget.advrecyclerview.utils.WrapperAdapterUtils
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import player.phonograph.R
 import player.phonograph.actions.injectPlayerToolbar
 import player.phonograph.adapter.display.PlayingQueueAdapter
@@ -36,6 +38,7 @@ import player.phonograph.model.lyrics.LrcLyrics
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.ui.fragments.AbsMusicServiceFragment
 import player.phonograph.ui.fragments.player.PlayerAlbumCoverFragment.Companion.VISIBILITY_ANIM_DURATION
+import player.phonograph.util.FavoriteUtil.toggleFavorite
 import player.phonograph.util.ImageUtil.getTintedDrawable
 import player.phonograph.util.NavigationUtil.goToAlbum
 import player.phonograph.util.NavigationUtil.goToArtist
@@ -132,7 +135,6 @@ abstract class AbsPlayerFragment :
     abstract fun setUpCoverFragment()
 
     override fun onDestroyView() {
-        viewModel.favoriteAnimateCallback = null
         favoriteMenuItem = null
         viewModel.lyricsMenuItem = null
         super.onDestroyView()
@@ -211,7 +213,6 @@ abstract class AbsPlayerFragment :
         playerToolbar.setNavigationOnClickListener { requireActivity().onBackPressed() }
         attachSpecialMenuItem(playerToolbar.menu)
         injectPlayerToolbar(playerToolbar.menu, this)
-        viewModel.favoriteAnimateCallback = favoriteAnimateCallback
     }
     abstract fun getImplToolbar(): Toolbar
 
@@ -280,8 +281,9 @@ abstract class AbsPlayerFragment :
                 showAsActionFlag = MenuItem.SHOW_AS_ACTION_ALWAYS
                 itemId = R.id.action_toggle_favorite
                 onClick {
-                    requireContext().run {
-                        viewModel.toggleFavorite(this, viewModel.currentSong)
+                    val result = toggleFavorite(requireContext(), viewModel.currentSong)
+                    if (viewModel.currentSong.id == MusicPlayerRemote.currentSong.id && result) {
+                        playerAlbumCoverFragment.showHeartAnimation()
                         viewModel.updateFavoriteState(viewModel.currentSong)
                     }
                     true
@@ -325,10 +327,6 @@ abstract class AbsPlayerFragment :
                 getReadableDurationString(duration)
             )
         }
-
-    private val favoriteAnimateCallback: (Boolean) -> Unit get() = {
-        if (viewModel.currentSong.id == MusicPlayerRemote.currentSong.id && it) playerAlbumCoverFragment.showHeartAnimation()
-    }
 
     abstract fun onShow()
     abstract fun onHide()

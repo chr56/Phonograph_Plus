@@ -5,25 +5,19 @@
 package player.phonograph.ui.fragments.player
 
 import android.app.Application
-import android.content.Context
-import android.graphics.Color
 import android.view.MenuItem
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModelProvider
-import java.io.File
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import player.phonograph.R
 import player.phonograph.model.Song
 import player.phonograph.model.lyrics.AbsLyrics
 import player.phonograph.model.lyrics.LyricsList
 import player.phonograph.model.lyrics.LyricsLoader
 import player.phonograph.notification.ErrorNotification
-import player.phonograph.util.FavoriteUtil
 import player.phonograph.util.FavoriteUtil.isFavorite
-import player.phonograph.util.ImageUtil.getTintedDrawable
-import util.mddesign.util.ToolbarColorUtil
+import java.io.File
 
 class PlayerFragmentViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -78,12 +72,6 @@ class PlayerFragmentViewModel(application: Application) : AndroidViewModel(appli
             if (song == Song.EMPTY_SONG) return@launch
             _favoriteState.emit(song to isFavorite(context, song))
         }
-    }
-
-    var favoriteAnimateCallback: ((Boolean) -> Unit)? = null
-    fun toggleFavorite(context: Context, song: Song) {
-        val result = FavoriteUtil.toggleFavorite(context, song)
-        favoriteAnimateCallback?.invoke(result)
     }
 
     val exceptionHandler by lazy {
