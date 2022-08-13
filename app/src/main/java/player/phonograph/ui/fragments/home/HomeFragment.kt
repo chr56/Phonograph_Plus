@@ -11,14 +11,15 @@ import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.util.Log
 import android.view.*
+import android.view.MenuItem.SHOW_AS_ACTION_ALWAYS
 import androidx.annotation.DrawableRes
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.graphics.BlendModeColorFilterCompat
 import androidx.core.graphics.BlendModeCompat
 import androidx.viewpager2.widget.ViewPager2
-import com.github.chr56.android.menu_dsl.MenuContext
-import com.github.chr56.android.menu_dsl.MenuItemCfg
-import com.github.chr56.android.menu_dsl.add
+import com.github.chr56.android.menu_extension.add
+import com.github.chr56.android.menu_model.MenuContext
+import com.github.chr56.android.menu_model.MenuItemContext
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
@@ -27,10 +28,10 @@ import lib.phonograph.cab.createToolbarCab
 import player.phonograph.BuildConfig.DEBUG
 import player.phonograph.R
 import player.phonograph.adapter.HomePagerAdapter
-import player.phonograph.model.pages.Pages
-import player.phonograph.model.pages.PageConfig
 import player.phonograph.adapter.base.MultiSelectionCabController
 import player.phonograph.databinding.FragmentHomeBinding
+import player.phonograph.model.pages.PageConfig
+import player.phonograph.model.pages.Pages
 import player.phonograph.notification.ErrorNotification
 import player.phonograph.settings.Setting
 import player.phonograph.ui.activities.MainActivity
@@ -79,7 +80,6 @@ class HomeFragment : AbsMainActivityFragment(), MainActivity.MainActivityFragmen
     }
 
     private fun setupToolbar() {
-
         binding.appbar.setBackgroundColor(primaryColor)
         with(binding.toolbar) {
             setBackgroundColor(primaryColor)
@@ -161,11 +161,11 @@ class HomeFragment : AbsMainActivityFragment(), MainActivity.MainActivityFragmen
     val popup: ListOptionsPopup by lazy { ListOptionsPopup(mainActivity) }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        menu.add(MenuContext(rootMenu = menu, requireContext()), fun MenuItemCfg.() {
+        menu.add(MenuContext(rootMenu = menu, requireContext()), fun MenuItemContext.() {
             itemId = R.id.action_search
-            titleRes(R.string.action_search, mainActivity)
+            titleRes(R.string.action_search)
             icon = mainActivity.getTintedDrawable(R.drawable.ic_search_white_24dp, Color.WHITE)
-            showAsActionFlag = MenuItemCfg.SHOW_AS_ACTION_ALWAYS
+            showAsActionFlag = SHOW_AS_ACTION_ALWAYS
         })
     }
 
@@ -220,10 +220,11 @@ class HomeFragment : AbsMainActivityFragment(), MainActivity.MainActivityFragmen
             }
             Setting.FIXED_TAB_LAYOUT -> {
                 binding.tabs.tabMode =
-                    if (Setting.instance.fixedTabLayout)
+                    if (Setting.instance.fixedTabLayout) {
                         TabLayout.MODE_FIXED
-                    else
+                    } else {
                         TabLayout.MODE_SCROLLABLE
+                    }
             }
         }
     }

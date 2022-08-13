@@ -169,7 +169,7 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
                 groupId = groupIds[1]
                 itemId = R.id.action_theme_toggle
                 icon = getTintedDrawable(R.drawable.ic_theme_switch_white_24dp, textColorPrimary)
-                titleRes(R.string.theme_switch, activity)
+                titleRes(R.string.theme_switch)
                 onClick {
                     Handler(Looper.getMainLooper()).postDelayed({
                         val themeSetting = Setting.instance.generalTheme
@@ -193,7 +193,7 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
                 groupId = groupIds[2]
                 itemId = R.id.action_shuffle_all
                 icon = getTintedDrawable(R.drawable.ic_shuffle_white_24dp, textColorPrimary)
-                titleRes(R.string.action_shuffle_all, activity)
+                titleRes(R.string.action_shuffle_all)
                 onClick {
                     drawerBinding.drawerLayout.closeDrawers()
                     Handler(Looper.getMainLooper()).postDelayed({
@@ -205,7 +205,7 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
                 groupId = groupIds[2]
                 itemId = R.id.action_scan
                 icon = getTintedDrawable(R.drawable.ic_scanner_white_24dp, textColorPrimary)
-                titleRes(R.string.scan_media, activity)
+                titleRes(R.string.scan_media)
                 onClick {
                     drawerBinding.drawerLayout.closeDrawers()
                     Handler(Looper.getMainLooper()).postDelayed({
@@ -218,7 +218,7 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
                 groupId = groupIds[3]
                 itemId = R.id.nav_settings
                 icon = getTintedDrawable(R.drawable.ic_settings_white_24dp, textColorPrimary)
-                titleRes(R.string.action_settings, activity)
+                titleRes(R.string.action_settings)
                 onClick {
                     Handler(Looper.getMainLooper()).postDelayed({
                         startActivity(Intent(activity, SettingsActivity::class.java))
@@ -229,7 +229,7 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
                 groupId = groupIds[3]
                 itemId = R.id.nav_about
                 icon = getTintedDrawable(R.drawable.ic_help_white_24dp, textColorPrimary)
-                titleRes(R.string.action_about, activity)
+                titleRes(R.string.action_about)
                 onClick {
                     Handler(Looper.getMainLooper()).postDelayed({
                         startActivity(Intent(activity, AboutActivity::class.java))
