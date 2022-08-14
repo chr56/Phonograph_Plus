@@ -386,6 +386,10 @@
     <string name="pref_summary_keep_playing_queue_intact">啟用後，Phonograph Plus 將儘可能保持播放列表而不會被意外清空</string>
     <string name="change_now_playing_screen">修改正在播放介面</string>
     <string name="load_images_for_files">載入封面</string>
+    <string name="background_notification_name">後臺消息</string>
+    <string name="sort_order_song_count">歌曲數量</string>
+    <string name="sort_order_album_count">專輯數量</string>
+    <string name="name">名稱</string>
     <plurals name="x_songs">
         <item quantity="other">%1$d 首</item>
     </plurals>
