@@ -9,6 +9,7 @@ on:
       - ".github/workflows/preview_release.yml"
       - ".github/workflows/action_test.yml"
       - ".github/ISSUE_TEMPLATE/**"
+      - "crowdin.yml"
 
 jobs:
   build:
