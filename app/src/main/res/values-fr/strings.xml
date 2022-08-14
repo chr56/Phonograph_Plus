@@ -73,9 +73,9 @@
     <string name="playlist_exists">La playlist %1$s existe déjà.</string>
     <string name="could_not_create_playlist">Impossible de cr\u00e9er la playlist.</string>
     <plurals name="msg_song_deletion_summary">
-        <item quantity="one"><![CDATA[Supprimer la chanson <b>%1$d</b> de l'appareil ?<br/>]]></item>
-        <item quantity="many"><![CDATA[Supprimer les chansons <b>%1$d</b> de l'appareil ?<br/>]]></item>
-        <item quantity="other"><![CDATA[Supprimer les chansons <b>%1$d</b> de l'appareil ?<br/>]]></item>
+        <item quantity="one">Supprimer la chanson <b>%1$d</b> de l\'appareil ?<br/></item>
+        <item quantity="many">Supprimer les chansons <b>%1$d</b> de l\'appareil ?<br/></item>
+        <item quantity="other">Supprimer les chansons <b>%1$d</b> de l\'appareil ?<br/></item>
     </plurals>
     <string name="delete_song_title">Supprimer le titre</string>
     <string name="delete_songs_title">Supprimer les titres</string>
@@ -138,7 +138,7 @@
     <string name="pref_title_remember_last_tab">Se souvenir de la dernière fenêtre</string>
     <string name="pref_title_remember_shuffle">Se souvenir de la lecture aléatoire</string>
     <string name="no_equalizer">Aucun égaliseur trouvé.</string>
-    <string name="no_audio_ID">"Jouez d'abord un titre, puis réessayez."</string>
+    <string name="no_audio_ID">"Jouez d\'abord un titre, puis réessayez."</string>
     <string name="delete_action">Supprimer</string>
     <string name="clear_action">Effacer</string>
     <string name="remove_action">Retirer</string>
