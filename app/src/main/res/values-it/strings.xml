@@ -124,6 +124,7 @@
     <string name="pref_header_now_playing_screen">Schermata di riproduzione</string>
     <string name="pref_title_general_theme">Tema generale</string>
     <string name="pref_header_audio">Audio</string>
+    <string name="pref_header_player_behaviour">Comportamento Giocatore</string>
     <string name="pref_header_library">Libreria</string>
     <string name="pref_header_images">Immagini</string>
     <string name="pref_header_lockscreen">Schermata di blocco</string>
@@ -337,6 +338,7 @@
     <string name="refresh">Aggiorna</string>
     <string name="pref_title_send_lyrics">Trasmetti testi sincronizzati</string>
     <string name="pref_summary_send_lyrics">Trasmetti testi sincronizzati al modulo Xposed \"StatusBar Lyrics\"</string>
+    <string name="pref_title_broadcast_current_player_state">Trasmetti lo stato attuale del giocatore al pubblico</string>
     <string name="pref_title_display_lyrics_time_axis">Visualizza l\'asse temporale dei testi</string>
     <string name="pref_summary_display_lyrics_time_axis">Visualizza l\'ora di inizio dei testi sincronizzati nella finestra di dialogo dei testi.</string>
     <string name="upgrade_notification_name">Aggiorna</string>
