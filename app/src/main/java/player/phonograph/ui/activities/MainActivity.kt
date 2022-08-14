@@ -31,7 +31,7 @@ import player.phonograph.VERSION_INFO
 import player.phonograph.model.pages.Pages
 import player.phonograph.databinding.ActivityMainBinding
 import player.phonograph.databinding.LayoutDrawerBinding
-import player.phonograph.dialogs.ChangelogDialog.Companion.create
+import player.phonograph.dialogs.ChangelogDialog
 import player.phonograph.dialogs.ChangelogDialog.Companion.setChangelogRead
 import player.phonograph.dialogs.ScanMediaFolderDialog
 import player.phonograph.dialogs.UpgradeDialog
@@ -134,7 +134,7 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
             if (!hasPermissions) {
                 requestPermissions()
             }
-            create().show(supportFragmentManager, "CHANGE_LOG_DIALOG")
+            ChangelogDialog.create().show(supportFragmentManager, "CHANGE_LOG_DIALOG")
         }
     }
 
@@ -468,8 +468,10 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
             val pInfo = packageManager.getPackageInfo(packageName, 0)
             val currentVersion = pInfo.versionCode
             if (currentVersion != Setting.instance.lastChangeLogVersion) {
-                create().show(supportFragmentManager, "CHANGE_LOG_DIALOG")
-                JunkCleaner(App.instance).clear(currentVersion, CoroutineScope(Dispatchers.IO))
+                runCatching {
+                    ChangelogDialog.create().show(supportFragmentManager, "CHANGE_LOG_DIALOG")
+                    JunkCleaner(App.instance).clear(currentVersion, CoroutineScope(Dispatchers.IO))
+                }
             }
         } catch (e: PackageManager.NameNotFoundException) {
             ErrorNotification.postErrorNotification(e, "Package Name Can't Be Found!")
