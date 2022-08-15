@@ -22,7 +22,6 @@ import java.io.FileOutputStream
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import player.phonograph.model.Artist
 import player.phonograph.notification.ErrorNotification
 import player.phonograph.util.CoroutineUtil.createDefaultExceptionHandler
 import player.phonograph.util.ImageUtil.resizeBitmap
@@ -38,8 +37,8 @@ class CustomArtistImageStore private constructor(context: Context) {
         private const val SUB_FOLDER_NAME: String = "/custom_artist_images/"
         private const val CUSTOM_ARTIST_IMAGE_PREFS: String = "custom_artist_image"
 
-        private fun sendErrorInfo(targetArtist: Artist) {
-            val msg = "Can not save custom image for ${targetArtist.name}"
+        private fun sendErrorInfo(targetArtistName: String) {
+            val msg = "Can not save custom image for $targetArtistName"
             ErrorNotification.postErrorNotification(msg)
             Log.w("Coil:ArtistImage", msg)
         }
@@ -61,19 +60,18 @@ class CustomArtistImageStore private constructor(context: Context) {
     /**
      * @return the unique file name of a artist
      */
-    fun getArtistFileName(artist: Artist): String {
-        val id = artist.id
-        val name = artist.name.replace(Regex("[^a-zA-Z0-9]"), "_")
-        return "#$id#$name.jpeg"
+    fun getArtistFileName(artistId: Long, artistName: String): String {
+        val artistNameSafe = artistName.replace(Regex("[^a-zA-Z0-9]"), "_")
+        return "#$artistId#$artistNameSafe.jpeg"
     }
 
     /**
      * @return the custom ArtistImage file, null if not set
      */
-    fun getCustomArtistImageFile(artist: Artist): File? {
-        val exist = preferences.getBoolean(getArtistFileName(artist), false)
+    fun getCustomArtistImageFile(artistId: Long, artistName: String): File? {
+        val exist = preferences.getBoolean(getArtistFileName(artistId, artistName), false)
         return if (exist) {
-            File(storeDir, getArtistFileName(artist))
+            File(storeDir, getArtistFileName(artistId, artistName))
         } else {
             null
         }
@@ -82,24 +80,25 @@ class CustomArtistImageStore private constructor(context: Context) {
     /**
      * set a custom artist image
      */
-    fun setCustomArtistImage(context: Context, artist: Artist, source: Uri) {
+    fun setCustomArtistImage(context: Context, artistId: Long, artistName: String, source: Uri) {
         Coil.imageLoader(context).enqueue(
             ImageRequest
                 .Builder(context)
                 .data(source)
                 .target(
                     object : Target {
-                        private val targetArtist = artist
+                        private val id = artistId
+                        private val name = artistName
 
                         override fun onError(error: Drawable?) {
-                            sendErrorInfo(targetArtist)
+                            sendErrorInfo(name)
                         }
                         override fun onSuccess(result: Drawable) {
                             val bitmap = result.toBitmapOrNull()
                             if (bitmap != null) {
-                                setCustomArtistImage(context, targetArtist, bitmap)
+                                setCustomArtistImage(context, id, name, bitmap)
                             } else {
-                                sendErrorInfo(targetArtist)
+                                sendErrorInfo(name)
                             }
                         }
                     }
@@ -111,10 +110,10 @@ class CustomArtistImageStore private constructor(context: Context) {
     /**
      * set a custom artist image
      */
-    fun setCustomArtistImage(context: Context, artist: Artist, bitmap: Bitmap) {
-        CoroutineScope(createDefaultExceptionHandler(TAG, "Fail to save $artist image"))
+    fun setCustomArtistImage(context: Context, artistId: Long, artistName: String, bitmap: Bitmap) {
+        CoroutineScope(createDefaultExceptionHandler(TAG, "Fail to save $artistName image"))
             .launch(Dispatchers.IO) {
-                val file = File(storeDir, getArtistFileName(artist))
+                val file = File(storeDir, getArtistFileName(artistId, artistName))
                 val result = runCatching {
                     BufferedOutputStream(FileOutputStream(file)).use { outputStream ->
                         resizeBitmap(bitmap, 2048)
@@ -122,10 +121,10 @@ class CustomArtistImageStore private constructor(context: Context) {
                     }
                 }
                 if (result.isFailure) {
-                    sendErrorInfo(artist)
+                    sendErrorInfo(artistName)
                 } else {
                     preferences.edit()
-                        .putBoolean(getArtistFileName(artist), true)
+                        .putBoolean(getArtistFileName(artistId, artistName), true)
                         .apply()
                     context.contentResolver.notifyChange(EXTERNAL_CONTENT_URI, null)
                 }
@@ -135,13 +134,13 @@ class CustomArtistImageStore private constructor(context: Context) {
     /**
      * remove a custom artist image if exist
      */
-    fun resetCustomArtistImage(context: Context, artist: Artist) {
-        CoroutineScope(createDefaultExceptionHandler(TAG, "Fail to save $artist image"))
+    fun resetCustomArtistImage(context: Context, artistId: Long, artistName: String) {
+        CoroutineScope(createDefaultExceptionHandler(TAG, "Fail to save $artistName image"))
             .launch {
-                preferences.edit().putBoolean(getArtistFileName(artist), false).apply()
+                preferences.edit().putBoolean(getArtistFileName(artistId, artistName), false).apply()
                 context.contentResolver.notifyChange(EXTERNAL_CONTENT_URI, null)
                 // trigger media store changed to force artist image reload
-                File(storeDir, getArtistFileName(artist)).delete()
+                File(storeDir, getArtistFileName(artistId, artistName)).delete()
             }
     }
 }
