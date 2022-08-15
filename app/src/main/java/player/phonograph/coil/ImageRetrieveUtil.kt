@@ -23,6 +23,7 @@ import coil.size.Dimension
 import coil.size.Size
 import java.io.File
 import java.io.InputStream
+import okio.Path.Companion.toOkioPath
 import okio.buffer
 import okio.source
 import org.jaudiotagger.audio.mp3.MP3File
@@ -106,6 +107,17 @@ fun readFromMediaStore(uri: Uri, context: Context, size: Size): SourceResult? {
         mimeType = contentResolver.getType(uri),
         dataSource = DataSource.DISK
     ) else null
+}
+
+internal fun readJEPGFile(file: File, diskCacheKey: String? = null): SourceResult {
+    return SourceResult(
+        source = ImageSource(
+            file = file.toOkioPath(true),
+            diskCacheKey = diskCacheKey
+        ),
+        mimeType = "image/jpeg",
+        dataSource = DataSource.DISK
+    )
 }
 
 fun ByteArray.toBitmap(): Bitmap = BitmapFactory.decodeByteArray(this, 0, this.size)

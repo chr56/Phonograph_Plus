@@ -17,7 +17,7 @@ import coil.fetch.Fetcher
 import coil.request.Options
 import coil.size.Size
 import player.phonograph.BuildConfig
-import player.phonograph.coil.IgnoreMediaStorePreference
+import player.phonograph.coil.*
 import player.phonograph.coil.readFromMediaStore
 import player.phonograph.coil.retrieveFromJAudioTagger
 import player.phonograph.coil.retrieveFromMediaMetadataRetriever
@@ -33,6 +33,13 @@ class ArtistImageFetcher(val data: ArtistImage, val context: Context, val size: 
     override suspend fun fetch(): FetchResult? {
         // returning bitmap
         var bitmap: Bitmap? = null
+
+        // first check if the custom artist image exist
+        val file = CustomArtistImageStore.instance(context)
+            .getCustomArtistImageFile(data.artistId, data.artistName)
+        if (file != null) {
+            return readJEPGFile(file, "#${data.artistId}#${data.artistName}")
+        }
 
         // then choose an AlbumCover as ArtistImage
 
