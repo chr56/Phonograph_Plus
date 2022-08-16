@@ -21,23 +21,17 @@
     <string name="action_add_to_playlist">Toevoegen aan afspeellijst…</string>
     <string name="action_tag_editor">Tag bewerker</string>
     <string name="action_delete_from_device">Verwijderen van apparaat</string>
-    <string name="action_details">Details</string>
     <string name="action_scan">Scannen</string>
     <string name="action_set_as_start_directory">Instellen als startmap</string>
-    <string name="albums">Albums</string>
     <string name="artists">Artiesten</string>
-    <string name="genres">Genres</string>
     <string name="songs">Nummers</string>
     <string name="playlists">Afspeellijsten</string>
     <string name="unplayable_file">Kan dit nummer niet afspelen.</string>
     <string name="biography_unavailable">Kan geen biografie vinden voor deze artiest.</string>
     <string name="wiki_unavailable">Kan geen wiki-entry vinden voor dit album.</string>
     <string name="biography">Biografie</string>
-    <string name="wiki">Wiki</string>
     <string name="audio_focus_denied">Audiofocus geweigerd.</string>
-    <string name="album">Album</string>
     <string name="artist">Artiest</string>
-    <string name="genre">Genre</string>
     <string name="album_artist">Album artiest</string>
     <string name="year">Jaar</string>
     <string name="track">Track-nummer</string>
@@ -45,13 +39,11 @@
     <string name="lyrics">Songteksten</string>
     <string name="album_or_artist_empty">De titel of artiest is leeg.</string>
     <string name="saving_changes">Wijzigingen opslaan</string>
-    <string name="label_details">Details</string>
     <string name="label_file_name">Bestandsnaam</string>
     <string name="label_file_path">Bestandspad</string>
     <string name="label_file_size">Grootte</string>
     <string name="label_file_format">Type</string>
     <string name="label_track_length">Lengte</string>
-    <string name="label_bit_rate">Bitrate</string>
     <string name="label_sampling_rate">Samplerate</string>
     <string name="action_go_to_artist">Ga naar artiest</string>
     <string name="action_go_to_album">Ga naar album</string>
@@ -102,7 +94,6 @@
     <string name="light_theme_name">Licht</string>
     <string name="dark_theme_name">Donker</string>
     <string name="black_theme_name">Zwart (AMOLED)</string>
-    <string name="auto_theme_name">Auto</string>
     <string name="always">Altijd</string>
     <string name="only_on_wifi">Alleen over wifi</string>
     <string name="never">Nooit</string>
@@ -114,11 +105,9 @@
     <string name="this_week">Deze week</string>
     <string name="this_month">Deze maand</string>
     <string name="this_year">Dit jaar</string>
-    <string name="equalizer">Equalizer</string>
     <string name="pref_header_colors">Kleuren</string>
     <string name="pref_header_now_playing_screen">Afspeelscherm</string>
     <string name="pref_title_general_theme">Algemeen thema</string>
-    <string name="pref_header_audio">Audio</string>
     <string name="pref_header_library">Bibliotheek</string>
     <string name="pref_header_images">Illustraties</string>
     <string name="pref_header_lockscreen">Vergrendelscherm</string>
@@ -208,7 +197,6 @@
     <string name="michael_cook_summary">Voor het mooie material app icoon.</string>
     <string name="maarten_corpel_summary">Voor het maken van de Play Store illustratie en de lege album hoes.</string>
     <string name="aleksandar_tesic_summary">Voor de hulp met het design.</string>
-    <string name="website">Website</string>
     <string name="up_next">Als volgende</string>
     <string name="pref_title_now_playing_screen_appearance">Uiterlijk</string>
     <string name="intro_label">Introductie</string>
@@ -252,7 +240,6 @@
     <string name="copied_device_info_to_clipboard">Apparaat info gekopieerd naar klembord.</string>
     <string name="your_account_data_is_only_used_for_authentication">Je accountgegevens worden alleen gebruikt voor authenticatie.</string>
     <string name="you_will_be_forwarded_to_the_issue_tracker_website">Je wordt doorverwezen naar de probleem bijhoud website.</string>
-    <string name="app_shortcut_shuffle_all_short">Shuffle</string>
     <string name="app_shortcut_top_tracks_short">Top nummers</string>
     <string name="app_shortcut_last_added_short">Laatst toegevoegd</string>
     <string name="playlist_is_empty">Afspeellijst is leeg</string>
@@ -278,7 +265,6 @@
     <string name="sort_order_a_z">Oplopend</string>
     <string name="sort_order_z_a">Aflopend</string>
     <string name="sort_order_artist">Artiest</string>
-    <string name="sort_order_album">Album</string>
     <string name="sort_order_year">Jaar</string>
     <string name="sort_order_date_added">Datum toegevoegd</string>
     <string name="finish_current_music_sleep_timer">Eindig het laatste nummer</string>
@@ -290,7 +276,6 @@
     <string name="Permission_denied">Rechten geweigerd!</string>
     <string name="err_permission_storage">Opslagrechten</string>
     <string name="add_blacklist">Wil je dit aan de zwarte lijst toevoegen?</string>
-    <string name="minutes_short">%1$d min</string>
     <!-- use for tag -->
     <string name="other_information">Overige</string>
     <string name="more_actions">Meer</string>
@@ -300,7 +285,6 @@
     <string name="failed">mislukt!</string>
     <string name="clear_all_preference">alle applicatie-instellingen wissen</string>
     <string name="clear_all_preference_msg"><b>Waarschuwing</b>: dit zal <b>ALLE</b> app voorkeuren/instellingen wissen! \n\nDit kan erg handig zijn als de applicatie crasht bij het starten. \nWeet je het zeker?</string>
-    <string name="databases">Databases</string>
     <plurals name="msg_deletion_result">
         <item quantity="one">%1$d / %2$d item succesvol verwijderd.</item>
         <item quantity="other">%1$d / %2$d items werden met succes verwijderd.</item>
