@@ -191,45 +191,6 @@ object MusicPlayerRemote {
             playQueue(queue, startPosition, startPlaying, shuffleMode)
         }
 
-    fun openQueue(queue: List<Song>, startPosition: Int, startPlaying: Boolean) {
-        if (!tryToHandleOpenPlayingQueue(queue, startPosition, startPlaying)) {
-            musicService?.openQueue(
-                playingQueue = queue,
-                startPosition = startPosition,
-                startPlaying = startPlaying,
-                shuffleMode = if (!Setting.instance.rememberShuffle) ShuffleMode.NONE else null,
-                async = false
-            )
-        }
-    }
-
-    fun openAndShuffleQueue(queue: List<Song>, startPlaying: Boolean) {
-        var startPosition = 0
-        if (queue.isNotEmpty()) {
-            startPosition = Random().nextInt(queue.size)
-        }
-        if (!tryToHandleOpenPlayingQueue(queue, startPosition, startPlaying) && musicService != null) {
-            openQueue(queue, startPosition, startPlaying)
-            setShuffleMode(ShuffleMode.SHUFFLE)
-        }
-    }
-
-    private fun tryToHandleOpenPlayingQueue(
-        queue: List<Song>,
-        startPosition: Int,
-        startPlaying: Boolean
-    ): Boolean {
-        if (playingQueue === queue) {
-            if (startPlaying) {
-                playSongAt(startPosition)
-            } else {
-                position = startPosition
-            }
-            return true
-        }
-        return false
-    }
-
     val currentSong: Song get() = queueManager.currentSong
     val previousSong: Song get() = queueManager.previousSong
     val nextSong: Song get() = queueManager.nextSong

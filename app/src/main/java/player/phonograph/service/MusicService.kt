@@ -225,20 +225,6 @@ class MusicService : Service(), OnSharedPreferenceChangeListener {
         )
     }
 
-    fun openQueue(
-        playingQueue: List<Song>,
-        startPosition: Int,
-        startPlaying: Boolean,
-        shuffleMode: ShuffleMode? = null,
-        async: Boolean = false
-    ) {
-        if (playingQueue.isNotEmpty() && startPosition in playingQueue.indices) {
-            queueManager.swapQueue(playingQueue, startPosition, async)
-            shuffleMode?.let { queueManager.switchShuffleMode(it,false) }
-            if (startPlaying) playSongAt(queueManager.currentSongPosition)
-        }
-    }
-
     fun playSongAt(position: Int) = controller.playAt(position)
     fun pause() = controller.pause()
     fun play() = controller.play()
@@ -441,22 +427,23 @@ class MusicService : Service(), OnSharedPreferenceChangeListener {
         }
 
         fun parsePlaylistAndPlay(intent: Intent, service: MusicService) {
-            val playlist: Playlist? = intent.getParcelableExtra(
-                INTENT_EXTRA_PLAYLIST
-            )
-            val playlistSongs = playlist?.getSongs(service)
-            val shuffleMode = ShuffleMode.deserialize(
-                intent.getIntExtra(INTENT_EXTRA_SHUFFLE_MODE, SHUFFLE_MODE_NONE)
-            )
-            if (playlistSongs.isNullOrEmpty()) {
+            val playlist: Playlist? =
+                intent.getParcelableExtra(INTENT_EXTRA_PLAYLIST)
+            val songs =
+                playlist?.getSongs(service)
+            val shuffleMode =
+                intent.getIntExtra(INTENT_EXTRA_SHUFFLE_MODE, Int.MAX_VALUE).let {
+                    if (it == Int.MAX_VALUE) null else ShuffleMode.deserialize(it)
+                }
+            if (songs.isNullOrEmpty()) {
                 Toast.makeText(service, R.string.playlist_is_empty, Toast.LENGTH_LONG).show()
             } else {
-                val queueManager = App.instance.queueManager
-                queueManager.switchShuffleMode(shuffleMode)
-                // TODO: keep the queue intact
-                val queue =
-                    if (shuffleMode == ShuffleMode.SHUFFLE) playlistSongs.toMutableList().apply { shuffle() } else playlistSongs
-                service.openQueue(queue, 0, startPlaying = true, async = false)
+                MusicPlayerRemote.playQueueCautiously(
+                    queue = songs,
+                    startPosition = 0,
+                    startPlaying = true,
+                    shuffleMode = shuffleMode
+                )
             }
         }
     }
