@@ -33,10 +33,7 @@
     <string name="biography_unavailable">Nu a putut fi g\u0103sit\u0103 o \u00eenregistrare biografic\u0103 pentru acest artist.</string>
     <string name="wiki_unavailable">Nu s-a putut g\u0103si o \u00eenregistrare wiki pentru acest album.</string>
     <string name="biography">Biografie</string>
-    <string name="wiki">Wiki</string>
     <string name="audio_focus_denied">Focus audio respins.</string>
-    <string name="album">Album</string>
-    <string name="artist">Artist</string>
     <string name="genre">Gen</string>
     <string name="album_artist">Artistul albumului</string>
     <string name="year">An</string>
@@ -48,9 +45,7 @@
     <string name="label_file_name">Nume fișier</string>
     <string name="label_file_path">Cale fișier</string>
     <string name="label_file_size">Mărime</string>
-    <string name="label_file_format">Format</string>
     <string name="label_track_length">Durată</string>
-    <string name="label_bit_rate">Bitrate</string>
     <string name="label_sampling_rate">Rată de sampling</string>
     <string name="action_go_to_artist">Accesaţi artistul</string>
     <string name="action_go_to_album">Accesaţi albumul</string>
@@ -91,15 +86,14 @@
     <string name="only_on_wifi">Doar cu Wi-Fi</string>
     <string name="never">Niciodată</string>
     <string name="today">Astăzi</string>
+    <string name="past_three_months">Ultimele 3 luni</string>
     <string name="this_week">Săptămâna aceasta</string>
     <string name="this_month">Luna aceasta</string>
-    <string name="past_three_months">Ultimele 3 luni</string>
     <string name="this_year">Anul acesta</string>
     <string name="equalizer">Egalizator</string>
     <string name="pref_header_colors">Culori</string>
     <string name="pref_header_now_playing_screen">Redare acum</string>
     <string name="pref_title_general_theme">Temă generală</string>
-    <string name="pref_header_audio">Audio</string>
     <string name="pref_header_library">Bibliotecă</string>
     <string name="pref_header_images">Imagini</string>
     <string name="pref_header_lockscreen">Ecran blocat</string>
@@ -206,7 +200,6 @@
     <string name="app_widget_big_name">Phonograph - Mare</string>
     <string name="app_widget_classic_name">Phonograph - Clasic</string>
     <string name="app_widget_small_name">Phonograph - Mic</string>
-    <string name="app_widget_card_name">Phonograph - Card</string>
     <string name="report_an_issue">Raportați o problemă</string>
     <string name="bug_report_issue">Problemă</string>
     <string name="login">Logare</string>
@@ -255,7 +248,6 @@
     <string name="action_sort_order">Ordine de sortare</string>
     <string name="sort_order_a_z">crescător</string>
     <string name="sort_order_z_a">descrescător</string>
-    <string name="sort_order_artist">Artist</string>
-    <string name="sort_order_album">Album</string>
     <string name="sort_order_year">An</string>
+    <!-- use for tag -->
 </resources>
