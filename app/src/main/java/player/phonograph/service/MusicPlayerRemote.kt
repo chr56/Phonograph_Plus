@@ -11,12 +11,12 @@ import android.database.Cursor
 import android.net.Uri
 import android.os.Environment
 import android.os.IBinder
-import android.provider.DocumentsContract
 import android.provider.MediaStore.Audio.AudioColumns.DATA
 import android.provider.MediaStore.Audio.AudioColumns._ID
 import android.util.Log
 import android.widget.Toast
 import android.widget.Toast.LENGTH_SHORT
+import androidx.core.provider.DocumentsContractCompat.getDocumentId
 import java.io.File
 import java.util.*
 import player.phonograph.App
@@ -34,7 +34,6 @@ import player.phonograph.settings.Setting
 /**
  * @author Karim Abou Zeid (kabouzeid)
  */
-@Suppress("unused", "MemberVisibilityCanBePrivate")
 object MusicPlayerRemote {
     var musicService: MusicService? = null
         private set
@@ -208,23 +207,20 @@ object MusicPlayerRemote {
     val shuffleMode: ShuffleMode
         get() = queueManager.shuffleMode
 
-    fun cycleRepeatMode(): Boolean {
-        return runCatching {
+    fun cycleRepeatMode(): Boolean =
+        runCatching {
             queueManager.cycleRepeatMode()
         }.isSuccess
-    }
 
-    fun toggleShuffleMode(): Boolean {
-        return runCatching {
+    fun toggleShuffleMode(): Boolean =
+        runCatching {
             queueManager.toggleShuffle()
         }.isSuccess
-    }
 
-    fun setShuffleMode(shuffleMode: ShuffleMode): Boolean {
-        return runCatching {
+    fun setShuffleMode(shuffleMode: ShuffleMode): Boolean =
+        runCatching {
             queueManager.switchShuffleMode(shuffleMode)
         }.isSuccess
-    }
 
     fun playNow(song: Song): Boolean {
         return musicService.tryExecute {
@@ -272,8 +268,7 @@ object MusicPlayerRemote {
                 musicService,
                 it.resources.getString(R.string.added_title_to_playing_queue),
                 LENGTH_SHORT
-            )
-                .show()
+            ).show()
         }
     }
 
@@ -307,8 +302,7 @@ object MusicPlayerRemote {
                 musicService,
                 it.resources.getString(R.string.added_title_to_playing_queue),
                 LENGTH_SHORT
-            )
-                .show()
+            ).show()
         }
     }
 
@@ -344,18 +338,16 @@ object MusicPlayerRemote {
 
     fun moveSong(from: Int, to: Int): Boolean {
         return musicService.tryExecute {
-            if (from in 0..playingQueue.size && to in 0..playingQueue.size) queueManager.moveSong(
-                from,
-                to
-            )
+            if (from in 0..playingQueue.size && to in 0..playingQueue.size) {
+                queueManager.moveSong(from, to)
+            }
         }
     }
 
-    fun clearQueue(): Boolean {
-        return runCatching {
+    fun clearQueue(): Boolean =
+        runCatching {
             queueManager.clearQueue()
         }.isSuccess
-    }
 
     val audioSessionId: Int get() = musicService?.audioSessionId ?: -1
 
@@ -368,12 +360,9 @@ object MusicPlayerRemote {
                 if (uri.scheme == ContentResolver.SCHEME_CONTENT) {
                     val songId =
                         when (uri.authority) {
-                            "com.android.providers.media.documents" -> {
+                            "com.android.providers.media.documents" ->
                                 getSongIdFromMediaProvider(uri)
-                            }
-                            "media" -> {
-                                uri.lastPathSegment
-                            }
+                            "media" -> uri.lastPathSegment
                             else -> null
                         }
                     if (songId != null) {
@@ -392,12 +381,8 @@ object MusicPlayerRemote {
                     } else {
                         val path = getFilePathFromUri(it, uri)
                         when {
-                            path != null -> {
-                                File(path)
-                            }
-                            uri.path != null -> {
-                                File(uri.path!!)
-                            }
+                            path != null -> File(path)
+                            uri.path != null -> File(uri.path!!)
                             else -> null
                         }
                     }
@@ -437,7 +422,6 @@ object MusicPlayerRemote {
         }.also {
             if (it.isFailure && it.exceptionOrNull() != null) {
                 val errMsg = it.exceptionOrNull()?.stackTraceToString().orEmpty()
-                ErrorNotification.init()
                 ErrorNotification.postErrorNotification(it.exceptionOrNull()!!, errMsg)
                 Log.e(TAG, errMsg)
             }
@@ -446,18 +430,19 @@ object MusicPlayerRemote {
         return null
     }
 
-    private fun getSongIdFromMediaProvider(uri: Uri): String = DocumentsContract.getDocumentId(uri).split(
-        ":"
-    )[1]
+    private fun getSongIdFromMediaProvider(uri: Uri): String =
+        getDocumentId(uri)!!.split(":")[1]
 
     val isServiceConnected: Boolean get() = musicService != null
 
     const val TAG = "MusicPlayerRemote"
 
-    private fun MusicService?.tryExecute(p: (obj: MusicService) -> Unit): Boolean {
+    private inline fun MusicService?.tryExecute(p: (obj: MusicService) -> Unit): Boolean {
         return if (this != null) {
             p(this)
             true
-        } else false
+        } else {
+            false
+        }
     }
 }
