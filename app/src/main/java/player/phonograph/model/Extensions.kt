@@ -13,9 +13,7 @@ fun Song.infoString(): String =
     buildInfoString(artistName, albumName)
 
 fun songCountString(context: Context, songCount: Int): String =
-    "$songCount ${if (songCount == 1) context.resources.getString(R.string.song) else context.resources.getString(
-        R.string.songs
-    )}"
+    context.resources.getQuantityString(R.plurals.x_songs, songCount, songCount)
 
 fun Artist.infoString(context: Context): String =
     buildInfoString(
