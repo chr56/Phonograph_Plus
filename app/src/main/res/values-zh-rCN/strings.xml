@@ -292,7 +292,6 @@
     <string name="finish_current_music_sleep_timer">播完最后一首</string>
     <string name="dialog_ringtone_title">设置为铃声</string>
     <string name="dialog_ringtone_message">允许 Phonograph 调整音频设定</string>
-    <string name="cracked_version">那你为什么要用这个版本？</string>
     <string name="perf_title_fixed_tab_layout">固定顶部标签</string>
     <string name="pref_summary_fixed_tab_layout">顶部标签不再能够滑动，并完全平铺</string>
     <string name="night_mode">夜间模式</string>
