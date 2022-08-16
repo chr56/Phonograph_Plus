@@ -22,7 +22,6 @@ fun injectPlayerToolbar(
 ) = playerFragment.requireActivity().run {
     attach(menu) {
         menuItem {
-            order = 2
             title = getString(R.string.action_clear_playing_queue)
             showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
             onClick {
