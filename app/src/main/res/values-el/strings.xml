@@ -21,7 +21,7 @@
     <string name="action_add_to_playlist">Προσθήκη στην λίστα αναπαραγωγής</string>
     <string name="action_tag_editor">Επεξεργασία ετικετών</string>
     <string name="action_delete_from_device">Διαγραφή από την συσκευή</string>
-    <string name="action_details">"Λεπτομέρειες "</string>
+    <string name="action_details">Λεπτομέρειες </string>
     <string name="action_scan">Σάρωση</string>
     <string name="action_set_as_start_directory">Ορισμός ως κατάλογος έναρξης</string>
     <string name="albums">Άλμπουμ</string>
@@ -43,7 +43,7 @@
     <string name="track_hint">"Κομμάτι (2 για κομμάτι 2 ή 3004 από CD3 κομμάτι 4)"</string>
     <string name="lyrics">Στίχοι</string>
     <string name="album_or_artist_empty">Το πεδίο \"Τίτλος\" ή \"Καλλιτέχνης\" είναι άδειο</string>
-    <string name="saving_changes">"Γίνεται αποθήκευση αλλαγών... "</string>
+    <string name="saving_changes">Γίνεται αποθήκευση αλλαγών... </string>
     <string name="label_details">Λεπτομέρειες</string>
     <string name="label_file_name">Όνομα αρχείου</string>
     <string name="label_file_path">Διαδρομή αρχείου</string>
@@ -58,7 +58,7 @@
     <string name="no_results">Κανένα αποτέλεσμα</string>
     <string name="updating">Γίνεται ανανέωση...</string>
     <string name="added_title_to_playing_queue">"Προστέθηκε ένας τίτλος στην ουρά αναπαραγωγής"</string>
-    <string name="added_x_titles_to_playing_queue">"Προστέθηκαν %1$d τίτλοι στην ουρά αναπαραγωγής "</string>
+    <string name="added_x_titles_to_playing_queue">Προστέθηκαν %1$d τίτλοι στην ουρά αναπαραγωγής </string>
     <string name="action_remove_from_playlist">Αφαίρεση από την λίστα</string>
     <string name="action_grid_size">Μέγεθος πλέγματος</string>
     <string name="action_grid_size_land">Μέγεθος πλέγματος</string>
@@ -91,9 +91,9 @@
     <string name="only_on_wifi">Μόνο σε Wi-Fi</string>
     <string name="never">Ποτέ</string>
     <string name="today">Σήμερα</string>
+    <string name="past_three_months">Τους περασμένους 3 μήνες</string>
     <string name="this_week">Αυτή την εβδομάδα</string>
     <string name="this_month">Αυτόν τον μήνα</string>
-    <string name="past_three_months">Τους περασμένους 3 μήνες</string>
     <string name="this_year">Αυτόν τον χρόνο</string>
     <string name="equalizer">Ισοσταθμιστής</string>
     <string name="pref_header_colors">Χρώματα</string>
@@ -207,7 +207,7 @@
     <string name="bug_report_manual">Χειροκίνητη αποστολή</string>
     <string name="username">Όνομα Χρήστη</string>
     <string name="password">Κωδικός Πρόσβασης</string>
-    <string name="bug_report_no_title">"Παρακαλώ εισάγετε έναν τίτλο για το πρόβλημα "</string>
+    <string name="bug_report_no_title">Παρακαλώ εισάγετε έναν τίτλο για το πρόβλημα </string>
     <string name="bug_report_no_description">Παρακαλώ εισάγετε μια περιγραφή του προβλήματος</string>
     <string name="bug_report_no_username">Παρακαλώ εισάγετε έγκυρο όνομα χρήστη GitHub</string>
     <string name="bug_report_no_password">Παρακαλώ εισάγετε έγκυρο κωδικό πρόσβασης GitHub</string>
@@ -224,4 +224,5 @@
     <string name="app_shortcut_top_tracks_short">Κορυφαία Κομμάτια</string>
     <string name="app_shortcut_last_added_short">@string/last_added</string>
     <string name="playlist_is_empty">Η Λίστα αναπαραγωγής είναι κενή</string>
+    <!-- use for tag -->
 </resources>
