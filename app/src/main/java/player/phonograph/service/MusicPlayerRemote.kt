@@ -135,7 +135,7 @@ object MusicPlayerRemote {
     /**
      * Play a queue (synchronized action!)
      * @param queue new queue
-     * @param startPosition position in queue when starting playing (only assuming shuffle mode off)
+     * @param startPosition position in queue when starting playing (available when shuffleMode off)
      * @param startPlaying true if to play now, false if to pause
      * @param shuffleMode new shuffle mode, null if not to intend to change current mode
      * @return success or not
@@ -161,15 +161,18 @@ object MusicPlayerRemote {
             }
             return true
         }
-        // swap queue
-        queueManager.swapQueue(queue, startPosition, false)
+        // parse shuffle mode & position
         val targetShuffleMode =
             if (Setting.instance.rememberShuffle) {
                 ShuffleMode.SHUFFLE
             } else {
-                shuffleMode
+                shuffleMode ?: queueManager.shuffleMode
             }
-        targetShuffleMode?.let { queueManager.switchShuffleMode(it, false) }
+        val targetPosition =
+            if (targetShuffleMode == ShuffleMode.SHUFFLE) Random().nextInt(queue.size) else startPosition
+        // swap queue
+        queueManager.swapQueue(queue, targetPosition, false)
+        shuffleMode?.let { queueManager.switchShuffleMode(targetShuffleMode, false) }
         if (startPlaying) musicService?.playSongAt(queueManager.currentSongPosition)
         else musicService?.pause()
         return true

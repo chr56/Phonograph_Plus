@@ -220,9 +220,8 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity() {
                 return true
             }
             R.id.action_shuffle_album -> {
-                val position = Random().nextInt(adapter.dataset.size)
                 MusicPlayerRemote
-                    .playQueue(adapter.dataset, position, true, ShuffleMode.SHUFFLE)
+                    .playQueue(adapter.dataset, 0, true, ShuffleMode.SHUFFLE)
                 return true
             }
             R.id.action_play_next -> {

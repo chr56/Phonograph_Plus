@@ -200,9 +200,8 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
                     drawerBinding.drawerLayout.closeDrawers()
                     Handler(Looper.getMainLooper()).postDelayed({
                         val songs = getAllSongs(activity)
-                        val position = Random().nextInt(songs.size)
                         MusicPlayerRemote
-                            .playQueue(songs, position, true, ShuffleMode.SHUFFLE)
+                            .playQueue(songs, 0, true, ShuffleMode.SHUFFLE)
                     }, 350)
                 }
             }

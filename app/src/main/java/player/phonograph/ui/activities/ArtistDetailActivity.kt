@@ -291,9 +291,8 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorHolder 
                 return true
             }
             R.id.action_shuffle_artist -> {
-                val position = Random().nextInt(songs.size)
                 MusicPlayerRemote
-                    .playQueue(songs, position, true, ShuffleMode.SHUFFLE)
+                    .playQueue(songs, 0, true, ShuffleMode.SHUFFLE)
                 return true
             }
             R.id.action_play_next -> {
