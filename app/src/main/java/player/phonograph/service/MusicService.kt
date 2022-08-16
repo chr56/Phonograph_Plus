@@ -225,9 +225,16 @@ class MusicService : Service(), OnSharedPreferenceChangeListener {
         )
     }
 
-    fun openQueue(playingQueue: List<Song>?, startPosition: Int, startPlaying: Boolean) {
-        if (playingQueue != null && playingQueue.isNotEmpty() && startPosition >= 0 && startPosition < playingQueue.size) {
-            queueManager.swapQueue(playingQueue, startPosition, true)
+    fun openQueue(
+        playingQueue: List<Song>,
+        startPosition: Int,
+        startPlaying: Boolean,
+        shuffleMode: ShuffleMode? = null,
+        async: Boolean = false
+    ) {
+        if (playingQueue.isNotEmpty() && startPosition in playingQueue.indices) {
+            queueManager.swapQueue(playingQueue, startPosition, async)
+            shuffleMode?.let { queueManager.switchShuffleMode(it,false) }
             if (startPlaying) playSongAt(queueManager.currentSongPosition)
         }
     }
@@ -449,7 +456,7 @@ class MusicService : Service(), OnSharedPreferenceChangeListener {
                 // TODO: keep the queue intact
                 val queue =
                     if (shuffleMode == ShuffleMode.SHUFFLE) playlistSongs.toMutableList().apply { shuffle() } else playlistSongs
-                service.openQueue(queue, 0, true)
+                service.openQueue(queue, 0, startPlaying = true, async = false)
             }
         }
     }

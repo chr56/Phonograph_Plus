@@ -132,16 +132,15 @@ object MusicPlayerRemote {
         musicService?.play()
     }
 
-    /**
-     * Async
-     */
-    @JvmStatic
     fun openQueue(queue: List<Song>, startPosition: Int, startPlaying: Boolean) {
-        if (!tryToHandleOpenPlayingQueue(queue, startPosition, startPlaying) && musicService != null) {
-            musicService!!.openQueue(queue, startPosition, startPlaying)
-            if (!Setting.instance.rememberShuffle) {
-                setShuffleMode(ShuffleMode.NONE)
-            }
+        if (!tryToHandleOpenPlayingQueue(queue, startPosition, startPlaying)) {
+            musicService?.openQueue(
+                playingQueue = queue,
+                startPosition = startPosition,
+                startPlaying = startPlaying,
+                shuffleMode = if (!Setting.instance.rememberShuffle) ShuffleMode.NONE else null,
+                async = false
+            )
         }
     }
 
