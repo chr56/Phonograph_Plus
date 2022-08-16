@@ -9,8 +9,6 @@ import android.net.Uri
 import android.os.Build
 import android.os.PowerManager
 import android.util.Log
-import android.widget.Toast
-import player.phonograph.R
 import player.phonograph.settings.Setting
 
 /**
@@ -273,11 +271,7 @@ class AudioPlayer(private val context: Context) : Playback, MediaPlayer.OnErrorL
         currentMediaPlayer.release()
         currentMediaPlayer = MediaPlayer()
         currentMediaPlayer.setWakeMode(context, PowerManager.PARTIAL_WAKE_LOCK)
-        Toast.makeText(
-            context,
-            context.resources.getString(R.string.unplayable_file),
-            Toast.LENGTH_SHORT
-        ).show()
+        callbacks?.onError(what, extra)
         return false
     }
 

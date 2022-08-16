@@ -23,5 +23,6 @@ interface Playback {
     interface PlaybackCallbacks {
         fun onTrackWentToNext()
         fun onTrackEnded()
+        fun onError(what: Int, extra: Int)
     }
 }

@@ -21,6 +21,7 @@ import player.phonograph.model.Song
 import player.phonograph.model.lyrics.LrcLyrics
 import player.phonograph.notification.ErrorNotification
 import player.phonograph.service.MusicService
+import player.phonograph.service.util.makeErrorMessage
 import player.phonograph.settings.Setting
 import player.phonograph.util.MusicUtil
 
@@ -425,6 +426,13 @@ class PlayerController(internal val service: MusicService) : Playback.PlaybackCa
         }
     }
 
+    override fun onError(what: Int, extra: Int) {
+        val msg = makeErrorMessage(service, what, extra)
+        Handler(Looper.getMainLooper()).post {
+            Toast.makeText(service, msg, Toast.LENGTH_SHORT).show()
+        }
+    }
+
     companion object {
         const val NOT_PAUSED = 0
         const val PAUSE_BY_MANUAL_ACTION = 2
@@ -577,7 +585,8 @@ class PlayerController(internal val service: MusicService) : Playback.PlaybackCa
         private fun broadcastLyrics(): Boolean {
             val controller = controllerRef.get() ?: return false
             if (controller.playerState != PlayerState.PLAYING ||
-                !Setting.instance.broadcastSynchronizedLyrics ){
+                !Setting.instance.broadcastSynchronizedLyrics
+            ) {
                 controller.broadcastStopLyric()
                 return false
             }
