@@ -33,9 +33,7 @@
     <string name="biography_unavailable">Az el\u0151ad\u00f3 \u00e9letrajza nem tal\u00e1lhat\u00f3.</string>
     <string name="wiki_unavailable">Az album wiki oldala nem tal\u00e1lhat\u00f3,</string>
     <string name="biography">Életrajz</string>
-    <string name="wiki">Wiki</string>
     <string name="audio_focus_denied">Audiofókusz megtagadva.</string>
-    <string name="album">Album</string>
     <string name="artist">Előadó</string>
     <string name="genre">Műfaj</string>
     <string name="album_artist">Album előadó</string>
@@ -91,9 +89,9 @@
     <string name="only_on_wifi">Csak WIFI-n keresztül</string>
     <string name="never">Soha</string>
     <string name="today">Ma</string>
+    <string name="past_three_months">Az utóbbi 3 hónapban</string>
     <string name="this_week">Ezen a héten</string>
     <string name="this_month">Ebben a hónapban</string>
-    <string name="past_three_months">Az utóbbi 3 hónapban</string>
     <string name="this_year">Ebben az évben</string>
     <string name="equalizer">Hangszínszabályzó</string>
     <string name="pref_header_colors">Színek</string>
@@ -256,6 +254,6 @@
     <string name="sort_order_a_z">Növekvő</string>
     <string name="sort_order_z_a">Csökkenő</string>
     <string name="sort_order_artist">Előadó</string>
-    <string name="sort_order_album">Album</string>
     <string name="sort_order_year">Év</string>
+    <!-- use for tag -->
 </resources>
