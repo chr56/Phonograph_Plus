@@ -92,16 +92,15 @@
     <string name="only_on_wifi">Solo en Wi-Fi</string>
     <string name="never">Nunca</string>
     <string name="today">Hoy</string>
-    <string name="this_week">Esta semana</string>
     <string name="past_seven_days">Últimos 7 días</string>
-    <string name="this_month">Este mes</string>
     <string name="past_three_months">Últimos 3 meses</string>
+    <string name="this_week">Esta semana</string>
+    <string name="this_month">Este mes</string>
     <string name="this_year">Este año</string>
     <string name="equalizer">Ecualizador</string>
     <string name="pref_header_colors">Colores</string>
     <string name="pref_header_now_playing_screen">Reproducción actual</string>
     <string name="pref_title_general_theme">Tema general</string>
-    <string name="pref_header_audio">Audio</string>
     <string name="pref_header_library">Biblioteca</string>
     <string name="pref_header_images">Imágenes</string>
     <string name="pref_header_lockscreen">Pantalla de bloqueo</string>
@@ -210,7 +209,6 @@
     <string name="app_widget_big_name">Phonograph - Grande</string>
     <string name="app_widget_classic_name">Phonograph - Clásico</string>
     <string name="app_widget_small_name">Phonograph - Pequeño</string>
-    <string name="app_widget_card_name">Phonograph - Card</string>
     <string name="report_an_issue">Notifique un problema</string>
     <string name="bug_report_issue">Problema</string>
     <string name="login">Registrarse</string>
@@ -248,8 +246,7 @@
     <string name="do_you_want_to_remove_from_the_blacklist"><![CDATA[¿Quieres remover <b>%1$s</b> de la lista negra?]]></string>
     <string name="clear_blacklist">Vaciar lista negra</string>
     <string name="do_you_want_to_clear_the_blacklist">¿Quieres eliminar la lista negra?</string>
-    <string name="pref_summary_blacklist">"
-El contenido de las carpetas de la lista negra está oculto en tu biblioteca"</string>
+    <string name="pref_summary_blacklist">El contenido de las carpetas de la lista negra está oculto en tu biblioteca</string>
     <string name="reset_artist_image">Resetear la imagen del artista</string>
     <string name="set_artist_image">Establecer la imagen del artista</string>
     <string name="library_categories">Categorías de la biblioteca</string>
@@ -264,4 +261,5 @@ El contenido de las carpetas de la lista negra está oculto en tu biblioteca"</s
     <string name="sort_order_album">Álbum</string>
     <string name="sort_order_year">Año</string>
     <string name="finish_current_music_sleep_timer">Terminar la última canción</string>
+    <!-- use for tag -->
 </resources>
