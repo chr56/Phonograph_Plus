@@ -6,7 +6,7 @@
     android:layout_height="match_parent">
 
     <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/inner_app_bar"
+        android:id="@+id/banner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -16,34 +16,23 @@
             app:layout_scrollFlags="scroll|enterAlways">
 
             <TextView
-                android:id="@+id/text_page_header"
+                android:id="@+id/banner_text"
                 style="@style/TextAppearance.AppCompat.Button"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginStart="16dp"
                 android:gravity="start|center_vertical"
-                app:layout_constraintEnd_toStartOf="@id/barrier"
+                app:layout_constraintEnd_toStartOf="@id/banner_button"
                 app:layout_constraintStart_toStartOf="parent" />
 
-
-            <androidx.constraintlayout.widget.Barrier
-                android:id="@id/barrier"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:barrierDirection="right"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/button_page_header"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:layout_editor_absoluteX="459dp" />
-
             <ImageButton
-                android:id="@+id/button_page_header"
+                android:id="@+id/banner_button"
                 android:layout_width="48dp"
                 android:layout_height="match_parent"
-                android:layout_marginEnd="4dp"
+                android:layout_marginEnd="8dp"
                 android:background="@android:color/transparent"
-                app:layout_constraintEnd_toEndOf="parent"
-                tools:ignore="SpeakableTextPresentCheck" />
+                android:contentDescription="@string/action_settings"
+                app:layout_constraintEnd_toEndOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -56,13 +45,13 @@
 
         <TextView
             android:id="@android:id/empty"
+            style="@style/TextAppearance.AppCompat.Title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:fontFamily="sans-serif-light"
             android:text="@string/empty"
-            android:textColor="?android:textColorSecondary"
-            android:textSize="@dimen/empty_text_size" />
+            android:textColor="?android:textColorSecondary" />
 
         <com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView
             android:id="@+id/recycler_view"
@@ -84,6 +73,7 @@
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="64dp"
         android:clickable="true"
+        android:contentDescription="@string/add_action"
         android:focusable="true"
         android:visibility="gone"
         app:srcCompat="@drawable/ic_add_white_24dp" />

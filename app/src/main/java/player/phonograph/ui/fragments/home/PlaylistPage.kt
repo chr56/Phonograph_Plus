@@ -56,7 +56,7 @@ class PlaylistPage : AbsPage() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.innerAppBar.visibility = View.GONE
+        binding.banner.visibility = View.GONE
 
         layoutManager = LinearLayoutManager(requireActivity())
 

@@ -11,9 +11,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.StringRes
-import androidx.appcompat.content.res.AppCompatResources
-import androidx.core.graphics.BlendModeColorFilterCompat
-import androidx.core.graphics.BlendModeCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.AppBarLayout
@@ -25,6 +22,7 @@ import player.phonograph.R
 import player.phonograph.adapter.display.DisplayAdapter
 import player.phonograph.databinding.FragmentDisplayPageBinding
 import player.phonograph.model.Displayable
+import player.phonograph.util.ImageUtil.getTintedDrawable
 import player.phonograph.util.Util
 import player.phonograph.util.ViewUtil.setUpFastScrollRecyclerViewColor
 import player.phonograph.views.StatusBarView
@@ -74,7 +72,7 @@ sealed class AbsDisplayPage<IT, A : DisplayAdapter<out Displayable>, LM : GridLa
         AppBarLayout.OnOffsetChangedListener { _, verticalOffset ->
             binding.container.setPadding(
                 binding.container.paddingLeft,
-                binding.innerAppBar.totalScrollRange + verticalOffset,
+                binding.banner.totalScrollRange + verticalOffset,
                 binding.container.paddingRight,
                 binding.container.paddingBottom
 
@@ -128,24 +126,21 @@ sealed class AbsDisplayPage<IT, A : DisplayAdapter<out Displayable>, LM : GridLa
 
     private fun initAppBar() {
 
-        binding.innerAppBar.setExpanded(false)
-        binding.innerAppBar.addOnOffsetChangedListener(innerAppbarOffsetListener)
-        val actionDrawable = AppCompatResources.getDrawable(
-            hostFragment.mainActivity,
-            R.drawable.ic_sort_variant_white_24dp
-        )
-        actionDrawable?.colorFilter = BlendModeColorFilterCompat
-            .createBlendModeColorFilterCompat(
-                binding.textPageHeader.currentTextColor,
-                BlendModeCompat.SRC_IN
+        binding.banner.setExpanded(false)
+        binding.banner.addOnOffsetChangedListener(innerAppbarOffsetListener)
+        binding.bannerButton.setImageDrawable(
+            hostFragment.mainActivity.getTintedDrawable(
+                R.drawable.ic_sort_variant_white_24dp,
+                binding.bannerText.currentTextColor,
             )
-        binding.buttonPageHeader.setImageDrawable(actionDrawable)
-        binding.buttonPageHeader.setOnClickListener {
+        )
+        binding.bannerButton.setOnClickListener {
             hostFragment.popup.onShow = ::configPopup
             hostFragment.popup.onDismiss = ::dismissPopup
             hostFragment.popup.showAtLocation(
                 binding.root, Gravity.TOP or Gravity.END, 0,
-                (hostFragment.mainActivity.findViewById<StatusBarView>(R.id.status_bar)?.height ?: 8) + hostFragment.totalHeaderHeight + binding.innerAppBar.height
+//                (hostFragment.mainActivity.findViewById<StatusBarView>(R.id.status_bar)?.height ?: 8)
+                        8 + hostFragment.totalHeaderHeight + binding.banner.height
             )
         }
 
@@ -224,7 +219,7 @@ sealed class AbsDisplayPage<IT, A : DisplayAdapter<out Displayable>, LM : GridLa
     }
 
     protected fun updateHeaderText() {
-        binding.textPageHeader.text = getHeaderText()
+        binding.bannerText.text = getHeaderText()
     }
 
     protected abstract fun getHeaderText(): CharSequence
@@ -238,7 +233,7 @@ sealed class AbsDisplayPage<IT, A : DisplayAdapter<out Displayable>, LM : GridLa
         super.onDestroyView()
         adapter.unregisterAdapterDataObserver(adapterDataObserver)
 
-        binding.innerAppBar.addOnOffsetChangedListener(innerAppbarOffsetListener)
+        binding.banner.addOnOffsetChangedListener(innerAppbarOffsetListener)
         hostFragment.removeOnAppBarOffsetChangedListener(outerAppbarOffsetListener)
         _viewBinding = null
     }
