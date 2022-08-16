@@ -391,6 +391,6 @@
     <string name="sort_order_album_count">專輯數量</string>
     <string name="name">名稱</string>
     <plurals name="x_songs">
-        <item quantity="other">%1$d 首</item>
+        <item quantity="other">%1$d 歌曲</item>
     </plurals>
 </resources>
