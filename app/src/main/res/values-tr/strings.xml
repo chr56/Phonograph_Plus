@@ -33,7 +33,6 @@
     <string name="biography_unavailable">Bu sanat\u00e7\u0131 i\u00e7in bir biyografi giri\u015fi bulunamad\u0131.</string>
     <string name="wiki_unavailable">Bu alb\u00fcm i\u00e7in bir wiki giri\u015fi bulunamad\u0131.</string>
     <string name="biography">Biyografi</string>
-    <string name="wiki">Wiki</string>
     <string name="audio_focus_denied">Ses odağı reddedildi.</string>
     <string name="album">Albüm</string>
     <string name="artist">Sanatçı</string>
@@ -92,10 +91,10 @@
     <string name="only_on_wifi">Yalnızca Wİ-Fİ</string>
     <string name="never">Asla</string>
     <string name="today">Bugün</string>
-    <string name="this_week">Bu hafta</string>
     <string name="past_seven_days">Son 7 gün</string>
-    <string name="this_month">Bu ay</string>
     <string name="past_three_months">Son 3 ay</string>
+    <string name="this_week">Bu hafta</string>
+    <string name="this_month">Bu ay</string>
     <string name="this_year">Bu yıl</string>
     <string name="equalizer">Ekolayzer</string>
     <string name="pref_header_colors">Renkler</string>
@@ -279,7 +278,6 @@
     <string name="failed_to_delete">Silinemedi</string>
     <string name="retry">Yeniden dene</string>
     <string name="not_available_now">şuan kullanılamıyor</string>
-    <string name="check_upgrade">Check upgrade</string>
     <string name="no_newer_version">Güncelleme yok!</string>
     <string name="new_version">Yeni Sürüm!</string>
     <string name="new_version_code">sürüm</string>
@@ -306,5 +304,4 @@
     <string name="pref_summary_reset_home_pages_tab_config">Tüm kitaplık kategorileri varsayılana sıfırlanır.</string>
     <string name="are_you_sure">Emin misin?</string>
     <string name="original_author">Orijinal Yazar</string>
-
 </resources>
