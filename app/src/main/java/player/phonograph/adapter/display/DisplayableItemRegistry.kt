@@ -33,7 +33,7 @@ import player.phonograph.util.menu.onSongMenuItemClick
  * @param imageView (optional) item's imagine for SceneTransitionAnimation
  * @return true if action have been processed
  */
-fun Displayable.clickHandler(list: List<Displayable>?, activity: Activity?, imageView: ImageView?): Boolean {
+fun Displayable.tapClick(list: List<Displayable>?, activity: Activity?, imageView: ImageView?): Boolean {
     return when (this) {
         is Song -> {
             val contextQueue = list?.filterIsInstance<Song>()

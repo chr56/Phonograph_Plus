@@ -141,7 +141,7 @@ open class DisplayAdapter<I : Displayable>(
             true -> toggleChecked(bindingAdapterPosition)
             false -> {
                 dataset[bindingAdapterPosition]
-                    .clickHandler(list = dataset, activity, imageView)
+                    .tapClick(list = dataset, activity, imageView)
             }
         }
     }
