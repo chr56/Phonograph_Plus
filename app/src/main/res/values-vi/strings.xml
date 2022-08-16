@@ -33,9 +33,7 @@
     <string name="biography_unavailable">Kh\u00f4ng t\u00ecm th\u1ea5y m\u1ee5c nh\u1eadp ti\u1ec3u s\u1eed c\u1ee7a ngh\u1ec7 s\u0129.</string>
     <string name="wiki_unavailable">Kh\u00f4ng t\u00ecm th\u1ea5y m\u1ee5c wiki cho album n\u00e0y.</string>
     <string name="biography">Tiểu sử</string>
-    <string name="wiki">Wiki</string>
     <string name="audio_focus_denied">Âm thanh trọng tâm bị từ chối.</string>
-    <string name="album">Album</string>
     <string name="artist">Nghệ sĩ</string>
     <string name="genre">Thể loại</string>
     <string name="album_artist">Album của nghệ sĩ</string>
@@ -92,10 +90,10 @@
     <string name="only_on_wifi">Chỉ dùng Wi-Fi</string>
     <string name="never">Không bao giờ</string>
     <string name="today">Hôm nay</string>
-    <string name="this_week">Tuần này</string>
     <string name="past_seven_days">7 ngày qua</string>
-    <string name="this_month">Tháng này</string>
     <string name="past_three_months">3 tháng qua</string>
+    <string name="this_week">Tuần này</string>
+    <string name="this_month">Tháng này</string>
     <string name="this_year">Năm nay</string>
     <string name="equalizer">Bộ lọc âm thanh</string>
     <string name="pref_header_colors">Màu sắc</string>
@@ -260,9 +258,9 @@
     <string name="sort_order_a_z">Tăng dần</string>
     <string name="sort_order_z_a">Giảm dần</string>
     <string name="sort_order_artist">Nghệ sĩ</string>
-    <string name="sort_order_album">Album</string>
     <string name="sort_order_year">Năm</string>
     <string name="finish_current_music_sleep_timer">Phát hết bài cuối</string>
     <string name="dialog_ringtone_title">Cài nhạc chuông</string>
     <string name="dialog_ringtone_message">Cho phép Phonograph thay đổi cài đặt âm thanh</string>
+    <!-- use for tag -->
 </resources>
