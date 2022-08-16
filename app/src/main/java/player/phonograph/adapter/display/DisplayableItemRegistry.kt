@@ -15,9 +15,9 @@ import player.phonograph.R
 import player.phonograph.mediastore.AlbumLoader.allSongs
 import player.phonograph.mediastore.ArtistLoader.allArtistSongs
 import player.phonograph.mediastore.GenreLoader.allGenreSongs
-import player.phonograph.model.Displayable
 import player.phonograph.model.Album
 import player.phonograph.model.Artist
+import player.phonograph.model.Displayable
 import player.phonograph.model.Genre
 import player.phonograph.model.Song
 import player.phonograph.service.MusicPlayerRemote
@@ -36,15 +36,11 @@ import player.phonograph.util.menu.onSongMenuItemClick
 fun Displayable.clickHandler(list: List<Displayable>?, activity: Activity?, imageView: ImageView?): Boolean {
     return when (this) {
         is Song -> {
-            val queue = list?.filterIsInstance<Song>()
-            if (queue != null) {
-                if (Setting.instance.keepPlayingQueueIntact) {
-                    MusicPlayerRemote.playNow(queue[queue.indexOf(this)])
-                } else {
-                    MusicPlayerRemote.openQueue(queue, queue.indexOf(this), true)
-                }
+            val contextQueue = list?.filterIsInstance<Song>()
+            if (!Setting.instance.keepPlayingQueueIntact && contextQueue != null) {
+                MusicPlayerRemote.openQueue(contextQueue, contextQueue.indexOf(this), true)
             } else {
-                MusicPlayerRemote.playNext(this)
+                MusicPlayerRemote.playNow(this)
             }
             true
         }
