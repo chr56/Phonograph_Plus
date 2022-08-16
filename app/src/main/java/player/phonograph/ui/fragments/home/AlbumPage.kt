@@ -101,7 +101,8 @@ class AlbumPage : AbsDisplayPage<Album, DisplayAdapter<Album>, GridLayoutManager
     }
 
     override fun getHeaderText(): CharSequence {
-        return "${hostFragment.mainActivity.getString(R.string.albums)}: ${getDataSet().size}"
+        val n = getDataSet().size
+        return hostFragment.mainActivity.resources.getQuantityString(R.plurals.x_albums, n, n)
     }
 
     companion object {
