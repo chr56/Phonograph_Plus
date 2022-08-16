@@ -26,6 +26,7 @@ import player.phonograph.provider.HistoryStore
 import player.phonograph.service.notification.PlayingNotificationManger
 import player.phonograph.service.player.MSG_NOW_PLAYING_CHANGED
 import player.phonograph.service.player.PlayerController
+import player.phonograph.service.player.PlayerController.ControllerHandler.Companion.RE_PREPARE_NEXT_PLAYER
 import player.phonograph.service.player.PlayerState
 import player.phonograph.service.player.PlayerStateObserver
 import player.phonograph.service.queue.*
@@ -93,25 +94,27 @@ class MusicService : Service(), OnSharedPreferenceChangeListener {
     private fun initQueueChangeObserver(): QueueChangeObserver = object : QueueChangeObserver {
         override fun onQueueCursorChanged(newPosition: Int) {
             notifyChange(META_CHANGED)
+            rePrepareNextSong()
         }
 
         override fun onQueueChanged(newPlayingQueue: List<Song>, newOriginalQueue: List<Song>) {
             handleAndSendChangeInternal(QUEUE_CHANGED)
             notifyChange(META_CHANGED)
+            rePrepareNextSong()
         }
 
         override fun onShuffleModeChanged(newMode: ShuffleMode) {
+            rePrepareNextSong()
             handleAndSendChangeInternal(SHUFFLE_MODE_CHANGED)
         }
 
         override fun onRepeatModeChanged(newMode: RepeatMode) {
-            controller.handler.removeMessages(
-                PlayerController.ControllerHandler.RE_PREPARE_NEXT_PLAYER
-            )
-            controller.handler.sendEmptyMessage(
-                PlayerController.ControllerHandler.RE_PREPARE_NEXT_PLAYER
-            )
+            rePrepareNextSong()
             handleAndSendChangeInternal(REPEAT_MODE_CHANGED)
+        }
+        private fun rePrepareNextSong() {
+            controller.handler.removeMessages(RE_PREPARE_NEXT_PLAYER)
+            controller.handler.sendEmptyMessage(RE_PREPARE_NEXT_PLAYER)
         }
     }
 
@@ -221,7 +224,6 @@ class MusicService : Service(), OnSharedPreferenceChangeListener {
         )
     }
 
-
     fun openQueue(playingQueue: List<Song>?, startPosition: Int, startPlaying: Boolean) {
         if (playingQueue != null && playingQueue.isNotEmpty() && startPosition >= 0 && startPosition < playingQueue.size) {
             queueManager.swapQueue(playingQueue, startPosition, true)
@@ -309,10 +311,10 @@ class MusicService : Service(), OnSharedPreferenceChangeListener {
                 // notify controller
                 if (queueManager.playingQueue.isNotEmpty()) {
                     controller.handler.removeMessages(
-                        PlayerController.ControllerHandler.RE_PREPARE_NEXT_PLAYER
+                        RE_PREPARE_NEXT_PLAYER
                     )
                     controller.handler.sendEmptyMessage(
-                        PlayerController.ControllerHandler.RE_PREPARE_NEXT_PLAYER
+                        RE_PREPARE_NEXT_PLAYER
                     )
                 } else {
                     controller.stop()
@@ -356,10 +358,10 @@ class MusicService : Service(), OnSharedPreferenceChangeListener {
             Setting.GAPLESS_PLAYBACK ->
                 if (sharedPreferences.getBoolean(key, false)) {
                     controller.handler.removeMessages(
-                        PlayerController.ControllerHandler.RE_PREPARE_NEXT_PLAYER
+                        RE_PREPARE_NEXT_PLAYER
                     )
                     controller.handler.sendEmptyMessage(
-                        PlayerController.ControllerHandler.RE_PREPARE_NEXT_PLAYER
+                        RE_PREPARE_NEXT_PLAYER
                     )
                 } else {
                     controller.handler.removeMessages(
