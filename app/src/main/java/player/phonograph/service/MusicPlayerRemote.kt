@@ -196,7 +196,7 @@ object MusicPlayerRemote {
     val songDurationMillis: Int
         get() = musicService?.songDurationMillis ?: -1
 
-    fun getQueueDurationMillis(position: Int): Long = queueManager.getAllSongsDuration()
+    fun getQueueDurationMillis(position: Int): Long = queueManager.getRestSongsDuration(position)
 
     fun seekTo(millis: Int): Int {
         return musicService?.seek(millis) ?: -1

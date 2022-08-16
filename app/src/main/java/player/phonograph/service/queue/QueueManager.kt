@@ -489,6 +489,10 @@ class QueueManager(val context: Application) {
     fun getAllSongsDuration(): Long =
         _originalPlayingQueue.fold(0L) { acc, song: Song -> acc + song.duration }
 
+    fun getRestSongsDuration(position: Int): Long =
+        _playingQueue.takeLast(_playingQueue.size - position)
+            .fold(0L) { acc, song -> acc + song.duration }
+
     /**
      * synchronized
      */
