@@ -38,9 +38,10 @@ import player.phonograph.interfaces.PaletteColorHolder
 import player.phonograph.misc.SimpleObservableScrollViewCallbacks
 import player.phonograph.model.*
 import player.phonograph.notification.ErrorNotification
+import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.MusicPlayerRemote.enqueue
-import player.phonograph.service.MusicPlayerRemote.openAndShuffleQueue
 import player.phonograph.service.MusicPlayerRemote.playNext
+import player.phonograph.service.queue.ShuffleMode
 import player.phonograph.settings.Setting
 import player.phonograph.settings.Setting.Companion.isAllowedToDownloadMetadata
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
@@ -290,7 +291,9 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorHolder 
                 return true
             }
             R.id.action_shuffle_artist -> {
-                openAndShuffleQueue(songs, true)
+                val position = Random().nextInt(songs.size)
+                MusicPlayerRemote
+                    .playQueue(songs, position, true, ShuffleMode.SHUFFLE)
                 return true
             }
             R.id.action_play_next -> {

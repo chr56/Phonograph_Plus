@@ -21,7 +21,6 @@ import player.phonograph.model.Displayable
 import player.phonograph.model.Genre
 import player.phonograph.model.Song
 import player.phonograph.service.MusicPlayerRemote
-import player.phonograph.settings.Setting
 import player.phonograph.util.NavigationUtil
 import player.phonograph.util.menu.onMultiSongMenuItemClick
 import player.phonograph.util.menu.onSongMenuItemClick
@@ -37,10 +36,9 @@ fun Displayable.tapClick(list: List<Displayable>?, activity: Activity?, imageVie
     return when (this) {
         is Song -> {
             val contextQueue = list?.filterIsInstance<Song>()
-            if (!Setting.instance.keepPlayingQueueIntact && contextQueue != null) {
-                MusicPlayerRemote.openQueue(contextQueue, contextQueue.indexOf(this), true)
-            } else {
-                MusicPlayerRemote.playNow(this)
+            if (contextQueue != null) {
+                MusicPlayerRemote
+                    .playQueueCautiously(contextQueue, contextQueue.indexOf(this), true, null)
             }
             true
         }

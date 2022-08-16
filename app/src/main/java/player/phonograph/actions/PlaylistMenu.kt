@@ -21,7 +21,7 @@ import player.phonograph.dialogs.RenamePlaylistDialog
 import player.phonograph.misc.SAFCallbackHandlerActivity
 import player.phonograph.model.playlist.*
 import player.phonograph.service.MusicPlayerRemote
-import player.phonograph.settings.Setting
+import player.phonograph.service.queue.ShuffleMode
 import player.phonograph.util.ImageUtil.getTintedDrawable
 import util.phonograph.m3u.PlaylistsManager
 
@@ -213,15 +213,10 @@ fun injectPlaylistAdapter(menu: Menu, context: Context, playlist: Playlist) = co
 }
 
 fun Playlist.play(context: Context): Boolean =
-    if (Setting.instance.keepPlayingQueueIntact) {
-        MusicPlayerRemote.playNow(getSongs(context))
-    } else {
-        MusicPlayerRemote.openQueue(getSongs(context), 0, true)
-        true
-    }
+    MusicPlayerRemote.playQueueCautiously(getSongs(context), 0, true, null)
 
 fun Playlist.shuffleAndPlay(context: Context) =
-    MusicPlayerRemote.openAndShuffleQueue(getSongs(context), true)
+    MusicPlayerRemote.playQueueCautiously(getSongs(context), 0, true, ShuffleMode.SHUFFLE)
 
 fun Playlist.playNext(context: Context): Boolean =
     MusicPlayerRemote.playNext(ArrayList(getSongs(context)))

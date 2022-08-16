@@ -32,9 +32,10 @@ import player.phonograph.glide.SongGlideRequest
 import player.phonograph.glide.palette.BitmapPaletteTarget
 import player.phonograph.glide.palette.BitmapPaletteWrapper
 import player.phonograph.model.*
+import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.MusicPlayerRemote.enqueue
-import player.phonograph.service.MusicPlayerRemote.openAndShuffleQueue
 import player.phonograph.service.MusicPlayerRemote.playNext
+import player.phonograph.service.queue.ShuffleMode
 import player.phonograph.settings.Setting.Companion.isAllowedToDownloadMetadata
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
 import player.phonograph.util.ImageUtil.getTintedDrawable
@@ -48,6 +49,7 @@ import util.mddesign.core.Themer
 import util.mddesign.util.MaterialColorHelper
 import util.phonograph.tageditor.AbsTagEditorActivity
 import util.phonograph.tageditor.AlbumTagEditorActivity
+import java.util.*
 
 /**
  * Be careful when changing things in this Activity!
@@ -218,7 +220,9 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity() {
                 return true
             }
             R.id.action_shuffle_album -> {
-                openAndShuffleQueue(adapter.dataset, true)
+                val position = Random().nextInt(adapter.dataset.size)
+                MusicPlayerRemote
+                    .playQueue(adapter.dataset, position, true, ShuffleMode.SHUFFLE)
                 return true
             }
             R.id.action_play_next -> {

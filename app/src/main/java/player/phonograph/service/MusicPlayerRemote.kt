@@ -132,6 +132,65 @@ object MusicPlayerRemote {
         musicService?.play()
     }
 
+    /**
+     * Play a queue (synchronized action!)
+     * @param queue new queue
+     * @param startPosition position in queue when starting playing (only assuming shuffle mode off)
+     * @param startPlaying true if to play now, false if to pause
+     * @param shuffleMode new shuffle mode, null if not to intend to change current mode
+     * @return success or not
+     */
+    fun playQueue(
+        queue: List<Song>,
+        startPosition: Int,
+        startPlaying: Boolean,
+        shuffleMode: ShuffleMode?
+    ): Boolean {
+        if (queue.isEmpty() || startPosition !in queue.indices) {
+            ErrorNotification.postErrorNotification(
+                "Queue(size:${queue.size}) submitted is empty or start position ($startPosition) is out ranged"
+            )
+            return false
+        }
+        // check whether queue already sits there
+        if (queueManager.playingQueue === queue) {
+            if (startPlaying) {
+                playSongAt(startPosition)
+            } else {
+                queueManager.setSongPosition(startPosition)
+            }
+            return true
+        }
+        // swap queue
+        queueManager.swapQueue(queue, startPosition, false)
+        val targetShuffleMode =
+            if (Setting.instance.rememberShuffle) {
+                ShuffleMode.SHUFFLE
+            } else {
+                shuffleMode
+            }
+        targetShuffleMode?.let { queueManager.switchShuffleMode(it, false) }
+        if (startPlaying) musicService?.playSongAt(queueManager.currentSongPosition)
+        else musicService?.pause()
+        return true
+    }
+
+    /**
+     * check [Setting.keepPlayingQueueIntact] before [playQueue]
+     * @see playQueue
+     */
+    fun playQueueCautiously(
+        queue: List<Song>,
+        startPosition: Int,
+        startPlaying: Boolean,
+        shuffleMode: ShuffleMode?
+    ): Boolean =
+        if (Setting.instance.keepPlayingQueueIntact) {
+            playNow(queue)
+        } else {
+            playQueue(queue, startPosition, startPlaying, shuffleMode)
+        }
+
     fun openQueue(queue: List<Song>, startPosition: Int, startPlaying: Boolean) {
         if (!tryToHandleOpenPlayingQueue(queue, startPosition, startPlaying)) {
             musicService?.openQueue(
@@ -144,10 +203,6 @@ object MusicPlayerRemote {
         }
     }
 
-    /**
-     * Async
-     */
-    @JvmStatic
     fun openAndShuffleQueue(queue: List<Song>, startPlaying: Boolean) {
         var startPosition = 0
         if (queue.isNotEmpty()) {
@@ -224,7 +279,7 @@ object MusicPlayerRemote {
     fun playNow(song: Song): Boolean {
         return musicService.tryExecute {
             if (playingQueue.isEmpty()) {
-                openQueue(listOf(song), 0, false)
+                playQueue(listOf(song), 0, false, null)
             } else {
                 queueManager.addSong(song, position)
                 it.playSongAt(position)
@@ -241,7 +296,7 @@ object MusicPlayerRemote {
     fun playNow(songs: List<Song>): Boolean {
         return musicService.tryExecute {
             if (playingQueue.isEmpty()) {
-                openQueue(songs, 0, false)
+                playQueue(songs, 0, false, null)
                 it.play()
             } else {
                 queueManager.addSongs(songs, position)
@@ -259,7 +314,7 @@ object MusicPlayerRemote {
     fun playNext(song: Song): Boolean {
         return musicService.tryExecute {
             if (playingQueue.isEmpty()) {
-                openQueue(listOf(song), 0, false)
+                playQueue(listOf(song), 0, false, null)
             } else {
                 queueManager.addSong(song, position + 1)
             }
@@ -275,7 +330,7 @@ object MusicPlayerRemote {
     fun playNext(songs: List<Song>): Boolean {
         return musicService.tryExecute {
             if (playingQueue.isEmpty()) {
-                openQueue(songs, 0, false)
+                playQueue(songs, 0, false, null)
             } else {
                 queueManager.addSongs(songs, position + 1)
             }
@@ -292,7 +347,7 @@ object MusicPlayerRemote {
     fun enqueue(song: Song): Boolean {
         return musicService.tryExecute {
             if (playingQueue.isEmpty()) {
-                openQueue(listOf(song), 0, false)
+                playQueue(listOf(song), 0, false, null)
             } else {
                 queueManager.addSong(song)
             }
@@ -309,7 +364,7 @@ object MusicPlayerRemote {
     fun enqueue(songs: List<Song>): Boolean {
         return musicService.tryExecute {
             if (playingQueue.isEmpty()) {
-                openQueue(songs, 0, false)
+                playQueue(songs, 0, false, null)
             } else {
                 queueManager.addSongs(songs)
             }
@@ -391,7 +446,7 @@ object MusicPlayerRemote {
                 }
             }
             if (songs != null && songs.isNotEmpty()) {
-                openQueue(songs, 0, true)
+                playQueue(songs, 0, true, null)
             } else {
                 // TODO the file is not listed in the media store
             }

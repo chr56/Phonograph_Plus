@@ -19,6 +19,7 @@ import com.bumptech.glide.Glide
 import com.github.chr56.android.menu_dsl.attach
 import com.github.chr56.android.menu_dsl.menuItem
 import com.sothree.slidinguppanel.SlidingUpPanelLayout
+import java.util.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import legacy.phonograph.JunkCleaner
@@ -28,7 +29,6 @@ import player.phonograph.R
 import player.phonograph.UPGRADABLE
 import player.phonograph.Updater.checkUpdate
 import player.phonograph.VERSION_INFO
-import player.phonograph.model.pages.Pages
 import player.phonograph.databinding.ActivityMainBinding
 import player.phonograph.databinding.LayoutDrawerBinding
 import player.phonograph.dialogs.ChangelogDialog
@@ -43,8 +43,8 @@ import player.phonograph.mediastore.PlaylistSongLoader
 import player.phonograph.mediastore.SongLoader.getAllSongs
 import player.phonograph.misc.SAFCallbackHandlerActivity
 import player.phonograph.misc.SafLauncher
-import player.phonograph.model.Song
 import player.phonograph.model.infoString
+import player.phonograph.model.pages.Pages
 import player.phonograph.notification.ErrorNotification
 import player.phonograph.notification.UpgradeNotification
 import player.phonograph.service.MusicPlayerRemote
@@ -98,7 +98,9 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
             }
             checkUpdate()
             showChangelog()
-            Setting.instance.registerOnSharedPreferenceChangedListener(sharedPreferenceChangeListener)
+            Setting.instance.registerOnSharedPreferenceChangedListener(
+                sharedPreferenceChangeListener
+            )
         }, 900)
 
         if (DEBUG) {
@@ -197,7 +199,10 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
                 onClick {
                     drawerBinding.drawerLayout.closeDrawers()
                     Handler(Looper.getMainLooper()).postDelayed({
-                        MusicPlayerRemote.openAndShuffleQueue(getAllSongs(activity), true)
+                        val songs = getAllSongs(activity)
+                        val position = Random().nextInt(songs.size)
+                        MusicPlayerRemote
+                            .playQueue(songs, position, true, ShuffleMode.SHUFFLE)
                     }, 350)
                 }
             }
@@ -352,15 +357,7 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
         intent.action?.let {
             if (it == MediaStore.INTENT_ACTION_MEDIA_PLAY_FROM_SEARCH) {
                 val songs = SearchQueryHelper.getSongs(this, intent.extras!!)
-                if (MusicPlayerRemote.shuffleMode == ShuffleMode.SHUFFLE) {
-                    MusicPlayerRemote.openAndShuffleQueue(songs, true)
-                } else {
-                    if (Setting.instance.keepPlayingQueueIntact) {
-                        MusicPlayerRemote.playNow(songs)
-                    } else {
-                        MusicPlayerRemote.openQueue(songs, 0, true)
-                    }
-                }
+                MusicPlayerRemote.playQueueCautiously(songs, 0, true, null)
                 handled = true
             }
         }
@@ -375,13 +372,8 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
                     val id = parseIdFromIntent(intent, "playlistId", "playlist")
                     if (id >= 0) {
                         val position = intent.getIntExtra("position", 0)
-                        val songs: List<Song> =
-                            ArrayList<Song>(PlaylistSongLoader.getPlaylistSongList(this, id))
-                        if (Setting.instance.keepPlayingQueueIntact) {
-                            MusicPlayerRemote.playNow(songs)
-                        } else {
-                            MusicPlayerRemote.openQueue(songs, 0, true)
-                        }
+                        val songs = PlaylistSongLoader.getPlaylistSongList(this, id)
+                        MusicPlayerRemote.playQueueCautiously(songs, position, true, null)
                         handled = true
                     }
                 }
@@ -390,11 +382,7 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
                     if (id >= 0) {
                         val position = intent.getIntExtra("position", 0)
                         val songs = AlbumLoader.getAlbum(this, id).songs
-                        if (Setting.instance.keepPlayingQueueIntact) {
-                            MusicPlayerRemote.playNow(songs)
-                        } else {
-                            MusicPlayerRemote.openQueue(songs, 0, true)
-                        }
+                        MusicPlayerRemote.playQueueCautiously(songs, position, true, null)
                         handled = true
                     }
                 }
@@ -403,12 +391,7 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
                     if (id >= 0) {
                         val position = intent.getIntExtra("position", 0)
                         val songs = ArtistLoader.getArtist(this, id).songs
-                        if (Setting.instance.keepPlayingQueueIntact) {
-                            MusicPlayerRemote.playNow(songs)
-                        } else {
-                            MusicPlayerRemote.openQueue(songs, 0, true)
-                        }
-
+                        MusicPlayerRemote.playQueueCautiously(songs, position, true, null)
                         handled = true
                     }
                 }

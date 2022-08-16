@@ -20,7 +20,7 @@ import player.phonograph.mediastore.GenreLoader
 import player.phonograph.model.Genre
 import player.phonograph.model.Song
 import player.phonograph.service.MusicPlayerRemote
-import player.phonograph.settings.Setting
+import player.phonograph.service.queue.ShuffleMode
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
 import player.phonograph.util.ImageUtil.getTintedDrawable
 import player.phonograph.util.ViewUtil.setUpFastScrollRecyclerViewColor
@@ -109,7 +109,8 @@ class GenreDetailActivity :
                 icon = getTintedDrawable(R.drawable.ic_shuffle_white_24dp, Color.WHITE)
                 showAsActionFlag = MenuItem.SHOW_AS_ACTION_ALWAYS
                 onClick {
-                    MusicPlayerRemote.openAndShuffleQueue(adapter.dataset, true)
+                    MusicPlayerRemote
+                        .playQueueCautiously(adapter.dataset, 0, true, ShuffleMode.SHUFFLE)
                     true
                 }
             }
@@ -119,12 +120,9 @@ class GenreDetailActivity :
                 icon = getTintedDrawable(R.drawable.ic_play_arrow_white_24dp, Color.WHITE)
                 showAsActionFlag = MenuItem.SHOW_AS_ACTION_ALWAYS
                 onClick {
-                    if (Setting.instance.keepPlayingQueueIntact) {
-                        MusicPlayerRemote.playNow(adapter.dataset)
-                    } else {
-                        MusicPlayerRemote.openQueue(adapter.dataset, 0, true)
-                        true
-                    }
+                    MusicPlayerRemote
+                        .playQueueCautiously(adapter.dataset, 0, true, ShuffleMode.NONE)
+                    true
                 }
             }
         }

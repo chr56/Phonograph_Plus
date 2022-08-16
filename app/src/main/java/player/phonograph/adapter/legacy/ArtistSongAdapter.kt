@@ -1,6 +1,9 @@
 package player.phonograph.adapter.legacy
 
-import android.view.*
+import android.view.LayoutInflater
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.ImageView
 import android.widget.TextView
@@ -12,7 +15,6 @@ import player.phonograph.adapter.base.MultiSelectionCabController
 import player.phonograph.glide.SongGlideRequest
 import player.phonograph.model.Song
 import player.phonograph.service.MusicPlayerRemote
-import player.phonograph.settings.Setting
 import player.phonograph.util.NavigationUtil
 import player.phonograph.util.menu.MenuClickListener
 import player.phonograph.util.menu.onMultiSongMenuItemClick
@@ -83,10 +85,8 @@ open class ArtistSongAdapter(
             if (isInQuickSelectMode) {
                 toggleChecked(song)
             } else {
-                if (Setting.instance.keepPlayingQueueIntact)
-                    MusicPlayerRemote.playNow(dataSet)
-                else
-                    MusicPlayerRemote.openQueue(dataSet, position, true)
+                MusicPlayerRemote
+                    .playQueueCautiously(dataSet,position,true,null)
             }
         }
         convertView.setOnLongClickListener {
