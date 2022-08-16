@@ -92,10 +92,10 @@
     <string name="only_on_wifi">فقط على Wi-Fi</string>
     <string name="never">أبداً</string>
     <string name="today">اليوم</string>
-    <string name="this_week">هذا الأسبوع</string>
     <string name="past_seven_days">آخر 7 أيام</string>
-    <string name="this_month">هذا الشهر</string>
     <string name="past_three_months">الأشهر الثلاثة السابقة</string>
+    <string name="this_week">هذا الأسبوع</string>
+    <string name="this_month">هذا الشهر</string>
     <string name="this_year">هذه السنة</string>
     <string name="equalizer">المعادل</string>
     <string name="pref_header_colors">الألوان</string>
@@ -265,4 +265,5 @@
     <string name="finish_current_music_sleep_timer">إكمال آخر أغنية</string>
     <string name="dialog_ringtone_title">تعيين كنغمة الرنين</string>
     <string name="dialog_ringtone_message">السماح لـphonograph بتعديل إعدادات الصوت</string>
+    <!-- use for tag -->
 </resources>
