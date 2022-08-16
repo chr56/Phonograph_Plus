@@ -8,7 +8,6 @@
     <string name="action_settings">"Impostazioni"</string>
     <string name="action_grant">Permetti</string>
     <string name="action_about">Informazioni</string>
-    <string name="action_clear_playlist">Svuota playlist</string>
     <string name="action_add_to_favorites">Aggiungi ai preferiti</string>
     <string name="action_remove_from_favorites">Rimuovi dai preferiti</string>
     <string name="action_search">Cerca</string>
@@ -23,8 +22,6 @@
     <string name="action_tag_editor">Modifica tag</string>
     <string name="action_delete_from_device">Elimina dal dispositivo</string>
     <string name="action_details">Dettagli</string>
-    <string name="action_rename">Rinomina</string>
-    <string name="action_delete">Elimina</string>
     <string name="action_scan">Fai una scansione</string>
     <string name="action_set_as_start_directory">Imposta come directory iniziale</string>
     <string name="albums">Album</string>
@@ -102,8 +99,6 @@
     <string name="action_shuffle_playlist">Riproduzione casuale playlist</string>
     <string name="action_clear_playing_queue">Svuota coda di riproduzione</string>
     <string name="action_save_playing_queue">Salva la coda di riproduzione</string>
-    <string name="action_go_to_start_directory">Vai alla directory iniziale</string>
-    <string name="action_show_lyrics">Mostra testo</string>
     <string name="light_theme_name">Chiaro</string>
     <string name="dark_theme_name">Scuro</string>
     <string name="black_theme_name">Nero (AMOLED)</string>
@@ -209,8 +204,6 @@
     <string name="report_bugs_summary">Segnala bug o richiedi nuove funzionalità.</string>
     <string name="translate">Traduci</string>
     <string name="translate_summary">Aiuta a tradurre Phonograph nella tua lingua.</string>
-    <string name="rate_on_google_play">Valuta</string>
-    <string name="rate_on_google_play_summary">Lascia una valutazione positiva su Google Play se ti piace Phonograph.</string>
     <string name="donate">Dona</string>
     <string name="aidan_follestad_summary">Per il theme engine e altre cose fantastiche.</string>
     <string name="michael_cook_summary">Per la bella icona in stile material.</string>
@@ -226,16 +219,12 @@
     <string name="library">Libreria</string>
     <string name="folders">Cartelle</string>
     <string name="theme_switch">Cambia tema</string>
-    <string name="saved_playlist_to">Playlist salvata in %s.</string>
     <string name="failed_to_save_playlist">Salvataggio playlist fallito (%s).</string>
     <string name="saved_x_playlists_to_x">Salvate %1$d playlist in %2$s.</string>
     <string name="saved_x_playlists_to_x_failed_to_save_x">Salvate %1$d playlist in %2$s, %3$d non salvato.</string>
-    <string name="not_listed_in_media_store"><![CDATA[<b>%s</b> non è elencato nel media store.]]></string>
-    <string name="some_files_are_not_listed_in_the_media_store">Alcuni file non sono elencati nel media store.</string>
     <string name="nothing_to_scan">Nulla da scansionare.</string>
     <string name="scanned_files">Scansione effettuata per %1$d su %2$d file.</string>
     <string name="could_not_scan_files">Non è stato possibile effettuare la scansione di %d file.</string>
-    <string name="listing_files">Creazione elenco dei file</string>
     <string name="new_start_directory">%s è la nuova directory iniziale.</string>
     <string name="app_widget_big_name">Phonograph - Grande</string>
     <string name="app_widget_classic_name">Phonograph - Classico</string>
@@ -298,7 +287,6 @@
     <string name="dialog_ringtone_message">Consenti a Phonograph di modificare le impostazioni audio</string>
     <string name="perf_title_fixed_tab_layout">Fissa tutte le schede</string>
     <string name="pref_summary_fixed_tab_layout">Le schede in alto non saranno scrollabili, ma verranno affiancate senza alcun margine.</string>
-    <string name="night_mode">Modalità notte</string>
     <string name="auto_mode_on">La modalità automatica è attiva, si prega di disattivarla e riprovare!</string>
     <string name="Permission_denied">Permesso negato!</string>
     <string name="err_permission_storage">Autorizzazione di archiviazione</string>

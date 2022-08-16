@@ -8,7 +8,6 @@
     <string name="action_settings">"Definições"</string>
     <string name="action_grant">Permitir</string>
     <string name="action_about">Sobre</string>
-    <string name="action_clear_playlist">Limpar lista de reprodução</string>
     <string name="action_add_to_favorites">Adicionar aos favoritos</string>
     <string name="action_remove_from_favorites">Remover dos favoritos</string>
     <string name="action_search">Pesquisar</string>
@@ -20,8 +19,6 @@
     <string name="action_tag_editor">Editor de etiquetas</string>
     <string name="action_delete_from_device">Eliminar do dispositivo</string>
     <string name="action_details">Detalhes</string>
-    <string name="action_rename">Mudar nome</string>
-    <string name="action_delete">Apagar</string>
     <string name="action_scan">Verificar</string>
     <string name="action_set_as_start_directory">Definir como diretoria principal</string>
     <string name="albums">Álbuns</string>
@@ -77,8 +74,6 @@
     <string name="action_shuffle_artist">Embaralhar Artista</string>
     <string name="action_shuffle_playlist">Embaralhar lista de reprodução</string>
     <string name="action_clear_playing_queue">Limpar fila de reprodução</string>
-    <string name="action_go_to_start_directory">Ir para diretoria principal</string>
-    <string name="action_show_lyrics">Mostrar letra</string>
     <string name="light_theme_name">Claro</string>
     <string name="dark_theme_name">Escuro</string>
     <string name="black_theme_name">Preto (AMOLED)</string>
@@ -155,8 +150,6 @@
     <string name="report_bugs_summary">Reportar erros ou sugerir novas funcionalidades.</string>
     <string name="translate">Traduzir</string>
     <string name="translate_summary">Ajude a traduzir o Phonograph para o seu idioma nativo.</string>
-    <string name="rate_on_google_play">Classifique</string>
-    <string name="rate_on_google_play_summary">Deixe uma avaliação positiva no Google Play, se gosta do Phonograph.</string>
     <string name="donate">Doar</string>
     <string name="aidan_follestad_summary">Pelo motor do tema e algumas outras coisas espetaculares.</string>
     <string name="michael_cook_summary">Para o bonito ícone material da aplicação.</string>
@@ -171,7 +164,6 @@
     <string name="rearrange_playing_queue_instruction">Reorganizar a fila de reprodução arrastando a música desde o seu número</string>
     <string name="library">Biblioteca</string>
     <string name="folders">Pastas</string>
-    <string name="saved_playlist_to">Lista de reprodução %s salva.</string>
     <string name="failed_to_save_playlist">Erro a salvar a lista de reprodução (%s).</string>
     <string name="nothing_to_scan">Nada para verificar.</string>
     <string name="scanned_files">Verificados %1$d de %2$d ficheiros.</string>

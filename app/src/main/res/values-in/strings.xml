@@ -8,7 +8,6 @@
     <string name="action_settings">"Pengaturan"</string>
     <string name="action_grant">Izinkan</string>
     <string name="action_about">Tentang</string>
-    <string name="action_clear_playlist">Bersihkan daftar putar</string>
     <string name="action_add_to_favorites">Tambahkan ke favorit</string>
     <string name="action_remove_from_favorites">Hapus dari favorit</string>
     <string name="action_search">Pencarian</string>
@@ -23,8 +22,6 @@
     <string name="action_tag_editor">Ubah label</string>
     <string name="action_delete_from_device">Hapus dari perangkat</string>
     <string name="action_details">Rincian</string>
-    <string name="action_rename">Ganti Nama</string>
-    <string name="action_delete">Hapus</string>
     <string name="action_scan">Pindai</string>
     <string name="action_set_as_start_directory">Atur sebagai direktori awal</string>
     <string name="albums">Album-album</string>
@@ -99,8 +96,6 @@
     <string name="action_shuffle_playlist">Putar daftar putar secara acak</string>
     <string name="action_clear_playing_queue">Kosongkan antrean yang sedang diputar</string>
     <string name="action_save_playing_queue">Menyimpan antrian yang diputar</string>
-    <string name="action_go_to_start_directory">Ke direktori awal</string>
-    <string name="action_show_lyrics">Tampilkan lirik</string>
     <string name="light_theme_name">Terang</string>
     <string name="dark_theme_name">Gelap</string>
     <string name="black_theme_name">Hitam (AMOLED)</string>
@@ -205,8 +200,6 @@
     <string name="report_bugs_summary">Laporkan masalah atau sarankan fitur baru</string>
     <string name="translate">Terjemahkan</string>
     <string name="translate_summary">Bantu terjemahkan Phonograph ke dalam bahasa Anda. </string>
-    <string name="rate_on_google_play">Nilai</string>
-    <string name="rate_on_google_play_summary">Tinggalkan penilaian positif di Google Play jika Anda menyukai Phonograph.</string>
     <string name="donate">Donasikan</string>
     <string name="aidan_follestad_summary">Untuk sistem tema dan beberapa hal besar lainnya.</string>
     <string name="michael_cook_summary">Untuk ikon aplikasi material yang keren. </string>
@@ -222,16 +215,12 @@
     <string name="library">Pustaka</string>
     <string name="folders">Map-map</string>
     <string name="theme_switch">Ubah tema</string>
-    <string name="saved_playlist_to">Daftar putar tersimpan ke %s.</string>
     <string name="failed_to_save_playlist">Gagal untuk menyimpan daftar putar (%s).</string>
     <string name="saved_x_playlists_to_x">%1$d daftar putar disimpan ke %2$s.</string>
     <string name="saved_x_playlists_to_x_failed_to_save_x">%1$d daftar putar disimpan ke %2$s, gagal menyimpan %3$d.</string>
-    <string name="not_listed_in_media_store"><![CDATA[<b>%s</b> tidak tercatat di toko media.]]></string>
-    <string name="some_files_are_not_listed_in_the_media_store">Beberapa berkas tidak tercatat di media penyimpanan.</string>
     <string name="nothing_to_scan">Tidak ada untuk di pindai.</string>
     <string name="scanned_files">%1$d dari %2$d berkas terpindai.</string>
     <string name="could_not_scan_files">Tidak dapat memindai %d berkas.</string>
-    <string name="listing_files">Mencatat berkas-berkas</string>
     <string name="new_start_directory">%s adalah direktori awal yang baru.</string>
     <string name="app_widget_big_name">Phonograph - Besar</string>
     <string name="app_widget_classic_name">Phonograph - Klasik</string>
@@ -294,7 +283,6 @@
     <string name="dialog_ringtone_message">Izinkan phonograph mengubah pengaturan audio</string>
     <string name="perf_title_fixed_tab_layout">Perbaiki semua tab</string>
     <string name="pref_summary_fixed_tab_layout">Tab di atas tidak dapat digulir, tetapi memutari ubin tanpa batas apapun.</string>
-    <string name="night_mode">Mode Malam</string>
     <string name="auto_mode_on">Mode otomatis sedang dihidupkan, silahkan matikan dan mulai lagi!</string>
     <string name="Permission_denied">Izin ditolak!</string>
     <string name="err_permission_storage">Izin Penyimpanan</string>

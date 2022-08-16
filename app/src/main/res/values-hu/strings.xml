@@ -8,7 +8,6 @@
     <string name="action_settings">"Beállítások"</string>
     <string name="action_grant">Engedélyezés</string>
     <string name="action_about">Névjegy</string>
-    <string name="action_clear_playlist">Lejátszási lista törlése</string>
     <string name="action_add_to_favorites">Hozzáadás a kedvencekhez</string>
     <string name="action_remove_from_favorites">Eltávolítás a kedvencekből</string>
     <string name="action_search">Keresés</string>
@@ -23,8 +22,6 @@
     <string name="action_tag_editor">Címkeszerkesztő</string>
     <string name="action_delete_from_device">Törlés az eszközről</string>
     <string name="action_details">Részletek</string>
-    <string name="action_rename">Átnevezés</string>
-    <string name="action_delete">Törlés</string>
     <string name="action_scan">Beolvasás</string>
     <string name="action_set_as_start_directory">Beállítás kezdő könyvtárként</string>
     <string name="albums">Albumok</string>
@@ -87,8 +84,6 @@
     <string name="action_shuffle_playlist">Lejátszási lista keverése</string>
     <string name="action_clear_playing_queue">Lejátszási lista törlése</string>
     <string name="action_save_playing_queue">Mentés a lejátszási sorba</string>
-    <string name="action_go_to_start_directory">Ugrás a kezdő könyvtárra</string>
-    <string name="action_show_lyrics">Dalszöveg</string>
     <string name="light_theme_name">Világos</string>
     <string name="dark_theme_name">Sötét</string>
     <string name="black_theme_name">Fekete</string>
@@ -187,8 +182,6 @@
     <string name="report_bugs_summary">Problémák jelentése, új funkciók kérése.</string>
     <string name="translate">Fordítás</string>
     <string name="translate_summary">Segítsen lefordítani a Phonograph-ot a saját nyelvére.</string>
-    <string name="rate_on_google_play">Értékelés</string>
-    <string name="rate_on_google_play_summary">Értékelje a Google Play-en a Phonograph-ot, ha tetszik önnek!</string>
     <string name="donate">Adományozás</string>
     <string name="aidan_follestad_summary">A téma motorért, és egyéb remek dolgok miatt.</string>
     <string name="michael_cook_summary">Az alkalmazás ikonjáért.</string>
@@ -203,16 +196,12 @@
     <string name="rearrange_playing_queue_instruction">A lejátszási sort átrendezheti, ha a dalokat a sorszámuknál megfogva húzni kezdi.</string>
     <string name="library">Könyvtár</string>
     <string name="folders">Mappák</string>
-    <string name="saved_playlist_to">Lejátszási lista mentve ide: %s.</string>
     <string name="failed_to_save_playlist">Nem sikerült menteni a lejátszási listát (%s).</string>
     <string name="saved_x_playlists_to_x">Mentés %1$d lejátszási listát %2$s-re.</string>
     <string name="saved_x_playlists_to_x_failed_to_save_x">Mentés %1$d lejátszási listák %2$s, nem sikerült menteni a %3$d.</string>
-    <string name="not_listed_in_media_store"><![CDATA[A(z) <b>%s</b> nem szerepel a médiatárban.]]></string>
-    <string name="some_files_are_not_listed_in_the_media_store">Egyes fájlok nem szerepelnek a médiában.</string>
     <string name="nothing_to_scan">Nincs mit beolvasni.</string>
     <string name="scanned_files">%1$d/%2$d fájl beolvasva.</string>
     <string name="could_not_scan_files">%d fájl beolvasása nem sikerült.</string>
-    <string name="listing_files">Fájlok betöltése</string>
     <string name="new_start_directory">Az új kezdő könyvtár: %s</string>
     <string name="app_widget_big_name">Phonograph - Nagy</string>
     <string name="app_widget_classic_name">Phonograph - Klasszikus</string>

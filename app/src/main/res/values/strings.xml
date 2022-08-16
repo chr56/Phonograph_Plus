@@ -8,7 +8,6 @@
     <string name="action_settings">"Settings"</string>
     <string name="action_grant">Grant</string>
     <string name="action_about">About</string>
-    <string name="action_clear_playlist">Clear playlist</string>
     <string name="action_add_to_favorites">Add to favorites</string>
     <string name="action_remove_from_favorites">Remove from favorites</string>
     <string name="action_search">Search</string>
@@ -23,8 +22,6 @@
     <string name="action_tag_editor">Tag editor</string>
     <string name="action_delete_from_device">Delete from device</string>
     <string name="action_details">Details</string>
-    <string name="action_rename">Rename</string>
-    <string name="action_delete">Delete</string>
     <string name="action_scan">Scan</string>
     <string name="action_set_as_start_directory">Set as start directory</string>
     <string name="albums">Albums</string>
@@ -103,8 +100,6 @@
     <string name="action_shuffle_playlist">Shuffle playlist</string>
     <string name="action_clear_playing_queue">Clear playing queue</string>
     <string name="action_save_playing_queue">Save playing queue</string>
-    <string name="action_go_to_start_directory">Go to start directory</string>
-    <string name="action_show_lyrics">Show lyrics</string>
     <string name="light_theme_name">Light</string>
     <string name="dark_theme_name">Dark</string>
     <string name="black_theme_name">Black (AMOLED)</string>
@@ -210,8 +205,6 @@
     <string name="report_bugs_summary">Report bugs or request new features.</string>
     <string name="translate">Translate</string>
     <string name="translate_summary">Help translating Phonograph to your native language.</string>
-    <string name="rate_on_google_play">Rate</string>
-    <string name="rate_on_google_play_summary">Leave a positive rating on Google Play if you like Phonograph.</string>
     <string name="donate">Donate</string>
     <string name="aidan_follestad_summary">For the theme engine and some other great stuff.</string>
     <string name="michael_cook_summary">For the pretty material app icon.</string>
@@ -227,16 +220,12 @@
     <string name="library">Library</string>
     <string name="folders">Folders</string>
     <string name="theme_switch">Theme switch</string>
-    <string name="saved_playlist_to">Saved playlist to %s.</string>
     <string name="failed_to_save_playlist">Failed to save playlist (%s).</string>
     <string name="saved_x_playlists_to_x">Saved %1$d playlists to %2$s.</string>
     <string name="saved_x_playlists_to_x_failed_to_save_x">Saved %1$d playlists to %2$s, failed to save %3$d.</string>
-    <string name="not_listed_in_media_store"><![CDATA[<b>%s</b> is not listed in the media store.]]></string>
-    <string name="some_files_are_not_listed_in_the_media_store">Some files are not listed in the media store.</string>
     <string name="nothing_to_scan">Nothing to scan.</string>
     <string name="scanned_files">Scanned %1$d of %2$d files.</string>
     <string name="could_not_scan_files">Could not scan %d files.</string>
-    <string name="listing_files">Listing files</string>
     <string name="new_start_directory">%s is the new start directory.</string>
     <string name="app_widget_big_name">Phonograph - Big</string>
     <string name="app_widget_classic_name">Phonograph - Classic</string>
@@ -299,7 +288,6 @@
     <string name="dialog_ringtone_message">Allow phonograph to modify audio settings</string>
     <string name="perf_title_fixed_tab_layout">Fix all tabs</string>
     <string name="pref_summary_fixed_tab_layout">Tabs in top will not be scrollable, but wound be tiled without any margin.</string>
-    <string name="night_mode">Night Mode</string>
     <string name="auto_mode_on">Auto Mode is on, please turn off and try again!</string>
     <string name="Permission_denied">Permission denied!</string>
     <string name="err_permission_storage">Storage Permission</string>

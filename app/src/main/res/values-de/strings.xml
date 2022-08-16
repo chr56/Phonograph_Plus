@@ -8,7 +8,6 @@
     <string name="action_settings">"Einstellungen"</string>
     <string name="action_grant">Gewähren</string>
     <string name="action_about">Über</string>
-    <string name="action_clear_playlist">Wiedergabeliste leeren</string>
     <string name="action_add_to_favorites">Zu Favoriten hinzufügen</string>
     <string name="action_remove_from_favorites">Von Favoriten entfernen</string>
     <string name="action_search">Suche</string>
@@ -23,8 +22,6 @@
     <string name="action_tag_editor">Tags ändern</string>
     <string name="action_delete_from_device">Von Gerät löschen</string>
     <string name="action_details">Details</string>
-    <string name="action_rename">Umbenennen</string>
-    <string name="action_delete">Löschen</string>
     <string name="action_scan">Scannen</string>
     <string name="action_set_as_start_directory">Als Start-Verzeichnis festlegen</string>
     <string name="albums">Alben</string>
@@ -88,8 +85,6 @@
     <string name="action_shuffle_playlist">Wiedergabeliste zufällig wiedergeben</string>
     <string name="action_clear_playing_queue">Warteschlange leeren</string>
     <string name="action_save_playing_queue">Warteschlange speichern</string>
-    <string name="action_go_to_start_directory">Zum Start-Verzeichnis gehen</string>
-    <string name="action_show_lyrics">Songtext anzeigen</string>
     <string name="light_theme_name">Hell</string>
     <string name="dark_theme_name">Dunkel</string>
     <string name="black_theme_name">Schwarz (AMOLED)</string>
@@ -191,8 +186,6 @@
     <string name="report_bugs_summary">Melde Fehler oder schlage neue Features vor.</string>
     <string name="translate">Übersetzen</string>
     <string name="translate_summary">Helfe dabei, Phonograph in deine Sprache zu übersetzen.</string>
-    <string name="rate_on_google_play">Bewerten</string>
-    <string name="rate_on_google_play_summary">Hinterlasse eine positive Bewertung auf Google Play, falls dir Phonograph gefällt.</string>
     <string name="donate">Spenden</string>
     <string name="aidan_follestad_summary">Für die Theme Engine und andere tolle Sachen.</string>
     <string name="michael_cook_summary">Für das schöne Material App Icon.</string>
@@ -207,16 +200,12 @@
     <string name="rearrange_playing_queue_instruction">Ziehe die Titelnummer eines Titels nach oben oder unten, um die Warteschlange neu anzuordnen.</string>
     <string name="library">Bibliothek</string>
     <string name="folders">Ordner</string>
-    <string name="saved_playlist_to">Playlist wurde in %s gespeichert.</string>
     <string name="failed_to_save_playlist">Speichern der Playlist fehlgeschlagen (%s).</string>
     <string name="saved_x_playlists_to_x">%1$d Wiedergabelisten wurden in %2$s gespeichert.</string>
     <string name="saved_x_playlists_to_x_failed_to_save_x">%1$d Wiedergabelisten wurden in %2$s gespeichert, %3$d konnten nicht gespeichert werden.</string>
-    <string name="not_listed_in_media_store"><![CDATA[<b>%s</b> ist nicht im Media Store gelistet.]]></string>
-    <string name="some_files_are_not_listed_in_the_media_store">Einige Dateien sind nicht im Medienverzeichnis gelistet.</string>
     <string name="nothing_to_scan">Nichts zu scannen.</string>
     <string name="scanned_files">%1$d von %2$d Dateien gescannt.</string>
     <string name="could_not_scan_files">%d Dateien konnten nicht gescannt werden.</string>
-    <string name="listing_files">Dateien werden gelistet</string>
     <string name="new_start_directory">%s ist das neue Start-Verzeichnis.</string>
     <string name="app_widget_big_name">Phonograph - Groß</string>
     <string name="app_widget_classic_name">Phonograph - Klassisch</string>

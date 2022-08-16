@@ -8,7 +8,6 @@
     <string name="action_settings">"Cài đặt"</string>
     <string name="action_grant">Cho phép</string>
     <string name="action_about">Thông tin</string>
-    <string name="action_clear_playlist">Dọn danh sách nhạc</string>
     <string name="action_add_to_favorites">Thêm vào danh sách yêu thích</string>
     <string name="action_remove_from_favorites">Xóa khỏi danh sách yêu thích</string>
     <string name="action_search">Tìm kiếm</string>
@@ -23,8 +22,6 @@
     <string name="action_tag_editor">Chỉnh sửa thẻ</string>
     <string name="action_delete_from_device">Xóa từ thiết bị</string>
     <string name="action_details">Chi tiết</string>
-    <string name="action_rename">Đổi tên</string>
-    <string name="action_delete">Xóa</string>
     <string name="action_scan">Quét</string>
     <string name="action_set_as_start_directory">Đặt làm thư mục bắt đầu</string>
     <string name="albums">Album</string>
@@ -88,8 +85,6 @@
     <string name="action_shuffle_playlist">Trộn danh sách nhạc</string>
     <string name="action_clear_playing_queue">Dọn hàng đợi phát</string>
     <string name="action_save_playing_queue">Lưu hàng đợi phát</string>
-    <string name="action_go_to_start_directory">Tới thư mục đầu</string>
-    <string name="action_show_lyrics">Hiện lời bài hát</string>
     <string name="light_theme_name">Sáng</string>
     <string name="dark_theme_name">Tối</string>
     <string name="black_theme_name">Đen (AMOLED)</string>
@@ -191,8 +186,6 @@
     <string name="report_bugs_summary">Báo lỗi và yêu cầu tính năng mới.</string>
     <string name="translate">Dịch</string>
     <string name="translate_summary">Hỗ trợ dịch Phonograph sang ngôn ngữ của bạn.</string>
-    <string name="rate_on_google_play">Đánh giá</string>
-    <string name="rate_on_google_play_summary">Hãy để lại một đánh giá tốt trên Google Play nếu bạn thích Phonograph.</string>
     <string name="donate">Hỗ trợ</string>
     <string name="aidan_follestad_summary">Bộ máy chủ đề và một vài thứ tuyệt vời khác.</string>
     <string name="michael_cook_summary">Biểu tượng Material cho ứng dụng.</string>
@@ -207,16 +200,12 @@
     <string name="rearrange_playing_queue_instruction">Sắp xếp lại hàng đợi phát bằng cách kéo một bài hát từ số thứ tự của nó.</string>
     <string name="library">Thư viện</string>
     <string name="folders">Thư mục</string>
-    <string name="saved_playlist_to">Đã lưu danh sách nhạc đến %s.</string>
     <string name="failed_to_save_playlist">Không thể lưu danh sách nhạc (%s).</string>
     <string name="saved_x_playlists_to_x">Đã lưu danh sách %1$d thành %2$s.</string>
     <string name="saved_x_playlists_to_x_failed_to_save_x">Đã lưu danh sách %1$d thành %2$s, lỗi khi lưu %3$d.</string>
-    <string name="not_listed_in_media_store"><![CDATA[<b>%s</b> không được liệt kê trong cửa hàng đa phương tiện.]]></string>
-    <string name="some_files_are_not_listed_in_the_media_store">Vài mục không được liệt kê trong kho bài hát.</string>
     <string name="nothing_to_scan">Không có gì để quét.</string>
     <string name="scanned_files">Đã quét %1$d của %2$d tập tin.</string>
     <string name="could_not_scan_files">Không thể quét %d tập tin.</string>
-    <string name="listing_files">Liệt kê các tập tin</string>
     <string name="new_start_directory">%s là thư mục khởi đầu.</string>
     <string name="app_widget_big_name">Phonograph - Lớn</string>
     <string name="app_widget_classic_name">Phonograph - Cổ điển</string>

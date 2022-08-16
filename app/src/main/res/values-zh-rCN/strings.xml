@@ -8,7 +8,6 @@
     <string name="action_settings">"设置"</string>
     <string name="action_grant">授予</string>
     <string name="action_about">关于</string>
-    <string name="action_clear_playlist">清空播放列表</string>
     <string name="action_add_to_favorites">添加到收藏</string>
     <string name="action_remove_from_favorites">从收藏中移除</string>
     <string name="action_search">搜索</string>
@@ -23,8 +22,6 @@
     <string name="action_tag_editor">编辑音乐标签</string>
     <string name="action_delete_from_device">从设备中删除</string>
     <string name="action_details">详情</string>
-    <string name="action_rename">重命名</string>
-    <string name="action_delete">删除</string>
     <string name="action_scan">扫描</string>
     <string name="action_set_as_start_directory">设为起始目录</string>
     <string name="albums">专辑</string>
@@ -98,8 +95,6 @@
     <string name="action_shuffle_playlist">随机播放此播放列表</string>
     <string name="action_clear_playing_queue">清空播放队列</string>
     <string name="action_save_playing_queue">保存播放队列</string>
-    <string name="action_go_to_start_directory">跳转至起始目录</string>
-    <string name="action_show_lyrics">显示歌词</string>
     <string name="light_theme_name">浅色</string>
     <string name="dark_theme_name">暗色</string>
     <string name="black_theme_name">黑色（AMOLED）</string>
@@ -205,8 +200,6 @@
     <string name="report_bugs_summary">提交 bug 或申请添加新功能</string>
     <string name="translate">翻译</string>
     <string name="translate_summary">帮助翻译 Phonograph </string>
-    <string name="rate_on_google_play">评分</string>
-    <string name="rate_on_google_play_summary">如果喜欢 Phonograph 请在 Google Play 中留下您的好评</string>
     <string name="donate">捐赠</string>
     <string name="aidan_follestad_summary">主题引擎以及其他一些优秀功能</string>
     <string name="michael_cook_summary">精致的质感设计图标</string>
@@ -222,16 +215,12 @@
     <string name="library">媒体库</string>
     <string name="folders">文件夹</string>
     <string name="theme_switch">主题切换</string>
-    <string name="saved_playlist_to">已保存播放列表到 %s</string>
     <string name="failed_to_save_playlist">保存播放列表（%s）失败</string>
     <string name="saved_x_playlists_to_x">已保存 %1$d 播放列表到 %2$s</string>
     <string name="saved_x_playlists_to_x_failed_to_save_x">已保存 %1$d 播放列表到 %2$s，保存 %3$d 失败</string>
-    <string name="not_listed_in_media_store"><![CDATA[<b>%s</b> 没有列在媒体储存中]]></string>
-    <string name="some_files_are_not_listed_in_the_media_store">部分文件未在媒体储存中列出</string>
     <string name="nothing_to_scan">没有可扫描的对象</string>
     <string name="scanned_files">已扫描 %1$d/%2$d 个文件</string>
     <string name="could_not_scan_files">%d 个文件无法扫描</string>
-    <string name="listing_files">正在列举文件</string>
     <string name="new_start_directory">%s 是新的初始目录</string>
     <string name="app_widget_big_name">Phonograph - 大尺寸</string>
     <string name="app_widget_classic_name">Phonograph - 经典</string>
@@ -294,7 +283,6 @@
     <string name="dialog_ringtone_message">允许 Phonograph 调整音频设定</string>
     <string name="perf_title_fixed_tab_layout">固定顶部标签</string>
     <string name="pref_summary_fixed_tab_layout">顶部标签不再能够滑动，并完全平铺</string>
-    <string name="night_mode">夜间模式</string>
     <string name="auto_mode_on">已开启自动模式，请关闭后再试!</string>
     <string name="Permission_denied">未授予权限!</string>
     <string name="err_permission_storage">存储权限</string>

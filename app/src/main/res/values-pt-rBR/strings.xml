@@ -8,7 +8,6 @@
     <string name="action_settings">"Configurações"</string>
     <string name="action_grant">Confirmar</string>
     <string name="action_about">Sobre</string>
-    <string name="action_clear_playlist">Limpar lista de reprodução</string>
     <string name="action_add_to_favorites">Adicionar aos favoritos</string>
     <string name="action_remove_from_favorites">Remover dos favoritos</string>
     <string name="action_search">Pesquisar</string>
@@ -23,8 +22,6 @@
     <string name="action_tag_editor">Editor de Tag</string>
     <string name="action_delete_from_device">Excluir do dispositivo</string>
     <string name="action_details">Detalhes</string>
-    <string name="action_rename">Renomear</string>
-    <string name="action_delete">Excluir</string>
     <string name="action_scan">Escanear</string>
     <string name="action_set_as_start_directory">Definir como tela inicial</string>
     <string name="albums">Álbuns</string>
@@ -88,8 +85,6 @@
     <string name="action_shuffle_playlist">Misturar lista de reprodução</string>
     <string name="action_clear_playing_queue">Limpar fila de reprodução</string>
     <string name="action_save_playing_queue">Salvar fila de reprodução</string>
-    <string name="action_go_to_start_directory">Ir para a pasta inicial</string>
-    <string name="action_show_lyrics">Mostrar letras</string>
     <string name="light_theme_name">Claro</string>
     <string name="dark_theme_name">Escuro</string>
     <string name="black_theme_name">Preto (AMOLED)</string>
@@ -191,8 +186,6 @@
     <string name="report_bugs_summary">Reportar bugs ou pedir por novas funções.</string>
     <string name="translate">Traduzir</string>
     <string name="translate_summary">Ajude a traduzir o Phonograph para seu idioma.</string>
-    <string name="rate_on_google_play">Nota</string>
-    <string name="rate_on_google_play_summary">Dê uma nota positiva no Google Play se você gosta do Phonograph.</string>
     <string name="donate">Doar</string>
     <string name="aidan_follestad_summary">Pelo mecanismo de temas e algumas outras coisas ótimas.</string>
     <string name="michael_cook_summary">Para o ícone material do aplicativo.</string>
@@ -207,16 +200,12 @@
     <string name="rearrange_playing_queue_instruction">Reorganizar a fila de reprodução arrastando uma música de seu número de música.</string>
     <string name="library">Biblioteca</string>
     <string name="folders">Pastas</string>
-    <string name="saved_playlist_to">Lista de reprodução salva em %s.</string>
     <string name="failed_to_save_playlist">Falha ao salvar a lista de reprodução (%s).</string>
     <string name="saved_x_playlists_to_x">Salvado %1$d lista de reprodução para %2$s.</string>
     <string name="saved_x_playlists_to_x_failed_to_save_x">Salvado %1$d listas de reprodução para %2$s, não foi possível salvar %3$d.</string>
-    <string name="not_listed_in_media_store"><![CDATA[<![CDATA[<b>%s</b> não está listado na loja de mídia.]]]]><![CDATA[>]]></string>
-    <string name="some_files_are_not_listed_in_the_media_store">Alguns arquivos não estão listados na loja de mídia.</string>
     <string name="nothing_to_scan">Nada para escanear.</string>
     <string name="scanned_files">Escaneou %1$d de %2$d arquivos.</string>
     <string name="could_not_scan_files">Não foi possível escanear %d arquivos.</string>
-    <string name="listing_files">Listando arquivos</string>
     <string name="new_start_directory">%s é o novo diretório inicial.</string>
     <string name="app_widget_big_name">Phonograph - Grande</string>
     <string name="app_widget_classic_name">Phonograph - Clássico</string>
@@ -279,7 +268,6 @@
     <string name="dialog_ringtone_message">Permitir que o Phonograph modifique as configurações de áudio</string>
     <string name="perf_title_fixed_tab_layout">Corrigir todas as guias</string>
     <string name="pref_summary_fixed_tab_layout">As guias na parte superior não serão roláveis, mas serão colocadas lado a lado sem qualquer margem.</string>
-    <string name="night_mode">Modo Noturno</string>
     <string name="auto_mode_on">O Modo Automático está ativado, desligue e tente novamente!</string>
     <string name="Permission_denied">Permissão negada!</string>
     <string name="err_permission_storage">Permissão de Armazenamento</string>

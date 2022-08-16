@@ -8,7 +8,6 @@
     <string name="action_settings">"Postavke"</string>
     <string name="action_grant">Dopusti</string>
     <string name="action_about">O Phonographu</string>
-    <string name="action_clear_playlist">Očisti popis naslova</string>
     <string name="action_add_to_favorites">Dodaj u favorite</string>
     <string name="action_remove_from_favorites">Ukloni iz favorita</string>
     <string name="action_search">Traži</string>
@@ -23,8 +22,6 @@
     <string name="action_tag_editor">Uređivač oznaka</string>
     <string name="action_delete_from_device">Izbriši s uređaja</string>
     <string name="action_details">Detalji</string>
-    <string name="action_rename">Preimenuj</string>
-    <string name="action_delete">Izbriši</string>
     <string name="action_scan">Skeniraj</string>
     <string name="action_set_as_start_directory">Postavi kao početni direktorij</string>
     <string name="albums">Albumi</string>
@@ -88,8 +85,6 @@
     <string name="action_shuffle_playlist">Izmiješaj popis naslova</string>
     <string name="action_clear_playing_queue">Očisti red čekanja</string>
     <string name="action_save_playing_queue">Spremi red čekanja</string>
-    <string name="action_go_to_start_directory">Idi na početni direktorij</string>
-    <string name="action_show_lyrics">Prikaži stihove</string>
     <string name="light_theme_name">Svijetla</string>
     <string name="dark_theme_name">Tamna</string>
     <string name="black_theme_name">Crna (AMOLED)</string>
@@ -191,8 +186,6 @@
     <string name="report_bugs_summary">Prijavite pogreške i zatražite nove mogućnosti.</string>
     <string name="translate">Prevedi</string>
     <string name="translate_summary">Pomozite prevesti Phonograph na svoj jezik.</string>
-    <string name="rate_on_google_play">Ocijeni</string>
-    <string name="rate_on_google_play_summary">Ostavite pozitivnu ocjenu na Google Playu ako vam se sviđa Phonograph.</string>
     <string name="donate">Doniraj</string>
     <string name="aidan_follestad_summary">Za pokretač teme i ostale super stvari.</string>
     <string name="michael_cook_summary">Za prekrasnu materijalnu ikonu.</string>
@@ -207,16 +200,12 @@
     <string name="rearrange_playing_queue_instruction">Preuredite red čekanja povlačenjem pjesme za njen broj.</string>
     <string name="library">Biblioteka</string>
     <string name="folders">Mape</string>
-    <string name="saved_playlist_to">Popis naslova spremljen u %s.</string>
     <string name="failed_to_save_playlist">Popis naslova nije spremljen (%s).</string>
     <string name="saved_x_playlists_to_x">%1$d popisa naslova je spremljeno u %2$s.</string>
     <string name="saved_x_playlists_to_x_failed_to_save_x">%1$d popisa naslova je spremljeno u %2$s, %3$d nije uspješno spremljeno.</string>
-    <string name="not_listed_in_media_store"><![CDATA[<b>%s</b> nije na popisu media storea.]]></string>
-    <string name="some_files_are_not_listed_in_the_media_store">Neke datoteke nisu u medijskom spremniku.</string>
     <string name="nothing_to_scan">Nema ništa za skeniranje.</string>
     <string name="scanned_files">Skenirano %1$d od %2$d datoteka</string>
     <string name="could_not_scan_files">Nije moguće skenirati %d datoteka.</string>
-    <string name="listing_files">Listanje datoteka</string>
     <string name="new_start_directory">%s je novi početni direktorij.</string>
     <string name="app_widget_big_name">Phonograph - Veliki</string>
     <string name="app_widget_classic_name">Phonograph - Klasični</string>

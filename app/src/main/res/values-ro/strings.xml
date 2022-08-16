@@ -8,7 +8,6 @@
     <string name="action_settings">"Setări"</string>
     <string name="action_grant">Permiteți</string>
     <string name="action_about">Despre</string>
-    <string name="action_clear_playlist">Ștergeți lista de redare</string>
     <string name="action_add_to_favorites">Adăugați la favorite</string>
     <string name="action_remove_from_favorites">Ștergeți de la favorite</string>
     <string name="action_search">Căutare</string>
@@ -23,8 +22,6 @@
     <string name="action_tag_editor">Editor etichete</string>
     <string name="action_delete_from_device">Ștergeți de pe dispozitiv</string>
     <string name="action_details">Detalii</string>
-    <string name="action_rename">Redenumire</string>
-    <string name="action_delete">Ştergeţi</string>
     <string name="action_scan">Scanează</string>
     <string name="action_set_as_start_directory">Setaţi ca dosar de pornire</string>
     <string name="albums">Albume</string>
@@ -87,8 +84,6 @@
     <string name="action_shuffle_playlist">Amestecare listă de redare</string>
     <string name="action_clear_playing_queue">Golește lista de redare</string>
     <string name="action_save_playing_queue">Salvați lista de redare</string>
-    <string name="action_go_to_start_directory">Du-te la directorul de pornire</string>
-    <string name="action_show_lyrics">Arată versuri</string>
     <string name="light_theme_name">Light (Alb)</string>
     <string name="dark_theme_name">Dark (Negru)</string>
     <string name="black_theme_name">Negru (AMOLED)</string>
@@ -187,8 +182,6 @@
     <string name="report_bugs_summary">Raportați probleme sau solicitați noi funcții.</string>
     <string name="translate">Traducere</string>
     <string name="translate_summary">Ajutaţi la traducerea Phonograph în limba maternă.</string>
-    <string name="rate_on_google_play">Evaluaţi</string>
-    <string name="rate_on_google_play_summary">Lăsați o evaluare pozitivă pe Google Play dacă vă place Phonograph.</string>
     <string name="donate">Donaţi</string>
     <string name="aidan_follestad_summary">Pentru motorul tematic și câteva alte lucruri minunate.</string>
     <string name="michael_cook_summary">Pentru pictograma drăguţă a aplicației în stil material.</string>
@@ -203,16 +196,12 @@
     <string name="rearrange_playing_queue_instruction">Rearanjați coada de redare prin glisarea unei melodii de la numărul piesei sale.</string>
     <string name="library">Bibliotecă</string>
     <string name="folders">Dosare</string>
-    <string name="saved_playlist_to">Listă de redare salvată în %s.</string>
     <string name="failed_to_save_playlist">Salvarea listei de redare (%s) a eșuat.</string>
     <string name="saved_x_playlists_to_x">Au fost salvate %1$d liste de redare în %2$s.</string>
     <string name="saved_x_playlists_to_x_failed_to_save_x">Au fost salvate %1$d liste de redare în %2$s, salvarea %3$d eșuând.</string>
-    <string name="not_listed_in_media_store"><![CDATA[<b>%s</b> nu este listat(ă) în stocarea media.]]></string>
-    <string name="some_files_are_not_listed_in_the_media_store">Unele fișiere nu sunt afișate în librăria media.</string>
     <string name="nothing_to_scan">Nimic de scanat.</string>
     <string name="scanned_files">Scanate %1$d din %2$d fişiere.</string>
     <string name="could_not_scan_files">Nu s-au putut scana %d fişiere.</string>
-    <string name="listing_files">Listare fişiere</string>
     <string name="new_start_directory">%s este noul director de pornire.</string>
     <string name="app_widget_big_name">Phonograph - Mare</string>
     <string name="app_widget_classic_name">Phonograph - Clasic</string>

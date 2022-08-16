@@ -8,7 +8,6 @@
     <string name="action_settings">"הגדרות"</string>
     <string name="action_grant">הענק</string>
     <string name="action_about">אודות</string>
-    <string name="action_clear_playlist">ניקוי רשימת השמעה</string>
     <string name="action_add_to_favorites">הוספה למועדפים</string>
     <string name="action_remove_from_favorites">הסרה מהמועדפים</string>
     <string name="action_search">חיפוש</string>
@@ -23,8 +22,6 @@
     <string name="action_tag_editor">עריכת תווית</string>
     <string name="action_delete_from_device">מחק מהמכשיר</string>
     <string name="action_details">פרטים</string>
-    <string name="action_rename">שנה שם</string>
-    <string name="action_delete">מחק</string>
     <string name="action_scan">סרוק</string>
     <string name="action_set_as_start_directory">הגדר כנתיב התחלתי</string>
     <string name="albums">אלבומים</string>
@@ -88,8 +85,6 @@
     <string name="action_shuffle_playlist">ערבב רשימת השמעה</string>
     <string name="action_clear_playing_queue">איפוס תור השמעה</string>
     <string name="action_save_playing_queue">שמור תור פעיל</string>
-    <string name="action_go_to_start_directory">עבור לנתיב התחלתי</string>
-    <string name="action_show_lyrics">הצג מילים</string>
     <string name="light_theme_name">בהיר</string>
     <string name="dark_theme_name">כהה</string>
     <string name="black_theme_name">שחור (AMOLED)</string>
@@ -191,8 +186,6 @@
     <string name="report_bugs_summary">דווח על באגים או בקש פיצ\'רים חדשים.</string>
     <string name="translate">תרגם</string>
     <string name="translate_summary">עזור לתרגם את Phonograph לשפת האם שלך.</string>
-    <string name="rate_on_google_play">דרג</string>
-    <string name="rate_on_google_play_summary">השאר דירוג חיובי ב-Google Play אם אתה אוהב את Phonograph.</string>
     <string name="donate">תרומה</string>
     <string name="aidan_follestad_summary">על מנוע ערכת הנושא, ועוד כמה דברים נחמדים.</string>
     <string name="michael_cook_summary">על סמל האפליקציה בסגנון Material.</string>
@@ -207,16 +200,12 @@
     <string name="rearrange_playing_queue_instruction">מיין מחדש את התור על ידי גרירת השיר מהמספר שלו.</string>
     <string name="library">ספריה</string>
     <string name="folders">תיקיות</string>
-    <string name="saved_playlist_to">רשימת ההשמעה נשמרה ל-%s.</string>
     <string name="failed_to_save_playlist">לא ניתן היה לשמור את רשימת ההשמעה (%s)</string>
     <string name="saved_x_playlists_to_x">נשמרו %1$d רשימות השמעה ל-%2$s.</string>
     <string name="saved_x_playlists_to_x_failed_to_save_x">נשמרו %1$d רשימות השמעה ל-%2$s. לא ניתן היה לשמור %3$d.</string>
-    <string name="not_listed_in_media_store"><![CDATA[<b>%s</b> לא רשום בחנות המדיה.]]></string>
-    <string name="some_files_are_not_listed_in_the_media_store">קבצים מסוימים לא רשומים בחנות המדיה.</string>
     <string name="nothing_to_scan">אין כלום לסרוק.</string>
     <string name="scanned_files">נסרקו %1$d מתוך %2$d קבצים.</string>
     <string name="could_not_scan_files">לא ניתן היה לסרוק %d קבצים.</string>
-    <string name="listing_files">מבצע רישום קבצים</string>
     <string name="new_start_directory">%s הוא כעת נתיב ההתחלה החדש.</string>
     <string name="app_widget_big_name">Phonograph - גדול</string>
     <string name="app_widget_classic_name">Phonograph - קלאסי</string>

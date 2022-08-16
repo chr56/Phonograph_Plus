@@ -8,7 +8,6 @@
     <string name="action_settings">"Налаштування"</string>
     <string name="action_grant">Надати</string>
     <string name="action_about">Про програму</string>
-    <string name="action_clear_playlist">Очистити список відтворення</string>
     <string name="action_add_to_favorites">Додати до улюблених</string>
     <string name="action_remove_from_favorites">Видалити з улюблених</string>
     <string name="action_search">Пошук</string>
@@ -23,8 +22,6 @@
     <string name="action_tag_editor">Редактор тегів</string>
     <string name="action_delete_from_device">Видалити з пристрою</string>
     <string name="action_details">Подробиці</string>
-    <string name="action_rename">Перейменувати</string>
-    <string name="action_delete">Видалити</string>
     <string name="action_scan">Сканувати</string>
     <string name="action_set_as_start_directory">Встановити як початкову теку</string>
     <string name="albums">Альбоми</string>
@@ -87,8 +84,6 @@
     <string name="action_shuffle_playlist">Перемішати список відтворення</string>
     <string name="action_clear_playing_queue">Очистити чергу відтворення</string>
     <string name="action_save_playing_queue">Зберегти чергу відтворення</string>
-    <string name="action_go_to_start_directory">Перейти до початкової теки</string>
-    <string name="action_show_lyrics">Показати текст</string>
     <string name="light_theme_name">Світла</string>
     <string name="dark_theme_name">Темна</string>
     <string name="black_theme_name">Чорна (AMOLED)</string>
@@ -188,8 +183,6 @@
     <string name="report_bugs_summary">Повідомити про помилку чи попросити нові функції.</string>
     <string name="translate">Перекласти</string>
     <string name="translate_summary">Допоможіть перекласти Phonograph на свою рідну мову.</string>
-    <string name="rate_on_google_play">Оцінити</string>
-    <string name="rate_on_google_play_summary">Залиште позитивний відгук у Google Play, якщо вам подобається Phonograph.</string>
     <string name="donate">Пожертва</string>
     <string name="aidan_follestad_summary">За рушій тем та усілякі круті штуки.</string>
     <string name="michael_cook_summary">За гарну матеріальну іконку програми.</string>
@@ -204,15 +197,11 @@
     <string name="rearrange_playing_queue_instruction">Змініть чергу відтворення, перетягнувши пісню за її номер.</string>
     <string name="library">Бібліотека</string>
     <string name="folders">Папки</string>
-    <string name="saved_playlist_to">Збережено список відтворення в %s.</string>
     <string name="failed_to_save_playlist">Не вдалося зберегти список відтворення (%s).</string>
     <string name="saved_x_playlists_to_x_failed_to_save_x">Збережено %1$d плейлистів до %2$s, не вдалося %3$d</string>
-    <string name="not_listed_in_media_store"><![CDATA[<b>%s</b> не вказано в медіа сховищі.]]></string>
-    <string name="some_files_are_not_listed_in_the_media_store">Деякі файли не вказані у медіасховищі</string>
     <string name="nothing_to_scan">Нічого сканувати.</string>
     <string name="scanned_files">Проскановано %1$d з %2$d файлів.</string>
     <string name="could_not_scan_files">Не вдалося просканувати %d файлів.</string>
-    <string name="listing_files">Лістинг файлів</string>
     <string name="new_start_directory">%s є новий каталог запуску.</string>
     <string name="app_widget_big_name">Phonograph - Великий</string>
     <string name="app_widget_classic_name">Phonograph - Класичний</string>

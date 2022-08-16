@@ -8,7 +8,6 @@
     <string name="action_settings">"Asetukset"</string>
     <string name="action_grant">Myönnä</string>
     <string name="action_about">Tietoa</string>
-    <string name="action_clear_playlist">Tyhjennä soittolista</string>
     <string name="action_add_to_favorites">Lisää suosikkeihin</string>
     <string name="action_remove_from_favorites">Poista suosikeista</string>
     <string name="action_search">Hae</string>
@@ -23,8 +22,6 @@
     <string name="action_tag_editor">Tagieditori</string>
     <string name="action_delete_from_device">Poista laitteesta</string>
     <string name="action_details">Yksityiskohdat</string>
-    <string name="action_rename">Nimeä uudelleen</string>
-    <string name="action_delete">Poista</string>
     <string name="action_scan">Skannaa</string>
     <string name="action_set_as_start_directory">Aseta aloituskansioksi</string>
     <string name="albums">Albumit</string>
@@ -88,8 +85,6 @@
     <string name="action_shuffle_playlist">Sekoita soittolistat</string>
     <string name="action_clear_playing_queue">Tyhjennä toistojono</string>
     <string name="action_save_playing_queue">Tallenna toistojono</string>
-    <string name="action_go_to_start_directory">Mene aloituskansioon</string>
-    <string name="action_show_lyrics">Näytä lyriikat</string>
     <string name="light_theme_name">Vaalea</string>
     <string name="dark_theme_name">Tumma</string>
     <string name="black_theme_name">Musta (AMOLED)</string>
@@ -191,8 +186,6 @@
     <string name="report_bugs_summary">Raportoi bugeja tai ehdota uusia ominaisuuksia.</string>
     <string name="translate">Käännä</string>
     <string name="translate_summary">Auta kääntämään Phonograph sinun äidinkielellesi.</string>
-    <string name="rate_on_google_play">Arvostele</string>
-    <string name="rate_on_google_play_summary">Jos pidät Phonographista, jätä sille positiivinen arvostelu Google Play -kaupassa.</string>
     <string name="donate">Lahjoita</string>
     <string name="aidan_follestad_summary">Teemamoottorista ja muutamista muista hienoista jutuista.</string>
     <string name="michael_cook_summary">Hienosta material-ikonista.</string>
@@ -207,16 +200,12 @@
     <string name="rearrange_playing_queue_instruction">Järjestä toistojonoa vetämällä kappaletta sen raitanumerosta.</string>
     <string name="library">Kirjasto</string>
     <string name="folders">Kansiot</string>
-    <string name="saved_playlist_to">Soittolista tallennettu paikkaan %s.</string>
     <string name="failed_to_save_playlist">Soittolistan tallentaminen epäonnistui (%s).</string>
     <string name="saved_x_playlists_to_x">Tallennettiin soittolistat %1$d paikkaan %2$s.</string>
     <string name="saved_x_playlists_to_x_failed_to_save_x">Tallennettiin soittolistat %1$d paikkaan %2$s, %3$d tallentaminen epäonnistui.</string>
-    <string name="not_listed_in_media_store"><![CDATA[Kohdetta <b>%s</b> ei ole listattu Media Storessa.]]></string>
-    <string name="some_files_are_not_listed_in_the_media_store">Jotkin tiedostot eivät ole listattuna Media Storessa.</string>
     <string name="nothing_to_scan">Ei mitään skannattavaa.</string>
     <string name="scanned_files">Skannattiin %1$d %2$d tiedostosta.</string>
     <string name="could_not_scan_files">Ei voitu skannata %d tiedostoa.</string>
-    <string name="listing_files">Listataan tiedostoja</string>
     <string name="new_start_directory">%s on uusi aloituskansio.</string>
     <string name="app_widget_big_name">Phonograph - Iso</string>
     <string name="app_widget_classic_name">Phonograph - Klassikko</string>

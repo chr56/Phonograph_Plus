@@ -8,7 +8,6 @@
     <string name="action_settings">"Nastavení"</string>
     <string name="action_grant">"Příspěvek "</string>
     <string name="action_about">O aplikaci</string>
-    <string name="action_clear_playlist">Vyčistit playlist</string>
     <string name="action_add_to_favorites">Přidat do oblíbených</string>
     <string name="action_remove_from_favorites">Odebrat z oblíbených</string>
     <string name="action_search">Hledat</string>
@@ -23,8 +22,6 @@
     <string name="action_tag_editor">Editor Tagů</string>
     <string name="action_delete_from_device">Smazat ze zařízení</string>
     <string name="action_details">Podrobné informace o skladbě</string>
-    <string name="action_rename">Přejmenovat</string>
-    <string name="action_delete">Smazat</string>
     <string name="action_scan">Skenovat</string>
     <string name="action_set_as_start_directory">Nastavit jako domovskou složku</string>
     <string name="albums">Alba</string>
@@ -88,8 +85,6 @@
     <string name="action_shuffle_playlist">Přehrát playlist náhodně</string>
     <string name="action_clear_playing_queue">Vyčistit frontu přehrávání</string>
     <string name="action_save_playing_queue">Uložit frontu přehrávání</string>
-    <string name="action_go_to_start_directory">Jít na domovskou složku</string>
-    <string name="action_show_lyrics">Zobrazit text</string>
     <string name="light_theme_name">Světlý</string>
     <string name="dark_theme_name">Tmavý</string>
     <string name="black_theme_name">Černý (AMOLED)</string>
@@ -191,8 +186,6 @@
     <string name="report_bugs_summary">"Nahlásit chyby nebo požádat o nové funkce. "</string>
     <string name="translate">Překládejte</string>
     <string name="translate_summary">"Pomozte nám přeložit Phonograph do vašeho mateřského jazyka. "</string>
-    <string name="rate_on_google_play">Ohodnotit</string>
-    <string name="rate_on_google_play_summary">Pokud máte Phonograph rádi, zanechte pozitivní hodnocení na Google Play.</string>
     <string name="donate">"Přispět "</string>
     <string name="aidan_follestad_summary">Za motivy a jiné další super věci.</string>
     <string name="michael_cook_summary">Za pěknou Material ikonu aplikace.</string>
@@ -207,16 +200,12 @@
     <string name="rearrange_playing_queue_instruction">"Změňte pořadí fronty přetažením skladby za její číslo. "</string>
     <string name="library">"Knihovna "</string>
     <string name="folders">"Složky "</string>
-    <string name="saved_playlist_to">Uloženo do playlistu %s.</string>
     <string name="failed_to_save_playlist">Chyba v uložení playlistu (%s).</string>
     <string name="saved_x_playlists_to_x">Uloženo %1$d playlistů do %2$s.</string>
     <string name="saved_x_playlists_to_x_failed_to_save_x">Uloženo %1$d playlistů do %2$s, nepodařilo se uložit %3$d.</string>
-    <string name="not_listed_in_media_store"><![CDATA[<b>%s</b> není zobrazeno v seznamu souborů.]]></string>
-    <string name="some_files_are_not_listed_in_the_media_store">Některé soubory nejsou zobrazeny v obchodě s médii.</string>
     <string name="nothing_to_scan">Nic ke skenování.</string>
     <string name="scanned_files">Naskenováno %1$d z %2$d souborů.</string>
     <string name="could_not_scan_files">Nelze skenovat %d souborů.</string>
-    <string name="listing_files">Načítání souborů</string>
     <string name="new_start_directory">%s je nová domovská složka.</string>
     <string name="app_widget_big_name">Phonograph - Velký</string>
     <string name="app_widget_classic_name">Phonograph - Klasický</string>

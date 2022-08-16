@@ -8,7 +8,6 @@
     <string name="action_settings">"الإعدادات"</string>
     <string name="action_grant">منح</string>
     <string name="action_about">حول</string>
-    <string name="action_clear_playlist">مسح قائمة التشغيل</string>
     <string name="action_add_to_favorites">إضافة إلى المفضلة</string>
     <string name="action_remove_from_favorites">إزالة من المفضلة</string>
     <string name="action_search">بحث</string>
@@ -23,8 +22,6 @@
     <string name="action_tag_editor">محرر الوسوم</string>
     <string name="action_delete_from_device">حذف من الجهاز</string>
     <string name="action_details">التفاصيل</string>
-    <string name="action_rename">إعادة التسمية</string>
-    <string name="action_delete">حذف</string>
     <string name="action_scan">فحص</string>
     <string name="action_set_as_start_directory">تعيين كمسار البداية</string>
     <string name="albums">الألبومات</string>
@@ -88,8 +85,6 @@
     <string name="action_shuffle_playlist">خلط قائمة التشغيل</string>
     <string name="action_clear_playing_queue">مسح قائمة التشغيل</string>
     <string name="action_save_playing_queue">حفظ قائمة التشغيل</string>
-    <string name="action_go_to_start_directory">الذهاب إلى مسار البداية</string>
-    <string name="action_show_lyrics">عرض كلمات الأغاني</string>
     <string name="light_theme_name">فاتح</string>
     <string name="dark_theme_name">غامق</string>
     <string name="black_theme_name">أسود (AMOLED)</string>
@@ -191,8 +186,6 @@
     <string name="report_bugs_summary">الإبلاغ عن مشاكل أو طلب ميزات جديدة.</string>
     <string name="translate">ترجمة</string>
     <string name="translate_summary">ساعد في ترجمة Phonograph إلى لغتك الأم.</string>
-    <string name="rate_on_google_play">قيّم</string>
-    <string name="rate_on_google_play_summary">اترك تقييماً إيجابياً على Goole Play إذا أعجبك Phonograph.</string>
     <string name="donate">تبرع</string>
     <string name="aidan_follestad_summary">من أجل محرك التنسيقات وبعض الأشياء الرائعة الأخرى.</string>
     <string name="michael_cook_summary">من أجل أيقونة التطبيق الجميلة بتصميم الماتيريال.</string>
@@ -207,16 +200,12 @@
     <string name="rearrange_playing_queue_instruction">إعادة ترتيب قائمة التشغيل عبر سحب الأغاني من أرقامها.</string>
     <string name="library">المكتبة</string>
     <string name="folders">المجلدات</string>
-    <string name="saved_playlist_to">تم حفظ قائمة التشغيل إلى %s.</string>
     <string name="failed_to_save_playlist">فشل حفظ قائمة التشغيل (%s).</string>
     <string name="saved_x_playlists_to_x">تم حفظ %1$d قوائم تشغيل إلى %2$s.</string>
     <string name="saved_x_playlists_to_x_failed_to_save_x">تم حفظ %1$d قوائم تشغيل إلى %2$s، فشل حفظ %3$d.</string>
-    <string name="not_listed_in_media_store"><![CDATA[<b>%s</b> غير مدرج في مخزن الوسائط.]]></string>
-    <string name="some_files_are_not_listed_in_the_media_store">بعض الملفات غير مدرجة في مخزن الوسائط.</string>
     <string name="nothing_to_scan">لا يوجد شيء للفحص</string>
     <string name="scanned_files">تم فحص %1$d من %2$d ملفات.</string>
     <string name="could_not_scan_files">تعذر فحص %d ملفات.</string>
-    <string name="listing_files">جار إدراج الملفات</string>
     <string name="new_start_directory">%s هو مسار البداية الجديد.</string>
     <string name="app_widget_big_name">Phonograph - كبير</string>
     <string name="app_widget_classic_name">Phonograph - كلاسيكي</string>

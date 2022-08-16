@@ -8,7 +8,6 @@
     <string name="action_settings">"Ρυθμίσεις "</string>
     <string name="action_grant">Χορήγησε</string>
     <string name="action_about">Σχετικά με</string>
-    <string name="action_clear_playlist">Εκκαθάριση λίστας</string>
     <string name="action_add_to_favorites">Προσθήκη στα αγαπημένα</string>
     <string name="action_remove_from_favorites">Αφαίρεση από τα αγαπημένα</string>
     <string name="action_search">Αναζήτηση</string>
@@ -23,8 +22,6 @@
     <string name="action_tag_editor">Επεξεργασία ετικετών</string>
     <string name="action_delete_from_device">Διαγραφή από την συσκευή</string>
     <string name="action_details">"Λεπτομέρειες "</string>
-    <string name="action_rename">Μετονομασία</string>
-    <string name="action_delete">Διαγραφή</string>
     <string name="action_scan">Σάρωση</string>
     <string name="action_set_as_start_directory">Ορισμός ως κατάλογος έναρξης</string>
     <string name="albums">Άλμπουμ</string>
@@ -87,8 +84,6 @@
     <string name="action_shuffle_playlist">Τυχαία λίστα αναπαραγωγής</string>
     <string name="action_clear_playing_queue">Εκκαθάριση της ουράς αναπαραγωγής</string>
     <string name="action_save_playing_queue">Αποθήκευση της σειράς αναπαραγωγής</string>
-    <string name="action_go_to_start_directory">Πηγαίνετε στον κατάλογο έναρξης</string>
-    <string name="action_show_lyrics">Εμφάνιση στίχων</string>
     <string name="light_theme_name">Ανοιχτό</string>
     <string name="dark_theme_name">Σκούρο</string>
     <string name="black_theme_name">Μαύρο (AMOLED οθόνη)</string>
@@ -178,8 +173,6 @@
     <string name="report_bugs_summary">Αναφέρετε σφάλματα ή ζητείστε νέα χαρακτηριστικά.</string>
     <string name="translate">Μεταφράστε</string>
     <string name="translate_summary">Βοηθήστε την μετάφραση του Phonograph στη μητρική σας γλώσσα.</string>
-    <string name="rate_on_google_play">Βαθμολογήστε</string>
-    <string name="rate_on_google_play_summary">Αφήστε μια θετική αξιολόγηση  στο Google Play, αν σας αρέσει το Phonograph.</string>
     <string name="donate">Δωρεά</string>
     <string name="aidan_follestad_summary">Για την μηχανή θεμάτων και κάποια άλλα ωραία πράγματα.</string>
     <string name="michael_cook_summary">Για το όμορφο material εικονίδιο της εφαρμογής.</string>
@@ -194,16 +187,12 @@
     <string name="rearrange_playing_queue_instruction">Κάντε αναδιάταξη της σειράς τραγουδιών  σύροντας ένα τραγούδι από τον αριθμό του.</string>
     <string name="library">Βιβλιοθήκη</string>
     <string name="folders">Φάκελοι</string>
-    <string name="saved_playlist_to">Η λίστα αναπαραγωγής αποθηκεύτηκε στο %s.</string>
     <string name="failed_to_save_playlist">Η λίστα αναπαραγωγής απέτυχε να αποθηκευτεί (%s).</string>
     <string name="saved_x_playlists_to_x">Αποθηκεύτηκαν %1$d λίστες αναπαραγωγής σε %2$s.</string>
     <string name="saved_x_playlists_to_x_failed_to_save_x">Αποθηκεύτηκαν %1$d λίστες αναπαραγωγής σε %2$s, αποτυχία αποθήκευσης %3$d.</string>
-    <string name="not_listed_in_media_store"><![CDATA[<b>%s</b> δεν είναι καταχωρημένο στο κατάστημα.]]></string>
-    <string name="some_files_are_not_listed_in_the_media_store">Μερικά αρχεία δεν έχουν κατανεμηθεί στο κατάστημα αρχείων.</string>
     <string name="nothing_to_scan">Δεν υπάρχει κάτι για σάρωση.</string>
     <string name="scanned_files">Έγινε σάρωση σε %1$d από %2$d αρχεία.</string>
     <string name="could_not_scan_files">Δεν μπόρεσε να πραγματοποιηθεί σάρωση σε %d αρχεία.</string>
-    <string name="listing_files">Λίστα αρχείων</string>
     <string name="new_start_directory">%s είναι ο νέος κατάλογος έναρξης.</string>
     <string name="app_widget_big_name">Phonograph - Μεγάλο</string>
     <string name="app_widget_classic_name">Phonograph - Κλασικό</string>

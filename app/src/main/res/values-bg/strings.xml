@@ -8,7 +8,6 @@
     <string name="action_settings">"Настройки"</string>
     <string name="action_grant">Разреши</string>
     <string name="action_about">За програмата</string>
-    <string name="action_clear_playlist">Изчисти плейлиста</string>
     <string name="action_add_to_favorites">Запази в любими</string>
     <string name="action_remove_from_favorites">Премахни от любими</string>
     <string name="action_search">Търсене</string>
@@ -23,8 +22,6 @@
     <string name="action_tag_editor">Таг Едитор</string>
     <string name="action_delete_from_device">Изтрий от устройството</string>
     <string name="action_details">Детайли</string>
-    <string name="action_rename">Преименувай</string>
-    <string name="action_delete">Изтрий</string>
     <string name="action_scan">Сканирай</string>
     <string name="action_set_as_start_directory">Задай като начална директория</string>
     <string name="albums">Албуми</string>
@@ -81,8 +78,6 @@
     <string name="action_shuffle_artist">Разбъркай артист</string>
     <string name="action_shuffle_playlist">Разбъркай този плейлист</string>
     <string name="action_clear_playing_queue">Изчисти списъкът с възпроизвеждащи се песни</string>
-    <string name="action_go_to_start_directory">Отиди в началната директория</string>
-    <string name="action_show_lyrics">Покажи текст</string>
     <string name="light_theme_name">Светъл изглед</string>
     <string name="dark_theme_name">Тъмен изглед</string>
     <string name="black_theme_name">Черен изглед (AMOLED дисплеи)</string>
@@ -162,8 +157,6 @@
     <string name="report_bugs_summary">Съобщи за бъгове или предложи нови идеи</string>
     <string name="translate">Преведи</string>
     <string name="translate_summary">Преведете Phonograph на вашият роден език.</string>
-    <string name="rate_on_google_play">Оцени</string>
-    <string name="rate_on_google_play_summary">Оставете позитивна оценка в Гугъл Плей ако харесвате Phonograph.</string>
     <string name="donate">Напревете дарение</string>
     <string name="aidan_follestad_summary">За темата и други страхотни неща.</string>
     <string name="michael_cook_summary">За красивата material design иконка.</string>
@@ -178,13 +171,10 @@
     <string name="rearrange_playing_queue_instruction">Разместете списъкът с текущо възпроизвеждащи се песни, като хванете тракът за неговият номер.</string>
     <string name="library">Библиотека</string>
     <string name="folders">Папки</string>
-    <string name="saved_playlist_to">Плейлистът бе запазен в %s.</string>
     <string name="failed_to_save_playlist">Плейлистът не бе запазен успешно (%s).</string>
-    <string name="not_listed_in_media_store"><![CDATA[<b>%s</b> не е намерен в медия хранилището.]]></string>
     <string name="nothing_to_scan">Няма нищо за сканиране.</string>
     <string name="scanned_files">Сканирани %1$d файлове от %2$d.</string>
     <string name="could_not_scan_files">%d файла не бяха сканирани.</string>
-    <string name="listing_files">Файловете се зареждат</string>
     <string name="new_start_directory">%s е новата заглавна директория.</string>
     <string name="app_widget_big_name">Phonograph - Голям</string>
     <string name="app_widget_classic_name">Phonograph - Класически</string>

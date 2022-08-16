@@ -8,7 +8,6 @@
     <string name="action_settings">"Instellingen"</string>
     <string name="action_grant">Toestaan</string>
     <string name="action_about">Over</string>
-    <string name="action_clear_playlist">Afspeellijst legen</string>
     <string name="action_add_to_favorites">Toevoegen aan favorieten</string>
     <string name="action_remove_from_favorites">Verwijderen uit favorieten</string>
     <string name="action_search">Zoeken</string>
@@ -23,8 +22,6 @@
     <string name="action_tag_editor">Tag bewerker</string>
     <string name="action_delete_from_device">Verwijderen van apparaat</string>
     <string name="action_details">Details</string>
-    <string name="action_rename">Hernoemen</string>
-    <string name="action_delete">Verwijderen</string>
     <string name="action_scan">Scannen</string>
     <string name="action_set_as_start_directory">Instellen als startmap</string>
     <string name="albums">Albums</string>
@@ -102,8 +99,6 @@
     <string name="action_shuffle_playlist">Shuffle afspeellijst</string>
     <string name="action_clear_playing_queue">Leeg afspeelwachtrij</string>
     <string name="action_save_playing_queue">Afspeelwachtrij opslaan</string>
-    <string name="action_go_to_start_directory">Ga naar startmap</string>
-    <string name="action_show_lyrics">Toon songtekst</string>
     <string name="light_theme_name">Licht</string>
     <string name="dark_theme_name">Donker</string>
     <string name="black_theme_name">Zwart (AMOLED)</string>
@@ -208,8 +203,6 @@
     <string name="report_bugs_summary">Rapporteer bugs of verzoek nieuwe functies.</string>
     <string name="translate">Vertalen</string>
     <string name="translate_summary">Help Phonograph te vertalen naar jouw moedertaal.</string>
-    <string name="rate_on_google_play">Beoordelen</string>
-    <string name="rate_on_google_play_summary">Laat een positieve beoordeling achter op Google Play als je Phonograph leuk vindt.</string>
     <string name="donate">Doneer</string>
     <string name="aidan_follestad_summary">Voor de themamogelijkheden en andere goede functies.</string>
     <string name="michael_cook_summary">Voor het mooie material app icoon.</string>
@@ -225,16 +218,12 @@
     <string name="library">Bibliotheek</string>
     <string name="folders">Mappen</string>
     <string name="theme_switch">Thema wisselen</string>
-    <string name="saved_playlist_to">Afspeellijst opgeslagen in %s.</string>
     <string name="failed_to_save_playlist">Opslaan van afspeellijst (%s) mislukt.</string>
     <string name="saved_x_playlists_to_x">%1$d afspeellijsten opgeslagen in %2$s.</string>
     <string name="saved_x_playlists_to_x_failed_to_save_x">%1$d afspeellijsten opgeslagen in %2$s, opslaan van %3$d mislukt.</string>
-    <string name="not_listed_in_media_store"><![CDATA[<b>%s</b> is niet aanwezig in mediaopslag.]]></string>
-    <string name="some_files_are_not_listed_in_the_media_store">Sommige bestanden worden niet vermeld in de mediaopslag.</string>
     <string name="nothing_to_scan">Niets te scannen.</string>
     <string name="scanned_files">%1$d van de %2$d bestanden gescand.</string>
     <string name="could_not_scan_files">Kan %d bestanden niet scannen.</string>
-    <string name="listing_files">Bestandslijst maken</string>
     <string name="new_start_directory">%s is de nieuwe startmap</string>
     <string name="app_widget_big_name">Phonograph - Groot</string>
     <string name="app_widget_classic_name">Phonograph - Klassiek</string>
@@ -297,7 +286,6 @@
     <string name="dialog_ringtone_message">Sta Phonograph toe om audioinstellingen te wijzigen</string>
     <string name="perf_title_fixed_tab_layout">Alle tabbladen vastzetten</string>
     <string name="pref_summary_fixed_tab_layout">De tabbladen bovenin zullen niet bladerbaar zijn, ze krijgen een titel zonder enige marge.</string>
-    <string name="night_mode">Nachtmodus</string>
     <string name="auto_mode_on">Auto Modes is ingeschakeld, schakel deze uit en probeer het opnieuw!</string>
     <string name="Permission_denied">Rechten geweigerd!</string>
     <string name="err_permission_storage">Opslagrechten</string>

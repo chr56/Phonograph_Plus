@@ -8,7 +8,6 @@
     <string name="action_settings">"設定"</string>
     <string name="action_grant">認める</string>
     <string name="action_about">Phonograph について</string>
-    <string name="action_clear_playlist">プレイリストを消去</string>
     <string name="action_add_to_favorites">お気に入りに追加</string>
     <string name="action_remove_from_favorites">お気に入りから解除</string>
     <string name="action_search">検索</string>
@@ -23,8 +22,6 @@
     <string name="action_tag_editor">タグの編集</string>
     <string name="action_delete_from_device">端末から削除</string>
     <string name="action_details">詳細情報</string>
-    <string name="action_rename">名前の変更</string>
-    <string name="action_delete">削除</string>
     <string name="action_scan">端末をスキャン</string>
     <string name="action_set_as_start_directory">初期ディレクトリに設定</string>
     <string name="albums">アルバム</string>
@@ -88,8 +85,6 @@
     <string name="action_shuffle_playlist">プレイリストをシャッフル</string>
     <string name="action_clear_playing_queue">再生キューを消去</string>
     <string name="action_save_playing_queue">再生キューを保存</string>
-    <string name="action_go_to_start_directory">初期ディレクトリに移動</string>
-    <string name="action_show_lyrics">歌詞を表示</string>
     <string name="light_theme_name">ライト</string>
     <string name="dark_theme_name">ダーク</string>
     <string name="black_theme_name">ブラック (AMOLED)</string>
@@ -191,8 +186,6 @@
     <string name="report_bugs_summary">パグの報告または新機能のリクエスト</string>
     <string name="translate">翻訳</string>
     <string name="translate_summary">Phonograph をあなたの母国語に翻訳するのをお手伝いください。</string>
-    <string name="rate_on_google_play">評価</string>
-    <string name="rate_on_google_play_summary">Phonograph を気に入っていただけましたか？お気に召していただけたなら是非 Google Play で良い評価をお願いします。</string>
     <string name="donate">寄付</string>
     <string name="aidan_follestad_summary">テーマエンジンやその他の素晴らしい働き。</string>
     <string name="michael_cook_summary">マテリアルデザインの最高なアイコン。</string>
@@ -207,16 +200,12 @@
     <string name="rearrange_playing_queue_instruction">トラック番号をドラッグして再生キューの曲を並び替えることができます。</string>
     <string name="library">ライブラリ</string>
     <string name="folders">フォルダ</string>
-    <string name="saved_playlist_to">プレイリストを%sに保存しました。</string>
     <string name="failed_to_save_playlist">プレイリスト(%s)の保存に失敗しました。</string>
     <string name="saved_x_playlists_to_x">%1$dプレイリストを%2$sに保存しました</string>
     <string name="saved_x_playlists_to_x_failed_to_save_x">%1$dプレイリストを%2$sに保存しました、%3$dに保存できませんでした。</string>
-    <string name="not_listed_in_media_store"><![CDATA[<b>%s</b>はメディアストアにリストされていません。]]></string>
-    <string name="some_files_are_not_listed_in_the_media_store">メディアストアに追加されていないファイルがあります。</string>
     <string name="nothing_to_scan">スキャンするものがありません。</string>
     <string name="scanned_files">%2$d個のファイルのうち%1$dをスキャンしました。</string>
     <string name="could_not_scan_files">%d個のファイルをスキャンできませんでした。</string>
-    <string name="listing_files">リストされたファイル</string>
     <string name="new_start_directory">%sは新しい初期ディレクトリです。</string>
     <string name="app_widget_big_name">Phonograph - 大</string>
     <string name="app_widget_classic_name">Phonograph - クラシック</string>
