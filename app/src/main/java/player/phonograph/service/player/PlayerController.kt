@@ -45,7 +45,7 @@ class PlayerController(internal val service: MusicService) : Playback.PlaybackCa
     private var lyricsUpdater: LyricsUpdater
 
     init {
-        audioPlayer = AudioPlayer(service, this)
+        audioPlayer = AudioPlayer(service, Setting.instance.gaplessPlayback, this)
 
         wakeLock =
             (App.instance.getSystemService(Context.POWER_SERVICE) as PowerManager)
@@ -618,6 +618,8 @@ class PlayerController(internal val service: MusicService) : Playback.PlaybackCa
 
     fun getSongProgressMillis(): Int = audioPlayer.position()
     fun getSongDurationMillis(): Int = audioPlayer.duration()
+
+    fun switchGaplessPlayback(gaplessPlayback: Boolean) { audioPlayer.gaplessPlayback = gaplessPlayback }
 
     private fun broadcastStopLyric() = App.instance.lyricsService.stopLyric()
     fun replaceLyrics(lyrics: LrcLyrics?) {

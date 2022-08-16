@@ -9,12 +9,11 @@ import android.net.Uri
 import android.os.Build
 import android.os.PowerManager
 import android.util.Log
-import player.phonograph.settings.Setting
 
 /**
  * @author chr_56, Andrew Neal, Karim Abou Zeid (kabouzeid)
  */
-class AudioPlayer(private val context: Context) : Playback, MediaPlayer.OnErrorListener, MediaPlayer.OnCompletionListener {
+class AudioPlayer(private val context: Context, var gaplessPlayback: Boolean) : Playback, MediaPlayer.OnErrorListener, MediaPlayer.OnCompletionListener {
 
     private var currentMediaPlayer = MediaPlayer().also {
         it.setWakeMode(
@@ -35,7 +34,8 @@ class AudioPlayer(private val context: Context) : Playback, MediaPlayer.OnErrorL
      */
     override fun setCallbacks(callbacks: Playback.PlaybackCallbacks?) { this.callbacks = callbacks }
 
-    constructor(context: Context, callbacks: Playback.PlaybackCallbacks) : this(context) { this.callbacks = callbacks }
+    constructor(context: Context, gaplessPlayback: Boolean, callbacks: Playback.PlaybackCallbacks) :
+        this(context, gaplessPlayback) { this.callbacks = callbacks }
 
     /**
      * @param path The path of the file, or the http/rtsp URL of the stream
@@ -122,7 +122,7 @@ class AudioPlayer(private val context: Context) : Playback, MediaPlayer.OnErrorL
             return
         }
 
-        if (Setting.instance.gaplessPlayback) {
+        if (gaplessPlayback) {
             nextMediaPlayer = MediaPlayer()
             nextMediaPlayer!!.setWakeMode(context, PowerManager.PARTIAL_WAKE_LOCK)
             nextMediaPlayer!!.audioSessionId = audioSessionId

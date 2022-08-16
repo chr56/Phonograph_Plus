@@ -26,6 +26,7 @@ import player.phonograph.provider.HistoryStore
 import player.phonograph.service.notification.PlayingNotificationManger
 import player.phonograph.service.player.MSG_NOW_PLAYING_CHANGED
 import player.phonograph.service.player.PlayerController
+import player.phonograph.service.player.PlayerController.ControllerHandler.Companion.CLEAN_NEXT_PLAYER
 import player.phonograph.service.player.PlayerController.ControllerHandler.Companion.RE_PREPARE_NEXT_PLAYER
 import player.phonograph.service.player.PlayerState
 import player.phonograph.service.player.PlayerStateObserver
@@ -355,23 +356,21 @@ class MusicService : Service(), OnSharedPreferenceChangeListener {
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String) {
         when (key) {
-            Setting.GAPLESS_PLAYBACK ->
-                if (sharedPreferences.getBoolean(key, false)) {
-                    controller.handler.removeMessages(
-                        RE_PREPARE_NEXT_PLAYER
-                    )
-                    controller.handler.sendEmptyMessage(
-                        RE_PREPARE_NEXT_PLAYER
-                    )
-                } else {
-                    controller.handler.removeMessages(
-                        PlayerController.ControllerHandler.CLEAN_NEXT_PLAYER
-                    )
-                    controller.handler.sendEmptyMessage(
-                        PlayerController.ControllerHandler.CLEAN_NEXT_PLAYER
-                    )
+            Setting.GAPLESS_PLAYBACK -> {
+                val gaplessPlayback = sharedPreferences.getBoolean(key, false)
+                controller.switchGaplessPlayback(gaplessPlayback)
+                controller.handler.apply {
+                    if (gaplessPlayback) {
+                        removeMessages(RE_PREPARE_NEXT_PLAYER)
+                        sendEmptyMessage(RE_PREPARE_NEXT_PLAYER)
+                    } else {
+                        removeMessages(CLEAN_NEXT_PLAYER)
+                        sendEmptyMessage(CLEAN_NEXT_PLAYER)
+                    }
                 }
-            Setting.ALBUM_ART_ON_LOCKSCREEN, Setting.BLURRED_ALBUM_ART -> playNotificationManager.updateMediaSessionMetaData()
+            }
+            Setting.ALBUM_ART_ON_LOCKSCREEN, Setting.BLURRED_ALBUM_ART ->
+                playNotificationManager.updateMediaSessionMetaData()
             Setting.COLORED_NOTIFICATION -> playNotificationManager.updateNotification()
             Setting.CLASSIC_NOTIFICATION -> {
                 playNotificationManager.setUpNotification()
