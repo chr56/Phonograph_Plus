@@ -393,4 +393,13 @@
     <plurals name="x_songs">
         <item quantity="other">%1$d 歌曲</item>
     </plurals>
+    <plurals name="x_albums">
+        <item quantity="other">%1$d 專輯</item>
+    </plurals>
+    <plurals name="x_artists">
+        <item quantity="other">%1$d 藝術家</item>
+    </plurals>
+    <plurals name="x_genres">
+        <item quantity="other">%1$d 流派</item>
+    </plurals>
 </resources>
