@@ -91,10 +91,10 @@
     <string name="only_on_wifi">Тільки через Wi-Fi</string>
     <string name="never">Ніколи</string>
     <string name="today">Сьогодні</string>
-    <string name="this_week">Цього тижня</string>
     <string name="past_seven_days">Минулі 7 днів</string>
-    <string name="this_month">Цього місяця</string>
     <string name="past_three_months">Минулі 3 місяці</string>
+    <string name="this_week">Цього тижня</string>
+    <string name="this_month">Цього місяця</string>
     <string name="this_year">Цього року</string>
     <string name="equalizer">Еквалайзер</string>
     <string name="pref_header_colors">Кольори</string>
@@ -246,4 +246,5 @@
     <string name="sort_order_artist">Виконавець</string>
     <string name="sort_order_album">Альбом</string>
     <string name="sort_order_year">Рік</string>
+    <!-- use for tag -->
 </resources>
