@@ -392,6 +392,7 @@
     <string name="pref_title_keep_playing_queue_intact">Пожалуйста, НЕ трогайте мою очередь воспроизведения.</string>
     <string name="pref_summary_keep_playing_queue_intact">Если этот параметр включен, Phonograph Plus не будет пытаться очистить очередь воспроизведения, если вы не спросите, ваша очередь воспроизведения останется нетронутой.</string>
     <string name="change_now_playing_screen">Изменить воспроизведение экрана</string>
+    <string name="load_images_for_files">Загрузить изображения для файлов</string>
     <plurals name="x_songs">
         <item quantity="one">%1$d песня</item>
         <item quantity="few">%1$d песен</item>
