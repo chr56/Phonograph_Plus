@@ -51,7 +51,7 @@ class ChangelogDialog : DialogFragment() {
         val webView = customView.findViewById<WebView>(R.id.web_view)
         try {
             // Fetch correct changelog
-            val locale = LocalizationUtil.locale
+            val locale = LocalizationUtil.currentLocale
 
             val inputStream: InputStream = when (locale.language) {
                 Locale("zh").language,

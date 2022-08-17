@@ -13,7 +13,7 @@ import player.phonograph.R
 
 class LanguageSettingDialog : DialogFragment() {
 
-    private val _names = getAvailableLanguageNames(LocalizationUtil.locale)
+    private val _names = getAvailableLanguageNames(LocalizationUtil.currentLocale)
     private val _locales = getAvailableLanguage()
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -22,7 +22,7 @@ class LanguageSettingDialog : DialogFragment() {
         val names = arrayOf(getString(R.string._default)).plus(_names)
         val locales = arrayOf(LocalizationUtil.systemLocale).plus(_locales)
 
-        val selected = locales.indexOf(LocalizationUtil.locale)
+        val selected = locales.indexOf(LocalizationUtil.currentLocale)
 
         val dialog = MaterialAlertDialogBuilder(requireContext())
             .setTitle(R.string.app_language)

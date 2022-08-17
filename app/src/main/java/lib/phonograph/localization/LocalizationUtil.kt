@@ -8,11 +8,15 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.res.Configuration
+import android.content.res.Resources
 import java.util.*
 
 object LocalizationUtil {
 
-    var locale: Locale = Locale.getDefault()
+    var currentLocale: Locale = Locale.getDefault()
+
+    @SuppressLint("ConstantLocale")
+    val systemLocale: Locale = Locale.getDefault()
 
     /**
      * read from persistence
@@ -40,15 +44,15 @@ object LocalizationUtil {
      */
     fun setCurrentLocale(context: Context, target: Locale, recreateActivity: Boolean = false) {
         // Java Locale
-        locale = target
+        currentLocale = target
         Locale.setDefault(target)
         // Android Context
-        updateContextResources(context, target)
+        updateResources(context.resources, target)
         if (recreateActivity && context is Activity) context.recreate()
     }
 
-    fun updateContextResources(context: Context, newLocale: Locale) {
-        val resources = context.resources
+    @JvmOverloads
+    fun updateResources(resources: Resources, newLocale: Locale = currentLocale) {
         if (resources.configuration.locales[0] == newLocale) return
         resources.updateConfiguration(
             amendConfiguration(resources.configuration, newLocale),
@@ -56,20 +60,16 @@ object LocalizationUtil {
         )
     }
 
-    fun createNewConfigurationContext(context: Context, newLocale: Locale): Context =
+    @JvmOverloads
+    fun createNewConfigurationContext(context: Context, newLocale: Locale = currentLocale): Context =
         context.createConfigurationContext(
             amendConfiguration(context.resources.configuration, newLocale)
         )
 
-    fun amendConfiguration(configuration: Configuration): Configuration =
-        amendConfiguration(configuration, locale)
-
-    private fun amendConfiguration(configuration: Configuration, newLocale: Locale): Configuration =
+    @JvmOverloads
+    fun amendConfiguration(configuration: Configuration, newLocale: Locale = currentLocale): Configuration =
         configuration.apply {
             setLocale(newLocale)
             setLayoutDirection(newLocale)
         }
-
-    @SuppressLint("ConstantLocale")
-    val systemLocale: Locale = Locale.getDefault()
 }
