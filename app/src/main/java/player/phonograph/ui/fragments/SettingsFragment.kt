@@ -17,7 +17,9 @@ import android.view.View
 import androidx.fragment.app.DialogFragment
 import androidx.preference.*
 import com.afollestad.materialdialogs.MaterialDialog
+import java.util.*
 import lib.phonograph.localization.LanguageSettingDialog
+import lib.phonograph.localization.Localization
 import lib.phonograph.preference.ColorPreferenceX
 import lib.phonograph.preference.DialogPreferenceX
 import lib.phonograph.preference.EditTextPreferenceX
@@ -153,6 +155,10 @@ class SettingsFragment : PreferenceFragmentCompat() {
                 requireActivity().recreate()
                 true
             }
+
+        val appLanguage =
+            findPreference<DialogPreferenceX>(getString(R.string.preference_key_app_language))
+        setSummary(appLanguage as Preference,Localization.currentLocale(requireContext()).displayLanguage)
 
         //
         val autoDownloadImagesPolicy = findPreference<Preference>("auto_download_images_policy")
