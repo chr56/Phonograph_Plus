@@ -8,6 +8,8 @@ import android.content.ComponentCallbacks
 import android.content.Context
 import android.content.ContextWrapper
 import android.content.res.Configuration
+import lib.phonograph.localization.LocalizationUtil.amendConfiguration
+import lib.phonograph.localization.LocalizationUtil.createNewConfigurationContext
 
 object ContextLocaleDelegate {
 
@@ -16,9 +18,9 @@ object ContextLocaleDelegate {
      */
     fun attachBaseContext(newBase: Context?): Context? =
         if (newBase != null) {
-            LocalizationUtil.createNewConfigurationContext(
+            createNewConfigurationContext(
                 context = newBase,
-                newLocale = LocalizationUtil.readLocale(newBase)
+                newLocale = Localization.currentLocale(newBase)
             )
         } else {
             newBase
@@ -27,6 +29,6 @@ object ContextLocaleDelegate {
     /**
      * Wrap [newConfig] with this in [ComponentCallbacks.onConfigurationChanged]
      */
-    fun onConfigurationChanged(newConfig: Configuration): Configuration =
-        LocalizationUtil.amendConfiguration(newConfig)
+    fun onConfigurationChanged(context: Context, newConfig: Configuration): Configuration =
+        amendConfiguration(newConfig, Localization.currentLocale(context))
 }

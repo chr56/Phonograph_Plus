@@ -53,7 +53,7 @@ class App : Application() {
     override fun onConfigurationChanged(newConfig: Configuration) {
         // Localization
         super.onConfigurationChanged(
-            ContextLocaleDelegate.onConfigurationChanged(newConfig)
+            ContextLocaleDelegate.onConfigurationChanged(this, newConfig)
         )
     }
 

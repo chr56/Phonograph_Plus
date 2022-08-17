@@ -14,7 +14,7 @@ import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.WhichButton
 import com.afollestad.materialdialogs.actions.getActionButton
 import com.afollestad.materialdialogs.customview.customView
-import lib.phonograph.localization.LocalizationUtil
+import lib.phonograph.localization.Localization
 import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.settings.Setting
@@ -51,7 +51,7 @@ class ChangelogDialog : DialogFragment() {
         val webView = customView.findViewById<WebView>(R.id.web_view)
         try {
             // Fetch correct changelog
-            val locale = LocalizationUtil.currentLocale
+            val locale = Localization.currentLocale(requireContext())
 
             val inputStream: InputStream = when (locale.language) {
                 Locale("zh").language,

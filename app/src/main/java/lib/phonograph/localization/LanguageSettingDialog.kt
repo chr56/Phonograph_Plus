@@ -13,37 +13,40 @@ import player.phonograph.R
 
 class LanguageSettingDialog : DialogFragment() {
 
-    private val _names = getAvailableLanguageNames(LocalizationUtil.currentLocale)
-    private val _locales = getAvailableLanguage()
-
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        var target: Locale? = null
+        val current: Locale = Localization.currentLocale(requireContext())
+        val default: Locale = Localization.defaultLocale(requireContext())
+        var target: Locale = current
 
-        val names = arrayOf(getString(R.string._default)).plus(_names)
-        val locales = arrayOf(LocalizationUtil.systemLocale).plus(_locales)
+        val allNames = getAvailableLanguageNames(current)
+        val allLocales = getAvailableLanguage()
 
-        val selected = locales.indexOf(LocalizationUtil.currentLocale)
+        val selected = allLocales.indexOf(current)
 
         val dialog = MaterialAlertDialogBuilder(requireContext())
             .setTitle(R.string.app_language)
-            .setSingleChoiceItems(names, selected) { _, which ->
-                target = locales.getOrNull(which)
+            .setSingleChoiceItems(allNames, selected) { _, which ->
+                target = allLocales.getOrNull(which) ?: current
             }
             .setPositiveButton(getString(android.R.string.ok)) { dialog, _ ->
-                target?.let {
-                    LocalizationUtil.writeLocale(requireContext(), it)
-                    LocalizationUtil.setCurrentLocale(requireContext(), it, true)
-                }
                 dialog.dismiss()
+                Localization.setCurrentLocale(
+                    context = requireContext(),
+                    newLocale = target,
+                    recreateActivity = true,
+                    saveToPersistence = true
+                )
             }
             .setNegativeButton(getString(R.string.reset_action)) { dialog, _ ->
-                LocalizationUtil.resetLocale(requireContext())
-                LocalizationUtil.setCurrentLocale(
-                    requireContext(),
-                    LocalizationUtil.systemLocale,
-                    true
-                )
                 dialog.dismiss()
+                Localization.resetLocale(requireContext())
+                Localization.setCurrentLocale(
+                    context = requireContext(),
+                    newLocale = default,
+                    recreateActivity = true,
+                    saveToPersistence = false
+                )
+                Localization.resetLocale(requireContext())
             }
             .create()
         return dialog

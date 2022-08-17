@@ -17,7 +17,7 @@ open class MultiLanguageActivity : AppCompatActivity() {
     }
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(
-            ContextLocaleDelegate.onConfigurationChanged(newConfig)
+            ContextLocaleDelegate.onConfigurationChanged(this, newConfig)
         )
     }
 }
