@@ -9,7 +9,7 @@ import android.app.Activity
 import android.content.Context
 import java.util.*
 
-class LocalizationUtil {
+object LocalizationUtil {
 
     var locale: Locale = Locale.getDefault()
 
@@ -62,8 +62,6 @@ class LocalizationUtil {
         resources.updateConfiguration(configuration, resources.displayMetrics)
     }
 
-    companion object {
-        @SuppressLint("ConstantLocale")
-        val systemLocale: Locale = Locale.getDefault()
-    }
+    @SuppressLint("ConstantLocale")
+    val systemLocale: Locale = Locale.getDefault()
 }
