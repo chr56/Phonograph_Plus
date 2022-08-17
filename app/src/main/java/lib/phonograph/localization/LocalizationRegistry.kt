@@ -6,7 +6,6 @@
 
 package lib.phonograph.localization
 
-import android.content.Context
 import java.util.*
 
 fun Locale.display(currentLocale: Locale): String {
@@ -21,7 +20,7 @@ fun Locale.display(currentLocale: Locale): String {
 }
 
 @Suppress("SpellCheckingInspection")
-val availableLanguageTag = listOf(
+val availableLanguageTag = arrayOf(
     "en",
     "en-CA",
     "en-GB",
@@ -54,17 +53,17 @@ val availableLanguageTag = listOf(
     "zh-TW"
 )
 
-fun getAvailableLanguage(context: Context): List<Locale> {
+fun getAvailableLanguage(): Array<Locale> {
     val tags = availableLanguageTag
-    val list = List(tags.size) {
+    val arrayOfLocales = Array(tags.size) {
         Locale(tags[it])
     }
-    return list
+    return arrayOfLocales
 }
 
-fun getAvailableLanguageNames(currentLocale: Locale): List<String> {
+fun getAvailableLanguageNames(currentLocale: Locale): Array<String> {
     val tags = availableLanguageTag
-    val list = List(tags.size) {
+    val list = Array(tags.size) {
         Locale(tags[it]).display(currentLocale)
     }
     return list
