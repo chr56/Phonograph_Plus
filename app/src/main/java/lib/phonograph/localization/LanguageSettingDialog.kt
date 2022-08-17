@@ -8,8 +8,8 @@ import android.app.Dialog
 import android.os.Bundle
 import androidx.fragment.app.DialogFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import player.phonograph.R
 import java.util.*
+import player.phonograph.R
 
 class LanguageSettingDialog : DialogFragment() {
 
@@ -29,13 +29,21 @@ class LanguageSettingDialog : DialogFragment() {
             .setSingleChoiceItems(names, selected) { _, which ->
                 target = locales.getOrNull(which)
             }
-            .setPositiveButton(getString(android.R.string.ok)) { _, _ ->
+            .setPositiveButton(getString(android.R.string.ok)) { dialog, _ ->
                 target?.let {
-                    LocalizationUtil.writeLocale(requireContext(), it, true)
+                    LocalizationUtil.writeLocale(requireContext(), it)
+                    LocalizationUtil.setCurrentLocale(requireContext(), it, true)
                 }
+                dialog.dismiss()
             }
-            .setNegativeButton(getString(R.string.reset_action)) { _, _ ->
-                LocalizationUtil.resetLocale(requireContext(), true)
+            .setNegativeButton(getString(R.string.reset_action)) { dialog, _ ->
+                LocalizationUtil.resetLocale(requireContext())
+                LocalizationUtil.setCurrentLocale(
+                    requireContext(),
+                    LocalizationUtil.systemLocale,
+                    true
+                )
+                dialog.dismiss()
             }
             .create()
         return dialog

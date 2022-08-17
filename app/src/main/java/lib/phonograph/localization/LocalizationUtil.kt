@@ -7,6 +7,7 @@ package lib.phonograph.localization
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
+import android.content.res.Configuration
 import java.util.*
 
 object LocalizationUtil {
@@ -14,26 +15,30 @@ object LocalizationUtil {
     var locale: Locale = Locale.getDefault()
 
     /**
-     * read from persistence & change runtime locate
+     * read from persistence
      */
-    fun readLocale(context: Context, recreateActivity: Boolean = false) {
-        val pref = LocalizationStore.instance(context).read(systemLocale)
-        adjustCurrentLocale(context, pref, recreateActivity)
+    fun readLocale(context: Context): Locale {
+        return LocalizationStore.instance(context).read(systemLocale)
     }
 
     /**
-     * change runtime locate & store persistence
+     * store persistence
      */
-    fun writeLocale(context: Context, newLocale: Locale, recreateActivity: Boolean = false) {
-        adjustCurrentLocale(context, newLocale, recreateActivity)
-        // Persistence
+    fun writeLocale(context: Context, newLocale: Locale) {
         LocalizationStore.instance(context).save(newLocale)
+    }
+
+    /**
+     * reset to default
+     */
+    fun resetLocale(context: Context) {
+        LocalizationStore.instance(context).reset()
     }
 
     /**
      * change runtime locate
      */
-    fun adjustCurrentLocale(context: Context, target: Locale, recreateActivity: Boolean = false) {
+    fun setCurrentLocale(context: Context, target: Locale, recreateActivity: Boolean = false) {
         // Java Locale
         locale = target
         Locale.setDefault(target)
@@ -42,25 +47,28 @@ object LocalizationUtil {
         if (recreateActivity && context is Activity) context.recreate()
     }
 
-    /**
-     * reset to default & clear persistence
-     */
-    fun resetLocale(context: Context, recreateActivity: Boolean = false) {
-        adjustCurrentLocale(context, systemLocale, recreateActivity)
-        LocalizationStore.instance(context).reset()
+    fun updateContextResources(context: Context, newLocale: Locale) {
+        val resources = context.resources
+        if (resources.configuration.locales[0] == newLocale) return
+        resources.updateConfiguration(
+            amendConfiguration(resources.configuration, newLocale),
+            resources.displayMetrics
+        )
     }
 
-    private fun updateContextResources(context: Context, newLocale: Locale) {
-        val resources = context.resources
-        if (resources.configuration.locales[0] == newLocale) {
-            return
-        }
-        val configuration = resources.configuration.apply {
+    fun createNewConfigurationContext(context: Context, newLocale: Locale): Context =
+        context.createConfigurationContext(
+            amendConfiguration(context.resources.configuration, newLocale)
+        )
+
+    fun amendConfiguration(configuration: Configuration): Configuration =
+        amendConfiguration(configuration, locale)
+
+    private fun amendConfiguration(configuration: Configuration, newLocale: Locale): Configuration =
+        configuration.apply {
             setLocale(newLocale)
             setLayoutDirection(newLocale)
         }
-        resources.updateConfiguration(configuration, resources.displayMetrics)
-    }
 
     @SuppressLint("ConstantLocale")
     val systemLocale: Locale = Locale.getDefault()
