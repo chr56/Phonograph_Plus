@@ -22,15 +22,15 @@ fun Locale.display(currentLocale: Locale): String {
 @Suppress("SpellCheckingInspection")
 val availableLanguageTag = arrayOf(
     "en",
-    "en-CA",
-    "en-GB",
+    "en-rCA",
+    "en-rGB",
     "ar",
     "bg",
     "cs",
     "de",
     "el",
-    "es-ES",
-    "es-US",
+    "es-rES",
+    "es-rUS",
     "fi",
     "fr",
     "hr",
@@ -42,21 +42,21 @@ val availableLanguageTag = arrayOf(
     "ko",
     "nl",
     "pl",
-    "pt-BR",
-    "pt-PT",
+    "pt-rBR",
+    "pt-rPT",
     "ro",
     "ru",
     "tr",
     "uk",
     "vi",
-    "zh-CN",
-    "zh-TW"
+    "zh-rCN",
+    "zh-rTW"
 )
 
 fun getAvailableLanguage(): Array<Locale> {
     val tags = availableLanguageTag
     val arrayOfLocales = Array(tags.size) {
-        Locale(tags[it])
+        parseAndroidTag(tags[it])
     }
     return arrayOfLocales
 }
@@ -64,7 +64,20 @@ fun getAvailableLanguage(): Array<Locale> {
 fun getAvailableLanguageNames(currentLocale: Locale): Array<String> {
     val tags = availableLanguageTag
     val list = Array(tags.size) {
-        Locale(tags[it]).display(currentLocale)
+        parseAndroidTag(tags[it]).display(currentLocale)
     }
     return list
+}
+
+fun parseAndroidTag(tag: String): Locale {
+    return if (tag.matches(Regex(".*-r.*"))) {
+        // with region
+        val r = tag.split("-r", limit = 2)
+        val lang = r[0]
+        val region = r[1]
+        Locale(lang, region)
+    } else {
+        // without regions
+        Locale(tag)
+    }
 }
