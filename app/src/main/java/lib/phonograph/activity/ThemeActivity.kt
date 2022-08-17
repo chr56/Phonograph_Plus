@@ -25,7 +25,7 @@ import util.mddesign.core.Themer
  * An abstract class providing material activity (no toolbar)
  * @author Karim Abou Zeid (kabouzeid)
  */
-abstract class ThemeActivity : AppCompatActivity() {
+abstract class ThemeActivity : MultiLanguageActivity() {
     private var createTime: Long = -1
 
     protected var primaryColor: Int = 0

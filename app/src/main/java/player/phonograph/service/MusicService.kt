@@ -4,6 +4,7 @@ import android.app.Service
 import android.appwidget.AppWidgetManager
 import android.content.*
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener
+import android.content.res.Configuration
 import android.media.audiofx.AudioEffect
 import android.os.Binder
 import android.os.Handler
@@ -11,6 +12,7 @@ import android.os.IBinder
 import android.support.v4.media.session.MediaSessionCompat
 import android.util.Log
 import android.widget.Toast
+import lib.phonograph.localization.ContextLocaleDelegate
 import player.phonograph.App
 import player.phonograph.App.Companion.ACTUAL_PACKAGE_NAME
 import player.phonograph.BuildConfig
@@ -389,6 +391,22 @@ class MusicService : Service(), OnSharedPreferenceChangeListener {
                 MusicServiceUtil.sendPublicIntent(this@MusicService, PLAY_STATE_CHANGED) // for musixmatch synced lyrics
             }
         }
+    }
+
+
+
+    override fun attachBaseContext(base: Context?) {
+        // Localization
+        super.attachBaseContext(
+            ContextLocaleDelegate.attachBaseContext(base)
+        )
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        // Localization
+        super.onConfigurationChanged(
+            ContextLocaleDelegate.onConfigurationChanged(newConfig)
+        )
     }
 
     @Suppress("SpellCheckingInspection")
