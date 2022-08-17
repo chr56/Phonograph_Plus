@@ -390,4 +390,6 @@
     <plurals name="x_genres">
         <item quantity="other">%1$d 流派</item>
     </plurals>
+    <string name="app_language">應用程式語言</string>
+    <string name="_default">默認</string>
 </resources>
