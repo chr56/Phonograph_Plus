@@ -19,6 +19,11 @@ object Localization {
     }
 
     /**
+     * default locale from system
+     */
+    fun defaultLocale(): Locale = startUpLocale
+
+    /**
      * save current locale to persistence
      */
     fun saveCurrentLocale(context: Context, newLocale: Locale) {
@@ -46,10 +51,4 @@ object Localization {
     fun resetLocale(context: Context) {
         LocalizationStore.instance(context).reset()
     }
-
-    /**
-     * default locale from system
-     */
-    fun defaultLocale(context: Context?): Locale =
-        if (context != null) context.resources.configuration.locales[0] else startUpLocale
 }

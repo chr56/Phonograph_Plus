@@ -15,7 +15,7 @@ class LanguageSettingDialog : DialogFragment() {
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val current: Locale = Localization.currentLocale(requireContext())
-        val default: Locale = Localization.defaultLocale(requireContext())
+        val default: Locale = Localization.defaultLocale()
         var target: Locale = current
 
         val allNames = getAvailableLanguageNames(current)
@@ -46,7 +46,6 @@ class LanguageSettingDialog : DialogFragment() {
                     recreateActivity = true,
                     saveToPersistence = false
                 )
-                Localization.resetLocale(requireContext())
             }
             .create()
         return dialog

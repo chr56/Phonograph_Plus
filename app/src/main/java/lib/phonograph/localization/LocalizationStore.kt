@@ -25,14 +25,20 @@ class LocalizationStore private constructor(context: Context) {
         }
     }
 
-    fun read(fallBack: Locale = startUpLocale): Locale {
+    private var firstRead = true
+
+    fun read(fallBack: Locale?): Locale {
+        if (firstRead) {
+            startUpLocale = Locale.getDefault()
+            firstRead = false
+        }
         val cache = localeCache
         if (cache != null) {
             return cache
         } else {
             val language = preference.getString(LANGUAGE, null)
             val region = preference.getString(REGION, null)
-            val locale = parseLocale(language, region) ?: fallBack
+            val locale = parseLocale(language, region) ?: fallBack ?: startUpLocale!!
             localeCache = locale
             return locale
         }
@@ -70,6 +76,7 @@ class LocalizationStore private constructor(context: Context) {
         private const val REGION = "region"
 
         @SuppressLint("ConstantLocale")
-        val startUpLocale: Locale = Locale.getDefault()
+        var startUpLocale: Locale = Locale.getDefault()
+            private set
     }
 }
