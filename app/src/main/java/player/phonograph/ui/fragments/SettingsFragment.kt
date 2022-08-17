@@ -17,6 +17,7 @@ import android.view.View
 import androidx.fragment.app.DialogFragment
 import androidx.preference.*
 import com.afollestad.materialdialogs.MaterialDialog
+import lib.phonograph.localization.LanguageSettingDialog
 import lib.phonograph.preference.ColorPreferenceX
 import lib.phonograph.preference.DialogPreferenceX
 import lib.phonograph.preference.EditTextPreferenceX
@@ -40,6 +41,11 @@ class SettingsFragment : PreferenceFragmentCompat() {
     }
 
     private fun onCreatePreferenceDialog(preference: Preference): DialogFragment? {
+        val key = preference.key
+        when (key) {
+            getString(R.string.preference_key_app_language) ->
+                return LanguageSettingDialog()
+        }
         return when (preference) {
             is NowPlayingScreenPreferenceX ->
                 NowPlayingScreenPreferenceDialog.newInstance()
@@ -48,11 +54,12 @@ class SettingsFragment : PreferenceFragmentCompat() {
             is HomeTabConfigPreferenceX ->
                 HomeTabConfigDialog.newInstance()
             is EditTextPreferenceX ->
-                EditTextPreferenceDialogFragmentCompatX.newInstance(preference.getKey())
+                EditTextPreferenceDialogFragmentCompatX.newInstance(key)
             is ListPreferenceX ->
-                ListPreferenceDialogFragmentCompatX.newInstance(preference.getKey())
-            is DialogPreferenceX ->
-                PreferenceDialogFragmentX.newInstance(preference.getKey())
+                ListPreferenceDialogFragmentCompatX.newInstance(key)
+            is DialogPreferenceX -> {
+                PreferenceDialogFragmentX.newInstance(key)
+            }
             else -> null
         }
     }

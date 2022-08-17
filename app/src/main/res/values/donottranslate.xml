@@ -43,4 +43,7 @@
     <string name="grid_size_7">7</string>
     <string name="grid_size_8">8</string>
 
+    <!--  special app keys  -->
+    <string name="preference_key_app_language" translatable="false">app_language</string>
+
 </resources>

@@ -44,7 +44,14 @@
             android:title="@string/pref_title_app_shortcuts"
             app:iconSpaceReserved="false" />
 
+        <lib.phonograph.preference.DialogPreferenceX
+            android:key="@string/preference_key_app_language"
+            android:persistent="false"
+            android:title="@string/app_language"
+            app:iconSpaceReserved="false" />
+
     </lib.phonograph.preference.PreferenceCategoryX>
+
     <lib.phonograph.preference.PreferenceCategoryX android:title="@string/pref_header_library">
 
         <player.phonograph.preferences.HomeTabConfigPreferenceX
