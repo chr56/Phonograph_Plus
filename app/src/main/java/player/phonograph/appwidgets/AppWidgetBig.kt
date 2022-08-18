@@ -10,14 +10,14 @@ import android.os.Looper
 import android.text.TextUtils
 import android.view.View
 import android.widget.RemoteViews
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.target.SimpleTarget
-import com.bumptech.glide.request.target.Target
-import com.bumptech.glide.request.transition.Transition
+import androidx.core.graphics.drawable.toBitmapOrNull
+import coil.Coil
+import coil.request.Disposable
+import coil.request.ImageRequest
+import coil.target.Target
 import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.appwidgets.base.BaseAppWidget
-import player.phonograph.glide.SongGlideRequest
 import player.phonograph.service.MusicService
 import player.phonograph.ui.activities.MainActivity
 import player.phonograph.util.ImageUtil
@@ -25,8 +25,6 @@ import player.phonograph.util.Util.getScreenSize
 import util.mddesign.util.MaterialColorHelper
 
 class AppWidgetBig : BaseAppWidget() {
-    private var target: Target<Bitmap>? = null // for cancellation
-
     /**
      * Initialize given widgets to default state, where we launch Music on
      * default click and hide actions if service not running.
@@ -42,6 +40,8 @@ class AppWidgetBig : BaseAppWidget() {
 
         pushUpdate(context, appWidgetIds, appWidgetView)
     }
+
+    private var task: Disposable? = null
 
     /**
      * Update all active widget instances by pushing changes
@@ -104,39 +104,40 @@ class AppWidgetBig : BaseAppWidget() {
         val widgetImageSize = p.x.coerceAtMost(p.y)
         uiHandler.post {
             val appContext = service.applicationContext
-            if (target != null) {
-                Glide.with(service.applicationContext).clear(target)
-            }
-            target =
-                SongGlideRequest.Builder
-                .from(Glide.with(appContext), song)
-                .checkIgnoreMediaStore(appContext)
-                .asBitmap().build()
-                .into(object : SimpleTarget<Bitmap?>(widgetImageSize, widgetImageSize) {
-                    override fun onResourceReady(
-                        resource: Bitmap,
-                        transition: Transition<in Bitmap?>?
-                    ) {
-                        update(resource)
-                    }
+            val loader = Coil.imageLoader(appContext)
+            task?.dispose() // cancel last
+            task = loader.enqueue(
+                ImageRequest.Builder(appContext)
+                    .data(song)
+                    .size(widgetImageSize, widgetImageSize)
+                    .target(
+                        object : Target {
 
-                    override fun onLoadFailed(errorDrawable: Drawable?) {
-                        super.onLoadFailed(errorDrawable)
-                        update(null)
-                    }
+                            override fun onStart(placeholder: Drawable?) {
+                                appWidgetView.setImageViewResource(R.id.image, R.drawable.default_album_art)
+                            }
 
-                    private fun update(bitmap: Bitmap?) {
-                        if (bitmap == null) {
-                            appWidgetView.setImageViewResource(
-                                R.id.image,
-                                R.drawable.default_album_art
-                            )
-                        } else {
-                            appWidgetView.setImageViewBitmap(R.id.image, bitmap)
+                            override fun onSuccess(result: Drawable) {
+                                update(result.toBitmapOrNull())
+                            }
+
+                            override fun onError(error: Drawable?) {
+                                update(null)
+                            }
+
+                            private fun update(bitmap: Bitmap?) {
+                                if (bitmap == null) {
+                                    appWidgetView
+                                        .setImageViewResource(R.id.image, R.drawable.default_album_art)
+                                } else {
+                                    appWidgetView.setImageViewBitmap(R.id.image, bitmap)
+                                }
+                                pushUpdate(appContext, appWidgetIds, appWidgetView)
+                            }
                         }
-                        pushUpdate(appContext, appWidgetIds, appWidgetView)
-                    }
-                }) as Target<Bitmap>?
+                    )
+                    .build()
+            )
         }
     }
 
