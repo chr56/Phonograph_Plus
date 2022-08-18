@@ -26,6 +26,7 @@ import player.phonograph.ui.fragments.player.AbsPlayerFragment
 import player.phonograph.ui.fragments.player.PlayerAlbumCoverFragment
 import player.phonograph.util.Util.isLandscape
 import player.phonograph.util.ViewUtil
+import player.phonograph.util.ViewUtil.isWindowBackgroundDarkSafe
 import player.phonograph.util.menu.MenuClickListener
 import util.mdcolor.ColorUtil
 import util.mdcolor.pref.ThemeColor
@@ -233,7 +234,7 @@ class FlatPlayerFragment :
                 )
             val animatorSet = AnimatorSet()
             animatorSet.playTogether(backgroundAnimator, statusBarAnimator)
-            if (!Util.isWindowBackgroundDark(fragment.activity)) {
+            if (!isWindowBackgroundDarkSafe(fragment.activity)) {
                 val adjustedLastColor =
                     if (ColorUtil.isColorLight(fragment.paletteColor)) ColorUtil.darkenColor(
                         fragment.paletteColor
@@ -254,7 +255,7 @@ class FlatPlayerFragment :
         }
 
         override fun animateColorChange(newColor: Int) {
-            if (Util.isWindowBackgroundDark(fragment.activity)) {
+            if (isWindowBackgroundDarkSafe(fragment.activity)) {
                 fragment.viewBinding.playerQueueSubHeader.setTextColor(
                     ThemeColor.textColorSecondary(fragment.requireActivity())
                 )

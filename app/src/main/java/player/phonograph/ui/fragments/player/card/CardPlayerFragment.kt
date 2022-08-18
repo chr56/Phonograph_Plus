@@ -280,7 +280,7 @@ class CardPlayerFragment :
                 AnimatorSet()
                     .apply {
                         play(backgroundAnimator)
-                        if (!Util.isWindowBackgroundDark(fragment.activity)) {
+                        if (!ViewUtil.isWindowBackgroundDarkSafe(fragment.activity)) {
                             play(
                                 ViewUtil.createTextColorTransition(
                                     fragment.viewBinding.playerQueueSubHeader,
@@ -299,7 +299,7 @@ class CardPlayerFragment :
         }
 
         override fun animateColorChange(newColor: Int) {
-            if (Util.isWindowBackgroundDark(fragment.activity)) {
+            if (ViewUtil.isWindowBackgroundDarkSafe(fragment.activity)) {
                 fragment.viewBinding.playerQueueSubHeader.setTextColor(
                     ThemeColor.textColorSecondary(fragment.requireActivity())
                 )

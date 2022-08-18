@@ -43,7 +43,7 @@ object ViewUtil {
         target: Any,
         propertyName: String,
         @ColorInt startColor: Int,
-        @ColorInt endColor: Int
+        @ColorInt endColor: Int,
     ): Animator {
         val animator: ObjectAnimator
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -96,4 +96,13 @@ object ViewUtil {
         val metrics = resources.displayMetrics
         return px / metrics.density
     }
+
+    fun isWindowBackgroundDarkSafe(context: Context?): Boolean =
+        try {
+            context?.let {
+                Util.isWindowBackgroundDark(context)
+            } ?: false
+        } catch (e: Exception) {
+            false
+        }
 }
