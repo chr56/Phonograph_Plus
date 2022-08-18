@@ -17,7 +17,10 @@ import com.afollestad.materialdialogs.WhichButton
 import com.afollestad.materialdialogs.actions.getActionButton
 import com.github.chr56.android.menu_dsl.attach
 import com.github.chr56.android.menu_dsl.menuItem
-import kotlin.system.exitProcess
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
 import lib.phonograph.activity.ToolbarActivity
 import player.phonograph.KEY_STACK_TRACE
 import player.phonograph.R
@@ -25,6 +28,10 @@ import player.phonograph.databinding.ActivityCrashBinding
 import player.phonograph.settings.SettingManager
 import player.phonograph.util.DeviceInfoUtil.getDeviceInfo
 import player.phonograph.util.ImageUtil.getTintedDrawable
+import player.phonograph.util.Util.currentDateTime
+import java.io.File
+import java.io.FileOutputStream
+import kotlin.system.exitProcess
 
 class CrashActivity : ToolbarActivity() {
 
@@ -86,6 +93,20 @@ class CrashActivity : ToolbarActivity() {
                 }
             }
         }
+
+        // save crash report
+        externalCacheDir?.let { cacheDir ->
+            coroutineScope.launch(Dispatchers.IO) {
+                val file = File(cacheDir, "Crash_Report_${currentDateTime()}.txt")
+                FileOutputStream(file).use {
+                    it.writer().apply {
+                        write(displayText)
+                        flush()
+                        close()
+                    }
+                }
+            }
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -110,4 +131,6 @@ class CrashActivity : ToolbarActivity() {
         }
         return true
     }
+
+    private val coroutineScope = CoroutineScope(SupervisorJob())
 }
