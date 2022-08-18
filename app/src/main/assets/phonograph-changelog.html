@@ -39,16 +39,19 @@
 
     <p>Translate Phonograph Plus into your language -> <a href="https://crowdin.com/project/phonograph-plus">crowdin</a></p>
 
-    <h4><b>0.3.1 beta01 </b> 2022.8.17</h4>
+    <h4><b>0.3.1 </b> 2022.8.18</h4>
     <div>
         <ol>
             <li>Translation: updated Italian (by Andrea Enzo Lattmann (Gh0stz0x)), French (by Exylos), Russian (by Photon_Gilbert)</li>
             <li>Translation: clean up English(British), English(Canadian) translations (only keep words that are different from default English(US))</li>
             <li>Translation: Remove Swedish and Norwegian Nynorsk translations (missing too many translations)</li>
             <li>New: Initial support for changing language in app (imperfect yet)</li>
+            <li>Fix: Crash after rotation to landscape</li>
             <li>Fix: After the playlist is modified, when the current track is finished, the audio of &quot;Next Track&quot; to play is still be &quot;Next Track&quot; of the PREVIOUS playlist, but player display the &quot;correct&quot; &quot;Next Track&quot; of the NEW playlist</li>
             <li>Fix: Couldn&quot;t play new queue by clicking an Song item (including starting position and tracks order), when &quot;Please do NOT touch my playing queue arbitrarily&quot; option is turned off</li>
             <li>Fix: In main player, total time of subsequent tracks (after &quot;Up Next&quot;) incorrectly</li>
+            <li>Improve: The design of Crash Report</li>
+            <li>Improve: Save crash report to external cache dir (/Android/data)</li>
             <li>Development: clean code</li>
         </ol>
     </div>
