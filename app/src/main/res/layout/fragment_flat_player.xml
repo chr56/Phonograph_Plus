@@ -70,9 +70,9 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
-            <fragment
+            <androidx.fragment.app.FragmentContainerView
                 android:id="@+id/playback_controls_fragment"
-                class="player.phonograph.ui.fragments.player.flat.FlatPlayerControllerFragment"
+                android:name="player.phonograph.ui.fragments.player.flat.FlatPlayerControllerFragment"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
