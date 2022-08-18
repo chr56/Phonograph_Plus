@@ -118,7 +118,16 @@ class FileAdapter(
                 if (loadCover) {
                     loadImage(image.context) {
                         data(item.linkedSong)
-                        target(image)
+                        target(
+                            onStart = {
+                                image.setImageResource(
+                                    R.drawable.ic_file_music_white_24dp
+                                )
+                                val iconColor = Util.resolveColor(context, R.attr.iconColor)
+                                image.setColorFilter(iconColor, PorterDuff.Mode.SRC_IN)
+                            },
+                            onSuccess = { image.setImageDrawable(it) }
+                        )
                     }
                 } else {
                     image.setImageResource(

@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import player.phonograph.R
 import player.phonograph.adapter.base.MediaEntryViewHolder
 import player.phonograph.coil.loadImage
+import player.phonograph.coil.target.ColoredTarget
 import player.phonograph.model.Album
 import player.phonograph.model.Artist
 import player.phonograph.model.Song
@@ -56,7 +57,10 @@ class SearchAdapter(
                 holder.text?.text = song.infoString()
                 loadImage(activity) {
                     data(song)
-                    target(holder.image!!)
+                    target(
+                        onStart = { holder.image!!.setImageResource(R.drawable.default_album_art) },
+                        onSuccess = { holder.image!!.setImageDrawable(it) }
+                    )
                 }
             }
             ALBUM -> {
@@ -65,7 +69,10 @@ class SearchAdapter(
                 holder.text?.text = album.infoString(activity)
                 loadImage(activity) {
                     data(album.safeGetFirstSong())
-                    target(holder.image!!)
+                    target(
+                        onStart = { holder.image!!.setImageResource(R.drawable.default_album_art) },
+                        onSuccess = { holder.image!!.setImageDrawable(it) }
+                    )
                 }
             }
             ARTIST -> {
@@ -74,7 +81,10 @@ class SearchAdapter(
                 holder.text?.text = artist.infoString(activity)
                 loadImage(activity) {
                     data(artist)
-                    target(holder.image!!)
+                    target(
+                        onStart = { holder.image!!.setImageResource(R.drawable.default_artist_image) },
+                        onSuccess = { holder.image!!.setImageDrawable(it) }
+                    )
                 }
             }
             else -> holder.title?.text = dataSet[position].toString()

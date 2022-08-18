@@ -31,16 +31,22 @@ class AlbumDisplayAdapter(
         holder.image?.let {
             loadImage(activity) {
                 data(dataset[position].safeGetFirstSong())
-                target(object : PhonographColoredTarget() {
-                    override fun onResourcesReady(drawable: Drawable) {
-                        holder.image?.setImageDrawable(drawable)
-                    }
+                target(
+                    object : PhonographColoredTarget() {
+                        override fun onStart(placeholder: Drawable?) {
+                            it.setImageResource(R.drawable.default_album_art)
+                            setPaletteColors(defaultFooterColor, holder)
+                        }
 
-                    override fun onColorReady(color: Int) {
-                        if (usePalette) setPaletteColors(color, holder)
-                        else setPaletteColors(defaultFooterColor, holder)
+                        override fun onResourcesReady(drawable: Drawable) {
+                            it.setImageDrawable(drawable)
+                        }
+
+                        override fun onColorReady(color: Int) {
+                            if (usePalette) setPaletteColors(color, holder)
+                        }
                     }
-                })
+                )
             }
         }
     }

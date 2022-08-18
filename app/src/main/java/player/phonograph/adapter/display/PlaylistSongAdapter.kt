@@ -6,10 +6,12 @@ package player.phonograph.adapter.display
 
 import android.content.Context
 import android.content.Intent
-import android.view.*
+import android.view.LayoutInflater
+import android.view.Menu
+import android.view.View
+import android.view.ViewGroup
 import android.widget.PopupMenu
 import androidx.appcompat.app.AppCompatActivity
-import com.bumptech.glide.Glide
 import com.github.chr56.android.menu_dsl.attach
 import com.github.chr56.android.menu_dsl.menuItem
 import com.github.chr56.android.menu_dsl.submenu
@@ -41,7 +43,10 @@ class PlaylistSongAdapter(
     override fun setImage(holder: DisplayViewHolder, position: Int) {
         loadImage(context) {
             data(dataset[position])
-            target(holder.image!!)
+            target(
+                onStart = { holder.image!!.setImageResource(R.drawable.default_album_art) },
+                onSuccess = { holder.image!!.setImageDrawable(it) }
+            )
         }
     }
 

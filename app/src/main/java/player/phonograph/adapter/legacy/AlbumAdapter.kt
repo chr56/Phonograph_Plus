@@ -10,7 +10,9 @@ import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.util.Pair
+import androidx.palette.graphics.Palette
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView.SectionedAdapter
+import kotlinx.coroutines.Deferred
 import player.phonograph.R
 import player.phonograph.adapter.base.MediaEntryViewHolder
 import player.phonograph.adapter.base.MultiSelectAdapter
@@ -99,13 +101,18 @@ open class AlbumAdapter(
         loadImage(context) {
             data(album.safeGetFirstSong())
             target(object : PhonographColoredTarget() {
+                override fun onStart(placeholder: Drawable?) {
+                    super.onStart(placeholder)
+                    holder.image!!.setImageResource(R.drawable.default_album_art)
+                    setColors(defaultFooterColor, holder)
+                }
+
                 override fun onResourcesReady(drawable: Drawable) {
                     holder.image!!.setImageDrawable(drawable)
                 }
 
                 override fun onColorReady(color: Int) {
                     if (usePalette) setColors(color, holder)
-                    else setColors(defaultFooterColor, holder)
                 }
             })
         }

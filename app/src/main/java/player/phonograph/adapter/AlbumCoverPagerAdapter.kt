@@ -14,6 +14,7 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
+import player.phonograph.R
 import player.phonograph.coil.loadImage
 import player.phonograph.coil.target.PhonographColoredTarget
 import player.phonograph.databinding.FragmentAlbumCoverBinding
@@ -126,6 +127,11 @@ class AlbumCoverPagerAdapter(
                 loadImage(context)
                     .from(song)
                     .into(object : PhonographColoredTarget() {
+                        override fun onStart(placeholder: Drawable?) {
+                            super.onStart(placeholder)
+                            target?.setImageResource(R.drawable.default_album_art)
+                        }
+
                         override fun onResourcesReady(drawable: Drawable) {
                             target?.setImageDrawable(drawable)
                         }

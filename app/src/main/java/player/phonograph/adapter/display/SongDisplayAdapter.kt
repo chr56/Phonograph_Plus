@@ -29,9 +29,9 @@ open class SongDisplayAdapter(
 
     override fun setImage(holder: DisplayViewHolder, position: Int) {
         holder.image?.let {
-            loadImage(context)
-                .from(dataset[position])
-                .into(
+            loadImage(context) {
+                data(dataset[position])
+                target(
                     object : PhonographColoredTarget() {
                         override fun onStart(placeholder: Drawable?) {
                             it.setImageResource(R.drawable.default_album_art)
@@ -47,7 +47,7 @@ open class SongDisplayAdapter(
                         }
                     }
                 )
-                .enqueue()
+            }
         }
     }
 
