@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"    >
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
     <include layout="@layout/status_bar" />
 
     <androidx.appcompat.widget.Toolbar
@@ -10,43 +11,32 @@
         style="@style/Toolbar" />
 
     <FrameLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="96dp">
+            android:layout_margin="16dp">
 
             <TextView
                 android:id="@+id/crash_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:fontFamily="monospace"
+                android:minHeight="48dp"
                 android:textIsSelectable="true"
                 android:textSize="12sp" />
         </ScrollView>
 
-        <LinearLayout
-            android:layout_width="match_parent"
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/copy_to_clipboard"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            android:orientation="vertical">
-
-            <Button
-                android:id="@+id/copy_to_clipboard"
-                android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:layout_gravity="top"
-                android:text="@string/copy_to_clipboard" />
-            <Button
-                android:id="@id/action_clear_all_preference"
-                android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:layout_gravity="bottom"
-                android:textColor="@color/md_red_A700"
-                android:text="@string/clear_all_preference"/>
-        </LinearLayout>
+            android:layout_gravity="bottom|end"
+            android:layout_margin="24dp"
+            android:contentDescription="@string/copy_to_clipboard"
+            android:src="@drawable/ic_send_white_24dp" />
     </FrameLayout>
 
 </LinearLayout>

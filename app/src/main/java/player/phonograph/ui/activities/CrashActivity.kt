@@ -10,7 +10,10 @@ import android.os.Handler
 import android.os.Looper
 import android.os.Process
 import android.view.Menu
+import android.view.Menu.NONE
 import android.view.MenuItem.SHOW_AS_ACTION_IF_ROOM
+import android.view.MenuItem.SHOW_AS_ACTION_NEVER
+import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.WhichButton
@@ -22,6 +25,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import lib.phonograph.activity.ToolbarActivity
+import player.phonograph.BuildConfig.DEBUG
 import player.phonograph.KEY_STACK_TRACE
 import player.phonograph.R
 import player.phonograph.databinding.ActivityCrashBinding
@@ -49,6 +53,21 @@ class CrashActivity : ToolbarActivity() {
         }
     }
 
+    /**
+     * stack trace text
+     */
+    private lateinit var stackTraceText: String
+
+    /**
+     * device data
+     */
+    private lateinit var deviceInfo: String
+
+    /**
+     *  full report
+     */
+    private lateinit var displayText: String
+
     override fun onCreate(savedInstanceState: Bundle?) {
         autoSetStatusBarColor = false
         autoSetNavigationBarColor = false
@@ -57,12 +76,9 @@ class CrashActivity : ToolbarActivity() {
         setContentView(binding.root)
         setupTheme()
 
-        // stack trace text
-        val stackTraceText: String = intent.getStringExtra(KEY_STACK_TRACE) ?: getString(R.string.empty)
-        // device data
-        val deviceInfo: String = getDeviceInfo(this)
-        // appended string
-        val displayText = "Crash Report:\n\n$deviceInfo\n$stackTraceText\n"
+        stackTraceText = intent.getStringExtra(KEY_STACK_TRACE) ?: getString(R.string.empty)
+        deviceInfo = getDeviceInfo(this)
+        displayText = "Crash Report:\n\n$deviceInfo\n$stackTraceText\n"
 
         // display textview
         binding.crashText.text = displayText
@@ -72,26 +88,7 @@ class CrashActivity : ToolbarActivity() {
             val clipboardManager = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
             val clipData = ClipData.newPlainText("CRASH", displayText)
             clipboardManager.setPrimaryClip(clipData)
-        }
-
-        // button "clear all preference"
-        binding.actionClearAllPreference.setOnClickListener {
-            MaterialDialog(this).show {
-                title(R.string.clear_all_preference)
-                message(R.string.clear_all_preference_msg)
-                cancelOnTouchOutside(true)
-                negativeButton(android.R.string.cancel)
-                positiveButton(R.string.clear_all_preference) {
-                    SettingManager(this@CrashActivity).clearAllPreference()
-                    Handler(Looper.getMainLooper()).postDelayed({
-                        Process.killProcess(Process.myPid())
-                        exitProcess(1)
-                    }, 4000)
-                }
-                apply {
-                    getActionButton(WhichButton.POSITIVE).updateTextColor(getColor(R.color.md_red_A700))
-                }
-            }
+            Toast.makeText(this,"${getString(R.string.copy_to_clipboard)}:\n${getString(R.string.success)}",Toast.LENGTH_SHORT).show()
         }
 
         // save crash report
@@ -111,21 +108,36 @@ class CrashActivity : ToolbarActivity() {
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         attach(menu) {
-            menuItem {
-                itemId = R.id.nav_settings
-                title = getString(R.string.action_settings)
+            menuItem(0, R.id.nav_settings, 1, getString(R.string.action_settings)) {
                 icon = getTintedDrawable(R.drawable.ic_settings_white_24dp, Color.WHITE)
                 showAsActionFlag = SHOW_AS_ACTION_IF_ROOM
                 onClick {
-                    when (it.itemId) {
-                        R.id.nav_settings -> {
+                    Handler(Looper.getMainLooper()).postDelayed({
+                        startActivity(Intent(this@CrashActivity, SettingsActivity::class.java))
+                    }, 80)
+                    true
+                }
+            }
+            menuItem(0, NONE, 2, getString(R.string.clear_all_preference)) {
+                showAsActionFlag = SHOW_AS_ACTION_NEVER
+                onClick {
+                    MaterialDialog(this@CrashActivity).show {
+                        title(R.string.clear_all_preference)
+                        message(R.string.clear_all_preference_msg)
+                        cancelOnTouchOutside(true)
+                        negativeButton(android.R.string.cancel)
+                        positiveButton(R.string.clear_all_preference) {
+                            SettingManager(this@CrashActivity).clearAllPreference()
                             Handler(Looper.getMainLooper()).postDelayed({
-                                startActivity(Intent(this@CrashActivity, SettingsActivity::class.java))
-                            }, 80)
-                            true
+                                Process.killProcess(Process.myPid())
+                                exitProcess(1)
+                            }, 4000)
                         }
-                        else -> false
+                        apply {
+                            getActionButton(WhichButton.POSITIVE).updateTextColor(getColor(R.color.md_red_A700))
+                        }
                     }
+                    true
                 }
             }
         }
