@@ -10,13 +10,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
-import com.bumptech.glide.Glide
 import player.phonograph.R
 import player.phonograph.adapter.base.MultiSelectionCabController
-import player.phonograph.glide.ArtistGlideRequest
-import player.phonograph.glide.PhonographColoredTarget
-import player.phonograph.model.sort.SortRef
+import player.phonograph.coil.loadImage
+import player.phonograph.coil.target.PhonographColoredTarget
 import player.phonograph.model.Artist
+import player.phonograph.model.sort.SortRef
 import player.phonograph.settings.Setting
 import player.phonograph.util.MusicUtil
 
@@ -25,17 +24,16 @@ class ArtistDisplayAdapter(
     cabController: MultiSelectionCabController?,
     dataSet: List<Artist>,
     layoutRes: Int,
-    cfg: (DisplayAdapter<Artist>.() -> Unit)?
+    cfg: (DisplayAdapter<Artist>.() -> Unit)?,
 ) : DisplayAdapter<Artist>(activity, cabController, dataSet, layoutRes, cfg) {
 
     override fun setImage(holder: DisplayViewHolder, position: Int) {
         holder.image?.let {
-            ArtistGlideRequest.Builder.from(Glide.with(activity), dataset[position])
-                .generatePalette(activity).build()
-                .into(object : PhonographColoredTarget(holder.image) {
-                    override fun onLoadCleared(placeholder: Drawable?) {
-                        super.onLoadCleared(placeholder)
-                        setPaletteColors(defaultFooterColor, holder)
+            loadImage(activity) {
+                data(dataset[position])
+                target(object : PhonographColoredTarget() {
+                    override fun onResourcesReady(drawable: Drawable) {
+                        holder.image?.setImageDrawable(drawable)
                     }
 
                     override fun onColorReady(color: Int) {
@@ -43,8 +41,10 @@ class ArtistDisplayAdapter(
                         else setPaletteColors(defaultFooterColor, holder)
                     }
                 })
+            }
         }
     }
+
     override fun getSectionNameImp(position: Int): String {
         val artist = dataset[position]
         val sectionName: String =
@@ -52,7 +52,9 @@ class ArtistDisplayAdapter(
                 SortRef.ARTIST_NAME -> MusicUtil.getSectionName(artist.name)
                 SortRef.ALBUM_COUNT -> artist.albumCount.toString()
                 SortRef.SONG_COUNT -> artist.songCount.toString()
-                else -> { "" }
+                else -> {
+                    ""
+                }
             }
         return MusicUtil.getSectionName(sectionName)
     }

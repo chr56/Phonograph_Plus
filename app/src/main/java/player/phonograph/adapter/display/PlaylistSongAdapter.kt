@@ -20,9 +20,9 @@ import com.h6ah4i.android.widget.advrecyclerview.draggable.ItemDraggableRange
 import com.h6ah4i.android.widget.advrecyclerview.draggable.annotation.DraggableItemStateFlags
 import player.phonograph.R
 import player.phonograph.adapter.base.MultiSelectionCabController
+import player.phonograph.coil.loadImage
 import player.phonograph.dialogs.DeleteSongsDialog
 import player.phonograph.dialogs.SongDetailDialog
-import player.phonograph.glide.SongGlideRequest
 import player.phonograph.interfaces.PaletteColorHolder
 import player.phonograph.model.Song
 import player.phonograph.util.ViewUtil.hitTest
@@ -33,14 +33,16 @@ class PlaylistSongAdapter(
     activity: AppCompatActivity,
     cabController: MultiSelectionCabController?,
     dataSet: List<Song>,
-    cfg: (DisplayAdapter<Song>.() -> Unit)?
+    cfg: (DisplayAdapter<Song>.() -> Unit)?,
 ) : DisplayAdapter<Song>(activity, cabController, dataSet, R.layout.item_list, cfg), DraggableItemAdapter<PlaylistSongAdapter.ViewHolder> {
 
     override fun getSectionNameImp(position: Int): String = (position + 1).toString()
 
     override fun setImage(holder: DisplayViewHolder, position: Int) {
-        SongGlideRequest.Builder.from(Glide.with(context), dataset[position])
-            .checkIgnoreMediaStore(activity).build().into(holder.image!!)
+        loadImage(context) {
+            data(dataset[position])
+            target(holder.image!!)
+        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DisplayViewHolder {
@@ -59,7 +61,7 @@ class PlaylistSongAdapter(
 
     override fun onCheckCanStartDrag(holder: ViewHolder, position: Int, x: Int, y: Int): Boolean =
         position >= 0 &&
-            (hitTest(holder.dragView!!, x, y) || hitTest(holder.image!!, x, y))
+                (hitTest(holder.dragView!!, x, y) || hitTest(holder.image!!, x, y))
 
     override fun onGetItemDraggableRange(holder: ViewHolder, position: Int): ItemDraggableRange =
         ItemDraggableRange(0, dataset.size - 1)
@@ -204,7 +206,7 @@ class PlaylistSongAdapter(
     override fun onCheckCanDrop(draggingPosition: Int, dropPosition: Int): Boolean =
         (dropPosition >= 0) && (dropPosition <= dataset.size - 1)
 
-    override fun onItemDragStarted(position: Int) { }
+    override fun onItemDragStarted(position: Int) {}
 
     override fun onItemDragFinished(fromPosition: Int, toPosition: Int, result: Boolean) {
         when {
