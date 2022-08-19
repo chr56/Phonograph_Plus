@@ -9,6 +9,7 @@ import android.content.Context
 import android.content.Intent
 import android.database.Cursor
 import android.os.Build
+import android.os.Handler
 import android.os.Looper
 import android.provider.MediaStore
 import android.util.Log
@@ -86,7 +87,7 @@ object LegacyPlaylistsUtil {
      */
     @Deprecated("use SAF")
     fun deletePlaylists(context: Context, filePlaylists: List<FilePlaylist>): List<FilePlaylist> {
-        var result: Int = 0
+        var result = 0
         val failList: MutableList<FilePlaylist> = ArrayList()
         // try to delete
         for (index in filePlaylists.indices) {
@@ -101,10 +102,12 @@ object LegacyPlaylistsUtil {
             }
             result += output
         }
-        CoroutineScope(SupervisorJob()).launch(Dispatchers.Main) {
-            CoroutineUtil.coroutineToast(
-                context, String.format(Locale.getDefault(), context.getString(R.string.deleted_x_playlists), result)
-            )
+        Handler(Looper.getMainLooper()).post {
+            Toast.makeText(
+                context,
+                context.resources.getQuantityString(R.plurals.msg_deletion_result, result, result, filePlaylists.size),
+                Toast.LENGTH_SHORT
+            ).show()
         }
 
         LocalBroadcastManager.getInstance(App.instance).sendBroadcast(Intent(BROADCAST_PLAYLISTS_CHANGED))
