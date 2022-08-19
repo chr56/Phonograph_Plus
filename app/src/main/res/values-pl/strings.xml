@@ -35,7 +35,6 @@
     <string name="biography">Biografia</string>
     <string name="wiki">Wikipedia</string>
     <string name="audio_focus_denied">Nie można teraz odtworzyć dźwięku</string>
-    <string name="album">Album</string>
     <string name="artist">Wykonawca</string>
     <string name="genre">Gatunek</string>
     <string name="album_artist">Wykonawca albumu</string>
@@ -48,7 +47,6 @@
     <string name="label_file_name">Nazwa pliku</string>
     <string name="label_file_path">Ścieżka pliku</string>
     <string name="label_file_size">Rozmiar</string>
-    <string name="label_file_format">Format</string>
     <string name="label_track_length">Długość</string>
     <string name="label_bit_rate">Próbkowanie</string>
     <string name="label_sampling_rate">Częstotliwość próbkowania</string>
@@ -91,9 +89,9 @@
     <string name="only_on_wifi">Tylko na WiFi</string>
     <string name="never">Nigdy</string>
     <string name="today">Dzisiaj</string>
+    <string name="past_three_months">Ostatnie 3 miesiące</string>
     <string name="this_week">Ten tydzień</string>
     <string name="this_month">Ten miesiąc</string>
-    <string name="past_three_months">Ostatnie 3 miesiące</string>
     <string name="this_year">Ten rok</string>
     <string name="equalizer">Korektor</string>
     <string name="pref_header_colors">Kolory</string>
@@ -103,7 +101,7 @@
     <string name="pref_header_library">Biblioteka</string>
     <string name="pref_header_images">Obrazy</string>
     <string name="pref_header_lockscreen">Ekran blokady</string>
-    <string name="pref_header_playlists">Lista odtwarzania</string>
+    <string name="pref_header_playlists">Listy odtwarzania</string>
     <string name="pref_header_notification">Powiadomienie</string>
     <string name="pref_title_navigation_bar">Kolorowy pasek nawigacyjny</string>
     <string name="pref_title_app_shortcuts">Kolorowe skróty aplikacji</string>
@@ -117,7 +115,7 @@
     <string name="pref_title_audio_ducking">Zmniejszaj głośność przy powiadomieniach</string>
     <string name="pref_title_last_added_interval">Okres ostatnio dodanych list odtwarzania</string>
     <string name="pref_title_synchronized_lyrics_show">Pokazuj zsynchronizowany tekst</string>
-    <string name="pref_title_remember_last_tab">"Zapamiętaj ostatnią zakładkę "</string>
+    <string name="pref_title_remember_last_tab">Zapamiętaj ostatnią zakładkę </string>
     <string name="no_equalizer">Nie znaleziono korektora</string>
     <string name="no_audio_ID">"Odegraj utwór, następnie ponów próbę"</string>
     <string name="delete_action">Usuń</string>
@@ -255,7 +253,8 @@
     <string name="action_sort_order">Kolejność sortowania</string>
     <string name="sort_order_a_z">Rosnąco</string>
     <string name="sort_order_z_a">Malejąco</string>
-    <string name="sort_order_artist">Artysta</string>
-    <string name="sort_order_album">Album</string>
+    <string name="sort_order_artist">Wykonawca</string>
     <string name="sort_order_year">Rok</string>
+    <string name="sort_order_song">Utwór</string>
+    <string name="pref_header_appearance">Wygląd</string>
 </resources>
