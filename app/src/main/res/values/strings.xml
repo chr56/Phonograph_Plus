@@ -410,4 +410,5 @@
         <item quantity="one">Generated Playlist</item>
         <item quantity="other">Generated Playlists</item>
     </plurals>
+    <string name="warning_can_not_retract">This action can not be retracted!</string>
 </resources>
