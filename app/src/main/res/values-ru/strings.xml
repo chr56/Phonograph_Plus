@@ -79,8 +79,6 @@
         <item quantity="many"><![CDATA[Удалить песни <b>%1$d</b> из плейлиста?]]></item>
         <item quantity="other"><![CDATA[Удалить песни <b>%1$d</b> из плейлиста?]]></item>
     </plurals>
-    <string name="delete_song_title">Удалить песню</string>
-    <string name="delete_songs_title">Удалить песни</string>
     <string name="remove_song_from_playlist_title">Удалить песню из плейлиста</string>
     <string name="remove_songs_from_playlist_title">Удалить песни из плейлиста</string>
     <string name="rename_playlist_title">Переименовать плейлист</string>

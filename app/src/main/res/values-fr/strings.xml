@@ -72,8 +72,6 @@
         <item quantity="many">Supprimer les chansons <b>%1$d</b> de l\'appareil ?<br/></item>
         <item quantity="other">Supprimer les chansons <b>%1$d</b> de l\'appareil ?<br/></item>
     </plurals>
-    <string name="delete_song_title">Supprimer le titre</string>
-    <string name="delete_songs_title">Supprimer les titres</string>
     <string name="remove_song_from_playlist_title">Retirer le titre de la playlist</string>
     <string name="remove_songs_from_playlist_title">Retirer les titres de la liste de lecture</string>
     <string name="rename_playlist_title">Renommer la playlist</string>

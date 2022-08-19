@@ -66,8 +66,6 @@
     <string name="created_playlist_x">Đã tạo danh sách nhạc %1$s.</string>
     <string name="playlist_exists">Danh sách %1$s đã tồn tại.</string>
     <string name="could_not_create_playlist">Kh\u00f4ng th\u1ec3 t\u1ea1o danh s\u00e1ch nh\u1ea1c.</string>
-    <string name="delete_song_title">Xóa bài hát</string>
-    <string name="delete_songs_title">Xóa các bài hát</string>
     <string name="remove_song_from_playlist_title">Di chuyển bài hát từ danh sách nhạc</string>
     <string name="remove_songs_from_playlist_title">Di chuyển các bài hát từ danh sách nhạc</string>
     <string name="rename_playlist_title">Đổi tên danh sách nhạc</string>

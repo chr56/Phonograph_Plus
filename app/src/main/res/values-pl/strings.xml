@@ -66,8 +66,6 @@
     <string name="created_playlist_x">Utworzono listę odtwarzania %1$s</string>
     <string name="playlist_exists">Lista %1$s już istnieje</string>
     <string name="could_not_create_playlist">Nie mo\u017cna utworzy\u0107 listy odtwarzania</string>
-    <string name="delete_song_title">Usuń utwór</string>
-    <string name="delete_songs_title">Usuń utwory</string>
     <string name="remove_song_from_playlist_title">Usuń utwór z listy odtwarzania</string>
     <string name="remove_songs_from_playlist_title">Usuń utwory z listy odtwarzania</string>
     <string name="rename_playlist_title">Zmień nazwę listy odtwarzania</string>

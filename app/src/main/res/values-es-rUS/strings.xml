@@ -66,8 +66,6 @@
     <string name="created_playlist_x">Lista de reproducción \'%1$s\' creada.</string>
     <string name="playlist_exists">Lista de reproducción %1$s ya existe.</string>
     <string name="could_not_create_playlist">No se pudo crear la lista de reproducci\u00f3n.</string>
-    <string name="delete_song_title">Eliminar canción</string>
-    <string name="delete_songs_title">Eliminar canciones</string>
     <string name="remove_song_from_playlist_title">Eliminar canción de la lista de reproducción</string>
     <string name="remove_songs_from_playlist_title">Eliminar canciones de la lista de reproducción</string>
     <string name="rename_playlist_title">Renombrar lista de reproducción</string>

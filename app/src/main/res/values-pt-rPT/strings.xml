@@ -58,8 +58,6 @@
     <string name="inserted_x_songs_into_playlist_x">Inseridas %1$d músicas na lista de reprodução %2$s.</string>
     <string name="created_playlist_x">Criada lista de reprodução %1$s.</string>
     <string name="could_not_create_playlist">N\u00e3o foi poss\u00edvel criar a lista de reprodu\u00e7\u00e3o.</string>
-    <string name="delete_song_title">Eliminar faixa</string>
-    <string name="delete_songs_title">Eliminar músicas</string>
     <string name="remove_song_from_playlist_title">Remover a música da lista de reprodução.</string>
     <string name="remove_songs_from_playlist_title">Remover músicas da lista de reprodução.</string>
     <string name="rename_playlist_title">Mudar o nome da lista de reprodução</string>

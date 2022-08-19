@@ -66,8 +66,6 @@
     <string name="created_playlist_x">נוצרה רשימת השמיעה %1$s</string>
     <string name="playlist_exists">רשימת ההשמעה %1$s כבר קיימת.</string>
     <string name="could_not_create_playlist">\u05dc\u05d0 \u05e0\u05d9\u05ea\u05df \u05dc\u05d9\u05e6\u05d5\u05e8 \u05e8\u05e9\u05d9\u05de\u05ea \u05e9\u05de\u05d9\u05e2\u05d4.</string>
-    <string name="delete_song_title">מחק שיר</string>
-    <string name="delete_songs_title">מחק שירים</string>
     <string name="remove_song_from_playlist_title">מחיקת שיר מרשימת ההשמעה</string>
     <string name="remove_songs_from_playlist_title">מחיקת שירים מרשימת ההשמעה</string>
     <string name="rename_playlist_title">שנה שם לרשימת ההשמעה</string>

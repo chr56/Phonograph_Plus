@@ -66,8 +66,6 @@
     <string name="created_playlist_x">%1$s lejátszási lista létrehozva.</string>
     <string name="playlist_exists">A (z)  %1$s lejátszási lista már létezik.</string>
     <string name="could_not_create_playlist">Nem siker\u00fclt l\u00e9trehozni a lej\u00e1tsz\u00e1si list\u00e1t.</string>
-    <string name="delete_song_title">Dal törlése</string>
-    <string name="delete_songs_title">Dalok törlése</string>
     <string name="remove_song_from_playlist_title">Dal eltávolítása a lejátszási listából</string>
     <string name="remove_songs_from_playlist_title">Dalok eltávolítása a lejátszási listából</string>
     <string name="rename_playlist_title">Lejátszási lista átnevezése</string>

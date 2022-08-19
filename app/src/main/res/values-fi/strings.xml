@@ -66,8 +66,6 @@
     <string name="created_playlist_x">Soittolista %1$s luotu.</string>
     <string name="playlist_exists">Soittolista %1$s on jo olemassa.</string>
     <string name="could_not_create_playlist">Soittolistan luominen ep\u00e4onnistui.</string>
-    <string name="delete_song_title">Poista kappale</string>
-    <string name="delete_songs_title">Poista kappaleet</string>
     <string name="remove_song_from_playlist_title">Poista kappale soittolistasta</string>
     <string name="remove_songs_from_playlist_title">Poista kappaleita soittolistasta</string>
     <string name="rename_playlist_title">Nimeä soittolista uudelleen</string>
