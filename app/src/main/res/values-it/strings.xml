@@ -33,9 +33,7 @@
     <string name="biography_unavailable">Impossibile trovare una biografia corrispondente a questo artista.</string>
     <string name="wiki_unavailable">Impossibile trovare una voce wiki per questo album.</string>
     <string name="biography">Biografia</string>
-    <string name="wiki">Wiki</string>
     <string name="audio_focus_denied">Focus audio negato.</string>
-    <string name="album">Album</string>
     <string name="artist">Artista</string>
     <string name="genre">Genere</string>
     <string name="album_artist">Artista dell\'album</string>
@@ -51,7 +49,6 @@
     <string name="label_file_size">Dimensione</string>
     <string name="label_file_format">Formato</string>
     <string name="label_track_length">Durata</string>
-    <string name="label_bit_rate">Bitrate</string>
     <string name="label_sampling_rate">Frequenza di campionamento</string>
     <string name="action_go_to_artist">Vai all\'artista</string>
     <string name="action_go_to_album">Vai all\'album</string>
@@ -118,7 +115,6 @@
     <string name="pref_header_colors">Colori</string>
     <string name="pref_header_now_playing_screen">Schermata di riproduzione</string>
     <string name="pref_title_general_theme">Tema generale</string>
-    <string name="pref_header_audio">Audio</string>
     <string name="pref_header_player_behaviour">Comportamento Giocatore</string>
     <string name="pref_header_library">Libreria</string>
     <string name="pref_header_images">Immagini</string>
@@ -239,7 +235,6 @@
     <string name="bug_report_use_account">Invia tramite account GitHub</string>
     <string name="bug_report_manual">Invia manualmente</string>
     <string name="username">Nome utente</string>
-    <string name="password">Password</string>
     <string name="bug_report_no_title">Si prega di inserire un titolo valido</string>
     <string name="bug_report_no_description">Si prega di inserire una descrizione valida</string>
     <string name="bug_report_no_username">Si prega di inserire un username GitHub valido</string>
@@ -255,7 +250,7 @@
     <string name="you_will_be_forwarded_to_the_issue_tracker_website">Verrai indirizzato al sito di bugtracking.</string>
     <string name="app_shortcut_shuffle_all_short">Casuale</string>
     <string name="app_shortcut_top_tracks_short">Migliori tracce</string>
-    <string name="app_shortcut_last_added_short">Ultima aggiunta</string>
+    <string name="app_shortcut_last_added_short">Aggiunti di recente</string>
     <string name="playlist_is_empty">La playlist è vuota</string>
     <string name="playing_notification_description">La notifica di riproduzione offre azioni per play/pausa ecc.</string>
     <string name="playing_notification_name">Notifica di riproduzione</string>
@@ -279,7 +274,6 @@
     <string name="sort_order_a_z">Ascendente</string>
     <string name="sort_order_z_a">Discendente</string>
     <string name="sort_order_artist">Artista</string>
-    <string name="sort_order_album">Album</string>
     <string name="sort_order_year">Anno</string>
     <string name="sort_order_date_added">Data di aggiunta</string>
     <string name="finish_current_music_sleep_timer">Termina l\'ultimo brano</string>
@@ -291,8 +285,6 @@
     <string name="Permission_denied">Permesso negato!</string>
     <string name="err_permission_storage">Autorizzazione di archiviazione</string>
     <string name="add_blacklist">Vuoi aggiungerlo alla lista nera?</string>
-    <string name="minutes_short">%1$d min</string>
-    <!-- use for tag -->
     <string name="other_information">Altro</string>
     <string name="more_actions">Più</string>
     <string name="crash">L\'app è crashata!</string>
@@ -310,7 +302,6 @@
     <string name="no_newer_version">Nessun aggiornamento!</string>
     <string name="new_version">Nuova versione!</string>
     <string name="new_version_code">versione</string>
-    <string name="new_version_log">changelog</string>
     <string name="new_version_tips">Questa finestra di dialogo può essere disabilitata nelle impostazioni. (Puoi anche controllare l\'aggiornamento manualmente in Informazioni)</string>
     <string name="download">Scarica</string>
     <string name="ignore_once">Ignora questo</string>
