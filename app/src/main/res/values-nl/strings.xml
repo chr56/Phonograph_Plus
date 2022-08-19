@@ -53,16 +53,8 @@
     <string name="action_grid_size_land">Rastergrootte (landschap)</string>
     <string name="inserted_x_songs_into_playlist_x">%1$d nummers toegevoegd aan afspeellijst %2$s.</string>
     <string name="created_playlist_x">Afspeellijst %1$s aangemaakt.</string>
-    <string name="deleted_x_songs">%1$d nummers verwijderd.</string>
-    <string name="deleted_x_playlists">%1$d afspeellijsten verwijderd.</string>
     <string name="playlist_exists">Afspeellijst %1$s bestaat al.</string>
-    <string name="delete_song_title">Verwijder nummer</string>
-    <string name="delete_songs_title">Verwijder nummers</string>
-    <string name="remove_song_from_playlist_title">Verwijder nummer uit afspeellijst</string>
-    <string name="remove_songs_from_playlist_title">Verwijder nummers uit afspeellijst</string>
     <string name="rename_playlist_title">Hernoem afspeellijst</string>
-    <string name="delete_playlist_title">Verwijder afspeellijst</string>
-    <string name="delete_playlists_title">Verwijder afspeellijst</string>
     <string name="clear_playlist_title">Afspeellijst legen</string>
     <string name="save_playlist_title">Opslaan als bestand</string>
     <string name="save_playlists_title">Opslaan als bestanden</string>
@@ -264,10 +256,6 @@
     <string name="clear_all_preference_msg"><b>Waarschuwing</b>: dit zal <b>ALLE</b> app voorkeuren/instellingen wissen! \n\nDit kan erg handig zijn als de applicatie crasht bij het starten. \nWeet je het zeker?</string>
     <string name="sort_order_song">Nummer</string>
     <string name="pref_header_appearance">Uiterlijk</string>
-    <plurals name="msg_deletion_result">
-        <item quantity="one">%1$d / %2$d item succesvol verwijderd.</item>
-        <item quantity="other">%1$d / %2$d items werden met succes verwijderd.</item>
-    </plurals>
     <string name="embedded_lyrics">ingesloten songteksten</string>
     <string name="external_lyrics">externe songteksten</string>
     <string name="lyrics_following">Songteksten volgen</string>
@@ -286,5 +274,9 @@
     <plurals name="x_songs">
         <item quantity="one">%1$d nummer</item>
         <item quantity="other">%1$d nummers</item>
+    </plurals>
+    <plurals name="msg_deletion_result">
+        <item quantity="one">%1$d / %2$d item succesvol verwijderd.</item>
+        <item quantity="other">%1$d / %2$d items werden met succes verwijderd.</item>
     </plurals>
 </resources>
