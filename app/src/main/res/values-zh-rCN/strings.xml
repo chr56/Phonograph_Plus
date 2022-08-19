@@ -5,7 +5,7 @@
     <string name="the_audio_file">音频文件</string>
     <string name="action_set_as_ringtone">设为铃声</string>
     <string name="action_share">分享</string>
-    <string name="action_settings">"设置"</string>
+    <string name="action_settings">设置</string>
     <string name="action_grant">授予</string>
     <string name="action_about">关于</string>
     <string name="action_add_to_favorites">添加到收藏</string>
@@ -29,7 +29,7 @@
     <string name="genres">流派</string>
     <string name="songs">歌曲</string>
     <string name="playlists">播放列表</string>
-    <string name="unplayable_file">无法播放该歌曲</string>
+    <string name="unplayable_file">无法播放这首歌曲</string>
     <string name="biography_unavailable">找不到该艺术家的个人信息</string>
     <string name="wiki_unavailable">找不到此专辑的维基数据</string>
     <string name="biography">歌手简介</string>
@@ -40,7 +40,8 @@
     <string name="genre">流派</string>
     <string name="album_artist">专辑艺术家</string>
     <string name="year">年份</string>
-    <string name="track_hint">"音轨（如用 2 表示第 2 首歌或用 3004 表示 CD3 里的第 4 首歌）"</string>
+    <string name="track">音轨号</string>
+    <string name="track_hint">音轨（如用 2 表示第 2 首歌或用 3004 表示 CD3 里的第 4 首歌）</string>
     <string name="lyrics">歌词</string>
     <string name="album_or_artist_empty">标题或艺术家名称为空</string>
     <string name="saving_changes">正在保存更改</string>
@@ -57,7 +58,7 @@
     <string name="label_playing_queue">播放队列</string>
     <string name="no_results">没有找到结果</string>
     <string name="updating">正在更新…</string>
-    <string name="added_title_to_playing_queue">"此歌曲已加入播放队列"</string>
+    <string name="added_title_to_playing_queue">此歌曲已加入播放队列</string>
     <string name="added_x_titles_to_playing_queue">%1$d 首歌曲已加入播放队列</string>
     <string name="action_remove_from_playlist">从播放列表中移除</string>
     <string name="action_grid_size">网格尺寸</string>
@@ -70,7 +71,7 @@
     <string name="clear_playlist_title">清空播放列表</string>
     <string name="save_playlist_title">另存为</string>
     <string name="save_playlists_title">另存为</string>
-    <string name="add_playlist_title">"添加到播放列表"</string>
+    <string name="add_playlist_title">添加到播放列表</string>
     <string name="select_all_title">全选</string>
     <string name="action_shuffle_all">随机播放所有歌曲</string>
     <string name="action_shuffle_album">随机播放此专辑</string>
@@ -119,7 +120,7 @@
     <string name="pref_title_remember_last_tab">记住最后打开页面</string>
     <string name="pref_title_remember_shuffle">记住随机播放开关</string>
     <string name="no_equalizer">没有找到均衡器</string>
-    <string name="no_audio_ID">"请在播放歌曲后再次尝试此操作"</string>
+    <string name="no_audio_ID">请在播放歌曲后再次尝试此操作</string>
     <string name="delete_action">删除</string>
     <string name="clear_action">清空</string>
     <string name="remove_action">移除</string>
@@ -141,7 +142,7 @@
     <string name="pref_summary_blurred_album_art">模糊化显示锁屏界面内的专辑封面，此功能或与第三方应用及桌面插件产生冲突</string>
     <string name="pref_summary_classic_notification">使用经典通知样式</string>
     <string name="pref_summary_colored_notification">使用与专辑封面相匹配的颜色着色通知背景色</string>
-    <string name="pref_summary_gapless_playback">"在某些设备上会造成播放问题"</string>
+    <string name="pref_summary_gapless_playback">在某些设备上会造成播放问题</string>
     <string name="pref_summary_ignore_media_store_artwork">可以提高专辑封面图片的质量但加载时间也会更长，仅当遇到专辑封面像素过低时建议开启</string>
     <string name="pref_summary_colored_navigation_bar">用主色调着色导航栏</string>
     <string name="pref_summary_colored_app_shortcuts">用主色调着色应用快捷方式</string>
@@ -192,7 +193,7 @@
     <string name="up_next">即将播放</string>
     <string name="pref_title_now_playing_screen_appearance">外观</string>
     <string name="intro_label">介绍页</string>
-    <string name="welcome_to_phonograph">"欢迎使用 Phonohraph ，这是一款精致且简洁的 Android 音乐播放器。 "</string>
+    <string name="welcome_to_phonograph">欢迎使用 Phonohraph ，这是一款精致且简洁的 Android 音乐播放器。 </string>
     <string name="open_playing_queue_instruction">上滑正在播放界面内的卡片即可展开播放队列</string>
     <string name="rearrange_playing_queue_instruction">通过拖动歌曲名前面的序列号来调整播放队列的顺序</string>
     <string name="library">媒体库</string>
@@ -243,7 +244,7 @@
     <string name="add_action">添加</string>
     <string name="blacklist">黑名单</string>
     <string name="remove_from_blacklist">从黑名单中移除</string>
-    <string name="do_you_want_to_remove_from_the_blacklist"><![CDATA[您想从黑名单中移除 <b>%1$s</b> 吗？]]></string>
+    <string name="do_you_want_to_remove_from_the_blacklist">您想从黑名单中移除 <b>%1$s</b> 吗？</string>
     <string name="clear_blacklist">清空黑名单</string>
     <string name="do_you_want_to_clear_the_blacklist">您想清除黑名单？</string>
     <string name="pref_summary_blacklist">黑名单文件夹中的内容将从您的媒体库中隐藏</string>
@@ -272,7 +273,6 @@
     <string name="add_blacklist">你确定要将该目录加入黑名单吗？</string>
     <string name="minutes_short">%1$d 分钟</string>
     <string name="other_information">其他信息</string>
-    <string name="track">音轨号</string>
     <string name="more_actions">更多</string>
     <string name="crash">应用崩溃</string>
     <string name="copy_to_clipboard">复制到剪贴板</string>
@@ -333,9 +333,6 @@
     <string name="export_">导出:</string>
     <string name="import_">导入:</string>
     <string name="databases">数据库</string>
-    <plurals name="msg_deletion_result">
-        <item quantity="other">%1$d / %2$d 个项目删除成功</item>
-    </plurals>
     <string name="embedded_lyrics">内嵌歌词</string>
     <string name="external_lyrics">外部歌词</string>
     <string name="lyrics_following">歌词滚动</string>
@@ -357,6 +354,8 @@
     <string name="pref_summary_keep_playing_queue_intact">启用后，Phonograph Plus 将尽可能保持播放列表而不会被意外清空</string>
     <string name="change_now_playing_screen">更改正在播放界面</string>
     <string name="load_images_for_files">加载封面</string>
+    <string name="app_language">语言</string>
+    <string name="_default">默认</string>
     <plurals name="x_songs">
         <item quantity="other">%1$d 歌曲</item>
     </plurals>
@@ -369,6 +368,27 @@
     <plurals name="x_genres">
         <item quantity="other">%1$d 流派</item>
     </plurals>
-    <string name="app_language">语言</string>
-    <string name="_default">默认</string>
+    <plurals name="msg_header_delete_items">
+        <item quantity="other">以下项目即将被删除：</item>
+    </plurals>
+    <plurals name="msg_header_remove_items">
+        <!-- %1$s: where -->
+        <item quantity="other">以下项目即将被从%1$s中移除：</item>
+    </plurals>
+    <plurals name="msg_deletion_result">
+        <item quantity="other">%1$d / %2$d 个项目删除成功</item>
+    </plurals>
+    <plurals name="item_songs">
+        <item quantity="other">歌曲</item>
+    </plurals>
+    <plurals name="item_playlists">
+        <item quantity="other">播放列表</item>
+    </plurals>
+    <plurals name="item_files">
+        <item quantity="other">文件</item>
+    </plurals>
+    <plurals name="item_playlists_generated">
+        <item quantity="other">生成的播放列表</item>
+    </plurals>
+    <string name="warning_can_not_retract">此操作无法撤销！</string>
 </resources>
