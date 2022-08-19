@@ -29,9 +29,6 @@
     <string name="genres">類型</string>
     <string name="songs">歌曲</string>
     <string name="playlists">播放清單</string>
-    <string name="unplayable_file">\u7121\u6cd5\u64ad\u653e\u9019\u9996\u6b4c\u3002</string>
-    <string name="biography_unavailable">\u7121\u6cd5\u627e\u5230\u9019\u4f4d\u6b4c\u624b\u7684\u500b\u4eba\u7c21\u4ecb\u3002</string>
-    <string name="wiki_unavailable">\u627e\u4e0d\u5230\u6b64\u5c08\u8f2f\u7684\u767e\u79d1\u8cc7\u6599</string>
     <string name="biography">個人簡介</string>
     <string name="wiki">百科</string>
     <string name="audio_focus_denied">無法獲得音訊焦點。</string>
@@ -67,7 +64,6 @@
     <string name="deleted_x_songs">已刪除 %1$d 首歌。</string>
     <string name="deleted_x_playlists">已刪除%1$d個播放清單</string>
     <string name="playlist_exists">播放清單 %1$s 已經存在</string>
-    <string name="could_not_create_playlist">\u7121\u6cd5\u5efa\u7acb\u64ad\u653e\u6e05\u55ae\u3002</string>
     <string name="delete_song_title">刪除歌曲</string>
     <string name="delete_songs_title">刪除多首歌曲</string>
     <string name="remove_song_from_playlist_title">將歌曲從播放清單中移除</string>
