@@ -55,16 +55,8 @@
     <string name="action_grid_size_land">Taille de la grille (paysage)</string>
     <string name="inserted_x_songs_into_playlist_x">%1$d titres ajoutés à la playlist %2$s.</string>
     <string name="created_playlist_x">Playlist %1$s créée.</string>
-    <string name="deleted_x_songs">%1$d titres supprimés.</string>
-    <string name="deleted_x_playlists">Supprimer les listes de lecture %1$d.</string>
     <string name="playlist_exists">La playlist %1$s existe déjà.</string>
-    <string name="delete_song_title">Supprimer le titre</string>
-    <string name="delete_songs_title">Supprimer les titres</string>
-    <string name="remove_song_from_playlist_title">Retirer le titre de la playlist</string>
-    <string name="remove_songs_from_playlist_title">Retirer les titres de la liste de lecture</string>
     <string name="rename_playlist_title">Renommer la playlist</string>
-    <string name="delete_playlist_title">Supprimer la playlist</string>
-    <string name="delete_playlists_title">Supprimer les playlists</string>
     <string name="clear_playlist_title">Effacer la playlist</string>
     <string name="save_playlist_title">Enregistrer en tant que fichier</string>
     <string name="save_playlists_title">Enregistrer en tant que fichiers</string>
