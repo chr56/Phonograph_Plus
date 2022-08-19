@@ -29,9 +29,6 @@
     <string name="genres">Géneros</string>
     <string name="songs">Canciones</string>
     <string name="playlists">Listas de reproducción</string>
-    <string name="unplayable_file">No es posible reproducir esta canci\u00f3n.</string>
-    <string name="biography_unavailable">Lo sentimos, no encontramos una biograf\u00eda correspondiente a \u00e9ste artista</string>
-    <string name="wiki_unavailable">No es posible encontrar una entrada de Wikipedia para este \u00e1lbum.</string>
     <string name="biography">Biografía</string>
     <string name="wiki">Wikipedia</string>
     <string name="audio_focus_denied">Ajuste de audio denegado.</string>
@@ -65,7 +62,6 @@
     <string name="created_playlist_x">Lista de reproducción %1$s creada.</string>
     <string name="deleted_x_songs">%1$d canciones eliminadas.</string>
     <string name="playlist_exists">La lista de reproducción %1$s ya existe.</string>
-    <string name="could_not_create_playlist">No se puede crear la lista de reproducci\u00f3n.</string>
     <string name="delete_song_title">Eliminar canción</string>
     <string name="delete_songs_title">Eliminar canciones</string>
     <string name="remove_song_from_playlist_title">Eliminar canción de la lista de reproducción</string>
