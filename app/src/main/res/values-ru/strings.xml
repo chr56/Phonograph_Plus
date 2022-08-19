@@ -29,6 +29,9 @@
     <string name="genres">Жанры</string>
     <string name="songs">Треки</string>
     <string name="playlists">Плейлисты</string>
+    <string name="unplayable_file">Не удалось воспроизвести эту песню.</string>
+    <string name="biography_unavailable">Невозможно найти биографию исполнителя.</string>
+    <string name="wiki_unavailable">Не удалось найти информацию в Википедии для этого альбома.</string>
     <string name="biography">Биография</string>
     <string name="wiki">Википедия</string>
     <string name="audio_focus_denied">В получении аудиофокуса отказано.</string>
@@ -55,22 +58,16 @@
     <string name="label_playing_queue">Очередь воспроизведения</string>
     <string name="no_results">Нет результатов</string>
     <string name="updating">Обновление...</string>
+    <string name="added_title_to_playing_queue">Композиция добавлена в очередь воспроизведения.</string>
     <string name="added_x_titles_to_playing_queue">%1$d композиций добавлено в очередь воспроизведения</string>
     <string name="action_remove_from_playlist">Удалить из плейлиста</string>
     <string name="action_grid_size">Размер сетки</string>
     <string name="action_grid_size_land">Размер сетки (ландшафт)</string>
     <string name="inserted_x_songs_into_playlist_x">%1$d композиций добавлено в плейлист %2$s.</string>
     <string name="created_playlist_x">Плейлист %1$s создан.</string>
-    <string name="deleted_x_songs">%1$d композиций удалено.</string>
-    <string name="deleted_x_playlists">Удалён плейлист  %1$d.</string>
     <string name="playlist_exists">Плейлист %1$s уже существует.</string>
-    <string name="delete_song_title">Удалить песню</string>
-    <string name="delete_songs_title">Удалить песни</string>
-    <string name="remove_song_from_playlist_title">Удалить песню из плейлиста</string>
-    <string name="remove_songs_from_playlist_title">Удалить песни из плейлиста</string>
+    <string name="could_not_create_playlist">Не удалось создать плейлист</string>
     <string name="rename_playlist_title">Переименовать плейлист</string>
-    <string name="delete_playlist_title">Удалить плейлист</string>
-    <string name="delete_playlists_title">Удалить плейлисты</string>
     <string name="clear_playlist_title">Очистить плейлист</string>
     <string name="save_playlist_title">Сохранить как файл</string>
     <string name="save_playlists_title">Сохранить как файлы</string>
@@ -143,6 +140,8 @@
     <string name="pref_summary_album_art_on_lockscreen">Обложка альбома текущей песни используется как изображение экрана блокировки.</string>
     <string name="pref_summary_blurred_album_art">Делает размытую обложку фоном экрана блокировки. Может создавать проблемы с другими приложениями и виджетами.</string>
     <string name="pref_summary_classic_notification">Использовать классический дизайн уведомления.</string>
+    <string name="pref_summary_colored_notification">Раскрашивать уведомление с обложкой альбома в яркий цвет.</string>
+    <string name="pref_summary_gapless_playback">Может вызвать проблемы с воспроизведением на некоторых устройствах.</string>
     <string name="pref_summary_ignore_media_store_artwork">Может увеличить качество обложки, но также увеличивает время её отрисовки. Влючайте только, если вы имеете проблемы с низким разрешением обложек альбомов.</string>
     <string name="pref_summary_colored_navigation_bar">Окрашивает панель навигации в основной цвет.</string>
     <string name="pref_summary_colored_app_shortcuts">Окрашивает шорткаты в основной цвет.</string>
@@ -150,12 +149,14 @@
     <string name="pref_summary_synchronized_lyrics_show">В настоящее время поддерживаются только синхронизированные тексты в формате LRC. Либо встроенные, либо как отдельный файл.</string>
     <string name="pref_summary_remember_last_tab">Перейти на последнюю открытую вкладку при запуске</string>
     <string name="pref_summary_remember_shuffle">Режим перемешивания останется включенным при выборе нового списка песен</string>
+    <string name="could_not_download_album_cover">Не удалось загрузить соответствующую обложку альбома.</string>
     <string name="search_hint">Поиск в библиотеке...</string>
     <string name="favorites">Избранное</string>
     <string name="last_added">Последние добавленные</string>
     <string name="history">Недавно воспроизведённые</string>
     <string name="my_top_tracks">Мои популярные треки</string>
     <string name="remove_cover">Удалить обложку</string>
+    <string name="download_from_last_fm">Загрузить из Last.fm</string>
     <string name="pick_from_local_storage">Выбрать из локального хранилища</string>
     <string name="web_search">Поиск в интернете</string>
     <string name="action_sleep_timer">Таймер сна</string>
@@ -331,12 +332,6 @@
     <string name="export_">Экспорт:</string>
     <string name="import_">Импорт:</string>
     <string name="databases">Базы данных</string>
-    <plurals name="msg_deletion_result">
-        <item quantity="one">%1$d / %2$d элемент был успешно удален.</item>
-        <item quantity="few">%1$d / %2$d элементы были успешно удалены.</item>
-        <item quantity="many">%1$d / %2$d элементы были успешно удалены.</item>
-        <item quantity="other">%1$d / %2$d элемент был успешно удален.</item>
-    </plurals>
     <string name="embedded_lyrics">встроенный текст</string>
     <string name="external_lyrics">внешний текст</string>
     <string name="lyrics_following">Подписка на тексты песен</string>
@@ -383,5 +378,11 @@
         <item quantity="few">%1$d жанров</item>
         <item quantity="many">%1$d жанров</item>
         <item quantity="other">%1$d жанры</item>
+    </plurals>
+    <plurals name="msg_deletion_result">
+        <item quantity="one">%1$d / %2$d элемент был успешно удален.</item>
+        <item quantity="few">%1$d / %2$d элементы были успешно удалены.</item>
+        <item quantity="many">%1$d / %2$d элементы были успешно удалены.</item>
+        <item quantity="other">%1$d / %2$d элемент был успешно удален.</item>
     </plurals>
 </resources>
