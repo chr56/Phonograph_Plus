@@ -5,7 +5,7 @@
     <string name="the_audio_file">A hangfájlt</string>
     <string name="action_set_as_ringtone">Beállítás csengőhangként</string>
     <string name="action_share">Megosztás</string>
-    <string name="action_settings">"Beállítások"</string>
+    <string name="action_settings">Beállítások</string>
     <string name="action_grant">Engedélyezés</string>
     <string name="action_about">Névjegy</string>
     <string name="action_add_to_favorites">Hozzáadás a kedvencekhez</string>
@@ -33,14 +33,12 @@
     <string name="biography_unavailable">Az el\u0151ad\u00f3 \u00e9letrajza nem tal\u00e1lhat\u00f3.</string>
     <string name="wiki_unavailable">Az album wiki oldala nem tal\u00e1lhat\u00f3,</string>
     <string name="biography">Életrajz</string>
-    <string name="wiki">Wiki</string>
     <string name="audio_focus_denied">Audiofókusz megtagadva.</string>
-    <string name="album">Album</string>
     <string name="artist">Előadó</string>
     <string name="genre">Műfaj</string>
     <string name="album_artist">Album előadó</string>
     <string name="year">Év</string>
-    <string name="track_hint">"Dal sorszáma az albumban"</string>
+    <string name="track_hint">Dal sorszáma az albumban</string>
     <string name="lyrics">Dalszöveg</string>
     <string name="album_or_artist_empty">A cím vagy az előadó üres.</string>
     <string name="saving_changes">Változások mentése</string>
@@ -57,7 +55,6 @@
     <string name="label_playing_queue">Lejátszási sor</string>
     <string name="no_results">Nincs találat</string>
     <string name="updating">Frissítés...</string>
-    <string name="added_title_to_playing_queue">"1 dal hozzáadva a lejátszási sorhoz."</string>
     <string name="added_x_titles_to_playing_queue">%1$d dal hozzáadva a lejátszási sorhoz.</string>
     <string name="action_remove_from_playlist">Eltávolítás a lejátszási listából</string>
     <string name="action_grid_size">Rácsméret</string>
@@ -77,7 +74,7 @@
     <string name="clear_playlist_title">Lejátszási lista kiürítése</string>
     <string name="save_playlist_title">Mentés fájlként</string>
     <string name="save_playlists_title">Mentés fájlként</string>
-    <string name="add_playlist_title">"Hozzáadás a lejátszási listához"</string>
+    <string name="add_playlist_title">Hozzáadás a lejátszási listához</string>
     <string name="action_shuffle_all">Összes keverése</string>
     <string name="action_shuffle_album">Album dalainak keverése</string>
     <string name="action_shuffle_artist">Előadó dalainak keverése</string>
@@ -91,9 +88,9 @@
     <string name="only_on_wifi">Csak WIFI-n keresztül</string>
     <string name="never">Soha</string>
     <string name="today">Ma</string>
+    <string name="past_three_months">Az utóbbi 3 hónapban</string>
     <string name="this_week">Ezen a héten</string>
     <string name="this_month">Ebben a hónapban</string>
-    <string name="past_three_months">Az utóbbi 3 hónapban</string>
     <string name="this_year">Ebben az évben</string>
     <string name="equalizer">Hangszínszabályzó</string>
     <string name="pref_header_colors">Színek</string>
@@ -119,7 +116,6 @@
     <string name="pref_title_synchronized_lyrics_show">Szinkronizált dalszöveg</string>
     <string name="pref_title_remember_last_tab">Emlékezz az utolsó fülre</string>
     <string name="no_equalizer">Nem található hangszínszabályzó.</string>
-    <string name="no_audio_ID">"Először játsszon le egy dalt, majd próbálja újra."</string>
     <string name="delete_action">Törlés</string>
     <string name="clear_action">Kiürítés</string>
     <string name="remove_action">Eltávolítás</string>
@@ -140,22 +136,18 @@
     <string name="pref_summary_album_art_on_lockscreen">Jelenlegi dal albumborítójának használata a zárképernyő háttérképeként.</string>
     <string name="pref_summary_blurred_album_art">Albumborító elhomályosítása a zárképernyőn. Ez problémákat okozhat a harmadik féltől származó alkalmazásoknál és widgeteknél.</string>
     <string name="pref_summary_classic_notification">Használja a klasszikus értesítési dizájn.</string>
-    <string name="pref_summary_colored_notification">"\u00c9rtes\u00edt\u00e9sek sz\u00ednez\u00e9se az albumbor\u00edt\u00f3 sz\u00edn\u00e9vel."</string>
-    <string name="pref_summary_gapless_playback">"Lejátszási problémákat okozhat néhány eszközön."</string>
     <string name="pref_summary_ignore_media_store_artwork">Növelheti az albumborítók minőségét, de lassabban tölti be a képeket. Csak akkor engedélyezze, ha az albumborítók rossz minőségben jelennek meg.</string>
     <string name="pref_summary_colored_navigation_bar">Navigációs sáv színezése az alapértelmezett színnel.</string>
     <string name="pref_summary_colored_app_shortcuts">Az alkalmazás hivatkozások színezése az elsődleges szín szerint.</string>
     <string name="pref_summary_audio_ducking">Beérkező értesítéskor a lejátszás hangereje lecsökken, majd az értesítés végén visszaáll az eredeti hangerőre.</string>
     <string name="pref_summary_synchronized_lyrics_show">Jelenleg csak az LRC formátumban szinkronizált szövegeket támogatják. Beágyazott vagy külön fájlként.</string>
     <string name="pref_summary_remember_last_tab">Menjen az utolsó megnyitott fülre az indításkor</string>
-    <string name="could_not_download_album_cover">"Nem siker\u00fclt let\u00f6lteni a megfelel\u0151 albumbor\u00edt\u00f3t."</string>
     <string name="search_hint">Keresés a könyvtárban...</string>
     <string name="favorites">Kedvencek</string>
     <string name="last_added">Legfrissebb dalok</string>
     <string name="history">Nemrég lejátszott</string>
     <string name="my_top_tracks">Toplista</string>
     <string name="remove_cover">Borító eltávolítása</string>
-    <string name="download_from_last_fm">Letöltés a Last.fm-ről</string>
     <string name="pick_from_local_storage">Kiválasztás az eszközről</string>
     <string name="web_search">Internetes keresés</string>
     <string name="action_sleep_timer">Elalvás időzítő</string>
@@ -191,7 +183,7 @@
     <string name="up_next">Lejátszási sor</string>
     <string name="pref_title_now_playing_screen_appearance">Megjelenés</string>
     <string name="intro_label">Bevezető</string>
-    <string name="welcome_to_phonograph">"Üdvözlöm! A Phonograph egy szép és kis méretű zenelejátszó Androidra. "</string>
+    <string name="welcome_to_phonograph">Üdvözlöm! A Phonograph egy szép és kis méretű zenelejátszó Androidra. </string>
     <string name="open_playing_queue_instruction">Húzza fel a kártyát a most játszott képernyőn, hogy megnyissa a lejátszási sort.</string>
     <string name="rearrange_playing_queue_instruction">A lejátszási sort átrendezheti, ha a dalokat a sorszámuknál megfogva húzni kezdi.</string>
     <string name="library">Könyvtár</string>
@@ -241,7 +233,7 @@
     <string name="add_action">Hozzáadás</string>
     <string name="blacklist">Tiltólista</string>
     <string name="remove_from_blacklist">Eltávolítás a tiltólistáról</string>
-    <string name="do_you_want_to_remove_from_the_blacklist"><![CDATA[Biztosan el szeretné távolítani <b>%1$s</b>-t a tiltólistáról?]]></string>
+    <string name="do_you_want_to_remove_from_the_blacklist">Biztosan el szeretné távolítani <b>%1$s</b>-t a tiltólistáról?</string>
     <string name="clear_blacklist">Tiltólista törlése</string>
     <string name="do_you_want_to_clear_the_blacklist">Biztosan törölni szeretné a tiltólistát?</string>
     <string name="pref_summary_blacklist">A tiltólistán lévő mappák tartalma nem szerepel a könyvtárban.</string>
@@ -256,6 +248,7 @@
     <string name="sort_order_a_z">Növekvő</string>
     <string name="sort_order_z_a">Csökkenő</string>
     <string name="sort_order_artist">Előadó</string>
-    <string name="sort_order_album">Album</string>
     <string name="sort_order_year">Év</string>
+    <string name="sort_order_song">Dal</string>
+    <string name="pref_header_appearance">Megjelenés</string>
 </resources>
