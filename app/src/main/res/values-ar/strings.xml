@@ -29,9 +29,6 @@
     <string name="genres">الأنواع</string>
     <string name="songs">الأغاني</string>
     <string name="playlists">قوائم التشغيل</string>
-    <string name="unplayable_file">\u0644\u0645 \u064a\u062a\u0645 \u0627\u0644\u062a\u0645\u0643\u0646 \u0645\u0646 \u062a\u0634\u063a\u064a\u0644 \u0627\u0644\u0623\u063a\u0646\u064a\u0629.</string>
-    <string name="biography_unavailable">\u0644\u0645 \u064a\u062a\u0645 \u0627\u0644\u0639\u062b\u0648\u0631 \u0639\u0644\u0649 \u0627\u0644\u0633\u064a\u0631\u0629 \u0627\u0644\u0630\u0627\u062a\u064a\u0629 \u0644\u0644\u0641\u0646\u0627\u0646.</string>
-    <string name="wiki_unavailable">\u0644\u0645 \u064a\u062a\u0645 \u0627\u0644\u0639\u062b\u0648\u0631 \u0639\u0644\u0649 \u0635\u0641\u062d\u0629 \u0648\u064a\u0643\u064a \u0644\u0647\u0630\u0627 \u0627\u0644\u0623\u0644\u0628\u0648\u0645.</string>
     <string name="biography">السيرة الذاتية</string>
     <string name="wiki">ويكي</string>
     <string name="audio_focus_denied">تم رفض Audio focus.</string>
@@ -65,7 +62,6 @@
     <string name="created_playlist_x">تم إنشاء قائمة التشغيل %1$s.</string>
     <string name="deleted_x_songs">تم حذف %1$d أغاني.</string>
     <string name="playlist_exists">قائمة التشغيل %1$s موجودة بالفعل.</string>
-    <string name="could_not_create_playlist">\u0644\u0645 \u064a\u062a\u0645 \u0627\u0644\u062a\u0645\u0643\u0646 \u0645\u0646 \u0625\u0646\u0634\u0627\u0621 \u0642\u0627\u0626\u0645\u0629 \u0627\u0644\u062a\u0634\u063a\u064a\u0644.</string>
     <string name="delete_song_title">حذف الأغنية</string>
     <string name="delete_songs_title">حذف الأغاني</string>
     <string name="remove_song_from_playlist_title">إزالة الأغنية من قائمة التشغيل</string>
