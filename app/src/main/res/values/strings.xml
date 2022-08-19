@@ -399,8 +399,8 @@
         <item quantity="other">%1$d genres</item>
     </plurals>
     <plurals name="msg_header_delete_items">
-        <item quantity="one"><br>This item would be deleted</br>:</item>
-        <item quantity="other"><br>These items would be deleted</br>:</item>
+        <item quantity="one">This item would be deleted:</item>
+        <item quantity="other">These items would be deleted:</item>
     </plurals>
     <plurals name="item_playlists">
         <item quantity="one">Playlist</item>

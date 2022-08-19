@@ -49,7 +49,7 @@ class ClearPlaylistDialog : DialogFragment() {
         // generate msg
         val message =
             StringBuilder().append(
-                resources.getQuantityString(R.plurals.msg_header_delete_items, playlists.size)
+                "<b>${resources.getQuantityString(R.plurals.msg_header_delete_items, playlists.size)}</b>"
             ).append("<br />")
 
         if (filesLists.isNotEmpty()) {
@@ -61,6 +61,7 @@ class ClearPlaylistDialog : DialogFragment() {
             }
         }
         if (smartLists.isNotEmpty()) {
+
             message.append(
                 resources.getQuantityString(R.plurals.item_playlists_generated, smartLists.size)
             ).append("<br />")
@@ -68,6 +69,8 @@ class ClearPlaylistDialog : DialogFragment() {
                 message.append("* <b>${playlist.name}</b>").append("<br />")
             }
         }
+
+        message.append("<br/><b>${getString(R.string.warning_can_not_retract)}</b><br/>")
 
         // extra permission check on R(11)
         val hasPermission =
