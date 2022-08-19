@@ -29,9 +29,6 @@
     <string name="genres">Жанри</string>
     <string name="songs">Пісні</string>
     <string name="playlists">Списки відтворення</string>
-    <string name="unplayable_file">\u041d\u0435 \u0432\u0434\u0430\u043b\u043e\u0441\u044f \u0432\u0456\u0434\u0442\u0432\u043e\u0440\u0438\u0442\u0438 \u043f\u0456\u0441\u043d\u044e.</string>
-    <string name="biography_unavailable">\u041d\u0435 \u0432\u0434\u0430\u043b\u043e\u0441\u044f \u0437\u043d\u0430\u0439\u0442\u0438 \u0431\u0456\u043e\u0433\u0440\u0430\u0444\u0456\u044e \u0432\u0438\u043a\u043e\u043d\u0430\u0432\u0446\u044f.</string>
-    <string name="wiki_unavailable">\u041d\u0435 \u0432\u0434\u0430\u043b\u043e\u0441\u044f \u0437\u043d\u0430\u0439\u0442\u0438 \u043d\u0430 \u0412\u0456\u043a\u0456\u043f\u0435\u0434\u0456\u0457 \u0441\u0442\u0430\u0442\u0442\u044e \u043f\u0440\u043e \u0446\u0435\u0439 \u0430\u043b\u044c\u0431\u043e\u043c.</string>
     <string name="biography">Біографія</string>
     <string name="wiki">Вікіпедія</string>
     <string name="audio_focus_denied">В отриманні аудіофокусу відмовлено.</string>
@@ -65,7 +62,6 @@
     <string name="created_playlist_x">Створено список відтворення %1$s.</string>
     <string name="deleted_x_songs">Видалено %1$d пісень.</string>
     <string name="playlist_exists">Список відтворення %1$s вже існує.</string>
-    <string name="could_not_create_playlist">\u041d\u0435 \u0432\u0434\u0430\u043b\u043e\u0441\u044f \u0441\u0442\u0432\u043e\u0440\u0438\u0442\u0438 \u0441\u043f\u0438\u0441\u043e\u043a \u0432\u0456\u0434\u0442\u0432\u043e\u0440\u0435\u043d\u043d\u044f.</string>
     <string name="delete_song_title">Видалити пісню</string>
     <string name="delete_songs_title">Видалити пісні</string>
     <string name="remove_song_from_playlist_title">Видалити пісню зі списку відтворення</string>
