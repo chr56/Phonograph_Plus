@@ -92,10 +92,10 @@
     <string name="only_on_wifi">רק עם WI-FI</string>
     <string name="never">אף פעם</string>
     <string name="today">היום</string>
-    <string name="this_week">השבוע</string>
     <string name="past_seven_days">7 הימים האחרונים</string>
-    <string name="this_month">החודש</string>
     <string name="past_three_months">שלשה חודשים האחרונים</string>
+    <string name="this_week">השבוע</string>
+    <string name="this_month">החודש</string>
     <string name="this_year">השנה</string>
     <string name="equalizer">אקוולייזר</string>
     <string name="pref_header_colors">צבעים</string>
@@ -105,7 +105,7 @@
     <string name="pref_header_library">ספרייה</string>
     <string name="pref_header_images">תמונות</string>
     <string name="pref_header_lockscreen">מסך נעילה</string>
-    <string name="pref_header_playlists">רשימת השמעה</string>
+    <string name="pref_header_playlists">רשימות השמעה</string>
     <string name="pref_header_notification">התראות</string>
     <string name="pref_title_navigation_bar">סרגל ניווט צבעוני</string>
     <string name="pref_title_app_shortcuts">קיצורי אפליקציה צבעוניים</string>
@@ -198,7 +198,7 @@
     <string name="welcome_to_phonograph">"ברוכים הבאים ל-Phonograph, נגן מוזיקה קל ויפה ל-Android. "</string>
     <string name="open_playing_queue_instruction">החלק את הכרטיס למעלה במסך \'מנגן כעת\' כדי לחשוף את תור ההשמעה המלא.</string>
     <string name="rearrange_playing_queue_instruction">מיין מחדש את התור על ידי גרירת השיר מהמספר שלו.</string>
-    <string name="library">ספריה</string>
+    <string name="library">ספרייה</string>
     <string name="folders">תיקיות</string>
     <string name="failed_to_save_playlist">לא ניתן היה לשמור את רשימת ההשמעה (%s)</string>
     <string name="saved_x_playlists_to_x">נשמרו %1$d רשימות השמעה ל-%2$s.</string>
@@ -263,4 +263,6 @@
     <string name="sort_order_album">אלבום</string>
     <string name="sort_order_year">שנה</string>
     <string name="finish_current_music_sleep_timer">סיים את השיר האחרון</string>
+    <string name="sort_order_song">שיר</string>
+    <string name="pref_header_appearance">מראה</string>
 </resources>
