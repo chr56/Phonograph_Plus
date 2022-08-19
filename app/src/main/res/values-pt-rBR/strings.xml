@@ -60,15 +60,8 @@
     <string name="action_grid_size_land">Tamanho da grade (horizontal)</string>
     <string name="inserted_x_songs_into_playlist_x">Inserido %1$d músicas na lista de reprodução %2$s.</string>
     <string name="created_playlist_x">Lista de reprodução criada %1$s.</string>
-    <string name="deleted_x_songs">Excluídas %1$d músicas.</string>
     <string name="playlist_exists">A lista de reprodução %1$s já existe.</string>
-    <string name="delete_song_title">Excluir música</string>
-    <string name="delete_songs_title">Excluir Músicas</string>
-    <string name="remove_song_from_playlist_title">Remover música da lista de reprodução</string>
-    <string name="remove_songs_from_playlist_title">Remover músicas da lista de reprodução</string>
     <string name="rename_playlist_title">Renomear lista de reprodução</string>
-    <string name="delete_playlist_title">Excluir lista de reprodução</string>
-    <string name="delete_playlists_title">Excluir listas de reprodução</string>
     <string name="clear_playlist_title">Limpar listas de reprodução</string>
     <string name="save_playlist_title">Salvar como arquivo</string>
     <string name="save_playlists_title">Salvar como arquivos</string>
