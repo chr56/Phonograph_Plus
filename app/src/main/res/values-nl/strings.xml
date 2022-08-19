@@ -26,9 +26,6 @@
     <string name="artists">Artiesten</string>
     <string name="songs">Nummers</string>
     <string name="playlists">Afspeellijsten</string>
-    <string name="unplayable_file">Kan dit nummer niet afspelen.</string>
-    <string name="biography_unavailable">Kan geen biografie vinden voor deze artiest.</string>
-    <string name="wiki_unavailable">Kan geen wiki-entry vinden voor dit album.</string>
     <string name="biography">Biografie</string>
     <string name="audio_focus_denied">Audiofocus geweigerd.</string>
     <string name="artist">Artiest</string>
@@ -59,7 +56,6 @@
     <string name="deleted_x_songs">%1$d nummers verwijderd.</string>
     <string name="deleted_x_playlists">%1$d afspeellijsten verwijderd.</string>
     <string name="playlist_exists">Afspeellijst %1$s bestaat al.</string>
-    <string name="could_not_create_playlist">Kan afspeellijst niet aanmaken.</string>
     <string name="delete_song_title">Verwijder nummer</string>
     <string name="delete_songs_title">Verwijder nummers</string>
     <string name="remove_song_from_playlist_title">Verwijder nummer uit afspeellijst</string>
