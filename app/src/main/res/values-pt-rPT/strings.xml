@@ -54,14 +54,7 @@
     <string name="action_grid_size_land">Tamanho de grelha (horizontal)</string>
     <string name="inserted_x_songs_into_playlist_x">Inseridas %1$d músicas na lista de reprodução %2$s.</string>
     <string name="created_playlist_x">Criada lista de reprodução %1$s.</string>
-    <string name="deleted_x_songs">Eliminadas %1$d músicas.</string>
-    <string name="delete_song_title">Eliminar faixa</string>
-    <string name="delete_songs_title">Eliminar músicas</string>
-    <string name="remove_song_from_playlist_title">Remover a música da lista de reprodução.</string>
-    <string name="remove_songs_from_playlist_title">Remover músicas da lista de reprodução.</string>
     <string name="rename_playlist_title">Mudar o nome da lista de reprodução</string>
-    <string name="delete_playlist_title">Eliminar lista de reprodução</string>
-    <string name="delete_playlists_title">Eliminar listas de reprodução</string>
     <string name="clear_playlist_title">Limpar lista de reprodução</string>
     <string name="save_playlist_title">Guardar como ficheiro</string>
     <string name="add_playlist_title">Adicionar à lista de reprodução</string>
