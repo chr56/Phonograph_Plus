@@ -91,6 +91,7 @@
     <string name="pref_header_audio">Аудио</string>
     <string name="pref_header_images">Изображения</string>
     <string name="pref_header_lockscreen">Заключен екран</string>
+    <string name="pref_header_playlists">Плейлисти</string>
     <string name="pref_title_navigation_bar">Оцветени навигационни бутони</string>
     <string name="pref_title_app_shortcuts">Оцветяване на бутоните</string>
     <string name="pref_title_album_art_on_lockscreen">Покажи обложката на албум</string>
@@ -169,7 +170,6 @@
     <string name="welcome_to_phonograph">"Добре дошли във Phonograph, красив и лек музикален плеър за Андроид. "</string>
     <string name="open_playing_queue_instruction">Плъзнете картата в екранът на текущо възпроизвеждащата се песен, за видите списъкът с песни.</string>
     <string name="rearrange_playing_queue_instruction">Разместете списъкът с текущо възпроизвеждащи се песни, като хванете тракът за неговият номер.</string>
-    <string name="library">Библиотека</string>
     <string name="folders">Папки</string>
     <string name="failed_to_save_playlist">Плейлистът не бе запазен успешно (%s).</string>
     <string name="nothing_to_scan">Няма нищо за сканиране.</string>
@@ -204,6 +204,11 @@
     <string name="you_will_be_forwarded_to_the_issue_tracker_website">Вие ще бъдете пренасочени към уебсайтът който следи за проблеми.</string>
     <string name="app_shortcut_shuffle_all_short">Разбъркай</string>
     <string name="app_shortcut_top_tracks_short">Най - често слушани</string>
-    <string name="app_shortcut_last_added_short">Последно_добавени</string>
+    <string name="app_shortcut_last_added_short">Последно добавени</string>
     <string name="playlist_is_empty">Плейлистът е празен</string>
+    <string name="sort_order_artist">Изпълнител</string>
+    <string name="sort_order_album">Албум</string>
+    <string name="sort_order_year">Година</string>
+    <string name="sort_order_song">Песен</string>
+    <string name="pref_header_appearance">Изглед</string>
 </resources>
