@@ -379,8 +379,8 @@
     <string name="reached_to_root">You have reached to root folder of this storage volume</string>
     <string name="sort_order_size">File Size</string>
     <string name="use_legacy_list_Files">Use legacy way to read files</string>
-    <string name="pref_title_keep_playing_queue_intact">Please do NOT touch my playing queue arbitrarily.</string>
-    <string name="pref_summary_keep_playing_queue_intact">If enabled, Phonograph Plus would not try to clear playing queue unless you ask so, your playing queue would be kept intact.</string>
+    <string name="pref_title_keep_playing_queue_intact">Keep the playing queue intact.</string>
+    <string name="pref_summary_keep_playing_queue_intact">If enabled, Phonograph Plus would not try to clear playing queue unless you ask, so you would not lose your playing queue by accident.</string>
     <string name="change_now_playing_screen">Change now playing screen</string>
     <string name="load_images_for_files">Load images for files</string>
     <string name="app_language">Application Language</string>
