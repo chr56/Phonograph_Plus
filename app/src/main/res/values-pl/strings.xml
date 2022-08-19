@@ -29,9 +29,6 @@
     <string name="genres">Gatunki</string>
     <string name="songs">Utwory</string>
     <string name="playlists">Listy odtwarzania</string>
-    <string name="unplayable_file">Utw\u00f3r nie mo\u017ce zosta\u0107 odegrany</string>
-    <string name="biography_unavailable">Nie znaleziono biografii tego wykonawcy.</string>
-    <string name="wiki_unavailable">Nie znaleziono informacji o tym albumie</string>
     <string name="biography">Biografia</string>
     <string name="wiki">Wikipedia</string>
     <string name="audio_focus_denied">Nie można teraz odtworzyć dźwięku</string>
@@ -63,7 +60,6 @@
     <string name="created_playlist_x">Utworzono listę odtwarzania %1$s</string>
     <string name="deleted_x_songs">Usunięto %1$d utworów</string>
     <string name="playlist_exists">Lista %1$s już istnieje</string>
-    <string name="could_not_create_playlist">Nie mo\u017cna utworzy\u0107 listy odtwarzania</string>
     <string name="delete_song_title">Usuń utwór</string>
     <string name="delete_songs_title">Usuń utwory</string>
     <string name="remove_song_from_playlist_title">Usuń utwór z listy odtwarzania</string>
