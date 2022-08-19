@@ -5,7 +5,7 @@
     <string name="the_audio_file">Zvučna datoteka</string>
     <string name="action_set_as_ringtone">Postavi kao zvuk zvona</string>
     <string name="action_share">Podijeli</string>
-    <string name="action_settings">"Postavke"</string>
+    <string name="action_settings">Postavke</string>
     <string name="action_grant">Dopusti</string>
     <string name="action_about">O Phonographu</string>
     <string name="action_add_to_favorites">Dodaj u favorite</string>
@@ -33,14 +33,12 @@
     <string name="biography_unavailable">Nije mogu\u0107e prona\u0107i biografiju za ovog izvo\u0111a\u010da.</string>
     <string name="wiki_unavailable">Nije mogu\u0107e prona\u0107i wiki unos za ovaj album.</string>
     <string name="biography">Biografija</string>
-    <string name="wiki">Wiki</string>
     <string name="audio_focus_denied">Zvučni fokus je odbijen.</string>
-    <string name="album">Album</string>
     <string name="artist">Izvođač</string>
     <string name="genre">Žanr</string>
     <string name="album_artist">Izvođač albuma</string>
     <string name="year">Godina</string>
-    <string name="track_hint">"Redni broj (2 za pjesmu broj 2 ili 3004 za CD3 pjesmu broj 4)"</string>
+    <string name="track_hint">Redni broj (2 za pjesmu broj 2 ili 3004 za CD3 pjesmu broj 4)</string>
     <string name="lyrics">Stihovi</string>
     <string name="album_or_artist_empty">Polje za naziv ili izvođača je prazno.</string>
     <string name="saving_changes">Spremanje promjena</string>
@@ -48,7 +46,6 @@
     <string name="label_file_name">Naziv datoteke</string>
     <string name="label_file_path">Odredište datoteke</string>
     <string name="label_file_size">Veličina</string>
-    <string name="label_file_format">Format</string>
     <string name="label_track_length">Duljina</string>
     <string name="label_bit_rate">Brzina prijenosa</string>
     <string name="label_sampling_rate">Brzina uzorkovanja</string>
@@ -57,7 +54,6 @@
     <string name="label_playing_queue">Red čekanja</string>
     <string name="no_results">Nema rezultata</string>
     <string name="updating">Ažuriranje...</string>
-    <string name="added_title_to_playing_queue">"1 pjesma je dodana u red čekanja."</string>
     <string name="added_x_titles_to_playing_queue">Dodano je %1$d pjesama u red čekanja.</string>
     <string name="action_remove_from_playlist">Ukloni s popisa naslova</string>
     <string name="action_grid_size">Veličina mreže</string>
@@ -77,7 +73,7 @@
     <string name="clear_playlist_title">Očisti popis naslova</string>
     <string name="save_playlist_title">Spremi kao datoteku</string>
     <string name="save_playlists_title">Spremi kao datoteke</string>
-    <string name="add_playlist_title">"Dodaj na popis naslova"</string>
+    <string name="add_playlist_title">Dodaj na popis naslova</string>
     <string name="select_all_title">Odaberi sve</string>
     <string name="action_shuffle_all">Izmiješaj sve</string>
     <string name="action_shuffle_album">Izmiješaj album</string>
@@ -92,10 +88,10 @@
     <string name="only_on_wifi">Samo na Wifi-ju</string>
     <string name="never">Nikad</string>
     <string name="today">Danas</string>
-    <string name="this_week">Ovaj tjedan</string>
     <string name="past_seven_days">Prošlih 7 dana</string>
-    <string name="this_month">Ovaj mjesec</string>
     <string name="past_three_months">Prošla 3 mjeseca</string>
+    <string name="this_week">Ovaj tjedan</string>
+    <string name="this_month">Ovaj mjesec</string>
     <string name="this_year">Ova godina</string>
     <string name="equalizer">Ekvalizator</string>
     <string name="pref_header_colors">Boje</string>
@@ -122,7 +118,6 @@
     <string name="pref_title_remember_last_tab">Zapamti zadnju karticu</string>
     <string name="pref_title_remember_shuffle">Zapamti nasumičnu rep.</string>
     <string name="no_equalizer">Ekvalizator nije pronađen.</string>
-    <string name="no_audio_ID">"Reproducirajte nešto i pokušajte opet."</string>
     <string name="delete_action">Izbriši</string>
     <string name="clear_action">Očisti</string>
     <string name="remove_action">Ukloni</string>
@@ -143,8 +138,6 @@
     <string name="pref_summary_album_art_on_lockscreen">Koristi omot albuma trenutne pjesme kao pozadinu zaključanog zaslona.</string>
     <string name="pref_summary_blurred_album_art">Zamagljuje omot albuma na zaključanom zaslonu. Može izazvati probleme za ostale aplikacije i widgete.</string>
     <string name="pref_summary_classic_notification">Koristi klasični dizajn obavijesti.</string>
-    <string name="pref_summary_colored_notification">"Obavijesti su obojene istaknutom bojom omota albuma."</string>
-    <string name="pref_summary_gapless_playback">"Na nekim uređajima može uzrokovati probleme s reproduciranjem."</string>
     <string name="pref_summary_ignore_media_store_artwork">Može povećati kvalitetu omota albuma, ali povećava vrijeme učitavanja. Omogućite ovo samo ako imate problema s omotima niske rezolucije.</string>
     <string name="pref_summary_colored_navigation_bar">Boja navigacijsku traku primarnom bojom.</string>
     <string name="pref_summary_colored_app_shortcuts">Boja prečace aplikacije u primarnu boju.</string>
@@ -152,14 +145,12 @@
     <string name="pref_summary_synchronized_lyrics_show">Trenutno su samo sinkronizirani stihovi u LRC formatu podržani. Ili ugrađeni ili u zasebnoj datoteci.</string>
     <string name="pref_summary_remember_last_tab">Pri pokretanju otvori zadnje otvorenu karticu</string>
     <string name="pref_summary_remember_shuffle">Način nasumične rep. će ostati uključen prilikom biranja novog popisa pjesama</string>
-    <string name="could_not_download_album_cover">"Nije mogu\u0107e preuzeti odgovaraju\u0107i omot albuma."</string>
     <string name="search_hint">Pretražite svoju biblioteku...</string>
     <string name="favorites">Favoriti</string>
     <string name="last_added">Posljednje dodano</string>
     <string name="history">Nedavno reproducirano</string>
     <string name="my_top_tracks">Najslušanije</string>
     <string name="remove_cover">Ukloni omot</string>
-    <string name="download_from_last_fm">Skini s lokacije Last.fm</string>
     <string name="pick_from_local_storage">Odaberi s pohrane uređaja</string>
     <string name="web_search">Web pretraga</string>
     <string name="action_sleep_timer">Tajmer za spavanje</string>
@@ -195,7 +186,7 @@
     <string name="up_next">Sljedeće na redu</string>
     <string name="pref_title_now_playing_screen_appearance">Izgled</string>
     <string name="intro_label">Uvod</string>
-    <string name="welcome_to_phonograph">"Dobrodošli u Phonograph, prekrasan i lagan glazbeni player za Android. "</string>
+    <string name="welcome_to_phonograph">Dobrodošli u Phonograph, prekrasan i lagan glazbeni player za Android. </string>
     <string name="open_playing_queue_instruction">Povucite karticu na zaslonu za reprodukciju kako bi otvorili cijeli red čekanja.</string>
     <string name="rearrange_playing_queue_instruction">Preuredite red čekanja povlačenjem pjesme za njen broj.</string>
     <string name="library">Biblioteka</string>
@@ -245,7 +236,7 @@
     <string name="add_action">Dodaj</string>
     <string name="blacklist">Crni popis</string>
     <string name="remove_from_blacklist">Ukloni sa crnog popisa</string>
-    <string name="do_you_want_to_remove_from_the_blacklist"><![CDATA[Želite li ukloniti<b>%1$s</b> sa crnog popisa?]]></string>
+    <string name="do_you_want_to_remove_from_the_blacklist">Želite li ukloniti<b>%1$s</b> sa crnog popisa?</string>
     <string name="clear_blacklist">Očisti crni popis</string>
     <string name="do_you_want_to_clear_the_blacklist">Želite li očistiti crni popis?</string>
     <string name="pref_summary_blacklist">Sadržaj mapa crnog popisa je skriven iz vaše biblioteke.</string>
@@ -260,7 +251,8 @@
     <string name="sort_order_a_z">Uzlazno</string>
     <string name="sort_order_z_a">Silazno</string>
     <string name="sort_order_artist">Izvođač</string>
-    <string name="sort_order_album">Album</string>
     <string name="sort_order_year">Godina</string>
     <string name="finish_current_music_sleep_timer">Završi zadnju pjesmu</string>
+    <string name="sort_order_song">Pjesma</string>
+    <string name="pref_header_appearance">Izgled</string>
 </resources>
