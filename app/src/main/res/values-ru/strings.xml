@@ -222,7 +222,7 @@
     <string name="welcome_to_phonograph">"Добро пожаловать в Phonograph, красивый и лёгкий плеер для Android"</string>
     <string name="open_playing_queue_instruction">Проведите по карточке на экране воспроизведения, чтобы просмотреть очередь</string>
     <string name="rearrange_playing_queue_instruction">Редактируйте очередь воспроизведения, перетаскивая песни за их номер</string>
-    <string name="library">Библиотека </string>
+    <string name="library">Библиотека</string>
     <string name="folders">Папки</string>
     <string name="theme_switch">Переключатель темы</string>
     <string name="failed_to_save_playlist">Не удалось сохранить плейлист (%s).</string>
@@ -346,7 +346,7 @@
     <string name="direction_open_folder_with_saf">Теперь, пожалуйста, выберите папку с файлами, с которой вы хотели бы работать</string>
     <string name="direction_open_file_with_saf">Теперь выберите файл, с которым вы хотите работать</string>
     <string name="file_incorrect">Файл неверный!</string>
-    <string name="pref_header_appearance">Вид</string>
+    <string name="pref_header_appearance">Вид экрана воспроизведения</string>
     <string name="deleting_old_files">Удаление старых файлов…</string>
     <string name="pref_title_reset_home_pages_tab_config">Сбросить все вкладки</string>
     <string name="pref_summary_reset_home_pages_tab_config">Все категории библиотек будут сброшены по умолчанию.</string>
