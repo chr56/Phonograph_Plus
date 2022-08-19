@@ -5,7 +5,7 @@
     <string name="the_audio_file">O ficheiro áudio</string>
     <string name="action_set_as_ringtone">Definir como toque de telemóvel</string>
     <string name="action_share">Partilhar</string>
-    <string name="action_settings">"Definições"</string>
+    <string name="action_settings">Definições</string>
     <string name="action_grant">Permitir</string>
     <string name="action_about">Sobre</string>
     <string name="action_add_to_favorites">Adicionar aos favoritos</string>
@@ -34,7 +34,7 @@
     <string name="genre">Género</string>
     <string name="album_artist">Artista do álbum</string>
     <string name="year">Ano</string>
-    <string name="track_hint">"Faixa (2 para faixa 2 ou 3004 para CD3 faixa 4)"</string>
+    <string name="track_hint">Faixa (2 para faixa 2 ou 3004 para CD3 faixa 4)</string>
     <string name="album_or_artist_empty">O título do álbum ou o artista está vazio.</string>
     <string name="saving_changes">A gravar alterações</string>
     <string name="label_details">Detalhes</string>
@@ -50,7 +50,6 @@
     <string name="label_playing_queue">Fila de reprodução</string>
     <string name="no_results">Sem resultados</string>
     <string name="updating">A atualizar...</string>
-    <string name="added_title_to_playing_queue">"Adicionada uma música à fila de reprodução."</string>
     <string name="added_x_titles_to_playing_queue">Adicionadas %1$d títulos à fila de reprodução.</string>
     <string name="action_remove_from_playlist">Remover da lista de reprodução</string>
     <string name="action_grid_size">Tamanho de grelha</string>
@@ -68,7 +67,7 @@
     <string name="delete_playlists_title">Eliminar listas de reprodução</string>
     <string name="clear_playlist_title">Limpar lista de reprodução</string>
     <string name="save_playlist_title">Guardar como ficheiro</string>
-    <string name="add_playlist_title">"Adicionar à lista de reprodução"</string>
+    <string name="add_playlist_title">Adicionar à lista de reprodução</string>
     <string name="action_shuffle_all">Embaralhar Todas</string>
     <string name="action_shuffle_album">Embaralhar Álbum</string>
     <string name="action_shuffle_artist">Embaralhar Artista</string>
@@ -87,6 +86,7 @@
     <string name="pref_header_audio">Áudio</string>
     <string name="pref_header_images">Imagens</string>
     <string name="pref_header_lockscreen">Ecrã de Bloqueio</string>
+    <string name="pref_header_playlists">Listas de reprodução</string>
     <string name="pref_title_navigation_bar">Barra de navegação colorida</string>
     <string name="pref_title_album_art_on_lockscreen">Mostrar capa do álbum</string>
     <string name="pref_title_blurred_album_art">Desfocar capa do álbum</string>
@@ -94,7 +94,6 @@
     <string name="pref_title_ignore_media_store_artwork">Ignorar capas Media Store</string>
     <string name="pref_title_gapless_playback">Reprodução contínua</string>
     <string name="no_equalizer">Nenhum equalizador encontrado.</string>
-    <string name="no_audio_ID">"Reproduza uma faixa primeiro, e tente outra vez."</string>
     <string name="delete_action">Eliminar</string>
     <string name="clear_action">Limpar</string>
     <string name="remove_action">Remover</string>
@@ -113,19 +112,15 @@
     <string name="song">Música</string>
     <string name="pref_summary_album_art_on_lockscreen">Usa a capa de álbum da faixa atual como papel de parede da tela de bloqueio.</string>
     <string name="pref_summary_blurred_album_art">Desfoca a capa do álbum no ecrã de bloqueio. Pode causar problemas com aplicações de terceiros e widgets.</string>
-    <string name="pref_summary_colored_notification">"Colorir a notifica\u00e7\u00e3o na cor viva da capa de \u00e1lbum."</string>
-    <string name="pref_summary_gapless_playback">"Pode causar problemas na reprodução em alguns dispositivos."</string>
     <string name="pref_summary_ignore_media_store_artwork">Pode aumentar a qualidade da capa do album, mas aumenta o tempo de carregamento. Ative isto somente se tiver problemas com capas de baixa resolução.</string>
     <string name="pref_summary_colored_navigation_bar">Colorir a barra de navegação na cor primária.</string>
     <string name="pref_summary_audio_ducking">Notificações, navegação etc.</string>
-    <string name="could_not_download_album_cover">"N\u00e3o foi encontrada uma capa para este \u00e1lbum."</string>
     <string name="search_hint">Procurar na biblioteca...</string>
     <string name="favorites">Favoritos</string>
     <string name="last_added">Últimas adições</string>
     <string name="history">Histórico</string>
     <string name="my_top_tracks">As minhas faixas favoritas</string>
     <string name="remove_cover">Remover capa</string>
-    <string name="download_from_last_fm">Descarregar do Last.fm</string>
     <string name="pick_from_local_storage">Escolher do armazenamento local</string>
     <string name="web_search">Procura web</string>
     <string name="action_sleep_timer">Temporizador para dormir</string>
@@ -137,8 +132,7 @@
     <string name="new_playlist_title">Nova lista de reprodução</string>
     <string name="colored_footers">Rodapés coloridos</string>
     <string name="special_thanks_to">Agradecimentos especiais a</string>
-    <string name="changelog">Changelog</string>
-    <string name="licenses">"Licenças "</string>
+    <string name="licenses">Licenças </string>
     <string name="permissions_denied">Permissões negadas.</string>
     <string name="permission_external_storage_denied">Permissão para aceder a armazenamento externo negada.</string>
     <string name="support_development">Apoiar o desenvolvimento</string>
@@ -159,10 +153,9 @@
     <string name="up_next">A seguir</string>
     <string name="pref_title_now_playing_screen_appearance">Aparência</string>
     <string name="intro_label">Introdução</string>
-    <string name="welcome_to_phonograph">"Bem vindo ao Phonograph, um belo e leve leitor de música para Android. "</string>
+    <string name="welcome_to_phonograph">Bem vindo ao Phonograph, um belo e leve leitor de música para Android. </string>
     <string name="open_playing_queue_instruction">Deslize o cartão no ecrã de \"a reproduzir\" para cima para mostrar a fila de reprodução completa.</string>
     <string name="rearrange_playing_queue_instruction">Reorganizar a fila de reprodução arrastando a música desde o seu número</string>
-    <string name="library">Biblioteca</string>
     <string name="folders">Pastas</string>
     <string name="failed_to_save_playlist">Erro a salvar a lista de reprodução (%s).</string>
     <string name="nothing_to_scan">Nada para verificar.</string>
@@ -172,7 +165,7 @@
     <string name="app_widget_big_name">Phonograph - Grande</string>
     <string name="app_widget_classic_name">Phonograph - Clássico</string>
     <string name="app_widget_small_name">Phonograph - Pequeno</string>
-    <string name="report_an_issue">"Denunciar um problema "</string>
+    <string name="report_an_issue">Denunciar um problema </string>
     <string name="bug_report_issue">Problema</string>
     <string name="login">Entrar</string>
     <string name="title">Título</string>
@@ -193,4 +186,10 @@
     <string name="bug_report_failed_unknown">Ocorreu um erro inesperado. Por favor contacte o desenvolvedor da aplicação.</string>
     <string name="your_account_data_is_only_used_for_authentication">A sua informação da conta é apenas usada para a autenticação.</string>
     <string name="you_will_be_forwarded_to_the_issue_tracker_website">Vai ser reencaminhado para o site do rastreador de problemas.</string>
+    <string name="app_shortcut_last_added_short">Últimas adições</string>
+    <string name="sort_order_artist">Artista</string>
+    <string name="sort_order_album">Álbum</string>
+    <string name="sort_order_year">Ano</string>
+    <string name="sort_order_song">Música</string>
+    <string name="pref_header_appearance">Aparência</string>
 </resources>
