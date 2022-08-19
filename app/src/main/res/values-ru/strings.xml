@@ -298,7 +298,6 @@
     <string name="err_permission_storage">Доступ к хранилищу</string>
     <string name="add_blacklist">Вы хотите добавить это в черный список?</string>
     <string name="minutes_short">%1$d мин</string>
-    <!-- use for tag -->
     <string name="other_information">Другая</string>
     <string name="more_actions">Другое</string>
     <string name="crash">Сбой приложения!!</string>
@@ -392,10 +391,31 @@
     <string name="pref_title_keep_playing_queue_intact">Пожалуйста, НЕ трогайте мою очередь воспроизведения.</string>
     <string name="pref_summary_keep_playing_queue_intact">Если этот параметр включен, Phonograph Plus не будет пытаться очистить очередь воспроизведения, если вы не спросите, ваша очередь воспроизведения останется нетронутой.</string>
     <string name="change_now_playing_screen">Изменить воспроизведение экрана</string>
+    <string name="load_images_for_files">Загрузить изображения для файлов</string>
+    <string name="app_language">Язык приложения</string>
+    <string name="_default">По умолчанию</string>
     <plurals name="x_songs">
         <item quantity="one">%1$d песня</item>
         <item quantity="few">%1$d песен</item>
         <item quantity="many">%1$d песен</item>
         <item quantity="other">%1$d песня</item>
+    </plurals>
+    <plurals name="x_albums">
+        <item quantity="one">%1$d альбом</item>
+        <item quantity="few">%1$d альбомов</item>
+        <item quantity="many">%1$d альбомов</item>
+        <item quantity="other">%1$d альбомы</item>
+    </plurals>
+    <plurals name="x_artists">
+        <item quantity="one">%1$d артист</item>
+        <item quantity="few">%1$d артистов</item>
+        <item quantity="many">%1$d артистов</item>
+        <item quantity="other">%1$d артисты</item>
+    </plurals>
+    <plurals name="x_genres">
+        <item quantity="one">%1$d жанр</item>
+        <item quantity="few">%1$d жанров</item>
+        <item quantity="many">%1$d жанров</item>
+        <item quantity="other">%1$d жанры</item>
     </plurals>
 </resources>
