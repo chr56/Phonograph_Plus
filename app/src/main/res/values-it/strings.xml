@@ -29,9 +29,6 @@
     <string name="genres">Generi</string>
     <string name="songs">Brani</string>
     <string name="playlists">Playlist</string>
-    <string name="unplayable_file">Impossibile riprodurre questo brano.</string>
-    <string name="biography_unavailable">Impossibile trovare una biografia corrispondente a questo artista.</string>
-    <string name="wiki_unavailable">Impossibile trovare una voce wiki per questo album.</string>
     <string name="biography">Biografia</string>
     <string name="audio_focus_denied">Focus audio negato.</string>
     <string name="artist">Artista</string>
@@ -64,7 +61,6 @@
     <string name="deleted_x_songs">%1$d brani eliminati.</string>
     <string name="deleted_x_playlists">Eliminate %1$d playlist.</string>
     <string name="playlist_exists">La playlist %1$s esiste già.</string>
-    <string name="could_not_create_playlist">Impossibile creare la playlist.</string>
     <string name="delete_song_title">Elimina brano</string>
     <string name="delete_songs_title">Elimina brani</string>
     <string name="remove_song_from_playlist_title">Rimuovi brano dalla playlist</string>
