@@ -15,26 +15,24 @@ import android.os.Bundle
 import android.provider.Settings
 import android.text.Html
 import android.util.Log
-import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.WhichButton
 import com.afollestad.materialdialogs.actions.getActionButton
 import player.phonograph.R
+import player.phonograph.misc.SAFCallbackHandlerActivity
 import player.phonograph.model.playlist.FilePlaylist
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.model.playlist.ResettablePlaylist
 import player.phonograph.model.playlist.SmartPlaylist
-import player.phonograph.misc.SAFCallbackHandlerActivity
 import util.mdcolor.pref.ThemeColor
 import util.phonograph.m3u.PlaylistsManager
-import java.lang.StringBuilder
 
 class ClearPlaylistDialog : DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val playlists: List<Playlist> = requireArguments().getParcelableArrayList(KEY)!!
 
-        val title: Int = if (playlists.size > 1) { R.string.delete_playlists_title } else { R.string.delete_playlist_title }
+//        val title: Int = if (playlists.size > 1) { R.string.delete_playlists_title } else { R.string.delete_playlist_title }
 
         // classify
         val smartLists = ArrayList<SmartPlaylist>()
@@ -51,37 +49,45 @@ class ClearPlaylistDialog : DialogFragment() {
         }
 
         // generate msg
-        val message = StringBuilder()
+        val message =
+            StringBuilder().append(
+                resources.getQuantityString(R.plurals.msg_header_delete_items, playlists.size)
+            ).append("<br />")
 
         if (filesLists.isNotEmpty()) {
-            val msgCommon = resources.getQuantityString(R.plurals.msg_playlist_deletion_summary, filesLists.size, filesLists.size)
-            message.append(msgCommon)
+            message.append(
+                resources.getQuantityString(R.plurals.item_playlists, filesLists.size)
+            ).append("<br />")
             for (playlist in filesLists) {
-                message.append("<b>${playlist.name}</b>").append("<br />")
+                message.append("* <b>${playlist.name}</b>").append("<br />")
             }
         }
         if (smartLists.isNotEmpty()) {
-            val msgSmart = resources.getString(R.string.clear_playlist_title)
-            message.append(msgSmart).append("<br />")
+            message.append(
+                resources.getQuantityString(R.plurals.item_playlists_generated, smartLists.size)
+            ).append("<br />")
             for (playlist in smartLists) {
-                message.append("<b>${playlist.name}</b>").append("<br />")
+                message.append("* <b>${playlist.name}</b>").append("<br />")
             }
         }
 
         // extra permission check on R(11)
-        var hasPermission = true
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            if (requireActivity().checkSelfPermission(Manifest.permission.MANAGE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {
-                hasPermission = false
-                message.append("<br />").append(requireActivity().resources.getString(R.string.permission_manage_external_storage_denied))
-                Toast.makeText(context, R.string.permission_manage_external_storage_denied, Toast.LENGTH_SHORT).show()
-                Log.w(TAG, "No MANAGE_EXTERNAL_STORAGE permission")
+        val hasPermission =
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R &&
+                requireActivity().checkSelfPermission(Manifest.permission.MANAGE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
+            ) {
+                Log.i(TAG, "No MANAGE_EXTERNAL_STORAGE Permission")
+                message.append("<br />")
+                    .append(requireActivity().resources.getString(R.string.permission_manage_external_storage_denied)) //todo res
+                false
+            } else {
+                true
             }
-        }
+
 
         // build dialog
         val dialog = MaterialDialog(requireActivity())
-            .title(title)
+            .title(R.string.delete_action)
             .message(text = Html.fromHtml(message.toString(), Html.FROM_HTML_MODE_LEGACY))
             .negativeButton(android.R.string.cancel) { dismiss() }
             .positiveButton(R.string.delete_action) {
@@ -119,6 +125,7 @@ class ClearPlaylistDialog : DialogFragment() {
     companion object {
         private const val KEY = "playlists"
         private const val TAG = "ClearPlaylistDialog"
+
         @JvmStatic
         fun create(playlists: List<Playlist>): ClearPlaylistDialog =
             ClearPlaylistDialog().apply {

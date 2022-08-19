@@ -354,7 +354,7 @@
     <string name="import_">Import: </string>
     <string name="databases">Databases</string>
     <plurals name="msg_deletion_result">
-        <item quantity="one">%1$d / %2$d item was successfully deleted.</item>>
+        <item quantity="one">%1$d / %2$d item was successfully deleted.</item>
         <item quantity="other">%1$d / %2$d items were successfully deleted.</item>
     </plurals>
     <plurals name="msg_files_deletion_summary">
@@ -399,5 +399,17 @@
     <plurals name="x_genres">
         <item quantity="one">%1$d genre</item>
         <item quantity="other">%1$d genres</item>
+    </plurals>
+    <plurals name="msg_header_delete_items">
+        <item quantity="one"><br>This item would be deleted</br>:</item>
+        <item quantity="other"><br>These items would be deleted</br>:</item>
+    </plurals>
+    <plurals name="item_playlists">
+        <item quantity="one">Playlist</item>
+        <item quantity="other">Playlists</item>
+    </plurals>
+    <plurals name="item_playlists_generated">
+        <item quantity="one">Generated Playlist</item>
+        <item quantity="other">Generated Playlists</item>
     </plurals>
 </resources>
