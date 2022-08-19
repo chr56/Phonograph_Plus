@@ -406,6 +406,10 @@
         <item quantity="one">Playlist</item>
         <item quantity="other">Playlists</item>
     </plurals>
+    <plurals name="item_files">
+        <item quantity="one">file</item>
+        <item quantity="other">files</item>
+    </plurals>
     <plurals name="item_playlists_generated">
         <item quantity="one">Generated Playlist</item>
         <item quantity="other">Generated Playlists</item>

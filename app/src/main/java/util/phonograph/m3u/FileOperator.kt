@@ -236,26 +236,22 @@ object FileOperator {
                     }
 
                     // confirm to delete
-                    val msg = StringBuffer().append(
-                        Html.fromHtml(
-                            activity.resources.getQuantityString(
-                                R.plurals.msg_files_deletion_summary,
-                                deleteList.size,
-                                deleteList.size
-                            ),
-                            Html.FROM_HTML_MODE_LEGACY
-                        )
+                    val msg = StringBuffer()
+                    msg.append(
+                        "<b>${activity.resources.getQuantityString(R.plurals.msg_header_delete_items, deleteList.size)}</b><br/>"
+                    ).append(
+                        "${activity.resources.getQuantityString(R.plurals.item_files, deleteList.size)}<br/>"
                     )
-                    deleteList.forEach { file ->
-                        msg.append(file.getAbsolutePath(activity)).appendLine()
-                        Log.i("FileDelete", "DeleteList:")
-                        Log.i("FileDelete", "${file.name}@${file.uri}")
+                    Log.v("FileDelete", "DeleteList:")
+                    for (file in deleteList) {
+                        msg.append("* <b>${file.getAbsolutePath(activity)}</b>")
+                        Log.v("FileDelete", "${file.name}@${file.uri}")
                     }
 
                     withContext(Dispatchers.Main) {
                         MaterialDialog(activity)
                             .title(R.string.delete_action)
-                            .message(text = msg)
+                            .message(text = Html.fromHtml(msg.toString(), Html.FROM_HTML_MODE_LEGACY))
                             .positiveButton(R.string.delete_action) {
                                 prepareList.forEach { it.delete() }
                                 sentPlaylistChangedLocalBoardCast()
