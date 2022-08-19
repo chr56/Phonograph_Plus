@@ -5,7 +5,7 @@
     <string name="the_audio_file">The audio file</string>
     <string name="action_set_as_ringtone">Set as ringtone</string>
     <string name="action_share">Share</string>
-    <string name="action_settings">"Settings"</string>
+    <string name="action_settings">Settings</string>
     <string name="action_grant">Grant</string>
     <string name="action_about">About</string>
     <string name="action_add_to_favorites">Add to favorites</string>
@@ -41,7 +41,7 @@
     <string name="album_artist">Album artist</string>
     <string name="year">Year</string>
     <string name="track">Track Number</string>
-    <string name="track_hint">"Track (2 for track 2 or 3004 for CD3 track 4)"</string>
+    <string name="track_hint">Track (2 for track 2 or 3004 for CD3 track 4)</string>
     <string name="lyrics">Lyrics</string>
     <string name="album_or_artist_empty">The title or artist is empty.</string>
     <string name="saving_changes">Saving changes</string>
@@ -58,7 +58,7 @@
     <string name="label_playing_queue">Playing queue</string>
     <string name="no_results">No results</string>
     <string name="updating">Updating…</string>
-    <string name="added_title_to_playing_queue">"Added 1 title to the playing queue."</string>
+    <string name="added_title_to_playing_queue">Added 1 title to the playing queue\u002E</string>
     <string name="added_x_titles_to_playing_queue">Added %1$d titles to the playing queue.</string>
     <string name="action_remove_from_playlist">Remove from playlist</string>
     <string name="action_grid_size">Grid size</string>
@@ -69,18 +69,17 @@
     <string name="deleted_x_playlists">Deleted %1$d playlists.</string>
     <string name="playlist_exists">Playlist %1$s already exists.</string>
     <string name="could_not_create_playlist">Couldn\u2019t create playlist.</string>
-
     <plurals name="msg_song_deletion_summary">
-        <item quantity="one"><![CDATA[Delete <b>%1$d</b> song from the device?<br/>]]></item>
-        <item quantity="other"><![CDATA[Delete <b>%1$d</b> songs from the device?<br/>]]></item>
+        <item quantity="one">Delete <b>%1$d</b> song from the device?\n</item>
+        <item quantity="other">Delete <b>%1$d</b> songs from the device?\n</item>
     </plurals>
     <plurals name="msg_song_removal_summary">
-        <item quantity="one"><![CDATA[Remove <b>%1$d</b> song from the playlist?]]></item>
-        <item quantity="other"><![CDATA[Delete <b>%1$d</b> songs from the playlist?]]></item>
+        <item quantity="one">Remove <b>%1$d</b> song from the playlist?\n</item>
+        <item quantity="other">Delete <b>%1$d</b> songs from the playlist?\n</item>
     </plurals>
     <plurals name="msg_playlist_deletion_summary">
-        <item quantity="one"><![CDATA[Delete <b>%1$d</b> playlist from the device?<br/>]]></item>
-        <item quantity="other"><![CDATA[Delete <b>%1$d</b> playlist from the device?<br/>]]></item>
+        <item quantity="one">Delete <b>%1$d</b> playlist from the device?\n</item>
+        <item quantity="other">Delete <b>%1$d</b> playlist from the device?\n</item>
     </plurals>
     <string name="delete_song_title">Delete song</string>
     <string name="delete_songs_title">Delete songs</string>
@@ -92,7 +91,7 @@
     <string name="clear_playlist_title">Clear playlist</string>
     <string name="save_playlist_title">Save as file</string>
     <string name="save_playlists_title">Save as files</string>
-    <string name="add_playlist_title">"Add to playlist"</string>
+    <string name="add_playlist_title">Add to playlist</string>
     <string name="select_all_title">Select all</string>
     <string name="action_shuffle_all">Shuffle all</string>
     <string name="action_shuffle_album">Shuffle album</string>
@@ -141,7 +140,7 @@
     <string name="pref_title_remember_last_tab">Remember last tab</string>
     <string name="pref_title_remember_shuffle">Remember shuffle</string>
     <string name="no_equalizer">No equalizer found.</string>
-    <string name="no_audio_ID">"Play a song first, then try again."</string>
+    <string name="no_audio_ID">Play a song first\u002C then try again\u002E</string>
     <string name="delete_action">Delete</string>
     <string name="clear_action">Clear</string>
     <string name="remove_action">Remove</string>
@@ -162,8 +161,8 @@
     <string name="pref_summary_album_art_on_lockscreen">Uses the current songs album cover as lockscreen wallpaper.</string>
     <string name="pref_summary_blurred_album_art">Blurs the album cover on the lockscreen. Can cause problems with third party apps and widgets.</string>
     <string name="pref_summary_classic_notification">Use the classic notification design.</string>
-    <string name="pref_summary_colored_notification">"Colors the notification in the album cover\u2019s vibrant color."</string>
-    <string name="pref_summary_gapless_playback">"Can cause playback issues on some devices."</string>
+    <string name="pref_summary_colored_notification">Colors the notification in the album cover\u2019s vibrant color\u002E</string>
+    <string name="pref_summary_gapless_playback">Can cause playback issues on some devices\u002E</string>
     <string name="pref_summary_ignore_media_store_artwork">Can increase the album cover quality but causes slower image loading times. Only enable this if you have problems with low resolution artworks.</string>
     <string name="pref_summary_colored_navigation_bar">Colors the navigation bar in the primary color.</string>
     <string name="pref_summary_colored_app_shortcuts">Colors the app shortcuts in the primary color.</string>
@@ -171,14 +170,14 @@
     <string name="pref_summary_synchronized_lyrics_show">Currently only synchronized lyrics in LRC format are supported. Either embedded or as a separate file.</string>
     <string name="pref_summary_remember_last_tab">Go to the last opened tab on launch</string>
     <string name="pref_summary_remember_shuffle">Shuffle mode will stay on when selecting a new list of songs</string>
-    <string name="could_not_download_album_cover">"Couldn\u2019t download a matching album cover."</string>
+    <string name="could_not_download_album_cover">Couldn\u2019t download a matching album cover\u002E</string>
     <string name="search_hint">Search your library…</string>
     <string name="favorites">Favorites</string>
     <string name="last_added">Last added</string>
     <string name="history">Recently played</string>
     <string name="my_top_tracks">My top tracks</string>
     <string name="remove_cover">Remove cover</string>
-    <string name="download_from_last_fm">Download from Last.fm</string>
+    <string name="download_from_last_fm">Download from Last\u002Efm</string>
     <string name="pick_from_local_storage">Pick from local storage</string>
     <string name="web_search">Web search</string>
     <string name="action_sleep_timer">Sleep timer</string>
@@ -214,7 +213,7 @@
     <string name="up_next">Up next</string>
     <string name="pref_title_now_playing_screen_appearance">Appearance</string>
     <string name="intro_label">Introduction</string>
-    <string name="welcome_to_phonograph">"Welcome to Phonograph, a beautiful and lightweight music player for Android. "</string>
+    <string name="welcome_to_phonograph">Welcome to Phonograph, a beautiful and lightweight music player for Android. </string>
     <string name="open_playing_queue_instruction">Swipe the card in the now playing screen up to reveal the full playing queue.</string>
     <string name="rearrange_playing_queue_instruction">Rearrange the playing queue by dragging a song from its track number.</string>
     <string name="library">Library</string>
@@ -265,7 +264,7 @@
     <string name="add_action">Add</string>
     <string name="blacklist">Blacklist</string>
     <string name="remove_from_blacklist">Remove from blacklist</string>
-    <string name="do_you_want_to_remove_from_the_blacklist"><![CDATA[Do you want to remove <b>%1$s</b> from the blacklist?]]></string>
+    <string name="do_you_want_to_remove_from_the_blacklist">Do you want to remove <b>%1$s</b> from the blacklist?</string>
     <string name="clear_blacklist">Clear blacklist</string>
     <string name="do_you_want_to_clear_the_blacklist">Do you want to clear the blacklist?</string>
     <string name="pref_summary_blacklist">The content of blacklisted folders is hidden from your library.</string>
@@ -359,8 +358,8 @@
         <item quantity="other">%1$d / %2$d items were successfully deleted.</item>
     </plurals>
     <plurals name="msg_files_deletion_summary">
-        <item quantity="one"><![CDATA[Delete <b>%1$d</b> file from the device?<br/> <b>This action can not be retracted!</b> <br/>]]></item>
-        <item quantity="other"><![CDATA[Delete <b>%1$d</b> files from the device?<br/> <b>This action can not be retracted!</b> <br/>]]></item>
+        <item quantity="one">Delete <b>%1$d</b> file from the device?\n<b>This action can not be retracted!</b>\n</item>
+        <item quantity="other">Delete <b>%1$d</b> files from the device?\n<b>This action can not be retracted!</b>\n</item>
     </plurals>
     <string name="embedded_lyrics">embedded lyrics</string>
     <string name="external_lyrics">external lyrics</string>
