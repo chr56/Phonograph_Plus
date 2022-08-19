@@ -72,8 +72,6 @@
     <string name="remove_song_from_playlist_title">מחיקת שיר מרשימת ההשמעה</string>
     <string name="remove_songs_from_playlist_title">מחיקת שירים מרשימת ההשמעה</string>
     <string name="rename_playlist_title">שנה שם לרשימת ההשמעה</string>
-    <string name="delete_playlist_title">מחיקת רשימת השמעה</string>
-    <string name="delete_playlists_title">מחיקת רשימות השמעה</string>
     <string name="clear_playlist_title">נקה רשימת השמעה</string>
     <string name="save_playlist_title">שמור כקובץ</string>
     <string name="save_playlists_title">שמור כקבצים</string>

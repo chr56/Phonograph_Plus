@@ -32,8 +32,6 @@ class ClearPlaylistDialog : DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val playlists: List<Playlist> = requireArguments().getParcelableArrayList(KEY)!!
 
-//        val title: Int = if (playlists.size > 1) { R.string.delete_playlists_title } else { R.string.delete_playlist_title }
-
         // classify
         val smartLists = ArrayList<SmartPlaylist>()
         val filesLists = ArrayList<FilePlaylist>()

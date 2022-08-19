@@ -210,7 +210,7 @@ object FileOperator {
                     withContext(Dispatchers.Main) {
 
                         MaterialDialog(activity)
-                            .title(R.string.delete_playlist_title)
+                            .title(R.string.delete_action)
                             .message(text = m)
                             .positiveButton(R.string.delete_action) {
                                 prepareList.forEach { it.delete() }

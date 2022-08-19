@@ -79,8 +79,6 @@
     <string name="remove_song_from_playlist_title">Retirer le titre de la playlist</string>
     <string name="remove_songs_from_playlist_title">Retirer les titres de la liste de lecture</string>
     <string name="rename_playlist_title">Renommer la playlist</string>
-    <string name="delete_playlist_title">Supprimer la playlist</string>
-    <string name="delete_playlists_title">Supprimer les playlists</string>
     <string name="clear_playlist_title">Effacer la playlist</string>
     <string name="save_playlist_title">Enregistrer en tant que fichier</string>
     <string name="save_playlists_title">Enregistrer en tant que fichiers</string>

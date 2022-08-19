@@ -72,8 +72,6 @@
     <string name="remove_song_from_playlist_title">プレイリストから曲を除去</string>
     <string name="remove_songs_from_playlist_title">プレイリストから曲を複数除去</string>
     <string name="rename_playlist_title">名前の変更</string>
-    <string name="delete_playlist_title">プレイリストの削除</string>
-    <string name="delete_playlists_title">プレイリストの複数削除</string>
     <string name="clear_playlist_title">プレイリストの消去</string>
     <string name="save_playlist_title">ファイルに保存</string>
     <string name="save_playlists_title">ファイルを保存</string>

@@ -86,8 +86,6 @@
     <string name="remove_song_from_playlist_title">Verwijder nummer uit afspeellijst</string>
     <string name="remove_songs_from_playlist_title">Verwijder nummers uit afspeellijst</string>
     <string name="rename_playlist_title">Hernoem afspeellijst</string>
-    <string name="delete_playlist_title">Verwijder afspeellijst</string>
-    <string name="delete_playlists_title">Verwijder afspeellijst</string>
     <string name="clear_playlist_title">Afspeellijst legen</string>
     <string name="save_playlist_title">Opslaan als bestand</string>
     <string name="save_playlists_title">Opslaan als bestanden</string>
