@@ -64,7 +64,7 @@
     <string name="action_grid_size_land">Tamanho da grade (horizontal)</string>
     <string name="inserted_x_songs_into_playlist_x">Inserido %1$d músicas na lista de reprodução %2$s.</string>
     <string name="created_playlist_x">Lista de reprodução criada %1$s.</string>
-    <string name="deleted_x_songs">Excluídas %1$s músicas.</string>
+    <string name="deleted_x_songs">Excluídas %1$d músicas.</string>
     <string name="playlist_exists">A lista de reprodução %1$s já existe.</string>
     <string name="could_not_create_playlist">N\u00e3o foi poss\u00edvel criar a lista de reprodu\u00e7\u00e3o.</string>
     <string name="delete_song_title">Excluir música</string>
@@ -105,7 +105,7 @@
     <string name="pref_header_library">Biblioteca</string>
     <string name="pref_header_images">Imagens</string>
     <string name="pref_header_lockscreen">Bloqueio de tela</string>
-    <string name="pref_header_playlists">Listas de reprodução</string>
+    <string name="pref_header_playlists">Listas de Reprodução</string>
     <string name="pref_header_notification">Notificação</string>
     <string name="pref_title_navigation_bar">Barra de navegação colorida</string>
     <string name="pref_title_app_shortcuts">Atalhos do aplicativo colorido</string>
@@ -245,7 +245,7 @@
     <string name="add_action">Adicionar</string>
     <string name="blacklist">Lista negra</string>
     <string name="remove_from_blacklist">Remover da lista negra</string>
-    <string name="do_you_want_to_remove_from_the_blacklist"><![CDATA[<![CDATA[Deseja remover <b>%1$s</b> da lista negra?]]]]><![CDATA[>]]></string>
+    <string name="do_you_want_to_remove_from_the_blacklist"><![CDATA[<![CDATA[<![CDATA[Deseja remover <b>%1$s</b> da lista negra?]]]]]]><![CDATA[><![CDATA[>]]]]><![CDATA[>]]></string>
     <string name="clear_blacklist">Limpar lista negra</string>
     <string name="do_you_want_to_clear_the_blacklist">Deseja limpar a lista negra?</string>
     <string name="pref_summary_blacklist">O conteúdo de pastas presentes na lista negra são ocultadas de sua biblioteca.</string>
@@ -272,7 +272,6 @@
     <string name="Permission_denied">Permissão negada!</string>
     <string name="err_permission_storage">Permissão de Armazenamento</string>
     <string name="add_blacklist">Deseja adicionar isso à lista negra?</string>
-    <!-- use for tag -->
     <string name="other_information">Outro</string>
     <string name="more_actions">Mais</string>
     <string name="not_available_now">não disponível agora</string>
@@ -298,7 +297,7 @@
     <string name="upgrade_notification_name">Melhorar</string>
     <string name="upgrade_notification_description">As notificações do aplicativo podem ser atualizadas.</string>
     <string name="action_add_to_black_list">Adicionar à lista negra</string>
-    <string name="sort_order_song">Canção</string>
+    <string name="sort_order_song">Música</string>
     <string name="sort_order_duration">Duração</string>
     <string name="sort_order_date_modified">Data Modificada</string>
     <string name="loading">Carregando</string>
