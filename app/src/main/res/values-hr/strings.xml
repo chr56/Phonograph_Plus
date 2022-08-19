@@ -29,9 +29,6 @@
     <string name="genres">Žanrovi</string>
     <string name="songs">Pjesme</string>
     <string name="playlists">Popisi naslova</string>
-    <string name="unplayable_file">Nije mogu\u0107e reproducirati ovu pjesmu.</string>
-    <string name="biography_unavailable">Nije mogu\u0107e prona\u0107i biografiju za ovog izvo\u0111a\u010da.</string>
-    <string name="wiki_unavailable">Nije mogu\u0107e prona\u0107i wiki unos za ovaj album.</string>
     <string name="biography">Biografija</string>
     <string name="audio_focus_denied">Zvučni fokus je odbijen.</string>
     <string name="artist">Izvođač</string>
@@ -62,7 +59,6 @@
     <string name="created_playlist_x">Stvoren popis naslova %1$s.</string>
     <string name="deleted_x_songs">Izbrisano %1$d pjesama.</string>
     <string name="playlist_exists">Popis naslova %1$s već postoji.</string>
-    <string name="could_not_create_playlist">Nije mogu\u0107e stvoriti popis naslova.</string>
     <string name="delete_song_title">Izbriši pjesmu</string>
     <string name="delete_songs_title">Izbriši pjesme</string>
     <string name="remove_song_from_playlist_title">Ukloni pjesmu s popisa naslova</string>
