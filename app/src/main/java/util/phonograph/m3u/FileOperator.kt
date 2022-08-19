@@ -11,7 +11,6 @@ import android.content.Context
 import android.net.Uri
 import android.os.Environment
 import android.provider.MediaStore
-import android.text.Html
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.core.provider.DocumentsContractCompat
@@ -34,6 +33,8 @@ import player.phonograph.model.playlist.Playlist
 import player.phonograph.notification.ErrorNotification
 import player.phonograph.util.CoroutineUtil.coroutineToast
 import player.phonograph.util.PlaylistsUtil
+import player.phonograph.util.StringUtil
+import player.phonograph.util.StringUtil.buildDeletionMessage
 import player.phonograph.util.Util.sentPlaylistChangedLocalBoardCast
 import util.phonograph.m3u.internal.M3UGenerator
 import util.phonograph.m3u.internal.appendTimestampSuffix
@@ -236,22 +237,24 @@ object FileOperator {
                     }
 
                     // confirm to delete
-                    val msg = StringBuffer()
-                    msg.append(
-                        "<b>${activity.resources.getQuantityString(R.plurals.msg_header_delete_items, deleteList.size)}</b><br/>"
-                    ).append(
-                        "${activity.resources.getQuantityString(R.plurals.item_files, deleteList.size)}<br/>"
+                    val message = buildDeletionMessage(
+                        context = activity,
+                        itemSize = deleteList.size,
+                        null,
+                        StringUtil.ItemGroup(
+                            activity.resources
+                                .getQuantityString(R.plurals.item_files, deleteList.size),
+                            deleteList.map { file ->
+                                Log.v("FileDelete", "${file.name}@${file.uri}")
+                                file.getAbsolutePath(activity)
+                            }
+                        )
                     )
-                    Log.v("FileDelete", "DeleteList:")
-                    for (file in deleteList) {
-                        msg.append("* <b>${file.getAbsolutePath(activity)}</b>")
-                        Log.v("FileDelete", "${file.name}@${file.uri}")
-                    }
 
                     withContext(Dispatchers.Main) {
                         MaterialDialog(activity)
                             .title(R.string.delete_action)
-                            .message(text = Html.fromHtml(msg.toString(), Html.FROM_HTML_MODE_LEGACY))
+                            .message(text = message)
                             .positiveButton(R.string.delete_action) {
                                 prepareList.forEach { it.delete() }
                                 sentPlaylistChangedLocalBoardCast()
