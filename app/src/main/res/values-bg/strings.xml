@@ -28,8 +28,6 @@
     <string name="artists">Изпълнители</string>
     <string name="songs">Песни</string>
     <string name="playlists">Плейлисти</string>
-    <string name="unplayable_file">\u0422\u0430\u0437\u0438 \u043f\u0435\u0441\u0435\u043d \u043d\u0435 \u043c\u043e\u0436\u0435 \u0434\u0430 \u0431\u044a\u0434\u0435 \u0432\u044a\u0437\u043f\u0440\u043e\u0438\u0437\u0432\u0435\u0434\u0435\u043d\u0430.</string>
-    <string name="biography_unavailable">\u0411\u0438\u043e\u0433\u0440\u0430\u0444\u0438\u044f\u0442\u0430 \u043d\u0430 \u0442\u043e\u0437\u0438 \u0438\u0437\u043f\u044a\u043b\u043d\u0438\u0442\u0435\u043b \u043d\u0435 \u0431\u0435 \u043d\u0430\u043c\u0435\u0440\u0435\u043d\u0430.</string>
     <string name="biography">Биография</string>
     <string name="audio_focus_denied">Аудио фокусът бе отказан.</string>
     <string name="album">Албум</string>
@@ -61,7 +59,6 @@
     <string name="inserted_x_songs_into_playlist_x">Бяха добавени %1$d песни в плейлист %2$s.</string>
     <string name="created_playlist_x">Плейлистът %1$s бе добавен.</string>
     <string name="deleted_x_songs">%1$d песни бяха изтрити.</string>
-    <string name="could_not_create_playlist">\u041f\u043b\u0435\u0439\u043b\u0438\u0441\u0442\u044a\u0442 \u043d\u0435 \u043c\u043e\u0436\u0435 \u0434\u0430 \u0441\u0435 \u0441\u044a\u0437\u0434\u0430\u0434\u0435.</string>
     <string name="delete_song_title">Изтрий песента</string>
     <string name="delete_songs_title">Изтрий песните</string>
     <string name="remove_song_from_playlist_title">Премахни тази песен от плейлистът</string>
