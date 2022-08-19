@@ -33,7 +33,6 @@
     <string name="biography_unavailable">El\u00e4m\u00e4nkertaa ei l\u00f6ytynyt t\u00e4lle artistille.</string>
     <string name="wiki_unavailable">Ei l\u00f6ytynyt wikist\u00e4 kohtaa t\u00e4lle albumille.</string>
     <string name="biography">Elämänkerta</string>
-    <string name="wiki">Wiki</string>
     <string name="audio_focus_denied">Ääntä ei voitu toistaa.</string>
     <string name="album">Albumi</string>
     <string name="artist">Artisti</string>
@@ -92,10 +91,10 @@
     <string name="only_on_wifi">Vain Wi-Fi-yhteydellä</string>
     <string name="never">Ei koskaan</string>
     <string name="today">1 päivä</string>
-    <string name="this_week">1 viikko</string>
     <string name="past_seven_days">Edelliset 7 päivää</string>
-    <string name="this_month">1 kuukausi</string>
     <string name="past_three_months">3 kuukautta</string>
+    <string name="this_week">1 viikko</string>
+    <string name="this_month">1 kuukausi</string>
     <string name="this_year">1 vuosi</string>
     <string name="equalizer">Taajuuskorjain</string>
     <string name="pref_header_colors">Värit</string>
@@ -263,4 +262,6 @@
     <string name="sort_order_album">Albumi</string>
     <string name="sort_order_year">Vuosi</string>
     <string name="finish_current_music_sleep_timer">Lopeta viimeinen kappale</string>
+    <string name="sort_order_song">Kappale</string>
+    <string name="pref_header_appearance">Ulkonäkö</string>
 </resources>
