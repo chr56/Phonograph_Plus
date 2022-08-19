@@ -386,6 +386,11 @@
         <item quantity="one">This item would be deleted:</item>
         <item quantity="other">These items would be deleted:</item>
     </plurals>
+    <plurals name="msg_header_remove_items">
+        <!-- %1$s: where -->
+        <item quantity="one">This item would be remove from %1$s:</item>
+        <item quantity="other">These items would be remove from %1$s:</item>
+    </plurals>
     <plurals name="item_songs">
         <item quantity="one">Song</item>
         <item quantity="other">Songs</item>
