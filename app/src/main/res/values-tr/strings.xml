@@ -29,9 +29,6 @@
     <string name="genres">Türler</string>
     <string name="songs">Şarkılar</string>
     <string name="playlists">Çalma listeleri</string>
-    <string name="unplayable_file">Bu \u015fark\u0131 \u00e7al\u0131namad\u0131.</string>
-    <string name="biography_unavailable">Bu sanat\u00e7\u0131 i\u00e7in bir biyografi giri\u015fi bulunamad\u0131.</string>
-    <string name="wiki_unavailable">Bu alb\u00fcm i\u00e7in bir wiki giri\u015fi bulunamad\u0131.</string>
     <string name="biography">Biyografi</string>
     <string name="audio_focus_denied">Ses odağı reddedildi.</string>
     <string name="album">Albüm</string>
@@ -64,7 +61,6 @@
     <string name="created_playlist_x">Çalma listesi %1$s oluşturuldu.</string>
     <string name="deleted_x_songs">%1$d şarkı silindi.</string>
     <string name="playlist_exists">%1$s oynatma listesi zaten mevcut.</string>
-    <string name="could_not_create_playlist">\u00c7alma listesi olu\u015fturulamad\u0131.</string>
     <string name="delete_song_title">Şarkıyı sil</string>
     <string name="delete_songs_title">Şarkıları sil</string>
     <string name="remove_song_from_playlist_title">Şarkıyı çalma listesinden kaldır</string>
