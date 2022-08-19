@@ -29,9 +29,6 @@
     <string name="genres">장르</string>
     <string name="songs">노래</string>
     <string name="playlists">재생 목록</string>
-    <string name="unplayable_file">\uc74c\uc545 \ud30c\uc77c \uc624\ub958\ub85c \uc7ac\uc0dd\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.</string>
-    <string name="biography_unavailable">\uc544\ud2f0\uc2a4\ud2b8 \uc815\ubcf4\ub97c \ucc3e\uc744 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.</string>
-    <string name="wiki_unavailable">\uc568\ubc94\uc758 \uc704\ud0a4 \ud56d\ubaa9\uc744 \ucc3e\uc744 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.</string>
     <string name="biography">정보</string>
     <string name="wiki">위키</string>
     <string name="audio_focus_denied">오디오 포커스 권한이 거부되었습니다.</string>
@@ -65,7 +62,6 @@
     <string name="created_playlist_x">재생 목록 %1$s을(를) 생성했습니다.</string>
     <string name="deleted_x_songs">%1$d개의 노래를 삭제했습니다.</string>
     <string name="playlist_exists">재생 목록 %1$s이(가) 이미 있습니다.</string>
-    <string name="could_not_create_playlist">\uc7ac\uc0dd \ubaa9\ub85d\uc744 \ub9cc\ub4e4 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.</string>
     <string name="delete_song_title">노래 삭제</string>
     <string name="delete_songs_title">노래 삭제</string>
     <string name="remove_song_from_playlist_title">재생 목록에서 노래 제거</string>
