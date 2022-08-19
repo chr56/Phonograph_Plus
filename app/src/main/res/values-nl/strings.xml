@@ -5,7 +5,7 @@
     <string name="the_audio_file">Het audiobestand</string>
     <string name="action_set_as_ringtone">Instellen als beltoon</string>
     <string name="action_share">Delen</string>
-    <string name="action_settings">"Instellingen"</string>
+    <string name="action_settings">Instellingen</string>
     <string name="action_grant">Toestaan</string>
     <string name="action_about">Over</string>
     <string name="action_add_to_favorites">Toevoegen aan favorieten</string>
@@ -21,44 +21,35 @@
     <string name="action_add_to_playlist">Toevoegen aan afspeellijst…</string>
     <string name="action_tag_editor">Tag bewerker</string>
     <string name="action_delete_from_device">Verwijderen van apparaat</string>
-    <string name="action_details">Details</string>
     <string name="action_scan">Scannen</string>
     <string name="action_set_as_start_directory">Instellen als startmap</string>
-    <string name="albums">Albums</string>
     <string name="artists">Artiesten</string>
-    <string name="genres">Genres</string>
     <string name="songs">Nummers</string>
     <string name="playlists">Afspeellijsten</string>
     <string name="unplayable_file">Kan dit nummer niet afspelen.</string>
     <string name="biography_unavailable">Kan geen biografie vinden voor deze artiest.</string>
     <string name="wiki_unavailable">Kan geen wiki-entry vinden voor dit album.</string>
     <string name="biography">Biografie</string>
-    <string name="wiki">Wiki</string>
     <string name="audio_focus_denied">Audiofocus geweigerd.</string>
-    <string name="album">Album</string>
     <string name="artist">Artiest</string>
-    <string name="genre">Genre</string>
     <string name="album_artist">Album artiest</string>
     <string name="year">Jaar</string>
     <string name="track">Track-nummer</string>
-    <string name="track_hint">"Nummer (2 voor nr. 2, of 3004 voor CD3 nr. 4)"</string>
+    <string name="track_hint">Nummer (2 voor nr. 2, of 3004 voor CD3 nr. 4)</string>
     <string name="lyrics">Songteksten</string>
     <string name="album_or_artist_empty">De titel of artiest is leeg.</string>
     <string name="saving_changes">Wijzigingen opslaan</string>
-    <string name="label_details">Details</string>
     <string name="label_file_name">Bestandsnaam</string>
     <string name="label_file_path">Bestandspad</string>
     <string name="label_file_size">Grootte</string>
     <string name="label_file_format">Type</string>
     <string name="label_track_length">Lengte</string>
-    <string name="label_bit_rate">Bitrate</string>
     <string name="label_sampling_rate">Samplerate</string>
     <string name="action_go_to_artist">Ga naar artiest</string>
     <string name="action_go_to_album">Ga naar album</string>
     <string name="label_playing_queue">Afspeelwachtrij</string>
     <string name="no_results">Geen resultaten</string>
     <string name="updating">Bijwerken…</string>
-    <string name="added_title_to_playing_queue">"1 titel toegevoegd aan de afspeelwachtrij."</string>
     <string name="added_x_titles_to_playing_queue">%1$d titels toegevoegd aan de afspeelwachtrij.</string>
     <string name="action_remove_from_playlist">Verwijderen uit afspeellijst</string>
     <string name="action_grid_size">Rastergrootte</string>
@@ -69,18 +60,6 @@
     <string name="deleted_x_playlists">%1$d afspeellijsten verwijderd.</string>
     <string name="playlist_exists">Afspeellijst %1$s bestaat al.</string>
     <string name="could_not_create_playlist">Kan afspeellijst niet aanmaken.</string>
-    <plurals name="msg_song_deletion_summary">
-        <item quantity="one"><![CDATA[Verwijder <b>%1$d</b> nummer van het apparaat?<br/>]]></item>
-        <item quantity="other"><![CDATA[Verwijder <b>%1$d</b> nummers van het apparaat?<br/>]]></item>
-    </plurals>
-    <plurals name="msg_song_removal_summary">
-        <item quantity="one"><![CDATA[<b>%1$d</b> nummer verwijderen uit de afspeellijst?]]></item>
-        <item quantity="other"><![CDATA[<b>%1$d</b> nummers verwijderen uit de afspeellijst?]]></item>
-    </plurals>
-    <plurals name="msg_playlist_deletion_summary">
-        <item quantity="one"><![CDATA[Verwijder <b>%1$d</b> afspeellijst van het apparaat?<br/>]]></item>
-        <item quantity="other"><![CDATA[Verwijder <b>%1$d</b> afspeellijsten van het apparaat?<br/>]]></item>
-    </plurals>
     <string name="delete_song_title">Verwijder nummer</string>
     <string name="delete_songs_title">Verwijder nummers</string>
     <string name="remove_song_from_playlist_title">Verwijder nummer uit afspeellijst</string>
@@ -91,7 +70,7 @@
     <string name="clear_playlist_title">Afspeellijst legen</string>
     <string name="save_playlist_title">Opslaan als bestand</string>
     <string name="save_playlists_title">Opslaan als bestanden</string>
-    <string name="add_playlist_title">"Toevoegen aan afspeellijst"</string>
+    <string name="add_playlist_title">Toevoegen aan afspeellijst</string>
     <string name="select_all_title">Alles selecteren</string>
     <string name="action_shuffle_all">Shuffle alles</string>
     <string name="action_shuffle_album">Album shufflen</string>
@@ -102,7 +81,6 @@
     <string name="light_theme_name">Licht</string>
     <string name="dark_theme_name">Donker</string>
     <string name="black_theme_name">Zwart (AMOLED)</string>
-    <string name="auto_theme_name">Auto</string>
     <string name="always">Altijd</string>
     <string name="only_on_wifi">Alleen over wifi</string>
     <string name="never">Nooit</string>
@@ -114,15 +92,13 @@
     <string name="this_week">Deze week</string>
     <string name="this_month">Deze maand</string>
     <string name="this_year">Dit jaar</string>
-    <string name="equalizer">Equalizer</string>
     <string name="pref_header_colors">Kleuren</string>
     <string name="pref_header_now_playing_screen">Afspeelscherm</string>
     <string name="pref_title_general_theme">Algemeen thema</string>
-    <string name="pref_header_audio">Audio</string>
     <string name="pref_header_library">Bibliotheek</string>
     <string name="pref_header_images">Illustraties</string>
     <string name="pref_header_lockscreen">Vergrendelscherm</string>
-    <string name="pref_header_playlists">Afspeellijst</string>
+    <string name="pref_header_playlists">Afspeellijsten</string>
     <string name="pref_header_notification">Melding</string>
     <string name="pref_title_navigation_bar">Gekleurde navigatiebalk</string>
     <string name="pref_title_app_shortcuts">Gekleurde app-snelkoppelingen</string>
@@ -139,7 +115,6 @@
     <string name="pref_title_remember_last_tab">Laatste tabblad onthouden</string>
     <string name="pref_title_remember_shuffle">Onthoud shuffle</string>
     <string name="no_equalizer">Geen equalizer gevonden.</string>
-    <string name="no_audio_ID">"Speel eerst iets af, probeer dan opnieuw."</string>
     <string name="delete_action">Verwijderen</string>
     <string name="clear_action">Legen</string>
     <string name="remove_action">Verwijderen</string>
@@ -160,8 +135,6 @@
     <string name="pref_summary_album_art_on_lockscreen">Albumhoes weergeven op het vergrendelscherm.</string>
     <string name="pref_summary_blurred_album_art">Vervaagt de albumhoes op het vergrendelscherm. Kan problemen met andere apps of widgets veroorzaken.</string>
     <string name="pref_summary_classic_notification">Gebruik de klassieke meldingsweergave.</string>
-    <string name="pref_summary_colored_notification">"Kleurt de melding met het palet van de albumhoes."</string>
-    <string name="pref_summary_gapless_playback">"Verwijdert de pauzes tussen nummers. Dit kan afspeelfouten veroorzaken."</string>
     <string name="pref_summary_ignore_media_store_artwork">Dit kan de albumhoes kwaliteit doen toenemen, maar langere laadtijden veroorzaken. Gebruik dit alleen als je problemen hebt met lage resolutie illustraties.</string>
     <string name="pref_summary_colored_navigation_bar">Kleurt de navigatiebalk in de primaire kleur.</string>
     <string name="pref_summary_colored_app_shortcuts">Kleurt de app-snelkoppelingen in de primaire kleur.</string>
@@ -169,14 +142,12 @@
     <string name="pref_summary_synchronized_lyrics_show">Momenteel worden gesynchr. songteksten alleen ondersteund in LRC-formaat. Of ingebed, of als separaat bestand.</string>
     <string name="pref_summary_remember_last_tab">Ga naar het laatst geopende tabblad bij opstarten</string>
     <string name="pref_summary_remember_shuffle">Shuffle modus blijft aan bij het selecteren van een nieuwe lijst met nummers</string>
-    <string name="could_not_download_album_cover">"Kan geen bijpassende albumhoes downloaden."</string>
     <string name="search_hint">Zoek in je bibliotheek…</string>
     <string name="favorites">Favorieten</string>
     <string name="last_added">Laatst toegevoegd</string>
     <string name="history">Geschiedenis</string>
     <string name="my_top_tracks">Mijn top nummers</string>
     <string name="remove_cover">Verwijder albumhoes</string>
-    <string name="download_from_last_fm">Download van last.fm</string>
     <string name="pick_from_local_storage">Kies uit lokale opslag</string>
     <string name="web_search">Zoek op het web</string>
     <string name="action_sleep_timer">Slaaptimer</string>
@@ -208,11 +179,10 @@
     <string name="michael_cook_summary">Voor het mooie material app icoon.</string>
     <string name="maarten_corpel_summary">Voor het maken van de Play Store illustratie en de lege album hoes.</string>
     <string name="aleksandar_tesic_summary">Voor de hulp met het design.</string>
-    <string name="website">Website</string>
     <string name="up_next">Als volgende</string>
     <string name="pref_title_now_playing_screen_appearance">Uiterlijk</string>
     <string name="intro_label">Introductie</string>
-    <string name="welcome_to_phonograph">"Welkom bij Phonograph, een mooie en lichte muziekspeler voor Android."</string>
+    <string name="welcome_to_phonograph">Welkom bij Phonograph, een mooie en lichte muziekspeler voor Android.</string>
     <string name="open_playing_queue_instruction">Veeg de kaart in het afspeelscherm om de afspeelwachtrij te weergeven.</string>
     <string name="rearrange_playing_queue_instruction">Rangschik de afspeelwachtrij door de afspeelnummers te verslepen.</string>
     <string name="library">Bibliotheek</string>
@@ -252,7 +222,6 @@
     <string name="copied_device_info_to_clipboard">Apparaat info gekopieerd naar klembord.</string>
     <string name="your_account_data_is_only_used_for_authentication">Je accountgegevens worden alleen gebruikt voor authenticatie.</string>
     <string name="you_will_be_forwarded_to_the_issue_tracker_website">Je wordt doorverwezen naar de probleem bijhoud website.</string>
-    <string name="app_shortcut_shuffle_all_short">Shuffle</string>
     <string name="app_shortcut_top_tracks_short">Top nummers</string>
     <string name="app_shortcut_last_added_short">Laatst toegevoegd</string>
     <string name="playlist_is_empty">Afspeellijst is leeg</string>
@@ -263,7 +232,7 @@
     <string name="add_action">Toevoegen</string>
     <string name="blacklist">Zwarte lijst</string>
     <string name="remove_from_blacklist">Verwijderen van zwarte lijst</string>
-    <string name="do_you_want_to_remove_from_the_blacklist"><![CDATA[Wil je <b>%1$s</b> verwijderen van de zwarte lijst?]]></string>
+    <string name="do_you_want_to_remove_from_the_blacklist">Wil je <b>%1$s</b> verwijderen van de zwarte lijst?</string>
     <string name="clear_blacklist">Zwarte lijst legen</string>
     <string name="do_you_want_to_clear_the_blacklist">Wil je de zwarte lijst legen?</string>
     <string name="pref_summary_blacklist">De inhoud van mappen op de zwarte lijst worden verborgen van je bibliotheek.</string>
@@ -278,7 +247,6 @@
     <string name="sort_order_a_z">Oplopend</string>
     <string name="sort_order_z_a">Aflopend</string>
     <string name="sort_order_artist">Artiest</string>
-    <string name="sort_order_album">Album</string>
     <string name="sort_order_year">Jaar</string>
     <string name="sort_order_date_added">Datum toegevoegd</string>
     <string name="finish_current_music_sleep_timer">Eindig het laatste nummer</string>
@@ -290,8 +258,6 @@
     <string name="Permission_denied">Rechten geweigerd!</string>
     <string name="err_permission_storage">Opslagrechten</string>
     <string name="add_blacklist">Wil je dit aan de zwarte lijst toevoegen?</string>
-    <string name="minutes_short">%1$d min</string>
-    <!-- use for tag -->
     <string name="other_information">Overige</string>
     <string name="more_actions">Meer</string>
     <string name="crash">App is gecrasht!!</string>
@@ -300,14 +266,11 @@
     <string name="failed">mislukt!</string>
     <string name="clear_all_preference">alle applicatie-instellingen wissen</string>
     <string name="clear_all_preference_msg"><b>Waarschuwing</b>: dit zal <b>ALLE</b> app voorkeuren/instellingen wissen! \n\nDit kan erg handig zijn als de applicatie crasht bij het starten. \nWeet je het zeker?</string>
-    <string name="databases">Databases</string>
+    <string name="sort_order_song">Nummer</string>
+    <string name="pref_header_appearance">Uiterlijk</string>
     <plurals name="msg_deletion_result">
         <item quantity="one">%1$d / %2$d item succesvol verwijderd.</item>
         <item quantity="other">%1$d / %2$d items werden met succes verwijderd.</item>
-    </plurals>
-    <plurals name="msg_files_deletion_summary">
-        <item quantity="one"><![CDATA[Verwijder <b>%1$d</b> bestand van het apparaat?<br/> <b>Deze actie kan niet worden teruggedraaid!</b> <br/>]]></item>
-        <item quantity="other"><![CDATA[<b>%1$d</b> bestanden van het apparaat verwijderen?<br/> <b>Deze actie kan niet worden teruggedraaid!</b> <br/>]]></item>
     </plurals>
     <string name="embedded_lyrics">ingesloten songteksten</string>
     <string name="external_lyrics">externe songteksten</string>
