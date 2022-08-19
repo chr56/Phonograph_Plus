@@ -58,15 +58,8 @@
     <string name="action_grid_size_land">Kích thước lưới (màn hình nằm ngang)</string>
     <string name="inserted_x_songs_into_playlist_x">Đã thêm %1$d baifhats vào danh sách nhạc %2$s</string>
     <string name="created_playlist_x">Đã tạo danh sách nhạc %1$s.</string>
-    <string name="deleted_x_songs">Đã xóa bài hát %1$d</string>
     <string name="playlist_exists">Danh sách %1$s đã tồn tại.</string>
-    <string name="delete_song_title">Xóa bài hát</string>
-    <string name="delete_songs_title">Xóa các bài hát</string>
-    <string name="remove_song_from_playlist_title">Di chuyển bài hát từ danh sách nhạc</string>
-    <string name="remove_songs_from_playlist_title">Di chuyển các bài hát từ danh sách nhạc</string>
     <string name="rename_playlist_title">Đổi tên danh sách nhạc</string>
-    <string name="delete_playlist_title">Xóa danh sách nhạc</string>
-    <string name="delete_playlists_title">Xóa các danh sách nhạc</string>
     <string name="clear_playlist_title">Dọn danh sách nhạc</string>
     <string name="save_playlist_title">Lưu thành tập tin</string>
     <string name="save_playlists_title">Lưu thành mục</string>
