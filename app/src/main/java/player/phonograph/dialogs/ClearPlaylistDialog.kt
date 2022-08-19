@@ -25,6 +25,7 @@ import player.phonograph.model.playlist.FilePlaylist
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.model.playlist.ResettablePlaylist
 import player.phonograph.model.playlist.SmartPlaylist
+import player.phonograph.util.StringUtil
 import util.mdcolor.pref.ThemeColor
 import util.phonograph.m3u.PlaylistsManager
 
@@ -46,50 +47,38 @@ class ClearPlaylistDialog : DialogFragment() {
             }
         }
 
-        // generate msg
-        val message =
-            StringBuilder().append(
-                "<b>${resources.getQuantityString(R.plurals.msg_header_delete_items, playlists.size)}</b>"
-            ).append("<br />")
-
-        if (filesLists.isNotEmpty()) {
-            message.append(
-                resources.getQuantityString(R.plurals.item_playlists, filesLists.size)
-            ).append("<br />")
-            for (playlist in filesLists) {
-                message.append("* <b>${playlist.name}</b>").append("<br />")
-            }
-        }
-        if (smartLists.isNotEmpty()) {
-
-            message.append(
-                resources.getQuantityString(R.plurals.item_playlists_generated, smartLists.size)
-            ).append("<br />")
-            for (playlist in smartLists) {
-                message.append("* <b>${playlist.name}</b>").append("<br />")
-            }
-        }
-
-        message.append("<br/><b>${getString(R.string.warning_can_not_retract)}</b><br/>")
-
         // extra permission check on R(11)
         val hasPermission =
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R &&
                 requireActivity().checkSelfPermission(Manifest.permission.MANAGE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
             ) {
                 Log.i(TAG, "No MANAGE_EXTERNAL_STORAGE Permission")
-                message.append("<br />")
-                    .append(requireActivity().resources.getString(R.string.permission_manage_external_storage_denied)) //todo res
                 false
             } else {
                 true
             }
 
+        // generate msg
+        val msg = StringUtil.buildDeletionMessage(
+            context = requireContext(),
+            itemSize = playlists.size,
+            extraSuffix = if (!hasPermission) requireContext().getString(
+                R.string.permission_manage_external_storage_denied
+            ) else "",
+            StringUtil.ItemGroup(
+                resources.getQuantityString(R.plurals.item_playlists, filesLists.size),
+                filesLists.map { it.name }
+            ),
+            StringUtil.ItemGroup(
+                resources.getQuantityString(R.plurals.item_playlists_generated, smartLists.size),
+                smartLists.map { it.name }
+            )
+        )
 
         // build dialog
         val dialog = MaterialDialog(requireActivity())
             .title(R.string.delete_action)
-            .message(text = Html.fromHtml(message.toString(), Html.FROM_HTML_MODE_LEGACY))
+            .message(text = msg)
             .negativeButton(android.R.string.cancel) { dismiss() }
             .positiveButton(R.string.delete_action) {
                 it.dismiss()
@@ -100,7 +89,8 @@ class ClearPlaylistDialog : DialogFragment() {
                 // files
                 val attachedActivity: Activity = requireActivity()
                 PlaylistsManager(
-                    attachedActivity, if (attachedActivity is SAFCallbackHandlerActivity) attachedActivity else null
+                    attachedActivity,
+                    if (attachedActivity is SAFCallbackHandlerActivity) attachedActivity else null
                 )
                     .deletePlaylistWithGuide(filesLists)
             }.also {
@@ -115,9 +105,15 @@ class ClearPlaylistDialog : DialogFragment() {
                     }
                 }
                 // set button color
-                it.getActionButton(WhichButton.POSITIVE).updateTextColor(ThemeColor.accentColor(requireContext()))
-                it.getActionButton(WhichButton.NEGATIVE).updateTextColor(ThemeColor.accentColor(requireContext()))
-                it.getActionButton(WhichButton.NEUTRAL).updateTextColor(ThemeColor.accentColor(requireContext()))
+                it.getActionButton(WhichButton.POSITIVE).updateTextColor(
+                    ThemeColor.accentColor(requireContext())
+                )
+                it.getActionButton(WhichButton.NEGATIVE).updateTextColor(
+                    ThemeColor.accentColor(requireContext())
+                )
+                it.getActionButton(WhichButton.NEUTRAL).updateTextColor(
+                    ThemeColor.accentColor(requireContext())
+                )
             }
 
         return dialog
@@ -130,7 +126,12 @@ class ClearPlaylistDialog : DialogFragment() {
         @JvmStatic
         fun create(playlists: List<Playlist>): ClearPlaylistDialog =
             ClearPlaylistDialog().apply {
-                arguments = Bundle().apply { putParcelableArrayList("playlists", ArrayList(playlists)) }
+                arguments = Bundle().apply {
+                    putParcelableArrayList(
+                        "playlists",
+                        ArrayList(playlists)
+                    )
+                }
             }
     }
 }
