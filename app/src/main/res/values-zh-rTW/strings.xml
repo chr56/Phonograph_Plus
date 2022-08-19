@@ -75,9 +75,6 @@
     <plurals name="msg_song_removal_summary">
         <item quantity="other"><![CDATA[確定要將<b>%1$d</b>首歌從播放清單中移除嗎？]]></item>
     </plurals>
-    <plurals name="msg_playlist_deletion_summary">
-        <item quantity="other"><![CDATA[確定要刪除<b>%1$d</b>個播放清單嗎？<br/>]]></item>
-    </plurals>
     <string name="delete_song_title">刪除歌曲</string>
     <string name="delete_songs_title">刪除多首歌曲</string>
     <string name="remove_song_from_playlist_title">將歌曲從播放清單中移除</string>

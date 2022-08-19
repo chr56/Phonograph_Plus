@@ -77,10 +77,6 @@
         <item quantity="one"><![CDATA[Rimuovere <b>%1$d</b> brano dalla playlist?]]></item>
         <item quantity="other"><![CDATA[Rimuovere <b>%1$d</b> brani dalla playlist?]]></item>
     </plurals>
-    <plurals name="msg_playlist_deletion_summary">
-        <item quantity="one"><![CDATA[Eliminare <b>%1$d</b> playlist dal dispositivo?<br/>]]></item>
-        <item quantity="other"><![CDATA[Eliminare <b>%1$d</b> playlist dal dispositivo?<br/>]]></item>
-    </plurals>
     <string name="delete_song_title">Elimina brano</string>
     <string name="delete_songs_title">Elimina brani</string>
     <string name="remove_song_from_playlist_title">Rimuovi brano dalla playlist</string>

@@ -81,12 +81,6 @@
         <item quantity="many"><![CDATA[Удалить песни <b>%1$d</b> из плейлиста?]]></item>
         <item quantity="other"><![CDATA[Удалить песни <b>%1$d</b> из плейлиста?]]></item>
     </plurals>
-    <plurals name="msg_playlist_deletion_summary">
-        <item quantity="one"><![CDATA[Удалить плейлист <b>%1$d</b> с устройства?]]></item>
-        <item quantity="few"><![CDATA[Удалить плейлисты <b>%1$d</b> с устройства?]]></item>
-        <item quantity="many"><![CDATA[Удалить плейлисты <b>%1$d</b> с устройства?]]></item>
-        <item quantity="other"><![CDATA[Удалить плейлист <b>%1$d</b> с устройства?]]></item>
-    </plurals>
     <string name="delete_song_title">Удалить песню</string>
     <string name="delete_songs_title">Удалить песни</string>
     <string name="remove_song_from_playlist_title">Удалить песню из плейлиста</string>

@@ -77,10 +77,6 @@
         <item quantity="one">Remove <b>%1$d</b> song from the playlist?\n</item>
         <item quantity="other">Delete <b>%1$d</b> songs from the playlist?\n</item>
     </plurals>
-    <plurals name="msg_playlist_deletion_summary">
-        <item quantity="one">Delete <b>%1$d</b> playlist from the device?\n</item>
-        <item quantity="other">Delete <b>%1$d</b> playlist from the device?\n</item>
-    </plurals>
     <string name="delete_song_title">Delete song</string>
     <string name="delete_songs_title">Delete songs</string>
     <string name="remove_song_from_playlist_title">Remove song from playlist</string>
