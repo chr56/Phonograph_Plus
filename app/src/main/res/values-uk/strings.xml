@@ -60,15 +60,8 @@
     <string name="action_grid_size_land">Розмір сітки (ландшафт)</string>
     <string name="inserted_x_songs_into_playlist_x">Додано %1$d пісень до списку відтворення %2$s.</string>
     <string name="created_playlist_x">Створено список відтворення %1$s.</string>
-    <string name="deleted_x_songs">Видалено %1$d пісень.</string>
     <string name="playlist_exists">Список відтворення %1$s вже існує.</string>
-    <string name="delete_song_title">Видалити пісню</string>
-    <string name="delete_songs_title">Видалити пісні</string>
-    <string name="remove_song_from_playlist_title">Видалити пісню зі списку відтворення</string>
-    <string name="remove_songs_from_playlist_title">Видалити пісні зі списку відтворення</string>
     <string name="rename_playlist_title">Перейменувати список відтворення</string>
-    <string name="delete_playlist_title">Видалити список відтворення</string>
-    <string name="delete_playlists_title">Видалити списки відтворення</string>
     <string name="clear_playlist_title">Очистити список відтворення</string>
     <string name="save_playlist_title">Зберегти як файл</string>
     <string name="add_playlist_title">Додати до списку відтворення</string>
