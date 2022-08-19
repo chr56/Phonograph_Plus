@@ -2,62 +2,67 @@ package player.phonograph.dialogs
 
 import android.app.Dialog
 import android.os.Bundle
-import android.text.Html
 import androidx.fragment.app.DialogFragment
-import util.mdcolor.pref.ThemeColor
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.WhichButton
 import com.afollestad.materialdialogs.actions.getActionButton
+import java.util.*
 import legacy.phonograph.LegacyPlaylistsUtil
 import player.phonograph.R
 import player.phonograph.model.PlaylistSong
-import java.util.*
+import player.phonograph.util.PlaylistsUtil
+import player.phonograph.util.StringUtil
+import util.mdcolor.pref.ThemeColor
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
  */
 class RemoveFromPlaylistDialog : DialogFragment() {
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val songs: List<PlaylistSong> = requireArguments().getParcelableArrayList("songs")!!
-        val title: Int = if (songs.size > 1) { R.string.remove_songs_from_playlist_title } else { R.string.remove_song_from_playlist_title }
-        val content: CharSequence
-        val msg: StringBuffer = StringBuffer()
 
-        msg.append(
-            Html.fromHtml(
-                resources.getQuantityString(R.plurals.msg_song_removal_summary, songs.size, songs.size), Html.FROM_HTML_MODE_LEGACY
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        val res = requireActivity().resources
+
+        val songs: List<PlaylistSong> = requireArguments().getParcelableArrayList("songs")!!
+        val playlist = PlaylistsUtil.getPlaylist(
+            requireContext(),
+            playlistId = songs.firstOrNull()?.playlistId ?: 0
+        )
+
+        val message = StringUtil.buildRemovalMessage(
+            context = requireContext(),
+            itemSize = songs.size,
+            where = playlist.name,
+            null,
+            StringUtil.ItemGroup(
+                res.getQuantityString(R.plurals.item_songs, songs.size),
+                songs.map { it.title }
             )
         )
-        songs.forEach { song ->
-            msg.append(song.title).appendLine()
-        }
-        val dialog = MaterialDialog(requireActivity())
-            .title(title)
-            .message(text = msg)
+
+        return MaterialDialog(requireActivity())
+            .title(R.string.remove_action)
+            .message(text = message)
             .negativeButton(android.R.string.cancel)
-            .positiveButton(R.string.remove_action) { if (activity != null) LegacyPlaylistsUtil.removeFromPlaylist(requireActivity(), songs) }
-        // set button color
-        dialog.getActionButton(WhichButton.POSITIVE).updateTextColor(ThemeColor.accentColor(requireActivity()))
-        dialog.getActionButton(WhichButton.NEGATIVE).updateTextColor(ThemeColor.accentColor(requireActivity()))
-        return dialog
+            .positiveButton(R.string.remove_action) {
+                if (activity != null) {
+                    LegacyPlaylistsUtil.removeFromPlaylist(requireActivity(), songs)
+                }
+            }
+            .apply {
+                val color = ThemeColor.accentColor(requireActivity())
+                // set button color
+                getActionButton(WhichButton.POSITIVE).updateTextColor(color)
+                getActionButton(WhichButton.NEGATIVE).updateTextColor(color)
+            }
     }
 
     companion object {
 
-        @JvmStatic
-        fun create(song: PlaylistSong): RemoveFromPlaylistDialog {
-            val list: MutableList<PlaylistSong> = ArrayList()
-            list.add(song)
-            return create(list)
-        }
-
-        @JvmStatic
-        fun create(songs: List<PlaylistSong>): RemoveFromPlaylistDialog {
-            val dialog = RemoveFromPlaylistDialog()
-            val args = Bundle()
-            args.putParcelableArrayList("songs", ArrayList(songs))
-            dialog.arguments = args
-            return dialog
-        }
+        fun create(songs: List<PlaylistSong>): RemoveFromPlaylistDialog =
+            RemoveFromPlaylistDialog().apply {
+                arguments = Bundle().apply {
+                    putParcelableArrayList("songs", ArrayList(songs))
+                }
+            }
     }
 }
