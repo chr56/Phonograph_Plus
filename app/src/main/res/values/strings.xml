@@ -71,8 +71,6 @@
         <item quantity="one">Remove <b>%1$d</b> song from the playlist?\n</item>
         <item quantity="other">Delete <b>%1$d</b> songs from the playlist?\n</item>
     </plurals>
-    <string name="remove_song_from_playlist_title">Remove song from playlist</string>
-    <string name="remove_songs_from_playlist_title">Remove songs from playlist</string>
     <string name="rename_playlist_title">Rename playlist</string>
     <string name="clear_playlist_title">Clear playlist</string>
     <string name="save_playlist_title">Save as file</string>

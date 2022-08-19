@@ -70,8 +70,6 @@
     <plurals name="msg_song_removal_summary">
         <item quantity="other"><![CDATA[Hapus <b>%1$d</b> lagu dari daftar putar?]]></item>
     </plurals>
-    <string name="remove_song_from_playlist_title">Hapus lagu dari daftar putar</string>
-    <string name="remove_songs_from_playlist_title">Hapus lagu-lagu dari daftar putar</string>
     <string name="rename_playlist_title">Ubah nama daftar putar</string>
     <string name="clear_playlist_title">Kosongkan daftar putar</string>
     <string name="save_playlist_title">Simpan sebagai berkas</string>

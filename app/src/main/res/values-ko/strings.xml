@@ -66,8 +66,6 @@
     <string name="created_playlist_x">재생 목록 %1$s을(를) 생성했습니다.</string>
     <string name="playlist_exists">재생 목록 %1$s이(가) 이미 있습니다.</string>
     <string name="could_not_create_playlist">\uc7ac\uc0dd \ubaa9\ub85d\uc744 \ub9cc\ub4e4 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.</string>
-    <string name="remove_song_from_playlist_title">재생 목록에서 노래 제거</string>
-    <string name="remove_songs_from_playlist_title">재생 목록에서 노래 제거</string>
     <string name="rename_playlist_title">재생 목록 이름 변경</string>
     <string name="clear_playlist_title">재생 목록 비우기</string>
     <string name="save_playlist_title">파일로 저장</string>

@@ -66,8 +66,6 @@
     <string name="created_playlist_x">Δημιουργήθηκε η λίστα αναπαραγωγής %1$s</string>
     <string name="playlist_exists">Η λίστα αναπαραγωγής %1$s υπάρχει ήδη.</string>
     <string name="could_not_create_playlist">\u0394\u03b5\u03bd \u03b5\u03af\u03bd\u03b1\u03b9 \u03b4\u03c5\u03bd\u03b1\u03c4\u03ae \u03b7 \u03b4\u03b7\u03bc\u03b9\u03bf\u03c5\u03c1\u03b3\u03af\u03b1 \u03bb\u03af\u03c3\u03c4\u03b1\u03c2 \u03b1\u03bd\u03b1\u03c0\u03b1\u03c1\u03b1\u03b3\u03c9\u03b3\u03ae\u03c2</string>
-    <string name="remove_song_from_playlist_title">Διαγραφή από την λίστα</string>
-    <string name="remove_songs_from_playlist_title">Διαγραφή τραγουδιών από την λίστα</string>
     <string name="rename_playlist_title">Μετονομασία λίστας αναπαραγωγής</string>
     <string name="clear_playlist_title">Εκκαθάριση λίστας</string>
     <string name="save_playlist_title">Αποθήκευση ως αρχείο</string>

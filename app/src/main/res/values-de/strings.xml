@@ -66,8 +66,6 @@
     <string name="created_playlist_x">Wiedergabeliste %1$s erstellt.</string>
     <string name="playlist_exists">Wiedergabeliste %1$s bereits vorhanden.</string>
     <string name="could_not_create_playlist">Wiedergabeliste konnte nicht erstellt werden.</string>
-    <string name="remove_song_from_playlist_title">Titel von Wiedergabeliste entfernen</string>
-    <string name="remove_songs_from_playlist_title">Titel von Wiedergabeliste entfernen</string>
     <string name="rename_playlist_title">Wiedergabeliste umbenennen</string>
     <string name="clear_playlist_title">Wiedergabeliste leeren</string>
     <string name="save_playlist_title">Als Datei speichern</string>

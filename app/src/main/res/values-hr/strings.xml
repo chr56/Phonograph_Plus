@@ -66,8 +66,6 @@
     <string name="created_playlist_x">Stvoren popis naslova %1$s.</string>
     <string name="playlist_exists">Popis naslova %1$s već postoji.</string>
     <string name="could_not_create_playlist">Nije mogu\u0107e stvoriti popis naslova.</string>
-    <string name="remove_song_from_playlist_title">Ukloni pjesmu s popisa naslova</string>
-    <string name="remove_songs_from_playlist_title">Ukloni pjesme s popisa naslova</string>
     <string name="rename_playlist_title">Preimenuj popis naslova</string>
     <string name="clear_playlist_title">Očisti popis naslova</string>
     <string name="save_playlist_title">Spremi kao datoteku</string>

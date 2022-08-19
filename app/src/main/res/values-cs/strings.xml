@@ -66,8 +66,6 @@
     <string name="created_playlist_x">Vytvořen playlist %1$s</string>
     <string name="playlist_exists">Seznam skladeb %1$s již existuje.</string>
     <string name="could_not_create_playlist">Nelze vytvo\u0159it playlist.</string>
-    <string name="remove_song_from_playlist_title">Odstranit skladbu z playlistu</string>
-    <string name="remove_songs_from_playlist_title">Odstranit skladby z playlistu</string>
     <string name="rename_playlist_title">Přejmenovat playlist</string>
     <string name="clear_playlist_title">Vyčistit playlist</string>
     <string name="save_playlist_title">Uložit jako soubor</string>
