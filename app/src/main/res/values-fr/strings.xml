@@ -65,7 +65,6 @@
     <string name="action_grid_size_land">Taille de la grille (paysage)</string>
     <string name="inserted_x_songs_into_playlist_x">%1$d titres ajoutés à la playlist %2$s.</string>
     <string name="created_playlist_x">Playlist %1$s créée.</string>
-    <string name="deleted_x_playlists">Supprimer les listes de lecture %1$d.</string>
     <string name="playlist_exists">La playlist %1$s existe déjà.</string>
     <string name="could_not_create_playlist">Impossible de cr\u00e9er la playlist.</string>
     <plurals name="msg_song_deletion_summary">

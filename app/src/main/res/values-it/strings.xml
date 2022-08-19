@@ -65,7 +65,6 @@
     <string name="action_grid_size_land">Dimensione griglia (schermo orizzontale)</string>
     <string name="inserted_x_songs_into_playlist_x">Aggiunti %1$d brani alla playlist %2$s</string>
     <string name="created_playlist_x">Playlist %1$s creata.</string>
-    <string name="deleted_x_playlists">Eliminate %1$d playlist.</string>
     <string name="playlist_exists">La playlist %1$s esiste già.</string>
     <string name="could_not_create_playlist">Impossibile creare la playlist.</string>
     <plurals name="msg_song_deletion_summary">

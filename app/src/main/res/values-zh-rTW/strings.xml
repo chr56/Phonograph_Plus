@@ -65,7 +65,6 @@
     <string name="action_grid_size_land">網格大小</string>
     <string name="inserted_x_songs_into_playlist_x">已將 %1$d 首歌加入播放清單 %2$s 中。</string>
     <string name="created_playlist_x">已新增播放清單 %1$s。</string>
-    <string name="deleted_x_playlists">已刪除%1$d個播放清單</string>
     <string name="playlist_exists">播放清單 %1$s 已經存在</string>
     <string name="could_not_create_playlist">\u7121\u6cd5\u5efa\u7acb\u64ad\u653e\u6e05\u55ae\u3002</string>
     <plurals name="msg_song_deletion_summary">

@@ -65,7 +65,6 @@
     <string name="action_grid_size_land">Ukuran kisi (lanskap)</string>
     <string name="inserted_x_songs_into_playlist_x">Telah menambah %1$d lagu ke daftar putar %2$s.</string>
     <string name="created_playlist_x">Telah membuat daftar putar %1$s</string>
-    <string name="deleted_x_playlists">Daftar Putar %1$d dihapus.</string>
     <string name="playlist_exists">Daftar putar %1$s sudah ada.</string>
     <string name="could_not_create_playlist">Tidak dapat membuat daftar putar.</string>
     <plurals name="msg_song_deletion_summary">
