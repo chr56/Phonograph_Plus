@@ -33,7 +33,6 @@
     <string name="biography_unavailable">Bu sanat\u00e7\u0131 i\u00e7in bir biyografi giri\u015fi bulunamad\u0131.</string>
     <string name="wiki_unavailable">Bu alb\u00fcm i\u00e7in bir wiki giri\u015fi bulunamad\u0131.</string>
     <string name="biography">Biyografi</string>
-    <string name="wiki">Wiki</string>
     <string name="audio_focus_denied">Ses odağı reddedildi.</string>
     <string name="album">Albüm</string>
     <string name="artist">Sanatçı</string>
@@ -44,7 +43,7 @@
     <string name="lyrics">Şarkı sözleri</string>
     <string name="album_or_artist_empty">Albüm başlığı veya albüm sanatçısı bilgisi yok.</string>
     <string name="saving_changes">Değişiklikler kaydediliyor</string>
-    <string name="label_details">Ayrıntılar</string>
+    <string name="label_details">Detaylar</string>
     <string name="label_file_name">Dosya adı</string>
     <string name="label_file_path">Dosya yolu</string>
     <string name="label_file_size">Boyut</string>
@@ -92,10 +91,10 @@
     <string name="only_on_wifi">Yalnızca Wİ-Fİ</string>
     <string name="never">Asla</string>
     <string name="today">Bugün</string>
-    <string name="this_week">Bu hafta</string>
     <string name="past_seven_days">Son 7 gün</string>
-    <string name="this_month">Bu ay</string>
     <string name="past_three_months">Son 3 ay</string>
+    <string name="this_week">Bu hafta</string>
+    <string name="this_month">Bu ay</string>
     <string name="this_year">Bu yıl</string>
     <string name="equalizer">Ekolayzer</string>
     <string name="pref_header_colors">Renkler</string>
@@ -270,7 +269,6 @@
     <string name="err_permission_storage">Depolama izni</string>
     <string name="add_blacklist">Bunu kara listeye eklemek ister misin?</string>
     <string name="minutes_short">%1$d dk</string>
-    <!-- use for tag -->
     <string name="other_information">Diğer</string>
     <string name="more_actions">Daha fazla</string>
     <string name="crash">Uygulama çöktü!!</string>
@@ -279,7 +277,6 @@
     <string name="failed_to_delete">Silinemedi</string>
     <string name="retry">Yeniden dene</string>
     <string name="not_available_now">şuan kullanılamıyor</string>
-    <string name="check_upgrade">Check upgrade</string>
     <string name="no_newer_version">Güncelleme yok!</string>
     <string name="new_version">Yeni Sürüm!</string>
     <string name="new_version_code">sürüm</string>
@@ -306,5 +303,4 @@
     <string name="pref_summary_reset_home_pages_tab_config">Tüm kitaplık kategorileri varsayılana sıfırlanır.</string>
     <string name="are_you_sure">Emin misin?</string>
     <string name="original_author">Orijinal Yazar</string>
-
 </resources>
