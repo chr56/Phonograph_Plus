@@ -29,9 +29,6 @@
     <string name="genres">Genuri</string>
     <string name="songs">Melodii</string>
     <string name="playlists">Liste de redare</string>
-    <string name="unplayable_file">Nu se poate reda.</string>
-    <string name="biography_unavailable">Nu a putut fi g\u0103sit\u0103 o \u00eenregistrare biografic\u0103 pentru acest artist.</string>
-    <string name="wiki_unavailable">Nu s-a putut g\u0103si o \u00eenregistrare wiki pentru acest album.</string>
     <string name="biography">Biografie</string>
     <string name="audio_focus_denied">Focus audio respins.</string>
     <string name="genre">Gen</string>
@@ -60,7 +57,6 @@
     <string name="created_playlist_x">Lista de redare %1$s a fost creată.</string>
     <string name="deleted_x_songs">%1$d melodii șterse.</string>
     <string name="playlist_exists">Lista de redare %1$s există deja.</string>
-    <string name="could_not_create_playlist">Nu s-a putut crea lista de redare.</string>
     <string name="delete_song_title">Ștergeţi melodia</string>
     <string name="delete_songs_title">Ștergeţi melodiile</string>
     <string name="remove_song_from_playlist_title">Scoatere melodie din playlist</string>
