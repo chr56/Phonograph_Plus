@@ -67,9 +67,6 @@
     <string name="created_playlist_x">已新增播放清單 %1$s。</string>
     <string name="playlist_exists">播放清單 %1$s 已經存在</string>
     <string name="could_not_create_playlist">\u7121\u6cd5\u5efa\u7acb\u64ad\u653e\u6e05\u55ae\u3002</string>
-    <plurals name="msg_song_deletion_summary">
-        <item quantity="other"><![CDATA[確定要刪除<b>%1$d</b>首歌嗎？<br/>]]></item>
-    </plurals>
     <plurals name="msg_song_removal_summary">
         <item quantity="other"><![CDATA[確定要將<b>%1$d</b>首歌從播放清單中移除嗎？]]></item>
     </plurals>

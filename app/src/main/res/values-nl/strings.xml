@@ -67,10 +67,6 @@
     <string name="created_playlist_x">Afspeellijst %1$s aangemaakt.</string>
     <string name="playlist_exists">Afspeellijst %1$s bestaat al.</string>
     <string name="could_not_create_playlist">Kan afspeellijst niet aanmaken.</string>
-    <plurals name="msg_song_deletion_summary">
-        <item quantity="one"><![CDATA[Verwijder <b>%1$d</b> nummer van het apparaat?<br/>]]></item>
-        <item quantity="other"><![CDATA[Verwijder <b>%1$d</b> nummers van het apparaat?<br/>]]></item>
-    </plurals>
     <plurals name="msg_song_removal_summary">
         <item quantity="one"><![CDATA[<b>%1$d</b> nummer verwijderen uit de afspeellijst?]]></item>
         <item quantity="other"><![CDATA[<b>%1$d</b> nummers verwijderen uit de afspeellijst?]]></item>

@@ -66,9 +66,6 @@
     <string name="created_playlist_x">播放列表 %1$s 已创建</string>
     <string name="playlist_exists">播放列表 %1$s 已存在</string>
     <string name="could_not_create_playlist">无法创建播放列表</string>
-    <plurals name="msg_song_deletion_summary">
-        <item quantity="other"><![CDATA[是否删除 <b>%1$d</b> 首歌曲?<br/>]]></item>
-    </plurals>
     <plurals name="msg_song_removal_summary">
         <item quantity="other"><![CDATA[是否从播放列表中移除 <b>%1$d</b> 首歌曲?<br/>]]></item>
     </plurals>

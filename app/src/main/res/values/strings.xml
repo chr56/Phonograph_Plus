@@ -67,10 +67,6 @@
     <string name="created_playlist_x">Created playlist %1$s.</string>
     <string name="playlist_exists">Playlist %1$s already exists.</string>
     <string name="could_not_create_playlist">Couldn\'t create playlist.</string>
-    <plurals name="msg_song_deletion_summary">
-        <item quantity="one">Delete <b>%1$d</b> song from the device?\n</item>
-        <item quantity="other">Delete <b>%1$d</b> songs from the device?\n</item>
-    </plurals>
     <plurals name="msg_song_removal_summary">
         <item quantity="one">Remove <b>%1$d</b> song from the playlist?\n</item>
         <item quantity="other">Delete <b>%1$d</b> songs from the playlist?\n</item>

@@ -67,9 +67,6 @@
     <string name="created_playlist_x">Telah membuat daftar putar %1$s</string>
     <string name="playlist_exists">Daftar putar %1$s sudah ada.</string>
     <string name="could_not_create_playlist">Tidak dapat membuat daftar putar.</string>
-    <plurals name="msg_song_deletion_summary">
-        <item quantity="other"><![CDATA[Hapus <b>%1$d</b> lagu dari perangkat?<br/>]]></item>
-    </plurals>
     <plurals name="msg_song_removal_summary">
         <item quantity="other"><![CDATA[Hapus <b>%1$d</b> lagu dari daftar putar?]]></item>
     </plurals>
