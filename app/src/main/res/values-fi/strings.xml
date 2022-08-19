@@ -29,9 +29,6 @@
     <string name="genres">Tyylilajit</string>
     <string name="songs">Kappaleet</string>
     <string name="playlists">Soittolistat</string>
-    <string name="unplayable_file">Virhe toistettaessa kappaletta.</string>
-    <string name="biography_unavailable">El\u00e4m\u00e4nkertaa ei l\u00f6ytynyt t\u00e4lle artistille.</string>
-    <string name="wiki_unavailable">Ei l\u00f6ytynyt wikist\u00e4 kohtaa t\u00e4lle albumille.</string>
     <string name="biography">Elämänkerta</string>
     <string name="audio_focus_denied">Ääntä ei voitu toistaa.</string>
     <string name="album">Albumi</string>
@@ -64,7 +61,6 @@
     <string name="created_playlist_x">Soittolista %1$s luotu.</string>
     <string name="deleted_x_songs">Poistettiin %1$d kappaletta.</string>
     <string name="playlist_exists">Soittolista %1$s on jo olemassa.</string>
-    <string name="could_not_create_playlist">Soittolistan luominen ep\u00e4onnistui.</string>
     <string name="delete_song_title">Poista kappale</string>
     <string name="delete_songs_title">Poista kappaleet</string>
     <string name="remove_song_from_playlist_title">Poista kappale soittolistasta</string>
