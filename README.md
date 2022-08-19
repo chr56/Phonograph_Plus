@@ -25,7 +25,9 @@ It is suggested to browser the [Changelog](app/src/main/assets/phonograph-change
 
 * 自动夜间模式 | Automatic & adaptive dark mode.
 
-* 更改界面 | Many changes to UI.
+* 调整界面 | Many changes to UI.
+
+* 应用内手动更改语言 | Change language in application manually.
 
 * 详情对话框内显示Tag信息 | Show tag information in "Detail" Dialog
 
@@ -61,6 +63,8 @@ It is suggested to browser the [Changelog](app/src/main/assets/phonograph-change
 ## **翻译**/**Translation**
 
 Translate Phonograph Plus into your language -> [crowdin](https://crowdin.com/project/phonograph-plus)
+
+We have removed Swedish and Norwegian Nynorsk translations due to missing too many translations
 
 ## **截图**/**Screenshot**
 
@@ -104,7 +108,7 @@ Songs | Folders | Artists | Playlists |
 
 - [x] 完成 Readme | Complete README
 
-- [x] 重构后台音乐服务 (❗WIP) | Refactor MusicService
+- [x] 重构后台音乐服务 | Refactor MusicService
 
 - [ ] 迁移 Glide 至 Coil ❗WIP | Migrate Glide to Coil ❗WIP
 
