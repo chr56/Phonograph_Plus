@@ -29,9 +29,9 @@
     <string name="genres">Genres</string>
     <string name="songs">Songs</string>
     <string name="playlists">Playlists</string>
-    <string name="unplayable_file">Couldn\u2019t play this song.</string>
-    <string name="biography_unavailable">Couldn\u2019t find a biography entry for this artist.</string>
-    <string name="wiki_unavailable">Couldn\u2019t find a wiki entry for this album.</string>
+    <string name="unplayable_file">Couldn\'t play this song.</string>
+    <string name="biography_unavailable">Couldn\'t find a biography entry for this artist.</string>
+    <string name="wiki_unavailable">Couldn\'t find a wiki entry for this album.</string>
     <string name="biography">Biography</string>
     <string name="wiki">Wiki</string>
     <string name="audio_focus_denied">Audio focus denied.</string>
@@ -58,7 +58,7 @@
     <string name="label_playing_queue">Playing queue</string>
     <string name="no_results">No results</string>
     <string name="updating">Updating…</string>
-    <string name="added_title_to_playing_queue">Added 1 title to the playing queue\u002E</string>
+    <string name="added_title_to_playing_queue">Added 1 title to the playing queue.</string>
     <string name="added_x_titles_to_playing_queue">Added %1$d titles to the playing queue.</string>
     <string name="action_remove_from_playlist">Remove from playlist</string>
     <string name="action_grid_size">Grid size</string>
@@ -68,7 +68,7 @@
     <string name="deleted_x_songs">Deleted %1$d songs.</string>
     <string name="deleted_x_playlists">Deleted %1$d playlists.</string>
     <string name="playlist_exists">Playlist %1$s already exists.</string>
-    <string name="could_not_create_playlist">Couldn\u2019t create playlist.</string>
+    <string name="could_not_create_playlist">Couldn\'t create playlist.</string>
     <plurals name="msg_song_deletion_summary">
         <item quantity="one">Delete <b>%1$d</b> song from the device?\n</item>
         <item quantity="other">Delete <b>%1$d</b> songs from the device?\n</item>
@@ -140,7 +140,7 @@
     <string name="pref_title_remember_last_tab">Remember last tab</string>
     <string name="pref_title_remember_shuffle">Remember shuffle</string>
     <string name="no_equalizer">No equalizer found.</string>
-    <string name="no_audio_ID">Play a song first\u002C then try again\u002E</string>
+    <string name="no_audio_ID">Play a song first, then try again.</string>
     <string name="delete_action">Delete</string>
     <string name="clear_action">Clear</string>
     <string name="remove_action">Remove</string>
@@ -161,8 +161,8 @@
     <string name="pref_summary_album_art_on_lockscreen">Uses the current songs album cover as lockscreen wallpaper.</string>
     <string name="pref_summary_blurred_album_art">Blurs the album cover on the lockscreen. Can cause problems with third party apps and widgets.</string>
     <string name="pref_summary_classic_notification">Use the classic notification design.</string>
-    <string name="pref_summary_colored_notification">Colors the notification in the album cover\u2019s vibrant color\u002E</string>
-    <string name="pref_summary_gapless_playback">Can cause playback issues on some devices\u002E</string>
+    <string name="pref_summary_colored_notification">Colors the notification in the album cover\'s vibrant color.</string>
+    <string name="pref_summary_gapless_playback">Can cause playback issues on some devices.</string>
     <string name="pref_summary_ignore_media_store_artwork">Can increase the album cover quality but causes slower image loading times. Only enable this if you have problems with low resolution artworks.</string>
     <string name="pref_summary_colored_navigation_bar">Colors the navigation bar in the primary color.</string>
     <string name="pref_summary_colored_app_shortcuts">Colors the app shortcuts in the primary color.</string>
@@ -170,14 +170,14 @@
     <string name="pref_summary_synchronized_lyrics_show">Currently only synchronized lyrics in LRC format are supported. Either embedded or as a separate file.</string>
     <string name="pref_summary_remember_last_tab">Go to the last opened tab on launch</string>
     <string name="pref_summary_remember_shuffle">Shuffle mode will stay on when selecting a new list of songs</string>
-    <string name="could_not_download_album_cover">Couldn\u2019t download a matching album cover\u002E</string>
+    <string name="could_not_download_album_cover">Couldn\'t download a matching album cover.</string>
     <string name="search_hint">Search your library…</string>
     <string name="favorites">Favorites</string>
     <string name="last_added">Last added</string>
     <string name="history">Recently played</string>
     <string name="my_top_tracks">My top tracks</string>
     <string name="remove_cover">Remove cover</string>
-    <string name="download_from_last_fm">Download from Last\u002Efm</string>
+    <string name="download_from_last_fm">Download from Last.fm</string>
     <string name="pick_from_local_storage">Pick from local storage</string>
     <string name="web_search">Web search</string>
     <string name="action_sleep_timer">Sleep timer</string>
