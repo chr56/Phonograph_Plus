@@ -363,12 +363,6 @@
         <item quantity="many">%1$d / %2$d элементы были успешно удалены.</item>
         <item quantity="other">%1$d / %2$d элемент был успешно удален.</item>
     </plurals>
-    <plurals name="msg_files_deletion_summary">
-        <item quantity="one"><![CDATA[Удалить <b>%1$d</b> файл с устройства?<br/> <b>Это действие не может быть отменено!</b> <br/>]]></item>
-        <item quantity="few"><![CDATA[Удалить <b>%1$d</b> файлы с устройства?<br/> <b>Это действие не может быть отменено!</b> <br/>]]></item>
-        <item quantity="many"><![CDATA[Удалить <b>%1$d</b> файлы с устройства?<br/> <b>Это действие не может быть отменено!</b> <br/>]]></item>
-        <item quantity="other"><![CDATA[Удалить <b>%1$d</b> файл с устройства?<br/> <b>Это действие не может быть отменено!</b> <br/>]]></item>
-    </plurals>
     <string name="embedded_lyrics">встроенный текст</string>
     <string name="external_lyrics">внешний текст</string>
     <string name="lyrics_following">Подписка на тексты песен</string>

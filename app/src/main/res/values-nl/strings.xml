@@ -303,10 +303,6 @@
         <item quantity="one">%1$d / %2$d item succesvol verwijderd.</item>
         <item quantity="other">%1$d / %2$d items werden met succes verwijderd.</item>
     </plurals>
-    <plurals name="msg_files_deletion_summary">
-        <item quantity="one"><![CDATA[Verwijder <b>%1$d</b> bestand van het apparaat?<br/> <b>Deze actie kan niet worden teruggedraaid!</b> <br/>]]></item>
-        <item quantity="other"><![CDATA[<b>%1$d</b> bestanden van het apparaat verwijderen?<br/> <b>Deze actie kan niet worden teruggedraaid!</b> <br/>]]></item>
-    </plurals>
     <string name="embedded_lyrics">ingesloten songteksten</string>
     <string name="external_lyrics">externe songteksten</string>
     <string name="lyrics_following">Songteksten volgen</string>

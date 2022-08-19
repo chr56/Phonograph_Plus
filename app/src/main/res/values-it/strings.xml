@@ -355,10 +355,6 @@
         <item quantity="one">%1$d / %2$d elemento è stato eliminato con successo.</item>
         <item quantity="other">%1$d / %2$d elementi sono stati eliminati con successo.</item>
     </plurals>
-    <plurals name="msg_files_deletion_summary">
-        <item quantity="one"><![CDATA[Eliminare <b>%1$d</b> file dal dispositivo?<br/><b>Questa azione non può essere annullata!</b><br/>]]></item>
-        <item quantity="other"><![CDATA[Eliminare <b>%1$d</b> file dal dispositivo?<br/><b>Questa azione non può essere annullata!</b><br/>]]></item>
-    </plurals>
     <string name="embedded_lyrics">testi integrati</string>
     <string name="external_lyrics">testi esterni</string>
     <string name="lyrics_following">Testi seguenti</string>

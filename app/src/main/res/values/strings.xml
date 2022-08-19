@@ -355,10 +355,6 @@
         <item quantity="one">%1$d / %2$d item was successfully deleted.</item>
         <item quantity="other">%1$d / %2$d items were successfully deleted.</item>
     </plurals>
-    <plurals name="msg_files_deletion_summary">
-        <item quantity="one">Delete <b>%1$d</b> file from the device?\n<b>This action can not be retracted!</b>\n</item>
-        <item quantity="other">Delete <b>%1$d</b> files from the device?\n<b>This action can not be retracted!</b>\n</item>
-    </plurals>
     <string name="embedded_lyrics">embedded lyrics</string>
     <string name="external_lyrics">external lyrics</string>
     <string name="lyrics_following">Lyrics Following</string>
