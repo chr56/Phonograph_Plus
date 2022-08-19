@@ -91,10 +91,10 @@
     <string name="only_on_wifi">Тільки через Wi-Fi</string>
     <string name="never">Ніколи</string>
     <string name="today">Сьогодні</string>
-    <string name="this_week">Цього тижня</string>
     <string name="past_seven_days">Минулі 7 днів</string>
-    <string name="this_month">Цього місяця</string>
     <string name="past_three_months">Минулі 3 місяці</string>
+    <string name="this_week">Цього тижня</string>
+    <string name="this_month">Цього місяця</string>
     <string name="this_year">Цього року</string>
     <string name="equalizer">Еквалайзер</string>
     <string name="pref_header_colors">Кольори</string>
@@ -227,6 +227,7 @@
     <string name="bug_report_failed_invalid_token">Недійсний токен доступу. Зв’яжіться з розробником додатка.</string>
     <string name="bug_report_failed_unknown">Сталася несподівана помилка. Зверніться до розробника програми.</string>
     <string name="app_shortcut_shuffle_all_short">Перемішати</string>
+    <string name="app_shortcut_last_added_short">Останні додані</string>
     <string name="playlist_is_empty">Список відтворення пустий</string>
     <string name="add_action">Додати</string>
     <string name="blacklist">Чорний список</string>
@@ -246,4 +247,6 @@
     <string name="sort_order_artist">Виконавець</string>
     <string name="sort_order_album">Альбом</string>
     <string name="sort_order_year">Рік</string>
+    <string name="sort_order_song">Пісня</string>
+    <string name="pref_header_appearance">Вигляд</string>
 </resources>
