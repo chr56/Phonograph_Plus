@@ -6,7 +6,6 @@ package player.phonograph.mediastore
 
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.app.PendingIntent
 import android.content.Context
 import android.database.Cursor
 import android.media.MediaScannerConnection
@@ -24,9 +23,9 @@ import java.util.*
 import kotlin.collections.ArrayList
 import kotlinx.coroutines.CoroutineScope
 import player.phonograph.R
+import player.phonograph.model.Song
 import player.phonograph.model.file.FileEntity
 import player.phonograph.model.file.Location
-import player.phonograph.model.Song
 import player.phonograph.model.file.put
 import player.phonograph.settings.Setting
 
@@ -238,10 +237,9 @@ object MediaStoreUtil {
      * delete songs by path via MediaStore
      */
     fun deleteSongs(context: Activity, songs: List<Song>) {
-
-        val total: Int = songs.size
-        var result: Int = 0
-        val failList: MutableList<Song> = ArrayList<Song>()
+        val total = songs.size
+        var result = 0
+        val failList: MutableList<Song> = ArrayList()
 
         // try to delete
         for (index in songs.indices) {
@@ -258,45 +256,36 @@ object MediaStoreUtil {
             result += output
         }
 
+        val r: String = context.resources.getQuantityString(R.plurals.msg_deletion_result, total, result, total)
+
+        Toast.makeText(context, r, Toast.LENGTH_SHORT).show()
+
         // handle fail , report and try again
-        if (failList.isNotEmpty()) {
-            val list = StringBuffer()
-            for (song in failList) {
-                list.append(song.title).append("\n")
-            }
-            MaterialDialog(context)
-                .title(R.string.failed_to_delete)
-                .message(
-                    text = "${context.resources.getQuantityString(R.plurals.msg_deletion_result, total, result, total)}\n" +
-                        "${context.getString(R.string.failed_to_delete)}: \n" +
-                        "$list "
-                )
-                .positiveButton(android.R.string.ok)
-                .neutralButton(R.string.retry) {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                        val uris: List<Uri> = List<Uri>(failList.size) { index ->
-                            Uri.withAppendedPath(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, failList[index].id.toString())
+        if (failList.isNotEmpty()) MaterialDialog(context)
+            .title(R.string.failed_to_delete)
+            .message(
+                text = "${r}\n${context.getString(R.string.failed_to_delete)}: \n${failList.map { "${it.title}\n" }} "
+            )
+            .positiveButton(android.R.string.ok)
+            .apply {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                    neutralButton(R.string.retry) {
+                        val uris = failList.map { song ->
+                            Uri.withAppendedPath(
+                                MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
+                                song.id.toString()
+                            )
                         }
-                        uris.forEach {
-                            Log.d(TAG, it.toString())
-                            Log.d(TAG, it.path.toString())
-                        }
-                        val pi: PendingIntent = MediaStore.createDeleteRequest(
-                            context.contentResolver, uris
-                        )
-                        context.startIntentSenderForResult(pi.intentSender, 0, null, 0, 0, 0)
-                    } else {
-                        // todo
+                        context.startIntentSenderForResult(
+                            MediaStore.createDeleteRequest(
+                                context.contentResolver,
+                                uris
+                            ).intentSender,
+                            0, null, 0, 0, 0)
                     }
                 }
-                .show()
-        }
-
-        Toast.makeText(
-            context,
-            String.format(Locale.getDefault(), context.getString(R.string.deleted_x_songs), result),
-            Toast.LENGTH_SHORT
-        ).show()
+            }
+            .show()
     }
 
     fun scanFiles(context: Context, paths: Array<String>, mimeTypes: Array<String>) {

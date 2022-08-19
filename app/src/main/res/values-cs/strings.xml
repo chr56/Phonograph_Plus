@@ -64,7 +64,6 @@
     <string name="action_grid_size_land">Velikost mřížky (na šiřku)</string>
     <string name="inserted_x_songs_into_playlist_x">Vloženo %1$d do playlistu %2$s.</string>
     <string name="created_playlist_x">Vytvořen playlist %1$s</string>
-    <string name="deleted_x_songs">Odstraněno %1$d skladeb.</string>
     <string name="playlist_exists">Seznam skladeb %1$s již existuje.</string>
     <string name="could_not_create_playlist">Nelze vytvo\u0159it playlist.</string>
     <string name="delete_song_title">Vymazat skladbu</string>

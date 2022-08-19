@@ -64,7 +64,6 @@
     <string name="action_grid_size_land">Tamaño de la cuadrícula (plano)</string>
     <string name="inserted_x_songs_into_playlist_x">Añadidas %1$d canciones a la lista de reproducción %2$s.</string>
     <string name="created_playlist_x">Lista de reproducción %1$s creada.</string>
-    <string name="deleted_x_songs">%1$d canciones eliminadas.</string>
     <string name="playlist_exists">La lista de reproducción %1$s ya existe.</string>
     <string name="could_not_create_playlist">No se puede crear la lista de reproducci\u00f3n.</string>
     <string name="delete_song_title">Eliminar canción</string>

@@ -64,7 +64,6 @@
     <string name="action_grid_size_land">حجم الشبكة (في الوضع الأفقي)</string>
     <string name="inserted_x_songs_into_playlist_x">تم إدراج %1$d أغاني إلى قائمة التشغيل %2$s.</string>
     <string name="created_playlist_x">تم إنشاء قائمة التشغيل %1$s.</string>
-    <string name="deleted_x_songs">تم حذف %1$d أغاني.</string>
     <string name="playlist_exists">قائمة التشغيل %1$s موجودة بالفعل.</string>
     <string name="could_not_create_playlist">\u0644\u0645 \u064a\u062a\u0645 \u0627\u0644\u062a\u0645\u0643\u0646 \u0645\u0646 \u0625\u0646\u0634\u0627\u0621 \u0642\u0627\u0626\u0645\u0629 \u0627\u0644\u062a\u0634\u063a\u064a\u0644.</string>
     <string name="delete_song_title">حذف الأغنية</string>

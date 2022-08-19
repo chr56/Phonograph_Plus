@@ -64,7 +64,6 @@
     <string name="action_grid_size_land">Dimensiunea grilei (peisaj)</string>
     <string name="inserted_x_songs_into_playlist_x">%1$d melodii inserate in %2$s.</string>
     <string name="created_playlist_x">Lista de redare %1$s a fost creată.</string>
-    <string name="deleted_x_songs">%1$d melodii șterse.</string>
     <string name="playlist_exists">Lista de redare %1$s există deja.</string>
     <string name="could_not_create_playlist">Nu s-a putut crea lista de redare.</string>
     <string name="delete_song_title">Ștergeţi melodia</string>

@@ -64,7 +64,6 @@
     <string name="action_grid_size_land">Rácsméret</string>
     <string name="inserted_x_songs_into_playlist_x">%1$d dal hozzáadva a(z) %2$s lejátszási listához.</string>
     <string name="created_playlist_x">%1$s lejátszási lista létrehozva.</string>
-    <string name="deleted_x_songs">%1$d dal törölve.</string>
     <string name="playlist_exists">A (z)  %1$s lejátszási lista már létezik.</string>
     <string name="could_not_create_playlist">Nem siker\u00fclt l\u00e9trehozni a lej\u00e1tsz\u00e1si list\u00e1t.</string>
     <string name="delete_song_title">Dal törlése</string>

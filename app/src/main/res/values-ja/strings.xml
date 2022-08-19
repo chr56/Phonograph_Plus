@@ -64,7 +64,6 @@
     <string name="action_grid_size_land">グリッドサイズ（横向き）</string>
     <string name="inserted_x_songs_into_playlist_x">%1$d曲を%2$sに追加しました</string>
     <string name="created_playlist_x">%1$sを作成しました</string>
-    <string name="deleted_x_songs">%1$d曲削除しました</string>
     <string name="playlist_exists">%1$sは既に存在します</string>
     <string name="could_not_create_playlist">\u30d7\u30ec\u30a4\u30ea\u30b9\u30c8\u306e\u4f5c\u6210\u306b\u5931\u6557\u3057\u307e\u3057\u305f</string>
     <string name="delete_song_title">楽曲の削除</string>

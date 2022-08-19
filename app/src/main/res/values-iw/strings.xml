@@ -64,7 +64,6 @@
     <string name="action_grid_size_land">גודל הרשת (קרקע)</string>
     <string name="inserted_x_songs_into_playlist_x">הוכנסו %1$d שירים לתוך רשימת השמיעה %2$s</string>
     <string name="created_playlist_x">נוצרה רשימת השמיעה %1$s</string>
-    <string name="deleted_x_songs">נמחקו %1$d שירים</string>
     <string name="playlist_exists">רשימת ההשמעה %1$s כבר קיימת.</string>
     <string name="could_not_create_playlist">\u05dc\u05d0 \u05e0\u05d9\u05ea\u05df \u05dc\u05d9\u05e6\u05d5\u05e8 \u05e8\u05e9\u05d9\u05de\u05ea \u05e9\u05de\u05d9\u05e2\u05d4.</string>
     <string name="delete_song_title">מחק שיר</string>

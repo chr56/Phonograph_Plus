@@ -64,7 +64,6 @@
     <string name="action_grid_size_land">Veličina mreže (vodoravno)</string>
     <string name="inserted_x_songs_into_playlist_x">Dodano je %1$d pjesama na popis %2$s.</string>
     <string name="created_playlist_x">Stvoren popis naslova %1$s.</string>
-    <string name="deleted_x_songs">Izbrisano %1$d pjesama.</string>
     <string name="playlist_exists">Popis naslova %1$s već postoji.</string>
     <string name="could_not_create_playlist">Nije mogu\u0107e stvoriti popis naslova.</string>
     <string name="delete_song_title">Izbriši pjesmu</string>

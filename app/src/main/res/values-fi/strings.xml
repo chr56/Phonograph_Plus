@@ -64,7 +64,6 @@
     <string name="action_grid_size_land">Ruudukon koko (vaaka)</string>
     <string name="inserted_x_songs_into_playlist_x">Lisätty %1$d kappaletta soittolistaan %2$s.</string>
     <string name="created_playlist_x">Soittolista %1$s luotu.</string>
-    <string name="deleted_x_songs">Poistettiin %1$d kappaletta.</string>
     <string name="playlist_exists">Soittolista %1$s on jo olemassa.</string>
     <string name="could_not_create_playlist">Soittolistan luominen ep\u00e4onnistui.</string>
     <string name="delete_song_title">Poista kappale</string>

@@ -65,7 +65,6 @@
     <string name="action_grid_size_land">Rastergrootte (landschap)</string>
     <string name="inserted_x_songs_into_playlist_x">%1$d nummers toegevoegd aan afspeellijst %2$s.</string>
     <string name="created_playlist_x">Afspeellijst %1$s aangemaakt.</string>
-    <string name="deleted_x_songs">%1$d nummers verwijderd.</string>
     <string name="deleted_x_playlists">%1$d afspeellijsten verwijderd.</string>
     <string name="playlist_exists">Afspeellijst %1$s bestaat al.</string>
     <string name="could_not_create_playlist">Kan afspeellijst niet aanmaken.</string>
