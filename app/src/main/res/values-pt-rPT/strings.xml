@@ -87,6 +87,7 @@
     <string name="pref_header_audio">Áudio</string>
     <string name="pref_header_images">Imagens</string>
     <string name="pref_header_lockscreen">Ecrã de Bloqueio</string>
+    <string name="pref_header_playlists">Listas de reprodução</string>
     <string name="pref_title_navigation_bar">Barra de navegação colorida</string>
     <string name="pref_title_album_art_on_lockscreen">Mostrar capa do álbum</string>
     <string name="pref_title_blurred_album_art">Desfocar capa do álbum</string>
@@ -137,8 +138,7 @@
     <string name="new_playlist_title">Nova lista de reprodução</string>
     <string name="colored_footers">Rodapés coloridos</string>
     <string name="special_thanks_to">Agradecimentos especiais a</string>
-    <string name="changelog">Changelog</string>
-    <string name="licenses">"Licenças "</string>
+    <string name="licenses">Licenças </string>
     <string name="permissions_denied">Permissões negadas.</string>
     <string name="permission_external_storage_denied">Permissão para aceder a armazenamento externo negada.</string>
     <string name="support_development">Apoiar o desenvolvimento</string>
@@ -162,7 +162,6 @@
     <string name="welcome_to_phonograph">"Bem vindo ao Phonograph, um belo e leve leitor de música para Android. "</string>
     <string name="open_playing_queue_instruction">Deslize o cartão no ecrã de \"a reproduzir\" para cima para mostrar a fila de reprodução completa.</string>
     <string name="rearrange_playing_queue_instruction">Reorganizar a fila de reprodução arrastando a música desde o seu número</string>
-    <string name="library">Biblioteca</string>
     <string name="folders">Pastas</string>
     <string name="failed_to_save_playlist">Erro a salvar a lista de reprodução (%s).</string>
     <string name="nothing_to_scan">Nada para verificar.</string>
@@ -172,7 +171,7 @@
     <string name="app_widget_big_name">Phonograph - Grande</string>
     <string name="app_widget_classic_name">Phonograph - Clássico</string>
     <string name="app_widget_small_name">Phonograph - Pequeno</string>
-    <string name="report_an_issue">"Denunciar um problema "</string>
+    <string name="report_an_issue">Denunciar um problema </string>
     <string name="bug_report_issue">Problema</string>
     <string name="login">Entrar</string>
     <string name="title">Título</string>
@@ -193,4 +192,10 @@
     <string name="bug_report_failed_unknown">Ocorreu um erro inesperado. Por favor contacte o desenvolvedor da aplicação.</string>
     <string name="your_account_data_is_only_used_for_authentication">A sua informação da conta é apenas usada para a autenticação.</string>
     <string name="you_will_be_forwarded_to_the_issue_tracker_website">Vai ser reencaminhado para o site do rastreador de problemas.</string>
+    <string name="app_shortcut_last_added_short">Últimas adições</string>
+    <string name="sort_order_artist">Artista</string>
+    <string name="sort_order_album">Álbum</string>
+    <string name="sort_order_year">Ano</string>
+    <string name="sort_order_song">Música</string>
+    <string name="pref_header_appearance">Aparência</string>
 </resources>
