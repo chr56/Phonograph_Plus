@@ -29,9 +29,6 @@
     <string name="genres">Aliran</string>
     <string name="songs">Lagu</string>
     <string name="playlists">Daftar putar</string>
-    <string name="unplayable_file">Tidak dapat memutar lagu ini.</string>
-    <string name="biography_unavailable">Tidak dapat menemukan entri biografi untuk artis ini.</string>
-    <string name="wiki_unavailable">Tidak dapat menemukan entri wiki untuk album ini.</string>
     <string name="biography">Biografi</string>
     <string name="audio_focus_denied">Fokus audio ditolak.</string>
     <string name="artist">Artis</string>
@@ -65,7 +62,6 @@
     <string name="deleted_x_songs">%1$d lagu dihapus</string>
     <string name="deleted_x_playlists">Daftar Putar %1$d dihapus.</string>
     <string name="playlist_exists">Daftar putar %1$s sudah ada.</string>
-    <string name="could_not_create_playlist">Tidak dapat membuat daftar putar.</string>
     <string name="delete_song_title">Hapus lagu</string>
     <string name="delete_songs_title">Hapus lagu-lagu</string>
     <string name="remove_song_from_playlist_title">Hapus lagu dari daftar putar</string>
