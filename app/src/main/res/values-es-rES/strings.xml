@@ -5,7 +5,7 @@
     <string name="the_audio_file">El archivo de audio.</string>
     <string name="action_set_as_ringtone">Establecer como tono de llamada</string>
     <string name="action_share">Compartir</string>
-    <string name="action_settings">"Ajustes"</string>
+    <string name="action_settings">Ajustes</string>
     <string name="action_grant">Otorgar</string>
     <string name="action_about">Acerca de</string>
     <string name="action_add_to_favorites">Añadir a favoritos</string>
@@ -40,7 +40,7 @@
     <string name="genre">Género</string>
     <string name="album_artist">Artista del álbum</string>
     <string name="year">Año</string>
-    <string name="track_hint">"Pista (2 para pista 2 o 3004 para CD3 pista 4)"</string>
+    <string name="track_hint">Pista (2 para pista 2 o 3004 para CD3 pista 4)</string>
     <string name="lyrics">Letras</string>
     <string name="album_or_artist_empty">El título o artista está vacío</string>
     <string name="saving_changes">Guardando cambios...</string>
@@ -57,7 +57,6 @@
     <string name="label_playing_queue">Cola de reproducción</string>
     <string name="no_results">No hay resultados</string>
     <string name="updating">Actualizando...</string>
-    <string name="added_title_to_playing_queue">"1 canción añadida a la cola de reproducción."</string>
     <string name="added_x_titles_to_playing_queue">%1$d canciones añadidas a la cola de reproducción.</string>
     <string name="action_remove_from_playlist">Eliminar de la lista de reproducción</string>
     <string name="action_grid_size">Tamaño de la cuadrícula</string>
@@ -77,7 +76,7 @@
     <string name="clear_playlist_title">Vaciar lista de reproducción</string>
     <string name="save_playlist_title">Guardar como archivo</string>
     <string name="save_playlists_title">Español</string>
-    <string name="add_playlist_title">"Añadir a lista de reproducción"</string>
+    <string name="add_playlist_title">Añadir a lista de reproducción</string>
     <string name="select_all_title">Seleccionar todo</string>
     <string name="action_shuffle_all">Modo aleatorio</string>
     <string name="action_shuffle_album">Reproducción aleatoria del álbum</string>
@@ -92,16 +91,15 @@
     <string name="only_on_wifi">Solo en Wi-Fi</string>
     <string name="never">Nunca</string>
     <string name="today">Hoy</string>
-    <string name="this_week">Esta semana</string>
     <string name="past_seven_days">Últimos 7 días</string>
-    <string name="this_month">Este mes</string>
     <string name="past_three_months">Últimos 3 meses</string>
+    <string name="this_week">Esta semana</string>
+    <string name="this_month">Este mes</string>
     <string name="this_year">Este año</string>
     <string name="equalizer">Ecualizador</string>
     <string name="pref_header_colors">Colores</string>
     <string name="pref_header_now_playing_screen">Reproducción actual</string>
     <string name="pref_title_general_theme">Tema general</string>
-    <string name="pref_header_audio">Audio</string>
     <string name="pref_header_library">Biblioteca</string>
     <string name="pref_header_images">Imágenes</string>
     <string name="pref_header_lockscreen">Pantalla de bloqueo</string>
@@ -122,7 +120,6 @@
     <string name="pref_title_remember_last_tab">Recordar la última pestaña</string>
     <string name="pref_title_remember_shuffle">Recordar aleatorio</string>
     <string name="no_equalizer">No se encontró ningún ecualizador</string>
-    <string name="no_audio_ID">"Reproduce una canción primero, luego intentalo otra vez."</string>
     <string name="delete_action">Borrar</string>
     <string name="clear_action">Limpiar</string>
     <string name="remove_action">Eliminar</string>
@@ -143,8 +140,6 @@
     <string name="pref_summary_album_art_on_lockscreen">Utiliza la carátula del álbum que se reproduce como fondo de pantalla de bloqueo</string>
     <string name="pref_summary_blurred_album_art">Desenfoca la carátula del álbum en la pantalla de bloqueo. Puede causar problemas con aplicaciones de terceros y widgets.</string>
     <string name="pref_summary_classic_notification">Utilizar el diseño clásico de notificación.</string>
-    <string name="pref_summary_colored_notification">"Colorea la notificaci\u00f3n con el color vibrante de la car\u00e1tula del \u00e1lbum."</string>
-    <string name="pref_summary_gapless_playback">"Puede causar problemas durante la reproducción en algunos dispositivos."</string>
     <string name="pref_summary_ignore_media_store_artwork">Puede aumentar la calidad de la carátula del álbum pero causa que las imágenes carguen mas lento. Sólo activalo si tienes problemas con carátulas de baja resolución.</string>
     <string name="pref_summary_colored_navigation_bar">Colorea la barra de navegación con el color principal.</string>
     <string name="pref_summary_colored_app_shortcuts">Colorea los accesos directos con el color principal</string>
@@ -152,14 +147,12 @@
     <string name="pref_summary_synchronized_lyrics_show">Actualmente sólo se admiten las letras sincronizadas en formato LRC. Tanto si están embebidas como si están en un archivo aparte.</string>
     <string name="pref_summary_remember_last_tab">Ir a la última pestaña abierta en el lanzamiento</string>
     <string name="pref_summary_remember_shuffle">Modo aleatorio estará activado cuando se seleccione una nueva lista de canciones</string>
-    <string name="could_not_download_album_cover">"No se puede descargar una car\u00e1tula de \u00e1lbum que coincida."</string>
     <string name="search_hint">Buscar en la biblioteca...</string>
     <string name="favorites">Favoritos</string>
     <string name="last_added">Último agregado</string>
     <string name="history">Recientemente reproducido</string>
     <string name="my_top_tracks">Canciones más reproducidas</string>
     <string name="remove_cover">Eliminar carátula</string>
-    <string name="download_from_last_fm">Descargar desde Last.fm</string>
     <string name="pick_from_local_storage">Seleccionar de almacenamiento interno</string>
     <string name="web_search">Buscar en Internet</string>
     <string name="action_sleep_timer">Temporizador de apagado</string>
@@ -195,7 +188,7 @@
     <string name="up_next">A continuación</string>
     <string name="pref_title_now_playing_screen_appearance">Apariencia</string>
     <string name="intro_label">Introducción</string>
-    <string name="welcome_to_phonograph">"Bienvenido a Phonograph, un bonito y ligero reproductor de música para Android."</string>
+    <string name="welcome_to_phonograph">Bienvenido a Phonograph, un bonito y ligero reproductor de música para Android.</string>
     <string name="open_playing_queue_instruction">Desliza la carta hacia arriba en la pantalla de ahora reproduciendo para desvelar completamente la cola de reproducción.</string>
     <string name="rearrange_playing_queue_instruction">Reordena la cola de reproducción arrastrando la canción desde su número de pista.</string>
     <string name="library">Biblioteca</string>
@@ -210,7 +203,6 @@
     <string name="app_widget_big_name">Phonograph - Grande</string>
     <string name="app_widget_classic_name">Phonograph - Clásico</string>
     <string name="app_widget_small_name">Phonograph - Pequeño</string>
-    <string name="app_widget_card_name">Phonograph - Card</string>
     <string name="report_an_issue">Notifique un problema</string>
     <string name="bug_report_issue">Problema</string>
     <string name="login">Registrarse</string>
@@ -245,11 +237,10 @@
     <string name="add_action">Añadir</string>
     <string name="blacklist">Lista Negra</string>
     <string name="remove_from_blacklist">Remover de la lista negra</string>
-    <string name="do_you_want_to_remove_from_the_blacklist"><![CDATA[¿Quieres remover <b>%1$s</b> de la lista negra?]]></string>
+    <string name="do_you_want_to_remove_from_the_blacklist">¿Quieres remover <b>%1$s</b> de la lista negra?</string>
     <string name="clear_blacklist">Vaciar lista negra</string>
     <string name="do_you_want_to_clear_the_blacklist">¿Quieres eliminar la lista negra?</string>
-    <string name="pref_summary_blacklist">"
-El contenido de las carpetas de la lista negra está oculto en tu biblioteca"</string>
+    <string name="pref_summary_blacklist">El contenido de las carpetas de la lista negra está oculto en tu biblioteca</string>
     <string name="reset_artist_image">Resetear la imagen del artista</string>
     <string name="set_artist_image">Establecer la imagen del artista</string>
     <string name="library_categories">Categorías de la biblioteca</string>
@@ -264,4 +255,6 @@ El contenido de las carpetas de la lista negra está oculto en tu biblioteca"</s
     <string name="sort_order_album">Álbum</string>
     <string name="sort_order_year">Año</string>
     <string name="finish_current_music_sleep_timer">Terminar la última canción</string>
+    <string name="sort_order_song">Canción</string>
+    <string name="pref_header_appearance">Apariencia</string>
 </resources>
