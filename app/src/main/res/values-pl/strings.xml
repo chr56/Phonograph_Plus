@@ -58,15 +58,8 @@
     <string name="action_grid_size_land">Rozmiar siatki (poziomo)</string>
     <string name="inserted_x_songs_into_playlist_x">Dodano %1$d utwory do listy odtwarzania %2$s</string>
     <string name="created_playlist_x">Utworzono listę odtwarzania %1$s</string>
-    <string name="deleted_x_songs">Usunięto %1$d utworów</string>
     <string name="playlist_exists">Lista %1$s już istnieje</string>
-    <string name="delete_song_title">Usuń utwór</string>
-    <string name="delete_songs_title">Usuń utwory</string>
-    <string name="remove_song_from_playlist_title">Usuń utwór z listy odtwarzania</string>
-    <string name="remove_songs_from_playlist_title">Usuń utwory z listy odtwarzania</string>
     <string name="rename_playlist_title">Zmień nazwę listy odtwarzania</string>
-    <string name="delete_playlist_title">Usuń listę odtwarzania</string>
-    <string name="delete_playlists_title">Usuń listy odtwarzania</string>
     <string name="clear_playlist_title">Wyczyść listę odtwarzania</string>
     <string name="save_playlist_title">Zapisz jako plik</string>
     <string name="save_playlists_title">Zapisz jako pliki</string>
