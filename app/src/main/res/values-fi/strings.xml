@@ -67,7 +67,6 @@
     <string name="playlist_exists">Soittolista %1$s on jo olemassa.</string>
     <string name="could_not_create_playlist">Soittolistan luominen ep\u00e4onnistui.</string>
     <string name="rename_playlist_title">Nimeä soittolista uudelleen</string>
-    <string name="clear_playlist_title">Tyhjennä soittolistat</string>
     <string name="save_playlist_title">Tallenna tiedostona</string>
     <string name="save_playlists_title">Tallenna tiedostoina</string>
     <string name="add_playlist_title">"Lisää soittolistaan"</string>

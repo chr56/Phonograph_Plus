@@ -67,7 +67,6 @@
     <string name="playlist_exists">Danh sách %1$s đã tồn tại.</string>
     <string name="could_not_create_playlist">Kh\u00f4ng th\u1ec3 t\u1ea1o danh s\u00e1ch nh\u1ea1c.</string>
     <string name="rename_playlist_title">Đổi tên danh sách nhạc</string>
-    <string name="clear_playlist_title">Dọn danh sách nhạc</string>
     <string name="save_playlist_title">Lưu thành tập tin</string>
     <string name="save_playlists_title">Lưu thành mục</string>
     <string name="add_playlist_title">"Thêm vào danh sách nhạc"</string>

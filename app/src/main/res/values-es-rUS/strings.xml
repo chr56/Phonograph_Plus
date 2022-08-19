@@ -67,7 +67,6 @@
     <string name="playlist_exists">Lista de reproducción %1$s ya existe.</string>
     <string name="could_not_create_playlist">No se pudo crear la lista de reproducci\u00f3n.</string>
     <string name="rename_playlist_title">Renombrar lista de reproducción</string>
-    <string name="clear_playlist_title">Limpiar lista de reproducción</string>
     <string name="save_playlist_title">Guardar como archivo</string>
     <string name="save_playlists_title">Guardar como archivos</string>
     <string name="add_playlist_title">"Agregar a la lista de reproducción"</string>

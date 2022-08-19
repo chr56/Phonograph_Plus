@@ -68,7 +68,6 @@
     <string name="playlist_exists">Daftar putar %1$s sudah ada.</string>
     <string name="could_not_create_playlist">Tidak dapat membuat daftar putar.</string>
     <string name="rename_playlist_title">Ubah nama daftar putar</string>
-    <string name="clear_playlist_title">Kosongkan daftar putar</string>
     <string name="save_playlist_title">Simpan sebagai berkas</string>
     <string name="save_playlists_title">Simpan sebagai berkas</string>
     <string name="add_playlist_title">"Tambahkan ke daftar putar"</string>

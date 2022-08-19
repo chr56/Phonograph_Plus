@@ -68,7 +68,6 @@
     <string name="playlist_exists">播放列表 %1$s 已存在</string>
     <string name="could_not_create_playlist">无法创建播放列表</string>
     <string name="rename_playlist_title">重命名播放列表</string>
-    <string name="clear_playlist_title">清空播放列表</string>
     <string name="save_playlist_title">另存为</string>
     <string name="save_playlists_title">另存为</string>
     <string name="add_playlist_title">添加到播放列表</string>

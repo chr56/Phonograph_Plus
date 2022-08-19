@@ -67,7 +67,6 @@
     <string name="playlist_exists">A (z)  %1$s lejátszási lista már létezik.</string>
     <string name="could_not_create_playlist">Nem siker\u00fclt l\u00e9trehozni a lej\u00e1tsz\u00e1si list\u00e1t.</string>
     <string name="rename_playlist_title">Lejátszási lista átnevezése</string>
-    <string name="clear_playlist_title">Lejátszási lista kiürítése</string>
     <string name="save_playlist_title">Mentés fájlként</string>
     <string name="save_playlists_title">Mentés fájlként</string>
     <string name="add_playlist_title">"Hozzáadás a lejátszási listához"</string>

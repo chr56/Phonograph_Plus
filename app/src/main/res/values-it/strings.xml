@@ -68,7 +68,6 @@
     <string name="playlist_exists">La playlist %1$s esiste già.</string>
     <string name="could_not_create_playlist">Impossibile creare la playlist.</string>
     <string name="rename_playlist_title">Rinomina playlist</string>
-    <string name="clear_playlist_title">Svuota playlist</string>
     <string name="save_playlist_title">Salva come file</string>
     <string name="save_playlists_title">Salva come file</string>
     <string name="add_playlist_title">"Aggiungi alla playlist"</string>

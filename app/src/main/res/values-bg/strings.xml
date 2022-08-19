@@ -63,7 +63,6 @@
     <string name="created_playlist_x">Плейлистът %1$s бе добавен.</string>
     <string name="could_not_create_playlist">\u041f\u043b\u0435\u0439\u043b\u0438\u0441\u0442\u044a\u0442 \u043d\u0435 \u043c\u043e\u0436\u0435 \u0434\u0430 \u0441\u0435 \u0441\u044a\u0437\u0434\u0430\u0434\u0435.</string>
     <string name="rename_playlist_title">Преименувай този плейлист</string>
-    <string name="clear_playlist_title">Изчисти този плейлист</string>
     <string name="save_playlist_title">Запази като файл</string>
     <string name="add_playlist_title">"Добави към плейлист"</string>
     <string name="action_shuffle_all">Разбъркай всички</string>

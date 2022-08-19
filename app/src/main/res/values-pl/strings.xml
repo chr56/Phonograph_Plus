@@ -67,7 +67,6 @@
     <string name="playlist_exists">Lista %1$s już istnieje</string>
     <string name="could_not_create_playlist">Nie mo\u017cna utworzy\u0107 listy odtwarzania</string>
     <string name="rename_playlist_title">Zmień nazwę listy odtwarzania</string>
-    <string name="clear_playlist_title">Wyczyść listę odtwarzania</string>
     <string name="save_playlist_title">Zapisz jako plik</string>
     <string name="save_playlists_title">Zapisz jako pliki</string>
     <string name="add_playlist_title">"Dodaj do listy odtwarzania"</string>

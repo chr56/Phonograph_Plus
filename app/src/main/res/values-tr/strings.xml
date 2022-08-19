@@ -67,7 +67,6 @@
     <string name="playlist_exists">%1$s oynatma listesi zaten mevcut.</string>
     <string name="could_not_create_playlist">\u00c7alma listesi olu\u015fturulamad\u0131.</string>
     <string name="rename_playlist_title">Çalma listesini yeniden adlandır</string>
-    <string name="clear_playlist_title">Çalma listesini temizle</string>
     <string name="save_playlist_title">Dosya olarak kaydet</string>
     <string name="save_playlists_title">Dosya olarak kaydet</string>
     <string name="add_playlist_title">"Çalma listesine ekle"</string>
