@@ -67,10 +67,6 @@
     <string name="created_playlist_x">Playlist %1$s creata.</string>
     <string name="playlist_exists">La playlist %1$s esiste già.</string>
     <string name="could_not_create_playlist">Impossibile creare la playlist.</string>
-    <plurals name="msg_song_removal_summary">
-        <item quantity="one"><![CDATA[Rimuovere <b>%1$d</b> brano dalla playlist?]]></item>
-        <item quantity="other"><![CDATA[Rimuovere <b>%1$d</b> brani dalla playlist?]]></item>
-    </plurals>
     <string name="rename_playlist_title">Rinomina playlist</string>
     <string name="clear_playlist_title">Svuota playlist</string>
     <string name="save_playlist_title">Salva come file</string>
