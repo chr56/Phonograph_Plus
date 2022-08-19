@@ -193,7 +193,7 @@ class PlaylistSongAdapter(
                     itemId = R.id.action_delete_from_device
                     titleRes(R.string.action_delete_from_device)
                     onClick {
-                        DeleteSongsDialog.create(listOf(song))
+                        DeleteSongsDialog.create(arrayListOf(song))
                             .show(activity.supportFragmentManager, "DELETE_SONGS")
                         true
                     }

@@ -31,7 +31,11 @@ import player.phonograph.dialogs.SleepTimerDialog
 import player.phonograph.glide.SongGlideRequest
 import player.phonograph.glide.palette.BitmapPaletteTarget
 import player.phonograph.glide.palette.BitmapPaletteWrapper
-import player.phonograph.model.*
+import player.phonograph.model.Album
+import player.phonograph.model.getReadableDurationString
+import player.phonograph.model.getYearString
+import player.phonograph.model.songCountString
+import player.phonograph.model.totalDuration
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.MusicPlayerRemote.enqueue
 import player.phonograph.service.MusicPlayerRemote.playNext
@@ -49,7 +53,6 @@ import util.mddesign.core.Themer
 import util.mddesign.util.MaterialColorHelper
 import util.phonograph.tageditor.AbsTagEditorActivity
 import util.phonograph.tageditor.AlbumTagEditorActivity
-import java.util.*
 
 /**
  * Be careful when changing things in this Activity!
@@ -237,7 +240,7 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity() {
                 return true
             }
             R.id.action_delete_from_device -> {
-                DeleteSongsDialog.create(adapter.dataset).show(supportFragmentManager, "DELETE_SONGS")
+                DeleteSongsDialog.create(ArrayList(adapter.dataset)).show(supportFragmentManager, "DELETE_SONGS")
                 return true
             }
             android.R.id.home -> {

@@ -392,6 +392,10 @@
         <item quantity="one">This item would be deleted:</item>
         <item quantity="other">These items would be deleted:</item>
     </plurals>
+    <plurals name="item_songs">
+        <item quantity="one">Song</item>
+        <item quantity="other">Songs</item>
+    </plurals>
     <plurals name="item_playlists">
         <item quantity="one">Playlist</item>
         <item quantity="other">Playlists</item>

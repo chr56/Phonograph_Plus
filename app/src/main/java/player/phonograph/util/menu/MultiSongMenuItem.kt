@@ -32,7 +32,7 @@ fun onMultiSongMenuItemClick(activity: FragmentActivity, songs: List<Song>, menu
             return true
         }
         R.id.action_delete_from_device -> {
-            DeleteSongsDialog.create(songs)
+            DeleteSongsDialog.create(ArrayList(songs))
                 .show(activity.supportFragmentManager, "DELETE_SONGS")
             return true
         }

@@ -59,7 +59,7 @@ fun onSongMenuItemClick(activity: FragmentActivity, song: Song, menuItemId: Int)
             BlacklistUtil.addToBlacklist(activity, song)
         }
         R.id.action_delete_from_device -> {
-            DeleteSongsDialog.create(listOf(song))
+            DeleteSongsDialog.create(arrayListOf(song))
                 .show(activity.supportFragmentManager, "DELETE_SONGS")
             return true
         }
