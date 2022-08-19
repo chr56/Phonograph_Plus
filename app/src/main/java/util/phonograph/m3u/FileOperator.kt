@@ -32,8 +32,8 @@ import player.phonograph.model.Song
 import player.phonograph.model.playlist.FilePlaylist
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.notification.ErrorNotification
-import player.phonograph.util.PlaylistsUtil
 import player.phonograph.util.CoroutineUtil.coroutineToast
+import player.phonograph.util.PlaylistsUtil
 import player.phonograph.util.Util.sentPlaylistChangedLocalBoardCast
 import util.phonograph.m3u.internal.M3UGenerator
 import util.phonograph.m3u.internal.appendTimestampSuffix
@@ -46,7 +46,6 @@ object FileOperator {
         safLauncher: SafLauncher,
         activity: ComponentActivity
     ) {
-
         // prepare callback
         val uriCallback: UriCallback = { uri ->
             // callback start
@@ -63,11 +62,15 @@ object FileOperator {
                                 coroutineToast(activity, R.string.success)
                             } catch (e: IOException) {
                                 coroutineToast(
-                                    activity, activity.getString(R.string.failed) + ":${uri.path} can not be written", true
+                                    activity,
+                                    activity.getString(R.string.failed) + ":${uri.path} can not be written",
+                                    true
                                 )
                                 ErrorNotification.postErrorNotification(
                                     e,
-                                    "${uri.path} can not be written.\nSongs:${songs?.map { it.data }?.reduce { acc, s -> "$acc,$s" }}\nActivity:$activity"
+                                    "${uri.path} can not be written.\nSongs:${
+                                    songs?.map { it.data }?.reduce { acc, s -> "$acc,$s" }
+                                    }\nActivity:$activity"
                                 )
                             } finally {
                                 outputStream.close()
@@ -75,11 +78,14 @@ object FileOperator {
                         }
                     } catch (e: FileNotFoundException) {
                         coroutineToast(
-                            activity, activity.getString(R.string.failed) + ":${uri.path} is not available"
+                            activity,
+                            activity.getString(R.string.failed) + ":${uri.path} is not available"
                         )
                         ErrorNotification.postErrorNotification(
                             e,
-                            "${uri.path} is not available.\nSongs:${songs?.map { it.data }?.reduce { acc, s -> "$acc,$s" }}\nActivity:$activity"
+                            "${uri.path} is not available.\nSongs:${
+                            songs?.map { it.data }?.reduce { acc, s -> "$acc,$s" }
+                            }\nActivity:$activity"
                         )
                     }
                 }
@@ -121,22 +127,44 @@ object FileOperator {
         if (songs.isEmpty()) return
 
         val playlistPath = PlaylistsUtil.getPlaylistPath(context, filePlaylist)
-        val playlistDocumentFile = DocumentFile.fromFile(File(playlistPath)).parentFile ?: DocumentFile.fromFile(Environment.getExternalStorageDirectory())
+        val playlistDocumentFile =
+            DocumentFile.fromFile(File(playlistPath)).parentFile ?: DocumentFile.fromFile(
+                Environment.getExternalStorageDirectory()
+            )
 
-        val cfg = OpenDocumentContract.Cfg(playlistDocumentFile.uri, arrayOf("audio/x-mpegurl", MediaStore.Audio.Playlists.CONTENT_TYPE, MediaStore.Audio.Playlists.ENTRY_CONTENT_TYPE), false)
+        val cfg = OpenDocumentContract.Cfg(
+            playlistDocumentFile.uri,
+            arrayOf(
+                "audio/x-mpegurl",
+                MediaStore.Audio.Playlists.CONTENT_TYPE,
+                MediaStore.Audio.Playlists.ENTRY_CONTENT_TYPE
+            ),
+            false
+        )
         safLauncher.openFile(cfg) { uri: Uri? ->
             if (uri != null) {
                 CoroutineScope(SupervisorJob()).launch(Dispatchers.IO) {
                     try {
-
                         if (!assertUri(context, filePlaylist, uri)) {
-                            val returningPath = DocumentFile.fromSingleUri(context, uri)?.getAbsolutePath(context)
+                            val returningPath = DocumentFile.fromSingleUri(context, uri)?.getAbsolutePath(
+                                context
+                            )
                             val errorMsg =
-                                "${ context.getString(R.string.failed_to_save_playlist, filePlaylist.name) }: ${context.getString(R.string.file_incorrect)}" +
+                                "${
+                                context.getString(
+                                    R.string.failed_to_save_playlist,
+                                    filePlaylist.name
+                                )
+                                }: ${context.getString(R.string.file_incorrect)}" +
                                     "Playlist($playlistPath) -> File($returningPath) "
                             Log.e("AppendToPlaylist", errorMsg)
                             coroutineToast(context, errorMsg, true)
-                            ErrorNotification.postErrorNotification(IllegalStateException("Write for Playlist($playlistPath) but we got File($returningPath) "), "SAF uri: $uri, Playlist:$playlistPath")
+                            ErrorNotification.postErrorNotification(
+                                IllegalStateException(
+                                    "Write for Playlist($playlistPath) but we got File($returningPath) "
+                                ),
+                                "SAF uri: $uri, Playlist:$playlistPath"
+                            )
                             return@launch
                         }
 
@@ -146,9 +174,15 @@ object FileOperator {
                             coroutineToast(context, context.getString(R.string.success))
                         }
                     } catch (e: FileNotFoundException) {
-                        coroutineToast(context, context.getString(R.string.failed_to_save_playlist, filePlaylist.name) + ": ${uri.path} is not available")
+                        coroutineToast(
+                            context,
+                            context.getString(R.string.failed_to_save_playlist, filePlaylist.name) + ": ${uri.path} is not available"
+                        )
                     } catch (e: IOException) {
-                        coroutineToast(context, context.getString(R.string.failed_to_save_playlist, filePlaylist.name) + ": Unknown!")
+                        coroutineToast(
+                            context,
+                            context.getString(R.string.failed_to_save_playlist, filePlaylist.name) + ": Unknown!"
+                        )
                     }
                 }
             }
@@ -162,12 +196,11 @@ object FileOperator {
     }
 
     fun deletePlaylistsViaSAF(activity: Activity, filePlaylists: List<FilePlaylist>, treeUri: Uri) {
-
         CoroutineScope(SupervisorJob()).launch(Dispatchers.IO) {
             val folder =
-                if (DocumentsContractCompat.isTreeUri(treeUri))
+                if (DocumentsContractCompat.isTreeUri(treeUri)) {
                     DocumentFile.fromTreeUri(activity, treeUri)
-                else null
+                } else null
 
             if (folder != null) {
                 val coroutineScope = CoroutineScope(Dispatchers.IO)
@@ -192,7 +225,10 @@ object FileOperator {
                     // valid playlists
                     prepareList.forEach { file ->
                         val filePath = file.getAbsolutePath(activity)
-                        if (filePath.endsWith("m3u", ignoreCase = true) or filePath.endsWith("m3u8", ignoreCase = true)) {
+                        if (filePath.endsWith("m3u", ignoreCase = true) or filePath.endsWith(
+                                "m3u8",
+                                ignoreCase = true
+                            )) {
                             for (p in playlistPaths) {
                                 if (p == filePath) deleteList.add(file)
                             }
@@ -200,18 +236,26 @@ object FileOperator {
                     }
 
                     // confirm to delete
-                    val m = StringBuffer().append(Html.fromHtml(activity.resources.getQuantityString(R.plurals.msg_files_deletion_summary, deleteList.size, deleteList.size), Html.FROM_HTML_MODE_LEGACY))
+                    val msg = StringBuffer().append(
+                        Html.fromHtml(
+                            activity.resources.getQuantityString(
+                                R.plurals.msg_files_deletion_summary,
+                                deleteList.size,
+                                deleteList.size
+                            ),
+                            Html.FROM_HTML_MODE_LEGACY
+                        )
+                    )
                     deleteList.forEach { file ->
-                        m.append(file.getAbsolutePath(activity)).appendLine()
+                        msg.append(file.getAbsolutePath(activity)).appendLine()
                         Log.i("FileDelete", "DeleteList:")
                         Log.i("FileDelete", "${file.name}@${file.uri}")
                     }
 
                     withContext(Dispatchers.Main) {
-
                         MaterialDialog(activity)
                             .title(R.string.delete_action)
-                            .message(text = m)
+                            .message(text = msg)
                             .positiveButton(R.string.delete_action) {
                                 prepareList.forEach { it.delete() }
                                 sentPlaylistChangedLocalBoardCast()
@@ -229,13 +273,15 @@ object FileOperator {
             } else {
                 // folder unavailable
                 coroutineToast(activity, R.string.failed_to_delete)
-                ErrorNotification.postErrorNotification(IllegalStateException("$treeUri is invalid"), "Select correct folder!")
+                ErrorNotification.postErrorNotification(
+                    IllegalStateException("$treeUri is invalid"),
+                    "Select correct folder!"
+                )
             }
         }
     }
 
     fun createPlaylistsViaSAF(playlists: List<Playlist>, context: Context, safLauncher: SafLauncher) {
-
         CoroutineScope(SupervisorJob()).launch(Dispatchers.IO) {
             while (safLauncher.openCallbackInUse) yield()
             try {
@@ -248,22 +294,34 @@ object FileOperator {
                             try {
                                 val dir = DocumentFile.fromTreeUri(context, treeUri)
                                 if (dir != null && dir.isDirectory) {
-
                                     playlists.forEach { playlist ->
-                                        val file = dir.createFile("audio/x-mpegurl", appendTimestampSuffix(playlist.name))
+                                        val file = dir.createFile(
+                                            "audio/x-mpegurl",
+                                            appendTimestampSuffix(playlist.name)
+                                        )
                                         if (file != null) {
-                                            val outputStream = context.contentResolver.openOutputStream(file.uri)
+                                            val outputStream = context.contentResolver.openOutputStream(
+                                                file.uri
+                                            )
                                             if (outputStream != null) {
                                                 val songs: List<Song> = playlist.getSongs(context)
                                                 M3UGenerator.generate(outputStream, songs, true)
                                             } else {
                                                 coroutineToast(
-                                                    context, context.getString(R.string.failed_to_save_playlist, playlist.name)
+                                                    context,
+                                                    context.getString(
+                                                        R.string.failed_to_save_playlist,
+                                                        playlist.name
+                                                    )
                                                 )
                                             }
                                         } else {
                                             coroutineToast(
-                                                context, context.getString(R.string.failed_to_save_playlist, playlist.name)
+                                                context,
+                                                context.getString(
+                                                    R.string.failed_to_save_playlist,
+                                                    playlist.name
+                                                )
                                             )
                                         }
                                     }
@@ -271,18 +329,28 @@ object FileOperator {
                                 }
                             } catch (e: FileNotFoundException) {
                                 coroutineToast(
-                                    context, context.getString(R.string.failed) + ":${treeUri.path} is not available"
+                                    context,
+                                    context.getString(R.string.failed) + ":${treeUri.path} is not available"
                                 )
-                                ErrorNotification.postErrorNotification(e, "${treeUri.path} is not available")
+                                ErrorNotification.postErrorNotification(
+                                    e,
+                                    "${treeUri.path} is not available"
+                                )
                             }
                         }
                     }
                 }
 
-                val parent = DocumentFile.fromFile(File(PlaylistsUtil.getPlaylistPath(context, playlists[0] as FilePlaylist))).parentFile
+                val parent = DocumentFile.fromFile(
+                    File(PlaylistsUtil.getPlaylistPath(context, playlists[0] as FilePlaylist))
+                ).parentFile
                     ?: DocumentFile.fromFile(Environment.getExternalStorageDirectory())
 
-                coroutineToast(context, context.getString(R.string.direction_open_folder_with_saf), true)
+                coroutineToast(
+                    context,
+                    context.getString(R.string.direction_open_folder_with_saf),
+                    true
+                )
                 safLauncher.openDir(parent.uri, uriCallback)
             } catch (e: Exception) {
                 coroutineToast(context, context.getString(R.string.failed) + ": unknown")
