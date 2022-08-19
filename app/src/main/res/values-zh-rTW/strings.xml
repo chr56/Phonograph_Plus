@@ -277,7 +277,7 @@
     <string name="sort_order_z_a">降序排列</string>
     <string name="sort_order_artist">演出者</string>
     <string name="sort_order_album">專輯</string>
-    <string name="sort_order_year">年份</string>
+    <string name="sort_order_year">年代</string>
     <string name="sort_order_date_added">加入時間</string>
     <string name="finish_current_music_sleep_timer">歌曲全數播放完畢</string>
     <string name="dialog_ringtone_title">設定鈴聲</string>
@@ -289,7 +289,6 @@
     <string name="err_permission_storage">儲存空間權限</string>
     <string name="add_blacklist">你是否想加至黑名單？</string>
     <string name="minutes_short">%1$d 分鐘</string>
-    <!-- use for tag -->
     <string name="other_information">其它</string>
     <string name="more_actions">更多</string>
     <string name="crash">程式出錯了</string>
@@ -361,6 +360,10 @@
     <string name="external_lyrics">外部歌詞</string>
     <string name="lyrics_following">歌詞滾動</string>
     <string name="error_notification_name">錯誤報告</string>
+    <string name="background_notification_name">後臺消息</string>
+    <string name="sort_order_song_count">歌曲數量</string>
+    <string name="sort_order_album_count">專輯數量</string>
+    <string name="name">名稱</string>
     <string name="preferences">首選項</string>
     <string name="pref_title_playlist_files_operation_behaviour">操作播放列表文件時行爲</string>
     <string name="pref_summary_playlist_files_operation_behaviour">新建或修改播放列表的操作行爲</string>
@@ -374,10 +377,8 @@
     <string name="pref_summary_keep_playing_queue_intact">啟用後，Phonograph Plus 將儘可能保持播放列表而不會被意外清空</string>
     <string name="change_now_playing_screen">修改正在播放介面</string>
     <string name="load_images_for_files">載入封面</string>
-    <string name="background_notification_name">後臺消息</string>
-    <string name="sort_order_song_count">歌曲數量</string>
-    <string name="sort_order_album_count">專輯數量</string>
-    <string name="name">名稱</string>
+    <string name="app_language">應用程式語言</string>
+    <string name="_default">默認</string>
     <plurals name="x_songs">
         <item quantity="other">%1$d 歌曲</item>
     </plurals>
@@ -390,6 +391,4 @@
     <plurals name="x_genres">
         <item quantity="other">%1$d 流派</item>
     </plurals>
-    <string name="app_language">應用程式語言</string>
-    <string name="_default">默認</string>
 </resources>
