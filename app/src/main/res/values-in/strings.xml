@@ -5,7 +5,7 @@
     <string name="the_audio_file">Berkas audio</string>
     <string name="action_set_as_ringtone">Setel sebagai nada dering</string>
     <string name="action_share">Bagikan</string>
-    <string name="action_settings">"Pengaturan"</string>
+    <string name="action_settings">Pengaturan</string>
     <string name="action_grant">Izinkan</string>
     <string name="action_about">Tentang</string>
     <string name="action_add_to_favorites">Tambahkan ke favorit</string>
@@ -33,15 +33,13 @@
     <string name="biography_unavailable">Tidak dapat menemukan entri biografi untuk artis ini.</string>
     <string name="wiki_unavailable">Tidak dapat menemukan entri wiki untuk album ini.</string>
     <string name="biography">Biografi</string>
-    <string name="wiki">Wiki</string>
     <string name="audio_focus_denied">Fokus audio ditolak.</string>
-    <string name="album">Album</string>
     <string name="artist">Artis</string>
     <string name="genre">Aliran</string>
     <string name="album_artist">Artis album</string>
     <string name="year">Tahun</string>
     <string name="track">Nomor Lagu</string>
-    <string name="track_hint">"Trek (2 untuk trek ke-2 atau 3004 untuk CD3 trek ke-4)"</string>
+    <string name="track_hint">Trek (2 untuk trek ke-2 atau 3004 untuk CD3 trek ke-4)</string>
     <string name="lyrics">Lirik</string>
     <string name="album_or_artist_empty">Judul atau artis kosong.</string>
     <string name="saving_changes">Menyimpan perubahan</string>
@@ -58,7 +56,6 @@
     <string name="label_playing_queue">Antrean putar</string>
     <string name="no_results">Tidak ditemukan</string>
     <string name="updating">Memperbaharui</string>
-    <string name="added_title_to_playing_queue">"1 lagu ditambahkan ke antrean putar"</string>
     <string name="added_x_titles_to_playing_queue">Telah menambah %1$d lagu ke antrean putar</string>
     <string name="action_remove_from_playlist">Hapus dari daftar putar</string>
     <string name="action_grid_size">Ukuran kisi</string>
@@ -69,15 +66,6 @@
     <string name="deleted_x_playlists">Daftar Putar %1$d dihapus.</string>
     <string name="playlist_exists">Daftar putar %1$s sudah ada.</string>
     <string name="could_not_create_playlist">Tidak dapat membuat daftar putar.</string>
-    <plurals name="msg_song_deletion_summary">
-        <item quantity="other"><![CDATA[Hapus <b>%1$d</b> lagu dari perangkat?<br/>]]></item>
-    </plurals>
-    <plurals name="msg_song_removal_summary">
-        <item quantity="other"><![CDATA[Hapus <b>%1$d</b> lagu dari daftar putar?]]></item>
-    </plurals>
-    <plurals name="msg_playlist_deletion_summary">
-        <item quantity="other"><![CDATA[Hapus <b>%1$d</b> daftar putar dari perangkat?<br/>]]></item>
-    </plurals>
     <string name="delete_song_title">Hapus lagu</string>
     <string name="delete_songs_title">Hapus lagu-lagu</string>
     <string name="remove_song_from_playlist_title">Hapus lagu dari daftar putar</string>
@@ -88,7 +76,7 @@
     <string name="clear_playlist_title">Kosongkan daftar putar</string>
     <string name="save_playlist_title">Simpan sebagai berkas</string>
     <string name="save_playlists_title">Simpan sebagai berkas</string>
-    <string name="add_playlist_title">"Tambahkan ke daftar putar"</string>
+    <string name="add_playlist_title">Tambahkan ke daftar putar</string>
     <string name="select_all_title">Pilih semua</string>
     <string name="action_shuffle_all">Acak semua</string>
     <string name="action_shuffle_album">Putar album secara acak</string>
@@ -136,7 +124,6 @@
     <string name="pref_title_remember_last_tab">Ingat tab terakhir</string>
     <string name="pref_title_remember_shuffle">Ingat putar acak</string>
     <string name="no_equalizer">Tidak ada ekualiser yang ditemukan.</string>
-    <string name="no_audio_ID">"Silahkan mainkan sebuah lagu dan coba lagi. "</string>
     <string name="delete_action">Hapus</string>
     <string name="clear_action">Kosongkan</string>
     <string name="remove_action">Hapus</string>
@@ -157,8 +144,6 @@
     <string name="pref_summary_album_art_on_lockscreen">Gunakan sambul album lagu yang sedang diputar sebagai wallpaper layar kunci</string>
     <string name="pref_summary_blurred_album_art">Buramkan sampul album di layar kunci. Dapat menyebabkan masalah dengan aplikasi pihak ke tiga dan widget</string>
     <string name="pref_summary_classic_notification">Gunakan desain notifikasi klasik.</string>
-    <string name="pref_summary_colored_notification">"Mewarnai notifikasi putar dengan warna yang cerah dari album."</string>
-    <string name="pref_summary_gapless_playback">"Dapat menyebabkan masalah pemutaran pada beberapa perangkat."</string>
     <string name="pref_summary_ignore_media_store_artwork">Dapat meningkatkan kualitas sampul album, namun menyebabkan waktu pemuatan lebih lambat. Aktifkan jika Anda bermasalah dengan resolusi gambar album yang rendah. </string>
     <string name="pref_summary_colored_navigation_bar">Mewarnai bilah navigasi dengan warna primer. </string>
     <string name="pref_summary_colored_app_shortcuts">Mewarnai pintasan-pintasan dengan warna utama.</string>
@@ -166,14 +151,12 @@
     <string name="pref_summary_synchronized_lyrics_show">Saat ini hanya mendukung lirik dalam format LRC yang disinkronkan. Antara tertanam atau sebagai file terpisah.</string>
     <string name="pref_summary_remember_last_tab">Pergi ke tab yang terakhir saat aplikasi dibuka</string>
     <string name="pref_summary_remember_shuffle">Mode putar acak akan tetap aktif saat memilih daftar lagu baru</string>
-    <string name="could_not_download_album_cover">"Tidak dapat mengunduh sampul album yang cocok."</string>
     <string name="search_hint">Mencari pustaka Anda…</string>
     <string name="favorites">Favorit</string>
     <string name="last_added">Terakhir ditambahkan</string>
     <string name="history">Diputar baru-baru ini</string>
     <string name="my_top_tracks">Sering Diputar</string>
     <string name="remove_cover">Hapus sampul</string>
-    <string name="download_from_last_fm">Unduh dari Last.fm</string>
     <string name="pick_from_local_storage">Ambil dari penyimpanan lokal</string>
     <string name="web_search">Pencarian web</string>
     <string name="action_sleep_timer">Pewaktu tidur</string>
@@ -209,7 +192,7 @@
     <string name="up_next">Berikutnya</string>
     <string name="pref_title_now_playing_screen_appearance">Tampilan</string>
     <string name="intro_label">Pengenalan</string>
-    <string name="welcome_to_phonograph">"Selamat datang di Phonograph, sebuah pemutar musik yang indah dan ringan untuk Android. "</string>
+    <string name="welcome_to_phonograph">Selamat datang di Phonograph, sebuah pemutar musik yang indah dan ringan untuk Android. </string>
     <string name="open_playing_queue_instruction">Geser ke atas pada kartu di layar yang sedang memutar untuk memperlihatkan dengan lengkap antrean yang sedang diputar.</string>
     <string name="rearrange_playing_queue_instruction">Atur ulang antrean yang sedang diputar dengan menyeret lagu dari nomor urut.</string>
     <string name="library">Pustaka</string>
@@ -260,7 +243,7 @@
     <string name="add_action">Tambah</string>
     <string name="blacklist">Daftar hitam</string>
     <string name="remove_from_blacklist">Hapus dari daftar hitam</string>
-    <string name="do_you_want_to_remove_from_the_blacklist"><![CDATA[Apakah Anda ingin menghapus <b>%1$s</b>  dari daftar hitam?]]></string>
+    <string name="do_you_want_to_remove_from_the_blacklist">Apakah Anda ingin menghapus <b>%1$s</b>  dari daftar hitam?</string>
     <string name="clear_blacklist">Bersihkan daftar hitam</string>
     <string name="do_you_want_to_clear_the_blacklist">Apakah Anda ingin menghapus daftar hitam?</string>
     <string name="pref_summary_blacklist">Konten yang sudah di daftar hitamkan tersembunyi dari pustaka Anda.</string>
@@ -275,7 +258,6 @@
     <string name="sort_order_a_z">Naik</string>
     <string name="sort_order_z_a">Turun</string>
     <string name="sort_order_artist">Artis</string>
-    <string name="sort_order_album">Album</string>
     <string name="sort_order_year">Tahun</string>
     <string name="sort_order_date_added">Tanggal Ditambahkan</string>
     <string name="finish_current_music_sleep_timer">Selesaikan lagu terakhir</string>
@@ -288,7 +270,6 @@
     <string name="err_permission_storage">Izin Penyimpanan</string>
     <string name="add_blacklist">Apakah Anda ingin menambahkan ke daftar hitam?</string>
     <string name="minutes_short">%1$d menit</string>
-    <!-- use for tag -->
     <string name="other_information">Lainnya</string>
     <string name="more_actions">Lainnya</string>
     <string name="crash">Aplikasi Crashed!!</string>
@@ -314,7 +295,6 @@
     <string name="tg_channel">Saluran Telegram</string>
     <string name="auto_check_upgrade">Periksa pembaruan otomatis</string>
     <string name="auto_check_upgrade_summary">Munculkan dialog pembaruan secepatnya jika versi terbaru tersedia.</string>
-    <string name="edit">Edit…</string>
     <string name="move_to_top">Pindahkan ke atas</string>
     <string name="move_to_bottom">Pindahkan ke bawah</string>
     <string name="move_up">Pindah ke atas</string>
@@ -335,7 +315,7 @@
     <string name="direction_open_folder_with_saf">Sekarang, silahkan pilih folder file yang berisi file yang anda ingin operasikan </string>
     <string name="direction_open_file_with_saf">Sekarang, silahkan pilih file yang anda ingin operasikan </string>
     <string name="file_incorrect">File tidak benar!</string>
-    <string name="pref_header_appearance">Penampilan</string>
+    <string name="pref_header_appearance">Tampilan</string>
     <string name="deleting_old_files">Menghapus file legacy…</string>
     <string name="pref_title_reset_home_pages_tab_config">Atur ulang semua tab</string>
     <string name="pref_summary_reset_home_pages_tab_config">Semua kategori pustaka akan di atur ulang ke bawaan.</string>
@@ -350,9 +330,6 @@
     <string name="databases">Basis data</string>
     <plurals name="msg_deletion_result">
         <item quantity="other">%1$d / %2$d item berhasil dihapus.</item>
-    </plurals>
-    <plurals name="msg_files_deletion_summary">
-        <item quantity="other"><![CDATA[Menghapus <b>%1$d</b> file dari perangkat?<br/><b>Aksi ini tidak dapat di batalkan!</b><br/>]]></item>
     </plurals>
     <string name="embedded_lyrics">lirik tertanam</string>
     <string name="external_lyrics">lirik luar</string>
