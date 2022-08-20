@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="what_do_you_want_to_share">Que voulez-vous partager ?</string>
     <string name="currently_listening_to_x_by_x">Vous écoutez %1$s de %2$s</string>
     <string name="the_audio_file">Le fichier audio</string>
     <string name="action_set_as_ringtone">Définir comme sonnerie</string>
     <string name="action_share">Partager</string>
-    <string name="action_settings">"Paramètres"</string>
+    <string name="action_settings">Paramètres</string>
     <string name="action_grant">Accorder</string>
     <string name="action_about">À propos</string>
     <string name="action_add_to_favorites">Ajouter aux favoris</string>
@@ -29,9 +29,9 @@
     <string name="genres">Genres</string>
     <string name="songs">Titres</string>
     <string name="playlists">Listes de lecture</string>
-    <string name="unplayable_file">Impossible de lire ce titre.</string>
-    <string name="biography_unavailable">Impossible de trouver la biographie de l\'artiste.</string>
-    <string name="wiki_unavailable">Impossible de trouver une entr\u00e9e wiki pour cet album.</string>
+    <string name="unplayable_file">Impossible de lire ce morceau.</string>
+    <string name="biography_unavailable">Impossible de trouver la biographie de cet artiste.</string>
+    <string name="wiki_unavailable">Impossible de trouver une description pour cet album.</string>
     <string name="biography">Biographie</string>
     <string name="wiki">Wiki</string>
     <string name="audio_focus_denied">Accès à l\'Audio Focus refusé.</string>
@@ -41,7 +41,7 @@
     <string name="album_artist">Artiste de l\'album</string>
     <string name="year">Année</string>
     <string name="track">Numéro de piste</string>
-    <string name="track_hint">"Piste (2 pour piste 2 ou 3004 pour CD3 piste 4)"</string>
+    <string name="track_hint">Piste (2 pour piste 2 ou 3004 pour CD3 piste 4)</string>
     <string name="lyrics">Paroles</string>
     <string name="album_or_artist_empty">Le champ \"titre\" ou \"artiste\" est vide.</string>
     <string name="saving_changes">Sauvegarde des modifications</string>
@@ -58,7 +58,7 @@
     <string name="label_playing_queue">File de lecture</string>
     <string name="no_results">Aucun résultat</string>
     <string name="updating">Actualisation…</string>
-    <string name="added_title_to_playing_queue">"1 titre ajouté à la file de lecture."</string>
+    <string name="added_title_to_playing_queue">1 titre ajouté à la file de lecture.</string>
     <string name="added_x_titles_to_playing_queue">%1$d titres ajoutés à la file de lecture.</string>
     <string name="action_remove_from_playlist">Retirer de la liste de lecture</string>
     <string name="action_grid_size">Taille de la grille</string>
@@ -66,11 +66,11 @@
     <string name="inserted_x_songs_into_playlist_x">%1$d titres ajoutés à la playlist %2$s.</string>
     <string name="created_playlist_x">Playlist %1$s créée.</string>
     <string name="playlist_exists">La playlist %1$s existe déjà.</string>
-    <string name="could_not_create_playlist">Impossible de cr\u00e9er la playlist.</string>
+    <string name="could_not_create_playlist">Impossible de créer la liste de lecture.</string>
     <string name="rename_playlist_title">Renommer la playlist</string>
     <string name="save_playlist_title">Enregistrer en tant que fichier</string>
     <string name="save_playlists_title">Enregistrer en tant que fichiers</string>
-    <string name="add_playlist_title">"Ajouter à la playlist"</string>
+    <string name="add_playlist_title">Ajouter à la playlist</string>
     <string name="select_all_title">Tout sélectionner</string>
     <string name="action_shuffle_all">Tout lire en aléatoire</string>
     <string name="action_shuffle_album">Lecture aléatoire des albums</string>
@@ -119,7 +119,7 @@
     <string name="pref_title_remember_last_tab">Se souvenir de la dernière fenêtre</string>
     <string name="pref_title_remember_shuffle">Se souvenir de la lecture aléatoire</string>
     <string name="no_equalizer">Aucun égaliseur trouvé.</string>
-    <string name="no_audio_ID">"Jouez d\'abord un titre, puis réessayez."</string>
+    <string name="no_audio_ID">Lancez d\'abord un morceau, puis réessayez.</string>
     <string name="delete_action">Supprimer</string>
     <string name="clear_action">Effacer</string>
     <string name="remove_action">Retirer</string>
@@ -140,8 +140,8 @@
     <string name="pref_summary_album_art_on_lockscreen">La pochette d\'album du titre actuel est utilisée comme fond d\'écran de verrouillage.</string>
     <string name="pref_summary_blurred_album_art">Floute la pochette d\'album sur l\'écran de verrouillage. Peut causer des problèmes avec des applications et des widgets tiers.</string>
     <string name="pref_summary_classic_notification">Utiliser le style de notification classique. </string>
-    <string name="pref_summary_colored_notification">"La notification est color\u00e9e en fonction de la pochette de l'album."</string>
-    <string name="pref_summary_gapless_playback">"Peut causer des problèmes de lecture sur certains appareils."</string>
+    <string name="pref_summary_colored_notification">Colore la notification en fonction de la pochette de l\'album.</string>
+    <string name="pref_summary_gapless_playback">Peut causer des problèmes de lecture sur certains appareils.</string>
     <string name="pref_summary_ignore_media_store_artwork">Peut augmenter la qualité des pochettes d\'albums mais aussi ralentir le temps de chargement des images. Activez cette option uniquement si vous avez des problèmes de basse résolution des pochettes.</string>
     <string name="pref_summary_colored_navigation_bar">Colore la barre de navigation en fonction de la couleur principale.</string>
     <string name="pref_summary_colored_app_shortcuts">Colore les raccourcis de l\'application selon la couleur principale. </string>
@@ -149,7 +149,7 @@
     <string name="pref_summary_synchronized_lyrics_show">Pour le moment, seules les paroles synchronisées en format LRC sont supportées, qu\'elles soient intégrées ou dans un fichier séparé. </string>
     <string name="pref_summary_remember_last_tab">Au démarrage, aller au dernier onglet ouvert.</string>
     <string name="pref_summary_remember_shuffle">Le mode aléatoire restera activé lors de la sélection d\'une nouvelle liste de lecture</string>
-    <string name="could_not_download_album_cover">"Impossible de t\u00e9l\u00e9charger la pochette correspondant \u00e0 l'album."</string>
+    <string name="could_not_download_album_cover">Impossible de télécharger la pochette correspondant à l\'album</string>
     <string name="search_hint">Recherche dans votre bibliothèque…</string>
     <string name="favorites">Favoris</string>
     <string name="last_added">Derniers ajouts</string>
@@ -192,7 +192,7 @@
     <string name="up_next">Suivant</string>
     <string name="pref_title_now_playing_screen_appearance">Apparence</string>
     <string name="intro_label">Présentation</string>
-    <string name="welcome_to_phonograph">"Bienvenue sur Phonograph, un lecteur de musique beau et léger pour Android. "</string>
+    <string name="welcome_to_phonograph">Bienvenue sur Phonograph, un lecteur de musique beau et léger pour Android. </string>
     <string name="open_playing_queue_instruction">Vous pouvez glisser la carte dans l\'écran de lecture en cours pour afficher la file de lecture complète.</string>
     <string name="rearrange_playing_queue_instruction">Vous pouvez réorganiser la file de lecture en faisant glisser une chanson à partir de son numéro de piste.</string>
     <string name="library">Bibliothèque</string>
@@ -234,7 +234,7 @@
     <string name="you_will_be_forwarded_to_the_issue_tracker_website">Vous serez redirigé vers le site internet du traqueur de problèmes.</string>
     <string name="app_shortcut_shuffle_all_short">Lecture aléatoire</string>
     <string name="app_shortcut_top_tracks_short">Meilleurs titres</string>
-    <string name="app_shortcut_last_added_short">Ajouté dernièrement</string>
+    <string name="app_shortcut_last_added_short">Derniers ajouts</string>
     <string name="playlist_is_empty">La playlist est vide</string>
     <string name="playing_notification_description">La notification de lecture fournit des actions pour la lecture/pause etc.</string>
     <string name="playing_notification_name">Notification de lecture</string>
@@ -243,7 +243,7 @@
     <string name="add_action">Ajouter</string>
     <string name="blacklist">Liste noire</string>
     <string name="remove_from_blacklist">Retirer de la liste noire</string>
-    <string name="do_you_want_to_remove_from_the_blacklist"><![CDATA[Voulez-vous retirer <b>%1$s</b> de la liste noire ?]]></string>
+    <string name="do_you_want_to_remove_from_the_blacklist">Voulez-vous retirer <b>%1$s</b> de la liste noire ?</string>
     <string name="clear_blacklist">Vider la liste noire</string>
     <string name="do_you_want_to_clear_the_blacklist">Voulez-vous vider la liste noire ?</string>
     <string name="pref_summary_blacklist">Le contenu des dossiers sur la liste noire n\'apparaît pas dans votre bibliothèque </string>
@@ -265,5 +265,151 @@
     <string name="dialog_ringtone_title">Définir la sonnerie</string>
     <string name="dialog_ringtone_message">Autoriser Phonograph à modifier les paramètres audio</string>
     <string name="perf_title_fixed_tab_layout">Corriger tous les onglets</string>
-    <!-- use for tag -->
+    <string name="pref_summary_fixed_tab_layout">Les onglets en haut ne seront plus défilables, mais seront pavés sans aucune marge.</string>
+    <string name="auto_mode_on">Le mode automatique est activé, veuillez le désactiver et réessayer!</string>
+    <string name="Permission_denied">Permission refusée !</string>
+    <string name="err_permission_storage">Autorisation d\'accès au stockage</string>
+    <string name="add_blacklist">Souhaitez-vous ajouter ceci à la liste noire ?</string>
+    <string name="minutes_short">%1$d min</string>
+    <string name="other_information">Autre</string>
+    <string name="more_actions">Plus</string>
+    <string name="crash">L\'application a planté !!</string>
+    <string name="copy_to_clipboard">copier vers le presse-papiers</string>
+    <string name="success">Réussite !</string>
+    <string name="failed">échec!</string>
+    <string name="clear_all_preference">effacer tous les paramètres de l\'application</string>
+    <string name="clear_all_preference_msg"><b>Avertissement</b>: cela réinitialisera <b>TOUTES les</b> préférences / paramètres de l\'application ! \n\nCela peut être très utile si l\'application plante au démarrage. \nÊtes-vous sûr ?</string>
+    <string name="failed_to_delete">Échec de la suppression</string>
+    <string name="grant_permission">Accorder la permission</string>
+    <string name="retry">Réessayer</string>
+    <string name="permission_manage_external_storage_denied">il semble que Phonograph n\'a pas la permission \"gérer le stockage externe\"!</string>
+    <string name="not_available_now">actuellement indisponible</string>
+    <string name="check_upgrade">Vérifier la mise à jour</string>
+    <string name="no_newer_version">Aucune mise à jour!</string>
+    <string name="new_version">Nouvelle Version !</string>
+    <string name="new_version_code">version</string>
+    <string name="new_version_log">Journal de modifications</string>
+    <string name="new_version_tips">Cette boîte de dialogue peut être désactivée dans les paramètres. (Vous pouvez également consulter la mise à jour manuellement.)</string>
+    <string name="download">Télécharger</string>
+    <string name="ignore_once">Ignorer celui-ci</string>
+    <string name="upgrade_ignored">La mise à jour a été ignorée.</string>
+    <string name="tg_channel">Canal Telegram</string>
+    <string name="auto_check_upgrade">Vérifier la mise à jour automatiquement</string>
+    <string name="auto_check_upgrade_summary">Déclenche une boîte de dialogue de mise à jour instantanément si une version plus récente est disponible.</string>
+    <string name="edit">Modifier…</string>
+    <string name="move_to_top">Placer en haut</string>
+    <string name="move_to_bottom">Placer en bas</string>
+    <string name="move_up">Monter</string>
+    <string name="move_down">Descendre</string>
+    <string name="refresh">Rafraîchir</string>
+    <string name="pref_title_send_lyrics">Afficher les paroles synchronisées</string>
+    <string name="pref_summary_send_lyrics">Diffuser les paroles synchronisées vers le module Xposed \"StatusBar Lyrics\"</string>
+    <string name="pref_title_broadcast_current_player_state">Diffuser le statut du lecteur au public</string>
+    <string name="pref_summary_broadcast_current_player_state">Diffuser le statut du lecteur à d\'autres applications comme Musixmatch.</string>
+    <string name="pref_title_display_lyrics_time_axis">Afficher l\'axe du temps des paroles</string>
+    <string name="pref_summary_display_lyrics_time_axis">Afficher le temps de démarrage des paroles synchronisées dans la boîte de dialogue des paroles.</string>
+    <string name="upgrade_notification_name">Mise à jour</string>
+    <string name="upgrade_notification_description">Les notifications de l\'application peuvent être mises à jour.</string>
+    <string name="action_add_to_black_list">Ajouter à la liste noire</string>
+    <string name="sort_order_song">Titre</string>
+    <string name="sort_order_duration">Durée</string>
+    <string name="sort_order_date_modified">Date Modifiée</string>
+    <string name="loading">Chargement</string>
+    <string name="delete_with_saf">Supprimer avec SAF</string>
+    <string name="direction_open_folder_with_saf">Maintenant, veuillez sélectionner le dossier  contenant les fichiers avec lesquels vous souhaitez interagir</string>
+    <string name="direction_open_file_with_saf">Maintenant, veuillez sélectionner le fichier avec lequel vous souhaitez interagir</string>
+    <string name="file_incorrect">Le fichier est incorrect !</string>
+    <string name="pref_header_appearance">Apparence</string>
+    <string name="deleting_old_files">Suppression des anciens fichiers…</string>
+    <string name="pref_title_reset_home_pages_tab_config">Réinitialiser tous les onglets</string>
+    <string name="pref_summary_reset_home_pages_tab_config">Toutes les catégories de la bibliothèque seraient réinitialisées à la valeur par défaut.</string>
+    <string name="are_you_sure">Êtes-vous sûr ?</string>
+    <string name="original_author">Auteur original</string>
+    <string name="plus_author">L\'auteur de Phonograph Plus</string>
+    <string name="pref_header_compatibility">Compatibilité</string>
+    <string name="pref_title_use_legacy_favorite_playlist_impl">Utiliser l\'ancien système de liste de lecture favorite</string>
+    <string name="pref_summary_use_legacy_favorite_playlist_impl">Si activé, l\'application sauvegardera les morceaux favoris dans une playlist m3u dans Storage au lieu d\'enregistrer les morceaux favoris dans la base de données interne de l\'application. (Vous pouvez exporter la liste manuellement.)</string>
+    <string name="export_">Exporter :</string>
+    <string name="import_">Importer :</string>
+    <string name="databases">Bases de données </string>
+    <string name="embedded_lyrics">paroles intégrées</string>
+    <string name="external_lyrics">paroles externes</string>
+    <string name="lyrics_following">Paroles suivantes</string>
+    <string name="error_notification_name">Rapports d\'erreur</string>
+    <string name="background_notification_name">Tâche en arrière-plan</string>
+    <string name="sort_order_song_count">Nombre de morceaux</string>
+    <string name="sort_order_album_count">Nombre d\'albums</string>
+    <string name="name">Nom</string>
+    <string name="preferences">Préférences</string>
+    <string name="pref_title_playlist_files_operation_behaviour">Comportement opérationnel pour les fichiers de playlist</string>
+    <string name="pref_summary_playlist_files_operation_behaviour">Comportements sur la façon de gérer les fichiers de playlist lors de la création, de la modification etc. pour les playlists des fichiers.</string>
+    <string name="behaviour_auto">Automatique</string>
+    <string name="behaviour_force_saf">Forcer l\'utilisation de la structure d\'accès au stockage</string>
+    <string name="behaviour_force_legacy">Forcer l\'utilisation des anciennes méthodes</string>
+    <string name="reached_to_root">Vous avez atteint le dossier racine de ce volume de stockage</string>
+    <string name="sort_order_size">Taille du fichier</string>
+    <string name="use_legacy_list_Files">Utiliser l\'ancienne méthode pour lire les fichiers</string>
+    <string name="pref_title_keep_playing_queue_intact">Garder la file d\'attente intacte.</string>
+    <string name="pref_summary_keep_playing_queue_intact">Si cette option est activée, Phonograph Plus n’essaiera pas de supprimer la file d’attente à moins que vous ne le demandez, ainsi vous ne perdriez pas votre file d’attente par accident.</string>
+    <string name="change_now_playing_screen">Changer l\'écran de la lecture</string>
+    <string name="load_images_for_files">Charger les images pour les fichiers</string>
+    <string name="app_language">Langue de l\'application</string>
+    <string name="_default">Par défaut</string>
+    <plurals name="x_songs">
+        <item quantity="one">%1$d morceau</item>
+        <item quantity="many">%1$d morceaux</item>
+        <item quantity="other">%1$d morceaux</item>
+    </plurals>
+    <plurals name="x_albums">
+        <item quantity="one">%1$d album</item>
+        <item quantity="many">%1$d albums</item>
+        <item quantity="other">%1$d albums</item>
+    </plurals>
+    <plurals name="x_artists">
+        <item quantity="one">%1$d artiste</item>
+        <item quantity="many">%1$d artistes</item>
+        <item quantity="other">%1$d artistes</item>
+    </plurals>
+    <plurals name="x_genres">
+        <item quantity="one">%1$d genre</item>
+        <item quantity="many">%1$d genres</item>
+        <item quantity="other">%1$d genres</item>
+    </plurals>
+    <plurals name="msg_header_delete_items">
+        <item quantity="one" tools:ignore="ImpliedQuantity">Cet élément sera supprimé :</item>
+        <item quantity="many">Ces éléments seront supprimés :</item>
+        <item quantity="other">Ces éléments seront supprimés :</item>
+    </plurals>
+    <plurals name="msg_header_remove_items">
+        <!-- %1$s: where -->
+        <item quantity="one">Cet élément serait retiré de %1$s :</item>
+        <item quantity="many">Ces éléments seraient retirés de %1$s :</item>
+        <item quantity="other">Ces éléments seraient retirés de %1$s :</item>
+    </plurals>
+    <plurals name="msg_deletion_result">
+        <item quantity="one" tools:ignore="MissingQuantity">%1$d / %2$d élément a été supprimé avec succès.</item>
+        <item quantity="many">%1$d / %2$d éléments ont été supprimés avec succès.</item>
+        <item quantity="other">%1$d / %2$d éléments ont été supprimés avec succès.</item>
+    </plurals>
+    <plurals name="item_songs">
+        <item quantity="one" tools:ignore="ImpliedQuantity">Morceau</item>
+        <item quantity="many">Morceaux</item>
+        <item quantity="other">Morceaux</item>
+    </plurals>
+    <plurals name="item_playlists">
+        <item quantity="one" tools:ignore="ImpliedQuantity">Liste de lecture</item>
+        <item quantity="many">Listes de lecture</item>
+        <item quantity="other">Listes de lecture</item>
+    </plurals>
+    <plurals name="item_files">
+        <item quantity="one" tools:ignore="ImpliedQuantity">fichier</item>
+        <item quantity="many">fichiers</item>
+        <item quantity="other">fichiers</item>
+    </plurals>
+    <plurals name="item_playlists_generated">
+        <item quantity="one" tools:ignore="ImpliedQuantity">Liste de lecture générée</item>
+        <item quantity="many">Listes de lecture générées</item>
+        <item quantity="other">Listes de lecture générées</item>
+    </plurals>
+    <string name="warning_can_not_retract">Cette action ne peut pas être annulée !</string>
 </resources>
