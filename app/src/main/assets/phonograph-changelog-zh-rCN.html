@@ -24,16 +24,33 @@
             padding-left: 0;
             padding-right: 0;
         }
+
+        ul {
+            list-style-position: inside;
+            padding-left: 0;
+            padding-right: 0;
+        }
         
         li {
             padding-top: 2px;
         }
+
+        .highlight-text{
+            color: HIGHLIGHT-COLOR;
+        }
+
+        .fine-print{
+            color:DISABLE-COLOR;
+            font-size: small;
+        }
+
+
     </style>
 </head>
 
 <body>
-    <h3 style="color: HIGHLIGHT-COLOR">修改说明</h3>
-    <p style="color:DISABLE-COLOR;font-size: small"><i>简体中文</i></p>
+    <h3 class="highlight-text">修改说明</h3>
+    <p class="fine-print"><i>简体中文</i></p>
     <br>
     <a href="https://github.com/chr56/Phonograph_Plus">开源地址(GitHub)</a>
 
@@ -404,7 +421,7 @@
         </div>
 
         <h4><b>0.0.1</b> (2021.10.21)</h4>
-        <p style="color: DISABLE-COLOR">初始版本</p>
+        <p class="fine-print">初始版本</p>
         <div>
             <ol>
                 <li>★更换包名为 player.phonograph.plus★</li>
@@ -419,8 +436,8 @@
                 <li>开发 又重构了部分代码...</li>
             </ol>
         </div>
-        <p style="color: DISABLE-COLOR">以下为之前紧急更新的更新日志</p>
-        <div style="color: DISABLE-COLOR">
+        <p>以下为之前紧急更新的更新日志</p>
+        <div>
             <ul style="padding: 16px">
                 <li>修复 歌曲列表使用网格试图(无论几列)闪退</li>
                 <li>修复 "详情"对话框卡死(若歌曲内嵌大图)</li>
@@ -434,13 +451,11 @@
 
     <div>以下是旧更新日志</div>
 
-    <div style="
+    <div class="fine-print" style="
         margin-top: 2px;
         margin-bottom: 160px;
         margin-left: 2px;
         padding-top: 1px;
-        color: DISABLE-COLOR;
-        font-size: small;
       ">
         <h4>2021.10.3 <i>184</i></h4>
         <div>
@@ -457,7 +472,7 @@
                 <li>修复 因幽灵播放列表导致崩溃(但是幽灵文件的Bug还在)</li>
                 <li>
                     其他 重构部分代码
-                    <del style="color: grey">(可能动了一些"不该动"的地方，然后引起某些崩溃或行为异常)
+                    <del class="fine-print">(可能动了一些"不该动"的地方，然后引起某些崩溃或行为异常)
                     </del>
                 </li>
             </ol>
@@ -491,7 +506,7 @@
                 <li>(右上角)菜单主题失效</li>
                 <li>"设为铃声"失效</li>
             </ol>
-            <p style="color: DISABLE-COLOR; margin-top: 0dp">可能仍有其他轻微Bug</p>
+            <p class="fine-print" style="margin-top: 0dp">可能仍有其他轻微Bug</p>
         </div>
         <br />
 
