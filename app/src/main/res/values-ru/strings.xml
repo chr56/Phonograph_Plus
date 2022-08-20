@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="what_do_you_want_to_share">Чем вы хотите поделиться?</string>
     <string name="currently_listening_to_x_by_x">Сейчас воспроизводится « %1$s » исполнителя %2$s</string>
     <string name="the_audio_file">Аудиофайл</string>
     <string name="action_set_as_ringtone">Установить как мелодию звонка</string>
     <string name="action_share">Поделиться</string>
-    <string name="action_settings">"Настройки"</string>
+    <string name="action_settings">Настройки</string>
     <string name="action_grant">Разрешить</string>
     <string name="action_about">О программе</string>
     <string name="action_add_to_favorites">Добавить в избранное</string>
@@ -18,7 +18,7 @@
     <string name="action_next">Следующий</string>
     <string name="action_add_to_playing_queue">Добавить в очередь воспроизведения</string>
     <string name="action_remove_from_playing_queue">Удалить из очереди воспроизведения</string>
-    <string name="action_add_to_playlist">Добавить в плейлист...</string>
+    <string name="action_add_to_playlist">Добавить в плейлист…</string>
     <string name="action_tag_editor">Редактор тэгов</string>
     <string name="action_delete_from_device">Удалить с устройства</string>
     <string name="action_details">Подробнее</string>
@@ -29,9 +29,9 @@
     <string name="genres">Жанры</string>
     <string name="songs">Треки</string>
     <string name="playlists">Плейлисты</string>
-    <string name="unplayable_file">\u041d\u0435 \u0443\u0434\u0430\u043b\u043e\u0441\u044c \u0432\u043e\u0441\u043f\u0440\u043e\u0438\u0437\u0432\u0435\u0441\u0442\u0438 \u044d\u0442\u0443 \u043f\u0435\u0441\u043d\u044e.</string>
-    <string name="biography_unavailable">\u041d\u0435\u0432\u043e\u0437\u043c\u043e\u0436\u043d\u043e \u043d\u0430\u0439\u0442\u0438 \u0431\u0438\u043e\u0433\u0440\u0430\u0444\u0438\u044e \u0438\u0441\u043f\u043e\u043b\u043d\u0438\u0442\u0435\u043b\u044f.</string>
-    <string name="wiki_unavailable">\u041d\u0435 \u0443\u0434\u0430\u043b\u043e\u0441\u044c \u043d\u0430\u0439\u0442\u0438 \u0438\u043d\u0444\u043e\u0440\u043c\u0430\u0446\u0438\u044e \u0432 \u0412\u0438\u043a\u0438\u043f\u0435\u0434\u0438\u0438 \u0434\u043b\u044f \u044d\u0442\u043e\u0433\u043e \u0430\u043b\u044c\u0431\u043e\u043c\u0430.</string>
+    <string name="unplayable_file">Не удалось воспроизвести эту песню.</string>
+    <string name="biography_unavailable">Невозможно найти биографию исполнителя.</string>
+    <string name="wiki_unavailable">Не удалось найти информацию в Википедии для этого альбома.</string>
     <string name="biography">Биография</string>
     <string name="wiki">Википедия</string>
     <string name="audio_focus_denied">В получении аудиофокуса отказано.</string>
@@ -41,7 +41,7 @@
     <string name="album_artist">Альбом исполнителя</string>
     <string name="year">Год</string>
     <string name="track">Номер дорожки</string>
-    <string name="track_hint">"Трек (2 для трека 2 или 3004 для трека 4 CD3)"</string>
+    <string name="track_hint">Трек (2 для трека 2 или 3004 для трека 4 CD3)</string>
     <string name="lyrics">Текст песни</string>
     <string name="album_or_artist_empty">Поля названия альбома или альбом исполнителя пусты.</string>
     <string name="saving_changes">Сохранение изменений</string>
@@ -57,8 +57,8 @@
     <string name="action_go_to_album">Перейти к альбому</string>
     <string name="label_playing_queue">Очередь воспроизведения</string>
     <string name="no_results">Нет результатов</string>
-    <string name="updating">Обновление...</string>
-    <string name="added_title_to_playing_queue">"Композиция добавлена в очередь воспроизведения."</string>
+    <string name="updating">Обновление…</string>
+    <string name="added_title_to_playing_queue">Композиция добавлена в очередь воспроизведения.</string>
     <string name="added_x_titles_to_playing_queue">%1$d композиций добавлено в очередь воспроизведения</string>
     <string name="action_remove_from_playlist">Удалить из плейлиста</string>
     <string name="action_grid_size">Размер сетки</string>
@@ -66,11 +66,11 @@
     <string name="inserted_x_songs_into_playlist_x">%1$d композиций добавлено в плейлист %2$s.</string>
     <string name="created_playlist_x">Плейлист %1$s создан.</string>
     <string name="playlist_exists">Плейлист %1$s уже существует.</string>
-    <string name="could_not_create_playlist">\u041d\u0435 \u0443\u0434\u0430\u043b\u043e\u0441\u044c \u0441\u043e\u0437\u0434\u0430\u0442\u044c \u043f\u043b\u0435\u0439\u043b\u0438\u0441\u0442.</string>
+    <string name="could_not_create_playlist">Не удалось создать плейлист</string>
     <string name="rename_playlist_title">Переименовать плейлист</string>
     <string name="save_playlist_title">Сохранить как файл</string>
     <string name="save_playlists_title">Сохранить как файлы</string>
-    <string name="add_playlist_title">"Добавить в плейлист"</string>
+    <string name="add_playlist_title">Добавить в плейлист</string>
     <string name="select_all_title">Выбрать все</string>
     <string name="action_shuffle_all">Перемешать всё</string>
     <string name="action_shuffle_album">Перемешать альбом</string>
@@ -119,7 +119,7 @@
     <string name="pref_title_remember_last_tab">Запомнить последнюю вкладку</string>
     <string name="pref_title_remember_shuffle">Запомнить перемешивание</string>
     <string name="no_equalizer">Эквалайзер не найден.</string>
-    <string name="no_audio_ID">"Сначала воспроизведите песню, а затем попробуйте снова."</string>
+    <string name="no_audio_ID">Сначала воспроизведите песню, затем попробуйте снова.</string>
     <string name="delete_action">Удалить</string>
     <string name="clear_action">Очистить</string>
     <string name="remove_action">Убрать</string>
@@ -140,8 +140,8 @@
     <string name="pref_summary_album_art_on_lockscreen">Обложка альбома текущей песни используется как изображение экрана блокировки.</string>
     <string name="pref_summary_blurred_album_art">Делает размытую обложку фоном экрана блокировки. Может создавать проблемы с другими приложениями и виджетами.</string>
     <string name="pref_summary_classic_notification">Использовать классический дизайн уведомления.</string>
-    <string name="pref_summary_colored_notification">"\u041e\u043a\u0440\u0430\u0448\u0438\u0432\u0430\u0435\u0442 \u0443\u0432\u0435\u0434\u043e\u043c\u043b\u0435\u043d\u0438\u0435 \u0432 \u0442\u043e\u043d \u043e\u0431\u043b\u043e\u0436\u043a\u0438 \u0430\u043b\u044c\u0431\u043e\u043c\u0430."</string>
-    <string name="pref_summary_gapless_playback">"Может вызвать проблемы с воспроизведением на некоторых устройствах."</string>
+    <string name="pref_summary_colored_notification">Раскрашивать уведомление с обложкой альбома в яркий цвет.</string>
+    <string name="pref_summary_gapless_playback">Может вызвать проблемы с воспроизведением на некоторых устройствах.</string>
     <string name="pref_summary_ignore_media_store_artwork">Может увеличить качество обложки, но также увеличивает время её отрисовки. Влючайте только, если вы имеете проблемы с низким разрешением обложек альбомов.</string>
     <string name="pref_summary_colored_navigation_bar">Окрашивает панель навигации в основной цвет.</string>
     <string name="pref_summary_colored_app_shortcuts">Окрашивает шорткаты в основной цвет.</string>
@@ -149,8 +149,8 @@
     <string name="pref_summary_synchronized_lyrics_show">В настоящее время поддерживаются только синхронизированные тексты в формате LRC. Либо встроенные, либо как отдельный файл.</string>
     <string name="pref_summary_remember_last_tab">Перейти на последнюю открытую вкладку при запуске</string>
     <string name="pref_summary_remember_shuffle">Режим перемешивания останется включенным при выборе нового списка песен</string>
-    <string name="could_not_download_album_cover">"\u041d\u0435 \u0443\u0434\u0430\u043b\u043e\u0441\u044c \u0437\u0430\u0433\u0440\u0443\u0437\u0438\u0442\u044c \u043f\u043e\u0434\u0445\u043e\u0434\u044f\u0449\u0443\u044e \u043e\u0431\u043b\u043e\u0436\u043a\u0443 \u0430\u043b\u044c\u0431\u043e\u043c\u0430."</string>
-    <string name="search_hint">Поиск в библиотеке...</string>
+    <string name="could_not_download_album_cover">Не удалось загрузить соответствующую обложку альбома.</string>
+    <string name="search_hint">Поиск в библиотеке…</string>
     <string name="favorites">Избранное</string>
     <string name="last_added">Последние добавленные</string>
     <string name="history">Недавно воспроизведённые</string>
@@ -192,10 +192,10 @@
     <string name="up_next">Далее</string>
     <string name="pref_title_now_playing_screen_appearance">Вид экрана воспроизведения</string>
     <string name="intro_label">Вступление</string>
-    <string name="welcome_to_phonograph">"Добро пожаловать в Phonograph, красивый и лёгкий плеер для Android"</string>
+    <string name="welcome_to_phonograph">Добро пожаловать в Phonograph, красивый и лёгкий плеер для Android</string>
     <string name="open_playing_queue_instruction">Проведите по карточке на экране воспроизведения, чтобы просмотреть очередь</string>
     <string name="rearrange_playing_queue_instruction">Редактируйте очередь воспроизведения, перетаскивая песни за их номер</string>
-    <string name="library">Библиотека </string>
+    <string name="library">Библиотека</string>
     <string name="folders">Папки</string>
     <string name="theme_switch">Переключатель темы</string>
     <string name="failed_to_save_playlist">Не удалось сохранить плейлист (%s).</string>
@@ -243,7 +243,7 @@
     <string name="add_action">Добавить</string>
     <string name="blacklist">Чёрный список</string>
     <string name="remove_from_blacklist">Убрать из чёрного списка</string>
-    <string name="do_you_want_to_remove_from_the_blacklist"><![CDATA[Убрать <b>%1$s</b> из чёрного списка?]]></string>
+    <string name="do_you_want_to_remove_from_the_blacklist">Убрать <b>%1$s</b> из чёрного списка?</string>
     <string name="clear_blacklist">Очистить чёрный список</string>
     <string name="do_you_want_to_clear_the_blacklist">Вы хотите очистить чёрный список?</string>
     <string name="pref_summary_blacklist">Занесённые в чёрный список папки скрыты из вашей библиотеки.</string>
@@ -319,7 +319,7 @@
     <string name="direction_open_folder_with_saf">Теперь, пожалуйста, выберите папку с файлами, с которой вы хотели бы работать</string>
     <string name="direction_open_file_with_saf">Теперь выберите файл, с которым вы хотите работать</string>
     <string name="file_incorrect">Файл неверный!</string>
-    <string name="pref_header_appearance">Вид</string>
+    <string name="pref_header_appearance">Вид экрана воспроизведения</string>
     <string name="deleting_old_files">Удаление старых файлов…</string>
     <string name="pref_title_reset_home_pages_tab_config">Сбросить все вкладки</string>
     <string name="pref_summary_reset_home_pages_tab_config">Все категории библиотек будут сброшены по умолчанию.</string>
@@ -332,12 +332,6 @@
     <string name="export_">Экспорт:</string>
     <string name="import_">Импорт:</string>
     <string name="databases">Базы данных</string>
-    <plurals name="msg_deletion_result">
-        <item quantity="one">%1$d / %2$d элемент был успешно удален.</item>
-        <item quantity="few">%1$d / %2$d элементы были успешно удалены.</item>
-        <item quantity="many">%1$d / %2$d элементы были успешно удалены.</item>
-        <item quantity="other">%1$d / %2$d элемент был успешно удален.</item>
-    </plurals>
     <string name="embedded_lyrics">встроенный текст</string>
     <string name="external_lyrics">внешний текст</string>
     <string name="lyrics_following">Подписка на тексты песен</string>
@@ -385,4 +379,48 @@
         <item quantity="many">%1$d жанров</item>
         <item quantity="other">%1$d жанры</item>
     </plurals>
+    <plurals name="msg_header_delete_items">
+        <item quantity="one" tools:ignore="ImpliedQuantity">Этот элемент будет удален:</item>
+        <item quantity="few">Эти элементы будут удалены:</item>
+        <item quantity="many">Эти элементы будут удалены:</item>
+        <item quantity="other">Эти элементы будут удалены:</item>
+    </plurals>
+    <plurals name="msg_header_remove_items">
+        <!-- %1$s: where -->
+        <item quantity="one">Этот элемент будет удален из %1$s:</item>
+        <item quantity="few">Эти элементы будут удалены из %1$s:</item>
+        <item quantity="many">Эти элементы будут удалены из %1$s:</item>
+        <item quantity="other">Эти элементы будут удалены из %1$s:</item>
+    </plurals>
+    <plurals name="msg_deletion_result">
+        <item quantity="one">%1$d / %2$d элемент был успешно удален.</item>
+        <item quantity="few">%1$d / %2$d элементы были успешно удалены.</item>
+        <item quantity="many">%1$d / %2$d элементы были успешно удалены.</item>
+        <item quantity="other">%1$d / %2$d элемент был успешно удален.</item>
+    </plurals>
+    <plurals name="item_songs">
+        <item quantity="one" tools:ignore="ImpliedQuantity">Песня</item>
+        <item quantity="few">Песен</item>
+        <item quantity="many">Песен</item>
+        <item quantity="other">Песни</item>
+    </plurals>
+    <plurals name="item_playlists">
+        <item quantity="one" tools:ignore="ImpliedQuantity">Плейлист</item>
+        <item quantity="few">Плейлистов</item>
+        <item quantity="many">Плейлистов</item>
+        <item quantity="other">Плейлисты</item>
+    </plurals>
+    <plurals name="item_files">
+        <item quantity="one" tools:ignore="ImpliedQuantity">файл</item>
+        <item quantity="few">файлов</item>
+        <item quantity="many">файлов</item>
+        <item quantity="other">файлы</item>
+    </plurals>
+    <plurals name="item_playlists_generated">
+        <item quantity="one" tools:ignore="ImpliedQuantity">Сгенерированный плейлист</item>
+        <item quantity="few">Сгенерированных плейлистов</item>
+        <item quantity="many">Сгенерированных плейлистов</item>
+        <item quantity="other">Сгенерированные плейлисты</item>
+    </plurals>
+    <string name="warning_can_not_retract">Это действие нельзя будет отменить!</string>
 </resources>
