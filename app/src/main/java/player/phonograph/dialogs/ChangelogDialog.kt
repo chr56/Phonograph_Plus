@@ -14,6 +14,7 @@ import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.WhichButton
 import com.afollestad.materialdialogs.actions.getActionButton
 import com.afollestad.materialdialogs.customview.customView
+import java.io.IOException
 import java.io.InputStream
 import java.util.*
 import lib.phonograph.localization.Localization
@@ -55,20 +56,11 @@ class ChangelogDialog : DialogFragment() {
         val webView = customView.findViewById<WebView>(R.id.web_view)
 
         // Fetch correct changelog
-        val locale = Localization.currentLocale(requireContext())
-
-        val changelogFileName =
-            when (locale.language) {
-                Locale.SIMPLIFIED_CHINESE.language -> {
-                    "changelog-zh-CN.html"
-                }
-                else -> {
-                    "changelog.html"
-                }
-            }
 
         try {
-            val inputStream: InputStream = requireActivity().assets.open(changelogFileName)
+            val locale = Localization.currentLocale(requireContext())
+
+            val inputStream = openLocalizedChangelogName(requireContext(), locale)
 
             // Process changelog.html in the assets folder
             val content = inputStream.use { stream ->
@@ -119,7 +111,23 @@ class ChangelogDialog : DialogFragment() {
         )
     }
 
+    fun openLocalizedChangelogName(context: Context, locale: Locale): InputStream {
+        val fullSuffix = "${locale.language}-${locale.country}".uppercase()
+        val mainSuffix = locale.language.uppercase()
+        val assetManager = context.assets
+        return try {
+            assetManager.open("$changelog-$fullSuffix.html")
+        } catch (e: IOException) {
+            try {
+                assetManager.open("$changelog-$mainSuffix.html")
+            } catch (e: IOException) {
+                assetManager.open("$changelog.html")
+            }
+        }
+    }
+
     companion object {
+        private const val changelog = "changelog"
 
         fun create(): ChangelogDialog = ChangelogDialog()
 
