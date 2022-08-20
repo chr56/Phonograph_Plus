@@ -14,6 +14,8 @@ import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.WhichButton
 import com.afollestad.materialdialogs.actions.getActionButton
 import com.afollestad.materialdialogs.customview.customView
+import java.io.InputStream
+import java.util.*
 import lib.phonograph.localization.Localization
 import player.phonograph.App
 import player.phonograph.R
@@ -21,10 +23,6 @@ import player.phonograph.notification.ErrorNotification
 import player.phonograph.settings.Setting
 import util.mdcolor.pref.ThemeColor
 import util.mddesign.util.Util.resolveColor
-import java.io.BufferedReader
-import java.io.InputStream
-import java.io.InputStreamReader
-import java.util.*
 
 /**
  * @author Aidan Follestad (afollestad)
@@ -32,8 +30,6 @@ import java.util.*
 class ChangelogDialog : DialogFragment() {
     @SuppressLint("InflateParams")
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-
-
         val customView: View =
             try {
                 requireActivity().layoutInflater.inflate(R.layout.dialog_web_view, null)
@@ -41,7 +37,9 @@ class ChangelogDialog : DialogFragment() {
                 ErrorNotification.postErrorNotification(e)
                 return MaterialDialog(requireActivity())
                     .title(android.R.string.dialog_alert_title)
-                    .message(text = "This device doesn't support web view, which is necessary to view the change log. It is missing a system component.")
+                    .message(
+                        text = "This device doesn't support web view, which is necessary to view the change log. It is missing a system component."
+                    )
                     .positiveButton(android.R.string.ok)
             }
 
@@ -50,24 +48,26 @@ class ChangelogDialog : DialogFragment() {
             .customView(view = customView, noVerticalPadding = false)
             .positiveButton(android.R.string.ok) { setChangelogRead(requireActivity()) }
             .apply {
-                getActionButton(WhichButton.POSITIVE).updateTextColor(ThemeColor.accentColor(requireActivity()))
+                getActionButton(WhichButton.POSITIVE).updateTextColor(
+                    ThemeColor.accentColor(requireActivity())
+                )
             }
         val webView = customView.findViewById<WebView>(R.id.web_view)
 
-        try {
-            // Fetch correct changelog
-            val locale = Localization.currentLocale(requireContext())
+        // Fetch correct changelog
+        val locale = Localization.currentLocale(requireContext())
 
-            val changelogFileName =
-                when (locale.language) {
-                    Locale.SIMPLIFIED_CHINESE.language -> {
-                        "phonograph-changelog-zh-rCN.html"
-                    }
-                    else -> {
-                        "phonograph-changelog.html"
-                    }
+        val changelogFileName =
+            when (locale.language) {
+                Locale.SIMPLIFIED_CHINESE.language -> {
+                    "changelog-zh-CN.html"
                 }
+                else -> {
+                    "changelog.html"
+                }
+            }
 
+        try {
             val inputStream: InputStream = requireActivity().assets.open(changelogFileName)
 
             // Process changelog.html in the assets folder
@@ -77,33 +77,49 @@ class ChangelogDialog : DialogFragment() {
                 }
             }
 
-            // Inject color values for WebView body background and links
-            val backgroundColor =
-                colorToCSS(
-                    resolveColor(activity,
-                        R.attr.md_background_color,
-                        Color.parseColor(if (App.instance.nightMode) "#424242" else "#ffffff"))
-                )
-            val contentColor =
-                colorToCSS(
-                    Color.parseColor(if (App.instance.nightMode) "#ffffff" else "#000000")
-                )
-            val changeLog = content
-                .replace("CONTENT-BACKGROUND-COLOR", backgroundColor)
-                .replace("TEXT-COLOR", contentColor)
-                .replace("DISABLE-COLOR", "rgb(167, 167, 167)") // grey
-                .replace("HIGHLIGHT-COLOR", colorToCSS(ThemeColor.accentColor(App.instance)))
+            val changeLog = generateChangelogHTML(
+                content,
+                ThemeColor.accentColor(requireContext())
+            )
+            // if (DEBUG) Log.v("CHANGELOG", changeLog)
 
             webView.loadData(changeLog, "text/html", "UTF-8")
         } catch (e: Throwable) {
-            webView.loadData("""<h1>Unable to load</h1><p>${e.localizedMessage}</p>""", "text/html", "UTF-8")
+            webView.loadData(
+                """<h1>Unable to load</h1><p>${e.localizedMessage}</p>""",
+                "text/html",
+                "UTF-8"
+            )
         }
 
         return dialog
     }
 
-    companion object {
+    fun generateChangelogHTML(content: String, accentColor: Int): String {
+        val backgroundColor =
+            colorToCSS(
+                resolveColor(
+                    activity,
+                    R.attr.md_background_color,
+                    Color.parseColor(if (App.instance.nightMode) "#424242" else "#ffffff")
+                )
+            )
+        val textColor =
+            colorToCSS(
+                Color.parseColor(if (App.instance.nightMode) "#ffffff" else "#000000")
+            )
+        return getHTML(
+            CSS = getCSS(
+                content_background_color = backgroundColor,
+                text_color = textColor,
+                highlight_color = colorToCSS(accentColor),
+                disable_color = "rgb(167, 167, 167)"
+            ),
+            content = content
+        )
+    }
 
+    companion object {
 
         fun create(): ChangelogDialog = ChangelogDialog()
 
@@ -118,10 +134,68 @@ class ChangelogDialog : DialogFragment() {
         }
 
         private fun colorToCSS(color: Int): String =
-            String.format("rgb(%d, %d, %d)",
+            String.format(
+                "rgb(%d, %d, %d)",
                 Color.red(color),
                 Color.green(color),
                 Color.blue(color)
             ) // on API 29, WebView doesn't load with hex colors
+
+        fun getCSS(
+            content_background_color: String,
+            text_color: String,
+            highlight_color: String,
+            disable_color: String
+        ) = """
+        * {
+            word-wrap: break-word;
+        }
+        body {
+            background-color: $content_background_color;
+            color: $text_color;
+        }
+        a {
+            color: $highlight_color;
+        }
+        a:active {
+            color: $highlight_color;
+        }
+        ol {
+            list-style-position: inside;
+            padding-left: 0;
+            padding-right: 0;
+        }
+        ul {
+            list-style-position: inside;
+            padding-left: 0;
+            padding-right: 0;
+        }
+        li {
+            padding-top: 2px;
+        }
+        .highlight-text{
+            color: $highlight_color;
+        }
+        .fine-print{
+            color: $disable_color;
+            font-size: small;
+        }"""
+
+        fun getHTML(
+            CSS: String,
+            content: String
+        ): String =
+            """
+        <html>
+        <head>
+        <style type="text/css">
+        $CSS
+        </style>
+        </head>
+        <body>
+        $content
+        </body>
+        </html>
+        """
     }
 }
