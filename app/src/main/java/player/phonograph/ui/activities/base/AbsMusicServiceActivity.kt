@@ -7,6 +7,7 @@ package player.phonograph.ui.activities.base
 import android.Manifest
 import android.content.*
 import android.media.AudioManager
+import android.os.Build
 import android.os.Bundle
 import android.os.IBinder
 import android.util.Log
@@ -181,13 +182,20 @@ abstract class AbsMusicServiceActivity : ToolbarActivity(), MusicServiceEventLis
     }
 
     override fun getPermissionsToRequest(): Array<String>? {
-        return arrayOf(
-            Manifest.permission.READ_EXTERNAL_STORAGE,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE
-        )
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            arrayOf(
+                Manifest.permission.READ_MEDIA_AUDIO,
+                Manifest.permission.POST_NOTIFICATIONS
+            )
+        } else
+            arrayOf(
+                Manifest.permission.READ_EXTERNAL_STORAGE,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE
+            )
     }
 
-    override val permissionDeniedMessage: String get() = getString(
-        R.string.permission_external_storage_denied
-    )
+    override val permissionDeniedMessage: String
+        get() = getString(
+            R.string.permission_external_storage_denied
+        )
 }
