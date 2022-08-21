@@ -62,7 +62,6 @@
     <string name="created_playlist_x">Δημιουργήθηκε η λίστα αναπαραγωγής %1$s</string>
     <string name="playlist_exists">Η λίστα αναπαραγωγής %1$s υπάρχει ήδη.</string>
     <string name="rename_playlist_title">Μετονομασία λίστας αναπαραγωγής</string>
-    <string name="clear_playlist_title">Εκκαθάριση λίστας</string>
     <string name="save_playlist_title">Αποθήκευση ως αρχείο</string>
     <string name="save_playlists_title">Αποθήκευση ως αρχεία</string>
     <string name="add_playlist_title">Προσθήκη στη λίστα αναπαραγωγής</string>
