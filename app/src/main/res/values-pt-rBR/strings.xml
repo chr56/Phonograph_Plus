@@ -62,7 +62,6 @@
     <string name="created_playlist_x">Lista de reprodução criada %1$s.</string>
     <string name="playlist_exists">A lista de reprodução %1$s já existe.</string>
     <string name="rename_playlist_title">Renomear lista de reprodução</string>
-    <string name="clear_playlist_title">Limpar listas de reprodução</string>
     <string name="save_playlist_title">Salvar como arquivo</string>
     <string name="save_playlists_title">Salvar como arquivos</string>
     <string name="add_playlist_title">Adicionar à lista de reprodução</string>
