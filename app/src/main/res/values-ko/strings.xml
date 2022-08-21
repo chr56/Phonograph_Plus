@@ -62,7 +62,6 @@
     <string name="created_playlist_x">재생 목록 %1$s을(를) 생성했습니다.</string>
     <string name="playlist_exists">재생 목록 %1$s이(가) 이미 있습니다.</string>
     <string name="rename_playlist_title">재생 목록 이름 변경</string>
-    <string name="clear_playlist_title">재생 목록 비우기</string>
     <string name="save_playlist_title">파일로 저장</string>
     <string name="save_playlists_title">파일들로 저장</string>
     <string name="add_playlist_title">재생 목록에 추가</string>
