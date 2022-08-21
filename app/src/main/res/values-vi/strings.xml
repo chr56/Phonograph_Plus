@@ -60,7 +60,6 @@
     <string name="created_playlist_x">Đã tạo danh sách nhạc %1$s.</string>
     <string name="playlist_exists">Danh sách %1$s đã tồn tại.</string>
     <string name="rename_playlist_title">Đổi tên danh sách nhạc</string>
-    <string name="clear_playlist_title">Dọn danh sách nhạc</string>
     <string name="save_playlist_title">Lưu thành tập tin</string>
     <string name="save_playlists_title">Lưu thành mục</string>
     <string name="add_playlist_title">Thêm vào danh sách nhạc</string>
