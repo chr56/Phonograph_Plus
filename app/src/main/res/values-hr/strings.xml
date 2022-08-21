@@ -59,7 +59,6 @@
     <string name="created_playlist_x">Stvoren popis naslova %1$s.</string>
     <string name="playlist_exists">Popis naslova %1$s već postoji.</string>
     <string name="rename_playlist_title">Preimenuj popis naslova</string>
-    <string name="clear_playlist_title">Očisti popis naslova</string>
     <string name="save_playlist_title">Spremi kao datoteku</string>
     <string name="save_playlists_title">Spremi kao datoteke</string>
     <string name="add_playlist_title">Dodaj na popis naslova</string>
