@@ -60,7 +60,6 @@
     <string name="created_playlist_x">%1$s lejátszási lista létrehozva.</string>
     <string name="playlist_exists">A (z)  %1$s lejátszási lista már létezik.</string>
     <string name="rename_playlist_title">Lejátszási lista átnevezése</string>
-    <string name="clear_playlist_title">Lejátszási lista kiürítése</string>
     <string name="save_playlist_title">Mentés fájlként</string>
     <string name="save_playlists_title">Mentés fájlként</string>
     <string name="add_playlist_title">Hozzáadás a lejátszási listához</string>
