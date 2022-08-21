@@ -1,11 +1,9 @@
 buildscript {
-    @Suppress("JcenterRepositoryObsolete")
     repositories {
-        mavenCentral()
-        google()
         gradlePluginPortal()
-        jcenter()
+        google()
         maven(url = "https://jitpack.io")
+        mavenCentral()
     }
     dependencies {
         classpath("com.android.tools.build:gradle:7.2.1")
@@ -19,11 +17,9 @@ plugins {
 }
 
 allprojects {
-    @Suppress("JcenterRepositoryObsolete")
     repositories {
-        mavenCentral()
         google()
-        jcenter()
+        mavenCentral()
         maven(url = "https://jitpack.io")
     }
 }

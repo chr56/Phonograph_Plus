@@ -1,18 +1,18 @@
-rootProject.buildFileName = "build.gradle.kts"
-
+dependencyResolutionManagement {
+    repositories {
+        mavenCentral()
+        google()
+        maven(url = "https://jitpack.io")
+    }
+}
 pluginManagement {
     repositories {
         gradlePluginPortal()
-        google()
         mavenCentral()
+        google()
     }
 }
-dependencyResolutionManagement {
-    repositories {
-        google()
-        mavenCentral()
-    }
-}
+rootProject.buildFileName = "build.gradle.kts"
 
 include(":app")
 includeBuild(file("version-management"))
