@@ -168,18 +168,32 @@ class ChangelogDialog : DialogFragment() {
         a:active {
             color: $highlight_color;
         }
-        ol {
-            list-style-position: inside;
-            padding-left: 0;
-            padding-right: 0;
+        h3 {
+            margin-top: 1ex;
+            margin-bottom: 1ex;
         }
+        h4,
+        h5 {
+            padding: 0;
+            margin: 0;
+            margin-top: 2ex;
+            margin-bottom: 0.5ex;
+        }
+        ol,
         ul {
             list-style-position: inside;
-            padding-left: 0;
-            padding-right: 0;
+            border: 0;
+            padding: 0;
+            margin: 0;
+            margin-left: 0.5ex;
         }
         li {
-            padding-top: 2px;
+            padding: 1px;
+            margin: 0;
+            margin-left: 1ex;
+        }
+        p {
+            margin: 0.75ex;
         }
         .highlight-text{
             color: $highlight_color;
