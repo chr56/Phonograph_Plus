@@ -53,7 +53,6 @@
     <string name="created_playlist_x">Wiedergabeliste %1$s erstellt.</string>
     <string name="playlist_exists">Wiedergabeliste %1$s bereits vorhanden.</string>
     <string name="rename_playlist_title">Wiedergabeliste umbenennen</string>
-    <string name="clear_playlist_title">Wiedergabeliste leeren</string>
     <string name="save_playlist_title">Als Datei speichern</string>
     <string name="save_playlists_title">Als Dateien speichern</string>
     <string name="add_playlist_title">Zu Wiedergabeliste hinzufügen</string>
