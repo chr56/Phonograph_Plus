@@ -62,7 +62,6 @@
     <string name="created_playlist_x">נוצרה רשימת השמיעה %1$s</string>
     <string name="playlist_exists">רשימת ההשמעה %1$s כבר קיימת.</string>
     <string name="rename_playlist_title">שנה שם לרשימת ההשמעה</string>
-    <string name="clear_playlist_title">נקה רשימת השמעה</string>
     <string name="save_playlist_title">שמור כקובץ</string>
     <string name="save_playlists_title">שמור כקבצים</string>
     <string name="add_playlist_title">הוסף לרשימת ההשמעה</string>
