@@ -59,7 +59,6 @@
     <string name="inserted_x_songs_into_playlist_x">Бяха добавени %1$d песни в плейлист %2$s.</string>
     <string name="created_playlist_x">Плейлистът %1$s бе добавен.</string>
     <string name="rename_playlist_title">Преименувай този плейлист</string>
-    <string name="clear_playlist_title">Изчисти този плейлист</string>
     <string name="save_playlist_title">Запази като файл</string>
     <string name="add_playlist_title">Добави към плейлист</string>
     <string name="action_shuffle_all">Разбъркай всички</string>
