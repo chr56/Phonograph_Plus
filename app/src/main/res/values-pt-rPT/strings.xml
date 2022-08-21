@@ -55,7 +55,6 @@
     <string name="inserted_x_songs_into_playlist_x">Inseridas %1$d músicas na lista de reprodução %2$s.</string>
     <string name="created_playlist_x">Criada lista de reprodução %1$s.</string>
     <string name="rename_playlist_title">Mudar o nome da lista de reprodução</string>
-    <string name="clear_playlist_title">Limpar lista de reprodução</string>
     <string name="save_playlist_title">Guardar como ficheiro</string>
     <string name="add_playlist_title">Adicionar à lista de reprodução</string>
     <string name="action_shuffle_all">Embaralhar Todas</string>
