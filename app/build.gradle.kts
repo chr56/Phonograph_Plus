@@ -22,7 +22,7 @@ if (isSigningFileExist) {
 
 android {
     compileSdk = 32
-    buildToolsVersion = "32.0.0"
+    buildToolsVersion = "33.0.0"
     namespace = "player.phonograph"
 
     val appName = "Phonograph Plus"
