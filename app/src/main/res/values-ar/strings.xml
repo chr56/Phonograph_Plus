@@ -62,7 +62,6 @@
     <string name="created_playlist_x">تم إنشاء قائمة التشغيل %1$s.</string>
     <string name="playlist_exists">قائمة التشغيل %1$s موجودة بالفعل.</string>
     <string name="rename_playlist_title">إعادة تسمية قائمة التشغيل</string>
-    <string name="clear_playlist_title">مسح قائمة التشغيل</string>
     <string name="save_playlist_title">حفظ كملف</string>
     <string name="save_playlists_title">حفظ كملفات</string>
     <string name="add_playlist_title">إضافة إلى قائمة التشغيل</string>
