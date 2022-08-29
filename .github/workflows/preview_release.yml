@@ -6,10 +6,10 @@ on:
     paths-ignore:
       - "README.md"
       - "version.json"
-      - ".github/workflows/preview_release.yml"
-      - ".github/workflows/action_test.yml"
+      - ".github/workflows/**"
       - ".github/ISSUE_TEMPLATE/**"
       - "crowdin.yml"
+      - 'fastlane/metadata/android/**'
 
 jobs:
   build:

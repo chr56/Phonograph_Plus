@@ -12,10 +12,10 @@ on:
       - 'README.md'
       - 'version.json'
       - 'ReleaseNote.md'
-      - '.github/workflows/preview_release.yml'
-      - '.github/workflows/action_test.yml'
+      - '.github/workflows/**'
       - '.github/ISSUE_TEMPLATE/**'
       - 'crowdin.yml'
+      - 'fastlane/metadata/android/**'
 
   workflow_dispatch:
   pull_request:
