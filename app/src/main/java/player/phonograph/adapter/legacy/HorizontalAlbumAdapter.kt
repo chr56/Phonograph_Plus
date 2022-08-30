@@ -7,14 +7,15 @@ import android.view.ViewGroup.MarginLayoutParams
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import com.bumptech.glide.Glide
+import mt.util.color.getPrimaryTextColor
+import mt.util.color.getSecondaryTextColor
+import mt.util.color.isColorLight
 import player.phonograph.R
 import player.phonograph.adapter.base.MultiSelectionCabController
 import player.phonograph.glide.PhonographColoredTarget
 import player.phonograph.glide.SongGlideRequest
 import player.phonograph.model.Album
 import player.phonograph.model.getYearString
-import util.mdcolor.ColorUtil
-import util.mddesign.util.MaterialColorHelper
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
@@ -23,7 +24,7 @@ class HorizontalAlbumAdapter(
     activity: AppCompatActivity,
     dataSet: List<Album>,
     usePalette: Boolean,
-    cabController: MultiSelectionCabController
+    cabController: MultiSelectionCabController,
 ) : AlbumAdapter(activity, dataSet, LAYOUT_RES, usePalette, cabController) {
 
     override fun createViewHolder(view: View, viewType: Int): ViewHolder {
@@ -36,17 +37,17 @@ class HorizontalAlbumAdapter(
         card.setCardBackgroundColor(color)
         if (holder.title != null) {
             holder.title!!.setTextColor(
-                MaterialColorHelper.getPrimaryTextColor(
+                getPrimaryTextColor(
                     activity,
-                    ColorUtil.isColorLight(color)
+                    isColorLight(color)
                 )
             )
         }
         if (holder.text != null) {
             holder.text!!.setTextColor(
-                MaterialColorHelper.getSecondaryTextColor(
+                getSecondaryTextColor(
                     activity,
-                    ColorUtil.isColorLight(color)
+                   isColorLight(color)
                 )
             )
         }

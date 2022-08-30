@@ -4,6 +4,11 @@
 
 package util.phonograph.tageditor;
 
+import static mt.tint.ActivityColor.setNavigationBarColor;
+import static mt.tint.ActivityColor.setTaskDescriptionColor;
+import static mt.util.color.ColorUtil.withAlpha;
+import static mt.util.color.ToolbarColor.toolbarTitleColor;
+
 import android.annotation.SuppressLint;
 import android.app.SearchManager;
 import android.content.Intent;
@@ -36,13 +41,11 @@ import java.util.Map;
 
 import kotlin.Unit;
 import lib.phonograph.activity.ToolbarActivity;
+import mt.pref.ThemeColor;
+import mt.tint.viewtint.Auto;
 import player.phonograph.R;
 import player.phonograph.misc.SimpleObservableScrollViewCallbacks;
 import player.phonograph.util.Util;
-import util.mdcolor.ColorUtil;
-import util.mdcolor.pref.ThemeColor;
-import util.mddesign.util.TintHelper;
-import util.mddesign.util.ToolbarColorUtil;
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
@@ -73,7 +76,7 @@ public abstract class AbsTagEditorActivity extends ToolbarActivity {
                 header.setTranslationY(scrollY);
                 alpha = 1;
             }
-            toolbar.setBackgroundColor(ColorUtil.withAlpha(paletteColorPrimary, alpha));
+            toolbar.setBackgroundColor(withAlpha(paletteColorPrimary, alpha));
             image.setTranslationY(scrollY / 2);
         }
     };
@@ -143,7 +146,7 @@ public abstract class AbsTagEditorActivity extends ToolbarActivity {
                     this::invoke
             );
             //set button color
-            DialogActionExtKt.getActionButton(dialog, WhichButton.POSITIVE).updateTextColor(ThemeColor.accentColor(this));
+            DialogActionExtKt.getActionButton(dialog, WhichButton.POSITIVE).updateTextColor(ThemeColor.INSTANCE.accentColor(this));
             dialog.show();
         });
     }
@@ -168,7 +171,7 @@ public abstract class AbsTagEditorActivity extends ToolbarActivity {
         fab.setEnabled(false);
         fab.setOnClickListener(v -> save());
 
-        TintHelper.setTintAuto(fab, ThemeColor.accentColor(this), true);
+        Auto.setTintAuto(fab, ThemeColor.INSTANCE.accentColor(this), true);
     }
 
     protected abstract void save();
@@ -215,7 +218,7 @@ public abstract class AbsTagEditorActivity extends ToolbarActivity {
         observableScrollView.setPadding(0, Util.getActionBarSize(this), 0, 0);
         observableScrollViewCallbacks.onScrollChanged(observableScrollView.getCurrentScrollY(), false, false);
 
-        setColors(getIntent().getIntExtra(EXTRA_PALETTE, ThemeColor.primaryColor(this)));
+        setColors(getIntent().getIntExtra(EXTRA_PALETTE, ThemeColor.INSTANCE.primaryColor(this)));
         toolbar.setBackgroundColor(paletteColorPrimary);
     }
 
@@ -247,10 +250,10 @@ public abstract class AbsTagEditorActivity extends ToolbarActivity {
         observableScrollViewCallbacks.onScrollChanged(observableScrollView.getCurrentScrollY(), false, false);
         header.setBackgroundColor(paletteColorPrimary);
         setStatusbarColor(paletteColorPrimary);
-        setNavigationbarColor(paletteColorPrimary);
-        setTaskDescriptionColor(paletteColorPrimary);
+        setNavigationBarColor(this, paletteColorPrimary);
+        setTaskDescriptionColor(this, paletteColorPrimary);
 
-        toolbar.setTitleTextColor(ToolbarColorUtil.toolbarTitleColor(this, color));
+        toolbar.setTitleTextColor(toolbarTitleColor(this, color));
     }
 
     protected void writeValuesToFiles(@NonNull final Map<FieldKey, String> fieldKeyValueMap, @Nullable final ArtworkInfo artworkInfo) {

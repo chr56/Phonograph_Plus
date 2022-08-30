@@ -23,6 +23,13 @@ import com.afollestad.materialdialogs.actions.getActionButton
 import com.bumptech.glide.Glide
 import lib.phonograph.cab.ToolbarCab
 import lib.phonograph.cab.createToolbarCab
+import mt.tint.requireLightStatusbar
+import mt.tint.setNavigationBarColor
+import mt.util.color.getSecondaryTextColor
+import mt.util.color.isColorLight
+import mt.util.color.resolveColor
+import mt.util.color.toolbarTitleColor
+import mt.util.color.withAlpha
 import player.phonograph.R
 import player.phonograph.adapter.base.MultiSelectionCabController
 import player.phonograph.adapter.legacy.ArtistSongAdapter
@@ -49,10 +56,6 @@ import player.phonograph.util.NavigationUtil.openEqualizer
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import util.mdcolor.ColorUtil
-import util.mddesign.util.MaterialColorHelper
-import util.mddesign.util.ToolbarColorUtil
-import util.mddesign.util.Util
 import util.phonograph.lastfm.rest.LastFMRestClient
 import util.phonograph.lastfm.rest.model.LastFmArtist
 import java.util.*
@@ -120,7 +123,7 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorHolder 
         setUpSongListView()
         setUpAlbumRecyclerView()
         model.isRecyclerViewPrepared = true
-        setColors(Util.resolveColor(this, R.attr.defaultFooterColor))
+        setColors(resolveColor(this, R.attr.defaultFooterColor))
     }
 
     private fun setUpSongListView() {
@@ -238,13 +241,13 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorHolder 
     private fun setColors(color: Int) {
         paletteColor = color
         viewBinding.header.setBackgroundColor(color)
-        setNavigationbarColor(color)
+        setNavigationBarColor(color)
         setTaskDescriptionColor(color)
         viewBinding.toolbar.setBackgroundColor(color)
         setSupportActionBar(viewBinding.toolbar) // needed to auto readjust the toolbar content color
-        viewBinding.toolbar.setTitleTextColor(ToolbarColorUtil.toolbarTitleColor(this, color))
+        viewBinding.toolbar.setTitleTextColor(toolbarTitleColor(this, color))
         setStatusbarColor(color)
-        val secondaryTextColor = MaterialColorHelper.getSecondaryTextColor(this, ColorUtil.isColorLight(color))
+        val secondaryTextColor = getSecondaryTextColor(this, isColorLight(color))
         val f = BlendModeColorFilterCompat
             .createBlendModeColorFilterCompat(secondaryTextColor, BlendModeCompat.SRC_IN)
         viewBinding.durationIcon.setImageDrawable(AppCompatResources.getDrawable(this, R.drawable.ic_timer_white_24dp))
@@ -377,7 +380,7 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorHolder 
 
     override fun setStatusbarColor(color: Int) {
         super.setStatusbarColor(color)
-        setLightStatusbar(false)
+        requireLightStatusbar(false)
     }
 
     private fun setUpArtist(artist: Artist) {
@@ -402,7 +405,7 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorHolder 
 
             // Change alpha of overlay
             val headerAlpha = max(0f, min(1f, 2f * scrollY / headerViewHeight))
-            viewBinding.headerOverlay.setBackgroundColor(ColorUtil.withAlpha(paletteColor, headerAlpha))
+            viewBinding.headerOverlay.setBackgroundColor(withAlpha(paletteColor, headerAlpha))
 
             // Translate name text
             viewBinding.header.translationY = max(-scrollY, -headerViewHeight).toFloat()

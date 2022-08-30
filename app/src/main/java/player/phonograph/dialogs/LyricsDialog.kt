@@ -12,18 +12,23 @@ import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.chip.Chip
+import mt.pref.ThemeColor
+import mt.util.color.getPrimaryTextColor
+import mt.util.color.isColorLight
+import mt.util.color.lightenColor
 import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.adapter.LyricsAdapter
 import player.phonograph.databinding.DialogLyricsBinding
 import player.phonograph.helper.MusicProgressViewUpdateHelper
 import player.phonograph.model.Song
-import player.phonograph.model.lyrics.*
+import player.phonograph.model.lyrics.AbsLyrics
+import player.phonograph.model.lyrics.DEFAULT_TITLE
+import player.phonograph.model.lyrics.LrcLyrics
+import player.phonograph.model.lyrics.LyricsList
+import player.phonograph.model.lyrics.LyricsSource
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
 import player.phonograph.ui.fragments.player.AbsPlayerFragment
-import util.mdcolor.ColorUtil
-import util.mdcolor.pref.ThemeColor
-import util.mddesign.util.MaterialColorHelper
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
@@ -99,15 +104,17 @@ class LyricsDialog : DialogFragment(), MusicProgressViewUpdateHelper.Callback {
         }
         return chip
     }
+
     private fun getChipBackgroundColor(checked: Boolean): ColorStateList {
         return ColorStateList.valueOf(
-            if (checked) ColorUtil.lightenColor(primaryColor)
+            if (checked) lightenColor(primaryColor)
             else resources.getColor(R.color.defaultFooterColor, requireContext().theme)
         )
     }
+
     private fun getChipTextColor(checked: Boolean): ColorStateList {
         return ColorStateList.valueOf(
-            if (checked) MaterialColorHelper.getPrimaryTextColor(requireContext(), ColorUtil.isColorLight(primaryColor))
+            if (checked) getPrimaryTextColor(requireContext(), isColorLight(primaryColor))
             else textColor
         )
     }
@@ -136,6 +143,7 @@ class LyricsDialog : DialogFragment(), MusicProgressViewUpdateHelper.Callback {
         chipSelected?.setTextColor(getChipTextColor(false))
         chipSelected = chip
     }
+
     private fun switchLyrics(index: Int) {
         val lyrics = lyricsList.list[index]
         lyricsDisplay = lyrics
@@ -160,7 +168,7 @@ class LyricsDialog : DialogFragment(), MusicProgressViewUpdateHelper.Callback {
 
     private val accentColor by lazy { ThemeColor.accentColor(App.instance) }
     private val primaryColor by lazy { ThemeColor.primaryColor(App.instance) }
-    private val textColor by lazy { ThemeColor.textColorSecondary(App.instance) }
+    private val textColor by lazy { getPrimaryTextColor(App.instance, !App.instance.nightMode) }
 
     private val backgroundCsl: ColorStateList by lazy {
         ColorStateList(
@@ -169,7 +177,9 @@ class LyricsDialog : DialogFragment(), MusicProgressViewUpdateHelper.Callback {
                 intArrayOf(android.R.attr.state_checked),
                 intArrayOf(),
             ),
-            intArrayOf(ColorUtil.lightenColor(primaryColor), ColorUtil.lightenColor(primaryColor), resources.getColor(R.color.defaultFooterColor, requireContext().theme))
+            intArrayOf(lightenColor(primaryColor),
+                lightenColor(primaryColor),
+                resources.getColor(R.color.defaultFooterColor, requireContext().theme))
         )
     }
     private val textColorCsl: ColorStateList by lazy {
@@ -178,7 +188,7 @@ class LyricsDialog : DialogFragment(), MusicProgressViewUpdateHelper.Callback {
                 intArrayOf(android.R.attr.state_checked),
                 intArrayOf(),
             ),
-            intArrayOf(MaterialColorHelper.getPrimaryTextColor(requireContext(), ColorUtil.isColorLight(primaryColor)), textColor)
+            intArrayOf(getPrimaryTextColor(requireContext(), isColorLight(primaryColor)), textColor)
         )
     }
 
@@ -235,6 +245,7 @@ class LyricsDialog : DialogFragment(), MusicProgressViewUpdateHelper.Callback {
             _progressViewUpdateHelper = null
         }
     }
+
     private fun scrollingTo(timeStamp: Int) {
         if (lyricsDisplay is LrcLyrics) {
             val line = (lyricsDisplay as LrcLyrics).getPosition(timeStamp)

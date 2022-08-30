@@ -6,8 +6,8 @@ package lib.phonograph.view
 import android.content.Context
 import android.util.AttributeSet
 import androidx.appcompat.widget.AppCompatSeekBar
-import util.mddesign.core.Themer
-import util.mdcolor.pref.ThemeColor
+import mt.pref.ThemeColor.accentColor
+import mt.tint.viewtint.setTint
 
 /**
  * @author Aidan Follestad (afollestad)
@@ -26,6 +26,6 @@ class SeekBarX : AppCompatSeekBar {
     }
 
     private fun init(context: Context, attrs: AttributeSet?) {
-        Themer.setTint(this, ThemeColor.accentColor(context))
+        this.setTint(accentColor(context))
     }
 }

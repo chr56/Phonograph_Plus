@@ -12,6 +12,7 @@ import com.github.chr56.android.menu_dsl.attach
 import com.github.chr56.android.menu_dsl.menuItem
 import kotlinx.coroutines.*
 import lib.phonograph.cab.*
+import mt.tint.setActivityToolbarColorAuto
 import player.phonograph.R
 import player.phonograph.adapter.base.MultiSelectionCabController
 import player.phonograph.adapter.display.SongDisplayAdapter
@@ -24,8 +25,6 @@ import player.phonograph.service.queue.ShuffleMode
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
 import player.phonograph.util.ImageUtil.getTintedDrawable
 import player.phonograph.util.ViewUtil.setUpFastScrollRecyclerViewColor
-import util.mdcolor.pref.ThemeColor
-import util.mddesign.core.Themer
 
 class GenreDetailActivity :
     AbsSlidingMusicPanelActivity() {
@@ -78,7 +77,7 @@ class GenreDetailActivity :
             layoutManager = LinearLayoutManager(this@GenreDetailActivity)
             adapter = this@GenreDetailActivity.adapter
         }
-        binding.recyclerView.setUpFastScrollRecyclerViewColor(this, ThemeColor.accentColor(this))
+        binding.recyclerView.setUpFastScrollRecyclerViewColor(this, accentColor)
         adapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
             override fun onChanged() {
                 super.onChanged()
@@ -89,8 +88,8 @@ class GenreDetailActivity :
     }
 
     private fun setUpToolBar() {
-        binding.toolbar.setBackgroundColor(ThemeColor.primaryColor(this))
-        Themer.setActivityToolbarColorAuto(this, binding.toolbar)
+        binding.toolbar.setBackgroundColor(primaryColor)
+        setActivityToolbarColorAuto(binding.toolbar)
         setSupportActionBar(binding.toolbar)
         supportActionBar!!.title = genre.name
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)

@@ -14,6 +14,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.SimpleTarget
 import com.bumptech.glide.request.target.Target
 import com.bumptech.glide.request.transition.Transition
+import mt.util.color.getSecondaryTextColor
 import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.appwidgets.Util.createRoundedBitmap
@@ -23,7 +24,6 @@ import player.phonograph.glide.palette.BitmapPaletteWrapper
 import player.phonograph.service.MusicService
 import player.phonograph.ui.activities.MainActivity
 import player.phonograph.util.ImageUtil
-import util.mddesign.util.MaterialColorHelper
 
 class AppWidgetCard : BaseAppWidget() {
     private var target: Target<BitmapPaletteWrapper>? = null // for cancellation
@@ -69,7 +69,7 @@ class AppWidgetCard : BaseAppWidget() {
                 ImageUtil.getTintedVectorDrawable(
                     service,
                     playPauseRes,
-                    MaterialColorHelper.getSecondaryTextColor(service, true)
+                    getSecondaryTextColor(service, true)
                 )
             )
         )
@@ -81,7 +81,7 @@ class AppWidgetCard : BaseAppWidget() {
                 ImageUtil.getTintedVectorDrawable(
                     service,
                     R.drawable.ic_skip_next_white_24dp,
-                    MaterialColorHelper.getSecondaryTextColor(service, true)
+                    getSecondaryTextColor(service, true)
                 )
             )
         )
@@ -91,7 +91,7 @@ class AppWidgetCard : BaseAppWidget() {
                 ImageUtil.getTintedVectorDrawable(
                     service,
                     R.drawable.ic_skip_previous_white_24dp,
-                    MaterialColorHelper.getSecondaryTextColor(service, true)
+                    getSecondaryTextColor(service, true)
                 )
             )
         )
@@ -125,7 +125,7 @@ class AppWidgetCard : BaseAppWidget() {
                             resource.bitmap,
                             palette.getVibrantColor(
                                 palette.getMutedColor(
-                                    MaterialColorHelper.getSecondaryTextColor(service, true)
+                                    getSecondaryTextColor(service, true)
                                 )
                             )
                         )
@@ -133,7 +133,7 @@ class AppWidgetCard : BaseAppWidget() {
 
                     override fun onLoadFailed(errorDrawable: Drawable?) {
                         super.onLoadFailed(errorDrawable)
-                        update(null, MaterialColorHelper.getSecondaryTextColor(service, true))
+                        update(null, getSecondaryTextColor(service, true))
                     }
 
                     private fun update(bitmap: Bitmap?, color: Int) {

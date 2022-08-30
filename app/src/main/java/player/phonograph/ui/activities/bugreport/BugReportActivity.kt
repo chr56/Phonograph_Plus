@@ -19,10 +19,9 @@ import com.afollestad.materialdialogs.MaterialDialog
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.floatingactionbutton.FloatingActionButton.OnVisibilityChangedListener
 import com.google.android.material.textfield.TextInputLayout
-import java.io.IOException
-import java.lang.ref.WeakReference
 import kotlinx.coroutines.*
 import lib.phonograph.activity.ToolbarActivity
+import mt.tint.viewtint.tint
 import org.eclipse.egit.github.core.Issue
 import org.eclipse.egit.github.core.client.GitHubClient
 import org.eclipse.egit.github.core.client.RequestException
@@ -37,8 +36,8 @@ import player.phonograph.ui.activities.bugreport.model.Report
 import player.phonograph.ui.activities.bugreport.model.github.ExtraInfo
 import player.phonograph.ui.activities.bugreport.model.github.GithubLoginInfo
 import player.phonograph.ui.activities.bugreport.model.github.GithubTarget
-import util.mdcolor.pref.ThemeColor
-import util.mddesign.util.TintHelper
+import java.io.IOException
+import java.lang.ref.WeakReference
 
 class BugReportActivity : ToolbarActivity() {
 
@@ -59,15 +58,13 @@ class BugReportActivity : ToolbarActivity() {
     private val deviceInfo: DeviceInfo by lazy { DeviceInfo() }
 
     private fun initViews() {
-        val accentColor = ThemeColor.accentColor(this)
-        val primaryColor = ThemeColor.primaryColor(this)
 
         binding.toolbar.setBackgroundColor(primaryColor)
         setSupportActionBar(binding.toolbar)
 
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
 
-        TintHelper.setTintAuto(binding.v.optionUseAccount, accentColor, false)
+        binding.v.optionUseAccount.tint(accentColor, false)
         binding.v.optionUseAccount.setOnClickListener {
             binding.v.inputTitle.isEnabled = true
             binding.v.inputDescription.isEnabled = true
@@ -83,7 +80,7 @@ class BugReportActivity : ToolbarActivity() {
             })
         }
 
-        TintHelper.setTintAuto(binding.v.optionAnonymous, accentColor, false)
+        binding.v.optionAnonymous.tint(accentColor, false)
         binding.v.optionAnonymous.setOnClickListener {
             binding.v.inputTitle.isEnabled = false
             binding.v.inputDescription.isEnabled = false
@@ -109,13 +106,13 @@ class BugReportActivity : ToolbarActivity() {
 
         binding.infoCard.airTextDeviceInfo.setOnClickListener { copyDeviceInfoToClipBoard() }
 
-        TintHelper.setTintAuto(binding.buttonSend, accentColor, true)
+        binding.buttonSend.tint(accentColor, true)
         binding.buttonSend.setOnClickListener { reportIssue() }
 
-        TintHelper.setTintAuto(binding.v.inputTitle, accentColor, false)
-        TintHelper.setTintAuto(binding.v.inputDescription, accentColor, false)
-        TintHelper.setTintAuto(binding.v.inputUsername, accentColor, false)
-        TintHelper.setTintAuto(binding.v.inputPassword, accentColor, false)
+        binding.v.inputTitle.tint(accentColor, false)
+        binding.v.inputTitle.tint(accentColor, false)
+        binding.v.inputTitle.tint(accentColor, false)
+        binding.v.inputTitle.tint(accentColor, false)
 
         binding.infoCard.airTextDeviceInfo.text = deviceInfo.toString()
     }

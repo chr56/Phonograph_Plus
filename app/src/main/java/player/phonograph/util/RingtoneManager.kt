@@ -8,8 +8,8 @@ import android.provider.Settings
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.WhichButton
 import com.afollestad.materialdialogs.actions.getActionButton
+import mt.pref.ThemeColor.accentColor
 import player.phonograph.R
-import util.mdcolor.pref.ThemeColor
 
 object RingtoneManager {
 
@@ -32,8 +32,8 @@ object RingtoneManager {
                         }
                     )
                 }
-                getActionButton(WhichButton.POSITIVE).updateTextColor(ThemeColor.accentColor(context))
-                getActionButton(WhichButton.NEGATIVE).updateTextColor(ThemeColor.accentColor(context))
+                getActionButton(WhichButton.POSITIVE).updateTextColor(accentColor(context))
+                getActionButton(WhichButton.NEGATIVE).updateTextColor(accentColor(context))
             }
         return dialog
     }

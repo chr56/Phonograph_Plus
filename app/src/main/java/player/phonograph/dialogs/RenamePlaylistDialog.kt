@@ -4,12 +4,12 @@ import android.app.Dialog
 import android.os.Bundle
 import android.text.InputType
 import androidx.fragment.app.DialogFragment
-import util.mdcolor.pref.ThemeColor
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.WhichButton
 import com.afollestad.materialdialogs.actions.getActionButton
 import com.afollestad.materialdialogs.input.input
 import legacy.phonograph.LegacyPlaylistsUtil
+import mt.pref.ThemeColor.accentColor
 import player.phonograph.R
 import player.phonograph.util.PlaylistsUtil
 
@@ -37,8 +37,8 @@ class RenamePlaylistDialog : DialogFragment() {
                 }
             }
         // set button color
-        dialog.getActionButton(WhichButton.POSITIVE).updateTextColor(ThemeColor.accentColor(requireActivity()))
-        dialog.getActionButton(WhichButton.NEGATIVE).updateTextColor(ThemeColor.accentColor(requireActivity()))
+        dialog.getActionButton(WhichButton.POSITIVE).updateTextColor(accentColor(requireActivity()))
+        dialog.getActionButton(WhichButton.NEGATIVE).updateTextColor(accentColor(requireActivity()))
         return dialog
     }
 

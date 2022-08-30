@@ -10,8 +10,8 @@ import android.util.AttributeSet
 import android.widget.TextView
 import androidx.preference.PreferenceCategory
 import androidx.preference.PreferenceViewHolder
+import mt.pref.ThemeColor.accentColor
 import player.phonograph.R
-import util.mdcolor.pref.ThemeColor
 
 class PreferenceCategoryX : PreferenceCategory {
 
@@ -39,8 +39,7 @@ class PreferenceCategoryX : PreferenceCategory {
 
     override fun onBindViewHolder(holder: PreferenceViewHolder) {
         super.onBindViewHolder(holder)
-        val mTitle = holder.itemView as TextView
-        mTitle.setTextColor(ThemeColor.accentColor(context))
+        (holder.itemView as TextView).setTextColor(accentColor(context))
     }
 
     private fun init(context: Context, attrs: AttributeSet?) {

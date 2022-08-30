@@ -5,7 +5,7 @@ import android.graphics.PorterDuff
 import android.util.AttributeSet
 import androidx.appcompat.widget.AppCompatImageView
 import player.phonograph.R
-import util.mddesign.util.Util
+import mt.util.color.resolveColor
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
@@ -26,6 +26,6 @@ class IconImageView : AppCompatImageView {
 
     private fun init(context: Context?) {
         if (context == null) return
-        setColorFilter(Util.resolveColor(context, R.attr.iconColor), PorterDuff.Mode.SRC_IN)
+        setColorFilter(resolveColor(context, R.attr.iconColor), PorterDuff.Mode.SRC_IN)
     }
 }

@@ -15,15 +15,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
-import androidx.appcompat.content.res.AppCompatResources
-import androidx.core.graphics.BlendModeColorFilterCompat
-import androidx.core.graphics.BlendModeCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import mt.util.color.getPrimaryTextColor
+import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.databinding.ItemTextBinding
 import player.phonograph.model.file.Location
-import util.mdcolor.pref.ThemeColor
+import player.phonograph.util.ImageUtil.getTintedDrawable
 
 @Suppress("JoinDeclarationAndAssignment")
 class BreadCrumbView : FrameLayout {
@@ -57,13 +56,9 @@ class BreadCrumbView : FrameLayout {
         recyclerView.adapter = adapter
         recyclerView.layoutManager = layoutManager
 
-        val drawable = AppCompatResources.getDrawable(context, R.drawable.ic_keyboard_arrow_right_white_24dp)?.also {
-            it.colorFilter = BlendModeColorFilterCompat
-                .createBlendModeColorFilterCompat(
-                    ThemeColor.textColorPrimary(context),
-                    BlendModeCompat.SRC_IN
-                )
-        }
+        val drawable = context.getTintedDrawable(R.drawable.ic_keyboard_arrow_right_white_24dp,
+            getPrimaryTextColor(context, !App.instance.nightMode)
+        )
         recyclerView.addItemDecoration(ItemDecorator(drawable!!))
 
         addView(
@@ -75,7 +70,7 @@ class BreadCrumbView : FrameLayout {
     class BreadCrumbAdapter(
         val context: Context,
         location: Location,
-        var callBack: (Location) -> Unit = {}
+        var callBack: (Location) -> Unit = {},
     ) : RecyclerView.Adapter<BreadCrumbAdapter.ViewHolder>() {
 
         var location: Location = location
@@ -97,7 +92,7 @@ class BreadCrumbView : FrameLayout {
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
             with(holder.viewBinding.text) {
                 text = if (position == 0) volumeName else crumbs[position - 1]
-                setTextColor(ThemeColor.textColorPrimary(context))
+                setTextColor(getPrimaryTextColor(context, !App.instance.nightMode))
             }
             holder.itemView.setOnClickListener {
                 callBack(
@@ -115,7 +110,7 @@ class BreadCrumbView : FrameLayout {
         override fun getItemCount(): Int = crumbs.size + 1
 
         class ViewHolder constructor(
-            val viewBinding: ItemTextBinding
+            val viewBinding: ItemTextBinding,
         ) : RecyclerView.ViewHolder(viewBinding.root)
     }
 
@@ -125,7 +120,7 @@ class BreadCrumbView : FrameLayout {
             outRect: Rect,
             view: View,
             parent: RecyclerView,
-            state: RecyclerView.State
+            state: RecyclerView.State,
         ) {
             if (parent.getChildAdapterPosition(view) == 0) return
             outRect.left = drawable.intrinsicWidth

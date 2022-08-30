@@ -21,6 +21,7 @@ import java.io.IOException
 import java.lang.IllegalStateException
 import kotlinx.coroutines.*
 import legacy.phonograph.LegacyPlaylistsUtil
+import mt.pref.ThemeColor
 import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.misc.SAFCallbackHandlerActivity
@@ -32,7 +33,6 @@ import player.phonograph.notification.ErrorNotification
 import player.phonograph.settings.Setting
 import player.phonograph.util.PlaylistsUtil
 import player.phonograph.util.CoroutineUtil.coroutineToast
-import util.mdcolor.pref.ThemeColor
 import util.phonograph.m3u.internal.M3UGenerator
 import util.phonograph.m3u.internal.appendTimestampSuffix
 

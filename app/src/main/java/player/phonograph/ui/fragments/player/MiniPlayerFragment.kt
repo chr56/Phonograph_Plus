@@ -5,13 +5,15 @@ import android.content.Context
 import android.graphics.PorterDuff
 import android.os.Bundle
 import android.view.*
-import util.mdcolor.pref.ThemeColor
-import util.mddesign.util.Util
+import mt.pref.ThemeColor
+import mt.util.color.getSecondaryTextColor
+import mt.util.color.resolveColor
+import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.databinding.FragmentMiniPlayerBinding
-import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.helper.MusicProgressViewUpdateHelper
 import player.phonograph.helper.PlayPauseButtonOnClickHandler
+import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.ui.fragments.AbsMusicServiceFragment
 import player.phonograph.views.PlayPauseDrawable
 import kotlin.math.abs
@@ -55,11 +57,10 @@ class MiniPlayerFragment : AbsMusicServiceFragment(), MusicProgressViewUpdateHel
         miniPlayerPlayPauseDrawable = PlayPauseDrawable(requireContext())
         binding.miniPlayerPlayPauseButton.setImageDrawable(miniPlayerPlayPauseDrawable)
         binding.miniPlayerPlayPauseButton.setColorFilter(
-            Util.resolveColor(
+            resolveColor(
                 requireActivity(),
                 R.attr.iconColor,
-                ThemeColor.textColorSecondary(requireActivity())
-            ),
+                getSecondaryTextColor(requireContext(), !App.instance.nightMode)),
             PorterDuff.Mode.SRC_IN
         )
         binding.miniPlayerPlayPauseButton.setOnClickListener(PlayPauseButtonOnClickHandler())

@@ -10,11 +10,11 @@ import android.util.Log
 import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import util.mdcolor.pref.ThemeColor
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.WhichButton
 import com.afollestad.materialdialogs.actions.getActionButton
 import com.afollestad.materialdialogs.customview.customView
+import mt.pref.ThemeColor
 import player.phonograph.R
 import player.phonograph.adapter.HomeTabConfigAdapter
 import player.phonograph.model.pages.PageConfig

@@ -8,10 +8,10 @@ import androidx.fragment.app.DialogFragment
 import androidx.preference.DialogPreference
 import androidx.preference.DialogPreference.TargetFragment
 import androidx.preference.Preference
-import util.mdcolor.pref.ThemeColor
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.WhichButton
 import com.afollestad.materialdialogs.actions.getActionButton
+import mt.pref.ThemeColor.accentColor
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
@@ -37,8 +37,8 @@ open class PreferenceDialogFragmentX : DialogFragment() {
             .positiveButton(text = preference!!.positiveButtonText)
             .negativeButton(text = preference!!.negativeButtonText)
         //set button color
-        dialog.getActionButton(WhichButton.POSITIVE).updateTextColor(ThemeColor.accentColor(requireActivity()))
-        dialog.getActionButton(WhichButton.NEGATIVE).updateTextColor(ThemeColor.accentColor(requireActivity()))
+        dialog.getActionButton(WhichButton.POSITIVE).updateTextColor(accentColor(requireActivity()))
+        dialog.getActionButton(WhichButton.NEGATIVE).updateTextColor(accentColor(requireActivity()))
 
         if (needInputMethod()) {
             requestInputMethod(dialog)

@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.util.Pair
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import mt.util.color.resolveColor
 import player.phonograph.R
 import player.phonograph.adapter.base.MediaEntryViewHolder
 import player.phonograph.glide.ArtistGlideRequest
@@ -19,7 +20,6 @@ import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.util.NavigationUtil.goToAlbum
 import player.phonograph.util.NavigationUtil.goToArtist
 import player.phonograph.util.menu.MenuClickListener
-import util.mddesign.util.Util
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
@@ -89,7 +89,7 @@ class SearchAdapter(
         init {
             itemView.setOnLongClickListener(null)
             if (itemViewType != HEADER) {
-                itemView.setBackgroundColor(Util.resolveColor(activity, R.attr.cardBackgroundColor))
+                itemView.setBackgroundColor(resolveColor(activity, R.attr.cardBackgroundColor))
                 itemView.elevation = activity.resources.getDimensionPixelSize(R.dimen.card_elevation).toFloat()
                 shortSeparator?.visibility = View.GONE
             }

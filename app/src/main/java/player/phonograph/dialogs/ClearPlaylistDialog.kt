@@ -13,12 +13,12 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
-import android.text.Html
 import android.util.Log
 import androidx.fragment.app.DialogFragment
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.WhichButton
 import com.afollestad.materialdialogs.actions.getActionButton
+import mt.pref.ThemeColor
 import player.phonograph.R
 import player.phonograph.misc.SAFCallbackHandlerActivity
 import player.phonograph.model.playlist.FilePlaylist
@@ -26,7 +26,6 @@ import player.phonograph.model.playlist.Playlist
 import player.phonograph.model.playlist.ResettablePlaylist
 import player.phonograph.model.playlist.SmartPlaylist
 import player.phonograph.util.StringUtil
-import util.mdcolor.pref.ThemeColor
 import util.phonograph.m3u.PlaylistsManager
 
 class ClearPlaylistDialog : DialogFragment() {

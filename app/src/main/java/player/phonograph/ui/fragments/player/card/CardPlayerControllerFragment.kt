@@ -12,14 +12,14 @@ import android.view.animation.DecelerateInterpolator
 import androidx.core.graphics.BlendModeColorFilterCompat
 import androidx.core.graphics.BlendModeCompat
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import mt.tint.viewtint.tint
+import mt.util.color.getSecondaryTextColor
+import mt.util.color.isColorLight
 import player.phonograph.databinding.FragmentCardPlayerPlaybackControlsBinding
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.helper.PlayPauseButtonOnClickHandler
 import player.phonograph.ui.fragments.player.AbsPlayerControllerFragment
 import player.phonograph.views.PlayPauseDrawable
-import util.mdcolor.ColorUtil
-import util.mddesign.util.MaterialColorHelper
-import util.mddesign.util.TintHelper
 
 class CardPlayerControllerFragment : AbsPlayerControllerFragment() {
 
@@ -27,7 +27,7 @@ class CardPlayerControllerFragment : AbsPlayerControllerFragment() {
     private val v: FragmentCardPlayerPlaybackControlsBinding get() = viewBinding!!
 
     private var _playerPlayPauseFab: FloatingActionButton? = null
-    val playerPlayPauseFab: FloatingActionButton get() =  _playerPlayPauseFab!!
+    val playerPlayPauseFab: FloatingActionButton get() = _playerPlayPauseFab!!
     var progressSliderHeight: Int = -1
         private set
 
@@ -57,12 +57,12 @@ class CardPlayerControllerFragment : AbsPlayerControllerFragment() {
 
     override fun setUpPlayPauseButton() {
         val fabColor = Color.WHITE
-        TintHelper.setTintAuto(v.playerPlayPauseFab, fabColor, true)
+        v.playerPlayPauseFab.tint(fabColor, true)
 
         playPauseDrawable = PlayPauseDrawable(requireActivity())
         playPauseDrawable.colorFilter =
             BlendModeColorFilterCompat.createBlendModeColorFilterCompat(
-                MaterialColorHelper.getSecondaryTextColor(requireContext(), ColorUtil.isColorLight(fabColor)), BlendModeCompat.SRC_IN
+                getSecondaryTextColor(requireContext(), isColorLight(fabColor)), BlendModeCompat.SRC_IN
             )
 
         v.playerPlayPauseFab.setImageDrawable(playPauseDrawable) // Note: set the drawable AFTER TintHelper.setTintAuto() was called

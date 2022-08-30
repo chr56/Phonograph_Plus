@@ -8,7 +8,10 @@ import android.annotation.SuppressLint
 import android.graphics.PorterDuff
 import android.media.MediaScannerConnection
 import android.text.format.Formatter.formatFileSize
-import android.view.*
+import android.view.LayoutInflater
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.PopupMenu
 import android.widget.Toast
@@ -16,8 +19,12 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView.SectionedAdapter
-import java.io.File
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import mt.util.color.resolveColor
 import player.phonograph.R
 import player.phonograph.adapter.base.MultiSelectAdapter
 import player.phonograph.adapter.base.MultiSelectionCabController
@@ -30,7 +37,7 @@ import player.phonograph.settings.Setting
 import player.phonograph.util.BlacklistUtil
 import player.phonograph.util.menu.onMultiSongMenuItemClick
 import player.phonograph.util.menu.onSongMenuItemClick
-import util.mddesign.util.Util
+import java.io.File
 
 class FileAdapter(
     activity: AppCompatActivity,
@@ -122,14 +129,14 @@ class FileAdapter(
                     image.setImageResource(
                         R.drawable.ic_file_music_white_24dp
                     )
-                    val iconColor = Util.resolveColor(context, R.attr.iconColor)
+                    val iconColor = resolveColor(context, R.attr.iconColor)
                     image.setColorFilter(iconColor, PorterDuff.Mode.SRC_IN)
                 }
             } else {
                 image.setImageResource(
                     R.drawable.ic_folder_white_24dp
                 )
-                val iconColor = Util.resolveColor(context, R.attr.iconColor)
+                val iconColor = resolveColor(context, R.attr.iconColor)
                 image.setColorFilter(iconColor, PorterDuff.Mode.SRC_IN)
             }
         }

@@ -9,10 +9,10 @@ import androidx.annotation.Nullable;
 import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.transition.Transition;
 
+import mt.util.color.MiscKt;
 import player.phonograph.R;
 import player.phonograph.glide.palette.BitmapPaletteWrapper;
 import player.phonograph.util.PhonographColorUtil;
-import util.mddesign.util.Util;
 
 /**
  * A target that merely aiming at fetch Bitmap with its Palette color only.
@@ -44,11 +44,11 @@ public abstract class CustomPaletteTarget extends CustomTarget<BitmapPaletteWrap
     }
 
     protected int getDefaultFooterColor() {
-        return Util.resolveColor(context, R.attr.defaultFooterColor);
+        return MiscKt.resolveColor(context, R.attr.defaultFooterColor);
     }
 
     protected int getAlbumArtistFooterColor() {
-        return Util.resolveColor(context, R.attr.cardBackgroundColor);
+        return MiscKt.resolveColor(context, R.attr.cardBackgroundColor);
     }
 
     public abstract void onResourceReady(@NonNull BitmapPaletteWrapper resource);

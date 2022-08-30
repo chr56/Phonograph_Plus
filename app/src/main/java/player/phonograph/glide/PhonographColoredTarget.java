@@ -8,7 +8,7 @@ import androidx.annotation.Nullable;
 
 import com.bumptech.glide.request.transition.Transition;
 
-import util.mddesign.util.Util;
+import mt.util.color.MiscKt;
 import player.phonograph.R;
 import player.phonograph.glide.palette.BitmapPaletteTarget;
 import player.phonograph.glide.palette.BitmapPaletteWrapper;
@@ -32,11 +32,11 @@ public abstract class PhonographColoredTarget extends BitmapPaletteTarget {
     }
 
     protected int getDefaultFooterColor() {
-        return Util.resolveColor(getView().getContext(), R.attr.defaultFooterColor);
+        return MiscKt.resolveColor(getView().getContext(), R.attr.defaultFooterColor);
     }
 
     protected int getAlbumArtistFooterColor() {
-        return Util.resolveColor(getView().getContext(), R.attr.cardBackgroundColor);
+        return MiscKt.resolveColor(getView().getContext(), R.attr.cardBackgroundColor);
     }
 
     public abstract void onColorReady(int color);

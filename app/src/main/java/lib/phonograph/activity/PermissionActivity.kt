@@ -12,8 +12,8 @@ import android.os.Bundle
 import android.provider.Settings
 import androidx.core.app.ActivityCompat
 import com.google.android.material.snackbar.Snackbar
+import mt.pref.ThemeColor.accentColor
 import player.phonograph.R
-import util.mdcolor.pref.ThemeColor
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
@@ -82,7 +82,7 @@ open class PermissionActivity : ThemeActivity() {
                             Snackbar.LENGTH_INDEFINITE
                         )
                             .setAction(R.string.action_grant) { requestPermissions() }
-                            .setActionTextColor(ThemeColor.accentColor(this))
+                            .setActionTextColor(accentColor)
                             .show()
                     } else {
                         // User has deny permission and checked never show permission dialog so you can redirect to Application settings page
@@ -98,7 +98,7 @@ open class PermissionActivity : ThemeActivity() {
                                     }
                                 )
                             }
-                            .setActionTextColor(ThemeColor.accentColor(this))
+                            .setActionTextColor(accentColor)
                             .show()
                     }
                     return

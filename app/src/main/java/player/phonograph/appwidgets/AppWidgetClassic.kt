@@ -14,6 +14,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.SimpleTarget
 import com.bumptech.glide.request.target.Target
 import com.bumptech.glide.request.transition.Transition
+import mt.util.color.getSecondaryTextColor
 import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.appwidgets.Util.createRoundedBitmap
@@ -23,7 +24,6 @@ import player.phonograph.glide.palette.BitmapPaletteWrapper
 import player.phonograph.service.MusicService
 import player.phonograph.ui.activities.MainActivity
 import player.phonograph.util.ImageUtil
-import util.mddesign.util.MaterialColorHelper
 
 class AppWidgetClassic : BaseAppWidget() {
     private var target: Target<BitmapPaletteWrapper>? = null // for cancellation
@@ -85,14 +85,14 @@ class AppWidgetClassic : BaseAppWidget() {
                 .into(object : SimpleTarget<BitmapPaletteWrapper?>(imageSize, imageSize) {
                     override fun onResourceReady(
                         resource: BitmapPaletteWrapper,
-                        transition: Transition<in BitmapPaletteWrapper?>?
+                        transition: Transition<in BitmapPaletteWrapper?>?,
                     ) {
                         val palette = resource.palette
                         update(
                             resource.bitmap,
                             palette.getVibrantColor(
                                 palette.getMutedColor(
-                                    MaterialColorHelper.getSecondaryTextColor(appContext, true)
+                                    getSecondaryTextColor(appContext, true)
                                 )
                             )
                         )
@@ -100,7 +100,7 @@ class AppWidgetClassic : BaseAppWidget() {
 
                     override fun onLoadFailed(errorDrawable: Drawable?) {
                         super.onLoadFailed(errorDrawable)
-                        update(null, MaterialColorHelper.getSecondaryTextColor(appContext, true))
+                        update(null, getSecondaryTextColor(appContext, true))
                     }
 
                     private fun update(bitmap: Bitmap?, color: Int) {
@@ -151,7 +151,7 @@ class AppWidgetClassic : BaseAppWidget() {
                         appWidgetView.setImageViewBitmap(R.id.image, roundedBitmap)
                         pushUpdate(appContext, appWidgetIds, appWidgetView)
                     }
-                })as Target<BitmapPaletteWrapper>?
+                }) as Target<BitmapPaletteWrapper>?
         }
     }
 

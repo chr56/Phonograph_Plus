@@ -14,7 +14,12 @@ import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.WhichButton
 import com.afollestad.materialdialogs.actions.getActionButton
 import com.afollestad.materialdialogs.files.folderChooser
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import mt.pref.ThemeColor.accentColor
 import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.misc.UpdateToastMediaScannerCompletionListener
@@ -23,7 +28,6 @@ import player.phonograph.settings.Setting
 import player.phonograph.util.CoroutineUtil.coroutineToast
 import player.phonograph.util.FileUtil.DirectoryInfo
 import player.phonograph.util.FileUtil.FileScanner
-import util.mdcolor.pref.ThemeColor
 import java.io.File
 import java.lang.ref.WeakReference
 
@@ -90,9 +94,9 @@ class ScanMediaFolderDialog : DialogFragment() {
             .positiveButton(android.R.string.ok)
             .negativeButton(android.R.string.cancel) { dismiss() }
         // set button color
-        dialog.getActionButton(WhichButton.POSITIVE).updateTextColor(ThemeColor.accentColor(requireActivity()))
-        dialog.getActionButton(WhichButton.NEGATIVE).updateTextColor(ThemeColor.accentColor(requireActivity()))
-        dialog.getActionButton(WhichButton.NEUTRAL).updateTextColor(ThemeColor.accentColor(requireActivity()))
+        dialog.getActionButton(WhichButton.POSITIVE).updateTextColor(accentColor(requireActivity()))
+        dialog.getActionButton(WhichButton.NEGATIVE).updateTextColor(accentColor(requireActivity()))
+        dialog.getActionButton(WhichButton.NEUTRAL).updateTextColor(accentColor(requireActivity()))
         return dialog
     }
 }

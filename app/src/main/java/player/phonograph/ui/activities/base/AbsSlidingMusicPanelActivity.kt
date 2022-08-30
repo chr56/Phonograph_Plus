@@ -13,6 +13,8 @@ import androidx.annotation.ColorInt
 import androidx.annotation.FloatRange
 import com.sothree.slidinguppanel.SlidingUpPanelLayout
 import com.sothree.slidinguppanel.SlidingUpPanelLayout.PanelState
+import mt.tint.setNavigationBarColor
+import mt.tint.setTaskDescriptionColor as setTaskDescriptionColorEXt
 import player.phonograph.R
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.settings.Setting
@@ -127,7 +129,7 @@ abstract class AbsSlidingMusicPanelActivity :
         val color: Int =
             argbEvaluator.evaluate(slideOffset, activityColor, playerFragment.paletteColor) as Int
         super.setStatusbarColor(color)
-        super.setNavigationbarColor(color)
+        setNavigationBarColor(color)
     }
 
     override fun onPanelStateChanged(panel: View, previousState: PanelState, newState: PanelState) {
@@ -225,7 +227,7 @@ abstract class AbsSlidingMusicPanelActivity :
                 animator.interpolator = PathInterpolator(0.4f, 0f, 1f, 1f)
                 animator.addUpdateListener { animation: ValueAnimator ->
                     setStatusbarColor(animation.animatedValue as Int)
-                    setNavigationbarColor(animation.animatedValue as Int)
+                    setNavigationBarColor(animation.animatedValue as Int)
                 }
                 animator.start()
             }
@@ -241,13 +243,13 @@ abstract class AbsSlidingMusicPanelActivity :
         )
     }
 
-    override fun setTaskDescriptionColor(@ColorInt color: Int) {
+    fun setTaskDescriptionColor(@ColorInt color: Int) {
         when (panelState) {
             PanelState.EXPANDED -> {
-                super.setTaskDescriptionColor(playerFragment.paletteColor)
+                setTaskDescriptionColorEXt(playerFragment.paletteColor)
             }
             else -> {
-                super.setTaskDescriptionColor(color)
+                setTaskDescriptionColorEXt(color)
             }
         }
     }

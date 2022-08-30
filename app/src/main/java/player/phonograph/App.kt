@@ -8,13 +8,14 @@ import android.os.Build
 import android.os.Process
 import android.util.Log
 import androidx.appcompat.content.res.AppCompatResources
-import kotlin.system.exitProcess
 import lib.phonograph.localization.ContextLocaleDelegate
+import mt.pref.ThemeColor
+import mt.pref.internal.ThemeStore
 import player.phonograph.appshortcuts.DynamicShortcutManager
 import player.phonograph.notification.ErrorNotification
 import player.phonograph.service.queue.QueueManager
 import player.phonograph.ui.activities.CrashActivity
-import util.mdcolor.pref.ThemeColor
+import kotlin.system.exitProcess
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
@@ -77,10 +78,10 @@ class App : Application() {
         }
 
         // default theme
-        if (!ThemeColor.isConfigured(this, 1)) {
+        if (!ThemeStore.isConfigured(this, 1)) {
             ThemeColor.editTheme(this)
-                .primaryColorRes(util.mdcolor.R.color.md_blue_A400)
-                .accentColorRes(util.mdcolor.R.color.md_yellow_900)
+                .primaryColorRes(mt.color.R.color.md_blue_A400)
+                .accentColorRes(mt.color.R.color.md_yellow_900)
                 .commit()
         }
 

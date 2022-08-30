@@ -14,6 +14,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.SimpleTarget
 import com.bumptech.glide.request.target.Target
 import com.bumptech.glide.request.transition.Transition
+import mt.util.color.getPrimaryTextColor
 import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.appwidgets.base.BaseAppWidget
@@ -22,7 +23,7 @@ import player.phonograph.service.MusicService
 import player.phonograph.ui.activities.MainActivity
 import player.phonograph.util.ImageUtil
 import player.phonograph.util.Util.getScreenSize
-import util.mddesign.util.MaterialColorHelper
+
 
 class AppWidgetBig : BaseAppWidget() {
     private var target: Target<Bitmap>? = null // for cancellation
@@ -68,7 +69,7 @@ class AppWidgetBig : BaseAppWidget() {
                 ImageUtil.getTintedVectorDrawable(
                     service,
                     playPauseRes,
-                    MaterialColorHelper.getPrimaryTextColor(service, false)
+                    getPrimaryTextColor(service, false)
                 )
             )
         )
@@ -80,7 +81,7 @@ class AppWidgetBig : BaseAppWidget() {
                 ImageUtil.getTintedVectorDrawable(
                     service,
                     R.drawable.ic_skip_next_white_24dp,
-                    MaterialColorHelper.getPrimaryTextColor(service, false)
+                    getPrimaryTextColor(service, false)
                 )
             )
         )
@@ -90,7 +91,7 @@ class AppWidgetBig : BaseAppWidget() {
                 ImageUtil.getTintedVectorDrawable(
                     service,
                     R.drawable.ic_skip_previous_white_24dp,
-                    MaterialColorHelper.getPrimaryTextColor(service, false)
+                    getPrimaryTextColor(service, false)
                 )
             )
         )

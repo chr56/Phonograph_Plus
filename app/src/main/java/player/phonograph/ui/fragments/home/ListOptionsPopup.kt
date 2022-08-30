@@ -18,11 +18,13 @@ import androidx.annotation.IdRes
 import androidx.core.view.forEachIndexed
 import androidx.core.view.get
 import androidx.core.view.iterator
+import mt.pref.ThemeColor
+import mt.util.color.getSecondaryTextColor
+import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.databinding.PopupWindowMainBinding
 import player.phonograph.model.sort.SortRef
 import player.phonograph.util.PhonographColorUtil
-import util.mdcolor.pref.ThemeColor
 
 class ListOptionsPopup private constructor(
     private val context: Context,
@@ -102,7 +104,7 @@ class ListOptionsPopup private constructor(
     private fun setUpColor() {
         // color
         val accentColor = ThemeColor.accentColor(context)
-        val textColor = ThemeColor.textColorSecondary(context)
+        val textColor = getSecondaryTextColor(context, !App.instance.nightMode)
         val widgetColor = ColorStateList(
             arrayOf(
                 intArrayOf(android.R.attr.state_enabled),

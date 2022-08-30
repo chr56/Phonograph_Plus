@@ -14,20 +14,21 @@ import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView
+import mt.util.color.getPrimaryTextColor
+import mt.util.color.getSecondaryTextColor
+import mt.util.color.isColorLight
 import player.phonograph.R
 import player.phonograph.adapter.base.MultiSelectAdapter
 import player.phonograph.adapter.base.MultiSelectionCabController
 import player.phonograph.adapter.base.UniversalMediaEntryViewHolder
 import player.phonograph.model.Displayable
-import util.mdcolor.ColorUtil
-import util.mddesign.util.MaterialColorHelper
 
 open class DisplayAdapter<I : Displayable>(
     protected val activity: AppCompatActivity,
     cabController: MultiSelectionCabController?,
     dataSet: List<I>,
     @LayoutRes var layoutRes: Int,
-    cfg: (DisplayAdapter<I>.() -> Unit)?
+    cfg: (DisplayAdapter<I>.() -> Unit)?,
 ) :
     MultiSelectAdapter<DisplayAdapter<I>.DisplayViewHolder, I>(activity, cabController), FastScrollRecyclerView.SectionedAdapter {
 
@@ -110,10 +111,10 @@ open class DisplayAdapter<I : Displayable>(
         holder.paletteColorContainer?.let { paletteColorContainer ->
             paletteColorContainer.setBackgroundColor(color)
             holder.title?.setTextColor(
-                MaterialColorHelper.getPrimaryTextColor(activity, ColorUtil.isColorLight(color))
+                getPrimaryTextColor(activity, isColorLight(color))
             )
             holder.text?.setTextColor(
-                MaterialColorHelper.getSecondaryTextColor(activity, ColorUtil.isColorLight(color))
+                getSecondaryTextColor(activity, isColorLight(color))
             )
         }
     }
@@ -145,6 +146,7 @@ open class DisplayAdapter<I : Displayable>(
             }
         }
     }
+
     protected open fun onLongClickItem(bindingAdapterPosition: Int, view: View): Boolean {
         return toggleChecked(bindingAdapterPosition)
     }

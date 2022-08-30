@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.AppBarLayout
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import mt.pref.ThemeColor
 import player.phonograph.App
 import player.phonograph.BuildConfig
 import player.phonograph.R
@@ -25,8 +26,7 @@ import player.phonograph.model.Displayable
 import player.phonograph.util.ImageUtil.getTintedDrawable
 import player.phonograph.util.Util
 import player.phonograph.util.ViewUtil.setUpFastScrollRecyclerViewColor
-import player.phonograph.views.StatusBarView
-import util.mdcolor.pref.ThemeColor
+
 
 /**
  * @param IT the model type that this fragment displays

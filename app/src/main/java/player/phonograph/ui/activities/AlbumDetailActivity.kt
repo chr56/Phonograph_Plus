@@ -20,6 +20,13 @@ import com.bumptech.glide.request.transition.Transition
 import com.google.android.material.appbar.AppBarLayout
 import lib.phonograph.cab.ToolbarCab
 import lib.phonograph.cab.createToolbarCab
+import mt.pref.ThemeColor.primaryColor
+import mt.tint.requireLightStatusbar
+import mt.tint.setActivityToolbarColorAuto
+import mt.tint.setNavigationBarColor
+import mt.util.color.getPrimaryTextColor
+import mt.util.color.getSecondaryTextColor
+import mt.util.color.isColorLight
 import player.phonograph.R
 import player.phonograph.adapter.base.MultiSelectionCabController
 import player.phonograph.adapter.display.AlbumSongDisplayAdapter
@@ -47,10 +54,6 @@ import player.phonograph.util.NavigationUtil.goToArtist
 import player.phonograph.util.NavigationUtil.openEqualizer
 import player.phonograph.util.PhonographColorUtil.getColor
 import player.phonograph.util.ViewUtil.setUpFastScrollRecyclerViewColor
-import util.mdcolor.ColorUtil
-import util.mdcolor.pref.ThemeColor
-import util.mddesign.core.Themer
-import util.mddesign.util.MaterialColorHelper
 import util.phonograph.tageditor.AbsTagEditorActivity
 import util.phonograph.tageditor.AlbumTagEditorActivity
 
@@ -86,7 +89,7 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity() {
         cabController = MultiSelectionCabController(cab)
 
         // activity
-        Themer.setActivityToolbarColorAuto(this, viewBinding.toolbar)
+        setActivityToolbarColorAuto(viewBinding.toolbar)
         setSupportActionBar(viewBinding.toolbar)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
 
@@ -134,16 +137,16 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity() {
     private fun updateColors(color: Int) {
         viewBinding.recyclerView.setUpFastScrollRecyclerViewColor(this, color)
         viewBinding.header.setBackgroundColor(color)
-        setNavigationbarColor(color)
+        setNavigationBarColor(color)
         setTaskDescriptionColor(color)
         viewBinding.toolbar.setBackgroundColor(color)
         setSupportActionBar(viewBinding.toolbar) // needed to auto readjust the toolbar content color
         setStatusbarColor(color)
-        val secondaryTextColor = MaterialColorHelper.getSecondaryTextColor(this, ColorUtil.isColorLight(color))
+        val secondaryTextColor = getSecondaryTextColor(this, isColorLight(color))
 
         val artistIcon = getTintedDrawable(R.drawable.ic_person_white_24dp, secondaryTextColor)!!
         viewBinding.artistText.setCompoundDrawablesWithIntrinsicBounds(artistIcon, null, null, null)
-        viewBinding.artistText.setTextColor(MaterialColorHelper.getPrimaryTextColor(this, ColorUtil.isColorLight(color)))
+        viewBinding.artistText.setTextColor(getPrimaryTextColor(this, isColorLight(color)))
         viewBinding.artistText.compoundDrawablePadding = 16
 
         val songCountIcon = getTintedDrawable(R.drawable.ic_music_note_white_24dp, secondaryTextColor)!!
@@ -178,7 +181,7 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity() {
                 .generatePalette(this).build()
                 .dontAnimate()
                 .into(object : BitmapPaletteTarget(viewBinding.image) {
-                    val defaultColor = ThemeColor.primaryColor(this@AlbumDetailActivity)
+                    val defaultColor = primaryColor(this@AlbumDetailActivity)
 
                     override fun onLoadFailed(errorDrawable: Drawable?) {
                         super.onLoadFailed(errorDrawable)
@@ -327,6 +330,6 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity() {
 
     override fun setStatusbarColor(color: Int) {
         super.setStatusbarColor(color)
-        setLightStatusbar(false)
+        requireLightStatusbar(false)
     }
 }

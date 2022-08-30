@@ -16,12 +16,12 @@ import com.afollestad.materialdialogs.customview.customView
 import com.afollestad.materialdialogs.customview.getCustomView
 import com.triggertrap.seekarc.SeekArc
 import lib.phonograph.view.CheckBoxX
+import mt.pref.ThemeColor.accentColor
 import player.phonograph.R
 import player.phonograph.model.getReadableDurationString
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.util.SleepTimer
 import player.phonograph.settings.Setting
-import util.mdcolor.pref.ThemeColor
 
 /**
  * @author Karim Abou Zeid (kabouzeid), chr_56<modify>
@@ -71,10 +71,10 @@ class SleepTimerDialog : DialogFragment() {
             .apply {
                 // set dialog button color
                 getActionButton(WhichButton.POSITIVE).updateTextColor(
-                    ThemeColor.accentColor(requireActivity())
+                    accentColor(requireActivity())
                 )
                 getActionButton(WhichButton.NEGATIVE).updateTextColor(
-                    ThemeColor.accentColor(requireActivity())
+                    accentColor(requireActivity())
                 )
             }
             .customView(viewRes = R.layout.dialog_sleep_timer, noVerticalPadding = true)
@@ -87,8 +87,8 @@ class SleepTimerDialog : DialogFragment() {
         timeDisplay = dialog.getCustomView().findViewById(R.id.timer_display)
 
         // init views : set seekArc color, size and progress
-        seekArc.progressColor = ThemeColor.accentColor(requireActivity())
-        seekArc.setThumbColor(ThemeColor.accentColor(requireActivity()))
+        seekArc.progressColor = accentColor(requireActivity())
+        seekArc.setThumbColor(accentColor(requireActivity()))
         seekArc.post {
             val width = seekArc.width
             val height = seekArc.height

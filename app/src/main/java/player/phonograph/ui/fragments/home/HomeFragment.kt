@@ -25,6 +25,10 @@ import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import lib.phonograph.cab.ToolbarCab
 import lib.phonograph.cab.createToolbarCab
+import mt.pref.ThemeColor
+import mt.util.color.getPrimaryTextColor
+import mt.util.color.getSecondaryTextColor
+import mt.util.color.isColorLight
 import player.phonograph.BuildConfig.DEBUG
 import player.phonograph.R
 import player.phonograph.adapter.HomePagerAdapter
@@ -38,9 +42,6 @@ import player.phonograph.ui.activities.MainActivity
 import player.phonograph.ui.activities.SearchActivity
 import player.phonograph.ui.fragments.AbsMainActivityFragment
 import player.phonograph.util.ImageUtil.getTintedDrawable
-import util.mdcolor.ColorUtil
-import util.mdcolor.pref.ThemeColor
-import util.mddesign.util.MaterialColorHelper
 
 class HomeFragment : AbsMainActivityFragment(), MainActivity.MainActivityFragmentCallbacks, SharedPreferences.OnSharedPreferenceChangeListener {
 
@@ -244,13 +245,13 @@ class HomeFragment : AbsMainActivityFragment(), MainActivity.MainActivityFragmen
     private val primaryColor by lazy(LazyThreadSafetyMode.NONE) { ThemeColor.primaryColor(requireActivity()) }
     private val accentColor by lazy(LazyThreadSafetyMode.NONE) { ThemeColor.accentColor(requireActivity()) }
     private val primaryTextColor by lazy(LazyThreadSafetyMode.NONE) {
-        MaterialColorHelper.getPrimaryTextColor(
-            mainActivity, ColorUtil.isColorLight(primaryColor)
+        getPrimaryTextColor(
+            mainActivity, isColorLight(primaryColor)
         )
     }
     private val secondaryTextColor by lazy(LazyThreadSafetyMode.NONE) {
-        MaterialColorHelper.getSecondaryTextColor(
-            mainActivity, ColorUtil.isColorLight(primaryColor)
+        getSecondaryTextColor(
+            mainActivity, isColorLight(primaryColor)
         )
     }
 

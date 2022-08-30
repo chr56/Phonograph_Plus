@@ -5,7 +5,6 @@
 package player.phonograph.service.notification
 
 import android.annotation.SuppressLint
-import android.app.Notification as OSNotification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
@@ -27,12 +26,14 @@ import android.text.TextUtils
 import android.view.View
 import android.widget.RemoteViews
 import androidx.annotation.RequiresApi
-import androidx.core.app.NotificationCompat as XNotificationCompat
 import androidx.media.app.NotificationCompat
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.target.Target
 import com.bumptech.glide.request.transition.Transition
+import mt.util.color.getPrimaryTextColor
+import mt.util.color.getSecondaryTextColor
+import mt.util.color.isColorLight
 import player.phonograph.App
 import player.phonograph.BuildConfig
 import player.phonograph.R
@@ -48,8 +49,8 @@ import player.phonograph.util.ImageUtil
 import player.phonograph.util.ImageUtil.copy
 import player.phonograph.util.PhonographColorUtil
 import player.phonograph.util.Util
-import util.mdcolor.ColorUtil
-import util.mddesign.util.MaterialColorHelper
+import android.app.Notification as OSNotification
+import androidx.core.app.NotificationCompat as XNotificationCompat
 
 class PlayingNotificationManger(private val service: MusicService) {
 
@@ -317,7 +318,7 @@ class PlayingNotificationManger(private val service: MusicService) {
                                         notificationLayoutBig
                                     )
                                     setNotificationContent(
-                                        ColorUtil.isColorLight(backgroundColor),
+                                        isColorLight(backgroundColor),
                                         notificationLayout,
                                         notificationLayoutBig
                                     )
@@ -343,8 +344,8 @@ class PlayingNotificationManger(private val service: MusicService) {
             notificationLayout: RemoteViews,
             notificationLayoutBig: RemoteViews
         ) {
-            val primary = MaterialColorHelper.getPrimaryTextColor(service, dark)
-            val secondary = MaterialColorHelper.getSecondaryTextColor(service, dark)
+            val primary = getPrimaryTextColor(service, dark)
+            val secondary = getSecondaryTextColor(service, dark)
 
             val prev = ImageUtil.createBitmap(
                 ImageUtil.getTintedVectorDrawable(

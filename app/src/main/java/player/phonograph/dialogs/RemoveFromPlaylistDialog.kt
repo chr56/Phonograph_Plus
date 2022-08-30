@@ -6,13 +6,12 @@ import androidx.fragment.app.DialogFragment
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.WhichButton
 import com.afollestad.materialdialogs.actions.getActionButton
-import java.util.*
 import legacy.phonograph.LegacyPlaylistsUtil
+import mt.pref.ThemeColor
 import player.phonograph.R
 import player.phonograph.model.PlaylistSong
 import player.phonograph.util.PlaylistsUtil
 import player.phonograph.util.StringUtil
-import util.mdcolor.pref.ThemeColor
 
 /**
  * @author Karim Abou Zeid (kabouzeid)

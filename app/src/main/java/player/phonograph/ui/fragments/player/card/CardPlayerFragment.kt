@@ -1,4 +1,3 @@
-
 package player.phonograph.ui.fragments.player.card
 
 import android.animation.Animator
@@ -17,6 +16,11 @@ import com.h6ah4i.android.widget.advrecyclerview.animator.GeneralItemAnimator
 import com.h6ah4i.android.widget.advrecyclerview.animator.RefactoredDefaultItemAnimator
 import com.sothree.slidinguppanel.SlidingUpPanelLayout
 import com.sothree.slidinguppanel.SlidingUpPanelLayout.PanelState
+import mt.util.color.darkenColor
+import mt.util.color.getSecondaryTextColor
+import mt.util.color.isColorLight
+import mt.util.color.resolveColor
+import player.phonograph.App
 import kotlin.math.max
 import player.phonograph.R
 import player.phonograph.adapter.base.MediaEntryViewHolder
@@ -31,9 +35,6 @@ import player.phonograph.ui.fragments.player.PlayerAlbumCoverFragment
 import player.phonograph.util.Util.isLandscape
 import player.phonograph.util.ViewUtil
 import player.phonograph.util.menu.MenuClickListener
-import util.mdcolor.ColorUtil
-import util.mdcolor.pref.ThemeColor
-import util.mddesign.util.Util
 
 class CardPlayerFragment :
     AbsPlayerFragment(),
@@ -52,7 +53,7 @@ class CardPlayerFragment :
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         impl = (if (isLandscape(resources)) LandscapeImpl(this) else PortraitImpl(this))
         _viewBinding = FragmentCardPlayerBinding.inflate(inflater)
@@ -76,7 +77,7 @@ class CardPlayerFragment :
 
         // for some reason the xml attribute doesn't get applied here.
         viewBinding.playingQueueCard.setCardBackgroundColor(
-            Util.resolveColor(activity, R.attr.cardBackgroundColor)
+            resolveColor(requireContext(), R.attr.cardBackgroundColor)
         )
     }
 
@@ -153,10 +154,10 @@ class CardPlayerFragment :
 
     override fun setUpCoverFragment() {
         playerAlbumCoverFragment = (
-            childFragmentManager.findFragmentById(
-                R.id.player_album_cover_fragment
-            ) as PlayerAlbumCoverFragment
-            )
+                childFragmentManager.findFragmentById(
+                    R.id.player_album_cover_fragment
+                ) as PlayerAlbumCoverFragment
+                )
             .apply { setCallbacks(this@CardPlayerFragment) }
     }
 
@@ -193,7 +194,7 @@ class CardPlayerFragment :
 
     override fun onColorChanged(color: Int) {
         animateColorChange(color)
-        playbackControlsFragment.setDark(ColorUtil.isColorLight(color))
+        playbackControlsFragment.setDark(isColorLight(color))
         callbacks!!.onPaletteColorChanged()
     }
 
@@ -284,10 +285,10 @@ class CardPlayerFragment :
                             play(
                                 ViewUtil.createTextColorTransition(
                                     fragment.viewBinding.playerQueueSubHeader,
-                                    if (ColorUtil.isColorLight(fragment.paletteColor)) ColorUtil.darkenColor(
+                                    if (isColorLight(fragment.paletteColor)) darkenColor(
                                         fragment.paletteColor
                                     ) else fragment.paletteColor,
-                                    if (ColorUtil.isColorLight(newColor)) ColorUtil.darkenColor(
+                                    if (isColorLight(newColor)) darkenColor(
                                         newColor
                                     ) else newColor
                                 )
@@ -301,7 +302,7 @@ class CardPlayerFragment :
         override fun animateColorChange(newColor: Int) {
             if (ViewUtil.isWindowBackgroundDarkSafe(fragment.activity)) {
                 fragment.viewBinding.playerQueueSubHeader.setTextColor(
-                    ThemeColor.textColorSecondary(fragment.requireActivity())
+                    getSecondaryTextColor(fragment.requireContext(), !App.instance.nightMode)
                 )
             }
         }
@@ -317,12 +318,10 @@ class CardPlayerFragment :
             currentSongViewHolder!!.shortSeparator!!.visibility = View.GONE
             currentSongViewHolder!!.image!!.scaleType = ImageView.ScaleType.CENTER
             currentSongViewHolder!!.image!!.setColorFilter(
-                Util.resolveColor(
-                    fragment.activity,
+                resolveColor(
+                    fragment.requireContext(),
                     R.attr.iconColor,
-                    ThemeColor.textColorSecondary(
-                        fragment.requireActivity()
-                    )
+                    getSecondaryTextColor(fragment.requireContext(), !App.instance.nightMode)
                 ),
                 PorterDuff.Mode.SRC_IN
             )
@@ -336,22 +335,22 @@ class CardPlayerFragment :
                 }
             }
             currentSongViewHolder!!.menu!!.setOnClickListener(object :
-                    MenuClickListener(
-                        (fragment.activity as AppCompatActivity),
-                        R.menu.menu_item_playing_queue_song
-                    ) {
-                    override val song: Song = MusicPlayerRemote.currentSong
+                MenuClickListener(
+                    (fragment.activity as AppCompatActivity),
+                    R.menu.menu_item_playing_queue_song
+                ) {
+                override val song: Song = MusicPlayerRemote.currentSong
 
-                    override fun onMenuItemClick(item: MenuItem): Boolean {
-                        when (item.itemId) {
-                            R.id.action_remove_from_playing_queue -> {
-                                MusicPlayerRemote.removeFromQueue(MusicPlayerRemote.position)
-                                return true
-                            }
+                override fun onMenuItemClick(item: MenuItem): Boolean {
+                    when (item.itemId) {
+                        R.id.action_remove_from_playing_queue -> {
+                            MusicPlayerRemote.removeFromQueue(MusicPlayerRemote.position)
+                            return true
                         }
-                        return fragment.onMenuItemClick(item)
                     }
-                })
+                    return fragment.onMenuItemClick(item)
+                }
+            })
         }
 
         override fun setUpPanelAndAlbumCoverHeight() {
@@ -424,10 +423,10 @@ class CardPlayerFragment :
                 .with(
                     ViewUtil.createBackgroundColorTransition(
                         fragment.requireView().findViewById(R.id.status_bar),
-                        ColorUtil.darkenColor(
+                        darkenColor(
                             fragment.paletteColor
                         ),
-                        ColorUtil.darkenColor(newColor)
+                        darkenColor(newColor)
                     )
                 )
             animatorSet.start()
