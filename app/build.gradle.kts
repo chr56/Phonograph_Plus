@@ -214,8 +214,10 @@ dependencies {
 
     implementation(Deps.google_material)
 
-    implementation(Deps.mdColor)
+    implementation(Deps.mdColorRes)
     implementation(Deps.mdUtil)
+    implementation(Deps.mdPref)
+    implementation(Deps.mdTint)
 
     implementation(Deps.android_menu_dsl)
     implementation(Deps.SeekArc)
