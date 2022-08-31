@@ -157,7 +157,7 @@ android {
                 variantName = variant.name,
                 isRelease = variant.buildType == "release",
                 appName = appName,
-                versionName = android.defaultConfig.versionName ?: "N/A",
+                versionName = (android.defaultConfig as com.android.build.api.dsl.ApplicationBaseFlavor).versionName ?: "N/A",
                 gitHash = getGitHash(true),
                 artifactsFiles = fileListToCopy
             )
