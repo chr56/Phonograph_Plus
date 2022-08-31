@@ -217,7 +217,7 @@ dependencies {
     implementation(Deps.mdColor)
     implementation(Deps.mdUtil)
 
-    implementation(Deps.Android_Menu_DSL)
+    implementation(Deps.android_menu_dsl)
     implementation(Deps.SeekArc)
     implementation(Deps.AndroidSlidingUpPanel_kabouzeid)
 
