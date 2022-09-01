@@ -1,7 +1,6 @@
 package player.phonograph.ui.activities
 
 import android.content.Context
-import android.graphics.Color
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -11,8 +10,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.github.chr56.android.menu_dsl.attach
 import com.github.chr56.android.menu_dsl.menuItem
 import kotlinx.coroutines.*
-import lib.phonograph.cab.*
+import lib.phonograph.cab.ToolbarCab
+import lib.phonograph.cab.createToolbarCab
 import mt.tint.setActivityToolbarColorAuto
+import mt.util.color.primaryTextColor
 import player.phonograph.R
 import player.phonograph.adapter.base.MultiSelectionCabController
 import player.phonograph.adapter.display.SongDisplayAdapter
@@ -89,8 +90,8 @@ class GenreDetailActivity :
 
     private fun setUpToolBar() {
         binding.toolbar.setBackgroundColor(primaryColor)
-        setActivityToolbarColorAuto(binding.toolbar)
         setSupportActionBar(binding.toolbar)
+        setActivityToolbarColorAuto(binding.toolbar)
         supportActionBar!!.title = genre.name
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
 
@@ -102,10 +103,11 @@ class GenreDetailActivity :
     lateinit var cabController: MultiSelectionCabController
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        val iconColor = primaryTextColor(primaryColor)
         attach(menu) {
             menuItem {
                 title = getString(R.string.action_shuffle_playlist)
-                icon = getTintedDrawable(R.drawable.ic_shuffle_white_24dp, Color.WHITE)
+                icon = getTintedDrawable(R.drawable.ic_shuffle_white_24dp, iconColor)
                 showAsActionFlag = MenuItem.SHOW_AS_ACTION_ALWAYS
                 onClick {
                     MusicPlayerRemote
@@ -116,7 +118,7 @@ class GenreDetailActivity :
 
             menuItem {
                 title = getString(R.string.action_play)
-                icon = getTintedDrawable(R.drawable.ic_play_arrow_white_24dp, Color.WHITE)
+                icon = getTintedDrawable(R.drawable.ic_play_arrow_white_24dp, iconColor)
                 showAsActionFlag = MenuItem.SHOW_AS_ACTION_ALWAYS
                 onClick {
                     MusicPlayerRemote
