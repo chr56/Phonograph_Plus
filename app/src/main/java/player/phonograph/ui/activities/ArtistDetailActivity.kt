@@ -24,12 +24,11 @@ import com.bumptech.glide.Glide
 import lib.phonograph.cab.ToolbarCab
 import lib.phonograph.cab.createToolbarCab
 import mt.tint.requireLightStatusbar
+import mt.tint.setActivityToolbarColor
+import mt.tint.setActivityToolbarColorAuto
 import mt.tint.setNavigationBarColor
-import mt.util.color.getSecondaryTextColor
-import mt.util.color.isColorLight
-import mt.util.color.resolveColor
-import mt.util.color.toolbarTitleColor
-import mt.util.color.withAlpha
+import mt.tint.viewtint.tintMenu
+import mt.util.color.*
 import player.phonograph.R
 import player.phonograph.adapter.base.MultiSelectionCabController
 import player.phonograph.adapter.legacy.ArtistSongAdapter
@@ -52,6 +51,7 @@ import player.phonograph.service.queue.ShuffleMode
 import player.phonograph.settings.Setting
 import player.phonograph.settings.Setting.Companion.isAllowedToDownloadMetadata
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
+import player.phonograph.util.ImageUtil.getTintedDrawable
 import player.phonograph.util.NavigationUtil.openEqualizer
 import retrofit2.Call
 import retrofit2.Callback
@@ -243,22 +243,16 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorHolder 
         viewBinding.header.setBackgroundColor(color)
         setNavigationBarColor(color)
         setTaskDescriptionColor(color)
-        viewBinding.toolbar.setBackgroundColor(color)
+
         setSupportActionBar(viewBinding.toolbar) // needed to auto readjust the toolbar content color
+        setActivityToolbarColor(viewBinding.toolbar, color)
         viewBinding.toolbar.setTitleTextColor(toolbarTitleColor(this, color))
+
         setStatusbarColor(color)
-        val secondaryTextColor = getSecondaryTextColor(this, isColorLight(color))
-        val f = BlendModeColorFilterCompat
-            .createBlendModeColorFilterCompat(secondaryTextColor, BlendModeCompat.SRC_IN)
-        viewBinding.durationIcon.setImageDrawable(AppCompatResources.getDrawable(this, R.drawable.ic_timer_white_24dp))
-        viewBinding.durationIcon.colorFilter = f
-        viewBinding.songCountIcon.setImageDrawable(AppCompatResources.getDrawable(this, R.drawable.ic_music_note_white_24dp))
-        viewBinding.songCountIcon.colorFilter = f
-        viewBinding.albumCountIcon.setImageDrawable(AppCompatResources.getDrawable(this, R.drawable.ic_album_white_24dp))
-        viewBinding.albumCountIcon.colorFilter = f
-        viewBinding.durationIcon.setColorFilter(secondaryTextColor, PorterDuff.Mode.SRC_IN)
-        viewBinding.songCountIcon.setColorFilter(secondaryTextColor, PorterDuff.Mode.SRC_IN)
-        viewBinding.albumCountIcon.setColorFilter(secondaryTextColor, PorterDuff.Mode.SRC_IN)
+        val secondaryTextColor = secondaryTextColor(color)
+        viewBinding.durationIcon.setImageDrawable(getTintedDrawable(R.drawable.ic_timer_white_24dp, secondaryTextColor))
+        viewBinding.songCountIcon.setImageDrawable(getTintedDrawable(R.drawable.ic_music_note_white_24dp, secondaryTextColor))
+        viewBinding.albumCountIcon.setImageDrawable(getTintedDrawable(R.drawable.ic_album_white_24dp, secondaryTextColor))
         viewBinding.durationText.setTextColor(secondaryTextColor)
         viewBinding.songCountText.setTextColor(secondaryTextColor)
         viewBinding.albumCountText.setTextColor(secondaryTextColor)
@@ -270,6 +264,7 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorHolder 
         setSupportActionBar(viewBinding.toolbar)
         supportActionBar?.title = null
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        setActivityToolbarColorAuto(viewBinding.toolbar)
         // MultiSelectionCab
         cab = createToolbarCab(this, R.id.cab_stub, R.id.multi_selection_cab)
         cabController = MultiSelectionCabController(cab)
@@ -278,6 +273,9 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorHolder 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_artist_detail, menu)
         menu.findItem(R.id.action_colored_footers).isChecked = usePalette
+        viewBinding.toolbar.apply {
+            tintMenu(this, menu, primaryTextColor(activityColor))
+        }
         return super.onCreateOptionsMenu(menu)
     }
 
