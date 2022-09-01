@@ -5,9 +5,9 @@
 package player.phonograph.actions
 
 import android.content.Context
-import android.graphics.Color
 import android.view.Menu
 import android.view.MenuItem
+import androidx.annotation.ColorInt
 import androidx.fragment.app.FragmentActivity
 import com.github.chr56.android.menu_dsl.attach
 import com.github.chr56.android.menu_dsl.menuItem
@@ -19,17 +19,21 @@ import player.phonograph.dialogs.AddToPlaylistDialog
 import player.phonograph.dialogs.ClearPlaylistDialog
 import player.phonograph.dialogs.RenamePlaylistDialog
 import player.phonograph.misc.SAFCallbackHandlerActivity
-import player.phonograph.model.playlist.*
+import player.phonograph.model.playlist.FilePlaylist
+import player.phonograph.model.playlist.Playlist
+import player.phonograph.model.playlist.PlaylistType
+import player.phonograph.model.playlist.ResettablePlaylist
+import player.phonograph.model.playlist.SmartPlaylist
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.queue.ShuffleMode
 import player.phonograph.util.ImageUtil.getTintedDrawable
 import util.phonograph.m3u.PlaylistsManager
 
-fun injectPlaylistDetail(menu: Menu, context: Context, playlist: Playlist) = context.run {
+fun injectPlaylistDetail(menu: Menu, context: Context, playlist: Playlist, @ColorInt iconColor: Int) = context.run {
     attach(menu) {
         menuItem {
             title = getString(R.string.action_shuffle_playlist)
-            icon = getTintedDrawable(R.drawable.ic_shuffle_white_24dp, Color.WHITE)
+            icon = getTintedDrawable(R.drawable.ic_shuffle_white_24dp, iconColor)
             showAsActionFlag = MenuItem.SHOW_AS_ACTION_ALWAYS
             onClick {
                 playlist.shuffleAndPlay(context)
@@ -38,14 +42,14 @@ fun injectPlaylistDetail(menu: Menu, context: Context, playlist: Playlist) = con
         }
         menuItem {
             title = getString(R.string.action_play)
-            icon = getTintedDrawable(R.drawable.ic_play_arrow_white_24dp, Color.WHITE)
+            icon = getTintedDrawable(R.drawable.ic_play_arrow_white_24dp, iconColor)
             showAsActionFlag = MenuItem.SHOW_AS_ACTION_ALWAYS
             onClick { playlist.play(context) }
         }
 
         menuItem {
             title = getString(R.string.refresh)
-            icon = getTintedDrawable(R.drawable.ic_refresh_white_24dp, Color.WHITE)
+            icon = getTintedDrawable(R.drawable.ic_refresh_white_24dp, iconColor)
             itemId = R.id.action_refresh
             showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
         }
@@ -135,7 +139,7 @@ fun injectPlaylistDetail(menu: Menu, context: Context, playlist: Playlist) = con
             menuItem {
                 itemId = R.id.action_setting_last_added_interval
                 title = getString(R.string.pref_title_last_added_interval)
-                icon = getTintedDrawable(R.drawable.ic_timer_white_24dp, Color.WHITE)
+                icon = getTintedDrawable(R.drawable.ic_timer_white_24dp, iconColor)
             }
         }
     }
