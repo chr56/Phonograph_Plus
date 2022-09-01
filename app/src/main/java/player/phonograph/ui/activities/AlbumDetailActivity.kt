@@ -24,9 +24,11 @@ import mt.pref.ThemeColor.primaryColor
 import mt.tint.requireLightStatusbar
 import mt.tint.setActivityToolbarColorAuto
 import mt.tint.setNavigationBarColor
+import mt.tint.viewtint.tintMenu
 import mt.util.color.getPrimaryTextColor
-import mt.util.color.getSecondaryTextColor
 import mt.util.color.isColorLight
+import mt.util.color.primaryTextColor
+import mt.util.color.secondaryTextColor
 import player.phonograph.R
 import player.phonograph.adapter.base.MultiSelectionCabController
 import player.phonograph.adapter.display.AlbumSongDisplayAdapter
@@ -89,9 +91,9 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity() {
         cabController = MultiSelectionCabController(cab)
 
         // activity
-        setActivityToolbarColorAuto(viewBinding.toolbar)
         setSupportActionBar(viewBinding.toolbar)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+        setActivityToolbarColorAuto(viewBinding.toolbar)
 
         // content
         setUpViews()
@@ -139,10 +141,14 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity() {
         viewBinding.header.setBackgroundColor(color)
         setNavigationBarColor(color)
         setTaskDescriptionColor(color)
+
+
         viewBinding.toolbar.setBackgroundColor(color)
         setSupportActionBar(viewBinding.toolbar) // needed to auto readjust the toolbar content color
         setStatusbarColor(color)
-        val secondaryTextColor = getSecondaryTextColor(this, isColorLight(color))
+        setActivityToolbarColorAuto(viewBinding.toolbar)
+
+        val secondaryTextColor = secondaryTextColor(color)
 
         val artistIcon = getTintedDrawable(R.drawable.ic_person_white_24dp, secondaryTextColor)!!
         viewBinding.artistText.setCompoundDrawablesWithIntrinsicBounds(artistIcon, null, null, null)
@@ -212,6 +218,9 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity() {
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_album_detail, menu)
+        viewBinding.toolbar.apply {
+            tintMenu(this, menu, primaryTextColor(activityColor))
+        }
         return super.onCreateOptionsMenu(menu)
     }
 
@@ -285,9 +294,10 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity() {
                 getActionButton(WhichButton.NEGATIVE).updateTextColor(accentColor)
             }
     }
+
     private fun showWikiDialog(
         wikiText: Spanned? = model.wikiText,
-        lastFMUrl: String? = model.lastFMUrl
+        lastFMUrl: String? = model.lastFMUrl,
     ) {
         wikiDialog.show {
             if (lastFMUrl != null) {
