@@ -67,8 +67,6 @@ class AboutActivity : ToolbarActivity(), View.OnClickListener {
         binding()
         mToolbar = binding.toolbar
 
-        setActivityToolbarColorAuto(mToolbar)
-
         setContentView(binding.root)
 
         setUpViews()
@@ -119,6 +117,7 @@ class AboutActivity : ToolbarActivity(), View.OnClickListener {
         mToolbar.setBackgroundColor(primaryColor)
         setSupportActionBar(mToolbar)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+        setActivityToolbarColorAuto(mToolbar)
     }
 
     @Keep

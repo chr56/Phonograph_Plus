@@ -43,8 +43,6 @@ class SearchActivity :
         viewBinding = ActivitySearchBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        setActivityToolbarColorAuto(binding.toolbar)
-
         binding.recyclerView.layoutManager = LinearLayoutManager(this)
 
         adapter = SearchAdapter(this, emptyList())
@@ -111,6 +109,7 @@ class SearchActivity :
         binding.toolbar.setBackgroundColor(primaryColor(this))
         setSupportActionBar(binding.toolbar)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+        setActivityToolbarColorAuto(binding.toolbar)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

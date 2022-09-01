@@ -91,9 +91,9 @@ class GenreDetailActivity :
     private fun setUpToolBar() {
         binding.toolbar.setBackgroundColor(primaryColor)
         setSupportActionBar(binding.toolbar)
-        setActivityToolbarColorAuto(binding.toolbar)
         supportActionBar!!.title = genre.name
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+        setActivityToolbarColorAuto(binding.toolbar)
 
         cab = createToolbarCab(this, R.id.cab_stub, R.id.multi_selection_cab)
         cabController = MultiSelectionCabController(cab)

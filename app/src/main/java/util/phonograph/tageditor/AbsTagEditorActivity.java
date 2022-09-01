@@ -42,6 +42,7 @@ import java.util.Map;
 import kotlin.Unit;
 import lib.phonograph.activity.ToolbarActivity;
 import mt.pref.ThemeColor;
+import mt.tint.ActivityColor;
 import mt.tint.viewtint.Auto;
 import player.phonograph.R;
 import player.phonograph.misc.SimpleObservableScrollViewCallbacks;
@@ -118,6 +119,7 @@ public abstract class AbsTagEditorActivity extends ToolbarActivity {
         //noinspection ConstantConditions
         getSupportActionBar().setTitle(null);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        ActivityColor.setActivityToolbarColorAuto(this, toolbar);
     }
 
     private void setUpViews() {
