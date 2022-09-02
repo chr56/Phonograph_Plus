@@ -21,7 +21,7 @@ if (isSigningFileExist) {
 }
 
 android {
-    compileSdk = 32
+    compileSdk = 33
     buildToolsVersion = "33.0.0"
     namespace = "player.phonograph"
 
@@ -33,7 +33,7 @@ android {
 
     defaultConfig {
         minSdk = 24
-        targetSdk = 32
+        targetSdk = 33
 
         renderscriptTargetApi = 29
         vectorDrawables.useSupportLibrary = true
