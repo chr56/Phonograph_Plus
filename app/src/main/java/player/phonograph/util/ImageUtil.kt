@@ -32,6 +32,7 @@ object ImageUtil {
             null
         }
 
+    @Deprecated("rm")
     fun calculateInSampleSize(width: Int, height: Int, reqWidth: Int): Int {
         // setting reqWidth matching to desired 1:1 ratio and screen-size
         val w: Int =
