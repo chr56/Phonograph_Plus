@@ -236,10 +236,6 @@ dependencies {
 
     implementation(Deps.coil)
 
-    implementation(Deps.glide)
-    annotationProcessor(Deps.glide_compiler)
-    implementation(Deps.glide_okhttp3_integration)
-
     implementation(Deps.licensesdialog)
     implementation(Deps.jaudiotagger)
     implementation(Deps.observablescrollview)

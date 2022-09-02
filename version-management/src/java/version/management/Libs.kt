@@ -35,11 +35,6 @@ object Deps {
 
     const val coil = "io.coil-kt:coil:2.1.0"
 
-    const val glideVersion = "4.12.0"
-    const val glide = "com.github.bumptech.glide:glide:$glideVersion"
-    const val glide_compiler = "com.github.bumptech.glide:compiler:$glideVersion"
-    const val glide_okhttp3_integration = "com.github.bumptech.glide:okhttp3-integration:$glideVersion"
-
     const val material_dialogs_version = "3.3.0"
     const val material_dialogs_core = "com.afollestad.material-dialogs:core:$material_dialogs_version"
     const val material_dialogs_input = "com.afollestad.material-dialogs:input:$material_dialogs_version"
