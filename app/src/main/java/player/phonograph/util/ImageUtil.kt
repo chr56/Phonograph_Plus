@@ -32,31 +32,6 @@ object ImageUtil {
             null
         }
 
-    @Deprecated("rm")
-    fun calculateInSampleSize(width: Int, height: Int, reqWidth: Int): Int {
-        // setting reqWidth matching to desired 1:1 ratio and screen-size
-        val w: Int =
-            if (width < height) {
-                height / width * reqWidth
-            } else {
-                width / height * reqWidth
-            }
-        var inSampleSize = 1
-        if (height > w || width > w) {
-            val halfHeight = height / 2
-            val halfWidth = width / 2
-
-            // Calculate the largest inSampleSize value that is a power of 2 and keeps both
-            // height and width larger than the requested height and width.
-            while (halfHeight / inSampleSize > w &&
-                halfWidth / inSampleSize > w
-            ) {
-                inSampleSize *= 2
-            }
-        }
-        return inSampleSize
-    }
-
     fun resizeBitmap(src: Bitmap, maxForSmallerSize: Int): Bitmap {
         val width = src.width
         val height = src.height
