@@ -29,6 +29,7 @@ import lib.phonograph.preference.dialog.ListPreferenceDialogFragmentCompatX
 import lib.phonograph.preference.dialog.PreferenceDialogFragmentX
 import player.phonograph.R
 import player.phonograph.appshortcuts.DynamicShortcutManager
+import player.phonograph.coil.IgnoreMediaStorePreference
 import player.phonograph.preferences.*
 import player.phonograph.settings.Setting
 import player.phonograph.util.NavigationUtil
@@ -311,6 +312,9 @@ class SettingsFragment : PreferenceFragmentCompat() {
                     },
                     1000
                 )
+            Setting.IGNORE_MEDIA_STORE_ARTWORK ->{
+                IgnoreMediaStorePreference.refresh()
+            }
         }
     }
 }
