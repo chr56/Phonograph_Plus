@@ -29,6 +29,7 @@ import player.phonograph.misc.UpdateToastMediaScannerCompletionListener
 import player.phonograph.model.file.FileEntity
 import player.phonograph.settings.Setting
 import player.phonograph.util.BlacklistUtil
+import player.phonograph.util.ImageUtil.getTintedDrawable
 import player.phonograph.util.menu.onMultiSongMenuItemClick
 import player.phonograph.util.menu.onSongMenuItemClick
 import util.mddesign.util.Util
@@ -120,21 +121,23 @@ class FileAdapter(
                         data(item.linkedSong)
                         target(
                             onStart = {
-                                image.setImageResource(
-                                    R.drawable.ic_file_music_white_24dp
+                                image.setImageDrawable(
+                                    image.context.getTintedDrawable(
+                                        R.drawable.ic_file_music_white_24dp,
+                                        Util.resolveColor(context, R.attr.iconColor)
+                                    )
                                 )
-                                val iconColor = Util.resolveColor(context, R.attr.iconColor)
-                                image.setColorFilter(iconColor, PorterDuff.Mode.SRC_IN)
                             },
                             onSuccess = { image.setImageDrawable(it) }
                         )
                     }
                 } else {
-                    image.setImageResource(
-                        R.drawable.ic_file_music_white_24dp
+                    image.setImageDrawable(
+                        image.context.getTintedDrawable(
+                            R.drawable.ic_file_music_white_24dp,
+                            Util.resolveColor(context, R.attr.iconColor)
+                        )
                     )
-                    val iconColor = Util.resolveColor(context, R.attr.iconColor)
-                    image.setColorFilter(iconColor, PorterDuff.Mode.SRC_IN)
                 }
             } else {
                 image.setImageResource(
