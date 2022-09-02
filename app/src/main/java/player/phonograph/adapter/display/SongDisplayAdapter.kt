@@ -6,14 +6,14 @@ package player.phonograph.adapter.display
 
 import android.graphics.drawable.Drawable
 import androidx.appcompat.app.AppCompatActivity
-import com.bumptech.glide.Glide
+import player.phonograph.R
 import player.phonograph.adapter.base.MultiSelectionCabController
-import player.phonograph.glide.PhonographColoredTarget
-import player.phonograph.glide.SongGlideRequest
-import player.phonograph.model.sort.SortRef
+import player.phonograph.coil.loadImage
+import player.phonograph.coil.target.PhonographColoredTarget
 import player.phonograph.model.Song
 import player.phonograph.model.getReadableDurationString
 import player.phonograph.model.getYearString
+import player.phonograph.model.sort.SortRef
 import player.phonograph.settings.Setting
 import player.phonograph.util.MusicUtil
 import java.text.SimpleDateFormat
@@ -24,25 +24,30 @@ open class SongDisplayAdapter(
     cabController: MultiSelectionCabController?,
     dataSet: List<Song>,
     layoutRes: Int,
-    cfg: (DisplayAdapter<Song>.() -> Unit)?
+    cfg: (DisplayAdapter<Song>.() -> Unit)?,
 ) : DisplayAdapter<Song>(activity, cabController, dataSet, layoutRes, cfg) {
 
     override fun setImage(holder: DisplayViewHolder, position: Int) {
         holder.image?.let {
-            SongGlideRequest.Builder.from(Glide.with(activity), dataset[position])
-                .checkIgnoreMediaStore(activity)
-                .generatePalette(activity).build()
-                .into(object : PhonographColoredTarget(holder.image) {
-                    override fun onLoadCleared(placeholder: Drawable?) {
-                        super.onLoadCleared(placeholder)
-                        setPaletteColors(defaultFooterColor, holder)
-                    }
+            loadImage(context) {
+                data(dataset[position])
+                target(
+                    object : PhonographColoredTarget() {
+                        override fun onStart(placeholder: Drawable?) {
+                            it.setImageResource(R.drawable.default_album_art)
+                            setPaletteColors(defaultFooterColor, holder)
+                        }
 
-                    override fun onColorReady(color: Int) {
-                        if (usePalette) setPaletteColors(color, holder)
-                        else setPaletteColors(defaultFooterColor, holder)
+                        override fun onResourcesReady(drawable: Drawable) {
+                            it.setImageDrawable(drawable)
+                        }
+
+                        override fun onColorReady(color: Int) {
+                            if (usePalette) setPaletteColors(color, holder)
+                        }
                     }
-                })
+                )
+            }
         }
     }
 
@@ -55,8 +60,10 @@ open class SongDisplayAdapter(
                 SortRef.ALBUM_NAME -> MusicUtil.getSectionName(song.albumName)
                 SortRef.YEAR -> getYearString(song.year)
                 SortRef.DURATION -> getReadableDurationString(song.duration)
-                SortRef.MODIFIED_DATE -> SimpleDateFormat("yy.MM.dd", Locale.getDefault()).format(song.dateModified * 1000)
-                SortRef.ADDED_DATE -> SimpleDateFormat("yy.MM.dd", Locale.getDefault()).format(song.dateAdded * 1000)
+                SortRef.MODIFIED_DATE ->
+                    SimpleDateFormat("yy.MM.dd", Locale.getDefault()).format(song.dateModified * 1000)
+                SortRef.ADDED_DATE ->
+                    SimpleDateFormat("yy.MM.dd", Locale.getDefault()).format(song.dateAdded * 1000)
                 else -> ""
             }
         return sectionName

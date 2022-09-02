@@ -2,6 +2,7 @@ package player.phonograph.adapter
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,14 +11,13 @@ import android.widget.ImageView
 import androidx.collection.LruCache
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import com.bumptech.glide.Glide
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
+import player.phonograph.R
+import player.phonograph.coil.loadImage
+import player.phonograph.coil.target.PhonographColoredTarget
 import player.phonograph.databinding.FragmentAlbumCoverBinding
-import player.phonograph.glide.CustomPaletteTarget
-import player.phonograph.glide.SongGlideRequest
-import player.phonograph.glide.palette.BitmapPaletteWrapper
 import player.phonograph.model.Song
 import player.phonograph.settings.Setting
 import player.phonograph.util.CoroutineUtil
@@ -27,7 +27,7 @@ import player.phonograph.util.CoroutineUtil
  */
 class AlbumCoverPagerAdapter(
     val fragment: Fragment,
-    dataSet: List<Song>
+    dataSet: List<Song>,
 ) :
     FragmentStateAdapter(fragment) {
 
@@ -39,6 +39,7 @@ class AlbumCoverPagerAdapter(
 
     override fun createFragment(position: Int): Fragment =
         AlbumCoverFragment.newInstance(dataSet[position], ::putColor)
+
     override fun getItemCount(): Int = dataSet.size
 
     private val colorCache: LruCache<Song, Int> = LruCache(6)
@@ -68,7 +69,7 @@ class AlbumCoverPagerAdapter(
         override fun onCreateView(
             inflater: LayoutInflater,
             container: ViewGroup?,
-            savedInstanceState: Bundle?
+            savedInstanceState: Bundle?,
         ): View {
             _binding = FragmentAlbumCoverBinding.inflate(LayoutInflater.from(context))
             return binding.root
@@ -121,25 +122,32 @@ class AlbumCoverPagerAdapter(
                 context: Context,
                 song: Song,
                 target: ImageView?,
-                colorCallback: (Song, Int) -> Unit
+                colorCallback: (Song, Int) -> Unit,
             ) {
-                SongGlideRequest.Builder.from(Glide.with(context), song)
-                    .checkIgnoreMediaStore(context)
-                    .generatePalette(context).build()
-                    .into(object : CustomPaletteTarget(context) {
-                        override fun onResourceReady(resource: BitmapPaletteWrapper) {
-                            target?.setImageBitmap(resource.bitmap)
+                loadImage(context)
+                    .from(song)
+                    .into(object : PhonographColoredTarget() {
+                        override fun onStart(placeholder: Drawable?) {
+                            super.onStart(placeholder)
+                            target?.setImageResource(R.drawable.default_album_art)
                         }
+
+                        override fun onResourcesReady(drawable: Drawable) {
+                            target?.setImageDrawable(drawable)
+                        }
+
                         override fun onColorReady(color: Int) {
                             colorCallback(song, color)
                         }
+
                     })
+                    .enqueue()
             }
 
             suspend fun loadImage(
                 context: Context,
                 song: Song,
-                target: ImageView?
+                target: ImageView?,
             ): Pair<Song, Int> =
                 withContext(SupervisorJob()) {
                     async {

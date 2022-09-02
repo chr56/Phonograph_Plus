@@ -9,14 +9,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
-import com.bumptech.glide.Glide
 import player.phonograph.R
 import player.phonograph.adapter.base.MultiSelectionCabController
-import player.phonograph.glide.PhonographColoredTarget
-import player.phonograph.glide.SongGlideRequest
-import player.phonograph.model.sort.SortRef
+import player.phonograph.coil.loadImage
+import player.phonograph.coil.target.PhonographColoredTarget
 import player.phonograph.model.Album
 import player.phonograph.model.getYearString
+import player.phonograph.model.sort.SortRef
 import player.phonograph.settings.Setting
 import player.phonograph.util.MusicUtil
 
@@ -30,20 +29,25 @@ class AlbumDisplayAdapter(
 
     override fun setImage(holder: DisplayViewHolder, position: Int) {
         holder.image?.let {
-            SongGlideRequest.Builder.from(Glide.with(activity), dataset[position].safeGetFirstSong())
-                .checkIgnoreMediaStore(activity)
-                .generatePalette(activity).build()
-                .into(object : PhonographColoredTarget(holder.image) {
-                    override fun onLoadCleared(placeholder: Drawable?) {
-                        super.onLoadCleared(placeholder)
-                        setPaletteColors(defaultFooterColor, holder)
-                    }
+            loadImage(activity) {
+                data(dataset[position].safeGetFirstSong())
+                target(
+                    object : PhonographColoredTarget() {
+                        override fun onStart(placeholder: Drawable?) {
+                            it.setImageResource(R.drawable.default_album_art)
+                            setPaletteColors(defaultFooterColor, holder)
+                        }
 
-                    override fun onColorReady(color: Int) {
-                        if (usePalette) setPaletteColors(color, holder)
-                        else setPaletteColors(defaultFooterColor, holder)
+                        override fun onResourcesReady(drawable: Drawable) {
+                            it.setImageDrawable(drawable)
+                        }
+
+                        override fun onColorReady(color: Int) {
+                            if (usePalette) setPaletteColors(color, holder)
+                        }
                     }
-                })
+                )
+            }
         }
     }
 

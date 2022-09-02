@@ -28,27 +28,29 @@ import android.view.View
 import android.widget.RemoteViews
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat as XNotificationCompat
+import androidx.core.graphics.drawable.toBitmap
 import androidx.media.app.NotificationCompat
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.target.CustomTarget
-import com.bumptech.glide.request.target.Target
-import com.bumptech.glide.request.transition.Transition
+import androidx.palette.graphics.Palette
+import coil.Coil
+import coil.request.Disposable
+import coil.request.ImageRequest
+import coil.size.Size
+import kotlinx.coroutines.Deferred
 import player.phonograph.App
 import player.phonograph.BuildConfig
 import player.phonograph.R
-import player.phonograph.glide.BlurTransformation
-import player.phonograph.glide.SongGlideRequest
-import player.phonograph.glide.palette.BitmapPaletteWrapper
+import player.phonograph.coil.BlurTransformation
+import player.phonograph.coil.target.ColoredTarget
 import player.phonograph.model.Song
 import player.phonograph.service.MusicService
 import player.phonograph.service.util.MediaButtonIntentReceiver
 import player.phonograph.settings.Setting
 import player.phonograph.ui.activities.MainActivity
 import player.phonograph.util.ImageUtil
-import player.phonograph.util.ImageUtil.copy
-import player.phonograph.util.PhonographColorUtil
+import player.phonograph.util.PaletteUtil.getColor
 import player.phonograph.util.Util
 import util.mdcolor.ColorUtil
+import util.mdcolor.pref.ThemeColor
 import util.mddesign.util.MaterialColorHelper
 
 class PlayingNotificationManger(private val service: MusicService) {
@@ -120,7 +122,7 @@ class PlayingNotificationManger(private val service: MusicService) {
     }
 
     inner class Impl24 : Impl {
-        private var target: CustomTarget<BitmapPaletteWrapper>? = null
+        var request: Disposable? = null
 
         @Synchronized
         override fun update(song: Song) {
@@ -176,55 +178,41 @@ class PlayingNotificationManger(private val service: MusicService) {
             postNotification(notificationBuilder.build())
 
             // then try to load cover image
+            val loader = Coil.imageLoader(service)
+            val imageRequest =
+                ImageRequest.Builder(service)
+                    .data(song)
+                    .size(bigNotificationImageSize)
+                    .target(object : ColoredTarget() {
+                        override fun onReady(drawable: Drawable, palette: Deferred<Palette>?) {
+                            palette?.getColor(ThemeColor.primaryColor(service)) {
+                                updateCover(drawable, it)
+                            }
+                        }
+
+                        fun updateCover(drawable: Drawable?, color: Int) {
+                            val bitmap: Bitmap = drawable?.toBitmap() ?: defaultCover
+                            notificationBuilder
+                                .setLargeIcon(bitmap)
+                                .also { builder ->
+                                    if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.O && Setting.instance.coloredNotification) {
+                                        builder.color = color
+                                    }
+                                }
+                            postNotification(notificationBuilder.build())
+                        }
+                    })
+                    .build()
 
             uiHandler.post {
-                if (target != null) {
-                    Glide.with(service).clear(target)
-                }
-                target = SongGlideRequest.Builder
-                    .from(Glide.with(service), song)
-                    .checkIgnoreMediaStore(service)
-                    .generatePalette(service).build()
-                    .into(object : CustomTarget<BitmapPaletteWrapper>(
-                        bigNotificationImageSize,
-                        bigNotificationImageSize
-                    ) {
-
-                            override fun onResourceReady(
-                                resource: BitmapPaletteWrapper,
-                                transition: Transition<in BitmapPaletteWrapper>?
-                            ) {
-                                updateCover(
-                                    resource.bitmap,
-                                    PhonographColorUtil.getColor(
-                                        resource.palette,
-                                        Color.TRANSPARENT
-                                    )
-                                )
-                            }
-
-                            override fun onLoadFailed(errorDrawable: Drawable?) {
-                                updateCover(null, Color.TRANSPARENT)
-                            }
-
-                            override fun onLoadCleared(placeholder: Drawable?) {
-                                updateCover(null, Color.WHITE)
-                            }
-
-                            fun updateCover(bitmap: Bitmap?, color: Int) {
-                                notificationBuilder
-                                    .setLargeIcon(bitmap ?: defaultCover)
-                                    .also { builder ->
-                                        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.O && Setting.instance.coloredNotification) builder.color = color
-                                    }
-                                postNotification(notificationBuilder.build())
-                            }
-                        })
+                request?.dispose()
+                request = loader.enqueue(imageRequest)
             }
         }
     }
+
     inner class Impl0 : Impl {
-        private var target: Target<BitmapPaletteWrapper>? = null
+        var request: Disposable? = null
 
         @Synchronized
         override fun update(song: Song) {
@@ -271,68 +259,50 @@ class PlayingNotificationManger(private val service: MusicService) {
             postNotification(notificationBuilder.build())
 
             // then try to load cover image
+            val loader = Coil.imageLoader(service)
+            val imageRequest = ImageRequest.Builder(service)
+                .data(song)
+                .size(bigNotificationImageSize)
+                .target(object : ColoredTarget() {
+                    override fun onReady(drawable: Drawable, palette: Deferred<Palette>?) {
+                        palette?.getColor(ThemeColor.primaryColor(service)) {
+                            updateCover(drawable, it)
+                        }
+                    }
+
+                    private fun updateCover(drawable: Drawable?, backgroundColor: Int) {
+                        val bitmap: Bitmap? = drawable?.toBitmap()
+                        if (bitmap != null) {
+                            notificationLayout.setImageViewBitmap(R.id.image, bitmap)
+                            notificationLayoutBig.setImageViewBitmap(R.id.image, bitmap)
+                        }
+                        if (Setting.instance.coloredNotification) {
+                            setBackgroundColor(
+                                backgroundColor,
+                                notificationLayout,
+                                notificationLayoutBig
+                            )
+                            setNotificationContent(
+                                ColorUtil.isColorLight(backgroundColor),
+                                notificationLayout,
+                                notificationLayoutBig
+                            )
+                        }
+                        postNotification(notificationBuilder.build())
+                    }
+                })
+                .build()
 
             uiHandler.post {
-                if (target != null) {
-                    Glide.with(service).clear(target)
-                }
-
-                target = SongGlideRequest.Builder.from(Glide.with(service), song)
-                    .checkIgnoreMediaStore(service).generatePalette(service).build()
-                    .into(object : CustomTarget<BitmapPaletteWrapper>(
-                        bigNotificationImageSize,
-                        bigNotificationImageSize
-                    ) {
-
-                            override fun onResourceReady(
-                                resource: BitmapPaletteWrapper,
-                                transition: Transition<in BitmapPaletteWrapper>?
-                            ) {
-                                updateCover(
-                                    resource.bitmap,
-                                    PhonographColorUtil.getColor(
-                                        resource.palette,
-                                        Color.TRANSPARENT
-                                    )
-                                )
-                            }
-
-                            override fun onLoadFailed(errorDrawable: Drawable?) {
-                                updateCover(null, Color.WHITE)
-                            }
-
-                            override fun onLoadCleared(placeholder: Drawable?) {
-                                updateCover(null, Color.WHITE)
-                            }
-
-                            private fun updateCover(bitmap: Bitmap?, backgroundColor: Int) {
-                                if (bitmap != null) {
-                                    notificationLayout.setImageViewBitmap(R.id.image, bitmap)
-                                    notificationLayoutBig.setImageViewBitmap(R.id.image, bitmap)
-                                }
-                                if (Setting.instance.coloredNotification) {
-                                    setBackgroundColor(
-                                        backgroundColor,
-                                        notificationLayout,
-                                        notificationLayoutBig
-                                    )
-                                    setNotificationContent(
-                                        ColorUtil.isColorLight(backgroundColor),
-                                        notificationLayout,
-                                        notificationLayoutBig
-                                    )
-                                }
-
-                                postNotification(notificationBuilder.build())
-                            }
-                        })
+                request?.dispose()
+                request = loader.enqueue(imageRequest)
             }
         }
 
         private fun setBackgroundColor(
             color: Int,
             notificationLayout: RemoteViews,
-            notificationLayoutBig: RemoteViews
+            notificationLayoutBig: RemoteViews,
         ) {
             notificationLayout.setInt(R.id.root, "setBackgroundColor", color)
             notificationLayoutBig.setInt(R.id.root, "setBackgroundColor", color)
@@ -341,7 +311,7 @@ class PlayingNotificationManger(private val service: MusicService) {
         private fun setNotificationContent(
             dark: Boolean,
             notificationLayout: RemoteViews,
-            notificationLayoutBig: RemoteViews
+            notificationLayoutBig: RemoteViews,
         ) {
             val primary = MaterialColorHelper.getPrimaryTextColor(service, dark)
             val secondary = MaterialColorHelper.getSecondaryTextColor(service, dark)
@@ -464,7 +434,7 @@ class PlayingNotificationManger(private val service: MusicService) {
         @Suppress("DEPRECATION")
         mediaSession.setFlags(
             MediaSessionCompat.FLAG_HANDLES_TRANSPORT_CONTROLS
-                or MediaSessionCompat.FLAG_HANDLES_MEDIA_BUTTONS
+                    or MediaSessionCompat.FLAG_HANDLES_MEDIA_BUTTONS
         )
         mediaSession.setMediaButtonReceiver(mediaButtonReceiverPendingIntent)
     }
@@ -473,12 +443,12 @@ class PlayingNotificationManger(private val service: MusicService) {
         PlaybackStateCompat.Builder()
             .setActions(
                 PlaybackStateCompat.ACTION_PLAY
-                    or PlaybackStateCompat.ACTION_PAUSE
-                    or PlaybackStateCompat.ACTION_PLAY_PAUSE
-                    or PlaybackStateCompat.ACTION_SKIP_TO_NEXT
-                    or PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS
-                    or PlaybackStateCompat.ACTION_STOP
-                    or PlaybackStateCompat.ACTION_SEEK_TO
+                        or PlaybackStateCompat.ACTION_PAUSE
+                        or PlaybackStateCompat.ACTION_PLAY_PAUSE
+                        or PlaybackStateCompat.ACTION_SKIP_TO_NEXT
+                        or PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS
+                        or PlaybackStateCompat.ACTION_STOP
+                        or PlaybackStateCompat.ACTION_SEEK_TO
             )
     }
 
@@ -520,39 +490,31 @@ class PlayingNotificationManger(private val service: MusicService) {
 
         if (Setting.instance.albumArtOnLockscreen) {
             val screenSize = Util.getScreenSize(service)
-            val request = SongGlideRequest.Builder.from(Glide.with(service), song)
-                .checkIgnoreMediaStore(service)
-                .asBitmap().build().also {
-                    if (Setting.instance.blurredAlbumArt) it.transform(
-                        BlurTransformation.Builder(service).build()
-                    )
-                }
-
-            uiHandler.post {
-                request.into(
-                    object : CustomTarget<Bitmap>(screenSize.x, screenSize.y) {
-
-                        override fun onLoadFailed(errorDrawable: Drawable?) {
-                            super.onLoadFailed(errorDrawable)
-                            mediaSession.setMetadata(metaData.build())
-                        }
-
-                        override fun onResourceReady(
-                            resource: Bitmap,
-                            transition: Transition<in Bitmap>?
-                        ) {
+            val loader = Coil.imageLoader(service)
+            val imageRequest =
+                ImageRequest.Builder(service)
+                    .data(song)
+                    .size(Size(screenSize.x, screenSize.y))
+                    .target(
+                        onSuccess = {
                             metaData.putBitmap(
                                 METADATA_KEY_ALBUM_ART,
-                                resource.copy()
+                                it.toBitmap()
                             )
                             mediaSession.setMetadata(metaData.build())
+                        },
+                        onError = {
+                            mediaSession.setMetadata(metaData.build())
                         }
-
-                        override fun onLoadCleared(placeholder: Drawable?) {
-                            mediaSession.setMetadata(metaData.build()) // todo check leakage
-                        }
+                    )
+                    .apply {
+                        if (Setting.instance.blurredAlbumArt) transformations(
+                            BlurTransformation(service)
+                        )
                     }
-                )
+                    .build()
+            uiHandler.post {
+                loader.enqueue(imageRequest)
             }
         } else {
             mediaSession.setMetadata(metaData.build())
@@ -579,19 +541,21 @@ class PlayingNotificationManger(private val service: MusicService) {
     /**
      * PendingIntent to launch MainActivity
      */
-    private val clickPendingIntent: PendingIntent get() = PendingIntent.getActivity(
-        service,
-        0,
-        Intent(service, MainActivity::class.java).apply { flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP },
-        PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_CANCEL_CURRENT
-    )
+    private val clickPendingIntent: PendingIntent
+        get() = PendingIntent.getActivity(
+            service,
+            0,
+            Intent(service, MainActivity::class.java).apply { flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP },
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_CANCEL_CURRENT
+        )
 
     /**
      * PendingIntent to quit/stop
      */
-    private val deletePendingIntent get() = buildPlaybackPendingIntent(
-        MusicService.ACTION_STOP_AND_QUIT_NOW
-    )
+    private val deletePendingIntent
+        get() = buildPlaybackPendingIntent(
+            MusicService.ACTION_STOP_AND_QUIT_NOW
+        )
 
     private val uiHandler: Handler by lazy { Handler(Looper.getMainLooper()) }
 

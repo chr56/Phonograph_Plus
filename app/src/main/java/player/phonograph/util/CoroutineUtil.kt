@@ -7,9 +7,11 @@ package player.phonograph.util
 import android.content.Context
 import android.widget.Toast
 import androidx.annotation.StringRes
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.yield
+import player.phonograph.notification.ErrorNotification
 
 object CoroutineUtil {
 
@@ -37,4 +39,12 @@ object CoroutineUtil {
         }
         class Wrapper<T>(var content: T?)
     }
+
+    fun createDefaultExceptionHandler(TAG: String, defaultMessageHeader: String = "Error!"): CoroutineExceptionHandler =
+        CoroutineExceptionHandler { _, exception ->
+            ErrorNotification.postErrorNotification(
+                exception,
+                "$defaultMessageHeader:${exception.message}"
+            )
+        }
 }

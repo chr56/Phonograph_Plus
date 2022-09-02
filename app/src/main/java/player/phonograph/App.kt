@@ -8,9 +8,12 @@ import android.os.Build
 import android.os.Process
 import android.util.Log
 import androidx.appcompat.content.res.AppCompatResources
+import coil.ImageLoader
+import coil.ImageLoaderFactory
 import kotlin.system.exitProcess
 import lib.phonograph.localization.ContextLocaleDelegate
 import player.phonograph.appshortcuts.DynamicShortcutManager
+import player.phonograph.coil.createPhonographImageLoader
 import player.phonograph.notification.ErrorNotification
 import player.phonograph.service.queue.QueueManager
 import player.phonograph.ui.activities.CrashActivity
@@ -19,7 +22,7 @@ import util.mdcolor.pref.ThemeColor
 /**
  * @author Karim Abou Zeid (kabouzeid)
  */
-class App : Application() {
+class App : Application(), ImageLoaderFactory {
 
     val lyricsService: StatusBarLyric.API.StatusBarLyric by lazy {
         // StatusBar Lyrics API
@@ -58,7 +61,10 @@ class App : Application() {
     }
 
     override fun onCreate() {
-        if (BuildConfig.DEBUG) Log.v("Metrics", "${System.currentTimeMillis().mod(10000000)} App.onCreate()")
+        if (BuildConfig.DEBUG) Log.v(
+            "Metrics",
+            "${System.currentTimeMillis().mod(10000000)} App.onCreate()"
+        )
         super.onCreate()
         instance = this
 
@@ -109,4 +115,7 @@ class App : Application() {
         const val PACKAGE_NAME = "player.phonograph"
         const val ACTUAL_PACKAGE_NAME = BuildConfig.APPLICATION_ID
     }
+
+    // for coil ImageLoader singleton
+    override fun newImageLoader(): ImageLoader = createPhonographImageLoader(this)
 }

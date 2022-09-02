@@ -10,16 +10,17 @@ import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.util.Pair
-import com.bumptech.glide.Glide
+import androidx.palette.graphics.Palette
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView.SectionedAdapter
+import kotlinx.coroutines.Deferred
 import player.phonograph.R
 import player.phonograph.adapter.base.MediaEntryViewHolder
 import player.phonograph.adapter.base.MultiSelectAdapter
 import player.phonograph.adapter.base.MultiSelectionCabController
-import player.phonograph.glide.PhonographColoredTarget
-import player.phonograph.glide.SongGlideRequest
-import player.phonograph.model.sort.SortRef
+import player.phonograph.coil.loadImage
+import player.phonograph.coil.target.PhonographColoredTarget
 import player.phonograph.model.*
+import player.phonograph.model.sort.SortRef
 import player.phonograph.settings.Setting
 import player.phonograph.util.MusicUtil
 import player.phonograph.util.NavigationUtil
@@ -97,22 +98,24 @@ open class AlbumAdapter(
 
     protected open fun loadAlbumCover(album: Album, holder: ViewHolder) {
         if (holder.image == null) return
-        SongGlideRequest.Builder.from(Glide.with(activity), album.safeGetFirstSong())
-            .checkIgnoreMediaStore(activity)
-            .generatePalette(activity).build()
-            .into(object : PhonographColoredTarget(holder.image) {
-                override fun onLoadCleared(placeholder: Drawable?) {
-                    super.onLoadCleared(placeholder)
+        loadImage(context) {
+            data(album.safeGetFirstSong())
+            target(object : PhonographColoredTarget() {
+                override fun onStart(placeholder: Drawable?) {
+                    super.onStart(placeholder)
+                    holder.image!!.setImageResource(R.drawable.default_album_art)
                     setColors(defaultFooterColor, holder)
                 }
 
+                override fun onResourcesReady(drawable: Drawable) {
+                    holder.image!!.setImageDrawable(drawable)
+                }
+
                 override fun onColorReady(color: Int) {
-                    if (usePalette) setColors(color, holder) else setColors(
-                        defaultFooterColor,
-                        holder
-                    )
+                    if (usePalette) setColors(color, holder)
                 }
             })
+        }
     }
 
     override fun getItemCount(): Int = dataSet.size

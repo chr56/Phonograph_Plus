@@ -6,11 +6,10 @@ import android.view.View
 import android.view.ViewGroup.MarginLayoutParams
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
-import com.bumptech.glide.Glide
 import player.phonograph.R
 import player.phonograph.adapter.base.MultiSelectionCabController
-import player.phonograph.glide.PhonographColoredTarget
-import player.phonograph.glide.SongGlideRequest
+import player.phonograph.coil.loadImage
+import player.phonograph.coil.target.PhonographColoredTarget
 import player.phonograph.model.Album
 import player.phonograph.model.getYearString
 import util.mdcolor.ColorUtil
@@ -23,7 +22,7 @@ class HorizontalAlbumAdapter(
     activity: AppCompatActivity,
     dataSet: List<Album>,
     usePalette: Boolean,
-    cabController: MultiSelectionCabController
+    cabController: MultiSelectionCabController,
 ) : AlbumAdapter(activity, dataSet, LAYOUT_RES, usePalette, cabController) {
 
     override fun createViewHolder(view: View, viewType: Int): ViewHolder {
@@ -54,22 +53,25 @@ class HorizontalAlbumAdapter(
 
     override fun loadAlbumCover(album: Album, holder: ViewHolder) {
         if (holder.image == null) return
-        SongGlideRequest.Builder.from(Glide.with(activity), album.safeGetFirstSong())
-            .checkIgnoreMediaStore(activity)
-            .generatePalette(activity).build()
-            .into(object : PhonographColoredTarget(holder.image) {
-                override fun onLoadCleared(placeholder: Drawable?) {
-                    super.onLoadCleared(placeholder)
-                    setColors(albumArtistFooterColor, holder)
+        loadImage(context) {
+            data(album.safeGetFirstSong())
+            target(object : PhonographColoredTarget() {
+
+                override fun onStart(placeholder: Drawable?) {
+                    super.onStart(placeholder)
+                    holder.image!!.setImageResource(R.drawable.default_album_art)
+                    setColors(defaultFooterColor, holder)
+                }
+
+                override fun onResourcesReady(drawable: Drawable) {
+                    holder.image!!.setImageDrawable(drawable)
                 }
 
                 override fun onColorReady(color: Int) {
-                    if (usePalette) setColors(color, holder) else setColors(
-                        albumArtistFooterColor,
-                        holder
-                    )
+                    if (usePalette) setColors(color, holder)
                 }
             })
+        }
     }
 
     override fun getAlbumText(album: Album): String =

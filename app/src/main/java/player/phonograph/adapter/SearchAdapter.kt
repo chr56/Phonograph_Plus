@@ -6,11 +6,10 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.util.Pair
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import player.phonograph.R
 import player.phonograph.adapter.base.MediaEntryViewHolder
-import player.phonograph.glide.ArtistGlideRequest
-import player.phonograph.glide.SongGlideRequest
+import player.phonograph.coil.loadImage
+import player.phonograph.coil.target.ColoredTarget
 import player.phonograph.model.Album
 import player.phonograph.model.Artist
 import player.phonograph.model.Song
@@ -26,7 +25,7 @@ import util.mddesign.util.Util
  */
 class SearchAdapter(
     private val activity: AppCompatActivity,
-    dataSet: List<Any>
+    dataSet: List<Any>,
 ) :
     RecyclerView.Adapter<SearchAdapter.ViewHolder>() {
 
@@ -52,31 +51,41 @@ class SearchAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
         when (getItemViewType(position)) {
+            SONG -> {
+                val song = dataSet[position] as Song
+                holder.title?.text = song.title
+                holder.text?.text = song.infoString()
+                loadImage(activity) {
+                    data(song)
+                    target(
+                        onStart = { holder.image!!.setImageResource(R.drawable.default_album_art) },
+                        onSuccess = { holder.image!!.setImageDrawable(it) }
+                    )
+                }
+            }
             ALBUM -> {
                 val album = dataSet[position] as Album
                 holder.title?.text = album.title
                 holder.text?.text = album.infoString(activity)
-                SongGlideRequest.Builder.from(Glide.with(activity), album.safeGetFirstSong())
-                    .checkIgnoreMediaStore(activity)
-                    .build()
-                    .into(holder.image!!)
+                loadImage(activity) {
+                    data(album.safeGetFirstSong())
+                    target(
+                        onStart = { holder.image!!.setImageResource(R.drawable.default_album_art) },
+                        onSuccess = { holder.image!!.setImageDrawable(it) }
+                    )
+                }
             }
             ARTIST -> {
                 val artist = dataSet[position] as Artist
                 holder.title?.text = artist.name
                 holder.text?.text = artist.infoString(activity)
-                ArtistGlideRequest.Builder.from(Glide.with(activity), artist)
-                    .build()
-                    .into(holder.image!!)
-            }
-            SONG -> {
-                val song = dataSet[position] as Song
-                holder.title?.text = song.title
-                holder.text?.text = song.infoString()
-                SongGlideRequest.Builder.from(Glide.with(activity), song)
-                    .checkIgnoreMediaStore(activity)
-                    .build()
-                    .into(holder.image!!)
+                loadImage(activity) {
+                    data(artist)
+                    target(
+                        onStart = { holder.image!!.setImageResource(R.drawable.default_artist_image) },
+                        onSuccess = { holder.image!!.setImageDrawable(it) }
+                    )
+                }
             }
             else -> holder.title?.text = dataSet[position].toString()
         }
@@ -111,6 +120,7 @@ class SearchAdapter(
                 // else -> itemView.findViewById<View>(R.id.image_container)?.visibility = View.GONE
             }
         }
+
         override fun onClick(v: View) {
 
             val item = dataSet[bindingAdapterPosition]

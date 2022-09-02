@@ -9,10 +9,9 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.util.Pair
-import com.bumptech.glide.Glide
 import player.phonograph.R
 import player.phonograph.adapter.base.MultiSelectionCabController
-import player.phonograph.glide.SongGlideRequest
+import player.phonograph.coil.loadImage
 import player.phonograph.model.Song
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.util.NavigationUtil
@@ -60,9 +59,14 @@ open class ArtistSongAdapter(
         }
         songTitle.text = song.title
         songInfo.text = song.albumName
-        SongGlideRequest.Builder.from(Glide.with(activity), song)
-            .checkIgnoreMediaStore(activity).build()
-            .into(albumArt)
+        loadImage(activity) {
+            data(song)
+            target(
+                onStart = { albumArt.setImageResource(R.drawable.default_artist_image) },
+                onSuccess = { albumArt.setImageDrawable(it) }
+            )
+        }
+
         albumArt.transitionName = activity.getString(R.string.transition_album_art)
         val overflowButton = convertView.findViewById<ImageView>(R.id.menu)
         overflowButton.setOnClickListener(object : MenuClickListener(activity, R.menu.menu_item_song_short) {
@@ -86,7 +90,7 @@ open class ArtistSongAdapter(
                 toggleChecked(song)
             } else {
                 MusicPlayerRemote
-                    .playQueueCautiously(dataSet,position,true,null)
+                    .playQueueCautiously(dataSet, position, true, null)
             }
         }
         convertView.setOnLongClickListener {

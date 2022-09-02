@@ -8,35 +8,38 @@ import android.annotation.SuppressLint
 import android.graphics.PorterDuff
 import android.media.MediaScannerConnection
 import android.text.format.Formatter.formatFileSize
-import android.view.*
+import android.view.LayoutInflater
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.PopupMenu
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView.SectionedAdapter
-import java.io.File
 import kotlinx.coroutines.*
 import player.phonograph.R
 import player.phonograph.adapter.base.MultiSelectAdapter
 import player.phonograph.adapter.base.MultiSelectionCabController
+import player.phonograph.coil.loadImage
 import player.phonograph.databinding.ItemListBinding
-import player.phonograph.glide.SongGlideRequest
 import player.phonograph.mediastore.MediaStoreUtil
 import player.phonograph.misc.UpdateToastMediaScannerCompletionListener
 import player.phonograph.model.file.FileEntity
 import player.phonograph.settings.Setting
 import player.phonograph.util.BlacklistUtil
+import player.phonograph.util.ImageUtil.getTintedDrawable
 import player.phonograph.util.menu.onMultiSongMenuItemClick
 import player.phonograph.util.menu.onSongMenuItemClick
 import util.mddesign.util.Util
+import java.io.File
 
 class FileAdapter(
     activity: AppCompatActivity,
     dataset: MutableList<FileEntity>,
     private val callback: (FileEntity) -> Unit,
-    cabController: MultiSelectionCabController?
+    cabController: MultiSelectionCabController?,
 ) : MultiSelectAdapter<FileAdapter.ViewHolder, FileEntity>(activity, cabController), SectionedAdapter {
     var dataSet: MutableList<FileEntity> = dataset
         @SuppressLint("NotifyDataSetChanged")
@@ -70,7 +73,7 @@ class FileAdapter(
     inner class ViewHolder(var binding: ItemListBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(
             item: FileEntity,
-            position: Int
+            position: Int,
         ) {
             with(binding) {
                 title.text = item.name
@@ -114,16 +117,27 @@ class FileAdapter(
         private fun setImage(image: ImageView, item: FileEntity) {
             if (item is FileEntity.File) {
                 if (loadCover) {
-                    SongGlideRequest.Builder.from(Glide.with(image), item.linkedSong)
-                        .checkIgnoreMediaStore(image.context)
-                        .asBitmap().build()
-                        .into(image)
+                    loadImage(image.context) {
+                        data(item.linkedSong)
+                        target(
+                            onStart = {
+                                image.setImageDrawable(
+                                    image.context.getTintedDrawable(
+                                        R.drawable.ic_file_music_white_24dp,
+                                        Util.resolveColor(context, R.attr.iconColor)
+                                    )
+                                )
+                            },
+                            onSuccess = { image.setImageDrawable(it) }
+                        )
+                    }
                 } else {
-                    image.setImageResource(
-                        R.drawable.ic_file_music_white_24dp
+                    image.setImageDrawable(
+                        image.context.getTintedDrawable(
+                            R.drawable.ic_file_music_white_24dp,
+                            Util.resolveColor(context, R.attr.iconColor)
+                        )
                     )
-                    val iconColor = Util.resolveColor(context, R.attr.iconColor)
-                    image.setColorFilter(iconColor, PorterDuff.Mode.SRC_IN)
                 }
             } else {
                 image.setImageResource(

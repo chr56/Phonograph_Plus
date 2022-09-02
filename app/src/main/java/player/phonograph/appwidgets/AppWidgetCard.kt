@@ -10,23 +10,25 @@ import android.os.Looper
 import android.text.TextUtils
 import android.view.View
 import android.widget.RemoteViews
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.target.SimpleTarget
-import com.bumptech.glide.request.target.Target
-import com.bumptech.glide.request.transition.Transition
+import androidx.core.graphics.drawable.toBitmapOrNull
+import androidx.palette.graphics.Palette
+import coil.Coil
+import coil.request.Disposable
+import coil.request.ImageRequest
+import kotlinx.coroutines.Deferred
 import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.appwidgets.Util.createRoundedBitmap
 import player.phonograph.appwidgets.base.BaseAppWidget
-import player.phonograph.glide.SongGlideRequest
-import player.phonograph.glide.palette.BitmapPaletteWrapper
+import player.phonograph.coil.target.ColoredTarget
 import player.phonograph.service.MusicService
 import player.phonograph.ui.activities.MainActivity
 import player.phonograph.util.ImageUtil
-import util.mddesign.util.MaterialColorHelper
+import player.phonograph.util.ImageUtil.getTintedDrawable
+import player.phonograph.util.PaletteUtil.getColor
+import util.mddesign.util.MaterialColorHelper.getSecondaryTextColor
 
 class AppWidgetCard : BaseAppWidget() {
-    private var target: Target<BitmapPaletteWrapper>? = null // for cancellation
 
     /**
      * Initialize given widgets to default state, where we launch Music on
@@ -43,6 +45,8 @@ class AppWidgetCard : BaseAppWidget() {
 
         pushUpdate(context, appWidgetIds, appWidgetView)
     }
+
+    private var task: Disposable? = null
 
     /**
      * Update all active widget instances by pushing changes
@@ -62,14 +66,13 @@ class AppWidgetCard : BaseAppWidget() {
         }
 
         // Set correct drawable for pause state
-        val playPauseRes = if (isPlaying) R.drawable.ic_pause_white_24dp else R.drawable.ic_play_arrow_white_24dp
         appWidgetView.setImageViewBitmap(
             R.id.button_toggle_play_pause,
             ImageUtil.createBitmap(
                 ImageUtil.getTintedVectorDrawable(
                     service,
-                    playPauseRes,
-                    MaterialColorHelper.getSecondaryTextColor(service, true)
+                    playPauseRes(isPlaying),
+                    getSecondaryTextColor(service, true)
                 )
             )
         )
@@ -81,7 +84,7 @@ class AppWidgetCard : BaseAppWidget() {
                 ImageUtil.getTintedVectorDrawable(
                     service,
                     R.drawable.ic_skip_next_white_24dp,
-                    MaterialColorHelper.getSecondaryTextColor(service, true)
+                    getSecondaryTextColor(service, true)
                 )
             )
         )
@@ -91,7 +94,7 @@ class AppWidgetCard : BaseAppWidget() {
                 ImageUtil.getTintedVectorDrawable(
                     service,
                     R.drawable.ic_skip_previous_white_24dp,
-                    MaterialColorHelper.getSecondaryTextColor(service, true)
+                    getSecondaryTextColor(service, true)
                 )
             )
         )
@@ -108,83 +111,66 @@ class AppWidgetCard : BaseAppWidget() {
 
         // Load the album cover async and push the update on completion
         uiHandler.post {
-            if (target != null) {
-                Glide.with(service).clear(target)
-            }
-            target = SongGlideRequest.Builder.from(Glide.with(service), song)
-                .checkIgnoreMediaStore(service)
-                .generatePalette(service).build()
-                .centerCrop()
-                .into(object : SimpleTarget<BitmapPaletteWrapper?>(imageSize, imageSize) {
-                    override fun onResourceReady(
-                        resource: BitmapPaletteWrapper,
-                        transition: Transition<in BitmapPaletteWrapper?>?
-                    ) {
-                        val palette = resource.palette
-                        update(
-                            resource.bitmap,
-                            palette.getVibrantColor(
-                                palette.getMutedColor(
-                                    MaterialColorHelper.getSecondaryTextColor(service, true)
-                                )
-                            )
-                        )
-                    }
+            val appContext = service.applicationContext
+            val loader = Coil.imageLoader(appContext)
+            task?.dispose() // cancel last
+            task = loader.enqueue(
+                ImageRequest.Builder(appContext)
+                    .data(song)
+                    .size(imageSize, imageSize)
+                    .target(object : ColoredTarget() {
 
-                    override fun onLoadFailed(errorDrawable: Drawable?) {
-                        super.onLoadFailed(errorDrawable)
-                        update(null, MaterialColorHelper.getSecondaryTextColor(service, true))
-                    }
+                        val fallbackColor: Int =
+                            getSecondaryTextColor(service, true)
 
-                    private fun update(bitmap: Bitmap?, color: Int) {
-                        // Set correct drawable for pause state
-                        val playPauseRes = if (isPlaying) R.drawable.ic_pause_white_24dp else R.drawable.ic_play_arrow_white_24dp
-                        appWidgetView.setImageViewBitmap(
-                            R.id.button_toggle_play_pause,
-                            ImageUtil.createBitmap(
-                                ImageUtil.getTintedVectorDrawable(
-                                    service,
-                                    playPauseRes,
-                                    color
-                                )
-                            )
-                        )
+                        override fun onStart(placeholder: Drawable?) {
+                            appWidgetView.setImageViewResource(R.id.image, R.drawable.default_album_art)
+                        }
 
-                        // Set prev/next button drawables
-                        appWidgetView.setImageViewBitmap(
-                            R.id.button_next,
-                            ImageUtil.createBitmap(
-                                ImageUtil.getTintedVectorDrawable(
-                                    service,
-                                    R.drawable.ic_skip_next_white_24dp,
-                                    color
-                                )
+                        override fun onReady(drawable: Drawable, palette: Deferred<Palette>?) {
+                            palette?.getColor(fallbackColor) { color ->
+                                update(drawable.toBitmapOrNull(), color)
+                            }
+                        }
+
+                        override fun onError(error: Drawable?) {
+                            update(null, fallbackColor)
+                        }
+
+                        fun update(bitmap: Bitmap?, color: Int) {
+                            // Set correct drawable for pause state
+                            appWidgetView.setImageViewBitmap(
+                                R.id.button_toggle_play_pause,
+                                ImageUtil.createBitmap(service.getTintedDrawable(playPauseRes(isPlaying), color)!!)
                             )
-                        )
-                        appWidgetView.setImageViewBitmap(
-                            R.id.button_prev,
-                            ImageUtil.createBitmap(
-                                ImageUtil.getTintedVectorDrawable(
-                                    service,
-                                    R.drawable.ic_skip_previous_white_24dp,
-                                    color
-                                )
+
+                            // Set prev/next button drawables
+                            appWidgetView.setImageViewBitmap(
+                                R.id.button_next,
+                                ImageUtil.createBitmap(service.getTintedDrawable(R.drawable.ic_skip_next_white_24dp, color)!!)
                             )
-                        )
-                        val image = getAlbumArtDrawable(service.resources, bitmap)
-                        val roundedBitmap = createRoundedBitmap(
-                            image,
-                            imageSize,
-                            imageSize,
-                            cardRadius,
-                            0f,
-                            cardRadius,
-                            0f
-                        )
-                        appWidgetView.setImageViewBitmap(R.id.image, roundedBitmap)
-                        pushUpdate(service, appWidgetIds, appWidgetView)
-                    }
-                })as Target<BitmapPaletteWrapper>?
+                            appWidgetView.setImageViewBitmap(
+                                R.id.button_prev,
+                                ImageUtil.createBitmap(service.getTintedDrawable(R.drawable.ic_skip_previous_white_24dp, color)!!)
+                            )
+
+                            val image = getAlbumArtDrawable(service.resources, bitmap)
+                            val roundedBitmap =
+                                createRoundedBitmap(
+                                    image,
+                                    imageSize,
+                                    imageSize,
+                                    cardRadius,
+                                    0f,
+                                    cardRadius,
+                                    0f
+                                )
+                            appWidgetView.setImageViewBitmap(R.id.image, roundedBitmap)
+                            pushUpdate(service, appWidgetIds, appWidgetView)
+                        }
+                    })
+                    .build()
+            )
         }
     }
 
@@ -203,6 +189,9 @@ class AppWidgetCard : BaseAppWidget() {
     }
 
     private val uiHandler: Handler by lazy { Handler(Looper.getMainLooper()) }
+
+
+    private fun playPauseRes(isPlaying: Boolean) = if (isPlaying) R.drawable.ic_pause_white_24dp else R.drawable.ic_play_arrow_white_24dp
 
     companion object {
         const val NAME = "app_widget_card"

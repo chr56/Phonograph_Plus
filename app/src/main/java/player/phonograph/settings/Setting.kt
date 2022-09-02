@@ -309,7 +309,7 @@ class Setting(context: Context) {
         const val NOW_PLAYING_SCREEN_ID = "now_playing_screen_id"
 
         // Behavior-File
-        private const val IGNORE_MEDIA_STORE_ARTWORK = "ignore_media_store_artwork"
+        const val IGNORE_MEDIA_STORE_ARTWORK = "ignore_media_store_artwork"
         private const val AUTO_DOWNLOAD_IMAGES_POLICY = "auto_download_images_policy"
 
         // Behavior-Playing

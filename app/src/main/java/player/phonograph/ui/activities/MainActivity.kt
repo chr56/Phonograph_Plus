@@ -15,11 +15,9 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.drawerlayout.widget.DrawerLayout
-import com.bumptech.glide.Glide
 import com.github.chr56.android.menu_dsl.attach
 import com.github.chr56.android.menu_dsl.menuItem
 import com.sothree.slidinguppanel.SlidingUpPanelLayout
-import java.util.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import legacy.phonograph.JunkCleaner
@@ -29,13 +27,13 @@ import player.phonograph.R
 import player.phonograph.UPGRADABLE
 import player.phonograph.Updater.checkUpdate
 import player.phonograph.VERSION_INFO
+import player.phonograph.coil.loadImage
 import player.phonograph.databinding.ActivityMainBinding
 import player.phonograph.databinding.LayoutDrawerBinding
 import player.phonograph.dialogs.ChangelogDialog
 import player.phonograph.dialogs.ChangelogDialog.Companion.setChangelogRead
 import player.phonograph.dialogs.ScanMediaFolderDialog
 import player.phonograph.dialogs.UpgradeDialog
-import player.phonograph.glide.SongGlideRequest
 import player.phonograph.helper.SearchQueryHelper
 import player.phonograph.mediastore.AlbumLoader
 import player.phonograph.mediastore.ArtistLoader
@@ -307,9 +305,14 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
             (navigationDrawerHeader!!.findViewById<View>(R.id.title) as TextView).text = song.title
             (navigationDrawerHeader!!.findViewById<View>(R.id.text) as TextView).text =
                 song.infoString()
-            SongGlideRequest.Builder.from(Glide.with(this), song)
-                .checkIgnoreMediaStore(this).build()
-                .into(navigationDrawerHeader!!.findViewById<View>(R.id.image) as ImageView)
+            val image = navigationDrawerHeader!!.findViewById<ImageView>(R.id.image)
+            loadImage(this) {
+                data(song)
+                target(
+                    onStart = { image.setImageResource(R.drawable.default_album_art) },
+                    onSuccess = { image.setImageDrawable(it) }
+                )
+            }
         } else {
             if (navigationDrawerHeader != null) {
                 drawerBinding.navigationView.removeHeaderView(navigationDrawerHeader!!)

@@ -6,10 +6,12 @@ package player.phonograph.adapter.display
 
 import android.content.Context
 import android.content.Intent
-import android.view.*
+import android.view.LayoutInflater
+import android.view.Menu
+import android.view.View
+import android.view.ViewGroup
 import android.widget.PopupMenu
 import androidx.appcompat.app.AppCompatActivity
-import com.bumptech.glide.Glide
 import com.github.chr56.android.menu_dsl.attach
 import com.github.chr56.android.menu_dsl.menuItem
 import com.github.chr56.android.menu_dsl.submenu
@@ -20,9 +22,9 @@ import com.h6ah4i.android.widget.advrecyclerview.draggable.ItemDraggableRange
 import com.h6ah4i.android.widget.advrecyclerview.draggable.annotation.DraggableItemStateFlags
 import player.phonograph.R
 import player.phonograph.adapter.base.MultiSelectionCabController
+import player.phonograph.coil.loadImage
 import player.phonograph.dialogs.DeleteSongsDialog
 import player.phonograph.dialogs.SongDetailDialog
-import player.phonograph.glide.SongGlideRequest
 import player.phonograph.interfaces.PaletteColorHolder
 import player.phonograph.model.Song
 import player.phonograph.util.ViewUtil.hitTest
@@ -33,14 +35,19 @@ class PlaylistSongAdapter(
     activity: AppCompatActivity,
     cabController: MultiSelectionCabController?,
     dataSet: List<Song>,
-    cfg: (DisplayAdapter<Song>.() -> Unit)?
+    cfg: (DisplayAdapter<Song>.() -> Unit)?,
 ) : DisplayAdapter<Song>(activity, cabController, dataSet, R.layout.item_list, cfg), DraggableItemAdapter<PlaylistSongAdapter.ViewHolder> {
 
     override fun getSectionNameImp(position: Int): String = (position + 1).toString()
 
     override fun setImage(holder: DisplayViewHolder, position: Int) {
-        SongGlideRequest.Builder.from(Glide.with(context), dataset[position])
-            .checkIgnoreMediaStore(activity).build().into(holder.image!!)
+        loadImage(context) {
+            data(dataset[position])
+            target(
+                onStart = { holder.image!!.setImageResource(R.drawable.default_album_art) },
+                onSuccess = { holder.image!!.setImageDrawable(it) }
+            )
+        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DisplayViewHolder {
@@ -59,7 +66,7 @@ class PlaylistSongAdapter(
 
     override fun onCheckCanStartDrag(holder: ViewHolder, position: Int, x: Int, y: Int): Boolean =
         position >= 0 &&
-            (hitTest(holder.dragView!!, x, y) || hitTest(holder.image!!, x, y))
+                (hitTest(holder.dragView!!, x, y) || hitTest(holder.image!!, x, y))
 
     override fun onGetItemDraggableRange(holder: ViewHolder, position: Int): ItemDraggableRange =
         ItemDraggableRange(0, dataset.size - 1)
@@ -204,7 +211,7 @@ class PlaylistSongAdapter(
     override fun onCheckCanDrop(draggingPosition: Int, dropPosition: Int): Boolean =
         (dropPosition >= 0) && (dropPosition <= dataset.size - 1)
 
-    override fun onItemDragStarted(position: Int) { }
+    override fun onItemDragStarted(position: Int) {}
 
     override fun onItemDragFinished(fromPosition: Int, toPosition: Int, result: Boolean) {
         when {
