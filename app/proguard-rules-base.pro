@@ -166,18 +166,6 @@
 -keep,allowobfuscation,allowshrinking class kotlin.coroutines.Continuation
 
 
-# Glide
--keep class * extends com.bumptech.glide.module.AppGlideModule { <init>(...);}
--keep class * implements com.bumptech.glide.module.LibraryGlideModule
--keep class com.bumptech.glide.GeneratedAppGlideModuleImpl
--keep public enum com.bumptech.glide.load.ImageHeaderParser$** {
-  **[] $VALUES;
-  public *;
-}
--keep class com.bumptech.glide.load.data.ParcelFileDescriptorRewinder$InternalRewinder {
-  *** rewind();
-}
-
 #  Gson
 # Gson specific classes
 -dontwarn sun.misc.**

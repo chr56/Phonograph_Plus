@@ -65,10 +65,6 @@
         <license>Apache Software License 2.0</license>
     </notice>
     <notice>
-        <name>Glide</name>
-        <url>https://github.com/bumptech/glide</url>
-    </notice>
-    <notice>
         <name>Launcher 3</name>
         <url>https://android.googlesource.com/platform/packages/apps/Launcher3</url>
         <copyright>Copyright (C) 2010 The Android Open Source Project</copyright>
