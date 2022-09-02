@@ -39,6 +39,7 @@ import kotlinx.coroutines.Deferred
 import player.phonograph.App
 import player.phonograph.BuildConfig
 import player.phonograph.R
+import player.phonograph.coil.BlurTransformation
 import player.phonograph.coil.target.ColoredTarget
 import player.phonograph.model.Song
 import player.phonograph.service.MusicService
@@ -487,7 +488,6 @@ class PlayingNotificationManger(private val service: MusicService) {
                 )
             }
 
-        // todo Blur
         if (Setting.instance.albumArtOnLockscreen) {
             val screenSize = Util.getScreenSize(service)
             val loader = Coil.imageLoader(service)
@@ -507,6 +507,11 @@ class PlayingNotificationManger(private val service: MusicService) {
                             mediaSession.setMetadata(metaData.build())
                         }
                     )
+                    .apply {
+                        if (Setting.instance.blurredAlbumArt) transformations(
+                            BlurTransformation(service)
+                        )
+                    }
                     .build()
             uiHandler.post {
                 loader.enqueue(imageRequest)
