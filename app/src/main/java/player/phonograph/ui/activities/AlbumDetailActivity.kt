@@ -15,8 +15,6 @@ import androidx.recyclerview.widget.RecyclerView.AdapterDataObserver
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.WhichButton
 import com.afollestad.materialdialogs.actions.getActionButton
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.transition.Transition
 import com.google.android.material.appbar.AppBarLayout
 import lib.phonograph.cab.ToolbarCab
 import lib.phonograph.cab.createToolbarCab
@@ -24,13 +22,12 @@ import player.phonograph.R
 import player.phonograph.adapter.base.MultiSelectionCabController
 import player.phonograph.adapter.display.AlbumSongDisplayAdapter
 import player.phonograph.adapter.display.SongDisplayAdapter
+import player.phonograph.coil.loadImage
+import player.phonograph.coil.target.PhonographColoredTarget
 import player.phonograph.databinding.ActivityAlbumDetailBinding
 import player.phonograph.dialogs.AddToPlaylistDialog
 import player.phonograph.dialogs.DeleteSongsDialog
 import player.phonograph.dialogs.SleepTimerDialog
-import player.phonograph.glide.SongGlideRequest
-import player.phonograph.glide.palette.BitmapPaletteTarget
-import player.phonograph.glide.palette.BitmapPaletteWrapper
 import player.phonograph.model.Album
 import player.phonograph.model.getReadableDurationString
 import player.phonograph.model.getYearString
@@ -45,7 +42,6 @@ import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
 import player.phonograph.util.ImageUtil.getTintedDrawable
 import player.phonograph.util.NavigationUtil.goToArtist
 import player.phonograph.util.NavigationUtil.openEqualizer
-import player.phonograph.util.PhonographColorUtil.getColor
 import player.phonograph.util.ViewUtil.setUpFastScrollRecyclerViewColor
 import util.mdcolor.ColorUtil
 import util.mdcolor.pref.ThemeColor
@@ -173,26 +169,24 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity() {
         ) { album, songs ->
             updateAlbumsInfo(album)
             adapter.dataset = songs
-            SongGlideRequest.Builder.from(Glide.with(this), album.safeGetFirstSong())
-                .checkIgnoreMediaStore(this)
-                .generatePalette(this).build()
-                .dontAnimate()
-                .into(object : BitmapPaletteTarget(viewBinding.image) {
-                    val defaultColor = ThemeColor.primaryColor(this@AlbumDetailActivity)
+            loadImage(this)
+                .from(album.safeGetFirstSong())
+                .into(object : PhonographColoredTarget() {
+                    override fun onResourcesReady(drawable: Drawable) {
+                        viewBinding.image.setImageDrawable(drawable)
+                    }
 
-                    override fun onLoadFailed(errorDrawable: Drawable?) {
-                        super.onLoadFailed(errorDrawable)
+                    override fun onColorReady(color: Int) {
+                        model.paletteColor.postValue(color)
+                    }
+
+                    val defaultColor = ThemeColor.primaryColor(this@AlbumDetailActivity)
+                    override fun onError(error: Drawable?) {
+                        viewBinding.image.setImageResource(R.drawable.default_album_art)
                         model.paletteColor.postValue(defaultColor)
                     }
-
-                    override fun onResourceReady(
-                        resource: BitmapPaletteWrapper,
-                        transition: Transition<in BitmapPaletteWrapper>?,
-                    ) {
-                        super.onResourceReady(resource, transition)
-                        model.paletteColor.postValue(getColor(resource.palette, defaultColor))
-                    }
                 })
+                .enqueue()
             if (isAllowedToDownloadMetadata(this)) model.loadWiki(context = this) { _, _ ->
                 isWikiPreLoaded = true
             }
