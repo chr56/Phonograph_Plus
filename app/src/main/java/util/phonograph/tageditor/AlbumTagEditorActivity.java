@@ -6,7 +6,6 @@ package util.phonograph.tageditor;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -20,14 +19,8 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.DataSource;
-import com.bumptech.glide.load.engine.GlideException;
-import com.bumptech.glide.request.RequestListener;
-import com.bumptech.glide.request.target.CustomTarget;
-import com.bumptech.glide.request.target.Target;
-import com.bumptech.glide.request.transition.Transition;
+import androidx.core.graphics.drawable.DrawableKt;
+import androidx.palette.graphics.Palette;
 
 import org.jaudiotagger.tag.FieldKey;
 
@@ -36,14 +29,18 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 
+import coil.Coil;
+import coil.ImageLoader;
+import coil.request.CachePolicy;
+import coil.request.ImageRequest;
+import kotlinx.coroutines.Deferred;
 import player.phonograph.R;
+import player.phonograph.coil.target.ColoredTarget;
 import player.phonograph.databinding.ActivityAlbumTagEditorBinding;
-import player.phonograph.glide.SongGlideRequest;
-import player.phonograph.glide.palette.BitmapPaletteWrapper;
 import player.phonograph.mediastore.AlbumLoader;
 import player.phonograph.model.Song;
 import player.phonograph.util.ImageUtil;
-import util.phonograph.lastfm.rest.LastFMUtil;
+import player.phonograph.util.PaletteUtil;
 import player.phonograph.util.PhonographColorUtil;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -51,6 +48,7 @@ import retrofit2.Response;
 import util.mddesign.util.ToolbarColorUtil;
 import util.mddesign.util.Util;
 import util.phonograph.lastfm.rest.LastFMRestClient;
+import util.phonograph.lastfm.rest.LastFMUtil;
 import util.phonograph.lastfm.rest.model.LastFmAlbum;
 
 public class AlbumTagEditorActivity extends AbsTagEditorActivity implements TextWatcher {
@@ -130,45 +128,39 @@ public class AlbumTagEditorActivity extends AbsTagEditorActivity implements Text
                 if (lastFmAlbum.getAlbum() != null) {
                     String url = LastFMUtil.getLargestAlbumImageUrl(lastFmAlbum.getAlbum().getImage());
                     if (!TextUtils.isEmpty(url) && url.trim().length() > 0) {
-                        Glide.with(AlbumTagEditorActivity.this)
-                                .as(BitmapPaletteWrapper.class)
-                                .apply(SongGlideRequest.DEFAULT_OPTION)
-                                .load(url)
-                                .listener(new RequestListener<BitmapPaletteWrapper>() {
-                                    @Override
-                                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<BitmapPaletteWrapper> target, boolean isFirstResource) {
-                                        Log.w(TAG, "Fail to load image cover:");
-                                        Log.i(TAG, "   Album      :" + albumTitleStr);
-                                        Log.i(TAG, "   AlbumArtist:" + albumArtistNameStr);
-                                        Log.i(TAG, "   Uri        :" + url.toString());
-                                        return false;
-                                    }
+                        ImageLoader loader = Coil.imageLoader(AlbumTagEditorActivity.this);
+                        ImageRequest request =
+                                new ImageRequest.Builder(AlbumTagEditorActivity.this)
+                                        .data(url)
+                                        .target(
+                                                new ColoredTarget() {
+                                                    @Override
+                                                    public void onReady(@NonNull Drawable drawable, @Nullable Deferred<Palette> palette) {
+                                                        Bitmap bitmap = DrawableKt.toBitmap(drawable, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), null);
+                                                        if (palette != null) {
+                                                            PaletteUtil.INSTANCE.getColor(palette, Util.resolveColor(AlbumTagEditorActivity.this, R.attr.defaultFooterColor), color ->
+                                                            {
+                                                                albumArtBitmap = ImageUtil.INSTANCE.resizeBitmap(bitmap, 2048);
+                                                                setImageBitmap(albumArtBitmap, color);
+                                                                deleteAlbumArt = false;
+                                                                dataChanged();
+                                                                setResult(RESULT_OK);
+                                                                return null;
+                                                            });
+                                                        }
+                                                    }
 
-                                    @Override
-                                    public boolean onResourceReady(BitmapPaletteWrapper resource, Object model, Target<BitmapPaletteWrapper> target, DataSource dataSource, boolean isFirstResource) {
-                                        return false;
-                                    }
-                                })
-                                .into(new CustomTarget<BitmapPaletteWrapper>() {
-                                    @Override
-                                    public void onLoadFailed(Drawable errorDrawable) {
-                                        super.onLoadFailed(errorDrawable);
-                                    }
-
-                                    @Override
-                                    public void onResourceReady(@NonNull BitmapPaletteWrapper resource, @Nullable Transition<? super BitmapPaletteWrapper> transition) {
-                                        albumArtBitmap = ImageUtil.INSTANCE.resizeBitmap(resource.getBitmap(), 2048);
-                                        setImageBitmap(albumArtBitmap, PhonographColorUtil.getColor(resource.getPalette(), Util.resolveColor(AlbumTagEditorActivity.this, R.attr.defaultFooterColor)));
-                                        deleteAlbumArt = false;
-                                        dataChanged();
-                                        setResult(RESULT_OK);
-                                    }
-
-                                    @Override
-                                    public void onLoadCleared(@Nullable Drawable placeholder) {
-                                        // todo check leakage
-                                    }
-                                });
+                                                    @Override
+                                                    public void onError(@Nullable Drawable error) {
+                                                        Log.w(TAG, "Fail to load image cover:");
+                                                        Log.i(TAG, "   Album      :" + albumTitleStr);
+                                                        Log.i(TAG, "   AlbumArtist:" + albumArtistNameStr);
+                                                        Log.i(TAG, "   Uri        :" + url);
+                                                    }
+                                                }
+                                        )
+                                        .build();
+                        loader.enqueue(request);
                         return;
                     }
                 }
@@ -230,48 +222,37 @@ public class AlbumTagEditorActivity extends AbsTagEditorActivity implements Text
 
     @Override
     protected void loadImageFromFile(@NonNull final Uri selectedFileUri) {
-        Glide.with(AlbumTagEditorActivity.this)
-                .as(BitmapPaletteWrapper.class)
-                .apply(SongGlideRequest.DEFAULT_OPTION)
-                .skipMemoryCache(true)
-                .load(selectedFileUri)
-                .listener(new RequestListener<BitmapPaletteWrapper>() {
-                    @Override
-                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<BitmapPaletteWrapper> target, boolean isFirstResource) {
-//                        if (e != null) {
-//                            e.printStackTrace();
-//                        }
-                        Log.w(TAG, "Fail to load image cover:");
-                        Log.i(TAG, "   Uri:  " + selectedFileUri.toString());
-                        return false;
-                    }
+        ImageLoader loader = Coil.imageLoader(AlbumTagEditorActivity.this);
+        ImageRequest request = new ImageRequest.Builder(AlbumTagEditorActivity.this)
+                .data(selectedFileUri)
+                .diskCachePolicy(CachePolicy.DISABLED)
+                .target(
+                        new ColoredTarget() {
+                            @Override
+                            public void onReady(@NonNull Drawable drawable, @Nullable Deferred<Palette> palette) {
+                                Bitmap bitmap = DrawableKt.toBitmap(drawable, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), null);
+                                if (palette != null) {
+                                    PaletteUtil.INSTANCE.getColor(palette, Util.resolveColor(AlbumTagEditorActivity.this, R.attr.defaultFooterColor), color ->
+                                    {
+                                        albumArtBitmap = ImageUtil.INSTANCE.resizeBitmap(bitmap, 2048);
+                                        setImageBitmap(albumArtBitmap, color);
+                                        deleteAlbumArt = false;
+                                        dataChanged();
+                                        setResult(RESULT_OK);
+                                        return null;
+                                    });
+                                }
+                            }
 
-                    @Override
-                    public boolean onResourceReady(BitmapPaletteWrapper resource, Object model, Target<BitmapPaletteWrapper> target, DataSource dataSource, boolean isFirstResource) {
-                        return false;
-                    }
-                })
-                .into(new CustomTarget<BitmapPaletteWrapper>() {
-                    @Override
-                    public void onLoadFailed(Drawable errorDrawable) {
-                        super.onLoadFailed(errorDrawable);
-                    }
-
-                    @Override
-                    public void onResourceReady(@NonNull BitmapPaletteWrapper resource, @Nullable Transition<? super BitmapPaletteWrapper> transition) {
-                        PhonographColorUtil.getColor(resource.getPalette(), Color.TRANSPARENT);
-                        albumArtBitmap = ImageUtil.INSTANCE.resizeBitmap(resource.getBitmap(), 2048);
-                        setImageBitmap(albumArtBitmap, PhonographColorUtil.getColor(resource.getPalette(), Util.resolveColor(AlbumTagEditorActivity.this, R.attr.defaultFooterColor)));
-                        deleteAlbumArt = false;
-                        dataChanged();
-                        setResult(RESULT_OK);
-                    }
-
-                    @Override
-                    public void onLoadCleared(@Nullable Drawable placeholder) {
-                        // todo check leakage
-                    }
-                });
+                            @Override
+                            public void onError(@Nullable Drawable error) {
+                                Log.w(TAG, "Fail to load image cover:");
+                                Log.i(TAG, "   Uri:  " + selectedFileUri.toString());
+                            }
+                        }
+                )
+                .build();
+        loader.enqueue(request);
     }
 
     @Override
