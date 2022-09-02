@@ -20,7 +20,7 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 
-import util.mddesign.util.ToolbarColorUtil;
+import mt.util.color.ToolbarColor;
 import player.phonograph.R;
 import player.phonograph.databinding.ActivitySongTagEditorBinding;
 import player.phonograph.mediastore.SongLoader;
@@ -151,7 +151,7 @@ public class SongTagEditorActivity extends AbsTagEditorActivity implements TextW
     @Override
     protected void setColors(int color) {
         super.setColors(color);
-        int toolbarTitleColor = ToolbarColorUtil.toolbarTitleColor(this, color);
+        int toolbarTitleColor = ToolbarColor.toolbarTitleColor(this, color);
         songTitle.setTextColor(toolbarTitleColor);
         albumTitle.setTextColor(toolbarTitleColor);
     }

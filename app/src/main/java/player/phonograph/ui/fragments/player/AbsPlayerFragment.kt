@@ -23,6 +23,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import mt.util.color.toolbarContentColor
 import player.phonograph.R
 import player.phonograph.actions.injectPlayerToolbar
 import player.phonograph.adapter.display.PlayingQueueAdapter
@@ -43,7 +44,6 @@ import player.phonograph.util.ImageUtil.getTintedDrawable
 import player.phonograph.util.NavigationUtil.goToAlbum
 import player.phonograph.util.NavigationUtil.goToArtist
 import player.phonograph.util.menu.onSongMenuItemClick
-import util.mddesign.util.ToolbarColorUtil
 import util.phonograph.tageditor.AbsTagEditorActivity
 import util.phonograph.tageditor.SongTagEditorActivity
 
@@ -310,7 +310,7 @@ abstract class AbsPlayerFragment :
 
     fun updateFavoriteIcon(isFavorite: Boolean) {
         val res = if (isFavorite) R.drawable.ic_favorite_white_24dp else R.drawable.ic_favorite_border_white_24dp
-        val color = ToolbarColorUtil.toolbarContentColor(requireContext(), Color.TRANSPARENT)
+        val color = toolbarContentColor(requireContext(), Color.TRANSPARENT)
         favoriteMenuItem?.apply {
             icon = requireContext().getTintedDrawable(res, color)
             title =

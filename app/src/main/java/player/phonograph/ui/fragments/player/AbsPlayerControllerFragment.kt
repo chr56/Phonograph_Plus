@@ -13,6 +13,10 @@ import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.SeekBar
 import android.widget.TextView
+import mt.util.color.getPrimaryDisabledTextColor
+import mt.util.color.getPrimaryTextColor
+import mt.util.color.getSecondaryDisabledTextColor
+import mt.util.color.getSecondaryTextColor
 import player.phonograph.R
 import player.phonograph.helper.MusicProgressViewUpdateHelper
 import player.phonograph.misc.SimpleOnSeekbarChangeListener
@@ -21,10 +25,7 @@ import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.queue.RepeatMode
 import player.phonograph.service.queue.ShuffleMode
 import player.phonograph.ui.fragments.AbsMusicServiceFragment
-import player.phonograph.util.MusicUtil
 import player.phonograph.views.PlayPauseDrawable
-import util.mddesign.util.MaterialColorHelper
-
 abstract class AbsPlayerControllerFragment : AbsMusicServiceFragment(), MusicProgressViewUpdateHelper.Callback {
 
     protected lateinit var playPauseDrawable: PlayPauseDrawable
@@ -59,7 +60,7 @@ abstract class AbsPlayerControllerFragment : AbsMusicServiceFragment(), MusicPro
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         return bindView(inflater)
     }
@@ -100,7 +101,7 @@ abstract class AbsPlayerControllerFragment : AbsMusicServiceFragment(), MusicPro
     }
 
     private fun setUpProgressSlider() {
-        val color = MaterialColorHelper.getPrimaryTextColor(context, false)
+        val color = getPrimaryTextColor(requireContext(), false)
         progressSlider.thumb.mutate().setColorFilter(color, PorterDuff.Mode.SRC_IN)
         progressSlider.progressDrawable.mutate().setColorFilter(Color.TRANSPARENT, PorterDuff.Mode.SRC_IN)
         progressSlider.setOnSeekBarChangeListener(object : SimpleOnSeekbarChangeListener() {
@@ -144,13 +145,10 @@ abstract class AbsPlayerControllerFragment : AbsMusicServiceFragment(), MusicPro
     }
 
     fun setDark(dark: Boolean) {
-        if (dark) {
-            lastPlaybackControlsColor = MaterialColorHelper.getSecondaryTextColor(activity, true)
-            lastDisabledPlaybackControlsColor = MaterialColorHelper.getSecondaryDisabledTextColor(activity, true)
-        } else {
-            lastPlaybackControlsColor = MaterialColorHelper.getPrimaryTextColor(activity, false)
-            lastDisabledPlaybackControlsColor = MaterialColorHelper.getPrimaryDisabledTextColor(activity, false)
-        }
+
+        lastPlaybackControlsColor = getSecondaryTextColor(requireContext(), dark)
+        lastDisabledPlaybackControlsColor = getPrimaryDisabledTextColor(requireContext(), dark)
+
         updateRepeatState()
         updateShuffleState()
         updatePrevNextColor()
@@ -160,11 +158,12 @@ abstract class AbsPlayerControllerFragment : AbsMusicServiceFragment(), MusicPro
 
     // Update state
     protected abstract fun updatePlayPauseDrawableState(animate: Boolean)
-    protected open fun updatePlayPauseColor() { }
+    protected open fun updatePlayPauseColor() {}
     private fun updatePrevNextColor() {
         nextButton.setColorFilter(lastPlaybackControlsColor, PorterDuff.Mode.SRC_IN)
         prevButton.setColorFilter(lastPlaybackControlsColor, PorterDuff.Mode.SRC_IN)
     }
+
     override fun onUpdateProgressViews(progress: Int, total: Int) {
         progressSlider.max = total
         progressSlider.progress = progress
@@ -173,10 +172,11 @@ abstract class AbsPlayerControllerFragment : AbsMusicServiceFragment(), MusicPro
     }
 
     private fun updateProgressTextColor() {
-        val color = MaterialColorHelper.getPrimaryTextColor(context, false)
+        val color = getPrimaryTextColor(requireContext(), false)
         songTotalTime.setTextColor(color)
         songCurrentProgress.setTextColor(color)
     }
+
     private fun updateRepeatState() {
         when (MusicPlayerRemote.repeatMode) {
             RepeatMode.NONE -> {
@@ -193,6 +193,7 @@ abstract class AbsPlayerControllerFragment : AbsMusicServiceFragment(), MusicPro
             }
         }
     }
+
     private fun updateShuffleState() {
         when (MusicPlayerRemote.shuffleMode) {
             ShuffleMode.SHUFFLE ->

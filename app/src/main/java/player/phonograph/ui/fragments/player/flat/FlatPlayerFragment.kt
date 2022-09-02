@@ -1,4 +1,3 @@
-
 package player.phonograph.ui.fragments.player.flat
 
 import android.animation.AnimatorSet
@@ -15,6 +14,10 @@ import com.h6ah4i.android.widget.advrecyclerview.animator.GeneralItemAnimator
 import com.h6ah4i.android.widget.advrecyclerview.animator.RefactoredDefaultItemAnimator
 import com.sothree.slidinguppanel.SlidingUpPanelLayout
 import com.sothree.slidinguppanel.SlidingUpPanelLayout.PanelState
+import mt.util.color.darkenColor
+import mt.util.color.getSecondaryTextColor
+import mt.util.color.isColorLight
+import mt.util.color.resolveColor
 import player.phonograph.R
 import player.phonograph.adapter.base.MediaEntryViewHolder
 import player.phonograph.databinding.FragmentFlatPlayerBinding
@@ -28,9 +31,6 @@ import player.phonograph.util.Util.isLandscape
 import player.phonograph.util.ViewUtil
 import player.phonograph.util.ViewUtil.isWindowBackgroundDarkSafe
 import player.phonograph.util.menu.MenuClickListener
-import util.mdcolor.ColorUtil
-import util.mdcolor.pref.ThemeColor
-import util.mddesign.util.Util
 
 class FlatPlayerFragment :
     AbsPlayerFragment(),
@@ -49,7 +49,7 @@ class FlatPlayerFragment :
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         impl = (if (isLandscape(resources)) LandscapeImpl(this) else PortraitImpl(this))
         _viewBinding = FragmentFlatPlayerBinding.inflate(inflater)
@@ -146,10 +146,10 @@ class FlatPlayerFragment :
 
     override fun setUpCoverFragment() {
         playerAlbumCoverFragment = (
-            childFragmentManager.findFragmentById(
-                R.id.player_album_cover_fragment
-            ) as PlayerAlbumCoverFragment
-            )
+                childFragmentManager.findFragmentById(
+                    R.id.player_album_cover_fragment
+                ) as PlayerAlbumCoverFragment
+                )
             .apply { setCallbacks(this@FlatPlayerFragment) }
     }
 
@@ -189,7 +189,7 @@ class FlatPlayerFragment :
 
     override fun onColorChanged(color: Int) {
         animateColorChange(color)
-        playbackControlsFragment.setDark(ColorUtil.isColorLight(color))
+        playbackControlsFragment.setDark(isColorLight(color))
         callbacks!!.onPaletteColorChanged()
     }
 
@@ -236,12 +236,8 @@ class FlatPlayerFragment :
             animatorSet.playTogether(backgroundAnimator, statusBarAnimator)
             if (!isWindowBackgroundDarkSafe(fragment.activity)) {
                 val adjustedLastColor =
-                    if (ColorUtil.isColorLight(fragment.paletteColor)) ColorUtil.darkenColor(
-                        fragment.paletteColor
-                    ) else fragment.paletteColor
-                val adjustedNewColor = if (ColorUtil.isColorLight(newColor)) ColorUtil.darkenColor(
-                    newColor
-                ) else newColor
+                    if (isColorLight(fragment.paletteColor)) darkenColor(fragment.paletteColor) else fragment.paletteColor
+                val adjustedNewColor = if (isColorLight(newColor)) darkenColor(newColor) else newColor
                 val subHeaderAnimator =
                     ViewUtil.createTextColorTransition(
                         fragment.viewBinding.playerQueueSubHeader,
@@ -255,11 +251,15 @@ class FlatPlayerFragment :
         }
 
         override fun animateColorChange(newColor: Int) {
-            if (isWindowBackgroundDarkSafe(fragment.activity)) {
-                fragment.viewBinding.playerQueueSubHeader.setTextColor(
-                    ThemeColor.textColorSecondary(fragment.requireActivity())
-                )
+            fragment.activity?.let { activity ->
+                if (isWindowBackgroundDarkSafe(activity)) {
+                    fragment.viewBinding.playerQueueSubHeader.setTextColor(
+                        getSecondaryTextColor(activity, isWindowBackgroundDarkSafe(activity))
+                    )
+                }
             }
+
+
         }
     }
 
@@ -273,11 +273,12 @@ class FlatPlayerFragment :
             currentSongViewHolder!!.shortSeparator!!.visibility = View.GONE
             currentSongViewHolder!!.image!!.scaleType = ImageView.ScaleType.CENTER
             currentSongViewHolder!!.image!!.setColorFilter(
-                Util.resolveColor(
-                    fragment.activity,
+                resolveColor(
+                    fragment.requireContext(),
                     R.attr.iconColor,
-                    ThemeColor.textColorSecondary(
-                        fragment.requireActivity()
+                    getSecondaryTextColor(
+                        fragment.requireActivity(),
+                        isWindowBackgroundDarkSafe(fragment.requireActivity())
                     )
                 ),
                 PorterDuff.Mode.SRC_IN

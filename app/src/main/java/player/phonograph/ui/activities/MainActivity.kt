@@ -21,6 +21,10 @@ import com.sothree.slidinguppanel.SlidingUpPanelLayout
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import legacy.phonograph.JunkCleaner
+import mt.tint.viewtint.setItemIconColors
+import mt.tint.viewtint.setItemTextColors
+import mt.util.color.getSecondaryTextColor
+import mt.util.color.resolveColor
 import player.phonograph.App
 import player.phonograph.BuildConfig.DEBUG
 import player.phonograph.R
@@ -52,10 +56,6 @@ import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
 import player.phonograph.ui.activities.intro.AppIntroActivity
 import player.phonograph.ui.fragments.home.HomeFragment
 import player.phonograph.util.ImageUtil.getTintedDrawable
-import util.mdcolor.pref.ThemeColor
-import util.mddesign.util.NavigationViewUtil.setItemIconColors
-import util.mddesign.util.NavigationViewUtil.setItemTextColors
-import util.mddesign.util.Util as MDthemerUtil
 
 class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity {
 
@@ -263,10 +263,10 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
 
         // color
         val iconColor =
-            MDthemerUtil.resolveColor(this, R.attr.iconColor, ThemeColor.textColorSecondary(this))
+            resolveColor(this, R.attr.iconColor, getSecondaryTextColor(this, !App.instance.nightMode))
         with(drawerBinding.navigationView) {
-            setItemIconColors(this, iconColor, accentColor)
-            setItemTextColors(this, textColorPrimary, accentColor)
+            setItemIconColors(iconColor, accentColor)
+            setItemTextColors(textColorPrimary, accentColor)
         }
     }
 

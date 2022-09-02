@@ -4,22 +4,24 @@
 
 package lib.phonograph.activity
 
-import android.content.SharedPreferences
-import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.view.View
 import android.view.View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
 import android.view.View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-import androidx.annotation.ColorInt
-import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
+import mt.pref.ThemeColor
+import mt.pref.ThemeColor.accentColor
+import mt.pref.ThemeColor.primaryColor
+import mt.pref.internal.ThemeStore.Companion.didThemeValuesChange
+import mt.tint.*
+import mt.util.color.darkenColor
+import mt.util.color.getPrimaryTextColor
+import mt.util.color.getSecondaryTextColor
+import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.settings.Setting
-import util.mdcolor.ColorUtil
-import util.mdcolor.pref.ThemeColor
-import util.mddesign.core.Themer
 
 /**
  * An abstract class providing material activity (no toolbar)
@@ -34,8 +36,8 @@ abstract class ThemeActivity : MultiLanguageActivity() {
     protected var textColorSecondary: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        updateColor()
-        ThemeColor.mPreferences(this).registerOnSharedPreferenceChangeListener(onSharedPreferenceChangeListener)
+        retrieveColors()
+        ThemeColor.registerPreferenceChangeListener(listener, this.applicationContext, this)
 
         super.onCreate(savedInstanceState)
         createTime = System.currentTimeMillis()
@@ -50,8 +52,8 @@ abstract class ThemeActivity : MultiLanguageActivity() {
         if (useCustomStatusBar) setFullScreenAndIncludeStatusBar()
 
         // color
-        if (autoSetStatusBarColor) setStatusbarColorAuto()
-        if (autoSetNavigationBarColor) setNavigationbarColorAuto()
+        if (autoSetStatusBarColor) setStatusbarColor(primaryColor(this))
+        if (autoSetNavigationBarColor) setNavigationBarColorAuto()
         if (autoSetTaskDescriptionColor) setTaskDescriptionColorAuto()
     }
 
@@ -71,24 +73,33 @@ abstract class ThemeActivity : MultiLanguageActivity() {
     /** Must call before super */
     protected var autoSetTaskDescriptionColor: Boolean = true
 
-    private fun updateColor() {
-        primaryColor = ThemeColor.primaryColor(this)
-        accentColor = ThemeColor.accentColor(this)
-        textColorPrimary = ThemeColor.textColorPrimary(this)
-        textColorSecondary = ThemeColor.textColorSecondary(this)
+    private fun retrieveColors() {
+        primaryColor = primaryColor(this)
+        accentColor = accentColor(this)
+        textColorPrimary = getPrimaryTextColor(this, !App.instance.nightMode)
+        textColorSecondary = getSecondaryTextColor(this, !App.instance.nightMode)
     }
 
-    private val onSharedPreferenceChangeListener = SharedPreferences.OnSharedPreferenceChangeListener {
-            _: SharedPreferences, key: String ->
-        when (key) {
-            ThemeColor.KEY_PRIMARY_COLOR -> primaryColor = ThemeColor.primaryColor(this)
-            ThemeColor.KEY_ACCENT_COLOR -> primaryColor = ThemeColor.accentColor(this)
+    private val listener = object : ThemeColor.ThemePreferenceChangeListener {
+        override fun onAccentColorChanged(newColor: Int) {
+            primaryColor = newColor
         }
+
+        override fun onPrimaryColorChanged(newColor: Int) {
+            primaryColor = newColor
+        }
+
+        override fun onNavigationBarTintSettingChanged(coloredNavigationBar: Boolean) {
+        }
+
+        override fun onStatusBarTintSettingChanged(coloredStatusBar: Boolean) {
+        }
+
     }
 
     override fun onResume() {
         super.onResume()
-        if (Themer.didThemeValuesChange(this, createTime)) {
+        if (didThemeValuesChange(this, createTime)) {
             postRecreate()
         }
     }
@@ -99,14 +110,9 @@ abstract class ThemeActivity : MultiLanguageActivity() {
         Handler(Looper.getMainLooper()).post { recreate() }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        ThemeColor.mPreferences(this).unregisterOnSharedPreferenceChangeListener(onSharedPreferenceChangeListener)
-    }
-
     protected fun updateAllColors(color: Int) {
         setStatusbarColor(color)
-        setNavigationbarColor(color)
+        setNavigationBarColor(color)
         setTaskDescriptionColor(color)
     }
 
@@ -118,6 +124,7 @@ abstract class ThemeActivity : MultiLanguageActivity() {
         window.decorView.systemUiVisibility =
             (SYSTEM_UI_FLAG_LAYOUT_STABLE or SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN)
     }
+
     protected fun restoreNotFullsScreen() {
         @Suppress("DEPRECATION")
         window.decorView.systemUiVisibility -=
@@ -128,51 +135,15 @@ abstract class ThemeActivity : MultiLanguageActivity() {
     // Status Bar
     //
     /**
-     * This will set the color of the view with the id "status_bar" on KitKat and Lollipop.
+     * This will set the color of the view with the id "status_bar" on Lollipop.
      * On Lollipop if no such view is found it will set the statusbar color using the native method.
      *
      * @param color the new statusbar color (will be shifted down on Lollipop and above)
      */
     open fun setStatusbarColor(color: Int) {
-        val darkColor = ColorUtil.darkenColor(color)
-        window.decorView.rootView.findViewById<View>(R.id.status_bar)?.setBackgroundColor(darkColor)
-        window.statusBarColor = darkColor
-        setLightStatusbarAuto(color)
-    }
-    private fun setStatusbarColorAuto() {
-        // we don't want to use statusbar color because we are doing the color darkening on our own to support KitKat
-        setStatusbarColor(ThemeColor.primaryColor(this))
-    }
-    open fun setLightStatusbar(enabled: Boolean) {
-        Themer.setLightStatusbar(this, enabled)
-    }
-
-    open fun setLightStatusbarAuto(bgColor: Int) {
-        setLightStatusbar(ColorUtil.isColorLight(bgColor))
-    }
-
-    //
-    // NavigationBar
-    //
-    open fun setNavigationbarColor(color: Int) {
-        if (ThemeColor.coloredNavigationBar(this)) {
-            Themer.setNavigationbarColor(this, color)
-        } else {
-            Themer.setNavigationbarColor(this, Color.BLACK)
-        }
-    }
-    private fun setNavigationbarColorAuto() {
-        setNavigationbarColor(ThemeColor.navigationBarColor(this))
-    }
-
-    //
-    // Task Description
-    //
-    open fun setTaskDescriptionColor(@ColorInt color: Int) {
-        Themer.setTaskDescriptionColor(this, color)
-    }
-    private fun setTaskDescriptionColorAuto() {
-        setTaskDescriptionColor(ThemeColor.primaryColor(this))
+        val darkColor = darkenColor(color)
+        setStatusbarColor(darkColor, R.id.status_bar)
+        requireLightStatusbarAuto(darkColor)
     }
 
     //

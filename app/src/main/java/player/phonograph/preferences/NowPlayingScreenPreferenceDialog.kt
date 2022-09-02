@@ -18,11 +18,11 @@ import com.afollestad.materialdialogs.WhichButton
 import com.afollestad.materialdialogs.actions.getActionButton
 import com.afollestad.materialdialogs.customview.customView
 import com.heinrichreimersoftware.materialintro.view.InkPageIndicator
+import mt.pref.ThemeColor
 import player.phonograph.R
-import player.phonograph.settings.Setting
 import player.phonograph.model.NowPlayingScreen
+import player.phonograph.settings.Setting
 import player.phonograph.util.ViewUtil
-import util.mdcolor.pref.ThemeColor
 
 /**
  * @author Karim Abou Zeid (kabouzeid)

@@ -1,5 +1,6 @@
 package player.phonograph.appwidgets
 
+
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
@@ -15,6 +16,7 @@ import coil.Coil
 import coil.request.Disposable
 import coil.request.ImageRequest
 import coil.target.Target
+import mt.util.color.primaryTextColor
 import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.appwidgets.base.BaseAppWidget
@@ -22,7 +24,7 @@ import player.phonograph.service.MusicService
 import player.phonograph.ui.activities.MainActivity
 import player.phonograph.util.ImageUtil
 import player.phonograph.util.Util.getScreenSize
-import util.mddesign.util.MaterialColorHelper
+
 
 class AppWidgetBig : BaseAppWidget() {
     /**
@@ -68,7 +70,7 @@ class AppWidgetBig : BaseAppWidget() {
                 ImageUtil.getTintedVectorDrawable(
                     service,
                     playPauseRes,
-                    MaterialColorHelper.getPrimaryTextColor(service, false)
+                    service.primaryTextColor( true)
                 )
             )
         )
@@ -80,7 +82,7 @@ class AppWidgetBig : BaseAppWidget() {
                 ImageUtil.getTintedVectorDrawable(
                     service,
                     R.drawable.ic_skip_next_white_24dp,
-                    MaterialColorHelper.getPrimaryTextColor(service, false)
+                    service.primaryTextColor( true)
                 )
             )
         )
@@ -90,7 +92,7 @@ class AppWidgetBig : BaseAppWidget() {
                 ImageUtil.getTintedVectorDrawable(
                     service,
                     R.drawable.ic_skip_previous_white_24dp,
-                    MaterialColorHelper.getPrimaryTextColor(service, false)
+                    service.primaryTextColor( true)
                 )
             )
         )

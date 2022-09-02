@@ -10,23 +10,26 @@ import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.util.Pair
-import androidx.palette.graphics.Palette
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView.SectionedAdapter
-import kotlinx.coroutines.Deferred
+import mt.util.color.getPrimaryTextColor
+import mt.util.color.getSecondaryTextColor
+import mt.util.color.isColorLight
 import player.phonograph.R
 import player.phonograph.adapter.base.MediaEntryViewHolder
 import player.phonograph.adapter.base.MultiSelectAdapter
 import player.phonograph.adapter.base.MultiSelectionCabController
 import player.phonograph.coil.loadImage
 import player.phonograph.coil.target.PhonographColoredTarget
-import player.phonograph.model.*
+import player.phonograph.model.Album
+import player.phonograph.model.Song
+import player.phonograph.model.buildInfoString
+import player.phonograph.model.getYearString
+import player.phonograph.model.songCountString
 import player.phonograph.model.sort.SortRef
 import player.phonograph.settings.Setting
 import player.phonograph.util.MusicUtil
 import player.phonograph.util.NavigationUtil
 import player.phonograph.util.menu.onMultiSongMenuItemClick
-import util.mdcolor.ColorUtil
-import util.mddesign.util.MaterialColorHelper
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
@@ -87,11 +90,11 @@ open class AlbumAdapter(
         holder.paletteColorContainer?.let { container ->
             container.setBackgroundColor(color)
             holder.title?.setTextColor(
-                MaterialColorHelper.getPrimaryTextColor(activity, ColorUtil.isColorLight(color))
+                getPrimaryTextColor(activity, isColorLight(color))
             )
 
             holder.text?.setTextColor(
-                MaterialColorHelper.getSecondaryTextColor(activity, ColorUtil.isColorLight(color))
+                getSecondaryTextColor(activity, isColorLight(color))
             )
         }
     }

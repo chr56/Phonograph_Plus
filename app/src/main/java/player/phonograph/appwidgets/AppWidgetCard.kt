@@ -16,6 +16,7 @@ import coil.Coil
 import coil.request.Disposable
 import coil.request.ImageRequest
 import kotlinx.coroutines.Deferred
+import mt.util.color.getSecondaryTextColor
 import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.appwidgets.Util.createRoundedBitmap
@@ -26,7 +27,6 @@ import player.phonograph.ui.activities.MainActivity
 import player.phonograph.util.ImageUtil
 import player.phonograph.util.ImageUtil.getTintedDrawable
 import player.phonograph.util.PaletteUtil.getColor
-import util.mddesign.util.MaterialColorHelper.getSecondaryTextColor
 
 class AppWidgetCard : BaseAppWidget() {
 

@@ -6,10 +6,10 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.util.Pair
 import androidx.recyclerview.widget.RecyclerView
+import mt.util.color.resolveColor
 import player.phonograph.R
 import player.phonograph.adapter.base.MediaEntryViewHolder
 import player.phonograph.coil.loadImage
-import player.phonograph.coil.target.ColoredTarget
 import player.phonograph.model.Album
 import player.phonograph.model.Artist
 import player.phonograph.model.Song
@@ -18,7 +18,6 @@ import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.util.NavigationUtil.goToAlbum
 import player.phonograph.util.NavigationUtil.goToArtist
 import player.phonograph.util.menu.MenuClickListener
-import util.mddesign.util.Util
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
@@ -98,7 +97,7 @@ class SearchAdapter(
         init {
             itemView.setOnLongClickListener(null)
             if (itemViewType != HEADER) {
-                itemView.setBackgroundColor(Util.resolveColor(activity, R.attr.cardBackgroundColor))
+                itemView.setBackgroundColor(resolveColor(activity, R.attr.cardBackgroundColor))
                 itemView.elevation = activity.resources.getDimensionPixelSize(R.dimen.card_elevation).toFloat()
                 shortSeparator?.visibility = View.GONE
             }
@@ -120,7 +119,6 @@ class SearchAdapter(
                 // else -> itemView.findViewById<View>(R.id.image_container)?.visibility = View.GONE
             }
         }
-
         override fun onClick(v: View) {
 
             val item = dataSet[bindingAdapterPosition]

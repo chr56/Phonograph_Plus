@@ -8,15 +8,16 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.net.Uri
 import android.widget.Toast
-import androidx.core.content.edit
 import androidx.preference.PreferenceManager
-import java.io.*
+import mt.pref.ThemeColor
 import org.json.JSONArray
 import org.json.JSONObject
 import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.notification.ErrorNotification
-import util.mdcolor.pref.ThemeColor
+import java.io.FileInputStream
+import java.io.FileOutputStream
+import java.io.IOException
 
 class SettingManager(var context: Context) {
 

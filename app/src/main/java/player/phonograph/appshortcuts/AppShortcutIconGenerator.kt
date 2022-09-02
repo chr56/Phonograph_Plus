@@ -8,11 +8,10 @@ import android.os.Build
 import android.util.TypedValue
 import androidx.annotation.RequiresApi
 import androidx.core.graphics.drawable.IconCompat
+import mt.pref.ThemeColor
 import player.phonograph.R
 import player.phonograph.settings.Setting.Companion.instance
 import player.phonograph.util.ImageUtil
-import util.mdcolor.pref.ThemeColor
-
 /**
  * @author Adrian Campos
  */

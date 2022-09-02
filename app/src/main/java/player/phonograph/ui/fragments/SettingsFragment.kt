@@ -15,9 +15,12 @@ import android.os.Handler
 import android.os.Looper
 import android.view.View
 import androidx.fragment.app.DialogFragment
-import androidx.preference.*
+import androidx.preference.ListPreference
+import androidx.preference.Preference
+import androidx.preference.PreferenceFragmentCompat
+import androidx.preference.PreferenceManager
+import androidx.preference.TwoStatePreference
 import com.afollestad.materialdialogs.MaterialDialog
-import java.util.*
 import lib.phonograph.localization.LanguageSettingDialog
 import lib.phonograph.localization.Localization
 import lib.phonograph.preference.ColorPreferenceX
@@ -27,14 +30,14 @@ import lib.phonograph.preference.ListPreferenceX
 import lib.phonograph.preference.dialog.EditTextPreferenceDialogFragmentCompatX
 import lib.phonograph.preference.dialog.ListPreferenceDialogFragmentCompatX
 import lib.phonograph.preference.dialog.PreferenceDialogFragmentX
+import mt.pref.ThemeColor
+import mt.util.color.darkenColor
 import player.phonograph.R
 import player.phonograph.appshortcuts.DynamicShortcutManager
 import player.phonograph.coil.IgnoreMediaStorePreference
 import player.phonograph.preferences.*
 import player.phonograph.settings.Setting
 import player.phonograph.util.NavigationUtil
-import util.mdcolor.ColorUtil
-import util.mdcolor.pref.ThemeColor
 import util.phonograph.misc.ColorChooserListener
 
 class SettingsFragment : PreferenceFragmentCompat() {
@@ -116,9 +119,11 @@ class SettingsFragment : PreferenceFragmentCompat() {
             MaterialDialog(requireContext())
                 .title(R.string.pref_title_reset_home_pages_tab_config)
                 .message(
-                    text = "${getString(R.string.pref_summary_reset_home_pages_tab_config)}\n${getString(
-                        R.string.are_you_sure
-                    )}"
+                    text = "${getString(R.string.pref_summary_reset_home_pages_tab_config)}\n${
+                        getString(
+                            R.string.are_you_sure
+                        )
+                    }"
                 )
                 .positiveButton {
                     Setting.instance.resetHomeTabConfig()
@@ -141,16 +146,12 @@ class SettingsFragment : PreferenceFragmentCompat() {
         val generalTheme = findPreference<Preference>("general_theme")!!
         setSummary(generalTheme)
         generalTheme.onPreferenceChangeListener =
-            Preference.OnPreferenceChangeListener { _: Preference?, o: Any? ->
-                val themeName = o as String?
-
-                setSummary(generalTheme, o!!)
-
-                ThemeColor.markChanged(requireActivity())
-
+            Preference.OnPreferenceChangeListener { _: Preference?, newValue: Any? ->
+                setSummary(generalTheme, newValue!!)
+                ThemeColor.editTheme(requireContext()).markChanged()
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
                     // Set the new theme so that updateAppShortcuts can pull it
-                    requireActivity().setTheme(Setting.getThemeResFromPrefValue(themeName))
+                    requireActivity().setTheme(Setting.getThemeResFromPrefValue(newValue as String?))
                     DynamicShortcutManager(requireContext()).updateDynamicShortcuts()
                 }
                 requireActivity().recreate()
@@ -159,7 +160,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
         val appLanguage =
             findPreference<DialogPreferenceX>(getString(R.string.preference_key_app_language))
-        setSummary(appLanguage as Preference,Localization.currentLocale(requireContext()).displayLanguage)
+        setSummary(appLanguage as Preference, Localization.currentLocale(requireContext()).displayLanguage)
 
         //
         val autoDownloadImagesPolicy = findPreference<Preference>("auto_download_images_policy")
@@ -174,8 +175,8 @@ class SettingsFragment : PreferenceFragmentCompat() {
         val primaryColor = ThemeColor.primaryColor(requireActivity())
         val accentColor = ThemeColor.accentColor(requireActivity())
 
-        val primaryColorPref = findPreference<Preference>("primary_color") as ColorPreferenceX?
-        primaryColorPref!!.setColor(primaryColor, ColorUtil.darkenColor(primaryColor))
+        val primaryColorPref = findPreference<Preference>("primary_color") as ColorPreferenceX
+        primaryColorPref.setColor(primaryColor, darkenColor(primaryColor))
         primaryColorPref.onPreferenceClickListener =
             ColorChooserListener(
                 requireActivity(),
@@ -183,8 +184,8 @@ class SettingsFragment : PreferenceFragmentCompat() {
                 ColorChooserListener.MODE_PRIMARY_COLOR
             )
 
-        val accentColorPref = findPreference<Preference>("accent_color") as ColorPreferenceX?
-        accentColorPref!!.setColor(accentColor, ColorUtil.darkenColor(accentColor))
+        val accentColorPref = findPreference<Preference>("accent_color") as ColorPreferenceX
+        accentColorPref.setColor(accentColor, darkenColor(accentColor))
         accentColorPref.onPreferenceClickListener =
             ColorChooserListener(
                 requireActivity(),
@@ -193,20 +194,16 @@ class SettingsFragment : PreferenceFragmentCompat() {
             )
 
         //
-        val colorNavBar = findPreference<Preference>("should_color_navigation_bar") as TwoStatePreference?
-//        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-//            colorNavBar!!.isVisible = false
-//        } else {
-        colorNavBar!!.isChecked = ThemeColor.coloredNavigationBar(requireActivity())
+        val colorNavBar = findPreference<Preference>("should_color_navigation_bar") as TwoStatePreference
+        colorNavBar.isChecked = ThemeColor.coloredNavigationBar(requireActivity())
         colorNavBar.onPreferenceChangeListener =
             Preference.OnPreferenceChangeListener { _: Preference?, newValue: Any? ->
                 ThemeColor.editTheme(requireActivity())
-                    .coloredNavigationBar((newValue as Boolean?)!!)
+                    .coloredNavigationBar(newValue as Boolean)
                     .commit()
                 requireActivity().recreate()
                 true
             }
-//        }
 
         //
         val classicNotification = findPreference<Preference>("classic_notification") as TwoStatePreference?
@@ -276,6 +273,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
                     .getString(preference.key, "")!!
             )
         }
+
         private fun setSummary(preference: Preference, value: Any) {
             val stringValue = value.toString()
             if (preference is ListPreference) {

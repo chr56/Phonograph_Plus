@@ -9,7 +9,13 @@ import android.view.View
 import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import kotlinx.coroutines.yield
+import mt.pref.ThemeColor.primaryColor
+import mt.tint.setActivityToolbarColorAuto
 import player.phonograph.R
 import player.phonograph.adapter.SearchAdapter
 import player.phonograph.databinding.ActivitySearchBinding
@@ -18,8 +24,6 @@ import player.phonograph.mediastore.ArtistLoader
 import player.phonograph.mediastore.SongLoader
 import player.phonograph.ui.activities.base.AbsMusicServiceActivity
 import player.phonograph.util.Util
-import util.mdcolor.pref.ThemeColor
-import util.mddesign.core.Themer
 
 class SearchActivity :
     AbsMusicServiceActivity(),
@@ -38,8 +42,6 @@ class SearchActivity :
 
         viewBinding = ActivitySearchBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-        Themer.setActivityToolbarColorAuto(this, binding.toolbar)
 
         binding.recyclerView.layoutManager = LinearLayoutManager(this)
 
@@ -104,9 +106,10 @@ class SearchActivity :
     }
 
     private fun setUpToolBar() {
-        binding.toolbar.setBackgroundColor(ThemeColor.primaryColor(this))
+        binding.toolbar.setBackgroundColor(primaryColor(this))
         setSupportActionBar(binding.toolbar)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+        setActivityToolbarColorAuto(binding.toolbar)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

@@ -16,6 +16,7 @@ import coil.Coil
 import coil.request.Disposable
 import coil.request.ImageRequest
 import kotlinx.coroutines.Deferred
+import mt.util.color.getSecondaryTextColor
 import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.appwidgets.Util.createRoundedBitmap
@@ -25,7 +26,6 @@ import player.phonograph.service.MusicService
 import player.phonograph.ui.activities.MainActivity
 import player.phonograph.util.ImageUtil
 import player.phonograph.util.PaletteUtil.getColor
-import util.mddesign.util.MaterialColorHelper
 
 class AppWidgetClassic : BaseAppWidget() {
 
@@ -87,7 +87,7 @@ class AppWidgetClassic : BaseAppWidget() {
                     .target(object : ColoredTarget() {
 
                         val fallbackColor: Int =
-                            MaterialColorHelper.getSecondaryTextColor(service, true)
+                            getSecondaryTextColor(service, true)
 
                         override fun onStart(placeholder: Drawable?) {
                             appWidgetView.setImageViewResource(R.id.image, R.drawable.default_album_art)

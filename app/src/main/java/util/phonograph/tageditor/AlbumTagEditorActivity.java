@@ -4,6 +4,8 @@
 
 package util.phonograph.tageditor;
 
+import static mt.util.color.MiscKt.resolveColor;
+
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
@@ -34,6 +36,7 @@ import coil.ImageLoader;
 import coil.request.CachePolicy;
 import coil.request.ImageRequest;
 import kotlinx.coroutines.Deferred;
+import mt.util.color.ToolbarColor;
 import player.phonograph.R;
 import player.phonograph.coil.target.ColoredTarget;
 import player.phonograph.databinding.ActivityAlbumTagEditorBinding;
@@ -45,8 +48,6 @@ import player.phonograph.util.PhonographColorUtil;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import util.mddesign.util.ToolbarColorUtil;
-import util.mddesign.util.Util;
 import util.phonograph.lastfm.rest.LastFMRestClient;
 import util.phonograph.lastfm.rest.LastFMUtil;
 import util.phonograph.lastfm.rest.model.LastFmAlbum;
@@ -107,7 +108,7 @@ public class AlbumTagEditorActivity extends AbsTagEditorActivity implements Text
         if (bitmap != null) {
             setImageBitmap(
                     bitmap,
-                    PhonographColorUtil.getColor(PhonographColorUtil.generatePalette(bitmap), Util.resolveColor(this, R.attr.defaultFooterColor))
+                    PhonographColorUtil.getColor(PhonographColorUtil.generatePalette(bitmap), resolveColor(this, R.attr.defaultFooterColor))
             );
         }
         deleteAlbumArt = false;
@@ -138,7 +139,7 @@ public class AlbumTagEditorActivity extends AbsTagEditorActivity implements Text
                                                     public void onReady(@NonNull Drawable drawable, @Nullable Deferred<Palette> palette) {
                                                         Bitmap bitmap = DrawableKt.toBitmap(drawable, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), null);
                                                         if (palette != null) {
-                                                            PaletteUtil.INSTANCE.getColor(palette, Util.resolveColor(AlbumTagEditorActivity.this, R.attr.defaultFooterColor), color ->
+                                                            PaletteUtil.INSTANCE.getColor(palette, resolveColor(AlbumTagEditorActivity.this, R.attr.defaultFooterColor), color ->
                                                             {
                                                                 albumArtBitmap = ImageUtil.INSTANCE.resizeBitmap(bitmap, 2048);
                                                                 setImageBitmap(albumArtBitmap, color);
@@ -186,7 +187,7 @@ public class AlbumTagEditorActivity extends AbsTagEditorActivity implements Text
 
     @Override
     protected void deleteImage() {
-        setImageBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.default_album_art), Util.resolveColor(this, R.attr.defaultFooterColor));
+        setImageBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.default_album_art), resolveColor(this, R.attr.defaultFooterColor));
         deleteAlbumArt = true;
         dataChanged();
     }
@@ -232,7 +233,7 @@ public class AlbumTagEditorActivity extends AbsTagEditorActivity implements Text
                             public void onReady(@NonNull Drawable drawable, @Nullable Deferred<Palette> palette) {
                                 Bitmap bitmap = DrawableKt.toBitmap(drawable, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), null);
                                 if (palette != null) {
-                                    PaletteUtil.INSTANCE.getColor(palette, Util.resolveColor(AlbumTagEditorActivity.this, R.attr.defaultFooterColor), color ->
+                                    PaletteUtil.INSTANCE.getColor(palette, resolveColor(AlbumTagEditorActivity.this, R.attr.defaultFooterColor), color ->
                                     {
                                         albumArtBitmap = ImageUtil.INSTANCE.resizeBitmap(bitmap, 2048);
                                         setImageBitmap(albumArtBitmap, color);
@@ -273,6 +274,6 @@ public class AlbumTagEditorActivity extends AbsTagEditorActivity implements Text
     @Override
     protected void setColors(int color) {
         super.setColors(color);
-        albumTitle.setTextColor(ToolbarColorUtil.toolbarTitleColor(this, color));
+        albumTitle.setTextColor(ToolbarColor.toolbarTitleColor(this, color));
     }
 }

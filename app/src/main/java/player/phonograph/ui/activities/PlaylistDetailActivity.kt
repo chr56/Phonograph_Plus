@@ -25,6 +25,11 @@ import com.simplecityapps.recyclerview_fastscroll.interfaces.OnFastScrollStateCh
 import legacy.phonograph.LegacyPlaylistsUtil
 import lib.phonograph.cab.ToolbarCab
 import lib.phonograph.cab.createToolbarCab
+import mt.tint.setActivityToolbarColorAuto
+import mt.tint.viewtint.applyOverflowMenuTint
+import mt.util.color.primaryTextColor
+import mt.util.color.secondaryDisabledTextColor
+import mt.util.color.secondaryTextColor
 import player.phonograph.R
 import player.phonograph.actions.injectPlaylistDetail
 import player.phonograph.adapter.base.MultiSelectionCabController
@@ -44,9 +49,6 @@ import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
 import player.phonograph.util.ImageUtil.getTintedDrawable
 import player.phonograph.util.PlaylistsUtil
 import player.phonograph.util.ViewUtil.setUpFastScrollRecyclerViewColor
-import util.mdcolor.ColorUtil
-import util.mddesign.core.Themer
-import util.mddesign.util.MaterialColorHelper
 
 class PlaylistDetailActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity {
 
@@ -73,9 +75,10 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandle
 
     override fun onCreate(savedInstanceState: Bundle?) {
         binding = ActivityPlaylistDetailBinding.inflate(layoutInflater)
+        setUpToolbar()
         super.onCreate(savedInstanceState)
 
-        Themer.setActivityToolbarColorAuto(this, binding.toolbar)
+        setActivityToolbarColorAuto(binding.toolbar)
 
         model.playlist.observe(this) {
             model.fetchPlaylist(this, playlistCallBack)
@@ -89,7 +92,6 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandle
         safLauncher = SafLauncher(activityResultRegistry)
         lifecycle.addObserver(safLauncher)
 
-        setUpToolbar()
         setUpRecyclerView()
         setUpDashBroad()
     }
@@ -103,6 +105,7 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandle
         binding.toolbar.setBackgroundColor(primaryColor)
         setSupportActionBar(binding.toolbar)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+        setActivityToolbarColorAuto(binding.toolbar)
     }
 
     private fun setUpRecyclerView() {
@@ -115,7 +118,8 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandle
                     binding.dashBroad.setExpanded(false, false)
                     // hide dashboard instantly
                 }
-                override fun onFastScrollStop() { }
+
+                override fun onFastScrollStop() {}
             }
         )
 
@@ -147,6 +151,7 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandle
             )
         }
     }
+
     private val playlistCallBack: PlaylistCallback
         get() = { playlist: Playlist, songs: List<Song> ->
             adapter.dataset = songs
@@ -162,9 +167,8 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandle
     private fun updateDashboard() {
 
         // colors
-
-        val textColor = MaterialColorHelper.getSecondaryTextColor(this, ColorUtil.isColorLight(primaryColor))
-        val iconColor = MaterialColorHelper.getSecondaryDisabledTextColor(this, ColorUtil.isColorLight(primaryColor))
+        val textColor = secondaryTextColor(primaryColor)
+        val iconColor = secondaryDisabledTextColor(primaryColor)
         with(binding) {
 
             nameIcon.setImageDrawable(getTintedDrawable(R.drawable.ic_description_white_24dp, iconColor, BlendModeCompat.SRC_ATOP))
@@ -197,7 +201,8 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandle
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         val playlist: Playlist = model.playlist.value ?: FilePlaylist()
-        injectPlaylistDetail(menu, this, playlist)
+        val iconColor = primaryTextColor(primaryColor)
+        injectPlaylistDetail(menu, this, playlist, iconColor)
         return super.onCreateOptionsMenu(menu)
     }
 

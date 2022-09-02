@@ -14,11 +14,12 @@ import com.afollestad.materialdialogs.WhichButton
 import com.afollestad.materialdialogs.actions.getActionButton
 import com.github.chr56.android.menu_dsl.attach
 import com.github.chr56.android.menu_dsl.menuItem
-import kotlin.system.exitProcess
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import lib.phonograph.activity.ToolbarActivity
+import mt.pref.ThemeColor
+import mt.tint.setActivityToolbarColorAuto
 import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.misc.OpenDocumentContract
@@ -26,10 +27,8 @@ import player.phonograph.provider.DatabaseManger
 import player.phonograph.settings.SettingManager
 import player.phonograph.ui.fragments.SettingsFragment
 import player.phonograph.util.CoroutineUtil
-import player.phonograph.util.Util
 import player.phonograph.util.Util.currentDateTime
-import util.mdcolor.pref.ThemeColor
-import util.mddesign.core.Themer
+import kotlin.system.exitProcess
 
 class SettingsActivity : ToolbarActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -40,7 +39,7 @@ class SettingsActivity : ToolbarActivity() {
         toolbar.setBackgroundColor(ThemeColor.primaryColor(this))
         setSupportActionBar(toolbar)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-        Themer.setActivityToolbarColorAuto(this, toolbar)
+        setActivityToolbarColorAuto(toolbar)
 
         if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction()
@@ -151,15 +150,19 @@ class SettingsActivity : ToolbarActivity() {
     private fun exportDatabase(uri: Uri): Boolean {
         return DatabaseManger(App.instance).exportDatabases(uri)
     }
+
     private fun importDatabase(uri: Uri): Boolean {
         return DatabaseManger(App.instance).importDatabases(uri)
     }
+
     private fun exportSetting(uri: Uri): Boolean {
         return SettingManager(App.instance).exportSettings(uri)
     }
+
     private fun importSetting(uri: Uri): Boolean {
         return SettingManager(App.instance).importSetting(uri)
     }
+
     private suspend fun Boolean.andReport() {
         CoroutineUtil.coroutineToast(App.instance, if (this) R.string.success else R.string.failed)
     }

@@ -7,18 +7,18 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.res.Resources
-import android.graphics.*
+import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.os.Build
 import android.view.View
 import android.widget.RemoteViews
 import androidx.core.content.res.ResourcesCompat
+import mt.util.color.getPrimaryTextColor
 import player.phonograph.R
 import player.phonograph.model.Song
 import player.phonograph.model.infoString
 import player.phonograph.service.MusicService
 import player.phonograph.util.ImageUtil
-import util.mddesign.util.MaterialColorHelper
 
 abstract class BaseAppWidget : AppWidgetProvider() {
 
@@ -89,7 +89,7 @@ abstract class BaseAppWidget : AppWidgetProvider() {
             R.id.button_next,
             ImageUtil.createBitmap(
                 ImageUtil.getTintedVectorDrawable(
-                    context, R.drawable.ic_skip_next_white_24dp, MaterialColorHelper.getPrimaryTextColor(context, false)
+                    context, R.drawable.ic_skip_next_white_24dp, getPrimaryTextColor(context, false)
                 )
             )
         )
@@ -97,7 +97,7 @@ abstract class BaseAppWidget : AppWidgetProvider() {
             R.id.button_prev,
             ImageUtil.createBitmap(
                 ImageUtil.getTintedVectorDrawable(
-                    context, R.drawable.ic_skip_previous_white_24dp, MaterialColorHelper.getPrimaryTextColor(context, false)
+                    context, R.drawable.ic_skip_previous_white_24dp, getPrimaryTextColor(context, false)
                 )
             )
         )
@@ -105,7 +105,7 @@ abstract class BaseAppWidget : AppWidgetProvider() {
             R.id.button_toggle_play_pause,
             ImageUtil.createBitmap(
                 ImageUtil.getTintedVectorDrawable(
-                    context, R.drawable.ic_play_arrow_white_24dp, MaterialColorHelper.getPrimaryTextColor(context, false)
+                    context, R.drawable.ic_play_arrow_white_24dp, getPrimaryTextColor(context, false)
                 )
             )
         )

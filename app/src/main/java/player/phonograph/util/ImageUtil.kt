@@ -15,9 +15,9 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.BlendModeColorFilterCompat
 import androidx.core.graphics.BlendModeCompat
 import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
+import mt.util.drawable.createTintedDrawable
 import java.io.InputStream
 import kotlin.math.roundToInt
-import util.mddesign.util.TintHelper
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
@@ -80,10 +80,10 @@ object ImageUtil {
         theme: Theme?,
         @ColorInt color: Int
     ): Drawable? =
-        TintHelper.createTintedDrawable(getVectorDrawable(res, resId, theme), color)
+        createTintedDrawable(getVectorDrawable(res, resId, theme), color)
 
     fun getTintedVectorDrawable(context: Context, @DrawableRes id: Int, @ColorInt color: Int): Drawable {
-        return TintHelper.createTintedDrawable(
+        return createTintedDrawable(
             getVectorDrawable(context.resources, id, context.theme),
             color
         )!!

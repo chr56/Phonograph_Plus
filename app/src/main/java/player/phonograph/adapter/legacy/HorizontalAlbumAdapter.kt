@@ -6,14 +6,15 @@ import android.view.View
 import android.view.ViewGroup.MarginLayoutParams
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
+import mt.util.color.getPrimaryTextColor
+import mt.util.color.getSecondaryTextColor
+import mt.util.color.isColorLight
 import player.phonograph.R
 import player.phonograph.adapter.base.MultiSelectionCabController
 import player.phonograph.coil.loadImage
 import player.phonograph.coil.target.PhonographColoredTarget
 import player.phonograph.model.Album
 import player.phonograph.model.getYearString
-import util.mdcolor.ColorUtil
-import util.mddesign.util.MaterialColorHelper
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
@@ -35,17 +36,17 @@ class HorizontalAlbumAdapter(
         card.setCardBackgroundColor(color)
         if (holder.title != null) {
             holder.title!!.setTextColor(
-                MaterialColorHelper.getPrimaryTextColor(
+                getPrimaryTextColor(
                     activity,
-                    ColorUtil.isColorLight(color)
+                    isColorLight(color)
                 )
             )
         }
         if (holder.text != null) {
             holder.text!!.setTextColor(
-                MaterialColorHelper.getSecondaryTextColor(
+                getSecondaryTextColor(
                     activity,
-                    ColorUtil.isColorLight(color)
+                   isColorLight(color)
                 )
             )
         }
@@ -73,6 +74,7 @@ class HorizontalAlbumAdapter(
             })
         }
     }
+
 
     override fun getAlbumText(album: Album): String =
         getYearString(album.year)

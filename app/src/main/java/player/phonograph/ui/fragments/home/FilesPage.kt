@@ -14,10 +14,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.annotation.DrawableRes
-import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.getSystemService
-import androidx.core.graphics.BlendModeColorFilterCompat
-import androidx.core.graphics.BlendModeCompat
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -26,19 +23,21 @@ import com.afollestad.materialdialogs.list.listItemsSingleChoice
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.snackbar.Snackbar
 import lib.phonograph.storage.root
+import mt.pref.ThemeColor
+import mt.util.color.getPrimaryTextColor
 import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.adapter.FileAdapter
 import player.phonograph.databinding.FragmentFolderPageBinding
-import player.phonograph.model.sort.FileSortMode
-import player.phonograph.model.sort.SortRef
 import player.phonograph.model.file.FileEntity
 import player.phonograph.model.file.Location
+import player.phonograph.model.sort.FileSortMode
+import player.phonograph.model.sort.SortRef
 import player.phonograph.notification.ErrorNotification
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.settings.Setting
+import player.phonograph.util.ImageUtil.getTintedDrawable
 import player.phonograph.util.ViewUtil.setUpFastScrollRecyclerViewColor
-import util.mdcolor.pref.ThemeColor
 
 class FilesPage : AbsPage() {
 
@@ -76,9 +75,9 @@ class FilesPage : AbsPage() {
             popup.showAtLocation(
                 binding.root, Gravity.TOP or Gravity.END, 0,
                 (
-                    hostFragment.mainActivity.findViewById<player.phonograph.views.StatusBarView>(R.id.status_bar)?.height ?: 8
-                    ) +
-                    hostFragment.totalHeaderHeight + binding.innerAppBar.height
+                        hostFragment.mainActivity.findViewById<player.phonograph.views.StatusBarView>(R.id.status_bar)?.height ?: 8
+                        ) +
+                        hostFragment.totalHeaderHeight + binding.innerAppBar.height
             )
         }
         binding.buttonBack.setImageDrawable(getDrawable(R.drawable.md_nav_back))
@@ -121,7 +120,7 @@ class FilesPage : AbsPage() {
 
         binding.recyclerView.setUpFastScrollRecyclerViewColor(
             hostFragment.mainActivity,
-            ThemeColor.accentColor(App.instance.applicationContext)
+            ThemeColor.accentColor(App.instance)
         )
         binding.recyclerView.apply {
             layoutManager = this@FilesPage.layoutManager
@@ -235,13 +234,9 @@ class FilesPage : AbsPage() {
     }
 
     private fun getDrawable(@DrawableRes resId: Int): Drawable? {
-        return AppCompatResources.getDrawable(hostFragment.mainActivity, resId)?.also {
-            it.colorFilter = BlendModeColorFilterCompat
-                .createBlendModeColorFilterCompat(
-                    ThemeColor.textColorPrimary(hostFragment.mainActivity),
-                    BlendModeCompat.SRC_IN
-                )
-        }
+        return hostFragment.mainActivity.getTintedDrawable(resId,
+            getPrimaryTextColor(requireContext(), !App.instance.nightMode)
+        )
     }
 
     private var innerAppbarOffsetListener =

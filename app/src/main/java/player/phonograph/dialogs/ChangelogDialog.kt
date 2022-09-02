@@ -14,16 +14,16 @@ import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.WhichButton
 import com.afollestad.materialdialogs.actions.getActionButton
 import com.afollestad.materialdialogs.customview.customView
-import java.io.IOException
-import java.io.InputStream
-import java.util.*
 import lib.phonograph.localization.Localization
+import mt.pref.ThemeColor
+import mt.util.color.resolveColor
 import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.notification.ErrorNotification
 import player.phonograph.settings.Setting
-import util.mdcolor.pref.ThemeColor
-import util.mddesign.util.Util.resolveColor
+import java.io.IOException
+import java.io.InputStream
+import java.util.*
 
 /**
  * @author Aidan Follestad (afollestad)
@@ -91,7 +91,7 @@ class ChangelogDialog : DialogFragment() {
         val backgroundColor =
             colorToCSS(
                 resolveColor(
-                    activity,
+                    requireContext(),
                     R.attr.md_background_color,
                     Color.parseColor(if (App.instance.nightMode) "#424242" else "#ffffff")
                 )

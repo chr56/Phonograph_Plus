@@ -10,14 +10,13 @@ import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.WindowDecorActionBar
 import androidx.appcompat.widget.Toolbar
 import androidx.appcompat.widget.ToolbarWidgetWrapper
-import util.mdcolor.pref.ThemeColor
-import util.mddesign.util.MenuTinter
+import mt.tint.viewtint.applyOverflowMenuTint
 
 /**
  * An abstract class providing material activity with toolbar
  * @author Karim Abou Zeid (kabouzeid)
  */
-abstract class ToolbarActivity : PermissionActivity() {
+abstract class ToolbarActivity() : PermissionActivity() {
 
     //
     // Toolbar & Actionbar
@@ -51,8 +50,8 @@ abstract class ToolbarActivity : PermissionActivity() {
     //
     // Menu (Tint)
     //
-    override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
-        MenuTinter.applyOverflowMenuTint(this, supportToolbar, ThemeColor.accentColor(this))
+    override fun onPrepareOptionsMenu(menu: Menu): Boolean {
+        supportToolbar?.let { applyOverflowMenuTint(this, it, accentColor) }
         return super.onPrepareOptionsMenu(menu)
     }
 

@@ -5,16 +5,17 @@ import android.app.Dialog
 import android.os.Bundle
 import android.text.Html
 import androidx.fragment.app.DialogFragment
-import util.mdcolor.pref.ThemeColor
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.WhichButton
 import com.afollestad.materialdialogs.actions.getActionButton
 import com.afollestad.materialdialogs.list.listItems
+import mt.pref.ThemeColor
 import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.dialogs.BlacklistFolderChooserDialog
 import player.phonograph.provider.BlacklistStore
 import java.io.File
+
 /**
  * @author Karim Abou Zeid (kabouzeid)
  */

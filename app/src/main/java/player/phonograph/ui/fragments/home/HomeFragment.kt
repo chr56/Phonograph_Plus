@@ -6,7 +6,6 @@ package player.phonograph.ui.fragments.home
 
 import android.content.Intent
 import android.content.SharedPreferences
-import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.util.Log
@@ -25,6 +24,8 @@ import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import lib.phonograph.cab.ToolbarCab
 import lib.phonograph.cab.createToolbarCab
+import mt.pref.ThemeColor
+import mt.util.color.primaryTextColor
 import player.phonograph.BuildConfig.DEBUG
 import player.phonograph.R
 import player.phonograph.adapter.HomePagerAdapter
@@ -38,11 +39,9 @@ import player.phonograph.ui.activities.MainActivity
 import player.phonograph.ui.activities.SearchActivity
 import player.phonograph.ui.fragments.AbsMainActivityFragment
 import player.phonograph.util.ImageUtil.getTintedDrawable
-import util.mdcolor.ColorUtil
-import util.mdcolor.pref.ThemeColor
-import util.mddesign.util.MaterialColorHelper
 
-class HomeFragment : AbsMainActivityFragment(), MainActivity.MainActivityFragmentCallbacks, SharedPreferences.OnSharedPreferenceChangeListener {
+class HomeFragment : AbsMainActivityFragment(), MainActivity.MainActivityFragmentCallbacks,
+    SharedPreferences.OnSharedPreferenceChangeListener {
 
     private var _viewBinding: FragmentHomeBinding? = null
     private val binding: FragmentHomeBinding get() = _viewBinding!!
@@ -72,6 +71,7 @@ class HomeFragment : AbsMainActivityFragment(), MainActivity.MainActivityFragmen
             "${System.currentTimeMillis().mod(10000000)} HomeFragment.onViewCreated()"
         )
     }
+
     override fun onDestroyView() {
         super.onDestroyView()
         binding.pager.unregisterOnPageChangeCallback(pageChangeListener)
@@ -164,7 +164,7 @@ class HomeFragment : AbsMainActivityFragment(), MainActivity.MainActivityFragmen
         menu.add(MenuContext(rootMenu = menu, requireContext()), fun MenuItemContext.() {
             itemId = R.id.action_search
             titleRes(R.string.action_search)
-            icon = mainActivity.getTintedDrawable(R.drawable.ic_search_white_24dp, Color.WHITE)
+            icon = mainActivity.getTintedDrawable(R.drawable.ic_search_white_24dp, primaryTextColor)
             showAsActionFlag = SHOW_AS_ACTION_ALWAYS
         })
     }
@@ -244,14 +244,10 @@ class HomeFragment : AbsMainActivityFragment(), MainActivity.MainActivityFragmen
     private val primaryColor by lazy(LazyThreadSafetyMode.NONE) { ThemeColor.primaryColor(requireActivity()) }
     private val accentColor by lazy(LazyThreadSafetyMode.NONE) { ThemeColor.accentColor(requireActivity()) }
     private val primaryTextColor by lazy(LazyThreadSafetyMode.NONE) {
-        MaterialColorHelper.getPrimaryTextColor(
-            mainActivity, ColorUtil.isColorLight(primaryColor)
-        )
+        mainActivity.primaryTextColor(primaryColor)
     }
     private val secondaryTextColor by lazy(LazyThreadSafetyMode.NONE) {
-        MaterialColorHelper.getSecondaryTextColor(
-            mainActivity, ColorUtil.isColorLight(primaryColor)
-        )
+        mainActivity.primaryTextColor(primaryColor)
     }
 
     companion object {

@@ -14,11 +14,11 @@ import androidx.fragment.app.DialogFragment
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.WhichButton
 import com.afollestad.materialdialogs.actions.getActionButton
+import mt.pref.ThemeColor.accentColor
 import player.phonograph.R
 import player.phonograph.mediastore.MediaStoreUtil
 import player.phonograph.model.Song
 import player.phonograph.util.StringUtil
-import util.mdcolor.pref.ThemeColor
 
 /**
  * @author Karim Abou Zeid (kabouzeid), Aidan Follestad (afollestad), chr_56<modify>
@@ -73,7 +73,7 @@ class DeleteSongsDialog : DialogFragment() {
                 }
 
                 // set button color
-                val color = ThemeColor.accentColor(requireActivity())
+                val color = accentColor(requireActivity())
                 getActionButton(WhichButton.POSITIVE).updateTextColor(color)
                 getActionButton(WhichButton.NEGATIVE).updateTextColor(color)
                 getActionButton(WhichButton.NEUTRAL).updateTextColor(color)

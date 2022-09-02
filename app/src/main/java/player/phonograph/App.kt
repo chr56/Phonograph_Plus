@@ -10,14 +10,15 @@ import android.util.Log
 import androidx.appcompat.content.res.AppCompatResources
 import coil.ImageLoader
 import coil.ImageLoaderFactory
-import kotlin.system.exitProcess
 import lib.phonograph.localization.ContextLocaleDelegate
+import mt.pref.ThemeColor
+import mt.pref.internal.ThemeStore
 import player.phonograph.appshortcuts.DynamicShortcutManager
 import player.phonograph.coil.createPhonographImageLoader
 import player.phonograph.notification.ErrorNotification
 import player.phonograph.service.queue.QueueManager
 import player.phonograph.ui.activities.CrashActivity
-import util.mdcolor.pref.ThemeColor
+import kotlin.system.exitProcess
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
@@ -35,16 +36,17 @@ class App : Application(), ImageLoaderFactory {
     }
 
     var _queueManager: QueueManager? = null
-    val queueManager: QueueManager get() {
-        if (_queueManager == null) {
-            // QueueManager
-            _queueManager = QueueManager(this).apply {
-                // restore all
-                postMessage(QueueManager.MSG_STATE_RESTORE_ALL)
+    val queueManager: QueueManager
+        get() {
+            if (_queueManager == null) {
+                // QueueManager
+                _queueManager = QueueManager(this).apply {
+                    // restore all
+                    postMessage(QueueManager.MSG_STATE_RESTORE_ALL)
+                }
             }
+            return _queueManager!!
         }
-        return _queueManager!!
-    }
 
     override fun attachBaseContext(base: Context?) {
         // Localization
@@ -83,10 +85,10 @@ class App : Application(), ImageLoaderFactory {
         }
 
         // default theme
-        if (!ThemeColor.isConfigured(this, 1)) {
+        if (!ThemeStore.isConfigured(this, 1)) {
             ThemeColor.editTheme(this)
-                .primaryColorRes(util.mdcolor.R.color.md_blue_A400)
-                .accentColorRes(util.mdcolor.R.color.md_yellow_900)
+                .primaryColorRes(mt.color.R.color.md_blue_A400)
+                .accentColorRes(mt.color.R.color.md_yellow_900)
                 .commit()
         }
 
@@ -110,7 +112,8 @@ class App : Application(), ImageLoaderFactory {
 
     companion object {
         @JvmStatic
-        lateinit var instance: App private set
+        lateinit var instance: App
+            private set
 
         const val PACKAGE_NAME = "player.phonograph"
         const val ACTUAL_PACKAGE_NAME = BuildConfig.APPLICATION_ID

@@ -15,6 +15,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import java.util.ArrayList
 import kotlinx.coroutines.*
+import mt.pref.ThemeColor
+import mt.util.color.lightenColor
 import player.phonograph.App
 import player.phonograph.BROADCAST_PLAYLISTS_CHANGED
 import player.phonograph.R
@@ -30,8 +32,6 @@ import player.phonograph.model.playlist.Playlist
 import player.phonograph.settings.Setting
 import player.phonograph.util.PlaylistsUtil
 import player.phonograph.util.ViewUtil.setUpFastScrollRecyclerViewColor
-import util.mdcolor.ColorUtil
-import util.mdcolor.pref.ThemeColor
 
 class PlaylistPage : AbsPage() {
 
@@ -149,7 +149,7 @@ class PlaylistPage : AbsPage() {
                 intArrayOf(),
             ),
             intArrayOf(
-                ColorUtil.lightenColor(primaryColor), accentColor, primaryColor
+                lightenColor(primaryColor), accentColor, primaryColor
             )
         )
 

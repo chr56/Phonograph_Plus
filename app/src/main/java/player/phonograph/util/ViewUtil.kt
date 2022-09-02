@@ -19,10 +19,12 @@ import android.view.animation.PathInterpolator
 import android.widget.TextView
 import androidx.annotation.ColorInt
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView
+import mt.util.color.getPrimaryTextColor
+import mt.util.color.isColorLight
+import mt.util.color.isWindowBackgroundDark
+import mt.util.color.resolveColor
+import mt.util.color.withAlpha
 import player.phonograph.R
-import util.mdcolor.ColorUtil
-import util.mddesign.util.MaterialColorHelper
-import util.mddesign.util.Util
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
@@ -80,11 +82,11 @@ object ViewUtil {
         return x in left..right && y >= top && y <= bottom
     }
 
-    fun FastScrollRecyclerView.setUpFastScrollRecyclerViewColor(context: Context?, accentColor: Int) {
+    fun FastScrollRecyclerView.setUpFastScrollRecyclerViewColor(context: Context, accentColor: Int) {
         setPopupBgColor(accentColor)
-        setPopupTextColor(MaterialColorHelper.getPrimaryTextColor(context, ColorUtil.isColorLight(accentColor)))
+        setPopupTextColor(getPrimaryTextColor(context, isColorLight(accentColor)))
         setThumbColor(accentColor)
-        setTrackColor(ColorUtil.withAlpha(Util.resolveColor(context, R.attr.colorControlNormal), 0.12f)) // todo
+        setTrackColor(withAlpha(resolveColor(context, R.attr.colorControlNormal), 0.12f)) // todo
     }
 
     fun convertDpToPixel(dp: Float, resources: Resources): Float {
@@ -100,7 +102,7 @@ object ViewUtil {
     fun isWindowBackgroundDarkSafe(context: Context?): Boolean =
         try {
             context?.let {
-                Util.isWindowBackgroundDark(context)
+                isWindowBackgroundDark(context)
             } ?: false
         } catch (e: Exception) {
             false

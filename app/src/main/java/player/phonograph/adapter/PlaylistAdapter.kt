@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.PopupMenu
 import androidx.annotation.LayoutRes
 import androidx.fragment.app.FragmentActivity
+import mt.util.color.resolveColor
 import player.phonograph.R
 import player.phonograph.actions.injectPlaylistAdapter
 import player.phonograph.adapter.base.MediaEntryViewHolder
@@ -21,7 +22,6 @@ import player.phonograph.model.playlist.SmartPlaylist
 import player.phonograph.util.FavoriteUtil
 import player.phonograph.util.NavigationUtil
 import player.phonograph.util.menu.onMultiSongMenuItemClick
-import util.mddesign.util.Util
 import util.phonograph.m3u.PlaylistsManager
 
 /**
@@ -131,7 +131,7 @@ class PlaylistAdapter(
                 if (shortSeparator != null) {
                     shortSeparator!!.visibility = View.GONE
                 }
-                itemView.setBackgroundColor(Util.resolveColor(activity, R.attr.cardBackgroundColor))
+                itemView.setBackgroundColor(resolveColor(activity, R.attr.cardBackgroundColor))
                 // if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 itemView.elevation =
                     activity.resources.getDimensionPixelSize(R.dimen.card_elevation).toFloat()
@@ -142,7 +142,7 @@ class PlaylistAdapter(
                     activity.resources.getDimensionPixelSize(R.dimen.list_item_image_icon_padding)
                 image!!.setPadding(iconPadding, iconPadding, iconPadding, iconPadding)
                 image!!.setColorFilter(
-                    Util.resolveColor(activity, R.attr.iconColor), PorterDuff.Mode.SRC_IN
+                    resolveColor(activity, R.attr.iconColor), PorterDuff.Mode.SRC_IN
                 )
             }
             if (menu != null) {

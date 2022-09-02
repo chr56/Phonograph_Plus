@@ -17,6 +17,7 @@ import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.Toolbar
 import de.psdev.licensesdialog.LicensesDialog
 import lib.phonograph.activity.ToolbarActivity
+import mt.tint.setActivityToolbarColorAuto
 import player.phonograph.App.Companion.instance
 import player.phonograph.BuildConfig
 import player.phonograph.R
@@ -28,8 +29,6 @@ import player.phonograph.dialogs.UpgradeDialog
 import player.phonograph.settings.Setting
 import player.phonograph.ui.activities.bugreport.BugReportActivity
 import player.phonograph.ui.activities.intro.AppIntroActivity
-import util.mdcolor.pref.ThemeColor
-import util.mddesign.core.Themer.setActivityToolbarColorAuto
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
@@ -67,8 +66,6 @@ class AboutActivity : ToolbarActivity(), View.OnClickListener {
         binding = ActivityAboutBinding.inflate(layoutInflater)
         binding()
         mToolbar = binding.toolbar
-
-        setActivityToolbarColorAuto(this, mToolbar)
 
         setContentView(binding.root)
 
@@ -117,9 +114,10 @@ class AboutActivity : ToolbarActivity(), View.OnClickListener {
     }
 
     private fun setUpToolbar() {
-        mToolbar.setBackgroundColor(ThemeColor.primaryColor(this))
+        mToolbar.setBackgroundColor(primaryColor)
         setSupportActionBar(mToolbar)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+        setActivityToolbarColorAuto(mToolbar)
     }
 
     @Keep
@@ -132,6 +130,7 @@ class AboutActivity : ToolbarActivity(), View.OnClickListener {
             appVersionHash.visibility = View.INVISIBLE
         }
     }
+
     private fun getCurrentVersionName(context: Context): String {
         try {
             return context.packageManager.getPackageInfo(context.packageName, 0).versionName
@@ -292,7 +291,8 @@ class AboutActivity : ToolbarActivity(), View.OnClickListener {
 
         private const val TRANSLATE =
             "https://crowdin.com/project/phonograph-plus"
-//            "https://phonograph.oneskyapp.com/collaboration/project?id=26521"
+
+        //            "https://phonograph.oneskyapp.com/collaboration/project?id=26521"
         private const val AIDAN_FOLLESTAD_GITHUB = "https://github.com/afollestad"
         private const val MICHAEL_COOK_WEBSITE = "https://cookicons.co/"
         private const val MAARTEN_CORPEL_WEBSITE = "https://maartencorpel.com/"

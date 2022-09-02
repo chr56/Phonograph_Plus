@@ -27,6 +27,7 @@ object Deps {
         const val cardview = "androidx.cardview:cardview:1.0.0"
         const val palette = "androidx.palette:palette-ktx:1.0.0"
     }
+
     const val google_material = "com.google.android.material:material:1.6.1"
 
     const val okhttp3 = "com.squareup.okhttp3:okhttp:4.9.3"
@@ -41,9 +42,15 @@ object Deps {
     const val material_dialogs_color = "com.afollestad.material-dialogs:color:$material_dialogs_version"
     const val material_dialogs_files = "com.afollestad.material-dialogs:files:$material_dialogs_version"
 
-    const val mdUtil = "com.github.chr56:mdUtil:0.0.1"
-    const val mdColor = "com.github.chr56:mdColor:0.0.1"
+
+    private const val mdVersion = "0.0.6"
+    const val mdColorRes = "com.github.chr56.material-tools:mdColorRes:$mdVersion"
+    const val mdUtil = "com.github.chr56.material-tools:mdUtil:$mdVersion"
+    const val mdPref = "com.github.chr56.material-tools:mdPref:$mdVersion"
+    const val mdTint = "com.github.chr56.material-tools:mdTint:$mdVersion"
+
     const val android_menu_dsl = "io.github.chr56:android-menu-dsl:0.1.0"
+
     const val SeekArc = "com.github.chr56:SeekArc:1.0"
     const val AndroidSlidingUpPanel_kabouzeid = "com.github.kabouzeid:AndroidSlidingUpPanel:6"
 

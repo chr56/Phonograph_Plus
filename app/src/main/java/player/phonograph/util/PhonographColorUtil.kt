@@ -5,7 +5,9 @@ import android.graphics.Bitmap
 import androidx.annotation.ColorInt
 import androidx.palette.graphics.Palette
 import androidx.palette.graphics.Palette.Swatch
-import util.mdcolor.ColorUtil
+import mt.util.color.darkenColor
+import mt.util.color.isColorLight
+import mt.util.color.lightenColor
 import player.phonograph.R
 import player.phonograph.settings.Setting
 import java.util.*
@@ -33,14 +35,14 @@ object PhonographColorUtil {
     @ColorInt
     fun shiftBackgroundColorForLightText(@ColorInt backgroundColor: Int): Int {
         var newColor = backgroundColor
-        while (ColorUtil.isColorLight(newColor)) newColor = ColorUtil.darkenColor(newColor)
+        while (isColorLight(newColor)) newColor = darkenColor(newColor)
         return newColor
     }
 
     @ColorInt
     fun shiftBackgroundColorForDarkText(@ColorInt backgroundColor: Int): Int {
         var newColor = backgroundColor
-        while (!ColorUtil.isColorLight(newColor)) newColor = ColorUtil.lightenColor(newColor)
+        while (!isColorLight(newColor)) newColor = lightenColor(newColor)
         return newColor
     }
 

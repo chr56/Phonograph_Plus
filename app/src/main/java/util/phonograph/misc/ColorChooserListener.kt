@@ -4,6 +4,7 @@
 
 package util.phonograph.misc
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.os.Build
@@ -12,41 +13,40 @@ import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.WhichButton
 import com.afollestad.materialdialogs.actions.getActionButton
 import com.afollestad.materialdialogs.color.colorChooser
+import mt.color.MaterialColor
+import mt.pref.ThemeColor
+import mt.pref.ThemeColor.accentColor
 import player.phonograph.R
 import player.phonograph.appshortcuts.DynamicShortcutManager
-import util.mdcolor.MaterialColor
-import util.mdcolor.pref.ThemeColor
 
-class ColorChooserListener(private var context: Context, private var defaultColor: Int = 0, private var mode: Int = 0) : Preference.OnPreferenceClickListener {
+class ColorChooserListener(private var context: Context, private var defaultColor: Int = 0, private var mode: Int = 0) :
+    Preference.OnPreferenceClickListener {
 
+    @SuppressLint("CheckResult")
     override fun onPreferenceClick(preference: Preference): Boolean {
-        val dialog =
-            MaterialDialog(context)
-                .title(R.string.pref_header_colors)
-                .colorChooser(colors = colors, subColors = subColors, allowCustomArgb = true, initialSelection = defaultColor) { _, color ->
-                    val editor = ThemeColor.editTheme(context)
+        MaterialDialog(context).show {
+            title(R.string.pref_header_colors)
+            colorChooser(colors = colors, subColors = subColors, allowCustomArgb = true, initialSelection = defaultColor) { _, color ->
+                ThemeColor.editTheme(context).apply {
                     when (mode) {
-                        MODE_PRIMARY_COLOR -> editor.primaryColor(color)
-                        MODE_ACCENT_COLOR -> editor.accentColor(color)
+                        MODE_PRIMARY_COLOR -> primaryColor(color)
+                        MODE_ACCENT_COLOR -> accentColor(color)
                         0 -> return@colorChooser
                     }
-                    editor.commit()
-
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
-                        DynamicShortcutManager(context).updateDynamicShortcuts()
-                    }
+                }.commit()
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
+                    DynamicShortcutManager(context).updateDynamicShortcuts()
                 }
-                .positiveButton(res = android.R.string.ok) {
-                    (context as Activity).recreate() // todo
+                (this@ColorChooserListener.context as? Activity)?.recreate()
+            }
+            positiveButton(res = android.R.string.ok)
+            negativeButton(res = android.R.string.cancel)
+                .apply {
+                    // set button color
+                    getActionButton(WhichButton.POSITIVE).updateTextColor(accentColor(context))
+                    getActionButton(WhichButton.NEGATIVE).updateTextColor(accentColor(context))
                 }
-                .negativeButton(res = android.R.string.cancel)
-
-        // set button color
-        dialog.getActionButton(WhichButton.POSITIVE).updateTextColor(ThemeColor.accentColor(context))
-        dialog.getActionButton(WhichButton.NEGATIVE).updateTextColor(ThemeColor.accentColor(context))
-
-        dialog.show()
-
+        }
         return true
     }
 
