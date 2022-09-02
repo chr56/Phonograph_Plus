@@ -110,7 +110,7 @@ Songs | Folders | Artists | Playlists |
 
 - [x] 重构后台音乐服务 | Refactor MusicService
 
-- [ ] 迁移 Glide 至 Coil ❗WIP | Migrate Glide to Coil ❗WIP
+- [x] 迁移 Glide 至 Coil | Migrate Glide to Coil
 
 - [ ] 自定义歌曲点击行为 ⭕ | User-defined click behavior for songs ⭕
 
