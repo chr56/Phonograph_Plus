@@ -2,6 +2,7 @@ package player.phonograph.ui.activities
 
 import android.content.Intent
 import android.graphics.PorterDuff
+import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
 import android.text.Html
@@ -20,20 +21,18 @@ import androidx.recyclerview.widget.RecyclerView.AdapterDataObserver
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.WhichButton
 import com.afollestad.materialdialogs.actions.getActionButton
-import com.bumptech.glide.Glide
 import lib.phonograph.cab.ToolbarCab
 import lib.phonograph.cab.createToolbarCab
 import player.phonograph.R
 import player.phonograph.adapter.base.MultiSelectionCabController
 import player.phonograph.adapter.legacy.ArtistSongAdapter
 import player.phonograph.adapter.legacy.HorizontalAlbumAdapter
+import player.phonograph.coil.CustomArtistImageStore
+import player.phonograph.coil.loadImage
+import player.phonograph.coil.target.PhonographColoredTarget
 import player.phonograph.databinding.ActivityArtistDetailBinding
 import player.phonograph.dialogs.AddToPlaylistDialog
 import player.phonograph.dialogs.SleepTimerDialog
-import player.phonograph.glide.ArtistGlideRequest
-import player.phonograph.glide.PhonographColoredTarget
-import player.phonograph.glide.util.CustomArtistImageUtil.resetCustomArtistImage
-import player.phonograph.glide.util.CustomArtistImageUtil.setCustomArtistImage
 import player.phonograph.interfaces.PaletteColorHolder
 import player.phonograph.misc.SimpleObservableScrollViewCallbacks
 import player.phonograph.model.*
@@ -50,6 +49,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import util.mdcolor.ColorUtil
+import util.mdcolor.pref.ThemeColor
 import util.mddesign.util.MaterialColorHelper
 import util.mddesign.util.ToolbarColorUtil
 import util.mddesign.util.Util
@@ -213,21 +213,32 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorHolder 
     }
 
     private fun loadArtistImage() {
-        ArtistGlideRequest.Builder.from(Glide.with(this), artist)
-            .generatePalette(this).build()
-            .dontAnimate()
-            .into(object : PhonographColoredTarget(viewBinding.image) {
+        loadImage(this)
+            .from(artist)
+            .into(object : PhonographColoredTarget() {
+                override fun onResourcesReady(drawable: Drawable) {
+                    viewBinding.image.setImageDrawable(drawable)
+                }
+
                 override fun onColorReady(color: Int) {
                     setColors(color)
                 }
+
+                val defaultColor = ThemeColor.primaryColor(this@ArtistDetailActivity)
+                override fun onError(error: Drawable?) {
+                    viewBinding.image.setImageResource(R.drawable.default_album_art)
+                    setColors(defaultColor)
+                }
             })
+            .enqueue()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         when (requestCode) {
             REQUEST_CODE_SELECT_IMAGE -> if (resultCode == RESULT_OK) {
-                setCustomArtistImage(artist, data!!.data!!)
+                CustomArtistImageStore.instance(this)
+                    .setCustomArtistImage(this, artist.id, artist.name, data!!.data!!)
             }
             else -> if (resultCode == RESULT_OK) {
                 load()
@@ -351,7 +362,8 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorHolder 
             }
             R.id.action_reset_artist_image -> {
                 Toast.makeText(this@ArtistDetailActivity, resources.getString(R.string.updating), Toast.LENGTH_SHORT).show()
-                resetCustomArtistImage(artist)
+                CustomArtistImageStore.instance(this)
+                    .resetCustomArtistImage(this, artist.id, artist.name)
                 return true
             }
             R.id.action_colored_footers -> {
