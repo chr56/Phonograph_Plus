@@ -14,7 +14,6 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Color
-import android.graphics.drawable.Drawable
 import android.media.MediaMetadata.*
 import android.os.Build
 import android.os.Handler
@@ -27,14 +26,12 @@ import android.view.View
 import android.widget.RemoteViews
 import androidx.annotation.RequiresApi
 import androidx.core.graphics.drawable.toBitmap
+import androidx.core.graphics.drawable.toBitmapOrNull
 import androidx.media.app.NotificationCompat
-import androidx.palette.graphics.Palette
 import coil.Coil
 import coil.request.Disposable
 import coil.request.ImageRequest
 import coil.size.Size
-import kotlinx.coroutines.Deferred
-import mt.pref.ThemeColor
 import mt.util.color.getPrimaryTextColor
 import mt.util.color.getSecondaryTextColor
 import mt.util.color.isColorLight
@@ -42,14 +39,13 @@ import player.phonograph.App
 import player.phonograph.BuildConfig
 import player.phonograph.R
 import player.phonograph.coil.BlurTransformation
-import player.phonograph.coil.target.ColoredTarget
+import player.phonograph.coil.target.PaletteTargetBuilder
 import player.phonograph.model.Song
 import player.phonograph.service.MusicService
 import player.phonograph.service.util.MediaButtonIntentReceiver
 import player.phonograph.settings.Setting
 import player.phonograph.ui.activities.MainActivity
 import player.phonograph.util.ImageUtil
-import player.phonograph.util.PaletteUtil.getColor
 import player.phonograph.util.Util
 import android.app.Notification as OSNotification
 import androidx.core.app.NotificationCompat as XNotificationCompat
@@ -184,25 +180,21 @@ class PlayingNotificationManger(private val service: MusicService) {
                 ImageRequest.Builder(service)
                     .data(song)
                     .size(bigNotificationImageSize)
-                    .target(object : ColoredTarget() {
-                        override fun onReady(drawable: Drawable, palette: Deferred<Palette>?) {
-                            palette?.getColor(ThemeColor.primaryColor(service)) {
-                                updateCover(drawable, it)
-                            }
-                        }
-
-                        fun updateCover(drawable: Drawable?, color: Int) {
-                            val bitmap: Bitmap = drawable?.toBitmap() ?: defaultCover
-                            notificationBuilder
-                                .setLargeIcon(bitmap)
-                                .also { builder ->
-                                    if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.O && Setting.instance.coloredNotification) {
-                                        builder.color = color
+                    .target(
+                        PaletteTargetBuilder(service)
+                            .onResourceReady { result, paletteColor ->
+                                val bitmap: Bitmap = result.toBitmapOrNull() ?: defaultCover
+                                notificationBuilder
+                                    .setLargeIcon(bitmap)
+                                    .also { builder ->
+                                        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.O && Setting.instance.coloredNotification) {
+                                            builder.color = paletteColor
+                                        }
                                     }
-                                }
-                            postNotification(notificationBuilder.build())
-                        }
-                    })
+                                postNotification(notificationBuilder.build())
+                            }
+                            .build()
+                    )
                     .build()
 
             uiHandler.post {
@@ -264,34 +256,30 @@ class PlayingNotificationManger(private val service: MusicService) {
             val imageRequest = ImageRequest.Builder(service)
                 .data(song)
                 .size(bigNotificationImageSize)
-                .target(object : ColoredTarget() {
-                    override fun onReady(drawable: Drawable, palette: Deferred<Palette>?) {
-                        palette?.getColor(ThemeColor.primaryColor(service)) {
-                            updateCover(drawable, it)
+                .target(
+                    PaletteTargetBuilder(service)
+                        .onResourceReady { result, backgroundColor ->
+                            val bitmap: Bitmap? = result.toBitmapOrNull()
+                            if (bitmap != null) {
+                                notificationLayout.setImageViewBitmap(R.id.image, bitmap)
+                                notificationLayoutBig.setImageViewBitmap(R.id.image, bitmap)
+                            }
+                            if (Setting.instance.coloredNotification) {
+                                setBackgroundColor(
+                                    backgroundColor,
+                                    notificationLayout,
+                                    notificationLayoutBig
+                                )
+                                setNotificationContent(
+                                    isColorLight(backgroundColor),
+                                    notificationLayout,
+                                    notificationLayoutBig
+                                )
+                            }
+                            postNotification(notificationBuilder.build())
                         }
-                    }
-
-                    private fun updateCover(drawable: Drawable?, backgroundColor: Int) {
-                        val bitmap: Bitmap? = drawable?.toBitmap()
-                        if (bitmap != null) {
-                            notificationLayout.setImageViewBitmap(R.id.image, bitmap)
-                            notificationLayoutBig.setImageViewBitmap(R.id.image, bitmap)
-                        }
-                        if (Setting.instance.coloredNotification) {
-                            setBackgroundColor(
-                                backgroundColor,
-                                notificationLayout,
-                                notificationLayoutBig
-                            )
-                            setNotificationContent(
-                                isColorLight(backgroundColor),
-                                notificationLayout,
-                                notificationLayoutBig
-                            )
-                        }
-                        postNotification(notificationBuilder.build())
-                    }
-                })
+                        .build()
+                )
                 .build()
 
             uiHandler.post {

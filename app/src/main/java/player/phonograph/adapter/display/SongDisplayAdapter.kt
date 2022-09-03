@@ -4,12 +4,11 @@
 
 package player.phonograph.adapter.display
 
-import android.graphics.drawable.Drawable
 import androidx.appcompat.app.AppCompatActivity
 import player.phonograph.R
 import player.phonograph.adapter.base.MultiSelectionCabController
 import player.phonograph.coil.loadImage
-import player.phonograph.coil.target.PhonographColoredTarget
+import player.phonograph.coil.target.PaletteTargetBuilder
 import player.phonograph.model.Song
 import player.phonograph.model.getReadableDurationString
 import player.phonograph.model.getYearString
@@ -28,24 +27,20 @@ open class SongDisplayAdapter(
 ) : DisplayAdapter<Song>(activity, cabController, dataSet, layoutRes, cfg) {
 
     override fun setImage(holder: DisplayViewHolder, position: Int) {
-        holder.image?.let {
+        holder.image?.let { view ->
             loadImage(context) {
                 data(dataset[position])
                 target(
-                    object : PhonographColoredTarget() {
-                        override fun onStart(placeholder: Drawable?) {
-                            it.setImageResource(R.drawable.default_album_art)
-                            setPaletteColors(defaultFooterColor, holder)
+                    PaletteTargetBuilder(context)
+                        .onStart {
+                            view.setImageResource(R.drawable.default_album_art)
+                            setPaletteColors(context.getColor(R.color.defaultFooterColor), holder)
                         }
-
-                        override fun onResourcesReady(drawable: Drawable) {
-                            it.setImageDrawable(drawable)
+                        .onResourceReady { result, palette ->
+                            view.setImageDrawable(result)
+                            if (usePalette) setPaletteColors(palette, holder)
                         }
-
-                        override fun onColorReady(color: Int) {
-                            if (usePalette) setPaletteColors(color, holder)
-                        }
-                    }
+                        .build()
                 )
             }
         }

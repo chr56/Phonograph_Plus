@@ -2,7 +2,6 @@ package player.phonograph.adapter
 
 import android.content.Context
 import android.content.SharedPreferences
-import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -16,7 +15,7 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
 import player.phonograph.R
 import player.phonograph.coil.loadImage
-import player.phonograph.coil.target.PhonographColoredTarget
+import player.phonograph.coil.target.PaletteTargetBuilder
 import player.phonograph.databinding.FragmentAlbumCoverBinding
 import player.phonograph.model.Song
 import player.phonograph.settings.Setting
@@ -126,21 +125,17 @@ class AlbumCoverPagerAdapter(
             ) {
                 loadImage(context)
                     .from(song)
-                    .into(object : PhonographColoredTarget() {
-                        override fun onStart(placeholder: Drawable?) {
-                            super.onStart(placeholder)
-                            target?.setImageResource(R.drawable.default_album_art)
-                        }
-
-                        override fun onResourcesReady(drawable: Drawable) {
-                            target?.setImageDrawable(drawable)
-                        }
-
-                        override fun onColorReady(color: Int) {
-                            colorCallback(song, color)
-                        }
-
-                    })
+                    .into(
+                        PaletteTargetBuilder(context)
+                            .onStart {
+                                target?.setImageResource(R.drawable.default_album_art)
+                            }
+                            .onResourceReady { result, palette ->
+                                target?.setImageDrawable(result)
+                                colorCallback(song, palette)
+                            }
+                            .build()
+                    )
                     .enqueue()
             }
 

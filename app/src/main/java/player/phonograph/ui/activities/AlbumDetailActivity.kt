@@ -1,7 +1,6 @@
 package player.phonograph.ui.activities
 
 import android.content.Intent
-import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
 import android.text.Spanned
@@ -32,7 +31,7 @@ import player.phonograph.adapter.base.MultiSelectionCabController
 import player.phonograph.adapter.display.AlbumSongDisplayAdapter
 import player.phonograph.adapter.display.SongDisplayAdapter
 import player.phonograph.coil.loadImage
-import player.phonograph.coil.target.PhonographColoredTarget
+import player.phonograph.coil.target.PaletteTargetBuilder
 import player.phonograph.databinding.ActivityAlbumDetailBinding
 import player.phonograph.dialogs.AddToPlaylistDialog
 import player.phonograph.dialogs.DeleteSongsDialog
@@ -173,6 +172,7 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity() {
     private val album: Album get() = model.album
 
     private fun load() {
+        val defaultColor = primaryColor(this)
         model.loadDataSet(
             this
         ) { album, songs ->
@@ -180,21 +180,16 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity() {
             adapter.dataset = songs
             loadImage(this)
                 .from(album.safeGetFirstSong())
-                .into(object : PhonographColoredTarget() {
-                    override fun onResourcesReady(drawable: Drawable) {
-                        viewBinding.image.setImageDrawable(drawable)
+                .into(PaletteTargetBuilder(defaultColor)
+                    .onResourceReady { result, palette ->
+                        viewBinding.image.setImageDrawable(result)
+                        model.paletteColor.postValue(palette)
                     }
-
-                    override fun onColorReady(color: Int) {
-                        model.paletteColor.postValue(color)
-                    }
-
-                    val defaultColor = primaryColor(this@AlbumDetailActivity)
-                    override fun onError(error: Drawable?) {
+                    .onFail {
                         viewBinding.image.setImageResource(R.drawable.default_album_art)
                         model.paletteColor.postValue(defaultColor)
                     }
-                })
+                    .build())
                 .enqueue()
             if (isAllowedToDownloadMetadata(this)) model.loadWiki(context = this) { _, _ ->
                 isWikiPreLoaded = true

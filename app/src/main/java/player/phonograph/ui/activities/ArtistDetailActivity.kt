@@ -1,7 +1,6 @@
 package player.phonograph.ui.activities
 
 import android.content.Intent
-import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
 import android.text.Html
@@ -36,7 +35,7 @@ import player.phonograph.adapter.legacy.ArtistSongAdapter
 import player.phonograph.adapter.legacy.HorizontalAlbumAdapter
 import player.phonograph.coil.CustomArtistImageStore
 import player.phonograph.coil.loadImage
-import player.phonograph.coil.target.PhonographColoredTarget
+import player.phonograph.coil.target.PaletteTargetBuilder
 import player.phonograph.databinding.ActivityArtistDetailBinding
 import player.phonograph.dialogs.AddToPlaylistDialog
 import player.phonograph.dialogs.SleepTimerDialog
@@ -216,23 +215,21 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorHolder 
     }
 
     private fun loadArtistImage() {
+        val defaultColor = primaryColor(this)
         loadImage(this)
             .from(artist)
-            .into(object : PhonographColoredTarget() {
-                override fun onResourcesReady(drawable: Drawable) {
-                    viewBinding.image.setImageDrawable(drawable)
-                }
-
-                override fun onColorReady(color: Int) {
-                    setColors(color)
-                }
-
-                val defaultColor = primaryColor(this@ArtistDetailActivity)
-                override fun onError(error: Drawable?) {
-                    viewBinding.image.setImageResource(R.drawable.default_album_art)
-                    setColors(defaultColor)
-                }
-            })
+            .into(
+                PaletteTargetBuilder(defaultColor)
+                    .onResourceReady { result, color ->
+                        viewBinding.image.setImageDrawable(result)
+                        setColors(color)
+                    }
+                    .onFail {
+                        viewBinding.image.setImageResource(R.drawable.default_album_art)
+                        setColors(defaultColor)
+                    }
+                    .build()
+            )
             .enqueue()
     }
 

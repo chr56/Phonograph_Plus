@@ -8,7 +8,6 @@ import static mt.util.color.MiscKt.resolveColor;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
@@ -20,9 +19,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.core.graphics.drawable.DrawableKt;
-import androidx.palette.graphics.Palette;
 
 import org.jaudiotagger.tag.FieldKey;
 
@@ -35,15 +32,14 @@ import coil.Coil;
 import coil.ImageLoader;
 import coil.request.CachePolicy;
 import coil.request.ImageRequest;
-import kotlinx.coroutines.Deferred;
+import kotlin.Unit;
 import mt.util.color.ToolbarColor;
 import player.phonograph.R;
-import player.phonograph.coil.target.ColoredTarget;
+import player.phonograph.coil.target.PaletteTargetBuilder;
 import player.phonograph.databinding.ActivityAlbumTagEditorBinding;
 import player.phonograph.mediastore.AlbumLoader;
 import player.phonograph.model.Song;
 import player.phonograph.util.ImageUtil;
-import player.phonograph.util.PaletteUtil;
 import player.phonograph.util.PhonographColorUtil;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -134,31 +130,24 @@ public class AlbumTagEditorActivity extends AbsTagEditorActivity implements Text
                                 new ImageRequest.Builder(AlbumTagEditorActivity.this)
                                         .data(url)
                                         .target(
-                                                new ColoredTarget() {
-                                                    @Override
-                                                    public void onReady(@NonNull Drawable drawable, @Nullable Deferred<Palette> palette) {
-                                                        Bitmap bitmap = DrawableKt.toBitmap(drawable, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), null);
-                                                        if (palette != null) {
-                                                            PaletteUtil.INSTANCE.getColor(palette, resolveColor(AlbumTagEditorActivity.this, R.attr.defaultFooterColor), color ->
-                                                            {
-                                                                albumArtBitmap = ImageUtil.INSTANCE.resizeBitmap(bitmap, 2048);
-                                                                setImageBitmap(albumArtBitmap, color);
-                                                                deleteAlbumArt = false;
-                                                                dataChanged();
-                                                                setResult(RESULT_OK);
-                                                                return null;
-                                                            });
-                                                        }
-                                                    }
-
-                                                    @Override
-                                                    public void onError(@Nullable Drawable error) {
-                                                        Log.w(TAG, "Fail to load image cover:");
-                                                        Log.i(TAG, "   Album      :" + albumTitleStr);
-                                                        Log.i(TAG, "   AlbumArtist:" + albumArtistNameStr);
-                                                        Log.i(TAG, "   Uri        :" + url);
-                                                    }
-                                                }
+                                                new PaletteTargetBuilder(AlbumTagEditorActivity.this)
+                                                        .onResourceReady((drawable, color) -> {
+                                                            Bitmap bitmap = DrawableKt.toBitmap(drawable, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), null);
+                                                            albumArtBitmap = ImageUtil.INSTANCE.resizeBitmap(bitmap, 2048);
+                                                            setImageBitmap(albumArtBitmap, color);
+                                                            deleteAlbumArt = false;
+                                                            dataChanged();
+                                                            setResult(RESULT_OK);
+                                                            return Unit.INSTANCE;
+                                                        })
+                                                        .onFail(drawable -> {
+                                                            Log.w(TAG, "Fail to load image cover:");
+                                                            Log.i(TAG, "   Album      :" + albumTitleStr);
+                                                            Log.i(TAG, "   AlbumArtist:" + albumArtistNameStr);
+                                                            Log.i(TAG, "   Uri        :" + url);
+                                                            return Unit.INSTANCE;
+                                                        })
+                                                        .build()
                                         )
                                         .build();
                         loader.enqueue(request);
@@ -228,29 +217,22 @@ public class AlbumTagEditorActivity extends AbsTagEditorActivity implements Text
                 .data(selectedFileUri)
                 .diskCachePolicy(CachePolicy.DISABLED)
                 .target(
-                        new ColoredTarget() {
-                            @Override
-                            public void onReady(@NonNull Drawable drawable, @Nullable Deferred<Palette> palette) {
-                                Bitmap bitmap = DrawableKt.toBitmap(drawable, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), null);
-                                if (palette != null) {
-                                    PaletteUtil.INSTANCE.getColor(palette, resolveColor(AlbumTagEditorActivity.this, R.attr.defaultFooterColor), color ->
-                                    {
-                                        albumArtBitmap = ImageUtil.INSTANCE.resizeBitmap(bitmap, 2048);
-                                        setImageBitmap(albumArtBitmap, color);
-                                        deleteAlbumArt = false;
-                                        dataChanged();
-                                        setResult(RESULT_OK);
-                                        return null;
-                                    });
-                                }
-                            }
-
-                            @Override
-                            public void onError(@Nullable Drawable error) {
-                                Log.w(TAG, "Fail to load image cover:");
-                                Log.i(TAG, "   Uri:  " + selectedFileUri.toString());
-                            }
-                        }
+                        new PaletteTargetBuilder(this)
+                                .onResourceReady((drawable, color) -> {
+                                    Bitmap bitmap = DrawableKt.toBitmap(drawable, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), null);
+                                    albumArtBitmap = ImageUtil.INSTANCE.resizeBitmap(bitmap, 2048);
+                                    setImageBitmap(albumArtBitmap, color);
+                                    deleteAlbumArt = false;
+                                    dataChanged();
+                                    setResult(RESULT_OK);
+                                    return Unit.INSTANCE;
+                                })
+                                .onFail(drawable -> {
+                                    Log.w(TAG, "Fail to load image cover:");
+                                    Log.i(TAG, "   Uri:  " + selectedFileUri);
+                                    return Unit.INSTANCE;
+                                })
+                                .build()
                 )
                 .build();
         loader.enqueue(request);

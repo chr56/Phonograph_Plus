@@ -1,7 +1,6 @@
 package player.phonograph.adapter.legacy
 
 import android.content.Context
-import android.graphics.drawable.Drawable
 import android.view.View
 import android.view.ViewGroup.MarginLayoutParams
 import androidx.appcompat.app.AppCompatActivity
@@ -12,7 +11,7 @@ import mt.util.color.isColorLight
 import player.phonograph.R
 import player.phonograph.adapter.base.MultiSelectionCabController
 import player.phonograph.coil.loadImage
-import player.phonograph.coil.target.PhonographColoredTarget
+import player.phonograph.coil.target.PaletteTargetBuilder
 import player.phonograph.model.Album
 import player.phonograph.model.getYearString
 
@@ -46,7 +45,7 @@ class HorizontalAlbumAdapter(
             holder.text!!.setTextColor(
                 getSecondaryTextColor(
                     activity,
-                   isColorLight(color)
+                    isColorLight(color)
                 )
             )
         }
@@ -56,22 +55,16 @@ class HorizontalAlbumAdapter(
         if (holder.image == null) return
         loadImage(context) {
             data(album.safeGetFirstSong())
-            target(object : PhonographColoredTarget() {
-
-                override fun onStart(placeholder: Drawable?) {
-                    super.onStart(placeholder)
+            target(PaletteTargetBuilder(context)
+                .onStart {
                     holder.image!!.setImageResource(R.drawable.default_album_art)
-                    setColors(defaultFooterColor, holder)
+                    setColors(context.getColor(R.color.defaultFooterColor), holder)
                 }
-
-                override fun onResourcesReady(drawable: Drawable) {
-                    holder.image!!.setImageDrawable(drawable)
+                .onResourceReady { result, palette ->
+                    holder.image!!.setImageDrawable(result)
+                    if (usePalette) setColors(palette, holder)
                 }
-
-                override fun onColorReady(color: Int) {
-                    if (usePalette) setColors(color, holder)
-                }
-            })
+                .build())
         }
     }
 

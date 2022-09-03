@@ -4,28 +4,24 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
-import android.graphics.drawable.Drawable
 import android.os.Handler
 import android.os.Looper
 import android.text.TextUtils
 import android.view.View
 import android.widget.RemoteViews
 import androidx.core.graphics.drawable.toBitmapOrNull
-import androidx.palette.graphics.Palette
 import coil.Coil
 import coil.request.Disposable
 import coil.request.ImageRequest
-import kotlinx.coroutines.Deferred
 import mt.util.color.getSecondaryTextColor
 import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.appwidgets.Util.createRoundedBitmap
 import player.phonograph.appwidgets.base.BaseAppWidget
-import player.phonograph.coil.target.ColoredTarget
+import player.phonograph.coil.target.PaletteTargetBuilder
 import player.phonograph.service.MusicService
 import player.phonograph.ui.activities.MainActivity
 import player.phonograph.util.ImageUtil
-import player.phonograph.util.PaletteUtil.getColor
 
 class AppWidgetClassic : BaseAppWidget() {
 
@@ -74,7 +70,8 @@ class AppWidgetClassic : BaseAppWidget() {
         if (cardRadius == 0f) cardRadius = service.resources.getDimension(
             R.dimen.app_widget_card_radius
         )
-
+        val fallbackColor: Int =
+            getSecondaryTextColor(service, true)
         // Load the album cover async and push the update on completion
         uiHandler.post {
             val appContext = service.applicationContext
@@ -84,78 +81,74 @@ class AppWidgetClassic : BaseAppWidget() {
                 ImageRequest.Builder(appContext)
                     .data(song)
                     .size(imageSize, imageSize)
-                    .target(object : ColoredTarget() {
-
-                        val fallbackColor: Int =
-                            getSecondaryTextColor(service, true)
-
-                        override fun onStart(placeholder: Drawable?) {
-                            appWidgetView.setImageViewResource(R.id.image, R.drawable.default_album_art)
-                        }
-
-                        override fun onReady(drawable: Drawable, palette: Deferred<Palette>?) {
-                            palette?.getColor(fallbackColor) { color ->
-                                update(drawable.toBitmapOrNull(), color)
+                    .target(
+                        PaletteTargetBuilder(fallbackColor)
+                            .onStart {
+                                appWidgetView.setImageViewResource(R.id.image, R.drawable.default_album_art)
                             }
-                        }
-
-                        override fun onError(error: Drawable?) {
-                            update(null, fallbackColor)
-                        }
-
-                        fun update(bitmap: Bitmap?, color: Int) {
-                            // Set correct drawable for pause state
-                            val playPauseRes = if (isPlaying) R.drawable.ic_pause_white_24dp else R.drawable.ic_play_arrow_white_24dp
-                            appWidgetView.setImageViewBitmap(
-                                R.id.button_toggle_play_pause,
-                                ImageUtil.createBitmap(
-                                    ImageUtil.getTintedVectorDrawable(
-                                        service,
-                                        playPauseRes,
-                                        color
-                                    )
-                                )
-                            )
-
-                            // Set prev/next button drawables
-                            appWidgetView.setImageViewBitmap(
-                                R.id.button_next,
-                                ImageUtil.createBitmap(
-                                    ImageUtil.getTintedVectorDrawable(
-                                        service,
-                                        R.drawable.ic_skip_next_white_24dp,
-                                        color
-                                    )
-                                )
-                            )
-                            appWidgetView.setImageViewBitmap(
-                                R.id.button_prev,
-                                ImageUtil.createBitmap(
-                                    ImageUtil.getTintedVectorDrawable(
-                                        service,
-                                        R.drawable.ic_skip_previous_white_24dp,
-                                        color
-                                    )
-                                )
-                            )
-                            val image = getAlbumArtDrawable(service.resources, bitmap)
-                            val roundedBitmap = createRoundedBitmap(
-                                image,
-                                imageSize,
-                                imageSize,
-                                cardRadius,
-                                0f,
-                                cardRadius,
-                                0f
-                            )
-                            appWidgetView.setImageViewBitmap(R.id.image, roundedBitmap)
-                            pushUpdate(appContext, appWidgetIds, appWidgetView)
-                        }
-                    }).build()
+                            .onResourceReady { result, paletteColor ->
+                                updateWidget(appWidgetView, service, isPlaying, result.toBitmapOrNull(), paletteColor)
+                                pushUpdate(service, appWidgetIds, appWidgetView)
+                            }
+                            .onFail {
+                                updateWidget(appWidgetView, service, isPlaying, null, fallbackColor)
+                                pushUpdate(service, appWidgetIds, appWidgetView)
+                            }
+                            .build()
+                    )
+                    .build()
 
             )
         }
     }
+
+    private fun updateWidget(appWidgetView: RemoteViews, service: MusicService, isPlaying: Boolean, bitmap: Bitmap?, color: Int) {
+        val playPauseRes = if (isPlaying) R.drawable.ic_pause_white_24dp else R.drawable.ic_play_arrow_white_24dp
+        appWidgetView.setImageViewBitmap(
+            R.id.button_toggle_play_pause,
+            ImageUtil.createBitmap(
+                ImageUtil.getTintedVectorDrawable(
+                    service,
+                    playPauseRes,
+                    color
+                )
+            )
+        )
+
+        // Set prev/next button drawables
+        appWidgetView.setImageViewBitmap(
+            R.id.button_next,
+            ImageUtil.createBitmap(
+                ImageUtil.getTintedVectorDrawable(
+                    service,
+                    R.drawable.ic_skip_next_white_24dp,
+                    color
+                )
+            )
+        )
+        appWidgetView.setImageViewBitmap(
+            R.id.button_prev,
+            ImageUtil.createBitmap(
+                ImageUtil.getTintedVectorDrawable(
+                    service,
+                    R.drawable.ic_skip_previous_white_24dp,
+                    color
+                )
+            )
+        )
+        val image = getAlbumArtDrawable(service.resources, bitmap)
+        val roundedBitmap = createRoundedBitmap(
+            image,
+            imageSize,
+            imageSize,
+            cardRadius,
+            0f,
+            cardRadius,
+            0f
+        )
+        appWidgetView.setImageViewBitmap(R.id.image, roundedBitmap)
+    }
+
 
     override fun setupAdditionalWidgetButtons(context: Context, view: RemoteViews) {
         // Home
