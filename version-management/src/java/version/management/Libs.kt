@@ -9,9 +9,9 @@ package version.management
 object Deps {
     object AndroidX {
         const val core = "androidx.core:core-ktx:1.8.0"
-        const val appcompat = "androidx.appcompat:appcompat:1.4.2"
+        const val appcompat = "androidx.appcompat:appcompat:1.5.0"
         const val activity = "androidx.activity:activity-ktx:1.5.1"
-        const val fragment = "androidx.fragment:fragment-ktx:1.5.1"
+        const val fragment = "androidx.fragment:fragment-ktx:1.5.2"
         const val lifecycle_runtime = "androidx.lifecycle:lifecycle-runtime-ktx:2.5.1"
 
         const val annotation = "androidx.annotation:annotation:1.4.0"
@@ -30,11 +30,11 @@ object Deps {
 
     const val google_material = "com.google.android.material:material:1.6.1"
 
-    const val okhttp3 = "com.squareup.okhttp3:okhttp:4.9.3"
+    const val okhttp3 = "com.squareup.okhttp3:okhttp:4.10.0"
     const val retrofit2 = "com.squareup.retrofit2:retrofit:2.9.0"
     const val retrofit2_converter_gson = "com.squareup.retrofit2:converter-gson:2.5.0"
 
-    const val coil = "io.coil-kt:coil:2.1.0"
+    const val coil = "io.coil-kt:coil:2.2.0"
 
     const val material_dialogs_version = "3.3.0"
     const val material_dialogs_core = "com.afollestad.material-dialogs:core:$material_dialogs_version"
