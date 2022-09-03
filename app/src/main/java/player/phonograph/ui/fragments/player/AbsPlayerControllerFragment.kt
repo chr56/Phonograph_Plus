@@ -4,7 +4,6 @@
 
 package player.phonograph.ui.fragments.player
 
-import android.graphics.Color
 import android.graphics.PorterDuff
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -13,10 +12,12 @@ import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.SeekBar
 import android.widget.TextView
-import mt.util.color.getPrimaryDisabledTextColor
-import mt.util.color.getPrimaryTextColor
-import mt.util.color.getSecondaryDisabledTextColor
-import mt.util.color.getSecondaryTextColor
+import androidx.core.graphics.BlendModeColorFilterCompat
+import androidx.core.graphics.BlendModeCompat
+import mt.util.color.isColorLight
+import mt.util.color.primaryTextColor
+import mt.util.color.secondaryDisabledTextColor
+import mt.util.color.secondaryTextColor
 import player.phonograph.R
 import player.phonograph.helper.MusicProgressViewUpdateHelper
 import player.phonograph.misc.SimpleOnSeekbarChangeListener
@@ -26,6 +27,7 @@ import player.phonograph.service.queue.RepeatMode
 import player.phonograph.service.queue.ShuffleMode
 import player.phonograph.ui.fragments.AbsMusicServiceFragment
 import player.phonograph.views.PlayPauseDrawable
+
 abstract class AbsPlayerControllerFragment : AbsMusicServiceFragment(), MusicProgressViewUpdateHelper.Callback {
 
     protected lateinit var playPauseDrawable: PlayPauseDrawable
@@ -101,9 +103,11 @@ abstract class AbsPlayerControllerFragment : AbsMusicServiceFragment(), MusicPro
     }
 
     private fun setUpProgressSlider() {
-        val color = getPrimaryTextColor(requireContext(), false)
-        progressSlider.thumb.mutate().setColorFilter(color, PorterDuff.Mode.SRC_IN)
-        progressSlider.progressDrawable.mutate().setColorFilter(Color.TRANSPARENT, PorterDuff.Mode.SRC_IN)
+        val color = requireContext().primaryTextColor(true)
+        val colorFilter =
+            BlendModeColorFilterCompat.createBlendModeColorFilterCompat(color, BlendModeCompat.SRC_IN)
+        progressSlider.thumb.mutate().colorFilter = colorFilter
+        progressSlider.progressDrawable.mutate().colorFilter = colorFilter
         progressSlider.setOnSeekBarChangeListener(object : SimpleOnSeekbarChangeListener() {
             override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
                 if (fromUser) {
@@ -144,10 +148,16 @@ abstract class AbsPlayerControllerFragment : AbsMusicServiceFragment(), MusicPro
         updateShuffleState()
     }
 
-    fun setDark(dark: Boolean) {
+    private fun calculateColor(backgroundColor: Int) {
+        val context = requireContext()
+        val darkmode = !isColorLight(backgroundColor)
 
-        lastPlaybackControlsColor = getSecondaryTextColor(requireContext(), dark)
-        lastDisabledPlaybackControlsColor = getPrimaryDisabledTextColor(requireContext(), dark)
+        lastPlaybackControlsColor = context.secondaryTextColor(darkmode)
+        lastDisabledPlaybackControlsColor = context.secondaryDisabledTextColor(darkmode)
+    }
+
+    fun setDark(backgroundColor: Int) {
+        calculateColor(backgroundColor)
 
         updateRepeatState()
         updateShuffleState()
@@ -172,7 +182,7 @@ abstract class AbsPlayerControllerFragment : AbsMusicServiceFragment(), MusicPro
     }
 
     private fun updateProgressTextColor() {
-        val color = getPrimaryTextColor(requireContext(), false)
+        val color = requireContext().primaryTextColor(true)
         songTotalTime.setTextColor(color)
         songCurrentProgress.setTextColor(color)
     }

@@ -189,7 +189,7 @@ class FlatPlayerFragment :
 
     override fun onColorChanged(color: Int) {
         animateColorChange(color)
-        playbackControlsFragment.setDark(isColorLight(color))
+        playbackControlsFragment.setDark(color)
         callbacks!!.onPaletteColorChanged()
     }
 
