@@ -156,7 +156,7 @@ abstract class AbsPlayerControllerFragment : AbsMusicServiceFragment(), MusicPro
         lastDisabledPlaybackControlsColor = context.secondaryDisabledTextColor(darkmode)
     }
 
-    fun setDark(backgroundColor: Int) {
+    fun modifyColor(backgroundColor: Int) {
         calculateColor(backgroundColor)
 
         updateRepeatState()

@@ -189,8 +189,8 @@ class FlatPlayerFragment :
 
     override fun onColorChanged(color: Int) {
         animateColorChange(color)
-        playbackControlsFragment.setDark(color)
-        callbacks!!.onPaletteColorChanged()
+        playbackControlsFragment.modifyColor(color)
+        callbacks.onPaletteColorChanged()
     }
 
     override fun onToolbarToggled() {

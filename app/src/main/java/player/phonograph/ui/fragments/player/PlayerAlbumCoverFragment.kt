@@ -2,17 +2,25 @@ package player.phonograph.ui.fragments.player
 
 import android.animation.Animator
 import android.annotation.SuppressLint
+import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.view.*
+import android.util.Log
+import android.view.GestureDetector
 import android.view.GestureDetector.SimpleOnGestureListener
+import android.view.LayoutInflater
+import android.view.MotionEvent
+import android.view.View
 import android.view.View.OnTouchListener
+import android.view.ViewGroup
 import android.view.animation.AccelerateInterpolator
 import android.view.animation.DecelerateInterpolator
 import androidx.viewpager2.widget.ViewPager2
 import kotlinx.coroutines.*
 import lib.phonograph.misc.SimpleAnimatorListener
+import player.phonograph.R
 import player.phonograph.adapter.AlbumCoverPagerAdapter
 import player.phonograph.databinding.FragmentPlayerAlbumCoverBinding
 import player.phonograph.helper.MusicProgressViewUpdateHelper
@@ -44,7 +52,7 @@ class PlayerAlbumCoverFragment :
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         _viewBinding = FragmentPlayerAlbumCoverBinding.inflate(inflater)
         return binding.root
@@ -93,6 +101,7 @@ class PlayerAlbumCoverFragment :
     override fun onQueueChanged() {
         updatePlayingQueue()
     }
+
     override fun onPlayingMetaChanged() {
         handler.sendEmptyMessage(MSG_UPDATE_POSITION)
     }
@@ -128,16 +137,18 @@ class PlayerAlbumCoverFragment :
 
     private fun onPageSelected(position: Int) {
         currentPosition = position
+        updateColorAt(position)
         if (position != MusicPlayerRemote.position) {
             MusicPlayerRemote.playSongAt(position)
         }
-        coroutineScope.launch {
-            albumCoverPagerAdapter?.let { adapter ->
-                val song = adapter.dataSet.getOrElse(position) { return@launch } // return if empty
+    }
+
+    private fun updateColorAt(position: Int) {
+        albumCoverPagerAdapter?.let { adapter ->
+            coroutineScope.launch(Dispatchers.Default) {
+                val song = adapter.dataSet.getOrElse(position) { return@launch }
                 val color = adapter.getPaletteColor(song)
-                withContext(Dispatchers.Main) {
-                    notifyColorChange(color)
-                }
+                notifyColorChange(color)
             }
         }
     }
@@ -211,7 +222,9 @@ class PlayerAlbumCoverFragment :
     }
 
     private fun notifyColorChange(color: Int) {
-        callbacks?.onColorChanged(color)
+        coroutineScope.launch(Dispatchers.Main) {
+            callbacks?.onColorChanged(color)
+        }
     }
 
     fun setCallbacks(listener: Callbacks) {

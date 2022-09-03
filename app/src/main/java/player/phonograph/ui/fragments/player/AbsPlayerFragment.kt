@@ -52,15 +52,14 @@ abstract class AbsPlayerFragment :
     Toolbar.OnMenuItemClickListener,
     PaletteColorHolder {
 
-    protected var callbacks: Callbacks? = null
-        private set
+    protected lateinit var callbacks: Callbacks
 
     protected lateinit var playerAlbumCoverFragment: PlayerAlbumCoverFragment
     protected lateinit var playbackControlsFragment: AbsPlayerControllerFragment
     protected val viewModel: PlayerFragmentViewModel
-        by viewModels {
-            PlayerFragmentViewModel.from(requireContext().applicationContext as Application)
-        }
+            by viewModels {
+                PlayerFragmentViewModel.from(requireContext().applicationContext as Application)
+            }
 
     lateinit var handler: Handler
 
@@ -78,7 +77,9 @@ abstract class AbsPlayerFragment :
     override fun onAttach(context: Context) {
         super.onAttach(context)
         callbacks =
-            try { context as Callbacks } catch (e: ClassCastException) {
+            try {
+                context as Callbacks
+            } catch (e: ClassCastException) {
                 throw RuntimeException(
                     "${context.javaClass.simpleName} must implement ${Callbacks::class.java.simpleName}"
                 )
@@ -103,7 +104,6 @@ abstract class AbsPlayerFragment :
 
     override fun onDetach() {
         super.onDetach()
-        callbacks = null
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -128,6 +128,7 @@ abstract class AbsPlayerFragment :
         _wrappedAdapter = recyclerViewDragDropManager.createWrappedAdapter(playingQueueAdapter)
         implementRecyclerView()
     }
+
     protected abstract fun implementRecyclerView()
 
     abstract fun setUpControllerFragment()
@@ -214,6 +215,7 @@ abstract class AbsPlayerFragment :
         attachSpecialMenuItem(playerToolbar.menu)
         injectPlayerToolbar(playerToolbar.menu, this)
     }
+
     abstract fun getImplToolbar(): Toolbar
 
     private var isToolbarShown: Boolean = true
@@ -225,12 +227,14 @@ abstract class AbsPlayerFragment :
             showToolbar(toolbar)
         }
     }
+
     private fun showToolbar(toolbar: View?) {
         if (toolbar == null) return
         isToolbarShown = true
         toolbar.visibility = View.VISIBLE
         toolbar.animate().alpha(1f).duration = VISIBILITY_ANIM_DURATION
     }
+
     private fun hideToolbar(toolbar: View?) {
         if (toolbar == null) return
         isToolbarShown = false
