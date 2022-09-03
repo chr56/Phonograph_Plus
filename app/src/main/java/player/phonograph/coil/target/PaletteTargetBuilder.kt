@@ -7,7 +7,7 @@ package player.phonograph.coil.target
 import android.content.Context
 import android.graphics.drawable.Drawable
 import androidx.palette.graphics.Palette
-import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.*
 import player.phonograph.R
 import player.phonograph.util.PaletteUtil.getColor
 
@@ -38,10 +38,17 @@ open class PaletteTargetBuilder(protected open val defaultColor: Int) {
             onStart = onStart,
             onError = onFail,
             onSuccess = { result: Drawable, palette: Deferred<Palette>? ->
-                palette?.getColor(defaultColor) {
-                    onSuccess(result, it)
+                coroutineScope.launch {
+                    val color = palette?.getColor(defaultColor) ?: defaultColor
+                    withContext(Dispatchers.Main) {
+                        onSuccess(result, color)
+                    }
                 }
             }
         )
+    }
+
+    companion object {
+        private val coroutineScope = CoroutineScope(Dispatchers.Default + SupervisorJob())
     }
 }

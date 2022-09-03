@@ -17,12 +17,13 @@ object PaletteUtil {
             Palette.from(this@toPaletteAsync).generate()
         }
 
-    fun Deferred<Palette>.getColor(@ColorInt fallbackColor: Int, callBack: (Int) -> Unit) {
-        coroutineScope.launch {
-            val color = PhonographColorUtil.getColor(this@getColor.await(), fallbackColor)
-            withContext(Dispatchers.Main) {
-                callBack(color)
+    suspend fun Deferred<Palette>.getColor(@ColorInt fallbackColor: Int): Int =
+        try {
+            withTimeout(1200) {
+                val palette = this@getColor.await()
+                PhonographColorUtil.getColor(palette, fallbackColor)
             }
+        } catch (e: TimeoutCancellationException) {
+            fallbackColor
         }
-    }
 }
