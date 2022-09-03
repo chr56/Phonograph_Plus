@@ -5,7 +5,9 @@
 package player.phonograph.coil
 
 import android.content.Context
+import android.graphics.drawable.Drawable
 import android.widget.ImageView
+import androidx.annotation.DrawableRes
 import coil.Coil
 import coil.request.ImageRequest
 import coil.target.Target
@@ -38,6 +40,15 @@ class ChainBuilder internal constructor(context: Context) {
     }
     fun config(block: ImageRequest.Builder.() -> Unit): ChainBuilder {
         requestBuilder.apply(block)
+        return this
+    }
+
+    fun default(@DrawableRes res: Int): ChainBuilder {
+        requestBuilder.placeholder(res)
+        return this
+    }
+    fun default(drawable: Drawable): ChainBuilder {
+        requestBuilder.placeholder(drawable)
         return this
     }
 
