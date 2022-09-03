@@ -9,6 +9,7 @@ import android.widget.Toast
 import androidx.annotation.StringRes
 import kotlinx.coroutines.*
 import player.phonograph.notification.ErrorNotification
+import java.util.concurrent.locks.Lock
 
 object CoroutineUtil {
 
@@ -47,6 +48,15 @@ object CoroutineUtil {
             )
         }
 
+    inline fun Lock.use(crossinline block: () -> Unit) {
+        lock()
+        try {
+            block()
+        } finally {
+            unlock()
+        }
+    }
+
     class BackgroundJob(private val callback: () -> Any?) {
         private var disposable: Job? = null
         fun execute(coroutineScope: CoroutineScope) {
@@ -55,6 +65,7 @@ object CoroutineUtil {
                 callback.invoke()
             }
         }
+
         fun isBusy(): Boolean = disposable != null
     }
 }
