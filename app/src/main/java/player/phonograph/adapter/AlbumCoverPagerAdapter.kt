@@ -10,9 +10,8 @@ import android.widget.ImageView
 import androidx.collection.LruCache
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.async
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.TimeoutCancellationException
+import kotlinx.coroutines.withTimeout
 import player.phonograph.R
 import player.phonograph.coil.loadImage
 import player.phonograph.coil.target.PaletteTargetBuilder
@@ -48,7 +47,7 @@ class AlbumCoverPagerAdapter(
 
     suspend fun getPaletteColor(song: Song): Int {
         return colorCache.get(song)
-            ?: AlbumCoverFragment.loadImage(fragment.requireContext(), song, null).second
+            ?: AlbumCoverFragment.loadImageForColor(fragment.requireContext(), song, null).second
     }
 
     class AlbumCoverFragment : Fragment(), SharedPreferences.OnSharedPreferenceChangeListener {
@@ -139,20 +138,22 @@ class AlbumCoverPagerAdapter(
                     .enqueue()
             }
 
-            suspend fun loadImage(
+            suspend fun loadImageForColor(
                 context: Context,
                 song: Song,
                 target: ImageView?,
             ): Pair<Song, Int> =
-                withContext(SupervisorJob()) {
-                    async {
+                try {
+                    withTimeout(1200) {
                         CoroutineUtil.Executor<Pair<Song, Int>> { tmp ->
                             loadImage(context, song, target) { song, color ->
                                 tmp.content = Pair(song, color)
                             }
                         }.execute()
                     }
-                }.await()
+                } catch (e: TimeoutCancellationException) {
+                    Pair(song, context.getColor(R.color.defaultFooterColor))
+                }
         }
     }
 }
