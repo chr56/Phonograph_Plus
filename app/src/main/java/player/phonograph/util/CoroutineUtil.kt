@@ -7,10 +7,7 @@ package player.phonograph.util
 import android.content.Context
 import android.widget.Toast
 import androidx.annotation.StringRes
-import kotlinx.coroutines.CoroutineExceptionHandler
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
-import kotlinx.coroutines.yield
+import kotlinx.coroutines.*
 import player.phonograph.notification.ErrorNotification
 
 object CoroutineUtil {
@@ -24,6 +21,7 @@ object CoroutineUtil {
             ).show()
         }
     }
+
     suspend fun coroutineToast(context: Context, @StringRes res: Int) =
         coroutineToast(context, context.getString(res))
 
@@ -37,6 +35,7 @@ object CoroutineUtil {
             while (holder.content == null) yield()
             return holder.content!!
         }
+
         class Wrapper<T>(var content: T?)
     }
 
@@ -47,4 +46,15 @@ object CoroutineUtil {
                 "$defaultMessageHeader:${exception.message}"
             )
         }
+
+    class BackgroundJob(private val callback: () -> Any?) {
+        private var disposable: Job? = null
+        fun execute(coroutineScope: CoroutineScope) {
+            disposable?.cancel()
+            disposable = coroutineScope.launch {
+                callback.invoke()
+            }
+        }
+        fun isBusy(): Boolean = disposable != null
+    }
 }
