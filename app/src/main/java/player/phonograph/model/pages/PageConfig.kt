@@ -7,7 +7,7 @@ package player.phonograph.model.pages
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
-import player.phonograph.ui.fragments.home.*
+import player.phonograph.ui.fragments.pages.*
 import kotlin.jvm.Throws
 
 class PageConfig(var tabMap: MutableMap<Int, String>) : Iterable<String> {

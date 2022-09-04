@@ -2,7 +2,7 @@
  * Copyright (c) 2022 chr_56 & Abou Zeid (kabouzeid) (original author)
  */
 
-package player.phonograph.ui.fragments.home
+package player.phonograph.ui.fragments.pages
 
 import android.annotation.SuppressLint
 import android.util.Log
@@ -12,36 +12,45 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.yield
 import player.phonograph.App
-import player.phonograph.BuildConfig.DEBUG
+import player.phonograph.BuildConfig
 import player.phonograph.R
+import player.phonograph.adapter.display.AlbumDisplayAdapter
 import player.phonograph.adapter.display.DisplayAdapter
-import player.phonograph.adapter.display.GenreDisplayAdapter
-import player.phonograph.mediastore.GenreLoader
+import player.phonograph.mediastore.AlbumLoader
 import player.phonograph.model.sort.SortMode
 import player.phonograph.model.sort.SortRef
-import player.phonograph.model.Genre
+import player.phonograph.model.Album
 
-class GenrePage : AbsDisplayPage<Genre, DisplayAdapter<Genre>, GridLayoutManager>() {
+class AlbumPage : AbsDisplayPage<Album, DisplayAdapter<Album>, GridLayoutManager>() {
 
     override fun initLayoutManager(): GridLayoutManager {
         return GridLayoutManager(hostFragment.requireContext(), 1)
             .also { it.spanCount = DisplayUtil(this).gridSize }
     }
 
-    override fun initAdapter(): DisplayAdapter<Genre> {
-        return GenreDisplayAdapter(
+    override fun initAdapter(): DisplayAdapter<Album> {
+        val displayUtil = DisplayUtil(this)
+
+        val layoutRes =
+            if (displayUtil.gridSize > displayUtil.maxGridSizeForList) R.layout.item_grid
+            else R.layout.item_list
+        Log.d(
+            TAG, "layoutRes: ${ if (layoutRes == R.layout.item_grid) "GRID" else if (layoutRes == R.layout.item_list) "LIST" else "UNKNOWN" }"
+        )
+
+        return AlbumDisplayAdapter(
             hostFragment.mainActivity,
             hostFragment.cabController,
-            ArrayList(), // empty until Genre loaded
-            R.layout.item_list_no_image
+            ArrayList(), // empty until Albums loaded
+            layoutRes
         ) {
-            showSectionName = true
+            usePalette = displayUtil.colorFooter
         }
     }
 
     override fun loadDataSet() {
         loaderCoroutineScope.launch {
-            val temp = GenreLoader.getAllGenres(App.instance)
+            val temp = AlbumLoader.getAllAlbums(App.instance)
             while (!isRecyclerViewPrepared) yield() // wait until ready
 
             withContext(Dispatchers.Main) {
@@ -55,7 +64,7 @@ class GenrePage : AbsDisplayPage<Genre, DisplayAdapter<Genre>, GridLayoutManager
         adapter.notifyDataSetChanged()
     }
 
-    override fun getDataSet(): List<Genre> {
+    override fun getDataSet(): List<Album> {
         return if (isRecyclerViewPrepared) adapter.dataset else emptyList()
     }
 
@@ -63,21 +72,26 @@ class GenrePage : AbsDisplayPage<Genre, DisplayAdapter<Genre>, GridLayoutManager
         displayUtil: DisplayUtil,
         popup: ListOptionsPopup
     ) {
-
         val currentSortMode = displayUtil.sortMode
-        if (DEBUG) Log.d(TAG, "Read cfg: sortMode $currentSortMode")
+        if (BuildConfig.DEBUG) Log.d(GenrePage.TAG, "Read cfg: sortMode $currentSortMode")
 
         popup.allowRevert = true
         popup.revert = currentSortMode.revert
 
         popup.sortRef = currentSortMode.sortRef
-        popup.sortRefAvailable = arrayOf(SortRef.DISPLAY_NAME, SortRef.SONG_COUNT)
+        popup.sortRefAvailable = arrayOf(
+            SortRef.ALBUM_NAME,
+            SortRef.ARTIST_NAME,
+            SortRef.YEAR,
+            SortRef.SONG_COUNT,
+        )
     }
 
     override fun saveSortOrderImpl(
         displayUtil: DisplayUtil,
-        popup: ListOptionsPopup,
+        popup: ListOptionsPopup
     ) {
+
         val selected = SortMode(popup.sortRef, popup.revert)
         if (displayUtil.sortMode != selected) {
             displayUtil.sortMode = selected
@@ -88,10 +102,10 @@ class GenrePage : AbsDisplayPage<Genre, DisplayAdapter<Genre>, GridLayoutManager
 
     override fun getHeaderText(): CharSequence {
         val n = getDataSet().size
-        return hostFragment.mainActivity.resources.getQuantityString(R.plurals.x_genres, n, n)
+        return hostFragment.mainActivity.resources.getQuantityString(R.plurals.x_albums, n, n)
     }
 
     companion object {
-        const val TAG = "GenrePage"
+        const val TAG = "AlbumPage"
     }
 }

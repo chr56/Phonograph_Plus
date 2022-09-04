@@ -37,8 +37,8 @@ import player.phonograph.notification.ErrorNotification
 import player.phonograph.settings.Setting
 import player.phonograph.ui.activities.MainActivity
 import player.phonograph.ui.activities.SearchActivity
-import player.phonograph.ui.fragments.home.AbsPage
-import player.phonograph.ui.fragments.home.ListOptionsPopup
+import player.phonograph.ui.fragments.pages.AbsPage
+import player.phonograph.ui.fragments.pages.ListOptionsPopup
 import player.phonograph.util.ImageUtil.getTintedDrawable
 
 class HomeFragment : AbsMainActivityFragment(), MainActivity.MainActivityFragmentCallbacks,

@@ -2,7 +2,7 @@
  * Copyright (c) 2022 chr_56 & Abou Zeid (kabouzeid) (original author)
  */
 
-package player.phonograph.ui.fragments.home
+package player.phonograph.ui.fragments.pages
 
 import android.annotation.SuppressLint
 import android.util.Log
@@ -14,21 +14,21 @@ import kotlinx.coroutines.yield
 import player.phonograph.App
 import player.phonograph.BuildConfig
 import player.phonograph.R
-import player.phonograph.adapter.display.AlbumDisplayAdapter
+import player.phonograph.adapter.display.ArtistDisplayAdapter
 import player.phonograph.adapter.display.DisplayAdapter
-import player.phonograph.mediastore.AlbumLoader
+import player.phonograph.mediastore.ArtistLoader
 import player.phonograph.model.sort.SortMode
 import player.phonograph.model.sort.SortRef
-import player.phonograph.model.Album
+import player.phonograph.model.Artist
 
-class AlbumPage : AbsDisplayPage<Album, DisplayAdapter<Album>, GridLayoutManager>() {
+class ArtistPage : AbsDisplayPage<Artist, DisplayAdapter<Artist>, GridLayoutManager>() {
 
     override fun initLayoutManager(): GridLayoutManager {
         return GridLayoutManager(hostFragment.requireContext(), 1)
             .also { it.spanCount = DisplayUtil(this).gridSize }
     }
 
-    override fun initAdapter(): DisplayAdapter<Album> {
+    override fun initAdapter(): DisplayAdapter<Artist> {
         val displayUtil = DisplayUtil(this)
 
         val layoutRes =
@@ -38,10 +38,10 @@ class AlbumPage : AbsDisplayPage<Album, DisplayAdapter<Album>, GridLayoutManager
             TAG, "layoutRes: ${ if (layoutRes == R.layout.item_grid) "GRID" else if (layoutRes == R.layout.item_list) "LIST" else "UNKNOWN" }"
         )
 
-        return AlbumDisplayAdapter(
+        return ArtistDisplayAdapter(
             hostFragment.mainActivity,
             hostFragment.cabController,
-            ArrayList(), // empty until Albums loaded
+            ArrayList(), // empty until Artist loaded
             layoutRes
         ) {
             usePalette = displayUtil.colorFooter
@@ -50,7 +50,7 @@ class AlbumPage : AbsDisplayPage<Album, DisplayAdapter<Album>, GridLayoutManager
 
     override fun loadDataSet() {
         loaderCoroutineScope.launch {
-            val temp = AlbumLoader.getAllAlbums(App.instance)
+            val temp = ArtistLoader.getAllArtists(App.instance)
             while (!isRecyclerViewPrepared) yield() // wait until ready
 
             withContext(Dispatchers.Main) {
@@ -64,7 +64,7 @@ class AlbumPage : AbsDisplayPage<Album, DisplayAdapter<Album>, GridLayoutManager
         adapter.notifyDataSetChanged()
     }
 
-    override fun getDataSet(): List<Album> {
+    override fun getDataSet(): List<Artist> {
         return if (isRecyclerViewPrepared) adapter.dataset else emptyList()
     }
 
@@ -72,6 +72,7 @@ class AlbumPage : AbsDisplayPage<Album, DisplayAdapter<Album>, GridLayoutManager
         displayUtil: DisplayUtil,
         popup: ListOptionsPopup
     ) {
+
         val currentSortMode = displayUtil.sortMode
         if (BuildConfig.DEBUG) Log.d(GenrePage.TAG, "Read cfg: sortMode $currentSortMode")
 
@@ -79,12 +80,7 @@ class AlbumPage : AbsDisplayPage<Album, DisplayAdapter<Album>, GridLayoutManager
         popup.revert = currentSortMode.revert
 
         popup.sortRef = currentSortMode.sortRef
-        popup.sortRefAvailable = arrayOf(
-            SortRef.ALBUM_NAME,
-            SortRef.ARTIST_NAME,
-            SortRef.YEAR,
-            SortRef.SONG_COUNT,
-        )
+        popup.sortRefAvailable = arrayOf(SortRef.ARTIST_NAME, SortRef.ALBUM_COUNT, SortRef.SONG_COUNT)
     }
 
     override fun saveSortOrderImpl(
@@ -102,10 +98,10 @@ class AlbumPage : AbsDisplayPage<Album, DisplayAdapter<Album>, GridLayoutManager
 
     override fun getHeaderText(): CharSequence {
         val n = getDataSet().size
-        return hostFragment.mainActivity.resources.getQuantityString(R.plurals.x_albums, n, n)
+        return hostFragment.mainActivity.resources.getQuantityString(R.plurals.x_artists, n, n)
     }
 
     companion object {
-        const val TAG = "AlbumPage"
+        const val TAG = "ArtistPage"
     }
 }

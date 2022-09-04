@@ -9,7 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import java.lang.ref.WeakReference
 import player.phonograph.model.pages.PageConfig
-import player.phonograph.ui.fragments.home.*
+import player.phonograph.ui.fragments.pages.*
 
 class HomePagerAdapter(fragment: Fragment, var cfg: PageConfig) : FragmentStateAdapter(fragment) {
     val map: MutableMap<Int, WeakReference<AbsPage>> = ArrayMap(cfg.getSize())

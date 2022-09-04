@@ -2,7 +2,7 @@
  * Copyright (c) 2022 chr_56
  */
 
-package player.phonograph.ui.fragments.home
+package player.phonograph.ui.fragments.pages
 
 import android.content.Context
 import androidx.lifecycle.ViewModel
