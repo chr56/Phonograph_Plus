@@ -6,17 +6,18 @@ package player.phonograph.ui.fragments.pages
 
 import android.os.Bundle
 import android.util.Log
-import android.view.Gravity
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
+import android.view.Menu.NONE
 import androidx.annotation.StringRes
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.github.chr56.android.menu_dsl.attach
+import com.github.chr56.android.menu_dsl.menuItem
 import com.google.android.material.appbar.AppBarLayout
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import mt.pref.ThemeColor
+import mt.util.color.primaryTextColor
 import player.phonograph.App
 import player.phonograph.BuildConfig
 import player.phonograph.R
@@ -74,7 +75,7 @@ sealed class AbsDisplayPage<IT, A : DisplayAdapter<out Displayable>, LM : GridLa
         AppBarLayout.OnOffsetChangedListener { _, verticalOffset ->
             binding.container.setPadding(
                 binding.container.paddingLeft,
-                binding.banner.totalScrollRange + verticalOffset,
+                binding.panel.totalScrollRange + verticalOffset,
                 binding.container.paddingRight,
                 binding.container.paddingBottom
 
@@ -128,23 +129,30 @@ sealed class AbsDisplayPage<IT, A : DisplayAdapter<out Displayable>, LM : GridLa
 
     private fun initAppBar() {
 
-        binding.banner.setExpanded(false)
-        binding.banner.addOnOffsetChangedListener(innerAppbarOffsetListener)
-        binding.bannerButton.setImageDrawable(
-            hostFragment.mainActivity.getTintedDrawable(
-                R.drawable.ic_sort_variant_white_24dp,
-                binding.bannerText.currentTextColor,
-            )
-        )
-        binding.bannerButton.setOnClickListener {
-            hostFragment.popup.onShow = ::configPopup
-            hostFragment.popup.onDismiss = ::dismissPopup
-            hostFragment.popup.showAtLocation(
-                binding.root, Gravity.TOP or Gravity.END, 0,
-//                (hostFragment.mainActivity.findViewById<StatusBarView>(R.id.status_bar)?.height ?: 8)
-                        8 + hostFragment.totalHeaderHeight + binding.banner.height
-            )
+        binding.panel.setExpanded(false)
+        binding.panel.addOnOffsetChangedListener(innerAppbarOffsetListener)
+
+        val toolbarMenu = binding.panelToolbar.menu
+        val context = hostFragment.mainActivity
+        context.attach(toolbarMenu) {
+            menuItem(NONE, NONE, 999, getString(R.string.action_settings)) {
+                icon = context.getTintedDrawable(
+                    R.drawable.ic_sort_variant_white_24dp,
+                    context.primaryTextColor(App.instance.nightMode),
+                )
+                showAsActionFlag = MenuItem.SHOW_AS_ACTION_ALWAYS
+                onClick {
+                    hostFragment.popup.onShow = ::configPopup
+                    hostFragment.popup.onDismiss = ::dismissPopup
+                    hostFragment.popup.showAtLocation(
+                        binding.root, Gravity.TOP or Gravity.END, 0,
+                        8 + hostFragment.totalHeaderHeight + binding.panel.height
+                    )
+                    true
+                }
+            }
         }
+        binding.panelToolbar.setTitleTextColor(requireContext().primaryTextColor(App.instance.nightMode))
 
         hostFragment.addOnAppBarOffsetChangedListener(outerAppbarOffsetListener)
     }
@@ -170,7 +178,7 @@ sealed class AbsDisplayPage<IT, A : DisplayAdapter<out Displayable>, LM : GridLa
 
     protected abstract fun setupSortOrderImpl(
         displayUtil: DisplayUtil,
-        popup: ListOptionsPopup
+        popup: ListOptionsPopup,
     )
 
     protected fun dismissPopup(popup: ListOptionsPopup) {
@@ -221,7 +229,7 @@ sealed class AbsDisplayPage<IT, A : DisplayAdapter<out Displayable>, LM : GridLa
     }
 
     protected fun updateHeaderText() {
-        binding.bannerText.text = getHeaderText()
+        binding.panelText.text = getHeaderText()
     }
 
     protected abstract fun getHeaderText(): CharSequence
@@ -235,7 +243,7 @@ sealed class AbsDisplayPage<IT, A : DisplayAdapter<out Displayable>, LM : GridLa
         super.onDestroyView()
         adapter.unregisterAdapterDataObserver(adapterDataObserver)
 
-        binding.banner.addOnOffsetChangedListener(innerAppbarOffsetListener)
+        binding.panel.addOnOffsetChangedListener(innerAppbarOffsetListener)
         hostFragment.removeOnAppBarOffsetChangedListener(outerAppbarOffsetListener)
         _viewBinding = null
     }
