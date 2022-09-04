@@ -2,7 +2,7 @@
  * Copyright (c) 2022 chr_56
  */
 
-package player.phonograph.ui.fragments.home
+package player.phonograph.ui.fragments
 
 import android.content.Intent
 import android.content.SharedPreferences
@@ -37,7 +37,8 @@ import player.phonograph.notification.ErrorNotification
 import player.phonograph.settings.Setting
 import player.phonograph.ui.activities.MainActivity
 import player.phonograph.ui.activities.SearchActivity
-import player.phonograph.ui.fragments.AbsMainActivityFragment
+import player.phonograph.ui.fragments.home.AbsPage
+import player.phonograph.ui.fragments.home.ListOptionsPopup
 import player.phonograph.util.ImageUtil.getTintedDrawable
 
 class HomeFragment : AbsMainActivityFragment(), MainActivity.MainActivityFragmentCallbacks,

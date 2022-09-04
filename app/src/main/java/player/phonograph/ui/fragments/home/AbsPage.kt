@@ -8,6 +8,7 @@ import android.os.Bundle
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import player.phonograph.ui.fragments.AbsMusicServiceFragment
+import player.phonograph.ui.fragments.HomeFragment
 
 // todo no more AbsMusicServiceFragment
 abstract class AbsPage : AbsMusicServiceFragment() {

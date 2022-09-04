@@ -54,7 +54,7 @@ import player.phonograph.service.queue.ShuffleMode
 import player.phonograph.settings.Setting
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
 import player.phonograph.ui.activities.intro.AppIntroActivity
-import player.phonograph.ui.fragments.home.HomeFragment
+import player.phonograph.ui.fragments.HomeFragment
 import player.phonograph.util.ImageUtil.getTintedDrawable
 
 class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity {
