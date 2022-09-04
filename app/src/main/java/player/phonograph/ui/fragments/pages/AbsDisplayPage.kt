@@ -6,9 +6,14 @@ package player.phonograph.ui.fragments.pages
 
 import android.os.Bundle
 import android.util.Log
-import android.view.*
+import android.view.Gravity
+import android.view.LayoutInflater
 import android.view.Menu.NONE
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
 import androidx.annotation.StringRes
+import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.github.chr56.android.menu_dsl.attach
@@ -154,8 +159,12 @@ sealed class AbsDisplayPage<IT, A : DisplayAdapter<out Displayable>, LM : GridLa
         }
         binding.panelToolbar.setTitleTextColor(requireContext().primaryTextColor(App.instance.nightMode))
 
+        configAppBar(binding.panelToolbar)
+
         hostFragment.addOnAppBarOffsetChangedListener(outerAppbarOffsetListener)
     }
+
+    protected open fun configAppBar(panelToolbar: Toolbar) {}
 
     private fun configPopup(popup: ListOptionsPopup) {
         val displayUtil = DisplayUtil(this)
