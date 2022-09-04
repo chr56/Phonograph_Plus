@@ -1,14 +1,19 @@
 /*
- * Copyright (c) 2022 chr_56 & Abou Zeid (kabouzeid) (original author)
+ * Copyright (c) 2022 chr_56
  */
 
-package player.phonograph.ui.fragments.pages
+package player.phonograph.ui.fragments.pages.util
 
 import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.model.sort.SortMode
 import player.phonograph.model.sort.SortRef
 import player.phonograph.settings.Setting
+import player.phonograph.ui.fragments.pages.AbsDisplayPage
+import player.phonograph.ui.fragments.pages.AlbumPage
+import player.phonograph.ui.fragments.pages.ArtistPage
+import player.phonograph.ui.fragments.pages.GenrePage
+import player.phonograph.ui.fragments.pages.SongPage
 import player.phonograph.util.Util
 
 class DisplayUtil(private val page: AbsDisplayPage<*, *, *>) {

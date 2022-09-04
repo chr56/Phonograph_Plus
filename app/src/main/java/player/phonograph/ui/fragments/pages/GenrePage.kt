@@ -20,6 +20,8 @@ import player.phonograph.mediastore.GenreLoader
 import player.phonograph.model.sort.SortMode
 import player.phonograph.model.sort.SortRef
 import player.phonograph.model.Genre
+import player.phonograph.ui.fragments.pages.util.DisplayUtil
+import player.phonograph.ui.fragments.pages.util.ListOptionsPopup
 
 class GenrePage : AbsDisplayPage<Genre, DisplayAdapter<Genre>, GridLayoutManager>() {
 

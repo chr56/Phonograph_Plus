@@ -20,6 +20,8 @@ import player.phonograph.mediastore.ArtistLoader
 import player.phonograph.model.sort.SortMode
 import player.phonograph.model.sort.SortRef
 import player.phonograph.model.Artist
+import player.phonograph.ui.fragments.pages.util.DisplayUtil
+import player.phonograph.ui.fragments.pages.util.ListOptionsPopup
 
 class ArtistPage : AbsDisplayPage<Artist, DisplayAdapter<Artist>, GridLayoutManager>() {
 
