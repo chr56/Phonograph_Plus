@@ -19,12 +19,12 @@ import androidx.core.view.forEachIndexed
 import androidx.core.view.get
 import androidx.core.view.iterator
 import mt.pref.ThemeColor
-import mt.util.color.getSecondaryTextColor
+import mt.util.color.secondaryTextColor
 import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.databinding.PopupWindowMainBinding
 import player.phonograph.model.sort.SortRef
-import player.phonograph.util.PhonographColorUtil
+import player.phonograph.util.PhonographColorUtil.backgroundColorByTheme
 
 class ListOptionsPopup private constructor(
     private val context: Context,
@@ -47,13 +47,9 @@ class ListOptionsPopup private constructor(
     )
 
     init {
-        // background
-        setBackgroundDrawable(
-            ColorDrawable(PhonographColorUtil.getCorrectBackgroundColor(context))
-        )
-        // animate
+        updateColor()
+        setBackgroundDrawable(ColorDrawable(context.backgroundColorByTheme()))
         this.animationStyle = android.R.style.Animation_Dialog
-        setUpColor()
     }
 
     override fun dismiss() {
@@ -73,10 +69,9 @@ class ListOptionsPopup private constructor(
 
     private fun onShow() {
         hideAllPopupItems()
+        setBackgroundDrawable(ColorDrawable(context.backgroundColorByTheme()))
+        this.animationStyle = android.R.style.Animation_Dialog
         onShow(this)
-        setBackgroundDrawable(
-            ColorDrawable(PhonographColorUtil.getCorrectBackgroundColor(context))
-        )
     }
 
     @Suppress("MemberVisibilityCanBePrivate")
@@ -101,10 +96,10 @@ class ListOptionsPopup private constructor(
     /**
      * widget color
      */
-    private fun setUpColor() {
+    private fun updateColor() {
         // color
         val accentColor = ThemeColor.accentColor(context)
-        val textColor = getSecondaryTextColor(context, !App.instance.nightMode)
+        val textColor = context.secondaryTextColor(App.instance.nightMode)
         val widgetColor = ColorStateList(
             arrayOf(
                 intArrayOf(android.R.attr.state_enabled),
@@ -270,7 +265,7 @@ class ListOptionsPopup private constructor(
             R.id.sort_order_song_count -> SortRef.SONG_COUNT
             R.id.sort_order_album_count -> SortRef.ALBUM_COUNT
             R.id.sort_order_size -> SortRef.SIZE
-            else -> { SortRef.ID }
+            else -> SortRef.ID
         }
 
     private fun findSortOrderButton(ref: SortRef): RadioButton? =
@@ -292,5 +287,4 @@ class ListOptionsPopup private constructor(
     private fun check(radioButton: RadioButton?) {
         radioButton?.isChecked = true
     }
-    private fun RadioButton.toggleOn() { isChecked = true }
 }

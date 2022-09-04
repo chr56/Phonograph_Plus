@@ -18,18 +18,16 @@ import java.util.*
 object PhonographColorUtil {
 
     @JvmStatic
-    fun getCorrectBackgroundColor(context: Context): Int {
-        return context.resources.getColor(
-            when (Setting.instance.generalTheme) {
-                R.style.Theme_Phonograph_Auto -> R.color.cardBackgroundColor
-                R.style.Theme_Phonograph_Light -> R.color.md_white_1000
-                R.style.Theme_Phonograph_Black -> R.color.md_black_1000
-                R.style.Theme_Phonograph_Dark -> R.color.md_grey_800
-                else -> R.color.md_grey_700
-            },
-            context.theme
-        )
-    }
+    fun Context.backgroundColorByTheme(): Int = resources.getColor(
+        when (Setting.instance.generalTheme) {
+            R.style.Theme_Phonograph_Auto -> R.color.cardBackgroundColor
+            R.style.Theme_Phonograph_Light -> R.color.md_white_1000
+            R.style.Theme_Phonograph_Black -> R.color.md_black_1000
+            R.style.Theme_Phonograph_Dark -> R.color.md_grey_800
+            else -> R.color.md_grey_700
+        },
+        theme
+    )
 
     @JvmStatic
     @ColorInt

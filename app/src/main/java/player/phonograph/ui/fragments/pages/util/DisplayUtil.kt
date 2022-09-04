@@ -110,6 +110,7 @@ class DisplayUtil(private val page: AbsDisplayPage<*, *, *>) {
                     if (isLandscape) pref.genreGridSizeLand = value
                     else pref.genreGridSize = value
                 }
+                else -> false
             }
         }
     var colorFooter: Boolean
@@ -144,6 +145,7 @@ class DisplayUtil(private val page: AbsDisplayPage<*, *, *>) {
                 is GenrePage -> {
                     // do noting
                 }
+                else -> false
             }
         }
 }
