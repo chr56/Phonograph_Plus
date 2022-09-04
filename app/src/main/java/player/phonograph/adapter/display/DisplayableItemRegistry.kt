@@ -38,11 +38,9 @@ fun Displayable.tapClick(list: List<Displayable>?, activity: Activity?, imageVie
         is Song -> {
             val contextQueue = list?.filterIsInstance<Song>()
             if (contextQueue != null) {
-                if (Setting.instance.keepPlayingQueueIntact) {
-                    MusicPlayerRemote.playNow(this)
-                } else {
-                    MusicPlayerRemote.playQueue(contextQueue, contextQueue.indexOf(this), true, null)
-                }
+                MusicPlayerRemote.playQueueCautiously(
+                    contextQueue, contextQueue.indexOf(this), true, null
+                )
             }
             true
         }

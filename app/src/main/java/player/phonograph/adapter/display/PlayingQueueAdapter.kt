@@ -90,7 +90,7 @@ class PlayingQueueAdapter(
     }
 
     override fun onClickItem(bindingAdapterPosition: Int, view: View, imageView: ImageView?) {
-        MusicPlayerRemote.playQueue(dataset, bindingAdapterPosition, true,null)
+        MusicPlayerRemote.playSongAt(bindingAdapterPosition)
     }
 
     override fun onLongClickItem(bindingAdapterPosition: Int, view: View): Boolean = true

@@ -43,7 +43,7 @@ object MusicPlayerRemote {
 
     fun bindToService(
         activity: Activity,
-        callback: ServiceConnection?
+        callback: ServiceConnection?,
     ): ServiceToken? {
         val contextWrapper = ContextWrapper(
             activity.parent ?: activity // try to use parent activity
@@ -135,16 +135,18 @@ object MusicPlayerRemote {
     /**
      * Play a queue (synchronized action!)
      * @param queue new queue
-     * @param startPosition position in queue when starting playing (available when shuffleMode off)
+     * @param startPosition position in queue when starting playing (available when shuffle mode off)
      * @param startPlaying true if to play now, false if to pause
-     * @param shuffleMode new shuffle mode, null if not to intend to change current mode
+     * @param shuffleMode new preferred shuffle mode: if [shuffleMode] is NOT null, shuffle mode would change and apply;
+     *              if [shuffleMode] is null, shuffle mode would change unless [Setting.rememberShuffle] is on
+     *              (always be [ShuffleMode.SHUFFLE] and )
      * @return success or not
      */
     fun playQueue(
         queue: List<Song>,
         startPosition: Int,
         startPlaying: Boolean,
-        shuffleMode: ShuffleMode?
+        shuffleMode: ShuffleMode?,
     ): Boolean {
         if (queue.isEmpty() || startPosition !in queue.indices) {
             ErrorNotification.postErrorNotification(
@@ -162,17 +164,13 @@ object MusicPlayerRemote {
             return true
         }
         // parse shuffle mode & position
-        val targetShuffleMode =
-            if (Setting.instance.rememberShuffle) {
-                ShuffleMode.SHUFFLE
-            } else {
-                shuffleMode ?: queueManager.shuffleMode
-            }
+        val targetShuffleMode = shuffleMode
+            ?: (if (Setting.instance.rememberShuffle) ShuffleMode.SHUFFLE else null)
         val targetPosition =
             if (targetShuffleMode == ShuffleMode.SHUFFLE) Random().nextInt(queue.size) else startPosition
         // swap queue
         queueManager.swapQueue(queue, targetPosition, false)
-        shuffleMode?.let { queueManager.switchShuffleMode(targetShuffleMode, false) }
+        targetShuffleMode?.let { queueManager.switchShuffleMode(targetShuffleMode, false) }
         if (startPlaying) musicService?.playSongAt(queueManager.currentSongPosition)
         else musicService?.pause()
         return true
@@ -186,7 +184,7 @@ object MusicPlayerRemote {
         queue: List<Song>,
         startPosition: Int,
         startPlaying: Boolean,
-        shuffleMode: ShuffleMode?
+        shuffleMode: ShuffleMode?,
     ): Boolean =
         if (Setting.instance.keepPlayingQueueIntact) {
             playNow(queue)
