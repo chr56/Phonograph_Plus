@@ -1,6 +1,8 @@
 package player.phonograph.util
 
 import android.content.Context
+import android.content.res.Configuration
+import android.content.res.Resources
 import android.graphics.Bitmap
 import androidx.annotation.ColorInt
 import androidx.palette.graphics.Palette
@@ -18,6 +20,19 @@ import java.util.*
 object PhonographColorUtil {
 
     @JvmStatic
+    val Resources.nightMode: Boolean
+        get() = when (Setting.instance.generalTheme) {
+            R.style.Theme_Phonograph_Black -> true
+            R.style.Theme_Phonograph_Dark -> true
+            R.style.Theme_Phonograph_Light -> false
+            R.style.Theme_Phonograph_Auto -> when (configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) {
+                Configuration.UI_MODE_NIGHT_YES -> true
+                Configuration.UI_MODE_NIGHT_NO -> false
+                else -> false
+            }
+            else -> false
+        }
+
     fun Context.backgroundColorByTheme(): Int = resources.getColor(
         when (Setting.instance.generalTheme) {
             R.style.Theme_Phonograph_Auto -> R.color.cardBackgroundColor
