@@ -17,11 +17,11 @@ import mt.pref.ThemeColor.primaryColor
 import mt.pref.internal.ThemeStore.Companion.didThemeValuesChange
 import mt.tint.*
 import mt.util.color.darkenColor
-import mt.util.color.getPrimaryTextColor
-import mt.util.color.getSecondaryTextColor
-import player.phonograph.App
+import mt.util.color.primaryTextColor
+import mt.util.color.secondaryTextColor
 import player.phonograph.R
 import player.phonograph.settings.Setting
+import player.phonograph.util.PhonographColorUtil.nightMode
 
 /**
  * An abstract class providing material activity (no toolbar)
@@ -76,8 +76,8 @@ abstract class ThemeActivity : MultiLanguageActivity() {
     private fun retrieveColors() {
         primaryColor = primaryColor(this)
         accentColor = accentColor(this)
-        textColorPrimary = getPrimaryTextColor(this, !App.instance.nightMode)
-        textColorSecondary = getSecondaryTextColor(this, !App.instance.nightMode)
+        textColorPrimary = primaryTextColor(resources.nightMode)
+        textColorSecondary = secondaryTextColor(resources.nightMode)
     }
 
     private val listener = object : ThemeColor.ThemePreferenceChangeListener {

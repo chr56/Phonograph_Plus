@@ -8,7 +8,7 @@ import android.util.AttributeSet
 import androidx.appcompat.widget.AppCompatCheckBox
 import mt.pref.ThemeColor.accentColor
 import mt.tint.viewtint.setTint
-import player.phonograph.App
+import player.phonograph.util.PhonographColorUtil.nightMode
 
 /**
  * @author Aidan Follestad (afollestad)
@@ -27,6 +27,6 @@ class CheckBoxX : AppCompatCheckBox {
     }
 
     private fun init(context: Context, attrs: AttributeSet?) {
-        this.setTint(accentColor(context), App.instance.nightMode)
+        this.setTint(accentColor(context), context.resources.nightMode)
     }
 }

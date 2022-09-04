@@ -6,9 +6,8 @@ package lib.phonograph.view
 import android.content.Context
 import android.util.AttributeSet
 import androidx.appcompat.widget.AppCompatTextView
-import mt.util.color.getPrimaryDisabledTextColor
-import mt.util.color.getSecondaryTextColor
-import player.phonograph.App
+import mt.util.color.secondaryTextColor
+import player.phonograph.util.PhonographColorUtil.nightMode
 
 /**
  * @author Aidan Follestad (afollestad)
@@ -27,6 +26,6 @@ class SecondaryTextViewX : AppCompatTextView {
     }
 
     private fun init(context: Context, attrs: AttributeSet?) {
-        setTextColor(getSecondaryTextColor(context, !App.instance.nightMode))
+        context.secondaryTextColor(context.resources.nightMode)
     }
 }

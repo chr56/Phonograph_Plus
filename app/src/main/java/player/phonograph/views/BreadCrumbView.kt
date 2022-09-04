@@ -17,12 +17,12 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import mt.util.color.getPrimaryTextColor
-import player.phonograph.App
+import mt.util.color.primaryTextColor
 import player.phonograph.R
 import player.phonograph.databinding.ItemTextBinding
 import player.phonograph.model.file.Location
 import player.phonograph.util.ImageUtil.getTintedDrawable
+import player.phonograph.util.PhonographColorUtil.nightMode
 
 @Suppress("JoinDeclarationAndAssignment")
 class BreadCrumbView : FrameLayout {
@@ -57,7 +57,7 @@ class BreadCrumbView : FrameLayout {
         recyclerView.layoutManager = layoutManager
 
         val drawable = context.getTintedDrawable(R.drawable.ic_keyboard_arrow_right_white_24dp,
-            getPrimaryTextColor(context, !App.instance.nightMode)
+            context.primaryTextColor(resources.nightMode)
         )
         recyclerView.addItemDecoration(ItemDecorator(drawable!!))
 
@@ -92,7 +92,7 @@ class BreadCrumbView : FrameLayout {
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
             with(holder.viewBinding.text) {
                 text = if (position == 0) volumeName else crumbs[position - 1]
-                setTextColor(getPrimaryTextColor(context, !App.instance.nightMode))
+                setTextColor(context.primaryTextColor(resources.nightMode))
             }
             holder.itemView.setOnClickListener {
                 callBack(

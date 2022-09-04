@@ -16,6 +16,7 @@ import mt.pref.ThemeColor
 import mt.util.color.getPrimaryTextColor
 import mt.util.color.isColorLight
 import mt.util.color.lightenColor
+import mt.util.color.primaryTextColor
 import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.adapter.LyricsAdapter
@@ -29,6 +30,7 @@ import player.phonograph.model.lyrics.LyricsList
 import player.phonograph.model.lyrics.LyricsSource
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
 import player.phonograph.ui.fragments.player.AbsPlayerFragment
+import player.phonograph.util.PhonographColorUtil.nightMode
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
@@ -168,7 +170,7 @@ class LyricsDialog : DialogFragment(), MusicProgressViewUpdateHelper.Callback {
 
     private val accentColor by lazy { ThemeColor.accentColor(App.instance) }
     private val primaryColor by lazy { ThemeColor.primaryColor(App.instance) }
-    private val textColor by lazy { getPrimaryTextColor(App.instance, !App.instance.nightMode) }
+    private val textColor by lazy { App.instance.primaryTextColor(App.instance.resources.nightMode) }
 
     private val backgroundCsl: ColorStateList by lazy {
         ColorStateList(

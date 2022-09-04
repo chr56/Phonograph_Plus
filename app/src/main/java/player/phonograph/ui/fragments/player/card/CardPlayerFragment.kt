@@ -5,7 +5,11 @@ import android.animation.AnimatorSet
 import android.graphics.PorterDuff
 import android.os.Build
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewAnimationUtils
+import android.view.ViewGroup
 import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import android.widget.ImageView
 import androidx.annotation.ColorInt
@@ -17,11 +21,9 @@ import com.h6ah4i.android.widget.advrecyclerview.animator.RefactoredDefaultItemA
 import com.sothree.slidinguppanel.SlidingUpPanelLayout
 import com.sothree.slidinguppanel.SlidingUpPanelLayout.PanelState
 import mt.util.color.darkenColor
-import mt.util.color.getSecondaryTextColor
 import mt.util.color.isColorLight
 import mt.util.color.resolveColor
-import player.phonograph.App
-import kotlin.math.max
+import mt.util.color.secondaryTextColor
 import player.phonograph.R
 import player.phonograph.adapter.base.MediaEntryViewHolder
 import player.phonograph.databinding.FragmentCardPlayerBinding
@@ -32,9 +34,11 @@ import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
 import player.phonograph.ui.fragments.player.AbsPlayerFragment
 import player.phonograph.ui.fragments.player.PlayerAlbumCoverFragment
+import player.phonograph.util.PhonographColorUtil.nightMode
 import player.phonograph.util.Util.isLandscape
 import player.phonograph.util.ViewUtil
 import player.phonograph.util.menu.MenuClickListener
+import kotlin.math.max
 
 class CardPlayerFragment :
     AbsPlayerFragment(),
@@ -302,7 +306,7 @@ class CardPlayerFragment :
         override fun animateColorChange(newColor: Int) {
             if (ViewUtil.isWindowBackgroundDarkSafe(fragment.activity)) {
                 fragment.viewBinding.playerQueueSubHeader.setTextColor(
-                    getSecondaryTextColor(fragment.requireContext(), !App.instance.nightMode)
+                    fragment.requireContext().secondaryTextColor(fragment.resources.nightMode)
                 )
             }
         }
@@ -321,7 +325,7 @@ class CardPlayerFragment :
                 resolveColor(
                     fragment.requireContext(),
                     R.attr.iconColor,
-                    getSecondaryTextColor(fragment.requireContext(), !App.instance.nightMode)
+                    fragment.requireContext().secondaryTextColor(fragment.resources.nightMode)
                 ),
                 PorterDuff.Mode.SRC_IN
             )

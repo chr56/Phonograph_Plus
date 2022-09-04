@@ -24,7 +24,7 @@ import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.snackbar.Snackbar
 import lib.phonograph.storage.root
 import mt.pref.ThemeColor
-import mt.util.color.getPrimaryTextColor
+import mt.util.color.primaryTextColor
 import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.adapter.FileAdapter
@@ -38,6 +38,7 @@ import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.settings.Setting
 import player.phonograph.ui.fragments.pages.util.ListOptionsPopup
 import player.phonograph.util.ImageUtil.getTintedDrawable
+import player.phonograph.util.PhonographColorUtil.nightMode
 import player.phonograph.util.ViewUtil.setUpFastScrollRecyclerViewColor
 
 class FilesPage : AbsPage() {
@@ -236,7 +237,7 @@ class FilesPage : AbsPage() {
 
     private fun getDrawable(@DrawableRes resId: Int): Drawable? {
         return hostFragment.mainActivity.getTintedDrawable(resId,
-            getPrimaryTextColor(requireContext(), !App.instance.nightMode)
+            hostFragment.mainActivity.primaryTextColor(hostFragment.mainActivity.resources.nightMode)
         )
     }
 

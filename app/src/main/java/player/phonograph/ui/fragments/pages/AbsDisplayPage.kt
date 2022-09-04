@@ -32,6 +32,7 @@ import player.phonograph.model.Displayable
 import player.phonograph.ui.fragments.pages.util.DisplayUtil
 import player.phonograph.ui.fragments.pages.util.ListOptionsPopup
 import player.phonograph.util.ImageUtil.getTintedDrawable
+import player.phonograph.util.PhonographColorUtil.nightMode
 import player.phonograph.util.Util
 import player.phonograph.util.ViewUtil.setUpFastScrollRecyclerViewColor
 
@@ -143,7 +144,7 @@ sealed class AbsDisplayPage<IT, A : DisplayAdapter<out Displayable>, LM : GridLa
             menuItem(NONE, NONE, 999, getString(R.string.action_settings)) {
                 icon = context.getTintedDrawable(
                     R.drawable.ic_sort_variant_white_24dp,
-                    context.primaryTextColor(App.instance.nightMode),
+                    context.primaryTextColor(context.resources.nightMode),
                 )
                 showAsActionFlag = MenuItem.SHOW_AS_ACTION_ALWAYS
                 onClick {
@@ -157,7 +158,7 @@ sealed class AbsDisplayPage<IT, A : DisplayAdapter<out Displayable>, LM : GridLa
                 }
             }
         }
-        binding.panelToolbar.setTitleTextColor(requireContext().primaryTextColor(App.instance.nightMode))
+        binding.panelToolbar.setTitleTextColor(requireContext().primaryTextColor(resources.nightMode))
 
         configAppBar(binding.panelToolbar)
 

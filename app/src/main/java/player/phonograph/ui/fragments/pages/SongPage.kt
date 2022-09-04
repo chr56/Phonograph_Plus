@@ -34,6 +34,7 @@ import player.phonograph.settings.Setting
 import player.phonograph.ui.fragments.pages.util.DisplayUtil
 import player.phonograph.ui.fragments.pages.util.ListOptionsPopup
 import player.phonograph.util.ImageUtil.getTintedDrawable
+import player.phonograph.util.PhonographColorUtil.nightMode
 
 class SongPage : AbsDisplayPage<Song, DisplayAdapter<Song>, GridLayoutManager>() {
 
@@ -130,7 +131,7 @@ class SongPage : AbsDisplayPage<Song, DisplayAdapter<Song>, GridLayoutManager>()
             rootMenu.add(this, NONE, NONE, 1, getString(R.string.action_play)) {
                 icon = context
                     .getTintedDrawable(R.drawable.ic_play_arrow_white_24dp,
-                        context.primaryTextColor(App.instance.nightMode))
+                        context.primaryTextColor(context.resources.nightMode))
                 showAsActionFlag = MenuItem.SHOW_AS_ACTION_ALWAYS
                 onClick {
                     if (Setting.instance.rememberShuffle) {
@@ -154,7 +155,7 @@ class SongPage : AbsDisplayPage<Song, DisplayAdapter<Song>, GridLayoutManager>()
             rootMenu.add(this, NONE, NONE, 2, getString(R.string.action_shuffle_all)) {
                 icon = context
                     .getTintedDrawable(R.drawable.ic_shuffle_white_24dp,
-                        context.primaryTextColor(App.instance.nightMode))
+                        context.primaryTextColor(context.resources.nightMode))
                 showAsActionFlag = MenuItem.SHOW_AS_ACTION_ALWAYS
                 onClick {
                     MusicPlayerRemote

@@ -17,10 +17,10 @@ import com.afollestad.materialdialogs.customview.customView
 import lib.phonograph.localization.Localization
 import mt.pref.ThemeColor
 import mt.util.color.resolveColor
-import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.notification.ErrorNotification
 import player.phonograph.settings.Setting
+import player.phonograph.util.PhonographColorUtil.nightMode
 import java.io.IOException
 import java.io.InputStream
 import java.util.*
@@ -93,12 +93,12 @@ class ChangelogDialog : DialogFragment() {
                 resolveColor(
                     requireContext(),
                     R.attr.md_background_color,
-                    Color.parseColor(if (App.instance.nightMode) "#424242" else "#ffffff")
+                    Color.parseColor(if (resources.nightMode) "#424242" else "#ffffff")
                 )
             )
         val textColor =
             colorToCSS(
-                Color.parseColor(if (App.instance.nightMode) "#ffffff" else "#000000")
+                Color.parseColor(if (resources.nightMode) "#ffffff" else "#000000")
             )
         return getHTML(
             CSS = getCSS(
@@ -153,7 +153,7 @@ class ChangelogDialog : DialogFragment() {
             content_background_color: String,
             text_color: String,
             highlight_color: String,
-            disable_color: String
+            disable_color: String,
         ) = """
         * {
             word-wrap: break-word;
@@ -205,7 +205,7 @@ class ChangelogDialog : DialogFragment() {
 
         fun getHTML(
             CSS: String,
-            content: String
+            content: String,
         ): String =
             """
         <html>

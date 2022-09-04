@@ -18,7 +18,6 @@ import androidx.appcompat.widget.Toolbar
 import de.psdev.licensesdialog.LicensesDialog
 import lib.phonograph.activity.ToolbarActivity
 import mt.tint.setActivityToolbarColorAuto
-import player.phonograph.App.Companion.instance
 import player.phonograph.BuildConfig
 import player.phonograph.R
 import player.phonograph.Updater
@@ -29,6 +28,7 @@ import player.phonograph.dialogs.UpgradeDialog
 import player.phonograph.settings.Setting
 import player.phonograph.ui.activities.bugreport.BugReportActivity
 import player.phonograph.ui.activities.intro.AppIntroActivity
+import player.phonograph.util.PhonographColorUtil.nightMode
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
@@ -267,15 +267,14 @@ class AboutActivity : ToolbarActivity(), View.OnClickListener {
     }
 
     private fun showLicenseDialog() {
-        val app = instance
         LicensesDialog.Builder(this)
             .setNotices(R.raw.notices)
             .setTitle(R.string.licenses)
             .setNoticesCssStyle(
                 getString(R.string.license_dialog_style)
-                    .replace("{bg-color}", if (app.nightMode) "424242" else "ffffff")
-                    .replace("{text-color}", if (app.nightMode) "ffffff" else "000000")
-                    .replace("{license-bg-color}", if (app.nightMode) "535353" else "eeeeee")
+                    .replace("{bg-color}", if (resources.nightMode) "424242" else "ffffff")
+                    .replace("{text-color}", if (resources.nightMode) "ffffff" else "000000")
+                    .replace("{license-bg-color}", if (resources.nightMode) "535353" else "eeeeee")
             )
             .setIncludeOwnLicense(true)
             .build()
