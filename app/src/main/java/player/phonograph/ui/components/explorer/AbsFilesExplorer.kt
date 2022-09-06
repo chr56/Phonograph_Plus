@@ -11,18 +11,20 @@ import com.google.android.material.appbar.AppBarLayout
 import player.phonograph.databinding.FragmentFolderPageBinding
 import player.phonograph.ui.components.ViewComponent
 
-sealed class FilesExplorer<M>(protected val context: Context) : ViewComponent<ViewGroup, M> {
+sealed class AbsFilesExplorer<M>(protected val context: Context) : ViewComponent<ViewGroup, M> {
 
     private var _viewBinding: FragmentFolderPageBinding? = null
     protected val binding get() = _viewBinding!!
 
-    override fun create(container: ViewGroup, model: M) {
+    override fun inflate(rootContainer: ViewGroup, layoutInflater: LayoutInflater?) {
         _viewBinding = FragmentFolderPageBinding.inflate(
-            LayoutInflater.from(context),
-            container,
+            layoutInflater ?: LayoutInflater.from(context),
+            rootContainer,
             true
         )
+    }
 
+    override fun loadData(model: M) {
         binding.innerAppBar.setExpanded(false)
         binding.innerAppBar.addOnOffsetChangedListener(innerAppbarOffsetListener)
 

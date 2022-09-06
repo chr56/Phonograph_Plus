@@ -39,16 +39,16 @@ import player.phonograph.util.ViewUtil.setUpFastScrollRecyclerViewColor
 class FilesPageExplorer(
     private val activity: ComponentActivity,
     private val homeFragment: HomeFragment,
-) : FilesExplorer<FilesViewModel>(activity) {
+) : AbsFilesExplorer<FilesPageViewModel>(activity) {
 
-    private lateinit var model: FilesViewModel
+    private lateinit var fileModel: FilesPageViewModel
 
     private lateinit var adapter: FileAdapter
     private lateinit var layoutManager: RecyclerView.LayoutManager
 
 
-    override fun initModel(filesViewModel: FilesViewModel) {
-        model = filesViewModel
+    override fun initModel(model: FilesPageViewModel) {
+        fileModel = model
         // header
         binding.buttonPageHeader.setImageDrawable(getDrawable(R.drawable.ic_sort_variant_white_24dp))
         binding.buttonPageHeader.setOnClickListener {
@@ -63,15 +63,15 @@ class FilesPageExplorer(
         binding.buttonBack.setImageDrawable(getDrawable(R.drawable.md_nav_back))
         binding.buttonBack.setOnClickListener { gotoTopLevel(true) }
         binding.buttonBack.setOnLongClickListener {
-            filesViewModel.currentLocation = Location.HOME
+            model.currentLocation = Location.HOME
             reload()
             true
         }
         // bread crumb
         binding.header.apply {
-            location = filesViewModel.currentLocation
+            location = model.currentLocation
             callBack = {
-                filesViewModel.currentLocation = it
+                model.currentLocation = it
                 reload()
             }
         }
@@ -86,10 +86,10 @@ class FilesPageExplorer(
 
         // recycle view
         layoutManager = LinearLayoutManager(activity)
-        adapter = FileAdapter(activity, filesViewModel.currentFileList.toMutableList(), {
+        adapter = FileAdapter(activity, model.currentFileList.toMutableList(), {
             when (it) {
                 is FileEntity.Folder -> {
-                    filesViewModel.currentLocation = it.location
+                    model.currentLocation = it.location
                     reload()
                 }
                 is FileEntity.File -> {
@@ -106,7 +106,7 @@ class FilesPageExplorer(
             layoutManager = this@FilesPageExplorer.layoutManager
             adapter = this@FilesPageExplorer.adapter
         }
-        filesViewModel.loadFiles { reload() }
+        model.loadFiles { reload() }
     }
 
     private val popup: ListOptionsPopup by lazy(LazyThreadSafetyMode.NONE) {
@@ -125,16 +125,16 @@ class FilesPageExplorer(
         popup.sortRefAvailable = arrayOf(SortRef.DISPLAY_NAME, SortRef.ADDED_DATE, SortRef.MODIFIED_DATE, SortRef.SIZE)
 
         popup.showFileOption = true
-        popup.useLegacyListFiles = model.useLegacyListFile
-        popup.showFilesImages = model.showFilesImages
+        popup.useLegacyListFiles = fileModel.useLegacyListFile
+        popup.showFilesImages = fileModel.showFilesImages
     }
 
     private fun dismissPopup(popup: ListOptionsPopup) {
         Setting.instance.fileSortMode = FileSortMode(popup.sortRef, popup.revert)
-        model.useLegacyListFile = popup.useLegacyListFiles
-        if (model.showFilesImages != popup.showFilesImages) {
-            model.showFilesImages = popup.showFilesImages
-            adapter.loadCover = model.showFilesImages
+        fileModel.useLegacyListFile = popup.useLegacyListFiles
+        if (fileModel.showFilesImages != popup.showFilesImages) {
+            fileModel.showFilesImages = popup.showFilesImages
+            adapter.loadCover = fileModel.showFilesImages
             adapter.notifyDataSetChanged()
         }
         reload()
@@ -145,9 +145,9 @@ class FilesPageExplorer(
      * @return success or not
      */
     override fun gotoTopLevel(allowToChangeVolume: Boolean): Boolean {
-        val parent = model.currentLocation.parent
+        val parent = fileModel.currentLocation.parent
         return if (parent != null) {
-            model.currentLocation = parent
+            fileModel.currentLocation = parent
             reload()
             true
         } else {
@@ -172,7 +172,7 @@ class FilesPageExplorer(
         MaterialDialog(activity)
             .listItemsSingleChoice(
                 items = volumes.map { "${it.getDescription(context)}\n(${it.root()?.path ?: "N/A"})" },
-                initialSelection = volumes.indexOf(model.currentLocation.storageVolume),
+                initialSelection = volumes.indexOf(fileModel.currentLocation.storageVolume),
                 waitForPositiveButton = true,
             ) { materialDialog: MaterialDialog, i: Int, _: CharSequence ->
                 materialDialog.dismiss()
@@ -180,7 +180,7 @@ class FilesPageExplorer(
                 if (path == null) {
                     Toast.makeText(activity, "Unmounted volume", Toast.LENGTH_SHORT).show()
                 } else { // todo
-                    model.currentLocation = Location.fromAbsolutePath("$path/")
+                    fileModel.currentLocation = Location.fromAbsolutePath("$path/")
                     reload()
                 }
             }
@@ -192,10 +192,10 @@ class FilesPageExplorer(
 
     override fun reload() {
         binding.container.isRefreshing = true
-        model.loadFiles {
-            adapter.dataSet = model.currentFileList.toMutableList()
+        fileModel.loadFiles {
+            adapter.dataSet = fileModel.currentFileList.toMutableList()
             binding.header.apply {
-                location = model.currentLocation
+                location = fileModel.currentLocation
                 layoutManager.scrollHorizontallyBy(
                     binding.header.width / 4,
                     recyclerView.Recycler(),
@@ -203,7 +203,7 @@ class FilesPageExplorer(
                 )
             }
             binding.buttonBack.setImageDrawable(
-                if (model.currentLocation.parent == null) {
+                if (fileModel.currentLocation.parent == null) {
                     getDrawable(R.drawable.ic_library_music_white_24dp)
                 } else {
                     getDrawable(R.drawable.icon_back_white)

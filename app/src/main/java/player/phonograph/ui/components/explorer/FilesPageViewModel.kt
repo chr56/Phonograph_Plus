@@ -17,7 +17,7 @@ import player.phonograph.util.FileUtil.FileScanner
 import java.io.File
 import java.util.*
 
-class FilesViewModel : ViewModel() {
+class FilesPageViewModel : ViewModel() {
 
     var currentLocation: Location = Location.HOME
 

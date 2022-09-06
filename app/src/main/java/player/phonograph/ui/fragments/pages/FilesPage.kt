@@ -13,23 +13,23 @@ import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.widget.FrameLayout
 import androidx.fragment.app.viewModels
 import player.phonograph.ui.components.explorer.FilesPageExplorer
-import player.phonograph.ui.components.explorer.FilesViewModel
+import player.phonograph.ui.components.explorer.FilesPageViewModel
 
 class FilesPage : AbsPage() {
 
     private lateinit var explorer: FilesPageExplorer
-    private lateinit var root: ViewGroup
-    private val model: FilesViewModel by viewModels()
+    private val model: FilesPageViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
+        val rootContainer = FrameLayout(requireContext())
+        container?.addView(rootContainer, LayoutParams(MATCH_PARENT, MATCH_PARENT))
         explorer = FilesPageExplorer(hostFragment.mainActivity, hostFragment)
-        root = FrameLayout(requireContext())
-        container?.addView(root, LayoutParams(MATCH_PARENT, MATCH_PARENT))
-        return root
+        explorer.inflate(rootContainer, inflater)
+        return container ?: rootContainer
     }
 
     override fun onDestroyView() {
@@ -39,7 +39,7 @@ class FilesPage : AbsPage() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        explorer.create(root, model)
+        explorer.loadData(model)
     }
 
     override fun onBackPress(): Boolean {
