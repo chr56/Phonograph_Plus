@@ -8,6 +8,8 @@ import android.annotation.SuppressLint
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
+import android.app.Service.STOP_FOREGROUND_DETACH
+import android.app.Service.STOP_FOREGROUND_REMOVE
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
@@ -32,9 +34,8 @@ import coil.Coil
 import coil.request.Disposable
 import coil.request.ImageRequest
 import coil.size.Size
-import mt.util.color.getPrimaryTextColor
-import mt.util.color.getSecondaryTextColor
-import mt.util.color.isColorLight
+import mt.util.color.primaryTextColor
+import mt.util.color.secondaryTextColor
 import player.phonograph.App
 import player.phonograph.BuildConfig
 import player.phonograph.R
@@ -91,7 +92,7 @@ class PlayingNotificationManger(private val service: MusicService) {
 
     @Synchronized
     fun removeNotification() {
-        service.stopForeground(true)
+        service.stopForeground(STOP_FOREGROUND_REMOVE)
         notificationManager.cancel(NOTIFICATION_ID)
     }
 
@@ -104,7 +105,7 @@ class PlayingNotificationManger(private val service: MusicService) {
             !service.isDestroyed && !service.isPlaying -> {
                 // pause
                 notificationManager.notify(NOTIFICATION_ID, notification)
-                service.stopForeground(false)
+                service.stopForeground(STOP_FOREGROUND_DETACH)
             }
             !service.isDestroyed && service.isPlaying -> {
                 // playing
@@ -242,7 +243,7 @@ class PlayingNotificationManger(private val service: MusicService) {
             notificationLayout.setImageViewResource(R.id.image, R.drawable.default_album_art)
             notificationLayoutBig.setImageViewResource(R.id.image, R.drawable.default_album_art)
             setBackgroundColor(Color.WHITE, notificationLayout, notificationLayoutBig)
-            setNotificationContent(true, notificationLayout, notificationLayoutBig)
+            setNotificationContent(Color.WHITE, notificationLayout, notificationLayoutBig)
 
             notificationBuilder
                 .setContent(notificationLayout)
@@ -271,7 +272,7 @@ class PlayingNotificationManger(private val service: MusicService) {
                                     notificationLayoutBig
                                 )
                                 setNotificationContent(
-                                    isColorLight(backgroundColor),
+                                    backgroundColor,
                                     notificationLayout,
                                     notificationLayoutBig
                                 )
@@ -298,12 +299,12 @@ class PlayingNotificationManger(private val service: MusicService) {
         }
 
         private fun setNotificationContent(
-            dark: Boolean,
+            bgColor: Int,
             notificationLayout: RemoteViews,
             notificationLayoutBig: RemoteViews,
         ) {
-            val primary = getPrimaryTextColor(service, dark)
-            val secondary = getSecondaryTextColor(service, dark)
+            val primary = service.primaryTextColor(bgColor)
+            val secondary = service.secondaryTextColor(bgColor)
 
             val prev = ImageUtil.createBitmap(
                 ImageUtil.getTintedVectorDrawable(
@@ -366,7 +367,7 @@ class PlayingNotificationManger(private val service: MusicService) {
             notificationLayoutBig.setOnClickPendingIntent(R.id.action_next, pendingIntent)
         }
 
-        val bigNotificationImageSize by lazy {
+        private val bigNotificationImageSize by lazy {
             service.resources.getDimensionPixelSize(
                 R.dimen.notification_big_image_size
             )
@@ -551,7 +552,5 @@ class PlayingNotificationManger(private val service: MusicService) {
     companion object {
         const val NOTIFICATION_CHANNEL_ID = "playing_notification"
         private const val NOTIFICATION_ID = 1
-        private const val MODE_FOREGROUND = 1
-        private const val MODE_BACKGROUND = 0
     }
 }
