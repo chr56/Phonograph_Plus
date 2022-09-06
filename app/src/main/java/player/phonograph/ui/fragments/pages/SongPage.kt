@@ -32,7 +32,7 @@ import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.queue.ShuffleMode
 import player.phonograph.settings.Setting
 import player.phonograph.ui.fragments.pages.util.DisplayUtil
-import player.phonograph.ui.fragments.pages.util.ListOptionsPopup
+import player.phonograph.ui.components.popup.ListOptionsPopup
 import player.phonograph.util.ImageUtil.getTintedDrawable
 import player.phonograph.util.PhonographColorUtil.nightMode
 

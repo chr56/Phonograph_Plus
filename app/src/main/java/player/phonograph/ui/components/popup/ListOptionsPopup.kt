@@ -2,7 +2,7 @@
  * Copyright (c) 2022 chr_56
  */
 
-package player.phonograph.ui.fragments.pages.util
+package player.phonograph.ui.components.popup
 
 import android.content.Context
 import android.content.res.ColorStateList

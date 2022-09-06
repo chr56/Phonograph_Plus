@@ -38,7 +38,7 @@ import player.phonograph.settings.Setting
 import player.phonograph.ui.activities.MainActivity
 import player.phonograph.ui.activities.SearchActivity
 import player.phonograph.ui.fragments.pages.AbsPage
-import player.phonograph.ui.fragments.pages.util.ListOptionsPopup
+import player.phonograph.ui.components.popup.ListOptionsPopup
 import player.phonograph.util.ImageUtil.getTintedDrawable
 
 class HomeFragment : AbsMainActivityFragment(), MainActivity.MainActivityFragmentCallbacks,

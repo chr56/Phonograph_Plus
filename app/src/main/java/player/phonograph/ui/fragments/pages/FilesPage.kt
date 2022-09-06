@@ -36,7 +36,7 @@ import player.phonograph.model.sort.SortRef
 import player.phonograph.notification.ErrorNotification
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.settings.Setting
-import player.phonograph.ui.fragments.pages.util.ListOptionsPopup
+import player.phonograph.ui.components.popup.ListOptionsPopup
 import player.phonograph.util.ImageUtil.getTintedDrawable
 import player.phonograph.util.PhonographColorUtil.nightMode
 import player.phonograph.util.ViewUtil.setUpFastScrollRecyclerViewColor

@@ -21,7 +21,7 @@ import player.phonograph.model.sort.SortMode
 import player.phonograph.model.sort.SortRef
 import player.phonograph.model.Genre
 import player.phonograph.ui.fragments.pages.util.DisplayUtil
-import player.phonograph.ui.fragments.pages.util.ListOptionsPopup
+import player.phonograph.ui.components.popup.ListOptionsPopup
 
 class GenrePage : AbsDisplayPage<Genre, DisplayAdapter<Genre>, GridLayoutManager>() {
 
