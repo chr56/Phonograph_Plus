@@ -16,6 +16,7 @@ import android.widget.ImageView
 import android.widget.PopupMenu
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ComponentActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView.SectionedAdapter
 import kotlinx.coroutines.CoroutineScope
@@ -40,7 +41,7 @@ import player.phonograph.util.menu.onSongMenuItemClick
 import java.io.File
 
 class FileAdapter(
-    activity: AppCompatActivity,
+    activity: ComponentActivity,
     dataset: MutableList<FileEntity>,
     private val callback: (FileEntity) -> Unit,
     cabController: MultiSelectionCabController?,
