@@ -33,7 +33,6 @@ import androidx.media.app.NotificationCompat
 import coil.Coil
 import coil.request.Disposable
 import coil.request.ImageRequest
-import coil.size.Size
 import mt.util.color.primaryTextColor
 import mt.util.color.secondaryTextColor
 import player.phonograph.App
@@ -47,7 +46,7 @@ import player.phonograph.service.util.MediaButtonIntentReceiver
 import player.phonograph.settings.Setting
 import player.phonograph.ui.activities.MainActivity
 import player.phonograph.util.ImageUtil
-import player.phonograph.util.Util
+import player.phonograph.util.Util.getScreenSize
 import android.app.Notification as OSNotification
 import androidx.core.app.NotificationCompat as XNotificationCompat
 
@@ -479,12 +478,12 @@ class PlayingNotificationManger(private val service: MusicService) {
             }
 
         if (Setting.instance.albumArtOnLockscreen) {
-            val screenSize = Util.getScreenSize(service)
+            val screenSize = service.getScreenSize()
             val loader = Coil.imageLoader(service)
             val imageRequest =
                 ImageRequest.Builder(service)
                     .data(song)
-                    .size(Size(screenSize.x, screenSize.y))
+                    .size(screenSize.x, screenSize.y)
                     .target(
                         onSuccess = {
                             metaData.putBitmap(

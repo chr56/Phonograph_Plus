@@ -102,7 +102,7 @@ class AppWidgetBig : BaseAppWidget() {
         setupAdditionalWidgetButtons(service, appWidgetView)
 
         // Load the album cover async and push the update on completion
-        val p = getScreenSize(service)
+        val p = service.getScreenSize()
         val widgetImageSize = p.x.coerceAtMost(p.y)
         uiHandler.post {
             val appContext = service.applicationContext

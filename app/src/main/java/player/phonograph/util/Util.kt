@@ -6,20 +6,17 @@ import android.content.Intent
 import android.content.res.Configuration
 import android.content.res.Resources
 import android.graphics.Point
+import android.os.Build
 import android.text.format.DateFormat
 import android.util.TypedValue
 import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
-import android.widget.Toast
-import androidx.annotation.StringRes
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import java.util.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import kotlinx.coroutines.yield
 import player.phonograph.App
 import player.phonograph.BROADCAST_PLAYLISTS_CHANGED
 import player.phonograph.R
+import java.util.*
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
@@ -30,7 +27,7 @@ object Util {
     fun getStyleId(context: Context): Int {
         val outValue = TypedValue()
         val result: Boolean = context.theme.resolveAttribute(android.R.attr.theme, outValue, true)
-        return if (result)outValue.resourceId else 0
+        return if (result) outValue.resourceId else 0
     }
 
     fun sentPlaylistChangedLocalBoardCast() =
@@ -62,11 +59,14 @@ object Util {
         return actionBarSize
     }
 
-    @JvmStatic
-    fun getScreenSize(c: Context): Point {
-        val display = (c.getSystemService(Context.WINDOW_SERVICE) as WindowManager).defaultDisplay
-        val size = Point()
-        display.getSize(size)
+    fun Context.getScreenSize(): Point {
+        val windowManager = getSystemService(Context.WINDOW_SERVICE) as WindowManager
+        val size: Point =
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                windowManager.currentWindowMetrics.bounds.run { Point(width(), height()) }
+            } else {
+                Point().also { windowManager.defaultDisplay.getSize(it) }
+            }
         return size
     }
 
@@ -100,6 +100,7 @@ object Util {
             while (holder.content == null) yield()
             return holder.content!!
         }
+
         class Wrapper<T>(var content: T?)
     }
 }
