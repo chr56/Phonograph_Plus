@@ -1,12 +1,16 @@
 package player.phonograph.dialogs
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Dialog
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.media.MediaScannerConnection
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
 import android.util.Log
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.DialogFragment
@@ -28,6 +32,7 @@ import player.phonograph.settings.Setting
 import player.phonograph.util.CoroutineUtil.coroutineToast
 import player.phonograph.util.FileUtil.DirectoryInfo
 import player.phonograph.util.FileUtil.FileScanner
+import player.phonograph.util.Util
 import java.io.File
 import java.lang.ref.WeakReference
 
@@ -35,19 +40,23 @@ class ScanMediaFolderDialog : DialogFragment() {
     private lateinit var initial: File
     private lateinit var activityWeakReference: WeakReference<Activity>
 
+    @SuppressLint("ObsoleteSdkInt")
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         activityWeakReference = WeakReference(requireActivity())
 
         // Storage permission check
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
             ActivityCompat.checkSelfPermission(
-                    requireActivity(), Manifest.permission.READ_EXTERNAL_STORAGE
-                )
+                requireActivity(), Manifest.permission.READ_EXTERNAL_STORAGE
+            )
             != PackageManager.PERMISSION_GRANTED
         ) {
             return MaterialDialog(requireContext())
                 .title(R.string.Permission_denied)
                 .message(R.string.err_permission_storage)
+                .neutralButton(R.string.grant_permission) {
+                    Util.navigateToStorageSetting(requireActivity())
+                }
                 .positiveButton(android.R.string.ok)
         }
 
@@ -61,8 +70,7 @@ class ScanMediaFolderDialog : DialogFragment() {
                 waitForPositiveButton = true,
                 emptyTextRes = R.string.empty,
                 initialDirectory = initial,
-            ) {
-                    _, file ->
+            ) { _, file ->
                 dismiss()
                 runCatching {
                     CoroutineScope(Dispatchers.IO + SupervisorJob()).launch {

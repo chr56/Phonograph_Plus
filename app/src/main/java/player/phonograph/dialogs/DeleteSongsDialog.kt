@@ -3,12 +3,9 @@ package player.phonograph.dialogs
 import android.Manifest
 import android.app.Activity
 import android.app.Dialog
-import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
-import android.os.Handler
-import android.provider.Settings
 import android.util.Log
 import androidx.fragment.app.DialogFragment
 import com.afollestad.materialdialogs.MaterialDialog
@@ -19,6 +16,7 @@ import player.phonograph.R
 import player.phonograph.mediastore.MediaStoreUtil
 import player.phonograph.model.Song
 import player.phonograph.util.StringUtil
+import player.phonograph.util.Util
 
 /**
  * @author Karim Abou Zeid (kabouzeid), Aidan Follestad (afollestad), chr_56<modify>
@@ -59,16 +57,10 @@ class DeleteSongsDialog : DialogFragment() {
             }
             .negativeButton(android.R.string.cancel)
             .apply {
-                // grant permission button for R
+                // grant permission button
                 if (!hasPermission) {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                        neutralButton(R.string.grant_permission) {
-                            val intent = Intent(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION).apply { // todo
-//                            data = Uri.parse("package:${context.packageName}")
-                                flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                            }
-                            Handler().postDelayed({ attachedActivity.startActivity(intent) }, 200)
-                        }
+                    neutralButton(R.string.grant_permission) {
+                        Util.navigateToStorageSetting(requireActivity())
                     }
                 }
 
