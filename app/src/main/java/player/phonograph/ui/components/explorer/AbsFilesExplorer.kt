@@ -25,7 +25,6 @@ sealed class AbsFilesExplorer<M>(protected val context: Context) : ViewComponent
     }
 
     override fun loadData(model: M) {
-        binding.innerAppBar.setExpanded(false)
         binding.innerAppBar.addOnOffsetChangedListener(innerAppbarOffsetListener)
 
         initModel(model)
