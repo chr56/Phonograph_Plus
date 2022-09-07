@@ -44,6 +44,7 @@ class ScanMediaFolderDialog : FileChooserDialog() {
                 }
             }
         }
+        dismiss()
     }
 
     companion object {
