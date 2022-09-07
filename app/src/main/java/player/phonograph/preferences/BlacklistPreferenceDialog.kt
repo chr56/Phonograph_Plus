@@ -12,7 +12,7 @@ import com.afollestad.materialdialogs.list.listItems
 import mt.pref.ThemeColor
 import player.phonograph.App
 import player.phonograph.R
-import player.phonograph.dialogs.BlacklistFolderChooserDialog
+import player.phonograph.ui.dialogs.BlacklistFolderChooserDialog
 import player.phonograph.provider.BlacklistStore
 import java.io.File
 

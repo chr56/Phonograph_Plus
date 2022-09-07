@@ -1,11 +1,9 @@
-package player.phonograph.dialogs
+package player.phonograph.ui.dialogs
 
 import android.app.Activity
 import android.media.MediaScannerConnection
-import android.os.Looper
 import android.util.Log
 import android.view.View
-import android.widget.Toast
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob

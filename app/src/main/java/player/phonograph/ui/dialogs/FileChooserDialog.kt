@@ -2,7 +2,7 @@
  * Copyright (c) 2022 chr_56
  */
 
-package player.phonograph.dialogs
+package player.phonograph.ui.dialogs
 
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable

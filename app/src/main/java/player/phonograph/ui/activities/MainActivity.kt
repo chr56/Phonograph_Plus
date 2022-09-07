@@ -36,7 +36,7 @@ import player.phonograph.databinding.ActivityMainBinding
 import player.phonograph.databinding.LayoutDrawerBinding
 import player.phonograph.dialogs.ChangelogDialog
 import player.phonograph.dialogs.ChangelogDialog.Companion.setChangelogRead
-import player.phonograph.dialogs.ScanMediaFolderDialog
+import player.phonograph.ui.dialogs.ScanMediaFolderDialog
 import player.phonograph.dialogs.UpgradeDialog
 import player.phonograph.helper.SearchQueryHelper
 import player.phonograph.mediastore.AlbumLoader

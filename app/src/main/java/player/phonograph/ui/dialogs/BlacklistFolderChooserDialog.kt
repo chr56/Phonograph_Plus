@@ -1,4 +1,4 @@
-package player.phonograph.dialogs
+package player.phonograph.ui.dialogs
 
 import android.view.View
 import com.afollestad.materialdialogs.MaterialDialog
