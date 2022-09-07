@@ -33,6 +33,7 @@ class DebugDialog : DialogFragment() {
             "Send Crash Notification",
             "Check Upgrade (Dialog)",
             "Check Upgrade (Notification)",
+            "File Chooser"
         )
 
         val dialog = MaterialDialog(requireActivity())
@@ -64,6 +65,10 @@ class DebugDialog : DialogFragment() {
                                 }
                             }
                         }, force = true)
+                    }
+                    4 -> {
+                        FileChooserDialog.Companion.TestDialog()
+                            .show(attachedActivity.get()!!.supportFragmentManager, "FileChooser")
                     }
                     else -> dialog.dismiss()
                 }
