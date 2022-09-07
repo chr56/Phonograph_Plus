@@ -5,7 +5,6 @@
 package player.phonograph.ui.components.explorer
 
 import android.content.Context
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.*
 import player.phonograph.App
@@ -17,37 +16,26 @@ import player.phonograph.util.FileUtil.FileScanner
 import java.io.File
 import java.util.*
 
-class FilesPageViewModel : ViewModel() {
+class FilesPageViewModel : AbsFileViewModel() {
 
-    var currentLocation: Location = Location.HOME
-
-    var currentFileList: MutableSet<FileEntity> = TreeSet<FileEntity>()
-        private set
-
-    private var listFileJob: Job? = null
-    fun loadFiles(
-        location: Location = currentLocation,
-        context: Context = App.instance,
-        onFinished: () -> Unit,
-    ) {
-        listFileJob?.cancel() // cancel current
-        listFileJob =
-            viewModelScope.launch(Dispatchers.IO + SupervisorJob()) {
-                if (useLegacyListFile)
-                    listFilesLegacy(location, context, this)
-                else
-                    listFilesMediaStore(location, context, this)
-                withContext(Dispatchers.Main) { onFinished() }
-            }
+    override fun onLoadFiles(location: Location, context: Context, scope: CoroutineScope?) {
+        if (useLegacyListFile)
+            listFilesLegacy(location, context, scope)
+        else
+            listFilesMediaStore(location, context, scope)
     }
 
     var useLegacyListFile: Boolean
         get() = Setting.instance.useLegacyListFilesImpl
-        set(value) { Setting.instance.useLegacyListFilesImpl = value }
+        set(value) {
+            Setting.instance.useLegacyListFilesImpl = value
+        }
 
     var showFilesImages: Boolean
         get() = Setting.instance.showFileImages
-        set(value) { Setting.instance.showFileImages = value }
+        set(value) {
+            Setting.instance.showFileImages = value
+        }
 
     @Synchronized
     private fun listFilesMediaStore(
@@ -100,7 +88,4 @@ class FilesPageViewModel : ViewModel() {
         currentFileList.addAll(set)
     }
 
-    override fun onCleared() {
-        viewModelScope.cancel()
-    }
 }

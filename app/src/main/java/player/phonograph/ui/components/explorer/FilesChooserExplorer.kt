@@ -86,7 +86,7 @@ class FilesChooserExplorer(
             layoutManager = this@FilesChooserExplorer.layoutManager
             adapter = this@FilesChooserExplorer.adapter
         }
-        model.loadFiles { reload() }
+        model.loadFiles(activity) { reload() }
 
         binding.innerAppBar.setExpanded(true)
     }
@@ -143,7 +143,7 @@ class FilesChooserExplorer(
 
     override fun reload() {
         binding.container.isRefreshing = true
-        fileModel.loadFiles {
+        fileModel.loadFiles(activity) {
             adapter.dataSet = fileModel.currentFileList.toMutableList()
             binding.header.apply {
                 location = fileModel.currentLocation

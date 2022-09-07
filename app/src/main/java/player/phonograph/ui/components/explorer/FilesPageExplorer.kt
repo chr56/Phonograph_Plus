@@ -106,7 +106,7 @@ class FilesPageExplorer(
             layoutManager = this@FilesPageExplorer.layoutManager
             adapter = this@FilesPageExplorer.adapter
         }
-        model.loadFiles { reload() }
+        model.loadFiles(activity) { reload() }
     }
 
     private val popup: ListOptionsPopup by lazy(LazyThreadSafetyMode.NONE) {
@@ -192,7 +192,7 @@ class FilesPageExplorer(
 
     override fun reload() {
         binding.container.isRefreshing = true
-        fileModel.loadFiles {
+        fileModel.loadFiles(activity) {
             adapter.dataSet = fileModel.currentFileList.toMutableList()
             binding.header.apply {
                 location = fileModel.currentLocation

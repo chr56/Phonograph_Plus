@@ -4,35 +4,19 @@
 
 package player.phonograph.ui.components.explorer
 
-import androidx.lifecycle.ViewModel
+import android.content.Context
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.*
 import player.phonograph.model.file.FileEntity
 import player.phonograph.model.file.Location
-import player.phonograph.util.FileUtil.FileScanner
 import java.io.File
 import java.util.*
 
-class FilesChooserViewModel : ViewModel() {
+class FilesChooserViewModel : AbsFileViewModel() {
 
-    var currentLocation: Location = Location.HOME
-
-    var currentFileList: MutableSet<FileEntity> = TreeSet<FileEntity>()
-        private set
-
-    private var listFileJob: Job? = null
-    fun loadFiles(
-        location: Location = currentLocation,
-        onFinished: () -> Unit,
-    ) {
-        listFileJob?.cancel() // cancel current
-        listFileJob =
-            viewModelScope.launch(Dispatchers.IO + SupervisorJob()) {
-                listFile(location, this)
-                withContext(Dispatchers.Main) { onFinished() }
-            }
+    override fun onLoadFiles(location: Location, context: Context, scope: CoroutineScope?) {
+        listFile(location, scope)
     }
-
 
     @Synchronized
     private fun listFile(
@@ -73,7 +57,4 @@ class FilesChooserViewModel : ViewModel() {
         currentFileList.addAll(set)
     }
 
-    override fun onCleared() {
-        viewModelScope.cancel()
-    }
 }
