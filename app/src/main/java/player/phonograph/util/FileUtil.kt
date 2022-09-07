@@ -87,18 +87,18 @@ object FileUtil {
         return if (result.isEmpty()) null else result
     }
 
-    fun fileIsMimeType(file: File, mimeType: String?, mimeTypeMap: MimeTypeMap): Boolean {
-        return if (mimeType == null || mimeType == "*/*") {
+    fun File.mimeTypeIs(mimeType: String): Boolean {
+        return if (mimeType.isEmpty() || mimeType == "*/*") {
             true
         } else {
             // get the file mime type
-            val filename = file.toURI().toString()
+            val filename = this.toURI().toString()
             val dotPos = filename.lastIndexOf('.')
             if (dotPos == -1) {
                 return false
             }
             val fileExtension = filename.substring(dotPos + 1).lowercase()
-            val fileType = mimeTypeMap.getMimeTypeFromExtension(fileExtension) ?: return false
+            val fileType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(fileExtension) ?: return false
             // check the 'type/subtype' pattern
             if (fileType == mimeType) {
                 return true
@@ -186,7 +186,7 @@ object FileUtil {
         fun listPaths(
             directoryInfos: DirectoryInfo,
             scope: CoroutineScope,
-            recursive: Boolean = false
+            recursive: Boolean = false,
         ): Array<String>? {
             if (!scope.isActive) return null
 
@@ -223,18 +223,13 @@ object FileUtil {
             return paths
         }
 
-        @JvmField
         val audioFileFilter: FileFilter =
             FileFilter { file: File ->
                 !file.isHidden && (
-                    file.isDirectory ||
-                        FileUtil.fileIsMimeType(file, "audio/*", MimeTypeMap.getSingleton()) ||
-                        FileUtil.fileIsMimeType(
-                            file,
-                            "application/ogg",
-                            MimeTypeMap.getSingleton()
+                        file.isDirectory ||
+                                file.mimeTypeIs("audio/*") ||
+                                file.mimeTypeIs("application/ogg")
                         )
-                    )
             }
     }
 }

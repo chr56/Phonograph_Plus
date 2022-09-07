@@ -42,7 +42,7 @@ class FilesChooserViewModel : ViewModel() {
         currentFileList.clear()
         // todo
         val directory = File(location.absolutePath).also { if (!it.isDirectory) return }
-        val files = directory.listFiles(FileScanner.audioFileFilter) ?: return
+        val files = directory.listFiles() ?: return
         val set = TreeSet<FileEntity>()
         for (file in files) {
             val l = Location.fromAbsolutePath(file.absolutePath)
