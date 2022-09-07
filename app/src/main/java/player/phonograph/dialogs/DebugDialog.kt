@@ -8,7 +8,6 @@ import android.app.Dialog
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.DialogFragment
-import androidx.fragment.app.FragmentActivity
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.list.listItemsSingleChoice
 import kotlinx.coroutines.CoroutineScope
@@ -20,23 +19,17 @@ import player.phonograph.Updater
 import player.phonograph.notification.ErrorNotification
 import player.phonograph.notification.UpgradeNotification
 import player.phonograph.settings.Setting
-import player.phonograph.ui.dialogs.FileChooserDialog
 import player.phonograph.util.CoroutineUtil.coroutineToast
-import java.lang.ref.WeakReference
 
 class DebugDialog : DialogFragment() {
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val attachedActivity: WeakReference<FragmentActivity> = WeakReference(requireActivity())
-
         val debugMenuItem = listOf(
             "Crash the app",
             "Send Crash Notification",
             "Check Upgrade (Dialog)",
             "Check Upgrade (Notification)",
-            "File Chooser"
         )
-
         val dialog = MaterialDialog(requireActivity())
             .title(text = "Debug Menu")
             .listItemsSingleChoice(items = debugMenuItem) { dialog: MaterialDialog, index: Int, _: CharSequence ->
@@ -47,7 +40,7 @@ class DebugDialog : DialogFragment() {
                         Updater.checkUpdate(callback = {
                             CoroutineScope(Dispatchers.Main).launch {
                                 try {
-                                    UpgradeDialog.create(it).show(attachedActivity.get()!!.supportFragmentManager, "DebugDialog")
+                                    UpgradeDialog.create(it).show(requireActivity().supportFragmentManager, "DebugDialog")
                                     if (Setting.instance.ignoreUpgradeVersionCode >= it.getInt(Updater.VERSIONCODE)) {
                                         coroutineToast(App.instance, getString(R.string.upgrade_ignored))
                                     }
@@ -66,10 +59,6 @@ class DebugDialog : DialogFragment() {
                                 }
                             }
                         }, force = true)
-                    }
-                    4 -> {
-                        FileChooserDialog.Companion.TestDialog()
-                            .show(attachedActivity.get()!!.supportFragmentManager, "FileChooser")
                     }
                     else -> dialog.dismiss()
                 }

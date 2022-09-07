@@ -88,13 +88,4 @@ abstract class FileChooserDialog : LargeDialog() {
     }
 
     protected abstract fun affirmative(view: View, currentLocation: Location)
-
-    companion object {
-        class TestDialog : FileChooserDialog() {
-            override fun affirmative(view: View, currentLocation: Location) {
-                Toast.makeText(requireContext(), currentLocation.absolutePath, Toast.LENGTH_SHORT).show()
-            }
-        }
-
-    }
 }
