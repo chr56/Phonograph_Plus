@@ -12,6 +12,7 @@ import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.chip.Chip
+import lib.phonograph.dialog.LargeDialog
 import mt.pref.ThemeColor
 import mt.util.color.getPrimaryTextColor
 import mt.util.color.isColorLight
@@ -35,7 +36,7 @@ import player.phonograph.util.PhonographColorUtil.nightMode
 /**
  * @author Karim Abou Zeid (kabouzeid)
  */
-class LyricsDialog : DialogFragment(), MusicProgressViewUpdateHelper.Callback {
+class LyricsDialog : LargeDialog(), MusicProgressViewUpdateHelper.Callback {
 
     private var _viewBinding: DialogLyricsBinding? = null
     val binding: DialogLyricsBinding get() = _viewBinding!!
@@ -209,19 +210,6 @@ class LyricsDialog : DialogFragment(), MusicProgressViewUpdateHelper.Callback {
                 }
             }
         }
-    }
-
-    override fun onStart() {
-        // set up size
-        requireDialog().window!!.attributes =
-            requireDialog().window!!.let { window ->
-                window.attributes.apply {
-                    width = (requireActivity().window.decorView.width * 0.90).toInt()
-                    height = (requireActivity().window.decorView.height * 0.90).toInt()
-                }
-            }
-
-        super.onStart()
     }
 
     override fun onDestroyView() {
