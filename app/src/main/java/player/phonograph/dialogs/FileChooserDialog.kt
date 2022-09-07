@@ -20,6 +20,7 @@ import androidx.appcompat.widget.AppCompatButton
 import androidx.core.view.setPadding
 import androidx.fragment.app.viewModels
 import lib.phonograph.dialog.LargeDialog
+import mt.pref.ThemeColor
 import player.phonograph.model.file.Location
 import player.phonograph.ui.components.explorer.FilesChooserExplorer
 import player.phonograph.ui.components.explorer.FilesChooserViewModel
@@ -50,6 +51,7 @@ abstract class FileChooserDialog : LargeDialog() {
 
     protected open fun setupView(inflater: LayoutInflater, explorer: FilesChooserExplorer): ViewGroup {
         val activity = requireActivity()
+        val accentColor = ThemeColor.accentColor(activity)
 
         val buttonPanelHeight = 128
         val content = FrameLayout(activity)
@@ -60,6 +62,8 @@ abstract class FileChooserDialog : LargeDialog() {
         with(buttonPanel) {
             val button = AppCompatButton(activity).apply {
                 text = activity.getText(android.R.string.selectAll)
+                textSize = 20f
+                setTextColor(accentColor)
                 gravity = Gravity.CENTER
                 setPadding(16)
                 setOnClickListener {

@@ -87,6 +87,8 @@ class FilesChooserExplorer(
             adapter = this@FilesChooserExplorer.adapter
         }
         model.loadFiles { reload() }
+
+        binding.innerAppBar.setExpanded(true)
     }
 
     /**
