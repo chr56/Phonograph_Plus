@@ -8,6 +8,7 @@ import android.content.Context
 import android.os.storage.StorageManager
 import android.os.storage.StorageVolume
 import android.util.Log
+import androidx.core.content.getSystemService
 import java.io.File
 import lib.phonograph.storage.*
 import player.phonograph.App
@@ -49,12 +50,15 @@ class Location private constructor(val basePath: String, val storageVolume: Stor
         fun from(basePath: String, storageVolume: StorageVolume): Location {
             return Location(basePath.ifBlank { "/" }, storageVolume)
         }
+
+        fun from(file: File) = fromAbsolutePath(file.absolutePath)
+
         /**
          * @param path absolute path
          */
         fun fromAbsolutePath(path: String, context: Context = App.instance): Location {
             val file = File(path)
-            val storageManager = context.getSystemService(StorageManager::class.java)
+            val storageManager = context.getSystemService<StorageManager>()!!
 
             val storageVolume = file.getStorageVolume(storageManager)
             val basePath = file.getBasePath(storageVolume.root() ?: throw IllegalStateException("unavailable for $storageManager"))
@@ -75,6 +79,7 @@ class Location private constructor(val basePath: String, val storageVolume: Stor
                 storageManager.primaryStorageVolume
             }
         }
+
         private fun File.getBasePath(root: File): String {
             return path.substringAfter(root.path)
         }
@@ -85,7 +90,8 @@ class Location private constructor(val basePath: String, val storageVolume: Stor
             Log.e(TAG, "base path is null!")
         }
         // debug only
-        if (DEBUG) Log.w(TAG, "Location Created! path = $basePath, storageVolume = ${storageVolume.getDescription(App.instance)}(${storageVolume.root()})")
+        if (DEBUG) Log.w(TAG,
+            "Location Created! path = $basePath, storageVolume = ${storageVolume.getDescription(App.instance)}(${storageVolume.root()})")
     }
 
     override fun hashCode(): Int = storageVolume.hashCode() * 31 + basePath.hashCode()

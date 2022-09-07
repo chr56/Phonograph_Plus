@@ -10,11 +10,12 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.*
 import player.phonograph.model.file.FileEntity
 import player.phonograph.model.file.Location
+import player.phonograph.settings.Setting
 import java.util.*
 
 abstract class AbsFileViewModel : ViewModel() {
 
-    var currentLocation: Location = Location.HOME
+    var currentLocation = Location.from(Setting.instance.startDirectory)
     var currentFileList: MutableSet<FileEntity> = TreeSet<FileEntity>()
 
     override fun onCleared() {
