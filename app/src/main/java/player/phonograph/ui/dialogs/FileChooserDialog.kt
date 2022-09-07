@@ -5,9 +5,6 @@
 package player.phonograph.ui.dialogs
 
 import android.annotation.SuppressLint
-import android.content.Context
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -15,15 +12,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
-import android.widget.Button
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.LinearLayout.LayoutParams
 import android.widget.Space
-import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.ButtonBarLayout
 import androidx.core.view.setMargins
-import androidx.core.view.setPadding
 import androidx.fragment.app.viewModels
 import lib.phonograph.dialog.LargeDialog
 import mt.pref.ThemeColor
@@ -31,6 +25,7 @@ import player.phonograph.R
 import player.phonograph.model.file.Location
 import player.phonograph.ui.components.explorer.FilesChooserExplorer
 import player.phonograph.ui.components.explorer.FilesChooserViewModel
+import player.phonograph.ui.components.viewcreater.createButton
 import player.phonograph.util.Util
 
 abstract class FileChooserDialog : LargeDialog() {
@@ -69,11 +64,11 @@ abstract class FileChooserDialog : LargeDialog() {
         val buttonPanel = ButtonBarLayout(activity, null).apply { orientation = LinearLayout.HORIZONTAL }
         with(buttonPanel) {
             val buttonGrantPermission =
-                createButton(activity, getString(R.string.grant_permission)) {
+                createButton(activity, getString(R.string.grant_permission), accentColor) {
                     Util.navigateToStorageSetting(activity)
                 }
             val buttonPositive =
-                createButton(activity, getString(android.R.string.selectAll)) {
+                createButton(activity, getString(android.R.string.selectAll), accentColor) {
                     affirmative(it, model.currentLocation)
                 }
             val layoutParams =
@@ -99,18 +94,6 @@ abstract class FileChooserDialog : LargeDialog() {
     }
 
     protected abstract fun affirmative(view: View, currentLocation: Location)
-
-    private fun createButton(context: Context, buttonText: String, onClick: (View) -> Unit): Button {
-        return AppCompatButton(context).apply {
-            text = buttonText
-            textSize = 20f
-            setTextColor(accentColor)
-            gravity = Gravity.CENTER
-            setOnClickListener { onClick(it) }
-            background = ColorDrawable(Color.TRANSPARENT)
-            setPadding(8)
-        }
-    }
 
     val accentColor by lazy { ThemeColor.accentColor(requireContext()) }
 }
