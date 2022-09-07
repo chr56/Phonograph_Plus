@@ -19,14 +19,19 @@ import android.widget.Button
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.LinearLayout.LayoutParams
+import android.widget.Space
 import androidx.appcompat.widget.AppCompatButton
+import androidx.appcompat.widget.ButtonBarLayout
+import androidx.core.view.setMargins
 import androidx.core.view.setPadding
 import androidx.fragment.app.viewModels
 import lib.phonograph.dialog.LargeDialog
 import mt.pref.ThemeColor
+import player.phonograph.R
 import player.phonograph.model.file.Location
 import player.phonograph.ui.components.explorer.FilesChooserExplorer
 import player.phonograph.ui.components.explorer.FilesChooserViewModel
+import player.phonograph.util.Util
 
 abstract class FileChooserDialog : LargeDialog() {
 
@@ -61,13 +66,26 @@ abstract class FileChooserDialog : LargeDialog() {
         explorer.inflate(contentPanel, inflater)
         contentPanel.setPadding(0, 0, 0, 24 + buttonPanelHeight)
 
-        val buttonPanel = LinearLayout(activity, null).apply { orientation = LinearLayout.HORIZONTAL }
+        val buttonPanel = ButtonBarLayout(activity, null).apply { orientation = LinearLayout.HORIZONTAL }
         with(buttonPanel) {
+            val buttonGrantPermission =
+                createButton(activity, getString(R.string.grant_permission)) {
+                    Util.navigateToStorageSetting(activity)
+                }
             val buttonPositive =
                 createButton(activity, getString(android.R.string.selectAll)) {
                     affirmative(it, model.currentLocation)
                 }
-            val layoutParams = LayoutParams(MATCH_PARENT, WRAP_CONTENT)
+            val layoutParams =
+                LayoutParams(WRAP_CONTENT, WRAP_CONTENT, 0f).apply { setMargins(16) }
+            addView(
+                buttonGrantPermission,
+                layoutParams
+            )
+            addView(
+                Space(activity),
+                LayoutParams(0, 0, 1f)
+            )
             addView(
                 buttonPositive,
                 layoutParams
@@ -90,7 +108,7 @@ abstract class FileChooserDialog : LargeDialog() {
             gravity = Gravity.CENTER
             setOnClickListener { onClick(it) }
             background = ColorDrawable(Color.TRANSPARENT)
-            setPadding(16)
+            setPadding(8)
         }
     }
 
