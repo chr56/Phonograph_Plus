@@ -4,7 +4,6 @@
 
 package player.phonograph.adapter.file
 
-
 import android.text.format.Formatter
 import android.view.LayoutInflater
 import android.view.MenuItem
@@ -46,7 +45,10 @@ class FileChooserAdapter(
                     image.context.getTintedDrawable(
                         if (item is FileEntity.File) R.drawable.ic_file_music_white_24dp
                         else R.drawable.ic_folder_white_24dp,
-                        resolveColor(context, R.attr.iconColor, context.primaryTextColor(context.resources.nightMode))
+                        resolveColor(
+                            context, R.attr.iconColor,
+                            context.primaryTextColor(context.resources.nightMode)
+                        )
                     )
                 )
                 binding.menu.visibility = GONE
@@ -55,17 +57,17 @@ class FileChooserAdapter(
                 }
             }
         }
-
-
     }
 
     override var multiSelectMenuRes: Int = 0
     override fun onMultipleItemAction(menuItem: MenuItem, selection: List<FileEntity>) = Unit
 
-    private val formatter = SimpleDateFormat("yy-MM-dd", Locale.getDefault())
+    private val formatter = SimpleDateFormat("yyyy.MM.dd HH:mm", Locale.getDefault())
     private fun toDate(timeInMill: Long): String {
-        return formatter.format(Calendar.getInstance().also {
-            it.timeInMillis = timeInMill
-        }.time)
+        return formatter.format(
+            Calendar.getInstance().also {
+                it.timeInMillis = timeInMill
+            }.time
+        )
     }
 }
