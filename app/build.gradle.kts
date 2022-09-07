@@ -229,7 +229,6 @@ dependencies {
     implementation(Deps.material_dialogs_core)
     implementation(Deps.material_dialogs_input)
     implementation(Deps.material_dialogs_color)
-    implementation(Deps.material_dialogs_files)
 
     implementation(Deps.okhttp3)
     implementation(Deps.retrofit2)

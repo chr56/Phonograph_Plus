@@ -40,7 +40,6 @@ object Deps {
     const val material_dialogs_core = "com.afollestad.material-dialogs:core:$material_dialogs_version"
     const val material_dialogs_input = "com.afollestad.material-dialogs:input:$material_dialogs_version"
     const val material_dialogs_color = "com.afollestad.material-dialogs:color:$material_dialogs_version"
-    const val material_dialogs_files = "com.afollestad.material-dialogs:files:$material_dialogs_version"
 
 
     private const val mdVersion = "0.0.6"
