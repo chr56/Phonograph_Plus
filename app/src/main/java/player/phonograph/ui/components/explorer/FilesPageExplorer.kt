@@ -22,7 +22,7 @@ import mt.pref.ThemeColor
 import mt.util.color.primaryTextColor
 import player.phonograph.App
 import player.phonograph.R
-import player.phonograph.adapter.FileAdapter
+import player.phonograph.adapter.file.FilePageAdapter
 import player.phonograph.model.file.FileEntity
 import player.phonograph.model.file.Location
 import player.phonograph.model.sort.FileSortMode
@@ -43,7 +43,7 @@ class FilesPageExplorer(
 
     private lateinit var fileModel: FilesPageViewModel
 
-    private lateinit var adapter: FileAdapter
+    private lateinit var adapter: FilePageAdapter
     private lateinit var layoutManager: RecyclerView.LayoutManager
 
 
@@ -86,7 +86,7 @@ class FilesPageExplorer(
 
         // recycle view
         layoutManager = LinearLayoutManager(activity)
-        adapter = FileAdapter(activity, model.currentFileList.toMutableList(), {
+        adapter = FilePageAdapter(activity, model.currentFileList.toMutableList(), {
             when (it) {
                 is FileEntity.Folder -> {
                     model.currentLocation = it.location

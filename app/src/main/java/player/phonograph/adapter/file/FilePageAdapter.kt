@@ -36,14 +36,14 @@ import player.phonograph.util.menu.onMultiSongMenuItemClick
 import player.phonograph.util.menu.onSongMenuItemClick
 import java.io.File
 
-class FileAdapter(
+class FilePageAdapter(
     activity: ComponentActivity,
     dataset: MutableList<FileEntity>,
     private val callback: (FileEntity) -> Unit,
     cabController: MultiSelectionCabController?,
-) : AbsFileAdapter<AbsFileAdapter.ViewHolder>(activity, dataset, cabController) {
+) : AbsFileAdapter<FilePageAdapter.ViewHolder>(activity, dataset, cabController) {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AbsFileAdapter.ViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FilePageAdapter.ViewHolder {
         return ViewHolder(ItemListBinding.inflate(LayoutInflater.from(context), parent, false))
     }
 
