@@ -4,6 +4,8 @@
 
 package player.phonograph.ui.dialogs
 
+import android.annotation.SuppressLint
+import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
@@ -13,9 +15,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
+import android.widget.Button
 import android.widget.FrameLayout
-import android.widget.FrameLayout.LayoutParams
-import android.widget.Toast
+import android.widget.LinearLayout
+import android.widget.LinearLayout.LayoutParams
 import androidx.appcompat.widget.AppCompatButton
 import androidx.core.view.setPadding
 import androidx.fragment.app.viewModels
@@ -49,43 +52,47 @@ abstract class FileChooserDialog : LargeDialog() {
         explorer.destroy()
     }
 
+    @SuppressLint("RestrictedApi")
     protected open fun setupView(inflater: LayoutInflater, explorer: FilesChooserExplorer): ViewGroup {
         val activity = requireActivity()
-        val accentColor = ThemeColor.accentColor(activity)
 
         val buttonPanelHeight = 128
-        val content = FrameLayout(activity)
-        explorer.inflate(content, inflater)
-        content.setPadding(0, 0, 0, 24 + buttonPanelHeight)
+        val contentPanel = FrameLayout(activity)
+        explorer.inflate(contentPanel, inflater)
+        contentPanel.setPadding(0, 0, 0, 24 + buttonPanelHeight)
 
-        val buttonPanel = FrameLayout(activity)
+        val buttonPanel = LinearLayout(activity, null).apply { orientation = LinearLayout.HORIZONTAL }
         with(buttonPanel) {
-            val button = AppCompatButton(activity).apply {
-                text = activity.getText(android.R.string.selectAll)
-                textSize = 20f
-                setTextColor(accentColor)
-                gravity = Gravity.CENTER
-                setPadding(16)
-                setOnClickListener {
+            val buttonPositive =
+                createButton(activity, getString(android.R.string.selectAll)) {
                     affirmative(it, model.currentLocation)
                 }
-                background = ColorDrawable(Color.TRANSPARENT)
-            }
+            val layoutParams = LayoutParams(MATCH_PARENT, WRAP_CONTENT)
             addView(
-                button,
-                LayoutParams(MATCH_PARENT, buttonPanelHeight, Gravity.CENTER)
+                buttonPositive,
+                layoutParams
             )
         }
 
         val rootContainer = FrameLayout(activity)
-        rootContainer.addView(content, 0, LayoutParams(MATCH_PARENT, WRAP_CONTENT, Gravity.TOP))
-        rootContainer.addView(
-            buttonPanel,
-            1,
-            LayoutParams(MATCH_PARENT, WRAP_CONTENT, Gravity.BOTTOM)
-        )
+        rootContainer.addView(contentPanel, 0, FrameLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT, Gravity.TOP))
+        rootContainer.addView(buttonPanel, 1, FrameLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT, Gravity.BOTTOM))
         return rootContainer
     }
 
     protected abstract fun affirmative(view: View, currentLocation: Location)
+
+    private fun createButton(context: Context, buttonText: String, onClick: (View) -> Unit): Button {
+        return AppCompatButton(context).apply {
+            text = buttonText
+            textSize = 20f
+            setTextColor(accentColor)
+            gravity = Gravity.CENTER
+            setOnClickListener { onClick(it) }
+            background = ColorDrawable(Color.TRANSPARENT)
+            setPadding(16)
+        }
+    }
+
+    val accentColor by lazy { ThemeColor.accentColor(requireContext()) }
 }
