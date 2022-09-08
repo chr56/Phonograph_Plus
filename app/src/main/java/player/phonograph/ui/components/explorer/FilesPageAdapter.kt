@@ -2,7 +2,7 @@
  * Copyright (c) 2022 chr_56
  */
 
-package player.phonograph.adapter.file
+package player.phonograph.ui.components.explorer
 
 import android.graphics.PorterDuff
 import android.media.MediaScannerConnection
@@ -36,18 +36,18 @@ import player.phonograph.util.menu.onMultiSongMenuItemClick
 import player.phonograph.util.menu.onSongMenuItemClick
 import java.io.File
 
-class FilePageAdapter(
+class FilesPageAdapter(
     activity: ComponentActivity,
     dataset: MutableList<FileEntity>,
     private val callback: (FileEntity) -> Unit,
     cabController: MultiSelectionCabController?,
-) : AbsFileAdapter<FilePageAdapter.ViewHolder>(activity, dataset, cabController) {
+) : AbsFilesAdapter<FilesPageAdapter.ViewHolder>(activity, dataset, cabController) {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FilePageAdapter.ViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(ItemListBinding.inflate(LayoutInflater.from(context), parent, false))
     }
 
-    inner class ViewHolder(binding: ItemListBinding) : AbsFileAdapter.ViewHolder(binding) {
+    inner class ViewHolder(binding: ItemListBinding) : AbsFilesAdapter.ViewHolder(binding) {
         override fun bind(
             item: FileEntity,
             position: Int,

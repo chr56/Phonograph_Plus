@@ -11,7 +11,6 @@ import androidx.recyclerview.widget.RecyclerView
 import mt.pref.ThemeColor
 import player.phonograph.App
 import player.phonograph.R
-import player.phonograph.adapter.file.FileChooserAdapter
 import player.phonograph.model.file.FileEntity
 import player.phonograph.model.file.Location
 import player.phonograph.util.ViewUtil.setUpFastScrollRecyclerViewColor
@@ -21,7 +20,7 @@ class FilesChooserExplorer(
 ) : AbsFilesExplorer<FilesChooserViewModel>(activity) {
     private lateinit var fileModel: FilesChooserViewModel
 
-    private lateinit var adapter: FileChooserAdapter
+    private lateinit var adapter: FilesChooserAdapter
     private lateinit var layoutManager: RecyclerView.LayoutManager
 
     override fun initModel(model: FilesChooserViewModel) {
@@ -53,7 +52,7 @@ class FilesChooserExplorer(
 
         // recycle view
         layoutManager = LinearLayoutManager(activity)
-        adapter = FileChooserAdapter(activity, model.currentFileList.toMutableList(), {
+        adapter = FilesChooserAdapter(activity, model.currentFileList.toMutableList(), {
             when (it) {
                 is FileEntity.Folder -> {
                     model.currentLocation = it.location

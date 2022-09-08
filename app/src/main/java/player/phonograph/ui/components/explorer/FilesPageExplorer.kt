@@ -11,7 +11,6 @@ import androidx.recyclerview.widget.RecyclerView
 import mt.pref.ThemeColor
 import player.phonograph.App
 import player.phonograph.R
-import player.phonograph.adapter.file.FilePageAdapter
 import player.phonograph.model.file.FileEntity
 import player.phonograph.model.file.Location
 import player.phonograph.model.sort.FileSortMode
@@ -29,7 +28,7 @@ class FilesPageExplorer(
 
     private lateinit var fileModel: FilesPageViewModel
 
-    private lateinit var adapter: FilePageAdapter
+    private lateinit var adapter: FilesPageAdapter
     private lateinit var layoutManager: RecyclerView.LayoutManager
 
 
@@ -72,7 +71,7 @@ class FilesPageExplorer(
 
         // recycle view
         layoutManager = LinearLayoutManager(activity)
-        adapter = FilePageAdapter(activity, model.currentFileList.toMutableList(), {
+        adapter = FilesPageAdapter(activity, model.currentFileList.toMutableList(), {
             when (it) {
                 is FileEntity.Folder -> {
                     model.currentLocation = it.location

@@ -2,7 +2,7 @@
  * Copyright (c) 2022 chr_56
  */
 
-package player.phonograph.adapter.file
+package player.phonograph.ui.components.explorer
 
 import android.text.format.Formatter
 import android.view.LayoutInflater
@@ -22,17 +22,17 @@ import player.phonograph.util.PhonographColorUtil.nightMode
 import java.text.SimpleDateFormat
 import java.util.*
 
-class FileChooserAdapter(
+class FilesChooserAdapter(
     activity: ComponentActivity,
     dataset: MutableList<FileEntity>,
     private val callback: (FileEntity) -> Unit,
     cabController: MultiSelectionCabController?,
-) : AbsFileAdapter<AbsFileAdapter.ViewHolder>(activity, dataset, cabController) {
+) : AbsFilesAdapter<AbsFilesAdapter.ViewHolder>(activity, dataset, cabController) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(ItemListBinding.inflate(LayoutInflater.from(context), parent, false))
     }
 
-    inner class ViewHolder(binding: ItemListBinding) : AbsFileAdapter.ViewHolder(binding) {
+    inner class ViewHolder(binding: ItemListBinding) : AbsFilesAdapter.ViewHolder(binding) {
         override fun bind(item: FileEntity, position: Int) {
             with(binding) {
                 title.text = item.name

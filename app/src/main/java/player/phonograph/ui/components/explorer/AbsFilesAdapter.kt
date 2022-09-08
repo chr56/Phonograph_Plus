@@ -2,7 +2,7 @@
  * Copyright (c) 2022 chr_56
  */
 
-package player.phonograph.adapter.file
+package player.phonograph.ui.components.explorer
 
 import androidx.core.app.ComponentActivity
 import androidx.recyclerview.widget.RecyclerView
@@ -12,7 +12,7 @@ import player.phonograph.adapter.base.MultiSelectionCabController
 import player.phonograph.databinding.ItemListBinding
 import player.phonograph.model.file.FileEntity
 
-abstract class AbsFileAdapter<VH : AbsFileAdapter.ViewHolder>(
+abstract class AbsFilesAdapter<VH : AbsFilesAdapter.ViewHolder>(
     activity: ComponentActivity,
     dataset: MutableList<FileEntity>,
     cabController: MultiSelectionCabController?
