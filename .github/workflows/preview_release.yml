@@ -4,11 +4,11 @@ on:
     tags:
       - "preview_*"
     paths-ignore:
-      - "README.md"
-      - "version.json"
-      - ".github/workflows/**"
-      - ".github/ISSUE_TEMPLATE/**"
-      - "crowdin.yml"
+      - 'README.md'
+      - 'ReleaseNote.md'
+      - 'version.json'
+      - '.github/**'
+      - 'crowdin.yml'
       - 'fastlane/metadata/android/**'
 
 jobs:
@@ -17,13 +17,10 @@ jobs:
     runs-on: ubuntu-20.04
     permissions:
       contents: write
-
     steps:
       - name: checkout
         uses: actions/checkout@v2.2.0
-
       # - uses: gradle/wrapper-validation-action@v1 # its timeout fails the action
-
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
@@ -33,7 +30,6 @@ jobs:
           java-version: "11"
           distribution: "adopt"
           cache: gradle
-
 
       - name: Build with Gradle
         run: ./gradlew assemblePreviewRelease --parallel --stacktrace
@@ -61,12 +57,11 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: mapping
-          path: "app/build/outputs/mapping/previewRelease/mapping.txt"
+          path: ./app/build/outputs/mapping/previewRelease/mapping.txt
 
       - name: Release New Version
         uses: softprops/action-gh-release@v1
         id: release_github
-
         if: startsWith(github.ref, 'refs/tags/preview_')
         with:
           name: "${{ github.ref_name }}"

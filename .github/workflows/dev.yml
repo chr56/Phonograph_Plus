@@ -6,31 +6,31 @@ on:
     tags-ignore:
       - 'preview_*'
       - 'v0*'
-      - 'r_*'
-      - 'test_*'
     paths-ignore:
       - 'README.md'
-      - 'version.json'
       - 'ReleaseNote.md'
-      - '.github/workflows/**'
-      - '.github/ISSUE_TEMPLATE/**'
+      - 'version.json'
+      - '.github/**'
       - 'crowdin.yml'
       - 'fastlane/metadata/android/**'
-
   workflow_dispatch:
   pull_request:
     branches: [ dev ]
     paths-ignore:
       - 'README.md'
-      - 'version'
+      - 'ReleaseNote.md'
       - 'version.json'
+      - '.github/**'
+      - 'crowdin.yml'
+      - 'fastlane/metadata/android/**'
 
 jobs:
   build:
+    name: dev build
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v2
-#      - uses: gradle/wrapper-validation-action@v1 # its timeout fails the action
+      #- uses: gradle/wrapper-validation-action@v1 # its timeout fails the action
 
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
@@ -44,7 +44,6 @@ jobs:
 
       - name: Build with Gradle
         run: ./gradlew assembleCiDebug --stacktrace --parallel
-
 
       - name: signing apk
         uses: r0adkll/sign-android-release@v1.0.4
@@ -61,7 +60,7 @@ jobs:
       - name: Upload APK
         uses: actions/upload-artifact@v2.3.1
         with:
-          name: ci_build
+          name: dev
           path: ${{steps.sign_app.outputs.signedReleaseFile}}
           retention-days: 3
 
