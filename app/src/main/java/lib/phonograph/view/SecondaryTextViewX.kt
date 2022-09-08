@@ -26,6 +26,6 @@ class SecondaryTextViewX : AppCompatTextView {
     }
 
     private fun init(context: Context, attrs: AttributeSet?) {
-        context.secondaryTextColor(context.resources.nightMode)
+        setTextColor(context.secondaryTextColor(context.resources.nightMode))
     }
 }
