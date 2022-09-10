@@ -17,6 +17,7 @@ import androidx.core.app.NotificationCompat
 import player.phonograph.*
 import player.phonograph.misc.VersionJson
 import player.phonograph.ui.activities.MainActivity
+import player.phonograph.ui.activities.MainActivity.Companion.SHOW_UPGRADE_DIALOG
 
 object UpgradeNotification {
     private var notificationManager: NotificationManager? = null
@@ -39,7 +40,7 @@ object UpgradeNotification {
 
             val action = Intent(context, MainActivity::class.java).apply {
                 this.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
-                this.putExtra(UPGRADABLE, true)
+                this.putExtra(SHOW_UPGRADE_DIALOG, true)
                 this.putExtra(VERSION_INFO, versionInfo)
             }
             val clickIntent: PendingIntent = PendingIntent.getActivity(context, 0, action, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)

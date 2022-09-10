@@ -95,10 +95,12 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
 
         showIntro()
         Handler(Looper.getMainLooper()).postDelayed({
-            if (intent.getBooleanExtra(UPGRADABLE, false)) {
+            val showUpgradeDialog = intent.getBooleanExtra(SHOW_UPGRADE_DIALOG, false)
+            if (showUpgradeDialog) {
                 showUpgradeDialog(intent.getBundleExtra(VERSION_INFO)!!)
+            } else {
+                checkUpdate()
             }
-            checkUpdate()
             showChangelog()
             Setting.instance.registerOnSharedPreferenceChangedListener(
                 sharedPreferenceChangeListener
@@ -479,6 +481,8 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
     companion object {
         private const val TAG = "MainActivity"
         private const val APP_INTRO_REQUEST = 100
+
+        const val SHOW_UPGRADE_DIALOG = "show_upgrade_dialog"
     }
 
     interface MainActivityFragmentCallbacks {
