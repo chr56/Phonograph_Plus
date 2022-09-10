@@ -21,7 +21,6 @@ import player.phonograph.UpdateConfig.requestUriBitBucket
 import player.phonograph.UpdateConfig.requestUriFastGit
 import player.phonograph.UpdateConfig.requestUriGitHub
 import player.phonograph.UpdateConfig.requestUriJsdelivr
-import player.phonograph.misc.NetworkException
 import player.phonograph.misc.VersionJson
 import player.phonograph.misc.VersionJson.Companion.DOWNLOAD_SOURCES
 import player.phonograph.misc.VersionJson.Companion.DOWNLOAD_URIS
@@ -35,6 +34,7 @@ import player.phonograph.misc.VersionJson.Companion.separator
 import player.phonograph.misc.webRequest
 import player.phonograph.settings.Setting
 import player.phonograph.util.Util.debug
+import java.io.IOException
 
 object UpdateUtil {
 
@@ -90,7 +90,7 @@ object UpdateUtil {
     private suspend fun checkUpdate(source: Request): Response? {
         return try {
             webRequest(request = source)
-        } catch (e: NetworkException) {
+        } catch (e: IOException) {
             logFails(source.url)
             null
         }
