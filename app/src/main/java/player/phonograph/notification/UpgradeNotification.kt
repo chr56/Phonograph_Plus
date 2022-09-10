@@ -15,6 +15,7 @@ import android.os.Bundle
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import player.phonograph.*
+import player.phonograph.misc.VersionJson
 import player.phonograph.ui.activities.MainActivity
 
 object UpgradeNotification {
@@ -51,12 +52,12 @@ object UpgradeNotification {
                     .setVisibility(NotificationCompat.VISIBILITY_PRIVATE)
                     .setContentTitle(context.getText(R.string.new_version))
                     .setContentText(
-                        "${context.getText(R.string.new_version_code)} ${versionInfo.getString(Updater.VERSION)}"
+                        "${context.getText(R.string.new_version_code)} ${versionInfo.getString(VersionJson.VERSION)}"
                     )
                     .setStyle(
                         NotificationCompat.BigTextStyle()
-                            .setBigContentTitle("${context.getText(R.string.new_version_code)} ${versionInfo.getString(Updater.VERSION)}")
-//                            .bigText("${context.getString(R.string.new_version_log)} ${versionInfo.getString(Updater.LOG_SUMMARY) ?: "NULL"}")
+                            .setBigContentTitle("${context.getText(R.string.new_version_code)} ${versionInfo.getString(VersionJson.VERSION)}")
+//                            .bigText("${context.getString(R.string.new_version_log)} ${versionInfo.getString(VersionJson.LOG_SUMMARY) ?: "NULL"}")
                     )
                     .setContentIntent(clickIntent)
                     .setAutoCancel(true)

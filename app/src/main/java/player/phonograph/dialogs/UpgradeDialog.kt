@@ -15,8 +15,16 @@ import androidx.fragment.app.DialogFragment
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.list.listItemsSingleChoice
 import player.phonograph.R
-import player.phonograph.Updater
+import player.phonograph.misc.VersionJson.Companion.DOWNLOAD_SOURCES
+import player.phonograph.misc.VersionJson.Companion.DOWNLOAD_URIS
+import player.phonograph.misc.VersionJson.Companion.EN
+import player.phonograph.misc.VersionJson.Companion.LOG_SUMMARY
+import player.phonograph.misc.VersionJson.Companion.VERSION
+import player.phonograph.misc.VersionJson.Companion.VERSIONCODE
+import player.phonograph.misc.VersionJson.Companion.ZH_CN
+import player.phonograph.misc.VersionJson.Companion.separator
 import player.phonograph.settings.Setting
+import player.phonograph.util.UpdateUtil.CAN_ACCESS_GITHUB
 import java.util.*
 
 class UpgradeDialog : DialogFragment() {
@@ -26,14 +34,14 @@ class UpgradeDialog : DialogFragment() {
 
         val versionInfo = requireArguments().getBundle(VERSION_BUNDLE) ?: Bundle()
 
-        val versionCode = versionInfo.getInt(Updater.VERSIONCODE, -1)
-        val version = versionInfo.getString(Updater.VERSION, "")
-        val logZH = versionInfo.getString("${Updater.ZH_CN}${Updater.separator}${Updater.LOG_SUMMARY}", "")
-        val logEN = versionInfo.getString("${Updater.EN}${Updater.separator}${Updater.LOG_SUMMARY}", "")
-        val canAccessGitHub = versionInfo.getBoolean(Updater.CAN_ACCESS_GITHUB, false)
+        val versionCode = versionInfo.getInt(VERSIONCODE, -1)
+        val version = versionInfo.getString(VERSION, "")
+        val logZH = versionInfo.getString("${ZH_CN}${separator}${LOG_SUMMARY}", "")
+        val logEN = versionInfo.getString("${EN}${separator}${LOG_SUMMARY}", "")
+        val canAccessGitHub = versionInfo.getBoolean(CAN_ACCESS_GITHUB, false)
 
-        val downloadUris: Array<String>? = versionInfo.getStringArray(Updater.DOWNLOAD_URIS)
-        val downloadSources: Array<String>? = versionInfo.getStringArray(Updater.DOWNLOAD_SOURCES)
+        val downloadUris: Array<String>? = versionInfo.getStringArray(DOWNLOAD_URIS)
+        val downloadSources: Array<String>? = versionInfo.getStringArray(DOWNLOAD_SOURCES)
 
         // use correct log
 

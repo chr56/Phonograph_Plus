@@ -20,6 +20,7 @@ import com.github.chr56.android.menu_dsl.menuItem
 import com.sothree.slidinguppanel.SlidingUpPanelLayout
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import legacy.phonograph.JunkCleaner
 import mt.tint.viewtint.setItemIconColors
 import mt.tint.viewtint.setItemTextColors
@@ -29,7 +30,7 @@ import player.phonograph.App
 import player.phonograph.BuildConfig.DEBUG
 import player.phonograph.R
 import player.phonograph.UPGRADABLE
-import player.phonograph.Updater.checkUpdate
+import player.phonograph.util.UpdateUtil.checkUpdate
 import player.phonograph.VERSION_INFO
 import player.phonograph.coil.loadImage
 import player.phonograph.databinding.ActivityMainBinding
@@ -57,6 +58,7 @@ import player.phonograph.ui.activities.intro.AppIntroActivity
 import player.phonograph.ui.fragments.HomeFragment
 import player.phonograph.util.ImageUtil.getTintedDrawable
 import player.phonograph.util.PhonographColorUtil.nightMode
+import player.phonograph.util.UpdateUtil
 
 class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity {
 
@@ -446,7 +448,11 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
     }
 
     private fun checkUpdate() {
-        checkUpdate(callback = { UpgradeNotification.sendUpgradeNotification(it) })
+        CoroutineScope(Dispatchers.IO).launch {
+            checkUpdate(false)?.let {
+                UpgradeNotification.sendUpgradeNotification(it)
+            }
+        }
     }
 
     private fun showChangelog() {

@@ -16,19 +16,23 @@ import androidx.annotation.Keep
 import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.Toolbar
 import de.psdev.licensesdialog.LicensesDialog
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import lib.phonograph.activity.ToolbarActivity
 import mt.tint.setActivityToolbarColorAuto
 import player.phonograph.BuildConfig
 import player.phonograph.R
-import player.phonograph.Updater
 import player.phonograph.databinding.ActivityAboutBinding
 import player.phonograph.dialogs.ChangelogDialog
 import player.phonograph.dialogs.DebugDialog
 import player.phonograph.dialogs.UpgradeDialog
+import player.phonograph.misc.VersionJson
 import player.phonograph.settings.Setting
 import player.phonograph.ui.activities.bugreport.BugReportActivity
 import player.phonograph.ui.activities.intro.AppIntroActivity
 import player.phonograph.util.PhonographColorUtil.nightMode
+import player.phonograph.util.UpdateUtil
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
@@ -183,16 +187,19 @@ class AboutActivity : ToolbarActivity(), View.OnClickListener {
                 ChangelogDialog.create().show(supportFragmentManager, "CHANGELOG_DIALOG")
             }
             checkUpgrade -> {
-                Updater.checkUpdate(callback = {
-                    if (it.getBoolean(Updater.UPGRADABLE)) {
-                        UpgradeDialog.create(it).show(supportFragmentManager, "UPGRADE_DIALOG")
-                        if (Setting.instance.ignoreUpgradeVersionCode >= it.getInt(Updater.VERSIONCODE)) {
-                            toast(getString(R.string.upgrade_ignored))
+                CoroutineScope(Dispatchers.Unconfined).launch {
+                    val result = UpdateUtil.checkUpdate()
+                    result?.let {
+                        if (it.getBoolean(VersionJson.UPGRADABLE)) {
+                            UpgradeDialog.create(it).show(supportFragmentManager, "UPGRADE_DIALOG")
+                            if (Setting.instance.ignoreUpgradeVersionCode >= it.getInt(VersionJson.VERSIONCODE)) {
+                                toast(getString(R.string.upgrade_ignored))
+                            }
+                        } else {
+                            toast(getText(R.string.no_newer_version))
                         }
-                    } else {
-                        toast(getText(R.string.no_newer_version))
                     }
-                }, force = true)
+                }
             }
             licenses -> {
                 showLicenseDialog()
