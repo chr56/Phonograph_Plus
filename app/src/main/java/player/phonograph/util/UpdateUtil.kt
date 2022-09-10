@@ -65,7 +65,8 @@ object UpdateUtil {
             // check source first
             checkUpdate(requestGithub)?.let { response ->
                 logSucceed(response.request.url)
-                return@withContext process(response, force)
+                val result = process(response, force)
+                result?.let { return@withContext it }
             }
             // check the fastest mirror
             val result = select<Response?> {
@@ -116,12 +117,12 @@ object UpdateUtil {
 
 
             return@withContext versionJson?.let { json: VersionJson ->
-                debug {
-                    Log.v(
-                        TAG,
-                        "versionCode: ${json.versionCode}, version: ${json.version}, logSummary-zh: ${json.logSummaryZH}, logSummary-en: ${json.logSummaryEN}"
-                    )
-                }
+//                debug {
+//                    Log.v(
+//                        TAG,
+//                        "versionCode: ${json.versionCode}, version: ${json.version}, logSummary-zh: ${json.logSummaryZH}, logSummary-en: ${json.logSummaryEN}"
+//                    )
+//                }
 
                 val ignoreUpgradeVersionCode = Setting.instance.ignoreUpgradeVersionCode
                 debug {
@@ -148,7 +149,11 @@ object UpdateUtil {
                         it.putStringArray(DOWNLOAD_URIS, json.downloadUris)
                         it.putStringArray(DOWNLOAD_SOURCES, json.downloadSources)
                     }
-                    it.putBoolean(UPGRADABLE, false)
+                    if (force) {
+                        it.putBoolean(UPGRADABLE, true)
+                    } else {
+                        it.putBoolean(UPGRADABLE, false)
+                    }
                 }
                 if (json.versionCode > BuildConfig.VERSION_CODE) {
                     debug { Log.v(TAG, "updatable!") }
@@ -157,9 +162,6 @@ object UpdateUtil {
                     debug { Log.v(TAG, "no update, latest version!") }
                 } else if (json.versionCode < BuildConfig.VERSION_CODE) {
                     debug { Log.w(TAG, "no update, version is newer than latest?") }
-                }
-                if (force) {
-                    result.putBoolean(UPGRADABLE, true)
                 }
                 return@let result
             }
