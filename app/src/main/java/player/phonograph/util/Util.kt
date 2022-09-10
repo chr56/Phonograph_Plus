@@ -16,9 +16,9 @@ import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import kotlinx.coroutines.yield
 import player.phonograph.App
 import player.phonograph.BROADCAST_PLAYLISTS_CHANGED
+import player.phonograph.BuildConfig.DEBUG
 import player.phonograph.R
 import java.util.*
 
@@ -114,4 +114,10 @@ object Util {
         return resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
     }
 
+    /**
+     * only run [block] on [DEBUG] build
+     */
+     inline fun debug(crossinline block: () -> Unit) {
+        if (DEBUG) block()
+    }
 }
