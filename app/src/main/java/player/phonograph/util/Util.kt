@@ -114,17 +114,4 @@ object Util {
         return resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
     }
 
-    /**
-     * a class to help convert callback-style function to async-coroutine-style function
-     */
-    class Executor<R>(val block: (Wrapper<R?>) -> Unit) {
-        private var holder: Wrapper<R?> = Wrapper(null)
-        suspend fun execute(): R {
-            block(holder)
-            while (holder.content == null) yield()
-            return holder.content!!
-        }
-
-        class Wrapper<T>(var content: T?)
-    }
 }

@@ -10,7 +10,10 @@ import android.widget.ImageView
 import androidx.collection.LruCache
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.TimeoutCancellationException
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withTimeout
 import player.phonograph.R
 import player.phonograph.coil.loadImage
@@ -18,7 +21,6 @@ import player.phonograph.coil.target.PaletteTargetBuilder
 import player.phonograph.databinding.FragmentAlbumCoverBinding
 import player.phonograph.model.Song
 import player.phonograph.settings.Setting
-import player.phonograph.util.CoroutineUtil
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
@@ -138,6 +140,7 @@ class AlbumCoverPagerAdapter(
                     .enqueue()
             }
 
+            @OptIn(ExperimentalCoroutinesApi::class)
             suspend fun loadImageForColor(
                 context: Context,
                 song: Song,
@@ -145,11 +148,13 @@ class AlbumCoverPagerAdapter(
             ): Pair<Song, Int> =
                 try {
                     withTimeout(1200) {
-                        CoroutineUtil.Executor<Pair<Song, Int>> { tmp ->
+                        suspendCancellableCoroutine { continuation ->
                             loadImage(context, song, target) { song, color ->
-                                tmp.content = Pair(song, color)
+                                continuation.resume(Pair(song, color)) {
+                                    cancel()
+                                }
                             }
-                        }.execute()
+                        }
                     }
                 } catch (e: TimeoutCancellationException) {
                     Pair(song, context.getColor(R.color.defaultFooterColor))
