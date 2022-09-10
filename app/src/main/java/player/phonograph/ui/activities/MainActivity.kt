@@ -20,6 +20,7 @@ import com.github.chr56.android.menu_dsl.menuItem
 import com.sothree.slidinguppanel.SlidingUpPanelLayout
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import legacy.phonograph.JunkCleaner
 import mt.tint.viewtint.setItemIconColors
@@ -448,9 +449,10 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
     }
 
     private fun checkUpdate() {
-        CoroutineScope(Dispatchers.IO).launch {
+        CoroutineScope(SupervisorJob()).launch {
             checkUpdate(false)?.let {
-                UpgradeNotification.sendUpgradeNotification(it)
+                if (it.getBoolean(UPGRADABLE))
+                    UpgradeNotification.sendUpgradeNotification(it)
             }
         }
     }
