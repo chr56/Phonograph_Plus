@@ -18,7 +18,7 @@ import java.util.concurrent.TimeUnit
 private const val TAG = "WebRequester"
 
 internal val okHttpClient = OkHttpClient.Builder()
-    .connectTimeout(8, TimeUnit.SECONDS)
+    .connectTimeout(4500, TimeUnit.MILLISECONDS)
     .build()
 
 suspend fun webRequest(request: Request): Response {
