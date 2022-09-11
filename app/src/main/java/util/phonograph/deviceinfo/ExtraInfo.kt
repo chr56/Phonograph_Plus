@@ -1,4 +1,8 @@
-package player.phonograph.ui.activities.bugreport.model.github
+/*
+ * Copyright (c) 2022 chr_56
+ */
+
+package util.phonograph.deviceinfo
 
 class ExtraInfo {
 

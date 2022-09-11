@@ -29,8 +29,8 @@ import player.phonograph.dialogs.DebugDialog
 import player.phonograph.dialogs.UpgradeDialog
 import player.phonograph.misc.VersionJson
 import player.phonograph.settings.Setting
-import player.phonograph.ui.activities.bugreport.BugReportActivity
 import player.phonograph.ui.activities.intro.AppIntroActivity
+import player.phonograph.ui.dialogs.ReportIssueDialog
 import player.phonograph.util.PhonographColorUtil.nightMode
 import player.phonograph.util.UpdateUtil
 
@@ -217,7 +217,7 @@ class AboutActivity : ToolbarActivity(), View.OnClickListener {
                 openUrl(WEBSITE)
             }
             reportBugs -> {
-                startActivity(Intent(this, BugReportActivity::class.java))
+                ReportIssueDialog().show(supportFragmentManager, "ReportIssueDialog")
             }
             writeAnEmail -> {
                 val intent = Intent(Intent.ACTION_SENDTO)

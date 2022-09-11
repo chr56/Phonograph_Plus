@@ -1,4 +1,4 @@
-package player.phonograph.ui.activities.bugreport.model
+package util.phonograph.deviceinfo
 
 import android.annotation.SuppressLint
 import android.os.Build
