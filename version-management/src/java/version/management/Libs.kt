@@ -54,7 +54,6 @@ object Deps {
 
     const val recyclerview_fastscroll = "com.simplecityapps:recyclerview-fastscroll:2.0.1"
 
-    const val gson = "com.google.code.gson:gson:2.8.6"
     const val kotlinx_serialization_json = "org.jetbrains.kotlinx:kotlinx-serialization-json:1.4.0"
 
     const val licensesdialog = "de.psdev.licensesdialog:licensesdialog:2.1.0"
