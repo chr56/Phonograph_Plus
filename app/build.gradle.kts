@@ -233,7 +233,6 @@ dependencies {
 
     implementation(Deps.okhttp3)
     implementation(Deps.retrofit2)
-    implementation(Deps.retrofit2_converter_gson)
     implementation(Deps.gson)
 
     implementation(Deps.kotlinx_serialization_json)

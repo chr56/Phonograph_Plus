@@ -32,7 +32,6 @@ object Deps {
 
     const val okhttp3 = "com.squareup.okhttp3:okhttp:4.10.0"
     const val retrofit2 = "com.squareup.retrofit2:retrofit:2.9.0"
-    const val retrofit2_converter_gson = "com.squareup.retrofit2:converter-gson:2.5.0"
 
     const val coil = "io.coil-kt:coil:2.2.0"
 
