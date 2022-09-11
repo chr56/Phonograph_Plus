@@ -173,7 +173,13 @@
     public <methods>;
 }
 -assumenosideeffects class kotlin.jvm.internal.Intrinsics {
+    # function parameters not null check: at every function's start
     static void checkParameterIsNotNull(java.lang.Object, java.lang.String);
+    # functions that returing not null object: interact with java
+    static void checkExpressionValueIsNotNull(java.lang.Object,java.lang.String);
+    static void checkNotNullExpressionValue(java.lang.Object,java.lang.String);
+    # use `!!` to assume not null & function parameters not null check
+    static void checkNotNull(java.lang.Object,java.lang.String);
 }
 ###################
 # kotlin coroutines
