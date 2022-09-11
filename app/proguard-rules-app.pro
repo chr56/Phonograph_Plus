@@ -29,5 +29,5 @@
 -keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.settings.SettingManager {public <methods>;}
 -keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.notification.** {public void post(...);}
 
--keepclassmembernames,allowoptimization class player.phonograph.Updater$VersionJson {public <methods>;}
+-keepclassmembernames,allowoptimization class player.phonograph.misc.VersionJson {<fields>; public <methods>;}
 -keepclassmembernames,allowoptimization class player.phonograph.provider.DatabaseManger { boolean *(...);}
