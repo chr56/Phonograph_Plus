@@ -62,5 +62,4 @@ object Deps {
     const val observablescrollview = "com.github.ksoichiro:android-observablescrollview:1.6.0"
     const val material_intro = "com.heinrichreimersoftware:material-intro:2.0.0"
     const val advrecyclerview = "com.h6ah4i.android.widget.advrecyclerview:advrecyclerview:1.0.0"
-    const val org_eclipse_egit_github = "org.eclipse.mylyn.github:org.eclipse.egit.github.core:2.1.5"
 }

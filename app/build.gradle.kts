@@ -244,5 +244,4 @@ dependencies {
     implementation(Deps.observablescrollview)
     implementation(Deps.material_intro)
     implementation(Deps.advrecyclerview)
-    implementation(Deps.org_eclipse_egit_github)
 }
