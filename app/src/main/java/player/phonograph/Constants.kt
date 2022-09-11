@@ -6,7 +6,7 @@ package player.phonograph
 
 const val KEY_STACK_TRACE = "stack_trace"
 
-
+const val ISSUE_TRACKER_LINK = "https://github.com/chr56/Phonograph_Plus/issues"
 
 const val VERSION_INFO = "versionInfo"
 const val UPGRADABLE = "upgradable"
