@@ -9,6 +9,7 @@ import version.management.Util.shiftFirstLetter
 plugins {
     id("com.android.application")
     id("kotlin-android")
+    id("org.jetbrains.kotlin.plugin.serialization")
     id("version.management") // Phonograph Plus's dependency management
 }
 
@@ -234,6 +235,8 @@ dependencies {
     implementation(Deps.retrofit2)
     implementation(Deps.retrofit2_converter_gson)
     implementation(Deps.gson)
+
+    implementation(Deps.kotlinx_serialization_json)
 
     implementation(Deps.coil)
 
