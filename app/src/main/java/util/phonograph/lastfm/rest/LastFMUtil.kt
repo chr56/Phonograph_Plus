@@ -3,8 +3,8 @@
  */
 package util.phonograph.lastfm.rest
 
+import util.phonograph.lastfm.rest.model.LastFmImage
 import util.phonograph.lastfm.rest.model.LastFmAlbum
-import util.phonograph.lastfm.rest.model.LastFmArtist
 import java.util.*
 
 /**
@@ -12,7 +12,7 @@ import java.util.*
  */
 object LastFMUtil {
 
-    fun getLargestArtistImageUrl(images: List<LastFmArtist.Artist.Image>): String? {
+    fun getLargestArtistImageUrl(images: List<LastFmImage>): String? {
         val imageUrls: MutableMap<ImageSize, String> = HashMap()
         for (image in images) {
             var size: ImageSize? = null

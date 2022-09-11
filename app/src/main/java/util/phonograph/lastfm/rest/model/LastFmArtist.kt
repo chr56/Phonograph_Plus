@@ -1,34 +1,24 @@
 package util.phonograph.lastfm.rest.model
 
-import com.google.gson.annotations.Expose
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.Serializable
 
+@Serializable
 class LastFmArtist {
-    @Expose
+
     var artist: Artist? = null
 
+    @Serializable
     class Artist {
-        @Expose
+
         var url: String? = null
 
-        @Expose
-        var image: List<Image> = ArrayList()
+        var image: List<LastFmImage> = ArrayList()
 
-        @Expose
         var bio: Bio? = null
 
-        inner class Bio {
-            @Expose
+        @Serializable
+        class Bio {
             var content: String = ""
-        }
-
-        class Image {
-            @SerializedName("#text")
-            @Expose
-            var text: String = ""
-
-            @Expose
-            var size: String = ""
         }
     }
 }

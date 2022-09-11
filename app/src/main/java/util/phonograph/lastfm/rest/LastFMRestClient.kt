@@ -1,11 +1,12 @@
 package util.phonograph.lastfm.rest
 
 import android.content.Context
+import lib.phonograph.serialization.KtSerializationRetrofitConverterFactory
 import okhttp3.Cache
 import okhttp3.Interceptor
+import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 import util.phonograph.lastfm.rest.service.LastFMService
 import java.io.File
 import java.util.*
@@ -21,7 +22,7 @@ class LastFMRestClient {
         val restAdapter = Retrofit.Builder()
             .baseUrl(BASE_URL)
             .callFactory(f)
-            .addConverterFactory(GsonConverterFactory.create())
+            .addConverterFactory(KtSerializationRetrofitConverterFactory("application/json".toMediaType()))
             .build()
         apiService = restAdapter.create(LastFMService::class.java)
     }
