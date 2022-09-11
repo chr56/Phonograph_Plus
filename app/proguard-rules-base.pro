@@ -17,48 +17,45 @@
 -dontskipnonpubliclibraryclasses
 -verbose
 
-#-obfuscationdictionary dict.txt
-#-classobfuscationdictionary dict.txt
-#-packageobfuscationdictionary dict.txt
-
 # Preserve some attributes that may be required for reflection.
 -keepattributes *Annotation*,Signature,InnerClasses,EnclosingMethod
 
-
+###########
+# JNI
+###########
 # For native methods, see http://proguard.sourceforge.net/manual/examples.html#native
 -keepclasseswithmembernames,includedescriptorclasses class * {
     native <methods>;
 }
 
+
+#############
+#   Android
+#############
 # Keep setters in Views so that animations can still work.
 -keepclassmembers public class * extends android.view.View {
     void set*(***);
     *** get*();
 }
-
 # We want to keep methods in Activity that could be used in the XML attribute onClick.
 -keepclassmembers class * extends android.app.Activity {
     public void *(android.view.View);
 }
-
 # For enumeration classes, see http://proguard.sourceforge.net/manual/examples.html#enumerations
 -keepclassmembers enum * {
     public static **[] values();
     public static ** valueOf(java.lang.String);
 }
-
 -keepclassmembers class * implements android.os.Parcelable {
     public static final android.os.Parcelable$Creator *;
 }
 -keepclassmembers class * implements android.os.Parcelable {
     public static final ** CREATOR;
 }
-
 # Preserve annotated Javascript interface methods.
 -keepclassmembers class * {
     @android.webkit.JavascriptInterface <methods>;
 }
-
 # The support libraries contains references to newer platform versions.
 # Don't warn about those in case this app is linking against an older
 # platform version. We know about them, and they are safe.
@@ -67,34 +64,21 @@
 -dontwarn android.support.**
 -dontwarn androidx.**
 
-
-# Understand the @Keep support annotation.
+##########
+# Keep annotation
+##########
 #-keep class android.support.annotation.Keep
 -keep class androidx.annotation.Keep
 
 #-keep @android.support.annotation.Keep class * {*;}
 -keep @androidx.annotation.Keep class * {*;}
 
-#-keepclasseswithmembers class * {
-#    @android.support.annotation.Keep <methods>;
-#}
-
 -keepclasseswithmembers class * {
     @androidx.annotation.Keep <methods>;
 }
-
-#-keepclasseswithmembers class * {
-#    @android.support.annotation.Keep <fields>;
-#}
-
 -keepclasseswithmembers class * {
     @androidx.annotation.Keep <fields>;
 }
-
-#-keepclasseswithmembers class * {
-#    @android.support.annotation.Keep <init>(...);
-#}
-
 -keepclasseswithmembers class * {
     @androidx.annotation.Keep <init>(...);
 }
@@ -107,25 +91,9 @@
 -dontnote java.lang.invoke.**
 
 
-# Add project specific ProGuard rules here.
-# By default, the flags in this file are appended to flags specified
-# in /Users/aidanfollestad/Documents/android-sdk/tools/proguard/proguard-android.txt
-# You can edit the include path and order by changing the proguardFiles
-# directive in build.gradle.
-#
-# For more details, see
-#   http://developer.android.com/guide/developing/tools/proguard.html
-
-# Add any project specific keep options here:
-
-# If your project uses WebView with JS, uncomment the following
-# and specify the fully qualified class name to the JavaScript interface
-# class:
-#-keepclassmembers class fqcn.of.javascript.interface.for.webview {
-#   public *;
-#}
-
+###########
 # OkHttp3
+###########
 # JSR 305 annotations are for embedding nullability information.
 -dontwarn javax.annotation.**
 # A resource is loaded with a relative path so the package of this class must be preserved.
@@ -138,7 +106,10 @@
 -dontwarn org.bouncycastle.**
 -dontwarn org.openjsse.**
 
+
+###########
 # RetroFit
+###########
 #-keep class retrofit2.** { *; }
 -keepclasseswithmembers class * {
 @retrofit2.http.* <methods>;
@@ -148,7 +119,6 @@
 -dontwarn retrofit2.KotlinExtensions$*
 # Guarded by a NoClassDefFoundError try/catch and only used when on the classpath.
 -dontwarn kotlin.Unit
-
 # With R8 full mode, it sees no subtypes of Retrofit interfaces since they are created with a Proxy
 # and replaces all potential values with null. Explicitly keeping the interfaces prevents this.
 -if interface * { @retrofit2.http.* <methods>; }
@@ -165,13 +135,16 @@
 # is used.
 -keep,allowobfuscation,allowshrinking class kotlin.coroutines.Continuation
 
+
+#############
 # Android X
+##############
 #-keepclassmembernames,allowshrinking,allowoptimization class androidx.** {*;}
 #-keepnames,allowshrinking interface androidx.** {*;}
 
-
+##########################
 # Material Design Componant
-#-keepnames,allowshrinking,allowoptimization class com.google.android.material.**
+###########################
 # CoordinatorLayout resolves the behaviors of its child components with reflection.
 -keep public class * extends androidx.coordinatorlayout.widget.CoordinatorLayout$Behavior {
     public <init>(android.content.Context, android.util.AttributeSet);
@@ -187,25 +160,10 @@
 }
 # Make sure we keep annotations for CoordinatorLayout's DefaultBehavior
 -keepattributes RuntimeVisible*Annotation*
-#-keep class android.support.v4.** {*;}
 
-
-
-# jaudiotagger
--keepclasseswithmembers class org.jaudiotagger.tag.id3.framebody.Framebody** {<init>(...);}
--keepclasseswithmembers class org.jaudiotagger.tag.** extends org.jaudiotagger.tag.id3.AbstractTagItem {<init>(...);}
--keepclasseswithmembers class org.jaudiotagger.tag.datatype.** extends org.jaudiotagger.tag.datatype.AbstractDataType {<init>(...);}
-#
-
-
-# Serialization
-#-keepnames class ** implements java.io.Serializable
-
-# StatusBarLyric API
--keep class StatusBarLyric.API.StatusBarLyric {*;}
-
-
+##########
 # Kotlin
+##########
 -dontwarn kotlin.**
 -keep class kotlin.Metadata { *; }
 -keepclassmembers class **$WhenMappings {
@@ -217,11 +175,14 @@
 -assumenosideeffects class kotlin.jvm.internal.Intrinsics {
     static void checkParameterIsNotNull(java.lang.Object, java.lang.String);
 }
+###################
 # kotlin coroutines
+###################
 -keep class kotlinx.coroutines.android.AndroidDispatcherFactory {*;}
 
+########################
 # kotlinx-serialization
-
+########################
 # Keep `Companion` object fields of serializable classes.
 # This avoids serializer lookup through `getDeclaredClasses` as done for named companion objects.
 -if @kotlinx.serialization.Serializable class **
@@ -248,3 +209,17 @@
 
 # @Serializable and @Polymorphic are used at runtime for polymorphic serialization.
 -keepattributes RuntimeVisibleAnnotations,AnnotationDefault
+
+
+###############
+# jaudiotagger
+################
+-keepclasseswithmembers class org.jaudiotagger.tag.id3.framebody.Framebody** {<init>(...);}
+-keepclasseswithmembers class org.jaudiotagger.tag.** extends org.jaudiotagger.tag.id3.AbstractTagItem {<init>(...);}
+-keepclasseswithmembers class org.jaudiotagger.tag.datatype.** extends org.jaudiotagger.tag.datatype.AbstractDataType {<init>(...);}
+
+
+####################
+# StatusBarLyric API
+####################
+-keep class StatusBarLyric.API.StatusBarLyric {*;}
