@@ -1,12 +1,15 @@
 package util.phonograph.lastfm.rest.model
 
+import androidx.annotation.Keep
 import kotlinx.serialization.Serializable
 
+@Keep
 @Serializable
 class LastFmArtist {
 
     var artist: Artist? = null
 
+    @Keep
     @Serializable
     class Artist {
 
@@ -16,6 +19,7 @@ class LastFmArtist {
 
         var bio: Bio? = null
 
+        @Keep
         @Serializable
         class Bio {
             var content: String = ""
