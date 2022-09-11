@@ -1,15 +1,15 @@
-**0.3.2 dev03 2022.9.8**
+**0.3.2 dev04 2022.9.11**
 
 **CN**
-- 修复 各类色彩异常
-- 新增 在全部歌曲页面顶栏添加全部播放按钮
-- 改进 添加“管理全部文件”的快捷方式
-- 改进 扫描媒体与添加黑名单对话框使用新版UI
-- 开发 清理代码
+- 改进 检查更新流程(防止更新提示重复弹出)
+- 移除 报告错误界面, 使用对话框
+- 移除 登录 Github 提交报告功能(对大多数人无用)
+- 开发 移除 `Gson` , 使用 `kotlin.serialization` 处理 Json 
+- 开发 增强混淆
 
 **EN**
-- Fix: more color anomalies
-- Add: "play all" button in the top bar of all songs page
-- Improve: add "Manage All Files" shortcut
-- Improve: use new UI in "Scan Media" and "Add To Blacklist" dialogs
-- Development: clean code
+- Improve: the check update procedure (and prevent popping up the update prompt repeatedly)
+- Remove: error reporting page (use dialog instead)
+- Remove: the feature of lodging into Github to submit a issue (useless for most people)
+- Development: remove `Gson`, use `kotlin.serialization` to handle Json
+- Development: enhance obfuscation
