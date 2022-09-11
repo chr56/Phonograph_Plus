@@ -23,8 +23,11 @@ suspend fun Call.emit(reportFailure: Boolean = true): Response =
             }
 
             override fun onFailure(call: Call, e: IOException) {
-                if (!reportFailure || continuation.isCancelled) return
-                continuation.resumeWithException(e)
+                if (!reportFailure || continuation.isCancelled) {
+                    continuation.cancel()
+                } else {
+                    continuation.resumeWithException(e)
+                }
             }
         })
     }
