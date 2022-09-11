@@ -3,21 +3,25 @@
 <br>
 <a href="https://github.com/chr56/Phonograph_Plus">开源地址(GitHub)</a>
 
-<h4><b>0.3.2 dev03</b> 2022.9.8</h4>
+<h4><b>0.3.2 dev04</b> 2022.9.11</h4>
 <div>
-    <ul>
+    <ol>
         <li>翻译 更新 俄语(Photon_Gilber), 法语(Exylos)</li>
         <li>开发 升级 targetSdk 至 33 (Android 13), 适配 Android 13 (实验性)</li>
-        <li>开发 移除 Glide , 使用 Coil 加载图片</li>
+        <li>开发 移除 <code>Glide</code> , 使用 <code>Coil</code> 加载图片</li>
+        <li>开发 移除 <code>Gson</code> , 使用 <code>kotlin.serialization</code> 处理 Json</li>
         <li>修复 浅色背景下图标颜色仍为白色</li>
         <li>新增 在全部歌曲页面顶栏添加全部播放按钮</li>
         <li>改进 添加请求“管理全部文件”权限的快捷方式</li>
         <li>改进 扫描媒体与添加黑名单对话框使用新版UI</li>
         <li>改进 重写部分字符串, 清理无用字符串</li>
         <li>改进 改进更新日志对话框</li>
+        <li>改进 检查更新流程(防止更新提示重复弹出)</li>
+        <li>移除 报告错误界面, 使用对话框</li>
+        <li>移除 登录 Github 提交报告功能(对大多数人无用)</li>
+        <li>开发 清理更新依赖, 更新 AGP 至 7.2.2, 更新 kotlin 至 1.7.10, 增强混淆</li>
         <li>发布 添加 fastlane metadata</li>
-        <li>开发 清理更新依赖, 更新 AGP 至 7.2.2, 更新 kotlin 至 1.7.10</li>
-    </ul>
+    </ol>
 </div>
 
 <h4><b>0.3.1</b> 2022.8.18</h4>
@@ -409,7 +413,7 @@
     </div>
     <p>以下为之前紧急更新的更新日志</p>
     <div style="padding: 0.5ex">
-        <ul >
+        <ul>
             <li>修复 歌曲列表使用网格试图(无论几列)闪退</li>
             <li>修复 "详情"对话框卡死(若歌曲内嵌大图)</li>
             <li>修复 弹出菜单主题失效</li>

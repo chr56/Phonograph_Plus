@@ -5,21 +5,25 @@
 
 <p>Translate Phonograph Plus into your language -> <a href="https://crowdin.com/project/phonograph-plus">crowdin</a></p>
 
-<h4><b>0.3.2 dev03</b> 2022.9.8</h4>
+<h4><b>0.3.2 dev04</b> 2022.9.11</h4>
 <div>
-    <ul>
+    <ol>
         <li>Translation: updated Russian (by Photon_Gilber), French (by Exylos)</li>
         <li>Development: upgrade targetSdk to 33 (Android 13) (experimental)</li>
-        <li>Development: remove Glide, use Coil to load images</li>
+        <li>Development: remove <code>Glide</code>, use <code>Coil</code> to load images</li>
+        <li>Development: remove <code>Gson</code>, use <code>kotlin.serialization</code> to handle Json</li>
         <li>Fix: the icon color is still white under light background</li>
         <li>Add: &quot;play all&quot; buttons in the top bar of all songs page</li>
-        <li>Improve:  add shortcut to grant &quot;Manage All Files&quot; permission</li>
+        <li>Improve: add shortcut to grant &quot;Manage All Files&quot; permission</li>
         <li>Improve: use new UI in &quot;Scan Media&quot; and &quot;Add To Blacklist&quot; dialogs</li>
         <li>Improve: rewrite many strings, clean up useless strings</li>
         <li>Improve: Improve changelog dialog</li>
+        <li>Improve: the check update procedure (and prevent popping up the update prompt repeatedly)</li>
+        <li>Remove: error reporting page (use dialog instead)</li>
+        <li>Remove: the feature of lodging into Github to submit a issue (useless for most people)</li>
+        <li>Development: clean up and upgrade dependencies, upgrade AGP to 7.2.2, upgrade kotlin to 1.7.10, enhance obfuscation</li>
         <li>Release: adding fastlane metadata</li>
-        <li>Development: clean up and upgrade dependencies, upgrade AGP to 7.2.2, upgrade kotlin to 1.7.10</li>
-    </ul>
+    </ol>
 </div>
 
 <h4><b>0.3.1 </b> 2022.8.18</h4>
