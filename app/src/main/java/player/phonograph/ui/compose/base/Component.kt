@@ -7,20 +7,22 @@ package player.phonograph.ui.compose.base
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material.*
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import player.phonograph.R
 
-// @Preview(showBackground = true)
 // @Composable
 // fun HorizontalTextItem(tag: String = "KeyName", value: String = "KeyValue") {
 //    Box {
@@ -40,9 +42,8 @@ import player.phonograph.R
 //    }
 // }
 
-@Preview(showBackground = true)
 @Composable
-fun VerticalTextItem(title: String = "KeyName", value: String = "KeyValue") {
+fun VerticalTextItem(title: String, value: String) {
     Column(modifier = Modifier.padding(horizontal = 8.dp, vertical = 8.dp), verticalArrangement = Arrangement.SpaceEvenly) {
         // title
         Text(
@@ -72,7 +73,7 @@ fun VerticalTextItem(title: String = "KeyName", value: String = "KeyValue") {
 fun Title(
     title: String,
     color: Color = MaterialTheme.colors.onSurface,
-    horizontalPadding: Dp = 8.dp
+    horizontalPadding: Dp = 8.dp,
 ) {
     Text(
         title,
@@ -86,15 +87,22 @@ fun BaseListEntry(
     image: @Composable () -> Unit,
     content: @Composable () -> Unit,
     showMenu: Boolean,
-    onMenuClick: () -> Unit
+    onMenuClick: () -> Unit,
 ) {
     Column {
         Row {
-            Box(Modifier.width(40.dp).fillMaxHeight()) { image() }
+            Box(Modifier
+                .width(40.dp)
+                .fillMaxHeight()) { image() }
             Box(Modifier.fillMaxHeight()) { content() }
             if (showMenu) {
-                Button(onClick = onMenuClick, modifier = Modifier.size(48.dp).padding(8.dp).fillMaxHeight()) {
-                    Icon(painter = painterResource(id = R.drawable.ic_more_vert_white_24dp), contentDescription = "Menu", tint = MaterialTheme.colors.onSurface)
+                Button(onClick = onMenuClick, modifier = Modifier
+                    .size(48.dp)
+                    .padding(8.dp)
+                    .fillMaxHeight()) {
+                    Icon(painter = painterResource(id = R.drawable.ic_more_vert_white_24dp),
+                        contentDescription = "Menu",
+                        tint = MaterialTheme.colors.onSurface)
                 }
             }
         }
@@ -111,9 +119,8 @@ fun BaseListEntry(
 // }
 //
 
-@Preview(showBackground = true)
 @Composable
-fun TailTextField(hint: String = "New Value", onValueChange: (String) -> Unit = {}) {
+fun TailTextField(hint: String, onValueChange: (String) -> Unit = {}) {
     var value by remember { mutableStateOf("") }
     TextField(
         value = value,
@@ -130,14 +137,13 @@ fun TailTextField(hint: String = "New Value", onValueChange: (String) -> Unit = 
             focusedIndicatorColor = MaterialTheme.colors.onSurface.copy(alpha = TextFieldDefaults.IconOpacity),
             unfocusedIndicatorColor = Color.Transparent,
 
-        ),
+            ),
         modifier = Modifier
             .padding(horizontal = 8.dp, vertical = 8.dp)
             .fillMaxWidth()
     )
 }
 //
-// @Preview(showBackground = true)
 // @Composable
 // private fun BaseTextFieldItem(tag: String = "KeyName", value: String = "KeyValue", readonly: Boolean = false) {
 //    TextField(

@@ -22,14 +22,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.painter.BitmapPainter
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import mt.pref.ThemeColor
 import mt.util.color.darkenColor
 import player.phonograph.R
@@ -91,7 +86,7 @@ class DetailModel : ViewModel() {
 }
 
 @Composable
-private fun DetailActivityContent(viewModel: DetailModel) {
+internal fun DetailActivityContent(viewModel: DetailModel) {
     val info by remember { mutableStateOf(viewModel.info) }
     val wrapper by remember { viewModel.artwork }
     val isDefaultArtwork by remember { viewModel.isDefaultArtwork }
@@ -174,16 +169,7 @@ private fun DetailActivityContent(viewModel: DetailModel) {
     }
 }
 
-@Preview(showBackground = true)
 @Composable
-fun Item(tag: String = "KeyName", value: String = "KeyValue") {
+internal fun Item(tag: String = "KeyName", value: String = "KeyValue") {
     VerticalTextItem(tag, value)
-}
-
-@Preview(showBackground = true)
-@Composable
-internal fun PreviewContent() {
-    PhonographTheme(previewMode = true) {
-        DetailActivityContent(DetailModel().apply { info = SongInfo("name") })
-    }
 }

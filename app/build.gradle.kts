@@ -230,7 +230,7 @@ dependencies {
     implementation(Deps.Compose.foundation)
     implementation(Deps.Compose.material)
     implementation(Deps.Compose.activity)
-    implementation(Deps.Compose.ui_tooling)
+    debugImplementation(Deps.Compose.ui_tooling)
 
     implementation(Deps.mdColorRes)
     implementation(Deps.mdUtil)
