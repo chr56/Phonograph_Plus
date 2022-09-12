@@ -72,17 +72,18 @@ class AlbumDetailActivityViewModel : ViewModel() {
                         lastFMUrl = null
                         wikiText = null
                         // parse
-                        lastFMUrl = lastFmAlbum.album?.url
-                        wikiText = lastFmAlbum.album?.wiki?.content?.trim().let { text: String? ->
-                            if (!text.isNullOrEmpty()) {
+                        lastFMUrl = lastFmAlbum.album.url
+                        wikiText = lastFmAlbum.album.wiki?.content?.trim()?.let { text ->
+                            if (text.isNotEmpty()) {
                                 Html.fromHtml(text, Html.FROM_HTML_MODE_LEGACY)
                             } else {
                                 // If the "lang" parameter is set and no wiki is given, retry with default language
                                 if (lang != null) {
                                     loadWiki(context, null, resultCallback)
                                     return
+                                } else {
+                                    SpannedString(context.getString(R.string.wiki_unavailable))
                                 }
-                                SpannedString(context.getString(R.string.failed))
                             }
                         }
                     }
