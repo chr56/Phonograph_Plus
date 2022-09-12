@@ -19,6 +19,7 @@ import lib.phonograph.cab.ToolbarCab
 import lib.phonograph.cab.createToolbarCab
 import mt.pref.ThemeColor.primaryColor
 import mt.tint.requireLightStatusbar
+ import mt.tint.setActivityToolbarColor
 import mt.tint.setActivityToolbarColorAuto
 import mt.tint.setNavigationBarColor
 import mt.tint.viewtint.tintMenu
@@ -141,7 +142,7 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity() {
         viewBinding.toolbar.setBackgroundColor(color)
         setSupportActionBar(viewBinding.toolbar) // needed to auto readjust the toolbar content color
         setStatusbarColor(color)
-        setActivityToolbarColorAuto(viewBinding.toolbar)
+        setActivityToolbarColor(viewBinding.toolbar, color)
 
         val secondaryTextColor = secondaryTextColor(color)
 
