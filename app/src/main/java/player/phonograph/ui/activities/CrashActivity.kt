@@ -25,6 +25,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import lib.phonograph.activity.ToolbarActivity
+import mt.util.color.primaryTextColor
 import player.phonograph.BuildConfig.DEBUG
 import player.phonograph.KEY_STACK_TRACE
 import player.phonograph.R
@@ -32,6 +33,7 @@ import player.phonograph.databinding.ActivityCrashBinding
 import player.phonograph.settings.SettingManager
 import player.phonograph.util.DeviceInfoUtil.getDeviceInfo
 import player.phonograph.util.ImageUtil.getTintedDrawable
+import player.phonograph.util.PhonographColorUtil.nightMode
 import player.phonograph.util.Util.currentDateTime
 import java.io.File
 import java.io.FileOutputStream
@@ -82,13 +84,14 @@ class CrashActivity : ToolbarActivity() {
 
         // display textview
         binding.crashText.text = displayText
+        binding.crashText.setTextColor(primaryTextColor(resources.nightMode))
 
         // button "copy to clipboard"
         binding.copyToClipboard.setOnClickListener {
             val clipboardManager = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
             val clipData = ClipData.newPlainText("CRASH", displayText)
             clipboardManager.setPrimaryClip(clipData)
-            Toast.makeText(this,"${getString(R.string.copy_to_clipboard)}:\n${getString(R.string.success)}",Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "${getString(R.string.copy_to_clipboard)}:\n${getString(R.string.success)}", Toast.LENGTH_SHORT).show()
         }
 
         // save crash report
