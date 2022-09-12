@@ -10,8 +10,8 @@ import kotlinx.serialization.Serializable
 
 @Keep
 @Serializable
-class LastFmImage {
+class LastFmImage(
     @SerialName("#text")
-    var text: String = ""
-    var size: String = ""
-}
+    var text: String,
+    var size: String?,
+)

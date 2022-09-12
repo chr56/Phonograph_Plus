@@ -34,7 +34,7 @@ object LastFMUtil {
     }
 
     @JvmStatic
-    fun getLargestAlbumImageUrl(images: List<LastFmAlbum.Album.Image>): String? {
+    fun getLargestAlbumImageUrl(images: List<LastFmImage>): String? {
         val imageUrls: MutableMap<ImageSize, String> = HashMap()
         for (image in images) {
             var size: ImageSize? = null
