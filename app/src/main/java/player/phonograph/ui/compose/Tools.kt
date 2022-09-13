@@ -24,7 +24,8 @@ object ColorTools {
             )
     }
 
-    fun Color.makeHighContrastWith(other: Color): Color {
-        return if (isColorRelevant(this, other)) this.getReverseColor() else this
+    inline fun makeSureContrastWith(backgroundColor: Color, block: () -> Color): Color {
+        val color = block()
+        return if (isColorRelevant(color, backgroundColor)) color.getReverseColor() else color
     }
 }

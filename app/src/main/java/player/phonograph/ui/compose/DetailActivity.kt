@@ -30,6 +30,7 @@ import mt.util.color.darkenColor
 import player.phonograph.R
 import player.phonograph.model.Song
 import player.phonograph.model.getReadableDurationString
+import player.phonograph.ui.compose.ColorTools.makeSureContrastWith
 import player.phonograph.ui.compose.base.ComposeToolbarActivity
 import player.phonograph.ui.compose.base.Title
 import player.phonograph.ui.compose.base.VerticalTextItem
@@ -90,16 +91,14 @@ internal fun DetailActivityContent(viewModel: DetailModel) {
     val info by remember { mutableStateOf(viewModel.info) }
     val wrapper by remember { viewModel.artwork }
     val isDefaultArtwork by remember { viewModel.isDefaultArtwork }
-    var paletteColor =
-        if (wrapper != null) {
-            Color(wrapper!!.paletteColor)
-        } else {
-            MaterialTheme.colors.primaryVariant
+    val paletteColor =
+        makeSureContrastWith(MaterialTheme.colors.surface) {
+            if (wrapper != null) {
+                Color(wrapper!!.paletteColor)
+            } else {
+                MaterialTheme.colors.primaryVariant
+            }
         }
-
-    if (ColorTools.isColorRelevant(MaterialTheme.colors.surface, paletteColor)) {
-        paletteColor = paletteColor.getReverseColor()
-    }
 
     Column(
         modifier = Modifier
