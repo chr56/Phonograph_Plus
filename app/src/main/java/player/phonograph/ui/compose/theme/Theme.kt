@@ -43,7 +43,7 @@ fun colorsLight(previewMode: Boolean): Colors {
         secondaryVariant = cfg[2],
         background = Color.White,
         surface = Color(0xFFDDDDDD),
-        error = Color(0xFFCCCCCC),
+        error = Color(0xFFB00020),
         onPrimary = Color.White,
         onSecondary = Color.Black,
         onBackground = Color.Black,
