@@ -1,20 +1,20 @@
 {
-    "version": "0.3.1",
-    "versionCode": 303,
+    "version": "0.3.2",
+    "versionCode": 310,
     "zh-cn": {
-        "logSummary": "\n\n<b>0.3.1 2022.8.18</b>\n<ol><li>翻译 更新意大利语(Andrea Enzo Lattmann (Gh0stz0x)), 法语(Exylos),俄语(Photon_Gilbert)</li><li>翻译 清理英式英语,加拿大英语翻译(仅保留拼写差异项)</li><li>翻译 移除 瑞典语(Swedish) 与 新挪威语(Norwegian Nynorsk) 翻译 (翻译缺失过多)</li><li>新增 初步支持应用内切换语言(暂不完美)</li><li>修复 旋转屏幕时崩溃</li><li>修复 正在播放列表被修改后, 当前曲目播放完后, 继续播放的音频却仍然为先前播放列表的下一曲, 但显示为新播放列表的下一曲</li><li>修复 &quot;保护播放列表不被肆意更改&quot;选项关闭后, 无法正确播放新播放列表(包括起始位置与曲目顺序)</li><li>修复 主播放器界面, &quot;即将播放&quot; 的后续曲目总计时不正确</li><li>改进 微调 崩溃界面 外观</li><li>改进 保存崩溃报告至应用外部(/Android/data)缓存文件夹内</li><li>开发 清理代码</li></ol>"
+        "logSummary": "\n\n<b>0.3.2 2022.9.13</b>\n<ol><li>翻译 更新 俄语(Photon_Gilber), 法语(Exylos)</li><li>开发 升级 targetSdk 至 33 (Android 13), 适配 Android 13 (实验性)</li><li>开发 移除 <code>Glide</code> , 使用 <code>Coil</code> 加载图片</li><li>开发 移除 <code>Gson</code> , 使用 <code>kotlin.serialization</code> 处理 Json</li><li>修复 浅色背景下图标颜色仍为白色</li><li>新增 在全部歌曲页面顶栏添加全部播放按钮</li><li>改进 添加请求“管理全部文件”权限的快捷方式</li><li>改进 扫描媒体与添加黑名单对话框使用新版UI</li><li>改进 重写部分字符串, 清理无用字符串</li><li>改进 改进更新日志对话框</li><li>改进 检查更新流程(防止更新提示重复弹出)</li><li>移除 报告错误界面, 使用对话框</li><li>移除 登录 Github 提交报告功能(对大多数人无用)</li><li>开发 清理更新依赖, 更新 AGP 至 7.2.2, 更新 kotlin 至 1.7.10, 增强混淆</li><li>发布 添加 fastlane metadata</li></ol>"
     },
     "en": {
-        "logSummary": "\n\n<b>0.3.1 2022.8.18</b>\n<ol><li>Translation: updated Italian (by Andrea Enzo Lattmann (Gh0stz0x)), French (by Exylos), Russian (by Photon_Gilbert)</li><li>Translation: clean up English(British), English(Canadian) translations (only keep words that are different from default English(US))</li><li>Translation: Remove Swedish and Norwegian Nynorsk translations (missing too many translations)</li><li>New: Initial support for changing language in app (imperfect yet)</li><li>Fix: Crash after rotation to landscape</li><li>Fix: After the playlist is modified, when the current track is finished, the audio of &quot;Next Track&quot; to play is still be &quot;Next Track&quot; of the PREVIOUS playlist, but player display the &quot;correct&quot; &quot;Next Track&quot; of the NEW playlist</li><li>Fix: Couldn&quot;t play new queue by clicking an Song item (including starting position and tracks order), when &quot;Please do NOT touch my playing queue arbitrarily&quot; option is turned off</li><li>Fix: In main player, total time of subsequent tracks (after &quot;Up Next&quot;) incorrectly</li><li>Improve: The design of Crash Report</li><li>Improve: Save crash report to external cache dir (/Android/data)</li><li>Development: clean code</li></ol>"
+        "logSummary": "\n\n<b>0.3.2 2022.9.13</b>\n<ol><li>Translation: updated Russian (by Photon_Gilber), French (by Exylos)</li><li>Development: upgrade targetSdk to 33 (Android 13) (experimental)</li><li>Development: remove <code>Glide</code>, use <code>Coil</code> to load images</li><li>Development: remove <code>Gson</code>, use <code>kotlin.serialization</code> to handle Json</li><li>Fix: the icon color is still white under light background</li><li>Add: &quot;play all&quot; buttons in the top bar of all songs page</li><li>Improve: add shortcut to grant &quot;Manage All Files&quot; permission</li><li>Improve: use new UI in &quot;Scan Media&quot; and &quot;Add To Blacklist&quot; dialogs</li><li>Improve: rewrite many strings, clean up useless strings</li><li>Improve: Improve changelog dialog</li><li>Improve: the check update procedure (and prevent popping up the update prompt repeatedly)</li><li>Remove: issues reporting page (use a smaller dialog instead now)</li><li>Remove: the feature of logging into Github to submit an issue (useless for most people)</li><li>Development: clean up and upgrade dependencies, upgrade AGP to 7.2.2, upgrade kotlin to 1.7.10, enhance obfuscation</li><li>Release: adding fastlane metadata</li></ol>"
     },
     "downloadSources": [
+        "Release: Github(v0.3.2)",
         "Release: Github(v0.3.1)",
-        "Release: Github(v0.3.0)",
         "Release(LTS): Github(v0.2.6.1)"
     ],
     "downloadUris": [
+        "https://github.com/chr56/Phonograph_Plus/releases/tag/v0.3.2",
         "https://github.com/chr56/Phonograph_Plus/releases/tag/v0.3.1",
-        "https://github.com/chr56/Phonograph_Plus/releases/tag/v0.3.0",
         "https://github.com/chr56/Phonograph_Plus/releases/tag/v0.2.6.1"
     ],
     "logSummary": "\n<b>请更新至新版本(至少高于v0.1.1), 此版本无法读取新更新日志\nUpdate Please (as least to version v0.1.1)! This version can not be read this changelogs.</b>"
