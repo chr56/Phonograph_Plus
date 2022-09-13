@@ -9,9 +9,9 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Surface
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
@@ -22,7 +22,7 @@ import androidx.compose.ui.graphics.Color
 import lib.phonograph.activity.ThemeActivity
 import mt.pref.ThemeColor
 import mt.util.color.darkenColor
-import mt.util.color.isColorLight
+import player.phonograph.ui.compose.components.PhonographAppBar
 import player.phonograph.ui.compose.theme.PhonographTheme
 
 abstract class ComposeToolbarActivity : ThemeActivity() {
@@ -63,30 +63,4 @@ abstract class ComposeToolbarActivity : ThemeActivity() {
     protected open val toolbarActions: @Composable (RowScope.() -> Unit) = {}
 
     protected open lateinit var appbarColor: MutableState<Color>
-}
-
-@Composable
-private fun PhonographAppBar(
-    title: @Composable () -> Unit,
-    backgroundColor: Color,
-    backClick: (() -> Unit) = { /* Empty*/ },
-    actions: @Composable (RowScope.() -> Unit) = { /* Empty*/ },
-) {
-    val contentColor = remember {
-        mutableStateOf(
-            if (isColorLight(backgroundColor.value.toInt())) Color.Black
-            else Color.White
-        )
-    }
-    TopAppBar(
-        title = title,
-        navigationIcon = {
-            IconButton(onClick = backClick) {
-                Icon(Icons.Default.ArrowBack, contentDescription = null)
-            }
-        },
-        actions = actions,
-        backgroundColor = backgroundColor,
-        contentColor = contentColor.value
-    )
 }
