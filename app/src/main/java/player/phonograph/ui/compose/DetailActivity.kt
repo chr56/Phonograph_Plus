@@ -147,38 +147,51 @@ internal fun InfoTable(info: SongInfo, titleColor: Color) {
         // File info
         Spacer(modifier = Modifier.height(16.dp))
         Title(stringResource(R.string.file), color = titleColor)
-        Item(stringResource(id = R.string.label_file_name), info.fileName ?: "-")
-        Item(stringResource(id = R.string.label_file_path), info.filePath ?: "-")
-        Item(stringResource(id = R.string.label_track_length), getReadableDurationString(info.trackLength ?: -1))
-        Item(stringResource(id = R.string.label_file_format), info.fileFormat ?: "-")
-        Item(stringResource(id = R.string.label_file_size), getFileSizeString(info.fileSize ?: -1))
-        Item(stringResource(id = R.string.label_bit_rate), "${info.bitRate ?: "-"} kb/s")
-        Item(stringResource(id = R.string.label_sampling_rate), "${info.samplingRate ?: "-"} Hz")
+        TagItem(stringResource(id = R.string.label_file_name), info.fileName)
+        TagItem(stringResource(id = R.string.label_file_path), info.filePath)
+        TagItem(stringResource(id = R.string.label_track_length), getReadableDurationString(info.trackLength ?: -1))
+        TagItem(stringResource(id = R.string.label_file_format), info.fileFormat)
+        TagItem(stringResource(id = R.string.label_file_size), getFileSizeString(info.fileSize ?: -1))
+        TagItem(stringResource(id = R.string.label_bit_rate), info.bitRate)
+        TagItem(stringResource(id = R.string.label_sampling_rate), info.samplingRate)
         // Common Tag
         Spacer(modifier = Modifier.height(16.dp))
         Title(stringResource(R.string.music_tags), color = titleColor)
-        Item(stringResource(id = R.string.title), info.title ?: "-")
-        Item(stringResource(id = R.string.artist), info.artist ?: "-")
-        Item(stringResource(id = R.string.album), info.album ?: "-")
-        Item(stringResource(id = R.string.album_artist), info.albumArtist ?: "-")
-        Item(stringResource(id = R.string.composer), info.composer ?: "-")
-        Item(stringResource(id = R.string.lyricist), info.lyricist ?: "-")
-        Item(stringResource(id = R.string.year), info.year ?: "-")
-        Item(stringResource(id = R.string.genre), info.genre ?: "-")
-        Item(stringResource(id = R.string.track), info.track ?: "-")
-        // Other Tag
-        Spacer(modifier = Modifier.height(8.dp))
-        Title(stringResource(R.string.other_information))
-        Item(stringResource(id = R.string.comment), info.comment ?: "-")
-        info.otherTags?.let { tags ->
-            for (tag in tags) {
-                Item(tag.key, tag.value)
+        TagItem(stringResource(id = R.string.title), info.title)
+        TagItem(stringResource(id = R.string.artist), info.artist)
+        TagItem(stringResource(id = R.string.album), info.album)
+        TagItem(stringResource(id = R.string.album_artist), info.albumArtist, true)
+        TagItem(stringResource(id = R.string.composer), info.composer, true)
+        TagItem(stringResource(id = R.string.lyricist), info.lyricist, true)
+        TagItem(stringResource(id = R.string.year), info.year)
+        TagItem(stringResource(id = R.string.genre), info.genre)
+        TagItem(stringResource(id = R.string.track), info.track, true)
+        // Other Tag (if available)
+        if (info.otherTags != null && info.comment != null) {
+            Spacer(modifier = Modifier.height(8.dp))
+            Title(stringResource(R.string.other_information))
+            TagItem(stringResource(id = R.string.comment), info.comment, true)
+            info.otherTags?.let { tags ->
+                for (tag in tags) {
+                    Item(tag.key, tag.value)
+                }
             }
         }
         // Lyrics
         // Spacer(modifier = Modifier.height(16.dp))
         // Title(stringResource(R.string.lyrics), color = color)
         Spacer(modifier = Modifier.height(16.dp))
+    }
+}
+
+@Composable
+internal fun TagItem(tag: String, value: String?, hideIfEmpty: Boolean = false) {
+    if (hideIfEmpty) {
+        if (!value.isNullOrEmpty()) {
+            Item(tag, value)
+        }
+    } else {
+        Item(tag, value ?: "-")
     }
 }
 
