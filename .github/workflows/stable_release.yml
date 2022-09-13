@@ -1,0 +1,40 @@
+name: stable_release
+on:
+  push:
+    tags:
+      - "v**"
+    paths-ignore:
+      - 'README.md'
+      - 'ReleaseNote.md'
+      - 'version.json'
+      - '.github/**'
+      - 'crowdin.yml'
+      - 'fastlane/metadata/android/**'
+
+jobs:
+  build:
+    name: Create Stable Release Template
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Create Stable Release Template
+        uses: softprops/action-gh-release@v1
+        id: release_github
+        if: startsWith(github.ref, 'refs/tags/v')
+        with:
+          token: ${{ secrets.TOKEN }}
+          name: "${{ github.ref_name }}"
+          draft: true
+          tag_name: ${{ github.ref }}
+          body: "
+            ## ${{ github.ref_name }} 2022.8.18
+            **Commitlog**: https://github.com/chr56/Phonograph_Plus/compare/
+            ### ZH
+            1.
+            2.
+            ### EN
+            1.
+            2.
+            "
+          # body_path: ${{ github.workspace }}/ReleaseNote.md
