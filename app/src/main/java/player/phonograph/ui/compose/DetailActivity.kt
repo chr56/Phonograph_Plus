@@ -33,8 +33,8 @@ import player.phonograph.model.Song
 import player.phonograph.model.getReadableDurationString
 import player.phonograph.ui.compose.ColorTools.makeSureContrastWith
 import player.phonograph.ui.compose.base.ComposeToolbarActivity
-import player.phonograph.ui.compose.base.Title
-import player.phonograph.ui.compose.base.VerticalTextItem
+import player.phonograph.ui.compose.components.Title
+import player.phonograph.ui.compose.components.VerticalTextItem
 import player.phonograph.ui.compose.theme.PhonographTheme
 import player.phonograph.util.SongDetailUtil
 import player.phonograph.util.SongDetailUtil.SongInfo
