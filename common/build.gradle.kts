@@ -14,18 +14,12 @@ android {
         targetSdk = 32
 //        namespace = "lib.phonograph.common" // todo: rename namespace
         namespace = "player.phonograph"
-
-
-        consumerProguardFiles("consumer-rules.pro")
     }
 
     buildTypes {
         release {
-            isMinifyEnabled = true
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
+            isMinifyEnabled = false
+            isShrinkResources = false
         }
     }
     compileOptions {
