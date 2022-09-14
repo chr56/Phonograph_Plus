@@ -1,6 +1,5 @@
 package player.phonograph
 
-import android.app.Application
 import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
@@ -24,7 +23,7 @@ import kotlin.system.exitProcess
 /**
  * @author Karim Abou Zeid (kabouzeid)
  */
-class App : Application(), ImageLoaderFactory {
+class App : BaseApp(), ImageLoaderFactory {
 
     val lyricsService: StatusBarLyric.API.StatusBarLyric by lazy {
         // StatusBar Lyrics API
