@@ -40,6 +40,7 @@ import mt.util.color.secondaryTextColor
 import player.phonograph.App
 import player.phonograph.BuildConfig
 import player.phonograph.R
+import player.phonograph.appshortcuts.getTintedVectorDrawable
 import player.phonograph.coil.BlurTransformation
 import player.phonograph.coil.target.PaletteTargetBuilder
 import player.phonograph.model.Song
@@ -307,7 +308,7 @@ class PlayingNotificationManger(private val service: MusicService) {
             val secondary = service.secondaryTextColor(bgColor)
 
             val prev = ImageUtil.createBitmap(
-                ImageUtil.getTintedVectorDrawable(
+                getTintedVectorDrawable(
                     service,
                     R.drawable.ic_skip_previous_white_24dp,
                     primary
@@ -315,7 +316,7 @@ class PlayingNotificationManger(private val service: MusicService) {
                 1.5f
             )
             val next = ImageUtil.createBitmap(
-                ImageUtil.getTintedVectorDrawable(
+                getTintedVectorDrawable(
                     service,
                     R.drawable.ic_skip_next_white_24dp,
                     primary
@@ -323,7 +324,7 @@ class PlayingNotificationManger(private val service: MusicService) {
                 1.5f
             )
             val playPause = ImageUtil.createBitmap(
-                ImageUtil.getTintedVectorDrawable(
+                getTintedVectorDrawable(
                     service,
                     if (service.isPlaying) R.drawable.ic_pause_white_24dp else R.drawable.ic_play_arrow_white_24dp,
                     primary

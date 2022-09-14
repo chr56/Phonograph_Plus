@@ -19,6 +19,7 @@ import coil.target.Target
 import mt.util.color.primaryTextColor
 import player.phonograph.App
 import player.phonograph.R
+import player.phonograph.appshortcuts.getTintedVectorDrawable
 import player.phonograph.appwidgets.base.BaseAppWidget
 import player.phonograph.service.MusicService
 import player.phonograph.ui.activities.MainActivity
@@ -67,7 +68,7 @@ class AppWidgetBig : BaseAppWidget() {
         appWidgetView.setImageViewBitmap(
             R.id.button_toggle_play_pause,
             ImageUtil.createBitmap(
-                ImageUtil.getTintedVectorDrawable(
+                getTintedVectorDrawable(
                     service,
                     playPauseRes,
                     service.primaryTextColor( true)
@@ -79,7 +80,7 @@ class AppWidgetBig : BaseAppWidget() {
         appWidgetView.setImageViewBitmap(
             R.id.button_next,
             ImageUtil.createBitmap(
-                ImageUtil.getTintedVectorDrawable(
+                getTintedVectorDrawable(
                     service,
                     R.drawable.ic_skip_next_white_24dp,
                     service.primaryTextColor( true)
@@ -89,7 +90,7 @@ class AppWidgetBig : BaseAppWidget() {
         appWidgetView.setImageViewBitmap(
             R.id.button_prev,
             ImageUtil.createBitmap(
-                ImageUtil.getTintedVectorDrawable(
+                getTintedVectorDrawable(
                     service,
                     R.drawable.ic_skip_previous_white_24dp,
                     service.primaryTextColor( true)

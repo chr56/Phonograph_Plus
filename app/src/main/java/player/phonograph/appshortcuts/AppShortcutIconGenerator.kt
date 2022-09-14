@@ -49,8 +49,8 @@ object AppShortcutIconGenerator {
 
     private fun generateThemedIcon(context: Context, iconId: Int, foregroundColor: Int, backgroundColor: Int): IconCompat {
         // Get and tint foreground and background drawables
-        val vectorDrawable = ImageUtil.getTintedVectorDrawable(context, iconId, foregroundColor)
-        val backgroundDrawable = ImageUtil.getTintedVectorDrawable(context, R.drawable.ic_app_shortcut_background, backgroundColor)
+        val vectorDrawable = getTintedVectorDrawable(context, iconId, foregroundColor)
+        val backgroundDrawable = getTintedVectorDrawable(context, R.drawable.ic_app_shortcut_background, backgroundColor)
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val adaptiveIconDrawable = AdaptiveIconDrawable(backgroundDrawable, vectorDrawable)
             IconCompat.createWithAdaptiveBitmap(ImageUtil.createBitmap(adaptiveIconDrawable))

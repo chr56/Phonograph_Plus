@@ -16,6 +16,7 @@ import androidx.core.content.res.ResourcesCompat
 import mt.util.color.getPrimaryTextColor
 import player.phonograph.MusicServiceMsgConst
 import player.phonograph.R
+import player.phonograph.appshortcuts.getTintedVectorDrawable
 import player.phonograph.model.Song
 import player.phonograph.model.infoString
 import player.phonograph.service.MusicService
@@ -89,7 +90,7 @@ abstract class BaseAppWidget : AppWidgetProvider() {
         view.setImageViewBitmap(
             R.id.button_next,
             ImageUtil.createBitmap(
-                ImageUtil.getTintedVectorDrawable(
+                getTintedVectorDrawable(
                     context, R.drawable.ic_skip_next_white_24dp, getPrimaryTextColor(context, false)
                 )
             )
@@ -97,7 +98,7 @@ abstract class BaseAppWidget : AppWidgetProvider() {
         view.setImageViewBitmap(
             R.id.button_prev,
             ImageUtil.createBitmap(
-                ImageUtil.getTintedVectorDrawable(
+                getTintedVectorDrawable(
                     context, R.drawable.ic_skip_previous_white_24dp, getPrimaryTextColor(context, false)
                 )
             )
@@ -105,7 +106,7 @@ abstract class BaseAppWidget : AppWidgetProvider() {
         view.setImageViewBitmap(
             R.id.button_toggle_play_pause,
             ImageUtil.createBitmap(
-                ImageUtil.getTintedVectorDrawable(
+                getTintedVectorDrawable(
                     context, R.drawable.ic_play_arrow_white_24dp, getPrimaryTextColor(context, false)
                 )
             )

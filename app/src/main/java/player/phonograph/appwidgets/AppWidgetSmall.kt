@@ -16,6 +16,7 @@ import coil.request.ImageRequest
 import mt.util.color.getSecondaryTextColor
 import player.phonograph.App
 import player.phonograph.R
+import player.phonograph.appshortcuts.getTintedVectorDrawable
 import player.phonograph.appwidgets.Util.createRoundedBitmap
 import player.phonograph.appwidgets.base.BaseAppWidget
 import player.phonograph.coil.target.PaletteTargetBuilder
@@ -111,7 +112,7 @@ class AppWidgetSmall : BaseAppWidget() {
         appWidgetView.setImageViewBitmap(
             R.id.button_toggle_play_pause,
             ImageUtil.createBitmap(
-                ImageUtil.getTintedVectorDrawable(
+                getTintedVectorDrawable(
                     service,
                     playPauseRes,
                     color
@@ -123,7 +124,7 @@ class AppWidgetSmall : BaseAppWidget() {
         appWidgetView.setImageViewBitmap(
             R.id.button_next,
             ImageUtil.createBitmap(
-                ImageUtil.getTintedVectorDrawable(
+                getTintedVectorDrawable(
                     service,
                     R.drawable.ic_skip_next_white_24dp,
                     color
@@ -133,7 +134,7 @@ class AppWidgetSmall : BaseAppWidget() {
         appWidgetView.setImageViewBitmap(
             R.id.button_prev,
             ImageUtil.createBitmap(
-                ImageUtil.getTintedVectorDrawable(
+                getTintedVectorDrawable(
                     service,
                     R.drawable.ic_skip_previous_white_24dp,
                     color

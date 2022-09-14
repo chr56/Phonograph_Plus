@@ -15,7 +15,6 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.BlendModeColorFilterCompat
 import androidx.core.graphics.BlendModeCompat
 import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
-import mt.util.drawable.createTintedDrawable
 import java.io.InputStream
 import kotlin.math.roundToInt
 
@@ -73,24 +72,6 @@ object ImageUtil {
             ResourcesCompat.getDrawable(res, resId, theme)!!
         } else VectorDrawableCompat.create(res, resId, theme)!!
     }
-
-    fun getTintedVectorDrawable(
-        res: Resources,
-        @DrawableRes resId: Int,
-        theme: Theme?,
-        @ColorInt color: Int
-    ): Drawable? =
-        createTintedDrawable(getVectorDrawable(res, resId, theme), color)
-
-    fun getTintedVectorDrawable(context: Context, @DrawableRes id: Int, @ColorInt color: Int): Drawable {
-        return createTintedDrawable(
-            getVectorDrawable(context.resources, id, context.theme),
-            color
-        )!!
-    }
-
-    fun getVectorDrawable(context: Context, @DrawableRes id: Int): Drawable =
-        getVectorDrawable(context.resources, id, context.theme)
 
     fun resolveDrawable(context: Context, @AttrRes drawableAttr: Int): Drawable {
         val a = context.obtainStyledAttributes(intArrayOf(drawableAttr))
