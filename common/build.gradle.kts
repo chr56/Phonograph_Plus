@@ -1,4 +1,5 @@
 import version.management.Deps
+
 plugins {
     id("com.android.library")
     id("kotlin-android")
@@ -11,7 +12,9 @@ android {
     defaultConfig {
         minSdk = 24
         targetSdk = 32
-        namespace = "lib.phonograph.common"
+//        namespace = "lib.phonograph.common" // todo: rename namespace
+        namespace = "player.phonograph"
+
 
         consumerProguardFiles("consumer-rules.pro")
     }
