@@ -16,8 +16,9 @@ import coil.fetch.FetchResult
 import coil.fetch.Fetcher
 import coil.request.Options
 import coil.size.Size
-import player.phonograph.BuildConfig.DEBUG
+import lib.phonograph.BuildConfig.DEBUG
 import player.phonograph.coil.*
+import player.phonograph.util.module.IgnoreMediaStorePreference
 
 class AudioFileFetcher private constructor(
     private val audioFile: AudioFile,

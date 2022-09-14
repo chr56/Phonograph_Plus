@@ -17,7 +17,7 @@ import android.util.Log
 import androidx.annotation.FloatRange
 import coil.size.Size
 import coil.transform.Transformation
-import player.phonograph.BuildConfig
+import lib.phonograph.BuildConfig
 import lib.phonograph.misc.StackBlur
 
 

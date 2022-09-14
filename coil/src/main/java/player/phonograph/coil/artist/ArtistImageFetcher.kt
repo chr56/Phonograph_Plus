@@ -16,11 +16,12 @@ import coil.fetch.FetchResult
 import coil.fetch.Fetcher
 import coil.request.Options
 import coil.size.Size
-import player.phonograph.BuildConfig
+import lib.phonograph.BuildConfig.DEBUG
 import player.phonograph.coil.*
 import player.phonograph.coil.readFromMediaStore
 import player.phonograph.coil.retrieveFromJAudioTagger
 import player.phonograph.coil.retrieveFromMediaMetadataRetriever
+import player.phonograph.util.module.IgnoreMediaStorePreference
 
 class ArtistImageFetcher(val data: ArtistImage, val context: Context, val size: Size) : Fetcher {
 
@@ -87,7 +88,7 @@ class ArtistImageFetcher(val data: ArtistImage, val context: Context, val size: 
                 DataSource.DISK
             )
         } else {
-            if (BuildConfig.DEBUG) {
+            if (DEBUG) {
                 Log.v(TAG, "No any cover for artist ${data.artistName}(${data.artistId})")
             }
             null

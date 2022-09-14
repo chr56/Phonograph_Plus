@@ -44,6 +44,8 @@ dependencies {
     implementation(Deps.AndroidX.lifecycle_runtime)
     implementation(Deps.AndroidX.annotation)
     implementation(Deps.AndroidX.palette)
+    implementation(Deps.AndroidX.preference)
+
 
     implementation(Deps.AndroidX.recyclerview)
     implementation(Deps.AndroidX.constraintlayout)

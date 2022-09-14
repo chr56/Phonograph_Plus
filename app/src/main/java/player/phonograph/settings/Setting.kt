@@ -63,7 +63,7 @@ class Setting(context: Context) {
     var nowPlayingScreenIndex: Int by IntPref(NOW_PLAYING_SCREEN_ID, 0)
 
     // Behavior-File
-    var ignoreMediaStoreArtwork: Boolean by BooleanPref(IGNORE_MEDIA_STORE_ARTWORK, false)
+    // var ignoreMediaStoreArtwork: Boolean by BooleanPref(IGNORE_MEDIA_STORE_ARTWORK, false) // moved to `common`
     var autoDownloadImagesPolicy: String by StringPref(AUTO_DOWNLOAD_IMAGES_POLICY, "never")
 
     // Behavior-Playing
@@ -236,7 +236,7 @@ class Setting(context: Context) {
         const val NOW_PLAYING_SCREEN_ID = "now_playing_screen_id"
 
         // Behavior-File
-        const val IGNORE_MEDIA_STORE_ARTWORK = "ignore_media_store_artwork"
+        // const val IGNORE_MEDIA_STORE_ARTWORK = "ignore_media_store_artwork" // moved to `common`
         private const val AUTO_DOWNLOAD_IMAGES_POLICY = "auto_download_images_policy"
 
         // Behavior-Playing
