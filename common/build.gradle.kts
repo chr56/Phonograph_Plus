@@ -39,4 +39,15 @@ dependencies {
 
     implementation(Deps.AndroidX.core)
     implementation(Deps.AndroidX.appcompat)
+    implementation(Deps.AndroidX.activity)
+    implementation(Deps.AndroidX.fragment)
+    implementation(Deps.AndroidX.lifecycle_runtime)
+    implementation(Deps.AndroidX.annotation)
+
+    implementation(Deps.AndroidX.recyclerview)
+    implementation(Deps.AndroidX.constraintlayout)
+
+    implementation(Deps.google_material)
+
+    implementation(Deps.okhttp3)
 }
