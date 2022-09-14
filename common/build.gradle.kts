@@ -29,6 +29,10 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
+
+    buildFeatures {
+        buildConfig = false
+    }
 }
 
 dependencies {
