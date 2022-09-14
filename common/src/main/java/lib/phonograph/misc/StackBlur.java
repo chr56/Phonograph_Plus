@@ -1,8 +1,8 @@
 /*
- * Copyright (c) 2022 chr_56 & Abou Zeid (kabouzeid) (original author)
+ * Copyright (c) 2022 chr_56
  */
 
-package util.phonograph.misc;
+package lib.phonograph.misc;
 
 import android.graphics.Bitmap;
 
