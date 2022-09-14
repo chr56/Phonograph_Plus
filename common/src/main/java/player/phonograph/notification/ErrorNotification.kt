@@ -14,7 +14,7 @@ import android.content.Intent
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
-import player.phonograph.App
+import player.phonograph.BaseApp
 import player.phonograph.R
 
 object ErrorNotification {
@@ -38,7 +38,7 @@ object ErrorNotification {
     }
 
     fun postErrorNotification(e: Throwable, note: String? = null) =
-        postErrorNotification(e, note, App.instance)
+        postErrorNotification(e, note, BaseApp.instance)
 
     fun postErrorNotification(e: Throwable, note: String? = null, context: Context) {
         send(
@@ -49,12 +49,12 @@ object ErrorNotification {
     }
 
     fun postErrorNotification(note: String) =
-        postErrorNotification(note, App.instance)
+        postErrorNotification(note, BaseApp.instance)
 
     fun postErrorNotification(note: String, context: Context) {
         send(
             msg = note,
-            title = App.instance.getString(R.string.error_notification_name),
+            title = context.getString(R.string.error_notification_name),
             context = context
         )
     }
