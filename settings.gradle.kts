@@ -16,4 +16,4 @@ rootProject.buildFileName = "build.gradle.kts"
 
 include(":app")
 includeBuild(file("version-management"))
-include(":common")
+include(":common",":coil")
