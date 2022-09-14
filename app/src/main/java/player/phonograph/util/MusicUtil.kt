@@ -14,9 +14,6 @@ import java.io.IOException
  */
 object MusicUtil {
 
-    fun getMediaStoreAlbumCoverUri(albumId: Long): Uri =
-        ContentUris.withAppendedId(Uri.parse("content://media/external/audio/albumart"), albumId)
-
     fun getSongFileUri(songId: Long): Uri {
         return ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, songId)
     }

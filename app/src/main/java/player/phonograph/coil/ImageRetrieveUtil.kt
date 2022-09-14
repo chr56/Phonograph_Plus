@@ -27,7 +27,7 @@ import okio.Path.Companion.toOkioPath
 import okio.buffer
 import okio.source
 import org.jaudiotagger.audio.mp3.MP3File
-import player.phonograph.util.MusicUtil.getMediaStoreAlbumCoverUri
+import player.phonograph.coil.util.getMediaStoreAlbumCoverUri
 
 internal fun readFromMediaStore(albumId: Long, context: Context, size: Size): SourceResult? {
     return runCatching {
@@ -121,3 +121,4 @@ internal fun readJEPGFile(file: File, diskCacheKey: String? = null): SourceResul
 }
 
 fun ByteArray.toBitmap(): Bitmap = BitmapFactory.decodeByteArray(this, 0, this.size)
+

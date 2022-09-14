@@ -16,15 +16,15 @@ import androidx.core.graphics.drawable.toBitmapOrNull
 import coil.Coil
 import coil.request.ImageRequest
 import coil.target.Target
-import java.io.BufferedOutputStream
-import java.io.File
-import java.io.FileOutputStream
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import player.phonograph.notification.ErrorNotification
-import player.phonograph.util.CoroutineUtil.createDefaultExceptionHandler
 import player.phonograph.util.ImageUtil.resizeBitmap
+import java.io.BufferedOutputStream
+import java.io.File
+import java.io.FileOutputStream
 
 /**
  * Class that manage custom artist image
@@ -93,6 +93,7 @@ class CustomArtistImageStore private constructor(context: Context) {
                         override fun onError(error: Drawable?) {
                             sendErrorInfo(name)
                         }
+
                         override fun onSuccess(result: Drawable) {
                             val bitmap = result.toBitmapOrNull()
                             if (bitmap != null) {
@@ -111,7 +112,7 @@ class CustomArtistImageStore private constructor(context: Context) {
      * set a custom artist image
      */
     fun setCustomArtistImage(context: Context, artistId: Long, artistName: String, bitmap: Bitmap) {
-        CoroutineScope(createDefaultExceptionHandler(TAG, "Fail to save $artistName image"))
+        CoroutineScope(exceptionHandler)
             .launch(Dispatchers.IO) {
                 val file = File(storeDir, getArtistFileName(artistId, artistName))
                 val result = runCatching {
@@ -135,12 +136,21 @@ class CustomArtistImageStore private constructor(context: Context) {
      * remove a custom artist image if exist
      */
     fun resetCustomArtistImage(context: Context, artistId: Long, artistName: String) {
-        CoroutineScope(createDefaultExceptionHandler(TAG, "Fail to save $artistName image"))
+        CoroutineScope(exceptionHandler)
             .launch {
                 preferences.edit().putBoolean(getArtistFileName(artistId, artistName), false).apply()
                 context.contentResolver.notifyChange(EXTERNAL_CONTENT_URI, null)
                 // trigger media store changed to force artist image reload
                 File(storeDir, getArtistFileName(artistId, artistName)).delete()
             }
+    }
+
+    private val exceptionHandler by lazy(LazyThreadSafetyMode.PUBLICATION) {
+        CoroutineExceptionHandler { _, exception ->
+            ErrorNotification
+                .postErrorNotification(
+                    exception, "Fail to save artist image: ${exception.message}"
+                )
+        }
     }
 }

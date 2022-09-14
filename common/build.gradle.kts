@@ -43,6 +43,7 @@ dependencies {
     implementation(Deps.AndroidX.fragment)
     implementation(Deps.AndroidX.lifecycle_runtime)
     implementation(Deps.AndroidX.annotation)
+    implementation(Deps.AndroidX.palette)
 
     implementation(Deps.AndroidX.recyclerview)
     implementation(Deps.AndroidX.constraintlayout)

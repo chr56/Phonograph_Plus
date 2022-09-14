@@ -3,16 +3,12 @@ package player.phonograph.util
 import android.content.Context
 import android.content.res.Configuration
 import android.content.res.Resources
-import android.graphics.Bitmap
 import androidx.annotation.ColorInt
-import androidx.palette.graphics.Palette
-import androidx.palette.graphics.Palette.Swatch
 import mt.util.color.darkenColor
 import mt.util.color.isColorLight
 import mt.util.color.lightenColor
 import player.phonograph.R
 import player.phonograph.util.preferences.StyleConfig
-import java.util.*
 
 
 /**
@@ -58,39 +54,5 @@ object PhonographColorUtil {
         var newColor = backgroundColor
         while (!isColorLight(newColor)) newColor = lightenColor(newColor)
         return newColor
-    }
-
-    @JvmStatic
-    fun generatePalette(bitmap: Bitmap): Palette = Palette.from(bitmap).generate()
-
-    @JvmStatic
-    @ColorInt
-    fun getColor(palette: Palette?, fallback: Int): Int {
-        if (palette != null) {
-            when {
-                palette.vibrantSwatch != null -> return palette.vibrantSwatch!!.rgb
-                palette.mutedSwatch != null -> return palette.mutedSwatch!!.rgb
-                palette.darkVibrantSwatch != null -> return palette.darkVibrantSwatch!!.rgb
-                palette.darkMutedSwatch != null -> return palette.darkMutedSwatch!!.rgb
-                palette.lightVibrantSwatch != null -> return palette.lightVibrantSwatch!!.rgb
-                palette.lightMutedSwatch != null -> return palette.lightMutedSwatch!!.rgb
-                palette.swatches.isNotEmpty() -> return Collections.max(palette.swatches, SwatchComparator.instance).rgb
-            }
-        }
-        return fallback
-    }
-
-    private class SwatchComparator : Comparator<Swatch> {
-        override fun compare(lhs: Swatch, rhs: Swatch): Int = lhs.population - rhs.population
-
-        companion object {
-            private var mInstance: SwatchComparator? = null
-
-            val instance: SwatchComparator?
-                get() {
-                    if (mInstance == null) mInstance = SwatchComparator()
-                    return mInstance
-                }
-        }
     }
 }

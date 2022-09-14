@@ -5,6 +5,7 @@
 package util.phonograph.tageditor;
 
 import static mt.util.color.MiscKt.resolveColor;
+import static player.phonograph.util.PaletteUtil.generatePalette;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -36,11 +37,11 @@ import kotlin.Unit;
 import mt.util.color.ToolbarColor;
 import player.phonograph.R;
 import player.phonograph.coil.target.PaletteTargetBuilder;
+import player.phonograph.util.PaletteUtil;
 import player.phonograph.databinding.ActivityAlbumTagEditorBinding;
 import player.phonograph.mediastore.AlbumLoader;
 import player.phonograph.model.Song;
 import player.phonograph.util.ImageUtil;
-import player.phonograph.util.PhonographColorUtil;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -104,7 +105,7 @@ public class AlbumTagEditorActivity extends AbsTagEditorActivity implements Text
         if (bitmap != null) {
             setImageBitmap(
                     bitmap,
-                    PhonographColorUtil.getColor(PhonographColorUtil.generatePalette(bitmap), resolveColor(this, R.attr.defaultFooterColor))
+                    PaletteUtil.getColor(generatePalette(bitmap), resolveColor(this, R.attr.defaultFooterColor))
             );
         }
         deleteAlbumArt = false;
