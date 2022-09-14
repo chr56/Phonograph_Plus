@@ -16,6 +16,7 @@ import mt.pref.internal.ThemeStore
 import player.phonograph.appshortcuts.DynamicShortcutManager
 import player.phonograph.coil.createPhonographImageLoader
 import player.phonograph.notification.ErrorNotification
+import player.phonograph.notification.ErrorNotification.KEY_STACK_TRACE
 import player.phonograph.service.queue.QueueManager
 import player.phonograph.ui.activities.CrashActivity
 import kotlin.system.exitProcess

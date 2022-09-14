@@ -27,7 +27,7 @@ import kotlinx.coroutines.launch
 import lib.phonograph.activity.ToolbarActivity
 import mt.util.color.primaryTextColor
 import player.phonograph.BuildConfig.DEBUG
-import player.phonograph.KEY_STACK_TRACE
+import player.phonograph.notification.ErrorNotification.KEY_STACK_TRACE
 import player.phonograph.R
 import player.phonograph.databinding.ActivityCrashBinding
 import player.phonograph.settings.SettingManager

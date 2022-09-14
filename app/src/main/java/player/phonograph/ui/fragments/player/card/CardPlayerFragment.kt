@@ -247,7 +247,6 @@ class CardPlayerFragment :
             val fab = (fragment.playbackControlsFragment as CardPlayerControllerFragment).playerPlayPauseFab
             val progressSliderHeight = (fragment.playbackControlsFragment as CardPlayerControllerFragment).progressSliderHeight
             if (progressSliderHeight < 0) {
-                ErrorNotification.init()
                 ErrorNotification.postErrorNotification(
                     IllegalStateException(
                         "CardPlayer's progressSliderHeight is less than 0: $progressSliderHeight"

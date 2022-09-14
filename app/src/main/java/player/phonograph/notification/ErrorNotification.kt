@@ -4,15 +4,17 @@
 
 package player.phonograph.notification
 
-import android.app.*
+import android.app.Activity
+import android.app.Notification
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import player.phonograph.App
-import player.phonograph.KEY_STACK_TRACE
-import player.phonograph.NOTIFICATION_CHANNEL_ID_ERROR
 import player.phonograph.R
 
 object ErrorNotification {
@@ -26,30 +28,51 @@ object ErrorNotification {
 
     private var count = 0
 
-    fun init() {
+    fun init(context: Context) {
         notificationManager =
-            App.instance.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && notificationManager != null) {
-            createNotificationChannel(notificationManager!!)
+            createNotificationChannel(notificationManager!!, context)
         }
         isReady = true
     }
 
-    fun postErrorNotification(e: Throwable, note: String? = null, context: Context = App.instance) {
-        send(msg = "$note\n${e::class.simpleName}\n${e.message}", title = "${e::class.simpleName}\n$note", context = context)
-    }
-    fun postErrorNotification(note: String, context: Context = App.instance) {
-        send(msg = note, title = App.instance.getString(R.string.error_notification_name), context = context)
+    fun postErrorNotification(e: Throwable, note: String? = null) =
+        postErrorNotification(e, note, App.instance)
+
+    fun postErrorNotification(e: Throwable, note: String? = null, context: Context) {
+        send(
+            msg = "$note\n${e::class.simpleName}\n${e.message}",
+            title = "${e::class.simpleName}\n$note",
+            context = context
+        )
     }
 
-    private fun send(msg: String, title: String? = null, context: Context = App.instance) {
-        if (!isReady) init()
+    fun postErrorNotification(note: String) =
+        postErrorNotification(note, App.instance)
+
+    fun postErrorNotification(note: String, context: Context) {
+        send(
+            msg = note,
+            title = App.instance.getString(R.string.error_notification_name),
+            context = context
+        )
+    }
+
+    private fun send(msg: String, title: String? = null, context: Context) {
+        if (!isReady) init(context)
 
         val action = Intent(context, crashActivity).apply {
             putExtra(KEY_STACK_TRACE, msg)
         }
 
-        val clickIntent: PendingIntent = PendingIntent.getActivity(context, 0, action, PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT)
+        val clickIntent: PendingIntent =
+            PendingIntent.getActivity(
+                context,
+                0,
+                action,
+                PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+            )
 
         notificationManager?.let { notificationManager ->
             val notification: Notification =
@@ -76,14 +99,13 @@ object ErrorNotification {
     }
 
     @RequiresApi(26)
-    private fun createNotificationChannel(notificationManager: NotificationManager) {
-
+    private fun createNotificationChannel(notificationManager: NotificationManager, context: Context) {
         var notificationChannel: NotificationChannel? =
             notificationManager.getNotificationChannel(NOTIFICATION_CHANNEL_ID_ERROR)
         if (notificationChannel == null) {
             notificationChannel = NotificationChannel(
                 NOTIFICATION_CHANNEL_ID_ERROR,
-                App.instance.getString(R.string.error_notification_name),
+                context.getString(R.string.error_notification_name),
                 NotificationManager.IMPORTANCE_HIGH
             )
             notificationChannel.enableLights(false)
@@ -91,4 +113,7 @@ object ErrorNotification {
             notificationManager.createNotificationChannel(notificationChannel)
         }
     }
+
+    const val KEY_STACK_TRACE = "stack_trace"
+    private const val NOTIFICATION_CHANNEL_ID_ERROR = "error_notification"
 }
