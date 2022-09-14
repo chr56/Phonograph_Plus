@@ -1,8 +1,11 @@
+/*
+ * Copyright (c) 2022 chr_56
+ */
+
 package player.phonograph.util
 
 import android.content.Context
 import android.content.res.Resources
-import android.content.res.Resources.Theme
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Canvas
@@ -67,7 +70,7 @@ object ImageUtil {
         return bitmap
     }
 
-    fun getVectorDrawable(res: Resources, @DrawableRes resId: Int, theme: Theme?): Drawable {
+    fun getVectorDrawable(res: Resources, @DrawableRes resId: Int, theme: Resources.Theme?): Drawable {
         return if (Build.VERSION.SDK_INT >= 21) {
             ResourcesCompat.getDrawable(res, resId, theme)!!
         } else VectorDrawableCompat.create(res, resId, theme)!!
