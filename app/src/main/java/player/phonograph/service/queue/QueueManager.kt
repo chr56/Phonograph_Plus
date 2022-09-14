@@ -231,7 +231,12 @@ class QueueManager(val context: Application) {
             }
         }
 
+    private var firstInitShuffleMode = true
     private fun applyNewShuffleMode(newShuffleMode: ShuffleMode) {
+        if (firstInitShuffleMode) {
+            firstInitShuffleMode = false
+            return
+        }
         synchronized(shuffleMode) {
             when (newShuffleMode) {
                 ShuffleMode.SHUFFLE -> {
@@ -406,23 +411,23 @@ class QueueManager(val context: Application) {
      * synchronized
      */
     private fun restoreAllState() {
-        val restoredQueue = MusicPlaybackQueueStore.getInstance(context).savedPlayingQueue
-        val restoredOriginalQueue = MusicPlaybackQueueStore.getInstance(context).savedOriginalPlayingQueue
-        val restoredPosition = PreferenceManager
-            .getDefaultSharedPreferences(context).getInt(PREF_POSITION, -1)
-
-        if (restoredQueue.isNotEmpty() && restoredQueue.size == restoredOriginalQueue.size && restoredPosition != -1) {
-            _originalPlayingQueue = restoredOriginalQueue.toMutableList()
-            _playingQueue = restoredQueue.toMutableList()
-            currentSongPosition = restoredPosition
-        }
 
         PreferenceManager.getDefaultSharedPreferences(context).getInt(PREF_SHUFFLE_MODE, 0).let {
+            firstInitShuffleMode = true
             shuffleMode = ShuffleMode.deserialize(it)
         }
         PreferenceManager.getDefaultSharedPreferences(context).getInt(PREF_REPEAT_MODE, 0).let {
             repeatMode = RepeatMode.deserialize(it)
         }
+
+        val restoredQueue = MusicPlaybackQueueStore.getInstance(context).savedPlayingQueue
+        val restoredOriginalQueue = MusicPlaybackQueueStore.getInstance(context).savedOriginalPlayingQueue
+        val restoredPosition = PreferenceManager
+            .getDefaultSharedPreferences(context).getInt(PREF_POSITION, -1)
+
+        _playingQueue = restoredQueue.toMutableList()
+        _originalPlayingQueue = restoredOriginalQueue.toMutableList()
+        currentSongPosition = restoredPosition
 
         observers.executeForEach {
             onStateRestored()
