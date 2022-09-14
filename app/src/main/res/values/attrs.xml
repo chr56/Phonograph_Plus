@@ -5,8 +5,6 @@
     <attr name="rectSelector" format="reference" />
     <attr name="rectSelectorStrong" format="reference" />
 
-    <attr name="defaultFooterColor" format="color" />
-
     <attr name="toolbarPopupTheme" format="reference" />
 
     <attr name="iconColor" format="color" />

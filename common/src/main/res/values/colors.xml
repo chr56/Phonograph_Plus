@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="defaultFooterColor">#E0E0E0</color> <!-- @color/md_grey_300 -->
+</resources>

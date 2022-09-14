@@ -9,7 +9,6 @@
     <color name="app_shortcut_default_background">@color/md_grey_600</color>
 
     <color name="cardBackgroundColor">@color/md_grey_800</color>
-    <color name="defaultFooterColor">@color/md_grey_900</color>
     <color name="dividerColor">@color/md_divider_white</color>
     <color name="iconColor">@color/MD_secondary_text_dark</color>
 
