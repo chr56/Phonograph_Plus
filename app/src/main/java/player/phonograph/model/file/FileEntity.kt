@@ -4,10 +4,7 @@
 
 package player.phonograph.model.file
 
-import player.phonograph.App
-import player.phonograph.mediastore.MediaStoreUtil
 import player.phonograph.model.sort.SortRef
-import player.phonograph.model.Song
 import player.phonograph.settings.Setting
 
 /**
@@ -47,9 +44,7 @@ sealed class FileEntity(
         val size: Long = -1,
         dateAdded: Long = -1,
         dateModified: Long = -1,
-    ) : FileEntity(location, name, dateAdded, dateModified) {
-        val linkedSong: Song get() = MediaStoreUtil.getSong(App.instance, id)
-    }
+    ) : FileEntity(location, name, dateAdded, dateModified)
 
     class Folder(
         location: Location,

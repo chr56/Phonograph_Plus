@@ -288,6 +288,8 @@ object MediaStoreUtil {
             .show()
     }
 
+    fun FileEntity.File.linkedSong(context: Context): Song = MediaStoreUtil.getSong(context, id)
+
     fun scanFiles(context: Context, paths: Array<String>, mimeTypes: Array<String>) {
         var failed: Int = 0
         var scanned: Int = 0
@@ -298,7 +300,7 @@ object MediaStoreUtil {
                 scanned++
             }
             val text = "${context.resources.getString(R.string.scanned_files, scanned, scanned + failed)} ${
-            if (failed > 0) String.format(context.resources.getString(R.string.could_not_scan_files, failed)) else ""
+                if (failed > 0) String.format(context.resources.getString(R.string.could_not_scan_files, failed)) else ""
             }"
             Toast.makeText(context, text, Toast.LENGTH_SHORT).show()
         }

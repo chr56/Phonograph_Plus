@@ -27,6 +27,7 @@ import player.phonograph.adapter.base.MultiSelectionCabController
 import player.phonograph.coil.loadImage
 import player.phonograph.databinding.ItemListBinding
 import player.phonograph.mediastore.MediaStoreUtil
+import player.phonograph.mediastore.MediaStoreUtil.linkedSong
 import player.phonograph.misc.UpdateToastMediaScannerCompletionListener
 import player.phonograph.model.file.FileEntity
 import player.phonograph.util.preferences.FileConfig
@@ -96,7 +97,7 @@ class FilesPageAdapter(
             if (item is FileEntity.File) {
                 if (loadCover) {
                     loadImage(image.context) {
-                        data(item.linkedSong)
+                        data(item.linkedSong(context))
                         target(
                             onStart = {
                                 image.setImageDrawable(
@@ -130,7 +131,7 @@ class FilesPageAdapter(
             context as AppCompatActivity
             return when (fileItem) {
                 is FileEntity.File -> {
-                    val song = fileItem.linkedSong
+                    val song = fileItem.linkedSong(context)
                     onSongMenuItemClick(context, song, item.itemId)
                 }
                 is FileEntity.Folder -> {
@@ -140,7 +141,7 @@ class FilesPageAdapter(
                             CoroutineScope(SupervisorJob()).launch(Dispatchers.IO) {
                                 val songs =
                                     MediaStoreUtil.searchSongFiles(context, fileItem.location)
-                                        ?.mapNotNull { if (it is FileEntity.File) it.linkedSong else null } ?: return@launch
+                                        ?.mapNotNull { if (it is FileEntity.File) it.linkedSong(context) else null } ?: return@launch
                                 withContext(Dispatchers.Main) {
                                     onMultiSongMenuItemClick(context, songs, itemId)
                                 }
@@ -185,7 +186,7 @@ class FilesPageAdapter(
 
     override var multiSelectMenuRes: Int = R.menu.menu_item_file_entities
     override fun onMultipleItemAction(menuItem: MenuItem, selection: List<FileEntity>) {
-        val songs = selection.mapNotNull { (it as? FileEntity.File)?.linkedSong }
+        val songs = selection.mapNotNull { (it as? FileEntity.File)?.linkedSong(context) }
         onMultiSongMenuItemClick(context as AppCompatActivity, songs, menuItem.itemId)
     }
 
