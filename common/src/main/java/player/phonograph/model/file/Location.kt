@@ -9,11 +9,11 @@ import android.os.storage.StorageManager
 import android.os.storage.StorageVolume
 import android.util.Log
 import androidx.core.content.getSystemService
-import java.io.File
-import lib.phonograph.storage.*
-import player.phonograph.App
-import player.phonograph.BuildConfig.DEBUG
+import lib.phonograph.storage.externalStoragePath
+import lib.phonograph.storage.root
+import player.phonograph.BaseApp
 import player.phonograph.util.FileUtil.defaultStartDirectory
+import java.io.File
 
 /**
  * Presenting a path
@@ -56,7 +56,7 @@ class Location private constructor(val basePath: String, val storageVolume: Stor
         /**
          * @param path absolute path
          */
-        fun fromAbsolutePath(path: String, context: Context = App.instance): Location {
+        fun fromAbsolutePath(path: String, context: Context = BaseApp.instance): Location {
             val file = File(path)
             val storageManager = context.getSystemService<StorageManager>()!!
 
@@ -64,7 +64,7 @@ class Location private constructor(val basePath: String, val storageVolume: Stor
             val basePath = file.getBasePath(storageVolume.root() ?: throw IllegalStateException("unavailable for $storageManager"))
             // path.substringAfter(storageVolume.root()?.path ?: file.getBasePath(context))
 
-            if (DEBUG) Log.w(TAG, "Location Created! path = $path, storageVolume = $storageVolume(${storageVolume.root()})")
+            // if (DEBUG) Log.w(TAG, "Location Created! path = $path, storageVolume = $storageVolume(${storageVolume.root()})")
             return from(basePath, storageVolume)
         }
 
@@ -90,8 +90,7 @@ class Location private constructor(val basePath: String, val storageVolume: Stor
             Log.e(TAG, "base path is null!")
         }
         // debug only
-        if (DEBUG) Log.w(TAG,
-            "Location Created! path = $basePath, storageVolume = ${storageVolume.getDescription(App.instance)}(${storageVolume.root()})")
+        //if (DEBUG) Log.w(TAG,"Location Created! path = $basePath, storageVolume = ${storageVolume.getDescription(BaseApp.instance)}(${storageVolume.root()})")
     }
 
     override fun hashCode(): Int = storageVolume.hashCode() * 31 + basePath.hashCode()
