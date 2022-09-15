@@ -9,7 +9,7 @@ import android.content.SharedPreferences
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import androidx.preference.PreferenceManager
-import player.phonograph.App
+import player.phonograph.BaseApp
 import player.phonograph.R
 import player.phonograph.model.sort.FileSortMode
 import player.phonograph.model.sort.SortMode
@@ -153,35 +153,35 @@ class Setting(context: Context) {
     // List-Appearance
     var albumGridSize: Int by IntPref(
         ALBUM_GRID_SIZE,
-        App.instance.resources.getInteger(R.integer.default_grid_columns)
+        BaseApp.instance.resources.getInteger(R.integer.default_grid_columns)
     )
     var songGridSize: Int by IntPref(
         SONG_GRID_SIZE,
-        App.instance.resources.getInteger(R.integer.default_list_columns)
+        BaseApp.instance.resources.getInteger(R.integer.default_list_columns)
     )
     var artistGridSize: Int by IntPref(
         ARTIST_GRID_SIZE,
-        App.instance.resources.getInteger(R.integer.default_list_columns)
+        BaseApp.instance.resources.getInteger(R.integer.default_list_columns)
     )
     var genreGridSize: Int by IntPref(
         GENRE_GRID_SIZE,
-        App.instance.resources.getInteger(R.integer.default_list_columns)
+        BaseApp.instance.resources.getInteger(R.integer.default_list_columns)
     )
     var albumGridSizeLand: Int by IntPref(
         ALBUM_GRID_SIZE_LAND,
-        App.instance.resources.getInteger(R.integer.default_grid_columns_land)
+        BaseApp.instance.resources.getInteger(R.integer.default_grid_columns_land)
     )
     var songGridSizeLand: Int by IntPref(
         SONG_GRID_SIZE_LAND,
-        App.instance.resources.getInteger(R.integer.default_grid_columns_land)
+        BaseApp.instance.resources.getInteger(R.integer.default_grid_columns_land)
     )
     var artistGridSizeLand: Int by IntPref(
         ARTIST_GRID_SIZE_LAND,
-        App.instance.resources.getInteger(R.integer.default_grid_columns_land)
+        BaseApp.instance.resources.getInteger(R.integer.default_grid_columns_land)
     )
     var genreGridSizeLand: Int by IntPref(
         GENRE_GRID_SIZE_LAND,
-        App.instance.resources.getInteger(R.integer.default_grid_columns_land)
+        BaseApp.instance.resources.getInteger(R.integer.default_grid_columns_land)
     )
     var albumColoredFooters by BooleanPref(ALBUM_COLORED_FOOTERS, true)
     var albumArtistColoredFooters by BooleanPref(ALBUM_ARTIST_COLORED_FOOTERS, true)
@@ -308,7 +308,7 @@ class Setting(context: Context) {
         private var singleton: Setting? = null
         val instance: Setting
             get() {
-                if (singleton == null) singleton = Setting(App.instance)
+                if (singleton == null) singleton = Setting(BaseApp.instance)
                 return singleton!!
             }
 

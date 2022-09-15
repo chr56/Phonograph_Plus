@@ -21,6 +21,7 @@ import lib.phonograph.activity.ToolbarActivity
 import mt.pref.ThemeColor
 import mt.tint.setActivityToolbarColorAuto
 import player.phonograph.App
+import player.phonograph.BaseApp
 import player.phonograph.R
 import player.phonograph.misc.OpenDocumentContract
 import player.phonograph.provider.DatabaseManger
@@ -114,7 +115,10 @@ class SettingsActivity : ToolbarActivity() {
                     message(R.string.clear_all_preference_msg)
                     negativeButton(android.R.string.cancel)
                     positiveButton(R.string.clear_all_preference) {
-                        SettingManager(this@SettingsActivity.applicationContext).clearAllPreference()
+
+                        val context = this@SettingsActivity.applicationContext
+                        SettingManager(context).clearAllPreference(context)
+                        ThemeColor.editTheme(context).clearAllPreference() // lib
 
                         Handler().postDelayed({
                             Process.killProcess(Process.myPid())

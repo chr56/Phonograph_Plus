@@ -25,6 +25,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import lib.phonograph.activity.ToolbarActivity
+import mt.pref.ThemeColor
 import mt.util.color.primaryTextColor
 import player.phonograph.BuildConfig.DEBUG
 import player.phonograph.notification.ErrorNotification.KEY_STACK_TRACE
@@ -130,7 +131,9 @@ class CrashActivity : ToolbarActivity() {
                         cancelOnTouchOutside(true)
                         negativeButton(android.R.string.cancel)
                         positiveButton(R.string.clear_all_preference) {
-                            SettingManager(this@CrashActivity).clearAllPreference()
+                            val context = this@CrashActivity.applicationContext
+                            SettingManager(context).clearAllPreference(context)
+                            ThemeColor.editTheme(context).clearAllPreference() // lib
                             Handler(Looper.getMainLooper()).postDelayed({
                                 Process.killProcess(Process.myPid())
                                 exitProcess(1)

@@ -9,10 +9,8 @@ import android.content.Context
 import android.net.Uri
 import android.widget.Toast
 import androidx.preference.PreferenceManager
-import mt.pref.ThemeColor
 import org.json.JSONArray
 import org.json.JSONObject
-import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.notification.ErrorNotification
 import java.io.FileInputStream
@@ -145,10 +143,9 @@ class SettingManager(var context: Context) {
      * **WARNING**! to reset all SharedPreferences!
      */
     @SuppressLint("ApplySharedPref") // must do immediately!
-    fun clearAllPreference() {
+    fun clearAllPreference(context: Context) {
         Setting.instance.rawMainPreference.edit().clear().commit()
-        ThemeColor.editTheme(App.instance).clearAllPreference() // lib
 
-        Toast.makeText(App.instance, R.string.success, Toast.LENGTH_SHORT).show()
+        Toast.makeText(context, R.string.success, Toast.LENGTH_SHORT).show()
     }
 }
