@@ -14,12 +14,12 @@ import android.util.Log
 import java.lang.ref.WeakReference
 import lib.phonograph.activity.ToolbarActivity
 import player.phonograph.BuildConfig.DEBUG
+import player.phonograph.MEDIA_STORE_CHANGED
 import player.phonograph.MusicServiceMsgConst
 import player.phonograph.R
 import player.phonograph.interfaces.MusicServiceEventListener
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.MusicPlayerRemote.ServiceToken
-import player.phonograph.service.MusicService
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
@@ -96,7 +96,7 @@ abstract class AbsMusicServiceActivity : ToolbarActivity(), MusicServiceEventLis
                     addAction(MusicServiceMsgConst.REPEAT_MODE_CHANGED)
                     addAction(MusicServiceMsgConst.META_CHANGED)
                     addAction(MusicServiceMsgConst.QUEUE_CHANGED)
-                    addAction(MusicServiceMsgConst.MEDIA_STORE_CHANGED)
+                    addAction(MEDIA_STORE_CHANGED)
                 }
             )
             receiverRegistered = true
@@ -167,7 +167,7 @@ abstract class AbsMusicServiceActivity : ToolbarActivity(), MusicServiceEventLis
                     MusicServiceMsgConst.PLAY_STATE_CHANGED -> activity.onPlayStateChanged()
                     MusicServiceMsgConst.REPEAT_MODE_CHANGED -> activity.onRepeatModeChanged()
                     MusicServiceMsgConst.SHUFFLE_MODE_CHANGED -> activity.onShuffleModeChanged()
-                    MusicServiceMsgConst.MEDIA_STORE_CHANGED -> activity.onMediaStoreChanged()
+                    MEDIA_STORE_CHANGED -> activity.onMediaStoreChanged()
                 }
             }
         }
@@ -176,7 +176,7 @@ abstract class AbsMusicServiceActivity : ToolbarActivity(), MusicServiceEventLis
     override fun missingPermissionCallback() {
         super.missingPermissionCallback()
         sendBroadcast(
-            Intent(MusicServiceMsgConst.MEDIA_STORE_CHANGED).apply {
+            Intent(MEDIA_STORE_CHANGED).apply {
                 putExtra("from_permissions_changed", true) // just in case we need to know this at some point
             }
         )
