@@ -1,8 +1,6 @@
 /*
- * Copyright (c) 2022 chr_56 & Abou Zeid (kabouzeid) (original author)
+ * Copyright (c) 2022 chr_56
  */
-
-@file:Suppress("DEPRECATION")
 
 package player.phonograph.util
 
@@ -11,7 +9,7 @@ import android.util.Log
 import android.webkit.MimeTypeMap
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.isActive
-import player.phonograph.App
+import player.phonograph.BaseApp
 import player.phonograph.notification.ErrorNotification
 import java.io.*
 import java.text.DecimalFormat
@@ -166,7 +164,7 @@ object FileUtil {
                 if (externalStorage.exists() && externalStorage.isDirectory) {
                     externalStorage
                 } else {
-                    App.instance.getExternalFilesDir(Environment.DIRECTORY_MUSIC) ?: File("/") // root
+                    BaseApp.instance.getExternalFilesDir(Environment.DIRECTORY_MUSIC) ?: File("/") // root
                 }
             }
         }
