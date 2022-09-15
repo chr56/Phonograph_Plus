@@ -12,16 +12,15 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import player.phonograph.App
-import player.phonograph.NOTIFICATION_CHANNEL_ID_BACKGROUND
 import player.phonograph.R
 
 object BackgroundNotification {
     private var notificationManager: NotificationManager? = null
     private var isReady: Boolean = false
 
-    fun init() {
+    fun init(context: Context) {
         notificationManager =
-            App.instance.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && notificationManager != null) {
             createNotificationChannel(notificationManager!!)
         }
@@ -33,7 +32,7 @@ object BackgroundNotification {
      */
     fun post(title: String, msg: String, id: Int, onGoing: Boolean = true) {
         val context = App.instance
-        if (!isReady) init()
+        if (!isReady) init(context)
         notificationManager?.let { notificationManager ->
 
             val notification: Notification =
@@ -55,7 +54,7 @@ object BackgroundNotification {
      */
     fun post(title: String, msg: String, id: Int, process: Int, maxProcess: Int) {
         val context = App.instance
-        if (!isReady) init()
+        if (!isReady) init(context)
         notificationManager?.let { notificationManager ->
             val notification: Notification =
                 NotificationCompat.Builder(context, NOTIFICATION_CHANNEL_ID_BACKGROUND)
@@ -73,7 +72,7 @@ object BackgroundNotification {
     }
 
     fun remove(id: Int) {
-        if (!isReady) init()
+        if (!isReady) init(App.instance)
         notificationManager?.cancel(id)
     }
 
@@ -93,4 +92,6 @@ object BackgroundNotification {
             notificationManager.createNotificationChannel(notificationChannel)
         }
     }
+
+    private const val NOTIFICATION_CHANNEL_ID_BACKGROUND = "background_notification"
 }
