@@ -18,7 +18,7 @@ import player.phonograph.provider.DatabaseConstants.HISTORY_DB
 import player.phonograph.provider.DatabaseConstants.MUSIC_PLAYBACK_STATE_DB
 import player.phonograph.provider.DatabaseConstants.SONG_PLAY_COUNT_DB
 import player.phonograph.util.Util.assertIfFalse
-import player.phonograph.util.Util.currentTimestamp
+import player.phonograph.util.TimeUtil.currentTimestamp
 
 class DatabaseManger(var context: Context) {
 

@@ -20,6 +20,7 @@ import player.phonograph.App
 import player.phonograph.BROADCAST_PLAYLISTS_CHANGED
 import player.phonograph.BuildConfig.DEBUG
 import player.phonograph.R
+import player.phonograph.util.TimeUtil.currentDate
 import java.util.*
 
 /**
@@ -58,11 +59,6 @@ object Util {
             context.startActivity(Intent(Settings.ACTION_MANAGE_ALL_APPLICATIONS_SETTINGS))
         }
     }
-
-    fun currentDate(): Date = Calendar.getInstance(TimeZone.getDefault(), Locale.getDefault()).time
-    fun currentTimestamp(): Long = currentDate().time
-
-    fun currentDateTime(): CharSequence = DateFormat.format("yyMMdd_HHmmss", currentDate())
 
     fun Boolean.assertIfFalse(throwable: Throwable) {
         if (!this) throw throwable

@@ -27,7 +27,7 @@ import player.phonograph.provider.DatabaseManger
 import player.phonograph.settings.SettingManager
 import player.phonograph.ui.fragments.SettingsFragment
 import player.phonograph.util.CoroutineUtil
-import player.phonograph.util.Util.currentDateTime
+import player.phonograph.util.TimeUtil.currentDateTime
 import kotlin.system.exitProcess
 
 class SettingsActivity : ToolbarActivity() {

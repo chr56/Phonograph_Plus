@@ -34,7 +34,7 @@ import player.phonograph.settings.SettingManager
 import player.phonograph.util.DeviceInfoUtil.getDeviceInfo
 import player.phonograph.util.ImageUtil.getTintedDrawable
 import player.phonograph.util.PhonographColorUtil.nightMode
-import player.phonograph.util.Util.currentDateTime
+import player.phonograph.util.TimeUtil.currentDateTime
 import java.io.File
 import java.io.FileOutputStream
 import kotlin.system.exitProcess

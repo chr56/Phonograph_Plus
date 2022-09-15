@@ -14,7 +14,7 @@ import player.phonograph.model.Song
 import player.phonograph.provider.DatabaseConstants.FAVORITE_DB
 import player.phonograph.service.MusicService
 import player.phonograph.mediastore.MediaStoreUtil
-import player.phonograph.util.Util.currentTimestamp
+import player.phonograph.util.TimeUtil.currentTimestamp
 
 class FavoriteSongsStore(context: Context = App.instance) : SQLiteOpenHelper(context, FAVORITE_DB, null, VERSION) {
 
