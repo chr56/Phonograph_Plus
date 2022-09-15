@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2022 chr_56
+ */
+
 package player.phonograph.util
 
 import java.util.*
