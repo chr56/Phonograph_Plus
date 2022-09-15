@@ -5,7 +5,7 @@
 package player.phonograph.model.file
 
 import player.phonograph.model.sort.SortRef
-import player.phonograph.settings.Setting
+import player.phonograph.util.module.FileSortModePreference
 
 /**
  * Presenting a file
@@ -21,7 +21,7 @@ sealed class FileEntity(
         return if ((this is Folder) xor (other is Folder)) {
             if (this is Folder) -1 else 1
         } else {
-            when (Setting.instance.fileSortMode.sortRef) {
+            when (FileSortModePreference.fileSortMode.sortRef) {
                 SortRef.MODIFIED_DATE -> dateModified.compareTo(other.dateModified)
                 SortRef.ADDED_DATE -> dateAdded.compareTo(other.dateAdded)
                 SortRef.SIZE -> {
@@ -30,7 +30,7 @@ sealed class FileEntity(
                 }
                 else -> name.compareTo(other.name)
             }.let {
-                if (Setting.instance.fileSortMode.revert) -it else it
+                if (FileSortModePreference.fileSortMode.revert) -it else it
             }
         }
     }

@@ -24,6 +24,23 @@ class BooleanIsolatePreference(
     }
 }
 
+class StringIsolatePreference(
+    private val keyName: String,
+    private val defValue: String?,
+    context: Context
+) : IsolatePreference<String?> {
+
+    private val preference = PreferenceManager.getDefaultSharedPreferences(context)
+
+    override fun read(): String? = preference.getString(keyName, defValue)
+
+    override fun write(value: String?) {
+        preference.edit().apply {
+            putString(keyName, value)
+        }.apply()
+    }
+}
+
 sealed interface IsolatePreference<T> {
     fun read(): T
     fun write(value: T)

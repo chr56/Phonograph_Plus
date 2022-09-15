@@ -140,16 +140,6 @@ class Setting(context: Context) {
             _genreSortMode = value.serialize()
         }
 
-    private var _fileSortMode: String by StringPref(
-        FILE_SORT_MODE,
-        FileSortMode(SortRef.ID, false).serialize()
-    )
-    var fileSortMode: FileSortMode
-        get() = FileSortMode.deserialize(_fileSortMode)
-        set(value) {
-            _fileSortMode = value.serialize()
-        }
-
     // List-Appearance
     var albumGridSize: Int by IntPref(
         ALBUM_GRID_SIZE,

@@ -21,6 +21,7 @@ import player.phonograph.settings.Setting
 import player.phonograph.ui.components.popup.ListOptionsPopup
 import player.phonograph.ui.fragments.HomeFragment
 import player.phonograph.util.ViewUtil.setUpFastScrollRecyclerViewColor
+import player.phonograph.util.module.FileSortModePreference
 
 class FilesPageExplorer(
     private val activity: ComponentActivity,
@@ -103,7 +104,7 @@ class FilesPageExplorer(
     }
 
     private fun configPopup(popup: ListOptionsPopup) {
-        val currentSortMode = Setting.instance.fileSortMode
+        val currentSortMode = FileSortModePreference.fileSortMode
         popup.allowRevert = true
         popup.revert = currentSortMode.revert
 
@@ -116,7 +117,7 @@ class FilesPageExplorer(
     }
 
     private fun dismissPopup(popup: ListOptionsPopup) {
-        Setting.instance.fileSortMode = FileSortMode(popup.sortRef, popup.revert)
+        FileSortModePreference.fileSortMode = FileSortMode(popup.sortRef, popup.revert)
         fileModel.useLegacyListFile = popup.useLegacyListFiles
         if (fileModel.showFilesImages != popup.showFilesImages) {
             fileModel.showFilesImages = popup.showFilesImages
