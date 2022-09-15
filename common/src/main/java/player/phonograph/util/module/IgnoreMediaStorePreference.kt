@@ -4,22 +4,17 @@
 
 package player.phonograph.util.module
 
-
-import androidx.preference.PreferenceManager
 import player.phonograph.BaseApp
 
-@Suppress("ObjectPropertyName")
 object IgnoreMediaStorePreference {
-    private var _ignoreMediaStore = init()
+    private val IGNORE_MEDIA_STORE_ARTWORK = "ignore_media_store_artwork"
+
+    private val impl: BooleanIsolatePreference =
+        BooleanIsolatePreference(IGNORE_MEDIA_STORE_ARTWORK, false, BaseApp.instance)
+
     var ignoreMediaStore: Boolean
-        get() = _ignoreMediaStore
+        get() = impl.read()
         set(newValue) {
-            _ignoreMediaStore = newValue
+            impl.write(newValue)
         }
-
-    private fun init(): Boolean =
-        PreferenceManager.getDefaultSharedPreferences(BaseApp.instance)
-            .getBoolean(IGNORE_MEDIA_STORE_ARTWORK, false)
-
-    const val IGNORE_MEDIA_STORE_ARTWORK = "ignore_media_store_artwork"
 }

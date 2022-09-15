@@ -34,7 +34,6 @@ import mt.pref.ThemeColor
 import mt.util.color.darkenColor
 import player.phonograph.R
 import player.phonograph.appshortcuts.DynamicShortcutManager
-import player.phonograph.util.module.IgnoreMediaStorePreference
 import player.phonograph.preferences.*
 import player.phonograph.util.preferences.HomeTabConfig
 import player.phonograph.util.preferences.NowPlayingScreenConfig
@@ -313,10 +312,6 @@ class SettingsFragment : PreferenceFragmentCompat() {
                     },
                     1000
                 )
-            IgnoreMediaStorePreference.IGNORE_MEDIA_STORE_ARTWORK -> {
-                IgnoreMediaStorePreference.ignoreMediaStore =
-                    sharedPreferences.getBoolean(IgnoreMediaStorePreference.IGNORE_MEDIA_STORE_ARTWORK, false)
-            }
         }
     }
 }
