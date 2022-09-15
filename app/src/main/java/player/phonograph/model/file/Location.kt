@@ -13,7 +13,7 @@ import java.io.File
 import lib.phonograph.storage.*
 import player.phonograph.App
 import player.phonograph.BuildConfig.DEBUG
-import player.phonograph.settings.Setting
+import player.phonograph.util.FileUtil.defaultStartDirectory
 
 /**
  * Presenting a path
@@ -68,7 +68,7 @@ class Location private constructor(val basePath: String, val storageVolume: Stor
             return from(basePath, storageVolume)
         }
 
-        val HOME: Location get() = fromAbsolutePath(Setting.defaultStartDirectory.absolutePath)
+        val HOME: Location get() = fromAbsolutePath(defaultStartDirectory.absolutePath)
 
         private fun File.getStorageVolume(storageManager: StorageManager): StorageVolume {
             val volume = storageManager.getStorageVolume(this)

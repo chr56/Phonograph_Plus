@@ -8,17 +8,14 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
-import android.os.Environment
 import android.util.Log
 import androidx.annotation.StyleRes
 import androidx.preference.PreferenceManager
-import java.io.File
-import kotlin.properties.ReadWriteProperty
-import kotlin.reflect.KProperty
 import org.json.JSONException
 import org.json.JSONObject
 import player.phonograph.App
 import player.phonograph.R
+import player.phonograph.model.NowPlayingScreen
 import player.phonograph.model.pages.PageConfig
 import player.phonograph.model.pages.PageConfigUtil
 import player.phonograph.model.pages.PageConfigUtil.fromJson
@@ -26,9 +23,12 @@ import player.phonograph.model.pages.PageConfigUtil.toJson
 import player.phonograph.model.sort.FileSortMode
 import player.phonograph.model.sort.SortMode
 import player.phonograph.model.sort.SortRef
-import player.phonograph.model.NowPlayingScreen
 import player.phonograph.util.CalendarUtil
 import player.phonograph.util.FileUtil
+import player.phonograph.util.FileUtil.defaultStartDirectory
+import java.io.File
+import kotlin.properties.ReadWriteProperty
+import kotlin.reflect.KProperty
 
 class Setting(context: Context) {
 
@@ -422,24 +422,6 @@ class Setting(context: Context) {
         const val PLAYLIST_OPS_BEHAVIOUR_FORCE_SAF = "force_saf"
         const val PLAYLIST_OPS_BEHAVIOUR_FORCE_LEGACY = "force_legacy"
 
-        // root
-        val defaultStartDirectory: File
-            get() {
-                val musicDir = Environment.getExternalStoragePublicDirectory(
-                    Environment.DIRECTORY_MUSIC
-                )
-
-                return if (musicDir != null && musicDir.exists() && musicDir.isDirectory) {
-                    musicDir
-                } else {
-                    val externalStorage = Environment.getExternalStorageDirectory()
-                    if (externalStorage.exists() && externalStorage.isDirectory) {
-                        externalStorage
-                    } else {
-                        App.instance.getExternalFilesDir(Environment.DIRECTORY_MUSIC) ?: File("/") // root
-                    }
-                }
-            }
     }
 
     // Delegates

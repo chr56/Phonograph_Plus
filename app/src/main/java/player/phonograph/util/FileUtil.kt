@@ -7,21 +7,23 @@
 package player.phonograph.util
 
 import android.content.Context
+import android.os.Environment
 import android.provider.MediaStore.Audio.AudioColumns.DATA
 import android.util.Log
 import android.webkit.MimeTypeMap
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.isActive
+import lib.phonograph.misc.SortedCursor
+import player.phonograph.App
+import player.phonograph.mediastore.SongLoader.getSongs
+import player.phonograph.mediastore.SongLoader.makeSongCursor
+import player.phonograph.model.Song
+import player.phonograph.notification.ErrorNotification
 import java.io.*
 import java.text.DecimalFormat
 import java.util.*
 import kotlin.math.log10
 import kotlin.math.pow
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.isActive
-import lib.phonograph.misc.SortedCursor
-import player.phonograph.mediastore.SongLoader.getSongs
-import player.phonograph.mediastore.SongLoader.makeSongCursor
-import player.phonograph.model.Song
-import player.phonograph.notification.ErrorNotification
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
@@ -180,6 +182,26 @@ object FileUtil {
             size / 1024.0.pow(digitGroups.toDouble())
         ) + " " + units[digitGroups]
     }
+
+
+    // root
+    val defaultStartDirectory: File
+        get() {
+            val musicDir = Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_MUSIC
+            )
+
+            return if (musicDir != null && musicDir.exists() && musicDir.isDirectory) {
+                musicDir
+            } else {
+                val externalStorage = Environment.getExternalStorageDirectory()
+                if (externalStorage.exists() && externalStorage.isDirectory) {
+                    externalStorage
+                } else {
+                    App.instance.getExternalFilesDir(Environment.DIRECTORY_MUSIC) ?: File("/") // root
+                }
+            }
+        }
 
     class DirectoryInfo(val file: File, val fileFilter: FileFilter)
     object FileScanner {
