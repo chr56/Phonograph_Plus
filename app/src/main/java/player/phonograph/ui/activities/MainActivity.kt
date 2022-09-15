@@ -53,13 +53,14 @@ import player.phonograph.notification.ErrorNotification
 import player.phonograph.notification.UpgradeNotification
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.queue.ShuffleMode
+import player.phonograph.util.preferences.HomeTabConfig
 import player.phonograph.settings.Setting
+import player.phonograph.util.preferences.StyleConfig
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
 import player.phonograph.ui.activities.intro.AppIntroActivity
 import player.phonograph.ui.fragments.HomeFragment
 import player.phonograph.util.ImageUtil.getTintedDrawable
 import player.phonograph.util.PhonographColorUtil.nightMode
-import player.phonograph.util.UpdateUtil
 
 class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity {
 
@@ -154,7 +155,7 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
 
             // page chooser
             val mainGroup = 999999
-            for ((page, tab) in Setting.instance.homeTabConfig.withIndex()) {
+            for ((page, tab) in HomeTabConfig.homeTabConfig.withIndex()) {
                 menuItem {
                     groupId = mainGroup
                     icon = Pages.getTintedIcon(tab, textColorPrimary, activity)
@@ -178,16 +179,16 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
                 titleRes(R.string.theme_switch)
                 onClick {
                     Handler(Looper.getMainLooper()).postDelayed({
-                        val themeSetting = Setting.instance.generalTheme
+                        val themeSetting = StyleConfig.generalTheme
 
                         if (themeSetting == R.style.Theme_Phonograph_Auto) {
                             Toast.makeText(activity, R.string.auto_mode_on, Toast.LENGTH_SHORT).show()
                         } else {
                             when (themeSetting) {
                                 R.style.Theme_Phonograph_Light ->
-                                    Setting.instance.setGeneralTheme("dark")
+                                    StyleConfig.setGeneralTheme("dark")
                                 R.style.Theme_Phonograph_Dark, R.style.Theme_Phonograph_Black ->
-                                    Setting.instance.setGeneralTheme("light")
+                                    StyleConfig.setGeneralTheme("light")
                             }
                             recreate()
                         }

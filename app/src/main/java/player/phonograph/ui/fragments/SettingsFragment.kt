@@ -36,7 +36,10 @@ import player.phonograph.R
 import player.phonograph.appshortcuts.DynamicShortcutManager
 import player.phonograph.coil.IgnoreMediaStorePreference
 import player.phonograph.preferences.*
+import player.phonograph.util.preferences.HomeTabConfig
+import player.phonograph.util.preferences.NowPlayingScreenConfig
 import player.phonograph.settings.Setting
+import player.phonograph.util.preferences.StyleConfig
 import player.phonograph.util.NavigationUtil
 import util.phonograph.misc.ColorChooserListener
 
@@ -126,7 +129,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
                     }"
                 )
                 .positiveButton {
-                    Setting.instance.resetHomeTabConfig()
+                    HomeTabConfig.resetHomeTabConfig()
                 }
                 .negativeButton {
                     it.dismiss()
@@ -138,7 +141,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
     private fun updateNowPlayingScreenSummary() {
         findPreference<Preference>("now_playing_screen_id")!!
-            .setSummary(Setting.instance.nowPlayingScreen.titleRes)
+            .setSummary(NowPlayingScreenConfig.nowPlayingScreen.titleRes)
     }
 
     fun invalidateSettings() {
@@ -151,7 +154,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
                 ThemeColor.editTheme(requireContext()).markChanged()
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
                     // Set the new theme so that updateAppShortcuts can pull it
-                    requireActivity().setTheme(Setting.getThemeResFromPrefValue(newValue as String?))
+                    requireActivity().setTheme(StyleConfig.getThemeResFromPrefValue(newValue as String?))
                     DynamicShortcutManager(requireContext()).updateDynamicShortcuts()
                 }
                 requireActivity().recreate()

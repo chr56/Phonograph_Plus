@@ -8,25 +8,14 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
-import android.util.Log
-import androidx.annotation.StyleRes
 import androidx.preference.PreferenceManager
-import org.json.JSONException
-import org.json.JSONObject
 import player.phonograph.App
 import player.phonograph.R
-import player.phonograph.model.NowPlayingScreen
-import player.phonograph.model.pages.PageConfig
-import player.phonograph.model.pages.PageConfigUtil
-import player.phonograph.model.pages.PageConfigUtil.fromJson
-import player.phonograph.model.pages.PageConfigUtil.toJson
 import player.phonograph.model.sort.FileSortMode
 import player.phonograph.model.sort.SortMode
 import player.phonograph.model.sort.SortRef
 import player.phonograph.util.CalendarUtil
-import player.phonograph.util.FileUtil
 import player.phonograph.util.FileUtil.defaultStartDirectory
-import java.io.File
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 
@@ -43,62 +32,23 @@ class Setting(context: Context) {
     val rawMainPreference get() = mPreferences
 
     fun registerOnSharedPreferenceChangedListener(
-        sharedPreferenceChangeListener: SharedPreferences.OnSharedPreferenceChangeListener?
+        sharedPreferenceChangeListener: SharedPreferences.OnSharedPreferenceChangeListener?,
     ) {
         mPreferences.registerOnSharedPreferenceChangeListener(sharedPreferenceChangeListener)
     }
 
     fun unregisterOnSharedPreferenceChangedListener(
-        sharedPreferenceChangeListener: SharedPreferences.OnSharedPreferenceChangeListener?
+        sharedPreferenceChangeListener: SharedPreferences.OnSharedPreferenceChangeListener?,
     ) {
         mPreferences.unregisterOnSharedPreferenceChangeListener(sharedPreferenceChangeListener)
     }
 
     // Theme and Color
-    @get:StyleRes
-    val generalTheme: Int
-        get() = getThemeResFromPrefValue(
-            mPreferences.getString(GENERAL_THEME, "auto")
-        )
-    fun setGeneralTheme(theme: String?) {
-        val editor = mPreferences.edit()
-        editor.putString(GENERAL_THEME, theme)
-        editor.apply()
-    }
+
+    var themeString: String by StringPref(GENERAL_THEME, "auto")
 
     // Appearance
-    var homeTabConfig: PageConfig
-        get() {
-            val rawString = mPreferences.getString(HOME_TAB_CONFIG, null)
-            val config: PageConfig = try {
-                JSONObject(rawString ?: "").fromJson()
-            } catch (e: JSONException) {
-                Log.e("Preference", "home tab config string $rawString")
-                Log.e("Preference", "Fail to parse home tab config string\n ${e.message}")
-                // return default
-                PageConfig.DEFAULT_CONFIG
-            }
-            // valid // TODO
-            return config
-        }
-        set(value) {
-            val json =
-                try {
-                    value.toJson()
-                } catch (e: JSONException) {
-                    Log.e("Preference", "Save home tab config failed, use default. \n${e.message}")
-                    // return default
-                    PageConfigUtil.DEFAULT_CONFIG
-                }
-            val editor = mPreferences.edit()
-            editor.putString(HOME_TAB_CONFIG, json.toString(0))
-            editor.apply()
-        }
-
-    fun resetHomeTabConfig() {
-        editor.putString(HOME_TAB_CONFIG, PageConfigUtil.DEFAULT_CONFIG.toString(0)).apply()
-    }
-
+    var homeTabConfigJsonString: String by StringPref(HOME_TAB_CONFIG, "")
     var coloredNotification: Boolean by BooleanPref(COLORED_NOTIFICATION, true)
     var classicNotification: Boolean by BooleanPref(CLASSIC_NOTIFICATION, false)
     var coloredAppShortcuts: Boolean by BooleanPref(COLORED_APP_SHORTCUTS, true)
@@ -110,19 +60,7 @@ class Setting(context: Context) {
     var rememberLastTab: Boolean by BooleanPref(REMEMBER_LAST_TAB, true)
     var lastPage: Int by IntPref(LAST_PAGE, 0)
     var lastMusicChooser: Int by IntPref(LAST_MUSIC_CHOOSER, 0)
-    var nowPlayingScreen: NowPlayingScreen
-        get() {
-            val id = mPreferences.getInt(NOW_PLAYING_SCREEN_ID, 0)
-            for (nowPlayingScreen in NowPlayingScreen.values()) {
-                if (nowPlayingScreen.id == id) return nowPlayingScreen
-            }
-            return NowPlayingScreen.CARD
-        }
-        set(nowPlayingScreen) {
-            val editor = mPreferences.edit()
-            editor.putInt(NOW_PLAYING_SCREEN_ID, nowPlayingScreen.id)
-            editor.apply()
-        }
+    var nowPlayingScreenIndex: Int by IntPref(NOW_PLAYING_SCREEN_ID, 0)
 
     // Behavior-File
     var ignoreMediaStoreArtwork: Boolean by BooleanPref(IGNORE_MEDIA_STORE_ARTWORK, false)
@@ -258,18 +196,7 @@ class Setting(context: Context) {
     var sleepTimerFinishMusic: Boolean by BooleanPref(SLEEP_TIMER_FINISH_SONG, false)
 
     // Misc
-    var startDirectory: File
-        get() = File(
-            mPreferences.getString(
-                START_DIRECTORY,
-                defaultStartDirectory.path
-            )!!
-        )
-        set(value) {
-            val editor = mPreferences.edit()
-            editor.putString(START_DIRECTORY, FileUtil.safeGetCanonicalPath(value))
-            editor.apply()
-        }
+    var startDirectoryPath: String by StringPref(START_DIRECTORY, defaultStartDirectory.path)
     var initializedBlacklist: Boolean by BooleanPref(INITIALIZED_BLACKLIST, false)
     var ignoreUpgradeVersionCode: Int by IntPref(IGNORE_UPGRADE_VERSION_CODE, 0)
 
@@ -404,17 +331,6 @@ class Setting(context: Context) {
                 }
                 "never" -> false
                 else -> false
-            }
-        }
-
-        @StyleRes
-        fun getThemeResFromPrefValue(themePrefValue: String?): Int {
-            return when (themePrefValue) {
-                "dark" -> R.style.Theme_Phonograph_Dark
-                "black" -> R.style.Theme_Phonograph_Black
-                "light" -> R.style.Theme_Phonograph_Light
-                "auto" -> R.style.Theme_Phonograph_Auto
-                else -> R.style.Theme_Phonograph_Auto
             }
         }
 

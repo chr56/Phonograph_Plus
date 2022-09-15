@@ -21,6 +21,7 @@ import player.phonograph.settings.Setting
 import player.phonograph.ui.fragments.player.AbsPlayerFragment
 import player.phonograph.ui.fragments.player.MiniPlayerFragment
 import player.phonograph.model.NowPlayingScreen
+import player.phonograph.util.preferences.NowPlayingScreenConfig
 import player.phonograph.ui.fragments.player.card.CardPlayerFragment
 import player.phonograph.ui.fragments.player.flat.FlatPlayerFragment
 import player.phonograph.util.ViewUtil
@@ -59,7 +60,7 @@ abstract class AbsSlidingMusicPanelActivity :
         supportFragmentManager.apply {
             beginTransaction().replace(
                 R.id.player_fragment_container,
-                when (Setting.instance.nowPlayingScreen) {
+                when (NowPlayingScreenConfig.nowPlayingScreen) {
                     NowPlayingScreen.FLAT -> FlatPlayerFragment()
                     NowPlayingScreen.CARD -> CardPlayerFragment()
                 },

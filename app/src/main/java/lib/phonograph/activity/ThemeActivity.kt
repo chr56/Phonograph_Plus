@@ -20,7 +20,7 @@ import mt.util.color.darkenColor
 import mt.util.color.primaryTextColor
 import mt.util.color.secondaryTextColor
 import player.phonograph.R
-import player.phonograph.settings.Setting
+import player.phonograph.util.preferences.StyleConfig
 import player.phonograph.util.PhonographColorUtil.nightMode
 
 /**
@@ -43,7 +43,7 @@ abstract class ThemeActivity : MultiLanguageActivity() {
         createTime = System.currentTimeMillis()
 
         // theme
-        setTheme(Setting.instance.generalTheme)
+        setTheme(StyleConfig.generalTheme)
 
         // night mode
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)

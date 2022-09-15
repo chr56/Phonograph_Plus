@@ -29,6 +29,7 @@ import player.phonograph.databinding.ItemListBinding
 import player.phonograph.mediastore.MediaStoreUtil
 import player.phonograph.misc.UpdateToastMediaScannerCompletionListener
 import player.phonograph.model.file.FileEntity
+import player.phonograph.util.preferences.FileConfig
 import player.phonograph.settings.Setting
 import player.phonograph.util.BlacklistUtil
 import player.phonograph.util.ImageUtil.getTintedDrawable
@@ -147,7 +148,7 @@ class FilesPageAdapter(
                             true
                         }
                         R.id.action_set_as_start_directory -> {
-                            Setting.instance().startDirectory = File(path)
+                            FileConfig.startDirectory = File(path)
                             Toast.makeText(
                                 context,
                                 String.format(context.getString(R.string.new_start_directory), path),

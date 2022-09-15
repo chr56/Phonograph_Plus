@@ -21,7 +21,7 @@ import com.heinrichreimersoftware.materialintro.view.InkPageIndicator
 import mt.pref.ThemeColor
 import player.phonograph.R
 import player.phonograph.model.NowPlayingScreen
-import player.phonograph.settings.Setting
+import player.phonograph.util.preferences.NowPlayingScreenConfig
 import player.phonograph.util.ViewUtil
 
 /**
@@ -35,14 +35,14 @@ class NowPlayingScreenPreferenceDialog : DialogFragment(), OnPageChangeListener 
         viewPager.adapter = NowPlayingScreenAdapter(context)
         viewPager.addOnPageChangeListener(this)
         viewPager.pageMargin = ViewUtil.convertDpToPixel(32f, resources).toInt()
-        viewPager.currentItem = Setting.instance.nowPlayingScreen.ordinal
+        viewPager.currentItem = NowPlayingScreenConfig.nowPlayingScreen.ordinal
         val pageIndicator: InkPageIndicator = view.findViewById(R.id.page_indicator)
         pageIndicator.setViewPager(viewPager)
         pageIndicator.onPageSelected(viewPager.currentItem)
         val dialog = MaterialDialog(requireContext())
             .title(R.string.pref_title_now_playing_screen_appearance)
             .positiveButton(android.R.string.ok) {
-                Setting.instance.nowPlayingScreen = NowPlayingScreen.values()[viewPagerPosition]
+                NowPlayingScreenConfig.nowPlayingScreen = NowPlayingScreen.values()[viewPagerPosition]
             }
             .negativeButton(android.R.string.cancel)
             .customView(view = view, dialogWrapContent = false)

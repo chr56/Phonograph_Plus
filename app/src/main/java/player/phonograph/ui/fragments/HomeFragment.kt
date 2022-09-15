@@ -34,11 +34,12 @@ import player.phonograph.databinding.FragmentHomeBinding
 import player.phonograph.model.pages.PageConfig
 import player.phonograph.model.pages.Pages
 import player.phonograph.notification.ErrorNotification
+import player.phonograph.util.preferences.HomeTabConfig
 import player.phonograph.settings.Setting
 import player.phonograph.ui.activities.MainActivity
 import player.phonograph.ui.activities.SearchActivity
-import player.phonograph.ui.fragments.pages.AbsPage
 import player.phonograph.ui.components.popup.ListOptionsPopup
+import player.phonograph.ui.fragments.pages.AbsPage
 import player.phonograph.util.ImageUtil.getTintedDrawable
 
 class HomeFragment : AbsMainActivityFragment(), MainActivity.MainActivityFragmentCallbacks,
@@ -103,7 +104,7 @@ class HomeFragment : AbsMainActivityFragment(), MainActivity.MainActivityFragmen
     lateinit var cab: ToolbarCab
     lateinit var cabController: MultiSelectionCabController
 
-    private fun readConfig(): PageConfig = Setting.instance.homeTabConfig
+    private fun readConfig(): PageConfig = HomeTabConfig.homeTabConfig
 
     private val cfg: PageConfig get() = readConfig()
 

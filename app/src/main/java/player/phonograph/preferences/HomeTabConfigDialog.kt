@@ -18,7 +18,7 @@ import mt.pref.ThemeColor
 import player.phonograph.R
 import player.phonograph.adapter.HomeTabConfigAdapter
 import player.phonograph.model.pages.PageConfig
-import player.phonograph.settings.Setting
+import player.phonograph.util.preferences.HomeTabConfig
 
 class HomeTabConfigDialog : DialogFragment() {
     private lateinit var adapter: HomeTabConfigAdapter
@@ -29,7 +29,7 @@ class HomeTabConfigDialog : DialogFragment() {
 
 //        Setting.instance.homeTabConfig = PageConfig.DEFAULT_CONFIG
 
-        val config: PageConfig = Setting.instance.homeTabConfig
+        val config: PageConfig = HomeTabConfig.homeTabConfig
 
         adapter = HomeTabConfigAdapter(config)
         recyclerView = view.findViewById(R.id.recycler_view)
@@ -43,13 +43,13 @@ class HomeTabConfigDialog : DialogFragment() {
             .title(R.string.library_categories)
             .customView(view = view, dialogWrapContent = false)
             .positiveButton(android.R.string.ok) {
-                Setting.instance.homeTabConfig = adapter.currentConfig
+                HomeTabConfig.homeTabConfig = adapter.currentConfig
                 Log.v(TAG, adapter.getState())
                 dismiss()
             }
             .negativeButton(android.R.string.cancel) { dismiss(); Log.i(TAG, adapter.getState()) }
             .neutralButton(R.string.reset_action) {
-                Setting.instance.homeTabConfig = PageConfig.DEFAULT_CONFIG
+                HomeTabConfig.homeTabConfig = PageConfig.DEFAULT_CONFIG
                 Log.v(TAG, adapter.getState())
                 dismiss()
             }

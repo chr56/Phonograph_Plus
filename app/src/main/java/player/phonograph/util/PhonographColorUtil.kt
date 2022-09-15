@@ -11,8 +11,9 @@ import mt.util.color.darkenColor
 import mt.util.color.isColorLight
 import mt.util.color.lightenColor
 import player.phonograph.R
-import player.phonograph.settings.Setting
+import player.phonograph.util.preferences.StyleConfig
 import java.util.*
+
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
@@ -21,7 +22,7 @@ object PhonographColorUtil {
 
     @JvmStatic
     val Resources.nightMode: Boolean
-        get() = when (Setting.instance.generalTheme) {
+        get() = when (StyleConfig.generalTheme) {
             R.style.Theme_Phonograph_Black -> true
             R.style.Theme_Phonograph_Dark -> true
             R.style.Theme_Phonograph_Light -> false
@@ -34,7 +35,7 @@ object PhonographColorUtil {
         }
 
     fun Context.backgroundColorByTheme(): Int = resources.getColor(
-        when (Setting.instance.generalTheme) {
+        when (StyleConfig.generalTheme) {
             R.style.Theme_Phonograph_Auto -> R.color.cardBackgroundColor
             R.style.Theme_Phonograph_Light -> R.color.md_white_1000
             R.style.Theme_Phonograph_Black -> R.color.md_black_1000
