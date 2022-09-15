@@ -25,7 +25,7 @@ import player.phonograph.model.file.FileEntity
 import player.phonograph.model.file.Location
 import player.phonograph.model.file.put
 import player.phonograph.settings.Setting
-import player.phonograph.util.Util
+import player.phonograph.util.PermissionUtil.navigateToStorageSetting
 import java.io.File
 
 object MediaStoreUtil {
@@ -270,7 +270,7 @@ object MediaStoreUtil {
                 dialog.dismiss()
             }
             setNegativeButton(R.string.grant_permission) { _, _ ->
-                Util.navigateToStorageSetting(context)
+                navigateToStorageSetting(context)
             }
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                 setNeutralButton(R.string.retry) { _, _ ->

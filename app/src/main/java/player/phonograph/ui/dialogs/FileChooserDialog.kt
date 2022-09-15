@@ -26,7 +26,7 @@ import player.phonograph.model.file.Location
 import player.phonograph.ui.components.explorer.FilesChooserExplorer
 import player.phonograph.ui.components.explorer.FilesChooserViewModel
 import player.phonograph.ui.components.viewcreater.createButton
-import player.phonograph.util.Util
+import player.phonograph.util.PermissionUtil.navigateToStorageSetting
 
 abstract class FileChooserDialog : LargeDialog() {
 
@@ -65,7 +65,7 @@ abstract class FileChooserDialog : LargeDialog() {
         with(buttonPanel) {
             val buttonGrantPermission =
                 createButton(activity, getString(R.string.grant_permission), accentColor) {
-                    Util.navigateToStorageSetting(activity)
+                    navigateToStorageSetting(activity)
                 }
             val buttonPositive =
                 createButton(activity, getString(android.R.string.selectAll), accentColor) {

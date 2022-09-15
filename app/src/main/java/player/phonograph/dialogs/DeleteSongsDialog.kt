@@ -16,7 +16,7 @@ import player.phonograph.R
 import player.phonograph.mediastore.MediaStoreUtil
 import player.phonograph.model.Song
 import player.phonograph.util.StringUtil
-import player.phonograph.util.Util
+import player.phonograph.util.PermissionUtil.navigateToStorageSetting
 
 /**
  * @author Karim Abou Zeid (kabouzeid), Aidan Follestad (afollestad), chr_56<modify>
@@ -60,7 +60,7 @@ class DeleteSongsDialog : DialogFragment() {
                 // grant permission button
                 if (!hasPermission) {
                     neutralButton(R.string.grant_permission) {
-                        Util.navigateToStorageSetting(requireActivity())
+                        navigateToStorageSetting(requireActivity())
                     }
                 }
 
