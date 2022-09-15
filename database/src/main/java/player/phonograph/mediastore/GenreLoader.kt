@@ -9,10 +9,10 @@ import android.content.Context
 import android.database.Cursor
 import android.os.Build
 import android.provider.MediaStore
-import player.phonograph.App
-import player.phonograph.model.sort.SortRef
+import player.phonograph.BaseApp
 import player.phonograph.model.Genre
 import player.phonograph.model.Song
+import player.phonograph.model.sort.SortRef
 import player.phonograph.settings.Setting
 
 @SuppressLint("Recycle")
@@ -97,7 +97,7 @@ object GenreLoader {
     }
 
     fun List<Genre>.allGenreSongs(): List<Song> =
-        this.flatMap { getSongs(App.instance, it.id) }
+        this.flatMap { getSongs(BaseApp.instance, it.id) }
 
     private fun List<Genre>.sortAll(): List<Genre> {
         val revert = Setting.instance.genreSortMode.revert

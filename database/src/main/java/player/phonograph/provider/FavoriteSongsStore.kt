@@ -9,14 +9,14 @@ import android.content.Context
 import android.content.Intent
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
-import player.phonograph.App
+import player.phonograph.BaseApp
 import player.phonograph.MEDIA_STORE_CHANGED
 import player.phonograph.mediastore.MediaStoreUtil
 import player.phonograph.model.Song
 import player.phonograph.provider.DatabaseConstants.FAVORITE_DB
 import player.phonograph.util.TimeUtil.currentTimestamp
 
-class FavoriteSongsStore(context: Context = App.instance) : SQLiteOpenHelper(context, FAVORITE_DB, null, VERSION) {
+class FavoriteSongsStore(context: Context = BaseApp.instance) : SQLiteOpenHelper(context, FAVORITE_DB, null, VERSION) {
 
     private val creatingTableSQL =
         "CREATE TABLE IF NOT EXISTS $TABLE_NAME ($COLUMNS_ID LONG NOT NULL PRIMARY KEY, $COLUMNS_PATH TEXT NOT NULL, $COLUMNS_TITLE TEXT, $COLUMNS_TIMESTAMP LONG);"
@@ -131,7 +131,7 @@ class FavoriteSongsStore(context: Context = App.instance) : SQLiteOpenHelper(con
     }
     fun remove(song: Song): Boolean = remove(song.id, song.data!!)
 
-    private fun notifyMediaStoreChanged() { App.instance.sendBroadcast(Intent(MEDIA_STORE_CHANGED)) }
+    private fun notifyMediaStoreChanged() { BaseApp.instance.sendBroadcast(Intent(MEDIA_STORE_CHANGED)) }
 
     companion object {
         private const val VERSION = 1
@@ -147,7 +147,7 @@ class FavoriteSongsStore(context: Context = App.instance) : SQLiteOpenHelper(con
         val instance: FavoriteSongsStore
             get() {
                 if (mInstance == null) {
-                    mInstance = FavoriteSongsStore(App.instance)
+                    mInstance = FavoriteSongsStore(BaseApp.instance)
                 }
                 return mInstance!!
             }
