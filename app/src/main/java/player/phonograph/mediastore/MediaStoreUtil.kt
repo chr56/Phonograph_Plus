@@ -17,10 +17,7 @@ import android.provider.MediaStore.Audio.AudioColumns
 import android.provider.MediaStore.MediaColumns.DATA
 import android.util.Log
 import android.widget.Toast
-import com.afollestad.materialdialogs.MaterialDialog
-import java.io.File
-import java.util.*
-import kotlin.collections.ArrayList
+import androidx.appcompat.app.AlertDialog
 import kotlinx.coroutines.CoroutineScope
 import player.phonograph.R
 import player.phonograph.model.Song
@@ -28,6 +25,8 @@ import player.phonograph.model.file.FileEntity
 import player.phonograph.model.file.Location
 import player.phonograph.model.file.put
 import player.phonograph.settings.Setting
+import player.phonograph.util.Util
+import java.io.File
 
 object MediaStoreUtil {
     private const val TAG: String = "MediaStoreUtil"
@@ -261,30 +260,35 @@ object MediaStoreUtil {
         Toast.makeText(context, r, Toast.LENGTH_SHORT).show()
 
         // handle fail , report and try again
-        if (failList.isNotEmpty()) MaterialDialog(context)
-            .title(R.string.failed_to_delete)
-            .message(
-                text = "${r}\n${context.getString(R.string.failed_to_delete)}: \n${failList.map { "${it.title}\n" }} "
-            )
-            .positiveButton(android.R.string.ok)
-            .apply {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                    neutralButton(R.string.retry) {
-                        val uris = failList.map { song ->
-                            Uri.withAppendedPath(
-                                MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
-                                song.id.toString()
-                            )
-                        }
-                        context.startIntentSenderForResult(
-                            MediaStore.createDeleteRequest(
-                                context.contentResolver,
-                                uris
-                            ).intentSender,
-                            0, null, 0, 0, 0)
+        // handle fail , report and try again
+        if (failList.isNotEmpty()) AlertDialog.Builder(context).apply {
+            setTitle(R.string.failed_to_delete)
+            setMessage(
+                "${r}\n${context.getString(R.string.failed_to_delete)}: \n" +
+                        "${failList.fold("") { acc, song -> "$acc,${song.title}" }} ")
+            setPositiveButton(android.R.string.ok) { dialog, _ ->
+                dialog.dismiss()
+            }
+            setNegativeButton(R.string.grant_permission) { _, _ ->
+                Util.navigateToStorageSetting(context)
+            }
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                setNeutralButton(R.string.retry) { _, _ ->
+                    val uris = failList.map { song ->
+                        Uri.withAppendedPath(
+                            MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
+                            song.id.toString()
+                        )
                     }
+                    context.startIntentSenderForResult(
+                        MediaStore.createDeleteRequest(
+                            context.contentResolver,
+                            uris
+                        ).intentSender,
+                        0, null, 0, 0, 0)
                 }
             }
+        }
             .show()
     }
 
