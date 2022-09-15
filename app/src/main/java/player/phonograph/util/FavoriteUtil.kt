@@ -9,6 +9,7 @@ import legacy.phonograph.LegacyPlaylistsUtil.addToPlaylist
 import legacy.phonograph.LegacyPlaylistsUtil.createPlaylist
 import legacy.phonograph.LegacyPlaylistsUtil.removeFromPlaylist
 import player.phonograph.App
+import player.phonograph.MusicServiceMsgConst
 import player.phonograph.R
 import player.phonograph.model.Song
 import player.phonograph.model.playlist.Playlist
@@ -89,7 +90,7 @@ object FavoriteUtil {
     }
     private fun notifyMediaStoreChanged() {
         App.instance.sendBroadcast(
-            Intent(MusicService.MEDIA_STORE_CHANGED)
+            Intent(MusicServiceMsgConst.MEDIA_STORE_CHANGED)
         )
     }
 }

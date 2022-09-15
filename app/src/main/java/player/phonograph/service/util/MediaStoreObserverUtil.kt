@@ -8,6 +8,7 @@ import android.content.Context
 import android.database.ContentObserver
 import android.os.Handler
 import android.provider.MediaStore
+import player.phonograph.MusicServiceMsgConst
 import player.phonograph.service.MusicService
 
 class MediaStoreObserverUtil {
@@ -95,7 +96,7 @@ class MediaStoreObserverUtil {
         override fun run() {
             // actually call refresh when the delayed callback fires
             // do not send a sticky broadcast here
-            handleAndSendChangeInternalCallback(MusicService.MEDIA_STORE_CHANGED)
+            handleAndSendChangeInternalCallback(MusicServiceMsgConst.MEDIA_STORE_CHANGED)
         }
 
         companion object {

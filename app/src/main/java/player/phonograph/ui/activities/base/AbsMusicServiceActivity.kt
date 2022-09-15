@@ -14,6 +14,7 @@ import android.util.Log
 import java.lang.ref.WeakReference
 import lib.phonograph.activity.ToolbarActivity
 import player.phonograph.BuildConfig.DEBUG
+import player.phonograph.MusicServiceMsgConst
 import player.phonograph.R
 import player.phonograph.interfaces.MusicServiceEventListener
 import player.phonograph.service.MusicPlayerRemote
@@ -90,12 +91,12 @@ abstract class AbsMusicServiceActivity : ToolbarActivity(), MusicServiceEventLis
             registerReceiver(
                 musicStateReceiver,
                 IntentFilter().apply {
-                    addAction(MusicService.PLAY_STATE_CHANGED)
-                    addAction(MusicService.SHUFFLE_MODE_CHANGED)
-                    addAction(MusicService.REPEAT_MODE_CHANGED)
-                    addAction(MusicService.META_CHANGED)
-                    addAction(MusicService.QUEUE_CHANGED)
-                    addAction(MusicService.MEDIA_STORE_CHANGED)
+                    addAction(MusicServiceMsgConst.PLAY_STATE_CHANGED)
+                    addAction(MusicServiceMsgConst.SHUFFLE_MODE_CHANGED)
+                    addAction(MusicServiceMsgConst.REPEAT_MODE_CHANGED)
+                    addAction(MusicServiceMsgConst.META_CHANGED)
+                    addAction(MusicServiceMsgConst.QUEUE_CHANGED)
+                    addAction(MusicServiceMsgConst.MEDIA_STORE_CHANGED)
                 }
             )
             receiverRegistered = true
@@ -161,12 +162,12 @@ abstract class AbsMusicServiceActivity : ToolbarActivity(), MusicServiceEventLis
             val action = intent.action
             reference.get()?.also { activity ->
                 when (action) {
-                    MusicService.META_CHANGED -> activity.onPlayingMetaChanged()
-                    MusicService.QUEUE_CHANGED -> activity.onQueueChanged()
-                    MusicService.PLAY_STATE_CHANGED -> activity.onPlayStateChanged()
-                    MusicService.REPEAT_MODE_CHANGED -> activity.onRepeatModeChanged()
-                    MusicService.SHUFFLE_MODE_CHANGED -> activity.onShuffleModeChanged()
-                    MusicService.MEDIA_STORE_CHANGED -> activity.onMediaStoreChanged()
+                    MusicServiceMsgConst.META_CHANGED -> activity.onPlayingMetaChanged()
+                    MusicServiceMsgConst.QUEUE_CHANGED -> activity.onQueueChanged()
+                    MusicServiceMsgConst.PLAY_STATE_CHANGED -> activity.onPlayStateChanged()
+                    MusicServiceMsgConst.REPEAT_MODE_CHANGED -> activity.onRepeatModeChanged()
+                    MusicServiceMsgConst.SHUFFLE_MODE_CHANGED -> activity.onShuffleModeChanged()
+                    MusicServiceMsgConst.MEDIA_STORE_CHANGED -> activity.onMediaStoreChanged()
                 }
             }
         }
@@ -175,7 +176,7 @@ abstract class AbsMusicServiceActivity : ToolbarActivity(), MusicServiceEventLis
     override fun missingPermissionCallback() {
         super.missingPermissionCallback()
         sendBroadcast(
-            Intent(MusicService.MEDIA_STORE_CHANGED).apply {
+            Intent(MusicServiceMsgConst.MEDIA_STORE_CHANGED).apply {
                 putExtra("from_permissions_changed", true) // just in case we need to know this at some point
             }
         )

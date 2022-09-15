@@ -14,6 +14,7 @@ import android.view.View
 import android.widget.RemoteViews
 import androidx.core.content.res.ResourcesCompat
 import mt.util.color.getPrimaryTextColor
+import player.phonograph.MusicServiceMsgConst
 import player.phonograph.R
 import player.phonograph.model.Song
 import player.phonograph.model.infoString
@@ -42,7 +43,7 @@ abstract class BaseAppWidget : AppWidgetProvider() {
      */
     fun notifyChange(service: MusicService, what: String) {
         if (hasInstances(service)) {
-            if (MusicService.META_CHANGED == what || MusicService.PLAY_STATE_CHANGED == what) {
+            if (MusicServiceMsgConst.META_CHANGED == what || MusicServiceMsgConst.PLAY_STATE_CHANGED == what) {
                 performUpdate(service, null)
             }
         }

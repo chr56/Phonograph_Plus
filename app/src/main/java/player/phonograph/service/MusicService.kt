@@ -16,6 +16,11 @@ import lib.phonograph.localization.ContextLocaleDelegate
 import player.phonograph.App
 import player.phonograph.App.Companion.ACTUAL_PACKAGE_NAME
 import player.phonograph.BuildConfig
+import player.phonograph.MusicServiceMsgConst.META_CHANGED
+import player.phonograph.MusicServiceMsgConst.REPEAT_MODE_CHANGED
+import player.phonograph.MusicServiceMsgConst.PLAY_STATE_CHANGED
+import player.phonograph.MusicServiceMsgConst.SHUFFLE_MODE_CHANGED
+import player.phonograph.MusicServiceMsgConst.QUEUE_CHANGED
 import player.phonograph.R
 import player.phonograph.appwidgets.AppWidgetBig
 import player.phonograph.appwidgets.AppWidgetCard
@@ -426,15 +431,6 @@ class MusicService : Service(), OnSharedPreferenceChangeListener {
 
         const val APP_WIDGET_UPDATE = "$ACTUAL_PACKAGE_NAME.appwidgetupdate"
         const val EXTRA_APP_WIDGET_NAME = ACTUAL_PACKAGE_NAME + "app_widget_name"
-
-        // do not change these three strings as it will break support with other apps (e.g. last.fm scrobbling)
-        const val META_CHANGED = "$ACTUAL_PACKAGE_NAME.metachanged"
-        const val QUEUE_CHANGED = "$ACTUAL_PACKAGE_NAME.queuechanged"
-        const val PLAY_STATE_CHANGED = "$ACTUAL_PACKAGE_NAME.playstatechanged"
-
-        const val REPEAT_MODE_CHANGED = "$ACTUAL_PACKAGE_NAME.repeatmodechanged"
-        const val SHUFFLE_MODE_CHANGED = "$ACTUAL_PACKAGE_NAME.shufflemodechanged"
-        const val MEDIA_STORE_CHANGED = "$ACTUAL_PACKAGE_NAME.mediastorechanged"
 
         const val SAVED_POSITION_IN_TRACK = "POSITION_IN_TRACK"
 

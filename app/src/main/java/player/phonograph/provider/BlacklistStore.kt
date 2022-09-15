@@ -6,6 +6,7 @@ import android.content.Intent
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import android.os.Environment
+import player.phonograph.MusicServiceMsgConst
 import java.io.File
 import player.phonograph.App
 import player.phonograph.service.MusicService
@@ -85,7 +86,7 @@ class BlacklistStore(context: Context) :
     }
 
     private fun notifyMediaStoreChanged() {
-        App.instance.sendBroadcast(Intent(MusicService.MEDIA_STORE_CHANGED))
+        App.instance.sendBroadcast(Intent(MusicServiceMsgConst.MEDIA_STORE_CHANGED))
     }
 
     val paths: List<String>
