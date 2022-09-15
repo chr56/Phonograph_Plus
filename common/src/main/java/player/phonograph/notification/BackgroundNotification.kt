@@ -11,7 +11,7 @@ import android.content.Context
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
-import player.phonograph.App
+import player.phonograph.BaseApp
 import player.phonograph.R
 
 object BackgroundNotification {
@@ -31,7 +31,7 @@ object BackgroundNotification {
      * Post a common notification
      */
     fun post(title: String, msg: String, id: Int, onGoing: Boolean = true) {
-        val context = App.instance
+        val context = BaseApp.instance
         if (!isReady) init(context)
         notificationManager?.let { notificationManager ->
 
@@ -53,7 +53,7 @@ object BackgroundNotification {
      * Post notification with process
      */
     fun post(title: String, msg: String, id: Int, process: Int, maxProcess: Int) {
-        val context = App.instance
+        val context = BaseApp.instance
         if (!isReady) init(context)
         notificationManager?.let { notificationManager ->
             val notification: Notification =
@@ -72,7 +72,7 @@ object BackgroundNotification {
     }
 
     fun remove(id: Int) {
-        if (!isReady) init(App.instance)
+        if (!isReady) init(BaseApp.instance)
         notificationManager?.cancel(id)
     }
 
@@ -84,7 +84,7 @@ object BackgroundNotification {
         if (notificationChannel == null) {
             notificationChannel = NotificationChannel(
                 NOTIFICATION_CHANNEL_ID_BACKGROUND,
-                App.instance.getString(R.string.background_notification_name),
+                BaseApp.instance.getString(R.string.background_notification_name),
                 NotificationManager.IMPORTANCE_HIGH
             )
             notificationChannel.enableLights(false)
