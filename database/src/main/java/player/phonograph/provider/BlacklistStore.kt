@@ -6,11 +6,11 @@ import android.content.Intent
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import android.os.Environment
+import java.io.File
 import player.phonograph.BaseApp
 import player.phonograph.MEDIA_STORE_CHANGED
-import player.phonograph.settings.Setting
 import player.phonograph.util.FileUtil.safeGetCanonicalPath
-import java.io.File
+import player.phonograph.util.module.BooleanIsolatePreference
 
 class BlacklistStore(context: Context) :
     SQLiteOpenHelper(context, DatabaseConstants.BLACKLIST_DB, null, VERSION) {
@@ -118,15 +118,22 @@ class BlacklistStore(context: Context) :
         fun getInstance(context: Context): BlacklistStore {
             return sInstance ?: BlacklistStore(context.applicationContext).also { blacklistStore ->
                 sInstance = blacklistStore
-                if (!Setting.instance.initializedBlacklist) {
+                val setting = setting(context)
+                if (!setting.read()) {
                     // blacklisted by default
                     blacklistStore.addPathImpl(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_ALARMS))
                     blacklistStore.addPathImpl(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_NOTIFICATIONS))
                     blacklistStore.addPathImpl(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_RINGTONES))
-                    Setting.instance.initializedBlacklist = true
+                    setting.write(true)
                 }
             }
         }
+
         private const val VERSION = 1
+
+        fun setting(context: Context) =
+            BooleanIsolatePreference(INITIALIZED_BLACKLIST, true, context)
+
+        private const val INITIALIZED_BLACKLIST = "initialized_blacklist"
     }
 }

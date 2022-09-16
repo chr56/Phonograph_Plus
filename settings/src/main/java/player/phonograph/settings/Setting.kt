@@ -187,7 +187,6 @@ class Setting(context: Context) {
 
     // Misc
     var startDirectoryPath: String by StringPref(START_DIRECTORY, defaultStartDirectory.path)
-    var initializedBlacklist: Boolean by BooleanPref(INITIALIZED_BLACKLIST, false)
     var ignoreUpgradeVersionCode: Int by IntPref(IGNORE_UPGRADE_VERSION_CODE, 0)
 
     // Compatibility
@@ -277,7 +276,6 @@ class Setting(context: Context) {
 
         // Misc
         private const val START_DIRECTORY = "start_directory"
-        private const val INITIALIZED_BLACKLIST = "initialized_blacklist"
         private const val IGNORE_UPGRADE_VERSION_CODE = "ignore_upgrade_version_code"
 
         // compatibility
