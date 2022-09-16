@@ -10,6 +10,8 @@ import android.content.Context.BIND_AUTO_CREATE
 import android.database.Cursor
 import android.net.Uri
 import android.os.Environment
+import android.os.Handler
+import android.os.HandlerThread
 import android.os.IBinder
 import android.provider.MediaStore.Audio.AudioColumns.DATA
 import android.provider.MediaStore.Audio.AudioColumns._ID
@@ -133,14 +135,14 @@ object MusicPlayerRemote {
     }
 
     /**
-     * Play a queue (synchronized action!)
+     * Play a queue (asynchronous)
      * @param queue new queue
      * @param startPosition position in queue when starting playing (available when shuffle mode off)
      * @param startPlaying true if to play now, false if to pause
      * @param shuffleMode new preferred shuffle mode: if [shuffleMode] is NOT null, shuffle mode would change and apply;
      *              if [shuffleMode] is null, shuffle mode would change unless [Setting.rememberShuffle] is on
      *              (always be [ShuffleMode.SHUFFLE] and )
-     * @return success or not
+     * @return request success or not
      */
     fun playQueue(
         queue: List<Song>,
@@ -154,25 +156,27 @@ object MusicPlayerRemote {
             )
             return false
         }
-        // check whether queue already sits there
-        if (queueManager.playingQueue === queue) {
-            if (startPlaying) {
-                playSongAt(startPosition)
-            } else {
-                queueManager.setSongPosition(startPosition)
+        operatorHandler.post {
+            // check whether queue already sits there
+            if (queueManager.playingQueue === queue) {
+                if (startPlaying) {
+                    playSongAt(startPosition)
+                } else {
+                    queueManager.setSongPosition(startPosition)
+                }
+                return@post
             }
-            return true
+            // parse shuffle mode & position
+            val targetShuffleMode = shuffleMode
+                ?: (if (Setting.instance.rememberShuffle) ShuffleMode.SHUFFLE else null)
+            val targetPosition =
+                if (targetShuffleMode == ShuffleMode.SHUFFLE) Random().nextInt(queue.size) else startPosition
+            // swap queue
+            queueManager.swapQueue(queue, targetPosition, false)
+            targetShuffleMode?.let { queueManager.switchShuffleMode(targetShuffleMode, false) }
+            if (startPlaying) musicService?.playSongAt(queueManager.currentSongPosition)
+            else musicService?.pause()
         }
-        // parse shuffle mode & position
-        val targetShuffleMode = shuffleMode
-            ?: (if (Setting.instance.rememberShuffle) ShuffleMode.SHUFFLE else null)
-        val targetPosition =
-            if (targetShuffleMode == ShuffleMode.SHUFFLE) Random().nextInt(queue.size) else startPosition
-        // swap queue
-        queueManager.swapQueue(queue, targetPosition, false)
-        targetShuffleMode?.let { queueManager.switchShuffleMode(targetShuffleMode, false) }
-        if (startPlaying) musicService?.playSongAt(queueManager.currentSongPosition)
-        else musicService?.pause()
         return true
     }
 
@@ -452,6 +456,13 @@ object MusicPlayerRemote {
     val isServiceConnected: Boolean get() = musicService != null
 
     const val TAG = "MusicPlayerRemote"
+
+    val operatorHandler: Handler by lazy {
+        HandlerThread("worker").let {
+            it.start()
+            Handler(it.looper)
+        }
+    }
 
     private inline fun MusicService?.tryExecute(p: (obj: MusicService) -> Unit): Boolean {
         return if (this != null) {
