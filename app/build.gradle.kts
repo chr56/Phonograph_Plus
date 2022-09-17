@@ -29,6 +29,12 @@ android {
     val appName = "Phonograph Plus"
 
     buildFeatures {
+
+
+        aidl = false
+        renderScript = false
+        shaders = false
+
         viewBinding = true
     }
 
