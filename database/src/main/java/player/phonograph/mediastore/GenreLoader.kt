@@ -13,7 +13,7 @@ import player.phonograph.BaseApp
 import player.phonograph.model.Genre
 import player.phonograph.model.Song
 import player.phonograph.model.sort.SortRef
-import player.phonograph.settings.Setting
+import player.phonograph.settings.SortOrderSettings
 
 @SuppressLint("Recycle")
 object GenreLoader {
@@ -100,8 +100,8 @@ object GenreLoader {
         this.flatMap { getSongs(BaseApp.instance, it.id) }
 
     private fun List<Genre>.sortAll(): List<Genre> {
-        val revert = Setting.instance.genreSortMode.revert
-        return when (Setting.instance.genreSortMode.sortRef) {
+        val revert = SortOrderSettings.instance.genreSortMode.revert
+        return when (SortOrderSettings.instance.genreSortMode.sortRef) {
             SortRef.DISPLAY_NAME -> this.sort(revert) { it.name }
             SortRef.SONG_COUNT -> this.sort(revert) { it.songCount }
             else -> this

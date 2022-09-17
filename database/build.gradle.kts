@@ -44,7 +44,7 @@ android {
 
 dependencies {
     implementation(project(":common"))
-    implementation(project(":settings"))
     implementation(Deps.AndroidX.core)
     implementation(Deps.AndroidX.appcompat)
+    implementation(Deps.AndroidX.preference)
 }

@@ -24,7 +24,7 @@ import player.phonograph.model.Song
 import player.phonograph.model.file.FileEntity
 import player.phonograph.model.file.Location
 import player.phonograph.model.file.put
-import player.phonograph.settings.Setting
+import player.phonograph.settings.SortOrderSettings
 import player.phonograph.util.PermissionUtil.navigateToStorageSetting
 import java.io.File
 
@@ -180,7 +180,7 @@ object MediaStoreUtil {
         context: Context,
         selection: String?,
         selectionValues: Array<String>?,
-        sortOrder: String? = Setting.instance.songSortMode.SQLQuerySortOrder,
+        sortOrder: String? = SortOrderSettings.instance.songSortMode.SQLQuerySortOrder,
     ): Cursor? {
 
         val (realSelection, realSelectionValues) =

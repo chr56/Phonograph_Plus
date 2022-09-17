@@ -13,7 +13,7 @@ import player.phonograph.model.Song
 import player.phonograph.model.getReadableDurationString
 import player.phonograph.model.getYearString
 import player.phonograph.model.sort.SortRef
-import player.phonograph.settings.Setting
+import player.phonograph.settings.SortOrderSettings
 import player.phonograph.util.MusicUtil
 import java.text.SimpleDateFormat
 import java.util.*
@@ -50,7 +50,7 @@ open class SongDisplayAdapter(
     override fun getSectionNameImp(position: Int): String {
         val song = dataset[position]
         val sectionName: String =
-            when (Setting.instance.songSortMode.sortRef) {
+            when (SortOrderSettings.instance.songSortMode.sortRef) {
                 SortRef.SONG_NAME -> MusicUtil.getSectionName(song.title)
                 SortRef.ARTIST_NAME -> MusicUtil.getSectionName(song.artistName)
                 SortRef.ALBUM_NAME -> MusicUtil.getSectionName(song.albumName)

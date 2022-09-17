@@ -81,47 +81,6 @@ class Setting(context: Context) {
     // Upgrade
     var checkUpgradeAtStartup: Boolean by BooleanPref(CHECK_UPGRADE_AT_STARTUP, true)
 
-    // List-SortMode
-    private var _songSortMode: String by StringPref(
-        SONG_SORT_MODE,
-        SortMode(SortRef.ID, false).serialize()
-    )
-    var songSortMode: SortMode
-        get() = SortMode.deserialize(_songSortMode)
-        set(value) {
-            _songSortMode = value.serialize()
-        }
-
-    private var _albumSortMode: String by StringPref(
-        ALBUM_SORT_MODE,
-        SortMode(SortRef.ID, false).serialize()
-    )
-    var albumSortMode: SortMode
-        get() = SortMode.deserialize(_albumSortMode)
-        set(value) {
-            _albumSortMode = value.serialize()
-        }
-
-    private var _artistSortMode: String by StringPref(
-        ARTIST_SORT_MODE,
-        SortMode(SortRef.ID, false).serialize()
-    )
-    var artistSortMode: SortMode
-        get() = SortMode.deserialize(_artistSortMode)
-        set(value) {
-            _artistSortMode = value.serialize()
-        }
-
-    private var _genreSortMode: String by StringPref(
-        GENRE_SORT_MODE,
-        SortMode(SortRef.ID, false).serialize()
-    )
-    var genreSortMode: SortMode
-        get() = SortMode.deserialize(_genreSortMode)
-        set(value) {
-            _genreSortMode = value.serialize()
-        }
-
     // List-Appearance
     var albumGridSize: Int by IntPref(
         ALBUM_GRID_SIZE,
@@ -224,14 +183,6 @@ class Setting(context: Context) {
 
         // Upgrade
         private const val CHECK_UPGRADE_AT_STARTUP = "check_upgrade_at_startup"
-
-        // List-SortMode
-        private const val SONG_SORT_MODE = "song_sort_mode"
-        private const val ALBUM_SORT_MODE = "album_sort_mode"
-        private const val ARTIST_SORT_MODE = "artist_sort_mode"
-        private const val GENRE_SORT_MODE = "genre_sort_mode"
-
-        private const val FILE_SORT_MODE = "file_sort_mode"
 
         // List-Appearance
         private const val ALBUM_GRID_SIZE = "album_grid_size"

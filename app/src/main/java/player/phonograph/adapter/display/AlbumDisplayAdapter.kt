@@ -16,6 +16,7 @@ import player.phonograph.model.Album
 import player.phonograph.model.getYearString
 import player.phonograph.model.sort.SortRef
 import player.phonograph.settings.Setting
+import player.phonograph.settings.SortOrderSettings
 import player.phonograph.util.MusicUtil
 
 class AlbumDisplayAdapter(
@@ -50,7 +51,7 @@ class AlbumDisplayAdapter(
     override fun getSectionNameImp(position: Int): String {
         val album = dataset[position]
         val sectionName: String =
-            when (Setting.instance.albumSortMode.sortRef) {
+            when (SortOrderSettings.instance.albumSortMode.sortRef) {
                 SortRef.ALBUM_NAME -> MusicUtil.getSectionName(album.title)
                 SortRef.ARTIST_NAME -> MusicUtil.getSectionName(album.artistName)
                 SortRef.YEAR -> getYearString(album.year)

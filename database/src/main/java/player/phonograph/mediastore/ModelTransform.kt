@@ -17,7 +17,7 @@ import player.phonograph.model.Album
 import player.phonograph.model.Artist
 import player.phonograph.model.Song
 import player.phonograph.notification.ErrorNotification
-import player.phonograph.settings.Setting
+import player.phonograph.settings.SortOrderSettings
 
 //
 // Albums
@@ -75,8 +75,8 @@ fun List<Song>.toAlbumList(): List<Album> {
 }
 
 fun List<Album>.sortAllAlbums(): List<Album> {
-    val revert = Setting.instance.albumSortMode.revert
-    return when (Setting.instance.albumSortMode.sortRef) {
+    val revert = SortOrderSettings.instance.albumSortMode.revert
+    return when (SortOrderSettings.instance.albumSortMode.sortRef) {
         SortRef.ALBUM_NAME -> this.sort(revert) { it.title }
         SortRef.ARTIST_NAME -> this.sort(revert) { it.artistName }
         SortRef.YEAR -> this.sort(revert) { it.year }
@@ -175,8 +175,8 @@ fun List<Song>.toArtistList(): List<Artist> {
 }
 
 fun List<Artist>.sortAllArtist(): List<Artist> {
-    val revert = Setting.instance.artistSortMode.revert
-    return when (Setting.instance.artistSortMode.sortRef) {
+    val revert = SortOrderSettings.instance.artistSortMode.revert
+    return when (SortOrderSettings.instance.artistSortMode.sortRef) {
         SortRef.ARTIST_NAME -> this.sort(revert) { it.name.lowercase() }
         SortRef.ALBUM_COUNT -> this.sort(revert) { it.albumCount }
         SortRef.SONG_COUNT -> this.sort(revert) { it.songCount }

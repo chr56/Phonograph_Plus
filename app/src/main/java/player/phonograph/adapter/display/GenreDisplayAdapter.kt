@@ -8,7 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import player.phonograph.adapter.base.MultiSelectionCabController
 import player.phonograph.model.sort.SortRef
 import player.phonograph.model.Genre
-import player.phonograph.settings.Setting
+import player.phonograph.settings.SortOrderSettings
 import player.phonograph.util.MusicUtil
 
 class GenreDisplayAdapter(
@@ -24,7 +24,7 @@ class GenreDisplayAdapter(
 ) {
 
     override fun getSectionNameImp(position: Int): String {
-        return when (Setting.instance.genreSortMode.sortRef) {
+        return when (SortOrderSettings.instance.genreSortMode.sortRef) {
             SortRef.DISPLAY_NAME -> MusicUtil.getSectionName(dataset[position].name)
             SortRef.SONG_COUNT -> dataset[position].songCount.toString()
             else -> ""

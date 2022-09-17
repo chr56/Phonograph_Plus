@@ -9,6 +9,7 @@ import player.phonograph.R
 import player.phonograph.model.sort.SortMode
 import player.phonograph.model.sort.SortRef
 import player.phonograph.settings.Setting
+import player.phonograph.settings.SortOrderSettings
 import player.phonograph.ui.fragments.pages.AbsDisplayPage
 import player.phonograph.ui.fragments.pages.AlbumPage
 import player.phonograph.ui.fragments.pages.ArtistPage
@@ -29,7 +30,7 @@ class DisplayUtil(private val page: AbsDisplayPage<*, *, *>) {
 
     var sortMode: SortMode
         get() {
-            val pref = Setting.instance
+            val pref = SortOrderSettings.instance
             return when (page) {
                 is SongPage -> {
                     pref.songSortMode
@@ -47,7 +48,7 @@ class DisplayUtil(private val page: AbsDisplayPage<*, *, *>) {
             }
         }
         set(value) {
-            val pref = Setting.instance
+            val pref = SortOrderSettings.instance
             when (page) {
                 is SongPage -> {
                     pref.songSortMode = value

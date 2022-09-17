@@ -16,7 +16,7 @@ import player.phonograph.coil.loadImage
 import player.phonograph.coil.target.PaletteTargetBuilder
 import player.phonograph.model.Artist
 import player.phonograph.model.sort.SortRef
-import player.phonograph.settings.Setting
+import player.phonograph.settings.SortOrderSettings
 import player.phonograph.util.MusicUtil
 
 class ArtistDisplayAdapter(
@@ -51,7 +51,7 @@ class ArtistDisplayAdapter(
     override fun getSectionNameImp(position: Int): String {
         val artist = dataset[position]
         val sectionName: String =
-            when (Setting.instance.artistSortMode.sortRef) {
+            when (SortOrderSettings.instance.artistSortMode.sortRef) {
                 SortRef.ARTIST_NAME -> MusicUtil.getSectionName(artist.name)
                 SortRef.ALBUM_COUNT -> artist.albumCount.toString()
                 SortRef.SONG_COUNT -> artist.songCount.toString()

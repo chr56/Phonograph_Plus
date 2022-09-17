@@ -25,7 +25,7 @@ import player.phonograph.model.buildInfoString
 import player.phonograph.model.getYearString
 import player.phonograph.model.songCountString
 import player.phonograph.model.sort.SortRef
-import player.phonograph.settings.Setting
+import player.phonograph.settings.SortOrderSettings
 import player.phonograph.util.MusicUtil
 import player.phonograph.util.NavigationUtil
 import player.phonograph.util.menu.onMultiSongMenuItemClick
@@ -135,7 +135,7 @@ open class AlbumAdapter(
     override fun getSectionName(position: Int): String {
         val album = dataSet[position]
         val sectionName: String =
-            when (Setting.instance.albumSortMode.sortRef) {
+            when (SortOrderSettings.instance.albumSortMode.sortRef) {
                 SortRef.ALBUM_NAME -> MusicUtil.getSectionName(album.title)
                 SortRef.ARTIST_NAME -> MusicUtil.getSectionName(album.artistName)
                 SortRef.YEAR -> getYearString(album.year)
