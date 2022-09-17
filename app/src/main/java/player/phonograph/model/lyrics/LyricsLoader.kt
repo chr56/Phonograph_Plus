@@ -10,8 +10,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.jaudiotagger.audio.AudioFileIO
 import org.jaudiotagger.tag.FieldKey
-import player.phonograph.BuildConfig
+import player.phonograph.App
 import player.phonograph.model.Song
+import player.phonograph.notification.ErrorNotification
 import player.phonograph.util.FileUtil
 import java.io.File
 
@@ -32,8 +33,7 @@ object LyricsLoader {
                     }
                 }
             } catch (e: Exception) {
-                val buildType = BuildConfig.BUILD_TYPE
-                if (buildType != "release" || buildType != "preview") { Log.e(TAG, "Failed to read lyrics from song\n${e.message}") }
+                ErrorNotification.postErrorNotification("Failed to read lyrics from song\n${e.message}", App.instance)
             }
         }
 
@@ -95,7 +95,9 @@ object LyricsLoader {
                                 if (raw.isNotEmpty()) vagueLyrics.add(parse(raw, LyricsSource.ExternalDecorated()))
                             }
                         }
-                    } catch (e: Exception) { Log.e(TAG, "Failed to read lyrics files\n${e.message}") }
+                    } catch (e: Exception) {
+                        ErrorNotification.postErrorNotification("Failed to read lyrics files\n${e.message}", App.instance)
+                    }
                 }
             }
         }
