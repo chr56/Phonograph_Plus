@@ -10,6 +10,8 @@ import android.widget.ImageView
 import androidx.annotation.DrawableRes
 import coil.Coil
 import coil.request.ImageRequest
+import coil.size.Dimension
+import coil.size.Size
 import coil.target.Target
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -49,6 +51,15 @@ class ChainBuilder internal constructor(context: Context) {
     }
     fun default(drawable: Drawable): ChainBuilder {
         requestBuilder.placeholder(drawable)
+        return this
+    }
+
+    fun size(size: Size): ChainBuilder {
+        requestBuilder.size(size)
+        return this
+    }
+    fun size(width: Dimension, height: Dimension): ChainBuilder {
+        requestBuilder.size(Size(width, height))
         return this
     }
 

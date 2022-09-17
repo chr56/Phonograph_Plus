@@ -43,6 +43,7 @@ class PlaylistSongAdapter(
     override fun setImage(holder: DisplayViewHolder, position: Int) {
         loadImage(context) {
             data(dataset[position])
+            size(holder.image!!.maxWidth, holder.image!!.maxHeight)
             target(
                 onStart = { holder.image!!.setImageResource(R.drawable.default_album_art) },
                 onSuccess = { holder.image!!.setImageDrawable(it) }

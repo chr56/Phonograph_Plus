@@ -55,6 +55,7 @@ class HorizontalAlbumAdapter(
         if (holder.image == null) return
         loadImage(context) {
             data(album.safeGetFirstSong())
+            size(holder.image!!.maxWidth, holder.image!!.maxHeight)
             target(PaletteTargetBuilder(context)
                 .onStart {
                     holder.image!!.setImageResource(R.drawable.default_album_art)

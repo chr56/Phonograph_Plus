@@ -31,6 +31,7 @@ class ArtistDisplayAdapter(
         holder.image?.let { view ->
             loadImage(activity) {
                 data(dataset[position])
+                size(view.maxWidth, view.maxHeight)
                 target(
                     PaletteTargetBuilder(context)
                         .onStart {

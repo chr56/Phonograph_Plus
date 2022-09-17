@@ -98,6 +98,7 @@ class FilesPageAdapter(
                 if (loadCover) {
                     loadImage(image.context) {
                         data(item.linkedSong(context))
+                        size(image.maxWidth, image.maxHeight)
                         target(
                             onStart = {
                                 image.setImageDrawable(

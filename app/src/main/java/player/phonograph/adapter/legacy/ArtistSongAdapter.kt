@@ -61,6 +61,7 @@ open class ArtistSongAdapter(
         songInfo.text = song.albumName
         loadImage(activity) {
             data(song)
+            size(albumArt.maxWidth, albumArt.maxHeight)
             target(
                 onStart = { albumArt.setImageResource(R.drawable.default_artist_image) },
                 onSuccess = { albumArt.setImageDrawable(it) }

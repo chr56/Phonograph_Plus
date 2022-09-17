@@ -55,6 +55,7 @@ class SearchAdapter(
                 holder.title?.text = song.title
                 holder.text?.text = song.infoString()
                 loadImage(activity) {
+                    size(holder.image!!.maxWidth, holder.image!!.maxHeight)
                     data(song)
                     target(
                         onStart = { holder.image!!.setImageResource(R.drawable.default_album_art) },

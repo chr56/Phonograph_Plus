@@ -30,6 +30,7 @@ open class SongDisplayAdapter(
         holder.image?.let { view ->
             loadImage(context) {
                 data(dataset[position])
+                size(view.maxWidth, view.maxHeight)
                 target(
                     PaletteTargetBuilder(context)
                         .onStart {

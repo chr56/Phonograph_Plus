@@ -30,6 +30,7 @@ class AlbumDisplayAdapter(
         holder.image?.let { view ->
             loadImage(activity) {
                 data(dataset[position].safeGetFirstSong())
+                size(view.maxWidth, view.maxHeight)
                 target(
                     PaletteTargetBuilder(context)
                         .onStart {
