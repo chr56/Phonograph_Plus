@@ -16,7 +16,7 @@ import coil.fetch.FetchResult
 import coil.fetch.Fetcher
 import coil.request.Options
 import coil.size.Size
-import lib.phonograph.BuildConfig.DEBUG
+import lib.phonograph.coil.BuildConfig.DEBUG
 import player.phonograph.coil.*
 import player.phonograph.util.module.IgnoreMediaStorePreference
 

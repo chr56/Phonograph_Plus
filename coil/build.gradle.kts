@@ -7,12 +7,12 @@ plugins {
 }
 
 android {
-    compileSdk = 32
+    compileSdk = 33
 
     defaultConfig {
         minSdk = 24
-        targetSdk = 32
-        namespace = "lib.phonograph"
+        targetSdk = 33
+        namespace = "lib.phonograph.coil"
     }
 
     buildTypes {
