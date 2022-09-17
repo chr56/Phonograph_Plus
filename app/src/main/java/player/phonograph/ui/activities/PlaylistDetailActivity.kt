@@ -49,6 +49,7 @@ import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
 import player.phonograph.util.ImageUtil.getTintedDrawable
 import player.phonograph.util.PlaylistsUtil
 import player.phonograph.util.ViewUtil.setUpFastScrollRecyclerViewColor
+import player.phonograph.util.module.LastAddedCutoffPreference
 
 class PlaylistDetailActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity {
 
@@ -227,7 +228,7 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandle
             }
             R.id.action_setting_last_added_interval -> {
                 val prefValue = getStringArray(R.array.pref_playlists_last_added_interval_values)
-                val currentChoice = prefValue.indexOf(Setting.instance.lastAddedCutoffPref)
+                val currentChoice = prefValue.indexOf(LastAddedCutoffPreference.lastAddedCutoffPref)
                 MaterialDialog(this)
                     .listItemsSingleChoice(
                         res = R.array.pref_playlists_last_added_interval_titles,
@@ -235,7 +236,7 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandle
                         checkedColor = accentColor
                     ) { dialog, index, _ ->
                         runCatching {
-                            Setting.instance.lastAddedCutoffPref = prefValue[index]
+                           LastAddedCutoffPreference.lastAddedCutoffPref = prefValue[index]
                         }.apply {
                             if (isSuccess) {
                                 model.triggerUpdate()

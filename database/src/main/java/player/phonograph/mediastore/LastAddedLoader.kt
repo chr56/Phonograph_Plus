@@ -9,7 +9,7 @@ import android.database.Cursor
 import android.provider.MediaStore
 import player.phonograph.mediastore.SongLoader.getSongs
 import player.phonograph.model.Song
-import player.phonograph.settings.Setting
+import player.phonograph.util.module.LastAddedCutoffPreference
 
 object LastAddedLoader {
     fun getLastAddedSongs(context: Context): List<Song> {
@@ -17,7 +17,7 @@ object LastAddedLoader {
     }
 
     fun makeLastAddedCursor(context: Context): Cursor? {
-        val cutoff = Setting.instance.lastAddedCutoff
+        val cutoff = LastAddedCutoffPreference.lastAddedCutoff
         return SongLoader.makeSongCursor(
             context, MediaStore.Audio.Media.DATE_ADDED + ">?", arrayOf(cutoff.toString()), MediaStore.Audio.Media.DATE_ADDED + " DESC"
         )

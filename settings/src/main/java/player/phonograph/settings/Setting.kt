@@ -78,24 +78,6 @@ class Setting(context: Context) {
     var synchronizedLyricsShow: Boolean by BooleanPref(SYNCHRONIZED_LYRICS_SHOW, true)
     var displaySynchronizedLyricsTimeAxis: Boolean by BooleanPref(DISPLAY_LYRICS_TIME_AXIS, true)
 
-    // List-Cutoff
-    val lastAddedCutoff: Long
-        get() {
-            val interval: Long = when (lastAddedCutoffPref) {
-                "today" -> CalendarUtil.elapsedToday
-                "past_seven_days" -> CalendarUtil.getElapsedDays(7)
-                "past_fourteen_days" -> CalendarUtil.getElapsedDays(14)
-                "past_one_month" -> CalendarUtil.getElapsedMonths(1)
-                "past_three_months" -> CalendarUtil.getElapsedMonths(3)
-                "this_week" -> CalendarUtil.elapsedWeek
-                "this_month" -> CalendarUtil.elapsedMonth
-                "this_year" -> CalendarUtil.elapsedYear
-                else -> CalendarUtil.getElapsedMonths(1)
-            }
-            return (System.currentTimeMillis() - interval) / 1000
-        }
-    var lastAddedCutoffPref: String by StringPref(LAST_ADDED_CUTOFF, "past_one_months")
-
     // Upgrade
     var checkUpgradeAtStartup: Boolean by BooleanPref(CHECK_UPGRADE_AT_STARTUP, true)
 
@@ -239,9 +221,6 @@ class Setting(context: Context) {
         // Behavior-Lyrics
         private const val SYNCHRONIZED_LYRICS_SHOW = "synchronized_lyrics_show"
         private const val DISPLAY_LYRICS_TIME_AXIS = "display_lyrics_time_axis"
-
-        // List-Cutoff
-        private const val LAST_ADDED_CUTOFF = "last_added_interval"
 
         // Upgrade
         private const val CHECK_UPGRADE_AT_STARTUP = "check_upgrade_at_startup"
