@@ -2,7 +2,7 @@
  * Copyright (c) 2022 chr_56
  */
 
-package player.phonograph.misc
+package lib.phonograph.misc
 
 import android.net.Uri
 import androidx.activity.result.ActivityResultLauncher
@@ -10,8 +10,7 @@ import androidx.activity.result.ActivityResultRegistry
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
-
-typealias UriCallback = (Uri?) -> Any
+import player.phonograph.misc.UriCallback
 
 class SafLauncher(private val registry: ActivityResultRegistry) : DefaultLifecycleObserver {
     private lateinit var createLauncher: ActivityResultLauncher<String>
@@ -61,8 +60,4 @@ class SafLauncher(private val registry: ActivityResultRegistry) : DefaultLifecyc
         this.openCallback = callback
         openLauncher.launch(cfg)
     }
-}
-
-interface SAFCallbackHandlerActivity {
-    fun getSafLauncher(): SafLauncher
 }

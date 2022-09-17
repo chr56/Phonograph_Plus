@@ -3,7 +3,7 @@
  */
 @file:JvmName("UpdateJsonParser")
 
-package player.phonograph.misc
+package lib.phonograph.misc
 
 import androidx.annotation.Keep
 import org.json.JSONObject

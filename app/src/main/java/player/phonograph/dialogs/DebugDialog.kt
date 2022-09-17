@@ -15,7 +15,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import player.phonograph.App
 import player.phonograph.R
-import player.phonograph.misc.VersionJson
+import lib.phonograph.misc.VersionJson
 import player.phonograph.notification.ErrorNotification
 import player.phonograph.notification.UpgradeNotification
 import player.phonograph.settings.Setting

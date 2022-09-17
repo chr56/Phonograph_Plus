@@ -28,7 +28,7 @@ import player.phonograph.coil.loadImage
 import player.phonograph.databinding.ItemListBinding
 import player.phonograph.mediastore.MediaStoreUtil
 import player.phonograph.mediastore.MediaStoreUtil.linkedSong
-import player.phonograph.misc.UpdateToastMediaScannerCompletionListener
+import lib.phonograph.misc.UpdateToastMediaScannerCompletionListener
 import player.phonograph.model.file.FileEntity
 import player.phonograph.util.preferences.FileConfig
 import player.phonograph.settings.Setting

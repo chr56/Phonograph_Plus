@@ -39,7 +39,7 @@ import player.phonograph.coil.target.PaletteTargetBuilder
 import player.phonograph.databinding.ActivityArtistDetailBinding
 import player.phonograph.dialogs.AddToPlaylistDialog
 import player.phonograph.dialogs.SleepTimerDialog
-import player.phonograph.interfaces.PaletteColorHolder
+import lib.phonograph.misc.PaletteColorHolder
 import player.phonograph.misc.SimpleObservableScrollViewCallbacks
 import player.phonograph.model.*
 import player.phonograph.notification.ErrorNotification

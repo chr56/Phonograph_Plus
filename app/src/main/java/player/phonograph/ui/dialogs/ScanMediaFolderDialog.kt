@@ -11,7 +11,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import player.phonograph.App
 import player.phonograph.R
-import player.phonograph.misc.UpdateToastMediaScannerCompletionListener
+import lib.phonograph.misc.UpdateToastMediaScannerCompletionListener
 import player.phonograph.model.file.Location
 import player.phonograph.notification.ErrorNotification
 import player.phonograph.util.CoroutineUtil.coroutineToast

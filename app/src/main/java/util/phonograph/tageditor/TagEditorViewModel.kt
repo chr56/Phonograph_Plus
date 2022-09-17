@@ -32,7 +32,7 @@ import org.jaudiotagger.tag.images.Artwork
 import org.jaudiotagger.tag.images.ArtworkFactory
 import player.phonograph.App
 import player.phonograph.R
-import player.phonograph.misc.UpdateToastMediaScannerCompletionListener
+import lib.phonograph.misc.UpdateToastMediaScannerCompletionListener
 import player.phonograph.notification.BackgroundNotification
 import player.phonograph.notification.ErrorNotification
 import player.phonograph.util.MusicUtil

@@ -17,8 +17,8 @@ import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.model.pages.PageConfig
 import player.phonograph.model.pages.Pages
-import util.phonograph.misc.SwipeAndDragHelper
-import util.phonograph.misc.SwipeAndDragHelper.ActionCompletionContract
+import lib.phonograph.misc.SwipeAndDragHelper
+import lib.phonograph.misc.SwipeAndDragHelper.ActionCompletionContract
 
 class HomeTabConfigAdapter(private val config: PageConfig) : RecyclerView.Adapter<HomeTabConfigAdapter.ViewHolder>(), ActionCompletionContract {
     private val touchHelper = ItemTouchHelper(SwipeAndDragHelper(this))

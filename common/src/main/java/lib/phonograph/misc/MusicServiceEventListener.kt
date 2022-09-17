@@ -1,4 +1,4 @@
-package player.phonograph.interfaces
+package lib.phonograph.misc
 
 /**
  * @author Karim Abou Zeid (kabouzeid)

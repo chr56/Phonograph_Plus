@@ -15,7 +15,7 @@ import android.os.Bundle
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import player.phonograph.*
-import player.phonograph.misc.VersionJson
+import lib.phonograph.misc.VersionJson
 import player.phonograph.ui.activities.MainActivity
 import player.phonograph.ui.activities.MainActivity.Companion.SHOW_UPGRADE_DIALOG
 

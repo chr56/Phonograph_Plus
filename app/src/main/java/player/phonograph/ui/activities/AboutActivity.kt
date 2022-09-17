@@ -27,7 +27,7 @@ import player.phonograph.databinding.ActivityAboutBinding
 import player.phonograph.dialogs.ChangelogDialog
 import player.phonograph.dialogs.DebugDialog
 import player.phonograph.dialogs.UpgradeDialog
-import player.phonograph.misc.VersionJson
+import lib.phonograph.misc.VersionJson
 import player.phonograph.settings.Setting
 import player.phonograph.ui.activities.intro.AppIntroActivity
 import player.phonograph.ui.dialogs.ReportIssueDialog

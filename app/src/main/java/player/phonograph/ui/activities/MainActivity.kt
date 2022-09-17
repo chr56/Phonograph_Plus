@@ -40,13 +40,13 @@ import player.phonograph.dialogs.ChangelogDialog
 import player.phonograph.dialogs.ChangelogDialog.Companion.setChangelogRead
 import player.phonograph.ui.dialogs.ScanMediaFolderDialog
 import player.phonograph.dialogs.UpgradeDialog
-import player.phonograph.helper.SearchQueryHelper
+import player.phonograph.mediastore.SearchQueryHelper
 import player.phonograph.mediastore.AlbumLoader
 import player.phonograph.mediastore.ArtistLoader
 import player.phonograph.mediastore.PlaylistSongLoader
 import player.phonograph.mediastore.SongLoader.getAllSongs
 import player.phonograph.misc.SAFCallbackHandlerActivity
-import player.phonograph.misc.SafLauncher
+import lib.phonograph.misc.SafLauncher
 import player.phonograph.model.infoString
 import player.phonograph.model.pages.Pages
 import player.phonograph.notification.ErrorNotification

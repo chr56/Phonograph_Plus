@@ -11,11 +11,10 @@ import player.phonograph.dialogs.AddToPlaylistDialog
 import player.phonograph.dialogs.DeleteSongsDialog
 import player.phonograph.dialogs.SongDetailDialog
 import player.phonograph.dialogs.SongShareDialog.Companion.createShareSongFileIntent
-import player.phonograph.interfaces.PaletteColorHolder
+import lib.phonograph.misc.PaletteColorHolder
 import player.phonograph.model.Song
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.util.BlacklistUtil
-import player.phonograph.util.MusicUtil
 import player.phonograph.util.NavigationUtil
 import player.phonograph.util.RingtoneManager
 import util.phonograph.tageditor.AbsTagEditorActivity

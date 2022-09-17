@@ -1,4 +1,4 @@
-package player.phonograph.interfaces
+package lib.phonograph.misc
 
 import androidx.annotation.ColorInt
 

@@ -20,7 +20,7 @@ import mt.util.color.secondaryDisabledTextColor
 import mt.util.color.secondaryTextColor
 import player.phonograph.R
 import player.phonograph.helper.MusicProgressViewUpdateHelper
-import player.phonograph.misc.SimpleOnSeekbarChangeListener
+import lib.phonograph.misc.SimpleOnSeekbarChangeListener
 import player.phonograph.model.getReadableDurationString
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.queue.RepeatMode

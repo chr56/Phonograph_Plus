@@ -1,4 +1,4 @@
-package player.phonograph.misc
+package lib.phonograph.misc
 
 import android.app.Activity
 import android.media.MediaScannerConnection.OnScanCompletedListener

@@ -17,7 +17,7 @@ import player.phonograph.BuildConfig.DEBUG
 import player.phonograph.MEDIA_STORE_CHANGED
 import player.phonograph.MusicServiceMsgConst
 import player.phonograph.R
-import player.phonograph.interfaces.MusicServiceEventListener
+import lib.phonograph.misc.MusicServiceEventListener
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.MusicPlayerRemote.ServiceToken
 

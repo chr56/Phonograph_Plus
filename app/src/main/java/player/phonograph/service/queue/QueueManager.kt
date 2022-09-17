@@ -9,7 +9,7 @@ import android.os.*
 import android.util.ArrayMap
 import androidx.preference.PreferenceManager
 import java.util.concurrent.CopyOnWriteArrayList
-import player.phonograph.helper.ShuffleHelper.shuffleAt
+import lib.phonograph.misc.ShuffleHelper.shuffleAt
 import player.phonograph.model.Song
 import player.phonograph.notification.ErrorNotification
 import player.phonograph.provider.MusicPlaybackQueueStore

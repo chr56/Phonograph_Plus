@@ -1,10 +1,13 @@
-package player.phonograph.helper
+/*
+ * Copyright (c) 2022 chr_56
+ */
+
+package player.phonograph.mediastore
 
 import android.app.SearchManager
 import android.content.Context
 import android.os.Bundle
 import android.provider.MediaStore
-import player.phonograph.mediastore.SongLoader
 import player.phonograph.model.Song
 import java.util.*
 

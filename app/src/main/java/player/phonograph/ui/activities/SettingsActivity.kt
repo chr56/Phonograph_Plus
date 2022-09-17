@@ -21,9 +21,8 @@ import lib.phonograph.activity.ToolbarActivity
 import mt.pref.ThemeColor
 import mt.tint.setActivityToolbarColorAuto
 import player.phonograph.App
-import player.phonograph.BaseApp
 import player.phonograph.R
-import player.phonograph.misc.OpenDocumentContract
+import lib.phonograph.misc.OpenDocumentContract
 import player.phonograph.provider.DatabaseManger
 import player.phonograph.settings.SettingManager
 import player.phonograph.ui.fragments.SettingsFragment

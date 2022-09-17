@@ -1,4 +1,4 @@
-package player.phonograph.misc
+package lib.phonograph.misc
 
 import android.widget.SeekBar
 import android.widget.SeekBar.OnSeekBarChangeListener

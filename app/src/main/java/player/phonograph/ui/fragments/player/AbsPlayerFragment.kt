@@ -31,7 +31,7 @@ import player.phonograph.dialogs.AddToPlaylistDialog
 import player.phonograph.dialogs.LyricsDialog
 import player.phonograph.dialogs.SongDetailDialog
 import player.phonograph.dialogs.SongShareDialog
-import player.phonograph.interfaces.PaletteColorHolder
+import lib.phonograph.misc.PaletteColorHolder
 import player.phonograph.model.buildInfoString
 import player.phonograph.model.getReadableDurationString
 import player.phonograph.model.lyrics.AbsLyrics
