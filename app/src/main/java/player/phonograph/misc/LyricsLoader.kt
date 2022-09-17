@@ -2,7 +2,7 @@
  * Copyright (c) 2022 chr_56
  */
 
-package player.phonograph.model.lyrics
+package player.phonograph.misc
 
 import android.util.Log
 import kotlinx.coroutines.CoroutineScope
@@ -12,6 +12,11 @@ import org.jaudiotagger.audio.AudioFileIO
 import org.jaudiotagger.tag.FieldKey
 import player.phonograph.App
 import player.phonograph.model.Song
+import player.phonograph.model.lyrics.AbsLyrics
+import player.phonograph.model.lyrics.LrcLyrics
+import player.phonograph.model.lyrics.LyricsList
+import player.phonograph.model.lyrics.LyricsSource
+import player.phonograph.model.lyrics.TextLyrics
 import player.phonograph.notification.ErrorNotification
 import player.phonograph.util.FileUtil
 import java.io.File
