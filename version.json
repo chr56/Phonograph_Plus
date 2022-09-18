@@ -1,20 +1,20 @@
 {
-    "version": "0.3.2",
-    "versionCode": 310,
+    "version": "0.3.3",
+    "versionCode": "311",
     "zh-cn": {
-        "logSummary": "\n\n<b>0.3.2 2022.9.13</b>\n<ol><li>翻译 更新 俄语(Photon_Gilber), 法语(Exylos)</li><li>开发 升级 targetSdk 至 33 (Android 13), 适配 Android 13 (实验性)</li><li>开发 移除 <code>Glide</code> , 使用 <code>Coil</code> 加载图片</li><li>开发 移除 <code>Gson</code> , 使用 <code>kotlin.serialization</code> 处理 Json</li><li>修复 浅色背景下图标颜色仍为白色</li><li>新增 在全部歌曲页面顶栏添加全部播放按钮</li><li>改进 添加请求“管理全部文件”权限的快捷方式</li><li>改进 扫描媒体与添加黑名单对话框使用新版UI</li><li>改进 重写部分字符串, 清理无用字符串</li><li>改进 改进更新日志对话框</li><li>改进 检查更新流程(防止更新提示重复弹出)</li><li>移除 报告错误界面, 使用对话框</li><li>移除 登录 Github 提交报告功能(对大多数人无用)</li><li>开发 清理更新依赖, 更新 AGP 至 7.2.2, 更新 kotlin 至 1.7.10, 增强混淆</li><li>发布 添加 fastlane metadata</li></ol>"
+        "logSummary": "\n\n<b>0.3.3 2022.9.18</b>\n    <ol><li>修复 打开应用时播放队列被随机刷新</li><li>改进将交换队列操作(随机播放、播放播放列表/专辑/艺术家)移动到后台，以修复更改队列时卡死(如果歌曲过多)</li><li>改进加载封面图时指定图片大小，尽量避免图片过大导致应用崩溃</li></ol>"
     },
     "en": {
-        "logSummary": "\n\n<b>0.3.2 2022.9.13</b>\n<ol><li>Translation: updated Russian (by Photon_Gilber), French (by Exylos)</li><li>Development: upgrade targetSdk to 33 (Android 13) (experimental)</li><li>Development: remove <code>Glide</code>, use <code>Coil</code> to load images</li><li>Development: remove <code>Gson</code>, use <code>kotlin.serialization</code> to handle Json</li><li>Fix: the icon color is still white under light background</li><li>Add: &quot;play all&quot; buttons in the top bar of all songs page</li><li>Improve: add shortcut to grant &quot;Manage All Files&quot; permission</li><li>Improve: use new UI in &quot;Scan Media&quot; and &quot;Add To Blacklist&quot; dialogs</li><li>Improve: rewrite many strings, clean up useless strings</li><li>Improve: Improve changelog dialog</li><li>Improve: the check update procedure (and prevent popping up the update prompt repeatedly)</li><li>Remove: issues reporting page (use a smaller dialog instead now)</li><li>Remove: the feature of logging into Github to submit an issue (useless for most people)</li><li>Development: clean up and upgrade dependencies, upgrade AGP to 7.2.2, upgrade kotlin to 1.7.10, enhance obfuscation</li><li>Release: adding fastlane metadata</li></ol>"
+        "logSummary": "\n\n<b>0.3.3 2022.9.18</b>\n<ol><li>Fix: randomly refresh playing queue on opening</li><li>Improve: move swapping-queue operations (e.g. shuffle all, play a playlist, play an album/artist) to background, to fix getting frozen when changing queue especially for users having to many song</li><li>Improve: designate a rational images size when loading cover artworks, to try to not crash app if the image is too large</li></ol>"
     },
     "downloadSources": [
+        "Release: Github(v0.3.3)",
         "Release: Github(v0.3.2)",
-        "Release: Github(v0.3.1)",
         "Release(LTS): Github(v0.2.6.1)"
     ],
     "downloadUris": [
+        "https://github.com/chr56/Phonograph_Plus/releases/tag/v0.3.3",
         "https://github.com/chr56/Phonograph_Plus/releases/tag/v0.3.2",
-        "https://github.com/chr56/Phonograph_Plus/releases/tag/v0.3.1",
         "https://github.com/chr56/Phonograph_Plus/releases/tag/v0.2.6.1"
     ],
     "logSummary": "\n<b>请更新至新版本(至少高于v0.1.1), 此版本无法读取新更新日志\nUpdate Please (as least to version v0.1.1)! This version can not be read this changelogs.</b>"
