@@ -19,7 +19,7 @@ This is a fork of [Phonograph](https://github.com/kabouzeid/Phonograph), with so
 
 建议直接看[更新日志](app/src/main/assets/changelog-ZH-CN.html)!
 
-It is suggested to browser the [Changelog](app/src/main/assets/changelog.html) to learn all of features completely.
+It is suggested to browser the [Changelog](app/src/main/assets/changelog.html) to learn all features completely.
 
 * 解锁 Pro | Unlock pro.
 
@@ -62,7 +62,7 @@ It is suggested to browser the [Changelog](app/src/main/assets/changelog.html) t
 
 ## **翻译**/**Translation**
 
-Translate Phonograph Plus into your language -> [crowdin](https://crowdin.com/project/phonograph-plus)
+Translate Phonograph Plus into your language -> [Crowdin](https://crowdin.com/project/phonograph-plus)
 
 We have removed Swedish and Norwegian Nynorsk translations due to missing too many translations
 
@@ -72,18 +72,17 @@ We have removed Swedish and Norwegian Nynorsk translations due to missing too ma
 
 For reference only, actual app might be different
 
-| Card Player | Flat Player |  Song Menu |
-| :---------: | :---------: | :--------: |
-| ![Screenshots](fastlane/metadata/android/en-US/images/phoneScreenshots/05.jpg?raw=true) |![Screenshots](fastlane/metadata/android/en-US/images/phoneScreenshots/08.jpg?raw=true) | ![Screenshots](fastlane/metadata/android/en-US/images/phoneScreenshots/02.jpg?raw=true) 
+|                                       Card Player                                       |                                       Flat Player                                       |                                        Song Menu                                        |
+|:---------------------------------------------------------------------------------------:|:---------------------------------------------------------------------------------------:|:---------------------------------------------------------------------------------------:|
+| ![Screenshots](fastlane/metadata/android/en-US/images/phoneScreenshots/05.jpg?raw=true) | ![Screenshots](fastlane/metadata/android/en-US/images/phoneScreenshots/08.jpg?raw=true) | ![Screenshots](fastlane/metadata/android/en-US/images/phoneScreenshots/02.jpg?raw=true) |
 
+|                                          Songs                                          |                                         Folders                                         |                                         Artists                                         |                                        Playlists                                        |
+|:---------------------------------------------------------------------------------------:|:---------------------------------------------------------------------------------------:|:---------------------------------------------------------------------------------------:|:---------------------------------------------------------------------------------------:|
+| ![Screenshots](fastlane/metadata/android/en-US/images/phoneScreenshots/09.jpg?raw=true) | ![Screenshots](fastlane/metadata/android/en-US/images/phoneScreenshots/10.jpg?raw=true) | ![Screenshots](fastlane/metadata/android/en-US/images/phoneScreenshots/07.jpg?raw=true) | ![Screenshots](fastlane/metadata/android/en-US/images/phoneScreenshots/06.jpg?raw=true) |
 
-Songs | Folders | Artists | Playlists |
-:---: | :-----: | :-----: | :-------: |
-| ![Screenshots](fastlane/metadata/android/en-US/images/phoneScreenshots/09.jpg?raw=true) | ![Screenshots](fastlane/metadata/android/en-US/images/phoneScreenshots/10.jpg?raw=true) | ![Screenshots](fastlane/metadata/android/en-US/images/phoneScreenshots/07.jpg?raw=true) | ![Screenshots](fastlane/metadata/android/en-US/images/phoneScreenshots/06.jpg?raw=true)|
-
-| Drawer | Setting | Tag Editor (Deprecated) |
-| :----: |:------: | :---------------------: |
-| ![Screenshots](fastlane/metadata/android/en-US/images/phoneScreenshots/03.jpg?raw=true)| ![Screenshots](fastlane/metadata/android/en-US/images/phoneScreenshots/01.jpg?raw=true) | ![Screenshots](fastlane/metadata/android/en-US/images/phoneScreenshots/04.jpg?raw=true) |
+|                                         Drawer                                          |                                         Setting                                         |                                 Tag Editor (Deprecated)                                 |
+|:---------------------------------------------------------------------------------------:|:---------------------------------------------------------------------------------------:|:---------------------------------------------------------------------------------------:|
+| ![Screenshots](fastlane/metadata/android/en-US/images/phoneScreenshots/03.jpg?raw=true) | ![Screenshots](fastlane/metadata/android/en-US/images/phoneScreenshots/01.jpg?raw=true) | ![Screenshots](fastlane/metadata/android/en-US/images/phoneScreenshots/04.jpg?raw=true) |
 
 
 
@@ -112,17 +111,17 @@ Songs | Folders | Artists | Playlists |
 
 - [x] 迁移 Glide 至 Coil | Migrate Glide to Coil
 
-- [ ] 自定义歌曲点击行为 ⭕ | User-defined click behavior for songs ⭕
-
 - [ ] 将歌曲“详情” 迁移至 Compose ❗WIP (基本完成) | Migrate Song Detail to Jetpack Compose (❗WIP: Almost Done)
-
-- [ ] 支持白名单机制 | Whitelist
 
 - [ ] 重构更新对话框 | Refactor Update Dialog
 
 - [ ] 重构设置UI | Refactor Setting UI
+
+- [ ] 自定义歌曲点击行为 ⭕ | User-defined click behavior for songs ⭕
+
+- [ ] 支持白名单机制 | Whitelist
   
-- [ ] 尝试适配 FlyMe / EvolutionX(等一系类原生)状态栏歌词 | Support some ROM's StatusBar lyrics, such as FlyMe / EvolutionX
+- [ ] 尝试适配 FlyMe / EvolutionX(等一系类原生)状态栏歌词 | Support some Android's StatusBar lyrics, such as FlyMe / EvolutionX
 
 - [ ] 自建本地媒体数据库(使用 AndroidX Room) ⭕, 以解析多艺术家歌曲, 并解析 Tag 中 ‘;’, '&', '/', '\', ',' , 改进搜索 | Use AndroidX Room to build Media database, to parse multi-artists songs and ‘;’, '&', '/', '\', ',' in tags,  and improve search result
 
