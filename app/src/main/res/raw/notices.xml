@@ -23,7 +23,7 @@
         <license>Apache Software License 2.0</license>
     </notice>
     <notice>
-        <name>android-issue-reporter</name>
+        <name>android-issue-reporter (Partial)</name>
         <url>https://github.com/HeinrichReimer/android-issue-reporter</url>
         <copyright>Copyright 2016 Heinrich Reimer</copyright>
         <license>Apache Software License 2.0</license>
@@ -124,6 +124,17 @@
         <name>Simple Storage (Partial)</name>
         <url>https://github.com/anggrayudi/SimpleStorage</url>
         <copyright>Copyright © 2020-2022 Anggrayudi Hardiannico A.</copyright>
+        <license>Apache Software License 2.0</license>
+    </notice>
+    <notice>
+        <name>kotlinx.serialization</name>
+        <url>https://github.com/Kotlin/kotlinx.serialization</url>
+        <license>Apache Software License 2.0</license>
+    </notice>
+    <notice>
+        <name>Coil</name>
+        <url>https://github.com/coil-kt/coil</url>
+        <copyright>Copyright © 2022 Coil Contributors</copyright>
         <license>Apache Software License 2.0</license>
     </notice>
 </notices>
