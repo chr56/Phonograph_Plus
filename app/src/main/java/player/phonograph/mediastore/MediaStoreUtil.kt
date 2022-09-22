@@ -143,6 +143,13 @@ object MediaStoreUtil {
         return null
     }
 
+    fun searchSongs(context: Context, currentLocation: Location, scope: CoroutineScope? = null): List<Song> {
+        val cursor = querySongs(
+            context, "$DATA LIKE ?", arrayOf("%${currentLocation.absolutePath}%")
+        )
+        return getSongs(cursor)
+    }
+
     private fun getSongFromCursor(cursor: Cursor): Song {
         val id = cursor.getLong(0)
         val title = cursor.getString(1)
