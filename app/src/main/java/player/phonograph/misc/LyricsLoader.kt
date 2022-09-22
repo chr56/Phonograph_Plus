@@ -9,6 +9,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.jaudiotagger.audio.AudioFileIO
+import org.jaudiotagger.audio.exceptions.CannotReadException
+import org.jaudiotagger.logging.ErrorMessage
 import org.jaudiotagger.tag.FieldKey
 import player.phonograph.App
 import player.phonograph.model.Song
@@ -36,6 +38,13 @@ object LyricsLoader {
                     if (str != null && str.trim().isNotBlank()) {
                         embedded = parse(str, LyricsSource.Embedded())
                     }
+                }
+            } catch (e: CannotReadException) {
+                val suffix = songFile.name.substringAfterLast('.', "")
+                if (ErrorMessage.NO_READER_FOR_THIS_FORMAT.getMsg(suffix) == e.message) {
+                    return@launch
+                } else {
+                    ErrorNotification.postErrorNotification("Failed to read song file\n${e.message}", App.instance)
                 }
             } catch (e: Exception) {
                 ErrorNotification.postErrorNotification("Failed to read lyrics from song\n${e.message}", App.instance)
