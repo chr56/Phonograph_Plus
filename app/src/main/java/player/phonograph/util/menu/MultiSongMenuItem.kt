@@ -18,6 +18,10 @@ import player.phonograph.service.MusicPlayerRemote
  */
 fun onMultiSongMenuItemClick(activity: FragmentActivity, songs: List<Song>, menuItemId: Int): Boolean {
     when (menuItemId) {
+        R.id.action_play -> {
+            MusicPlayerRemote.playNow(songs)
+            return true
+        }
         R.id.action_play_next -> {
             MusicPlayerRemote.playNext(songs)
             return true

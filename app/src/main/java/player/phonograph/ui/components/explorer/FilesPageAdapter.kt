@@ -138,7 +138,7 @@ class FilesPageAdapter(
                 is FileEntity.Folder -> {
                     val path = fileItem.location.absolutePath
                     return when (val itemId = item.itemId) {
-                        R.id.action_play_next, R.id.action_add_to_current_playing, R.id.action_add_to_playlist, R.id.action_delete_from_device -> {
+                        R.id.action_play, R.id.action_play_next, R.id.action_add_to_current_playing, R.id.action_add_to_playlist, R.id.action_delete_from_device -> {
                             CoroutineScope(SupervisorJob()).launch(Dispatchers.IO) {
                                 val songs = MediaStoreUtil.searchSongs(context, fileItem.location)
                                 withContext(Dispatchers.Main) {
