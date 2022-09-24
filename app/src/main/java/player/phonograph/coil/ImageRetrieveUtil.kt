@@ -9,6 +9,7 @@ import android.content.ContentResolver
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Matrix
 import android.graphics.Point
 import android.media.MediaMetadataRetriever
 import android.net.Uri
@@ -21,13 +22,14 @@ import coil.decode.ImageSource
 import coil.fetch.SourceResult
 import coil.size.Dimension
 import coil.size.Size
-import java.io.File
-import java.io.InputStream
 import okio.Path.Companion.toOkioPath
 import okio.buffer
 import okio.source
-import org.jaudiotagger.audio.mp3.MP3File
+import org.jaudiotagger.audio.AudioFile
+import org.jaudiotagger.audio.AudioFileIO
 import player.phonograph.util.MusicUtil.getMediaStoreAlbumCoverUri
+import java.io.File
+import java.io.InputStream
 
 internal fun readFromMediaStore(albumId: Long, context: Context, size: Size): SourceResult? {
     return runCatching {
@@ -36,32 +38,41 @@ internal fun readFromMediaStore(albumId: Long, context: Context, size: Size): So
     }.getOrNull()
 }
 
-internal fun retrieveFromMediaMetadataRetriever(filepath: String, retriever: MediaMetadataRetriever): Bitmap? {
+internal fun retrieveFromMediaMetadataRetriever(
+    filepath: String,
+    retriever: MediaMetadataRetriever,
+    width: Int = -1,
+    height: Int = -1,
+): Bitmap? {
     val embeddedPicture: ByteArray? =
         runCatching {
             retriever.setDataSource(filepath)
             retriever.embeddedPicture
         }.getOrNull()
-    return embeddedPicture?.toBitmap()
+    return embeddedPicture?.toBitmap(width, height)
 }
 
-internal fun retrieveFromJAudioTagger(filepath: String): Bitmap? {
-    return runCatching {
-        val mp3File = MP3File(filepath)
-        /* return@runCatching */ if (mp3File.hasID3v2Tag()) {
-            mp3File.tag.firstArtwork?.binaryData?.toBitmap() ?: return@runCatching null
-        } else {
-            null
-        }
-    }.getOrNull()
-}
+internal fun retrieveFromJAudioTagger(
+    filepath: String,
+    width: Int = -1,
+    height: Int = -1,
+): Bitmap? = runCatching {
+    AudioFileIO.read(File(filepath)).retrieveEmbedPicture(width, height)
+}.getOrNull()
 
-internal fun retrieveFromExternalFile(filepath: String): Bitmap? {
+internal fun retrieveFromExternalFile(filepath: String, width: Int = -1, height: Int = -1): Bitmap? {
     val parent = File(filepath).parentFile ?: return null
     for (fallback in fallbackCoverFiles) {
         val coverFile = File(parent, fallback)
         return if (coverFile.exists()) {
-            BitmapFactory.decodeFile(coverFile.absolutePath)
+            if (width > 0 && height > 0)
+                BitmapFactory.decodeFile(coverFile.absolutePath,
+                    BitmapFactory.Options().apply {
+                        outHeight = height
+                        outWidth = height
+                    })
+            else
+                BitmapFactory.decodeFile(coverFile.absolutePath)
         } else {
             continue
         }
@@ -122,3 +133,31 @@ internal fun readJEPGFile(file: File, diskCacheKey: String? = null): SourceResul
 }
 
 fun ByteArray.toBitmap(): Bitmap = BitmapFactory.decodeByteArray(this, 0, this.size)
+fun ByteArray.toBitmap(width: Int, height: Int): Bitmap = toBitmap().resize(width, height)
+
+fun Bitmap.resize(width: Int, height: Int): Bitmap =
+    when {
+        width <= 0 || height <= 0 -> this // not configured
+        (this.width > width || this.height > height) -> makeCenterScaled(this, width, height)
+        else -> this
+    }
+
+private fun makeCenterScaled(source: Bitmap, width: Int, height: Int): Bitmap {
+    var bitmap = source
+    val matrix = Matrix()
+
+    while (source.width.toFloat() / width > 1.5f || source.height.toFloat() / height > 1.5f) {
+        matrix.preScale(0.6667F, 0.6667F, source.width / 2f, source.height / 2f)
+        bitmap = Bitmap.createBitmap(bitmap, 0, 0, source.width, source.height, matrix, false)
+    }
+
+    val x = if (source.width > width) (source.width - width) / 2 else 0
+    val y = if (source.height > height) (source.height - height) / 2 else 0
+    return Bitmap.createBitmap(bitmap, x, y, width, height)
+}
+
+
+fun AudioFile.retrieveEmbedPicture(width: Int, height: Int): Bitmap? {
+    val artwork = this.tag.firstArtwork
+    return artwork?.binaryData?.toBitmap(width, height)
+}
