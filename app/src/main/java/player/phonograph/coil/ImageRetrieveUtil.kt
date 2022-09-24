@@ -98,9 +98,10 @@ fun readFromMediaStore(uri: Uri, context: Context, size: Size): SourceResult? {
         } else {
             contentResolver.openInputStream(uri)
         }
-    return if (inputStream != null) SourceResult(
+    val source = inputStream?.use { it.source().buffer() }
+    return if (source != null) SourceResult(
         source = ImageSource(
-            source = inputStream.source().buffer(),
+            source = source,
             context = context,
             metadata = ContentMetadata(uri)
         ),
