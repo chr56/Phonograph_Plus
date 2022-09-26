@@ -270,6 +270,27 @@
     <string name="more_actions">Ver más</string>
     <string name="crash">App ha fallado!!</string>
     <string name="copy_to_clipboard">copiar al portapapeles</string>
+    <string name="success">Completado exitosamente!</string>
+    <string name="failed">fallido!</string>
+    <string name="clear_all_preference">Restablecer todas las configuraciones </string>
+    <string name="clear_all_preference_msg"><b>Advertencia</b>: esto restablecirá <b>TODAS</b> las configuraciones de la aplicación! \n\nEsto puede ser muy útil si la aplicación se bloquea al iniciar. \n¿Estás seguro?</string>
+    <string name="failed_to_delete">Error al borrar</string>
+    <string name="grant_permission">Conceder Permiso</string>
+    <string name="retry">Reintentar</string>
+    <string name="permission_manage_external_storage_denied">parece que Phonograph no tiene el permiso \"gestionar almacenamiento externo\"!</string>
+    <string name="not_available_now">no disponible por ahora </string>
+    <string name="check_upgrade">Comprobar actualizaciones</string>
+    <string name="no_newer_version">No hay actualizaciones disponibles</string>
+    <string name="new_version">Nueva versión encontrada </string>
+    <string name="new_version_code">versión</string>
+    <string name="new_version_log">registro de cambios</string>
+    <string name="new_version_tips">Este diálogo puede desactivarse en Configuración. (También puede comprobar la actualización manualmente en \"Acerca de\")</string>
+    <string name="upgrade_ignored">La actualización ha sido ignorada.</string>
     <string name="sort_order_song">Canción</string>
     <string name="pref_header_appearance">Apariencia</string>
+    <string name="name">Nombre</string>
+    <string name="preferences">Preferencias</string>
+    <string name="sort_order_size">Tamaño de Archivo</string>
+    <string name="use_legacy_list_Files">Usar la forma antigua de leer archivos</string>
+    <string name="pref_title_keep_playing_queue_intact">Mantener intacta la cola de reproducción.</string>
 </resources>
