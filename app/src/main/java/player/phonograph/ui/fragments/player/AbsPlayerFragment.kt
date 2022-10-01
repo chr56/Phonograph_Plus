@@ -304,23 +304,28 @@ abstract class AbsPlayerFragment :
         viewModel.backgroundCoroutine.launch {
             viewModel.favoriteState.collectLatest {
                 if (it.first == viewModel.currentSong) {
-                    withContext(Dispatchers.Main) {
-                        updateFavoriteIcon(it.second)
-                    }
+                    updateFavoriteIcon(it.second)
                 }
             }
         }
     }
 
+    /**
+     * delayed and run on main-thread
+     */
     fun updateFavoriteIcon(isFavorite: Boolean) {
-        val res = if (isFavorite) R.drawable.ic_favorite_white_24dp else R.drawable.ic_favorite_border_white_24dp
-        val color = toolbarContentColor(requireContext(), Color.TRANSPARENT)
-        favoriteMenuItem?.apply {
-            icon = requireContext().getTintedDrawable(res, color)
-            title =
-                if (isFavorite) getString(R.string.action_remove_from_favorites)
-                else getString(R.string.action_add_to_favorites)
-        }
+        Handler(Looper.getMainLooper()).postDelayed({
+            val activity = activity ?: return@postDelayed
+            val res = if (isFavorite) R.drawable.ic_favorite_white_24dp else R.drawable.ic_favorite_border_white_24dp
+            val color = toolbarContentColor(activity, Color.TRANSPARENT)
+            favoriteMenuItem?.apply {
+                icon = activity.getTintedDrawable(res, color)
+                title =
+                    if (isFavorite) getString(R.string.action_remove_from_favorites)
+                    else getString(R.string.action_add_to_favorites)
+            }
+        }, 200)
+
     }
 
     protected val upNextAndQueueTime: String
