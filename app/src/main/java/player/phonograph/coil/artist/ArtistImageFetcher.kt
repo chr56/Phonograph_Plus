@@ -15,6 +15,7 @@ import coil.fetch.DrawableResult
 import coil.fetch.FetchResult
 import coil.fetch.Fetcher
 import coil.request.Options
+import coil.size.Dimension
 import coil.size.Size
 import player.phonograph.BuildConfig
 import player.phonograph.coil.*
@@ -33,6 +34,9 @@ class ArtistImageFetcher(val data: ArtistImage, val context: Context, val size: 
     override suspend fun fetch(): FetchResult? {
         // returning bitmap
         var bitmap: Bitmap? = null
+
+        val width = (size.width as? Dimension.Pixels)?.px ?: -1
+        val height = (size.height as? Dimension.Pixels)?.px ?: -1
 
         // first check if the custom artist image exist
         val file = CustomArtistImageStore.instance(context)
@@ -58,7 +62,7 @@ class ArtistImageFetcher(val data: ArtistImage, val context: Context, val size: 
         //
         MediaMetadataRetriever().use { retriever ->
             for (cover in data.albumCovers) {
-                bitmap = retrieveFromMediaMetadataRetriever(cover.filePath, retriever)
+                bitmap = retrieveFromMediaMetadataRetriever(cover.filePath, retriever, width, height)
                 if (bitmap != null) break
             }
         }
@@ -67,7 +71,7 @@ class ArtistImageFetcher(val data: ArtistImage, val context: Context, val size: 
         //
         if (bitmap == null) {
             for (cover in data.albumCovers) {
-                bitmap = retrieveFromJAudioTagger(cover.filePath)
+                bitmap = retrieveFromJAudioTagger(cover.filePath, width, height)
                 if (bitmap != null) break
             }
         }
