@@ -148,22 +148,24 @@ abstract class AbsPlayerControllerFragment : AbsMusicServiceFragment(), MusicPro
         updateShuffleState()
     }
 
-    private fun calculateColor(backgroundColor: Int) {
-        val context = requireContext()
-        val darkmode = !isColorLight(backgroundColor)
 
-        lastPlaybackControlsColor = context.secondaryTextColor(darkmode)
-        lastDisabledPlaybackControlsColor = context.secondaryDisabledTextColor(darkmode)
-    }
+    private fun calculateColor(backgroundColor: Int): Boolean =
+        context?.let {
+            // context might be null if using requireContext() when resizing activity size
+            val darkmode = !isColorLight(backgroundColor)
+            lastPlaybackControlsColor = it.secondaryTextColor(darkmode)
+            lastDisabledPlaybackControlsColor = it.secondaryDisabledTextColor(darkmode)
+            true
+        } ?: false
 
     fun modifyColor(backgroundColor: Int) {
-        calculateColor(backgroundColor)
-
-        updateRepeatState()
-        updateShuffleState()
-        updatePrevNextColor()
-        updatePlayPauseColor()
-        updateProgressTextColor()
+        if (calculateColor(backgroundColor)) {
+            updateRepeatState()
+            updateShuffleState()
+            updatePrevNextColor()
+            updatePlayPauseColor()
+            updateProgressTextColor()
+        }
     }
 
     // Update state
