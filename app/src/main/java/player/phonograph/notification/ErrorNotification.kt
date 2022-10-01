@@ -42,7 +42,7 @@ object ErrorNotification {
 
     fun postErrorNotification(e: Throwable, note: String? = null, context: Context) {
         send(
-            msg = "$note\n${e::class.simpleName}\n${e.message}",
+            msg = "$note\n${e.stackTraceToString()}}",
             title = "${e::class.simpleName}\n$note",
             context = context
         )
