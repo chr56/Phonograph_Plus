@@ -8,10 +8,10 @@ package version.management
 
 object Deps {
     object AndroidX {
-        const val core = "androidx.core:core-ktx:1.8.0"
-        const val appcompat = "androidx.appcompat:appcompat:1.5.0"
-        const val activity = "androidx.activity:activity-ktx:1.5.1"
-        const val fragment = "androidx.fragment:fragment-ktx:1.5.2"
+        const val core = "androidx.core:core-ktx:1.9.0"
+        const val appcompat = "androidx.appcompat:appcompat:1.5.1"
+        const val activity = "androidx.activity:activity-ktx:1.6.0"
+        const val fragment = "androidx.fragment:fragment-ktx:1.5.3"
         const val lifecycle_runtime = "androidx.lifecycle:lifecycle-runtime-ktx:2.5.1"
 
         const val annotation = "androidx.annotation:annotation:1.4.0"
