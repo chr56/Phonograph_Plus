@@ -17,6 +17,7 @@ import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.Space
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.widget.ButtonBarLayout
 import androidx.core.view.setMargins
 import androidx.fragment.app.DialogFragment
@@ -33,6 +34,7 @@ import player.phonograph.ui.components.viewcreater.createButton
 import player.phonograph.util.CoroutineUtil
 import player.phonograph.util.PermissionUtil.navigateToStorageSetting
 import player.phonograph.util.StringUtil
+import player.phonograph.util.Util
 import java.io.File
 
 /**
@@ -173,12 +175,8 @@ class DeleteSongsDialog : DialogFragment() {
             title.text = activity.getString(R.string.delete_action)
             delete = { MediaStoreUtil.deleteSongs(activity, model.songs) }
             deleteWithLyrics = {
+                deleteLyrics(activity, model.songs)
                 delete()
-                for (song in model.songs) {
-                    val file = File(song.data)
-                    val (lyrics, _) = LyricsLoader.searchExternalLyricsFiles(file, song)
-                    lyrics.forEach { it.delete() }
-                }
             }
         }
 
@@ -186,6 +184,25 @@ class DeleteSongsDialog : DialogFragment() {
 
         var delete: () -> Unit = {}
         var deleteWithLyrics: () -> Unit = { }
+        private fun deleteLyrics(activity: Activity, songs: ArrayList<Song>) {
+            for (song in songs) {
+                val file = File(song.data)
+                val (preciseFiles, _) = LyricsLoader.searchExternalLyricsFiles(file, song)
+                val fails = mutableListOf<String>()
+                preciseFiles.forEach {
+                    val result = it.delete()
+                    if (!result) fails.add(it.name)
+                }
+                if (fails.isNotEmpty()) {
+                    Util.withLooper {
+                        Toast.makeText(activity,
+                            activity.getString(R.string.failed_to_delete) + fails.fold("") { a, n -> "$a,$n" },
+                            Toast.LENGTH_SHORT)
+                            .show()
+                    }
+                }
+            }
+        }
     }
 
     class DeleteSongsModel(val songs: ArrayList<Song>, var hasPermission: Boolean)
