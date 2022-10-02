@@ -26,6 +26,7 @@ import player.phonograph.model.file.Location
 import player.phonograph.model.file.put
 import player.phonograph.settings.Setting
 import player.phonograph.util.PermissionUtil.navigateToStorageSetting
+import player.phonograph.util.Util
 import java.io.File
 
 object MediaStoreUtil {
@@ -264,7 +265,9 @@ object MediaStoreUtil {
 
         val r: String = context.resources.getQuantityString(R.plurals.msg_deletion_result, total, result, total)
 
-        Toast.makeText(context, r, Toast.LENGTH_SHORT).show()
+        Util.withLooper {
+            Toast.makeText(context, r, Toast.LENGTH_SHORT).show()
+        }
 
         // handle fail , report and try again
         // handle fail , report and try again
