@@ -401,4 +401,5 @@
         <item quantity="other">Generated Playlists</item>
     </plurals>
     <string name="warning_can_not_retract">This action can not be retracted!</string>
+    <string name="delete_with_lyrics">Delete with lyrics</string>
 </resources>

@@ -23,11 +23,13 @@ import androidx.fragment.app.DialogFragment
 import mt.pref.ThemeColor.accentColor
 import player.phonograph.R
 import player.phonograph.mediastore.MediaStoreUtil
+import player.phonograph.misc.LyricsLoader
 import player.phonograph.model.Song
 import player.phonograph.ui.components.ViewComponent
 import player.phonograph.ui.components.viewcreater.createButton
 import player.phonograph.util.PermissionUtil.navigateToStorageSetting
 import player.phonograph.util.StringUtil
+import java.io.File
 
 /**
  * @author Karim Abou Zeid (kabouzeid), Aidan Follestad (afollestad), chr_56<modify>
@@ -99,11 +101,12 @@ class DeleteSongsDialog : DialogFragment() {
                 val buttonDelete =
                     createButton(activity, activity.getString(R.string.delete_action), accentColor) {
                         dismiss()
-                        deleteAction()
+                        delete()
                     }
-                val buttonCancel =
-                    createButton(activity, activity.getString(android.R.string.cancel), accentColor) {
+                val buttonDeleteWithLyrics =
+                    createButton(activity, activity.getString(R.string.delete_with_lyrics), accentColor) {
                         dismiss()
+                        deleteWithLyrics()
                     }
 
                 val layoutParams =
@@ -118,7 +121,7 @@ class DeleteSongsDialog : DialogFragment() {
                     LinearLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT, 1f)
                 )
                 addView(
-                    buttonCancel,
+                    buttonDeleteWithLyrics,
                     layoutParams
                 )
                 addView(
@@ -160,12 +163,21 @@ class DeleteSongsDialog : DialogFragment() {
                     )
                 )
             title.text = activity.getString(R.string.delete_action)
-            deleteAction = { MediaStoreUtil.deleteSongs(activity, model.songs) }
+            delete = { MediaStoreUtil.deleteSongs(activity, model.songs) }
+            deleteWithLyrics = {
+                delete()
+                for (song in model.songs) {
+                    val file = File(song.data)
+                    val (lyrics, _) = LyricsLoader.searchExternalLyricsFiles(file, song)
+                    lyrics.forEach { it.delete() }
+                }
+            }
         }
 
         override fun destroy() {}
 
-        var deleteAction: () -> Unit = {}
+        var delete: () -> Unit = {}
+        var deleteWithLyrics: () -> Unit = { }
     }
 
     class DeleteSongsModel(val songs: ArrayList<Song>, var hasPermission: Boolean)
