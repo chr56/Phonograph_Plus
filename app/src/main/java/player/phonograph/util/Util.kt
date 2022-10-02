@@ -1,27 +1,21 @@
 package player.phonograph.util
 
 import android.app.Activity
-import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
 import android.content.res.Resources
 import android.graphics.Point
-import android.net.Uri
 import android.os.Build
-import android.provider.Settings
-import android.text.format.DateFormat
+import android.os.Looper
 import android.util.TypedValue
 import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
-import android.widget.Toast
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import player.phonograph.App
 import player.phonograph.BROADCAST_PLAYLISTS_CHANGED
 import player.phonograph.BuildConfig.DEBUG
 import player.phonograph.R
-import player.phonograph.util.TimeUtil.currentDate
-import java.util.*
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
@@ -93,7 +87,20 @@ object Util {
     /**
      * only run [block] on [DEBUG] build
      */
-     inline fun debug(crossinline block: () -> Unit) {
+    inline fun debug(crossinline block: () -> Unit) {
         if (DEBUG) block()
+    }
+
+    /**
+     * wrap with looper check
+     */
+    inline fun withLooper(crossinline block: () -> Unit) {
+        if (Looper.myLooper() == null) {
+            Looper.prepare()
+            block()
+            Looper.loop()
+        } else {
+            block()
+        }
     }
 }
