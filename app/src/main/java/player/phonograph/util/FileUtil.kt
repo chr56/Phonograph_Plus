@@ -129,29 +129,6 @@ object FileUtil {
         return if (pos == -1) str else str.substring(0, pos)
     }
 
-    @Throws(Exception::class)
-    fun readFromStream(`is`: InputStream?): String {
-        val reader = BufferedReader(InputStreamReader(`is`))
-        val sb = StringBuilder()
-        var line: String?
-        while (reader.readLine().also { line = it } != null) {
-            if (sb.isNotEmpty()) {
-                sb.append("\n")
-            }
-            sb.append(line)
-        }
-        reader.close()
-        return sb.toString()
-    }
-
-    @Throws(Exception::class)
-    fun read(file: File): String {
-        val fin = FileInputStream(file)
-        val ret = readFromStream(fin)
-        fin.close()
-        return ret
-    }
-
     @JvmStatic
     fun safeGetCanonicalPath(file: File): String {
         return try {

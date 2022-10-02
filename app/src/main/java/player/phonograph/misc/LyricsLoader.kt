@@ -13,6 +13,7 @@ import org.jaudiotagger.audio.exceptions.CannotReadException
 import org.jaudiotagger.logging.ErrorMessage
 import org.jaudiotagger.tag.FieldKey
 import player.phonograph.App
+import player.phonograph.BuildConfig.DEBUG
 import player.phonograph.model.Song
 import player.phonograph.model.lyrics.AbsLyrics
 import player.phonograph.model.lyrics.LrcLyrics
@@ -56,63 +57,20 @@ object LyricsLoader {
         val vagueLyrics: MutableList<AbsLyrics> = ArrayList(3)
 
         val jobExternal = backgroundCoroutine.launch(Dispatchers.IO) {
-            songFile.absoluteFile.parentFile?.let { dir ->
-                if (dir.exists() && dir.isDirectory) {
-                    val filename = Regex.escape(FileUtil.stripExtension(songFile.name))
-                    val songName = Regex.escape(song.title)
-
-                    // precise pattern
-                    val preciseRegex = Regex("""$filename\.(lrc|txt)""", RegexOption.IGNORE_CASE)
-                    // vague pattern
-                    val vagueRegex1 = Regex(""".*[-;]?$filename[-;]?.*\.(lrc|txt)""", RegexOption.IGNORE_CASE)
-                    val vagueRegex2 = Regex(""".*[-;]?$songName[-;]?.*\.(lrc|txt)""", RegexOption.IGNORE_CASE)
-
-                    val preciseFiles: MutableList<File> = ArrayList(1)
-                    val vagueFiles: MutableList<File> = ArrayList(3)
-
-                    // start list file under the same dir
-                    val result = dir.listFiles { f: File ->
-                        when {
-                            preciseRegex.matches(f.name) -> {
-                                preciseFiles.add(f)
-                                Log.v(TAG, "add a precise file: ${f.path} for ${song.title}")
-                                return@listFiles true
-                            }
-                            vagueRegex1.matches(f.name) -> {
-                                vagueFiles.add(f)
-                                Log.v(TAG, "add a vague file: ${f.path} for ${song.title}")
-                                return@listFiles true
-                            }
-                            vagueRegex2.matches(f.name) -> {
-                                vagueFiles.add(f)
-                                Log.v(TAG, "add a vague file: ${f.path} for ${song.title}")
-                                return@listFiles true
-                            }
-                        }
-                        false
-                    }
-
-                    if (result.isNullOrEmpty()) return@let
-
-                    Log.v(TAG, result.map { it.path }.fold("All lyrics found:") { acc, str -> "$acc$str;" }.toString())
-
-                    try {
-                        // precise
-                        for (f in preciseFiles) {
-                            FileUtil.read(f).also { raw ->
-                                if (raw.isNotEmpty()) preciseLyrics.add(parse(raw, LyricsSource.ExternalPrecise()))
-                            }
-                        }
-                        // vague
-                        for (f in vagueFiles) {
-                            FileUtil.read(f).also { raw ->
-                                if (raw.isNotEmpty()) vagueLyrics.add(parse(raw, LyricsSource.ExternalDecorated()))
-                            }
-                        }
-                    } catch (e: Exception) {
-                        ErrorNotification.postErrorNotification("Failed to read lyrics files\n${e.message}", App.instance)
-                    }
+            val (preciseFiles, vagueFiles) = searchExternalLyricsFiles(songFile, song)
+            try {
+                // precise
+                for (file in preciseFiles) {
+                    val lyrics = parse(file, LyricsSource.ExternalPrecise()) ?: continue
+                    preciseLyrics.add(lyrics)
                 }
+                // vague
+                for (file in vagueFiles) {
+                    val lyrics = parse(file, LyricsSource.ExternalDecorated()) ?: continue
+                    vagueLyrics.add(lyrics)
+                }
+            } catch (e: Exception) {
+                ErrorNotification.postErrorNotification("Failed to read lyrics files\n${e.message}", App.instance)
             }
         }
 
@@ -122,7 +80,7 @@ object LyricsLoader {
 
         val resultList: ArrayList<AbsLyrics> = ArrayList(4)
         resultList.apply {
-            if (embedded != null) add(embedded!!)
+            embedded?.let { add(it) }
             addAll(preciseLyrics)
             addAll(vagueLyrics)
         }
@@ -131,19 +89,70 @@ object LyricsLoader {
         return LyricsList(resultList)
     }
 
+    fun parse(file: File, lyricsSource: LyricsSource = LyricsSource.Unknown()): AbsLyrics? =
+        file.readText().let { content ->
+            if (content.isNotEmpty()) parse(content, lyricsSource) else null
+        }
+
     fun parse(raw: String, lyricsSource: LyricsSource = LyricsSource.Unknown()): AbsLyrics {
         val lines = raw.take(80).lines()
         val regex = Regex("""(\[.+])+.*""")
 
         for (line in lines) {
             if (regex.matches(line)) {
-                Log.v(TAG, "using LrcLyrics")
                 return LrcLyrics.from(raw, lyricsSource)
             }
         }
-        Log.v(TAG, "using TextLyrics")
         return TextLyrics.from(raw, lyricsSource)
     }
 
+    fun searchExternalLyricsFiles(songFile: File, song: Song): Pair<List<File>, List<File>> {
+        val dir = songFile.absoluteFile.parentFile ?: return emptyPair
+
+        if (!dir.exists() || !dir.isDirectory) return emptyPair
+
+        val filename = Regex.escape(FileUtil.stripExtension(songFile.name))
+        val songName = Regex.escape(song.title)
+
+        // precise pattern
+        val preciseRegex = Regex("""$filename\.(lrc|txt)""", RegexOption.IGNORE_CASE)
+        // vague pattern
+        val vagueRegex1 = Regex(""".*[-;]?$filename[-;]?.*\.(lrc|txt)""", RegexOption.IGNORE_CASE)
+        val vagueRegex2 = Regex(""".*[-;]?$songName[-;]?.*\.(lrc|txt)""", RegexOption.IGNORE_CASE)
+
+        val preciseFiles: MutableList<File> = ArrayList(1)
+        val vagueFiles: MutableList<File> = ArrayList(3)
+
+        // start list file under the same dir
+        val result = dir.listFiles { f: File ->
+            when {
+                preciseRegex.matches(f.name) -> {
+                    preciseFiles.add(f)
+                    if (DEBUG) Log.v(TAG, "add a precise file: ${f.path} for ${song.title}")
+                    return@listFiles true
+                }
+                vagueRegex1.matches(f.name) -> {
+                    vagueFiles.add(f)
+                    if (DEBUG) Log.v(TAG, "add a vague file: ${f.path} for ${song.title}")
+                    return@listFiles true
+                }
+                vagueRegex2.matches(f.name) -> {
+                    vagueFiles.add(f)
+                    if (DEBUG) Log.v(TAG, "add a vague file: ${f.path} for ${song.title}")
+                    return@listFiles true
+                }
+            }
+            false
+        }
+
+        return if (result.isNullOrEmpty()) {
+            emptyPair
+        } else {
+            if (DEBUG) Log.v(TAG, result.fold("All lyrics found:") { acc, str -> "$acc;${str.path}" })
+            Pair(preciseFiles, vagueFiles)
+        }
+    }
+
     private const val TAG = "LyricsLoader"
+    private val emptyPair: Pair<List<File>, List<File>> get() = Pair(emptyList(), emptyList())
 }
