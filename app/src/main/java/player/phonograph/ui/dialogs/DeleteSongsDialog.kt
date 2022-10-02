@@ -20,6 +20,9 @@ import android.widget.TextView
 import androidx.appcompat.widget.ButtonBarLayout
 import androidx.core.view.setMargins
 import androidx.fragment.app.DialogFragment
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import mt.pref.ThemeColor.accentColor
 import player.phonograph.R
 import player.phonograph.mediastore.MediaStoreUtil
@@ -27,6 +30,7 @@ import player.phonograph.misc.LyricsLoader
 import player.phonograph.model.Song
 import player.phonograph.ui.components.ViewComponent
 import player.phonograph.ui.components.viewcreater.createButton
+import player.phonograph.util.CoroutineUtil
 import player.phonograph.util.PermissionUtil.navigateToStorageSetting
 import player.phonograph.util.StringUtil
 import java.io.File
@@ -101,12 +105,16 @@ class DeleteSongsDialog : DialogFragment() {
                 val buttonDelete =
                     createButton(activity, activity.getString(R.string.delete_action), accentColor) {
                         dismiss()
-                        delete()
+                        coroutineScope.launch {
+                            delete()
+                        }
                     }
                 val buttonDeleteWithLyrics =
                     createButton(activity, activity.getString(R.string.delete_with_lyrics), accentColor) {
                         dismiss()
-                        deleteWithLyrics()
+                        coroutineScope.launch {
+                            deleteWithLyrics()
+                        }
                     }
 
                 val layoutParams =
@@ -195,6 +203,8 @@ class DeleteSongsDialog : DialogFragment() {
 
     companion object {
         private const val TAG = "DeleteSongsDialog"
+        private val coroutineScope =
+            CoroutineScope(Dispatchers.IO + CoroutineUtil.createDefaultExceptionHandler(TAG, "Fail!"))
 
         fun create(songs: ArrayList<Song>): DeleteSongsDialog =
             DeleteSongsDialog().apply {
