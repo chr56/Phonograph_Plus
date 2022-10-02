@@ -7,7 +7,7 @@ package player.phonograph.util.menu
 import androidx.fragment.app.FragmentActivity
 import player.phonograph.R
 import player.phonograph.dialogs.AddToPlaylistDialog
-import player.phonograph.dialogs.DeleteSongsDialog
+import player.phonograph.ui.dialogs.DeleteSongsDialog
 import player.phonograph.model.Song
 import player.phonograph.service.MusicPlayerRemote
 

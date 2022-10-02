@@ -8,7 +8,7 @@ import android.content.Intent
 import androidx.fragment.app.FragmentActivity
 import player.phonograph.R
 import player.phonograph.dialogs.AddToPlaylistDialog
-import player.phonograph.dialogs.DeleteSongsDialog
+import player.phonograph.ui.dialogs.DeleteSongsDialog
 import player.phonograph.dialogs.SongDetailDialog
 import player.phonograph.dialogs.SongShareDialog.Companion.createShareSongFileIntent
 import player.phonograph.interfaces.PaletteColorHolder

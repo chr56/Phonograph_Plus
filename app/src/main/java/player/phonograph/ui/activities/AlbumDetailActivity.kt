@@ -35,7 +35,7 @@ import player.phonograph.coil.loadImage
 import player.phonograph.coil.target.PaletteTargetBuilder
 import player.phonograph.databinding.ActivityAlbumDetailBinding
 import player.phonograph.dialogs.AddToPlaylistDialog
-import player.phonograph.dialogs.DeleteSongsDialog
+import player.phonograph.ui.dialogs.DeleteSongsDialog
 import player.phonograph.dialogs.SleepTimerDialog
 import player.phonograph.model.Album
 import player.phonograph.model.getReadableDurationString
