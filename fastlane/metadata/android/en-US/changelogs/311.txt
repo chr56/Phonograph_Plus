@@ -1,8 +1,0 @@
-<strong>EN</strong>
-<ol>
-<li>Fix: randomly refresh playing queue on opening</li>
-<li>Improve: move swapping-queue operations (e.g. shuffle all, play a playlist, play an album/artist) to background, to
-fix getting frozen when changing queue especially for users having to many song</li>
-<li>Improve: designate a rational images size when loading cover artworks, to try to not crash app if the image is too
-large</li>
-</ol>
