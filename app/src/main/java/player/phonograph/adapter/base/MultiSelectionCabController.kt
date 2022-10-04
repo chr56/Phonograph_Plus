@@ -6,7 +6,6 @@ package player.phonograph.adapter.base
 
 import android.content.Context
 import android.graphics.Color
-import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import androidx.annotation.MenuRes
@@ -55,17 +54,10 @@ class MultiSelectionCabController(val cab: ToolbarCab) {
     private fun updateMenu() {
         if (menuHandler != null) {
             cab.menuHandler = menuHandler
-        } else if (menuRes != 0) {
-            cab.menuRes = menuRes
-            cab.menuItemClickListener = Toolbar.OnMenuItemClickListener {
-                onMenuItemClick(it)
-            }
         }
     }
 
-    var menuHandler: ((Menu) -> Boolean)? = null
-    var menuRes = 0
-    var onMenuItemClick: (MenuItem) -> Boolean = { false }
+    var menuHandler: ((Toolbar) -> Boolean)? = null
     var onDismiss: () -> Unit = {}
     fun dismiss(): Boolean {
         if (cab.status == CabStatus.STATUS_ACTIVE) {
@@ -77,4 +69,13 @@ class MultiSelectionCabController(val cab: ToolbarCab) {
     }
 
     fun isActive(): Boolean = cab.status == CabStatus.STATUS_ACTIVE
+
+    companion object {
+        fun createMenuHandler(@MenuRes menuId: Int, menuItemClick: (MenuItem) -> Boolean): (Toolbar) -> Boolean =
+            { toolbar ->
+                toolbar.inflateMenu(menuId)
+                toolbar.setOnMenuItemClickListener(menuItemClick)
+                true
+            }
+    }
 }

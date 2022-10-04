@@ -14,9 +14,7 @@ import android.view.View
 import android.view.ViewStub
 import androidx.annotation.ColorInt
 import androidx.annotation.IdRes
-import androidx.annotation.MenuRes
 import androidx.annotation.StyleRes
-import androidx.appcompat.content.res.AppCompatResources
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.core.view.iterator
@@ -27,7 +25,7 @@ fun createToolbarCab(
     activity: Activity,
     @IdRes stubId: Int,
     @IdRes inflatedId: Int,
-    cfg: CabCfg = {}
+    cfg: CabCfg = {},
 ): ToolbarCab {
     val toolbar: Toolbar =
         when (val stub = activity.findViewById<View>(stubId)) {
@@ -50,7 +48,7 @@ typealias CabCfg = ToolbarCab.() -> Unit
 class ToolbarCab internal constructor(
     val activity: Activity,
     val toolbar: Toolbar,
-    applyCfg: CabCfg
+    applyCfg: CabCfg,
 ) {
 
     var status: CabStatus = CabStatus.STATUS_INACTIVE // default
@@ -80,15 +78,8 @@ class ToolbarCab internal constructor(
 
     private fun setUpMenu() = toolbar.run {
         menu.clear()
-        if (menuRes == 0 && menuHandler == null) {
-            setOnMenuItemClickListener(null)
-        } else {
-            if (menuHandler != null) {
-                menuHandler!!.invoke(menu)
-            } else if (menuRes != 0) {
-                inflateMenu(menuRes)
-                setOnMenuItemClickListener(menuItemClickListener)
-            }
+        if (menuHandler != null) {
+            menuHandler!!.invoke(this)
             // tint
             overflowIcon = activity.getTintedDrawable(androidx.appcompat.R.drawable.abc_ic_menu_overflow_material, titleTextColor)
             for (item in menu) {
@@ -142,33 +133,17 @@ class ToolbarCab internal constructor(
             setTint(titleTextColor)
         }
         set(value) {
-                field = value
-                toolbar.navigationIcon = value
-            }
-
-    @MenuRes
-    var menuRes: Int = 0
-        set(value) {
             field = value
-            setUpMenu()
+            toolbar.navigationIcon = value
         }
 
     /**
      * handle menu creating & callbacks
      */
-    var menuHandler: ((Menu) -> Boolean)? = null
+    var menuHandler: ((Toolbar) -> Boolean)? = null
         set(value) {
             field = value
             setUpMenu()
-        }
-
-
-    var menuItemClickListener = Toolbar.OnMenuItemClickListener {
-        return@OnMenuItemClickListener false
-    }
-        set(value) {
-            field = value
-            toolbar.setOnMenuItemClickListener(value)
         }
 
     var closeClickListener = View.OnClickListener {

@@ -4,8 +4,8 @@
 package player.phonograph.adapter.base
 
 import android.content.Context
-import android.view.Menu
 import android.view.MenuItem
+import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.RecyclerView
 import lib.phonograph.cab.CabStatus
 import player.phonograph.R
@@ -18,8 +18,8 @@ abstract class MultiSelectAdapter<VH : RecyclerView.ViewHolder, I>(
     private val cabController: MultiSelectionCabController?,
 ) : RecyclerView.Adapter<VH>() {
 
-    abstract var multiSelectMenuRes: Int
-    open var multiSelectMenuHandler: ((Menu) -> Boolean)? = null
+    open val multiSelectMenuRes: Int = 0
+    open val multiSelectMenuHandler: ((Toolbar) -> Boolean)? = null
 
 
     private var checkedList: MutableList<I> = ArrayList()
@@ -27,14 +27,13 @@ abstract class MultiSelectAdapter<VH : RecyclerView.ViewHolder, I>(
     private fun updateCab() {
         // todo
         cabController?.onDismiss = ::clearChecked
-        cabController?.onMenuItemClick = ::onCabItemClicked
 
         val hasMenu = multiSelectMenuHandler != null || multiSelectMenuRes != 0
         if (hasMenu) {
             if (multiSelectMenuHandler != null) {
                 cabController?.menuHandler = multiSelectMenuHandler
             } else if (multiSelectMenuRes != 0) {
-                cabController?.menuRes = multiSelectMenuRes
+                cabController?.menuHandler = MultiSelectionCabController.createMenuHandler(multiSelectMenuRes, ::onCabItemClicked)
             }
         }
 
