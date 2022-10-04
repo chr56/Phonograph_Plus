@@ -293,7 +293,7 @@
     <string name="download">下载</string>
     <string name="ignore_once">忽略此次</string>
     <string name="upgrade_ignored">更新已忽略！</string>
-    <string name="tg_channel">Telegram Channel</string>
+    <string name="tg_channel">Telegram 频道</string>
     <string name="auto_check_upgrade">自动检查更新</string>
     <string name="auto_check_upgrade_summary">自动检查更新并及时弹出更新对话框</string>
     <string name="edit">编辑…</string>
@@ -390,5 +390,4 @@
         <item quantity="other">生成的播放列表</item>
     </plurals>
     <string name="warning_can_not_retract">此操作无法撤销！</string>
-    <string name="delete_with_lyrics">删除(和歌词一起)</string>
 </resources>
