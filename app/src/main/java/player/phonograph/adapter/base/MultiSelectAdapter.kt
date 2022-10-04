@@ -4,9 +4,9 @@
 package player.phonograph.adapter.base
 
 import android.content.Context
+import android.view.Menu
 import android.view.MenuItem
 import androidx.recyclerview.widget.RecyclerView
-import java.util.*
 import lib.phonograph.cab.CabStatus
 import player.phonograph.R
 
@@ -19,14 +19,26 @@ abstract class MultiSelectAdapter<VH : RecyclerView.ViewHolder, I>(
 ) : RecyclerView.Adapter<VH>() {
 
     abstract var multiSelectMenuRes: Int
+    open var multiSelectMenuHandler: ((Menu) -> Boolean)? = null
+
 
     private var checkedList: MutableList<I> = ArrayList()
 
     private fun updateCab() {
-        cabController?.showContent(context, checkedList.size, multiSelectMenuRes)
         // todo
         cabController?.onDismiss = ::clearChecked
         cabController?.onMenuItemClick = ::onCabItemClicked
+
+        val hasMenu = multiSelectMenuHandler != null || multiSelectMenuRes != 0
+        if (hasMenu) {
+            if (multiSelectMenuHandler != null) {
+                cabController?.menuHandler = multiSelectMenuHandler
+            } else if (multiSelectMenuRes != 0) {
+                cabController?.menuRes = multiSelectMenuRes
+            }
+        }
+
+        cabController?.showContent(context, checkedList.size, hasMenu)
     }
 
     /** must return a real item **/
@@ -51,7 +63,9 @@ abstract class MultiSelectAdapter<VH : RecyclerView.ViewHolder, I>(
             checkedList.clear()
             for (i in 0 until itemCount) {
                 val item = getItem(i)
-                if (item != null) { checkedList.add(item) }
+                if (item != null) {
+                    checkedList.add(item)
+                }
             }
             updateItemCheckStatusForAll()
             updateCab()

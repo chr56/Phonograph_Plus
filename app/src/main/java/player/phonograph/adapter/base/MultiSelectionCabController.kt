@@ -6,6 +6,7 @@ package player.phonograph.adapter.base
 
 import android.content.Context
 import android.graphics.Color
+import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import androidx.annotation.MenuRes
@@ -31,7 +32,7 @@ class MultiSelectionCabController(val cab: ToolbarCab) {
             cab.titleTextColor = value
         }
 
-    fun showContent(context: Context, checkedListSize: Int, @MenuRes menuRes: Int): Boolean {
+    fun showContent(context: Context, checkedListSize: Int, hasMenu: Boolean): Boolean {
         return run {
             if (checkedListSize < 1) {
                 cab.hide()
@@ -41,10 +42,7 @@ class MultiSelectionCabController(val cab: ToolbarCab) {
                 cab.titleTextColor = textColor
                 cab.navigationIcon = context.getTintedDrawable(R.drawable.ic_close_white_24dp, Color.WHITE)!!
 
-                cab.menuRes = menuRes
-                cab.menuItemClickListener = Toolbar.OnMenuItemClickListener {
-                    onMenuItemClick(it)
-                }
+                if (hasMenu) updateMenu()
                 cab.closeClickListener = View.OnClickListener {
                     dismiss()
                 }
@@ -54,6 +52,19 @@ class MultiSelectionCabController(val cab: ToolbarCab) {
         }
     }
 
+    private fun updateMenu() {
+        if (menuHandler != null) {
+            cab.menuHandler = menuHandler
+        } else if (menuRes != 0) {
+            cab.menuRes = menuRes
+            cab.menuItemClickListener = Toolbar.OnMenuItemClickListener {
+                onMenuItemClick(it)
+            }
+        }
+    }
+
+    var menuHandler: ((Menu) -> Boolean)? = null
+    var menuRes = 0
     var onMenuItemClick: (MenuItem) -> Boolean = { false }
     var onDismiss: () -> Unit = {}
     fun dismiss(): Boolean {

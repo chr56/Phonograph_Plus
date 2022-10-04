@@ -114,10 +114,12 @@ open class ArtistSongAdapter(
     }
 
     private fun updateCab() {
-        cabController?.showContent(context, checked.size, R.menu.menu_media_selection) // todo: valid
         // todo
         cabController?.onDismiss = ::unCheckAll
         cabController?.onMenuItemClick = ::onCabItemClicked
+        cabController?.menuRes = R.menu.menu_media_selection
+
+        cabController?.showContent(context, checked.size, true) // todo: valid
     }
 
     private fun unCheckAll() {
