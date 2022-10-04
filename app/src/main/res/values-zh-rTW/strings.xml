@@ -390,5 +390,4 @@
         <item quantity="other">生成的播放清單</item>
     </plurals>
     <string name="warning_can_not_retract">此操作無法撤消！</string>
-    <string name="delete_with_lyrics">刪除(包括歌詞)</string>
 </resources>
