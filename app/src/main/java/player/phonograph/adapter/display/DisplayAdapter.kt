@@ -13,11 +13,13 @@ import android.widget.PopupMenu
 import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
+import androidx.appcompat.widget.Toolbar
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView
 import mt.util.color.getPrimaryTextColor
 import mt.util.color.getSecondaryTextColor
 import mt.util.color.isColorLight
 import player.phonograph.R
+import player.phonograph.actions.create
 import player.phonograph.adapter.base.MultiSelectAdapter
 import player.phonograph.adapter.base.MultiSelectionCabController
 import player.phonograph.adapter.base.UniversalMediaEntryViewHolder
@@ -49,7 +51,11 @@ open class DisplayAdapter<I : Displayable>(
 
     var showSectionName: Boolean = true
 
-    override var multiSelectMenuRes: Int = R.menu.menu_media_selection
+    override val multiSelectMenuHandler: ((Toolbar) -> Boolean)?
+        get() = {
+            create(it.menu, context, checkedList, cabTextColorColor) { true }
+            true
+        }
 
     override fun getItemId(position: Int): Long = dataset[position].getItemID()
     override fun getItem(datasetPosition: Int): I = dataset[datasetPosition]
@@ -99,9 +105,7 @@ open class DisplayAdapter<I : Displayable>(
     override fun updateItemCheckStatusForAll() = notifyDataSetChanged()
     override fun updateItemCheckStatus(datasetPosition: Int) = notifyItemChanged(datasetPosition)
 
-    override fun onMultipleItemAction(menuItem: MenuItem, selection: List<I>) {
-        selection.multiMenuClick(actionId = menuItem.itemId, activity)
-    }
+    override fun onMultipleItemAction(menuItem: MenuItem, selection: List<I>) {}
 
     override fun getSectionName(position: Int): String =
         if (showSectionName) getSectionNameImp(position) else ""

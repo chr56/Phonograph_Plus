@@ -22,7 +22,8 @@ abstract class MultiSelectAdapter<VH : RecyclerView.ViewHolder, I>(
     open val multiSelectMenuHandler: ((Toolbar) -> Boolean)? = null
 
 
-    private var checkedList: MutableList<I> = ArrayList()
+    protected var checkedList: MutableList<I> = ArrayList()
+        private set
 
     private fun updateCab() {
         // todo
@@ -92,6 +93,12 @@ abstract class MultiSelectAdapter<VH : RecyclerView.ViewHolder, I>(
         }
         return true
     }
+
+    protected var cabTextColorColor: Int
+        get() = cabController?.textColor ?: 0
+        set(value) {
+            cabController?.textColor = value
+        }
 
     protected abstract fun onMultipleItemAction(menuItem: MenuItem, selection: List<I>)
 }

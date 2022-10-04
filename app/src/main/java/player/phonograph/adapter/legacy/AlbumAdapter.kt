@@ -8,12 +8,14 @@ import android.view.View.VISIBLE
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import androidx.core.util.Pair
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView.SectionedAdapter
 import mt.util.color.getPrimaryTextColor
 import mt.util.color.getSecondaryTextColor
 import mt.util.color.isColorLight
 import player.phonograph.R
+import player.phonograph.actions.create
 import player.phonograph.adapter.base.MediaEntryViewHolder
 import player.phonograph.adapter.base.MultiSelectAdapter
 import player.phonograph.adapter.base.MultiSelectionCabController
@@ -28,7 +30,6 @@ import player.phonograph.model.sort.SortRef
 import player.phonograph.settings.Setting
 import player.phonograph.util.MusicUtil
 import player.phonograph.util.NavigationUtil
-import player.phonograph.util.menu.onMultiSongMenuItemClick
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
@@ -41,8 +42,6 @@ open class AlbumAdapter(
     cabController: MultiSelectionCabController? = null,
 ) :
     MultiSelectAdapter<AlbumAdapter.ViewHolder, Album>(activity, cabController), SectionedAdapter {
-
-    override var multiSelectMenuRes: Int = R.menu.menu_media_selection
 
     var dataSet: List<Album> = dataSet
         set(dataSet) {
@@ -124,9 +123,13 @@ open class AlbumAdapter(
 
     override fun getName(obj: Album): String = obj.title
 
-    override fun onMultipleItemAction(menuItem: MenuItem, selection: List<Album>) {
-        onMultiSongMenuItemClick(activity, getSongList(selection), menuItem.itemId)
-    } // todo
+    override fun onMultipleItemAction(menuItem: MenuItem, selection: List<Album>) {}
+
+    override val multiSelectMenuHandler: ((Toolbar) -> Boolean)?
+        get() = {
+            create(it.menu, context, checkedList, cabTextColorColor) { true }
+            true
+        }
 
     private fun getSongList(albums: List<Album>): List<Song> {
         return albums.flatMap { album -> album.songs }

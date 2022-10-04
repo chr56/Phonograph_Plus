@@ -1,5 +1,6 @@
 package player.phonograph.adapter.legacy
 
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
@@ -10,6 +11,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.util.Pair
 import player.phonograph.R
+import player.phonograph.actions.create
 import player.phonograph.adapter.base.MultiSelectionCabController
 import player.phonograph.coil.loadImage
 import player.phonograph.model.Song
@@ -101,10 +103,6 @@ open class ArtistSongAdapter(
         return convertView
     }
 
-    private fun onMultipleItemAction(menuItem: MenuItem, selection: List<Song>) {
-        onMultiSongMenuItemClick(activity, selection, menuItem.itemId)
-    }
-
     protected fun toggleChecked(song: Song) {
         if (cabController != null) {
             if (!checked.remove(song)) checked.add(song)
@@ -116,8 +114,10 @@ open class ArtistSongAdapter(
     private fun updateCab() {
         // todo
         cabController?.onDismiss = ::unCheckAll
-        cabController?.onMenuItemClick = ::onCabItemClicked
-        cabController?.menuRes = R.menu.menu_media_selection
+        cabController?.menuHandler = {
+            create(it.menu, context, checked, Color.WHITE) { true }
+            true
+        }
 
         cabController?.showContent(context, checked.size, true) // todo: valid
     }
@@ -132,9 +132,4 @@ open class ArtistSongAdapter(
     val isInQuickSelectMode: Boolean
         get() = cabController != null && cabController.isActive()
 
-    fun onCabItemClicked(menuItem: MenuItem): Boolean {
-        onMultipleItemAction(menuItem, ArrayList(checked))
-        unCheckAll()
-        return true
-    }
 }
