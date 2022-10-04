@@ -21,6 +21,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.core.view.iterator
 import player.phonograph.R
+import player.phonograph.util.ImageUtil.getTintedDrawable
 
 fun createToolbarCab(
     activity: Activity,
@@ -79,16 +80,20 @@ class ToolbarCab internal constructor(
 
     private fun setUpMenu() = toolbar.run {
         menu.clear()
-        if (menuRes != 0) {
-            inflateMenu(menuRes)
-            overflowIcon =
-                AppCompatResources.getDrawable(activity, androidx.appcompat.R.drawable.abc_ic_menu_overflow_material)?.apply { setTint(titleTextColor) }
+        if (menuRes == 0 && menuHandler == null) {
+            setOnMenuItemClickListener(null)
+        } else {
+            if (menuHandler != null) {
+                menuHandler!!.invoke(menu)
+            } else if (menuRes != 0) {
+                inflateMenu(menuRes)
+                setOnMenuItemClickListener(menuItemClickListener)
+            }
+            // tint
+            overflowIcon = activity.getTintedDrawable(androidx.appcompat.R.drawable.abc_ic_menu_overflow_material, titleTextColor)
             for (item in menu) {
                 item.icon = item.icon?.apply { setTint(titleTextColor) }
             }
-            setOnMenuItemClickListener(menuItemClickListener)
-        } else {
-            setOnMenuItemClickListener(null)
         }
     }
 
@@ -147,6 +152,16 @@ class ToolbarCab internal constructor(
             field = value
             setUpMenu()
         }
+
+    /**
+     * handle menu creating & callbacks
+     */
+    var menuHandler: ((Menu) -> Boolean)? = null
+        set(value) {
+            field = value
+            setUpMenu()
+        }
+
 
     var menuItemClickListener = Toolbar.OnMenuItemClickListener {
         return@OnMenuItemClickListener false
