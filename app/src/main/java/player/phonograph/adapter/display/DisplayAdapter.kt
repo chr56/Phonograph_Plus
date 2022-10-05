@@ -107,8 +107,6 @@ open class DisplayAdapter<I : Displayable>(
     override fun updateItemCheckStatusForAll() = notifyDataSetChanged()
     override fun updateItemCheckStatus(datasetPosition: Int) = notifyItemChanged(datasetPosition)
 
-    override fun onMultipleItemAction(menuItem: MenuItem, selection: List<I>) {}
-
     override fun getSectionName(position: Int): String =
         if (showSectionName) getSectionNameImp(position) else ""
 

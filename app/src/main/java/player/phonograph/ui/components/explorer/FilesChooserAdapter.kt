@@ -59,9 +59,6 @@ class FilesChooserAdapter(
         }
     }
 
-    override var multiSelectMenuRes: Int = 0
-    override fun onMultipleItemAction(menuItem: MenuItem, selection: List<FileEntity>) = Unit
-
     private val formatter = SimpleDateFormat("yyyy.MM.dd HH:mm", Locale.getDefault())
     private fun toDate(timeInMill: Long): String {
         return formatter.format(

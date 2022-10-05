@@ -4,11 +4,9 @@
 package player.phonograph.adapter.base
 
 import android.content.Context
-import android.view.MenuItem
 import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.RecyclerView
 import lib.phonograph.cab.CabStatus
-import player.phonograph.R
 
 /**
  * @author chr_56 & Karim Abou Zeid (kabouzeid)
@@ -18,9 +16,7 @@ abstract class MultiSelectAdapter<VH : RecyclerView.ViewHolder, I>(
     private val cabController: MultiSelectionCabController?,
 ) : RecyclerView.Adapter<VH>() {
 
-    open val multiSelectMenuRes: Int = 0
     open val multiSelectMenuHandler: ((Toolbar) -> Boolean)? = null
-
 
     protected var checkedList: MutableList<I> = ArrayList()
         private set
@@ -29,16 +25,11 @@ abstract class MultiSelectAdapter<VH : RecyclerView.ViewHolder, I>(
         // todo
         cabController?.onDismiss = ::clearChecked
 
-        val hasMenu = multiSelectMenuHandler != null || multiSelectMenuRes != 0
-        if (hasMenu) {
-            if (multiSelectMenuHandler != null) {
-                cabController?.menuHandler = multiSelectMenuHandler
-            } else if (multiSelectMenuRes != 0) {
-                cabController?.menuHandler = MultiSelectionCabController.createMenuHandler(multiSelectMenuRes, ::onCabItemClicked)
-            }
+        if (multiSelectMenuHandler != null) {
+            cabController?.menuHandler = multiSelectMenuHandler
         }
 
-        cabController?.showContent(context, checkedList.size, hasMenu)
+        cabController?.showContent(context, checkedList.size)
     }
 
     /** must return a real item **/
@@ -84,21 +75,10 @@ abstract class MultiSelectAdapter<VH : RecyclerView.ViewHolder, I>(
 
     protected open fun getName(obj: I): String = obj.toString()
 
-    private fun onCabItemClicked(menuItem: MenuItem): Boolean {
-        if (menuItem.itemId == R.id.action_multi_select_adapter_check_all) {
-            checkAll()
-        } else {
-            onMultipleItemAction(menuItem, ArrayList(checkedList))
-            cabController?.dismiss()
-        }
-        return true
-    }
-
     protected var cabTextColorColor: Int
         get() = cabController?.textColor ?: 0
         set(value) {
             cabController?.textColor = value
         }
 
-    protected abstract fun onMultipleItemAction(menuItem: MenuItem, selection: List<I>)
 }

@@ -193,8 +193,6 @@ class FilesPageAdapter(
             }
         }
 
-    override fun onMultipleItemAction(menuItem: MenuItem, selection: List<FileEntity>) {}
-
     var loadCover: Boolean = Setting.instance.showFileImages
 
 }

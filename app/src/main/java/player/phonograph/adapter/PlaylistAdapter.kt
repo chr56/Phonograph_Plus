@@ -104,7 +104,6 @@ class PlaylistAdapter(
                 true
             }
         }
-    override fun onMultipleItemAction(menuItem: MenuItem, selection: List<Playlist>) {}
 
     inner class ViewHolder(itemView: View, itemViewType: Int) : MediaEntryViewHolder(itemView) {
         init {

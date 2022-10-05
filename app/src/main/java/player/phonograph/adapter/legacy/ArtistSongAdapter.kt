@@ -115,10 +115,9 @@ open class ArtistSongAdapter(
         cabController?.onDismiss = ::unCheckAll
         cabController?.menuHandler = {
             applyToToolbar(it.menu, context, checked, Color.WHITE) { true }
-            true
         }
 
-        cabController?.showContent(context, checked.size, true) // todo: valid
+        cabController?.showContent(context, checked.size) // todo: valid
     }
 
     private fun unCheckAll() {

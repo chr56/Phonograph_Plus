@@ -123,8 +123,6 @@ open class AlbumAdapter(
 
     override fun getName(obj: Album): String = obj.title
 
-    override fun onMultipleItemAction(menuItem: MenuItem, selection: List<Album>) {}
-
     override val multiSelectMenuHandler: ((Toolbar) -> Boolean)?
         get() = {
             applyToToolbar(it.menu, context, checkedList, cabTextColorColor) {
