@@ -15,6 +15,7 @@ import android.widget.ImageView
 import android.widget.PopupMenu
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ComponentActivity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -23,6 +24,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import mt.util.color.resolveColor
 import player.phonograph.R
+import player.phonograph.actions.applyToToolbar
 import player.phonograph.adapter.base.MultiSelectionCabController
 import player.phonograph.coil.loadImage
 import player.phonograph.databinding.ItemListBinding
@@ -183,11 +185,15 @@ class FilesPageAdapter(
         }
     }
 
-    override var multiSelectMenuRes: Int = R.menu.menu_item_file_entities
-    override fun onMultipleItemAction(menuItem: MenuItem, selection: List<FileEntity>) {
-        val songs = selection.mapNotNull { (it as? FileEntity.File)?.linkedSong(context) }
-        onMultiSongMenuItemClick(context as AppCompatActivity, songs, menuItem.itemId)
-    }
+    override val multiSelectMenuHandler: ((Toolbar) -> Boolean)
+        get() = {
+            applyToToolbar(it.menu, context, checkedList, cabTextColorColor) {
+                checkAll()
+                true
+            }
+        }
+
+    override fun onMultipleItemAction(menuItem: MenuItem, selection: List<FileEntity>) {}
 
     var loadCover: Boolean = Setting.instance.showFileImages
 
