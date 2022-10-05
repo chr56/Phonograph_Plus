@@ -7,22 +7,19 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupMenu
 import androidx.annotation.LayoutRes
+import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.FragmentActivity
 import mt.util.color.resolveColor
 import player.phonograph.R
+import player.phonograph.actions.applyToPlaylistsToolbar
 import player.phonograph.actions.injectPlaylistAdapter
 import player.phonograph.adapter.base.MediaEntryViewHolder
 import player.phonograph.adapter.base.MultiSelectAdapter
 import player.phonograph.adapter.base.MultiSelectionCabController
-import player.phonograph.dialogs.ClearPlaylistDialog
-import player.phonograph.misc.SAFCallbackHandlerActivity
-import player.phonograph.model.Song
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.model.playlist.SmartPlaylist
 import player.phonograph.util.FavoriteUtil
 import player.phonograph.util.NavigationUtil
-import player.phonograph.util.menu.onMultiSongMenuItemClick
-import util.phonograph.m3u.PlaylistsManager
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
@@ -99,31 +96,15 @@ class PlaylistAdapter(
 
     override fun getName(obj: Playlist): String = obj.name
 
-    override var multiSelectMenuRes: Int = R.menu.menu_playlists_selection
-    override fun onMultipleItemAction(menuItem: MenuItem, selection: List<Playlist>) {
-        when (menuItem.itemId) {
-            R.id.action_delete_playlist -> {
-                ClearPlaylistDialog.create(selection).show(activity.supportFragmentManager, "DELETE_PLAYLISTS")
-            }
-            R.id.action_save_playlist ->
-                if (activity is SAFCallbackHandlerActivity) {
-                    PlaylistsManager(activity, activity).duplicatePlaylistsViaSaf(selection)
-                } else {
-                    PlaylistsManager(activity, null).duplicatePlaylistsViaSaf(selection)
-                }
-            else ->
-                // default, handle common items
-                onMultiSongMenuItemClick(activity, getSongList(selection), menuItem.itemId)
-        }
-    }
 
-    private fun getSongList(playlists: List<Playlist>): List<Song> {
-        val songs: MutableList<Song> = ArrayList()
-        for (playlist in playlists) {
-            songs.addAll(playlist.getSongs(activity))
+    override val multiSelectMenuHandler: ((Toolbar) -> Boolean)
+        get() = {
+            applyToPlaylistsToolbar(it.menu, activity, checkedList, cabTextColorColor) {
+                checkAll()
+                true
+            }
         }
-        return songs
-    }
+    override fun onMultipleItemAction(menuItem: MenuItem, selection: List<Playlist>) {}
 
     inner class ViewHolder(itemView: View, itemViewType: Int) : MediaEntryViewHolder(itemView) {
         init {

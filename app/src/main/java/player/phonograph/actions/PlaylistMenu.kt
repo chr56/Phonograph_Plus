@@ -216,6 +216,75 @@ fun injectPlaylistAdapter(menu: Menu, context: Context, playlist: Playlist) = co
     }
 }
 
+@JvmName("applyToToolbarPlaylist")
+fun applyToPlaylistsToolbar(
+    menu: Menu,
+    context: Context,
+    playlists: List<Playlist>,
+    @ColorInt iconColor: Int,
+    selectAllCallback: (() -> Boolean)?,
+): Boolean = with(context) {
+    attach(menu) {
+        val songs = playlists.flatMap { it.getSongs(context) }
+        menuItem(getString(R.string.action_play)) {
+            icon = getTintedDrawable(R.drawable.ic_play_arrow_white_24dp, iconColor)
+            showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
+            onClick {
+                MusicPlayerRemote.playNow(songs)
+                true
+            }
+        }
+        menuItem(getString(R.string.action_play_next)) {
+            icon = getTintedDrawable(R.drawable.ic_redo_white_24dp, iconColor)
+            showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
+            onClick {
+                MusicPlayerRemote.playNext(songs)
+                true
+            }
+        }
+        menuItem(getString(R.string.action_add_to_playing_queue)) {
+            icon = getTintedDrawable(R.drawable.ic_library_add_white_24dp, iconColor)
+            showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
+            onClick {
+                MusicPlayerRemote.enqueue(songs)
+                true
+            }
+        }
+        menuItem(getString(R.string.action_add_to_playlist)) {
+            icon = getTintedDrawable(R.drawable.ic_playlist_add_white_24dp, iconColor)
+            showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
+            onClick {
+                actionAddToPlaylist(songs)
+            }
+        }
+        menuItem(getString(R.string.action_delete_from_device)) {
+            icon = getTintedDrawable(R.drawable.ic_delete_white_24dp, iconColor)
+            showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
+            onClick {
+                playlists.deletePlaylists(context)
+            }
+        }
+        menuItem(getString(R.string.save_playlists_title)) {
+            icon = getTintedDrawable(R.drawable.ic_save_white_24dp, iconColor)
+            showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
+            onClick {
+                playlists.savePlaylists(context)
+                true
+            }
+        }
+        selectAllCallback?.let { callback ->
+            menuItem(getString(R.string.select_all_title)) {
+                icon = getTintedDrawable(R.drawable.ic_select_all_white_24dp, iconColor)
+                showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
+                onClick {
+                    callback()
+                }
+            }
+        }
+    }
+    true
+}
+
 fun Playlist.play(context: Context): Boolean =
     MusicPlayerRemote.playQueueCautiously(getSongs(context), 0, true, null)
 
@@ -243,9 +312,25 @@ fun Playlist.deletePlaylist(activity: FragmentActivity) {
         .show(activity.supportFragmentManager, "CLEAR_PLAYLIST")
 }
 
+fun List<Playlist>.deletePlaylists(activity: Context): Boolean =
+    if (activity is FragmentActivity) {
+        ClearPlaylistDialog.create(this)
+            .show(activity.supportFragmentManager, "CLEAR_PLAYLIST")
+        true
+    } else {
+        false
+    }
+
 fun Playlist.savePlaylist(activity: FragmentActivity) {
     CoroutineScope(Dispatchers.Default).launch {
         PlaylistsManager(activity, activity as? SAFCallbackHandlerActivity)
             .duplicatePlaylistViaSaf(this@savePlaylist)
+    }
+}
+
+fun List<Playlist>.savePlaylists(activity: Context) {
+    CoroutineScope(Dispatchers.Default).launch {
+        PlaylistsManager(activity, activity as? SAFCallbackHandlerActivity)
+            .duplicatePlaylistsViaSaf(this@savePlaylists)
     }
 }
