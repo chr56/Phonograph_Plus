@@ -19,7 +19,7 @@ import lib.phonograph.cab.ToolbarCab
 import lib.phonograph.cab.createToolbarCab
 import mt.pref.ThemeColor.primaryColor
 import mt.tint.requireLightStatusbar
- import mt.tint.setActivityToolbarColor
+import mt.tint.setActivityToolbarColor
 import mt.tint.setActivityToolbarColorAuto
 import mt.tint.setNavigationBarColor
 import mt.tint.viewtint.tintMenu
@@ -28,6 +28,7 @@ import mt.util.color.isColorLight
 import mt.util.color.primaryTextColor
 import mt.util.color.secondaryTextColor
 import player.phonograph.R
+import player.phonograph.actions.applyToToolbar
 import player.phonograph.adapter.base.MultiSelectionCabController
 import player.phonograph.adapter.display.AlbumSongDisplayAdapter
 import player.phonograph.adapter.display.SongDisplayAdapter
@@ -61,7 +62,7 @@ import util.phonograph.tageditor.AlbumTagEditorActivity
 class AlbumDetailActivity : AbsSlidingMusicPanelActivity() {
 
     companion object {
-        private const val TAG_EDITOR_REQUEST = 2001
+        const val TAG_EDITOR_REQUEST = 2001
         const val EXTRA_ALBUM_ID = "extra_album_id"
     }
 
@@ -207,69 +208,28 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.menu_album_detail, menu)
-        viewBinding.toolbar.apply {
-            tintMenu(this, menu, primaryTextColor(activityColor))
+        applyToToolbar(menu, this, album, primaryTextColor(activityColor)) {
+            // load wiki
+            if (isWikiPreLoaded) {
+                showWikiDialog()
+            } else {
+                model.loadWiki(this) { wikiText: Spanned?, url: String? ->
+                    showWikiDialog(wikiText, url)
+                }
+            }
+            true
         }
+        tintMenu(viewBinding.toolbar, menu, primaryTextColor(activityColor))
+
         return super.onCreateOptionsMenu(menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.action_sleep_timer -> {
-                SleepTimerDialog().show(supportFragmentManager, "SET_SLEEP_TIMER")
-                return true
-            }
-            R.id.action_equalizer -> {
-                openEqualizer(this)
-                return true
-            }
-            R.id.action_shuffle_album -> {
-                MusicPlayerRemote
-                    .playQueue(adapter.dataset, 0, true, ShuffleMode.SHUFFLE)
-                return true
-            }
-            R.id.action_play_next -> {
-                playNext(adapter.dataset)
-                return true
-            }
-            R.id.action_add_to_current_playing -> {
-                enqueue(adapter.dataset)
-                return true
-            }
-            R.id.action_add_to_playlist -> {
-                AddToPlaylistDialog.create(adapter.dataset).show(supportFragmentManager, "ADD_PLAYLIST")
-                return true
-            }
-            R.id.action_delete_from_device -> {
-                DeleteSongsDialog.create(ArrayList(adapter.dataset)).show(supportFragmentManager, "DELETE_SONGS")
-                return true
-            }
-            android.R.id.home -> {
-                super.onBackPressed()
-                return true
-            }
-            R.id.action_tag_editor -> {
-                val intent = Intent(this, AlbumTagEditorActivity::class.java)
-                intent.putExtra(AbsTagEditorActivity.EXTRA_ID, album.id)
-                startActivityForResult(intent, TAG_EDITOR_REQUEST)
-                return true
-            }
-            R.id.action_go_to_artist -> {
-                goToArtist(this, album.artistId)
-                return true
-            }
-            R.id.action_wiki -> {
-                if (isWikiPreLoaded) {
-                    showWikiDialog()
-                } else {
-                    model.loadWiki(this) { wikiText: Spanned?, url: String? ->
-                        showWikiDialog(wikiText, url)
-                    }
-                }
-                return true
-            }
-            else -> return super.onOptionsItemSelected(item)
+        return if (item.itemId == android.R.id.home) {
+            super.onBackPressed()
+            true
+        } else {
+            super.onOptionsItemSelected(item)
         }
     }
 

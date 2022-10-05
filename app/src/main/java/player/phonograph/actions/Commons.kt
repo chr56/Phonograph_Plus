@@ -45,3 +45,10 @@ internal fun Context.actionDelete(songs: List<Song>) =
     } else {
         false
     }
+
+internal inline fun fragmentActivity(context: Context, block: (FragmentActivity) -> Boolean): Boolean =
+    if (context is FragmentActivity) {
+        block(context)
+    } else {
+        false
+    }
