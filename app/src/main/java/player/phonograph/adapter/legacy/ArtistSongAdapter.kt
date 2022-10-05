@@ -11,14 +11,13 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.util.Pair
 import player.phonograph.R
-import player.phonograph.actions.create
+import player.phonograph.actions.applyToToolbar
 import player.phonograph.adapter.base.MultiSelectionCabController
 import player.phonograph.coil.loadImage
 import player.phonograph.model.Song
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.util.NavigationUtil
 import player.phonograph.util.menu.MenuClickListener
-import player.phonograph.util.menu.onMultiSongMenuItemClick
 
 // Todo: use AbsMultiSelectAdapter
 /**
@@ -115,7 +114,7 @@ open class ArtistSongAdapter(
         // todo
         cabController?.onDismiss = ::unCheckAll
         cabController?.menuHandler = {
-            create(it.menu, context, checked, Color.WHITE) { true }
+            applyToToolbar(it.menu, context, checked, Color.WHITE) { true }
             true
         }
 

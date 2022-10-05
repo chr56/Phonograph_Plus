@@ -19,7 +19,7 @@ import mt.util.color.getPrimaryTextColor
 import mt.util.color.getSecondaryTextColor
 import mt.util.color.isColorLight
 import player.phonograph.R
-import player.phonograph.actions.create
+import player.phonograph.actions.applyToToolbar
 import player.phonograph.adapter.base.MultiSelectAdapter
 import player.phonograph.adapter.base.MultiSelectionCabController
 import player.phonograph.adapter.base.UniversalMediaEntryViewHolder
@@ -53,8 +53,10 @@ open class DisplayAdapter<I : Displayable>(
 
     override val multiSelectMenuHandler: ((Toolbar) -> Boolean)?
         get() = {
-            create(it.menu, context, checkedList, cabTextColorColor) { true }
-            true
+            applyToToolbar(it.menu, context, checkedList, cabTextColorColor) {
+                checkAll()
+                true
+            }
         }
 
     override fun getItemId(position: Int): Long = dataset[position].getItemID()
