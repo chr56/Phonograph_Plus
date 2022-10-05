@@ -15,6 +15,7 @@ import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.FrameLayout
 import android.widget.LinearLayout
+import android.widget.ScrollView
 import android.widget.Space
 import android.widget.TextView
 import android.widget.Toast
@@ -150,13 +151,16 @@ class DeleteSongsDialog : DialogFragment() {
             }
 
 
-            val root = LinearLayout(activity).apply {
+            val linearLayout = LinearLayout(activity).apply {
                 orientation = LinearLayout.VERTICAL
                 addView(titlePanel, LinearLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT))
                 addView(contentPanel, LinearLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT))
                 addView(buttonPanel, LinearLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT))
             }
-            rootContainer.addView(root, FrameLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT).apply { setMargins(24) })
+            val scrollView = ScrollView(activity).apply {
+                addView(linearLayout)
+            }
+            rootContainer.addView(scrollView, FrameLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT).apply { setMargins(24) })
         }
 
         override fun loadData(model: DeleteSongsModel) {
