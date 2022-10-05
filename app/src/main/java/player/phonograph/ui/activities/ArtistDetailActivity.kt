@@ -9,13 +9,14 @@ import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.AdapterDataObserver
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.WhichButton
 import com.afollestad.materialdialogs.actions.getActionButton
+import com.github.chr56.android.menu_dsl.menuItem
+import com.github.chr56.android.menu_model.MenuContext
 import lib.phonograph.cab.ToolbarCab
 import lib.phonograph.cab.createToolbarCab
 import mt.pref.ThemeColor.primaryColor
@@ -30,6 +31,7 @@ import mt.util.color.secondaryTextColor
 import mt.util.color.toolbarTitleColor
 import mt.util.color.withAlpha
 import player.phonograph.R
+import player.phonograph.actions.applyToToolbar
 import player.phonograph.adapter.base.MultiSelectionCabController
 import player.phonograph.adapter.legacy.ArtistSongAdapter
 import player.phonograph.adapter.legacy.HorizontalAlbumAdapter
@@ -37,21 +39,14 @@ import player.phonograph.coil.CustomArtistImageStore
 import player.phonograph.coil.loadImage
 import player.phonograph.coil.target.PaletteTargetBuilder
 import player.phonograph.databinding.ActivityArtistDetailBinding
-import player.phonograph.dialogs.AddToPlaylistDialog
-import player.phonograph.dialogs.SleepTimerDialog
 import player.phonograph.interfaces.PaletteColorHolder
 import player.phonograph.misc.SimpleObservableScrollViewCallbacks
 import player.phonograph.model.*
 import player.phonograph.notification.ErrorNotification
-import player.phonograph.service.MusicPlayerRemote
-import player.phonograph.service.MusicPlayerRemote.enqueue
-import player.phonograph.service.MusicPlayerRemote.playNext
-import player.phonograph.service.queue.ShuffleMode
 import player.phonograph.settings.Setting
 import player.phonograph.settings.Setting.Companion.isAllowedToDownloadMetadata
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
 import player.phonograph.util.ImageUtil.getTintedDrawable
-import player.phonograph.util.NavigationUtil.openEqualizer
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -279,98 +274,61 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorHolder 
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.menu_artist_detail, menu)
-        menu.findItem(R.id.action_colored_footers).isChecked = usePalette
-        viewBinding.toolbar.apply {
-            tintMenu(this, menu, primaryTextColor(activityColor))
+        applyToToolbar(menu, this, artist, primaryTextColor(activityColor), this::biographyCallback)
+        MenuContext(menu, this).apply {
+            menuItem(title = getString(R.string.colored_footers)) {
+                checkable = true
+                checked = usePalette
+                showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
+                onClick {
+                    it.isChecked = !it.isChecked
+                    usePalette = it.isChecked
+                    true
+                }
+            }
         }
+        tintMenu(viewBinding.toolbar, menu, primaryTextColor(activityColor))
         return super.onCreateOptionsMenu(menu)
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        val id = item.itemId
-        val songs = songAdapter.dataSet
-        when (id) {
-            R.id.action_sleep_timer -> {
-                SleepTimerDialog().show(supportFragmentManager, "SET_SLEEP_TIMER")
-                return true
-            }
-            R.id.action_equalizer -> {
-                openEqualizer(this)
-                return true
-            }
-            R.id.action_shuffle_artist -> {
-                MusicPlayerRemote
-                    .playQueue(songs, 0, true, ShuffleMode.SHUFFLE)
-                return true
-            }
-            R.id.action_play_next -> {
-                playNext(songs)
-                return true
-            }
-            R.id.action_add_to_current_playing -> {
-                enqueue(songs)
-                return true
-            }
-            R.id.action_add_to_playlist -> {
-                AddToPlaylistDialog.create(songs).show(supportFragmentManager, "ADD_PLAYLIST")
-                return true
-            }
-            android.R.id.home -> {
-                super.onBackPressed()
-                return true
-            }
-            R.id.action_biography -> {
-                if (biographyDialog == null) {
-                    biographyDialog = MaterialDialog(this)
-                        .title(null, artist.name)
-                        .positiveButton(android.R.string.ok, null, null)
-                        .apply {
-                            getActionButton(WhichButton.POSITIVE).updateTextColor(accentColor)
-                            getActionButton(WhichButton.NEGATIVE).updateTextColor(accentColor)
-                        }
+    private fun biographyCallback(artist: Artist): Boolean {
+        if (biographyDialog == null) {
+            biographyDialog = MaterialDialog(this)
+                .title(null, artist.name)
+                .positiveButton(android.R.string.ok, null, null)
+                .apply {
+                    getActionButton(WhichButton.POSITIVE).updateTextColor(accentColor)
+                    getActionButton(WhichButton.NEGATIVE).updateTextColor(accentColor)
                 }
-                if (isAllowedToDownloadMetadata(this@ArtistDetailActivity)) { // wiki should've been already downloaded
-                    biographyDialog!!.show {
-                        if (biography != null) {
-                            message(text = biography)
-                        } else {
-                            message(R.string.biography_unavailable)
-                        }
-                        negativeButton(text = "Last.FM") {
-                            startActivity(
-                                Intent(Intent.ACTION_VIEW).apply {
-                                    data = Uri.parse(lastFmUrl)
-                                    flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                                }
-                            )
-                        }
-                    }
-                } else { // force download
-                    biographyDialog!!.show()
-                    loadBiography()
-                }
-                return true
-            }
-            R.id.action_set_artist_image -> {
-                val intent = Intent(Intent.ACTION_GET_CONTENT)
-                intent.type = "image/*"
-                startActivityForResult(Intent.createChooser(intent, getString(R.string.pick_from_local_storage)), REQUEST_CODE_SELECT_IMAGE)
-                return true
-            }
-            R.id.action_reset_artist_image -> {
-                Toast.makeText(this@ArtistDetailActivity, resources.getString(R.string.updating), Toast.LENGTH_SHORT).show()
-                CustomArtistImageStore.instance(this)
-                    .resetCustomArtistImage(this, artist.id, artist.name)
-                return true
-            }
-            R.id.action_colored_footers -> {
-                item.isChecked = !item.isChecked
-                usePalette = item.isChecked
-                return true
-            }
-            else -> return super.onOptionsItemSelected(item)
         }
+        if (isAllowedToDownloadMetadata(this@ArtistDetailActivity)) { // wiki should've been already downloaded
+            biographyDialog!!.show {
+                if (biography != null) {
+                    message(text = biography)
+                } else {
+                    message(R.string.biography_unavailable)
+                }
+                negativeButton(text = "Last.FM") {
+                    startActivity(
+                        Intent(Intent.ACTION_VIEW).apply {
+                            data = Uri.parse(lastFmUrl)
+                            flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                        }
+                    )
+                }
+            }
+        } else { // force download
+            biographyDialog!!.show()
+            loadBiography()
+        }
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return if (item.itemId == android.R.id.home) {
+            super.onBackPressed()
+            true
+        } else super.onOptionsItemSelected(item)
     }
 
     override fun onBackPressed() {
@@ -422,7 +380,7 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorHolder 
     }
 
     companion object {
-        private const val REQUEST_CODE_SELECT_IMAGE = 1000
+        const val REQUEST_CODE_SELECT_IMAGE = 1000
         const val EXTRA_ARTIST_ID = "extra_artist_id"
     }
 }
