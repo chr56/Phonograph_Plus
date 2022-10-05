@@ -149,12 +149,14 @@
     <string name="pref_summary_synchronized_lyrics_show">現時点では LRC 形式の同期歌詞のみに対応しています。埋め込みと別ファイルのどちらにも対応しています。</string>
     <string name="pref_summary_remember_last_tab">アプリ起動時に最後に開いていたタブを開く</string>
     <string name="pref_summary_remember_shuffle">新しい曲のリストを選択しても、シャッフルモードはオンのままになります。</string>
+    <string name="could_not_download_album_cover">一致するアルバムカバーをダウンロードできませんでした</string>
     <string name="search_hint">ライブラリ内を検索…</string>
     <string name="favorites">お気に入り</string>
     <string name="last_added">最近追加された曲</string>
     <string name="history">最近再生した曲</string>
     <string name="my_top_tracks">再生回数の多い曲</string>
     <string name="remove_cover">アルバムアートを除去</string>
+    <string name="download_from_last_fm">Last.fmからダウンロード</string>
     <string name="pick_from_local_storage">ローカルストレージから選択</string>
     <string name="web_search">ウェブで検索</string>
     <string name="action_sleep_timer">スリープタイマー</string>
@@ -195,6 +197,7 @@
     <string name="rearrange_playing_queue_instruction">トラック番号をドラッグして再生キューの曲を並び替えることができます。</string>
     <string name="library">ライブラリ</string>
     <string name="folders">フォルダ</string>
+    <string name="theme_switch">テーマの切り替え</string>
     <string name="failed_to_save_playlist">プレイリスト(%s)の保存に失敗しました。</string>
     <string name="saved_x_playlists_to_x">%1$dプレイリストを%2$sに保存しました</string>
     <string name="saved_x_playlists_to_x_failed_to_save_x">%1$dプレイリストを%2$sに保存しました、%3$dに保存できませんでした。</string>
@@ -257,9 +260,135 @@
     <string name="sort_order_artist">アーティスト</string>
     <string name="sort_order_album">アルバム</string>
     <string name="sort_order_year">年</string>
+    <string name="sort_order_date_added">追加日</string>
     <string name="finish_current_music_sleep_timer">最後の曲を終える</string>
     <string name="dialog_ringtone_title">着信音の設定</string>
     <string name="dialog_ringtone_message">Phonographによるオーディオ設定の変更を許可する</string>
+    <string name="perf_title_fixed_tab_layout">上部タブの固定</string>
+    <string name="pref_summary_fixed_tab_layout">上部タブはスクロールできなくなり、余白なしのフラットな状態になります</string>
+    <string name="auto_mode_on">オートモードがオンになっています。オフにしてもう一度お試しください!</string>
+    <string name="Permission_denied">アクセスが拒否されました!</string>
+    <string name="err_permission_storage">ストレージ権限</string>
+    <string name="add_blacklist">ブラックリストに追加しますか?</string>
+    <string name="minutes_short">%1$d 分</string>
+    <string name="other_information">その他</string>
+    <string name="more_actions">もっと見る</string>
+    <string name="crash">アプリがクラッシュしました!!</string>
+    <string name="copy_to_clipboard">クリップボードにコピー</string>
+    <string name="success">成功!</string>
+    <string name="failed">失敗!</string>
+    <string name="clear_all_preference">すべてのアプリケーション設定を消去</string>
+    <string name="clear_all_preference_msg"><b>警告</b>: これは <b>すべての</b> アプリ設定がリセットされます! \n\nアプリ起動時にクラッシュする場合には効果があるかもしれません。 \n実行してよろしいですか?</string>
+    <string name="failed_to_delete">削除できませんでした</string>
+    <string name="grant_permission">権限を許可</string>
+    <string name="retry">再試行</string>
+    <string name="permission_manage_external_storage_denied">Phonograph に「外部ストレージ管理」の権限が許可されていないようです!</string>
+    <string name="not_available_now">現在利用できません</string>
+    <string name="check_upgrade">アップデートを確認</string>
+    <string name="no_newer_version">アップデートはありません!</string>
+    <string name="new_version">新バージョンが利用可能です!</string>
+    <string name="new_version_code">バージョン</string>
+    <string name="new_version_log">更新履歴</string>
+    <string name="new_version_tips">このダイアログは設定で無効にできます (手動で更新を確認することも可能です)。</string>
+    <string name="download">ダウンロード</string>
+    <string name="ignore_once">今回は無視する</string>
+    <string name="upgrade_ignored">アップグレードは無視されています。</string>
+    <string name="tg_channel">Telegram チャンネル</string>
+    <string name="auto_check_upgrade">アップデートを自動的に確認</string>
+    <string name="auto_check_upgrade_summary">新バージョンが利用可能な場合は、すぐにアップデートダイアログを開きます。</string>
+    <string name="edit">編集…</string>
+    <string name="move_to_top">一番上に移動</string>
+    <string name="move_to_bottom">一番下へ移動</string>
+    <string name="move_up">上に移動</string>
+    <string name="move_down">下へ移動</string>
+    <string name="refresh">更新</string>
+    <string name="pref_title_send_lyrics">同期歌詞を送信</string>
+    <string name="pref_summary_send_lyrics">Xposedモジュール「StatusBar Lyrics」に同期歌詞を送信します</string>
+    <string name="pref_title_broadcast_current_player_state">現在のプレイヤーのステータスを公開</string>
+    <string name="pref_summary_broadcast_current_player_state">Musixmatch のような他のアプリに現在のプレイヤーのステータスを公開します</string>
+    <string name="pref_title_display_lyrics_time_axis">歌詞の時間軸を表示</string>
+    <string name="pref_summary_display_lyrics_time_axis">歌詞ダイアログで、同期歌詞の開始時刻を表示します。</string>
+    <string name="upgrade_notification_name">更新</string>
+    <string name="upgrade_notification_description">アプリの更新を通知します。</string>
+    <string name="action_add_to_black_list">ブラックリストに追加</string>
     <string name="sort_order_song">タイトル</string>
+    <string name="sort_order_duration">長さ</string>
+    <string name="sort_order_date_modified">変更日時</string>
+    <string name="loading">読み込み中</string>
+    <string name="delete_with_saf">SAFを利用して削除</string>
+    <string name="direction_open_folder_with_saf">操作したいファイルを含むフォルダを選択してください</string>
+    <string name="direction_open_file_with_saf">操作したいファイルを選択してください</string>
+    <string name="file_incorrect">ファイルが正しくありません!</string>
     <string name="pref_header_appearance">外観</string>
+    <string name="deleting_old_files">古いファイルを削除しています…</string>
+    <string name="pref_title_reset_home_pages_tab_config">すべてのカテゴリタブをリセット</string>
+    <string name="pref_summary_reset_home_pages_tab_config">すべてのライブラリのカテゴリがデフォルトにリセットされます。</string>
+    <string name="are_you_sure">よろしいですか?</string>
+    <string name="original_author">オリジナル作者</string>
+    <string name="plus_author">Phonograph Plus の作者</string>
+    <string name="pref_header_compatibility">互換性</string>
+    <string name="pref_title_use_legacy_favorite_playlist_impl">旧式のお気に入りプレイリストフォーマットを使用する</string>
+    <string name="pref_summary_use_legacy_favorite_playlist_impl">有効にすると、お気に入り曲をアプリ内部のデータベースではなく、ストレージ上のm3uプレイリストに保存します。 (手動でリストをエクスポートできます)</string>
+    <string name="export_">エクスポート: </string>
+    <string name="import_">インポート: </string>
+    <string name="databases">データベース</string>
+    <string name="embedded_lyrics">埋め込み歌詞</string>
+    <string name="external_lyrics">外部歌詞</string>
+    <string name="lyrics_following">歌詞に連動</string>
+    <string name="error_notification_name">エラーレポート</string>
+    <string name="background_notification_name">バックグラウンド作業</string>
+    <string name="sort_order_song_count">楽曲数</string>
+    <string name="sort_order_album_count">アルバム数</string>
+    <string name="name">名称</string>
+    <string name="preferences">設定</string>
+    <string name="pref_title_playlist_files_operation_behaviour">プレイリストファイルの操作時の動作</string>
+    <string name="pref_summary_playlist_files_operation_behaviour">プレイリストを作成、変更等の操作をするときの動作</string>
+    <string name="behaviour_auto">自動</string>
+    <string name="behaviour_force_saf">ストレージアクセスフレームワーク (SAF) を強制的に使用</string>
+    <string name="behaviour_force_legacy">従来の方法を強制的に使用</string>
+    <string name="reached_to_root">このストレージのルートフォルダに達しました</string>
+    <string name="sort_order_size">ファイルサイズ</string>
+    <string name="use_legacy_list_Files">従来の方法を利用してファイルを読み込む</string>
+    <string name="pref_title_keep_playing_queue_intact">再生キューを保持します</string>
+    <string name="pref_summary_keep_playing_queue_intact">有効にすると、Phonograph Plusは再生キューをクリアしようとしないため、ミスでキューを失うことがなくなります。</string>
+    <string name="change_now_playing_screen">再生中の画面を変更</string>
+    <string name="load_images_for_files">ファイルのカバーアートを読み込む</string>
+    <string name="app_language">アプリケーションの言語</string>
+    <string name="_default">デフォルト</string>
+    <plurals name="x_songs">
+        <item quantity="other">%1$d 曲</item>
+    </plurals>
+    <plurals name="x_albums">
+        <item quantity="other">%1$d アルバム</item>
+    </plurals>
+    <plurals name="x_artists">
+        <item quantity="other">%1$d アーティスト</item>
+    </plurals>
+    <plurals name="x_genres">
+        <item quantity="other">%1$d ジャンル</item>
+    </plurals>
+    <plurals name="msg_header_delete_items">
+        <item quantity="other">これらのアイテムは削除されます:</item>
+    </plurals>
+    <plurals name="msg_header_remove_items">
+        <!-- %1$s: where -->
+        <item quantity="other">これらのアイテムは %1$s から削除されます:</item>
+    </plurals>
+    <plurals name="msg_deletion_result">
+        <item quantity="other">%1$d / %2$d アイテムが正常に削除されました。</item>
+    </plurals>
+    <plurals name="item_songs">
+        <item quantity="other">曲</item>
+    </plurals>
+    <plurals name="item_playlists">
+        <item quantity="other">プレイリスト</item>
+    </plurals>
+    <plurals name="item_files">
+        <item quantity="other">ファイル</item>
+    </plurals>
+    <plurals name="item_playlists_generated">
+        <item quantity="other">作成済みプレイリスト</item>
+    </plurals>
+    <string name="warning_can_not_retract">この操作は元に戻せません!</string>
+    <string name="delete_with_lyrics">歌詞と一緒に削除</string>
 </resources>
