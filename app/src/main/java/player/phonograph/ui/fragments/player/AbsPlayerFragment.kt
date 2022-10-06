@@ -2,7 +2,6 @@ package player.phonograph.ui.fragments.player
 
 import android.app.Application
 import android.content.Context
-import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
@@ -27,10 +26,7 @@ import mt.util.color.toolbarContentColor
 import player.phonograph.R
 import player.phonograph.actions.injectPlayerToolbar
 import player.phonograph.adapter.display.PlayingQueueAdapter
-import player.phonograph.dialogs.AddToPlaylistDialog
 import player.phonograph.dialogs.LyricsDialog
-import player.phonograph.dialogs.SongDetailDialog
-import player.phonograph.dialogs.SongShareDialog
 import player.phonograph.interfaces.PaletteColorHolder
 import player.phonograph.model.buildInfoString
 import player.phonograph.model.getReadableDurationString
@@ -41,15 +37,9 @@ import player.phonograph.ui.fragments.AbsMusicServiceFragment
 import player.phonograph.ui.fragments.player.PlayerAlbumCoverFragment.Companion.VISIBILITY_ANIM_DURATION
 import player.phonograph.util.FavoriteUtil.toggleFavorite
 import player.phonograph.util.ImageUtil.getTintedDrawable
-import player.phonograph.util.NavigationUtil.goToAlbum
-import player.phonograph.util.NavigationUtil.goToArtist
-import player.phonograph.util.menu.onSongMenuItemClick
-import util.phonograph.tageditor.AbsTagEditorActivity
-import util.phonograph.tageditor.SongTagEditorActivity
 
 abstract class AbsPlayerFragment :
     AbsMusicServiceFragment(),
-    Toolbar.OnMenuItemClickListener,
     PaletteColorHolder {
 
     protected lateinit var callbacks: Callbacks
@@ -102,10 +92,6 @@ abstract class AbsPlayerFragment :
         false
     }
 
-    override fun onDetach() {
-        super.onDetach()
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initRecyclerView()
@@ -147,45 +133,6 @@ abstract class AbsPlayerFragment :
             WrapperAdapterUtils.releaseAll(wrappedAdapter)
             _wrappedAdapter = null
         }
-    }
-
-    override fun onMenuItemClick(item: MenuItem): Boolean {
-        // current song
-        val song = MusicPlayerRemote.currentSong
-        when (item.itemId) {
-            R.id.action_add_to_playlist -> {
-                AddToPlaylistDialog.create(List(1) { song })
-                    .show(childFragmentManager, "ADD_PLAYLIST")
-                return true
-            }
-            R.id.action_details -> {
-                SongDetailDialog.create(song)
-                    .show(childFragmentManager, "SONG_DETAIL")
-                return true
-            }
-            R.id.action_go_to_album -> {
-                goToAlbum(requireActivity(), song.albumId)
-                return true
-            }
-            R.id.action_go_to_artist -> {
-                goToArtist(requireActivity(), song.artistId)
-                return true
-            }
-            R.id.action_tag_editor -> {
-                startActivity(
-                    Intent(activity, SongTagEditorActivity::class.java)
-                        .apply { putExtra(AbsTagEditorActivity.EXTRA_ID, song.id) }
-                )
-                return true
-            }
-            R.id.action_share -> {
-                SongShareDialog.create(song)
-                    .show(childFragmentManager, "SHARE_SONG")
-                return true
-            }
-            else -> onSongMenuItemClick(requireActivity(), song, item.itemId)
-        }
-        return false
     }
 
     private fun addLyricsObserver() {

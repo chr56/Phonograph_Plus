@@ -165,7 +165,6 @@ class PlaylistSongAdapter(
             // todo
 
             menuItem {
-                itemId = R.id.action_details
                 titleRes(R.string.action_details)
                 onClick {
                     SongDetailDialog.create(song).show(
@@ -180,7 +179,6 @@ class PlaylistSongAdapter(
                 context.getString(R.string.more_actions)
             ) {
                 menuItem {
-                    itemId = R.id.action_tag_editor
                     titleRes(R.string.action_tag_editor)
                     onClick {
                         activity.startActivity(
@@ -198,7 +196,6 @@ class PlaylistSongAdapter(
                     }
                 }
                 menuItem {
-                    itemId = R.id.action_delete_from_device
                     titleRes(R.string.action_delete_from_device)
                     onClick {
                         DeleteSongsDialog.create(arrayListOf(song))
