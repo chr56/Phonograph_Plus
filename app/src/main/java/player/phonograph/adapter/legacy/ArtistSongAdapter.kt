@@ -7,12 +7,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.ImageView
+import android.widget.PopupMenu
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.util.Pair
 import player.phonograph.R
 import player.phonograph.actions.applyToToolbar
 import player.phonograph.adapter.base.MultiSelectionCabController
+import player.phonograph.adapter.display.initMenu
 import player.phonograph.coil.loadImage
 import player.phonograph.model.Song
 import player.phonograph.service.MusicPlayerRemote
@@ -70,22 +72,11 @@ open class ArtistSongAdapter(
         }
 
         albumArt.transitionName = activity.getString(R.string.transition_album_art)
-        val overflowButton = convertView.findViewById<ImageView>(R.id.menu)
-        overflowButton.setOnClickListener(object : MenuClickListener(activity, R.menu.menu_item_song_short) {
-            override val song: Song
-                get() = song
-
-            override fun onMenuItemClick(item: MenuItem): Boolean {
-                if (item.itemId == R.id.action_go_to_album) {
-                    val albumPairs = arrayOf<Pair<View, String>>(
-                        Pair.create(albumArt, activity.resources.getString(R.string.transition_album_art))
-                    )
-                    NavigationUtil.goToAlbum(activity, song.albumId, *albumPairs)
-                    return true
-                }
-                return super.onMenuItemClick(item)
-            }
-        })
+        convertView.findViewById<ImageView>(R.id.menu).setOnClickListener {
+            PopupMenu(activity, it).apply {
+                song.initMenu(activity, this.menu)
+            }.show()
+        }
         convertView.isActivated = isChecked(song)
         convertView.setOnClickListener {
             if (isInQuickSelectMode) {
