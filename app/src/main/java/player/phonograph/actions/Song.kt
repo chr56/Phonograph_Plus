@@ -11,13 +11,10 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import androidx.core.util.Pair
-import androidx.fragment.app.FragmentActivity
 import com.github.chr56.android.menu_dsl.attach
 import com.github.chr56.android.menu_dsl.menuItem
 import com.github.chr56.android.menu_dsl.submenu
 import player.phonograph.R
-import player.phonograph.dialogs.SongDetailDialog
-import player.phonograph.dialogs.SongShareDialog
 import player.phonograph.interfaces.PaletteColorHolder
 import player.phonograph.model.Song
 import player.phonograph.service.MusicPlayerRemote
@@ -157,16 +154,6 @@ private inline fun activity(context: Context, block: (Activity) -> Boolean): Boo
     block(context)
 } else {
     false
-}
-
-fun gotoDetail(activity: FragmentActivity, song: Song): Boolean {
-    SongDetailDialog.create(song).show(activity.supportFragmentManager, "SONG_DETAILS")
-    return true
-}
-
-private fun share(context: Context, song: Song): Boolean {
-    context.startActivity(Intent.createChooser(SongShareDialog.createShareSongFileIntent(song, context), null))
-    return true
 }
 
 fun tagEditor(context: Context, song: Song): Boolean {

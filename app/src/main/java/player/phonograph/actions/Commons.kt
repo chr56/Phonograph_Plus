@@ -5,8 +5,11 @@
 package player.phonograph.actions
 
 import android.content.Context
+import android.content.Intent
 import androidx.fragment.app.FragmentActivity
 import player.phonograph.dialogs.AddToPlaylistDialog
+import player.phonograph.dialogs.SongDetailDialog
+import player.phonograph.dialogs.SongShareDialog
 import player.phonograph.mediastore.GenreLoader
 import player.phonograph.mediastore.MediaStoreUtil.linkedSong
 import player.phonograph.model.Album
@@ -52,3 +55,13 @@ internal inline fun fragmentActivity(context: Context, block: (FragmentActivity)
     } else {
         false
     }
+
+fun gotoDetail(activity: FragmentActivity, song: Song): Boolean {
+    SongDetailDialog.create(song).show(activity.supportFragmentManager, "SONG_DETAILS")
+    return true
+}
+
+fun share(context: Context, song: Song): Boolean {
+    context.startActivity(Intent.createChooser(SongShareDialog.createShareSongFileIntent(song, context), null))
+    return true
+}
