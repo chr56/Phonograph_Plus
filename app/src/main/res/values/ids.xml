@@ -35,4 +35,9 @@
     <item name="action_export_preferences" type="id" />
     <item name="action_import_preferences" type="id" />
 
+    <item name="action_tag_editor" type="id" />
+    <item name="action_go_to_album" type="id" />
+    <item name="action_go_to_artist" type="id" />
+    <item name="action_set_as_ringtone" type="id" />
+
 </resources>

@@ -8,7 +8,6 @@ import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import android.widget.ImageView
 import android.widget.PopupMenu
 import androidx.annotation.ColorInt
-import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.FragmentContainerView
 import com.h6ah4i.android.widget.advrecyclerview.animator.GeneralItemAnimator
@@ -23,7 +22,6 @@ import player.phonograph.R
 import player.phonograph.adapter.base.MediaEntryViewHolder
 import player.phonograph.adapter.display.initMenu
 import player.phonograph.databinding.FragmentFlatPlayerBinding
-import player.phonograph.model.Song
 import player.phonograph.model.infoString
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
@@ -32,7 +30,6 @@ import player.phonograph.ui.fragments.player.PlayerAlbumCoverFragment
 import player.phonograph.util.Util.isLandscape
 import player.phonograph.util.ViewUtil
 import player.phonograph.util.ViewUtil.isWindowBackgroundDarkSafe
-import player.phonograph.util.menu.MenuClickListener
 
 class FlatPlayerFragment :
     AbsPlayerFragment(),

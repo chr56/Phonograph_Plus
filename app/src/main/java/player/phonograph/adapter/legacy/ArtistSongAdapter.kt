@@ -2,7 +2,6 @@ package player.phonograph.adapter.legacy
 
 import android.graphics.Color
 import android.view.LayoutInflater
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
@@ -10,7 +9,6 @@ import android.widget.ImageView
 import android.widget.PopupMenu
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.util.Pair
 import player.phonograph.R
 import player.phonograph.actions.applyToToolbar
 import player.phonograph.adapter.base.MultiSelectionCabController
@@ -18,8 +16,6 @@ import player.phonograph.adapter.display.initMenu
 import player.phonograph.coil.loadImage
 import player.phonograph.model.Song
 import player.phonograph.service.MusicPlayerRemote
-import player.phonograph.util.NavigationUtil
-import player.phonograph.util.menu.MenuClickListener
 
 // Todo: use AbsMultiSelectAdapter
 /**

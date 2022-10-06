@@ -6,7 +6,6 @@ import android.graphics.PorterDuff
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewAnimationUtils
 import android.view.ViewGroup
@@ -14,7 +13,6 @@ import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import android.widget.ImageView
 import android.widget.PopupMenu
 import androidx.annotation.ColorInt
-import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.FragmentContainerView
 import com.h6ah4i.android.widget.advrecyclerview.animator.GeneralItemAnimator
@@ -29,7 +27,6 @@ import player.phonograph.R
 import player.phonograph.adapter.base.MediaEntryViewHolder
 import player.phonograph.adapter.display.initMenu
 import player.phonograph.databinding.FragmentCardPlayerBinding
-import player.phonograph.model.Song
 import player.phonograph.model.infoString
 import player.phonograph.notification.ErrorNotification
 import player.phonograph.service.MusicPlayerRemote
@@ -39,7 +36,6 @@ import player.phonograph.ui.fragments.player.PlayerAlbumCoverFragment
 import player.phonograph.util.PhonographColorUtil.nightMode
 import player.phonograph.util.Util.isLandscape
 import player.phonograph.util.ViewUtil
-import player.phonograph.util.menu.MenuClickListener
 import kotlin.math.max
 
 class CardPlayerFragment :

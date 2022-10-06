@@ -1,7 +1,6 @@
 package player.phonograph.adapter
 
 import android.view.LayoutInflater
-import android.view.Menu
 import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupMenu
@@ -20,7 +19,6 @@ import player.phonograph.model.infoString
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.util.NavigationUtil.goToAlbum
 import player.phonograph.util.NavigationUtil.goToArtist
-import player.phonograph.util.menu.MenuClickListener
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
