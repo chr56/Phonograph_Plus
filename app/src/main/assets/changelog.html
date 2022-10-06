@@ -5,14 +5,27 @@
 
 <p>Translate Phonograph Plus into your language -> <a href="https://crowdin.com/project/phonograph-plus">crowdin</a></p>
 
+<h4><b>0.3.5 LTS</b> 2022.10.6</h4>
+<div>
+    <ol>
+        <li>Translation: update Japanese (by aorinngo), Spanish (by Armando de Nazareth)</li>
+        <li>Fix: could not scroll Delete Dialog</li>
+    </ol>
+</div>
+
+
 <h4><b>0.3.4</b> 2022.10.3</h4>
 <div>
     <ol>
-        <li>New: delete song along with the lyrics file with the same name (requires <code>Manage all external files</code> permission)</li>
+        <li>New: delete song along with the lyrics file with the same name (requires <code>Manage all external
+            files</code> permission)
+        </li>
         <li>Fix: when play a folder, it cannot recursively select all subfolders</li>
         <li>Fix: player interface crash, e.g. when resizing the window (partially fixed)</li>
         <li>Improve: limit image size limit when loading to prevent crashes due to oversize images</li>
-        <li>Improve: mute error notifications when encountering <code>opus</code> format (currently we cannot read tags of <code>opus</code> )</li>
+        <li>Improve: mute error notifications when encountering <code>opus</code> format (currently we cannot read tags
+            of <code>opus</code> )
+        </li>
         <li>Development: add missing licenses of some libraries</li>
         <li>Development: update Gradle to 7.5.1, update AGP to 7.3.0, update dependencies</li>
     </ol>
@@ -22,10 +35,14 @@
 <div>
     <ol>
         <li>Fix: randomly refresh playing queue on opening</li>
-        <li>Improve: move swapping-queue operations (e.g. shuffle all, play a playlist, play an album/artist) to background, to
-            fix getting frozen when changing queue especially for users having to many song</li>
-        <li>Improve: designate a rational images size when loading cover artworks, to try to not crash app if the image is too
-            large</li>
+        <li>Improve: move swapping-queue operations (e.g. shuffle all, play a playlist, play an album/artist) to
+            background, to
+            fix getting frozen when changing queue especially for users having to many song
+        </li>
+        <li>Improve: designate a rational images size when loading cover artworks, to try to not crash app if the image
+            is too
+            large
+        </li>
     </ol>
 </div>
 
@@ -45,7 +62,9 @@
         <li>Improve: the check update procedure (and prevent popping up the update prompt repeatedly)</li>
         <li>Remove: issues reporting page (use a smaller dialog instead now)</li>
         <li>Remove: the feature of logging into Github to submit an issue (useless for most people)</li>
-        <li>Development: clean up and upgrade dependencies, upgrade AGP to 7.2.2, upgrade kotlin to 1.7.10, enhance obfuscation</li>
+        <li>Development: clean up and upgrade dependencies, upgrade AGP to 7.2.2, upgrade kotlin to 1.7.10, enhance
+            obfuscation
+        </li>
         <li>Release: adding fastlane metadata</li>
     </ol>
 </div>
