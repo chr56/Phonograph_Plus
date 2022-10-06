@@ -7,14 +7,12 @@
 package player.phonograph.adapter.display
 
 import android.app.Activity
+import android.content.Context
+import android.view.Menu
 import android.widget.ImageView
-import androidx.annotation.MenuRes
 import androidx.core.util.Pair
-import androidx.fragment.app.FragmentActivity
 import player.phonograph.R
-import player.phonograph.mediastore.AlbumLoader.allSongs
-import player.phonograph.mediastore.ArtistLoader.allArtistSongs
-import player.phonograph.mediastore.GenreLoader.allGenreSongs
+import player.phonograph.actions.applyToPopupMenu
 import player.phonograph.model.Album
 import player.phonograph.model.Artist
 import player.phonograph.model.Displayable
@@ -24,8 +22,6 @@ import player.phonograph.service.MusicPlayerRemote.playNow
 import player.phonograph.service.MusicPlayerRemote.playQueue
 import player.phonograph.settings.Setting
 import player.phonograph.util.NavigationUtil
-import player.phonograph.util.menu.onMultiSongMenuItemClick
-import player.phonograph.util.menu.onSongMenuItemClick
 
 /**
  * involve item click
@@ -103,53 +99,22 @@ fun Displayable.tapClick(list: List<Displayable>?, activity: Activity?, imageVie
     }
 }
 
-/**
- * @return correspond Menu Res ID for item
- */
-@MenuRes
-fun Displayable.menuRes(): Int = when (this) {
-    is Song -> R.menu.menu_item_song_short
-    else -> 0
-}
+fun Displayable.hasMenu(): Boolean = this is Song
 
 /**
- * invoke menu item click
- * @param actionId ItemId in menu as well as `Unique Action ID`
- * @param activity as [android.content.Context]
- * @return true if action have been processed
+ * setup three-dot menu for [Song]
  */
-fun Displayable.menuClick(actionId: Int, activity: FragmentActivity): Boolean {
-    return when (this) {
-        is Song ->
-            onSongMenuItemClick(
-                activity,
-                this,
-                actionId
-            )
-        else -> false
-    }
-}
-
-/**
- * invoke menu item click
- * @param actionId ItemId in menu as well as `Unique Action ID`
- * @param activity as [android.content.Context]
- * @return true if action have been processed
- */
-fun List<Displayable>.multiMenuClick(actionId: Int, activity: FragmentActivity): Boolean {
-    val songs = when (val sample = this.getOrNull(0)) {
-        is Song -> this.filterIsInstance<Song>()
-        is Album -> this.filterIsInstance<Album>().allSongs()
-        is Artist -> this.filterIsInstance<Artist>().allArtistSongs()
-        is Genre -> this.filterIsInstance<Genre>().allGenreSongs()
-        else -> emptyList()
-    }
-    return if (songs.isNotEmpty()) {
-        onMultiSongMenuItemClick(activity, songs, actionId)
+fun Displayable.initMenu(
+    context: Context,
+    menu: Menu,
+    enableCollapse: Boolean = true,
+    showPlay: Boolean = false,
+) =
+    if (this is Song) {
+        applyToPopupMenu(context, menu, this, enableCollapse, showPlay)
     } else {
-        false
+        menu.clear()
     }
-}
 
 /**
  * for fast-scroll recycler-view's bar hint

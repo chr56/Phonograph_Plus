@@ -130,13 +130,7 @@ open class DisplayAdapter<I : Displayable>(
     protected open fun onMenuClick(bindingAdapterPosition: Int, menuButtonView: View) {
         if (dataset.isNotEmpty()) {
             PopupMenu(activity, menuButtonView).apply {
-                inflate(dataset[0].menuRes())
-                setOnMenuItemClickListener { menuItem ->
-                    dataset[bindingAdapterPosition].menuClick(
-                        actionId = menuItem.itemId,
-                        activity = activity
-                    )
-                }
+                dataset[bindingAdapterPosition].initMenu(activity,this.menu)
             }.show()
         }
     }
@@ -170,10 +164,9 @@ open class DisplayAdapter<I : Displayable>(
             menu?.setOnClickListener {
                 onMenuClick(bindingAdapterPosition, it)
             }
-            // Hide Menu if not available
-            val item = dataset.getOrNull(0)
-            if (item != null) {
-                menu?.visibility = if (item.menuRes() == 0) View.GONE else View.VISIBLE
+            // Setup MenuItem
+            dataset.getOrNull(0)?.let {
+                menu?.visibility = if (it.hasMenu()) View.VISIBLE else View.GONE
             }
         }
     }
