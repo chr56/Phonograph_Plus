@@ -9,6 +9,7 @@ package player.phonograph.adapter.display
 import android.app.Activity
 import android.content.Context
 import android.view.Menu
+import android.view.View
 import android.widget.ImageView
 import androidx.core.util.Pair
 import player.phonograph.R
@@ -109,9 +110,10 @@ fun Displayable.initMenu(
     menu: Menu,
     enableCollapse: Boolean = true,
     showPlay: Boolean = false,
+    transitionView: View? = null,
 ) =
     if (this is Song) {
-        applyToPopupMenu(context, menu, this, enableCollapse, showPlay)
+        applyToPopupMenu(context, menu, this, enableCollapse, showPlay, transitionView)
     } else {
         menu.clear()
     }

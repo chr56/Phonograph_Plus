@@ -10,6 +10,8 @@ import android.content.Intent
 import android.view.Menu
 import android.view.MenuItem
 import android.view.SubMenu
+import android.view.View
+import androidx.core.util.Pair
 import androidx.fragment.app.FragmentActivity
 import com.github.chr56.android.menu_dsl.attach
 import com.github.chr56.android.menu_dsl.menuItem
@@ -35,6 +37,7 @@ fun applyToPopupMenu(
     song: Song,
     enableCollapse: Boolean = true,
     showPlay: Boolean = false,
+    transitionView: View? = null,
 ) = context.run {
     attach(menu) {
         if (showPlay) menuItem(title = getString(R.string.action_play)) { // id = R.id.action_play_
@@ -67,17 +70,35 @@ fun applyToPopupMenu(
         menuItem(title = getString(R.string.action_go_to_album)) { // id = R.id.action_go_to_album
             showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
             onClick {
-                if (context is Activity)
-                    NavigationUtil.goToAlbum(context, song.albumId)
-                true
+                activity(context) {
+                    if (transitionView != null) {
+                        NavigationUtil.goToAlbum(
+                            it,
+                            song.albumId,
+                            Pair(transitionView, context.resources.getString(R.string.transition_album_art))
+                        )
+                    } else {
+                        NavigationUtil.goToAlbum(it, song.albumId)
+                    }
+                    true
+                }
             }
         }
         menuItem(title = getString(R.string.action_go_to_artist)) { // id = R.id.action_go_to_artist
             showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
             onClick {
-                if (context is Activity)
-                    NavigationUtil.goToArtist(context, song.artistId)
-                true
+                activity(context) {
+                    if (transitionView != null) {
+                        NavigationUtil.goToArtist(
+                            it,
+                            song.artistId,
+                            Pair(transitionView, context.resources.getString(R.string.transition_artist_image))
+                        )
+                    } else {
+                        NavigationUtil.goToArtist(it, song.artistId)
+                    }
+                    true
+                }
             }
         }
         menuItem(title = getString(R.string.action_details)) { // id = R.id.action_details
@@ -135,21 +156,19 @@ private fun MenuContext.collapse(short: Boolean, block: SubMenuContext.() -> Uni
     }
 }
 
+private inline fun activity(context: Context, block: (Activity) -> Boolean): Boolean = if (context is Activity) {
+    block(context)
+} else {
+    false
+}
+
 fun gotoDetail(activity: FragmentActivity, song: Song): Boolean {
     SongDetailDialog.create(song).show(activity.supportFragmentManager, "SONG_DETAILS")
     return true
 }
 
 private fun share(context: Context, song: Song): Boolean {
-    context.startActivity(
-        Intent.createChooser(
-            SongShareDialog.createShareSongFileIntent(
-                song,
-                context
-            ),
-            null
-        )
-    )
+    context.startActivity(Intent.createChooser(SongShareDialog.createShareSongFileIntent(song, context), null))
     return true
 }
 

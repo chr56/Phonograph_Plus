@@ -74,7 +74,7 @@ open class ArtistSongAdapter(
         albumArt.transitionName = activity.getString(R.string.transition_album_art)
         convertView.findViewById<ImageView>(R.id.menu).setOnClickListener {
             PopupMenu(activity, it).apply {
-                song.initMenu(activity, this.menu)
+                song.initMenu(activity, this.menu, transitionView = albumArt)
             }.show()
         }
         convertView.isActivated = isChecked(song)
