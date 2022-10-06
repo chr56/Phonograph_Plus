@@ -1,14 +1,17 @@
 package player.phonograph.adapter
 
 import android.view.LayoutInflater
+import android.view.Menu
 import android.view.View
 import android.view.ViewGroup
+import android.widget.PopupMenu
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.util.Pair
 import androidx.recyclerview.widget.RecyclerView
 import mt.util.color.resolveColor
 import player.phonograph.R
 import player.phonograph.adapter.base.MediaEntryViewHolder
+import player.phonograph.adapter.display.initMenu
 import player.phonograph.coil.loadImage
 import player.phonograph.model.Album
 import player.phonograph.model.Artist
@@ -106,10 +109,12 @@ class SearchAdapter(
             menu?.apply {
                 if (itemViewType == SONG) {
                     visibility = View.VISIBLE
-
-                    setOnClickListener(object : MenuClickListener(activity, null) {
-                        override val song: Song get() = dataSet[bindingAdapterPosition] as Song
-                    })
+                    setOnClickListener {
+                        val song = dataSet[bindingAdapterPosition] as Song
+                        PopupMenu(activity, this).apply {
+                            song.initMenu(activity, this.menu, enableCollapse = false, showPlay = true)
+                        }
+                    }
                 } else {
                     visibility = View.GONE
                 }
@@ -120,6 +125,7 @@ class SearchAdapter(
                 // else -> itemView.findViewById<View>(R.id.image_container)?.visibility = View.GONE
             }
         }
+
         override fun onClick(v: View) {
 
             val item = dataSet[bindingAdapterPosition]
