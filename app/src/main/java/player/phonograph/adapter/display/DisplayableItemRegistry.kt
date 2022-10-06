@@ -108,13 +108,12 @@ fun Displayable.hasMenu(): Boolean = this is Song
 fun Displayable.initMenu(
     context: Context,
     menu: Menu,
-    enableCollapse: Boolean = true,
     showPlay: Boolean = false,
     index: Int = Int.MIN_VALUE,
     transitionView: View? = null,
 ) =
     if (this is Song) {
-        applyToPopupMenu(context, menu, this, enableCollapse, showPlay, index, transitionView)
+        applyToPopupMenu(context, menu, this, showPlay, index, transitionView)
     } else {
         menu.clear()
     }

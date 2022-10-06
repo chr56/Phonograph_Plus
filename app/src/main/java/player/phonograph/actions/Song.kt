@@ -9,15 +9,12 @@ import android.content.Context
 import android.content.Intent
 import android.view.Menu
 import android.view.MenuItem
-import android.view.SubMenu
 import android.view.View
 import androidx.core.util.Pair
 import androidx.fragment.app.FragmentActivity
 import com.github.chr56.android.menu_dsl.attach
 import com.github.chr56.android.menu_dsl.menuItem
 import com.github.chr56.android.menu_dsl.submenu
-import com.github.chr56.android.menu_model.MenuContext
-import com.github.chr56.android.menu_model.SubMenuContext
 import player.phonograph.R
 import player.phonograph.dialogs.SongDetailDialog
 import player.phonograph.dialogs.SongShareDialog
@@ -35,7 +32,6 @@ fun applyToPopupMenu(
     context: Context,
     menu: Menu,
     song: Song,
-    enableCollapse: Boolean,
     showPlay: Boolean,
     index: Int,
     transitionView: View?,
@@ -119,7 +115,7 @@ fun applyToPopupMenu(
                 true
             }
         }
-        collapse(enableCollapse) {
+        submenu(context.getString(R.string.more_actions)) {
             menuItem(title = getString(R.string.action_share)) { // id = R.id.action_share
                 showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
                 onClick { share(context, song) }
@@ -154,16 +150,6 @@ fun applyToPopupMenu(
                 }
             }
         }
-    }
-}
-
-private fun MenuContext.collapse(short: Boolean, block: SubMenuContext.() -> Unit) {
-    if (short) {
-        submenu(context.getString(R.string.more_actions)) {
-            block()
-        }
-    } else {
-        block(SubMenuContext(this, rootMenu, rootMenu as SubMenu))
     }
 }
 

@@ -110,8 +110,8 @@ class SearchAdapter(
                     setOnClickListener {
                         val song = dataSet[bindingAdapterPosition] as Song
                         PopupMenu(activity, this).apply {
-                            song.initMenu(activity, this.menu, enableCollapse = false, showPlay = true)
-                        }
+                            song.initMenu(activity, this.menu, showPlay = true)
+                        }.show()
                     }
                 } else {
                     visibility = View.GONE
