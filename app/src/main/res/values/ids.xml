@@ -39,5 +39,12 @@
     <item name="action_go_to_album" type="id" />
     <item name="action_go_to_artist" type="id" />
     <item name="action_set_as_ringtone" type="id" />
+    <item name="action_play_next" type="id" />
+    <item name="action_add_to_current_playing" type="id" />
+    <item name="action_add_to_playlist" type="id" />
+    <item name="action_details" type="id" />
+    <item name="action_add_to_black_list" type="id" />
+    <item name="action_delete_from_device" type="id" />
+    <item name="action_share" type="id" />
 
 </resources>

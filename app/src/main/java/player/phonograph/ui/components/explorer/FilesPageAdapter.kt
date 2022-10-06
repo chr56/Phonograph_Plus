@@ -5,40 +5,25 @@
 package player.phonograph.ui.components.explorer
 
 import android.graphics.PorterDuff
-import android.media.MediaScannerConnection
 import android.text.format.Formatter
 import android.view.LayoutInflater
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.PopupMenu
-import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ComponentActivity
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import mt.util.color.resolveColor
 import player.phonograph.R
+import player.phonograph.actions.applyToPopupMenu
 import player.phonograph.actions.applyToToolbar
 import player.phonograph.adapter.base.MultiSelectionCabController
 import player.phonograph.coil.loadImage
 import player.phonograph.databinding.ItemListBinding
-import player.phonograph.mediastore.MediaStoreUtil
 import player.phonograph.mediastore.MediaStoreUtil.linkedSong
-import player.phonograph.misc.UpdateToastMediaScannerCompletionListener
 import player.phonograph.model.file.FileEntity
-import player.phonograph.util.preferences.FileConfig
 import player.phonograph.settings.Setting
-import player.phonograph.util.BlacklistUtil
 import player.phonograph.util.ImageUtil.getTintedDrawable
-import player.phonograph.util.menu.onMultiSongMenuItemClick
-import player.phonograph.util.menu.onSongMenuItemClick
-import java.io.File
 
 class FilesPageAdapter(
     activity: ComponentActivity,
@@ -70,16 +55,12 @@ class FilesPageAdapter(
                 shortSeparator.visibility = if (position == dataSet.size - 1) View.GONE else View.VISIBLE
 
                 setImage(image, item)
-            }
-            binding.menu.setOnClickListener {
-                PopupMenu(context, binding.menu)
-                    .apply {
-                        inflate(
-                            if (item is FileEntity.File) R.menu.menu_item_file_entity else R.menu.menu_item_directory_entity
-                        )
-                        setOnMenuItemClickListener { onMenuClick(it, item) }
-                        show()
-                    }
+
+                menu.setOnClickListener {
+                    PopupMenu(context, binding.menu).apply {
+                        applyToPopupMenu(context, this.menu, item)
+                    }.show()
+                }
             }
 
             itemView.setOnClickListener {
@@ -127,60 +108,6 @@ class FilesPageAdapter(
                 )
                 val iconColor = resolveColor(context, R.attr.iconColor)
                 image.setColorFilter(iconColor, PorterDuff.Mode.SRC_IN)
-            }
-        }
-
-        private fun onMenuClick(item: MenuItem, fileItem: FileEntity): Boolean {
-            context as AppCompatActivity
-            return when (fileItem) {
-                is FileEntity.File -> {
-                    val song = fileItem.linkedSong(context)
-                    onSongMenuItemClick(context, song, item.itemId)
-                }
-                is FileEntity.Folder -> {
-                    val path = fileItem.location.absolutePath
-                    return when (val itemId = item.itemId) {
-                        R.id.action_play, R.id.action_play_next, R.id.action_add_to_current_playing, R.id.action_add_to_playlist, R.id.action_delete_from_device -> {
-                            CoroutineScope(SupervisorJob()).launch(Dispatchers.IO) {
-                                val songs = MediaStoreUtil.searchSongs(context, fileItem.location)
-                                withContext(Dispatchers.Main) {
-                                    onMultiSongMenuItemClick(context, songs, itemId)
-                                }
-                            }
-                            true
-                        }
-                        R.id.action_set_as_start_directory -> {
-                            FileConfig.startDirectory = File(path)
-                            Toast.makeText(
-                                context,
-                                String.format(context.getString(R.string.new_start_directory), path),
-                                Toast.LENGTH_SHORT
-                            ).show()
-                            true
-                        }
-                        R.id.action_scan -> {
-                            CoroutineScope(SupervisorJob()).launch(Dispatchers.IO) {
-                                val files = File(path).listFiles() ?: return@launch
-                                val paths: Array<String> = Array(files.size) { files[it].path }
-
-                                withContext(Dispatchers.Main) {
-                                    MediaScannerConnection.scanFile(
-                                        context,
-                                        paths,
-                                        arrayOf("audio/*"),
-                                        UpdateToastMediaScannerCompletionListener(context, paths)
-                                    )
-                                }
-                            }
-                            true
-                        }
-                        R.id.action_add_to_black_list -> {
-                            BlacklistUtil.addToBlacklist(context, File(path))
-                            true
-                        }
-                        else -> false
-                    }
-                }
             }
         }
     }
