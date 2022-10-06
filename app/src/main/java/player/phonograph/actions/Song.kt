@@ -35,9 +35,10 @@ fun applyToPopupMenu(
     context: Context,
     menu: Menu,
     song: Song,
-    enableCollapse: Boolean = true,
-    showPlay: Boolean = false,
-    transitionView: View? = null,
+    enableCollapse: Boolean,
+    showPlay: Boolean,
+    index: Int,
+    transitionView: View?,
 ) = context.run {
     attach(menu) {
         if (showPlay) menuItem(title = getString(R.string.action_play)) { // id = R.id.action_play_
@@ -54,11 +55,21 @@ fun applyToPopupMenu(
                 true
             }
         }
-        menuItem(title = getString(R.string.action_add_to_playing_queue)) { // id = R.id.action_add_to_current_playing
-            showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
-            onClick {
-                MusicPlayerRemote.enqueue(song)
-                true
+        if (index >= 0) {
+            menuItem(title = getString(R.string.action_remove_from_playing_queue)) {
+                showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
+                onClick {
+                    MusicPlayerRemote.removeFromQueue(index)
+                    true
+                }
+            }
+        } else {
+            menuItem(title = getString(R.string.action_add_to_playing_queue)) { // id = R.id.action_add_to_current_playing
+                showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
+                onClick {
+                    MusicPlayerRemote.enqueue(song)
+                    true
+                }
             }
         }
         menuItem(title = getString(R.string.action_add_to_playlist)) { // id = R.id.action_add_to_playlist

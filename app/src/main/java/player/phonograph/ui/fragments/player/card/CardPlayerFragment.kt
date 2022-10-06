@@ -12,6 +12,7 @@ import android.view.ViewAnimationUtils
 import android.view.ViewGroup
 import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import android.widget.ImageView
+import android.widget.PopupMenu
 import androidx.annotation.ColorInt
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -26,6 +27,7 @@ import mt.util.color.resolveColor
 import mt.util.color.secondaryTextColor
 import player.phonograph.R
 import player.phonograph.adapter.base.MediaEntryViewHolder
+import player.phonograph.adapter.display.initMenu
 import player.phonograph.databinding.FragmentCardPlayerBinding
 import player.phonograph.model.Song
 import player.phonograph.model.infoString
@@ -337,23 +339,14 @@ class CardPlayerFragment :
                     fragment.viewBinding.playerSlidingLayout.panelState = PanelState.COLLAPSED
                 }
             }
-            currentSongViewHolder!!.menu!!.setOnClickListener(object :
-                MenuClickListener(
-                    (fragment.activity as AppCompatActivity),
-                    R.menu.menu_item_playing_queue_song
-                ) {
-                override val song: Song = MusicPlayerRemote.currentSong
-
-                override fun onMenuItemClick(item: MenuItem): Boolean {
-                    when (item.itemId) {
-                        R.id.action_remove_from_playing_queue -> {
-                            MusicPlayerRemote.removeFromQueue(MusicPlayerRemote.position)
-                            return true
-                        }
-                    }
-                    return fragment.onMenuItemClick(item)
+            currentSongViewHolder?.menu?.let { menuView ->
+                menuView.setOnClickListener {
+                    PopupMenu(fragment.requireContext(), it).apply {
+                        MusicPlayerRemote.currentSong
+                            .initMenu(fragment.requireContext(), this.menu, index = MusicPlayerRemote.position)
+                    }.show()
                 }
-            })
+            }
         }
 
         override fun setUpPanelAndAlbumCoverHeight() {

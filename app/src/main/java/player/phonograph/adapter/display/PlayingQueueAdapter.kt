@@ -6,7 +6,6 @@ package player.phonograph.adapter.display
 
 import android.annotation.SuppressLint
 import android.view.LayoutInflater
-import android.view.MenuItem
 import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
@@ -23,15 +22,13 @@ import player.phonograph.R
 import player.phonograph.model.Song
 import player.phonograph.model.infoString
 import player.phonograph.service.MusicPlayerRemote
-import player.phonograph.util.NavigationUtil
 import player.phonograph.util.ViewUtil
-import player.phonograph.util.menu.onSongMenuItemClick
 
 class PlayingQueueAdapter(
     activity: AppCompatActivity,
     dataSet: List<Song>,
     current: Int,
-    cfg: (DisplayAdapter<Song>.() -> Unit)?
+    cfg: (DisplayAdapter<Song>.() -> Unit)?,
 ) : DisplayAdapter<Song>(activity, null, dataSet, R.layout.item_list, cfg), DraggableItemAdapter<PlayingQueueAdapter.ViewHolder> {
 
     var current: Int = current
@@ -55,37 +52,18 @@ class PlayingQueueAdapter(
     override fun onBindViewHolder(
         holder: DisplayViewHolder,
         position: Int,
-        payloads: MutableList<Any>
+        payloads: MutableList<Any>,
     ) {
         (holder as ViewHolder).bind(position)
     }
 
-    override fun setImage(holder: DisplayViewHolder, position: Int) { }
+    override fun setImage(holder: DisplayViewHolder, position: Int) {}
 
     override fun onMenuClick(bindingAdapterPosition: Int, menuButtonView: View) {
         if (dataset.isNotEmpty()) {
-            val popupMenu = PopupMenu(activity, menuButtonView)
-            popupMenu.inflate(R.menu.menu_item_playing_queue_song)
-            popupMenu.setOnMenuItemClickListener { menuItem ->
-                if (menuItem != null) {
-                    onMenuItemClick(menuItem, bindingAdapterPosition)
-                } else false
-            }
-            popupMenu.show()
-        }
-    }
-
-    private fun onMenuItemClick(menuItem: MenuItem, position: Int): Boolean {
-        return when (menuItem.itemId) {
-            R.id.action_go_to_album -> {
-                NavigationUtil.goToAlbum(activity, dataset[position].albumId)
-                return true
-            }
-            R.id.action_remove_from_playing_queue -> {
-                MusicPlayerRemote.removeFromQueue(position)
-                return true
-            }
-            else -> onSongMenuItemClick(activity, dataset[position], menuItem.itemId)
+            PopupMenu(activity, menuButtonView).apply {
+                dataset[bindingAdapterPosition].initMenu(activity, this.menu, index = bindingAdapterPosition)
+            }.show()
         }
     }
 
@@ -125,6 +103,7 @@ class PlayingQueueAdapter(
 
         @DraggableItemStateFlags
         private var mDragStateFlags = 0
+
         @DraggableItemStateFlags
         override fun getDragStateFlags(): Int = mDragStateFlags
         override fun setDragStateFlags(@DraggableItemStateFlags flags: Int) {
@@ -148,7 +127,7 @@ class PlayingQueueAdapter(
 
     override fun onCheckCanDrop(draggingPosition: Int, dropPosition: Int): Boolean = true
 
-    override fun onItemDragStarted(position: Int) { }
+    override fun onItemDragStarted(position: Int) {}
 
     @SuppressLint("NotifyDataSetChanged")
     override fun onItemDragFinished(fromPosition: Int, toPosition: Int, result: Boolean) {
