@@ -60,7 +60,12 @@ class MusicService : Service(), OnSharedPreferenceChangeListener {
     private lateinit var controller: PlayerController
     private var playerStateObserver: PlayerStateObserver = initPlayerStateObserver()
 
-    private lateinit var playNotificationManager: PlayingNotificationManger
+    private val playNotificationManager: PlayingNotificationManger
+        get() {
+            if (_playNotificationManager == null) _playNotificationManager = PlayingNotificationManger(this)
+            return _playNotificationManager!!
+        }
+    private var _playNotificationManager: PlayingNotificationManger? = null
 
     private lateinit var throttledTimer: ThrottledTimer
 
@@ -80,7 +85,7 @@ class MusicService : Service(), OnSharedPreferenceChangeListener {
         controller.addObserver(playerStateObserver)
 
         // notifications & media session
-        playNotificationManager = PlayingNotificationManger(this)
+        // _playNotificationManager = PlayingNotificationManger(this)
         playNotificationManager.setupMediaSession(initMediaSessionCallback())
         playNotificationManager.setUpNotification()
         playNotificationManager.mediaSession.isActive = true
@@ -120,6 +125,7 @@ class MusicService : Service(), OnSharedPreferenceChangeListener {
             rePrepareNextSong()
             handleAndSendChangeInternal(REPEAT_MODE_CHANGED)
         }
+
         private fun rePrepareNextSong() {
             controller.handler.removeMessages(RE_PREPARE_NEXT_PLAYER)
             controller.handler.sendEmptyMessage(RE_PREPARE_NEXT_PLAYER)
@@ -399,7 +405,6 @@ class MusicService : Service(), OnSharedPreferenceChangeListener {
     }
 
 
-
     override fun attachBaseContext(base: Context?) {
         // Localization
         super.attachBaseContext(
@@ -464,6 +469,7 @@ class MusicService : Service(), OnSharedPreferenceChangeListener {
 
     override fun onBind(intent: Intent): IBinder = musicBind
     private val musicBind: IBinder = MusicBinder()
+
     inner class MusicBinder : Binder() {
         val service: MusicService get() = this@MusicService
     }
