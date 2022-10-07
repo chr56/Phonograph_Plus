@@ -13,6 +13,7 @@ import android.widget.ImageView
 import android.widget.PopupMenu
 import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ComponentActivity
+import coil.size.ViewSizeResolver
 import mt.util.color.resolveColor
 import player.phonograph.R
 import player.phonograph.actions.applyToPopupMenu
@@ -81,7 +82,7 @@ class FilesPageAdapter(
                 if (loadCover) {
                     loadImage(image.context) {
                         data(item.linkedSong(context))
-                        size(image.maxWidth, image.maxHeight)
+                        size(ViewSizeResolver(image))
                         target(
                             onStart = {
                                 image.setImageDrawable(

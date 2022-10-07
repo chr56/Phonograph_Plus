@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
+import coil.size.ViewSizeResolver
 import player.phonograph.R
 import player.phonograph.adapter.base.MultiSelectionCabController
 import player.phonograph.coil.loadImage
@@ -30,7 +31,7 @@ class AlbumDisplayAdapter(
         holder.image?.let { view ->
             loadImage(activity) {
                 data(dataset[position].safeGetFirstSong())
-                size(view.maxWidth, view.maxHeight)
+                size(ViewSizeResolver(view))
                 target(
                     PaletteTargetBuilder(context)
                         .onStart {

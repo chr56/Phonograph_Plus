@@ -5,6 +5,7 @@ import android.view.View
 import android.view.ViewGroup.MarginLayoutParams
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
+import coil.size.ViewSizeResolver
 import mt.util.color.getPrimaryTextColor
 import mt.util.color.getSecondaryTextColor
 import mt.util.color.isColorLight
@@ -55,7 +56,7 @@ class HorizontalAlbumAdapter(
         if (holder.image == null) return
         loadImage(context) {
             data(album.safeGetFirstSong())
-            size(holder.image!!.maxWidth, holder.image!!.maxHeight)
+            size(ViewSizeResolver(holder.image!!))
             target(PaletteTargetBuilder(context)
                 .onStart {
                     holder.image!!.setImageResource(R.drawable.default_album_art)

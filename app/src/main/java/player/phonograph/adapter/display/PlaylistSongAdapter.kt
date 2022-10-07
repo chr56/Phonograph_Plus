@@ -12,6 +12,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupMenu
 import androidx.appcompat.app.AppCompatActivity
+import coil.size.ViewSizeResolver
 import com.github.chr56.android.menu_dsl.attach
 import com.github.chr56.android.menu_dsl.menuItem
 import com.github.chr56.android.menu_dsl.submenu
@@ -43,7 +44,7 @@ class PlaylistSongAdapter(
     override fun setImage(holder: DisplayViewHolder, position: Int) {
         loadImage(context) {
             data(dataset[position])
-            size(holder.image!!.maxWidth, holder.image!!.maxHeight)
+            size(ViewSizeResolver(holder.image!!))
             target(
                 onStart = { holder.image!!.setImageResource(R.drawable.default_album_art) },
                 onSuccess = { holder.image!!.setImageDrawable(it) }

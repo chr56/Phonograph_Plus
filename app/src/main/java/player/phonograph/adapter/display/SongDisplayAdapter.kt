@@ -5,6 +5,7 @@
 package player.phonograph.adapter.display
 
 import androidx.appcompat.app.AppCompatActivity
+import coil.size.ViewSizeResolver
 import player.phonograph.R
 import player.phonograph.adapter.base.MultiSelectionCabController
 import player.phonograph.coil.loadImage
@@ -30,7 +31,7 @@ open class SongDisplayAdapter(
         holder.image?.let { view ->
             loadImage(context) {
                 data(dataset[position])
-                size(view.maxWidth, view.maxHeight)
+                size(ViewSizeResolver(view))
                 target(
                     PaletteTargetBuilder(context)
                         .onStart {
