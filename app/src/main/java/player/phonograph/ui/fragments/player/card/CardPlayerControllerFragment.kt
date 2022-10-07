@@ -86,7 +86,7 @@ class CardPlayerControllerFragment : AbsPlayerControllerFragment() {
     }
 
     override fun show() {
-        v.playerPlayPauseFab.animate()
+        if (isResumed) v.playerPlayPauseFab.animate()
             .scaleX(1f)
             .scaleY(1f)
             .rotation(360f)
@@ -95,7 +95,7 @@ class CardPlayerControllerFragment : AbsPlayerControllerFragment() {
     }
 
     override fun hide() {
-        v.playerPlayPauseFab.apply {
+        if (isResumed) v.playerPlayPauseFab.apply {
             scaleX = 0f
             scaleY = 0f
             rotation = 0f
