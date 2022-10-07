@@ -70,7 +70,7 @@ class FlatPlayerControllerFragment : AbsPlayerControllerFragment() {
     private var musicControllerAnimationSet: AnimatorSet? = null
 
     override fun show() {
-        if (hidden) {
+        if (hidden && isResumed) {
             if (musicControllerAnimationSet == null) {
                 val interpolator: TimeInterpolator = FastOutSlowInInterpolator()
                 val duration = 300
@@ -87,17 +87,18 @@ class FlatPlayerControllerFragment : AbsPlayerControllerFragment() {
             }
             musicControllerAnimationSet!!.start()
         }
-
         hidden = false
     }
 
     override fun hide() {
-        musicControllerAnimationSet?.cancel()
-        prepareForAnimation(v.playerPlayPauseButton)
-        prepareForAnimation(v.playerNextButton)
-        prepareForAnimation(v.playerPrevButton)
-        prepareForAnimation(v.playerRepeatButton)
-        prepareForAnimation(v.playerShuffleButton)
+            musicControllerAnimationSet?.cancel()
+            if (isResumed) {
+            prepareForAnimation(v.playerPlayPauseButton)
+            prepareForAnimation(v.playerNextButton)
+            prepareForAnimation(v.playerPrevButton)
+            prepareForAnimation(v.playerRepeatButton)
+            prepareForAnimation(v.playerShuffleButton)
+        }
         hidden = true
     }
 
@@ -107,7 +108,7 @@ class FlatPlayerControllerFragment : AbsPlayerControllerFragment() {
         view: View,
         interpolator: TimeInterpolator,
         duration: Int,
-        delay: Int
+        delay: Int,
     ) {
         val scaleX: Animator = ObjectAnimator.ofFloat(view, View.SCALE_X, 0f, 1f)
         scaleX.interpolator = interpolator
