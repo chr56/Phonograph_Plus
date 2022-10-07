@@ -8,6 +8,7 @@ import android.widget.ArrayAdapter
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import coil.size.ViewSizeResolver
 import androidx.core.util.Pair
 import player.phonograph.R
 import player.phonograph.adapter.base.MultiSelectionCabController
@@ -61,7 +62,7 @@ open class ArtistSongAdapter(
         songInfo.text = song.albumName
         loadImage(activity) {
             data(song)
-            size(albumArt.maxWidth, albumArt.maxHeight)
+            size(ViewSizeResolver(albumArt))
             target(
                 onStart = { albumArt.setImageResource(R.drawable.default_artist_image) },
                 onSuccess = { albumArt.setImageDrawable(it) }

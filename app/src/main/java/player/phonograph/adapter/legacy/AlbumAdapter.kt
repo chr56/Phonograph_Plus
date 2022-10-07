@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.util.Pair
+import coil.size.ViewSizeResolver
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView.SectionedAdapter
 import mt.util.color.getPrimaryTextColor
 import mt.util.color.getSecondaryTextColor
@@ -102,7 +103,7 @@ open class AlbumAdapter(
         if (holder.image == null) return
         loadImage(context) {
             data(album.safeGetFirstSong())
-            size(holder.image!!.maxWidth, holder.image!!.maxHeight)
+            size(ViewSizeResolver(holder.image!!))
             target(
                 PaletteTargetBuilder(context)
                     .onStart {

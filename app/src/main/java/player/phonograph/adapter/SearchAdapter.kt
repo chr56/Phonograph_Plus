@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.util.Pair
 import androidx.recyclerview.widget.RecyclerView
+import coil.size.ViewSizeResolver
 import mt.util.color.resolveColor
 import player.phonograph.R
 import player.phonograph.adapter.base.MediaEntryViewHolder
@@ -55,7 +56,7 @@ class SearchAdapter(
                 holder.title?.text = song.title
                 holder.text?.text = song.infoString()
                 loadImage(activity) {
-                    size(holder.image!!.maxWidth, holder.image!!.maxHeight)
+                    size(ViewSizeResolver(holder.image!!))
                     data(song)
                     target(
                         onStart = { holder.image!!.setImageResource(R.drawable.default_album_art) },

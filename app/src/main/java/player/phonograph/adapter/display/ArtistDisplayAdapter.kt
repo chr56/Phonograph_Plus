@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
+import coil.size.ViewSizeResolver
 import player.phonograph.R
 import player.phonograph.adapter.base.MultiSelectionCabController
 import player.phonograph.coil.loadImage
@@ -31,7 +32,7 @@ class ArtistDisplayAdapter(
         holder.image?.let { view ->
             loadImage(activity) {
                 data(dataset[position])
-                size(view.maxWidth, view.maxHeight)
+                size(ViewSizeResolver(view))
                 target(
                     PaletteTargetBuilder(context)
                         .onStart {
