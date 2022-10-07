@@ -103,7 +103,7 @@ class PlayerAlbumCoverFragment :
     }
 
     override fun onPlayingMetaChanged() {
-        handler.sendEmptyMessage(MSG_UPDATE_POSITION)
+        updatePosition()
     }
 
     private val coroutineScope = CoroutineScope(SupervisorJob())
@@ -111,12 +111,16 @@ class PlayerAlbumCoverFragment :
     private val handler: Handler = Handler(Looper.getMainLooper()) { message ->
         when (message.what) {
             MSG_UPDATE_QUEUE -> {
-                val queue = MusicPlayerRemote.playingQueue
-                val position = MusicPlayerRemote.position
-                albumCoverPagerAdapter = AlbumCoverPagerAdapter(this, queue)
-                binding.playerCoverViewpager.adapter = albumCoverPagerAdapter
-                binding.playerCoverViewpager.setCurrentItem(position, false)
-                onPageSelected(position)
+                if (isResumed) {
+                    val queue = MusicPlayerRemote.playingQueue
+                    val position = MusicPlayerRemote.position
+                    albumCoverPagerAdapter = AlbumCoverPagerAdapter(this, queue)
+                    binding.playerCoverViewpager.adapter = albumCoverPagerAdapter
+                    binding.playerCoverViewpager.setCurrentItem(position, false)
+                    onPageSelected(position)
+                } else {
+                    Handler(Looper.getMainLooper()).postDelayed(::updatePlayingQueue, 400)
+                }
             }
             MSG_UPDATE_POSITION -> {
                 binding.playerCoverViewpager.setCurrentItem(MusicPlayerRemote.position, false)
@@ -127,6 +131,10 @@ class PlayerAlbumCoverFragment :
 
     private fun updatePlayingQueue() {
         handler.sendEmptyMessage(MSG_UPDATE_QUEUE)
+    }
+
+    private fun updatePosition() {
+        handler.sendEmptyMessage(MSG_UPDATE_POSITION)
     }
 
     private val pageChangeListener = object : ViewPager2.OnPageChangeCallback() {
