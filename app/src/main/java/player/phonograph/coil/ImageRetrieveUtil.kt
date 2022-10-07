@@ -9,7 +9,6 @@ import android.content.ContentResolver
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.graphics.Matrix
 import android.graphics.Point
 import android.media.MediaMetadataRetriever
 import android.net.Uri
@@ -138,23 +137,9 @@ fun ByteArray.toBitmap(width: Int, height: Int): Bitmap = toBitmap().resize(widt
 fun Bitmap.resize(width: Int, height: Int): Bitmap =
     when {
         width <= 0 || height <= 0 -> this // not configured
-        (this.width > width || this.height > height) -> makeCenterScaled(this, width, height)
+        (this.width > width || this.height > height) -> Bitmap.createScaledBitmap(this, width, height, false)
         else -> this
     }
-
-private fun makeCenterScaled(source: Bitmap, width: Int, height: Int): Bitmap {
-    var bitmap = source
-    val matrix = Matrix()
-
-    while (source.width.toFloat() / width > 1.5f || source.height.toFloat() / height > 1.5f) {
-        matrix.preScale(0.6667F, 0.6667F, source.width / 2f, source.height / 2f)
-        bitmap = Bitmap.createBitmap(bitmap, 0, 0, source.width, source.height, matrix, false)
-    }
-
-    val x = if (source.width > width) (source.width - width) / 2 else 0
-    val y = if (source.height > height) (source.height - height) / 2 else 0
-    return Bitmap.createBitmap(bitmap, x, y, width, height)
-}
 
 
 fun AudioFile.retrieveEmbedPicture(width: Int, height: Int): Bitmap? {
