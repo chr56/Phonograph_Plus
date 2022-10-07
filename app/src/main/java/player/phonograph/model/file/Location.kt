@@ -89,9 +89,6 @@ class Location private constructor(val basePath: String, val storageVolume: Stor
         if (basePath.isBlank()) {
             Log.e(TAG, "base path is null!")
         }
-        // debug only
-        if (DEBUG) Log.w(TAG,
-            "Location Created! path = $basePath, storageVolume = ${storageVolume.getDescription(App.instance)}(${storageVolume.root()})")
     }
 
     override fun hashCode(): Int = storageVolume.hashCode() * 31 + basePath.hashCode()
