@@ -18,7 +18,7 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import player.phonograph.R
-import player.phonograph.mediastore.MediaStoreUtil
+import player.phonograph.mediastore.searchSongs
 import player.phonograph.mediastore.MediaStoreUtil.linkedSong
 import player.phonograph.misc.UpdateToastMediaScannerCompletionListener
 import player.phonograph.model.Song
@@ -109,7 +109,7 @@ private inline fun action(context: Context, fileItem: FileEntity, block: (List<S
     when (fileItem) {
         is FileEntity.File -> block(listOf(fileItem.linkedSong(context)))
         is FileEntity.Folder -> block(
-            MediaStoreUtil.searchSongs(context, fileItem.location)
+            searchSongs(context, fileItem.location)
         )
     }
 

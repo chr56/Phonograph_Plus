@@ -4,27 +4,17 @@
 
 package player.phonograph.mediastore
 
-import android.annotation.SuppressLint
-import android.app.Activity
 import android.content.Context
 import android.database.Cursor
 import android.media.MediaScannerConnection
 import android.net.Uri
-import android.os.Build
 import android.provider.MediaStore
 import android.provider.MediaStore.Audio.AudioColumns
 import android.provider.MediaStore.MediaColumns.DATA
-import android.util.Log
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
-import kotlinx.coroutines.CoroutineScope
 import player.phonograph.R
 import player.phonograph.model.Song
 import player.phonograph.model.file.FileEntity
-import player.phonograph.model.file.Location
-import player.phonograph.model.file.put
-import player.phonograph.util.PermissionUtil.navigateToStorageSetting
-import player.phonograph.util.Util
 import java.io.File
 
 object MediaStoreUtil {
@@ -87,38 +77,6 @@ object MediaStoreUtil {
         }
     }
 
-    /**
-     * This might be time-consuming
-     * @param currentLocation the location you want to query
-     * @param scope CoroutineScope (Optional)
-     * @return the ordered TreeSet containing songs and folders in this location
-     */
-    @SuppressLint("Range") // todo
-    fun searchSongFiles(context: Context, currentLocation: Location, scope: CoroutineScope? = null): Set<FileEntity>? {
-        val fileCursor = querySongFiles(
-            context,
-            "$DATA LIKE ?",
-            arrayOf("${currentLocation.absolutePath}%"),
-        ) ?: return null
-        return fileCursor.use { cursor ->
-            if (cursor.moveToFirst()) {
-                val list: MutableList<FileEntity> = ArrayList()
-                do {
-                    val item = parseFileEntity(cursor, currentLocation)
-                    list.put(item)
-                } while (cursor.moveToNext())
-                list.toSortedSet()
-            } else null
-        }
-    }
-
-    fun searchSongs(context: Context, currentLocation: Location, scope: CoroutineScope? = null): List<Song> {
-        val cursor = querySongs(
-            context, "$DATA LIKE ?", arrayOf("%${currentLocation.absolutePath}%")
-        )
-        return getSongs(cursor)
-    }
-
     fun FileEntity.File.linkedSong(context: Context): Song = MediaStoreUtil.getSong(context, id)
 
 
@@ -138,13 +96,6 @@ object MediaStoreUtil {
         }
     }
 
-    fun searchSong(context: Context, fileName: String): Song {
-        val cursor = querySongs(
-            context,
-            selection = "$DATA LIKE ? OR ${MediaStore.MediaColumns.DISPLAY_NAME} LIKE ? ",
-            selectionValues = arrayOf(fileName, fileName)
-        )
-        return getSong(cursor)
-    }
+
 
 }
