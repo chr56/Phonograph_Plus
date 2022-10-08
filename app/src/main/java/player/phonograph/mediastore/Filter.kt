@@ -18,12 +18,33 @@ fun withPathFilter(context: Context, block: () -> SQLWhereClause): SQLWhereClaus
     val target = block()
     return if (paths.isNotEmpty()) {
         SQLWhereClause(
-            paths.fold(target.selection.ifEmpty { "${MediaStore.MediaColumns.SIZE} > 0" }) { acc, _ -> "$acc AND ${MediaStore.Audio.AudioColumns.DATA} NOT LIKE ? " },
+            plusBlacklistSelectionCondition(target.selection, paths.size),
             target.selectionValues.plus(paths)
         )
     } else {
         target
     }
+}
+
+/**
+ * create placeholder in selection
+ * @param count count of the duplicated
+ */
+private fun plusBlacklistSelectionCondition(selection: String, count: Int): String {
+    val what = "${MediaStore.Audio.AudioColumns.DATA} NOT LIKE ?"
+    var accumulator = selection
+    // first
+    accumulator +=
+        if (selection.isEmpty()) {
+            what
+        } else {
+            "AND $what"
+        }
+    // rest
+    for (i in 1 until count) {
+        accumulator += "AND $what"
+    }
+    return accumulator
 }
 
 const val BASE_AUDIO_SELECTION =
