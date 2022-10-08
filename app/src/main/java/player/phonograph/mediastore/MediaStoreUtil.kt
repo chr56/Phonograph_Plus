@@ -240,7 +240,8 @@ object MediaStoreUtil {
         return cursor
     }
 
-    fun FileEntity.File.linkedSong(context: Context): Song = MediaStoreUtil.getSong(context, id)
+    fun FileEntity.File.linkedSong(context: Context): Song =
+        if (id > 0) MediaStoreUtil.getSong(context, id) else searchSongs(context, location).firstOrNull() ?: Song.EMPTY_SONG
 
     fun scanFiles(context: Context, paths: Array<String>, mimeTypes: Array<String>) {
         var failed: Int = 0
