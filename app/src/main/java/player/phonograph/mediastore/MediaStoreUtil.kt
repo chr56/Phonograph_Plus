@@ -192,14 +192,16 @@ object MediaStoreUtil {
     ): Cursor? {
 
         val (realSelection, realSelectionValues) =
-            Pair(
-                first = if ((selection ?: "").trim { it <= ' ' } != "") {
-                    "${SongConst.BASE_AUDIO_SELECTION} AND $selection "
-                } else {
-                    SongConst.BASE_AUDIO_SELECTION
-                },
-                second = selectionValues ?: emptyArray()
-            ).generateBlacklistFilter(context)
+            withPathFilter(context) {
+                Pair(
+                    first = if ((selection ?: "").trim { it <= ' ' } != "") {
+                        "${SongConst.BASE_AUDIO_SELECTION} AND $selection "
+                    } else {
+                        SongConst.BASE_AUDIO_SELECTION
+                    },
+                    second = selectionValues ?: emptyArray()
+                )
+            }
 
         var cursor: Cursor? = null
         try {
@@ -219,14 +221,16 @@ object MediaStoreUtil {
         selectionValues: Array<String> = emptyArray(),
     ): Cursor? {
         val (realSelection, realSelectionValues) =
-            Pair(
-                first = if (selection.trim { it <= ' ' } != "") {
-                    "${SongConst.BASE_AUDIO_SELECTION} AND $selection "
-                } else {
-                    SongConst.BASE_AUDIO_SELECTION
-                },
-                second = selectionValues
-            ).generateBlacklistFilter(context)
+            withPathFilter(context) {
+                Pair(
+                    first = if (selection.trim { it <= ' ' } != "") {
+                        "${SongConst.BASE_AUDIO_SELECTION} AND $selection "
+                    } else {
+                        SongConst.BASE_AUDIO_SELECTION
+                    },
+                    second = selectionValues
+                )
+            }
 
         var cursor: Cursor? = null
         try {

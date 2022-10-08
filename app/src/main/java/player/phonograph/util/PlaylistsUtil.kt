@@ -18,7 +18,7 @@ import android.provider.MediaStore.Audio.Playlists
 import android.provider.MediaStore.Audio.PlaylistsColumns
 import android.util.Log
 import androidx.documentfile.provider.DocumentFile
-import player.phonograph.mediastore.generateBlacklistFilter
+import player.phonograph.mediastore.withPathFilter
 import player.phonograph.model.playlist.FilePlaylist
 
 object PlaylistsUtil {
@@ -84,14 +84,17 @@ object PlaylistsUtil {
     ): Cursor? {
 
         val (realSelection, realSelectionValues) =
-            Pair(
-                first = if ((selection ?: "").trim { it <= ' ' } != "") {
-                    "$BASE_PLAYLIST_SELECTION AND $selection "
-                } else {
-                    BASE_PLAYLIST_SELECTION
-                },
-                second = selectionValues ?: emptyArray()
-            ).generateBlacklistFilter(context)
+            withPathFilter(context) {
+                Pair(
+                    first = if ((selection ?: "").trim { it <= ' ' } != "") {
+                        "$BASE_PLAYLIST_SELECTION AND $selection "
+                    } else {
+                        BASE_PLAYLIST_SELECTION
+                    },
+                    second = selectionValues ?: emptyArray()
+                )
+            }
+
 
         val cursor: Cursor? = try {
             context.contentResolver.query(
