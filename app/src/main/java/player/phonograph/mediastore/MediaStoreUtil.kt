@@ -11,7 +11,6 @@ import android.database.Cursor
 import android.media.MediaScannerConnection
 import android.net.Uri
 import android.os.Build
-import android.provider.BaseColumns
 import android.provider.MediaStore
 import android.provider.MediaStore.Audio.AudioColumns
 import android.provider.MediaStore.MediaColumns.DATA
@@ -24,7 +23,6 @@ import player.phonograph.model.Song
 import player.phonograph.model.file.FileEntity
 import player.phonograph.model.file.Location
 import player.phonograph.model.file.put
-import player.phonograph.settings.Setting
 import player.phonograph.util.PermissionUtil.navigateToStorageSetting
 import player.phonograph.util.Util
 import java.io.File
@@ -60,7 +58,7 @@ object MediaStoreUtil {
         val songs: MutableList<Song> = ArrayList()
         if (cursor != null && cursor.moveToFirst()) {
             do {
-                songs.add(getSongFromCursor(cursor))
+                songs.add(parseSong(cursor))
             } while (cursor.moveToNext())
             cursor.close()
         }
@@ -71,7 +69,7 @@ object MediaStoreUtil {
         if (cursor != null) {
             val song: Song =
                 if (cursor.moveToFirst()) {
-                    getSongFromCursor(cursor)
+                    parseSong(cursor)
                 } else {
                     Song.EMPTY_SONG
                 }
@@ -84,7 +82,7 @@ object MediaStoreUtil {
     fun getSong(context: Context, file: File): Song? {
         return querySongs(context, "$DATA LIKE ?", arrayOf(file.path))?.use { cursor ->
             if (cursor.moveToFirst()) {
-                getSongFromCursor(cursor)
+                parseSong(cursor)
             } else null
         }
     }
@@ -97,51 +95,21 @@ object MediaStoreUtil {
      */
     @SuppressLint("Range") // todo
     fun searchSongFiles(context: Context, currentLocation: Location, scope: CoroutineScope? = null): Set<FileEntity>? {
-        querySongFiles(
+        val fileCursor = querySongFiles(
             context,
             "$DATA LIKE ?",
             arrayOf("${currentLocation.absolutePath}%"),
-        )?.use { cursor ->
+        ) ?: return null
+        return fileCursor.use { cursor ->
             if (cursor.moveToFirst()) {
                 val list: MutableList<FileEntity> = ArrayList()
                 do {
-                    val id = cursor.getLong(cursor.getColumnIndex(AudioColumns._ID))
-                    val displayName = cursor.getString(cursor.getColumnIndex(AudioColumns.DISPLAY_NAME))
-                    val absolutePath = cursor.getString(cursor.getColumnIndex(DATA))
-                    val size = cursor.getLong(cursor.getColumnIndex(AudioColumns.SIZE))
-                    val dateAdded = cursor.getLong(cursor.getColumnIndex(AudioColumns.DATE_ADDED))
-                    val dateModified = cursor.getLong(cursor.getColumnIndex(AudioColumns.DATE_MODIFIED))
-
-                    val songRelativePath = absolutePath.substringAfter(currentLocation.absolutePath).removePrefix("/")
-                    val basePath = currentLocation.basePath.let { if (it == "/") "" else it } // root //todo
-
-                    val item = if (songRelativePath.contains('/')) {
-                        val folderName = songRelativePath.substringBefore('/')
-                        // folder
-                        FileEntity.Folder(
-                            location = currentLocation.changeTo("$basePath/$folderName"),
-                            name = folderName,
-                            dateAdded = dateAdded,
-                            dateModified = dateModified
-                        )
-                    } else {
-                        // file
-                        FileEntity.File(
-                            location = currentLocation.changeTo("$basePath/$songRelativePath"),
-                            name = displayName,
-                            id = id,
-                            size = size,
-                            dateAdded = dateAdded,
-                            dateModified = dateModified
-                        )
-                    }
-
+                    val item = parseFileEntity(cursor, currentLocation)
                     list.put(item)
                 } while (cursor.moveToNext())
-                return list.toSortedSet()
-            }
+                list.toSortedSet()
+            } else null
         }
-        return null
     }
 
     fun searchSongs(context: Context, currentLocation: Location, scope: CoroutineScope? = null): List<Song> {
@@ -151,34 +119,8 @@ object MediaStoreUtil {
         return getSongs(cursor)
     }
 
-    private fun getSongFromCursor(cursor: Cursor): Song {
-        val id = cursor.getLong(0)
-        val title = cursor.getString(1)
-        val trackNumber = cursor.getInt(2)
-        val year = cursor.getInt(3)
-        val duration = cursor.getLong(4)
-        val data = cursor.getString(5)
-        val dateAdded = cursor.getLong(6)
-        val dateModified = cursor.getLong(7)
-        val albumId = cursor.getLong(8)
-        val albumName = cursor.getString(9)
-        val artistId = cursor.getLong(10)
-        val artistName = cursor.getString(11)
-        return Song(
-            id = id,
-            title = title,
-            trackNumber = trackNumber,
-            year = year,
-            duration = duration,
-            data = data,
-            dateAdded = dateAdded,
-            dateModified = dateModified,
-            albumId = albumId,
-            albumName = albumName,
-            artistId = artistId,
-            artistName = artistName
-        )
-    }
+    fun FileEntity.File.linkedSong(context: Context): Song = MediaStoreUtil.getSong(context, id)
+
 
     /**
      * delete songs by path via MediaStore
@@ -242,7 +184,6 @@ object MediaStoreUtil {
             .show()
     }
 
-    fun FileEntity.File.linkedSong(context: Context): Song = MediaStoreUtil.getSong(context, id)
 
     fun scanFiles(context: Context, paths: Array<String>, mimeTypes: Array<String>) {
         var failed: Int = 0
