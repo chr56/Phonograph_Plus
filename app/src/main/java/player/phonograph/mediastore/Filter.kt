@@ -12,13 +12,28 @@ class SQLWhereClause(val selection: String, val selectionValues: Array<String>)
 
 /**
  *  amend path with path filter SQL to SQLWhereClause
+ *  @param mode whitelist mode
  */
-fun withPathFilter(context: Context, block: () -> SQLWhereClause): SQLWhereClause {
-    val paths = BlacklistStore.getInstance(context).paths.map { "$it%" }
+fun withPathFilter(context: Context, mode: Boolean = false, block: () -> SQLWhereClause): SQLWhereClause {
+    val paths =
+        if (mode)
+            emptyList() // todo: not implemented yet
+        else
+            BlacklistStore.getInstance(context).paths.map { "$it%" }
+
     val target = block()
+
+    val pattern =
+        if (mode)
+            "${MediaStore.Audio.AudioColumns.DATA} LIKE ?"
+        else
+            "${MediaStore.Audio.AudioColumns.DATA} NOT LIKE ?"
+
+    val separator = if (mode) "OR" else " AND"
+
     return if (paths.isNotEmpty()) {
         SQLWhereClause(
-            plusBlacklistSelectionCondition(target.selection, paths.size),
+            plusSelectionCondition(target.selection, pattern, paths.size, separator),
             target.selectionValues.plus(paths)
         )
     } else {
@@ -27,22 +42,23 @@ fun withPathFilter(context: Context, block: () -> SQLWhereClause): SQLWhereClaus
 }
 
 /**
- * create placeholder in selection
- * @param count count of the duplicated
+ * create duplicated string for selection
+ * @param what the string to duplicate
+ * @param count count of the duplicated [what]
+ * @param separator separator
  */
-private fun plusBlacklistSelectionCondition(selection: String, count: Int): String {
-    val what = "${MediaStore.Audio.AudioColumns.DATA} NOT LIKE ?"
+private fun plusSelectionCondition(selection: String, what: String, count: Int, separator: String): String {
     var accumulator = selection
     // first
     accumulator +=
         if (selection.isEmpty()) {
             what
         } else {
-            "AND $what"
+            " $separator $what"
         }
     // rest
     for (i in 1 until count) {
-        accumulator += "AND $what"
+        accumulator += " $separator $what"
     }
     return accumulator
 }
