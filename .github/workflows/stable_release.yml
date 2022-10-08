@@ -18,6 +18,17 @@ jobs:
     permissions:
       contents: write
     steps:
+      - name: Generate Release Note Template
+        run: |
+          echo "${{ github.ref_name }} " $(date +%Y.%m.%d) > ./ReleaseNoteTemplate.md
+          echo "" >> ./ReleaseNoteTemplate.md
+          echo "### ZH" >> ./ReleaseNoteTemplate.md
+          echo "1." >> ./ReleaseNoteTemplate.md
+          echo "" >> ./ReleaseNoteTemplate.md
+          echo "### EN" >> ./ReleaseNoteTemplate.md
+          echo "2." >> ./ReleaseNoteTemplate.md
+          echo "" >> ./ReleaseNoteTemplate.md
+
       - name: Create Stable Release Template
         uses: softprops/action-gh-release@v1
         id: release_github
@@ -27,14 +38,4 @@ jobs:
           name: "${{ github.ref_name }}"
           draft: true
           tag_name: ${{ github.ref }}
-          body: "
-            ## ${{ github.ref_name }} 2022.8.18
-            **Commitlog**: https://github.com/chr56/Phonograph_Plus/compare/
-            ### ZH
-            1.
-            2.
-            ### EN
-            1.
-            2.
-            "
-          # body_path: ${{ github.workspace }}/ReleaseNote.md
+          body_path: ./ReleaseNoteTemplate.md
