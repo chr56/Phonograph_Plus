@@ -191,28 +191,22 @@ object MediaStoreUtil {
         sortOrder: String? = Setting.instance.songSortMode.SQLQuerySortOrder,
     ): Cursor? {
 
-        val (realSelection, realSelectionValues) =
+        val actual =
             withPathFilter(context) {
-                Pair(
-                    first = if ((selection ?: "").trim { it <= ' ' } != "") {
-                        "${SongConst.BASE_AUDIO_SELECTION} AND $selection "
-                    } else {
-                        SongConst.BASE_AUDIO_SELECTION
-                    },
-                    second = selectionValues ?: emptyArray()
+                SQLWhereClause(
+                    selection = withBaseAudioFilter { selection },
+                    selectionValues = selectionValues ?: emptyArray()
                 )
             }
 
-        var cursor: Cursor? = null
-        try {
-            cursor = context.contentResolver.query(
+        return try {
+            context.contentResolver.query(
                 MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
-                SongConst.BASE_SONG_PROJECTION, realSelection, realSelectionValues, sortOrder
+                SongConst.BASE_SONG_PROJECTION, actual.selection, actual.selectionValues, sortOrder
             )
         } catch (e: SecurityException) {
+            null
         }
-
-        return cursor
     }
 
     fun queryFiles(
@@ -220,15 +214,11 @@ object MediaStoreUtil {
         selection: String = "",
         selectionValues: Array<String> = emptyArray(),
     ): Cursor? {
-        val (realSelection, realSelectionValues) =
+        val actual =
             withPathFilter(context) {
-                Pair(
-                    first = if (selection.trim { it <= ' ' } != "") {
-                        "${SongConst.BASE_AUDIO_SELECTION} AND $selection "
-                    } else {
-                        SongConst.BASE_AUDIO_SELECTION
-                    },
-                    second = selectionValues
+                SQLWhereClause(
+                    selection = withBaseAudioFilter { selection },
+                    selectionValues = selectionValues
                 )
             }
 
@@ -236,7 +226,7 @@ object MediaStoreUtil {
         try {
             cursor = context.contentResolver.query(
                 MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
-                SongConst.BASE_FILE_PROJECTION, realSelection, realSelectionValues, AudioColumns.DATE_MODIFIED
+                SongConst.BASE_FILE_PROJECTION, actual.selection, actual.selectionValues, AudioColumns.DATE_MODIFIED
             )
         } catch (e: SecurityException) {
         }

@@ -18,6 +18,8 @@ import android.provider.MediaStore.Audio.Playlists
 import android.provider.MediaStore.Audio.PlaylistsColumns
 import android.util.Log
 import androidx.documentfile.provider.DocumentFile
+import player.phonograph.mediastore.SQLWhereClause
+import player.phonograph.mediastore.withBasePlaylistFilter
 import player.phonograph.mediastore.withPathFilter
 import player.phonograph.model.playlist.FilePlaylist
 
@@ -83,15 +85,11 @@ object PlaylistsUtil {
         selectionValues: Array<String>?,
     ): Cursor? {
 
-        val (realSelection, realSelectionValues) =
+        val actual =
             withPathFilter(context) {
-                Pair(
-                    first = if ((selection ?: "").trim { it <= ' ' } != "") {
-                        "$BASE_PLAYLIST_SELECTION AND $selection "
-                    } else {
-                        BASE_PLAYLIST_SELECTION
-                    },
-                    second = selectionValues ?: emptyArray()
+                SQLWhereClause(
+                    selection = withBasePlaylistFilter { selection },
+                    selectionValues = selectionValues ?: emptyArray()
                 )
             }
 
@@ -104,7 +102,7 @@ object PlaylistsUtil {
                     PlaylistsColumns.NAME, /* 1 */
                     PlaylistsColumns.DATA /* 2 */
                 ),
-                realSelection, realSelectionValues, Playlists.DEFAULT_SORT_ORDER
+                actual.selection, actual.selectionValues, Playlists.DEFAULT_SORT_ORDER
             )
         } catch (e: SecurityException) {
             null
@@ -253,6 +251,4 @@ object PlaylistsUtil {
         return result
     }
 
-    // select only named playlist
-    const val BASE_PLAYLIST_SELECTION = "${PlaylistsColumns.NAME} != '' "
 }
