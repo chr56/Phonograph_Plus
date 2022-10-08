@@ -2,7 +2,6 @@ package player.phonograph.mediastore
 
 import android.content.Context
 import android.database.Cursor
-import player.phonograph.mediastore.MediaStoreUtil.querySongs
 import player.phonograph.model.Song
 
 /**

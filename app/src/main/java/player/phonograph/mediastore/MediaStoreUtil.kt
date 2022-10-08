@@ -181,62 +181,6 @@ object MediaStoreUtil {
     }
 
     /**
-     * query audio file via MediaStore
-     */
-    fun querySongs(
-        context: Context,
-        selection: String = "",
-        selectionValues: Array<String> = emptyArray(),
-        sortOrder: String? = Setting.instance.songSortMode.SQLQuerySortOrder,
-    ): Cursor? {
-
-        val actual =
-            withPathFilter(context) {
-                SQLWhereClause(
-                    selection = withBaseAudioFilter { selection },
-                    selectionValues = selectionValues
-                )
-            }
-
-        return try {
-            context.contentResolver.query(
-                MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
-                SongConst.BASE_SONG_PROJECTION, actual.selection, actual.selectionValues, sortOrder
-            )
-        } catch (e: SecurityException) {
-            null
-        }
-    }
-
-    /**
-     * query audio file via MediaStore
-     */
-    fun querySongFiles(
-        context: Context,
-        selection: String = "",
-        selectionValues: Array<String> = emptyArray(),
-        sortOrder: String? = Setting.instance.songSortMode.SQLQuerySortOrder,
-    ): Cursor? {
-
-        val actual =
-            withPathFilter(context) {
-                SQLWhereClause(
-                    selection = withBaseAudioFilter { selection },
-                    selectionValues = selectionValues
-                )
-            }
-
-        return try {
-            context.contentResolver.query(
-                MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
-                SongConst.BASE_FILE_PROJECTION, actual.selection, actual.selectionValues, sortOrder
-            )
-        } catch (e: SecurityException) {
-            null
-        }
-    }
-
-    /**
      * delete songs by path via MediaStore
      */
     fun deleteSongs(context: Activity, songs: List<Song>) {
@@ -325,36 +269,4 @@ object MediaStoreUtil {
         return getSong(cursor)
     }
 
-    /**
-     * Const values about MediaStore of Audio
-     */
-    object SongConst {
-        // just select only songs
-        const val BASE_AUDIO_SELECTION =
-            "${AudioColumns.IS_MUSIC} =1 AND ${AudioColumns.TITLE} != '' "
-
-        val BASE_SONG_PROJECTION = arrayOf(
-            BaseColumns._ID, // 0
-            AudioColumns.TITLE, // 1
-            AudioColumns.TRACK, // 2
-            AudioColumns.YEAR, // 3
-            AudioColumns.DURATION, // 4
-            AudioColumns.DATA, // 5
-            AudioColumns.DATE_ADDED, // 6
-            AudioColumns.DATE_MODIFIED, // 7
-            AudioColumns.ALBUM_ID, // 8
-            AudioColumns.ALBUM, // 9
-            AudioColumns.ARTIST_ID, // 10
-            AudioColumns.ARTIST, // 11
-        )
-
-        val BASE_FILE_PROJECTION = arrayOf(
-            BaseColumns._ID, // 0
-            AudioColumns.DISPLAY_NAME, // 1
-            AudioColumns.DATA, // 2
-            AudioColumns.SIZE, // 3
-            AudioColumns.DATE_ADDED, // 4
-            AudioColumns.DATE_MODIFIED, // 5
-        )
-    }
 }

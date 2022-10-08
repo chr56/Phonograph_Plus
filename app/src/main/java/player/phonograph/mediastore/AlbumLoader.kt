@@ -6,7 +6,6 @@ package player.phonograph.mediastore
 
 import android.content.Context
 import android.provider.MediaStore.Audio.AudioColumns
-import player.phonograph.mediastore.MediaStoreUtil.querySongs
 import player.phonograph.mediastore.SongLoader.getSongs
 import player.phonograph.mediastore.SongLoader.makeSongCursor
 import player.phonograph.model.Album

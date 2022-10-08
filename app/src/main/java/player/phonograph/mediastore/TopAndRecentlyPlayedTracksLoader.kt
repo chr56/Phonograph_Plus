@@ -7,7 +7,6 @@ import android.content.Context
 import android.database.Cursor
 import android.provider.BaseColumns
 import lib.phonograph.misc.SortedLongCursor
-import player.phonograph.mediastore.MediaStoreUtil.querySongs
 import player.phonograph.provider.HistoryStore
 import player.phonograph.provider.SongPlayCountStore
 

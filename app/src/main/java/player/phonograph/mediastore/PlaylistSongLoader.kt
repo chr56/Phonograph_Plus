@@ -64,7 +64,7 @@ object PlaylistSongLoader {
                     AudioColumns.ARTIST, // 11
                     MediaStore.Audio.Playlists.Members._ID // 12
                 ),
-                MediaStoreUtil.SongConst.BASE_AUDIO_SELECTION, null,
+                BASE_AUDIO_SELECTION, null,
                 MediaStore.Audio.Playlists.Members.DEFAULT_SORT_ORDER
             )
         } catch (e: SecurityException) {

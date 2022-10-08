@@ -6,21 +6,16 @@
 
 package player.phonograph.util
 
-import android.content.Context
 import android.os.Environment
-import android.provider.MediaStore.Audio.AudioColumns.DATA
 import android.util.Log
 import android.webkit.MimeTypeMap
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.isActive
-import lib.phonograph.misc.SortedCursor
 import player.phonograph.App
-import player.phonograph.mediastore.MediaStoreUtil.querySongs
-import player.phonograph.mediastore.SongLoader.getSongs
-import player.phonograph.mediastore.SongLoader.makeSongCursor
-import player.phonograph.model.Song
 import player.phonograph.notification.ErrorNotification
-import java.io.*
+import java.io.File
+import java.io.FileFilter
+import java.io.IOException
 import java.text.DecimalFormat
 import java.util.*
 import kotlin.math.log10
