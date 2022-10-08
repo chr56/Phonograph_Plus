@@ -72,17 +72,25 @@ We have removed Swedish and Norwegian Nynorsk translations due to missing too ma
 
 For reference only, actual app might be different
 
-|                                       Card Player                                       |                                       Flat Player                                       |                                        Song Menu                                        |
-|:---------------------------------------------------------------------------------------:|:---------------------------------------------------------------------------------------:|:---------------------------------------------------------------------------------------:|
-| ![Screenshots](fastlane/metadata/android/en-US/images/phoneScreenshots/05.jpg?raw=true) | ![Screenshots](fastlane/metadata/android/en-US/images/phoneScreenshots/08.jpg?raw=true) | ![Screenshots](fastlane/metadata/android/en-US/images/phoneScreenshots/02.jpg?raw=true) |
+|                                       Card Player                                       |                                       Flat Player                                       |
+|:---------------------------------------------------------------------------------------:|:---------------------------------------------------------------------------------------:|
+| ![Screenshots](fastlane/metadata/android/en-US/images/phoneScreenshots/05.jpg?raw=true) | ![Screenshots](fastlane/metadata/android/en-US/images/phoneScreenshots/08.jpg?raw=true) |
 
-|                                          Songs                                          |                                         Folders                                         |                                         Artists                                         |                                        Playlists                                        |
-|:---------------------------------------------------------------------------------------:|:---------------------------------------------------------------------------------------:|:---------------------------------------------------------------------------------------:|:---------------------------------------------------------------------------------------:|
-| ![Screenshots](fastlane/metadata/android/en-US/images/phoneScreenshots/09.jpg?raw=true) | ![Screenshots](fastlane/metadata/android/en-US/images/phoneScreenshots/10.jpg?raw=true) | ![Screenshots](fastlane/metadata/android/en-US/images/phoneScreenshots/07.jpg?raw=true) | ![Screenshots](fastlane/metadata/android/en-US/images/phoneScreenshots/06.jpg?raw=true) |
+|                                         Drawer                                          |                                         Setting                                         |
+|:---------------------------------------------------------------------------------------:|:---------------------------------------------------------------------------------------:|
+| ![Screenshots](fastlane/metadata/android/en-US/images/phoneScreenshots/03.jpg?raw=true) | ![Screenshots](fastlane/metadata/android/en-US/images/phoneScreenshots/01.jpg?raw=true) |
 
-|                                         Drawer                                          |                                         Setting                                         |                                 Tag Editor (Deprecated)                                 |
-|:---------------------------------------------------------------------------------------:|:---------------------------------------------------------------------------------------:|:---------------------------------------------------------------------------------------:|
-| ![Screenshots](fastlane/metadata/android/en-US/images/phoneScreenshots/03.jpg?raw=true) | ![Screenshots](fastlane/metadata/android/en-US/images/phoneScreenshots/01.jpg?raw=true) | ![Screenshots](fastlane/metadata/android/en-US/images/phoneScreenshots/04.jpg?raw=true) |
+|                                          Songs                                          |                                         Folders                                         |
+|:---------------------------------------------------------------------------------------:|:---------------------------------------------------------------------------------------:|
+| ![Screenshots](fastlane/metadata/android/en-US/images/phoneScreenshots/09.jpg?raw=true) | ![Screenshots](fastlane/metadata/android/en-US/images/phoneScreenshots/10.jpg?raw=true) |
+
+|                                         Artists                                         |                                        Playlists                                        |
+|:---------------------------------------------------------------------------------------:|:---------------------------------------------------------------------------------------:|
+| ![Screenshots](fastlane/metadata/android/en-US/images/phoneScreenshots/07.jpg?raw=true) | ![Screenshots](fastlane/metadata/android/en-US/images/phoneScreenshots/06.jpg?raw=true) |
+
+|                                        Song Menu                                        |                                 Tag Editor (Deprecated)                                 |
+|:---------------------------------------------------------------------------------------:|:---------------------------------------------------------------------------------------:|
+| ![Screenshots](fastlane/metadata/android/en-US/images/phoneScreenshots/02.jpg?raw=true) | ![Screenshots](fastlane/metadata/android/en-US/images/phoneScreenshots/04.jpg?raw=true) |
 
 
 
@@ -111,23 +119,25 @@ For reference only, actual app might be different
 
 - [x] 迁移 Glide 至 Coil | Migrate Glide to Coil
 
-- [ ] 将歌曲“详情” 迁移至 Compose ❗WIP (基本完成) | Migrate Song Detail to Jetpack Compose (❗WIP: Almost Done)
+- [ ] 支持白名单机制 | Whitelist
 
-- [ ] 重构更新对话框 | Refactor Update Dialog
+- [ ] 将歌曲“详情” 迁移至 Compose ⭕WIP (基本完成) | Migrate Song Detail to Jetpack Compose (⭕WIP: Almost Done)
 
 - [ ] 重构设置UI | Refactor Setting UI
 
-- [ ] 自定义歌曲点击行为 ⭕ | User-defined click behavior for songs ⭕
+- [ ] 重构更新对话框 | Refactor Update Dialog
 
-- [ ] 支持白名单机制 | Whitelist
-  
-- [ ] 尝试适配 FlyMe / EvolutionX(等一系类原生)状态栏歌词 | Support some Android's StatusBar lyrics, such as FlyMe / EvolutionX
+- [ ] 重构搜索 | Refactor Search
+
+- [ ] 自定义歌曲点击行为 ⭕ | User-defined click behavior for songs ⭕
 
 - [ ] 自建本地媒体数据库(使用 AndroidX Room) ⭕, 以解析多艺术家歌曲, 并解析 Tag 中 ‘;’, '&', '/', '\', ',' , 改进搜索 | Use AndroidX Room to build Media database, to parse multi-artists songs and ‘;’, '&', '/', '\', ',' in tags,  and improve search result
 
 - [ ]  ...
 
 **2023~2024(?)**
+
+- [ ] 重写音乐标签编辑 | Rewrite Tag Editor
 
 - [ ] 增强“播放列表详情”(支持搜索 ❌, 更好的修改本地列表方式 ❗WIP, 响应打开文件的Intent ❌) | Enhance Playlist Detail: support search ❌, Better way to modify ❗WIP, handle intent of open (playlist) file ❌
 
@@ -137,7 +147,7 @@ For reference only, actual app might be different
 
 - [ ] 改进 SlidingMusicBar | improve SlidingMusicBar
 
-- [ ] 重写音乐标签编辑 | Rewrite Tag Editor
+- [ ] 尝试适配 FlyMe / EvolutionX(等一系类原生)状态栏歌词 | Support some Android's StatusBar lyrics, such as FlyMe / EvolutionX
 
 - [ ] <del>完美适配 Android11+ 的文件访问(❌) | Adapter Android11+ File Permission perfectly</del>
 
