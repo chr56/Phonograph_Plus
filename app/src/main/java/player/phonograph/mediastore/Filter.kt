@@ -29,11 +29,10 @@ fun withPathFilter(context: Context, mode: Boolean = false, block: () -> SQLWher
         else
             "${MediaStore.Audio.AudioColumns.DATA} NOT LIKE ?"
 
-    val separator = if (mode) "OR" else " AND"
 
     return if (paths.isNotEmpty()) {
         SQLWhereClause(
-            plusSelectionCondition(target.selection, pattern, paths.size, separator),
+            plusSelectionCondition(target.selection, mode, pattern, paths.size),
             target.selectionValues.plus(paths)
         )
     } else {
@@ -43,23 +42,26 @@ fun withPathFilter(context: Context, mode: Boolean = false, block: () -> SQLWher
 
 /**
  * create duplicated string for selection
+ * @param mode whitelist mode
  * @param what the string to duplicate
  * @param count count of the duplicated [what]
- * @param separator separator
  */
-private fun plusSelectionCondition(selection: String, what: String, count: Int, separator: String): String {
+private fun plusSelectionCondition(selection: String, mode: Boolean, what: String, count: Int): String {
+    if (count <= 0) return selection // do nothing
+    val separator = if (mode) "OR" else " AND"
     var accumulator = selection
     // first
     accumulator +=
         if (selection.isEmpty()) {
-            what
+            "($what"
         } else {
-            " $separator $what"
+            " AND ($what"
         }
     // rest
     for (i in 1 until count) {
         accumulator += " $separator $what"
     }
+    accumulator += ")"
     return accumulator
 }
 
