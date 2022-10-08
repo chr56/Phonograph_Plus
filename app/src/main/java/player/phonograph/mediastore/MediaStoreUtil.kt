@@ -240,68 +240,6 @@ object MediaStoreUtil {
         return cursor
     }
 
-    /**
-     * delete songs by path via MediaStore
-     */
-    fun deleteSongs(context: Activity, songs: List<Song>) {
-        val total = songs.size
-        var result = 0
-        val failList: MutableList<Song> = ArrayList()
-
-        // try to delete
-        for (index in songs.indices) {
-            val output = context.contentResolver.delete(
-                MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
-                "${MediaStore.Audio.Media.DATA} = ?",
-                arrayOf(songs[index].data)
-            )
-            // if it failed
-            if (output == 0) {
-                Log.w(TAG, "fail to delete song ${songs[index].title} at ${songs[index].data}")
-                failList.add(songs[index])
-            }
-            result += output
-        }
-
-        val r: String = context.resources.getQuantityString(R.plurals.msg_deletion_result, total, result, total)
-
-        Util.withLooper {
-            Toast.makeText(context, r, Toast.LENGTH_SHORT).show()
-        }
-
-        // handle fail , report and try again
-        // handle fail , report and try again
-        if (failList.isNotEmpty()) AlertDialog.Builder(context).apply {
-            setTitle(R.string.failed_to_delete)
-            setMessage(
-                "${r}\n${context.getString(R.string.failed_to_delete)}: \n" +
-                        "${failList.fold("") { acc, song -> "$acc,${song.title}" }} ")
-            setPositiveButton(android.R.string.ok) { dialog, _ ->
-                dialog.dismiss()
-            }
-            setNegativeButton(R.string.grant_permission) { _, _ ->
-                navigateToStorageSetting(context)
-            }
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                setNeutralButton(R.string.retry) { _, _ ->
-                    val uris = failList.map { song ->
-                        Uri.withAppendedPath(
-                            MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
-                            song.id.toString()
-                        )
-                    }
-                    context.startIntentSenderForResult(
-                        MediaStore.createDeleteRequest(
-                            context.contentResolver,
-                            uris
-                        ).intentSender,
-                        0, null, 0, 0, 0)
-                }
-            }
-        }
-            .show()
-    }
-
     fun FileEntity.File.linkedSong(context: Context): Song = MediaStoreUtil.getSong(context, id)
 
     fun scanFiles(context: Context, paths: Array<String>, mimeTypes: Array<String>) {
