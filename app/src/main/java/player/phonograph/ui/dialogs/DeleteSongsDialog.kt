@@ -5,8 +5,12 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.pm.PackageManager
 import android.graphics.Typeface
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.provider.MediaStore
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -19,6 +23,7 @@ import android.widget.ScrollView
 import android.widget.Space
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.ButtonBarLayout
 import androidx.core.view.setMargins
 import androidx.fragment.app.DialogFragment
@@ -27,7 +32,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import mt.pref.ThemeColor.accentColor
 import player.phonograph.R
-import player.phonograph.mediastore.MediaStoreUtil
+import player.phonograph.mediastore.DeleteSongUtil
 import player.phonograph.misc.LyricsLoader
 import player.phonograph.model.Song
 import player.phonograph.ui.components.ViewComponent
@@ -177,7 +182,19 @@ class DeleteSongsDialog : DialogFragment() {
                     )
                 )
             title.text = activity.getString(R.string.delete_action)
-            delete = { MediaStoreUtil.deleteSongs(activity, model.songs) }
+            delete = {
+                val total = model.songs.size
+                val fails = DeleteSongUtil.deleteSongs(activity, model.songs)
+
+                val msg: String =
+                    activity.resources.getQuantityString(R.plurals.msg_deletion_result, total, total - fails.size, total)
+
+                if (fails.isNotEmpty()) Handler(Looper.getMainLooper()).post {
+                    // handle fail , report and try again
+                    showFailDialog(activity, msg, fails)
+                    Toast.makeText(activity, msg, Toast.LENGTH_SHORT).show()
+                }
+            }
             deleteWithLyrics = {
                 deleteLyrics(activity, model.songs)
                 delete()
@@ -206,6 +223,34 @@ class DeleteSongsDialog : DialogFragment() {
                     }
                 }
             }
+        }
+
+        private fun showFailDialog(context: Activity, msg: String, failList: List<Song>) {
+            AlertDialog.Builder(context).apply {
+                val title = context.getString(R.string.failed_to_delete)
+                setTitle(title)
+                setMessage(
+                    "${msg}\n${title}: \n${failList.fold("") { acc, song -> "$acc${song.title}\n" }} ")
+                setNeutralButton(R.string.grant_permission) { _, _ ->
+                    navigateToStorageSetting(context)
+                }
+                setPositiveButton(android.R.string.ok) { dialog, _ ->
+                    dialog.dismiss()
+                }
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                    setNegativeButton(R.string.retry) { _, _ ->
+                        val uris = failList.map { song ->
+                            Uri.withAppendedPath(
+                                MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, song.id.toString()
+                            )
+                        }
+                        context.startIntentSenderForResult(
+                            MediaStore.createDeleteRequest(
+                                context.contentResolver, uris
+                            ).intentSender, 0, null, 0, 0, 0)
+                    }
+                }
+            }.show()
         }
     }
 
