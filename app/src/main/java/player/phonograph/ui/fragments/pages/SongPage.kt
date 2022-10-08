@@ -23,7 +23,6 @@ import player.phonograph.BuildConfig
 import player.phonograph.R
 import player.phonograph.adapter.display.DisplayAdapter
 import player.phonograph.adapter.display.SongDisplayAdapter
-import player.phonograph.mediastore.MediaStoreUtil
 import player.phonograph.mediastore.SongLoader
 import player.phonograph.model.Song
 import player.phonograph.model.sort.SortMode
@@ -65,7 +64,7 @@ class SongPage : AbsDisplayPage<Song, DisplayAdapter<Song>, GridLayoutManager>()
 
     override fun loadDataSet() {
         loaderCoroutineScope.launch {
-            val temp = MediaStoreUtil.getAllSongs(App.instance)
+            val temp = SongLoader.getAllSongs(App.instance)
             while (!isRecyclerViewPrepared) yield() // wait until ready
 
             withContext(Dispatchers.Main) {

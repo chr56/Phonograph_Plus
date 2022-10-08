@@ -19,10 +19,10 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import player.phonograph.R
 import player.phonograph.mediastore.searchSongs
-import player.phonograph.mediastore.MediaStoreUtil.linkedSong
 import player.phonograph.misc.UpdateToastMediaScannerCompletionListener
 import player.phonograph.model.Song
 import player.phonograph.model.file.FileEntity
+import player.phonograph.model.file.linkedSong
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.util.BlacklistUtil
 import player.phonograph.util.preferences.FileConfig

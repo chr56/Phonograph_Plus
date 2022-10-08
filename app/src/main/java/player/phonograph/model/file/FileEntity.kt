@@ -4,6 +4,9 @@
 
 package player.phonograph.model.file
 
+import android.content.Context
+import player.phonograph.mediastore.SongLoader
+import player.phonograph.model.Song
 import player.phonograph.model.sort.SortRef
 import player.phonograph.settings.Setting
 
@@ -14,7 +17,7 @@ sealed class FileEntity(
     val location: Location,
     name: String? = null,
     val dateAdded: Long = -1,
-    val dateModified: Long = -1
+    val dateModified: Long = -1,
 ) : Comparable<FileEntity> {
 
     override fun compareTo(other: FileEntity): Int {
@@ -68,3 +71,5 @@ sealed class FileEntity(
         return true
     }
 }
+
+fun FileEntity.File.linkedSong(context: Context): Song = SongLoader.getSong(context, id)

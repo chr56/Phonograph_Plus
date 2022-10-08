@@ -13,7 +13,7 @@ import player.phonograph.App
 import player.phonograph.MusicServiceMsgConst
 import player.phonograph.model.Song
 import player.phonograph.provider.DatabaseConstants.FAVORITE_DB
-import player.phonograph.mediastore.MediaStoreUtil
+import player.phonograph.mediastore.SongLoader
 import player.phonograph.util.TimeUtil.currentTimestamp
 
 class FavoriteSongsStore(context: Context = App.instance) : SQLiteOpenHelper(context, FAVORITE_DB, null, VERSION) {
@@ -39,7 +39,7 @@ class FavoriteSongsStore(context: Context = App.instance) : SQLiteOpenHelper(con
     fun getAllSongs(context: Context): List<Song> {
         val result: MutableList<Song> = ArrayList()
         for (item in getAll()) {
-            val song = MediaStoreUtil.getSong(context, item.first)
+            val song = SongLoader.getSong(context, item.first)
             if (song != Song.EMPTY_SONG) result.add(song)
         }
         return result

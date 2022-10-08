@@ -11,12 +11,13 @@ import player.phonograph.dialogs.AddToPlaylistDialog
 import player.phonograph.dialogs.SongDetailDialog
 import player.phonograph.dialogs.SongShareDialog
 import player.phonograph.mediastore.GenreLoader
-import player.phonograph.mediastore.MediaStoreUtil.linkedSong
+import player.phonograph.mediastore.SongLoader
 import player.phonograph.model.Album
 import player.phonograph.model.Artist
 import player.phonograph.model.Genre
 import player.phonograph.model.Song
 import player.phonograph.model.file.FileEntity
+import player.phonograph.model.file.linkedSong
 import player.phonograph.ui.dialogs.DeleteSongsDialog
 
 internal fun convertToSongs(selections: List<Any>, context: Context): List<Song> = selections.flatMap {
@@ -30,6 +31,7 @@ internal fun convertToSongs(selections: List<Any>, context: Context): List<Song>
         else -> emptyList()
     }
 }
+
 
 internal fun Context.actionAddToPlaylist(songs: List<Song>) =
     if ((this is FragmentActivity)) {

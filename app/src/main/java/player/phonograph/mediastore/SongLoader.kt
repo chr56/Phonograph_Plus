@@ -2,6 +2,7 @@ package player.phonograph.mediastore
 
 import android.content.Context
 import android.database.Cursor
+import android.provider.MediaStore
 import player.phonograph.model.Song
 
 /**
@@ -10,19 +11,27 @@ import player.phonograph.model.Song
 object SongLoader {
 
     @JvmStatic
-    fun getAllSongs(context: Context): List<Song> = MediaStoreUtil.getAllSongs(context)
+    fun getAllSongs(context: Context): List<Song> = querySongs(context).getSongs()
+
 
     @JvmStatic
-    fun getSongs(context: Context, title: String): List<Song> = MediaStoreUtil.getSongs(context, title)
+    fun getSong(context: Context, queryId: Long): Song {
+        val cursor =
+            querySongs(
+                context, "${MediaStore.Audio.AudioColumns._ID} =? ", arrayOf(queryId.toString())
+            )
+        return cursor.getFirstSong()
+    }
 
     @JvmStatic
-    fun getSong(context: Context, queryId: Long): Song = MediaStoreUtil.getSong(context, queryId)
+    fun getSongs(context: Context, title: String): List<Song> {
+        val cursor = querySongs(
+            context, "${MediaStore.Audio.AudioColumns.TITLE} LIKE ?", arrayOf("%$title%")
+        )
+        return cursor.getSongs()
+    }
 
-    @JvmStatic
-    fun getSongs(cursor: Cursor?): List<Song> = MediaStoreUtil.getSongs(cursor)
-
-    @JvmStatic
-    fun getSong(cursor: Cursor?): Song = MediaStoreUtil.getSong(cursor)
+    fun getSongs(cursor: Cursor?): List<Song> = cursor.getSongs() //todo
 
     @JvmStatic
     fun makeSongCursor(

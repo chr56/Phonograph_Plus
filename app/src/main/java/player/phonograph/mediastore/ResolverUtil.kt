@@ -11,6 +11,31 @@ import player.phonograph.model.Song
 import player.phonograph.model.file.FileEntity
 import player.phonograph.model.file.Location
 
+
+/**
+ * read [Song] from cursor safely
+ */
+fun Cursor?.getFirstSong(): Song {
+    return this?.use {
+        if (moveToFirst()) {
+            parseSong(this)
+        } else {
+            Song.EMPTY_SONG
+        }
+    } ?: Song.EMPTY_SONG
+}
+
+fun Cursor?.getSongs(): List<Song> {
+    val songs: MutableList<Song> = ArrayList()
+    if (this != null && moveToFirst()) {
+        do {
+            songs.add(parseSong(this))
+        } while (moveToNext())
+        close()
+    }
+    return songs
+}
+
 /**
  * convert song cursor to [Song]
  * (**require [cursor] not empty**)

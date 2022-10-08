@@ -40,7 +40,7 @@ fun searchSongs(context: Context, currentLocation: Location, scope: CoroutineSco
     val cursor = querySongs(
         context, "${MediaStore.MediaColumns.DATA} LIKE ?", arrayOf("%${currentLocation.absolutePath}%")
     )
-    return MediaStoreUtil.getSongs(cursor)
+    return cursor.getSongs()
 }
 
 fun searchSong(context: Context, fileName: String): Song {
@@ -49,5 +49,5 @@ fun searchSong(context: Context, fileName: String): Song {
         "${MediaStore.MediaColumns.DATA} LIKE ? OR ${MediaStore.MediaColumns.DISPLAY_NAME} LIKE ? ",
         arrayOf(fileName, fileName)
     )
-    return MediaStoreUtil.getSong(cursor)
+    return cursor.getFirstSong()
 }

@@ -21,8 +21,8 @@ import player.phonograph.actions.applyToToolbar
 import player.phonograph.adapter.base.MultiSelectionCabController
 import player.phonograph.coil.loadImage
 import player.phonograph.databinding.ItemListBinding
-import player.phonograph.mediastore.MediaStoreUtil.linkedSong
 import player.phonograph.model.file.FileEntity
+import player.phonograph.model.file.linkedSong
 import player.phonograph.settings.Setting
 import player.phonograph.util.ImageUtil.getTintedDrawable
 

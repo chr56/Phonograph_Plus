@@ -11,9 +11,9 @@ import androidx.recyclerview.widget.RecyclerView
 import mt.pref.ThemeColor
 import player.phonograph.App
 import player.phonograph.R
-import player.phonograph.mediastore.MediaStoreUtil.linkedSong
 import player.phonograph.model.file.FileEntity
 import player.phonograph.model.file.Location
+import player.phonograph.model.file.linkedSong
 import player.phonograph.model.sort.FileSortMode
 import player.phonograph.model.sort.SortRef
 import player.phonograph.service.MusicPlayerRemote
