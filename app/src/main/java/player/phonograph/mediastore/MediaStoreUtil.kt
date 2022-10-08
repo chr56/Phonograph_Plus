@@ -37,7 +37,7 @@ object MediaStoreUtil {
      *****************************/
 
     fun getAllSongs(context: Context): List<Song> {
-        val cursor = querySongs(context, null, null)
+        val cursor = querySongs(context)
         return getSongs(cursor)
     }
 
@@ -97,7 +97,7 @@ object MediaStoreUtil {
      */
     @SuppressLint("Range") // todo
     fun searchSongFiles(context: Context, currentLocation: Location, scope: CoroutineScope? = null): Set<FileEntity>? {
-        queryFiles(
+        querySongFiles(
             context,
             "$DATA LIKE ?",
             arrayOf("${currentLocation.absolutePath}%"),
@@ -183,11 +183,10 @@ object MediaStoreUtil {
     /**
      * query audio file via MediaStore
      */
-    @JvmOverloads
     fun querySongs(
         context: Context,
-        selection: String?,
-        selectionValues: Array<String>?,
+        selection: String = "",
+        selectionValues: Array<String> = emptyArray(),
         sortOrder: String? = Setting.instance.songSortMode.SQLQuerySortOrder,
     ): Cursor? {
 
@@ -195,7 +194,7 @@ object MediaStoreUtil {
             withPathFilter(context) {
                 SQLWhereClause(
                     selection = withBaseAudioFilter { selection },
-                    selectionValues = selectionValues ?: emptyArray()
+                    selectionValues = selectionValues
                 )
             }
 
@@ -209,11 +208,16 @@ object MediaStoreUtil {
         }
     }
 
-    fun queryFiles(
+    /**
+     * query audio file via MediaStore
+     */
+    fun querySongFiles(
         context: Context,
         selection: String = "",
         selectionValues: Array<String> = emptyArray(),
+        sortOrder: String? = Setting.instance.songSortMode.SQLQuerySortOrder,
     ): Cursor? {
+
         val actual =
             withPathFilter(context) {
                 SQLWhereClause(
@@ -222,16 +226,14 @@ object MediaStoreUtil {
                 )
             }
 
-        var cursor: Cursor? = null
-        try {
-            cursor = context.contentResolver.query(
+        return try {
+            context.contentResolver.query(
                 MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
-                SongConst.BASE_FILE_PROJECTION, actual.selection, actual.selectionValues, AudioColumns.DATE_MODIFIED
+                SongConst.BASE_FILE_PROJECTION, actual.selection, actual.selectionValues, sortOrder
             )
         } catch (e: SecurityException) {
+            null
         }
-
-        return cursor
     }
 
     /**

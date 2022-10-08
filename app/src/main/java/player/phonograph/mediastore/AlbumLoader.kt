@@ -6,6 +6,7 @@ package player.phonograph.mediastore
 
 import android.content.Context
 import android.provider.MediaStore.Audio.AudioColumns
+import player.phonograph.mediastore.MediaStoreUtil.querySongs
 import player.phonograph.mediastore.SongLoader.getSongs
 import player.phonograph.mediastore.SongLoader.makeSongCursor
 import player.phonograph.model.Album
@@ -18,16 +19,16 @@ object AlbumLoader {
 
     fun getAllAlbums(context: Context): List<Album> {
         val songs = getSongs(
-            makeSongCursor(context, null, null, null)
+            querySongs(context, sortOrder = null)
         )
-        return if (songs.isNullOrEmpty()) return emptyList() else songs.toAlbumList()
+        return if (songs.isEmpty()) return emptyList() else songs.toAlbumList()
     }
 
     fun getAlbums(context: Context, query: String): List<Album> {
         val songs = getSongs(
             makeSongCursor(context, "${AudioColumns.ALBUM} LIKE ?", arrayOf("%$query%"), null)
         )
-        return if (songs.isNullOrEmpty()) return emptyList() else songs.toAlbumList()
+        return if (songs.isEmpty()) return emptyList() else songs.toAlbumList()
     }
 
     fun getAlbum(context: Context, albumId: Long): Album {

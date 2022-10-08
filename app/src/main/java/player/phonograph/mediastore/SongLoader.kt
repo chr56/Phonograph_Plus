@@ -26,15 +26,11 @@ object SongLoader {
     fun getSong(cursor: Cursor?): Song = MediaStoreUtil.getSong(cursor)
 
     @JvmStatic
-    fun makeSongCursor(context: Context, selection: String?, selectionValues: Array<String>?): Cursor? =
-        querySongs(context, selection, selectionValues)
-
-    @JvmStatic
     fun makeSongCursor(
         context: Context,
-        selection: String?,
-        selectionValues: Array<String>?,
-        sortOrder: String?
+        selection: String,
+        selectionValues: Array<String>,
+        sortOrder: String? = null,
     ): Cursor? =
         querySongs(context, selection, selectionValues, sortOrder)
 }

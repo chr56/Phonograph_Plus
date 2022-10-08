@@ -7,6 +7,7 @@ import android.content.Context
 import android.database.Cursor
 import android.provider.BaseColumns
 import lib.phonograph.misc.SortedLongCursor
+import player.phonograph.mediastore.MediaStoreUtil.querySongs
 import player.phonograph.provider.HistoryStore
 import player.phonograph.provider.SongPlayCountStore
 
@@ -93,7 +94,7 @@ object TopAndRecentlyPlayedTracksLoader {
             selection.append(")")
 
             // get a list of songs with the data given the selection statement
-            val songCursor = SongLoader.makeSongCursor(context, selection.toString(), null)
+            val songCursor = querySongs(context, selection = selection.toString()) //todo: SQL injection
             if (songCursor != null) {
                 // now return the wrapped TopTracksCursor to handle sorting given order
                 return SortedLongCursor(songCursor, order, BaseColumns._ID)

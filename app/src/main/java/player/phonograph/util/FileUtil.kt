@@ -15,6 +15,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.isActive
 import lib.phonograph.misc.SortedCursor
 import player.phonograph.App
+import player.phonograph.mediastore.MediaStoreUtil.querySongs
 import player.phonograph.mediastore.SongLoader.getSongs
 import player.phonograph.mediastore.SongLoader.makeSongCursor
 import player.phonograph.model.Song
@@ -29,20 +30,6 @@ import kotlin.math.pow
  * @author Karim Abou Zeid (kabouzeid)
  */
 object FileUtil {
-
-    fun matchFilesWithMediaStore(context: Context, files: List<File>): List<Song> {
-        return getSongs(makeSongCursor(context, files))
-    }
-
-    private fun makeSongCursor(context: Context, files: List<File>): SortedCursor? {
-        var selection: String? = null
-        val paths: Array<String> = toPathArray(files)
-        if (files.size in 1..998) { // 999 is the max amount Androids SQL implementation can handle.
-            selection = "$DATA IN (${makePlaceholders(files.size)})"
-        }
-        val songCursor = makeSongCursor(context, selection, if (selection == null) null else paths)
-        return if (songCursor == null) null else SortedCursor(songCursor, paths, DATA)
-    }
 
     private fun makePlaceholders(len: Int): String {
         val sb = StringBuilder(len * 2 - 1)

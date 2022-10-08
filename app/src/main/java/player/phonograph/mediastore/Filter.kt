@@ -68,9 +68,9 @@ private fun plusSelectionCondition(selection: String, mode: Boolean, what: Strin
 const val BASE_AUDIO_SELECTION =
     "${MediaStore.Audio.AudioColumns.IS_MUSIC} =1 "
 
-inline fun withBaseAudioFilter(block: () -> String?): String {
+inline fun withBaseAudioFilter(block: () -> String): String {
     val selection = block()
-    return if (selection.isNullOrBlank()) {
+    return if (selection.isBlank()) {
         BASE_AUDIO_SELECTION
     } else {
         "$BASE_AUDIO_SELECTION AND $selection "
