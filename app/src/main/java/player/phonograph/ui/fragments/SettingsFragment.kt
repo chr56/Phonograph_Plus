@@ -35,10 +35,12 @@ import mt.util.color.darkenColor
 import player.phonograph.R
 import player.phonograph.appshortcuts.DynamicShortcutManager
 import player.phonograph.coil.IgnoreMediaStorePreference
-import player.phonograph.preferences.*
+import player.phonograph.preferences.HomeTabConfigDialog
+import player.phonograph.preferences.NowPlayingScreenPreferenceDialog
 import player.phonograph.util.preferences.HomeTabConfig
 import player.phonograph.util.preferences.NowPlayingScreenConfig
 import player.phonograph.settings.Setting
+import player.phonograph.ui.dialogs.PathFilterDialog
 import player.phonograph.util.preferences.StyleConfig
 import player.phonograph.util.NavigationUtil
 import util.phonograph.misc.ColorChooserListener

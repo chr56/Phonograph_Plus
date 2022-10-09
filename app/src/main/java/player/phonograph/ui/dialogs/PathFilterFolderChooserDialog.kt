@@ -8,8 +8,8 @@ import mt.pref.ThemeColor
 import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.model.file.Location
-import player.phonograph.preferences.PathFilterDialog
 import player.phonograph.provider.PathFilterStore
+import player.phonograph.settings.Setting
 import java.io.File
 
 class PathFilterFolderChooserDialog : FileChooserDialog() {
@@ -20,12 +20,15 @@ class PathFilterFolderChooserDialog : FileChooserDialog() {
             .title(R.string.add_blacklist)
             .message(text = file.absolutePath)
             .positiveButton(android.R.string.ok) {
-                PathFilterStore.getInstance(App.instance).addBlacklistPath(file)
+                with(PathFilterStore.getInstance(App.instance)) {
+                    val mode = Setting.instance().pathFilterExcludeMode
+                    if (mode) addBlacklistPath(file) else addWhitelistPath(file)
+                }
 
                 it.dismiss() // dismiss this alert dialog
                 this.dismiss() // dismiss Folder Chooser
 
-                PathFilterDialog.newInstance()
+                PathFilterDialog()
                     .show(parentFragmentManager, "Blacklist_Preference_Dialog") // then reopen BlacklistPreferenceDialog
             }
             .negativeButton(android.R.string.cancel) {
