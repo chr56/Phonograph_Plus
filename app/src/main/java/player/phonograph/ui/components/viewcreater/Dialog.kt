@@ -26,11 +26,13 @@ fun buildDialogView(context: Context, titlePanel: TitlePanel?, contentPanel: Con
     val scrollView = ScrollView(context).apply {
         val linearLayout = LinearLayout(context).apply {
             orientation = LinearLayout.VERTICAL
-            if (titlePanel != null) {
-                addView(titlePanel.panel, LinearLayoutLayoutParams(MATCH_PARENT, WRAP_CONTENT))
-            }
-            addView(contentPanel.panel, LinearLayoutLayoutParams(MATCH_PARENT, WRAP_CONTENT))
-            addView(buttonPanel.panel, LinearLayoutLayoutParams(MATCH_PARENT, WRAP_CONTENT))
+            val layoutParams =
+                LinearLayoutLayoutParams(MATCH_PARENT, WRAP_CONTENT).apply {
+                    setMargins(16, 8, 16, 8)
+                }
+            if (titlePanel != null) addView(titlePanel.panel, layoutParams)
+            addView(contentPanel.panel, layoutParams)
+            addView(buttonPanel.panel, layoutParams)
         }
         addView(linearLayout)
     }
