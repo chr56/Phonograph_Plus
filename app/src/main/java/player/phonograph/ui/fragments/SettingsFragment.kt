@@ -73,33 +73,28 @@ class SettingsFragment : PreferenceFragmentCompat() {
         }
     }
 
-    // todo
-    @SuppressLint("RestrictedApi")
+    //    @SuppressLint("RestrictedApi")
     override fun onDisplayPreferenceDialog(preference: Preference) {
-        if (this.callbackFragment is OnPreferenceDisplayDialogCallback) {
-            (this.callbackFragment as OnPreferenceDisplayDialogCallback)
-                .onPreferenceDisplayDialog(this, preference)
-            return
-        }
-        if (this.activity is OnPreferenceDisplayDialogCallback) {
-            (this.activity as OnPreferenceDisplayDialogCallback?)!!
-                .onPreferenceDisplayDialog(this, preference)
-            return
-        }
-        if (this.parentFragmentManager.findFragmentByTag(
-                "androidx.preference.PreferenceFragmentCompat.DIALOG"
-            ) == null
-        ) {
+//        if (this.callbackFragment is OnPreferenceDisplayDialogCallback) {
+//            (this.callbackFragment as OnPreferenceDisplayDialogCallback)
+//                .onPreferenceDisplayDialog(this, preference)
+//            return
+//        }
+//        if (this.activity is OnPreferenceDisplayDialogCallback) {
+//            (this.activity as OnPreferenceDisplayDialogCallback?)!!
+//                .onPreferenceDisplayDialog(this, preference)
+//            return
+//        }
+        val tag = "androidx.preference.PreferenceFragmentCompat.DIALOG"
+
+//        if (this.parentFragmentManager.findFragmentByTag(tag) == null) {
             val dialogFragment = onCreatePreferenceDialog(preference)
             if (dialogFragment != null) {
                 dialogFragment.setTargetFragment(this, 0)
-                dialogFragment.show(
-                    this.parentFragmentManager,
-                    "androidx.preference.PreferenceFragmentCompat.DIALOG"
-                )
+                dialogFragment.show(this.parentFragmentManager, tag)
                 return
             }
-        }
+//        }
         super.onDisplayPreferenceDialog(preference)
     }
 
@@ -313,7 +308,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
                     },
                     1000
                 )
-            Setting.IGNORE_MEDIA_STORE_ARTWORK ->{
+            Setting.IGNORE_MEDIA_STORE_ARTWORK -> {
                 IgnoreMediaStorePreference.refresh()
             }
         }
