@@ -391,4 +391,7 @@
     </plurals>
     <string name="warning_can_not_retract">此操作無法撤消！</string>
     <string name="delete_with_lyrics">刪除(包括歌詞)</string>
+    <string name="excluded_paths">排除的路徑</string>
+    <string name="included_paths">包含的路徑</string>
+    <string name="swith_mode">切換模式</string>
 </resources>

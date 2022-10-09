@@ -402,4 +402,7 @@
     </plurals>
     <string name="warning_can_not_retract">This action can not be retracted!</string>
     <string name="delete_with_lyrics">Delete with lyrics</string>
+    <string name="excluded_paths">Excluded Paths</string>
+    <string name="included_paths">Included Paths</string>
+    <string name="swith_mode">switch mode</string>
 </resources>
