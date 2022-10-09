@@ -4,7 +4,6 @@
 
 package player.phonograph.ui.dialogs
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -13,10 +12,6 @@ import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.FrameLayout
-import android.widget.LinearLayout
-import android.widget.LinearLayout.LayoutParams
-import android.widget.Space
-import androidx.appcompat.widget.ButtonBarLayout
 import androidx.core.view.setMargins
 import androidx.fragment.app.viewModels
 import lib.phonograph.dialog.LargeDialog
@@ -25,7 +20,8 @@ import player.phonograph.R
 import player.phonograph.model.file.Location
 import player.phonograph.ui.components.explorer.FilesChooserExplorer
 import player.phonograph.ui.components.explorer.FilesChooserViewModel
-import player.phonograph.ui.components.viewcreater.createButton
+import player.phonograph.ui.components.viewcreater.buttonPanel
+import player.phonograph.ui.components.viewcreater.contentPanel
 import player.phonograph.util.PermissionUtil.navigateToStorageSetting
 
 abstract class FileChooserDialog : LargeDialog() {
@@ -52,44 +48,28 @@ abstract class FileChooserDialog : LargeDialog() {
         explorer.destroy()
     }
 
-    @SuppressLint("RestrictedApi")
     protected open fun setupView(inflater: LayoutInflater, explorer: FilesChooserExplorer): ViewGroup {
         val activity = requireActivity()
 
-        val buttonPanelHeight = 128
-        val contentPanel = FrameLayout(activity)
-        explorer.inflate(contentPanel, inflater)
-        contentPanel.setPadding(0, 0, 0, 24 + buttonPanelHeight)
-
-        val buttonPanel = ButtonBarLayout(activity, null).apply { orientation = LinearLayout.HORIZONTAL }
-        with(buttonPanel) {
-            val buttonGrantPermission =
-                createButton(activity, getString(R.string.grant_permission), accentColor) {
-                    navigateToStorageSetting(activity)
-                }
-            val buttonPositive =
-                createButton(activity, getString(android.R.string.selectAll), accentColor) {
-                    affirmative(it, model.currentLocation)
-                }
-            val layoutParams =
-                LayoutParams(WRAP_CONTENT, WRAP_CONTENT, 0f).apply { setMargins(16) }
-            addView(
-                buttonGrantPermission,
-                layoutParams
-            )
-            addView(
-                Space(activity),
-                LayoutParams(0, 0, 1f)
-            )
-            addView(
-                buttonPositive,
-                layoutParams
-            )
+        val contentPanel = contentPanel(activity) {
+            explorer.inflate(this, inflater)
+            setPadding(0, 0, 0, 24 + 128)
         }
 
-        val rootContainer = FrameLayout(activity)
-        rootContainer.addView(contentPanel, 0, FrameLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT, Gravity.TOP))
-        rootContainer.addView(buttonPanel, 1, FrameLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT, Gravity.BOTTOM))
+        val buttonPanel = buttonPanel(activity) {
+            button(0, getString(R.string.grant_permission), accentColor) {
+                navigateToStorageSetting(activity)
+            }
+            space(1)
+            button(2, getString(android.R.string.selectAll), accentColor) {
+                affirmative(it, model.currentLocation)
+            }
+        }
+
+        val rootContainer = FrameLayout(activity).apply {
+            addView(contentPanel.panel, 0, FrameLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT, Gravity.TOP))
+            addView(buttonPanel.panel, 1, FrameLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT, Gravity.BOTTOM).apply { setMargins(8) })
+        }
         return rootContainer
     }
 
