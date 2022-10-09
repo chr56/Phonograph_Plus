@@ -17,9 +17,6 @@ import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.FrameLayout
-import android.widget.LinearLayout
-import android.widget.ScrollView
-import android.widget.Space
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -34,7 +31,10 @@ import player.phonograph.mediastore.DeleteSongUtil
 import player.phonograph.misc.LyricsLoader
 import player.phonograph.model.Song
 import player.phonograph.ui.components.ViewComponent
-import player.phonograph.ui.components.viewcreater.createButton
+import player.phonograph.ui.components.viewcreater.*
+import player.phonograph.ui.components.viewcreater.buttonPanel
+import player.phonograph.ui.components.viewcreater.contentPanel
+import player.phonograph.ui.components.viewcreater.titlePanel
 import player.phonograph.util.CoroutineUtil
 import player.phonograph.util.PermissionUtil.navigateToStorageSetting
 import player.phonograph.util.StringUtil
@@ -97,44 +97,23 @@ class DeleteSongsDialog : DialogFragment() {
             titlePanel = titlePanel(activity)
 
             buttonPanel = buttonPanel(activity) {
-                val buttonGrantPermission =
-                    createButton(activity, activity.getString(R.string.grant_permission), accentColor) {
-                        navigateToStorageSetting(activity)
+                // orientation = LinearLayout.VERTICAL
+                button(0, activity.getString(R.string.grant_permission), accentColor) {
+                    navigateToStorageSetting(activity)
+                }
+                button(1, activity.getString(R.string.delete_action), accentColor) {
+                    dismiss()
+                    coroutineScope.launch {
+                        delete()
                     }
-                val buttonDelete =
-                    createButton(activity, activity.getString(R.string.delete_action), accentColor) {
-                        dismiss()
-                        coroutineScope.launch {
-                            delete()
-                        }
+                }
+                space(2)
+                button(3, activity.getString(R.string.delete_with_lyrics), accentColor) {
+                    dismiss()
+                    coroutineScope.launch {
+                        deleteWithLyrics()
                     }
-                val buttonDeleteWithLyrics =
-                    createButton(activity, activity.getString(R.string.delete_with_lyrics), accentColor) {
-                        dismiss()
-                        coroutineScope.launch {
-                            deleteWithLyrics()
-                        }
-                    }
-
-                val layoutParams =
-                    LinearLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT, 0f)//.apply { setMargins(16) }
-
-                addView(
-                    buttonGrantPermission,
-                    layoutParams
-                )
-                addView(
-                    Space(activity),
-                    LinearLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT, 1f)
-                )
-                addView(
-                    buttonDeleteWithLyrics,
-                    layoutParams
-                )
-                addView(
-                    buttonDelete,
-                    layoutParams
-                )
+                }
             }
 
 
