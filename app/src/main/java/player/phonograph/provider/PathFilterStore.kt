@@ -9,36 +9,35 @@ import android.os.Environment
 import player.phonograph.MusicServiceMsgConst
 import java.io.File
 import player.phonograph.App
-import player.phonograph.service.MusicService
 import player.phonograph.settings.Setting
 import player.phonograph.util.FileUtil.safeGetCanonicalPath
 
-class BlacklistStore(context: Context) :
-    SQLiteOpenHelper(context, DatabaseConstants.BLACKLIST_DB, null, VERSION) {
+class PathFilterStore(context: Context) :
+    SQLiteOpenHelper(context, DatabaseConstants.PATH_FILTER, null, VERSION) {
 
     override fun onCreate(db: SQLiteDatabase) {
         db.execSQL(
-            "CREATE TABLE IF NOT EXISTS ${BlacklistStoreColumns.NAME} (${BlacklistStoreColumns.PATH} TEXT NOT NULL);"
+            "CREATE TABLE IF NOT EXISTS $TABLE_BLACKLIST (${PATH} TEXT NOT NULL);"
         )
     }
 
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
-        db.execSQL("DROP TABLE IF EXISTS " + BlacklistStoreColumns.NAME)
+        db.execSQL("DROP TABLE IF EXISTS $TABLE_BLACKLIST")
         onCreate(db)
     }
 
     override fun onDowngrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
-        db.execSQL("DROP TABLE IF EXISTS " + BlacklistStoreColumns.NAME)
+        db.execSQL("DROP TABLE IF EXISTS $TABLE_BLACKLIST")
         onCreate(db)
     }
 
-    fun addPath(file: File?) {
-        addPathImpl(file)
+    fun addBlacklistPath(file: File) {
+        addBlacklistPathImpl(file)
         notifyMediaStoreChanged()
     }
 
-    private fun addPathImpl(file: File?) {
-        if (file == null || contains(file)) return
+    private fun addBlacklistPathImpl(file: File?) {
+        if (file == null || containsBlacklist(file)) return
 
         val path = safeGetCanonicalPath(file)
 
@@ -47,9 +46,9 @@ class BlacklistStore(context: Context) :
             try {
                 // add the entry
                 insert(
-                    BlacklistStoreColumns.NAME, null,
+                    TABLE_BLACKLIST, null,
                     ContentValues(1).apply {
-                        put(BlacklistStoreColumns.PATH, path)
+                        put(PATH, path)
                     }
                 )
                 setTransactionSuccessful()
@@ -59,41 +58,38 @@ class BlacklistStore(context: Context) :
         }
     }
 
-    operator fun contains(file: File?): Boolean {
+    fun containsBlacklist(file: File?): Boolean {
         if (file == null) return false
 
         val path = safeGetCanonicalPath(file)
         return readableDatabase.query(
-            BlacklistStoreColumns.NAME, arrayOf(BlacklistStoreColumns.PATH),
-            BlacklistStoreColumns.PATH + "=?", arrayOf(path),
+            TABLE_BLACKLIST, arrayOf(PATH),
+            "$PATH = ?", arrayOf(path),
             null, null, null, null
         )?.use {
             it.moveToFirst()
         } ?: false
     }
 
-    fun removePath(file: File) {
+    fun removeBlacklistPath(file: File) {
         writableDatabase.delete(
-            BlacklistStoreColumns.NAME,
-            BlacklistStoreColumns.PATH + "=?", arrayOf(safeGetCanonicalPath(file))
+            TABLE_BLACKLIST,
+            "$PATH = ?", arrayOf(safeGetCanonicalPath(file))
         )
         notifyMediaStoreChanged()
     }
 
-    fun clear() {
-        writableDatabase.delete(BlacklistStoreColumns.NAME, null, null)
+    fun clearBlacklist() {
+        writableDatabase.delete(TABLE_BLACKLIST, null, null)
         notifyMediaStoreChanged()
     }
 
-    private fun notifyMediaStoreChanged() {
-        App.instance.sendBroadcast(Intent(MusicServiceMsgConst.MEDIA_STORE_CHANGED))
-    }
 
-    val paths: List<String>
+    val blacklistPaths: List<String>
         get() {
             val paths: MutableList<String> = ArrayList()
             readableDatabase.query(
-                BlacklistStoreColumns.NAME, arrayOf(BlacklistStoreColumns.PATH),
+                TABLE_BLACKLIST, arrayOf(PATH),
                 null, null, null, null, null
             )?.use { cursor ->
                 if (cursor.moveToFirst()) {
@@ -105,29 +101,32 @@ class BlacklistStore(context: Context) :
             return paths
         }
 
-    interface BlacklistStoreColumns {
-        companion object {
-            const val NAME = "blacklist"
-            const val PATH = "path"
-        }
-    }
 
     companion object {
-        private var sInstance: BlacklistStore? = null
+        private const val VERSION = 1
+
+        const val TABLE_BLACKLIST = "blacklist"
+        const val PATH = "path"
+
+        private var sInstance: PathFilterStore? = null
 
         @Synchronized
-        fun getInstance(context: Context): BlacklistStore {
-            return sInstance ?: BlacklistStore(context.applicationContext).also { blacklistStore ->
+        fun getInstance(context: Context): PathFilterStore {
+            return sInstance ?: PathFilterStore(context.applicationContext).also { blacklistStore ->
                 sInstance = blacklistStore
                 if (!Setting.instance.initializedBlacklist) {
                     // blacklisted by default
-                    blacklistStore.addPathImpl(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_ALARMS))
-                    blacklistStore.addPathImpl(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_NOTIFICATIONS))
-                    blacklistStore.addPathImpl(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_RINGTONES))
+                    blacklistStore.addBlacklistPathImpl(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_ALARMS))
+                    blacklistStore.addBlacklistPathImpl(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_NOTIFICATIONS))
+                    blacklistStore.addBlacklistPathImpl(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_RINGTONES))
                     Setting.instance.initializedBlacklist = true
                 }
             }
         }
-        private const val VERSION = 1
+
+
+        private fun notifyMediaStoreChanged() {
+            App.instance.sendBroadcast(Intent(MusicServiceMsgConst.MEDIA_STORE_CHANGED))
+        }
     }
 }

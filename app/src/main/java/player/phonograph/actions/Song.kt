@@ -18,7 +18,7 @@ import player.phonograph.R
 import player.phonograph.interfaces.PaletteColorHolder
 import player.phonograph.model.Song
 import player.phonograph.service.MusicPlayerRemote
-import player.phonograph.util.BlacklistUtil
+import player.phonograph.util.PathFilterUtil
 import player.phonograph.util.NavigationUtil
 import player.phonograph.util.RingtoneManager
 import util.phonograph.tageditor.AbsTagEditorActivity
@@ -135,7 +135,7 @@ fun applyToPopupMenu(
             menuItem(title = getString(R.string.action_add_to_black_list)) { // id = R.id.action_add_to_black_list
                 showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
                 onClick {
-                    BlacklistUtil.addToBlacklist(context, song)
+                    PathFilterUtil.addToBlacklist(context, song)
                     true
                 }
             }

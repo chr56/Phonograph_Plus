@@ -24,7 +24,7 @@ import player.phonograph.model.Song
 import player.phonograph.model.file.FileEntity
 import player.phonograph.model.file.linkedSong
 import player.phonograph.service.MusicPlayerRemote
-import player.phonograph.util.BlacklistUtil
+import player.phonograph.util.PathFilterUtil
 import player.phonograph.util.preferences.FileConfig
 import java.io.File
 
@@ -89,7 +89,7 @@ fun applyToPopupMenu(
                 menuItem(title = getString(R.string.action_add_to_black_list)) { // id = R.id.action_add_to_black_list
                     showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
                     onClick {
-                        BlacklistUtil.addToBlacklist(context, File(file.location.absolutePath))
+                        PathFilterUtil.addToBlacklist(context, File(file.location.absolutePath))
                         true
                     }
                 }

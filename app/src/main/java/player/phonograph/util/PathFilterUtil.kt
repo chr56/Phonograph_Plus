@@ -11,10 +11,10 @@ import kotlinx.coroutines.*
 import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.model.Song
-import player.phonograph.provider.BlacklistStore
+import player.phonograph.provider.PathFilterStore
 import java.io.File
 
-object BlacklistUtil {
+object PathFilterUtil {
     fun addToBlacklist(context: Context, file: File) {
         if (file.isDirectory)
             addToBlacklistImpl(context, file.absolutePath)
@@ -54,7 +54,7 @@ object BlacklistUtil {
                                     .title(R.string.add_blacklist)
                                     .message(text = pathText)
                                     .positiveButton(android.R.string.ok) {
-                                        CoroutineScope(Dispatchers.IO).launch(Dispatchers.IO) { BlacklistStore.getInstance(App.instance).addPath(File(pathText as String)) }
+                                        CoroutineScope(Dispatchers.IO).launch(Dispatchers.IO) { PathFilterStore.getInstance(App.instance).addBlacklistPath(File(pathText as String)) }
                                         parentDialog.dismiss()
                                     }
                                     .negativeButton(android.R.string.cancel)

@@ -6,7 +6,7 @@ package player.phonograph.mediastore
 
 import android.content.Context
 import android.provider.MediaStore
-import player.phonograph.provider.BlacklistStore
+import player.phonograph.provider.PathFilterStore
 
 class SQLWhereClause(val selection: String, val selectionValues: Array<String>)
 
@@ -19,7 +19,7 @@ fun withPathFilter(context: Context, mode: Boolean = false, block: () -> SQLWher
         if (mode)
             emptyList() // todo: not implemented yet
         else
-            BlacklistStore.getInstance(context).paths.map { "$it%" }
+            PathFilterStore.getInstance(context).blacklistPaths.map { "$it%" }
 
     val target = block()
 

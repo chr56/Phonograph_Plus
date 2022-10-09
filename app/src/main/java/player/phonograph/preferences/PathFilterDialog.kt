@@ -12,17 +12,17 @@ import com.afollestad.materialdialogs.list.listItems
 import mt.pref.ThemeColor
 import player.phonograph.App
 import player.phonograph.R
-import player.phonograph.ui.dialogs.BlacklistFolderChooserDialog
-import player.phonograph.provider.BlacklistStore
+import player.phonograph.ui.dialogs.PathFilterFolderChooserDialog
+import player.phonograph.provider.PathFilterStore
 import java.io.File
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
  */
-class BlacklistPreferenceDialog : DialogFragment() {
+class PathFilterDialog : DialogFragment() {
     private lateinit var paths: List<String>
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        paths = BlacklistStore.getInstance(requireContext()).paths
+        paths = PathFilterStore.getInstance(requireContext()).blacklistPaths
         val dialog = MaterialDialog(requireContext())
             .title(R.string.blacklist)
             .positiveButton(android.R.string.ok) { dismiss() }
@@ -31,14 +31,14 @@ class BlacklistPreferenceDialog : DialogFragment() {
                     .title(R.string.clear_blacklist)
                     .message(R.string.do_you_want_to_clear_the_blacklist)
                     .positiveButton(R.string.clear_action) {
-                        BlacklistStore.getInstance(App.instance).clear()
+                        PathFilterStore.getInstance(App.instance).clearBlacklist()
                         refreshBlacklistData()
                     }
                     .negativeButton(android.R.string.cancel)
                     .show()
             }
             .negativeButton(R.string.add_action) {
-                BlacklistFolderChooserDialog().show(parentFragmentManager, "FOLDER_CHOOSER")
+                PathFilterFolderChooserDialog().show(parentFragmentManager, "FOLDER_CHOOSER")
                 dismiss()
             }
             .listItems(items = paths, waitForPositiveButton = false) { _, _, charSequence ->
@@ -46,7 +46,7 @@ class BlacklistPreferenceDialog : DialogFragment() {
                     .title(R.string.remove_from_blacklist)
                     .message(text = Html.fromHtml(getString(R.string.do_you_want_to_remove_from_the_blacklist, charSequence)))
                     .positiveButton(R.string.remove_action) {
-                        BlacklistStore.getInstance(App.instance).removePath(File(charSequence.toString()))
+                        PathFilterStore.getInstance(App.instance).removeBlacklistPath(File(charSequence.toString()))
                         refreshBlacklistData()
                     }
                     .negativeButton(android.R.string.cancel)
@@ -62,14 +62,14 @@ class BlacklistPreferenceDialog : DialogFragment() {
 
     @SuppressLint("CheckResult")
     private fun refreshBlacklistData() {
-        val paths = BlacklistStore.getInstance(App.instance).paths
+        val paths = PathFilterStore.getInstance(App.instance).blacklistPaths
         val dialog = dialog as MaterialDialog
         dialog.listItems(items = paths)
     }
 
     companion object {
-        fun newInstance(): BlacklistPreferenceDialog {
-            return BlacklistPreferenceDialog()
+        fun newInstance(): PathFilterDialog {
+            return PathFilterDialog()
         }
     }
 }

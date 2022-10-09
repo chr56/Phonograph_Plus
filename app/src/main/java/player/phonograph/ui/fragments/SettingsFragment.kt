@@ -52,7 +52,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
     private fun onCreatePreferenceDialog(preference: Preference): DialogFragment? =
         when (val key = preference.key) {
             getString(R.string.preference_key_app_language) -> LanguageSettingDialog()
-            getString(R.string.preference_key_blacklist) -> BlacklistPreferenceDialog()
+            getString(R.string.preference_key_blacklist) -> PathFilterDialog()
             getString(R.string.preference_key_home_tab_config) -> HomeTabConfigDialog()
             getString(R.string.preference_key_now_playing_screen) -> NowPlayingScreenPreferenceDialog()
             else -> {
