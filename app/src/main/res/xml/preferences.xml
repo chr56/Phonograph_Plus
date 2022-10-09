@@ -82,6 +82,17 @@
     </lib.phonograph.preference.PreferenceCategoryX>
 
 
+    <lib.phonograph.preference.PreferenceCategoryX android:title="@string/blacklist">
+
+        <lib.phonograph.preference.DialogPreferenceX
+            android:key="@string/preference_key_blacklist"
+            android:summary="@string/pref_summary_blacklist"
+            android:title="@string/blacklist"
+            app:iconSpaceReserved="false" />
+
+    </lib.phonograph.preference.PreferenceCategoryX>
+
+
     <lib.phonograph.preference.PreferenceCategoryX android:title="@string/pref_header_notification">
 
         <lib.phonograph.preference.SwitchPreferenceX
@@ -224,16 +235,6 @@
             android:negativeButtonText="@null"
             android:positiveButtonText="@null"
             android:title="@string/pref_title_last_added_interval"
-            app:iconSpaceReserved="false" />
-
-    </lib.phonograph.preference.PreferenceCategoryX>
-
-    <lib.phonograph.preference.PreferenceCategoryX android:title="@string/blacklist">
-
-        <lib.phonograph.preference.DialogPreferenceX
-            android:key="@string/preference_key_blacklist"
-            android:summary="@string/pref_summary_blacklist"
-            android:title="@string/blacklist"
             app:iconSpaceReserved="false" />
 
     </lib.phonograph.preference.PreferenceCategoryX>
