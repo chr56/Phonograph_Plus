@@ -45,5 +45,8 @@
 
     <!--  special app keys  -->
     <string name="preference_key_app_language" translatable="false">app_language</string>
+    <string name="preference_key_blacklist" translatable="false">blacklist</string>
+    <string name="preference_key_home_tab_config" translatable="false">home_tab_config</string>
+    <string name="preference_key_now_playing_screen" translatable="false">now_playing_screen</string>
 
 </resources>

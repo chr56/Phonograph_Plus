@@ -49,29 +49,25 @@ class SettingsFragment : PreferenceFragmentCompat() {
         addPreferencesFromResource(R.xml.preferences)
     }
 
-    private fun onCreatePreferenceDialog(preference: Preference): DialogFragment? {
-        val key = preference.key
-        when (key) {
-            getString(R.string.preference_key_app_language) ->
-                return LanguageSettingDialog()
-        }
-        return when (preference) {
-            is NowPlayingScreenPreferenceX ->
-                NowPlayingScreenPreferenceDialog.newInstance()
-            is BlacklistPreferenceX ->
-                BlacklistPreferenceDialog.newInstance()
-            is HomeTabConfigPreferenceX ->
-                HomeTabConfigDialog.newInstance()
-            is EditTextPreferenceX ->
-                EditTextPreferenceDialogFragmentCompatX.newInstance(key)
-            is ListPreferenceX ->
-                ListPreferenceDialogFragmentCompatX.newInstance(key)
-            is DialogPreferenceX -> {
-                PreferenceDialogFragmentX.newInstance(key)
+    private fun onCreatePreferenceDialog(preference: Preference): DialogFragment? =
+        when (val key = preference.key) {
+            getString(R.string.preference_key_app_language) -> LanguageSettingDialog()
+            getString(R.string.preference_key_blacklist) -> BlacklistPreferenceDialog()
+            getString(R.string.preference_key_home_tab_config) -> HomeTabConfigDialog()
+            getString(R.string.preference_key_now_playing_screen) -> NowPlayingScreenPreferenceDialog()
+            else -> {
+                when (preference) {
+                    is EditTextPreferenceX ->
+                        EditTextPreferenceDialogFragmentCompatX.newInstance(key)
+                    is ListPreferenceX ->
+                        ListPreferenceDialogFragmentCompatX.newInstance(key)
+                    is DialogPreferenceX -> {
+                        PreferenceDialogFragmentX.newInstance(key)
+                    }
+                    else -> null
+                }
             }
-            else -> null
         }
-    }
 
     //    @SuppressLint("RestrictedApi")
     override fun onDisplayPreferenceDialog(preference: Preference) {
@@ -88,12 +84,12 @@ class SettingsFragment : PreferenceFragmentCompat() {
         val tag = "androidx.preference.PreferenceFragmentCompat.DIALOG"
 
 //        if (this.parentFragmentManager.findFragmentByTag(tag) == null) {
-            val dialogFragment = onCreatePreferenceDialog(preference)
-            if (dialogFragment != null) {
-                dialogFragment.setTargetFragment(this, 0)
-                dialogFragment.show(this.parentFragmentManager, tag)
-                return
-            }
+        val dialogFragment = onCreatePreferenceDialog(preference)
+        if (dialogFragment != null) {
+            dialogFragment.setTargetFragment(this, 0)
+            dialogFragment.show(this.parentFragmentManager, tag)
+            return
+        }
 //        }
         super.onDisplayPreferenceDialog(preference)
     }
@@ -107,9 +103,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        Setting.instance.unregisterOnSharedPreferenceChangedListener(
-            sharedPreferenceChangeListener
-        )
+        Setting.instance.unregisterOnSharedPreferenceChangedListener(sharedPreferenceChangeListener)
     }
 
     override fun onPreferenceTreeClick(preference: Preference): Boolean {
@@ -135,8 +129,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
     }
 
     private fun updateNowPlayingScreenSummary() {
-        findPreference<Preference>("now_playing_screen_id")!!
-            .setSummary(NowPlayingScreenConfig.nowPlayingScreen.titleRes)
+        findPreference<Preference>(getString(R.string.preference_key_now_playing_screen))?.setSummary(NowPlayingScreenConfig.nowPlayingScreen.titleRes)
     }
 
     fun invalidateSettings() {

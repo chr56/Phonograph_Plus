@@ -54,8 +54,8 @@
 
     <lib.phonograph.preference.PreferenceCategoryX android:title="@string/pref_header_library">
 
-        <player.phonograph.preferences.HomeTabConfigPreferenceX
-            android:key="home_pages_tab_config"
+        <lib.phonograph.preference.DialogPreferenceX
+            android:key="@string/preference_key_home_tab_config"
             android:summary="@string/pref_summary_library_categories"
             android:title="@string/library_categories"
             app:iconSpaceReserved="false" />
@@ -102,8 +102,8 @@
 
     <lib.phonograph.preference.PreferenceCategoryX android:title="@string/pref_header_now_playing_screen">
 
-        <player.phonograph.preferences.NowPlayingScreenPreferenceX
-            android:key="now_playing_screen_id"
+        <lib.phonograph.preference.DialogPreferenceX
+            android:key="@string/preference_key_now_playing_screen"
             android:title="@string/pref_title_now_playing_screen_appearance"
             app:iconSpaceReserved="false" />
 
@@ -230,8 +230,8 @@
 
     <lib.phonograph.preference.PreferenceCategoryX android:title="@string/blacklist">
 
-        <player.phonograph.preferences.BlacklistPreferenceX
-            android:key="blacklist"
+        <lib.phonograph.preference.DialogPreferenceX
+            android:key="@string/preference_key_blacklist"
             android:summary="@string/pref_summary_blacklist"
             android:title="@string/blacklist"
             app:iconSpaceReserved="false" />
