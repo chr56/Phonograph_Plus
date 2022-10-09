@@ -134,6 +134,15 @@ class SettingsFragment : PreferenceFragmentCompat() {
         findPreference<Preference>(getString(R.string.preference_key_now_playing_screen))?.setSummary(NowPlayingScreenConfig.nowPlayingScreen.titleRes)
     }
 
+    private fun updatePathFilterExcludeMode() {
+        findPreference<Preference>(getString(R.string.preference_key_blacklist))?.summary =
+            if (Setting.instance().pathFilterExcludeMode) {
+                "${getString(R.string.path_filter_excluded_mode)} - \n${getString(R.string.pref_summary_path_filter_excluded_mode)}"
+            } else {
+                "${getString(R.string.path_filter_included_mode)} - \n${getString(R.string.pref_summary_path_filter_included_mode)}"
+            }
+    }
+
     fun invalidateSettings() {
         //
         val generalTheme = findPreference<Preference>("general_theme")!!
@@ -255,6 +264,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
         //
         updateNowPlayingScreenSummary()
+        updatePathFilterExcludeMode()
     }
 
     companion object {
@@ -290,6 +300,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
     private val sharedPreferenceChangeListener = SharedPreferences.OnSharedPreferenceChangeListener { sharedPreferences, key ->
         when (key) {
             Setting.NOW_PLAYING_SCREEN_ID -> updateNowPlayingScreenSummary()
+            Setting.PATH_FILTER_EXCLUDE_MODE -> updatePathFilterExcludeMode()
             Setting.CLASSIC_NOTIFICATION ->
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                     findPreference<Preference>("colored_notification")!!.isEnabled =

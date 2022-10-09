@@ -82,12 +82,12 @@
     </lib.phonograph.preference.PreferenceCategoryX>
 
 
-    <lib.phonograph.preference.PreferenceCategoryX android:title="@string/blacklist">
+    <lib.phonograph.preference.PreferenceCategoryX android:title="@string/path_filter">
 
         <lib.phonograph.preference.DialogPreferenceX
             android:key="@string/preference_key_blacklist"
-            android:summary="@string/pref_summary_blacklist"
-            android:title="@string/blacklist"
+            android:persistent="false"
+            android:title="@string/path_filter"
             app:iconSpaceReserved="false" />
 
     </lib.phonograph.preference.PreferenceCategoryX>

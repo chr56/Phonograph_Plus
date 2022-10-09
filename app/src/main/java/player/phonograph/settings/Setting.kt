@@ -289,7 +289,7 @@ class Setting(context: Context) {
         // Misc
         private const val START_DIRECTORY = "start_directory"
         private const val INITIALIZED_BLACKLIST = "initialized_blacklist"
-        private const val PATH_FILTER_EXCLUDE_MODE = "path_filter_exclude_mode"
+        const val PATH_FILTER_EXCLUDE_MODE = "path_filter_exclude_mode"
         private const val IGNORE_UPGRADE_VERSION_CODE = "ignore_upgrade_version_code"
 
         // compatibility

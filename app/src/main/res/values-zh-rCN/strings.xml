@@ -394,4 +394,9 @@
     <string name="excluded_paths">黑名单</string>
     <string name="included_paths">白名单</string>
     <string name="swith_mode">切换模式</string>
+    <string name="path_filter">文件过滤器</string>
+    <string name="path_filter_excluded_mode">黑名单模式</string>
+    <string name="path_filter_included_mode">白名单模式</string>
+    <string name="pref_summary_path_filter_excluded_mode">黑名单文件夹中的内容将被隐藏</string>
+    <string name="pref_summary_path_filter_included_mode">仅显示白名单文件夹中的内容</string>
 </resources>

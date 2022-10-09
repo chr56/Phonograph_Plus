@@ -405,4 +405,9 @@
     <string name="excluded_paths">Excluded Paths</string>
     <string name="included_paths">Included Paths</string>
     <string name="swith_mode">switch mode</string>
+    <string name="path_filter">Path Filter</string>
+    <string name="path_filter_excluded_mode">Exclude Mode</string>
+    <string name="path_filter_included_mode">Include Mode</string>
+    <string name="pref_summary_path_filter_excluded_mode">The content of excluded folders is hidden from your library.</string>
+    <string name="pref_summary_path_filter_included_mode">Your library only shows the content from included folders.</string>
 </resources>
