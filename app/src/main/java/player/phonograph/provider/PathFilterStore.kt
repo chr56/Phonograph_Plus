@@ -135,7 +135,7 @@ class PathFilterStore(context: Context) :
 
 
     companion object {
-        private const val VERSION = 1
+        private const val VERSION = 2
 
         const val TABLE_BLACKLIST = "blacklist"
         const val TABLE_WHITELIST = "whitelist"
