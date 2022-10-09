@@ -5,12 +5,15 @@ import android.content.Context
 import android.content.Intent
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
-import android.os.Environment
-import player.phonograph.MusicServiceMsgConst
-import java.io.File
+import android.os.Environment.DIRECTORY_ALARMS
+import android.os.Environment.DIRECTORY_NOTIFICATIONS
+import android.os.Environment.DIRECTORY_RINGTONES
+import android.os.Environment.getExternalStoragePublicDirectory
 import player.phonograph.App
+import player.phonograph.MusicServiceMsgConst
 import player.phonograph.settings.Setting
 import player.phonograph.util.FileUtil.safeGetCanonicalPath
+import java.io.File
 
 class PathFilterStore(context: Context) :
     SQLiteOpenHelper(context, DatabaseConstants.PATH_FILTER, null, VERSION) {
@@ -19,25 +22,73 @@ class PathFilterStore(context: Context) :
         db.execSQL(
             "CREATE TABLE IF NOT EXISTS $TABLE_BLACKLIST (${PATH} TEXT NOT NULL);"
         )
+        db.execSQL(
+            "CREATE TABLE IF NOT EXISTS $TABLE_WHITELIST (${PATH} TEXT NOT NULL);"
+        )
     }
 
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
-        db.execSQL("DROP TABLE IF EXISTS $TABLE_BLACKLIST")
         onCreate(db)
     }
 
     override fun onDowngrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
-        db.execSQL("DROP TABLE IF EXISTS $TABLE_BLACKLIST")
         onCreate(db)
     }
 
+    val blacklistPaths: List<String>
+        get() = fetch(TABLE_BLACKLIST)
+
+    val whitelistPaths: List<String>
+        get() = fetch(TABLE_WHITELIST)
+
+    private fun fetch(table: String): List<String> {
+        val paths: MutableList<String> = ArrayList()
+        readableDatabase.query(
+            table, arrayOf(PATH), null, null, null, null, null
+        )?.use { cursor ->
+            if (cursor.moveToFirst()) {
+                do {
+                    paths.add(cursor.getString(0))
+                } while (cursor.moveToNext())
+            }
+        }
+        return paths
+    }
+
+
     fun addBlacklistPath(file: File) {
-        addBlacklistPathImpl(file)
+        addPathImpl(file, TABLE_BLACKLIST)
         notifyMediaStoreChanged()
     }
 
-    private fun addBlacklistPathImpl(file: File?) {
-        if (file == null || containsBlacklist(file)) return
+    fun addWhitelistPath(file: File) {
+        addPathImpl(file, TABLE_WHITELIST)
+        notifyMediaStoreChanged()
+    }
+
+
+    fun removeBlacklistPath(file: File) {
+        removePathImpl(file, TABLE_BLACKLIST)
+        notifyMediaStoreChanged()
+    }
+    fun removeWhitelistPath(file: File) {
+        removePathImpl(file, TABLE_WHITELIST)
+        notifyMediaStoreChanged()
+    }
+
+    fun clearBlacklist() {
+        clearTable(TABLE_BLACKLIST)
+        notifyMediaStoreChanged()
+    }
+
+    fun clearWhitelist() {
+        clearTable(TABLE_WHITELIST)
+        notifyMediaStoreChanged()
+    }
+
+
+    private fun addPathImpl(file: File, table: String) {
+        if (contains(file, table)) return
 
         val path = safeGetCanonicalPath(file)
 
@@ -46,7 +97,7 @@ class PathFilterStore(context: Context) :
             try {
                 // add the entry
                 insert(
-                    TABLE_BLACKLIST, null,
+                    table, null,
                     ContentValues(1).apply {
                         put(PATH, path)
                     }
@@ -58,12 +109,18 @@ class PathFilterStore(context: Context) :
         }
     }
 
-    fun containsBlacklist(file: File?): Boolean {
+    private fun removePathImpl(file: File, table: String) {
+        writableDatabase.delete(
+            table, "$PATH = ?", arrayOf(safeGetCanonicalPath(file))
+        )
+    }
+
+    internal fun contains(file: File?, table: String): Boolean {
         if (file == null) return false
 
         val path = safeGetCanonicalPath(file)
         return readableDatabase.query(
-            TABLE_BLACKLIST, arrayOf(PATH),
+            table, arrayOf(PATH),
             "$PATH = ?", arrayOf(path),
             null, null, null, null
         )?.use {
@@ -71,41 +128,17 @@ class PathFilterStore(context: Context) :
         } ?: false
     }
 
-    fun removeBlacklistPath(file: File) {
-        writableDatabase.delete(
-            TABLE_BLACKLIST,
-            "$PATH = ?", arrayOf(safeGetCanonicalPath(file))
-        )
-        notifyMediaStoreChanged()
+
+    private fun clearTable(table: String) {
+        writableDatabase.delete(table, null, null)
     }
-
-    fun clearBlacklist() {
-        writableDatabase.delete(TABLE_BLACKLIST, null, null)
-        notifyMediaStoreChanged()
-    }
-
-
-    val blacklistPaths: List<String>
-        get() {
-            val paths: MutableList<String> = ArrayList()
-            readableDatabase.query(
-                TABLE_BLACKLIST, arrayOf(PATH),
-                null, null, null, null, null
-            )?.use { cursor ->
-                if (cursor.moveToFirst()) {
-                    do {
-                        paths.add(cursor.getString(0))
-                    } while (cursor.moveToNext())
-                }
-            }
-            return paths
-        }
 
 
     companion object {
         private const val VERSION = 1
 
         const val TABLE_BLACKLIST = "blacklist"
+        const val TABLE_WHITELIST = "whitelist"
         const val PATH = "path"
 
         private var sInstance: PathFilterStore? = null
@@ -116,9 +149,9 @@ class PathFilterStore(context: Context) :
                 sInstance = blacklistStore
                 if (!Setting.instance.initializedBlacklist) {
                     // blacklisted by default
-                    blacklistStore.addBlacklistPathImpl(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_ALARMS))
-                    blacklistStore.addBlacklistPathImpl(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_NOTIFICATIONS))
-                    blacklistStore.addBlacklistPathImpl(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_RINGTONES))
+                    blacklistStore.addPathImpl(getExternalStoragePublicDirectory(DIRECTORY_ALARMS), TABLE_BLACKLIST)
+                    blacklistStore.addPathImpl(getExternalStoragePublicDirectory(DIRECTORY_NOTIFICATIONS), TABLE_BLACKLIST)
+                    blacklistStore.addPathImpl(getExternalStoragePublicDirectory(DIRECTORY_RINGTONES), TABLE_BLACKLIST)
                     Setting.instance.initializedBlacklist = true
                 }
             }
