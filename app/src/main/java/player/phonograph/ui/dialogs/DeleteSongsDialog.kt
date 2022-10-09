@@ -4,7 +4,6 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.pm.PackageManager
-import android.graphics.Typeface
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -24,7 +23,6 @@ import android.widget.Space
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.widget.ButtonBarLayout
 import androidx.core.view.setMargins
 import androidx.fragment.app.DialogFragment
 import kotlinx.coroutines.CoroutineScope
@@ -85,27 +83,20 @@ class DeleteSongsDialog : DialogFragment() {
     }
 
     class DeleteSongsWindow(private val activity: Activity, val dismiss: () -> Unit) : ViewComponent<ViewGroup, DeleteSongsModel> {
-        lateinit var text: TextView
-        lateinit var title: TextView
+
+        lateinit var titlePanel: TitlePanel
+        lateinit var buttonPanel: ButtonPanel
+        lateinit var contentPanel: ContentPanel
+
+        lateinit var contentText: TextView
 
         @SuppressLint("RestrictedApi")
         override fun inflate(rootContainer: ViewGroup, layoutInflater: LayoutInflater?) {
             val accentColor = accentColor(activity)
 
-            title = TextView(activity).apply {
-                textSize = 20f
-                setTextColor(activity.getColor(R.color.dialog_button_color))
-                typeface = Typeface.create(Typeface.SANS_SERIF, Typeface.BOLD)
-            }
+            titlePanel = titlePanel(activity)
 
-            val titlePanel = FrameLayout(activity).apply {
-                setPadding(24, 36, 24, 36)
-                addView(title)
-            }
-
-
-            val buttonPanel = ButtonBarLayout(activity, null).apply { orientation = LinearLayout.HORIZONTAL }
-            with(buttonPanel) {
+            buttonPanel = buttonPanel(activity) {
                 val buttonGrantPermission =
                     createButton(activity, activity.getString(R.string.grant_permission), accentColor) {
                         navigateToStorageSetting(activity)
@@ -146,30 +137,20 @@ class DeleteSongsDialog : DialogFragment() {
                 )
             }
 
-            text = TextView(activity).apply {
-                textSize = 16f
+
+            contentPanel = contentPanel(activity) {
+                this@DeleteSongsWindow.contentText = TextView(activity).apply {
+                    textSize = 16f
+                }
+                addView(contentText)
             }
 
-            val contentPanel = FrameLayout(activity).apply {
-                setPadding(24, 16, 24, 16)
-                addView(text)
-            }
-
-
-            val linearLayout = LinearLayout(activity).apply {
-                orientation = LinearLayout.VERTICAL
-                addView(titlePanel, LinearLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT))
-                addView(contentPanel, LinearLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT))
-                addView(buttonPanel, LinearLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT))
-            }
-            val scrollView = ScrollView(activity).apply {
-                addView(linearLayout)
-            }
-            rootContainer.addView(scrollView, FrameLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT).apply { setMargins(24) })
+            val root = buildDialogView(activity, titlePanel, contentPanel, buttonPanel)
+            rootContainer.addView(root, FrameLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT).apply { setMargins(24) })
         }
 
         override fun loadData(model: DeleteSongsModel) {
-            text.text =
+            contentText.text =
                 StringUtil.buildDeletionMessage(
                     context = activity,
                     itemSize = model.songs.size,
@@ -181,7 +162,7 @@ class DeleteSongsDialog : DialogFragment() {
                         model.songs.map { it.title }
                     )
                 )
-            title.text = activity.getString(R.string.delete_action)
+            titlePanel.titleView.text = activity.getString(R.string.delete_action)
             delete = {
                 val total = model.songs.size
                 val fails = DeleteSongUtil.deleteSongs(activity, model.songs)
