@@ -10,6 +10,7 @@ plugins {
     id("com.android.application")
     id("kotlin-android")
     id("org.jetbrains.kotlin.plugin.serialization")
+    id("org.jetbrains.kotlin.plugin.parcelize")
     id("version.management") // Phonograph Plus's dependency management
 }
 
