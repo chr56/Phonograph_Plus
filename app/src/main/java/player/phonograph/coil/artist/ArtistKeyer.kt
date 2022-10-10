@@ -10,6 +10,6 @@ import player.phonograph.model.Artist
 
 class ArtistKeyer : Keyer<Artist> {
     override fun key(data: Artist, options: Options): String {
-        return with(data) { "$name/$id" }
+        return with(data) { "$name($id)@${options.size}" }
     }
 }

@@ -9,6 +9,6 @@ import coil.request.Options
 
 class AudioFileKeyer : Keyer<AudioFile> {
     override fun key(data: AudioFile, options: Options): String {
-        return data.songId.toString()
+        return "${data.songId}@${options.size}"
     }
 }
