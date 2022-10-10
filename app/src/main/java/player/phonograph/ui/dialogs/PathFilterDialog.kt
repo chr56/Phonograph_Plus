@@ -178,4 +178,13 @@ class PathFilterDialog : DialogFragment() {
 
     fun title(mode: Boolean) = if (mode) getString(R.string.excluded_paths) else getString(R.string.included_paths)
 
+    override fun onStart() {
+        requireDialog().window!!.attributes =
+            requireDialog().window!!.let { window ->
+                window.attributes.apply {
+                    width = (requireActivity().window.decorView.width * 0.90).toInt()
+                }
+            }
+        super.onStart()
+    }
 }
