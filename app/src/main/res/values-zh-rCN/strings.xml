@@ -293,7 +293,7 @@
     <string name="download">下载</string>
     <string name="ignore_once">忽略此次</string>
     <string name="upgrade_ignored">更新已忽略！</string>
-    <string name="tg_channel">Telegram Channel</string>
+    <string name="tg_channel">Telegram 频道</string>
     <string name="auto_check_upgrade">自动检查更新</string>
     <string name="auto_check_upgrade_summary">自动检查更新并及时弹出更新对话框</string>
     <string name="edit">编辑…</string>
@@ -391,12 +391,4 @@
     </plurals>
     <string name="warning_can_not_retract">此操作无法撤销！</string>
     <string name="delete_with_lyrics">删除(和歌词一起)</string>
-    <string name="excluded_paths">黑名单</string>
-    <string name="included_paths">白名单</string>
-    <string name="swith_mode">切换模式</string>
-    <string name="path_filter">文件过滤器</string>
-    <string name="path_filter_excluded_mode">黑名单模式</string>
-    <string name="path_filter_included_mode">白名单模式</string>
-    <string name="pref_summary_path_filter_excluded_mode">黑名单文件夹中的内容将被隐藏</string>
-    <string name="pref_summary_path_filter_included_mode">仅显示白名单文件夹中的内容</string>
 </resources>
