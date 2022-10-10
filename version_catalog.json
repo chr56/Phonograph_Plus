@@ -1,0 +1,38 @@
+{
+  "updateDate": 1665331200,
+  "latestVersions": {
+    "lts": 314,
+    "stable": 314,
+    "preview": 314
+  },
+  "versions": [
+    {
+      "channel": "lts",
+      "versionName": "0.3.5.1-LTS",
+      "versionCode": 314,
+      "date": 1665331200,
+      "link": {
+        "name": "Github Release",
+        "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/v0.3.5.1-LTS"
+      },
+      "releaseNote": {
+        "zh-cn": "0.3.5.1-LTS log",
+        "en": "0.3.5.1-LTS log"
+      }
+    },
+    {
+      "channel": "lts",
+      "versionName": "0.2.6.1",
+      "versionCode": 226,
+      "date": 1665331200,
+      "link": {
+        "name": "Github Release",
+        "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/v0.2.6.1"
+      },
+      "releaseNote": {
+        "zh-cn": "0.2.6.1 log",
+        "en": "0.2.6.1 log"
+      }
+    }
+  ]
+}
