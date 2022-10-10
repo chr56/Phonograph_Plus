@@ -5,7 +5,7 @@
     <string name="the_audio_file">קובץ האודיו</string>
     <string name="action_set_as_ringtone">הגדרה כצלצול</string>
     <string name="action_share">שיתוף</string>
-    <string name="action_settings">"הגדרות"</string>
+    <string name="action_settings">הגדרות</string>
     <string name="action_grant">הענק</string>
     <string name="action_about">אודות</string>
     <string name="action_add_to_favorites">הוספה למועדפים</string>
@@ -29,9 +29,6 @@
     <string name="genres">סגנונות</string>
     <string name="songs">שירים</string>
     <string name="playlists">רשימות השמעה</string>
-    <string name="unplayable_file">\u05dc\u05d0 \u05e0\u05d9\u05ea\u05df \u05dc\u05e0\u05d2\u05df \u05e9\u05d9\u05e8 \u05d6\u05d4.</string>
-    <string name="biography_unavailable">\u05dc\u05d0 \u05e0\u05d9\u05ea\u05df \u05dc\u05de\u05e6\u05d5\u05d0 \u05e2\u05d5\u05d3 \u05e2\u05e8\u05da \u05d1\u05d9\u05d5\u05d2\u05e8\u05e4\u05d9\u05d4 \u05e9\u05dc \u05d0\u05de\u05df \u05d6\u05d4.</string>
-    <string name="wiki_unavailable">\u05dc\u05d0 \u05d9\u05db\u05d5\u05dc \u05dc\u05de\u05e6\u05d5\u05d0 \u05e2\u05e8\u05da \u05d5\u05d5\u05d9\u05e7\u05d9\u05e4\u05d3\u05d9\u05d4 \u05dc\u05d0\u05dc\u05d1\u05d5\u05dd \u05d4\u05d6\u05d4.</string>
     <string name="biography">ביוגרפיה</string>
     <string name="wiki">וויקיפדיה</string>
     <string name="audio_focus_denied">מיקוד שמע נדחה.</string>
@@ -40,7 +37,7 @@
     <string name="genre">סגנון</string>
     <string name="album_artist">אמן האלבום</string>
     <string name="year">שנה</string>
-    <string name="track_hint">"שיר (2 בשביל שיר 2 או 3004 בשביל דיסק 3 שיר 4)"</string>
+    <string name="track_hint">שיר (2 בשביל שיר 2 או 3004 בשביל דיסק 3 שיר 4)</string>
     <string name="lyrics">מילים</string>
     <string name="album_or_artist_empty">הכותרת או האמן ריקים.</string>
     <string name="saving_changes">שומר שינויים</string>
@@ -57,7 +54,6 @@
     <string name="label_playing_queue">מנגן תור השמעה</string>
     <string name="no_results">אין תוצאות</string>
     <string name="updating">מעדכן...</string>
-    <string name="added_title_to_playing_queue">"נוסף שיר אחד לתור "</string>
     <string name="added_x_titles_to_playing_queue">נוספו %1$d שירים לתור</string>
     <string name="action_remove_from_playlist">הסר מרשימת ההשמעה</string>
     <string name="action_grid_size">גודל הרשת</string>
@@ -65,11 +61,10 @@
     <string name="inserted_x_songs_into_playlist_x">הוכנסו %1$d שירים לתוך רשימת השמיעה %2$s</string>
     <string name="created_playlist_x">נוצרה רשימת השמיעה %1$s</string>
     <string name="playlist_exists">רשימת ההשמעה %1$s כבר קיימת.</string>
-    <string name="could_not_create_playlist">\u05dc\u05d0 \u05e0\u05d9\u05ea\u05df \u05dc\u05d9\u05e6\u05d5\u05e8 \u05e8\u05e9\u05d9\u05de\u05ea \u05e9\u05de\u05d9\u05e2\u05d4.</string>
     <string name="rename_playlist_title">שנה שם לרשימת ההשמעה</string>
     <string name="save_playlist_title">שמור כקובץ</string>
     <string name="save_playlists_title">שמור כקבצים</string>
-    <string name="add_playlist_title">"הוסף לרשימת ההשמעה"</string>
+    <string name="add_playlist_title">הוסף לרשימת ההשמעה</string>
     <string name="select_all_title">בחר הכל</string>
     <string name="action_shuffle_all">ערבב הכל</string>
     <string name="action_shuffle_album">ערבב אלבום</string>
@@ -84,10 +79,10 @@
     <string name="only_on_wifi">רק עם WI-FI</string>
     <string name="never">אף פעם</string>
     <string name="today">היום</string>
-    <string name="this_week">השבוע</string>
     <string name="past_seven_days">7 הימים האחרונים</string>
-    <string name="this_month">החודש</string>
     <string name="past_three_months">שלשה חודשים האחרונים</string>
+    <string name="this_week">השבוע</string>
+    <string name="this_month">החודש</string>
     <string name="this_year">השנה</string>
     <string name="equalizer">אקוולייזר</string>
     <string name="pref_header_colors">צבעים</string>
@@ -97,7 +92,7 @@
     <string name="pref_header_library">ספרייה</string>
     <string name="pref_header_images">תמונות</string>
     <string name="pref_header_lockscreen">מסך נעילה</string>
-    <string name="pref_header_playlists">רשימת השמעה</string>
+    <string name="pref_header_playlists">רשימות השמעה</string>
     <string name="pref_header_notification">התראות</string>
     <string name="pref_title_navigation_bar">סרגל ניווט צבעוני</string>
     <string name="pref_title_app_shortcuts">קיצורי אפליקציה צבעוניים</string>
@@ -114,7 +109,6 @@
     <string name="pref_title_remember_last_tab">זכור את הכרטיסיה האחרונה</string>
     <string name="pref_title_remember_shuffle">זכור ערבוב</string>
     <string name="no_equalizer">אקוולייזר לא נמצא</string>
-    <string name="no_audio_ID">"נגן/י שיר ואז נסה/י שנית."</string>
     <string name="delete_action">מחיקה</string>
     <string name="clear_action">ניקוי</string>
     <string name="remove_action">הסרה</string>
@@ -135,8 +129,6 @@
     <string name="pref_summary_album_art_on_lockscreen">השתמש בתמונת האלבום של השיר הנוכחי כרקע מסך הנעילה.</string>
     <string name="pref_summary_blurred_album_art">מטשטש את תמונת האלבום במסך הנעילה. עלול לגרום לבעיות עם ווידג\'טים ואפליקציות צד שלישי.</string>
     <string name="pref_summary_classic_notification">השתמש בעיצוב התראות קלאסי.</string>
-    <string name="pref_summary_colored_notification">"\u05e6\u05d5\u05d1\u05e2 \u05d0\u05ea \u05d4\u05ea\u05e8\u05d0\u05ea \u05d4\u05e0\u05d2\u05df \u05d1\u05e6\u05d1\u05e2 \u05d4\u05de\u05e8\u05db\u05d6\u05d9 \u05e9\u05dc \u05ea\u05de\u05d5\u05e0\u05ea \u05d4\u05d0\u05dc\u05d1\u05d5\u05dd."</string>
-    <string name="pref_summary_gapless_playback">"עלול לגרום לבעיות בהשמעה בחלק מן המכשירים."</string>
     <string name="pref_summary_ignore_media_store_artwork">יכול להעלות את איכות תמונות האלבומים, אך גם גורם לטעינה איטית יותר של התמונות. הפעל אפשרות זו רק אם יש לך בעיות עם תמונות באיכות נמוכה.</string>
     <string name="pref_summary_colored_navigation_bar">צובע את שורת הניווט בצבע הראשי.</string>
     <string name="pref_summary_colored_app_shortcuts">צובע את קיצורי האפליקציה בצבע הראשי.</string>
@@ -144,14 +136,12 @@
     <string name="pref_summary_synchronized_lyrics_show">כרגע מסכרן מילות שירים רק בפורמט LRC.  מילות שרים מוטבעות או בקובץ נפרד.</string>
     <string name="pref_summary_remember_last_tab">עבור לכרטיסייה האחרונה שהייתה פתוחה בהפעלה</string>
     <string name="pref_summary_remember_shuffle">מצב ערבוב יישאר פעיל בבחירת רשימה חדשה של שירים</string>
-    <string name="could_not_download_album_cover">"\u05dc\u05d0 \u05e0\u05d9\u05ea\u05df \u05dc\u05d4\u05d5\u05e8\u05d9\u05d3 \u05ea\u05de\u05d5\u05e0\u05ea \u05d0\u05dc\u05d1\u05d5\u05dd \u05de\u05ea\u05d0\u05d9\u05de\u05d4."</string>
     <string name="search_hint">חפש בספרייה שלך...</string>
     <string name="favorites">מועדפים</string>
     <string name="last_added">נוספו לאחרונה</string>
     <string name="history">הושמע לאחרונה</string>
     <string name="my_top_tracks">השירים המובילים שלי</string>
     <string name="remove_cover">הסרת עטיפה</string>
-    <string name="download_from_last_fm">הורדה מ-Last.fm</string>
     <string name="pick_from_local_storage">בחר מאחסון מקומי</string>
     <string name="web_search">חיפוש באינטרנט</string>
     <string name="action_sleep_timer">טיימר לשינה</string>
@@ -187,10 +177,10 @@
     <string name="up_next">הבא בתור</string>
     <string name="pref_title_now_playing_screen_appearance">מראה</string>
     <string name="intro_label">מבוא</string>
-    <string name="welcome_to_phonograph">"ברוכים הבאים ל-Phonograph, נגן מוזיקה קל ויפה ל-Android. "</string>
+    <string name="welcome_to_phonograph">ברוכים הבאים ל-Phonograph, נגן מוזיקה קל ויפה ל-Android. </string>
     <string name="open_playing_queue_instruction">החלק את הכרטיס למעלה במסך \'מנגן כעת\' כדי לחשוף את תור ההשמעה המלא.</string>
     <string name="rearrange_playing_queue_instruction">מיין מחדש את התור על ידי גרירת השיר מהמספר שלו.</string>
-    <string name="library">ספריה</string>
+    <string name="library">ספרייה</string>
     <string name="folders">תיקיות</string>
     <string name="failed_to_save_playlist">לא ניתן היה לשמור את רשימת ההשמעה (%s)</string>
     <string name="saved_x_playlists_to_x">נשמרו %1$d רשימות השמעה ל-%2$s.</string>
@@ -237,7 +227,7 @@
     <string name="add_action">הוסף</string>
     <string name="blacklist">רשימה שחורה</string>
     <string name="remove_from_blacklist">הסר מהרשימה השחורה</string>
-    <string name="do_you_want_to_remove_from_the_blacklist"><![CDATA[האם ברצונך להסיר את <b>%1$s</b> מהרשימה השחורה?]]></string>
+    <string name="do_you_want_to_remove_from_the_blacklist">האם ברצונך להסיר את <b>%1$s</b> מהרשימה השחורה?</string>
     <string name="clear_blacklist">נקה רשימה שחורה</string>
     <string name="do_you_want_to_clear_the_blacklist">האם ברצונך לנקות את הרשימה השחורה?</string>
     <string name="pref_summary_blacklist">התוכן בתיקיות שנמצאות ברשימה השחורה מוסתר מהספרייה שלך.</string>
@@ -255,4 +245,6 @@
     <string name="sort_order_album">אלבום</string>
     <string name="sort_order_year">שנה</string>
     <string name="finish_current_music_sleep_timer">סיים את השיר האחרון</string>
+    <string name="sort_order_song">שיר</string>
+    <string name="pref_header_appearance">מראה</string>
 </resources>
