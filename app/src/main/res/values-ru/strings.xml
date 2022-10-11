@@ -423,4 +423,5 @@
         <item quantity="other">Сгенерированные плейлисты</item>
     </plurals>
     <string name="warning_can_not_retract">Это действие нельзя будет отменить!</string>
+    <string name="delete_with_lyrics">Удалить с текстом</string>
 </resources>
