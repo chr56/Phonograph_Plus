@@ -29,7 +29,7 @@ class VersionCatalog(
 @kotlinx.serialization.Serializable
 data class Version(
     val channel: String,
-    val link: Link,
+    val link: List<Link>,
     val releaseNote: ReleaseNote,
     val versionName: String,
     val versionCode: Int,

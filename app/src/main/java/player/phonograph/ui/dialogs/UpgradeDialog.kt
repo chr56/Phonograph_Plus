@@ -137,11 +137,11 @@ class UpgradeDialog : DialogFragment() {
 
 
     private fun actionSelectVersion(version: Version) {
-        val link = version.link
-        buildSingleChoiceAlertDialog(getString(R.string.download), arrayListOf(link.name)) { _, which ->
+        val links = version.link
+        buildSingleChoiceAlertDialog(getString(R.string.download),links.map { it.name }) { _, which ->
             requireContext().startActivity(
                 Intent(Intent.ACTION_VIEW).apply {
-                    data = Uri.parse(link.uri)
+                    data = Uri.parse(links[which].uri)
                     flags = Intent.FLAG_ACTIVITY_NEW_TASK
                 }
             )
@@ -150,7 +150,7 @@ class UpgradeDialog : DialogFragment() {
 
     private inline fun buildSingleChoiceAlertDialog(
         title: String,
-        items: ArrayList<String>,
+        items: List<String>,
         crossinline callback: (DialogInterface, Int) -> Unit,
     ): AlertDialog.Builder {
         return AlertDialog.Builder(requireActivity())
