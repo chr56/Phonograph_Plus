@@ -1,18 +1,18 @@
 {
-    "version": "0.3.5.1-LTS",
-    "versionCode": "314",
+    "version": "0.3.5.2-LTS",
+    "versionCode": "315",
     "zh-cn": {
-        "logSummary": "\n\n<b>0.3.5.1</b> 2022.10.8\n<ol><li>修复 删除对话框不消失删除结果</li><li>修复 使用旧式方法浏览文件时无法解析歌曲</li><li>修复 歌曲内嵌图片过大时引起崩溃</li><li>修复 调整应用窗口大小时崩溃</li></ol>\n\n<b>0.3.5</b> 2022.10.6\n<ol><li>翻译 更新日语(aorinngo), 西班牙语(Armando de Nazareth)</li><li>修复 删除对话框无法滚动</li></ol>\n\n<b>0.3.4</b> 2022.10.3\n<ol><li>新增 删除歌曲时一并删除同名歌词文件(需'管理全部文件'权限)</li><li>修复 选择文件夹进行播放时无法递归选择其下所有子文件夹</li><li>修复 播放器界面崩溃,如调整窗口大小时(仅部分修复)</li><li>改进 图片加载时限制大小以防止过大图片导致崩溃</li><li>改进 关闭遇到 <code>opus</code> 格式时弹出的错误通知(目前暂时无法读取 <code>opus</code> 格式的标签)</li><li>开发 补上部分库缺失的 License</li><li>开发 更新 Gradle 至 7.5.1, 更新 AGP 至 7.3.0, 更新依赖</li></ol>"
+        "logSummary": "\n\n<b>0.3.5.2</b> 2022.10.11\n<ol><li>修复 因图片缓存配置错误而在主播放器出现的低像素图片</li><li>修复 扫描媒体对话框因加载结束前提前退出导致崩溃</li></ol>\n\n<b>0.3.5.1</b> 2022.10.8\n<ol><li>修复 删除对话框不消失删除结果</li><li>修复 使用旧式方法浏览文件时无法解析歌曲</li><li>修复 歌曲内嵌图片过大时引起崩溃</li><li>修复 调整应用窗口大小时崩溃</li></ol>\n\n<b>0.3.5</b> 2022.10.6\n<ol><li>翻译 更新日语(aorinngo), 西班牙语(Armando de Nazareth)</li><li>修复 删除对话框无法滚动</li></ol>\n"
     },
     "en": {
-        "logSummary": "\n\n<b>0.3.5.1</b> 2022.10.8\n<ol><li>Fix: randomly refresh playing queue on opening</li><li>Improve: move swapping-queue operations (e.g. shuffle all, play a playlist, play an album/artist) tobackground, tofix getting frozen when changing queue especially for users having to many song</li><li>Improve: designate a rational images size when loading cover artworks, to try to not crash app if the imageis toolarge</li></ol>\n\n<b>0.3.5</b> 2022.10.6\n<ol><li>Translation: update Japanese (by aorinngo), Spanish (by Armando de Nazareth)</li><li>Fix: could not scroll Delete Dialog</li></ol>\n\n<b>0.3.4</b> 2022.10.3\n<ol><li>New: delete song along with the lyrics file with the same name (requires <code>Manage all external files</code> permission)</li><li>Fix: when play a folder, it cannot recursively select all subfolders</li><li>Fix: player interface crash, e.g. when resizing the window (partially fixed)</li><li>Improve: limit image size when loading to prevent crashes due to oversize images</li><li>Improve: mute error notifications when encountering <code>opus</code> format (currently we cannot read tags of <code>opus</code> )</li><li>Development: add missing licenses of some libraries</li><li>Development: update Gradle to 7.5.1, update AGP to 7.3.0, update dependencies</li></ol>"
+        "logSummary": "n\n<b>0.3.5.2</b> 2022.10.11\n<ol><li>Fix: Low pixel images appearing in the main player due to image cache policy misconfiguration</li><li>Fix: Scan Media Dialog crashes if early exit before the loading finished</li></ol>\n\n<b>0.3.5.1</b> 2022.10.8\n<ol><li>Fix: randomly refresh playing queue on opening</li><li>Improve: move swapping-queue operations (e.g. shuffle all, play a playlist, play an album/artist) tobackground, tofix getting frozen when changing queue especially for users having to many song</li><li>Improve: designate a rational images size when loading cover artworks, to try to not crash app if the imageis toolarge</li></ol>\n\n<b>0.3.5</b> 2022.10.6\n<ol><li>Translation: update Japanese (by aorinngo), Spanish (by Armando de Nazareth)</li><li>Fix: could not scroll Delete Dialog</li></ol>\n"
     },
     "downloadSources": [
-        "Release: Github(v0.3.5.1-LTS)",
+        "Release: Github(v0.3.5.2-LTS)",
         "Release(LTS): Github(v0.2.6.1)"
     ],
     "downloadUris": [
-        "https://github.com/chr56/Phonograph_Plus/releases/tag/v0.3.5.1-LTS",
+        "https://github.com/chr56/Phonograph_Plus/releases/tag/v0.3.5.2-LTS",
         "https://github.com/chr56/Phonograph_Plus/releases/tag/v0.2.6.1"
     ],
     "logSummary": "\n<b>请更新至新版本(至少高于v0.1.1), 此版本无法读取新更新日志\nUpdate Please (as least to version v0.1.1)! This version can not be read this changelogs.</b>"
