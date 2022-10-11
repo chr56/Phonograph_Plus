@@ -21,8 +21,6 @@ const val ISSUE_TRACKER_LINK = "https://github.com/chr56/Phonograph_Plus/issues"
 
 const val VERSION_INFO = "versionInfo"
 const val UPGRADABLE = "upgradable"
-const val NOTIFICATION_CHANNEL_ID_UPGRADABLE = "upgrade_notification"
-const val NOTIFICATION_ID_UPGRADABLE = 8747233
 
 
 
