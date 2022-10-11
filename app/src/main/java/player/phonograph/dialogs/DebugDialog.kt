@@ -14,13 +14,12 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import player.phonograph.App
-import player.phonograph.R
-import player.phonograph.misc.VersionJson
+import player.phonograph.BuildConfig
+import player.phonograph.model.version.VersionCatalog
 import player.phonograph.notification.ErrorNotification
-import player.phonograph.notification.UpgradeNotification
-import player.phonograph.settings.Setting
+import player.phonograph.notification.UpgradeNotification2
 import player.phonograph.util.CoroutineUtil.coroutineToast
-import player.phonograph.util.UpdateUtil
+import player.phonograph.util.UpdateUtil2
 
 class DebugDialog : DialogFragment() {
 
@@ -40,12 +39,11 @@ class DebugDialog : DialogFragment() {
                     1 -> ErrorNotification.postErrorNotification(Exception("Test"), "Crash Notification Test!!")
                     2 -> {
                         CoroutineScope(Dispatchers.Unconfined).launch {
-                            val result = UpdateUtil.checkUpdate(true)
-                            result?.let {
+                            UpdateUtil2.checkUpdate(true) { versionCatalog: VersionCatalog, upgradable: Boolean ->
                                 try {
-                                    UpgradeDialog.create(it).show(fragmentManager, "DebugDialog")
-                                    if (Setting.instance.ignoreUpgradeVersionCode >= it.getInt(VersionJson.VERSIONCODE)) {
-                                        coroutineToast(App.instance, getString(R.string.upgrade_ignored))
+                                    player.phonograph.ui.dialogs.UpgradeDialog.create(versionCatalog).show(fragmentManager, "DebugDialog")
+                                    if (!upgradable) {
+                                        coroutineToast(App.instance, "not upgradable")
                                     }
                                 } catch (e: IllegalStateException) {
                                     Log.e("CheckUpdateCallback", e.message.orEmpty())
@@ -55,13 +53,14 @@ class DebugDialog : DialogFragment() {
                     }
                     3 -> {
                         CoroutineScope(Dispatchers.Unconfined).launch {
-                            val result = UpdateUtil.checkUpdate(true)
-                            result?.let {
-                                UpgradeNotification.sendUpgradeNotification(it)
-                                CoroutineScope(Dispatchers.Main).launch {
-                                    if (Setting.instance.ignoreUpgradeVersionCode >= it.getInt(VersionJson.VERSIONCODE)) {
-                                        coroutineToast(App.instance, getString(R.string.upgrade_ignored))
-                                    }
+                            UpdateUtil2.checkUpdate(true) { versionCatalog: VersionCatalog, upgradable: Boolean ->
+                                val channel = when (BuildConfig.FLAVOR) {
+                                    "preview" -> "preview"
+                                    else -> "stable"
+                                }
+                                UpgradeNotification2.sendUpgradeNotification(versionCatalog, channel)
+                                if (!upgradable) {
+                                    coroutineToast(App.instance, "not upgradable")
                                 }
                             }
                         }
