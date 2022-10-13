@@ -26,6 +26,9 @@
     <string name="artists">Interpreten</string>
     <string name="songs">Titel</string>
     <string name="playlists">Wiedergabelisten</string>
+    <string name="unplayable_file">Der Song konnte nicht abgespielt werden.</string>
+    <string name="biography_unavailable">Die Biografie dieses Interpreten wurde nicht gefunden.</string>
+    <string name="wiki_unavailable">Es konnte kein Wiki-Eintrag f\u00fcr dieses Album gefunden werden.</string>
     <string name="biography">Biografie</string>
     <string name="audio_focus_denied">Kein Audiofokus.</string>
     <string name="artist">Interpret</string>
@@ -45,6 +48,7 @@
     <string name="label_playing_queue">Warteschlange</string>
     <string name="no_results">Keine Ergebnisse</string>
     <string name="updating">Aktualisiere…</string>
+    <string name="added_title_to_playing_queue">1 Titel wurde der Warteschlange hinzugefügt.</string>
     <string name="added_x_titles_to_playing_queue">%1$d Titel wurden der Warteschlange hinzugefügt.</string>
     <string name="action_remove_from_playlist">Aus Wiedergabeliste entfernen</string>
     <string name="action_grid_size">Rastergröße</string>
@@ -52,6 +56,7 @@
     <string name="inserted_x_songs_into_playlist_x">%1$d Titel wurden der Wiedergabeliste %2$s hinzugefügt.</string>
     <string name="created_playlist_x">Wiedergabeliste %1$s erstellt.</string>
     <string name="playlist_exists">Wiedergabeliste %1$s bereits vorhanden.</string>
+    <string name="could_not_create_playlist">Wiedergabeliste konnte nicht erstellt werden.</string>
     <string name="rename_playlist_title">Wiedergabeliste umbenennen</string>
     <string name="save_playlist_title">Als Datei speichern</string>
     <string name="save_playlists_title">Als Dateien speichern</string>
@@ -98,6 +103,7 @@
     <string name="pref_title_remember_last_tab">Letzten Tab merken</string>
     <string name="pref_title_remember_shuffle">Zufallswiedergabe merken</string>
     <string name="no_equalizer">Kein Equalizer gefunden.</string>
+    <string name="no_audio_ID">Keine Audio ID, spiele etwas ab und versuche es erneut.</string>
     <string name="delete_action">Löschen</string>
     <string name="clear_action">Leeren</string>
     <string name="remove_action">Entfernen</string>
@@ -118,6 +124,8 @@
     <string name="pref_summary_album_art_on_lockscreen">Das Album Cover des aktuellen Titels wird als Hintergrund im Sperrbildschirm verwendet.</string>
     <string name="pref_summary_blurred_album_art">Lässt das Album Cover auf dem Sperrbildschirm verschwommen aussehen. Kann Probleme mit Apps und Widgets von Dritten verursachen.</string>
     <string name="pref_summary_classic_notification">Das klassische Benachrichtigungsdesign verwenden.</string>
+    <string name="pref_summary_colored_notification">Die Benachrichtigung ist in der Farbe des Album-Covers gef\u00e4rbt.</string>
+    <string name="pref_summary_gapless_playback">Kann bei einigen Geräten Wiedergabeprobleme verursachen.</string>
     <string name="pref_summary_ignore_media_store_artwork">Kann die Album Cover Qualität verbessern was jedoch die Ladezeit beeinträchtigt. Nur aktivieren falls Probleme mit niedrig aufgelösten Album Covern auftreten.</string>
     <string name="pref_summary_colored_navigation_bar">Färbt die Navigationsleiste mit der Hauptfarbe.</string>
     <string name="pref_summary_colored_app_shortcuts">Färbt die App-Shortcuts in der Hauptfarbe.</string>
@@ -125,12 +133,14 @@
     <string name="pref_summary_synchronized_lyrics_show">Aktuell werden nur synchronisierte Songtexte im LRC-Format unterstützt, entweder eingebettet oder als separate Datei.</string>
     <string name="pref_summary_remember_last_tab">Zuletzt geöffneten Tab beim Start anzeigen</string>
     <string name="pref_summary_remember_shuffle">Die Art der zufälligen Wiedergabe bleibt erhalten, wenn neue Songs ausgewählt werden</string>
+    <string name="could_not_download_album_cover">Es konnte kein passendes Album-Cover heruntergeladen werden.</string>
     <string name="search_hint">Durchsuche deine Mediathek</string>
     <string name="favorites">Favoriten</string>
     <string name="last_added">Zuletzt hinzugefügt</string>
     <string name="history">Verlauf</string>
     <string name="my_top_tracks">Meine Lieblingstitel</string>
     <string name="remove_cover">Cover entfernen</string>
+    <string name="download_from_last_fm">Von Last.fm herunterladen</string>
     <string name="pick_from_local_storage">Aus lokalem Speicher wählen</string>
     <string name="web_search">Internetsuche</string>
     <string name="action_sleep_timer">Einschlaf-Timer</string>
@@ -231,6 +241,4 @@
     <string name="finish_current_music_sleep_timer">Letzten Song beenden</string>
     <string name="dialog_ringtone_title">Klingelton einstellen</string>
     <string name="dialog_ringtone_message">Phonograph erlauben, die Audioeinstellungen zu verändern</string>
-    <string name="sort_order_song">Titel</string>
-    <string name="pref_header_appearance">Aussehen</string>
 </resources>
