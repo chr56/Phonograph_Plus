@@ -26,6 +26,9 @@
     <string name="artists">Artiesten</string>
     <string name="songs">Nummers</string>
     <string name="playlists">Afspeellijsten</string>
+    <string name="unplayable_file">Kan dit nummer niet afspelen.</string>
+    <string name="biography_unavailable">Kan geen biografie vinden voor deze artiest.</string>
+    <string name="wiki_unavailable">Kan geen wiki-entry vinden voor dit album.</string>
     <string name="biography">Biografie</string>
     <string name="audio_focus_denied">Audiofocus geweigerd.</string>
     <string name="artist">Artiest</string>
@@ -47,6 +50,7 @@
     <string name="label_playing_queue">Afspeelwachtrij</string>
     <string name="no_results">Geen resultaten</string>
     <string name="updating">Bijwerken…</string>
+    <string name="added_title_to_playing_queue">1 titel toegevoegd aan de afspeelwachtrij.</string>
     <string name="added_x_titles_to_playing_queue">%1$d titels toegevoegd aan de afspeelwachtrij.</string>
     <string name="action_remove_from_playlist">Verwijderen uit afspeellijst</string>
     <string name="action_grid_size">Rastergrootte</string>
@@ -54,6 +58,7 @@
     <string name="inserted_x_songs_into_playlist_x">%1$d nummers toegevoegd aan afspeellijst %2$s.</string>
     <string name="created_playlist_x">Afspeellijst %1$s aangemaakt.</string>
     <string name="playlist_exists">Afspeellijst %1$s bestaat al.</string>
+    <string name="could_not_create_playlist">Kan afspeellijst niet aanmaken.</string>
     <string name="rename_playlist_title">Hernoem afspeellijst</string>
     <string name="save_playlist_title">Opslaan als bestand</string>
     <string name="save_playlists_title">Opslaan als bestanden</string>
@@ -85,7 +90,7 @@
     <string name="pref_header_library">Bibliotheek</string>
     <string name="pref_header_images">Illustraties</string>
     <string name="pref_header_lockscreen">Vergrendelscherm</string>
-    <string name="pref_header_playlists">Afspeellijsten</string>
+    <string name="pref_header_playlists">Afspeellijst</string>
     <string name="pref_header_notification">Melding</string>
     <string name="pref_title_navigation_bar">Gekleurde navigatiebalk</string>
     <string name="pref_title_app_shortcuts">Gekleurde app-snelkoppelingen</string>
@@ -102,6 +107,7 @@
     <string name="pref_title_remember_last_tab">Laatste tabblad onthouden</string>
     <string name="pref_title_remember_shuffle">Onthoud shuffle</string>
     <string name="no_equalizer">Geen equalizer gevonden.</string>
+    <string name="no_audio_ID">Speel eerst iets af, probeer dan opnieuw.</string>
     <string name="delete_action">Verwijderen</string>
     <string name="clear_action">Legen</string>
     <string name="remove_action">Verwijderen</string>
@@ -122,6 +128,8 @@
     <string name="pref_summary_album_art_on_lockscreen">Albumhoes weergeven op het vergrendelscherm.</string>
     <string name="pref_summary_blurred_album_art">Vervaagt de albumhoes op het vergrendelscherm. Kan problemen met andere apps of widgets veroorzaken.</string>
     <string name="pref_summary_classic_notification">Gebruik de klassieke meldingsweergave.</string>
+    <string name="pref_summary_colored_notification">Kleurt de melding met het palet van de albumhoes.</string>
+    <string name="pref_summary_gapless_playback">Verwijdert de pauzes tussen nummers. Dit kan afspeelfouten veroorzaken.</string>
     <string name="pref_summary_ignore_media_store_artwork">Dit kan de albumhoes kwaliteit doen toenemen, maar langere laadtijden veroorzaken. Gebruik dit alleen als je problemen hebt met lage resolutie illustraties.</string>
     <string name="pref_summary_colored_navigation_bar">Kleurt de navigatiebalk in de primaire kleur.</string>
     <string name="pref_summary_colored_app_shortcuts">Kleurt de app-snelkoppelingen in de primaire kleur.</string>
@@ -129,12 +137,14 @@
     <string name="pref_summary_synchronized_lyrics_show">Momenteel worden gesynchr. songteksten alleen ondersteund in LRC-formaat. Of ingebed, of als separaat bestand.</string>
     <string name="pref_summary_remember_last_tab">Ga naar het laatst geopende tabblad bij opstarten</string>
     <string name="pref_summary_remember_shuffle">Shuffle modus blijft aan bij het selecteren van een nieuwe lijst met nummers</string>
+    <string name="could_not_download_album_cover">Kan geen bijpassende albumhoes downloaden.</string>
     <string name="search_hint">Zoek in je bibliotheek…</string>
     <string name="favorites">Favorieten</string>
     <string name="last_added">Laatst toegevoegd</string>
     <string name="history">Geschiedenis</string>
     <string name="my_top_tracks">Mijn top nummers</string>
     <string name="remove_cover">Verwijder albumhoes</string>
+    <string name="download_from_last_fm">Download van last.fm</string>
     <string name="pick_from_local_storage">Kies uit lokale opslag</string>
     <string name="web_search">Zoek op het web</string>
     <string name="action_sleep_timer">Slaaptimer</string>
@@ -253,8 +263,6 @@
     <string name="failed">mislukt!</string>
     <string name="clear_all_preference">alle applicatie-instellingen wissen</string>
     <string name="clear_all_preference_msg"><b>Waarschuwing</b>: dit zal <b>ALLE</b> app voorkeuren/instellingen wissen! \n\nDit kan erg handig zijn als de applicatie crasht bij het starten. \nWeet je het zeker?</string>
-    <string name="sort_order_song">Nummer</string>
-    <string name="pref_header_appearance">Uiterlijk</string>
     <string name="embedded_lyrics">ingesloten songteksten</string>
     <string name="external_lyrics">externe songteksten</string>
     <string name="lyrics_following">Songteksten volgen</string>
