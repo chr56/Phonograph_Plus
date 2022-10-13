@@ -29,6 +29,9 @@
     <string name="genres">Gatunki</string>
     <string name="songs">Utwory</string>
     <string name="playlists">Listy odtwarzania</string>
+    <string name="unplayable_file">Utw\u00f3r nie mo\u017ce zosta\u0107 odegrany</string>
+    <string name="biography_unavailable">Nie znaleziono biografii tego wykonawcy.</string>
+    <string name="wiki_unavailable">Nie znaleziono informacji o tym albumie</string>
     <string name="biography">Biografia</string>
     <string name="wiki">Wikipedia</string>
     <string name="audio_focus_denied">Nie można teraz odtworzyć dźwięku</string>
@@ -52,6 +55,7 @@
     <string name="label_playing_queue">Kolejka odtwarzania</string>
     <string name="no_results">Brak wyników</string>
     <string name="updating">Aktualizowanie...</string>
+    <string name="added_title_to_playing_queue">Dodano 1 tytuł do kolejki odtwarzania</string>
     <string name="added_x_titles_to_playing_queue">Dodano %1$d tytuły do kolejki odtwarzania</string>
     <string name="action_remove_from_playlist">Usuń z listy odtwarzania</string>
     <string name="action_grid_size">Rozmiar siatki</string>
@@ -59,6 +63,7 @@
     <string name="inserted_x_songs_into_playlist_x">Dodano %1$d utwory do listy odtwarzania %2$s</string>
     <string name="created_playlist_x">Utworzono listę odtwarzania %1$s</string>
     <string name="playlist_exists">Lista %1$s już istnieje</string>
+    <string name="could_not_create_playlist">Nie mo\u017cna utworzy\u0107 listy odtwarzania</string>
     <string name="rename_playlist_title">Zmień nazwę listy odtwarzania</string>
     <string name="save_playlist_title">Zapisz jako plik</string>
     <string name="save_playlists_title">Zapisz jako pliki</string>
@@ -88,7 +93,7 @@
     <string name="pref_header_library">Biblioteka</string>
     <string name="pref_header_images">Obrazy</string>
     <string name="pref_header_lockscreen">Ekran blokady</string>
-    <string name="pref_header_playlists">Listy odtwarzania</string>
+    <string name="pref_header_playlists">Lista odtwarzania</string>
     <string name="pref_header_notification">Powiadomienie</string>
     <string name="pref_title_navigation_bar">Kolorowy pasek nawigacyjny</string>
     <string name="pref_title_app_shortcuts">Kolorowe skróty aplikacji</string>
@@ -104,6 +109,7 @@
     <string name="pref_title_synchronized_lyrics_show">Pokazuj zsynchronizowany tekst</string>
     <string name="pref_title_remember_last_tab">Zapamiętaj ostatnią zakładkę </string>
     <string name="no_equalizer">Nie znaleziono korektora</string>
+    <string name="no_audio_ID">Odegraj utwór, następnie ponów próbę</string>
     <string name="delete_action">Usuń</string>
     <string name="clear_action">Wyczyść</string>
     <string name="remove_action">Usuń</string>
@@ -124,18 +130,22 @@
     <string name="pref_summary_album_art_on_lockscreen">Okładki albumów obecnie granych utworów będą zastępowały tapetę na ekranie blokady</string>
     <string name="pref_summary_blurred_album_art">Rozmywa okładki albumów na ekranie blokady. Mogą wystąpić problemy z aplikacjami firm trzecich oraz widżetami</string>
     <string name="pref_summary_classic_notification">Używaj klasycznego stylu powiadomienia.</string>
+    <string name="pref_summary_colored_notification">Odtwarzacz w pasku powiadomie\u0144 ma tonacj\u0119 ok\u0142adki albumu</string>
+    <string name="pref_summary_gapless_playback">Na niektórych urządzeniach mogą wystąpić problemy z odtwarzaniem</string>
     <string name="pref_summary_ignore_media_store_artwork">Polepszy to jakość okładek, ale może spowodować ich wolniejsze ładowanie. Zaznacz tylko wtedy, gdy masz kłopoty z niską jakością grafik</string>
     <string name="pref_summary_colored_navigation_bar">Kolory paska nawigacyjnego będą odpowiadały kolorowi podstawowemu</string>
     <string name="pref_summary_colored_app_shortcuts">Kolory skrótów aplikacji w kolorze podstawowym</string>
     <string name="pref_summary_audio_ducking">Notyfikacje, nawigacja, itp.</string>
     <string name="pref_summary_synchronized_lyrics_show">Obecnie wspierane są tylko napisy w formacie LRC oraz te osadzone w osobnym pliku.</string>
     <string name="pref_summary_remember_last_tab">Idź do ostatniej otwartej zakładki przy starcie</string>
+    <string name="could_not_download_album_cover">Nie uda\u0142o si\u0119 pobra\u0107 pasuj\u0105cej ok\u0142adki albumu</string>
     <string name="search_hint">Szukaj w bibliotece...</string>
     <string name="favorites">Ulubione</string>
     <string name="last_added">Ostatnio dodane</string>
     <string name="history">Historia odtwarzania</string>
     <string name="my_top_tracks">Moja Top Lista</string>
     <string name="remove_cover">Usuń okładkę</string>
+    <string name="download_from_last_fm">Pobierz z last.fm</string>
     <string name="pick_from_local_storage">Wybierz z pamięci lokalnej</string>
     <string name="web_search">Wyszukaj w sieci</string>
     <string name="action_sleep_timer">Wyłącznik czasowy</string>
@@ -235,8 +245,6 @@
     <string name="action_sort_order">Kolejność sortowania</string>
     <string name="sort_order_a_z">Rosnąco</string>
     <string name="sort_order_z_a">Malejąco</string>
-    <string name="sort_order_artist">Wykonawca</string>
+    <string name="sort_order_artist">Artysta</string>
     <string name="sort_order_year">Rok</string>
-    <string name="sort_order_song">Utwór</string>
-    <string name="pref_header_appearance">Wygląd</string>
 </resources>
