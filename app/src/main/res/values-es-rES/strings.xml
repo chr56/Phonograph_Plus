@@ -265,7 +265,6 @@
     <string name="Permission_denied">Permiso denegado!</string>
     <string name="err_permission_storage">Permiso de almacenamiento</string>
     <string name="add_blacklist">¿Quieres añadir esto a la lista negra?</string>
-    <string name="minutes_short">%1$d min</string>
     <string name="other_information">Otros</string>
     <string name="more_actions">Ver más</string>
     <string name="crash">App ha fallado!!</string>
