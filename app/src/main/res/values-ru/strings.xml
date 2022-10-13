@@ -18,7 +18,7 @@
     <string name="action_next">Следующий</string>
     <string name="action_add_to_playing_queue">Добавить в очередь воспроизведения</string>
     <string name="action_remove_from_playing_queue">Удалить из очереди воспроизведения</string>
-    <string name="action_add_to_playlist">Добавить в плейлист...</string>
+    <string name="action_add_to_playlist">Добавить в плейлист…</string>
     <string name="action_tag_editor">Редактор тэгов</string>
     <string name="action_delete_from_device">Удалить с устройства</string>
     <string name="action_details">Подробнее</string>
@@ -57,7 +57,7 @@
     <string name="action_go_to_album">Перейти к альбому</string>
     <string name="label_playing_queue">Очередь воспроизведения</string>
     <string name="no_results">Нет результатов</string>
-    <string name="updating">Обновление...</string>
+    <string name="updating">Обновление…</string>
     <string name="added_title_to_playing_queue">Композиция добавлена в очередь воспроизведения.</string>
     <string name="added_x_titles_to_playing_queue">%1$d композиций добавлено в очередь воспроизведения</string>
     <string name="action_remove_from_playlist">Удалить из плейлиста</string>
@@ -150,7 +150,7 @@
     <string name="pref_summary_remember_last_tab">Перейти на последнюю открытую вкладку при запуске</string>
     <string name="pref_summary_remember_shuffle">Режим перемешивания останется включенным при выборе нового списка песен</string>
     <string name="could_not_download_album_cover">Не удалось загрузить соответствующую обложку альбома.</string>
-    <string name="search_hint">Поиск в библиотеке...</string>
+    <string name="search_hint">Поиск в библиотеке…</string>
     <string name="favorites">Избранное</string>
     <string name="last_added">Последние добавленные</string>
     <string name="history">Недавно воспроизведённые</string>
@@ -423,5 +423,4 @@
         <item quantity="other">Сгенерированные плейлисты</item>
     </plurals>
     <string name="warning_can_not_retract">Это действие нельзя будет отменить!</string>
-    <string name="delete_with_lyrics">Удалить с текстом</string>
 </resources>
