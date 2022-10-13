@@ -29,6 +29,9 @@
     <string name="genres">Genuri</string>
     <string name="songs">Melodii</string>
     <string name="playlists">Liste de redare</string>
+    <string name="unplayable_file">Nu se poate reda.</string>
+    <string name="biography_unavailable">Nu a putut fi g\u0103sit\u0103 o \u00eenregistrare biografic\u0103 pentru acest artist.</string>
+    <string name="wiki_unavailable">Nu s-a putut g\u0103si o \u00eenregistrare wiki pentru acest album.</string>
     <string name="biography">Biografie</string>
     <string name="audio_focus_denied">Focus audio respins.</string>
     <string name="genre">Gen</string>
@@ -49,6 +52,7 @@
     <string name="label_playing_queue">Lista de redare</string>
     <string name="no_results">Niciun rezultat</string>
     <string name="updating">Actualizare...</string>
+    <string name="added_title_to_playing_queue">Melodie adăugată în lista de redare.</string>
     <string name="added_x_titles_to_playing_queue">%1$d melodii adăugate în lista de redare.</string>
     <string name="action_remove_from_playlist">Ștergeți din lista de redare.</string>
     <string name="action_grid_size">Mărimea grilei</string>
@@ -56,6 +60,7 @@
     <string name="inserted_x_songs_into_playlist_x">%1$d melodii inserate in %2$s.</string>
     <string name="created_playlist_x">Lista de redare %1$s a fost creată.</string>
     <string name="playlist_exists">Lista de redare %1$s există deja.</string>
+    <string name="could_not_create_playlist">Nu s-a putut crea lista de redare.</string>
     <string name="rename_playlist_title">Redenumire listă de redare</string>
     <string name="save_playlist_title">Salveaza ca fișier</string>
     <string name="save_playlists_title">Salvează ca fișiere</string>
@@ -100,6 +105,7 @@
     <string name="pref_title_synchronized_lyrics_show">Afişare versuri sincronizate</string>
     <string name="pref_title_remember_last_tab">Rețineți ultima filă</string>
     <string name="no_equalizer">Niciun egalizator găsit</string>
+    <string name="no_audio_ID">Redă o melodie mai întâi, apoi încearcă din nou.</string>
     <string name="delete_action">Șterge</string>
     <string name="clear_action">Eliberați</string>
     <string name="remove_action">Ștergeți</string>
@@ -120,18 +126,22 @@
     <string name="pref_summary_album_art_on_lockscreen">Folosește coperta de album a melodiei curente ca fundal pentru ecranul de blocare.</string>
     <string name="pref_summary_blurred_album_art">Blurează coperta de album pentru ecranul de blocare. Poate cauza probleme cu widgeturi și aplicații terțe.</string>
     <string name="pref_summary_classic_notification">Utilizați designul clasic de notificare.</string>
+    <string name="pref_summary_colored_notification">Coloreaz\u0103 bara de notificare cu cea mai vibrant\u0103 culoare a copertei de album.</string>
+    <string name="pref_summary_gapless_playback">Poate cauza probleme de redare pe unele dispozitive.</string>
     <string name="pref_summary_ignore_media_store_artwork">Poate mări calitatea coperții de album, dar cauzează încărcarea mai lentă a imaginilor. Activați doar dacă aveți probleme cu imaginile de rezoluție mică.</string>
     <string name="pref_summary_colored_navigation_bar">Colorare bară de navigare în culoarea primară.</string>
     <string name="pref_summary_colored_app_shortcuts">Colorarea comenzilor rapide ale aplicației în culoarea primară.</string>
     <string name="pref_summary_audio_ducking">Notificări, navigație etc.</string>
     <string name="pref_summary_synchronized_lyrics_show">În prezent sunt acceptate numai versurile sincronizate în format LRC. Fie încorporate, fie ca fişier separat.</string>
     <string name="pref_summary_remember_last_tab">Accesați ultima filă deschisă la lansare</string>
+    <string name="could_not_download_album_cover">Nu s-a putut desc\u0103rca o copert\u0103 de album corespunz\u0103toare.</string>
     <string name="search_hint">Căutați în bibliotecă.</string>
     <string name="favorites">Favorite</string>
     <string name="last_added">Ultimele adăugate</string>
     <string name="history">Istoric</string>
     <string name="my_top_tracks">Melodiile mele favorite</string>
     <string name="remove_cover">Ștergeți coperta</string>
+    <string name="download_from_last_fm">Descărcați de la Last.fm</string>
     <string name="pick_from_local_storage">Alegeți din stocarea locală</string>
     <string name="web_search">Căutare pe Web</string>
     <string name="action_sleep_timer">Cronometru pentru somn</string>
@@ -231,6 +241,4 @@
     <string name="sort_order_a_z">crescător</string>
     <string name="sort_order_z_a">descrescător</string>
     <string name="sort_order_year">An</string>
-    <string name="sort_order_song">Melodie</string>
-    <string name="pref_header_appearance">Aspect</string>
 </resources>
