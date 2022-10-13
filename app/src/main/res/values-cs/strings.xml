@@ -29,6 +29,9 @@
     <string name="genres">Žánry</string>
     <string name="songs">Skladby</string>
     <string name="playlists">Playlisty</string>
+    <string name="unplayable_file">Omlouv\u00e1me se, p\u0159i pokusu p\u0159ehr\u00e1t tuto skladbu do\u0161lo k chyb\u011b</string>
+    <string name="biography_unavailable">Omlouv\u00e1me se, k tomuto interpretovi nem\u016f\u017eeme sehnat dopl\u0148uj\u00edc\u00ed informace.</string>
+    <string name="wiki_unavailable">Omlouv\u00e1me se, k tomuto albu nem\u016f\u017eeme sehnat dopl\u0148uj\u00edc\u00ed informace.</string>
     <string name="biography">Biografie</string>
     <string name="audio_focus_denied">Nebylo možné získat ohnisko zvuku.</string>
     <string name="artist">Interpret</string>
@@ -39,7 +42,7 @@
     <string name="lyrics">Text</string>
     <string name="album_or_artist_empty">Název alba nebo interpreta je prázdný.</string>
     <string name="saving_changes">Ukládání změn</string>
-    <string name="label_details">Podrobné informace o skladbě</string>
+    <string name="label_details">Podrobnosti</string>
     <string name="label_file_name">Název souboru</string>
     <string name="label_file_path">Umístění souboru</string>
     <string name="label_file_size">Velikost</string>
@@ -52,6 +55,7 @@
     <string name="label_playing_queue">Fronta</string>
     <string name="no_results">Žádné výsledky</string>
     <string name="updating">Aktualizace...</string>
+    <string name="added_title_to_playing_queue">Přidána 1 skladba do fronty.</string>
     <string name="added_x_titles_to_playing_queue">Přidáno %1$d skladeb do fronty.</string>
     <string name="action_remove_from_playlist">Odstranit z playlistu</string>
     <string name="action_grid_size">Velikost mřížky</string>
@@ -59,6 +63,7 @@
     <string name="inserted_x_songs_into_playlist_x">Vloženo %1$d do playlistu %2$s.</string>
     <string name="created_playlist_x">Vytvořen playlist %1$s</string>
     <string name="playlist_exists">Seznam skladeb %1$s již existuje.</string>
+    <string name="could_not_create_playlist">Nelze vytvo\u0159it playlist.</string>
     <string name="rename_playlist_title">Přejmenovat playlist</string>
     <string name="save_playlist_title">Uložit jako soubor</string>
     <string name="save_playlists_title">Uložit jako soubor</string>
@@ -90,7 +95,7 @@
     <string name="pref_header_library">Knihovna</string>
     <string name="pref_header_images">Obrázky</string>
     <string name="pref_header_lockscreen">Odemykací obrazovka</string>
-    <string name="pref_header_playlists">Playlisty</string>
+    <string name="pref_header_playlists">Seznamy skladeb</string>
     <string name="pref_header_notification">Oznámení</string>
     <string name="pref_title_navigation_bar">Barevné záhlaví</string>
     <string name="pref_title_app_shortcuts">Barevné zkratky aplikace</string>
@@ -107,6 +112,7 @@
     <string name="pref_title_remember_last_tab">Pamatovat poslední kartu</string>
     <string name="pref_title_remember_shuffle">Pamatovat náhodné přehrávání</string>
     <string name="no_equalizer">Nenalezen žádný ekvalizér. </string>
+    <string name="no_audio_ID">Nejdříve přehrajte píseň, poté zkuste znovu. </string>
     <string name="delete_action">Smazat</string>
     <string name="clear_action">Vyčistit</string>
     <string name="remove_action">Odstranit</string>
@@ -127,6 +133,8 @@
     <string name="pref_summary_album_art_on_lockscreen">Používá aktuální obal alba jako tapetu zamykací obrazovky.</string>
     <string name="pref_summary_blurred_album_art">Rozostří obal alba na uzamčené obrazovce. Může být problematické s aplikacemi a widgety třetích stran.</string>
     <string name="pref_summary_classic_notification">Použije klasický vzhled oznámení.</string>
+    <string name="pref_summary_colored_notification">Zbarv\u00ed ozn\u00e1men\u00ed do barev podle obalu alba.</string>
+    <string name="pref_summary_gapless_playback">Může způsobit problémy s přehráváním u některých zařízení.</string>
     <string name="pref_summary_ignore_media_store_artwork">Může zvýšit kvalitu obalu alba, ale způsobí pomalejší načítání. Povolte pouze pokud máte problémy s nízkým rozlišením obalu. </string>
     <string name="pref_summary_colored_navigation_bar">Barvy navigačního panelu v primární barvě</string>
     <string name="pref_summary_colored_app_shortcuts">Zbarví zkratky aplikace primární barvou</string>
@@ -134,12 +142,14 @@
     <string name="pref_summary_synchronized_lyrics_show">V současné době jsou podporovány pouze synchronizované texty ve formátu LRC. Buď vestavěný nebo jako samostatný soubor.</string>
     <string name="pref_summary_remember_last_tab">Přejděte na poslední otevřenou kartu při spuštění</string>
     <string name="pref_summary_remember_shuffle">Při výběru nového seznamu skladeb zůstane režim náhodného přehrávání zapnutý</string>
+    <string name="could_not_download_album_cover">Nelze st\u00e1hnout odpov\u00eddaj\u00edc\u00ed obal alba.</string>
     <string name="search_hint">Vyhledat zvukové soubory...</string>
     <string name="favorites">Oblíbené</string>
     <string name="last_added">Naposledy přidáno</string>
     <string name="history">Nedávno přehrané</string>
     <string name="my_top_tracks">Moje nejposlouchanější skladby </string>
     <string name="remove_cover">Odstranit obal</string>
+    <string name="download_from_last_fm">Stáhnout z Last.fm</string>
     <string name="pick_from_local_storage">Vybrat z místního úložiště</string>
     <string name="web_search">Najít na webu</string>
     <string name="action_sleep_timer">Určit ukončení přehrávání</string>
@@ -178,7 +188,7 @@
     <string name="welcome_to_phonograph">Vítejte ve Phonographu, krásném a lehkém přehrávači pro Android. </string>
     <string name="open_playing_queue_instruction">Potáhněte kartu v obrazovce Právě přehrávané nahoru pro zobrazení celé fronty přehrávání. </string>
     <string name="rearrange_playing_queue_instruction">Změňte pořadí fronty přetažením skladby za její číslo. </string>
-    <string name="library">Knihovna</string>
+    <string name="library">Knihovna </string>
     <string name="folders">Složky </string>
     <string name="failed_to_save_playlist">Chyba v uložení playlistu (%s).</string>
     <string name="saved_x_playlists_to_x">Uloženo %1$d playlistů do %2$s.</string>
@@ -243,6 +253,4 @@
     <string name="finish_current_music_sleep_timer">Dokončit poslední skladbu</string>
     <string name="dialog_ringtone_title">Nastavit vyzváněcí tón</string>
     <string name="dialog_ringtone_message">Povolit aplikaci Phonograph měnit nastavení zvuku</string>
-    <string name="sort_order_song">Skladba</string>
-    <string name="pref_header_appearance">Vzhled</string>
 </resources>
