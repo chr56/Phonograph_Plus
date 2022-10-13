@@ -29,6 +29,9 @@
     <string name="genres">Tyylilajit</string>
     <string name="songs">Kappaleet</string>
     <string name="playlists">Soittolistat</string>
+    <string name="unplayable_file">Virhe toistettaessa kappaletta.</string>
+    <string name="biography_unavailable">El\u00e4m\u00e4nkertaa ei l\u00f6ytynyt t\u00e4lle artistille.</string>
+    <string name="wiki_unavailable">Ei l\u00f6ytynyt wikist\u00e4 kohtaa t\u00e4lle albumille.</string>
     <string name="biography">Elämänkerta</string>
     <string name="audio_focus_denied">Ääntä ei voitu toistaa.</string>
     <string name="album">Albumi</string>
@@ -53,6 +56,7 @@
     <string name="label_playing_queue">Toistojono</string>
     <string name="no_results">Ei hakutuloksia</string>
     <string name="updating">Päivitetään...</string>
+    <string name="added_title_to_playing_queue">Kappale lisätty toistojonoon.</string>
     <string name="added_x_titles_to_playing_queue">%1$d kappaletta lisättiin toistojonoon</string>
     <string name="action_remove_from_playlist">Poista soittolistasta</string>
     <string name="action_grid_size">Ruudukon koko</string>
@@ -60,6 +64,7 @@
     <string name="inserted_x_songs_into_playlist_x">Lisätty %1$d kappaletta soittolistaan %2$s.</string>
     <string name="created_playlist_x">Soittolista %1$s luotu.</string>
     <string name="playlist_exists">Soittolista %1$s on jo olemassa.</string>
+    <string name="could_not_create_playlist">Soittolistan luominen ep\u00e4onnistui.</string>
     <string name="rename_playlist_title">Nimeä soittolista uudelleen</string>
     <string name="save_playlist_title">Tallenna tiedostona</string>
     <string name="save_playlists_title">Tallenna tiedostoina</string>
@@ -108,6 +113,7 @@
     <string name="pref_title_remember_last_tab">Muista viimeisin välilehti</string>
     <string name="pref_title_remember_shuffle">Muista sekoitus</string>
     <string name="no_equalizer">Taajuuskorjainta ei löytynyt.</string>
+    <string name="no_audio_ID">Toista jokin kappale ensin, koita sitten uudelleen.</string>
     <string name="delete_action">Poista</string>
     <string name="clear_action">Tyhjennä</string>
     <string name="remove_action">Poista</string>
@@ -128,6 +134,8 @@
     <string name="pref_summary_album_art_on_lockscreen">Käyttää tämänhetkisen kappaleen albumin kantta lukitusnäytön taustakuvana.</string>
     <string name="pref_summary_blurred_album_art">Sumentaa albumin kannen lukitusnäytöllä. Saattaa aiheuttaa ongelmia kolmannen osapuolen sovellusten ja widgettien kanssa.</string>
     <string name="pref_summary_classic_notification">Käytä klassista ilmoituksen ulkonäköä.</string>
+    <string name="pref_summary_colored_notification">V\u00e4ritt\u00e4\u00e4 ilmoituksen albumin eloisalla v\u00e4rill\u00e4.</string>
+    <string name="pref_summary_gapless_playback">Saattaa aiheuttaa toisto-ongelmia joillain laitteilla.</string>
     <string name="pref_summary_ignore_media_store_artwork">Saattaa nostaa albumin kannen laatua, mutta aiheuttaa hitaampaa kuvien latausaikaa. Käytä tätä vain, jos sinulla on ongelmia huonolaatuisten taideteosten kanssa.</string>
     <string name="pref_summary_colored_navigation_bar">Värittää navigaatiopalkin päävärillä.</string>
     <string name="pref_summary_colored_app_shortcuts">Värittää sovelluksen pikavalinnat päävärillä.</string>
@@ -135,12 +143,14 @@
     <string name="pref_summary_synchronized_lyrics_show">Nykyiseltään sovellus tukee vain LRC-muodossa olevia sanoituksia, joko sulautettuna tai erillisinä tiedostoina.</string>
     <string name="pref_summary_remember_last_tab">Palauttaa käynnistyessään viimeksi avoinna olleen välilehden.</string>
     <string name="pref_summary_remember_shuffle">Sekoitus-tila pysyy päällä, kun valitset uuden listan kappaleita</string>
+    <string name="could_not_download_album_cover">Ei voitu ladata albumia vastaavaa albumin kantta.</string>
     <string name="search_hint">Etsi kirjastostasi...</string>
     <string name="favorites">Suosikit</string>
     <string name="last_added">Viimeksi lisätyt</string>
     <string name="history">Viimeksi toistettu</string>
     <string name="my_top_tracks">Eniten kuunnellut</string>
     <string name="remove_cover">Poista kansi</string>
+    <string name="download_from_last_fm">Lataa Last.fm-sivustolta</string>
     <string name="pick_from_local_storage">Valitse paikallisesta muistista</string>
     <string name="web_search">Web-haku</string>
     <string name="action_sleep_timer">Ajastin</string>
@@ -244,6 +254,4 @@
     <string name="sort_order_album">Albumi</string>
     <string name="sort_order_year">Vuosi</string>
     <string name="finish_current_music_sleep_timer">Lopeta viimeinen kappale</string>
-    <string name="sort_order_song">Kappale</string>
-    <string name="pref_header_appearance">Ulkonäkö</string>
 </resources>
