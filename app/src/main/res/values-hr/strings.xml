@@ -29,6 +29,9 @@
     <string name="genres">Žanrovi</string>
     <string name="songs">Pjesme</string>
     <string name="playlists">Popisi naslova</string>
+    <string name="unplayable_file">Nije mogu\u0107e reproducirati ovu pjesmu.</string>
+    <string name="biography_unavailable">Nije mogu\u0107e prona\u0107i biografiju za ovog izvo\u0111a\u010da.</string>
+    <string name="wiki_unavailable">Nije mogu\u0107e prona\u0107i wiki unos za ovaj album.</string>
     <string name="biography">Biografija</string>
     <string name="audio_focus_denied">Zvučni fokus je odbijen.</string>
     <string name="artist">Izvođač</string>
@@ -51,6 +54,7 @@
     <string name="label_playing_queue">Red čekanja</string>
     <string name="no_results">Nema rezultata</string>
     <string name="updating">Ažuriranje...</string>
+    <string name="added_title_to_playing_queue">1 pjesma je dodana u red čekanja.</string>
     <string name="added_x_titles_to_playing_queue">Dodano je %1$d pjesama u red čekanja.</string>
     <string name="action_remove_from_playlist">Ukloni s popisa naslova</string>
     <string name="action_grid_size">Veličina mreže</string>
@@ -58,6 +62,7 @@
     <string name="inserted_x_songs_into_playlist_x">Dodano je %1$d pjesama na popis %2$s.</string>
     <string name="created_playlist_x">Stvoren popis naslova %1$s.</string>
     <string name="playlist_exists">Popis naslova %1$s već postoji.</string>
+    <string name="could_not_create_playlist">Nije mogu\u0107e stvoriti popis naslova.</string>
     <string name="rename_playlist_title">Preimenuj popis naslova</string>
     <string name="save_playlist_title">Spremi kao datoteku</string>
     <string name="save_playlists_title">Spremi kao datoteke</string>
@@ -106,6 +111,7 @@
     <string name="pref_title_remember_last_tab">Zapamti zadnju karticu</string>
     <string name="pref_title_remember_shuffle">Zapamti nasumičnu rep.</string>
     <string name="no_equalizer">Ekvalizator nije pronađen.</string>
+    <string name="no_audio_ID">Reproducirajte nešto i pokušajte opet.</string>
     <string name="delete_action">Izbriši</string>
     <string name="clear_action">Očisti</string>
     <string name="remove_action">Ukloni</string>
@@ -126,6 +132,8 @@
     <string name="pref_summary_album_art_on_lockscreen">Koristi omot albuma trenutne pjesme kao pozadinu zaključanog zaslona.</string>
     <string name="pref_summary_blurred_album_art">Zamagljuje omot albuma na zaključanom zaslonu. Može izazvati probleme za ostale aplikacije i widgete.</string>
     <string name="pref_summary_classic_notification">Koristi klasični dizajn obavijesti.</string>
+    <string name="pref_summary_colored_notification">Obavijesti su obojene istaknutom bojom omota albuma.</string>
+    <string name="pref_summary_gapless_playback">Na nekim uređajima može uzrokovati probleme s reproduciranjem.</string>
     <string name="pref_summary_ignore_media_store_artwork">Može povećati kvalitetu omota albuma, ali povećava vrijeme učitavanja. Omogućite ovo samo ako imate problema s omotima niske rezolucije.</string>
     <string name="pref_summary_colored_navigation_bar">Boja navigacijsku traku primarnom bojom.</string>
     <string name="pref_summary_colored_app_shortcuts">Boja prečace aplikacije u primarnu boju.</string>
@@ -133,12 +141,14 @@
     <string name="pref_summary_synchronized_lyrics_show">Trenutno su samo sinkronizirani stihovi u LRC formatu podržani. Ili ugrađeni ili u zasebnoj datoteci.</string>
     <string name="pref_summary_remember_last_tab">Pri pokretanju otvori zadnje otvorenu karticu</string>
     <string name="pref_summary_remember_shuffle">Način nasumične rep. će ostati uključen prilikom biranja novog popisa pjesama</string>
+    <string name="could_not_download_album_cover">Nije mogu\u0107e preuzeti odgovaraju\u0107i omot albuma.</string>
     <string name="search_hint">Pretražite svoju biblioteku...</string>
     <string name="favorites">Favoriti</string>
     <string name="last_added">Posljednje dodano</string>
     <string name="history">Nedavno reproducirano</string>
     <string name="my_top_tracks">Najslušanije</string>
     <string name="remove_cover">Ukloni omot</string>
+    <string name="download_from_last_fm">Skini s lokacije Last.fm</string>
     <string name="pick_from_local_storage">Odaberi s pohrane uređaja</string>
     <string name="web_search">Web pretraga</string>
     <string name="action_sleep_timer">Tajmer za spavanje</string>
@@ -241,6 +251,4 @@
     <string name="sort_order_artist">Izvođač</string>
     <string name="sort_order_year">Godina</string>
     <string name="finish_current_music_sleep_timer">Završi zadnju pjesmu</string>
-    <string name="sort_order_song">Pjesma</string>
-    <string name="pref_header_appearance">Izgled</string>
 </resources>
