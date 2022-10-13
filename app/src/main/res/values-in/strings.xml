@@ -29,6 +29,9 @@
     <string name="genres">Aliran</string>
     <string name="songs">Lagu</string>
     <string name="playlists">Daftar putar</string>
+    <string name="unplayable_file">Tidak dapat memutar lagu ini.</string>
+    <string name="biography_unavailable">Tidak dapat menemukan entri biografi untuk artis ini.</string>
+    <string name="wiki_unavailable">Tidak dapat menemukan entri wiki untuk album ini.</string>
     <string name="biography">Biografi</string>
     <string name="audio_focus_denied">Fokus audio ditolak.</string>
     <string name="artist">Artis</string>
@@ -53,6 +56,7 @@
     <string name="label_playing_queue">Antrean putar</string>
     <string name="no_results">Tidak ditemukan</string>
     <string name="updating">Memperbaharui</string>
+    <string name="added_title_to_playing_queue">1 lagu ditambahkan ke antrean putar</string>
     <string name="added_x_titles_to_playing_queue">Telah menambah %1$d lagu ke antrean putar</string>
     <string name="action_remove_from_playlist">Hapus dari daftar putar</string>
     <string name="action_grid_size">Ukuran kisi</string>
@@ -60,6 +64,7 @@
     <string name="inserted_x_songs_into_playlist_x">Telah menambah %1$d lagu ke daftar putar %2$s.</string>
     <string name="created_playlist_x">Telah membuat daftar putar %1$s</string>
     <string name="playlist_exists">Daftar putar %1$s sudah ada.</string>
+    <string name="could_not_create_playlist">Tidak dapat membuat daftar putar.</string>
     <string name="rename_playlist_title">Ubah nama daftar putar</string>
     <string name="save_playlist_title">Simpan sebagai berkas</string>
     <string name="save_playlists_title">Simpan sebagai berkas</string>
@@ -111,6 +116,7 @@
     <string name="pref_title_remember_last_tab">Ingat tab terakhir</string>
     <string name="pref_title_remember_shuffle">Ingat putar acak</string>
     <string name="no_equalizer">Tidak ada ekualiser yang ditemukan.</string>
+    <string name="no_audio_ID">Silahkan mainkan sebuah lagu dan coba lagi. </string>
     <string name="delete_action">Hapus</string>
     <string name="clear_action">Kosongkan</string>
     <string name="remove_action">Hapus</string>
@@ -131,6 +137,8 @@
     <string name="pref_summary_album_art_on_lockscreen">Gunakan sambul album lagu yang sedang diputar sebagai wallpaper layar kunci</string>
     <string name="pref_summary_blurred_album_art">Buramkan sampul album di layar kunci. Dapat menyebabkan masalah dengan aplikasi pihak ke tiga dan widget</string>
     <string name="pref_summary_classic_notification">Gunakan desain notifikasi klasik.</string>
+    <string name="pref_summary_colored_notification">Mewarnai notifikasi putar dengan warna yang cerah dari album.</string>
+    <string name="pref_summary_gapless_playback">Dapat menyebabkan masalah pemutaran pada beberapa perangkat.</string>
     <string name="pref_summary_ignore_media_store_artwork">Dapat meningkatkan kualitas sampul album, namun menyebabkan waktu pemuatan lebih lambat. Aktifkan jika Anda bermasalah dengan resolusi gambar album yang rendah. </string>
     <string name="pref_summary_colored_navigation_bar">Mewarnai bilah navigasi dengan warna primer. </string>
     <string name="pref_summary_colored_app_shortcuts">Mewarnai pintasan-pintasan dengan warna utama.</string>
@@ -138,12 +146,14 @@
     <string name="pref_summary_synchronized_lyrics_show">Saat ini hanya mendukung lirik dalam format LRC yang disinkronkan. Antara tertanam atau sebagai file terpisah.</string>
     <string name="pref_summary_remember_last_tab">Pergi ke tab yang terakhir saat aplikasi dibuka</string>
     <string name="pref_summary_remember_shuffle">Mode putar acak akan tetap aktif saat memilih daftar lagu baru</string>
+    <string name="could_not_download_album_cover">Tidak dapat mengunduh sampul album yang cocok.</string>
     <string name="search_hint">Mencari pustaka Anda…</string>
     <string name="favorites">Favorit</string>
     <string name="last_added">Terakhir ditambahkan</string>
     <string name="history">Diputar baru-baru ini</string>
     <string name="my_top_tracks">Sering Diputar</string>
     <string name="remove_cover">Hapus sampul</string>
+    <string name="download_from_last_fm">Unduh dari Last.fm</string>
     <string name="pick_from_local_storage">Ambil dari penyimpanan lokal</string>
     <string name="web_search">Pencarian web</string>
     <string name="action_sleep_timer">Pewaktu tidur</string>
@@ -302,7 +312,7 @@
     <string name="direction_open_folder_with_saf">Sekarang, silahkan pilih folder file yang berisi file yang anda ingin operasikan </string>
     <string name="direction_open_file_with_saf">Sekarang, silahkan pilih file yang anda ingin operasikan </string>
     <string name="file_incorrect">File tidak benar!</string>
-    <string name="pref_header_appearance">Tampilan</string>
+    <string name="pref_header_appearance">Penampilan</string>
     <string name="deleting_old_files">Menghapus file legacy…</string>
     <string name="pref_title_reset_home_pages_tab_config">Atur ulang semua tab</string>
     <string name="pref_summary_reset_home_pages_tab_config">Semua kategori pustaka akan di atur ulang ke bawaan.</string>
