@@ -115,6 +115,7 @@
     <string name="pref_title_remember_last_tab">Ricorda ultima scheda</string>
     <string name="pref_title_remember_shuffle">Ricorda casuale</string>
     <string name="no_equalizer">Nessun equalizzatore trovato</string>
+    <string name="no_audio_ID">Riproduci un brano e prova di nuovo.</string>
     <string name="delete_action">Elimina</string>
     <string name="clear_action">Svuota</string>
     <string name="remove_action">Rimuovi</string>
@@ -135,7 +136,7 @@
     <string name="pref_summary_album_art_on_lockscreen">Usa la copertina dell\'album in riproduzione come sfondo della schermata di blocco.</string>
     <string name="pref_summary_blurred_album_art">Applica una sfocatura sulla copertina nella schermata di blocco. Può causare problemi con app e widget di terze parti.</string>
     <string name="pref_summary_classic_notification">Usa il design di notifica classico.</string>
-    <string name="pref_summary_colored_notification">La notifica è colorata secondo la gamma di colori della copertina.</string>
+    <string name="pref_summary_colored_notification">La notifica \u00e8 colorata secondo la gamma di colori della copertina.</string>
     <string name="pref_summary_gapless_playback">Può causare problemi di riproduzione su alcuni dispositivi.</string>
     <string name="pref_summary_ignore_media_store_artwork">Può incrementare la qualità delle copertine, ma causa rallentamenti nei tempi di caricamento delle immagini. Abilita soltanto se hai problemi con copertine a bassa risoluzione.</string>
     <string name="pref_summary_colored_navigation_bar">Colora la barra di navigazione del colore principale.</string>
@@ -228,7 +229,7 @@
     <string name="you_will_be_forwarded_to_the_issue_tracker_website">Verrai indirizzato al sito di bugtracking.</string>
     <string name="app_shortcut_shuffle_all_short">Casuale</string>
     <string name="app_shortcut_top_tracks_short">Migliori tracce</string>
-    <string name="app_shortcut_last_added_short">Aggiunti di recente</string>
+    <string name="app_shortcut_last_added_short">Ultima aggiunta</string>
     <string name="playlist_is_empty">La playlist è vuota</string>
     <string name="playing_notification_description">La notifica di riproduzione offre azioni per play/pausa ecc.</string>
     <string name="playing_notification_name">Notifica di riproduzione</string>
