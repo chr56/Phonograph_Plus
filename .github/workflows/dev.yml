@@ -43,7 +43,7 @@ jobs:
           cache: gradle
 
       - name: Build with Gradle
-        run: ./gradlew assembleCiDebug --stacktrace --parallel
+        run: ./gradlew assembleCheckoutDebug --stacktrace --parallel
 
       - name: signing apk
         uses: r0adkll/sign-android-release@v1.0.4
