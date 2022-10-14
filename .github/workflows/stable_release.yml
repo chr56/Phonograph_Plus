@@ -18,6 +18,7 @@ jobs:
     permissions:
       contents: write
     steps:
+
       - name: Generate Release Note Template
         run: |
           echo "${{ github.ref_name }} " $(date +%Y.%m.%d) > ./ReleaseNoteTemplate.md
