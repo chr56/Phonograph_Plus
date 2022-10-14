@@ -43,7 +43,7 @@ jobs:
           cache: gradle
 
       - name: Build with Gradle
-        run: ./gradlew assembleCiDebug --stacktrace --parallel
+        run: ./gradlew assembleCheckoutDebug --stacktrace --parallel
 
       - name: signing apk
         uses: r0adkll/sign-android-release@v1.0.4
@@ -51,7 +51,7 @@ jobs:
         env:
           BUILD_TOOLS_VERSION: 31.0.0
         with:
-          releaseDirectory: ./app/build/outputs/apk/ci/debug
+          releaseDirectory: ./app/build/outputs/apk/checkout/debug
           signingKeyBase64: ${{ secrets.KEY }}
           keyStorePassword: ${{ secrets.STORE_PASSWORD }}
           alias: ${{ secrets.KEY_ALIAS }}

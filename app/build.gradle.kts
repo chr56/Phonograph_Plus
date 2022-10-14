@@ -40,12 +40,14 @@ android {
         renderscriptTargetApi = 29
         vectorDrawables.useSupportLibrary = true
 
-        applicationId = "player.phonograph"
+        applicationId = "player.phonograph.plus"
         versionCode = 350
         versionName = "0.4-dev"
 
         buildConfigField("String", "GIT_COMMIT_HASH", "\"${getGitHash(false)}\"")
         setProperty("archivesBaseName", "PhonographPlus_$versionName")
+
+        proguardFiles(File("proguard-rules-base.pro"), File("proguard-rules-app.pro"))
     }
 
     signingConfigs {
@@ -67,7 +69,6 @@ android {
             // shrink
             isMinifyEnabled = true
             isShrinkResources = true
-            proguardFiles(File("proguard-rules-base.pro"), File("proguard-rules-app.pro"))
         }
         getByName("debug") {
             // signing as well
@@ -80,56 +81,34 @@ android {
 
     flavorDimensions += listOf("purpose")
     productFlavors {
-        create("common") {
+        // Stable or LTS release
+        create("stable") {
             dimension = "purpose"
 
-            applicationIdSuffix = ".plus"
             resValue("string", "app_name", appName)
         }
+        // Preview release
         create("preview") {
             dimension = "purpose"
-            matchingFallbacks.add("common")
+            matchingFallbacks.add("stable")
 
             resValue("string", "app_name", "$appName Preview")
-            applicationIdSuffix = ".plus.preview"
+            applicationIdSuffix = ".preview"
         }
-        // test Proguard
-        create("proguardTest") {
-            dimension = "purpose"
-            matchingFallbacks.add("common")
-
-            resValue("string", "app_name", "$appName ProguardTest")
-            applicationIdSuffix = ".plus.proguard"
-        }
-        // for checkout to locate a bug etc.
+        // for checkout to locate a bug and ci etc.
         create("checkout") {
             dimension = "purpose"
-            matchingFallbacks.add("common")
+            matchingFallbacks.add("stable")
 
             resValue("string", "app_name", "$appName Checkout")
-            applicationIdSuffix = ".plus.checkout"
-        }
-        // for ci
-        create("ci") {
-            dimension = "purpose"
-            matchingFallbacks.add("common")
-
-            applicationIdSuffix = ".plus.ci"
-            resValue("string", "app_name", "$appName CI Build")
+            applicationIdSuffix = ".checkout"
         }
     }
     androidComponents {
         beforeVariants(selector().withBuildType("release")) { variantBuilder ->
             val favors = variantBuilder.productFlavors
             // no "release" type
-            if (favors.contains("purpose" to "checkout") || favors.contains("purpose" to "ci")) {
-                variantBuilder.enable = false
-            }
-        }
-        beforeVariants(selector().withBuildType("debug")) { variantBuilder ->
-            val favors = variantBuilder.productFlavors
-            // no "debug" type
-            if (favors.contains("purpose" to "proguardTest")) {
+            if (favors.contains("purpose" to "checkout")) {
                 variantBuilder.enable = false
             }
         }
