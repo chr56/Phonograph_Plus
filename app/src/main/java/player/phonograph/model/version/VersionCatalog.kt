@@ -54,8 +54,8 @@ data class Version(
     ) : Parcelable {
         fun parsed(resources: Resources): Spanned {
             val lang = resources.configuration.locales.get(0)
-            val zhs = Locale.SIMPLIFIED_CHINESE
-            val source = if (lang.equals(zhs)) zh_cn else en
+            val source =
+                if (lang.language.lowercase() == "zh" && lang.script.lowercase() == "hans") zh_cn else en
             return Html.fromHtml(source, Html.FROM_HTML_MODE_LEGACY)
         }
     }
