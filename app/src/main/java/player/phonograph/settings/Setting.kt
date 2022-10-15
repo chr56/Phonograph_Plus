@@ -200,7 +200,6 @@ class Setting(context: Context) {
     var startDirectoryPath: String by StringPref(START_DIRECTORY, defaultStartDirectory.path)
     var initializedBlacklist: Boolean by BooleanPref(INITIALIZED_BLACKLIST, false)
     var pathFilterExcludeMode: Boolean by BooleanPref(PATH_FILTER_EXCLUDE_MODE, true)
-    var ignoreUpgradeVersionCode: Int by IntPref(IGNORE_UPGRADE_VERSION_CODE, 0)
 
     // Compatibility
     var useLegacyFavoritePlaylistImpl: Boolean by BooleanPref(

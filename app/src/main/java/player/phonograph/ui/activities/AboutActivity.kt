@@ -27,6 +27,7 @@ import player.phonograph.databinding.ActivityAboutBinding
 import player.phonograph.dialogs.ChangelogDialog
 import player.phonograph.dialogs.DebugDialog
 import player.phonograph.model.version.VersionCatalog
+import player.phonograph.settings.Setting
 import player.phonograph.ui.activities.intro.AppIntroActivity
 import player.phonograph.ui.dialogs.ReportIssueDialog
 import player.phonograph.ui.dialogs.UpgradeDialog
@@ -183,9 +184,9 @@ class AboutActivity : ToolbarActivity(), View.OnClickListener {
                     UpdateUtil2.checkUpdate { versionCatalog: VersionCatalog, upgradable: Boolean ->
                         if (upgradable) {
                             UpgradeDialog.create(versionCatalog).show(supportFragmentManager, "UPGRADE_DIALOG")
-                            //if (Setting.instance.ignoreUpgradeVersionCode >= it.getInt(VersionJson.VERSIONCODE)) {
-                            //     toast(getString(R.string.upgrade_ignored))
-                            //}
+                            if (Setting.instance.ignoreUpgradeDate >= versionCatalog.currentLatestChannelVersionBy { it.date }.date) {
+                                toast(getString(R.string.upgrade_ignored))
+                            }
                         } else {
                             toast(getText(R.string.no_newer_version))
                         }
