@@ -23,7 +23,6 @@ import player.phonograph.UpdateConfig2.requestUriGitHub
 import player.phonograph.UpdateConfig2.requestUriJsdelivr
 import player.phonograph.misc.webRequest
 import player.phonograph.model.version.VersionCatalog
-import player.phonograph.notification.ErrorNotification
 import player.phonograph.settings.Setting
 import player.phonograph.util.Util.debug
 import java.io.IOException
@@ -98,7 +97,6 @@ object UpdateUtil2 {
                     parser.decodeFromString<VersionCatalog>(it.string())
                 }
             } catch (e: Exception) {
-                ErrorNotification.postErrorNotification(e, "Parse version.json fail!")
                 e.printStackTrace()
                 null
             }
