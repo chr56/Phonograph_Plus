@@ -17,9 +17,9 @@ import player.phonograph.App
 import player.phonograph.BuildConfig
 import player.phonograph.model.version.VersionCatalog
 import player.phonograph.notification.ErrorNotification
-import player.phonograph.notification.UpgradeNotification2
+import player.phonograph.notification.UpgradeNotification
 import player.phonograph.util.CoroutineUtil.coroutineToast
-import player.phonograph.util.UpdateUtil2
+import player.phonograph.util.UpdateUtil
 
 class DebugDialog : DialogFragment() {
 
@@ -39,7 +39,7 @@ class DebugDialog : DialogFragment() {
                     1 -> ErrorNotification.postErrorNotification(Exception("Test"), "Crash Notification Test!!")
                     2 -> {
                         CoroutineScope(Dispatchers.Unconfined).launch {
-                            UpdateUtil2.checkUpdate(true) { versionCatalog: VersionCatalog, upgradable: Boolean ->
+                            UpdateUtil.checkUpdate(true) { versionCatalog: VersionCatalog, upgradable: Boolean ->
                                 try {
                                     player.phonograph.ui.dialogs.UpgradeDialog.create(versionCatalog).show(fragmentManager, "DebugDialog")
                                     if (!upgradable) {
@@ -53,12 +53,12 @@ class DebugDialog : DialogFragment() {
                     }
                     3 -> {
                         CoroutineScope(Dispatchers.Unconfined).launch {
-                            UpdateUtil2.checkUpdate(true) { versionCatalog: VersionCatalog, upgradable: Boolean ->
+                            UpdateUtil.checkUpdate(true) { versionCatalog: VersionCatalog, upgradable: Boolean ->
                                 val channel = when (BuildConfig.FLAVOR) {
                                     "preview" -> "preview"
                                     else -> "stable"
                                 }
-                                UpgradeNotification2.sendUpgradeNotification(versionCatalog, channel)
+                                UpgradeNotification.sendUpgradeNotification(versionCatalog, channel)
                                 if (!upgradable) {
                                     coroutineToast(App.instance, "not upgradable")
                                 }

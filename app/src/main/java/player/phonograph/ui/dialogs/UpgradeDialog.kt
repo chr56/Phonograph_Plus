@@ -35,7 +35,7 @@ import player.phonograph.ui.components.viewcreater.buttonPanel
 import player.phonograph.ui.components.viewcreater.contentPanel
 import player.phonograph.ui.components.viewcreater.titlePanel
 import player.phonograph.util.TimeUtil.dateText
-import player.phonograph.util.UpdateUtil2.canAccessGitHub
+import player.phonograph.util.UpdateUtil.canAccessGitHub
 
 class UpgradeDialog : DialogFragment() {
 

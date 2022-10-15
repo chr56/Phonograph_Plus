@@ -32,7 +32,7 @@ import player.phonograph.ui.activities.intro.AppIntroActivity
 import player.phonograph.ui.dialogs.ReportIssueDialog
 import player.phonograph.ui.dialogs.UpgradeDialog
 import player.phonograph.util.PhonographColorUtil.nightMode
-import player.phonograph.util.UpdateUtil2
+import player.phonograph.util.UpdateUtil
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
@@ -181,7 +181,7 @@ class AboutActivity : ToolbarActivity(), View.OnClickListener {
             }
             checkUpgrade -> {
                 CoroutineScope(Dispatchers.Unconfined).launch {
-                    UpdateUtil2.checkUpdate { versionCatalog: VersionCatalog, upgradable: Boolean ->
+                    UpdateUtil.checkUpdate { versionCatalog: VersionCatalog, upgradable: Boolean ->
                         if (upgradable) {
                             UpgradeDialog.create(versionCatalog).show(supportFragmentManager, "UPGRADE_DIALOG")
                             if (Setting.instance.ignoreUpgradeDate >= versionCatalog.currentLatestChannelVersionBy { it.date }.date) {

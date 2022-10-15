@@ -7,7 +7,7 @@ package player.phonograph
 /**
  * urls of update source & mirrors
  */
-object UpdateConfig2 {
+object UpdateConfig {
 
     private const val owner = "chr56"
     private const val organization = "Phonograph-Plus"

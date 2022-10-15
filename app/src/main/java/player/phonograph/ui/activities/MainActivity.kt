@@ -49,7 +49,7 @@ import player.phonograph.model.infoString
 import player.phonograph.model.pages.Pages
 import player.phonograph.model.version.VersionCatalog
 import player.phonograph.notification.ErrorNotification
-import player.phonograph.notification.UpgradeNotification2
+import player.phonograph.notification.UpgradeNotification
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.queue.ShuffleMode
 import player.phonograph.settings.Setting
@@ -60,7 +60,7 @@ import player.phonograph.ui.dialogs.UpgradeDialog
 import player.phonograph.ui.fragments.HomeFragment
 import player.phonograph.util.ImageUtil.getTintedDrawable
 import player.phonograph.util.PhonographColorUtil.nightMode
-import player.phonograph.util.UpdateUtil2
+import player.phonograph.util.UpdateUtil
 import player.phonograph.util.preferences.HomeTabConfig
 import player.phonograph.util.preferences.StyleConfig
 
@@ -455,13 +455,13 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
 
     private fun checkUpdate() {
         CoroutineScope(SupervisorJob()).launch {
-            UpdateUtil2.checkUpdate { versionCatalog: VersionCatalog, upgradable: Boolean ->
+            UpdateUtil.checkUpdate { versionCatalog: VersionCatalog, upgradable: Boolean ->
                 if (upgradable) {
                     val channel = when (BuildConfig.FLAVOR) {
                         "preview" -> "preview"
                         else -> "stable"
                     }
-                    UpgradeNotification2.sendUpgradeNotification(versionCatalog, channel)
+                    UpgradeNotification.sendUpgradeNotification(versionCatalog, channel)
                 }
             }
         }

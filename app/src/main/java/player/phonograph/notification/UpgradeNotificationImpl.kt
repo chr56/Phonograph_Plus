@@ -20,7 +20,7 @@ import player.phonograph.model.version.VersionCatalog
 import player.phonograph.ui.activities.MainActivity
 import java.util.*
 
-class UpgradeNotificationImpl2(context: Context) : AbsNotificationImpl() {
+class UpgradeNotificationImpl(context: Context) : AbsNotificationImpl() {
 
     override val channelId: String = NOTIFICATION_CHANNEL_ID_UPGRADABLE
     override val channelName: CharSequence = context.getString(R.string.upgrade_notification_name)

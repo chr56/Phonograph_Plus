@@ -17,10 +17,10 @@ import okhttp3.HttpUrl
 import okhttp3.Request
 import okhttp3.Response
 import player.phonograph.BuildConfig
-import player.phonograph.UpdateConfig2.requestUriBitBucket
-import player.phonograph.UpdateConfig2.requestUriFastGit
-import player.phonograph.UpdateConfig2.requestUriGitHub
-import player.phonograph.UpdateConfig2.requestUriJsdelivr
+import player.phonograph.UpdateConfig.requestUriBitBucket
+import player.phonograph.UpdateConfig.requestUriFastGit
+import player.phonograph.UpdateConfig.requestUriGitHub
+import player.phonograph.UpdateConfig.requestUriJsdelivr
 import player.phonograph.misc.webRequest
 import player.phonograph.model.version.VersionCatalog
 import player.phonograph.settings.Setting
@@ -28,7 +28,7 @@ import player.phonograph.util.TimeUtil.dateText
 import player.phonograph.util.Util.debug
 import java.io.IOException
 
-object UpdateUtil2 {
+object UpdateUtil {
 
     /**
      * check update from repositories
