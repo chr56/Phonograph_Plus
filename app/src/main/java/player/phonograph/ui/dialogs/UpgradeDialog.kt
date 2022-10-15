@@ -35,6 +35,7 @@ import player.phonograph.ui.components.viewcreater.buttonPanel
 import player.phonograph.ui.components.viewcreater.contentPanel
 import player.phonograph.ui.components.viewcreater.titlePanel
 import player.phonograph.util.TimeUtil.dateText
+import player.phonograph.util.UpdateUtil2.canAccessGitHub
 
 class UpgradeDialog : DialogFragment() {
 
@@ -115,9 +116,9 @@ class UpgradeDialog : DialogFragment() {
     private fun actionMore() {
         val uris = arrayListOf("https://github.com/chr56/Phonograph_Plus/releases")
         val text = arrayListOf(getString(R.string.git_hub) + "(Release Page)")
-        if (false) { //todo
-            uris.plus("https://t.me/Phonograph_Plus")
-            text.plus(getString(R.string.tg_channel))
+        if (canAccessGitHub) {
+            uris.add("https://t.me/Phonograph_Plus")
+            text.add(getString(R.string.tg_channel))
         }
         buildSingleChoiceAlertDialog(getString(R.string.download), text) { _, which ->
             if (which in uris.indices) requireContext().startActivity(

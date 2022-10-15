@@ -30,8 +30,13 @@ import java.io.IOException
 
 object UpdateUtil2 {
 
+    /**
+     * check update from repositories
+     * @param force override [Setting.ignoreUpgradeDate]
+     * @param callback execute if [VersionCatalog] is fetched successfully
+     */
     suspend fun checkUpdate(force: Boolean = false, callback: suspend (versionCatalog: VersionCatalog, upgradable: Boolean) -> Unit) {
-        val versionCatalog = checkVersionCatalog()
+        val versionCatalog = fetchVersionCatalog()
         if (versionCatalog != null) {
             val upgradable = checkUpgradable(versionCatalog, force)
             callback(versionCatalog, upgradable)
@@ -40,10 +45,10 @@ object UpdateUtil2 {
 
 
     /**
-     * @return version bundle or null (failure)
+     * @return [VersionCatalog] or null (failure)
      */
     @OptIn(ExperimentalCoroutinesApi::class)
-    suspend fun checkVersionCatalog(): VersionCatalog? {
+    suspend fun fetchVersionCatalog(): VersionCatalog? {
         return withContext(Dispatchers.IO + SupervisorJob()) {
             // source
             val requestGithub = Request.Builder().url(requestUriGitHub).get().build()
@@ -56,8 +61,11 @@ object UpdateUtil2 {
             // check source first
             sendRequest(requestGithub)?.let { response ->
                 logSucceed(response.request.url)
-                val result = process(response)
-                result?.let { return@withContext it }
+                val result = processResponse(response)
+                result?.let {
+                    canAccessGitHub = true
+                    return@withContext it
+                }
             }
             // check the fastest mirror
             val result = select<Response?> {
@@ -72,7 +80,7 @@ object UpdateUtil2 {
                 }
             }
             return@withContext if (result != null) {
-                process(result)
+                processResponse(result)
             } else {
                 null
             }
@@ -83,7 +91,7 @@ object UpdateUtil2 {
      * handle response
      * @return resolved VersionCatalog
      */
-    private suspend fun process(response: Response): VersionCatalog? {
+    private suspend fun processResponse(response: Response): VersionCatalog? {
         return withContext(Dispatchers.Default) {
             try {
                 response.body?.use {
@@ -151,6 +159,8 @@ object UpdateUtil2 {
         }
     }
 
+    var canAccessGitHub = false
+        private set
 
     private fun logFails(url: HttpUrl) = Log.w(TAG, "Failed to check new version from $url!")
 
