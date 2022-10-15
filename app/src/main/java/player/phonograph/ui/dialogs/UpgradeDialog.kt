@@ -71,7 +71,7 @@ class UpgradeDialog : DialogFragment() {
         container.apply {
             val head = TextView(context).apply {
                 setPadding(32)
-                text = dateText(versionCatalog.updateDate)
+                text = dateText(versionCatalog.currentLatestChannelVersionBy { it.versionCode }.date)
                 textSize = 18f
                 typeface = Typeface.create(Typeface.SANS_SERIF, Typeface.BOLD)
             }
@@ -108,8 +108,7 @@ class UpgradeDialog : DialogFragment() {
 
     private fun actionIgnore() {
         dismiss()
-        val time = versionCatalog.updateDateForChannel.currentChannel()
-        Setting.instance.ignoreUpgradeDate = time
+        Setting.instance.ignoreUpgradeDate = versionCatalog.currentLatestChannelVersionBy { it.date }.date
         Toast.makeText(activity, R.string.upgrade_ignored, Toast.LENGTH_SHORT).show()
     }
 

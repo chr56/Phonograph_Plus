@@ -11,36 +11,21 @@ import android.text.Spanned
 import kotlinx.parcelize.Parcelize
 import kotlinx.serialization.SerialName
 import player.phonograph.BuildConfig
-import player.phonograph.util.UpdateUtil2
 import java.util.*
 
 
 @kotlinx.serialization.Serializable
 @Parcelize
 class VersionCatalog(
-    val updateDate: Long,
-    val updateDateForChannel: LatestVersions,
     val versions: List<Version>,
 ) : Parcelable {
-    @Parcelize
-    @kotlinx.serialization.Serializable
-    class LatestVersions(
-        val lts: Long,
-        val preview: Long,
-        val stable: Long,
-    ) : Parcelable {
-        fun currentChannel(): Long {
-            val flavor = BuildConfig.FLAVOR.lowercase()
-            return when {
-                //todo lts channel
-                flavor.contains("preview") -> preview
-                else -> stable
-            }
-        }
-    }
+    val channelVersions: List<Version>
+        get() = versions.filter { version -> version.channel == currentChannel }
 
-    fun currentChannelVersions(): List<Version> =
-        versions.filter { version -> version.channel == currentChannel }
+    fun <R : Comparable<R>> currentLatestChannelVersionBy(selector: (Version) -> R): Version =
+        with(channelVersions) {
+            maxByOrNull(selector) ?: firstOrNull() ?: Version.EMPTY_VERSION
+        }
 }
 
 @Parcelize
@@ -73,6 +58,18 @@ data class Version(
             val source = if (lang.equals(zhs)) zh_cn else en
             return Html.fromHtml(source, Html.FROM_HTML_MODE_LEGACY)
         }
+    }
+
+    companion object {
+        internal val EMPTY_VERSION
+            get() = Version(
+                currentChannel,
+                emptyList(),
+                ReleaseNote("Error", "Error"),
+                "Unknown",
+                0,
+                0
+            )
     }
 }
 

@@ -107,7 +107,7 @@ object UpdateUtil2 {
         val currentVersionCode = BuildConfig.VERSION_CODE
 
         // filter current channel & latest
-        val versions = versionCatalog.currentChannelVersions()
+        val versions = versionCatalog.channelVersions
         val latestVersion = versions.maxByOrNull { version -> version.versionCode }
 
         if (versions.isEmpty() || latestVersion == null) {
@@ -117,8 +117,9 @@ object UpdateUtil2 {
 
         // check if ignored
         val ignoredDate = Setting.instance.ignoreUpgradeDate
-        if (ignoredDate >= versionCatalog.updateDateForChannel.currentChannel() && !force) {
-            Log.d(TAG, "ignore this upgrade: ${versionCatalog.updateDate}(${dateText(versionCatalog.updateDate)})")
+        val latestVersionByTime = versionCatalog.currentLatestChannelVersionBy { it.date }
+        if (ignoredDate >= latestVersionByTime.date && !force) {
+            Log.d(TAG, "ignore this upgrade: ${latestVersionByTime.date}(${dateText(latestVersionByTime.date)})")
             return false
         }
 

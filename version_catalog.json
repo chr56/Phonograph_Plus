@@ -1,10 +1,4 @@
 {
-  "updateDate": 1665331200,
-  "updateDateForChannel": {
-    "lts": 1665331200,
-    "stable": 1665331200,
-    "preview": 1665763200
-  },
   "versions": [
     {
       "channel": "preview",
