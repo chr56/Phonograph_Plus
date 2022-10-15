@@ -87,13 +87,15 @@ class UpgradeDialog : DialogFragment() {
                             text = with(version) {
                                 "$versionName ${dateText(date)} ($channel)"
                             }
-                            textSize = 16f
+                            textSize = 17f
                             typeface = Typeface.create(Typeface.SANS_SERIF, Typeface.BOLD)
+                            setPadding(8)
                         }
                         val log = TextView(context).apply {
-                            textSize = 15f
+                            textSize = 14f
                             text = version.releaseNote.parsed(resources)
                             typeface = Typeface.create(Typeface.SANS_SERIF, Typeface.BOLD)
+                            setPadding(8)
                         }
                         addView(title, MATCH_PARENT, WRAP_CONTENT)
                         addView(log, MATCH_PARENT, WRAP_CONTENT)
