@@ -17,40 +17,40 @@ import java.util.*
 @kotlinx.serialization.Serializable
 @Parcelize
 class VersionCatalog(
-    val versions: List<Version>,
+    val versions: List<Version> = emptyList(),
 ) : Parcelable {
     val channelVersions: List<Version>
         get() = versions.filter { version -> version.channel == currentChannel }
 
     fun <R : Comparable<R>> currentLatestChannelVersionBy(selector: (Version) -> R): Version =
         with(channelVersions) {
-            maxByOrNull(selector) ?: firstOrNull() ?: Version.EMPTY_VERSION
+            maxByOrNull(selector) ?: Version()
         }
 }
 
 @Parcelize
 @kotlinx.serialization.Serializable
 data class Version(
-    val channel: String,
-    val link: List<Link>,
-    val releaseNote: ReleaseNote,
-    val versionName: String,
-    val versionCode: Int,
-    val date: Long,
+    val channel: String = currentChannel,
+    val link: List<Link> = emptyList(),
+    val releaseNote: ReleaseNote = ReleaseNote(),
+    val versionName: String = "unknown",
+    val versionCode: Int = -1,
+    val date: Long = 0,
 ) : Parcelable {
     @Parcelize
     @kotlinx.serialization.Serializable
     data class Link(
-        val name: String,
-        val uri: String,
+        val name: String = "",
+        val uri: String = "",
     ) : Parcelable
 
     @Parcelize
     @kotlinx.serialization.Serializable
     data class ReleaseNote(
-        val en: String,
+        val en: String = "",
         @SerialName("zh-cn")
-        val zh_cn: String,
+        val zh_cn: String = "",
     ) : Parcelable {
         fun parsed(resources: Resources): Spanned {
             val lang = resources.configuration.locales.get(0)
@@ -58,18 +58,6 @@ data class Version(
                 if (lang.language.lowercase() == "zh" && lang.script.lowercase() == "hans") zh_cn else en
             return Html.fromHtml(source, Html.FROM_HTML_MODE_LEGACY)
         }
-    }
-
-    companion object {
-        internal val EMPTY_VERSION
-            get() = Version(
-                currentChannel,
-                emptyList(),
-                ReleaseNote("Error", "Error"),
-                "Unknown",
-                0,
-                0
-            )
     }
 }
 

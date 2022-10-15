@@ -168,7 +168,10 @@ object UpdateUtil {
         Log.i(TAG, "Succeeded to check new version from $url!")
     }
 
-    private val parser = Json { ignoreUnknownKeys = true }
+    private val parser = Json {
+        ignoreUnknownKeys = true
+        isLenient = true
+    }
 
     private const val TAG = "UpdateUtil"
 
