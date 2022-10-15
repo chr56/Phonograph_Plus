@@ -93,9 +93,7 @@ class UpgradeDialog : DialogFragment() {
                         }
                         val log = TextView(context).apply {
                             textSize = 15f
-                            text = with(version) {
-                                releaseNoteText(resources, releaseNote)
-                            }
+                            text = version.releaseNote.parsed(resources)
                             typeface = Typeface.create(Typeface.SANS_SERIF, Typeface.BOLD)
                         }
                         addView(title, MATCH_PARENT, WRAP_CONTENT)
@@ -138,7 +136,7 @@ class UpgradeDialog : DialogFragment() {
 
     private fun actionSelectVersion(version: Version) {
         val links = version.link
-        buildSingleChoiceAlertDialog(getString(R.string.download),links.map { it.name }) { _, which ->
+        buildSingleChoiceAlertDialog(getString(R.string.download), links.map { it.name }) { _, which ->
             requireContext().startActivity(
                 Intent(Intent.ACTION_VIEW).apply {
                     data = Uri.parse(links[which].uri)
@@ -170,27 +168,11 @@ class UpgradeDialog : DialogFragment() {
         }
 
         private const val VERSION_CATALOG = "VERSION_CATALOG"
-
-        private fun logLanguage(resources: Resources): String = when (resources.configuration.locales.get(0).language) {
-            Locale("zh").language,
-            Locale("zh-rCN").language,
-            Locale("zh-cn").language,
-            Locale("zh-hans").language,
-            -> "ZH"
-            else -> "EN"
-        }
     }
 
     private val accentColor get() = ThemeColor.accentColor(requireContext())
     private fun date(stamp: Long) = Date(stamp * 1000)
     private fun dateText(stamp: Long) = SimpleDateFormat("yyyy.MM.dd", Locale.getDefault()).format(date(stamp))
-    private fun releaseNoteText(resources: Resources, releaseNote: Version.ReleaseNote): Spanned =
-        Html.fromHtml(
-            when (logLanguage(resources)) {
-                "ZH" -> releaseNote.zh_cn
-                else -> releaseNote.en
-            }, Html.FROM_HTML_MODE_LEGACY
-        )
 
     override fun onStart() {
         // set up size

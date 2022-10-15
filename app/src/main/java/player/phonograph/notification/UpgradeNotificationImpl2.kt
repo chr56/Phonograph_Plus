@@ -38,7 +38,7 @@ class UpgradeNotificationImpl2(context: Context) : AbsNotificationImpl() {
                 PendingIntent.getActivity(context, 0, action, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
 
             val title = "${context.getString(R.string.new_version_code)} -- ${version.versionName}"
-            val note = parseReleaseNote(context, version.releaseNote)
+            val note = version.releaseNote.parsed(context.resources)
             val notification: Notification =
                 NotificationCompat.Builder(context, NOTIFICATION_CHANNEL_ID_UPGRADABLE)
                     .setSmallIcon(R.drawable.ic_notification)
