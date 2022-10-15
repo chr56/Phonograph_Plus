@@ -9,6 +9,8 @@ import android.content.Intent
 import android.graphics.Typeface
 import android.net.Uri
 import android.os.Bundle
+import android.text.SpannableStringBuilder
+import android.text.style.ForegroundColorSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -24,7 +26,9 @@ import androidx.cardview.widget.CardView
 import androidx.core.view.setMargins
 import androidx.core.view.setPadding
 import androidx.fragment.app.DialogFragment
+import mt.color.MaterialColor
 import mt.pref.ThemeColor
+import mt.util.color.primaryTextColor
 import player.phonograph.R
 import player.phonograph.UpdateConfig.GITHUB_REPO
 import player.phonograph.model.version.Version
@@ -73,6 +77,7 @@ class UpgradeDialog : DialogFragment() {
         container.apply {
             val head = TextView(context).apply {
                 setPadding(32)
+                setTextColor(accentColor)
                 text = dateText(versionCatalog.currentLatestChannelVersionBy { it.versionCode }.date)
                 textSize = 18f
                 typeface = Typeface.create(Typeface.SANS_SERIF, Typeface.BOLD)
@@ -84,9 +89,7 @@ class UpgradeDialog : DialogFragment() {
                     addView(LinearLayout(context).apply {
                         orientation = VERTICAL
                         val title = TextView(context).apply {
-                            text = with(version) {
-                                "$versionName ${dateText(date)} ($channel)"
-                            }
+                            text = toTitle(version)
                             textSize = 17f
                             typeface = Typeface.create(Typeface.SANS_SERIF, Typeface.BOLD)
                             setPadding(8)
@@ -107,6 +110,22 @@ class UpgradeDialog : DialogFragment() {
                 addView(card,
                     FrameLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT).apply { setMargins(36) })
             }
+        }
+    }
+
+    private fun toTitle(version: Version) = with(version) {
+        val channelColor = ForegroundColorSpan(when (channel.lowercase()) {
+            "stable" -> MaterialColor.Blue._A200.asColor
+            "preview" -> MaterialColor.DeepOrange._A200.asColor
+            "lts" -> MaterialColor.Green._A200.asColor
+            else -> MaterialColor.BlueGrey._700.asColor
+        })
+        SpannableStringBuilder().apply {
+            append(versionName, ForegroundColorSpan(accentColor), SpannableStringBuilder.SPAN_EXCLUSIVE_INCLUSIVE)
+            append(" ")
+            append(dateText(date), ForegroundColorSpan(primaryTextColor), SpannableStringBuilder.SPAN_EXCLUSIVE_EXCLUSIVE)
+            append(" ")
+            append(channel, channelColor, SpannableStringBuilder.SPAN_EXCLUSIVE_INCLUSIVE)
         }
     }
 
@@ -158,6 +177,7 @@ class UpgradeDialog : DialogFragment() {
     }
 
     private val accentColor get() = ThemeColor.accentColor(requireContext())
+    private val primaryTextColor get() = requireContext().primaryTextColor()
 
     companion object {
         const val GITHUB_RELEASE_URL = "https://github.com/$GITHUB_REPO/releases"
