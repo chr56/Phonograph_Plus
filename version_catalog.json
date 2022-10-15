@@ -3,9 +3,42 @@
   "latestVersions": {
     "lts": 314,
     "stable": 314,
-    "preview": 314
+    "preview": 350
   },
   "versions": [
+    {
+      "channel": "preview",
+      "versionName": "0.4-dev1",
+      "versionCode": 351,
+      "date": 1665763200,
+      "link": [],
+      "releaseNote": {
+        "zh-cn": "N/A",
+        "en": "N/A"
+      }
+    },
+    {
+      "channel": "preview",
+      "versionName": "0.4-dev2",
+      "versionCode": 400,
+      "date": 1665763200,
+      "link": [],
+      "releaseNote": {
+        "zh-cn": "N/A",
+        "en": "N/A"
+      }
+    },
+    {
+      "channel": "stable",
+      "versionName": "unknown",
+      "versionCode": 315,
+      "date": 1665763200,
+      "link": [],
+      "releaseNote": {
+        "zh-cn": "N/A",
+        "en": "N/A"
+      }
+    },
     {
       "channel": "lts",
       "versionName": "0.3.5.1-LTS",
