@@ -24,6 +24,7 @@ import player.phonograph.UpdateConfig2.requestUriJsdelivr
 import player.phonograph.misc.webRequest
 import player.phonograph.model.version.VersionCatalog
 import player.phonograph.settings.Setting
+import player.phonograph.util.TimeUtil.dateText
 import player.phonograph.util.Util.debug
 import java.io.IOException
 
@@ -37,13 +38,6 @@ object UpdateUtil2 {
         }
     }
 
-    fun currentChannel(): String {
-        val flavor = BuildConfig.FLAVOR.lowercase()
-        return when {
-            flavor.contains("preview") -> "preview"
-            else -> "stable"
-        }
-    }
 
     /**
      * @return version bundle or null (failure)
@@ -52,16 +46,12 @@ object UpdateUtil2 {
     suspend fun checkVersionCatalog(): VersionCatalog? {
         return withContext(Dispatchers.IO + SupervisorJob()) {
             // source
-            val requestGithub = Request.Builder()
-                .url(requestUriGitHub).get().build()
+            val requestGithub = Request.Builder().url(requestUriGitHub).get().build()
 
             // mirrors
-            val requestBitBucket = Request.Builder()
-                .url(requestUriBitBucket).get().build()
-            val requestJsdelivr = Request.Builder()
-                .url(requestUriJsdelivr).get().build()
-            val requestFastGit = Request.Builder()
-                .url(requestUriFastGit).get().build()
+            val requestBitBucket = Request.Builder().url(requestUriBitBucket).get().build()
+            val requestJsdelivr = Request.Builder().url(requestUriJsdelivr).get().build()
+            val requestFastGit = Request.Builder().url(requestUriFastGit).get().build()
 
             // check source first
             sendRequest(requestGithub)?.let { response ->
@@ -108,26 +98,32 @@ object UpdateUtil2 {
 
     /**
      * check if the current is outdated
-     * @param force override [Setting.ignoreUpgradeVersionCode]
+     * @param force override [Setting.ignoreUpgradeDate]
      * @return true if new versions available
      */
     @Suppress("KotlinConstantConditions")
     private fun checkUpgradable(versionCatalog: VersionCatalog, force: Boolean): Boolean {
 
         val currentVersionCode = BuildConfig.VERSION_CODE
-        val latestVersionCode = when (BuildConfig.FLAVOR) {
-            "preview" -> versionCatalog.latestVersions.preview
-            else -> versionCatalog.latestVersions.stable
+
+        // filter current channel & latest
+        val versions = versionCatalog.currentChannelVersions()
+        val latestVersion = versions.maxByOrNull { version -> version.versionCode }
+
+        if (versions.isEmpty() || latestVersion == null) {
+            Log.e(TAG, "VersionCatalog seems corrupted: $versionCatalog")
+            return false
         }
 
         // check if ignored
-        val ignoreUpgradeVersionCode = Setting.instance.ignoreUpgradeVersionCode
-        if (ignoreUpgradeVersionCode >= latestVersionCode && !force) {
-            Log.d(TAG, "ignore this upgrade(version code: $latestVersionCode)")
+        val ignoredDate = Setting.instance.ignoreUpgradeDate
+        if (ignoredDate >= versionCatalog.updateDateForChannel.currentChannel() && !force) {
+            Log.d(TAG, "ignore this upgrade: ${versionCatalog.updateDate}(${dateText(versionCatalog.updateDate)})")
             return false
         }
 
 
+        val latestVersionCode = latestVersion.versionCode
         return when {
             latestVersionCode > currentVersionCode -> {
                 debug { Log.v(TAG, "updatable!") }
@@ -155,8 +151,7 @@ object UpdateUtil2 {
     }
 
 
-    private fun logFails(url: HttpUrl) =
-        Log.w(TAG, "Failed to check new version from $url!")
+    private fun logFails(url: HttpUrl) = Log.w(TAG, "Failed to check new version from $url!")
 
     private fun logSucceed(url: HttpUrl) = debug {
         Log.i(TAG, "Succeeded to check new version from $url!")

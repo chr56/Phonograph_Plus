@@ -6,12 +6,9 @@ package player.phonograph.ui.dialogs
 
 import android.content.DialogInterface
 import android.content.Intent
-import android.content.res.Resources
 import android.graphics.Typeface
 import android.net.Uri
 import android.os.Bundle
-import android.text.Html
-import android.text.Spanned
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -31,13 +28,13 @@ import mt.pref.ThemeColor
 import player.phonograph.R
 import player.phonograph.model.version.Version
 import player.phonograph.model.version.VersionCatalog
+import player.phonograph.settings.Setting
 import player.phonograph.ui.components.viewcreater.ContentPanel
 import player.phonograph.ui.components.viewcreater.buildDialogView
 import player.phonograph.ui.components.viewcreater.buttonPanel
 import player.phonograph.ui.components.viewcreater.contentPanel
 import player.phonograph.ui.components.viewcreater.titlePanel
-import java.text.SimpleDateFormat
-import java.util.*
+import player.phonograph.util.TimeUtil.dateText
 
 class UpgradeDialog : DialogFragment() {
 
@@ -111,8 +108,8 @@ class UpgradeDialog : DialogFragment() {
 
     private fun actionIgnore() {
         dismiss()
-        val time = versionCatalog.updateDate
-        // Setting.instance.ignoreUpgradeVersionCode = 0 //todo
+        val time = versionCatalog.updateDateForChannel.currentChannel()
+        Setting.instance.ignoreUpgradeDate = time
         Toast.makeText(activity, R.string.upgrade_ignored, Toast.LENGTH_SHORT).show()
     }
 
@@ -171,8 +168,6 @@ class UpgradeDialog : DialogFragment() {
     }
 
     private val accentColor get() = ThemeColor.accentColor(requireContext())
-    private fun date(stamp: Long) = Date(stamp * 1000)
-    private fun dateText(stamp: Long) = SimpleDateFormat("yyyy.MM.dd", Locale.getDefault()).format(date(stamp))
 
     override fun onStart() {
         // set up size
