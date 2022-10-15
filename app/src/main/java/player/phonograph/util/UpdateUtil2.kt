@@ -29,18 +29,21 @@ import java.io.IOException
 
 object UpdateUtil2 {
 
-    suspend fun checkUpdate(force: Boolean = false, callback: SuccessCallback) {
+    suspend fun checkUpdate(force: Boolean = false, callback: suspend (versionCatalog: VersionCatalog, upgradable: Boolean) -> Unit) {
         val versionCatalog = checkVersionCatalog()
         if (versionCatalog != null) {
             val upgradable = checkUpgradable(versionCatalog, force)
-            callback.onRequestSuccess(versionCatalog, upgradable)
+            callback(versionCatalog, upgradable)
         }
     }
 
-    fun interface SuccessCallback {
-        suspend fun onRequestSuccess(versionCatalog: VersionCatalog, upgradable: Boolean)
+    fun currentChannel(): String {
+        val flavor = BuildConfig.FLAVOR.lowercase()
+        return when {
+            flavor.contains("preview") -> "preview"
+            else -> "stable"
+        }
     }
-
 
     /**
      * @return version bundle or null (failure)
@@ -61,7 +64,7 @@ object UpdateUtil2 {
                 .url(requestUriFastGit).get().build()
 
             // check source first
-            checkUpdate(requestGithub)?.let { response ->
+            sendRequest(requestGithub)?.let { response ->
                 logSucceed(response.request.url)
                 val result = process(response)
                 result?.let { return@withContext it }
@@ -69,13 +72,13 @@ object UpdateUtil2 {
             // check the fastest mirror
             val result = select<Response?> {
                 produce {
-                    send(checkUpdate(requestBitBucket))
+                    send(sendRequest(requestBitBucket))
                 }
                 produce {
-                    send(checkUpdate(requestJsdelivr))
+                    send(sendRequest(requestJsdelivr))
                 }
                 produce {
-                    send(checkUpdate(requestFastGit))
+                    send(sendRequest(requestFastGit))
                 }
             }
             return@withContext if (result != null) {
@@ -111,15 +114,6 @@ object UpdateUtil2 {
     @Suppress("KotlinConstantConditions")
     private fun checkUpgradable(versionCatalog: VersionCatalog, force: Boolean): Boolean {
 
-        // // todo
-        // val currentChannel = when (BuildConfig.FLAVOR) {
-        //     "preview" -> "preview"
-        //     "stable" -> "stable"
-        //     else -> "stable"
-        // }
-        // val availableVersions =
-        //     versionCatalog.versions.filter { it.channel == channel }
-
         val currentVersionCode = BuildConfig.VERSION_CODE
         val latestVersionCode = when (BuildConfig.FLAVOR) {
             "preview" -> versionCatalog.latestVersions.preview
@@ -151,7 +145,7 @@ object UpdateUtil2 {
         }
     }
 
-    private suspend fun checkUpdate(source: Request): Response? {
+    private suspend fun sendRequest(source: Request): Response? {
         return try {
             webRequest(request = source)
         } catch (e: IOException) {
