@@ -26,11 +26,11 @@ import player.phonograph.R
 import player.phonograph.databinding.ActivityAboutBinding
 import player.phonograph.dialogs.ChangelogDialog
 import player.phonograph.dialogs.DebugDialog
-import player.phonograph.dialogs.UpgradeDialog
-import player.phonograph.misc.VersionJson
+import player.phonograph.model.version.VersionCatalog
 import player.phonograph.settings.Setting
 import player.phonograph.ui.activities.intro.AppIntroActivity
 import player.phonograph.ui.dialogs.ReportIssueDialog
+import player.phonograph.ui.dialogs.UpgradeDialog
 import player.phonograph.util.PhonographColorUtil.nightMode
 import player.phonograph.util.UpdateUtil
 
@@ -94,20 +94,13 @@ class AboutActivity : ToolbarActivity(), View.OnClickListener {
         translate = binding.activityAboutMainContent.cardSupportDevelopmentLayout.translate
         cracked = binding.activityAboutMainContent.cardSupportDevelopmentLayout.cracked
 
-        aidanFollestadGitHub =
-            binding.activityAboutMainContent.cardSpecialThanksLayout.aidanFollestadGitHub
-        michaelCookWebsite =
-            binding.activityAboutMainContent.cardSpecialThanksLayout.michaelCookWebsite
-        maartenCorpelTwitter =
-            binding.activityAboutMainContent.cardSpecialThanksLayout.maartenCorpelTwitter
-        maartenCorpelWebsite =
-            binding.activityAboutMainContent.cardSpecialThanksLayout.maartenCorpelWebsite
-        aleksandarTesicTwitter =
-            binding.activityAboutMainContent.cardSpecialThanksLayout.aleksandarTesicTwitter
-        eugeneCheungGitHub =
-            binding.activityAboutMainContent.cardSpecialThanksLayout.eugeneCheungGitHub
-        eugeneCheungWebsite =
-            binding.activityAboutMainContent.cardSpecialThanksLayout.eugeneCheungWebsite
+        aidanFollestadGitHub = binding.activityAboutMainContent.cardSpecialThanksLayout.aidanFollestadGitHub
+        michaelCookWebsite = binding.activityAboutMainContent.cardSpecialThanksLayout.michaelCookWebsite
+        maartenCorpelTwitter = binding.activityAboutMainContent.cardSpecialThanksLayout.maartenCorpelTwitter
+        maartenCorpelWebsite = binding.activityAboutMainContent.cardSpecialThanksLayout.maartenCorpelWebsite
+        aleksandarTesicTwitter = binding.activityAboutMainContent.cardSpecialThanksLayout.aleksandarTesicTwitter
+        eugeneCheungGitHub = binding.activityAboutMainContent.cardSpecialThanksLayout.eugeneCheungGitHub
+        eugeneCheungWebsite = binding.activityAboutMainContent.cardSpecialThanksLayout.eugeneCheungWebsite
         adrianTwitter = binding.activityAboutMainContent.cardSpecialThanksLayout.adrianTwitter
     }
 
@@ -188,11 +181,10 @@ class AboutActivity : ToolbarActivity(), View.OnClickListener {
             }
             checkUpgrade -> {
                 CoroutineScope(Dispatchers.Unconfined).launch {
-                    val result = UpdateUtil.checkUpdate()
-                    result?.let {
-                        if (it.getBoolean(VersionJson.UPGRADABLE)) {
-                            UpgradeDialog.create(it).show(supportFragmentManager, "UPGRADE_DIALOG")
-                            if (Setting.instance.ignoreUpgradeVersionCode >= it.getInt(VersionJson.VERSIONCODE)) {
+                    UpdateUtil.checkUpdate { versionCatalog: VersionCatalog, upgradable: Boolean ->
+                        if (upgradable) {
+                            UpgradeDialog.create(versionCatalog).show(supportFragmentManager, "UPGRADE_DIALOG")
+                            if (Setting.instance.ignoreUpgradeDate >= versionCatalog.currentLatestChannelVersionBy { it.date }.date) {
                                 toast(getString(R.string.upgrade_ignored))
                             }
                         } else {
@@ -274,18 +266,11 @@ class AboutActivity : ToolbarActivity(), View.OnClickListener {
     }
 
     private fun showLicenseDialog() {
-        LicensesDialog.Builder(this)
-            .setNotices(R.raw.notices)
-            .setTitle(R.string.licenses)
-            .setNoticesCssStyle(
-                getString(R.string.license_dialog_style)
-                    .replace("{bg-color}", if (resources.nightMode) "424242" else "ffffff")
-                    .replace("{text-color}", if (resources.nightMode) "ffffff" else "000000")
-                    .replace("{license-bg-color}", if (resources.nightMode) "535353" else "eeeeee")
-            )
-            .setIncludeOwnLicense(true)
-            .build()
-            .show()
+        LicensesDialog.Builder(this).setNotices(R.raw.notices).setTitle(R.string.licenses)
+            .setNoticesCssStyle(getString(R.string.license_dialog_style).replace("{bg-color}",
+                    if (resources.nightMode) "424242" else "ffffff")
+                .replace("{text-color}", if (resources.nightMode) "ffffff" else "000000")
+                .replace("{license-bg-color}", if (resources.nightMode) "535353" else "eeeeee")).setIncludeOwnLicense(true).build().show()
     }
 
     companion object {
@@ -295,8 +280,7 @@ class AboutActivity : ToolbarActivity(), View.OnClickListener {
 
         private const val GITHUB_MODIFIER = "https://github.com/chr56/"
 
-        private const val TRANSLATE =
-            "https://crowdin.com/project/phonograph-plus"
+        private const val TRANSLATE = "https://crowdin.com/project/phonograph-plus"
 
         //            "https://phonograph.oneskyapp.com/collaboration/project?id=26521"
         private const val AIDAN_FOLLESTAD_GITHUB = "https://github.com/afollestad"

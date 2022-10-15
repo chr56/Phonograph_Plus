@@ -28,18 +28,16 @@ import mt.tint.viewtint.setItemTextColors
 import mt.util.color.resolveColor
 import mt.util.color.secondaryTextColor
 import player.phonograph.App
+import player.phonograph.BuildConfig
 import player.phonograph.BuildConfig.DEBUG
 import player.phonograph.R
 import player.phonograph.UPGRADABLE
-import player.phonograph.util.UpdateUtil.checkUpdate
 import player.phonograph.VERSION_INFO
 import player.phonograph.coil.loadImage
 import player.phonograph.databinding.ActivityMainBinding
 import player.phonograph.databinding.LayoutDrawerBinding
 import player.phonograph.dialogs.ChangelogDialog
 import player.phonograph.dialogs.ChangelogDialog.Companion.setChangelogRead
-import player.phonograph.ui.dialogs.ScanMediaFolderDialog
-import player.phonograph.dialogs.UpgradeDialog
 import player.phonograph.helper.SearchQueryHelper
 import player.phonograph.mediastore.AlbumLoader
 import player.phonograph.mediastore.ArtistLoader
@@ -49,18 +47,22 @@ import player.phonograph.misc.SAFCallbackHandlerActivity
 import player.phonograph.misc.SafLauncher
 import player.phonograph.model.infoString
 import player.phonograph.model.pages.Pages
+import player.phonograph.model.version.VersionCatalog
 import player.phonograph.notification.ErrorNotification
 import player.phonograph.notification.UpgradeNotification
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.queue.ShuffleMode
-import player.phonograph.util.preferences.HomeTabConfig
 import player.phonograph.settings.Setting
-import player.phonograph.util.preferences.StyleConfig
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
 import player.phonograph.ui.activities.intro.AppIntroActivity
+import player.phonograph.ui.dialogs.ScanMediaFolderDialog
+import player.phonograph.ui.dialogs.UpgradeDialog
 import player.phonograph.ui.fragments.HomeFragment
 import player.phonograph.util.ImageUtil.getTintedDrawable
 import player.phonograph.util.PhonographColorUtil.nightMode
+import player.phonograph.util.UpdateUtil
+import player.phonograph.util.preferences.HomeTabConfig
+import player.phonograph.util.preferences.StyleConfig
 
 class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity {
 
@@ -96,9 +98,9 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
 
         showIntro()
         Handler(Looper.getMainLooper()).postDelayed({
-            val showUpgradeDialog = intent.getBooleanExtra(SHOW_UPGRADE_DIALOG, false)
+            val showUpgradeDialog = intent.getBooleanExtra(UPGRADABLE, false)
             if (showUpgradeDialog) {
-                showUpgradeDialog(intent.getBundleExtra(VERSION_INFO)!!)
+                showUpgradeDialog(intent.getParcelableExtra(VERSION_INFO) as? VersionCatalog)
             } else {
                 checkUpdate()
             }
@@ -453,9 +455,14 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
 
     private fun checkUpdate() {
         CoroutineScope(SupervisorJob()).launch {
-            checkUpdate(false)?.let {
-                if (it.getBoolean(UPGRADABLE))
-                    UpgradeNotification.sendUpgradeNotification(it)
+            UpdateUtil.checkUpdate { versionCatalog: VersionCatalog, upgradable: Boolean ->
+                if (upgradable) {
+                    val channel = when (BuildConfig.FLAVOR) {
+                        "preview" -> "preview"
+                        else -> "stable"
+                    }
+                    UpgradeNotification.sendUpgradeNotification(versionCatalog, channel)
+                }
             }
         }
     }
@@ -475,8 +482,10 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
         }
     }
 
-    private fun showUpgradeDialog(versionInfo: Bundle) {
-        UpgradeDialog.create(versionInfo).show(supportFragmentManager, "UpgradeDialog")
+    private fun showUpgradeDialog(versionCatalog: VersionCatalog?) {
+        versionCatalog?.let {
+            UpgradeDialog.create(versionCatalog).show(supportFragmentManager, "UpgradeDialog")
+        }
     }
 
     companion object {

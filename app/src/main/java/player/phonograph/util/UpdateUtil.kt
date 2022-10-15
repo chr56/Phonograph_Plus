@@ -4,7 +4,6 @@
 
 package player.phonograph.util
 
-import android.os.Bundle
 import android.util.Log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -12,83 +11,146 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.channels.produce
 import kotlinx.coroutines.selects.select
 import kotlinx.coroutines.withContext
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.json.Json
 import okhttp3.HttpUrl
 import okhttp3.Request
 import okhttp3.Response
-import org.json.JSONObject
 import player.phonograph.BuildConfig
 import player.phonograph.UpdateConfig.requestUriBitBucket
 import player.phonograph.UpdateConfig.requestUriFastGit
 import player.phonograph.UpdateConfig.requestUriGitHub
 import player.phonograph.UpdateConfig.requestUriJsdelivr
-import player.phonograph.misc.VersionJson
-import player.phonograph.misc.VersionJson.Companion.DOWNLOAD_SOURCES
-import player.phonograph.misc.VersionJson.Companion.DOWNLOAD_URIS
-import player.phonograph.misc.VersionJson.Companion.EN
-import player.phonograph.misc.VersionJson.Companion.LOG_SUMMARY
-import player.phonograph.misc.VersionJson.Companion.UPGRADABLE
-import player.phonograph.misc.VersionJson.Companion.VERSION
-import player.phonograph.misc.VersionJson.Companion.VERSIONCODE
-import player.phonograph.misc.VersionJson.Companion.ZH_CN
-import player.phonograph.misc.VersionJson.Companion.separator
 import player.phonograph.misc.webRequest
+import player.phonograph.model.version.VersionCatalog
 import player.phonograph.settings.Setting
+import player.phonograph.util.TimeUtil.dateText
 import player.phonograph.util.Util.debug
 import java.io.IOException
 
 object UpdateUtil {
 
-    private const val TAG = "UpdateUtil"
+    /**
+     * check update from repositories
+     * @param force override [Setting.ignoreUpgradeDate]
+     * @param callback execute if [VersionCatalog] is fetched successfully
+     */
+    suspend fun checkUpdate(force: Boolean = false, callback: suspend (versionCatalog: VersionCatalog, upgradable: Boolean) -> Unit) {
+        val versionCatalog = fetchVersionCatalog()
+        if (versionCatalog != null) {
+            val upgradable = checkUpgradable(versionCatalog, force)
+            callback(versionCatalog, upgradable)
+        }
+    }
+
 
     /**
-     * @return version bundle or null (failure)
+     * @return [VersionCatalog] or null (failure)
      */
     @OptIn(ExperimentalCoroutinesApi::class)
-    suspend fun checkUpdate(force: Boolean = false): Bundle? {
-        if (!force && !Setting.instance.checkUpgradeAtStartup) {
-            Log.d(TAG, "ignore upgrade check!")
-            return null
-        }
+    suspend fun fetchVersionCatalog(): VersionCatalog? {
         return withContext(Dispatchers.IO + SupervisorJob()) {
             // source
-            val requestGithub = Request.Builder()
-                .url(requestUriGitHub).get().build()
+            val requestGithub = Request.Builder().url(requestUriGitHub).get().build()
 
             // mirrors
-            val requestBitBucket = Request.Builder()
-                .url(requestUriBitBucket).get().build()
-            val requestJsdelivr = Request.Builder()
-                .url(requestUriJsdelivr).get().build()
-            val requestFastGit = Request.Builder()
-                .url(requestUriFastGit).get().build()
+            val requestBitBucket = Request.Builder().url(requestUriBitBucket).get().build()
+            val requestJsdelivr = Request.Builder().url(requestUriJsdelivr).get().build()
+            val requestFastGit = Request.Builder().url(requestUriFastGit).get().build()
 
             // check source first
-            checkUpdate(requestGithub)?.let { response ->
+            sendRequest(requestGithub)?.let { response ->
                 logSucceed(response.request.url)
-                val result = process(response, force)
-                result?.let { return@withContext it }
+                val result = processResponse(response)
+                result?.let {
+                    canAccessGitHub = true
+                    return@withContext it
+                }
             }
             // check the fastest mirror
             val result = select<Response?> {
                 produce {
-                    send(checkUpdate(requestBitBucket))
+                    send(sendRequest(requestBitBucket))
                 }
                 produce {
-                    send(checkUpdate(requestJsdelivr))
+                    send(sendRequest(requestJsdelivr))
                 }
                 produce {
-                    send(checkUpdate(requestFastGit))
+                    send(sendRequest(requestFastGit))
                 }
             }
             return@withContext if (result != null) {
-                process(result, force)
+                processResponse(result)
             } else {
                 null
             }
         }
     }
 
-    private suspend fun checkUpdate(source: Request): Response? {
+    /**
+     * handle response
+     * @return resolved VersionCatalog
+     */
+    private suspend fun processResponse(response: Response): VersionCatalog? {
+        return withContext(Dispatchers.Default) {
+            try {
+                response.body?.use {
+                    parser.decodeFromString<VersionCatalog>(it.string())
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+                null
+            }
+        }
+    }
+
+    /**
+     * check if the current is outdated
+     * @param force override [Setting.ignoreUpgradeDate]
+     * @return true if new versions available
+     */
+    @Suppress("KotlinConstantConditions")
+    private fun checkUpgradable(versionCatalog: VersionCatalog, force: Boolean): Boolean {
+
+        val currentVersionCode = BuildConfig.VERSION_CODE
+
+        // filter current channel & latest
+        val versions = versionCatalog.channelVersions
+        val latestVersion = versions.maxByOrNull { version -> version.versionCode }
+
+        if (versions.isEmpty() || latestVersion == null) {
+            Log.e(TAG, "VersionCatalog seems corrupted: $versionCatalog")
+            return false
+        }
+
+        // check if ignored
+        val ignoredDate = Setting.instance.ignoreUpgradeDate
+        val latestVersionByTime = versionCatalog.currentLatestChannelVersionBy { it.date }
+        if (ignoredDate >= latestVersionByTime.date && !force) {
+            Log.d(TAG, "ignore this upgrade: ${latestVersionByTime.date}(${dateText(latestVersionByTime.date)})")
+            return false
+        }
+
+
+        val latestVersionCode = latestVersion.versionCode
+        return when {
+            latestVersionCode > currentVersionCode -> {
+                debug { Log.v(TAG, "updatable!") }
+                true
+            }
+            latestVersionCode == currentVersionCode -> {
+                debug { Log.v(TAG, "no update, latest version!") }
+                false
+            }
+            latestVersionCode < currentVersionCode -> {
+                debug { Log.w(TAG, "no update, version is newer than latest?") }
+                false
+            }
+            else -> false
+        }
+    }
+
+    private suspend fun sendRequest(source: Request): Response? {
         return try {
             webRequest(request = source)
         } catch (e: IOException) {
@@ -97,86 +159,21 @@ object UpdateUtil {
         }
     }
 
-    /**
-     * handle response
-     * @return resolved result
-     */
-    private suspend fun process(response: Response, force: Boolean): Bundle? {
-        return withContext(Dispatchers.Default) {
+    var canAccessGitHub = false
+        private set
 
-            val versionJson: VersionJson? =
-                try {
-                    response.body?.use {
-                        VersionJson.parseFromJson(JSONObject(it.string()))
-                    }
-                } catch (e: Exception) {
-                    Log.e(TAG, "Parse version.json fail!")
-                    e.printStackTrace()
-                    return@withContext null
-                }
-
-
-            return@withContext versionJson?.let { json: VersionJson ->
-//                debug {
-//                    Log.v(
-//                        TAG,
-//                        "versionCode: ${json.versionCode}, version: ${json.version}, logSummary-zh: ${json.logSummaryZH}, logSummary-en: ${json.logSummaryEN}"
-//                    )
-//                }
-
-                val ignoreUpgradeVersionCode = Setting.instance.ignoreUpgradeVersionCode
-                debug {
-                    Log.v(
-                        TAG,
-                        "current state: force:$force, ignoreUpgradeVersionCode:$ignoreUpgradeVersionCode, canAccessGitHub:$canAccessGitHub "
-                    )
-                }
-
-                // stop if version code is lower ignore version code level and not force to execute
-                if (ignoreUpgradeVersionCode >= json.versionCode && !force) {
-                    Log.d(TAG, "ignore this upgrade(version code: ${json.versionCode})")
-                    return@let null
-                }
-
-                val result = Bundle().also {
-                    it.putInt(VERSIONCODE, json.versionCode)
-                    it.putString(VERSION, json.version)
-                    // it.putString(LOG_SUMMARY, json.logSummary)
-                    it.putString("${ZH_CN}${separator}${LOG_SUMMARY}", json.logSummaryZH)
-                    it.putString("${EN}${separator}${LOG_SUMMARY}", json.logSummaryEN)
-                    it.putBoolean(CAN_ACCESS_GITHUB, canAccessGitHub)
-                    if (json.downloadUris != null && json.downloadSources != null) {
-                        it.putStringArray(DOWNLOAD_URIS, json.downloadUris)
-                        it.putStringArray(DOWNLOAD_SOURCES, json.downloadSources)
-                    }
-                    if (force) {
-                        it.putBoolean(UPGRADABLE, true)
-                    } else {
-                        it.putBoolean(UPGRADABLE, false)
-                    }
-                }
-                if (json.versionCode > BuildConfig.VERSION_CODE) {
-                    debug { Log.v(TAG, "updatable!") }
-                    result.putBoolean(UPGRADABLE, true)
-                } else if (json.versionCode == BuildConfig.VERSION_CODE) {
-                    debug { Log.v(TAG, "no update, latest version!") }
-                } else if (json.versionCode < BuildConfig.VERSION_CODE) {
-                    debug { Log.w(TAG, "no update, version is newer than latest?") }
-                }
-                return@let result
-            }
-        }
-    }
-
-    internal var canAccessGitHub = false
-
-    private fun logFails(url: HttpUrl) =
-        Log.w(TAG, "Failed to check new version from $url!")
+    private fun logFails(url: HttpUrl) = Log.w(TAG, "Failed to check new version from $url!")
 
     private fun logSucceed(url: HttpUrl) = debug {
         Log.i(TAG, "Succeeded to check new version from $url!")
     }
 
+    private val parser = Json {
+        ignoreUnknownKeys = true
+        isLenient = true
+    }
 
-    const val CAN_ACCESS_GITHUB = "canAccessGitHub"
+    private const val TAG = "UpdateUtil"
+
 }
+

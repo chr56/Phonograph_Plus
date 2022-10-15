@@ -9,15 +9,17 @@ package player.phonograph
  */
 object UpdateConfig {
 
-    private const val owner = "chr56"
-    private const val organization = "Phonograph-Plus"
-    private const val repo = "Phonograph_Plus"
-    private const val branch = "dev"
-    private const val file = "version.json"
+    private const val OWNER = "chr56"
+    private const val ORGANIZATION = "Phonograph-Plus"
+    private const val REPO = "Phonograph_Plus"
+    private const val BRANCH = "dev"
+    private const val FILE = "version_catalog.json"
 
-    const val requestUriGitHub = "https://raw.githubusercontent.com/$owner/$repo/$branch/$file"
-    const val requestUriBitBucket = "https://bitbucket.org/$organization/$repo/raw/$branch/$file"
+    const val GITHUB_REPO = "$OWNER/$REPO"
 
-    const val requestUriJsdelivr = "https://cdn.jsdelivr.net/gh/$owner/$repo@$branch/$file"
-    const val requestUriFastGit = "https://endpoint.fastgit.org/https://github.com/$owner/$repo/blob/$branch/$file"
+    const val requestUriGitHub = "https://raw.githubusercontent.com/$GITHUB_REPO/$BRANCH/$FILE"
+    const val requestUriBitBucket = "https://bitbucket.org/$ORGANIZATION/$REPO/raw/$BRANCH/$FILE"
+
+    const val requestUriJsdelivr = "https://cdn.jsdelivr.net/gh/$GITHUB_REPO@$BRANCH/$FILE"
+    const val requestUriFastGit = "https://endpoint.fastgit.org/https://github.com/$GITHUB_REPO/blob/$BRANCH/$FILE"
 }
