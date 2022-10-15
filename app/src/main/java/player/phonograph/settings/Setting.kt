@@ -196,6 +196,7 @@ class Setting(context: Context) {
     var sleepTimerFinishMusic: Boolean by BooleanPref(SLEEP_TIMER_FINISH_SONG, false)
 
     // Misc
+    var ignoreUpgradeDate: Long by LongPref(IGNORE_UPGRADE_DATE, 0)
     var startDirectoryPath: String by StringPref(START_DIRECTORY, defaultStartDirectory.path)
     var initializedBlacklist: Boolean by BooleanPref(INITIALIZED_BLACKLIST, false)
     var pathFilterExcludeMode: Boolean by BooleanPref(PATH_FILTER_EXCLUDE_MODE, true)
@@ -287,10 +288,10 @@ class Setting(context: Context) {
         private const val SLEEP_TIMER_FINISH_SONG = "sleep_timer_finish_music"
 
         // Misc
+        private const val IGNORE_UPGRADE_DATE = "ignore_upgrade_date"
         private const val START_DIRECTORY = "start_directory"
         private const val INITIALIZED_BLACKLIST = "initialized_blacklist"
         const val PATH_FILTER_EXCLUDE_MODE = "path_filter_exclude_mode"
-        private const val IGNORE_UPGRADE_VERSION_CODE = "ignore_upgrade_version_code"
 
         // compatibility
         private const val USE_LEGACY_FAVORITE_PLAYLIST_IMPL = "use_legacy_favorite_playlist_impl"
@@ -303,6 +304,7 @@ class Setting(context: Context) {
 
         // unused & deprecated
         const val FORCE_SQUARE_ALBUM_COVER = "force_square_album_art"
+        private const val IGNORE_UPGRADE_VERSION_CODE = "ignore_upgrade_version_code"
 
         //
         // Singleton
