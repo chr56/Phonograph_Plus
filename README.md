@@ -71,28 +71,28 @@ We have removed Swedish and Norwegian Nynorsk translations due to missing too ma
 For reference only, actual app might be different
 
 |                                       Card Player                                       |                                       Flat Player                                       |
-| :-------------------------------------------------------------------------------------: | :-------------------------------------------------------------------------------------: |
+|:---------------------------------------------------------------------------------------:|:---------------------------------------------------------------------------------------:|
 | ![Screenshots](fastlane/metadata/android/en-US/images/phoneScreenshots/05.jpg?raw=true) | ![Screenshots](fastlane/metadata/android/en-US/images/phoneScreenshots/08.jpg?raw=true) |
 
 |                                         Drawer                                          |                                         Setting                                         |
-| :-------------------------------------------------------------------------------------: | :-------------------------------------------------------------------------------------: |
+|:---------------------------------------------------------------------------------------:|:---------------------------------------------------------------------------------------:|
 | ![Screenshots](fastlane/metadata/android/en-US/images/phoneScreenshots/03.jpg?raw=true) | ![Screenshots](fastlane/metadata/android/en-US/images/phoneScreenshots/01.jpg?raw=true) |
 
 |                                          Songs                                          |                                         Folders                                         |
-| :-------------------------------------------------------------------------------------: | :-------------------------------------------------------------------------------------: |
+|:---------------------------------------------------------------------------------------:|:---------------------------------------------------------------------------------------:|
 | ![Screenshots](fastlane/metadata/android/en-US/images/phoneScreenshots/09.jpg?raw=true) | ![Screenshots](fastlane/metadata/android/en-US/images/phoneScreenshots/10.jpg?raw=true) |
 
 |                                         Artists                                         |                                        Playlists                                        |
-| :-------------------------------------------------------------------------------------: | :-------------------------------------------------------------------------------------: |
+|:---------------------------------------------------------------------------------------:|:---------------------------------------------------------------------------------------:|
 | ![Screenshots](fastlane/metadata/android/en-US/images/phoneScreenshots/07.jpg?raw=true) | ![Screenshots](fastlane/metadata/android/en-US/images/phoneScreenshots/06.jpg?raw=true) |
 
 |                                        Song Menu                                        |                                 Tag Editor (Deprecated)                                 |
-| :-------------------------------------------------------------------------------------: | :-------------------------------------------------------------------------------------: |
+|:---------------------------------------------------------------------------------------:|:---------------------------------------------------------------------------------------:|
 | ![Screenshots](fastlane/metadata/android/en-US/images/phoneScreenshots/02.jpg?raw=true) | ![Screenshots](fastlane/metadata/android/en-US/images/phoneScreenshots/04.jpg?raw=true) |
 
-## **Build Instructions** / **构建指南**
+## **Build Instructions & Developer Guide** / **构建指南与开发指南**
 
-See [BuildInstructions.md](./Build_Instructions.md)
+See [Build_Instructions.md](./Build_Instructions.md)
 
 ## **开发计划**/**Development Plan (or Road Map?)**
 

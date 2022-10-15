@@ -11,30 +11,29 @@ Currently(2020.10.15), this project's toolchain&dependencies are:
 - `kotlinx.serialization`,`kotlinx.parcelize`
 - most popular `androidx`(`Jetpack`) components (most of them are latest)
 - popular 3rd-party libraries available on (`MavenCentral` and `jitpack.io`), some might kind of old and unmaintained
-- `unpopular` 3rd-party libraries: `AdrienPoupa`'s `jaudiotagger`, `coil`
+- "unpopular" 3rd-party libraries: `AdrienPoupa`'s `jaudiotagger`, `coil`
 - some modified libraries by me
 
 and
 
 - <del>`Jetpack Compose`</del> coming soon in next versions
 
-
 see [Libs.kt](./version-management/src/java/version/management/Libs.kt) for all the libraries.
 
-see [settings.gradle.kts](./settings.gradle.kts) for all gradle plugins.
+see [build.gradle.kts](./build.gradle.kts) for all gradle plugins.
 
 ## **Requirement**
 
 **Build**:
 
-1) a PC : any desktop operate system platform (only `Windows` and `Ubuntu 20.04` are tested), I am not sure if it works
+1. a PC : any desktop operate system platform (only `Windows` and `Ubuntu 20.04` are tested), I am not sure if it works
    on `Android(Termux)`.
-2) JDK 11 (we are targeting API 33)
-3) connected network
+2. JDK 11 (we are using AGP 7.5.1).
+3. The connected and fast network.
 
 **Development**:
 
-plus `Android Studio` with correspond `Android Gradle Plugin`
+Plus `Android Studio` with correspond `Android Gradle Plugin` (currently `Dolphin`). (`IDEA` is untested)
 
 ## **Instructions (Build with commandline)**
 
@@ -42,12 +41,12 @@ plus `Android Studio` with correspond `Android Gradle Plugin`
 
 ### 1) Download source code
 
-a. go to release page to download parked release code 
+a. go to release page to download parked release code
 
 b. use `git`
 
 ```shell
-git clone <REPO-URL> --depth=1 -b <VERSION> 
+git clone <REPO-URL> --depth=1 -b <VERSION>
 ```
 
 ### 2) install JDK
@@ -61,7 +60,7 @@ winget install --id EclipseAdoptium.Temurin.11.JDK
 # or JDK by other vendor
 ```
 
-on Linux (Debian based)
+on Linux (`Debian` based)
 
 ```shell
 apt-get install temurin-11-jdk
@@ -77,6 +76,12 @@ yum install temurin-11-jdk
 
 ### 4) generate a new signing key or use your own
 
+using `keytool` from JDK
+
+```shell
+keytool -genkeypair -storepass <keystore-password> -alias <key-alias> -keypass <key-password> -keyalg RSA -keysize 2048 -keystore <your-signing-key-file-path->
+```
+
 ### 5) configure Signing Config
 
 create file `signing.properties` on repository's root:
@@ -88,7 +93,7 @@ keyAlias=<key-alias>
 keyPassword=<key-password>
 ```
 
-replace <*> with yours
+replace <\*> with yours.
 
 You can create `signing.properties` by command:
 
@@ -101,18 +106,22 @@ echo "keyPassword=<key-password>" >> ./signing.properties
 
 ### 6) build
 
-We are building the build variant`Stable` now. see more in section Build Variant.
+We are building the build variant `Stable` (Build Type `Release`) now.
+
+See more in section Build Variant.
 
 ```shell
  ./gradlew assembleStableRelease --parallel
 ```
 
 if your version is before 0.4, replace `stable` with `common` (matching letter case), using:
+
 ```shell
 ./gradlew assembleCommonRelease --parallel
 ```
 
 ### 7) pick up file
+
 _Note: if the version is before 0.4, replace `stable` with `common` (matching letter case)_
 
 built apk is in `./app/build/outputs/apk/stable/release/` with name `PhonographPlus_<VERSION>-stable-release.apk`
@@ -127,15 +136,36 @@ to move apk to `./products/stableRelease` and rename to `Phonograph Plus_<VERSIO
 
 ## Build Variant
 
-only one flavor `purpose` and two default `BuildType` (`debug`/`release`), and
-all `release` shrinks and minifies.
+only one flavor `purpose` and two default `BuildType` (`debug`/`release`), and all `release` shrinks and minifies.
 
-`stable` (or `common` before v4.0): for stable and LTS release
-
-`preview`: for preview release, package name suffix `.preview`
-
-`checkout`: for locate-bug-propose and `dev` build of `Github Action`, package name suffix `.checkout`
+|           Build Variant            |                                        Note                                        |
+|:----------------------------------:|:----------------------------------------------------------------------------------:|
+| `stable` (or `common` before v4.0) |                             for stable and LTS release                             |
+|             `preview`              |                for preview release, package name suffix `.preview`                 |
+|             `checkout`             | for bug-locate and `dev` build of `Github Action`, package name suffix `.checkout` |
 
 before v4.0, we have more (like `ci` for `Github Action`).
 
+## Project Structure
 
+#### Gradle Module
+
+Currently:
+
+- `app`: all actual code of the Phonograph Plus
+- `version-management`: (composite build) store libraries dependencies meta (versions etc) and some util for gradle
+  build script
+
+#### Source Code Structure of Phonograph Plus
+
+TODO
+
+#### Repository Structure
+
+- `app/`, `version-management/`: Gradle Module
+- `version.json`,`version_catalog.json`: containing the latest version information that Phonograph Plus would read at startup
+- `crowdin.yml`: Crowdin configuration
+- `ReleaseNote.md`: GitHub Action `preview_release` read this and post to Release Page
+- `fastlane/metadata/android/`: app meta info (not used)
+- `.github/`: `Github Action` and templates
+- and other gradle's file
