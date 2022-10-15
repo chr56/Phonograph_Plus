@@ -26,6 +26,7 @@ import androidx.core.view.setPadding
 import androidx.fragment.app.DialogFragment
 import mt.pref.ThemeColor
 import player.phonograph.R
+import player.phonograph.UpdateConfig.GITHUB_REPO
 import player.phonograph.model.version.Version
 import player.phonograph.model.version.VersionCatalog
 import player.phonograph.settings.Setting
@@ -114,10 +115,10 @@ class UpgradeDialog : DialogFragment() {
     }
 
     private fun actionMore() {
-        val uris = arrayListOf("https://github.com/chr56/Phonograph_Plus/releases")
-        val text = arrayListOf(getString(R.string.git_hub) + "(Release Page)")
+        val uris = arrayListOf(GITHUB_RELEASE_URL)
+        val text = arrayListOf("${getString(R.string.git_hub)} (Release Page)")
         if (canAccessGitHub) {
-            uris.add("https://t.me/Phonograph_Plus")
+            uris.add(TG_CHANNEL)
             text.add(getString(R.string.tg_channel))
         }
         buildSingleChoiceAlertDialog(getString(R.string.download), text) { _, which ->
@@ -143,6 +144,33 @@ class UpgradeDialog : DialogFragment() {
         }.show()
     }
 
+    override fun onStart() {
+        // set up size
+        requireDialog().window!!.attributes =
+            requireDialog().window!!.let { window ->
+                window.attributes.apply {
+                    width = (requireActivity().window.decorView.width * 0.90).toInt()
+                }
+            }
+        super.onStart()
+    }
+
+    private val accentColor get() = ThemeColor.accentColor(requireContext())
+
+    companion object {
+        const val GITHUB_RELEASE_URL = "https://github.com/$GITHUB_REPO/releases"
+        const val TG_CHANNEL = "https://t.me/Phonograph_Plus"
+
+        fun create(versionCatalog: VersionCatalog): UpgradeDialog = UpgradeDialog().apply {
+            arguments = Bundle().also {
+                it.putParcelable(VERSION_CATALOG, versionCatalog)
+            }
+        }
+
+        private const val VERSION_CATALOG = "VERSION_CATALOG"
+    }
+
+
     private inline fun buildSingleChoiceAlertDialog(
         title: String,
         items: List<String>,
@@ -157,26 +185,4 @@ class UpgradeDialog : DialogFragment() {
             .setPositiveButton(android.R.string.ok) { dialog, _: Int -> dialog.dismiss() }
     }
 
-    companion object {
-        fun create(versionCatalog: VersionCatalog): UpgradeDialog = UpgradeDialog().apply {
-            arguments = Bundle().also {
-                it.putParcelable(VERSION_CATALOG, versionCatalog)
-            }
-        }
-
-        private const val VERSION_CATALOG = "VERSION_CATALOG"
-    }
-
-    private val accentColor get() = ThemeColor.accentColor(requireContext())
-
-    override fun onStart() {
-        // set up size
-        requireDialog().window!!.attributes =
-            requireDialog().window!!.let { window ->
-                window.attributes.apply {
-                    width = (requireActivity().window.decorView.width * 0.90).toInt()
-                }
-            }
-        super.onStart()
-    }
 }
