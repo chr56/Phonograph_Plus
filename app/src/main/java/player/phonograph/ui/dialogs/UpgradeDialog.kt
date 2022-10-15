@@ -84,7 +84,7 @@ class UpgradeDialog : DialogFragment() {
                         orientation = VERTICAL
                         val title = TextView(context).apply {
                             text = with(version) {
-                                "$versionName ${dateText(date)}"
+                                "$versionName ${dateText(date)} ($channel)"
                             }
                             textSize = 16f
                             typeface = Typeface.create(Typeface.SANS_SERIF, Typeface.BOLD)
