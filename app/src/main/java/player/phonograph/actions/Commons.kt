@@ -18,6 +18,8 @@ import player.phonograph.model.Genre
 import player.phonograph.model.Song
 import player.phonograph.model.file.FileEntity
 import player.phonograph.model.file.linkedSong
+import player.phonograph.settings.Setting
+import player.phonograph.ui.compose.DetailActivity
 import player.phonograph.ui.dialogs.DeleteSongsDialog
 
 internal fun convertToSongs(selections: List<Any>, context: Context): List<Song> = selections.flatMap {
@@ -59,7 +61,12 @@ internal inline fun fragmentActivity(context: Context, block: (FragmentActivity)
     }
 
 fun gotoDetail(activity: FragmentActivity, song: Song): Boolean {
-    SongDetailDialog.create(song).show(activity.supportFragmentManager, "SONG_DETAILS")
+    if (Setting.instance().useLegacyDetailDialog)
+        SongDetailDialog.create(song).show(activity.supportFragmentManager, "SONG_DETAILS")
+    else
+        activity.startActivity(Intent(activity, DetailActivity::class.java).apply {
+            putExtra("song", song)
+        })
     return true
 }
 

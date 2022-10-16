@@ -275,4 +275,14 @@
             app:iconSpaceReserved="false" />
     </lib.phonograph.preference.PreferenceCategoryX>
 
+    <!-- TODO -->
+    <lib.phonograph.preference.PreferenceCategoryX android:title="@string/misc">
+        <lib.phonograph.preference.SwitchPreferenceX
+            android:defaultValue="false"
+            android:key="use_legacy_detail_dialog"
+            android:summary="@string/pref_summary_use_legacy_detail_dialog"
+            android:title="@string/pref_title_use_legacy_detail_dialog"
+            app:iconSpaceReserved="false" />
+    </lib.phonograph.preference.PreferenceCategoryX>
+
 </PreferenceScreen>

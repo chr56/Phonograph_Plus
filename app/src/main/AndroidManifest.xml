@@ -110,6 +110,11 @@
         <activity android:name=".ui.activities.GenreDetailActivity" />
         <activity android:name=".ui.activities.PlaylistDetailActivity" />
         <activity
+            android:name=".ui.compose.DetailActivity"
+            android:exported="false"
+            android:label="@string/action_details"
+            android:theme="@style/Theme.Phonograph.Auto" />
+        <activity
             android:name="util.phonograph.tageditor.SongTagEditorActivity"
             android:windowSoftInputMode="adjustResize" />
         <activity
@@ -136,6 +141,7 @@
             android:exported="true"
             android:launchMode="singleInstance"
             android:process="player.phonograph.crash" />
+
 
         <service
             android:name=".service.MusicService"

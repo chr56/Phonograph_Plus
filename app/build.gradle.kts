@@ -31,6 +31,7 @@ android {
 
     buildFeatures {
         viewBinding = true
+        compose = true
     }
 
     defaultConfig {
@@ -164,8 +165,16 @@ android {
         targetCompatibility = JavaVersion.VERSION_1_8
     }
 
+    composeOptions {
+        kotlinCompilerExtensionVersion = Deps.Compose.comilerVersion
+    }
+
     kotlinOptions {
         jvmTarget = "1.8"
+        freeCompilerArgs = listOf(
+            "-P",
+            "plugin:androidx.compose.compiler.plugins.kotlin:suppressKotlinVersionCompatibilityCheck=true"
+        )
     }
 
 }
@@ -195,6 +204,13 @@ dependencies {
     implementation(Deps.AndroidX.palette)
 
     implementation(Deps.google_material)
+
+    implementation(Deps.Compose.foundation)
+    implementation(Deps.Compose.ui)
+    implementation(Deps.Compose.foundation)
+    implementation(Deps.Compose.material)
+    implementation(Deps.Compose.activity)
+    debugImplementation(Deps.Compose.ui_tooling)
 
     implementation(Deps.mdColorRes)
     implementation(Deps.mdUtil)
