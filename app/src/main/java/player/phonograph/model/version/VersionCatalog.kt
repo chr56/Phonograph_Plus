@@ -8,12 +8,14 @@ import android.content.res.Resources
 import android.os.Parcelable
 import android.text.Html
 import android.text.Spanned
+import androidx.annotation.Keep
 import kotlinx.parcelize.Parcelize
 import kotlinx.serialization.SerialName
 import player.phonograph.BuildConfig
 import java.util.*
 
 
+@Keep
 @kotlinx.serialization.Serializable
 @Parcelize
 class VersionCatalog(
@@ -28,6 +30,7 @@ class VersionCatalog(
         }
 }
 
+@Keep
 @Parcelize
 @kotlinx.serialization.Serializable
 data class Version(
@@ -38,6 +41,7 @@ data class Version(
     val versionCode: Int = -1,
     val date: Long = 0,
 ) : Parcelable {
+    @Keep
     @Parcelize
     @kotlinx.serialization.Serializable
     data class Link(
@@ -45,6 +49,7 @@ data class Version(
         val uri: String = "",
     ) : Parcelable
 
+    @Keep
     @Parcelize
     @kotlinx.serialization.Serializable
     data class ReleaseNote(
