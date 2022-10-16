@@ -18,7 +18,7 @@
 -keepclasseswithmembernames class player.phonograph.ui.** extends androidx.lifecycle.ViewModel {public <methods>;}
 
 
--keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.mediastore.MediaStoreUtil {public <methods>;}
+-keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.mediastore.QueryUtilKt {public <methods>;}
 -keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.mediastore.ModelTransformKt { <methods>;}
 
 -keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.service.** {public <methods>;public <fields>;}
@@ -29,5 +29,4 @@
 -keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.settings.SettingManager {public <methods>;}
 -keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.notification.** {public void post(...);}
 
--keepclassmembernames,allowoptimization class player.phonograph.misc.VersionJson {<fields>; public <methods>;}
 -keepclassmembernames,allowoptimization class player.phonograph.provider.DatabaseManger { boolean *(...);}
