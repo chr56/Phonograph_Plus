@@ -1,19 +1,25 @@
-**0.3.4 2022.10.3**
+**0.4-dev1 2022.10.17**
 
 **CN**
-- 新增 删除歌曲时一并删除同名歌词文件(需`管理全部文件`权限)
-- 修复 选择文件夹进行播放时无法递归选择其下所有子文件夹
-- 修复 播放器界面崩溃,如调整窗口大小时(仅部分修复)
-- 改进 图片加载时限制大小以防止过大图片导致崩溃
-- 改进 关闭遇到`opus`格式时弹出的错误通知(目前暂时无法读取`opus`格式的标签)
-- 开发 补上部分库缺失的 License 
-- 开发 更新 Gradle 至 7.5.1, 更新 AGP 至 7.3.0, 更新依赖
+
+对比 v0.3.5.2
+- 移除 黑名单
+- 新增 “路径过滤器“, 支持"排除模式"(黑名单)和"仅包含模式"(白名单), 两者暂时无法同时使用
+- 新增 全新的歌曲详情页面
+- 新增 全新的更详细的更新对话框等
+- 改进 菜单(几乎所有列表皆提供"播放","随机播放","下一个播放","加入列表"等)
+- 开发 重构媒体读取
+- 开发 引入 Jetpack Compose
+- 其他 APK体积膨胀, 不再”小而美“
 
 **EN**
-- New: delete song along with the lyrics file with the same name (requires `Manage all external files` permission)
-- Fix: when play a folder, it cannot recursively select all subfolders
-- Fix: player interface crash, e.g. when resizing the window (partially fixed)
-- Improve: limit image size limit when loading to prevent crashes due to oversize images
-- Improve: mute error notifications when encountering `opus` format (currently we cannot read `opus`'s tags)
-- Development: add missing licenses of some libraries
-- Development: update Gradle to 7.5.1, update AGP to 7.3.0, update dependencies
+
+Compare to v0.3.5.2
+- Remove: Blacklist
+- New: the Path filter, support "exclude mode" (blacklist) and "include mode" (whitelist), currently they can't be enabled at the same time
+- New: Song Details Page
+- New: brand new and detailed Upgrade Dialog and more
+- Improve: menus (almost all lists provide "Play", "Shuffle Play", "Play Next", "Add To Queues", etc.)
+- Development: Refactor media reading
+- Development: Introduce Jetpack Compose
+- Other: APK is bloated, no longer "tiny but versatile"
