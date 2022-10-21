@@ -12,11 +12,13 @@ A material designed local music player for Android.
 
 <br/>
 
-This is a fork of [Phonograph](https://github.com/kabouzeid/Phonograph), with some extra additional features.
+This is a fork of [Phonograph](https://github.com/kabouzeid/Phonograph), and is currently under my maintenance and development.
 
-## **特性** / **Features**
+## **新增特性** / **Additional Features**
 
-建议直接看[更新日志](app/src/main/assets/changelog-ZH-CN.html)!
+所有特性皆与原版相比。 All listed features are compared with original Phonograph.
+
+浏览[更新日志](app/src/main/assets/changelog-ZH-CN.html)以了解明细!
 
 It is suggested to browser the [Changelog](app/src/main/assets/changelog.html) to learn all features completely.
 
@@ -120,17 +122,17 @@ See [Build_Instructions.md](./Build_Instructions.md)
 
 - [x] 迁移 Glide 至 Coil | Migrate Glide to Coil
 
-- [ ] 支持白名单机制 | Whitelist
+- [x] 支持白名单机制 | Whitelist
 
-- [ ] 将歌曲“详情” 迁移至 Compose ⭕WIP (基本完成) | Migrate Song Detail to Jetpack Compose (⭕WIP: Almost Done)
+- [x] 将歌曲“详情” 迁移至 Compose | Migrate Song Detail to Jetpack Compose
+
+- [x] 重构更新对话框 | Refactor Update Dialog
+
+- [ ] 自定义歌曲点击行为 ⭕ | User-defined click behavior for songs ⭕
 
 - [ ] 重构设置 UI | Refactor Setting UI
 
-- [ ] 重构更新对话框 | Refactor Update Dialog
-
 - [ ] 重构搜索 | Refactor Search
-
-- [ ] 自定义歌曲点击行为 ⭕ | User-defined click behavior for songs ⭕
 
 - [ ] 自建本地媒体数据库(使用 AndroidX Room) ⭕, 以解析多艺术家歌曲, 并解析 Tag 中 ‘;’, '&', '/', '\', ',' , 改进搜索 | Use AndroidX Room to build
   Media database, to parse multi-artists songs and ‘;’, '&', '/', '\', ',' in tags, and improve search result
