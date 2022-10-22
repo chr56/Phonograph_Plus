@@ -37,11 +37,7 @@ fun applyToToolbar(
         menuItem(title = getString(R.string.action_play)) { //id = R.id.action_shuffle_album
             icon = getTintedDrawable(R.drawable.ic_play_arrow_white_24dp, iconColor)
             showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
-            onClick {
-                MusicPlayerRemote
-                    .playQueueCautiously(album.songs, 0, true, ShuffleMode.NONE)
-                true
-            }
+            onClick { playQueue(context, album.songs) }
         }
 
         menuItem(title = getString(R.string.action_shuffle_album)) { //id = R.id.action_shuffle_album

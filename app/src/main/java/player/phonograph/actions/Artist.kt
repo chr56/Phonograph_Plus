@@ -36,9 +36,7 @@ fun applyToToolbar(
             icon = getTintedDrawable(R.drawable.ic_play_arrow_white_24dp, iconColor)
             showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
             onClick {
-                MusicPlayerRemote
-                    .playQueueCautiously(artist.songs, 0, true, ShuffleMode.NONE)
-                true
+                playQueue(context, artist.songs)
             }
         }
 

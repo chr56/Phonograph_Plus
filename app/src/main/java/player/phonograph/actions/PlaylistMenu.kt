@@ -286,7 +286,7 @@ fun applyToPlaylistsToolbar(
 }
 
 fun Playlist.play(context: Context): Boolean =
-    MusicPlayerRemote.playQueueCautiously(getSongs(context), 0, true, null)
+    playQueue(context, getSongs(context))
 
 fun Playlist.shuffleAndPlay(context: Context) =
     MusicPlayerRemote.playQueueCautiously(getSongs(context), 0, true, ShuffleMode.SHUFFLE)
