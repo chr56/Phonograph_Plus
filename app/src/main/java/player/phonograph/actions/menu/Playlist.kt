@@ -4,32 +4,28 @@
 
 package player.phonograph.actions.menu
 
-import android.content.Context
-import android.view.Menu
-import android.view.MenuItem
-import androidx.annotation.ColorInt
-import androidx.fragment.app.FragmentActivity
 import com.github.chr56.android.menu_dsl.attach
 import com.github.chr56.android.menu_dsl.menuItem
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import player.phonograph.R
+import player.phonograph.actions.actionAddToCurrentQueue
 import player.phonograph.actions.actionAddToPlaylist
-import player.phonograph.actions.playQueue
-import player.phonograph.dialogs.AddToPlaylistDialog
-import player.phonograph.dialogs.ClearPlaylistDialog
-import player.phonograph.dialogs.RenamePlaylistDialog
-import player.phonograph.misc.SAFCallbackHandlerActivity
+import player.phonograph.actions.actionDeletePlaylist
+import player.phonograph.actions.actionPlay
+import player.phonograph.actions.actionPlayNext
+import player.phonograph.actions.actionRenamePlaylist
+import player.phonograph.actions.actionSavePlaylist
+import player.phonograph.actions.actionShuffleAndPlay
 import player.phonograph.model.playlist.FilePlaylist
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.model.playlist.PlaylistType
 import player.phonograph.model.playlist.ResettablePlaylist
 import player.phonograph.model.playlist.SmartPlaylist
-import player.phonograph.service.MusicPlayerRemote
-import player.phonograph.service.queue.ShuffleMode
 import player.phonograph.util.ImageUtil.getTintedDrawable
-import util.phonograph.m3u.PlaylistsManager
+import androidx.annotation.ColorInt
+import androidx.fragment.app.FragmentActivity
+import android.content.Context
+import android.view.Menu
+import android.view.MenuItem
 
 fun playlistToolbar(menu: Menu, context: Context, playlist: Playlist, @ColorInt iconColor: Int) = context.run {
     attach(menu) {
@@ -38,7 +34,7 @@ fun playlistToolbar(menu: Menu, context: Context, playlist: Playlist, @ColorInt 
             icon = getTintedDrawable(R.drawable.ic_shuffle_white_24dp, iconColor)
             showAsActionFlag = MenuItem.SHOW_AS_ACTION_ALWAYS
             onClick {
-                playlist.shuffleAndPlay(context)
+                playlist.actionShuffleAndPlay(context)
                 true
             }
         }
@@ -46,7 +42,7 @@ fun playlistToolbar(menu: Menu, context: Context, playlist: Playlist, @ColorInt 
             title = getString(R.string.action_play)
             icon = getTintedDrawable(R.drawable.ic_play_arrow_white_24dp, iconColor)
             showAsActionFlag = MenuItem.SHOW_AS_ACTION_ALWAYS
-            onClick { playlist.play(context) }
+            onClick { playlist.actionPlay(context) }
         }
 
         menuItem {
@@ -59,13 +55,13 @@ fun playlistToolbar(menu: Menu, context: Context, playlist: Playlist, @ColorInt 
         menuItem {
             title = getString(R.string.action_play_next)
             showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
-            onClick { playlist.playNext(context) }
+            onClick { playlist.actionPlayNext(context) }
         }
 
         menuItem {
             title = getString(R.string.action_add_to_playing_queue)
             showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
-            onClick { playlist.addToCurrentQueue(context) }
+            onClick { playlist.actionAddToCurrentQueue(context) }
         }
         menuItem {
             title = getString(R.string.action_add_to_playlist)
@@ -73,7 +69,7 @@ fun playlistToolbar(menu: Menu, context: Context, playlist: Playlist, @ColorInt 
             onClick {
                 val activity = context as? FragmentActivity
                 if (activity != null) {
-                    playlist.addToPlaylist(activity)
+                    playlist.actionAddToPlaylist(activity)
                     true
                 } else {
                     false
@@ -94,7 +90,7 @@ fun playlistToolbar(menu: Menu, context: Context, playlist: Playlist, @ColorInt 
                 onClick {
                     val activity = context as? FragmentActivity
                     if (activity != null) {
-                        playlist.renamePlaylist(activity)
+                        playlist.actionRenamePlaylist(activity)
                         true
                     } else {
                         false
@@ -113,7 +109,7 @@ fun playlistToolbar(menu: Menu, context: Context, playlist: Playlist, @ColorInt 
                 onClick {
                     val activity = context as? FragmentActivity
                     if (activity != null) {
-                        playlist.deletePlaylist(activity)
+                        playlist.actionDeletePlaylist(activity)
                         true
                     } else {
                         false
@@ -128,7 +124,7 @@ fun playlistToolbar(menu: Menu, context: Context, playlist: Playlist, @ColorInt 
             onClick {
                 val activity = context as? FragmentActivity
                 if (activity != null) {
-                    playlist.savePlaylist(activity)
+                    playlist.actionSavePlaylist(activity)
                     true
                 } else {
                     false
@@ -151,22 +147,22 @@ fun playlistPopupMenu(menu: Menu, context: Context, playlist: Playlist) = contex
     attach(menu) {
         menuItem {
             title = getString(R.string.action_play)
-            onClick { playlist.play(context) }
+            onClick { playlist.actionPlay(context) }
         }
         menuItem {
             title = getString(R.string.action_play_next)
-            onClick { playlist.playNext(context) }
+            onClick { playlist.actionPlayNext(context) }
         }
         menuItem {
             title = getString(R.string.action_add_to_playing_queue)
-            onClick { playlist.addToCurrentQueue(context) }
+            onClick { playlist.actionAddToCurrentQueue(context) }
         }
         menuItem {
             title = getString(R.string.add_playlist_title)
             onClick {
                 val activity = context as? FragmentActivity
                 if (activity != null) {
-                    playlist.addToPlaylist(activity)
+                    playlist.actionAddToPlaylist(activity)
                     true
                 } else {
                     false
@@ -179,7 +175,7 @@ fun playlistPopupMenu(menu: Menu, context: Context, playlist: Playlist) = contex
                 onClick {
                     val activity = context as? FragmentActivity
                     if (activity != null) {
-                        playlist.renamePlaylist(activity)
+                        playlist.actionRenamePlaylist(activity)
                         true
                     } else {
                         false
@@ -195,7 +191,7 @@ fun playlistPopupMenu(menu: Menu, context: Context, playlist: Playlist) = contex
                 onClick {
                     val activity = context as? FragmentActivity
                     if (activity != null) {
-                        playlist.deletePlaylist(activity)
+                        playlist.actionDeletePlaylist(activity)
                         true
                     } else {
                         false
@@ -208,7 +204,7 @@ fun playlistPopupMenu(menu: Menu, context: Context, playlist: Playlist) = contex
             onClick {
                 val activity = context as? FragmentActivity
                 if (activity != null) {
-                    playlist.savePlaylist(activity)
+                    playlist.actionSavePlaylist(activity)
                     true
                 } else {
                     false
@@ -218,52 +214,3 @@ fun playlistPopupMenu(menu: Menu, context: Context, playlist: Playlist) = contex
     }
 }
 
-fun Playlist.play(context: Context): Boolean =
-    playQueue(context, getSongs(context))
-
-fun Playlist.shuffleAndPlay(context: Context) =
-    MusicPlayerRemote.playQueueCautiously(getSongs(context), 0, true, ShuffleMode.SHUFFLE)
-
-fun Playlist.playNext(context: Context): Boolean =
-    MusicPlayerRemote.playNext(ArrayList(getSongs(context)))
-
-fun Playlist.addToCurrentQueue(context: Context): Boolean =
-    MusicPlayerRemote.enqueue(ArrayList(getSongs(context)))
-
-fun Playlist.addToPlaylist(activity: FragmentActivity) {
-    AddToPlaylistDialog.create(getSongs(activity))
-        .show(activity.supportFragmentManager, "ADD_PLAYLIST")
-}
-
-fun Playlist.renamePlaylist(activity: FragmentActivity) {
-    RenamePlaylistDialog.create(this.id)
-        .show(activity.supportFragmentManager, "RENAME_PLAYLIST")
-}
-
-fun Playlist.deletePlaylist(activity: FragmentActivity) {
-    ClearPlaylistDialog.create(listOf(this))
-        .show(activity.supportFragmentManager, "CLEAR_PLAYLIST")
-}
-
-fun List<Playlist>.deletePlaylists(activity: Context): Boolean =
-    if (activity is FragmentActivity) {
-        ClearPlaylistDialog.create(this)
-            .show(activity.supportFragmentManager, "CLEAR_PLAYLIST")
-        true
-    } else {
-        false
-    }
-
-fun Playlist.savePlaylist(activity: FragmentActivity) {
-    CoroutineScope(Dispatchers.Default).launch {
-        PlaylistsManager(activity, activity as? SAFCallbackHandlerActivity)
-            .duplicatePlaylistViaSaf(this@savePlaylist)
-    }
-}
-
-fun List<Playlist>.savePlaylists(activity: Context) {
-    CoroutineScope(Dispatchers.Default).launch {
-        PlaylistsManager(activity, activity as? SAFCallbackHandlerActivity)
-            .duplicatePlaylistsViaSaf(this@savePlaylists)
-    }
-}

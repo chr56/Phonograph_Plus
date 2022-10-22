@@ -15,7 +15,7 @@ import com.github.chr56.android.menu_dsl.attach
 import com.github.chr56.android.menu_dsl.menuItem
 import player.phonograph.R
 import player.phonograph.actions.fragmentActivity
-import player.phonograph.actions.playQueue
+import player.phonograph.actions.actionPlayQueue
 import player.phonograph.dialogs.AddToPlaylistDialog
 import player.phonograph.model.Album
 import player.phonograph.service.MusicPlayerRemote
@@ -39,7 +39,7 @@ fun albumDetailToolbar(
         menuItem(title = getString(R.string.action_play)) { //id = R.id.action_shuffle_album
             icon = getTintedDrawable(R.drawable.ic_play_arrow_white_24dp, iconColor)
             showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
-            onClick { playQueue(context, album.songs) }
+            onClick { album.songs.actionPlayQueue(context) }
         }
 
         menuItem(title = getString(R.string.action_shuffle_album)) { //id = R.id.action_shuffle_album

@@ -15,8 +15,8 @@ import player.phonograph.R
 import player.phonograph.actions.actionAddToPlaylist
 import player.phonograph.actions.actionDelete
 import player.phonograph.actions.fragmentActivity
-import player.phonograph.actions.gotoDetail
-import player.phonograph.actions.share
+import player.phonograph.actions.actionsGotoDetail
+import player.phonograph.actions.actionShare
 import player.phonograph.mediastore.searchSongs
 import player.phonograph.misc.UpdateToastMediaScannerCompletionListener
 import player.phonograph.model.Song
@@ -60,21 +60,21 @@ fun fileEntityPopupMenu(
         menuItem(title = getString(R.string.action_add_to_playlist)) { // id = R.id.action_add_to_playlist
             showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
             onClick {
-                action(context, file) { actionAddToPlaylist(it) } //todo
+                action(context, file) { it.actionAddToPlaylist(context) } //todo
             }
         }
         when (file) {
-            is FileEntity.File -> {
+            is FileEntity.File   -> {
                 menuItem(title = getString(R.string.action_details)) { // id = R.id.action_details
                     showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
                     onClick {
-                        fragmentActivity(context) { gotoDetail(it, file.linkedSong(context)) }
+                        fragmentActivity(context) { file.linkedSong(context).actionsGotoDetail(it) }
                         true
                     }
                 }
                 menuItem(title = getString(R.string.action_share)) { // id = R.id.action_share
                     showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
-                    onClick { share(context, file.linkedSong(context)) }
+                    onClick { file.linkedSong(context).actionShare(context) }
                 }
             }
             is FileEntity.Folder -> {
@@ -104,19 +104,23 @@ fun fileEntityPopupMenu(
         menuItem(title = getString(R.string.action_delete_from_device)) { // id = R.id.action_delete_from_device
             showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
             onClick {
-                action(context, file) { actionDelete(it) } //todo
+                action(context, file) { it.actionDelete(context) } //todo
             }
         }
     }
 }
 
-private inline fun action(context: Context, fileItem: FileEntity, block: (List<Song>) -> Boolean): Boolean =
-    when (fileItem) {
-        is FileEntity.File -> block(listOf(fileItem.linkedSong(context)))
-        is FileEntity.Folder -> block(
-            searchSongs(context, fileItem.location)
-        )
-    }
+private inline fun action(
+    context: Context,
+    fileItem: FileEntity,
+    block: (List<Song>) -> Boolean,
+): Boolean =
+    block(
+        when (fileItem) {
+            is FileEntity.File   -> listOf(fileItem.linkedSong(context))
+            is FileEntity.Folder -> searchSongs(context, fileItem.location)
+        }
+    )
 
 private fun scan(context: Context, dir: FileEntity.Folder) =
     CoroutineScope(SupervisorJob()).launch(Dispatchers.IO) {

@@ -11,16 +11,16 @@ import player.phonograph.R
 import player.phonograph.actions.actionAddToPlaylist
 import player.phonograph.actions.actionDelete
 import player.phonograph.actions.fragmentActivity
-import player.phonograph.actions.gotoDetail
-import player.phonograph.actions.share
-import player.phonograph.actions.tagEditor
+import player.phonograph.actions.actionsGotoDetail
+import player.phonograph.actions.actionShare
+import player.phonograph.actions.actionTagEditor
+import player.phonograph.actions.activity
 import player.phonograph.model.Song
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.util.NavigationUtil
 import player.phonograph.util.PathFilterUtil
 import player.phonograph.util.RingtoneManager
 import androidx.core.util.Pair
-import android.app.Activity
 import android.content.Context
 import android.view.Menu
 import android.view.MenuItem
@@ -69,7 +69,7 @@ fun songPopupMenu(
         menuItem(title = getString(R.string.action_add_to_playlist)) { // id = R.id.action_add_to_playlist
             showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
             onClick {
-                actionAddToPlaylist(listOf(song))
+                listOf(song).actionAddToPlaylist(context)
             }
         }
         menuItem(title = getString(R.string.action_go_to_album)) { // id = R.id.action_go_to_album
@@ -80,7 +80,8 @@ fun songPopupMenu(
                         NavigationUtil.goToAlbum(
                             it,
                             song.albumId,
-                            Pair(transitionView, context.resources.getString(R.string.transition_album_art))
+                            Pair(transitionView,
+                                 context.resources.getString(R.string.transition_album_art))
                         )
                     } else {
                         NavigationUtil.goToAlbum(it, song.albumId)
@@ -97,7 +98,8 @@ fun songPopupMenu(
                         NavigationUtil.goToArtist(
                             it,
                             song.artistId,
-                            Pair(transitionView, context.resources.getString(R.string.transition_artist_image))
+                            Pair(transitionView,
+                                 context.resources.getString(R.string.transition_artist_image))
                         )
                     } else {
                         NavigationUtil.goToArtist(it, song.artistId)
@@ -109,18 +111,18 @@ fun songPopupMenu(
         menuItem(title = getString(R.string.action_details)) { // id = R.id.action_details
             showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
             onClick {
-                fragmentActivity(context) { gotoDetail(it, song) }
+                fragmentActivity(context) { song.actionsGotoDetail(it) }
                 true
             }
         }
         submenu(context.getString(R.string.more_actions)) {
             menuItem(title = getString(R.string.action_share)) { // id = R.id.action_share
                 showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
-                onClick { share(context, song) }
+                onClick { song.actionShare(context) }
             }
             menuItem(title = getString(R.string.action_tag_editor)) { // id = R.id.action_tag_editor
                 showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
-                onClick { tagEditor(context, song) }
+                onClick { song.actionTagEditor(context) }
             }
             menuItem(title = getString(R.string.action_set_as_ringtone)) { // id = R.id.action_set_as_ringtone
                 showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
@@ -143,7 +145,7 @@ fun songPopupMenu(
             menuItem(title = getString(R.string.action_delete_from_device)) { // id = R.id.action_delete_from_device
                 showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
                 onClick {
-                    actionDelete(listOf(song))
+                    listOf(song).actionDelete(context)
                     true
                 }
             }
@@ -151,8 +153,3 @@ fun songPopupMenu(
     }
 }
 
-private inline fun activity(context: Context, block: (Activity) -> Boolean): Boolean = if (context is Activity) {
-    block(context)
-} else {
-    false
-}

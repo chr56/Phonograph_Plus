@@ -15,7 +15,7 @@ import com.github.chr56.android.menu_dsl.attach
 import com.github.chr56.android.menu_dsl.menuItem
 import player.phonograph.R
 import player.phonograph.actions.fragmentActivity
-import player.phonograph.actions.playQueue
+import player.phonograph.actions.actionPlayQueue
 import player.phonograph.coil.CustomArtistImageStore
 import player.phonograph.dialogs.AddToPlaylistDialog
 import player.phonograph.model.Artist
@@ -38,7 +38,7 @@ fun artistDetailToolbar(
             icon = getTintedDrawable(R.drawable.ic_play_arrow_white_24dp, iconColor)
             showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
             onClick {
-                playQueue(context, artist.songs)
+                artist.songs.actionPlayQueue(context)
             }
         }
 
