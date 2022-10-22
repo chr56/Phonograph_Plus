@@ -1,7 +1,6 @@
 package player.phonograph.adapter.legacy
 
 import android.view.LayoutInflater
-import android.view.MenuItem
 import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
@@ -16,7 +15,7 @@ import mt.util.color.getPrimaryTextColor
 import mt.util.color.getSecondaryTextColor
 import mt.util.color.isColorLight
 import player.phonograph.R
-import player.phonograph.actions.applyToToolbar
+import player.phonograph.actions.menu.multiItemsToolbar
 import player.phonograph.adapter.base.MediaEntryViewHolder
 import player.phonograph.adapter.base.MultiSelectAdapter
 import player.phonograph.adapter.base.MultiSelectionCabController
@@ -126,7 +125,7 @@ open class AlbumAdapter(
 
     override val multiSelectMenuHandler: ((Toolbar) -> Boolean)?
         get() = {
-            applyToToolbar(it.menu, context, checkedList, cabTextColorColor) {
+            multiItemsToolbar(it.menu, context, checkedList, cabTextColorColor) {
                 checkAll()
                 true
             }

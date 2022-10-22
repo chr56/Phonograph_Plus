@@ -2,25 +2,31 @@
  * Copyright (c) 2022 chr_56
  */
 
-package player.phonograph.actions
+package player.phonograph.actions.menu
 
+import com.github.chr56.android.menu_dsl.attach
+import com.github.chr56.android.menu_dsl.menuItem
+import com.github.chr56.android.menu_dsl.submenu
+import player.phonograph.R
+import player.phonograph.actions.actionAddToPlaylist
+import player.phonograph.actions.actionDelete
+import player.phonograph.actions.fragmentActivity
+import player.phonograph.actions.gotoDetail
+import player.phonograph.actions.share
+import player.phonograph.actions.tagEditor
+import player.phonograph.model.Song
+import player.phonograph.service.MusicPlayerRemote
+import player.phonograph.util.NavigationUtil
+import player.phonograph.util.PathFilterUtil
+import player.phonograph.util.RingtoneManager
+import androidx.core.util.Pair
 import android.app.Activity
 import android.content.Context
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import androidx.core.util.Pair
-import com.github.chr56.android.menu_dsl.attach
-import com.github.chr56.android.menu_dsl.menuItem
-import com.github.chr56.android.menu_dsl.submenu
-import player.phonograph.R
-import player.phonograph.model.Song
-import player.phonograph.service.MusicPlayerRemote
-import player.phonograph.util.PathFilterUtil
-import player.phonograph.util.NavigationUtil
-import player.phonograph.util.RingtoneManager
 
-fun applyToPopupMenu(
+fun songPopupMenu(
     context: Context,
     menu: Menu,
     song: Song,

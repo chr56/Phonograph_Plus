@@ -1,17 +1,5 @@
 package player.phonograph.ui.activities
 
-import android.content.Intent
-import android.net.Uri
-import android.os.Bundle
-import android.text.Html
-import android.text.Spanned
-import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuItem
-import android.view.View
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.RecyclerView.AdapterDataObserver
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.WhichButton
 import com.afollestad.materialdialogs.actions.getActionButton
@@ -31,7 +19,7 @@ import mt.util.color.secondaryTextColor
 import mt.util.color.toolbarTitleColor
 import mt.util.color.withAlpha
 import player.phonograph.R
-import player.phonograph.actions.applyToToolbar
+import player.phonograph.actions.menu.artistDetailToolbar
 import player.phonograph.adapter.base.MultiSelectionCabController
 import player.phonograph.adapter.legacy.ArtistSongAdapter
 import player.phonograph.adapter.legacy.HorizontalAlbumAdapter
@@ -41,7 +29,13 @@ import player.phonograph.coil.target.PaletteTargetBuilder
 import player.phonograph.databinding.ActivityArtistDetailBinding
 import player.phonograph.interfaces.PaletteColorHolder
 import player.phonograph.misc.SimpleObservableScrollViewCallbacks
-import player.phonograph.model.*
+import player.phonograph.model.Album
+import player.phonograph.model.Artist
+import player.phonograph.model.Song
+import player.phonograph.model.albumCountString
+import player.phonograph.model.getReadableDurationString
+import player.phonograph.model.songCountString
+import player.phonograph.model.totalDuration
 import player.phonograph.notification.ErrorNotification
 import player.phonograph.settings.Setting
 import player.phonograph.settings.Setting.Companion.isAllowedToDownloadMetadata
@@ -52,9 +46,21 @@ import retrofit2.Callback
 import retrofit2.Response
 import util.phonograph.lastfm.rest.LastFMRestClient
 import util.phonograph.lastfm.rest.model.LastFmArtist
-import java.util.*
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.AdapterDataObserver
+import android.content.Intent
+import android.net.Uri
+import android.os.Bundle
+import android.text.Html
+import android.text.Spanned
+import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuItem
+import android.view.View
 import kotlin.math.max
 import kotlin.math.min
+import java.util.Locale
 
 /**
  * Be careful when changing things in this Activity!
@@ -274,7 +280,7 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorHolder 
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        applyToToolbar(menu, this, artist, primaryTextColor(activityColor), this::biographyCallback)
+        artistDetailToolbar(menu, this, artist, primaryTextColor(activityColor), this::biographyCallback)
         MenuContext(menu, this).apply {
             menuItem(title = getString(R.string.colored_footers)) {
                 checkable = true

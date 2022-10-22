@@ -30,7 +30,7 @@ import mt.util.color.primaryTextColor
 import mt.util.color.secondaryDisabledTextColor
 import mt.util.color.secondaryTextColor
 import player.phonograph.R
-import player.phonograph.actions.applyToPlaylistDetailToolbar
+import player.phonograph.actions.menu.playlistToolbar
 import player.phonograph.adapter.base.MultiSelectionCabController
 import player.phonograph.adapter.display.PlaylistSongAdapter
 import player.phonograph.databinding.ActivityPlaylistDetailBinding
@@ -201,7 +201,7 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandle
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         val playlist: Playlist = model.playlist.value ?: FilePlaylist()
         val iconColor = primaryTextColor(primaryColor)
-        applyToPlaylistDetailToolbar(menu, this, playlist, iconColor)
+        playlistToolbar(menu, this, playlist, iconColor)
         return super.onCreateOptionsMenu(menu)
     }
 

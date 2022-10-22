@@ -2,7 +2,7 @@
  * Copyright (c) 2022 chr_56
  */
 
-package player.phonograph.actions
+package player.phonograph.actions.menu
 
 import android.content.Context
 import android.view.Menu
@@ -11,10 +11,14 @@ import androidx.annotation.ColorInt
 import com.github.chr56.android.menu_dsl.attach
 import com.github.chr56.android.menu_dsl.menuItem
 import player.phonograph.R
+import player.phonograph.actions.actionAddToPlaylist
+import player.phonograph.actions.actionDelete
+import player.phonograph.actions.convertToSongs
+import player.phonograph.actions.playQueue
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.util.ImageUtil.getTintedDrawable
 
-fun applyToToolbar(
+fun multiItemsToolbar(
     menu: Menu,
     context: Context,
     selections: List<Any>,

@@ -4,20 +4,11 @@
 
 package player.phonograph.ui.components.explorer
 
-import android.graphics.PorterDuff
-import android.text.format.Formatter
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.PopupMenu
-import androidx.appcompat.widget.Toolbar
-import androidx.core.app.ComponentActivity
 import coil.size.ViewSizeResolver
 import mt.util.color.resolveColor
 import player.phonograph.R
-import player.phonograph.actions.applyToPopupMenu
-import player.phonograph.actions.applyToToolbar
+import player.phonograph.actions.menu.multiItemsToolbar
+import player.phonograph.actions.menu.fileEntityPopupMenu
 import player.phonograph.adapter.base.MultiSelectionCabController
 import player.phonograph.coil.loadImage
 import player.phonograph.databinding.ItemListBinding
@@ -25,6 +16,15 @@ import player.phonograph.model.file.FileEntity
 import player.phonograph.model.file.linkedSong
 import player.phonograph.settings.Setting
 import player.phonograph.util.ImageUtil.getTintedDrawable
+import androidx.appcompat.widget.Toolbar
+import androidx.core.app.ComponentActivity
+import android.graphics.PorterDuff
+import android.text.format.Formatter
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.PopupMenu
 
 class FilesPageAdapter(
     activity: ComponentActivity,
@@ -59,7 +59,7 @@ class FilesPageAdapter(
 
                 menu.setOnClickListener {
                     PopupMenu(context, binding.menu).apply {
-                        applyToPopupMenu(context, this.menu, item)
+                        fileEntityPopupMenu(context, this.menu, item)
                     }.show()
                 }
             }
@@ -115,7 +115,7 @@ class FilesPageAdapter(
 
     override val multiSelectMenuHandler: ((Toolbar) -> Boolean)
         get() = {
-            applyToToolbar(it.menu, context, checkedList, cabTextColorColor) {
+            multiItemsToolbar(it.menu, context, checkedList, cabTextColorColor) {
                 checkAll()
                 true
             }

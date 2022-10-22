@@ -13,7 +13,7 @@ import android.view.View
 import android.widget.ImageView
 import androidx.core.util.Pair
 import player.phonograph.R
-import player.phonograph.actions.applyToPopupMenu
+import player.phonograph.actions.menu.songPopupMenu
 import player.phonograph.model.Album
 import player.phonograph.model.Artist
 import player.phonograph.model.Displayable
@@ -113,7 +113,7 @@ fun Displayable.initMenu(
     transitionView: View? = null,
 ) =
     if (this is Song) {
-        applyToPopupMenu(context, menu, this, showPlay, index, transitionView)
+        songPopupMenu(context, menu, this, showPlay, index, transitionView)
     } else {
         menu.clear()
     }

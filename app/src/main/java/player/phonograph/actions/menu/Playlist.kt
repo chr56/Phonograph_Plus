@@ -2,7 +2,7 @@
  * Copyright (c) 2022 chr_56
  */
 
-package player.phonograph.actions
+package player.phonograph.actions.menu
 
 import android.content.Context
 import android.view.Menu
@@ -15,6 +15,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import player.phonograph.R
+import player.phonograph.actions.actionAddToPlaylist
+import player.phonograph.actions.playQueue
 import player.phonograph.dialogs.AddToPlaylistDialog
 import player.phonograph.dialogs.ClearPlaylistDialog
 import player.phonograph.dialogs.RenamePlaylistDialog
@@ -29,7 +31,7 @@ import player.phonograph.service.queue.ShuffleMode
 import player.phonograph.util.ImageUtil.getTintedDrawable
 import util.phonograph.m3u.PlaylistsManager
 
-fun applyToPlaylistDetailToolbar(menu: Menu, context: Context, playlist: Playlist, @ColorInt iconColor: Int) = context.run {
+fun playlistToolbar(menu: Menu, context: Context, playlist: Playlist, @ColorInt iconColor: Int) = context.run {
     attach(menu) {
         menuItem {
             title = getString(R.string.action_shuffle_playlist)
@@ -145,7 +147,7 @@ fun applyToPlaylistDetailToolbar(menu: Menu, context: Context, playlist: Playlis
     }
 }
 
-fun applyToPopupMenu(menu: Menu, context: Context, playlist: Playlist) = context.run {
+fun playlistPopupMenu(menu: Menu, context: Context, playlist: Playlist) = context.run {
     attach(menu) {
         menuItem {
             title = getString(R.string.action_play)
@@ -216,7 +218,7 @@ fun applyToPopupMenu(menu: Menu, context: Context, playlist: Playlist) = context
     }
 }
 
-fun applyToToolbar(
+fun multiPlaylistToolbar(
     menu: Menu,
     context: Context,
     playlists: List<Playlist>,

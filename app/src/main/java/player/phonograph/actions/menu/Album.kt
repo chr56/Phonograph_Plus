@@ -2,50 +2,52 @@
  * Copyright (c) 2022 chr_56
  */
 
-package player.phonograph.actions
+package player.phonograph.actions.menu
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.annotation.ColorInt
 import com.github.chr56.android.menu_dsl.attach
 import com.github.chr56.android.menu_dsl.menuItem
 import player.phonograph.R
-import player.phonograph.coil.CustomArtistImageStore
+import player.phonograph.actions.fragmentActivity
+import player.phonograph.actions.playQueue
 import player.phonograph.dialogs.AddToPlaylistDialog
-import player.phonograph.model.Artist
+import player.phonograph.model.Album
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.queue.ShuffleMode
-import player.phonograph.ui.activities.ArtistDetailActivity
+import player.phonograph.ui.activities.AlbumDetailActivity
 import player.phonograph.ui.dialogs.DeleteSongsDialog
 import player.phonograph.util.ImageUtil.getTintedDrawable
+import player.phonograph.util.NavigationUtil.goToArtist
+import util.phonograph.tageditor.AbsTagEditorActivity
+import util.phonograph.tageditor.AlbumTagEditorActivity
 
-fun applyToToolbar(
+fun albumDetailToolbar(
     menu: Menu,
     context: Context,
-    artist: Artist,
+    album: Album,
     @ColorInt iconColor: Int,
-    loadBiographyCallback: (Artist) -> Boolean,
+    loadWikiCallback: (Album) -> Boolean,
 ): Boolean = with(context) {
     attach(menu) {
 
-        menuItem(title = getString(R.string.action_play)) { //id = R.id.action_shuffle_artist
+        menuItem(title = getString(R.string.action_play)) { //id = R.id.action_shuffle_album
             icon = getTintedDrawable(R.drawable.ic_play_arrow_white_24dp, iconColor)
             showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
-            onClick {
-                playQueue(context, artist.songs)
-            }
+            onClick { playQueue(context, album.songs) }
         }
 
-        menuItem(title = getString(R.string.action_shuffle_artist)) { //id = R.id.action_shuffle_artist
+        menuItem(title = getString(R.string.action_shuffle_album)) { //id = R.id.action_shuffle_album
             icon = getTintedDrawable(R.drawable.ic_shuffle_white_24dp, iconColor)
             showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
             onClick {
                 MusicPlayerRemote
-                    .playQueue(artist.songs, 0, true, ShuffleMode.SHUFFLE)
+                    .playQueue(album.songs, 0, true, ShuffleMode.SHUFFLE)
                 true
             }
         }
@@ -55,7 +57,7 @@ fun applyToToolbar(
             icon = getTintedDrawable(R.drawable.ic_redo_white_24dp, iconColor)
             showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
             onClick {
-                MusicPlayerRemote.playNext(artist.songs)
+                MusicPlayerRemote.playNext(album.songs)
                 true
             }
         }
@@ -65,7 +67,7 @@ fun applyToToolbar(
             icon = getTintedDrawable(R.drawable.ic_library_add_white_24dp, iconColor)
             showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
             onClick {
-                MusicPlayerRemote.enqueue(artist.songs)
+                MusicPlayerRemote.enqueue(album.songs)
                 true
             }
         }
@@ -75,35 +77,34 @@ fun applyToToolbar(
             showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
             onClick {
                 fragmentActivity(context) {
-                    AddToPlaylistDialog.create(artist.songs).show(it.supportFragmentManager, "ADD_PLAYLIST")
+                    AddToPlaylistDialog.create(album.songs).show(it.supportFragmentManager, "ADD_PLAYLIST")
                     true
                 }
             }
         }
 
-        menuItem(title = getString(R.string.set_artist_image)) { //id = R.id.action_set_artist_image
+        menuItem(title = getString(R.string.action_go_to_artist)) { //id = R.id.action_go_to_artist
             icon = getTintedDrawable(R.drawable.ic_person_white_24dp, iconColor)
             showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
             onClick {
-                if (context is ComponentActivity)
-                    context.startActivityForResult(
-                        Intent.createChooser(
-                            Intent(Intent.ACTION_GET_CONTENT).apply {
-                                type = "image/*"
-                            }, getString(R.string.pick_from_local_storage)),
-                        ArtistDetailActivity.REQUEST_CODE_SELECT_IMAGE)
+                if (context is Activity)
+                    goToArtist(context, album.artistId)
                 true
             }
         }
 
 
-        menuItem(title = getString(R.string.reset_artist_image)) { //id = R.id.action_reset_artist_image
-            icon = getTintedDrawable(R.drawable.ic_close_white_24dp, iconColor)
+        menuItem(title = getString(R.string.action_tag_editor)) { //id = R.id.action_tag_editor
+            icon = getTintedDrawable(R.drawable.ic_library_music_white_24dp, iconColor)
             showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
             onClick {
-                Toast.makeText(context, resources.getString(R.string.updating), Toast.LENGTH_SHORT).show()
-                CustomArtistImageStore.instance(context)
-                    .resetCustomArtistImage(context, artist.id, artist.name)
+                if (context is ComponentActivity)
+                    context.startActivityForResult(
+                        Intent(context, AlbumTagEditorActivity::class.java).apply {
+                            putExtra(AbsTagEditorActivity.EXTRA_ID, album.id)
+                        },
+                        AlbumDetailActivity.TAG_EDITOR_REQUEST
+                    )
                 true
             }
         }
@@ -114,20 +115,19 @@ fun applyToToolbar(
             showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
             onClick {
                 fragmentActivity(context) {
-                    DeleteSongsDialog.create(ArrayList(artist.songs)).show(it.supportFragmentManager, "ADD_PLAYLIST")
+                    DeleteSongsDialog.create(ArrayList(album.songs)).show(it.supportFragmentManager, "ADD_PLAYLIST")
                     true
                 }
             }
         }
 
-        menuItem(title = getString(R.string.biography)) { //id = R.id.action_biography
+        menuItem(title = getString(R.string.wiki)) { //id = R.id.action_wiki
             icon = getTintedDrawable(R.drawable.ic_info_outline_white_24dp, iconColor)
             showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
             onClick {
-                loadBiographyCallback(artist)
+                loadWikiCallback(album)
             }
         }
     }
     true
 }
-

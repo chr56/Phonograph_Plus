@@ -1,16 +1,5 @@
 package player.phonograph.ui.activities
 
-import android.content.Intent
-import android.net.Uri
-import android.os.Bundle
-import android.text.Spanned
-import android.view.Menu
-import android.view.MenuItem
-import android.view.View
-import androidx.activity.viewModels
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.RecyclerView.AdapterDataObserver
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.WhichButton
 import com.afollestad.materialdialogs.actions.getActionButton
@@ -28,33 +17,34 @@ import mt.util.color.isColorLight
 import mt.util.color.primaryTextColor
 import mt.util.color.secondaryTextColor
 import player.phonograph.R
-import player.phonograph.actions.applyToToolbar
+import player.phonograph.actions.menu.albumDetailToolbar
 import player.phonograph.adapter.base.MultiSelectionCabController
 import player.phonograph.adapter.display.AlbumSongDisplayAdapter
 import player.phonograph.adapter.display.SongDisplayAdapter
 import player.phonograph.coil.loadImage
 import player.phonograph.coil.target.PaletteTargetBuilder
 import player.phonograph.databinding.ActivityAlbumDetailBinding
-import player.phonograph.dialogs.AddToPlaylistDialog
-import player.phonograph.ui.dialogs.DeleteSongsDialog
-import player.phonograph.dialogs.SleepTimerDialog
 import player.phonograph.model.Album
 import player.phonograph.model.getReadableDurationString
 import player.phonograph.model.getYearString
 import player.phonograph.model.songCountString
 import player.phonograph.model.totalDuration
-import player.phonograph.service.MusicPlayerRemote
-import player.phonograph.service.MusicPlayerRemote.enqueue
-import player.phonograph.service.MusicPlayerRemote.playNext
-import player.phonograph.service.queue.ShuffleMode
 import player.phonograph.settings.Setting.Companion.isAllowedToDownloadMetadata
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
 import player.phonograph.util.ImageUtil.getTintedDrawable
 import player.phonograph.util.NavigationUtil.goToArtist
-import player.phonograph.util.NavigationUtil.openEqualizer
 import player.phonograph.util.ViewUtil.setUpFastScrollRecyclerViewColor
-import util.phonograph.tageditor.AbsTagEditorActivity
-import util.phonograph.tageditor.AlbumTagEditorActivity
+import androidx.activity.viewModels
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.AdapterDataObserver
+import android.content.Intent
+import android.net.Uri
+import android.os.Bundle
+import android.text.Spanned
+import android.view.Menu
+import android.view.MenuItem
+import android.view.View
 
 /**
  * Be careful when changing things in this Activity!
@@ -208,7 +198,7 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        applyToToolbar(menu, this, album, primaryTextColor(activityColor)) {
+        albumDetailToolbar(menu, this, album, primaryTextColor(activityColor)) {
             // load wiki
             if (isWikiPreLoaded) {
                 showWikiDialog()

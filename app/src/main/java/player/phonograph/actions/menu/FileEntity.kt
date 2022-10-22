@@ -2,14 +2,8 @@
  * Copyright (c) 2022 chr_56
  */
 
-package player.phonograph.actions
+package player.phonograph.actions.menu
 
-import android.app.Activity
-import android.content.Context
-import android.media.MediaScannerConnection
-import android.view.Menu
-import android.view.MenuItem
-import android.widget.Toast
 import com.github.chr56.android.menu_dsl.attach
 import com.github.chr56.android.menu_dsl.menuItem
 import kotlinx.coroutines.CoroutineScope
@@ -18,6 +12,11 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import player.phonograph.R
+import player.phonograph.actions.actionAddToPlaylist
+import player.phonograph.actions.actionDelete
+import player.phonograph.actions.fragmentActivity
+import player.phonograph.actions.gotoDetail
+import player.phonograph.actions.share
 import player.phonograph.mediastore.searchSongs
 import player.phonograph.misc.UpdateToastMediaScannerCompletionListener
 import player.phonograph.model.Song
@@ -26,9 +25,15 @@ import player.phonograph.model.file.linkedSong
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.util.PathFilterUtil
 import player.phonograph.util.preferences.FileConfig
+import android.app.Activity
+import android.content.Context
+import android.media.MediaScannerConnection
+import android.view.Menu
+import android.view.MenuItem
+import android.widget.Toast
 import java.io.File
 
-fun applyToPopupMenu(
+fun fileEntityPopupMenu(
     context: Context,
     menu: Menu,
     file: FileEntity,
@@ -55,7 +60,7 @@ fun applyToPopupMenu(
         menuItem(title = getString(R.string.action_add_to_playlist)) { // id = R.id.action_add_to_playlist
             showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
             onClick {
-                action(context, file, ::actionAddToPlaylist)
+                action(context, file) { actionAddToPlaylist(it) } //todo
             }
         }
         when (file) {
@@ -99,7 +104,7 @@ fun applyToPopupMenu(
         menuItem(title = getString(R.string.action_delete_from_device)) { // id = R.id.action_delete_from_device
             showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
             onClick {
-                action(context, file, ::actionDelete)
+                action(context, file) { actionDelete(it) } //todo
             }
         }
     }

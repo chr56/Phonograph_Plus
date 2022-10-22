@@ -5,7 +5,6 @@
 package player.phonograph.adapter.display
 
 import android.view.LayoutInflater
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
@@ -19,7 +18,7 @@ import mt.util.color.getPrimaryTextColor
 import mt.util.color.getSecondaryTextColor
 import mt.util.color.isColorLight
 import player.phonograph.R
-import player.phonograph.actions.applyToToolbar
+import player.phonograph.actions.menu.multiItemsToolbar
 import player.phonograph.adapter.base.MultiSelectAdapter
 import player.phonograph.adapter.base.MultiSelectionCabController
 import player.phonograph.adapter.base.UniversalMediaEntryViewHolder
@@ -53,7 +52,7 @@ open class DisplayAdapter<I : Displayable>(
 
     override val multiSelectMenuHandler: ((Toolbar) -> Boolean)?
         get() = {
-            applyToToolbar(it.menu, context, checkedList, cabTextColorColor) {
+            multiItemsToolbar(it.menu, context, checkedList, cabTextColorColor) {
                 checkAll()
                 true
             }

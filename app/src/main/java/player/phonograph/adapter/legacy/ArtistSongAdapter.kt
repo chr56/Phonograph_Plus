@@ -11,7 +11,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import coil.size.ViewSizeResolver
 import player.phonograph.R
-import player.phonograph.actions.applyToToolbar
+import player.phonograph.actions.menu.multiItemsToolbar
 import player.phonograph.adapter.base.MultiSelectionCabController
 import player.phonograph.adapter.display.initMenu
 import player.phonograph.coil.loadImage
@@ -102,7 +102,7 @@ open class ArtistSongAdapter(
         // todo
         cabController?.onDismiss = ::unCheckAll
         cabController?.menuHandler = {
-            applyToToolbar(it.menu, context, checked, Color.WHITE) { true }
+            multiItemsToolbar(it.menu, context, checked, Color.WHITE) { true }
         }
 
         cabController?.showContent(context, checked.size) // todo: valid

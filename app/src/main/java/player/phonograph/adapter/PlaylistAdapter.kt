@@ -10,8 +10,8 @@ import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.FragmentActivity
 import mt.util.color.resolveColor
 import player.phonograph.R
-import player.phonograph.actions.applyToToolbar
-import player.phonograph.actions.applyToPopupMenu
+import player.phonograph.actions.menu.multiPlaylistToolbar
+import player.phonograph.actions.menu.playlistPopupMenu
 import player.phonograph.adapter.base.MediaEntryViewHolder
 import player.phonograph.adapter.base.MultiSelectAdapter
 import player.phonograph.adapter.base.MultiSelectionCabController
@@ -98,7 +98,7 @@ class PlaylistAdapter(
 
     override val multiSelectMenuHandler: ((Toolbar) -> Boolean)
         get() = {
-            applyToToolbar(it.menu, activity, checkedList, cabTextColorColor) {
+            multiPlaylistToolbar(it.menu, activity, checkedList, cabTextColorColor) {
                 checkAll()
                 true
             }
@@ -128,7 +128,7 @@ class PlaylistAdapter(
                 menu!!.setOnClickListener { view: View? ->
                     val playlist = dataSet[bindingAdapterPosition]
                     PopupMenu(activity, view).apply {
-                        applyToPopupMenu(menu, activity, playlist)
+                        playlistPopupMenu(menu, activity, playlist)
                     }.show()
                 }
             }
