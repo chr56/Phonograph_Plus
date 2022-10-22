@@ -33,6 +33,7 @@ import androidx.media.app.NotificationCompat
 import coil.Coil
 import coil.request.Disposable
 import coil.request.ImageRequest
+import coil.size.Size
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import mt.util.color.primaryTextColor
@@ -127,13 +128,6 @@ class PlayingNotificationManger(private val service: MusicService) {
         override fun update(song: Song) {
             val isPlaying = service.isPlaying
 
-            val bigNotificationImageWidth = service.resources.getDimensionPixelSize(
-                androidx.core.R.dimen.compat_notification_large_icon_max_width
-            )
-
-            val bigNotificationImageHeight = service.resources.getDimensionPixelSize(
-                androidx.core.R.dimen.compat_notification_large_icon_max_height
-            )
 
             val playPauseAction = XNotificationCompat.Action(
                 if (isPlaying) R.drawable.ic_pause_white_24dp else R.drawable.ic_play_arrow_white_24dp,
@@ -178,12 +172,20 @@ class PlayingNotificationManger(private val service: MusicService) {
 
             postNotification(notificationBuilder.build())
 
+
+            val size = with(service.resources) {
+                Size(
+                    getDimensionPixelSize(androidx.core.R.dimen.notification_large_icon_width),
+                    getDimensionPixelSize(androidx.core.R.dimen.notification_large_icon_height)
+                )
+            }
+
             // then try to load cover image
             val loader = Coil.imageLoader(service)
             val imageRequest =
                 ImageRequest.Builder(service)
                     .data(song)
-                    .size(bigNotificationImageWidth, bigNotificationImageHeight)
+                    .size(size)
                     .target(
                         PaletteTargetBuilder(service)
                             .onResourceReady { result, paletteColor ->
@@ -258,7 +260,7 @@ class PlayingNotificationManger(private val service: MusicService) {
             val loader = Coil.imageLoader(service)
             val imageRequest = ImageRequest.Builder(service)
                 .data(song)
-                .size(bigNotificationImageSize)
+                .size(imageSize)
                 .target(
                     PaletteTargetBuilder(service)
                         .onResourceReady { result, backgroundColor ->
@@ -367,10 +369,13 @@ class PlayingNotificationManger(private val service: MusicService) {
             notificationLayoutBig.setOnClickPendingIntent(R.id.action_next, pendingIntent)
         }
 
-        private val bigNotificationImageSize by lazy {
-            service.resources.getDimensionPixelSize(
-                R.dimen.notification_big_image_size
-            )
+        private val imageSize by lazy {
+            with(service.resources) {
+                Size(
+                    getDimensionPixelSize(R.dimen.notification_big_image_size),
+                    getDimensionPixelSize(R.dimen.notification_big_image_size)
+                )
+            }
         }
     }
 
@@ -479,12 +484,12 @@ class PlayingNotificationManger(private val service: MusicService) {
             }
 
         if (Setting.instance.albumArtOnLockscreen) {
-            val screenSize = service.getScreenSize()
+            val screenSize = service.getScreenSize().run { Size(x, y) }
             val loader = Coil.imageLoader(service)
             val imageRequest =
                 ImageRequest.Builder(service)
                     .data(song)
-                    .size(screenSize.x, screenSize.y)
+                    .size(screenSize)
                     .target(
                         onSuccess = {
                             metaData.putBitmap(
