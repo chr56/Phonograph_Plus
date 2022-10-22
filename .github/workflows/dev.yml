@@ -8,7 +8,7 @@ on:
       - 'v0*'
     paths-ignore:
       - '**.md'
-      - './*.json'
+      - '*.json'
       - '.github/**'
       - 'crowdin.yml'
       - 'fastlane/metadata/android/**'
