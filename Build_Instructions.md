@@ -10,13 +10,10 @@ Currently(2020.10.15), this project's toolchain&dependencies are:
 - `kotlin` for JVM(Android) `1.7.10`
 - `kotlinx.serialization`,`kotlinx.parcelize`
 - most popular `androidx`(`Jetpack`) components (most of them are latest)
+- `Jetpack Compose` (Since 0.4)
 - popular 3rd-party libraries available on (`MavenCentral` and `jitpack.io`), some might kind of old and unmaintained
 - "unpopular" 3rd-party libraries: `AdrienPoupa`'s `jaudiotagger`, `coil`
 - some modified libraries by me
-
-and
-
-- <del>`Jetpack Compose`</del> coming soon in next versions
 
 see [Libs.kt](./version-management/src/java/version/management/Libs.kt) for all the libraries.
 
