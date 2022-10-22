@@ -6,6 +6,7 @@ package player.phonograph.provider
 
 import android.content.Context
 import android.net.Uri
+import android.util.Log
 import java.io.*
 import java.lang.IllegalArgumentException
 import java.util.zip.ZipEntry
@@ -17,7 +18,6 @@ import player.phonograph.provider.DatabaseConstants.FAVORITE_DB
 import player.phonograph.provider.DatabaseConstants.HISTORY_DB
 import player.phonograph.provider.DatabaseConstants.MUSIC_PLAYBACK_STATE_DB
 import player.phonograph.provider.DatabaseConstants.SONG_PLAY_COUNT_DB
-import player.phonograph.util.Util.assertIfFalse
 import player.phonograph.util.TimeUtil.currentTimestamp
 
 class DatabaseManger(var context: Context) {
@@ -82,8 +82,11 @@ class DatabaseManger(var context: Context) {
     private fun moveFile(from: File, to: File) {
         if (from.isDirectory || to.isDirectory) throw IllegalArgumentException("move dirs")
         if (from.exists() && from.canWrite()) {
-            to.delete().assertIfFalse(IOException("Can't delete $PATH_FILTER"))
-            from.renameTo(to).assertIfFalse(IOException("Can't replace file $PATH_FILTER"))
+            if (to.exists()) {
+                Log.e(TAG, "deleting ${to.path}")
+                to.delete().also { require(it) { "Can't delete ${to.path}" } }
+            }
+            from.renameTo(to).also { require(it) { "Restore ${from.path} failed!" } }
         }
     }
 
@@ -126,5 +129,9 @@ class DatabaseManger(var context: Context) {
                 }
             } // todo else
         }
+    }
+
+    companion object {
+        const val TAG = "DatabaseManger"
     }
 }
