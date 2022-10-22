@@ -4,10 +4,6 @@
 
 package player.phonograph.actions.menu
 
-import android.content.Context
-import android.view.Menu
-import android.view.MenuItem
-import androidx.annotation.ColorInt
 import com.github.chr56.android.menu_dsl.attach
 import com.github.chr56.android.menu_dsl.menuItem
 import player.phonograph.R
@@ -15,8 +11,13 @@ import player.phonograph.actions.actionAddToPlaylist
 import player.phonograph.actions.actionDelete
 import player.phonograph.actions.convertToSongs
 import player.phonograph.actions.playQueue
+import player.phonograph.model.playlist.Playlist
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.util.ImageUtil.getTintedDrawable
+import androidx.annotation.ColorInt
+import android.content.Context
+import android.view.Menu
+import android.view.MenuItem
 
 fun multiItemsToolbar(
     menu: Menu,
@@ -57,13 +58,34 @@ fun multiItemsToolbar(
                     actionAddToPlaylist(convertToSongs(selections, context))
                 }
             }
+
+            val playlists: List<Playlist> = selections.filterIsInstance<Playlist>()
+
             menuItem(getString(R.string.action_delete_from_device)) {
                 icon = getTintedDrawable(R.drawable.ic_delete_white_24dp, iconColor)
                 showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
                 onClick {
-                    actionDelete(convertToSongs(selections, context))
+                    // check playlist to avoid accidentally deleting song but playlist
+                    if (playlists.isEmpty()) {
+                        actionDelete(convertToSongs(selections, context))
+                    } else {
+                        // todo
+                        playlists.deletePlaylists(context)
+                    }
                 }
             }
+
+            if (playlists.isNotEmpty()){
+                menuItem(getString(R.string.save_playlists_title)) {
+                    icon = getTintedDrawable(R.drawable.ic_save_white_24dp, iconColor)
+                    showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
+                    onClick {
+                        playlists.savePlaylists(context)
+                        true
+                    }
+                }
+            }
+
             selectAllCallback?.let { callback ->
                 menuItem(getString(R.string.select_all_title)) {
                     icon = getTintedDrawable(R.drawable.ic_select_all_white_24dp, iconColor)

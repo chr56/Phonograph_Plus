@@ -20,6 +20,7 @@ import player.phonograph.model.Genre
 import player.phonograph.model.Song
 import player.phonograph.model.file.FileEntity
 import player.phonograph.model.file.linkedSong
+import player.phonograph.model.playlist.Playlist
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.queue.ShuffleMode
 import player.phonograph.settings.Setting
@@ -34,6 +35,7 @@ internal fun convertToSongs(selections: List<Any>, context: Context): List<Song>
         is Album -> it.songs
         is Artist -> it.songs
         is Genre -> GenreLoader.getSongs(context, it.id)
+        is Playlist -> it.getSongs(context)
         is FileEntity.File -> listOf(it.linkedSong(context))
         // is FileEntity.Folder -> TODO()
         else -> emptyList()
