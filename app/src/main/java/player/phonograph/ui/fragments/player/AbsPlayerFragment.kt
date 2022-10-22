@@ -14,8 +14,8 @@ import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.github.chr56.android.menu_dsl.add
 import com.github.chr56.android.menu_dsl.attach
+import com.github.chr56.android.menu_dsl.menuItem
 import com.h6ah4i.android.widget.advrecyclerview.draggable.RecyclerViewDragDropManager
 import com.h6ah4i.android.widget.advrecyclerview.utils.WrapperAdapterUtils
 import kotlinx.coroutines.Dispatchers
@@ -24,19 +24,22 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import mt.util.color.toolbarContentColor
 import player.phonograph.R
-import player.phonograph.actions.injectPlayerToolbar
 import player.phonograph.adapter.display.PlayingQueueAdapter
+import player.phonograph.dialogs.CreatePlaylistDialog
 import player.phonograph.dialogs.LyricsDialog
+import player.phonograph.dialogs.SleepTimerDialog
 import player.phonograph.interfaces.PaletteColorHolder
 import player.phonograph.model.buildInfoString
 import player.phonograph.model.getReadableDurationString
 import player.phonograph.model.lyrics.AbsLyrics
 import player.phonograph.model.lyrics.LrcLyrics
+import player.phonograph.preferences.NowPlayingScreenPreferenceDialog
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.ui.fragments.AbsMusicServiceFragment
 import player.phonograph.ui.fragments.player.PlayerAlbumCoverFragment.Companion.VISIBILITY_ANIM_DURATION
 import player.phonograph.util.FavoriteUtil.toggleFavorite
 import player.phonograph.util.ImageUtil.getTintedDrawable
+import player.phonograph.util.NavigationUtil
 
 abstract class AbsPlayerFragment :
     AbsMusicServiceFragment(),
@@ -159,8 +162,93 @@ abstract class AbsPlayerFragment :
         playerToolbar = getImplToolbar()
         playerToolbar.setNavigationIcon(R.drawable.ic_close_white_24dp)
         playerToolbar.setNavigationOnClickListener { requireActivity().onBackPressed() }
-        attachSpecialMenuItem(playerToolbar.menu)
-        injectPlayerToolbar(playerToolbar.menu, this)
+        requireContext().attach(playerToolbar.menu) {
+            // visible
+            menuItem(getString(R.string.lyrics)) {
+                order = 0
+                icon = requireContext()
+                    .getTintedDrawable(R.drawable.ic_comment_text_outline_white_24dp, Color.WHITE)
+                showAsActionFlag = MenuItem.SHOW_AS_ACTION_ALWAYS
+                visible = false
+                itemId = R.id.action_show_lyrics
+                onClick {
+                    val lyricsPack = viewModel.lyricsList.value
+                    if (!lyricsPack.isEmpty()) {
+                        LyricsDialog.create(
+                            lyricsPack,
+                            viewModel.currentSong,
+                            viewModel.currentLyrics ?: lyricsPack.getAvailableLyrics()!!
+                        ).show(childFragmentManager, "LYRICS")
+                    }
+                    true
+                }
+            }.apply {
+                viewModel.lyricsMenuItem = this
+            }
+
+            menuItem(getString(R.string.action_add_to_favorites)) {
+                order = 1
+                icon = requireContext()
+                    .getTintedDrawable(R.drawable.ic_favorite_border_white_24dp, Color.WHITE) // default state
+                showAsActionFlag = MenuItem.SHOW_AS_ACTION_ALWAYS
+                itemId = R.id.action_toggle_favorite
+                onClick {
+                    val result = toggleFavorite(requireContext(), viewModel.currentSong)
+                    if (viewModel.currentSong.id == MusicPlayerRemote.currentSong.id && result) {
+                        playerAlbumCoverFragment.showHeartAnimation()
+                        viewModel.updateFavoriteState(viewModel.currentSong)
+                    }
+                    true
+                }
+            }.apply {
+                favoriteMenuItem = this
+            }
+
+            // collapsed
+            menuItem {
+                title = getString(R.string.action_clear_playing_queue)
+                showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
+                onClick {
+                    MusicPlayerRemote.clearQueue()
+                }
+            }
+            menuItem {
+                title = getString(R.string.action_save_playing_queue)
+                showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
+                onClick {
+                    CreatePlaylistDialog.create(MusicPlayerRemote.playingQueue)
+                        .show(childFragmentManager, "ADD_TO_PLAYLIST")
+                    true
+                }
+            }
+            menuItem {
+                title = getString(R.string.action_sleep_timer)
+                showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
+                onClick {
+                    SleepTimerDialog()
+                        .show(childFragmentManager, "SET_SLEEP_TIMER")
+                    true
+                }
+            }
+            menuItem {
+                title = getString(R.string.equalizer)
+                showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
+                onClick {
+                    NavigationUtil.openEqualizer(requireActivity())
+                    true
+                }
+            }
+            menuItem {
+                title = getString(R.string.change_now_playing_screen)
+                showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
+                onClick {
+                    NowPlayingScreenPreferenceDialog()
+                        .show(childFragmentManager, "NOW_PLAYING_SCREEN")
+                    true
+                }
+            }
+        }
+
     }
 
     abstract fun getImplToolbar(): Toolbar
@@ -200,48 +288,7 @@ abstract class AbsPlayerFragment :
 
     private fun attachSpecialMenuItem(menu: Menu) {
         requireActivity().attach(menu) {
-            // todo
-            rootMenu.add(this) {
-                order = 0
-                title = getString(R.string.lyrics)
-                icon = requireContext()
-                    .getTintedDrawable(R.drawable.ic_comment_text_outline_white_24dp, Color.WHITE)
-                showAsActionFlag = MenuItem.SHOW_AS_ACTION_ALWAYS
-                visible = false
-                itemId = R.id.action_show_lyrics
-                onClick {
-                    val lyricsPack = viewModel.lyricsList.value
-                    if (!lyricsPack.isEmpty()) {
-                        LyricsDialog.create(
-                            lyricsPack,
-                            viewModel.currentSong,
-                            viewModel.currentLyrics ?: lyricsPack.getAvailableLyrics()!!
-                        ).show(childFragmentManager, "LYRICS")
-                    }
-                    true
-                }
-            }.apply {
-                viewModel.lyricsMenuItem = this
-            }
 
-            rootMenu.add(this) {
-                order = 1
-                title = getString(R.string.action_add_to_favorites)
-                icon = requireContext()
-                    .getTintedDrawable(R.drawable.ic_favorite_border_white_24dp, Color.WHITE) // default state
-                showAsActionFlag = MenuItem.SHOW_AS_ACTION_ALWAYS
-                itemId = R.id.action_toggle_favorite
-                onClick {
-                    val result = toggleFavorite(requireContext(), viewModel.currentSong)
-                    if (viewModel.currentSong.id == MusicPlayerRemote.currentSong.id && result) {
-                        playerAlbumCoverFragment.showHeartAnimation()
-                        viewModel.updateFavoriteState(viewModel.currentSong)
-                    }
-                    true
-                }
-            }.apply {
-                favoriteMenuItem = this
-            }
         }
     }
 
