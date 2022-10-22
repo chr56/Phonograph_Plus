@@ -26,12 +26,11 @@ import legacy.phonograph.LegacyPlaylistsUtil
 import lib.phonograph.cab.ToolbarCab
 import lib.phonograph.cab.createToolbarCab
 import mt.tint.setActivityToolbarColorAuto
-import mt.tint.viewtint.applyOverflowMenuTint
 import mt.util.color.primaryTextColor
 import mt.util.color.secondaryDisabledTextColor
 import mt.util.color.secondaryTextColor
 import player.phonograph.R
-import player.phonograph.actions.injectPlaylistDetail
+import player.phonograph.actions.applyToPlaylistDetailToolbar
 import player.phonograph.adapter.base.MultiSelectionCabController
 import player.phonograph.adapter.display.PlaylistSongAdapter
 import player.phonograph.databinding.ActivityPlaylistDetailBinding
@@ -202,7 +201,7 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandle
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         val playlist: Playlist = model.playlist.value ?: FilePlaylist()
         val iconColor = primaryTextColor(primaryColor)
-        injectPlaylistDetail(menu, this, playlist, iconColor)
+        applyToPlaylistDetailToolbar(menu, this, playlist, iconColor)
         return super.onCreateOptionsMenu(menu)
     }
 

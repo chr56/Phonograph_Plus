@@ -12,6 +12,7 @@ import player.phonograph.R
 import player.phonograph.dialogs.AddToPlaylistDialog
 import player.phonograph.dialogs.SongDetailDialog
 import player.phonograph.dialogs.SongShareDialog
+import player.phonograph.interfaces.PaletteColorHolder
 import player.phonograph.mediastore.GenreLoader
 import player.phonograph.model.Album
 import player.phonograph.model.Artist
@@ -24,6 +25,8 @@ import player.phonograph.service.queue.ShuffleMode
 import player.phonograph.settings.Setting
 import player.phonograph.ui.compose.DetailActivity
 import player.phonograph.ui.dialogs.DeleteSongsDialog
+import util.phonograph.tageditor.AbsTagEditorActivity
+import util.phonograph.tageditor.SongTagEditorActivity
 
 internal fun convertToSongs(selections: List<Any>, context: Context): List<Song> = selections.flatMap {
     when (it) {
@@ -75,6 +78,17 @@ fun gotoDetail(activity: FragmentActivity, song: Song): Boolean {
 
 fun share(context: Context, song: Song): Boolean {
     context.startActivity(Intent.createChooser(SongShareDialog.createShareSongFileIntent(song, context), null))
+    return true
+}
+
+
+fun tagEditor(context: Context, song: Song): Boolean {
+    context.startActivity(Intent(context, SongTagEditorActivity::class.java).apply {
+        putExtra(AbsTagEditorActivity.EXTRA_ID, song.id)
+        (context as? PaletteColorHolder)?.let {
+            putExtra(AbsTagEditorActivity.EXTRA_PALETTE, it.paletteColor)
+        }
+    })
     return true
 }
 

@@ -6,7 +6,6 @@ package player.phonograph.actions
 
 import android.app.Activity
 import android.content.Context
-import android.content.Intent
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -15,15 +14,11 @@ import com.github.chr56.android.menu_dsl.attach
 import com.github.chr56.android.menu_dsl.menuItem
 import com.github.chr56.android.menu_dsl.submenu
 import player.phonograph.R
-import player.phonograph.interfaces.PaletteColorHolder
 import player.phonograph.model.Song
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.util.PathFilterUtil
 import player.phonograph.util.NavigationUtil
 import player.phonograph.util.RingtoneManager
-import util.phonograph.tageditor.AbsTagEditorActivity
-import util.phonograph.tageditor.AbsTagEditorActivity.EXTRA_PALETTE
-import util.phonograph.tageditor.SongTagEditorActivity
 
 fun applyToPopupMenu(
     context: Context,
@@ -154,14 +149,4 @@ private inline fun activity(context: Context, block: (Activity) -> Boolean): Boo
     block(context)
 } else {
     false
-}
-
-fun tagEditor(context: Context, song: Song): Boolean {
-    context.startActivity(Intent(context, SongTagEditorActivity::class.java).apply {
-        putExtra(AbsTagEditorActivity.EXTRA_ID, song.id)
-        (context as? PaletteColorHolder)?.let {
-            putExtra(EXTRA_PALETTE, it.paletteColor)
-        }
-    })
-    return true
 }

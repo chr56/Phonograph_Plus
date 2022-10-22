@@ -2,7 +2,6 @@ package player.phonograph.adapter
 
 import android.graphics.PorterDuff
 import android.view.LayoutInflater
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupMenu
@@ -11,8 +10,8 @@ import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.FragmentActivity
 import mt.util.color.resolveColor
 import player.phonograph.R
-import player.phonograph.actions.applyToPlaylistsToolbar
-import player.phonograph.actions.injectPlaylistAdapter
+import player.phonograph.actions.applyToToolbar
+import player.phonograph.actions.applyToPopupMenu
 import player.phonograph.adapter.base.MediaEntryViewHolder
 import player.phonograph.adapter.base.MultiSelectAdapter
 import player.phonograph.adapter.base.MultiSelectionCabController
@@ -99,7 +98,7 @@ class PlaylistAdapter(
 
     override val multiSelectMenuHandler: ((Toolbar) -> Boolean)
         get() = {
-            applyToPlaylistsToolbar(it.menu, activity, checkedList, cabTextColorColor) {
+            applyToToolbar(it.menu, activity, checkedList, cabTextColorColor) {
                 checkAll()
                 true
             }
@@ -129,7 +128,7 @@ class PlaylistAdapter(
                 menu!!.setOnClickListener { view: View? ->
                     val playlist = dataSet[bindingAdapterPosition]
                     PopupMenu(activity, view).apply {
-                        injectPlaylistAdapter(menu, activity, playlist)
+                        applyToPopupMenu(menu, activity, playlist)
                     }.show()
                 }
             }

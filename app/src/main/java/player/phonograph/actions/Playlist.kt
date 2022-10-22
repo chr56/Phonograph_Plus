@@ -29,7 +29,7 @@ import player.phonograph.service.queue.ShuffleMode
 import player.phonograph.util.ImageUtil.getTintedDrawable
 import util.phonograph.m3u.PlaylistsManager
 
-fun injectPlaylistDetail(menu: Menu, context: Context, playlist: Playlist, @ColorInt iconColor: Int) = context.run {
+fun applyToPlaylistDetailToolbar(menu: Menu, context: Context, playlist: Playlist, @ColorInt iconColor: Int) = context.run {
     attach(menu) {
         menuItem {
             title = getString(R.string.action_shuffle_playlist)
@@ -145,7 +145,7 @@ fun injectPlaylistDetail(menu: Menu, context: Context, playlist: Playlist, @Colo
     }
 }
 
-fun injectPlaylistAdapter(menu: Menu, context: Context, playlist: Playlist) = context.run {
+fun applyToPopupMenu(menu: Menu, context: Context, playlist: Playlist) = context.run {
     attach(menu) {
         menuItem {
             title = getString(R.string.action_play)
@@ -216,8 +216,7 @@ fun injectPlaylistAdapter(menu: Menu, context: Context, playlist: Playlist) = co
     }
 }
 
-@JvmName("applyToToolbarPlaylist")
-fun applyToPlaylistsToolbar(
+fun applyToToolbar(
     menu: Menu,
     context: Context,
     playlists: List<Playlist>,
