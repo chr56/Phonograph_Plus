@@ -3,6 +3,7 @@
 **CN**
 
 对比 v0.3.5.2
+- 修复 导入数据库时偶尔出错
 - 移除 黑名单
 - 新增 “路径过滤器“, 支持"排除模式"(黑名单)和"仅包含模式"(白名单), 两者暂时无法同时使用
 - 新增 全新的歌曲详情页面
@@ -15,6 +16,7 @@
 **EN**
 
 Compare to v0.3.5.2
+- Fix: crash when importing databases
 - Remove: Blacklist
 - New: the Path filter, support "exclude mode" (blacklist) and "include mode" (whitelist), currently they can't be enabled at the same time
 - New: Song Details Page
