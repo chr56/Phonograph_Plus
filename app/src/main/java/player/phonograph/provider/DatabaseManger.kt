@@ -7,25 +7,26 @@ package player.phonograph.provider
 import android.content.Context
 import android.net.Uri
 import android.util.Log
-import java.io.*
-import java.lang.IllegalArgumentException
-import java.util.zip.ZipEntry
-import java.util.zip.ZipInputStream
-import java.util.zip.ZipOutputStream
 import player.phonograph.notification.ErrorNotification
-import player.phonograph.provider.DatabaseConstants.PATH_FILTER
 import player.phonograph.provider.DatabaseConstants.FAVORITE_DB
 import player.phonograph.provider.DatabaseConstants.HISTORY_DB
 import player.phonograph.provider.DatabaseConstants.MUSIC_PLAYBACK_STATE_DB
+import player.phonograph.provider.DatabaseConstants.PATH_FILTER
 import player.phonograph.provider.DatabaseConstants.SONG_PLAY_COUNT_DB
 import player.phonograph.util.TimeUtil.currentTimestamp
+import java.io.*
+import java.util.zip.ZipEntry
+import java.util.zip.ZipInputStream
+import java.util.zip.ZipOutputStream
 
 class DatabaseManger(var context: Context) {
 
     fun exportDatabases(uri: Uri): Boolean {
-        return context.contentResolver.openFileDescriptor(uri, "w")?.fileDescriptor?.let { fileDescriptor ->
-            FileOutputStream(fileDescriptor).use {
-                exportDatabasesImpl(it)
+        return context.contentResolver.openFileDescriptor(uri, "w")?.use { parcel ->
+            parcel.fileDescriptor?.let { fileDescriptor ->
+                FileOutputStream(fileDescriptor).use {
+                    exportDatabasesImpl(it)
+                }
             }
         } ?: false
     }
@@ -50,9 +51,11 @@ class DatabaseManger(var context: Context) {
     }
 
     fun importDatabases(uri: Uri): Boolean {
-        return context.contentResolver.openFileDescriptor(uri, "r")?.fileDescriptor?.let { fd ->
-            FileInputStream(fd).use {
-                importDatabaseImpl(it, context.cacheDir)
+        return context.contentResolver.openFileDescriptor(uri, "r")?.use { parcel ->
+            parcel.fileDescriptor?.let { fd ->
+                FileInputStream(fd).use {
+                    importDatabaseImpl(it, context.cacheDir)
+                }
             }
         } ?: false
     }
@@ -115,19 +118,23 @@ class DatabaseManger(var context: Context) {
     private fun extractZipFile(source: ZipInputStream, destinationDir: File) {
         var entry: ZipEntry?
         while (source.nextEntry.also { entry = it } != null) {
-            if (entry == null) throw IOException("Zip file has no entry")
-            if (!entry!!.isDirectory) {
-                val file = File(destinationDir, entry!!.name)
-                FileOutputStream(file).use { fos ->
-                    BufferedOutputStream(fos).use { outputStream ->
-                        var len: Int
-                        val bytes = ByteArray(1024)
-                        while (source.read(bytes).also { len = it } != -1) {
-                            outputStream.write(bytes, 0, len)
+            entry?.apply {
+                if (!isDirectory) {
+                    val file = File(destinationDir, name)
+                    FileOutputStream(file).use { fos ->
+                        BufferedOutputStream(fos).use { outputStream ->
+                            var len: Int
+                            val bytes = ByteArray(1024)
+                            while (source.read(bytes).also { len = it } != -1) {
+                                outputStream.write(bytes, 0, len)
+                            }
                         }
                     }
+                } else {
+                    Log.w(TAG, "${this.name} is directory!!")
                 }
-            } // todo else
+            }
+
         }
     }
 
