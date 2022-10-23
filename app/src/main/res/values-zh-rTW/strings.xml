@@ -326,6 +326,14 @@
     <string name="are_you_sure">是否確定？</string>
     <string name="original_author">原作者</string>
     <string name="plus_author">Phonograph Plus 作者</string>
+    <string name="comment">註釋</string>
+    <string name="misc">雜項</string>
+    <string name="pref_title_use_legacy_detail_dialog">使用舊版詳情對話方塊</string>
+    <string name="pref_summary_use_legacy_detail_dialog">使用舊版歌曲詳情對話方塊而不是新頁面</string>
+    <string name="composer">作曲</string>
+    <string name="lyricist">作詞</string>
+    <string name="music_tags">音樂標籤</string>
+    <string name="file">檔案</string>
     <string name="pref_header_compatibility">相容性</string>
     <string name="pref_title_use_legacy_favorite_playlist_impl">使用舊式歌曲收藏機制</string>
     <string name="pref_summary_use_legacy_favorite_playlist_impl">開啟後，收藏的歌曲將加至外部的m3u播放列表，而不是存於應用內部（需要手動匯出）</string>
