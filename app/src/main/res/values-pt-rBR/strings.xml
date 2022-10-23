@@ -5,7 +5,7 @@
     <string name="the_audio_file">O arquivo de áudio</string>
     <string name="action_set_as_ringtone">Definir como toque de chamada</string>
     <string name="action_share">Compartilhar</string>
-    <string name="action_settings">"Configurações"</string>
+    <string name="action_settings">Configurações</string>
     <string name="action_grant">Confirmar</string>
     <string name="action_about">Sobre</string>
     <string name="action_add_to_favorites">Adicionar aos favoritos</string>
@@ -40,7 +40,7 @@
     <string name="genre">Gênero</string>
     <string name="album_artist">Artista do álbum</string>
     <string name="year">Ano</string>
-    <string name="track_hint">"Música (2 para a música 2 ou 3004 para a música 4 do CD3)"</string>
+    <string name="track_hint">Música (2 para a música 2 ou 3004 para a música 4 do CD3)</string>
     <string name="lyrics">Letra</string>
     <string name="album_or_artist_empty">O título ou artista está vazio.</string>
     <string name="saving_changes">Salvando alterações</string>
@@ -57,7 +57,7 @@
     <string name="label_playing_queue">Fila de reprodução</string>
     <string name="no_results">Sem resultados</string>
     <string name="updating">Atualizando…</string>
-    <string name="added_title_to_playing_queue">"Adicionado 1 título à lista de reprodução"</string>
+    <string name="added_title_to_playing_queue">Adicionado 1 título à lista de reprodução</string>
     <string name="added_x_titles_to_playing_queue">Adicionados %1$d títulos á fila de reprodução</string>
     <string name="action_remove_from_playlist">Remover da playlist</string>
     <string name="action_grid_size">Tamanho da grade</string>
@@ -69,7 +69,7 @@
     <string name="rename_playlist_title">Renomear lista de reprodução</string>
     <string name="save_playlist_title">Salvar como arquivo</string>
     <string name="save_playlists_title">Salvar como arquivos</string>
-    <string name="add_playlist_title">"Adicionar à lista de reprodução"</string>
+    <string name="add_playlist_title">Adicionar à lista de reprodução</string>
     <string name="select_all_title">Selecionar tudo</string>
     <string name="action_shuffle_all">Misturar todas</string>
     <string name="action_shuffle_album">Misturar álbum</string>
@@ -114,7 +114,7 @@
     <string name="pref_title_remember_last_tab">Lembrar última aba</string>
     <string name="pref_title_remember_shuffle">Memorizar aleatorização</string>
     <string name="no_equalizer">Nenhum equalizador encontrado.</string>
-    <string name="no_audio_ID">"Sem identificação de áudio, reproduza algo e tente novamente."</string>
+    <string name="no_audio_ID">Sem identificação de áudio, reproduza algo e tente novamente.</string>
     <string name="delete_action">Excluir</string>
     <string name="clear_action">Limpar</string>
     <string name="remove_action">Remover</string>
@@ -135,8 +135,8 @@
     <string name="pref_summary_album_art_on_lockscreen">Usa a capa do álbum de músicas atuais como papel de parede da tela de bloqueio.</string>
     <string name="pref_summary_blurred_album_art">Desfoca a capa do álbum na tela de bloqueio. Pode causar problemas com aplicativos e widgets de terceiros.</string>
     <string name="pref_summary_classic_notification">Usar o design de notificação clássico.</string>
-    <string name="pref_summary_colored_notification">"Colore a notifica\u00e7\u00e3o na cor vibrante da capa do \u00e1lbum."</string>
-    <string name="pref_summary_gapless_playback">"Pode causar problemas de reprodução em alguns dispositivos."</string>
+    <string name="pref_summary_colored_notification">Colore a notifica\u00e7\u00e3o na cor vibrante da capa do \u00e1lbum.</string>
+    <string name="pref_summary_gapless_playback">Pode causar problemas de reprodução em alguns dispositivos.</string>
     <string name="pref_summary_ignore_media_store_artwork">Pode aumentar a qualidade da capa do álbum, mas reduz o tempo de carregamento da imagem. Ative isso somente se você tiver problemas com capas de baixa resolução.</string>
     <string name="pref_summary_colored_navigation_bar">Colore a barra de navegação na cor principal.</string>
     <string name="pref_summary_colored_app_shortcuts">Colore os atalhos do aplicativo na cor principal.</string>
@@ -144,7 +144,7 @@
     <string name="pref_summary_synchronized_lyrics_show">Atualmente, apenas as letras sincronizadas no formato LRC são suportadas. Incorporado ou como um arquivo separado.</string>
     <string name="pref_summary_remember_last_tab">Ir para a última aba aberta ao iniciar</string>
     <string name="pref_summary_remember_shuffle">O modo aleatório permanece ativado ao selecionar uma nova lista de músicas</string>
-    <string name="could_not_download_album_cover">"N\u00e3o foi poss\u00edvel baixar a capa do \u00e1lbum correspondente."</string>
+    <string name="could_not_download_album_cover">N\u00e3o foi poss\u00edvel baixar a capa do \u00e1lbum correspondente.</string>
     <string name="search_hint">Pesquisar na sua biblioteca…</string>
     <string name="favorites">Favoritos</string>
     <string name="last_added">Adicionada recentemente</string>
@@ -187,7 +187,7 @@
     <string name="up_next">A seguir</string>
     <string name="pref_title_now_playing_screen_appearance">Aparência</string>
     <string name="intro_label">Introdução</string>
-    <string name="welcome_to_phonograph">"Seja bem-vindo ao Phonograph, um lindo e leve player de música para Android. "</string>
+    <string name="welcome_to_phonograph">Seja bem-vindo ao Phonograph, um lindo e leve player de música para Android. </string>
     <string name="open_playing_queue_instruction">Arraste para cima o cartão da tela de reproduzindo agora para mostrar a fila de reprodução completa.</string>
     <string name="rearrange_playing_queue_instruction">Reorganizar a fila de reprodução arrastando uma música de seu número de música.</string>
     <string name="library">Biblioteca</string>
@@ -264,7 +264,6 @@
     <string name="Permission_denied">Permissão negada!</string>
     <string name="err_permission_storage">Permissão de Armazenamento</string>
     <string name="add_blacklist">Deseja adicionar isso à lista negra?</string>
-    <!-- use for tag -->
     <string name="other_information">Outro</string>
     <string name="more_actions">Mais</string>
     <string name="not_available_now">não disponível agora</string>
