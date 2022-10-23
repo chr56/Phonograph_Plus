@@ -5,7 +5,7 @@
     <string name="the_audio_file">ملف الصوت</string>
     <string name="action_set_as_ringtone">تعيين كنغمة الرنين</string>
     <string name="action_share">مشاركة</string>
-    <string name="action_settings">"الإعدادات"</string>
+    <string name="action_settings">الإعدادات</string>
     <string name="action_grant">منح</string>
     <string name="action_about">حول</string>
     <string name="action_add_to_favorites">إضافة إلى المفضلة</string>
@@ -40,7 +40,7 @@
     <string name="genre">النوع</string>
     <string name="album_artist">فنان الألبوم</string>
     <string name="year">السنة</string>
-    <string name="track_hint">"المقطع (2 للمقطع 2 أو 3004 لـCD3 للمقطع 4)"</string>
+    <string name="track_hint">المقطع (2 للمقطع 2 أو 3004 لـCD3 للمقطع 4)</string>
     <string name="lyrics">كلمات الأغاني</string>
     <string name="album_or_artist_empty">حقل العنوان أو الفنان فارغ.</string>
     <string name="saving_changes">جار حفظ التغييرات</string>
@@ -57,7 +57,7 @@
     <string name="label_playing_queue">قائمة التشغيل</string>
     <string name="no_results">لا توجد نتائج</string>
     <string name="updating">جار التحديث...</string>
-    <string name="added_title_to_playing_queue">"تمت إضافة عنوان واحد إلى قائمة التشغيل."</string>
+    <string name="added_title_to_playing_queue">تمت إضافة عنوان واحد إلى قائمة التشغيل.</string>
     <string name="added_x_titles_to_playing_queue">تمت إضافة %1$d عناوين إلى قائمة التشغيل.</string>
     <string name="action_remove_from_playlist">إزالة من قائمة التشغيل</string>
     <string name="action_grid_size">حجم الشبكة</string>
@@ -69,7 +69,7 @@
     <string name="rename_playlist_title">إعادة تسمية قائمة التشغيل</string>
     <string name="save_playlist_title">حفظ كملف</string>
     <string name="save_playlists_title">حفظ كملفات</string>
-    <string name="add_playlist_title">"إضافة إلى قائمة التشغيل"</string>
+    <string name="add_playlist_title">إضافة إلى قائمة التشغيل</string>
     <string name="select_all_title">تحديد الكل</string>
     <string name="action_shuffle_all">خلط الكل</string>
     <string name="action_shuffle_album">خلط الألبوم</string>
@@ -84,10 +84,10 @@
     <string name="only_on_wifi">فقط على Wi-Fi</string>
     <string name="never">أبداً</string>
     <string name="today">اليوم</string>
-    <string name="this_week">هذا الأسبوع</string>
     <string name="past_seven_days">آخر 7 أيام</string>
-    <string name="this_month">هذا الشهر</string>
     <string name="past_three_months">الأشهر الثلاثة السابقة</string>
+    <string name="this_week">هذا الأسبوع</string>
+    <string name="this_month">هذا الشهر</string>
     <string name="this_year">هذه السنة</string>
     <string name="equalizer">المعادل</string>
     <string name="pref_header_colors">الألوان</string>
@@ -114,7 +114,7 @@
     <string name="pref_title_remember_last_tab">تذكر آخر لسان</string>
     <string name="pref_title_remember_shuffle">تذكر الخلط</string>
     <string name="no_equalizer">لا يوجد معدل صوت</string>
-    <string name="no_audio_ID">"شغل أغنية أولاً، ثم حاول مرة أخرى."</string>
+    <string name="no_audio_ID">شغل أغنية أولاً، ثم حاول مرة أخرى.</string>
     <string name="delete_action">حذف</string>
     <string name="clear_action">مسح</string>
     <string name="remove_action">إزالة</string>
@@ -135,8 +135,8 @@
     <string name="pref_summary_album_art_on_lockscreen">استعمال غلاف ألبوم الأغنية الحالية كخلفية لشاشة القفل.</string>
     <string name="pref_summary_blurred_album_art">تغييم غلاف الألبوم في شاشة القفل. قد يسبب مشاكل مع التطبيقات والأدوات الذكية من طرف ثالث.</string>
     <string name="pref_summary_classic_notification">استعمال تصميم الإشعار الكلاسيكي.</string>
-    <string name="pref_summary_colored_notification">"\u062a\u0644\u0648\u064a\u0646 \u0627\u0644\u0625\u0634\u0639\u0627\u0631 \u0628\u0644\u0648\u0646 \u063a\u0644\u0627\u0641 \u0627\u0644\u0623\u0644\u0628\u0648\u0645 \u0627\u0644\u0628\u0627\u0631\u0632."</string>
-    <string name="pref_summary_gapless_playback">"قد يسبب مشاكل في التشغيل على بعض الأجهزة."</string>
+    <string name="pref_summary_colored_notification">\u062a\u0644\u0648\u064a\u0646 \u0627\u0644\u0625\u0634\u0639\u0627\u0631 \u0628\u0644\u0648\u0646 \u063a\u0644\u0627\u0641 \u0627\u0644\u0623\u0644\u0628\u0648\u0645 \u0627\u0644\u0628\u0627\u0631\u0632.</string>
+    <string name="pref_summary_gapless_playback">قد يسبب مشاكل في التشغيل على بعض الأجهزة.</string>
     <string name="pref_summary_ignore_media_store_artwork">قد يرفع جودة أغلفة الألبومات لكنه يسبب بطئاً في زمن تحميل الصور. قم بتفعيل هذا الخيار إذا كانت لديك مشاكل مع الصور منخفضة الدقة.</string>
     <string name="pref_summary_colored_navigation_bar">تلوين شريط التنقل باللون الأساسي.</string>
     <string name="pref_summary_colored_app_shortcuts">تلوين اختصارات التطبيق باللون الأساسي.</string>
@@ -144,7 +144,7 @@
     <string name="pref_summary_synchronized_lyrics_show">حالياً كلمات الأغاني المتزامنة بصيغة LRC هي المدعومة فقط. سواء كانت مدمجة أو كملف منفصل.</string>
     <string name="pref_summary_remember_last_tab">الذهاب إلى آخر لسان مفتوح عند التشغيل</string>
     <string name="pref_summary_remember_shuffle">سيبقى وضع الخلط مفعلاً عند اختيار قائمة أغاني جديدة</string>
-    <string name="could_not_download_album_cover">"\u0644\u0645 \u064a\u062a\u0645 \u0627\u0644\u062a\u0645\u0643\u0646 \u0645\u0646 \u062a\u062d\u0645\u064a\u0644 \u063a\u0644\u0627\u0641 \u0623\u0644\u0628\u0648\u0645 \u0645\u0637\u0627\u0628\u0642."</string>
+    <string name="could_not_download_album_cover">\u0644\u0645 \u064a\u062a\u0645 \u0627\u0644\u062a\u0645\u0643\u0646 \u0645\u0646 \u062a\u062d\u0645\u064a\u0644 \u063a\u0644\u0627\u0641 \u0623\u0644\u0628\u0648\u0645 \u0645\u0637\u0627\u0628\u0642.</string>
     <string name="search_hint">البحث في مكتبتك...</string>
     <string name="favorites">المفضلة</string>
     <string name="last_added">المضافة مؤخراً</string>
@@ -187,7 +187,7 @@
     <string name="up_next">التالي</string>
     <string name="pref_title_now_playing_screen_appearance">المظهر</string>
     <string name="intro_label">المقدمة</string>
-    <string name="welcome_to_phonograph">"مرحباً بك في Phonograph، مشغل موسيقى جميل وخفيف للأندرويد. "</string>
+    <string name="welcome_to_phonograph">مرحباً بك في Phonograph، مشغل موسيقى جميل وخفيف للأندرويد. </string>
     <string name="open_playing_queue_instruction">اسحب البطاقة في شاشة \"يتم تشغيله الآن\" لإظهار قائمة التشغيل بالكامل.</string>
     <string name="rearrange_playing_queue_instruction">إعادة ترتيب قائمة التشغيل عبر سحب الأغاني من أرقامها.</string>
     <string name="library">المكتبة</string>
@@ -237,7 +237,7 @@
     <string name="add_action">إضافة</string>
     <string name="blacklist">القائمة السوداء</string>
     <string name="remove_from_blacklist">إزالة من القائمة السوداء</string>
-    <string name="do_you_want_to_remove_from_the_blacklist"><![CDATA[هل تريد إزالة <b>%1$s</b> من القائمة السوداء؟]]></string>
+    <string name="do_you_want_to_remove_from_the_blacklist">هل تريد إزالة <b>%1$s</b> من القائمة السوداء؟</string>
     <string name="clear_blacklist">مسح القائمة السوداء</string>
     <string name="do_you_want_to_clear_the_blacklist">هل تريد مسح القائمة السوداء؟</string>
     <string name="pref_summary_blacklist">سيتم إخفاء محتوى المجلدات التي في القائمة السوداء من مكتبتك.</string>
