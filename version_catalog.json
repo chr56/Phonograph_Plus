@@ -1,17 +1,19 @@
 {
   "versions": [
     {
-      "channel": "preview",
-      "versionName": "0.4-beta",
-      "versionCode": 399,
-      "date": 1666389600,
-      "link": [{
-        "name": "Github Release",
-        "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/preview_0.4-beta"
-      }],
+      "channel": "stable",
+      "versionName": "0.4.0",
+      "versionCode": 400,
+      "date": 1666476000,
+      "link": [
+        {
+          "name": "Github Release",
+          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/v0.4.0"
+        }
+      ],
       "releaseNote": {
-        "zh-cn": "<ol><li>修复 导入数据库时偶尔出错</li><li>移除 黑名单</li><li>新增 “路径过滤器“, 支持&quot;排除模式&quot;(黑名单)和&quot;仅包含模式&quot;(白名单), 两者暂时无法同时使用</li><li>新增 全新的歌曲详情页面</li><li>新增 全新的更详细的更新对话框等</li><li>改进 菜单(几乎所有列表皆提供&quot;播放&quot;,&quot;随机播放&quot;,&quot;下一个播放&quot;,&quot;加入列表&quot;等)</li><li>开发 重构媒体读取</li><li>开发 引入 Jetpack Compose</li><li>其他 APK体积膨胀, 不再”小而美“</li></ol>",
-        "en": "<ol><li>Fix: crash when importing databases</li><li>Remove: Blacklist</li><li>New: the Path filter, support &quot;exclude mode&quot; (blacklist) and &quot;include mode&quot; (whitelist),currently they can not be enabled at the same time</li><li>New: Song Details Page</li><li>New: brand new and detailed Upgrade Dialog and more</li><li>Improve: menus (almost all lists provide &quot;Play&quot;, &quot;Shuffle Play&quot;, &quot;Play Next&quot;,&quot;Add To Queues&quot;, etc.)</li><li>Development: Refactor media reading</li><li>Development: Introduce Jetpack Compose</li><li>Other: APK is bloated, no longer &quot;tiny but versatile&quot;</li></ol>"
+        "zh-cn": "Phonograph Plus 更名一周年纪念版<br/><ol><li>翻译 清理各语言翻译</li><li>翻译 更新俄语（Photon Gilbert），土耳其语（Erdem Özdemir）</li><li>修复 导入数据库时偶尔出错</li><li>移除 黑名单</li><li>新增 “路径过滤器“, 支持&quot;排除模式&quot;(黑名单)和&quot;仅包含模式&quot;(白名单), 两者暂时无法同时使用</li><li>新增 全新的歌曲详情页面</li><li>新增 全新的更详细的更新对话框等</li><li>改进 菜单(几乎所有列表皆提供&quot;播放&quot;,&quot;随机播放&quot;,&quot;下一个播放&quot;,&quot;加入列表&quot;等)</li><li>开发 重构媒体读取</li><li>开发 引入 Jetpack Compose</li><li>其他 APK体积膨胀, 不再”小而美“</li></ol",
+        "en": "Phonograph Plus 1st Renaming Anniversary Version<br/><ol><li>Translation: update Russian (by Photon Gilbert)，Turkish(by Erdem Özdemir)</li><li>Translation: clean up translations for all language</li><li>Fix: crash when importing databases</li><li>Remove: Blacklist</li><li>New: the Path filter, support &quot;exclude mode&quot; (blacklist) and &quot;include mode&quot; (whitelist),currently they can not be enabled at the same time</li><li>New: Song Details Page</li><li>New: brand new and detailed Upgrade Dialog and more</li><li>Improve: menus (almost all lists provide &quot;Play&quot;, &quot;Shuffle Play&quot;, &quot;Play Next&quot;,&quot;Add To Queues&quot;, etc.)</li><li>Development: Refactor media reading</li><li>Development: Introduce Jetpack Compose</li><li>Other: APK is bloated, no longer &quot;tiny but versatile&quot;</li></ol>"
       }
     },
     {
@@ -28,54 +30,6 @@
       "releaseNote": {
         "zh-cn": "<b>0.3.5.2</b>\n<ol><li>修复 因图片缓存配置错误而在主播放器出现的低像素图片</li><li>修复 扫描媒体对话框因加载结束前提前退出导致崩溃</li></ol>",
         "en": "<ol><li>Fix: Low pixel images appearing in the main player due to image cache policy misconfiguration</li><li>Fix: Scan Media Dialog crashes if early exit before the loading finished</li></ol>"
-      }
-    },
-    {
-      "channel": "lts",
-      "versionName": "0.3.5.1-LTS",
-      "versionCode": 314,
-      "date": 1665158400,
-      "link": [
-        {
-          "name": "Github Release",
-          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/v0.3.5.1-LTS"
-        }
-      ],
-      "releaseNote": {
-        "zh-cn": "\n\n<b>0.3.5.1</b> 2022.10.8\n<ol><li>修复 删除对话框不消失删除结果</li><li>修复 使用旧式方法浏览文件时无法解析歌曲</li><li>修复 歌曲内嵌图片过大时引起崩溃</li><li>修复 调整应用窗口大小时崩溃</li></ol>\n\n<b>0.3.5</b> 2022.10.6\n<ol><li>翻译 更新日语(aorinngo), 西班牙语(Armando de Nazareth)</li><li>修复 删除对话框无法滚动</li></ol>",
-        "en": "<ol><li>Fix: randomly refresh playing queue on opening</li><li>Improve: move swapping-queue operations (e.g. shuffle all, play a playlist, play an album/artist) tobackground, tofix getting frozen when changing queue especially for users having to many song</li><li>Improve: designate a rational images size when loading cover artworks, to try to not crash app if the imageis toolarge</li></ol>"
-      }
-    },
-    {
-      "channel": "lts",
-      "versionName": "0.2.6.1",
-      "versionCode": 226,
-      "date": 1656518400,
-      "link": [
-        {
-          "name": "Github Release",
-          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/v0.2.6.1"
-        }
-      ],
-      "releaseNote": {
-        "zh-cn": "翻译 更新 葡萄牙语(巴西)翻译 (Luiz-bro), 印度尼西亚语翻译 (Raven Ell (ravenel)), 荷兰语翻译 (Blinkin), 意大利语翻译 (gdonisi)\n\n0.2.x 版本停更不再支持。",
-        "en": "Translations: Update Portuguese (Brazil) (by Luiz-bro), Indonesian (by Raven Ell ( ravenel)), Dutch (by Blinkin), Italian (by gdonisi)\n\n\nv0.2.x no longer would receive new features."
-      }
-    },
-    {
-      "channel": "stable",
-      "versionName": "0.3.5.2-LTS",
-      "versionCode": 315,
-      "date": 1665417600,
-      "link": [
-        {
-          "name": "Github Release",
-          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/v0.3.5.2-LTS"
-        }
-      ],
-      "releaseNote": {
-        "zh-cn": "见 LTS",
-        "en": "See LTS"
       }
     }
   ]

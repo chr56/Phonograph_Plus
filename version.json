@@ -1,19 +1,19 @@
 {
-    "version": "0.3.5.2-LTS",
-    "versionCode": "315",
+    "version": "0.4.0",
+    "versionCode": "400",
     "zh-cn": {
-        "logSummary": "\n\n<b>0.3.5.2</b> 2022.10.11\n<ol><li>修复 因图片缓存配置错误而在主播放器出现的低像素图片</li><li>修复 扫描媒体对话框因加载结束前提前退出导致崩溃</li></ol>\n\n<b>0.3.5.1</b> 2022.10.8\n<ol><li>修复 删除对话框不消失删除结果</li><li>修复 使用旧式方法浏览文件时无法解析歌曲</li><li>修复 歌曲内嵌图片过大时引起崩溃</li><li>修复 调整应用窗口大小时崩溃</li></ol>\n\n<b>0.3.5</b> 2022.10.6\n<ol><li>翻译 更新日语(aorinngo), 西班牙语(Armando de Nazareth)</li><li>修复 删除对话框无法滚动</li></ol>\n"
+        "logSummary": "\n\n<b>0.4.0</b> 2022.10.23\n\n Phonograph Plus 更名一周年纪念版<br/>一年前的今天，正式更名为Phonograph Plus，并发布了第一个版本<a href=\"https://github.com/chr56/Phonograph_Plus/releases/tag/v0.0.1)\">v.0.0.1</a><br><ol><li>翻译 清理各语言翻译</li><li>翻译 更新俄语（Photon Gilbert），土耳其语（Erdem Özdemir）</li><li>修复 导入数据库时偶尔出错</li><li>移除 黑名单</li><li>新增 “路径过滤器“, 支持&quot;排除模式&quot;(黑名单)和&quot;仅包含模式&quot;(白名单), 两者暂时无法同时使用</li><li>新增 全新的歌曲详情页面</li><li>新增 全新的更详细的更新对话框等</li><li>改进 菜单(几乎所有列表皆提供&quot;播放&quot;,&quot;随机播放&quot;,&quot;下一个播放&quot;,&quot;加入列表&quot;等)</li><li>开发 重构媒体读取</li><li>开发 引入 Jetpack Compose</li><li>其他 APK体积膨胀, 不再”小而美“</li></ol>"
     },
     "en": {
-        "logSummary": "n\n<b>0.3.5.2</b> 2022.10.11\n<ol><li>Fix: Low pixel images appearing in the main player due to image cache policy misconfiguration</li><li>Fix: Scan Media Dialog crashes if early exit before the loading finished</li></ol>\n\n<b>0.3.5.1</b> 2022.10.8\n<ol><li>Fix: randomly refresh playing queue on opening</li><li>Improve: move swapping-queue operations (e.g. shuffle all, play a playlist, play an album/artist) tobackground, tofix getting frozen when changing queue especially for users having to many song</li><li>Improve: designate a rational images size when loading cover artworks, to try to not crash app if the imageis toolarge</li></ol>\n\n<b>0.3.5</b> 2022.10.6\n<ol><li>Translation: update Japanese (by aorinngo), Spanish (by Armando de Nazareth)</li><li>Fix: could not scroll Delete Dialog</li></ol>\n"
+        "logSummary": "\n\n<b>0.4.0</b> 2022.10.23 \n\n Phonograph Plus 1st Renaming Anniversary Version<br/>One year ago, first canonical stable Phonograph Plus version<a href=\"https://github.com/chr56/Phonograph_Plus/releases/tag/v0.0.1)\">v.0.0.1</a> was released.<br><ol><li>Translation: update Russian (by Photon Gilbert)，Turkish(by Erdem Özdemir)</li><li>Translation: clean up translations for all language</li><li>Fix: crash when importing databases</li><li>Remove: Blacklist</li><li>New: the Path filter, support &quot;exclude mode&quot; (blacklist) and &quot;include mode&quot; (whitelist),currently they can not be enabled at the same time</li><li>New: Song Details Page</li><li>New: brand new and detailed Upgrade Dialog and more</li><li>Improve: menus (almost all lists provide &quot;Play&quot;, &quot;Shuffle Play&quot;, &quot;Play Next&quot;,&quot;Add To Queues&quot;, etc.)</li><li>Development: Refactor media reading</li><li>Development: Introduce Jetpack Compose</li><li>Other: APK is bloated, no longer &quot;tiny but versatile&quot;</li></ol>"
     },
     "downloadSources": [
-        "Release: Github(v0.3.5.2-LTS)",
-        "Release(LTS): Github(v0.2.6.1)"
+        "Release: Github(v0.4.0)",
+        "Release(LTS): Github(v0.3.5.2-LTS)"
     ],
     "downloadUris": [
-        "https://github.com/chr56/Phonograph_Plus/releases/tag/v0.3.5.2-LTS",
-        "https://github.com/chr56/Phonograph_Plus/releases/tag/v0.2.6.1"
+        "https://github.com/chr56/Phonograph_Plus/releases/tag/v0.4.0",
+        "https://github.com/chr56/Phonograph_Plus/releases/tag/v0.3.5.2-LTS"
     ],
     "logSummary": "\n<b>请更新至新版本(至少高于v0.1.1), 此版本无法读取新更新日志\nUpdate Please (as least to version v0.1.1)! This version can not be read this changelogs.</b>"
 }
