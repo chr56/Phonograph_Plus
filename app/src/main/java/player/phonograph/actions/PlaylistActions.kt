@@ -19,7 +19,7 @@ import androidx.fragment.app.FragmentActivity
 import android.content.Context
 
 fun Playlist.actionPlay(context: Context): Boolean =
-    getSongs(context).actionPlayQueue(context)
+    getSongs(context).actionPlay(context, ShuffleMode.NONE)
 
 fun Playlist.actionShuffleAndPlay(context: Context) =
     MusicPlayerRemote.playQueueCautiously(getSongs(context), 0, true, ShuffleMode.SHUFFLE)
@@ -46,12 +46,10 @@ fun Playlist.actionDeletePlaylist(activity: FragmentActivity) {
 }
 
 fun List<Playlist>.actionDeletePlaylists(activity: Context): Boolean =
-    if (activity is FragmentActivity) {
+    fragmentActivity(activity) {
         ClearPlaylistDialog.create(this)
-            .show(activity.supportFragmentManager, "CLEAR_PLAYLIST")
+            .show(it.supportFragmentManager, "CLEAR_PLAYLIST")
         true
-    } else {
-        false
     }
 
 fun Playlist.actionSavePlaylist(activity: FragmentActivity) {

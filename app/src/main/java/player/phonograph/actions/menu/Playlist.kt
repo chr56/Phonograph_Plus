@@ -7,14 +7,7 @@ package player.phonograph.actions.menu
 import com.github.chr56.android.menu_dsl.attach
 import com.github.chr56.android.menu_dsl.menuItem
 import player.phonograph.R
-import player.phonograph.actions.actionAddToCurrentQueue
-import player.phonograph.actions.actionAddToPlaylist
-import player.phonograph.actions.actionDeletePlaylist
-import player.phonograph.actions.actionPlay
-import player.phonograph.actions.actionPlayNext
-import player.phonograph.actions.actionRenamePlaylist
-import player.phonograph.actions.actionSavePlaylist
-import player.phonograph.actions.actionShuffleAndPlay
+import player.phonograph.actions.*
 import player.phonograph.model.playlist.FilePlaylist
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.model.playlist.PlaylistType
@@ -27,121 +20,107 @@ import android.content.Context
 import android.view.Menu
 import android.view.MenuItem
 
-fun playlistToolbar(menu: Menu, context: Context, playlist: Playlist, @ColorInt iconColor: Int) = context.run {
-    attach(menu) {
-        menuItem {
-            title = getString(R.string.action_shuffle_playlist)
-            icon = getTintedDrawable(R.drawable.ic_shuffle_white_24dp, iconColor)
-            showAsActionFlag = MenuItem.SHOW_AS_ACTION_ALWAYS
-            onClick {
-                playlist.actionShuffleAndPlay(context)
-                true
-            }
-        }
-        menuItem {
-            title = getString(R.string.action_play)
-            icon = getTintedDrawable(R.drawable.ic_play_arrow_white_24dp, iconColor)
-            showAsActionFlag = MenuItem.SHOW_AS_ACTION_ALWAYS
-            onClick { playlist.actionPlay(context) }
-        }
-
-        menuItem {
-            title = getString(R.string.refresh)
-            icon = getTintedDrawable(R.drawable.ic_refresh_white_24dp, iconColor)
-            itemId = R.id.action_refresh
-            showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
-        }
-
-        menuItem {
-            title = getString(R.string.action_play_next)
-            showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
-            onClick { playlist.actionPlayNext(context) }
-        }
-
-        menuItem {
-            title = getString(R.string.action_add_to_playing_queue)
-            showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
-            onClick { playlist.actionAddToCurrentQueue(context) }
-        }
-        menuItem {
-            title = getString(R.string.action_add_to_playlist)
-            showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
-            onClick {
-                val activity = context as? FragmentActivity
-                if (activity != null) {
-                    playlist.actionAddToPlaylist(activity)
-                    true
-                } else {
-                    false
-                }
-            }
-        }
-
-        // File Playlist
-        if (playlist !is SmartPlaylist) {
+fun playlistToolbar(menu: Menu, context: Context, playlist: Playlist, @ColorInt iconColor: Int) =
+    context.run {
+        attach(menu) {
             menuItem {
-                title = getString(R.string.edit)
-                itemId = R.id.action_edit_playlist
+                title = getString(R.string.action_shuffle_playlist)
+                icon = getTintedDrawable(R.drawable.ic_shuffle_white_24dp, iconColor)
+                showAsActionFlag = MenuItem.SHOW_AS_ACTION_ALWAYS
+                onClick { playlist.actionShuffleAndPlay(context) }
+            }
+            menuItem {
+                title = getString(R.string.action_play)
+                icon = getTintedDrawable(R.drawable.ic_play_arrow_white_24dp, iconColor)
+                showAsActionFlag = MenuItem.SHOW_AS_ACTION_ALWAYS
+                onClick { playlist.actionPlay(context) }
+            }
+
+            menuItem {
+                title = getString(R.string.refresh)
+                icon = getTintedDrawable(R.drawable.ic_refresh_white_24dp, iconColor)
+                itemId = R.id.action_refresh
+                showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
+            }
+
+            menuItem {
+                title = getString(R.string.action_play_next)
                 showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
+                onClick { playlist.actionPlayNext(context) }
+            }
+
+            menuItem {
+                title = getString(R.string.action_add_to_playing_queue)
+                showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
+                onClick { playlist.actionAddToCurrentQueue(context) }
             }
             menuItem {
-                title = getString(R.string.rename_action)
+                title = getString(R.string.action_add_to_playlist)
                 showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
                 onClick {
-                    val activity = context as? FragmentActivity
-                    if (activity != null) {
-                        playlist.actionRenamePlaylist(activity)
+                    fragmentActivity(context) {
+                        playlist.actionAddToPlaylist(it)
                         true
-                    } else {
-                        false
                     }
                 }
             }
-        }
 
-        // Resettable
-        if (playlist is ResettablePlaylist) {
-            menuItem {
-                title = getString(
-                    if (playlist is FilePlaylist) R.string.delete_action else R.string.clear_action
-                )
-                showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
-                onClick {
-                    val activity = context as? FragmentActivity
-                    if (activity != null) {
-                        playlist.actionDeletePlaylist(activity)
-                        true
-                    } else {
-                        false
+            // File Playlist
+            if (playlist !is SmartPlaylist) {
+                menuItem {
+                    title = getString(R.string.edit)
+                    itemId = R.id.action_edit_playlist
+                    showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
+                }
+                menuItem {
+                    title = getString(R.string.rename_action)
+                    showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
+                    onClick {
+                        fragmentActivity(context) {
+                            playlist.actionRenamePlaylist(it)
+                            true
+                        }
                     }
                 }
             }
-        }
 
-        menuItem {
-            title = getString(R.string.save_playlist_title)
-            showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
-            onClick {
-                val activity = context as? FragmentActivity
-                if (activity != null) {
-                    playlist.actionSavePlaylist(activity)
-                    true
-                } else {
-                    false
+            // Resettable
+            if (playlist is ResettablePlaylist) {
+                menuItem {
+                    title = getString(
+                        if (playlist is FilePlaylist) R.string.delete_action else R.string.clear_action
+                    )
+                    showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
+                    onClick {
+                        fragmentActivity(context) {
+                            playlist.actionDeletePlaylist(it)
+                            true
+                        }
+                    }
                 }
             }
-        }
 
-        // shortcut
-        if (playlist.type == PlaylistType.LAST_ADDED) {
             menuItem {
-                itemId = R.id.action_setting_last_added_interval
-                title = getString(R.string.pref_title_last_added_interval)
-                icon = getTintedDrawable(R.drawable.ic_timer_white_24dp, iconColor)
+                title = getString(R.string.save_playlist_title)
+                showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
+                onClick {
+                    fragmentActivity(context) {
+                        playlist.actionSavePlaylist(it)
+                        true
+                    }
+                }
+            }
+
+            // shortcut
+            if (playlist.type == PlaylistType.LAST_ADDED) {
+                menuItem {
+                    itemId = R.id.action_setting_last_added_interval
+                    title = getString(R.string.pref_title_last_added_interval)
+                    icon = getTintedDrawable(R.drawable.ic_timer_white_24dp, iconColor)
+                }
             }
         }
     }
-}
 
 fun playlistPopupMenu(menu: Menu, context: Context, playlist: Playlist) = context.run {
     attach(menu) {
@@ -160,12 +139,9 @@ fun playlistPopupMenu(menu: Menu, context: Context, playlist: Playlist) = contex
         menuItem {
             title = getString(R.string.add_playlist_title)
             onClick {
-                val activity = context as? FragmentActivity
-                if (activity != null) {
-                    playlist.actionAddToPlaylist(activity)
+                fragmentActivity(context) {
+                    playlist.actionAddToPlaylist(it)
                     true
-                } else {
-                    false
                 }
             }
         }
@@ -173,12 +149,9 @@ fun playlistPopupMenu(menu: Menu, context: Context, playlist: Playlist) = contex
             menuItem {
                 title = getString(R.string.rename_action)
                 onClick {
-                    val activity = context as? FragmentActivity
-                    if (activity != null) {
-                        playlist.actionRenamePlaylist(activity)
+                    fragmentActivity(context) {
+                        playlist.actionRenamePlaylist(it)
                         true
-                    } else {
-                        false
                     }
                 }
             }
@@ -189,12 +162,9 @@ fun playlistPopupMenu(menu: Menu, context: Context, playlist: Playlist) = contex
                     if (playlist is FilePlaylist) getString(R.string.delete_action)
                     else getString(R.string.clear_action)
                 onClick {
-                    val activity = context as? FragmentActivity
-                    if (activity != null) {
-                        playlist.actionDeletePlaylist(activity)
+                    fragmentActivity(context){
+                        playlist.actionDeletePlaylist(it)
                         true
-                    } else {
-                        false
                     }
                 }
             }
@@ -202,12 +172,9 @@ fun playlistPopupMenu(menu: Menu, context: Context, playlist: Playlist) = contex
         menuItem {
             title = getString(R.string.save_playlist_title)
             onClick {
-                val activity = context as? FragmentActivity
-                if (activity != null) {
-                    playlist.actionSavePlaylist(activity)
+                fragmentActivity(context){
+                    playlist.actionSavePlaylist(it)
                     true
-                } else {
-                    false
                 }
             }
         }

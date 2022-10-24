@@ -9,12 +9,14 @@ import com.github.chr56.android.menu_dsl.menuItem
 import player.phonograph.R
 import player.phonograph.actions.actionAddToPlaylist
 import player.phonograph.actions.actionDelete
-import player.phonograph.actions.convertToSongs
 import player.phonograph.actions.actionDeletePlaylists
-import player.phonograph.actions.actionPlayQueue
+import player.phonograph.actions.actionEnqueue
+import player.phonograph.actions.actionPlayNext
+import player.phonograph.actions.actionPlay
 import player.phonograph.actions.actionSavePlaylists
+import player.phonograph.actions.convertToSongs
 import player.phonograph.model.playlist.Playlist
-import player.phonograph.service.MusicPlayerRemote
+import player.phonograph.service.queue.ShuffleMode
 import player.phonograph.util.ImageUtil.getTintedDrawable
 import androidx.annotation.ColorInt
 import android.content.Context
@@ -34,22 +36,21 @@ fun multiItemsToolbar(
                 icon = getTintedDrawable(R.drawable.ic_play_arrow_white_24dp, iconColor)
                 showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
                 onClick {
-                    convertToSongs(selections, context).actionPlayQueue(context)
+                    convertToSongs(selections, context).actionPlay(context, ShuffleMode.NONE)
                 }
             }
             menuItem(getString(R.string.action_play_next)) {
                 icon = getTintedDrawable(R.drawable.ic_redo_white_24dp, iconColor)
                 showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
                 onClick {
-                    MusicPlayerRemote.playNext(convertToSongs(selections, context))
-                    true
+                    convertToSongs(selections, context).actionPlayNext()
                 }
             }
             menuItem(getString(R.string.action_add_to_playing_queue)) {
                 icon = getTintedDrawable(R.drawable.ic_library_add_white_24dp, iconColor)
                 showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
                 onClick {
-                    MusicPlayerRemote.enqueue(convertToSongs(selections, context))
+                    convertToSongs(selections, context).actionEnqueue()
                     true
                 }
             }

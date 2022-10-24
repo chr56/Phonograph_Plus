@@ -15,7 +15,7 @@ import player.phonograph.R
 import player.phonograph.actions.actionAddToPlaylist
 import player.phonograph.actions.actionDelete
 import player.phonograph.actions.fragmentActivity
-import player.phonograph.actions.actionsGotoDetail
+import player.phonograph.actions.actionGotoDetail
 import player.phonograph.actions.actionShare
 import player.phonograph.mediastore.searchSongs
 import player.phonograph.misc.UpdateToastMediaScannerCompletionListener
@@ -68,7 +68,7 @@ fun fileEntityPopupMenu(
                 menuItem(title = getString(R.string.action_details)) { // id = R.id.action_details
                     showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
                     onClick {
-                        fragmentActivity(context) { file.linkedSong(context).actionsGotoDetail(it) }
+                        fragmentActivity(context) { file.linkedSong(context).actionGotoDetail(it) }
                         true
                     }
                 }

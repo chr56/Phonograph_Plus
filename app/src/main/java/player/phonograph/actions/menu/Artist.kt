@@ -14,8 +14,13 @@ import androidx.annotation.ColorInt
 import com.github.chr56.android.menu_dsl.attach
 import com.github.chr56.android.menu_dsl.menuItem
 import player.phonograph.R
+import player.phonograph.actions.actionAddToPlaylist
+import player.phonograph.actions.actionDelete
+import player.phonograph.actions.actionEnqueue
 import player.phonograph.actions.fragmentActivity
-import player.phonograph.actions.actionPlayQueue
+import player.phonograph.actions.actionPlay
+import player.phonograph.actions.actionPlayNext
+import player.phonograph.actions.activity
 import player.phonograph.coil.CustomArtistImageStore
 import player.phonograph.dialogs.AddToPlaylistDialog
 import player.phonograph.model.Artist
@@ -37,64 +42,48 @@ fun artistDetailToolbar(
         menuItem(title = getString(R.string.action_play)) { //id = R.id.action_shuffle_artist
             icon = getTintedDrawable(R.drawable.ic_play_arrow_white_24dp, iconColor)
             showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
-            onClick {
-                artist.songs.actionPlayQueue(context)
-            }
+            onClick { artist.songs.actionPlay(context, ShuffleMode.NONE) }
         }
 
         menuItem(title = getString(R.string.action_shuffle_artist)) { //id = R.id.action_shuffle_artist
             icon = getTintedDrawable(R.drawable.ic_shuffle_white_24dp, iconColor)
             showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
-            onClick {
-                MusicPlayerRemote
-                    .playQueue(artist.songs, 0, true, ShuffleMode.SHUFFLE)
-                true
-            }
+            onClick { artist.songs.actionPlay(context, ShuffleMode.SHUFFLE) }
         }
 
 
         menuItem(title = getString(R.string.action_play_next)) { //id = R.id.action_play_next
             icon = getTintedDrawable(R.drawable.ic_redo_white_24dp, iconColor)
             showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
-            onClick {
-                MusicPlayerRemote.playNext(artist.songs)
-                true
-            }
+            onClick { artist.songs.actionPlayNext() }
         }
 
 
         menuItem(title = getString(R.string.action_add_to_playing_queue)) { //id = R.id.action_add_to_current_playing
             icon = getTintedDrawable(R.drawable.ic_library_add_white_24dp, iconColor)
             showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
-            onClick {
-                MusicPlayerRemote.enqueue(artist.songs)
-                true
-            }
+            onClick { artist.songs.actionEnqueue() }
         }
 
         menuItem(title = getString(R.string.action_add_to_playlist)) { //id = R.id.action_add_to_playlist
             icon = getTintedDrawable(R.drawable.ic_playlist_add_white_24dp, iconColor)
             showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
-            onClick {
-                fragmentActivity(context) {
-                    AddToPlaylistDialog.create(artist.songs).show(it.supportFragmentManager, "ADD_PLAYLIST")
-                    true
-                }
-            }
+            onClick { artist.songs.actionAddToPlaylist(context) }
         }
 
         menuItem(title = getString(R.string.set_artist_image)) { //id = R.id.action_set_artist_image
             icon = getTintedDrawable(R.drawable.ic_person_white_24dp, iconColor)
             showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
             onClick {
-                if (context is ComponentActivity)
-                    context.startActivityForResult(
+                activity(context){
+                    it.startActivityForResult(
                         Intent.createChooser(
                             Intent(Intent.ACTION_GET_CONTENT).apply {
                                 type = "image/*"
                             }, getString(R.string.pick_from_local_storage)),
                         ArtistDetailActivity.REQUEST_CODE_SELECT_IMAGE)
-                true
+                    true
+                }
             }
         }
 
@@ -103,7 +92,8 @@ fun artistDetailToolbar(
             icon = getTintedDrawable(R.drawable.ic_close_white_24dp, iconColor)
             showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
             onClick {
-                Toast.makeText(context, resources.getString(R.string.updating), Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, resources.getString(R.string.updating), Toast.LENGTH_SHORT)
+                    .show()
                 CustomArtistImageStore.instance(context)
                     .resetCustomArtistImage(context, artist.id, artist.name)
                 true
@@ -115,10 +105,7 @@ fun artistDetailToolbar(
             icon = getTintedDrawable(R.drawable.ic_delete_white_24dp, iconColor)
             showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
             onClick {
-                fragmentActivity(context) {
-                    DeleteSongsDialog.create(ArrayList(artist.songs)).show(it.supportFragmentManager, "ADD_PLAYLIST")
-                    true
-                }
+                artist.songs.actionDelete(context)
             }
         }
 
