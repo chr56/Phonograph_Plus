@@ -113,7 +113,7 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity() {
         model.isRecyclerViewPrepared = true
         // jump
         viewBinding.artistText.setOnClickListener {
-            goToArtist(this@AlbumDetailActivity, album.artistId)
+            goToArtist(this, album.artistId)
         }
         // paletteColor
         model.paletteColor.observe(this) {

@@ -81,32 +81,29 @@ fun Song.actionGotoDetail(activity: FragmentActivity): Boolean {
 }
 
 fun Song.actionGotoAlbum(context: Context, transitionView: View?): Boolean =
-    activity(context) {
-        if (transitionView != null) {
-            NavigationUtil.goToAlbum(
-                it,
-                albumId,
-                Pair(transitionView, context.resources.getString(R.string.transition_album_art))
-            )
-        } else {
-            NavigationUtil.goToAlbum(it, albumId)
-        }
+    if (transitionView != null) {
+        NavigationUtil.goToAlbum(
+            context,
+            albumId,
+            Pair(transitionView, context.resources.getString(R.string.transition_album_art))
+        )
+        true
+    } else {
+        NavigationUtil.goToAlbum(context, albumId)
         true
     }
 
 
 fun Song.actionGotoArtist(context: Context, transitionView: View?): Boolean =
-    activity(context) {
-        if (transitionView != null) {
-            NavigationUtil.goToArtist(
-                it,
-                artistId,
-                Pair(transitionView,
-                     context.resources.getString(R.string.transition_artist_image))
-            )
-        } else {
-            NavigationUtil.goToArtist(it, artistId)
-        }
+    if (transitionView != null) {
+        NavigationUtil.goToArtist(
+            context,
+            artistId,
+            Pair(transitionView, context.resources.getString(R.string.transition_artist_image))
+        )
+        true
+    } else {
+        NavigationUtil.goToArtist(context, artistId)
         true
     }
 

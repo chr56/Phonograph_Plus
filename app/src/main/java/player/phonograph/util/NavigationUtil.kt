@@ -22,70 +22,85 @@ import player.phonograph.ui.activities.PlaylistDetailActivity
  * @author Karim Abou Zeid (kabouzeid)
  */
 object NavigationUtil {
-    @JvmStatic
-    fun goToArtist(activity: Activity, artistId: Long) {
-        activity.startActivity(
-            Intent(activity, ArtistDetailActivity::class.java)
+
+    fun goToArtist(context: Context, artistId: Long) {
+        context.startActivity(
+            Intent(context.applicationContext, ArtistDetailActivity::class.java)
                 .apply { putExtra(ArtistDetailActivity.EXTRA_ARTIST_ID, artistId) }
         )
     }
-    @JvmStatic
-    fun goToArtist(activity: Activity, artistId: Long, vararg sharedElements: Pair<View, String>) {
+
+    fun goToArtist(context: Context, artistId: Long, vararg sharedElements: Pair<View, String>) {
         val intent =
-            Intent(activity, ArtistDetailActivity::class.java)
+            Intent(context.applicationContext, ArtistDetailActivity::class.java)
                 .apply { putExtra(ArtistDetailActivity.EXTRA_ARTIST_ID, artistId) }
-        if (sharedElements.isNotEmpty()) {
-            activity.startActivity(intent, ActivityOptionsCompat.makeSceneTransitionAnimation(activity, *sharedElements).toBundle())
+        if (sharedElements.isNotEmpty() && context is Activity) {
+            context.startActivity(intent,
+                                  ActivityOptionsCompat
+                                      .makeSceneTransitionAnimation(context, *sharedElements)
+                                      .toBundle()
+            )
         } else {
-            activity.startActivity(intent)
+            context.startActivity(intent)
         }
     }
 
-    @JvmStatic
-    fun goToAlbum(activity: Activity, albumId: Long) {
-        activity.startActivity(
-            Intent(activity, AlbumDetailActivity::class.java)
+    fun goToAlbum(context: Context, albumId: Long) {
+        context.startActivity(
+            Intent(context.applicationContext, AlbumDetailActivity::class.java)
                 .apply { putExtra(AlbumDetailActivity.EXTRA_ALBUM_ID, albumId) }
         )
     }
 
-    @JvmStatic
-    fun goToAlbum(activity: Activity, albumId: Long, vararg sharedElements: Pair<View, String>) {
+    fun goToAlbum(context: Context, albumId: Long, vararg sharedElements: Pair<View, String>) {
         val intent =
-            Intent(activity, AlbumDetailActivity::class.java)
+            Intent(context.applicationContext, AlbumDetailActivity::class.java)
                 .apply { putExtra(AlbumDetailActivity.EXTRA_ALBUM_ID, albumId) }
-        if (sharedElements.isNotEmpty()) {
-            activity.startActivity(intent, ActivityOptionsCompat.makeSceneTransitionAnimation(activity, *sharedElements).toBundle())
+        if (sharedElements.isNotEmpty() && context is Activity) {
+            context.startActivity(intent,
+                                  ActivityOptionsCompat
+                                      .makeSceneTransitionAnimation(context, *sharedElements)
+                                      .toBundle()
+            )
         } else {
-            activity.startActivity(intent)
+            context.startActivity(intent)
         }
     }
 
     fun goToGenre(context: Context, genre: Genre?, vararg sharedElements: Pair<*, *>?) {
-        val intent = Intent(context, GenreDetailActivity::class.java)
-        intent.putExtra(GenreDetailActivity.EXTRA_GENRE, genre)
-        context.startActivity(intent)
+        context.startActivity(
+            Intent(context, GenreDetailActivity::class.java)
+                .apply {
+                    putExtra(GenreDetailActivity.EXTRA_GENRE, genre)
+                }
+        )
     }
 
-    fun goToPlaylist(activity: Activity, playlist: Playlist?, vararg sharedElements: Pair<*, *>?) {
-        val intent = Intent(activity, PlaylistDetailActivity::class.java)
-        intent.putExtra(PlaylistDetailActivity.EXTRA_PLAYLIST, playlist)
-        activity.startActivity(intent)
+    fun goToPlaylist(context: Context, playlist: Playlist?, vararg sharedElements: Pair<*, *>?) {
+        context.startActivity(
+            Intent(context, PlaylistDetailActivity::class.java).apply {
+                putExtra(PlaylistDetailActivity.EXTRA_PLAYLIST, playlist)
+            }
+        )
     }
 
-    @JvmStatic
     fun openEqualizer(activity: Activity) {
         val sessionId = MusicPlayerRemote.audioSessionId
         if (sessionId == AudioEffect.ERROR_BAD_VALUE) {
-            Toast.makeText(activity, activity.resources.getString(R.string.no_audio_ID), Toast.LENGTH_LONG).show()
+            Toast.makeText(activity,
+                           activity.resources.getString(R.string.no_audio_ID),
+                           Toast.LENGTH_LONG).show()
         } else {
             try {
-                val effects = Intent(AudioEffect.ACTION_DISPLAY_AUDIO_EFFECT_CONTROL_PANEL)
-                effects.putExtra(AudioEffect.EXTRA_AUDIO_SESSION, sessionId)
-                effects.putExtra(AudioEffect.EXTRA_CONTENT_TYPE, AudioEffect.CONTENT_TYPE_MUSIC)
-                activity.startActivityForResult(effects, 0)
+                activity.startActivityForResult(
+                    Intent(AudioEffect.ACTION_DISPLAY_AUDIO_EFFECT_CONTROL_PANEL).apply {
+                        putExtra(AudioEffect.EXTRA_AUDIO_SESSION, sessionId)
+                        putExtra(AudioEffect.EXTRA_CONTENT_TYPE, AudioEffect.CONTENT_TYPE_MUSIC)
+                    }, 0)
             } catch (notFound: ActivityNotFoundException) {
-                Toast.makeText(activity, activity.resources.getString(R.string.no_equalizer), Toast.LENGTH_SHORT).show()
+                Toast.makeText(activity,
+                               activity.resources.getString(R.string.no_equalizer),
+                               Toast.LENGTH_SHORT).show()
             }
         }
     }

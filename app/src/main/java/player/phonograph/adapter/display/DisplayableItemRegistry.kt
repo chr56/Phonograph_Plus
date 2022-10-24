@@ -72,16 +72,11 @@ fun Displayable.tapClick(list: List<Displayable>?, activity: Activity?, imageVie
                     NavigationUtil.goToArtist(
                         activity,
                         this.id,
-                        Pair(
-                            imageView,
-                            imageView.resources.getString(R.string.transition_artist_image)
-                        )
+                        Pair(imageView,
+                             imageView.resources.getString(R.string.transition_artist_image))
                     )
                 } else {
-                    NavigationUtil.goToArtist(
-                        activity,
-                        this.id
-                    )
+                    NavigationUtil.goToArtist(activity, this.id)
                 }
                 true
             } else {

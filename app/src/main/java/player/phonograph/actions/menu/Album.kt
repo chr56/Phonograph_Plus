@@ -72,10 +72,8 @@ fun albumDetailToolbar(
             icon = getTintedDrawable(R.drawable.ic_person_white_24dp, iconColor)
             showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
             onClick {
-                activity(context) {
-                    goToArtist(it, album.artistId)
-                    true
-                }
+                goToArtist(context, album.artistId)
+                true
             }
         }
 
