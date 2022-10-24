@@ -29,6 +29,7 @@ import androidx.lifecycle.ViewModel
 import mt.pref.ThemeColor
 import mt.util.color.darkenColor
 import player.phonograph.R
+import player.phonograph.mediastore.SongLoader
 import player.phonograph.model.Song
 import player.phonograph.model.getReadableDurationString
 import player.phonograph.ui.compose.ColorTools.makeSureContrastWith
@@ -41,13 +42,15 @@ import player.phonograph.util.SongDetailUtil.SongInfo
 import player.phonograph.util.SongDetailUtil.getFileSizeString
 import player.phonograph.util.SongDetailUtil.loadArtwork
 import player.phonograph.util.SongDetailUtil.loadSong
+import android.content.Context
+import android.content.Intent
 
 class DetailActivity : ComposeToolbarActivity() {
     val model: DetailModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        model.song = intent.extras?.getParcelable("song") ?: Song.EMPTY_SONG
+        model.song = parseIntent(this, intent)
         with(model) {
             info = loadSong(song)
             artwork = loadArtwork(this@DetailActivity, song = song) {
@@ -78,6 +81,22 @@ class DetailActivity : ComposeToolbarActivity() {
             }
         }
     }
+
+
+    companion object {
+        private fun parseIntent(context: Context, intent: Intent): Song =
+            SongLoader.getSong(context, intent.extras?.getLong(SONG_ID) ?: -1)
+
+        const val SONG_ID = "SONG_ID"
+
+        fun launch(context: Context, songId: Long) {
+            context.startActivity(
+                Intent(context.applicationContext, DetailActivity::class.java).apply {
+                    putExtra(SONG_ID, songId)
+                }
+            )
+        }
+    }
 }
 
 class DetailModel : ViewModel() {
@@ -106,7 +125,9 @@ internal fun DetailActivityContent(viewModel: DetailModel) {
             .verticalScroll(state = rememberScrollState())
             .fillMaxSize()
     ) {
-        CoverImage(bitmap = wrapper!!.bitmap, backgroundColor = paletteColor, showCover = !isDefaultArtwork)
+        CoverImage(bitmap = wrapper!!.bitmap,
+                   backgroundColor = paletteColor,
+                   showCover = !isDefaultArtwork)
         InfoTable(info, paletteColor)
     }
 }
@@ -149,9 +170,11 @@ internal fun InfoTable(info: SongInfo, titleColor: Color) {
         Title(stringResource(R.string.file), color = titleColor)
         TagItem(stringResource(id = R.string.label_file_name), info.fileName)
         TagItem(stringResource(id = R.string.label_file_path), info.filePath)
-        TagItem(stringResource(id = R.string.label_track_length), getReadableDurationString(info.trackLength ?: -1))
+        TagItem(stringResource(id = R.string.label_track_length),
+                getReadableDurationString(info.trackLength ?: -1))
         TagItem(stringResource(id = R.string.label_file_format), info.fileFormat)
-        TagItem(stringResource(id = R.string.label_file_size), getFileSizeString(info.fileSize ?: -1))
+        TagItem(stringResource(id = R.string.label_file_size),
+                getFileSizeString(info.fileSize ?: -1))
         TagItem(stringResource(id = R.string.label_bit_rate), info.bitRate)
         TagItem(stringResource(id = R.string.label_sampling_rate), info.samplingRate)
         // Common Tag

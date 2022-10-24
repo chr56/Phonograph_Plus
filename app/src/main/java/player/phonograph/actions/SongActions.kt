@@ -76,9 +76,7 @@ fun Song.actionGotoDetail(activity: FragmentActivity): Boolean {
     if (Setting.instance().useLegacyDetailDialog)
         SongDetailDialog.create(this).show(activity.supportFragmentManager, "SONG_DETAILS")
     else
-        activity.startActivity(Intent(activity, DetailActivity::class.java).apply {
-            putExtra("song", this@actionGotoDetail)
-        })
+        DetailActivity.launch(activity, id)
     return true
 }
 
