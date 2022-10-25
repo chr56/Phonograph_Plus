@@ -1,0 +1,54 @@
+name: Bug Report
+description: Report bugs or unintended behaviors
+title: "[Bug]: "
+labels: ["Bug"]
+
+body:
+  - type: textarea
+    id: summary
+    attributes:
+      label: Bug Summary
+      description: A clear and concise description of what this bug is.
+    validations:
+      required: true
+
+  - type: input
+    id: app-version
+    attributes:
+      label: Version
+      description: "Which version are you using?"
+      placeholder: "0.x.x"
+    validations:
+      required: true
+
+  - type: textarea
+    id: step-to-reproduce
+    attributes:
+      label: Steps to reproduce the bug
+      description: Steps to reproduce the bugs or unexpected behaviors.
+    validations:
+      required: false
+
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: Screenshots or Screen recordings
+      description: (Optional)
+    validations:
+      required: false
+
+  - type: textarea
+    id: envirment
+    attributes:
+      label: Environment
+      description: What is your environment (such as OS version, ROM)? (Optional)
+    validations:
+      required: false
+
+  - type: textarea
+    id: other-info
+    attributes:
+      label: Other helpful information
+      description: (Optional)
+    validations:
+      required: false

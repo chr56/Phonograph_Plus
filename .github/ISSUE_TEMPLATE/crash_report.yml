@@ -1,0 +1,52 @@
+name: Crash Report
+description: Report serious bugs, like app crashes
+title: "[Crash Report]: "
+labels: ["Bug"]
+
+body:
+  - type: textarea
+    id: crash-log
+    attributes:
+      label: Crash log
+      description: Crash log
+      value: |
+        ```
+        [REPLACE ME: if crash report isavailable, copy your logs to here.]
+        [REPLACE ME: do NOT these three backquotes (`)]
+        [PEPLACE ME: put your report inside these backquotes (`)]
+        ```
+    validations:
+      required: true
+
+  - type: textarea
+    id: step-to-reproduce
+    attributes:
+      label: Steps to reproduce the bug
+      description: Steps to reproduce the bugs or unexpected behaviors.
+    validations:
+      required: false
+
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: Screenshots or Screen recordings
+      description: (Optional)
+    validations:
+      required: false
+
+  - type: textarea
+    id: other-info
+    attributes:
+      label: Other helpful information
+      description: (Optional)
+    validations:
+      required: false
+
+  - type: input
+    id: app-version
+    attributes:
+      label: Version
+      description: "Which version are you using?"
+      placeholder: "0.x.x"
+    validations:
+      required: false
