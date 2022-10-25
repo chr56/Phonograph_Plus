@@ -17,6 +17,7 @@ import com.afollestad.materialdialogs.customview.customView
 import lib.phonograph.localization.Localization
 import mt.pref.ThemeColor
 import mt.util.color.resolveColor
+import org.intellij.lang.annotations.Language
 import player.phonograph.R
 import player.phonograph.notification.ErrorNotification
 import player.phonograph.settings.Setting
@@ -149,6 +150,7 @@ class ChangelogDialog : DialogFragment() {
                 Color.blue(color)
             ) // on API 29, WebView doesn't load with hex colors
 
+        @Language("CSS")
         fun getCSS(
             content_background_color: String,
             text_color: String,
@@ -203,6 +205,7 @@ class ChangelogDialog : DialogFragment() {
             font-size: small;
         }"""
 
+        @Language("HTML")
         fun getHTML(
             CSS: String,
             content: String,
