@@ -1,26 +1,28 @@
 ---
-name: Bug report
-about: Report bugs or unexpected behaviors
+name: Bug Report
+about: Report bugs or unintended behaviors
 title: "[Bug Report]"
 labels: bug
 assignees: ''
 
 ---
 
-**Describe the bug or unexpected behavior**
-A clear and concise description of what the bug is.
+### **Describe the bug or unexpected behavior**
 
-**Crash log**
-If app crashed, copy the logs if available.
+(REPLACE ME: A clear and concise description of what this bug is.)
+
+### **How to reproduce**
+
+(REPLACE ME: Steps to reproduce the bugs or unexpected behaviors:)
+
+### **Screenshots (Optional)**
+
+(REPLACE ME: Delete this if you do not have)
+
+### **Other helpful information**
+ 
+#### **App log**
+
 ```
-[YOUR LOGS HERE]
+[REPLACE ME: YOUR LOGS HERE, if you can use logcat to capture logs]
 ```
-
-**How to reproduce**
-Steps to reproduce the bugs or unexpected behaviors:
-
-**Screenshots (Optional)**
-(if available)
-
-**Other information**
-…
