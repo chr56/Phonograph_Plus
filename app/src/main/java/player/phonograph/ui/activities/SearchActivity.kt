@@ -1,21 +1,14 @@
 package player.phonograph.ui.activities
 
-import android.content.Context
-import android.os.Bundle
-import android.text.TextUtils
-import android.view.Menu
-import android.view.MenuItem
-import android.view.View
-import androidx.appcompat.widget.SearchView
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.yield
+import mt.pref.ThemeColor
 import mt.pref.ThemeColor.primaryColor
-import mt.tint.setActivityToolbarColorAuto
+import mt.tint.setActivityToolbarColor
+import mt.util.color.primaryTextColor
 import player.phonograph.R
 import player.phonograph.adapter.SearchAdapter
 import player.phonograph.databinding.ActivitySearchBinding
@@ -23,11 +16,25 @@ import player.phonograph.mediastore.AlbumLoader
 import player.phonograph.mediastore.ArtistLoader
 import player.phonograph.mediastore.SongLoader
 import player.phonograph.ui.activities.base.AbsMusicServiceActivity
+import player.phonograph.util.ImageUtil.getTintedDrawable
+import player.phonograph.util.ImageUtil.makeContrastDrawable
 import player.phonograph.util.Util
+import androidx.appcompat.widget.SearchView
+import androidx.core.graphics.BlendModeColorFilterCompat.createBlendModeColorFilterCompat
+import androidx.core.graphics.BlendModeCompat
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import android.content.Context
+import android.graphics.drawable.Drawable
+import android.os.Bundle
+import android.text.TextUtils
+import android.view.Menu
+import android.view.MenuItem
+import android.view.View
 
 class SearchActivity :
-    AbsMusicServiceActivity(),
-    SearchView.OnQueryTextListener {
+        AbsMusicServiceActivity(),
+        SearchView.OnQueryTextListener {
 
     private var viewBinding: ActivitySearchBinding? = null
     val binding get() = viewBinding!!
@@ -106,10 +113,12 @@ class SearchActivity :
     }
 
     private fun setUpToolBar() {
-        binding.toolbar.setBackgroundColor(primaryColor(this))
         setSupportActionBar(binding.toolbar)
-        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-        setActivityToolbarColorAuto(binding.toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        setActivityToolbarColor(binding.toolbar, primaryColor)
+        with(binding.toolbar) {
+            collapseIcon = makeContrastDrawable(collapseIcon, primaryColor)
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

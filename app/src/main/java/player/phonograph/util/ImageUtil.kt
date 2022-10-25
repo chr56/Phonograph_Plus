@@ -1,5 +1,6 @@
 package player.phonograph.util
 
+import mt.util.color.primaryTextColor
 import android.content.Context
 import android.content.res.Resources
 import android.content.res.Resources.Theme
@@ -119,5 +120,16 @@ object ImageUtil {
             mode
         )
         return drawable
+    }
+
+    fun Context.makeContrastDrawable(
+        source: Drawable?,
+        backgroundColor: Int,
+    ): Drawable? {
+        source?.colorFilter = BlendModeColorFilterCompat.createBlendModeColorFilterCompat(
+            primaryTextColor(backgroundColor),
+            BlendModeCompat.SRC_IN
+        )
+        return source
     }
 }
