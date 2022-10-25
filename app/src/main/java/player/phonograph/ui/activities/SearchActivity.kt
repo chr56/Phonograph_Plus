@@ -5,8 +5,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.yield
-import mt.pref.ThemeColor
-import mt.pref.ThemeColor.primaryColor
 import mt.tint.setActivityToolbarColor
 import mt.util.color.primaryTextColor
 import player.phonograph.R
@@ -16,21 +14,20 @@ import player.phonograph.mediastore.AlbumLoader
 import player.phonograph.mediastore.ArtistLoader
 import player.phonograph.mediastore.SongLoader
 import player.phonograph.ui.activities.base.AbsMusicServiceActivity
-import player.phonograph.util.ImageUtil.getTintedDrawable
 import player.phonograph.util.ImageUtil.makeContrastDrawable
+import player.phonograph.util.ReflectUtil.reflectDeclaredField
 import player.phonograph.util.Util
 import androidx.appcompat.widget.SearchView
-import androidx.core.graphics.BlendModeColorFilterCompat.createBlendModeColorFilterCompat
-import androidx.core.graphics.BlendModeCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import android.content.Context
-import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.text.TextUtils
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.TextView
 
 class SearchActivity :
         AbsMusicServiceActivity(),
@@ -145,6 +142,7 @@ class SearchActivity :
         searchView!!.setQuery(query, false)
         searchView!!.post { searchView!!.setOnQueryTextListener(this) }
 
+        setQueryTextColor(searchView!!, primaryTextColor(primaryColor))
         return super.onCreateOptionsMenu(menu)
     }
 
@@ -174,6 +172,7 @@ class SearchActivity :
 
     override fun onQueryTextChange(newText: String): Boolean {
         search(newText)
+        setQueryTextColor(searchView!!, primaryTextColor(primaryColor))
         return false
     }
 
@@ -182,7 +181,18 @@ class SearchActivity :
         searchView?.clearFocus()
     }
 
+
+
     companion object {
         const val QUERY = "query"
+
+        private fun setQueryTextColor(searchView: SearchView, color: Int) {
+            try {
+                val textView: TextView = searchView.reflectDeclaredField("mSearchSrcTextView")
+                textView.setTextColor(color)
+            } catch (e: Exception) {
+                Log.w("SearchViewReflect", e)
+            }
+        }
     }
 }

@@ -139,8 +139,8 @@
 #############
 # Android X
 ##############
-#-keepclassmembernames,allowshrinking,allowoptimization class androidx.** {*;}
-#-keepnames,allowshrinking interface androidx.** {*;}
+# we need get `mSearchSrcTextView` to change color
+-keepclassmembernames class androidx.appcompat.widget.SearchView { androidx.appcompat.widget.SearchView$SearchAutoComplete mSearchSrcTextView;}
 
 ##########################
 # Material Design Componant
