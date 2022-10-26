@@ -139,8 +139,9 @@
 #############
 # Android X
 ##############
-# we need get `mSearchSrcTextView` to change color
+# we need get `mSearchSrcTextView` and `mCloseButton to mofify color
 -keepclassmembernames class androidx.appcompat.widget.SearchView { androidx.appcompat.widget.SearchView$SearchAutoComplete mSearchSrcTextView;}
+-keepclassmembernames class androidx.appcompat.widget.SearchView { android.widget.ImageView mCloseButton;}
 
 ##########################
 # Material Design Componant

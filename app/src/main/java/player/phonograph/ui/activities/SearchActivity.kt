@@ -14,10 +14,12 @@ import player.phonograph.mediastore.AlbumLoader
 import player.phonograph.mediastore.ArtistLoader
 import player.phonograph.mediastore.SongLoader
 import player.phonograph.ui.activities.base.AbsMusicServiceActivity
+import player.phonograph.util.ImageUtil.drawableColorFilter
 import player.phonograph.util.ImageUtil.makeContrastDrawable
 import player.phonograph.util.ReflectUtil.reflectDeclaredField
 import player.phonograph.util.Util
 import androidx.appcompat.widget.SearchView
+import androidx.core.graphics.BlendModeCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import android.content.Context
@@ -27,6 +29,7 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.ImageView
 import android.widget.TextView
 
 class SearchActivity :
@@ -113,9 +116,6 @@ class SearchActivity :
         setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         setActivityToolbarColor(binding.toolbar, primaryColor)
-        with(binding.toolbar) {
-            collapseIcon = makeContrastDrawable(collapseIcon, primaryColor)
-        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -142,7 +142,11 @@ class SearchActivity :
         searchView!!.setQuery(query, false)
         searchView!!.post { searchView!!.setOnQueryTextListener(this) }
 
-        setQueryTextColor(searchView!!, primaryTextColor(primaryColor))
+        searchView!!.adjustColor(primaryTextColor(primaryColor))
+        with(binding.toolbar) {
+            collapseIcon = makeContrastDrawable(collapseIcon, primaryTextColor(primaryColor))
+        }
+
         return super.onCreateOptionsMenu(menu)
     }
 
@@ -172,7 +176,10 @@ class SearchActivity :
 
     override fun onQueryTextChange(newText: String): Boolean {
         search(newText)
-        setQueryTextColor(searchView!!, primaryTextColor(primaryColor))
+        searchView?.adjustColor(primaryTextColor(primaryColor))
+        with(binding.toolbar) {
+            collapseIcon = makeContrastDrawable(collapseIcon, primaryTextColor(primaryColor))
+        }
         return false
     }
 
@@ -186,13 +193,27 @@ class SearchActivity :
     companion object {
         const val QUERY = "query"
 
-        private fun setQueryTextColor(searchView: SearchView, color: Int) {
+        private fun SearchView.adjustColor(color: Int) {
             try {
-                val textView: TextView = searchView.reflectDeclaredField("mSearchSrcTextView")
-                textView.setTextColor(color)
+                setQueryTextColor(this, color)
+                setIconDrawableColor(this, color)
             } catch (e: Exception) {
                 Log.w("SearchViewReflect", e)
             }
+        }
+
+        @Throws(NoSuchFieldException::class, SecurityException::class)
+        private fun setQueryTextColor(searchView: SearchView, color: Int) {
+            val textView: TextView = searchView.reflectDeclaredField("mSearchSrcTextView")
+            textView.setTextColor(color)
+        }
+
+        @Throws(NoSuchFieldException::class, SecurityException::class)
+        private fun setIconDrawableColor(searchView: SearchView, color: Int) {
+            val closeButton: ImageView = searchView.reflectDeclaredField("mCloseButton")
+            closeButton.colorFilter = drawableColorFilter(color, BlendModeCompat.SRC_IN)
+            // val searchButton: ImageView = searchView.reflectDeclaredField("mSearchButton")
+            // searchButton.colorFilter = drawableColorFilter(color, BlendModeCompat.SRC_OUT)
         }
     }
 }

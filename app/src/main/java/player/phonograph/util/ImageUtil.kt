@@ -79,7 +79,7 @@ object ImageUtil {
         res: Resources,
         @DrawableRes resId: Int,
         theme: Theme?,
-        @ColorInt color: Int
+        @ColorInt color: Int,
     ): Drawable? =
         createTintedDrawable(getVectorDrawable(res, resId, theme), color)
 
@@ -112,13 +112,10 @@ object ImageUtil {
     fun Context.getTintedDrawable(
         @DrawableRes id: Int,
         @ColorInt color: Int,
-        mode: BlendModeCompat = BlendModeCompat.SRC_IN
+        mode: BlendModeCompat = BlendModeCompat.SRC_IN,
     ): Drawable? {
         val drawable = ResourcesCompat.getDrawable(this.resources, id, theme)
-        drawable?.colorFilter = BlendModeColorFilterCompat.createBlendModeColorFilterCompat(
-            color,
-            mode
-        )
+        drawable?.colorFilter = drawableColorFilter(color, mode)
         return drawable
     }
 
@@ -126,10 +123,11 @@ object ImageUtil {
         source: Drawable?,
         backgroundColor: Int,
     ): Drawable? {
-        source?.colorFilter = BlendModeColorFilterCompat.createBlendModeColorFilterCompat(
-            primaryTextColor(backgroundColor),
-            BlendModeCompat.SRC_IN
-        )
+        source?.colorFilter =
+            drawableColorFilter(primaryTextColor(backgroundColor), BlendModeCompat.SRC_IN)
         return source
     }
+
+    fun drawableColorFilter(color: Int, mode: BlendModeCompat) =
+        BlendModeColorFilterCompat.createBlendModeColorFilterCompat(color, mode)
 }
