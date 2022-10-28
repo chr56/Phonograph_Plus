@@ -3,6 +3,7 @@ package player.phonograph.ui.activities
 import com.github.chr56.android.menu_dsl.attach
 import com.github.chr56.android.menu_dsl.menuItem
 import lib.phonograph.activity.ToolbarActivity
+import lib.phonograph.dialog.alertDialog
 import mt.util.color.primaryTextColor
 import player.phonograph.R
 import player.phonograph.databinding.ActivityCrashBinding
@@ -134,12 +135,11 @@ class CrashActivity : ToolbarActivity() {
             menuItem(0, NONE, 2, getString(R.string.clear_all_preference)) {
                 showAsActionFlag = SHOW_AS_ACTION_NEVER
                 onClick {
-                    val dialog = AlertDialog.Builder(context)
-                        .setTitle(R.string.clear_all_preference)
-                        .setMessage(R.string.clear_all_preference_msg)
-                        .setCancelable(true)
-                        .setNegativeButton(android.R.string.cancel) { _, _ -> }
-                        .setPositiveButton(R.string.clear_all_preference) { dialog, _: Int ->
+                    val dialog = alertDialog(context) {
+                        title(R.string.clear_all_preference)
+                        message(R.string.clear_all_preference_msg)
+                        neutralButton(android.R.string.cancel)
+                        positiveButton(R.string.clear_all_preference) { dialog ->
                             SettingManager(this@CrashActivity).clearAllPreference()
                             Handler(Looper.getMainLooper()).postDelayed(
                                 {
@@ -148,9 +148,11 @@ class CrashActivity : ToolbarActivity() {
                                 }, 2000
                             )
                         }
-                        .create()
+                        builder.setCancelable(true)
+                    }
                     dialog.show()
-                    dialog.getButton(DialogInterface.BUTTON_POSITIVE)?.setTextColor(getColor(R.color.md_red_A700))
+                    dialog.getButton(DialogInterface.BUTTON_POSITIVE)
+                        ?.setTextColor(getColor(R.color.md_red_A700))
                     true
                 }
             }

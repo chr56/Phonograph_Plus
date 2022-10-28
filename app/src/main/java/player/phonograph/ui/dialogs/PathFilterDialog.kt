@@ -1,5 +1,6 @@
 package player.phonograph.ui.dialogs
 
+import lib.phonograph.dialog.alertDialog
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -41,7 +42,11 @@ class PathFilterDialog : DialogFragment() {
     private lateinit var adapter: PathAdapter
 
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?,
+    ): View {
         return buildDialog()
     }
 
@@ -84,10 +89,12 @@ class PathFilterDialog : DialogFragment() {
             }
         }
         root.addView(controlPanel.panel,
-            LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT, Gravity.TOP)
+                     LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT, Gravity.TOP)
         )
         root.addView(recyclerView,
-            LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.MATCH_PARENT, Gravity.BOTTOM).apply { setMargins(0, 128, 0, 0) }
+                     LayoutParams(LayoutParams.WRAP_CONTENT,
+                                  LayoutParams.MATCH_PARENT,
+                                  Gravity.BOTTOM).apply { setMargins(0, 128, 0, 0) }
         )
     }
 
@@ -112,39 +119,43 @@ class PathFilterDialog : DialogFragment() {
         val path = with(PathFilterStore.getInstance(context)) {
             if (mode) blacklistPaths else whitelistPaths
         }[index]
-        AlertDialog.Builder(context).apply {
-            setTitle(R.string.delete_action)
-            setMessage("${title(mode)}\n${path}")
-            setPositiveButton(android.R.string.ok) { _, _: Int ->
+        alertDialog(context) {
+            title(R.string.delete_action)
+            message("${title(mode)}\n${path}")
+            positiveButton(android.R.string.ok) {
                 with(PathFilterStore.getInstance(context)) {
                     if (mode) removeBlacklistPath(File(path)) else removeWhitelistPath(File(path))
                 }
                 loadPaths()
             }
-            setNegativeButton(android.R.string.cancel) { it, _: Int ->
+            neutralButton(android.R.string.cancel) {
                 it.dismiss()
             }
         }.show()
     }
 
     private fun clearAll(mode: Boolean) {
-        AlertDialog.Builder(requireContext()).apply {
-            setTitle(R.string.clear_action)
-            setMessage(
+        alertDialog(requireContext()) {
+            title(R.string.clear_action)
+            message(
                 if (mode) R.string.excluded_paths else R.string.included_paths
             )
-            setPositiveButton(R.string.clear_action) { _, _ ->
+            positiveButton(R.string.clear_action) {
                 with(PathFilterStore.getInstance(requireContext())) {
                     if (mode) clearBlacklist() else clearWhitelist()
                 }
                 loadPaths()
             }
-            setNegativeButton(android.R.string.cancel) { _, _ -> }
+            neutralButton(android.R.string.cancel)
         }.show()
     }
 
-    class PathAdapter(val context: Context, val paths: List<String>, val onClick: (Int, View) -> Unit) :
-        RecyclerView.Adapter<PathAdapter.ViewHolder>() {
+    class PathAdapter(
+        val context: Context,
+        val paths: List<String>,
+        val onClick: (Int, View) -> Unit,
+    ) :
+            RecyclerView.Adapter<PathAdapter.ViewHolder>() {
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
             return ViewHolder(initView(context))
@@ -170,8 +181,9 @@ class PathFilterDialog : DialogFragment() {
                 setPadding(24, 6, 24, 6)
             }
             val root = FrameLayout(context).apply {
-                val layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
-                    .apply { setMargins(24, 32, 24, 32) }
+                val layoutParams =
+                    LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
+                        .apply { setMargins(24, 32, 24, 32) }
                 addView(textView, layoutParams)
             }
             return Binding(root, textView)
@@ -180,7 +192,8 @@ class PathFilterDialog : DialogFragment() {
         class Binding(val root: View, val textView: TextView)
     }
 
-    fun title(mode: Boolean) = if (mode) getString(R.string.excluded_paths) else getString(R.string.included_paths)
+    fun title(mode: Boolean) =
+        if (mode) getString(R.string.excluded_paths) else getString(R.string.included_paths)
 
     override fun onStart() {
         requireDialog().window!!.attributes =
