@@ -2,8 +2,10 @@ package player.phonograph.ui.activities
 
 import com.github.chr56.android.menu_dsl.attach
 import com.github.chr56.android.menu_dsl.menuItem
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import lib.phonograph.activity.ToolbarActivity
 import lib.phonograph.dialog.alertDialog
+import mt.tint.viewtint.setBackgroundTint
 import mt.util.color.primaryTextColor
 import player.phonograph.R
 import player.phonograph.databinding.ActivityCrashBinding
@@ -21,6 +23,7 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
+import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
@@ -44,16 +47,39 @@ class CrashActivity : ToolbarActivity() {
 
     private var crashReportMode = true
 
+    private val colorPrimaryDeep get() =  resources.getColor(
+        if (crashReportMode) R.color.md_deep_orange_900 else R.color.md_grey_800, theme
+    )
+    private val colorPrimary get() =  resources.getColor(
+        if (crashReportMode) R.color.md_deep_orange_700 else R.color.md_grey_700, theme
+    )
+
+
     private fun setupTheme() {
         // statusbar theme
-        updateAllColors(resources.getColor(R.color.md_grey_800, theme))
+        updateAllColors(colorPrimaryDeep)
 
         // toolbar theme
-        findViewById<Toolbar>(R.id.toolbar).apply {
-            setBackgroundColor(resources.getColor(R.color.md_grey_700, theme))
+        binding.toolbar.apply {
+            setBackgroundColor(colorPrimary)
             title = if (crashReportMode) getString(R.string.crash) else "Internal Error"
             setSupportActionBar(this)
         }
+        // float button
+        binding.copyToClipboard.apply {
+            backgroundTintList = ColorStateList(
+                arrayOf(
+                    intArrayOf(-android.R.attr.state_pressed),
+                    intArrayOf(android.R.attr.state_pressed)
+                ),
+                intArrayOf(
+                    colorPrimary,
+                    colorPrimaryDeep
+                )
+            )
+            setColorFilter(primaryTextColor(colorPrimary))
+        }
+
     }
 
     /**
