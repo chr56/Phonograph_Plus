@@ -2,6 +2,22 @@
   "versions": [
     {
       "channel": "stable",
+      "versionName": "0.4.1",
+      "versionCode": 401,
+      "date": 1666965600,
+      "link": [
+        {
+          "name": "Github Release",
+          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/v0.4.1"
+        }
+      ],
+      "releaseNote": {
+        "zh-cn": "<ol><li>修复 打开歌曲详情时卡死</li><li>修复 搜索页面的文字图标在浅色主色调下对比度问题(部分修复)</li><li>新增 歌词功能总开关</li><li>改进 崩溃界面，区分崩溃与内部错误</li><li>改进 优化菜单</li><li>开发 清理代码</li></ol>",
+        "en": "<ol><li>Fix: stuck when opening song details</li><li>Fix: terrible contrast of the text and icon on Search Page when under light primary color (Partial Fix)</li><li>Add: a general switch for all lyrics features</li><li>Improve: Crash Report Page - to distinguish between crash and internal error</li><li>Improve: menu</li><li>Development: clean up code</li></ol>"
+      }
+    },
+    {
+      "channel": "stable",
       "versionName": "0.4.0",
       "versionCode": 400,
       "date": 1666476000,

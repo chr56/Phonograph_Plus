@@ -1,11 +1,11 @@
 {
-    "version": "0.4.0",
-    "versionCode": "400",
+    "version": "0.4.1",
+    "versionCode": "401",
     "zh-cn": {
-        "logSummary": "\n\n<b>0.4.0</b> 2022.10.23\n\n Phonograph Plus 更名一周年纪念版<br/>一年前的今天，正式更名为Phonograph Plus，并发布了第一个版本<a href=\"https://github.com/chr56/Phonograph_Plus/releases/tag/v0.0.1)\">v.0.0.1</a><br><ol><li>翻译 清理各语言翻译</li><li>翻译 更新俄语（Photon Gilbert），土耳其语（Erdem Özdemir）</li><li>修复 导入数据库时偶尔出错</li><li>移除 黑名单</li><li>新增 “路径过滤器“, 支持&quot;排除模式&quot;(黑名单)和&quot;仅包含模式&quot;(白名单), 两者暂时无法同时使用</li><li>新增 全新的歌曲详情页面</li><li>新增 全新的更详细的更新对话框等</li><li>改进 菜单(几乎所有列表皆提供&quot;播放&quot;,&quot;随机播放&quot;,&quot;下一个播放&quot;,&quot;加入列表&quot;等)</li><li>开发 重构媒体读取</li><li>开发 引入 Jetpack Compose</li><li>其他 APK体积膨胀, 不再”小而美“</li></ol>"
+        "logSummary": "\n\n<b>0.4.1</b> 2022.10.28 \n\n<ol><li>修复 打开歌曲详情时卡死</li><li>修复 搜索页面的文字图标在浅色主色调下对比度问题(部分修复)</li><li>新增 歌词功能总开关</li><li>改进 崩溃界面，区分崩溃与内部错误</li><li>改进 优化菜单</li><li>开发 清理代码</li></ol>"
     },
     "en": {
-        "logSummary": "\n\n<b>0.4.0</b> 2022.10.23 \n\n Phonograph Plus 1st Renaming Anniversary Version<br/>One year ago, first canonical stable Phonograph Plus version<a href=\"https://github.com/chr56/Phonograph_Plus/releases/tag/v0.0.1)\">v.0.0.1</a> was released.<br><ol><li>Translation: update Russian (by Photon Gilbert)，Turkish(by Erdem Özdemir)</li><li>Translation: clean up translations for all language</li><li>Fix: crash when importing databases</li><li>Remove: Blacklist</li><li>New: the Path filter, support &quot;exclude mode&quot; (blacklist) and &quot;include mode&quot; (whitelist),currently they can not be enabled at the same time</li><li>New: Song Details Page</li><li>New: brand new and detailed Upgrade Dialog and more</li><li>Improve: menus (almost all lists provide &quot;Play&quot;, &quot;Shuffle Play&quot;, &quot;Play Next&quot;,&quot;Add To Queues&quot;, etc.)</li><li>Development: Refactor media reading</li><li>Development: Introduce Jetpack Compose</li><li>Other: APK is bloated, no longer &quot;tiny but versatile&quot;</li></ol>"
+        "logSummary": "\n\n<b>0.4.1</b> 2022.10.28 \n\n<ol><li>Fix: stuck when opening song details</li><li>Fix: terrible contrast of the text and icon on Search Page when under light primary color (Partial Fix)</li><li>Add: a general switch for all lyrics features</li><li>Improve: Crash Report Page - to distinguish between crash and internal error</li><li>Improve: menu</li><li>Development: clean up code</li></ol>"
     },
     "downloadSources": [
         "Release: Github(v0.4.0)",
