@@ -1,14 +1,7 @@
 package player.phonograph.ui.activities
 
-import com.afollestad.materialdialogs.MaterialDialog
-import com.afollestad.materialdialogs.WhichButton
-import com.afollestad.materialdialogs.actions.getActionButton
 import com.github.chr56.android.menu_dsl.attach
 import com.github.chr56.android.menu_dsl.menuItem
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.launch
 import lib.phonograph.activity.ToolbarActivity
 import mt.util.color.primaryTextColor
 import player.phonograph.R
@@ -20,10 +13,12 @@ import player.phonograph.util.DeviceInfoUtil.getDeviceInfo
 import player.phonograph.util.ImageUtil.getTintedDrawable
 import player.phonograph.util.PhonographColorUtil.nightMode
 import player.phonograph.util.TimeUtil.currentDateTime
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.Toolbar
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
@@ -36,8 +31,11 @@ import android.view.MenuItem.SHOW_AS_ACTION_IF_ROOM
 import android.view.MenuItem.SHOW_AS_ACTION_NEVER
 import android.widget.Toast
 import kotlin.system.exitProcess
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
 import java.io.File
-import java.io.FileOutputStream
 
 class CrashActivity : ToolbarActivity() {
 
@@ -108,13 +106,10 @@ class CrashActivity : ToolbarActivity() {
         // save crash report
         externalCacheDir?.let { cacheDir ->
             coroutineScope.launch(Dispatchers.IO) {
-                val file = File(cacheDir, "Crash_Report_${currentDateTime()}.txt")
-                FileOutputStream(file).use {
-                    it.writer().apply {
-                        write(displayText)
-                        flush()
-                        close()
-                    }
+                val file = File(cacheDir, "Error_Report_${currentDateTime()}.txt")
+                file.writer().use { writer ->
+                    writer.write(displayText)
+                    writer.flush()
                 }
             }
         }
@@ -139,24 +134,23 @@ class CrashActivity : ToolbarActivity() {
             menuItem(0, NONE, 2, getString(R.string.clear_all_preference)) {
                 showAsActionFlag = SHOW_AS_ACTION_NEVER
                 onClick {
-                    MaterialDialog(this@CrashActivity).show {
-                        title(R.string.clear_all_preference)
-                        message(R.string.clear_all_preference_msg)
-                        cancelOnTouchOutside(true)
-                        negativeButton(android.R.string.cancel)
-                        positiveButton(R.string.clear_all_preference) {
+                    val dialog = AlertDialog.Builder(context)
+                        .setTitle(R.string.clear_all_preference)
+                        .setMessage(R.string.clear_all_preference_msg)
+                        .setCancelable(true)
+                        .setNegativeButton(android.R.string.cancel) { _, _ -> }
+                        .setPositiveButton(R.string.clear_all_preference) { dialog, _: Int ->
                             SettingManager(this@CrashActivity).clearAllPreference()
                             Handler(Looper.getMainLooper()).postDelayed(
                                 {
                                     Process.killProcess(Process.myPid())
                                     exitProcess(1)
-                                }, 4000
+                                }, 2000
                             )
                         }
-                        apply {
-                            getActionButton(WhichButton.POSITIVE).updateTextColor(getColor(R.color.md_red_A700))
-                        }
-                    }
+                        .create()
+                    dialog.show()
+                    dialog.getButton(DialogInterface.BUTTON_POSITIVE)?.setTextColor(getColor(R.color.md_red_A700))
                     true
                 }
             }
@@ -164,5 +158,5 @@ class CrashActivity : ToolbarActivity() {
         return true
     }
 
-    private val coroutineScope = CoroutineScope(SupervisorJob())
+    private val coroutineScope by lazy { CoroutineScope(SupervisorJob()) }
 }
