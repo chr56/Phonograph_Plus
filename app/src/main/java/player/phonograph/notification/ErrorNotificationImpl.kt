@@ -12,6 +12,7 @@ import android.content.Context
 import android.content.Intent
 import androidx.core.app.NotificationCompat
 import player.phonograph.R
+import player.phonograph.notification.ErrorNotification.KEY_IS_A_CRASH
 import player.phonograph.notification.ErrorNotification.KEY_STACK_TRACE
 
 class ErrorNotificationImpl(context: Context, private val crashActivity: Class<out Activity>) : AbsNotificationImpl() {
@@ -23,6 +24,7 @@ class ErrorNotificationImpl(context: Context, private val crashActivity: Class<o
     fun send(msg: String, title: String? = null, context: Context) {
         val action = Intent(context, crashActivity).apply {
             putExtra(KEY_STACK_TRACE, msg)
+            putExtra(KEY_IS_A_CRASH, false)
         }
 
         val clickIntent: PendingIntent =
@@ -36,7 +38,8 @@ class ErrorNotificationImpl(context: Context, private val crashActivity: Class<o
                     .setCategory(NotificationCompat.CATEGORY_ERROR)
                     .setPriority(NotificationCompat.PRIORITY_HIGH)
                     .setVisibility(NotificationCompat.VISIBILITY_PRIVATE)
-                    .setContentTitle(context.getString(R.string.error_notification_name)).setContentText(msg)
+                    .setContentTitle(context.getString(R.string.error_notification_name))
+                    .setContentText(msg)
                     .setStyle(
                         NotificationCompat.BigTextStyle()
                             .setBigContentTitle(context.getString(R.string.error_notification_name))

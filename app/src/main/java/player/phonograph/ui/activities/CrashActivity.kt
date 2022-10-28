@@ -1,5 +1,26 @@
 package player.phonograph.ui.activities
 
+import com.afollestad.materialdialogs.MaterialDialog
+import com.afollestad.materialdialogs.WhichButton
+import com.afollestad.materialdialogs.actions.getActionButton
+import com.github.chr56.android.menu_dsl.attach
+import com.github.chr56.android.menu_dsl.menuItem
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
+import lib.phonograph.activity.ToolbarActivity
+import mt.util.color.primaryTextColor
+import player.phonograph.R
+import player.phonograph.databinding.ActivityCrashBinding
+import player.phonograph.notification.ErrorNotification.KEY_IS_A_CRASH
+import player.phonograph.notification.ErrorNotification.KEY_STACK_TRACE
+import player.phonograph.settings.SettingManager
+import player.phonograph.util.DeviceInfoUtil.getDeviceInfo
+import player.phonograph.util.ImageUtil.getTintedDrawable
+import player.phonograph.util.PhonographColorUtil.nightMode
+import player.phonograph.util.TimeUtil.currentDateTime
+import androidx.appcompat.widget.Toolbar
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
@@ -14,34 +35,15 @@ import android.view.Menu.NONE
 import android.view.MenuItem.SHOW_AS_ACTION_IF_ROOM
 import android.view.MenuItem.SHOW_AS_ACTION_NEVER
 import android.widget.Toast
-import androidx.appcompat.widget.Toolbar
-import com.afollestad.materialdialogs.MaterialDialog
-import com.afollestad.materialdialogs.WhichButton
-import com.afollestad.materialdialogs.actions.getActionButton
-import com.github.chr56.android.menu_dsl.attach
-import com.github.chr56.android.menu_dsl.menuItem
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.launch
-import lib.phonograph.activity.ToolbarActivity
-import mt.util.color.primaryTextColor
-import player.phonograph.BuildConfig.DEBUG
-import player.phonograph.notification.ErrorNotification.KEY_STACK_TRACE
-import player.phonograph.R
-import player.phonograph.databinding.ActivityCrashBinding
-import player.phonograph.settings.SettingManager
-import player.phonograph.util.DeviceInfoUtil.getDeviceInfo
-import player.phonograph.util.ImageUtil.getTintedDrawable
-import player.phonograph.util.PhonographColorUtil.nightMode
-import player.phonograph.util.TimeUtil.currentDateTime
+import kotlin.system.exitProcess
 import java.io.File
 import java.io.FileOutputStream
-import kotlin.system.exitProcess
 
 class CrashActivity : ToolbarActivity() {
 
     private lateinit var binding: ActivityCrashBinding
+
+    private var crashReportMode = true
 
     private fun setupTheme() {
         // statusbar theme
@@ -50,7 +52,7 @@ class CrashActivity : ToolbarActivity() {
         // toolbar theme
         findViewById<Toolbar>(R.id.toolbar).apply {
             setBackgroundColor(resources.getColor(R.color.md_grey_700, theme))
-            title = getString(R.string.crash)
+            title = if (crashReportMode) getString(R.string.crash) else "Internal Error"
             setSupportActionBar(this)
         }
     }
@@ -71,6 +73,10 @@ class CrashActivity : ToolbarActivity() {
     private lateinit var displayText: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
+
+        stackTraceText = intent.getStringExtra(KEY_STACK_TRACE) ?: getString(R.string.empty)
+        crashReportMode = intent.getBooleanExtra(KEY_IS_A_CRASH, true)
+
         autoSetStatusBarColor = false
         autoSetNavigationBarColor = false
         binding = ActivityCrashBinding.inflate(layoutInflater)
@@ -78,9 +84,12 @@ class CrashActivity : ToolbarActivity() {
         setContentView(binding.root)
         setupTheme()
 
-        stackTraceText = intent.getStringExtra(KEY_STACK_TRACE) ?: getString(R.string.empty)
         deviceInfo = getDeviceInfo(this)
-        displayText = "Crash Report:\n\n$deviceInfo\n$stackTraceText\n"
+        displayText = buildString {
+            append("${if (crashReportMode) "Crash Report" else "Internal Error"}:\n\n")
+            append("$deviceInfo\n")
+            append("$stackTraceText\n")
+        }
 
         // display textview
         binding.crashText.text = displayText
@@ -91,7 +100,9 @@ class CrashActivity : ToolbarActivity() {
             val clipboardManager = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
             val clipData = ClipData.newPlainText("CRASH", displayText)
             clipboardManager.setPrimaryClip(clipData)
-            Toast.makeText(this, "${getString(R.string.copy_to_clipboard)}:\n${getString(R.string.success)}", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this,
+                           "${getString(R.string.copy_to_clipboard)}:\n${getString(R.string.success)}",
+                           Toast.LENGTH_SHORT).show()
         }
 
         // save crash report
@@ -115,9 +126,13 @@ class CrashActivity : ToolbarActivity() {
                 icon = getTintedDrawable(R.drawable.ic_settings_white_24dp, Color.WHITE)
                 showAsActionFlag = SHOW_AS_ACTION_IF_ROOM
                 onClick {
-                    Handler(Looper.getMainLooper()).postDelayed({
-                        startActivity(Intent(this@CrashActivity, SettingsActivity::class.java))
-                    }, 80)
+                    Handler(Looper.getMainLooper()).postDelayed(
+                        {
+                            startActivity(
+                                Intent(this@CrashActivity, SettingsActivity::class.java)
+                            )
+                        }, 80
+                    )
                     true
                 }
             }
@@ -131,10 +146,12 @@ class CrashActivity : ToolbarActivity() {
                         negativeButton(android.R.string.cancel)
                         positiveButton(R.string.clear_all_preference) {
                             SettingManager(this@CrashActivity).clearAllPreference()
-                            Handler(Looper.getMainLooper()).postDelayed({
-                                Process.killProcess(Process.myPid())
-                                exitProcess(1)
-                            }, 4000)
+                            Handler(Looper.getMainLooper()).postDelayed(
+                                {
+                                    Process.killProcess(Process.myPid())
+                                    exitProcess(1)
+                                }, 4000
+                            )
                         }
                         apply {
                             getActionButton(WhichButton.POSITIVE).updateTextColor(getColor(R.color.md_red_A700))

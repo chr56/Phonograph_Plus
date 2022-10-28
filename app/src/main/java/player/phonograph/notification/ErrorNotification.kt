@@ -38,4 +38,5 @@ object ErrorNotification {
     }
 
     const val KEY_STACK_TRACE = "stack_trace"
+    const val KEY_IS_A_CRASH ="is_a_crash"
 }
