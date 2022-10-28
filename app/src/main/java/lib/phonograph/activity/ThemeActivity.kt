@@ -43,7 +43,7 @@ abstract class ThemeActivity : MultiLanguageActivity() {
         createTime = System.currentTimeMillis()
 
         // theme
-        setTheme(StyleConfig.generalTheme)
+        setTheme(StyleConfig.generalTheme(this))
 
         // night mode
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)

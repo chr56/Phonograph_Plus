@@ -181,7 +181,7 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
                 titleRes(R.string.theme_switch)
                 onClick {
                     Handler(Looper.getMainLooper()).postDelayed({
-                        val themeSetting = StyleConfig.generalTheme
+                        val themeSetting = StyleConfig.generalTheme(this@MainActivity)
 
                         if (themeSetting == R.style.Theme_Phonograph_Auto) {
                             Toast.makeText(activity, R.string.auto_mode_on, Toast.LENGTH_SHORT).show()
