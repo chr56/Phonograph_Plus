@@ -315,13 +315,13 @@ class Setting(context: Context) {
         //
         private var singleton: Setting? = null
         val instance: Setting
-            get() {
-                if (singleton == null) singleton = Setting(App.instance)
-                return singleton!!
-            }
+            get() = instance(App.instance)
 
         @JvmStatic
-        fun instance(): Setting = instance
+        fun instance(context: Context = App.instance): Setting {
+            if (singleton == null) singleton = Setting(context)
+            return singleton!!
+        }
 
         @JvmStatic
         fun isAllowedToDownloadMetadata(context: Context): Boolean {
