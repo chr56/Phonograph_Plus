@@ -136,7 +136,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
     private fun updatePathFilterExcludeMode() {
         findPreference<Preference>(getString(R.string.preference_key_blacklist))?.summary =
-            if (Setting.instance().pathFilterExcludeMode) {
+            if (Setting.instance.pathFilterExcludeMode) {
                 "${getString(R.string.path_filter_excluded_mode)} - \n${getString(R.string.pref_summary_path_filter_excluded_mode)}"
             } else {
                 "${getString(R.string.path_filter_included_mode)} - \n${getString(R.string.pref_summary_path_filter_included_mode)}"

@@ -10,7 +10,7 @@ import androidx.annotation.RequiresApi
 import androidx.core.graphics.drawable.IconCompat
 import mt.pref.ThemeColor
 import player.phonograph.R
-import player.phonograph.settings.Setting.Companion.instance
+import player.phonograph.settings.Setting
 import player.phonograph.util.ImageUtil
 /**
  * @author Adrian Campos
@@ -19,7 +19,7 @@ import player.phonograph.util.ImageUtil
 object AppShortcutIconGenerator {
 
     fun generateThemedIcon(context: Context, iconId: Int): Icon =
-        if (instance().coloredAppShortcuts) {
+        if (Setting.instance(context).coloredAppShortcuts) {
             generateUserThemedIcon(context, iconId).toIcon(context)
         } else {
             generateDefaultThemedIcon(context, iconId).toIcon(context)

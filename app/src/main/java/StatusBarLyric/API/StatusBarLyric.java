@@ -95,7 +95,7 @@ public class StatusBarLyric {
     @Keep
     protected void sendLyric(Context context, String lyric, String icon, String serviceName, boolean useSystemMusicActive) {
 
-        if (!hasEnable() && Setting.instance().getBroadcastSynchronizedLyrics()) {
+        if (!hasEnable() && Setting.instance(context).getBroadcastSynchronizedLyrics()) {
             Log.d("statusbar_lyric", "use fallback: " + lyric);
             if (!lyric.isEmpty()) {
                 context.sendBroadcast(

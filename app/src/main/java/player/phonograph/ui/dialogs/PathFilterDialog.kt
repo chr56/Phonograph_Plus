@@ -29,7 +29,7 @@ import java.io.File
  */
 class PathFilterDialog : DialogFragment() {
 
-    private val mode get() = Setting.instance().pathFilterExcludeMode
+    private val mode get() = Setting.instance.pathFilterExcludeMode
 
     private lateinit var titlePanel: TitlePanel
     private lateinit var contentPanel: ContentPanel
@@ -55,8 +55,8 @@ class PathFilterDialog : DialogFragment() {
 
         buttonPanel = buttonPanel(context) {
             button(0, getString(R.string.swith_mode), accentColor) {
-                val inv = !Setting.instance().pathFilterExcludeMode
-                Setting.instance().pathFilterExcludeMode = inv
+                val inv = !Setting.instance.pathFilterExcludeMode
+                Setting.instance.pathFilterExcludeMode = inv
                 loadPaths()
                 App.instance.sendBroadcast(Intent(MusicServiceMsgConst.MEDIA_STORE_CHANGED))
             }

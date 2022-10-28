@@ -73,7 +73,7 @@ internal fun actionRemoveFromQueue(index: Int): Boolean =
     MusicPlayerRemote.removeFromQueue(index)
 
 fun Song.actionGotoDetail(activity: FragmentActivity): Boolean {
-    if (Setting.instance().useLegacyDetailDialog)
+    if (Setting.instance(activity).useLegacyDetailDialog)
         SongDetailDialog.create(this).show(activity.supportFragmentManager, "SONG_DETAILS")
     else
         DetailActivity.launch(activity, id)

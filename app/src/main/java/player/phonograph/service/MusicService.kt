@@ -100,7 +100,7 @@ class MusicService : Service(), OnSharedPreferenceChangeListener {
             this@MusicService::handleAndSendChangeInternal
         )
         registerReceiver(widgetIntentReceiver, IntentFilter(APP_WIDGET_UPDATE))
-        Setting.instance().registerOnSharedPreferenceChangedListener(this)
+        Setting.instance.registerOnSharedPreferenceChangedListener(this)
         sendBroadcast(Intent("player.phonograph.PHONOGRAPH_MUSIC_SERVICE_CREATED"))
     }
 
