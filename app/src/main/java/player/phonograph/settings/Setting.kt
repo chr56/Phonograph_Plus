@@ -4,18 +4,17 @@
 
 package player.phonograph.settings
 
-import android.content.Context
-import android.content.SharedPreferences
-import android.net.ConnectivityManager
-import android.net.NetworkCapabilities
-import androidx.preference.PreferenceManager
 import player.phonograph.App
-import player.phonograph.R
 import player.phonograph.model.sort.FileSortMode
 import player.phonograph.model.sort.SortMode
 import player.phonograph.model.sort.SortRef
 import player.phonograph.util.CalendarUtil
 import player.phonograph.util.FileUtil.defaultStartDirectory
+import androidx.preference.PreferenceManager
+import android.content.Context
+import android.content.SharedPreferences
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 
@@ -152,43 +151,8 @@ class Setting(context: Context) {
         }
 
     // List-Appearance
-    var albumGridSize: Int by IntPref(
-        ALBUM_GRID_SIZE,
-        App.instance.resources.getInteger(R.integer.default_grid_columns)
-    )
-    var songGridSize: Int by IntPref(
-        SONG_GRID_SIZE,
-        App.instance.resources.getInteger(R.integer.default_list_columns)
-    )
-    var artistGridSize: Int by IntPref(
-        ARTIST_GRID_SIZE,
-        App.instance.resources.getInteger(R.integer.default_list_columns)
-    )
-    var genreGridSize: Int by IntPref(
-        GENRE_GRID_SIZE,
-        App.instance.resources.getInteger(R.integer.default_list_columns)
-    )
-    var albumGridSizeLand: Int by IntPref(
-        ALBUM_GRID_SIZE_LAND,
-        App.instance.resources.getInteger(R.integer.default_grid_columns_land)
-    )
-    var songGridSizeLand: Int by IntPref(
-        SONG_GRID_SIZE_LAND,
-        App.instance.resources.getInteger(R.integer.default_grid_columns_land)
-    )
-    var artistGridSizeLand: Int by IntPref(
-        ARTIST_GRID_SIZE_LAND,
-        App.instance.resources.getInteger(R.integer.default_grid_columns_land)
-    )
-    var genreGridSizeLand: Int by IntPref(
-        GENRE_GRID_SIZE_LAND,
-        App.instance.resources.getInteger(R.integer.default_grid_columns_land)
-    )
-    var albumColoredFooters by BooleanPref(ALBUM_COLORED_FOOTERS, true)
+    /*  see also [DisplaySetting] */
     var albumArtistColoredFooters by BooleanPref(ALBUM_ARTIST_COLORED_FOOTERS, true)
-    var songColoredFooters by BooleanPref(SONG_COLORED_FOOTERS, true)
-    var artistColoredFooters by BooleanPref(ARTIST_COLORED_FOOTERS, true)
-
     var showFileImages by BooleanPref(SHOW_FILE_IMAGINES, false)
 
     // SleepTimer
@@ -271,17 +235,7 @@ class Setting(context: Context) {
         private const val FILE_SORT_MODE = "file_sort_mode"
 
         // List-Appearance
-        private const val ALBUM_GRID_SIZE = "album_grid_size"
-        private const val ALBUM_GRID_SIZE_LAND = "album_grid_size_land"
-        private const val SONG_GRID_SIZE = "song_grid_size"
-        private const val SONG_GRID_SIZE_LAND = "song_grid_size_land"
-        private const val ARTIST_GRID_SIZE = "artist_grid_size"
-        private const val ARTIST_GRID_SIZE_LAND = "artist_grid_size_land"
-        private const val GENRE_GRID_SIZE = "genre_grid_size"
-        private const val GENRE_GRID_SIZE_LAND = "genre_grid_size_land"
-        private const val ALBUM_COLORED_FOOTERS = "album_colored_footers"
-        private const val SONG_COLORED_FOOTERS = "song_colored_footers"
-        private const val ARTIST_COLORED_FOOTERS = "artist_colored_footers"
+        /*  see also [DisplaySetting] */
         private const val ALBUM_ARTIST_COLORED_FOOTERS = "album_artist_colored_footers"
         private const val SHOW_FILE_IMAGINES = "show_file_imagines"
 
@@ -318,7 +272,7 @@ class Setting(context: Context) {
             get() = instance(App.instance)
 
         @JvmStatic
-        fun instance(context: Context = App.instance): Setting {
+        fun instance(context: Context): Setting {
             if (singleton == null) singleton = Setting(context)
             return singleton!!
         }

@@ -30,7 +30,7 @@ import player.phonograph.model.sort.SortRef
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.queue.ShuffleMode
 import player.phonograph.settings.Setting
-import player.phonograph.ui.fragments.pages.util.DisplayUtil
+import player.phonograph.ui.fragments.pages.util.DisplayConfig
 import player.phonograph.ui.components.popup.ListOptionsPopup
 import player.phonograph.util.ImageUtil.getTintedDrawable
 import player.phonograph.util.PhonographColorUtil.nightMode
@@ -39,14 +39,14 @@ class SongPage : AbsDisplayPage<Song, DisplayAdapter<Song>, GridLayoutManager>()
 
     override fun initLayoutManager(): GridLayoutManager {
         return GridLayoutManager(hostFragment.requireContext(), 1)
-            .also { it.spanCount = DisplayUtil(this).gridSize }
+            .also { it.spanCount = DisplayConfig(this).gridSize }
     }
 
     override fun initAdapter(): DisplayAdapter<Song> {
-        val displayUtil = DisplayUtil(this)
+        val displayConfig = DisplayConfig(this)
 
         val layoutRes =
-            if (displayUtil.gridSize > displayUtil.maxGridSizeForList) R.layout.item_grid
+            if (displayConfig.gridSize > displayConfig.maxGridSizeForList) R.layout.item_grid
             else R.layout.item_list
         Log.d(
             TAG, "layoutRes: ${if (layoutRes == R.layout.item_grid) "GRID" else if (layoutRes == R.layout.item_list) "LIST" else "UNKNOWN"}"
@@ -58,7 +58,7 @@ class SongPage : AbsDisplayPage<Song, DisplayAdapter<Song>, GridLayoutManager>()
             ArrayList(), // empty until songs loaded
             layoutRes
         ) {
-            usePalette = displayUtil.colorFooter
+            usePalette = displayConfig.colorFooter
         }
     }
 
@@ -83,11 +83,11 @@ class SongPage : AbsDisplayPage<Song, DisplayAdapter<Song>, GridLayoutManager>()
     }
 
     override fun setupSortOrderImpl(
-        displayUtil: DisplayUtil,
+        displayConfig: DisplayConfig,
         popup: ListOptionsPopup,
     ) {
 
-        val currentSortMode = displayUtil.sortMode
+        val currentSortMode = displayConfig.sortMode
         if (BuildConfig.DEBUG) Log.d(GenrePage.TAG, "Read cfg: sortMode $currentSortMode")
 
         popup.allowRevert = true
@@ -105,12 +105,12 @@ class SongPage : AbsDisplayPage<Song, DisplayAdapter<Song>, GridLayoutManager>()
     }
 
     override fun saveSortOrderImpl(
-        displayUtil: DisplayUtil,
+        displayConfig: DisplayConfig,
         popup: ListOptionsPopup,
     ) {
         val selected = SortMode(popup.sortRef, popup.revert)
-        if (displayUtil.sortMode != selected) {
-            displayUtil.sortMode = selected
+        if (displayConfig.sortMode != selected) {
+            displayConfig.sortMode = selected
             loadDataSet()
             Log.d(AlbumPage.TAG, "Write cfg: sortMode $selected")
         }

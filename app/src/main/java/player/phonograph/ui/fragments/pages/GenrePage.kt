@@ -20,14 +20,14 @@ import player.phonograph.mediastore.GenreLoader
 import player.phonograph.model.sort.SortMode
 import player.phonograph.model.sort.SortRef
 import player.phonograph.model.Genre
-import player.phonograph.ui.fragments.pages.util.DisplayUtil
+import player.phonograph.ui.fragments.pages.util.DisplayConfig
 import player.phonograph.ui.components.popup.ListOptionsPopup
 
 class GenrePage : AbsDisplayPage<Genre, DisplayAdapter<Genre>, GridLayoutManager>() {
 
     override fun initLayoutManager(): GridLayoutManager {
         return GridLayoutManager(hostFragment.requireContext(), 1)
-            .also { it.spanCount = DisplayUtil(this).gridSize }
+            .also { it.spanCount = DisplayConfig(this).gridSize }
     }
 
     override fun initAdapter(): DisplayAdapter<Genre> {
@@ -62,11 +62,11 @@ class GenrePage : AbsDisplayPage<Genre, DisplayAdapter<Genre>, GridLayoutManager
     }
 
     override fun setupSortOrderImpl(
-        displayUtil: DisplayUtil,
+        displayConfig: DisplayConfig,
         popup: ListOptionsPopup
     ) {
 
-        val currentSortMode = displayUtil.sortMode
+        val currentSortMode = displayConfig.sortMode
         if (DEBUG) Log.d(TAG, "Read cfg: sortMode $currentSortMode")
 
         popup.allowRevert = true
@@ -77,12 +77,12 @@ class GenrePage : AbsDisplayPage<Genre, DisplayAdapter<Genre>, GridLayoutManager
     }
 
     override fun saveSortOrderImpl(
-        displayUtil: DisplayUtil,
+        displayConfig: DisplayConfig,
         popup: ListOptionsPopup,
     ) {
         val selected = SortMode(popup.sortRef, popup.revert)
-        if (displayUtil.sortMode != selected) {
-            displayUtil.sortMode = selected
+        if (displayConfig.sortMode != selected) {
+            displayConfig.sortMode = selected
             loadDataSet()
             Log.d(TAG, "Write cfg: sortMode $selected")
         }

@@ -29,7 +29,7 @@ import player.phonograph.R
 import player.phonograph.adapter.display.DisplayAdapter
 import player.phonograph.databinding.FragmentDisplayPageBinding
 import player.phonograph.model.Displayable
-import player.phonograph.ui.fragments.pages.util.DisplayUtil
+import player.phonograph.ui.fragments.pages.util.DisplayConfig
 import player.phonograph.ui.components.popup.ListOptionsPopup
 import player.phonograph.util.ImageUtil.getTintedDrawable
 import player.phonograph.util.PhonographColorUtil.nightMode
@@ -168,41 +168,41 @@ sealed class AbsDisplayPage<IT, A : DisplayAdapter<out Displayable>, LM : GridLa
     protected open fun configAppBar(panelToolbar: Toolbar) {}
 
     private fun configPopup(popup: ListOptionsPopup) {
-        val displayUtil = DisplayUtil(this)
+        val displayConfig = DisplayConfig(this)
 
         // grid size
         if (Util.isLandscape(resources)) popup.viewBinding.titleGridSize.text = resources.getText(R.string.action_grid_size_land)
-        popup.maxGridSize = displayUtil.maxGridSize
-        popup.gridSize = displayUtil.gridSize
+        popup.maxGridSize = displayConfig.maxGridSize
+        popup.gridSize = displayConfig.gridSize
 
         // color footer
         if (this !is GenrePage) { // Genre Page never is colored
             popup.colorFooterVisibility = true
-            popup.colorFooterEnability = displayUtil.gridSize > displayUtil.maxGridSizeForList
-            popup.colorFooter = displayUtil.colorFooter
+            popup.colorFooterEnability = displayConfig.gridSize > displayConfig.maxGridSizeForList
+            popup.colorFooter = displayConfig.colorFooter
         }
 
         // sort order
-        setupSortOrderImpl(displayUtil, popup)
+        setupSortOrderImpl(displayConfig, popup)
     }
 
     protected abstract fun setupSortOrderImpl(
-        displayUtil: DisplayUtil,
+        displayConfig: DisplayConfig,
         popup: ListOptionsPopup,
     )
 
     protected fun dismissPopup(popup: ListOptionsPopup) {
 
-        val displayUtil = DisplayUtil(this)
+        val displayConfig = DisplayConfig(this)
 
         //  Grid Size
         val gridSizeSelected = popup.gridSize
 
-        if (gridSizeSelected > 0 && gridSizeSelected != displayUtil.gridSize) {
+        if (gridSizeSelected > 0 && gridSizeSelected != displayConfig.gridSize) {
 
-            displayUtil.gridSize = gridSizeSelected
+            displayConfig.gridSize = gridSizeSelected
             val itemLayoutRes =
-                if (gridSizeSelected > displayUtil.maxGridSizeForList) R.layout.item_grid else R.layout.item_list
+                if (gridSizeSelected > displayConfig.maxGridSizeForList) R.layout.item_grid else R.layout.item_list
 
             if (adapter.layoutRes != itemLayoutRes) {
                 loadDataSet()
@@ -214,19 +214,19 @@ sealed class AbsDisplayPage<IT, A : DisplayAdapter<out Displayable>, LM : GridLa
         if (this !is GenrePage) {
             // color footer
             val coloredFootersSelected = popup.colorFooter
-            if (displayUtil.colorFooter != coloredFootersSelected) {
-                displayUtil.colorFooter = coloredFootersSelected
+            if (displayConfig.colorFooter != coloredFootersSelected) {
+                displayConfig.colorFooter = coloredFootersSelected
                 adapter.usePalette = coloredFootersSelected
                 refreshDataSet()
             }
         }
 
         // sort order
-        saveSortOrderImpl(displayUtil, popup)
+        saveSortOrderImpl(displayConfig, popup)
     }
 
     protected abstract fun saveSortOrderImpl(
-        displayUtil: DisplayUtil,
+        displayConfig: DisplayConfig,
         popup: ListOptionsPopup,
     )
 
