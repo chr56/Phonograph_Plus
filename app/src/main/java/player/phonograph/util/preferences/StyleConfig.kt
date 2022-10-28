@@ -4,17 +4,12 @@
 
 package player.phonograph.util.preferences
 
-import player.phonograph.App
-import androidx.annotation.StyleRes
 import player.phonograph.R
 import player.phonograph.settings.Setting
+import androidx.annotation.StyleRes
 import android.content.Context
 
 object StyleConfig {
-
-    @get:StyleRes
-    val generalTheme: Int
-        get() = generalTheme(App.instance)
 
     @StyleRes
     fun generalTheme(context: Context): Int =

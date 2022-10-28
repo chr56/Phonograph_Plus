@@ -26,6 +26,6 @@ class PrimaryTextViewX : AppCompatTextView {
     }
 
     private fun init(context: Context, attrs: AttributeSet?) {
-        setTextColor(context.primaryTextColor(context.resources.nightMode))
+        setTextColor(context.primaryTextColor(context.resources.nightMode(context)))
     }
 }
