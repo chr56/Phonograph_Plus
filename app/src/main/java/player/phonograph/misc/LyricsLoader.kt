@@ -21,7 +21,9 @@ import player.phonograph.model.lyrics.LyricsList
 import player.phonograph.model.lyrics.LyricsSource
 import player.phonograph.model.lyrics.TextLyrics
 import player.phonograph.notification.ErrorNotification
+import player.phonograph.settings.Setting
 import player.phonograph.util.FileUtil
+import player.phonograph.util.Util.debug
 import java.io.File
 
 object LyricsLoader {
@@ -29,6 +31,12 @@ object LyricsLoader {
     private val backgroundCoroutine: CoroutineScope by lazy { CoroutineScope(Dispatchers.IO) }
 
     suspend fun loadLyrics(songFile: File, song: Song): LyricsList {
+        if (!Setting.instance.enableLyrics) {
+            debug {
+                Log.v(TAG,"Lyrics is off for ${song.title}")
+            }
+            return LyricsList()
+        }
 
         // embedded
         val embedded = backgroundCoroutine.async(Dispatchers.IO) {
@@ -65,7 +73,10 @@ object LyricsLoader {
         return LyricsList(resultList)
     }
 
-    private fun parseEmbedded(songFile: File, lyricsSource: LyricsSource = LyricsSource.Embedded()): AbsLyrics? = try {
+    private fun parseEmbedded(
+        songFile: File,
+        lyricsSource: LyricsSource = LyricsSource.Embedded(),
+    ): AbsLyrics? = try {
         AudioFileIO.read(songFile).tag?.getFirst(FieldKey.LYRICS).let { str ->
             if (str != null && str.trim().isNotBlank()) {
                 parse(str, lyricsSource)
@@ -80,11 +91,16 @@ object LyricsLoader {
         }
         null
     } catch (e: Exception) {
-        ErrorNotification.postErrorNotification(e, "Failed to read lyrics from song\n", App.instance)
+        ErrorNotification.postErrorNotification(e,
+                                                "Failed to read lyrics from song\n",
+                                                App.instance)
         null
     }
 
-    private fun parseExternal(file: File, lyricsSource: LyricsSource = LyricsSource.Unknown()): AbsLyrics? =
+    private fun parseExternal(
+        file: File,
+        lyricsSource: LyricsSource = LyricsSource.Unknown(),
+    ): AbsLyrics? =
         file.readText().let { content ->
             if (content.isNotEmpty()) parse(content, lyricsSource) else null
         }
@@ -126,12 +142,12 @@ object LyricsLoader {
                     if (DEBUG) Log.v(TAG, "add a precise file: ${f.path} for ${song.title}")
                     return@listFiles true
                 }
-                vagueRegex1.matches(f.name) -> {
+                vagueRegex1.matches(f.name)  -> {
                     vagueFiles.add(f)
                     if (DEBUG) Log.v(TAG, "add a vague file: ${f.path} for ${song.title}")
                     return@listFiles true
                 }
-                vagueRegex2.matches(f.name) -> {
+                vagueRegex2.matches(f.name)  -> {
                     vagueFiles.add(f)
                     if (DEBUG) Log.v(TAG, "add a vague file: ${f.path} for ${song.title}")
                     return@listFiles true
@@ -143,7 +159,8 @@ object LyricsLoader {
         return if (result.isNullOrEmpty()) {
             emptyPair
         } else {
-            if (DEBUG) Log.v(TAG, result.fold("All lyrics found:") { acc, str -> "$acc;${str.path}" })
+            if (DEBUG) Log.v(TAG,
+                             result.fold("All lyrics found:") { acc, str -> "$acc;${str.path}" })
             Pair(preciseFiles, vagueFiles)
         }
     }
