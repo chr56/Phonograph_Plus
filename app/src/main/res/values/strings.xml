@@ -418,4 +418,6 @@
     <string name="path_filter_included_mode">Include Mode</string>
     <string name="pref_summary_path_filter_excluded_mode">The content of excluded folders is hidden from your library.</string>
     <string name="pref_summary_path_filter_included_mode">Your library only shows the content from included folders.</string>
+    <string name="pref_title_load_lyrics">Load Lyrics</string>
+    <string name="pref_summary_load_lyrics">General switch of lyrics, switch off to disable all lyrics feature</string>
 </resources>

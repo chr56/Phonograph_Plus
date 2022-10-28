@@ -71,6 +71,7 @@ class Setting(context: Context) {
     var rememberShuffle: Boolean by BooleanPref(REMEMBER_SHUFFLE, true)
     var gaplessPlayback: Boolean by BooleanPref(GAPLESS_PLAYBACK, false)
     var audioDucking: Boolean by BooleanPref(AUDIO_DUCKING, true)
+    var enableLyrics: Boolean by BooleanPref(ENABLE_LYRICS, true)
     var broadcastSynchronizedLyrics: Boolean by BooleanPref(BROADCAST_SYNCHRONIZED_LYRICS, true)
     var broadcastCurrentPlayerState: Boolean by BooleanPref(BROADCAST_CURRENT_PLAYER_STATE, true)
 
@@ -247,6 +248,7 @@ class Setting(context: Context) {
         private const val REMEMBER_SHUFFLE = "remember_shuffle"
         private const val AUDIO_DUCKING = "audio_ducking"
         const val GAPLESS_PLAYBACK = "gapless_playback"
+        private const val ENABLE_LYRICS = "enable_lyrics"
         const val BROADCAST_SYNCHRONIZED_LYRICS = "synchronized_lyrics_send"
         const val BROADCAST_CURRENT_PLAYER_STATE = "broadcast_current_player_state"
 

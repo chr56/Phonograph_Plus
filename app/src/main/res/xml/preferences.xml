@@ -206,6 +206,13 @@
 
         <lib.phonograph.preference.SwitchPreferenceX
             android:defaultValue="true"
+            android:key="enable_lyrics"
+            android:summary="@string/pref_summary_load_lyrics"
+            android:title="@string/pref_title_load_lyrics"
+            app:iconSpaceReserved="false"/>
+
+        <lib.phonograph.preference.SwitchPreferenceX
+            android:defaultValue="true"
             android:key="synchronized_lyrics_send"
             android:summary="@string/pref_summary_send_lyrics"
             android:title="@string/pref_title_send_lyrics"

@@ -407,4 +407,6 @@
     <string name="path_filter_included_mode">包含模式</string>
     <string name="pref_summary_path_filter_excluded_mode">列入排除路徑的文件夾將不會顯示在音樂庫中</string>
     <string name="pref_summary_path_filter_included_mode">音樂庫中只展示屬於包含路徑的</string>
+    <string name="pref_title_load_lyrics">開啟歌詞</string>
+    <string name="pref_summary_load_lyrics">歌詞總開關，可關閉所有歌詞功能</string>
 </resources>

@@ -407,4 +407,6 @@
     <string name="path_filter_included_mode">白名单模式</string>
     <string name="pref_summary_path_filter_excluded_mode">黑名单文件夹中的内容将被隐藏</string>
     <string name="pref_summary_path_filter_included_mode">仅显示白名单文件夹中的内容</string>
+    <string name="pref_title_load_lyrics">开启歌词</string>
+    <string name="pref_summary_load_lyrics">歌词总开关，可关闭所有歌词功能</string>
 </resources>
