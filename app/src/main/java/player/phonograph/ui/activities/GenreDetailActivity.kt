@@ -1,15 +1,7 @@
 package player.phonograph.ui.activities
 
-import android.content.Context
-import android.os.Bundle
-import android.view.Menu
-import android.view.MenuItem
-import android.view.View
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.github.chr56.android.menu_dsl.attach
 import com.github.chr56.android.menu_dsl.menuItem
-import kotlinx.coroutines.*
 import lib.phonograph.cab.ToolbarCab
 import lib.phonograph.cab.createToolbarCab
 import mt.tint.setActivityToolbarColorAuto
@@ -19,6 +11,7 @@ import player.phonograph.adapter.base.MultiSelectionCabController
 import player.phonograph.adapter.display.SongDisplayAdapter
 import player.phonograph.databinding.ActivityGenreDetailBinding
 import player.phonograph.mediastore.GenreLoader
+import player.phonograph.misc.menuProvider
 import player.phonograph.model.Genre
 import player.phonograph.model.Song
 import player.phonograph.service.MusicPlayerRemote
@@ -26,6 +19,14 @@ import player.phonograph.service.queue.ShuffleMode
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
 import player.phonograph.util.ImageUtil.getTintedDrawable
 import player.phonograph.util.ViewUtil.setUpFastScrollRecyclerViewColor
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import android.content.Context
+import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
+import android.view.View
+import kotlinx.coroutines.*
 
 class GenreDetailActivity :
     AbsSlidingMusicPanelActivity() {
@@ -93,6 +94,7 @@ class GenreDetailActivity :
         setSupportActionBar(binding.toolbar)
         supportActionBar!!.title = genre.name
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+        addMenuProvider(menuProvider(this::setupMenu, this::setupMenuCallback))
         setActivityToolbarColorAuto(binding.toolbar)
 
         cab = createToolbarCab(this, R.id.cab_stub, R.id.multi_selection_cab)
@@ -102,7 +104,7 @@ class GenreDetailActivity :
     lateinit var cab: ToolbarCab
     lateinit var cabController: MultiSelectionCabController
 
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+    private fun setupMenu(menu: Menu) {
         val iconColor = primaryTextColor(primaryColor)
         attach(menu) {
             menuItem {
@@ -126,17 +128,16 @@ class GenreDetailActivity :
                 }
             }
         }
-        return true
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+    private fun setupMenuCallback(item: MenuItem): Boolean {
         when (item.itemId) {
             android.R.id.home -> {
                 onBackPressed()
                 return true
             }
         }
-        return super.onOptionsItemSelected(item)
+        return true
     }
 
     override fun onBackPressed() {

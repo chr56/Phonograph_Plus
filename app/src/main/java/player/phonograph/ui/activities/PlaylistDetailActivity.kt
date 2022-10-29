@@ -4,16 +4,6 @@
 
 package player.phonograph.ui.activities
 
-import android.os.Bundle
-import android.view.Menu
-import android.view.MenuItem
-import android.view.View
-import android.view.View.GONE
-import android.view.View.VISIBLE
-import androidx.activity.viewModels
-import androidx.core.graphics.BlendModeCompat
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.list.listItemsSingleChoice
 import com.afollestad.materialdialogs.utils.MDUtil.getStringArray
@@ -36,6 +26,7 @@ import player.phonograph.adapter.display.PlaylistSongAdapter
 import player.phonograph.databinding.ActivityPlaylistDetailBinding
 import player.phonograph.misc.SAFCallbackHandlerActivity
 import player.phonograph.misc.SafLauncher
+import player.phonograph.misc.menuProvider
 import player.phonograph.model.Song
 import player.phonograph.model.getReadableDurationString
 import player.phonograph.model.playlist.FilePlaylist
@@ -48,6 +39,16 @@ import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
 import player.phonograph.util.ImageUtil.getTintedDrawable
 import player.phonograph.util.PlaylistsUtil
 import player.phonograph.util.ViewUtil.setUpFastScrollRecyclerViewColor
+import androidx.activity.viewModels
+import androidx.core.graphics.BlendModeCompat
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
+import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
 
 class PlaylistDetailActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity {
 
@@ -76,6 +77,7 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandle
         binding = ActivityPlaylistDetailBinding.inflate(layoutInflater)
         setUpToolbar()
         super.onCreate(savedInstanceState)
+        addMenuProvider(menuProvider(this::setupMenu, this::setupMenuCallback))
 
         setActivityToolbarColorAuto(binding.toolbar)
 
@@ -198,14 +200,13 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandle
         }
     }
 
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+    private fun setupMenu(menu: Menu) {
         val playlist: Playlist = model.playlist.value ?: FilePlaylist()
         val iconColor = primaryTextColor(primaryColor)
         playlistToolbar(menu, this, playlist, iconColor)
-        return super.onCreateOptionsMenu(menu)
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+    private fun setupMenuCallback(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.action_edit_playlist -> {
                 if (model.playlist.value is FilePlaylist) {

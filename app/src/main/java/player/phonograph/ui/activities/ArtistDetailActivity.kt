@@ -29,6 +29,7 @@ import player.phonograph.coil.target.PaletteTargetBuilder
 import player.phonograph.databinding.ActivityArtistDetailBinding
 import player.phonograph.interfaces.PaletteColorHolder
 import player.phonograph.misc.SimpleObservableScrollViewCallbacks
+import player.phonograph.misc.menuProvider
 import player.phonograph.model.Album
 import player.phonograph.model.Artist
 import player.phonograph.model.Song
@@ -273,13 +274,14 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorHolder 
         setSupportActionBar(viewBinding.toolbar)
         supportActionBar?.title = null
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        addMenuProvider(menuProvider(this::setupMenu, this::setupMenuCallback))
         setActivityToolbarColorAuto(viewBinding.toolbar)
         // MultiSelectionCab
         cab = createToolbarCab(this, R.id.cab_stub, R.id.multi_selection_cab)
         cabController = MultiSelectionCabController(cab)
     }
 
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+    private fun setupMenu(menu: Menu) {
         artistDetailToolbar(menu, this, artist, primaryTextColor(activityColor), this::biographyCallback)
         attach(menu) {
             menuItem(title = getString(R.string.colored_footers)) {
@@ -294,7 +296,13 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorHolder 
             }
         }
         tintMenu(viewBinding.toolbar, menu, primaryTextColor(activityColor))
-        return super.onCreateOptionsMenu(menu)
+    }
+
+    private fun setupMenuCallback(item: MenuItem): Boolean {
+        return if (item.itemId == android.R.id.home) {
+            super.onBackPressed()
+            true
+        } else super.onOptionsItemSelected(item)
     }
 
     private fun biographyCallback(artist: Artist): Boolean {
@@ -330,12 +338,6 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorHolder 
         return true
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return if (item.itemId == android.R.id.home) {
-            super.onBackPressed()
-            true
-        } else super.onOptionsItemSelected(item)
-    }
 
     override fun onBackPressed() {
         if (!cabController.dismiss()) {

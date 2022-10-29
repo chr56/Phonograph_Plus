@@ -23,6 +23,7 @@ import mt.tint.setActivityToolbarColorAuto
 import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.misc.OpenDocumentContract
+import player.phonograph.misc.menuProvider
 import player.phonograph.provider.DatabaseManger
 import player.phonograph.settings.SettingManager
 import player.phonograph.ui.fragments.SettingsFragment
@@ -39,6 +40,7 @@ class SettingsActivity : ToolbarActivity() {
         toolbar.setBackgroundColor(ThemeColor.primaryColor(this))
         setSupportActionBar(toolbar)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+        addMenuProvider(menuProvider(this::setupMenu, this::setupMenuCallback))
         setActivityToolbarColorAuto(toolbar)
 
         if (savedInstanceState == null) {
@@ -51,7 +53,7 @@ class SettingsActivity : ToolbarActivity() {
         }
     }
 
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+    private fun setupMenu(menu: Menu) {
         attach(from = menu) {
             menuItem {
                 itemId = R.id.action_export_data
@@ -79,10 +81,9 @@ class SettingsActivity : ToolbarActivity() {
                 showAsActionFlag = SHOW_AS_ACTION_NEVER
             }
         }
-        return true
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+    private fun setupMenuCallback(item: MenuItem): Boolean {
         when (item.itemId) {
             android.R.id.home -> {
                 onBackPressed()
@@ -126,19 +127,20 @@ class SettingsActivity : ToolbarActivity() {
                 }
             }
         }
-        return super.onOptionsItemSelected(item)
+        return false
     }
 
     private lateinit var createAction: (Uri) -> Boolean
     private lateinit var openAction: (Uri) -> Boolean
 
-    private val createLauncher = registerForActivityResult(ActivityResultContracts.CreateDocument()) {
-        it?.let { uri ->
-            CoroutineScope(Dispatchers.IO).launch {
-                createAction(uri).andReport()
+    private val createLauncher =
+        registerForActivityResult(ActivityResultContracts.CreateDocument()) {
+            it?.let { uri ->
+                CoroutineScope(Dispatchers.IO).launch {
+                    createAction(uri).andReport()
+                }
             }
         }
-    }
     private val openLauncher = registerForActivityResult(OpenDocumentContract()) {
         it?.let { uri ->
             CoroutineScope(Dispatchers.IO).launch {

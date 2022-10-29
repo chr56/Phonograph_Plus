@@ -24,6 +24,7 @@ import player.phonograph.adapter.display.SongDisplayAdapter
 import player.phonograph.coil.loadImage
 import player.phonograph.coil.target.PaletteTargetBuilder
 import player.phonograph.databinding.ActivityAlbumDetailBinding
+import player.phonograph.misc.menuProvider
 import player.phonograph.model.Album
 import player.phonograph.model.getReadableDurationString
 import player.phonograph.model.getYearString
@@ -80,6 +81,7 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity() {
         // activity
         setSupportActionBar(viewBinding.toolbar)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+        addMenuProvider(menuProvider(this::setupMenu, this::setupMenuCallback))
         setActivityToolbarColorAuto(viewBinding.toolbar)
 
         // content
@@ -197,7 +199,7 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity() {
         viewBinding.albumYearText.text = getYearString(album.year)
     }
 
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+    private fun setupMenu(menu: Menu) {
         albumDetailToolbar(menu, this, album, primaryTextColor(activityColor)) {
             // load wiki
             if (isWikiPreLoaded) {
@@ -210,11 +212,9 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity() {
             true
         }
         tintMenu(viewBinding.toolbar, menu, primaryTextColor(activityColor))
-
-        return super.onCreateOptionsMenu(menu)
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+    private fun setupMenuCallback(item: MenuItem): Boolean {
         return if (item.itemId == android.R.id.home) {
             super.onBackPressed()
             true

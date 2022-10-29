@@ -1,10 +1,5 @@
 package player.phonograph.ui.activities
 
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import kotlinx.coroutines.yield
 import mt.tint.setActivityToolbarColor
 import mt.util.color.primaryTextColor
 import player.phonograph.R
@@ -13,6 +8,7 @@ import player.phonograph.databinding.ActivitySearchBinding
 import player.phonograph.mediastore.AlbumLoader
 import player.phonograph.mediastore.ArtistLoader
 import player.phonograph.mediastore.SongLoader
+import player.phonograph.misc.menuProvider
 import player.phonograph.ui.activities.base.AbsMusicServiceActivity
 import player.phonograph.util.ImageUtil.drawableColorFilter
 import player.phonograph.util.ImageUtil.makeContrastDrawable
@@ -31,6 +27,11 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import kotlinx.coroutines.yield
 
 class SearchActivity :
         AbsMusicServiceActivity(),
@@ -115,10 +116,11 @@ class SearchActivity :
     private fun setUpToolBar() {
         setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        addMenuProvider(menuProvider(this::setupMenu, this::setupMenuCallback))
         setActivityToolbarColor(binding.toolbar, primaryColor)
     }
 
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+    private fun setupMenu(menu: Menu) {
         menuInflater.inflate(R.menu.menu_search, menu)
 
         val searchItem = menu.findItem(R.id.search)
@@ -146,15 +148,13 @@ class SearchActivity :
         with(binding.toolbar) {
             collapseIcon = makeContrastDrawable(collapseIcon, primaryTextColor(primaryColor))
         }
-
-        return super.onCreateOptionsMenu(menu)
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+    private fun setupMenuCallback(item: MenuItem): Boolean {
         if (item.itemId == android.R.id.home) {
             onBackPressed()
         }
-        return super.onOptionsItemSelected(item)
+        return false
     }
 
     private fun search(query: String) {

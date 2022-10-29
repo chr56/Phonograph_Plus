@@ -18,6 +18,7 @@ import player.phonograph.R
 import player.phonograph.adapter.HomePagerAdapter
 import player.phonograph.adapter.base.MultiSelectionCabController
 import player.phonograph.databinding.FragmentHomeBinding
+import player.phonograph.misc.menuProvider
 import player.phonograph.model.pages.PageConfig
 import player.phonograph.model.pages.Pages
 import player.phonograph.notification.ErrorNotification
@@ -32,6 +33,7 @@ import androidx.annotation.DrawableRes
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.graphics.BlendModeColorFilterCompat
 import androidx.core.graphics.BlendModeCompat
+import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.widget.ViewPager2
 import android.content.Intent
 import android.content.SharedPreferences
@@ -41,7 +43,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
-import android.view.MenuItem
 import android.view.MenuItem.SHOW_AS_ACTION_ALWAYS
 import android.view.View
 import android.view.ViewGroup
@@ -100,6 +101,12 @@ class HomeFragment : AbsMainActivityFragment(), MainActivity.MainActivityFragmen
             setTabTextColors(secondaryTextColor, primaryTextColor)
             setSelectedTabIndicatorColor(accentColor)
         }
+
+        requireActivity().addMenuProvider(
+            menuProvider(this::setupMenu),
+            viewLifecycleOwner,
+            Lifecycle.State.RESUMED
+        )
 
         cab = createToolbarCab(mainActivity, R.id.cab_stub, R.id.multi_selection_cab)
         cabController = MultiSelectionCabController(cab)
@@ -166,25 +173,19 @@ class HomeFragment : AbsMainActivityFragment(), MainActivity.MainActivityFragmen
 
     val popup: ListOptionsPopup by lazy { ListOptionsPopup(mainActivity) }
 
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+    private fun setupMenu(menu: Menu) {
         attach(requireContext(), menu) {
             menuItem {
                 itemId = R.id.action_search
                 titleRes(R.string.action_search)
                 icon = mainActivity.getTintedDrawable(R.drawable.ic_search_white_24dp, primaryTextColor)
                 showAsActionFlag = SHOW_AS_ACTION_ALWAYS
+                onClick {
+                    startActivity(Intent(mainActivity, SearchActivity::class.java))
+                    true
+                }
             }
         }
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.action_search -> {
-                startActivity(Intent(mainActivity, SearchActivity::class.java))
-                return true
-            }
-        }
-        return super.onOptionsItemSelected(item)
     }
 
     fun addOnAppBarOffsetChangedListener(
