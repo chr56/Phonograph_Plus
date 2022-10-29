@@ -53,7 +53,7 @@ object Deps {
     const val material_dialogs_color = "com.afollestad.material-dialogs:color:$material_dialogs_version"
 
 
-    private const val mdVersion = "0.0.6"
+    private const val mdVersion = "0.0.8"
     const val mdColorRes = "com.github.chr56.material-tools:mdColorRes:$mdVersion"
     const val mdUtil = "com.github.chr56.material-tools:mdUtil:$mdVersion"
     const val mdPref = "com.github.chr56.material-tools:mdPref:$mdVersion"

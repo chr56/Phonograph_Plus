@@ -11,7 +11,7 @@ import mt.tint.requireLightStatusbar
 import mt.tint.setActivityToolbarColor
 import mt.tint.setActivityToolbarColorAuto
 import mt.tint.setNavigationBarColor
-import mt.tint.viewtint.tintMenu
+import mt.tint.viewtint.tintMenuActionIcons
 import mt.util.color.getPrimaryTextColor
 import mt.util.color.isColorLight
 import mt.util.color.primaryTextColor
@@ -211,7 +211,7 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity() {
             }
             true
         }
-        tintMenu(viewBinding.toolbar, menu, primaryTextColor(activityColor))
+        tintMenuActionIcons(viewBinding.toolbar, menu, primaryTextColor(activityColor))
     }
 
     private fun setupMenuCallback(item: MenuItem): Boolean {

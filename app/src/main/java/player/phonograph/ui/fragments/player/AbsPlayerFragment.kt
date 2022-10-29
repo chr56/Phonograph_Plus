@@ -4,7 +4,7 @@ import com.github.chr56.android.menu_dsl.attach
 import com.github.chr56.android.menu_dsl.menuItem
 import com.h6ah4i.android.widget.advrecyclerview.draggable.RecyclerViewDragDropManager
 import com.h6ah4i.android.widget.advrecyclerview.utils.WrapperAdapterUtils
-import mt.util.color.toolbarContentColor
+import mt.util.color.toolbarIconColor
 import player.phonograph.R
 import player.phonograph.adapter.display.PlayingQueueAdapter
 import player.phonograph.dialogs.CreatePlaylistDialog
@@ -304,7 +304,7 @@ abstract class AbsPlayerFragment :
         Handler(Looper.getMainLooper()).postDelayed({
             val activity = activity ?: return@postDelayed
             val res = if (isFavorite) R.drawable.ic_favorite_white_24dp else R.drawable.ic_favorite_border_white_24dp
-            val color = toolbarContentColor(activity, Color.TRANSPARENT)
+            val color = toolbarIconColor(activity, Color.TRANSPARENT)
             favoriteMenuItem?.apply {
                 icon = activity.getTintedDrawable(res, color)
                 title =
