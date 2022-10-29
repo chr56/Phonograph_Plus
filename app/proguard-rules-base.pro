@@ -139,8 +139,12 @@
 #############
 # Android X
 ##############
-#-keepclassmembernames,allowshrinking,allowoptimization class androidx.** {*;}
-#-keepnames,allowshrinking interface androidx.** {*;}
+# we use reflect to modify the colors
+-keepclassmembernames class androidx.appcompat.widget.SearchView { androidx.appcompat.widget.SearchView$SearchAutoComplete mSearchSrcTextView;}
+-keepclassmembernames class androidx.appcompat.widget.SearchView { android.widget.ImageView mSearchButton;}
+-keepclassmembernames class androidx.appcompat.widget.SearchView { android.widget.ImageView mGoButton;}
+-keepclassmembernames class androidx.appcompat.widget.SearchView { android.widget.ImageView mCloseButton;}
+-keepclassmembernames class androidx.appcompat.widget.SearchView { android.widget.ImageView mVoiceButton;}
 
 ##########################
 # Material Design Componant

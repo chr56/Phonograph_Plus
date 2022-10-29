@@ -16,6 +16,9 @@ import kotlinx.coroutines.withContext
 import kotlinx.coroutines.yield
 import mt.pref.ThemeColor.primaryColor
 import mt.tint.setActivityToolbarColorAuto
+import mt.tint.viewtint.setSearchViewContentColor
+import mt.tint.viewtint.tintCollapseIcon
+import mt.util.color.primaryTextColor
 import player.phonograph.R
 import player.phonograph.adapter.SearchAdapter
 import player.phonograph.databinding.ActivitySearchBinding
@@ -135,6 +138,10 @@ class SearchActivity :
 
         searchView!!.setQuery(query, false)
         searchView!!.post { searchView!!.setOnQueryTextListener(this) }
+
+        val textColor = primaryTextColor(primaryColor)
+        binding.toolbar.tintCollapseIcon(textColor)
+        setSearchViewContentColor(searchView, textColor)
 
         return super.onCreateOptionsMenu(menu)
     }
