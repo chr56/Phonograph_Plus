@@ -23,7 +23,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import mt.util.color.toolbarContentColor
+import mt.util.color.toolbarIconColor
 import player.phonograph.R
 import player.phonograph.actions.injectPlayerToolbar
 import player.phonograph.adapter.display.PlayingQueueAdapter
@@ -317,7 +317,7 @@ abstract class AbsPlayerFragment :
         Handler(Looper.getMainLooper()).postDelayed({
             val activity = activity ?: return@postDelayed
             val res = if (isFavorite) R.drawable.ic_favorite_white_24dp else R.drawable.ic_favorite_border_white_24dp
-            val color = toolbarContentColor(activity, Color.TRANSPARENT)
+            val color = toolbarIconColor(activity, Color.TRANSPARENT)
             favoriteMenuItem?.apply {
                 icon = activity.getTintedDrawable(res, color)
                 title =

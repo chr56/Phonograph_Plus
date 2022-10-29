@@ -23,7 +23,7 @@ import mt.tint.requireLightStatusbar
 import mt.tint.setActivityToolbarColor
 import mt.tint.setActivityToolbarColorAuto
 import mt.tint.setNavigationBarColor
-import mt.tint.viewtint.tintMenu
+import mt.tint.viewtint.tintMenuActionIcons
 import mt.util.color.primaryTextColor
 import mt.util.color.resolveColor
 import mt.util.color.secondaryTextColor
@@ -282,7 +282,7 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorHolder 
         menuInflater.inflate(R.menu.menu_artist_detail, menu)
         menu.findItem(R.id.action_colored_footers).isChecked = usePalette
         viewBinding.toolbar.apply {
-            tintMenu(this, menu, primaryTextColor(activityColor))
+            tintMenuActionIcons(this, menu, primaryTextColor(activityColor))
         }
         return super.onCreateOptionsMenu(menu)
     }

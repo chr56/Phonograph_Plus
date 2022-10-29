@@ -22,7 +22,7 @@ import mt.tint.requireLightStatusbar
  import mt.tint.setActivityToolbarColor
 import mt.tint.setActivityToolbarColorAuto
 import mt.tint.setNavigationBarColor
-import mt.tint.viewtint.tintMenu
+import mt.tint.viewtint.tintMenuActionIcons
 import mt.util.color.getPrimaryTextColor
 import mt.util.color.isColorLight
 import mt.util.color.primaryTextColor
@@ -209,7 +209,7 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity() {
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_album_detail, menu)
         viewBinding.toolbar.apply {
-            tintMenu(this, menu, primaryTextColor(activityColor))
+            tintMenuActionIcons(this, menu, primaryTextColor(activityColor))
         }
         return super.onCreateOptionsMenu(menu)
     }
