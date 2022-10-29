@@ -4,21 +4,8 @@
 
 package player.phonograph.ui.fragments
 
-import android.content.Intent
-import android.content.SharedPreferences
-import android.graphics.drawable.Drawable
-import android.os.Bundle
-import android.util.Log
-import android.view.*
-import android.view.MenuItem.SHOW_AS_ACTION_ALWAYS
-import androidx.annotation.DrawableRes
-import androidx.appcompat.content.res.AppCompatResources
-import androidx.core.graphics.BlendModeColorFilterCompat
-import androidx.core.graphics.BlendModeCompat
-import androidx.viewpager2.widget.ViewPager2
-import com.github.chr56.android.menu_extension.add
-import com.github.chr56.android.menu_model.MenuContext
-import com.github.chr56.android.menu_model.MenuItemContext
+import com.github.chr56.android.menu_dsl.attach
+import com.github.chr56.android.menu_dsl.menuItem
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
@@ -34,13 +21,30 @@ import player.phonograph.databinding.FragmentHomeBinding
 import player.phonograph.model.pages.PageConfig
 import player.phonograph.model.pages.Pages
 import player.phonograph.notification.ErrorNotification
-import player.phonograph.util.preferences.HomeTabConfig
 import player.phonograph.settings.Setting
 import player.phonograph.ui.activities.MainActivity
 import player.phonograph.ui.activities.SearchActivity
 import player.phonograph.ui.components.popup.ListOptionsPopup
 import player.phonograph.ui.fragments.pages.AbsPage
 import player.phonograph.util.ImageUtil.getTintedDrawable
+import player.phonograph.util.preferences.HomeTabConfig
+import androidx.annotation.DrawableRes
+import androidx.appcompat.content.res.AppCompatResources
+import androidx.core.graphics.BlendModeColorFilterCompat
+import androidx.core.graphics.BlendModeCompat
+import androidx.viewpager2.widget.ViewPager2
+import android.content.Intent
+import android.content.SharedPreferences
+import android.graphics.drawable.Drawable
+import android.os.Bundle
+import android.util.Log
+import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.MenuItem.SHOW_AS_ACTION_ALWAYS
+import android.view.View
+import android.view.ViewGroup
 
 class HomeFragment : AbsMainActivityFragment(), MainActivity.MainActivityFragmentCallbacks,
     SharedPreferences.OnSharedPreferenceChangeListener {
@@ -163,12 +167,14 @@ class HomeFragment : AbsMainActivityFragment(), MainActivity.MainActivityFragmen
     val popup: ListOptionsPopup by lazy { ListOptionsPopup(mainActivity) }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        menu.add(MenuContext(rootMenu = menu, requireContext()), fun MenuItemContext.() {
-            itemId = R.id.action_search
-            titleRes(R.string.action_search)
-            icon = mainActivity.getTintedDrawable(R.drawable.ic_search_white_24dp, primaryTextColor)
-            showAsActionFlag = SHOW_AS_ACTION_ALWAYS
-        })
+        attach(requireContext(), menu) {
+            menuItem {
+                itemId = R.id.action_search
+                titleRes(R.string.action_search)
+                icon = mainActivity.getTintedDrawable(R.drawable.ic_search_white_24dp, primaryTextColor)
+                showAsActionFlag = SHOW_AS_ACTION_ALWAYS
+            }
+        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

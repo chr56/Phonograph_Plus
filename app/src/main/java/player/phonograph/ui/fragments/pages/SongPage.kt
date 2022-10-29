@@ -4,19 +4,9 @@
 
 package player.phonograph.ui.fragments.pages
 
-import android.annotation.SuppressLint
-import android.util.Log
-import android.view.Menu.NONE
-import android.view.MenuItem
-import androidx.appcompat.widget.Toolbar
-import androidx.recyclerview.widget.GridLayoutManager
 import com.github.chr56.android.menu_dsl.attach
 import com.github.chr56.android.menu_extension.add
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import kotlinx.coroutines.yield
 import mt.util.color.primaryTextColor
 import player.phonograph.App
 import player.phonograph.BuildConfig
@@ -30,10 +20,20 @@ import player.phonograph.model.sort.SortRef
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.queue.ShuffleMode
 import player.phonograph.settings.Setting
-import player.phonograph.ui.fragments.pages.util.DisplayConfig
 import player.phonograph.ui.components.popup.ListOptionsPopup
+import player.phonograph.ui.fragments.pages.util.DisplayConfig
 import player.phonograph.util.ImageUtil.getTintedDrawable
 import player.phonograph.util.PhonographColorUtil.nightMode
+import androidx.appcompat.widget.Toolbar
+import androidx.recyclerview.widget.GridLayoutManager
+import android.annotation.SuppressLint
+import android.util.Log
+import android.view.Menu.NONE
+import android.view.MenuItem
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import kotlinx.coroutines.yield
 
 class SongPage : AbsDisplayPage<Song, DisplayAdapter<Song>, GridLayoutManager>() {
 
@@ -123,16 +123,14 @@ class SongPage : AbsDisplayPage<Song, DisplayAdapter<Song>, GridLayoutManager>()
 
     override fun configAppBar(panelToolbar: Toolbar) {
         val context = hostFragment.mainActivity
-
-        val allSongs = SongLoader.getAllSongs(context)
-
         attach(context, panelToolbar.menu) {
             rootMenu.add(this, NONE, NONE, 1, getString(R.string.action_play)) {
                 icon = context
                     .getTintedDrawable(R.drawable.ic_play_arrow_white_24dp,
-                        context.primaryTextColor(context.resources.nightMode))
+                                       context.primaryTextColor(context.resources.nightMode))
                 showAsActionFlag = MenuItem.SHOW_AS_ACTION_ALWAYS
                 onClick {
+                    val allSongs = SongLoader.getAllSongs(context)
                     if (Setting.instance.rememberShuffle) {
                         MaterialAlertDialogBuilder(context)
                             .setMessage(R.string.pref_title_remember_shuffle)
@@ -154,11 +152,11 @@ class SongPage : AbsDisplayPage<Song, DisplayAdapter<Song>, GridLayoutManager>()
             rootMenu.add(this, NONE, NONE, 2, getString(R.string.action_shuffle_all)) {
                 icon = context
                     .getTintedDrawable(R.drawable.ic_shuffle_white_24dp,
-                        context.primaryTextColor(context.resources.nightMode))
+                                       context.primaryTextColor(context.resources.nightMode))
                 showAsActionFlag = MenuItem.SHOW_AS_ACTION_ALWAYS
                 onClick {
                     MusicPlayerRemote
-                        .playQueue(allSongs, 0, true, ShuffleMode.SHUFFLE)
+                        .playQueue(SongLoader.getAllSongs(context), 0, true, ShuffleMode.SHUFFLE)
                     true
                 }
             }

@@ -106,23 +106,22 @@ class GenreDetailActivity :
         val iconColor = primaryTextColor(primaryColor)
         attach(menu) {
             menuItem {
-                title = getString(R.string.action_shuffle_playlist)
-                icon = getTintedDrawable(R.drawable.ic_shuffle_white_24dp, iconColor)
-                showAsActionFlag = MenuItem.SHOW_AS_ACTION_ALWAYS
-                onClick {
-                    MusicPlayerRemote
-                        .playQueueCautiously(adapter.dataset, 0, true, ShuffleMode.SHUFFLE)
-                    true
-                }
-            }
-
-            menuItem {
                 title = getString(R.string.action_play)
                 icon = getTintedDrawable(R.drawable.ic_play_arrow_white_24dp, iconColor)
                 showAsActionFlag = MenuItem.SHOW_AS_ACTION_ALWAYS
                 onClick {
                     MusicPlayerRemote
                         .playQueueCautiously(adapter.dataset, 0, true, ShuffleMode.NONE)
+                    true
+                }
+            }
+            menuItem {
+                title = getString(R.string.action_shuffle_playlist)
+                icon = getTintedDrawable(R.drawable.ic_shuffle_white_24dp, iconColor)
+                showAsActionFlag = MenuItem.SHOW_AS_ACTION_ALWAYS
+                onClick {
+                    MusicPlayerRemote
+                        .playQueueCautiously(adapter.dataset, 0, true, ShuffleMode.SHUFFLE)
                     true
                 }
             }

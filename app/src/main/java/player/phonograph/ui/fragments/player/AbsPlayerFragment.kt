@@ -1,27 +1,9 @@
 package player.phonograph.ui.fragments.player
 
-import android.app.Application
-import android.content.Context
-import android.graphics.Color
-import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
-import android.view.Menu
-import android.view.MenuItem
-import android.view.View
-import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
-import androidx.fragment.app.viewModels
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.github.chr56.android.menu_dsl.attach
 import com.github.chr56.android.menu_dsl.menuItem
 import com.h6ah4i.android.widget.advrecyclerview.draggable.RecyclerViewDragDropManager
 import com.h6ah4i.android.widget.advrecyclerview.utils.WrapperAdapterUtils
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import mt.util.color.toolbarContentColor
 import player.phonograph.R
 import player.phonograph.adapter.display.PlayingQueueAdapter
@@ -40,6 +22,23 @@ import player.phonograph.ui.fragments.player.PlayerAlbumCoverFragment.Companion.
 import player.phonograph.util.FavoriteUtil.toggleFavorite
 import player.phonograph.util.ImageUtil.getTintedDrawable
 import player.phonograph.util.NavigationUtil
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
+import androidx.fragment.app.viewModels
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import android.app.Application
+import android.content.Context
+import android.graphics.Color
+import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.view.MenuItem
+import android.view.View
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 abstract class AbsPlayerFragment :
     AbsMusicServiceFragment(),
@@ -283,12 +282,6 @@ abstract class AbsPlayerFragment :
             hideToolbar(toolbar)
         } else if (isToolbarShown && toolbar.visibility != View.VISIBLE) {
             showToolbar(toolbar)
-        }
-    }
-
-    private fun attachSpecialMenuItem(menu: Menu) {
-        requireActivity().attach(menu) {
-
         }
     }
 

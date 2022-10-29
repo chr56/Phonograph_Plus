@@ -3,8 +3,8 @@ package player.phonograph.ui.activities
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.WhichButton
 import com.afollestad.materialdialogs.actions.getActionButton
+import com.github.chr56.android.menu_dsl.attach
 import com.github.chr56.android.menu_dsl.menuItem
-import com.github.chr56.android.menu_model.MenuContext
 import lib.phonograph.cab.ToolbarCab
 import lib.phonograph.cab.createToolbarCab
 import mt.pref.ThemeColor.primaryColor
@@ -281,7 +281,7 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorHolder 
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         artistDetailToolbar(menu, this, artist, primaryTextColor(activityColor), this::biographyCallback)
-        MenuContext(menu, this).apply {
+        attach(menu) {
             menuItem(title = getString(R.string.colored_footers)) {
                 checkable = true
                 checked = usePalette

@@ -4,23 +4,9 @@
 
 package player.phonograph.ui.fragments.pages
 
-import android.os.Bundle
-import android.util.Log
-import android.view.Gravity
-import android.view.LayoutInflater
-import android.view.Menu.NONE
-import android.view.MenuItem
-import android.view.View
-import android.view.ViewGroup
-import androidx.annotation.StringRes
-import androidx.appcompat.widget.Toolbar
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.github.chr56.android.menu_dsl.attach
 import com.github.chr56.android.menu_dsl.menuItem
 import com.google.android.material.appbar.AppBarLayout
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import mt.pref.ThemeColor
 import mt.util.color.primaryTextColor
 import player.phonograph.App
@@ -29,12 +15,26 @@ import player.phonograph.R
 import player.phonograph.adapter.display.DisplayAdapter
 import player.phonograph.databinding.FragmentDisplayPageBinding
 import player.phonograph.model.Displayable
-import player.phonograph.ui.fragments.pages.util.DisplayConfig
 import player.phonograph.ui.components.popup.ListOptionsPopup
+import player.phonograph.ui.fragments.pages.util.DisplayConfig
 import player.phonograph.util.ImageUtil.getTintedDrawable
 import player.phonograph.util.PhonographColorUtil.nightMode
 import player.phonograph.util.Util
 import player.phonograph.util.ViewUtil.setUpFastScrollRecyclerViewColor
+import androidx.annotation.StringRes
+import androidx.appcompat.widget.Toolbar
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import android.os.Bundle
+import android.util.Log
+import android.view.Gravity
+import android.view.LayoutInflater
+import android.view.Menu.NONE
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 
 
 /**
@@ -138,9 +138,8 @@ sealed class AbsDisplayPage<IT, A : DisplayAdapter<out Displayable>, LM : GridLa
         binding.panel.setExpanded(false)
         binding.panel.addOnOffsetChangedListener(innerAppbarOffsetListener)
 
-        val toolbarMenu = binding.panelToolbar.menu
         val context = hostFragment.mainActivity
-        context.attach(toolbarMenu) {
+        context.attach(binding.panelToolbar.menu) {
             menuItem(NONE, NONE, 999, getString(R.string.action_settings)) {
                 icon = context.getTintedDrawable(
                     R.drawable.ic_sort_variant_white_24dp,
