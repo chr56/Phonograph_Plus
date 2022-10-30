@@ -4,13 +4,14 @@
 
 package lib.phonograph.activity
 
-import android.view.KeyEvent
-import android.view.Menu
+import mt.tint.viewtint.applyOverflowMenuTint
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.WindowDecorActionBar
 import androidx.appcompat.widget.Toolbar
 import androidx.appcompat.widget.ToolbarWidgetWrapper
-import mt.tint.viewtint.applyOverflowMenuTint
+import android.view.KeyEvent
+import android.view.Menu
+import android.view.MenuItem
 
 /**
  * An abstract class providing material activity with toolbar
@@ -32,7 +33,17 @@ abstract class ToolbarActivity() : PermissionActivity() {
 
     override fun setSupportActionBar(toolbar: Toolbar?) {
         this.supportToolbar = toolbar
+        this.supportToolbar?.setOnMenuItemClickListener(this::onBackClick)
+        this.supportToolbar?.setNavigationOnClickListener { onBackPressedDispatcher.onBackPressed() }
     }
+
+    private fun onBackClick(item: MenuItem): Boolean =
+        if (item.itemId == android.R.id.home) {
+            onBackPressedDispatcher.onBackPressed()
+            true
+        } else {
+            false
+        }
 
     protected open fun getSupportActionBarView(ab: ActionBar?): Toolbar? {
         return if (ab == null || ab !is WindowDecorActionBar) null else try {
@@ -43,7 +54,8 @@ abstract class ToolbarActivity() : PermissionActivity() {
             field.isAccessible = true
             field[wrapper] as Toolbar
         } catch (t: Throwable) {
-            throw RuntimeException("Failed to retrieve Toolbar from AppCompat support ActionBar: ${t.message}", t)
+            throw RuntimeException(
+                "Failed to retrieve Toolbar from AppCompat support ActionBar: ${t.message}", t)
         }
     }
 
