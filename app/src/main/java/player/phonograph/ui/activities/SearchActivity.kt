@@ -130,7 +130,7 @@ class SearchActivity : AbsMusicServiceActivity(), SearchView.OnQueryTextListener
             }
 
             override fun onMenuItemActionCollapse(item: MenuItem): Boolean {
-                onBackPressed()
+                onBackPressedDispatcher.onBackPressed()
                 return false
             }
         })

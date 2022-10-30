@@ -86,7 +86,7 @@ class SettingsActivity : ToolbarActivity() {
     private fun setupMenuCallback(item: MenuItem): Boolean {
         when (item.itemId) {
             android.R.id.home -> {
-                onBackPressed()
+                onBackPressedDispatcher.onBackPressed()
                 return true
             }
             R.id.action_export_data -> {

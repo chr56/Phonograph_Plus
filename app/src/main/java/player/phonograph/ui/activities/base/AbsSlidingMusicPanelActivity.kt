@@ -200,7 +200,7 @@ abstract class AbsSlidingMusicPanelActivity :
     }
 
     override fun onBackPressed() {
-        if (!handleBackPress()) super.onBackPressed()
+        if (!handleBackPress())  onBackPressedDispatcher.onBackPressed()
     }
 
     open fun handleBackPress(): Boolean {

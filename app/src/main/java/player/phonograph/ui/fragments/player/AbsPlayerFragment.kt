@@ -160,7 +160,7 @@ abstract class AbsPlayerFragment :
     private fun initToolbar() {
         playerToolbar = getImplToolbar()
         playerToolbar.setNavigationIcon(R.drawable.ic_close_white_24dp)
-        playerToolbar.setNavigationOnClickListener { requireActivity().onBackPressed() }
+        playerToolbar.setNavigationOnClickListener { requireActivity().onBackPressedDispatcher.onBackPressed() }
         requireContext().attach(playerToolbar.menu) {
             // visible
             menuItem(getString(R.string.lyrics)) {

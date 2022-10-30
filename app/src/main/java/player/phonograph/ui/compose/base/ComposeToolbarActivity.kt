@@ -59,7 +59,9 @@ abstract class ComposeToolbarActivity : ThemeActivity() {
     protected abstract fun SetUpContent()
     protected abstract val title: String
 
-    protected open val backClick: (() -> (Unit)) = { onBackPressed() }
+    protected open val backClick: (() -> (Unit)) = {
+        onBackPressedDispatcher.onBackPressed()
+    }
     protected open val toolbarActions: @Composable (RowScope.() -> Unit) = {}
 
     protected open lateinit var appbarColor: MutableState<Color>
