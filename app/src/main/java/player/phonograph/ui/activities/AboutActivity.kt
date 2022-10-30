@@ -6,7 +6,6 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.os.Looper
-import android.view.MenuItem
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -164,14 +163,6 @@ class AboutActivity : ToolbarActivity(), View.OnClickListener {
         } // debug Menu
 
         binding.activityAboutMainContent.cardAuthorLayoutModifier.github.setOnClickListener(this)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == android.R.id.home) {
-            onBackPressed()
-            return true
-        }
-        return super.onOptionsItemSelected(item)
     }
 
     override fun onClick(v: View) {

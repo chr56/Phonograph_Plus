@@ -81,7 +81,7 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity() {
         // activity
         setSupportActionBar(viewBinding.toolbar)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-        addMenuProvider(menuProvider(this::setupMenu, this::setupMenuCallback))
+        addMenuProvider(menuProvider(this::setupMenu))
         setActivityToolbarColorAuto(viewBinding.toolbar)
 
         // content
@@ -212,15 +212,6 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity() {
             true
         }
         tintMenuActionIcons(viewBinding.toolbar, menu, primaryTextColor(activityColor))
-    }
-
-    private fun setupMenuCallback(item: MenuItem): Boolean {
-        return if (item.itemId == android.R.id.home) {
-            super.onBackPressed()
-            true
-        } else {
-            super.onOptionsItemSelected(item)
-        }
     }
 
     private var isWikiPreLoaded = false

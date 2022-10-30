@@ -3,7 +3,6 @@ package player.phonograph.ui.activities
 import mt.tint.setActivityToolbarColor
 import mt.tint.viewtint.setSearchViewContentColor
 import mt.tint.viewtint.tintCollapseIcon
-import mt.tint.viewtint.tintMenuActionIcons
 import mt.util.color.primaryTextColor
 import player.phonograph.R
 import player.phonograph.adapter.SearchAdapter
@@ -110,7 +109,7 @@ class SearchActivity : AbsMusicServiceActivity(), SearchView.OnQueryTextListener
     private fun setUpToolBar() {
         setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        addMenuProvider(menuProvider(this::setupMenu, this::setupMenuCallback))
+        addMenuProvider(menuProvider(this::setupMenu))
         setActivityToolbarColor(binding.toolbar, primaryColor)
     }
 
@@ -141,13 +140,6 @@ class SearchActivity : AbsMusicServiceActivity(), SearchView.OnQueryTextListener
         val textColor = primaryTextColor(primaryColor)
         binding.toolbar.tintCollapseIcon(textColor)
         setSearchViewContentColor(searchView, textColor)
-    }
-
-    private fun setupMenuCallback(item: MenuItem): Boolean {
-        if (item.itemId == android.R.id.home) {
-            onBackPressed()
-        }
-        return false
     }
 
     private fun search(query: String) {

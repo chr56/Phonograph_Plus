@@ -274,7 +274,7 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorHolder 
         setSupportActionBar(viewBinding.toolbar)
         supportActionBar?.title = null
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        addMenuProvider(menuProvider(this::setupMenu, this::setupMenuCallback))
+        addMenuProvider(menuProvider(this::setupMenu))
         setActivityToolbarColorAuto(viewBinding.toolbar)
         // MultiSelectionCab
         cab = createToolbarCab(this, R.id.cab_stub, R.id.multi_selection_cab)
@@ -296,13 +296,6 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorHolder 
             }
         }
         tintMenuActionIcons(viewBinding.toolbar, menu, primaryTextColor(activityColor))
-    }
-
-    private fun setupMenuCallback(item: MenuItem): Boolean {
-        return if (item.itemId == android.R.id.home) {
-            super.onBackPressed()
-            true
-        } else super.onOptionsItemSelected(item)
     }
 
     private fun biographyCallback(artist: Artist): Boolean {
