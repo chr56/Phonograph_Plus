@@ -1,27 +1,8 @@
 package player.phonograph.ui.activities
 
-import android.content.Intent
-import android.content.SharedPreferences
-import android.content.pm.PackageManager
-import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
-import android.provider.MediaStore
-import android.util.Log
-import android.view.Menu
-import android.view.MenuItem
-import android.view.View
-import android.widget.ImageView
-import android.widget.TextView
-import android.widget.Toast
-import androidx.drawerlayout.widget.DrawerLayout
 import com.github.chr56.android.menu_dsl.attach
 import com.github.chr56.android.menu_dsl.menuItem
 import com.sothree.slidinguppanel.SlidingUpPanelLayout
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.launch
 import legacy.phonograph.JunkCleaner
 import mt.tint.viewtint.setItemIconColors
 import mt.tint.viewtint.setItemTextColors
@@ -63,6 +44,24 @@ import player.phonograph.util.PhonographColorUtil.nightMode
 import player.phonograph.util.UpdateUtil
 import player.phonograph.util.preferences.HomeTabConfig
 import player.phonograph.util.preferences.StyleConfig
+import androidx.drawerlayout.widget.DrawerLayout
+import android.content.Intent
+import android.content.SharedPreferences
+import android.content.pm.PackageManager
+import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.provider.MediaStore
+import android.util.Log
+import android.view.Menu
+import android.view.View
+import android.widget.ImageView
+import android.widget.TextView
+import android.widget.Toast
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
 
 class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity {
 
@@ -342,16 +341,12 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
         intent?.let { handlePlaybackIntent(it) }
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == android.R.id.home) {
-            if (drawerBinding.drawerLayout.isDrawerOpen(drawerBinding.navigationView)) {
-                drawerBinding.drawerLayout.closeDrawer(drawerBinding.navigationView)
-            } else {
-                drawerBinding.drawerLayout.openDrawer(drawerBinding.navigationView)
-            }
-            return true
+    override fun navigateUp() {
+        if (drawerBinding.drawerLayout.isDrawerOpen(drawerBinding.navigationView)) {
+            drawerBinding.drawerLayout.closeDrawer(drawerBinding.navigationView)
+        } else {
+            drawerBinding.drawerLayout.openDrawer(drawerBinding.navigationView)
         }
-        return super.onOptionsItemSelected(item)
     }
 
     override fun handleBackPress(): Boolean {

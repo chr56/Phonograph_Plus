@@ -33,17 +33,22 @@ abstract class ToolbarActivity() : PermissionActivity() {
 
     override fun setSupportActionBar(toolbar: Toolbar?) {
         this.supportToolbar = toolbar
-        this.supportToolbar?.setOnMenuItemClickListener(this::onBackClick)
-        this.supportToolbar?.setNavigationOnClickListener { onBackPressedDispatcher.onBackPressed() }
+        this.supportToolbar?.setOnMenuItemClickListener{
+            if (it.itemId == android.R.id.home) {
+                navigateUp()
+                true
+            } else {
+                false
+            }
+        }
+        this.supportToolbar?.setNavigationOnClickListener { navigateUp() }
     }
 
-    private fun onBackClick(item: MenuItem): Boolean =
-        if (item.itemId == android.R.id.home) {
+    protected open fun navigateUp() {
+        if (!isTaskRoot) {
             onBackPressedDispatcher.onBackPressed()
-            true
-        } else {
-            false
         }
+    }
 
     protected open fun getSupportActionBarView(ab: ActionBar?): Toolbar? {
         return if (ab == null || ab !is WindowDecorActionBar) null else try {
