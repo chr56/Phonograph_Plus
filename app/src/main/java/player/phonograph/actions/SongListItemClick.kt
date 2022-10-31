@@ -10,6 +10,7 @@ import player.phonograph.model.Song
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.queue.ShuffleMode
 import player.phonograph.settings.Setting
+import android.content.res.Resources
 
 // 1 : Single song
 
@@ -31,6 +32,37 @@ const val QUEUE_SHUFFLE = 219
 
 const val PRE_MASK_GOTO_POSITION_FIRST = 1 shl 3
 const val PRE_MASK_PLAY_QUEUE_IF_EMPTY = 1 shl 4
+
+val baseModes by lazy {
+    intArrayOf(
+        SONG_PLAY_NEXT,
+        SONG_PLAY_NOW,
+        SONG_APPEND_QUEUE,
+        SONG_SINGLE_PLAY,
+        QUEUE_PLAY_NEXT,
+        QUEUE_PLAY_NOW,
+        QUEUE_APPEND_QUEUE,
+        QUEUE_SWITCH_TO_BEGINNING,
+        QUEUE_SWITCH_TO_POSITION,
+        QUEUE_SHUFFLE,
+    )
+}
+
+fun modeName(resources: Resources, id: Int): String {
+    return when (id) {
+        SONG_PLAY_NEXT -> "SONG_PLAY_NEXT"
+        SONG_PLAY_NOW -> "SONG_PLAY_NOW"
+        SONG_APPEND_QUEUE -> "SONG_APPEND_QUEUE"
+        SONG_SINGLE_PLAY -> "SONG_SINGLE_PLAY"
+        QUEUE_PLAY_NEXT -> "QUEUE_PLAY_NEXT"
+        QUEUE_PLAY_NOW -> "QUEUE_PLAY_NOW"
+        QUEUE_APPEND_QUEUE -> "QUEUE_APPEND_QUEUE"
+        QUEUE_SWITCH_TO_BEGINNING -> "QUEUE_SWITCH_TO_BEGINNING"
+        QUEUE_SWITCH_TO_POSITION -> "QUEUE_SWITCH_TO_POSITION"
+        QUEUE_SHUFFLE -> "QUEUE_SHUFFLE"
+        else -> "MODE $id"
+    }
+}
 
 fun songClick(
     list: List<Song>,
