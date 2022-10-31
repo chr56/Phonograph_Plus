@@ -27,10 +27,10 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import android.content.Context
@@ -39,31 +39,45 @@ import android.content.Context
 fun ClickModeSettingDialog(context: Context, onDismiss: () -> Unit) {
     PhonographTheme {
         BoxWithConstraints {
+            // at least be a square dialog
             Column(Modifier
-                       .widthIn(min = maxWidth * 3 / 5, max = maxWidth)
-                       .verticalScroll(rememberScrollState())
+                       .widthIn(min = maxWidth * 5 / 7, max = maxWidth)
+                       .heightIn(min = maxWidth, max = maxHeight * 6 / 7)
+                       // .verticalScroll(rememberScrollState())
                        .padding(8.dp)
             ) {
 
                 Text(modifier = Modifier
+                    .height(48.dp)
                     .fillMaxWidth()
-                    .padding(16.dp),
+                    .padding(horizontal = 12.dp, vertical = 8.dp),
                      text = context.getString(R.string.pref_title_click_behavior),
                      style = TextStyle(fontWeight = FontWeight.Bold,
                                        color = MaterialTheme.colors.onSurface,
-                                       fontSize = 20.sp
-                     )
+                                       fontSize = 20.sp),
+                     textAlign = TextAlign.Start
                 )
 
-                Content(context)
+                Box(modifier = Modifier
+                    .heightIn(max = this@BoxWithConstraints.maxHeight * 5 / 9)
+                    .fillMaxWidth()
+                    .verticalScroll(rememberScrollState())
+                ) {
+                    Content(context)
+                }
 
                 Row(modifier = Modifier
-                    .wrapContentWidth()
+                    .height(48.dp)
+                    .width(IntrinsicSize.Max)
                     .align(Alignment.End)
-                    .padding(8.dp)) {
+                    .padding(horizontal = 12.dp, vertical = 8.dp)
+                ) {
+                    // Spacer(modifier = Modifier.wrapContentWidth(Alignment.Start))
                     Text(text = context.getString(android.R.string.ok),
-                         modifier = Modifier.clickable { onDismiss() },
-                         color = MaterialTheme.colors.primary)
+                         modifier = Modifier
+                             .clickable { onDismiss() },
+                         color = MaterialTheme.colors.primary,
+                         textAlign = TextAlign.Start)
                 }
             }
         }
@@ -130,7 +144,7 @@ fun ModeRadioBox(
              Modifier
                  .padding(4.dp)
                  .fillMaxWidth()
-                 .align(CenterVertically)
+                 .align(Alignment.CenterVertically)
                  .alignByBaseline())
     }
 }
@@ -155,7 +169,7 @@ fun FlagCheckBox(
              Modifier
                  .padding(4.dp)
                  .fillMaxWidth()
-                 .align(CenterVertically)
+                 .align(Alignment.CenterVertically)
                  .alignByBaseline())
     }
 
