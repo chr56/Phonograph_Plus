@@ -409,4 +409,16 @@
     <string name="pref_summary_path_filter_included_mode">音樂庫中只展示屬於包含路徑的</string>
     <string name="pref_title_load_lyrics">開啟歌詞</string>
     <string name="pref_summary_load_lyrics">歌詞總開關，可關閉所有歌詞功能</string>
+    <string name="mode_song_play_next">(單曲)下一首播放</string>
+    <string name="mode_song_play_now">(單曲)立即播放</string>
+    <string name="mode_song_append_queue">(單曲)追加至當前播放佇列</string>
+    <string name="mode_song_single_play">僅單曲迴圈</string>
+    <string name="mode_queue_play_next">(全部)下一首播放</string>
+    <string name="mode_queue_play_now">(全部)立即播放</string>
+    <string name="mode_queue_append_queue">(全部)追加至當前播放佇列</string>
+    <string name="mode_queue_switch_to_beginning">替換當前, 從頭播放</string>
+    <string name="mode_queue_switch_to_position">替換當前, 從選擇處播放</string>
+    <string name="mode_queue_shuffle">替換當前, 隨機播放</string>
+    <string name="pref_title_click_behavior">點選歌曲時行為</string>
+    <string name="pref_summary_click_behavior">點選一列表內歌曲時的操作</string>
 </resources>

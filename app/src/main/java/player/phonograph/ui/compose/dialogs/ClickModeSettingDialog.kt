@@ -4,6 +4,7 @@
 
 package player.phonograph.ui.compose.dialogs
 
+import player.phonograph.R
 import player.phonograph.actions.baseModes
 import player.phonograph.actions.modeName
 import player.phonograph.settings.Setting
@@ -46,7 +47,7 @@ fun ClickModeSettingDialog(context: Context, onDismiss: () -> Unit) {
                 Text(modifier = Modifier
                     .fillMaxWidth()
                     .padding(16.dp),
-                     text = "Mode Setting",
+                     text = context.getString(R.string.pref_title_click_behavior),
                      style = TextStyle(fontWeight = FontWeight.Bold,
                                        color = MaterialTheme.colors.onSurface,
                                        fontSize = 20.sp
@@ -61,7 +62,7 @@ fun ClickModeSettingDialog(context: Context, onDismiss: () -> Unit) {
                     .wrapContentWidth()
                     .align(Alignment.End)
                     .padding(8.dp)) {
-                    Text(text = "OK",
+                    Text(text = context.getString(android.R.string.ok),
                          modifier = Modifier.clickable { onDismiss() },
                          color = MaterialTheme.colors.primary
                     )
