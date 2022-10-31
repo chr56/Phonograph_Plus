@@ -419,6 +419,8 @@
     <string name="mode_queue_switch_to_beginning">替換當前, 從頭播放</string>
     <string name="mode_queue_switch_to_position">替換當前, 從選擇處播放</string>
     <string name="mode_queue_shuffle">替換當前, 隨機播放</string>
+    <string name="mode_flag_goto_position_first">若與當前播放列表相同, 轉跳至所選位置</string>
+    <string name="mode_flag_play_queue_if_empty">若當前播放列表為空, 播放全部歌曲</string>
     <string name="pref_title_click_behavior">點選歌曲時行為</string>
     <string name="pref_summary_click_behavior">點選一列表內歌曲時的操作</string>
 </resources>

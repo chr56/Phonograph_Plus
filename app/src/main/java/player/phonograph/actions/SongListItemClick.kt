@@ -11,6 +11,7 @@ import player.phonograph.model.Song
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.queue.ShuffleMode
 import player.phonograph.settings.Setting
+import player.phonograph.util.Util.testBit
 import android.content.res.Resources
 
 // 1 : Single song
@@ -74,7 +75,7 @@ fun songClick(
     var base = Setting.instance.defaultSongItemClickBaseMode
 
     // pre-process extra mode
-    if (MusicPlayerRemote.playingQueue.isEmpty() && extra.bitTest(PRE_MASK_PLAY_QUEUE_IF_EMPTY)) {
+    if (MusicPlayerRemote.playingQueue.isEmpty() && extra.testBit(PRE_MASK_PLAY_QUEUE_IF_EMPTY)) {
         if (base in 100..109) {
             base += 100
         } else {
@@ -82,7 +83,7 @@ fun songClick(
         }
     }
 
-    if (list == MusicPlayerRemote.playingQueue && extra.bitTest(PRE_MASK_GOTO_POSITION_FIRST)) {
+    if (list == MusicPlayerRemote.playingQueue && extra.testBit(PRE_MASK_GOTO_POSITION_FIRST)) {
         // same queue, jump
         MusicPlayerRemote.playSongAt(position)
         return true
@@ -145,5 +146,3 @@ fun resetExtraMode() {
     Setting.instance.defaultSongItemClickExtraMode = 0
 }
 
-
-private fun Int.bitTest(mask: Int): Boolean = (this and mask) != 0

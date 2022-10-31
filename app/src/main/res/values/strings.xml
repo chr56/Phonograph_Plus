@@ -430,6 +430,8 @@
     <string name="mode_queue_switch_to_beginning">Replace the current, and play the queue from beginning</string>
     <string name="mode_queue_switch_to_position">Replace the current, and play the queue from where selected</string>
     <string name="mode_queue_shuffle">Replace the current, and shuffle play the queue</string>
+    <string name="mode_flag_goto_position_first">If same with current queue, move to the position of selected song</string>
+    <string name="mode_flag_play_queue_if_empty">If current queue is empty, play the queue directly</string>
     <string name="pref_title_click_behavior">Custom behavior when clicking a song</string>
-    <string name="pref_summary_click_behavior">Define what the player should do when you clicked a song in a list."</string>
+    <string name="pref_summary_click_behavior">Define what the player should do when you clicked a song in a list.</string>
 </resources>
