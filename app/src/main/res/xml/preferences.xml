@@ -176,6 +176,12 @@
 
     <lib.phonograph.preference.PreferenceCategoryX android:title="@string/pref_header_player_behaviour">
 
+        <lib.phonograph.preference.DialogPreferenceX
+            android:key="@string/preference_key_click_behavior"
+            android:persistent="false"
+            android:title="@string/preference_key_click_behavior"
+            app:iconSpaceReserved="false"/>
+
         <lib.phonograph.preference.SwitchPreferenceX
             android:defaultValue="true"
             android:key="audio_ducking"
