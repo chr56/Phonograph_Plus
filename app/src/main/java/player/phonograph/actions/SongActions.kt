@@ -36,7 +36,7 @@ fun Song.actionPlay(): Boolean = actionPlayNow()
  * This would ask for ShuffleMode if [Setting.rememberShuffle] enabled.
  * @param shuffleMode target shuffle mode
  */
-fun List<Song>.actionPlay(context: Context, shuffleMode: ShuffleMode) =
+fun List<Song>.actionPlay(context: Context, shuffleMode: ShuffleMode?) =
     if (Setting.instance.rememberShuffle) {
         // ask for
         MaterialAlertDialogBuilder(context)
@@ -53,6 +53,9 @@ fun List<Song>.actionPlay(context: Context, shuffleMode: ShuffleMode) =
     }
 
 fun Song.actionPlayNow(): Boolean =
+    MusicPlayerRemote.playNow(this)
+
+fun List<Song>.actionPlayNow(): Boolean =
     MusicPlayerRemote.playNow(this)
 
 fun Song.actionPlayNext(): Boolean =
