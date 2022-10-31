@@ -6,23 +6,22 @@
 
 package player.phonograph.adapter.display
 
-import android.app.Activity
-import android.content.Context
-import android.view.Menu
-import android.view.View
-import android.widget.ImageView
-import androidx.core.util.Pair
 import player.phonograph.R
+import player.phonograph.actions.actionPlay
 import player.phonograph.actions.menu.songPopupMenu
+import player.phonograph.actions.songClick
 import player.phonograph.model.Album
 import player.phonograph.model.Artist
 import player.phonograph.model.Displayable
 import player.phonograph.model.Genre
 import player.phonograph.model.Song
-import player.phonograph.service.MusicPlayerRemote.playNow
-import player.phonograph.service.MusicPlayerRemote.playQueue
-import player.phonograph.settings.Setting
 import player.phonograph.util.NavigationUtil
+import androidx.core.util.Pair
+import android.app.Activity
+import android.content.Context
+import android.view.Menu
+import android.view.View
+import android.widget.ImageView
 
 /**
  * involve item click
@@ -31,20 +30,22 @@ import player.phonograph.util.NavigationUtil
  * @param imageView (optional) item's imagine for SceneTransitionAnimation
  * @return true if action have been processed
  */
-fun Displayable.tapClick(list: List<Displayable>?, activity: Activity?, imageView: ImageView?): Boolean {
+fun <T : Displayable> Displayable.tapClick(
+    list: List<T>?,
+    activity: Activity?,
+    imageView: ImageView?,
+): Boolean {
     return when (this) {
-        is Song -> {
-            val contextQueue = list?.filterIsInstance<Song>()
-            if (contextQueue != null) {
-                if (Setting.instance.keepPlayingQueueIntact) {
-                    playNow(this)
-                } else {
-                    playQueue(contextQueue, contextQueue.indexOf(this), true, null)
-                }
+        is Song   -> {
+            val queue = list?.filterIsInstance<Song>()
+            if (queue != null && queue.isNotEmpty()) {
+                songClick(queue, queue.indexOf(this), true)
+            } else {
+                this.actionPlay()
             }
             true
         }
-        is Album -> {
+        is Album  -> {
             if (activity != null) {
                 if (imageView != null) {
                     NavigationUtil.goToAlbum(
@@ -83,7 +84,7 @@ fun Displayable.tapClick(list: List<Displayable>?, activity: Activity?, imageVie
                 false
             }
         }
-        is Genre -> {
+        is Genre  -> {
             if (activity != null) {
                 NavigationUtil.goToGenre(activity, this)
                 true
@@ -91,7 +92,7 @@ fun Displayable.tapClick(list: List<Displayable>?, activity: Activity?, imageVie
                 false
             }
         }
-        else -> false
+        else      -> false
     }
 }
 
@@ -118,9 +119,9 @@ fun Displayable.initMenu(
  */
 fun Displayable?.defaultSortOrderReference(): String? =
     when (this) {
-        is Song -> this.title
-        is Album -> this.title
+        is Song   -> this.title
+        is Album  -> this.title
         is Artist -> this.name
-        is Genre -> this.name
-        else -> null
+        is Genre  -> this.name
+        else      -> null
     }

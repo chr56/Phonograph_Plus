@@ -9,10 +9,7 @@ package player.phonograph.actions
 import player.phonograph.model.Song
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.queue.ShuffleMode
-
-
-@JvmInline
-value class ClickMode(val id: Int)
+import player.phonograph.settings.Setting
 
 // 1 : Single song
 
@@ -35,16 +32,13 @@ const val QUEUE_SHUFFLE = 219
 const val PRE_MASK_GOTO_POSITION_FIRST = 1 shl 3
 const val PRE_MASK_PLAY_QUEUE_IF_EMPTY = 1 shl 4
 
-private val baseMode: ClickMode get() =  TODO()
-private val extraMode: ClickMode get() =  TODO()
-
-fun tapClick(
+fun songClick(
     list: List<Song>,
     position: Int,
     startPlaying: Boolean,
 ): Boolean {
-    val extra = extraMode.id
-    var base = baseMode.id
+    val extra = Setting.instance.defaultSongItemClickExtraMode
+    var base = Setting.instance.defaultSongItemClickBaseMode
 
     // pre-process extra mode
     if (MusicPlayerRemote.playingQueue.isEmpty() && extra.bitTest(PRE_MASK_PLAY_QUEUE_IF_EMPTY)) {
@@ -102,10 +96,20 @@ fun tapClick(
                 ShuffleMode.SHUFFLE
             )
         }
-        0                         -> return false //todo
-        else                      -> return false
+        else  /* invalided */     -> {
+            resetBaseMode()
+            return false
+        }
     }
     return true
+}
+
+fun resetBaseMode() {
+    Setting.instance.defaultSongItemClickBaseMode = SONG_PLAY_NOW
+}
+
+fun resetExtraMode() {
+    Setting.instance.defaultSongItemClickExtraMode = 0
 }
 
 
