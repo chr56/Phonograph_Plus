@@ -6,9 +6,8 @@ import android.view.ViewGroup.MarginLayoutParams
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import coil.size.ViewSizeResolver
-import mt.util.color.getPrimaryTextColor
-import mt.util.color.getSecondaryTextColor
-import mt.util.color.isColorLight
+import mt.util.color.primaryTextColor
+import mt.util.color.secondaryTextColor
 import player.phonograph.R
 import player.phonograph.adapter.base.MultiSelectionCabController
 import player.phonograph.coil.loadImage
@@ -36,18 +35,12 @@ class HorizontalAlbumAdapter(
         card.setCardBackgroundColor(color)
         if (holder.title != null) {
             holder.title!!.setTextColor(
-                getPrimaryTextColor(
-                    activity,
-                    isColorLight(color)
-                )
+                activity.primaryTextColor(color)
             )
         }
         if (holder.text != null) {
             holder.text!!.setTextColor(
-                getSecondaryTextColor(
-                    activity,
-                    isColorLight(color)
-                )
+                activity.secondaryTextColor(color)
             )
         }
     }

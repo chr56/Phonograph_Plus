@@ -12,8 +12,6 @@ import mt.tint.setActivityToolbarColor
 import mt.tint.setActivityToolbarColorAuto
 import mt.tint.setNavigationBarColor
 import mt.tint.viewtint.tintMenuActionIcons
-import mt.util.color.getPrimaryTextColor
-import mt.util.color.isColorLight
 import mt.util.color.primaryTextColor
 import mt.util.color.secondaryTextColor
 import player.phonograph.R
@@ -141,7 +139,7 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity() {
 
         val artistIcon = getTintedDrawable(R.drawable.ic_person_white_24dp, secondaryTextColor)!!
         viewBinding.artistText.setCompoundDrawablesWithIntrinsicBounds(artistIcon, null, null, null)
-        viewBinding.artistText.setTextColor(getPrimaryTextColor(this, isColorLight(color)))
+        viewBinding.artistText.setTextColor(primaryTextColor(color))
         viewBinding.artistText.compoundDrawablePadding = 16
 
         val songCountIcon = getTintedDrawable(R.drawable.ic_music_note_white_24dp, secondaryTextColor)!!

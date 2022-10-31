@@ -4,25 +4,24 @@
 
 package player.phonograph.adapter.display
 
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.PopupMenu
-import androidx.annotation.LayoutRes
-import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.content.res.AppCompatResources
-import androidx.appcompat.widget.Toolbar
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView
-import mt.util.color.getPrimaryTextColor
-import mt.util.color.getSecondaryTextColor
-import mt.util.color.isColorLight
+import mt.util.color.primaryTextColor
+import mt.util.color.secondaryTextColor
 import player.phonograph.R
 import player.phonograph.actions.menu.multiItemsToolbar
 import player.phonograph.adapter.base.MultiSelectAdapter
 import player.phonograph.adapter.base.MultiSelectionCabController
 import player.phonograph.adapter.base.UniversalMediaEntryViewHolder
 import player.phonograph.model.Displayable
+import androidx.annotation.LayoutRes
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.content.res.AppCompatResources
+import androidx.appcompat.widget.Toolbar
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.PopupMenu
 
 open class DisplayAdapter<I : Displayable>(
     protected val activity: AppCompatActivity,
@@ -114,10 +113,10 @@ open class DisplayAdapter<I : Displayable>(
         holder.paletteColorContainer?.let { paletteColorContainer ->
             paletteColorContainer.setBackgroundColor(color)
             holder.title?.setTextColor(
-                getPrimaryTextColor(activity, isColorLight(color))
+                activity.primaryTextColor(color)
             )
             holder.text?.setTextColor(
-                getSecondaryTextColor(activity, isColorLight(color))
+                activity.secondaryTextColor(color)
             )
         }
     }

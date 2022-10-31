@@ -13,7 +13,7 @@ import androidx.core.graphics.drawable.toBitmapOrNull
 import coil.Coil
 import coil.request.Disposable
 import coil.request.ImageRequest
-import mt.util.color.getSecondaryTextColor
+import mt.util.color.secondaryTextColor
 import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.appwidgets.Util.createRoundedBitmap
@@ -61,6 +61,7 @@ class AppWidgetCard : BaseAppWidget() {
             appWidgetView.setTextViewText(R.id.text, getSongArtistAndAlbum(song))
         }
 
+        val color = service.secondaryTextColor(false)
         // Set correct drawable for pause state
         appWidgetView.setImageViewBitmap(
             R.id.button_toggle_play_pause,
@@ -68,7 +69,7 @@ class AppWidgetCard : BaseAppWidget() {
                 ImageUtil.getTintedVectorDrawable(
                     service,
                     playPauseRes(isPlaying),
-                    getSecondaryTextColor(service, true)
+                    color
                 )
             )
         )
@@ -77,21 +78,13 @@ class AppWidgetCard : BaseAppWidget() {
         appWidgetView.setImageViewBitmap(
             R.id.button_next,
             ImageUtil.createBitmap(
-                ImageUtil.getTintedVectorDrawable(
-                    service,
-                    R.drawable.ic_skip_next_white_24dp,
-                    getSecondaryTextColor(service, true)
-                )
+                service.getTintedDrawable(R.drawable.ic_skip_next_white_24dp,color)!!
             )
         )
         appWidgetView.setImageViewBitmap(
             R.id.button_prev,
             ImageUtil.createBitmap(
-                ImageUtil.getTintedVectorDrawable(
-                    service,
-                    R.drawable.ic_skip_previous_white_24dp,
-                    getSecondaryTextColor(service, true)
-                )
+                service.getTintedDrawable(R.drawable.ic_skip_previous_white_24dp,color)!!
             )
         )
 
@@ -104,7 +97,7 @@ class AppWidgetCard : BaseAppWidget() {
         if (cardRadius == 0f) cardRadius = service.resources.getDimension(
             R.dimen.app_widget_card_radius
         )
-        val fallbackColor = getSecondaryTextColor(service, true)
+        val fallbackColor = service.secondaryTextColor( true)
 
         // Load the album cover async and push the update on completion
         uiHandler.post {

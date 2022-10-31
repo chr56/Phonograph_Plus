@@ -11,9 +11,8 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.util.Pair
 import coil.size.ViewSizeResolver
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView.SectionedAdapter
-import mt.util.color.getPrimaryTextColor
-import mt.util.color.getSecondaryTextColor
-import mt.util.color.isColorLight
+import mt.util.color.primaryTextColor
+import mt.util.color.secondaryTextColor
 import player.phonograph.R
 import player.phonograph.actions.menu.multiItemsToolbar
 import player.phonograph.adapter.base.MediaEntryViewHolder
@@ -88,11 +87,11 @@ open class AlbumAdapter(
         holder.paletteColorContainer?.let { container ->
             container.setBackgroundColor(color)
             holder.title?.setTextColor(
-                getPrimaryTextColor(activity, isColorLight(color))
+                activity.primaryTextColor(color)
             )
 
             holder.text?.setTextColor(
-                getSecondaryTextColor(activity, isColorLight(color))
+                activity.secondaryTextColor(color)
             )
         }
     }

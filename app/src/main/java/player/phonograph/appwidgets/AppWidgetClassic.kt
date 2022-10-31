@@ -13,7 +13,7 @@ import androidx.core.graphics.drawable.toBitmapOrNull
 import coil.Coil
 import coil.request.Disposable
 import coil.request.ImageRequest
-import mt.util.color.getSecondaryTextColor
+import mt.util.color.secondaryTextColor
 import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.appwidgets.Util.createRoundedBitmap
@@ -70,8 +70,7 @@ class AppWidgetClassic : BaseAppWidget() {
         if (cardRadius == 0f) cardRadius = service.resources.getDimension(
             R.dimen.app_widget_card_radius
         )
-        val fallbackColor: Int =
-            getSecondaryTextColor(service, true)
+        val fallbackColor: Int = service.secondaryTextColor(false)
         // Load the album cover async and push the update on completion
         uiHandler.post {
             val appContext = service.applicationContext

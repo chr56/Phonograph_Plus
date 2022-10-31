@@ -13,13 +13,14 @@ import android.os.Build
 import android.view.View
 import android.widget.RemoteViews
 import androidx.core.content.res.ResourcesCompat
-import mt.util.color.getPrimaryTextColor
+import mt.util.color.primaryTextColor
 import player.phonograph.MusicServiceMsgConst
 import player.phonograph.R
 import player.phonograph.model.Song
 import player.phonograph.model.infoString
 import player.phonograph.service.MusicService
 import player.phonograph.util.ImageUtil
+import player.phonograph.util.ImageUtil.getTintedDrawable
 
 abstract class BaseAppWidget : AppWidgetProvider() {
 
@@ -86,28 +87,24 @@ abstract class BaseAppWidget : AppWidgetProvider() {
 
         view.setViewVisibility(R.id.media_titles, View.INVISIBLE)
         view.setImageViewResource(R.id.image, R.drawable.default_album_art)
+        val textColor = context.primaryTextColor(true)
+
         view.setImageViewBitmap(
             R.id.button_next,
             ImageUtil.createBitmap(
-                ImageUtil.getTintedVectorDrawable(
-                    context, R.drawable.ic_skip_next_white_24dp, getPrimaryTextColor(context, false)
-                )
+                context.getTintedDrawable(R.drawable.ic_skip_next_white_24dp,textColor)!!
             )
         )
         view.setImageViewBitmap(
             R.id.button_prev,
             ImageUtil.createBitmap(
-                ImageUtil.getTintedVectorDrawable(
-                    context, R.drawable.ic_skip_previous_white_24dp, getPrimaryTextColor(context, false)
-                )
+                context.getTintedDrawable(R.drawable.ic_skip_previous_white_24dp,textColor)!!
             )
         )
         view.setImageViewBitmap(
             R.id.button_toggle_play_pause,
             ImageUtil.createBitmap(
-                ImageUtil.getTintedVectorDrawable(
-                    context, R.drawable.ic_play_arrow_white_24dp, getPrimaryTextColor(context, false)
-                )
+                context.getTintedDrawable(R.drawable.ic_play_arrow_white_24dp,textColor)!!
             )
         )
     }

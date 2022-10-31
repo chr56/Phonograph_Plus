@@ -13,8 +13,7 @@ import androidx.core.graphics.BlendModeColorFilterCompat
 import androidx.core.graphics.BlendModeCompat
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import mt.tint.viewtint.tint
-import mt.util.color.getSecondaryTextColor
-import mt.util.color.isColorLight
+import mt.util.color.secondaryTextColor
 import player.phonograph.databinding.FragmentCardPlayerPlaybackControlsBinding
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.helper.PlayPauseButtonOnClickHandler
@@ -62,7 +61,7 @@ class CardPlayerControllerFragment : AbsPlayerControllerFragment() {
         playPauseDrawable = PlayPauseDrawable(requireActivity())
         playPauseDrawable.colorFilter =
             BlendModeColorFilterCompat.createBlendModeColorFilterCompat(
-                getSecondaryTextColor(requireContext(), isColorLight(fabColor)), BlendModeCompat.SRC_IN
+                requireContext().secondaryTextColor(fabColor), BlendModeCompat.SRC_IN
             )
 
         v.playerPlayPauseFab.setImageDrawable(playPauseDrawable) // Note: set the drawable AFTER TintHelper.setTintAuto() was called

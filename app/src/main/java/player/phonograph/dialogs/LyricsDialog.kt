@@ -8,16 +8,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CompoundButton
-import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.chip.Chip
 import lib.phonograph.dialog.LargeDialog
 import mt.pref.ThemeColor
-import mt.util.color.getPrimaryTextColor
-import mt.util.color.isColorLight
 import mt.util.color.lightenColor
 import mt.util.color.primaryTextColor
+import mt.util.color.secondaryTextColor
 import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.adapter.LyricsAdapter
@@ -117,7 +115,7 @@ class LyricsDialog : LargeDialog(), MusicProgressViewUpdateHelper.Callback {
 
     private fun getChipTextColor(checked: Boolean): ColorStateList {
         return ColorStateList.valueOf(
-            if (checked) getPrimaryTextColor(requireContext(), isColorLight(primaryColor))
+            if (checked) requireContext().secondaryTextColor(primaryColor)
             else textColor
         )
     }
@@ -191,7 +189,7 @@ class LyricsDialog : LargeDialog(), MusicProgressViewUpdateHelper.Callback {
                 intArrayOf(android.R.attr.state_checked),
                 intArrayOf(),
             ),
-            intArrayOf(getPrimaryTextColor(requireContext(), isColorLight(primaryColor)), textColor)
+            intArrayOf(requireContext().primaryTextColor(primaryColor), textColor)
         )
     }
 

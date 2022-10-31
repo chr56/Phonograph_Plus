@@ -15,9 +15,9 @@ import com.h6ah4i.android.widget.advrecyclerview.animator.RefactoredDefaultItemA
 import com.sothree.slidinguppanel.SlidingUpPanelLayout
 import com.sothree.slidinguppanel.SlidingUpPanelLayout.PanelState
 import mt.util.color.darkenColor
-import mt.util.color.getSecondaryTextColor
 import mt.util.color.isColorLight
 import mt.util.color.resolveColor
+import mt.util.color.secondaryTextColor
 import player.phonograph.R
 import player.phonograph.adapter.base.MediaEntryViewHolder
 import player.phonograph.adapter.display.initMenu
@@ -253,7 +253,7 @@ class FlatPlayerFragment :
             fragment.activity?.let { activity ->
                 if (isWindowBackgroundDarkSafe(activity)) {
                     fragment.viewBinding.playerQueueSubHeader.setTextColor(
-                        getSecondaryTextColor(activity, isWindowBackgroundDarkSafe(activity))
+                        activity.secondaryTextColor(!isWindowBackgroundDarkSafe(activity))
                     )
                 }
             }
@@ -275,9 +275,8 @@ class FlatPlayerFragment :
                 resolveColor(
                     fragment.requireContext(),
                     R.attr.iconColor,
-                    getSecondaryTextColor(
-                        fragment.requireActivity(),
-                        isWindowBackgroundDarkSafe(fragment.requireActivity())
+                    fragment.requireContext().secondaryTextColor(
+                        !isWindowBackgroundDarkSafe(fragment.requireActivity())
                     )
                 ),
                 PorterDuff.Mode.SRC_IN

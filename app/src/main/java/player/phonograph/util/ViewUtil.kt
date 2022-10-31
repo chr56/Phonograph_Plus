@@ -19,9 +19,8 @@ import android.view.animation.PathInterpolator
 import android.widget.TextView
 import androidx.annotation.ColorInt
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView
-import mt.util.color.getPrimaryTextColor
-import mt.util.color.isColorLight
 import mt.util.color.isWindowBackgroundDark
+import mt.util.color.primaryTextColor
 import mt.util.color.resolveColor
 import mt.util.color.withAlpha
 import player.phonograph.R
@@ -84,7 +83,7 @@ object ViewUtil {
 
     fun FastScrollRecyclerView.setUpFastScrollRecyclerViewColor(context: Context, accentColor: Int) {
         setPopupBgColor(accentColor)
-        setPopupTextColor(getPrimaryTextColor(context, isColorLight(accentColor)))
+        setPopupTextColor(context.primaryTextColor(accentColor))
         setThumbColor(accentColor)
         setTrackColor(withAlpha(resolveColor(context, R.attr.colorControlNormal), 0.12f)) // todo
     }
