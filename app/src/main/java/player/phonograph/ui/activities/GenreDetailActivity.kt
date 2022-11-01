@@ -1,12 +1,10 @@
 package player.phonograph.ui.activities
 
-import com.github.chr56.android.menu_dsl.attach
-import com.github.chr56.android.menu_dsl.menuItem
 import lib.phonograph.cab.ToolbarCab
 import lib.phonograph.cab.createToolbarCab
 import mt.tint.setActivityToolbarColorAuto
-import mt.util.color.primaryTextColor
 import player.phonograph.R
+import player.phonograph.actions.menu.genreDetailToolbar
 import player.phonograph.adapter.base.MultiSelectionCabController
 import player.phonograph.adapter.display.SongDisplayAdapter
 import player.phonograph.databinding.ActivityGenreDetailBinding
@@ -14,22 +12,23 @@ import player.phonograph.mediastore.GenreLoader
 import player.phonograph.misc.menuProvider
 import player.phonograph.model.Genre
 import player.phonograph.model.Song
-import player.phonograph.service.MusicPlayerRemote
-import player.phonograph.service.queue.ShuffleMode
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
-import player.phonograph.util.ImageUtil.getTintedDrawable
 import player.phonograph.util.ViewUtil.setUpFastScrollRecyclerViewColor
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import android.content.Context
 import android.os.Bundle
 import android.view.Menu
-import android.view.MenuItem
 import android.view.View
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import kotlinx.coroutines.yield
 
 class GenreDetailActivity :
-    AbsSlidingMusicPanelActivity() {
+        AbsSlidingMusicPanelActivity() {
 
     private var _viewBinding: ActivityGenreDetailBinding? = null
     private val binding: ActivityGenreDetailBinding get() = _viewBinding!!
@@ -94,7 +93,7 @@ class GenreDetailActivity :
         setSupportActionBar(binding.toolbar)
         supportActionBar!!.title = genre.name
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-        addMenuProvider(menuProvider(this::setupMenu, this::setupMenuCallback))
+        addMenuProvider(menuProvider(this::setupMenu))
         setActivityToolbarColorAuto(binding.toolbar)
 
         cab = createToolbarCab(this, R.id.cab_stub, R.id.multi_selection_cab)
@@ -105,40 +104,9 @@ class GenreDetailActivity :
     lateinit var cabController: MultiSelectionCabController
 
     private fun setupMenu(menu: Menu) {
-        val iconColor = primaryTextColor(primaryColor)
-        attach(menu) {
-            menuItem {
-                title = getString(R.string.action_play)
-                icon = getTintedDrawable(R.drawable.ic_play_arrow_white_24dp, iconColor)
-                showAsActionFlag = MenuItem.SHOW_AS_ACTION_ALWAYS
-                onClick {
-                    MusicPlayerRemote
-                        .playQueueCautiously(adapter.dataset, 0, true, ShuffleMode.NONE)
-                    true
-                }
-            }
-            menuItem {
-                title = getString(R.string.action_shuffle_playlist)
-                icon = getTintedDrawable(R.drawable.ic_shuffle_white_24dp, iconColor)
-                showAsActionFlag = MenuItem.SHOW_AS_ACTION_ALWAYS
-                onClick {
-                    MusicPlayerRemote
-                        .playQueueCautiously(adapter.dataset, 0, true, ShuffleMode.SHUFFLE)
-                    true
-                }
-            }
-        }
+        genreDetailToolbar(menu, this, genre)
     }
 
-    private fun setupMenuCallback(item: MenuItem): Boolean {
-        when (item.itemId) {
-            android.R.id.home -> {
-                onBackPressed()
-                return true
-            }
-        }
-        return true
-    }
 
     override fun onBackPressed() {
         if (cabController.dismiss()) return else super.onBackPressed()
