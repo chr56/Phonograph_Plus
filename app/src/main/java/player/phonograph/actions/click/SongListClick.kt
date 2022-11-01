@@ -45,7 +45,7 @@ fun songClick(
         }
     }
 
-    if (list == MusicPlayerRemote.playingQueue && extra.testBit(FLAG_MASK_GOTO_POSITION_FIRST)) {
+    if (extra.testBit(FLAG_MASK_GOTO_POSITION_FIRST) && list == MusicPlayerRemote.playingQueue) {
         // same queue, jump
         MusicPlayerRemote.playSongAt(position)
         return true
