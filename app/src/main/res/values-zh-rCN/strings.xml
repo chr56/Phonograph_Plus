@@ -409,4 +409,18 @@
     <string name="pref_summary_path_filter_included_mode">仅显示白名单文件夹中的内容</string>
     <string name="pref_title_load_lyrics">开启歌词</string>
     <string name="pref_summary_load_lyrics">歌词总开关，可关闭所有歌词功能</string>
+    <string name="mode_song_play_next">(单曲)下一首播放</string>
+    <string name="mode_song_play_now">(单曲)立即播放</string>
+    <string name="mode_song_append_queue">(单曲)追加至当前播放队列</string>
+    <string name="mode_song_single_play">仅单曲循环</string>
+    <string name="mode_queue_play_next">(全部)下一首播放</string>
+    <string name="mode_queue_play_now">(全部)立即播放</string>
+    <string name="mode_queue_append_queue">(全部)追加至当前播放队列</string>
+    <string name="mode_queue_switch_to_beginning">替换当前, 从头播放</string>
+    <string name="mode_queue_switch_to_position">替换当前, 从选择处播放</string>
+    <string name="mode_queue_shuffle">替换当前, 随机播放</string>
+    <string name="mode_flag_goto_position_first">若与当前播放列表相同, 转跳至所选位置</string>
+    <string name="mode_flag_play_queue_if_empty">若当前播放列表为空, 播放全部歌曲</string>
+    <string name="pref_title_click_behavior">单击歌曲时行为</string>
+    <string name="pref_summary_click_behavior">单击一列表内歌曲时的操作</string>
 </resources>

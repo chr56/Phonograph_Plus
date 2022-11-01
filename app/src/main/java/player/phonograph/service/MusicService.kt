@@ -22,6 +22,7 @@ import player.phonograph.MusicServiceMsgConst.PLAY_STATE_CHANGED
 import player.phonograph.MusicServiceMsgConst.SHUFFLE_MODE_CHANGED
 import player.phonograph.MusicServiceMsgConst.QUEUE_CHANGED
 import player.phonograph.R
+import player.phonograph.actions.actionPlay
 import player.phonograph.appwidgets.AppWidgetBig
 import player.phonograph.appwidgets.AppWidgetCard
 import player.phonograph.appwidgets.AppWidgetClassic
@@ -46,6 +47,7 @@ import player.phonograph.service.util.MediaStoreObserverUtil
 import player.phonograph.service.util.MusicServiceUtil
 import player.phonograph.service.util.SongPlayCountHelper
 import player.phonograph.settings.Setting
+import kotlin.random.Random
 
 /**
  * @author Karim Abou Zeid (kabouzeid), Andrew Neal
@@ -457,11 +459,9 @@ class MusicService : Service(), OnSharedPreferenceChangeListener {
             if (songs.isNullOrEmpty()) {
                 Toast.makeText(service, R.string.playlist_is_empty, Toast.LENGTH_LONG).show()
             } else {
-                MusicPlayerRemote.playQueueCautiously(
-                    queue = songs,
-                    startPosition = 0,
-                    startPlaying = true,
-                    shuffleMode = shuffleMode
+                songs.actionPlay(
+                    shuffleMode,
+                    if (shuffleMode == ShuffleMode.SHUFFLE) Random.nextInt(songs.size) else 0
                 )
             }
         }

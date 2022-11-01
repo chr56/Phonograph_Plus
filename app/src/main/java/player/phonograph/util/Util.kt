@@ -69,7 +69,8 @@ object Util {
         if (activity != null) {
             val currentFocus = activity.currentFocus
             if (currentFocus != null) {
-                val inputMethodManager = activity.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+                val inputMethodManager =
+                    activity.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
                 inputMethodManager.hideSoftInputFromWindow(currentFocus.windowToken, 0)
             }
         }
@@ -103,4 +104,8 @@ object Util {
             block()
         }
     }
+
+    fun Int.testBit(mask: Int): Boolean = (this and mask) != 0
+    fun Int.setBit(mask: Int): Int = (this or mask)
+    fun Int.unsetBit(mask: Int): Int = (this and mask.inv())
 }

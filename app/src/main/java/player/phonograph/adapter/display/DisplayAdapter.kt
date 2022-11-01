@@ -8,6 +8,7 @@ import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView
 import mt.util.color.primaryTextColor
 import mt.util.color.secondaryTextColor
 import player.phonograph.R
+import player.phonograph.actions.click.listClick
 import player.phonograph.actions.menu.multiItemsToolbar
 import player.phonograph.adapter.base.MultiSelectAdapter
 import player.phonograph.adapter.base.MultiSelectionCabController
@@ -137,8 +138,7 @@ open class DisplayAdapter<I : Displayable>(
         when (isInQuickSelectMode) {
             true -> toggleChecked(bindingAdapterPosition)
             false -> {
-                dataset[bindingAdapterPosition]
-                    .tapClick(list = dataset, activity, imageView)
+                listClick(dataset, bindingAdapterPosition, activity, imageView)
             }
         }
     }

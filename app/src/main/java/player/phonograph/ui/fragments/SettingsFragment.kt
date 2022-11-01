@@ -4,22 +4,6 @@
 
 package player.phonograph.ui.fragments
 
-import android.annotation.SuppressLint
-import android.content.Intent
-import android.content.SharedPreferences
-import android.content.pm.PackageManager
-import android.media.audiofx.AudioEffect
-import android.os.Build
-import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
-import android.view.View
-import androidx.fragment.app.DialogFragment
-import androidx.preference.ListPreference
-import androidx.preference.Preference
-import androidx.preference.PreferenceFragmentCompat
-import androidx.preference.PreferenceManager
-import androidx.preference.TwoStatePreference
 import com.afollestad.materialdialogs.MaterialDialog
 import lib.phonograph.localization.LanguageSettingDialog
 import lib.phonograph.localization.Localization
@@ -37,13 +21,30 @@ import player.phonograph.appshortcuts.DynamicShortcutManager
 import player.phonograph.coil.IgnoreMediaStorePreference
 import player.phonograph.preferences.HomeTabConfigDialog
 import player.phonograph.preferences.NowPlayingScreenPreferenceDialog
+import player.phonograph.settings.Setting
+import player.phonograph.ui.dialogs.ClickModeSettingDialog
+import player.phonograph.ui.dialogs.PathFilterDialog
+import player.phonograph.util.NavigationUtil
 import player.phonograph.util.preferences.HomeTabConfig
 import player.phonograph.util.preferences.NowPlayingScreenConfig
-import player.phonograph.settings.Setting
-import player.phonograph.ui.dialogs.PathFilterDialog
 import player.phonograph.util.preferences.StyleConfig
-import player.phonograph.util.NavigationUtil
 import util.phonograph.misc.ColorChooserListener
+import androidx.fragment.app.DialogFragment
+import androidx.preference.ListPreference
+import androidx.preference.Preference
+import androidx.preference.PreferenceFragmentCompat
+import androidx.preference.PreferenceManager
+import androidx.preference.TwoStatePreference
+import android.annotation.SuppressLint
+import android.content.Intent
+import android.content.SharedPreferences
+import android.content.pm.PackageManager
+import android.media.audiofx.AudioEffect
+import android.os.Build
+import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.view.View
 
 class SettingsFragment : PreferenceFragmentCompat() {
 
@@ -57,6 +58,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
             getString(R.string.preference_key_blacklist) -> PathFilterDialog()
             getString(R.string.preference_key_home_tab_config) -> HomeTabConfigDialog()
             getString(R.string.preference_key_now_playing_screen) -> NowPlayingScreenPreferenceDialog()
+            getString(R.string.preference_key_click_behavior) -> ClickModeSettingDialog()
             else -> {
                 when (preference) {
                     is EditTextPreferenceX ->

@@ -24,16 +24,22 @@ fun playlistToolbar(menu: Menu, context: Context, playlist: Playlist, @ColorInt 
     context.run {
         attach(menu) {
             menuItem {
+                title = getString(R.string.action_play)
+                icon = getTintedDrawable(R.drawable.ic_play_arrow_white_24dp, iconColor)
+                showAsActionFlag = MenuItem.SHOW_AS_ACTION_ALWAYS
+                onClick { playlist.actionPlay(context) }
+            }
+            menuItem {
                 title = getString(R.string.action_shuffle_playlist)
                 icon = getTintedDrawable(R.drawable.ic_shuffle_white_24dp, iconColor)
                 showAsActionFlag = MenuItem.SHOW_AS_ACTION_ALWAYS
                 onClick { playlist.actionShuffleAndPlay(context) }
             }
             menuItem {
-                title = getString(R.string.action_play)
-                icon = getTintedDrawable(R.drawable.ic_play_arrow_white_24dp, iconColor)
-                showAsActionFlag = MenuItem.SHOW_AS_ACTION_ALWAYS
-                onClick { playlist.actionPlay(context) }
+                title = getString(R.string.action_play_next)
+                icon = getTintedDrawable(R.drawable.ic_redo_white_24dp, iconColor)
+                showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
+                onClick { playlist.actionPlayNext(context) }
             }
 
             menuItem {
@@ -42,13 +48,6 @@ fun playlistToolbar(menu: Menu, context: Context, playlist: Playlist, @ColorInt 
                 itemId = R.id.action_refresh
                 showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
             }
-
-            menuItem {
-                title = getString(R.string.action_play_next)
-                showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
-                onClick { playlist.actionPlayNext(context) }
-            }
-
             menuItem {
                 title = getString(R.string.action_add_to_playing_queue)
                 showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
@@ -162,7 +161,7 @@ fun playlistPopupMenu(menu: Menu, context: Context, playlist: Playlist) = contex
                     if (playlist is FilePlaylist) getString(R.string.delete_action)
                     else getString(R.string.clear_action)
                 onClick {
-                    fragmentActivity(context){
+                    fragmentActivity(context) {
                         playlist.actionDeletePlaylist(it)
                         true
                     }
@@ -172,7 +171,7 @@ fun playlistPopupMenu(menu: Menu, context: Context, playlist: Playlist) = contex
         menuItem {
             title = getString(R.string.save_playlist_title)
             onClick {
-                fragmentActivity(context){
+                fragmentActivity(context) {
                     playlist.actionSavePlaylist(it)
                     true
                 }

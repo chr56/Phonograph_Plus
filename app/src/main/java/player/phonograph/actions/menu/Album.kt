@@ -15,7 +15,8 @@ import player.phonograph.actions.actionPlayNext
 import player.phonograph.actions.activity
 import player.phonograph.actions.fragmentActivity
 import player.phonograph.model.Album
-import player.phonograph.service.queue.ShuffleMode
+import player.phonograph.service.queue.ShuffleMode.NONE
+import player.phonograph.service.queue.ShuffleMode.SHUFFLE
 import player.phonograph.ui.activities.AlbumDetailActivity
 import player.phonograph.util.ImageUtil.getTintedDrawable
 import player.phonograph.util.NavigationUtil.goToArtist
@@ -26,6 +27,7 @@ import android.content.Context
 import android.content.Intent
 import android.view.Menu
 import android.view.MenuItem
+import kotlin.random.Random
 
 fun albumDetailToolbar(
     menu: Menu,
@@ -39,13 +41,13 @@ fun albumDetailToolbar(
         menuItem(title = getString(R.string.action_play)) { //id = R.id.action_shuffle_album
             icon = getTintedDrawable(R.drawable.ic_play_arrow_white_24dp, iconColor)
             showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
-            onClick { album.songs.actionPlay(context, ShuffleMode.NONE) }
+            onClick { album.songs.actionPlay(NONE,0) }
         }
 
         menuItem(title = getString(R.string.action_shuffle_album)) { //id = R.id.action_shuffle_album
             icon = getTintedDrawable(R.drawable.ic_shuffle_white_24dp, iconColor)
             showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
-            onClick { album.songs.actionPlay(context, ShuffleMode.SHUFFLE) }
+            onClick { album.songs.actionPlay(SHUFFLE, Random.nextInt(album.songs.size)) }
         }
 
 

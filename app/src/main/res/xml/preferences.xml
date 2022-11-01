@@ -176,6 +176,13 @@
 
     <lib.phonograph.preference.PreferenceCategoryX android:title="@string/pref_header_player_behaviour">
 
+        <lib.phonograph.preference.DialogPreferenceX
+            android:key="@string/preference_key_click_behavior"
+            android:persistent="false"
+            android:title="@string/pref_title_click_behavior"
+            android:summary="@string/pref_summary_click_behavior"
+            app:iconSpaceReserved="false"/>
+
         <lib.phonograph.preference.SwitchPreferenceX
             android:defaultValue="true"
             android:key="audio_ducking"
@@ -195,13 +202,6 @@
             android:key="keep_playing_queue_intact"
             android:summary="@string/pref_summary_keep_playing_queue_intact"
             android:title="@string/pref_title_keep_playing_queue_intact"
-            app:iconSpaceReserved="false" />
-
-        <lib.phonograph.preference.SwitchPreferenceX
-            android:defaultValue="true"
-            android:key="remember_shuffle"
-            android:summary="@string/pref_summary_remember_shuffle"
-            android:title="@string/pref_title_remember_shuffle"
             app:iconSpaceReserved="false" />
 
         <lib.phonograph.preference.SwitchPreferenceX
