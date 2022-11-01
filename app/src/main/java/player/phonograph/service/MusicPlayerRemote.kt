@@ -173,22 +173,6 @@ object MusicPlayerRemote {
         return true
     }
 
-    /**
-     * check [Setting.keepPlayingQueueIntact] before [playQueue]
-     * @see playQueue
-     */
-    fun playQueueCautiously(
-        queue: List<Song>,
-        startPosition: Int,
-        startPlaying: Boolean,
-        shuffleMode: ShuffleMode?,
-    ): Boolean =
-        if (Setting.instance.keepPlayingQueueIntact) {
-            playNow(queue)
-        } else {
-            playQueue(queue, startPosition, startPlaying, shuffleMode)
-        }
-
     val currentSong: Song get() = queueManager.currentSong
     val previousSong: Song get() = queueManager.previousSong
     val nextSong: Song get() = queueManager.nextSong

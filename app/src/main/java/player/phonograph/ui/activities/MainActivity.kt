@@ -15,6 +15,7 @@ import player.phonograph.R
 import player.phonograph.UPGRADABLE
 import player.phonograph.VERSION_INFO
 import player.phonograph.actions.actionPlay
+import player.phonograph.actions.actionPlayNow
 import player.phonograph.coil.loadImage
 import player.phonograph.databinding.ActivityMainBinding
 import player.phonograph.databinding.LayoutDrawerBinding
@@ -364,7 +365,7 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
         intent.action?.let {
             if (it == MediaStore.INTENT_ACTION_MEDIA_PLAY_FROM_SEARCH) {
                 val songs = SearchQueryHelper.getSongs(this, intent.extras!!)
-                MusicPlayerRemote.playQueueCautiously(songs, 0, true, null)
+                songs.actionPlayNow()
                 handled = true
             }
         }
@@ -380,7 +381,8 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
                     if (id >= 0) {
                         val position = intent.getIntExtra("position", 0)
                         val songs = PlaylistSongLoader.getPlaylistSongList(this, id)
-                        MusicPlayerRemote.playQueueCautiously(songs, position, true, null)
+                        // MusicPlayerRemote.playQueueCautiously(songs, position, true, null)
+                        songs.actionPlayNow()
                         handled = true
                     }
                 }
@@ -389,7 +391,8 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
                     if (id >= 0) {
                         val position = intent.getIntExtra("position", 0)
                         val songs = AlbumLoader.getAlbum(this, id).songs
-                        MusicPlayerRemote.playQueueCautiously(songs, position, true, null)
+                        // MusicPlayerRemote.playQueueCautiously(songs, position, true, null)
+                        songs.actionPlayNow()
                         handled = true
                     }
                 }
@@ -398,7 +401,8 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
                     if (id >= 0) {
                         val position = intent.getIntExtra("position", 0)
                         val songs = ArtistLoader.getArtist(this, id).songs
-                        MusicPlayerRemote.playQueueCautiously(songs, position, true, null)
+                        // MusicPlayerRemote.playQueueCautiously(songs, position, true, null)
+                        songs.actionPlayNow()
                         handled = true
                     }
                 }
