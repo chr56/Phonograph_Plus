@@ -40,17 +40,17 @@ fun multiItemsToolbar(
                     convertToSongs(selections, context).actionPlay(NONE, 0)
                 }
             }
-            menuItem(title = getString(R.string.action_shuffle_artist)) { //id = R.id.action_shuffle_artist
-                icon = getTintedDrawable(R.drawable.ic_shuffle_white_24dp, iconColor)
-                showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
-                onClick { convertToSongs(selections, context).actionPlay(SHUFFLE, selections.size) }
-            }
             menuItem(getString(R.string.action_play_next)) {
                 icon = getTintedDrawable(R.drawable.ic_redo_white_24dp, iconColor)
                 showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
                 onClick {
                     convertToSongs(selections, context).actionPlayNext()
                 }
+            }
+            menuItem(title = getString(R.string.action_shuffle_all)) {
+                icon = getTintedDrawable(R.drawable.ic_shuffle_white_24dp, iconColor)
+                showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
+                onClick { convertToSongs(selections, context).actionPlay(SHUFFLE, selections.size) }
             }
             menuItem(getString(R.string.action_add_to_playing_queue)) {
                 icon = getTintedDrawable(R.drawable.ic_library_add_white_24dp, iconColor)
