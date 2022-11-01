@@ -139,9 +139,7 @@ object MusicPlayerRemote {
      * @param queue new queue
      * @param startPosition position in queue when starting playing (available when shuffle mode off)
      * @param startPlaying true if to play now, false if to pause
-     * @param shuffleMode new preferred shuffle mode: if [shuffleMode] is NOT null, shuffle mode would change and apply;
-     *              if [shuffleMode] is null, shuffle mode would change unless [Setting.rememberShuffle] is on
-     *              (always be [ShuffleMode.SHUFFLE] and )
+     * @param shuffleMode new preferred shuffle mode, null if no intend to change
      * @return request success or not
      */
     fun playQueue(
@@ -167,13 +165,10 @@ object MusicPlayerRemote {
                 return@post
             }
             // parse shuffle mode & position
-            val targetShuffleMode = shuffleMode
-                ?: (if (Setting.instance.rememberShuffle) ShuffleMode.SHUFFLE else null)
-            val targetPosition =
-                if (targetShuffleMode == ShuffleMode.SHUFFLE) Random().nextInt(queue.size) else startPosition
+            val targetPosition = if (shuffleMode == ShuffleMode.SHUFFLE) 0 else startPosition
             // swap queue
+            shuffleMode?.let { queueManager.switchShuffleMode(shuffleMode, false) }
             queueManager.swapQueue(queue, targetPosition, false)
-            targetShuffleMode?.let { queueManager.switchShuffleMode(targetShuffleMode, false) }
             if (startPlaying) musicService?.playSongAt(queueManager.currentSongPosition)
             else musicService?.pause()
         }
@@ -382,8 +377,8 @@ object MusicPlayerRemote {
                         when (uri.authority) {
                             "com.android.providers.media.documents" ->
                                 getSongIdFromMediaProvider(uri)
-                            "media" -> uri.lastPathSegment
-                            else -> null
+                            "media"                                 -> uri.lastPathSegment
+                            else                                    -> null
                         }
                     if (songId != null) {
                         songs = getSongs(makeSongCursor(it, "$_ID=?", arrayOf(songId)))
@@ -401,9 +396,9 @@ object MusicPlayerRemote {
                     } else {
                         val path = getFilePathFromUri(it, uri)
                         when {
-                            path != null -> File(path)
+                            path != null     -> File(path)
                             uri.path != null -> File(uri.path!!)
-                            else -> null
+                            else             -> null
                         }
                     }
 

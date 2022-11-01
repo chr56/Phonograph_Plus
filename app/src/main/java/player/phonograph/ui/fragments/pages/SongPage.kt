@@ -6,7 +6,6 @@ package player.phonograph.ui.fragments.pages
 
 import com.github.chr56.android.menu_dsl.attach
 import com.github.chr56.android.menu_extension.add
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import mt.util.color.primaryTextColor
 import player.phonograph.App
 import player.phonograph.BuildConfig
@@ -19,7 +18,6 @@ import player.phonograph.model.sort.SortMode
 import player.phonograph.model.sort.SortRef
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.queue.ShuffleMode
-import player.phonograph.settings.Setting
 import player.phonograph.ui.components.popup.ListOptionsPopup
 import player.phonograph.ui.fragments.pages.util.DisplayConfig
 import player.phonograph.util.ImageUtil.getTintedDrawable
@@ -131,21 +129,7 @@ class SongPage : AbsDisplayPage<Song, DisplayAdapter<Song>, GridLayoutManager>()
                 showAsActionFlag = MenuItem.SHOW_AS_ACTION_ALWAYS
                 onClick {
                     val allSongs = SongLoader.getAllSongs(context)
-                    if (Setting.instance.rememberShuffle) {
-                        MaterialAlertDialogBuilder(context)
-                            .setMessage(R.string.pref_title_remember_shuffle)
-                            .setPositiveButton(android.R.string.ok) { _, _ ->
-                                MusicPlayerRemote
-                                    .playQueue(allSongs, 0, true, null)
-                            }
-                            .setNegativeButton(android.R.string.cancel) { _, _ ->
-                                MusicPlayerRemote
-                                    .playQueue(allSongs, 0, true, ShuffleMode.NONE)
-                            }.create().show()
-                    } else {
-                        MusicPlayerRemote
-                            .playQueue(allSongs, 0, true, ShuffleMode.NONE)
-                    }
+                    MusicPlayerRemote.playQueue(allSongs, 0, true, ShuffleMode.NONE)
                     true
                 }
             }

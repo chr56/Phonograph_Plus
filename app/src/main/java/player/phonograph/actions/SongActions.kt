@@ -37,20 +37,7 @@ fun Song.actionPlay(): Boolean = actionPlayNow()
  * @param shuffleMode target shuffle mode
  */
 fun List<Song>.actionPlay(context: Context, shuffleMode: ShuffleMode?) =
-    if (Setting.instance.rememberShuffle) {
-        // ask for
-        MaterialAlertDialogBuilder(context)
-            .setMessage(R.string.pref_title_remember_shuffle)
-            .setPositiveButton(android.R.string.ok) { _, _ ->
-                MusicPlayerRemote.playQueue(this, 0, true, null)
-            }
-            .setNegativeButton(android.R.string.cancel) { _, _ ->
-                MusicPlayerRemote.playQueue(this, 0, true, ShuffleMode.NONE)
-            }.create().show()
-        true
-    } else {
-        MusicPlayerRemote.playQueue(this, 0, true, shuffleMode)
-    }
+    MusicPlayerRemote.playQueue(this, 0, true, shuffleMode)
 
 fun Song.actionPlayNow(): Boolean =
     MusicPlayerRemote.playNow(this)
