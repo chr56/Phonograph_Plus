@@ -40,7 +40,7 @@ class SettingsActivity : ToolbarActivity() {
         toolbar.setBackgroundColor(ThemeColor.primaryColor(this))
         setSupportActionBar(toolbar)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-        addMenuProvider(menuProvider(this::setupMenu, this::setupMenuCallback))
+        addMenuProvider(menuProvider(this::setupMenu))
         setActivityToolbarColorAuto(toolbar)
 
         if (savedInstanceState == null) {
@@ -59,75 +59,66 @@ class SettingsActivity : ToolbarActivity() {
                 itemId = R.id.action_export_data
                 title = "${getString(R.string.export_)}${getString(R.string.databases)}"
                 showAsActionFlag = SHOW_AS_ACTION_NEVER
+                onClick {
+                    createAction = { uri -> exportDatabase(uri) }
+                    createLauncher.launch("phonograph_plus_databases_${currentDateTime()}.zip")
+                    true
+                }
             }
             menuItem {
                 itemId = R.id.action_import_data
                 title = "${getString(R.string.import_)}${getString(R.string.databases)}"
                 showAsActionFlag = SHOW_AS_ACTION_NEVER
+                onClick {
+                    openAction = { uri -> importDatabase(uri) }
+                    openLauncher.launch(OpenDocumentContract.Cfg(null, arrayOf("application/zip")))
+                    true
+                }
             }
             menuItem {
                 itemId = R.id.action_export_preferences
                 title = "${getString(R.string.export_)}${getString(R.string.preferences)}"
                 showAsActionFlag = SHOW_AS_ACTION_NEVER
+                onClick {
+                    createAction = { uri -> exportSetting(uri) }
+                    createLauncher.launch("phonograph_plus_settings_${currentDateTime()}.json")
+                    true
+                }
             }
             menuItem {
                 itemId = R.id.action_import_preferences
                 title = "${getString(R.string.import_)}${getString(R.string.preferences)}"
                 showAsActionFlag = SHOW_AS_ACTION_NEVER
+                onClick {
+                    openAction = { uri -> importSetting(uri) }
+                    openLauncher.launch(OpenDocumentContract.Cfg(null, arrayOf("application/json")))
+                    true
+                }
             }
             menuItem {
                 itemId = R.id.action_clear_all_preference
                 title = getString(R.string.clear_all_preference)
                 showAsActionFlag = SHOW_AS_ACTION_NEVER
-            }
-        }
-    }
+                onClick {
+                    MaterialDialog(context).show {
+                        title(R.string.clear_all_preference)
+                        message(R.string.clear_all_preference_msg)
+                        negativeButton(android.R.string.cancel)
+                        positiveButton(R.string.clear_all_preference) {
+                            SettingManager(this@SettingsActivity.applicationContext).clearAllPreference()
 
-    private fun setupMenuCallback(item: MenuItem): Boolean {
-        when (item.itemId) {
-            android.R.id.home -> {
-                onBackPressedDispatcher.onBackPressed()
-                return true
-            }
-            R.id.action_export_data -> {
-                createAction = { uri -> exportDatabase(uri) }
-                createLauncher.launch("phonograph_plus_databases_${currentDateTime()}.zip")
-                return true
-            }
-            R.id.action_import_data -> {
-                openAction = { uri -> importDatabase(uri) }
-                openLauncher.launch(OpenDocumentContract.Cfg(null, arrayOf("application/zip")))
-                return true
-            }
-            R.id.action_export_preferences -> {
-                createAction = { uri -> exportSetting(uri) }
-                createLauncher.launch("phonograph_plus_settings_${currentDateTime()}.json")
-                return true
-            }
-            R.id.action_import_preferences -> {
-                openAction = { uri -> importSetting(uri) }
-                openLauncher.launch(OpenDocumentContract.Cfg(null, arrayOf("application/json")))
-                return true
-            }
-            R.id.action_clear_all_preference -> {
-                MaterialDialog(this).show {
-                    title(R.string.clear_all_preference)
-                    message(R.string.clear_all_preference_msg)
-                    negativeButton(android.R.string.cancel)
-                    positiveButton(R.string.clear_all_preference) {
-                        SettingManager(this@SettingsActivity.applicationContext).clearAllPreference()
-
-                        Handler().postDelayed({
-                            Process.killProcess(Process.myPid())
-                            exitProcess(1)
-                        }, 4000)
+                            Handler().postDelayed({
+                                                      Process.killProcess(Process.myPid())
+                                                      exitProcess(1)
+                                                  }, 4000)
+                        }
+                        cancelOnTouchOutside(true)
+                        getActionButton(WhichButton.POSITIVE).updateTextColor(getColor(R.color.md_red_A700))
                     }
-                    cancelOnTouchOutside(true)
-                    getActionButton(WhichButton.POSITIVE).updateTextColor(getColor(R.color.md_red_A700))
+                    true
                 }
             }
         }
-        return false
     }
 
     private lateinit var createAction: (Uri) -> Boolean
@@ -149,21 +140,17 @@ class SettingsActivity : ToolbarActivity() {
         }
     }
 
-    private fun exportDatabase(uri: Uri): Boolean {
-        return DatabaseManger(App.instance).exportDatabases(uri)
-    }
+    private fun exportDatabase(uri: Uri): Boolean =
+        DatabaseManger(App.instance).exportDatabases(uri)
 
-    private fun importDatabase(uri: Uri): Boolean {
-        return DatabaseManger(App.instance).importDatabases(uri)
-    }
+    private fun importDatabase(uri: Uri): Boolean =
+        DatabaseManger(App.instance).importDatabases(uri)
 
-    private fun exportSetting(uri: Uri): Boolean {
-        return SettingManager(App.instance).exportSettings(uri)
-    }
+    private fun exportSetting(uri: Uri): Boolean =
+        SettingManager(App.instance).exportSettings(uri)
 
-    private fun importSetting(uri: Uri): Boolean {
-        return SettingManager(App.instance).importSetting(uri)
-    }
+    private fun importSetting(uri: Uri): Boolean =
+        SettingManager(App.instance).importSetting(uri)
 
     private suspend fun Boolean.andReport() {
         CoroutineUtil.coroutineToast(App.instance, if (this) R.string.success else R.string.failed)
