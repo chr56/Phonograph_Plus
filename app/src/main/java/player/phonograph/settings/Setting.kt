@@ -5,8 +5,8 @@
 package player.phonograph.settings
 
 import player.phonograph.App
-import player.phonograph.actions.PRE_MASK_PLAY_QUEUE_IF_EMPTY
-import player.phonograph.actions.SONG_PLAY_NOW
+import player.phonograph.actions.click.mode.PRE_MASK_PLAY_QUEUE_IF_EMPTY
+import player.phonograph.actions.click.mode.SONG_PLAY_NOW
 import player.phonograph.model.sort.FileSortMode
 import player.phonograph.model.sort.SortMode
 import player.phonograph.model.sort.SortRef

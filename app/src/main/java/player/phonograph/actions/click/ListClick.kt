@@ -5,7 +5,6 @@
 package player.phonograph.actions.click
 
 import player.phonograph.R
-import player.phonograph.actions.songClick
 import player.phonograph.model.Album
 import player.phonograph.model.Artist
 import player.phonograph.model.Displayable

@@ -5,10 +5,10 @@
 package player.phonograph.ui.compose.dialogs
 
 import player.phonograph.R
-import player.phonograph.actions.PRE_MASK_GOTO_POSITION_FIRST
-import player.phonograph.actions.PRE_MASK_PLAY_QUEUE_IF_EMPTY
-import player.phonograph.actions.baseModes
-import player.phonograph.actions.modeName
+import player.phonograph.actions.click.mode.PRE_MASK_GOTO_POSITION_FIRST
+import player.phonograph.actions.click.mode.PRE_MASK_PLAY_QUEUE_IF_EMPTY
+import player.phonograph.actions.click.mode.baseModes
+import player.phonograph.actions.click.mode.modeName
 import player.phonograph.settings.Setting
 import player.phonograph.ui.compose.theme.PhonographTheme
 import player.phonograph.util.Util.setBit
