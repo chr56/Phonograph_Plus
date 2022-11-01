@@ -5,7 +5,7 @@
 package player.phonograph.settings
 
 import player.phonograph.App
-import player.phonograph.actions.click.mode.SongClickMode.PRE_MASK_PLAY_QUEUE_IF_EMPTY
+import player.phonograph.actions.click.mode.SongClickMode.FLAG_MASK_PLAY_QUEUE_IF_EMPTY
 import player.phonograph.actions.click.mode.SongClickMode.SONG_PLAY_NOW
 import player.phonograph.model.sort.FileSortMode
 import player.phonograph.model.sort.SortMode
@@ -67,10 +67,10 @@ class Setting(context: Context) {
     var autoDownloadImagesPolicy: String by StringPref(AUTO_DOWNLOAD_IMAGES_POLICY, "never")
 
     // Behavior-Playing
-    var defaultSongItemClickBaseMode: Int
-            by IntPref(DEFAULT_SONG_ITEM_CLICK_BASE_MODE, SONG_PLAY_NOW)
-    var defaultSongItemClickExtraMode: Int
-            by IntPref(DEFAULT_SONG_ITEM_CLICK_EXTRA_MODE, PRE_MASK_PLAY_QUEUE_IF_EMPTY)
+    var songItemClickMode: Int
+            by IntPref(SONG_ITEM_CLICK_MODE, SONG_PLAY_NOW)
+    var songItemClickExtraFlag: Int
+            by IntPref(SONG_ITEM_CLICK_EXTRA_FLAG, FLAG_MASK_PLAY_QUEUE_IF_EMPTY)
     var keepPlayingQueueIntact: Boolean by BooleanPref(KEEP_PLAYING_QUEUE_INTACT, true)
     var rememberShuffle: Boolean by BooleanPref(REMEMBER_SHUFFLE, true)
     var gaplessPlayback: Boolean by BooleanPref(GAPLESS_PLAYBACK, false)
@@ -212,8 +212,8 @@ class Setting(context: Context) {
         private const val AUTO_DOWNLOAD_IMAGES_POLICY = "auto_download_images_policy"
 
         // Behavior-Playing
-        const val DEFAULT_SONG_ITEM_CLICK_BASE_MODE = "default_song_item_click_extra_mode"
-        const val DEFAULT_SONG_ITEM_CLICK_EXTRA_MODE = "default_song_item_click_extra_mode"
+        const val SONG_ITEM_CLICK_MODE = "song_item_click_extra_flag"
+        const val SONG_ITEM_CLICK_EXTRA_FLAG = "song_item_click_extra_mode"
         const val KEEP_PLAYING_QUEUE_INTACT = "keep_playing_queue_intact"
         private const val REMEMBER_SHUFFLE = "remember_shuffle"
         private const val AUDIO_DUCKING = "audio_ducking"

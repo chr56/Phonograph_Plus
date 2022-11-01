@@ -5,8 +5,8 @@
 package player.phonograph.ui.compose.dialogs
 
 import player.phonograph.R
-import player.phonograph.actions.click.mode.SongClickMode.PRE_MASK_GOTO_POSITION_FIRST
-import player.phonograph.actions.click.mode.SongClickMode.PRE_MASK_PLAY_QUEUE_IF_EMPTY
+import player.phonograph.actions.click.mode.SongClickMode.FLAG_MASK_GOTO_POSITION_FIRST
+import player.phonograph.actions.click.mode.SongClickMode.FLAG_MASK_PLAY_QUEUE_IF_EMPTY
 import player.phonograph.actions.click.mode.SongClickMode.baseModes
 import player.phonograph.actions.click.mode.SongClickMode.modeName
 import player.phonograph.settings.Setting
@@ -89,11 +89,11 @@ private fun Content(context: Context) {
     Column {
 
         val currentMode = remember {
-            mutableStateOf(Setting.instance.defaultSongItemClickBaseMode)
+            mutableStateOf(Setting.instance.songItemClickMode)
         }
         val setCurrentMode = { new: Int ->
             currentMode.value = new
-            Setting.instance.defaultSongItemClickBaseMode = new
+            Setting.instance.songItemClickMode = new
         }
         for (id in baseModes) {
             ModeRadioBox(mode = id,
@@ -105,7 +105,7 @@ private fun Content(context: Context) {
         Spacer(Modifier.height(8.dp))
 
         val currentExtraFlag = remember {
-            mutableStateOf(Setting.instance.defaultSongItemClickExtraMode)
+            mutableStateOf(Setting.instance.songItemClickExtraFlag)
         }
         val flipExtraFlagBit = { mask: Int ->
             val new = if (currentExtraFlag.value.testBit(mask)) {
@@ -114,14 +114,14 @@ private fun Content(context: Context) {
                 currentExtraFlag.value.setBit(mask)
             }
             currentExtraFlag.value = new
-            Setting.instance.defaultSongItemClickExtraMode = new
+            Setting.instance.songItemClickExtraFlag = new
         }
 
-        FlagCheckBox(mask = PRE_MASK_GOTO_POSITION_FIRST,
+        FlagCheckBox(mask = FLAG_MASK_GOTO_POSITION_FIRST,
                      name = context.getString(R.string.mode_flag_goto_position_first),
                      currentExtraFlag = currentExtraFlag,
                      flipExtraFlagBit = flipExtraFlagBit)
-        FlagCheckBox(mask = PRE_MASK_PLAY_QUEUE_IF_EMPTY,
+        FlagCheckBox(mask = FLAG_MASK_PLAY_QUEUE_IF_EMPTY,
                      name = context.getString(R.string.mode_flag_play_queue_if_empty),
                      currentExtraFlag = currentExtraFlag,
                      flipExtraFlagBit = flipExtraFlagBit)

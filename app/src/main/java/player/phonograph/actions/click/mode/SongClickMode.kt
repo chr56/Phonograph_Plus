@@ -23,8 +23,8 @@ object SongClickMode {
     const val QUEUE_SWITCH_TO_POSITION = 213
     const val QUEUE_SHUFFLE = 219
 
-    const val PRE_MASK_GOTO_POSITION_FIRST = 1 shl 3
-    const val PRE_MASK_PLAY_QUEUE_IF_EMPTY = 1 shl 4
+    const val FLAG_MASK_GOTO_POSITION_FIRST = 1 shl 3
+    const val FLAG_MASK_PLAY_QUEUE_IF_EMPTY = 1 shl 4
 
     val baseModes by lazy {
         intArrayOf(
@@ -60,10 +60,10 @@ object SongClickMode {
 
 
     fun resetBaseMode() {
-        Setting.instance.defaultSongItemClickBaseMode = SONG_PLAY_NOW
+        Setting.instance.songItemClickMode = SONG_PLAY_NOW
     }
 
     fun resetExtraMode() {
-        Setting.instance.defaultSongItemClickExtraMode = PRE_MASK_PLAY_QUEUE_IF_EMPTY
+        Setting.instance.songItemClickExtraFlag = FLAG_MASK_PLAY_QUEUE_IF_EMPTY
     }
 }

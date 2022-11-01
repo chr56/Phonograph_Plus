@@ -9,8 +9,8 @@ package player.phonograph.actions.click
 import player.phonograph.actions.actionEnqueue
 import player.phonograph.actions.actionPlayNext
 import player.phonograph.actions.actionPlayNow
-import player.phonograph.actions.click.mode.SongClickMode.PRE_MASK_GOTO_POSITION_FIRST
-import player.phonograph.actions.click.mode.SongClickMode.PRE_MASK_PLAY_QUEUE_IF_EMPTY
+import player.phonograph.actions.click.mode.SongClickMode.FLAG_MASK_GOTO_POSITION_FIRST
+import player.phonograph.actions.click.mode.SongClickMode.FLAG_MASK_PLAY_QUEUE_IF_EMPTY
 import player.phonograph.actions.click.mode.SongClickMode.QUEUE_APPEND_QUEUE
 import player.phonograph.actions.click.mode.SongClickMode.QUEUE_PLAY_NEXT
 import player.phonograph.actions.click.mode.SongClickMode.QUEUE_PLAY_NOW
@@ -33,11 +33,11 @@ fun songClick(
     position: Int,
     startPlaying: Boolean,
 ): Boolean {
-    val extra = Setting.instance.defaultSongItemClickExtraMode
-    var base = Setting.instance.defaultSongItemClickBaseMode
+    val extra = Setting.instance.songItemClickExtraFlag
+    var base = Setting.instance.songItemClickMode
 
     // pre-process extra mode
-    if (MusicPlayerRemote.playingQueue.isEmpty() && extra.testBit(PRE_MASK_PLAY_QUEUE_IF_EMPTY)) {
+    if (MusicPlayerRemote.playingQueue.isEmpty() && extra.testBit(FLAG_MASK_PLAY_QUEUE_IF_EMPTY)) {
         if (base in 100..109) {
             base += 100
         } else {
@@ -45,7 +45,7 @@ fun songClick(
         }
     }
 
-    if (list == MusicPlayerRemote.playingQueue && extra.testBit(PRE_MASK_GOTO_POSITION_FIRST)) {
+    if (list == MusicPlayerRemote.playingQueue && extra.testBit(FLAG_MASK_GOTO_POSITION_FIRST)) {
         // same queue, jump
         MusicPlayerRemote.playSongAt(position)
         return true
