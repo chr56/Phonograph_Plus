@@ -20,10 +20,14 @@ import android.content.Context
 import kotlin.random.Random
 
 fun Playlist.actionPlay(context: Context): Boolean =
-    getSongs(context).actionPlay(ShuffleMode.NONE, 0)
+    getSongs(context).let { songs ->
+        songs.actionPlay(ShuffleMode.NONE, 0)
+    }
 
 fun Playlist.actionShuffleAndPlay(context: Context) =
-    MusicPlayerRemote.playQueueCautiously(getSongs(context), 0, true, ShuffleMode.SHUFFLE)
+    getSongs(context).let { songs ->
+        songs.actionPlay(ShuffleMode.SHUFFLE, Random.nextInt(songs.size))
+    }
 
 fun Playlist.actionPlayNext(context: Context): Boolean =
     MusicPlayerRemote.playNext(ArrayList(getSongs(context)))

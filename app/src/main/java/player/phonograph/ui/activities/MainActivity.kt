@@ -14,6 +14,7 @@ import player.phonograph.BuildConfig.DEBUG
 import player.phonograph.R
 import player.phonograph.UPGRADABLE
 import player.phonograph.VERSION_INFO
+import player.phonograph.actions.actionPlay
 import player.phonograph.coil.loadImage
 import player.phonograph.databinding.ActivityMainBinding
 import player.phonograph.databinding.LayoutDrawerBinding
@@ -58,6 +59,7 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import kotlin.random.Random
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -206,8 +208,7 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
                     drawerBinding.drawerLayout.closeDrawers()
                     Handler(Looper.getMainLooper()).postDelayed({
                         val songs = getAllSongs(activity)
-                        MusicPlayerRemote
-                            .playQueue(songs, 0, true, ShuffleMode.SHUFFLE)
+                        songs.actionPlay(ShuffleMode.SHUFFLE, Random.nextInt(songs.size))
                     }, 350)
                 }
             }

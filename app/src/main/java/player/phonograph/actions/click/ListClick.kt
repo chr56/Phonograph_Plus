@@ -32,7 +32,7 @@ fun <T : Displayable> listClick(
     if (list.isEmpty()) return false
     when (list.firstOrNull()) {
         is Song   -> {
-            songClick(list.filterIsInstance<Song>(), position, true)
+            songClick(list.filterIsInstance<Song>(), position)
         }
         is Album  -> {
             if (activity != null) {

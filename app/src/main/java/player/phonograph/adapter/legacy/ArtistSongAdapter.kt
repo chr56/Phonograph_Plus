@@ -11,12 +11,12 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import coil.size.ViewSizeResolver
 import player.phonograph.R
+import player.phonograph.actions.actionPlay
 import player.phonograph.actions.menu.multiItemsToolbar
 import player.phonograph.adapter.base.MultiSelectionCabController
 import player.phonograph.adapter.display.initMenu
 import player.phonograph.coil.loadImage
 import player.phonograph.model.Song
-import player.phonograph.service.MusicPlayerRemote
 
 // Todo: use AbsMultiSelectAdapter
 /**
@@ -79,8 +79,7 @@ open class ArtistSongAdapter(
             if (isInQuickSelectMode) {
                 toggleChecked(song)
             } else {
-                MusicPlayerRemote
-                    .playQueueCautiously(dataSet, position, true, null)
+                dataSet.actionPlay(null,0)
             }
         }
         convertView.setOnLongClickListener {

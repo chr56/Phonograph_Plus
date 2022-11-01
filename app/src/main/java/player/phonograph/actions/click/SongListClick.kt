@@ -7,6 +7,7 @@
 package player.phonograph.actions.click
 
 import player.phonograph.actions.actionEnqueue
+import player.phonograph.actions.actionPlay
 import player.phonograph.actions.actionPlayNext
 import player.phonograph.actions.actionPlayNow
 import player.phonograph.actions.click.mode.SongClickMode.FLAG_MASK_GOTO_POSITION_FIRST
@@ -24,15 +25,13 @@ import player.phonograph.actions.click.mode.SongClickMode.SONG_SINGLE_PLAY
 import player.phonograph.actions.click.mode.SongClickMode.resetBaseMode
 import player.phonograph.model.Song
 import player.phonograph.service.MusicPlayerRemote
-import player.phonograph.service.queue.ShuffleMode
+import player.phonograph.service.queue.ShuffleMode.SHUFFLE
+import player.phonograph.service.queue.ShuffleMode.NONE
 import player.phonograph.settings.Setting
 import player.phonograph.util.Util.testBit
+import kotlin.random.Random
 
-fun songClick(
-    list: List<Song>,
-    position: Int,
-    startPlaying: Boolean,
-): Boolean {
+fun songClick(list: List<Song>, position: Int): Boolean {
     val extra = Setting.instance.songItemClickExtraFlag
     var base = Setting.instance.songItemClickMode
 
@@ -57,41 +56,13 @@ fun songClick(
         SONG_PLAY_NEXT            -> list[position].actionPlayNext()
         SONG_PLAY_NOW             -> list[position].actionPlayNow()
         SONG_APPEND_QUEUE         -> list[position].actionEnqueue()
-        SONG_SINGLE_PLAY          -> {
-            MusicPlayerRemote.playQueue(
-                listOf(list[position]),
-                0,
-                startPlaying,
-                null
-            )
-        }
+        SONG_SINGLE_PLAY          -> listOf(list[position]).actionPlay(null, 0)
         QUEUE_PLAY_NOW            -> list.actionPlayNow()
         QUEUE_PLAY_NEXT           -> list.actionPlayNext()
         QUEUE_APPEND_QUEUE        -> list.actionEnqueue()
-        QUEUE_SWITCH_TO_BEGINNING -> {
-            MusicPlayerRemote.playQueue(
-                list,
-                0,
-                startPlaying,
-                ShuffleMode.NONE
-            )
-        }
-        QUEUE_SWITCH_TO_POSITION  -> {
-            MusicPlayerRemote.playQueue(
-                list,
-                position,
-                startPlaying,
-                ShuffleMode.NONE
-            )
-        }
-        QUEUE_SHUFFLE             -> {
-            MusicPlayerRemote.playQueue(
-                list,
-                position,
-                startPlaying,
-                ShuffleMode.SHUFFLE
-            )
-        }
+        QUEUE_SWITCH_TO_BEGINNING -> list.actionPlay(NONE, 0)
+        QUEUE_SWITCH_TO_POSITION  -> list.actionPlay(NONE, position)
+        QUEUE_SHUFFLE             -> list.actionPlay(SHUFFLE, Random.nextInt(list.size))
         else  /* invalided */     -> {
             resetBaseMode()
             return false
