@@ -4,31 +4,28 @@
 
 package player.phonograph.actions.menu
 
-import android.content.Context
-import android.content.Intent
-import android.view.Menu
-import android.view.MenuItem
-import android.widget.Toast
-import androidx.activity.ComponentActivity
-import androidx.annotation.ColorInt
 import com.github.chr56.android.menu_dsl.attach
 import com.github.chr56.android.menu_dsl.menuItem
 import player.phonograph.R
 import player.phonograph.actions.actionAddToPlaylist
 import player.phonograph.actions.actionDelete
 import player.phonograph.actions.actionEnqueue
-import player.phonograph.actions.fragmentActivity
 import player.phonograph.actions.actionPlay
 import player.phonograph.actions.actionPlayNext
 import player.phonograph.actions.activity
 import player.phonograph.coil.CustomArtistImageStore
-import player.phonograph.dialogs.AddToPlaylistDialog
 import player.phonograph.model.Artist
-import player.phonograph.service.MusicPlayerRemote
-import player.phonograph.service.queue.ShuffleMode
+import player.phonograph.service.queue.ShuffleMode.NONE
+import player.phonograph.service.queue.ShuffleMode.SHUFFLE
 import player.phonograph.ui.activities.ArtistDetailActivity
-import player.phonograph.ui.dialogs.DeleteSongsDialog
 import player.phonograph.util.ImageUtil.getTintedDrawable
+import androidx.annotation.ColorInt
+import android.content.Context
+import android.content.Intent
+import android.view.Menu
+import android.view.MenuItem
+import android.widget.Toast
+import kotlin.random.Random
 
 fun artistDetailToolbar(
     menu: Menu,
@@ -42,13 +39,13 @@ fun artistDetailToolbar(
         menuItem(title = getString(R.string.action_play)) { //id = R.id.action_shuffle_artist
             icon = getTintedDrawable(R.drawable.ic_play_arrow_white_24dp, iconColor)
             showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
-            onClick { artist.songs.actionPlay(context, ShuffleMode.NONE) }
+            onClick { artist.songs.actionPlay(NONE, 0) }
         }
 
         menuItem(title = getString(R.string.action_shuffle_artist)) { //id = R.id.action_shuffle_artist
             icon = getTintedDrawable(R.drawable.ic_shuffle_white_24dp, iconColor)
             showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
-            onClick { artist.songs.actionPlay(context, ShuffleMode.SHUFFLE) }
+            onClick { artist.songs.actionPlay(SHUFFLE, Random.nextInt(artist.songs.size)) }
         }
 
 
@@ -75,7 +72,7 @@ fun artistDetailToolbar(
             icon = getTintedDrawable(R.drawable.ic_person_white_24dp, iconColor)
             showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
             onClick {
-                activity(context){
+                activity(context) {
                     it.startActivityForResult(
                         Intent.createChooser(
                             Intent(Intent.ACTION_GET_CONTENT).apply {

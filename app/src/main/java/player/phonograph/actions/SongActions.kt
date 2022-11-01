@@ -4,7 +4,6 @@
 
 package player.phonograph.actions
 
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import player.phonograph.R
 import player.phonograph.dialogs.AddToPlaylistDialog
 import player.phonograph.dialogs.SongDetailDialog
@@ -31,13 +30,10 @@ import android.view.View
 fun Song.actionPlay(): Boolean = actionPlayNow()
 
 /**
- * Play queue.
- *
- * This would ask for ShuffleMode if [Setting.rememberShuffle] enabled.
- * @param shuffleMode target shuffle mode
+ * Play queue with target [ShuffleMode]
  */
-fun List<Song>.actionPlay(context: Context, shuffleMode: ShuffleMode?) =
-    MusicPlayerRemote.playQueue(this, 0, true, shuffleMode)
+fun List<Song>.actionPlay(shuffleMode: ShuffleMode?, position: Int) =
+    MusicPlayerRemote.playQueue(this, position, true, shuffleMode)
 
 fun Song.actionPlayNow(): Boolean =
     MusicPlayerRemote.playNow(this)

@@ -17,9 +17,10 @@ import player.phonograph.service.queue.ShuffleMode
 import util.phonograph.m3u.PlaylistsManager
 import androidx.fragment.app.FragmentActivity
 import android.content.Context
+import kotlin.random.Random
 
 fun Playlist.actionPlay(context: Context): Boolean =
-    getSongs(context).actionPlay(context, ShuffleMode.NONE)
+    getSongs(context).actionPlay(ShuffleMode.NONE, 0)
 
 fun Playlist.actionShuffleAndPlay(context: Context) =
     MusicPlayerRemote.playQueueCautiously(getSongs(context), 0, true, ShuffleMode.SHUFFLE)
