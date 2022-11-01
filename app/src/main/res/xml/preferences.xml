@@ -206,13 +206,6 @@
 
         <lib.phonograph.preference.SwitchPreferenceX
             android:defaultValue="true"
-            android:key="remember_shuffle"
-            android:summary="@string/pref_summary_remember_shuffle"
-            android:title="@string/pref_title_remember_shuffle"
-            app:iconSpaceReserved="false" />
-
-        <lib.phonograph.preference.SwitchPreferenceX
-            android:defaultValue="true"
             android:key="enable_lyrics"
             android:summary="@string/pref_summary_load_lyrics"
             android:title="@string/pref_title_load_lyrics"
