@@ -4,6 +4,7 @@ import com.github.chr56.android.menu_dsl.attach
 import com.github.chr56.android.menu_dsl.menuItem
 import com.h6ah4i.android.widget.advrecyclerview.draggable.RecyclerViewDragDropManager
 import com.h6ah4i.android.widget.advrecyclerview.utils.WrapperAdapterUtils
+import mt.tint.viewtint.setMenuColor
 import mt.util.color.toolbarIconColor
 import player.phonograph.R
 import player.phonograph.adapter.display.PlayingQueueAdapter
@@ -247,6 +248,7 @@ abstract class AbsPlayerFragment :
                 }
             }
         }
+        setMenuColor(requireContext(), playerToolbar, playerToolbar.menu, Color.WHITE)
 
     }
 
