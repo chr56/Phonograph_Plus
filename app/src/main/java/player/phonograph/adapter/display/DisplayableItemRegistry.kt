@@ -25,32 +25,29 @@ import android.widget.ImageView
 
 /**
  * involve item click
- * @param list      (optional) a list that this Displayable is among
+ * @param list      a list that this Displayable is among
+ * @param position  position where selected
  * @param activity  (optional) for SceneTransitionAnimation
  * @param imageView (optional) item's imagine for SceneTransitionAnimation
  * @return true if action have been processed
  */
-fun <T : Displayable> Displayable.tapClick(
-    list: List<T>?,
+fun <T : Displayable> listClick(
+    list: List<T>,
+    position: Int,
     activity: Activity?,
     imageView: ImageView?,
 ): Boolean {
-    return when (this) {
+    if (list.isEmpty()) return false
+    when (list.firstOrNull()) {
         is Song   -> {
-            val queue = list?.filterIsInstance<Song>()
-            if (queue != null && queue.isNotEmpty()) {
-                songClick(queue, queue.indexOf(this), true)
-            } else {
-                this.actionPlay()
-            }
-            true
+            songClick(list.filterIsInstance<Song>(), position, true)
         }
         is Album  -> {
             if (activity != null) {
                 if (imageView != null) {
                     NavigationUtil.goToAlbum(
                         activity,
-                        this.id,
+                        (list[position] as Album).id,
                         Pair(
                             imageView,
                             imageView.resources.getString(R.string.transition_album_art)
@@ -59,12 +56,11 @@ fun <T : Displayable> Displayable.tapClick(
                 } else {
                     NavigationUtil.goToAlbum(
                         activity,
-                        this.id
+                        (list[position] as Album).id
                     )
                 }
-                true
             } else {
-                false
+                return false
             }
         }
         is Artist -> {
@@ -72,28 +68,30 @@ fun <T : Displayable> Displayable.tapClick(
                 if (imageView != null) {
                     NavigationUtil.goToArtist(
                         activity,
-                        this.id,
-                        Pair(imageView,
-                             imageView.resources.getString(R.string.transition_artist_image))
+                        (list[position] as Artist).id,
+                        Pair(
+                            imageView,
+                            imageView.resources.getString(R.string.transition_artist_image)
+                        )
                     )
                 } else {
-                    NavigationUtil.goToArtist(activity, this.id)
+                    NavigationUtil.goToArtist(activity, (list[position] as Artist).id)
                 }
-                true
+
             } else {
-                false
+                return false
             }
         }
         is Genre  -> {
             if (activity != null) {
-                NavigationUtil.goToGenre(activity, this)
-                true
+                NavigationUtil.goToGenre(activity, (list[position] as Genre))
             } else {
-                false
+                return false
             }
         }
-        else      -> false
+        else      -> return false
     }
+    return true
 }
 
 fun Displayable.hasMenu(): Boolean = this is Song

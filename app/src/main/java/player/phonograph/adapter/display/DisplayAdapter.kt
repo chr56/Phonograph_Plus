@@ -137,8 +137,7 @@ open class DisplayAdapter<I : Displayable>(
         when (isInQuickSelectMode) {
             true -> toggleChecked(bindingAdapterPosition)
             false -> {
-                dataset[bindingAdapterPosition]
-                    .tapClick(list = dataset, activity, imageView)
+                listClick(dataset, bindingAdapterPosition, activity, imageView)
             }
         }
     }
