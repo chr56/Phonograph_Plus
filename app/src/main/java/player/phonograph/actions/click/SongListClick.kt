@@ -87,7 +87,7 @@ fun songClick(
         QUEUE_SHUFFLE             -> {
             MusicPlayerRemote.playQueue(
                 list,
-                0,
+                position,
                 startPlaying,
                 ShuffleMode.SHUFFLE
             )

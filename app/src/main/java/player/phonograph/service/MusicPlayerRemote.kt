@@ -137,9 +137,9 @@ object MusicPlayerRemote {
     /**
      * Play a queue (asynchronous)
      * @param queue new queue
-     * @param startPosition position in queue when starting playing (available when shuffle mode off)
      * @param startPlaying true if to play now, false if to pause
      * @param shuffleMode new preferred shuffle mode, null if no intend to change
+     * @param startPosition * if Shuffle Mode on, selected position as first song; if off, position in queue when starting playing
      * @return request success or not
      */
     fun playQueue(
@@ -164,11 +164,9 @@ object MusicPlayerRemote {
                 }
                 return@post
             }
-            // parse shuffle mode & position
-            val targetPosition = if (shuffleMode == ShuffleMode.SHUFFLE) 0 else startPosition
             // swap queue
             shuffleMode?.let { queueManager.switchShuffleMode(shuffleMode, false) }
-            queueManager.swapQueue(queue, targetPosition, false)
+            queueManager.swapQueue(queue, startPosition, false)
             if (startPlaying) musicService?.playSongAt(queueManager.currentSongPosition)
             else musicService?.pause()
         }
