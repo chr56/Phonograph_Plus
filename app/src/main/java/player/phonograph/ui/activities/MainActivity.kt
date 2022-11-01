@@ -339,8 +339,6 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
     override fun onServiceConnected() {
         super.onServiceConnected()
         updateNavigationDrawerHeader()
-
-        intent?.let { handlePlaybackIntent(it) }
     }
 
     override fun navigateUp() {
@@ -357,74 +355,6 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
             return true
         }
         return super.handleBackPress() || currentFragment.handleBackPress()
-    }
-
-    private fun handlePlaybackIntent(intent: Intent) {
-        var handled = false
-
-        intent.action?.let {
-            if (it == MediaStore.INTENT_ACTION_MEDIA_PLAY_FROM_SEARCH) {
-                val songs = SearchQueryHelper.getSongs(this, intent.extras!!)
-                songs.actionPlayNow()
-                handled = true
-            }
-        }
-
-        val uri = intent.data
-        if (uri != null && uri.toString().isNotEmpty()) {
-            MusicPlayerRemote.playFromUri(uri)
-            handled = true
-        } else {
-            when (intent.type) {
-                MediaStore.Audio.Playlists.CONTENT_TYPE -> {
-                    val id = parseIdFromIntent(intent, "playlistId", "playlist")
-                    if (id >= 0) {
-                        val position = intent.getIntExtra("position", 0)
-                        val songs = PlaylistSongLoader.getPlaylistSongList(this, id)
-                        // MusicPlayerRemote.playQueueCautiously(songs, position, true, null)
-                        songs.actionPlayNow()
-                        handled = true
-                    }
-                }
-                MediaStore.Audio.Albums.CONTENT_TYPE -> {
-                    val id = parseIdFromIntent(intent, "albumId", "album")
-                    if (id >= 0) {
-                        val position = intent.getIntExtra("position", 0)
-                        val songs = AlbumLoader.getAlbum(this, id).songs
-                        // MusicPlayerRemote.playQueueCautiously(songs, position, true, null)
-                        songs.actionPlayNow()
-                        handled = true
-                    }
-                }
-                MediaStore.Audio.Artists.CONTENT_TYPE -> {
-                    val id = parseIdFromIntent(intent, "artistId", "artist")
-                    if (id >= 0) {
-                        val position = intent.getIntExtra("position", 0)
-                        val songs = ArtistLoader.getArtist(this, id).songs
-                        // MusicPlayerRemote.playQueueCautiously(songs, position, true, null)
-                        songs.actionPlayNow()
-                        handled = true
-                    }
-                }
-            }
-        }
-
-        if (handled) setIntent(Intent())
-    }
-
-    private fun parseIdFromIntent(intent: Intent, longKey: String, stringKey: String): Long {
-        var id = intent.getLongExtra(longKey, -1)
-        if (id < 0) {
-            val idString = intent.getStringExtra(stringKey)
-            if (idString != null) {
-                try {
-                    id = idString.toLong()
-                } catch (e: NumberFormatException) {
-                    e.message?.let { Log.e(TAG, it) }
-                }
-            }
-        }
-        return id
     }
 
     override fun onPanelExpanded(panel: View?) {

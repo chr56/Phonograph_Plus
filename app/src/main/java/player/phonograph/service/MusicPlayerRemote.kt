@@ -348,6 +348,7 @@ object MusicPlayerRemote {
 
     val audioSessionId: Int get() = musicService?.audioSessionId ?: -1
 
+    /*
     @Suppress("DEPRECATION")
     fun playFromUri(uri: Uri) {
         musicService.tryExecute {
@@ -391,7 +392,7 @@ object MusicPlayerRemote {
             if (songs != null && songs.isNotEmpty()) {
                 playQueue(songs, 0, true, null)
             } else {
-                // TODO the file is not listed in the media store
+                // the file is not listed in the media store
             }
         }
     }
@@ -429,6 +430,8 @@ object MusicPlayerRemote {
 
     private fun getSongIdFromMediaProvider(uri: Uri): String =
         getDocumentId(uri)!!.split(":")[1]
+    */
+
 
     val isServiceConnected: Boolean get() = musicService != null
 
