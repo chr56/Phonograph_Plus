@@ -36,6 +36,7 @@
         <activity android:name=".ui.activities.StarterActivity"
             android:excludeFromRecents="true"
             android:label="@string/action_play"
+            android:theme="@style/StarterDialog"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
