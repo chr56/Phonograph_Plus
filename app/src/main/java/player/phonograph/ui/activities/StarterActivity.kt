@@ -4,9 +4,25 @@
 
 package player.phonograph.ui.activities
 
-import lib.phonograph.dialog.alertDialog
+import mt.pref.ThemeColor
 import player.phonograph.BuildConfig
 import player.phonograph.R
+import player.phonograph.actions.actionEnqueue
+import player.phonograph.actions.actionPlay
+import player.phonograph.actions.actionPlayNext
+import player.phonograph.actions.actionPlayNow
+import player.phonograph.actions.click.mode.SongClickMode
+import player.phonograph.actions.click.mode.SongClickMode.QUEUE_APPEND_QUEUE
+import player.phonograph.actions.click.mode.SongClickMode.QUEUE_PLAY_NEXT
+import player.phonograph.actions.click.mode.SongClickMode.QUEUE_PLAY_NOW
+import player.phonograph.actions.click.mode.SongClickMode.QUEUE_SHUFFLE
+import player.phonograph.actions.click.mode.SongClickMode.QUEUE_SWITCH_TO_BEGINNING
+import player.phonograph.actions.click.mode.SongClickMode.QUEUE_SWITCH_TO_POSITION
+import player.phonograph.actions.click.mode.SongClickMode.SONG_APPEND_QUEUE
+import player.phonograph.actions.click.mode.SongClickMode.SONG_PLAY_NEXT
+import player.phonograph.actions.click.mode.SongClickMode.SONG_PLAY_NOW
+import player.phonograph.actions.click.mode.SongClickMode.SONG_SINGLE_PLAY
+import player.phonograph.actions.click.mode.SongClickMode.modeName
 import player.phonograph.appshortcuts.DynamicShortcutManager
 import player.phonograph.appshortcuts.DynamicShortcutManager.Companion.reportShortcutUsed
 import player.phonograph.appshortcuts.shortcuttype.LastAddedShortcutType
@@ -26,8 +42,14 @@ import player.phonograph.notification.ErrorNotification
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.MusicService
 import player.phonograph.service.queue.ShuffleMode
+import player.phonograph.ui.components.viewcreater.buildDialogView
+import player.phonograph.ui.components.viewcreater.buttonPanel
+import player.phonograph.ui.components.viewcreater.contentPanel
+import player.phonograph.ui.components.viewcreater.titlePanel
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.provider.DocumentsContractCompat.getDocumentId
+import androidx.core.view.setMargins
 import android.content.ContentResolver
 import android.content.Context
 import android.content.Intent
@@ -37,6 +59,14 @@ import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
+import android.view.View
+import android.widget.FrameLayout.LayoutParams.MATCH_PARENT
+import android.widget.FrameLayout.LayoutParams.WRAP_CONTENT
+import android.widget.FrameLayout.LayoutParams
+import android.widget.LinearLayout
+import android.widget.RadioButton
+import android.widget.RadioGroup
+import android.widget.TextView
 import android.widget.Toast
 import kotlin.random.Random
 import java.io.File
@@ -71,30 +101,9 @@ class StarterActivity : AppCompatActivity() {
             Toast.makeText(this, R.string.empty, Toast.LENGTH_SHORT).show()
             gotoMainActivity()
         } else {
-            val msg =
-                buildString {
-                    append("${getString(R.string.action_play)}\n")
-                    val songs = playRequest.songs
-                    val count = songs.size
-                    append("${resources.getQuantityString(R.plurals.x_songs, count, count)}\n")
-                    songs.take(10).forEach {
-                        append("${it.title}\n")
-                    }
-                    if (count > 10) append("...")
-                }
-            alertDialog(this) {
-                title(getString(R.string.app_name))
-                message(msg)
-                positiveButton(android.R.string.ok) { dialog ->
-                    MusicPlayerRemote.playQueue(playRequest.songs, playRequest.position, true, null)
-                    gotoMainActivity()
-                    dialog.dismiss()
-                }
-                negativeButton(android.R.string.cancel) { dialog ->
-                    dialog.dismiss()
-                    finish()
-                }
-            }.show()
+            Dialog(this, playRequest) {
+                gotoMainActivity()
+            }.create().show()
         }
     }
 
@@ -257,6 +266,106 @@ class StarterActivity : AppCompatActivity() {
             }
         )
         finish()
+    }
+
+    class Dialog(
+        private val context: Context,
+        private val playRequest: PlayRequest,
+        private val callback: () -> Unit,
+    ) {
+        fun getString(id: Int) = context.getString(id)
+
+        private var selected = -1
+        fun create(): AlertDialog {
+
+            val text = buildString {
+                append("${getString(R.string.action_play)}\n")
+                val songs = playRequest.songs
+                val count = songs.size
+                append("${context.resources.getQuantityString(R.plurals.x_songs, count, count)}\n")
+                songs.take(10).forEach {
+                    append("${it.title}\n")
+                }
+                if (count > 10) append("...")
+            }
+
+            val buttons = SongClickMode.baseModes
+            val list = playRequest.songs
+            val position = playRequest.position
+
+            val ok = { _: View ->
+                when (selected) {
+                    SONG_PLAY_NEXT            -> list[position].actionPlayNext()
+                    SONG_PLAY_NOW             -> list[position].actionPlayNow()
+                    SONG_APPEND_QUEUE         -> list[position].actionEnqueue()
+                    SONG_SINGLE_PLAY          -> listOf(list[position]).actionPlay(null, 0)
+                    QUEUE_PLAY_NOW            -> list.actionPlayNow()
+                    QUEUE_PLAY_NEXT           -> list.actionPlayNext()
+                    QUEUE_APPEND_QUEUE        -> list.actionEnqueue()
+                    QUEUE_SWITCH_TO_BEGINNING -> list.actionPlay(ShuffleMode.NONE, 0)
+                    QUEUE_SWITCH_TO_POSITION  -> list.actionPlay(ShuffleMode.NONE, position)
+                    QUEUE_SHUFFLE             -> list.actionPlay(ShuffleMode.SHUFFLE,
+                                                                 Random.nextInt(list.size))
+                    else  /* invalided */     -> {}
+                }
+                callback()
+            }
+
+            val dialogView = createDialogView(text, buttons, { selected = it }, ok)
+            return AlertDialog.Builder(context, R.style.ThemeOverlay_AppCompat_Dialog_Alert)
+                .setView(dialogView).create()
+        }
+
+
+        private fun createDialogView(
+            hint: String,
+            modes: IntArray,
+            checkCallback: (Int) -> Unit,
+            okCallback: (View) -> Unit,
+        ): View {
+            val primaryColor = ThemeColor.primaryColor(context)
+
+            val titlePanel = titlePanel(context).apply {
+                titleView.text = getString(R.string.app_name)
+            }
+            val contentPanel = contentPanel(context) {
+                addView(
+                    LinearLayout(context).apply {
+                        orientation = LinearLayout.VERTICAL
+                        // Text
+                        TextView(context).apply {
+                            text = hint
+                        }.also {
+                            addView(it)
+                        }
+                        // Buttons
+                        RadioGroup(context).apply {
+                            for (i in modes.indices) {
+                                this.addView(
+                                    RadioButton(context).apply {
+                                        this.text = modeName(context.resources, modes[i])
+                                        this.setOnClickListener {
+                                            checkCallback(modes[i])
+                                        }
+                                    }
+                                )
+                            }
+                        }.also {
+                            addView(it)
+                        }
+                    },
+                    LayoutParams(MATCH_PARENT, WRAP_CONTENT).apply { setMargins(16) }
+                )
+            }
+            val buttonPanel = buttonPanel(context) {
+                button(0, getString(android.R.string.cancel), primaryColor) {}
+                space(1)
+                button(2, getString(android.R.string.ok), primaryColor, okCallback)
+            }
+            return buildDialogView(
+                context, titlePanel, contentPanel, buttonPanel
+            )
+        }
     }
 
     companion object {
