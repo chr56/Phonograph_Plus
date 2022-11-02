@@ -76,6 +76,7 @@ class StarterActivity : AppCompatActivity() {
 
     private fun handleIntent(intent: Intent): Boolean {
         var songs: List<Song>? = null
+        var position = 0
         // uri first
         songs = handleUriPlayRequest(intent)
 
@@ -85,19 +86,21 @@ class StarterActivity : AppCompatActivity() {
         }
         // then
         if (songs == null) {
-            songs = handleExtra(intent)
+            val result = handleExtra(intent)
+            songs = result?.first
+            position = result?.second ?: 0
         }
 
         return if (songs == null) {
             false
         } else {
-            startMusicService(songs)
+            startMusicService(songs, position)
             true
         }
     }
 
-    private fun startMusicService(queue: List<Song>) {
-        MusicPlayerRemote.playQueue(queue, 0, true, null)
+    private fun startMusicService(queue: List<Song>, position: Int) {
+        MusicPlayerRemote.playQueue(queue, position, true, null)
     }
 
     private fun handleUriPlayRequest(intent: Intent): List<Song>? {
@@ -164,14 +167,14 @@ class StarterActivity : AppCompatActivity() {
         return null
     }
 
-    private fun handleExtra(intent: Intent): List<Song>? {
+    private fun handleExtra(intent: Intent): Pair<List<Song>, Int>? {
         when (intent.type) {
             MediaStore.Audio.Playlists.CONTENT_TYPE -> {
                 val id = parseIdFromIntent(intent, "playlistId", "playlist")
                 if (id >= 0) {
                     val position = intent.getIntExtra("position", 0)
                     val songs = PlaylistSongLoader.getPlaylistSongList(this, id)
-                    if (songs.isNotEmpty()) return songs
+                    if (songs.isNotEmpty()) return songs to position
                 }
             }
             MediaStore.Audio.Albums.CONTENT_TYPE    -> {
@@ -179,7 +182,7 @@ class StarterActivity : AppCompatActivity() {
                 if (id >= 0) {
                     val position = intent.getIntExtra("position", 0)
                     val songs = AlbumLoader.getAlbum(this, id).songs
-                    if (songs.isNotEmpty()) return songs
+                    if (songs.isNotEmpty()) return songs to position
                 }
             }
             MediaStore.Audio.Artists.CONTENT_TYPE   -> {
@@ -187,7 +190,7 @@ class StarterActivity : AppCompatActivity() {
                 if (id >= 0) {
                     val position = intent.getIntExtra("position", 0)
                     val songs = ArtistLoader.getArtist(this, id).songs
-                    if (songs.isNotEmpty()) return songs
+                    if (songs.isNotEmpty()) return songs to position
                 }
             }
         }
