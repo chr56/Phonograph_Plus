@@ -4,6 +4,7 @@
 
 package player.phonograph.ui.activities
 
+import lib.phonograph.dialog.alertDialog
 import player.phonograph.BuildConfig
 import player.phonograph.R
 import player.phonograph.appshortcuts.DynamicShortcutManager
@@ -61,21 +62,40 @@ class StarterActivity : AppCompatActivity() {
             debugLog("Normal Mode")
             DynamicShortcutManager(this).updateDynamicShortcuts()
             processFrontGroundMode(launcherIntent)
-            finish()
         }
     }
 
     private fun processFrontGroundMode(intent: Intent) {
         val playRequest = lookupSongsFromIntent(intent)
-        if (playRequest != null)
-            MusicPlayerRemote.playQueue(playRequest.songs, playRequest.position, true, null)
-        else
+        if (playRequest == null) {
             Toast.makeText(this, R.string.empty, Toast.LENGTH_SHORT).show()
-        startActivity(
-            Intent(applicationContext, MainActivity::class.java).apply {
-                flags = Intent.FLAG_ACTIVITY_NEW_TASK
-            }
-        )
+            gotoMainActivity()
+        } else {
+            val msg =
+                buildString {
+                    append("${getString(R.string.action_play)}\n")
+                    val songs = playRequest.songs
+                    val count = songs.size
+                    append("${resources.getQuantityString(R.plurals.x_songs, count, count)}\n")
+                    songs.take(10).forEach {
+                        append("${it.title}\n")
+                    }
+                    if (count > 10) append("...")
+                }
+            alertDialog(this) {
+                title(getString(R.string.app_name))
+                message(msg)
+                positiveButton(android.R.string.ok) { dialog ->
+                    MusicPlayerRemote.playQueue(playRequest.songs, playRequest.position, true, null)
+                    gotoMainActivity()
+                    dialog.dismiss()
+                }
+                negativeButton(android.R.string.cancel) { dialog ->
+                    dialog.dismiss()
+                    finish()
+                }
+            }.show()
+        }
     }
 
 
@@ -228,6 +248,15 @@ class StarterActivity : AppCompatActivity() {
         } else {
             Toast.makeText(this, R.string.empty, Toast.LENGTH_SHORT).show()
         }
+    }
+
+    private fun gotoMainActivity() {
+        startActivity(
+            Intent(applicationContext, MainActivity::class.java).apply {
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK
+            }
+        )
+        finish()
     }
 
     companion object {
