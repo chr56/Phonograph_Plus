@@ -5,6 +5,7 @@
 package player.phonograph.ui.activities
 
 import player.phonograph.BuildConfig
+import player.phonograph.actions.actionPlay
 import player.phonograph.appshortcuts.DynamicShortcutManager
 import player.phonograph.appshortcuts.DynamicShortcutManager.Companion.reportShortcutUsed
 import player.phonograph.appshortcuts.shortcuttype.LastAddedShortcutType
@@ -23,8 +24,7 @@ import player.phonograph.model.playlist.ShuffleAllPlaylist
 import player.phonograph.notification.ErrorNotification
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.MusicService
-import player.phonograph.service.queue.SHUFFLE_MODE_NONE
-import player.phonograph.service.queue.SHUFFLE_MODE_SHUFFLE
+import player.phonograph.service.queue.ShuffleMode
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.provider.DocumentsContractCompat.getDocumentId
 import android.content.ContentResolver
@@ -36,6 +36,7 @@ import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
+import kotlin.random.Random
 import java.io.File
 
 class StarterActivity : AppCompatActivity() {
@@ -198,21 +199,21 @@ class StarterActivity : AppCompatActivity() {
         when (shortcutType) {
             SHORTCUT_TYPE_SHUFFLE_ALL -> {
                 startServiceWithPlaylist(
-                    SHUFFLE_MODE_SHUFFLE,
+                    ShuffleMode.SHUFFLE,
                     ShuffleAllPlaylist(applicationContext)
                 )
                 reportShortcutUsed(this, ShuffleAllShortcutType.id)
             }
             SHORTCUT_TYPE_TOP_TRACKS  -> {
                 startServiceWithPlaylist(
-                    SHUFFLE_MODE_NONE,
+                    ShuffleMode.NONE,
                     MyTopTracksPlaylist(applicationContext)
                 )
                 reportShortcutUsed(this, TopTracksShortcutType.id)
             }
             SHORTCUT_TYPE_LAST_ADDED  -> {
                 startServiceWithPlaylist(
-                    SHUFFLE_MODE_NONE,
+                    ShuffleMode.NONE,
                     LastAddedPlaylist(applicationContext)
                 )
                 reportShortcutUsed(this, LastAddedShortcutType.id)
@@ -220,16 +221,15 @@ class StarterActivity : AppCompatActivity() {
         }
     }
 
-    private fun startServiceWithPlaylist(shuffleMode: Int, playlist: Playlist) {
+    private fun startServiceWithPlaylist(shuffleMode: ShuffleMode, playlist: Playlist) {
+        val songs = playlist.getSongs(applicationContext)
+        songs.actionPlay(
+            shuffleMode,
+            if (shuffleMode == ShuffleMode.SHUFFLE) Random.nextInt(songs.size) else 0
+        )
         startService(
             Intent(this, MusicService::class.java).apply {
-                action = MusicService.ACTION_PLAY_PLAYLIST
-                putExtras(
-                    Bundle().apply {
-                        putParcelable(MusicService.INTENT_EXTRA_PLAYLIST, playlist)
-                        putInt(MusicService.INTENT_EXTRA_SHUFFLE_MODE, shuffleMode)
-                    }
-                )
+                action = MusicService.ACTION_PLAY
             }
         )
     }

@@ -1,35 +1,20 @@
 package player.phonograph.service
 
-import android.app.Service
-import android.appwidget.AppWidgetManager
-import android.content.*
-import android.content.SharedPreferences.OnSharedPreferenceChangeListener
-import android.content.res.Configuration
-import android.media.audiofx.AudioEffect
-import android.os.Binder
-import android.os.Handler
-import android.os.IBinder
-import android.support.v4.media.session.MediaSessionCompat
-import android.util.Log
-import android.widget.Toast
 import lib.phonograph.localization.ContextLocaleDelegate
 import player.phonograph.App
 import player.phonograph.App.Companion.ACTUAL_PACKAGE_NAME
 import player.phonograph.BuildConfig
 import player.phonograph.MusicServiceMsgConst.META_CHANGED
-import player.phonograph.MusicServiceMsgConst.REPEAT_MODE_CHANGED
 import player.phonograph.MusicServiceMsgConst.PLAY_STATE_CHANGED
-import player.phonograph.MusicServiceMsgConst.SHUFFLE_MODE_CHANGED
 import player.phonograph.MusicServiceMsgConst.QUEUE_CHANGED
-import player.phonograph.R
-import player.phonograph.actions.actionPlay
+import player.phonograph.MusicServiceMsgConst.REPEAT_MODE_CHANGED
+import player.phonograph.MusicServiceMsgConst.SHUFFLE_MODE_CHANGED
 import player.phonograph.appwidgets.AppWidgetBig
 import player.phonograph.appwidgets.AppWidgetCard
 import player.phonograph.appwidgets.AppWidgetClassic
 import player.phonograph.appwidgets.AppWidgetSmall
 import player.phonograph.model.Song
 import player.phonograph.model.lyrics.LrcLyrics
-import player.phonograph.model.playlist.Playlist
 import player.phonograph.provider.HistoryStore
 import player.phonograph.service.notification.PlayingNotificationManger
 import player.phonograph.service.player.MSG_NOW_PLAYING_CHANGED
@@ -38,16 +23,33 @@ import player.phonograph.service.player.PlayerController.ControllerHandler.Compa
 import player.phonograph.service.player.PlayerController.ControllerHandler.Companion.RE_PREPARE_NEXT_PLAYER
 import player.phonograph.service.player.PlayerState
 import player.phonograph.service.player.PlayerStateObserver
-import player.phonograph.service.queue.*
+import player.phonograph.service.queue.QueueChangeObserver
+import player.phonograph.service.queue.QueueManager
 import player.phonograph.service.queue.QueueManager.Companion.MSG_SAVE_CURSOR
 import player.phonograph.service.queue.QueueManager.Companion.MSG_SAVE_MODE
 import player.phonograph.service.queue.QueueManager.Companion.MSG_SAVE_QUEUE
+import player.phonograph.service.queue.RepeatMode
+import player.phonograph.service.queue.ShuffleMode
 import player.phonograph.service.util.MediaButtonIntentReceiver
 import player.phonograph.service.util.MediaStoreObserverUtil
 import player.phonograph.service.util.MusicServiceUtil
 import player.phonograph.service.util.SongPlayCountHelper
 import player.phonograph.settings.Setting
-import kotlin.random.Random
+import android.app.Service
+import android.appwidget.AppWidgetManager
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
+import android.content.SharedPreferences
+import android.content.SharedPreferences.OnSharedPreferenceChangeListener
+import android.content.res.Configuration
+import android.media.audiofx.AudioEffect
+import android.os.Binder
+import android.os.Handler
+import android.os.IBinder
+import android.support.v4.media.session.MediaSessionCompat
+import android.util.Log
 
 /**
  * @author Karim Abou Zeid (kabouzeid), Andrew Neal
@@ -188,7 +190,6 @@ class MusicService : Service(), OnSharedPreferenceChangeListener {
                     }
                     ACTION_PAUSE -> pause()
                     ACTION_PLAY -> play()
-                    ACTION_PLAY_PLAYLIST -> parsePlaylistAndPlay(intent, this)
                     ACTION_REWIND -> back(true)
                     ACTION_SKIP -> playNextSong(true)
                     ACTION_STOP_AND_QUIT_NOW -> {
@@ -425,16 +426,12 @@ class MusicService : Service(), OnSharedPreferenceChangeListener {
     companion object {
         const val ACTION_TOGGLE_PAUSE = "$ACTUAL_PACKAGE_NAME.togglepause"
         const val ACTION_PLAY = "$ACTUAL_PACKAGE_NAME.play"
-        const val ACTION_PLAY_PLAYLIST = "$ACTUAL_PACKAGE_NAME.play.playlist"
         const val ACTION_PAUSE = "$ACTUAL_PACKAGE_NAME.pause"
         const val ACTION_SKIP = "$ACTUAL_PACKAGE_NAME.skip"
         const val ACTION_REWIND = "$ACTUAL_PACKAGE_NAME.rewind"
         const val ACTION_STOP_AND_QUIT_NOW = "$ACTUAL_PACKAGE_NAME.stop_and_quit_now"
         const val ACTION_STOP_AND_QUIT_PENDING = "$ACTUAL_PACKAGE_NAME.stop_and_quit_pending"
         const val ACTION_CANCEL_PENDING_QUIT = "$ACTUAL_PACKAGE_NAME.cancel_pending_quit"
-
-        const val INTENT_EXTRA_PLAYLIST = ACTUAL_PACKAGE_NAME + "intentextra.playlist"
-        const val INTENT_EXTRA_SHUFFLE_MODE = "$ACTUAL_PACKAGE_NAME.intentextra.shufflemode"
 
         const val APP_WIDGET_UPDATE = "$ACTUAL_PACKAGE_NAME.appwidgetupdate"
         const val EXTRA_APP_WIDGET_NAME = ACTUAL_PACKAGE_NAME + "app_widget_name"
@@ -447,24 +444,6 @@ class MusicService : Service(), OnSharedPreferenceChangeListener {
             if (force || BuildConfig.DEBUG) Log.i("MusicServiceDebug", msg)
         }
 
-        fun parsePlaylistAndPlay(intent: Intent, service: MusicService) {
-            val playlist: Playlist? =
-                intent.getParcelableExtra(INTENT_EXTRA_PLAYLIST)
-            val songs =
-                playlist?.getSongs(service)
-            val shuffleMode =
-                intent.getIntExtra(INTENT_EXTRA_SHUFFLE_MODE, Int.MAX_VALUE).let {
-                    if (it == Int.MAX_VALUE) null else ShuffleMode.deserialize(it)
-                }
-            if (songs.isNullOrEmpty()) {
-                Toast.makeText(service, R.string.playlist_is_empty, Toast.LENGTH_LONG).show()
-            } else {
-                songs.actionPlay(
-                    shuffleMode,
-                    if (shuffleMode == ShuffleMode.SHUFFLE) Random.nextInt(songs.size) else 0
-                )
-            }
-        }
     }
 
     override fun onBind(intent: Intent): IBinder = musicBind
