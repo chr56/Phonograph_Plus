@@ -4,14 +4,27 @@
 
 package player.phonograph.ui.activities
 
+import player.phonograph.BuildConfig
+import player.phonograph.appshortcuts.DynamicShortcutManager
+import player.phonograph.appshortcuts.DynamicShortcutManager.Companion.reportShortcutUsed
+import player.phonograph.appshortcuts.shortcuttype.LastAddedShortcutType
+import player.phonograph.appshortcuts.shortcuttype.ShuffleAllShortcutType
+import player.phonograph.appshortcuts.shortcuttype.TopTracksShortcutType
 import player.phonograph.helper.SearchQueryHelper
 import player.phonograph.mediastore.AlbumLoader
 import player.phonograph.mediastore.ArtistLoader
 import player.phonograph.mediastore.PlaylistSongLoader
 import player.phonograph.mediastore.SongLoader
 import player.phonograph.model.Song
+import player.phonograph.model.playlist.LastAddedPlaylist
+import player.phonograph.model.playlist.MyTopTracksPlaylist
+import player.phonograph.model.playlist.Playlist
+import player.phonograph.model.playlist.ShuffleAllPlaylist
 import player.phonograph.notification.ErrorNotification
 import player.phonograph.service.MusicPlayerRemote
+import player.phonograph.service.MusicService
+import player.phonograph.service.queue.SHUFFLE_MODE_NONE
+import player.phonograph.service.queue.SHUFFLE_MODE_SHUFFLE
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.provider.DocumentsContractCompat.getDocumentId
 import android.content.ContentResolver
@@ -26,16 +39,37 @@ import android.util.Log
 import java.io.File
 
 class StarterActivity : AppCompatActivity() {
+
+    private fun debugLog(msg: String) {
+        if (BuildConfig.DEBUG) Log.d("Starter", msg)
+    }
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        val launcherIntent = intent
+        val extras = launcherIntent.extras
+
+        if (extras != null && extras.getBoolean(EXTRA_SHORTCUT_MODE, false)) {
+            processShortCut(launcherIntent.extras?.getInt(SHORTCUT_TYPE) ?: SHORTCUT_TYPE_NONE)
+            debugLog("ShortCut")
+        } else {
+            processFrontGroundMode(launcherIntent)
+            debugLog("Normal")
+            DynamicShortcutManager(this).updateDynamicShortcuts()
+        }
+
+        finish()
+    }
+
+    private fun processFrontGroundMode(intent: Intent) {
         handleIntent(intent)
         startActivity(
             Intent(applicationContext, MainActivity::class.java).apply {
                 flags = Intent.FLAG_ACTIVITY_NEW_TASK
             }
         )
-        finish()
     }
 
 
@@ -159,6 +193,47 @@ class StarterActivity : AppCompatActivity() {
         return null
     }
 
+
+    private fun processShortCut(shortcutType: Int) {
+        when (shortcutType) {
+            SHORTCUT_TYPE_SHUFFLE_ALL -> {
+                startServiceWithPlaylist(
+                    SHUFFLE_MODE_SHUFFLE,
+                    ShuffleAllPlaylist(applicationContext)
+                )
+                reportShortcutUsed(this, ShuffleAllShortcutType.id)
+            }
+            SHORTCUT_TYPE_TOP_TRACKS  -> {
+                startServiceWithPlaylist(
+                    SHUFFLE_MODE_NONE,
+                    MyTopTracksPlaylist(applicationContext)
+                )
+                reportShortcutUsed(this, TopTracksShortcutType.id)
+            }
+            SHORTCUT_TYPE_LAST_ADDED  -> {
+                startServiceWithPlaylist(
+                    SHUFFLE_MODE_NONE,
+                    LastAddedPlaylist(applicationContext)
+                )
+                reportShortcutUsed(this, LastAddedShortcutType.id)
+            }
+        }
+    }
+
+    private fun startServiceWithPlaylist(shuffleMode: Int, playlist: Playlist) {
+        startService(
+            Intent(this, MusicService::class.java).apply {
+                action = MusicService.ACTION_PLAY_PLAYLIST
+                putExtras(
+                    Bundle().apply {
+                        putParcelable(MusicService.INTENT_EXTRA_PLAYLIST, playlist)
+                        putInt(MusicService.INTENT_EXTRA_SHUFFLE_MODE, shuffleMode)
+                    }
+                )
+            }
+        )
+    }
+
     companion object {
         const val AUTHORITY_MEDIA_PROVIDER = "com.android.providers.media.documents"
         const val AUTHORITY_DOCUMENTS_PROVIDER = "com.android.externalstorage.documents"
@@ -209,6 +284,13 @@ class StarterActivity : AppCompatActivity() {
             }
             return id
         }
+
+        const val EXTRA_SHORTCUT_MODE = "player.phonograph.SHORTCUT_MODE"
+        const val SHORTCUT_TYPE = "player.phonograph.appshortcuts.ShortcutType"
+        const val SHORTCUT_TYPE_SHUFFLE_ALL = 0
+        const val SHORTCUT_TYPE_TOP_TRACKS = 1
+        const val SHORTCUT_TYPE_LAST_ADDED = 2
+        const val SHORTCUT_TYPE_NONE = 3
     }
 
 }

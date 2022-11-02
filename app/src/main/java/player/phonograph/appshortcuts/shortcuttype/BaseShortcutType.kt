@@ -5,8 +5,8 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.ShortcutInfo
 import android.os.Build
+import player.phonograph.ui.activities.StarterActivity
 import android.os.Bundle
-import player.phonograph.appshortcuts.AppShortcutLauncherActivity
 
 /**
  * @author Adrian Campos
@@ -23,11 +23,12 @@ abstract class BaseShortcutType(var context: Context) {
      * @return
      */
     fun getPlaySongsIntent(shortcutType: Int): Intent =
-        Intent(context, AppShortcutLauncherActivity::class.java).apply {
+        Intent(context, StarterActivity::class.java).apply {
             action = Intent.ACTION_VIEW
             putExtras(
                 Bundle().apply {
-                    putInt(AppShortcutLauncherActivity.KEY_SHORTCUT_TYPE, shortcutType)
+                    putInt(StarterActivity.SHORTCUT_TYPE, shortcutType)
+                    putBoolean(StarterActivity.EXTRA_SHORTCUT_MODE, true)
                 }
             )
         }

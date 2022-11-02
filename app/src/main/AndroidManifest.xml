@@ -138,10 +138,6 @@
             android:name=".ui.activities.intro.AppIntroActivity"
             android:label="@string/intro_label"
             android:theme="@style/Theme.Intro" />
-        <activity
-            android:name=".appshortcuts.AppShortcutLauncherActivity"
-            android:launchMode="singleInstance"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
 
         <activity
             android:name=".ui.activities.CrashActivity"
