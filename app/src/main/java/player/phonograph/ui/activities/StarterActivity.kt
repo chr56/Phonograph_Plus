@@ -5,7 +5,7 @@
 package player.phonograph.ui.activities
 
 import player.phonograph.BuildConfig
-import player.phonograph.actions.actionPlay
+import player.phonograph.R
 import player.phonograph.appshortcuts.DynamicShortcutManager
 import player.phonograph.appshortcuts.DynamicShortcutManager.Companion.reportShortcutUsed
 import player.phonograph.appshortcuts.shortcuttype.LastAddedShortcutType
@@ -19,8 +19,8 @@ import player.phonograph.mediastore.SongLoader
 import player.phonograph.model.Song
 import player.phonograph.model.playlist.LastAddedPlaylist
 import player.phonograph.model.playlist.MyTopTracksPlaylist
-import player.phonograph.model.playlist.Playlist
 import player.phonograph.model.playlist.ShuffleAllPlaylist
+import player.phonograph.model.playlist.SmartPlaylist
 import player.phonograph.notification.ErrorNotification
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.MusicService
@@ -36,6 +36,7 @@ import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
+import android.widget.Toast
 import kotlin.random.Random
 import java.io.File
 
@@ -53,19 +54,23 @@ class StarterActivity : AppCompatActivity() {
         val extras = launcherIntent.extras
 
         if (extras != null && extras.getBoolean(EXTRA_SHORTCUT_MODE, false)) {
+            debugLog("ShortCut Mode")
             processShortCut(launcherIntent.extras?.getInt(SHORTCUT_TYPE) ?: SHORTCUT_TYPE_NONE)
-            debugLog("ShortCut")
+            finish()
         } else {
-            processFrontGroundMode(launcherIntent)
-            debugLog("Normal")
+            debugLog("Normal Mode")
             DynamicShortcutManager(this).updateDynamicShortcuts()
+            processFrontGroundMode(launcherIntent)
+            finish()
         }
-
-        finish()
     }
 
     private fun processFrontGroundMode(intent: Intent) {
-        handleIntent(intent)
+        val playRequest = lookupSongsFromIntent(intent)
+        if (playRequest != null)
+            MusicPlayerRemote.playQueue(playRequest.songs, playRequest.position, true, null)
+        else
+            Toast.makeText(this, R.string.empty, Toast.LENGTH_SHORT).show()
         startActivity(
             Intent(applicationContext, MainActivity::class.java).apply {
                 flags = Intent.FLAG_ACTIVITY_NEW_TASK
@@ -74,40 +79,28 @@ class StarterActivity : AppCompatActivity() {
     }
 
 
-    private fun handleIntent(intent: Intent): Boolean {
-        var songs: List<Song>? = null
-        var position = 0
+    private fun lookupSongsFromIntent(intent: Intent): PlayRequest? {
+        var playRequest: PlayRequest? = null
         // uri first
-        songs = handleUriPlayRequest(intent)
+        playRequest = handleUriPlayRequest(intent)
 
         // then search
-        if (songs == null) {
-            songs = handleSearchRequest(intent)
+        if (playRequest == null) {
+            playRequest = handleSearchRequest(intent)
         }
         // then
-        if (songs == null) {
-            val result = handleExtra(intent)
-            songs = result?.first
-            position = result?.second ?: 0
+        if (playRequest == null) {
+            playRequest = handleExtra(intent)
         }
 
-        return if (songs == null) {
-            false
-        } else {
-            startMusicService(songs, position)
-            true
-        }
+        return playRequest
     }
 
-    private fun startMusicService(queue: List<Song>, position: Int) {
-        MusicPlayerRemote.playQueue(queue, position, true, null)
-    }
-
-    private fun handleUriPlayRequest(intent: Intent): List<Song>? {
+    private fun handleUriPlayRequest(intent: Intent): PlayRequest? {
         val uri = intent.data
         if (uri != null && uri.toString().isNotEmpty()) {
             val songs = parseUri(uri)
-            if (songs != null) return songs
+            if (songs != null) return PlayRequest(songs, 0)
         }
         return null
     }
@@ -157,24 +150,24 @@ class StarterActivity : AppCompatActivity() {
         return songs
     }
 
-    private fun handleSearchRequest(intent: Intent): List<Song>? {
+    private fun handleSearchRequest(intent: Intent): PlayRequest? {
         intent.action?.let {
             if (it == MediaStore.INTENT_ACTION_MEDIA_PLAY_FROM_SEARCH) {
                 val songs = SearchQueryHelper.getSongs(this, intent.extras!!)
-                if (songs.isNotEmpty()) return songs
+                if (songs.isNotEmpty()) return PlayRequest(songs, 0)
             }
         }
         return null
     }
 
-    private fun handleExtra(intent: Intent): Pair<List<Song>, Int>? {
+    private fun handleExtra(intent: Intent): PlayRequest? {
         when (intent.type) {
             MediaStore.Audio.Playlists.CONTENT_TYPE -> {
                 val id = parseIdFromIntent(intent, "playlistId", "playlist")
                 if (id >= 0) {
                     val position = intent.getIntExtra("position", 0)
                     val songs = PlaylistSongLoader.getPlaylistSongList(this, id)
-                    if (songs.isNotEmpty()) return songs to position
+                    if (songs.isNotEmpty()) return PlayRequest(songs, position)
                 }
             }
             MediaStore.Audio.Albums.CONTENT_TYPE    -> {
@@ -182,7 +175,7 @@ class StarterActivity : AppCompatActivity() {
                 if (id >= 0) {
                     val position = intent.getIntExtra("position", 0)
                     val songs = AlbumLoader.getAlbum(this, id).songs
-                    if (songs.isNotEmpty()) return songs to position
+                    if (songs.isNotEmpty()) return PlayRequest(songs, position)
                 }
             }
             MediaStore.Audio.Artists.CONTENT_TYPE   -> {
@@ -190,7 +183,7 @@ class StarterActivity : AppCompatActivity() {
                 if (id >= 0) {
                     val position = intent.getIntExtra("position", 0)
                     val songs = ArtistLoader.getArtist(this, id).songs
-                    if (songs.isNotEmpty()) return songs to position
+                    if (songs.isNotEmpty()) return PlayRequest(songs, position)
                 }
             }
         }
@@ -199,48 +192,50 @@ class StarterActivity : AppCompatActivity() {
 
 
     private fun processShortCut(shortcutType: Int) {
-        when (shortcutType) {
+        var shuffleMode = ShuffleMode.NONE
+        val playlist: SmartPlaylist? = when (shortcutType) {
             SHORTCUT_TYPE_SHUFFLE_ALL -> {
-                startServiceWithPlaylist(
-                    ShuffleMode.SHUFFLE,
-                    ShuffleAllPlaylist(applicationContext)
-                )
                 reportShortcutUsed(this, ShuffleAllShortcutType.id)
+                shuffleMode = ShuffleMode.SHUFFLE
+                ShuffleAllPlaylist(applicationContext)
+
             }
             SHORTCUT_TYPE_TOP_TRACKS  -> {
-                startServiceWithPlaylist(
-                    ShuffleMode.NONE,
-                    MyTopTracksPlaylist(applicationContext)
-                )
                 reportShortcutUsed(this, TopTracksShortcutType.id)
+                MyTopTracksPlaylist(applicationContext)
+
             }
             SHORTCUT_TYPE_LAST_ADDED  -> {
-                startServiceWithPlaylist(
-                    ShuffleMode.NONE,
-                    LastAddedPlaylist(applicationContext)
-                )
                 reportShortcutUsed(this, LastAddedShortcutType.id)
+                LastAddedPlaylist(applicationContext)
             }
+            else                      -> null
         }
-    }
+        val songs = playlist?.getSongs(applicationContext)
 
-    private fun startServiceWithPlaylist(shuffleMode: ShuffleMode, playlist: Playlist) {
-        val songs = playlist.getSongs(applicationContext)
-        songs.actionPlay(
-            shuffleMode,
-            if (shuffleMode == ShuffleMode.SHUFFLE) Random.nextInt(songs.size) else 0
-        )
-        startService(
-            Intent(this, MusicService::class.java).apply {
-                action = MusicService.ACTION_PLAY
-            }
-        )
+        if (songs != null) {
+            MusicPlayerRemote.playQueue(
+                songs,
+                if (shuffleMode == ShuffleMode.SHUFFLE) Random.nextInt(songs.size) else 0,
+                true,
+                shuffleMode,
+            )
+            startService(
+                Intent(this, MusicService::class.java).apply {
+                    action = MusicService.ACTION_PLAY
+                }
+            )
+        } else {
+            Toast.makeText(this, R.string.empty, Toast.LENGTH_SHORT).show()
+        }
     }
 
     companion object {
         const val AUTHORITY_MEDIA_PROVIDER = "com.android.providers.media.documents"
         const val AUTHORITY_DOCUMENTS_PROVIDER = "com.android.externalstorage.documents"
         const val AUTHORITY_MEDIA = "media"
+
+        data class PlayRequest(val songs: List<Song>, val position: Int)
 
         fun getFilePathFromUri(context: Context, uri: Uri): String? {
             val column = "_data"
