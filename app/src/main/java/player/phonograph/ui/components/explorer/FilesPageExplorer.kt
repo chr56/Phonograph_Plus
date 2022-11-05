@@ -4,23 +4,22 @@
 
 package player.phonograph.ui.components.explorer
 
-import android.view.Gravity
-import androidx.core.app.ComponentActivity
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import mt.pref.ThemeColor
 import player.phonograph.App
 import player.phonograph.R
+import player.phonograph.actions.click.fileClick
 import player.phonograph.model.file.FileEntity
 import player.phonograph.model.file.Location
-import player.phonograph.model.file.linkedSong
 import player.phonograph.model.sort.FileSortMode
 import player.phonograph.model.sort.SortRef
-import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.settings.Setting
 import player.phonograph.ui.components.popup.ListOptionsPopup
 import player.phonograph.ui.fragments.HomeFragment
 import player.phonograph.util.ViewUtil.setUpFastScrollRecyclerViewColor
+import androidx.core.app.ComponentActivity
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import android.view.Gravity
 
 class FilesPageExplorer(
     private val activity: ComponentActivity,
@@ -41,7 +40,8 @@ class FilesPageExplorer(
             popup.showAtLocation(
                 binding.root, Gravity.TOP or Gravity.END, 0,
                 (
-                        activity.findViewById<player.phonograph.views.StatusBarView>(R.id.status_bar)?.height ?: 8
+                        activity.findViewById<player.phonograph.views.StatusBarView>(R.id.status_bar)?.height
+                            ?: 8
                         ) +
                         homeFragment.totalHeaderHeight + binding.innerAppBar.height
             )
@@ -72,14 +72,22 @@ class FilesPageExplorer(
 
         // recycle view
         layoutManager = LinearLayoutManager(activity)
-        adapter = FilesPageAdapter(activity, model.currentFileList.toMutableList(), {
-            when (it) {
+        adapter = FilesPageAdapter(activity, model.currentFileList.toMutableList(), { fileEntities, position ->
+            when (val item = fileEntities[position]) {
                 is FileEntity.Folder -> {
-                    model.currentLocation = it.location
+                    model.currentLocation = item.location
                     reload()
                 }
-                is FileEntity.File -> {
-                    MusicPlayerRemote.playNow(it.linkedSong(context))
+                is FileEntity.File   -> {
+                    val base = Setting.instance.songItemClickMode
+                    val extra = Setting.instance.songItemClickExtraFlag
+                    fileClick(
+                        fileEntities,
+                        position,
+                        base,
+                        extra,
+                        activity
+                    )
                 }
             }
         }, homeFragment.cabController)
@@ -108,7 +116,8 @@ class FilesPageExplorer(
         popup.revert = currentSortMode.revert
 
         popup.sortRef = currentSortMode.sortRef
-        popup.sortRefAvailable = arrayOf(SortRef.DISPLAY_NAME, SortRef.ADDED_DATE, SortRef.MODIFIED_DATE, SortRef.SIZE)
+        popup.sortRefAvailable =
+            arrayOf(SortRef.DISPLAY_NAME, SortRef.ADDED_DATE, SortRef.MODIFIED_DATE, SortRef.SIZE)
 
         popup.showFileOption = true
         popup.useLegacyListFiles = fileModel.useLegacyListFile

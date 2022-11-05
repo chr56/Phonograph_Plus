@@ -29,7 +29,7 @@ import android.widget.PopupMenu
 class FilesPageAdapter(
     activity: ComponentActivity,
     dataset: MutableList<FileEntity>,
-    private val callback: (FileEntity) -> Unit,
+    private val callback: (List<FileEntity>, Int) -> Unit,
     cabController: MultiSelectionCabController?,
 ) : AbsFilesAdapter<FilesPageAdapter.ViewHolder>(activity, dataset, cabController) {
 
@@ -68,7 +68,7 @@ class FilesPageAdapter(
                 if (isInQuickSelectMode) {
                     toggleChecked(bindingAdapterPosition)
                 } else {
-                    callback(item)
+                    callback(dataSet as List<FileEntity>, position)
                 }
             }
             itemView.setOnLongClickListener {
