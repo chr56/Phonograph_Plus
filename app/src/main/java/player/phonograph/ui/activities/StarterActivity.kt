@@ -36,7 +36,6 @@ import player.phonograph.model.playlist.MyTopTracksPlaylist
 import player.phonograph.model.playlist.ShuffleAllPlaylist
 import player.phonograph.model.playlist.SmartPlaylist
 import player.phonograph.notification.ErrorNotification
-import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.MusicService
 import player.phonograph.service.queue.ShuffleMode
 import player.phonograph.ui.components.viewcreater.buildDialogView
@@ -240,12 +239,10 @@ class StarterActivity : AppCompatActivity() {
         val songs = playlist?.getSongs(applicationContext)
 
         if (songs != null) {
-            MusicPlayerRemote.playQueue(
-                songs,
-                if (shuffleMode == ShuffleMode.SHUFFLE) Random.nextInt(songs.size) else 0,
-                true,
-                shuffleMode,
-            )
+            val queueManager = App.instance.queueManager
+            queueManager.swapQueue(songs, if (shuffleMode == ShuffleMode.SHUFFLE) Random.nextInt(songs.size) else 0, false)
+            queueManager.switchShuffleMode(shuffleMode,false)
+            queueManager.setSongPosition(0)
             startService(
                 Intent(this, MusicService::class.java).apply {
                     action = MusicService.ACTION_PLAY
@@ -392,22 +389,17 @@ class StarterActivity : AppCompatActivity() {
                     null,
                     null
                 )
-
-            runCatching {
+            try {
                 cursor?.use {
                     if (it.moveToFirst()) {
                         val columnIndex = it.getColumnIndexOrThrow(column)
                         return it.getString(columnIndex)
                     }
                 }
-            }.also {
-                if (it.isFailure && it.exceptionOrNull() != null) {
-                    val errMsg = it.exceptionOrNull()?.stackTraceToString().orEmpty()
-                    ErrorNotification.postErrorNotification(it.exceptionOrNull()!!, errMsg)
-                    Log.e(MusicPlayerRemote.TAG, errMsg)
-                }
+            } catch (e: Exception) {
+                ErrorNotification.postErrorNotification(e)
+                e.printStackTrace()
             }
-
             return null
         }
 
