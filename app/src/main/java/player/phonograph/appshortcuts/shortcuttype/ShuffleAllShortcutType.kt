@@ -6,7 +6,7 @@ import android.content.pm.ShortcutInfo
 import android.os.Build
 import player.phonograph.R
 import player.phonograph.appshortcuts.AppShortcutIconGenerator
-import player.phonograph.appshortcuts.AppShortcutLauncherActivity
+import player.phonograph.ui.activities.StarterActivity
 
 /**
  * @author Adrian Campos
@@ -19,7 +19,7 @@ class ShuffleAllShortcutType(context: Context) : BaseShortcutType(context) {
             .setShortLabel(context.getString(R.string.app_shortcut_shuffle_all_short))
             .setLongLabel(context.getString(R.string.action_shuffle_all))
             .setIcon(AppShortcutIconGenerator.generateThemedIcon(context, R.drawable.ic_app_shortcut_shuffle_all))
-            .setIntent(getPlaySongsIntent(AppShortcutLauncherActivity.SHORTCUT_TYPE_SHUFFLE_ALL))
+            .setIntent(getPlaySongsIntent(StarterActivity.SHORTCUT_TYPE_SHUFFLE_ALL))
             .build()
 
     companion object {

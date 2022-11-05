@@ -6,7 +6,7 @@ import android.content.pm.ShortcutInfo
 import android.os.Build
 import player.phonograph.R
 import player.phonograph.appshortcuts.AppShortcutIconGenerator
-import player.phonograph.appshortcuts.AppShortcutLauncherActivity
+import player.phonograph.ui.activities.StarterActivity
 
 /**
  * @author Adrian Campos
@@ -19,7 +19,7 @@ class LastAddedShortcutType(context: Context) : BaseShortcutType(context) {
             .setShortLabel(context.getString(R.string.app_shortcut_last_added_short))
             .setLongLabel(context.getString(R.string.last_added))
             .setIcon(AppShortcutIconGenerator.generateThemedIcon(context, R.drawable.ic_app_shortcut_last_added))
-            .setIntent(getPlaySongsIntent(AppShortcutLauncherActivity.SHORTCUT_TYPE_LAST_ADDED))
+            .setIntent(getPlaySongsIntent(StarterActivity.SHORTCUT_TYPE_LAST_ADDED))
             .build()
 
     companion object {

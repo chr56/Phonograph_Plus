@@ -6,7 +6,7 @@ import android.content.pm.ShortcutInfo
 import android.os.Build
 import player.phonograph.R
 import player.phonograph.appshortcuts.AppShortcutIconGenerator
-import player.phonograph.appshortcuts.AppShortcutLauncherActivity
+import player.phonograph.ui.activities.StarterActivity
 
 /**
  * @author Adrian Campos
@@ -19,7 +19,7 @@ class TopTracksShortcutType(context: Context) : BaseShortcutType(context) {
             .setShortLabel(context.getString(R.string.app_shortcut_top_tracks_short))
             .setLongLabel(context.getString(R.string.my_top_tracks))
             .setIcon(AppShortcutIconGenerator.generateThemedIcon(context, R.drawable.ic_app_shortcut_top_tracks))
-            .setIntent(getPlaySongsIntent(AppShortcutLauncherActivity.SHORTCUT_TYPE_TOP_TRACKS))
+            .setIntent(getPlaySongsIntent(StarterActivity.SHORTCUT_TYPE_TOP_TRACKS))
             .build()
 
     companion object {
