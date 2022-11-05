@@ -5,12 +5,9 @@
 package player.phonograph.ui.activities
 
 import mt.pref.ThemeColor
+import player.phonograph.App
 import player.phonograph.BuildConfig
 import player.phonograph.R
-import player.phonograph.actions.actionEnqueue
-import player.phonograph.actions.actionPlay
-import player.phonograph.actions.actionPlayNext
-import player.phonograph.actions.actionPlayNow
 import player.phonograph.actions.click.mode.SongClickMode
 import player.phonograph.actions.click.mode.SongClickMode.QUEUE_APPEND_QUEUE
 import player.phonograph.actions.click.mode.SongClickMode.QUEUE_PLAY_NEXT
@@ -60,9 +57,9 @@ import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
 import android.view.View
+import android.widget.FrameLayout.LayoutParams
 import android.widget.FrameLayout.LayoutParams.MATCH_PARENT
 import android.widget.FrameLayout.LayoutParams.WRAP_CONTENT
-import android.widget.FrameLayout.LayoutParams
 import android.widget.LinearLayout
 import android.widget.RadioButton
 import android.widget.RadioGroup
@@ -291,23 +288,30 @@ class StarterActivity : AppCompatActivity() {
 
             val buttons = SongClickMode.baseModes
             val list = playRequest.songs
-            val position = playRequest.position
+            val targetPosition = playRequest.position
+
+            val song = list[targetPosition]
 
             val ok = { _: View ->
+                val queueManager = App.instance.queueManager
+                val currentPosition = queueManager.currentSongPosition
                 when (selected) {
-                    SONG_PLAY_NEXT            -> list[position].actionPlayNext()
-                    SONG_PLAY_NOW             -> list[position].actionPlayNow()
-                    SONG_APPEND_QUEUE         -> list[position].actionEnqueue()
-                    SONG_SINGLE_PLAY          -> listOf(list[position]).actionPlay(null, 0)
-                    QUEUE_PLAY_NOW            -> list.actionPlayNow()
-                    QUEUE_PLAY_NEXT           -> list.actionPlayNext()
-                    QUEUE_APPEND_QUEUE        -> list.actionEnqueue()
-                    QUEUE_SWITCH_TO_BEGINNING -> list.actionPlay(ShuffleMode.NONE, 0)
-                    QUEUE_SWITCH_TO_POSITION  -> list.actionPlay(ShuffleMode.NONE, position)
-                    QUEUE_SHUFFLE             -> list.actionPlay(ShuffleMode.SHUFFLE,
-                                                                 Random.nextInt(list.size))
+                    SONG_PLAY_NEXT            -> queueManager.addSong(song, currentPosition + 1)
+                    SONG_PLAY_NOW             -> queueManager.addSong(song, currentPosition)
+                    SONG_APPEND_QUEUE         -> queueManager.addSong(song)
+                    SONG_SINGLE_PLAY          -> queueManager.swapQueue(listOf(song), 0, false)
+                    QUEUE_PLAY_NOW            -> queueManager.addSongs(list, currentPosition)
+                    QUEUE_PLAY_NEXT           -> queueManager.addSongs(list, currentPosition + 1)
+                    QUEUE_APPEND_QUEUE        -> queueManager.addSongs(list)
+                    QUEUE_SWITCH_TO_BEGINNING -> queueManager.swapQueue(list, 0, false)
+                    QUEUE_SWITCH_TO_POSITION  -> queueManager.swapQueue(list, targetPosition, false)
+                    QUEUE_SHUFFLE             -> {
+                        queueManager.swapQueue(list, 0, false)
+                        queueManager.switchShuffleMode(ShuffleMode.SHUFFLE)
+                    }
                     else  /* invalided */     -> {}
                 }
+                queueManager.setSongPosition(0, false)
                 callback()
             }
 
