@@ -345,13 +345,14 @@ class StarterActivity : AppCompatActivity() {
                         // Buttons
                         RadioGroup(context).apply {
                             for (i in modes.indices) {
-                                this.addView(
+                                addView(
                                     RadioButton(context).apply {
                                         this.text = modeName(context.resources, modes[i])
                                         this.setOnClickListener {
                                             checkCallback(modes[i])
                                         }
-                                    }
+                                    },
+                                    MATCH_PARENT, WRAP_CONTENT
                                 )
                             }
                         }.also {
