@@ -30,6 +30,7 @@ import player.phonograph.mediastore.AlbumLoader
 import player.phonograph.mediastore.ArtistLoader
 import player.phonograph.mediastore.PlaylistSongLoader
 import player.phonograph.mediastore.SongLoader
+import player.phonograph.model.PlayRequest
 import player.phonograph.model.Song
 import player.phonograph.model.playlist.LastAddedPlaylist
 import player.phonograph.model.playlist.MyTopTracksPlaylist
@@ -374,8 +375,6 @@ class StarterActivity : AppCompatActivity() {
         const val AUTHORITY_MEDIA_PROVIDER = "com.android.providers.media.documents"
         const val AUTHORITY_DOCUMENTS_PROVIDER = "com.android.externalstorage.documents"
         const val AUTHORITY_MEDIA = "media"
-
-        data class PlayRequest(val songs: List<Song>, val position: Int)
 
         fun getFilePathFromUri(context: Context, uri: Uri): String? {
             val column = "_data"
