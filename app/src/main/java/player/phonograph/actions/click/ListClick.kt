@@ -10,6 +10,7 @@ import player.phonograph.model.Artist
 import player.phonograph.model.Displayable
 import player.phonograph.model.Genre
 import player.phonograph.model.Song
+import player.phonograph.settings.Setting
 import player.phonograph.util.NavigationUtil
 import androidx.core.util.Pair
 import android.app.Activity
@@ -32,7 +33,9 @@ fun <T : Displayable> listClick(
     if (list.isEmpty()) return false
     when (list.firstOrNull()) {
         is Song   -> {
-            songClick(list.filterIsInstance<Song>(), position)
+            val base = Setting.instance.songItemClickMode
+            val extra = Setting.instance.songItemClickExtraFlag
+            songClick(list.filterIsInstance<Song>(), position, base, extra)
         }
         is Album  -> {
             if (activity != null) {

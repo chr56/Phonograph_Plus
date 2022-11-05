@@ -25,18 +25,21 @@ import player.phonograph.actions.click.mode.SongClickMode.SONG_SINGLE_PLAY
 import player.phonograph.actions.click.mode.SongClickMode.resetBaseMode
 import player.phonograph.model.Song
 import player.phonograph.service.MusicPlayerRemote
-import player.phonograph.service.queue.ShuffleMode.SHUFFLE
 import player.phonograph.service.queue.ShuffleMode.NONE
-import player.phonograph.settings.Setting
+import player.phonograph.service.queue.ShuffleMode.SHUFFLE
 import player.phonograph.util.Util.testBit
 import kotlin.random.Random
 
-fun songClick(list: List<Song>, position: Int): Boolean {
-    val extra = Setting.instance.songItemClickExtraFlag
-    var base = Setting.instance.songItemClickMode
+fun songClick(
+    list: List<Song>,
+    position: Int,
+    baseMode: Int,
+    extraFlag: Int,
+): Boolean {
+    var base = baseMode
 
     // pre-process extra mode
-    if (MusicPlayerRemote.playingQueue.isEmpty() && extra.testBit(FLAG_MASK_PLAY_QUEUE_IF_EMPTY)) {
+    if (MusicPlayerRemote.playingQueue.isEmpty() && extraFlag.testBit(FLAG_MASK_PLAY_QUEUE_IF_EMPTY)) {
         if (base in 100..109) {
             base += 100
         } else {
@@ -44,7 +47,7 @@ fun songClick(list: List<Song>, position: Int): Boolean {
         }
     }
 
-    if (extra.testBit(FLAG_MASK_GOTO_POSITION_FIRST) && list == MusicPlayerRemote.playingQueue) {
+    if (extraFlag.testBit(FLAG_MASK_GOTO_POSITION_FIRST) && list == MusicPlayerRemote.playingQueue) {
         // same queue, jump
         MusicPlayerRemote.playSongAt(position)
         return true
