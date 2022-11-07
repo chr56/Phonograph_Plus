@@ -326,6 +326,12 @@
     <string name="are_you_sure">Вы уверены?</string>
     <string name="original_author">Оригинальный автор</string>
     <string name="plus_author">Автор Phonograph Plus</string>
+    <string name="misc">Прочее</string>
+    <string name="comment">Комментарий</string>
+    <string name="composer">Автор музыки</string>
+    <string name="lyricist">Автор текста</string>
+    <string name="music_tags">Теги</string>
+    <string name="file">Файл</string>
     <string name="pref_header_compatibility">Совместимость</string>
     <string name="pref_title_use_legacy_favorite_playlist_impl">Использовать устаревший механизм избранного плейлиста</string>
     <string name="pref_summary_use_legacy_favorite_playlist_impl">Если включить эту функцию, то приложение будет сохранять любимые песни в список воспроизведения m3u в хранилище вместо сохранения любимых песен во внутренней базе данных приложения. (Вы можете экспортировать список вручную).</string>
@@ -424,4 +430,23 @@
     </plurals>
     <string name="warning_can_not_retract">Это действие нельзя будет отменить!</string>
     <string name="delete_with_lyrics">Удалить с текстом</string>
+    <string name="excluded_paths">Исключенные пути до файлов</string>
+    <string name="included_paths">Используемые пути до файлов</string>
+    <string name="swith_mode">переключить режим</string>
+    <string name="path_filter">Фильтр по пути</string>
+    <string name="path_filter_excluded_mode">Режим исключения</string>
+    <string name="path_filter_included_mode">Режим добавления</string>
+    <string name="pref_summary_path_filter_excluded_mode">Содержание исключенных каталогов скрыто из вашей библиотеки.</string>
+    <string name="pref_summary_path_filter_included_mode">В вашей библиотеке отображается только содержимое включенных каталогов.</string>
+    <string name="pref_title_load_lyrics">Добавить текст песни</string>
+    <string name="pref_summary_load_lyrics">Переключатель для текстов песен. Отключите, чтобы не отображать все тексты  песен</string>
+    <string name="mode_song_play_next">Включить следующий трек</string>
+    <string name="mode_song_play_now">Включить трек прямо сейчас (сверху)</string>
+    <string name="mode_song_append_queue">Добавить трек в очередь воспроизведения</string>
+    <string name="mode_song_single_play">Повторять только этот трек</string>
+    <string name="mode_queue_play_next">Включить следующий трек в очереди</string>
+    <string name="mode_queue_play_now">Включить следующий трек в очереди прямо сейчас (сверху)</string>
+    <string name="mode_queue_append_queue">Добавить трек в очередь воспроизведения</string>
+    <string name="pref_title_click_behavior">Настраиваемое поведение при нажатии на трек</string>
+    <string name="pref_summary_click_behavior">Определите, что должен делать плеер, когда вы нажимаете на трек в списке</string>
 </resources>
