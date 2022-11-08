@@ -19,9 +19,77 @@ class QueueHolder private constructor(
 ) {
     var playingQueue: MutableList<Song> = CopyOnWriteArrayList(playing)
     var originalPlayingQueue: MutableList<Song> = CopyOnWriteArrayList(original)
+    private val queueLock = Any()
+
     var currentSongPosition: Int = position
+    private val positionLock = Any()
+
     var shuffleMode: ShuffleMode = shuffle
     var repeatMode: RepeatMode = repeat
+
+
+    /**
+     * synchronized
+     */
+    fun modifyQueue(
+        action: (MutableList<Song>, MutableList<Song>) -> Unit,
+    ) = synchronized(queueLock) {
+        action(playingQueue, originalPlayingQueue)
+    }
+
+    /**
+     * synchronized
+     */
+    fun modifyPosition(newPosition: Int) = synchronized(positionLock) {
+        currentSongPosition = newPosition
+    }
+
+    /**
+     * synchronized
+     */
+    fun modifyShuffleMode(newShuffleMode: ShuffleMode) = synchronized(shuffleMode) {
+        shuffleMode = newShuffleMode
+    }
+
+    /**
+     * synchronized
+     */
+    fun modifyRepeatMode(newRepeatMode: RepeatMode) = synchronized(repeatMode) {
+        repeatMode = newRepeatMode
+    }
+
+    /**
+     * synchronized
+     */
+    fun cycleRepeatMode() {
+        modifyRepeatMode(
+            when (repeatMode) {
+                RepeatMode.NONE -> RepeatMode.REPEAT_QUEUE
+                RepeatMode.REPEAT_QUEUE -> RepeatMode.REPEAT_SINGLE_SONG
+                RepeatMode.REPEAT_SINGLE_SONG -> RepeatMode.NONE
+            }
+        )
+    }
+
+    /**
+     * synchronized
+     */
+    fun toggleShuffle() {
+        modifyShuffleMode(
+            when (shuffleMode) {
+                ShuffleMode.NONE -> ShuffleMode.SHUFFLE
+                ShuffleMode.SHUFFLE -> ShuffleMode.NONE
+            }
+        )
+    }
+
+    fun getRestSongsDuration(position: Int): Long =
+        playingQueue.takeLast(getRestSongsCount(position))
+            .fold(0L) { acc, song -> acc + song.duration }
+    private fun getRestSongsCount(currentPosition: Int): Int =
+        if (playingQueue.isEmpty() || playingQueue.size - currentPosition < 0) 0
+        else playingQueue.size - currentPosition
+
 
     fun saveAll(context: Context) {
         saveQueue(context)
