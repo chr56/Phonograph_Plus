@@ -62,13 +62,9 @@ This is a fork of [Phonograph](https://github.com/kabouzeid/Phonograph), and is 
 - 以及更多细小特性 | and more small features/fixes.
 
 
-<del>浏览[更新日志](app/src/main/assets/changelog-ZH-CN.html)以了解明细!</del>
+浏览[更新日志](https://phonographplus.github.io/changelogs/changeslogs/changelog-ZH-CN.html)以了解明细!
 
-更新日志计划由 GitHub Page 提供 
-
-<del>It is suggested to browser the [Changelog](app/src/main/assets/changelog.html) to learn all features completely.</del>
-
-Changelog would soon be provided via GitHub Page
+It is suggested to browser the [Changelog](https://phonographplus.github.io/changelogs/changeslogs/changelog.html) to learn all features completely
 
 ## **翻译**/**Translation**
 
