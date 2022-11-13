@@ -4,6 +4,17 @@
 
 package player.phonograph.ui.components.popup
 
+import mt.pref.ThemeColor
+import mt.util.color.secondaryTextColor
+import player.phonograph.R
+import player.phonograph.databinding.PopupWindowMainBinding
+import player.phonograph.model.sort.SortRef
+import player.phonograph.util.PhonographColorUtil.backgroundColorByTheme
+import player.phonograph.util.PhonographColorUtil.nightMode
+import androidx.annotation.IdRes
+import androidx.core.view.forEach
+import androidx.core.view.get
+import androidx.core.view.iterator
 import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.drawable.ColorDrawable
@@ -14,17 +25,6 @@ import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.PopupWindow
 import android.widget.RadioButton
-import androidx.annotation.IdRes
-import androidx.core.view.forEachIndexed
-import androidx.core.view.get
-import androidx.core.view.iterator
-import mt.pref.ThemeColor
-import mt.util.color.secondaryTextColor
-import player.phonograph.R
-import player.phonograph.databinding.PopupWindowMainBinding
-import player.phonograph.model.sort.SortRef
-import player.phonograph.util.PhonographColorUtil.backgroundColorByTheme
-import player.phonograph.util.PhonographColorUtil.nightMode
 
 class ListOptionsPopup private constructor(
     private val context: Context,
@@ -200,10 +200,12 @@ class ListOptionsPopup private constructor(
 
     var maxGridSize: Int
         get() {
-            viewBinding.groupGridSize.forEachIndexed { index, view ->
+            var index = -1
+            viewBinding.groupGridSize.forEach { view ->
+                index++
                 if ((view as RadioButton).visibility == GONE) return index
             }
-            return 0
+            return index
         }
         set(max) {
             val visibility = if (max <= 0) GONE else VISIBLE
