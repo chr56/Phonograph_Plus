@@ -15,7 +15,7 @@ import android.view.ViewGroup
 import android.widget.PopupWindow
 import android.widget.RadioButton
 import androidx.annotation.IdRes
-import androidx.core.view.forEachIndexed
+import androidx.core.view.forEach
 import androidx.core.view.get
 import androidx.core.view.iterator
 import mt.pref.ThemeColor
@@ -200,10 +200,12 @@ class ListOptionsPopup private constructor(
 
     var maxGridSize: Int
         get() {
-            viewBinding.groupGridSize.forEachIndexed { index, view ->
+            var index = -1
+            viewBinding.groupGridSize.forEach { view ->
+                index++
                 if ((view as RadioButton).visibility == GONE) return index
             }
-            return 0
+            return index
         }
         set(max) {
             val visibility = if (max <= 0) GONE else VISIBLE
