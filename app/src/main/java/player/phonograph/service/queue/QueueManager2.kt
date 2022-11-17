@@ -17,11 +17,13 @@ class QueueManager2(val context: Application) {
     private val handler: QueueManagerHandler
     private val thread = HandlerThread("QueueManagerHandler", THREAD_PRIORITY_BACKGROUND)
     private var queueHolder: QueueHolder
+    private val observerManager: ObserverManager
 
     init {
         thread.start()
         handler = QueueManagerHandler(thread.looper)
         queueHolder = QueueHolder.fromPersistence(context)
+        observerManager = ObserverManager()
     }
 
     /**
@@ -30,7 +32,6 @@ class QueueManager2(val context: Application) {
     fun release() {
         handler.looper.quitSafely()
         thread.quitSafely()
-        // observers.clear() //todo
     }
 
     private inner class QueueManagerHandler(looper: Looper) : Handler(looper) {
@@ -71,6 +72,11 @@ class QueueManager2(val context: Application) {
         action: (MutableList<Song>, MutableList<Song>) -> Unit,
     ) = request(async) {
         queueHolder.modifyQueue(action)
+        handler.post {
+            with(queueHolder) {
+                observerManager.notifyQueueChanged(playingQueue, originalPlayingQueue)
+            }
+        }
     }
 
     fun modifyPosition(
@@ -78,6 +84,9 @@ class QueueManager2(val context: Application) {
         newPosition: Int,
     ) = request(async) {
         queueHolder.modifyPosition(newPosition)
+        handler.post {
+            observerManager.notifyCurrentPositionChanged(newPosition)
+        }
     }
 
     fun modifyShuffleMode(
@@ -85,6 +94,9 @@ class QueueManager2(val context: Application) {
         newShuffleMode: ShuffleMode,
     ) = request(async) {
         queueHolder.modifyShuffleMode(newShuffleMode)
+        handler.post {
+            observerManager.notifyShuffleModeChanged(newShuffleMode)
+        }
     }
 
     fun modifyRepeatMode(
@@ -92,6 +104,9 @@ class QueueManager2(val context: Application) {
         newRepeatMode: RepeatMode,
     ) = request(async) {
         queueHolder.modifyRepeatMode(newRepeatMode)
+        handler.post {
+            observerManager.notifyRepeatModeChanged(newRepeatMode)
+        }
     }
 
 
@@ -149,6 +164,41 @@ class QueueManager2(val context: Application) {
      * synchronized
      */
     fun toggleShuffle() = queueHolder.toggleShuffle()
+
+    fun addObserver(observer: QueueObserver) = observerManager.addObserver(observer)
+    fun removeObserver(observer: QueueObserver) = observerManager.removeObserver(observer)
+
+    private inner class ObserverManager {
+        private val observers: MutableList<QueueObserver> = ArrayList()
+        fun addObserver(observer: QueueObserver) = observers.add(observer)
+        fun removeObserver(observer: QueueObserver): Boolean = observers.remove(observer)
+
+        fun notifyQueueChanged(newPlayingQueue: List<Song>, newOriginalQueue: List<Song>) =
+            notifyAllObservers {
+                onQueueChanged(newPlayingQueue, newOriginalQueue)
+            }
+
+        fun notifyCurrentPositionChanged(newPosition: Int) =
+            notifyAllObservers {
+                onCurrentPositionChanged(newPosition)
+            }
+
+        fun notifyShuffleModeChanged(newMode: ShuffleMode) =
+            notifyAllObservers {
+                onShuffleModeChanged(newMode)
+            }
+
+        fun notifyRepeatModeChanged(newMode: RepeatMode) =
+            notifyAllObservers {
+                onRepeatModeChanged(newMode)
+            }
+
+        private inline fun notifyAllObservers(block: QueueObserver.() -> Unit) {
+            for (observer in observers) {
+                block(observer)
+            }
+        }
+    }
 
     companion object {
         const val MSG_STATE_RESTORE_ALL = 1
