@@ -105,6 +105,28 @@ class QueueManager2(val context: Application) {
     private fun restoreAllState() = queueHolder.saveAll(context)
 
 
+    fun swapQueue(newQueue: List<Song>, newPosition: Int) =
+        swapQueue(queueHolder, newQueue, newPosition)
+
+    fun addSong(song: Song, position: Int = -1) =
+        addSong(queueHolder, song, position)
+
+    fun addSongs(songs: List<Song>, position: Int = -1) =
+        addSongs(queueHolder, songs, position)
+
+    fun removeSongAt(position: Int) =
+        removeSongAt(queueHolder, position)
+
+    fun removeSong(song: Song) =
+        removeSong(queueHolder, song)
+
+    fun moveSong(from: Int, to: Int) =
+        moveSong(queueHolder, from, to)
+
+    fun clearQueue() =
+        clearQueue(queueHolder)
+
+
     fun post(what: Int) = handler.sendEmptyMessage(what)
 
     private inline fun request(async: Boolean, crossinline block: () -> Unit) {
