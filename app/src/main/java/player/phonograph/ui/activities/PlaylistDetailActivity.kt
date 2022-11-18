@@ -4,9 +4,6 @@
 
 package player.phonograph.ui.activities
 
-import com.afollestad.materialdialogs.MaterialDialog
-import com.afollestad.materialdialogs.list.listItemsSingleChoice
-import com.afollestad.materialdialogs.utils.MDUtil.getStringArray
 import com.google.android.material.appbar.AppBarLayout
 import com.h6ah4i.android.widget.advrecyclerview.animator.RefactoredDefaultItemAnimator
 import com.h6ah4i.android.widget.advrecyclerview.draggable.RecyclerViewDragDropManager
@@ -34,7 +31,6 @@ import player.phonograph.model.playlist.GeneratedPlaylist
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.model.playlist.SmartPlaylist
 import player.phonograph.model.totalDuration
-import player.phonograph.settings.Setting
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
 import player.phonograph.util.ImageUtil.getTintedDrawable
 import player.phonograph.util.PlaylistsUtil
@@ -203,7 +199,13 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandle
     private fun setupMenu(menu: Menu) {
         val playlist: Playlist = model.playlist.value ?: FilePlaylist()
         val iconColor = primaryTextColor(primaryColor)
-        playlistToolbar(menu, this, playlist, iconColor)
+        playlistToolbar(menu, this, playlist, iconColor) {
+            if (playlist is GeneratedPlaylist) {
+                playlist.refresh(this)
+            }
+            adapter.dataset = emptyList()
+            model.triggerUpdate()
+        }
     }
 
     private fun setupMenuCallback(item: MenuItem): Boolean {
@@ -215,37 +217,6 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandle
                 } else {
                     false
                 }
-            }
-            R.id.action_refresh -> {
-                val playlist: Playlist = model.playlist.value ?: FilePlaylist()
-                adapter.dataset = emptyList()
-                if (playlist is GeneratedPlaylist) {
-                    playlist.refresh(this)
-                }
-                model.triggerUpdate()
-                true
-            }
-            R.id.action_setting_last_added_interval -> {
-                val prefValue = getStringArray(R.array.pref_playlists_last_added_interval_values)
-                val currentChoice = prefValue.indexOf(Setting.instance.lastAddedCutoffPref)
-                MaterialDialog(this)
-                    .listItemsSingleChoice(
-                        res = R.array.pref_playlists_last_added_interval_titles,
-                        initialSelection = currentChoice.let { if (it == -1) 0 else it },
-                        checkedColor = accentColor
-                    ) { dialog, index, _ ->
-                        runCatching {
-                            Setting.instance.lastAddedCutoffPref = prefValue[index]
-                        }.apply {
-                            if (isSuccess) {
-                                model.triggerUpdate()
-                            }
-                        }
-                        dialog.dismiss()
-                    }
-                    .title(R.string.pref_title_last_added_interval)
-                    .show()
-                true
             }
             android.R.id.home -> {
                 onBackPressed()

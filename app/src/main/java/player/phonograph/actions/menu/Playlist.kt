@@ -4,8 +4,11 @@
 
 package player.phonograph.actions.menu
 
+import com.afollestad.materialdialogs.MaterialDialog
+import com.afollestad.materialdialogs.list.listItemsSingleChoice
 import com.github.chr56.android.menu_dsl.attach
 import com.github.chr56.android.menu_dsl.menuItem
+import mt.pref.ThemeColor
 import player.phonograph.R
 import player.phonograph.actions.*
 import player.phonograph.model.playlist.FilePlaylist
@@ -13,14 +16,21 @@ import player.phonograph.model.playlist.Playlist
 import player.phonograph.model.playlist.PlaylistType
 import player.phonograph.model.playlist.ResettablePlaylist
 import player.phonograph.model.playlist.SmartPlaylist
+import player.phonograph.notification.ErrorNotification
+import player.phonograph.settings.Setting
 import player.phonograph.util.ImageUtil.getTintedDrawable
 import androidx.annotation.ColorInt
-import androidx.fragment.app.FragmentActivity
 import android.content.Context
 import android.view.Menu
 import android.view.MenuItem
 
-fun playlistToolbar(menu: Menu, context: Context, playlist: Playlist, @ColorInt iconColor: Int) =
+fun playlistToolbar(
+    menu: Menu,
+    context: Context,
+    playlist: Playlist,
+    @ColorInt iconColor: Int,
+    refresh: () -> Unit,
+) =
     context.run {
         attach(menu) {
             menuItem {
@@ -45,8 +55,11 @@ fun playlistToolbar(menu: Menu, context: Context, playlist: Playlist, @ColorInt 
             menuItem {
                 title = getString(R.string.refresh)
                 icon = getTintedDrawable(R.drawable.ic_refresh_white_24dp, iconColor)
-                itemId = R.id.action_refresh
                 showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
+                onClick {
+                    refresh()
+                    true
+                }
             }
             menuItem {
                 title = getString(R.string.action_add_to_playing_queue)
@@ -116,6 +129,28 @@ fun playlistToolbar(menu: Menu, context: Context, playlist: Playlist, @ColorInt 
                     itemId = R.id.action_setting_last_added_interval
                     title = getString(R.string.pref_title_last_added_interval)
                     icon = getTintedDrawable(R.drawable.ic_timer_white_24dp, iconColor)
+                    onClick {
+                        val prefValue =
+                            resources.getStringArray(R.array.pref_playlists_last_added_interval_values)
+                        val currentChoice = prefValue.indexOf(Setting.instance.lastAddedCutoffPref)
+                        MaterialDialog(context)
+                            .listItemsSingleChoice(
+                                res = R.array.pref_playlists_last_added_interval_titles,
+                                initialSelection = currentChoice.let { if (it == -1) 0 else it },
+                                checkedColor = ThemeColor.accentColor(context)
+                            ) { dialog, index, _ ->
+                                try {
+                                    Setting.instance.lastAddedCutoffPref = prefValue[index]
+                                    refresh()
+                                } catch (e: Exception) {
+                                    ErrorNotification.postErrorNotification(e)
+                                }
+                                dialog.dismiss()
+                            }
+                            .title(R.string.pref_title_last_added_interval)
+                            .show()
+                        true
+                    }
                 }
             }
         }
