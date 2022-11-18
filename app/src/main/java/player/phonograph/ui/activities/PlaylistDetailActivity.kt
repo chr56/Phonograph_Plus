@@ -4,7 +4,6 @@
 
 package player.phonograph.ui.activities
 
-import com.google.android.material.appbar.AppBarLayout
 import com.h6ah4i.android.widget.advrecyclerview.animator.RefactoredDefaultItemAnimator
 import com.h6ah4i.android.widget.advrecyclerview.draggable.RecyclerViewDragDropManager
 import com.h6ah4i.android.widget.advrecyclerview.utils.WrapperAdapterUtils
@@ -133,18 +132,19 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandle
     private fun setUpDashBroad() {
         with(binding) {
             dashBroad.setBackgroundColor(primaryColor)
-            dashBroad.addOnOffsetChangedListener(
-                AppBarLayout.OnOffsetChangedListener { _, verticalOffset ->
-                    recyclerView.setPadding(
-                        recyclerView.paddingLeft,
-                        dashBroad.totalScrollRange + verticalOffset,
-                        recyclerView.paddingRight,
-                        recyclerView.paddingBottom
-                    )
-                }
-            )
+            dashBroad.addOnOffsetChangedListener { _, verticalOffset ->
+                recyclerView.setPadding(
+                    recyclerView.paddingLeft,
+                    dashBroad.totalScrollRange + verticalOffset,
+                    recyclerView.paddingRight,
+                    recyclerView.paddingBottom
+                )
+            }
             recyclerView.setPadding(
-                recyclerView.paddingLeft, recyclerView.paddingTop + dashBroad.height, recyclerView.paddingRight, recyclerView.paddingBottom
+                recyclerView.paddingLeft,
+                recyclerView.paddingTop + dashBroad.height,
+                recyclerView.paddingRight,
+                recyclerView.paddingBottom
             )
         }
     }
@@ -199,30 +199,26 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandle
     private fun setupMenu(menu: Menu) {
         val playlist: Playlist = model.playlist.value ?: FilePlaylist()
         val iconColor = primaryTextColor(primaryColor)
-        playlistToolbar(menu, this, playlist, iconColor) {
-            if (playlist is GeneratedPlaylist) {
-                playlist.refresh(this)
-            }
-            adapter.dataset = emptyList()
-            model.triggerUpdate()
+        playlistToolbar(menu, this, playlist, iconColor, ::enterEditMode) {
+            refreshCallback(playlist)
         }
+    }
+
+    private fun refreshCallback(playlist: Playlist) {
+        if (playlist is GeneratedPlaylist) {
+            playlist.refresh(this)
+        }
+        adapter.dataset = emptyList()
+        model.triggerUpdate()
     }
 
     private fun setupMenuCallback(item: MenuItem): Boolean {
         return when (item.itemId) {
-            R.id.action_edit_playlist -> {
-                if (model.playlist.value is FilePlaylist) {
-                    enterEditMode()
-                    true
-                } else {
-                    false
-                }
-            }
             android.R.id.home -> {
                 onBackPressed()
                 true
             }
-            else -> false
+            else              -> false
         }
     }
 
@@ -298,6 +294,5 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandle
     companion object {
         private const val TAG = "PlaylistDetail"
         const val EXTRA_PLAYLIST = "extra_playlist"
-        const val EDIT_PLAYLIST: Int = 100
     }
 }

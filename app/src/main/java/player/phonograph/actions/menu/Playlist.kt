@@ -29,6 +29,7 @@ fun playlistToolbar(
     context: Context,
     playlist: Playlist,
     @ColorInt iconColor: Int,
+    enterEditMode: () -> Unit,
     refresh: () -> Unit,
 ) =
     context.run {
@@ -83,6 +84,14 @@ fun playlistToolbar(
                     title = getString(R.string.edit)
                     itemId = R.id.action_edit_playlist
                     showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
+                    onClick {
+                        if (playlist is FilePlaylist) {
+                            enterEditMode()
+                            true
+                        } else {
+                            false
+                        }
+                    }
                 }
                 menuItem {
                     title = getString(R.string.rename_action)
