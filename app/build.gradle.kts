@@ -216,26 +216,24 @@ dependencies {
     implementation(deps.mt.pref)
     implementation(deps.mt.tint)
 
-    implementation(deps.menu.dsl)
-    implementation(deps.seek.arc)
-    implementation(deps.sliding.up.panel)
+    implementation(deps.menuDsl)
+    implementation(deps.seekArc)
+    implementation(deps.slidingUpPanel)
 
-    implementation(deps.recyclerview.fastscroll)
-
-    implementation(deps.material.dialogs.core)
-    implementation(deps.material.dialogs.input)
-    implementation(deps.material.dialogs.color)
+    implementation(deps.materialDialogs.core)
+    implementation(deps.materialDialogs.input)
+    implementation(deps.materialDialogs.color)
 
     implementation(deps.okhttp3)
     implementation(deps.retrofit2)
+    implementation(deps.coil)
 
     implementation(deps.kotlinx.serialization.json)
-
-    implementation(deps.coil)
 
     implementation(deps.licensesdialog)
     implementation(deps.jaudiotagger)
     implementation(deps.observablescrollview)
-    implementation(deps.material.intro)
+    implementation(deps.materialIntro)
     implementation(deps.advrecyclerview)
+    implementation(deps.recyclerviewFastscroll)
 }

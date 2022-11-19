@@ -93,13 +93,13 @@ dependencyResolutionManagement {
             val versionMaterialDialogs = "material_dialogs"
             version(versionMaterialDialogs, "3.3.0")
 
-            library("material_dialogs_core",
+            library("materialDialogs_core",
                     "com.afollestad.material-dialogs",
                     "core").versionRef(versionMaterialDialogs)
-            library("material_dialogs_input",
+            library("materialDialogs_input",
                     "com.afollestad.material-dialogs",
                     "input").versionRef(versionMaterialDialogs)
-            library("material_dialogs_color",
+            library("materialDialogs_color",
                     "com.afollestad.material-dialogs",
                     "color").versionRef(versionMaterialDialogs)
 
@@ -118,13 +118,13 @@ dependencyResolutionManagement {
                     "com.github.chr56.material-tools",
                     "mdTint").versionRef(versionMaterialTool)
 
-            library("menu_dsl",
+            library("menuDsl",
                     "io.github.chr56:android-menu-dsl:0.1.0")
-            library("seek_arc",
+            library("seekArc",
                     "com.github.chr56:SeekArc:1.0")
-            library("sliding_up_panel",
+            library("slidingUpPanel",
                     "com.github.kabouzeid:AndroidSlidingUpPanel:6")
-            library("recyclerview_fastscroll",
+            library("recyclerviewFastscroll",
                     "com.simplecityapps:recyclerview-fastscroll:2.0.1")
             library("licensesdialog",
                     "de.psdev.licensesdialog:licensesdialog:2.1.0")
@@ -132,7 +132,7 @@ dependencyResolutionManagement {
                     "com.github.AdrienPoupa:jaudiotagger:2.2.3")
             library("observablescrollview",
                     "com.github.ksoichiro:android-observablescrollview:1.6.0")
-            library("material_intro",
+            library("materialIntro",
                     "com.heinrichreimersoftware:material-intro:2.0.0")
             library("advrecyclerview",
                     "com.h6ah4i.android.widget.advrecyclerview:advrecyclerview:1.0.0")
