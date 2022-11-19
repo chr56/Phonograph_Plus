@@ -1,16 +1,16 @@
 import com.android.build.api.artifact.SingleArtifact
-import java.util.*
+import com.android.build.api.dsl.ApplicationBaseFlavor
 import version.management.CopyArtifactsTask
-import version.management.CopyArtifactsTask.Config as CopyConfig
 import version.management.Util.getGitHash
 import version.management.Util.shiftFirstLetter
+import java.util.Properties
 
 plugins {
     id("com.android.application")
     id("kotlin-android")
     id("org.jetbrains.kotlin.plugin.serialization")
     id("org.jetbrains.kotlin.plugin.parcelize")
-    id("version.management") // Phonograph Plus's dependency management
+    id("version.management")
 }
 
 val isSigningFileExist: Boolean = rootProject.file("signing.properties").exists()
@@ -44,7 +44,11 @@ android {
         versionCode = 402
         versionName = "0.5-dev1"
 
-        buildConfigField("String", "GIT_COMMIT_HASH", "\"${getGitHash(false)}\"")
+        buildConfigField("String",
+                         "GIT_COMMIT_HASH",
+                         """
+                             "${getGitHash(false)}"
+                         """.trimIndent())
         setProperty("archivesBaseName", "PhonographPlus_$versionName")
 
         proguardFiles(File("proguard-rules-base.pro"), File("proguard-rules-app.pro"))
@@ -134,11 +138,11 @@ android {
                 }
             }
 
-            val cfg = CopyConfig(
+            val cfg = CopyArtifactsTask.Config(
                 variantName = variant.name,
                 isRelease = variant.buildType == "release",
                 appName = appName,
-                versionName = (android.defaultConfig as com.android.build.api.dsl.ApplicationBaseFlavor).versionName ?: "N/A",
+                versionName = (android.defaultConfig as ApplicationBaseFlavor).versionName ?: "N/A",
                 gitHash = getGitHash(true),
                 artifactsFiles = fileListToCopy
             )
