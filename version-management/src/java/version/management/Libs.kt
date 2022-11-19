@@ -14,7 +14,7 @@ object Deps {
         const val fragment = "androidx.fragment:fragment-ktx:1.5.3"
         const val lifecycle_runtime = "androidx.lifecycle:lifecycle-runtime-ktx:2.5.1"
 
-        const val annotation = "androidx.annotation:annotation:1.4.0"
+        const val annotation = "androidx.annotation:annotation:1.5.0"
         const val preference = "androidx.preference:preference-ktx:1.2.0"
 
         const val recyclerview = "androidx.recyclerview:recyclerview:1.2.1"
