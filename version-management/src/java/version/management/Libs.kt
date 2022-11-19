@@ -45,7 +45,7 @@ object Deps {
     const val okhttp3 = "com.squareup.okhttp3:okhttp:4.10.0"
     const val retrofit2 = "com.squareup.retrofit2:retrofit:2.9.0"
 
-    const val coil = "io.coil-kt:coil:2.2.0"
+    const val coil = "io.coil-kt:coil:2.2.2"
 
     const val material_dialogs_version = "3.3.0"
     const val material_dialogs_core = "com.afollestad.material-dialogs:core:$material_dialogs_version"
