@@ -1,17 +1,16 @@
 import com.android.build.api.artifact.SingleArtifact
-import java.util.*
+import com.android.build.api.dsl.ApplicationBaseFlavor
 import version.management.CopyArtifactsTask
-import version.management.CopyArtifactsTask.Config as CopyConfig
-import version.management.Deps
 import version.management.Util.getGitHash
 import version.management.Util.shiftFirstLetter
+import java.util.Properties
 
 plugins {
     id("com.android.application")
     id("kotlin-android")
     id("org.jetbrains.kotlin.plugin.serialization")
     id("org.jetbrains.kotlin.plugin.parcelize")
-    id("version.management") // Phonograph Plus's dependency management
+    id("version.management")
 }
 
 val isSigningFileExist: Boolean = rootProject.file("signing.properties").exists()
@@ -45,7 +44,11 @@ android {
         versionCode = 402
         versionName = "0.5-dev1"
 
-        buildConfigField("String", "GIT_COMMIT_HASH", "\"${getGitHash(false)}\"")
+        buildConfigField("String",
+                         "GIT_COMMIT_HASH",
+                         """
+                             "${getGitHash(false)}"
+                         """.trimIndent())
         setProperty("archivesBaseName", "PhonographPlus_$versionName")
 
         proguardFiles(File("proguard-rules-base.pro"), File("proguard-rules-app.pro"))
@@ -135,11 +138,11 @@ android {
                 }
             }
 
-            val cfg = CopyConfig(
+            val cfg = CopyArtifactsTask.Config(
                 variantName = variant.name,
                 isRelease = variant.buildType == "release",
                 appName = appName,
-                versionName = (android.defaultConfig as com.android.build.api.dsl.ApplicationBaseFlavor).versionName ?: "N/A",
+                versionName = (android.defaultConfig as ApplicationBaseFlavor).versionName ?: "N/A",
                 gitHash = getGitHash(true),
                 artifactsFiles = fileListToCopy
             )
@@ -166,7 +169,7 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion = Deps.Compose.comilerVersion
+        kotlinCompilerExtensionVersion = deps.versions.composeCompiler.get()
     }
 
     kotlinOptions {
@@ -180,63 +183,61 @@ android {
 }
 
 /**
- * see composing-build-module: [version.management.Deps]
+ * Now, this project is using [VersionCatalog] (declaring in `setting.gradle.kts`)
  */
 dependencies {
 
-    implementation(Deps.AndroidX.core)
-    implementation(Deps.AndroidX.appcompat)
-    implementation(Deps.AndroidX.activity)
-    implementation(Deps.AndroidX.fragment)
-    implementation(Deps.AndroidX.lifecycle_runtime)
+    implementation(deps.androidx.core)
+    implementation(deps.androidx.appcompat)
+    implementation(deps.androidx.activity)
+    implementation(deps.androidx.fragment)
+    implementation(deps.androidx.lifecycle.runtime)
 
-    implementation(Deps.AndroidX.annotation)
-    implementation(Deps.AndroidX.preference)
+    implementation(deps.androidx.annotation)
+    implementation(deps.androidx.preference)
 
-    implementation(Deps.AndroidX.recyclerview)
+    implementation(deps.androidx.recyclerview)
 
-    implementation(Deps.AndroidX.constraintlayout)
-    implementation(Deps.AndroidX.percentlayout)
-    implementation(Deps.AndroidX.swiperefreshlayout)
+    implementation(deps.androidx.constraintlayout)
+    implementation(deps.androidx.percentlayout)
+    implementation(deps.androidx.swiperefreshlayout)
 
-    implementation(Deps.AndroidX.media)
-    implementation(Deps.AndroidX.cardview)
-    implementation(Deps.AndroidX.palette)
+    implementation(deps.androidx.media)
+    implementation(deps.androidx.cardview)
+    implementation(deps.androidx.palette)
 
-    implementation(Deps.google_material)
+    implementation(deps.google.material)
 
-    implementation(Deps.Compose.foundation)
-    implementation(Deps.Compose.ui)
-    implementation(Deps.Compose.foundation)
-    implementation(Deps.Compose.material)
-    implementation(Deps.Compose.activity)
-    debugImplementation(Deps.Compose.ui_tooling)
+    implementation(deps.compose.foundation)
+    implementation(deps.compose.ui)
+    implementation(deps.compose.foundation)
+    implementation(deps.compose.material)
+    implementation(deps.compose.activity)
+    debugImplementation(deps.compose.ui.tooling)
 
-    implementation(Deps.mdColorRes)
-    implementation(Deps.mdUtil)
-    implementation(Deps.mdPref)
-    implementation(Deps.mdTint)
+    implementation(deps.mt.colorRes)
+    implementation(deps.mt.util)
+    implementation(deps.mt.pref)
+    implementation(deps.mt.tint)
 
-    implementation(Deps.android_menu_dsl)
-    implementation(Deps.SeekArc)
-    implementation(Deps.AndroidSlidingUpPanel_kabouzeid)
+    implementation(deps.menuDsl)
+    implementation(deps.seekArc)
+    implementation(deps.slidingUpPanel)
 
-    implementation(Deps.recyclerview_fastscroll)
+    implementation(deps.materialDialogs.core)
+    implementation(deps.materialDialogs.input)
+    implementation(deps.materialDialogs.color)
 
-    implementation(Deps.material_dialogs_core)
-    implementation(Deps.material_dialogs_input)
-    implementation(Deps.material_dialogs_color)
+    implementation(deps.okhttp3)
+    implementation(deps.retrofit2)
+    implementation(deps.coil)
 
-    implementation(Deps.okhttp3)
-    implementation(Deps.retrofit2)
+    implementation(deps.kotlinx.serialization.json)
 
-    implementation(Deps.kotlinx_serialization_json)
-
-    implementation(Deps.coil)
-
-    implementation(Deps.licensesdialog)
-    implementation(Deps.jaudiotagger)
-    implementation(Deps.observablescrollview)
-    implementation(Deps.material_intro)
-    implementation(Deps.advrecyclerview)
+    implementation(deps.licensesdialog)
+    implementation(deps.jaudiotagger)
+    implementation(deps.observablescrollview)
+    implementation(deps.materialIntro)
+    implementation(deps.advrecyclerview)
+    implementation(deps.recyclerviewFastscroll)
 }
