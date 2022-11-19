@@ -59,21 +59,34 @@ dependencyResolutionManagement {
             version(versionCompose, "1.3.1")
             version(versionComposeCompiler, "1.3.1")
 
+            library("compose.runtime",
+                    "androidx.compose.runtime",
+                    "runtime").versionRef(versionCompose)
+            library("compose.foundation",
+                    "androidx.compose.foundation",
+                    "foundation").versionRef(versionCompose)
             library("compose.ui",
                     "androidx.compose.ui",
                     "ui").versionRef(versionCompose)
             library("compose.ui_tooling",
                     "androidx.compose.ui",
                     "ui-tooling").versionRef(versionCompose)
-            library("compose.foundation",
-                    "androidx.compose.foundation",
-                    "foundation").versionRef(versionCompose)
             library("compose.material",
                     "androidx.compose.material",
                     "material").versionRef(versionCompose)
             library("compose.activity",
                     "androidx.activity",
                     "activity-compose").versionRef(versionActivity)
+
+            bundle("compose",
+                   listOf(
+                       "compose.runtime",
+                       "compose.foundation",
+                       "compose.ui",
+                       "compose.material",
+                       "compose.activity",
+                   )
+            )
 
             //
             // popular
@@ -93,15 +106,24 @@ dependencyResolutionManagement {
             val versionMaterialDialogs = "material_dialogs"
             version(versionMaterialDialogs, "3.3.0")
 
-            library("materialDialogs_core",
+            library("materialDialogs.core",
                     "com.afollestad.material-dialogs",
                     "core").versionRef(versionMaterialDialogs)
-            library("materialDialogs_input",
+            library("materialDialogs.input",
                     "com.afollestad.material-dialogs",
                     "input").versionRef(versionMaterialDialogs)
-            library("materialDialogs_color",
+            library("materialDialogs.color",
                     "com.afollestad.material-dialogs",
                     "color").versionRef(versionMaterialDialogs)
+
+            bundle("materialDialogs",
+                   listOf(
+                       "materialDialogs.core",
+                       "materialDialogs.input",
+                       "materialDialogs.color"
+                   )
+            )
+
 
             val versionMaterialTool = "material-tools"
             version(versionMaterialTool, "0.0.9")
@@ -117,6 +139,10 @@ dependencyResolutionManagement {
             library("mt.tint",
                     "com.github.chr56.material-tools",
                     "mdTint").versionRef(versionMaterialTool)
+
+            bundle("materialTools",
+                   listOf("mt.colorRes", "mt.util", "mt.pref", "mt.tint")
+            )
 
             library("menuDsl",
                     "io.github.chr56:android-menu-dsl:0.1.0")

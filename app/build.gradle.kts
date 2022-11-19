@@ -208,25 +208,16 @@ dependencies {
 
     implementation(deps.google.material)
 
-    implementation(deps.compose.foundation)
-    implementation(deps.compose.ui)
-    implementation(deps.compose.foundation)
-    implementation(deps.compose.material)
-    implementation(deps.compose.activity)
+    implementation(deps.bundles.compose)
     debugImplementation(deps.compose.ui.tooling)
 
-    implementation(deps.mt.colorRes)
-    implementation(deps.mt.util)
-    implementation(deps.mt.pref)
-    implementation(deps.mt.tint)
+    implementation(deps.bundles.materialTools)
 
     implementation(deps.menuDsl)
     implementation(deps.seekArc)
     implementation(deps.slidingUpPanel)
 
-    implementation(deps.materialDialogs.core)
-    implementation(deps.materialDialogs.input)
-    implementation(deps.materialDialogs.color)
+    implementation(deps.bundles.materialDialogs)
 
     implementation(deps.okhttp3)
     implementation(deps.retrofit2)
