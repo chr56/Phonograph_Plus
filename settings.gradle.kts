@@ -56,7 +56,7 @@ dependencyResolutionManagement {
             //
             val versionCompose = "compose"
             val versionComposeCompiler = "composeCompiler"
-            version(versionCompose, "1.2.1")
+            version(versionCompose, "1.3.1")
             version(versionComposeCompiler, "1.3.1")
 
             library("compose.ui",
