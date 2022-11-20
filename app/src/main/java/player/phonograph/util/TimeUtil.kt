@@ -17,5 +17,6 @@ object TimeUtil {
 
     fun date(stamp: Long) = Date(stamp * 1000)
     fun dateText(stamp: Long) = SimpleDateFormat("yyyy.MM.dd", Locale.getDefault()).format(date(stamp))
+    fun timeText(stamp: Long) = SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(date(stamp))
 
 }
