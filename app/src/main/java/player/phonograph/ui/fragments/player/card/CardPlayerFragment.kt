@@ -242,11 +242,9 @@ class CardPlayerFragment :
         }
 
         override fun animateColorChange(newColor: Int) {
-            if (ViewUtil.isWindowBackgroundDarkSafe(fragment.activity)) {
-                fragment.viewBinding.playerQueueSubHeader.setTextColor(
-                    fragment.requireContext().secondaryTextColor(fragment.resources.nightMode)
-                )
-            }
+            fragment.viewBinding.playerQueueSubHeader.setTextColor(
+                fragment.requireContext().secondaryTextColor(fragment.resources.nightMode)
+            )
         }
     }
 

@@ -17,6 +17,7 @@ import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
 import player.phonograph.ui.fragments.player.AbsPlayerFragment
 import player.phonograph.ui.fragments.player.PlayerAlbumCoverFragment
+import player.phonograph.util.PhonographColorUtil.nightMode
 import player.phonograph.util.Util.isLandscape
 import player.phonograph.util.ViewUtil
 import player.phonograph.util.ViewUtil.isWindowBackgroundDarkSafe
@@ -195,15 +196,9 @@ class FlatPlayerFragment :
         }
 
         override fun animateColorChange(newColor: Int) {
-            fragment.activity?.let { activity ->
-                if (isWindowBackgroundDarkSafe(activity)) {
-                    fragment.viewBinding.playerQueueSubHeader.setTextColor(
-                        activity.secondaryTextColor(!isWindowBackgroundDarkSafe(activity))
-                    )
-                }
-            }
-
-
+            fragment.viewBinding.playerQueueSubHeader.setTextColor(
+                fragment.requireContext().secondaryTextColor(fragment.resources.nightMode)
+            )
         }
     }
 
