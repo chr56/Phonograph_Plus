@@ -434,4 +434,5 @@
     <string name="mode_flag_play_queue_if_empty">If current queue is empty, play the queue directly</string>
     <string name="pref_title_click_behavior">Custom behavior when clicking a song</string>
     <string name="pref_summary_click_behavior">Define what the player should do when you clicked a song in a list.</string>
+    <string name="playing_queue_history">Playing Queue History</string>
 </resources>

@@ -6,6 +6,7 @@ package player.phonograph.service.queue
 
 import player.phonograph.model.Song
 import player.phonograph.provider.MusicPlaybackQueueStore
+import player.phonograph.util.TimeUtil
 import androidx.preference.PreferenceManager
 import android.content.Context
 import java.util.concurrent.CopyOnWriteArrayList
@@ -184,6 +185,7 @@ class QueueHolder private constructor(
     }
 
     @Suppress("UNCHECKED_CAST")
+    @Synchronized
     fun clone(): QueueHolder = QueueHolder(
         (playingQueue as CopyOnWriteArrayList).clone() as List<Song>,
         (originalPlayingQueue as CopyOnWriteArrayList).clone() as List<Song>,
@@ -191,6 +193,8 @@ class QueueHolder private constructor(
         shuffleMode,
         repeatMode
     )
+
+    val snapshotTime: Long = TimeUtil.currentTimestamp()
 
     companion object {
         private val persistenceLock = Any()

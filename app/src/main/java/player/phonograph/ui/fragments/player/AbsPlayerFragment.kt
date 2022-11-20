@@ -18,6 +18,7 @@ import player.phonograph.model.lyrics.AbsLyrics
 import player.phonograph.model.lyrics.LrcLyrics
 import player.phonograph.preferences.NowPlayingScreenPreferenceDialog
 import player.phonograph.service.MusicPlayerRemote
+import player.phonograph.ui.dialogs.QueueSnapshotsDialog
 import player.phonograph.ui.fragments.AbsMusicServiceFragment
 import player.phonograph.ui.fragments.player.PlayerAlbumCoverFragment.Companion.VISIBILITY_ANIM_DURATION
 import player.phonograph.util.FavoriteUtil.toggleFavorite
@@ -249,6 +250,15 @@ abstract class AbsPlayerFragment :
                 onClick {
                     NowPlayingScreenPreferenceDialog()
                         .show(childFragmentManager, "NOW_PLAYING_SCREEN")
+                    true
+                }
+            }
+            menuItem {
+                title = context.getString(R.string.playing_queue_history)
+                showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
+                onClick {
+                    QueueSnapshotsDialog()
+                        .show(childFragmentManager, "QUEUE_SNAPSHOTS")
                     true
                 }
             }

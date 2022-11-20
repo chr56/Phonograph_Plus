@@ -423,4 +423,5 @@
     <string name="mode_flag_play_queue_if_empty">若當前播放列表為空, 播放全部歌曲</string>
     <string name="pref_title_click_behavior">點選歌曲時行為</string>
     <string name="pref_summary_click_behavior">點選一列表內歌曲時的操作</string>
+    <string name="playing_queue_history">播放列表歷史</string>
 </resources>

@@ -26,6 +26,9 @@ class QueueManager(val context: Application) {
         observerManager = ObserverManager()
     }
 
+    private val queueHolderSnapshots: MutableList<QueueHolder> = ArrayList()
+    fun getQueueSnapShots(): List<QueueHolder> = queueHolderSnapshots.toList()
+
     /**
      * stop internal thread and release resource
      */
@@ -122,7 +125,7 @@ class QueueManager(val context: Application) {
 
 
     fun swapQueue(newQueue: List<Song>, newPosition: Int, async: Boolean = true) = async(async) {
-        snapshotAndNotify(queueHolder) {
+        snapshotAndNotify(queueHolder, createSnapshot = true) {
             swapQueue(queueHolder, newQueue, newPosition)
         }
     }
@@ -190,7 +193,12 @@ class QueueManager(val context: Application) {
      * for queue operations
      * detect queue changes and notify observers effectually
      */
-    private inline fun snapshotAndNotify(queueHolder: QueueHolder, block: () -> Unit) {
+    private inline fun snapshotAndNotify(
+        queueHolder: QueueHolder,
+        createSnapshot: Boolean = false,
+        block: () -> Unit,
+    ) {
+        if (createSnapshot) createSnapshot()
         val oldPosition = queueHolder.currentSongPosition
         block()
         handler.post {
@@ -202,6 +210,18 @@ class QueueManager(val context: Application) {
                 }
             }
             saveQueue()
+        }
+    }
+
+    fun createSnapshot() {
+        if (queueHolder.playingQueue.size <= 0) return
+        queueHolderSnapshots.add(0, queueHolder.clone())
+        if (queueHolderSnapshots.size > 10) queueHolderSnapshots.removeLast()
+    }
+
+    fun recoverSnapshot(newQueueHolder: QueueHolder, async: Boolean) = async(async) {
+        snapshotAndNotify(queueHolder, false) {
+            queueHolder = newQueueHolder.clone()
         }
     }
 
