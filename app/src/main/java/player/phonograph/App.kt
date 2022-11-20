@@ -43,7 +43,7 @@ class App : Application(), ImageLoaderFactory {
                 // QueueManager
                 _queueManager = QueueManager(this).apply {
                     // restore all
-                    postMessage(QueueManager.MSG_STATE_RESTORE_ALL)
+                    post(QueueManager.MSG_STATE_RESTORE_ALL)
                 }
             }
             return _queueManager!!

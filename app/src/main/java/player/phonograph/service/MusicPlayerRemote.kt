@@ -4,34 +4,27 @@
 
 package player.phonograph.service
 
-import android.app.Activity
-import android.content.*
-import android.content.Context.BIND_AUTO_CREATE
-import android.database.Cursor
-import android.net.Uri
-import android.os.Environment
-import android.os.Handler
-import android.os.HandlerThread
-import android.os.IBinder
-import android.provider.MediaStore.Audio.AudioColumns.DATA
-import android.provider.MediaStore.Audio.AudioColumns._ID
-import android.util.Log
-import android.widget.Toast
-import android.widget.Toast.LENGTH_SHORT
-import androidx.core.provider.DocumentsContractCompat.getDocumentId
-import java.io.File
-import java.util.*
 import player.phonograph.App
 import player.phonograph.R
-import player.phonograph.mediastore.SongLoader.getSongs
-import player.phonograph.mediastore.SongLoader.makeSongCursor
 import player.phonograph.model.Song
 import player.phonograph.notification.ErrorNotification
 import player.phonograph.service.MusicService.MusicBinder
 import player.phonograph.service.queue.QueueManager
 import player.phonograph.service.queue.RepeatMode
 import player.phonograph.service.queue.ShuffleMode
-import player.phonograph.settings.Setting
+import android.app.Activity
+import android.content.ComponentName
+import android.content.Context
+import android.content.Context.BIND_AUTO_CREATE
+import android.content.ContextWrapper
+import android.content.Intent
+import android.content.ServiceConnection
+import android.os.Handler
+import android.os.HandlerThread
+import android.os.IBinder
+import android.widget.Toast
+import android.widget.Toast.LENGTH_SHORT
+import java.util.WeakHashMap
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
@@ -160,12 +153,12 @@ object MusicPlayerRemote {
                 if (startPlaying) {
                     playSongAt(startPosition)
                 } else {
-                    queueManager.setSongPosition(startPosition)
+                    queueManager.modifyPosition(startPosition, false)
                 }
                 return@post
             }
             // swap queue
-            shuffleMode?.let { queueManager.switchShuffleMode(shuffleMode, false) }
+            shuffleMode?.let { queueManager.modifyShuffleMode(shuffleMode, false) }
             queueManager.swapQueue(queue, startPosition, false)
             if (startPlaying) musicService?.playSongAt(queueManager.currentSongPosition)
             else musicService?.pause()
@@ -183,7 +176,7 @@ object MusicPlayerRemote {
     var position: Int
         get() = queueManager.currentSongPosition
         set(position) {
-            queueManager.setSongPosition(position)
+            queueManager.modifyPosition(position, false)
         }
 
     val playingQueue: List<Song>
@@ -216,7 +209,7 @@ object MusicPlayerRemote {
 
     fun setShuffleMode(shuffleMode: ShuffleMode): Boolean =
         runCatching {
-            queueManager.switchShuffleMode(shuffleMode)
+            queueManager.modifyShuffleMode(shuffleMode)
         }.isSuccess
 
     fun playNow(song: Song): Boolean {

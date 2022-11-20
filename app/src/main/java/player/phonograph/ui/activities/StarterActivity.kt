@@ -242,8 +242,8 @@ class StarterActivity : AppCompatActivity() {
         if (songs != null) {
             val queueManager = App.instance.queueManager
             queueManager.swapQueue(songs, if (shuffleMode == ShuffleMode.SHUFFLE) Random.nextInt(songs.size) else 0, false)
-            queueManager.switchShuffleMode(shuffleMode,false)
-            queueManager.setSongPosition(0)
+            queueManager.modifyShuffleMode(shuffleMode, false)
+            queueManager.modifyPosition(0, false)
             startService(
                 Intent(this, MusicService::class.java).apply {
                     action = MusicService.ACTION_PLAY
@@ -305,11 +305,11 @@ class StarterActivity : AppCompatActivity() {
                     QUEUE_SWITCH_TO_POSITION  -> queueManager.swapQueue(list, targetPosition, false)
                     QUEUE_SHUFFLE             -> {
                         queueManager.swapQueue(list, 0, false)
-                        queueManager.switchShuffleMode(ShuffleMode.SHUFFLE)
+                        queueManager.modifyShuffleMode(ShuffleMode.SHUFFLE, false)
                     }
                     else  /* invalided */     -> {}
                 }
-                queueManager.setSongPosition(0, false)
+                queueManager.modifyPosition(0, false)
                 callback()
             }
 

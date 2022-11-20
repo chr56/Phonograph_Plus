@@ -23,11 +23,10 @@ import player.phonograph.service.player.PlayerController.ControllerHandler.Compa
 import player.phonograph.service.player.PlayerController.ControllerHandler.Companion.RE_PREPARE_NEXT_PLAYER
 import player.phonograph.service.player.PlayerState
 import player.phonograph.service.player.PlayerStateObserver
-import player.phonograph.service.queue.QueueChangeObserver
 import player.phonograph.service.queue.QueueManager
-import player.phonograph.service.queue.QueueManager.Companion.MSG_SAVE_CURSOR
-import player.phonograph.service.queue.QueueManager.Companion.MSG_SAVE_MODE
+import player.phonograph.service.queue.QueueManager.Companion.MSG_SAVE_CFG
 import player.phonograph.service.queue.QueueManager.Companion.MSG_SAVE_QUEUE
+import player.phonograph.service.queue.QueueObserver
 import player.phonograph.service.queue.RepeatMode
 import player.phonograph.service.queue.ShuffleMode
 import player.phonograph.service.util.MediaButtonIntentReceiver
@@ -59,7 +58,7 @@ class MusicService : Service(), OnSharedPreferenceChangeListener {
     private val songPlayCountHelper = SongPlayCountHelper()
 
     val queueManager: QueueManager get() = App.instance.queueManager
-    private val queueChangeObserver: QueueChangeObserver = initQueueChangeObserver()
+    private val queueChangeObserver: QueueObserver = initQueueChangeObserver()
 
     private lateinit var controller: PlayerController
     private var playerStateObserver: PlayerStateObserver = initPlayerStateObserver()
@@ -108,8 +107,8 @@ class MusicService : Service(), OnSharedPreferenceChangeListener {
         sendBroadcast(Intent("player.phonograph.PHONOGRAPH_MUSIC_SERVICE_CREATED"))
     }
 
-    private fun initQueueChangeObserver(): QueueChangeObserver = object : QueueChangeObserver {
-        override fun onQueueCursorChanged(newPosition: Int) {
+    private fun initQueueChangeObserver(): QueueObserver = object : QueueObserver {
+        override fun onCurrentPositionChanged(newPosition: Int) {
             notifyChange(META_CHANGED)
             rePrepareNextSong()
         }
@@ -225,9 +224,9 @@ class MusicService : Service(), OnSharedPreferenceChangeListener {
         controller.removeObserver(playerStateObserver)
         queueManager.removeObserver(queueChangeObserver)
         queueManager.apply {
-            postMessage(MSG_SAVE_QUEUE)
-            postMessage(MSG_SAVE_CURSOR)
-            postMessage(MSG_SAVE_MODE)
+            // todo
+            post(MSG_SAVE_QUEUE)
+            post(MSG_SAVE_CFG)
         }
         sendBroadcast(Intent("player.phonograph.PHONOGRAPH_MUSIC_SERVICE_DESTROYED"))
     }
@@ -300,7 +299,7 @@ class MusicService : Service(), OnSharedPreferenceChangeListener {
                 playNotificationManager.updateMediaSessionPlaybackState()
 
                 // save state
-                queueManager.postMessage(QueueManager.MSG_SAVE_CURSOR)
+                queueManager.post(MSG_SAVE_CFG)
                 controller.saveCurrentMills()
 
                 // add to history
@@ -315,8 +314,8 @@ class MusicService : Service(), OnSharedPreferenceChangeListener {
                 playNotificationManager.updateMediaSessionMetaData() // because playing queue size might have changed
 
                 // save state
-                queueManager.postMessage(QueueManager.MSG_SAVE_QUEUE)
-                queueManager.postMessage(QueueManager.MSG_SAVE_CURSOR)
+                queueManager.post(MSG_SAVE_QUEUE)
+                queueManager.post(MSG_SAVE_CFG)
 
                 // notify controller
                 if (queueManager.playingQueue.isNotEmpty()) {

@@ -365,6 +365,9 @@ abstract class AbsPlayerFragment :
         viewModel.updateFavoriteState(MusicPlayerRemote.currentSong)
     }
 
+    override fun onShuffleModeChanged() {
+        refreshAdapter()
+    }
 
     open fun onShow() {
         playbackControlsFragment.show()
@@ -378,10 +381,14 @@ abstract class AbsPlayerFragment :
 
     protected abstract fun updateCurrentSong()
     protected open fun updateQueue() {
-        playingQueueAdapter.dataset = MusicPlayerRemote.playingQueue
-        playingQueueAdapter.current = MusicPlayerRemote.position
+        refreshAdapter()
     }
     protected open fun updateQueuePosition() {
+        playingQueueAdapter.current = MusicPlayerRemote.position
+    }
+
+    private fun refreshAdapter(){
+        playingQueueAdapter.dataset = MusicPlayerRemote.playingQueue
         playingQueueAdapter.current = MusicPlayerRemote.position
     }
 
