@@ -84,9 +84,11 @@ class QueueManager(val context: Application) {
 
     fun modifyShuffleMode(
         newShuffleMode: ShuffleMode,
+        alongWithQueue: Boolean = true,
         async: Boolean = true,
     ) = async(async) {
         queueHolder.modifyShuffleMode(newShuffleMode)
+        if (alongWithQueue) shuffleQueue()
         handler.post {
             observerManager.notifyShuffleModeChanged(newShuffleMode)
         }
@@ -157,9 +159,23 @@ class QueueManager(val context: Application) {
         }
     }
 
+    fun shuffleQueue() {
+        shuffle(queueHolder, queueHolder.shuffleMode)
+        with(observerManager) {
+            with(queueHolder) {
+                handler.post {
+                    notifyQueueChanged(playingQueue, originalPlayingQueue)
+                    notifyCurrentPositionChanged(currentSongPosition)
+                }
+            }
+        }
+    }
+
     fun moveToNextSong(async: Boolean = true) = async(async) {
         queueHolder.currentSongPosition = nextSongPosition
-        observerManager.notifyCurrentPositionChanged(queueHolder.currentSongPosition)
+        handler.post {
+            observerManager.notifyCurrentPositionChanged(queueHolder.currentSongPosition)
+        }
     }
 
     fun post(what: Int) = handler.sendEmptyMessage(what)
@@ -198,8 +214,12 @@ class QueueManager(val context: Application) {
         }
     }
 
-    fun toggleShuffle(async: Boolean = true) = async(async) {
+    fun toggleShuffle(
+        alongWithQueue: Boolean = true,
+        async: Boolean = true,
+    ) = async(async) {
         queueHolder.toggleShuffle()
+        if (alongWithQueue) shuffleQueue()
         handler.post {
             observerManager.notifyShuffleModeChanged(queueHolder.shuffleMode)
         }

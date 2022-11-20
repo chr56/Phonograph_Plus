@@ -143,3 +143,26 @@ fun clearQueue(queueHolder: QueueHolder) {
         queueHolder.modifyPosition(-1)
     }
 }
+
+fun shuffle(queueHolder: QueueHolder, newShuffleMode: ShuffleMode) {
+    queueHolder.modifyQueue { _playingQueue, _originalPlayingQueue ->
+        when (newShuffleMode) {
+            ShuffleMode.SHUFFLE -> {
+                _playingQueue.shuffleAt(queueHolder.currentSongPosition)
+                queueHolder.modifyPosition(0)
+            }
+            ShuffleMode.NONE    -> {
+                val currentSongId = queueHolder.currentSong.id
+                _playingQueue.clear()
+                _playingQueue.addAll(_originalPlayingQueue)
+                for (song in _playingQueue) {
+                    if (song.id == currentSongId) {
+                        queueHolder.modifyPosition(_playingQueue.indexOf(song))
+                        break
+                    }
+                }
+            }
+        }
+        Unit
+    }
+}
