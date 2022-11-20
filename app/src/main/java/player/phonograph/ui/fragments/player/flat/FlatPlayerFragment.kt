@@ -1,15 +1,5 @@
 package player.phonograph.ui.fragments.player.flat
 
-import android.animation.AnimatorSet
-import android.graphics.PorterDuff
-import android.os.Bundle
-import android.view.*
-import android.view.ViewTreeObserver.OnGlobalLayoutListener
-import android.widget.ImageView
-import android.widget.PopupMenu
-import androidx.annotation.ColorInt
-import androidx.appcompat.widget.Toolbar
-import androidx.fragment.app.FragmentContainerView
 import com.h6ah4i.android.widget.advrecyclerview.animator.GeneralItemAnimator
 import com.h6ah4i.android.widget.advrecyclerview.animator.RefactoredDefaultItemAnimator
 import com.sothree.slidinguppanel.SlidingUpPanelLayout
@@ -30,6 +20,17 @@ import player.phonograph.ui.fragments.player.PlayerAlbumCoverFragment
 import player.phonograph.util.Util.isLandscape
 import player.phonograph.util.ViewUtil
 import player.phonograph.util.ViewUtil.isWindowBackgroundDarkSafe
+import androidx.appcompat.widget.Toolbar
+import androidx.fragment.app.FragmentContainerView
+import android.animation.AnimatorSet
+import android.graphics.PorterDuff
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.view.ViewTreeObserver.OnGlobalLayoutListener
+import android.widget.ImageView
+import android.widget.PopupMenu
 
 class FlatPlayerFragment :
     AbsPlayerFragment(),
@@ -39,11 +40,8 @@ class FlatPlayerFragment :
     private var _viewBinding: FragmentFlatPlayerBinding? = null
     private val viewBinding: FragmentFlatPlayerBinding get() = _viewBinding!!
 
-    @get:ColorInt
-    override var paletteColor = 0
-        private set
+    override fun getToolBarContainer(): View? = viewBinding.toolbarContainer
 
-    private lateinit var impl: Impl
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -82,20 +80,9 @@ class FlatPlayerFragment :
         _viewBinding = null
     }
 
-    override fun onPause() {
-        recyclerViewDragDropManager?.cancelDrag()
-        super.onPause()
-    }
-
-    override fun onResume() {
-        super.onResume()
-        checkToggleToolbar(viewBinding.toolbarContainer)
-    }
-
 
     override fun updateQueue() {
-        playingQueueAdapter!!.dataset = MusicPlayerRemote.playingQueue
-        playingQueueAdapter!!.current = MusicPlayerRemote.position
+        super.updateQueue()
         viewBinding.playerQueueSubHeader.text = upNextAndQueueTime
         if (viewBinding.playerSlidingLayout == null || viewBinding.playerSlidingLayout!!.panelState == PanelState.COLLAPSED) {
             resetToCurrentPosition()
@@ -103,7 +90,7 @@ class FlatPlayerFragment :
     }
 
     override fun updateQueuePosition() {
-        playingQueueAdapter!!.current = MusicPlayerRemote.position
+        super.updateQueuePosition()
         viewBinding.playerQueueSubHeader.text = upNextAndQueueTime
         if (viewBinding.playerSlidingLayout == null || viewBinding.playerSlidingLayout!!.panelState == PanelState.COLLAPSED) {
             resetToCurrentPosition()
@@ -141,20 +128,6 @@ class FlatPlayerFragment :
         layoutManager!!.scrollToPositionWithOffset(MusicPlayerRemote.position + 1, 0)
     }
 
-    private fun animateColorChange(newColor: Int) {
-        impl.animateColorChange(newColor)
-        paletteColor = newColor
-    }
-
-    override fun onShow() {
-        playbackControlsFragment.show()
-    }
-
-    override fun onHide() {
-        playbackControlsFragment.hide()
-        onBackPressed()
-    }
-
     override fun onBackPressed(): Boolean {
         var wasExpanded = false
         if (viewBinding.playerSlidingLayout != null) {
@@ -162,12 +135,6 @@ class FlatPlayerFragment :
             viewBinding.playerSlidingLayout!!.panelState = PanelState.COLLAPSED
         }
         return wasExpanded
-    }
-
-    override fun onColorChanged(color: Int) {
-        animateColorChange(color)
-        playbackControlsFragment.modifyColor(color)
-        callbacks.onPaletteColorChanged()
     }
 
     override fun onToolbarToggled() {

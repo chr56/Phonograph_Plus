@@ -1,20 +1,5 @@
 package player.phonograph.ui.fragments.player.card
 
-import android.animation.Animator
-import android.animation.AnimatorSet
-import android.graphics.PorterDuff
-import android.os.Build
-import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewAnimationUtils
-import android.view.ViewGroup
-import android.view.ViewTreeObserver.OnGlobalLayoutListener
-import android.widget.ImageView
-import android.widget.PopupMenu
-import androidx.annotation.ColorInt
-import androidx.appcompat.widget.Toolbar
-import androidx.fragment.app.FragmentContainerView
 import com.h6ah4i.android.widget.advrecyclerview.animator.GeneralItemAnimator
 import com.h6ah4i.android.widget.advrecyclerview.animator.RefactoredDefaultItemAnimator
 import com.sothree.slidinguppanel.SlidingUpPanelLayout
@@ -36,6 +21,20 @@ import player.phonograph.ui.fragments.player.PlayerAlbumCoverFragment
 import player.phonograph.util.PhonographColorUtil.nightMode
 import player.phonograph.util.Util.isLandscape
 import player.phonograph.util.ViewUtil
+import androidx.appcompat.widget.Toolbar
+import androidx.fragment.app.FragmentContainerView
+import android.animation.Animator
+import android.animation.AnimatorSet
+import android.graphics.PorterDuff
+import android.os.Build
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewAnimationUtils
+import android.view.ViewGroup
+import android.view.ViewTreeObserver.OnGlobalLayoutListener
+import android.widget.ImageView
+import android.widget.PopupMenu
 import kotlin.math.max
 
 class CardPlayerFragment :
@@ -46,11 +45,8 @@ class CardPlayerFragment :
     private var _viewBinding: FragmentCardPlayerBinding? = null
     private val viewBinding: FragmentCardPlayerBinding get() = _viewBinding!!
 
-    @get:ColorInt
-    override var paletteColor = 0
-        private set
+    override fun getToolBarContainer(): View? = viewBinding.toolbarContainer
 
-    private lateinit var impl: Impl
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -91,22 +87,9 @@ class CardPlayerFragment :
         _viewBinding = null
     }
 
-    override fun onPause() {
-        if (recyclerViewDragDropManager != null) {
-            recyclerViewDragDropManager!!.cancelDrag()
-        }
-        super.onPause()
-    }
-
-    override fun onResume() {
-        super.onResume()
-        checkToggleToolbar(viewBinding.toolbarContainer)
-    }
-
 
     override fun updateQueue() {
-        playingQueueAdapter!!.dataset = MusicPlayerRemote.playingQueue
-        playingQueueAdapter!!.current = MusicPlayerRemote.position
+        super.updateQueue()
         viewBinding.playerQueueSubHeader.text = upNextAndQueueTime
         if (viewBinding.playerSlidingLayout.panelState == PanelState.COLLAPSED) {
             resetToCurrentPosition()
@@ -114,7 +97,7 @@ class CardPlayerFragment :
     }
 
     override fun updateQueuePosition() {
-        playingQueueAdapter!!.current = MusicPlayerRemote.position
+        super.updateQueuePosition()
         viewBinding.playerQueueSubHeader.text = upNextAndQueueTime
         if (viewBinding.playerSlidingLayout.panelState == PanelState.COLLAPSED) {
             resetToCurrentPosition()
@@ -152,30 +135,10 @@ class CardPlayerFragment :
         layoutManager!!.scrollToPositionWithOffset(MusicPlayerRemote.position + 1, 0)
     }
 
-    private fun animateColorChange(newColor: Int) {
-        impl.animateColorChange(newColor)
-        paletteColor = newColor
-    }
-
-    override fun onShow() {
-        playbackControlsFragment.show()
-    }
-
-    override fun onHide() {
-        playbackControlsFragment.hide()
-        onBackPressed()
-    }
-
     override fun onBackPressed(): Boolean {
         val wasExpanded = viewBinding.playerSlidingLayout.panelState == PanelState.EXPANDED
         viewBinding.playerSlidingLayout.panelState = PanelState.COLLAPSED
         return wasExpanded
-    }
-
-    override fun onColorChanged(color: Int) {
-        animateColorChange(color)
-        playbackControlsFragment.modifyColor(color)
-        callbacks.onPaletteColorChanged()
     }
 
     override fun onToolbarToggled() {

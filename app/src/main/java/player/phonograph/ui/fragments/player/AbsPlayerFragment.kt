@@ -23,6 +23,7 @@ import player.phonograph.ui.fragments.player.PlayerAlbumCoverFragment.Companion.
 import player.phonograph.util.FavoriteUtil.toggleFavorite
 import player.phonograph.util.ImageUtil.getTintedDrawable
 import player.phonograph.util.NavigationUtil
+import androidx.annotation.ColorInt
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.viewModels
@@ -64,8 +65,12 @@ abstract class AbsPlayerFragment :
     private var _recyclerViewDragDropManager: RecyclerViewDragDropManager? = null
     protected val recyclerViewDragDropManager: RecyclerViewDragDropManager get() = _recyclerViewDragDropManager!!
 
-    // toolbar
     protected lateinit var playerToolbar: Toolbar
+
+    @get:ColorInt
+    override var paletteColor = 0
+        protected set
+    internal lateinit var impl: Impl
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -278,8 +283,9 @@ abstract class AbsPlayerFragment :
             .withEndAction { toolbar.visibility = View.GONE }
     }
 
-    protected fun checkToggleToolbar(toolbar: View?) {
-        if (toolbar == null) return
+    abstract fun getToolBarContainer(): View?
+    protected fun checkToggleToolbar() {
+        val toolbar = getToolBarContainer() ?: return
         if (!isToolbarShown && toolbar.visibility != View.GONE) {
             hideToolbar(toolbar)
         } else if (isToolbarShown && toolbar.visibility != View.VISIBLE) {
@@ -326,6 +332,16 @@ abstract class AbsPlayerFragment :
             )
         }
 
+    override fun onPause() {
+        recyclerViewDragDropManager.cancelDrag()
+        super.onPause()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        checkToggleToolbar()
+    }
+
     override fun onServiceConnected() {
         updateQueue()
         updateCurrentSong()
@@ -349,16 +365,37 @@ abstract class AbsPlayerFragment :
         viewModel.updateFavoriteState(MusicPlayerRemote.currentSong)
     }
 
-    abstract fun onShow()
-    abstract fun onHide()
+
+    open fun onShow() {
+        playbackControlsFragment.show()
+    }
+
+    open fun onHide() {
+        playbackControlsFragment.hide()
+        onBackPressed()
+    }
     abstract fun onBackPressed(): Boolean
 
     protected abstract fun updateCurrentSong()
-    protected abstract fun updateQueue()
-    protected abstract fun updateQueuePosition()
+    protected open fun updateQueue() {
+        playingQueueAdapter.dataset = MusicPlayerRemote.playingQueue
+        playingQueueAdapter.current = MusicPlayerRemote.position
+    }
+    protected open fun updateQueuePosition() {
+        playingQueueAdapter.current = MusicPlayerRemote.position
+    }
 
     interface Callbacks {
         fun onPaletteColorChanged()
+    }
+    open fun animateColorChange(newColor: Int) {
+        impl.animateColorChange(newColor)
+        paletteColor = newColor
+    }
+    open fun onColorChanged(color: Int) {
+        animateColorChange(color)
+        playbackControlsFragment.modifyColor(color)
+        callbacks.onPaletteColorChanged()
     }
 
     companion object {
