@@ -10,13 +10,15 @@
     <ol>
         <li>Fix: on large tablets, the number of list columns cannot be adjusted and locked to 6 columns when the screen is landscaped </li>
         <li>Fix: low contrast color of the text and icon on Search Page if using a light primary color</li>
-        <li>New: allow custom click-behavior for song items or file items in list: There are 8 modes and 2 extra behaviors allowing defining what player should do when clicking item in a list.</li>
+        <li>Fix: some color glitch</li>
+        <li>New: playing queue snapshot: track the current queue, record and save when playing queue is entirety replaced (keep till app rebooted), only store the last ten changes, to recovery queues, goto player menu (playing queue history)</li>
+        <li>New: custom click-behavior: allow custom click-behavior for song items or file items in list: There are 8 modes and 2 extra behaviors allowing defining what player should do when clicking item in a list.</li>
         <li>Remove: the option &quot;Remember Shuffle&quot; (It's a very vague option, causing conflict with some intended playing actions and custom click-behavior)</li>
-        <li>Remove: the option &quot;Keep the playing queue intact&quot; (It's useless now since custom click-behavior was added)</li>
+        <li>Remove: the option &quot;Keep the playing queue intact&quot; (It's useless now since queue snapshot and custom click-behavior were added)</li>
         <li>New: a confirm dialog when playing from outside (like open from file explorer): The options are similar to custom click-behavior.</li>
         <li>Fix: playing from shortcut won't work</li>
         <li>Translation: updated Russian (by ElinaAndreeva)</li>
-        <li>Development: clean up code, update dependencies, using Gradle VersionCatalog</li>
+        <li>Development: refactor Queue Manager, clean up code, update dependencies, using Gradle VersionCatalog</li>
     </ol>
 </div>
 
