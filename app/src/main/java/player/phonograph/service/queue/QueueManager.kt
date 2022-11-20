@@ -159,16 +159,8 @@ class QueueManager(val context: Application) {
         }
     }
 
-    fun shuffleQueue() {
+    private fun shuffleQueue() {
         shuffle(queueHolder, queueHolder.shuffleMode)
-        with(observerManager) {
-            with(queueHolder) {
-                handler.post {
-                    notifyQueueChanged(playingQueue, originalPlayingQueue)
-                    notifyCurrentPositionChanged(currentSongPosition)
-                }
-            }
-        }
     }
 
     fun moveToNextSong(async: Boolean = true) = async(async) {
