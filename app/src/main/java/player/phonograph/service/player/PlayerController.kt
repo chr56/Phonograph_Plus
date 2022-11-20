@@ -121,7 +121,7 @@ class PlayerController(internal val service: MusicService) : Playback.PlaybackCa
             "prepareSongsImp:Before",
             "current:${queueManager.currentSong.title} ,next:${queueManager.nextSong.title}"
         )
-        queueManager.setSongPosition(position, false)
+        queueManager.modifyPosition(position, false)
         return prepareCurrentPlayer(queueManager.currentSong).also { setCurrentSuccess ->
             if (setCurrentSuccess) prepareNextPlayer(queueManager.nextSong)
             else prepareNextPlayer(null)
@@ -209,7 +209,7 @@ class PlayerController(internal val service: MusicService) : Playback.PlaybackCa
     }
     private fun setPositionImp(position: Int) {
         if (playerState == PlayerState.PAUSED) {
-            queueManager.setSongPosition(position)
+            queueManager.modifyPosition(position,false)
             prepareSongsImp(position)
         }
     }
@@ -314,7 +314,7 @@ class PlayerController(internal val service: MusicService) : Playback.PlaybackCa
     }
     private fun jumpBackwardImp(force: Boolean) {
         if (force) {
-            playAtImp(queueManager.previousSongPositionInList)
+            playAtImp(queueManager.previousListPosition)
         } else {
             playAtImp(queueManager.previousSongPosition)
         }
@@ -342,7 +342,7 @@ class PlayerController(internal val service: MusicService) : Playback.PlaybackCa
     }
     private fun jumpForwardImp(force: Boolean) {
         if (force) {
-            playAtImp(queueManager.nextSongPositionInList)
+            playAtImp(queueManager.nextListPosition)
         } else {
             if (!queueManager.isLastTrack()) {
                 playAtImp(queueManager.nextSongPosition)
@@ -397,7 +397,7 @@ class PlayerController(internal val service: MusicService) : Playback.PlaybackCa
                 stopImp()
                 return@request
             }
-            queueManager.moveToNextSong()
+            queueManager.moveToNextSong(false)
             notifyNowPlayingChanged()
             prepareNextPlayer(queueManager.nextSong)
         }
