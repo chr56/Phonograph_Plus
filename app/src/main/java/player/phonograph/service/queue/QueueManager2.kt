@@ -63,6 +63,11 @@ class QueueManager2(val context: Application) {
     val nextSongPosition: Int
         @Synchronized get() = queueHolder.nextSongPosition
 
+    val previousListPosition: Int
+        @Synchronized get() = queueHolder.previousListPosition
+    val nextListPosition: Int
+        @Synchronized get() = queueHolder.nextListPosition
+
     val currentSong: Song get() = queueHolder.currentSong
     val previousSong: Song get() = queueHolder.previousSong
     val nextSong: Song get() = queueHolder.nextSong
@@ -101,6 +106,8 @@ class QueueManager2(val context: Application) {
     fun isLastTrack(): Boolean = currentSongPosition == playingQueue.size - 1
 
     fun isQueueEnded(): Boolean = nextSongPosition == -1 && isLastTrack()
+
+    fun getRestSongsDuration(position: Int): Long = queueHolder.getRestSongsDuration(position)
 
 
     private fun saveQueue() = queueHolder.saveQueue(context)
@@ -148,6 +155,11 @@ class QueueManager2(val context: Application) {
         snapshotAndNotify(queueHolder) {
             clearQueue(queueHolder)
         }
+    }
+
+    fun moveToNextSong(async: Boolean = true) = async(async) {
+        queueHolder.currentSongPosition = nextSongPosition
+        observerManager.notifyCurrentPositionChanged(queueHolder.currentSongPosition)
     }
 
     fun post(what: Int) = handler.sendEmptyMessage(what)
