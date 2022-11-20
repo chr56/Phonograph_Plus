@@ -214,7 +214,9 @@ class QueueManager(val context: Application) {
     }
 
     fun createSnapshot() {
-        queueHolderSnapshots.add(queueHolder.clone())
+        if (queueHolder.playingQueue.size <= 0) return
+        queueHolderSnapshots.add(0, queueHolder.clone())
+        if (queueHolderSnapshots.size > 10) queueHolderSnapshots.removeLast()
     }
 
     fun recoverSnapshot(newQueueHolder: QueueHolder, async: Boolean) = async(async) {
