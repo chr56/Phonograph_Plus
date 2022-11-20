@@ -68,8 +68,8 @@ class QueueManager2(val context: Application) {
     val nextSong: Song get() = queueHolder.nextSong
 
     fun modifyPosition(
-        async: Boolean = true,
         newPosition: Int,
+        async: Boolean = true,
     ) = async(async) {
         queueHolder.modifyPosition(newPosition)
         handler.post {
@@ -78,8 +78,8 @@ class QueueManager2(val context: Application) {
     }
 
     fun modifyShuffleMode(
-        async: Boolean = true,
         newShuffleMode: ShuffleMode,
+        async: Boolean = true,
     ) = async(async) {
         queueHolder.modifyShuffleMode(newShuffleMode)
         handler.post {
@@ -88,8 +88,8 @@ class QueueManager2(val context: Application) {
     }
 
     fun modifyRepeatMode(
-        async: Boolean = true,
         newRepeatMode: RepeatMode,
+        async: Boolean = true,
     ) = async(async) {
         queueHolder.modifyRepeatMode(newRepeatMode)
         handler.post {
