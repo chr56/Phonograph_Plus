@@ -326,9 +326,36 @@ abstract class AbsPlayerFragment :
             )
         }
 
+    override fun onServiceConnected() {
+        updateQueue()
+        updateCurrentSong()
+        viewModel.updateFavoriteState(MusicPlayerRemote.currentSong)
+        viewModel.loadLyrics(MusicPlayerRemote.currentSong)
+    }
+
+    override fun onPlayingMetaChanged() {
+        updateCurrentSong()
+        updateQueuePosition()
+        viewModel.updateFavoriteState(MusicPlayerRemote.currentSong)
+        viewModel.loadLyrics(MusicPlayerRemote.currentSong)
+    }
+
+    override fun onQueueChanged() {
+        updateQueue()
+    }
+
+    override fun onMediaStoreChanged() {
+        updateQueue()
+        viewModel.updateFavoriteState(MusicPlayerRemote.currentSong)
+    }
+
     abstract fun onShow()
     abstract fun onHide()
     abstract fun onBackPressed(): Boolean
+
+    protected abstract fun updateCurrentSong()
+    protected abstract fun updateQueue()
+    protected abstract fun updateQueuePosition()
 
     interface Callbacks {
         fun onPaletteColorChanged()

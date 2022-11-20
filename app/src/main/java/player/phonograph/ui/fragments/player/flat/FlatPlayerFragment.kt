@@ -92,30 +92,8 @@ class FlatPlayerFragment :
         checkToggleToolbar(viewBinding.toolbarContainer)
     }
 
-    override fun onServiceConnected() {
-        updateQueue()
-        updateCurrentSong()
-        viewModel.updateFavoriteState(MusicPlayerRemote.currentSong)
-        viewModel.loadLyrics(MusicPlayerRemote.currentSong)
-    }
 
-    override fun onPlayingMetaChanged() {
-        updateCurrentSong()
-        updateQueuePosition()
-        viewModel.updateFavoriteState(MusicPlayerRemote.currentSong)
-        viewModel.loadLyrics(MusicPlayerRemote.currentSong)
-    }
-
-    override fun onQueueChanged() {
-        updateQueue()
-    }
-
-    override fun onMediaStoreChanged() {
-        updateQueue()
-        viewModel.updateFavoriteState(MusicPlayerRemote.currentSong)
-    }
-
-    private fun updateQueue() {
+    override fun updateQueue() {
         playingQueueAdapter!!.dataset = MusicPlayerRemote.playingQueue
         playingQueueAdapter!!.current = MusicPlayerRemote.position
         viewBinding.playerQueueSubHeader.text = upNextAndQueueTime
@@ -124,7 +102,7 @@ class FlatPlayerFragment :
         }
     }
 
-    private fun updateQueuePosition() {
+    override fun updateQueuePosition() {
         playingQueueAdapter!!.current = MusicPlayerRemote.position
         viewBinding.playerQueueSubHeader.text = upNextAndQueueTime
         if (viewBinding.playerSlidingLayout == null || viewBinding.playerSlidingLayout!!.panelState == PanelState.COLLAPSED) {
@@ -132,7 +110,7 @@ class FlatPlayerFragment :
         }
     }
 
-    private fun updateCurrentSong() {
+    override fun updateCurrentSong() {
         viewModel.currentSong = MusicPlayerRemote.currentSong
         impl.onCurrentSongChanged()
     }
