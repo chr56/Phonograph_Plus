@@ -79,6 +79,7 @@ class QueueManager(val context: Application) {
         queueHolder.modifyPosition(newPosition)
         handler.post {
             observerManager.notifyCurrentPositionChanged(newPosition)
+            saveCfg()
         }
     }
 
@@ -91,6 +92,8 @@ class QueueManager(val context: Application) {
         if (alongWithQueue) shuffleQueue()
         handler.post {
             observerManager.notifyShuffleModeChanged(newShuffleMode)
+            saveCfg()
+            if (alongWithQueue) saveQueue()
         }
     }
 
@@ -101,6 +104,7 @@ class QueueManager(val context: Application) {
         queueHolder.modifyRepeatMode(newRepeatMode)
         handler.post {
             observerManager.notifyRepeatModeChanged(newRepeatMode)
+            saveCfg()
         }
     }
 
@@ -189,12 +193,15 @@ class QueueManager(val context: Application) {
     private inline fun snapshotAndNotify(queueHolder: QueueHolder, block: () -> Unit) {
         val oldPosition = queueHolder.currentSongPosition
         block()
-        with(observerManager) {
-            with(queueHolder) {
-                notifyQueueChanged(playingQueue, originalPlayingQueue) // always changes
-                if (oldPosition != currentSongPosition)
-                    notifyCurrentPositionChanged(currentSongPosition)
+        handler.post {
+            with(observerManager) {
+                with(queueHolder) {
+                    notifyQueueChanged(playingQueue, originalPlayingQueue) // always changes
+                    if (oldPosition != currentSongPosition)
+                        notifyCurrentPositionChanged(currentSongPosition)
+                }
             }
+            saveQueue()
         }
     }
 
@@ -203,6 +210,7 @@ class QueueManager(val context: Application) {
         queueHolder.cycleRepeatMode()
         handler.post {
             observerManager.notifyRepeatModeChanged(queueHolder.repeatMode)
+            saveCfg()
         }
     }
 
@@ -214,6 +222,8 @@ class QueueManager(val context: Application) {
         if (alongWithQueue) shuffleQueue()
         handler.post {
             observerManager.notifyShuffleModeChanged(queueHolder.shuffleMode)
+            saveCfg()
+            if (alongWithQueue) saveQueue()
         }
     }
 
