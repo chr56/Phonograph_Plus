@@ -67,18 +67,6 @@ class QueueManager2(val context: Application) {
     val previousSong: Song get() = queueHolder.previousSong
     val nextSong: Song get() = queueHolder.nextSong
 
-    fun modifyQueue(
-        async: Boolean = true,
-        action: (MutableList<Song>, MutableList<Song>) -> Unit,
-    ) = request(async) {
-        queueHolder.modifyQueue(action)
-        handler.post {
-            with(queueHolder) {
-                observerManager.notifyQueueChanged(playingQueue, originalPlayingQueue)
-            }
-        }
-    }
-
     fun modifyPosition(
         async: Boolean = true,
         newPosition: Int,
@@ -120,27 +108,47 @@ class QueueManager2(val context: Application) {
     private fun restoreAllState() = queueHolder.saveAll(context)
 
 
-    fun swapQueue(newQueue: List<Song>, newPosition: Int) =
+    fun swapQueue(newQueue: List<Song>, newPosition: Int, async: Boolean = true) = request(async) {
         swapQueue(queueHolder, newQueue, newPosition)
+        notifyQueueChanged(queueHolder)
+    }
 
-    fun addSong(song: Song, position: Int = -1) =
+    fun addSong(song: Song, position: Int = -1, async: Boolean = true) = request(async) {
         addSong(queueHolder, song, position)
+        notifyQueueChanged(queueHolder)
+    }
 
-    fun addSongs(songs: List<Song>, position: Int = -1) =
+    fun addSongs(songs: List<Song>, position: Int = -1, async: Boolean = true) = request(async) {
         addSongs(queueHolder, songs, position)
+        notifyQueueChanged(queueHolder)
+    }
 
-    fun removeSongAt(position: Int) =
+    fun removeSongAt(position: Int, async: Boolean = true) = request(async) {
         removeSongAt(queueHolder, position)
+        notifyQueueChanged(queueHolder)
+    }
 
-    fun removeSong(song: Song) =
+    fun removeSong(song: Song, async: Boolean = true) = request(async) {
         removeSong(queueHolder, song)
+        notifyQueueChanged(queueHolder)
+    }
 
-    fun moveSong(from: Int, to: Int) =
+    fun moveSong(from: Int, to: Int, async: Boolean = true) = request(async) {
         moveSong(queueHolder, from, to)
+        notifyQueueChanged(queueHolder)
+    }
 
-    fun clearQueue() =
+    fun clearQueue(async: Boolean = true) = request(async) {
         clearQueue(queueHolder)
+        notifyQueueChanged(queueHolder)
+    }
 
+    private fun notifyQueueChanged(queueHolder: QueueHolder) {
+        with(observerManager) {
+            notifyQueueChanged(queueHolder.playingQueue, queueHolder.originalPlayingQueue)
+            notifyCurrentPositionChanged(queueHolder.currentSongPosition)
+        }
+    }
 
     fun post(what: Int) = handler.sendEmptyMessage(what)
 
@@ -155,15 +163,19 @@ class QueueManager2(val context: Application) {
     }
 
 
-    /**
-     * synchronized
-     */
-    fun cycleRepeatMode() = queueHolder.cycleRepeatMode()
+    fun cycleRepeatMode(async: Boolean = true) = async(async) {
+        queueHolder.cycleRepeatMode()
+        handler.post {
+            observerManager.notifyRepeatModeChanged(queueHolder.repeatMode)
+        }
+    }
 
-    /**
-     * synchronized
-     */
-    fun toggleShuffle() = queueHolder.toggleShuffle()
+    fun toggleShuffle(async: Boolean = true) = async(async) {
+        queueHolder.toggleShuffle()
+        handler.post {
+            observerManager.notifyShuffleModeChanged(queueHolder.shuffleMode)
+        }
+    }
 
     fun addObserver(observer: QueueObserver) = observerManager.addObserver(observer)
     fun removeObserver(observer: QueueObserver) = observerManager.removeObserver(observer)
