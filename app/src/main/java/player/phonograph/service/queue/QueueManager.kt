@@ -164,7 +164,7 @@ class QueueManager(val context: Application) {
     }
 
     fun moveToNextSong(async: Boolean = true) = async(async) {
-        queueHolder.currentSongPosition = nextSongPosition
+        queueHolder.modifyPosition(nextSongPosition)
         handler.post {
             observerManager.notifyCurrentPositionChanged(queueHolder.currentSongPosition)
         }

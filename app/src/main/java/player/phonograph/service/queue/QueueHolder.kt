@@ -18,15 +18,19 @@ class QueueHolder private constructor(
     repeat: RepeatMode,
 ) {
     var playingQueue: MutableList<Song> = CopyOnWriteArrayList(playing)
+        private set
     var originalPlayingQueue: MutableList<Song> = CopyOnWriteArrayList(original)
+        private set
     private val queueLock = Any()
 
     var currentSongPosition: Int = position
+        private set
     private val positionLock = Any()
 
     var shuffleMode: ShuffleMode = shuffle
+        private set
     var repeatMode: RepeatMode = repeat
-
+        private set
 
     /**
      * synchronized
@@ -66,10 +70,10 @@ class QueueHolder private constructor(
         get() {
             val result = currentSongPosition - 1
             return when (repeatMode) {
-                RepeatMode.NONE -> {
+                RepeatMode.NONE               -> {
                     if (result < 0) 0 else result
                 }
-                RepeatMode.REPEAT_QUEUE -> {
+                RepeatMode.REPEAT_QUEUE       -> {
                     if (result <= 0) playingQueue.size - 1 else result
                 }
                 RepeatMode.REPEAT_SINGLE_SONG -> {
@@ -91,14 +95,14 @@ class QueueHolder private constructor(
         get() {
             val result = currentSongPosition + 1
             return when (repeatMode) {
-                RepeatMode.NONE -> {
+                RepeatMode.NONE               -> {
                     if (result >= playingQueue.size) {
                         -1
                     } else {
                         result
                     }
                 }
-                RepeatMode.REPEAT_QUEUE -> {
+                RepeatMode.REPEAT_QUEUE       -> {
                     if (result >= playingQueue.size) 0 else result
                 }
                 RepeatMode.REPEAT_SINGLE_SONG -> {
@@ -133,8 +137,8 @@ class QueueHolder private constructor(
     fun cycleRepeatMode() {
         modifyRepeatMode(
             when (repeatMode) {
-                RepeatMode.NONE -> RepeatMode.REPEAT_QUEUE
-                RepeatMode.REPEAT_QUEUE -> RepeatMode.REPEAT_SINGLE_SONG
+                RepeatMode.NONE               -> RepeatMode.REPEAT_QUEUE
+                RepeatMode.REPEAT_QUEUE       -> RepeatMode.REPEAT_SINGLE_SONG
                 RepeatMode.REPEAT_SINGLE_SONG -> RepeatMode.NONE
             }
         )
@@ -146,7 +150,7 @@ class QueueHolder private constructor(
     fun toggleShuffle() {
         modifyShuffleMode(
             when (shuffleMode) {
-                ShuffleMode.NONE -> ShuffleMode.SHUFFLE
+                ShuffleMode.NONE    -> ShuffleMode.SHUFFLE
                 ShuffleMode.SHUFFLE -> ShuffleMode.NONE
             }
         )
@@ -155,6 +159,7 @@ class QueueHolder private constructor(
     fun getRestSongsDuration(position: Int): Long =
         playingQueue.takeLast(getRestSongsCount(position))
             .fold(0L) { acc, song -> acc + song.duration }
+
     private fun getRestSongsCount(currentPosition: Int): Int =
         if (playingQueue.isEmpty() || playingQueue.size - currentPosition < 0) 0
         else playingQueue.size - currentPosition
