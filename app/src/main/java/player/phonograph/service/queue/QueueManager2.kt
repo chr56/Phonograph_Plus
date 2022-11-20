@@ -70,7 +70,7 @@ class QueueManager2(val context: Application) {
     fun modifyPosition(
         async: Boolean = true,
         newPosition: Int,
-    ) = request(async) {
+    ) = async(async) {
         queueHolder.modifyPosition(newPosition)
         handler.post {
             observerManager.notifyCurrentPositionChanged(newPosition)
@@ -80,7 +80,7 @@ class QueueManager2(val context: Application) {
     fun modifyShuffleMode(
         async: Boolean = true,
         newShuffleMode: ShuffleMode,
-    ) = request(async) {
+    ) = async(async) {
         queueHolder.modifyShuffleMode(newShuffleMode)
         handler.post {
             observerManager.notifyShuffleModeChanged(newShuffleMode)
@@ -90,7 +90,7 @@ class QueueManager2(val context: Application) {
     fun modifyRepeatMode(
         async: Boolean = true,
         newRepeatMode: RepeatMode,
-    ) = request(async) {
+    ) = async(async) {
         queueHolder.modifyRepeatMode(newRepeatMode)
         handler.post {
             observerManager.notifyRepeatModeChanged(newRepeatMode)
@@ -108,57 +108,73 @@ class QueueManager2(val context: Application) {
     private fun restoreAllState() = queueHolder.saveAll(context)
 
 
-    fun swapQueue(newQueue: List<Song>, newPosition: Int, async: Boolean = true) = request(async) {
-        swapQueue(queueHolder, newQueue, newPosition)
-        notifyQueueChanged(queueHolder)
+    fun swapQueue(newQueue: List<Song>, newPosition: Int, async: Boolean = true) = async(async) {
+        snapshotAndNotify(queueHolder) {
+            swapQueue(queueHolder, newQueue, newPosition)
+        }
     }
 
-    fun addSong(song: Song, position: Int = -1, async: Boolean = true) = request(async) {
-        addSong(queueHolder, song, position)
-        notifyQueueChanged(queueHolder)
+    fun addSong(song: Song, position: Int = -1, async: Boolean = true) = async(async) {
+        snapshotAndNotify(queueHolder) {
+            addSong(queueHolder, song, position)
+        }
     }
 
-    fun addSongs(songs: List<Song>, position: Int = -1, async: Boolean = true) = request(async) {
-        addSongs(queueHolder, songs, position)
-        notifyQueueChanged(queueHolder)
+    fun addSongs(songs: List<Song>, position: Int = -1, async: Boolean = true) = async(async) {
+        snapshotAndNotify(queueHolder) {
+            addSongs(queueHolder, songs, position)
+        }
     }
 
-    fun removeSongAt(position: Int, async: Boolean = true) = request(async) {
-        removeSongAt(queueHolder, position)
-        notifyQueueChanged(queueHolder)
+    fun removeSongAt(position: Int, async: Boolean = true) = async(async) {
+        snapshotAndNotify(queueHolder) {
+            removeSongAt(queueHolder, position)
+        }
     }
 
-    fun removeSong(song: Song, async: Boolean = true) = request(async) {
-        removeSong(queueHolder, song)
-        notifyQueueChanged(queueHolder)
+    fun removeSong(song: Song, async: Boolean = true) = async(async) {
+        snapshotAndNotify(queueHolder) {
+            removeSong(queueHolder, song)
+        }
     }
 
-    fun moveSong(from: Int, to: Int, async: Boolean = true) = request(async) {
-        moveSong(queueHolder, from, to)
-        notifyQueueChanged(queueHolder)
+    fun moveSong(from: Int, to: Int, async: Boolean = true) = async(async) {
+        snapshotAndNotify(queueHolder) {
+            moveSong(queueHolder, from, to)
+        }
     }
 
-    fun clearQueue(async: Boolean = true) = request(async) {
-        clearQueue(queueHolder)
-        notifyQueueChanged(queueHolder)
-    }
-
-    private fun notifyQueueChanged(queueHolder: QueueHolder) {
-        with(observerManager) {
-            notifyQueueChanged(queueHolder.playingQueue, queueHolder.originalPlayingQueue)
-            notifyCurrentPositionChanged(queueHolder.currentSongPosition)
+    fun clearQueue(async: Boolean = true) = async(async) {
+        snapshotAndNotify(queueHolder) {
+            clearQueue(queueHolder)
         }
     }
 
     fun post(what: Int) = handler.sendEmptyMessage(what)
 
-    private inline fun request(async: Boolean, crossinline block: () -> Unit) {
+    private fun async(async: Boolean, block: () -> Unit) {
         if (async) {
             handler.post {
                 block()
             }
         } else {
             block()
+        }
+    }
+
+    /**
+     * for queue operations
+     * detect queue changes and notify observers effectually
+     */
+    private inline fun snapshotAndNotify(queueHolder: QueueHolder, block: () -> Unit) {
+        val oldPosition = queueHolder.currentSongPosition
+        block()
+        with(observerManager) {
+            with(queueHolder) {
+                notifyQueueChanged(playingQueue, originalPlayingQueue) // always changes
+                if (oldPosition != currentSongPosition)
+                    notifyCurrentPositionChanged(currentSongPosition)
+            }
         }
     }
 
