@@ -24,6 +24,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -41,6 +43,15 @@ fun QueueSnapshotsDialog(context: Context, queueManager: QueueManager, onDismiss
     PhonographTheme {
         BoxWithConstraints {
             Column(Modifier.padding(16.dp)) {
+                Text(modifier = Modifier
+                    .height(48.dp)
+                    .fillMaxWidth()
+                    .padding(horizontal = 12.dp, vertical = 8.dp),
+                     text = context.getString(R.string.playing_queue_history),
+                     style = TextStyle(fontWeight = FontWeight.Bold,
+                                       color = MaterialTheme.colors.onSurface,
+                                       fontSize = 20.sp),
+                     textAlign = TextAlign.Start)
                 MainContent(context, snapShots, onRecoverySnapshot)
                 Row(modifier = Modifier
                     .height(48.dp)
