@@ -161,7 +161,7 @@ class QueueManager(val context: Application) {
     }
 
     fun clearQueue(async: Boolean = true) = async(async) {
-        snapshotAndNotify(queueHolder) {
+        snapshotAndNotify(queueHolder, true) {
             clearQueue(queueHolder)
         }
     }
