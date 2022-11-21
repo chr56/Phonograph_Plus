@@ -5,6 +5,7 @@
 package player.phonograph.service.queue
 
 import player.phonograph.model.Song
+import player.phonograph.service.MusicPlayerRemote
 import android.app.Application
 import android.os.Handler
 import android.os.HandlerThread
@@ -223,6 +224,7 @@ class QueueManager(val context: Application) {
         snapshotAndNotify(queueHolder, false) {
             queueHolder = newQueueHolder.clone()
         }
+        MusicPlayerRemote.playSongAt(queueHolder.currentSongPosition)
     }
 
 
