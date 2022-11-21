@@ -242,7 +242,7 @@ class CardPlayerFragment :
         }
 
         override fun animateColorChange(newColor: Int) {
-            fragment.viewBinding.playerQueueSubHeader.setTextColor(
+            fragment._viewBinding?.playerQueueSubHeader?.setTextColor(
                 fragment.requireContext().secondaryTextColor(fragment.resources.nightMode)
             )
         }
@@ -318,7 +318,7 @@ class CardPlayerFragment :
 
         override fun animateColorChange(newColor: Int) {
             super.animateColorChange(newColor)
-            fragment.viewBinding.playerSlidingLayout.setBackgroundColor(fragment.paletteColor)
+            fragment._viewBinding?.playerSlidingLayout?.setBackgroundColor(fragment.paletteColor)
             createDefaultColorChangeAnimatorSet(newColor).start()
         }
     }

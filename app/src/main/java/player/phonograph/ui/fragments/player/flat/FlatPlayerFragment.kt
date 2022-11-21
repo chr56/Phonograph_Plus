@@ -196,7 +196,7 @@ class FlatPlayerFragment :
         }
 
         override fun animateColorChange(newColor: Int) {
-            fragment.viewBinding.playerQueueSubHeader.setTextColor(
+            fragment._viewBinding?.playerQueueSubHeader?.setTextColor(
                 fragment.requireContext().secondaryTextColor(fragment.resources.nightMode)
             )
         }
