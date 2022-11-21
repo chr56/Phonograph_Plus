@@ -205,7 +205,7 @@ class QueueManager(val context: Application) {
             with(observerManager) {
                 with(queueHolder) {
                     notifyQueueChanged(playingQueue, originalPlayingQueue) // always changes
-                    if (oldPosition != currentSongPosition)
+                    if (oldPosition != currentSongPosition || createSnapshot)
                         notifyCurrentPositionChanged(currentSongPosition)
                 }
             }
