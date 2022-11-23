@@ -220,8 +220,12 @@ class QueueManager(val context: Application) {
         if (queueHolderSnapshots.size > 10) queueHolderSnapshots.removeLast()
     }
 
-    fun recoverSnapshot(newQueueHolder: QueueHolder, async: Boolean) = async(async) {
-        snapshotAndNotify(queueHolder, false) {
+    fun recoverSnapshot(
+        newQueueHolder: QueueHolder,
+        createSnapshot: Boolean = false,
+        async: Boolean = true
+    ) = async(async) {
+        snapshotAndNotify(queueHolder, createSnapshot) {
             queueHolder = newQueueHolder.clone()
         }
         MusicPlayerRemote.playSongAt(queueHolder.currentSongPosition)

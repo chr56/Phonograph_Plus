@@ -37,35 +37,39 @@ fun QueueSnapshotsDialog(context: Context, queueManager: QueueManager, onDismiss
         queueManager.getQueueSnapShots()
     }
     val onRecoverySnapshot = { snapshot: QueueHolder ->
-        with(queueManager) {
-            createSnapshot()
-            recoverSnapshot(snapshot, true)
-        }
+        queueManager.recoverSnapshot(snapshot, createSnapshot = true, async = true)
         onDismiss()
     }
     PhonographTheme {
         BoxWithConstraints {
             Column(Modifier.padding(16.dp)) {
-                Text(modifier = Modifier
-                    .height(48.dp)
-                    .fillMaxWidth()
-                    .padding(horizontal = 12.dp, vertical = 8.dp),
-                     text = context.getString(R.string.playing_queue_history),
-                     style = TextStyle(fontWeight = FontWeight.Bold,
-                                       color = MaterialTheme.colors.onSurface,
-                                       fontSize = 20.sp),
-                     textAlign = TextAlign.Start)
+                Text(
+                    modifier = Modifier
+                        .height(48.dp)
+                        .fillMaxWidth()
+                        .padding(horizontal = 12.dp, vertical = 8.dp),
+                    text = context.getString(R.string.playing_queue_history),
+                    style = TextStyle(
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colors.onSurface,
+                        fontSize = 20.sp
+                    ),
+                    textAlign = TextAlign.Start
+                )
                 MainContent(context, snapShots, onRecoverySnapshot)
-                Row(modifier = Modifier
-                    .height(48.dp)
-                    .width(IntrinsicSize.Max)
-                    .align(Alignment.End)
-                    .padding(horizontal = 12.dp, vertical = 8.dp)
+                Row(
+                    modifier = Modifier
+                        .height(48.dp)
+                        .width(IntrinsicSize.Max)
+                        .align(Alignment.End)
+                        .padding(horizontal = 12.dp, vertical = 8.dp)
                 ) {
-                    Text(text = context.getString(android.R.string.cancel),
-                         modifier = Modifier.clickable { onDismiss() },
-                         color = MaterialTheme.colors.primary,
-                         textAlign = TextAlign.Start)
+                    Text(
+                        text = context.getString(android.R.string.cancel),
+                        modifier = Modifier.clickable { onDismiss() },
+                        color = MaterialTheme.colors.primary,
+                        textAlign = TextAlign.Start
+                    )
                 }
             }
         }
@@ -87,9 +91,10 @@ private fun MainContent(
             }
         }
     } else {
-        Box(modifier = Modifier
-            .fillMaxWidth()
-            .wrapContentHeight()
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .wrapContentHeight()
         ) {
             Text(text = context.getString(R.string.empty), Modifier.align(Alignment.Center))
         }
@@ -102,7 +107,8 @@ private fun Snapshot(context: Context, queueHolder: QueueHolder, onClick: () -> 
              .clickable { onClick() }
              .fillMaxWidth()
              .padding(4.dp)) {
-        Column(Modifier.padding(12.dp)
+        Column(
+            Modifier.padding(12.dp)
         ) {
             val songCount = queueHolder.playingQueue.size
             Text(text = timeText(queueHolder.snapshotTime / 1000), fontSize = 12.sp)
@@ -111,18 +117,24 @@ private fun Snapshot(context: Context, queueHolder: QueueHolder, onClick: () -> 
                 Text(text = " (${queueHolder.currentSongPosition + 1})")
                 Spacer(modifier = Modifier.widthIn(16.dp))
                 when (queueHolder.repeatMode) {
-                    RepeatMode.REPEAT_QUEUE       ->
-                        Icon(painter = painterResource(id = R.drawable.ic_repeat_white_24dp),
-                             contentDescription = null)
+                    RepeatMode.REPEAT_QUEUE ->
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_repeat_white_24dp),
+                            contentDescription = null
+                        )
                     RepeatMode.REPEAT_SINGLE_SONG ->
-                        Icon(painter = painterResource(id = R.drawable.ic_repeat_one_white_24dp),
-                             contentDescription = null)
-                    else                          -> {}
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_repeat_one_white_24dp),
+                            contentDescription = null
+                        )
+                    else -> {}
                 }
                 when (queueHolder.shuffleMode) {
                     ShuffleMode.SHUFFLE -> {
-                        Icon(painter = painterResource(id = R.drawable.ic_shuffle_white_24dp),
-                             contentDescription = context.getString(R.string.pref_title_remember_shuffle))
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_shuffle_white_24dp),
+                            contentDescription = context.getString(R.string.pref_title_remember_shuffle)
+                        )
                     }
                     else                -> {}
                 }
