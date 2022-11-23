@@ -27,6 +27,7 @@ class QueueManager(val context: Application) {
         observerManager = ObserverManager()
     }
 
+    private var snapShotsItemCount: Long = 0
     private val queueHolderSnapshots: MutableList<QueueHolder> = ArrayList()
     fun getQueueSnapShots(): List<QueueHolder> = queueHolderSnapshots.toList()
 
@@ -216,8 +217,14 @@ class QueueManager(val context: Application) {
 
     fun createSnapshot() {
         if (queueHolder.playingQueue.size <= 0) return
-        queueHolderSnapshots.add(0, queueHolder.clone())
-        if (queueHolderSnapshots.size > 10) queueHolderSnapshots.removeLast()
+        synchronized(queueHolderSnapshots) {
+            snapShotsItemCount += queueHolder.playingQueue.size
+            queueHolderSnapshots.add(0, queueHolder.clone())
+            if (queueHolderSnapshots.size > 10 || snapShotsItemCount >= 150_000) {
+                val removed = queueHolderSnapshots.removeLast()
+                snapShotsItemCount -= removed.playingQueue.size
+            }
+        }
     }
 
     fun recoverSnapshot(
