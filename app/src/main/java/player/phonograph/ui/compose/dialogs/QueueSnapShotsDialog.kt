@@ -37,7 +37,10 @@ fun QueueSnapshotsDialog(context: Context, queueManager: QueueManager, onDismiss
         queueManager.getQueueSnapShots()
     }
     val onRecoverySnapshot = { snapshot: QueueHolder ->
-        queueManager.recoverSnapshot(snapshot, true)
+        with(queueManager) {
+            createSnapshot()
+            recoverSnapshot(snapshot, true)
+        }
         onDismiss()
     }
     PhonographTheme {
