@@ -182,7 +182,7 @@ class DeleteSongsDialog : DialogFragment() {
         private fun deleteLyrics(activity: Activity, songs: ArrayList<Song>) {
             for (song in songs) {
                 val file = File(song.data)
-                val (preciseFiles, _) = LyricsLoader.searchExternalLyricsFiles(file, song)
+                val preciseFiles = LyricsLoader.getExternalPreciseLyricsFile(file)
                 val fails = mutableListOf<String>()
                 preciseFiles.forEach {
                     val result = it.delete()
