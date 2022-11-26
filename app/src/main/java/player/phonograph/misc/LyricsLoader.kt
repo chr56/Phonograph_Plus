@@ -44,6 +44,10 @@ object LyricsLoader {
         }
 
         // external
+        val externalPrecise = backgroundCoroutine.async(Dispatchers.IO) {
+            val files = getExternalPreciseLyricsFile(songFile)
+            files.mapNotNull { parseExternal(it, LyricsSource.ExternalPrecise()) }
+        }
         val external = backgroundCoroutine.async(Dispatchers.IO) {
             val (preciseFiles, vagueFiles) = searchExternalLyricsFiles(songFile, song)
             try {
@@ -64,8 +68,9 @@ object LyricsLoader {
             if (embeddedLyrics != null) {
                 add(embeddedLyrics)
             }
-            val (preciseLyrics, vagueLyrics) = external.await()
+            val preciseLyrics = externalPrecise.await()
             addAll(preciseLyrics)
+            val (_, vagueLyrics) = external.await()
             addAll(vagueLyrics)
         }
 
@@ -115,6 +120,13 @@ object LyricsLoader {
             }
         }
         return TextLyrics.from(raw, lyricsSource)
+    }
+
+    fun getExternalPreciseLyricsFile(songFile: File): List<File> {
+        val filename = FileUtil.stripExtension(songFile.absolutePath)
+        val lrc = File("$filename.lrc").takeIf { it.exists() }
+        val txt = File("$filename.txt").takeIf { it.exists() }
+        return listOfNotNull(lrc, txt)
     }
 
     fun searchExternalLyricsFiles(songFile: File, song: Song): Pair<List<File>, List<File>> {
