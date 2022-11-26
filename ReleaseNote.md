@@ -1,4 +1,4 @@
-**0.5-dev2 2022.11.23**
+**0.5.0 2022.11.27**
 
 **CN**
 - 修复 在大屏设备上，横屏时无法调整列表列数，且锁定在6列
@@ -10,6 +10,7 @@
 - 删除 选项“保护播放列表不被肆意更改” (添加了播放列表快照与自定义点击行为后已无用)
 - 新增 从外部播放时显示确认对话框 (如, 从文件管理器打开): 选项类似于自定义点击行为
 - 修复 从桌面捷径播放失效
+- 优化 歌词搜索加载速度
 - 翻译 更新俄语翻译(by ElinaAndreeva)
 - 开发 重构播放队列管理器, 清理代码, 更新依赖, 使用VersionCatalog
 
@@ -23,5 +24,6 @@
 - Remove: the option "Keep the playing queue intact" (It's useless now since queue snapshot and custom click-behavior were added)
 - New: a confirm dialog when playing from outside (like open from file explorer): The options are similar to custom click-behavior.
 - Fix: playing from shortcut won't work
+- Optimise: lyrics fetching and loading performance
 - Translation: updated Russian (by ElinaAndreeva)
 - Development: refactor Queue Manager, clean up code, update dependencies, using Gradle VersionCatalog
