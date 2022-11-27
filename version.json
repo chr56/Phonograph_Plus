@@ -1,19 +1,19 @@
 {
-    "version": "0.4.1",
-    "versionCode": "401",
+    "version": "0.5.0",
+    "versionCode": "450",
     "zh-cn": {
-        "logSummary": "\n\n<b>0.4.1</b> 2022.10.28 \n\n<ol><li>修复 打开歌曲详情时卡死</li><li>修复 搜索页面的文字图标在浅色主色调下对比度问题(部分修复)</li><li>新增 歌词功能总开关</li><li>改进 崩溃界面，区分崩溃与内部错误</li><li>改进 优化菜单</li><li>开发 清理代码</li></ol>"
+        "logSummary": "\n\n<b>0.5.0</b> 2022.11.27 \n\n<ol><li>修复 在大屏设备上，横屏时无法调整列表列数，且锁定在6列</li><li>修复 浅色主色调下搜索页面上文本和图标的对比度低</li><li>修复 某些颜色异常</li><li>新增 播放列表快照: 追踪当前播放列表, 在列表被替换时记录并存储(重启应用后失效), 以供恢复, 仅存储最近的变化, 位于播放器菜单(播放列表历史)</li><li>新增 允许自定义位于列表中的歌曲或文件的点击行为: 共 8 种模式和 2 种额外, 可自定义点击列表项目时的操作</li><li>移除 选项“记住随机播放” (意义模糊，与自定义点击行为和某些特意播放冲突)</li><li>删除 选项“保护播放列表不被肆意更改” (添加了播放列表快照与自定义点击行为后已无用)</li><li>新增 从外部播放时显示确认对话框 (如, 从文件管理器打开): 选项类似于自定义点击行为</li><li>修复 从桌面捷径播放失效</li><li>优化 歌词搜索加载速度</li><li>翻译 更新俄语翻译(by ElinaAndreeva)</li><li>开发 重构播放队列管理器, 清理代码, 更新依赖, 使用VersionCatalog</li></ol>"
     },
     "en": {
-        "logSummary": "\n\n<b>0.4.1</b> 2022.10.28 \n\n<ol><li>Fix: stuck when opening song details</li><li>Fix: terrible contrast of the text and icon on Search Page when under light primary color (Partial Fix)</li><li>Add: a general switch for all lyrics features</li><li>Improve: Crash Report Page - to distinguish between crash and internal error</li><li>Improve: menu</li><li>Development: clean up code</li></ol>"
+        "logSummary": "\n\n<b>0.5.0</b> 2022.11.27 \n\n<ol><li>Fix: on large tablets, the number of list columns cannot be adjusted and locked to 6 columns when the screen is landscaped</li><li>Fix: low contrast color of the text and icon on Search Page if using a light primary color</li><li>Fix: some color glitch</li><li>New: playing queue snapshot: track the current queue, record and save when playing queue is entirety replaced (keep till app rebooted), only store recent changes, to recovery queues, goto player menu (playing queue history)</li><li>New: custom click-behavior: allow custom click-behavior for song items or file items in list: There are 8 modes and 2 extra behaviors allowing defining what player should do when clicking item in a list.</li><li>Remove: the option \"Remember Shuffle\" (It's a very vague option, causing conflict with some intended playing actions and custom click-behavior)</li><li>Remove: the option \"Keep the playing queue intact\" (It's useless now since queue snapshot and custom click-behavior were added)</li><li>New: a confirm dialog when playing from outside (like open from file explorer): The options are similar to custom click-behavior.</li><li>Fix: playing from shortcut won't work</li><li>Optimise: lyrics fetching and loading performance</li><li>Translation: updated Russian (by ElinaAndreeva)</li><li>Development: refactor Queue Manager, clean up code, update dependencies, using Gradle VersionCatalog</li></ol>"
     },
     "downloadSources": [
-        "Release: Github(v0.4.0)",
-        "Release(LTS): Github(v0.3.5.2-LTS)"
+        "Release: Github(v0.5.0)",
+        "Release(LTS): Github(v0.3.5.3-LTS)"
     ],
     "downloadUris": [
-        "https://github.com/chr56/Phonograph_Plus/releases/tag/v0.4.0",
-        "https://github.com/chr56/Phonograph_Plus/releases/tag/v0.3.5.2-LTS"
+        "https://github.com/chr56/Phonograph_Plus/releases/tag/v0.5.0",
+        "https://github.com/chr56/Phonograph_Plus/releases/tag/v0.3.5.3-LTS"
     ],
     "logSummary": "\n<b>请更新至新版本(至少高于v0.1.1), 此版本无法读取新更新日志\nUpdate Please (as least to version v0.1.1)! This version can not be read this changelogs.</b>"
 }
