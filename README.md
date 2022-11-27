@@ -31,6 +31,10 @@ This is a fork of [Phonograph](https://github.com/kabouzeid/Phonograph), and is 
 - 歌词对话框内显示歌词时间轴信息, 并可以通过长按进行快速转跳与自动滚动 | Show Time Axis in "Lyrics" Dialog and allow seeking basing lyric's time axis and
   support lyrics following.
 
+- 自定义歌曲点击行为 | User-defined click behavior for songs
+
+- 支持正在播放列表历史记录 | Support history of playing queue.
+
 - 适配 Android 11 分区存储 （部分） | Fix Android 11 Scope Storage. (Partial)
 
 - 改进菜单, 适当折叠歌曲弹出菜单 | Improve menu experience.
@@ -124,9 +128,9 @@ See [Build_Instructions.md](./Build_Instructions.md)
 
 - [x] 重构更新对话框 | Refactor Update Dialog
 
-- [ ] 自定义歌曲点击行为 ⭕ | User-defined click behavior for songs ⭕
+- [x] 自定义歌曲点击行为 | User-defined click behavior for songs
 
-- [ ] 支持正在播放列表历史记录 | Support history of playing queue.
+- [x] 支持正在播放列表历史记录 | Support history of playing queue.
 
 - [ ] 重构设置 UI | Refactor Setting UI
 
