@@ -15,16 +15,11 @@ import player.phonograph.R
 import player.phonograph.UPGRADABLE
 import player.phonograph.VERSION_INFO
 import player.phonograph.actions.actionPlay
-import player.phonograph.actions.actionPlayNow
 import player.phonograph.coil.loadImage
 import player.phonograph.databinding.ActivityMainBinding
 import player.phonograph.databinding.LayoutDrawerBinding
 import player.phonograph.dialogs.ChangelogDialog
 import player.phonograph.dialogs.ChangelogDialog.Companion.setChangelogRead
-import player.phonograph.helper.SearchQueryHelper
-import player.phonograph.mediastore.AlbumLoader
-import player.phonograph.mediastore.ArtistLoader
-import player.phonograph.mediastore.PlaylistSongLoader
 import player.phonograph.mediastore.SongLoader.getAllSongs
 import player.phonograph.misc.SAFCallbackHandlerActivity
 import player.phonograph.misc.SafLauncher
@@ -44,6 +39,7 @@ import player.phonograph.ui.fragments.HomeFragment
 import player.phonograph.util.ImageUtil.getTintedDrawable
 import player.phonograph.util.PhonographColorUtil.nightMode
 import player.phonograph.util.UpdateUtil
+import player.phonograph.util.Util.debug
 import player.phonograph.util.preferences.HomeTabConfig
 import player.phonograph.util.preferences.StyleConfig
 import androidx.drawerlayout.widget.DrawerLayout
@@ -53,7 +49,6 @@ import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.provider.MediaStore
 import android.util.Log
 import android.view.Menu
 import android.view.View
@@ -99,18 +94,19 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
         setUpDrawer()
 
         showIntro()
-        Handler(Looper.getMainLooper()).postDelayed({
-            val showUpgradeDialog = intent.getBooleanExtra(UPGRADABLE, false)
-            if (showUpgradeDialog) {
-                showUpgradeDialog(intent.getParcelableExtra(VERSION_INFO) as? VersionCatalog)
-            } else {
-                checkUpdate()
-            }
-            showChangelog()
-            Setting.instance.registerOnSharedPreferenceChangedListener(
-                sharedPreferenceChangeListener
-            )
-        }, 900)
+        Handler(Looper.getMainLooper()).postDelayed(
+            {
+                val showUpgradeDialog = intent.getBooleanExtra(UPGRADABLE, false)
+                if (showUpgradeDialog) {
+                    showUpgradeDialog(intent.getParcelableExtra(VERSION_INFO) as? VersionCatalog)
+                } else {
+                    checkUpdate()
+                }
+                showChangelog()
+                Setting.instance
+                    .registerOnSharedPreferenceChangedListener(sharedPreferenceChangeListener)
+            }, 900
+        )
 
         if (DEBUG) {
             Log.v("Metrics", "${System.currentTimeMillis().mod(10000000)} MainActivity.onCreate()")
@@ -119,10 +115,12 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
 
     override fun onResume() {
         super.onResume()
-        if (DEBUG) Log.v(
-            "Metrics",
-            "${System.currentTimeMillis().mod(10000000)} MainActivity.onResume()"
-        )
+        debug {
+            Log.v(
+                "Metrics",
+                "${System.currentTimeMillis().mod(10000000)} MainActivity.onResume()"
+            )
+        }
     }
 
     override fun onDestroy() {
@@ -167,9 +165,9 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
                     itemId = 1000 + page
                     onClick {
                         drawerBinding.drawerLayout.closeDrawers()
-                        Handler(Looper.getMainLooper()).postDelayed({
-                            currentFragment.requestSelectPage(page)
-                        }, 150)
+                        Handler(Looper.getMainLooper()).postDelayed(
+                            { currentFragment.requestSelectPage(page) }, 150
+                        )
                     }
                 }
             }
@@ -182,21 +180,24 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
                 icon = getTintedDrawable(R.drawable.ic_theme_switch_white_24dp, textColorPrimary)
                 titleRes(R.string.theme_switch)
                 onClick {
-                    Handler(Looper.getMainLooper()).postDelayed({
-                        val themeSetting = StyleConfig.generalTheme(this@MainActivity)
-
-                        if (themeSetting == R.style.Theme_Phonograph_Auto) {
-                            Toast.makeText(activity, R.string.auto_mode_on, Toast.LENGTH_SHORT).show()
-                        } else {
-                            when (themeSetting) {
-                                R.style.Theme_Phonograph_Light ->
-                                    StyleConfig.setGeneralTheme("dark")
-                                R.style.Theme_Phonograph_Dark, R.style.Theme_Phonograph_Black ->
-                                    StyleConfig.setGeneralTheme("light")
+                    Handler(Looper.getMainLooper()).postDelayed(
+                        {
+                            val themeSetting = StyleConfig.generalTheme(this@MainActivity)
+                            if (themeSetting == R.style.Theme_Phonograph_Auto) {
+                                Toast.makeText(
+                                    activity, R.string.auto_mode_on, Toast.LENGTH_SHORT
+                                ).show()
+                            } else {
+                                when (themeSetting) {
+                                    R.style.Theme_Phonograph_Light ->
+                                        StyleConfig.setGeneralTheme("dark")
+                                    R.style.Theme_Phonograph_Dark, R.style.Theme_Phonograph_Black ->
+                                        StyleConfig.setGeneralTheme("light")
+                                }
+                                recreate()
                             }
-                            recreate()
-                        }
-                    }, 200)
+                        }, 200
+                    )
                 }
             }
 
@@ -207,10 +208,12 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
                 titleRes(R.string.action_shuffle_all)
                 onClick {
                     drawerBinding.drawerLayout.closeDrawers()
-                    Handler(Looper.getMainLooper()).postDelayed({
-                        val songs = getAllSongs(activity)
-                        songs.actionPlay(ShuffleMode.SHUFFLE, Random.nextInt(songs.size))
-                    }, 350)
+                    Handler(Looper.getMainLooper()).postDelayed(
+                        {
+                            val songs = getAllSongs(activity)
+                            songs.actionPlay(ShuffleMode.SHUFFLE, Random.nextInt(songs.size))
+                        }, 350
+                    )
                 }
             }
             menuItem {
@@ -220,9 +223,11 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
                 titleRes(R.string.scan_media)
                 onClick {
                     drawerBinding.drawerLayout.closeDrawers()
-                    Handler(Looper.getMainLooper()).postDelayed({
-                        ScanMediaFolderDialog().show(supportFragmentManager, "scan_media")
-                    }, 200)
+                    Handler(Looper.getMainLooper()).postDelayed(
+                        {
+                            ScanMediaFolderDialog().show(supportFragmentManager, "scan_media")
+                        }, 200
+                    )
                 }
             }
 
@@ -232,9 +237,13 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
                 icon = getTintedDrawable(R.drawable.ic_settings_white_24dp, textColorPrimary)
                 titleRes(R.string.action_settings)
                 onClick {
-                    Handler(Looper.getMainLooper()).postDelayed({
-                        startActivity(Intent(activity, SettingsActivity::class.java))
-                    }, 200)
+                    Handler(Looper.getMainLooper()).postDelayed(
+                        {
+                            startActivity(
+                                Intent(activity, SettingsActivity::class.java)
+                            )
+                        }, 200
+                    )
                 }
             }
             menuItem {
@@ -243,9 +252,13 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
                 icon = getTintedDrawable(R.drawable.ic_help_white_24dp, textColorPrimary)
                 titleRes(R.string.action_about)
                 onClick {
-                    Handler(Looper.getMainLooper()).postDelayed({
-                        startActivity(Intent(activity, AboutActivity::class.java))
-                    }, 200)
+                    Handler(Looper.getMainLooper()).postDelayed(
+                        {
+                            startActivity(
+                                Intent(activity, AboutActivity::class.java)
+                            )
+                        }, 200
+                    )
                 }
             }
 
@@ -284,16 +297,17 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
         drawerBinding.navigationView.setCheckedItem(1000 + page)
     }
 
-    private val sharedPreferenceChangeListener = SharedPreferences.OnSharedPreferenceChangeListener { sharedPreferences, key ->
-        when (key) {
-            Setting.HOME_TAB_CONFIG -> {
-                with(drawerBinding.navigationView.menu) {
-                    clear()
-                    inflateDrawerMenu(this)
+    private val sharedPreferenceChangeListener =
+        SharedPreferences.OnSharedPreferenceChangeListener { sharedPreferences, key ->
+            when (key) {
+                Setting.HOME_TAB_CONFIG -> {
+                    with(drawerBinding.navigationView.menu) {
+                        clear()
+                        inflateDrawerMenu(this)
+                    }
                 }
             }
         }
-    }
 
     private fun updateNavigationDrawerHeader() {
         if (MusicPlayerRemote.playingQueue.isNotEmpty()) {
@@ -374,12 +388,13 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
 
             blockRequestPermissions = true
 
-            Handler(Looper.getMainLooper()).postDelayed({
-                startActivityForResult(
-                    Intent(this@MainActivity, AppIntroActivity::class.java),
-                    APP_INTRO_REQUEST
-                )
-            }, 50)
+            Handler(Looper.getMainLooper()).postDelayed(
+                {
+                    startActivityForResult(
+                        Intent(this@MainActivity, AppIntroActivity::class.java), APP_INTRO_REQUEST
+                    )
+                }, 50
+            )
         }
     }
 
@@ -389,7 +404,7 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
                 if (upgradable) {
                     val channel = when (BuildConfig.FLAVOR) {
                         "preview" -> "preview"
-                        else -> "stable"
+                        else      -> "stable"
                     }
                     UpgradeNotification.sendUpgradeNotification(versionCatalog, channel)
                 }
@@ -421,8 +436,6 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
     companion object {
         private const val TAG = "MainActivity"
         private const val APP_INTRO_REQUEST = 100
-
-        const val SHOW_UPGRADE_DIALOG = "show_upgrade_dialog"
     }
 
     interface MainActivityFragmentCallbacks {
