@@ -4,13 +4,13 @@
 
 package player.phonograph.util
 
+import com.fondesa.kpermissions.PermissionStatus
 import com.fondesa.kpermissions.coroutines.sendSuspend
 import com.fondesa.kpermissions.extension.permissionsBuilder
-import com.fondesa.kpermissions.isGranted
-import com.fondesa.kpermissions.isPermanentlyDenied
 import com.fondesa.kpermissions.request.PermissionRequest
 import com.google.android.material.snackbar.Snackbar
 import mt.pref.ThemeColor
+import player.phonograph.MusicServiceMsgConst
 import player.phonograph.R
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
@@ -46,64 +46,6 @@ object PermissionUtil {
     }
 
     private val scope = CoroutineScope(Dispatchers.Unconfined)
-
-
-    suspend fun requestOrCheckPermission(
-        context: Context,
-        request: PermissionRequest,
-        checkOnly: Boolean,
-        snackBarContainer: View? = null,
-        callback: (() -> Unit)? = null
-    ) {
-        val result = if (checkOnly) request.checkStatus() else request.sendSuspend()
-        val missingPermissions = mutableListOf<String>()
-        for (permissionStatus in result) {
-            if (!permissionStatus.isGranted()) {
-                if (snackBarContainer != null) {
-                    val snackBar = Snackbar.make(
-                        snackBarContainer,
-                        "${context.getString(R.string.permissions_denied)}\n${permissionStatus.permission}",
-                        Snackbar.LENGTH_SHORT
-                    )
-                    if (permissionStatus.isPermanentlyDenied()) {
-                        snackBar.setAction(R.string.action_settings) {
-                            context.startActivity(
-                                Intent().apply {
-                                    action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
-                                    data = Uri.fromParts("package", context.packageName, null)
-                                }
-                            )
-                        }
-                    } else {
-                        snackBar.setAction(R.string.action_grant) {
-                            scope.launch {
-                                requestOrCheckPermission(context, request, false, snackBarContainer)
-                            }
-                        }
-                    }
-                    snackBar.setActionTextColor(ThemeColor.accentColor(context))
-                    withContext(Dispatchers.Main) {
-                        snackBar.show()
-                    }
-                } else {
-                    val toast =
-                        Toast.makeText(
-                            context,
-                            R.string.permissions_denied,
-                            Toast.LENGTH_SHORT
-                        )
-                    withContext(Dispatchers.Main) {
-                        toast.show()
-                    }
-                }
-                missingPermissions.add(permissionStatus.permission)
-            }
-        }
-        if (missingPermissions.isNotEmpty()) {
-            callback?.invoke()
-        }
-    }
-
 
     fun requestOrCheckPermission(
         fragmentActivity: FragmentActivity,
@@ -148,7 +90,90 @@ object PermissionUtil {
         }
     }
 
+    suspend fun requestOrCheckPermission(
+        context: Context,
+        request: PermissionRequest,
+        checkOnly: Boolean,
+        snackBarContainer: View? = null,
+        callback: (() -> Unit)? = null
+    ) {
+        val result = requestOrCheckPermissionStatus(request, checkOnly)
+        if (result.isNotEmpty()) {
+            notifyUser(context, result, snackBarContainer) {
+                request.send()
+                context.sendBroadcast(Intent(MusicServiceMsgConst.MEDIA_STORE_CHANGED))
+                scope.launch {
+                    requestOrCheckPermission(
+                        context,
+                        request,
+                        true,
+                        snackBarContainer,
+                        callback
+                    )
+                }
+            }
+            callback?.invoke()
+        }
+    }
 
+    /**
+     * @return list of Pair<permission: String, requireGotoSetting: Boolean>
+     */
+    suspend fun requestOrCheckPermissionStatus(
+        request: PermissionRequest,
+        checkOnly: Boolean
+    ): List<Pair<String, Boolean>> {
+        val result = if (checkOnly) request.checkStatus() else request.sendSuspend()
+        // checking
+        val missingPermissions = mutableListOf<Pair<String, Boolean>>()
+        for (permissionStatus in result) {
+            if (permissionStatus is PermissionStatus.Granted) continue
+            val requireGotoSetting = permissionStatus is PermissionStatus.Denied.Permanently
+            missingPermissions.add(permissionStatus.permission to requireGotoSetting)
+        }
+        return missingPermissions
+    }
+
+    private suspend fun notifyUser(
+        context: Context,
+        missingPermissions: List<Pair<String, Boolean>>,
+        snackBarContainer: View?,
+        retry: (() -> Unit)?
+    ) {
+        if (missingPermissions.isEmpty()) return
+
+        val msg = missingPermissions.fold("") { acc, pair -> "$acc,${pair.first}" }
+        val requireGotoSetting = missingPermissions.asSequence()
+            .map { it.second }.reduce { acc, b -> if (acc) true else b }
+
+        if (snackBarContainer != null) {
+            val snackBar = Snackbar.make(
+                snackBarContainer,
+                "${context.getString(R.string.permissions_denied)}\n${msg}",
+                Snackbar.LENGTH_INDEFINITE
+            )
+            if (requireGotoSetting) {
+                snackBar.setAction(R.string.action_settings) { navigateToAppDetailSetting(context) }
+            } else {
+                snackBar.setAction(R.string.action_grant) { retry?.invoke() }
+            }
+            snackBar.setActionTextColor(ThemeColor.accentColor(context))
+            withContext(Dispatchers.Main) { snackBar.show() }
+        } else {
+            val toast = Toast.makeText(context, R.string.permissions_denied, Toast.LENGTH_SHORT)
+            withContext(Dispatchers.Main) { toast.show() }
+        }
+    }
+
+
+    fun navigateToAppDetailSetting(context: Context) {
+        context.startActivity(
+            Intent().apply {
+                action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
+                data = Uri.fromParts("package", context.packageName, null)
+            }
+        )
+    }
 
     fun navigateToStorageSetting(context: Context) {
         val uri = Uri.parse("package:${context.packageName}")
