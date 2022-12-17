@@ -15,11 +15,9 @@ import java.lang.ref.WeakReference
 import lib.phonograph.activity.ToolbarActivity
 import player.phonograph.BuildConfig.DEBUG
 import player.phonograph.MusicServiceMsgConst
-import player.phonograph.R
 import player.phonograph.interfaces.MusicServiceEventListener
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.MusicPlayerRemote.ServiceToken
-import player.phonograph.service.MusicService
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
@@ -182,7 +180,7 @@ abstract class AbsMusicServiceActivity : ToolbarActivity(), MusicServiceEventLis
         )
     }
 
-    override fun getPermissionsToRequest(): Array<String>? {
+    override fun runtimePermissionsToRequest(): Array<String>? {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             arrayOf(
                 Manifest.permission.READ_MEDIA_AUDIO,
@@ -195,8 +193,4 @@ abstract class AbsMusicServiceActivity : ToolbarActivity(), MusicServiceEventLis
             )
     }
 
-    override val permissionDeniedMessage: String
-        get() = getString(
-            R.string.permission_external_storage_denied
-        )
 }
