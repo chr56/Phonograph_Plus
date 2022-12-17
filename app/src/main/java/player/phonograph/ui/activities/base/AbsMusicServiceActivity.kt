@@ -171,15 +171,6 @@ abstract class AbsMusicServiceActivity : ToolbarActivity(), MusicServiceEventLis
         }
     }
 
-    override fun missingPermissionCallback() {
-        super.missingPermissionCallback()
-        sendBroadcast(
-            Intent(MusicServiceMsgConst.MEDIA_STORE_CHANGED).apply {
-                putExtra("from_permissions_changed", true) // just in case we need to know this at some point
-            }
-        )
-    }
-
     override fun runtimePermissionsToRequest(): Array<String>? {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             arrayOf(

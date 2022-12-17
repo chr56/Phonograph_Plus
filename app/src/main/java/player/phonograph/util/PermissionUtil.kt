@@ -10,6 +10,7 @@ import com.fondesa.kpermissions.extension.permissionsBuilder
 import com.fondesa.kpermissions.request.PermissionRequest
 import com.google.android.material.snackbar.Snackbar
 import mt.pref.ThemeColor
+import player.phonograph.App
 import player.phonograph.MusicServiceMsgConst
 import player.phonograph.R
 import androidx.fragment.app.Fragment
@@ -45,81 +46,11 @@ object PermissionUtil {
         return permissionsBuilder(head, *tail).build()
     }
 
-    private val scope = CoroutineScope(Dispatchers.Unconfined)
-
-    fun requestOrCheckPermission(
-        fragmentActivity: FragmentActivity,
-        permissions: Array<String>,
-        checkOnly: Boolean,
-        snackBarContainer: View? = null,
-        callback: (() -> Unit)? = null
-    ) {
-        if (permissions.isNotEmpty()) {
-            val request = fragmentActivity.generatePermissionRequest(permissions)
-            scope.launch {
-                requestOrCheckPermission(
-                    fragmentActivity,
-                    request,
-                    checkOnly,
-                    snackBarContainer,
-                    callback
-                )
-            }
-        }
-    }
-
-    fun requestOrCheckPermission(
-        fragment: Fragment,
-        permissions: Array<String>,
-        checkOnly: Boolean,
-        snackBarContainer: View? = null,
-        callback: (() -> Unit)? = null
-    ) {
-        if (permissions.isNotEmpty()) {
-            val context = fragment.requireContext()
-            val request = fragment.generatePermissionRequest(permissions)
-            scope.launch {
-                requestOrCheckPermission(
-                    context,
-                    request,
-                    checkOnly,
-                    snackBarContainer,
-                    callback
-                )
-            }
-        }
-    }
-
-    suspend fun requestOrCheckPermission(
-        context: Context,
-        request: PermissionRequest,
-        checkOnly: Boolean,
-        snackBarContainer: View? = null,
-        callback: (() -> Unit)? = null
-    ) {
-        val result = requestOrCheckPermissionStatus(request, checkOnly)
-        if (result.isNotEmpty()) {
-            notifyUser(context, result, snackBarContainer) {
-                request.send()
-                context.sendBroadcast(Intent(MusicServiceMsgConst.MEDIA_STORE_CHANGED))
-                scope.launch {
-                    requestOrCheckPermission(
-                        context,
-                        request,
-                        true,
-                        snackBarContainer,
-                        callback
-                    )
-                }
-            }
-            callback?.invoke()
-        }
-    }
-
     /**
      * @return list of Pair<permission: String, requireGotoSetting: Boolean>
      */
     suspend fun requestOrCheckPermissionStatus(
+        context: Context,
         request: PermissionRequest,
         checkOnly: Boolean
     ): List<Pair<String, Boolean>> {
@@ -127,14 +58,17 @@ object PermissionUtil {
         // checking
         val missingPermissions = mutableListOf<Pair<String, Boolean>>()
         for (permissionStatus in result) {
-            if (permissionStatus is PermissionStatus.Granted) continue
+            if (permissionStatus is PermissionStatus.Granted) {
+                context.sendBroadcast(Intent(MusicServiceMsgConst.MEDIA_STORE_CHANGED))
+                continue
+            }
             val requireGotoSetting = permissionStatus is PermissionStatus.Denied.Permanently
             missingPermissions.add(permissionStatus.permission to requireGotoSetting)
         }
         return missingPermissions
     }
 
-    private suspend fun notifyUser(
+    suspend fun notifyUser(
         context: Context,
         missingPermissions: List<Pair<String, Boolean>>,
         snackBarContainer: View?,

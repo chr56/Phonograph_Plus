@@ -4,22 +4,10 @@
 
 package lib.phonograph.activity
 
-import com.fondesa.kpermissions.coroutines.sendSuspend
-import com.fondesa.kpermissions.extension.permissionsBuilder
-import com.fondesa.kpermissions.isGranted
-import com.fondesa.kpermissions.request.PermissionRequest
-import com.fondesa.kpermissions.shouldShowRationale
-import com.google.android.material.snackbar.Snackbar
-import player.phonograph.R
 import player.phonograph.util.PermissionUtil
-import androidx.core.app.ActivityCompat
-import android.Manifest
-import android.content.Intent
-import android.content.pm.PackageManager
-import android.net.Uri
+import player.phonograph.util.PermissionUtil.generatePermissionRequest
 import android.os.Bundle
 import android.os.PersistableBundle
-import android.provider.Settings
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -31,23 +19,29 @@ open class PermissionActivity : ThemeActivity() {
 
     protected open fun runtimePermissionsToRequest(): Array<String>? = null
 
-    private fun requestOrCheckPermission(checkOnly: Boolean) {
-        val permissions = runtimePermissionsToRequest() ?: return
-        PermissionUtil.requestOrCheckPermission(
-            this,
-            permissions,
-            checkOnly,
-            snackBarContainer,
-            ::missingPermissionCallback
-        )
+    private val scope = CoroutineScope(Dispatchers.Unconfined)
+    private fun requestOrCheckPermission(permissions: Array<String>, checkOnly: Boolean) {
+        scope.launch {
+            val result = PermissionUtil.requestOrCheckPermissionStatus(
+                this@PermissionActivity, generatePermissionRequest(permissions), checkOnly
+            )
+            if (result.isNotEmpty()) {
+                PermissionUtil.notifyUser(this@PermissionActivity, result, snackBarContainer) {
+                    requestOrCheckPermission(result.map { it.first }.toTypedArray(), false)
+                }
+                missingPermissionCallback()
+            }
+        }
     }
 
     protected open fun requestPermissions() {
-        requestOrCheckPermission(checkOnly = false)
+        val permissions = runtimePermissionsToRequest() ?: return
+        requestOrCheckPermission(permissions = permissions, checkOnly = false)
     }
 
     protected open fun checkPermissions() {
-        requestOrCheckPermission(checkOnly = true)
+        val permissions = runtimePermissionsToRequest() ?: return
+        requestOrCheckPermission(permissions = permissions, checkOnly = true)
     }
 
     override fun onPostCreate(savedInstanceState: Bundle?, persistentState: PersistableBundle?) {
