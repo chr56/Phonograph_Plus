@@ -8,6 +8,7 @@ import org.jaudiotagger.audio.AudioFileIO
 import org.jaudiotagger.audio.exceptions.CannotReadException
 import org.jaudiotagger.logging.ErrorMessage
 import org.jaudiotagger.tag.FieldKey
+import player.phonograph.App
 import player.phonograph.model.Song
 import player.phonograph.model.lyrics.AbsLyrics
 import player.phonograph.model.lyrics.LrcLyrics
@@ -18,6 +19,7 @@ import player.phonograph.notification.ErrorNotification.postErrorNotification
 import player.phonograph.settings.Setting
 import player.phonograph.util.FileUtil
 import player.phonograph.util.Util.debug
+import player.phonograph.util.permissions.hasStorageWritePermission
 import android.util.Log
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -35,6 +37,8 @@ object LyricsLoader {
             }
             return LyricsList()
         }
+
+        if (!hasStorageWritePermission(App.instance)) return LyricsList()
 
         // embedded
         val embedded = backgroundCoroutine.async(Dispatchers.IO) {
