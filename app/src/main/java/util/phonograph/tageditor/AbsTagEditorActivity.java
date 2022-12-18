@@ -9,11 +9,14 @@ import static mt.tint.ActivityColor.setTaskDescriptionColor;
 import static mt.util.color.ColorUtil.withAlpha;
 import static mt.util.color.ToolbarColor.toolbarTitleColor;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.SearchManager;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
@@ -32,10 +35,12 @@ import com.afollestad.materialdialogs.actions.DialogActionExtKt;
 import com.afollestad.materialdialogs.list.DialogListExtKt;
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
 
 import org.jaudiotagger.tag.FieldKey;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -47,6 +52,7 @@ import mt.tint.viewtint.Auto;
 import player.phonograph.R;
 import player.phonograph.misc.SimpleObservableScrollViewCallbacks;
 import player.phonograph.util.Util;
+import player.phonograph.util.permissions.NavigationKt;
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
@@ -120,6 +126,46 @@ public abstract class AbsTagEditorActivity extends ToolbarActivity {
         getSupportActionBar().setTitle(null);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         ActivityColor.setActivityToolbarColorAuto(this, toolbar);
+        askForPermission();
+    }
+
+    private void askForPermission() {
+        String[] permissions;
+        boolean requireGotoSetting = false;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            permissions = new String[]{Manifest.permission.READ_MEDIA_AUDIO};
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            permissions = new String[]{
+                    Manifest.permission.READ_EXTERNAL_STORAGE
+            };
+            requireGotoSetting = true;
+        } else {
+            permissions = new String[]{
+                    Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE
+            };
+        }
+
+        requestPermissionImpl(permissions, (Map<String, Boolean> map) -> {
+            Collection<Boolean> values = map.values();
+            boolean success = true;
+            for (Boolean v : values) {
+                if (!v) {
+                    success = false;
+                    break;
+                }
+            }
+            if (!success) {
+                askForPermission();
+            }
+            return Unit.INSTANCE;
+        });
+
+        if (requireGotoSetting && checkSelfPermission(Manifest.permission.MANAGE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            Snackbar.make(getSnackBarContainer(), R.string.permission_external_storage_denied, Snackbar.LENGTH_INDEFINITE)
+                    .setAction(R.string.grant_permission, v -> {
+                        NavigationKt.navigateToStorageSetting(this);
+                    }).setActionTextColor(getPrimaryColor()).show();
+        }
     }
 
     private void setUpViews() {
