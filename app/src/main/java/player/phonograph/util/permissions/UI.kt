@@ -7,39 +7,39 @@ package player.phonograph.util.permissions
 import com.google.android.material.snackbar.Snackbar
 import mt.pref.ThemeColor
 import player.phonograph.R
-import android.content.Context
+import androidx.annotation.MainThread
+import androidx.fragment.app.FragmentActivity
 import android.view.View
 import android.widget.Toast
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 
-suspend fun notifyUser(
-    context: Context,
-    missingPermissions: List<Pair<String, Boolean>>,
+@MainThread
+fun notifyPermissionUser(
+    context: FragmentActivity,
+    missingPermissions: List<Permission>,
     snackBarContainer: View?,
-    retry: (() -> Unit)?
+    retryCallback: (() -> Unit)?
 ) {
     if (missingPermissions.isEmpty()) return
 
-    val msg = missingPermissions.fold("") { acc, pair -> "$acc,${pair.first}" }
-    val requireGotoSetting = missingPermissions.asSequence()
-        .map { it.second }.reduce { acc, b -> if (acc) true else b }
+    val message = StringBuffer("${context.getString(R.string.permissions_denied)}:")
+    var requireGotoSetting = false
+    for (permission in missingPermissions) {
+        message.append(permission.permissionName(context))
+        if (permission is NonGrantedPermission.PermanentlyDeniedPermission)
+            requireGotoSetting = true
+    }
 
     if (snackBarContainer != null) {
-        val snackBar = Snackbar.make(
-            snackBarContainer,
-            "${context.getString(R.string.permissions_denied)}\n${msg}",
-            Snackbar.LENGTH_INDEFINITE
-        )
+        val snackBar = Snackbar.make(snackBarContainer, message, Snackbar.LENGTH_INDEFINITE)
         if (requireGotoSetting) {
             snackBar.setAction(R.string.action_settings) { navigateToAppDetailSetting(context) }
         } else {
-            snackBar.setAction(R.string.action_grant) { retry?.invoke() }
+            snackBar.setAction(R.string.action_grant) { retryCallback?.invoke() }
         }
         snackBar.setActionTextColor(ThemeColor.accentColor(context))
-        withContext(Dispatchers.Main) { snackBar.show() }
+        snackBar.show()
     } else {
-        val toast = Toast.makeText(context, R.string.permissions_denied, Toast.LENGTH_SHORT)
-        withContext(Dispatchers.Main) { toast.show() }
+        val toast = Toast.makeText(context, message, Toast.LENGTH_SHORT)
+        toast.show()
     }
 }
