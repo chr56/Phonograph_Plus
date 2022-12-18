@@ -1,17 +1,32 @@
 package player.phonograph.ui.dialogs
 
 import lib.phonograph.dialog.alertDialog
-import android.Manifest
+import mt.pref.ThemeColor.accentColor
+import player.phonograph.R
+import player.phonograph.mediastore.DeleteSongUtil
+import player.phonograph.misc.LyricsLoader
+import player.phonograph.model.Song
+import player.phonograph.ui.components.ViewComponent
+import player.phonograph.ui.components.viewcreater.*
+import player.phonograph.util.CoroutineUtil
+import player.phonograph.util.StringUtil
+import player.phonograph.util.Util
+import player.phonograph.util.permissions.GrantedPermission
+import player.phonograph.util.permissions.checkPermission
+import player.phonograph.util.permissions.navigateToStorageSetting
+import androidx.core.view.setMargins
+import androidx.fragment.app.DialogFragment
+import android.Manifest.permission.MANAGE_EXTERNAL_STORAGE
+import android.Manifest.permission.WRITE_EXTERNAL_STORAGE
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
+import android.os.Build.VERSION.SDK_INT
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.provider.MediaStore
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,26 +35,9 @@ import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.FrameLayout
 import android.widget.TextView
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
-import androidx.core.view.setMargins
-import androidx.fragment.app.DialogFragment
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import mt.pref.ThemeColor.accentColor
-import player.phonograph.R
-import player.phonograph.mediastore.DeleteSongUtil
-import player.phonograph.misc.LyricsLoader
-import player.phonograph.model.Song
-import player.phonograph.ui.components.ViewComponent
-import player.phonograph.ui.components.viewcreater.*
-import player.phonograph.ui.components.viewcreater.buttonPanel
-import player.phonograph.ui.components.viewcreater.contentPanel
-import player.phonograph.ui.components.viewcreater.titlePanel
-import player.phonograph.util.CoroutineUtil
-import player.phonograph.util.permissions.navigateToStorageSetting
-import player.phonograph.util.StringUtil
-import player.phonograph.util.Util
 import java.io.File
 
 /**
@@ -55,21 +53,25 @@ class DeleteSongsDialog : DialogFragment() {
 
     private lateinit var window: DeleteSongsWindow
 
+    private fun permissionCheck() {
+        val context = requireContext()
+        hasPermission = when {
+            SDK_INT >= Build.VERSION_CODES.TIRAMISU -> false
+            // extra permission check on R(11) and S(11)
+            SDK_INT >= Build.VERSION_CODES.R && SDK_INT < Build.VERSION_CODES.TIRAMISU -> {
+                checkPermission(context, MANAGE_EXTERNAL_STORAGE) is GrantedPermission
+            }
+            else -> {
+                checkPermission(context, WRITE_EXTERNAL_STORAGE) is GrantedPermission
+            }
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         songs = requireArguments().getParcelableArrayList("songs")!!
-        // extra permission check on R(11)
-        hasPermission =
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R &&
-                requireActivity().checkSelfPermission(Manifest.permission.MANAGE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
-            ) {
-                Log.i(TAG, "No MANAGE_EXTERNAL_STORAGE Permission")
-                false
-            } else {
-                true
-            }
+        permissionCheck()
         model = DeleteSongsModel(songs, hasPermission)
-
     }
 
     override fun onCreateView(
@@ -158,10 +160,12 @@ class DeleteSongsDialog : DialogFragment() {
                 val fails = DeleteSongUtil.deleteSongs(activity, model.songs)
 
                 val msg: String =
-                    activity.resources.getQuantityString(R.plurals.msg_deletion_result,
-                                                         total,
-                                                         total - fails.size,
-                                                         total)
+                    activity.resources.getQuantityString(
+                        R.plurals.msg_deletion_result,
+                        total,
+                        total - fails.size,
+                        total
+                    )
 
                 if (fails.isNotEmpty()) Handler(Looper.getMainLooper()).post {
                     // handle fail , report and try again
@@ -216,7 +220,7 @@ class DeleteSongsDialog : DialogFragment() {
                 positiveButton(android.R.string.ok) { dialog ->
                     dialog.dismiss()
                 }
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                if (SDK_INT >= Build.VERSION_CODES.R) {
                     negativeButton(R.string.retry) {
                         val uris = failList.map { song ->
                             Uri.withAppendedPath(
@@ -250,8 +254,10 @@ class DeleteSongsDialog : DialogFragment() {
     companion object {
         private const val TAG = "DeleteSongsDialog"
         private val coroutineScope =
-            CoroutineScope(Dispatchers.IO + CoroutineUtil.createDefaultExceptionHandler(TAG,
-                                                                                        "Fail!"))
+            CoroutineScope(
+                Dispatchers.IO +
+                        CoroutineUtil.createDefaultExceptionHandler(TAG, "Fail!")
+            )
 
         fun create(songs: ArrayList<Song>): DeleteSongsDialog =
             DeleteSongsDialog().apply {
