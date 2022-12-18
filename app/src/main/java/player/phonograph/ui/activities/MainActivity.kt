@@ -40,10 +40,15 @@ import player.phonograph.util.ImageUtil.getTintedDrawable
 import player.phonograph.util.PhonographColorUtil.nightMode
 import player.phonograph.util.UpdateUtil
 import player.phonograph.util.Util.debug
+import player.phonograph.util.permissions.NonGrantedPermission
+import player.phonograph.util.permissions.Permission
 import player.phonograph.util.preferences.HomeTabConfig
 import player.phonograph.util.preferences.StyleConfig
+import androidx.annotation.RequiresApi
 import androidx.drawerlayout.widget.DrawerLayout
 import android.Manifest.permission.POST_NOTIFICATIONS
+import android.Manifest.permission.READ_EXTERNAL_STORAGE
+import android.Manifest.permission.READ_MEDIA_AUDIO
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
@@ -72,8 +77,6 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
     private lateinit var currentFragment: MainActivityFragmentCallbacks
     private var navigationDrawerHeader: View? = null
 
-    private var blockRequestPermissions = false
-
     private lateinit var safLauncher: SafLauncher
     override fun getSafLauncher(): SafLauncher = safLauncher
 
@@ -83,6 +86,7 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
         safLauncher = SafLauncher(activityResultRegistry)
         lifecycle.addObserver(safLauncher)
 
+        showIntro()
         currentFragment =
             if (savedInstanceState == null) {
                 HomeFragment.newInstance().apply {
@@ -96,7 +100,6 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
 
         setUpDrawer()
 
-        showIntro()
         Handler(Looper.getMainLooper()).postDelayed(
             {
                 val showUpgradeDialog = intent.getBooleanExtra(UPGRADABLE, false)
@@ -142,18 +145,25 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == APP_INTRO_REQUEST) {
-            blockRequestPermissions = false
             ChangelogDialog.create().show(supportFragmentManager, "CHANGE_LOG_DIALOG")
-            requestPermissions()
+            val permissions = if (Build.VERSION.SDK_INT >= TIRAMISU) arrayOf(
+                POST_NOTIFICATIONS,
+                READ_MEDIA_AUDIO
+            ) else arrayOf(READ_EXTERNAL_STORAGE)
+            askForPermission(permissions)
         }
     }
 
-    override fun requestPermissions() {
-        if (!blockRequestPermissions) super.requestPermissions()
+    private fun askForPermission(list: Array<String>) {
+        notifyPermissionDeniedUser(list.map { NonGrantedPermission(it) }) {
+            requestPermissionImpl(list) { map ->
+                if (!map.values.reduce { acc, b -> if (!acc) false else b })
+                    askForPermission(list)
+            }
+        }
     }
 
-    override fun runtimePermissionsToRequest(): Array<String>? =
-        if (Build.VERSION.SDK_INT >= TIRAMISU) arrayOf(POST_NOTIFICATIONS) else null
+    override fun requestPermissions() {} // not allow
 
     private fun inflateDrawerMenu(menu: Menu) {
         attach(this, menu) {
@@ -390,15 +400,12 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
             Setting.instance.introShown = true
             setChangelogRead(this)
 
-            blockRequestPermissions = true
+            Handler(Looper.getMainLooper()).post {
+                startActivityForResult(
+                    Intent(this@MainActivity, AppIntroActivity::class.java), APP_INTRO_REQUEST
+                )
+            }
 
-            Handler(Looper.getMainLooper()).postDelayed(
-                {
-                    startActivityForResult(
-                        Intent(this@MainActivity, AppIntroActivity::class.java), APP_INTRO_REQUEST
-                    )
-                }, 50
-            )
         }
     }
 

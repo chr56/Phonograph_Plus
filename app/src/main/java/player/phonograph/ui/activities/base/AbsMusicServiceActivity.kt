@@ -13,7 +13,6 @@ import player.phonograph.util.Util.debug
 import player.phonograph.util.permissions.NonGrantedPermission
 import player.phonograph.util.permissions.Permission
 import player.phonograph.util.permissions.checkPermission
-import player.phonograph.util.permissions.notifyPermissionUser
 import android.Manifest.permission.READ_EXTERNAL_STORAGE
 import android.Manifest.permission.READ_MEDIA_AUDIO
 import android.content.BroadcastReceiver
@@ -27,7 +26,6 @@ import android.os.Build
 import android.os.Build.VERSION_CODES.TIRAMISU
 import android.os.Bundle
 import android.os.IBinder
-import android.os.PersistableBundle
 import android.util.Log
 import java.lang.System.currentTimeMillis
 import java.lang.ref.WeakReference
@@ -83,7 +81,7 @@ abstract class AbsMusicServiceActivity : ToolbarActivity(), MusicServiceEventLis
     override fun onStart() {
         super.onStart()
         if (permission is NonGrantedPermission) {
-            notifyPermissionUser(this, listOf(permission), snackBarContainer) {
+            notifyPermissionDeniedUser(listOf(permission)) {
                 requestPermissionImpl(arrayOf(permission.permissionId)) { result ->
                     if (result.entries.first().value)
                         sendBroadcast(Intent(MusicServiceMsgConst.MEDIA_STORE_CHANGED))

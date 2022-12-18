@@ -11,7 +11,7 @@ import player.phonograph.util.permissions.PermissionDelegate
 import player.phonograph.util.permissions.RequestCallback
 import player.phonograph.util.permissions.checkPermissions
 import player.phonograph.util.permissions.convertPermissionsResult
-import player.phonograph.util.permissions.notifyPermissionUser
+import player.phonograph.util.permissions.notifyUser
 import android.os.Bundle
 import android.os.PersistableBundle
 
@@ -28,6 +28,11 @@ open class PermissionActivity : ThemeActivity() {
     protected fun requestPermissionImpl(permissions: Array<String>, callback: RequestCallback) {
         permissionDelegate.grant(permissions, callback)
     }
+
+    protected fun notifyPermissionDeniedUser(
+        missingPermissions: List<Permission>,
+        retryCallback: (() -> Unit)?
+    ) = notifyUser(this, missingPermissions, snackBarContainer, retryCallback)
 
     protected open fun runtimePermissionsToRequest(): Array<String>? = null
 
@@ -48,14 +53,9 @@ open class PermissionActivity : ThemeActivity() {
         val allGranted = result.fold(true) { acc, i -> if (!acc) false else i is GrantedPermission }
         if (!allGranted) {
             val other = result.filterIsInstance<NonGrantedPermission>()
-            notifyPermissionUser(this, other, snackBarContainer, ::requestPermissions)
+            notifyPermissionDeniedUser(other, ::requestPermissions)
         }
         return allGranted
-    }
-
-    override fun onPostCreate(savedInstanceState: Bundle?, persistentState: PersistableBundle?) {
-        super.onPostCreate(savedInstanceState, persistentState)
-        requestPermissions()
     }
 
     override fun onResume() {

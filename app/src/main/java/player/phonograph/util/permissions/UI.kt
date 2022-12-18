@@ -15,7 +15,7 @@ import android.view.View
 import android.widget.Toast
 
 @MainThread
-fun notifyPermissionUser(
+fun notifyUser(
     context: FragmentActivity,
     missingPermissions: List<Permission>,
     snackBarContainer: View?,
