@@ -23,10 +23,10 @@ fun notifyUser(
 ) {
     if (missingPermissions.isEmpty()) return
 
-    val message = StringBuffer("${context.getString(R.string.permissions_denied)}:")
+    val message = StringBuffer(context.getString(R.string.permissions_denied)).append('\n')
     var requireGotoSetting = false
     for (permission in missingPermissions) {
-        message.append(permission.permissionName(context))
+        message.append(permission.permissionName(context)).append('\n')
         if (permission is NonGrantedPermission.PermanentlyDeniedPermission)
             requireGotoSetting = true
     }
