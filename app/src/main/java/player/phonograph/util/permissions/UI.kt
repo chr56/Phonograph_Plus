@@ -9,6 +9,8 @@ import mt.pref.ThemeColor
 import player.phonograph.R
 import androidx.annotation.MainThread
 import androidx.fragment.app.FragmentActivity
+import android.os.Handler
+import android.os.Looper
 import android.view.View
 import android.widget.Toast
 
@@ -37,9 +39,12 @@ fun notifyPermissionUser(
             snackBar.setAction(R.string.action_grant) { retryCallback?.invoke() }
         }
         snackBar.setActionTextColor(ThemeColor.accentColor(context))
-        snackBar.show()
+        mainThread { snackBar.show() }
     } else {
         val toast = Toast.makeText(context, message, Toast.LENGTH_SHORT)
-        toast.show()
+        mainThread { toast.show() }
     }
 }
+
+private inline fun mainThread(crossinline block: () -> Unit) =
+    Handler(Looper.getMainLooper()).post { block() }

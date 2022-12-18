@@ -25,7 +25,7 @@ open class PermissionActivity : ThemeActivity() {
         super.onCreate(savedInstanceState)
     }
 
-    fun requestPermission(permissions: Array<String>, callback: RequestCallback) {
+    protected fun requestPermissionImpl(permissions: Array<String>, callback: RequestCallback) {
         permissionDelegate.grant(permissions, callback)
     }
 
@@ -33,7 +33,7 @@ open class PermissionActivity : ThemeActivity() {
 
     protected open fun requestPermissions() {
         val permissions = runtimePermissionsToRequest() ?: return
-        requestPermission(permissions) { result ->
+        requestPermissionImpl(permissions) { result ->
             notifyResult(convertPermissionsResult(result))
         }
     }

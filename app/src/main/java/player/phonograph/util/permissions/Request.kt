@@ -4,16 +4,15 @@
 
 package player.phonograph.util.permissions
 
-import lib.phonograph.activity.PermissionActivity
 import android.util.Log
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.suspendCancellableCoroutine
 
 
 @OptIn(ExperimentalCoroutinesApi::class)
-suspend fun requestPermission(activity: PermissionActivity, permissionId: String): Permission =
+suspend fun requestPermission(delegate: PermissionDelegate, permissionId: String): Permission =
     suspendCancellableCoroutine { continuation ->
-        activity.requestPermission(arrayOf(permissionId)) {
+        delegate.grant(arrayOf(permissionId)) {
             val (id, result) = it.entries.first()
             val ret = if (result) {
                 GrantedPermission(id)
@@ -27,9 +26,9 @@ suspend fun requestPermission(activity: PermissionActivity, permissionId: String
     }
 
 @OptIn(ExperimentalCoroutinesApi::class)
-suspend fun requestPermissions(activity: PermissionActivity, permissionIds: Array<String>): List<Permission> =
+suspend fun requestPermissions(delegate: PermissionDelegate, permissionIds: Array<String>): List<Permission> =
     suspendCancellableCoroutine { continuation ->
-        activity.requestPermission(permissionIds) {
+        delegate.grant(permissionIds) {
             val ret = it.entries.map { (id, result) ->
                 if (result) {
                     GrantedPermission(id)

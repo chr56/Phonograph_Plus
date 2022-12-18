@@ -140,7 +140,7 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == APP_INTRO_REQUEST) {
             blockRequestPermissions = false
-            checkPermissions()
+            requestPermissions()
             ChangelogDialog.create().show(supportFragmentManager, "CHANGE_LOG_DIALOG")
         }
     }

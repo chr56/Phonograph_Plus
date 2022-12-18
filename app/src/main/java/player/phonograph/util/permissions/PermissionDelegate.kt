@@ -16,7 +16,7 @@ typealias RequestCallback = (Map<String, Boolean>) -> Unit
 
 private typealias Request = Pair<Array<String>, RequestCallback>
 
-internal class PermissionDelegate {
+class PermissionDelegate {
     private lateinit var resultLauncher: ActivityResultLauncher<Array<String>>
     private var callback: RequestCallback? = null
 
