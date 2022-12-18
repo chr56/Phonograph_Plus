@@ -4,6 +4,8 @@
 
 package lib.phonograph.activity
 
+import player.phonograph.util.permissions.PermissionDelegate
+import player.phonograph.util.permissions.RequestCallback
 import player.phonograph.util.permissions.generatePermissionRequest
 import player.phonograph.util.permissions.notifyUser
 import player.phonograph.util.permissions.requestOrCheckPermissionStatus
@@ -17,6 +19,14 @@ import kotlinx.coroutines.launch
  * @author Karim Abou Zeid (kabouzeid)
  */
 open class PermissionActivity : ThemeActivity() {
+    private val permissionDelegate: PermissionDelegate = PermissionDelegate()
+    override fun onCreate(savedInstanceState: Bundle?) {
+        permissionDelegate.attach(this)
+        super.onCreate(savedInstanceState)
+    }
+    fun requestPermission(permissions: Array<String>, callback: RequestCallback) {
+        permissionDelegate.grant(permissions, callback)
+    }
 
     protected open fun runtimePermissionsToRequest(): Array<String>? = null
 
