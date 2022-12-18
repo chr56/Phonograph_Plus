@@ -37,7 +37,7 @@ import player.phonograph.ui.components.viewcreater.buttonPanel
 import player.phonograph.ui.components.viewcreater.contentPanel
 import player.phonograph.ui.components.viewcreater.titlePanel
 import player.phonograph.util.CoroutineUtil
-import player.phonograph.util.PermissionUtil.navigateToStorageSetting
+import player.phonograph.util.permissions.navigateToStorageSetting
 import player.phonograph.util.StringUtil
 import player.phonograph.util.Util
 import java.io.File

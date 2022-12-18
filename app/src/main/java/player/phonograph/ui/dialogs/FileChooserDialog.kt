@@ -22,7 +22,7 @@ import player.phonograph.ui.components.explorer.FilesChooserExplorer
 import player.phonograph.ui.components.explorer.FilesChooserViewModel
 import player.phonograph.ui.components.viewcreater.buttonPanel
 import player.phonograph.ui.components.viewcreater.contentPanel
-import player.phonograph.util.PermissionUtil.navigateToStorageSetting
+import player.phonograph.util.permissions.navigateToStorageSetting
 
 abstract class FileChooserDialog : LargeDialog() {
 

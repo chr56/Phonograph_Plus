@@ -4,8 +4,9 @@
 
 package lib.phonograph.activity
 
-import player.phonograph.util.PermissionUtil
-import player.phonograph.util.PermissionUtil.generatePermissionRequest
+import player.phonograph.util.permissions.generatePermissionRequest
+import player.phonograph.util.permissions.notifyUser
+import player.phonograph.util.permissions.requestOrCheckPermissionStatus
 import android.os.Bundle
 import android.os.PersistableBundle
 import kotlinx.coroutines.CoroutineScope
@@ -22,11 +23,11 @@ open class PermissionActivity : ThemeActivity() {
     private val scope = CoroutineScope(Dispatchers.Unconfined)
     private fun requestOrCheckPermission(permissions: Array<String>, checkOnly: Boolean) {
         scope.launch {
-            val result = PermissionUtil.requestOrCheckPermissionStatus(
+            val result = requestOrCheckPermissionStatus(
                 this@PermissionActivity, generatePermissionRequest(permissions), checkOnly
             )
             if (result.isNotEmpty()) {
-                PermissionUtil.notifyUser(this@PermissionActivity, result, snackBarContainer) {
+                notifyUser(this@PermissionActivity, result, snackBarContainer) {
                     requestOrCheckPermission(result.map { it.first }.toTypedArray(), false)
                 }
                 missingPermissionCallback()
