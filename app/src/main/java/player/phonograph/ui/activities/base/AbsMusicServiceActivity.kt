@@ -4,22 +4,33 @@
 
 package player.phonograph.ui.activities.base
 
-import android.Manifest
-import android.content.*
-import android.media.AudioManager
-import android.os.Build
-import android.os.Bundle
-import android.os.IBinder
-import android.util.Log
-import java.lang.ref.WeakReference
 import lib.phonograph.activity.ToolbarActivity
-import player.phonograph.BuildConfig.DEBUG
 import player.phonograph.MusicServiceMsgConst
-import player.phonograph.R
 import player.phonograph.interfaces.MusicServiceEventListener
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.MusicPlayerRemote.ServiceToken
-import player.phonograph.service.MusicService
+import player.phonograph.util.Util.debug
+import player.phonograph.util.permissions.NonGrantedPermission
+import player.phonograph.util.permissions.Permission
+import player.phonograph.util.permissions.checkPermission
+import player.phonograph.util.permissions.notifyPermissionUser
+import android.Manifest.permission.READ_EXTERNAL_STORAGE
+import android.Manifest.permission.READ_MEDIA_AUDIO
+import android.content.BroadcastReceiver
+import android.content.ComponentName
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
+import android.content.ServiceConnection
+import android.media.AudioManager
+import android.os.Build
+import android.os.Build.VERSION_CODES.TIRAMISU
+import android.os.Bundle
+import android.os.IBinder
+import android.os.PersistableBundle
+import android.util.Log
+import java.lang.System.currentTimeMillis
+import java.lang.ref.WeakReference
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
@@ -31,13 +42,22 @@ abstract class AbsMusicServiceActivity : ToolbarActivity(), MusicServiceEventLis
     private var musicStateReceiver: MusicStateReceiver? = null
     private var receiverRegistered = false
 
+    private lateinit var permission: Permission
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        if (DEBUG) Log.v(
-            "Metrics",
-            "${System.currentTimeMillis().mod(10000000)} AbsMusicServiceActivity start Music Service"
+
+        permission = checkPermission(
+            this, if (Build.VERSION.SDK_INT >= TIRAMISU) READ_MEDIA_AUDIO else READ_EXTERNAL_STORAGE
         )
+
+        debug {
+            Log.v(
+                "Metrics",
+                "${currentTimeMillis().mod(10000000)} AbsMusicServiceActivity start Music Service"
+            )
+        }
         serviceToken =
             MusicPlayerRemote.bindToService(
                 this,
@@ -51,11 +71,25 @@ abstract class AbsMusicServiceActivity : ToolbarActivity(), MusicServiceEventLis
                     }
                 }
             )
-        if (DEBUG) Log.v(
-            "Metrics",
-            "${System.currentTimeMillis().mod(10000000)} AbsMusicServiceActivity Music Service is started"
-        )
+        debug {
+            Log.v(
+                "Metrics",
+                "${currentTimeMillis().mod(10000000)} AbsMusicServiceActivity Music Service is started"
+            )
+        }
         volumeControlStream = AudioManager.STREAM_MUSIC
+    }
+
+    override fun onStart() {
+        super.onStart()
+        if (permission is NonGrantedPermission) {
+            notifyPermissionUser(this, listOf(permission), snackBarContainer) {
+                requestPermissionImpl(arrayOf(permission.permissionId)) { result ->
+                    if (result.entries.first().value)
+                        sendBroadcast(Intent(MusicServiceMsgConst.MEDIA_STORE_CHANGED))
+                }
+            }
+        }
     }
 
     override fun onDestroy() {
@@ -162,41 +196,15 @@ abstract class AbsMusicServiceActivity : ToolbarActivity(), MusicServiceEventLis
             val action = intent.action
             reference.get()?.also { activity ->
                 when (action) {
-                    MusicServiceMsgConst.META_CHANGED -> activity.onPlayingMetaChanged()
-                    MusicServiceMsgConst.QUEUE_CHANGED -> activity.onQueueChanged()
-                    MusicServiceMsgConst.PLAY_STATE_CHANGED -> activity.onPlayStateChanged()
-                    MusicServiceMsgConst.REPEAT_MODE_CHANGED -> activity.onRepeatModeChanged()
+                    MusicServiceMsgConst.META_CHANGED         -> activity.onPlayingMetaChanged()
+                    MusicServiceMsgConst.QUEUE_CHANGED        -> activity.onQueueChanged()
+                    MusicServiceMsgConst.PLAY_STATE_CHANGED   -> activity.onPlayStateChanged()
+                    MusicServiceMsgConst.REPEAT_MODE_CHANGED  -> activity.onRepeatModeChanged()
                     MusicServiceMsgConst.SHUFFLE_MODE_CHANGED -> activity.onShuffleModeChanged()
-                    MusicServiceMsgConst.MEDIA_STORE_CHANGED -> activity.onMediaStoreChanged()
+                    MusicServiceMsgConst.MEDIA_STORE_CHANGED  -> activity.onMediaStoreChanged()
                 }
             }
         }
     }
 
-    override fun missingPermissionCallback() {
-        super.missingPermissionCallback()
-        sendBroadcast(
-            Intent(MusicServiceMsgConst.MEDIA_STORE_CHANGED).apply {
-                putExtra("from_permissions_changed", true) // just in case we need to know this at some point
-            }
-        )
-    }
-
-    override fun getPermissionsToRequest(): Array<String>? {
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            arrayOf(
-                Manifest.permission.READ_MEDIA_AUDIO,
-                Manifest.permission.POST_NOTIFICATIONS
-            )
-        } else
-            arrayOf(
-                Manifest.permission.READ_EXTERNAL_STORAGE,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE
-            )
-    }
-
-    override val permissionDeniedMessage: String
-        get() = getString(
-            R.string.permission_external_storage_denied
-        )
 }

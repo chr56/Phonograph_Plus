@@ -43,9 +43,12 @@ import player.phonograph.util.Util.debug
 import player.phonograph.util.preferences.HomeTabConfig
 import player.phonograph.util.preferences.StyleConfig
 import androidx.drawerlayout.widget.DrawerLayout
+import android.Manifest.permission.POST_NOTIFICATIONS
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
+import android.os.Build
+import android.os.Build.VERSION_CODES.TIRAMISU
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -140,16 +143,17 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == APP_INTRO_REQUEST) {
             blockRequestPermissions = false
-            if (!hasPermissions) {
-                requestPermissions()
-            }
             ChangelogDialog.create().show(supportFragmentManager, "CHANGE_LOG_DIALOG")
+            requestPermissions()
         }
     }
 
     override fun requestPermissions() {
         if (!blockRequestPermissions) super.requestPermissions()
     }
+
+    override fun runtimePermissionsToRequest(): Array<String>? =
+        if (Build.VERSION.SDK_INT >= TIRAMISU) arrayOf(POST_NOTIFICATIONS) else null
 
     private fun inflateDrawerMenu(menu: Menu) {
         attach(this, menu) {

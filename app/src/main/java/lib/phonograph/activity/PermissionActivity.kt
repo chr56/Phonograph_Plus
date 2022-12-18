@@ -4,114 +4,64 @@
 
 package lib.phonograph.activity
 
-import android.Manifest
-import android.content.Intent
-import android.content.pm.PackageManager
-import android.net.Uri
+import player.phonograph.util.permissions.GrantedPermission
+import player.phonograph.util.permissions.NonGrantedPermission
+import player.phonograph.util.permissions.Permission
+import player.phonograph.util.permissions.PermissionDelegate
+import player.phonograph.util.permissions.RequestCallback
+import player.phonograph.util.permissions.checkPermissions
+import player.phonograph.util.permissions.convertPermissionsResult
+import player.phonograph.util.permissions.notifyPermissionUser
 import android.os.Bundle
-import android.provider.Settings
-import androidx.core.app.ActivityCompat
-import com.google.android.material.snackbar.Snackbar
-import mt.pref.ThemeColor.accentColor
-import player.phonograph.R
+import android.os.PersistableBundle
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
  */
 open class PermissionActivity : ThemeActivity() {
+    private val permissionDelegate: PermissionDelegate = PermissionDelegate()
+    override fun onCreate(savedInstanceState: Bundle?) {
+        permissionDelegate.attach(this)
+        super.onCreate(savedInstanceState)
+    }
 
-    private var permissions: Array<String>? = null
-    protected open fun getPermissionsToRequest(): Array<String>? = null
+    protected fun requestPermissionImpl(permissions: Array<String>, callback: RequestCallback) {
+        permissionDelegate.grant(permissions, callback)
+    }
 
-    val hasPermissions: Boolean
-        get() {
-            permissions?.let {
-                for (permission in permissions!!) {
-                    if (checkSelfPermission(permission) != PackageManager.PERMISSION_GRANTED) {
-                        return false
-                    }
-                }
-            }
-            return true
-        }
+    protected open fun runtimePermissionsToRequest(): Array<String>? = null
 
     protected open fun requestPermissions() {
-        permissions?.let { requestPermissions(it, PERMISSION_REQUEST) }
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        permissions = getPermissionsToRequest()
-    }
-
-    override fun onPostCreate(savedInstanceState: Bundle?) {
-        super.onPostCreate(savedInstanceState)
-        if (!hasPermissions) {
-            requestPermissions()
+        val permissions = runtimePermissionsToRequest() ?: return
+        requestPermissionImpl(permissions) { result ->
+            notifyResult(convertPermissionsResult(result))
         }
+    }
+
+    protected open fun checkPermissions(): Boolean {
+        val permissions = runtimePermissionsToRequest() ?: return true
+        val result = checkPermissions(this, permissions)
+        return notifyResult(result)
+    }
+
+    private fun notifyResult(result: List<Permission>): Boolean {
+        val allGranted = result.fold(true) { acc, i -> if (!acc) false else i is GrantedPermission }
+        if (!allGranted) {
+            val other = result.filterIsInstance<NonGrantedPermission>()
+            notifyPermissionUser(this, other, snackBarContainer, ::requestPermissions)
+        }
+        return allGranted
+    }
+
+    override fun onPostCreate(savedInstanceState: Bundle?, persistentState: PersistableBundle?) {
+        super.onPostCreate(savedInstanceState, persistentState)
+        requestPermissions()
     }
 
     override fun onResume() {
         super.onResume()
-        if (!hasPermissions) {
-            missingPermissionCallback() // callback
-        }
+        checkPermissions()
     }
 
-    // todo
-    protected open fun missingPermissionCallback() { /*implemented by sub classes */ }
-
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-
-        if (requestCode == PERMISSION_REQUEST) {
-            for (grantResult in grantResults) {
-                if (grantResult != PackageManager.PERMISSION_GRANTED) {
-                    if (ActivityCompat.shouldShowRequestPermissionRationale(
-                            this@PermissionActivity,
-                            Manifest.permission.WRITE_EXTERNAL_STORAGE
-                        )
-                    ) {
-                        // User has deny from permission dialog
-                        Snackbar.make(
-                            snackBarContainer, permissionDeniedMessage,
-                            Snackbar.LENGTH_INDEFINITE
-                        )
-                            .setAction(R.string.action_grant) { requestPermissions() }
-                            .setActionTextColor(accentColor)
-                            .show()
-                    } else {
-                        // User has deny permission and checked never show permission dialog so you can redirect to Application settings page
-                        Snackbar.make(
-                            snackBarContainer, permissionDeniedMessage,
-                            Snackbar.LENGTH_INDEFINITE
-                        )
-                            .setAction(R.string.action_settings) {
-                                startActivity(
-                                    Intent().apply {
-                                        action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
-                                        data = Uri.fromParts("package", this@PermissionActivity.packageName, null)
-                                    }
-                                )
-                            }
-                            .setActionTextColor(accentColor)
-                            .show()
-                    }
-                    return
-                }
-            }
-            missingPermissionCallback()
-        }
-    }
-
-    protected open val permissionDeniedMessage: String
-        get() = getString(R.string.permissions_denied)
-
-    companion object {
-        const val PERMISSION_REQUEST = 100
-    }
+    protected open fun missingPermissionCallback() {}
 }
