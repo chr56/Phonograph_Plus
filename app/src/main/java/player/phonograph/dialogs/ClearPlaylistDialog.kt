@@ -4,17 +4,6 @@
 
 package player.phonograph.dialogs
 
-import android.Manifest
-import android.app.Activity
-import android.app.Dialog
-import android.content.Intent
-import android.content.pm.PackageManager
-import android.net.Uri
-import android.os.Build
-import android.os.Bundle
-import android.provider.Settings
-import android.util.Log
-import androidx.fragment.app.DialogFragment
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.WhichButton
 import com.afollestad.materialdialogs.actions.getActionButton
@@ -26,7 +15,16 @@ import player.phonograph.model.playlist.Playlist
 import player.phonograph.model.playlist.ResettablePlaylist
 import player.phonograph.model.playlist.SmartPlaylist
 import player.phonograph.util.StringUtil
+import player.phonograph.util.permissions.hasStorageWritePermission
 import util.phonograph.m3u.PlaylistsManager
+import androidx.fragment.app.DialogFragment
+import android.app.Activity
+import android.app.Dialog
+import android.content.Intent
+import android.net.Uri
+import android.os.Build
+import android.os.Bundle
+import android.provider.Settings
 
 class ClearPlaylistDialog : DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -47,15 +45,7 @@ class ClearPlaylistDialog : DialogFragment() {
         }
 
         // extra permission check on R(11)
-        val hasPermission =
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R &&
-                requireActivity().checkSelfPermission(Manifest.permission.MANAGE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
-            ) {
-                Log.i(TAG, "No MANAGE_EXTERNAL_STORAGE Permission")
-                false
-            } else {
-                true
-            }
+        val hasPermission = hasStorageWritePermission(requireContext())
 
         // generate msg
         val msg = StringUtil.buildDeletionMessage(

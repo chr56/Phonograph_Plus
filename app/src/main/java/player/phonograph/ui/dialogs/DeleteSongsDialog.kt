@@ -11,13 +11,10 @@ import player.phonograph.ui.components.viewcreater.*
 import player.phonograph.util.CoroutineUtil
 import player.phonograph.util.StringUtil
 import player.phonograph.util.Util
-import player.phonograph.util.permissions.GrantedPermission
-import player.phonograph.util.permissions.checkPermission
+import player.phonograph.util.permissions.hasStorageWritePermission
 import player.phonograph.util.permissions.navigateToStorageSetting
 import androidx.core.view.setMargins
 import androidx.fragment.app.DialogFragment
-import android.Manifest.permission.MANAGE_EXTERNAL_STORAGE
-import android.Manifest.permission.WRITE_EXTERNAL_STORAGE
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.net.Uri
@@ -53,24 +50,10 @@ class DeleteSongsDialog : DialogFragment() {
 
     private lateinit var window: DeleteSongsWindow
 
-    private fun permissionCheck() {
-        val context = requireContext()
-        hasPermission = when {
-            SDK_INT >= Build.VERSION_CODES.TIRAMISU -> false
-            // extra permission check on R(11) and S(11)
-            SDK_INT >= Build.VERSION_CODES.R && SDK_INT < Build.VERSION_CODES.TIRAMISU -> {
-                checkPermission(context, MANAGE_EXTERNAL_STORAGE) is GrantedPermission
-            }
-            else -> {
-                checkPermission(context, WRITE_EXTERNAL_STORAGE) is GrantedPermission
-            }
-        }
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         songs = requireArguments().getParcelableArrayList("songs")!!
-        permissionCheck()
+        hasPermission = hasStorageWritePermission(requireContext())
         model = DeleteSongsModel(songs, hasPermission)
     }
 

@@ -13,6 +13,7 @@ import player.phonograph.util.Util.debug
 import player.phonograph.util.permissions.NonGrantedPermission
 import player.phonograph.util.permissions.Permission
 import player.phonograph.util.permissions.checkPermission
+import player.phonograph.util.permissions.checkStorageReadPermission
 import android.Manifest.permission.READ_EXTERNAL_STORAGE
 import android.Manifest.permission.READ_MEDIA_AUDIO
 import android.content.BroadcastReceiver
@@ -46,9 +47,7 @@ abstract class AbsMusicServiceActivity : ToolbarActivity(), MusicServiceEventLis
         super.onCreate(savedInstanceState)
 
 
-        permission = checkPermission(
-            this, if (Build.VERSION.SDK_INT >= TIRAMISU) READ_MEDIA_AUDIO else READ_EXTERNAL_STORAGE
-        )
+        permission = checkStorageReadPermission(this)
 
         debug {
             Log.v(
