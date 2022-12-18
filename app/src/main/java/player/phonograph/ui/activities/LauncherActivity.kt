@@ -7,6 +7,7 @@ package player.phonograph.ui.activities
 import lib.phonograph.activity.ToolbarActivity
 import mt.util.color.invertColor
 import mt.util.color.primaryDisabledTextColor
+import player.phonograph.appshortcuts.DynamicShortcutManager
 import player.phonograph.settings.Setting
 import player.phonograph.ui.activities.intro.AppIntroActivity
 import player.phonograph.util.permissions.NonGrantedPermission
@@ -34,6 +35,7 @@ class LauncherActivity : ToolbarActivity() {
             setContentView(generateView())
             showIntro()
         } else {
+            DynamicShortcutManager(this).updateDynamicShortcuts()
             startMainActivity()
         }
     }
