@@ -38,7 +38,7 @@ fun notifyUser(
         } else {
             snackBar.setAction(R.string.action_grant) { retryCallback?.invoke() }
         }
-        snackBar.setActionTextColor(ThemeColor.accentColor(context))
+        snackBar.setActionTextColor(ThemeColor.accentColor(context)).setTextMaxLines(Int.MAX_VALUE)
         mainThread { snackBar.show() }
     } else {
         val toast = Toast.makeText(context, message, Toast.LENGTH_SHORT)
