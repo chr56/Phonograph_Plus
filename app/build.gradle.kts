@@ -222,7 +222,6 @@ dependencies {
     implementation(deps.okhttp3)
     implementation(deps.retrofit2)
     implementation(deps.coil)
-    implementation(deps.kpermissions)
 
     implementation(deps.kotlinx.serialization.json)
 

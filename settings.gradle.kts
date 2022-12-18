@@ -99,8 +99,6 @@ dependencyResolutionManagement {
                     "org.jetbrains.kotlinx:kotlinx-serialization-json:1.4.0")
             library("coil",
                     "io.coil-kt:coil:2.2.2")
-            library("kpermissions",
-                    "com.github.fondesa:kpermissions-coroutines:3.3.0")
 
             //
             // other
