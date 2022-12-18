@@ -7,7 +7,7 @@
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission
         android:name="android.permission.MANAGE_EXTERNAL_STORAGE"
         tools:ignore="ScopedStorage" />
@@ -33,11 +33,12 @@
         android:theme="@style/Theme.Phonograph.Auto"
         tools:ignore="UnusedAttribute">
 
-        <activity android:name=".ui.activities.StarterActivity"
+        <activity
+            android:name=".ui.activities.StarterActivity"
             android:excludeFromRecents="true"
+            android:exported="true"
             android:label="@string/action_play"
-            android:theme="@style/StarterDialog"
-            android:exported="true">
+            android:theme="@style/StarterDialog">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.APP_MUSIC" />
@@ -107,6 +108,10 @@
 
         <activity
             android:name=".ui.activities.MainActivity"
+            android:exported="true">
+        </activity>
+        <activity
+            android:name=".ui.activities.LauncherActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

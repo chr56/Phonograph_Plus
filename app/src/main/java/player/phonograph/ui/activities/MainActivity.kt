@@ -19,7 +19,6 @@ import player.phonograph.coil.loadImage
 import player.phonograph.databinding.ActivityMainBinding
 import player.phonograph.databinding.LayoutDrawerBinding
 import player.phonograph.dialogs.ChangelogDialog
-import player.phonograph.dialogs.ChangelogDialog.Companion.setChangelogRead
 import player.phonograph.mediastore.SongLoader.getAllSongs
 import player.phonograph.misc.SAFCallbackHandlerActivity
 import player.phonograph.misc.SafLauncher
@@ -32,7 +31,6 @@ import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.queue.ShuffleMode
 import player.phonograph.settings.Setting
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
-import player.phonograph.ui.activities.intro.AppIntroActivity
 import player.phonograph.ui.dialogs.ScanMediaFolderDialog
 import player.phonograph.ui.dialogs.UpgradeDialog
 import player.phonograph.ui.fragments.HomeFragment
@@ -40,20 +38,12 @@ import player.phonograph.util.ImageUtil.getTintedDrawable
 import player.phonograph.util.PhonographColorUtil.nightMode
 import player.phonograph.util.UpdateUtil
 import player.phonograph.util.Util.debug
-import player.phonograph.util.permissions.NonGrantedPermission
-import player.phonograph.util.permissions.Permission
 import player.phonograph.util.preferences.HomeTabConfig
 import player.phonograph.util.preferences.StyleConfig
-import androidx.annotation.RequiresApi
 import androidx.drawerlayout.widget.DrawerLayout
-import android.Manifest.permission.POST_NOTIFICATIONS
-import android.Manifest.permission.READ_EXTERNAL_STORAGE
-import android.Manifest.permission.READ_MEDIA_AUDIO
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
-import android.os.Build
-import android.os.Build.VERSION_CODES.TIRAMISU
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -86,7 +76,6 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
         safLauncher = SafLauncher(activityResultRegistry)
         lifecycle.addObserver(safLauncher)
 
-        showIntro()
         currentFragment =
             if (savedInstanceState == null) {
                 HomeFragment.newInstance().apply {
@@ -140,27 +129,6 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
         drawerBinding.drawerContentContainer.addView(wrapSlidingMusicPanel(mainBinding.root))
 
         return drawerBinding.root
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == APP_INTRO_REQUEST) {
-            ChangelogDialog.create().show(supportFragmentManager, "CHANGE_LOG_DIALOG")
-            val permissions = if (Build.VERSION.SDK_INT >= TIRAMISU) arrayOf(
-                POST_NOTIFICATIONS,
-                READ_MEDIA_AUDIO
-            ) else arrayOf(READ_EXTERNAL_STORAGE)
-            askForPermission(permissions)
-        }
-    }
-
-    private fun askForPermission(list: Array<String>) {
-        notifyPermissionDeniedUser(list.map { NonGrantedPermission(it) }) {
-            requestPermissionImpl(list) { map ->
-                if (!map.values.reduce { acc, b -> if (!acc) false else b })
-                    askForPermission(list)
-            }
-        }
     }
 
     override fun requestPermissions() {} // not allow
@@ -395,20 +363,6 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
         drawerBinding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
     }
 
-    private fun showIntro() {
-        if (!Setting.instance.introShown) {
-            Setting.instance.introShown = true
-            setChangelogRead(this)
-
-            Handler(Looper.getMainLooper()).post {
-                startActivityForResult(
-                    Intent(this@MainActivity, AppIntroActivity::class.java), APP_INTRO_REQUEST
-                )
-            }
-
-        }
-    }
-
     private fun checkUpdate() {
         CoroutineScope(SupervisorJob()).launch {
             UpdateUtil.checkUpdate { versionCatalog: VersionCatalog, upgradable: Boolean ->
@@ -446,7 +400,6 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
 
     companion object {
         private const val TAG = "MainActivity"
-        private const val APP_INTRO_REQUEST = 100
     }
 
     interface MainActivityFragmentCallbacks {
