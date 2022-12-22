@@ -17,6 +17,8 @@ import android.Manifest.permission.READ_EXTERNAL_STORAGE
 import android.Manifest.permission.READ_MEDIA_AUDIO
 import android.content.Intent
 import android.os.Build
+import android.os.Build.VERSION.SDK_INT
+import android.os.Build.VERSION_CODES.N_MR1
 import android.os.Bundle
 import android.view.View
 
@@ -35,7 +37,9 @@ class LauncherActivity : ToolbarActivity() {
             setContentView(generateView())
             showIntro()
         } else {
-            DynamicShortcutManager(this).updateDynamicShortcuts()
+            if (SDK_INT >= N_MR1) {
+                DynamicShortcutManager(this).updateDynamicShortcuts()
+            }
             startMainActivity()
         }
     }

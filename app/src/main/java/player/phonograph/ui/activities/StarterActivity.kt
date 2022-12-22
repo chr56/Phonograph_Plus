@@ -52,6 +52,8 @@ import android.content.Context
 import android.content.Intent
 import android.database.Cursor
 import android.net.Uri
+import android.os.Build.VERSION.SDK_INT
+import android.os.Build.VERSION_CODES.N_MR1
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
@@ -87,7 +89,9 @@ class StarterActivity : AppCompatActivity() {
             finish()
         } else {
             debugLog("Normal Mode")
-            DynamicShortcutManager(this).updateDynamicShortcuts()
+            if (SDK_INT >= N_MR1) {
+                DynamicShortcutManager(this).updateDynamicShortcuts()
+            }
             processFrontGroundMode(launcherIntent)
         }
     }
@@ -165,9 +169,10 @@ class StarterActivity : AppCompatActivity() {
 
             if (file != null) {
                 songs = SongLoader.getSongs(
-                    SongLoader.makeSongCursor(this,
-                                              "${MediaStore.Audio.AudioColumns.DATA}=?",
-                                              arrayOf(file.absolutePath)
+                    SongLoader.makeSongCursor(
+                        this,
+                        "${MediaStore.Audio.AudioColumns.DATA}=?",
+                        arrayOf(file.absolutePath)
                     )
                 )
             }
@@ -241,7 +246,11 @@ class StarterActivity : AppCompatActivity() {
 
         if (songs != null) {
             val queueManager = App.instance.queueManager
-            queueManager.swapQueue(songs, if (shuffleMode == ShuffleMode.SHUFFLE) Random.nextInt(songs.size) else 0, false)
+            queueManager.swapQueue(
+                songs,
+                if (shuffleMode == ShuffleMode.SHUFFLE) Random.nextInt(songs.size) else 0,
+                false
+            )
             queueManager.modifyShuffleMode(shuffleMode, false)
             queueManager.modifyPosition(0, false)
             startService(
