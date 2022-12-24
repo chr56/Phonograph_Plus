@@ -22,11 +22,16 @@ object StyleConfig {
     @StyleRes
     fun getThemeResFromPrefValue(themePrefValue: String?): Int {
         return when (themePrefValue) {
-            "dark"  -> R.style.Theme_Phonograph_Dark
-            "black" -> R.style.Theme_Phonograph_Black
-            "light" -> R.style.Theme_Phonograph_Light
-            "auto"  -> R.style.Theme_Phonograph_Auto
-            else    -> R.style.Theme_Phonograph_Auto
+            THEME_AUTO  -> R.style.Theme_Phonograph_Auto
+            THEME_DARK  -> R.style.Theme_Phonograph_Dark
+            THEME_BLACK -> R.style.Theme_Phonograph_Black
+            THEME_LIGHT -> R.style.Theme_Phonograph_Light
+            else        -> R.style.Theme_Phonograph_Auto
         }
     }
+
+    const val THEME_AUTO = "auto"
+    const val THEME_DARK = "dark"
+    const val THEME_BLACK = "black"
+    const val THEME_LIGHT = "light"
 }

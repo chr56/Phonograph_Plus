@@ -39,7 +39,6 @@ import player.phonograph.model.songCountString
 import player.phonograph.model.totalDuration
 import player.phonograph.notification.ErrorNotification
 import player.phonograph.settings.Setting
-import player.phonograph.settings.Setting.Companion.isAllowedToDownloadMetadata
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
 import player.phonograph.util.ImageUtil.getTintedDrawable
 import retrofit2.Call
@@ -190,7 +189,7 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorHolder 
                         loadBiography(null)
                         return
                     }
-                    if (!isAllowedToDownloadMetadata(this@ArtistDetailActivity)) {
+                    if (!Setting.instance.isAllowedToDownloadMetadata(this@ArtistDetailActivity)) {
                         with(biographyDialog!!) {
                             if (biography != null) {
                                 message(text = biography)
@@ -308,7 +307,7 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorHolder 
                     getActionButton(WhichButton.NEGATIVE).updateTextColor(accentColor)
                 }
         }
-        if (isAllowedToDownloadMetadata(this@ArtistDetailActivity)) { // wiki should've been already downloaded
+        if (Setting.instance.isAllowedToDownloadMetadata(this@ArtistDetailActivity)) { // wiki should've been already downloaded
             biographyDialog!!.show {
                 if (biography != null) {
                     message(text = biography)
@@ -351,7 +350,7 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorHolder 
 
     private fun setUpArtist(artist: Artist) {
         loadArtistImage()
-        if (isAllowedToDownloadMetadata(this)) {
+        if (Setting.instance.isAllowedToDownloadMetadata(this)) {
             loadBiography()
         }
         supportActionBar!!.title = artist.name

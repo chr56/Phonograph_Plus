@@ -28,7 +28,7 @@ import player.phonograph.model.getReadableDurationString
 import player.phonograph.model.getYearString
 import player.phonograph.model.songCountString
 import player.phonograph.model.totalDuration
-import player.phonograph.settings.Setting.Companion.isAllowedToDownloadMetadata
+import player.phonograph.settings.Setting
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
 import player.phonograph.util.ImageUtil.getTintedDrawable
 import player.phonograph.util.NavigationUtil.goToArtist
@@ -183,7 +183,7 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity() {
                     }
                     .build())
                 .enqueue()
-            if (isAllowedToDownloadMetadata(this)) model.loadWiki(context = this) { _, _ ->
+            if (Setting.instance.isAllowedToDownloadMetadata(this)) model.loadWiki(context = this) { _, _ ->
                 isWikiPreLoaded = true
             }
         }
