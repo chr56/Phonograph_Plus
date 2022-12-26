@@ -17,6 +17,9 @@ import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
 import player.phonograph.ui.fragments.player.AbsPlayerFragment
 import player.phonograph.ui.fragments.player.PlayerAlbumCoverFragment
+import player.phonograph.util.AnimationUtil.PHONOGRAPH_ANIM_TIME
+import player.phonograph.util.AnimationUtil.backgroundColorTransitionAnimator
+import player.phonograph.util.AnimationUtil.textColorTransitionAnimator
 import player.phonograph.util.PhonographColorUtil.nightMode
 import player.phonograph.util.Util.isLandscape
 import player.phonograph.util.ViewUtil
@@ -166,16 +169,12 @@ class FlatPlayerFragment :
         fun createDefaultColorChangeAnimatorSet(newColor: Int): AnimatorSet? {
             if (fragment.playbackControlsFragment.view == null) return null // todo
             val backgroundAnimator =
-                ViewUtil.createBackgroundColorTransition(
-                    fragment.playbackControlsFragment.requireView(),
-                    fragment.paletteColor,
-                    newColor
+                fragment.playbackControlsFragment.requireView().backgroundColorTransitionAnimator(
+                    fragment.paletteColor, newColor
                 )
             val statusBarAnimator =
-                ViewUtil.createBackgroundColorTransition(
-                    fragment.viewBinding.playerStatusBar,
-                    fragment.paletteColor,
-                    newColor
+                fragment.viewBinding.playerStatusBar.backgroundColorTransitionAnimator(
+                    fragment.paletteColor, newColor
                 )
             val animatorSet = AnimatorSet()
             animatorSet.playTogether(backgroundAnimator, statusBarAnimator)
@@ -184,14 +183,12 @@ class FlatPlayerFragment :
                     if (isColorLight(fragment.paletteColor)) darkenColor(fragment.paletteColor) else fragment.paletteColor
                 val adjustedNewColor = if (isColorLight(newColor)) darkenColor(newColor) else newColor
                 val subHeaderAnimator =
-                    ViewUtil.createTextColorTransition(
-                        fragment.viewBinding.playerQueueSubHeader,
-                        adjustedLastColor,
-                        adjustedNewColor
+                    fragment.viewBinding.playerQueueSubHeader.textColorTransitionAnimator(
+                        adjustedLastColor, adjustedNewColor
                     )
                 animatorSet.play(subHeaderAnimator)
             }
-            animatorSet.duration = ViewUtil.PHONOGRAPH_ANIM_TIME.toLong()
+            animatorSet.duration = PHONOGRAPH_ANIM_TIME
             return animatorSet
         }
 
@@ -303,10 +300,8 @@ class FlatPlayerFragment :
             val animatorSet = createDefaultColorChangeAnimatorSet(newColor)
             animatorSet?.let {
                 animatorSet.play(
-                    ViewUtil.createBackgroundColorTransition(
-                        fragment.viewBinding.playerToolbar,
-                        fragment.paletteColor,
-                        newColor
+                    fragment.viewBinding.playerToolbar.backgroundColorTransitionAnimator(
+                        fragment.paletteColor, newColor
                     )
                 )
                 animatorSet.start()

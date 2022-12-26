@@ -28,6 +28,7 @@ import player.phonograph.model.lyrics.LrcLyrics
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.settings.Setting
 import player.phonograph.ui.fragments.AbsMusicServiceFragment
+import player.phonograph.util.AnimationUtil.PHONOGRAPH_ANIM_TIME
 import player.phonograph.util.ViewUtil
 
 /**
@@ -171,7 +172,7 @@ class PlayerAlbumCoverFragment :
             pivotX = width / 2f
             pivotY = height / 2f
             animate()
-                .setDuration((ViewUtil.PHONOGRAPH_ANIM_TIME / 2).toLong())
+                .setDuration(PHONOGRAPH_ANIM_TIME / 2)
                 .setInterpolator(DecelerateInterpolator())
                 .scaleX(1f)
                 .scaleY(1f)
@@ -183,7 +184,7 @@ class PlayerAlbumCoverFragment :
                 })
                 .withEndAction {
                     animate()
-                        .setDuration((ViewUtil.PHONOGRAPH_ANIM_TIME / 2).toLong())
+                        .setDuration(PHONOGRAPH_ANIM_TIME / 2)
                         .setInterpolator(AccelerateInterpolator())
                         .scaleX(0f)
                         .scaleY(0f)

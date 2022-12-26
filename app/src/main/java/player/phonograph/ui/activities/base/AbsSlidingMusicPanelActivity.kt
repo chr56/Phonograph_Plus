@@ -24,6 +24,7 @@ import player.phonograph.model.NowPlayingScreen
 import player.phonograph.util.preferences.NowPlayingScreenConfig
 import player.phonograph.ui.fragments.player.card.CardPlayerFragment
 import player.phonograph.ui.fragments.player.flat.FlatPlayerFragment
+import player.phonograph.util.AnimationUtil.PHONOGRAPH_ANIM_TIME
 import player.phonograph.util.ViewUtil
 
 // TODO: Move smooth AnimateColorChange to ThemeActivity
@@ -223,7 +224,7 @@ abstract class AbsSlidingMusicPanelActivity :
         colorChangeAnimator?.cancel()
         colorChangeAnimator = ValueAnimator
             .ofArgb(oldColor, newColor)
-            .setDuration(ViewUtil.PHONOGRAPH_ANIM_TIME.toLong())
+            .setDuration(PHONOGRAPH_ANIM_TIME)
             .also { animator ->
                 animator.interpolator = PathInterpolator(0.4f, 0f, 1f, 1f)
                 animator.addUpdateListener { animation: ValueAnimator ->

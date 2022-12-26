@@ -18,6 +18,9 @@ import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
 import player.phonograph.ui.fragments.player.AbsPlayerFragment
 import player.phonograph.ui.fragments.player.PlayerAlbumCoverFragment
+import player.phonograph.util.AnimationUtil.PHONOGRAPH_ANIM_TIME
+import player.phonograph.util.AnimationUtil.backgroundColorTransitionAnimator
+import player.phonograph.util.AnimationUtil.textColorTransitionAnimator
 import player.phonograph.util.PhonographColorUtil.nightMode
 import player.phonograph.util.Util.isLandscape
 import player.phonograph.util.ViewUtil
@@ -212,10 +215,8 @@ class CardPlayerFragment :
                         endRadius.toFloat()
                     )
                 } else {
-                    ViewUtil.createBackgroundColorTransition(
-                        fragment.viewBinding.colorBackground,
-                        fragment.paletteColor,
-                        newColor
+                    fragment.viewBinding.colorBackground.backgroundColorTransitionAnimator(
+                        fragment.paletteColor, newColor
                     )
                 }
 
@@ -225,8 +226,7 @@ class CardPlayerFragment :
                         play(backgroundAnimator)
                         if (!ViewUtil.isWindowBackgroundDarkSafe(fragment.activity)) {
                             play(
-                                ViewUtil.createTextColorTransition(
-                                    fragment.viewBinding.playerQueueSubHeader,
+                                fragment.viewBinding.playerQueueSubHeader.textColorTransitionAnimator(
                                     if (isColorLight(fragment.paletteColor)) darkenColor(
                                         fragment.paletteColor
                                     ) else fragment.paletteColor,
@@ -236,7 +236,7 @@ class CardPlayerFragment :
                                 )
                             )
                         }
-                        duration = ViewUtil.PHONOGRAPH_ANIM_TIME.toLong()
+                        duration = PHONOGRAPH_ANIM_TIME
                     }
             return animatorSet
         }
@@ -345,18 +345,13 @@ class CardPlayerFragment :
             fragment.viewBinding.playerSlidingLayout.setBackgroundColor(fragment.paletteColor)
             val animatorSet = createDefaultColorChangeAnimatorSet(newColor)
             animatorSet.play(
-                ViewUtil.createBackgroundColorTransition(
-                    fragment.viewBinding.playerToolbar,
-                    fragment.paletteColor,
-                    newColor
+                fragment.viewBinding.playerToolbar.backgroundColorTransitionAnimator(
+                    fragment.paletteColor, newColor
                 )
-            )
-                .with(
-                    ViewUtil.createBackgroundColorTransition(
-                        fragment.requireView().findViewById(R.id.status_bar),
-                        darkenColor(
-                            fragment.paletteColor
-                        ),
+            ).with(
+                    fragment.requireView().findViewById<View>(R.id.status_bar)
+                        .backgroundColorTransitionAnimator(
+                        darkenColor(fragment.paletteColor),
                         darkenColor(newColor)
                     )
                 )
