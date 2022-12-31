@@ -2,6 +2,22 @@
   "versions": [
     {
       "channel": "stable",
+      "versionName": "0.5.1",
+      "versionCode": 451,
+      "date": 1672480800,
+      "link": [
+        {
+          "name": "Github Release",
+          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/v0.5.1"
+        }
+      ],
+      "releaseNote": {
+        "zh-cn": "<ol><li>翻译 更新意大利语(by gdonisi, Andrea Enzo Lattmann), 德语(by worldtest), 波兰语(by Robert Biś)</li>\n<li>改进 权限授权</li>\n<li>改进 尝试避免播放器因动画崩溃</li></ol>",
+        "en": "<ol><li>Translation: updated Italian (by gdonisi, Andrea Enzo Lattmann), German (by worldtest), Polish (by Robert Biś)</li>\n<li>Improve: permission grant</li>\n<li>Improve: try to avoid crashes due to main player animations</li></ol>"
+      }
+    },
+    {
+      "channel": "stable",
       "versionName": "0.5.0",
       "versionCode": 450,
       "date": 1669519200,
