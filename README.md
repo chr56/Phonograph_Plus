@@ -132,7 +132,7 @@ See [Build_Instructions.md](./Build_Instructions.md)
 
 - [x] 支持正在播放列表历史记录 | Support history of playing queue.
 
-- [ ] 重构设置 UI | Refactor Setting UI
+- [ ] 重构设置 UI (WIP⭕) | Refactor Setting UI (WIP⭕)
 
 - [ ] 重构搜索 | Refactor Search
 
@@ -145,16 +145,18 @@ See [Build_Instructions.md](./Build_Instructions.md)
 
 - [ ] 重写音乐标签编辑 | Rewrite Tag Editor
 
+- [ ] 重构主播放器 | Refactor Main Player
+
 - [ ] 增强“播放列表详情”(支持搜索 ❌, 更好的修改本地列表方式 ❗WIP, 响应打开文件的 Intent ❌) | Enhance Playlist Detail: support search ❌, Better way to
   modify ❗WIP, handle intent of open (playlist) file ❌
 
-- [ ] 检查文件 | Valid files
-
 - [ ] 桌面歌词(?) | Desktop lyrics (?)
+
+- [ ] 尝试适配 FlyMe / EvolutionX(等一系类原生)状态栏歌词 | Support some Android's StatusBar lyrics, such as FlyMe / EvolutionX
 
 - [ ] 改进 SlidingMusicBar | improve SlidingMusicBar
 
-- [ ] 尝试适配 FlyMe / EvolutionX(等一系类原生)状态栏歌词 | Support some Android's StatusBar lyrics, such as FlyMe / EvolutionX
+- [ ] <del>检查文件 | Valid files</del>
 
 - [ ] <del>完美适配 Android11+ 的文件访问(❌) | Adapter Android11+ File Permission perfectly</del>
 
