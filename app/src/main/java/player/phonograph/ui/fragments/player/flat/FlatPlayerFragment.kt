@@ -165,6 +165,7 @@ class FlatPlayerFragment :
     }
 
     private abstract class BaseImpl(protected var fragment: FlatPlayerFragment) : Impl {
+        protected var currentAnimatorSet: AnimatorSet? = null
         fun defaultColorChangeAnimatorSet(newColor: Int): AnimatorSet {
             val lightMode = !fragment.resources.nightMode
             val backgroundAnimator =
@@ -187,8 +188,6 @@ class FlatPlayerFragment :
                 }
             }
         }
-
-        abstract override fun animateColorChange(newColor: Int)
     }
 
     private class PortraitImpl(fragment: FlatPlayerFragment) : BaseImpl(fragment) {
@@ -272,7 +271,8 @@ class FlatPlayerFragment :
         }
 
         override fun animateColorChange(newColor: Int) {
-            defaultColorChangeAnimatorSet(newColor).start()
+            currentAnimatorSet?.cancel()
+            currentAnimatorSet = defaultColorChangeAnimatorSet(newColor).also { it.start() }
         }
     }
 
@@ -291,13 +291,15 @@ class FlatPlayerFragment :
         }
 
         override fun animateColorChange(newColor: Int) {
-            defaultColorChangeAnimatorSet(newColor).apply {
-                play(
+            currentAnimatorSet?.cancel()
+            currentAnimatorSet = defaultColorChangeAnimatorSet(newColor).also {
+                it.play(
                     fragment.viewBinding.playerToolbar.backgroundColorTransitionAnimator(
                         fragment.paletteColor, newColor
                     )
                 )
-            }.start()
+                it.start()
+            }
         }
     }
 }

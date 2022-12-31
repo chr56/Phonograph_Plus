@@ -187,7 +187,7 @@ class CardPlayerFragment :
     }
 
     private abstract class BaseImpl(protected var fragment: CardPlayerFragment) : Impl {
-
+        protected var currentAnimatorSet: AnimatorSet? = null
         @SuppressLint("ObsoleteSdkInt")
         fun defaultColorChangeAnimatorSet(newColor: Int): AnimatorSet {
             val lightMode = !fragment.resources.nightMode
@@ -313,7 +313,8 @@ class CardPlayerFragment :
         }
 
         override fun animateColorChange(newColor: Int) {
-            defaultColorChangeAnimatorSet(newColor).start()
+            currentAnimatorSet?.cancel()
+            currentAnimatorSet = defaultColorChangeAnimatorSet(newColor).also { it.start() }
         }
     }
 
@@ -336,8 +337,9 @@ class CardPlayerFragment :
         }
 
         override fun animateColorChange(newColor: Int) {
-            defaultColorChangeAnimatorSet(newColor).apply {
-                play(
+            currentAnimatorSet?.cancel()
+            currentAnimatorSet = defaultColorChangeAnimatorSet(newColor).also {
+                it.play(
                     fragment.viewBinding.playerToolbar.backgroundColorTransitionAnimator(
                         fragment.paletteColor, newColor
                     )
@@ -348,7 +350,8 @@ class CardPlayerFragment :
                             darkenColor(newColor)
                         )
                 )
-            }.start()
+                it.start()
+            }
         }
     }
 }
