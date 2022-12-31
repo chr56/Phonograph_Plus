@@ -41,8 +41,8 @@ android {
         vectorDrawables.useSupportLibrary = true
 
         applicationId = "player.phonograph.plus"
-        versionCode = 450
-        versionName = "0.5.0"
+        versionCode = 451
+        versionName = "0.5.1"
 
         buildConfigField("String",
                          "GIT_COMMIT_HASH",
