@@ -201,7 +201,7 @@
                     android:layout_marginStart="32dp"
                     android:paddingBottom="8dp"
                     android:paddingTop="8dp"
-                    android:text="@string/fork_on_github"
+                    android:text="@string/git_hub"
                     android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
 
             </LinearLayout>
