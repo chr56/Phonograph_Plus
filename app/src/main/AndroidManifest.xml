@@ -134,6 +134,10 @@
         <activity
             android:name="util.phonograph.tageditor.AlbumTagEditorActivity"
             android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".ui.compose.TagEditorActivity"
+            android:label="@string/action_tag_editor"
+            android:windowSoftInputMode="adjustResize" />
         <activity android:name=".ui.activities.SearchActivity" />
         <activity
             android:name=".ui.activities.SettingsActivity"
