@@ -7,6 +7,7 @@ package player.phonograph.ui.compose.tag
 import player.phonograph.R
 import player.phonograph.model.getReadableDurationString
 import player.phonograph.ui.compose.components.Title
+import player.phonograph.ui.compose.components.VerticalTextItem
 import player.phonograph.util.SongDetailUtil
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -24,7 +25,9 @@ import androidx.compose.ui.unit.dp
 @Composable
 internal fun InfoTable(info: SongDetailUtil.SongInfo, titleColor: Color) {
     Column(modifier = Modifier.padding(horizontal = 8.dp)) {
+        //
         // File info
+        //
         Spacer(modifier = Modifier.height(16.dp))
         Title(stringResource(R.string.file), color = titleColor)
         TagItem(stringResource(id = R.string.label_file_name), info.fileName)
@@ -40,7 +43,9 @@ internal fun InfoTable(info: SongDetailUtil.SongInfo, titleColor: Color) {
         )
         TagItem(stringResource(id = R.string.label_bit_rate), info.bitRate)
         TagItem(stringResource(id = R.string.label_sampling_rate), info.samplingRate)
+        //
         // Common Tag
+        //
         Spacer(modifier = Modifier.height(16.dp))
         Title(stringResource(R.string.music_tags), color = titleColor)
         TagItem(stringResource(id = R.string.title), info.title)
@@ -52,7 +57,9 @@ internal fun InfoTable(info: SongDetailUtil.SongInfo, titleColor: Color) {
         TagItem(stringResource(id = R.string.year), info.year)
         TagItem(stringResource(id = R.string.genre), info.genre)
         TagItem(stringResource(id = R.string.track), info.track, true)
+        //
         // Other Tag (if available)
+        //
         if (info.otherTags != null && info.comment != null) {
             Spacer(modifier = Modifier.height(8.dp))
             Title(stringResource(R.string.other_information))
@@ -68,4 +75,21 @@ internal fun InfoTable(info: SongDetailUtil.SongInfo, titleColor: Color) {
         // Title(stringResource(R.string.lyrics), color = color)
         Spacer(modifier = Modifier.height(16.dp))
     }
+}
+
+
+@Composable
+internal fun TagItem(tag: String, value: String?, hideIfEmpty: Boolean = false) {
+    if (hideIfEmpty) {
+        if (!value.isNullOrEmpty()) {
+            Item(tag, value)
+        }
+    } else {
+        Item(tag, value ?: "-")
+    }
+}
+
+@Composable
+internal fun Item(tag: String, value: String) {
+    VerticalTextItem(tag, value)
 }
