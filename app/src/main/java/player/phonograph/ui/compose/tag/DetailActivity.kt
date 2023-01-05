@@ -9,13 +9,13 @@ import mt.util.color.darkenColor
 import player.phonograph.R
 import player.phonograph.mediastore.SongLoader
 import player.phonograph.model.Song
+import player.phonograph.model.SongInfoModel
 import player.phonograph.ui.compose.ColorTools.makeSureContrastWith
 import player.phonograph.ui.compose.base.ComposeToolbarActivity
 import player.phonograph.ui.compose.theme.PhonographTheme
 import player.phonograph.util.SongDetailUtil
-import player.phonograph.util.SongDetailUtil.SongInfo
 import player.phonograph.util.SongDetailUtil.loadArtwork
-import player.phonograph.util.SongDetailUtil.loadSong
+import player.phonograph.util.SongDetailUtil.readSong
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -41,7 +41,7 @@ class DetailActivity : ComposeToolbarActivity() {
         super.onCreate(savedInstanceState)
         model.song = parseIntent(this, intent)
         with(model) {
-            info = loadSong(song)
+            info = readSong(song)
             artwork = loadArtwork(this@DetailActivity, song = song) {
                 updateBarsColor()
                 model.isDefaultArtwork.value = false
@@ -90,7 +90,7 @@ class DetailActivity : ComposeToolbarActivity() {
 
 class DetailModel : ViewModel() {
     lateinit var song: Song
-    lateinit var info: SongInfo
+    lateinit var info: SongInfoModel
     var artwork: MutableState<SongDetailUtil.BitmapPaletteWrapper?> = mutableStateOf(null)
     var isDefaultArtwork = mutableStateOf(true)
 }

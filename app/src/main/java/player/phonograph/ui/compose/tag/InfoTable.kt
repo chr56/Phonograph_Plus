@@ -5,11 +5,11 @@
 package player.phonograph.ui.compose.tag
 
 import player.phonograph.R
+import player.phonograph.model.SongInfoModel
 import player.phonograph.model.getReadableDurationString
 import player.phonograph.ui.compose.components.Title
 import player.phonograph.ui.compose.components.VerticalTextFieldItem
 import player.phonograph.ui.compose.components.VerticalTextItem
-import player.phonograph.util.SongDetailUtil
 import player.phonograph.util.SongDetailUtil.getFileSizeString
 import androidx.annotation.StringRes
 import androidx.compose.foundation.clickable
@@ -34,7 +34,7 @@ import androidx.compose.ui.unit.dp
  */
 @Composable
 internal fun InfoTable(
-    info: SongDetailUtil.SongInfo,
+    info: SongInfoModel,
     titleColor: Color,
     editable: Boolean = false
 ) {
@@ -44,34 +44,34 @@ internal fun InfoTable(
         //
         Spacer(modifier = Modifier.height(16.dp))
         Title(stringResource(R.string.file), color = titleColor)
-        Item(R.string.label_file_name, info.fileName ?: NA)
-        Item(R.string.label_file_path, info.filePath ?: NA)
-        Item(R.string.label_track_length, getReadableDurationString(info.trackLength ?: -1))
-        Item(R.string.label_file_format, info.fileFormat ?: NA)
-        Item(R.string.label_file_size, getFileSizeString(info.fileSize ?: -1))
-        Item(R.string.label_bit_rate, info.bitRate ?: NA)
-        Item(R.string.label_sampling_rate, info.samplingRate ?: NA)
+        Item(R.string.label_file_name, info.fileName.value())
+        Item(R.string.label_file_path, info.filePath.value())
+        Item(R.string.label_file_size, getFileSizeString(info.fileSize.value()))
+        Item(R.string.label_track_length, getReadableDurationString(info.trackLength.value()))
+        Item(R.string.label_file_format, info.fileFormat.value())
+        Item(R.string.label_bit_rate, info.bitRate.value())
+        Item(R.string.label_sampling_rate, info.samplingRate.value())
         //
         // Common Tag
         //
         Spacer(modifier = Modifier.height(16.dp))
         Title(stringResource(R.string.music_tags), color = titleColor)
-        Tag(R.string.title, info.title, editable)
-        Tag(R.string.artist, info.artist, editable)
-        Tag(R.string.album, info.album, editable)
-        Tag(R.string.album_artist, info.albumArtist, editable, true)
-        Tag(R.string.composer, info.composer, editable, true)
-        Tag(R.string.lyricist, info.lyricist, editable, true)
-        Tag(R.string.year, info.year, editable)
-        Tag(R.string.genre, info.genre, editable)
-        Tag(R.string.track, info.track, editable, true)
+        Tag(R.string.title, info.title.value(), editable)
+        Tag(R.string.artist, info.artist.value(), editable)
+        Tag(R.string.album, info.album.value(), editable)
+        Tag(R.string.album_artist, info.albumArtist.value(), editable, true)
+        Tag(R.string.composer, info.composer.value(), editable, true)
+        Tag(R.string.lyricist, info.lyricist.value(), editable, true)
+        Tag(R.string.year, info.year.value(), editable)
+        Tag(R.string.genre, info.genre.value(), editable)
+        Tag(R.string.track, info.track.value(), editable, true)
+        Tag(R.string.comment, info.comment.value(), true)
         //
         // Other Tag (if available)
         //
-        if (info.otherTags != null && info.comment != null) {
+        if (info.otherTags != null) {
             Spacer(modifier = Modifier.height(8.dp))
             Title(stringResource(R.string.other_information))
-            Tag(stringResource(id = R.string.comment), info.comment, true)
             info.otherTags?.let { tags ->
                 for (tag in tags) {
                     Item(tag.key, tag.value)
