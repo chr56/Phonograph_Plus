@@ -131,15 +131,17 @@ internal fun Item(tag: String, value: String) = VerticalTextItem(title = tag, va
 @Composable
 internal fun EditableItem(
     title: String,
-    value: String,
+    value: String?,
     onTextChanged: (String) -> Unit,
-    trailingIcon: @Composable (() -> Unit)? = null
+    trailingIcon: @Composable (() -> Unit)? = null,
+    allowReset: Boolean = true
 ) = VerticalTextFieldItem(
     title = title,
     value = value,
-    hint = value,
+    hint = value ?: "",
     onTextChanged = onTextChanged,
-    trailingIcon = trailingIcon
+    extraTrailingIcon = trailingIcon,
+    allowReset = allowReset
 )
 
 private const val NA = "-"
