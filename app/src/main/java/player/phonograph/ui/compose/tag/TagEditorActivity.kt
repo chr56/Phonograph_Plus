@@ -2,7 +2,7 @@
  * Copyright (c) 2022~2023 chr_56
  */
 
-package player.phonograph.ui.compose
+package player.phonograph.ui.compose.tag
 
 import player.phonograph.R
 import player.phonograph.ui.compose.base.ComposeToolbarActivity

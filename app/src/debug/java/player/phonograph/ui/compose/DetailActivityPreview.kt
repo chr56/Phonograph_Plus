@@ -4,6 +4,9 @@
 
 package player.phonograph.ui.compose
 
+import player.phonograph.ui.compose.tag.DetailActivityContent
+import player.phonograph.ui.compose.tag.DetailModel
+import player.phonograph.ui.compose.tag.Item
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import player.phonograph.ui.compose.theme.PhonographTheme

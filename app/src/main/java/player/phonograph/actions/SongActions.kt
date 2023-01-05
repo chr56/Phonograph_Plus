@@ -13,7 +13,7 @@ import player.phonograph.model.Song
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.queue.ShuffleMode
 import player.phonograph.settings.Setting
-import player.phonograph.ui.compose.DetailActivity
+import player.phonograph.ui.compose.tag.DetailActivity
 import player.phonograph.ui.dialogs.DeleteSongsDialog
 import player.phonograph.util.NavigationUtil
 import player.phonograph.util.PathFilterUtil
