@@ -7,15 +7,22 @@ package player.phonograph.ui.compose.tag
 import player.phonograph.R
 import player.phonograph.model.getReadableDurationString
 import player.phonograph.ui.compose.components.Title
+import player.phonograph.ui.compose.components.VerticalTextFieldItem
 import player.phonograph.ui.compose.components.VerticalTextItem
 import player.phonograph.util.SongDetailUtil
 import player.phonograph.util.SongDetailUtil.getFileSizeString
 import androidx.annotation.StringRes
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
@@ -28,6 +35,7 @@ import androidx.compose.ui.unit.dp
 internal fun InfoTable(
     info: SongDetailUtil.SongInfo,
     titleColor: Color,
+    editable: Boolean = false
 ) {
     Column(modifier = Modifier.padding(horizontal = 8.dp)) {
         //
@@ -47,15 +55,15 @@ internal fun InfoTable(
         //
         Spacer(modifier = Modifier.height(16.dp))
         Title(stringResource(R.string.music_tags), color = titleColor)
-        Tag(R.string.title, info.title)
-        Tag(R.string.artist, info.artist)
-        Tag(R.string.album, info.album)
-        Tag(R.string.album_artist, info.albumArtist, true)
-        Tag(R.string.composer, info.composer, true)
-        Tag(R.string.lyricist, info.lyricist, true)
-        Tag(R.string.year, info.year)
-        Tag(R.string.genre, info.genre)
-        Tag(R.string.track, info.track, true)
+        Tag(R.string.title, info.title, editable)
+        Tag(R.string.artist, info.artist, editable)
+        Tag(R.string.album, info.album, editable)
+        Tag(R.string.album_artist, info.albumArtist, editable, true)
+        Tag(R.string.composer, info.composer, editable, true)
+        Tag(R.string.lyricist, info.lyricist, editable, true)
+        Tag(R.string.year, info.year, editable)
+        Tag(R.string.genre, info.genre, editable)
+        Tag(R.string.track, info.track, editable, true)
         //
         // Other Tag (if available)
         //
@@ -77,15 +85,38 @@ internal fun InfoTable(
 }
 
 @Composable
-private fun Tag(@StringRes tagStringRes: Int, value: String?, hideIfEmpty: Boolean = false) =
-    Tag(tag = stringResource(id = tagStringRes), value = value, hideIfEmpty)
+private fun Tag(
+    @StringRes tagStringRes: Int,
+    name: String?,
+    editable: Boolean = false,
+    hideIfEmpty: Boolean = false,
+) = Tag(name = stringResource(id = tagStringRes), value = name, editable, hideIfEmpty)
 
 @Composable
-internal fun Tag(tag: String, value: String?, hideIfEmpty: Boolean = false) {
-    if (hideIfEmpty) {
-        if (!value.isNullOrEmpty()) Item(tag, value)
-    } else {
-        Item(tag, value ?: NA)
+internal fun Tag(
+    name: String,
+    value: String?,
+    editable: Boolean = false,
+    hideIfEmpty: Boolean = false,
+) {
+    var editMode: Boolean by remember { mutableStateOf(false) }
+    val modifier = if (editable) Modifier.clickable { editMode = true } else Modifier
+    Box(modifier = modifier) {
+        if (editMode) {
+            //
+            // EditMode
+            //
+            EditableItem(name, value ?: "", {})
+        } else {
+            //
+            // Common & Readonly
+            //
+            if (hideIfEmpty) {
+                if (!value.isNullOrEmpty()) Item(name, value)
+            } else {
+                Item(name, value ?: NA)
+            }
+        }
     }
 }
 
@@ -94,8 +125,21 @@ internal fun Tag(tag: String, value: String?, hideIfEmpty: Boolean = false) {
 private fun Item(@StringRes tagStringRes: Int, value: String) =
     Item(stringResource(tagStringRes), value)
 
+@Composable
+internal fun Item(tag: String, value: String) = VerticalTextItem(title = tag, value = value)
 
 @Composable
-internal fun Item(tag: String, value: String) = VerticalTextItem(tag, value)
+internal fun EditableItem(
+    title: String,
+    value: String,
+    onTextChanged: (String) -> Unit,
+    trailingIcon: @Composable (() -> Unit)? = null
+) = VerticalTextFieldItem(
+    title = title,
+    value = value,
+    hint = value,
+    onTextChanged = onTextChanged,
+    trailingIcon = trailingIcon
+)
 
 private const val NA = "-"
