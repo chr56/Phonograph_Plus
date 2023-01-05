@@ -9,6 +9,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
@@ -66,7 +67,7 @@ fun VerticalTextFieldItem(
             value = currentValue,
             placeholder = { Text(text = hint) },
             onValueChange = changeCurrentValue,
-            modifier = Modifier.align(Alignment.Start),
+            modifier = Modifier.align(Alignment.Start).fillMaxWidth(),
             colors = TextFieldDefaults.textFieldColors(
                 backgroundColor = MaterialTheme.colors.background,
                 textColor = MaterialTheme.colors.onSurface,
@@ -102,11 +103,11 @@ private fun TrailingIcon(
             Icon(
                 Icons.Default.Refresh,
                 contentDescription = stringResource(id = R.string.reset_action),
-                modifier = Modifier.clickable { onReset() })
+                modifier = Modifier.padding(8.dp).clickable { onReset() })
         if (allowClear)
             Icon(
                 Icons.Default.Close,
                 contentDescription = stringResource(id = R.string.clear_action),
-                modifier = Modifier.clickable { onClear() })
+                modifier = Modifier.padding(8.dp).clickable { onClear() })
     }
 }
