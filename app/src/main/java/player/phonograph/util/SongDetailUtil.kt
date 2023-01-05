@@ -35,20 +35,6 @@ import java.io.File
 
 object SongDetailUtil {
 
-    fun getFileSizeString(sizeInBytes: Long): String {
-        val fileSizeInKB: Long = sizeInBytes / 1024
-        val fileSizeInMB: Long = fileSizeInKB / 1024
-        val fileSizeInMBf: Float = fileSizeInKB / 1024F
-
-        val readableFileSizeInMB =
-            fileSizeInMB.toString() +
-                    ((fileSizeInMBf - fileSizeInMB).toString()).let {
-                        if (it.isNotBlank() && it.length >= 5) it.substring(1, 4) else ".0"
-                    }
-
-        return "$readableFileSizeInMB MB ($fileSizeInKB KB)"
-    }
-
     fun readSong(song: Song): SongInfoModel = readSong(File(song.data))
 
     fun readSong(songFile: File): SongInfoModel {

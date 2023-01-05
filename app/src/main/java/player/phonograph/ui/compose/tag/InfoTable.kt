@@ -6,11 +6,11 @@ package player.phonograph.ui.compose.tag
 
 import player.phonograph.R
 import player.phonograph.model.SongInfoModel
+import player.phonograph.model.getFileSizeString
 import player.phonograph.model.getReadableDurationString
 import player.phonograph.ui.compose.components.Title
 import player.phonograph.ui.compose.components.VerticalTextFieldItem
 import player.phonograph.ui.compose.components.VerticalTextItem
-import player.phonograph.util.SongDetailUtil.getFileSizeString
 import androidx.annotation.StringRes
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box

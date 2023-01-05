@@ -1,16 +1,5 @@
 package player.phonograph.dialogs
 
-import android.app.Activity
-import android.app.Dialog
-import android.content.Context
-import android.os.Bundle
-import android.text.Html
-import android.text.Spanned
-import android.util.Log
-import android.view.View
-import android.widget.TextView
-import android.widget.Toast
-import androidx.fragment.app.DialogFragment
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.WhichButton
 import com.afollestad.materialdialogs.actions.getActionButton
@@ -22,14 +11,31 @@ import org.jaudiotagger.audio.AudioFileIO
 import org.jaudiotagger.audio.AudioHeader
 import org.jaudiotagger.audio.exceptions.CannotReadException
 import org.jaudiotagger.audio.exceptions.InvalidAudioFrameException
-import org.jaudiotagger.tag.*
+import org.jaudiotagger.tag.EmptyFrameException
+import org.jaudiotagger.tag.FieldDataInvalidException
+import org.jaudiotagger.tag.FieldKey
+import org.jaudiotagger.tag.InvalidDataTypeException
+import org.jaudiotagger.tag.InvalidFrameIdentifierException
+import org.jaudiotagger.tag.TagException
+import org.jaudiotagger.tag.TagNotFoundException
 import org.jaudiotagger.tag.datatype.DataTypes
 import org.jaudiotagger.tag.id3.AbstractID3v2Frame
 import player.phonograph.R
 import player.phonograph.model.Song
+import player.phonograph.model.getFileSizeString
 import player.phonograph.model.getReadableDurationString
 import player.phonograph.notification.ErrorNotification
-import player.phonograph.util.MusicUtil
+import androidx.fragment.app.DialogFragment
+import android.app.Activity
+import android.app.Dialog
+import android.content.Context
+import android.os.Bundle
+import android.text.Html
+import android.text.Spanned
+import android.util.Log
+import android.view.View
+import android.widget.TextView
+import android.widget.Toast
 import java.io.File
 import java.io.IOException
 
@@ -187,12 +193,6 @@ class SongDetailDialog : DialogFragment() {
         }
         private fun makeTextWithTitle(context: Context, title: String, text: String): Spanned {
             return Html.fromHtml("<b>$title: </b>$text", Html.FROM_HTML_MODE_COMPACT)
-        }
-
-        private fun getFileSizeString(sizeInBytes: Long): String {
-            val fileSizeInKB = sizeInBytes / 1024
-            val fileSizeInMB = fileSizeInKB / 1024
-            return "$fileSizeInMB MB"
         }
     }
 }
