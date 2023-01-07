@@ -48,8 +48,13 @@ import androidx.compose.ui.unit.dp
 internal fun InfoTable(
     info: SongInfoModel,
     titleColor: Color,
-    editable: Boolean = false
+    editable: Boolean = false,
+    editRequestModel: EditRequestModel? = null
 ) {
+    val editRequest: EditRequest = remember {
+      { key, newValue -> editRequestModel?.request(info, key, newValue) }
+    }
+
     Column(modifier = Modifier.padding(horizontal = 8.dp)) {
         //
         // File info
@@ -68,16 +73,16 @@ internal fun InfoTable(
         //
         Spacer(modifier = Modifier.height(16.dp))
         Title(stringResource(R.string.music_tags), color = titleColor)
-        Tag(info, TITLE, editable)
-        Tag(info, ARTIST, editable)
-        Tag(info, ALBUM, editable)
-        Tag(info, ALBUM_ARTIST, editable, hideIfEmpty = true)
-        Tag(info, COMPOSER, editable, hideIfEmpty = true)
-        Tag(info, LYRICIST, editable, hideIfEmpty = true)
-        Tag(info, YEAR, editable)
-        Tag(info, GENRE, editable)
-        Tag(info, TRACK, editable, hideIfEmpty = true)
-        Tag(info, COMMENT, editable, hideIfEmpty = true)
+        Tag(info, TITLE, editable, editRequest)
+        Tag(info, ARTIST, editable, editRequest)
+        Tag(info, ALBUM, editable, editRequest)
+        Tag(info, ALBUM_ARTIST, editable, editRequest, hideIfEmpty = true)
+        Tag(info, COMPOSER, editable, editRequest, hideIfEmpty = true)
+        Tag(info, LYRICIST, editable, editRequest, hideIfEmpty = true)
+        Tag(info, YEAR, editable, editRequest)
+        Tag(info, GENRE, editable, editRequest)
+        Tag(info, TRACK, editable, editRequest, hideIfEmpty = true)
+        Tag(info, COMMENT, editable, editRequest, hideIfEmpty = true)
         //
         // Other Tag (if available)
         //
@@ -102,7 +107,7 @@ internal fun Tag(
     info: SongInfoModel,
     key: FieldKey,
     editable: Boolean = false,
-    editRequest: ((FieldKey, String) -> Unit)? = null,
+    editRequest: EditRequest? = null,
     hideIfEmpty: Boolean = false,
 ) {
     val tagNameRes = remember { songTagNameRes(key) }
