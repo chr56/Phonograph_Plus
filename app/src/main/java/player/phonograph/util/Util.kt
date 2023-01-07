@@ -1,5 +1,11 @@
 package player.phonograph.util
 
+import player.phonograph.App
+import player.phonograph.BROADCAST_PLAYLISTS_CHANGED
+import player.phonograph.BuildConfig.DEBUG
+import player.phonograph.R
+import player.phonograph.notification.ErrorNotification
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
@@ -8,14 +14,10 @@ import android.content.res.Resources
 import android.graphics.Point
 import android.os.Build
 import android.os.Looper
+import android.util.Log
 import android.util.TypedValue
 import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import player.phonograph.App
-import player.phonograph.BROADCAST_PLAYLISTS_CHANGED
-import player.phonograph.BuildConfig.DEBUG
-import player.phonograph.R
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
@@ -103,6 +105,16 @@ object Util {
         } else {
             block()
         }
+    }
+
+    fun reportError(e: Throwable, tag: String, message: String) {
+        Log.e(tag, message, e)
+        ErrorNotification.postErrorNotification(e, message)
+    }
+
+    fun warning(tag: String, message: String) {
+        Log.w(tag, message)
+        ErrorNotification.postErrorNotification(message)
     }
 
     fun Int.testBit(mask: Int): Boolean = (this and mask) != 0
