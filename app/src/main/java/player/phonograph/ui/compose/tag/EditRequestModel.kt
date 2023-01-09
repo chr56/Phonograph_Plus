@@ -20,4 +20,20 @@ class EditRequestModel {
             _allRequest[key] = newValue
     }
 
+    companion object {
+        /**
+         * generate diff with [oldInfo]
+         * @return <TagFieldKey, oldValue, newValue> triple
+         */
+        fun generateDiff(
+            oldInfo: SongInfoModel,
+            modified: EditRequestModel
+        ): List<Triple<FieldKey, String?, String?>> {
+            return modified.allRequests.map { (key, new) ->
+                val old = oldInfo.tagValue(key).value()
+                Triple(key, old, new)
+            }
+        }
+    }
+
 }
