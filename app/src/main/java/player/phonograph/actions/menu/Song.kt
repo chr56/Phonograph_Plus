@@ -10,6 +10,7 @@ import com.github.chr56.android.menu_dsl.submenu
 import player.phonograph.R
 import player.phonograph.actions.*
 import player.phonograph.model.Song
+import player.phonograph.ui.compose.tag.TagEditorActivity
 import android.content.Context
 import android.view.Menu
 import android.view.MenuItem
@@ -69,6 +70,13 @@ fun songPopupMenu(
             menuItem(title = getString(R.string.action_tag_editor)) { // id = R.id.action_tag_editor
                 showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
                 onClick { song.actionTagEditor(context) }
+            }
+            menuItem(title = getString(R.string.action_tag_editor)) { // id = R.id.action_tag_editor
+                showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
+                onClick {
+                    TagEditorActivity.launch(context, song.id)
+                    true
+                }
             }
             menuItem(title = getString(R.string.action_set_as_ringtone)) { // id = R.id.action_set_as_ringtone
                 showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
