@@ -4,52 +4,50 @@
 
 package player.phonograph.ui.compose.components
 
+import player.phonograph.ui.compose.isColorLight
 import androidx.compose.foundation.layout.RowScope
+import androidx.compose.material.AppBarDefaults
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import player.phonograph.ui.compose.isColorLight
+import androidx.compose.ui.unit.Dp
 
-/**
- *
- */
 @Composable
 internal fun PhonographAppBar(
     title: @Composable () -> Unit,
     backgroundColor: Color,
-    backClick: (() -> Unit) = { /* Empty*/ },
-    actions: @Composable (RowScope.() -> Unit) = { /* Empty*/ },
+    modifier: Modifier = Modifier,
+    contentColor: Color = defaultContentColor(backgroundColor),
+    navigationIcon: @Composable () -> Unit = { DefaultNavigationIcon() },
+    actions: @Composable RowScope.() -> Unit = { DefaultActions() },
+    elevation: Dp = AppBarDefaults.TopAppBarElevation
 ) {
-    AppBar(
+    TopAppBar(
         title = title,
+        modifier = modifier,
+        navigationIcon = navigationIcon,
         actions = actions,
-        backClick = backClick,
         backgroundColor = backgroundColor,
-        textColor = if (backgroundColor.isColorLight()) Color.Black else Color.White
+        contentColor = contentColor,
+        elevation = elevation
     )
 }
 
 @Composable
-internal fun AppBar(
-    title: @Composable () -> Unit,
-    backgroundColor: Color,
-    textColor: Color,
-    backClick: (() -> Unit) = { /* Empty*/ },
-    actions: @Composable (RowScope.() -> Unit) = { /* Empty*/ },
-) {
-    TopAppBar(
-        title = title,
-        navigationIcon = {
-            IconButton(onClick = backClick) {
-                Icon(Icons.Default.ArrowBack, contentDescription = null)
-            }
-        },
-        actions = actions,
-        backgroundColor = backgroundColor,
-        contentColor = textColor
-    )
+fun DefaultNavigationIcon(onBackClick: () -> Unit = {}) {
+    IconButton(onClick = onBackClick) {
+        Icon(Icons.Default.ArrowBack, contentDescription = null)
+    }
 }
+
+@Composable
+fun DefaultActions() {
+}
+
+internal fun defaultContentColor(backgroundColor: Color) =
+    if (backgroundColor.isColorLight()) Color.Black else Color.White

@@ -1,10 +1,15 @@
 /*
- * Copyright (c) 2022 chr_56 & Abou Zeid (kabouzeid) (original author)
+ * Copyright (c) 2022~2023 chr_56
  */
 
 package player.phonograph.ui.compose.base
 
-import android.os.Bundle
+import lib.phonograph.activity.ThemeActivity
+import mt.pref.ThemeColor
+import mt.util.color.darkenColor
+import player.phonograph.ui.compose.components.DefaultNavigationIcon
+import player.phonograph.ui.compose.components.PhonographAppBar
+import player.phonograph.ui.compose.theme.PhonographTheme
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.RowScope
@@ -19,13 +24,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import lib.phonograph.activity.ThemeActivity
-import mt.pref.ThemeColor
-import mt.util.color.darkenColor
-import player.phonograph.ui.compose.components.PhonographAppBar
-import player.phonograph.ui.compose.theme.PhonographTheme
+import android.os.Bundle
 
 abstract class ComposeToolbarActivity : ThemeActivity() {
+    protected open lateinit var appbarColor: MutableState<Color>
     override fun onCreate(savedInstanceState: Bundle?) {
         useCustomStatusBar = false
         super.onCreate(savedInstanceState)
@@ -40,9 +42,9 @@ abstract class ComposeToolbarActivity : ThemeActivity() {
                 Column(modifier = Modifier.fillMaxSize()) {
                     PhonographAppBar(
                         title = { Text(text = title) },
-                        backClick = backClick,
-                        actions = toolbarActions,
                         backgroundColor = backgroundColor,
+                        navigationIcon = { DefaultNavigationIcon(toolbarBackPressed) },
+                        actions = toolbarActions
                     )
                     Surface(color = MaterialTheme.colors.background) {
                         SetUpContent()
@@ -59,10 +61,8 @@ abstract class ComposeToolbarActivity : ThemeActivity() {
     protected abstract fun SetUpContent()
     protected abstract val title: String
 
-    protected open val backClick: (() -> (Unit)) = {
+    protected open val toolbarBackPressed: () -> (Unit) = {
         onBackPressedDispatcher.onBackPressed()
     }
     protected open val toolbarActions: @Composable (RowScope.() -> Unit) = {}
-
-    protected open lateinit var appbarColor: MutableState<Color>
 }
