@@ -75,6 +75,18 @@ class TagEditorActivity : ComposeToolbarActivity() {
         model.showSaveConfirmation.value = true
     }
 
+    override val toolbarBackPressed: () -> Unit = {
+        if (model.allowExitWithoutSaving.value || model.editRequestModel.allRequests.isEmpty()) {
+            finish()
+        } else {
+            model.showExitWithoutSavingConfirmation.value = true
+        }
+    }
+
+    override fun onBackPressed() {
+        toolbarBackPressed()
+    }
+
     companion object {
         private fun parseIntent(context: Context, intent: Intent): Song =
             SongLoader.getSong(context, intent.extras?.getLong(SONG_ID) ?: -1)
@@ -94,6 +106,8 @@ class TagEditorActivity : ComposeToolbarActivity() {
 class TagEditorModel(val song: Song, val infoModel: SongInfoModel) : ViewModel() {
     val editRequestModel: EditRequestModel = EditRequestModel()
     val showSaveConfirmation: MutableState<Boolean> = mutableStateOf(false)
+    val showExitWithoutSavingConfirmation: MutableState<Boolean> = mutableStateOf(false)
+    val allowExitWithoutSaving: MutableState<Boolean> = mutableStateOf(false)
 }
 
 @Composable
@@ -116,6 +130,35 @@ fun TagEditorActivityContent(
     if (model.showSaveConfirmation.value) {
         SaveConfirmationDialog(model)
     }
+    if (model.showExitWithoutSavingConfirmation.value) {
+        ExitWithoutSavingDialog(model)
+    }
+}
+
+@Composable
+fun ExitWithoutSavingDialog(model: TagEditorModel) {
+    val dismiss = { model.showExitWithoutSavingConfirmation.value = false }
+    AlertDialog(
+        onDismissRequest = dismiss,
+        title = { Text("Exit without saving?") },
+        buttons = {
+            Row(Modifier.fillMaxWidth()) {
+                TextButton(
+                    onClick = {
+                        dismiss()
+                        model.allowExitWithoutSaving.value = true
+                    },
+                    Modifier.weight(2f)
+                ) {
+                    Text(stringResource(id = android.R.string.ok))
+                }
+                Spacer(modifier = Modifier.widthIn(48.dp))
+                TextButton(onClick = dismiss, Modifier.weight(2f)) {
+                    Text(stringResource(id = android.R.string.cancel))
+                }
+            }
+        }
+    )
 }
 
 @Composable
