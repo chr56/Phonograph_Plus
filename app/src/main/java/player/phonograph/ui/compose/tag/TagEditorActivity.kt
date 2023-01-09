@@ -5,6 +5,7 @@
 package player.phonograph.ui.compose.tag
 
 import org.jaudiotagger.tag.FieldKey
+import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.mediastore.SongLoader
 import player.phonograph.model.Song
@@ -13,6 +14,7 @@ import player.phonograph.model.songTagNameRes
 import player.phonograph.ui.compose.base.ComposeToolbarActivity
 import player.phonograph.ui.compose.components.Title
 import player.phonograph.util.SongDetailUtil.readSong
+import player.phonograph.util.tageditor.applyTagEdit
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
@@ -45,6 +47,9 @@ import androidx.lifecycle.ViewModel
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import java.io.File
 
 class TagEditorActivity : ComposeToolbarActivity() {
     private lateinit var model: TagEditorModel
@@ -116,11 +121,15 @@ fun TagEditorActivityContent(
 @Composable
 fun SaveConfirmationDialog(model: TagEditorModel) {
     val dismiss = { model.showSaveConfirmation.value = false }
+    val save = {
+        dismiss()
+        saveImpl(model.song, model.editRequestModel)
+    }
     AlertDialog(
         onDismissRequest = dismiss,
         buttons = {
             Row(Modifier.fillMaxWidth()) {
-                TextButton(onClick = { /*TODO*/ }, Modifier.weight(2f)) {
+                TextButton(onClick = save, Modifier.weight(2f)) {
                     Text(stringResource(id = android.R.string.ok), color = Color.Red)
                 }
                 Spacer(modifier = Modifier.widthIn(48.dp))
@@ -135,6 +144,14 @@ fun SaveConfirmationDialog(model: TagEditorModel) {
         }
     )
 }
+
+fun saveImpl(song: Song, edit: EditRequestModel) =
+    applyTagEdit(
+        CoroutineScope(Dispatchers.Unconfined),
+        App.instance,
+        edit,
+        File(song.data)
+    )
 
 @Composable
 internal fun DiffScreen(old: SongInfoModel, new: EditRequestModel) {
@@ -164,7 +181,12 @@ private fun Diff(tag: Triple<FieldKey, String?, String?>) {
 @Composable
 private fun DiffText(string: String?, modifier: Modifier = Modifier) {
     if (string.isNullOrEmpty()) {
-        Text(stringResource(id = R.string.empty), modifier.fillMaxWidth().alpha(0.5f))
+        Text(
+            stringResource(id = R.string.empty),
+            modifier
+                .fillMaxWidth()
+                .alpha(0.5f)
+        )
     } else {
         Text(string, modifier.fillMaxWidth())
     }
