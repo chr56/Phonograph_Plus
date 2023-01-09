@@ -131,7 +131,7 @@ internal fun Tag(
             //
             // Common & Readonly
             //
-            if (hideIfEmpty) {
+            if (hideIfEmpty && !editable) {
                 if (tagValue.isNotEmpty()) Item(tagName, tagValue)
             } else {
                 Item(tagName, tagValue)
