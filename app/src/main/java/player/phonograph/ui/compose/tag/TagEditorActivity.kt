@@ -140,7 +140,7 @@ fun ExitWithoutSavingDialog(model: TagEditorModel) {
     val dismiss = { model.showExitWithoutSavingConfirmation.value = false }
     AlertDialog(
         onDismissRequest = dismiss,
-        title = { Text("Exit without saving?") },
+        title = { Text(stringResource(id = R.string.exit_without_saving)) },
         buttons = {
             Row(Modifier.fillMaxWidth()) {
                 TextButton(
@@ -173,7 +173,7 @@ fun SaveConfirmationDialog(model: TagEditorModel) {
         buttons = {
             Row(Modifier.fillMaxWidth()) {
                 TextButton(onClick = save, Modifier.weight(2f)) {
-                    Text(stringResource(id = android.R.string.ok), color = Color.Red)
+                    Text(stringResource(id = R.string.save), color = Color.Red)
                 }
                 Spacer(modifier = Modifier.widthIn(48.dp))
                 TextButton(onClick = dismiss, Modifier.weight(2f)) {
@@ -181,7 +181,7 @@ fun SaveConfirmationDialog(model: TagEditorModel) {
                 }
             }
         },
-        title = { Text(stringResource(id = R.string.music_tags)) },
+        title = { Text(stringResource(id = R.string.save)) },
         text = {
             DiffScreen(model.infoModel, model.editRequestModel)
         }
@@ -200,7 +200,7 @@ fun saveImpl(song: Song, edit: EditRequestModel) =
 internal fun DiffScreen(old: SongInfoModel, new: EditRequestModel) {
     val diff = remember { EditRequestModel.generateDiff(old, new) }
     if (diff.isEmpty())
-        Text(text = stringResource(id = R.string.empty))
+        Text(text = stringResource(id = R.string.no_changes))
     else
         LazyColumn(Modifier.padding(8.dp)) {
             for (tag in diff) {
