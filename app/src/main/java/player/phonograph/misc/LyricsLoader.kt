@@ -19,7 +19,7 @@ import player.phonograph.notification.ErrorNotification.postErrorNotification
 import player.phonograph.settings.Setting
 import player.phonograph.util.FileUtil
 import player.phonograph.util.Util.debug
-import player.phonograph.util.permissions.hasStorageWritePermission
+import player.phonograph.util.permissions.hasStorageReadPermission
 import android.util.Log
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -38,7 +38,12 @@ object LyricsLoader {
             return LyricsList()
         }
 
-        if (!hasStorageWritePermission(App.instance)) return LyricsList()
+        if (!hasStorageReadPermission(App.instance)) {
+            debug {
+                Log.v(TAG, "No storage read permission to fetch lyrics for ${song.title}")
+            }
+            return LyricsList()
+        }
 
         // embedded
         val embedded = backgroundCoroutine.async(Dispatchers.IO) {
