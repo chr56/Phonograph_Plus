@@ -15,7 +15,10 @@ import player.phonograph.coil.retriever.ImageRetriever
 import player.phonograph.coil.retriever.JAudioTaggerRetriever
 import player.phonograph.coil.retriever.MediaMetadataRetriever
 import player.phonograph.coil.retriever.MediaStoreRetriever
+import player.phonograph.coil.retriever.retrieverFromConfig
+import player.phonograph.model.config.ImageSourceConfig
 import player.phonograph.util.Util.debug
+import player.phonograph.util.preferences.CoilImageSourceConfig
 import android.content.Context
 import android.util.Log
 
@@ -57,17 +60,7 @@ class AudioFileFetcher private constructor(
     }
 
     companion object {
-        val retriever =
-            if (!IgnoreMediaStorePreference.ignoreMediaStore) listOf(
-                MediaStoreRetriever(),
-                MediaMetadataRetriever(),
-                JAudioTaggerRetriever(),
-                ExternalFileRetriever()
-            ) else listOf(
-                MediaMetadataRetriever(),
-                JAudioTaggerRetriever(),
-                ExternalFileRetriever()
-            )
+        val retriever = retrieverFromConfig
         private const val TAG = "ImageRetriever"
     }
 }
