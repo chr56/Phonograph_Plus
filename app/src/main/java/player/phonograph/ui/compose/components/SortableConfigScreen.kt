@@ -54,19 +54,14 @@ typealias Items = ArrayList<SortableConfigModel.Item>
 
 @Composable
 fun SortableConfigScreen(model: SortableConfigModel) {
+    val data = remember { mutableStateOf(model.items.toList()) }
     val onMove: (ItemPosition, ItemPosition) -> Unit =
-        { from, to -> model.move(from.index, to.index) }
+        { from, to ->
+            model.move(from.index, to.index)
+            data.value = data.value.toMutableList().apply { add(to.index, removeAt(from.index)) }
+        }
     val onToggleEnabled: (SortableConfigModel.Item, Boolean) -> Unit =
         { item, enabled -> model.toggle(item, enabled) }
-    SortableConfigList(items = model.items, onMove = onMove, onToggleEnabled = onToggleEnabled)
-}
-
-@Composable
-fun SortableConfigList(
-    items: Items,
-    onMove: (ItemPosition, ItemPosition) -> Unit,
-    onToggleEnabled: (SortableConfigModel.Item, Boolean) -> Unit
-) {
     val state = rememberReorderableLazyListState(onMove = onMove)
     LazyColumn(
         modifier = Modifier
@@ -75,13 +70,12 @@ fun SortableConfigList(
             .detectReorderAfterLongPress(state),
         state = state.listState
     ) {
-        items(items, { it.id() }) { item ->
+        items(data.value, { it.id() }) { item ->
             ReorderableItem(state, key = item.id()) {
                 Item(sortableConfigItem = item) { onToggleEnabled(item, it) }
             }
         }
     }
-
 }
 
 @Composable
