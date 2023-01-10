@@ -9,10 +9,12 @@ import org.burnoutcrew.reorderable.detectReorderAfterLongPress
 import org.burnoutcrew.reorderable.rememberReorderableLazyListState
 import org.burnoutcrew.reorderable.reorderable
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Checkbox
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
@@ -41,7 +43,7 @@ interface SortableConfigContract {
 }
 
 @Composable
-fun SortableConfigScreen(adapter: SortableConfigContract) {
+fun SortableConfigScreen(adapter: SortableConfigContract, modifier: Modifier = Modifier) {
     var data by remember { mutableStateOf(adapter.allItems()) }
     val state = rememberReorderableLazyListState(
         onMove = { from, to ->
@@ -49,14 +51,17 @@ fun SortableConfigScreen(adapter: SortableConfigContract) {
             data = data.toMutableList().apply { add(to.index, removeAt(from.index)) }
         })
     LazyColumn(
-        modifier = Modifier
-            .padding(16.dp)
+        modifier = modifier
             .reorderable(state)
             .detectReorderAfterLongPress(state),
         state = state.listState
     ) {
-        items(data/* */) { item ->
-            ReorderableItem(reorderableState = state, key = item.id()) {
+        items(data, { it.id() }) { item ->
+            ReorderableItem(
+                reorderableState = state,
+                key = item.id(),
+                modifier = Modifier.fillMaxWidth()
+            ) {
                 val enabled = remember { mutableStateOf(item.enabled()) }
                 val onToggle = { newValue: Boolean ->
                     enabled.value = newValue
@@ -75,7 +80,7 @@ private fun Item(
     onCheckedChange: (Boolean) -> Unit
 ) {
     Row(
-        Modifier.padding(horizontal = 8.dp)
+        Modifier.padding(horizontal = 8.dp, vertical = 8.dp)
     ) {
         Checkbox(
             checked = enabled.value,
@@ -84,7 +89,8 @@ private fun Item(
         Text(
             text = itemName,
             modifier = Modifier.align(Alignment.CenterVertically),
-            textAlign = TextAlign.Start
+            textAlign = TextAlign.Start,
+            style = MaterialTheme.typography.subtitle1
         )
     }
 }
