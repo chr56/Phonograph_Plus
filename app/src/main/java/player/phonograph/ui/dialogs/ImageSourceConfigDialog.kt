@@ -6,11 +6,14 @@ package player.phonograph.ui.dialogs
 
 import player.phonograph.ui.compose.base.BridgeDialogFragment
 import player.phonograph.ui.compose.dialogs.ImageSourceConfigDialog
+import player.phonograph.ui.compose.theme.PhonographTheme
 import androidx.compose.runtime.Composable
 
 class ImageSourceConfigDialog : BridgeDialogFragment() {
     @Composable
     override fun Content() {
-        ImageSourceConfigDialog(context = requireContext())
+        PhonographTheme {
+            ImageSourceConfigDialog(context = requireContext(), ::dismiss)
+        }
     }
 }
