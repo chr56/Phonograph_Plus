@@ -325,6 +325,14 @@
     <string name="are_you_sure">よろしいですか?</string>
     <string name="original_author">オリジナル作者</string>
     <string name="plus_author">Phonograph Plus の作者</string>
+    <string name="misc">その他</string>
+    <string name="comment">コメント</string>
+    <string name="pref_title_use_legacy_detail_dialog">従来の詳細ダイアログを使用</string>
+    <string name="pref_summary_use_legacy_detail_dialog">曲の詳細ページの代わりに、従来の詳細ダイアログを使用します</string>
+    <string name="composer">作曲者</string>
+    <string name="lyricist">作詞家</string>
+    <string name="music_tags">音楽タグ</string>
+    <string name="file">ファイル</string>
     <string name="pref_header_compatibility">互換性</string>
     <string name="pref_title_use_legacy_favorite_playlist_impl">旧式のお気に入りプレイリストフォーマットを使用する</string>
     <string name="pref_summary_use_legacy_favorite_playlist_impl">有効にすると、お気に入り曲をアプリ内部のデータベースではなく、ストレージ上のm3uプレイリストに保存します。 (手動でリストをエクスポートできます)</string>
@@ -390,4 +398,29 @@
     </plurals>
     <string name="warning_can_not_retract">この操作は元に戻せません!</string>
     <string name="delete_with_lyrics">歌詞と一緒に削除</string>
+    <string name="excluded_paths">除外するパス</string>
+    <string name="included_paths">含めるパス</string>
+    <string name="swith_mode">モードを変更</string>
+    <string name="path_filter">パスフィルタ</string>
+    <string name="path_filter_excluded_mode">除外モード</string>
+    <string name="path_filter_included_mode">登録モード</string>
+    <string name="pref_summary_path_filter_excluded_mode">除外したフォルダのコンテンツはライブラリから非表示になります。</string>
+    <string name="pref_summary_path_filter_included_mode">ライブラリには登録したフォルダのコンテンツのみが表示されます。</string>
+    <string name="pref_title_load_lyrics">歌詞の読み込み</string>
+    <string name="pref_summary_load_lyrics">一般的な歌詞機能を切り替えます。すべての歌詞機能を無効にするにはオフにしてください。</string>
+    <string name="mode_song_play_next">曲を次に再生</string>
+    <string name="mode_song_play_now">今すぐ曲を再生 (一番上)</string>
+    <string name="mode_song_append_queue">曲をキューに追加</string>
+    <string name="mode_song_single_play">一曲のみをリピート</string>
+    <string name="mode_queue_play_next">キューを次に再生</string>
+    <string name="mode_queue_play_now">今すぐキューを再生(一番上)</string>
+    <string name="mode_queue_append_queue">キューを再生キューに追加</string>
+    <string name="mode_queue_switch_to_beginning">現在の再生キューを置き換え、最初からキューを再生</string>
+    <string name="mode_queue_switch_to_position">現在の再生キューを置き換え、選択した曲からキューを再生</string>
+    <string name="mode_queue_shuffle">現在の再生キューを置き換え、キューをシャッフル再生</string>
+    <string name="mode_flag_goto_position_first">現在の再生キューと同じ場合、選択した曲の位置に移動</string>
+    <string name="mode_flag_play_queue_if_empty">現在の再生キューが空の場合、キューを直接再生</string>
+    <string name="pref_title_click_behavior">曲をタップした時のカスタム動作</string>
+    <string name="pref_summary_click_behavior">リスト内の曲をクリックしたときのプレーヤーの動作を設定します。</string>
+    <string name="playing_queue_history">再生キュー履歴</string>
 </resources>
