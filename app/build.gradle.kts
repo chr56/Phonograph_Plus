@@ -231,4 +231,5 @@ dependencies {
     implementation(deps.materialIntro)
     implementation(deps.advrecyclerview)
     implementation(deps.recyclerviewFastscroll)
+    implementation(deps.composeReorderable)
 }

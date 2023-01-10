@@ -137,4 +137,10 @@
         <copyright>Copyright © 2022 Coil Contributors</copyright>
         <license>Apache Software License 2.0</license>
     </notice>
+    <notice>
+        <name>ComposeReorderable</name>
+        <url>https://github.com/aclassen/ComposeReorderable</url>
+        <copyright>Copyright 2022 André Claßen</copyright>
+        <license>Apache Software License 2.0</license>
+    </notice>
 </notices>
