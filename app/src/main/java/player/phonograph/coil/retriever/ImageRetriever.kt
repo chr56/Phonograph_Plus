@@ -1,13 +1,12 @@
 /*
  * Copyright (c) 2022~2023 chr_56
  */
-
-package player.phonograph.coil
+@file:JvmName("ImageRetriever")
+package player.phonograph.coil.retriever
 
 import coil.decode.DataSource
 import coil.fetch.DrawableResult
 import coil.fetch.FetchResult
-import coil.size.Dimension
 import coil.size.Size
 import player.phonograph.coil.audiofile.AudioFile
 import android.content.Context
@@ -72,8 +71,3 @@ class ExternalFileRetriever : ImageRetriever {
         return retrieveFromExternalFile(audioFile.path)
     }
 }
-
-//todo
-
-private fun Size.w() = (width as? Dimension.Pixels)?.px ?: -1
-private fun Size.h() = (height as? Dimension.Pixels)?.px ?: -1

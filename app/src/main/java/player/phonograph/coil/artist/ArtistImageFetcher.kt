@@ -15,13 +15,13 @@ import coil.fetch.DrawableResult
 import coil.fetch.FetchResult
 import coil.fetch.Fetcher
 import coil.request.Options
-import coil.size.Dimension
 import coil.size.Size
 import player.phonograph.BuildConfig
 import player.phonograph.coil.*
-import player.phonograph.coil.readFromMediaStore
-import player.phonograph.coil.retrieveFromJAudioTagger
-import player.phonograph.coil.retrieveFromMediaMetadataRetriever
+import player.phonograph.coil.retriever.readFromMediaStore
+import player.phonograph.coil.retriever.readJEPGFile
+import player.phonograph.coil.retriever.retrieveFromJAudioTagger
+import player.phonograph.coil.retriever.retrieveFromMediaMetadataRetriever
 
 class ArtistImageFetcher(val data: ArtistImage, val context: Context, val size: Size) : Fetcher {
 

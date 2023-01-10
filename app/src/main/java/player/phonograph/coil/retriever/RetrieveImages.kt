@@ -1,19 +1,10 @@
 /*
- * Copyright (c) 2022 chr_56
+ * Copyright (c) 2022~2023 chr_56
  */
-@file:JvmName("ImageRetrieveUtil")
 
-package player.phonograph.coil
+@file:JvmName("RetrieveImages")
+package player.phonograph.coil.retriever
 
-import android.content.ContentResolver
-import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.graphics.Point
-import android.media.MediaMetadataRetriever
-import android.net.Uri
-import android.os.Build
-import android.os.Bundle
 import coil.annotation.ExperimentalCoilApi
 import coil.decode.ContentMetadata
 import coil.decode.DataSource
@@ -22,13 +13,20 @@ import coil.fetch.FetchResult
 import coil.fetch.SourceResult
 import coil.size.Dimension
 import coil.size.Size
-import coil.size.pxOrElse
 import okio.Path.Companion.toOkioPath
 import okio.buffer
 import okio.source
 import org.jaudiotagger.audio.AudioFile
 import org.jaudiotagger.audio.AudioFileIO
 import player.phonograph.util.MusicUtil.getMediaStoreAlbumCoverUri
+import android.content.ContentResolver
+import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.Point
+import android.media.MediaMetadataRetriever
+import android.net.Uri
+import android.os.Build
+import android.os.Bundle
 import java.io.File
 import java.io.InputStream
 
@@ -130,18 +128,6 @@ internal fun readJEPGFile(file: File, diskCacheKey: String? = null): SourceResul
         ),
         mimeType = "image/jpeg",
         dataSource = DataSource.DISK
-    )
-}
-
-fun ByteArray.toBitmap(): Bitmap = BitmapFactory.decodeByteArray(this, 0, this.size)
-fun ByteArray.toBitmap(size: Size): Bitmap = toBitmap().resize(size)
-fun Bitmap.resize(size: Size): Bitmap {
-    if (size.width is Dimension.Undefined || size.height is Dimension.Undefined) return this
-    return Bitmap.createScaledBitmap(
-        this,
-        size.width.pxOrElse { width },
-        size.height.pxOrElse { height },
-        false
     )
 }
 

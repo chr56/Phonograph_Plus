@@ -9,12 +9,12 @@ import coil.fetch.FetchResult
 import coil.fetch.Fetcher
 import coil.request.Options
 import coil.size.Size
-import player.phonograph.coil.ExternalFileRetriever
+import player.phonograph.coil.retriever.ExternalFileRetriever
 import player.phonograph.coil.IgnoreMediaStorePreference
-import player.phonograph.coil.ImageRetriever
-import player.phonograph.coil.JAudioTaggerRetriever
-import player.phonograph.coil.MediaMetadataRetriever
-import player.phonograph.coil.MediaStoreRetriever
+import player.phonograph.coil.retriever.ImageRetriever
+import player.phonograph.coil.retriever.JAudioTaggerRetriever
+import player.phonograph.coil.retriever.MediaMetadataRetriever
+import player.phonograph.coil.retriever.MediaStoreRetriever
 import player.phonograph.util.Util.debug
 import android.content.Context
 import android.util.Log
