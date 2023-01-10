@@ -4,6 +4,7 @@
 
 package player.phonograph.ui.compose.dialogs
 
+import player.phonograph.R
 import player.phonograph.model.config.ImageSourceConfig
 import player.phonograph.ui.compose.components.SortableConfigAdapter
 import player.phonograph.ui.compose.components.SortableConfigScreen
@@ -39,10 +40,19 @@ fun ImageSourceConfigDialog(context: Context, onDismiss: () -> Unit) {
         SortableConfigScreen(adapter = adapter, modifier = Modifier.fillMaxWidth())
         Row(Modifier.fillMaxWidth()) {
             TextButton(
-                onClick = onDismiss,
+                onClick = { reset(); onDismiss() },
                 Modifier
                     .weight(2f)
                     .wrapContentWidth(Alignment.Start)
+            ) {
+                Text(stringResource(id = R.string.reset_action))
+            }
+            Spacer(modifier = Modifier.widthIn(48.dp))
+            TextButton(
+                onClick = onDismiss,
+                Modifier
+                    .weight(2f)
+                    .wrapContentWidth(Alignment.End)
             ) {
                 Text(stringResource(id = android.R.string.cancel))
             }
@@ -57,6 +67,10 @@ fun ImageSourceConfigDialog(context: Context, onDismiss: () -> Unit) {
             }
         }
     }
+}
+
+fun reset() {
+    CoilImageSourceConfig.resetToDefault()
 }
 
 private fun saveImpl(adapter: SortableConfigAdapter) {
