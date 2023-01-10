@@ -40,7 +40,7 @@ class AudioFileFetcher private constructor(
         size: Size
     ): FetchResult? {
         for (retriever in retrievers) {
-            val result = retriever.retrieve(audioFile, context, size)
+            val result = retriever.retrieve(audioFile.path, audioFile.albumId, context, size)
             if (result == null) {
                 debug {
                     Log.v(TAG, "Image not available from ${retriever.name} for $audioFile")

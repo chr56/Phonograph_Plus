@@ -3,6 +3,7 @@
  */
 
 @file:JvmName("RetrieveImages")
+
 package player.phonograph.coil.retriever
 
 import coil.annotation.ExperimentalCoilApi
@@ -18,7 +19,6 @@ import okio.buffer
 import okio.source
 import org.jaudiotagger.audio.AudioFile
 import org.jaudiotagger.audio.AudioFileIO
-import player.phonograph.util.MusicUtil.getMediaStoreAlbumCoverUri
 import android.content.ContentResolver
 import android.content.Context
 import android.graphics.Bitmap
@@ -30,12 +30,15 @@ import android.os.Bundle
 import java.io.File
 import java.io.InputStream
 
-internal fun readFromMediaStore(albumId: Long, context: Context, size: Size): SourceResult? {
-    return runCatching {
+internal fun readFromMediaStore(
+    albumId: Long,
+    context: Context,
+    size: Size
+): SourceResult? =
+    runCatching {
         val uri = getMediaStoreAlbumCoverUri(albumId)
         readFromMediaStore(uri, context, size)
     }.getOrNull()
-}
 
 internal fun retrieveFromMediaMetadataRetriever(
     filepath: String,
@@ -61,7 +64,7 @@ internal fun retrieveFromExternalFile(
     filepath: String
 ): FetchResult? {
     val parent = File(filepath).parentFile ?: return null
-    for (fallback in fallbackCoverFiles) {
+    for (fallback in folderCoverFiles) {
         val coverFile = File(parent, fallback)
         return if (coverFile.exists()) {
             SourceResult(
@@ -79,17 +82,12 @@ internal fun retrieveFromExternalFile(
     return null
 }
 
-internal val fallbackCoverFiles = arrayOf(
-    "cover.jpg",
-    "album.jpg",
-    "folder.jpg",
-    "cover.png",
-    "album.png",
-    "folder.png"
-)
-
 @OptIn(ExperimentalCoilApi::class)
-fun readFromMediaStore(uri: Uri, context: Context, size: Size): SourceResult? {
+internal fun readFromMediaStore(
+    uri: Uri,
+    context: Context,
+    size: Size
+): SourceResult? {
     val contentResolver = context.contentResolver
     val inputStream: InputStream? =
         if (Build.VERSION.SDK_INT >= 29) {
@@ -120,18 +118,22 @@ fun readFromMediaStore(uri: Uri, context: Context, size: Size): SourceResult? {
     ) else null
 }
 
-internal fun readJEPGFile(file: File, diskCacheKey: String? = null): SourceResult {
+internal fun readFromFile(
+    file: File,
+    diskCacheKey: String? = null,
+    mimeType: String?
+): SourceResult {
     return SourceResult(
         source = ImageSource(
             file = file.toOkioPath(true),
             diskCacheKey = diskCacheKey
         ),
-        mimeType = "image/jpeg",
+        mimeType = mimeType,
         dataSource = DataSource.DISK
     )
 }
 
-fun AudioFile.retrieveEmbedPicture(size: Size): Bitmap? {
+internal fun AudioFile.retrieveEmbedPicture(size: Size): Bitmap? {
     val artwork = this.tag.firstArtwork
     return artwork?.binaryData?.toBitmap(size)
 }
