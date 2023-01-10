@@ -34,9 +34,7 @@ class MediaMetadataRetriever : ImageRetriever {
     override val name: String = "MediaMetadataRetriever"
     override fun retrieve(audioFile: AudioFile, context: Context, size: Size): FetchResult? {
         val bitmap = retrieveFromMediaMetadataRetriever(
-            audioFile.path,
-            MediaMetadataRetriever(),
-            size.w(), size.h()
+            audioFile.path, mediaMetadataRetriever, size
         )
         return bitmap?.let {
             DrawableResult(
@@ -46,6 +44,9 @@ class MediaMetadataRetriever : ImageRetriever {
             )
         }
     }
+    companion object {
+        private val mediaMetadataRetriever = MediaMetadataRetriever()
+    }
 }
 
 
@@ -53,7 +54,7 @@ class JAudioTaggerRetriever : ImageRetriever {
     override val name: String = "JAudioTaggerRetriever"
     override fun retrieve(audioFile: AudioFile, context: Context, size: Size): FetchResult? {
         val bitmap = retrieveFromJAudioTagger(
-            audioFile.path, size.w(), size.h()
+            audioFile.path, size
         )
         return bitmap?.let {
             DrawableResult(
@@ -68,16 +69,7 @@ class JAudioTaggerRetriever : ImageRetriever {
 class ExternalFileRetriever : ImageRetriever {
     override val name: String = "ExternalFileRetriever"
     override fun retrieve(audioFile: AudioFile, context: Context, size: Size): FetchResult? {
-        val bitmap = retrieveFromExternalFile(
-            audioFile.path, size.w(), size.h()
-        )
-        return bitmap?.let {
-            DrawableResult(
-                BitmapDrawable(context.resources, bitmap),
-                false,
-                DataSource.DISK
-            )
-        }
+        return retrieveFromExternalFile(audioFile.path)
     }
 }
 

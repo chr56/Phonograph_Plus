@@ -35,9 +35,6 @@ class ArtistImageFetcher(val data: ArtistImage, val context: Context, val size: 
         // returning bitmap
         var bitmap: Bitmap? = null
 
-        val width = (size.width as? Dimension.Pixels)?.px ?: -1
-        val height = (size.height as? Dimension.Pixels)?.px ?: -1
-
         // first check if the custom artist image exist
         val file = CustomArtistImageStore.instance(context)
             .getCustomArtistImageFile(data.artistId, data.artistName)
@@ -62,7 +59,7 @@ class ArtistImageFetcher(val data: ArtistImage, val context: Context, val size: 
         //
         MediaMetadataRetriever().use { retriever ->
             for (cover in data.albumCovers) {
-                bitmap = retrieveFromMediaMetadataRetriever(cover.filePath, retriever, width, height)
+                bitmap = retrieveFromMediaMetadataRetriever(cover.filePath, retriever, size)
                 if (bitmap != null) break
             }
         }
@@ -71,7 +68,7 @@ class ArtistImageFetcher(val data: ArtistImage, val context: Context, val size: 
         //
         if (bitmap == null) {
             for (cover in data.albumCovers) {
-                bitmap = retrieveFromJAudioTagger(cover.filePath, width, height)
+                bitmap = retrieveFromJAudioTagger(cover.filePath, size)
                 if (bitmap != null) break
             }
         }

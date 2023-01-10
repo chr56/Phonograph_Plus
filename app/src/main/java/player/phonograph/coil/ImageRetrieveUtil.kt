@@ -18,9 +18,11 @@ import coil.annotation.ExperimentalCoilApi
 import coil.decode.ContentMetadata
 import coil.decode.DataSource
 import coil.decode.ImageSource
+import coil.fetch.FetchResult
 import coil.fetch.SourceResult
 import coil.size.Dimension
 import coil.size.Size
+import coil.size.pxOrElse
 import okio.Path.Companion.toOkioPath
 import okio.buffer
 import okio.source
@@ -40,38 +42,38 @@ internal fun readFromMediaStore(albumId: Long, context: Context, size: Size): So
 internal fun retrieveFromMediaMetadataRetriever(
     filepath: String,
     retriever: MediaMetadataRetriever,
-    width: Int = -1,
-    height: Int = -1,
+    size: Size
 ): Bitmap? {
     val embeddedPicture: ByteArray? =
         runCatching {
             retriever.setDataSource(filepath)
             retriever.embeddedPicture
         }.getOrNull()
-    return embeddedPicture?.toBitmap(width, height)
+    return embeddedPicture?.toBitmap(size)
 }
 
 internal fun retrieveFromJAudioTagger(
     filepath: String,
-    width: Int = -1,
-    height: Int = -1,
+    size: Size
 ): Bitmap? = runCatching {
-    AudioFileIO.read(File(filepath)).retrieveEmbedPicture(width, height)
+    AudioFileIO.read(File(filepath)).retrieveEmbedPicture(size)
 }.getOrNull()
 
-internal fun retrieveFromExternalFile(filepath: String, width: Int = -1, height: Int = -1): Bitmap? {
+internal fun retrieveFromExternalFile(
+    filepath: String
+): FetchResult? {
     val parent = File(filepath).parentFile ?: return null
     for (fallback in fallbackCoverFiles) {
         val coverFile = File(parent, fallback)
         return if (coverFile.exists()) {
-            if (width > 0 && height > 0)
-                BitmapFactory.decodeFile(coverFile.absolutePath,
-                    BitmapFactory.Options().apply {
-                        outHeight = height
-                        outWidth = height
-                    })
-            else
-                BitmapFactory.decodeFile(coverFile.absolutePath)
+            SourceResult(
+                source = ImageSource(
+                    file = coverFile.toOkioPath(true),
+                    diskCacheKey = filepath
+                ),
+                mimeType = null,
+                dataSource = DataSource.DISK
+            )
         } else {
             continue
         }
@@ -132,17 +134,18 @@ internal fun readJEPGFile(file: File, diskCacheKey: String? = null): SourceResul
 }
 
 fun ByteArray.toBitmap(): Bitmap = BitmapFactory.decodeByteArray(this, 0, this.size)
-fun ByteArray.toBitmap(width: Int, height: Int): Bitmap = toBitmap().resize(width, height)
+fun ByteArray.toBitmap(size: Size): Bitmap = toBitmap().resize(size)
+fun Bitmap.resize(size: Size): Bitmap {
+    if (size.width is Dimension.Undefined || size.height is Dimension.Undefined) return this
+    return Bitmap.createScaledBitmap(
+        this,
+        size.width.pxOrElse { width },
+        size.height.pxOrElse { height },
+        false
+    )
+}
 
-fun Bitmap.resize(width: Int, height: Int): Bitmap =
-    when {
-        width <= 0 || height <= 0 -> this // not configured
-        (this.width > width || this.height > height) -> Bitmap.createScaledBitmap(this, width, height, false)
-        else -> this
-    }
-
-
-fun AudioFile.retrieveEmbedPicture(width: Int, height: Int): Bitmap? {
+fun AudioFile.retrieveEmbedPicture(size: Size): Bitmap? {
     val artwork = this.tag.firstArtwork
-    return artwork?.binaryData?.toBitmap(width, height)
+    return artwork?.binaryData?.toBitmap(size)
 }
