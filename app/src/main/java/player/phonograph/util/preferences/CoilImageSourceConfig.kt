@@ -69,7 +69,7 @@ object CoilImageSourceConfig {
      * @return true if correct
      */
     fun checkInvalid(config: ImageSourceConfig): Boolean {
-        if (config.list.isEmpty()) {
+        if (config.sources.isEmpty()) {
             Log.e(TAG, "Illegal ImageSourceConfig: $config")
             return false
         }

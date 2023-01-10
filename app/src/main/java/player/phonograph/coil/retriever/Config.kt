@@ -14,7 +14,7 @@ import player.phonograph.util.preferences.CoilImageSourceConfig
 internal val retrieverFromConfig: List<ImageRetriever>
     get() {
         val config = CoilImageSourceConfig.currentConfig
-        return config.list.filter { it.enabled }.map { it.imageSource.retriever() }
+        return config.sources.filter { it.enabled }.map { it.imageSource.retriever() }
     }
 
 internal fun ImageSource.retriever(): ImageRetriever = when (key) {

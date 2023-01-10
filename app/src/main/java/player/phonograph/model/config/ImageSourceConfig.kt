@@ -17,7 +17,7 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 @kotlinx.serialization.Serializable
 data class ImageSourceConfig(
-    val list: List<Item>,
+    val sources: List<Item>,
     val version: Int = 0
 ) : Parcelable {
     @Keep
