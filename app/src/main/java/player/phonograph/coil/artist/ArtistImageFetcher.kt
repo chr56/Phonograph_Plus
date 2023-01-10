@@ -11,11 +11,13 @@ import coil.request.Options
 import coil.size.Size
 import player.phonograph.coil.CustomArtistImageStore
 import player.phonograph.coil.IgnoreMediaStorePreference
+import player.phonograph.coil.retriever.ExternalFileRetriever
 import player.phonograph.coil.retriever.ImageRetriever
 import player.phonograph.coil.retriever.JAudioTaggerRetriever
 import player.phonograph.coil.retriever.MediaMetadataRetriever
 import player.phonograph.coil.retriever.MediaStoreRetriever
 import player.phonograph.coil.retriever.readFromFile
+import player.phonograph.coil.retriever.retrieverFromConfig
 import player.phonograph.util.Util.debug
 import android.content.Context
 import android.util.Log
@@ -72,15 +74,8 @@ class ArtistImageFetcher(val data: ArtistImage, val context: Context, val size: 
     }
 
     companion object {
+        val retriever = retrieverFromConfig.filter { it !is ExternalFileRetriever }
+        // ExternalFileRetriever is not suitable for artist
         private const val TAG = "ArtistImageFetcher"
-        val retriever =
-            if (!IgnoreMediaStorePreference.ignoreMediaStore) listOf(
-                MediaStoreRetriever(),
-                MediaMetadataRetriever(),
-                JAudioTaggerRetriever()
-            ) else listOf(
-                MediaMetadataRetriever(),
-                JAudioTaggerRetriever()
-            )
     }
 }

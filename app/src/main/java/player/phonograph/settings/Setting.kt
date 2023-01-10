@@ -63,6 +63,7 @@ class Setting(context: Context) {
     var nowPlayingScreenIndex: Int by IntPref(NOW_PLAYING_SCREEN_ID, 0)
 
     // Behavior-File
+    var imageSourceConfigJsonString: String by StringPref(IMAGE_SOURCE_CONFIG, "{}")
     var ignoreMediaStoreArtwork: Boolean by BooleanPref(IGNORE_MEDIA_STORE_ARTWORK, false)
     var autoDownloadImagesPolicy: String by StringPref(AUTO_DOWNLOAD_IMAGES_POLICY, "never")
 
@@ -208,6 +209,7 @@ class Setting(context: Context) {
         const val NOW_PLAYING_SCREEN_ID = "now_playing_screen_id"
 
         // Behavior-File
+        const val IMAGE_SOURCE_CONFIG = "image_source_config"
         const val IGNORE_MEDIA_STORE_ARTWORK = "ignore_media_store_artwork"
         private const val AUTO_DOWNLOAD_IMAGES_POLICY = "auto_download_images_policy"
 
