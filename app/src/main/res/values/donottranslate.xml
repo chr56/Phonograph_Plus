@@ -49,5 +49,6 @@
     <string name="preference_key_blacklist" translatable="false">blacklist</string>
     <string name="preference_key_home_tab_config" translatable="false">home_tab_config</string>
     <string name="preference_key_now_playing_screen" translatable="false">now_playing_screen</string>
+    <string name="preference_key_image_source_config" translatable="false">image_source_config</string>
 
 </resources>

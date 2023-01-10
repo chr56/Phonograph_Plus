@@ -136,6 +136,11 @@
 
     <lib.phonograph.preference.PreferenceCategoryX android:title="@string/pref_header_images">
 
+        <lib.phonograph.preference.DialogPreferenceX
+            android:key="image_source_config"
+            android:title="@string/preference_key_image_source_config"
+            app:iconSpaceReserved="false"/>
+
         <lib.phonograph.preference.SwitchPreferenceX
             android:defaultValue="false"
             android:key="ignore_media_store_artwork"
@@ -179,9 +184,9 @@
         <lib.phonograph.preference.DialogPreferenceX
             android:key="@string/preference_key_click_behavior"
             android:persistent="false"
-            android:title="@string/pref_title_click_behavior"
             android:summary="@string/pref_summary_click_behavior"
-            app:iconSpaceReserved="false"/>
+            android:title="@string/pref_title_click_behavior"
+            app:iconSpaceReserved="false" />
 
         <lib.phonograph.preference.SwitchPreferenceX
             android:defaultValue="true"
@@ -202,7 +207,7 @@
             android:key="enable_lyrics"
             android:summary="@string/pref_summary_load_lyrics"
             android:title="@string/pref_title_load_lyrics"
-            app:iconSpaceReserved="false"/>
+            app:iconSpaceReserved="false" />
 
         <lib.phonograph.preference.SwitchPreferenceX
             android:defaultValue="true"

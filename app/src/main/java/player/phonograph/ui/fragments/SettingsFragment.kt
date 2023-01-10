@@ -23,6 +23,7 @@ import player.phonograph.preferences.HomeTabConfigDialog
 import player.phonograph.preferences.NowPlayingScreenPreferenceDialog
 import player.phonograph.settings.Setting
 import player.phonograph.ui.dialogs.ClickModeSettingDialog
+import player.phonograph.ui.dialogs.ImageSourceConfigDialog
 import player.phonograph.ui.dialogs.PathFilterDialog
 import player.phonograph.util.NavigationUtil
 import player.phonograph.util.preferences.HomeTabConfig
@@ -59,6 +60,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
             getString(R.string.preference_key_home_tab_config) -> HomeTabConfigDialog()
             getString(R.string.preference_key_now_playing_screen) -> NowPlayingScreenPreferenceDialog()
             getString(R.string.preference_key_click_behavior) -> ClickModeSettingDialog()
+            getString(R.string.preference_key_image_source_config) -> ImageSourceConfigDialog()
             else -> {
                 when (preference) {
                     is EditTextPreferenceX ->
