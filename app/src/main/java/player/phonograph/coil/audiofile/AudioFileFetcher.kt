@@ -4,21 +4,20 @@
 
 package player.phonograph.coil.audiofile
 
-import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.drawable.BitmapDrawable
-import android.media.MediaMetadataRetriever
-import android.util.Log
 import coil.ImageLoader
-import coil.decode.DataSource
-import coil.fetch.DrawableResult
 import coil.fetch.FetchResult
 import coil.fetch.Fetcher
 import coil.request.Options
-import coil.size.Dimension
 import coil.size.Size
-import player.phonograph.BuildConfig.DEBUG
-import player.phonograph.coil.*
+import player.phonograph.coil.ExternalFileRetriever
+import player.phonograph.coil.IgnoreMediaStorePreference
+import player.phonograph.coil.ImageRetriever
+import player.phonograph.coil.JAudioTaggerRetriever
+import player.phonograph.coil.MediaMetadataRetriever
+import player.phonograph.coil.MediaStoreRetriever
+import player.phonograph.util.Util.debug
+import android.content.Context
+import android.util.Log
 
 class AudioFileFetcher private constructor(
     private val audioFile: AudioFile,
@@ -27,80 +26,48 @@ class AudioFileFetcher private constructor(
 ) : Fetcher {
 
     class Factory : Fetcher.Factory<AudioFile> {
-        override fun create(data: AudioFile, options: Options, imageLoader: ImageLoader): Fetcher {
-            return AudioFileFetcher(data, options.context, options.size)
-        }
+        override fun create(data: AudioFile, options: Options, imageLoader: ImageLoader): Fetcher =
+            AudioFileFetcher(data, options.context, options.size)
     }
 
-    override suspend fun fetch(): FetchResult? {
-        // returning bitmap
-        var bitmap: Bitmap?
+    override suspend fun fetch(): FetchResult? =
+        retrieve(retriever, audioFile, context, size)
 
-        val width = (size.width as? Dimension.Pixels)?.px ?: -1
-        val height = (size.height as? Dimension.Pixels)?.px ?: -1
-
-        //
-        // 0: lookup for MediaStore
-        //
-        if (!IgnoreMediaStorePreference.ignoreMediaStore) {
-            val result = readFromMediaStore(audioFile.albumId, context, size)
-            if (result != null) {
-                return result
-            } else {
-                if (DEBUG) {
-                    Log.v(TAG, "No cover for $audioFile from Android MediaStore")
+    private fun retrieve(
+        retrievers: List<ImageRetriever>,
+        audioFile: AudioFile,
+        context: Context,
+        size: Size
+    ): FetchResult? {
+        for (retriever in retrievers) {
+            val result = retriever.retrieve(audioFile, context, size)
+            if (result == null) {
+                debug {
+                    Log.v(TAG, "Image not available from ${retriever.name} for $audioFile")
                 }
+                continue
+            } else {
+                return result
             }
         }
-
-        //
-        // 1: From Android MediaMetadataRetriever
-        //
-        MediaMetadataRetriever().use { retriever ->
-            bitmap = retrieveFromMediaMetadataRetriever(audioFile.path, retriever, width, height)
-            if (DEBUG && bitmap == null) {
-                Log.v(TAG, "No cover for $audioFile from Android naive MediaMetadataRetriever")
-            }
+        debug {
+            Log.v(TAG, "No any cover for $audioFile")
         }
-
-        //
-        // 2: Use JAudioTagger to get embedded high resolution album art if there is any
-        //
-        if (bitmap == null) {
-            bitmap = retrieveFromJAudioTagger(audioFile.path, width, height)
-            if (DEBUG && bitmap == null) {
-                Log.v(TAG, "No cover for $audioFile in tags")
-            }
-        }
-
-        //
-        // 3: Look for album art in external files
-        //
-        if (bitmap == null) {
-            bitmap = retrieveFromExternalFile(audioFile.path, width, height)
-            if (DEBUG && bitmap == null) {
-                Log.v(TAG, "No cover file along with $audioFile in folder")
-            }
-        }
-
-        //
-        // Collect Result
-        //
-        return if (bitmap != null) {
-            DrawableResult(
-                BitmapDrawable(context.resources, bitmap),
-                false,
-                DataSource.DISK
-            )
-        } else {
-            if (DEBUG) {
-                Log.v(TAG, "No any cover for $audioFile")
-            }
-            null
-        }
+        return null
     }
 
     companion object {
-        private const val TAG = "AudioFileFetcher"
+        val retriever =
+            if (!IgnoreMediaStorePreference.ignoreMediaStore) listOf(
+                MediaStoreRetriever(),
+                MediaMetadataRetriever(),
+                JAudioTaggerRetriever(),
+                ExternalFileRetriever()
+            ) else listOf(
+                MediaMetadataRetriever(),
+                JAudioTaggerRetriever(),
+                ExternalFileRetriever()
+            )
+        private const val TAG = "ImageRetriever"
     }
 }
