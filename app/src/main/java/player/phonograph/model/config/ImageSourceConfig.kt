@@ -43,6 +43,10 @@ data class ImageSourceConfig(
                 ), VERSION
             )
         const val VERSION = 1
+
+        fun from(source: List<Item>): ImageSourceConfig {
+            return ImageSourceConfig(source, VERSION)
+        }
     }
 }
 

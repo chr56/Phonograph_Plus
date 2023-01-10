@@ -48,7 +48,7 @@ fun ImageSourceConfigDialog(context: Context, onDismiss: () -> Unit) {
             }
             Spacer(modifier = Modifier.widthIn(48.dp))
             TextButton(
-                onClick = onDismiss,
+                onClick = { saveImpl(adapter); onDismiss() },
                 Modifier
                     .weight(2f)
                     .wrapContentWidth(Alignment.End)
@@ -57,6 +57,13 @@ fun ImageSourceConfigDialog(context: Context, onDismiss: () -> Unit) {
             }
         }
     }
+}
+
+private fun saveImpl(adapter: SortableConfigAdapter) {
+    val config = ImageSourceConfig.from(
+        adapter.data.map { ImageSourceConfig.Item(it.text, it.enabled) }
+    )
+    CoilImageSourceConfig.currentConfig = config
 }
 
 private fun imageSourceConfigAdapter(config: ImageSourceConfig): SortableConfigAdapter {
