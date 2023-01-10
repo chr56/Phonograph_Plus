@@ -9,6 +9,7 @@ import org.burnoutcrew.reorderable.ReorderableItem
 import org.burnoutcrew.reorderable.detectReorderAfterLongPress
 import org.burnoutcrew.reorderable.rememberReorderableLazyListState
 import org.burnoutcrew.reorderable.reorderable
+import player.phonograph.model.SortableConfigModel
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -22,35 +23,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-
-class SortableConfigModel(init: List<Item>) {
-    private var _items: Items = ArrayList(init)
-    val items: Items @Synchronized get() = _items
-
-    fun refresh(newItems: List<Item>) {
-        synchronized(_items) {
-            _items = ArrayList(newItems)
-        }
-    }
-
-    fun move(from: Int, to: Int) {
-        synchronized(_items) {
-            _items.add(to, _items.removeAt(from))
-        }
-    }
-
-    fun toggle(item: Item, enabled: Boolean) {
-        item.enabled = enabled
-    }
-
-    interface Item {
-        fun name(): String
-        fun id(): String
-        var enabled: Boolean
-    }
-}
-
-typealias Items = ArrayList<SortableConfigModel.Item>
 
 @Composable
 fun SortableConfigScreen(model: SortableConfigModel) {
