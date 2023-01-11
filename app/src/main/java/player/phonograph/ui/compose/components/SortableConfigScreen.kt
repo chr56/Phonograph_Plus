@@ -36,9 +36,9 @@ interface SortableConfigContract {
     fun toggle(position: Int, newValue: Boolean)
     fun toggle(item: Item, newValue: Boolean)
     interface Item {
+        fun key(): String
         fun text(): String
         fun enabled(): Boolean
-        fun id(): Int
     }
 }
 
@@ -56,10 +56,10 @@ fun SortableConfigScreen(adapter: SortableConfigContract, modifier: Modifier = M
             .detectReorderAfterLongPress(state),
         state = state.listState
     ) {
-        items(data, { it.id() }) { item ->
+        items(data, { it.key() }) { item ->
             ReorderableItem(
                 reorderableState = state,
-                key = item.id(),
+                key = item.key(),
                 modifier = Modifier.fillMaxWidth()
             ) {
                 val enabled = remember { mutableStateOf(item.enabled()) }
@@ -112,12 +112,16 @@ class SortableConfigAdapter(val data: MutableList<Item>) : SortableConfigContrac
     }
 
     override fun toggle(item: SortableConfigContract.Item, newValue: Boolean) {
-        data.find { item.id() == it.id }?.enabled = newValue
+        data.find { item.key() == it.key() }?.enabled = newValue
     }
 
-    class Item(val text: String, var enabled: Boolean, val id: Int) : SortableConfigContract.Item {
+    class Item(
+        private val key: String,
+        private val text: String,
+        var enabled: Boolean,
+    ) : SortableConfigContract.Item {
+        override fun key(): String = key
         override fun text(): String = text
         override fun enabled(): Boolean = enabled
-        override fun id(): Int = id
     }
 }

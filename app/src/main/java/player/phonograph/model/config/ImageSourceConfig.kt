@@ -24,11 +24,11 @@ data class ImageSourceConfig(
     @Parcelize
     @kotlinx.serialization.Serializable
     data class Item(
-        val name: String,
+        val key: String,
         val enabled: Boolean
     ) : Parcelable {
         val imageSource: ImageSource
-            get() = ImageSource.fromKey(name)
+            get() = ImageSource.fromKey(key)
     }
 
     companion object {

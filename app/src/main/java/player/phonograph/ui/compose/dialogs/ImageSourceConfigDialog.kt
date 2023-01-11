@@ -30,7 +30,7 @@ import android.content.Context
 @Composable
 fun ImageSourceConfigDialog(context: Context, onDismiss: () -> Unit) {
     val config = remember { CoilImageSourceConfig.currentConfig }
-    val adapter = remember { imageSourceConfigAdapter(config) }
+    val adapter = remember { imageSourceConfigAdapter(config, context) }
     Column(modifier = Modifier.padding(16.dp)) {
         Text(
             stringResource(id = R.string.image_source_config),
@@ -74,16 +74,23 @@ fun reset() {
 
 private fun saveImpl(adapter: SortableConfigAdapter) {
     val config = ImageSourceConfig.from(
-        adapter.data.map { ImageSourceConfig.Item(it.text, it.enabled) }
+        adapter.data.map { ImageSourceConfig.Item(it.key(), it.enabled()) }
     )
     CoilImageSourceConfig.currentConfig = config
 }
 
-private fun imageSourceConfigAdapter(config: ImageSourceConfig): SortableConfigAdapter {
+private fun imageSourceConfigAdapter(
+    config: ImageSourceConfig,
+    context: Context
+): SortableConfigAdapter {
     return SortableConfigAdapter(
         config.sources
             .map {
-                SortableConfigAdapter.Item(it.name, it.enabled, it.name.hashCode())
+                SortableConfigAdapter.Item(
+                    key = it.key,
+                    text = it.imageSource.displayString(context),
+                    enabled = it.enabled
+                )
             }
             .toMutableList()
     )
