@@ -4,8 +4,11 @@
 
 package player.phonograph.ui.compose
 
+import mt.util.color.primaryTextColor
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.luminance
+import androidx.compose.ui.graphics.toArgb
+import android.content.Context
 import kotlin.math.abs
 
 fun Color.isColorLight(): Boolean = luminance() >= 0.5f
@@ -16,6 +19,11 @@ fun Color.getReverseColor(): Color {
     val b = colorSpace.getMaxValue(3) - blue
     return Color(r, g, b, alpha, colorSpace)
 }
+
+fun textColorOn(context: Context, color: Color): Color =
+    Color(
+        context.primaryTextColor(color.toArgb())
+    )
 
 object ColorTools {
     fun isColorRelevant(a: Color, b: Color): Boolean {

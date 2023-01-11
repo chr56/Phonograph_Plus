@@ -15,10 +15,19 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import mt.pref.ThemeColor
+import mt.pref.accentColor
+import mt.util.color.primaryTextColor
+import mt.util.color.shiftColor
 import player.phonograph.App
+import player.phonograph.ui.compose.textColorOn
+import android.content.Context
 
 @Composable
-fun PhonographTheme(darkTheme: Boolean = isSystemInDarkTheme(), previewMode: Boolean = false, content: @Composable () -> Unit) {
+fun PhonographTheme(
+    darkTheme: Boolean = isSystemInDarkTheme(),
+    previewMode: Boolean = false,
+    content: @Composable () -> Unit
+) {
     val colors =
         if (darkTheme) {
             colorsNight(previewMode)
@@ -34,18 +43,17 @@ fun PhonographTheme(darkTheme: Boolean = isSystemInDarkTheme(), previewMode: Boo
     )
 }
 
-fun colorsLight(previewMode: Boolean): Colors {
-    val cfg = getColorConfig(previewMode)
-    return Colors(
-        primary = cfg[0],
-        primaryVariant = cfg[1],
-        secondary = cfg[2],
-        secondaryVariant = cfg[2],
+fun colorsLight(previewMode: Boolean): Colors = with(colorConfig(previewMode)) {
+    Colors(
+        primary = primary,
+        primaryVariant = primaryDark,
+        secondary = accent,
+        secondaryVariant = accentDark,
         background = Color.White,
         surface = Color(0xFFDDDDDD),
         error = Color(0xFFB00020),
-        onPrimary = Color.White,
-        onSecondary = Color.Black,
+        onPrimary = onPrimary,
+        onSecondary = onAccent,
         onBackground = Color.Black,
         onSurface = Color.Black,
         onError = Color.White,
@@ -53,18 +61,17 @@ fun colorsLight(previewMode: Boolean): Colors {
     )
 }
 
-fun colorsNight(previewMode: Boolean): Colors {
-    val cfg = getColorConfig(previewMode)
-    return Colors(
-        primary = cfg[0],
-        primaryVariant = cfg[1],
-        secondary = cfg[2],
-        secondaryVariant = cfg[2],
+fun colorsNight(previewMode: Boolean): Colors = with(colorConfig(previewMode)) {
+    Colors(
+        primary = primary,
+        primaryVariant = primaryDark,
+        secondary = accent,
+        secondaryVariant = accentDark,
         background = Color(0xFF1B1B1B),
         surface = Color(0xFF1B1B1B),
         error = Color(0xFF85002D),
-        onPrimary = Color.Black,
-        onSecondary = Color.Black,
+        onPrimary = onPrimary,
+        onSecondary = onAccent,
         onBackground = Color.White,
         onSurface = Color.White,
         onError = Color.Black,
@@ -72,22 +79,33 @@ fun colorsNight(previewMode: Boolean): Colors {
     )
 }
 
-// todo
-fun getColorConfig(previewMode: Boolean = false): Array<Color> {
-    return if (previewMode) {
-        arrayOf(
+class ColorConfig(
+    val primary: Color,
+    val primaryDark: Color,
+    val accent: Color,
+    val accentDark: Color = accent,
+    val onPrimary: Color = textColorOn(App.instance, primary),
+    val onAccent: Color = textColorOn(App.instance, accent),
+)
+
+fun colorConfig(previewMode: Boolean, context: Context = App.instance): ColorConfig =
+    if (previewMode) {
+        ColorConfig(
             Color(mt.color.R.color.md_blue_A400),
             Color(mt.color.R.color.md_blue_900),
             Color(mt.color.R.color.md_yellow_900),
+            Color(mt.color.R.color.md_orange_900),
         )
     } else {
-        arrayOf(
-            Color(ThemeColor.primaryColor(App.instance)),
-            Color(ThemeColor.statusBarColor(App.instance)),
-            Color(ThemeColor.accentColor(App.instance)),
+        val primary = ThemeColor.primaryColor(context)
+        val accent = ThemeColor.accentColor(context)
+        ColorConfig(
+            Color(primary),
+            Color(shiftColor(primary, 0.8f)),
+            Color(accent),
+            Color(shiftColor(accent, 0.9f)),
         )
     }
-}
 
 // Set of Material typography styles to start with
 val Typography = Typography(
