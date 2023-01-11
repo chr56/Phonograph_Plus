@@ -424,4 +424,9 @@
     <string name="pref_title_click_behavior">单击歌曲时行为</string>
     <string name="pref_summary_click_behavior">单击一列表内歌曲时的操作</string>
     <string name="playing_queue_history">播放列表历史</string>
+    <string name="image_source_media_store">Android 媒体存储</string>
+    <string name="image_source_media_metadata_retriever">Android 媒体元数据提取器</string>
+    <string name="image_source_jaudio_tagger">JAudioTagger</string>
+    <string name="image_source_external_file">外部文件</string>
+    <string name="image_source_config">图片来源配置</string>
 </resources>

@@ -138,7 +138,7 @@
 
         <lib.phonograph.preference.DialogPreferenceX
             android:key="image_source_config"
-            android:title="@string/preference_key_image_source_config"
+            android:title="@string/image_source_config"
             app:iconSpaceReserved="false"/>
 
         <lib.phonograph.preference.SwitchPreferenceX

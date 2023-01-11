@@ -435,4 +435,9 @@
     <string name="pref_title_click_behavior">Custom behavior when clicking a song</string>
     <string name="pref_summary_click_behavior">Define what the player should do when you clicked a song in a list.</string>
     <string name="playing_queue_history">Playing Queue History</string>
+    <string name="image_source_media_store">Android MediaStore</string>
+    <string name="image_source_media_metadata_retriever">Android Media Metadata Retriever</string>
+    <string name="image_source_jaudio_tagger">JAudioTagger</string>
+    <string name="image_source_external_file">External File</string>
+    <string name="image_source_config">Image Source Config</string>
 </resources>

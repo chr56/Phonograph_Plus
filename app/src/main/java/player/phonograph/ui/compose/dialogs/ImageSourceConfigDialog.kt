@@ -33,7 +33,7 @@ fun ImageSourceConfigDialog(context: Context, onDismiss: () -> Unit) {
     val adapter = remember { imageSourceConfigAdapter(config) }
     Column(modifier = Modifier.padding(16.dp)) {
         Text(
-            "ImageSourceConfig",
+            stringResource(id = R.string.image_source_config),
             modifier = Modifier.padding(horizontal = 8.dp),
             style = MaterialTheme.typography.h6
         )
@@ -56,7 +56,6 @@ fun ImageSourceConfigDialog(context: Context, onDismiss: () -> Unit) {
             ) {
                 Text(stringResource(id = android.R.string.cancel))
             }
-            Spacer(modifier = Modifier.widthIn(48.dp))
             TextButton(
                 onClick = { saveImpl(adapter); onDismiss() },
                 Modifier
@@ -83,7 +82,9 @@ private fun saveImpl(adapter: SortableConfigAdapter) {
 private fun imageSourceConfigAdapter(config: ImageSourceConfig): SortableConfigAdapter {
     return SortableConfigAdapter(
         config.sources
-            .map { SortableConfigAdapter.Item(it.name, it.enabled, it.name.hashCode()) }
+            .map {
+                SortableConfigAdapter.Item(it.name, it.enabled, it.name.hashCode())
+            }
             .toMutableList()
     )
 }
