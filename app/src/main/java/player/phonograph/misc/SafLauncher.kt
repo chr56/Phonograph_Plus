@@ -13,6 +13,7 @@ import androidx.lifecycle.LifecycleOwner
 
 typealias UriCallback = (Uri?) -> Any
 
+// todo
 class SafLauncher(private val registry: ActivityResultRegistry) : DefaultLifecycleObserver {
     private lateinit var createLauncher: ActivityResultLauncher<String>
     lateinit var createCallback: UriCallback
@@ -28,8 +29,9 @@ class SafLauncher(private val registry: ActivityResultRegistry) : DefaultLifecyc
     lateinit var openCallback: UriCallback
     var openCallbackInUse = false
         private set
+
     override fun onCreate(owner: LifecycleOwner) {
-        createLauncher = registry.register("CreateFile", owner, ActivityResultContracts.CreateDocument()) {
+        createLauncher = registry.register("CreateFile", owner, ActivityResultContracts.CreateDocument("*/*")) {
             createCallback(it)
             createCallbackInUse = false
         }
