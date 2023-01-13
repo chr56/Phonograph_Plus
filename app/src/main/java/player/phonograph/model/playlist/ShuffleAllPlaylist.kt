@@ -4,13 +4,13 @@
 
 package player.phonograph.model.playlist
 
+import player.phonograph.R
+import player.phonograph.mediastore.SongLoader
+import player.phonograph.model.Song
+import androidx.annotation.Keep
 import android.content.Context
 import android.os.Parcel
 import android.os.Parcelable
-import androidx.annotation.Keep
-import player.phonograph.R
-import player.phonograph.model.Song
-import player.phonograph.mediastore.SongLoader
 
 class ShuffleAllPlaylist : SmartPlaylist {
     constructor(context: Context) : super(
@@ -23,7 +23,7 @@ class ShuffleAllPlaylist : SmartPlaylist {
 
     override val iconRes: Int = R.drawable.ic_shuffle_white_24dp
 
-    override fun getSongs(context: Context): List<Song> = SongLoader.getAllSongs(context) as List<Song>
+    override fun getSongs(context: Context): List<Song> = SongLoader.getAllSongs(context)
 
     override fun containsSong(context: Context, songId: Long): Boolean = true
     override fun toString(): String = "ShuffleAllPlaylist"
