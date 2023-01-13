@@ -12,26 +12,31 @@ import player.phonograph.model.ImageSource
 import androidx.annotation.Keep
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
+import kotlinx.serialization.SerialName
 
 @Keep
 @Parcelize
 @kotlinx.serialization.Serializable
 data class ImageSourceConfig(
-    val sources: List<Item>,
-    val version: Int = 0
+    @SerialName("sources") val sources: List<Item>,
+    @SerialName("version") val version: Int = 0
 ) : Parcelable {
     @Keep
     @Parcelize
     @kotlinx.serialization.Serializable
     data class Item(
-        val name: String,
-        val enabled: Boolean
+        @SerialName("key") val key: String,
+        @SerialName("enabled") val enabled: Boolean
     ) : Parcelable {
         val imageSource: ImageSource
-            get() = ImageSource.fromKey(name)
+            get() = ImageSource.fromKey(key)
     }
 
     companion object {
+        fun from(source: List<Item>): ImageSourceConfig {
+            return ImageSourceConfig(source, VERSION)
+        }
+
         @Suppress("PropertyName")
         val DEFAULT: ImageSourceConfig
             get() = ImageSourceConfig(
@@ -42,6 +47,7 @@ data class ImageSourceConfig(
                     Item(IMAGE_SOURCE_EXTERNAL_FILE, true),
                 ), VERSION
             )
+
         const val VERSION = 1
     }
 }

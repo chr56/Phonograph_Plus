@@ -10,12 +10,8 @@ import coil.fetch.Fetcher
 import coil.request.Options
 import coil.size.Size
 import player.phonograph.coil.CustomArtistImageStore
-import player.phonograph.coil.IgnoreMediaStorePreference
 import player.phonograph.coil.retriever.ExternalFileRetriever
 import player.phonograph.coil.retriever.ImageRetriever
-import player.phonograph.coil.retriever.JAudioTaggerRetriever
-import player.phonograph.coil.retriever.MediaMetadataRetriever
-import player.phonograph.coil.retriever.MediaStoreRetriever
 import player.phonograph.coil.retriever.readFromFile
 import player.phonograph.coil.retriever.retrieverFromConfig
 import player.phonograph.util.Util.debug
