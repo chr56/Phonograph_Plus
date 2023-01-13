@@ -141,13 +141,6 @@
             android:title="@string/image_source_config"
             app:iconSpaceReserved="false"/>
 
-        <lib.phonograph.preference.SwitchPreferenceX
-            android:defaultValue="false"
-            android:key="ignore_media_store_artwork"
-            android:summary="@string/pref_summary_ignore_media_store_artwork"
-            android:title="@string/pref_title_ignore_media_store_artwork"
-            app:iconSpaceReserved="false" />
-
         <lib.phonograph.preference.ListPreferenceX
             android:defaultValue="never"
             android:entries="@array/pref_auto_download_images_titles"

@@ -18,7 +18,6 @@ import mt.pref.ThemeColor
 import mt.util.color.darkenColor
 import player.phonograph.R
 import player.phonograph.appshortcuts.DynamicShortcutManager
-import player.phonograph.coil.IgnoreMediaStorePreference
 import player.phonograph.preferences.HomeTabConfigDialog
 import player.phonograph.preferences.NowPlayingScreenPreferenceDialog
 import player.phonograph.settings.Setting
@@ -318,9 +317,6 @@ class SettingsFragment : PreferenceFragmentCompat() {
                     },
                     1000
                 )
-            Setting.IGNORE_MEDIA_STORE_ARTWORK -> {
-                IgnoreMediaStorePreference.refresh()
-            }
         }
     }
 }
