@@ -165,6 +165,11 @@ class PlayingQueueAdapter(
         }
     }
 
+    // Playing Queue might have multiple items of SAME song, so we have to make differences
+    override fun getItemId(position: Int): Long =
+        super.getItemId(position) + position * 65537 // 65537, the fifth Fermat prime
+
+
     companion object {
         private const val HISTORY = 0
         private const val CURRENT = 1
