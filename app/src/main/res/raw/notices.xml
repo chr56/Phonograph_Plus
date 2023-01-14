@@ -143,4 +143,10 @@
         <copyright>Copyright 2022 André Claßen</copyright>
         <license>Apache Software License 2.0</license>
     </notice>
+    <notice>
+        <name>Compose Material Dialogs</name>
+        <url>https://https://github.com/vanpra/compose-material-dialogs</url>
+        <copyright>Copyright 2022 vanpra</copyright>
+        <license>Apache Software License 2.0</license>
+    </notice>
 </notices>

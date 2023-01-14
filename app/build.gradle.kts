@@ -218,6 +218,7 @@ dependencies {
     implementation(deps.slidingUpPanel)
 
     implementation(deps.bundles.materialDialogs)
+    implementation(deps.composeMaterialDialogs)
 
     implementation(deps.okhttp3)
     implementation(deps.retrofit2)

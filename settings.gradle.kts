@@ -124,6 +124,9 @@ dependencyResolutionManagement {
                    )
             )
 
+            library("composeMaterialDialogs",
+                    "io.github.vanpra.compose-material-dialogs:core:0.9.0")
+
 
             val versionMaterialTool = "material-tools"
             version(versionMaterialTool, "0.0.9")
