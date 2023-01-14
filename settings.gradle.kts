@@ -160,7 +160,7 @@ dependencyResolutionManagement {
             library("jaudiotagger",
                     "com.github.AdrienPoupa:jaudiotagger:2.2.3")
             library("observablescrollview",
-                    "com.github.ksoichiro:android-observablescrollview:1.6.0")
+                    "com.github.chr56:Android-ObservableScrollView-Retro:0.0.1")
             library("materialIntro",
                     "com.heinrichreimersoftware:material-intro:2.0.0")
             library("advrecyclerview",
