@@ -28,15 +28,10 @@ import androidx.compose.ui.unit.dp
 import android.content.Context
 
 @Composable
-fun ImageSourceConfigDialog(context: Context, onDismiss: () -> Unit) {
+fun ImageSourceConfigDialogContent(context: Context, onDismiss: () -> Unit) {
     val config = remember { CoilImageSourceConfig.currentConfig }
     val adapter = remember { imageSourceConfigAdapter(config, context) }
     Column(modifier = Modifier.padding(16.dp)) {
-        Text(
-            stringResource(id = R.string.image_source_config),
-            modifier = Modifier.padding(horizontal = 8.dp),
-            style = MaterialTheme.typography.h6
-        )
         SortableConfigScreen(adapter = adapter, modifier = Modifier.fillMaxWidth())
         Row(Modifier.fillMaxWidth()) {
             TextButton(
