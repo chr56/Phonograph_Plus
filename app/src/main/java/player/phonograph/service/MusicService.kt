@@ -1,8 +1,8 @@
 package player.phonograph.service
 
 import lib.phonograph.localization.ContextLocaleDelegate
+import player.phonograph.ACTUAL_PACKAGE_NAME
 import player.phonograph.App
-import player.phonograph.App.Companion.ACTUAL_PACKAGE_NAME
 import player.phonograph.BuildConfig
 import player.phonograph.MusicServiceMsgConst.META_CHANGED
 import player.phonograph.MusicServiceMsgConst.PLAY_STATE_CHANGED

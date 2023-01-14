@@ -4,24 +4,27 @@
 
 package player.phonograph
 
-object MusicServiceMsgConst {
-    private const val PKG_ABBR = App.ACTUAL_PACKAGE_NAME
+const val ACTUAL_PACKAGE_NAME = BuildConfig.APPLICATION_ID
 
-    // do not change these three strings as it will break support with other apps (e.g. last.fm scrobbling)
-    const val REPEAT_MODE_CHANGED = "$PKG_ABBR.repeatmodechanged"
-    const val SHUFFLE_MODE_CHANGED = "$PKG_ABBR.shufflemodechanged"
-    const val MEDIA_STORE_CHANGED = "$PKG_ABBR.mediastorechanged"
-
-    const val META_CHANGED = "$PKG_ABBR.metachanged"
-    const val QUEUE_CHANGED = "$PKG_ABBR.queuechanged"
-    const val PLAY_STATE_CHANGED = "$PKG_ABBR.playstatechanged"
-}
+const val PACKAGE_NAME = "player.phonograph"
+const val BROADCAST_PLAYLISTS_CHANGED = "$PACKAGE_NAME.playlists_changed"
 
 const val ISSUE_TRACKER_LINK = "https://github.com/chr56/Phonograph_Plus/issues"
+
+object MusicServiceMsgConst {
+
+    // do not change these three strings as it will break support with other apps (e.g. last.fm scrobbling)
+    const val REPEAT_MODE_CHANGED = "$ACTUAL_PACKAGE_NAME.repeatmodechanged"
+    const val SHUFFLE_MODE_CHANGED = "$ACTUAL_PACKAGE_NAME.shufflemodechanged"
+    const val MEDIA_STORE_CHANGED = "$ACTUAL_PACKAGE_NAME.mediastorechanged"
+
+    const val META_CHANGED = "$ACTUAL_PACKAGE_NAME.metachanged"
+    const val QUEUE_CHANGED = "$ACTUAL_PACKAGE_NAME.queuechanged"
+    const val PLAY_STATE_CHANGED = "$ACTUAL_PACKAGE_NAME.playstatechanged"
+}
+
 
 const val VERSION_INFO = "versionInfo"
 const val UPGRADABLE = "upgradable"
 
 
-
-const val BROADCAST_PLAYLISTS_CHANGED = "${App.PACKAGE_NAME}.playlists_changed"

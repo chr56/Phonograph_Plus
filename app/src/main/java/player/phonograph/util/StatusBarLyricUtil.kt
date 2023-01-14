@@ -6,6 +6,7 @@ package player.phonograph.util
 
 import StatusBarLyric.API.StatusBarLyric
 import player.phonograph.App
+import player.phonograph.PACKAGE_NAME
 import player.phonograph.R
 import player.phonograph.settings.Setting
 import androidx.appcompat.content.res.AppCompatResources
@@ -19,7 +20,7 @@ import java.io.ByteArrayOutputStream
 
 object StatusBarLyricUtil {
     // Actually, ServiceName is (music) service name, so we have no suffix (.plus.BUILD_TYPE)
-    private const val musicServiceName = App.PACKAGE_NAME
+    private const val musicServiceName = PACKAGE_NAME
     private const val useSystemMusicActive = false
     private val icon: Drawable? = AppCompatResources.getDrawable(App.instance, R.drawable.ic_notification)
 

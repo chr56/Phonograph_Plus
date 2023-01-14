@@ -1,13 +1,5 @@
 package player.phonograph
 
-import android.app.Application
-import android.content.Context
-import android.content.Intent
-import android.content.res.Configuration
-import android.os.Build
-import android.os.Process
-import android.util.Log
-import androidx.appcompat.content.res.AppCompatResources
 import coil.ImageLoader
 import coil.ImageLoaderFactory
 import lib.phonograph.localization.ContextLocaleDelegate
@@ -19,6 +11,13 @@ import player.phonograph.notification.ErrorNotification
 import player.phonograph.notification.ErrorNotification.KEY_STACK_TRACE
 import player.phonograph.service.queue.QueueManager
 import player.phonograph.ui.activities.CrashActivity
+import android.app.Application
+import android.content.Context
+import android.content.Intent
+import android.content.res.Configuration
+import android.os.Build
+import android.os.Process
+import android.util.Log
 import kotlin.system.exitProcess
 
 /**
@@ -26,7 +25,13 @@ import kotlin.system.exitProcess
  */
 class App : Application(), ImageLoaderFactory {
 
-    var _queueManager: QueueManager? = null
+    companion object {
+        @JvmStatic
+        lateinit var instance: App
+            private set
+    }
+
+    private var _queueManager: QueueManager? = null
     val queueManager: QueueManager
         get() {
             if (_queueManager == null) {
@@ -92,15 +97,6 @@ class App : Application(), ImageLoaderFactory {
     override fun onTerminate() {
         queueManager.release()
         super.onTerminate()
-    }
-
-    companion object {
-        @JvmStatic
-        lateinit var instance: App
-            private set
-
-        const val PACKAGE_NAME = "player.phonograph"
-        const val ACTUAL_PACKAGE_NAME = BuildConfig.APPLICATION_ID
     }
 
     // for coil ImageLoader singleton

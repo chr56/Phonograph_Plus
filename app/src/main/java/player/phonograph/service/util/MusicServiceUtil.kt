@@ -4,17 +4,18 @@
 
 package player.phonograph.service.util
 
-import android.content.Intent
+import player.phonograph.ACTUAL_PACKAGE_NAME
 import player.phonograph.App
 import player.phonograph.model.Song
 import player.phonograph.service.MusicService
+import android.content.Intent
 
 object MusicServiceUtil {
     private const val ANDROID_MUSIC_PACKAGE_NAME = "com.android.music"
     fun sendPublicIntent(service: MusicService, what: String) {
         service.sendStickyBroadcast(
             Intent(
-                what.replace(App.ACTUAL_PACKAGE_NAME, ANDROID_MUSIC_PACKAGE_NAME)
+                what.replace(ACTUAL_PACKAGE_NAME, ANDROID_MUSIC_PACKAGE_NAME)
             ).apply {
                 val song: Song = App.instance.queueManager.currentSong
                 putExtra("id", song.id)
@@ -24,7 +25,7 @@ object MusicServiceUtil {
                 putExtra("duration", song.duration)
                 putExtra("position", service.songProgressMillis.toLong())
                 putExtra("playing", service.isPlaying)
-                putExtra("scrobbling_source", App.ACTUAL_PACKAGE_NAME)
+                putExtra("scrobbling_source", ACTUAL_PACKAGE_NAME)
             }
         )
     }
