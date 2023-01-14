@@ -15,20 +15,14 @@ import player.phonograph.ui.compose.base.ComposeToolbarActivity
 import player.phonograph.ui.compose.components.Title
 import player.phonograph.util.SongDetailUtil.readSong
 import player.phonograph.util.tageditor.applyTagEdit
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.RowScope
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.AlertDialog
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.material.icons.Icons
@@ -38,6 +32,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
@@ -140,7 +135,12 @@ fun ExitWithoutSavingDialog(model: TagEditorModel) {
     val dismiss = { model.showExitWithoutSavingConfirmation.value = false }
     AlertDialog(
         onDismissRequest = dismiss,
-        title = { Text(stringResource(id = R.string.exit_without_saving)) },
+        title = {
+            Text(
+                stringResource(id = R.string.exit_without_saving),
+                style = MaterialTheme.typography.h6
+            )
+        },
         buttons = {
             Row(Modifier.fillMaxWidth()) {
                 TextButton(
@@ -148,12 +148,19 @@ fun ExitWithoutSavingDialog(model: TagEditorModel) {
                         dismiss()
                         model.allowExitWithoutSaving.value = true
                     },
-                    Modifier.weight(2f)
+                    Modifier
+                        .padding(horizontal = 16.dp)
+                        .wrapContentWidth(Alignment.Start)
                 ) {
                     Text(stringResource(id = android.R.string.ok))
                 }
                 Spacer(modifier = Modifier.widthIn(48.dp))
-                TextButton(onClick = dismiss, Modifier.weight(2f)) {
+                TextButton(
+                    onClick = dismiss,
+                    Modifier
+                        .padding(horizontal = 16.dp)
+                        .wrapContentWidth(Alignment.End)
+                ) {
                     Text(stringResource(id = android.R.string.cancel))
                 }
             }
@@ -172,16 +179,31 @@ fun SaveConfirmationDialog(model: TagEditorModel) {
         onDismissRequest = dismiss,
         buttons = {
             Row(Modifier.fillMaxWidth()) {
-                TextButton(onClick = save, Modifier.weight(2f)) {
+                TextButton(
+                    onClick = save,
+                    Modifier
+                        .padding(horizontal = 16.dp)
+                        .wrapContentWidth(Alignment.Start)
+                ) {
                     Text(stringResource(id = R.string.save), color = Color.Red)
                 }
                 Spacer(modifier = Modifier.widthIn(48.dp))
-                TextButton(onClick = dismiss, Modifier.weight(2f)) {
+                TextButton(
+                    onClick = dismiss,
+                    Modifier
+                        .padding(horizontal = 16.dp)
+                        .wrapContentWidth(Alignment.End)
+                ) {
                     Text(stringResource(id = android.R.string.cancel))
                 }
             }
         },
-        title = { Text(stringResource(id = R.string.save)) },
+        title = {
+            Text(
+                stringResource(id = R.string.save),
+                style = MaterialTheme.typography.h6
+            )
+        },
         text = {
             DiffScreen(model.infoModel, model.editRequestModel)
         }
