@@ -232,4 +232,5 @@ dependencies {
     implementation(deps.advrecyclerview)
     implementation(deps.recyclerviewFastscroll)
     implementation(deps.composeReorderable)
+    implementation(deps.statusBarLyricsApi)
 }

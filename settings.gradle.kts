@@ -164,6 +164,8 @@ dependencyResolutionManagement {
                     "com.h6ah4i.android.widget.advrecyclerview:advrecyclerview:1.0.0")
             library("composeReorderable",
                     "org.burnoutcrew.composereorderable:reorderable:0.9.6")
+            library("statusBarLyricsApi",
+                    "com.github.577fkj:StatusBarApiExample:v2.0")
         }
     }
 }
