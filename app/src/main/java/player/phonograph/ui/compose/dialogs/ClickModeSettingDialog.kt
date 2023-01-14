@@ -10,7 +10,6 @@ import player.phonograph.actions.click.mode.SongClickMode.FLAG_MASK_PLAY_QUEUE_I
 import player.phonograph.actions.click.mode.SongClickMode.baseModes
 import player.phonograph.actions.click.mode.SongClickMode.modeName
 import player.phonograph.settings.Setting
-import player.phonograph.ui.compose.theme.PhonographTheme
 import player.phonograph.util.Util.setBit
 import player.phonograph.util.Util.testBit
 import player.phonograph.util.Util.unsetBit
@@ -28,57 +27,36 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import android.content.Context
 
 @Composable
-fun ClickModeSettingDialog(context: Context, onDismiss: () -> Unit) {
-    PhonographTheme {
-        BoxWithConstraints {
-            // at least be a square dialog
-            Column(Modifier
-                       .widthIn(min = maxWidth * 5 / 7, max = maxWidth)
-                       .heightIn(min = maxWidth, max = maxHeight * 6 / 7)
-                       // .verticalScroll(rememberScrollState())
-                       .padding(8.dp)
-            ) {
-
-                Text(modifier = Modifier
-                    .height(48.dp)
-                    .fillMaxWidth()
-                    .padding(horizontal = 12.dp, vertical = 8.dp),
-                     text = context.getString(R.string.pref_title_click_behavior),
-                     style = TextStyle(fontWeight = FontWeight.Bold,
-                                       color = MaterialTheme.colors.onSurface,
-                                       fontSize = 20.sp),
-                     textAlign = TextAlign.Start
-                )
-
-                Box(modifier = Modifier
-                    .heightIn(max = this@BoxWithConstraints.maxHeight * 5 / 9)
+fun ClickModeSettingDialogContent(context: Context, onDismiss: () -> Unit) {
+    BoxWithConstraints {
+        Column(Modifier.heightIn(min = this@BoxWithConstraints.maxHeight * 2 / 3)) {
+            Box(
+                modifier = Modifier
                     .fillMaxWidth()
                     .verticalScroll(rememberScrollState())
-                ) {
-                    Content(context)
-                }
+            ) {
+                Content(context)
+            }
 
-                Row(modifier = Modifier
+            Row(
+                modifier = Modifier
                     .height(48.dp)
                     .width(IntrinsicSize.Max)
                     .align(Alignment.End)
                     .padding(horizontal = 12.dp, vertical = 8.dp)
-                ) {
-                    // Spacer(modifier = Modifier.wrapContentWidth(Alignment.Start))
-                    Text(text = context.getString(android.R.string.ok),
-                         modifier = Modifier
-                             .clickable { onDismiss() },
-                         color = MaterialTheme.colors.primary,
-                         textAlign = TextAlign.Start)
-                }
+            ) {
+                // Spacer(modifier = Modifier.wrapContentWidth(Alignment.Start))
+                Text(
+                    text = context.getString(android.R.string.cancel),
+                    modifier = Modifier.clickable { onDismiss() },
+                    color = MaterialTheme.colors.primary,
+                    textAlign = TextAlign.Start
+                )
             }
         }
     }
@@ -96,10 +74,12 @@ private fun Content(context: Context) {
             Setting.instance.songItemClickMode = new
         }
         for (id in baseModes) {
-            ModeRadioBox(mode = id,
-                         name = modeName(context.resources, id),
-                         currentMode = currentMode,
-                         setCurrentMode = setCurrentMode)
+            ModeRadioBox(
+                mode = id,
+                name = modeName(context.resources, id),
+                currentMode = currentMode,
+                setCurrentMode = setCurrentMode
+            )
         }
 
         Spacer(Modifier.height(8.dp))
@@ -117,14 +97,18 @@ private fun Content(context: Context) {
             Setting.instance.songItemClickExtraFlag = new
         }
 
-        FlagCheckBox(mask = FLAG_MASK_GOTO_POSITION_FIRST,
-                     name = context.getString(R.string.mode_flag_goto_position_first),
-                     currentExtraFlag = currentExtraFlag,
-                     flipExtraFlagBit = flipExtraFlagBit)
-        FlagCheckBox(mask = FLAG_MASK_PLAY_QUEUE_IF_EMPTY,
-                     name = context.getString(R.string.mode_flag_play_queue_if_empty),
-                     currentExtraFlag = currentExtraFlag,
-                     flipExtraFlagBit = flipExtraFlagBit)
+        FlagCheckBox(
+            mask = FLAG_MASK_GOTO_POSITION_FIRST,
+            name = context.getString(R.string.mode_flag_goto_position_first),
+            currentExtraFlag = currentExtraFlag,
+            flipExtraFlagBit = flipExtraFlagBit
+        )
+        FlagCheckBox(
+            mask = FLAG_MASK_PLAY_QUEUE_IF_EMPTY,
+            name = context.getString(R.string.mode_flag_play_queue_if_empty),
+            currentExtraFlag = currentExtraFlag,
+            flipExtraFlagBit = flipExtraFlagBit
+        )
     }
 }
 
@@ -140,12 +124,14 @@ fun ModeRadioBox(
             .clickable { setCurrentMode(mode) }
             .fillMaxWidth()) {
         RadioButton(selected = currentMode.value == mode, onClick = { setCurrentMode(mode) })
-        Text(text = name,
-             Modifier
-                 .padding(4.dp)
-                 .fillMaxWidth()
-                 .align(Alignment.CenterVertically)
-                 .alignByBaseline())
+        Text(
+            text = name,
+            Modifier
+                .padding(4.dp)
+                .fillMaxWidth()
+                .align(Alignment.CenterVertically)
+                .alignByBaseline()
+        )
     }
 }
 
@@ -165,12 +151,14 @@ fun FlagCheckBox(
             checked = currentExtraFlag.value.testBit(mask),
             onCheckedChange = { flipExtraFlagBit(mask) }
         )
-        Text(text = name,
-             Modifier
-                 .padding(4.dp)
-                 .fillMaxWidth()
-                 .align(Alignment.CenterVertically)
-                 .alignByBaseline())
+        Text(
+            text = name,
+            Modifier
+                .padding(4.dp)
+                .fillMaxWidth()
+                .align(Alignment.CenterVertically)
+                .alignByBaseline()
+        )
     }
 
 }

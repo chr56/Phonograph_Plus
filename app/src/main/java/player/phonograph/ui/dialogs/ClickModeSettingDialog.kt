@@ -4,13 +4,34 @@
 
 package player.phonograph.ui.dialogs
 
+import com.vanpra.composematerialdialogs.MaterialDialog
+import com.vanpra.composematerialdialogs.customView
+import com.vanpra.composematerialdialogs.rememberMaterialDialogState
+import com.vanpra.composematerialdialogs.title
+import player.phonograph.R
 import player.phonograph.ui.compose.base.BridgeDialogFragment
-import player.phonograph.ui.compose.dialogs.ClickModeSettingDialog
+import player.phonograph.ui.compose.dialogs.ClickModeSettingDialogContent
+import player.phonograph.ui.compose.theme.PhonographTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.unit.dp
 
 class ClickModeSettingDialog : BridgeDialogFragment() {
     @Composable
     override fun Content() {
-        ClickModeSettingDialog(requireContext(), ::dismiss)
+        val dialogState = rememberMaterialDialogState(true)
+        PhonographTheme {
+            PhonographTheme {
+                MaterialDialog(
+                    dialogState = dialogState,
+                    elevation = 0.dp,
+                    autoDismiss = true
+                ) {
+                    title(res = R.string.pref_title_click_behavior)
+                    customView {
+                        ClickModeSettingDialogContent(requireContext(), ::dismiss)
+                    }
+                }
+            }
+        }
     }
 }
