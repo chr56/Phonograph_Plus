@@ -11,6 +11,7 @@ import player.phonograph.App
 import player.phonograph.model.Song
 import player.phonograph.model.lyrics.LrcLyrics
 import player.phonograph.notification.ErrorNotification
+import player.phonograph.util.StatusBarLyricUtil
 import java.io.File
 
 class LyricsUpdater(song: Song?) {
@@ -53,11 +54,11 @@ class LyricsUpdater(song: Song?) {
         if (newLine != null) {
             if (newLine != cache) {
                 cache = newLine // update cache
-                App.instance.lyricsService.updateLyric(newLine)
+                StatusBarLyricUtil.updateLyric(newLine)
             }
         } else {
             cache = ""
-            App.instance.lyricsService.stopLyric()
+            StatusBarLyricUtil.stopLyric()
         }
     }
 

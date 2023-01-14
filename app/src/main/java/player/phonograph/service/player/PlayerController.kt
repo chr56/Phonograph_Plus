@@ -24,6 +24,7 @@ import player.phonograph.service.MusicService
 import player.phonograph.service.util.makeErrorMessage
 import player.phonograph.settings.Setting
 import player.phonograph.util.MusicUtil
+import player.phonograph.util.StatusBarLyricUtil
 
 // todo cleanup queueManager.setQueueCursor
 /**
@@ -621,7 +622,7 @@ class PlayerController(internal val service: MusicService) : Playback.PlaybackCa
 
     fun switchGaplessPlayback(gaplessPlayback: Boolean) { audioPlayer.gaplessPlayback = gaplessPlayback }
 
-    private fun broadcastStopLyric() = App.instance.lyricsService.stopLyric()
+    private fun broadcastStopLyric() = StatusBarLyricUtil.stopLyric()
     fun replaceLyrics(lyrics: LrcLyrics?) {
         if (lyrics != null) {
             lyricsUpdater.forceReplaceLyrics(lyrics)

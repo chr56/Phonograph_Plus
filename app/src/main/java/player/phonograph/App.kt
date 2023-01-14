@@ -26,16 +26,6 @@ import kotlin.system.exitProcess
  */
 class App : Application(), ImageLoaderFactory {
 
-    val lyricsService: StatusBarLyric.API.StatusBarLyric by lazy {
-        // StatusBar Lyrics API
-        StatusBarLyric.API.StatusBarLyric(
-            this@App,
-            AppCompatResources.getDrawable(this@App, R.drawable.ic_notification),
-            PACKAGE_NAME,
-            false
-        )
-    }
-
     var _queueManager: QueueManager? = null
     val queueManager: QueueManager
         get() {

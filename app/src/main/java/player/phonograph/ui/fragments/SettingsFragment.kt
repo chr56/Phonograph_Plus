@@ -25,6 +25,7 @@ import player.phonograph.ui.dialogs.ClickModeSettingDialog
 import player.phonograph.ui.dialogs.ImageSourceConfigDialog
 import player.phonograph.ui.dialogs.PathFilterDialog
 import player.phonograph.util.NavigationUtil
+import player.phonograph.util.StatusBarLyricUtil
 import player.phonograph.util.preferences.HomeTabConfig
 import player.phonograph.util.preferences.NowPlayingScreenConfig
 import player.phonograph.util.preferences.StyleConfig
@@ -313,7 +314,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
                 // clear lyrics displaying on the statusbar now
                 Handler(Looper.getMainLooper()).postDelayed(
                     {
-                        player.phonograph.App.instance.lyricsService.stopLyric()
+                        StatusBarLyricUtil.stopLyric()
                     },
                     1000
                 )
