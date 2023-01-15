@@ -17,6 +17,7 @@ import tools.release.filecopy.ApkInfo
 import tools.release.filecopy.copyApk
 import tools.release.filecopy.copyMapping
 import tools.release.git.getGitHash
+import tools.release.text.shiftFirstLetter
 import java.io.File
 import javax.inject.Inject
 
@@ -48,22 +49,17 @@ open class PublishArtifactsTask @Inject constructor(
 
     private fun collectApks() {
         val loader = variant.artifacts.getBuiltArtifactsLoader()
-        //project.afterEvaluate {
         val apkDirectory = apksDirectoryProvider.get()
         val apks = loader.load(apkDirectory)?.let { builtArtifacts ->
             builtArtifacts.elements
         }
         collectApksImpl(apks)
-        //}
-
     }
 
     private fun collectMappingFile() {
-        //project.afterEvaluate {
         val mappingFile =
             mappingFileProvider.orNull?.asFile
         collectMappingImpl(mappingFile)
-        //}
     }
 
     private fun collectApksImpl(apks: Collection<BuiltArtifact>?) {

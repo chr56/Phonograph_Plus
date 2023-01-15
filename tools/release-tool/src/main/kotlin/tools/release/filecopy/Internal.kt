@@ -5,7 +5,7 @@
 package tools.release.filecopy
 
 import com.android.build.api.variant.BuiltArtifact
-import tools.release.currentTimeString
+import tools.release.text.currentTimeString
 import java.io.File
 
 data class ApkInfo(
@@ -45,10 +45,11 @@ private fun copyApkImpl(
     destinationDir: File,
     apkName: String,
     overwrite: Boolean = true
-) = copyFile(
-    File(artifact.outputFile),
-    destinationDir, "$apkName.apk", overwrite
-)
+) {
+    val name = "$apkName.apk"
+    copyFile(File(artifact.outputFile), destinationDir, name, overwrite)
+    println("copied! apk     $name")
+}
 
 
 internal fun copyMapping(
@@ -69,8 +70,9 @@ private fun copyMappingImpl(
     gitHash: String,
     overwrite: Boolean = true
 ) {
-    val newName = "${apkName}_mapping_${gitHash}.txt"
-    copyFile(mappingFile, destinationDir, newName, overwrite)
+    val name = "${apkName}_mapping_${gitHash}.txt"
+    copyFile(mappingFile, destinationDir, name, overwrite)
+    println("copied! mapping $name")
 }
 
 private fun copyFile(
