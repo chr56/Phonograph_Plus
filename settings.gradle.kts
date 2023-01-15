@@ -183,4 +183,4 @@ pluginManagement {
 rootProject.buildFileName = "build.gradle.kts"
 
 include(":app")
-includeBuild(file("version-management"))
+includeBuild(file("tools/release-tool"))

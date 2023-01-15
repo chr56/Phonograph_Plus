@@ -1,8 +1,8 @@
 import com.android.build.api.artifact.SingleArtifact
 import com.android.build.api.dsl.ApplicationBaseFlavor
-import version.management.CopyArtifactsTask
-import version.management.Util.getGitHash
-import version.management.Util.shiftFirstLetter
+import tools.release.CopyArtifactsTask
+import tools.release.git.getGitHash
+import tools.release.shiftFirstLetter
 import java.util.Properties
 
 plugins {
@@ -10,7 +10,7 @@ plugins {
     id("kotlin-android")
     id("org.jetbrains.kotlin.plugin.serialization")
     id("org.jetbrains.kotlin.plugin.parcelize")
-    id("version.management")
+    id("tools.release")
 }
 
 val isSigningFileExist: Boolean = rootProject.file("signing.properties").exists()
