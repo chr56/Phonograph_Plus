@@ -2,7 +2,7 @@
 
 _This part is not written very well._
 
-Currently(2020.10.15), this project's toolchain&dependencies are:
+Currently(2023.1.15), this project's toolchain&dependencies are:
 
 - `Android SDK` `33` (no `NDK`), requiring `JDK` `11`
 - `Gradlew` `7.5.1`
@@ -11,11 +11,12 @@ Currently(2020.10.15), this project's toolchain&dependencies are:
 - `kotlinx.serialization`,`kotlinx.parcelize`
 - most popular `androidx`(`Jetpack`) components (most of them are latest)
 - `Jetpack Compose` (Since 0.4)
-- popular 3rd-party libraries available on (`MavenCentral` and `jitpack.io`), some might kind of old and unmaintained
-- "unpopular" 3rd-party libraries: `AdrienPoupa`'s `jaudiotagger`, `coil`
-- some modified libraries by me
+- many 3rd-party libraries available on (`MavenCentral` and `jitpack.io`), some might kind of old and unmaintained
+  including some modified libraries by me
 
-see [Libs.kt](./version-management/src/java/version/management/Libs.kt) for all the libraries.
+Gradle Version Catalogs is used in this project.
+
+see [setting.kt](./settings.gradle.kts) for all the libraries.
 
 see [build.gradle.kts](./build.gradle.kts) for all gradle plugins.
 
@@ -135,11 +136,12 @@ to move apk to `./products/stableRelease` and rename to `Phonograph Plus_<VERSIO
 
 only one flavor `purpose` and two default `BuildType` (`debug`/`release`), and all `release` shrinks and minifies.
 
-|           Build Variant            |                                        Note                                        |
-|:----------------------------------:|:----------------------------------------------------------------------------------:|
-| `stable` (or `common` before v4.0) |                             for stable and LTS release                             |
-|             `preview`              |                for preview release, package name suffix `.preview`                 |
-|             `checkout`             | for bug-locate and `dev` build of `Github Action`, package name suffix `.checkout` |
+|       Build Variant        |                                        Note                                        |
+|:--------------------------:|:----------------------------------------------------------------------------------:|
+|          `stable`          |                             for stable and LTS release                             |
+| ~`common` (before v0.4.0)~ |                     for stable and LTS release (before v0.4.0)                     |
+|         `preview`          |                for preview release, package name suffix `.preview`                 |
+|         `checkout`         | for bug-locate and `dev` build of `Github Action`, package name suffix `.checkout` |
 
 before v4.0, we have more (like `ci` for `Github Action`).
 
@@ -150,8 +152,8 @@ before v4.0, we have more (like `ci` for `Github Action`).
 Currently:
 
 - `app`: all actual code of the Phonograph Plus
-- `version-management`: (composite build) store libraries dependencies meta (versions etc) and some util for gradle
-  build script
+- `release-tool`: (composite build) store libraries dependencies meta (versions etc) and some util for gradle build
+  script
 
 #### Source Code Structure of Phonograph Plus
 
@@ -159,8 +161,9 @@ TODO
 
 #### Repository Structure
 
-- `app/`, `version-management/`: Gradle Module
-- `version.json`,`version_catalog.json`: containing the latest version information that Phonograph Plus would read at startup
+- `app/`, `tools/release-tool/`: Gradle Module
+- `version.json`,`version_catalog.json`: containing the latest version information that Phonograph Plus would read at
+  startup
 - `crowdin.yml`: Crowdin configuration
 - `ReleaseNote.md`: GitHub Action `preview_release` read this and post to Release Page
 - `fastlane/metadata/android/`: app meta info (not used)
