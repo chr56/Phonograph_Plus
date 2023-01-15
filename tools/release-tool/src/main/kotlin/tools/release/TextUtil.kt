@@ -4,6 +4,7 @@
 
 package tools.release
 
+import com.android.build.api.variant.ApplicationVariant
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -18,3 +19,4 @@ fun String.shiftFirstLetter(): String {
     return this[0].uppercaseChar() + this.substring(1)
 }
 
+val ApplicationVariant.canonicalName: String get() = name.shiftFirstLetter()

@@ -1,6 +1,6 @@
 repositories {
-    mavenCentral()
     google()
+    mavenCentral()
 }
 
 plugins {
@@ -20,7 +20,9 @@ java {
 }
 
 dependencies {
+    val agp = "7.3.0"
     compileOnly(gradleApi())
+    compileOnly("com.android.tools.build:gradle-api:$agp")
 }
 
 gradlePlugin {

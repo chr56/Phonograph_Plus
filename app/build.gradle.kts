@@ -1,8 +1,6 @@
-import com.android.build.api.artifact.SingleArtifact
 import com.android.build.api.dsl.ApplicationBaseFlavor
-import tools.release.CopyArtifactsTask
 import tools.release.git.getGitHash
-import tools.release.shiftFirstLetter
+import tools.release.registerPublishTask
 import java.util.Properties
 
 plugins {
@@ -118,40 +116,8 @@ android {
         }
 
         onVariants(selector().withBuildType("release")) { variant ->
-            val canonicalName = variant.name.shiftFirstLetter()
-
-            val loader = variant.artifacts.getBuiltArtifactsLoader()
-
-            val apkOutputDirectory = variant.artifacts.get(SingleArtifact.APK)
-            val mappingFile = variant.artifacts.get(SingleArtifact.OBFUSCATION_MAPPING_FILE)
-
-            val fileListToCopy = ArrayList<File>()
-
-            afterEvaluate {
-                loader.load(apkOutputDirectory.get())?.also { builtArtifacts ->
-                    fileListToCopy.addAll(
-                        builtArtifacts.elements.map { File(it.outputFile) }
-                    )
-                }
-                mappingFile.orNull?.asFile?.let {
-                    fileListToCopy.add(it)
-                }
-            }
-
-            val cfg = CopyArtifactsTask.Config(
-                variantName = variant.name,
-                isRelease = variant.buildType == "release",
-                appName = appName,
-                versionName = (android.defaultConfig as ApplicationBaseFlavor).versionName ?: "N/A",
-                gitHash = getGitHash(true),
-                artifactsFiles = fileListToCopy
-            )
-
-            tasks.register("copyArtifactsFor$canonicalName", CopyArtifactsTask::class.java, cfg)
-
-            tasks.register("Publish$canonicalName", CopyArtifactsTask::class.java, cfg).configure {
-                dependsOn("assemble$canonicalName")
-            }
+            val version = (android.defaultConfig as ApplicationBaseFlavor).versionName ?: "N/A"
+            tasks.registerPublishTask(appName, version, variant)
         }
     }
 
