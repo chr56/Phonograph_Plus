@@ -1,4 +1,3 @@
-enableFeaturePreview("VERSION_CATALOGS")
 dependencyResolutionManagement {
     repositories {
         mavenCentral()
@@ -6,7 +5,7 @@ dependencyResolutionManagement {
         maven(url = "https://jitpack.io")
     }
     versionCatalogs {
-        create("deps") {
+        create("depsLibs") {
 
             //
             // Common Androidx/Jetpack

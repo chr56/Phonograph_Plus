@@ -169,7 +169,7 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion = deps.versions.composeCompiler.get()
+        kotlinCompilerExtensionVersion = depsLibs.versions.composeCompiler.get()
     }
 
     kotlinOptions {
@@ -187,51 +187,51 @@ android {
  */
 dependencies {
 
-    implementation(deps.androidx.core)
-    implementation(deps.androidx.appcompat)
-    implementation(deps.androidx.activity)
-    implementation(deps.androidx.fragment)
-    implementation(deps.androidx.lifecycle.runtime)
+    implementation(depsLibs.androidx.core)
+    implementation(depsLibs.androidx.appcompat)
+    implementation(depsLibs.androidx.activity)
+    implementation(depsLibs.androidx.fragment)
+    implementation(depsLibs.androidx.lifecycle.runtime)
 
-    implementation(deps.androidx.annotation)
-    implementation(deps.androidx.preference)
+    implementation(depsLibs.androidx.annotation)
+    implementation(depsLibs.androidx.preference)
 
-    implementation(deps.androidx.recyclerview)
+    implementation(depsLibs.androidx.recyclerview)
 
-    implementation(deps.androidx.constraintlayout)
-    implementation(deps.androidx.percentlayout)
-    implementation(deps.androidx.swiperefreshlayout)
+    implementation(depsLibs.androidx.constraintlayout)
+    implementation(depsLibs.androidx.percentlayout)
+    implementation(depsLibs.androidx.swiperefreshlayout)
 
-    implementation(deps.androidx.media)
-    implementation(deps.androidx.cardview)
-    implementation(deps.androidx.palette)
+    implementation(depsLibs.androidx.media)
+    implementation(depsLibs.androidx.cardview)
+    implementation(depsLibs.androidx.palette)
 
-    implementation(deps.google.material)
+    implementation(depsLibs.google.material)
 
-    implementation(deps.bundles.compose)
-    debugImplementation(deps.compose.ui.tooling)
+    implementation(depsLibs.bundles.compose)
+    debugImplementation(depsLibs.compose.ui.tooling)
 
-    implementation(deps.bundles.materialTools)
+    implementation(depsLibs.bundles.materialTools)
 
-    implementation(deps.menuDsl)
-    implementation(deps.seekArc)
-    implementation(deps.slidingUpPanel)
+    implementation(depsLibs.menuDsl)
+    implementation(depsLibs.seekArc)
+    implementation(depsLibs.slidingUpPanel)
 
-    implementation(deps.bundles.materialDialogs)
-    implementation(deps.composeMaterialDialogs)
+    implementation(depsLibs.bundles.materialDialogs)
+    implementation(depsLibs.composeMaterialDialogs)
 
-    implementation(deps.okhttp3)
-    implementation(deps.retrofit2)
-    implementation(deps.coil)
+    implementation(depsLibs.okhttp3)
+    implementation(depsLibs.retrofit2)
+    implementation(depsLibs.coil)
 
-    implementation(deps.kotlinx.serialization.json)
+    implementation(depsLibs.kotlinx.serialization.json)
 
-    implementation(deps.licensesdialog)
-    implementation(deps.jaudiotagger)
-    implementation(deps.observablescrollview)
-    implementation(deps.materialIntro)
-    implementation(deps.advrecyclerview)
-    implementation(deps.recyclerviewFastscroll)
-    implementation(deps.composeReorderable)
-    implementation(deps.statusBarLyricsApi)
+    implementation(depsLibs.licensesdialog)
+    implementation(depsLibs.jaudiotagger)
+    implementation(depsLibs.observablescrollview)
+    implementation(depsLibs.materialIntro)
+    implementation(depsLibs.advrecyclerview)
+    implementation(depsLibs.recyclerviewFastscroll)
+    implementation(depsLibs.composeReorderable)
+    implementation(depsLibs.statusBarLyricsApi)
 }
