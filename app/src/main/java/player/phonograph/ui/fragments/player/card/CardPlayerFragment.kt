@@ -7,6 +7,7 @@ import com.sothree.slidinguppanel.SlidingUpPanelLayout.PanelState
 import mt.util.color.darkenColor
 import mt.util.color.resolveColor
 import mt.util.color.secondaryTextColor
+import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.adapter.base.MediaEntryViewHolder
 import player.phonograph.adapter.display.initMenu
@@ -190,7 +191,7 @@ class CardPlayerFragment :
         protected var currentAnimatorSet: AnimatorSet? = null
         @SuppressLint("ObsoleteSdkInt")
         fun defaultColorChangeAnimatorSet(newColor: Int): AnimatorSet {
-            val lightMode = !fragment.resources.nightMode
+            val lightMode = !(fragment.context ?: App.instance).resources.nightMode
             val controllerFragment =
                 (fragment.playbackControlsFragment as CardPlayerControllerFragment)
             val fab = controllerFragment.playerPlayPauseFab
