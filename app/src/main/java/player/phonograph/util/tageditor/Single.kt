@@ -18,7 +18,6 @@ import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.misc.UpdateToastMediaScannerCompletionListener
 import player.phonograph.notification.BackgroundNotification
-import player.phonograph.ui.compose.tag.EditRequestModel
 import player.phonograph.util.Util.reportError
 import android.app.Activity
 import android.content.Context
@@ -34,7 +33,7 @@ import java.io.IOException
 fun applyTagEdit(
     scope: CoroutineScope,
     context: Context,
-    editRequestModel: EditRequestModel,
+    allEditRequest: Map<FieldKey, String?>,
     songFile: File
 ) {
     scope.launch(Dispatchers.Default) {
@@ -45,10 +44,9 @@ fun applyTagEdit(
             TAG_EDITOR_NOTIFICATION_CODE
         )
         // process
-        val requests = editRequestModel.allRequests
-        if (requests.isEmpty()) return@launch
+        if (allEditRequest.isEmpty()) return@launch
         withContext(Dispatchers.IO) {
-            applyTagEditImpl(context, songFile, requests)
+            applyTagEditImpl(context, songFile, allEditRequest)
         }
         // notify user
         BackgroundNotification.remove(TAG_EDITOR_NOTIFICATION_CODE)

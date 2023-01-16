@@ -35,13 +35,14 @@ import android.content.Intent
 import android.os.Bundle
 
 class DetailActivity : ComposeToolbarActivity() {
+
     val model: DetailModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         model.song = parseIntent(this, intent)
         with(model) {
-            info = readSong(song)
+            infoTableViewModel = InfoTableViewModel(readSong(song), Color(primaryColor))
             artwork = loadArtwork(this@DetailActivity, song = song) {
                 updateBarsColor()
                 model.isDefaultArtwork.value = false
@@ -61,6 +62,7 @@ class DetailActivity : ComposeToolbarActivity() {
     private fun updateBarsColor() {
         model.artwork.value?.paletteColor?.let { color ->
             if (color != 0) {
+                model.infoTableViewModel.updateTitleColor(Color(color))
                 val colorInt = darkenColor(color)
                 appbarColor.value = Color(colorInt)
                 window.statusBarColor = darkenColor(colorInt)
@@ -76,7 +78,7 @@ class DetailActivity : ComposeToolbarActivity() {
         private fun parseIntent(context: Context, intent: Intent): Song =
             SongLoader.getSong(context, intent.extras?.getLong(SONG_ID) ?: -1)
 
-        const val SONG_ID = "SONG_ID"
+        private const val SONG_ID = "SONG_ID"
 
         fun launch(context: Context, songId: Long) {
             context.startActivity(
@@ -90,14 +92,13 @@ class DetailActivity : ComposeToolbarActivity() {
 
 class DetailModel : ViewModel() {
     lateinit var song: Song
-    lateinit var info: SongInfoModel
+    lateinit var infoTableViewModel: InfoTableViewModel
     var artwork: MutableState<SongDetailUtil.BitmapPaletteWrapper?> = mutableStateOf(null)
     var isDefaultArtwork = mutableStateOf(true)
 }
 
 @Composable
 internal fun DetailActivityContent(viewModel: DetailModel) {
-    val info by remember { mutableStateOf(viewModel.info) }
     val wrapper by remember { viewModel.artwork }
     val isDefaultArtwork by remember { viewModel.isDefaultArtwork }
     val paletteColor =
@@ -114,9 +115,11 @@ internal fun DetailActivityContent(viewModel: DetailModel) {
             .verticalScroll(state = rememberScrollState())
             .fillMaxSize()
     ) {
-        CoverImage(bitmap = wrapper!!.bitmap,
-                   backgroundColor = paletteColor,
-                   showCover = !isDefaultArtwork)
-        InfoTable(info, paletteColor)
+        CoverImage(
+            bitmap = wrapper!!.bitmap,
+            backgroundColor = paletteColor,
+            showCover = !isDefaultArtwork
+        )
+        InfoTable(viewModel.infoTableViewModel)
     }
 }

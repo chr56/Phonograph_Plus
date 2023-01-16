@@ -5,16 +5,16 @@
 package player.phonograph.ui.compose.tag
 
 import org.jaudiotagger.tag.FieldKey
-import org.jaudiotagger.tag.FieldKey.TITLE
-import org.jaudiotagger.tag.FieldKey.ARTIST
 import org.jaudiotagger.tag.FieldKey.ALBUM
 import org.jaudiotagger.tag.FieldKey.ALBUM_ARTIST
-import org.jaudiotagger.tag.FieldKey.COMPOSER
-import org.jaudiotagger.tag.FieldKey.LYRICIST
-import org.jaudiotagger.tag.FieldKey.YEAR
-import org.jaudiotagger.tag.FieldKey.GENRE
-import org.jaudiotagger.tag.FieldKey.TRACK
+import org.jaudiotagger.tag.FieldKey.ARTIST
 import org.jaudiotagger.tag.FieldKey.COMMENT
+import org.jaudiotagger.tag.FieldKey.COMPOSER
+import org.jaudiotagger.tag.FieldKey.GENRE
+import org.jaudiotagger.tag.FieldKey.LYRICIST
+import org.jaudiotagger.tag.FieldKey.TITLE
+import org.jaudiotagger.tag.FieldKey.TRACK
+import org.jaudiotagger.tag.FieldKey.YEAR
 import player.phonograph.R
 import player.phonograph.model.SongInfoModel
 import player.phonograph.model.getFileSizeString
@@ -32,12 +32,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 
@@ -45,14 +45,14 @@ import androidx.compose.ui.unit.dp
  * Text infomation
  */
 @Composable
-internal fun InfoTable(
-    info: SongInfoModel,
-    titleColor: Color,
-    editable: Boolean = false,
-    editRequestModel: EditRequestModel? = null
-) {
+internal fun InfoTable(viewModel: InfoTableViewModel) {
+
+    val titleColor = viewModel.titleColor.collectAsState().value
+    val info = viewModel.info.collectAsState().value
+
+    val editable = viewModel is EditableInfoTableViewModel
     val editRequest: EditRequest = remember {
-      { key, newValue -> editRequestModel?.request(info, key, newValue) }
+        { key, newValue -> (viewModel as? EditableInfoTableViewModel)?.editRequest(key, newValue) }
     }
 
     Column(modifier = Modifier.padding(horizontal = 8.dp)) {
