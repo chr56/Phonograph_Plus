@@ -11,6 +11,7 @@ import player.phonograph.mediastore.SongLoader
 import player.phonograph.model.Song
 import player.phonograph.ui.compose.ColorTools.makeSureContrastWith
 import player.phonograph.ui.compose.base.ComposeToolbarActivity
+import player.phonograph.ui.compose.components.CoverImage
 import player.phonograph.ui.compose.theme.PhonographTheme
 import player.phonograph.util.SongDetailUtil
 import player.phonograph.util.SongDetailUtil.loadArtwork
@@ -97,12 +98,12 @@ class DetailModel(
 
 
     var artwork: MutableState<SongDetailUtil.BitmapPaletteWrapper?> = mutableStateOf(null)
-    var isDefaultArtwork = mutableStateOf(true)
+    var artworkLoaded = mutableStateOf(false)
 
     fun loadArtwork(context: Context, onFinished: () -> Unit) {
         artwork = loadArtwork(context, song) {
+            artworkLoaded.value = true
             onFinished()
-            isDefaultArtwork.value = false
             val paletteColor = artwork.value?.paletteColor
             if (paletteColor != null) {
                 infoTableViewModel.updateTitleColor(Color(paletteColor))
@@ -121,7 +122,6 @@ class DetailModel(
 @Composable
 internal fun DetailActivityContent(viewModel: DetailModel) {
     val wrapper by remember { viewModel.artwork }
-    val isDefaultArtwork by remember { viewModel.isDefaultArtwork }
     val paletteColor =
         makeSureContrastWith(MaterialTheme.colors.surface) {
             if (wrapper != null) {
@@ -136,11 +136,12 @@ internal fun DetailActivityContent(viewModel: DetailModel) {
             .verticalScroll(state = rememberScrollState())
             .fillMaxSize()
     ) {
-        CoverImage(
-            bitmap = wrapper!!.bitmap,
-            backgroundColor = paletteColor,
-            showCover = !isDefaultArtwork
-        )
+        if (viewModel.artworkLoaded.value) {
+            CoverImage(
+                bitmap = wrapper!!.bitmap,
+                backgroundColor = paletteColor
+            )
+        }
         InfoTable(viewModel.infoTableViewModel)
     }
 }
