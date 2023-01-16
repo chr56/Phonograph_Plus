@@ -49,7 +49,7 @@ class TagEditorActivity : ComposeToolbarActivity() {
         val song = parseIntent(this, intent)
         val infoTableViewModel =
             EditableInfoTableViewModel(readSong(song), Color(ThemeColor.primaryColor(this)))
-        model = TagEditorModel(song, infoTableViewModel)
+        model = TagEditorModel(song, infoTableViewModel, ::finish)
         super.onCreate(savedInstanceState)
     }
 
@@ -61,26 +61,27 @@ class TagEditorActivity : ComposeToolbarActivity() {
     override val title: String get() = getString(R.string.action_tag_editor)
 
     override val toolbarActions: @Composable RowScope.() -> Unit = {
-        IconButton(onClick = ::save) {
+        IconButton(onClick = { model.saveConfirmationDialogState.show() }) {
             Icon(Icons.Default.Done, null)
         }
     }
 
-    private fun save() {
-        model.saveConfirmationDialogState.show()
+    override val toolbarBackPressed: () -> Unit = {
+        back()
     }
 
-    override val toolbarBackPressed: () -> Unit = {
-        if (model.allowExitWithoutSaving.value || model.infoTableViewModel.allEditRequests.isEmpty()) {
+    override fun onBackPressed() {
+        back()
+    }
+
+    private fun back() {
+        if (model.infoTableViewModel.allEditRequests.isEmpty()) {
             finish()
         } else {
             model.exitWithoutSavingDialogState.show()
         }
     }
 
-    override fun onBackPressed() {
-        toolbarBackPressed()
-    }
 
     companion object {
         private fun parseIntent(context: Context, intent: Intent): Song =
@@ -100,11 +101,12 @@ class TagEditorActivity : ComposeToolbarActivity() {
 
 class TagEditorModel(
     val song: Song,
-    val infoTableViewModel: EditableInfoTableViewModel
+    val infoTableViewModel: EditableInfoTableViewModel,
+    val exitCallback: () -> Unit
 ) : ViewModel() {
     val saveConfirmationDialogState = MaterialDialogState(false)
     val exitWithoutSavingDialogState = MaterialDialogState(false)
-    val allowExitWithoutSaving: MutableState<Boolean> = mutableStateOf(false)
+    fun requestExit() = exitCallback()
 }
 
 @Composable
@@ -131,7 +133,7 @@ fun ExitWithoutSavingDialog(model: TagEditorModel) {
             positiveButton(res = android.R.string.cancel, onClick = dismiss)
             button(res = android.R.string.ok) {
                 dismiss()
-                model.allowExitWithoutSaving.value = true
+                model.requestExit()
             }
         }
     ) {
