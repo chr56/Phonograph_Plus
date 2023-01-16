@@ -8,7 +8,7 @@ import com.vanpra.composematerialdialogs.MaterialDialog
 import com.vanpra.composematerialdialogs.MaterialDialogState
 import com.vanpra.composematerialdialogs.customView
 import com.vanpra.composematerialdialogs.title
-import mt.pref.ThemeColor
+import mt.pref.ThemeColor.primaryColor
 import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.mediastore.SongLoader
@@ -16,26 +16,21 @@ import player.phonograph.model.Song
 import player.phonograph.ui.compose.base.ComposeToolbarActivity
 import player.phonograph.util.SongDetailUtil.readSong
 import player.phonograph.util.tageditor.applyTagEdit
+import androidx.activity.viewModels
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.AlertDialog
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
-import androidx.compose.material.TextButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewmodel.CreationExtras
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -44,12 +39,13 @@ import kotlinx.coroutines.Dispatchers
 import java.io.File
 
 class TagEditorActivity : ComposeToolbarActivity() {
-    private lateinit var model: TagEditorModel
+
+    private lateinit var song: Song
+    private val model: TagEditorModel
+            by viewModels { TagEditorModel.Factory(song, ::finish, Color(primaryColor(this))) }
+
     override fun onCreate(savedInstanceState: Bundle?) {
-        val song = parseIntent(this, intent)
-        val infoTableViewModel =
-            EditableInfoTableViewModel(readSong(song), Color(ThemeColor.primaryColor(this)))
-        model = TagEditorModel(song, infoTableViewModel, ::finish)
+        song = parseIntent(this, intent)
         super.onCreate(savedInstanceState)
     }
 
@@ -99,14 +95,30 @@ class TagEditorActivity : ComposeToolbarActivity() {
     }
 }
 
-class TagEditorModel(
+class TagEditorModel internal constructor(
     val song: Song,
-    val infoTableViewModel: EditableInfoTableViewModel,
-    val exitCallback: () -> Unit
+    val exitCallback: () -> Unit,
+    val primaryColor: Color
 ) : ViewModel() {
+
+    val infoTableViewModel = createInfoTableViewModel(song, primaryColor)
+    private fun createInfoTableViewModel(song: Song, primaryColor: Color) =
+        EditableInfoTableViewModel(readSong(song), primaryColor)
+
     val saveConfirmationDialogState = MaterialDialogState(false)
     val exitWithoutSavingDialogState = MaterialDialogState(false)
     fun requestExit() = exitCallback()
+
+    class Factory(
+        private val song: Song,
+        private val exitCallback: () -> Unit,
+        private val primaryColor: Color
+    ) : ViewModelProvider.Factory {
+        @Suppress("UNCHECKED_CAST")
+        override fun <T : ViewModel> create(modelClass: Class<T>, extras: CreationExtras): T {
+            return TagEditorModel(song, exitCallback, primaryColor) as T
+        }
+    }
 }
 
 @Composable
