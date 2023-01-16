@@ -364,6 +364,7 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
     }
 
     private fun checkUpdate() {
+        if (!Setting.instance.checkUpgradeAtStartup) return
         CoroutineScope(SupervisorJob()).launch {
             UpdateUtil.checkUpdate { versionCatalog: VersionCatalog, upgradable: Boolean ->
                 if (upgradable) {
