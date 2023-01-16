@@ -9,7 +9,6 @@ import mt.util.color.darkenColor
 import player.phonograph.R
 import player.phonograph.mediastore.SongLoader
 import player.phonograph.model.Song
-import player.phonograph.model.SongInfoModel
 import player.phonograph.ui.compose.ColorTools.makeSureContrastWith
 import player.phonograph.ui.compose.base.ComposeToolbarActivity
 import player.phonograph.ui.compose.theme.PhonographTheme
@@ -30,24 +29,21 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 
 class DetailActivity : ComposeToolbarActivity() {
 
-    val model: DetailModel by viewModels()
+    private lateinit var song: Song
+    val model: DetailModel
+            by viewModels { DetailModel.Factory(song, Color(ThemeColor.primaryColor(this))) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        song = parseIntent(this, intent)
         super.onCreate(savedInstanceState)
-        model.song = parseIntent(this, intent)
-        with(model) {
-            infoTableViewModel = InfoTableViewModel(readSong(song), Color(primaryColor))
-            artwork = loadArtwork(this@DetailActivity, song = song) {
-                updateBarsColor()
-                model.isDefaultArtwork.value = false
-            }
-        }
+        model.loadArtwork(this) { updateBarsColor() }
     }
 
     @Composable
@@ -62,7 +58,6 @@ class DetailActivity : ComposeToolbarActivity() {
     private fun updateBarsColor() {
         model.artwork.value?.paletteColor?.let { color ->
             if (color != 0) {
-                model.infoTableViewModel.updateTitleColor(Color(color))
                 val colorInt = darkenColor(color)
                 appbarColor.value = Color(colorInt)
                 window.statusBarColor = darkenColor(colorInt)
@@ -90,11 +85,37 @@ class DetailActivity : ComposeToolbarActivity() {
     }
 }
 
-class DetailModel : ViewModel() {
-    lateinit var song: Song
-    lateinit var infoTableViewModel: InfoTableViewModel
+class DetailModel(
+    val song: Song,
+    val defaultColor: Color
+) : ViewModel() {
+
+    val infoTableViewModel: InfoTableViewModel = createInfoTableViewModel(song, defaultColor)
+
+    private fun createInfoTableViewModel(song: Song, defaultColor: Color) =
+        InfoTableViewModel(readSong(song), defaultColor)
+
+
     var artwork: MutableState<SongDetailUtil.BitmapPaletteWrapper?> = mutableStateOf(null)
     var isDefaultArtwork = mutableStateOf(true)
+
+    fun loadArtwork(context: Context, onFinished: () -> Unit) {
+        artwork = loadArtwork(context, song) {
+            onFinished()
+            isDefaultArtwork.value = false
+            val paletteColor = artwork.value?.paletteColor
+            if (paletteColor != null) {
+                infoTableViewModel.updateTitleColor(Color(paletteColor))
+            }
+        }
+    }
+
+    class Factory(private val song: Song, private val color: Color) : ViewModelProvider.Factory {
+        @Suppress("UNCHECKED_CAST")
+        override fun <T : ViewModel> create(modelClass: Class<T>): T {
+            return DetailModel(song, color) as T
+        }
+    }
 }
 
 @Composable
