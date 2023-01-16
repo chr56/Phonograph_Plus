@@ -19,9 +19,9 @@ import androidx.compose.ui.graphics.painter.BitmapPainter
 import android.graphics.Bitmap
 
 @Composable
-internal fun CoverImage(bitmap: Bitmap, backgroundColor: Color) {
+internal fun CoverImage(bitmap: Bitmap, backgroundColor: Color, modifier: Modifier = Modifier) {
     BoxWithConstraints(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .wrapContentHeight()
             .background(backgroundColor)

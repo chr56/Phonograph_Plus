@@ -4,6 +4,9 @@
 
 package player.phonograph.ui.compose.tag
 
+import com.vanpra.composematerialdialogs.MaterialDialog
+import com.vanpra.composematerialdialogs.MaterialDialogState
+import com.vanpra.composematerialdialogs.title
 import mt.pref.ThemeColor
 import mt.util.color.darkenColor
 import player.phonograph.R
@@ -17,11 +20,16 @@ import player.phonograph.util.SongDetailUtil
 import player.phonograph.util.SongDetailUtil.loadArtwork
 import player.phonograph.util.SongDetailUtil.readSong
 import androidx.activity.viewModels
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
+import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
@@ -29,6 +37,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import android.content.Context
@@ -111,6 +121,8 @@ class DetailModel(
         }
     }
 
+    val coverImageDetailDialogState = MaterialDialogState(false)
+
     class Factory(private val song: Song, private val color: Color) : ViewModelProvider.Factory {
         @Suppress("UNCHECKED_CAST")
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
@@ -139,9 +151,38 @@ internal fun DetailActivityContent(viewModel: DetailModel) {
         if (viewModel.artworkLoaded.value) {
             CoverImage(
                 bitmap = wrapper!!.bitmap,
-                backgroundColor = paletteColor
+                backgroundColor = paletteColor,
+                modifier = Modifier.clickable {
+                    viewModel.coverImageDetailDialogState.show()
+                }
             )
         }
         InfoTable(viewModel.infoTableViewModel)
+    }
+    CoverImageDetailDialog(viewModel.coverImageDetailDialogState, artwork = viewModel.artwork.value)
+}
+
+@Composable
+fun CoverImageDetailDialog(
+    state: MaterialDialogState,
+    artwork: SongDetailUtil.BitmapPaletteWrapper?
+) = MaterialDialog(
+    dialogState = state,
+    buttons = {
+        positiveButton(res = android.R.string.ok) { state.hide() }
+    }
+) {
+    title(res = R.string.label_details)
+    Column(
+        modifier = Modifier
+            .padding(bottom = 28.dp, start = 24.dp, end = 24.dp)
+            .wrapContentWidth()
+    ) {
+        if (artwork != null) {
+            val save = {}
+            TextButton(onClick = save) {
+                Text(stringResource(R.string.save))
+            }
+        }
     }
 }
