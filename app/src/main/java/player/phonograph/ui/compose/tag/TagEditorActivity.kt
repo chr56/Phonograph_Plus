@@ -4,6 +4,10 @@
 
 package player.phonograph.ui.compose.tag
 
+import com.vanpra.composematerialdialogs.MaterialDialog
+import com.vanpra.composematerialdialogs.MaterialDialogState
+import com.vanpra.composematerialdialogs.customView
+import com.vanpra.composematerialdialogs.title
 import mt.pref.ThemeColor
 import player.phonograph.App
 import player.phonograph.R
@@ -63,14 +67,14 @@ class TagEditorActivity : ComposeToolbarActivity() {
     }
 
     private fun save() {
-        model.showSaveConfirmation.value = true
+        model.saveConfirmationDialogState.show()
     }
 
     override val toolbarBackPressed: () -> Unit = {
         if (model.allowExitWithoutSaving.value || model.infoTableViewModel.allEditRequests.isEmpty()) {
             finish()
         } else {
-            model.showExitWithoutSavingConfirmation.value = true
+            model.exitWithoutSavingDialogState.show()
         }
     }
 
@@ -98,8 +102,8 @@ class TagEditorModel(
     val song: Song,
     val infoTableViewModel: EditableInfoTableViewModel
 ) : ViewModel() {
-    val showSaveConfirmation: MutableState<Boolean> = mutableStateOf(false)
-    val showExitWithoutSavingConfirmation: MutableState<Boolean> = mutableStateOf(false)
+    val saveConfirmationDialogState = MaterialDialogState(false)
+    val exitWithoutSavingDialogState = MaterialDialogState(false)
     val allowExitWithoutSaving: MutableState<Boolean> = mutableStateOf(false)
 }
 
@@ -112,92 +116,50 @@ fun TagEditorActivityContent(model: TagEditorModel) {
     ) {
         InfoTable(model.infoTableViewModel)
     }
-    if (model.showSaveConfirmation.value) {
-        SaveConfirmationDialog(model)
-    }
-    if (model.showExitWithoutSavingConfirmation.value) {
-        ExitWithoutSavingDialog(model)
-    }
+    SaveConfirmationDialog(model)
+    ExitWithoutSavingDialog(model)
 }
 
 @Composable
 fun ExitWithoutSavingDialog(model: TagEditorModel) {
-    val dismiss = { model.showExitWithoutSavingConfirmation.value = false }
-    AlertDialog(
-        onDismissRequest = dismiss,
-        title = {
-            Text(
-                stringResource(id = R.string.exit_without_saving),
-                style = MaterialTheme.typography.h6
-            )
-        },
+    val dismiss = { model.exitWithoutSavingDialogState.hide() }
+    MaterialDialog(
+        dialogState = model.exitWithoutSavingDialogState,
+        elevation = 0.dp,
+        autoDismiss = false,
         buttons = {
-            Row(Modifier.fillMaxWidth()) {
-                TextButton(
-                    onClick = {
-                        dismiss()
-                        model.allowExitWithoutSaving.value = true
-                    },
-                    Modifier
-                        .padding(horizontal = 16.dp)
-                        .wrapContentWidth(Alignment.Start)
-                ) {
-                    Text(stringResource(id = android.R.string.ok))
-                }
-                Spacer(modifier = Modifier.widthIn(48.dp))
-                TextButton(
-                    onClick = dismiss,
-                    Modifier
-                        .padding(horizontal = 16.dp)
-                        .wrapContentWidth(Alignment.End)
-                ) {
-                    Text(stringResource(id = android.R.string.cancel))
-                }
+            positiveButton(res = android.R.string.cancel, onClick = dismiss)
+            button(res = android.R.string.ok) {
+                dismiss()
+                model.allowExitWithoutSaving.value = true
             }
         }
-    )
+    ) {
+        title(res = R.string.exit_without_saving)
+    }
 }
 
 @Composable
 fun SaveConfirmationDialog(model: TagEditorModel) {
-    val dismiss = { model.showSaveConfirmation.value = false }
+    val dismiss = { model.saveConfirmationDialogState.hide() }
     val save = {
         dismiss()
         saveImpl(model)
     }
-    AlertDialog(
-        onDismissRequest = dismiss,
+    MaterialDialog(
+        dialogState = model.saveConfirmationDialogState,
+        elevation = 0.dp,
+        autoDismiss = false,
         buttons = {
-            Row(Modifier.fillMaxWidth()) {
-                TextButton(
-                    onClick = save,
-                    Modifier
-                        .padding(horizontal = 16.dp)
-                        .wrapContentWidth(Alignment.Start)
-                ) {
-                    Text(stringResource(id = R.string.save), color = Color.Red)
-                }
-                Spacer(modifier = Modifier.widthIn(48.dp))
-                TextButton(
-                    onClick = dismiss,
-                    Modifier
-                        .padding(horizontal = 16.dp)
-                        .wrapContentWidth(Alignment.End)
-                ) {
-                    Text(stringResource(id = android.R.string.cancel))
-                }
-            }
-        },
-        title = {
-            Text(
-                stringResource(id = R.string.save),
-                style = MaterialTheme.typography.h6
-            )
-        },
-        text = {
+            button(res = R.string.save, onClick = save)
+            button(res = android.R.string.cancel, onClick = dismiss)
+        }
+    ) {
+        title(res = R.string.save)
+        customView {
             DiffScreen(model)
         }
-    )
+    }
 }
 
 fun saveImpl(model: TagEditorModel) =
