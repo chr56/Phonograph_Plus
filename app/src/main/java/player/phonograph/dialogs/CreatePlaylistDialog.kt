@@ -1,20 +1,20 @@
 package player.phonograph.dialogs
 
-import android.app.Dialog
-import android.os.Bundle
-import android.text.InputType
-import android.widget.Toast
-import androidx.fragment.app.DialogFragment
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.WhichButton
 import com.afollestad.materialdialogs.actions.getActionButton
 import com.afollestad.materialdialogs.input.input
 import mt.pref.ThemeColor.accentColor
 import player.phonograph.R
-import player.phonograph.misc.SAFCallbackHandlerActivity
+import player.phonograph.misc.ICreateFileStorageAccess
 import player.phonograph.model.Song
 import player.phonograph.util.PlaylistsUtil
 import util.phonograph.m3u.PlaylistsManager
+import androidx.fragment.app.DialogFragment
+import android.app.Dialog
+import android.os.Bundle
+import android.text.InputType
+import android.widget.Toast
 
 /**
  * @author Karim Abou Zeid (kabouzeid), Aidan Follestad (afollestad)
@@ -28,26 +28,36 @@ class CreatePlaylistDialog : DialogFragment() {
             .negativeButton(android.R.string.cancel)
             .input(
                 inputType = InputType.TYPE_CLASS_TEXT or
-                    InputType.TYPE_TEXT_VARIATION_PERSON_NAME or
-                    InputType.TYPE_TEXT_FLAG_CAP_WORDS,
+                        InputType.TYPE_TEXT_VARIATION_PERSON_NAME or
+                        InputType.TYPE_TEXT_FLAG_CAP_WORDS,
                 hintRes = R.string.playlist_name_empty,
                 waitForPositiveButton = true,
                 allowEmpty = false
             ) { _, input ->
                 val name = input.toString().trim()
                 if (name.isEmpty()) {
-                    Toast.makeText(requireContext(), getString(R.string.failed), Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), getString(R.string.failed), Toast.LENGTH_SHORT)
+                        .show()
                     return@input
                 }
-                if (!PlaylistsUtil.doesPlaylistExist(requireActivity(), name)) {
-                    val activity = requireActivity()
-                    if (activity is SAFCallbackHandlerActivity) {
-                        PlaylistsManager(activity, activity).createPlaylist(name, songs)
-                    } else {
-                        PlaylistsManager(activity, null).createPlaylist(name, songs)
-                    }
+                val activity = requireActivity()
+                if (!PlaylistsUtil.doesPlaylistExist(activity, name)) {
+                    PlaylistsManager.createPlaylist(
+                        context = activity,
+                        name = name,
+                        songs = songs,
+                        host = activity as? ICreateFileStorageAccess
+                    )
+
                 } else {
-                    Toast.makeText(requireContext(), requireActivity().resources.getString(R.string.playlist_exists, name), Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        activity,
+                        requireActivity().resources.getString(
+                            R.string.playlist_exists,
+                            name
+                        ),
+                        Toast.LENGTH_SHORT
+                    ).show()
                     dismiss()
                 }
             }

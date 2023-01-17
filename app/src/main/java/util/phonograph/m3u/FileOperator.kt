@@ -6,26 +6,16 @@
 
 package util.phonograph.m3u
 
-import android.app.Activity
-import android.content.Context
-import android.net.Uri
-import android.os.Environment
-import android.provider.MediaStore
-import android.util.Log
-import androidx.activity.ComponentActivity
-import androidx.core.provider.DocumentsContractCompat
-import androidx.documentfile.provider.DocumentFile
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.WhichButton
 import com.afollestad.materialdialogs.actions.getActionButton
-import java.io.File
-import java.io.FileNotFoundException
-import java.io.IOException
-import kotlinx.coroutines.*
 import lib.phonograph.storage.getAbsolutePath
+import player.phonograph.App
 import player.phonograph.R
+import player.phonograph.misc.CreateFileStorageAccessTool
+import player.phonograph.misc.OpenDirStorageAccessTool
 import player.phonograph.misc.OpenDocumentContract
-import player.phonograph.misc.SafLauncher
+import player.phonograph.misc.OpenFileStorageAccessTool
 import player.phonograph.misc.UriCallback
 import player.phonograph.model.Song
 import player.phonograph.model.playlist.FilePlaylist
@@ -35,95 +25,125 @@ import player.phonograph.util.CoroutineUtil.coroutineToast
 import player.phonograph.util.PlaylistsUtil
 import player.phonograph.util.StringUtil
 import player.phonograph.util.StringUtil.buildDeletionMessage
+import player.phonograph.util.Util.reportError
 import player.phonograph.util.Util.sentPlaylistChangedLocalBoardCast
 import util.phonograph.m3u.internal.M3UGenerator
 import util.phonograph.m3u.internal.appendTimestampSuffix
+import androidx.annotation.StringRes
+import androidx.core.provider.DocumentsContractCompat
+import androidx.documentfile.provider.DocumentFile
+import android.app.Activity
+import android.content.Context
+import android.net.Uri
+import android.os.Environment
+import android.os.Looper
+import android.provider.MediaStore
+import android.util.Log
+import android.widget.Toast
+import kotlinx.coroutines.*
+import java.io.File
+import java.io.FileNotFoundException
+import java.io.IOException
 
 object FileOperator {
 
+    private inline fun execute(
+        block: () -> Unit,
+        message: String,
+        tag: String = "FileOperator",
+        extraMessage: String? = null,
+        //exception: Class<Exception> = Exception::class.java
+    ) {
+        try {
+            block()
+        } catch (e: Exception) {
+            //if (e.javaClass == exception) {
+            reportError(e, tag, "Failed! $message $extraMessage")
+            safeToast(App.instance, "Failed! $message")
+            //}
+        }
+    }
+
     fun createPlaylistViaSAF(
+        context: Context,
         name: String,
         songs: List<Song>?,
-        safLauncher: SafLauncher,
-        activity: ComponentActivity
+        accessTool: CreateFileStorageAccessTool
     ) {
-        // prepare callback
-        val uriCallback: UriCallback = { uri ->
-            // callback start
-            CoroutineScope(SupervisorJob()).launch(Dispatchers.IO) {
-                if (uri == null) {
-                    coroutineToast(activity, R.string.failed)
-                } else {
-                    sentPlaylistChangedLocalBoardCast()
-                    try {
-                        val outputStream = activity.contentResolver.openOutputStream(uri, "rw")
-                        if (outputStream != null) {
-                            try {
-                                if (songs != null) M3UGenerator.generate(outputStream, songs, true)
-                                coroutineToast(activity, R.string.success)
-                            } catch (e: IOException) {
-                                coroutineToast(
-                                    activity,
-                                    activity.getString(R.string.failed) + ":${uri.path} can not be written",
-                                    true
-                                )
-                                ErrorNotification.postErrorNotification(
-                                    e,
-                                    "${uri.path} can not be written.\nSongs:${
-                                    songs?.map { it.data }?.reduce { acc, s -> "$acc,$s" }
-                                    }\nActivity:$activity"
-                                )
-                            } finally {
-                                outputStream.close()
+        CoroutineScope(SupervisorJob()).launch(Dispatchers.IO) {
+            while (accessTool.busy) yield()
+            execute(
+                {
+                    accessTool.launch("$name.m3u") { uri ->
+                        CoroutineScope(SupervisorJob()).launch(Dispatchers.IO) {
+                            if (uri == null) {
+                                safeToast(context, R.string.failed)
+                            } else {
+                                sentPlaylistChangedLocalBoardCast()
+                                try {
+                                    context.contentResolver.openOutputStream(uri, "rw")
+                                        ?.use { stream ->
+                                            try {
+                                                if (songs != null) M3UGenerator.generate(
+                                                    stream,
+                                                    songs,
+                                                    true
+                                                )
+                                                safeToast(context, R.string.success)
+                                            } catch (e: IOException) {
+                                                val message = "${uri.path} can not be written"
+                                                safeToast(
+                                                    context,
+                                                    "${context.getString(R.string.failed)}: $message"
+                                                )
+                                                reportError(e, "CreatePlaylist",
+                                                            "$message\nSongs:${
+                                                                songs?.map { it.data }
+                                                                    ?.reduce { acc, s -> "$acc,$s" }
+                                                            }\nActivity:$context"
+                                                )
+                                            }
+                                        }
+                                } catch (e: FileNotFoundException) {
+                                    val message = "${uri.path} is not available"
+                                    safeToast(
+                                        context,
+                                        "${context.getString(R.string.failed)}:$message"
+                                    )
+                                    ErrorNotification.postErrorNotification(
+                                        e,
+                                        "$message\nSongs:${
+                                            songs?.map { it.data }?.reduce { acc, s -> "$acc,$s" }
+                                        }\nActivity:$context"
+                                    )
+                                }
                             }
                         }
-                    } catch (e: FileNotFoundException) {
-                        coroutineToast(
-                            activity,
-                            activity.getString(R.string.failed) + ":${uri.path} is not available"
-                        )
-                        ErrorNotification.postErrorNotification(
-                            e,
-                            "${uri.path} is not available.\nSongs:${
-                            songs?.map { it.data }?.reduce { acc, s -> "$acc,$s" }
-                            }\nActivity:$activity"
-                        )
                     }
-                }
-            }
-            // callback end
-        }
-
-        CoroutineScope(SupervisorJob()).launch(Dispatchers.IO) {
-            while (safLauncher.createCallbackInUse) yield()
-            try {
-                safLauncher.createFile("$name.m3u", uriCallback)
-            } catch (e: Exception) {
-                coroutineToast(activity, activity.getString(R.string.failed) + ": unknown")
-                ErrorNotification.postErrorNotification(e, "Unknown")
-                Log.w("CreatePlaylistDialog", "SaveFail: \n${e.message}")
-            }
+                },
+                "Failed to save!", "CreatePlaylist"
+            )
         }
     }
 
     fun appendToPlaylistViaSAF(
+        context: Context,
         songs: List<Song>,
         playlistId: Long,
         removeDuplicated: Boolean,
-        context: Context,
-        safLauncher: SafLauncher
+        accessTool: OpenFileStorageAccessTool
     ) {
         if (songs.isEmpty()) return
         val playlist = PlaylistsUtil.getPlaylist(context, playlistId)
-        appendToPlaylistViaSAF(songs, playlist, removeDuplicated, context, safLauncher)
+        appendToPlaylistViaSAF(context, songs, playlist, removeDuplicated, accessTool)
     }
 
     fun appendToPlaylistViaSAF(
+        context: Context,
         songs: List<Song>,
         filePlaylist: FilePlaylist,
         removeDuplicated: Boolean,
-        context: Context,
-        safLauncher: SafLauncher
+        accessTool: OpenFileStorageAccessTool
     ) {
         if (songs.isEmpty()) return
 
@@ -142,22 +162,23 @@ object FileOperator {
             ),
             false
         )
-        safLauncher.openFile(cfg) { uri: Uri? ->
+        accessTool.launch(cfg) { uri: Uri? ->
             if (uri != null) {
                 CoroutineScope(SupervisorJob()).launch(Dispatchers.IO) {
                     try {
                         if (!assertUri(context, filePlaylist, uri)) {
-                            val returningPath = DocumentFile.fromSingleUri(context, uri)?.getAbsolutePath(
-                                context
-                            )
+                            val returningPath =
+                                DocumentFile.fromSingleUri(context, uri)?.getAbsolutePath(
+                                    context
+                                )
                             val errorMsg =
                                 "${
-                                context.getString(
-                                    R.string.failed_to_save_playlist,
-                                    filePlaylist.name
-                                )
+                                    context.getString(
+                                        R.string.failed_to_save_playlist,
+                                        filePlaylist.name
+                                    )
                                 }: ${context.getString(R.string.file_incorrect)}" +
-                                    "Playlist($playlistPath) -> File($returningPath) "
+                                        "Playlist($playlistPath) -> File($returningPath) "
                             Log.e("AppendToPlaylist", errorMsg)
                             coroutineToast(context, errorMsg, true)
                             ErrorNotification.postErrorNotification(
@@ -177,12 +198,18 @@ object FileOperator {
                     } catch (e: FileNotFoundException) {
                         coroutineToast(
                             context,
-                            context.getString(R.string.failed_to_save_playlist, filePlaylist.name) + ": ${uri.path} is not available"
+                            context.getString(
+                                R.string.failed_to_save_playlist,
+                                filePlaylist.name
+                            ) + ": ${uri.path} is not available"
                         )
                     } catch (e: IOException) {
                         coroutineToast(
                             context,
-                            context.getString(R.string.failed_to_save_playlist, filePlaylist.name) + ": Unknown!"
+                            context.getString(
+                                R.string.failed_to_save_playlist,
+                                filePlaylist.name
+                            ) + ": Unknown!"
                         )
                     }
                 }
@@ -212,7 +239,8 @@ object FileOperator {
                 }
                 // search playlist in folder
                 val playlistInFolder = coroutineScope.async {
-                    return@async PlaylistsUtil.searchPlaylist(activity, folder, filePlaylists).toMutableList()
+                    return@async PlaylistsUtil.searchPlaylist(activity, folder, filePlaylists)
+                        .toMutableList()
                 }
 
                 val prepareList: MutableList<DocumentFile> = playlistInFolder.await()
@@ -229,7 +257,8 @@ object FileOperator {
                         if (filePath.endsWith("m3u", ignoreCase = true) or filePath.endsWith(
                                 "m3u8",
                                 ignoreCase = true
-                            )) {
+                            )
+                        ) {
                             for (p in playlistPaths) {
                                 if (p == filePath) deleteList.add(file)
                             }
@@ -280,9 +309,13 @@ object FileOperator {
         }
     }
 
-    fun createPlaylistsViaSAF(playlists: List<Playlist>, context: Context, safLauncher: SafLauncher) {
+    fun createPlaylistsViaSAF(
+        context: Context,
+        playlists: List<Playlist>,
+        accessTool: OpenDirStorageAccessTool
+    ) {
         CoroutineScope(SupervisorJob()).launch(Dispatchers.IO) {
-            while (safLauncher.openCallbackInUse) yield()
+            while (accessTool.busy) yield()
             try {
                 // callback
                 val uriCallback: UriCallback = { treeUri ->
@@ -299,9 +332,10 @@ object FileOperator {
                                             appendTimestampSuffix(playlist.name)
                                         )
                                         if (file != null) {
-                                            val outputStream = context.contentResolver.openOutputStream(
-                                                file.uri
-                                            )
+                                            val outputStream =
+                                                context.contentResolver.openOutputStream(
+                                                    file.uri
+                                                )
                                             if (outputStream != null) {
                                                 val songs: List<Song> = playlist.getSongs(context)
                                                 M3UGenerator.generate(outputStream, songs, true)
@@ -350,12 +384,27 @@ object FileOperator {
                     context.getString(R.string.direction_open_folder_with_saf),
                     true
                 )
-                safLauncher.openDir(parent.uri, uriCallback)
+                accessTool.launch(parent.uri) { uriCallback(it) }
             } catch (e: Exception) {
                 coroutineToast(context, context.getString(R.string.failed) + ": unknown")
                 ErrorNotification.postErrorNotification(e, "unknown")
                 Log.w("CreatePlaylistDialog", "SaveFail: \n${e.message}")
             }
         }
+    }
+
+
+    private fun safeToast(context: Context, message: String) {
+        val ready = Looper.myLooper() != null
+        if (!ready) Looper.prepare()
+        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+        if (!ready) Looper.loop()
+    }
+
+    private fun safeToast(context: Context, @StringRes id: Int) {
+        val ready = Looper.myLooper() != null
+        if (!ready) Looper.prepare()
+        Toast.makeText(context, id, Toast.LENGTH_SHORT).show()
+        if (!ready) Looper.loop()
     }
 }

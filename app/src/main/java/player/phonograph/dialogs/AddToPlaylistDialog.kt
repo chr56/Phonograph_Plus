@@ -1,17 +1,17 @@
 package player.phonograph.dialogs
 
+import com.afollestad.materialdialogs.MaterialDialog
+import com.afollestad.materialdialogs.list.listItemsSingleChoice
+import player.phonograph.R
+import player.phonograph.misc.IOpenFileStorageAccess
+import player.phonograph.model.Song
+import player.phonograph.util.PlaylistsUtil
+import util.phonograph.m3u.PlaylistsManager
+import androidx.fragment.app.DialogFragment
 import android.app.Dialog
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
-import androidx.fragment.app.DialogFragment
-import com.afollestad.materialdialogs.MaterialDialog
-import com.afollestad.materialdialogs.list.listItemsSingleChoice
-import player.phonograph.R
-import player.phonograph.model.Song
-import player.phonograph.util.PlaylistsUtil
-import player.phonograph.misc.SAFCallbackHandlerActivity
-import util.phonograph.m3u.PlaylistsManager
 
 /**
  * @author Karim Abou Zeid (kabouzeid), Aidan Follestad (afollestad)
@@ -39,15 +39,17 @@ class AddToPlaylistDialog : DialogFragment() {
             .listItemsSingleChoice(items = playlistNames) { materialDialog: MaterialDialog, index: Int, _: CharSequence ->
                 if (index == 0) {
                     materialDialog.dismiss()
-                    CreatePlaylistDialog.create(songs).show(requireActivity().supportFragmentManager, "ADD_TO_PLAYLIST")
+                    CreatePlaylistDialog.create(songs)
+                        .show(requireActivity().supportFragmentManager, "ADD_TO_PLAYLIST")
                 } else {
                     materialDialog.dismiss()
                     val activity = requireActivity()
-                    if (activity is SAFCallbackHandlerActivity) {
-                        PlaylistsManager(activity, activity).appendPlaylist(songs, filePlaylist = playlists[index - 1])
-                    } else {
-                        PlaylistsManager(activity, null).appendPlaylist(songs, filePlaylist = playlists[index - 1])
-                    }
+                    PlaylistsManager.appendPlaylist(
+                        activity,
+                        songs,
+                        filePlaylist = playlists[index - 1],
+                        activity as? IOpenFileStorageAccess
+                    )
                 }
             }
     }

@@ -9,7 +9,7 @@ import com.afollestad.materialdialogs.WhichButton
 import com.afollestad.materialdialogs.actions.getActionButton
 import mt.pref.ThemeColor
 import player.phonograph.R
-import player.phonograph.misc.SAFCallbackHandlerActivity
+import player.phonograph.misc.IOpenDirStorageAccess
 import player.phonograph.model.playlist.FilePlaylist
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.model.playlist.ResettablePlaylist
@@ -77,11 +77,9 @@ class ClearPlaylistDialog : DialogFragment() {
                 }
                 // files
                 val attachedActivity: Activity = requireActivity()
-                PlaylistsManager(
-                    attachedActivity,
-                    if (attachedActivity is SAFCallbackHandlerActivity) attachedActivity else null
+                PlaylistsManager.deletePlaylistWithGuide(
+                    attachedActivity, filesLists, attachedActivity as? IOpenDirStorageAccess
                 )
-                    .deletePlaylistWithGuide(filesLists)
             }.also {
                 // grant permission button for R
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && !hasPermission) {

@@ -4,13 +4,11 @@
 
 package player.phonograph.actions
 
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import player.phonograph.dialogs.AddToPlaylistDialog
 import player.phonograph.dialogs.ClearPlaylistDialog
 import player.phonograph.dialogs.RenamePlaylistDialog
-import player.phonograph.misc.SAFCallbackHandlerActivity
+import player.phonograph.misc.ICreateFileStorageAccess
+import player.phonograph.misc.IOpenDirStorageAccess
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.queue.ShuffleMode
@@ -18,6 +16,9 @@ import util.phonograph.m3u.PlaylistsManager
 import androidx.fragment.app.FragmentActivity
 import android.content.Context
 import kotlin.random.Random
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 fun Playlist.actionPlay(context: Context): Boolean =
     getSongs(context).let { songs ->
@@ -59,14 +60,16 @@ fun List<Playlist>.actionDeletePlaylists(activity: Context): Boolean =
 
 fun Playlist.actionSavePlaylist(activity: FragmentActivity) {
     CoroutineScope(Dispatchers.Default).launch {
-        PlaylistsManager(activity, activity as? SAFCallbackHandlerActivity)
-            .duplicatePlaylistViaSaf(this@actionSavePlaylist)
+        PlaylistsManager.duplicatePlaylistViaSaf(
+            activity, this@actionSavePlaylist, activity as? ICreateFileStorageAccess
+        )
     }
 }
 
 fun List<Playlist>.actionSavePlaylists(activity: Context) {
     CoroutineScope(Dispatchers.Default).launch {
-        PlaylistsManager(activity, activity as? SAFCallbackHandlerActivity)
-            .duplicatePlaylistsViaSaf(this@actionSavePlaylists)
+        PlaylistsManager.duplicatePlaylistsViaSaf(
+            activity, this@actionSavePlaylists, activity as? IOpenDirStorageAccess
+        )
     }
 }

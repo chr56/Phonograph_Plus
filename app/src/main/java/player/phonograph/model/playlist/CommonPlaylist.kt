@@ -4,17 +4,19 @@
 
 package player.phonograph.model.playlist
 
-import android.content.Context
-import android.os.Parcel
-import android.os.Parcelable
-import androidx.annotation.DrawableRes
-import androidx.annotation.Keep
 import legacy.phonograph.LegacyPlaylistsUtil
 import player.phonograph.R
 import player.phonograph.mediastore.PlaylistSongLoader
+import player.phonograph.misc.IOpenDirStorageAccess
+import player.phonograph.misc.IOpenFileStorageAccess
 import player.phonograph.model.Song
 import player.phonograph.util.PlaylistsUtil
 import util.phonograph.m3u.PlaylistsManager
+import androidx.annotation.DrawableRes
+import androidx.annotation.Keep
+import android.content.Context
+import android.os.Parcel
+import android.os.Parcelable
 
 class FilePlaylist : Playlist, EditablePlaylist {
 
@@ -44,7 +46,7 @@ class FilePlaylist : Playlist, EditablePlaylist {
         LegacyPlaylistsUtil.removeFromPlaylist(context, song, id)
 
     override fun appendSongs(context: Context, songs: List<Song>) {
-        PlaylistsManager(context, null).appendPlaylist(songs, this)
+        PlaylistsManager.appendPlaylist(context, songs, this, context as? IOpenFileStorageAccess)
     }
     override fun appendSong(context: Context, song: Song) = appendSongs(context, listOf(song))
 
@@ -53,7 +55,7 @@ class FilePlaylist : Playlist, EditablePlaylist {
     }
 
     override fun clear(context: Context) {
-        PlaylistsManager(context, null).deletePlaylistWithGuide(listOf(this))
+        PlaylistsManager.deletePlaylistWithGuide(context, listOf(this), context as? IOpenDirStorageAccess)
     }
 
     override fun equals(other: Any?): Boolean {
