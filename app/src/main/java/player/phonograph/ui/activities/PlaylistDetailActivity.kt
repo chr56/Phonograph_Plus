@@ -20,9 +20,7 @@ import player.phonograph.actions.menu.playlistToolbar
 import player.phonograph.adapter.base.MultiSelectionCabController
 import player.phonograph.adapter.display.PlaylistSongAdapter
 import player.phonograph.databinding.ActivityPlaylistDetailBinding
-import player.phonograph.misc.SAFCallbackHandlerActivity
-import player.phonograph.misc.SafLauncher
-import player.phonograph.misc.menuProvider
+import player.phonograph.misc.*
 import player.phonograph.model.Song
 import player.phonograph.model.getReadableDurationString
 import player.phonograph.model.playlist.FilePlaylist
@@ -45,7 +43,11 @@ import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 
-class PlaylistDetailActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity {
+class PlaylistDetailActivity :
+        AbsSlidingMusicPanelActivity(),
+        IOpenFileStorageAccess,
+        ICreateFileStorageAccess,
+        IOpenDirStorageAccess {
 
     private lateinit var binding: ActivityPlaylistDetailBinding
 
@@ -59,8 +61,12 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandle
     private var wrappedAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>? = null
 
     // for saf callback
-    private lateinit var safLauncher: SafLauncher
-    override fun getSafLauncher(): SafLauncher = safLauncher
+    override val openFileStorageAccessTool: OpenFileStorageAccessTool =
+        OpenFileStorageAccessTool()
+    override val openDirStorageAccessTool: OpenDirStorageAccessTool =
+        OpenDirStorageAccessTool()
+    override val createFileStorageAccessTool: CreateFileStorageAccessTool =
+        CreateFileStorageAccessTool()
 
     /* ********************
      *
@@ -85,8 +91,9 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandle
         cab = createToolbarCab(this, R.id.cab_stub, R.id.multi_selection_cab)
         cabController = MultiSelectionCabController(cab)
 
-        safLauncher = SafLauncher(activityResultRegistry)
-        lifecycle.addObserver(safLauncher)
+        openFileStorageAccessTool.register(lifecycle, activityResultRegistry)
+        openDirStorageAccessTool.register(lifecycle, activityResultRegistry)
+        createFileStorageAccessTool.register(lifecycle, activityResultRegistry)
 
         setUpRecyclerView()
         setUpDashBroad()
@@ -168,12 +175,41 @@ class PlaylistDetailActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandle
         val iconColor = secondaryDisabledTextColor(primaryColor)
         with(binding) {
 
-            nameIcon.setImageDrawable(getTintedDrawable(R.drawable.ic_description_white_24dp, iconColor, BlendModeCompat.SRC_ATOP))
-            songCountIcon.setImageDrawable(getTintedDrawable(R.drawable.ic_music_note_white_24dp, iconColor, BlendModeCompat.SRC_ATOP))
-            durationIcon.setImageDrawable(getTintedDrawable(R.drawable.ic_timer_white_24dp, iconColor, BlendModeCompat.SRC_ATOP))
-            pathIcon.setImageDrawable(getTintedDrawable(R.drawable.ic_file_music_white_24dp, iconColor, BlendModeCompat.SRC_ATOP))
+            nameIcon.setImageDrawable(
+                getTintedDrawable(
+                    R.drawable.ic_description_white_24dp,
+                    iconColor,
+                    BlendModeCompat.SRC_ATOP
+                )
+            )
+            songCountIcon.setImageDrawable(
+                getTintedDrawable(
+                    R.drawable.ic_music_note_white_24dp,
+                    iconColor,
+                    BlendModeCompat.SRC_ATOP
+                )
+            )
+            durationIcon.setImageDrawable(
+                getTintedDrawable(
+                    R.drawable.ic_timer_white_24dp,
+                    iconColor,
+                    BlendModeCompat.SRC_ATOP
+                )
+            )
+            pathIcon.setImageDrawable(
+                getTintedDrawable(
+                    R.drawable.ic_file_music_white_24dp,
+                    iconColor,
+                    BlendModeCompat.SRC_ATOP
+                )
+            )
 
-            icon.setImageDrawable(getTintedDrawable(R.drawable.ic_queue_music_white_24dp, textColor))
+            icon.setImageDrawable(
+                getTintedDrawable(
+                    R.drawable.ic_queue_music_white_24dp,
+                    textColor
+                )
+            )
 
             nameText.setTextColor(textColor)
             songCountText.setTextColor(textColor)

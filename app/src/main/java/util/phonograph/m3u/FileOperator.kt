@@ -16,7 +16,6 @@ import player.phonograph.misc.CreateFileStorageAccessTool
 import player.phonograph.misc.OpenDirStorageAccessTool
 import player.phonograph.misc.OpenDocumentContract
 import player.phonograph.misc.OpenFileStorageAccessTool
-import player.phonograph.misc.UriCallback
 import player.phonograph.model.Song
 import player.phonograph.model.playlist.FilePlaylist
 import player.phonograph.model.playlist.Playlist
@@ -408,3 +407,6 @@ object FileOperator {
         if (!ready) Looper.loop()
     }
 }
+
+
+typealias UriCallback = (Uri?) -> Any

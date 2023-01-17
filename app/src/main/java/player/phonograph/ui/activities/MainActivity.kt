@@ -20,8 +20,12 @@ import player.phonograph.databinding.ActivityMainBinding
 import player.phonograph.databinding.LayoutDrawerBinding
 import player.phonograph.dialogs.ChangelogDialog
 import player.phonograph.mediastore.SongLoader.getAllSongs
-import player.phonograph.misc.SAFCallbackHandlerActivity
-import player.phonograph.misc.SafLauncher
+import player.phonograph.misc.CreateFileStorageAccessTool
+import player.phonograph.misc.ICreateFileStorageAccess
+import player.phonograph.misc.IOpenDirStorageAccess
+import player.phonograph.misc.IOpenFileStorageAccess
+import player.phonograph.misc.OpenDirStorageAccessTool
+import player.phonograph.misc.OpenFileStorageAccessTool
 import player.phonograph.model.infoString
 import player.phonograph.model.pages.Pages
 import player.phonograph.model.version.VersionCatalog
@@ -59,7 +63,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 
-class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity {
+class MainActivity : AbsSlidingMusicPanelActivity(),
+                     IOpenFileStorageAccess, ICreateFileStorageAccess, IOpenDirStorageAccess {
 
     private lateinit var mainBinding: ActivityMainBinding
     private lateinit var drawerBinding: LayoutDrawerBinding
@@ -67,14 +72,19 @@ class MainActivity : AbsSlidingMusicPanelActivity(), SAFCallbackHandlerActivity 
     private lateinit var currentFragment: MainActivityFragmentCallbacks
     private var navigationDrawerHeader: View? = null
 
-    private lateinit var safLauncher: SafLauncher
-    override fun getSafLauncher(): SafLauncher = safLauncher
+    override val openFileStorageAccessTool: OpenFileStorageAccessTool =
+        OpenFileStorageAccessTool()
+    override val openDirStorageAccessTool: OpenDirStorageAccessTool =
+        OpenDirStorageAccessTool()
+    override val createFileStorageAccessTool: CreateFileStorageAccessTool =
+        CreateFileStorageAccessTool()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        safLauncher = SafLauncher(activityResultRegistry)
-        lifecycle.addObserver(safLauncher)
+        openFileStorageAccessTool.register(lifecycle, activityResultRegistry)
+        openDirStorageAccessTool.register(lifecycle, activityResultRegistry)
+        createFileStorageAccessTool.register(lifecycle, activityResultRegistry)
 
         currentFragment =
             if (savedInstanceState == null) {
