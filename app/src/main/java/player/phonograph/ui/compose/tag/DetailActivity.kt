@@ -27,6 +27,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -40,6 +41,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -198,10 +200,15 @@ internal fun CoverImageDetailDialog(
             .wrapContentWidth()
     ) {
         if (artwork != null) {
-            Text(stringResource(R.string.save),
-                 Modifier
-                     .fillMaxWidth()
-                     .clickable { onSave() })
+            Text(
+                text = stringResource(R.string.save),
+                color = MaterialTheme.colors.primary,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .requiredHeight(32.dp)
+                    .clickable { onSave() },
+                textAlign = TextAlign.Start
+            )
         }
     }
 }
