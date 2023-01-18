@@ -14,6 +14,7 @@ import player.phonograph.ui.compose.ColorTools
 import player.phonograph.ui.compose.components.CoverImage
 import player.phonograph.util.SongDetailUtil
 import player.phonograph.util.tageditor.applyTagEdit
+import androidx.annotation.StringRes
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -72,6 +73,8 @@ internal fun TagBrowserScreen(viewModel: TagBrowserScreenViewModel, context: Con
         state = viewModel.coverImageDetailDialogState,
         artwork = viewModel.artwork.value,
         onSave = { viewModel.saveArtwork(context!!) },
+        onDelete = { (viewModel as? TagEditorScreenViewModel)?.deleteArtwork(context!!) },
+        onUpdate = { (viewModel as? TagEditorScreenViewModel)?.replaceArtwork(context!!) },
         editMode = viewModel is TagEditorScreenViewModel
     )
     // edit mode
@@ -86,6 +89,8 @@ internal fun CoverImageDetailDialog(
     state: MaterialDialogState,
     artwork: SongDetailUtil.BitmapPaletteWrapper?,
     onSave: () -> Unit,
+    onDelete: () -> Unit,
+    onUpdate: () -> Unit,
     editMode: Boolean
 ) = MaterialDialog(
     dialogState = state,
@@ -93,25 +98,36 @@ internal fun CoverImageDetailDialog(
         positiveButton(res = android.R.string.ok) { state.hide() }
     }
 ) {
-    title(res = player.phonograph.R.string.label_details)
+    title(res = R.string.label_details)
     Column(
         modifier = Modifier
             .padding(bottom = 28.dp, start = 24.dp, end = 24.dp)
             .wrapContentWidth()
     ) {
         if (artwork != null) {
-            Text(
-                text = stringResource(player.phonograph.R.string.save),
-                color = MaterialTheme.colors.primary,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .requiredHeight(32.dp)
-                    .clickable { onSave() },
-                textAlign = TextAlign.Start
-            )
+            MenuItem(textRes = R.string.save, onSave)
+            if (editMode) {
+                MenuItem(textRes = R.string.remove_cover, onDelete)
+            }
+        }
+        if (editMode) {
+            MenuItem(textRes = R.string.update_image, onUpdate)
         }
     }
 }
+
+@Composable
+private fun MenuItem(@StringRes textRes: Int, onClick: () -> Unit) =
+    Text(
+        text = stringResource(textRes),
+        color = MaterialTheme.colors.primary,
+        textAlign = TextAlign.Start,
+        style = MaterialTheme.typography.button,
+        modifier = Modifier
+            .fillMaxWidth()
+            .requiredHeight(32.dp)
+            .clickable(onClick = onClick),
+    )
 
 @Composable
 internal fun ExitWithoutSavingDialog(model: TagEditorScreenViewModel, activity: Activity?) {

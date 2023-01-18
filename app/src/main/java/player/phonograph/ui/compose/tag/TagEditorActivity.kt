@@ -125,6 +125,14 @@ class TagEditorScreenViewModel(song: Song, defaultColor: Color) :
         activity.finish()
     }
 
+    fun deleteArtwork(context: Context) {
+
+    }
+
+    fun replaceArtwork(context: Context) {
+
+    }
+
     class Factory(private val song: Song, private val color: Color) : ViewModelProvider.Factory {
         @Suppress("UNCHECKED_CAST")
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
