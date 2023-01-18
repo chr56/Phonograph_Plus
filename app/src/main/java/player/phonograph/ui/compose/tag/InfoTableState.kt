@@ -34,18 +34,6 @@ class EditableInfoTableState(
             _allEditRequest[key] = newValue
     }
 
-    /**
-     * generate diff with [oldInfo]
-     * @return <TagFieldKey, oldValue, newValue> triple
-     */
-    fun generateDiff(): List<Triple<FieldKey, String?, String?>> {
-        val current = info.value
-        return allEditRequests.map { (key, new) ->
-            val old = current.tagValue(key).value()
-            Triple(key, old, new)
-        }
-    }
-
 }
 
 typealias EditRequest = (FieldKey, String?) -> Unit

@@ -12,10 +12,13 @@ import player.phonograph.R
 import player.phonograph.mediastore.SongLoader
 import player.phonograph.misc.CreateFileStorageAccessTool
 import player.phonograph.misc.ICreateFileStorageAccess
+import player.phonograph.misc.IOpenFileStorageAccess
+import player.phonograph.misc.OpenFileStorageAccessTool
 import player.phonograph.model.Song
 import player.phonograph.ui.compose.base.ComposeToolbarActivity
 import player.phonograph.ui.compose.theme.PhonographTheme
 import player.phonograph.util.SongDetailUtil
+import player.phonograph.util.tageditor.selectNewArtwork
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.material.Icon
@@ -26,15 +29,24 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.yield
 
-class TagEditorActivity : ComposeToolbarActivity(), ICreateFileStorageAccess {
+class TagEditorActivity :
+        ComposeToolbarActivity(),
+        ICreateFileStorageAccess,
+        IOpenFileStorageAccess {
 
     override val createFileStorageAccessTool: CreateFileStorageAccessTool =
         CreateFileStorageAccessTool()
+    override val openFileStorageAccessTool: OpenFileStorageAccessTool =
+        OpenFileStorageAccessTool()
 
     private lateinit var song: Song
     private val model: TagEditorScreenViewModel
@@ -43,6 +55,7 @@ class TagEditorActivity : ComposeToolbarActivity(), ICreateFileStorageAccess {
     override fun onCreate(savedInstanceState: Bundle?) {
         song = parseIntent(this, intent)
         createFileStorageAccessTool.register(lifecycle, activityResultRegistry)
+        openFileStorageAccessTool.register(lifecycle, activityResultRegistry)
         super.onCreate(savedInstanceState)
         model.loadArtwork(this) { updateBarsColor() }
     }
@@ -125,12 +138,28 @@ class TagEditorScreenViewModel(song: Song, defaultColor: Color) :
         activity.finish()
     }
 
-    fun deleteArtwork(context: Context) {
+    var needDeleteCover = false
+        private set
+    var needReplaceCover = false
+        private set
 
+    var newCover: Uri? = null
+        private set
+
+    fun deleteArtwork() {
+        needDeleteCover = true
+        needReplaceCover = false
     }
 
     fun replaceArtwork(context: Context) {
-
+        viewModelScope.launch {
+            val newArtwork = selectNewArtwork(context)
+            while (newArtwork.value == null) yield()
+            val uri = newArtwork.value ?: throw Exception("Coroutine Error")
+            needReplaceCover = true
+            needDeleteCover = false
+            newCover = uri
+        }
     }
 
     class Factory(private val song: Song, private val color: Color) : ViewModelProvider.Factory {
@@ -139,4 +168,25 @@ class TagEditorScreenViewModel(song: Song, defaultColor: Color) :
             return TagEditorScreenViewModel(song, color) as T
         }
     }
+}
+
+/**
+ * generate diff with [oldInfo]
+ * @return <TagFieldKey, oldValue, newValue> triple
+ */
+internal fun TagEditorScreenViewModel.generateDiff(): TagDiff {
+    val current = infoTableState.info.value
+    val tagDiff = infoTableState.allEditRequests.map { (key, new) ->
+        val old = current.tagValue(key).value()
+        Triple(key, old, new)
+    }
+    val artworkDiff =
+        if (needReplaceCover) {
+            TagDiff.ArtworkDiff.Replaced(newCover)
+        } else if (needDeleteCover) {
+            TagDiff.ArtworkDiff.Deleted
+        } else {
+            TagDiff.ArtworkDiff.None
+        }
+    return TagDiff(tagDiff, artworkDiff)
 }

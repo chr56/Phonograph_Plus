@@ -38,11 +38,15 @@ import kotlinx.coroutines.yield
 import java.io.File
 import java.io.IOException
 
-fun applyTagEdit(
+
+fun applyEdit(
     scope: CoroutineScope,
     context: Context,
+    songFile: File,
     allEditRequest: Map<FieldKey, String?>,
-    songFile: File
+    needDeleteCover: Boolean,
+    needReplaceCover: Boolean,
+    newCoverUri: Uri?
 ) {
     scope.launch(Dispatchers.Default) {
         // notify user first
@@ -52,9 +56,15 @@ fun applyTagEdit(
             TAG_EDITOR_NOTIFICATION_CODE
         )
         // process
-        if (allEditRequest.isEmpty()) return@launch
         withContext(Dispatchers.IO) {
-            applyTagEditImpl(context, songFile, allEditRequest)
+            if (allEditRequest.isNotEmpty()) {
+                applyTagEditImpl(context, songFile, allEditRequest)
+            }
+            if (needReplaceCover) {
+                replaceArtwork(context, songFile, newCoverUri!!)
+            } else if (needDeleteCover) {
+                deleteArtWork(songFile)
+            }
         }
         // notify user
         BackgroundNotification.remove(TAG_EDITOR_NOTIFICATION_CODE)
@@ -72,28 +82,24 @@ fun applyTagEdit(
     }
 }
 
-fun replaceArtwork(
-    coroutineScope: CoroutineScope,
-    activity: Context, songFile: File, uri: Uri
-) {
-    coroutineScope.launch(Dispatchers.IO) {
-        val cacheFile =
-            try {
-                copyImageToCache(activity, songFile, uri)
-            } catch (e: Exception) {
-                null
-            }
-        if (cacheFile != null) {
-            try {
-                replaceArtworkImpl(songFile, cacheFile)
-            } catch (e: Exception) {
-                reportError(e, LOGTAG, "Failed to write tag!")
-            }
-        } else {
-            warning(LOGTAG, "Failed to replace Artwork!")
+private fun replaceArtwork(activity: Context, songFile: File, uri: Uri) {
+    val cacheFile =
+        try {
+            copyImageToCache(activity, songFile, uri)
+        } catch (e: Exception) {
+            null
         }
-        cacheFile?.delete()
+    if (cacheFile != null) {
+        try {
+            replaceArtworkImpl(songFile, cacheFile)
+        } catch (e: Exception) {
+            reportError(e, LOGTAG, "Failed to write tag!")
+        }
+    } else {
+        warning(LOGTAG, "Failed to replace Artwork!")
     }
+    cacheFile?.delete()
+
 }
 
 private fun copyImageToCache(activity: Context, songFile: File, uri: Uri): File {
@@ -127,15 +133,13 @@ private fun replaceArtworkImpl(songFile: File, imageFile: File) {
     file.commit()
 }
 
-fun deleteArtWork(coroutineScope: CoroutineScope, songFile: File) {
-    coroutineScope.launch(Dispatchers.IO) {
-        safeEditTag(songFile.path) {
-            val file = AudioFileIO.read(songFile)
-            file.tagOrCreateAndSetDefault.also {
-                it.deleteArtworkField()
-            }
-            file.commit()
+private fun deleteArtWork(songFile: File) {
+    safeEditTag(songFile.path) {
+        val file = AudioFileIO.read(songFile)
+        file.tagOrCreateAndSetDefault.also {
+            it.deleteArtworkField()
         }
+        file.commit()
     }
 }
 

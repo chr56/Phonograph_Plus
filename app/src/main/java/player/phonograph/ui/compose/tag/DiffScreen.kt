@@ -22,24 +22,34 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import android.net.Uri
 
 @Composable
 internal fun DiffScreen(model: TagEditorScreenViewModel) {
-    val diff = remember { model.infoTableState.generateDiff() }
-    if (diff.isEmpty())
+    val diff = remember { model.generateDiff() }
+    if (diff.noChange())
         Text(text = stringResource(id = R.string.no_changes))
     else
         LazyColumn(Modifier.padding(8.dp)) {
-            for (tag in diff) {
+            for (tag in diff.tagDiff) {
                 item {
-                    Diff(tag)
+                    TagDiff(tag)
                 }
             }
+            if (diff.artworkDiff is TagDiff.ArtworkDiff.Deleted)
+                item {
+                    Title(stringResource(id = R.string.remove_cover))
+                }
+            if (diff.artworkDiff is TagDiff.ArtworkDiff.Replaced)
+                item {
+                    Title(stringResource(id = R.string.update_image))
+                    DiffText("-> ${diff.artworkDiff.uri}")
+                }
         }
 }
 
 @Composable
-private fun Diff(tag: Triple<FieldKey, String?, String?>) {
+private fun TagDiff(tag: Triple<FieldKey, String?, String?>) {
     Column(Modifier.padding(vertical = 16.dp)) {
         Title(stringResource(id = songTagNameRes(tag.first)), horizontalPadding = 0.dp)
         DiffText(tag.second)
@@ -60,4 +70,20 @@ private fun DiffText(string: String?, modifier: Modifier = Modifier) {
     } else {
         Text(string, modifier.fillMaxWidth())
     }
+}
+
+internal class TagDiff(
+    /**
+     * <TagFieldKey, oldValue, newValue> triple
+     */
+    val tagDiff: List<Triple<FieldKey, String?, String?>>,
+    val artworkDiff: ArtworkDiff
+) {
+    sealed class ArtworkDiff {
+        class Replaced(val uri: Uri?) : ArtworkDiff()
+        object Deleted : ArtworkDiff()
+        object None : ArtworkDiff()
+    }
+
+    fun noChange() = tagDiff.isEmpty() && artworkDiff is ArtworkDiff.None
 }

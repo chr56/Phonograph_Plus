@@ -13,7 +13,7 @@ import player.phonograph.R
 import player.phonograph.ui.compose.ColorTools
 import player.phonograph.ui.compose.components.CoverImage
 import player.phonograph.util.SongDetailUtil
-import player.phonograph.util.tageditor.applyTagEdit
+import player.phonograph.util.tageditor.applyEdit
 import androidx.annotation.StringRes
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -73,7 +73,7 @@ internal fun TagBrowserScreen(viewModel: TagBrowserScreenViewModel, context: Con
         state = viewModel.coverImageDetailDialogState,
         artwork = viewModel.artwork.value,
         onSave = { viewModel.saveArtwork(context!!) },
-        onDelete = { (viewModel as? TagEditorScreenViewModel)?.deleteArtwork(context!!) },
+        onDelete = { (viewModel as? TagEditorScreenViewModel)?.deleteArtwork() },
         onUpdate = { (viewModel as? TagEditorScreenViewModel)?.replaceArtwork(context!!) },
         editMode = viewModel is TagEditorScreenViewModel
     )
@@ -172,9 +172,12 @@ internal fun SaveConfirmationDialog(model: TagEditorScreenViewModel, context: Co
 }
 
 private fun saveImpl(model: TagEditorScreenViewModel, context: Context?) =
-    applyTagEdit(
+    applyEdit(
         CoroutineScope(Dispatchers.Unconfined),
         context ?: App.instance,
+        File(model.song.data),
         model.infoTableState.allEditRequests,
-        File(model.song.data)
+        model.needDeleteCover,
+        model.needReplaceCover,
+        model.newCover
     )
