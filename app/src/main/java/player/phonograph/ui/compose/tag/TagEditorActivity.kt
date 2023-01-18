@@ -4,6 +4,7 @@
 
 package player.phonograph.ui.compose.tag
 
+import com.vanpra.composematerialdialogs.MaterialDialogState
 import mt.pref.ThemeColor
 import mt.pref.ThemeColor.primaryColor
 import mt.util.color.darkenColor
@@ -14,6 +15,7 @@ import player.phonograph.misc.ICreateFileStorageAccess
 import player.phonograph.model.Song
 import player.phonograph.ui.compose.base.ComposeToolbarActivity
 import player.phonograph.ui.compose.theme.PhonographTheme
+import player.phonograph.util.SongDetailUtil
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.material.Icon
@@ -22,6 +24,9 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -45,7 +50,7 @@ class TagEditorActivity : ComposeToolbarActivity(), ICreateFileStorageAccess {
     @Composable
     override fun SetUpContent() {
         PhonographTheme {
-            DetailScreen(model, this)
+            TagBrowserScreen(model, this)
         }
     }
 
@@ -66,7 +71,7 @@ class TagEditorActivity : ComposeToolbarActivity(), ICreateFileStorageAccess {
     }
 
     private fun back() {
-        if (model.infoTableViewModel.allEditRequests.isEmpty()) {
+        if (model.infoTableState.allEditRequests.isEmpty()) {
             finish()
         } else {
             model.exitWithoutSavingDialogState.show()
@@ -98,6 +103,32 @@ class TagEditorActivity : ComposeToolbarActivity(), ICreateFileStorageAccess {
                     putExtra(SONG_ID, songId)
                 }
             )
+        }
+    }
+}
+
+class TagEditorScreenViewModel(song: Song, defaultColor: Color) :
+        TagBrowserScreenViewModel(song, defaultColor) {
+    private var _infoTableViewModel: EditableInfoTableState? = null
+    override val infoTableState: EditableInfoTableState
+        @Synchronized get() {
+            if (_infoTableViewModel == null) {
+                _infoTableViewModel =
+                    EditableInfoTableState(SongDetailUtil.readSong(song), defaultColor)
+            }
+            return _infoTableViewModel!!
+        }
+
+    val saveConfirmationDialogState = MaterialDialogState(false)
+    val exitWithoutSavingDialogState = MaterialDialogState(false)
+    fun requestExit(activity: Activity) {
+        activity.finish()
+    }
+
+    class Factory(private val song: Song, private val color: Color) : ViewModelProvider.Factory {
+        @Suppress("UNCHECKED_CAST")
+        override fun <T : ViewModel> create(modelClass: Class<T>): T {
+            return TagEditorScreenViewModel(song, color) as T
         }
     }
 }

@@ -25,7 +25,7 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 internal fun DiffScreen(model: TagEditorScreenViewModel) {
-    val diff = remember { model.infoTableViewModel.generateDiff() }
+    val diff = remember { model.infoTableState.generateDiff() }
     if (diff.isEmpty())
         Text(text = stringResource(id = R.string.no_changes))
     else

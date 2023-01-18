@@ -13,9 +13,12 @@ import player.phonograph.misc.ICreateFileStorageAccess
 import player.phonograph.model.Song
 import player.phonograph.ui.compose.base.ComposeToolbarActivity
 import player.phonograph.ui.compose.theme.PhonographTheme
+import player.phonograph.util.SongDetailUtil
 import androidx.activity.viewModels
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -40,7 +43,7 @@ class DetailActivity : ComposeToolbarActivity(), ICreateFileStorageAccess {
     @Composable
     override fun SetUpContent() {
         PhonographTheme {
-            DetailScreen(model, this)
+            TagBrowserScreen(model, this)
         }
     }
 
@@ -76,3 +79,22 @@ class DetailActivity : ComposeToolbarActivity(), ICreateFileStorageAccess {
     }
 }
 
+class DetailScreenViewModel(song: Song, defaultColor: Color) :
+        TagBrowserScreenViewModel(song, defaultColor) {
+    private var _infoTableState: InfoTableState? = null
+    override val infoTableState: InfoTableState
+        @Synchronized get() {
+            if (_infoTableState == null) {
+                _infoTableState =
+                    InfoTableState(SongDetailUtil.readSong(song), defaultColor)
+            }
+            return _infoTableState!!
+        }
+
+    class Factory(private val song: Song, private val color: Color) : ViewModelProvider.Factory {
+        @Suppress("UNCHECKED_CAST")
+        override fun <T : ViewModel> create(modelClass: Class<T>): T {
+            return DetailScreenViewModel(song, color) as T
+        }
+    }
+}

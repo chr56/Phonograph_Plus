@@ -6,15 +6,13 @@ package player.phonograph.ui.compose.tag
 
 import org.jaudiotagger.tag.FieldKey
 import player.phonograph.model.SongInfoModel
-import androidx.annotation.ColorInt
 import androidx.compose.ui.graphics.Color
-import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import java.util.EnumMap
 
-open class InfoTableViewModel(info: SongInfoModel, defaultColor: Color) : ViewModel() {
+open class InfoTableState(info: SongInfoModel, defaultColor: Color) {
     private val _info: MutableStateFlow<SongInfoModel> = MutableStateFlow(info)
     val info get() = _info as StateFlow<SongInfoModel>
 
@@ -23,10 +21,10 @@ open class InfoTableViewModel(info: SongInfoModel, defaultColor: Color) : ViewMo
     fun updateTitleColor(color: Color) {_titleColor.update { color }}
 }
 
-class EditableInfoTableViewModel(
+class EditableInfoTableState(
     info: SongInfoModel,
     color: Color
-) : InfoTableViewModel(info, color) {
+) : InfoTableState(info, color) {
 
     private val _allEditRequest: MutableMap<FieldKey, String?> = EnumMap(FieldKey::class.java)
     val allEditRequests: Map<FieldKey, String?> get() = _allEditRequest

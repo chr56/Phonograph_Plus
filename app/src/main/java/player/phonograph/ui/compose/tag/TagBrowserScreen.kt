@@ -40,9 +40,7 @@ import kotlinx.coroutines.Dispatchers
 import java.io.File
 
 @Composable
-internal fun DetailScreen(viewModel: AbsDetailScreenViewModel, context: Context?) {
-
-    val editMode = remember { viewModel is TagEditorScreenViewModel }
+internal fun TagBrowserScreen(viewModel: TagBrowserScreenViewModel, context: Context?) {
 
     val wrapper by remember { viewModel.artwork }
     val paletteColor =
@@ -59,7 +57,7 @@ internal fun DetailScreen(viewModel: AbsDetailScreenViewModel, context: Context?
             .verticalScroll(state = rememberScrollState())
             .fillMaxSize()
     ) {
-        if (viewModel.artworkLoaded.value || editMode) {
+        if (viewModel.artworkLoaded.value || viewModel is TagEditorScreenViewModel) { // edit mode
             CoverImage(
                 bitmap = wrapper!!.bitmap,
                 backgroundColor = paletteColor,
@@ -68,20 +66,21 @@ internal fun DetailScreen(viewModel: AbsDetailScreenViewModel, context: Context?
                 }
             )
         }
-        InfoTable(viewModel.infoTableViewModel)
+        InfoTable(viewModel.infoTableState)
     }
     CoverImageDetailDialog(
         state = viewModel.coverImageDetailDialogState,
         artwork = viewModel.artwork.value,
         onSave = { viewModel.saveArtwork(context!!) },
-        editMode = editMode
+        editMode = viewModel is TagEditorScreenViewModel
     )
-    if (editMode) {
-        viewModel as TagEditorScreenViewModel
+    // edit mode
+    if (viewModel is TagEditorScreenViewModel) {
         SaveConfirmationDialog(viewModel, context)
         ExitWithoutSavingDialog(viewModel, context as? Activity)
     }
 }
+
 @Composable
 internal fun CoverImageDetailDialog(
     state: MaterialDialogState,
@@ -115,7 +114,7 @@ internal fun CoverImageDetailDialog(
 }
 
 @Composable
-fun ExitWithoutSavingDialog(model: TagEditorScreenViewModel, activity: Activity?) {
+internal fun ExitWithoutSavingDialog(model: TagEditorScreenViewModel, activity: Activity?) {
     val dismiss = { model.exitWithoutSavingDialogState.hide() }
     MaterialDialog(
         dialogState = model.exitWithoutSavingDialogState,
@@ -134,7 +133,7 @@ fun ExitWithoutSavingDialog(model: TagEditorScreenViewModel, activity: Activity?
 }
 
 @Composable
-fun SaveConfirmationDialog(model: TagEditorScreenViewModel, context: Context?) {
+internal fun SaveConfirmationDialog(model: TagEditorScreenViewModel, context: Context?) {
     val dismiss = { model.saveConfirmationDialogState.hide() }
     val save = {
         dismiss()
@@ -160,6 +159,6 @@ private fun saveImpl(model: TagEditorScreenViewModel, context: Context?) =
     applyTagEdit(
         CoroutineScope(Dispatchers.Unconfined),
         context ?: App.instance,
-        model.infoTableViewModel.allEditRequests,
+        model.infoTableState.allEditRequests,
         File(model.song.data)
     )
