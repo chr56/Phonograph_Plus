@@ -11,6 +11,8 @@ import mt.pref.ThemeColor
 import mt.util.color.darkenColor
 import player.phonograph.R
 import player.phonograph.mediastore.SongLoader
+import player.phonograph.misc.CreateFileStorageAccessTool
+import player.phonograph.misc.ICreateFileStorageAccess
 import player.phonograph.model.Song
 import player.phonograph.ui.compose.ColorTools.makeSureContrastWith
 import player.phonograph.ui.compose.base.ComposeToolbarActivity
@@ -23,13 +25,13 @@ import androidx.activity.viewModels
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
-import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
@@ -41,17 +43,24 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 
-class DetailActivity : ComposeToolbarActivity() {
+class DetailActivity : ComposeToolbarActivity(), ICreateFileStorageAccess {
 
     private lateinit var song: Song
     val model: DetailModel
             by viewModels { DetailModel.Factory(song, Color(ThemeColor.primaryColor(this))) }
 
+
+    override val createFileStorageAccessTool: CreateFileStorageAccessTool =
+        CreateFileStorageAccessTool()
+
     override fun onCreate(savedInstanceState: Bundle?) {
+        createFileStorageAccessTool.register(lifecycle, activityResultRegistry)
         song = parseIntent(this, intent)
         super.onCreate(savedInstanceState)
         model.loadArtwork(this) { updateBarsColor() }
@@ -60,7 +69,7 @@ class DetailActivity : ComposeToolbarActivity() {
     @Composable
     override fun SetUpContent() {
         PhonographTheme {
-            DetailActivityContent(model)
+            DetailActivityContent(this, model)
         }
     }
 
@@ -121,6 +130,11 @@ class DetailModel(
         }
     }
 
+    fun saveArtwork(activity: Activity) {
+        val wrapper = artwork.value ?: return
+        SongDetailUtil.saveArtwork(viewModelScope, activity, wrapper)
+    }
+
     val coverImageDetailDialogState = MaterialDialogState(false)
 
     class Factory(private val song: Song, private val color: Color) : ViewModelProvider.Factory {
@@ -132,7 +146,7 @@ class DetailModel(
 }
 
 @Composable
-internal fun DetailActivityContent(viewModel: DetailModel) {
+internal fun DetailActivityContent(activity: DetailActivity?, viewModel: DetailModel) {
     val wrapper by remember { viewModel.artwork }
     val paletteColor =
         makeSureContrastWith(MaterialTheme.colors.surface) {
@@ -159,13 +173,18 @@ internal fun DetailActivityContent(viewModel: DetailModel) {
         }
         InfoTable(viewModel.infoTableViewModel)
     }
-    CoverImageDetailDialog(viewModel.coverImageDetailDialogState, artwork = viewModel.artwork.value)
+    CoverImageDetailDialog(
+        state = viewModel.coverImageDetailDialogState,
+        artwork = viewModel.artwork.value,
+        onSave = { viewModel.saveArtwork(activity!!) }
+    )
 }
 
 @Composable
-fun CoverImageDetailDialog(
+internal fun CoverImageDetailDialog(
     state: MaterialDialogState,
-    artwork: SongDetailUtil.BitmapPaletteWrapper?
+    artwork: SongDetailUtil.BitmapPaletteWrapper?,
+    onSave: () -> Unit
 ) = MaterialDialog(
     dialogState = state,
     buttons = {
@@ -179,10 +198,10 @@ fun CoverImageDetailDialog(
             .wrapContentWidth()
     ) {
         if (artwork != null) {
-            val save = {}
-            TextButton(onClick = save) {
-                Text(stringResource(R.string.save))
-            }
+            Text(stringResource(R.string.save),
+                 Modifier
+                     .fillMaxWidth()
+                     .clickable { onSave() })
         }
     }
 }
