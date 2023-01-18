@@ -131,34 +131,40 @@ object SongDetailUtil {
         return otherTags
     }
 
-    fun loadArtwork(context: Context, song: Song, onLoaded: () -> Unit): MutableState<BitmapPaletteWrapper?> {
+    fun loadArtwork(
+        context: Context,
+        song: Song,
+        onLoaded: () -> Unit
+    ): MutableState<BitmapPaletteWrapper?> {
         val bitmapState = mutableStateOf<BitmapPaletteWrapper?>(
-            BitmapPaletteWrapper(ContextCompat.getDrawable(context, R.drawable.default_album_art)!!
-                .toBitmap(),
-                ThemeColor.primaryColor(context))
+            BitmapPaletteWrapper(
+                ContextCompat.getDrawable(context, R.drawable.default_album_art)!!.toBitmap(),
+                ThemeColor.primaryColor(context)
+            )
         )
         loadImage(context) {
             data(song)
-            target(PaletteTargetBuilder(context)
-                .onResourceReady { result: Drawable, paletteColor: Int ->
-                    bitmapState.value =
-                        BitmapPaletteWrapper(result.toBitmap(), paletteColor)
-
-                    onLoaded.invoke()
-                }
-                .build())
+            target(
+                PaletteTargetBuilder(context)
+                    .onResourceReady { result: Drawable, paletteColor: Int ->
+                        bitmapState.value = BitmapPaletteWrapper(result.toBitmap(), paletteColor)
+                        onLoaded.invoke()
+                    }
+                    .build()
+            )
         }
         return bitmapState
     }
 
     fun saveArtwork(
         coroutineScope: CoroutineScope,
-        activity: Activity,
+        activity: Context,
         wrapper: BitmapPaletteWrapper,
+        fileName: String
     ) {
         if (activity is ICreateFileStorageAccess) {
             val accessTool = activity.createFileStorageAccessTool
-            accessTool.launch("Cover.jpg") { uri ->
+            accessTool.launch("$fileName.jpg") { uri ->
                 if (uri != null) {
                     saveArtworkImpl(coroutineScope, activity, uri, wrapper)
                 } else {

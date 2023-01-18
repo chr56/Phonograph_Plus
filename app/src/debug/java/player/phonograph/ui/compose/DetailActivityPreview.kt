@@ -17,7 +17,7 @@ import androidx.compose.ui.tooling.preview.Preview
 fun ContentPreview() {
     PhonographTheme(previewMode = true) {
         DetailActivityContent(
-            null, DetailModel(Song.EMPTY_SONG, Color.Black)
+            DetailModel(Song.EMPTY_SONG, Color.Black), null
         )
     }
 }

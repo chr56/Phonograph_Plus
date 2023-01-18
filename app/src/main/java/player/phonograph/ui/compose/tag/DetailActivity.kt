@@ -44,7 +44,6 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -69,7 +68,7 @@ class DetailActivity : ComposeToolbarActivity(), ICreateFileStorageAccess {
     @Composable
     override fun SetUpContent() {
         PhonographTheme {
-            DetailActivityContent(this, model)
+            DetailActivityContent(model, this)
         }
     }
 
@@ -130,9 +129,10 @@ class DetailModel(
         }
     }
 
-    fun saveArtwork(activity: Activity) {
+    fun saveArtwork(activity: Context) {
         val wrapper = artwork.value ?: return
-        SongDetailUtil.saveArtwork(viewModelScope, activity, wrapper)
+        val fileName = song.data.substringAfterLast('/').substringBeforeLast('.')
+        SongDetailUtil.saveArtwork(viewModelScope, activity, wrapper, fileName)
     }
 
     val coverImageDetailDialogState = MaterialDialogState(false)
@@ -146,7 +146,7 @@ class DetailModel(
 }
 
 @Composable
-internal fun DetailActivityContent(activity: DetailActivity?, viewModel: DetailModel) {
+internal fun DetailActivityContent(viewModel: DetailModel, context: Context?) {
     val wrapper by remember { viewModel.artwork }
     val paletteColor =
         makeSureContrastWith(MaterialTheme.colors.surface) {
@@ -176,7 +176,7 @@ internal fun DetailActivityContent(activity: DetailActivity?, viewModel: DetailM
     CoverImageDetailDialog(
         state = viewModel.coverImageDetailDialogState,
         artwork = viewModel.artwork.value,
-        onSave = { viewModel.saveArtwork(activity!!) }
+        onSave = { viewModel.saveArtwork(context!!) }
     )
 }
 
