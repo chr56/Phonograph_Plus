@@ -40,7 +40,7 @@ class DetailActivity : ComposeToolbarActivity(), ICreateFileStorageAccess {
     @Composable
     override fun SetUpContent() {
         PhonographTheme {
-            DetailActivityContent(model, this)
+            DetailScreen(model, this)
         }
     }
 

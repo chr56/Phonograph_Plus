@@ -13,6 +13,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import android.app.Activity
 import android.content.Context
 
 abstract class AbsDetailScreenViewModel(
@@ -62,6 +63,32 @@ class DetailScreenViewModel(song: Song, defaultColor: Color) :
         @Suppress("UNCHECKED_CAST")
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
             return DetailScreenViewModel(song, color) as T
+        }
+    }
+}
+
+class TagEditorScreenViewModel(song: Song, defaultColor: Color) :
+        AbsDetailScreenViewModel(song, defaultColor) {
+    private var _infoTableViewModel: EditableInfoTableViewModel? = null
+    override val infoTableViewModel: EditableInfoTableViewModel
+        @Synchronized get() {
+            if (_infoTableViewModel == null) {
+                _infoTableViewModel =
+                    EditableInfoTableViewModel(SongDetailUtil.readSong(song), defaultColor)
+            }
+            return _infoTableViewModel!!
+        }
+
+    val saveConfirmationDialogState = MaterialDialogState(false)
+    val exitWithoutSavingDialogState = MaterialDialogState(false)
+    fun requestExit(activity: Activity) {
+        activity.finish()
+    }
+
+    class Factory(private val song: Song, private val color: Color) : ViewModelProvider.Factory {
+        @Suppress("UNCHECKED_CAST")
+        override fun <T : ViewModel> create(modelClass: Class<T>): T {
+            return TagEditorScreenViewModel(song, color) as T
         }
     }
 }

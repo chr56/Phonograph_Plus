@@ -6,10 +6,14 @@ package player.phonograph.ui.compose.tag
 
 import com.vanpra.composematerialdialogs.MaterialDialog
 import com.vanpra.composematerialdialogs.MaterialDialogState
+import com.vanpra.composematerialdialogs.customView
 import com.vanpra.composematerialdialogs.title
+import player.phonograph.App
+import player.phonograph.R
 import player.phonograph.ui.compose.ColorTools
 import player.phonograph.ui.compose.components.CoverImage
 import player.phonograph.util.SongDetailUtil
+import player.phonograph.util.tageditor.applyTagEdit
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -29,10 +33,17 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import android.app.Activity
 import android.content.Context
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import java.io.File
 
 @Composable
-internal fun DetailActivityContent(viewModel: AbsDetailScreenViewModel, context: Context?) {
+internal fun DetailScreen(viewModel: AbsDetailScreenViewModel, context: Context?) {
+
+    val editMode = remember { viewModel is TagEditorScreenViewModel }
+
     val wrapper by remember { viewModel.artwork }
     val paletteColor =
         ColorTools.makeSureContrastWith(MaterialTheme.colors.surface) {
@@ -48,7 +59,7 @@ internal fun DetailActivityContent(viewModel: AbsDetailScreenViewModel, context:
             .verticalScroll(state = rememberScrollState())
             .fillMaxSize()
     ) {
-        if (viewModel.artworkLoaded.value) {
+        if (viewModel.artworkLoaded.value || editMode) {
             CoverImage(
                 bitmap = wrapper!!.bitmap,
                 backgroundColor = paletteColor,
@@ -62,14 +73,21 @@ internal fun DetailActivityContent(viewModel: AbsDetailScreenViewModel, context:
     CoverImageDetailDialog(
         state = viewModel.coverImageDetailDialogState,
         artwork = viewModel.artwork.value,
-        onSave = { viewModel.saveArtwork(context!!) }
+        onSave = { viewModel.saveArtwork(context!!) },
+        editMode = editMode
     )
+    if (editMode) {
+        viewModel as TagEditorScreenViewModel
+        SaveConfirmationDialog(viewModel, context)
+        ExitWithoutSavingDialog(viewModel, context as? Activity)
+    }
 }
 @Composable
 internal fun CoverImageDetailDialog(
     state: MaterialDialogState,
     artwork: SongDetailUtil.BitmapPaletteWrapper?,
-    onSave: () -> Unit
+    onSave: () -> Unit,
+    editMode: Boolean
 ) = MaterialDialog(
     dialogState = state,
     buttons = {
@@ -95,3 +113,53 @@ internal fun CoverImageDetailDialog(
         }
     }
 }
+
+@Composable
+fun ExitWithoutSavingDialog(model: TagEditorScreenViewModel, activity: Activity?) {
+    val dismiss = { model.exitWithoutSavingDialogState.hide() }
+    MaterialDialog(
+        dialogState = model.exitWithoutSavingDialogState,
+        elevation = 0.dp,
+        autoDismiss = false,
+        buttons = {
+            positiveButton(res = android.R.string.cancel, onClick = dismiss)
+            button(res = android.R.string.ok) {
+                dismiss()
+                activity?.let { model.requestExit(it) }
+            }
+        }
+    ) {
+        title(res = R.string.exit_without_saving)
+    }
+}
+
+@Composable
+fun SaveConfirmationDialog(model: TagEditorScreenViewModel, context: Context?) {
+    val dismiss = { model.saveConfirmationDialogState.hide() }
+    val save = {
+        dismiss()
+        saveImpl(model, context)
+    }
+    MaterialDialog(
+        dialogState = model.saveConfirmationDialogState,
+        elevation = 0.dp,
+        autoDismiss = false,
+        buttons = {
+            button(res = R.string.save, onClick = save)
+            button(res = android.R.string.cancel, onClick = dismiss)
+        }
+    ) {
+        title(res = R.string.save)
+        customView {
+            DiffScreen(model)
+        }
+    }
+}
+
+private fun saveImpl(model: TagEditorScreenViewModel, context: Context?) =
+    applyTagEdit(
+        CoroutineScope(Dispatchers.Unconfined),
+        context ?: App.instance,
+        model.infoTableViewModel.allEditRequests,
+        File(model.song.data)
+    )
