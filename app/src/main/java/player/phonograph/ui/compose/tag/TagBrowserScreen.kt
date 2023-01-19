@@ -27,6 +27,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -42,7 +43,7 @@ import java.io.File
 
 @Composable
 internal fun TagBrowserScreen(viewModel: TagBrowserScreenViewModel, context: Context?) {
-    val wrapper by viewModel.artwork
+    val wrapper by viewModel.artwork.collectAsState()
     val paletteColor =
         ColorTools.makeSureContrastWith(MaterialTheme.colors.surface) {
             if (wrapper != null) {
@@ -57,7 +58,7 @@ internal fun TagBrowserScreen(viewModel: TagBrowserScreenViewModel, context: Con
             .verticalScroll(state = rememberScrollState())
             .fillMaxSize()
     ) {
-        if (viewModel.artworkLoaded.value || viewModel is TagEditorScreenViewModel) {
+        if (wrapper != null || viewModel is TagEditorScreenViewModel) {
             CoverImage(
                 bitmap = wrapper?.bitmap,
                 backgroundColor = paletteColor,
@@ -70,7 +71,7 @@ internal fun TagBrowserScreen(viewModel: TagBrowserScreenViewModel, context: Con
     }
     CoverImageDetailDialog(
         state = viewModel.coverImageDetailDialogState,
-        artwork = viewModel.artwork.value,
+        artwork = wrapper,
         onSave = { viewModel.saveArtwork(context!!) },
         onDelete = { (viewModel as? TagEditorScreenViewModel)?.deleteArtwork() },
         onUpdate = { (viewModel as? TagEditorScreenViewModel)?.replaceArtwork(context!!) },

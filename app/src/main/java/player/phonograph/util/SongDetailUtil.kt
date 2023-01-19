@@ -32,11 +32,14 @@ import android.app.Activity
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
+import android.graphics.drawable.DrawableContainer
 import android.net.Uri
 import android.util.Log
 import android.widget.Toast
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.io.File
 import java.io.IOException
@@ -133,27 +136,23 @@ object SongDetailUtil {
 
     fun loadArtwork(
         context: Context,
-        data: Any,
-        onLoaded: () -> Unit
-    ): MutableState<BitmapPaletteWrapper?> {
-        val bitmapState = mutableStateOf<BitmapPaletteWrapper?>(
-            BitmapPaletteWrapper(
-                ContextCompat.getDrawable(context, R.drawable.default_album_art)!!.toBitmap(),
-                ThemeColor.primaryColor(context)
-            )
-        )
+        container: MutableStateFlow<BitmapPaletteWrapper?>,
+        data: Any
+    ) {
         loadImage(context) {
             data(data)
             target(
                 PaletteTargetBuilder(context)
                     .onResourceReady { result: Drawable, paletteColor: Int ->
-                        bitmapState.value = BitmapPaletteWrapper(result.toBitmap(), paletteColor)
-                        onLoaded.invoke()
+                        val success =
+                            container.tryEmit(
+                                BitmapPaletteWrapper(result.toBitmap(), paletteColor)
+                            )
+                        if (!success) warning("LoadArtwork", "Failed to load artwork!")
                     }
                     .build()
             )
         }
-        return bitmapState
     }
 
     fun saveArtwork(

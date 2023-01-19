@@ -5,7 +5,6 @@
 package player.phonograph.ui.compose.tag
 
 import com.vanpra.composematerialdialogs.MaterialDialogState
-import mt.pref.ThemeColor
 import mt.pref.ThemeColor.primaryColor
 import mt.util.color.darkenColor
 import player.phonograph.R
@@ -26,7 +25,6 @@ import androidx.compose.material.IconButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -58,7 +56,18 @@ class TagEditorActivity :
         createFileStorageAccessTool.register(lifecycle, activityResultRegistry)
         openFileStorageAccessTool.register(lifecycle, activityResultRegistry)
         super.onCreate(savedInstanceState)
-        model.loadArtwork(this) { updateBarsColor() }
+        setupObservers()
+        model.loadArtwork(this)
+    }
+
+
+    private fun setupObservers() {
+        model.viewModelScope.launch {
+            model.artwork.collect {
+                val newColor = it?.paletteColor ?: primaryColor
+                updateBarsColor(darkenColor(newColor))
+            }
+        }
     }
 
     @Composable
@@ -89,19 +98,6 @@ class TagEditorActivity :
             finish()
         } else {
             model.exitWithoutSavingDialogState.show()
-        }
-    }
-
-    private fun updateBarsColor() {
-        model.artwork.value?.paletteColor?.let { color ->
-            if (color != 0) {
-                val colorInt = darkenColor(color)
-                appbarColor.value = Color(colorInt)
-                window.statusBarColor = darkenColor(colorInt)
-                if (ThemeColor.coloredNavigationBar(this)) {
-                    window.navigationBarColor = darkenColor(colorInt)
-                }
-            }
         }
     }
 
@@ -150,8 +146,7 @@ class TagEditorScreenViewModel(song: Song, defaultColor: Color) :
     fun deleteArtwork() {
         needDeleteCover = true
         needReplaceCover = false
-        artwork = mutableStateOf(null)
-        artworkLoaded.value = false
+        artwork.tryEmit(null)
     }
 
     fun replaceArtwork(context: Context) {
@@ -162,7 +157,7 @@ class TagEditorScreenViewModel(song: Song, defaultColor: Color) :
             needReplaceCover = true
             needDeleteCover = false
             newCover = uri
-            loadArtworkImpl(context, uri) {}
+            loadArtworkImpl(context, uri)
         }
     }
 

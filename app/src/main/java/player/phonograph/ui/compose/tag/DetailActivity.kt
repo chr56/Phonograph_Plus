@@ -19,9 +19,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import kotlinx.coroutines.launch
 
 class DetailActivity : ComposeToolbarActivity(), ICreateFileStorageAccess {
 
@@ -37,7 +39,17 @@ class DetailActivity : ComposeToolbarActivity(), ICreateFileStorageAccess {
         createFileStorageAccessTool.register(lifecycle, activityResultRegistry)
         song = parseIntent(this, intent)
         super.onCreate(savedInstanceState)
-        model.loadArtwork(this) { updateBarsColor() }
+        setupObservers()
+        model.loadArtwork(this)
+    }
+
+    private fun setupObservers() {
+        model.viewModelScope.launch {
+            model.artwork.collect {
+                val newColor = it?.paletteColor ?: primaryColor
+                updateBarsColor(darkenColor(newColor))
+            }
+        }
     }
 
     @Composable
@@ -48,20 +60,6 @@ class DetailActivity : ComposeToolbarActivity(), ICreateFileStorageAccess {
     }
 
     override val title: String get() = getString(R.string.label_details)
-
-    private fun updateBarsColor() {
-        model.artwork.value?.paletteColor?.let { color ->
-            if (color != 0) {
-                val colorInt = darkenColor(color)
-                appbarColor.value = Color(colorInt)
-                window.statusBarColor = darkenColor(colorInt)
-                if (ThemeColor.coloredNavigationBar(this)) {
-                    window.navigationBarColor = darkenColor(colorInt)
-                }
-            }
-        }
-    }
-
 
     companion object {
         private fun parseIntent(context: Context, intent: Intent): Song =

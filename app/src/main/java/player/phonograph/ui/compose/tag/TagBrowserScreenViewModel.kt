@@ -5,14 +5,16 @@
 package player.phonograph.ui.compose.tag
 
 import com.vanpra.composematerialdialogs.MaterialDialogState
+import mt.pref.ThemeColor
 import player.phonograph.model.Song
 import player.phonograph.util.SongDetailUtil
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import android.content.Context
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.launch
 
 abstract class TagBrowserScreenViewModel(
     val song: Song,
@@ -21,21 +23,26 @@ abstract class TagBrowserScreenViewModel(
 
     abstract val infoTableState: InfoTableState
 
-    var artwork: ArtworkState = mutableStateOf(null)
-    var artworkLoaded = mutableStateOf(false)
+    var artwork: ArtworkStateFlow = MutableStateFlow(null)
 
-    fun loadArtwork(context: Context, onFinished: () -> Unit) =
-        loadArtworkImpl(context, song, onFinished)
+    fun loadArtwork(context: Context) = loadArtworkImpl(context, song)
 
-    protected fun loadArtworkImpl(context: Context, what: Any, onFinished: () -> Unit) {
-        artwork = SongDetailUtil.loadArtwork(context, what) {
-            artworkLoaded.value = true
-            onFinished()
-            val paletteColor = paletteColor(artwork)
-            if (paletteColor != null) {
-                infoTableState.updateTitleColor(Color(paletteColor))
+    protected fun loadArtworkImpl(context: Context, what: Any) {
+        viewModelScope.launch(Dispatchers.Unconfined) {
+            // observe
+            artwork.collect { newArtworkState ->
+                val paletteColor = newArtworkState?.paletteColor
+                infoTableState.updateTitleColor(
+                    if (paletteColor != null) {
+                        Color(paletteColor)
+                    } else {
+                        Color(ThemeColor.primaryColor(context))
+                    }
+                )
             }
         }
+        // execute
+        SongDetailUtil.loadArtwork(context, artwork, what)
     }
 
     fun saveArtwork(activity: Context) {
@@ -47,9 +54,7 @@ abstract class TagBrowserScreenViewModel(
     val coverImageDetailDialogState = MaterialDialogState(false)
 }
 
-typealias ArtworkState = MutableState<SongDetailUtil.BitmapPaletteWrapper?>
-
-private fun paletteColor(artwork: ArtworkState) = artwork.value?.paletteColor
+typealias ArtworkStateFlow = MutableStateFlow<SongDetailUtil.BitmapPaletteWrapper?>
 
 private fun fileName(fullPath: String) =
     fullPath.substringAfterLast('/').substringBeforeLast('.')
