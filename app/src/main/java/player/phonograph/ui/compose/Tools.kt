@@ -9,7 +9,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.graphics.toArgb
 import android.content.Context
+import android.graphics.Color.RGBToHSV
 import kotlin.math.abs
+import kotlin.math.roundToInt
 
 fun Color.isColorLight(): Boolean = luminance() >= 0.5f
 
@@ -33,7 +35,21 @@ object ColorTools {
     }
 
     inline fun makeSureContrastWith(backgroundColor: Color, block: () -> Color): Color {
-        val color = block()
-        return if (isColorRelevant(color, backgroundColor)) color.getReverseColor() else color
+        val goingDarker = backgroundColor.isColorLight()
+        var newColor = block()
+        while (isColorRelevant(newColor, backgroundColor)) {
+            newColor = if (goingDarker) newColor.darker() else newColor.lighter()
+        }
+        return newColor
     }
 }
+
+private fun Color.hsvShift(by: Float): Color {
+    val hsv = floatArrayOf(0f, 0f, 0f)
+    RGBToHSV(red.roundToInt(), green.roundToInt(), blue.roundToInt(), hsv)
+    return Color.hsv(hsv[0], hsv[1], hsv[2] * by)
+}
+
+fun Color.darker(): Color = hsvShift(0.8f)
+
+fun Color.lighter(): Color = hsvShift(1.25f)
