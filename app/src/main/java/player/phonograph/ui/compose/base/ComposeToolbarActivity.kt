@@ -6,6 +6,7 @@ package player.phonograph.ui.compose.base
 
 import lib.phonograph.activity.ThemeActivity
 import mt.pref.ThemeColor
+import mt.pref.ThemeColor.coloredNavigationBar
 import mt.util.color.darkenColor
 import player.phonograph.ui.compose.components.DefaultNavigationIcon
 import player.phonograph.ui.compose.components.PhonographAppBar
@@ -65,4 +66,11 @@ abstract class ComposeToolbarActivity : ThemeActivity() {
         onBackPressedDispatcher.onBackPressed()
     }
     protected open val toolbarActions: @Composable (RowScope.() -> Unit) = {}
+
+
+    protected fun updateBarsColor(color: Int) {
+        appbarColor.value = Color(color)
+        window.statusBarColor = darkenColor(color)
+        if (coloredNavigationBar(this)) window.navigationBarColor = darkenColor(color)
+    }
 }
