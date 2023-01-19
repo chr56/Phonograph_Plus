@@ -33,7 +33,6 @@
     <string name="biography_unavailable">このアーティストのバイオグラフィーの登録を見つけられません</string>
     <string name="wiki_unavailable">このアーティストのWikiページを見つけられません</string>
     <string name="biography">バイオグラフィー</string>
-    <string name="wiki">Wiki</string>
     <string name="audio_focus_denied">オーディオフォーカスが禁止されています</string>
     <string name="album">アルバム</string>
     <string name="artist">アーティスト</string>

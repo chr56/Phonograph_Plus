@@ -5,7 +5,7 @@
     <string name="the_audio_file">Il file audio</string>
     <string name="action_set_as_ringtone">Imposta come suoneria</string>
     <string name="action_share">Condividi</string>
-    <string name="action_settings">"Impostazioni"</string>
+    <string name="action_settings">Impostazioni</string>
     <string name="action_grant">Permetti</string>
     <string name="action_about">Informazioni</string>
     <string name="action_add_to_favorites">Aggiungi ai preferiti</string>
@@ -13,7 +13,7 @@
     <string name="action_search">Cerca</string>
     <string name="action_play_next">Riproduci successivo</string>
     <string name="action_play">Riproduci</string>
-    <string name="action_play_pause">Play/Pausa</string>
+    <string name="action_play_pause">Riproduci/Pausa</string>
     <string name="action_previous">Precedente</string>
     <string name="action_next">Prossima</string>
     <string name="action_add_to_playing_queue">Aggiungi alla coda di riproduzione</string>
@@ -22,8 +22,8 @@
     <string name="action_tag_editor">Modifica tag</string>
     <string name="action_delete_from_device">Elimina dal dispositivo</string>
     <string name="action_details">Dettagli</string>
-    <string name="action_scan">Fai una scansione</string>
-    <string name="action_set_as_start_directory">Imposta come directory iniziale</string>
+    <string name="action_scan">Scansiona</string>
+    <string name="action_set_as_start_directory">Imposta come cartella iniziale</string>
     <string name="albums">Album</string>
     <string name="artists">Artisti</string>
     <string name="genres">Generi</string>
@@ -40,11 +40,11 @@
     <string name="genre">Genere</string>
     <string name="album_artist">Artista dell\'album</string>
     <string name="year">Anno</string>
-    <string name="track">\"Numero traccia</string>
-    <string name="track_hint">"Traccia (2 per traccia 2, o 3004 per CD3 traccia 4)"</string>
+    <string name="track">Numero Traccia</string>
+    <string name="track_hint">Traccia (2 per traccia 2, o 3004 per CD3 traccia 4)</string>
     <string name="lyrics">Testi</string>
     <string name="album_or_artist_empty">Il titolo o l\'artista sono vuoti.</string>
-    <string name="saving_changes">Salvando le modifiche</string>
+    <string name="saving_changes">Salva le modifiche</string>
     <string name="label_details">Dettagli</string>
     <string name="label_file_name">Nome file</string>
     <string name="label_file_path">Percorso file</string>
@@ -58,7 +58,7 @@
     <string name="label_playing_queue">Coda di riproduzione</string>
     <string name="no_results">Nessun risultato</string>
     <string name="updating">Aggiornamento...</string>
-    <string name="added_title_to_playing_queue">"Un brano aggiunto alla coda di riproduzione."</string>
+    <string name="added_title_to_playing_queue">Un brano aggiunto alla coda di riproduzione.</string>
     <string name="added_x_titles_to_playing_queue">%1$d titoli aggiunti alla coda.</string>
     <string name="action_remove_from_playlist">Rimuovi dalla playlist</string>
     <string name="action_grid_size">Dimensione griglia</string>
@@ -70,7 +70,7 @@
     <string name="rename_playlist_title">Rinomina playlist</string>
     <string name="save_playlist_title">Salva come file</string>
     <string name="save_playlists_title">Salva come file</string>
-    <string name="add_playlist_title">"Aggiungi alla playlist"</string>
+    <string name="add_playlist_title">Aggiungi alla playlist</string>
     <string name="select_all_title">Seleziona tutto</string>
     <string name="action_shuffle_all">Riproduzione casuale</string>
     <string name="action_shuffle_album">Riproduzione casuale album</string>
@@ -119,7 +119,7 @@
     <string name="pref_title_remember_last_tab">Ricorda ultima scheda</string>
     <string name="pref_title_remember_shuffle">Ricorda casuale</string>
     <string name="no_equalizer">Nessun equalizzatore trovato</string>
-    <string name="no_audio_ID">"Riproduci un brano e prova di nuovo."</string>
+    <string name="no_audio_ID">Riproduci un brano e prova di nuovo.</string>
     <string name="delete_action">Elimina</string>
     <string name="clear_action">Svuota</string>
     <string name="remove_action">Rimuovi</string>
@@ -140,8 +140,8 @@
     <string name="pref_summary_album_art_on_lockscreen">Usa la copertina dell\'album in riproduzione come sfondo della schermata di blocco.</string>
     <string name="pref_summary_blurred_album_art">Applica una sfocatura sulla copertina nella schermata di blocco. Può causare problemi con app e widget di terze parti.</string>
     <string name="pref_summary_classic_notification">Usa il design di notifica classico.</string>
-    <string name="pref_summary_colored_notification">"La notifica \u00e8 colorata secondo la gamma di colori della copertina."</string>
-    <string name="pref_summary_gapless_playback">"Può causare problemi di riproduzione su alcuni dispositivi."</string>
+    <string name="pref_summary_colored_notification">La notifica \u00e8 colorata secondo la gamma di colori della copertina.</string>
+    <string name="pref_summary_gapless_playback">Può causare problemi di riproduzione su alcuni dispositivi.</string>
     <string name="pref_summary_ignore_media_store_artwork">Può incrementare la qualità delle copertine, ma causa rallentamenti nei tempi di caricamento delle immagini. Abilita soltanto se hai problemi con copertine a bassa risoluzione.</string>
     <string name="pref_summary_colored_navigation_bar">Colora la barra di navigazione del colore principale.</string>
     <string name="pref_summary_colored_app_shortcuts">Colora le scorciatoie dell\'app con il colore principale.</string>
@@ -149,7 +149,7 @@
     <string name="pref_summary_synchronized_lyrics_show">Attualmente solo i testi sincronizzati in formato LRC sono supportati. Sia integrati o come file separati.</string>
     <string name="pref_summary_remember_last_tab">All\'avvio vai all\'ultima scheda aperta</string>
     <string name="pref_summary_remember_shuffle">La modalità casuale rimarrà attiva quando si seleziona un nuovo elenco di brani</string>
-    <string name="could_not_download_album_cover">"Impossibile scaricare una copertina adatta."</string>
+    <string name="could_not_download_album_cover">Impossibile scaricare una copertina adatta.</string>
     <string name="search_hint">Cercando nella tua libreria...</string>
     <string name="favorites">Preferiti</string>
     <string name="last_added">Aggiunti di recente</string>
@@ -192,7 +192,7 @@
     <string name="up_next">A seguire</string>
     <string name="pref_title_now_playing_screen_appearance">Aspetto</string>
     <string name="intro_label">Introduzione</string>
-    <string name="welcome_to_phonograph">"Benvenuto in Phonograph, un music player bellissimo e leggero per Android. "</string>
+    <string name="welcome_to_phonograph">Benvenuto in Phonograph, un music player bellissimo e leggero per Android. </string>
     <string name="open_playing_queue_instruction">Fai uno swipe sulla card nella schermata In riproduzione per mostrare l\'intera coda di riproduzione.</string>
     <string name="rearrange_playing_queue_instruction">Riorganizza la coda di riproduzione trascinando una canzone dal suo numero di traccia.</string>
     <string name="library">Libreria</string>
@@ -243,7 +243,7 @@
     <string name="add_action">Aggiungi</string>
     <string name="blacklist">Lista nera</string>
     <string name="remove_from_blacklist">Rimuovi dalla lista nera</string>
-    <string name="do_you_want_to_remove_from_the_blacklist"><![CDATA[Vuoi rimuovere <b>%1$s</b> dalla lista nera?]]></string>
+    <string name="do_you_want_to_remove_from_the_blacklist">Vuoi rimuovere <b>%1$s</b> dalla lista nera?</string>
     <string name="clear_blacklist">Pulisci lista nera</string>
     <string name="do_you_want_to_clear_the_blacklist">Vuoi pulire la lista nera?</string>
     <string name="pref_summary_blacklist">Il contenuto delle cartelle in lista nera sono nascoste dalla tua libreria.</string>
@@ -271,7 +271,6 @@
     <string name="err_permission_storage">Autorizzazione di archiviazione</string>
     <string name="add_blacklist">Vuoi aggiungerlo alla lista nera?</string>
     <string name="minutes_short">%1$d min</string>
-    <!-- use for tag -->
     <string name="other_information">Altro</string>
     <string name="more_actions">Più</string>
     <string name="crash">L\'app è crashata!</string>
@@ -289,7 +288,7 @@
     <string name="no_newer_version">Nessun aggiornamento!</string>
     <string name="new_version">Nuova versione!</string>
     <string name="new_version_code">versione</string>
-    <string name="new_version_log">changelog</string>
+    <string name="new_version_log">Registro delle modifiche</string>
     <string name="new_version_tips">Questa finestra di dialogo può essere disabilitata nelle impostazioni. (Puoi anche controllare l\'aggiornamento manualmente in Informazioni)</string>
     <string name="download">Scarica</string>
     <string name="ignore_once">Ignora questo</string>
@@ -306,6 +305,7 @@
     <string name="pref_title_send_lyrics">Trasmetti testi sincronizzati</string>
     <string name="pref_summary_send_lyrics">Trasmetti testi sincronizzati al modulo Xposed \"StatusBar Lyrics\"</string>
     <string name="pref_title_broadcast_current_player_state">Trasmetti lo stato attuale del giocatore al pubblico</string>
+    <string name="pref_summary_broadcast_current_player_state">Trasmetti lo stato attuale del riproduttore ad altre applicazioni come Musixmatch.</string>
     <string name="pref_title_display_lyrics_time_axis">Visualizza l\'asse temporale dei testi</string>
     <string name="pref_summary_display_lyrics_time_axis">Visualizza l\'ora di inizio dei testi sincronizzati nella finestra di dialogo dei testi.</string>
     <string name="upgrade_notification_name">Aggiorna</string>
@@ -332,10 +332,6 @@
     <string name="export_">Esporta: </string>
     <string name="import_">Importa: </string>
     <string name="databases">Database</string>
-    <plurals name="msg_deletion_result">
-        <item quantity="one">%1$d / %2$d elemento è stato eliminato con successo.</item>
-        <item quantity="other">%1$d / %2$d elementi sono stati eliminati con successo.</item>
-    </plurals>
     <string name="embedded_lyrics">testi integrati</string>
     <string name="external_lyrics">testi esterni</string>
     <string name="lyrics_following">Testi seguenti</string>
@@ -351,8 +347,59 @@
     <string name="behaviour_force_saf">Forza l\'uso di Storage Access Framework</string>
     <string name="behaviour_force_legacy">Forzare l\'uso di modalità legacy</string>
     <string name="reached_to_root">Hai raggiunto la cartella principale di questo volume di archiviazione</string>
+    <string name="sort_order_size">Dimensione File</string>
+    <string name="use_legacy_list_Files">Usa il modo precedente per leggere i file</string>
+    <string name="pref_title_keep_playing_queue_intact">Mantenere intatta la coda di riproduzione.</string>
+    <string name="pref_summary_keep_playing_queue_intact">Se abilitato, Phonograph Plus non proverebbe a cancellare la coda di riproduzione a meno che non chiedi, in modo da non perdere la coda di riproduzione per caso.</string>
+    <string name="change_now_playing_screen">Cambia schermata di riproduzione</string>
+    <string name="load_images_for_files">Carica immagini per i file</string>
+    <string name="app_language">Lingua Applicazione</string>
+    <string name="_default">Predefinito</string>
     <plurals name="x_songs">
         <item quantity="one">%1$d brano</item>
         <item quantity="other">%1$d brani</item>
     </plurals>
+    <plurals name="x_albums">
+        <item quantity="one">%1$d album</item>
+        <item quantity="other">%1$d albums</item>
+    </plurals>
+    <plurals name="x_artists">
+        <item quantity="one">%1$d artista</item>
+        <item quantity="other">%1$d artisti</item>
+    </plurals>
+    <plurals name="x_genres">
+        <item quantity="one">%1$d genere</item>
+        <item quantity="other">%1$d generi</item>
+    </plurals>
+    <plurals name="msg_header_delete_items">
+        <item quantity="one">Questo elemento sarà cancellato:</item>
+        <item quantity="other">Questi elementi saranno eliminati:</item>
+    </plurals>
+    <plurals name="msg_header_remove_items">
+        <!-- %1$s: where -->
+        <item quantity="one">Questo elemento verrebbe rimosso da %1$s:</item>
+        <item quantity="other">Questi elementi verrebbero rimossi da %1$s:</item>
+    </plurals>
+    <plurals name="msg_deletion_result">
+        <item quantity="one">%1$d / %2$d elemento è stato eliminato con successo.</item>
+        <item quantity="other">%1$d / %2$d elementi sono stati eliminati con successo.</item>
+    </plurals>
+    <plurals name="item_songs">
+        <item quantity="one">Brano</item>
+        <item quantity="other">Brani</item>
+    </plurals>
+    <plurals name="item_playlists">
+        <item quantity="one">Scaletta</item>
+        <item quantity="other">Scalette</item>
+    </plurals>
+    <plurals name="item_files">
+        <item quantity="one">file</item>
+        <item quantity="other">files</item>
+    </plurals>
+    <plurals name="item_playlists_generated">
+        <item quantity="one">Scaletta Generata</item>
+        <item quantity="other">Scalette Generate</item>
+    </plurals>
+    <string name="warning_can_not_retract">Questa azione non può essere ritrattata!</string>
+    <string name="delete_with_lyrics">Elimina con i testi</string>
 </resources>

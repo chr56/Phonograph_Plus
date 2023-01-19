@@ -164,7 +164,7 @@
     <string name="cancel_current_timer">Отменить текущий таймер</string>
     <string name="sleep_timer_canceled">Таймер сна отменен.</string>
     <string name="sleep_timer_set">Таймер сна установлен на %d минут(ы) с текущего момента</string>
-    <string name="action_new_playlist">Новый плейлист...</string>
+    <string name="action_new_playlist">Новый плейлист…</string>
     <string name="new_playlist_title">Новый плейлист</string>
     <string name="colored_footers">Окрашенные нижние колонтитулы</string>
     <string name="special_thanks_to">Особая благодарность</string>
@@ -223,7 +223,7 @@
     <string name="bug_report_no_description">Пожалуйста, дайте подробное описание проблемы</string>
     <string name="bug_report_no_username">Пожалуйста, введите действительное имя пользователя GitHub</string>
     <string name="bug_report_no_password">Пожалуйста, введите действительный пароль GitHub</string>
-    <string name="bug_report_uploading">Загрузка отчёта на GitHub...</string>
+    <string name="bug_report_uploading">Загрузка отчёта на GitHub…</string>
     <string name="bug_report_failed">Невозможно отправить отчёт</string>
     <string name="bug_report_failed_wrong_credentials">Неправильное имя пользователя или пароль</string>
     <string name="bug_report_failed_invalid_token">Неправильный токен авторизации. Пожалуйста, свяжитесь с разработчиком приложения.</string>
@@ -423,4 +423,5 @@
         <item quantity="other">Сгенерированные плейлисты</item>
     </plurals>
     <string name="warning_can_not_retract">Это действие нельзя будет отменить!</string>
+    <string name="delete_with_lyrics">Удалить с текстом</string>
 </resources>
