@@ -317,12 +317,6 @@
     <string name="are_you_sure">Jesteś pewny?</string>
     <string name="original_author">Autor oryginału</string>
     <string name="plus_author">Autor Phonograph Plus</string>
-    <string name="misc">Różne</string>
-    <string name="comment">Komentarz</string>
-    <string name="composer">Twórca</string>
-    <string name="lyricist">Autor tekstu utworu</string>
-    <string name="music_tags">Tagi muzyczne</string>
-    <string name="file">Plik</string>
     <string name="pref_header_compatibility">Zgodność</string>
     <string name="export_">Eksportuj: </string>
     <string name="import_">Importuj:</string>
@@ -349,7 +343,4 @@
     </plurals>
     <string name="warning_can_not_retract">Tej czynności nie można cofnąć</string>
     <string name="delete_with_lyrics">Usuń z tekstem</string>
-    <string name="pref_title_load_lyrics">Wczytaj teksty</string>
-    <string name="mode_song_play_next">Odtwórz następny utwór</string>
-    <string name="mode_song_single_play">Powtórz ten utwór</string>
 </resources>
