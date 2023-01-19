@@ -24,8 +24,11 @@ abstract class TagBrowserScreenViewModel(
     var artwork: ArtworkState = mutableStateOf(null)
     var artworkLoaded = mutableStateOf(false)
 
-    fun loadArtwork(context: Context, onFinished: () -> Unit) {
-        artwork = SongDetailUtil.loadArtwork(context, song) {
+    fun loadArtwork(context: Context, onFinished: () -> Unit) =
+        loadArtworkImpl(context, song, onFinished)
+
+    protected fun loadArtworkImpl(context: Context, what: Any, onFinished: () -> Unit) {
+        artwork = SongDetailUtil.loadArtwork(context, what) {
             artworkLoaded.value = true
             onFinished()
             val paletteColor = paletteColor(artwork)

@@ -4,6 +4,7 @@
 
 package player.phonograph.ui.compose.components
 
+import player.phonograph.R
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -16,19 +17,25 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.painter.BitmapPainter
+import androidx.compose.ui.res.painterResource
 import android.graphics.Bitmap
 
 @Composable
-internal fun CoverImage(bitmap: Bitmap, backgroundColor: Color, modifier: Modifier = Modifier) {
+internal fun CoverImage(bitmap: Bitmap?, backgroundColor: Color, modifier: Modifier = Modifier) {
     BoxWithConstraints(
         modifier = modifier
             .fillMaxWidth()
             .wrapContentHeight()
             .background(backgroundColor)
     ) {
+        val painter = if (bitmap != null) {
+            BitmapPainter(bitmap.asImageBitmap())
+        } else {
+            painterResource(id = R.drawable.default_album_art)
+        }
         // Cover Artwork
         Image(
-            painter = BitmapPainter(bitmap.asImageBitmap()),
+            painter = painter,
             contentDescription = "Cover",
             modifier = Modifier
                 .align(Alignment.Center)

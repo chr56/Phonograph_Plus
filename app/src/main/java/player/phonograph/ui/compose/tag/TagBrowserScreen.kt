@@ -42,8 +42,7 @@ import java.io.File
 
 @Composable
 internal fun TagBrowserScreen(viewModel: TagBrowserScreenViewModel, context: Context?) {
-
-    val wrapper by remember { viewModel.artwork }
+    val wrapper by viewModel.artwork
     val paletteColor =
         ColorTools.makeSureContrastWith(MaterialTheme.colors.surface) {
             if (wrapper != null) {
@@ -58,9 +57,9 @@ internal fun TagBrowserScreen(viewModel: TagBrowserScreenViewModel, context: Con
             .verticalScroll(state = rememberScrollState())
             .fillMaxSize()
     ) {
-        if (viewModel.artworkLoaded.value || viewModel is TagEditorScreenViewModel) { // edit mode
+        if (viewModel.artworkLoaded.value || viewModel is TagEditorScreenViewModel) {
             CoverImage(
-                bitmap = wrapper!!.bitmap,
+                bitmap = wrapper?.bitmap,
                 backgroundColor = paletteColor,
                 modifier = Modifier.clickable {
                     viewModel.coverImageDetailDialogState.show()

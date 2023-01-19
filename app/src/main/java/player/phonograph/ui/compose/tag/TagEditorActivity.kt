@@ -26,6 +26,7 @@ import androidx.compose.material.IconButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -149,6 +150,8 @@ class TagEditorScreenViewModel(song: Song, defaultColor: Color) :
     fun deleteArtwork() {
         needDeleteCover = true
         needReplaceCover = false
+        artwork = mutableStateOf(null)
+        artworkLoaded.value = false
     }
 
     fun replaceArtwork(context: Context) {
@@ -159,6 +162,7 @@ class TagEditorScreenViewModel(song: Song, defaultColor: Color) :
             needReplaceCover = true
             needDeleteCover = false
             newCover = uri
+            loadArtworkImpl(context, uri) {}
         }
     }
 

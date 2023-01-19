@@ -133,7 +133,7 @@ object SongDetailUtil {
 
     fun loadArtwork(
         context: Context,
-        song: Song,
+        data: Any,
         onLoaded: () -> Unit
     ): MutableState<BitmapPaletteWrapper?> {
         val bitmapState = mutableStateOf<BitmapPaletteWrapper?>(
@@ -143,7 +143,7 @@ object SongDetailUtil {
             )
         )
         loadImage(context) {
-            data(song)
+            data(data)
             target(
                 PaletteTargetBuilder(context)
                     .onResourceReady { result: Drawable, paletteColor: Int ->
