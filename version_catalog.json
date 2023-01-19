@@ -2,6 +2,22 @@
   "versions": [
     {
       "channel": "stable",
+      "versionName": "0.5.3",
+      "versionCode": 453,
+      "date": 1674111600,
+      "link": [
+        {
+          "name": "Github Release",
+          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/v0.5.3"
+        }
+      ],
+      "releaseNote": {
+        "zh-cn": "<ol><li>修复 排序方式“时长”无效</li><li>修复 无法真正关闭自动检查更新(v0.4.0起)</li><li>开发 清理重构代码</li></ol>",
+        "en": "<ol><li>Fix: sort mode Duration is invalid</li><li>Fix: can't turn off Check for update automatically (since v0.4.0)</li><li>Development: cleanup and refactor code</li></ol>"
+      }
+    },
+    {
+      "channel": "stable",
       "versionName": "0.5.2",
       "versionCode": 452,
       "date": 1673615400,
@@ -17,45 +33,29 @@
       }
     },
     {
-      "channel": "stable",
-      "versionName": "0.5.1",
-      "versionCode": 451,
-      "date": 1672480800,
-      "link": [
-        {
-          "name": "Github Release",
-          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/v0.5.1"
-        }
-      ],
-      "releaseNote": {
-        "zh-cn": "<ol><li>翻译 更新意大利语(by gdonisi, Andrea Enzo Lattmann), 德语(by worldtest), 波兰语(by Robert Biś)</li>\n<li>改进 权限授权</li>\n<li>改进 尝试避免播放器因动画崩溃</li></ol>",
-        "en": "<ol><li>Translation: updated Italian (by gdonisi, Andrea Enzo Lattmann), German (by worldtest), Polish (by Robert Biś)</li>\n<li>Improve: permission grant</li>\n<li>Improve: try to avoid crashes due to main player animations</li></ol>"
-      }
-    },
-    {
       "channel": "lts",
-      "versionName": "0.3.5.3-LTS",
-      "versionCode": 316,
-      "date": 1669518600,
+      "versionName": "0.3.5.4-LTS",
+      "versionCode": 317,
+      "date": 1674111500,
       "link": [
         {
           "name": "Github Release",
-          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/v0.3.5.3-LTS"
+          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/v0.3.5.4-LTS"
         }
       ],
       "releaseNote": {
-        "zh-cn": "<ol><li>修复 浅色主色调下搜索页面上文本和图标的对比度低</li><li>修复 在大屏设备上，横屏时无法调整列表列数，且锁定在6列</li></ol>",
-        "en": "<ol><li>Fix: low contrast color of the text and icon on Search Page if using a light primary color</li><li>Fix: on large tablets, the number of list columns cannot be adjusted and locked to 6 columns when the screen is landscaped</li></ol>"
+        "zh-cn": "<ol><li>修复 在播放队列中, 移动相同歌曲时崩溃</li><li>修复 排序方式“时长”无效</li><li>翻译 更新 俄语(by PhotonGilbert and ElinaAndreeva), 土耳其语(by Erdem Özdemir), 意大利语(by gdonisi and ndrea Enzo Lattmann), 德语(worldtest), 波兰语(Robert Biś), 日语(by aorinngo)</li></ol>",
+        "en": "<ol><li>Fix: crash when moving same songs in Playing Queue</li><li>Fix: sort mode Duration is invalid</li><li>Translation: update Russian(by PhotonGilbert and ElinaAndreeva), Turkish(by Erdem Özdemir), Italian(by gdonisi and ndrea Enzo Lattmann), German(worldtest), Polish(Robert Biś), Japanese(by aorinngo)</li></ol>"
       }
     },{
       "channel": "preview",
-      "versionName": "0.5.0",
-      "versionCode": 404,
-      "date": 1669518600,
+      "versionName": "0.5.3",
+      "versionCode": 453,
+      "date": 1674111500,
       "link": [
         {
           "name": "Github Release",
-          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/v0.5.0"
+          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/v0.5.3"
         }
       ],
       "releaseNote": {

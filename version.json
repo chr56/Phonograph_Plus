@@ -1,18 +1,18 @@
 {
-    "version": "0.5.2",
-    "versionCode": "452",
+    "version": "0.5.3",
+    "versionCode": "453",
     "zh-cn": {
-        "logSummary": "\n\n<b>0.5.2</b> 2023.1.13 \n\n<ol><li>翻译 更新日语(by aorinngo)</li>\n<li>新增 支持管理歌曲图片来源</li>\n<li>修复 v0.5.1后歌词不加载除非授予存储写入权限</li>\n<li>修复 在播放队列中, 移动相同歌曲时崩溃</li>\n<li>开发 启用 Java 11 支持, 清理代码</li></ol>"
+        "logSummary": "请更新至新版本(至少高于v0.4.0)"
     },
     "en": {
-        "logSummary": "\n\n<b>0.5.2</b> 2023.1.13 \n\n<ol><li>Translation: updated Japanese (by aorinngo)</li>\n<li>New: support manage embed image source of song files</li>\n<li>Fix: lyrics can not be shown unless write storage permission granted since v0.5.1</li>\n<li>Fix: crash when moving same songs in Playing Queue</li>\n<li>Development: enable Java 11 support, clean up codes</li></ol>"
+        "logSummary": "Update Please(as least to version v0.4.0)"
     },
     "downloadSources": [
-        "Release: Github(v0.5.2)",
+        "Release: Github(v0.5.3)",
         "Release(LTS): Github(v0.3.5.3-LTS)"
     ],
     "downloadUris": [
-        "https://github.com/chr56/Phonograph_Plus/releases/tag/v0.5.2",
+        "https://github.com/chr56/Phonograph_Plus/releases/tag/v0.5.3",
         "https://github.com/chr56/Phonograph_Plus/releases/tag/v0.3.5.3-LTS"
     ],
     "logSummary": "\n<b>请更新至新版本(至少高于v0.1.1), 此版本无法读取新更新日志\nUpdate Please (as least to version v0.1.1)! This version can not be read this changelogs.</b>"
