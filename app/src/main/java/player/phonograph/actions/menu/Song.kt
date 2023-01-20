@@ -71,13 +71,6 @@ fun songPopupMenu(
                 showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
                 onClick { song.actionTagEditor(context) }
             }
-            menuItem(title = getString(R.string.action_tag_editor)) { // id = R.id.action_tag_editor
-                showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
-                onClick {
-                    TagEditorActivity.launch(context, song.id)
-                    true
-                }
-            }
             menuItem(title = getString(R.string.action_set_as_ringtone)) { // id = R.id.action_set_as_ringtone
                 showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
                 onClick { song.actionSetAsRingtone(context) }
