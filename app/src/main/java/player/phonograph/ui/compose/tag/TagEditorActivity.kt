@@ -26,6 +26,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -81,7 +82,7 @@ class TagEditorActivity :
 
     override val toolbarActions: @Composable RowScope.() -> Unit = {
         IconButton(onClick = { model.saveConfirmationDialogState.show() }) {
-            Icon(Icons.Default.Done, null)
+            Icon(painterResource(id = R.drawable.ic_save_white_24dp), null)
         }
     }
 
