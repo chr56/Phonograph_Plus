@@ -129,9 +129,6 @@
             android:label="@string/action_details"
             android:theme="@style/Theme.Phonograph.Auto" />
         <activity
-            android:name="util.phonograph.tageditor.SongTagEditorActivity"
-            android:windowSoftInputMode="adjustResize" />
-        <activity
             android:name="util.phonograph.tageditor.AlbumTagEditorActivity"
             android:windowSoftInputMode="adjustResize" />
         <activity
