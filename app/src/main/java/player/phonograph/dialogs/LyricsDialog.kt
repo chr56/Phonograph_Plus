@@ -20,7 +20,7 @@ import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.adapter.LyricsAdapter
 import player.phonograph.databinding.DialogLyricsBinding
-import player.phonograph.helper.MusicProgressViewUpdateHelper
+import player.phonograph.misc.MusicProgressViewUpdateHelper
 import player.phonograph.model.Song
 import player.phonograph.model.lyrics.AbsLyrics
 import player.phonograph.model.lyrics.DEFAULT_TITLE

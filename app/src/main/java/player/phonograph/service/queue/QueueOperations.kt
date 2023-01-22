@@ -4,7 +4,7 @@
 
 package player.phonograph.service.queue
 
-import player.phonograph.helper.ShuffleHelper.shuffleAt
+import player.phonograph.misc.ShuffleHelper.shuffleAt
 import player.phonograph.model.Song
 import player.phonograph.notification.ErrorNotification
 

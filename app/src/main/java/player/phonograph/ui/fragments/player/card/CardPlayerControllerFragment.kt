@@ -16,7 +16,7 @@ import mt.tint.viewtint.tint
 import mt.util.color.secondaryTextColor
 import player.phonograph.databinding.FragmentCardPlayerPlaybackControlsBinding
 import player.phonograph.service.MusicPlayerRemote
-import player.phonograph.helper.PlayPauseButtonOnClickHandler
+import player.phonograph.misc.PlayPauseButtonOnClickHandler
 import player.phonograph.ui.fragments.player.AbsPlayerControllerFragment
 import player.phonograph.views.PlayPauseDrawable
 

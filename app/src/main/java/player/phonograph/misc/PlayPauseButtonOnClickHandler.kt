@@ -1,4 +1,4 @@
-package player.phonograph.helper
+package player.phonograph.misc
 
 import android.view.View
 import androidx.annotation.Keep

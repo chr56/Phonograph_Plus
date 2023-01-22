@@ -2,12 +2,9 @@ package player.phonograph.ui.fragments.player
 
 import android.animation.Animator
 import android.annotation.SuppressLint
-import android.graphics.Color
-import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.view.GestureDetector
 import android.view.GestureDetector.SimpleOnGestureListener
 import android.view.LayoutInflater
@@ -20,23 +17,21 @@ import android.view.animation.DecelerateInterpolator
 import androidx.viewpager2.widget.ViewPager2
 import kotlinx.coroutines.*
 import lib.phonograph.misc.SimpleAnimatorListener
-import player.phonograph.R
 import player.phonograph.adapter.AlbumCoverPagerAdapter
 import player.phonograph.databinding.FragmentPlayerAlbumCoverBinding
-import player.phonograph.helper.MusicProgressViewUpdateHelper
+import player.phonograph.misc.MusicProgressViewUpdateHelper
 import player.phonograph.model.lyrics.LrcLyrics
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.settings.Setting
 import player.phonograph.ui.fragments.AbsMusicServiceFragment
 import player.phonograph.util.AnimationUtil.PHONOGRAPH_ANIM_TIME
-import player.phonograph.util.ViewUtil
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
  */
 class PlayerAlbumCoverFragment :
-    AbsMusicServiceFragment(),
-    MusicProgressViewUpdateHelper.Callback {
+        AbsMusicServiceFragment(),
+        MusicProgressViewUpdateHelper.Callback {
 
     private var _viewBinding: FragmentPlayerAlbumCoverBinding? = null
     private val binding: FragmentPlayerAlbumCoverBinding get() = _viewBinding!!

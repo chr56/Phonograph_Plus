@@ -1,4 +1,4 @@
-package player.phonograph.helper
+package player.phonograph.misc
 
 import player.phonograph.model.Song
 
