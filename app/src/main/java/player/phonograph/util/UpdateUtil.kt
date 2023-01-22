@@ -4,6 +4,7 @@
 
 package player.phonograph.util
 
+import lib.phonograph.misc.emit
 import android.util.Log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -14,6 +15,7 @@ import kotlinx.coroutines.withContext
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import okhttp3.HttpUrl
+import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
 import player.phonograph.BuildConfig
@@ -21,12 +23,12 @@ import player.phonograph.UpdateConfig.requestUriBitBucket
 import player.phonograph.UpdateConfig.requestUriFastGit
 import player.phonograph.UpdateConfig.requestUriGitHub
 import player.phonograph.UpdateConfig.requestUriJsdelivr
-import player.phonograph.misc.webRequest
 import player.phonograph.model.version.VersionCatalog
 import player.phonograph.settings.Setting
 import player.phonograph.util.TimeUtil.dateText
 import player.phonograph.util.Util.debug
 import java.io.IOException
+import java.util.concurrent.TimeUnit
 
 object UpdateUtil {
 
@@ -177,3 +179,17 @@ object UpdateUtil {
 
 }
 
+internal val okHttpClient = OkHttpClient.Builder()
+    .connectTimeout(4500, TimeUnit.MILLISECONDS)
+    .build()
+
+suspend fun webRequest(request: Request): Response {
+    return withContext(Dispatchers.IO) {
+        val call = okHttpClient.newCall(request)
+        return@withContext try {
+            call.emit()
+        } catch (e: IOException) {
+            throw e
+        }
+    }
+}
