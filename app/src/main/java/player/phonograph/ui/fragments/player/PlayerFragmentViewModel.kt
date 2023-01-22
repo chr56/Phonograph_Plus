@@ -15,7 +15,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import player.phonograph.model.Song
 import player.phonograph.model.lyrics.AbsLyrics
 import player.phonograph.model.lyrics.LyricsList
-import player.phonograph.misc.LyricsLoader
+import player.phonograph.mediastore.LyricsLoader
 import player.phonograph.notification.ErrorNotification
 import player.phonograph.util.FavoriteUtil.isFavorite
 

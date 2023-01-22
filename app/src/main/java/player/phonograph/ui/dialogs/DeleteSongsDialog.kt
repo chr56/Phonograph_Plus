@@ -4,7 +4,7 @@ import lib.phonograph.dialog.alertDialog
 import mt.pref.ThemeColor.accentColor
 import player.phonograph.R
 import player.phonograph.mediastore.DeleteSongUtil
-import player.phonograph.misc.LyricsLoader
+import player.phonograph.mediastore.LyricsLoader
 import player.phonograph.model.Song
 import player.phonograph.ui.components.ViewComponent
 import player.phonograph.ui.components.viewcreater.*

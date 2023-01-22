@@ -4,14 +4,14 @@
 
 package player.phonograph.misc
 
-import android.util.Log
-import kotlinx.coroutines.CoroutineExceptionHandler
-import kotlinx.coroutines.runBlocking
-import player.phonograph.App
+import player.phonograph.mediastore.LyricsLoader
 import player.phonograph.model.Song
 import player.phonograph.model.lyrics.LrcLyrics
 import player.phonograph.notification.ErrorNotification
 import player.phonograph.util.StatusBarLyricUtil
+import android.util.Log
+import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.runBlocking
 import java.io.File
 
 class LyricsUpdater(song: Song?) {

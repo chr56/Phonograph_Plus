@@ -1,8 +1,8 @@
 /*
- * Copyright (c) 2022 chr_56
+ * Copyright (c) 2022~2023 chr_56
  */
 
-package player.phonograph.misc
+package player.phonograph.mediastore
 
 import org.jaudiotagger.audio.AudioFileIO
 import org.jaudiotagger.audio.exceptions.CannotReadException
