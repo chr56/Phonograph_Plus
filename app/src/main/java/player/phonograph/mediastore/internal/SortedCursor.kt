@@ -13,7 +13,7 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-package lib.phonograph.misc
+package player.phonograph.mediastore.internal
 
 import android.database.AbstractCursor
 import android.database.Cursor
@@ -23,33 +23,30 @@ import android.database.Cursor
  * contents of the cursor. It wraps the Cursor and simulates the internal cursor being sorted
  * by moving the point to the appropriate spot
  */
-class SortedLongCursor : AbstractCursor {
+class SortedCursor : AbstractCursor {
 
     /**
      * @param cursor     to wrap
      * @param order      the list of unique ids in sorted order to display
      * @param columnName the column name of the id to look up in the internal cursor
      */
-    constructor(cursor: Cursor, order: LongArray?, columnName: String) : super() {
+    constructor(cursor: Cursor, order: Array<String>?, columnName: String) : super() {
         this.mCursor = cursor
-        missingIds = buildCursorPositionMapping(order, columnName)
+        this.mMissingValues = buildCursorPositionMapping(order, columnName)
     }
 
     // cursor to wrap
     private val mCursor: Cursor
 
-    // the map of external indices to internal indices
-    private var mOrderedPositions: MutableList<Int?>? = null
-
     // this contains the ids that weren't found in the underlying cursor
-    val missingIds: List<Long>
-        /**
-         * @return the list of ids that weren't found in the underlying cursor
-         */
-        get
+    var mMissingValues: List<String>
+        private set
+
+    // the map of external indices to internal indices
+    private lateinit var mOrderedPositions: MutableList<Int>
 
     // this contains the mapped cursor positions and afterwards the extra ids that weren't found
-    private var mMapCursorPositions: HashMap<Long, Int>? = null
+    private lateinit var mMapCursorPositions: java.util.HashMap<String, Int>
 
     /**
      * This function populates mOrderedPositions with the cursor positions in the order based
@@ -58,47 +55,44 @@ class SortedLongCursor : AbstractCursor {
      * @param order the target order of the internal cursor
      * @return returns the ids that aren't found in the underlying cursor
      */
-    private fun buildCursorPositionMapping(order: LongArray?, columnName: String): List<Long> {
-        val missingIds: MutableList<Long> = ArrayList()
+    private fun buildCursorPositionMapping(order: Array<String>?, columnName: String): List<String> {
+        val missingValues: MutableList<String> = ArrayList()
         mOrderedPositions = ArrayList(mCursor.count)
         mMapCursorPositions = HashMap(mCursor.count)
-        val idPosition = mCursor.getColumnIndex(columnName)
+        val valueColumnIndex = mCursor.getColumnIndex(columnName)
         if (mCursor.moveToFirst()) {
             // first figure out where each of the ids are in the cursor
             do {
-                mMapCursorPositions!![mCursor.getLong(idPosition)] = mCursor.position
+                mMapCursorPositions[mCursor.getString(valueColumnIndex)] = mCursor.position
             } while (mCursor.moveToNext())
-
-            // now create the ordered positions to map to the internal cursor given the
-            // external sort order
-            var i = 0
-            while (order != null && i < order.size) {
-                val id = order[i]
-                if (mMapCursorPositions!!.containsKey(id)) {
-                    mOrderedPositions!!.add(mMapCursorPositions!![id])
-                    mMapCursorPositions!!.remove(id)
-                } else {
-                    missingIds.add(id)
+            if (order != null) {
+                // now create the ordered positions to map to the internal cursor given the
+                // external sort order
+                for (value in order) {
+                    if (mMapCursorPositions.containsKey(value)) {
+                        mOrderedPositions.add(mMapCursorPositions[value]!!)
+                        mMapCursorPositions.remove(value)
+                    } else {
+                        missingValues.add(value)
+                    }
                 }
-                i++
             }
             mCursor.moveToFirst()
         }
-        return missingIds
+        return missingValues
     }
 
     /**
      * @return the list of ids that were in the underlying cursor but not part of the ordered list
      */
-    val extraIds: Collection<Long>
-        get() = mMapCursorPositions!!.keys
+    val extraValues: Collection<String> get() = mMapCursorPositions.keys
 
     override fun close() {
         mCursor.close()
         super.close()
     }
 
-    override fun getCount(): Int = mOrderedPositions!!.size
+    override fun getCount(): Int = mOrderedPositions.size
 
     override fun getColumnNames(): Array<String> = mCursor.columnNames
 
@@ -118,7 +112,7 @@ class SortedLongCursor : AbstractCursor {
 
     override fun onMove(oldPosition: Int, newPosition: Int): Boolean {
         if (newPosition in 0 until count) {
-            mCursor.moveToPosition(mOrderedPositions!![newPosition]!!)
+            mCursor.moveToPosition(mOrderedPositions[newPosition])
             return true
         }
         return false
