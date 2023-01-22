@@ -25,11 +25,11 @@ import player.phonograph.appshortcuts.DynamicShortcutManager.Companion.reportSho
 import player.phonograph.appshortcuts.shortcuttype.LastAddedShortcutType
 import player.phonograph.appshortcuts.shortcuttype.ShuffleAllShortcutType
 import player.phonograph.appshortcuts.shortcuttype.TopTracksShortcutType
-import player.phonograph.misc.SearchQueryHelper
 import player.phonograph.mediastore.AlbumLoader
 import player.phonograph.mediastore.ArtistLoader
 import player.phonograph.mediastore.PlaylistSongLoader
 import player.phonograph.mediastore.SongLoader
+import player.phonograph.mediastore.processQuery
 import player.phonograph.model.PlayRequest
 import player.phonograph.model.Song
 import player.phonograph.model.playlist.LastAddedPlaylist
@@ -184,7 +184,7 @@ class StarterActivity : AppCompatActivity() {
     private fun handleSearchRequest(intent: Intent): PlayRequest? {
         intent.action?.let {
             if (it == MediaStore.INTENT_ACTION_MEDIA_PLAY_FROM_SEARCH) {
-                val songs = SearchQueryHelper.getSongs(this, intent.extras!!)
+                val songs = processQuery(this, intent.extras!!)
                 if (songs.isNotEmpty()) return PlayRequest(songs, 0)
             }
         }
