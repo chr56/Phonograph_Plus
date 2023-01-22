@@ -4,7 +4,6 @@
 
 package player.phonograph.service.queue
 
-import player.phonograph.misc.ShuffleHelper.shuffleAt
 import player.phonograph.model.Song
 import player.phonograph.notification.ErrorNotification
 
@@ -21,7 +20,7 @@ fun swapQueue(queueHolder: QueueHolder, newQueue: List<Song>, newPosition: Int) 
             _playingQueue.clear()
             _playingQueue.addAll(newQueue)
             if (queueHolder.shuffleMode == ShuffleMode.SHUFFLE) {
-                _playingQueue.shuffleAt(newPosition)
+                shuffle(_playingQueue, newPosition)
                 queueHolder.modifyPosition(0)
             } else {
                 queueHolder.modifyPosition(newPosition)
@@ -148,7 +147,7 @@ fun shuffle(queueHolder: QueueHolder, newShuffleMode: ShuffleMode) {
     queueHolder.modifyQueue { _playingQueue, _originalPlayingQueue ->
         when (newShuffleMode) {
             ShuffleMode.SHUFFLE -> {
-                _playingQueue.shuffleAt(queueHolder.currentSongPosition)
+                shuffle(_playingQueue, queueHolder.currentSongPosition)
                 queueHolder.modifyPosition(0)
             }
             ShuffleMode.NONE    -> {
@@ -163,6 +162,16 @@ fun shuffle(queueHolder: QueueHolder, newShuffleMode: ShuffleMode) {
                 }
             }
         }
-        Unit
+    }
+}
+
+private fun shuffle(songs: MutableList<Song>, current: Int) {
+    if (songs.isEmpty()) return
+    if (current in 0 until songs.size) {
+        val song: Song = songs.removeAt(current)
+        songs.shuffle()
+        songs.add(0, song)
+    } else {
+        songs.shuffle()
     }
 }
