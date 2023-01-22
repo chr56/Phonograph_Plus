@@ -22,8 +22,6 @@ import androidx.activity.viewModels
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Done
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
@@ -170,10 +168,6 @@ class TagEditorScreenViewModel(song: Song, defaultColor: Color) :
     }
 }
 
-/**
- * generate diff with [oldInfo]
- * @return <TagFieldKey, oldValue, newValue> triple
- */
 internal fun TagEditorScreenViewModel.generateDiff(): TagDiff {
     val current = infoTableState.info.value
     val tagDiff = infoTableState.allEditRequests.map { (key, new) ->
