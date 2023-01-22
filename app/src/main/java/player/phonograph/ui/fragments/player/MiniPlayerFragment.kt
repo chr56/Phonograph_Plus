@@ -15,7 +15,6 @@ import mt.util.color.secondaryTextColor
 import player.phonograph.R
 import player.phonograph.databinding.FragmentMiniPlayerBinding
 import player.phonograph.misc.MusicProgressViewUpdateHelper
-import player.phonograph.misc.PlayPauseButtonOnClickHandler
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.ui.fragments.AbsMusicServiceFragment
 import player.phonograph.util.PhonographColorUtil.nightMode

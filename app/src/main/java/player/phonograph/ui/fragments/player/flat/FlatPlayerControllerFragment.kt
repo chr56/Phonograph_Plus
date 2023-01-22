@@ -13,9 +13,9 @@ import android.view.LayoutInflater
 import android.view.View
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import player.phonograph.databinding.FragmentFlatPlayerPlaybackControlsBinding
-import player.phonograph.misc.PlayPauseButtonOnClickHandler
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.ui.fragments.player.AbsPlayerControllerFragment
+import player.phonograph.ui.fragments.player.PlayPauseButtonOnClickHandler
 import player.phonograph.views.PlayPauseDrawable
 import java.util.*
 

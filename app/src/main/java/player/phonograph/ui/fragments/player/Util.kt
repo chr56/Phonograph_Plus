@@ -1,13 +1,12 @@
-package player.phonograph.misc
-
-import android.view.View
-import androidx.annotation.Keep
-import player.phonograph.service.MusicPlayerRemote
-
-/**
- * @author Karim Abou Zeid (kabouzeid)
+/*
+ * Copyright (c) 2022~2023 chr_56
  */
-@Keep
+
+package player.phonograph.ui.fragments.player
+
+import player.phonograph.service.MusicPlayerRemote
+import android.view.View
+
 class PlayPauseButtonOnClickHandler : View.OnClickListener {
     override fun onClick(v: View) {
         if (MusicPlayerRemote.isPlaying) {
