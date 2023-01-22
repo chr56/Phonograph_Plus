@@ -6,16 +6,13 @@ package player.phonograph.ui.activities.base
 
 import lib.phonograph.activity.ToolbarActivity
 import player.phonograph.MusicServiceMsgConst
-import player.phonograph.interfaces.MusicServiceEventListener
+import player.phonograph.misc.MusicServiceEventListener
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.MusicPlayerRemote.ServiceToken
 import player.phonograph.util.Util.debug
 import player.phonograph.util.permissions.NonGrantedPermission
 import player.phonograph.util.permissions.Permission
-import player.phonograph.util.permissions.checkPermission
 import player.phonograph.util.permissions.checkStorageReadPermission
-import android.Manifest.permission.READ_EXTERNAL_STORAGE
-import android.Manifest.permission.READ_MEDIA_AUDIO
 import android.content.BroadcastReceiver
 import android.content.ComponentName
 import android.content.Context
@@ -23,8 +20,6 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.content.ServiceConnection
 import android.media.AudioManager
-import android.os.Build
-import android.os.Build.VERSION_CODES.TIRAMISU
 import android.os.Bundle
 import android.os.IBinder
 import android.util.Log

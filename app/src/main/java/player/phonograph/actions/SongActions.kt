@@ -8,7 +8,7 @@ import player.phonograph.R
 import player.phonograph.dialogs.AddToPlaylistDialog
 import player.phonograph.dialogs.SongDetailDialog
 import player.phonograph.dialogs.SongShareDialog
-import player.phonograph.interfaces.PaletteColorHolder
+import player.phonograph.misc.PaletteColorHolder
 import player.phonograph.model.Song
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.queue.ShuffleMode

@@ -27,7 +27,7 @@ import player.phonograph.coil.CustomArtistImageStore
 import player.phonograph.coil.loadImage
 import player.phonograph.coil.target.PaletteTargetBuilder
 import player.phonograph.databinding.ActivityArtistDetailBinding
-import player.phonograph.interfaces.PaletteColorHolder
+import player.phonograph.misc.PaletteColorHolder
 import player.phonograph.misc.SimpleObservableScrollViewCallbacks
 import player.phonograph.misc.menuProvider
 import player.phonograph.model.Album

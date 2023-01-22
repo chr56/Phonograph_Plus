@@ -11,7 +11,7 @@ import player.phonograph.adapter.display.PlayingQueueAdapter
 import player.phonograph.dialogs.CreatePlaylistDialog
 import player.phonograph.dialogs.LyricsDialog
 import player.phonograph.dialogs.SleepTimerDialog
-import player.phonograph.interfaces.PaletteColorHolder
+import player.phonograph.misc.PaletteColorHolder
 import player.phonograph.model.buildInfoString
 import player.phonograph.model.getReadableDurationString
 import player.phonograph.model.lyrics.AbsLyrics

@@ -4,7 +4,7 @@ import android.content.Context
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
-import player.phonograph.interfaces.MusicServiceEventListener
+import player.phonograph.misc.MusicServiceEventListener
 import player.phonograph.ui.activities.base.AbsMusicServiceActivity
 
 /**

@@ -26,7 +26,7 @@ import player.phonograph.adapter.base.MultiSelectionCabController
 import player.phonograph.coil.loadImage
 import player.phonograph.ui.dialogs.DeleteSongsDialog
 import player.phonograph.dialogs.SongDetailDialog
-import player.phonograph.interfaces.PaletteColorHolder
+import player.phonograph.misc.PaletteColorHolder
 import player.phonograph.model.Song
 import player.phonograph.util.ViewUtil.hitTest
 import util.phonograph.tageditor.AbsTagEditorActivity
