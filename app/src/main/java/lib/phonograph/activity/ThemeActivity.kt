@@ -4,13 +4,6 @@
 
 package lib.phonograph.activity
 
-import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
-import android.view.View
-import android.view.View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-import android.view.View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-import androidx.appcompat.app.AppCompatDelegate
 import mt.pref.ThemeColor
 import mt.pref.ThemeColor.accentColor
 import mt.pref.ThemeColor.primaryColor
@@ -20,8 +13,17 @@ import mt.util.color.darkenColor
 import mt.util.color.primaryTextColor
 import mt.util.color.secondaryTextColor
 import player.phonograph.R
-import player.phonograph.util.preferences.StyleConfig
 import player.phonograph.util.PhonographColorUtil.nightMode
+import player.phonograph.util.preferences.StyleConfig
+import androidx.appcompat.app.AppCompatDelegate
+import android.animation.ValueAnimator
+import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.view.View
+import android.view.View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+import android.view.View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+import android.view.animation.PathInterpolator
 
 /**
  * An abstract class providing material activity (no toolbar)
@@ -150,4 +152,30 @@ abstract class ThemeActivity : MultiLanguageActivity() {
     // SnackBar holder
     //
     protected open val snackBarContainer: View get() = window.decorView
+
+    //
+    // Animation
+    //
+    private var colorChangeAnimator: ValueAnimator? = null
+    protected fun animateThemeColorChange(
+        oldColor: Int, newColor: Int
+    ) { // todo: make sure lifecycle
+        colorChangeAnimator?.cancel()
+        colorChangeAnimator = ValueAnimator
+            .ofArgb(oldColor, newColor)
+            .setDuration(600L)
+        colorChangeAnimator?.also { animator ->
+            animator.interpolator = PathInterpolator(0.4f, 0f, 1f, 1f)
+            animator.addUpdateListener { animation: ValueAnimator ->
+                setStatusbarColor(animation.animatedValue as Int)
+                setNavigationBarColor(animation.animatedValue as Int)
+            }
+            animator.start()
+        }
+    }
+
+    protected fun cancelThemeColorChange() {
+        colorChangeAnimator?.cancel()
+        colorChangeAnimator = null
+    }
 }

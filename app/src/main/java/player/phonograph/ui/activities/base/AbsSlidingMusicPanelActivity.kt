@@ -1,33 +1,28 @@
 package player.phonograph.ui.activities.base
 
+import com.sothree.slidinguppanel.SlidingUpPanelLayout
+import com.sothree.slidinguppanel.SlidingUpPanelLayout.PanelState
+import mt.tint.setNavigationBarColor
+import player.phonograph.R
+import player.phonograph.model.NowPlayingScreen
+import player.phonograph.service.MusicPlayerRemote
+import player.phonograph.settings.Setting
+import player.phonograph.ui.fragments.player.AbsPlayerFragment
+import player.phonograph.ui.fragments.player.MiniPlayerFragment
+import player.phonograph.ui.fragments.player.card.CardPlayerFragment
+import player.phonograph.ui.fragments.player.flat.FlatPlayerFragment
+import player.phonograph.util.preferences.NowPlayingScreenConfig
+import androidx.annotation.ColorInt
+import androidx.annotation.FloatRange
 import android.animation.ArgbEvaluator
-import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver.OnGlobalLayoutListener
-import android.view.animation.PathInterpolator
-import androidx.annotation.ColorInt
-import androidx.annotation.FloatRange
-import com.sothree.slidinguppanel.SlidingUpPanelLayout
-import com.sothree.slidinguppanel.SlidingUpPanelLayout.PanelState
-import mt.tint.setNavigationBarColor
 import mt.tint.setTaskDescriptionColor as setTaskDescriptionColorEXt
-import player.phonograph.R
-import player.phonograph.service.MusicPlayerRemote
-import player.phonograph.settings.Setting
-import player.phonograph.ui.fragments.player.AbsPlayerFragment
-import player.phonograph.ui.fragments.player.MiniPlayerFragment
-import player.phonograph.model.NowPlayingScreen
-import player.phonograph.util.preferences.NowPlayingScreenConfig
-import player.phonograph.ui.fragments.player.card.CardPlayerFragment
-import player.phonograph.ui.fragments.player.flat.FlatPlayerFragment
-import player.phonograph.util.AnimationUtil.PHONOGRAPH_ANIM_TIME
-import player.phonograph.util.ViewUtil
 
-// TODO: Move smooth AnimateColorChange to ThemeActivity
 /**
  * @author Karim Abou Zeid (kabouzeid)
  *
@@ -45,7 +40,6 @@ abstract class AbsSlidingMusicPanelActivity :
 
     private var slidingUpPanelLayout: SlidingUpPanelLayout? = null
 
-    private var colorChangeAnimator: ValueAnimator? = null
     private val argbEvaluator = ArgbEvaluator()
 
     private var playerColor: Int = 0
@@ -127,7 +121,7 @@ abstract class AbsSlidingMusicPanelActivity :
 
     override fun onPanelSlide(panel: View, @FloatRange(from = 0.0, to = 1.0) slideOffset: Float) {
         setMiniPlayerAlphaProgress(slideOffset)
-        colorChangeAnimator?.cancel()
+        cancelThemeColorChange()
         val color: Int =
             argbEvaluator.evaluate(slideOffset, activityColor, playerFragment.paletteColor) as Int
         super.setStatusbarColor(color)
@@ -215,30 +209,14 @@ abstract class AbsSlidingMusicPanelActivity :
 
     override fun onPaletteColorChanged() {
         if (panelState == PanelState.EXPANDED) {
-            animateColorChange(playerColor, playerFragment.paletteColor)
+            animateThemeColorChange(playerColor, playerFragment.paletteColor)
             playerColor = playerFragment.paletteColor
         }
     }
 
-    private fun animateColorChange(oldColor: Int, newColor: Int) {
-        colorChangeAnimator?.cancel()
-        colorChangeAnimator = ValueAnimator
-            .ofArgb(oldColor, newColor)
-            .setDuration(PHONOGRAPH_ANIM_TIME)
-            .also { animator ->
-                animator.interpolator = PathInterpolator(0.4f, 0f, 1f, 1f)
-                animator.addUpdateListener { animation: ValueAnimator ->
-                    setStatusbarColor(animation.animatedValue as Int)
-                    setNavigationBarColor(animation.animatedValue as Int)
-                }
-                animator.start()
-            }
-    }
-
     override fun onDestroy() {
         super.onDestroy()
-        colorChangeAnimator?.cancel() // just in case
-        colorChangeAnimator = null
+        cancelThemeColorChange() // just in case
         // preference
         Setting.instance.unregisterOnSharedPreferenceChangedListener(
             sharedPreferenceChangeListener
