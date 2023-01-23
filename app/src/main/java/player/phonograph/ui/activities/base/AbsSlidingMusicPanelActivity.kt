@@ -34,8 +34,7 @@ import mt.tint.setTaskDescriptionColor as setTaskDescriptionColorEXt
  */
 abstract class AbsSlidingMusicPanelActivity :
     AbsMusicServiceActivity(),
-    SlidingUpPanelLayout.PanelSlideListener,
-    AbsPlayerFragment.Callbacks {
+    SlidingUpPanelLayout.PanelSlideListener {
 
     private lateinit var playerFragment: AbsPlayerFragment
     private lateinit var miniPlayerFragment: MiniPlayerFragment
@@ -94,6 +93,7 @@ abstract class AbsSlidingMusicPanelActivity :
                 layout.addPanelSlideListener(this)
             }
 
+        setupPaletteColorObserver()
         lifecycle.addObserver(nowPlayingScreenPreferenceObserver)  // preference
     }
 
@@ -206,10 +206,12 @@ abstract class AbsSlidingMusicPanelActivity :
         return false
     }
 
-    override fun onPaletteColorChanged() {
-        if (panelState == PanelState.EXPANDED) {
-            animateThemeColorChange(playerColor, playerFragment.paletteColor)
-            playerColor = playerFragment.paletteColor
+    private fun setupPaletteColorObserver() {
+        playerFragment.observePaletteColor { color ->
+            if (panelState == PanelState.EXPANDED) {
+                animateThemeColorChange(playerColor, color)
+            }
+            playerColor = color
         }
     }
 

@@ -50,8 +50,6 @@ import kotlinx.coroutines.withContext
 abstract class AbsPlayerFragment :
         AbsMusicServiceFragment(), PaletteColorHolder {
 
-    protected lateinit var callbacks: Callbacks
-
     protected lateinit var playerAlbumCoverFragment: PlayerAlbumCoverFragment
     protected lateinit var playbackControlsFragment: AbsPlayerControllerFragment
     protected val viewModel: PlayerFragmentViewModel
@@ -75,14 +73,6 @@ abstract class AbsPlayerFragment :
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        callbacks =
-            try {
-                context as Callbacks
-            } catch (e: ClassCastException) {
-                throw RuntimeException(
-                    "${context.javaClass.simpleName} must implement ${Callbacks::class.java.simpleName}"
-                )
-            }
         handler = Handler(Looper.getMainLooper(), handlerCallbacks)
     }
 
@@ -415,10 +405,6 @@ abstract class AbsPlayerFragment :
         playingQueueAdapter.current = MusicPlayerRemote.position
     }
 
-    interface Callbacks {
-        fun onPaletteColorChanged()
-    }
-
     companion object {
         const val UPDATE_LYRICS = 1001
         const val LYRICS = "lyrics"
@@ -435,8 +421,6 @@ abstract class AbsPlayerFragment :
     override val paletteColor
         @ColorInt get() = viewModel.paletteColor.value
 
-    val paletteColorState = viewModel.paletteColor
-
     open fun updateColor(color: Int) = viewModel.updatePaletteColor(color)
 
     private fun setupPaletteColorObserver() {
@@ -446,7 +430,16 @@ abstract class AbsPlayerFragment :
                 viewModel.paletteColor.collect { newColor ->
                     impl.animateColorChange(newColor)
                     playbackControlsFragment.modifyColor(newColor)
-                    callbacks.onPaletteColorChanged()
+                }
+            }
+        }
+    }
+
+    fun observePaletteColor(callback: (Int) -> Unit) {
+        lifecycleScope.launch {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.paletteColor.collect {
+                    callback(it)
                 }
             }
         }
