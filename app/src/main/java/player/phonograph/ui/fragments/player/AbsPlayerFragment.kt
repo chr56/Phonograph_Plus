@@ -52,11 +52,7 @@ abstract class AbsPlayerFragment :
 
     protected lateinit var playerAlbumCoverFragment: PlayerAlbumCoverFragment
     protected lateinit var playbackControlsFragment: AbsPlayerControllerFragment
-    protected val viewModel: PlayerFragmentViewModel
-            by viewModels {
-                PlayerFragmentViewModel.from(requireContext().applicationContext as Application)
-            }
-
+    protected val viewModel: PlayerFragmentViewModel by viewModels()
     lateinit var handler: Handler
 
     // recycle view

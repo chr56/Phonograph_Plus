@@ -4,27 +4,26 @@
 
 package player.phonograph.ui.fragments.player
 
-import android.app.Application
-import android.view.MenuItem
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.ViewModelProvider
-import java.io.File
-import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import player.phonograph.App
+import player.phonograph.mediastore.LyricsLoader
 import player.phonograph.model.Song
 import player.phonograph.model.lyrics.AbsLyrics
 import player.phonograph.model.lyrics.LyricsList
-import player.phonograph.mediastore.LyricsLoader
 import player.phonograph.notification.ErrorNotification
 import player.phonograph.util.FavoriteUtil.isFavorite
 import androidx.annotation.ColorInt
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import android.content.Context
+import android.view.MenuItem
+import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
+import java.io.File
 
-class PlayerFragmentViewModel(application: Application) : AndroidViewModel(application) {
-
-    val applicationContext get() = getApplication<Application>()
+class PlayerFragmentViewModel : ViewModel() {
 
     val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
         ErrorNotification.postErrorNotification(throwable)
@@ -78,7 +77,7 @@ class PlayerFragmentViewModel(application: Application) : AndroidViewModel(appli
         _favoriteState.value = Song.EMPTY_SONG to false
         loadFavoriteStateJob = viewModelScope.launch(exceptionHandler) {
             if (song == Song.EMPTY_SONG) return@launch
-            _favoriteState.emit(song to isFavorite(context ?: applicationContext, song))
+            _favoriteState.emit(song to isFavorite(context ?: App.instance, song))
         }
     }
 
@@ -88,12 +87,6 @@ class PlayerFragmentViewModel(application: Application) : AndroidViewModel(appli
     fun updatePaletteColor(@ColorInt newColor: Int) {
         viewModelScope.launch {
             _paletteColor.emit(newColor)
-        }
-    }
-
-    companion object {
-        fun from(application: Application): ViewModelProvider.Factory {
-            return ViewModelProvider.AndroidViewModelFactory(application)
         }
     }
 }
