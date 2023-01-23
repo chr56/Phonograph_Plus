@@ -203,7 +203,7 @@ abstract class AbsPlayerFragment :
                     val result = toggleFavorite(requireContext(), viewModel.currentSong)
                     if (viewModel.currentSong.id == MusicPlayerRemote.currentSong.id && result) {
                         playerAlbumCoverFragment.showHeartAnimation()
-                        viewModel.updateFavoriteState(viewModel.currentSong)
+                        viewModel.updateFavoriteState(viewModel.currentSong, context)
                     }
                     true
                 }
@@ -356,14 +356,14 @@ abstract class AbsPlayerFragment :
     override fun onServiceConnected() {
         updateQueue()
         updateCurrentSong()
-        viewModel.updateFavoriteState(MusicPlayerRemote.currentSong)
+        viewModel.updateFavoriteState(MusicPlayerRemote.currentSong, context)
         viewModel.loadLyrics(MusicPlayerRemote.currentSong)
     }
 
     override fun onPlayingMetaChanged() {
         updateCurrentSong()
         updateQueuePosition()
-        viewModel.updateFavoriteState(MusicPlayerRemote.currentSong)
+        viewModel.updateFavoriteState(MusicPlayerRemote.currentSong, context)
         viewModel.loadLyrics(MusicPlayerRemote.currentSong)
     }
 
@@ -373,7 +373,7 @@ abstract class AbsPlayerFragment :
 
     override fun onMediaStoreChanged() {
         updateQueue()
-        viewModel.updateFavoriteState(MusicPlayerRemote.currentSong)
+        viewModel.updateFavoriteState(MusicPlayerRemote.currentSong, context)
     }
 
     override fun onShuffleModeChanged() {
@@ -390,7 +390,11 @@ abstract class AbsPlayerFragment :
     }
     abstract fun onBackPressed(): Boolean
 
-    protected abstract fun updateCurrentSong()
+    protected open fun updateCurrentSong() {
+        viewModel.updateCurrentSong(MusicPlayerRemote.currentSong, context)
+        impl.onCurrentSongChanged()
+    }
+
     protected open fun updateQueue() {
         refreshAdapter()
     }

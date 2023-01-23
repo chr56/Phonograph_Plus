@@ -101,11 +101,6 @@ class FlatPlayerFragment :
         }
     }
 
-    override fun updateCurrentSong() {
-        viewModel.currentSong = MusicPlayerRemote.currentSong
-        impl.onCurrentSongChanged()
-    }
-
     override fun setUpControllerFragment() {
         playbackControlsFragment = childFragmentManager.findFragmentById(
             R.id.playback_controls_fragment
