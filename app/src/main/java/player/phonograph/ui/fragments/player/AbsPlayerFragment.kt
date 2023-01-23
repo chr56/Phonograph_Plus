@@ -45,8 +45,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 abstract class AbsPlayerFragment :
-    AbsMusicServiceFragment(),
-    PaletteColorHolder {
+        AbsMusicServiceFragment(), PaletteColorHolder {
 
     protected lateinit var callbacks: Callbacks
 
@@ -195,8 +194,11 @@ abstract class AbsPlayerFragment :
 
             menuItem(getString(R.string.action_add_to_favorites)) {
                 order = 1
-                icon = requireContext()
-                    .getTintedDrawable(R.drawable.ic_favorite_border_white_24dp, Color.WHITE) // default state
+                icon =
+                    requireContext().getTintedDrawable(
+                        R.drawable.ic_favorite_border_white_24dp, Color.WHITE
+                    )
+                // default state
                 showAsActionFlag = MenuItem.SHOW_AS_ACTION_ALWAYS
                 itemId = R.id.action_toggle_favorite
                 onClick {
@@ -320,18 +322,21 @@ abstract class AbsPlayerFragment :
      * delayed and run on main-thread
      */
     fun updateFavoriteIcon(isFavorite: Boolean) {
-        Handler(Looper.getMainLooper()).postDelayed({
-            val activity = activity ?: return@postDelayed
-            val res = if (isFavorite) R.drawable.ic_favorite_white_24dp else R.drawable.ic_favorite_border_white_24dp
-            val color = toolbarIconColor(activity, Color.TRANSPARENT)
-            favoriteMenuItem?.apply {
-                icon = activity.getTintedDrawable(res, color)
-                title =
-                    if (isFavorite) getString(R.string.action_remove_from_favorites)
-                    else getString(R.string.action_add_to_favorites)
-            }
-        }, 200)
-
+        Handler(Looper.getMainLooper()).postDelayed(
+            {
+                val activity =
+                    activity ?: return@postDelayed
+                val res =
+                    if (isFavorite) R.drawable.ic_favorite_white_24dp else R.drawable.ic_favorite_border_white_24dp
+                val color = toolbarIconColor(activity, Color.TRANSPARENT)
+                favoriteMenuItem?.apply {
+                    icon = activity.getTintedDrawable(res, color)
+                    title =
+                        if (isFavorite) getString(R.string.action_remove_from_favorites)
+                        else getString(R.string.action_add_to_favorites)
+                }
+            }, 200
+        )
     }
 
     protected val upNextAndQueueTime: String
@@ -388,6 +393,7 @@ abstract class AbsPlayerFragment :
         playbackControlsFragment.hide()
         onBackPressed()
     }
+
     abstract fun onBackPressed(): Boolean
 
     protected open fun updateCurrentSong() {
@@ -398,11 +404,12 @@ abstract class AbsPlayerFragment :
     protected open fun updateQueue() {
         refreshAdapter()
     }
+
     protected open fun updateQueuePosition() {
         playingQueueAdapter.current = MusicPlayerRemote.position
     }
 
-    private fun refreshAdapter(){
+    private fun refreshAdapter() {
         playingQueueAdapter.dataset = MusicPlayerRemote.playingQueue
         playingQueueAdapter.current = MusicPlayerRemote.position
     }
@@ -410,10 +417,12 @@ abstract class AbsPlayerFragment :
     interface Callbacks {
         fun onPaletteColorChanged()
     }
+
     open fun animateColorChange(newColor: Int) {
         impl.animateColorChange(newColor)
         paletteColor = newColor
     }
+
     open fun onColorChanged(color: Int) {
         animateColorChange(color)
         playbackControlsFragment.modifyColor(color)
