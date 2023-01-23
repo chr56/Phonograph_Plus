@@ -28,6 +28,7 @@ import androidx.annotation.ColorInt
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import android.app.Application
@@ -145,7 +146,7 @@ abstract class AbsPlayerFragment :
     }
 
     private fun addLyricsObserver() {
-        viewModel.backgroundCoroutine.launch {
+        lifecycleScope.launch(viewModel.exceptionHandler) {
             viewModel.lyricsList.collectLatest {
                 val lyrics = viewModel.currentLyrics
                 withContext(Dispatchers.Main) {
@@ -306,7 +307,7 @@ abstract class AbsPlayerFragment :
     var favoriteMenuItem: MenuItem? = null
 
     fun addFavoriteSateObserver() {
-        viewModel.backgroundCoroutine.launch {
+        lifecycleScope.launch(viewModel.exceptionHandler) {
             viewModel.favoriteState.collectLatest {
                 if (it.first == viewModel.currentSong) {
                     updateFavoriteIcon(it.second)

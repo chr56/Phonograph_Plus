@@ -18,18 +18,14 @@ import player.phonograph.model.lyrics.LyricsList
 import player.phonograph.mediastore.LyricsLoader
 import player.phonograph.notification.ErrorNotification
 import player.phonograph.util.FavoriteUtil.isFavorite
+import androidx.lifecycle.viewModelScope
 
 class PlayerFragmentViewModel(application: Application) : AndroidViewModel(application) {
 
     val context get() = getApplication<Application>()
 
-    val backgroundCoroutine: CoroutineScope by lazy {
-        CoroutineScope(
-            Dispatchers.IO +
-                CoroutineExceptionHandler { _, throwable ->
-                    ErrorNotification.postErrorNotification(throwable)
-                }
-        )
+    val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
+        ErrorNotification.postErrorNotification(throwable)
     }
 
     var currentSong: Song = Song.EMPTY_SONG
@@ -58,7 +54,7 @@ class PlayerFragmentViewModel(application: Application) : AndroidViewModel(appli
         _lyricsList.value = LyricsList()
         lyricsMenuItem?.isVisible = false
         // load new lyrics
-        loadLyricsJob = backgroundCoroutine.launch {
+        loadLyricsJob = viewModelScope.launch {
             if (song == Song.EMPTY_SONG) return@launch
             _lyricsList.emit(
                 LyricsLoader.loadLyrics(File(song.data), song)
@@ -75,7 +71,7 @@ class PlayerFragmentViewModel(application: Application) : AndroidViewModel(appli
     fun updateFavoriteState(song: Song) {
         loadFavoriteStateJob?.cancel()
         _favoriteState.value = Song.EMPTY_SONG to false
-        loadFavoriteStateJob = backgroundCoroutine.launch {
+        loadFavoriteStateJob = viewModelScope.launch(exceptionHandler) {
             if (song == Song.EMPTY_SONG) return@launch
             _favoriteState.emit(song to isFavorite(context, song))
         }
