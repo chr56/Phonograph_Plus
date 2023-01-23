@@ -4,6 +4,7 @@ import com.github.chr56.android.menu_dsl.attach
 import com.github.chr56.android.menu_dsl.menuItem
 import com.h6ah4i.android.widget.advrecyclerview.draggable.RecyclerViewDragDropManager
 import com.h6ah4i.android.widget.advrecyclerview.utils.WrapperAdapterUtils
+import mt.pref.primaryColor
 import mt.tint.viewtint.setMenuColor
 import mt.util.color.toolbarIconColor
 import player.phonograph.R
@@ -28,7 +29,9 @@ import androidx.annotation.ColorInt
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import android.app.Application
@@ -68,9 +71,6 @@ abstract class AbsPlayerFragment :
 
     protected lateinit var playerToolbar: Toolbar
 
-    @get:ColorInt
-    override var paletteColor = 0
-        protected set
     internal lateinit var impl: Impl
 
     override fun onAttach(context: Context) {
@@ -107,6 +107,7 @@ abstract class AbsPlayerFragment :
         initToolbar()
         setUpControllerFragment()
         setUpCoverFragment()
+        setupPaletteColorObserver()
 
         addFavoriteSateObserver()
         addLyricsObserver()
@@ -418,17 +419,6 @@ abstract class AbsPlayerFragment :
         fun onPaletteColorChanged()
     }
 
-    open fun animateColorChange(newColor: Int) {
-        impl.animateColorChange(newColor)
-        paletteColor = newColor
-    }
-
-    open fun onColorChanged(color: Int) {
-        animateColorChange(color)
-        playbackControlsFragment.modifyColor(color)
-        callbacks.onPaletteColorChanged()
-    }
-
     companion object {
         const val UPDATE_LYRICS = 1001
         const val LYRICS = "lyrics"
@@ -439,5 +429,26 @@ abstract class AbsPlayerFragment :
         fun onCurrentSongChanged()
         fun animateColorChange(newColor: Int)
         fun setUpPanelAndAlbumCoverHeight()
+    }
+
+
+    override val paletteColor
+        @ColorInt get() = viewModel.paletteColor.value
+
+    val paletteColorState = viewModel.paletteColor
+
+    open fun updateColor(color: Int) = viewModel.updatePaletteColor(color)
+
+    private fun setupPaletteColorObserver() {
+        lifecycleScope.launch {
+            updateColor(requireContext().primaryColor()) // init
+            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.paletteColor.collect { newColor ->
+                    impl.animateColorChange(newColor)
+                    playbackControlsFragment.modifyColor(newColor)
+                    callbacks.onPaletteColorChanged()
+                }
+            }
+        }
     }
 }

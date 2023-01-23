@@ -18,6 +18,7 @@ import player.phonograph.model.lyrics.LyricsList
 import player.phonograph.mediastore.LyricsLoader
 import player.phonograph.notification.ErrorNotification
 import player.phonograph.util.FavoriteUtil.isFavorite
+import androidx.annotation.ColorInt
 import androidx.lifecycle.viewModelScope
 import android.content.Context
 
@@ -78,6 +79,15 @@ class PlayerFragmentViewModel(application: Application) : AndroidViewModel(appli
         loadFavoriteStateJob = viewModelScope.launch(exceptionHandler) {
             if (song == Song.EMPTY_SONG) return@launch
             _favoriteState.emit(song to isFavorite(context ?: applicationContext, song))
+        }
+    }
+
+    private val _paletteColor: MutableStateFlow<Int> = MutableStateFlow(0)
+    val paletteColor get() = _paletteColor.asStateFlow()
+
+    fun updatePaletteColor(@ColorInt newColor: Int) {
+        viewModelScope.launch {
+            _paletteColor.emit(newColor)
         }
     }
 
