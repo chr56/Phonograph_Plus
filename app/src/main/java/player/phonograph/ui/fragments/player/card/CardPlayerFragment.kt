@@ -44,7 +44,6 @@ import kotlin.math.max
 
 class CardPlayerFragment :
         AbsPlayerFragment(),
-        PlayerAlbumCoverFragment.Callbacks,
         SlidingUpPanelLayout.PanelSlideListener {
 
     private var _viewBinding: FragmentCardPlayerBinding? = null
@@ -113,15 +112,6 @@ class CardPlayerFragment :
         playbackControlsFragment = childFragmentManager.findFragmentById(
             R.id.playback_controls_fragment
         ) as CardPlayerControllerFragment
-    }
-
-    override fun setUpCoverFragment() {
-        playerAlbumCoverFragment = (
-                childFragmentManager.findFragmentById(
-                    R.id.player_album_cover_fragment
-                ) as PlayerAlbumCoverFragment
-                )
-            .apply { setCallbacks(this@CardPlayerFragment) }
     }
 
     override fun getImplToolbar(): Toolbar = viewBinding.playerToolbar

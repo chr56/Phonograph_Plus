@@ -48,7 +48,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 abstract class AbsPlayerFragment :
-        AbsMusicServiceFragment(), PaletteColorHolder {
+        AbsMusicServiceFragment(), PaletteColorHolder, PlayerAlbumCoverFragment.Callbacks {
 
     protected lateinit var playerAlbumCoverFragment: PlayerAlbumCoverFragment
     protected lateinit var playbackControlsFragment: AbsPlayerControllerFragment
@@ -119,7 +119,11 @@ abstract class AbsPlayerFragment :
 
     abstract fun setUpControllerFragment()
 
-    abstract fun setUpCoverFragment()
+    private fun setUpCoverFragment() {
+        playerAlbumCoverFragment =
+            (childFragmentManager.findFragmentById(R.id.player_album_cover_fragment) as PlayerAlbumCoverFragment)
+        playerAlbumCoverFragment.setCallbacks(this)
+    }
 
     override fun onDestroyView() {
         favoriteMenuItem = null
@@ -405,6 +409,8 @@ abstract class AbsPlayerFragment :
         playingQueueAdapter.current = MusicPlayerRemote.position
     }
 
+    abstract override fun onToolbarToggled()
+
     companion object {
         const val UPDATE_LYRICS = 1001
         const val LYRICS = "lyrics"
@@ -421,11 +427,11 @@ abstract class AbsPlayerFragment :
     override val paletteColor
         @ColorInt get() = viewModel.paletteColor.value
 
-    open fun updateColor(color: Int) = viewModel.updatePaletteColor(color)
+    override fun updatePaletteColor(color: Int) = viewModel.updatePaletteColor(color)
 
     private fun setupPaletteColorObserver() {
         lifecycleScope.launch {
-            updateColor(requireContext().primaryColor()) // init
+            updatePaletteColor(requireContext().primaryColor()) // init
             lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.paletteColor.collect { newColor ->
                     impl.animateColorChange(newColor)

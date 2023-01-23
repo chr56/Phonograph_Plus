@@ -38,7 +38,6 @@ import android.widget.PopupMenu
 
 class FlatPlayerFragment :
         AbsPlayerFragment(),
-        PlayerAlbumCoverFragment.Callbacks,
         SlidingUpPanelLayout.PanelSlideListener {
 
     private var _viewBinding: FragmentFlatPlayerBinding? = null
@@ -105,15 +104,6 @@ class FlatPlayerFragment :
         playbackControlsFragment = childFragmentManager.findFragmentById(
             R.id.playback_controls_fragment
         ) as FlatPlayerControllerFragment
-    }
-
-    override fun setUpCoverFragment() {
-        playerAlbumCoverFragment = (
-                childFragmentManager.findFragmentById(
-                    R.id.player_album_cover_fragment
-                ) as PlayerAlbumCoverFragment
-                )
-            .apply { setCallbacks(this@FlatPlayerFragment) }
     }
 
     override fun getImplToolbar(): Toolbar = viewBinding.playerToolbar

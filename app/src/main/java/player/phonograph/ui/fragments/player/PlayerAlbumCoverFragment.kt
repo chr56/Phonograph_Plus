@@ -226,9 +226,7 @@ class PlayerAlbumCoverFragment :
     }
 
     private fun notifyColorChange(color: Int) {
-        coroutineScope.launch(Dispatchers.Main) {
-            callbacks?.updateColor(color)
-        }
+        callbacks?.updatePaletteColor(color)
     }
 
     fun setCallbacks(listener: Callbacks) {
@@ -283,7 +281,7 @@ class PlayerAlbumCoverFragment :
     }
 
     interface Callbacks {
-        fun updateColor(color: Int)
+        fun updatePaletteColor(color: Int)
         fun onToolbarToggled()
     }
 
