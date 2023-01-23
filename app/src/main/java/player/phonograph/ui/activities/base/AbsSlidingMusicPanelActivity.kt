@@ -14,6 +14,8 @@ import player.phonograph.ui.fragments.player.flat.FlatPlayerFragment
 import player.phonograph.util.preferences.NowPlayingScreenConfig
 import androidx.annotation.ColorInt
 import androidx.annotation.FloatRange
+import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.LifecycleOwner
 import android.animation.ArgbEvaluator
 import android.annotation.SuppressLint
 import android.content.SharedPreferences
@@ -92,10 +94,7 @@ abstract class AbsSlidingMusicPanelActivity :
                 layout.addPanelSlideListener(this)
             }
 
-        // preference
-        Setting.instance.registerOnSharedPreferenceChangedListener(
-            sharedPreferenceChangeListener
-        )
+        lifecycle.addObserver(nowPlayingScreenPreferenceObserver)  // preference
     }
 
     fun setAntiDragView(antiDragView: View?) {
@@ -217,10 +216,6 @@ abstract class AbsSlidingMusicPanelActivity :
     override fun onDestroy() {
         super.onDestroy()
         cancelThemeColorChange() // just in case
-        // preference
-        Setting.instance.unregisterOnSharedPreferenceChangedListener(
-            sharedPreferenceChangeListener
-        )
     }
 
     fun setTaskDescriptionColor(@ColorInt color: Int) {
@@ -234,10 +229,27 @@ abstract class AbsSlidingMusicPanelActivity :
         }
     }
 
-    private val sharedPreferenceChangeListener =
-        SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
-            when (key) {
-                Setting.NOW_PLAYING_SCREEN_ID -> recreate()
+    private val nowPlayingScreenPreferenceObserver =
+        object : DefaultLifecycleObserver {
+            private val sharedPreferenceChangeListener =
+                SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
+                    when (key) {
+                        Setting.NOW_PLAYING_SCREEN_ID -> recreate()
+                    }
+                }
+
+            override fun onCreate(owner: LifecycleOwner) {
+                Setting.instance.registerOnSharedPreferenceChangedListener(
+                    sharedPreferenceChangeListener
+                )
+                super.onCreate(owner)
+            }
+
+            override fun onDestroy(owner: LifecycleOwner) {
+                Setting.instance.unregisterOnSharedPreferenceChangedListener(
+                    sharedPreferenceChangeListener
+                )
+                super.onDestroy(owner)
             }
         }
 
