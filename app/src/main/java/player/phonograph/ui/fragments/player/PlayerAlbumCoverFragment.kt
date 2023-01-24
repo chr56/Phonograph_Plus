@@ -25,6 +25,8 @@ import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.settings.Setting
 import player.phonograph.ui.fragments.AbsMusicServiceFragment
 import player.phonograph.util.AnimationUtil.PHONOGRAPH_ANIM_TIME
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.whenResumed
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
@@ -192,31 +194,41 @@ class PlayerAlbumCoverFragment :
         }
     }
 
-    private fun isLyricsAvailable(): Boolean = lyrics != null && Setting.instance.synchronizedLyricsShow
-
     private fun hideLyricsLayout() {
-        if (isBindingAccessible() && isVisible) {
-            binding.playerLyrics
-                .animate().alpha(0f).setDuration(VISIBILITY_ANIM_DURATION)
-                .withEndAction {
-                    if (isBindingAccessible()) {
-                        binding.playerLyrics.visibility = View.GONE
-                        binding.playerLyricsLine1.text = null
-                        binding.playerLyricsLine2.text = null
+        lifecycleScope.launch {
+            lifecycle.whenResumed {
+                binding.playerLyrics
+                    .animate().alpha(0f).setDuration(VISIBILITY_ANIM_DURATION)
+                    .withEndAction {
+                        lifecycleScope.launch {
+                            lifecycle.whenResumed {
+                                binding.playerLyrics.visibility = View.GONE
+                                binding.playerLyricsLine1.text = null
+                                binding.playerLyricsLine2.text = null
+                            }
+                        }
                     }
-                }
+            }
         }
     }
 
-    fun setLyrics(l: LrcLyrics) {
-        if (Setting.instance.synchronizedLyricsShow && this.isVisible) {
-            lyrics = l
-            binding.playerLyricsLine1.text = null
-            binding.playerLyricsLine2.text = null
-            binding.playerLyrics.apply {
-                visibility = View.VISIBLE
-                animate().alpha(1f).duration = VISIBILITY_ANIM_DURATION
+    private fun resetLyricsLayout() {
+        lifecycleScope.launch {
+            lifecycle.whenResumed {
+                binding.playerLyricsLine1.text = null
+                binding.playerLyricsLine2.text = null
+                binding.playerLyrics.apply {
+                    visibility = View.VISIBLE
+                    animate().alpha(1f).duration = VISIBILITY_ANIM_DURATION
+                }
             }
+        }
+    }
+
+    fun setLyrics(newLrcLyrics: LrcLyrics) {
+        if (Setting.instance.synchronizedLyricsShow && this.isVisible) {
+            lyrics = newLrcLyrics
+            resetLyricsLayout()
         } else {
             clearLyrics()
         }
@@ -235,50 +247,58 @@ class PlayerAlbumCoverFragment :
         callbacks = listener
     }
 
-    fun updateProgressViews(progress: Int, total: Int) {
-        if (!isBindingAccessible()) return
+    private fun isLyricsAvailable(): Boolean =
+        lyrics != null && Setting.instance.synchronizedLyricsShow
 
-        if (!isLyricsAvailable()) {
-            hideLyricsLayout()
-            return
+    private fun updateProgressViews(progress: Int, total: Int) {
+        lifecycleScope.launch(Dispatchers.Unconfined) {
+            lifecycle.whenResumed {
+                if (!isLyricsAvailable()) {
+                    hideLyricsLayout()
+                    return@whenResumed
+                }
+
+
+                binding.playerLyrics.apply {
+                    visibility = View.VISIBLE
+                    alpha = 1f
+                }
+                val oldLine = binding.playerLyricsLine2.text.toString()
+                val line = lyrics!!.getLine(progress).first
+
+                if (oldLine != line || oldLine.isEmpty()) {
+                    updateLyricsImpl(oldLine, line)
+                }
+            }
         }
+    }
 
-        // Synchronized lyrics begin
-        val lyrics = lyrics!!
-        binding.playerLyrics.apply {
-            visibility = View.VISIBLE
+    private fun updateLyricsImpl(oldLine: String, line: String) {
+        binding.playerLyricsLine1.text = oldLine
+        binding.playerLyricsLine2.text = line
+        binding.playerLyricsLine1.visibility = View.VISIBLE
+        binding.playerLyricsLine2.visibility = View.VISIBLE
+
+        binding.playerLyricsLine2.measure(
+            View.MeasureSpec.makeMeasureSpec(
+                binding.playerLyricsLine2.measuredWidth,
+                View.MeasureSpec.EXACTLY
+            ),
+            View.MeasureSpec.UNSPECIFIED
+        )
+
+        val height = binding.playerLyricsLine2.measuredHeight
+
+        binding.playerLyricsLine1.apply {
             alpha = 1f
+            translationY = 0f
+            animate().alpha(0f).translationY(-height.toFloat()).duration =
+                VISIBILITY_ANIM_DURATION
         }
-
-        val oldLine = binding.playerLyricsLine2.text.toString()
-        val line = lyrics.getLine(progress).first
-
-        if (oldLine != line || oldLine.isEmpty()) {
-            binding.playerLyricsLine1.text = oldLine
-            binding.playerLyricsLine2.text = line
-            binding.playerLyricsLine1.visibility = View.VISIBLE
-            binding.playerLyricsLine2.visibility = View.VISIBLE
-
-            binding.playerLyricsLine2.measure(
-                View.MeasureSpec.makeMeasureSpec(
-                    binding.playerLyricsLine2.measuredWidth,
-                    View.MeasureSpec.EXACTLY
-                ),
-                View.MeasureSpec.UNSPECIFIED
-            )
-
-            val height = binding.playerLyricsLine2.measuredHeight
-
-            binding.playerLyricsLine1.apply {
-                alpha = 1f
-                translationY = 0f
-                animate().alpha(0f).translationY(-height.toFloat()).duration = VISIBILITY_ANIM_DURATION
-            }
-            binding.playerLyricsLine2.apply {
-                alpha = 0f
-                translationY = height.toFloat()
-                animate().alpha(1f).translationY(0f).duration = VISIBILITY_ANIM_DURATION
-            }
+        binding.playerLyricsLine2.apply {
+            alpha = 0f
+            translationY = height.toFloat()
+            animate().alpha(1f).translationY(0f).duration = VISIBILITY_ANIM_DURATION
         }
     }
 
@@ -286,8 +306,6 @@ class PlayerAlbumCoverFragment :
         fun updatePaletteColor(color: Int)
         fun onToolbarToggled()
     }
-
-    private fun isBindingAccessible(): Boolean = _viewBinding != null
 
     companion object {
         const val VISIBILITY_ANIM_DURATION = 300L
