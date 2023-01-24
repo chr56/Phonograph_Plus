@@ -219,8 +219,6 @@ class CardPlayerFragment :
                     }
                 }
         }
-
-        abstract override fun animateColorChange(newColor: Int)
     }
 
     private class PortraitImpl(fragment: CardPlayerFragment) : BaseImpl(fragment) {
@@ -300,7 +298,8 @@ class CardPlayerFragment :
 
         override fun animateColorChange(newColor: Int) {
             currentAnimatorSet?.cancel()
-            currentAnimatorSet = defaultColorChangeAnimatorSet(newColor).also { it.start() }
+            currentAnimatorSet = defaultColorChangeAnimatorSet(newColor)
+            if (fragment.view != null) currentAnimatorSet?.start()
         }
     }
 

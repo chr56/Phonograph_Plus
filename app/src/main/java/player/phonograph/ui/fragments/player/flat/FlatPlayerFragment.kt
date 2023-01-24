@@ -258,7 +258,8 @@ class FlatPlayerFragment :
 
         override fun animateColorChange(newColor: Int) {
             currentAnimatorSet?.cancel()
-            currentAnimatorSet = defaultColorChangeAnimatorSet(newColor).also { it.start() }
+            currentAnimatorSet = defaultColorChangeAnimatorSet(newColor)
+            if (fragment.view != null) currentAnimatorSet?.start()
         }
     }
 
