@@ -4,16 +4,6 @@
 
 package player.phonograph.ui.fragments.player
 
-import android.graphics.PorterDuff
-import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.widget.ImageButton
-import android.widget.SeekBar
-import android.widget.TextView
-import androidx.core.graphics.BlendModeColorFilterCompat
-import androidx.core.graphics.BlendModeCompat
 import mt.util.color.isColorLight
 import mt.util.color.primaryTextColor
 import mt.util.color.secondaryDisabledTextColor
@@ -27,8 +17,20 @@ import player.phonograph.service.queue.RepeatMode
 import player.phonograph.service.queue.ShuffleMode
 import player.phonograph.ui.fragments.AbsMusicServiceFragment
 import player.phonograph.views.PlayPauseDrawable
+import androidx.core.graphics.BlendModeColorFilterCompat.createBlendModeColorFilterCompat
+import androidx.core.graphics.BlendModeCompat
+import android.graphics.PorterDuff.Mode.SRC_IN
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.ImageButton
+import android.widget.SeekBar
+import android.widget.TextView
 
-abstract class AbsPlayerControllerFragment : AbsMusicServiceFragment(), MusicProgressViewUpdateHelper.Callback {
+abstract class AbsPlayerControllerFragment :
+        AbsMusicServiceFragment(),
+        MusicProgressViewUpdateHelper.Callback {
 
     protected lateinit var playPauseDrawable: PlayPauseDrawable
 
@@ -104,15 +106,17 @@ abstract class AbsPlayerControllerFragment : AbsMusicServiceFragment(), MusicPro
 
     private fun setUpProgressSlider() {
         val color = requireContext().primaryTextColor(true)
-        val colorFilter =
-            BlendModeColorFilterCompat.createBlendModeColorFilterCompat(color, BlendModeCompat.SRC_IN)
+        val colorFilter = createBlendModeColorFilterCompat(color, BlendModeCompat.SRC_IN)
         progressSlider.thumb.mutate().colorFilter = colorFilter
         progressSlider.progressDrawable.mutate().colorFilter = colorFilter
         progressSlider.setOnSeekBarChangeListener(object : SimpleOnSeekbarChangeListener() {
             override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
                 if (fromUser) {
                     MusicPlayerRemote.seekTo(progress)
-                    onUpdateProgressViews(MusicPlayerRemote.songProgressMillis, MusicPlayerRemote.songDurationMillis)
+                    onUpdateProgressViews(
+                        MusicPlayerRemote.songProgressMillis,
+                        MusicPlayerRemote.songDurationMillis
+                    )
                 }
             }
         })
@@ -160,20 +164,24 @@ abstract class AbsPlayerControllerFragment : AbsMusicServiceFragment(), MusicPro
 
     fun modifyColor(backgroundColor: Int) {
         if (calculateColor(backgroundColor)) {
-            updateRepeatState()
-            updateShuffleState()
-            updatePrevNextColor()
-            updatePlayPauseColor()
-            updateProgressTextColor()
+            updateAll()
         }
+    }
+
+    private fun updateAll() {
+        updateRepeatState()
+        updateShuffleState()
+        updatePrevNextColor()
+        updatePlayPauseColor()
+        updateProgressTextColor()
     }
 
     // Update state
     protected abstract fun updatePlayPauseDrawableState(animate: Boolean)
     protected open fun updatePlayPauseColor() {}
     private fun updatePrevNextColor() {
-        nextButton.setColorFilter(lastPlaybackControlsColor, PorterDuff.Mode.SRC_IN)
-        prevButton.setColorFilter(lastPlaybackControlsColor, PorterDuff.Mode.SRC_IN)
+        nextButton.setColorFilter(lastPlaybackControlsColor, SRC_IN)
+        prevButton.setColorFilter(lastPlaybackControlsColor, SRC_IN)
     }
 
     override fun onUpdateProgressViews(progress: Int, total: Int) {
@@ -189,31 +197,28 @@ abstract class AbsPlayerControllerFragment : AbsMusicServiceFragment(), MusicPro
         songCurrentProgress.setTextColor(color)
     }
 
-    private fun updateRepeatState() {
-        when (MusicPlayerRemote.repeatMode) {
-            RepeatMode.NONE -> {
-                repeatButton.setImageResource(R.drawable.ic_repeat_white_24dp)
-                repeatButton.setColorFilter(lastDisabledPlaybackControlsColor, PorterDuff.Mode.SRC_IN)
-            }
-            RepeatMode.REPEAT_QUEUE -> {
-                repeatButton.setImageResource(R.drawable.ic_repeat_white_24dp)
-                repeatButton.setColorFilter(lastPlaybackControlsColor, PorterDuff.Mode.SRC_IN)
-            }
-            RepeatMode.REPEAT_SINGLE_SONG -> {
-                repeatButton.setImageResource(R.drawable.ic_repeat_one_white_24dp)
-                repeatButton.setColorFilter(lastPlaybackControlsColor, PorterDuff.Mode.SRC_IN)
-            }
+    private fun updateRepeatState() = when (MusicPlayerRemote.repeatMode) {
+        RepeatMode.NONE               -> {
+            repeatButton.setImageResource(R.drawable.ic_repeat_white_24dp)
+            repeatButton.setColorFilter(lastDisabledPlaybackControlsColor, SRC_IN)
+        }
+        RepeatMode.REPEAT_QUEUE       -> {
+            repeatButton.setImageResource(R.drawable.ic_repeat_white_24dp)
+            repeatButton.setColorFilter(lastPlaybackControlsColor, SRC_IN)
+        }
+        RepeatMode.REPEAT_SINGLE_SONG -> {
+            repeatButton.setImageResource(R.drawable.ic_repeat_one_white_24dp)
+            repeatButton.setColorFilter(lastPlaybackControlsColor, SRC_IN)
         }
     }
 
-    private fun updateShuffleState() {
+    private fun updateShuffleState() = shuffleButton.setColorFilter(
         when (MusicPlayerRemote.shuffleMode) {
-            ShuffleMode.SHUFFLE ->
-                shuffleButton.setColorFilter(lastPlaybackControlsColor, PorterDuff.Mode.SRC_IN)
-            ShuffleMode.NONE ->
-                shuffleButton.setColorFilter(lastDisabledPlaybackControlsColor, PorterDuff.Mode.SRC_IN)
-        }
-    }
+            ShuffleMode.SHUFFLE -> lastPlaybackControlsColor
+            ShuffleMode.NONE    -> lastDisabledPlaybackControlsColor
+        },
+        SRC_IN
+    )
 
     abstract fun show()
     abstract fun hide()
