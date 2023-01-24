@@ -19,6 +19,10 @@ import player.phonograph.ui.fragments.AbsMusicServiceFragment
 import player.phonograph.views.PlayPauseDrawable
 import androidx.core.graphics.BlendModeColorFilterCompat.createBlendModeColorFilterCompat
 import androidx.core.graphics.BlendModeCompat
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import android.content.Context
 import android.graphics.PorterDuff.Mode.SRC_IN
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -27,6 +31,9 @@ import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.SeekBar
 import android.widget.TextView
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 abstract class AbsPlayerControllerFragment :
         AbsMusicServiceFragment(),
@@ -152,23 +159,23 @@ abstract class AbsPlayerControllerFragment :
         updateShuffleState()
     }
 
-
-    private fun calculateColor(backgroundColor: Int): Boolean =
-        context?.let {
-            // context might be null if using requireContext() when resizing activity size
-            val darkmode = !isColorLight(backgroundColor)
-            lastPlaybackControlsColor = it.secondaryTextColor(darkmode)
-            lastDisabledPlaybackControlsColor = it.secondaryDisabledTextColor(darkmode)
-            true
-        } ?: false
+    private fun calculateColor(context: Context, backgroundColor: Int) {
+        val darkmode = !isColorLight(backgroundColor)
+        lastPlaybackControlsColor = context.secondaryTextColor(darkmode)
+        lastDisabledPlaybackControlsColor = context.secondaryDisabledTextColor(darkmode)
+    }
 
     fun modifyColor(backgroundColor: Int) {
-        if (calculateColor(backgroundColor)) {
-            updateAll()
+        lifecycleScope.launch {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                require(context != null) { "ControllerFragment is not available now!" }
+                calculateColor(requireContext(), backgroundColor)
+                updateAll()
+            }
         }
     }
 
-    private fun updateAll() {
+    private suspend fun updateAll() = withContext(Dispatchers.Main) {
         updateRepeatState()
         updateShuffleState()
         updatePrevNextColor()
