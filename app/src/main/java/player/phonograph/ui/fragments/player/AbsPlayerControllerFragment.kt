@@ -19,7 +19,9 @@ import player.phonograph.ui.fragments.AbsMusicServiceFragment
 import player.phonograph.views.PlayPauseDrawable
 import androidx.core.graphics.BlendModeColorFilterCompat.createBlendModeColorFilterCompat
 import androidx.core.graphics.BlendModeCompat
+import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import android.content.Context
@@ -35,9 +37,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-abstract class AbsPlayerControllerFragment :
-        AbsMusicServiceFragment(),
-        MusicProgressViewUpdateHelper.Callback {
+abstract class AbsPlayerControllerFragment : AbsMusicServiceFragment() {
 
     protected lateinit var playPauseDrawable: PlayPauseDrawable
 
@@ -54,17 +54,34 @@ abstract class AbsPlayerControllerFragment :
     protected var lastPlaybackControlsColor = 0
     private var lastDisabledPlaybackControlsColor = 0
 
-    private var _progressViewUpdateHelper: MusicProgressViewUpdateHelper? = null
-    private val progressViewUpdateHelper: MusicProgressViewUpdateHelper get() = _progressViewUpdateHelper!!
+    private val progressViewUpdateHelperDelegate =
+        object : DefaultLifecycleObserver, MusicProgressViewUpdateHelper.Callback {
+            private var updateHelper: MusicProgressViewUpdateHelper? = null
+
+            override fun onCreate(owner: LifecycleOwner) {
+                updateHelper =
+                    MusicProgressViewUpdateHelper(this)
+            }
+
+            override fun onResume(owner: LifecycleOwner) {
+                updateHelper!!.start()
+            }
+
+            override fun onPause(owner: LifecycleOwner) {
+                updateHelper!!.stop()
+            }
+
+            override fun onDestroy(owner: LifecycleOwner) {
+                updateHelper = null
+            }
+
+            override fun onUpdateProgressViews(progress: Int, total: Int) =
+                updateProgressViews(progress, total)
+        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        _progressViewUpdateHelper = MusicProgressViewUpdateHelper(this)
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        _progressViewUpdateHelper = null
+        lifecycle.addObserver(progressViewUpdateHelperDelegate)
     }
 
     protected abstract fun bindView(inflater: LayoutInflater): View
@@ -120,23 +137,13 @@ abstract class AbsPlayerControllerFragment :
             override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
                 if (fromUser) {
                     MusicPlayerRemote.seekTo(progress)
-                    onUpdateProgressViews(
+                    updateProgressViews(
                         MusicPlayerRemote.songProgressMillis,
                         MusicPlayerRemote.songDurationMillis
                     )
                 }
             }
         })
-    }
-
-    override fun onResume() {
-        super.onResume()
-        progressViewUpdateHelper.start()
-    }
-
-    override fun onPause() {
-        super.onPause()
-        progressViewUpdateHelper.stop()
     }
 
     // Listeners
@@ -191,17 +198,17 @@ abstract class AbsPlayerControllerFragment :
         prevButton.setColorFilter(lastPlaybackControlsColor, SRC_IN)
     }
 
-    override fun onUpdateProgressViews(progress: Int, total: Int) {
-        progressSlider.max = total
-        progressSlider.progress = progress
-        songTotalTime.text = getReadableDurationString(total.toLong())
-        songCurrentProgress.text = getReadableDurationString(progress.toLong())
-    }
-
     private fun updateProgressTextColor() {
         val color = requireContext().primaryTextColor(true)
         songTotalTime.setTextColor(color)
         songCurrentProgress.setTextColor(color)
+    }
+
+    private fun updateProgressViews(progress: Int, total: Int) {
+        progressSlider.max = total
+        progressSlider.progress = progress
+        songTotalTime.text = getReadableDurationString(total.toLong())
+        songCurrentProgress.text = getReadableDurationString(progress.toLong())
     }
 
     private fun updateRepeatState() = when (MusicPlayerRemote.repeatMode) {
