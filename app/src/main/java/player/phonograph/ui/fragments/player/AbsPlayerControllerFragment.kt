@@ -9,7 +9,7 @@ import mt.util.color.primaryTextColor
 import mt.util.color.secondaryDisabledTextColor
 import mt.util.color.secondaryTextColor
 import player.phonograph.R
-import player.phonograph.misc.MusicProgressViewUpdateHelper
+import player.phonograph.misc.MusicProgressViewUpdateHelperDelegate
 import player.phonograph.misc.SimpleOnSeekbarChangeListener
 import player.phonograph.model.getReadableDurationString
 import player.phonograph.service.MusicPlayerRemote
@@ -19,9 +19,7 @@ import player.phonograph.ui.fragments.AbsMusicServiceFragment
 import player.phonograph.views.PlayPauseDrawable
 import androidx.core.graphics.BlendModeColorFilterCompat.createBlendModeColorFilterCompat
 import androidx.core.graphics.BlendModeCompat
-import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import android.content.Context
@@ -55,29 +53,7 @@ abstract class AbsPlayerControllerFragment : AbsMusicServiceFragment() {
     private var lastDisabledPlaybackControlsColor = 0
 
     private val progressViewUpdateHelperDelegate =
-        object : DefaultLifecycleObserver, MusicProgressViewUpdateHelper.Callback {
-            private var updateHelper: MusicProgressViewUpdateHelper? = null
-
-            override fun onCreate(owner: LifecycleOwner) {
-                updateHelper =
-                    MusicProgressViewUpdateHelper(this)
-            }
-
-            override fun onResume(owner: LifecycleOwner) {
-                updateHelper!!.start()
-            }
-
-            override fun onPause(owner: LifecycleOwner) {
-                updateHelper!!.stop()
-            }
-
-            override fun onDestroy(owner: LifecycleOwner) {
-                updateHelper = null
-            }
-
-            override fun onUpdateProgressViews(progress: Int, total: Int) =
-                updateProgressViews(progress, total)
-        }
+        MusicProgressViewUpdateHelperDelegate(::updateProgressViews)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

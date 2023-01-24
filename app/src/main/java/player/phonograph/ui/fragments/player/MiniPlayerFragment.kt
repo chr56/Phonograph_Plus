@@ -14,7 +14,7 @@ import mt.util.color.resolveColor
 import mt.util.color.secondaryTextColor
 import player.phonograph.R
 import player.phonograph.databinding.FragmentMiniPlayerBinding
-import player.phonograph.misc.MusicProgressViewUpdateHelper
+import player.phonograph.misc.MusicProgressViewUpdateHelperDelegate
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.ui.fragments.AbsMusicServiceFragment
 import player.phonograph.util.PhonographColorUtil.nightMode
@@ -24,15 +24,18 @@ import kotlin.math.abs
 /**
  * @author Karim Abou Zeid (kabouzeid)
  */
-class MiniPlayerFragment : AbsMusicServiceFragment(), MusicProgressViewUpdateHelper.Callback {
+class MiniPlayerFragment : AbsMusicServiceFragment() {
     private var viewBinding: FragmentMiniPlayerBinding? = null
     private val binding get() = viewBinding!!
 
     private var miniPlayerPlayPauseDrawable: PlayPauseDrawable? = null
-    private var progressViewUpdateHelper: MusicProgressViewUpdateHelper = MusicProgressViewUpdateHelper(this)
+
+    private val progressViewUpdateHelperDelegate =
+        MusicProgressViewUpdateHelperDelegate(::updateProgressViews)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         viewBinding = FragmentMiniPlayerBinding.inflate(layoutInflater)
+        lifecycle.addObserver(progressViewUpdateHelperDelegate)
         super.onCreate(savedInstanceState)
     }
 
@@ -86,20 +89,10 @@ class MiniPlayerFragment : AbsMusicServiceFragment(), MusicProgressViewUpdateHel
         updatePlayPauseDrawableState(true)
     }
 
-    override fun onUpdateProgressViews(progress: Int, total: Int) {
+    fun updateProgressViews(progress: Int, total: Int) {
         binding.progressIndicator.max = total
         binding.progressIndicator.progress = progress
         binding.progressIndicator.show()
-    }
-
-    override fun onResume() {
-        super.onResume()
-        progressViewUpdateHelper.start()
-    }
-
-    override fun onPause() {
-        super.onPause()
-        progressViewUpdateHelper.stop()
     }
 
     private class FlingPlayBackController(context: Context?) : View.OnTouchListener {

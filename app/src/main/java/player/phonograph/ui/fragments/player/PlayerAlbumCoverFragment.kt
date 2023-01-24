@@ -19,7 +19,7 @@ import kotlinx.coroutines.*
 import lib.phonograph.misc.SimpleAnimatorListener
 import player.phonograph.adapter.AlbumCoverPagerAdapter
 import player.phonograph.databinding.FragmentPlayerAlbumCoverBinding
-import player.phonograph.misc.MusicProgressViewUpdateHelper
+import player.phonograph.misc.MusicProgressViewUpdateHelperDelegate
 import player.phonograph.model.lyrics.LrcLyrics
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.settings.Setting
@@ -30,8 +30,7 @@ import player.phonograph.util.AnimationUtil.PHONOGRAPH_ANIM_TIME
  * @author Karim Abou Zeid (kabouzeid)
  */
 class PlayerAlbumCoverFragment :
-        AbsMusicServiceFragment(),
-        MusicProgressViewUpdateHelper.Callback {
+        AbsMusicServiceFragment() {
 
     private var _viewBinding: FragmentPlayerAlbumCoverBinding? = null
     private val binding: FragmentPlayerAlbumCoverBinding get() = _viewBinding!!
@@ -42,8 +41,13 @@ class PlayerAlbumCoverFragment :
 
     private var albumCoverPagerAdapter: AlbumCoverPagerAdapter? = null
 
-    /**[onViewCreated]*/
-    private lateinit var progressViewUpdateHelper: MusicProgressViewUpdateHelper
+    private val progressViewUpdateHelperDelegate =
+        MusicProgressViewUpdateHelperDelegate(::updateProgressViews)
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        lifecycle.addObserver(progressViewUpdateHelperDelegate)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -80,13 +84,11 @@ class PlayerAlbumCoverFragment :
             })
             offscreenPageLimit = 1
         }
-        progressViewUpdateHelper = MusicProgressViewUpdateHelper(this, 500, 1000).apply { start() }
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         binding.playerCoverViewpager.unregisterOnPageChangeCallback(pageChangeListener)
-        progressViewUpdateHelper.stop()
         _viewBinding = null
     }
 
@@ -233,7 +235,7 @@ class PlayerAlbumCoverFragment :
         callbacks = listener
     }
 
-    override fun onUpdateProgressViews(progress: Int, total: Int) {
+    fun updateProgressViews(progress: Int, total: Int) {
         if (!isBindingAccessible()) return
 
         if (!isLyricsAvailable()) {
