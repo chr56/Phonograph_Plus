@@ -4,10 +4,12 @@
 
 package player.phonograph.misc
 
+import player.phonograph.service.MusicPlayerRemote
+import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.LifecycleOwner
 import android.os.Handler
 import android.os.Looper
 import android.os.Message
-import player.phonograph.service.MusicPlayerRemote
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
@@ -65,7 +67,7 @@ class MusicProgressViewUpdateHelper : Handler {
         sendMessageDelayed(message, delay)
     }
 
-    interface Callback {
+    fun interface Callback {
         fun onUpdateProgressViews(progress: Int, total: Int)
     }
 
@@ -74,5 +76,32 @@ class MusicProgressViewUpdateHelper : Handler {
         private const val MIN_INTERVAL = 20
         private const val UPDATE_INTERVAL_PLAYING = 1000
         private const val UPDATE_INTERVAL_PAUSED = 500
+    }
+}
+
+class MusicProgressViewUpdateHelperDelegate(var callback: MusicProgressViewUpdateHelper.Callback?) :
+        DefaultLifecycleObserver, MusicProgressViewUpdateHelper.Callback {
+    private var updateHelper: MusicProgressViewUpdateHelper? = null
+
+    override fun onCreate(owner: LifecycleOwner) {
+        updateHelper =
+            MusicProgressViewUpdateHelper(this)
+    }
+
+    override fun onResume(owner: LifecycleOwner) {
+        updateHelper!!.start()
+    }
+
+    override fun onPause(owner: LifecycleOwner) {
+        updateHelper!!.stop()
+    }
+
+    override fun onDestroy(owner: LifecycleOwner) {
+        callback = null
+        updateHelper = null
+    }
+
+    override fun onUpdateProgressViews(progress: Int, total: Int) {
+        callback?.onUpdateProgressViews(progress, total)
     }
 }
