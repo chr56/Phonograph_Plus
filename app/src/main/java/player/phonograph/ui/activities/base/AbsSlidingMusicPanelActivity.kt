@@ -16,6 +16,7 @@ import androidx.annotation.ColorInt
 import androidx.annotation.FloatRange
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.lifecycleScope
 import android.animation.ArgbEvaluator
 import android.annotation.SuppressLint
 import android.content.SharedPreferences
@@ -23,6 +24,7 @@ import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver.OnGlobalLayoutListener
+import kotlinx.coroutines.launch
 import mt.tint.setTaskDescriptionColor as setTaskDescriptionColorEXt
 
 /**
@@ -207,11 +209,13 @@ abstract class AbsSlidingMusicPanelActivity :
     }
 
     private fun setupPaletteColorObserver() {
-        playerFragment.observePaletteColor { color ->
-            if (panelState == PanelState.EXPANDED) {
-                animateThemeColorChange(playerColor, color)
+        playerFragment.lifecycleScope.launch {
+            playerFragment.observePaletteColor { color ->
+                if (panelState == PanelState.EXPANDED) {
+                    animateThemeColorChange(playerColor, color)
+                }
+                playerColor = color
             }
-            playerColor = color
         }
     }
 

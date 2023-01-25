@@ -233,10 +233,16 @@ class CardPlayerFragment :
                         }
                     }
                 }
+                lifecycleScope.launch {
+                    fragment.observePaletteColor(fragment) { newColor ->
+                        animateColorChange(newColor)
+                    }
+                }
             }
         }
 
         abstract fun updateCurrentSong(song: Song)
+        abstract fun animateColorChange(newColor: Int)
     }
 
     private class PortraitImpl(fragment: CardPlayerFragment) : BaseImpl(fragment) {

@@ -31,6 +31,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -411,7 +412,6 @@ abstract class AbsPlayerFragment :
 
     internal interface Impl {
         fun init()
-        fun animateColorChange(newColor: Int)
         fun setUpPanelAndAlbumCoverHeight()
     }
 
@@ -424,21 +424,16 @@ abstract class AbsPlayerFragment :
     private fun setupPaletteColorObserver() {
         lifecycleScope.launch {
             updatePaletteColor(requireContext().primaryColor()) // init
-            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.paletteColor.collect { newColor ->
-                    impl.animateColorChange(newColor)
-                    playbackControlsFragment.modifyColor(newColor)
-                }
+            observePaletteColor { newColor ->
+                playbackControlsFragment.modifyColor(newColor)
             }
         }
     }
 
-    fun observePaletteColor(callback: (Int) -> Unit) {
-        lifecycleScope.launch {
-            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.paletteColor.collect {
-                    callback(it)
-                }
+    suspend fun observePaletteColor(owner: LifecycleOwner? = null, callback: (Int) -> Unit) {
+        (owner?.lifecycle ?: this.lifecycle).repeatOnLifecycle(Lifecycle.State.STARTED) {
+            viewModel.paletteColor.collect {
+                callback(it)
             }
         }
     }

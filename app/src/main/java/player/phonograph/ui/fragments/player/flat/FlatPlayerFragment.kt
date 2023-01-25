@@ -188,10 +188,16 @@ class FlatPlayerFragment :
                         }
                     }
                 }
+                lifecycleScope.launch {
+                    fragment.observePaletteColor(fragment) { newColor ->
+                        animateColorChange(newColor)
+                    }
+                }
             }
         }
 
         abstract fun updateCurrentSong(song: Song)
+        abstract fun animateColorChange(newColor: Int)
     }
 
     private class PortraitImpl(fragment: FlatPlayerFragment) : BaseImpl(fragment) {
