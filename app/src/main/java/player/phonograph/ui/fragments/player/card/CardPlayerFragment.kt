@@ -26,6 +26,8 @@ import player.phonograph.util.Util.isLandscape
 import player.phonograph.util.ViewUtil
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.FragmentContainerView
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.whenResumed
 import android.animation.Animator
 import android.animation.AnimatorSet
 import android.annotation.SuppressLint
@@ -41,6 +43,7 @@ import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import android.widget.ImageView
 import android.widget.PopupMenu
 import kotlin.math.max
+import kotlinx.coroutines.launch
 
 class CardPlayerFragment :
         AbsPlayerFragment(),
@@ -219,6 +222,20 @@ class CardPlayerFragment :
                     }
                 }
         }
+
+        override fun init() {
+            with(fragment) {
+                lifecycleScope.launch {
+                    viewModel.currentSong.collect {
+                        lifecycle.whenResumed {
+                            updateCurrentSong(it)
+                        }
+                    }
+                }
+            }
+        }
+
+        abstract fun updateCurrentSong(song: Song)
     }
 
     private class PortraitImpl(fragment: CardPlayerFragment) : BaseImpl(fragment) {
@@ -259,6 +276,7 @@ class CardPlayerFragment :
                     }.show()
                 }
             }
+            super.init()
         }
 
         override fun setUpPanelAndAlbumCoverHeight() {
@@ -290,7 +308,7 @@ class CardPlayerFragment :
             )
         }
 
-        override fun onCurrentSongChanged(song: Song) {
+        override fun updateCurrentSong(song: Song) {
             currentSongViewHolder!!.title!!.text = song.title
             currentSongViewHolder!!.text!!.text = song.infoString()
         }
@@ -303,7 +321,7 @@ class CardPlayerFragment :
     }
 
     private class LandscapeImpl(fragment: CardPlayerFragment) : BaseImpl(fragment) {
-        override fun init() {}
+
         override fun setUpPanelAndAlbumCoverHeight() {
             val panelHeight =
                 fragment.viewBinding.playerSlidingLayout.height - fragment.playbackControlsFragment.requireView()
@@ -314,7 +332,7 @@ class CardPlayerFragment :
             )
         }
 
-        override fun onCurrentSongChanged(song: Song) {
+        override fun updateCurrentSong(song: Song) {
             fragment.viewBinding.playerToolbar.title = song.title
             fragment.viewBinding.playerToolbar.subtitle = song.infoString()
         }

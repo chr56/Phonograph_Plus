@@ -387,7 +387,6 @@ abstract class AbsPlayerFragment :
 
     protected open fun updateCurrentSong() {
         viewModel.updateCurrentSong(MusicPlayerRemote.currentSong, context)
-        impl.onCurrentSongChanged(MusicPlayerRemote.currentSong)
     }
 
     protected open fun updateQueue() {
@@ -412,7 +411,6 @@ abstract class AbsPlayerFragment :
 
     internal interface Impl {
         fun init()
-        fun onCurrentSongChanged(song: Song)
         fun animateColorChange(newColor: Int)
         fun setUpPanelAndAlbumCoverHeight()
     }

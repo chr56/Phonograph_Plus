@@ -26,6 +26,8 @@ import player.phonograph.util.ViewUtil
 import player.phonograph.util.ViewUtil.isWindowBackgroundDarkSafe
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.FragmentContainerView
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.whenResumed
 import android.animation.AnimatorSet
 import android.graphics.PorterDuff
 import android.os.Bundle
@@ -35,6 +37,7 @@ import android.view.ViewGroup
 import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import android.widget.ImageView
 import android.widget.PopupMenu
+import kotlinx.coroutines.launch
 
 class FlatPlayerFragment :
         AbsPlayerFragment(),
@@ -174,6 +177,20 @@ class FlatPlayerFragment :
                 }
             }
         }
+
+        override fun init() {
+            with(fragment) {
+                lifecycleScope.launch {
+                    viewModel.currentSong.collect {
+                        lifecycle.whenResumed {
+                            updateCurrentSong(it)
+                        }
+                    }
+                }
+            }
+        }
+
+        abstract fun updateCurrentSong(song: Song)
     }
 
     private class PortraitImpl(fragment: FlatPlayerFragment) : BaseImpl(fragment) {
@@ -216,6 +233,7 @@ class FlatPlayerFragment :
                     }.show()
                 }
             }
+            super.init()
         }
 
         override fun setUpPanelAndAlbumCoverHeight() {
@@ -250,7 +268,7 @@ class FlatPlayerFragment :
             )
         }
 
-        override fun onCurrentSongChanged(song: Song) {
+        override fun updateCurrentSong(song: Song) {
             currentSongViewHolder!!.title!!.text = song.title
             currentSongViewHolder!!.text!!.text = song.infoString()
         }
@@ -263,14 +281,14 @@ class FlatPlayerFragment :
     }
 
     private class LandscapeImpl(fragment: FlatPlayerFragment) : BaseImpl(fragment) {
-        override fun init() {}
         override fun setUpPanelAndAlbumCoverHeight() {
             (fragment.activity as AbsSlidingMusicPanelActivity?)!!.setAntiDragView(
                 fragment.requireView().findViewById(R.id.player_panel)
             )
         }
 
-        override fun onCurrentSongChanged(song: Song) {
+        override fun updateCurrentSong(song: Song) {
+
             fragment.viewBinding.playerToolbar.title = song.title
             fragment.viewBinding.playerToolbar.subtitle = song.infoString()
         }
