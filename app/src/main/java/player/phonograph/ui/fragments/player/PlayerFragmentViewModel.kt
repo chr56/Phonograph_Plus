@@ -9,8 +9,8 @@ import player.phonograph.mediastore.LyricsLoader
 import player.phonograph.model.Song
 import player.phonograph.model.lyrics.AbsLyrics
 import player.phonograph.model.lyrics.LyricsList
-import player.phonograph.notification.ErrorNotification
 import player.phonograph.util.FavoriteUtil.isFavorite
+import player.phonograph.util.Util.reportError
 import androidx.annotation.ColorInt
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -26,7 +26,7 @@ import java.io.File
 class PlayerFragmentViewModel : ViewModel() {
 
     val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
-        ErrorNotification.postErrorNotification(throwable)
+        reportError(throwable, "PlayerFragment", "")
     }
 
     private val _currentSong: MutableStateFlow<Song> = MutableStateFlow(Song.EMPTY_SONG)
