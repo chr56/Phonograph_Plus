@@ -26,6 +26,7 @@ import player.phonograph.util.ViewUtil
 import player.phonograph.util.ViewUtil.isWindowBackgroundDarkSafe
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.FragmentContainerView
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.whenResumed
 import android.animation.AnimatorSet
@@ -156,7 +157,7 @@ class FlatPlayerFragment :
     private abstract class BaseImpl(protected var fragment: FlatPlayerFragment) : Impl {
         protected var currentAnimatorSet: AnimatorSet? = null
         fun defaultColorChangeAnimatorSet(newColor: Int): AnimatorSet {
-            val lightMode = !(fragment.context ?: App.instance).resources.nightMode
+            val lightMode = fragment.resources.nightMode
             val backgroundAnimator =
                 fragment.playbackControlsFragment.requireView()
                     .backgroundColorTransitionAnimator(fragment.paletteColor, newColor)
@@ -274,6 +275,8 @@ class FlatPlayerFragment :
         }
 
         override fun animateColorChange(newColor: Int) {
+            val showed = fragment.lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)
+            if (!showed) return
             currentAnimatorSet?.cancel()
             currentAnimatorSet = defaultColorChangeAnimatorSet(newColor)
             if (fragment.view != null) currentAnimatorSet?.start()
@@ -294,6 +297,8 @@ class FlatPlayerFragment :
         }
 
         override fun animateColorChange(newColor: Int) {
+            val showed = fragment.lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)
+            if (!showed) return
             currentAnimatorSet?.cancel()
             currentAnimatorSet = defaultColorChangeAnimatorSet(newColor).also {
                 it.play(

@@ -26,6 +26,7 @@ import player.phonograph.util.Util.isLandscape
 import player.phonograph.util.ViewUtil
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.FragmentContainerView
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.whenResumed
 import android.animation.Animator
@@ -179,7 +180,7 @@ class CardPlayerFragment :
         protected var currentAnimatorSet: AnimatorSet? = null
         @SuppressLint("ObsoleteSdkInt")
         fun defaultColorChangeAnimatorSet(newColor: Int): AnimatorSet {
-            val lightMode = !(fragment.context ?: App.instance).resources.nightMode
+            val lightMode = fragment.resources.nightMode
             val controllerFragment =
                 (fragment.playbackControlsFragment as CardPlayerControllerFragment)
             val fab = controllerFragment.playerPlayPauseFab
@@ -314,6 +315,8 @@ class CardPlayerFragment :
         }
 
         override fun animateColorChange(newColor: Int) {
+            val showed = fragment.lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)
+            if (!showed) return
             currentAnimatorSet?.cancel()
             currentAnimatorSet = defaultColorChangeAnimatorSet(newColor)
             if (fragment.view != null) currentAnimatorSet?.start()
@@ -338,6 +341,8 @@ class CardPlayerFragment :
         }
 
         override fun animateColorChange(newColor: Int) {
+            val showed = fragment.lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)
+            if (!showed) return
             currentAnimatorSet?.cancel()
             currentAnimatorSet = defaultColorChangeAnimatorSet(newColor).also {
                 it.play(
