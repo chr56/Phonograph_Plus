@@ -20,7 +20,7 @@ import mt.util.color.toolbarTitleColor
 import player.phonograph.R
 import player.phonograph.actions.menu.artistDetailToolbar
 import player.phonograph.adapter.base.MultiSelectionCabController
-import player.phonograph.adapter.legacy.ArtistSongAdapter
+import player.phonograph.adapter.display.SongDisplayAdapter
 import player.phonograph.adapter.legacy.HorizontalAlbumAdapter
 import player.phonograph.coil.CustomArtistImageStore
 import player.phonograph.coil.loadImage
@@ -45,18 +45,17 @@ import retrofit2.Response
 import util.phonograph.lastfm.rest.LastFMRestClient
 import util.phonograph.lastfm.rest.model.LastFmArtist
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.LinearLayoutManager.HORIZONTAL
+import androidx.recyclerview.widget.LinearLayoutManager.VERTICAL
 import androidx.recyclerview.widget.RecyclerView.AdapterDataObserver
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.text.Html
 import android.text.Spanned
-import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.ListView
 import java.util.Locale
 
 /**
@@ -67,15 +66,12 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorHolder 
     private lateinit var viewBinding: ActivityArtistDetailBinding
     private lateinit var model: ArtistDetailActivityViewModel
 
-    private lateinit var songListHeader: View
-    private lateinit var albumRecyclerView: RecyclerView
-
     private var biography: Spanned? = null
     private var biographyDialog: MaterialDialog? = null
     private var lastFmUrl: String? = null
 
     private lateinit var albumAdapter: HorizontalAlbumAdapter
-    private lateinit var songAdapter: ArtistSongAdapter
+    private lateinit var songAdapter: SongDisplayAdapter
 
     private val lastFMRestClient: LastFMRestClient by lazy { LastFMRestClient(this) }
 
@@ -102,10 +98,6 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorHolder 
 
         super.onCreate(savedInstanceState)
 
-        songListHeader = LayoutInflater.from(this)
-            .inflate(R.layout.artist_detail_header, viewBinding.list, false)
-        albumRecyclerView = songListHeader.findViewById(R.id.recycler_view)
-
         setUpToolbar()
         setUpViews()
     }
@@ -114,30 +106,35 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorHolder 
 
     private fun setUpViews() {
         viewBinding.innerAppBar.addOnOffsetChangedListener { _, verticalOffset ->
-            viewBinding.list.setPaddingTop(verticalOffset)
+            viewBinding.mainContent.setPaddingTop(verticalOffset)
         }
-        songAdapter = ArtistSongAdapter(this@ArtistDetailActivity, cabController, artist.songs)
-        with(viewBinding.list) {
-            addHeaderView(songListHeader)
+
+        songAdapter = SongDisplayAdapter(
+            this, cabController, artist.songs, R.layout.item_list, null
+        )
+        with(viewBinding.songsRecycleView) {
             adapter = songAdapter
+            layoutManager =
+                LinearLayoutManager(this@ArtistDetailActivity, VERTICAL, false)
         }
-        setUpAlbumRecyclerView()
+
+        albumAdapter = HorizontalAlbumAdapter(this, artist.albums, usePalette, cabController)
+        with(viewBinding.albumRecycleView) {
+            adapter = albumAdapter
+            layoutManager =
+                LinearLayoutManager(this@ArtistDetailActivity, HORIZONTAL, false)
+            albumAdapter.registerAdapterDataObserver(object : AdapterDataObserver() {
+                override fun onChanged() {
+                    super.onChanged()
+                    if (albumAdapter.itemCount == 0) finish()
+                }
+            })
+        }
+
         model.isRecyclerViewPrepared = true
         setColors(resolveColor(this, R.attr.defaultFooterColor))
     }
 
-    private fun setUpAlbumRecyclerView() {
-        albumRecyclerView.layoutManager =
-            LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
-        albumAdapter = HorizontalAlbumAdapter(this, artist.albums, usePalette, cabController)
-        albumRecyclerView.adapter = albumAdapter
-        albumAdapter.registerAdapterDataObserver(object : AdapterDataObserver() {
-            override fun onChanged() {
-                super.onChanged()
-                if (albumAdapter.itemCount == 0) finish()
-            }
-        })
-    }
 
     private fun load() {
         model.loadDataSet(
@@ -146,7 +143,7 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorHolder 
                 setUpArtist(artist)
             },
             { songs: List<Song> ->
-                songAdapter.dataSet = songs
+                songAdapter.dataset = songs
             },
             { albums: List<Album> ->
                 albumAdapter.dataSet = albums
@@ -333,7 +330,8 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorHolder 
 
     override fun onBackPressed() {
         if (!cabController.dismiss()) {
-            albumRecyclerView.stopScroll()
+            viewBinding.albumRecycleView.stopScroll()
+            viewBinding.songsRecycleView.stopScroll()
             super.onBackPressed()
         }
     }
@@ -364,7 +362,7 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorHolder 
 
     private val artist: Artist get() = model.artist
 
-    private fun ListView.setPaddingTop(top: Int) =
+    private fun View.setPaddingTop(top: Int) =
         setPadding(paddingLeft, top, paddingRight, paddingBottom)
 
     companion object {
