@@ -43,27 +43,28 @@ class PlayerFragmentViewModel : ViewModel() {
     private var _lyricsList: MutableStateFlow<LyricsList> = MutableStateFlow(LyricsList())
     val lyricsList get() = _lyricsList.asStateFlow()
 
-    var currentLyrics: AbsLyrics? = null
-        private set
+    private var _currentLyrics: MutableStateFlow<AbsLyrics?> = MutableStateFlow(null)
+    val currentLyrics get() = _currentLyrics.asStateFlow()
 
     fun forceReplaceLyrics(lyrics: AbsLyrics) {
-        currentLyrics = lyrics
+        viewModelScope.launch {
+            _currentLyrics.emit(lyrics)
+        }
     }
 
     private var loadLyricsJob: Job? = null
     fun loadLyrics(song: Song) {
         // cancel old song's lyrics after switching
         loadLyricsJob?.cancel()
-        currentLyrics = null
+        _currentLyrics.value = null
         _lyricsList.value = LyricsList()
         lyricsMenuItem?.isVisible = false
         // load new lyrics
         loadLyricsJob = viewModelScope.launch {
             if (song == Song.EMPTY_SONG) return@launch
-            _lyricsList.emit(
-                LyricsLoader.loadLyrics(File(song.data), song)
-            )
-            currentLyrics = _lyricsList.value.getAvailableLyrics()
+            val newLyrics = LyricsLoader.loadLyrics(File(song.data), song)
+            _lyricsList.emit(newLyrics)
+            _currentLyrics.emit(newLyrics.getAvailableLyrics())
         }
     }
 

@@ -34,7 +34,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import android.app.Application
 import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
@@ -137,16 +136,14 @@ abstract class AbsPlayerFragment :
 
     private fun addLyricsObserver() {
         lifecycleScope.launch(viewModel.exceptionHandler) {
-            viewModel.lyricsList.collectLatest {
-                val lyrics = viewModel.currentLyrics
+            viewModel.currentLyrics.collect { lyrics ->
                 withContext(Dispatchers.Main) {
                     if (lyrics != null && lyrics is LrcLyrics) {
                         playerAlbumCoverFragment.setLyrics(lyrics)
                     } else {
                         playerAlbumCoverFragment.clearLyrics()
                     }
-                    viewModel.lyricsMenuItem?.isVisible =
-                        (viewModel.currentLyrics != null)
+                    viewModel.lyricsMenuItem?.isVisible = (lyrics != null)
                 }
             }
         }
@@ -174,7 +171,7 @@ abstract class AbsPlayerFragment :
                         LyricsDialog.create(
                             lyricsPack,
                             viewModel.currentSong,
-                            viewModel.currentLyrics ?: lyricsPack.getAvailableLyrics()!!
+                            viewModel.currentLyrics.value ?: lyricsPack.getAvailableLyrics()!!
                         ).show(childFragmentManager, "LYRICS")
                     }
                     true
