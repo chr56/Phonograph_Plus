@@ -29,13 +29,15 @@ class PlayerFragmentViewModel : ViewModel() {
         ErrorNotification.postErrorNotification(throwable)
     }
 
-    var currentSong: Song = Song.EMPTY_SONG
-        private set
+    private val _currentSong: MutableStateFlow<Song> = MutableStateFlow(Song.EMPTY_SONG)
+    val currentSong get() = _currentSong.asStateFlow()
 
     fun updateCurrentSong(song: Song, context: Context?) {
-        currentSong = song
-        loadLyrics(song)
-        updateFavoriteState(song, context)
+        viewModelScope.launch {
+            _currentSong.emit(song)
+            loadLyrics(song)
+            updateFavoriteState(song, context)
+        }
     }
 
     var lyricsMenuItem: MenuItem? = null

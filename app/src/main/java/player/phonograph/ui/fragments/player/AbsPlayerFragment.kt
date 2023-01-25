@@ -13,6 +13,7 @@ import player.phonograph.dialogs.CreatePlaylistDialog
 import player.phonograph.dialogs.LyricsDialog
 import player.phonograph.dialogs.SleepTimerDialog
 import player.phonograph.misc.PaletteColorHolder
+import player.phonograph.model.Song
 import player.phonograph.model.buildInfoString
 import player.phonograph.model.getReadableDurationString
 import player.phonograph.model.lyrics.AbsLyrics
@@ -170,7 +171,7 @@ abstract class AbsPlayerFragment :
                     if (!lyricsPack.isEmpty()) {
                         LyricsDialog.create(
                             lyricsPack,
-                            viewModel.currentSong,
+                            viewModel.currentSong.value,
                             viewModel.currentLyrics.value ?: lyricsPack.getAvailableLyrics()!!
                         ).show(childFragmentManager, "LYRICS")
                     }
@@ -190,10 +191,10 @@ abstract class AbsPlayerFragment :
                 showAsActionFlag = MenuItem.SHOW_AS_ACTION_ALWAYS
                 itemId = R.id.action_toggle_favorite
                 onClick {
-                    val result = toggleFavorite(requireContext(), viewModel.currentSong)
-                    if (viewModel.currentSong.id == MusicPlayerRemote.currentSong.id && result) {
+                    val result = toggleFavorite(requireContext(), viewModel.currentSong.value)
+                    if (viewModel.currentSong.value.id == MusicPlayerRemote.currentSong.id && result) {
                         playerAlbumCoverFragment.showHeartAnimation()
-                        viewModel.updateFavoriteState(viewModel.currentSong, context)
+                        viewModel.updateFavoriteState(viewModel.currentSong.value, context)
                     }
                     true
                 }
@@ -386,7 +387,7 @@ abstract class AbsPlayerFragment :
 
     protected open fun updateCurrentSong() {
         viewModel.updateCurrentSong(MusicPlayerRemote.currentSong, context)
-        impl.onCurrentSongChanged()
+        impl.onCurrentSongChanged(MusicPlayerRemote.currentSong)
     }
 
     protected open fun updateQueue() {
@@ -411,7 +412,7 @@ abstract class AbsPlayerFragment :
 
     internal interface Impl {
         fun init()
-        fun onCurrentSongChanged()
+        fun onCurrentSongChanged(song: Song)
         fun animateColorChange(newColor: Int)
         fun setUpPanelAndAlbumCoverHeight()
     }
