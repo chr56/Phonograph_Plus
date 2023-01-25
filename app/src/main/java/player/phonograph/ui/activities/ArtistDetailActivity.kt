@@ -17,7 +17,6 @@ import mt.util.color.primaryTextColor
 import mt.util.color.resolveColor
 import mt.util.color.secondaryTextColor
 import mt.util.color.toolbarTitleColor
-import mt.util.color.withAlpha
 import player.phonograph.R
 import player.phonograph.actions.menu.artistDetailToolbar
 import player.phonograph.adapter.base.MultiSelectionCabController
@@ -28,7 +27,6 @@ import player.phonograph.coil.loadImage
 import player.phonograph.coil.target.PaletteTargetBuilder
 import player.phonograph.databinding.ActivityArtistDetailBinding
 import player.phonograph.misc.PaletteColorHolder
-import player.phonograph.misc.SimpleObservableScrollViewCallbacks
 import player.phonograph.misc.menuProvider
 import player.phonograph.model.Album
 import player.phonograph.model.Artist
@@ -58,8 +56,7 @@ import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import kotlin.math.max
-import kotlin.math.min
+import android.widget.ListView
 import java.util.Locale
 
 /**
@@ -72,8 +69,6 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorHolder 
 
     private lateinit var songListHeader: View
     private lateinit var albumRecyclerView: RecyclerView
-
-    private var headerViewHeight = 0
 
     private var biography: Spanned? = null
     private var biographyDialog: MaterialDialog? = null
@@ -107,11 +102,9 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorHolder 
 
         super.onCreate(savedInstanceState)
 
-        songListHeader = LayoutInflater.from(this).inflate(R.layout.artist_detail_header, viewBinding.list, false)
+        songListHeader = LayoutInflater.from(this)
+            .inflate(R.layout.artist_detail_header, viewBinding.list, false)
         albumRecyclerView = songListHeader.findViewById(R.id.recycler_view)
-
-        // ObservableListViewParams
-        headerViewHeight = resources.getDimensionPixelSize(R.dimen.detail_header_height)
 
         setUpToolbar()
         setUpViews()
@@ -120,27 +113,22 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorHolder 
     override fun createContentView(): View = wrapSlidingMusicPanel(viewBinding.root)
 
     private fun setUpViews() {
-        setUpSongListView()
+        viewBinding.innerAppBar.addOnOffsetChangedListener { _, verticalOffset ->
+            viewBinding.list.setPaddingTop(verticalOffset)
+        }
+        songAdapter = ArtistSongAdapter(this@ArtistDetailActivity, cabController, artist.songs)
+        with(viewBinding.list) {
+            addHeaderView(songListHeader)
+            adapter = songAdapter
+        }
         setUpAlbumRecyclerView()
         model.isRecyclerViewPrepared = true
         setColors(resolveColor(this, R.attr.defaultFooterColor))
     }
 
-    private fun setUpSongListView() {
-        songAdapter = ArtistSongAdapter(this@ArtistDetailActivity, cabController, artist.songs)
-        with(viewBinding.list) {
-            setPadding(0, headerViewHeight, 0, 0)
-            setScrollViewCallbacks(observableScrollViewCallbacks)
-            addHeaderView(songListHeader)
-            adapter = songAdapter
-        }
-        window.decorView.findViewById<View>(android.R.id.content).post {
-            observableScrollViewCallbacks.onScrollChanged(-headerViewHeight, b = false, b2 = false)
-        }
-    }
-
     private fun setUpAlbumRecyclerView() {
-        albumRecyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+        albumRecyclerView.layoutManager =
+            LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
         albumAdapter = HorizontalAlbumAdapter(this, artist.albums, usePalette, cabController)
         albumRecyclerView.adapter = albumAdapter
         albumAdapter.registerAdapterDataObserver(object : AdapterDataObserver() {
@@ -177,8 +165,8 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorHolder 
                 ) {
 
                     response.body()?.let { lastFmArtist ->
-                        lastFmUrl = lastFmArtist.artist?.url
-                        val bioContent = lastFmArtist.artist?.bio?.content
+                        lastFmUrl = lastFmArtist.artist.url
+                        val bioContent = lastFmArtist.artist.bio?.content
                         if (bioContent != null && bioContent.trim { it <= ' ' }.isNotEmpty()) {
                             biography = Html.fromHtml(bioContent, Html.FROM_HTML_MODE_LEGACY)
                         }
@@ -241,7 +229,7 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorHolder 
                 CustomArtistImageStore.instance(this)
                     .setCustomArtistImage(this, artist.id, artist.name, data!!.data!!)
             }
-            else -> if (resultCode == RESULT_OK) {
+            else                      -> if (resultCode == RESULT_OK) {
                 load()
             }
         }
@@ -259,9 +247,15 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorHolder 
 
         setStatusbarColor(color)
         val secondaryTextColor = secondaryTextColor(color)
-        viewBinding.durationIcon.setImageDrawable(getTintedDrawable(R.drawable.ic_timer_white_24dp, secondaryTextColor))
-        viewBinding.songCountIcon.setImageDrawable(getTintedDrawable(R.drawable.ic_music_note_white_24dp, secondaryTextColor))
-        viewBinding.albumCountIcon.setImageDrawable(getTintedDrawable(R.drawable.ic_album_white_24dp, secondaryTextColor))
+        viewBinding.durationIcon.setImageDrawable(
+            getTintedDrawable(R.drawable.ic_timer_white_24dp, secondaryTextColor)
+        )
+        viewBinding.songCountIcon.setImageDrawable(
+            getTintedDrawable(R.drawable.ic_music_note_white_24dp, secondaryTextColor)
+        )
+        viewBinding.albumCountIcon.setImageDrawable(
+            getTintedDrawable(R.drawable.ic_album_white_24dp, secondaryTextColor)
+        )
         viewBinding.durationText.setTextColor(secondaryTextColor)
         viewBinding.songCountText.setTextColor(secondaryTextColor)
         viewBinding.albumCountText.setTextColor(secondaryTextColor)
@@ -281,7 +275,13 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorHolder 
     }
 
     private fun setupMenu(menu: Menu) {
-        artistDetailToolbar(menu, this, artist, primaryTextColor(activityColor), this::biographyCallback)
+        artistDetailToolbar(
+            menu = menu,
+            context = this,
+            artist = artist,
+            iconColor = primaryTextColor(activityColor),
+            loadBiographyCallback = this::biographyCallback
+        )
         attach(menu) {
             menuItem(title = getString(R.string.colored_footers)) {
                 checkable = true
@@ -364,20 +364,8 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorHolder 
 
     private val artist: Artist get() = model.artist
 
-    private val observableScrollViewCallbacks: SimpleObservableScrollViewCallbacks = object : SimpleObservableScrollViewCallbacks() {
-        override fun onScrollChanged(i: Int, b: Boolean, b2: Boolean) {
-            val scrollY = i + headerViewHeight
-
-            // Change alpha of overlay
-            val headerAlpha = max(0f, min(1f, 2f * scrollY / headerViewHeight))
-            viewBinding.headerOverlay.setBackgroundColor(withAlpha(paletteColor, headerAlpha))
-
-            // Translate name text
-            viewBinding.header.translationY = max(-scrollY, -headerViewHeight).toFloat()
-            viewBinding.headerOverlay.translationY = max(-scrollY, -headerViewHeight).toFloat()
-            viewBinding.image.translationY = max(-scrollY, -headerViewHeight).toFloat()
-        }
-    }
+    private fun ListView.setPaddingTop(top: Int) =
+        setPadding(paddingLeft, top, paddingRight, paddingBottom)
 
     companion object {
         const val REQUEST_CODE_SELECT_IMAGE = 1000
