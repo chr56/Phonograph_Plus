@@ -11,9 +11,9 @@ import player.phonograph.mediastore.ArtistLoader
 import player.phonograph.model.Album
 import player.phonograph.model.Artist
 import player.phonograph.model.Song
+import androidx.lifecycle.viewModelScope
 
 class ArtistDetailActivityViewModel(var artistId: Long) : ViewModel() {
-    private val loaderCoroutineScope: CoroutineScope = CoroutineScope(Dispatchers.IO)
 
     var isRecyclerViewPrepared: Boolean = false
     fun loadDataSet(
@@ -22,7 +22,7 @@ class ArtistDetailActivityViewModel(var artistId: Long) : ViewModel() {
         songCallback: (List<Song>) -> Unit,
         albumCallback: (List<Album>) -> Unit
     ) {
-        loaderCoroutineScope.launch {
+        viewModelScope.launch(SupervisorJob()) {
 
             _artist = ArtistLoader.getArtist(context, artistId)
 
