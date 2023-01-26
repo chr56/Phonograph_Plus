@@ -1,8 +1,5 @@
 package player.phonograph.ui.activities
 
-import com.afollestad.materialdialogs.MaterialDialog
-import com.afollestad.materialdialogs.WhichButton
-import com.afollestad.materialdialogs.actions.getActionButton
 import com.github.chr56.android.menu_dsl.attach
 import com.github.chr56.android.menu_dsl.menuItem
 import lib.phonograph.cab.ToolbarCab
@@ -30,15 +27,9 @@ import player.phonograph.model.albumCountString
 import player.phonograph.model.getReadableDurationString
 import player.phonograph.model.songCountString
 import player.phonograph.model.totalDuration
-import player.phonograph.notification.ErrorNotification
 import player.phonograph.settings.Setting
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
 import player.phonograph.util.ImageUtil.getTintedDrawable
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import util.phonograph.lastfm.rest.LastFMRestClient
-import util.phonograph.lastfm.rest.model.LastFmArtist
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -47,19 +38,12 @@ import androidx.recyclerview.widget.LinearLayoutManager.HORIZONTAL
 import androidx.recyclerview.widget.LinearLayoutManager.VERTICAL
 import androidx.recyclerview.widget.RecyclerView.AdapterDataObserver
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
-import android.text.Html
-import android.text.Spanned
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import kotlinx.coroutines.launch
-import java.util.Locale
 
-/**
- * Be careful when changing things in this Activity!
- */
 class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorHolder {
 
     private lateinit var viewBinding: ActivityArtistDetailBinding
@@ -67,8 +51,6 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorHolder 
 
     private lateinit var albumAdapter: HorizontalAlbumAdapter
     private lateinit var songAdapter: SongDisplayAdapter
-
-    private val lastFMRestClient: LastFMRestClient by lazy { LastFMRestClient(this) }
 
     override val paletteColor: Int
         get() = model.paletteColor.value
@@ -163,59 +145,6 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorHolder 
     }
 
 
-    private var biography: Spanned? = null
-    private var biographyDialog: MaterialDialog? = null
-    private var lastFmUrl: String? = null
-
-    private fun loadBiography(artist: Artist, lang: String? = Locale.getDefault().language) {
-        biography = null
-        lastFMRestClient.apiService
-            .getArtistInfo(artist.name, lang, null)
-            .enqueue(object : Callback<LastFmArtist?> {
-                override fun onResponse(
-                    call: Call<LastFmArtist?>,
-                    response: Response<LastFmArtist?>,
-                ) {
-
-                    response.body()?.let { lastFmArtist ->
-                        lastFmUrl = lastFmArtist.artist.url
-                        val bioContent = lastFmArtist.artist.bio?.content
-                        if (bioContent != null && bioContent.trim { it <= ' ' }.isNotEmpty()) {
-                            biography = Html.fromHtml(bioContent, Html.FROM_HTML_MODE_LEGACY)
-                        }
-                    }
-
-                    // If the "lang" parameter is set and no biography is given, retry with default language
-                    if (biography == null && lang != null) {
-                        loadBiography(artist, null)
-                        return
-                    }
-                    if (!Setting.instance.isAllowedToDownloadMetadata(this@ArtistDetailActivity)) {
-                        with(biographyDialog!!) {
-                            if (biography != null) {
-                                message(text = biography)
-                            } else {
-                                message(R.string.biography_unavailable)
-                            }
-                            negativeButton(text = "Last.FM") {
-                                startActivity(
-                                    Intent(Intent.ACTION_VIEW).apply {
-                                        data = Uri.parse(lastFmUrl)
-                                        flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                                    }
-                                )
-                            }
-                        }
-                    }
-                }
-
-                override fun onFailure(call: Call<LastFmArtist?>, t: Throwable) {
-                    ErrorNotification.postErrorNotification(t, "Load ${artist.name} Fail")
-                    biography = null
-                }
-            })
-    }
-
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         when (requestCode) {
@@ -274,7 +203,7 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorHolder 
             context = this,
             artist = model.artist.value ?: Artist(),
             iconColor = primaryTextColor(activityColor),
-            loadBiographyCallback = this::biographyCallback
+            loadBiographyCallback = { model.showBiography(this, it) }
         )
         attach(menu) {
             menuItem(title = getString(R.string.colored_footers)) {
@@ -290,40 +219,6 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorHolder 
         }
         tintMenuActionIcons(viewBinding.toolbar, menu, primaryTextColor(activityColor))
     }
-
-    private fun biographyCallback(artist: Artist): Boolean {
-        if (biographyDialog == null) {
-            biographyDialog = MaterialDialog(this)
-                .title(null, artist.name)
-                .positiveButton(android.R.string.ok, null, null)
-                .apply {
-                    getActionButton(WhichButton.POSITIVE).updateTextColor(accentColor)
-                    getActionButton(WhichButton.NEGATIVE).updateTextColor(accentColor)
-                }
-        }
-        if (Setting.instance.isAllowedToDownloadMetadata(this@ArtistDetailActivity)) { // wiki should've been already downloaded
-            biographyDialog!!.show {
-                if (biography != null) {
-                    message(text = biography)
-                } else {
-                    message(R.string.biography_unavailable)
-                }
-                negativeButton(text = "Last.FM") {
-                    startActivity(
-                        Intent(Intent.ACTION_VIEW).apply {
-                            data = Uri.parse(lastFmUrl)
-                            flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                        }
-                    )
-                }
-            }
-        } else { // force download
-            biographyDialog!!.show()
-            loadBiography(artist)
-        }
-        return true
-    }
-
 
     override fun onBackPressed() {
         if (!cabController.dismiss()) {
@@ -346,7 +241,7 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorHolder 
     private fun setUpArtist(artist: Artist) {
         model.loadArtistImage(this, artist, viewBinding.image)
         if (Setting.instance.isAllowedToDownloadMetadata(this)) {
-            loadBiography(artist)
+            model.loadBiography(this, artist)
         }
         supportActionBar!!.title = artist.name
         viewBinding.songCountText.text = songCountString(this, artist.songCount)
