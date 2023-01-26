@@ -1,15 +1,13 @@
-**0.5.3 2023.1.19**
+**0.5.4 2023.1.26**
 
 **CN**
-<ol>
-<li>修复 排序方式“时长”无效</li>
-<li>修复 无法真正关闭自动检查更新(v0.4.0起)</li>
-<li>开发 清理重构代码</li>
-</ol>
+- 改进 使用 `Kaned1as` 维护的 jaudiotagger 以支持 opus 格式音乐标签读取
+- 修复 从后台返回主播放器时随机崩溃
+- 修复 艺术家详情页顶部消失(自v0.5.3)
+- 开发 清理重构代码
 
 **EN**
-<ol>
-<li>Fix: sort mode Duration is invalid</li>
-<li>Fix: can't turn off Check for update automatically (since v0.4.0)</li>
-<li>Development: cleanup and refactor codes</li>
-</ol>
+- Improve: using `Kaned1as` version of jaudiotagger, to support reading tags of opus format
+- Fix: random crashes when going back to Main Player from background
+- Fix: missing header of Artist Detail(Since v0.5.3)
+- Development: cleanup and refactor codes
