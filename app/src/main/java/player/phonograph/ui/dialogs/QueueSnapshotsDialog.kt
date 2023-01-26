@@ -24,7 +24,10 @@ class QueueSnapshotsDialog : BridgeDialogFragment() {
             MaterialDialog(
                 dialogState = dialogState,
                 elevation = 0.dp,
-                autoDismiss = true
+                onCloseRequest = { dismiss() },
+                buttons = {
+                    button(res = android.R.string.ok) { dismiss() }
+                }
             ) {
                 title(res = R.string.playing_queue_history)
                 customView {

@@ -24,7 +24,7 @@ class ImageSourceConfigDialog : BridgeDialogFragment() {
                 MaterialDialog(
                     dialogState = dialogState,
                     elevation = 0.dp,
-                    autoDismiss = true
+                    onCloseRequest = { dismiss() }
                 ) {
                     title(res = R.string.image_source_config)
                     customView {

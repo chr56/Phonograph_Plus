@@ -34,17 +34,14 @@ fun QueueSnapshotsDialogContent(
     queueManager: QueueManager,
     onDismiss: () -> Unit
 ) {
+    val snapShots = remember {
+        queueManager.getQueueSnapShots()
+    }
+    val onRecoverySnapshot = { snapshot: QueueHolder ->
+        queueManager.recoverSnapshot(snapshot, createSnapshot = true, async = true)
+        onDismiss()
+    }
     Column {
-        //
-        // MainContent
-        //
-        val snapShots = remember {
-            queueManager.getQueueSnapShots()
-        }
-        val onRecoverySnapshot = { snapshot: QueueHolder ->
-            queueManager.recoverSnapshot(snapshot, createSnapshot = true, async = true)
-            onDismiss()
-        }
         if (snapShots.isNotEmpty()) {
             LazyColumn(Modifier.padding(16.dp)) {
                 for (snapShot in snapShots) {
@@ -60,26 +57,6 @@ fun QueueSnapshotsDialogContent(
                     .wrapContentHeight()
             ) {
                 Text(text = context.getString(R.string.empty), Modifier.align(Alignment.Center))
-            }
-        }
-        //
-        // buttom
-        //
-        Box(Modifier.fillMaxWidth()) {
-            Row(
-                modifier = Modifier
-                    .height(48.dp)
-                    .align(Alignment.BottomEnd)
-                    .padding(horizontal = 12.dp, vertical = 8.dp)
-            ) {
-                Text(
-                    text = context.getString(android.R.string.cancel),
-                    modifier = Modifier
-                        .clickable { onDismiss() }
-                        .wrapContentWidth(Alignment.End),
-                    color = MaterialTheme.colors.primary,
-                    textAlign = TextAlign.Start
-                )
             }
         }
     }

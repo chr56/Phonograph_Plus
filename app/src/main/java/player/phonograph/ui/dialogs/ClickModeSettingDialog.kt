@@ -24,12 +24,13 @@ class ClickModeSettingDialog : BridgeDialogFragment() {
                 MaterialDialog(
                     dialogState = dialogState,
                     elevation = 0.dp,
-                    autoDismiss = true
+                    onCloseRequest = { dismiss() },
+                    buttons = {
+                        button(res = android.R.string.ok) { dismiss() }
+                    }
                 ) {
                     title(res = R.string.pref_title_click_behavior)
-                    customView {
-                        ClickModeSettingDialogContent(requireContext(), ::dismiss)
-                    }
+                    ClickModeSettingDialogContent(requireContext(), ::dismiss)
                 }
             }
         }
