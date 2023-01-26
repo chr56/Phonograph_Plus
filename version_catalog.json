@@ -2,6 +2,22 @@
   "versions": [
     {
       "channel": "stable",
+      "versionName": "0.5.4",
+      "versionCode": 454,
+      "date": 1674725000,
+      "link": [
+        {
+          "name": "Github Release",
+          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/v0.5.4"
+        }
+      ],
+      "releaseNote": {
+        "zh-cn": "<ol><li>改进 使用 Kaned1as 维护的 jaudiotagger 以支持 opus 格式音乐标签读取</li><li>修复 从后台返回主播放器时随机崩溃</li><li>修复 艺术家详情页顶部消失 (自 v0.5.3)</li><li>开发 清理重构代码</li></ol>",
+        "en": "<ol><li>Improve: using Kaned1as version of jaudiotagger, to support reading tags of opus format</li><li>Fix: random crashes when going back to Main Player from background</li><li>Fix: missing header of Artist Detail (Since v0.5.3)</li><li>Development: cleanup and refactor codes</li></ol>"
+      }
+    },
+    {
+      "channel": "stable",
       "versionName": "0.5.3",
       "versionCode": 453,
       "date": 1674111600,
@@ -14,22 +30,6 @@
       "releaseNote": {
         "zh-cn": "<ol><li>修复 排序方式“时长”无效</li><li>修复 无法真正关闭自动检查更新(v0.4.0起)</li><li>开发 清理重构代码</li></ol>",
         "en": "<ol><li>Fix: sort mode Duration is invalid</li><li>Fix: can't turn off Check for update automatically (since v0.4.0)</li><li>Development: cleanup and refactor code</li></ol>"
-      }
-    },
-    {
-      "channel": "stable",
-      "versionName": "0.5.2",
-      "versionCode": 452,
-      "date": 1673615400,
-      "link": [
-        {
-          "name": "Github Release",
-          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/v0.5.2"
-        }
-      ],
-      "releaseNote": {
-        "zh-cn": "<ol><li>翻译 更新日语(by aorinngo)</li>\n<li>新增 支持管理歌曲图片来源</li>\n<li>修复 v0.5.1后歌词不加载除非授予存储写入权限</li>\n<li>修复 在播放队列中, 移动相同歌曲时崩溃</li>\n<li>开发 启用 Java 11 支持, 清理代码</li></ol>",
-        "en": "<ol><li>Translation: updated Japanese (by aorinngo)</li>\n<li>New: support manage embed image source of song files</li>\n<li>Fix: lyrics can not be shown unless write storage permission granted since v0.5.1</li>\n<li>Fix: crash when moving same songs in Playing Queue</li>\n<li>Development: enable Java 11 support, clean up codes</li></ol>"
       }
     },
     {
