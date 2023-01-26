@@ -28,9 +28,7 @@ import player.phonograph.coil.target.PaletteTargetBuilder
 import player.phonograph.databinding.ActivityArtistDetailBinding
 import player.phonograph.misc.PaletteColorHolder
 import player.phonograph.misc.menuProvider
-import player.phonograph.model.Album
 import player.phonograph.model.Artist
-import player.phonograph.model.Song
 import player.phonograph.model.albumCountString
 import player.phonograph.model.getReadableDurationString
 import player.phonograph.model.songCountString
@@ -44,6 +42,9 @@ import retrofit2.Callback
 import retrofit2.Response
 import util.phonograph.lastfm.rest.LastFMRestClient
 import util.phonograph.lastfm.rest.model.LastFmArtist
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager.HORIZONTAL
 import androidx.recyclerview.widget.LinearLayoutManager.VERTICAL
@@ -56,6 +57,7 @@ import android.text.Spanned
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import kotlinx.coroutines.launch
 import java.util.Locale
 
 /**
@@ -65,10 +67,6 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorHolder 
 
     private lateinit var viewBinding: ActivityArtistDetailBinding
     private lateinit var model: ArtistDetailActivityViewModel
-
-    private var biography: Spanned? = null
-    private var biographyDialog: MaterialDialog? = null
-    private var lastFmUrl: String? = null
 
     private lateinit var albumAdapter: HorizontalAlbumAdapter
     private lateinit var songAdapter: SongDisplayAdapter
@@ -90,7 +88,7 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorHolder 
     override fun onCreate(savedInstanceState: Bundle?) {
         model = ArtistDetailActivityViewModel(intent.extras!!.getLong(EXTRA_ARTIST_ID))
         viewBinding = ActivityArtistDetailBinding.inflate(layoutInflater)
-        load()
+        model.load(this)
 
         autoSetStatusBarColor = false
         autoSetNavigationBarColor = false
@@ -100,6 +98,7 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorHolder 
 
         setUpToolbar()
         setUpViews()
+        observeData()
     }
 
     override fun createContentView(): View = wrapSlidingMusicPanel(viewBinding.root)
@@ -109,16 +108,16 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorHolder 
             viewBinding.mainContent.setPaddingTop(verticalOffset)
         }
 
-        songAdapter = SongDisplayAdapter(
-            this, cabController, artist.songs, R.layout.item_list, null
-        )
+        songAdapter =
+            SongDisplayAdapter(this, cabController, emptyList(), R.layout.item_list, null)
         with(viewBinding.songsRecycleView) {
             adapter = songAdapter
             layoutManager =
                 LinearLayoutManager(this@ArtistDetailActivity, VERTICAL, false)
         }
 
-        albumAdapter = HorizontalAlbumAdapter(this, artist.albums, usePalette, cabController)
+        albumAdapter =
+            HorizontalAlbumAdapter(this, emptyList(), usePalette, cabController)
         with(viewBinding.albumRecycleView) {
             adapter = albumAdapter
             layoutManager =
@@ -131,27 +130,39 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorHolder 
             })
         }
 
-        model.isRecyclerViewPrepared = true
         setColors(resolveColor(this, R.attr.defaultFooterColor))
     }
 
-
-    private fun load() {
-        model.loadDataSet(
-            this,
-            { artist: Artist ->
-                setUpArtist(artist)
-            },
-            { songs: List<Song> ->
-                songAdapter.dataset = songs
-            },
-            { albums: List<Album> ->
-                albumAdapter.dataSet = albums
+    private fun observeData() {
+        lifecycleScope.launch {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                model.artist.collect {
+                    setUpArtist(it ?: Artist())
+                }
             }
-        )
+        }
+        lifecycleScope.launch {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                model.albums.collect {
+                    albumAdapter.dataSet = it ?: emptyList()
+                }
+            }
+        }
+        lifecycleScope.launch {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                model.songs.collect {
+                    songAdapter.dataset = it ?: emptyList()
+                }
+            }
+        }
     }
 
-    private fun loadBiography(lang: String? = Locale.getDefault().language) {
+
+    private var biography: Spanned? = null
+    private var biographyDialog: MaterialDialog? = null
+    private var lastFmUrl: String? = null
+
+    private fun loadBiography(artist: Artist, lang: String? = Locale.getDefault().language) {
         biography = null
         lastFMRestClient.apiService
             .getArtistInfo(artist.name, lang, null)
@@ -171,7 +182,7 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorHolder 
 
                     // If the "lang" parameter is set and no biography is given, retry with default language
                     if (biography == null && lang != null) {
-                        loadBiography(null)
+                        loadBiography(artist, null)
                         return
                     }
                     if (!Setting.instance.isAllowedToDownloadMetadata(this@ArtistDetailActivity)) {
@@ -200,7 +211,7 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorHolder 
             })
     }
 
-    private fun loadArtistImage() {
+    private fun loadArtistImage(artist: Artist) {
         val defaultColor = primaryColor(this)
         loadImage(this)
             .from(artist)
@@ -223,11 +234,12 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorHolder 
         super.onActivityResult(requestCode, resultCode, data)
         when (requestCode) {
             REQUEST_CODE_SELECT_IMAGE -> if (resultCode == RESULT_OK) {
+                val artist = model.artist.value!!
                 CustomArtistImageStore.instance(this)
                     .setCustomArtistImage(this, artist.id, artist.name, data!!.data!!)
             }
             else                      -> if (resultCode == RESULT_OK) {
-                load()
+                model.load(this)
             }
         }
     }
@@ -275,7 +287,7 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorHolder 
         artistDetailToolbar(
             menu = menu,
             context = this,
-            artist = artist,
+            artist = model.artist.value ?: Artist(),
             iconColor = primaryTextColor(activityColor),
             loadBiographyCallback = this::biographyCallback
         )
@@ -322,7 +334,7 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorHolder 
             }
         } else { // force download
             biographyDialog!!.show()
-            loadBiography()
+            loadBiography(artist)
         }
         return true
     }
@@ -338,7 +350,7 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorHolder 
 
     override fun onMediaStoreChanged() {
         super.onMediaStoreChanged()
-        load()
+        model.load(this)
     }
 
     override fun setStatusbarColor(color: Int) {
@@ -347,20 +359,16 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorHolder 
     }
 
     private fun setUpArtist(artist: Artist) {
-        loadArtistImage()
+        loadArtistImage(artist)
         if (Setting.instance.isAllowedToDownloadMetadata(this)) {
-            loadBiography()
+            loadBiography(artist)
         }
         supportActionBar!!.title = artist.name
         viewBinding.songCountText.text = songCountString(this, artist.songCount)
         viewBinding.albumCountText.text = albumCountString(this, artist.albumCount)
         viewBinding.durationText.text = getReadableDurationString(artist.songs.totalDuration())
-
-        // songAdapter.swapDataSet(artist.getSongs());
-        // albumAdapter.swapDataSet(artist.albums);
     }
 
-    private val artist: Artist get() = model.artist
 
     private fun View.setPaddingTop(top: Int) =
         setPadding(paddingLeft, top, paddingRight, paddingBottom)

@@ -11,35 +11,30 @@ import player.phonograph.mediastore.ArtistLoader
 import player.phonograph.model.Album
 import player.phonograph.model.Artist
 import player.phonograph.model.Song
+import androidx.activity.ComponentActivity
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 
 class ArtistDetailActivityViewModel(var artistId: Long) : ViewModel() {
 
-    var isRecyclerViewPrepared: Boolean = false
-    fun loadDataSet(
-        context: Context,
-        artistCallback: (Artist) -> Unit,
-        songCallback: (List<Song>) -> Unit,
-        albumCallback: (List<Album>) -> Unit
-    ) {
+    private var _artist: MutableStateFlow<Artist?> = MutableStateFlow(null)
+    val artist get() = _artist.asStateFlow()
+
+    private var _albums: MutableStateFlow<List<Album>?> = MutableStateFlow(null)
+    val albums get() = _albums.asStateFlow()
+
+    private var _songs: MutableStateFlow<List<Song>?> = MutableStateFlow(null)
+    val songs get() = _songs.asStateFlow()
+
+
+    fun load(context: Context) {
         viewModelScope.launch(SupervisorJob()) {
-
-            _artist = ArtistLoader.getArtist(context, artistId)
-
-            val songs: List<Song> = artist.songs
-            val albums: List<Album> = artist.albums ?: emptyList()
-
-            while (!isRecyclerViewPrepared) yield() // wait until ready
-            withContext(Dispatchers.Main) {
-                if (isRecyclerViewPrepared) {
-                    artistCallback(artist)
-                    songCallback(songs)
-                    albumCallback(albums)
-                }
-            }
+            val artist = ArtistLoader.getArtist(context, artistId)
+            _artist.emit(artist)
+            _albums.emit(artist.albums)
+            _songs.emit(artist.songs)
         }
     }
 
-    var _artist: Artist? = null
-    val artist: Artist get() = if (_artist != null) _artist!! else Artist()
 }
