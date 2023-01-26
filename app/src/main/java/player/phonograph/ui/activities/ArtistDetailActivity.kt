@@ -7,7 +7,6 @@ import com.github.chr56.android.menu_dsl.attach
 import com.github.chr56.android.menu_dsl.menuItem
 import lib.phonograph.cab.ToolbarCab
 import lib.phonograph.cab.createToolbarCab
-import mt.pref.ThemeColor.primaryColor
 import mt.tint.requireLightStatusbar
 import mt.tint.setActivityToolbarColor
 import mt.tint.setActivityToolbarColorAuto
@@ -23,8 +22,6 @@ import player.phonograph.adapter.base.MultiSelectionCabController
 import player.phonograph.adapter.display.SongDisplayAdapter
 import player.phonograph.adapter.legacy.HorizontalAlbumAdapter
 import player.phonograph.coil.CustomArtistImageStore
-import player.phonograph.coil.loadImage
-import player.phonograph.coil.target.PaletteTargetBuilder
 import player.phonograph.databinding.ActivityArtistDetailBinding
 import player.phonograph.misc.PaletteColorHolder
 import player.phonograph.misc.menuProvider
@@ -73,8 +70,9 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorHolder 
 
     private val lastFMRestClient: LastFMRestClient by lazy { LastFMRestClient(this) }
 
-    override var paletteColor = 0
-        private set
+    override val paletteColor: Int
+        get() = model.paletteColor.value
+
     private var usePalette = Setting.instance.albumArtistColoredFooters
         set(value) {
             field = value
@@ -155,6 +153,13 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorHolder 
                 }
             }
         }
+        lifecycleScope.launch {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                model.paletteColor.collect { color ->
+                    setColors(color)
+                }
+            }
+        }
     }
 
 
@@ -211,25 +216,6 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorHolder 
             })
     }
 
-    private fun loadArtistImage(artist: Artist) {
-        val defaultColor = primaryColor(this)
-        loadImage(this)
-            .from(artist)
-            .into(
-                PaletteTargetBuilder(defaultColor)
-                    .onResourceReady { result, color ->
-                        viewBinding.image.setImageDrawable(result)
-                        setColors(color)
-                    }
-                    .onFail {
-                        viewBinding.image.setImageResource(R.drawable.default_album_art)
-                        setColors(defaultColor)
-                    }
-                    .build()
-            )
-            .enqueue()
-    }
-
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         when (requestCode) {
@@ -245,7 +231,6 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorHolder 
     }
 
     private fun setColors(color: Int) {
-        paletteColor = color
         viewBinding.header.setBackgroundColor(color)
         setNavigationBarColor(color)
         setTaskDescriptionColor(color)
@@ -359,7 +344,7 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorHolder 
     }
 
     private fun setUpArtist(artist: Artist) {
-        loadArtistImage(artist)
+        model.loadArtistImage(this, artist, viewBinding.image)
         if (Setting.instance.isAllowedToDownloadMetadata(this)) {
             loadBiography(artist)
         }
