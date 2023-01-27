@@ -143,9 +143,9 @@ See [Build_Instructions.md](./Build_Instructions.md)
 
 ### **2023~2024(?)**
 
-- [ ] 重写音乐标签编辑 | Rewrite Tag Editor
+- [ ] 重写音乐标签编辑 (单文件⭕, 批量❌) | Rewrite Tag Editor (Single File⭕, Batch❌)
 
-- [ ] 重构主播放器 | Refactor Main Player
+- [ ] 重构主播放器 (WIP⭕) | Refactor Main Player (WIP⭕)
 
 - [ ] 增强“播放列表详情”(支持搜索 ❌, 更好的修改本地列表方式 ❗WIP, 响应打开文件的 Intent ❌) | Enhance Playlist Detail: support search ❌, Better way to
   modify ❗WIP, handle intent of open (playlist) file ❌
