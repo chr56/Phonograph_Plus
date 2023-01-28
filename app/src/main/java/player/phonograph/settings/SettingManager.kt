@@ -37,7 +37,7 @@ class SettingManager(var context: Context) {
             saveToFile(uri, content, context.contentResolver)
             true
         } catch (e: Exception) {
-            reportError(e, "SettingManager", "Failed to convert SharedPreferences to Json")
+            reportError(e, TAG, "Failed to convert SharedPreferences to Json")
             false
         }
 
@@ -75,10 +75,12 @@ class SettingManager(var context: Context) {
 
     private fun serializedValue(obj: Any?): JsonElement = when (obj) {
         null       -> JsonNull
-        is String  -> JsonPrimitive(obj)
-        is Number  -> JsonPrimitive(obj)
-        is Boolean -> JsonPrimitive(obj)
-        is Set<*>  -> JsonArray(obj.map { serializedValue(it) })
+        is String  -> JsonPrimitive("${SEP}${TS}${SEP}$obj")
+        is Int     -> JsonPrimitive("${SEP}${TI}${SEP}$obj")
+        is Long    -> JsonPrimitive("${SEP}${TL}${SEP}$obj")
+        is Float   -> JsonPrimitive("${SEP}${TF}${SEP}$obj")
+        is Boolean -> JsonPrimitive("${SEP}${TB}${SEP}$obj")
+        is Set<*>  -> JsonArray(obj.map { JsonPrimitive("${SEP}${TS}${SEP}$obj") })
         else       -> throw IllegalArgumentException("unsupported type")
     }
 
@@ -93,7 +95,7 @@ class SettingManager(var context: Context) {
 
         val json = rawJson.content
         if (rawJson.formatVersion < VERSION) {
-            warning("SettingManager", "This file is using legacy format")
+            warning(TAG, "This file is using legacy format")
         }
 
         PreferenceManager.getDefaultSharedPreferences(context).edit().let { editor ->
@@ -104,22 +106,31 @@ class SettingManager(var context: Context) {
         }
         true
     } catch (e: Exception) {
-        reportError(e, "SettingManager", "Failed to import Setting")
+        reportError(e, TAG, "Failed to import Setting")
         false
     }
 
     private fun deserializeValue(editor: Editor, key: String, jsonElement: JsonElement) {
-        // todo typesafe
         when (jsonElement) {
             is JsonPrimitive -> {
                 with(jsonElement) {
-                    when {
-                        booleanOrNull != null -> editor.putBoolean(key, boolean)
-                        intOrNull != null     -> editor.putInt(key, int)
-                        longOrNull != null    -> editor.putLong(key, long)
-                        floatOrNull != null   -> editor.putFloat(key, float)
-                        isString              -> editor.putString(key, content)
-                        else                  -> throw IllegalStateException("unsupported type")
+                    if (content.getOrNull(0) != SEP) {
+                        if (jsonElement is JsonNull) {
+                            editor.remove(key)
+                        } else {
+                            warning(TAG, "in key $key value $content is glitch")
+                        }
+                    } else {
+                        val type = content[1]
+                        val data = content.substring(3)
+                        when (type) {
+                            TB  -> editor.putBoolean(key, data.toBoolean())
+                            TS  -> editor.putString(key, data)
+                            TI  -> editor.putInt(key, data.toInt())
+                            TL  -> editor.putLong(key, data.toLong())
+                            TF  -> editor.putFloat(key, data.toFloat())
+                            else -> warning(TAG, "unsupported type $type")
+                        }
                     }
                 }
             }
@@ -127,8 +138,9 @@ class SettingManager(var context: Context) {
                 val data = jsonElement.map { it.jsonPrimitive.content }
                 editor.putStringSet(key, java.util.HashSet(data))
             }
-            is JsonNull      -> {}
-            else             -> {}
+            else             -> {
+                warning(TAG, "unexpected element")
+            }
         }
     }
 
@@ -154,6 +166,15 @@ class SettingManager(var context: Context) {
     )
 
     companion object {
-        const val VERSION = 1
+        const val VERSION = 2
+        private const val TAG = "SettingManager"
+
+        private const val SEP = '/'
+        private const val TB = 'B'
+        private const val TS = 'S'
+        private const val TI = 'I'
+        private const val TL = 'L'
+        private const val TF = 'F'
+
     }
 }
