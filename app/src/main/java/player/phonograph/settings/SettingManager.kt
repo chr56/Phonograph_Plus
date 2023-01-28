@@ -4,47 +4,46 @@
 
 package player.phonograph.settings
 
-import android.annotation.SuppressLint
-import android.content.Context
-import android.net.Uri
-import android.widget.Toast
-import androidx.preference.PreferenceManager
 import mt.pref.ThemeColor
-import org.json.JSONArray
-import org.json.JSONObject
 import player.phonograph.App
 import player.phonograph.R
-import player.phonograph.notification.ErrorNotification
+import player.phonograph.util.Util.reportError
+import androidx.preference.PreferenceManager
+import android.annotation.SuppressLint
+import android.content.ContentResolver
+import android.content.Context
+import android.content.SharedPreferences.Editor
+import android.net.Uri
+import android.widget.Toast
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.*
 import java.io.FileInputStream
 import java.io.FileOutputStream
-import java.io.IOException
 
 class SettingManager(var context: Context) {
 
-    fun exportSettings(uri: Uri): Boolean {
-        runCatching {
-            val map = Setting.instance.rawMainPreference.all
-            val json = map.toJson()
-            return@runCatching json.toString(2)
-        }.let { r ->
-            if (r.isFailure) ErrorNotification.postErrorNotification(
-                r.exceptionOrNull() ?: Exception(),
-                "Failed to convert SharedPreferences to Json"
-            )else {
-                saveToFile(uri, r.getOrNull()!!)
-            }
-            return r.isSuccess
-        }
-    }
+    private val parser by lazy(LazyThreadSafetyMode.NONE) { Json { prettyPrint = true } }
 
-    private fun saveToFile(dest: Uri, content: String) {
-        context.contentResolver.openFileDescriptor(dest, "w")?.fileDescriptor?.let { fileDescriptor ->
-            FileOutputStream(fileDescriptor).use { stream ->
-                stream.bufferedWriter().apply {
-                    write(content)
-                    flush()
-                    close()
-                }
+    fun exportSettings(uri: Uri): Boolean =
+        try {
+            val prefs = Setting.instance.rawMainPreference.all
+            val json: JsonElement = serializedPref(prefs)
+            val content = parser.encodeToString(json)
+            saveToFile(uri, content, context.contentResolver)
+            true
+        } catch (e: Exception) {
+            reportError(e, "SettingManager", "Failed to convert SharedPreferences to Json")
+            false
+        }
+
+    private fun saveToFile(dest: Uri, content: String, contentResolver: ContentResolver) {
+        val fileDescriptor =
+            contentResolver.openFileDescriptor(dest, "w")?.fileDescriptor
+
+        FileOutputStream(fileDescriptor).use { stream ->
+            stream.bufferedWriter().use {
+                it.write(content)
+                it.flush()
             }
         }
     }
@@ -57,89 +56,65 @@ class SettingManager(var context: Context) {
         } ?: false
     }
 
-    private fun loadSettings(fileInputStream: FileInputStream): Boolean {
-        runCatching {
-            val json: JSONObject
-            fileInputStream.use {
-                it.bufferedReader().apply {
-                    json = JSONObject(readText())
-                    close()
-                }
-            }
-            val editor = PreferenceManager.getDefaultSharedPreferences(context).edit()
-            for (key in json.keys()) {
-                when (val value = json.opt(key)) {
-                    is String -> editor.putString(key, value)
-                    is Int -> editor.putInt(key, value)
-                    is Long -> editor.putLong(key, value)
-                    is Boolean -> editor.putBoolean(key, value)
-                    is Float -> editor.putFloat(key, value)
-                    is Set<*> -> {
-                        if (value.isNotEmpty()) {
-                            editor.putStringSet(key, value.filterIsInstance<String>().toSet())
-                        }
-                    }
-                    else -> throw IllegalArgumentException("value ${value.javaClass} is unsupported!")
-                }
+    private fun serializedPref(prefs: Map<String, Any?>): JsonElement =
+        JsonObject(
+            prefs.mapValues { serializedValue(it.value) }
+        )
+
+    private fun serializedValue(obj: Any?): JsonElement = when (obj) {
+        null       -> JsonNull
+        is String  -> JsonPrimitive(obj)
+        is Number  -> JsonPrimitive(obj)
+        is Boolean -> JsonPrimitive(obj)
+        is Set<*>  -> JsonArray(obj.map { serializedValue(it) })
+        else       -> throw IllegalArgumentException("unsupported type")
+    }
+
+
+    private fun loadSettings(fileInputStream: FileInputStream): Boolean = try {
+
+        val raw: String = fileInputStream.use { stream ->
+            stream.bufferedReader().use { it.readText() }
+        }
+
+        val json = parser.parseToJsonElement(raw)
+
+        PreferenceManager.getDefaultSharedPreferences(context).edit().let { editor ->
+            for ((key, value) in (json as JsonObject).entries) {
+                deserializeValue(editor, key, value)
             }
             editor.apply()
-        }.let { r ->
-            if (r.isFailure) ErrorNotification.postErrorNotification(
-                r.exceptionOrNull() ?: Exception(),
-                "Failed to import Setting"
-            )
-            return r.isSuccess
+        }
+        true
+    } catch (e: Exception) {
+        reportError(e, "SettingManager", "Failed to import Setting")
+        false
+    }
+
+    private fun deserializeValue(editor: Editor, key: String, jsonElement: JsonElement) {
+        // todo typesafe
+        when (jsonElement) {
+            is JsonPrimitive -> {
+                with(jsonElement) {
+                    when {
+                        booleanOrNull != null -> editor.putBoolean(key, boolean)
+                        intOrNull != null     -> editor.putInt(key, int)
+                        longOrNull != null    -> editor.putLong(key, long)
+                        floatOrNull != null   -> editor.putFloat(key, float)
+                        isString              -> editor.putString(key, content)
+                        else                  -> throw IllegalStateException("unsupported type")
+                    }
+                }
+            }
+            is JsonArray     -> {
+                val data = jsonElement.map { it.jsonPrimitive.content }
+                editor.putStringSet(key, java.util.HashSet(data))
+            }
+            is JsonNull      -> {}
+            else             -> {}
         }
     }
 
-    /**
-     * Convert SharedPreferences map to Json Object
-     */
-    @Throws(IllegalArgumentException::class, IOException::class)
-    internal fun Map<String, Any?>.toJson(): JSONObject =
-        JSONObject().also { json ->
-            val glitchList: MutableList<String> = ArrayList()
-            for ((key, value) in this) {
-                if (value == null) { glitchList.add(key); continue }
-                when (value) {
-                    is String -> {
-                        json.put(key, value)
-                    }
-                    is Int -> {
-                        json.put(key, value)
-                    }
-                    is Long -> {
-                        json.put(key, value)
-                    }
-                    is Float -> {
-                        json.put(key, value.toDouble())
-                    }
-                    is Boolean -> {
-                        json.put(key, value)
-                    }
-                    is Set<*> -> {
-                        json.put(
-                            key,
-                            JSONArray().also {
-                                for (s in value) {
-                                    it.put(s)
-                                }
-                            }
-                        )
-                    }
-                    else -> {
-                        val e = IllegalArgumentException("unsupported type")
-                        ErrorNotification.postErrorNotification(
-                            e, "Failed to convert SharedPreferences to Json: Unsupported type ${value.javaClass}"
-                        )
-                    }
-                }
-            }
-            if (glitchList.isNotEmpty()) ErrorNotification.postErrorNotification(
-                Throwable(),
-                "Failed to save ${glitchList.reduce { acc, s: String -> acc + s }}"
-            )
-        }
 
     /**
      * **WARNING**! to reset all SharedPreferences!
