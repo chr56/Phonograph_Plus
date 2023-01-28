@@ -6,8 +6,11 @@ package player.phonograph.settings
 
 import mt.pref.ThemeColor
 import player.phonograph.App
+import player.phonograph.BuildConfig.GIT_COMMIT_HASH
+import player.phonograph.BuildConfig.VERSION_CODE
 import player.phonograph.R
 import player.phonograph.util.Util.reportError
+import player.phonograph.util.Util.warning
 import androidx.preference.PreferenceManager
 import android.annotation.SuppressLint
 import android.content.ContentResolver
@@ -15,6 +18,8 @@ import android.content.Context
 import android.content.SharedPreferences.Editor
 import android.net.Uri
 import android.widget.Toast
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.*
 import java.io.FileInputStream
@@ -27,8 +32,8 @@ class SettingManager(var context: Context) {
     fun exportSettings(uri: Uri): Boolean =
         try {
             val prefs = Setting.instance.rawMainPreference.all
-            val json: JsonElement = serializedPref(prefs)
-            val content = parser.encodeToString(json)
+            val model = serializedPref(prefs)
+            val content = parser.encodeToString(model)
             saveToFile(uri, content, context.contentResolver)
             true
         } catch (e: Exception) {
@@ -56,10 +61,17 @@ class SettingManager(var context: Context) {
         } ?: false
     }
 
-    private fun serializedPref(prefs: Map<String, Any?>): JsonElement =
-        JsonObject(
+    private fun serializedPref(prefs: Map<String, Any?>): SettingExport {
+        val content = JsonObject(
             prefs.mapValues { serializedValue(it.value) }
         )
+        return SettingExport(
+            VERSION,
+            VERSION_CODE,
+            GIT_COMMIT_HASH,
+            content
+        )
+    }
 
     private fun serializedValue(obj: Any?): JsonElement = when (obj) {
         null       -> JsonNull
@@ -73,14 +85,19 @@ class SettingManager(var context: Context) {
 
     private fun loadSettings(fileInputStream: FileInputStream): Boolean = try {
 
-        val raw: String = fileInputStream.use { stream ->
+        val rawString: String = fileInputStream.use { stream ->
             stream.bufferedReader().use { it.readText() }
         }
 
-        val json = parser.parseToJsonElement(raw)
+        val rawJson = parser.decodeFromString<SettingExport>(rawString)
+
+        val json = rawJson.content
+        if (rawJson.formatVersion < VERSION) {
+            warning("SettingManager", "This file is using legacy format")
+        }
 
         PreferenceManager.getDefaultSharedPreferences(context).edit().let { editor ->
-            for ((key, value) in (json as JsonObject).entries) {
+            for ((key, value) in json.entries) {
                 deserializeValue(editor, key, value)
             }
             editor.apply()
@@ -125,5 +142,18 @@ class SettingManager(var context: Context) {
         ThemeColor.editTheme(App.instance).clearAllPreference() // lib
 
         Toast.makeText(App.instance, R.string.success, Toast.LENGTH_SHORT).show()
+    }
+
+
+    @kotlinx.serialization.Serializable
+    private data class SettingExport(
+        @SerialName("format_version") val formatVersion: Int,
+        @SerialName("app_version") val appVersion: Int,
+        @SerialName("commit_hash") val commitHash: String,
+        @SerialName("content") val content: JsonObject
+    )
+
+    companion object {
+        const val VERSION = 1
     }
 }
