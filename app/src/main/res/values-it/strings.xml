@@ -154,7 +154,7 @@
     <string name="favorites">Preferiti</string>
     <string name="last_added">Aggiunti di recente</string>
     <string name="history">Ascoltati di recente</string>
-    <string name="my_top_tracks">Brani preferiti</string>
+    <string name="my_top_tracks">I miei brani migliori</string>
     <string name="remove_cover">Rimuovi copertina</string>
     <string name="download_from_last_fm">Scarica da Last.fm</string>
     <string name="pick_from_local_storage">Scegli dai tuoi file.</string>
