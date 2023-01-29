@@ -20,7 +20,10 @@ import legacy.phonograph.DeprecatedPreference.SortOrder.SONG_SORT_ORDER
 import player.phonograph.R
 import player.phonograph.notification.BackgroundNotification
 import player.phonograph.notification.ErrorNotification
+import player.phonograph.service.util.QueuePreferenceManager
+import player.phonograph.service.util.QueuePreferenceManager.Companion.NAME as QUEUE_PREF
 import player.phonograph.util.CoroutineUtil
+import android.content.Context.MODE_PRIVATE
 
 class JunkCleaner(context: Context) : FileCleaner(context) {
     companion object {
@@ -34,6 +37,7 @@ class JunkCleaner(context: Context) : FileCleaner(context) {
             BackgroundNotification.post(context.getString(R.string.deleting_old_files), "", NOTIFICATION_ID)
             removePreferenceFile(versionCode)
             removeDeprecatedPreference(versionCode)
+            migrateQueuePreferences(versionCode)
             BackgroundNotification.remove(NOTIFICATION_ID)
         }
     }
@@ -54,6 +58,47 @@ class JunkCleaner(context: Context) : FileCleaner(context) {
             removePreference(context, keyName = GENRE_SORT_ORDER)
         }
     }
+
+    fun migrateQueuePreferences(versionCode: Int) {
+        Log.i(TAG, "Start Migrate Queue Preferences")
+
+        fun moveIntPreference(
+            oldKeyName: String,
+            newKeyName: String
+        ) {
+            try {
+                val oldPref = PreferenceManager.getDefaultSharedPreferences(context)
+                val value = oldPref.getInt(oldKeyName, 0)
+                val newPref = context.getSharedPreferences(QUEUE_PREF, MODE_PRIVATE)
+                newPref.edit().putInt(newKeyName, value).apply()
+                oldPref.edit().remove(oldKeyName).apply()
+
+                Log.i(TAG, "Success: $oldKeyName -> $newKeyName")
+            } catch (e: Exception) {
+                Log.i(TAG, "Fail: $oldKeyName -> $newKeyName")
+            }
+        }
+        if (versionCode > 454) {
+            moveIntPreference(
+                DeprecatedPreference.QueueCfg.PREF_REPEAT_MODE,
+                QueuePreferenceManager.KEY_REPEAT_MODE
+            )
+            moveIntPreference(
+                DeprecatedPreference.QueueCfg.PREF_SHUFFLE_MODE,
+                QueuePreferenceManager.KEY_SHUFFLE_MODE
+            )
+            moveIntPreference(
+                DeprecatedPreference.QueueCfg.PREF_POSITION,
+                QueuePreferenceManager.KEY_CURRENT_POSITION
+            )
+            moveIntPreference(
+                DeprecatedPreference.QueueCfg.PREF_POSITION_IN_TRACK,
+                QueuePreferenceManager.KEY_CURRENT_MILLISECOND
+            )
+        }
+        Log.i(TAG, "Migrate Queue Preferences Completed")
+    }
+
 }
 
 object DeprecatedPreference {
@@ -69,6 +114,14 @@ object DeprecatedPreference {
         const val ALBUM_SONG_SORT_ORDER = "album_song_sort_order"
         const val SONG_SORT_ORDER = "song_sort_order"
         const val GENRE_SORT_ORDER = "genre_sort_order"
+    }
+
+    // "move to a separate preference after 454"
+    object QueueCfg {
+        const val PREF_POSITION = "POSITION"
+        const val PREF_SHUFFLE_MODE = "SHUFFLE_MODE"
+        const val PREF_REPEAT_MODE = "REPEAT_MODE"
+        const val PREF_POSITION_IN_TRACK = "POSITION_IN_TRACK"
     }
 }
 
