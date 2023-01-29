@@ -6,8 +6,8 @@ package player.phonograph.service.queue
 
 import player.phonograph.model.Song
 import player.phonograph.provider.MusicPlaybackQueueStore
+import player.phonograph.service.util.QueuePreferenceManager
 import player.phonograph.util.TimeUtil
-import androidx.preference.PreferenceManager
 import android.content.Context
 import java.util.concurrent.CopyOnWriteArrayList
 
@@ -177,11 +177,10 @@ class QueueHolder private constructor(
     }
 
     fun saveCfg(context: Context) = synchronized(persistenceLock) {
-        PreferenceManager.getDefaultSharedPreferences(context).edit().apply {
-            putInt(PREF_POSITION, currentSongPosition)
-            putInt(PREF_SHUFFLE_MODE, shuffleMode.serialize())
-            putInt(PREF_REPEAT_MODE, repeatMode.serialize())
-        }.apply()
+        val queuePreferenceManager = QueuePreferenceManager(context)
+        queuePreferenceManager.currentPosition = currentSongPosition
+        queuePreferenceManager.repeatMode = repeatMode
+        queuePreferenceManager.shuffleMode = shuffleMode
     }
 
     @Suppress("UNCHECKED_CAST")
@@ -206,31 +205,16 @@ class QueueHolder private constructor(
                 val restoredOriginalQueue: List<Song> =
                     MusicPlaybackQueueStore.getInstance(context).savedOriginalPlayingQueue
 
+                val preferenceManager = QueuePreferenceManager(context)
 
-                val preferenceManager = PreferenceManager.getDefaultSharedPreferences(context)
-
-                val restoredPosition: Int = preferenceManager.getInt(PREF_POSITION, -1)
-
-                val shuffle: ShuffleMode =
-                    preferenceManager.getInt(PREF_SHUFFLE_MODE, 0).let {
-                        ShuffleMode.deserialize(it)
-                    }
-
-                val repeat: RepeatMode =
-                    preferenceManager.getInt(PREF_REPEAT_MODE, 0).let {
-                        RepeatMode.deserialize(it)
-                    }
-
-                return QueueHolder(restoredQueue,
-                                   restoredOriginalQueue,
-                                   restoredPosition,
-                                   shuffle,
-                                   repeat)
+                return QueueHolder(
+                    restoredQueue,
+                    restoredOriginalQueue,
+                    preferenceManager.currentPosition,
+                    preferenceManager.shuffleMode,
+                    preferenceManager.repeatMode
+                )
             }
         }
-
-        const val PREF_POSITION = "POSITION"
-        const val PREF_SHUFFLE_MODE = "SHUFFLE_MODE"
-        const val PREF_REPEAT_MODE = "REPEAT_MODE"
     }
 }
