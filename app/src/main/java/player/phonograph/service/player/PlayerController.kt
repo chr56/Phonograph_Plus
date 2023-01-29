@@ -11,7 +11,6 @@ import android.os.PowerManager.WakeLock
 import android.util.ArrayMap
 import android.util.Log
 import android.widget.Toast
-import androidx.preference.PreferenceManager
 import java.lang.ref.WeakReference
 import player.phonograph.App
 import player.phonograph.BuildConfig.DEBUG
@@ -21,6 +20,7 @@ import player.phonograph.model.Song
 import player.phonograph.model.lyrics.LrcLyrics
 import player.phonograph.notification.ErrorNotification
 import player.phonograph.service.MusicService
+import player.phonograph.service.util.QueuePreferenceManager
 import player.phonograph.service.util.makeErrorMessage
 import player.phonograph.settings.Setting
 import player.phonograph.util.MusicUtil
@@ -171,10 +171,7 @@ class PlayerController(internal val service: MusicService) : Playback.PlaybackCa
     fun restoreIfNecessary() {
         if (!restored) {
             val restoredPositionInTrack =
-                PreferenceManager.getDefaultSharedPreferences(service).getInt(
-                    MusicService.SAVED_POSITION_IN_TRACK,
-                    -1
-                )
+                QueuePreferenceManager(service).currentMillisecond
             prepareSongsImp(queueManager.currentSongPosition)
             if (restoredPositionInTrack > 0) seekTo(restoredPositionInTrack.toLong())
             restored = true
@@ -475,10 +472,7 @@ class PlayerController(internal val service: MusicService) : Playback.PlaybackCa
         saveCurrentMillsImp()
     }
     private fun saveCurrentMillsImp() {
-        PreferenceManager.getDefaultSharedPreferences(service).edit().putInt(
-            MusicService.SAVED_POSITION_IN_TRACK,
-            audioPlayer.position()
-        ).apply()
+        QueuePreferenceManager(service).currentMillisecond = audioPlayer.position()
     }
 
     val audioSessionId: Int = audioPlayer.audioSessionId

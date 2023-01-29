@@ -435,8 +435,6 @@ class MusicService : Service(), OnSharedPreferenceChangeListener {
         const val APP_WIDGET_UPDATE = "$ACTUAL_PACKAGE_NAME.appwidgetupdate"
         const val EXTRA_APP_WIDGET_NAME = ACTUAL_PACKAGE_NAME + "app_widget_name"
 
-        const val SAVED_POSITION_IN_TRACK = "POSITION_IN_TRACK"
-
         private const val THROTTLE: Long = 500
 
         fun log(msg: String, force: Boolean) {
