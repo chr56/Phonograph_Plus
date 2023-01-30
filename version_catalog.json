@@ -2,6 +2,22 @@
   "versions": [
     {
       "channel": "stable",
+      "versionName": "0.5.4.1",
+      "versionCode": 454,
+      "date": 1675066000,
+      "link": [
+        {
+          "name": "Github Release",
+          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/v0.5.4.1"
+        }
+      ],
+      "releaseNote": {
+        "zh-cn": "<ol><li>修复 报错 NoSuchMethodException: ba.r</li></ol>",
+        "en": "<ol><li>Fix: report the error NoSuchMethodException: ba.r</li></ol>"
+      }
+    },
+    {
+      "channel": "stable",
       "versionName": "0.5.4",
       "versionCode": 454,
       "date": 1674725000,
