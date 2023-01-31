@@ -7,6 +7,8 @@ package util.phonograph
 import java.io.File
 
 
+fun parse(path: String): ReleaseNoteModel = parse(File(path))
+
 fun parse(file: File): ReleaseNoteModel {
 
     val result = mutableMapOf<String, String>()

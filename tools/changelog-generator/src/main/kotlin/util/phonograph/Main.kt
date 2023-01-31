@@ -4,15 +4,17 @@
 
 package util.phonograph
 
-import java.io.File
+const val demoFile = "tools/changelog-generator/FormatExample.md"
 
-fun main() {
-    val model = parse(File("tools/changelog-generator/FormatExample.md"))
-    println(model)
+fun main(args: Array<String>) {
+    val model = parse(demoFile)
+    println("===========================================")
+    println("Models: $model")
     println("===========================================")
 
     val md = generateGitHubReleaseMarkDown(model)
     println(md)
+    exportGitHubReleaseMarkDown(md)
     println("===========================================")
 
     val html = generateHTML(model)
