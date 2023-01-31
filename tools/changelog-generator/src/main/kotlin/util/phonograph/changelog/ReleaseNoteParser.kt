@@ -2,7 +2,7 @@
  * Copyright (c) 2022~2023 chr_56
  */
 
-package util.phonograph
+package util.phonograph.changelog
 
 import java.io.File
 

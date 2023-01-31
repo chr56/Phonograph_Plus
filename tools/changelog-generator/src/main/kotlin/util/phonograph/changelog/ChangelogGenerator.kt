@@ -2,16 +2,16 @@
  * Copyright (c) 2022~2023 chr_56
  */
 
-package util.phonograph
+package util.phonograph.changelog
 
 import util.phonograph.format.dateString
 import util.phonograph.format.div
 import util.phonograph.format.html
 import util.phonograph.format.htmlNoteItem
-import util.phonograph.format.markdownHeader
 import util.phonograph.format.markdownNoteItem
 import util.phonograph.format.markdownNoteSubtitle
 
+internal fun ReleaseNoteModel.markdownHeader() = "## **v${version} ${dateString(time)}**"
 fun generateGitHubReleaseMarkDown(model: ReleaseNoteModel): String {
 
     val header = model.markdownHeader()
@@ -54,6 +54,8 @@ private fun generateHTMLImpl(
         htmlNoteItem(items)
     }
 }
+
 private fun htmlHeader(version: String, date: Long) =
     "<h4><b>$version</b> ${dateString(date)}</h4>"
+
 private fun List<String>.collect(): String = reduce { acc, s -> "$acc\n$s" }
