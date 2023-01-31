@@ -10,5 +10,5 @@ import java.util.Locale
 
 private val dateFormatter = SimpleDateFormat("yyyy.MM.dd", Locale.ENGLISH)
 fun dateString(stamp: Long): String {
-    return dateFormatter.format(Date(stamp))
+    return dateFormatter.format(Date(stamp * 1000))
 }
