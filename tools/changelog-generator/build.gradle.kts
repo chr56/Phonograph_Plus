@@ -13,13 +13,14 @@ sourceSets {
     }
 }
 
-val releaseNotePath = "/tools/changelog-generator/FormatExample.md"
+val originalReleaseNotePath = "ReleaseNote.md"
+val outputGitHubReleaseNotePath = "GitHubReleaseNote.md"
 
 tasks.register("GenerateGithubReleaseNote", JavaExec::class.java) {
     args = listOf(
         rootProject.projectDir.absolutePath,
-        releaseNotePath,
-        "products/GitHubReleaseMarkDown.md"
+        originalReleaseNotePath,
+        outputGitHubReleaseNotePath
     )
 
     classpath = sourceSets.named("main").get().runtimeClasspath
@@ -31,7 +32,7 @@ tasks.register("GenerateGithubReleaseNote", JavaExec::class.java) {
 tasks.register("GenerateHTML", JavaExec::class.java) {
     args = listOf(
         rootProject.projectDir.absolutePath,
-       releaseNotePath,
+        originalReleaseNotePath,
     )
 
     classpath = sourceSets.named("main").get().runtimeClasspath

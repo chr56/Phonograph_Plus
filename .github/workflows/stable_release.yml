@@ -22,18 +22,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Generate Release Note Template
-        run: |
-          echo "##${{ github.ref_name }} " $(date +%Y.%m.%d) > ./ReleaseNoteTemplate.md
-          echo "" >> ./ReleaseNoteTemplate.md
-          echo "### ZH" >> ./ReleaseNoteTemplate.md
-          echo "1." >> ./ReleaseNoteTemplate.md
-          echo "" >> ./ReleaseNoteTemplate.md
-          echo "### EN" >> ./ReleaseNoteTemplate.md
-          echo "2." >> ./ReleaseNoteTemplate.md
-          echo "" >> ./ReleaseNoteTemplate.md
-          cat ./ReleaseNote.md >> ./ReleaseNoteTemplate.md
-
       - name: Create Stable Release Template
         uses: softprops/action-gh-release@v1
         id: release_github
@@ -43,4 +31,4 @@ jobs:
           name: "${{ github.ref_name }}"
           draft: true
           tag_name: ${{ github.ref }}
-          body_path: ./ReleaseNoteTemplate.md
+          body_path: ./GitHubReleaseNote.md

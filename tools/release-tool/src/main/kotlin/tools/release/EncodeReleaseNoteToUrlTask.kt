@@ -16,7 +16,7 @@ open class EncodeReleaseNoteToUrlTask : DefaultTask() {
     }
 
     companion object {
-        val inputReleaseNote = File("ReleaseNote.md")
-        val outputReleaseNote = File("ReleaseNote.url.txt")
+        val inputReleaseNote = File("GitHubReleaseNote.md")
+        val outputReleaseNote = File("GitHubReleaseNote.url.txt")
     }
 }
