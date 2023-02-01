@@ -9,10 +9,6 @@ import org.gradle.api.Project
 
 class Plugin : Plugin<Project> {
     override fun apply(target: Project) {
-        target.registerEncodeReleaseNoteToUrlTask()
-    }
-}
 
-internal fun Project.registerEncodeReleaseNoteToUrlTask() {
-    tasks.register("encodeReleaseNoteToUrl", EncodeReleaseNoteToUrlTask::class.java)
+    }
 }

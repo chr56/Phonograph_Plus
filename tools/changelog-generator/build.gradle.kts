@@ -14,7 +14,9 @@ sourceSets {
 }
 
 val originalReleaseNotePath = "ReleaseNote.md"
+
 val outputGitHubReleaseNotePath = "GitHubReleaseNote.md"
+val outputEncodedUrlPath = "GitHubReleaseNote.url.txt"
 
 tasks.register("GenerateGithubReleaseNote", JavaExec::class.java) {
     args = listOf(
@@ -25,6 +27,19 @@ tasks.register("GenerateGithubReleaseNote", JavaExec::class.java) {
 
     classpath = sourceSets.named("main").get().runtimeClasspath
     mainClass.set("util.phonograph.MainGenerateGithubReleaseNoteKt")
+
+    dependsOn(tasks.findByPath("build"))
+}
+
+tasks.register("GenerateEncodedUrl", JavaExec::class.java) {
+    args = listOf(
+        rootProject.projectDir.absolutePath,
+        originalReleaseNotePath,
+        outputEncodedUrlPath
+    )
+
+    classpath = sourceSets.named("main").get().runtimeClasspath
+    mainClass.set("util.phonograph.MainEncodeUrlKt")
 
     dependsOn(tasks.findByPath("build"))
 }

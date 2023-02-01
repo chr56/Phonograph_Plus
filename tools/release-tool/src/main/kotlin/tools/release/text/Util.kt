@@ -11,20 +11,6 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
 
-fun encodeReleaseNoteToUrl(inputFile: File, outputFile: File): Boolean =
-    if (inputFile.exists()) {
-        val raw = inputFile.readText()
-        val result = URLEncoder.encode(raw, "UTF-8")
-        outputFile.outputStream().use { output ->
-            output.write(result.toByteArray())
-            output.flush()
-        }
-        true
-    } else {
-        println("ReleaseNote ${inputFile.name} doesn't exist!")
-        false
-    }
-
 val currentTimeString: String
     get() = SimpleDateFormat("yyMMddHHmmss", Locale.ENGLISH).format(Calendar.getInstance().time)
 
