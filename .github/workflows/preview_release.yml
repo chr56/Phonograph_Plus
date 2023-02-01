@@ -4,17 +4,11 @@ on:
     tags:
       - "preview_*"
     paths-ignore:
-      - 'README.md'
-      - 'ReleaseNote.md'
-      - 'GitHubReleaseNote.md'
-      - 'version.json'
       - '.github/**'
-      - 'crowdin.yml'
-      - 'fastlane/metadata/android/**'
 
 jobs:
   build:
-    name: Build&Release Preview
+    name: Build & Release Preview
     runs-on: ubuntu-20.04
     permissions:
       contents: write

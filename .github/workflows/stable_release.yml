@@ -4,17 +4,12 @@ on:
     tags:
       - "v**"
     paths-ignore:
-      - 'README.md'
-      - 'ReleaseNote.md'
-      - 'version.json'
       - '.github/**'
-      - 'crowdin.yml'
-      - 'fastlane/metadata/android/**'
 
 jobs:
-  build:
+  release:
     name: Create Stable Release Template
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     permissions:
       contents: write
     steps:

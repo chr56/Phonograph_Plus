@@ -7,6 +7,7 @@ on:
     tags-ignore:
       - 'preview_*'
       - 'v0*'
+      - 'test*'
     paths-ignore:
       - './idea/**'
       - '**.md'
@@ -21,6 +22,7 @@ on:
       - 'dev'
       - 'main'
     paths-ignore:
+      - './idea/**'
       - '**.md'
       - './*.json'
       - '.github/**'
