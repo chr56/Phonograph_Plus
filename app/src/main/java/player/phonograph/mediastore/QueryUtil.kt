@@ -4,6 +4,7 @@
 
 package player.phonograph.mediastore
 
+import legacy.phonograph.MediaStoreCompat
 import android.content.Context
 import android.database.Cursor
 import android.provider.BaseColumns
@@ -106,4 +107,4 @@ const val BASE_AUDIO_SELECTION =
     "${AudioColumns.IS_MUSIC} =1 "
 
 const val BASE_PLAYLIST_SELECTION =
-    "${Audio.PlaylistsColumns.NAME} != '' "
+    "${MediaStoreCompat.Audio.PlaylistsColumns.NAME} != '' "

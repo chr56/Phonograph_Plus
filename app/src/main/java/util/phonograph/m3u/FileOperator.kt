@@ -9,6 +9,7 @@ package util.phonograph.m3u
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.WhichButton
 import com.afollestad.materialdialogs.actions.getActionButton
+import legacy.phonograph.MediaStoreCompat
 import lib.phonograph.storage.getAbsolutePath
 import player.phonograph.App
 import player.phonograph.R
@@ -36,7 +37,6 @@ import android.content.Context
 import android.net.Uri
 import android.os.Environment
 import android.os.Looper
-import android.provider.MediaStore
 import android.util.Log
 import android.widget.Toast
 import kotlinx.coroutines.*
@@ -156,8 +156,8 @@ object FileOperator {
             playlistDocumentFile.uri,
             arrayOf(
                 "audio/x-mpegurl",
-                MediaStore.Audio.Playlists.CONTENT_TYPE,
-                MediaStore.Audio.Playlists.ENTRY_CONTENT_TYPE
+                MediaStoreCompat.Audio.Playlists.CONTENT_TYPE,
+                MediaStoreCompat.Audio.Playlists.ENTRY_CONTENT_TYPE
             ),
             false
         )

@@ -4,6 +4,7 @@
 
 package player.phonograph.ui.activities
 
+import legacy.phonograph.MediaStoreCompat
 import mt.pref.ThemeColor
 import player.phonograph.App
 import player.phonograph.BuildConfig
@@ -193,7 +194,7 @@ class StarterActivity : AppCompatActivity() {
 
     private fun handleExtra(intent: Intent): PlayRequest? {
         when (intent.type) {
-            MediaStore.Audio.Playlists.CONTENT_TYPE -> {
+            MediaStoreCompat.Audio.Playlists.CONTENT_TYPE -> {
                 val id = parseIdFromIntent(intent, "playlistId", "playlist")
                 if (id >= 0) {
                     val position = intent.getIntExtra("position", 0)

@@ -14,8 +14,8 @@ import android.net.Uri
 import android.os.Build
 import android.provider.BaseColumns
 import android.provider.MediaStore
-import android.provider.MediaStore.Audio.Playlists
-import android.provider.MediaStore.Audio.PlaylistsColumns
+import legacy.phonograph.MediaStoreCompat.Audio.Playlists
+import legacy.phonograph.MediaStoreCompat.Audio.PlaylistsColumns
 import android.util.Log
 import androidx.documentfile.provider.DocumentFile
 import player.phonograph.mediastore.SQLWhereClause

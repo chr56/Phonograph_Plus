@@ -4,6 +4,7 @@
 
 package player.phonograph.service.util
 
+import legacy.phonograph.MediaStoreCompat
 import android.content.Context
 import android.database.ContentObserver
 import android.os.Handler
@@ -43,7 +44,7 @@ class MediaStoreObserverUtil {
                 mediaStoreObserver!!
             )
             contentResolver.registerContentObserver(
-                MediaStore.Audio.Playlists.EXTERNAL_CONTENT_URI,
+                MediaStoreCompat.Audio.Playlists.EXTERNAL_CONTENT_URI,
                 true,
                 mediaStoreObserver!!
             )
@@ -69,7 +70,7 @@ class MediaStoreObserverUtil {
                 mediaStoreObserver!!
             )
             contentResolver.registerContentObserver(
-                MediaStore.Audio.Playlists.INTERNAL_CONTENT_URI,
+                MediaStoreCompat.Audio.Playlists.INTERNAL_CONTENT_URI,
                 true,
                 mediaStoreObserver!!
             )

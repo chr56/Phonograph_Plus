@@ -4,6 +4,14 @@
 
 package legacy.phonograph
 
+import player.phonograph.App
+import player.phonograph.BROADCAST_PLAYLISTS_CHANGED
+import player.phonograph.R
+import player.phonograph.model.PlaylistSong
+import player.phonograph.model.Song
+import player.phonograph.model.playlist.FilePlaylist
+import player.phonograph.util.PlaylistsUtil
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
@@ -14,20 +22,6 @@ import android.os.Looper
 import android.provider.MediaStore
 import android.util.Log
 import android.widget.Toast
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.launch
-import player.phonograph.App
-import player.phonograph.BROADCAST_PLAYLISTS_CHANGED
-import player.phonograph.R
-import player.phonograph.model.PlaylistSong
-import player.phonograph.model.Song
-import player.phonograph.model.playlist.FilePlaylist
-import player.phonograph.util.CoroutineUtil
-import player.phonograph.util.PlaylistsUtil
-import player.phonograph.util.Util
 import java.util.*
 
 object LegacyPlaylistsUtil {
@@ -38,15 +32,15 @@ object LegacyPlaylistsUtil {
         if (name.isNotEmpty()) {
             try {
                 val cursor = context.contentResolver.query(
-                    MediaStore.Audio.Playlists.EXTERNAL_CONTENT_URI,
-                    arrayOf(MediaStore.Audio.Playlists._ID/* 0 */),
-                    MediaStore.Audio.PlaylistsColumns.NAME + "=?", arrayOf(name), null
+                    MediaStoreCompat.Audio.Playlists.EXTERNAL_CONTENT_URI,
+                    arrayOf(MediaStoreCompat.Audio.Playlists._ID/* 0 */),
+                    MediaStoreCompat.Audio.PlaylistsColumns.NAME + "=?", arrayOf(name), null
                 )
                 if (cursor == null || cursor.count < 1) {
                     val values = ContentValues(1)
-                    values.put(MediaStore.Audio.PlaylistsColumns.NAME, name)
+                    values.put(MediaStoreCompat.Audio.PlaylistsColumns.NAME, name)
                     val uri = context.contentResolver.insert(
-                        MediaStore.Audio.Playlists.EXTERNAL_CONTENT_URI, values
+                        MediaStoreCompat.Audio.Playlists.EXTERNAL_CONTENT_URI, values
                     )
                     if (uri != null) {
                         // Necessary because somehow the MediaStoreObserver doesn't work for playlists
@@ -58,7 +52,9 @@ object LegacyPlaylistsUtil {
                     }
                 } else {
                     // Playlist exists
-                    if (cursor.moveToFirst()) { id = cursor.getLong(0) }
+                    if (cursor.moveToFirst()) {
+                        id = cursor.getLong(0)
+                    }
                 }
                 cursor?.close()
             } catch (ignored: SecurityException) { }
@@ -75,10 +71,13 @@ object LegacyPlaylistsUtil {
     fun renamePlaylist(context: Context, id: Long, newName: String) {
         val playlistUri = PlaylistsUtil.getPlaylistUris(id)
         try {
-            context.contentResolver.update(playlistUri, ContentValues().also { it.put(MediaStore.Audio.PlaylistsColumns.NAME, newName) }, null, null)
+            context.contentResolver.update(playlistUri, ContentValues().also {
+                it.put(MediaStoreCompat.Audio.PlaylistsColumns.NAME, newName)
+            }, null, null)
             // Necessary because somehow the MediaStoreObserver doesn't work for playlists
             context.contentResolver.notifyChange(playlistUri, null)
-        } catch (ignored: SecurityException) { }
+        } catch (ignored: SecurityException) {
+        }
     }
 
     /**
@@ -92,7 +91,7 @@ object LegacyPlaylistsUtil {
         // try to delete
         for (index in filePlaylists.indices) {
             val output = context.contentResolver.delete(
-                MediaStore.Audio.Playlists.EXTERNAL_CONTENT_URI,
+                MediaStoreCompat.Audio.Playlists.EXTERNAL_CONTENT_URI,
                 "${MediaStore.Audio.Media._ID} = ?",
                 arrayOf(filePlaylists[index].id.toString())
             )
@@ -110,7 +109,8 @@ object LegacyPlaylistsUtil {
             ).show()
         }
 
-        LocalBroadcastManager.getInstance(App.instance).sendBroadcast(Intent(BROADCAST_PLAYLISTS_CHANGED))
+        LocalBroadcastManager.getInstance(App.instance)
+            .sendBroadcast(Intent(BROADCAST_PLAYLISTS_CHANGED))
         return failList
     }
 
@@ -138,12 +138,13 @@ object LegacyPlaylistsUtil {
         showToastOnFinish: Boolean
     ) {
 
-        val uri = MediaStore.Audio.Playlists.Members.getContentUri("external", playlistId)
+        val uri = MediaStoreCompat.Audio.Playlists.Members.getContentUri("external", playlistId)
         var cursor: Cursor? = null
         var base = 0
         try {
             try {
-                val projection = arrayOf("max(" + MediaStore.Audio.Playlists.Members.PLAY_ORDER + ")")
+                val projection =
+                    arrayOf("max(" + MediaStoreCompat.Audio.Playlists.Members.PLAY_ORDER + ")")
                 cursor = context.contentResolver
                     .query(uri, projection, null, null, null)
                 if (cursor != null && cursor.moveToFirst()) {
@@ -180,7 +181,12 @@ object LegacyPlaylistsUtil {
     }
 
     @Deprecated("")
-    private fun makeInsertItems(songs: List<Song>, offset: Int, lenth: Int, base: Int): Array<ContentValues?> {
+    private fun makeInsertItems(
+        songs: List<Song>,
+        offset: Int,
+        lenth: Int,
+        base: Int
+    ): Array<ContentValues?> {
         var len = lenth
         if (offset + len > songs.size) {
             len = songs.size - offset
@@ -188,15 +194,19 @@ object LegacyPlaylistsUtil {
         val contentValues = arrayOfNulls<ContentValues>(len)
         for (i in 0 until len) {
             contentValues[i] = ContentValues()
-            contentValues[i]!!.put(MediaStore.Audio.Playlists.Members.PLAY_ORDER, base + offset + i)
-            contentValues[i]!!.put(MediaStore.Audio.Playlists.Members.AUDIO_ID, songs[offset + i].id)
+            contentValues[i]!!.put(MediaStoreCompat.Audio.Playlists.Members.PLAY_ORDER, base + offset + i)
+            contentValues[i]!!.put(
+                MediaStoreCompat.Audio.Playlists.Members.AUDIO_ID,
+                songs[offset + i].id
+            )
         }
         return contentValues
     }
 
     @Deprecated("")
     fun moveItem(context: Context, playlistId: Long, from: Int, to: Int): Boolean {
-        val res = MediaStore.Audio.Playlists.Members.moveItem(context.contentResolver, playlistId, from, to)
+        val res = MediaStoreCompat.Audio.Playlists.Members
+            .moveItem(context.contentResolver, playlistId, from, to)
         // Necessary because somehow the MediaStoreObserver doesn't work for playlists
         // NOTE: actually for now lets disable this because it messes with the animation (tested on Android 11)
 //        context.contentResolver.notifyChange(getPlaylistUris(context, playlistId), null)
@@ -205,18 +215,22 @@ object LegacyPlaylistsUtil {
 
     @Deprecated("")
     fun removeFromPlaylist(context: Context, song: Song, playlistId: Long) {
-        val selection = MediaStore.Audio.Playlists.Members.AUDIO_ID + " =?"
+        val selection = MediaStoreCompat.Audio.Playlists.Members.AUDIO_ID + " =?"
         val selectionArgs = arrayOf(song.id.toString())
         try {
             if (Build.VERSION.SDK_INT >= 29)
                 context.contentResolver.delete(
-                    MediaStore.Audio.Playlists.Members.getContentUri(
+                    MediaStoreCompat.Audio.Playlists.Members.getContentUri(
                         MediaStore.getExternalVolumeNames(context).firstOrNull(), playlistId
                     ),
                     selection, selectionArgs
                 )
             else
-                context.contentResolver.delete(PlaylistsUtil.getPlaylistUris(playlistId), selection, selectionArgs)
+                context.contentResolver.delete(
+                    PlaylistsUtil.getPlaylistUris(playlistId),
+                    selection,
+                    selectionArgs
+                )
             // Necessary because somehow the MediaStoreObserver doesn't work for playlists
             context.contentResolver.notifyChange(PlaylistsUtil.getPlaylistUris(playlistId), null)
         } catch (ignored: SecurityException) {
@@ -230,22 +244,30 @@ object LegacyPlaylistsUtil {
             selectionArgs[i] = songs[i].idInPlayList.toString()
         }
 
-        var selection = MediaStore.Audio.Playlists.Members._ID + " IN ("
+        var selection = MediaStoreCompat.Audio.Playlists.Members._ID + " IN ("
         for (selectionArg in selectionArgs) selection += "?, "
         selection = selection.substring(0, selection.length - 2) + ")"
 
         try {
             if (Build.VERSION.SDK_INT >= 29)
                 context.contentResolver.delete(
-                    MediaStore.Audio.Playlists.Members.getContentUri(
-                        MediaStore.getExternalVolumeNames(context).firstOrNull(), songs[0].playlistId
+                    MediaStoreCompat.Audio.Playlists.Members.getContentUri(
+                        MediaStore.getExternalVolumeNames(context).firstOrNull(),
+                        songs[0].playlistId
                     ),
                     selection, selectionArgs
                 )
             else
-                context.contentResolver.delete(PlaylistsUtil.getPlaylistUris(songs[0].playlistId), selection, selectionArgs)
+                context.contentResolver.delete(
+                    PlaylistsUtil.getPlaylistUris(songs[0].playlistId),
+                    selection,
+                    selectionArgs
+                )
             // Necessary because somehow the MediaStoreObserver is not notified when adding a playlist
-            context.contentResolver.notifyChange(PlaylistsUtil.getPlaylistUris(songs[0].playlistId), null)
+            context.contentResolver.notifyChange(
+                PlaylistsUtil.getPlaylistUris(songs[0].playlistId),
+                null
+            )
         } catch (ignored: SecurityException) {
         }
     }

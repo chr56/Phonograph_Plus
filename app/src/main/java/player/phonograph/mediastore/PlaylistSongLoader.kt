@@ -4,11 +4,11 @@
 
 package player.phonograph.mediastore
 
+import legacy.phonograph.MediaStoreCompat.Audio.Playlists
+import player.phonograph.model.PlaylistSong
 import android.content.Context
 import android.database.Cursor
-import android.provider.MediaStore
 import android.provider.MediaStore.Audio.AudioColumns
-import player.phonograph.model.PlaylistSong
 
 object PlaylistSongLoader {
 
@@ -44,13 +44,12 @@ object PlaylistSongLoader {
             idInPlayList = cursor.getLong(12),
         )
 
-    @Suppress("DEPRECATION")
     private fun makeCursor(context: Context, playlistId: Long): Cursor? {
         return try {
             context.contentResolver.query(
-                MediaStore.Audio.Playlists.Members.getContentUri("external", playlistId),
+                Playlists.Members.getContentUri("external", playlistId),
                 arrayOf(
-                    MediaStore.Audio.Playlists.Members.AUDIO_ID, // 0
+                    Playlists.Members.AUDIO_ID, // 0
                     AudioColumns.TITLE, // 1
                     AudioColumns.TRACK, // 2
                     AudioColumns.YEAR, // 3
@@ -62,10 +61,10 @@ object PlaylistSongLoader {
                     AudioColumns.ALBUM, // 9
                     AudioColumns.ARTIST_ID, // 10
                     AudioColumns.ARTIST, // 11
-                    MediaStore.Audio.Playlists.Members._ID // 12
+                    Playlists.Members._ID // 12
                 ),
                 BASE_AUDIO_SELECTION, null,
-                MediaStore.Audio.Playlists.Members.DEFAULT_SORT_ORDER
+                Playlists.Members.DEFAULT_SORT_ORDER
             )
         } catch (e: SecurityException) {
             null
