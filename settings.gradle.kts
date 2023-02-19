@@ -48,7 +48,7 @@ dependencyResolutionManagement {
                     "androidx.palette:palette-ktx:1.0.0")
 
             library("google.material",
-                    "com.google.android.material:material:1.6.1")
+                    "com.google.android.material:material:1.8.0")
 
             //
             // Jetpack Compose
