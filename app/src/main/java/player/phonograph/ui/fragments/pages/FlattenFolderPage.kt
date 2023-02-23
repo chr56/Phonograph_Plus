@@ -10,10 +10,15 @@ import com.google.android.material.appbar.AppBarLayout
 import mt.pref.ThemeColor
 import mt.util.color.primaryTextColor
 import player.phonograph.App
+import player.phonograph.BuildConfig
 import player.phonograph.R
 import player.phonograph.adapter.display.SongCollectionAdapter
 import player.phonograph.adapter.display.SongDisplayAdapter
 import player.phonograph.databinding.FragmentDisplayPageBinding
+import player.phonograph.model.sort.SortMode
+import player.phonograph.model.sort.SortRef
+import player.phonograph.ui.components.popup.ListOptionsPopup
+import player.phonograph.ui.fragments.pages.util.DisplayConfig
 import player.phonograph.util.ImageUtil.getTintedDrawable
 import player.phonograph.util.PhonographColorUtil.nightMode
 import player.phonograph.util.ViewUtil.setUpFastScrollRecyclerViewColor
@@ -21,6 +26,8 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import android.os.Bundle
+import android.util.Log
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuItem
@@ -97,6 +104,15 @@ class FlattenFolderPage : AbsPage() {
                     context.primaryTextColor(context.resources.nightMode),
                 )
                 showAsActionFlag = MenuItem.SHOW_AS_ACTION_ALWAYS
+                onClick {
+                    hostFragment.popup.onShow = ::configPopup
+                    hostFragment.popup.onDismiss = ::dismissPopup
+                    hostFragment.popup.showAtLocation(
+                        binding.root, Gravity.TOP or Gravity.END, 0,
+                        8 + hostFragment.totalHeaderHeight + binding.panel.height
+                    )
+                    true
+                }
             }
         }
         binding.panelToolbar.setTitleTextColor(requireContext().primaryTextColor(resources.nightMode))
@@ -104,6 +120,42 @@ class FlattenFolderPage : AbsPage() {
         hostFragment.addOnAppBarOffsetChangedListener(outerAppbarOffsetListener)
     }
 
+    private fun configPopup(popup: ListOptionsPopup) {
+        val mode = viewModel.mainViewMode.value
+        if (mode) configPopupFolder(popup) else configPopupSongs(popup)
+    }
+
+    private fun configPopupFolder(popup: ListOptionsPopup) {
+        val currentSortMode = viewModel.sortMode.value
+        popup.allowRevert = true
+        popup.revert = currentSortMode.revert
+
+        popup.sortRef = currentSortMode.sortRef
+        popup.sortRefAvailable =
+            arrayOf(SortRef.DISPLAY_NAME)//, SortRef.ADDED_DATE, SortRef.MODIFIED_DATE, SortRef.SIZE)
+    }
+
+    private fun configPopupSongs(popup: ListOptionsPopup) {
+        popup.dismiss()
+        // todo
+    }
+
+    private fun dismissPopup(popup: ListOptionsPopup) {
+        val mode = viewModel.mainViewMode.value
+        if (mode) dismissPopupFolder(popup) else dismissPopupSongs(popup)
+    }
+
+    private fun dismissPopupFolder(popup: ListOptionsPopup) {
+        val selected = SortMode(popup.sortRef, popup.revert)
+        if (viewModel.sortMode.value != selected) {
+            viewModel.sortMode.value = selected
+            viewModel.loadFolders(requireContext())
+        }
+    }
+
+    private fun dismissPopupSongs(popup: ListOptionsPopup) {
+        // todo
+    }
 
     private lateinit var songCollectionAdapter: SongCollectionAdapter
     private lateinit var songAdapter: SongDisplayAdapter
