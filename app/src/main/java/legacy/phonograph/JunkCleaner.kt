@@ -23,6 +23,7 @@ import player.phonograph.notification.ErrorNotification
 import player.phonograph.service.util.QueuePreferenceManager
 import player.phonograph.service.util.QueuePreferenceManager.Companion.NAME as QUEUE_PREF
 import player.phonograph.util.CoroutineUtil
+import player.phonograph.util.preferences.HomeTabConfig
 import android.content.Context.MODE_PRIVATE
 
 class JunkCleaner(context: Context) : FileCleaner(context) {
@@ -95,6 +96,7 @@ class JunkCleaner(context: Context) : FileCleaner(context) {
                 DeprecatedPreference.QueueCfg.PREF_POSITION_IN_TRACK,
                 QueuePreferenceManager.KEY_CURRENT_MILLISECOND
             )
+            HomeTabConfig.resetHomeTabConfig()
         }
         Log.i(TAG, "Migrate Queue Preferences Completed")
     }
