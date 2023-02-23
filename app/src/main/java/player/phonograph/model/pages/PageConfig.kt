@@ -20,25 +20,27 @@ class PageConfig(var tabMap: MutableMap<Int, String>) : Iterable<String> {
 
     fun getAsPage(index: Int): AbsPage =
         when (get(index)) {
-            Pages.SONG -> SongPage()
-            Pages.ALBUM -> AlbumPage()
-            Pages.ARTIST -> ArtistPage()
+            Pages.SONG     -> SongPage()
+            Pages.ALBUM    -> AlbumPage()
+            Pages.ARTIST   -> ArtistPage()
             Pages.PLAYLIST -> PlaylistPage()
-            Pages.GENRE -> GenrePage()
-            Pages.FOLDER -> FilesPage()
-            else -> EmptyPage()
+            Pages.GENRE    -> GenrePage()
+            Pages.FILES    -> FilesPage()
+            Pages.FOLDER   -> FlattenFolderPage()
+            else           -> EmptyPage()
         }
 
     companion object {
         val DEFAULT_CONFIG = PageConfig(
-            HashMap<Int, String>(6).also {
-                it[0] = Pages.SONG
-                it[1] = Pages.ALBUM
-                it[2] = Pages.ARTIST
-                it[3] = Pages.PLAYLIST
-                it[4] = Pages.GENRE
-                it[5] = Pages.FOLDER
-            }
+            hashMapOf(
+                0 to Pages.SONG,
+                1 to Pages.ALBUM,
+                2 to Pages.ARTIST,
+                3 to Pages.PLAYLIST,
+                4 to Pages.GENRE,
+                5 to Pages.FOLDER,
+                6 to Pages.FILES,
+            )
         )
     }
 

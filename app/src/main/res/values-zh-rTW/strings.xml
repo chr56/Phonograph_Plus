@@ -197,6 +197,7 @@
     <string name="rearrange_playing_queue_instruction">您可以更改歌曲播放的順序，上下拖曳播放佇列中的歌曲編號即可。</string>
     <string name="library">音樂庫</string>
     <string name="folders">文件夾</string>
+    <string name="files">文件</string>
     <string name="theme_switch">主題切換</string>
     <string name="failed_to_save_playlist">無法儲存播放清單 \"%s\"</string>
     <string name="saved_x_playlists_to_x">儲存播放清單 %1$d 至 %2$s</string>
