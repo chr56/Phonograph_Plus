@@ -4,6 +4,7 @@
 
 package player.phonograph.model
 
+import player.phonograph.util.FileUtil.stripStorageVolume
 import androidx.annotation.Keep
 import android.content.Context
 import android.os.Parcel
@@ -18,7 +19,8 @@ class SongCollection(
 
     override fun getItemID(): Long = hashCode().toLong()
     override fun getDisplayTitle(context: Context) = name
-    override fun getDescription(context: Context) = songCountString(context, songs.size)
+    override fun getDescription(context: Context) =
+        "${songCountString(context, songs.size)} ...${stripStorageVolume(detail.orEmpty())}"
 
 
     override fun equals(other: Any?): Boolean {
