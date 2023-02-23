@@ -34,12 +34,12 @@ class PageConfig(var tabMap: MutableMap<Int, String>) : Iterable<String> {
         val DEFAULT_CONFIG = PageConfig(
             hashMapOf(
                 0 to Pages.SONG,
-                1 to Pages.ALBUM,
-                2 to Pages.ARTIST,
+                1 to Pages.FOLDER,
+                2 to Pages.FILES,
                 3 to Pages.PLAYLIST,
-                4 to Pages.GENRE,
-                5 to Pages.FOLDER,
-                6 to Pages.FILES,
+                4 to Pages.ALBUM,
+                5 to Pages.ARTIST,
+                6 to Pages.GENRE,
             )
         )
     }
