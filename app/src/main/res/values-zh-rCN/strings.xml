@@ -197,6 +197,7 @@
     <string name="rearrange_playing_queue_instruction">通过拖动歌曲名前面的序列号来调整播放队列的顺序</string>
     <string name="library">媒体库</string>
     <string name="folders">文件夹</string>
+    <string name="files">文件</string>
     <string name="theme_switch">主题切换</string>
     <string name="failed_to_save_playlist">保存播放列表（%s）失败</string>
     <string name="saved_x_playlists_to_x">已保存 %1$d 播放列表到 %2$s</string>
