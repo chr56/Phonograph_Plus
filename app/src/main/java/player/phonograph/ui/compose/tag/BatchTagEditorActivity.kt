@@ -28,6 +28,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.core.app.BundleCompat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import android.content.Context
@@ -97,16 +98,27 @@ class BatchTagEditorActivity :
 
     companion object {
         private fun parseIntent(context: Context, intent: Intent): List<Song> {
-            val ids = intent.extras?.getLongArray(SONG_IDS) ?: return emptyList()
-            return ids.map { SongLoader.getSong(context, it) }
+            val songs: ArrayList<Song>? = intent.extras?.getParcelableArrayList(SONGS)
+            val ids: LongArray? = intent.extras?.getLongArray(SONG_IDS)
+            return songs ?: (ids?.map { SongLoader.getSong(context, it) }
+                ?: emptyList())
         }
 
         private const val SONG_IDS = "SONG_IDS"
+        private const val SONGS = "SONGS"
 
         fun launch(context: Context, songsIds: LongArray) {
             context.startActivity(
                 Intent(context.applicationContext, BatchTagEditorActivity::class.java).apply {
                     putExtra(SONG_IDS, songsIds)
+                }
+            )
+        }
+
+        fun launch(context: Context, songs: ArrayList<Song>) {
+            context.startActivity(
+                Intent(context.applicationContext, BatchTagEditorActivity::class.java).apply {
+                    putExtra(SONGS, songs)
                 }
             )
         }

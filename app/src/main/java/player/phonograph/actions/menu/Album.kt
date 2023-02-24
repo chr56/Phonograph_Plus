@@ -81,8 +81,7 @@ fun albumDetailToolbar(
             icon = getTintedDrawable(R.drawable.ic_library_music_white_24dp, iconColor)
             showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
             onClick {
-                val songsIds = album.songs.map { it.id }.toLongArray()
-                BatchTagEditorActivity.launch(context, songsIds)
+                BatchTagEditorActivity.launch(context, ArrayList(album.songs))
                 true
             }
         }
