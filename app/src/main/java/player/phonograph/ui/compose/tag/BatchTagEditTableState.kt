@@ -25,10 +25,16 @@ class BatchTagEditTableState(info: List<SongInfoModel>, defaultColor: Color) {
     private val _allEditRequest: MutableMap<FieldKey, String?> = EnumMap(FieldKey::class.java)
     val allEditRequests: Map<FieldKey, String?> get() = _allEditRequest
 
-    fun editRequest(key: FieldKey, newValue: String?) {
+    fun changeField(key: FieldKey, newValue: String) {
         _allEditRequest[key] = newValue
+    }
+    fun removeField(key: FieldKey) {
+        _allEditRequest[key] = null
+    }
+    fun undoChanges(key: FieldKey) {
+        _allEditRequest.remove(key)
     }
 }
 
 internal fun List<SongInfoModel>.reduceTags(key: FieldKey) =
-    map { it.tagValue(key).value() }
+    map { it.tagValue(key).value() }.filterNot { it.isEmpty() }.toSet()
