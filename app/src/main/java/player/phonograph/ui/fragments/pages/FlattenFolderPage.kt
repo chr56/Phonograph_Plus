@@ -19,6 +19,7 @@ import player.phonograph.model.sort.SortMode
 import player.phonograph.model.sort.SortRef
 import player.phonograph.ui.components.popup.ListOptionsPopup
 import player.phonograph.ui.fragments.pages.util.DisplayConfig
+import player.phonograph.ui.fragments.pages.util.DisplayConfigTarget
 import player.phonograph.util.ImageUtil.getTintedDrawable
 import player.phonograph.util.PhonographColorUtil.nightMode
 import player.phonograph.util.ViewUtil.setUpFastScrollRecyclerViewColor
@@ -136,8 +137,21 @@ class FlattenFolderPage : AbsPage() {
     }
 
     private fun configPopupSongs(popup: ListOptionsPopup) {
-        popup.dismiss()
-        // todo
+        val displayConfig = DisplayConfig(DisplayConfigTarget.SongPage)
+        val currentSortMode = displayConfig.sortMode
+
+        popup.allowRevert = true
+        popup.revert = currentSortMode.revert
+
+        popup.sortRef = currentSortMode.sortRef
+        popup.sortRefAvailable =
+            arrayOf(
+                SortRef.SONG_NAME,
+                SortRef.ALBUM_NAME,
+                SortRef.ARTIST_NAME, SortRef.YEAR, SortRef.ADDED_DATE,
+                SortRef.MODIFIED_DATE,
+                SortRef.DURATION,
+            )
     }
 
     private fun dismissPopup(popup: ListOptionsPopup) {
@@ -154,7 +168,14 @@ class FlattenFolderPage : AbsPage() {
     }
 
     private fun dismissPopupSongs(popup: ListOptionsPopup) {
-        // todo
+        val displayConfig = DisplayConfig(DisplayConfigTarget.SongPage)
+
+        val selected = SortMode(popup.sortRef, popup.revert)
+        if (displayConfig.sortMode != selected) {
+            displayConfig.sortMode = selected
+            viewModel.loadFolders(requireContext())
+            viewModel.loadSongs()
+        }
     }
 
     private lateinit var songCollectionAdapter: SongCollectionAdapter

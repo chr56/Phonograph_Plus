@@ -33,6 +33,9 @@ class FlattenFolderPageViewModel : ViewModel() {
     val sortMode: MutableStateFlow<SortMode> =
         MutableStateFlow(SortMode(SortRef.DISPLAY_NAME))
 
+    private var _currentPosition: Int = -1
+    val currentFolder get() = _folders.value.getOrNull(_currentPosition)
+
 
     fun loadFolders(context: Context) {
         viewModelScope.launch(Dispatchers.IO) {
@@ -44,9 +47,15 @@ class FlattenFolderPageViewModel : ViewModel() {
 
     fun browseFolder(position: Int) {
         viewModelScope.launch(Dispatchers.IO) {
-            val songs = _folders.value[position].songs
-            _currentSongs.emit(songs)
+            _currentPosition = position
+            loadSongs()
             mainViewMode.emit(false)
+        }
+    }
+
+    fun loadSongs() {
+        viewModelScope.launch(Dispatchers.IO) {
+            _currentSongs.emit(currentFolder?.songs ?: emptyList())
         }
     }
 
