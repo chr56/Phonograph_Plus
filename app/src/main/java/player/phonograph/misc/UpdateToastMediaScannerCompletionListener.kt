@@ -19,7 +19,6 @@ class UpdateToastMediaScannerCompletionListener(
     OnScanCompletedListener {
 
     private val activityWeakReference: WeakReference<Activity> = WeakReference(activity)
-    private val toast = Toast.makeText(activity.applicationContext, "", Toast.LENGTH_SHORT)
 
     private val notificationId = paths.hashCode()
 
@@ -44,9 +43,15 @@ class UpdateToastMediaScannerCompletionListener(
             if (fail.size > 0) {
                 ErrorNotification.postErrorNotification("Couldn't scan:\n${fail.reduce { acc, s -> "$acc\n$s" }}")
             }
-            activityWeakReference.get()?.runOnUiThread {
-                toast.setText("$text $textFail")
-                toast.show()
+            activityWeakReference.get()?.let { activity ->
+                activity.runOnUiThread {
+                    Toast.makeText(
+                        activity.applicationContext,
+                        "$text $textFail",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+
             }
         }
     }
