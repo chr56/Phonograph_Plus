@@ -4,82 +4,75 @@
 [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://github.com/chr56/Phonograph_Plus/blob/release/LICENSE.txt)
 [<img src="https://github.com/chr56/Phonograph_Plus/actions/workflows/dev.yml/badge.svg" alt="Dev CI Status">](https://github.com/chr56/Phonograph_Plus/actions/workflows/dev.yml)
 
+**Phonograph 第三方维护版**
 
-**A fork of Phonograph under maintenance and development**
-
-A material designed local music player for Android.
+**正在维护和开发的 Phonograph 分支**
 
 <br/>
 
+[ENGLISH](./README.md)
 
-[简体中文](./README_ZH.md)
+原项目：[Phonograph](https://github.com/kabouzeid/Phonograph)
 
-This is a fork of [Phonograph](https://github.com/kabouzeid/Phonograph), and is currently under my maintenance and development.
+## **新增特性**
 
-## **Additional Features**
+所有特性皆与原版相比。 
 
-All listed features are compared with original Phonograph.
+- 解锁 Pro 
 
-- Unlock pro.
+- 自动夜间模式 
 
-- Automatic & adaptive dark mode.
+- 大规模调整界面 
 
-- Plenty of user interface changes.
+- 应用内手动更改语言 
 
-- Change language in application manually.
+- 全新详情页, 显示歌曲标签等信息 
 
-- Brand-new Detail page with more information like tags
+- 歌词对话框内显示歌词时间轴信息, 并可以通过长按进行快速转跳与自动滚动 
 
-- Show Time Axis in "Lyrics" Dialog and allow seeking basing lyric's time axis and
-  support lyrics following.
+- 自定义歌曲点击行为 
 
-- User-defined click behavior for songs
+- 支持正在播放列表历史记录 
 
-- Support history of playing queue.
+- 适配 Android 11 分区存储 （部分） 
 
-- Fix Android 11 Scope Storage. (Partial)
+- 改进菜单, 适当折叠歌曲弹出菜单  
 
-- Improve menu experience.
+- 改进媒体库交互 
 
-- Improve “Library” pages user experience.
+- 支持更多排序方式 
 
-- Support more sort orders.
+- 添加崩溃报告页面 
 
-- Allow collecting app crash report.
+- 使用路径过滤器代替黑名单, 支持排除模式与仅包含模式 
 
-- use Path filter to replace, support "exclude mode" (blacklist) and "include mode" (whitelist).
+- 在歌曲(或文件)弹出菜单中, 快速添加排除名单(黑名单)
 
-- Add song menu shortcut to add new items to excluded-list (blacklist).
+- 适配" [墨·状态栏歌词](https://github.com/Block-Network/StatusBarLyric) 
 
-- Co-work-with/Support StatusBar Lyric
-  Xposed Module (api)
+- 支持导出内部数据库以供备份 
+- 增大“最近播放”和“最喜爱的歌曲(实际是“最常播放”的歌曲)”条目数量(100→150)
 
-- Export internal databases for the need of backup.
+- 允许标签固定并平铺 
 
-- Increase history played tracks and top played tracks entries capacity (
-  100->150).
+- 全新的文件夹视图 
 
-- Allow tabs fixed.
+- 支持删除歌曲时一同删除歌词 
 
-- Brand-new File tab.
+- 以及更多细小特性 
 
-- Allow deleting songs file along with its external lyrics file. 
-
-- and more small features/fixes.
+浏览[更新日志](https://phonographplus.github.io/changelogs/changeslogs/changelog-ZH-CN.html)以了解明细!
 
 
+## **翻译**
 
-It is suggested to browser the [Changelog](https://phonographplus.github.io/changelogs/changeslogs/changelog.html) to learn all features completely
+[Crowdin](https://crowdin.com/project/phonograph-plus)
 
-## **Translation**
 
-Translate Phonograph Plus into your language -> [Crowdin](https://crowdin.com/project/phonograph-plus)
+## **截图**
 
-We have removed Swedish and Norwegian Nynorsk translations due to missing too many translations
+仅供参考， 以实际为准
 
-## **Screenshot**
-
-For reference only, actual app might be different
 
 |                                       Card Player                                       |                                       Flat Player                                       |
 |:---------------------------------------------------------------------------------------:|:---------------------------------------------------------------------------------------:|
@@ -101,67 +94,65 @@ For reference only, actual app might be different
 |:---------------------------------------------------------------------------------------:|:---------------------------------------------------------------------------------------:|
 | ![Screenshots](fastlane/metadata/android/en-US/images/phoneScreenshots/02.jpg?raw=true) | ![Screenshots](fastlane/metadata/android/en-US/images/phoneScreenshots/04.jpg?raw=true) |
 
-## **Build Instructions & Developer Guide**
+## **构建指南与开发指南** 
 
-See [Build_Instructions.md](./Build_Instructions.md)
+[Build_Instructions.md](./Build_Instructions.md)
 
-## **Development Plan (or Road Map?)** & **TO-DO list**
+## **开发计划**
 
 ### **2022**
 
-- [x] Refactor File Fragment
+- [x] 重构文件视图
 
-- [x] Refactor Library UI
+- [x] 重构媒体库 UI
 
-- [x] Better 'My Top Songs' algorithm
+- [x] 实现更好的播放频率计数
 
-- [x] Complete README
+- [x] 完成 Readme
 
-- [x] Refactor MusicService
+- [x] 重构后台音乐服务
 
-- [x] Migrate Glide to Coil
+- [x] 迁移 Glide 至 Coil
 
-- [x] Whitelist
+- [x] 支持白名单机制
 
-- [x] Migrate Song Detail to Jetpack Compose
+- [x] 将歌曲“详情” 迁移至 Compose
 
-- [x] Refactor Update Dialog
+- [x] 重构更新对话框
 
-- [x] User-defined click behavior for songs
+- [x] 自定义歌曲点击行为
 
-- [x] Support history of playing queue.
+- [x] 支持正在播放列表历史记录 
 
-- [ ] Refactor Setting UI (WIP⭕)
+- [ ] 重构设置 UI (WIP⭕) 
 
-- [ ] Refactor Search
+- [ ] 重构搜索 
 
-- [ ] Use AndroidX Room to build
-  Media database, to parse multi-artists songs and ‘;’, '&', '/', '\', ',' in tags, and improve search result
+- [ ] 自建本地媒体数据库(使用 AndroidX Room) ⭕, 以解析多艺术家歌曲, 并解析 Tag 中 ‘;’, '&', '/', '\', ',' , 改进搜索
 
 - [ ] ...
 
 ### **2023~2024(?)**
 
-- [ ] Rewrite Tag Editor (Single File⭕, Batch❌)
+- [ ] 重写音乐标签编辑 (单文件⭕, 批量❌) 
 
-- [ ] Refactor Main Player (WIP⭕)
+- [ ] 重构主播放器 (WIP⭕) 
 
-- [ ] Enhance Playlist Detail: support search ❌, Better way to
-  modify ❗WIP, handle intent of open (playlist) file ❌
+- [ ] 增强“播放列表详情”(支持搜索 ❌, 更好的修改本地列表方式 ❗WIP, 响应打开文件的 Intent ❌)
 
-- [ ] Desktop lyrics (?)
+- [ ] 桌面歌词(?) 
 
-- [ ] Support some Android's StatusBar lyrics, such as FlyMe / EvolutionX
+- [ ] 尝试适配 FlyMe / EvolutionX(等一系类原生)状态栏歌词 
 
-- [ ] improve SlidingMusicBar
+- [ ] 改进 SlidingMusicBar 
 
-- [ ] Valid files</del>
+- [ ] <del>检查文件 </del>
 
-- [ ] Adapter Android11+ File Permission perfectly</del>
+- [ ] <del>完美适配 Android11+ 的文件访问(❌) </del>
 
-- [ ] Refactor so-called Theme Engine</del>
+- [ ] <del>部分重构(所谓的)"主题引擎" </del>
 
-- [ ] Make songs listening statistics</del>
+- [ ] <del>统计听歌频率 </del>
 
 - [ ] ...
 
