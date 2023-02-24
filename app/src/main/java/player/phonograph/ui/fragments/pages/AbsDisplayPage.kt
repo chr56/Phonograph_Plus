@@ -17,6 +17,7 @@ import player.phonograph.databinding.FragmentDisplayPageBinding
 import player.phonograph.model.Displayable
 import player.phonograph.ui.components.popup.ListOptionsPopup
 import player.phonograph.ui.fragments.pages.util.DisplayConfig
+import player.phonograph.ui.fragments.pages.util.DisplayConfigTarget
 import player.phonograph.util.ImageUtil.getTintedDrawable
 import player.phonograph.util.PhonographColorUtil.nightMode
 import player.phonograph.util.Util
@@ -133,6 +134,8 @@ sealed class AbsDisplayPage<IT, A : DisplayAdapter<out Displayable>, LM : GridLa
         isRecyclerViewPrepared = true
     }
 
+    internal abstract val displayConfigTarget: DisplayConfigTarget
+
     private fun initAppBar() {
 
         binding.panel.setExpanded(false)
@@ -167,10 +170,11 @@ sealed class AbsDisplayPage<IT, A : DisplayAdapter<out Displayable>, LM : GridLa
     protected open fun configAppBar(panelToolbar: Toolbar) {}
 
     private fun configPopup(popup: ListOptionsPopup) {
-        val displayConfig = DisplayConfig(this)
+        val displayConfig = DisplayConfig(displayConfigTarget)
 
         // grid size
-        if (Util.isLandscape(resources)) popup.viewBinding.titleGridSize.text = resources.getText(R.string.action_grid_size_land)
+        if (Util.isLandscape(resources)) popup.viewBinding.titleGridSize.text =
+            resources.getText(R.string.action_grid_size_land)
         popup.maxGridSize = displayConfig.maxGridSize
         popup.gridSize = displayConfig.gridSize
 
@@ -192,7 +196,7 @@ sealed class AbsDisplayPage<IT, A : DisplayAdapter<out Displayable>, LM : GridLa
 
     protected fun dismissPopup(popup: ListOptionsPopup) {
 
-        val displayConfig = DisplayConfig(this)
+        val displayConfig = DisplayConfig(displayConfigTarget)
 
         //  Grid Size
         val gridSizeSelected = popup.gridSize

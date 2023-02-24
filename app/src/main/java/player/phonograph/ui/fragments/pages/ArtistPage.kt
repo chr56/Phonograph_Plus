@@ -4,34 +4,37 @@
 
 package player.phonograph.ui.fragments.pages
 
-import android.annotation.SuppressLint
-import android.util.Log
-import androidx.recyclerview.widget.GridLayoutManager
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import kotlinx.coroutines.yield
 import player.phonograph.App
 import player.phonograph.BuildConfig
 import player.phonograph.R
 import player.phonograph.adapter.display.ArtistDisplayAdapter
 import player.phonograph.adapter.display.DisplayAdapter
 import player.phonograph.mediastore.ArtistLoader
+import player.phonograph.model.Artist
 import player.phonograph.model.sort.SortMode
 import player.phonograph.model.sort.SortRef
-import player.phonograph.model.Artist
-import player.phonograph.ui.fragments.pages.util.DisplayConfig
 import player.phonograph.ui.components.popup.ListOptionsPopup
+import player.phonograph.ui.fragments.pages.util.DisplayConfig
+import player.phonograph.ui.fragments.pages.util.DisplayConfigTarget
+import androidx.recyclerview.widget.GridLayoutManager
+import android.annotation.SuppressLint
+import android.util.Log
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import kotlinx.coroutines.yield
 
 class ArtistPage : AbsDisplayPage<Artist, DisplayAdapter<Artist>, GridLayoutManager>() {
 
+    override val displayConfigTarget get() = DisplayConfigTarget.ArtistPage
+
     override fun initLayoutManager(): GridLayoutManager {
         return GridLayoutManager(hostFragment.requireContext(), 1)
-            .also { it.spanCount = DisplayConfig(this).gridSize }
+            .also { it.spanCount = DisplayConfig(displayConfigTarget).gridSize }
     }
 
     override fun initAdapter(): DisplayAdapter<Artist> {
-        val displayConfig = DisplayConfig(this)
+        val displayConfig = DisplayConfig(displayConfigTarget)
 
         val layoutRes =
             if (displayConfig.gridSize > displayConfig.maxGridSizeForList) R.layout.item_grid

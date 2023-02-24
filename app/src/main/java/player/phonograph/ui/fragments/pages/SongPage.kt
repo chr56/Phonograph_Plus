@@ -17,10 +17,10 @@ import player.phonograph.mediastore.SongLoader
 import player.phonograph.model.Song
 import player.phonograph.model.sort.SortMode
 import player.phonograph.model.sort.SortRef
-import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.queue.ShuffleMode
 import player.phonograph.ui.components.popup.ListOptionsPopup
 import player.phonograph.ui.fragments.pages.util.DisplayConfig
+import player.phonograph.ui.fragments.pages.util.DisplayConfigTarget
 import player.phonograph.util.ImageUtil.getTintedDrawable
 import player.phonograph.util.PhonographColorUtil.nightMode
 import androidx.appcompat.widget.Toolbar
@@ -37,13 +37,15 @@ import kotlinx.coroutines.yield
 
 class SongPage : AbsDisplayPage<Song, DisplayAdapter<Song>, GridLayoutManager>() {
 
+    override val displayConfigTarget get() = DisplayConfigTarget.SongPage
+
     override fun initLayoutManager(): GridLayoutManager {
         return GridLayoutManager(hostFragment.requireContext(), 1)
-            .also { it.spanCount = DisplayConfig(this).gridSize }
+            .also { it.spanCount = DisplayConfig(displayConfigTarget).gridSize }
     }
 
     override fun initAdapter(): DisplayAdapter<Song> {
-        val displayConfig = DisplayConfig(this)
+        val displayConfig = DisplayConfig(displayConfigTarget)
 
         val layoutRes =
             if (displayConfig.gridSize > displayConfig.maxGridSizeForList) R.layout.item_grid

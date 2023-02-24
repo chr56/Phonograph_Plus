@@ -9,11 +9,10 @@ import player.phonograph.R
 import player.phonograph.model.sort.SortMode
 import player.phonograph.model.sort.SortRef
 import player.phonograph.settings.Setting
-import player.phonograph.ui.fragments.pages.AbsDisplayPage
-import player.phonograph.ui.fragments.pages.AlbumPage
-import player.phonograph.ui.fragments.pages.ArtistPage
-import player.phonograph.ui.fragments.pages.GenrePage
-import player.phonograph.ui.fragments.pages.SongPage
+import player.phonograph.ui.fragments.pages.util.DisplayConfigTarget.AlbumPage
+import player.phonograph.ui.fragments.pages.util.DisplayConfigTarget.ArtistPage
+import player.phonograph.ui.fragments.pages.util.DisplayConfigTarget.GenrePage
+import player.phonograph.ui.fragments.pages.util.DisplayConfigTarget.SongPage
 import player.phonograph.util.Util
 import androidx.preference.PreferenceManager
 import android.content.Context
@@ -21,9 +20,17 @@ import android.content.res.Resources
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 
-class DisplayConfig(private val page: AbsDisplayPage<*, *, *>) {
+internal sealed class DisplayConfigTarget {
+    object SongPage : DisplayConfigTarget()
+    object AlbumPage : DisplayConfigTarget()
+    object ArtistPage : DisplayConfigTarget()
+    object GenrePage : DisplayConfigTarget()
+}
+
+
+class DisplayConfig internal constructor(private val page: DisplayConfigTarget) {
     private val isLandscape: Boolean
-        get() = Util.isLandscape(page.resources)
+        get() = Util.isLandscape(App.instance.resources)
 
     val maxGridSize: Int
         get() = if (isLandscape) App.instance.resources.getInteger(R.integer.max_columns_land) else
@@ -155,7 +162,7 @@ class DisplayConfig(private val page: AbsDisplayPage<*, *, *>) {
         }
 }
 
-class DisplaySetting(context: Context) {
+internal class DisplaySetting(context: Context) {
 
     private val preferences = PreferenceManager.getDefaultSharedPreferences(context)
     private val resources: Resources = context.resources
