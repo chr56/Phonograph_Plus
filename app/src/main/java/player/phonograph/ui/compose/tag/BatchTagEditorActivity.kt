@@ -132,7 +132,7 @@ fun BatchTagEditScreen(viewModel: BatchTagEditScreenViewModel, context: Context)
             .verticalScroll(state = rememberScrollState())
             .fillMaxSize()
     ) {
-        BatchTagEditTable(viewModel.infoTableState)
+        BatchTagEditTable(viewModel.infoTableState, context)
         // dialogs
         SaveConfirmationDialog(viewModel.saveConfirmationDialogState, { DiffScreen() }) {
             saveImpl(viewModel, context)
@@ -178,7 +178,9 @@ private fun saveImpl(model: BatchTagEditScreenViewModel, context: Context) =
         context,
         model.songs.map { File(it.data) },
         model.infoTableState.allEditRequests,
-        needDeleteCover = false, needReplaceCover = false, newCoverUri = null //todo
+        model.infoTableState.needDeleteCover,
+        model.infoTableState.needReplaceCover,
+        model.infoTableState.newCover,
     )
 
 @Composable

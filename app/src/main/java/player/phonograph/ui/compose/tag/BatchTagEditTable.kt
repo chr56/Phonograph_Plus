@@ -49,10 +49,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import android.content.Context
 import kotlinx.coroutines.flow.MutableStateFlow
 
 @Composable
-internal fun BatchTagEditTable(stateHolder: BatchTagEditTableState) {
+internal fun BatchTagEditTable(stateHolder: BatchTagEditTableState, context: Context) {
     val titleColor = stateHolder.titleColor.collectAsState().value
 
     Column(modifier = Modifier.padding(horizontal = 8.dp)) {
@@ -61,6 +62,16 @@ internal fun BatchTagEditTable(stateHolder: BatchTagEditTableState) {
         Title(stringResource(R.string.files), color = titleColor)
         FileList(stateHolder)
         // tags
+        Spacer(modifier = Modifier.height(16.dp))
+        Text(
+            text = stringResource(R.string.update_image),
+            Modifier
+                .padding(16.dp)
+                .fillMaxWidth()
+                .clickable {
+                    stateHolder.coverImageDetailDialogState.show()
+                }
+        )
         Spacer(modifier = Modifier.height(16.dp))
         Title(stringResource(R.string.music_tags), color = titleColor)
 
@@ -75,6 +86,7 @@ internal fun BatchTagEditTable(stateHolder: BatchTagEditTableState) {
         //MultipleTag(TRACK, stateHolder)
         MultipleTag(COMMENT, stateHolder)
     }
+    CoverImageDetailDialog(stateHolder, context)
 }
 
 @Composable
@@ -186,3 +198,14 @@ private fun MultipleTag(
         }
     }
 }
+
+@Composable
+private fun CoverImageDetailDialog(stateHolder: BatchTagEditTableState, context: Context) =
+    CoverImageDetailDialog(
+        state = stateHolder.coverImageDetailDialogState,
+        artworkExist = true,
+        onSave = {},
+        onDelete = { stateHolder.removeCover() },
+        onUpdate = { stateHolder.updateCover(context) },
+        editMode = true
+    )
