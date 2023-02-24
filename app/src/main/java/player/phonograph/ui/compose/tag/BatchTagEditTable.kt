@@ -49,6 +49,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.flow.MutableStateFlow
 
 @Composable
 internal fun BatchTagEditTable(stateHolder: BatchTagEditTableState) {
@@ -115,7 +116,7 @@ private fun MultipleTag(
     val tagNameRes = remember { songTagNameRes(key) }
     val tagName = stringResource(id = tagNameRes)
 
-    var currentValue by remember { mutableStateOf("") }
+    val currentValue = remember { MutableStateFlow("") }
 
     var showDropdownMenu by remember { mutableStateOf(false) }
 
@@ -125,8 +126,7 @@ private fun MultipleTag(
             title = tagName,
             value = currentValue,
             hint = "",
-            onTextChanged = { newValue -> stateHolder.changeField(key, newValue) },
-            extraTrailingIcon = {
+            trailingIcon = {
                 Row {
                     Icon(
                         Icons.Default.ArrowDropDown,
@@ -142,12 +142,11 @@ private fun MultipleTag(
                             .padding(8.dp)
                             .clickable {
                                 stateHolder.undoChanges(key)
+                                currentValue.tryEmit("")
                             }
                     )
                 }
-            },
-            allowReset = false,
-            allowClear = false,
+            }
         )
 
         DropdownMenu(
@@ -166,7 +165,7 @@ private fun MultipleTag(
                     DropdownMenuItem(
                         onClick = {
                             showDropdownMenu = false
-                            currentValue = prefill
+                            currentValue.tryEmit(prefill)
                             stateHolder.changeField(key, prefill)
                         }
                     ) {
@@ -177,7 +176,7 @@ private fun MultipleTag(
                 DropdownMenuItem(
                     onClick = {
                         showDropdownMenu = false
-                        currentValue = textClear
+                        currentValue.tryEmit(textClear)
                         stateHolder.removeField(key)
                     }
                 ) {
