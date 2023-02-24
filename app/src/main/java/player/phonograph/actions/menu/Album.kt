@@ -17,14 +17,11 @@ import player.phonograph.actions.fragmentActivity
 import player.phonograph.model.Album
 import player.phonograph.service.queue.ShuffleMode.NONE
 import player.phonograph.service.queue.ShuffleMode.SHUFFLE
-import player.phonograph.ui.activities.AlbumDetailActivity
+import player.phonograph.ui.compose.tag.BatchTagEditorActivity
 import player.phonograph.util.ImageUtil.getTintedDrawable
 import player.phonograph.util.NavigationUtil.goToArtist
-import util.phonograph.tageditor.AbsTagEditorActivity
-import util.phonograph.tageditor.AlbumTagEditorActivity
 import androidx.annotation.ColorInt
 import android.content.Context
-import android.content.Intent
 import android.view.Menu
 import android.view.MenuItem
 import kotlin.random.Random
@@ -41,7 +38,7 @@ fun albumDetailToolbar(
         menuItem(title = getString(R.string.action_play)) { //id = R.id.action_shuffle_album
             icon = getTintedDrawable(R.drawable.ic_play_arrow_white_24dp, iconColor)
             showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
-            onClick { album.songs.actionPlay(NONE,0) }
+            onClick { album.songs.actionPlay(NONE, 0) }
         }
 
         menuItem(title = getString(R.string.action_shuffle_album)) { //id = R.id.action_shuffle_album
@@ -84,15 +81,9 @@ fun albumDetailToolbar(
             icon = getTintedDrawable(R.drawable.ic_library_music_white_24dp, iconColor)
             showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
             onClick {
-                activity(context) {
-                    it.startActivityForResult(
-                        Intent(context, AlbumTagEditorActivity::class.java).apply {
-                            putExtra(AbsTagEditorActivity.EXTRA_ID, album.id)
-                        },
-                        AlbumDetailActivity.TAG_EDITOR_REQUEST
-                    )
-                    true
-                }
+                val songsIds = album.songs.map { it.id }.toLongArray()
+                BatchTagEditorActivity.launch(context, songsIds)
+                true
             }
         }
 
