@@ -20,6 +20,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -32,6 +33,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import kotlinx.coroutines.flow.MutableStateFlow
 
 @Composable
 fun VerticalTextFieldItem(
@@ -109,5 +111,54 @@ private fun TrailingIcon(
                 Icons.Default.Close,
                 contentDescription = stringResource(id = R.string.clear_action),
                 modifier = Modifier.padding(8.dp).clickable { onClear() })
+    }
+}
+
+
+
+@Composable
+fun VerticalTextFieldItem(
+    title: String,
+    value: MutableStateFlow<String>,
+    hint: String,
+    trailingIcon: @Composable (() -> Unit)? = null
+) {
+    Column(
+        modifier = Modifier.padding(horizontal = 8.dp, vertical = 8.dp),
+        verticalArrangement = Arrangement.SpaceEvenly
+    ) {
+        // title
+        Text(
+            text = title,
+            style = TextStyle(
+                fontWeight = FontWeight.Bold,
+                fontSize = 16.sp,
+            ),
+            modifier = Modifier
+                .align(Alignment.Start),
+        )
+        // content
+        val currentValue = value.collectAsState()
+        TextField(
+            value = currentValue.value,
+            placeholder = { Text(text = hint) },
+            onValueChange = { value.tryEmit(it) },
+            modifier = Modifier
+                .align(Alignment.Start)
+                .fillMaxWidth(),
+            colors = TextFieldDefaults.textFieldColors(
+                backgroundColor = MaterialTheme.colors.background,
+                textColor = MaterialTheme.colors.onSurface,
+                focusedIndicatorColor = MaterialTheme.colors.onSurface.copy(alpha = TextFieldDefaults.IconOpacity),
+                unfocusedIndicatorColor = Color.Transparent,
+            ),
+            textStyle = TextStyle(
+                //color = MaterialTheme.colors.onSurface.copy(alpha = 0.92f),
+                fontSize = 14.sp,
+            ),
+            trailingIcon = {
+                trailingIcon?.invoke()
+            }
+        )
     }
 }
