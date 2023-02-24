@@ -4,22 +4,20 @@
 
 package player.phonograph.ui.compose
 
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.tooling.preview.Preview
+import player.phonograph.model.Song
+import player.phonograph.ui.compose.tag.TagBrowserScreen
+import player.phonograph.ui.compose.tag.DetailScreenViewModel
 import player.phonograph.ui.compose.theme.PhonographTheme
-import player.phonograph.util.SongDetailUtil
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.tooling.preview.Preview
 
 @Preview(showBackground = true)
 @Composable
 fun ContentPreview() {
     PhonographTheme(previewMode = true) {
-        DetailActivityContent(DetailModel().apply { info = SongDetailUtil.SongInfo("name") })
+        TagBrowserScreen(
+            DetailScreenViewModel(Song.EMPTY_SONG, Color.Black), null
+        )
     }
-}
-
-
-@Preview(showBackground = true)
-@Composable
-fun ItemPreview(tag: String = "KeyName", value: String = "KeyValue") {
-    Item(tag, value)
 }

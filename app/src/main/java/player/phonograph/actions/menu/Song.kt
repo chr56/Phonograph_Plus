@@ -10,6 +10,7 @@ import com.github.chr56.android.menu_dsl.submenu
 import player.phonograph.R
 import player.phonograph.actions.*
 import player.phonograph.model.Song
+import player.phonograph.ui.compose.tag.TagEditorActivity
 import android.content.Context
 import android.view.Menu
 import android.view.MenuItem

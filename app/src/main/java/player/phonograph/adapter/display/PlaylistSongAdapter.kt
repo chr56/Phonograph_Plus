@@ -4,14 +4,6 @@
 
 package player.phonograph.adapter.display
 
-import android.content.Context
-import android.content.Intent
-import android.view.LayoutInflater
-import android.view.Menu
-import android.view.View
-import android.view.ViewGroup
-import android.widget.PopupMenu
-import androidx.appcompat.app.AppCompatActivity
 import coil.size.ViewSizeResolver
 import com.github.chr56.android.menu_dsl.attach
 import com.github.chr56.android.menu_dsl.menuItem
@@ -24,20 +16,26 @@ import com.h6ah4i.android.widget.advrecyclerview.draggable.annotation.DraggableI
 import player.phonograph.R
 import player.phonograph.adapter.base.MultiSelectionCabController
 import player.phonograph.coil.loadImage
-import player.phonograph.ui.dialogs.DeleteSongsDialog
 import player.phonograph.dialogs.SongDetailDialog
-import player.phonograph.misc.PaletteColorHolder
 import player.phonograph.model.Song
+import player.phonograph.ui.compose.tag.TagEditorActivity
+import player.phonograph.ui.dialogs.DeleteSongsDialog
 import player.phonograph.util.ViewUtil.hitTest
-import util.phonograph.tageditor.AbsTagEditorActivity
-import util.phonograph.tageditor.SongTagEditorActivity
+import androidx.appcompat.app.AppCompatActivity
+import android.content.Context
+import android.view.LayoutInflater
+import android.view.Menu
+import android.view.View
+import android.view.ViewGroup
+import android.widget.PopupMenu
 
 class PlaylistSongAdapter(
     activity: AppCompatActivity,
     cabController: MultiSelectionCabController?,
     dataSet: List<Song>,
     cfg: (DisplayAdapter<Song>.() -> Unit)?,
-) : DisplayAdapter<Song>(activity, cabController, dataSet, R.layout.item_list, cfg), DraggableItemAdapter<PlaylistSongAdapter.ViewHolder> {
+) : DisplayAdapter<Song>(activity, cabController, dataSet, R.layout.item_list, cfg),
+    DraggableItemAdapter<PlaylistSongAdapter.ViewHolder> {
 
     override fun getSectionNameImp(position: Int): String = (position + 1).toString()
 
@@ -182,17 +180,7 @@ class PlaylistSongAdapter(
                 menuItem {
                     titleRes(R.string.action_tag_editor)
                     onClick {
-                        activity.startActivity(
-                            Intent(activity, SongTagEditorActivity::class.java).apply {
-                                putExtra(AbsTagEditorActivity.EXTRA_ID, song.id)
-                                if (activity is PaletteColorHolder) {
-                                    putExtra(
-                                        AbsTagEditorActivity.EXTRA_PALETTE,
-                                        (activity as PaletteColorHolder).paletteColor
-                                    )
-                                }
-                            }
-                        )
+                        TagEditorActivity.launch(activity, song.id)
                         true
                     }
                 }
@@ -229,8 +217,8 @@ class PlaylistSongAdapter(
     }
 
     inner class ViewHolder(itemView: View) :
-        DisplayViewHolder(itemView),
-        DraggableItemViewHolder {
+            DisplayViewHolder(itemView),
+            DraggableItemViewHolder {
 
         @DraggableItemStateFlags
         private var mDragStateFlags = 0

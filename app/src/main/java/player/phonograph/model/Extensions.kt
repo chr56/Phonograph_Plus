@@ -75,3 +75,17 @@ fun List<Song>.totalDuration(): Long =
     fold(0L) { acc: Long, song: Song -> acc + song.duration }
 
 fun getYearString(year: Int): String = if (year > 0) year.toString() else "-"
+
+fun getFileSizeString(sizeInBytes: Long): String {
+    val fileSizeInKB: Long = sizeInBytes / 1024
+    val fileSizeInMB: Long = fileSizeInKB / 1024
+    val fileSizeInMBf: Float = fileSizeInKB / 1024F
+
+    val readableFileSizeInMB =
+        fileSizeInMB.toString() +
+                ((fileSizeInMBf - fileSizeInMB).toString()).let {
+                    if (it.isNotBlank() && it.length >= 5) it.substring(1, 4) else ".0"
+                }
+
+    return "$readableFileSizeInMB MB ($fileSizeInKB KB)"
+}
