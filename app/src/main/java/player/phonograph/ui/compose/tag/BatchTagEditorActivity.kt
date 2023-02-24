@@ -4,6 +4,7 @@
 
 package player.phonograph.ui.compose.tag
 
+import com.vanpra.composematerialdialogs.MaterialDialogState
 import mt.pref.ThemeColor.primaryColor
 import player.phonograph.R
 import player.phonograph.mediastore.SongLoader
@@ -28,7 +29,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.core.app.BundleCompat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import android.content.Context
@@ -74,7 +74,7 @@ class BatchTagEditorActivity :
     override val title: String get() = getString(R.string.action_tag_editor)
 
     override val toolbarActions: @Composable RowScope.() -> Unit = {
-        IconButton(onClick = { }) {
+        IconButton(onClick = { model.saveConfirmationDialogState.show() }) {
             Icon(painterResource(id = R.drawable.ic_save_white_24dp), null)
         }
     }
@@ -133,6 +133,10 @@ fun BatchTagEditScreen(viewModel: BatchTagEditScreenViewModel, context: Context)
             .fillMaxSize()
     ) {
         BatchTagEditTable(viewModel.infoTableState)
+        // dialogs
+        SaveConfirmationDialog(viewModel.saveConfirmationDialogState, { DiffScreen() }) {
+            saveImpl(viewModel, context)
+        }
     }
 }
 
@@ -140,6 +144,8 @@ class BatchTagEditScreenViewModel(
     val songs: List<Song>,
     val defaultColor: Color
 ) : ViewModel() {
+
+    val saveConfirmationDialogState = MaterialDialogState(false)
 
     private var _batchTagEditTableState: BatchTagEditTableState? = null
     val infoTableState: BatchTagEditTableState
@@ -150,10 +156,6 @@ class BatchTagEditScreenViewModel(
             }
             return _batchTagEditTableState!!
         }
-
-    fun save(context: Context) {
-        saveImpl(this, context)
-    }
 
     class Factory(
         private val songs: List<Song>,
@@ -174,3 +176,8 @@ private fun saveImpl(model: BatchTagEditScreenViewModel, context: Context) =
         model.infoTableState.allEditRequests,
         needDeleteCover = false, needReplaceCover = false, newCoverUri = null //todo
     )
+
+@Composable
+private fun DiffScreen() {
+    //todo
+}
