@@ -31,6 +31,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -91,8 +92,7 @@ class BatchTagEditorActivity :
         if (model.infoTableState.allEditRequests.isEmpty()) {
             finish()
         } else {
-            finish()
-            //todo
+            model.exitWithoutSavingDialogState.show()
         }
     }
 
@@ -137,6 +137,9 @@ fun BatchTagEditScreen(viewModel: BatchTagEditScreenViewModel, context: Context)
         SaveConfirmationDialog(viewModel.saveConfirmationDialogState, { DiffScreen() }) {
             saveImpl(viewModel, context)
         }
+        ExitWithoutSavingDialog(viewModel.exitWithoutSavingDialogState) {
+            (context as? Activity)?.finish()
+        }
     }
 }
 
@@ -146,6 +149,7 @@ class BatchTagEditScreenViewModel(
 ) : ViewModel() {
 
     val saveConfirmationDialogState = MaterialDialogState(false)
+    val exitWithoutSavingDialogState = MaterialDialogState(false)
 
     private var _batchTagEditTableState: BatchTagEditTableState? = null
     val infoTableState: BatchTagEditTableState

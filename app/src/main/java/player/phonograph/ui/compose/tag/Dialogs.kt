@@ -22,6 +22,7 @@ internal fun SaveConfirmationDialog(
     val dismiss = { dialogState.hide() }
     val save = {
         dismiss()
+        onSave()
     }
     MaterialDialog(
         dialogState = dialogState,
@@ -36,5 +37,27 @@ internal fun SaveConfirmationDialog(
         customView {
             diffScreen()
         }
+    }
+}
+
+@Composable
+internal fun ExitWithoutSavingDialog(
+    dialogState: MaterialDialogState,
+    onExit: () -> Unit
+) {
+    val dismiss = { dialogState.hide() }
+    MaterialDialog(
+        dialogState = dialogState,
+        elevation = 0.dp,
+        autoDismiss = false,
+        buttons = {
+            positiveButton(res = android.R.string.cancel, onClick = dismiss)
+            button(res = android.R.string.ok) {
+                dismiss()
+                onExit()
+            }
+        }
+    ) {
+        title(res = R.string.exit_without_saving)
     }
 }
