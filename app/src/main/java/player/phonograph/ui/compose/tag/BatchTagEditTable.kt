@@ -40,6 +40,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -160,6 +161,13 @@ private fun MultipleTag(
                 }
             }
         )
+
+        LaunchedEffect(currentValue) {
+            currentValue.collect { newValue ->
+                if (newValue.isNotBlank())
+                    stateHolder.changeField(key, newValue)
+            }
+        }
 
         DropdownMenu(
             expanded = showDropdownMenu,
