@@ -196,7 +196,7 @@ private fun MultipleTag(
                 DropdownMenuItem(
                     onClick = {
                         showDropdownMenu = false
-                        currentValue.tryEmit(textClear)
+                        currentValue.tryEmit("")
                         stateHolder.removeField(key)
                     }
                 ) {
