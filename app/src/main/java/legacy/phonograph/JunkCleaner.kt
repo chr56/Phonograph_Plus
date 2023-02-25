@@ -18,6 +18,7 @@ import legacy.phonograph.DeprecatedPreference.SortOrder.ARTIST_SORT_ORDER
 import legacy.phonograph.DeprecatedPreference.SortOrder.GENRE_SORT_ORDER
 import legacy.phonograph.DeprecatedPreference.SortOrder.SONG_SORT_ORDER
 import player.phonograph.R
+import player.phonograph.model.pages.Pages
 import player.phonograph.notification.BackgroundNotification
 import player.phonograph.notification.ErrorNotification
 import player.phonograph.service.util.QueuePreferenceManager
@@ -96,7 +97,7 @@ class JunkCleaner(context: Context) : FileCleaner(context) {
                 DeprecatedPreference.QueueCfg.PREF_POSITION_IN_TRACK,
                 QueuePreferenceManager.KEY_CURRENT_MILLISECOND
             )
-            HomeTabConfig.resetHomeTabConfig()
+            HomeTabConfig.append(Pages.FOLDER)
         }
         Log.i(TAG, "Migrate Queue Preferences Completed")
     }

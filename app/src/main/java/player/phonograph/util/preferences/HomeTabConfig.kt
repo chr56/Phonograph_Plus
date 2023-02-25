@@ -40,6 +40,15 @@ object HomeTabConfig {
             Setting.instance.homeTabConfigJsonString = json.toString(0)
         }
 
+    /**
+     * add a new [page] at the end of setting
+     */
+    fun append(page: String) {
+        val list = homeTabConfig.tabList.toMutableList()
+        list.add(page)
+        homeTabConfig = PageConfig.from(list)
+    }
+
     fun resetHomeTabConfig() {
         Setting.instance.homeTabConfigJsonString = PageConfigUtil.DEFAULT_CONFIG.toString(0)
     }
