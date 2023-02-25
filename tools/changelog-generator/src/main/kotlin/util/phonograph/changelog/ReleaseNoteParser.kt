@@ -24,7 +24,7 @@ fun parse(file: File): ReleaseNoteModel {
             result.putAll(tags)
             if (tags.containsKey("note")) {
                 if (noteCollectTarget != null) { // close last and summit
-                    note[noteCollectTarget] = buffer
+                    note[noteCollectTarget] = buffer.toList()
                     buffer.clear()
                 }
                 noteCollectTarget = tags["note"]
