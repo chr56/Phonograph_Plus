@@ -52,6 +52,8 @@ class PageConfig private constructor(private val tabs: MutableList<String>) : It
             override fun hasNext(): Boolean = current < tabs.size
             override fun next(): String = tabs[current++]
         }
+
+    override fun toString(): String = tabs.fold("PagerConfig:") { acc, i ->"$acc,$i" }
 }
 
 object PageConfigUtil {
