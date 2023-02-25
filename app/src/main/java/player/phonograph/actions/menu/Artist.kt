@@ -18,6 +18,7 @@ import player.phonograph.model.Artist
 import player.phonograph.service.queue.ShuffleMode.NONE
 import player.phonograph.service.queue.ShuffleMode.SHUFFLE
 import player.phonograph.ui.activities.ArtistDetailActivity
+import player.phonograph.ui.compose.tag.BatchTagEditorActivity
 import player.phonograph.util.ImageUtil.getTintedDrawable
 import androidx.annotation.ColorInt
 import android.content.Context
@@ -97,6 +98,14 @@ fun artistDetailToolbar(
             }
         }
 
+        menuItem(title = getString(R.string.action_tag_editor)) { //id = R.id.action_tag_editor
+            icon = getTintedDrawable(R.drawable.ic_library_music_white_24dp, iconColor)
+            showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
+            onClick {
+                BatchTagEditorActivity.launch(context, ArrayList(artist.songs))
+                true
+            }
+        }
 
         menuItem(title = getString(R.string.action_delete_from_device)) { //id = R.id.action_delete_from_device
             icon = getTintedDrawable(R.drawable.ic_delete_white_24dp, iconColor)

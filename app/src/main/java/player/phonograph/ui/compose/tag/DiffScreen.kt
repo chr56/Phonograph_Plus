@@ -27,6 +27,17 @@ import android.net.Uri
 @Composable
 internal fun DiffScreen(model: TagEditorScreenViewModel) {
     val diff = remember { model.generateDiff() }
+    DiffScreen(diff)
+}
+
+@Composable
+internal fun DiffScreen(model: BatchTagEditScreenViewModel) {
+    val diff = remember { model.generateDiff() }
+    DiffScreen(diff)
+}
+
+@Composable
+private fun DiffScreen(diff: TagDiff) {
     if (diff.noChange())
         Text(text = stringResource(id = R.string.no_changes))
     else

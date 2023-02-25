@@ -45,14 +45,14 @@ import androidx.compose.ui.unit.dp
  * Text infomation
  */
 @Composable
-internal fun InfoTable(viewModel: InfoTableState) {
+internal fun InfoTable(stateHolder: InfoTableState) {
 
-    val titleColor = viewModel.titleColor.collectAsState().value
-    val info = viewModel.info.collectAsState().value
+    val titleColor = stateHolder.titleColor.collectAsState().value
+    val info = stateHolder.info.collectAsState().value
 
-    val editable = viewModel is EditableInfoTableState
+    val editable = stateHolder is EditableInfoTableState
     val editRequest: EditRequest = remember {
-        { key, newValue -> (viewModel as? EditableInfoTableState)?.editRequest(key, newValue) }
+        { key, newValue -> (stateHolder as? EditableInfoTableState)?.editRequest(key, newValue) }
     }
 
     Column(modifier = Modifier.padding(horizontal = 8.dp)) {

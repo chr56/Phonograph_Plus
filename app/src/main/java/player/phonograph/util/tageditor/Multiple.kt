@@ -20,11 +20,10 @@ import kotlinx.coroutines.withContext
 import kotlinx.coroutines.yield
 import java.io.File
 
-
 fun applyEdit(
     scope: CoroutineScope,
     context: Context,
-    songFile: File,
+    songFiles: List<File>,
     allEditRequest: Map<FieldKey, String?>,
     needDeleteCover: Boolean,
     needReplaceCover: Boolean,
@@ -39,29 +38,32 @@ fun applyEdit(
         )
         // process
         withContext(Dispatchers.IO) {
-            applyEditImpl(
-                context,
-                songFile,
-                allEditRequest,
-                needDeleteCover,
-                needReplaceCover,
-                newCoverUri
-            )
+            for (songFile in songFiles) {
+                applyEditImpl(
+                    context,
+                    songFile,
+                    allEditRequest,
+                    needDeleteCover,
+                    needReplaceCover,
+                    newCoverUri
+                )
+            }
         }
         // notify user
         BackgroundNotification.remove(TAG_EDITOR_NOTIFICATION_CODE)
         // refresh media store
+        val paths = songFiles.map { it.path }.toTypedArray()
         val listener =
             if (context is Activity)
                 UpdateToastMediaScannerCompletionListener(
                     context,
-                    arrayOf(songFile.path)
+                    paths
                 ) else null
         yield()
         MediaScannerConnection.scanFile(
-            App.instance, arrayOf(songFile.path), null, listener
+            App.instance, paths, null, listener
         )
     }
 }
 
-private const val TAG_EDITOR_NOTIFICATION_CODE = 824_3348_7
+private const val TAG_EDITOR_NOTIFICATION_CODE = 824_3348_6
