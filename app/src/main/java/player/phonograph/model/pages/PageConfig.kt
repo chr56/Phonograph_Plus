@@ -10,13 +10,12 @@ import org.json.JSONObject
 import player.phonograph.ui.fragments.pages.*
 import kotlin.jvm.Throws
 
-class PageConfig(var tabMap: MutableMap<Int, String>) : Iterable<String> {
+class PageConfig private constructor(private val tabs: MutableList<String>) : Iterable<String> {
 
-    fun getSize(): Int = tabMap.size
+    val tabList get() = tabs.toList()
 
-    fun get(index: Int): String {
-        return tabMap[index] ?: "EMPTY"
-    }
+    fun getSize(): Int = tabs.size
+    fun get(index: Int): String = tabs[index]
 
     fun getAsPage(index: Int): AbsPage =
         when (get(index)) {
@@ -31,15 +30,18 @@ class PageConfig(var tabMap: MutableMap<Int, String>) : Iterable<String> {
         }
 
     companion object {
+
+        fun from(init: List<String>) = PageConfig(init.toMutableList())
+
         val DEFAULT_CONFIG = PageConfig(
-            hashMapOf(
-                0 to Pages.SONG,
-                1 to Pages.FOLDER,
-                2 to Pages.FILES,
-                3 to Pages.PLAYLIST,
-                4 to Pages.ALBUM,
-                5 to Pages.ARTIST,
-                6 to Pages.GENRE,
+            mutableListOf(
+                Pages.SONG,
+                Pages.FOLDER,
+                Pages.FILES,
+                Pages.PLAYLIST,
+                Pages.ALBUM,
+                Pages.ARTIST,
+                Pages.GENRE,
             )
         )
     }
@@ -47,8 +49,8 @@ class PageConfig(var tabMap: MutableMap<Int, String>) : Iterable<String> {
     override fun iterator(): Iterator<String> =
         object : Iterator<String> {
             var current = 0
-            override fun hasNext(): Boolean = current < tabMap.size
-            override fun next(): String = tabMap[current++] ?: Pages.EMPTY
+            override fun hasNext(): Boolean = current < tabs.size
+            override fun next(): String = tabs[current++]
         }
 }
 
@@ -66,15 +68,15 @@ object PageConfigUtil {
 
         if (array.length() <= 0) throw JSONException("No Value")
 
-        val cfg = HashMap<Int, String>()
+        val cfg = ArrayList<String>()
         for (i in 0 until array.length()) {
-            cfg[i] = array.optString(i).also {
+            cfg.add(array.optString(i).also {
                 if (it.isBlank()) throw JSONException(
                     "Empty String at index $i"
                 )
-            }
+            })
         }
-        return PageConfig(cfg)
+        return PageConfig.from(cfg)
     }
 
     private const val KEY = "PageCfg"

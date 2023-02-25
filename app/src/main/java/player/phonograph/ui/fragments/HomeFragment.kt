@@ -216,10 +216,9 @@ class HomeFragment : AbsMainActivityFragment(), MainActivity.MainActivityFragmen
 
                 var newPosition = -1
 
-                readConfig().tabMap.forEach { entry: Map.Entry<Int, String> ->
-                    if (entry.value == current) {
-                        newPosition = entry.key
-                        return@forEach
+                readConfig().tabList.forEachIndexed { index, page ->
+                    if (page == current) {
+                        newPosition = index
                     }
                 }
                 if (newPosition < 0) newPosition = 0

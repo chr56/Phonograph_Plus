@@ -12,6 +12,7 @@ import player.phonograph.model.pages.PageConfigUtil
 import player.phonograph.model.pages.PageConfigUtil.fromJson
 import player.phonograph.model.pages.PageConfigUtil.toJson
 import player.phonograph.settings.Setting
+import player.phonograph.util.Util
 
 object HomeTabConfig {
     var homeTabConfig: PageConfig
@@ -20,8 +21,7 @@ object HomeTabConfig {
             val config: PageConfig = try {
                 JSONObject(rawString).fromJson()
             } catch (e: JSONException) {
-                Log.e("Preference", "home tab config string $rawString")
-                Log.e("Preference", "Fail to parse home tab config string\n ${e.message}")
+                Util.reportError(e, "Preference", "Fail to parse home tab config string $rawString")
                 // return default
                 PageConfig.DEFAULT_CONFIG
             }

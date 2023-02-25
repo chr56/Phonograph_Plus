@@ -29,13 +29,7 @@ class HomeTabConfigAdapter(private val config: PageConfig) : RecyclerView.Adapte
 
     private val tabs: TabList = TabList(ArrayList(3))
     private val restAvailableTabs: MutableList<String> =
-        PageConfig.DEFAULT_CONFIG.tabMap.let {
-            val list = ArrayList<String>(3)
-            it.forEach { entry: Map.Entry<Int, String> ->
-                list.add(entry.value)
-            }
-            list
-        }
+        PageConfig.DEFAULT_CONFIG.tabList.toMutableList()
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         if (position < config.getSize()) {
@@ -120,19 +114,11 @@ class HomeTabConfigAdapter(private val config: PageConfig) : RecyclerView.Adapte
             }
             return count
         }
-        fun toPageConfig(): PageConfig {
-            return PageConfig(
-                HashMap<Int, String>().also { hashMap ->
-                    var index = 0
-                    tabItems.forEach {
-                        if (it.visibility) {
-                            hashMap[index] = it.name
-                            index++
-                        }
-                    }
-                }
-            )
-        }
+
+        fun toPageConfig(): PageConfig = PageConfig.from(
+            tabItems.filter { it.visibility }.map { it.name }
+        )
+
         fun print(): String {
             return tabItems.map { " [name=${it.name},visibility=${it.visibility}]" }
                 .fold("TabItems:") {
