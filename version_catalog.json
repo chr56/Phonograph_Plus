@@ -2,18 +2,18 @@
   "versions": [
     {
       "channel": "preview",
-      "versionName": "0.6.0-dev1",
-      "versionCode": 460,
-      "date": 1677140000,
+      "versionName": "0.6.0-dev2",
+      "versionCode": 461,
+      "date": 1677339000,
       "link": [
         {
           "name": "Github Release",
-          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/preview_0.6.0-dev1"
+          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/preview_0.6.0-dev2"
         }
       ],
       "releaseNote": {
-        "zh-cn": "<ol><li>添加 平铺式文件夹页面</li><li>修改 重置库类别设置（警告：设置将被重置）</li><li>修改 导出设置json格式（警告：与先前版本不兼容）</li><li>修复 导入设置备份后崩溃</li><li>开发 清理代码，重构项目结构</li></ol>",
-        "en": "<ol><li>Add: Flatten Folder Page</li><li>Modify: reset Library Categories Settings (WARNING: setting reset)</li><li>Modify: exported setting json format (WARNING: Incompatible with previous versions)</li><li>Fix: crash after import backups of setting</li><li>Development: cleanup code, refactor project structure</li></ol>"
+        "zh-cn": "<ol><li>新增 平铺式文件夹页面</li><li>新增 全新的音乐标签编辑器（包括单曲编辑和批量编辑）</li><li>移除 旧的音乐标签编辑器</li><li>改进 对多选和艺术家曲目进行批量编辑音乐标签</li><li>修改 导出设置json格式（警告：与先前版本不兼容）</li><li>修复 导入设置备份后崩溃</li><li>翻译 更新意大利语(by gdonisi)</li><li>开发 使用独立文件中存储播放器状态</li><li>开发 清理代码，重构项目结构, 更新AGP至7.4.1</li></ol>",
+        "en": "<ol><li>Add: Flatten Folder Page</li><li>Add: brand-new music tag editors (including Single Edit and Batch Edit)</li><li>Remove: legacy music tag editors</li><li>Improve: allow multi tag editing for the multi-selected and artist</li><li>Modify: the exported setting json format (WARNING: Incompatible with previous versions)</li><li>Fix: crash after importing backups of setting</li><li>Translation: update Italian (by gdonisi)</li><li>Development: store player state in separate preference file</li><li>Development: cleanup code, refactor project structure, upgrade AGP to 7.4.1</li></ol>"
       }
     },
     {
