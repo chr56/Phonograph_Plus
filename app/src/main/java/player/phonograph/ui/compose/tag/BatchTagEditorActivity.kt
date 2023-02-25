@@ -134,7 +134,7 @@ fun BatchTagEditScreen(viewModel: BatchTagEditScreenViewModel, context: Context)
     ) {
         BatchTagEditTable(viewModel.infoTableState, context)
         // dialogs
-        SaveConfirmationDialog(viewModel.saveConfirmationDialogState, { DiffScreen() }) {
+        SaveConfirmationDialog(viewModel.saveConfirmationDialogState, { DiffScreen(viewModel) }) {
             saveImpl(viewModel, context)
         }
         ExitWithoutSavingDialog(viewModel.exitWithoutSavingDialogState) {
@@ -172,6 +172,22 @@ class BatchTagEditScreenViewModel(
     }
 }
 
+
+internal fun BatchTagEditScreenViewModel.generateDiff(): TagDiff {
+    val tagDiff = infoTableState.allEditRequests.map { (key, new) ->
+        Triple(key, "(${key.name})", new)
+    }
+    val artworkDiff =
+        if (infoTableState.needReplaceCover) {
+            TagDiff.ArtworkDiff.Replaced(infoTableState.newCover)
+        } else if (infoTableState.needDeleteCover) {
+            TagDiff.ArtworkDiff.Deleted
+        } else {
+            TagDiff.ArtworkDiff.None
+        }
+    return TagDiff(tagDiff, artworkDiff)
+}
+
 private fun saveImpl(model: BatchTagEditScreenViewModel, context: Context) =
     applyEdit(
         CoroutineScope(Dispatchers.Unconfined),
@@ -182,8 +198,3 @@ private fun saveImpl(model: BatchTagEditScreenViewModel, context: Context) =
         model.infoTableState.needReplaceCover,
         model.infoTableState.newCover,
     )
-
-@Composable
-private fun DiffScreen() {
-    //todo
-}
