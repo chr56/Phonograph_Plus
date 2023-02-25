@@ -18,6 +18,7 @@ import player.phonograph.model.playlist.ResettablePlaylist
 import player.phonograph.model.playlist.SmartPlaylist
 import player.phonograph.notification.ErrorNotification
 import player.phonograph.settings.Setting
+import player.phonograph.ui.compose.tag.BatchTagEditorActivity
 import player.phonograph.util.ImageUtil.getTintedDrawable
 import androidx.annotation.ColorInt
 import android.content.Context
@@ -102,6 +103,14 @@ fun playlistToolbar(
                             true
                         }
                     }
+                }
+            }
+
+            menuItem(title = getString(R.string.action_tag_editor)) { //id = R.id.action_tag_editor
+                showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
+                onClick {
+                    BatchTagEditorActivity.launch(context, ArrayList(playlist.getSongs(context)))
+                    true
                 }
             }
 

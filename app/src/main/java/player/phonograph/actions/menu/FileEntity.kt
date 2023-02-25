@@ -23,6 +23,7 @@ import player.phonograph.model.Song
 import player.phonograph.model.file.FileEntity
 import player.phonograph.model.file.linkedSong
 import player.phonograph.service.MusicPlayerRemote
+import player.phonograph.ui.compose.tag.TagEditorActivity
 import player.phonograph.util.PathFilterUtil
 import player.phonograph.util.preferences.FileConfig
 import android.app.Activity
@@ -75,6 +76,13 @@ fun fileEntityPopupMenu(
                 menuItem(title = getString(R.string.action_share)) { // id = R.id.action_share
                     showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
                     onClick { file.linkedSong(context).actionShare(context) }
+                }
+                menuItem(title = getString(R.string.action_tag_editor)) { //id = R.id.action_tag_editor
+                    showAsActionFlag = MenuItem.SHOW_AS_ACTION_IF_ROOM
+                    onClick {
+                        TagEditorActivity.launch(context, file.id)
+                        true
+                    }
                 }
             }
             is FileEntity.Folder -> {
