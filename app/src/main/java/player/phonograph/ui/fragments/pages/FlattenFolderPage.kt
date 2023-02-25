@@ -72,7 +72,6 @@ class FlattenFolderPage : AbsPage() {
                 binding.panel.totalScrollRange + verticalOffset,
                 binding.container.paddingRight,
                 binding.container.paddingBottom
-
             )
         }
 
@@ -80,8 +79,8 @@ class FlattenFolderPage : AbsPage() {
         super.onViewCreated(view, savedInstanceState)
         binding.empty.text = resources.getText(R.string.loading)
 
-        setupAppBar()
         setupRecyclerView()
+        setupAppBar()
 
         observeRecyclerView()
 
@@ -251,5 +250,11 @@ class FlattenFolderPage : AbsPage() {
                 return true
             }
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        binding.panel.removeOnOffsetChangedListener(innerAppbarOffsetListener)
+        hostFragment.removeOnAppBarOffsetChangedListener(outerAppbarOffsetListener)
     }
 }

@@ -256,7 +256,7 @@ sealed class AbsDisplayPage<IT, A : DisplayAdapter<out Displayable>, LM : GridLa
         super.onDestroyView()
         adapter.unregisterAdapterDataObserver(adapterDataObserver)
 
-        binding.panel.addOnOffsetChangedListener(innerAppbarOffsetListener)
+        binding.panel.removeOnOffsetChangedListener(innerAppbarOffsetListener)
         hostFragment.removeOnAppBarOffsetChangedListener(outerAppbarOffsetListener)
         _viewBinding = null
     }
