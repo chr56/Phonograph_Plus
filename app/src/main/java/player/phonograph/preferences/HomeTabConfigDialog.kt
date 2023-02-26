@@ -16,12 +16,12 @@ import com.afollestad.materialdialogs.actions.getActionButton
 import com.afollestad.materialdialogs.customview.customView
 import mt.pref.ThemeColor
 import player.phonograph.R
-import player.phonograph.adapter.HomeTabConfigAdapter
+import player.phonograph.adapter.sortable.PageTabConfigAdapter
 import player.phonograph.model.pages.PageConfig
 import player.phonograph.util.preferences.HomeTabConfig
 
 class HomeTabConfigDialog : DialogFragment() {
-    private lateinit var adapter: HomeTabConfigAdapter
+    private lateinit var adapter: PageTabConfigAdapter
     private lateinit var recyclerView: RecyclerView
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -31,7 +31,7 @@ class HomeTabConfigDialog : DialogFragment() {
 
         val config: PageConfig = HomeTabConfig.homeTabConfig
 
-        adapter = HomeTabConfigAdapter(config)
+        adapter = PageTabConfigAdapter(config).also { it.init() }
         recyclerView = view.findViewById(R.id.recycler_view)
         recyclerView.layoutManager = LinearLayoutManager(activity)
         recyclerView.adapter = adapter
