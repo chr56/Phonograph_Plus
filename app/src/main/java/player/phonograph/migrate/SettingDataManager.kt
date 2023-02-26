@@ -44,21 +44,20 @@ object SettingDataManager {
         }
 
     private fun saveToFile(dest: Uri, content: String, contentResolver: ContentResolver) {
-        val fileDescriptor =
-            contentResolver.openFileDescriptor(dest, "w")?.fileDescriptor
-
-        FileOutputStream(fileDescriptor).use { stream ->
-            stream.bufferedWriter().use {
-                it.write(content)
-                it.flush()
+        contentResolver.openFileDescriptor(dest, "wt")?.use { descriptor ->
+            FileOutputStream(descriptor.fileDescriptor).use { stream ->
+                stream.bufferedWriter().use {
+                    it.write(content)
+                    it.flush()
+                }
             }
         }
     }
 
     fun importSetting(uri: Uri, context: Context): Boolean {
-        return context.contentResolver.openFileDescriptor(uri, "r")?.fileDescriptor?.let { fd ->
-            FileInputStream(fd).use {
-                loadSettings(it, context)
+        return context.contentResolver.openFileDescriptor(uri, "r")?.use {
+            FileInputStream(it.fileDescriptor).use { stream ->
+                loadSettings(stream, context)
             }
         } ?: false
     }
