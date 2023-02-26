@@ -53,11 +53,11 @@
 -keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.util.** {public <methods>;}
 
 -keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.settings.Setting {public void set**(...); public *** get**();}
--keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.migrate.SettingDataManager {public <methods>;}
 
 -keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.notification.**Impl {public <methods>;}
 
--keepclassmembernames,allowoptimization class player.phonograph.provider.DatabaseManger { boolean *(...);}
+-keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.migrate.SettingDataManager {public <methods>;}
+-keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.migrate.DatabaseDataManger { boolean *(...);}
 
 
 -keepclasseswithmembernames,allowoptimization,allowshrinking class util.phonograph.tageditor.** {public <methods>;public <fields>;}

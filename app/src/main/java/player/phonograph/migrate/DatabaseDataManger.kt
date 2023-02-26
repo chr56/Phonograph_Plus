@@ -1,8 +1,8 @@
 /*
- * Copyright (c) 2022 chr_56 & Abou Zeid (kabouzeid) (original author)
+ * Copyright (c) 2022~2023 chr_56
  */
 
-package player.phonograph.provider
+package player.phonograph.migrate
 
 import android.content.Context
 import android.net.Uri
@@ -19,27 +19,28 @@ import java.util.zip.ZipEntry
 import java.util.zip.ZipInputStream
 import java.util.zip.ZipOutputStream
 
-class DatabaseManger(var context: Context) {
+object DatabaseDataManger {
 
-    fun exportDatabases(uri: Uri): Boolean {
+    fun exportDatabases(uri: Uri, context: Context): Boolean {
         return context.contentResolver.openFileDescriptor(uri, "w")?.use { parcel ->
             parcel.fileDescriptor?.let { fileDescriptor ->
                 FileOutputStream(fileDescriptor).use {
-                    exportDatabasesImpl(it)
+                    exportDatabasesImpl(it, context)
                 }
             }
         } ?: false
     }
 
-    fun exportDatabases(folder: String = "exported") {
+    fun exportDatabases(folder: String = "exported", context: Context) {
         context.getExternalFilesDir(folder)?.let {
-            FileOutputStream(File(it, "phonograph_plus_databases_${currentTimestamp()}.zip")).use { fileOutputStream ->
-                exportDatabasesImpl(fileOutputStream)
+            val name = "phonograph_plus_databases_${currentTimestamp()}.zip"
+            FileOutputStream(File(it, name)).use { fileOutputStream ->
+                exportDatabasesImpl(fileOutputStream, context)
             }
         }
     }
 
-    private fun exportDatabasesImpl(fileOutputStream: FileOutputStream): Boolean {
+    private fun exportDatabasesImpl(fileOutputStream: FileOutputStream, context: Context): Boolean {
         ZipOutputStream(fileOutputStream).use { zipOut ->
             addToZipFile(zipOut, context.getDatabasePath(FAVORITE_DB), FAVORITE_DB)
             addToZipFile(zipOut, context.getDatabasePath(PATH_FILTER), PATH_FILTER)
@@ -50,29 +51,33 @@ class DatabaseManger(var context: Context) {
         return true // todo
     }
 
-    fun importDatabases(uri: Uri): Boolean {
+    fun importDatabases(uri: Uri, context: Context): Boolean {
         return context.contentResolver.openFileDescriptor(uri, "r")?.use { parcel ->
             parcel.fileDescriptor?.let { fd ->
                 FileInputStream(fd).use {
-                    importDatabaseImpl(it, context.cacheDir)
+                    importDatabaseImpl(it, context, context.cacheDir)
                 }
             }
         } ?: false
     }
 
-    private fun importDatabaseImpl(fileInputStream: FileInputStream, cacheDir: File): Boolean {
+    private fun importDatabaseImpl(
+        fileInputStream: FileInputStream,
+        context: Context,
+        cacheDir: File
+    ): Boolean {
         if (!cacheDir.exists() && !cacheDir.isDirectory && !cacheDir.canWrite())
             throw FileNotFoundException("Output dirs unavailable!")
         ZipInputStream(fileInputStream).use { zipIn ->
             extractZipFile(zipIn, cacheDir)
         }
         if (cacheDir.exists()) {
-            replaceDatabaseFile(cacheDir)
+            replaceDatabaseFile(cacheDir, context)
         }
         return true // todo
     }
 
-    private fun replaceDatabaseFile(sourceDir: File) {
+    private fun replaceDatabaseFile(sourceDir: File, context: Context) {
         if (sourceDir.exists() && sourceDir.isDirectory) {
             moveFile(from = File(sourceDir, FAVORITE_DB), to = context.getDatabasePath(FAVORITE_DB))
             moveFile(from = File(sourceDir, PATH_FILTER), to = context.getDatabasePath(PATH_FILTER))
@@ -138,7 +143,5 @@ class DatabaseManger(var context: Context) {
         }
     }
 
-    companion object {
-        const val TAG = "DatabaseManger"
-    }
+    private const val TAG = "DatabaseManger"
 }

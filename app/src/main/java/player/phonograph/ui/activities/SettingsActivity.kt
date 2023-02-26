@@ -13,7 +13,7 @@ import player.phonograph.R
 import player.phonograph.migrate.SettingDataManager
 import player.phonograph.misc.OpenDocumentContract
 import player.phonograph.misc.menuProvider
-import player.phonograph.provider.DatabaseManger
+import player.phonograph.migrate.DatabaseDataManger
 import player.phonograph.ui.fragments.SettingsFragment
 import player.phonograph.util.CoroutineUtil
 import player.phonograph.util.TimeUtil.currentDateTime
@@ -142,10 +142,10 @@ class SettingsActivity : ToolbarActivity() {
     }
 
     private fun exportDatabase(uri: Uri): Boolean =
-        DatabaseManger(App.instance).exportDatabases(uri)
+        DatabaseDataManger.exportDatabases(uri, App.instance)
 
     private fun importDatabase(uri: Uri): Boolean =
-        DatabaseManger(App.instance).importDatabases(uri)
+        DatabaseDataManger.importDatabases(uri, App.instance)
 
     private fun exportSetting(uri: Uri): Boolean =
         SettingDataManager.exportSettings(uri, App.instance)
