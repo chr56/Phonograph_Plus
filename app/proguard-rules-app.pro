@@ -53,7 +53,7 @@
 -keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.util.** {public <methods>;}
 
 -keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.settings.Setting {public void set**(...); public *** get**();}
--keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.settings.SettingManager {public <methods>;}
+-keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.migrate.SettingDataManager {public <methods>;}
 
 -keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.notification.**Impl {public <methods>;}
 

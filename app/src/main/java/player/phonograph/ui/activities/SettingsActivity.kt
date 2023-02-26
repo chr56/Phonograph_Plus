@@ -1,35 +1,34 @@
 package player.phonograph.ui.activities
 
-import android.net.Uri
-import android.os.Bundle
-import android.os.Handler
-import android.os.Process
-import android.view.Menu
-import android.view.MenuItem
-import android.view.MenuItem.SHOW_AS_ACTION_NEVER
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.widget.Toolbar
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.WhichButton
 import com.afollestad.materialdialogs.actions.getActionButton
 import com.github.chr56.android.menu_dsl.attach
 import com.github.chr56.android.menu_dsl.menuItem
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import lib.phonograph.activity.ToolbarActivity
 import mt.pref.ThemeColor
 import mt.tint.setActivityToolbarColorAuto
 import player.phonograph.App
 import player.phonograph.R
+import player.phonograph.migrate.SettingDataManager
 import player.phonograph.misc.OpenDocumentContract
 import player.phonograph.misc.menuProvider
 import player.phonograph.provider.DatabaseManger
-import player.phonograph.settings.SettingManager
 import player.phonograph.ui.fragments.SettingsFragment
 import player.phonograph.util.CoroutineUtil
 import player.phonograph.util.TimeUtil.currentDateTime
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.widget.Toolbar
+import android.net.Uri
+import android.os.Bundle
+import android.os.Handler
+import android.os.Process
+import android.view.Menu
+import android.view.MenuItem.SHOW_AS_ACTION_NEVER
 import kotlin.system.exitProcess
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class SettingsActivity : ToolbarActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -105,12 +104,14 @@ class SettingsActivity : ToolbarActivity() {
                         message(R.string.clear_all_preference_msg)
                         negativeButton(android.R.string.cancel)
                         positiveButton(R.string.clear_all_preference) {
-                            SettingManager(this@SettingsActivity.applicationContext).clearAllPreference()
+                            SettingDataManager.clearAllPreference()
 
-                            Handler().postDelayed({
-                                                      Process.killProcess(Process.myPid())
-                                                      exitProcess(1)
-                                                  }, 4000)
+                            Handler().postDelayed(
+                                {
+                                    Process.killProcess(Process.myPid())
+                                    exitProcess(1)
+                                }, 4000
+                            )
                         }
                         cancelOnTouchOutside(true)
                         getActionButton(WhichButton.POSITIVE).updateTextColor(getColor(R.color.md_red_A700))
@@ -147,10 +148,10 @@ class SettingsActivity : ToolbarActivity() {
         DatabaseManger(App.instance).importDatabases(uri)
 
     private fun exportSetting(uri: Uri): Boolean =
-        SettingManager(App.instance).exportSettings(uri)
+        SettingDataManager.exportSettings(uri, App.instance)
 
     private fun importSetting(uri: Uri): Boolean =
-        SettingManager(App.instance).importSetting(uri)
+        SettingDataManager.importSetting(uri, App.instance)
 
     private suspend fun Boolean.andReport() {
         CoroutineUtil.coroutineToast(App.instance, if (this) R.string.success else R.string.failed)

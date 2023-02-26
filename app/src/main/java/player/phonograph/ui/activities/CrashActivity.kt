@@ -2,22 +2,18 @@ package player.phonograph.ui.activities
 
 import com.github.chr56.android.menu_dsl.attach
 import com.github.chr56.android.menu_dsl.menuItem
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 import lib.phonograph.activity.ToolbarActivity
 import lib.phonograph.dialog.alertDialog
-import mt.tint.viewtint.setBackgroundTint
 import mt.util.color.primaryTextColor
 import player.phonograph.R
 import player.phonograph.databinding.ActivityCrashBinding
 import player.phonograph.notification.ErrorNotification.KEY_IS_A_CRASH
 import player.phonograph.notification.ErrorNotification.KEY_STACK_TRACE
-import player.phonograph.settings.SettingManager
+import player.phonograph.migrate.SettingDataManager
 import player.phonograph.util.DeviceInfoUtil.getDeviceInfo
 import player.phonograph.util.ImageUtil.getTintedDrawable
 import player.phonograph.util.PhonographColorUtil.nightMode
 import player.phonograph.util.TimeUtil.currentDateTime
-import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.widget.Toolbar
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
@@ -166,7 +162,7 @@ class CrashActivity : ToolbarActivity() {
                         message(R.string.clear_all_preference_msg)
                         neutralButton(android.R.string.cancel)
                         positiveButton(R.string.clear_all_preference) { dialog ->
-                            SettingManager(this@CrashActivity).clearAllPreference()
+                            SettingDataManager.clearAllPreference()
                             Handler(Looper.getMainLooper()).postDelayed(
                                 {
                                     Process.killProcess(Process.myPid())

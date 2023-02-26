@@ -1,14 +1,15 @@
 /*
- * Copyright (c) 2022 chr_56
+ * Copyright (c) 2022~2023 chr_56
  */
 
-package player.phonograph.settings
+package player.phonograph.migrate
 
 import mt.pref.ThemeColor
 import player.phonograph.App
 import player.phonograph.BuildConfig.GIT_COMMIT_HASH
 import player.phonograph.BuildConfig.VERSION_CODE
 import player.phonograph.R
+import player.phonograph.settings.Setting
 import player.phonograph.util.Util.reportError
 import player.phonograph.util.Util.warning
 import androidx.preference.PreferenceManager
@@ -18,6 +19,7 @@ import android.content.Context
 import android.content.SharedPreferences.Editor
 import android.net.Uri
 import android.widget.Toast
+import kotlin.LazyThreadSafetyMode.NONE
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
@@ -25,11 +27,11 @@ import kotlinx.serialization.json.*
 import java.io.FileInputStream
 import java.io.FileOutputStream
 
-class SettingManager(var context: Context) {
+object SettingDataManager {
 
-    private val parser by lazy(LazyThreadSafetyMode.NONE) { Json { prettyPrint = true } }
+    private val parser by lazy(NONE) { Json { prettyPrint = true } }
 
-    fun exportSettings(uri: Uri): Boolean =
+    fun exportSettings(uri: Uri, context: Context): Boolean =
         try {
             val prefs = Setting.instance.rawMainPreference.all
             val model = serializedPref(prefs)
@@ -53,10 +55,10 @@ class SettingManager(var context: Context) {
         }
     }
 
-    fun importSetting(uri: Uri): Boolean {
+    fun importSetting(uri: Uri, context: Context): Boolean {
         return context.contentResolver.openFileDescriptor(uri, "r")?.fileDescriptor?.let { fd ->
             FileInputStream(fd).use {
-                loadSettings(it)
+                loadSettings(it, context)
             }
         } ?: false
     }
@@ -75,17 +77,17 @@ class SettingManager(var context: Context) {
 
     private fun serializedValue(obj: Any?): JsonElement = when (obj) {
         null       -> JsonNull
-        is String  -> JsonPrimitive("${SEP}${TS}${SEP}$obj")
-        is Int     -> JsonPrimitive("${SEP}${TI}${SEP}$obj")
-        is Long    -> JsonPrimitive("${SEP}${TL}${SEP}$obj")
-        is Float   -> JsonPrimitive("${SEP}${TF}${SEP}$obj")
-        is Boolean -> JsonPrimitive("${SEP}${TB}${SEP}$obj")
-        is Set<*>  -> JsonArray(obj.map { JsonPrimitive("${SEP}${TS}${SEP}$obj") })
+        is String  -> JsonPrimitive("$SEP$TS$SEP$obj")
+        is Int     -> JsonPrimitive("$SEP$TI$SEP$obj")
+        is Long    -> JsonPrimitive("$SEP$TL$SEP$obj")
+        is Float   -> JsonPrimitive("$SEP$TF$SEP$obj")
+        is Boolean -> JsonPrimitive("$SEP$TB$SEP$obj")
+        is Set<*>  -> JsonArray(obj.map { JsonPrimitive("$SEP$TS$SEP$obj") })
         else       -> throw IllegalArgumentException("unsupported type")
     }
 
 
-    private fun loadSettings(fileInputStream: FileInputStream): Boolean = try {
+    private fun loadSettings(fileInputStream: FileInputStream, context: Context): Boolean = try {
 
         val rawString: String = fileInputStream.use { stream ->
             stream.bufferedReader().use { it.readText() }
@@ -124,11 +126,11 @@ class SettingManager(var context: Context) {
                         val type = content[1]
                         val data = content.substring(3)
                         when (type) {
-                            TB  -> editor.putBoolean(key, data.toBoolean())
-                            TS  -> editor.putString(key, data)
-                            TI  -> editor.putInt(key, data.toInt())
-                            TL  -> editor.putLong(key, data.toLong())
-                            TF  -> editor.putFloat(key, data.toFloat())
+                            TB   -> editor.putBoolean(key, data.toBoolean())
+                            TS   -> editor.putString(key, data)
+                            TI   -> editor.putInt(key, data.toInt())
+                            TL   -> editor.putLong(key, data.toLong())
+                            TF   -> editor.putFloat(key, data.toFloat())
                             else -> warning(TAG, "unsupported type $type")
                         }
                     }
@@ -165,16 +167,14 @@ class SettingManager(var context: Context) {
         @SerialName("content") val content: JsonObject
     )
 
-    companion object {
-        const val VERSION = 2
-        private const val TAG = "SettingManager"
+    const val VERSION = 2
+    private const val TAG = "SettingManager"
 
-        private const val SEP = '/'
-        private const val TB = 'B'
-        private const val TS = 'S'
-        private const val TI = 'I'
-        private const val TL = 'L'
-        private const val TF = 'F'
+    private const val SEP = '/'
+    private const val TB = 'B'
+    private const val TS = 'S'
+    private const val TI = 'I'
+    private const val TL = 'L'
+    private const val TF = 'F'
 
-    }
 }
