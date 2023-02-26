@@ -10,6 +10,7 @@ import player.phonograph.BuildConfig.GIT_COMMIT_HASH
 import player.phonograph.BuildConfig.VERSION_CODE
 import player.phonograph.R
 import player.phonograph.settings.Setting
+import player.phonograph.util.FileUtil.saveToFile
 import player.phonograph.util.Util.reportError
 import player.phonograph.util.Util.warning
 import androidx.preference.PreferenceManager
@@ -42,17 +43,6 @@ object SettingDataManager {
             reportError(e, TAG, "Failed to convert SharedPreferences to Json")
             false
         }
-
-    private fun saveToFile(dest: Uri, content: String, contentResolver: ContentResolver) {
-        contentResolver.openFileDescriptor(dest, "wt")?.use { descriptor ->
-            FileOutputStream(descriptor.fileDescriptor).use { stream ->
-                stream.bufferedWriter().use {
-                    it.write(content)
-                    it.flush()
-                }
-            }
-        }
-    }
 
     fun importSetting(uri: Uri, context: Context): Boolean {
         return context.contentResolver.openFileDescriptor(uri, "r")?.use {

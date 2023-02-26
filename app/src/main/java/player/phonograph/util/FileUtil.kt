@@ -15,6 +15,8 @@ import kotlinx.coroutines.isActive
 import player.phonograph.App
 import player.phonograph.notification.ErrorNotification
 import androidx.core.content.getSystemService
+import android.content.ContentResolver
+import android.net.Uri
 import android.os.storage.StorageManager
 import java.io.File
 import java.io.FileFilter
@@ -23,6 +25,7 @@ import java.text.DecimalFormat
 import java.util.*
 import kotlin.math.log10
 import kotlin.math.pow
+import java.io.FileOutputStream
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
@@ -225,5 +228,19 @@ object FileUtil {
                                 file.mimeTypeIs("application/ogg")
                         )
             }
+    }
+
+    /**
+     * save [content] to a file from document uri ([dest])
+     */
+    fun saveToFile(dest: Uri, content: String, contentResolver: ContentResolver) {
+        contentResolver.openFileDescriptor(dest, "wt")?.use { descriptor ->
+            FileOutputStream(descriptor.fileDescriptor).use { stream ->
+                stream.bufferedWriter().use {
+                    it.write(content)
+                    it.flush()
+                }
+            }
+        }
     }
 }
