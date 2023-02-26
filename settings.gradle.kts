@@ -157,7 +157,7 @@ dependencyResolutionManagement {
             library("licensesdialog",
                     "de.psdev.licensesdialog:licensesdialog:2.1.0")
             library("jaudiotagger",
-                    "com.github.chr56:jaudiotagger:0.0.0-no-mp4")
+                    "com.github.chr56:jaudiotagger:0.0.1-no-mp4")
             library("observablescrollview",
                     "com.github.chr56:Android-ObservableScrollView-Retro:0.0.1")
             library("materialIntro",
