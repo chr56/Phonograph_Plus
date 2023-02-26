@@ -15,12 +15,12 @@ sourceSets {
 }
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_1_8
-    targetCompatibility = JavaVersion.VERSION_1_8
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
 }
 
 dependencies {
-    val agp = "7.3.0"
+    val agp = "7.4.1"
     compileOnly(gradleApi())
     compileOnly("com.android.tools.build:gradle-api:$agp")
 }
