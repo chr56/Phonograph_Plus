@@ -4,18 +4,21 @@
 
 package player.phonograph.migrate
 
-import android.content.Context
-import android.net.Uri
-import android.util.Log
-import player.phonograph.notification.ErrorNotification
 import player.phonograph.provider.DatabaseConstants.FAVORITE_DB
 import player.phonograph.provider.DatabaseConstants.HISTORY_DB
 import player.phonograph.provider.DatabaseConstants.MUSIC_PLAYBACK_STATE_DB
 import player.phonograph.provider.DatabaseConstants.PATH_FILTER
 import player.phonograph.provider.DatabaseConstants.SONG_PLAY_COUNT_DB
 import player.phonograph.util.TimeUtil.currentTimestamp
-import java.io.*
-import java.util.zip.ZipEntry
+import player.phonograph.util.zip.ZipUtil.addToZipFile
+import player.phonograph.util.zip.ZipUtil.extractZipFile
+import android.content.Context
+import android.net.Uri
+import android.util.Log
+import java.io.File
+import java.io.FileInputStream
+import java.io.FileNotFoundException
+import java.io.FileOutputStream
 import java.util.zip.ZipInputStream
 import java.util.zip.ZipOutputStream
 
@@ -95,51 +98,6 @@ object DatabaseDataManger {
                 to.delete().also { require(it) { "Can't delete ${to.path}" } }
             }
             from.renameTo(to).also { require(it) { "Restore ${from.path} failed!" } }
-        }
-    }
-
-    private fun addToZipFile(destination: ZipOutputStream, file: File, entryName: String): Boolean {
-        runCatching {
-            if (file.exists() && file.isFile) {
-                destination.putNextEntry(ZipEntry(entryName))
-                BufferedInputStream(FileInputStream(file)).use { fs ->
-                    val buffer = ByteArray(1024)
-                    var len: Int
-                    while (fs.read(buffer).also { len = it } != -1) {
-                        destination.write(buffer, 0, len)
-                    }
-                }
-            } else {
-                ErrorNotification.postErrorNotification(IllegalStateException(), "File ${file.name} is a directory or something!")
-            }
-        }.let {
-            if (it.isFailure) ErrorNotification.postErrorNotification(
-                it.exceptionOrNull() ?: Exception(), "Failed to add ${file.name} to current archive file ($destination)"
-            )
-            return it.isSuccess
-        }
-    }
-
-    private fun extractZipFile(source: ZipInputStream, destinationDir: File) {
-        var entry: ZipEntry?
-        while (source.nextEntry.also { entry = it } != null) {
-            entry?.apply {
-                if (!isDirectory) {
-                    val file = File(destinationDir, name)
-                    FileOutputStream(file).use { fos ->
-                        BufferedOutputStream(fos).use { outputStream ->
-                            var len: Int
-                            val bytes = ByteArray(1024)
-                            while (source.read(bytes).also { len = it } != -1) {
-                                outputStream.write(bytes, 0, len)
-                            }
-                        }
-                    }
-                } else {
-                    Log.w(TAG, "${this.name} is directory!!")
-                }
-            }
-
         }
     }
 
