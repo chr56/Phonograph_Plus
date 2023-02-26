@@ -16,7 +16,7 @@ import player.phonograph.util.FileUtil.safeGetCanonicalPath
 import java.io.File
 
 class PathFilterStore(context: Context) :
-    SQLiteOpenHelper(context, DatabaseConstants.PATH_FILTER, null, VERSION) {
+        SQLiteOpenHelper(context, DatabaseConstants.PATH_FILTER, null, VERSION) {
 
     override fun onCreate(db: SQLiteDatabase) {
         db.execSQL(
@@ -66,13 +66,55 @@ class PathFilterStore(context: Context) :
         notifyMediaStoreChanged()
     }
 
+    fun addBlacklistPath(path: String) {
+        addPathImpl(path, TABLE_BLACKLIST)
+        notifyMediaStoreChanged()
+    }
+
+    fun addWhitelistPath(path: String) {
+        addPathImpl(path, TABLE_WHITELIST)
+        notifyMediaStoreChanged()
+    }
+
+
+    fun addBlacklistPath(paths: List<String>) {
+        paths.forEach { addPathImpl(it, TABLE_BLACKLIST) }
+        notifyMediaStoreChanged()
+    }
+
+    fun addWhitelistPath(paths: List<String>) {
+        paths.forEach { addPathImpl(it, TABLE_WHITELIST) }
+        notifyMediaStoreChanged()
+    }
+
 
     fun removeBlacklistPath(file: File) {
         removePathImpl(file, TABLE_BLACKLIST)
         notifyMediaStoreChanged()
     }
+
     fun removeWhitelistPath(file: File) {
         removePathImpl(file, TABLE_WHITELIST)
+        notifyMediaStoreChanged()
+    }
+
+    fun removeBlacklistPath(path: String) {
+        removePathImpl(path, TABLE_BLACKLIST)
+        notifyMediaStoreChanged()
+    }
+
+    fun removeWhitelistPath(path: String) {
+        removePathImpl(path, TABLE_WHITELIST)
+        notifyMediaStoreChanged()
+    }
+
+    fun removeBlacklistPath(paths: List<String>) {
+        paths.forEach { removePathImpl(it, TABLE_BLACKLIST) }
+        notifyMediaStoreChanged()
+    }
+
+    fun removeWhitelistPath(paths: List<String>) {
+        paths.forEach { removePathImpl(it, TABLE_WHITELIST)}
         notifyMediaStoreChanged()
     }
 
@@ -89,9 +131,12 @@ class PathFilterStore(context: Context) :
 
     private fun addPathImpl(file: File, table: String) {
         if (contains(file, table)) return
-
         val path = safeGetCanonicalPath(file)
+        addPathImpl(path, table)
+    }
 
+    private fun addPathImpl(path: String, table: String) {
+        if (contains(path, table)) return
         with(writableDatabase) {
             beginTransaction()
             try {
@@ -109,16 +154,19 @@ class PathFilterStore(context: Context) :
         }
     }
 
-    private fun removePathImpl(file: File, table: String) {
+    private fun removePathImpl(file: File, table: String) =
+        removePathImpl(safeGetCanonicalPath(file), table)
+
+    private fun removePathImpl(path: String, table: String) {
         writableDatabase.delete(
-            table, "$PATH = ?", arrayOf(safeGetCanonicalPath(file))
+            table, "$PATH = ?", arrayOf(path)
         )
     }
 
-    internal fun contains(file: File?, table: String): Boolean {
-        if (file == null) return false
+    internal fun contains(file: File, table: String): Boolean =
+        contains(safeGetCanonicalPath(file), table)
 
-        val path = safeGetCanonicalPath(file)
+    internal fun contains(path: String, table: String): Boolean {
         return readableDatabase.query(
             table, arrayOf(PATH),
             "$PATH = ?", arrayOf(path),
