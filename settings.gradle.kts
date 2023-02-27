@@ -56,7 +56,7 @@ dependencyResolutionManagement {
             val versionCompose = "compose"
             val versionComposeCompiler = "composeCompiler"
             version(versionCompose, "1.3.1")
-            version(versionComposeCompiler, "1.3.1")
+            version(versionComposeCompiler, "1.4.3")
 
             library("compose.runtime",
                     "androidx.compose.runtime",
