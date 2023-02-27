@@ -4,19 +4,20 @@
 
 package player.phonograph.provider
 
+import player.phonograph.App
+import player.phonograph.MusicServiceMsgConst
+import player.phonograph.mediastore.SongLoader
+import player.phonograph.model.Song
+import player.phonograph.provider.DatabaseConstants.FAVORITE_DB
+import player.phonograph.util.TimeUtil.currentTimestamp
 import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
-import player.phonograph.App
-import player.phonograph.MusicServiceMsgConst
-import player.phonograph.model.Song
-import player.phonograph.provider.DatabaseConstants.FAVORITE_DB
-import player.phonograph.mediastore.SongLoader
-import player.phonograph.util.TimeUtil.currentTimestamp
 
-class FavoriteSongsStore(context: Context = App.instance) : SQLiteOpenHelper(context, FAVORITE_DB, null, VERSION) {
+class FavoriteSongsStore(context: Context = App.instance) :
+        SQLiteOpenHelper(context, FAVORITE_DB, null, VERSION) {
 
     private val creatingTableSQL =
         "CREATE TABLE IF NOT EXISTS $TABLE_NAME ($COLUMNS_ID LONG NOT NULL PRIMARY KEY, $COLUMNS_PATH TEXT NOT NULL, $COLUMNS_TITLE TEXT, $COLUMNS_TIMESTAMP LONG);"
@@ -88,14 +89,43 @@ class FavoriteSongsStore(context: Context = App.instance) : SQLiteOpenHelper(con
 
         database.beginTransaction()
         try {
-            val values = ContentValues(3)
-            values.put(COLUMNS_ID, song.id)
-            values.put(COLUMNS_PATH, song.data)
-            values.put(COLUMNS_TITLE, song.title)
-            values.put(COLUMNS_TIMESTAMP, currentTimestamp())
-
+            val values = ContentValues(4)
+                .apply {
+                    put(COLUMNS_ID, song.id)
+                    put(COLUMNS_PATH, song.data)
+                    put(COLUMNS_TITLE, song.title)
+                    put(COLUMNS_TIMESTAMP, currentTimestamp())
+                }
             database.insert(TABLE_NAME, null, values)
 
+            database.setTransactionSuccessful()
+            notifyMediaStoreChanged()
+            result = true
+        } finally {
+            database.endTransaction()
+        }
+
+        return result
+    }
+
+    fun addAll(songs: Collection<Song>): Boolean {
+        val database = writableDatabase
+        var result = false
+
+        database.beginTransaction()
+        try {
+            val values = ContentValues(4)
+
+            for (song in songs) {
+                with(values) {
+                    put(COLUMNS_ID, song.id)
+                    put(COLUMNS_PATH, song.data)
+                    put(COLUMNS_TITLE, song.title)
+                    put(COLUMNS_TIMESTAMP, currentTimestamp())
+                }
+                database.insert(TABLE_NAME, null, values)
+                values.clear()
+            }
             database.setTransactionSuccessful()
             notifyMediaStoreChanged()
             result = true
