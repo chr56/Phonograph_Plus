@@ -1,15 +1,5 @@
 package player.phonograph.dialogs
 
-import android.annotation.SuppressLint
-import android.app.Dialog
-import android.content.Context
-import android.content.pm.PackageManager
-import android.graphics.Color
-import android.os.Bundle
-import android.view.InflateException
-import android.view.View
-import android.webkit.WebView
-import androidx.fragment.app.DialogFragment
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.WhichButton
 import com.afollestad.materialdialogs.actions.getActionButton
@@ -20,8 +10,16 @@ import mt.util.color.resolveColor
 import org.intellij.lang.annotations.Language
 import player.phonograph.R
 import player.phonograph.notification.ErrorNotification
-import player.phonograph.settings.Setting
 import player.phonograph.util.PhonographColorUtil.nightMode
+import androidx.fragment.app.DialogFragment
+import android.annotation.SuppressLint
+import android.app.Dialog
+import android.content.Context
+import android.graphics.Color
+import android.os.Bundle
+import android.view.InflateException
+import android.view.View
+import android.webkit.WebView
 import java.io.IOException
 import java.io.InputStream
 import java.util.*
@@ -48,7 +46,7 @@ class ChangelogDialog : DialogFragment() {
         val dialog: MaterialDialog = MaterialDialog(requireActivity())
             .title(R.string.changelog)
             .customView(view = customView, noVerticalPadding = false)
-            .positiveButton(android.R.string.ok) { setChangelogRead(requireActivity()) }
+            .positiveButton(android.R.string.ok) { it.dismiss() }
             .apply {
                 getActionButton(WhichButton.POSITIVE).updateTextColor(
                     ThemeColor.accentColor(requireActivity())
@@ -131,16 +129,6 @@ class ChangelogDialog : DialogFragment() {
         private const val changelog = "changelog"
 
         fun create(): ChangelogDialog = ChangelogDialog()
-
-        fun setChangelogRead(context: Context) {
-            try {
-                val pInfo = context.packageManager.getPackageInfo(context.packageName, 0)
-                val currentVersion = pInfo.versionCode
-                Setting.instance.lastChangeLogVersion = currentVersion
-            } catch (e: PackageManager.NameNotFoundException) {
-                e.printStackTrace()
-            }
-        }
 
         private fun colorToCSS(color: Int): String =
             String.format(

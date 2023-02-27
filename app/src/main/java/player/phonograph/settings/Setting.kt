@@ -206,7 +206,7 @@ class Setting(context: Context) {
     var useLegacyDetailDialog: Boolean by BooleanPref(USE_LEGACY_DETAIL_DIALOG, false)
 
     // Changelog
-    var lastChangeLogVersion: Int by IntPref(LAST_CHANGELOG_VERSION, -1)
+    var previousVersion: Int by IntPref(PREVIOUS_VERSION, -1)
     var introShown: Boolean by BooleanPref(INTRO_SHOWN, false)
 
     companion object {
@@ -282,8 +282,8 @@ class Setting(context: Context) {
         const val PLAYLIST_FILES_OPERATION_BEHAVIOUR = "playlist_files_operation_behaviour"
         const val USE_LEGACY_DETAIL_DIALOG = "use_legacy_detail_dialog"
 
-        // Changelog
-        const val LAST_CHANGELOG_VERSION = "last_changelog_version"
+        // version
+        const val PREVIOUS_VERSION = "last_changelog_version"
         const val INTRO_SHOWN = "intro_shown"
 
         // unused & deprecated

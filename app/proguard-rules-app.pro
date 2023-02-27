@@ -56,6 +56,7 @@
 
 -keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.notification.**Impl {public <methods>;}
 
+-keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.migrate.* extends player.phonograph.migrate.Migration{public <methods>;}
 -keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.migrate.SettingDataManager {public <methods>;}
 -keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.migrate.DatabaseDataManger { boolean *(...);}
 
