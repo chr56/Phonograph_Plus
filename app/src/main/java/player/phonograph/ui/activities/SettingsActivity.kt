@@ -157,7 +157,7 @@ class SettingsActivity : ToolbarActivity(), ICreateFileStorageAccess, IOpenFileS
                 }
             }
             menuItem {
-                title = "Backup"
+                titleRes(R.string.action_backup)
                 showAsActionFlag = SHOW_AS_ACTION_NEVER
                 onClick {
                     BackupDataDialog().show(supportFragmentManager, "BACKUP_DIALOG")
