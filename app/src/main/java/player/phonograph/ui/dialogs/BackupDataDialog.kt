@@ -24,6 +24,8 @@ class BackupDataDialog : DialogFragment() {
         val items = mapOf(
             0 to "export path filter",
             1 to "import path filter",
+            2 to "export playing queues",
+            3 to "import playing queues",
         )
         return AlertDialog.Builder(activity)
             .setTitle("Backup")
@@ -44,6 +46,22 @@ class BackupDataDialog : DialogFragment() {
                         ) { uri: Uri? ->
                             uri ?: return@launch
                             DatabaseBackupManger.importPathFilter(activity, uri)
+                        }
+                    }
+                    2 -> {
+                        activity.createFileStorageAccessTool.launch(
+                            "phonograph_plus_playing_queues_${TimeUtil.currentDateTime()}.json"
+                        ) { uri: Uri? ->
+                            uri ?: return@launch
+                            DatabaseBackupManger.exportPlayingQueues(activity, uri)
+                        }
+                    }
+                    3 -> {
+                        activity.openFileStorageAccessTool.launch(
+                            OpenDocumentContract.Cfg(null, arrayOf("application/json"))
+                        ) { uri: Uri? ->
+                            uri ?: return@launch
+                            DatabaseBackupManger.importPlayingQueues(activity, uri)
                         }
                     }
                 }
