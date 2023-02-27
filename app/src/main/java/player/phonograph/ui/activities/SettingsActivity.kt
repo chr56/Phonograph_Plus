@@ -18,6 +18,7 @@ import player.phonograph.misc.IOpenFileStorageAccess
 import player.phonograph.misc.OpenDocumentContract
 import player.phonograph.misc.OpenFileStorageAccessTool
 import player.phonograph.misc.menuProvider
+import player.phonograph.ui.dialogs.BackupDataDialog
 import player.phonograph.ui.fragments.SettingsFragment
 import player.phonograph.util.CoroutineUtil
 import player.phonograph.util.TimeUtil.currentDateTime
@@ -152,6 +153,14 @@ class SettingsActivity : ToolbarActivity(), ICreateFileStorageAccess, IOpenFileS
                         cancelOnTouchOutside(true)
                         getActionButton(WhichButton.POSITIVE).updateTextColor(getColor(R.color.md_red_A700))
                     }
+                    true
+                }
+            }
+            menuItem {
+                title = "Backup"
+                showAsActionFlag = SHOW_AS_ACTION_NEVER
+                onClick {
+                    BackupDataDialog().show(supportFragmentManager, "BACKUP_DIALOG")
                     true
                 }
             }
