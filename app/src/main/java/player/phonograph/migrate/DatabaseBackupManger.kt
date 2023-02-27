@@ -82,22 +82,16 @@ object DatabaseBackupManger {
     }
 
     fun importPathFilter(context: Context, sourceUri: Uri): Boolean {
-        context.contentResolver.openFileDescriptor(sourceUri, "r")?.use {
-            FileInputStream(it.fileDescriptor).use { fileInputStream ->
-                val rawString: String = fileInputStream.use { stream ->
-                    stream.bufferedReader().use { reader -> reader.readText() }
-                }
-                val json = parser.parseToJsonElement(rawString) as? JsonObject
-                if (json != null) {
-                    try {
-                        importPathFilter(context, json, true)
-                    } catch (e: Exception) {
-                        reportError(e, TAG, "Failed!")
-                    }
-                } else {
-                    warning(TAG, "Nothing to import")
-                }
+        val rawString: String = readFrom(context, sourceUri)
+        val json = parser.parseToJsonElement(rawString) as? JsonObject
+        if (json != null) {
+            try {
+                importPathFilter(context, json, true)
+            } catch (e: Exception) {
+                reportError(e, TAG, "Failed!")
             }
+        } else {
+            warning(TAG, "Nothing to import")
         }
         return true
     }
@@ -167,41 +161,30 @@ object DatabaseBackupManger {
     }
 
     fun importPlayingQueues(context: Context, sourceUri: Uri): Boolean {
-        context.contentResolver.openFileDescriptor(sourceUri, "r")?.use {
-            FileInputStream(it.fileDescriptor).use { fileInputStream ->
-                val rawString: String = fileInputStream.use { stream ->
-                    stream.bufferedReader().use { reader -> reader.readText() }
-                }
-                val json = parser.parseToJsonElement(rawString) as? JsonObject
-                if (json != null) {
-                    try {
-                        importPlayingQueues(context, json, true)
-                    } catch (e: Exception) {
-                        reportError(e, TAG, "Failed!")
-                    }
-                } else {
-                    warning(TAG, "Nothing to import")
-                }
+        val rawString: String = readFrom(context, sourceUri)
+        val json = parser.parseToJsonElement(rawString) as? JsonObject
+        if (json != null) {
+            try {
+                importPlayingQueues(context, json)
+            } catch (e: Exception) {
+                reportError(e, TAG, "Failed!")
             }
+        } else {
+            warning(TAG, "Nothing to import")
         }
         return true
     }
 
 
-    private fun importPlayingQueues(context: Context, json: JsonObject, override: Boolean) {
+    private fun importPlayingQueues(context: Context, json: JsonObject) {
         val oq = json[ORIGINAL_PLAYING_QUEUE] as? JsonArray
         val pq = json[PLAYING_QUEUE] as? JsonArray
 
 
         val db = MusicPlaybackQueueStore.getInstance(context)
 
-        val originalQueue =
-            oq?.map { parser.decodeFromJsonElement(PersistentSong.serializer(), it) }
-                ?.mapNotNull { it.getMatchingSong(context) }
-        val currentQueueQueue =
-            pq?.map { parser.decodeFromJsonElement(PersistentSong.serializer(), it) }
-                ?.mapNotNull { it.getMatchingSong(context) }
-
+        val originalQueue = recoverSongs(context, oq)
+        val currentQueueQueue = recoverSongs(context, pq)
 
         if (!(originalQueue == null && currentQueueQueue == null)) {
 
@@ -255,22 +238,16 @@ object DatabaseBackupManger {
     }
 
     fun importFavorites(context: Context, sourceUri: Uri): Boolean {
-        context.contentResolver.openFileDescriptor(sourceUri, "r")?.use {
-            FileInputStream(it.fileDescriptor).use { fileInputStream ->
-                val rawString: String = fileInputStream.use { stream ->
-                    stream.bufferedReader().use { reader -> reader.readText() }
-                }
-                val json = parser.parseToJsonElement(rawString) as? JsonObject
-                if (json != null) {
-                    try {
-                        importFavorites(context, json, true)
-                    } catch (e: Exception) {
-                        reportError(e, TAG, "Failed!")
-                    }
-                } else {
-                    warning(TAG, "Nothing to import")
-                }
+        val rawString: String = readFrom(context, sourceUri)
+        val json = parser.parseToJsonElement(rawString) as? JsonObject
+        if (json != null) {
+            try {
+                importFavorites(context, json, true)
+            } catch (e: Exception) {
+                reportError(e, TAG, "Failed!")
             }
+        } else {
+            warning(TAG, "Nothing to import")
         }
         return true
     }
@@ -280,13 +257,12 @@ object DatabaseBackupManger {
 
         val db = FavoriteSongsStore.instance
 
-        val songs = f?.map { parser.decodeFromJsonElement(PersistentSong.serializer(), it) }
-            ?.mapNotNull { it.getMatchingSong(context) }
+        val songs = recoverSongs(context, f)
 
         if (!songs.isNullOrEmpty()) {
 
             // todo: report imported songs
-
+            if (override) db.clear()
             db.addAll(songs.asReversed())
             context.sendBroadcast(Intent(MusicServiceMsgConst.MEDIA_STORE_CHANGED))
         } else {
@@ -294,8 +270,13 @@ object DatabaseBackupManger {
         }
     }
 
-    fun persistentSong(song: Song): JsonElement =
+    private fun persistentSong(song: Song): JsonElement =
         parser.encodeToJsonElement(PersistentSong.serializer(), PersistentSong.from(song))
+
+    private fun recoverSongs(context: Context, array: JsonArray?): List<Song>? =
+        array?.map { parser.decodeFromJsonElement(PersistentSong.serializer(), it) }
+            ?.mapNotNull { it.getMatchingSong(context) }
+
 
     @Keep
     @Serializable
@@ -315,6 +296,24 @@ object DatabaseBackupManger {
             if (song == Song.EMPTY_SONG) return null
             return song
         }
+    }
+
+    /**
+     * @param uri source document content uri
+     */
+    private fun readFrom(context: Context, uri: Uri): String {
+        try {
+            context.contentResolver.openFileDescriptor(uri, "r")?.use {
+                FileInputStream(it.fileDescriptor).use { fileInputStream ->
+                    fileInputStream.use { stream ->
+                        return stream.bufferedReader().use { reader -> reader.readText() }
+                    }
+                }
+            }
+        } catch (e: Exception) {
+            reportError(e, TAG, "Could not read content from $uri")
+        }
+        return ""
     }
 
     private const val TAG = "DatabaseBackupManger"
