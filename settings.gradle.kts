@@ -95,7 +95,7 @@ dependencyResolutionManagement {
             library("retrofit2",
                     "com.squareup.retrofit2:retrofit:2.9.0")
             library("kotlinx.serialization.json",
-                    "org.jetbrains.kotlinx:kotlinx-serialization-json:1.4.0")
+                    "org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.0")
             library("coil",
                     "io.coil-kt:coil:2.2.2")
 
