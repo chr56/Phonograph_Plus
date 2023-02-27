@@ -16,7 +16,7 @@ dependencyResolutionManagement {
             library("androidx.core",
                     "androidx.core:core-ktx:1.9.0")
             library("androidx.appcompat",
-                    "androidx.appcompat:appcompat:1.5.1")
+                     "androidx.appcompat:appcompat:1.6.1")
             library("androidx.activity",
                     "androidx.activity",
                     "activity-ktx").versionRef(versionActivity)
