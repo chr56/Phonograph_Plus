@@ -10,14 +10,17 @@ import mt.pref.ThemeColor
 import mt.tint.setActivityToolbarColorAuto
 import player.phonograph.App
 import player.phonograph.R
-import player.phonograph.migrate.SettingDataManager
-import player.phonograph.misc.OpenDocumentContract
-import player.phonograph.misc.menuProvider
 import player.phonograph.migrate.DatabaseDataManger
+import player.phonograph.migrate.SettingDataManager
+import player.phonograph.misc.CreateFileStorageAccessTool
+import player.phonograph.misc.ICreateFileStorageAccess
+import player.phonograph.misc.IOpenFileStorageAccess
+import player.phonograph.misc.OpenDocumentContract
+import player.phonograph.misc.OpenFileStorageAccessTool
+import player.phonograph.misc.menuProvider
 import player.phonograph.ui.fragments.SettingsFragment
 import player.phonograph.util.CoroutineUtil
 import player.phonograph.util.TimeUtil.currentDateTime
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.widget.Toolbar
 import android.net.Uri
 import android.os.Bundle
@@ -30,10 +33,19 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class SettingsActivity : ToolbarActivity() {
+class SettingsActivity : ToolbarActivity(), ICreateFileStorageAccess, IOpenFileStorageAccess {
+
+    override val openFileStorageAccessTool: OpenFileStorageAccessTool =
+        OpenFileStorageAccessTool()
+    override val createFileStorageAccessTool: CreateFileStorageAccessTool =
+        CreateFileStorageAccessTool()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_preferences)
+
+        openFileStorageAccessTool.register(lifecycle, activityResultRegistry)
+        createFileStorageAccessTool.register(lifecycle, activityResultRegistry)
 
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         toolbar.setBackgroundColor(ThemeColor.primaryColor(this))
@@ -59,8 +71,14 @@ class SettingsActivity : ToolbarActivity() {
                 title = "${getString(R.string.export_)}${getString(R.string.databases)}"
                 showAsActionFlag = SHOW_AS_ACTION_NEVER
                 onClick {
-                    createAction = { uri -> exportDatabase(uri) }
-                    createLauncher.launch("phonograph_plus_databases_${currentDateTime()}.zip")
+                    createFileStorageAccessTool.launch(
+                        "phonograph_plus_databases_${currentDateTime()}.zip"
+                    ) { uri ->
+                        uri ?: return@launch
+                        CoroutineScope(Dispatchers.IO).launch {
+                            exportDatabase(uri).andReport()
+                        }
+                    }
                     true
                 }
             }
@@ -69,8 +87,14 @@ class SettingsActivity : ToolbarActivity() {
                 title = "${getString(R.string.import_)}${getString(R.string.databases)}"
                 showAsActionFlag = SHOW_AS_ACTION_NEVER
                 onClick {
-                    openAction = { uri -> importDatabase(uri) }
-                    openLauncher.launch(OpenDocumentContract.Cfg(null, arrayOf("application/zip")))
+                    openFileStorageAccessTool.launch(
+                        OpenDocumentContract.Cfg(null, arrayOf("application/zip"))
+                    ) { uri ->
+                        uri ?: return@launch
+                        CoroutineScope(Dispatchers.IO).launch {
+                            importDatabase(uri).andReport()
+                        }
+                    }
                     true
                 }
             }
@@ -79,8 +103,14 @@ class SettingsActivity : ToolbarActivity() {
                 title = "${getString(R.string.export_)}${getString(R.string.preferences)}"
                 showAsActionFlag = SHOW_AS_ACTION_NEVER
                 onClick {
-                    createAction = { uri -> exportSetting(uri) }
-                    createLauncher.launch("phonograph_plus_settings_${currentDateTime()}.json")
+                    createFileStorageAccessTool.launch(
+                        "phonograph_plus_settings_${currentDateTime()}.json"
+                    ) { uri ->
+                        uri ?: return@launch
+                        CoroutineScope(Dispatchers.IO).launch {
+                            exportSetting(uri).andReport()
+                        }
+                    }
                     true
                 }
             }
@@ -89,8 +119,14 @@ class SettingsActivity : ToolbarActivity() {
                 title = "${getString(R.string.import_)}${getString(R.string.preferences)}"
                 showAsActionFlag = SHOW_AS_ACTION_NEVER
                 onClick {
-                    openAction = { uri -> importSetting(uri) }
-                    openLauncher.launch(OpenDocumentContract.Cfg(null, arrayOf("application/json")))
+                    openFileStorageAccessTool.launch(
+                        OpenDocumentContract.Cfg(null, arrayOf("application/json"))
+                    ) { uri ->
+                        uri ?: return@launch
+                        CoroutineScope(Dispatchers.IO).launch {
+                            importSetting(uri).andReport()
+                        }
+                    }
                     true
                 }
             }
@@ -118,25 +154,6 @@ class SettingsActivity : ToolbarActivity() {
                     }
                     true
                 }
-            }
-        }
-    }
-
-    private lateinit var createAction: (Uri) -> Boolean
-    private lateinit var openAction: (Uri) -> Boolean
-
-    private val createLauncher =
-        registerForActivityResult(ActivityResultContracts.CreateDocument()) {
-            it?.let { uri ->
-                CoroutineScope(Dispatchers.IO).launch {
-                    createAction(uri).andReport()
-                }
-            }
-        }
-    private val openLauncher = registerForActivityResult(OpenDocumentContract()) {
-        it?.let { uri ->
-            CoroutineScope(Dispatchers.IO).launch {
-                openAction(uri).andReport()
             }
         }
     }
