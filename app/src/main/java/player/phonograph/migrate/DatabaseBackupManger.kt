@@ -4,16 +4,25 @@
 
 package player.phonograph.migrate
 
+import player.phonograph.MusicServiceMsgConst
+import player.phonograph.mediastore.searchSong
+import player.phonograph.model.Song
+import player.phonograph.provider.MusicPlaybackQueueStore
 import player.phonograph.provider.PathFilterStore
 import player.phonograph.util.FileUtil.saveToFile
 import player.phonograph.util.Util.reportError
 import player.phonograph.util.Util.warning
+import androidx.annotation.Keep
 import android.content.Context
+import android.content.Intent
 import android.net.Uri
 import kotlin.LazyThreadSafetyMode.NONE
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonArray
+import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
 import java.io.FileInputStream
@@ -116,6 +125,120 @@ object DatabaseBackupManger {
             warning(TAG, "Nothing to import")
         }
 
+    }
+
+    private const val PLAYING_QUEUE = "playing_queue"
+    private const val ORIGINAL_PLAYING_QUEUE = "original_playing_queue"
+
+    /**
+     * @param destinationUri destination document uri
+     */
+    fun exportPlayingQueues(context: Context, destinationUri: Uri): Boolean {
+        val json = exportPlayingQueues(context)
+        val content = parser.encodeToString(json)
+        saveToFile(destinationUri, content, context.contentResolver)
+        return true
+    }
+
+    /**
+     * close stream after use
+     */
+    fun exportPlayingQueues(context: Context, outputStream: OutputStream) {
+        val json = exportPlayingQueues(context)
+        val content = parser.encodeToString(json)
+        outputStream.writer(Charsets.UTF_8).also {
+            it.write(content)
+            it.flush()
+        }
+    }
+
+    private fun exportPlayingQueues(context: Context): JsonObject {
+        val db = MusicPlaybackQueueStore.getInstance(context)
+        val oq = db.savedOriginalPlayingQueue.map(::persistentSong)
+        val pq = db.savedPlayingQueue.map(::persistentSong)
+        return JsonObject(
+            mapOf(
+                VERSION to JsonPrimitive(VERSION_CODE),
+                PLAYING_QUEUE to JsonArray(pq),
+                ORIGINAL_PLAYING_QUEUE to JsonArray(oq),
+            )
+        )
+    }
+
+    fun importPlayingQueues(context: Context, sourceUri: Uri): Boolean {
+        context.contentResolver.openFileDescriptor(sourceUri, "r")?.use {
+            FileInputStream(it.fileDescriptor).use { fileInputStream ->
+                val rawString: String = fileInputStream.use { stream ->
+                    stream.bufferedReader().use { reader -> reader.readText() }
+                }
+                val json = parser.parseToJsonElement(rawString) as? JsonObject
+                if (json != null) {
+                    try {
+                        importPlayingQueues(context, json, true)
+                    } catch (e: Exception) {
+                        reportError(e, TAG, "Failed!")
+                    }
+                } else {
+                    warning(TAG, "Nothing to import")
+                }
+            }
+        }
+        return true
+    }
+
+
+    private fun importPlayingQueues(context: Context, json: JsonObject, override: Boolean) {
+        val oq = json[ORIGINAL_PLAYING_QUEUE] as? JsonArray
+        val pq = json[PLAYING_QUEUE] as? JsonArray
+
+
+        val db = MusicPlaybackQueueStore.getInstance(context)
+
+        val originalQueue =
+            oq?.map { parser.decodeFromJsonElement(PersistentSong.serializer(), it) }
+                ?.mapNotNull { it.getMatchingSong(context) }
+        val currentQueueQueue =
+            pq?.map { parser.decodeFromJsonElement(PersistentSong.serializer(), it) }
+                ?.mapNotNull { it.getMatchingSong(context) }
+
+
+        if (!(originalQueue == null && currentQueueQueue == null)) {
+
+            // todo: report imported queues
+
+            db.saveQueues(
+                currentQueueQueue ?: originalQueue ?: emptyList(),
+                originalQueue ?: currentQueueQueue ?: emptyList(),
+            )
+            context.sendBroadcast(Intent(MusicServiceMsgConst.MEDIA_STORE_CHANGED))
+
+        } else {
+            warning(TAG, "Nothing to import")
+        }
+    }
+
+
+    fun persistentSong(song: Song): JsonElement =
+        parser.encodeToJsonElement(PersistentSong.serializer(), PersistentSong.from(song))
+
+    @Keep
+    @Serializable
+    class PersistentSong(
+        @SerialName("path") val path: String,
+        @SerialName("title") val title: String,
+        @SerialName("album") val album: String?,
+        @SerialName("artist") val artist: String?,
+    ) {
+        companion object {
+            fun from(song: Song): PersistentSong =
+                PersistentSong(song.data, song.title, song.albumName, song.artistName)
+        }
+
+        fun getMatchingSong(context: Context): Song? {
+            val song = searchSong(context, path)
+            if (song == Song.EMPTY_SONG) return null
+            return song
+        }
     }
 
     private const val TAG = "DatabaseBackupManger"
