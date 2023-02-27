@@ -9,6 +9,7 @@ import player.phonograph.service.util.QueuePreferenceManager
 import player.phonograph.util.Util.reportError
 import player.phonograph.util.preferences.HomeTabConfig
 import player.phonograph.migrate.DeprecatedPreference.SortOrder
+import player.phonograph.settings.Setting
 import androidx.preference.PreferenceManager
 import android.content.Context
 import android.content.Context.MODE_PRIVATE
@@ -33,6 +34,8 @@ fun migrate(context: Context, from: Int, to: Int) {
     }
 
     Log.i(TAG, "End Migrate")
+
+    Setting.instance.previousVersion = to
 }
 
 /**

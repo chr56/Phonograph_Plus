@@ -3,7 +3,6 @@ package player.phonograph.ui.activities
 import com.github.chr56.android.menu_dsl.attach
 import com.github.chr56.android.menu_dsl.menuItem
 import com.sothree.slidinguppanel.SlidingUpPanelLayout
-import legacy.phonograph.JunkCleaner
 import mt.tint.viewtint.setItemIconColors
 import mt.tint.viewtint.setItemTextColors
 import mt.util.color.resolveColor
@@ -20,6 +19,7 @@ import player.phonograph.databinding.ActivityMainBinding
 import player.phonograph.databinding.LayoutDrawerBinding
 import player.phonograph.dialogs.ChangelogDialog
 import player.phonograph.mediastore.SongLoader.getAllSongs
+import player.phonograph.migrate.migrate
 import player.phonograph.misc.CreateFileStorageAccessTool
 import player.phonograph.misc.ICreateFileStorageAccess
 import player.phonograph.misc.IOpenDirStorageAccess
@@ -107,7 +107,7 @@ class MainActivity : AbsSlidingMusicPanelActivity(),
                 } else {
                     checkUpdate()
                 }
-                showChangelog()
+                versionCheck()
                 Setting.instance
                     .registerOnSharedPreferenceChangedListener(sharedPreferenceChangeListener)
             }, 900
@@ -388,15 +388,17 @@ class MainActivity : AbsSlidingMusicPanelActivity(),
         }
     }
 
-    private fun showChangelog() {
+    private fun versionCheck() {
         try {
-            val pInfo = packageManager.getPackageInfo(packageName, 0)
-            val currentVersion = pInfo.versionCode
-            if (currentVersion != Setting.instance.lastChangeLogVersion) {
-                runCatching {
-                    ChangelogDialog.create().show(supportFragmentManager, "CHANGE_LOG_DIALOG")
-                    JunkCleaner(App.instance).clear(currentVersion, CoroutineScope(Dispatchers.IO))
-                }
+            val currentVersion = packageManager.getPackageInfo(packageName, 0).versionCode
+            val previousVersion = Setting.instance.previousVersion
+
+            if (currentVersion > previousVersion) {
+                ChangelogDialog.create().show(supportFragmentManager, "CHANGE_LOG_DIALOG")
+            }
+
+            CoroutineScope(Dispatchers.Default).launch {
+                migrate(App.instance, previousVersion, currentVersion)
             }
         } catch (e: PackageManager.NameNotFoundException) {
             ErrorNotification.postErrorNotification(e, "Package Name Can't Be Found!")
