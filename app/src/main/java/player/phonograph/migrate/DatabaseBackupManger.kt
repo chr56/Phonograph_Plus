@@ -7,6 +7,7 @@ package player.phonograph.migrate
 import player.phonograph.MusicServiceMsgConst
 import player.phonograph.mediastore.searchSong
 import player.phonograph.model.Song
+import player.phonograph.provider.FavoriteSongsStore
 import player.phonograph.provider.MusicPlaybackQueueStore
 import player.phonograph.provider.PathFilterStore
 import player.phonograph.util.FileUtil.saveToFile
@@ -217,6 +218,81 @@ object DatabaseBackupManger {
         }
     }
 
+    private const val FAVORITE = "favorite"
+
+    /**
+     * @param destinationUri destination document uri
+     */
+    fun exportFavorites(context: Context, destinationUri: Uri): Boolean {
+        val json = exportFavorites(context)
+        val content = parser.encodeToString(json)
+        saveToFile(destinationUri, content, context.contentResolver)
+        return true
+    }
+
+    /**
+     * close stream after use
+     */
+    fun exportFavorites(context: Context, outputStream: OutputStream) {
+        val json = exportFavorites(context)
+        val content = parser.encodeToString(json)
+        outputStream.writer(Charsets.UTF_8).also {
+            it.write(content)
+            it.flush()
+        }
+    }
+
+    private fun exportFavorites(context: Context): JsonObject {
+        val db = FavoriteSongsStore.instance
+
+        val songs = db.getAllSongs(context).map(::persistentSong)
+        return JsonObject(
+            mapOf(
+                VERSION to JsonPrimitive(VERSION_CODE),
+                FAVORITE to JsonArray(songs)
+            )
+        )
+    }
+
+    fun importFavorites(context: Context, sourceUri: Uri): Boolean {
+        context.contentResolver.openFileDescriptor(sourceUri, "r")?.use {
+            FileInputStream(it.fileDescriptor).use { fileInputStream ->
+                val rawString: String = fileInputStream.use { stream ->
+                    stream.bufferedReader().use { reader -> reader.readText() }
+                }
+                val json = parser.parseToJsonElement(rawString) as? JsonObject
+                if (json != null) {
+                    try {
+                        importFavorites(context, json, true)
+                    } catch (e: Exception) {
+                        reportError(e, TAG, "Failed!")
+                    }
+                } else {
+                    warning(TAG, "Nothing to import")
+                }
+            }
+        }
+        return true
+    }
+
+    private fun importFavorites(context: Context, json: JsonObject, override: Boolean) {
+        val f = json[FAVORITE] as? JsonArray
+
+        val db = FavoriteSongsStore.instance
+
+        val songs = f?.map { parser.decodeFromJsonElement(PersistentSong.serializer(), it) }
+            ?.mapNotNull { it.getMatchingSong(context) }
+
+        if (!songs.isNullOrEmpty()) {
+
+            // todo: report imported songs
+
+            db.addAll(songs.asReversed())
+            context.sendBroadcast(Intent(MusicServiceMsgConst.MEDIA_STORE_CHANGED))
+        } else {
+            warning(TAG, "Nothing to import")
+        }
+    }
 
     fun persistentSong(song: Song): JsonElement =
         parser.encodeToJsonElement(PersistentSong.serializer(), PersistentSong.from(song))
