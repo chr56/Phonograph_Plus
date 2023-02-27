@@ -59,6 +59,21 @@ class BackupDataDialog : DialogFragment() {
                     true
                 }
             },
+            "export favorites" to {
+                export(
+                    requireActivity(),
+                    "phonograph_plus_favorites_${TimeUtil.currentDateTime()}.json"
+                ) { uri ->
+                    DatabaseBackupManger.exportFavorites(activity, uri)
+                    true
+                }
+            },
+            "import favorites" to {
+                import(requireActivity(), "application/json") { uri ->
+                    DatabaseBackupManger.importFavorites(activity, uri)
+                    true
+                }
+            },
         )
         return AlertDialog.Builder(activity)
             .setTitle("Backup")
