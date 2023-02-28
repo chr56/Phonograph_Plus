@@ -35,6 +35,27 @@ fun generateGitHubReleaseMarkDown(model: ReleaseNoteModel): String {
     }
 }
 
+fun generateTGReleaseMarkDown(model: ReleaseNoteModel): String {
+
+    val header = "**v${model.version} ${dateString(model.time)}**"
+
+    val zh = buildString {
+        appendLine("**ZH**")
+        appendLine(markdownNoteItem(model.note.zh))
+    }
+
+    val en = buildString {
+        appendLine("**EN**")
+        appendLine(markdownNoteItem(model.note.en))
+    }
+
+    return buildString {
+        append(header).append('\n')
+        append(zh).append('\n')
+        append(en).append('\n')
+    }
+}
+
 fun generateHTML(model: ReleaseNoteModel): Map<String, String> {
     val en = generateHTMLImpl(model.version, model.time, model.note.en).collect()
     val zh = generateHTMLImpl(model.version, model.time, model.note.zh).collect()
