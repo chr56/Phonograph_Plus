@@ -4,7 +4,6 @@
 [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://github.com/chr56/Phonograph_Plus/blob/release/LICENSE.txt)
 [<img src="https://github.com/chr56/Phonograph_Plus/actions/workflows/dev.yml/badge.svg" alt="Dev CI Status">](https://github.com/chr56/Phonograph_Plus/actions/workflows/dev.yml)
 
-
 **A fork of Phonograph under maintenance and development**
 
 A material designed local music player for Android.
@@ -14,7 +13,8 @@ A material designed local music player for Android.
 
 [简体中文](./README_ZH.md)
 
-This is a fork of [Phonograph](https://github.com/kabouzeid/Phonograph), and is currently under my maintenance and development.
+This is a fork of [Phonograph](https://github.com/kabouzeid/Phonograph), and is currently under my maintenance and
+development.
 
 ## **Additional Features**
 
@@ -63,13 +63,12 @@ All listed features are compared with original Phonograph.
 
 - Brand-new File tab.
 
-- Allow deleting songs file along with its external lyrics file. 
+- Allow deleting songs file along with its external lyrics file.
 
 - and more small features/fixes.
 
-
-
-It is suggested to browser the [Changelog](https://phonographplus.github.io/changelogs/changeslogs/changelog.html) to learn all features completely
+It is suggested to browser the [Changelog](https://phonographplus.github.io/changelogs/changeslogs/changelog.html) to
+learn all features completely
 
 ## **Translation**
 
@@ -81,25 +80,21 @@ We have removed Swedish and Norwegian Nynorsk translations due to missing too ma
 
 For reference only, actual app might be different
 
-|                                       Card Player                                       |                                       Flat Player                                       |
-|:---------------------------------------------------------------------------------------:|:---------------------------------------------------------------------------------------:|
-| ![Screenshots](fastlane/metadata/android/en-US/images/phoneScreenshots/05.jpg?raw=true) | ![Screenshots](fastlane/metadata/android/en-US/images/phoneScreenshots/08.jpg?raw=true) |
+|                                           Card Player                                           |                                           Flat Player                                           |                                           Drawer                                            |
+|:-----------------------------------------------------------------------------------------------:|:-----------------------------------------------------------------------------------------------:|:-------------------------------------------------------------------------------------------:|
+| ![Screenshots](fastlane/metadata/android/en-US/images/phoneScreenshots/CardPlayer.jpg?raw=true) | ![Screenshots](fastlane/metadata/android/en-US/images/phoneScreenshots/FlatPlayer.jpg?raw=true) | ![Screenshots](fastlane/metadata/android/en-US/images/phoneScreenshots/Drawer.jpg?raw=true) |
 
-|                                         Drawer                                          |                                         Setting                                         |
-|:---------------------------------------------------------------------------------------:|:---------------------------------------------------------------------------------------:|
-| ![Screenshots](fastlane/metadata/android/en-US/images/phoneScreenshots/03.jpg?raw=true) | ![Screenshots](fastlane/metadata/android/en-US/images/phoneScreenshots/01.jpg?raw=true) |
+|                                           Drawer                                            |                                             Songs                                             |                                             Files                                             |
+|:-------------------------------------------------------------------------------------------:|:---------------------------------------------------------------------------------------------:|:---------------------------------------------------------------------------------------------:|
+| ![Screenshots](fastlane/metadata/android/en-US/images/phoneScreenshots/Drawer.jpg?raw=true) | ![Screenshots](fastlane/metadata/android/en-US/images/phoneScreenshots/SongPage.jpg?raw=true) | ![Screenshots](fastlane/metadata/android/en-US/images/phoneScreenshots/FilePage.jpg?raw=true) |
 
-|                                          Songs                                          |                                         Folders                                         |
-|:---------------------------------------------------------------------------------------:|:---------------------------------------------------------------------------------------:|
-| ![Screenshots](fastlane/metadata/android/en-US/images/phoneScreenshots/09.jpg?raw=true) | ![Screenshots](fastlane/metadata/android/en-US/images/phoneScreenshots/10.jpg?raw=true) |
+|                                             Artists                                             |                                             Albums                                             |                                             Playlists                                             |
+|:-----------------------------------------------------------------------------------------------:|:----------------------------------------------------------------------------------------------:|:-------------------------------------------------------------------------------------------------:|
+| ![Screenshots](fastlane/metadata/android/en-US/images/phoneScreenshots/ArtistPage.jpg?raw=true) | ![Screenshots](fastlane/metadata/android/en-US/images/phoneScreenshots/AlbumPage.jpg?raw=true) | ![Screenshots](fastlane/metadata/android/en-US/images/phoneScreenshots/PlaylistPage.jpg?raw=true) |
 
-|                                         Artists                                         |                                        Playlists                                        |
-|:---------------------------------------------------------------------------------------:|:---------------------------------------------------------------------------------------:|
-| ![Screenshots](fastlane/metadata/android/en-US/images/phoneScreenshots/07.jpg?raw=true) | ![Screenshots](fastlane/metadata/android/en-US/images/phoneScreenshots/06.jpg?raw=true) |
-
-|                                        Song Menu                                        |                                 Tag Editor (Deprecated)                                 |
-|:---------------------------------------------------------------------------------------:|:---------------------------------------------------------------------------------------:|
-| ![Screenshots](fastlane/metadata/android/en-US/images/phoneScreenshots/02.jpg?raw=true) | ![Screenshots](fastlane/metadata/android/en-US/images/phoneScreenshots/04.jpg?raw=true) |
+|                                           Setting                                            |                                           Song Detail                                           |                                           Tag Editor                                           |
+|:--------------------------------------------------------------------------------------------:|:-----------------------------------------------------------------------------------------------:|:----------------------------------------------------------------------------------------------:|
+| ![Screenshots](fastlane/metadata/android/en-US/images/phoneScreenshots/Setting.jpg?raw=true) | ![Screenshots](fastlane/metadata/android/en-US/images/phoneScreenshots/SongDetail.jpg?raw=true) | ![Screenshots](fastlane/metadata/android/en-US/images/phoneScreenshots/TagEditor.jpg?raw=true) |
 
 ## **Build Instructions & Developer Guide**
 

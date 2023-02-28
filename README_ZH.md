@@ -16,85 +16,78 @@
 
 ## **新增特性**
 
-所有特性皆与原版相比。 
+所有特性皆与原版相比。
 
-- 解锁 Pro 
+- 解锁 Pro
 
-- 自动夜间模式 
+- 自动夜间模式
 
-- 大规模调整界面 
+- 大规模调整界面
 
-- 应用内手动更改语言 
+- 应用内手动更改语言
 
-- 全新详情页, 显示歌曲标签等信息 
+- 全新详情页, 显示歌曲标签等信息
 
-- 歌词对话框内显示歌词时间轴信息, 并可以通过长按进行快速转跳与自动滚动 
+- 歌词对话框内显示歌词时间轴信息, 并可以通过长按进行快速转跳与自动滚动
 
-- 自定义歌曲点击行为 
+- 自定义歌曲点击行为
 
-- 支持正在播放列表历史记录 
+- 支持正在播放列表历史记录
 
-- 适配 Android 11 分区存储 （部分） 
+- 适配 Android 11 分区存储 （部分）
 
-- 改进菜单, 适当折叠歌曲弹出菜单  
+- 改进菜单, 适当折叠歌曲弹出菜单
 
-- 改进媒体库交互 
+- 改进媒体库交互
 
-- 支持更多排序方式 
+- 支持更多排序方式
 
-- 添加崩溃报告页面 
+- 添加崩溃报告页面
 
-- 使用路径过滤器代替黑名单, 支持排除模式与仅包含模式 
+- 使用路径过滤器代替黑名单, 支持排除模式与仅包含模式
 
 - 在歌曲(或文件)弹出菜单中, 快速添加排除名单(黑名单)
 
-- 适配" [墨·状态栏歌词](https://github.com/Block-Network/StatusBarLyric) 
+- 适配" [墨·状态栏歌词](https://github.com/Block-Network/StatusBarLyric)
 
-- 支持导出内部数据库以供备份 
+- 支持导出内部数据库以供备份
 - 增大“最近播放”和“最喜爱的歌曲(实际是“最常播放”的歌曲)”条目数量(100→150)
 
-- 允许标签固定并平铺 
+- 允许标签固定并平铺
 
-- 全新的文件夹视图 
+- 全新的文件夹视图
 
-- 支持删除歌曲时一同删除歌词 
+- 支持删除歌曲时一同删除歌词
 
-- 以及更多细小特性 
+- 以及更多细小特性
 
 浏览[更新日志](https://phonographplus.github.io/changelogs/changeslogs/changelog-ZH-CN.html)以了解明细!
-
 
 ## **翻译**
 
 [Crowdin](https://crowdin.com/project/phonograph-plus)
 
-
 ## **截图**
 
 仅供参考， 以实际为准
 
+|                                           Card Player                                           |                                           Flat Player                                           |                                           Drawer                                            |
+|:-----------------------------------------------------------------------------------------------:|:-----------------------------------------------------------------------------------------------:|:-------------------------------------------------------------------------------------------:|
+| ![Screenshots](fastlane/metadata/android/en-US/images/phoneScreenshots/CardPlayer.jpg?raw=true) | ![Screenshots](fastlane/metadata/android/en-US/images/phoneScreenshots/FlatPlayer.jpg?raw=true) | ![Screenshots](fastlane/metadata/android/en-US/images/phoneScreenshots/Drawer.jpg?raw=true) |
 
-|                                       Card Player                                       |                                       Flat Player                                       |
-|:---------------------------------------------------------------------------------------:|:---------------------------------------------------------------------------------------:|
-| ![Screenshots](fastlane/metadata/android/en-US/images/phoneScreenshots/05.jpg?raw=true) | ![Screenshots](fastlane/metadata/android/en-US/images/phoneScreenshots/08.jpg?raw=true) |
+|                                           Drawer                                            |                                             Songs                                             |                                             Files                                             |
+|:-------------------------------------------------------------------------------------------:|:---------------------------------------------------------------------------------------------:|:---------------------------------------------------------------------------------------------:|
+| ![Screenshots](fastlane/metadata/android/en-US/images/phoneScreenshots/Drawer.jpg?raw=true) | ![Screenshots](fastlane/metadata/android/en-US/images/phoneScreenshots/SongPage.jpg?raw=true) | ![Screenshots](fastlane/metadata/android/en-US/images/phoneScreenshots/FilePage.jpg?raw=true) |
 
-|                                         Drawer                                          |                                         Setting                                         |
-|:---------------------------------------------------------------------------------------:|:---------------------------------------------------------------------------------------:|
-| ![Screenshots](fastlane/metadata/android/en-US/images/phoneScreenshots/03.jpg?raw=true) | ![Screenshots](fastlane/metadata/android/en-US/images/phoneScreenshots/01.jpg?raw=true) |
+|                                             Artists                                             |                                             Albums                                             |                                             Playlists                                             |
+|:-----------------------------------------------------------------------------------------------:|:----------------------------------------------------------------------------------------------:|:-------------------------------------------------------------------------------------------------:|
+| ![Screenshots](fastlane/metadata/android/en-US/images/phoneScreenshots/ArtistPage.jpg?raw=true) | ![Screenshots](fastlane/metadata/android/en-US/images/phoneScreenshots/AlbumPage.jpg?raw=true) | ![Screenshots](fastlane/metadata/android/en-US/images/phoneScreenshots/PlaylistPage.jpg?raw=true) |
 
-|                                          Songs                                          |                                         Folders                                         |
-|:---------------------------------------------------------------------------------------:|:---------------------------------------------------------------------------------------:|
-| ![Screenshots](fastlane/metadata/android/en-US/images/phoneScreenshots/09.jpg?raw=true) | ![Screenshots](fastlane/metadata/android/en-US/images/phoneScreenshots/10.jpg?raw=true) |
+|                                           Setting                                            |                                           Song Detail                                           |                                           Tag Editor                                           |
+|:--------------------------------------------------------------------------------------------:|:-----------------------------------------------------------------------------------------------:|:----------------------------------------------------------------------------------------------:|
+| ![Screenshots](fastlane/metadata/android/en-US/images/phoneScreenshots/Setting.jpg?raw=true) | ![Screenshots](fastlane/metadata/android/en-US/images/phoneScreenshots/SongDetail.jpg?raw=true) | ![Screenshots](fastlane/metadata/android/en-US/images/phoneScreenshots/TagEditor.jpg?raw=true) |
 
-|                                         Artists                                         |                                        Playlists                                        |
-|:---------------------------------------------------------------------------------------:|:---------------------------------------------------------------------------------------:|
-| ![Screenshots](fastlane/metadata/android/en-US/images/phoneScreenshots/07.jpg?raw=true) | ![Screenshots](fastlane/metadata/android/en-US/images/phoneScreenshots/06.jpg?raw=true) |
-
-|                                        Song Menu                                        |                                 Tag Editor (Deprecated)                                 |
-|:---------------------------------------------------------------------------------------:|:---------------------------------------------------------------------------------------:|
-| ![Screenshots](fastlane/metadata/android/en-US/images/phoneScreenshots/02.jpg?raw=true) | ![Screenshots](fastlane/metadata/android/en-US/images/phoneScreenshots/04.jpg?raw=true) |
-
-## **构建指南与开发指南** 
+## **构建指南与开发指南**
 
 [Build_Instructions.md](./Build_Instructions.md)
 
@@ -122,11 +115,11 @@
 
 - [x] 自定义歌曲点击行为
 
-- [x] 支持正在播放列表历史记录 
+- [x] 支持正在播放列表历史记录
 
-- [ ] 重构设置 UI (WIP⭕) 
+- [ ] 重构设置 UI (WIP⭕)
 
-- [ ] 重构搜索 
+- [ ] 重构搜索
 
 - [ ] 自建本地媒体数据库(使用 AndroidX Room) ⭕, 以解析多艺术家歌曲, 并解析 Tag 中 ‘;’, '&', '/', '\', ',' , 改进搜索
 
@@ -134,17 +127,17 @@
 
 ### **2023~2024(?)**
 
-- [ ] 重写音乐标签编辑 (单文件⭕, 批量❌) 
+- [ ] 重写音乐标签编辑 (单文件⭕, 批量❌)
 
-- [ ] 重构主播放器 (WIP⭕) 
+- [ ] 重构主播放器 (WIP⭕)
 
 - [ ] 增强“播放列表详情”(支持搜索 ❌, 更好的修改本地列表方式 ❗WIP, 响应打开文件的 Intent ❌)
 
-- [ ] 桌面歌词(?) 
+- [ ] 桌面歌词(?)
 
-- [ ] 尝试适配 FlyMe / EvolutionX(等一系类原生)状态栏歌词 
+- [ ] 尝试适配 FlyMe / EvolutionX(等一系类原生)状态栏歌词
 
-- [ ] 改进 SlidingMusicBar 
+- [ ] 改进 SlidingMusicBar
 
 - [ ] <del>检查文件 </del>
 
