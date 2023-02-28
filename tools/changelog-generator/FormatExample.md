@@ -1,4 +1,4 @@
-## {{version:000}} {{date:1675138300}}
+## {{version:release}} {{date:1675138300}} {{versionCode:0}}
 
 ### {{note:en}}
 - item 1

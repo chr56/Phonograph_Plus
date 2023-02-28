@@ -44,6 +44,7 @@ fun parse(file: File): ReleaseNoteModel {
     }
     return ReleaseNoteModel(
         version = result["version"] ?: "NA",
+        versionCode = result["versionCode"]?.toInt() ?: -1,
         time = result["date"]?.toLongOrNull() ?: 0,
         note = ReleaseNoteModel.Note(
             note["en"] ?: emptyList(),

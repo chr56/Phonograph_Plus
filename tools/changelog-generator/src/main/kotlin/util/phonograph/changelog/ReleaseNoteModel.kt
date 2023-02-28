@@ -6,6 +6,7 @@ package util.phonograph.changelog
 
 data class ReleaseNoteModel(
     val version: String,
+    val versionCode: Int,
     val time: Long,
     val note: Note
 ) {
