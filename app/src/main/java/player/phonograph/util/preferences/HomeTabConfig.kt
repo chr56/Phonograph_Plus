@@ -17,9 +17,16 @@ import kotlinx.serialization.json.JsonObject
 object HomeTabConfig {
     private val parser = Json { ignoreUnknownKeys = true;isLenient = true }
 
+    private var cachedPageConfig: PageConfig? = null
+    private var cachedRawPageConfig: String? = null
+
     var homeTabConfig: PageConfig
-        get() {
+        @Synchronized get() {
             val rawString = Setting.instance.homeTabConfigJsonString
+            val cached = cachedPageConfig
+            if (rawString == cachedRawPageConfig && cached != null) {
+                return cached // return the cached instead
+            }
             val config: PageConfig = try {
                 val json = parser.parseToJsonElement(rawString)
                 PageConfigUtil.fromJson(json as JsonObject)
@@ -28,6 +35,9 @@ object HomeTabConfig {
                 // return default
                 PageConfig.DEFAULT_CONFIG
             }
+            // update cache
+            cachedPageConfig = config
+            cachedRawPageConfig = rawString
             // valid // TODO
             return config
         }
@@ -42,7 +52,9 @@ object HomeTabConfig {
                 }
             val str =
                 parser.encodeToString(json)
-            Setting.instance.homeTabConfigJsonString = str
+            synchronized(this) {
+                Setting.instance.homeTabConfigJsonString = str
+            }
         }
 
     /**
