@@ -31,6 +31,8 @@ import player.phonograph.util.preferences.NowPlayingScreenConfig
 import player.phonograph.util.preferences.StyleConfig
 import util.phonograph.misc.ColorChooserListener
 import androidx.fragment.app.DialogFragment
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.whenStarted
 import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
@@ -38,14 +40,13 @@ import androidx.preference.PreferenceManager
 import androidx.preference.TwoStatePreference
 import android.annotation.SuppressLint
 import android.content.Intent
-import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.media.audiofx.AudioEffect
 import android.os.Build
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.view.View
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class SettingsFragment : PreferenceFragmentCompat() {
 
@@ -100,16 +101,42 @@ class SettingsFragment : PreferenceFragmentCompat() {
         super.onDisplayPreferenceDialog(preference)
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        Setting.instance.observe(
+            this, arrayOf(
+                Setting.NOW_PLAYING_SCREEN_ID,
+                Setting.PATH_FILTER_EXCLUDE_MODE,
+                Setting.CLASSIC_NOTIFICATION,
+                Setting.BROADCAST_SYNCHRONIZED_LYRICS,
+            )
+        ) { sharedPreferences, key ->
+            lifecycleScope.launch {
+                lifecycle.whenStarted {
+                    when (key) {
+                        Setting.NOW_PLAYING_SCREEN_ID         -> updateNowPlayingScreenSummary()
+                        Setting.PATH_FILTER_EXCLUDE_MODE      -> updatePathFilterExcludeMode()
+                        Setting.CLASSIC_NOTIFICATION          ->
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                findPreference<Preference>("colored_notification")!!.isEnabled =
+                                    sharedPreferences.getBoolean(key, false)
+                            }
+                        Setting.BROADCAST_SYNCHRONIZED_LYRICS -> {
+                            delay(200)
+                            // clear lyrics displaying on the statusbar now
+                            StatusBarLyricUtil.stopLyric()
+                        }
+                    }
+                }
+
+            }
+        }
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(requireView(), savedInstanceState)
         listView.setPadding(0, 0, 0, 0)
         invalidateSettings()
-        Setting.instance.registerOnSharedPreferenceChangedListener(sharedPreferenceChangeListener)
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        Setting.instance.unregisterOnSharedPreferenceChangedListener(sharedPreferenceChangeListener)
     }
 
     override fun onPreferenceTreeClick(preference: Preference): Boolean {
@@ -301,23 +328,4 @@ class SettingsFragment : PreferenceFragmentCompat() {
         }
     }
 
-    private val sharedPreferenceChangeListener = SharedPreferences.OnSharedPreferenceChangeListener { sharedPreferences, key ->
-        when (key) {
-            Setting.NOW_PLAYING_SCREEN_ID -> updateNowPlayingScreenSummary()
-            Setting.PATH_FILTER_EXCLUDE_MODE -> updatePathFilterExcludeMode()
-            Setting.CLASSIC_NOTIFICATION ->
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    findPreference<Preference>("colored_notification")!!.isEnabled =
-                        sharedPreferences.getBoolean(key, false)
-                }
-            Setting.BROADCAST_SYNCHRONIZED_LYRICS ->
-                // clear lyrics displaying on the statusbar now
-                Handler(Looper.getMainLooper()).postDelayed(
-                    {
-                        StatusBarLyricUtil.stopLyric()
-                    },
-                    1000
-                )
-        }
-    }
 }

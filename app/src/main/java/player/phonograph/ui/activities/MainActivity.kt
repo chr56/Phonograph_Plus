@@ -108,8 +108,16 @@ class MainActivity : AbsSlidingMusicPanelActivity(),
                     checkUpdate()
                 }
                 versionCheck()
-                Setting.instance
-                    .registerOnSharedPreferenceChangedListener(sharedPreferenceChangeListener)
+                Setting.instance.observe(
+                    this,
+                    arrayOf(Setting.HOME_TAB_CONFIG)
+                ) { _, key ->
+                    if (key == Setting.HOME_TAB_CONFIG)
+                        with(drawerBinding.navigationView.menu) {
+                            clear()
+                            inflateDrawerMenu(this)
+                        }
+                }
             }, 900
         )
 
@@ -126,11 +134,6 @@ class MainActivity : AbsSlidingMusicPanelActivity(),
                 "${System.currentTimeMillis().mod(10000000)} MainActivity.onResume()"
             )
         }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        Setting.instance.unregisterOnSharedPreferenceChangedListener(sharedPreferenceChangeListener)
     }
 
     override fun createContentView(): View {
@@ -288,18 +291,6 @@ class MainActivity : AbsSlidingMusicPanelActivity(),
     fun switchPageChooserTo(page: Int) {
         drawerBinding.navigationView.setCheckedItem(1000 + page)
     }
-
-    private val sharedPreferenceChangeListener =
-        SharedPreferences.OnSharedPreferenceChangeListener { sharedPreferences, key ->
-            when (key) {
-                Setting.HOME_TAB_CONFIG -> {
-                    with(drawerBinding.navigationView.menu) {
-                        clear()
-                        inflateDrawerMenu(this)
-                    }
-                }
-            }
-        }
 
     private fun updateNavigationDrawerHeader() {
         if (MusicPlayerRemote.playingQueue.isNotEmpty()) {

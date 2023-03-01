@@ -1,26 +1,24 @@
 package player.phonograph.adapter
 
-import android.content.Context
-import android.content.SharedPreferences
-import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.widget.ImageView
-import androidx.collection.LruCache
-import androidx.fragment.app.Fragment
-import androidx.viewpager2.adapter.FragmentStateAdapter
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.TimeoutCancellationException
-import kotlinx.coroutines.cancel
-import kotlinx.coroutines.suspendCancellableCoroutine
-import kotlinx.coroutines.withTimeout
 import player.phonograph.R
 import player.phonograph.coil.loadImage
 import player.phonograph.coil.target.PaletteTargetBuilder
 import player.phonograph.databinding.FragmentAlbumCoverBinding
 import player.phonograph.model.Song
-import player.phonograph.settings.Setting
+import androidx.collection.LruCache
+import androidx.fragment.app.Fragment
+import androidx.viewpager2.adapter.FragmentStateAdapter
+import android.content.Context
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.ImageView
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.TimeoutCancellationException
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlinx.coroutines.withTimeout
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
@@ -52,7 +50,7 @@ class AlbumCoverPagerAdapter(
             ?: AlbumCoverFragment.loadImageForColor(fragment.requireContext(), song, null).second
     }
 
-    class AlbumCoverFragment : Fragment(), SharedPreferences.OnSharedPreferenceChangeListener {
+    class AlbumCoverFragment : Fragment() {
 
         private var _binding: FragmentAlbumCoverBinding? = null
         val binding get() = _binding!!
@@ -78,28 +76,16 @@ class AlbumCoverPagerAdapter(
         override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
             super.onViewCreated(view, savedInstanceState)
             forceSquareAlbumCover(false)
-            // forceSquareAlbumCover(Setting.instance.forceSquareAlbumCover);
-            // TODO
-            Setting.instance.registerOnSharedPreferenceChangedListener(this)
             loadAlbumCover()
         }
 
         override fun onDestroyView() {
             super.onDestroyView()
             _binding = null
-            Setting.instance.unregisterOnSharedPreferenceChangedListener(this)
         }
 
         fun loadAlbumCover() {
             loadImage(requireContext(), song, binding.playerImage, onColorReadyCallback)
-        }
-
-        override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String) {
-            when (key) {
-                Setting.FORCE_SQUARE_ALBUM_COVER -> {
-                    // todo
-                }
-            }
         }
 
         internal fun forceSquareAlbumCover(forceSquareAlbumCover: Boolean) {

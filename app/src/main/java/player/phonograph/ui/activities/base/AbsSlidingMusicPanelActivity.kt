@@ -14,12 +14,9 @@ import player.phonograph.ui.fragments.player.flat.FlatPlayerFragment
 import player.phonograph.util.preferences.NowPlayingScreenConfig
 import androidx.annotation.ColorInt
 import androidx.annotation.FloatRange
-import androidx.lifecycle.DefaultLifecycleObserver
-import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import android.animation.ArgbEvaluator
 import android.annotation.SuppressLint
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
@@ -35,8 +32,8 @@ import mt.tint.setTaskDescriptionColor as setTaskDescriptionColorEXt
  * [.wrapSlidingMusicPanel] first and then return it in [.createContentView]
  */
 abstract class AbsSlidingMusicPanelActivity :
-    AbsMusicServiceActivity(),
-    SlidingUpPanelLayout.PanelSlideListener {
+        AbsMusicServiceActivity(),
+        SlidingUpPanelLayout.PanelSlideListener {
 
     private lateinit var playerFragment: AbsPlayerFragment
     private lateinit var miniPlayerFragment: MiniPlayerFragment
@@ -96,7 +93,12 @@ abstract class AbsSlidingMusicPanelActivity :
             }
 
         setupPaletteColorObserver()
-        lifecycle.addObserver(nowPlayingScreenPreferenceObserver)  // preference
+        Setting.instance.observe(
+            this, arrayOf(Setting.NOW_PLAYING_SCREEN_ID)
+        ) { _, key ->
+            if (key == Setting.NOW_PLAYING_SCREEN_ID)
+                recreate()
+        }
     }
 
     fun setAntiDragView(antiDragView: View?) {
@@ -234,30 +236,6 @@ abstract class AbsSlidingMusicPanelActivity :
             }
         }
     }
-
-    private val nowPlayingScreenPreferenceObserver =
-        object : DefaultLifecycleObserver {
-            private val sharedPreferenceChangeListener =
-                SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
-                    when (key) {
-                        Setting.NOW_PLAYING_SCREEN_ID -> recreate()
-                    }
-                }
-
-            override fun onCreate(owner: LifecycleOwner) {
-                Setting.instance.registerOnSharedPreferenceChangedListener(
-                    sharedPreferenceChangeListener
-                )
-                super.onCreate(owner)
-            }
-
-            override fun onDestroy(owner: LifecycleOwner) {
-                Setting.instance.unregisterOnSharedPreferenceChangedListener(
-                    sharedPreferenceChangeListener
-                )
-                super.onDestroy(owner)
-            }
-        }
 
     override val snackBarContainer: View get() = findViewById(R.id.content_container)
 

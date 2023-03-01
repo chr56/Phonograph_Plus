@@ -34,21 +34,41 @@ import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.graphics.BlendModeColorFilterCompat
 import androidx.core.graphics.BlendModeCompat
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.whenStarted
 import androidx.viewpager2.widget.ViewPager2
 import android.content.Intent
-import android.content.SharedPreferences
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.Menu
-import android.view.MenuInflater
 import android.view.MenuItem.SHOW_AS_ACTION_ALWAYS
 import android.view.View
 import android.view.ViewGroup
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
-class HomeFragment : AbsMainActivityFragment(), MainActivity.MainActivityFragmentCallbacks,
-    SharedPreferences.OnSharedPreferenceChangeListener {
+class HomeFragment : AbsMainActivityFragment(), MainActivity.MainActivityFragmentCallbacks {
+
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        Setting.instance.observe(
+            this,
+            arrayOf(Setting.HOME_TAB_CONFIG, Setting.FIXED_TAB_LAYOUT)
+        ) { _, key ->
+            lifecycleScope.launch {
+                lifecycle.whenStarted {
+                    when (key) {
+                        Setting.HOME_TAB_CONFIG  -> reloadPages()
+                        Setting.FIXED_TAB_LAYOUT -> reloadTabsLayout()
+                    }
+                }
+            }
+        }
+    }
 
     private var _viewBinding: FragmentHomeBinding? = null
     private val binding: FragmentHomeBinding get() = _viewBinding!!
@@ -72,7 +92,6 @@ class HomeFragment : AbsMainActivityFragment(), MainActivity.MainActivityFragmen
         setupToolbar()
         setUpViewPager()
 
-        Setting.instance.registerOnSharedPreferenceChangedListener(this)
         if (DEBUG) Log.v(
             "Metrics",
             "${System.currentTimeMillis().mod(10000000)} HomeFragment.onViewCreated()"
@@ -82,7 +101,6 @@ class HomeFragment : AbsMainActivityFragment(), MainActivity.MainActivityFragmen
     override fun onDestroyView() {
         super.onDestroyView()
         binding.pager.unregisterOnPageChangeCallback(pageChangeListener)
-        Setting.instance.unregisterOnSharedPreferenceChangedListener(this)
         _viewBinding = null
     }
 
@@ -200,42 +218,40 @@ class HomeFragment : AbsMainActivityFragment(), MainActivity.MainActivityFragmen
         binding.appbar.removeOnOffsetChangedListener(onOffsetChangedListener)
     }
 
+
+    private suspend fun reloadPages() = withContext(Dispatchers.Main) {
+        var oldPosition = binding.pager.currentItem
+        if (oldPosition < 0) oldPosition = 0
+
+        val current = pagerAdapter.cfg.get(oldPosition)
+
+        var newPosition = -1
+
+        readConfig().tabList.forEachIndexed { index, page ->
+            if (page == current) {
+                newPosition = index
+            }
+        }
+        if (newPosition < 0) newPosition = 0
+
+        setUpViewPager()
+        binding.pager.currentItem = newPosition
+    }
+
+    private suspend fun reloadTabsLayout() = withContext(Dispatchers.Main) {
+        binding.tabs.tabMode =
+            if (Setting.instance.fixedTabLayout) {
+                TabLayout.MODE_FIXED
+            } else {
+                TabLayout.MODE_SCROLLABLE
+            }
+    }
+
     val totalAppBarScrollingRange: Int get() = binding.appbar.totalScrollRange
 
     val totalHeaderHeight: Int
         get() =
             totalAppBarScrollingRange + if (binding.tabs.visibility == View.VISIBLE) binding.tabs.height else 0
-
-    override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
-        when (key) {
-            Setting.HOME_TAB_CONFIG -> {
-                var oldPosition = binding.pager.currentItem
-                if (oldPosition < 0) oldPosition = 0
-
-                val current = pagerAdapter.cfg.get(oldPosition)
-
-                var newPosition = -1
-
-                readConfig().tabList.forEachIndexed { index, page ->
-                    if (page == current) {
-                        newPosition = index
-                    }
-                }
-                if (newPosition < 0) newPosition = 0
-
-                setUpViewPager()
-                binding.pager.currentItem = newPosition
-            }
-            Setting.FIXED_TAB_LAYOUT -> {
-                binding.tabs.tabMode =
-                    if (Setting.instance.fixedTabLayout) {
-                        TabLayout.MODE_FIXED
-                    } else {
-                        TabLayout.MODE_SCROLLABLE
-                    }
-            }
-        }
-    }
 
     private fun updateTabVisibility() {
         // hide the tab bar when only a single tab is visible
