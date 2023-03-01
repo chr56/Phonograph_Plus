@@ -23,21 +23,35 @@ object HomeTabConfig {
     var homeTabConfig: PageConfig
         @Synchronized get() {
             val rawString = Setting.instance.homeTabConfigJsonString
+
+            if (rawString.isEmpty()) {
+                resetHomeTabConfig()
+                return PageConfig.DEFAULT_CONFIG
+            }
+
+
             val cached = cachedPageConfig
             if (rawString == cachedRawPageConfig && cached != null) {
                 return cached // return the cached instead
             }
+
+
             val config: PageConfig = try {
                 val json = parser.parseToJsonElement(rawString)
                 PageConfigUtil.fromJson(json as JsonObject)
             } catch (e: Exception) {
                 Util.reportError(e, "Preference", "Fail to parse home tab config string $rawString")
                 // return default
+                resetHomeTabConfig()
                 PageConfig.DEFAULT_CONFIG
             }
+
+
             // update cache
             cachedPageConfig = config
             cachedRawPageConfig = rawString
+
+
             // valid // TODO
             return config
         }
