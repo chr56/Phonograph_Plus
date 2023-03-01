@@ -108,13 +108,13 @@
 
         <activity
             android:name=".ui.activities.MainActivity"
-            android:exported="true">
-        </activity>
+            android:exported="true"></activity>
         <activity
             android:name=".ui.activities.LauncherActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
@@ -154,6 +154,10 @@
             android:launchMode="singleInstance"
             android:process="player.phonograph.crash" />
 
+        <activity
+            android:name="lib.phonograph.misc.Reboot$RebootActivity"
+            android:launchMode="singleInstance"
+            android:process="player.phonograph.reboot" />
 
         <service
             android:name=".service.MusicService"

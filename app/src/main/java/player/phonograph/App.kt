@@ -3,6 +3,7 @@ package player.phonograph
 import coil.ImageLoader
 import coil.ImageLoaderFactory
 import lib.phonograph.localization.ContextLocaleDelegate
+import lib.phonograph.misc.Reboot
 import mt.pref.ThemeColor
 import mt.pref.internal.ThemeStore
 import player.phonograph.appshortcuts.DynamicShortcutManager
@@ -59,6 +60,8 @@ class App : Application(), ImageLoaderFactory {
     }
 
     override fun onCreate() {
+        if (Reboot.isRebootingProcess(this)) return
+
         if (BuildConfig.DEBUG) Log.v(
             "Metrics",
             "${System.currentTimeMillis().mod(10000000)} App.onCreate()"
