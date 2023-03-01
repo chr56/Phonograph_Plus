@@ -12,6 +12,8 @@ import player.phonograph.model.sort.SortMode
 import player.phonograph.model.sort.SortRef
 import player.phonograph.util.CalendarUtil
 import player.phonograph.util.preferences.StyleConfig
+import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.LifecycleOwner
 import androidx.preference.PreferenceManager
 import android.content.Context
 import android.content.SharedPreferences
@@ -36,6 +38,41 @@ class Setting(context: Context) {
 
     private val listeners =
         mutableListOf<WeakReference<SharedPreferences.OnSharedPreferenceChangeListener>>()
+
+    /**
+     * observe preferences
+     * @param keys preferences to observe
+     * @param action callback
+     */
+    fun observe(
+        lifecycleOwner: LifecycleOwner,
+        keys: Array<String>,
+        action: (SharedPreferences, String) -> Unit
+    ) {
+        lifecycleOwner.lifecycle.addObserver(
+            object : DefaultLifecycleObserver {
+                val listener =
+                    SharedPreferences.OnSharedPreferenceChangeListener { sharedPreferences: SharedPreferences?, k ->
+                        if (sharedPreferences != null && k in keys) {
+                            action(sharedPreferences, k)
+                        }
+                    }
+
+                override fun onCreate(owner: LifecycleOwner) {
+                    mPreferences.registerOnSharedPreferenceChangeListener(listener)
+                    listeners.add(WeakReference(listener))
+                }
+
+                override fun onDestroy(owner: LifecycleOwner) {
+                    val l = listeners.firstOrNull { listener == it.get() }
+                    if (l != null) {
+                        mPreferences.unregisterOnSharedPreferenceChangeListener(listener)
+                    }
+                }
+            }
+        )
+    }
+
 
     fun registerOnSharedPreferenceChangedListener(
         sharedPreferenceChangeListener: SharedPreferences.OnSharedPreferenceChangeListener,
