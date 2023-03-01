@@ -4,11 +4,10 @@
 
 package player.phonograph.model.pages
 
-import org.json.JSONArray
-import org.json.JSONException
-import org.json.JSONObject
 import player.phonograph.ui.fragments.pages.*
-import kotlin.jvm.Throws
+import kotlinx.serialization.json.JsonArray
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.JsonPrimitive
 
 class PageConfig private constructor(private val tabs: MutableList<String>) : Iterable<String> {
 
@@ -53,35 +52,29 @@ class PageConfig private constructor(private val tabs: MutableList<String>) : It
             override fun next(): String = tabs[current++]
         }
 
-    override fun toString(): String = tabs.fold("PagerConfig:") { acc, i ->"$acc,$i" }
+    override fun toString(): String = tabs.fold("PagerConfig:") { acc, i -> "$acc,$i" }
 }
 
 object PageConfigUtil {
 
-    @Throws(JSONException::class)
-    fun PageConfig.toJson(): JSONObject {
-        val array: Array<String> = Array(this.getSize()) { i -> this.get(i) }
-        return JSONObject().put(KEY, JSONArray(array))
-    }
+    fun PageConfig.toJson(): JsonObject = JsonObject(
+        mapOf(
+            KEY to JsonArray(tabList.map { JsonPrimitive(it) })
+        )
+    )
 
-    @Throws(JSONException::class)
-    fun JSONObject.fromJson(): PageConfig {
-        val array = this.optJSONArray(KEY) ?: throw JSONException("KEY(\"PageCfg\") doesn't exist")
 
-        if (array.length() <= 0) throw JSONException("No Value")
+    fun fromJson(json: JsonObject): PageConfig {
+        val array = (json[KEY] as? JsonArray)
+            ?: throw IllegalStateException("KEY(\"PageCfg\") doesn't exist")
 
-        val cfg = ArrayList<String>()
-        for (i in 0 until array.length()) {
-            cfg.add(array.optString(i).also {
-                if (it.isBlank()) throw JSONException(
-                    "Empty String at index $i"
-                )
-            })
-        }
-        return PageConfig.from(cfg)
+        if (array.size <= 0) throw IllegalStateException("No Value")
+
+        val data = array.mapNotNull { (it as? JsonPrimitive)?.content }.filter { it.isNotBlank() }
+
+        return PageConfig.from(data)
     }
 
     private const val KEY = "PageCfg"
 
-    val DEFAULT_CONFIG = PageConfig.DEFAULT_CONFIG.toJson()
 }

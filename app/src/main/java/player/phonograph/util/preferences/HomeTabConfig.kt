@@ -4,23 +4,26 @@
 
 package player.phonograph.util.preferences
 
-import android.util.Log
-import org.json.JSONException
-import org.json.JSONObject
 import player.phonograph.model.pages.PageConfig
 import player.phonograph.model.pages.PageConfigUtil
-import player.phonograph.model.pages.PageConfigUtil.fromJson
 import player.phonograph.model.pages.PageConfigUtil.toJson
 import player.phonograph.settings.Setting
 import player.phonograph.util.Util
+import android.util.Log
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonObject
 
 object HomeTabConfig {
+    private val parser = Json { ignoreUnknownKeys = true;isLenient = true }
+
     var homeTabConfig: PageConfig
         get() {
             val rawString = Setting.instance.homeTabConfigJsonString
             val config: PageConfig = try {
-                JSONObject(rawString).fromJson()
-            } catch (e: JSONException) {
+                val json = parser.parseToJsonElement(rawString)
+                PageConfigUtil.fromJson(json as JsonObject)
+            } catch (e: Exception) {
                 Util.reportError(e, "Preference", "Fail to parse home tab config string $rawString")
                 // return default
                 PageConfig.DEFAULT_CONFIG
@@ -32,12 +35,14 @@ object HomeTabConfig {
             val json =
                 try {
                     value.toJson()
-                } catch (e: JSONException) {
+                } catch (e: Exception) {
                     Log.e("Preference", "Save home tab config failed, use default. \n${e.message}")
                     // return default
-                    PageConfigUtil.DEFAULT_CONFIG
+                    PageConfig.DEFAULT_CONFIG.toJson()
                 }
-            Setting.instance.homeTabConfigJsonString = json.toString(0)
+            val str =
+                parser.encodeToString(json)
+            Setting.instance.homeTabConfigJsonString = str
         }
 
     /**
@@ -50,6 +55,7 @@ object HomeTabConfig {
     }
 
     fun resetHomeTabConfig() {
-        Setting.instance.homeTabConfigJsonString = PageConfigUtil.DEFAULT_CONFIG.toString(0)
+        Setting.instance.homeTabConfigJsonString =
+            Json.encodeToString(PageConfig.DEFAULT_CONFIG.toJson())
     }
 }
