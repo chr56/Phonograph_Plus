@@ -6,6 +6,7 @@ import com.afollestad.materialdialogs.actions.getActionButton
 import com.github.chr56.android.menu_dsl.attach
 import com.github.chr56.android.menu_dsl.menuItem
 import lib.phonograph.activity.ToolbarActivity
+import lib.phonograph.misc.Reboot
 import mt.pref.ThemeColor
 import mt.tint.setActivityToolbarColorAuto
 import player.phonograph.App
@@ -22,6 +23,7 @@ import player.phonograph.ui.dialogs.BackupDataDialog
 import player.phonograph.ui.fragments.SettingsFragment
 import player.phonograph.util.CoroutineUtil
 import player.phonograph.util.TimeUtil.currentDateTime
+import player.phonograph.util.preferences.HomeTabConfig
 import androidx.appcompat.widget.Toolbar
 import android.net.Uri
 import android.os.Bundle
@@ -140,15 +142,10 @@ class SettingsActivity : ToolbarActivity(), ICreateFileStorageAccess, IOpenFileS
                         title(R.string.clear_all_preference)
                         message(R.string.clear_all_preference_msg)
                         negativeButton(android.R.string.cancel)
-                        positiveButton(R.string.clear_all_preference) {
+                        positiveButton(R.string.clear_all_preference) { dialog ->
+                            dialog.dismiss()
                             SettingDataManager.clearAllPreference()
-
-                            Handler().postDelayed(
-                                {
-                                    Process.killProcess(Process.myPid())
-                                    exitProcess(1)
-                                }, 4000
-                            )
+                            Reboot.reboot(context)
                         }
                         cancelOnTouchOutside(true)
                         getActionButton(WhichButton.POSITIVE).updateTextColor(getColor(R.color.md_red_A700))

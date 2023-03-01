@@ -4,6 +4,7 @@ import com.github.chr56.android.menu_dsl.attach
 import com.github.chr56.android.menu_dsl.menuItem
 import lib.phonograph.activity.ToolbarActivity
 import lib.phonograph.dialog.alertDialog
+import lib.phonograph.misc.Reboot
 import mt.util.color.primaryTextColor
 import player.phonograph.R
 import player.phonograph.databinding.ActivityCrashBinding
@@ -162,13 +163,9 @@ class CrashActivity : ToolbarActivity() {
                         message(R.string.clear_all_preference_msg)
                         neutralButton(android.R.string.cancel)
                         positiveButton(R.string.clear_all_preference) { dialog ->
+                            dialog.dismiss()
                             SettingDataManager.clearAllPreference()
-                            Handler(Looper.getMainLooper()).postDelayed(
-                                {
-                                    Process.killProcess(Process.myPid())
-                                    exitProcess(1)
-                                }, 2000
-                            )
+                            Reboot.reboot(context)
                         }
                         builder.setCancelable(true)
                     }
