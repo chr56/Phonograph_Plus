@@ -19,6 +19,7 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
+import java.lang.ref.WeakReference
 
 class Setting(context: Context) {
 
@@ -32,16 +33,28 @@ class Setting(context: Context) {
      */
     val rawMainPreference get() = mPreferences
 
+
+    private val listeners =
+        mutableListOf<WeakReference<SharedPreferences.OnSharedPreferenceChangeListener>>()
+
     fun registerOnSharedPreferenceChangedListener(
-        sharedPreferenceChangeListener: SharedPreferences.OnSharedPreferenceChangeListener?,
+        sharedPreferenceChangeListener: SharedPreferences.OnSharedPreferenceChangeListener,
     ) {
         mPreferences.registerOnSharedPreferenceChangeListener(sharedPreferenceChangeListener)
+        listeners.add(WeakReference(sharedPreferenceChangeListener))
     }
 
     fun unregisterOnSharedPreferenceChangedListener(
-        sharedPreferenceChangeListener: SharedPreferences.OnSharedPreferenceChangeListener?,
+        sharedPreferenceChangeListener: SharedPreferences.OnSharedPreferenceChangeListener,
     ) {
+        listeners.removeIf { sharedPreferenceChangeListener == it.get() }
         mPreferences.unregisterOnSharedPreferenceChangeListener(sharedPreferenceChangeListener)
+    }
+
+    fun forceUnregisterAllListener() {
+        listeners.mapNotNull { it.get() }.forEach {
+            mPreferences.unregisterOnSharedPreferenceChangeListener(it)
+        }
     }
 
     // Theme and Color

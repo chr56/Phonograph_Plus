@@ -141,6 +141,7 @@ object SettingDataManager {
      */
     @SuppressLint("ApplySharedPref") // must do immediately!
     fun clearAllPreference() {
+        Setting.instance.forceUnregisterAllListener()
         Setting.instance.rawMainPreference.edit().clear().commit()
         ThemeColor.editTheme(App.instance).clearAllPreference() // lib
 
