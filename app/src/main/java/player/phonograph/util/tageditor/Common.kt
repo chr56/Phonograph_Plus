@@ -54,7 +54,7 @@ fun selectNewArtwork(activity: Context): MutableState<Uri?> {
     val state = mutableStateOf<Uri?>(null)
     if (activity is IOpenFileStorageAccess) {
         val accessTool = activity.openFileStorageAccessTool
-        val cfg = OpenDocumentContract.Cfg(null, mime_types = arrayOf("image/*"))
+        val cfg = OpenDocumentContract.Config(mime_types = arrayOf("image/*"))
         accessTool.launch(cfg) { uri ->
             if (uri != null) {
                 state.value = uri

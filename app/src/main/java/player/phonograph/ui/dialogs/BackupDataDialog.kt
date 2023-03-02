@@ -115,7 +115,7 @@ class BackupDataDialog : DialogFragment() {
             "Unsupported activity (SAF unavailable)"
         }
         activity.openFileStorageAccessTool.launch(
-            OpenDocumentContract.Cfg(null, arrayOf(mimeType))
+            OpenDocumentContract.Config(arrayOf(mimeType))
         ) { uri: Uri? ->
             uri ?: return@launch
             lifecycleScope.launch(Dispatchers.IO) {

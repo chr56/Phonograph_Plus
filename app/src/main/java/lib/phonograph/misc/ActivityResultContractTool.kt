@@ -62,9 +62,9 @@ abstract class ActivityResultContractTool<I, O> {
     }
 }
 
-class OpenFileStorageAccessTool : ActivityResultContractTool<OpenDocumentContract.Cfg, Uri?>() {
+class OpenFileStorageAccessTool : ActivityResultContractTool<OpenDocumentContract.Config, Uri?>() {
     override fun key(): String = "OpenFile"
-    override fun contract(): ActivityResultContract<OpenDocumentContract.Cfg, Uri?> =
+    override fun contract(): ActivityResultContract<OpenDocumentContract.Config, Uri?> =
         OpenDocumentContract()
 }
 

@@ -152,13 +152,13 @@ object FileOperator {
                 Environment.getExternalStorageDirectory()
             )
 
-        val cfg = OpenDocumentContract.Cfg(
-            playlistDocumentFile.uri,
+        val cfg = OpenDocumentContract.Config(
             arrayOf(
                 "audio/x-mpegurl",
                 MediaStoreCompat.Audio.Playlists.CONTENT_TYPE,
                 MediaStoreCompat.Audio.Playlists.ENTRY_CONTENT_TYPE
             ),
+            playlistDocumentFile.uri,
             false
         )
         accessTool.launch(cfg) { uri: Uri? ->

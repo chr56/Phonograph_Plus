@@ -87,7 +87,7 @@ class SettingsActivity : ToolbarActivity(), ICreateFileStorageAccess, IOpenFileS
                 showAsActionFlag = SHOW_AS_ACTION_NEVER
                 onClick {
                     openFileStorageAccessTool.launch(
-                        OpenDocumentContract.Cfg(null, arrayOf("application/zip"))
+                        OpenDocumentContract.Config(arrayOf("application/zip"))
                     ) { uri ->
                         uri ?: return@launch
                         CoroutineScope(Dispatchers.IO).launch {
@@ -119,7 +119,7 @@ class SettingsActivity : ToolbarActivity(), ICreateFileStorageAccess, IOpenFileS
                 showAsActionFlag = SHOW_AS_ACTION_NEVER
                 onClick {
                     openFileStorageAccessTool.launch(
-                        OpenDocumentContract.Cfg(null, arrayOf("application/json"))
+                        OpenDocumentContract.Config(arrayOf("application/json"))
                     ) { uri ->
                         uri ?: return@launch
                         CoroutineScope(Dispatchers.IO).launch {
