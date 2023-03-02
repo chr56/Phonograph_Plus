@@ -16,8 +16,8 @@ import org.jaudiotagger.tag.Tag
 import org.jaudiotagger.tag.TagException
 import org.jaudiotagger.tag.images.Artwork
 import org.jaudiotagger.tag.images.ArtworkFactory
-import player.phonograph.misc.IOpenFileStorageAccess
-import player.phonograph.misc.OpenDocumentContract
+import lib.phonograph.misc.IOpenFileStorageAccess
+import lib.phonograph.misc.OpenDocumentContract
 import player.phonograph.util.Util
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf

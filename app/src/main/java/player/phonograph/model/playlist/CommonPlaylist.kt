@@ -7,8 +7,8 @@ package player.phonograph.model.playlist
 import legacy.phonograph.LegacyPlaylistsUtil
 import player.phonograph.R
 import player.phonograph.mediastore.PlaylistSongLoader
-import player.phonograph.misc.IOpenDirStorageAccess
-import player.phonograph.misc.IOpenFileStorageAccess
+import lib.phonograph.misc.IOpenDirStorageAccess
+import lib.phonograph.misc.IOpenFileStorageAccess
 import player.phonograph.model.Song
 import player.phonograph.util.PlaylistsUtil
 import util.phonograph.m3u.PlaylistsManager

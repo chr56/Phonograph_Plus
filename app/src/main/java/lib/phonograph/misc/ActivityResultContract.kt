@@ -2,7 +2,7 @@
  * Copyright (c) 2022 chr_56
  */
 
-package player.phonograph.misc
+package lib.phonograph.misc
 
 import android.annotation.TargetApi
 import android.app.Activity

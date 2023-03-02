@@ -13,10 +13,10 @@ import legacy.phonograph.MediaStoreCompat
 import lib.phonograph.storage.getAbsolutePath
 import player.phonograph.App
 import player.phonograph.R
-import player.phonograph.misc.CreateFileStorageAccessTool
-import player.phonograph.misc.OpenDirStorageAccessTool
-import player.phonograph.misc.OpenDocumentContract
-import player.phonograph.misc.OpenFileStorageAccessTool
+import lib.phonograph.misc.CreateFileStorageAccessTool
+import lib.phonograph.misc.OpenDirStorageAccessTool
+import lib.phonograph.misc.OpenDocumentContract
+import lib.phonograph.misc.OpenFileStorageAccessTool
 import player.phonograph.model.Song
 import player.phonograph.model.playlist.FilePlaylist
 import player.phonograph.model.playlist.Playlist

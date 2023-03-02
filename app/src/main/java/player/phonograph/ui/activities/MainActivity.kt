@@ -20,12 +20,12 @@ import player.phonograph.databinding.LayoutDrawerBinding
 import player.phonograph.dialogs.ChangelogDialog
 import player.phonograph.mediastore.SongLoader.getAllSongs
 import player.phonograph.migrate.migrate
-import player.phonograph.misc.CreateFileStorageAccessTool
-import player.phonograph.misc.ICreateFileStorageAccess
-import player.phonograph.misc.IOpenDirStorageAccess
-import player.phonograph.misc.IOpenFileStorageAccess
-import player.phonograph.misc.OpenDirStorageAccessTool
-import player.phonograph.misc.OpenFileStorageAccessTool
+import lib.phonograph.misc.CreateFileStorageAccessTool
+import lib.phonograph.misc.ICreateFileStorageAccess
+import lib.phonograph.misc.IOpenDirStorageAccess
+import lib.phonograph.misc.IOpenFileStorageAccess
+import lib.phonograph.misc.OpenDirStorageAccessTool
+import lib.phonograph.misc.OpenFileStorageAccessTool
 import player.phonograph.model.infoString
 import player.phonograph.model.pages.Pages
 import player.phonograph.model.version.VersionCatalog
@@ -46,7 +46,6 @@ import player.phonograph.util.preferences.HomeTabConfig
 import player.phonograph.util.preferences.StyleConfig
 import androidx.drawerlayout.widget.DrawerLayout
 import android.content.Intent
-import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.Handler
