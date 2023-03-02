@@ -37,6 +37,7 @@ internal fun applyEditImpl(
     needReplaceCover: Boolean,
     newCoverUri: Uri?
 ) {
+    require(songFile.canWrite()) { "can not write ${songFile.absoluteFile}" } // must writable
     if (allEditRequest.isNotEmpty()) {
         applyTagEditImpl(context, songFile, allEditRequest)
     }
