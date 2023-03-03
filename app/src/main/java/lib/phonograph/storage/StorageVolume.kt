@@ -4,6 +4,10 @@
 
 package lib.phonograph.storage
 
+import lib.phonograph.uri.isDocumentProviderUri
+import lib.phonograph.uri.isDownloadsDocument
+import lib.phonograph.uri.isMediaDocument
+import lib.phonograph.uri.isRawFile
 import androidx.annotation.RequiresApi
 import android.annotation.SuppressLint
 import android.content.Context

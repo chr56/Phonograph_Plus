@@ -2,15 +2,15 @@
  * Copyright (c) 2022~2023 chr_56
  */
 
-package lib.phonograph.storage
+package lib.phonograph.uri
 
+import lib.phonograph.storage.getBasePath
+import lib.phonograph.storage.getStorageId
 import android.content.ContentResolver
 import android.content.Context
 import android.net.Uri
 import android.provider.DocumentsContract
 import java.io.File
-
-
 
 const val DOCUMENT_PROVIDER_PATH_TREE = "tree"
 const val DOCUMENT_PROVIDER_PATH_DOCUMENT = "document"

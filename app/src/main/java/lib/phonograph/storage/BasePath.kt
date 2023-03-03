@@ -4,6 +4,10 @@
 
 package lib.phonograph.storage
 
+import lib.phonograph.uri.isDocumentProviderUri
+import lib.phonograph.uri.isDownloadsDocument
+import lib.phonograph.uri.isRawFile
+import lib.phonograph.uri.isTreeDocumentFile
 import androidx.documentfile.provider.DocumentFile
 import android.content.Context
 import android.os.Build

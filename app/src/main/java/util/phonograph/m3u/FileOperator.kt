@@ -17,7 +17,7 @@ import lib.phonograph.misc.OpenDirStorageAccessTool
 import lib.phonograph.misc.OpenDocumentContract
 import lib.phonograph.misc.OpenFileStorageAccessTool
 import lib.phonograph.storage.getAbsolutePath
-import lib.phonograph.storage.guessDocumentUri
+import lib.phonograph.uri.guessDocumentUri
 import player.phonograph.model.Song
 import player.phonograph.model.playlist.FilePlaylist
 import player.phonograph.model.playlist.Playlist

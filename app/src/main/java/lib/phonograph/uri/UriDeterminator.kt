@@ -2,7 +2,7 @@
  * Copyright (c) 2022~2023 chr_56
  */
 
-package lib.phonograph.storage
+package lib.phonograph.uri
 
 import android.content.ContentResolver
 import android.content.Context
