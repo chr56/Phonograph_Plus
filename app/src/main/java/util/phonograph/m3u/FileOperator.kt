@@ -17,6 +17,7 @@ import lib.phonograph.misc.CreateFileStorageAccessTool
 import lib.phonograph.misc.OpenDirStorageAccessTool
 import lib.phonograph.misc.OpenDocumentContract
 import lib.phonograph.misc.OpenFileStorageAccessTool
+import lib.phonograph.storage.accessor.guessDocumentUri
 import player.phonograph.model.Song
 import player.phonograph.model.playlist.FilePlaylist
 import player.phonograph.model.playlist.Playlist
@@ -147,10 +148,7 @@ object FileOperator {
         if (songs.isEmpty()) return
 
         val playlistPath = PlaylistsUtil.getPlaylistPath(context, filePlaylist)
-        val playlistDocumentFile =
-            DocumentFile.fromFile(File(playlistPath)).parentFile ?: DocumentFile.fromFile(
-                Environment.getExternalStorageDirectory()
-            )
+        val documentUri = guessDocumentUri(context,File(playlistPath))
 
         val cfg = OpenDocumentContract.Config(
             arrayOf(
@@ -158,7 +156,7 @@ object FileOperator {
                 MediaStoreCompat.Audio.Playlists.CONTENT_TYPE,
                 MediaStoreCompat.Audio.Playlists.ENTRY_CONTENT_TYPE
             ),
-            playlistDocumentFile.uri,
+            documentUri,
             false
         )
         accessTool.launch(cfg) { uri: Uri? ->
