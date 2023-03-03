@@ -165,9 +165,7 @@ object FileOperator {
                     try {
                         if (!assertUri(context, filePlaylist, uri)) {
                             val returningPath =
-                                DocumentFile.fromSingleUri(context, uri)?.getAbsolutePath(
-                                    context
-                                )
+                                DocumentFile.fromSingleUri(context, uri)?.getAbsolutePath(context)!!
                             val errorMsg =
                                 "${
                                     context.getString(
@@ -217,7 +215,7 @@ object FileOperator {
     fun assertUri(context: Context, target: FilePlaylist, uri: Uri): Boolean {
         val playlistPath = PlaylistsUtil.getPlaylistPath(context, target)
         val documentFile = DocumentFile.fromSingleUri(context, uri) ?: return false
-        return documentFile.getAbsolutePath(context) == playlistPath
+        return documentFile.getAbsolutePath(context)!! == playlistPath
     }
 
     fun deletePlaylistsViaSAF(activity: Activity, filePlaylists: List<FilePlaylist>, treeUri: Uri) {
@@ -249,12 +247,10 @@ object FileOperator {
                 } else {
                     val playlistPaths = mediaStorePaths.await()
                     // valid playlists
-                    prepareList.forEach { file ->
-                        val filePath = file.getAbsolutePath(activity)
-                        if (filePath.endsWith("m3u", ignoreCase = true) or filePath.endsWith(
-                                "m3u8",
-                                ignoreCase = true
-                            )
+                    for (file in prepareList) {
+                        val filePath = file.getAbsolutePath(activity) ?: continue
+                        if (filePath.endsWith("m3u", ignoreCase = true) or
+                            filePath.endsWith("m3u8",ignoreCase = true)
                         ) {
                             for (p in playlistPaths) {
                                 if (p == filePath) deleteList.add(file)
@@ -270,7 +266,7 @@ object FileOperator {
                         StringUtil.ItemGroup(
                             activity.resources
                                 .getQuantityString(R.plurals.item_files, deleteList.size),
-                            deleteList.map { file ->
+                            deleteList.mapNotNull { file ->
                                 Log.v("FileDelete", "${file.name}@${file.uri}")
                                 file.getAbsolutePath(activity)
                             }

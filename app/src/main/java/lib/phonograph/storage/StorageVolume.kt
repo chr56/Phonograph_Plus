@@ -53,9 +53,7 @@ fun Uri.getStorageId(context: Context): String {
     return when {
         isRawFile()             -> File(path).getStorageId(context)
         isDocumentProviderUri() -> {
-            val result = path.substringBefore(':', "").substringAfterLast('/')
-            if (result.isEmpty()) throw IllegalArgumentException("Unknown Storage Volume (uri:$this) ")
-            result
+            parseStorageVolumeId(uri = this) ?: throw IllegalArgumentException("Unknown Storage Volume (uri:$this) ")
         }
         isDownloadsDocument()   -> PRIMARY
         else                    -> throw IllegalArgumentException("Unknown Storage Volume (uri:$this) ")

@@ -69,7 +69,7 @@ private fun basicConvertDocumentProviderUri(
     id: String?,
 ): Uri {
     val storageId = file.getStorageId(context)
-    val basePath = file.getBasePath(context)
+    val basePath = file.getBasePath()
     require(storageId.isNotEmpty() && basePath.isNotEmpty()) { "Invalid path: ${file.absoluteFile}" }
 
     val location = "$storageId:$basePath"
