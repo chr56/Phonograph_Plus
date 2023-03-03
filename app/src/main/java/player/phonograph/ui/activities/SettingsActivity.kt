@@ -13,25 +13,21 @@ import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.migrate.DatabaseDataManger
 import player.phonograph.migrate.SettingDataManager
-import player.phonograph.misc.CreateFileStorageAccessTool
-import player.phonograph.misc.ICreateFileStorageAccess
-import player.phonograph.misc.IOpenFileStorageAccess
-import player.phonograph.misc.OpenDocumentContract
-import player.phonograph.misc.OpenFileStorageAccessTool
+import lib.phonograph.misc.CreateFileStorageAccessTool
+import lib.phonograph.misc.ICreateFileStorageAccess
+import lib.phonograph.misc.IOpenFileStorageAccess
+import lib.phonograph.misc.OpenDocumentContract
+import lib.phonograph.misc.OpenFileStorageAccessTool
 import player.phonograph.misc.menuProvider
 import player.phonograph.ui.dialogs.BackupDataDialog
 import player.phonograph.ui.fragments.SettingsFragment
 import player.phonograph.util.CoroutineUtil
 import player.phonograph.util.TimeUtil.currentDateTime
-import player.phonograph.util.preferences.HomeTabConfig
 import androidx.appcompat.widget.Toolbar
 import android.net.Uri
 import android.os.Bundle
-import android.os.Handler
-import android.os.Process
 import android.view.Menu
 import android.view.MenuItem.SHOW_AS_ACTION_NEVER
-import kotlin.system.exitProcess
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -91,7 +87,7 @@ class SettingsActivity : ToolbarActivity(), ICreateFileStorageAccess, IOpenFileS
                 showAsActionFlag = SHOW_AS_ACTION_NEVER
                 onClick {
                     openFileStorageAccessTool.launch(
-                        OpenDocumentContract.Cfg(null, arrayOf("application/zip"))
+                        OpenDocumentContract.Config(arrayOf("application/zip"))
                     ) { uri ->
                         uri ?: return@launch
                         CoroutineScope(Dispatchers.IO).launch {
@@ -123,7 +119,7 @@ class SettingsActivity : ToolbarActivity(), ICreateFileStorageAccess, IOpenFileS
                 showAsActionFlag = SHOW_AS_ACTION_NEVER
                 onClick {
                     openFileStorageAccessTool.launch(
-                        OpenDocumentContract.Cfg(null, arrayOf("application/json"))
+                        OpenDocumentContract.Config(arrayOf("application/json"))
                     ) { uri ->
                         uri ?: return@launch
                         CoroutineScope(Dispatchers.IO).launch {

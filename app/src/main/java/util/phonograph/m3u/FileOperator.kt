@@ -10,13 +10,14 @@ import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.WhichButton
 import com.afollestad.materialdialogs.actions.getActionButton
 import legacy.phonograph.MediaStoreCompat
-import lib.phonograph.storage.getAbsolutePath
 import player.phonograph.App
 import player.phonograph.R
-import player.phonograph.misc.CreateFileStorageAccessTool
-import player.phonograph.misc.OpenDirStorageAccessTool
-import player.phonograph.misc.OpenDocumentContract
-import player.phonograph.misc.OpenFileStorageAccessTool
+import lib.phonograph.misc.CreateFileStorageAccessTool
+import lib.phonograph.misc.OpenDirStorageAccessTool
+import lib.phonograph.misc.OpenDocumentContract
+import lib.phonograph.misc.OpenFileStorageAccessTool
+import lib.phonograph.storage.getAbsolutePath
+import lib.phonograph.uri.guessDocumentUri
 import player.phonograph.model.Song
 import player.phonograph.model.playlist.FilePlaylist
 import player.phonograph.model.playlist.Playlist
@@ -147,18 +148,15 @@ object FileOperator {
         if (songs.isEmpty()) return
 
         val playlistPath = PlaylistsUtil.getPlaylistPath(context, filePlaylist)
-        val playlistDocumentFile =
-            DocumentFile.fromFile(File(playlistPath)).parentFile ?: DocumentFile.fromFile(
-                Environment.getExternalStorageDirectory()
-            )
+        val documentUri = guessDocumentUri(context,File(playlistPath))
 
-        val cfg = OpenDocumentContract.Cfg(
-            playlistDocumentFile.uri,
+        val cfg = OpenDocumentContract.Config(
             arrayOf(
                 "audio/x-mpegurl",
                 MediaStoreCompat.Audio.Playlists.CONTENT_TYPE,
                 MediaStoreCompat.Audio.Playlists.ENTRY_CONTENT_TYPE
             ),
+            documentUri,
             false
         )
         accessTool.launch(cfg) { uri: Uri? ->
@@ -167,9 +165,7 @@ object FileOperator {
                     try {
                         if (!assertUri(context, filePlaylist, uri)) {
                             val returningPath =
-                                DocumentFile.fromSingleUri(context, uri)?.getAbsolutePath(
-                                    context
-                                )
+                                DocumentFile.fromSingleUri(context, uri)?.getAbsolutePath(context)!!
                             val errorMsg =
                                 "${
                                     context.getString(
@@ -219,7 +215,7 @@ object FileOperator {
     fun assertUri(context: Context, target: FilePlaylist, uri: Uri): Boolean {
         val playlistPath = PlaylistsUtil.getPlaylistPath(context, target)
         val documentFile = DocumentFile.fromSingleUri(context, uri) ?: return false
-        return documentFile.getAbsolutePath(context) == playlistPath
+        return documentFile.getAbsolutePath(context)!! == playlistPath
     }
 
     fun deletePlaylistsViaSAF(activity: Activity, filePlaylists: List<FilePlaylist>, treeUri: Uri) {
@@ -251,12 +247,10 @@ object FileOperator {
                 } else {
                     val playlistPaths = mediaStorePaths.await()
                     // valid playlists
-                    prepareList.forEach { file ->
-                        val filePath = file.getAbsolutePath(activity)
-                        if (filePath.endsWith("m3u", ignoreCase = true) or filePath.endsWith(
-                                "m3u8",
-                                ignoreCase = true
-                            )
+                    for (file in prepareList) {
+                        val filePath = file.getAbsolutePath(activity) ?: continue
+                        if (filePath.endsWith("m3u", ignoreCase = true) or
+                            filePath.endsWith("m3u8",ignoreCase = true)
                         ) {
                             for (p in playlistPaths) {
                                 if (p == filePath) deleteList.add(file)
@@ -272,7 +266,7 @@ object FileOperator {
                         StringUtil.ItemGroup(
                             activity.resources
                                 .getQuantityString(R.plurals.item_files, deleteList.size),
-                            deleteList.map { file ->
+                            deleteList.mapNotNull { file ->
                                 Log.v("FileDelete", "${file.name}@${file.uri}")
                                 file.getAbsolutePath(activity)
                             }

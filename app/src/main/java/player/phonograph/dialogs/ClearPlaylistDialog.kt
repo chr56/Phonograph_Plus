@@ -9,7 +9,7 @@ import com.afollestad.materialdialogs.WhichButton
 import com.afollestad.materialdialogs.actions.getActionButton
 import mt.pref.ThemeColor
 import player.phonograph.R
-import player.phonograph.misc.IOpenDirStorageAccess
+import lib.phonograph.misc.IOpenDirStorageAccess
 import player.phonograph.model.playlist.FilePlaylist
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.model.playlist.ResettablePlaylist

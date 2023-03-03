@@ -8,10 +8,10 @@ import com.vanpra.composematerialdialogs.MaterialDialogState
 import mt.pref.ThemeColor.primaryColor
 import player.phonograph.R
 import player.phonograph.mediastore.SongLoader
-import player.phonograph.misc.CreateFileStorageAccessTool
-import player.phonograph.misc.ICreateFileStorageAccess
-import player.phonograph.misc.IOpenFileStorageAccess
-import player.phonograph.misc.OpenFileStorageAccessTool
+import lib.phonograph.misc.CreateFileStorageAccessTool
+import lib.phonograph.misc.ICreateFileStorageAccess
+import lib.phonograph.misc.IOpenFileStorageAccess
+import lib.phonograph.misc.OpenFileStorageAccessTool
 import player.phonograph.model.Song
 import player.phonograph.ui.compose.base.ComposeToolbarActivity
 import player.phonograph.ui.compose.theme.PhonographTheme

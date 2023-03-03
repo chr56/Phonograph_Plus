@@ -6,7 +6,7 @@ import com.afollestad.materialdialogs.actions.getActionButton
 import com.afollestad.materialdialogs.input.input
 import mt.pref.ThemeColor.accentColor
 import player.phonograph.R
-import player.phonograph.misc.ICreateFileStorageAccess
+import lib.phonograph.misc.ICreateFileStorageAccess
 import player.phonograph.model.Song
 import player.phonograph.util.PlaylistsUtil
 import util.phonograph.m3u.PlaylistsManager

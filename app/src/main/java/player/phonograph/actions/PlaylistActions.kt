@@ -7,8 +7,8 @@ package player.phonograph.actions
 import player.phonograph.dialogs.AddToPlaylistDialog
 import player.phonograph.dialogs.ClearPlaylistDialog
 import player.phonograph.dialogs.RenamePlaylistDialog
-import player.phonograph.misc.ICreateFileStorageAccess
-import player.phonograph.misc.IOpenDirStorageAccess
+import lib.phonograph.misc.ICreateFileStorageAccess
+import lib.phonograph.misc.IOpenDirStorageAccess
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.queue.ShuffleMode

@@ -8,9 +8,9 @@ import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.migrate.DatabaseBackupManger
 import player.phonograph.migrate.SettingDataManager
-import player.phonograph.misc.ICreateFileStorageAccess
-import player.phonograph.misc.IOpenFileStorageAccess
-import player.phonograph.misc.OpenDocumentContract
+import lib.phonograph.misc.ICreateFileStorageAccess
+import lib.phonograph.misc.IOpenFileStorageAccess
+import lib.phonograph.misc.OpenDocumentContract
 import player.phonograph.util.CoroutineUtil
 import player.phonograph.util.TimeUtil
 import androidx.appcompat.app.AlertDialog
@@ -115,7 +115,7 @@ class BackupDataDialog : DialogFragment() {
             "Unsupported activity (SAF unavailable)"
         }
         activity.openFileStorageAccessTool.launch(
-            OpenDocumentContract.Cfg(null, arrayOf(mimeType))
+            OpenDocumentContract.Config(arrayOf(mimeType))
         ) { uri: Uri? ->
             uri ?: return@launch
             lifecycleScope.launch(Dispatchers.IO) {

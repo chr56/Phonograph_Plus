@@ -14,9 +14,9 @@ import legacy.phonograph.LegacyPlaylistsUtil
 import mt.pref.ThemeColor
 import player.phonograph.App
 import player.phonograph.R
-import player.phonograph.misc.ICreateFileStorageAccess
-import player.phonograph.misc.IOpenDirStorageAccess
-import player.phonograph.misc.IOpenFileStorageAccess
+import lib.phonograph.misc.ICreateFileStorageAccess
+import lib.phonograph.misc.IOpenDirStorageAccess
+import lib.phonograph.misc.IOpenFileStorageAccess
 import player.phonograph.model.Song
 import player.phonograph.model.playlist.FilePlaylist
 import player.phonograph.model.playlist.Playlist

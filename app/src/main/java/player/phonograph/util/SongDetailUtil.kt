@@ -6,7 +6,6 @@
 
 package player.phonograph.util
 
-import mt.pref.ThemeColor
 import org.jaudiotagger.audio.AudioFile
 import org.jaudiotagger.audio.AudioFileIO
 import org.jaudiotagger.audio.AudioHeader
@@ -14,32 +13,25 @@ import org.jaudiotagger.tag.FieldKey
 import org.jaudiotagger.tag.datatype.DataTypes
 import org.jaudiotagger.tag.id3.AbstractTagFrame
 import player.phonograph.App
-import player.phonograph.R
 import player.phonograph.coil.loadImage
 import player.phonograph.coil.target.PaletteTargetBuilder
-import player.phonograph.misc.ICreateFileStorageAccess
+import lib.phonograph.misc.ICreateFileStorageAccess
 import player.phonograph.model.LongFilePropertyField
 import player.phonograph.model.Song
 import player.phonograph.model.SongInfoModel
 import player.phonograph.model.StringFilePropertyField
 import player.phonograph.model.TagField
 import player.phonograph.util.Util.warning
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
-import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
-import android.app.Activity
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
-import android.graphics.drawable.DrawableContainer
 import android.net.Uri
 import android.util.Log
 import android.widget.Toast
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.io.File
 import java.io.IOException

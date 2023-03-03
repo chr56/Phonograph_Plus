@@ -16,8 +16,8 @@ import org.jaudiotagger.tag.Tag
 import org.jaudiotagger.tag.TagException
 import org.jaudiotagger.tag.images.Artwork
 import org.jaudiotagger.tag.images.ArtworkFactory
-import player.phonograph.misc.IOpenFileStorageAccess
-import player.phonograph.misc.OpenDocumentContract
+import lib.phonograph.misc.IOpenFileStorageAccess
+import lib.phonograph.misc.OpenDocumentContract
 import player.phonograph.util.Util
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
@@ -54,7 +54,7 @@ fun selectNewArtwork(activity: Context): MutableState<Uri?> {
     val state = mutableStateOf<Uri?>(null)
     if (activity is IOpenFileStorageAccess) {
         val accessTool = activity.openFileStorageAccessTool
-        val cfg = OpenDocumentContract.Cfg(null, mime_types = arrayOf("image/*"))
+        val cfg = OpenDocumentContract.Config(mime_types = arrayOf("image/*"))
         accessTool.launch(cfg) { uri ->
             if (uri != null) {
                 state.value = uri
