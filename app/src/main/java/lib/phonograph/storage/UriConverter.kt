@@ -2,11 +2,8 @@
  * Copyright (c) 2022~2023 chr_56
  */
 
-package lib.phonograph.storage.accessor
+package lib.phonograph.storage
 
-import lib.phonograph.storage.EXTERNAL_STORAGE_AUTHORITY
-import lib.phonograph.storage.getBasePath
-import lib.phonograph.storage.getStorageId
 import android.content.ContentResolver
 import android.content.Context
 import android.net.Uri

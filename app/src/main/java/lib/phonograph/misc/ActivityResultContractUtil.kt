@@ -4,7 +4,7 @@
 
 package lib.phonograph.misc
 
-import lib.phonograph.storage.accessor.guessDocumentUri
+import lib.phonograph.storage.guessDocumentUri
 import android.content.Context
 import android.net.Uri
 import kotlinx.coroutines.ExperimentalCoroutinesApi

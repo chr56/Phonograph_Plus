@@ -10,14 +10,14 @@ import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.WhichButton
 import com.afollestad.materialdialogs.actions.getActionButton
 import legacy.phonograph.MediaStoreCompat
-import lib.phonograph.storage.getAbsolutePath
 import player.phonograph.App
 import player.phonograph.R
 import lib.phonograph.misc.CreateFileStorageAccessTool
 import lib.phonograph.misc.OpenDirStorageAccessTool
 import lib.phonograph.misc.OpenDocumentContract
 import lib.phonograph.misc.OpenFileStorageAccessTool
-import lib.phonograph.storage.accessor.guessDocumentUri
+import lib.phonograph.storage.getAbsolutePath
+import lib.phonograph.storage.guessDocumentUri
 import player.phonograph.model.Song
 import player.phonograph.model.playlist.FilePlaylist
 import player.phonograph.model.playlist.Playlist
