@@ -65,6 +65,13 @@ fun generateHTML(model: ReleaseNoteModel): Map<String, String> {
     )
 }
 
+fun generateHTMLNoteMinify(note: ReleaseNoteModel.Note, lang: String): String = html {
+    when (lang) {
+        "zh" -> htmlNoteItem(note.zh)
+        "en" -> htmlNoteItem(note.en)
+    }
+}.map { it.trimStart() }.reduce { acc, s -> "$acc$s" }.replace("\n", "\\n")
+
 private fun generateHTMLImpl(
     version: String,
     date: Long,
