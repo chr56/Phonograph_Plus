@@ -46,7 +46,6 @@ class CreatePlaylistDialog : DialogFragment() {
                         context = activity,
                         name = name,
                         songs = songs,
-                        host = activity as? ICreateFileStorageAccess
                     )
 
                 } else {

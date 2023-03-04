@@ -9,7 +9,6 @@ import com.afollestad.materialdialogs.WhichButton
 import com.afollestad.materialdialogs.actions.getActionButton
 import mt.pref.ThemeColor
 import player.phonograph.R
-import lib.phonograph.misc.IOpenDirStorageAccess
 import player.phonograph.model.playlist.FilePlaylist
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.model.playlist.ResettablePlaylist
@@ -78,7 +77,7 @@ class ClearPlaylistDialog : DialogFragment() {
                 // files
                 val attachedActivity: Activity = requireActivity()
                 PlaylistsManager.deletePlaylistWithGuide(
-                    attachedActivity, filesLists, attachedActivity as? IOpenDirStorageAccess
+                    attachedActivity, filesLists
                 )
             }.also {
                 // grant permission button for R

@@ -3,7 +3,6 @@ package player.phonograph.dialogs
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.list.listItemsSingleChoice
 import player.phonograph.R
-import lib.phonograph.misc.IOpenFileStorageAccess
 import player.phonograph.model.Song
 import player.phonograph.util.PlaylistsUtil
 import util.phonograph.m3u.PlaylistsManager
@@ -47,8 +46,7 @@ class AddToPlaylistDialog : DialogFragment() {
                     PlaylistsManager.appendPlaylist(
                         activity,
                         songs,
-                        filePlaylist = playlists[index - 1],
-                        activity as? IOpenFileStorageAccess
+                        filePlaylist = playlists[index - 1]
                     )
                 }
             }

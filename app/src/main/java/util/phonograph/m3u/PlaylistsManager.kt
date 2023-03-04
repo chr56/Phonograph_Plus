@@ -6,17 +6,16 @@
 
 package util.phonograph.m3u
 
-import com.afollestad.materialdialogs.DialogCallback
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.WhichButton
 import com.afollestad.materialdialogs.actions.getActionButton
 import legacy.phonograph.LegacyPlaylistsUtil
-import mt.pref.ThemeColor
-import player.phonograph.App
-import player.phonograph.R
 import lib.phonograph.misc.ICreateFileStorageAccess
 import lib.phonograph.misc.IOpenDirStorageAccess
 import lib.phonograph.misc.IOpenFileStorageAccess
+import mt.pref.ThemeColor
+import player.phonograph.App
+import player.phonograph.R
 import player.phonograph.model.Song
 import player.phonograph.model.playlist.FilePlaylist
 import player.phonograph.model.playlist.Playlist
@@ -26,9 +25,12 @@ import player.phonograph.util.CoroutineUtil.coroutineToast
 import player.phonograph.util.PlaylistsUtil
 import util.phonograph.m3u.internal.M3UGenerator
 import util.phonograph.m3u.internal.appendTimestampSuffix
+import util.phonograph.playlist.appendToPlaylistViaSAF
+import util.phonograph.playlist.createPlaylistViaSAF
+import util.phonograph.playlist.createPlaylistsViaSAF
+import util.phonograph.playlist.deletePlaylistsViaSAF
 import android.app.Activity
 import android.content.Context
-import android.net.Uri
 import android.os.Build
 import android.os.Environment
 import android.util.Log
@@ -38,18 +40,19 @@ import java.io.IOException
 
 object PlaylistsManager {
 
+    /**
+     * @param context must be ICreateFileStorageAccess
+     */
     fun createPlaylist(
         context: Context,
         name: String,
         songs: List<Song>? = null,
         path: String? = null,
-        host: ICreateFileStorageAccess? = null
     ) {
-        val accessTool = host?.createFileStorageAccessTool
         CoroutineScope(SupervisorJob())
             .launch(Dispatchers.Default) {
-                if (shouldUseSAF && accessTool != null) {
-                    FileOperator.createPlaylistViaSAF(context, name, songs, accessTool)
+                if (shouldUseSAF && context is ICreateFileStorageAccess) {
+                    createPlaylistViaSAF(context, playlistName = name, songs = songs)
                 } else {
                     // legacy ways
                     LegacyPlaylistsUtil.createPlaylist(context, name).also { id ->
@@ -74,43 +77,38 @@ object PlaylistsManager {
         context: Context,
         songs: List<Song>,
         filePlaylist: FilePlaylist,
-        host: IOpenFileStorageAccess? = null
     ) {
-        val accessTool = host?.openFileStorageAccessTool
-        CoroutineScope(SupervisorJob())
-            .launch(Dispatchers.Default) {
-                if (shouldUseSAF && accessTool != null) {
-                    coroutineToast(context, R.string.direction_open_file_with_saf)
-                    FileOperator.appendToPlaylistViaSAF(
-                        context,
-                        songs,
-                        filePlaylist,
-                        false,
-                        accessTool
-                    )
-                } else {
-                    LegacyPlaylistsUtil.addToPlaylist(context, songs, filePlaylist.id, true)
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) coroutineToast(
-                        context,
-                        R.string.failed
-                    )
-                }
+        CoroutineScope(SupervisorJob()).launch(Dispatchers.Default) {
+            if (shouldUseSAF && context is IOpenFileStorageAccess) {
+                coroutineToast(context, R.string.direction_open_file_with_saf)
+                appendToPlaylistViaSAF(
+                    context,
+                    songs = songs,
+                    filePlaylist = filePlaylist,
+                )
+            } else {
+                LegacyPlaylistsUtil.addToPlaylist(context, songs, filePlaylist.id, true)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) coroutineToast(
+                    context,
+                    R.string.failed
+                )
             }
+        }
     }
 
     fun appendPlaylist(
         context: Context,
         songs: List<Song>,
         playlistId: Long,
-        host: IOpenFileStorageAccess? = null
-    ) = appendPlaylist(context, songs, PlaylistsUtil.getPlaylist(context, playlistId), host)
+    ) = appendPlaylist(context, songs, PlaylistsUtil.getPlaylist(context, playlistId))
 
+    /**
+     * @param context must be IOpenDirStorageAccess
+     */
     fun deletePlaylistWithGuide(
         context: Context,
         filePlaylists: List<FilePlaylist>,
-        host: IOpenDirStorageAccess?
     ) {
-        val accessTool = host?.openDirStorageAccessTool
         val scope = CoroutineScope(SupervisorJob())
         scope.launch(Dispatchers.Default) {
             // try to delete
@@ -133,50 +131,21 @@ object PlaylistsManager {
                 }\n" +
                         " ${context.getString(R.string.failed_to_delete)}: \n $list "
 
-                // setup delete with saf callback
-                val callback: DialogCallback = {
-                    scope.launch(Dispatchers.IO) {
-                        if (accessTool != null && context is Activity) {
-                            // todo remove hardcode
-                            val regex = "/(sdcard)|(storage/emulated)/\\d+/".toRegex()
-                            val rawPath = PlaylistsUtil.getPlaylistPath(context, filePlaylists[0])
-                            val path = regex.replace(
-                                rawPath.removePrefix(Environment.getExternalStorageDirectory().absolutePath),
-                                ""
-                            )
-
-                            val parentFolderUri = Uri.parse(
-                                "content://com.android.externalstorage.documents/document/primary:" + Uri.encode(
-                                    path
-                                )
-                            )
-
-                            coroutineToast(
-                                context,
-                                context.getString(R.string.direction_open_folder_with_saf),
-                                true
-                            )
-                            accessTool.launch(parentFolderUri) { uri: Uri? ->
-                                uri?.let {
-                                    FileOperator.deletePlaylistsViaSAF(
-                                        context,
-                                        filePlaylists,
-                                        it
-                                    )
-                                }
-                            }
-                        } else {
-                            coroutineToast(context, R.string.failed)
-                        }
-                    }
-                }
                 // report failure
                 withContext(Dispatchers.Main) {
                     MaterialDialog(context)
                         .title(R.string.failed_to_delete)
                         .message(text = msg)
                         .positiveButton(android.R.string.ok)
-                        .negativeButton(R.string.delete_with_saf, click = callback)
+                        .negativeButton(R.string.delete_with_saf) {
+                            scope.launch(Dispatchers.IO) {
+                                if (context is Activity && context is IOpenDirStorageAccess) {
+                                    deletePlaylistsViaSAF(context, filePlaylists)
+                                } else {
+                                    coroutineToast(context, R.string.failed)
+                                }
+                            }
+                        }
                         .also {
                             // color
                             it.getActionButton(WhichButton.POSITIVE)
@@ -209,13 +178,10 @@ object PlaylistsManager {
     fun duplicatePlaylistsViaSaf(
         context: Context,
         filePlaylists: List<Playlist>,
-        host: IOpenDirStorageAccess? = null
     ) {
-        val accessTool = host?.openDirStorageAccessTool
         CoroutineScope(SupervisorJob()).launch(Dispatchers.Default) {
-
-            if (accessTool != null) {
-                FileOperator.createPlaylistsViaSAF(context, filePlaylists, accessTool)
+            if (context is IOpenDirStorageAccess) {
+                createPlaylistsViaSAF(context, filePlaylists)
             } else {
                 // legacy ways
                 withContext(Dispatchers.IO) {
@@ -228,11 +194,7 @@ object PlaylistsManager {
     fun duplicatePlaylistViaSaf(
         context: Context,
         playlist: Playlist,
-        host: ICreateFileStorageAccess?
-    ) {
-        val songs: List<Song> = playlist.getSongs(context)
-        createPlaylist(context, appendTimestampSuffix(playlist.name), songs, host = host)
-    }
+    ) = createPlaylist(context, appendTimestampSuffix(playlist.name), playlist.getSongs(context))
 
     private suspend fun legacySavePlaylists(context: Context, filePlaylists: List<Playlist>) {
         var successes = 0

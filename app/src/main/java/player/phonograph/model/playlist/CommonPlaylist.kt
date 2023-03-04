@@ -7,8 +7,6 @@ package player.phonograph.model.playlist
 import legacy.phonograph.LegacyPlaylistsUtil
 import player.phonograph.R
 import player.phonograph.mediastore.PlaylistSongLoader
-import lib.phonograph.misc.IOpenDirStorageAccess
-import lib.phonograph.misc.IOpenFileStorageAccess
 import player.phonograph.model.Song
 import player.phonograph.util.PlaylistsUtil
 import util.phonograph.m3u.PlaylistsManager
@@ -46,7 +44,7 @@ class FilePlaylist : Playlist, EditablePlaylist {
         LegacyPlaylistsUtil.removeFromPlaylist(context, song, id)
 
     override fun appendSongs(context: Context, songs: List<Song>) {
-        PlaylistsManager.appendPlaylist(context, songs, this, context as? IOpenFileStorageAccess)
+        PlaylistsManager.appendPlaylist(context, songs, this)
     }
     override fun appendSong(context: Context, song: Song) = appendSongs(context, listOf(song))
 
@@ -55,7 +53,7 @@ class FilePlaylist : Playlist, EditablePlaylist {
     }
 
     override fun clear(context: Context) {
-        PlaylistsManager.deletePlaylistWithGuide(context, listOf(this), context as? IOpenDirStorageAccess)
+        PlaylistsManager.deletePlaylistWithGuide(context, listOf(this))
     }
 
     override fun equals(other: Any?): Boolean {
