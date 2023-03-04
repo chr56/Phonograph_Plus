@@ -50,7 +50,7 @@ jobs:
 
       - name: Build with Gradle (Assemble CheckoutDebug)
         run: |
-          ./gradlew assembleCheckoutDebug --stacktrace --parallel
+          ./gradlew assembleCheckoutDebug --stacktrace --parallel --no-daemon
 
       - name: Signing Apk
         uses: r0adkll/sign-android-release@v1.0.4
