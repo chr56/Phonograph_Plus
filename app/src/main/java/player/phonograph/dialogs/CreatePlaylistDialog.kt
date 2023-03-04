@@ -6,15 +6,17 @@ import com.afollestad.materialdialogs.actions.getActionButton
 import com.afollestad.materialdialogs.input.input
 import mt.pref.ThemeColor.accentColor
 import player.phonograph.R
-import lib.phonograph.misc.ICreateFileStorageAccess
 import player.phonograph.model.Song
 import player.phonograph.util.PlaylistsUtil
-import util.phonograph.m3u.PlaylistsManager
+import util.phonograph.playlist.PlaylistsManager
 import androidx.fragment.app.DialogFragment
 import android.app.Dialog
 import android.os.Bundle
 import android.text.InputType
 import android.widget.Toast
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 /**
  * @author Karim Abou Zeid (kabouzeid), Aidan Follestad (afollestad)
@@ -42,12 +44,13 @@ class CreatePlaylistDialog : DialogFragment() {
                 }
                 val activity = requireActivity()
                 if (!PlaylistsUtil.doesPlaylistExist(activity, name)) {
-                    PlaylistsManager.createPlaylist(
-                        context = activity,
-                        name = name,
-                        songs = songs,
-                        host = activity as? ICreateFileStorageAccess
-                    )
+                    CoroutineScope(Dispatchers.Default).launch {
+                        PlaylistsManager.createPlaylist(
+                            context = activity,
+                            name = name,
+                            songs = songs,
+                        )
+                    }
 
                 } else {
                     Toast.makeText(

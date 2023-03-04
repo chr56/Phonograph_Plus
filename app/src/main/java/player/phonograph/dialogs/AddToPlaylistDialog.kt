@@ -3,15 +3,17 @@ package player.phonograph.dialogs
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.list.listItemsSingleChoice
 import player.phonograph.R
-import lib.phonograph.misc.IOpenFileStorageAccess
 import player.phonograph.model.Song
 import player.phonograph.util.PlaylistsUtil
-import util.phonograph.m3u.PlaylistsManager
+import util.phonograph.playlist.PlaylistsManager
 import androidx.fragment.app.DialogFragment
 import android.app.Dialog
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 /**
  * @author Karim Abou Zeid (kabouzeid), Aidan Follestad (afollestad)
@@ -44,12 +46,13 @@ class AddToPlaylistDialog : DialogFragment() {
                 } else {
                     materialDialog.dismiss()
                     val activity = requireActivity()
-                    PlaylistsManager.appendPlaylist(
-                        activity,
-                        songs,
-                        filePlaylist = playlists[index - 1],
-                        activity as? IOpenFileStorageAccess
-                    )
+                    CoroutineScope(Dispatchers.Default).launch {
+                        PlaylistsManager.appendPlaylist(
+                            activity,
+                            songs,
+                            filePlaylist = playlists[index - 1]
+                        )
+                    }
                 }
             }
     }

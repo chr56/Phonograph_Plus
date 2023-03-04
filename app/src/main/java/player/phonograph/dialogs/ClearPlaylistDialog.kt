@@ -9,14 +9,13 @@ import com.afollestad.materialdialogs.WhichButton
 import com.afollestad.materialdialogs.actions.getActionButton
 import mt.pref.ThemeColor
 import player.phonograph.R
-import lib.phonograph.misc.IOpenDirStorageAccess
 import player.phonograph.model.playlist.FilePlaylist
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.model.playlist.ResettablePlaylist
 import player.phonograph.model.playlist.SmartPlaylist
 import player.phonograph.util.StringUtil
 import player.phonograph.util.permissions.hasStorageWritePermission
-import util.phonograph.m3u.PlaylistsManager
+import util.phonograph.playlist.PlaylistsManager
 import androidx.fragment.app.DialogFragment
 import android.app.Activity
 import android.app.Dialog
@@ -25,6 +24,9 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class ClearPlaylistDialog : DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -77,9 +79,11 @@ class ClearPlaylistDialog : DialogFragment() {
                 }
                 // files
                 val attachedActivity: Activity = requireActivity()
-                PlaylistsManager.deletePlaylistWithGuide(
-                    attachedActivity, filesLists, attachedActivity as? IOpenDirStorageAccess
-                )
+                CoroutineScope(Dispatchers.Default).launch {
+                    PlaylistsManager.deletePlaylistWithGuide(
+                        attachedActivity, filesLists
+                    )
+                }
             }.also {
                 // grant permission button for R
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && !hasPermission) {

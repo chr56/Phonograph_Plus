@@ -7,12 +7,10 @@ package player.phonograph.actions
 import player.phonograph.dialogs.AddToPlaylistDialog
 import player.phonograph.dialogs.ClearPlaylistDialog
 import player.phonograph.dialogs.RenamePlaylistDialog
-import lib.phonograph.misc.ICreateFileStorageAccess
-import lib.phonograph.misc.IOpenDirStorageAccess
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.queue.ShuffleMode
-import util.phonograph.m3u.PlaylistsManager
+import util.phonograph.playlist.PlaylistsManager
 import androidx.fragment.app.FragmentActivity
 import android.content.Context
 import kotlin.random.Random
@@ -61,7 +59,7 @@ fun List<Playlist>.actionDeletePlaylists(activity: Context): Boolean =
 fun Playlist.actionSavePlaylist(activity: FragmentActivity) {
     CoroutineScope(Dispatchers.Default).launch {
         PlaylistsManager.duplicatePlaylistViaSaf(
-            activity, this@actionSavePlaylist, activity as? ICreateFileStorageAccess
+            activity, this@actionSavePlaylist
         )
     }
 }
@@ -69,7 +67,7 @@ fun Playlist.actionSavePlaylist(activity: FragmentActivity) {
 fun List<Playlist>.actionSavePlaylists(activity: Context) {
     CoroutineScope(Dispatchers.Default).launch {
         PlaylistsManager.duplicatePlaylistsViaSaf(
-            activity, this@actionSavePlaylists, activity as? IOpenDirStorageAccess
+            activity, this@actionSavePlaylists
         )
     }
 }
