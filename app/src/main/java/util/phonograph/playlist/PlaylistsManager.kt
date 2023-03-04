@@ -1,10 +1,10 @@
 /*
- * Copyright (c) 2022 chr_56
+ * Copyright (c) 2022~2023 chr_56
  */
 
 @file:Suppress("MemberVisibilityCanBePrivate")
 
-package util.phonograph.m3u
+package util.phonograph.playlist
 
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.WhichButton
@@ -23,11 +23,6 @@ import player.phonograph.settings.Setting
 import player.phonograph.util.CoroutineUtil.coroutineToast
 import player.phonograph.util.PlaylistsUtil
 import player.phonograph.util.Util.warning
-import util.phonograph.playlist.appendTimestampSuffix
-import util.phonograph.playlist.appendToPlaylistViaSAF
-import util.phonograph.playlist.createPlaylistViaSAF
-import util.phonograph.playlist.createPlaylistsViaSAF
-import util.phonograph.playlist.deletePlaylistsViaSAF
 import util.phonograph.playlist.m3u.M3UGenerator
 import android.app.Activity
 import android.content.Context

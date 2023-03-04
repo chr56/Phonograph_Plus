@@ -5,7 +5,7 @@ import com.afollestad.materialdialogs.list.listItemsSingleChoice
 import player.phonograph.R
 import player.phonograph.model.Song
 import player.phonograph.util.PlaylistsUtil
-import util.phonograph.m3u.PlaylistsManager
+import util.phonograph.playlist.PlaylistsManager
 import androidx.fragment.app.DialogFragment
 import android.app.Dialog
 import android.os.Bundle

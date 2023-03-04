@@ -9,7 +9,7 @@ import player.phonograph.R
 import player.phonograph.mediastore.PlaylistSongLoader
 import player.phonograph.model.Song
 import player.phonograph.util.PlaylistsUtil
-import util.phonograph.m3u.PlaylistsManager
+import util.phonograph.playlist.PlaylistsManager
 import androidx.annotation.DrawableRes
 import androidx.annotation.Keep
 import android.content.Context

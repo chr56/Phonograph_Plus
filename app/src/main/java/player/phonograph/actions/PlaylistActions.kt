@@ -10,7 +10,7 @@ import player.phonograph.dialogs.RenamePlaylistDialog
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.queue.ShuffleMode
-import util.phonograph.m3u.PlaylistsManager
+import util.phonograph.playlist.PlaylistsManager
 import androidx.fragment.app.FragmentActivity
 import android.content.Context
 import kotlin.random.Random

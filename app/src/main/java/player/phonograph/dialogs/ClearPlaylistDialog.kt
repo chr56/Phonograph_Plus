@@ -15,7 +15,7 @@ import player.phonograph.model.playlist.ResettablePlaylist
 import player.phonograph.model.playlist.SmartPlaylist
 import player.phonograph.util.StringUtil
 import player.phonograph.util.permissions.hasStorageWritePermission
-import util.phonograph.m3u.PlaylistsManager
+import util.phonograph.playlist.PlaylistsManager
 import androidx.fragment.app.DialogFragment
 import android.app.Activity
 import android.app.Dialog
