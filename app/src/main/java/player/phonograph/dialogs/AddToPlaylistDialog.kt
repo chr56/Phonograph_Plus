@@ -11,6 +11,9 @@ import android.app.Dialog
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 /**
  * @author Karim Abou Zeid (kabouzeid), Aidan Follestad (afollestad)
@@ -43,11 +46,13 @@ class AddToPlaylistDialog : DialogFragment() {
                 } else {
                     materialDialog.dismiss()
                     val activity = requireActivity()
-                    PlaylistsManager.appendPlaylist(
-                        activity,
-                        songs,
-                        filePlaylist = playlists[index - 1]
-                    )
+                    CoroutineScope(Dispatchers.Default).launch {
+                        PlaylistsManager.appendPlaylist(
+                            activity,
+                            songs,
+                            filePlaylist = playlists[index - 1]
+                        )
+                    }
                 }
             }
     }

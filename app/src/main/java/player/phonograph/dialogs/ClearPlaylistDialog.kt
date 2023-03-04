@@ -24,6 +24,9 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class ClearPlaylistDialog : DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -76,9 +79,11 @@ class ClearPlaylistDialog : DialogFragment() {
                 }
                 // files
                 val attachedActivity: Activity = requireActivity()
-                PlaylistsManager.deletePlaylistWithGuide(
-                    attachedActivity, filesLists
-                )
+                CoroutineScope(Dispatchers.Default).launch {
+                    PlaylistsManager.deletePlaylistWithGuide(
+                        attachedActivity, filesLists
+                    )
+                }
             }.also {
                 // grant permission button for R
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && !hasPermission) {

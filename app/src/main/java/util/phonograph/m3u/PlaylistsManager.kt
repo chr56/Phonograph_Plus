@@ -19,16 +19,16 @@ import player.phonograph.R
 import player.phonograph.model.Song
 import player.phonograph.model.playlist.FilePlaylist
 import player.phonograph.model.playlist.Playlist
-import player.phonograph.notification.ErrorNotification
 import player.phonograph.settings.Setting
 import player.phonograph.util.CoroutineUtil.coroutineToast
 import player.phonograph.util.PlaylistsUtil
-import util.phonograph.playlist.m3u.M3UGenerator
+import player.phonograph.util.Util.warning
 import util.phonograph.playlist.appendTimestampSuffix
 import util.phonograph.playlist.appendToPlaylistViaSAF
 import util.phonograph.playlist.createPlaylistViaSAF
 import util.phonograph.playlist.createPlaylistsViaSAF
 import util.phonograph.playlist.deletePlaylistsViaSAF
+import util.phonograph.playlist.m3u.M3UGenerator
 import android.app.Activity
 import android.content.Context
 import android.os.Build
@@ -43,60 +43,53 @@ object PlaylistsManager {
     /**
      * @param context must be ICreateFileStorageAccess
      */
-    fun createPlaylist(
+    suspend fun createPlaylist(
         context: Context,
         name: String,
         songs: List<Song>? = null,
         path: String? = null,
-    ) {
-        CoroutineScope(SupervisorJob())
-            .launch(Dispatchers.Default) {
-                if (shouldUseSAF && context is ICreateFileStorageAccess) {
-                    createPlaylistViaSAF(context, playlistName = name, songs = songs)
-                } else {
-                    // legacy ways
-                    LegacyPlaylistsUtil.createPlaylist(context, name).also { id ->
-                        if (PlaylistsUtil.doesPlaylistExist(context, id)) {
-                            songs?.let {
-                                LegacyPlaylistsUtil.addToPlaylist(context, it, id, true)
-                                coroutineToast(context, R.string.success)
-                            }
-                        } else {
-                            coroutineToast(context, R.string.failed)
-                            ErrorNotification.postErrorNotification(
-                                Exception("Failed to save playlist (id=$id)"),
-                                null
-                            )
-                        }
+    ) = withContext(Dispatchers.Default) {
+        if (shouldUseSAF && context is ICreateFileStorageAccess) {
+            createPlaylistViaSAF(context, playlistName = name, songs = songs)
+        } else {
+            // legacy ways
+            LegacyPlaylistsUtil.createPlaylist(context, name).also { id ->
+                if (PlaylistsUtil.doesPlaylistExist(context, id)) {
+                    songs?.let {
+                        LegacyPlaylistsUtil.addToPlaylist(context, it, id, true)
+                        coroutineToast(context, R.string.success)
                     }
+                } else {
+                    warning(TAG, "Failed to save playlist (id=$id)")
+                    coroutineToast(context, R.string.failed)
                 }
-            }
-    }
-
-    fun appendPlaylist(
-        context: Context,
-        songs: List<Song>,
-        filePlaylist: FilePlaylist,
-    ) {
-        CoroutineScope(SupervisorJob()).launch(Dispatchers.Default) {
-            if (shouldUseSAF && context is IOpenFileStorageAccess) {
-                coroutineToast(context, R.string.direction_open_file_with_saf)
-                appendToPlaylistViaSAF(
-                    context,
-                    songs = songs,
-                    filePlaylist = filePlaylist,
-                )
-            } else {
-                LegacyPlaylistsUtil.addToPlaylist(context, songs, filePlaylist.id, true)
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) coroutineToast(
-                    context,
-                    R.string.failed
-                )
             }
         }
     }
 
-    fun appendPlaylist(
+
+    suspend fun appendPlaylist(
+        context: Context,
+        songs: List<Song>,
+        filePlaylist: FilePlaylist,
+    ) = withContext(Dispatchers.Default) {
+        if (shouldUseSAF && context is IOpenFileStorageAccess) {
+            coroutineToast(context, R.string.direction_open_file_with_saf)
+            appendToPlaylistViaSAF(
+                context,
+                songs = songs,
+                filePlaylist = filePlaylist,
+            )
+        } else {
+            LegacyPlaylistsUtil.addToPlaylist(context, songs, filePlaylist.id, true)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) coroutineToast(
+                context,
+                R.string.failed
+            )
+        }
+    }
+
+    suspend fun appendPlaylist(
         context: Context,
         songs: List<Song>,
         playlistId: Long,
@@ -105,58 +98,55 @@ object PlaylistsManager {
     /**
      * @param context must be IOpenDirStorageAccess
      */
-    fun deletePlaylistWithGuide(
+    suspend fun deletePlaylistWithGuide(
         context: Context,
         filePlaylists: List<FilePlaylist>,
-    ) {
-        val scope = CoroutineScope(SupervisorJob())
-        scope.launch(Dispatchers.Default) {
-            // try to delete
-            val failList = LegacyPlaylistsUtil.deletePlaylists(context, filePlaylists)
+    ) = withContext(Dispatchers.Default) {
+        // try to delete
+        val failList = LegacyPlaylistsUtil.deletePlaylists(context, filePlaylists)
 
-            if (failList.isNotEmpty()) {
+        if (failList.isNotEmpty()) {
 
-                // generate error msg
-                val list = StringBuffer()
-                for (playlist in failList) {
-                    list.append(playlist.name).append("\n")
-                }
-                val msg = "${
-                    context.resources.getQuantityString(
-                        R.plurals.msg_deletion_result,
-                        filePlaylists.size,
-                        filePlaylists.size - failList.size,
-                        filePlaylists.size
-                    )
-                }\n" +
-                        " ${context.getString(R.string.failed_to_delete)}: \n $list "
+            // generate error msg
+            val list = StringBuffer()
+            for (playlist in failList) {
+                list.append(playlist.name).append("\n")
+            }
+            val msg = "${
+                context.resources.getQuantityString(
+                    R.plurals.msg_deletion_result,
+                    filePlaylists.size,
+                    filePlaylists.size - failList.size,
+                    filePlaylists.size
+                )
+            }\n" +
+                    " ${context.getString(R.string.failed_to_delete)}: \n $list "
 
-                // report failure
-                withContext(Dispatchers.Main) {
-                    MaterialDialog(context)
-                        .title(R.string.failed_to_delete)
-                        .message(text = msg)
-                        .positiveButton(android.R.string.ok)
-                        .negativeButton(R.string.delete_with_saf) {
-                            scope.launch(Dispatchers.IO) {
-                                if (context is Activity && context is IOpenDirStorageAccess) {
-                                    deletePlaylistsViaSAF(context, filePlaylists)
-                                } else {
-                                    coroutineToast(context, R.string.failed)
-                                }
+            // report failure
+            withContext(Dispatchers.Main) {
+                MaterialDialog(context)
+                    .title(R.string.failed_to_delete)
+                    .message(text = msg)
+                    .positiveButton(android.R.string.ok)
+                    .negativeButton(R.string.delete_with_saf) {
+                        CoroutineScope(Dispatchers.IO).launch {
+                            if (context is Activity && context is IOpenDirStorageAccess) {
+                                deletePlaylistsViaSAF(context, filePlaylists)
+                            } else {
+                                coroutineToast(context, R.string.failed)
                             }
                         }
-                        .also {
-                            // color
-                            it.getActionButton(WhichButton.POSITIVE)
-                                .updateTextColor(ThemeColor.accentColor(context))
-                            it.getActionButton(WhichButton.NEGATIVE)
-                                .updateTextColor(ThemeColor.accentColor(context))
-                            it.getActionButton(WhichButton.NEUTRAL)
-                                .updateTextColor(ThemeColor.accentColor(context))
-                        }
-                        .show()
-                }
+                    }
+                    .also {
+                        // color
+                        it.getActionButton(WhichButton.POSITIVE)
+                            .updateTextColor(ThemeColor.accentColor(context))
+                        it.getActionButton(WhichButton.NEGATIVE)
+                            .updateTextColor(ThemeColor.accentColor(context))
+                        it.getActionButton(WhichButton.NEUTRAL)
+                            .updateTextColor(ThemeColor.accentColor(context))
+                    }
+                    .show()
             }
         }
     }
@@ -175,23 +165,19 @@ object PlaylistsManager {
             }
         }
 
-    fun duplicatePlaylistsViaSaf(
+    suspend fun duplicatePlaylistsViaSaf(
         context: Context,
         filePlaylists: List<Playlist>,
-    ) {
-        CoroutineScope(SupervisorJob()).launch(Dispatchers.Default) {
-            if (context is IOpenDirStorageAccess) {
-                createPlaylistsViaSAF(context, filePlaylists)
-            } else {
-                // legacy ways
-                withContext(Dispatchers.IO) {
-                    legacySavePlaylists(context, filePlaylists)
-                }
-            }
+    ) = withContext(Dispatchers.IO) {
+        if (context is IOpenDirStorageAccess) {
+            createPlaylistsViaSAF(context, filePlaylists)
+        } else {
+            // legacy ways
+            legacySavePlaylists(context, filePlaylists)
         }
     }
 
-    fun duplicatePlaylistViaSaf(
+    suspend fun duplicatePlaylistViaSaf(
         context: Context,
         playlist: Playlist,
     ) = createPlaylist(context, appendTimestampSuffix(playlist.name), playlist.getSongs(context))
@@ -205,10 +191,7 @@ object PlaylistsManager {
             try {
                 dir = M3UGenerator.writeFile(
                     App.instance,
-                    File(
-                        Environment.getExternalStorageDirectory(),
-                        Environment.DIRECTORY_DOWNLOADS
-                    ),
+                    File(Environment.DIRECTORY_DOWNLOADS),
                     playlist
                 ).parent
                 successes++

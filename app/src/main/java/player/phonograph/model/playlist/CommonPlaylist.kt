@@ -15,6 +15,9 @@ import androidx.annotation.Keep
 import android.content.Context
 import android.os.Parcel
 import android.os.Parcelable
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class FilePlaylist : Playlist, EditablePlaylist {
 
@@ -44,7 +47,9 @@ class FilePlaylist : Playlist, EditablePlaylist {
         LegacyPlaylistsUtil.removeFromPlaylist(context, song, id)
 
     override fun appendSongs(context: Context, songs: List<Song>) {
-        PlaylistsManager.appendPlaylist(context, songs, this)
+        CoroutineScope(Dispatchers.Default).launch {
+            PlaylistsManager.appendPlaylist(context, songs, this@FilePlaylist)
+        }
     }
     override fun appendSong(context: Context, song: Song) = appendSongs(context, listOf(song))
 
@@ -53,7 +58,9 @@ class FilePlaylist : Playlist, EditablePlaylist {
     }
 
     override fun clear(context: Context) {
-        PlaylistsManager.deletePlaylistWithGuide(context, listOf(this))
+        CoroutineScope(Dispatchers.Default).launch {
+            PlaylistsManager.deletePlaylistWithGuide(context, listOf(this@FilePlaylist))
+        }
     }
 
     override fun equals(other: Any?): Boolean {

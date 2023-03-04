@@ -15,6 +15,9 @@ import android.app.Dialog
 import android.os.Bundle
 import android.text.InputType
 import android.widget.Toast
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 /**
  * @author Karim Abou Zeid (kabouzeid), Aidan Follestad (afollestad)
@@ -42,11 +45,13 @@ class CreatePlaylistDialog : DialogFragment() {
                 }
                 val activity = requireActivity()
                 if (!PlaylistsUtil.doesPlaylistExist(activity, name)) {
-                    PlaylistsManager.createPlaylist(
-                        context = activity,
-                        name = name,
-                        songs = songs,
-                    )
+                    CoroutineScope(Dispatchers.Default).launch {
+                        PlaylistsManager.createPlaylist(
+                            context = activity,
+                            name = name,
+                            songs = songs,
+                        )
+                    }
 
                 } else {
                     Toast.makeText(
