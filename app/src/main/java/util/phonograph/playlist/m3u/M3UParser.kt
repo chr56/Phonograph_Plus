@@ -1,8 +1,8 @@
 /*
- * Copyright (c) 2022 chr_56
+ * Copyright (c) 2022~2023 chr_56
  */
 
-package util.phonograph.m3u.internal
+package util.phonograph.playlist.m3u
 
 import android.content.Context
 import player.phonograph.model.Song

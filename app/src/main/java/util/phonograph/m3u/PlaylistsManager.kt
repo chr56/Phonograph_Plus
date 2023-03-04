@@ -23,8 +23,8 @@ import player.phonograph.notification.ErrorNotification
 import player.phonograph.settings.Setting
 import player.phonograph.util.CoroutineUtil.coroutineToast
 import player.phonograph.util.PlaylistsUtil
-import util.phonograph.m3u.internal.M3UGenerator
-import util.phonograph.m3u.internal.appendTimestampSuffix
+import util.phonograph.playlist.m3u.M3UGenerator
+import util.phonograph.playlist.appendTimestampSuffix
 import util.phonograph.playlist.appendToPlaylistViaSAF
 import util.phonograph.playlist.createPlaylistViaSAF
 import util.phonograph.playlist.createPlaylistsViaSAF

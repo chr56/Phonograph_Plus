@@ -15,7 +15,7 @@ import player.phonograph.model.playlist.FilePlaylist
 import player.phonograph.util.CoroutineUtil.coroutineToast
 import player.phonograph.util.PlaylistsUtil
 import player.phonograph.util.Util.reportError
-import util.phonograph.m3u.internal.M3UGenerator
+import util.phonograph.playlist.m3u.M3UGenerator
 import android.content.Context
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
