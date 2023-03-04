@@ -5,6 +5,7 @@ repositories {
 
 plugins {
     kotlin("jvm")
+    id("org.jetbrains.kotlin.plugin.serialization")
 }
 
 sourceSets {
@@ -59,4 +60,8 @@ tasks.register("GenerateHTML", JavaExec::class.java) {
 java {
     sourceCompatibility = JavaVersion.VERSION_1_8
     targetCompatibility = JavaVersion.VERSION_1_8
+}
+
+dependencies{
+    implementation(depsLibs.kotlinx.serialization.json)
 }
