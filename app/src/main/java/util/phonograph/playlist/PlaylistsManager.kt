@@ -23,6 +23,9 @@ import player.phonograph.util.CoroutineUtil.coroutineToast
 import player.phonograph.util.PlaylistsUtil
 import player.phonograph.util.Util.warning
 import util.phonograph.playlist.m3u.M3UGenerator
+import util.phonograph.playlist.mediastore.addToPlaylistViaMediastore
+import util.phonograph.playlist.mediastore.createOrFindPlaylistViaMediastore
+import util.phonograph.playlist.mediastore.deletePlaylistsViaMediastore
 import util.phonograph.playlist.saf.appendTimestampSuffix
 import util.phonograph.playlist.saf.appendToPlaylistViaSAF
 import util.phonograph.playlist.saf.createPlaylistViaSAF
@@ -52,16 +55,15 @@ object PlaylistsManager {
             createPlaylistViaSAF(context, playlistName = name, songs = songs)
         } else {
             // legacy ways
-            LegacyPlaylistsUtil.createPlaylist(context, name).also { id ->
-                if (PlaylistsUtil.doesPlaylistExist(context, id)) {
-                    songs?.let {
-                        LegacyPlaylistsUtil.addToPlaylist(context, it, id, true)
-                        coroutineToast(context, R.string.success)
-                    }
-                } else {
-                    warning(TAG, "Failed to save playlist (id=$id)")
-                    coroutineToast(context, R.string.failed)
+            val id = createOrFindPlaylistViaMediastore(context, name)
+            if (PlaylistsUtil.doesPlaylistExist(context, id)) {
+                songs?.let {
+                    addToPlaylistViaMediastore(context, it, id, true)
+                    coroutineToast(context, R.string.success)
                 }
+            } else {
+                warning(TAG, "Failed to save playlist (id=$id)")
+                coroutineToast(context, R.string.failed)
             }
         }
     }
@@ -80,11 +82,9 @@ object PlaylistsManager {
                 filePlaylist = filePlaylist,
             )
         } else {
-            LegacyPlaylistsUtil.addToPlaylist(context, songs, filePlaylist.id, true)
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) coroutineToast(
-                context,
-                R.string.failed
-            )
+            addToPlaylistViaMediastore(context, songs, filePlaylist.id, true)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
+                coroutineToast(context, R.string.failed)
         }
     }
 
@@ -102,7 +102,7 @@ object PlaylistsManager {
         filePlaylists: List<FilePlaylist>,
     ) = withContext(Dispatchers.Default) {
         // try to delete
-        val failList = LegacyPlaylistsUtil.deletePlaylists(context, filePlaylists)
+        val failList = deletePlaylistsViaMediastore(context, filePlaylists)
 
         if (failList.isNotEmpty()) {
 

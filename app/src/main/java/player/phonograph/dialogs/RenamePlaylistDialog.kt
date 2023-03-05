@@ -1,17 +1,19 @@
 package player.phonograph.dialogs
 
-import android.app.Dialog
-import android.os.Bundle
-import android.text.InputType
-import androidx.fragment.app.DialogFragment
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.WhichButton
 import com.afollestad.materialdialogs.actions.getActionButton
 import com.afollestad.materialdialogs.input.input
-import util.phonograph.playlist.LegacyPlaylistsUtil
 import mt.pref.ThemeColor.accentColor
 import player.phonograph.R
 import player.phonograph.util.PlaylistsUtil
+import util.phonograph.playlist.mediastore.renamePlaylistViaMediastore
+import androidx.fragment.app.DialogFragment
+import androidx.lifecycle.lifecycleScope
+import android.app.Dialog
+import android.os.Bundle
+import android.text.InputType
+import kotlinx.coroutines.launch
 
 /**
  * @author Karim Abou Zeid (kabouzeid), Aidan Follestad (afollestad)
@@ -33,7 +35,9 @@ class RenamePlaylistDialog : DialogFragment() {
             ) { _, charSequence ->
                 val name: String = charSequence.toString().trim()
                 if (name.isNotEmpty()) {
-                    LegacyPlaylistsUtil.renamePlaylist(requireActivity(), requireArguments().getLong(PLAYLIST_ID), name)
+                    lifecycleScope.launch {
+                        renamePlaylistViaMediastore(requireActivity(), requireArguments().getLong(PLAYLIST_ID), name)
+                    }
                 }
             }
         // set button color
