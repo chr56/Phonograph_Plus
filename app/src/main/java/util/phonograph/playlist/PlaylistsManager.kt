@@ -9,7 +9,6 @@ package util.phonograph.playlist
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.WhichButton
 import com.afollestad.materialdialogs.actions.getActionButton
-import legacy.phonograph.LegacyPlaylistsUtil
 import lib.phonograph.misc.ICreateFileStorageAccess
 import lib.phonograph.misc.IOpenDirStorageAccess
 import lib.phonograph.misc.IOpenFileStorageAccess
@@ -24,6 +23,11 @@ import player.phonograph.util.CoroutineUtil.coroutineToast
 import player.phonograph.util.PlaylistsUtil
 import player.phonograph.util.Util.warning
 import util.phonograph.playlist.m3u.M3UGenerator
+import util.phonograph.playlist.saf.appendTimestampSuffix
+import util.phonograph.playlist.saf.appendToPlaylistViaSAF
+import util.phonograph.playlist.saf.createPlaylistViaSAF
+import util.phonograph.playlist.saf.createPlaylistsViaSAF
+import util.phonograph.playlist.saf.deletePlaylistsViaSAF
 import android.app.Activity
 import android.content.Context
 import android.os.Build

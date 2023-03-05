@@ -4,7 +4,7 @@
 
 package player.phonograph.model.playlist
 
-import legacy.phonograph.LegacyPlaylistsUtil
+import util.phonograph.playlist.LegacyPlaylistsUtil
 import player.phonograph.R
 import player.phonograph.mediastore.PlaylistSongLoader
 import player.phonograph.model.Song

@@ -5,16 +5,15 @@ package player.phonograph.util
 
 import android.content.Context
 import android.content.Intent
-import legacy.phonograph.LegacyPlaylistsUtil.addToPlaylist
-import legacy.phonograph.LegacyPlaylistsUtil.createPlaylist
-import legacy.phonograph.LegacyPlaylistsUtil.removeFromPlaylist
+import util.phonograph.playlist.LegacyPlaylistsUtil.addToPlaylist
+import util.phonograph.playlist.LegacyPlaylistsUtil.createPlaylist
+import util.phonograph.playlist.LegacyPlaylistsUtil.removeFromPlaylist
 import player.phonograph.App
 import player.phonograph.MusicServiceMsgConst
 import player.phonograph.R
 import player.phonograph.model.Song
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.provider.FavoriteSongsStore
-import player.phonograph.service.MusicService
 import player.phonograph.settings.Setting
 import player.phonograph.util.PlaylistsUtil.doesPlaylistContain
 import player.phonograph.util.PlaylistsUtil.getPlaylist

@@ -8,7 +8,7 @@ import com.h6ah4i.android.widget.advrecyclerview.animator.RefactoredDefaultItemA
 import com.h6ah4i.android.widget.advrecyclerview.draggable.RecyclerViewDragDropManager
 import com.h6ah4i.android.widget.advrecyclerview.utils.WrapperAdapterUtils
 import com.simplecityapps.recyclerview_fastscroll.interfaces.OnFastScrollStateChangeListener
-import legacy.phonograph.LegacyPlaylistsUtil
+import util.phonograph.playlist.LegacyPlaylistsUtil
 import lib.phonograph.cab.ToolbarCab
 import lib.phonograph.cab.createToolbarCab
 import lib.phonograph.misc.CreateFileStorageAccessTool

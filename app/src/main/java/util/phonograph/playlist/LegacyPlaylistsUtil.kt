@@ -1,9 +1,10 @@
 /*
- * Copyright (c) 2022 chr_56 & Abou Zeid (kabouzeid) (original author)
+ * Copyright (c) 2022~2023 chr_56
  */
 
-package legacy.phonograph
+package util.phonograph.playlist
 
+import legacy.phonograph.MediaStoreCompat
 import player.phonograph.App
 import player.phonograph.BROADCAST_PLAYLISTS_CHANGED
 import player.phonograph.R
@@ -118,7 +119,7 @@ object LegacyPlaylistsUtil {
         "use SAF",
         ReplaceWith(
             "addToPlaylist(context, song, playlistId, showToastOnFinish)",
-            "legacy.phonograph.LegacyPlaylistsUtil.addToPlaylist"
+            "util.phonograph.playlist.LegacyPlaylistsUtil.addToPlaylist"
         )
     )
     fun addToPlaylist(context: Context, song: Song, playlistId: Long, showToastOnFinish: Boolean) =
@@ -128,7 +129,7 @@ object LegacyPlaylistsUtil {
         "use SAF",
         ReplaceWith(
             "addToPlaylist(context, listOf(song), playlistId, showToastOnFinish)",
-            "legacy.phonograph.LegacyPlaylistsUtil.addToPlaylist"
+            "util.phonograph.playlist.LegacyPlaylistsUtil.addToPlaylist"
         )
     )
     fun addToPlaylist(
@@ -205,8 +206,7 @@ object LegacyPlaylistsUtil {
 
     @Deprecated("")
     fun moveItem(context: Context, playlistId: Long, from: Int, to: Int): Boolean {
-        val res = MediaStoreCompat.Audio.Playlists.Members
-            .moveItem(context.contentResolver, playlistId, from, to)
+        val res = MediaStoreCompat.Audio.Playlists.Members.moveItem(context.contentResolver, playlistId, from, to)
         // Necessary because somehow the MediaStoreObserver doesn't work for playlists
         // NOTE: actually for now lets disable this because it messes with the animation (tested on Android 11)
 //        context.contentResolver.notifyChange(getPlaylistUris(context, playlistId), null)

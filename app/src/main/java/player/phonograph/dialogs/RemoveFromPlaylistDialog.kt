@@ -6,7 +6,7 @@ import androidx.fragment.app.DialogFragment
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.WhichButton
 import com.afollestad.materialdialogs.actions.getActionButton
-import legacy.phonograph.LegacyPlaylistsUtil
+import util.phonograph.playlist.LegacyPlaylistsUtil
 import mt.pref.ThemeColor
 import player.phonograph.R
 import player.phonograph.model.PlaylistSong
