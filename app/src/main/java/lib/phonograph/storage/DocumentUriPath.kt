@@ -84,8 +84,8 @@ fun documentProviderUriAbsolutePath(uri: Uri, context: Context): String? {
         Log.w("Storage", "Non-Android DocumentProvider: $uri")
     }
     return when {
-        DocumentsContract.isTreeUri(uri)              -> documentUriAbsolutePath(uri)
-        DocumentsContract.isDocumentUri(context, uri) -> documentTreeUriAbsolutePath(uri)
+        DocumentsContract.isTreeUri(uri)              -> documentTreeUriAbsolutePath(uri)
+        DocumentsContract.isDocumentUri(context, uri) -> documentUriAbsolutePath(uri)
         else                                          -> childDocumentUriAbsolutePath(uri) // may be a ChildDocumentUri
     }
 }
