@@ -44,14 +44,15 @@ suspend fun createPlaylistViaSAF(
     songs: List<Song>?,
 ) = withContext(Dispatchers.IO) {
     // check
-    if (songs.isNullOrEmpty()) return@withContext
     require(context is IOpenFileStorageAccess)
     while (context.openFileStorageAccessTool.busy) yield()
     // launch
     val uri = createFileViaSAF(context, "$playlistName.m3u")
     openOutputStreamSafe(context, uri, "rwt")?.use { stream ->
         try {
-            M3UGenerator.generate(stream, songs, true)
+            if (!songs.isNullOrEmpty()) {
+                M3UGenerator.generate(stream, songs, true)
+            }
             coroutineToast(context, R.string.success)
         } catch (e: Exception) {
             reportError(e, TAG, "Failed to write $uri")

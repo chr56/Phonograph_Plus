@@ -23,6 +23,9 @@ import player.phonograph.util.CoroutineUtil.coroutineToast
 import player.phonograph.util.PlaylistsUtil
 import player.phonograph.util.Util.warning
 import util.phonograph.playlist.m3u.M3UGenerator
+import util.phonograph.playlist.mediastore.addToPlaylistViaMediastore
+import util.phonograph.playlist.mediastore.createOrFindPlaylistViaMediastore
+import util.phonograph.playlist.mediastore.deletePlaylistsViaMediastore
 import util.phonograph.playlist.saf.appendTimestampSuffix
 import util.phonograph.playlist.saf.appendToPlaylistViaSAF
 import util.phonograph.playlist.saf.createPlaylistViaSAF
@@ -51,18 +54,20 @@ object PlaylistsManager {
         if (shouldUseSAF && context is ICreateFileStorageAccess) {
             createPlaylistViaSAF(context, playlistName = name, songs = songs)
         } else {
-            // legacy ways
-            LegacyPlaylistsUtil.createPlaylist(context, name).also { id ->
-                if (PlaylistsUtil.doesPlaylistExist(context, id)) {
-                    songs?.let {
-                        LegacyPlaylistsUtil.addToPlaylist(context, it, id, true)
-                        coroutineToast(context, R.string.success)
-                    }
-                } else {
-                    warning(TAG, "Failed to save playlist (id=$id)")
-                    coroutineToast(context, R.string.failed)
-                }
+            createPlaylistLegacy(context, playlistName = name, songs = songs) // legacy ways
+        }
+    }
+
+    private suspend fun createPlaylistLegacy(context: Context, playlistName: String, songs: List<Song>?) {
+        val id = createOrFindPlaylistViaMediastore(context, playlistName)
+        if (PlaylistsUtil.doesPlaylistExist(context, id)) {
+            songs?.let {
+                addToPlaylistViaMediastore(context, it, id, true)
+                coroutineToast(context, R.string.success)
             }
+        } else {
+            warning(TAG, "Failed to save playlist (id=$id)")
+            coroutineToast(context, R.string.failed)
         }
     }
 
@@ -80,11 +85,9 @@ object PlaylistsManager {
                 filePlaylist = filePlaylist,
             )
         } else {
-            LegacyPlaylistsUtil.addToPlaylist(context, songs, filePlaylist.id, true)
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) coroutineToast(
-                context,
-                R.string.failed
-            )
+            addToPlaylistViaMediastore(context, songs, filePlaylist.id, true)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
+                coroutineToast(context, R.string.failed)
         }
     }
 
@@ -102,30 +105,32 @@ object PlaylistsManager {
         filePlaylists: List<FilePlaylist>,
     ) = withContext(Dispatchers.Default) {
         // try to delete
-        val failList = LegacyPlaylistsUtil.deletePlaylists(context, filePlaylists)
+        val failList = deletePlaylistsViaMediastore(context, filePlaylists)
 
         if (failList.isNotEmpty()) {
 
             // generate error msg
-            val list = StringBuffer()
-            for (playlist in failList) {
-                list.append(playlist.name).append("\n")
-            }
-            val msg = "${
-                context.resources.getQuantityString(
-                    R.plurals.msg_deletion_result,
-                    filePlaylists.size,
-                    filePlaylists.size - failList.size,
-                    filePlaylists.size
+
+            val message = buildString {
+                appendLine(
+                    context.resources.getQuantityString(
+                        R.plurals.msg_deletion_result,
+                        filePlaylists.size, filePlaylists.size - failList.size, filePlaylists.size
+                    )
                 )
-            }\n" +
-                    " ${context.getString(R.string.failed_to_delete)}: \n $list "
+                appendLine(
+                    "${context.getString(R.string.failed_to_delete)}: "
+                )
+                for (playlist in failList) {
+                    appendLine(playlist.name)
+                }
+            }
 
             // report failure
             withContext(Dispatchers.Main) {
                 MaterialDialog(context)
                     .title(R.string.failed_to_delete)
-                    .message(text = msg)
+                    .message(text = message)
                     .positiveButton(android.R.string.ok)
                     .negativeButton(R.string.delete_with_saf) {
                         CoroutineScope(Dispatchers.IO).launch {
@@ -171,8 +176,7 @@ object PlaylistsManager {
         if (context is IOpenDirStorageAccess) {
             createPlaylistsViaSAF(context, filePlaylists)
         } else {
-            // legacy ways
-            legacySavePlaylists(context, filePlaylists)
+            legacySavePlaylists(context, filePlaylists) // legacy ways
         }
     }
 

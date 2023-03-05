@@ -8,7 +8,6 @@ import com.h6ah4i.android.widget.advrecyclerview.animator.RefactoredDefaultItemA
 import com.h6ah4i.android.widget.advrecyclerview.draggable.RecyclerViewDragDropManager
 import com.h6ah4i.android.widget.advrecyclerview.utils.WrapperAdapterUtils
 import com.simplecityapps.recyclerview_fastscroll.interfaces.OnFastScrollStateChangeListener
-import util.phonograph.playlist.LegacyPlaylistsUtil
 import lib.phonograph.cab.ToolbarCab
 import lib.phonograph.cab.createToolbarCab
 import lib.phonograph.misc.CreateFileStorageAccessTool
@@ -26,7 +25,7 @@ import player.phonograph.actions.menu.playlistToolbar
 import player.phonograph.adapter.base.MultiSelectionCabController
 import player.phonograph.adapter.display.PlaylistSongAdapter
 import player.phonograph.databinding.ActivityPlaylistDetailBinding
-import player.phonograph.misc.*
+import player.phonograph.misc.menuProvider
 import player.phonograph.model.Song
 import player.phonograph.model.getReadableDurationString
 import player.phonograph.model.playlist.FilePlaylist
@@ -38,6 +37,8 @@ import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
 import player.phonograph.util.ImageUtil.getTintedDrawable
 import player.phonograph.util.PlaylistsUtil
 import player.phonograph.util.ViewUtil.setUpFastScrollRecyclerViewColor
+import util.phonograph.playlist.mediastore.moveItemViaMediastore
+import util.phonograph.playlist.mediastore.removeFromPlaylistViaMediastore
 import androidx.activity.viewModels
 import androidx.core.graphics.BlendModeCompat
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -48,6 +49,7 @@ import android.view.MenuItem
 import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
+import kotlinx.coroutines.runBlocking
 
 class PlaylistDetailActivity :
         AbsSlidingMusicPanelActivity(),
@@ -271,10 +273,14 @@ class PlaylistDetailActivity :
         adapter.editMode = true
 
         adapter.onMove = { fromPosition: Int, toPosition: Int ->
-            LegacyPlaylistsUtil.moveItem(this, playlist.id, fromPosition, toPosition)
+            runBlocking {
+                moveItemViaMediastore(this@PlaylistDetailActivity, playlist.id, fromPosition, toPosition)
+            }
         }
         adapter.onDelete = {
-            LegacyPlaylistsUtil.removeFromPlaylist(this, adapter.dataset[it], playlist.id)
+            runBlocking{
+                removeFromPlaylistViaMediastore(this@PlaylistDetailActivity, adapter.dataset[it], playlist.id)
+            }
         }
 
         with(binding) {

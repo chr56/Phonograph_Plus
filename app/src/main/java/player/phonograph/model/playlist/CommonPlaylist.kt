@@ -4,12 +4,13 @@
 
 package player.phonograph.model.playlist
 
-import util.phonograph.playlist.LegacyPlaylistsUtil
 import player.phonograph.R
 import player.phonograph.mediastore.PlaylistSongLoader
 import player.phonograph.model.Song
 import player.phonograph.util.PlaylistsUtil
 import util.phonograph.playlist.PlaylistsManager
+import util.phonograph.playlist.mediastore.moveItemViaMediastore
+import util.phonograph.playlist.mediastore.removeFromPlaylistViaMediastore
 import androidx.annotation.DrawableRes
 import androidx.annotation.Keep
 import android.content.Context
@@ -18,6 +19,7 @@ import android.os.Parcelable
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 class FilePlaylist : Playlist, EditablePlaylist {
 
@@ -43,8 +45,10 @@ class FilePlaylist : Playlist, EditablePlaylist {
         @DrawableRes
         get() = R.drawable.ic_queue_music_white_24dp
 
-    override fun removeSong(context: Context, song: Song) =
-        LegacyPlaylistsUtil.removeFromPlaylist(context, song, id)
+    override fun removeSong(context: Context, song: Song) = runBlocking {
+        removeFromPlaylistViaMediastore(context, song, id)
+        Unit
+    }
 
     override fun appendSongs(context: Context, songs: List<Song>) {
         CoroutineScope(Dispatchers.Default).launch {
@@ -54,7 +58,9 @@ class FilePlaylist : Playlist, EditablePlaylist {
     override fun appendSong(context: Context, song: Song) = appendSongs(context, listOf(song))
 
     override fun moveSong(context: Context, song: Song, from: Int, to: Int) {
-        LegacyPlaylistsUtil.moveItem(context, id, from, to)
+        runBlocking {
+            moveItemViaMediastore(context, id, from, to)
+        }
     }
 
     override fun clear(context: Context) {

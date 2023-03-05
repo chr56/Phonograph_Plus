@@ -1,17 +1,19 @@
 package player.phonograph.dialogs
 
-import android.app.Dialog
-import android.os.Bundle
-import androidx.fragment.app.DialogFragment
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.WhichButton
 import com.afollestad.materialdialogs.actions.getActionButton
-import util.phonograph.playlist.LegacyPlaylistsUtil
 import mt.pref.ThemeColor
 import player.phonograph.R
 import player.phonograph.model.PlaylistSong
 import player.phonograph.util.PlaylistsUtil
 import player.phonograph.util.StringUtil
+import util.phonograph.playlist.mediastore.removeFromPlaylistViaMediastore
+import androidx.fragment.app.DialogFragment
+import androidx.lifecycle.lifecycleScope
+import android.app.Dialog
+import android.os.Bundle
+import kotlinx.coroutines.launch
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
@@ -44,7 +46,10 @@ class RemoveFromPlaylistDialog : DialogFragment() {
             .negativeButton(android.R.string.cancel)
             .positiveButton(R.string.remove_action) {
                 if (activity != null) {
-                    LegacyPlaylistsUtil.removeFromPlaylist(requireActivity(), songs)
+                    it.dismiss()
+                    lifecycleScope.launch {
+                        removeFromPlaylistViaMediastore(requireActivity(), songs)
+                    }
                 }
             }
             .apply {

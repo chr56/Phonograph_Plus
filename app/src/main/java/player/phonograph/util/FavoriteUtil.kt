@@ -3,11 +3,6 @@
  */
 package player.phonograph.util
 
-import android.content.Context
-import android.content.Intent
-import util.phonograph.playlist.LegacyPlaylistsUtil.addToPlaylist
-import util.phonograph.playlist.LegacyPlaylistsUtil.createPlaylist
-import util.phonograph.playlist.LegacyPlaylistsUtil.removeFromPlaylist
 import player.phonograph.App
 import player.phonograph.MusicServiceMsgConst
 import player.phonograph.R
@@ -17,6 +12,12 @@ import player.phonograph.provider.FavoriteSongsStore
 import player.phonograph.settings.Setting
 import player.phonograph.util.PlaylistsUtil.doesPlaylistContain
 import player.phonograph.util.PlaylistsUtil.getPlaylist
+import util.phonograph.playlist.mediastore.addToPlaylistViaMediastore
+import util.phonograph.playlist.mediastore.createOrFindPlaylistViaMediastore
+import util.phonograph.playlist.mediastore.removeFromPlaylistViaMediastore
+import android.content.Context
+import android.content.Intent
+import kotlinx.coroutines.runBlocking
 
 object FavoriteUtil {
 
@@ -38,7 +39,9 @@ object FavoriteUtil {
      */
     fun toggleFavorite(context: Context, song: Song): Boolean {
         return if (Setting.instance.useLegacyFavoritePlaylistImpl) {
-            toggleFavoriteLegacyImpl(context, song)
+            runBlocking {
+                toggleFavoriteLegacyImpl(context, song)
+            }
         } else {
             toggleFavoriteDatabaseImpl(context, song)
         }.also {
@@ -49,12 +52,12 @@ object FavoriteUtil {
     /**
      * @return new state
      */
-    private fun toggleFavoriteLegacyImpl(context: Context, song: Song): Boolean {
+    private suspend fun toggleFavoriteLegacyImpl(context: Context, song: Song): Boolean {
         return if (isFavorite(context, song)) {
-            removeFromPlaylist(context, song, getFavoritesPlaylist(context).id)
+            removeFromPlaylistViaMediastore(context, song, getFavoritesPlaylist(context).id)
             false
         } else {
-            addToPlaylist(context, song, getOrCreateFavoritesPlaylist(context).id, false)
+            addToPlaylistViaMediastore(context, song, getOrCreateFavoritesPlaylist(context).id, false)
             true
         }
     }
@@ -84,9 +87,14 @@ object FavoriteUtil {
     private fun getFavoritesPlaylist(context: Context): Playlist {
         return getPlaylist(context, context.getString(R.string.favorites))
     }
-    private fun getOrCreateFavoritesPlaylist(context: Context): Playlist {
-        return getPlaylist(context, createPlaylist(context, context.getString(R.string.favorites))).also { notifyMediaStoreChanged() }
+
+    private suspend fun getOrCreateFavoritesPlaylist(context: Context): Playlist {
+        return getPlaylist(
+            context,
+            createOrFindPlaylistViaMediastore(context, context.getString(R.string.favorites))
+        ).also { notifyMediaStoreChanged() }
     }
+
     private fun notifyMediaStoreChanged() {
         App.instance.sendBroadcast(
             Intent(MusicServiceMsgConst.MEDIA_STORE_CHANGED)
