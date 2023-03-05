@@ -31,13 +31,18 @@ suspend fun renamePlaylistViaMediastore(
 ): Boolean = withContext(Dispatchers.IO) {
     val playlistUri = PlaylistsUtil.getPlaylistUris(id)
     try {
-        context.contentResolver.update(playlistUri, ContentValues().apply {
+        val result = context.contentResolver.update(playlistUri, ContentValues().apply {
             put(MediaStoreCompat.Audio.PlaylistsColumns.NAME, newName)
         }, null, null)
-        // Necessary because somehow the MediaStoreObserver doesn't work for playlists
-        context.contentResolver.notifyChange(playlistUri, null)
-        coroutineToast(context, R.string.success)
-        true
+        if (result > 0) {
+            // Necessary because somehow the MediaStoreObserver doesn't work for playlists
+            context.contentResolver.notifyChange(playlistUri, null)
+            coroutineToast(context, R.string.success)
+            true
+        } else {
+            coroutineToast(context, R.string.failed)
+            false
+        }
     } catch (ignored: Exception) {
         coroutineToast(context, R.string.failed)
         false
@@ -47,7 +52,12 @@ suspend fun renamePlaylistViaMediastore(
 /**
  * @return success or not
  */
-suspend fun addToPlaylistViaMediastore(context: Context, song: Song, playlistId: Long, showToastOnFinish: Boolean): Boolean =
+suspend fun addToPlaylistViaMediastore(
+    context: Context,
+    song: Song,
+    playlistId: Long,
+    showToastOnFinish: Boolean,
+): Boolean =
     addToPlaylistViaMediastore(context, listOf(song), playlistId, showToastOnFinish)
 
 /**
