@@ -50,7 +50,7 @@ jobs:
           gzip -k ./mapping.txt
           # renaming
           NEW_NAME=mapping_${{ github.ref_name }}_$(git rev-parse --short HEAD)
-          echo "NEW_MAPPING_FILE_NAME=${NEW_NAME}" >> $env:GITHUB_OUTPUT
+          echo "NEW_MAPPING_FILE_NAME=${NEW_NAME}" >> $GITHUB_OUTPUT
           cp ./mapping.txt.gz ./${NEW_NAME}.txt.gz
           cd -
 
