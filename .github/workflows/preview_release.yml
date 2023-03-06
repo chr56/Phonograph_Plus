@@ -41,12 +41,17 @@ jobs:
           alias: ${{ secrets.KEY_ALIAS }}
           keyPassword: ${{ secrets.KEY_PASSWORD }}
 
-      - name: Compress Mapping file
+      - name: Compress Mapping File & Renaming Mapping File
+        id: process_mapping
         shell: bash
         run: |
           cd ./app/build/outputs/mapping/previewRelease/
           # compress
           gzip -k ./mapping.txt
+          # renaming
+          NEW_NAME=mapping_${{ github.ref_name }}_$(git rev-parse --short HEAD)
+          echo "NEW_MAPPING_FILE_NAME=${NEW_NAME}" >> $env:GITHUB_OUTPUT
+          cp ./mapping.txt.gz ./${NEW_NAME}.txt.gz
           cd -
 
       - name: Upload Artifact
@@ -60,7 +65,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: mapping
-          path: ./app/build/outputs/mapping/previewRelease/mapping.txt.gz
+          path: ./app/build/outputs/mapping/previewRelease/${{ steps.process_mapping.outputs.NEW_MAPPING_FILE_NAME }}.txt.gz
 
       - name: Release New Version
         uses: softprops/action-gh-release@v1
@@ -70,7 +75,7 @@ jobs:
           name: "${{ github.ref_name }}"
           files: |
             ${{steps.sign_app.outputs.signedReleaseFile}}
-            ${{ github.workspace }}/app/build/outputs/mapping/previewRelease/mapping.txt.gz
+            ${{ github.workspace }}/app/build/outputs/mapping/previewRelease/${{ steps.process_mapping.outputs.NEW_MAPPING_FILE_NAME }}.txt.gz
           prerelease: true
           draft: false
           tag_name: ${{ github.ref }}
