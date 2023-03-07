@@ -4,8 +4,8 @@
 
 package util.phonograph
 
+import util.phonograph.changelog.generateVersionJsonItem
 import util.phonograph.changelog.parseReleaseNote
-import util.phonograph.format.generateVersionJson
 
 
 fun main(args: Array<String>) {
@@ -15,6 +15,6 @@ fun main(args: Array<String>) {
 
     val model = parseReleaseNote("$rootPath/$sourcePath")
 
-    val item = generateVersionJson(model, "preview")
+    val item = generateVersionJsonItem(model, "preview")
     println(item)
 }

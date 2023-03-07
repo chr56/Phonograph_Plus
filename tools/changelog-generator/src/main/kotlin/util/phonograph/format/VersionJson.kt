@@ -4,42 +4,8 @@
 
 package util.phonograph.format
 
-import util.phonograph.changelog.ReleaseNoteModel
-import util.phonograph.changelog.generateHTMLNoteMinify
-import util.phonograph.parser
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.JsonObject
-import kotlinx.serialization.json.encodeToJsonElement
-
-private fun ReleaseNoteModel.versionJsonItem(channel: String): VersionJsonItem = VersionJsonItem(
-    channel = channel,
-    versionName = version,
-    versionCode = versionCode,
-    date = time,
-    link = listOf(
-        VersionJsonItem.Link(
-            name = "Github Release",
-            url = "https://github.com/chr56/Phonograph_Plus/releases/tag/v$version"
-        )
-    ),
-    releaseNote = VersionJsonItem.ReleaseNote(
-        zh = generateHTMLNoteMinify(note, "zh"),
-        en = generateHTMLNoteMinify(note, "en"),
-    )
-)
-
-//todo
-fun generateVersionJson(model: ReleaseNoteModel, channel: String): String {
-    val item = generateVersionItem(model, channel)
-    return parser.encodeToString(item)
-}
-
-internal fun generateVersionItem(model: ReleaseNoteModel, channel: String): JsonObject {
-    val versionJsonItem = model.versionJsonItem(channel)
-    return parser.encodeToJsonElement(versionJsonItem) as JsonObject
-}
 
 internal const val CHANNEL = "channel"
 internal const val VERSION_NAME = "versionName"
