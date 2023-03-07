@@ -24,10 +24,10 @@ private fun ReleaseNoteModel.versionJsonItem(channel: String): VersionJsonItem =
     versionName = version,
     versionCode = versionCode,
     date = time,
-    link = VersionJsonItem.Link(
+    link = listOf(VersionJsonItem.Link(
         name = "Github Release",
         url = "https://github.com/chr56/Phonograph_Plus/releases/tag/v$version"
-    ),
+    )),
     releaseNote = VersionJsonItem.ReleaseNote(
         zh = generateHTMLNoteMinify(note, "zh"),
         en = generateHTMLNoteMinify(note, "en"),
@@ -62,7 +62,7 @@ class VersionJsonItem(
     @SerialName(VERSION_NAME) val versionName: String,
     @SerialName(VERSION_CODE) val versionCode: Int,
     @SerialName(DATE) val date: Long,
-    @SerialName(LINK) val link: Link,
+    @SerialName(LINK) val link: List<Link>,
     @SerialName(RELEASE_NOTE) val releaseNote: ReleaseNote,
 ) {
     @Serializable
