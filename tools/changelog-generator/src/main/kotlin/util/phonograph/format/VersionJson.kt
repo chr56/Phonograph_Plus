@@ -6,18 +6,12 @@ package util.phonograph.format
 
 import util.phonograph.changelog.ReleaseNoteModel
 import util.phonograph.changelog.generateHTMLNoteMinify
+import util.phonograph.parser
 import kotlinx.serialization.SerialName
-import kotlinx.serialization.json.Json
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.encodeToJsonElement
-
-private val parser = Json {
-    ignoreUnknownKeys = true
-    isLenient = true
-    prettyPrint = true
-}
 
 private fun ReleaseNoteModel.versionJsonItem(channel: String): VersionJsonItem = VersionJsonItem(
     channel = channel,
