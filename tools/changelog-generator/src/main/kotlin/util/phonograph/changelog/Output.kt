@@ -8,17 +8,17 @@ import java.io.BufferedWriter
 import java.io.File
 
 
-fun exportGitHubReleaseMarkDown(string: String, path: String) {
+fun writeToFile(string: String, path: String) {
     val file = File(path)
     if (file.exists() && file.isFile) {
         file.delete()
     }
-    exportGitHubReleaseMarkDown(string, file)
+    writeToFile(string, file)
 }
 
-fun exportGitHubReleaseMarkDown(string: String, file: File) {
+fun writeToFile(data: String, file: File) {
     file.bufferedWriter().use {
-        it.write(string)
+        it.write(data)
     }
 }
 
