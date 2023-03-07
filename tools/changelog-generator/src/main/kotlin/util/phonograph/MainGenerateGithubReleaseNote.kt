@@ -6,7 +6,7 @@ package util.phonograph
 
 import util.phonograph.changelog.exportGitHubReleaseMarkDown
 import util.phonograph.changelog.generateGitHubReleaseMarkDown
-import util.phonograph.changelog.parse
+import util.phonograph.changelog.parseReleaseNote
 
 fun main(args: Array<String>) {
 
@@ -14,7 +14,7 @@ fun main(args: Array<String>) {
     val sourcePath = args[1]
     val targetPath = args[2]
 
-    val model = parse("$rootPath/$sourcePath")
+    val model = parseReleaseNote("$rootPath/$sourcePath")
 
     val markdown = generateGitHubReleaseMarkDown(model)
     exportGitHubReleaseMarkDown(markdown, "$rootPath/$targetPath")

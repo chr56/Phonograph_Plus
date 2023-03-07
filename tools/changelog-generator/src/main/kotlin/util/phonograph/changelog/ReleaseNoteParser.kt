@@ -7,9 +7,9 @@ package util.phonograph.changelog
 import java.io.File
 
 
-fun parse(path: String): ReleaseNoteModel = parse(File(path))
+fun parseReleaseNote(path: String): ReleaseNoteModel = parseReleaseNote(File(path))
 
-fun parse(file: File): ReleaseNoteModel {
+fun parseReleaseNote(file: File): ReleaseNoteModel {
 
     val result = mutableMapOf<String, String>()
 

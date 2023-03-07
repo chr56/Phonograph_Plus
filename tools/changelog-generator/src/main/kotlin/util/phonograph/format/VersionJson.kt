@@ -24,10 +24,12 @@ private fun ReleaseNoteModel.versionJsonItem(channel: String): VersionJsonItem =
     versionName = version,
     versionCode = versionCode,
     date = time,
-    link = listOf(VersionJsonItem.Link(
-        name = "Github Release",
-        url = "https://github.com/chr56/Phonograph_Plus/releases/tag/v$version"
-    )),
+    link = listOf(
+        VersionJsonItem.Link(
+            name = "Github Release",
+            url = "https://github.com/chr56/Phonograph_Plus/releases/tag/v$version"
+        )
+    ),
     releaseNote = VersionJsonItem.ReleaseNote(
         zh = generateHTMLNoteMinify(note, "zh"),
         en = generateHTMLNoteMinify(note, "en"),
