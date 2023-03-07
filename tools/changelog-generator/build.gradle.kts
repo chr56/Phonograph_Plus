@@ -61,6 +61,7 @@ tasks.register("GenerateVersionJson", JavaExec::class.java) {
     args = listOf(
         rootProject.projectDir.absolutePath,
         originalReleaseNotePath,
+        "version_catalog.json"
     )
 
     classpath = sourceSets.named("main").get().runtimeClasspath

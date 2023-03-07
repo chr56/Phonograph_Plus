@@ -31,17 +31,6 @@ private fun ReleaseNoteModel.versionJsonItem(channel: String): VersionJsonItem =
     )
 )
 
-//todo
-fun generateVersionJsonItem(model: ReleaseNoteModel, channel: String): String {
-    val item = generateVersionJsonItemImpl(model, channel)
-    return parser.encodeToString(item)
-}
-
-internal fun generateVersionJsonItemImpl(model: ReleaseNoteModel, channel: String): JsonObject {
-    val versionJsonItem = model.versionJsonItem(channel)
-    return parser.encodeToJsonElement(versionJsonItem) as JsonObject
-}
-
 
 fun parseVersionJson(path: String): VersionJson = parseVersionJson(File(path))
 
@@ -49,3 +38,30 @@ fun parseVersionJson(file: File): VersionJson {
     val raw = file.readText()
     return parser.decodeFromString(raw)
 }
+
+const val MAX_CHANNEL_ITEM = 3
+
+fun updateVersionJson(versionJson: VersionJson, releaseNoteModel: ReleaseNoteModel): VersionJson {
+    // new item
+    val channel = "preview" //todo
+    val newVersionJsonItem = releaseNoteModel.versionJsonItem(channel)
+
+    // with old items
+    val allItems = mutableListOf(newVersionJsonItem).also { it.addAll(versionJson.versions) }
+
+    // process
+    val items =
+        allItems
+            .distinctBy { it.date } // distinct by time
+            .groupBy { it.channel } // group by channel
+            .flatMap { (_, g) ->
+                g.sortedByDescending { it.date }.take(MAX_CHANNEL_ITEM) // keep every channel up to [MAX_CHANNEL_ITEM]
+            }.sortedByDescending { it.date } // sort by time
+
+    // create new
+    val result = VersionJson(items)
+
+    return result
+}
+
+fun serializeVersionJson(versionJson: VersionJson): String = parser.encodeToString(versionJson)
