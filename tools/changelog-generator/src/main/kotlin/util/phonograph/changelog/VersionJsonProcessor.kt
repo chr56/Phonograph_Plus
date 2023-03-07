@@ -14,8 +14,8 @@ import kotlinx.serialization.json.encodeToJsonElement
 import java.io.File
 
 
-private fun ReleaseNoteModel.versionJsonItem(channel: String): VersionJsonItem = VersionJsonItem(
-    channel = channel,
+private fun ReleaseNoteModel.versionJsonItem(): VersionJsonItem = VersionJsonItem(
+    channel = channel ?: "NA",
     versionName = version,
     versionCode = versionCode,
     date = time,
@@ -43,8 +43,7 @@ const val MAX_CHANNEL_ITEM = 3
 
 fun updateVersionJson(versionJson: VersionJson, releaseNoteModel: ReleaseNoteModel): VersionJson {
     // new item
-    val channel = "preview" //todo
-    val newVersionJsonItem = releaseNoteModel.versionJsonItem(channel)
+    val newVersionJsonItem = releaseNoteModel.versionJsonItem()
 
     // with old items
     val allItems = mutableListOf(newVersionJsonItem).also { it.addAll(versionJson.versions) }
