@@ -12,13 +12,14 @@
 7. 改进 播放列表保存和删除
 8. 修改 导出设置json格式（警告：与先前版本不兼容）
 9. 修改 清除所有设置后强制重启应用
-10. 修复 歌曲图像来源配置中的交互异常
-11. 修复 清除所有设置时的崩溃
-12. 修复 导入设置备份后崩溃
-13. 翻译 更新意大利语(by gdonisi)
-14. 开发 使用独立文件中存储播放器状态
-15. 开发 清理代码，重构项目结构
-16. 开发 更新AGP至7.4.1， kotlin至1.8.10， 更新其他依赖
+10. 修改 禁止从旧版本升级（v0.2.4-RC1以前的版本）
+11. 修复 歌曲图像来源配置中的交互异常
+12. 修复 清除所有设置时的崩溃
+13. 修复 导入设置备份后崩溃
+14. 翻译 更新意大利语(by gdonisi)
+15. 开发 使用独立文件中存储播放器状态
+16. 开发 清理代码，重构项目结构
+17. 开发 更新AGP至7.4.1， kotlin至1.8.10， 更新其他依赖
 
 
 ### EN
@@ -31,12 +32,13 @@
 7. Improve: playlists save & delete 
 8. Modify: the exported setting json format (WARNING: Incompatible with previous versions)
 9. Modify: force reboot app after clearing all settings
-10. Fix: glitch of interactions in Image Source Config
-11. Fix: crash while clearing all settings
-12. Fix: crash after importing backups of setting
-13. Translation: update Italian (by gdonisi)
-14. Development: store player state in separate preference file
-15. Development: cleanup code, refactor project structure
-16. Development: upgrade AGP to 7.4.1, kotlin to 1.8.10 and other dependencies
+10. Modify: forbid upgrading from old versions (versions before v0.2.4-RC1)
+11. Fix: glitch of interactions in Image Source Config
+12. Fix: crash while clearing all settings
+13. Fix: crash after importing backups of setting
+14. Translation: update Italian (by gdonisi)
+15. Development: store player state in separate preference file
+16. Development: cleanup code, refactor project structure
+17. Development: upgrade AGP to 7.4.1, kotlin to 1.8.10 and other dependencies
 
 
