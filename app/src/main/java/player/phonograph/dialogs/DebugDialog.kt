@@ -20,12 +20,16 @@ import player.phonograph.notification.ErrorNotification
 import player.phonograph.notification.UpgradeNotification
 import player.phonograph.util.CoroutineUtil.coroutineToast
 import player.phonograph.util.UpdateUtil
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.GlobalScope
 
 class DebugDialog : DialogFragment() {
 
+    @OptIn(DelicateCoroutinesApi::class)
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val debugMenuItem = listOf(
             "Crash the app",
+            "Crash the app (Coroutine)",
             "Send Crash Notification",
             "Check Upgrade (Dialog)",
             "Check Upgrade (Notification)",
@@ -36,8 +40,11 @@ class DebugDialog : DialogFragment() {
             .listItemsSingleChoice(items = debugMenuItem) { dialog: MaterialDialog, index: Int, _: CharSequence ->
                 when (index) {
                     0 -> throw Exception("Crash Test!!! Crash Test!!! Crash Test!!! Crash Test!!! Crash Test!!! ")
-                    1 -> ErrorNotification.postErrorNotification(Exception("Test"), "Crash Notification Test!!")
-                    2 -> {
+                    1 -> GlobalScope.launch {
+                        throw Exception("Crash Test!!! Crash Test!!! Crash Test!!! Crash Test!!! Crash Test!!! ")
+                    }
+                    2 -> ErrorNotification.postErrorNotification(Exception("Test"), "Crash Notification Test!!")
+                    3 -> {
                         CoroutineScope(Dispatchers.Unconfined).launch {
                             UpdateUtil.checkUpdate(true) { versionCatalog: VersionCatalog, upgradable: Boolean ->
                                 try {
@@ -51,7 +58,7 @@ class DebugDialog : DialogFragment() {
                             }
                         }
                     }
-                    3 -> {
+                    4 -> {
                         CoroutineScope(Dispatchers.Unconfined).launch {
                             UpdateUtil.checkUpdate(true) { versionCatalog: VersionCatalog, upgradable: Boolean ->
                                 val channel = when (BuildConfig.FLAVOR) {
