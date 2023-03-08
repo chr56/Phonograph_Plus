@@ -1,4 +1,4 @@
-## {{version:0.6.0-beta1}} {{versionCode:463}} {{date:1678135000}} {{channel:preview}}
+## {{version:0.6.0}} {{versionCode:500}} {{date:1678264000}} {{channel:stable}}
 
 ### {{note:en}}
 - Add: Flatten Folder Page
