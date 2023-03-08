@@ -1,8 +1,0 @@
-<b>0.3.4 2022.10.3</b>
-- New: delete song along with the lyrics file with the same name (requires `Manage all external files` permission)
-- Fix: when play a folder, it cannot recursively select all subfolders
-- Fix: player interface crash, e.g. when resizing the window (partially fixed)
-- Improve: limit image size limit when loading to prevent crashes due to oversize images
-- Improve: mute error notifications when encountering `opus` format (currently we cannot read `opus`'s tags)
-- Development: add missing licenses of some libraries
-- Development: update Gradle to 7.5.1, update AGP to 7.3.0, update dependencies
