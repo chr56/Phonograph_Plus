@@ -2,12 +2,12 @@
 
 _This part is not written very well._
 
-Currently(2023.1.15), this project's toolchain&dependencies are:
+Currently(2023.3.8), this project's toolchain&dependencies are:
 
 - `Android SDK` `33` (no `NDK`), requiring `JDK` `11`
-- `Gradlew` `7.5.1`
-- `Android Gradle Plugin` `7.3.0`
-- `kotlin` for JVM(Android) `1.7.10`
+- `Gradlew` `7.6`
+- `Android Gradle Plugin` `7.4.1`
+- `kotlin` for JVM(Android) `1.8.10`
 - `kotlinx.serialization`,`kotlinx.parcelize`
 - most popular `androidx`(`Jetpack`) components (most of them are latest)
 - `Jetpack Compose` (Since 0.4)
@@ -26,12 +26,12 @@ see [build.gradle.kts](./build.gradle.kts) for all gradle plugins.
 
 1. a PC : any desktop operate system platform (only `Windows` and `Ubuntu 20.04` are tested), I am not sure if it works
    on `Android(Termux)`.
-2. JDK 11 (we are using AGP 7.5.1).
+2. JDK 11 (we are using AGP 7.6).
 3. The connected and fast network.
 
 **Development**:
 
-Plus `Android Studio` with correspond `Android Gradle Plugin` (currently `Dolphin`). (`IDEA` is untested)
+Plus `Android Studio` with correspond `Android Gradle Plugin` (currently `Electron Eel (Patch 1)`). (`IDEA` is untested)
 
 ## **Instructions (Build with commandline)**
 
@@ -161,7 +161,7 @@ TODO
 
 #### Repository Structure
 
-- `app/`, `tools/release-tool/`: Gradle Module
+- `app/`, `tools/release-tool/`, `tools/changelog-generator`: Gradle Module
 - `version.json`,`version_catalog.json`: containing the latest version information that Phonograph Plus would read at
   startup
 - `crowdin.yml`: Crowdin configuration
