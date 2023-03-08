@@ -70,6 +70,18 @@ tasks.register("GenerateVersionJson", JavaExec::class.java) {
     dependsOn(tasks.findByPath("build"))
 }
 
+tasks.register("GenerateFdroidMetadata", JavaExec::class.java) {
+    args = listOf(
+        rootProject.projectDir.absolutePath,
+        originalReleaseNotePath
+    )
+
+    classpath = sourceSets.named("main").get().runtimeClasspath
+    mainClass.set("util.phonograph.MainGenerateFdroidMetadataKt")
+
+    dependsOn(tasks.findByPath("build"))
+}
+
 java {
     sourceCompatibility = JavaVersion.VERSION_1_8
     targetCompatibility = JavaVersion.VERSION_1_8
