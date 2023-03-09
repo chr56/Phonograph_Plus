@@ -227,7 +227,7 @@
 -keepclasseswithmembers class org.jaudiotagger.tag.id3.framebody.Framebody** {<init>(...);}
 -keepclasseswithmembers class org.jaudiotagger.tag.** extends org.jaudiotagger.tag.id3.AbstractTagItem {<init>(...);}
 -keepclasseswithmembers class org.jaudiotagger.tag.datatype.** extends org.jaudiotagger.tag.datatype.AbstractDataType {<init>(...);}
-
+-keepclasseswithmembers class org.jcodec.containers.mp4.boxes.** {<init>(...);}
 
 ####################
 # StatusBarLyric API
