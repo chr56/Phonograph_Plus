@@ -16,6 +16,7 @@ on:
       - 'crowdin.yml'
       - 'fastlane/metadata/android/**'
       - 'tools/**'
+      - './fdroid.properties'
   workflow_dispatch:
   pull_request:
     branches:
@@ -29,6 +30,7 @@ on:
       - 'crowdin.yml'
       - 'fastlane/metadata/android/**'
       - 'tools/**'
+      - './fdroid.properties'
 
 jobs:
   build:
