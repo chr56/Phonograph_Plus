@@ -6,6 +6,7 @@ package util.phonograph
 
 import util.phonograph.changelog.parseReleaseNote
 import util.phonograph.changelog.writeFdroidMetadataChangelogText
+import util.phonograph.changelog.writeFdroidMetadataVersionInfo
 
 fun main(args: Array<String>) {
     val rootPath = args[0]
@@ -19,5 +20,6 @@ fun main(args: Array<String>) {
     for (lang in languages) {
         writeFdroidMetadataChangelogText(model, rootPath, lang)
     }
+    writeFdroidMetadataVersionInfo(model, rootPath)
     println("Completed!")
 }
