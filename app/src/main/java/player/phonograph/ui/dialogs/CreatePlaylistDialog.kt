@@ -1,4 +1,8 @@
-package player.phonograph.dialogs
+/*
+ * Copyright (c) 2022~2023 chr_56, Karim Abou Zeid (kabouzeid), Aidan Follestad (afollestad)
+ */
+
+package player.phonograph.ui.dialogs
 
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.WhichButton
@@ -18,13 +22,10 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-/**
- * @author Karim Abou Zeid (kabouzeid), Aidan Follestad (afollestad)
- */
 class CreatePlaylistDialog : DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val songs: List<Song>? = requireArguments().getParcelableArrayList(SONGS)
-        val dialog = MaterialDialog(requireActivity())
+        val songs: List<Song> = requireArguments().getParcelableArrayList(SONGS)!!
+        return MaterialDialog(requireActivity())
             .title(R.string.new_playlist_title)
             .positiveButton(R.string.create_action)
             .negativeButton(android.R.string.cancel)
@@ -38,8 +39,7 @@ class CreatePlaylistDialog : DialogFragment() {
             ) { _, input ->
                 val name = input.toString().trim()
                 if (name.isEmpty()) {
-                    Toast.makeText(requireContext(), getString(R.string.failed), Toast.LENGTH_SHORT)
-                        .show()
+                    Toast.makeText(requireContext(), getString(R.string.failed), Toast.LENGTH_SHORT).show()
                     return@input
                 }
                 val activity = requireActivity()
@@ -61,34 +61,22 @@ class CreatePlaylistDialog : DialogFragment() {
                         ),
                         Toast.LENGTH_SHORT
                     ).show()
-                    dismiss()
                 }
+            }.apply {
+                getActionButton(WhichButton.POSITIVE).updateTextColor(accentColor(requireActivity()))
+                getActionButton(WhichButton.NEGATIVE).updateTextColor(accentColor(requireActivity()))
             }
-        // set button color
-        dialog.getActionButton(WhichButton.POSITIVE).updateTextColor(accentColor(requireActivity()))
-        dialog.getActionButton(WhichButton.NEGATIVE).updateTextColor(accentColor(requireActivity()))
-
-        return dialog
     }
 
     companion object {
         private const val SONGS = "songs"
 
-        @JvmStatic
-        fun create(songs: List<Song>): CreatePlaylistDialog {
-            val dialog = CreatePlaylistDialog()
-            val args = Bundle()
-            args.putParcelableArrayList(SONGS, ArrayList(songs))
-            dialog.arguments = args
-            return dialog
-        }
-        @JvmStatic
-        fun createEmpty(): CreatePlaylistDialog {
-            val dialog = CreatePlaylistDialog()
-            val args = Bundle()
-            args.putParcelableArrayList(SONGS, null)
-            dialog.arguments = args
-            return dialog
-        }
+        fun create(songs: List<Song>?): CreatePlaylistDialog =
+            CreatePlaylistDialog().apply {
+                arguments = Bundle().apply {
+                    putParcelableArrayList(SONGS, ArrayList(songs ?: emptyList()))
+                }
+            }
+
     }
 }

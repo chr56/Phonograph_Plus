@@ -9,7 +9,6 @@ import mt.tint.viewtint.setMenuColor
 import mt.util.color.toolbarIconColor
 import player.phonograph.R
 import player.phonograph.adapter.display.PlayingQueueAdapter
-import player.phonograph.dialogs.CreatePlaylistDialog
 import player.phonograph.dialogs.LyricsDialog
 import player.phonograph.dialogs.SleepTimerDialog
 import player.phonograph.misc.PaletteColorHolder
@@ -20,6 +19,7 @@ import player.phonograph.model.lyrics.AbsLyrics
 import player.phonograph.model.lyrics.LrcLyrics
 import player.phonograph.preferences.NowPlayingScreenPreferenceDialog
 import player.phonograph.service.MusicPlayerRemote
+import player.phonograph.ui.dialogs.CreatePlaylistDialog
 import player.phonograph.ui.dialogs.QueueSnapshotsDialog
 import player.phonograph.ui.fragments.AbsMusicServiceFragment
 import player.phonograph.ui.fragments.player.PlayerAlbumCoverFragment.Companion.VISIBILITY_ANIM_DURATION

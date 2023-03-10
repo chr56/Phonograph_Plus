@@ -5,7 +5,6 @@
 package player.phonograph.ui.dialogs
 
 import player.phonograph.R
-import player.phonograph.dialogs.CreatePlaylistDialog
 import player.phonograph.model.Song
 import player.phonograph.util.PlaylistsUtil
 import util.phonograph.playlist.PlaylistsManager
