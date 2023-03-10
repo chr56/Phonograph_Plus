@@ -4,12 +4,12 @@
 
 package player.phonograph.actions
 
-import player.phonograph.dialogs.AddToPlaylistDialog
-import player.phonograph.dialogs.ClearPlaylistDialog
-import player.phonograph.dialogs.RenamePlaylistDialog
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.queue.ShuffleMode
+import player.phonograph.ui.dialogs.AddToPlaylistDialog
+import player.phonograph.ui.dialogs.ClearPlaylistDialog
+import player.phonograph.ui.dialogs.RenamePlaylistDialog
 import util.phonograph.playlist.PlaylistsManager
 import androidx.fragment.app.FragmentActivity
 import android.content.Context

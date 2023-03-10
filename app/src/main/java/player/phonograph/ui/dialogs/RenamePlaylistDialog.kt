@@ -1,4 +1,8 @@
-package player.phonograph.dialogs
+/*
+ *  Copyright (c) 2022~2023 chr_56, Karim Abou Zeid (kabouzeid), Aidan Follestad (afollestad)
+ */
+
+package player.phonograph.ui.dialogs
 
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.WhichButton
@@ -15,9 +19,6 @@ import android.os.Bundle
 import android.text.InputType
 import kotlinx.coroutines.launch
 
-/**
- * @author Karim Abou Zeid (kabouzeid), Aidan Follestad (afollestad)
- */
 class RenamePlaylistDialog : DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val playlistId = requireArguments().getLong(PLAYLIST_ID)
@@ -39,22 +40,22 @@ class RenamePlaylistDialog : DialogFragment() {
                         renamePlaylistViaMediastore(requireActivity(), requireArguments().getLong(PLAYLIST_ID), name)
                     }
                 }
+            }.apply {
+                // set button color
+                getActionButton(WhichButton.POSITIVE).updateTextColor(accentColor(requireActivity()))
+                getActionButton(WhichButton.NEGATIVE).updateTextColor(accentColor(requireActivity()))
             }
-        // set button color
-        dialog.getActionButton(WhichButton.POSITIVE).updateTextColor(accentColor(requireActivity()))
-        dialog.getActionButton(WhichButton.NEGATIVE).updateTextColor(accentColor(requireActivity()))
         return dialog
     }
 
     companion object {
         private const val PLAYLIST_ID = "playlist_id"
-        @JvmStatic
-        fun create(playlistId: Long): RenamePlaylistDialog {
-            val dialog = RenamePlaylistDialog()
-            val args = Bundle()
-            args.putLong(PLAYLIST_ID, playlistId)
-            dialog.arguments = args
-            return dialog
-        }
+
+        fun create(playlistId: Long): RenamePlaylistDialog =
+            RenamePlaylistDialog().apply {
+                arguments = Bundle().apply {
+                    putLong(PLAYLIST_ID, playlistId)
+                }
+            }
     }
 }

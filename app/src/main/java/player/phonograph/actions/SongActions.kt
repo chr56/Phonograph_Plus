@@ -5,7 +5,6 @@
 package player.phonograph.actions
 
 import player.phonograph.R
-import player.phonograph.dialogs.AddToPlaylistDialog
 import player.phonograph.dialogs.SongDetailDialog
 import player.phonograph.dialogs.SongShareDialog
 import player.phonograph.misc.PaletteColorHolder
@@ -15,6 +14,7 @@ import player.phonograph.service.queue.ShuffleMode
 import player.phonograph.settings.Setting
 import player.phonograph.ui.compose.tag.DetailActivity
 import player.phonograph.ui.compose.tag.TagEditorActivity
+import player.phonograph.ui.dialogs.AddToPlaylistDialog
 import player.phonograph.ui.dialogs.DeleteSongsDialog
 import player.phonograph.util.NavigationUtil
 import player.phonograph.util.PathFilterUtil

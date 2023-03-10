@@ -22,7 +22,7 @@ import player.phonograph.BROADCAST_PLAYLISTS_CHANGED
 import player.phonograph.R
 import player.phonograph.adapter.PlaylistAdapter
 import player.phonograph.databinding.FragmentDisplayPageBinding
-import player.phonograph.dialogs.CreatePlaylistDialog
+import player.phonograph.ui.dialogs.CreatePlaylistDialog
 import player.phonograph.misc.PlaylistsModifiedReceiver
 import player.phonograph.model.playlist.FavoriteSongsPlaylist
 import player.phonograph.model.playlist.HistoryPlaylist
@@ -154,7 +154,7 @@ class PlaylistPage : AbsPage() {
         )
 
         binding.addNewItem.setOnClickListener {
-            CreatePlaylistDialog.createEmpty().show(childFragmentManager, "CREATE_NEW_PLAYLIST")
+            CreatePlaylistDialog.create(null).show(childFragmentManager, "CREATE_NEW_PLAYLIST")
         }
 
         binding.addNewItem.visibility = View.VISIBLE
