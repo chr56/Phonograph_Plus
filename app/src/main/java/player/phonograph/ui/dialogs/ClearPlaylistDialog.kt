@@ -1,8 +1,8 @@
 /*
- * Copyright (c) 2022 chr_56 & Abou Zeid (kabouzeid) (original author)
+ *  Copyright (c) 2022~2023 chr_56 & Abou Zeid (kabouzeid) (original author)
  */
 
-package player.phonograph.dialogs
+package player.phonograph.ui.dialogs
 
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.WhichButton
@@ -11,6 +11,7 @@ import mt.pref.ThemeColor
 import player.phonograph.R
 import player.phonograph.model.playlist.FilePlaylist
 import player.phonograph.model.playlist.Playlist
+import player.phonograph.model.playlist.PlaylistType
 import player.phonograph.model.playlist.ResettablePlaylist
 import player.phonograph.model.playlist.SmartPlaylist
 import player.phonograph.util.StringUtil
@@ -33,18 +34,9 @@ class ClearPlaylistDialog : DialogFragment() {
         val playlists: List<Playlist> = requireArguments().getParcelableArrayList(KEY)!!
 
         // classify
-        val smartLists = ArrayList<SmartPlaylist>()
-        val filesLists = ArrayList<FilePlaylist>()
-        for (playlist in playlists) {
-            when (playlist) {
-                is FilePlaylist -> {
-                    filesLists.add(playlist)
-                }
-                is SmartPlaylist -> {
-                    if (playlist is ResettablePlaylist) smartLists.add(playlist)
-                }
-            }
-        }
+        val grouped = playlists.groupBy { it.type }
+        val smartLists = grouped.getOrDefault(PlaylistType.ABS_SMART, emptyList()).filterIsInstance<SmartPlaylist>()
+        val filesLists = grouped.getOrDefault(PlaylistType.FILE, emptyList()).filterIsInstance<FilePlaylist>()
 
         // extra permission check on R(11)
         val hasPermission = hasStorageWritePermission(requireContext())
@@ -66,6 +58,7 @@ class ClearPlaylistDialog : DialogFragment() {
             )
         )
 
+        val fragmentActivity: Activity = requireActivity()
         // build dialog
         val dialog = MaterialDialog(requireActivity())
             .title(R.string.delete_action)
@@ -78,21 +71,19 @@ class ClearPlaylistDialog : DialogFragment() {
                     if (playlist is ResettablePlaylist) playlist.clear(requireContext())
                 }
                 // files
-                val attachedActivity: Activity = requireActivity()
                 CoroutineScope(Dispatchers.Default).launch {
                     PlaylistsManager.deletePlaylistWithGuide(
-                        attachedActivity, filesLists
+                        fragmentActivity, filesLists
                     )
                 }
             }.also {
                 // grant permission button for R
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && !hasPermission) {
                     it.neutralButton(R.string.grant_permission) {
-                        val intent = Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION).apply {
+                        startActivity(Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION).apply {
                             data = Uri.parse("package:${requireContext().packageName}")
                             flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                        }
-                        startActivity(intent)
+                        })
                     }
                 }
                 // set button color
@@ -114,14 +105,10 @@ class ClearPlaylistDialog : DialogFragment() {
         private const val KEY = "playlists"
         private const val TAG = "ClearPlaylistDialog"
 
-        @JvmStatic
         fun create(playlists: List<Playlist>): ClearPlaylistDialog =
             ClearPlaylistDialog().apply {
                 arguments = Bundle().apply {
-                    putParcelableArrayList(
-                        "playlists",
-                        ArrayList(playlists)
-                    )
+                    putParcelableArrayList(KEY, ArrayList(playlists))
                 }
             }
     }
