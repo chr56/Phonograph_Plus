@@ -41,7 +41,7 @@ class BackupDataDialog : DialogFragment() {
             "$stringExport$stringSetting" to {
                 export(
                     requireActivity(),
-                    "phonograph_plus_favorites_${TimeUtil.currentDateTime()}.json"
+                    "phonograph_plus_settings_${TimeUtil.currentDateTime()}.json"
                 ) { uri ->
                     SettingDataManager.exportSettings(uri, activity)
                     true
