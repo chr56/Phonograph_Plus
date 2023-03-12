@@ -1,24 +1,8 @@
 package player.phonograph.ui.activities
 
-import android.content.Context
-import android.content.Intent
-import android.content.pm.PackageManager
-import android.net.Uri
-import android.os.Bundle
-import android.os.Looper
-import android.view.View
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.TextView
-import android.widget.Toast
-import androidx.annotation.Keep
-import androidx.appcompat.widget.AppCompatButton
-import androidx.appcompat.widget.Toolbar
 import de.psdev.licensesdialog.LicensesDialog
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import lib.phonograph.activity.ToolbarActivity
+import lib.phonograph.misc.NoticesProcessor
 import mt.tint.setActivityToolbarColorAuto
 import player.phonograph.BuildConfig
 import player.phonograph.R
@@ -32,6 +16,24 @@ import player.phonograph.ui.dialogs.ReportIssueDialog
 import player.phonograph.ui.dialogs.UpgradeDialog
 import player.phonograph.util.PhonographColorUtil.nightMode
 import player.phonograph.util.UpdateUtil
+import player.phonograph.util.Util.reportError
+import androidx.annotation.Keep
+import androidx.appcompat.widget.AppCompatButton
+import androidx.appcompat.widget.Toolbar
+import android.content.Context
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.net.Uri
+import android.os.Bundle
+import android.os.Looper
+import android.view.View
+import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.TextView
+import android.widget.Toast
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
@@ -257,7 +259,13 @@ class AboutActivity : ToolbarActivity(), View.OnClickListener {
     }
 
     private fun showLicenseDialog() {
-        LicensesDialog.Builder(this).setNotices(R.raw.notices).setTitle(R.string.licenses)
+        val notices = try {
+            NoticesProcessor.readNotices(this)
+        } catch (e: Exception) {
+            reportError(e,"NoticesProcessor", "Failed to read notices")
+            return
+        }
+        LicensesDialog.Builder(this).setNotices(notices).setTitle(R.string.licenses)
             .setNoticesCssStyle(getString(R.string.license_dialog_style).replace("{bg-color}",
                     if (resources.nightMode) "424242" else "ffffff")
                 .replace("{text-color}", if (resources.nightMode) "ffffff" else "000000")

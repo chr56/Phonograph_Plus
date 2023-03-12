@@ -1,0 +1,133 @@
+{
+  "notices": [
+    {
+      "name": "Advanced RecyclerView",
+      "url": "https://github.com/h6ah4i/android-advancedrecyclerview",
+      "copyright": "Copyright (C) 2015 Haruki Hasegawa",
+      "license": "Apache Software License 2.0"
+    },
+    {
+      "name": "android-issue-reporter (Partial)",
+      "url": "https://github.com/HeinrichReimer/android-issue-reporter",
+      "copyright": "Copyright 2016 Heinrich Reimer",
+      "license": "Apache Software License 2.0"
+    },
+    {
+      "name": "Android-ObservableScrollView",
+      "url": "https://github.com/ksoichiro/Android-ObservableScrollView",
+      "copyright": "Copyright 2014 Soichiro Kashima",
+      "license": "Apache Software License 2.0"
+    },
+    {
+      "name": "Android Open Source Project",
+      "url": "http://developer.android.com/tools/support-library/index.html",
+      "copyright": "Copyright (C) 2016 The Android Open Source Project",
+      "license": "Apache Software License 2.0"
+    },
+    {
+      "name": "Android Sliding Up Panel",
+      "url": "https://github.com/umano/AndroidSlidingUpPanel",
+      "license": "Apache Software License 2.0"
+    },
+    {
+      "name": "Android Support Libraries",
+      "url": "http://developer.android.com/tools/support-library/index.html",
+      "copyright": "Copyright (C) 2016 The Android Open Source Project",
+      "license": "Apache Software License 2.0"
+    },
+    {
+      "name": "Butter Knife",
+      "url": "https://github.com/JakeWharton/butterknife",
+      "copyright": "Copyright 2013 Jake Wharton",
+      "license": "Apache Software License 2.0"
+    },
+    {
+      "name": "Eleven",
+      "url": "https://github.com/CyanogenMod/android_packages_apps_Eleven",
+      "copyright": "Copyright (c) 2014, The CyanogenMod Project",
+      "license": "Apache Software License 2.0"
+    },
+    {
+      "name": "Launcher 3",
+      "url": "https://android.googlesource.com/platform/packages/apps/Launcher3",
+      "copyright": "Copyright (C) 2010 The Android Open Source Project",
+      "license": "Apache Software License 2.0"
+    },
+    {
+      "name": "Linear Layout Manager",
+      "url": "https://github.com/serso/android-linear-layout-manager",
+      "copyright": "Copyright 2014 serso aka se.solovyev",
+      "license": "Apache Software License 2.0"
+    },
+    {
+      "name": "Material Contextual Action Bar",
+      "url": "https://github.com/afollestad/material-cab",
+      "copyright": "Copyright 2016 Aidan Follestad",
+      "license": "Apache Software License 2.0"
+    },
+    {
+      "name": "Material Dialogs",
+      "url": "https://github.com/afollestad/material-dialogs",
+      "copyright": "Copyright (c) 2018 Aidan Michael Follestad",
+      "license": "Apache Software License 2.0"
+    },
+    {
+      "name": "Material Intro",
+      "url": "https://github.com/HeinrichReimer/material-intro",
+      "copyright": "Copyright 2016 Heinrich Reimer",
+      "license": "MIT License"
+    },
+    {
+      "name": "OkHttp",
+      "url": "https://github.com/square/okhttp",
+      "license": "Apache Software License 2.0"
+    },
+    {
+      "name": "RecyclerView-FastScroll",
+      "url": "https://github.com/timusus/RecyclerView-FastScroll",
+      "copyright": "Copyright (C) 2016 Tim Malseed",
+      "license": "Apache Software License 2.0"
+    },
+    {
+      "name": "Retrofit",
+      "url": "https://github.com/square/retrofit",
+      "copyright": "Copyright 2013 Square, Inc.",
+      "license": "Apache Software License 2.0"
+    },
+    {
+      "name": "SeekArc",
+      "url": "https://github.com/Triggertrap/SeekArc",
+      "copyright": "Copyright (c) 2013 Triggertrap Ltd\nAuthor Neil Davies\n",
+      "license": "MIT License"
+    },
+    {
+      "name": "Simple Storage (Partial)",
+      "url": "https://github.com/anggrayudi/SimpleStorage",
+      "copyright": "Copyright © 2020-2022 Anggrayudi Hardiannico A.",
+      "license": "Apache Software License 2.0"
+    },
+    {
+      "name": "kotlinx.serialization",
+      "url": "https://github.com/Kotlin/kotlinx.serialization",
+      "license": "Apache Software License 2.0"
+    },
+    {
+      "name": "Coil",
+      "url": "https://github.com/coil-kt/coil",
+      "copyright": "Copyright © 2022 Coil Contributors",
+      "license": "Apache Software License 2.0"
+    },
+    {
+      "name": "ComposeReorderable",
+      "url": "https://github.com/aclassen/ComposeReorderable",
+      "copyright": "Copyright 2022 André Claßen",
+      "license": "Apache Software License 2.0"
+    },
+    {
+      "name": "Compose Material Dialogs",
+      "url": "https://https://github.com/vanpra/compose-material-dialogs",
+      "copyright": "Copyright 2022 vanpra",
+      "license": "Apache Software License 2.0"
+    }
+  ]
+}
