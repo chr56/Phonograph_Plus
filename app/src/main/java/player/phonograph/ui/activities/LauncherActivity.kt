@@ -16,9 +16,9 @@ import android.Manifest.permission.POST_NOTIFICATIONS
 import android.Manifest.permission.READ_EXTERNAL_STORAGE
 import android.Manifest.permission.READ_MEDIA_AUDIO
 import android.content.Intent
-import android.os.Build
 import android.os.Build.VERSION.SDK_INT
 import android.os.Build.VERSION_CODES.N_MR1
+import android.os.Build.VERSION_CODES.TIRAMISU
 import android.os.Bundle
 import android.view.View
 
@@ -60,7 +60,7 @@ class LauncherActivity : ToolbarActivity() {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == APP_INTRO_REQUEST) {
             val permissions =
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
+                if (SDK_INT >= TIRAMISU)
                     arrayOf(POST_NOTIFICATIONS, READ_MEDIA_AUDIO)
                 else arrayOf(READ_EXTERNAL_STORAGE)
             askForPermission(permissions)
