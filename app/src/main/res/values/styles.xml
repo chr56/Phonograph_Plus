@@ -38,7 +38,7 @@
         <item name="android:transitionName" tools:ignore="NewApi">toolbar</item>
     </style>
 
-    <style name="StarterDialog" parent="Theme.AppCompat.DayNight.Dialog">
+    <style name="DialogActivity" parent="Theme.AppCompat.DayNight.Dialog">
         <item name="android:windowNoTitle">true</item>
         <item name="android:title">@null</item>
         <item name="android:windowBackground">@android:color/transparent</item>
