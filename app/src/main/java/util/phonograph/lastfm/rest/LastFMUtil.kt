@@ -1,11 +1,10 @@
 /*
- * Copyright (c) 2022 chr_56 & Abou Zeid (kabouzeid) (original author)
+ * Copyright (c) 2022-2023 chr_56 & Abou Zeid (kabouzeid) (original author)
  */
 package util.phonograph.lastfm.rest
 
 import util.phonograph.lastfm.rest.model.LastFmImage
-import util.phonograph.lastfm.rest.model.LastFmAlbum
-import java.util.*
+import java.util.EnumMap
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
@@ -13,7 +12,7 @@ import java.util.*
 object LastFMUtil {
 
     fun getLargestArtistImageUrl(images: List<LastFmImage>): String? {
-        val imageUrls: MutableMap<ImageSize, String> = HashMap()
+        val imageUrls: MutableMap<ImageSize, String> = EnumMap(ImageSize::class.java)
         for (image in images) {
             var size: ImageSize? = null
             val attribute = image.size
@@ -21,13 +20,13 @@ object LastFMUtil {
                 size = ImageSize.UNKNOWN
             } else {
                 try {
-                    size = ImageSize.valueOf(attribute.toUpperCase(Locale.ENGLISH))
+                    size = ImageSize.valueOf(attribute.uppercase())
                 } catch (e: IllegalArgumentException) {
                     // if they suddenly again introduce a new image size
                 }
             }
             if (size != null) {
-                imageUrls[size] = image.text!!
+                imageUrls[size] = image.text
             }
         }
         return getLargestImageUrl(imageUrls)
@@ -35,7 +34,7 @@ object LastFMUtil {
 
     @JvmStatic
     fun getLargestAlbumImageUrl(images: List<LastFmImage>): String? {
-        val imageUrls: MutableMap<ImageSize, String> = HashMap()
+        val imageUrls: MutableMap<ImageSize, String> = EnumMap(ImageSize::class.java)
         for (image in images) {
             var size: ImageSize? = null
             val attribute = image.size
@@ -43,7 +42,7 @@ object LastFMUtil {
                 size = ImageSize.UNKNOWN
             } else {
                 try {
-                    size = ImageSize.valueOf(attribute.toUpperCase(Locale.ENGLISH))
+                    size = ImageSize.valueOf(attribute.uppercase())
                 } catch (e: IllegalArgumentException) {
                     // if they suddenly again introduce a new image size
                 }
