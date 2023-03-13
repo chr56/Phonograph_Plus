@@ -7,7 +7,6 @@ import com.sothree.slidinguppanel.SlidingUpPanelLayout.PanelState
 import mt.util.color.darkenColor
 import mt.util.color.resolveColor
 import mt.util.color.secondaryTextColor
-import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.adapter.base.MediaEntryViewHolder
 import player.phonograph.adapter.display.initMenu
@@ -125,8 +124,8 @@ class CardPlayerFragment :
         viewBinding.playerRecyclerView.layoutManager = layoutManager
         viewBinding.playerRecyclerView.adapter = wrappedAdapter
         viewBinding.playerRecyclerView.itemAnimator = animator
-        recyclerViewDragDropManager!!.attachRecyclerView(viewBinding.playerRecyclerView)
-        layoutManager!!.scrollToPositionWithOffset(MusicPlayerRemote.position + 1, 0)
+        recyclerViewDragDropManager.attachRecyclerView(viewBinding.playerRecyclerView)
+        layoutManager.scrollToPositionWithOffset(MusicPlayerRemote.position + 1, 0)
     }
 
     override fun onBackPressed(): Boolean {
@@ -173,7 +172,7 @@ class CardPlayerFragment :
 
     private fun resetToCurrentPosition() {
         viewBinding.playerRecyclerView.stopScroll()
-        layoutManager!!.scrollToPositionWithOffset(MusicPlayerRemote.position + 1, 0)
+        layoutManager.scrollToPositionWithOffset(MusicPlayerRemote.position + 1, 0)
     }
 
     private abstract class BaseImpl(protected var fragment: CardPlayerFragment) : Impl {
