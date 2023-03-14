@@ -38,6 +38,13 @@
         <item name="android:transitionName" tools:ignore="NewApi">toolbar</item>
     </style>
 
+    <style name="Theme.AppIntroTheme" parent="Theme.AppCompat.NoActionBar">
+        <!-- Theme for app intro -->
+        <item name="colorPrimary">@color/md_blue_A400</item>
+        <item name="colorPrimaryDark">@color/md_blue_800</item>
+        <item name="colorAccent">@color/md_orange_500</item>
+    </style>
+
     <style name="DialogActivity" parent="Theme.AppCompat.DayNight.Dialog">
         <item name="android:windowNoTitle">true</item>
         <item name="android:title">@null</item>
