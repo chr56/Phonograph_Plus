@@ -434,4 +434,11 @@
     <string name="image_source_external_file">外部文件</string>
     <string name="image_source_config">图片来源配置</string>
     <string name="action_backup">备份</string>
+    <string name="grant_permission_description">请授权某些必须权限以保证正常使用</string>
+    <string name="permission_name_post_notifications">发布通知</string>
+    <string name="permission_desc_post_notifications">自 Android T (13) 起，应用程序需要此权限才能发送通知</string>
+    <string name="permission_name_read_media_audio">读取媒体音频</string>
+    <string name="permission_desc_read_media_audio">自 Android T (13) 起，具有此权限的应用程序可读取设备内音频</string>
+    <string name="permission_name_read_external_storage">读取外部存储</string>
+    <string name="permission_desc_read_external_storage">读取设备中的音乐文件必须读取外部存储权限</string>
 </resources>

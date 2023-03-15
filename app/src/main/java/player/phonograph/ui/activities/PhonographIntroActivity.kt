@@ -10,12 +10,27 @@ import com.github.appintro.SlideBackgroundColorHolder
 import com.github.appintro.SlidePolicy
 import player.phonograph.R
 import player.phonograph.databinding.FragmentIntroBinding
+import player.phonograph.databinding.ItemSimpleBinding
+import player.phonograph.util.permissions.GrantedPermission
+import player.phonograph.util.permissions.checkPermission
 import androidx.annotation.StringRes
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.view.setMargins
 import androidx.fragment.app.Fragment
+import android.Manifest
+import android.content.Intent
+import android.os.Build.VERSION.SDK_INT
+import android.os.Build.VERSION_CODES.TIRAMISU
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.GONE
+import android.view.View.OnClickListener
 import android.view.ViewGroup
+import android.view.ViewGroup.LayoutParams.MATCH_PARENT
+import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
+import android.widget.LinearLayout
 
 class PhonographIntroActivity : AppIntro() {
 
@@ -37,6 +52,11 @@ class PhonographIntroActivity : AppIntro() {
                 backgroundColorRes = R.color.md_blue_900
             )
         )
+
+        addSlide(
+            PermissionSlideFragment.newInstance()
+        )
+
     }
 
     override fun onSkipPressed(currentFragment: Fragment?) {
@@ -47,6 +67,109 @@ class PhonographIntroActivity : AppIntro() {
     override fun onDonePressed(currentFragment: Fragment?) {
         super.onDonePressed(currentFragment)
         finish()
+    }
+
+    class PermissionSlideFragment : EmptySlideFragment(), SlidePolicy {
+
+        override val titleRes: Int get() = R.string.grant_permission
+        override val descriptionRes: Int get() = R.string.grant_permission_description
+
+
+        class PermissionDetail(
+            val permission: String,
+            val title: String,
+            val description: String,
+        )
+
+        val permissions: List<PermissionDetail>
+            get() = when {
+                SDK_INT >= TIRAMISU ->
+                    listOf(
+                        PermissionDetail(
+                            Manifest.permission.POST_NOTIFICATIONS,
+                            getString(R.string.permission_name_post_notifications),
+                            getString(R.string.permission_desc_post_notifications)
+                        ),
+                        PermissionDetail(
+                            Manifest.permission.READ_MEDIA_AUDIO,
+                            getString(R.string.permission_name_read_media_audio),
+                            getString(R.string.permission_desc_read_media_audio)
+                        ),
+                    )
+                else                ->
+                    listOf(
+                        PermissionDetail(
+                            Manifest.permission.READ_EXTERNAL_STORAGE,
+                            getString(R.string.permission_name_read_external_storage),
+                            getString(R.string.permission_desc_read_external_storage),
+                        )
+                    )
+            }
+
+        private var _items: List<ItemSimpleBinding>? = null
+        private val items get() = _items!!
+        override fun setUpView(container: ViewGroup) {
+            _items = permissions.map { detail ->
+                createViewItem(detail) {
+                    val context = container.context
+                    val activity = (context as? AppCompatActivity)
+                    if (activity != null) {
+                        //todo
+                        ActivityCompat.requestPermissions(
+                            activity, arrayOf(detail.permission), 0
+                        )
+                    }
+                }
+            }
+            val params = LinearLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT).apply {
+                setMargins(32)
+            }
+            items.forEachIndexed { index, itemBinding ->
+                container.addView(itemBinding.root, index, params)
+            }
+        }
+
+        override fun onDestroyView() {
+            super.onDestroyView()
+            _items = null
+        }
+
+        private fun createViewItem(
+            detail: PermissionDetail,
+            onClick: OnClickListener,
+        ): ItemSimpleBinding {
+            return ItemSimpleBinding.inflate(layoutInflater).also { itemBinding ->
+                itemBinding.title.text = detail.title
+                itemBinding.text.text = detail.description
+                itemBinding.root.setOnClickListener(onClick)
+                itemBinding.menu.visibility = GONE
+                updateItemBackgroundColor(itemBinding, detail.permission)
+            }
+        }
+
+        private fun updateItemBackgroundColor(itemBinding: ItemSimpleBinding, permission: String) {
+            // val permissionResult = checkPermission(requireContext(), permission)
+            itemBinding.root.setBackgroundColor(
+                resources.getColor(
+                    R.color.md_blue_grey_400
+                    // if (permissionResult is GrantedPermission) R.color.md_green_600
+                    // else R.color.md_red_600
+                    , null
+                )
+            )
+        }
+
+        override val isPolicyRespected: Boolean
+            get() = true
+
+        override fun onUserIllegallyRequestedNextPage() {
+        }
+
+        override val defaultBackgroundColorRes: Int get() = R.color.md_blue_grey_700
+
+        companion object {
+            fun newInstance(): PermissionSlideFragment = PermissionSlideFragment()
+        }
     }
 
     /**
@@ -69,14 +192,10 @@ class PhonographIntroActivity : AppIntro() {
             savedInstanceState: Bundle?,
         ): View {
             _binding = FragmentIntroBinding.inflate(inflater, container, true)
-            return binding.root
-        }
-
-        override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-            super.onViewCreated(view, savedInstanceState)
             binding.title.text = getString(titleRes)
             binding.description.text = getString(descriptionRes)
             setUpView(binding.container)
+            return binding.root
         }
 
         protected open fun setUpView(container: ViewGroup) {}
