@@ -8,18 +8,18 @@ import com.github.appintro.AppIntro
 import com.github.appintro.AppIntroFragment
 import com.github.appintro.SlideBackgroundColorHolder
 import com.github.appintro.SlidePolicy
+import lib.phonograph.misc.IRequestPermission
+import lib.phonograph.misc.RequestPermissionTool
 import player.phonograph.R
 import player.phonograph.databinding.FragmentIntroBinding
 import player.phonograph.databinding.ItemSimpleBinding
+import player.phonograph.util.Util.warning
 import player.phonograph.util.permissions.GrantedPermission
 import player.phonograph.util.permissions.checkPermission
 import androidx.annotation.StringRes
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
 import androidx.core.view.setMargins
 import androidx.fragment.app.Fragment
 import android.Manifest
-import android.content.Intent
 import android.os.Build.VERSION.SDK_INT
 import android.os.Build.VERSION_CODES.TIRAMISU
 import android.os.Bundle
@@ -31,18 +31,23 @@ import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.LinearLayout
+import android.widget.Toast
+import android.widget.Toast.LENGTH_LONG
 
-class PhonographIntroActivity : AppIntro() {
+class PhonographIntroActivity : AppIntro(), IRequestPermission {
 
     private fun config() {
         showStatusBar(true)
         isColorTransitionsEnabled = true
     }
 
+    override val requestPermissionTool: RequestPermissionTool = RequestPermissionTool()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         config()
+        requestPermissionTool.register(lifecycle, activityResultRegistry)
 
         addSlide(
             AppIntroFragment.createInstance(
@@ -110,14 +115,19 @@ class PhonographIntroActivity : AppIntro() {
         private val items get() = _items!!
         override fun setUpView(container: ViewGroup) {
             _items = permissions.map { detail ->
-                createViewItem(detail) {
+                createViewItem(detail) { view ->
                     val context = container.context
-                    val activity = (context as? AppCompatActivity)
-                    if (activity != null) {
-                        //todo
-                        ActivityCompat.requestPermissions(
-                            activity, arrayOf(detail.permission), 0
-                        )
+                    val permissionsTool = (context as? IRequestPermission)?.requestPermissionTool
+                    if (permissionsTool != null) {
+                        permissionsTool.launch(detail.permission) {
+                            updateItemBackgroundColor(view, detail.permission)
+                        }
+                    } else {
+                        Toast.makeText(
+                            requireContext(),
+                            "${context::class.java.simpleName} is unsupported for ask permissions",
+                            LENGTH_LONG
+                        ).show()
                     }
                 }
             }
@@ -143,18 +153,16 @@ class PhonographIntroActivity : AppIntro() {
                 itemBinding.text.text = detail.description
                 itemBinding.root.setOnClickListener(onClick)
                 itemBinding.menu.visibility = GONE
-                updateItemBackgroundColor(itemBinding, detail.permission)
+                updateItemBackgroundColor(itemBinding.root, detail.permission)
             }
         }
 
-        private fun updateItemBackgroundColor(itemBinding: ItemSimpleBinding, permission: String) {
-            // val permissionResult = checkPermission(requireContext(), permission)
-            itemBinding.root.setBackgroundColor(
+        private fun updateItemBackgroundColor(view: View, permission: String) {
+            val permissionResult = checkPermission(requireContext(), permission)
+            view.setBackgroundColor(
                 resources.getColor(
-                    R.color.md_blue_grey_400
-                    // if (permissionResult is GrantedPermission) R.color.md_green_600
-                    // else R.color.md_red_600
-                    , null
+                    if (permissionResult is GrantedPermission) R.color.md_green_600
+                    else R.color.md_red_600, null
                 )
             )
         }
