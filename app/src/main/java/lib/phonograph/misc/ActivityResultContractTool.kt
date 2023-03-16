@@ -80,6 +80,18 @@ class CreateFileStorageAccessTool(val mimeType: String = "*/*") : ActivityResult
         ActivityResultContracts.CreateDocument(mimeType)
 }
 
+class RequestPermissionTool : ActivityResultContractTool<String, Boolean>() {
+    override fun key(): String = "RequestPermissionTool"
+    override fun contract(): ActivityResultContract<String, Boolean> =
+        ActivityResultContracts.RequestPermission()
+}
+
+class RequestMultiplePermissionsTool : ActivityResultContractTool<Array<String>, Map<String, Boolean>>() {
+    override fun key(): String = "RequestMultiplePermissionsTool"
+    override fun contract(): ActivityResultContract<Array<String>, Map<String, Boolean>> =
+        ActivityResultContracts.RequestMultiplePermissions()
+}
+
 interface IOpenFileStorageAccess {
     val openFileStorageAccessTool: OpenFileStorageAccessTool
 }
@@ -90,4 +102,12 @@ interface IOpenDirStorageAccess {
 
 interface ICreateFileStorageAccess {
     val createFileStorageAccessTool: CreateFileStorageAccessTool
+}
+
+interface IRequestPermission {
+    val requestPermissionTool: RequestPermissionTool
+}
+
+interface IRequestMultiplePermission {
+    val requestMultiplePermissionsTool: RequestMultiplePermissionsTool
 }
