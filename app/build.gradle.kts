@@ -196,7 +196,7 @@ dependencies {
     implementation(depsLibs.licensesdialog)
     implementation(depsLibs.jaudiotagger)
     implementation(depsLibs.observablescrollview)
-    implementation(depsLibs.materialIntro)
+    implementation(depsLibs.appIntro)
     implementation(depsLibs.advrecyclerview)
     implementation(depsLibs.recyclerviewFastscroll)
     implementation(depsLibs.composeReorderable)

@@ -2,6 +2,8 @@
 <resources>
     <string name="what_do_you_want_to_share">What do you want to share?</string>
     <string name="currently_listening_to_x_by_x">Currently listening to %1$s by %2$s.</string>
+    <string name="disable">disable</string>
+    <string name="choose_at_least_one">Please choose at least one</string>
     <string name="the_audio_file">The audio file</string>
     <string name="action_set_as_ringtone">Set as ringtone</string>
     <string name="action_share">Share</string>
@@ -297,6 +299,7 @@
     <string name="tg_channel">Telegram Channel</string>
     <string name="auto_check_upgrade">Check update automatically</string>
     <string name="auto_check_upgrade_summary">Pop up an upgrade dialog instantly if newer version available.</string>
+    <string name="auto_check_upgrade_extra_description">App would check newer versions from a public static resource in GitHub Repository and other mirror sites.</string>
     <string name="edit">Edit…</string>
     <string name="move_to_top">Move to top</string>
     <string name="move_to_bottom">Move to bottom</string>
@@ -445,4 +448,12 @@
     <string name="image_source_external_file">External File</string>
     <string name="image_source_config">Image Source Config</string>
     <string name="action_backup">Backup</string>
+    <string name="grant_permission_description">Some necessary permissions are required to make sure working properly.</string>
+    <string name="permission_name_post_notifications">Post Notifications</string>
+    <string name="permission_desc_post_notifications">Since Android T (13), applications require this permission to post notifications.</string>
+    <string name="permission_name_read_media_audio">Read Media Audio</string>
+    <string name="permission_desc_read_media_audio">Since Android T (13), application with this permission can read audios of the device.</string>
+    <string name="permission_name_read_external_storage">Read External Storage</string>
+    <string name="permission_desc_read_external_storage">Read External Storage permission is required to read music file in the device.</string>
+    <string name="completed">completed</string>
 </resources>

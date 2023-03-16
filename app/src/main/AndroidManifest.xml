@@ -119,9 +119,10 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ui.activities.intro.AppIntroActivity"
+            android:name=".ui.activities.PhonographIntroActivity"
             android:label="@string/intro_label"
-            android:theme="@style/Theme.Intro" />
+            android:theme="@style/Theme.AppIntroTheme"
+            android:exported="true"/>
         <activity android:name=".ui.activities.AlbumDetailActivity" />
         <activity android:name=".ui.activities.ArtistDetailActivity" />
         <activity android:name=".ui.activities.GenreDetailActivity" />

@@ -7,12 +7,6 @@
       "license": "Apache Software License 2.0"
     },
     {
-      "name": "android-issue-reporter (Partial)",
-      "url": "https://github.com/HeinrichReimer/android-issue-reporter",
-      "copyright": "Copyright 2016 Heinrich Reimer",
-      "license": "Apache Software License 2.0"
-    },
-    {
       "name": "Android-ObservableScrollView",
       "url": "https://github.com/ksoichiro/Android-ObservableScrollView",
       "copyright": "Copyright 2014 Soichiro Kashima",
@@ -33,12 +27,6 @@
       "name": "Android Support Libraries",
       "url": "http://developer.android.com/tools/support-library/index.html",
       "copyright": "Copyright (C) 2016 The Android Open Source Project",
-      "license": "Apache Software License 2.0"
-    },
-    {
-      "name": "Butter Knife",
-      "url": "https://github.com/JakeWharton/butterknife",
-      "copyright": "Copyright 2013 Jake Wharton",
       "license": "Apache Software License 2.0"
     },
     {
@@ -70,12 +58,6 @@
       "url": "https://github.com/afollestad/material-dialogs",
       "copyright": "Copyright (c) 2018 Aidan Michael Follestad",
       "license": "Apache Software License 2.0"
-    },
-    {
-      "name": "Material Intro",
-      "url": "https://github.com/HeinrichReimer/material-intro",
-      "copyright": "Copyright 2016 Heinrich Reimer",
-      "license": "MIT License"
     },
     {
       "name": "OkHttp",
@@ -125,8 +107,14 @@
     },
     {
       "name": "Compose Material Dialogs",
-      "url": "https://https://github.com/vanpra/compose-material-dialogs",
+      "url": "https://github.com/vanpra/compose-material-dialogs",
       "copyright": "Copyright 2022 vanpra",
+      "license": "Apache Software License 2.0"
+    },
+    {
+      "name": "AppIntro",
+      "url": "https://github.com/AppIntro/AppIntro",
+      "copyright": "Copyright (C) 2015-2020 AppIntro Developers",
       "license": "Apache Software License 2.0"
     }
   ]

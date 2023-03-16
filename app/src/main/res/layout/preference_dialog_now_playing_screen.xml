@@ -14,14 +14,4 @@
         android:paddingLeft="72dp"
         android:paddingRight="72dp" />
 
-    <com.heinrichreimersoftware.materialintro.view.InkPageIndicator
-        android:id="@+id/page_indicator"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="16dp"
-        app:currentPageIndicatorColor="?android:textColorPrimary"
-        app:dotDiameter="8dp"
-        app:dotGap="8dp"
-        app:pageIndicatorColor="?android:textColorHint" />
-
 </LinearLayout>
