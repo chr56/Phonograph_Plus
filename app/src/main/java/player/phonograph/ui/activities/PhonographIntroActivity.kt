@@ -42,7 +42,10 @@ import android.widget.Toast.LENGTH_LONG
 class PhonographIntroActivity : AppIntro(), IOpenFileStorageAccess, IRequestPermission {
 
     private fun config() {
+        isWizardMode = true
         showStatusBar(true)
+        setStatusBarColorRes(R.color.md_black_1000)
+        setNavBarColorRes(R.color.md_black_1000)
         isColorTransitionsEnabled = true
     }
 
@@ -71,6 +74,14 @@ class PhonographIntroActivity : AppIntro(), IOpenFileStorageAccess, IRequestPerm
 
         addSlide(
             SettingSlideFragment.newInstance()
+        )
+
+        addSlide(
+            AppIntroFragment.createInstance(
+                description = getString(R.string.completed),
+                imageDrawable = R.drawable.icon_web,
+                backgroundColorRes = R.color.md_green_800
+            )
         )
 
     }
@@ -184,7 +195,7 @@ class PhonographIntroActivity : AppIntro(), IOpenFileStorageAccess, IRequestPerm
         override fun onUserIllegallyRequestedNextPage() {
         }
 
-        override val defaultBackgroundColorRes: Int get() = R.color.md_blue_grey_700
+        override val defaultBackgroundColorRes: Int get() = R.color.md_yellow_900
 
         companion object {
             fun newInstance(): PermissionSlideFragment = PermissionSlideFragment()
@@ -194,7 +205,7 @@ class PhonographIntroActivity : AppIntro(), IOpenFileStorageAccess, IRequestPerm
     class SettingSlideFragment : EmptySlideFragment(), SlidePolicy {
 
         override val titleRes: Int get() = R.string.action_settings
-        override val descriptionRes: Int get() = R.string.description
+        override val descriptionRes: Int get() = -1
 
         private var _contentBinding: FragmentIntroSlideSettingBinding? = null
         val contentBinding: FragmentIntroSlideSettingBinding get() = _contentBinding!!
@@ -262,6 +273,9 @@ class PhonographIntroActivity : AppIntro(), IOpenFileStorageAccess, IRequestPerm
         @get:StringRes
         protected abstract val descriptionRes: Int
 
+        protected val title: String? get() = if (titleRes != -1) getString(titleRes) else null
+        protected val description: String? get() = if (descriptionRes != -1) getString(descriptionRes) else null
+
         private var _binding: FragmentIntroBinding? = null
         val binding: FragmentIntroBinding get() = _binding!!
 
@@ -271,8 +285,8 @@ class PhonographIntroActivity : AppIntro(), IOpenFileStorageAccess, IRequestPerm
             savedInstanceState: Bundle?,
         ): View {
             _binding = FragmentIntroBinding.inflate(inflater, container, false)
-            binding.title.text = getString(titleRes)
-            binding.description.text = getString(descriptionRes)
+            binding.title.text = title
+            binding.description.text = description
             setUpView(binding.container)
             return binding.root
         }

@@ -444,4 +444,5 @@
     <string name="permission_desc_read_media_audio">自 Android T (13) 起，具有此权限的应用程序可读取设备内音频</string>
     <string name="permission_name_read_external_storage">读取外部存储</string>
     <string name="permission_desc_read_external_storage">读取设备中的音乐文件必须读取外部存储权限</string>
+    <string name="completed">完成</string>
 </resources>

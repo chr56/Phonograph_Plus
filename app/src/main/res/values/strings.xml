@@ -455,4 +455,5 @@
     <string name="permission_desc_read_media_audio">Since Android T (13), application with this permission can read audios of the device.</string>
     <string name="permission_name_read_external_storage">Read External Storage</string>
     <string name="permission_desc_read_external_storage">Read External Storage is required to read music file in the device.</string>
+    <string name="completed">completed</string>
 </resources>
