@@ -72,12 +72,6 @@
       "license": "Apache Software License 2.0"
     },
     {
-      "name": "Material Intro",
-      "url": "https://github.com/HeinrichReimer/material-intro",
-      "copyright": "Copyright 2016 Heinrich Reimer",
-      "license": "MIT License"
-    },
-    {
       "name": "OkHttp",
       "url": "https://github.com/square/okhttp",
       "license": "Apache Software License 2.0"
