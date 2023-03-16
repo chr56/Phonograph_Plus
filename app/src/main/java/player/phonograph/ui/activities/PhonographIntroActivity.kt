@@ -231,7 +231,7 @@ class PhonographIntroActivity : AppIntro(), IOpenFileStorageAccess, IRequestPerm
                     R.id.disable -> Setting.instance.checkUpgradeAtStartup = false
                 }
             }
-            val backupSetting = "${getString(R.string.import_)}\n${getString(R.string.action_settings)}"
+            val backupSetting = "${getString(R.string.import_)}${getString(R.string.action_settings)}"
             contentBinding.backup.text = backupSetting
             contentBinding.backup.setOnClickListener {
                 val activity = requireActivity()

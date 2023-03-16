@@ -448,12 +448,12 @@
     <string name="image_source_external_file">External File</string>
     <string name="image_source_config">Image Source Config</string>
     <string name="action_backup">Backup</string>
-    <string name="grant_permission_description">Some necessary permissions is required to make sure working properly.</string>
+    <string name="grant_permission_description">Some necessary permissions are required to make sure working properly.</string>
     <string name="permission_name_post_notifications">Post Notifications</string>
     <string name="permission_desc_post_notifications">Since Android T (13), applications require this permission to post notifications.</string>
     <string name="permission_name_read_media_audio">Read Media Audio</string>
     <string name="permission_desc_read_media_audio">Since Android T (13), application with this permission can read audios of the device.</string>
     <string name="permission_name_read_external_storage">Read External Storage</string>
-    <string name="permission_desc_read_external_storage">Read External Storage is required to read music file in the device.</string>
+    <string name="permission_desc_read_external_storage">Read External Storage permission is required to read music file in the device.</string>
     <string name="completed">completed</string>
 </resources>
