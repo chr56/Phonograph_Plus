@@ -199,7 +199,7 @@ class PhonographIntroActivity : AppIntro(), IRequestPermission {
             container: ViewGroup?,
             savedInstanceState: Bundle?,
         ): View {
-            _binding = FragmentIntroBinding.inflate(inflater, container, true)
+            _binding = FragmentIntroBinding.inflate(inflater, container, false)
             binding.title.text = getString(titleRes)
             binding.description.text = getString(descriptionRes)
             setUpView(binding.container)
