@@ -11,7 +11,6 @@ import player.phonograph.dialogs.ChangelogDialog
 import player.phonograph.dialogs.DebugDialog
 import player.phonograph.model.version.VersionCatalog
 import player.phonograph.settings.Setting
-import player.phonograph.ui.activities.intro.AppIntroActivity
 import player.phonograph.ui.dialogs.ReportIssueDialog
 import player.phonograph.ui.dialogs.UpgradeDialog
 import player.phonograph.util.PhonographColorUtil.nightMode
@@ -190,7 +189,7 @@ class AboutActivity : ToolbarActivity(), View.OnClickListener {
                 showLicenseDialog()
             }
             intro -> {
-                startActivity(Intent(this, AppIntroActivity::class.java))
+                startActivity(Intent(this, PhonographIntroActivity::class.java))
             }
             followOnTwitter -> {
                 openUrl(TWITTER)
