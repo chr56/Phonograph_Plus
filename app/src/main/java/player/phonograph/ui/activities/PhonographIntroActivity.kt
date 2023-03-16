@@ -8,12 +8,17 @@ import com.github.appintro.AppIntro
 import com.github.appintro.AppIntroFragment
 import com.github.appintro.SlideBackgroundColorHolder
 import com.github.appintro.SlidePolicy
+import lib.phonograph.misc.IOpenFileStorageAccess
 import lib.phonograph.misc.IRequestPermission
+import lib.phonograph.misc.OpenDocumentContract
+import lib.phonograph.misc.OpenFileStorageAccessTool
 import lib.phonograph.misc.RequestPermissionTool
 import player.phonograph.R
 import player.phonograph.databinding.FragmentIntroBinding
+import player.phonograph.databinding.FragmentIntroSlideSettingBinding
 import player.phonograph.databinding.ItemSimpleBinding
-import player.phonograph.util.Util.warning
+import player.phonograph.migrate.SettingDataManager
+import player.phonograph.settings.Setting
 import player.phonograph.util.permissions.GrantedPermission
 import player.phonograph.util.permissions.checkPermission
 import androidx.annotation.StringRes
@@ -34,19 +39,21 @@ import android.widget.LinearLayout
 import android.widget.Toast
 import android.widget.Toast.LENGTH_LONG
 
-class PhonographIntroActivity : AppIntro(), IRequestPermission {
+class PhonographIntroActivity : AppIntro(), IOpenFileStorageAccess, IRequestPermission {
 
     private fun config() {
         showStatusBar(true)
         isColorTransitionsEnabled = true
     }
 
+    override val openFileStorageAccessTool: OpenFileStorageAccessTool = OpenFileStorageAccessTool()
     override val requestPermissionTool: RequestPermissionTool = RequestPermissionTool()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         config()
+        openFileStorageAccessTool.register(lifecycle, activityResultRegistry)
         requestPermissionTool.register(lifecycle, activityResultRegistry)
 
         addSlide(
@@ -60,6 +67,10 @@ class PhonographIntroActivity : AppIntro(), IRequestPermission {
 
         addSlide(
             PermissionSlideFragment.newInstance()
+        )
+
+        addSlide(
+            SettingSlideFragment.newInstance()
         )
 
     }
@@ -177,6 +188,66 @@ class PhonographIntroActivity : AppIntro(), IRequestPermission {
 
         companion object {
             fun newInstance(): PermissionSlideFragment = PermissionSlideFragment()
+        }
+    }
+
+    class SettingSlideFragment : EmptySlideFragment(), SlidePolicy {
+
+        override val titleRes: Int get() = R.string.action_settings
+        override val descriptionRes: Int get() = R.string.description
+
+        private var _contentBinding: FragmentIntroSlideSettingBinding? = null
+        val contentBinding: FragmentIntroSlideSettingBinding get() = _contentBinding!!
+
+        override fun setUpView(container: ViewGroup) {
+            _contentBinding = FragmentIntroSlideSettingBinding.inflate(layoutInflater)
+            container.removeAllViews()
+            container.addView(contentBinding.root)
+        }
+
+        override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+            super.onViewCreated(view, savedInstanceState)
+            val msg =
+                "${getString(R.string.auto_check_upgrade_summary)}\n\n${getString(R.string.auto_check_upgrade_extra_description)}"
+            contentBinding.checkUpgradeDesc.text = msg
+            contentBinding.checkUpgradeChoose.setOnCheckedChangeListener { _, selected ->
+                when (selected) {
+                    R.id.enable  -> Setting.instance.checkUpgradeAtStartup = true
+                    R.id.disable -> Setting.instance.checkUpgradeAtStartup = false
+                }
+            }
+            val backupSetting = "${getString(R.string.import_)}\n${getString(R.string.action_settings)}"
+            contentBinding.backup.text = backupSetting
+            contentBinding.backup.setOnClickListener {
+                val activity = requireActivity()
+                require(activity is IOpenFileStorageAccess)
+                activity.openFileStorageAccessTool.launch(
+                    OpenDocumentContract.Config(arrayOf("application/json"))
+                ) { uri ->
+                    if (uri != null) {
+                        SettingDataManager.importSetting(uri, activity)
+                    }
+                }
+            }
+        }
+
+        override fun onDestroyView() {
+            super.onDestroyView()
+            _contentBinding = null
+        }
+
+        override val isPolicyRespected: Boolean
+            get() = contentBinding.checkUpgradeChoose.checkedRadioButtonId != -1
+
+        override fun onUserIllegallyRequestedNextPage() {
+            Toast.makeText(requireContext(), R.string.choose_at_least_one, Toast.LENGTH_SHORT)
+                .show()
+        }
+
+        override val defaultBackgroundColorRes: Int get() = R.color.md_deep_purple_800
+
+        companion object {
+            fun newInstance(): SettingSlideFragment = SettingSlideFragment()
         }
     }
 

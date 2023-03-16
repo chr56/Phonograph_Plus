@@ -3,6 +3,8 @@
     <string name="what_do_you_want_to_share">您想分享哪些内容？</string>
     <string name="currently_listening_to_x_by_x">当前正在播放 %2$s 的 %1$s</string>
     <string name="the_audio_file">音频文件</string>
+    <string name="disable">关闭</string>
+    <string name="choose_at_least_one">至少选一个</string>
     <string name="action_set_as_ringtone">设为铃声</string>
     <string name="action_share">分享</string>
     <string name="action_settings">设置</string>
@@ -297,6 +299,7 @@
     <string name="tg_channel">Telegram Channel</string>
     <string name="auto_check_upgrade">自动检查更新</string>
     <string name="auto_check_upgrade_summary">自动检查更新并及时弹出更新对话框</string>
+    <string name="auto_check_upgrade_extra_description">将从 GitHub 和其他镜像站点上检查更新版本</string>
     <string name="edit">编辑…</string>
     <string name="move_to_top">移至顶部</string>
     <string name="move_to_bottom">移至底部</string>
