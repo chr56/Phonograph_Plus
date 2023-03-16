@@ -25,6 +25,7 @@ import androidx.annotation.StringRes
 import androidx.core.view.setMargins
 import androidx.fragment.app.Fragment
 import android.Manifest
+import android.content.Intent
 import android.os.Build.VERSION.SDK_INT
 import android.os.Build.VERSION_CODES.TIRAMISU
 import android.os.Bundle
@@ -88,11 +89,14 @@ class PhonographIntroActivity : AppIntro(), IOpenFileStorageAccess, IRequestPerm
 
     override fun onSkipPressed(currentFragment: Fragment?) {
         super.onSkipPressed(currentFragment)
+        Setting.instance.introShown = false
         finish()
     }
 
     override fun onDonePressed(currentFragment: Fragment?) {
         super.onDonePressed(currentFragment)
+        startActivity(Intent(this, MainActivity::class.java))
+        Setting.instance.introShown = true
         finish()
     }
 
