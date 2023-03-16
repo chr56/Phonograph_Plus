@@ -435,4 +435,10 @@
     <string name="pref_title_click_behavior">Comportamento personalizzato quando si fa clic su un brano</string>
     <string name="pref_summary_click_behavior">Definisci cosa deve fare il lettore quando fai clic su un brano in una lista.</string>
     <string name="playing_queue_history">Riproduzione Cronologia Code</string>
+    <string name="exit_without_saving">Esci senza salvare</string>
+    <string name="save">Salva</string>
+    <string name="no_changes">Nessuna modifica</string>
+    <string name="image_source_media_metadata_retriever">Recuperatore di metadati multimediali Android</string>
+    <string name="image_source_external_file">File esterno</string>
+    <string name="image_source_config">Configurazione origine immagine</string>
 </resources>
