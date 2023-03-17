@@ -42,6 +42,7 @@ import player.phonograph.util.ImageUtil.getTintedDrawable
 import player.phonograph.util.PhonographColorUtil.nightMode
 import player.phonograph.util.UpdateUtil
 import player.phonograph.util.Util.debug
+import player.phonograph.util.Util.warning
 import player.phonograph.util.preferences.HomeTabConfig
 import player.phonograph.util.preferences.StyleConfig
 import androidx.drawerlayout.widget.DrawerLayout
@@ -365,6 +366,10 @@ class MainActivity : AbsSlidingMusicPanelActivity(),
 
     private fun checkUpdate() {
         if (!Setting.instance.checkUpgradeAtStartup) return
+        if (!Setting.instance.introShown) {
+            warning(TAG, "Upgrade check was blocked, because AppIntro not shown (auto check requires user opt-in)!")
+            return
+        }
         CoroutineScope(SupervisorJob()).launch {
             UpdateUtil.checkUpdate { versionCatalog: VersionCatalog, upgradable: Boolean ->
                 if (upgradable) {
