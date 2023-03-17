@@ -15,7 +15,7 @@ internal fun ReleaseNoteModel.markdownHeader() = "## **v${version} ${dateString(
 fun generateGitHubReleaseMarkDown(model: ReleaseNoteModel): String {
 
     val header = model.markdownHeader()
-    val extra = "**Commit log**: "
+    val extra = "**Commit log**: https://github.com/"
 
     val zh = buildString {
         appendLine(markdownNoteSubtitle("ZH"))
@@ -30,8 +30,8 @@ fun generateGitHubReleaseMarkDown(model: ReleaseNoteModel): String {
     return buildString {
         append(header).append('\n').append('\n')
         append(extra).append('\n').append('\n')
-        append(zh).append('\n')
         append(en).append('\n')
+        append(zh).append('\n')
     }
 }
 
@@ -75,7 +75,7 @@ fun generateHTMLNoteMinify(note: ReleaseNoteModel.Note, lang: String): String = 
 private fun generateHTMLImpl(
     version: String,
     date: Long,
-    items: List<String>
+    items: List<String>,
 ) = html {
     line(htmlHeader(version, date))
     div {
