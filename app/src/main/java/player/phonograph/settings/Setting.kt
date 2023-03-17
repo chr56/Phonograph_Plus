@@ -174,7 +174,7 @@ class Setting(context: Context) {
     var lastAddedCutoffPref: String by StringPref(LAST_ADDED_CUTOFF, "past_one_months")
 
     // Upgrade
-    var checkUpgradeAtStartup: Boolean by BooleanPref(CHECK_UPGRADE_AT_STARTUP, true)
+    var checkUpgradeAtStartup: Boolean by BooleanPref(CHECK_UPGRADE_AT_STARTUP, false)
 
     // List-SortMode
     private var _songSortMode: String by StringPref(
