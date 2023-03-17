@@ -2,6 +2,22 @@
   "versions": [
     {
       "channel": "stable",
+      "versionName": "0.6.1",
+      "versionCode": 510,
+      "date": 1679050000,
+      "link": [
+        {
+          "name": "Github Release",
+          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/v0.6.1"
+        }
+      ],
+      "releaseNote": {
+        "zh-cn": "<ol><li>新增 全新的首次启动介绍页</li><li>修改 介绍页内请求权限、设置自动检测更新、恢复设置备份</li><li>翻译 更新意大利语(by gdonisi）</li></ol>",
+        "en": "<ol><li>New: a brand-new App Introduction</li><li>Modify: request permissions in App Intro, ask auto-upgrade-check in App Intro, recover setting backup in App Intro</li><li>Translation: updated Italian (by gdonisi)</li></ol>"
+      }
+    },
+    {
+      "channel": "stable",
       "versionName": "0.6.0.1",
       "versionCode": 501,
       "date": 1678675000,
