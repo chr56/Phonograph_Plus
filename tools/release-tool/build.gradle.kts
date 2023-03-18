@@ -30,9 +30,9 @@ tasks.withType<KotlinCompilationTask<KotlinJvmCompilerOptions>>().configureEach 
 }
 
 dependencies {
-    val agp = "7.4.1"
+    val agpVersion = "7.4.2"
     compileOnly(gradleApi())
-    compileOnly("com.android.tools.build:gradle-api:$agp")
+    compileOnly("com.android.tools.build:gradle-api:$agpVersion")
 }
 
 gradlePlugin {
