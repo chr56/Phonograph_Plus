@@ -12,6 +12,7 @@ import player.phonograph.R
 import player.phonograph.ui.compose.base.BridgeDialogFragment
 import player.phonograph.ui.compose.dialogs.ClickModeSettingDialogContent
 import player.phonograph.ui.compose.theme.PhonographTheme
+import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.dp
 
@@ -26,7 +27,12 @@ class ClickModeSettingDialog : BridgeDialogFragment() {
                     elevation = 0.dp,
                     onCloseRequest = { dismiss() },
                     buttons = {
-                        button(res = android.R.string.ok) { dismiss() }
+                        button(
+                            res = android.R.string.ok,
+                            textStyle = MaterialTheme.typography.button.copy(color = MaterialTheme.colors.secondary)
+                        ) {
+                            dismiss()
+                        }
                     }
                 ) {
                     title(res = R.string.pref_title_click_behavior)
