@@ -15,6 +15,13 @@
             android:title="@string/pref_title_general_theme"
             app:iconSpaceReserved="false" />
 
+        <lib.phonograph.preference.SwitchPreferenceX
+            android:key="enable_monet"
+            android:defaultValue="false"
+            android:summary="@string/pref_summary_enable_monet"
+            android:title="@string/pref_title_enable_monet"
+            app:iconSpaceReserved="false"/>
+
         <lib.phonograph.preference.ColorPreferenceX
             android:key="primary_color"
             android:persistent="false"

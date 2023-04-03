@@ -97,6 +97,7 @@ class Setting(context: Context) {
     // Theme and Color
 
     var themeString: String by StringPref(GENERAL_THEME, StyleConfig.THEME_AUTO)
+    var enableMonet: Boolean by BooleanPref(ENABLE_MONET, false)
 
     // Appearance
     var homeTabConfigJsonString: String by StringPref(HOME_TAB_CONFIG, "")
@@ -264,6 +265,7 @@ class Setting(context: Context) {
 
         // Appearance
         const val GENERAL_THEME = "general_theme"
+        const val ENABLE_MONET = "enable_monet"
         const val HOME_TAB_CONFIG = "home_tab_config"
         const val COLORED_NOTIFICATION = "colored_notification"
         const val CLASSIC_NOTIFICATION = "classic_notification"

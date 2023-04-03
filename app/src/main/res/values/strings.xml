@@ -457,4 +457,6 @@
     <string name="permission_desc_read_external_storage">Read External Storage permission is required to read music file in the device.</string>
     <string name="completed">Completed</string>
     <string name="dynamic_colors">Dynamic Colors</string>
+    <string name="pref_title_enable_monet">Enable Monet</string>
+    <string name="pref_summary_enable_monet">Use Material You wallpaper-based theming system. (experimental, no full Material You support)</string>
 </resources>
