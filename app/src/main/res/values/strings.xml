@@ -456,4 +456,5 @@
     <string name="permission_name_read_external_storage">Read External Storage</string>
     <string name="permission_desc_read_external_storage">Read External Storage permission is required to read music file in the device.</string>
     <string name="completed">Completed</string>
+    <string name="dynamic_colors">Dynamic Colors</string>
 </resources>

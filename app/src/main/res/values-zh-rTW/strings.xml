@@ -445,4 +445,5 @@
     <string name="permission_name_read_external_storage">讀取外部儲存</string>
     <string name="permission_desc_read_external_storage">讀取裝置中的音樂檔案必須讀取外部儲存許可權。</string>
     <string name="completed">完成</string>
+    <string name="dynamic_colors">動態色彩</string>
 </resources>

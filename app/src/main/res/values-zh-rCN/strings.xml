@@ -445,4 +445,5 @@
     <string name="permission_name_read_external_storage">读取外部存储</string>
     <string name="permission_desc_read_external_storage">读取设备中的音乐文件必须读取外部存储权限</string>
     <string name="completed">完成</string>
+    <string name="dynamic_colors">动态颜色</string>
 </resources>

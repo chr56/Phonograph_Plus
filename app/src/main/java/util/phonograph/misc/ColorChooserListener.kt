@@ -13,11 +13,14 @@ import mt.pref.ThemeColor
 import mt.pref.ThemeColor.accentColor
 import player.phonograph.R
 import player.phonograph.appshortcuts.DynamicShortcutManager
+import androidx.annotation.RequiresApi
 import androidx.preference.Preference
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
-import android.os.Build
+import android.os.Build.VERSION.SDK_INT
+import android.os.Build.VERSION_CODES.N_MR1
+import android.os.Build.VERSION_CODES.S
 
 class ColorChooserListener(private var context: Context, private var defaultColor: Int = 0, private var mode: Int = 0) :
         Preference.OnPreferenceClickListener {
@@ -30,7 +33,7 @@ class ColorChooserListener(private var context: Context, private var defaultColo
                 0                  -> return
             }
         }.commit()
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
+        if (SDK_INT >= N_MR1) {
             DynamicShortcutManager(context).updateDynamicShortcuts()
         }
         (this@ColorChooserListener.context as? Activity)?.recreate()
@@ -48,12 +51,38 @@ class ColorChooserListener(private var context: Context, private var defaultColo
             ) { _, color ->
                 applyNewColor(color)
             }
+            if (SDK_INT >= S) {
+                @Suppress("DEPRECATION")
+                neutralButton(res = R.string.dynamic_colors) {
+                    MaterialDialog(context)
+                        .title(R.string.dynamic_colors)
+                        .colorChooser(
+                            colors = dynamicColors(context),
+                            subColors = allDynamicColors(context)
+                        ) { _, color ->
+                            applyNewColor(color)
+                        }
+                        .positiveButton {
+                            it.dismiss()
+                            dismiss()
+                        }
+                        .negativeButton {
+                            it.dismiss()
+                        }
+                        .apply {
+                            getActionButton(WhichButton.POSITIVE).updateTextColor(accentColor(context))
+                            getActionButton(WhichButton.NEGATIVE).updateTextColor(accentColor(context))
+                        }
+                        .show()
+                }
+            }
             positiveButton(res = android.R.string.ok)
             negativeButton(res = android.R.string.cancel)
                 .apply {
                     // set button color
                     getActionButton(WhichButton.POSITIVE).updateTextColor(accentColor(context))
                     getActionButton(WhichButton.NEGATIVE).updateTextColor(accentColor(context))
+                    getActionButton(WhichButton.NEUTRAL).updateTextColor(accentColor(context))
                 }
         }
         return true
@@ -63,6 +92,80 @@ class ColorChooserListener(private var context: Context, private var defaultColo
         const val MODE_PRIMARY_COLOR: Int = 1
         const val MODE_ACCENT_COLOR: Int = 2
     }
+
+    // Dynamic Colors
+    @RequiresApi(S)
+    private fun dynamicColors(context: Context) = intArrayOf(
+        context.getColor(android.R.color.system_accent1_400),
+        context.getColor(android.R.color.system_accent2_400),
+        context.getColor(android.R.color.system_accent3_400),
+        context.getColor(android.R.color.system_neutral1_500),
+        context.getColor(android.R.color.system_neutral2_500),
+    )
+
+    @RequiresApi(S)
+    private fun allDynamicColors(context: Context) = arrayOf(
+        intArrayOf(
+            context.getColor(android.R.color.system_accent1_100),
+            context.getColor(android.R.color.system_accent1_200),
+            context.getColor(android.R.color.system_accent1_300),
+            context.getColor(android.R.color.system_accent1_400),
+            context.getColor(android.R.color.system_accent1_500),
+            context.getColor(android.R.color.system_accent1_600),
+            context.getColor(android.R.color.system_accent1_700),
+            context.getColor(android.R.color.system_accent1_800),
+            context.getColor(android.R.color.system_accent1_900),
+        ),
+        intArrayOf(
+            context.getColor(android.R.color.system_accent2_100),
+            context.getColor(android.R.color.system_accent2_200),
+            context.getColor(android.R.color.system_accent2_300),
+            context.getColor(android.R.color.system_accent2_400),
+            context.getColor(android.R.color.system_accent2_500),
+            context.getColor(android.R.color.system_accent2_600),
+            context.getColor(android.R.color.system_accent2_700),
+            context.getColor(android.R.color.system_accent2_800),
+            context.getColor(android.R.color.system_accent2_900),
+            context.getColor(android.R.color.system_accent2_900),
+        ),
+        intArrayOf(
+            context.getColor(android.R.color.system_accent3_100),
+            context.getColor(android.R.color.system_accent3_200),
+            context.getColor(android.R.color.system_accent3_300),
+            context.getColor(android.R.color.system_accent3_400),
+            context.getColor(android.R.color.system_accent3_500),
+            context.getColor(android.R.color.system_accent3_600),
+            context.getColor(android.R.color.system_accent3_700),
+            context.getColor(android.R.color.system_accent3_800),
+            context.getColor(android.R.color.system_accent3_900),
+        ),
+        intArrayOf(
+            context.getColor(android.R.color.system_neutral1_0),
+            context.getColor(android.R.color.system_neutral1_100),
+            context.getColor(android.R.color.system_neutral1_200),
+            context.getColor(android.R.color.system_neutral1_300),
+            context.getColor(android.R.color.system_neutral1_400),
+            context.getColor(android.R.color.system_neutral1_500),
+            context.getColor(android.R.color.system_neutral1_600),
+            context.getColor(android.R.color.system_neutral1_700),
+            context.getColor(android.R.color.system_neutral1_800),
+            context.getColor(android.R.color.system_neutral1_900),
+            context.getColor(android.R.color.system_neutral1_1000),
+        ),
+        intArrayOf(
+            context.getColor(android.R.color.system_neutral2_0),
+            context.getColor(android.R.color.system_neutral2_100),
+            context.getColor(android.R.color.system_neutral2_200),
+            context.getColor(android.R.color.system_neutral2_300),
+            context.getColor(android.R.color.system_neutral2_400),
+            context.getColor(android.R.color.system_neutral2_500),
+            context.getColor(android.R.color.system_neutral2_600),
+            context.getColor(android.R.color.system_neutral2_700),
+            context.getColor(android.R.color.system_neutral2_800),
+            context.getColor(android.R.color.system_neutral2_900),
+            context.getColor(android.R.color.system_neutral2_1000),
+        ),
+    )
 
     // Color Preset
     private val colors: IntArray
