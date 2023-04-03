@@ -1,5 +1,6 @@
 package player.phonograph.util
 
+import mt.pref.ThemeColor
 import android.content.Context
 import android.content.res.Configuration
 import android.content.res.Resources
@@ -12,7 +13,9 @@ import mt.util.color.isColorLight
 import mt.util.color.lightenColor
 import player.phonograph.App
 import player.phonograph.R
+import player.phonograph.settings.Setting
 import player.phonograph.util.preferences.StyleConfig
+import android.os.Build
 import java.util.*
 
 
@@ -50,6 +53,18 @@ object PhonographColorUtil {
         },
         theme
     )
+
+    /**
+     * adjust color settings from Dynamic Color of Material You if available
+     */
+    fun applyMonet(context: Context) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && Setting.instance.enableMonet) {
+            ThemeColor.editTheme(context)
+                .primaryColor(context.getColor(android.R.color.system_accent1_300))
+                .accentColor(context.getColor(android.R.color.system_accent1_600))
+                .commit()
+        }
+    }
 
     @JvmStatic
     @ColorInt

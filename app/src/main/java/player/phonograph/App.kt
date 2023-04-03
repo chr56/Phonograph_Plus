@@ -12,6 +12,7 @@ import player.phonograph.notification.ErrorNotification
 import player.phonograph.notification.ErrorNotification.KEY_STACK_TRACE
 import player.phonograph.service.queue.QueueManager
 import player.phonograph.ui.activities.CrashActivity
+import player.phonograph.util.PhonographColorUtil.applyMonet
 import android.app.Application
 import android.content.Context
 import android.content.Intent
@@ -57,6 +58,8 @@ class App : Application(), ImageLoaderFactory {
         super.onConfigurationChanged(
             ContextLocaleDelegate.onConfigurationChanged(this, newConfig)
         )
+        // Theme
+        applyMonet(this)
     }
 
     override fun onCreate() {
@@ -90,6 +93,8 @@ class App : Application(), ImageLoaderFactory {
                 .accentColorRes(mt.color.R.color.md_yellow_900)
                 .commit()
         }
+
+        applyMonet(this)
 
         // Set up dynamic shortcuts
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
