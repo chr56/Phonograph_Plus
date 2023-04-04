@@ -9,7 +9,7 @@ import java.io.File
 
 fun generateFdroidMetadataChangelogText(model: ReleaseNoteModel, lang: String): String =
     buildString {
-        appendLine("${model.version}(${model.versionCode}) ${dateString(model.time)}").append('\n')
+        appendLine("<b>${model.version}(${model.versionCode}) ${dateString(model.time)}</b>")
         val note = when (lang) {
             "en-US" -> model.note.en
             "zh-CN" -> model.note.zh
