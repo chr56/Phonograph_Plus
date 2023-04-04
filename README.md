@@ -126,7 +126,7 @@ See [Build_Instructions.md](./Build_Instructions.md)
 
 - [x] Support history of playing queue.
 
-- [ ] Refactor Setting UI (WIP⭕)
+- [ ] Refactor Setting UI (WIP🚧)
 
 - [ ] Refactor Search
 
@@ -137,26 +137,30 @@ See [Build_Instructions.md](./Build_Instructions.md)
 
 ### **2023~2024(?)**
 
-- [ ] Rewrite Tag Editor (Single File⭕, Batch❌)
+- [x] Rewrite Tag Editor
 
-- [ ] Refactor Main Player (WIP⭕)
+- [ ] Improve data backup/migrate
 
-- [ ] Enhance Playlist Detail: support search ❌, Better way to
-  modify ❗WIP, handle intent of open (playlist) file ❌
+- [ ] Improve App Intro (WIP🚧)
 
-- [ ] Desktop lyrics (?)
+- [ ] Refactor Main Player
 
-- [ ] Support some Android's StatusBar lyrics, such as FlyMe / EvolutionX
+- [ ] Refactor Pages
+
+- [ ] Enhance Playlist Detail: support search, Better way to
+  modify , handle intent of open (playlist) file
 
 - [ ] improve SlidingMusicBar
 
-- [ ] Valid files</del>
+- [ ] Support some Android's StatusBar lyrics, such as FlyMe / EvolutionX
 
-- [ ] Adapter Android11+ File Permission perfectly</del>
+- [ ] <del>Validate audio files</del>
 
-- [ ] Refactor so-called Theme Engine</del>
+- [ ] <del>Completed Android 11+ File Permission</del>
 
-- [ ] Make songs listening statistics</del>
+- [ ] <del>Refactor so-called Theme Engine</del>
+
+- [ ] <del>Make songs listening statistics</del>
 
 - [ ] ...
 
