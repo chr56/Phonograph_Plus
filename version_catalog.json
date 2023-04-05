@@ -1,6 +1,22 @@
 {
   "versions": [
     {
+      "channel": "preview",
+      "versionName": "0.6.2-dev1",
+      "versionCode": 511,
+      "date": 1680670000,
+      "link": [
+        {
+          "name": "Github Release",
+          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/v0.6.2-dev1"
+        }
+      ],
+      "releaseNote": {
+        "zh-cn": "<ol><li>新增 [Android S 及以上] 支持读取系统 Material You 动态颜色</li><li>新增 [Android S 及以上] 支持主题颜色跟随系统 Material You 动态颜色（“Monet”）[实验性支持，仅颜色支持，非完整的 Material You 主题]</li><li>修复 某些对话框的颜色和样式</li><li>修复 某些文本未大写 (by Porkepix)</li><li>翻译 更新德语翻译 (by cvzi)</li><li>开发 更新 AGP 至 7.4.2</li></ol>",
+        "en": "<ol><li>New: [Android S and above] support to read system Material You dynamic colors </li><li>New: [Android S and above] support to follow system Material You dynamic colors (\"Monet\") [experimental, only color support, NO FULL Material You support]</li><li>Fix: color and style of some dialogs</li><li>Fix: some text not capitalized (by Porkepix)</li><li>Translation: update German (by cvzi)</li><li>Development: upgrade AGP to 7.4.2</li></ol>"
+      }
+    },
+    {
       "channel": "stable",
       "versionName": "0.6.1",
       "versionCode": 510,
@@ -46,22 +62,6 @@
       "releaseNote": {
         "zh-cn": "<ol><li>新增 平铺式文件夹页面</li><li>新增 全新的音乐标签编辑器（包括单曲编辑和批量编辑）</li><li>新增 备份路径过滤器、播放队列、收藏夹歌曲，支持跨设备迁移（只要两机的歌曲位置不动）。</li><li>移除 旧的音乐标签编辑器</li><li>改进 对多选和艺术家曲目进行批量编辑音乐标签</li><li>改进 标签页的顺序</li><li>改进 播放列表保存和删除</li><li>修改 导出设置json格式（警告：与先前版本不兼容）</li><li>修改 清除所有设置后强制重启应用</li><li>修改 禁止从旧版本升级（v0.2.4-RC1以前的版本）</li><li>修复 歌曲图像来源配置中的交互异常</li><li>修复 清除所有设置时的崩溃</li><li>修复 导入设置备份后崩溃</li><li>翻译 更新意大利语(by gdonisi)</li><li>开发 使用独立文件中存储播放器状态</li><li>开发 清理代码，重构项目结构</li><li>开发 更新AGP至7.4.1， kotlin至1.8.10， 更新其他依赖</li></ol>",
         "en": "<ol><li>Add: Flatten Folder Page</li><li>Add: brand-new music tag editors (including Single Edit and Batch Edit)</li><li>Add: support backup of Path Filter, Playing Queue, Favorites Songs which can be migrated crossing different devices (as long as song locations unchanged)</li><li>Remove: legacy music tag editors</li><li>Improve: allow multi tag editing for the multi-selected and artist</li><li>Improve: order of Tab pages</li><li>Improve: playlists save and delete </li><li>Modify: the exported setting json format (WARNING: Incompatible with previous versions)</li><li>Modify: force reboot app after clearing all settings</li><li>Modify: forbid upgrading from old versions (versions before v0.2.4-RC1)</li><li>Fix: glitch of interactions in Image Source Config</li><li>Fix: crash while clearing all settings</li><li>Fix: crash after importing backups of setting</li><li>Translation: update Italian (by gdonisi)</li><li>Development: store player state in separate preference file</li><li>Development: cleanup code, refactor project structure</li><li>Development: upgrade AGP to 7.4.1, kotlin to 1.8.10 and other dependencies</li></ol>"
-      }
-    },
-    {
-      "channel": "stable",
-      "versionName": "0.5.4.1",
-      "versionCode": 454,
-      "date": 1675066000,
-      "link": [
-        {
-          "name": "Github Release",
-          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/v0.5.4.1"
-        }
-      ],
-      "releaseNote": {
-        "zh-cn": "<ol><li>修复 报错 NoSuchMethodException: ba.r</li></ol><ol><li>改进 使用 Kaned1as 维护的 jaudiotagger 以支持 opus 格式音乐标签读取</li><li>修复 从后台返回主播放器时随机崩溃</li><li>修复 艺术家详情页顶部消失 (自 v0.5.3)</li><li>开发 清理重构代码</li></ol>",
-        "en": "<ol><li>Fix: report the error NoSuchMethodException: ba.r</li></ol><ol><li>Improve: using Kaned1as version of jaudiotagger, to support reading tags of opus format</li><li>Fix: random crashes when going back to Main Player from background</li><li>Fix: missing header of Artist Detail (Since v0.5.3)</li><li>Development: cleanup and refactor codes</li></ol>"
       }
     },
     {
