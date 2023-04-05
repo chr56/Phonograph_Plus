@@ -8,13 +8,16 @@
 
 A material designed local music player for Android.
 
-<br/>
-
-
 [简体中文](./README_ZH.md)
 
 This is a fork of [Phonograph](https://github.com/kabouzeid/Phonograph), and is currently under my maintenance and
 development.
+
+[<img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png"
+     alt="Get it on F-Droid"
+     height="80">](https://f-droid.org/packages/player.phonograph.plus/)
+
+Or get the latest APK from the [Releases Section](https://github.com/chr56/Phonograph_Plus/releases/latest).
 
 ## **Additional Features**
 
@@ -163,8 +166,3 @@ See [Build_Instructions.md](./Build_Instructions.md)
 - [ ] <del>Make songs listening statistics</del>
 
 - [ ] ...
-
-<br/>
-<br/>
-<br/>
-<br/>
