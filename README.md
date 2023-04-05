@@ -3,15 +3,20 @@
 [![Crowdin](https://badges.crowdin.net/phonograph-plus/localized.svg)](https://crowdin.com/project/phonograph-plus)
 [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://github.com/chr56/Phonograph_Plus/blob/release/LICENSE.txt)
 [<img src="https://github.com/chr56/Phonograph_Plus/actions/workflows/dev.yml/badge.svg" alt="Dev CI Status">](https://github.com/chr56/Phonograph_Plus/actions/workflows/dev.yml)
+![DownloadsStatistics](https://img.shields.io/github/downloads/chr56/Phonograph_Plus/total)
 
 **A fork of Phonograph under maintenance and development**
 
 A material designed local music player for Android.
 
+<br/>
+
 [简体中文](./README_ZH.md)
 
 This is a fork of [Phonograph](https://github.com/kabouzeid/Phonograph), and is currently under my maintenance and
 development.
+
+## **Downloads**
 
 [<img src="https://img.shields.io/github/v/release/chr56/phonograph_plus?label=Github%20Release" alt="Github%20Release">](https://github.com/chr56/Phonograph_Plus/releases/latest)
 [<img src="https://img.shields.io/github/v/release/chr56/phonograph_plus?label=Github%20Release%20(Latest)&include_prereleases" alt="Github%20Release%20(Latest)">](https://github.com/chr56/Phonograph_Plus/releases/)
@@ -165,3 +170,10 @@ See [Build_Instructions.md](./Build_Instructions.md)
 - [ ] <del>Make songs listening statistics</del>
 
 - [ ] ...
+
+
+## **Repository Mirror**
+
+[![GitHub](https://img.shields.io/badge/Git-Github-Blue)](https://github.com/chr56/Phonograph_Plus/)
+[![Codeberg](https://img.shields.io/badge/Git-Codeberg-Blue)](https://codeberg.org/PhonographPlus/Phonograph_Plus)
+[![BitBucket](https://img.shields.io/badge/Git-BitBucket-Blue)](https://bitbucket.org/phonograph-plus/phonograph_plus/)
