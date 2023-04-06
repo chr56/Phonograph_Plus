@@ -454,4 +454,7 @@
     <string name="permission_name_read_external_storage">Externen Speicher lesen</string>
     <string name="permission_desc_read_external_storage">Zum Lesen der Musikdateien auf dem Gerät ist die Berechtigung zum Lesen des externen Speichers erforderlich.</string>
     <string name="completed">vollständig</string>
+    <string name="dynamic_colors">Dynamische Farben</string>
+    <string name="pref_title_enable_monet">Monet aktivieren</string>
+    <string name="pref_summary_enable_monet">Verwende das auf Material You Wallpaper gestützte Design (experimentell, keine vollständige Material You Unterstützung)</string>
 </resources>
