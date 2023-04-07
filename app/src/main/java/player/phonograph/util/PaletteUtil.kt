@@ -21,9 +21,37 @@ object PaletteUtil {
         try {
             withTimeout(1200) {
                 val palette = this@getColor.await()
-                PhonographColorUtil.getColor(palette, fallbackColor)
+                palette.getColor(fallbackColor)
             }
         } catch (e: TimeoutCancellationException) {
             fallbackColor
         }
+
+
+    @ColorInt
+    fun Palette.getColor(fallback: Int): Int {
+        val swatchColor =
+            vibrantSwatch
+                ?: mutedSwatch
+                ?: lightVibrantSwatch
+                ?: lightMutedSwatch
+                ?: darkVibrantSwatch
+                ?: darkMutedSwatch
+        return swatchColor?.rgb
+            ?: if (swatches.isNotEmpty()) swatches.maxWith(SwatchComparator.instance!!).rgb else fallback
+    }
+
+    private class SwatchComparator : Comparator<Palette.Swatch> {
+        override fun compare(lhs: Palette.Swatch, rhs: Palette.Swatch): Int = lhs.population - rhs.population
+
+        companion object {
+            private var mInstance: SwatchComparator? = null
+
+            val instance: SwatchComparator?
+                get() {
+                    if (mInstance == null) mInstance = SwatchComparator()
+                    return mInstance
+                }
+        }
+    }
 }
