@@ -24,25 +24,10 @@ import android.view.inputmethod.InputMethodManager
  */
 object Util {
 
-    @JvmStatic
-    fun getStyleId(context: Context): Int {
-        val outValue = TypedValue()
-        val result: Boolean = context.theme.resolveAttribute(android.R.attr.theme, outValue, true)
-        return if (result) outValue.resourceId else 0
-    }
-
     fun sentPlaylistChangedLocalBoardCast() =
         LocalBroadcastManager.getInstance(App.instance).sendBroadcast(
             Intent(BROADCAST_PLAYLISTS_CHANGED)
         )
-
-    fun Boolean.assertIfFalse(throwable: Throwable) {
-        if (!this) throw throwable
-    }
-
-    fun Boolean.assertIfTrue(throwable: Throwable) {
-        if (this) throw throwable
-    }
 
     @JvmStatic
     fun getActionBarSize(context: Context): Int {
