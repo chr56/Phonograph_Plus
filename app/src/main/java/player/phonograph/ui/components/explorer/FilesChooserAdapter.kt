@@ -17,7 +17,7 @@ import player.phonograph.R
 import player.phonograph.adapter.base.MultiSelectionCabController
 import player.phonograph.databinding.ItemListBinding
 import player.phonograph.model.file.FileEntity
-import player.phonograph.util.ImageUtil.getTintedDrawable
+import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.PhonographColorUtil.nightMode
 import java.text.SimpleDateFormat
 import java.util.*

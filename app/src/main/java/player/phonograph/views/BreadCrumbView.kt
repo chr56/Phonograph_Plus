@@ -21,7 +21,7 @@ import mt.util.color.primaryTextColor
 import player.phonograph.R
 import player.phonograph.databinding.ItemTextBinding
 import player.phonograph.model.file.Location
-import player.phonograph.util.ImageUtil.getTintedDrawable
+import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.PhonographColorUtil.nightMode
 
 @Suppress("JoinDeclarationAndAssignment")

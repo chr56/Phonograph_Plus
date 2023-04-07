@@ -12,14 +12,13 @@ import player.phonograph.actions.actionDelete
 import player.phonograph.actions.actionEnqueue
 import player.phonograph.actions.actionPlay
 import player.phonograph.actions.actionPlayNext
-import player.phonograph.actions.activity
 import player.phonograph.actions.fragmentActivity
 import player.phonograph.model.Album
 import player.phonograph.service.queue.ShuffleMode.NONE
 import player.phonograph.service.queue.ShuffleMode.SHUFFLE
 import player.phonograph.ui.compose.tag.BatchTagEditorActivity
-import player.phonograph.util.ImageUtil.getTintedDrawable
 import player.phonograph.util.NavigationUtil.goToArtist
+import player.phonograph.util.theme.getTintedDrawable
 import androidx.annotation.ColorInt
 import android.content.Context
 import android.view.Menu

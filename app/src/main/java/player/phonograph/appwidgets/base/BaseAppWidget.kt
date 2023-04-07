@@ -20,7 +20,7 @@ import player.phonograph.model.Song
 import player.phonograph.model.infoString
 import player.phonograph.service.MusicService
 import player.phonograph.util.ImageUtil
-import player.phonograph.util.ImageUtil.getTintedDrawable
+import player.phonograph.util.theme.getTintedDrawable
 
 abstract class BaseAppWidget : AppWidgetProvider() {
 

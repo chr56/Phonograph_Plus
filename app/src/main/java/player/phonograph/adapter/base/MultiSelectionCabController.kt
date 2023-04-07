@@ -14,7 +14,7 @@ import lib.phonograph.cab.CabStatus
 import lib.phonograph.cab.ToolbarCab
 import mt.pref.ThemeColor
 import player.phonograph.R
-import player.phonograph.util.ImageUtil.getTintedDrawable
+import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.PhonographColorUtil
 
 class MultiSelectionCabController(val cab: ToolbarCab) {

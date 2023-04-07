@@ -109,16 +109,6 @@ object ImageUtil {
         )
     }
 
-    fun Context.getTintedDrawable(
-        @DrawableRes id: Int,
-        @ColorInt color: Int,
-        mode: BlendModeCompat = BlendModeCompat.SRC_IN,
-    ): Drawable? {
-        val drawable = ResourcesCompat.getDrawable(this.resources, id, theme)
-        drawable?.colorFilter = drawableColorFilter(color, mode)
-        return drawable
-    }
-
     fun Context.makeContrastDrawable(
         source: Drawable?,
         backgroundColor: Int,

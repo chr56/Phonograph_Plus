@@ -25,7 +25,7 @@ import player.phonograph.databinding.FragmentFolderPageBinding
 import player.phonograph.model.file.Location
 import player.phonograph.notification.ErrorNotification
 import player.phonograph.ui.components.ViewComponent
-import player.phonograph.util.ImageUtil.getTintedDrawable
+import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.PhonographColorUtil.nightMode
 
 sealed class AbsFilesExplorer<M : AbsFileViewModel>(protected val context: Context) : ViewComponent<ViewGroup, M> {

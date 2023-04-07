@@ -10,7 +10,6 @@ import com.google.android.material.appbar.AppBarLayout
 import mt.pref.ThemeColor
 import mt.util.color.primaryTextColor
 import player.phonograph.App
-import player.phonograph.BuildConfig
 import player.phonograph.R
 import player.phonograph.adapter.display.SongCollectionAdapter
 import player.phonograph.adapter.display.SongDisplayAdapter
@@ -20,14 +19,13 @@ import player.phonograph.model.sort.SortRef
 import player.phonograph.ui.components.popup.ListOptionsPopup
 import player.phonograph.ui.fragments.pages.util.DisplayConfig
 import player.phonograph.ui.fragments.pages.util.DisplayConfigTarget
-import player.phonograph.util.ImageUtil.getTintedDrawable
 import player.phonograph.util.PhonographColorUtil.nightMode
 import player.phonograph.util.ViewUtil.setUpFastScrollRecyclerViewColor
+import player.phonograph.util.theme.getTintedDrawable
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import android.os.Bundle
-import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.Menu

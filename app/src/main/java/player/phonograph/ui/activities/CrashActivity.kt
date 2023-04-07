@@ -12,7 +12,7 @@ import player.phonograph.notification.ErrorNotification.KEY_IS_A_CRASH
 import player.phonograph.notification.ErrorNotification.KEY_STACK_TRACE
 import player.phonograph.migrate.SettingDataManager
 import player.phonograph.util.DeviceInfoUtil.getDeviceInfo
-import player.phonograph.util.ImageUtil.getTintedDrawable
+import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.PhonographColorUtil.nightMode
 import player.phonograph.util.TimeUtil.currentDateTime
 import android.content.ClipData

@@ -22,7 +22,7 @@ import player.phonograph.coil.target.PaletteTargetBuilder
 import player.phonograph.service.MusicService
 import player.phonograph.ui.activities.MainActivity
 import player.phonograph.util.ImageUtil
-import player.phonograph.util.ImageUtil.getTintedDrawable
+import player.phonograph.util.theme.getTintedDrawable
 
 class AppWidgetCard : BaseAppWidget() {
 

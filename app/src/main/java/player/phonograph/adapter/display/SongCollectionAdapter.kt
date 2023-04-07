@@ -9,7 +9,7 @@ import mt.util.color.resolveColor
 import player.phonograph.R
 import player.phonograph.adapter.base.MultiSelectionCabController
 import player.phonograph.model.SongCollection
-import player.phonograph.util.ImageUtil.getTintedDrawable
+import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.PhonographColorUtil.nightMode
 import androidx.appcompat.app.AppCompatActivity
 import android.view.View

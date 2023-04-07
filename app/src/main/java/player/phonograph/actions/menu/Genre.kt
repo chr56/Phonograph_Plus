@@ -13,9 +13,8 @@ import player.phonograph.actions.actionPlay
 import player.phonograph.actions.actionPlayNext
 import player.phonograph.mediastore.GenreLoader
 import player.phonograph.model.Genre
-import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.queue.ShuffleMode
-import player.phonograph.util.ImageUtil.getTintedDrawable
+import player.phonograph.util.theme.getTintedDrawable
 import android.content.Context
 import android.view.Menu
 import android.view.MenuItem

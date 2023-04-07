@@ -22,7 +22,7 @@ import player.phonograph.ISSUE_TRACKER_LINK
 import player.phonograph.R
 import player.phonograph.databinding.DialogReportIssueBinding
 import player.phonograph.util.DeviceInfoUtil
-import player.phonograph.util.ImageUtil.getTintedDrawable
+import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.PhonographColorUtil.nightMode
 
 class ReportIssueDialog : DialogFragment() {
