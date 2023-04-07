@@ -21,7 +21,7 @@ import player.phonograph.util.AnimationUtil.backgroundColorTransitionAnimator
 import player.phonograph.util.AnimationUtil.textColorTransitionAnimator
 import player.phonograph.util.Util.isLandscape
 import player.phonograph.util.ViewUtil
-import player.phonograph.util.ViewUtil.isWindowBackgroundDarkSafe
+import player.phonograph.util.theme.isWindowBackgroundDarkSafe
 import player.phonograph.util.theme.nightMode
 import player.phonograph.util.theme.requireDarkenColor
 import androidx.appcompat.widget.Toolbar
