@@ -18,7 +18,7 @@ import player.phonograph.ui.fragments.player.AbsPlayerFragment
 import player.phonograph.util.AnimationUtil.PHONOGRAPH_ANIM_TIME
 import player.phonograph.util.AnimationUtil.backgroundColorTransitionAnimator
 import player.phonograph.util.AnimationUtil.textColorTransitionAnimator
-import player.phonograph.util.ColorUtil.requireDarkenColor
+import player.phonograph.util.PhonographColorUtil.requireDarkenColor
 import player.phonograph.util.PhonographColorUtil.nightMode
 import player.phonograph.util.Util.isLandscape
 import player.phonograph.util.ViewUtil

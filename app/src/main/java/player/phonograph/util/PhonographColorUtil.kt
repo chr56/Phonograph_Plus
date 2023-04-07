@@ -1,13 +1,6 @@
 package player.phonograph.util
 
 import mt.pref.ThemeColor
-import android.content.Context
-import android.content.res.Configuration
-import android.content.res.Resources
-import android.graphics.Bitmap
-import androidx.annotation.ColorInt
-import androidx.palette.graphics.Palette
-import androidx.palette.graphics.Palette.Swatch
 import mt.util.color.darkenColor
 import mt.util.color.isColorLight
 import mt.util.color.lightenColor
@@ -15,15 +8,27 @@ import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.settings.Setting
 import player.phonograph.util.preferences.StyleConfig
+import androidx.annotation.ColorInt
+import androidx.palette.graphics.Palette
+import androidx.palette.graphics.Palette.Swatch
+import android.content.Context
+import android.content.res.Configuration
+import android.content.res.Resources
+import android.graphics.Bitmap
 import android.os.Build
-import java.util.*
+import java.util.Collections
 
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
  */
 object PhonographColorUtil {
-
+    /**
+     * darken the color if light for once
+     */
+    @ColorInt
+    fun requireDarkenColor(@ColorInt color: Int): Int =
+        if (isColorLight(color)) darkenColor(color) else color
 
     @JvmStatic
     val Resources.nightMode: Boolean
