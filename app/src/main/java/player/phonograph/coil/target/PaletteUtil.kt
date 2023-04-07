@@ -1,8 +1,8 @@
 /*
- * Copyright (c) 2022 chr_56
+ *  Copyright (c) 2022~2023 chr_56
  */
 
-package player.phonograph.util
+package player.phonograph.coil.target
 
 import android.graphics.Bitmap
 import androidx.annotation.ColorInt
