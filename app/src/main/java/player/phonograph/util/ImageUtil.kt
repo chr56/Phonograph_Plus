@@ -58,6 +58,4 @@ object ImageUtil {
         )
     }
 
-    fun drawableColorFilter(color: Int, mode: BlendModeCompat) =
-        BlendModeColorFilterCompat.createBlendModeColorFilterCompat(color, mode)
 }

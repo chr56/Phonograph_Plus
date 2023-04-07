@@ -4,10 +4,10 @@
 
 package player.phonograph.util.theme
 
-import player.phonograph.util.ImageUtil.drawableColorFilter
 import androidx.annotation.ColorInt
 import androidx.annotation.DrawableRes
 import androidx.core.content.res.ResourcesCompat
+import androidx.core.graphics.BlendModeColorFilterCompat
 import androidx.core.graphics.BlendModeCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import android.content.Context
@@ -42,3 +42,7 @@ fun Context.createTintedDrawable(
     val drawable = ResourcesCompat.getDrawable(resources, id, theme) ?: return null
     return drawable.makeTintedDrawable(color, mode)
 }
+
+
+fun drawableColorFilter(color: Int, mode: BlendModeCompat) =
+    BlendModeColorFilterCompat.createBlendModeColorFilterCompat(color, mode)
