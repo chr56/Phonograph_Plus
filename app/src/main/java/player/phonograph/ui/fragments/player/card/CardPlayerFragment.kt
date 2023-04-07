@@ -7,6 +7,7 @@ import com.sothree.slidinguppanel.SlidingUpPanelLayout.PanelState
 import mt.util.color.darkenColor
 import mt.util.color.resolveColor
 import mt.util.color.secondaryTextColor
+import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.adapter.base.MediaEntryViewHolder
 import player.phonograph.adapter.display.initMenu
@@ -19,8 +20,8 @@ import player.phonograph.ui.fragments.player.AbsPlayerFragment
 import player.phonograph.util.AnimationUtil.PHONOGRAPH_ANIM_TIME
 import player.phonograph.util.AnimationUtil.backgroundColorTransitionAnimator
 import player.phonograph.util.AnimationUtil.textColorTransitionAnimator
-import player.phonograph.util.PhonographColorUtil.requireDarkenColor
-import player.phonograph.util.PhonographColorUtil.nightMode
+import player.phonograph.util.theme.requireDarkenColor
+import player.phonograph.util.theme.nightMode
 import player.phonograph.util.Util.isLandscape
 import player.phonograph.util.ViewUtil
 import androidx.appcompat.widget.Toolbar
@@ -179,7 +180,7 @@ class CardPlayerFragment :
         protected var currentAnimatorSet: AnimatorSet? = null
         @SuppressLint("ObsoleteSdkInt")
         fun defaultColorChangeAnimatorSet(newColor: Int): AnimatorSet {
-            val lightMode = fragment.resources.nightMode
+            val lightMode = App.instance.nightMode
             val controllerFragment =
                 (fragment.playbackControlsFragment as CardPlayerControllerFragment)
             val fab = controllerFragment.playerPlayPauseFab
@@ -257,7 +258,7 @@ class CardPlayerFragment :
                 resolveColor(
                     fragment.requireContext(),
                     R.attr.iconColor,
-                    fragment.requireContext().secondaryTextColor(fragment.resources.nightMode)
+                    fragment.requireContext().secondaryTextColor(App.instance.nightMode)
                 ),
                 PorterDuff.Mode.SRC_IN
             )

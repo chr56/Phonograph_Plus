@@ -17,7 +17,7 @@ import player.phonograph.databinding.FragmentMiniPlayerBinding
 import player.phonograph.misc.MusicProgressViewUpdateHelperDelegate
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.ui.fragments.AbsMusicServiceFragment
-import player.phonograph.util.PhonographColorUtil.nightMode
+import player.phonograph.util.theme.nightMode
 import player.phonograph.views.PlayPauseDrawable
 import kotlin.math.abs
 
@@ -66,7 +66,7 @@ class MiniPlayerFragment : AbsMusicServiceFragment() {
             resolveColor(
                 requireActivity(),
                 R.attr.iconColor,
-                requireContext().secondaryTextColor(resources.nightMode)),
+                requireContext().secondaryTextColor(requireContext().nightMode)),
             PorterDuff.Mode.SRC_IN
         )
         binding.miniPlayerPlayPauseButton.setOnClickListener(PlayPauseButtonOnClickHandler())

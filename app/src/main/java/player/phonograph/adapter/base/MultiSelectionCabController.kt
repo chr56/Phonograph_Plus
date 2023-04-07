@@ -15,11 +15,11 @@ import lib.phonograph.cab.ToolbarCab
 import mt.pref.ThemeColor
 import player.phonograph.R
 import player.phonograph.util.theme.getTintedDrawable
-import player.phonograph.util.PhonographColorUtil
+import player.phonograph.util.theme.shiftBackgroundColorForLightText
 
 class MultiSelectionCabController(val cab: ToolbarCab) {
 
-    var cabColor: Int = PhonographColorUtil.shiftBackgroundColorForLightText(ThemeColor.primaryColor(cab.activity))
+    var cabColor: Int = shiftBackgroundColorForLightText(ThemeColor.primaryColor(cab.activity))
         set(value) {
             field = value
             cab.backgroundColor = value

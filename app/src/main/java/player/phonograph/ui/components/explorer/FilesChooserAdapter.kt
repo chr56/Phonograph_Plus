@@ -18,7 +18,7 @@ import player.phonograph.adapter.base.MultiSelectionCabController
 import player.phonograph.databinding.ItemListBinding
 import player.phonograph.model.file.FileEntity
 import player.phonograph.util.theme.getTintedDrawable
-import player.phonograph.util.PhonographColorUtil.nightMode
+import player.phonograph.util.theme.nightMode
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -47,7 +47,7 @@ class FilesChooserAdapter(
                         else R.drawable.ic_folder_white_24dp,
                         resolveColor(
                             context, R.attr.iconColor,
-                            context.primaryTextColor(context.resources.nightMode)
+                            context.primaryTextColor(context.nightMode)
                         )
                     )
                 )

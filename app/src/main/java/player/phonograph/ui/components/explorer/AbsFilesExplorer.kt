@@ -26,7 +26,7 @@ import player.phonograph.model.file.Location
 import player.phonograph.notification.ErrorNotification
 import player.phonograph.ui.components.ViewComponent
 import player.phonograph.util.theme.getTintedDrawable
-import player.phonograph.util.PhonographColorUtil.nightMode
+import player.phonograph.util.theme.nightMode
 
 sealed class AbsFilesExplorer<M : AbsFileViewModel>(protected val context: Context) : ViewComponent<ViewGroup, M> {
 
@@ -152,6 +152,6 @@ sealed class AbsFilesExplorer<M : AbsFileViewModel>(protected val context: Conte
 
     companion object {
         internal fun Context.getThemedDrawable(@DrawableRes resId: Int): Drawable? =
-            getTintedDrawable(resId, primaryTextColor(resources.nightMode))
+            getTintedDrawable(resId, primaryTextColor(nightMode))
     }
 }

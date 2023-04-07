@@ -3,11 +3,11 @@
  */
 package lib.phonograph.view
 
+import mt.util.color.secondaryTextColor
+import player.phonograph.util.theme.nightMode
+import androidx.appcompat.widget.AppCompatTextView
 import android.content.Context
 import android.util.AttributeSet
-import androidx.appcompat.widget.AppCompatTextView
-import mt.util.color.secondaryTextColor
-import player.phonograph.util.PhonographColorUtil.nightMode
 
 /**
  * @author Aidan Follestad (afollestad)
@@ -26,6 +26,6 @@ class SecondaryTextViewX : AppCompatTextView {
     }
 
     private fun init(context: Context, attrs: AttributeSet?) {
-        setTextColor(context.secondaryTextColor(context.resources.nightMode(context)))
+        setTextColor(context.secondaryTextColor(context.nightMode))
     }
 }

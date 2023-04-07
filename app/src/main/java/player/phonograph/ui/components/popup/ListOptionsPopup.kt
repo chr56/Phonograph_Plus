@@ -9,8 +9,8 @@ import mt.util.color.secondaryTextColor
 import player.phonograph.R
 import player.phonograph.databinding.PopupWindowMainBinding
 import player.phonograph.model.sort.SortRef
-import player.phonograph.util.PhonographColorUtil.backgroundColorByTheme
-import player.phonograph.util.PhonographColorUtil.nightMode
+import player.phonograph.util.theme.backgroundColorByTheme
+import player.phonograph.util.theme.nightMode
 import androidx.annotation.IdRes
 import androidx.core.view.forEach
 import androidx.core.view.get
@@ -48,7 +48,7 @@ class ListOptionsPopup private constructor(
 
     init {
         updateColor()
-        setBackgroundDrawable(ColorDrawable(context.backgroundColorByTheme()))
+        setBackgroundDrawable(ColorDrawable(backgroundColorByTheme(context)))
         this.animationStyle = android.R.style.Animation_Dialog
     }
 
@@ -69,7 +69,7 @@ class ListOptionsPopup private constructor(
 
     private fun onShow() {
         hideAllPopupItems()
-        setBackgroundDrawable(ColorDrawable(context.backgroundColorByTheme()))
+        setBackgroundDrawable(ColorDrawable(backgroundColorByTheme(context)))
         this.animationStyle = android.R.style.Animation_Dialog
         onShow(this)
     }
@@ -99,7 +99,7 @@ class ListOptionsPopup private constructor(
     private fun updateColor() {
         // color
         val accentColor = ThemeColor.accentColor(context)
-        val textColor = context.secondaryTextColor(context.resources.nightMode)
+        val textColor = context.secondaryTextColor(context.nightMode)
         val widgetColor = ColorStateList(
             arrayOf(
                 intArrayOf(android.R.attr.state_enabled),

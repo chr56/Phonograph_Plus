@@ -6,6 +6,7 @@ import com.sothree.slidinguppanel.SlidingUpPanelLayout
 import com.sothree.slidinguppanel.SlidingUpPanelLayout.PanelState
 import mt.util.color.resolveColor
 import mt.util.color.secondaryTextColor
+import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.adapter.base.MediaEntryViewHolder
 import player.phonograph.adapter.display.initMenu
@@ -18,11 +19,11 @@ import player.phonograph.ui.fragments.player.AbsPlayerFragment
 import player.phonograph.util.AnimationUtil.PHONOGRAPH_ANIM_TIME
 import player.phonograph.util.AnimationUtil.backgroundColorTransitionAnimator
 import player.phonograph.util.AnimationUtil.textColorTransitionAnimator
-import player.phonograph.util.PhonographColorUtil.requireDarkenColor
-import player.phonograph.util.PhonographColorUtil.nightMode
 import player.phonograph.util.Util.isLandscape
 import player.phonograph.util.ViewUtil
 import player.phonograph.util.ViewUtil.isWindowBackgroundDarkSafe
+import player.phonograph.util.theme.nightMode
+import player.phonograph.util.theme.requireDarkenColor
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.FragmentContainerView
 import androidx.lifecycle.Lifecycle
@@ -156,7 +157,7 @@ class FlatPlayerFragment :
     private abstract class BaseImpl(protected var fragment: FlatPlayerFragment) : Impl {
         protected var currentAnimatorSet: AnimatorSet? = null
         fun defaultColorChangeAnimatorSet(newColor: Int): AnimatorSet {
-            val lightMode = fragment.resources.nightMode
+            val lightMode = App.instance.nightMode
             val backgroundAnimator =
                 fragment.playbackControlsFragment.requireView()
                     .backgroundColorTransitionAnimator(fragment.paletteColor, newColor)

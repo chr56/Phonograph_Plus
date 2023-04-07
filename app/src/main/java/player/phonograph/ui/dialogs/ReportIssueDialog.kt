@@ -23,7 +23,7 @@ import player.phonograph.R
 import player.phonograph.databinding.DialogReportIssueBinding
 import player.phonograph.util.DeviceInfoUtil
 import player.phonograph.util.theme.getTintedDrawable
-import player.phonograph.util.PhonographColorUtil.nightMode
+import player.phonograph.util.theme.nightMode
 
 class ReportIssueDialog : DialogFragment() {
 
@@ -49,9 +49,9 @@ class ReportIssueDialog : DialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         binding.deviceInfoText.text = deviceInfo
 
-        binding.buttonSend.tint(primaryColor, true, resources.nightMode)
+        binding.buttonSend.tint(primaryColor, true, view.context.nightMode)
         binding.buttonSend.setImageDrawable(
-            requireContext().getTintedDrawable(R.drawable.ic_send_white_24dp, Color.WHITE)
+            view.context.getTintedDrawable(R.drawable.ic_send_white_24dp, Color.WHITE)
         )
         binding.buttonSend.setOnClickListener {
             requireContext().copyDeviceInfoToClipBoard()

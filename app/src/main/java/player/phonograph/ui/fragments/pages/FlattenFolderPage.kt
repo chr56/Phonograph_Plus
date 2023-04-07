@@ -19,9 +19,9 @@ import player.phonograph.model.sort.SortRef
 import player.phonograph.ui.components.popup.ListOptionsPopup
 import player.phonograph.ui.fragments.pages.util.DisplayConfig
 import player.phonograph.ui.fragments.pages.util.DisplayConfigTarget
-import player.phonograph.util.PhonographColorUtil.nightMode
 import player.phonograph.util.ViewUtil.setUpFastScrollRecyclerViewColor
 import player.phonograph.util.theme.getTintedDrawable
+import player.phonograph.util.theme.nightMode
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -99,7 +99,7 @@ class FlattenFolderPage : AbsPage() {
             menuItem(Menu.NONE, Menu.NONE, 999, getString(R.string.action_settings)) {
                 icon = context.getTintedDrawable(
                     R.drawable.ic_sort_variant_white_24dp,
-                    context.primaryTextColor(context.resources.nightMode),
+                    context.primaryTextColor(context.nightMode),
                 )
                 showAsActionFlag = MenuItem.SHOW_AS_ACTION_ALWAYS
                 onClick {
@@ -113,7 +113,7 @@ class FlattenFolderPage : AbsPage() {
                 }
             }
         }
-        binding.panelToolbar.setTitleTextColor(requireContext().primaryTextColor(resources.nightMode))
+        binding.panelToolbar.setTitleTextColor(requireContext().primaryTextColor(requireContext().nightMode))
 
         hostFragment.addOnAppBarOffsetChangedListener(outerAppbarOffsetListener)
     }
