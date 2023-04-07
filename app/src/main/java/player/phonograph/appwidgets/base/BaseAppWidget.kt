@@ -19,7 +19,7 @@ import player.phonograph.R
 import player.phonograph.model.Song
 import player.phonograph.model.infoString
 import player.phonograph.service.MusicService
-import player.phonograph.util.ImageUtil
+import player.phonograph.util.BitmapUtil
 import player.phonograph.util.theme.getTintedDrawable
 
 abstract class BaseAppWidget : AppWidgetProvider() {
@@ -91,19 +91,19 @@ abstract class BaseAppWidget : AppWidgetProvider() {
 
         view.setImageViewBitmap(
             R.id.button_next,
-            ImageUtil.createBitmap(
+            BitmapUtil.createBitmap(
                 context.getTintedDrawable(R.drawable.ic_skip_next_white_24dp,textColor)!!
             )
         )
         view.setImageViewBitmap(
             R.id.button_prev,
-            ImageUtil.createBitmap(
+            BitmapUtil.createBitmap(
                 context.getTintedDrawable(R.drawable.ic_skip_previous_white_24dp,textColor)!!
             )
         )
         view.setImageViewBitmap(
             R.id.button_toggle_play_pause,
-            ImageUtil.createBitmap(
+            BitmapUtil.createBitmap(
                 context.getTintedDrawable(R.drawable.ic_play_arrow_white_24dp,textColor)!!
             )
         )

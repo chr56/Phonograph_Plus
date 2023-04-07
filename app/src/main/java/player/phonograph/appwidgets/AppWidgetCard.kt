@@ -21,7 +21,7 @@ import player.phonograph.appwidgets.base.BaseAppWidget
 import player.phonograph.coil.target.PaletteTargetBuilder
 import player.phonograph.service.MusicService
 import player.phonograph.ui.activities.MainActivity
-import player.phonograph.util.ImageUtil
+import player.phonograph.util.BitmapUtil
 import player.phonograph.util.theme.createTintedDrawable
 import player.phonograph.util.theme.getTintedDrawable
 
@@ -66,7 +66,7 @@ class AppWidgetCard : BaseAppWidget() {
         // Set correct drawable for pause state
         appWidgetView.setImageViewBitmap(
             R.id.button_toggle_play_pause,
-            ImageUtil.createBitmap(
+            BitmapUtil.createBitmap(
                 service.createTintedDrawable(
                     playPauseRes(isPlaying),
                     color
@@ -77,13 +77,13 @@ class AppWidgetCard : BaseAppWidget() {
         // Set prev/next button drawables
         appWidgetView.setImageViewBitmap(
             R.id.button_next,
-            ImageUtil.createBitmap(
+            BitmapUtil.createBitmap(
                 service.createTintedDrawable(R.drawable.ic_skip_next_white_24dp,color)!!
             )
         )
         appWidgetView.setImageViewBitmap(
             R.id.button_prev,
-            ImageUtil.createBitmap(
+            BitmapUtil.createBitmap(
                 service.createTintedDrawable(R.drawable.ic_skip_previous_white_24dp,color)!!
             )
         )
@@ -132,17 +132,17 @@ class AppWidgetCard : BaseAppWidget() {
         // Set correct drawable for pause state
         appWidgetView.setImageViewBitmap(
             R.id.button_toggle_play_pause,
-            ImageUtil.createBitmap(service.getTintedDrawable(playPauseRes(isPlaying), color)!!)
+            BitmapUtil.createBitmap(service.getTintedDrawable(playPauseRes(isPlaying), color)!!)
         )
 
         // Set prev/next button drawables
         appWidgetView.setImageViewBitmap(
             R.id.button_next,
-            ImageUtil.createBitmap(service.getTintedDrawable(R.drawable.ic_skip_next_white_24dp, color)!!)
+            BitmapUtil.createBitmap(service.getTintedDrawable(R.drawable.ic_skip_next_white_24dp, color)!!)
         )
         appWidgetView.setImageViewBitmap(
             R.id.button_prev,
-            ImageUtil.createBitmap(service.getTintedDrawable(R.drawable.ic_skip_previous_white_24dp, color)!!)
+            BitmapUtil.createBitmap(service.getTintedDrawable(R.drawable.ic_skip_previous_white_24dp, color)!!)
         )
 
         val image = getAlbumArtDrawable(service.resources, bitmap)

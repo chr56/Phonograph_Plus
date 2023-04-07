@@ -24,7 +24,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import player.phonograph.notification.ErrorNotification
 import player.phonograph.util.CoroutineUtil.createDefaultExceptionHandler
-import player.phonograph.util.ImageUtil.resizeBitmap
+import player.phonograph.util.BitmapUtil.restraintBitmapSize
 
 /**
  * Class that manage custom artist image
@@ -93,6 +93,7 @@ class CustomArtistImageStore private constructor(context: Context) {
                         override fun onError(error: Drawable?) {
                             sendErrorInfo(name)
                         }
+
                         override fun onSuccess(result: Drawable) {
                             val bitmap = result.toBitmapOrNull()
                             if (bitmap != null) {
@@ -116,7 +117,7 @@ class CustomArtistImageStore private constructor(context: Context) {
                 val file = File(storeDir, getArtistFileName(artistId, artistName))
                 val result = runCatching {
                     BufferedOutputStream(FileOutputStream(file)).use { outputStream ->
-                        resizeBitmap(bitmap, 2048)
+                        bitmap.restraintBitmapSize(2048, true)
                             .compress(JPEG, 100, outputStream)
                     }
                 }
