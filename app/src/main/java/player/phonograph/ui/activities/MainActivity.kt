@@ -38,8 +38,8 @@ import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
 import player.phonograph.ui.dialogs.ScanMediaFolderDialog
 import player.phonograph.ui.dialogs.UpgradeDialog
 import player.phonograph.ui.fragments.HomeFragment
-import player.phonograph.util.ImageUtil.getTintedDrawable
-import player.phonograph.util.PhonographColorUtil.nightMode
+import player.phonograph.util.theme.getTintedDrawable
+import player.phonograph.util.theme.nightMode
 import player.phonograph.util.UpdateUtil
 import player.phonograph.util.Util.debug
 import player.phonograph.util.Util.warning
@@ -281,7 +281,7 @@ class MainActivity : AbsSlidingMusicPanelActivity(),
 
         // color
         val iconColor =
-            resolveColor(this, R.attr.iconColor, secondaryTextColor(resources.nightMode))
+            resolveColor(this, R.attr.iconColor, secondaryTextColor(nightMode))
         with(drawerBinding.navigationView) {
             setItemIconColors(iconColor, accentColor)
             setItemTextColors(textColorPrimary, accentColor)

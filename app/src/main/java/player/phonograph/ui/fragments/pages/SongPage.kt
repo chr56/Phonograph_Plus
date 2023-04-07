@@ -21,8 +21,8 @@ import player.phonograph.service.queue.ShuffleMode
 import player.phonograph.ui.components.popup.ListOptionsPopup
 import player.phonograph.ui.fragments.pages.util.DisplayConfig
 import player.phonograph.ui.fragments.pages.util.DisplayConfigTarget
-import player.phonograph.util.ImageUtil.getTintedDrawable
-import player.phonograph.util.PhonographColorUtil.nightMode
+import player.phonograph.util.theme.getTintedDrawable
+import player.phonograph.util.theme.nightMode
 import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.GridLayoutManager
 import android.annotation.SuppressLint
@@ -129,7 +129,7 @@ class SongPage : AbsDisplayPage<Song, DisplayAdapter<Song>, GridLayoutManager>()
             rootMenu.add(this, NONE, NONE, 1, getString(R.string.action_play)) {
                 icon = context
                     .getTintedDrawable(R.drawable.ic_play_arrow_white_24dp,
-                                       context.primaryTextColor(context.resources.nightMode))
+                                       context.primaryTextColor(context.nightMode))
                 showAsActionFlag = MenuItem.SHOW_AS_ACTION_ALWAYS
                 onClick {
                     val allSongs = SongLoader.getAllSongs(context)
@@ -140,7 +140,7 @@ class SongPage : AbsDisplayPage<Song, DisplayAdapter<Song>, GridLayoutManager>()
             rootMenu.add(this, NONE, NONE, 2, getString(R.string.action_shuffle_all)) {
                 icon = context
                     .getTintedDrawable(R.drawable.ic_shuffle_white_24dp,
-                                       context.primaryTextColor(context.resources.nightMode))
+                                       context.primaryTextColor(context.nightMode))
                 showAsActionFlag = MenuItem.SHOW_AS_ACTION_ALWAYS
                 onClick {
                     val allSongs = SongLoader.getAllSongs(context)

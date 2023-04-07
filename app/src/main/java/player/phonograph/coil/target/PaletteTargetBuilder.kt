@@ -9,7 +9,7 @@ import android.graphics.drawable.Drawable
 import androidx.palette.graphics.Palette
 import kotlinx.coroutines.*
 import player.phonograph.R
-import player.phonograph.util.PaletteUtil.getColor
+import player.phonograph.coil.target.PaletteUtil.getColor
 
 open class PaletteTargetBuilder(protected open val defaultColor: Int) {
 

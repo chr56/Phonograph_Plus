@@ -3,12 +3,12 @@
  */
 package lib.phonograph.view
 
-import android.content.Context
-import android.util.AttributeSet
-import androidx.appcompat.widget.AppCompatCheckBox
 import mt.pref.ThemeColor.accentColor
 import mt.tint.viewtint.setTint
-import player.phonograph.util.PhonographColorUtil.nightMode
+import player.phonograph.util.theme.nightMode
+import androidx.appcompat.widget.AppCompatCheckBox
+import android.content.Context
+import android.util.AttributeSet
 
 /**
  * @author Aidan Follestad (afollestad)
@@ -27,6 +27,6 @@ class CheckBoxX : AppCompatCheckBox {
     }
 
     private fun init(context: Context, attrs: AttributeSet?) {
-        this.setTint(accentColor(context), context.resources.nightMode)
+        this.setTint(accentColor(context), context.nightMode)
     }
 }

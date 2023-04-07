@@ -18,10 +18,10 @@ import player.phonograph.model.Displayable
 import player.phonograph.ui.components.popup.ListOptionsPopup
 import player.phonograph.ui.fragments.pages.util.DisplayConfig
 import player.phonograph.ui.fragments.pages.util.DisplayConfigTarget
-import player.phonograph.util.ImageUtil.getTintedDrawable
-import player.phonograph.util.PhonographColorUtil.nightMode
 import player.phonograph.util.Util
 import player.phonograph.util.ViewUtil.setUpFastScrollRecyclerViewColor
+import player.phonograph.util.theme.getTintedDrawable
+import player.phonograph.util.theme.nightMode
 import androidx.annotation.StringRes
 import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.GridLayoutManager
@@ -146,7 +146,7 @@ sealed class AbsDisplayPage<IT, A : DisplayAdapter<out Displayable>, LM : GridLa
             menuItem(NONE, NONE, 999, getString(R.string.action_settings)) {
                 icon = context.getTintedDrawable(
                     R.drawable.ic_sort_variant_white_24dp,
-                    context.primaryTextColor(context.resources.nightMode),
+                    context.primaryTextColor(context.nightMode),
                 )
                 showAsActionFlag = MenuItem.SHOW_AS_ACTION_ALWAYS
                 onClick {
@@ -160,7 +160,7 @@ sealed class AbsDisplayPage<IT, A : DisplayAdapter<out Displayable>, LM : GridLa
                 }
             }
         }
-        binding.panelToolbar.setTitleTextColor(requireContext().primaryTextColor(resources.nightMode))
+        binding.panelToolbar.setTitleTextColor(requireContext().primaryTextColor(requireContext().nightMode))
 
         configAppBar(binding.panelToolbar)
 

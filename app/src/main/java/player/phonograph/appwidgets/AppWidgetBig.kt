@@ -22,8 +22,9 @@ import player.phonograph.R
 import player.phonograph.appwidgets.base.BaseAppWidget
 import player.phonograph.service.MusicService
 import player.phonograph.ui.activities.MainActivity
-import player.phonograph.util.ImageUtil
+import player.phonograph.util.BitmapUtil
 import player.phonograph.util.Util.getScreenSize
+import player.phonograph.util.theme.createTintedDrawable
 
 
 class AppWidgetBig : BaseAppWidget() {
@@ -66,34 +67,31 @@ class AppWidgetBig : BaseAppWidget() {
         val playPauseRes = if (isPlaying) R.drawable.ic_pause_white_24dp else R.drawable.ic_play_arrow_white_24dp
         appWidgetView.setImageViewBitmap(
             R.id.button_toggle_play_pause,
-            ImageUtil.createBitmap(
-                ImageUtil.getTintedVectorDrawable(
-                    service,
+            BitmapUtil.createBitmap(
+                service.createTintedDrawable(
                     playPauseRes,
                     service.primaryTextColor( true)
-                )
+                )!!
             )
         )
 
         // Set prev/next button drawables
         appWidgetView.setImageViewBitmap(
             R.id.button_next,
-            ImageUtil.createBitmap(
-                ImageUtil.getTintedVectorDrawable(
-                    service,
+            BitmapUtil.createBitmap(
+                service.createTintedDrawable(
                     R.drawable.ic_skip_next_white_24dp,
                     service.primaryTextColor( true)
-                )
+                )!!
             )
         )
         appWidgetView.setImageViewBitmap(
             R.id.button_prev,
-            ImageUtil.createBitmap(
-                ImageUtil.getTintedVectorDrawable(
-                    service,
+            BitmapUtil.createBitmap(
+                service.createTintedDrawable(
                     R.drawable.ic_skip_previous_white_24dp,
                     service.primaryTextColor( true)
-                )
+                )!!
             )
         )
 

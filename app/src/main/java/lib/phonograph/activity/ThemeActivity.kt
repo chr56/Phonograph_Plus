@@ -12,9 +12,10 @@ import mt.tint.*
 import mt.util.color.darkenColor
 import mt.util.color.primaryTextColor
 import mt.util.color.secondaryTextColor
+import mt.util.isNightMode
 import player.phonograph.R
-import player.phonograph.util.PhonographColorUtil.applyMonet
-import player.phonograph.util.PhonographColorUtil.nightMode
+import player.phonograph.util.theme.applyMonet
+import player.phonograph.util.theme.nightMode
 import player.phonograph.util.preferences.StyleConfig
 import androidx.appcompat.app.AppCompatDelegate
 import android.animation.ValueAnimator
@@ -80,8 +81,8 @@ abstract class ThemeActivity : MultiLanguageActivity() {
     private fun retrieveColors() {
         primaryColor = primaryColor(this)
         accentColor = accentColor(this)
-        textColorPrimary = primaryTextColor(resources.nightMode)
-        textColorSecondary = secondaryTextColor(resources.nightMode)
+        textColorPrimary = primaryTextColor(nightMode)
+        textColorSecondary = secondaryTextColor(nightMode)
     }
 
     private val listener = object : ThemeColor.ThemePreferenceChangeListener {

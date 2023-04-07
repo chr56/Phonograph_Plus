@@ -10,7 +10,7 @@ import mt.util.color.resolveColor
 import org.intellij.lang.annotations.Language
 import player.phonograph.R
 import player.phonograph.notification.ErrorNotification
-import player.phonograph.util.PhonographColorUtil.nightMode
+import player.phonograph.util.theme.nightMode
 import androidx.fragment.app.DialogFragment
 import android.annotation.SuppressLint
 import android.app.Dialog
@@ -92,12 +92,12 @@ class ChangelogDialog : DialogFragment() {
                 resolveColor(
                     requireContext(),
                     R.attr.md_background_color,
-                    Color.parseColor(if (resources.nightMode) "#424242" else "#ffffff")
+                    Color.parseColor(if (requireContext().nightMode) "#424242" else "#ffffff")
                 )
             )
         val textColor =
             colorToCSS(
-                Color.parseColor(if (resources.nightMode) "#ffffff" else "#000000")
+                Color.parseColor(if (requireContext().nightMode) "#ffffff" else "#000000")
             )
         return getHTML(
             CSS = getCSS(

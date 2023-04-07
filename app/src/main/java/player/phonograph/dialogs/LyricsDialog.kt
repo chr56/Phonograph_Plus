@@ -29,7 +29,7 @@ import player.phonograph.model.lyrics.LyricsList
 import player.phonograph.model.lyrics.LyricsSource
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
 import player.phonograph.ui.fragments.player.AbsPlayerFragment
-import player.phonograph.util.PhonographColorUtil.nightMode
+import player.phonograph.util.theme.nightMode
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
@@ -169,7 +169,7 @@ class LyricsDialog : LargeDialog(), MusicProgressViewUpdateHelper.Callback {
 
     private val accentColor by lazy { ThemeColor.accentColor(App.instance) }
     private val primaryColor by lazy { ThemeColor.primaryColor(App.instance) }
-    private val textColor by lazy { App.instance.primaryTextColor(App.instance.resources.nightMode) }
+    private val textColor by lazy { App.instance.primaryTextColor(App.instance.nightMode) }
 
     private val backgroundCsl: ColorStateList by lazy {
         ColorStateList(

@@ -15,7 +15,7 @@ import player.phonograph.databinding.ItemListBinding
 import player.phonograph.model.file.FileEntity
 import player.phonograph.model.file.linkedSong
 import player.phonograph.settings.Setting
-import player.phonograph.util.ImageUtil.getTintedDrawable
+import player.phonograph.util.theme.getTintedDrawable
 import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ComponentActivity
 import android.graphics.PorterDuff

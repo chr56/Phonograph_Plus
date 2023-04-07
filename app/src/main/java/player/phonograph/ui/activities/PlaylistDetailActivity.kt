@@ -34,7 +34,7 @@ import player.phonograph.model.playlist.Playlist
 import player.phonograph.model.playlist.SmartPlaylist
 import player.phonograph.model.totalDuration
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
-import player.phonograph.util.ImageUtil.getTintedDrawable
+import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.PlaylistsUtil
 import player.phonograph.util.ViewUtil.setUpFastScrollRecyclerViewColor
 import util.phonograph.playlist.mediastore.moveItemViaMediastore

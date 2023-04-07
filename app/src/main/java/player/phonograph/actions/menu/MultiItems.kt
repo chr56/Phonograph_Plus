@@ -20,7 +20,7 @@ import player.phonograph.service.queue.ShuffleMode.NONE
 import player.phonograph.service.queue.ShuffleMode.SHUFFLE
 import player.phonograph.ui.compose.tag.BatchTagEditorActivity
 import player.phonograph.ui.compose.tag.TagEditorActivity
-import player.phonograph.util.ImageUtil.getTintedDrawable
+import player.phonograph.util.theme.getTintedDrawable
 import androidx.annotation.ColorInt
 import android.content.Context
 import android.view.Menu

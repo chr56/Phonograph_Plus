@@ -63,12 +63,4 @@ object ViewUtil {
         return px / metrics.density
     }
 
-    fun isWindowBackgroundDarkSafe(context: Context?): Boolean =
-        try {
-            context?.let {
-                isWindowBackgroundDark(context)
-            } ?: false
-        } catch (e: Exception) {
-            false
-        }
 }

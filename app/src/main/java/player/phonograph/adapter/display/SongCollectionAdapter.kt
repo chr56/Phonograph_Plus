@@ -9,8 +9,8 @@ import mt.util.color.resolveColor
 import player.phonograph.R
 import player.phonograph.adapter.base.MultiSelectionCabController
 import player.phonograph.model.SongCollection
-import player.phonograph.util.ImageUtil.getTintedDrawable
-import player.phonograph.util.PhonographColorUtil.nightMode
+import player.phonograph.util.theme.getTintedDrawable
+import player.phonograph.util.theme.nightMode
 import androidx.appcompat.app.AppCompatActivity
 import android.view.View
 import android.widget.ImageView
@@ -31,7 +31,7 @@ class SongCollectionAdapter(
                 R.drawable.ic_folder_white_24dp, resolveColor(
                     context,
                     R.attr.iconColor,
-                    context.primaryTextColor(context.resources.nightMode)
+                    context.primaryTextColor(context.nightMode)
                 )
             )
         )

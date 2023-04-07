@@ -8,7 +8,7 @@ import android.content.Context
 import android.graphics.drawable.Drawable
 import androidx.core.graphics.BlendModeCompat
 import player.phonograph.R
-import player.phonograph.util.ImageUtil.getTintedDrawable
+import player.phonograph.util.theme.getTintedDrawable
 
 object Pages {
     const val EMPTY = "EMPTY"

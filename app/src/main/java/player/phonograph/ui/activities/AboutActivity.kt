@@ -13,7 +13,7 @@ import player.phonograph.model.version.VersionCatalog
 import player.phonograph.settings.Setting
 import player.phonograph.ui.dialogs.ReportIssueDialog
 import player.phonograph.ui.dialogs.UpgradeDialog
-import player.phonograph.util.PhonographColorUtil.nightMode
+import player.phonograph.util.theme.nightMode
 import player.phonograph.util.UpdateUtil
 import player.phonograph.util.Util.reportError
 import androidx.annotation.Keep
@@ -266,9 +266,9 @@ class AboutActivity : ToolbarActivity(), View.OnClickListener {
         }
         LicensesDialog.Builder(this).setNotices(notices).setTitle(R.string.licenses)
             .setNoticesCssStyle(getString(R.string.license_dialog_style).replace("{bg-color}",
-                    if (resources.nightMode) "424242" else "ffffff")
-                .replace("{text-color}", if (resources.nightMode) "ffffff" else "000000")
-                .replace("{license-bg-color}", if (resources.nightMode) "535353" else "eeeeee")).setIncludeOwnLicense(true).build().show()
+                    if (nightMode) "424242" else "ffffff")
+                .replace("{text-color}", if (nightMode) "ffffff" else "000000")
+                .replace("{license-bg-color}", if (nightMode) "535353" else "eeeeee")).setIncludeOwnLicense(true).build().show()
     }
 
     companion object {

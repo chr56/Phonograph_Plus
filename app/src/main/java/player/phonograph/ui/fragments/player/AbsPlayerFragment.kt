@@ -24,7 +24,7 @@ import player.phonograph.ui.dialogs.QueueSnapshotsDialog
 import player.phonograph.ui.fragments.AbsMusicServiceFragment
 import player.phonograph.ui.fragments.player.PlayerAlbumCoverFragment.Companion.VISIBILITY_ANIM_DURATION
 import player.phonograph.util.FavoriteUtil.toggleFavorite
-import player.phonograph.util.ImageUtil.getTintedDrawable
+import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.NavigationUtil
 import androidx.annotation.ColorInt
 import androidx.appcompat.app.AppCompatActivity

@@ -8,13 +8,13 @@ import lib.phonograph.misc.Reboot
 import mt.util.color.primaryTextColor
 import player.phonograph.R
 import player.phonograph.databinding.ActivityCrashBinding
+import player.phonograph.migrate.SettingDataManager
 import player.phonograph.notification.ErrorNotification.KEY_IS_A_CRASH
 import player.phonograph.notification.ErrorNotification.KEY_STACK_TRACE
-import player.phonograph.migrate.SettingDataManager
 import player.phonograph.util.DeviceInfoUtil.getDeviceInfo
-import player.phonograph.util.ImageUtil.getTintedDrawable
-import player.phonograph.util.PhonographColorUtil.nightMode
 import player.phonograph.util.TimeUtil.currentDateTime
+import player.phonograph.util.theme.getTintedDrawable
+import player.phonograph.util.theme.nightMode
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
@@ -25,13 +25,11 @@ import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.os.Process
 import android.view.Menu
 import android.view.Menu.NONE
 import android.view.MenuItem.SHOW_AS_ACTION_IF_ROOM
 import android.view.MenuItem.SHOW_AS_ACTION_NEVER
 import android.widget.Toast
-import kotlin.system.exitProcess
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -115,7 +113,7 @@ class CrashActivity : ToolbarActivity() {
 
         // display textview
         binding.crashText.text = displayText
-        binding.crashText.setTextColor(primaryTextColor(resources.nightMode))
+        binding.crashText.setTextColor(primaryTextColor(nightMode))
 
         // button "copy to clipboard"
         binding.copyToClipboard.setOnClickListener {

@@ -23,7 +23,6 @@ import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import android.text.TextUtils
-import android.util.Log
 import android.view.View
 import android.widget.RemoteViews
 import androidx.annotation.RequiresApi
@@ -48,8 +47,9 @@ import player.phonograph.service.MusicService
 import player.phonograph.service.util.MediaButtonIntentReceiver
 import player.phonograph.settings.Setting
 import player.phonograph.ui.activities.MainActivity
-import player.phonograph.util.ImageUtil
+import player.phonograph.util.BitmapUtil
 import player.phonograph.util.Util.getScreenSize
+import player.phonograph.util.theme.createTintedDrawable
 import android.app.Notification as OSNotification
 import androidx.core.app.NotificationCompat as XNotificationCompat
 
@@ -308,28 +308,25 @@ class PlayingNotificationManger(private val service: MusicService) {
             val primary = service.primaryTextColor(bgColor)
             val secondary = service.secondaryTextColor(bgColor)
 
-            val prev = ImageUtil.createBitmap(
-                ImageUtil.getTintedVectorDrawable(
-                    service,
+            val prev = BitmapUtil.createBitmap(
+                service.createTintedDrawable(
                     R.drawable.ic_skip_previous_white_24dp,
                     primary
-                ),
+                )!!,
                 1.5f
             )
-            val next = ImageUtil.createBitmap(
-                ImageUtil.getTintedVectorDrawable(
-                    service,
+            val next = BitmapUtil.createBitmap(
+                service.createTintedDrawable(
                     R.drawable.ic_skip_next_white_24dp,
                     primary
-                ),
+                )!!,
                 1.5f
             )
-            val playPause = ImageUtil.createBitmap(
-                ImageUtil.getTintedVectorDrawable(
-                    service,
+            val playPause = BitmapUtil.createBitmap(
+                service.createTintedDrawable(
                     if (service.isPlaying) R.drawable.ic_pause_white_24dp else R.drawable.ic_play_arrow_white_24dp,
                     primary
-                ),
+                )!!,
                 1.5f
             )
 

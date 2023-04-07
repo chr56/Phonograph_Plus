@@ -19,7 +19,7 @@ import player.phonograph.model.playlist.SmartPlaylist
 import player.phonograph.notification.ErrorNotification
 import player.phonograph.settings.Setting
 import player.phonograph.ui.compose.tag.BatchTagEditorActivity
-import player.phonograph.util.ImageUtil.getTintedDrawable
+import player.phonograph.util.theme.getTintedDrawable
 import androidx.annotation.ColorInt
 import android.content.Context
 import android.view.Menu
