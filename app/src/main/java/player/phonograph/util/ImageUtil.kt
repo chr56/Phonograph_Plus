@@ -1,37 +1,18 @@
 package player.phonograph.util
 
-import mt.util.color.primaryTextColor
-import android.content.Context
-import android.content.res.Resources
-import android.content.res.Resources.Theme
+import androidx.core.graphics.BlendModeColorFilterCompat
+import androidx.core.graphics.BlendModeCompat
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.graphics.drawable.Drawable
-import android.os.Build
-import androidx.annotation.AttrRes
-import androidx.annotation.ColorInt
-import androidx.annotation.DrawableRes
-import androidx.core.content.res.ResourcesCompat
-import androidx.core.graphics.BlendModeColorFilterCompat
-import androidx.core.graphics.BlendModeCompat
-import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
-import mt.util.drawable.createTintedDrawable
-import java.io.InputStream
 import kotlin.math.roundToInt
+import java.io.InputStream
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
  */
 object ImageUtil {
-
-    fun Bitmap.copy(): Bitmap? =
-        try {
-            this.copy(this.config ?: Bitmap.Config.RGB_565, false)
-        } catch (e: OutOfMemoryError) {
-            e.printStackTrace()
-            null
-        }
 
     fun resizeBitmap(src: Bitmap, maxForSmallerSize: Int): Bitmap {
         val width = src.width
@@ -56,7 +37,6 @@ object ImageUtil {
         return Bitmap.createScaledBitmap(src, dstWidth, dstHeight, false)
     }
 
-    @JvmOverloads
     fun createBitmap(drawable: Drawable, sizeMultiplier: Float = 1f): Bitmap {
         val bitmap = Bitmap.createBitmap(
             (drawable.intrinsicWidth * sizeMultiplier).toInt(),
@@ -69,29 +49,13 @@ object ImageUtil {
         return bitmap
     }
 
-    fun resolveDrawable(context: Context, @AttrRes drawableAttr: Int): Drawable {
-        val a = context.obtainStyledAttributes(intArrayOf(drawableAttr))
-        val drawable = a.getDrawable(0)
-        a.recycle()
-        return drawable!!
-    }
-
-    fun resize(stream: InputStream?, scaledWidth: Int, scaledHeight: Int): Bitmap {
+    fun resizeBitmap(stream: InputStream?, scaledWidth: Int, scaledHeight: Int): Bitmap {
         return Bitmap.createScaledBitmap(
             BitmapFactory.decodeStream(stream),
             scaledWidth,
             scaledHeight,
             true
         )
-    }
-
-    fun Context.makeContrastDrawable(
-        source: Drawable?,
-        backgroundColor: Int,
-    ): Drawable? {
-        source?.colorFilter =
-            drawableColorFilter(primaryTextColor(backgroundColor), BlendModeCompat.SRC_IN)
-        return source
     }
 
     fun drawableColorFilter(color: Int, mode: BlendModeCompat) =
