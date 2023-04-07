@@ -22,6 +22,7 @@ import player.phonograph.coil.target.PaletteTargetBuilder
 import player.phonograph.service.MusicService
 import player.phonograph.ui.activities.MainActivity
 import player.phonograph.util.ImageUtil
+import player.phonograph.util.theme.createTintedDrawable
 import player.phonograph.util.theme.getTintedDrawable
 
 class AppWidgetCard : BaseAppWidget() {
@@ -66,11 +67,10 @@ class AppWidgetCard : BaseAppWidget() {
         appWidgetView.setImageViewBitmap(
             R.id.button_toggle_play_pause,
             ImageUtil.createBitmap(
-                ImageUtil.getTintedVectorDrawable(
-                    service,
+                service.createTintedDrawable(
                     playPauseRes(isPlaying),
                     color
-                )
+                )!!
             )
         )
 
@@ -78,13 +78,13 @@ class AppWidgetCard : BaseAppWidget() {
         appWidgetView.setImageViewBitmap(
             R.id.button_next,
             ImageUtil.createBitmap(
-                service.getTintedDrawable(R.drawable.ic_skip_next_white_24dp,color)!!
+                service.createTintedDrawable(R.drawable.ic_skip_next_white_24dp,color)!!
             )
         )
         appWidgetView.setImageViewBitmap(
             R.id.button_prev,
             ImageUtil.createBitmap(
-                service.getTintedDrawable(R.drawable.ic_skip_previous_white_24dp,color)!!
+                service.createTintedDrawable(R.drawable.ic_skip_previous_white_24dp,color)!!
             )
         )
 

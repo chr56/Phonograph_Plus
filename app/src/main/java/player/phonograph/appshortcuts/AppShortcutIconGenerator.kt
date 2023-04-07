@@ -12,6 +12,8 @@ import mt.pref.ThemeColor
 import player.phonograph.R
 import player.phonograph.settings.Setting
 import player.phonograph.util.ImageUtil
+import player.phonograph.util.theme.createTintedDrawable
+
 /**
  * @author Adrian Campos
  */
@@ -49,8 +51,8 @@ object AppShortcutIconGenerator {
 
     private fun generateThemedIcon(context: Context, iconId: Int, foregroundColor: Int, backgroundColor: Int): IconCompat {
         // Get and tint foreground and background drawables
-        val vectorDrawable = ImageUtil.getTintedVectorDrawable(context, iconId, foregroundColor)
-        val backgroundDrawable = ImageUtil.getTintedVectorDrawable(context, R.drawable.ic_app_shortcut_background, backgroundColor)
+        val vectorDrawable = context.createTintedDrawable(iconId, foregroundColor)
+        val backgroundDrawable = context.createTintedDrawable(R.drawable.ic_app_shortcut_background, backgroundColor)
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val adaptiveIconDrawable = AdaptiveIconDrawable(backgroundDrawable, vectorDrawable)
             IconCompat.createWithAdaptiveBitmap(ImageUtil.createBitmap(adaptiveIconDrawable))

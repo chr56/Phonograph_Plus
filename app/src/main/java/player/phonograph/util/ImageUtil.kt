@@ -69,30 +69,6 @@ object ImageUtil {
         return bitmap
     }
 
-    fun getVectorDrawable(res: Resources, @DrawableRes resId: Int, theme: Theme?): Drawable {
-        return if (Build.VERSION.SDK_INT >= 21) {
-            ResourcesCompat.getDrawable(res, resId, theme)!!
-        } else VectorDrawableCompat.create(res, resId, theme)!!
-    }
-
-    fun getTintedVectorDrawable(
-        res: Resources,
-        @DrawableRes resId: Int,
-        theme: Theme?,
-        @ColorInt color: Int,
-    ): Drawable? =
-        createTintedDrawable(getVectorDrawable(res, resId, theme), color)
-
-    fun getTintedVectorDrawable(context: Context, @DrawableRes id: Int, @ColorInt color: Int): Drawable {
-        return createTintedDrawable(
-            getVectorDrawable(context.resources, id, context.theme),
-            color
-        )!!
-    }
-
-    fun getVectorDrawable(context: Context, @DrawableRes id: Int): Drawable =
-        getVectorDrawable(context.resources, id, context.theme)
-
     fun resolveDrawable(context: Context, @AttrRes drawableAttr: Int): Drawable {
         val a = context.obtainStyledAttributes(intArrayOf(drawableAttr))
         val drawable = a.getDrawable(0)

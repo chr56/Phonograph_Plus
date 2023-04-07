@@ -22,6 +22,7 @@ import player.phonograph.coil.target.PaletteTargetBuilder
 import player.phonograph.service.MusicService
 import player.phonograph.ui.activities.MainActivity
 import player.phonograph.util.ImageUtil
+import player.phonograph.util.theme.createTintedDrawable
 
 class AppWidgetClassic : BaseAppWidget() {
 
@@ -106,11 +107,10 @@ class AppWidgetClassic : BaseAppWidget() {
         appWidgetView.setImageViewBitmap(
             R.id.button_toggle_play_pause,
             ImageUtil.createBitmap(
-                ImageUtil.getTintedVectorDrawable(
-                    service,
+                service.createTintedDrawable(
                     playPauseRes,
                     color
-                )
+                )!!
             )
         )
 
@@ -118,21 +118,19 @@ class AppWidgetClassic : BaseAppWidget() {
         appWidgetView.setImageViewBitmap(
             R.id.button_next,
             ImageUtil.createBitmap(
-                ImageUtil.getTintedVectorDrawable(
-                    service,
+                service.createTintedDrawable(
                     R.drawable.ic_skip_next_white_24dp,
                     color
-                )
+                )!!
             )
         )
         appWidgetView.setImageViewBitmap(
             R.id.button_prev,
             ImageUtil.createBitmap(
-                ImageUtil.getTintedVectorDrawable(
-                    service,
+                service.createTintedDrawable(
                     R.drawable.ic_skip_previous_white_24dp,
                     color
-                )
+                )!!
             )
         )
         val image = getAlbumArtDrawable(service.resources, bitmap)
