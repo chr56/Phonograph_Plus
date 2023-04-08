@@ -50,7 +50,15 @@
 
 -keepnames,allowoptimization,allowshrinking class player.phonograph.dialogs.**
 
--keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.util.** {public <methods>;}
+-keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.mechanism.** {public <methods>;}
+
+-keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.util.permissions.** {public <methods>;}
+-keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.util.theme.ThemeKt {public <methods>;}
+-keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.util.theme.DrawableTintKt {public <methods>;}
+-keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.util.ui.BitmapUtil {public <methods>;}
+-keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.util.zip.ZipUtil {public <methods>;}
+-keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.util.*Util {public <methods>;}
+
 
 -keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.settings.Setting {public void set**(...); public *** get**();}
 
