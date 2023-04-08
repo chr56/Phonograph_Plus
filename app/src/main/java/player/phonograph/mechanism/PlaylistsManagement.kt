@@ -23,7 +23,7 @@ import android.provider.BaseColumns
 import android.provider.MediaStore
 import android.util.Log
 
-object PlaylistsUtil {
+object PlaylistsManagement {
     private const val TAG: String = "PlaylistUtil"
 
     fun getAllPlaylists(context: Context): List<FilePlaylist> {

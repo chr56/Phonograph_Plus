@@ -11,7 +11,7 @@ import lib.phonograph.uri.isTreeDocumentFileSafe
 import player.phonograph.R
 import player.phonograph.model.playlist.FilePlaylist
 import player.phonograph.util.CoroutineUtil.coroutineToast
-import player.phonograph.mechanism.PlaylistsUtil
+import player.phonograph.mechanism.PlaylistsManagement
 import player.phonograph.util.Util.warning
 import androidx.documentfile.provider.DocumentFile
 import android.content.Context
@@ -37,7 +37,7 @@ suspend fun tryToDeletePlaylistsViaSAF(
     require(context is IOpenDirStorageAccess)
     while (context.openDirStorageAccessTool.busy) yield()
     // common root
-    val playlistPaths = filePlaylists.map { PlaylistsUtil.getPlaylistPath(context, it) }
+    val playlistPaths = filePlaylists.map { PlaylistsManagement.getPlaylistPath(context, it) }
     val commonRoot = commonPathRoot(playlistPaths)
     coroutineToast(
         context,
@@ -85,7 +85,7 @@ private fun searchPlaylist(
     root: DocumentFile,
     filePlaylists: List<FilePlaylist>
 ): List<DocumentFile> {
-    val fileNames = PlaylistsUtil.getPlaylistFileNames(context, filePlaylists)
+    val fileNames = PlaylistsManagement.getPlaylistFileNames(context, filePlaylists)
     return if (fileNames.isEmpty()) {
         Log.w(TAG, "No playlist display name?")
         emptyList()

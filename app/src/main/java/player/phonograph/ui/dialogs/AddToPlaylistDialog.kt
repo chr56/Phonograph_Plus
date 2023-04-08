@@ -6,7 +6,7 @@ package player.phonograph.ui.dialogs
 
 import player.phonograph.R
 import player.phonograph.model.Song
-import player.phonograph.mechanism.PlaylistsUtil
+import player.phonograph.mechanism.PlaylistsManagement
 import util.phonograph.playlist.PlaylistsManager
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
@@ -18,7 +18,7 @@ import kotlinx.coroutines.launch
 class AddToPlaylistDialog : DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val songs: List<Song> = requireArguments().getParcelableArrayList(SONG)!!
-        val playlists = PlaylistsUtil.getAllPlaylists(requireActivity())
+        val playlists = PlaylistsManagement.getAllPlaylists(requireActivity())
 
         val playlistNames =
             arrayOf(resources.getString(R.string.action_new_playlist)) + playlists.map { it.name }.toTypedArray()

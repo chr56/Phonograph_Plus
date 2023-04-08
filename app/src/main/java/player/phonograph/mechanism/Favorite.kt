@@ -10,8 +10,8 @@ import player.phonograph.model.Song
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.provider.FavoriteSongsStore
 import player.phonograph.settings.Setting
-import player.phonograph.mechanism.PlaylistsUtil.doesPlaylistContain
-import player.phonograph.mechanism.PlaylistsUtil.getPlaylist
+import player.phonograph.mechanism.PlaylistsManagement.doesPlaylistContain
+import player.phonograph.mechanism.PlaylistsManagement.getPlaylist
 import util.phonograph.playlist.mediastore.addToPlaylistViaMediastore
 import util.phonograph.playlist.mediastore.createOrFindPlaylistViaMediastore
 import util.phonograph.playlist.mediastore.removeFromPlaylistViaMediastore
