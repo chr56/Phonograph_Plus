@@ -15,7 +15,7 @@ import player.phonograph.ui.dialogs.ReportIssueDialog
 import player.phonograph.ui.dialogs.UpgradeDialog
 import player.phonograph.util.theme.nightMode
 import player.phonograph.mechanism.Update
-import player.phonograph.util.Util.reportError
+import player.phonograph.util.reportError
 import androidx.annotation.Keep
 import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.Toolbar

@@ -10,9 +10,9 @@ import player.phonograph.actions.click.mode.SongClickMode.FLAG_MASK_PLAY_QUEUE_I
 import player.phonograph.actions.click.mode.SongClickMode.baseModes
 import player.phonograph.actions.click.mode.SongClickMode.modeName
 import player.phonograph.settings.Setting
-import player.phonograph.util.Util.setBit
-import player.phonograph.util.Util.testBit
-import player.phonograph.util.Util.unsetBit
+import player.phonograph.util.setBit
+import player.phonograph.util.testBit
+import player.phonograph.util.unsetBit
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row

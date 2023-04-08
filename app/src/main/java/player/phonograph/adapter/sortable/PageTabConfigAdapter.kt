@@ -6,7 +6,7 @@ package player.phonograph.adapter.sortable
 
 import player.phonograph.model.pages.PageConfig
 import player.phonograph.model.pages.Pages
-import player.phonograph.util.Util
+import player.phonograph.util.warning
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
@@ -44,7 +44,7 @@ class PageTabConfigAdapter(private val pageConfig: PageConfig) : SortableListAda
     companion object {
         private const val TAG = "PageTabConfigAdapter"
         private fun Boolean.report(msg: String): Boolean {
-            if (!this) Util.warning(TAG, msg)
+            if (!this) warning(TAG, msg)
             return this
         }
     }

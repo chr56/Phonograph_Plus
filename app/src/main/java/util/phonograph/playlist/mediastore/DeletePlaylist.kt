@@ -8,8 +8,8 @@ import legacy.phonograph.MediaStoreCompat
 import player.phonograph.BROADCAST_PLAYLISTS_CHANGED
 import player.phonograph.R
 import player.phonograph.model.playlist.FilePlaylist
-import player.phonograph.util.CoroutineUtil.coroutineToast
-import player.phonograph.util.Util.warning
+import player.phonograph.util.coroutineToast
+import player.phonograph.util.warning
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import android.content.Context
 import android.content.Intent

@@ -10,7 +10,7 @@ import player.phonograph.model.Song
 import player.phonograph.model.lyrics.AbsLyrics
 import player.phonograph.model.lyrics.LyricsList
 import player.phonograph.mechanism.Favorite.isFavorite
-import player.phonograph.util.Util.reportError
+import player.phonograph.util.reportError
 import androidx.annotation.ColorInt
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

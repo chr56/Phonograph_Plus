@@ -9,7 +9,7 @@ import player.phonograph.MusicServiceMsgConst
 import player.phonograph.misc.MusicServiceEventListener
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.MusicPlayerRemote.ServiceToken
-import player.phonograph.util.Util.debug
+import player.phonograph.util.debug
 import player.phonograph.util.permissions.NonGrantedPermission
 import player.phonograph.util.permissions.Permission
 import player.phonograph.util.permissions.checkStorageReadPermission

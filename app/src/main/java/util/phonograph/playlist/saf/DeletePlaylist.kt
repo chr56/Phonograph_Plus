@@ -10,9 +10,9 @@ import lib.phonograph.storage.getBasePath
 import lib.phonograph.uri.isTreeDocumentFileSafe
 import player.phonograph.R
 import player.phonograph.model.playlist.FilePlaylist
-import player.phonograph.util.CoroutineUtil.coroutineToast
+import player.phonograph.util.coroutineToast
 import player.phonograph.mechanism.PlaylistsManagement
-import player.phonograph.util.Util.warning
+import player.phonograph.util.warning
 import androidx.documentfile.provider.DocumentFile
 import android.content.Context
 import android.os.Environment

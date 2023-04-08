@@ -18,7 +18,7 @@ import player.phonograph.BuildConfig
 import player.phonograph.model.version.VersionCatalog
 import player.phonograph.notification.ErrorNotification
 import player.phonograph.notification.UpgradeNotification
-import player.phonograph.util.CoroutineUtil.coroutineToast
+import player.phonograph.util.coroutineToast
 import player.phonograph.mechanism.Update
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope

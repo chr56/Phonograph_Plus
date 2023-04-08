@@ -12,9 +12,9 @@ import lib.phonograph.storage.getAbsolutePath
 import player.phonograph.R
 import player.phonograph.model.Song
 import player.phonograph.model.playlist.FilePlaylist
-import player.phonograph.util.CoroutineUtil.coroutineToast
+import player.phonograph.util.coroutineToast
 import player.phonograph.mechanism.PlaylistsManagement
-import player.phonograph.util.Util.reportError
+import player.phonograph.util.reportError
 import util.phonograph.playlist.m3u.M3UGenerator
 import android.content.Context
 import kotlinx.coroutines.Dispatchers

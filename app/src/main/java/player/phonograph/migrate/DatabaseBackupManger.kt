@@ -11,8 +11,8 @@ import player.phonograph.provider.FavoriteSongsStore
 import player.phonograph.provider.MusicPlaybackQueueStore
 import player.phonograph.provider.PathFilterStore
 import player.phonograph.util.FileUtil.saveToFile
-import player.phonograph.util.Util.reportError
-import player.phonograph.util.Util.warning
+import player.phonograph.util.reportError
+import player.phonograph.util.warning
 import androidx.annotation.Keep
 import android.content.Context
 import android.content.Intent

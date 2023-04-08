@@ -18,7 +18,7 @@ import player.phonograph.model.lyrics.TextLyrics
 import player.phonograph.notification.ErrorNotification.postErrorNotification
 import player.phonograph.settings.Setting
 import player.phonograph.util.FileUtil
-import player.phonograph.util.Util.debug
+import player.phonograph.util.debug
 import player.phonograph.util.permissions.hasStorageReadPermission
 import android.util.Log
 import kotlinx.coroutines.CoroutineScope

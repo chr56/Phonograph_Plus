@@ -21,7 +21,7 @@ import player.phonograph.model.Song
 import player.phonograph.model.SongInfoModel
 import player.phonograph.model.StringFilePropertyField
 import player.phonograph.model.TagField
-import player.phonograph.util.Util.warning
+import player.phonograph.util.warning
 import androidx.core.graphics.drawable.toBitmap
 import android.content.Context
 import android.graphics.Bitmap

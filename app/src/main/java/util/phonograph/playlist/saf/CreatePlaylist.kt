@@ -10,9 +10,9 @@ import lib.phonograph.misc.IOpenFileStorageAccess
 import player.phonograph.R
 import player.phonograph.model.Song
 import player.phonograph.model.playlist.Playlist
-import player.phonograph.util.CoroutineUtil.coroutineToast
-import player.phonograph.util.Util.reportError
-import player.phonograph.util.Util.warning
+import player.phonograph.util.coroutineToast
+import player.phonograph.util.reportError
+import player.phonograph.util.warning
 import util.phonograph.playlist.m3u.M3UGenerator
 import androidx.documentfile.provider.DocumentFile
 import android.content.Context

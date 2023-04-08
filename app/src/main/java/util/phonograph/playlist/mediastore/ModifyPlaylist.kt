@@ -9,7 +9,7 @@ import legacy.phonograph.MediaStoreCompat.Audio.Playlists
 import player.phonograph.R
 import player.phonograph.model.PlaylistSong
 import player.phonograph.model.Song
-import player.phonograph.util.CoroutineUtil.coroutineToast
+import player.phonograph.util.coroutineToast
 import player.phonograph.mechanism.PlaylistsManagement
 import android.content.ContentValues
 import android.content.Context

@@ -11,7 +11,7 @@ import player.phonograph.migrate.SettingDataManager
 import lib.phonograph.misc.ICreateFileStorageAccess
 import lib.phonograph.misc.IOpenFileStorageAccess
 import lib.phonograph.misc.OpenDocumentContract
-import player.phonograph.util.CoroutineUtil
+import player.phonograph.util.coroutineToast
 import player.phonograph.util.text.currentDateTime
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
@@ -137,6 +137,6 @@ class BackupDataDialog : DialogFragment() {
     }
 
     private suspend fun Boolean.andReport() {
-        CoroutineUtil.coroutineToast(App.instance, if (this) R.string.success else R.string.failed)
+        coroutineToast(App.instance, if (this) R.string.success else R.string.failed)
     }
 }

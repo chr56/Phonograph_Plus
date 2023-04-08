@@ -19,9 +19,9 @@ import player.phonograph.model.Song
 import player.phonograph.model.playlist.FilePlaylist
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.settings.Setting
-import player.phonograph.util.CoroutineUtil.coroutineToast
+import player.phonograph.util.coroutineToast
 import player.phonograph.mechanism.PlaylistsManagement
-import player.phonograph.util.Util.warning
+import player.phonograph.util.warning
 import util.phonograph.playlist.m3u.M3UGenerator
 import util.phonograph.playlist.mediastore.addToPlaylistViaMediastore
 import util.phonograph.playlist.mediastore.createOrFindPlaylistViaMediastore

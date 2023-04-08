@@ -4,7 +4,7 @@
 
 package player.phonograph.util.zip
 
-import player.phonograph.util.Util
+import player.phonograph.util.reportError
 import android.util.Log
 import java.io.BufferedInputStream
 import java.io.BufferedOutputStream
@@ -29,13 +29,13 @@ object ZipUtil {
                     }
                 }
             } else {
-                Util.reportError(
+                reportError(
                     IllegalStateException(), "ZopUtil",
                     "File ${file.name} is not a file"
                 )
             }
         }.let {
-            if (it.isFailure) Util.reportError(
+            if (it.isFailure) reportError(
                 it.exceptionOrNull() ?: Exception(),
                 "ZopUtil",
                 "Failed to add ${file.name} to current archive file ($destination)"

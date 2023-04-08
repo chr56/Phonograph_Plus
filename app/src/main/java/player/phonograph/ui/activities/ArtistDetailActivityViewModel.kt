@@ -18,7 +18,7 @@ import player.phonograph.model.Album
 import player.phonograph.model.Artist
 import player.phonograph.model.Song
 import player.phonograph.settings.Setting
-import player.phonograph.util.Util.reportError
+import player.phonograph.util.reportError
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response

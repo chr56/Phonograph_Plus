@@ -41,8 +41,8 @@ import player.phonograph.ui.fragments.HomeFragment
 import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.theme.nightMode
 import player.phonograph.mechanism.Update
-import player.phonograph.util.Util.debug
-import player.phonograph.util.Util.warning
+import player.phonograph.util.debug
+import player.phonograph.util.warning
 import player.phonograph.mechanism.setting.HomeTabConfig
 import player.phonograph.mechanism.setting.StyleConfig
 import androidx.drawerlayout.widget.DrawerLayout
