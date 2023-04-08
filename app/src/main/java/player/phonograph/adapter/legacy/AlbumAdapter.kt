@@ -1,14 +1,5 @@
 package player.phonograph.adapter.legacy
 
-import android.view.LayoutInflater
-import android.view.View
-import android.view.View.GONE
-import android.view.View.VISIBLE
-import android.view.ViewGroup
-import androidx.annotation.LayoutRes
-import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
-import androidx.core.util.Pair
 import coil.size.ViewSizeResolver
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView.SectionedAdapter
 import mt.util.color.primaryTextColor
@@ -27,8 +18,17 @@ import player.phonograph.model.getYearString
 import player.phonograph.model.songCountString
 import player.phonograph.model.sort.SortRef
 import player.phonograph.settings.Setting
-import player.phonograph.util.StringUtil
 import player.phonograph.util.NavigationUtil
+import player.phonograph.util.text.makeSectionName
+import androidx.annotation.LayoutRes
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
+import androidx.core.util.Pair
+import android.view.LayoutInflater
+import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
+import android.view.ViewGroup
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
@@ -138,8 +138,8 @@ open class AlbumAdapter(
         val album = dataSet[position]
         val sectionName: String =
             when (Setting.instance.albumSortMode.sortRef) {
-                SortRef.ALBUM_NAME -> StringUtil.getSectionName(album.title)
-                SortRef.ARTIST_NAME -> StringUtil.getSectionName(album.artistName)
+                SortRef.ALBUM_NAME -> makeSectionName(album.title)
+                SortRef.ARTIST_NAME -> makeSectionName(album.artistName)
                 SortRef.YEAR -> getYearString(album.year)
                 SortRef.SONG_COUNT -> album.songCount.toString()
                 else -> ""

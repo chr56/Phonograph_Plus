@@ -22,7 +22,7 @@ import player.phonograph.misc.menuProvider
 import player.phonograph.ui.dialogs.BackupDataDialog
 import player.phonograph.ui.fragments.SettingsFragment
 import player.phonograph.util.CoroutineUtil
-import player.phonograph.util.TimeUtil.currentDateTime
+import player.phonograph.util.text.currentDateTime
 import androidx.appcompat.widget.Toolbar
 import android.net.Uri
 import android.os.Bundle

@@ -4,7 +4,6 @@
 
 package player.phonograph.adapter.display
 
-import androidx.appcompat.app.AppCompatActivity
 import coil.size.ViewSizeResolver
 import player.phonograph.R
 import player.phonograph.adapter.base.MultiSelectionCabController
@@ -15,9 +14,10 @@ import player.phonograph.model.getReadableDurationString
 import player.phonograph.model.getYearString
 import player.phonograph.model.sort.SortRef
 import player.phonograph.settings.Setting
-import player.phonograph.util.StringUtil
+import player.phonograph.util.text.makeSectionName
+import androidx.appcompat.app.AppCompatActivity
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Locale
 
 open class SongDisplayAdapter(
     activity: AppCompatActivity,
@@ -52,9 +52,9 @@ open class SongDisplayAdapter(
         val song = dataset[position]
         val sectionName: String =
             when (Setting.instance.songSortMode.sortRef) {
-                SortRef.SONG_NAME -> StringUtil.getSectionName(song.title)
-                SortRef.ARTIST_NAME -> StringUtil.getSectionName(song.artistName)
-                SortRef.ALBUM_NAME -> StringUtil.getSectionName(song.albumName)
+                SortRef.SONG_NAME -> makeSectionName(song.title)
+                SortRef.ARTIST_NAME -> makeSectionName(song.artistName)
+                SortRef.ALBUM_NAME -> makeSectionName(song.albumName)
                 SortRef.YEAR -> getYearString(song.year)
                 SortRef.DURATION -> getReadableDurationString(song.duration)
                 SortRef.MODIFIED_DATE ->

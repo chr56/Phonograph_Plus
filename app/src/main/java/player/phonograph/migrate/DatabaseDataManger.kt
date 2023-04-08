@@ -9,7 +9,7 @@ import player.phonograph.provider.DatabaseConstants.HISTORY_DB
 import player.phonograph.provider.DatabaseConstants.MUSIC_PLAYBACK_STATE_DB
 import player.phonograph.provider.DatabaseConstants.PATH_FILTER
 import player.phonograph.provider.DatabaseConstants.SONG_PLAY_COUNT_DB
-import player.phonograph.util.TimeUtil.currentTimestamp
+import player.phonograph.util.text.currentTimestamp
 import player.phonograph.util.zip.ZipUtil.addToZipFile
 import player.phonograph.util.zip.ZipUtil.extractZipFile
 import android.content.Context

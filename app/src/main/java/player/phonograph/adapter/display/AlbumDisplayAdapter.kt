@@ -4,10 +4,6 @@
 
 package player.phonograph.adapter.display
 
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import androidx.appcompat.app.AppCompatActivity
 import coil.size.ViewSizeResolver
 import player.phonograph.R
 import player.phonograph.adapter.base.MultiSelectionCabController
@@ -17,7 +13,11 @@ import player.phonograph.model.Album
 import player.phonograph.model.getYearString
 import player.phonograph.model.sort.SortRef
 import player.phonograph.settings.Setting
-import player.phonograph.util.StringUtil
+import player.phonograph.util.text.makeSectionName
+import androidx.appcompat.app.AppCompatActivity
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 
 class AlbumDisplayAdapter(
     activity: AppCompatActivity,
@@ -52,8 +52,8 @@ class AlbumDisplayAdapter(
         val album = dataset[position]
         val sectionName: String =
             when (Setting.instance.albumSortMode.sortRef) {
-                SortRef.ALBUM_NAME -> StringUtil.getSectionName(album.title)
-                SortRef.ARTIST_NAME -> StringUtil.getSectionName(album.artistName)
+                SortRef.ALBUM_NAME -> makeSectionName(album.title)
+                SortRef.ARTIST_NAME -> makeSectionName(album.artistName)
                 SortRef.YEAR -> getYearString(album.year)
                 SortRef.SONG_COUNT -> album.songCount.toString()
                 else -> ""

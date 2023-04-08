@@ -15,7 +15,7 @@ import player.phonograph.UpdateConfig.requestUriJsdelivr
 import player.phonograph.model.version.VersionCatalog
 import player.phonograph.settings.Setting
 import player.phonograph.util.NetworkUtil.invokeRequest
-import player.phonograph.util.TimeUtil.dateText
+import player.phonograph.util.text.dateText
 import player.phonograph.util.Util.debug
 import android.util.Log
 import kotlinx.coroutines.Dispatchers

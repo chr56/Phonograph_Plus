@@ -8,10 +8,10 @@ import lib.phonograph.misc.IOpenDirStorageAccess
 import lib.phonograph.storage.getAbsolutePath
 import player.phonograph.R
 import player.phonograph.model.playlist.FilePlaylist
-import player.phonograph.util.StringUtil.ItemGroup
-import player.phonograph.util.StringUtil.buildDeletionMessage
 import player.phonograph.util.Util.reportError
 import player.phonograph.util.Util.sentPlaylistChangedLocalBoardCast
+import player.phonograph.util.text.ItemGroup
+import player.phonograph.util.text.buildDeletionMessage
 import androidx.appcompat.app.AlertDialog
 import androidx.documentfile.provider.DocumentFile
 import android.app.Activity

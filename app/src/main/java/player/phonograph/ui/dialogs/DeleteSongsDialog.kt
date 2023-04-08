@@ -9,10 +9,11 @@ import player.phonograph.model.Song
 import player.phonograph.ui.components.ViewComponent
 import player.phonograph.ui.components.viewcreater.*
 import player.phonograph.util.CoroutineUtil
-import player.phonograph.util.StringUtil
 import player.phonograph.util.Util
 import player.phonograph.util.permissions.hasStorageWritePermission
 import player.phonograph.util.permissions.navigateToStorageSetting
+import player.phonograph.util.text.ItemGroup
+import player.phonograph.util.text.buildDeletionMessage
 import androidx.core.view.setMargins
 import androidx.fragment.app.DialogFragment
 import android.annotation.SuppressLint
@@ -125,13 +126,13 @@ class DeleteSongsDialog : DialogFragment() {
 
         override fun loadData(model: DeleteSongsModel) {
             contentText.text =
-                StringUtil.buildDeletionMessage(
+                buildDeletionMessage(
                     context = activity,
                     itemSize = model.songs.size,
                     extraSuffix = if (!model.hasPermission) activity.getString(
                         R.string.permission_manage_external_storage_denied
                     ) else "",
-                    StringUtil.ItemGroup(
+                    ItemGroup(
                         activity.resources.getQuantityString(R.plurals.item_songs,
                                                              model.songs.size),
                         model.songs.map { it.title }
