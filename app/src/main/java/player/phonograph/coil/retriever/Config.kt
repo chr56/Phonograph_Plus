@@ -9,7 +9,7 @@ import player.phonograph.model.IMAGE_SOURCE_J_AUDIO_TAGGER
 import player.phonograph.model.IMAGE_SOURCE_MEDIA_METADATA_RETRIEVER
 import player.phonograph.model.IMAGE_SOURCE_MEDIA_STORE
 import player.phonograph.model.ImageSource
-import player.phonograph.util.preferences.CoilImageSourceConfig
+import player.phonograph.mechanism.setting.CoilImageSourceConfig
 
 internal val retrieverFromConfig: List<ImageRetriever>
     get() {

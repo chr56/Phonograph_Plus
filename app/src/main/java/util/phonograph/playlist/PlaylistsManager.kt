@@ -20,7 +20,7 @@ import player.phonograph.model.playlist.FilePlaylist
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.settings.Setting
 import player.phonograph.util.CoroutineUtil.coroutineToast
-import player.phonograph.util.PlaylistsUtil
+import player.phonograph.mechanism.PlaylistsUtil
 import player.phonograph.util.Util.warning
 import util.phonograph.playlist.m3u.M3UGenerator
 import util.phonograph.playlist.mediastore.addToPlaylistViaMediastore

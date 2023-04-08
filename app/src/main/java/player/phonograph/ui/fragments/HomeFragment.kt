@@ -28,7 +28,7 @@ import player.phonograph.ui.activities.SearchActivity
 import player.phonograph.ui.components.popup.ListOptionsPopup
 import player.phonograph.ui.fragments.pages.AbsPage
 import player.phonograph.util.theme.getTintedDrawable
-import player.phonograph.util.preferences.HomeTabConfig
+import player.phonograph.mechanism.setting.HomeTabConfig
 import androidx.annotation.DrawableRes
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.graphics.BlendModeColorFilterCompat

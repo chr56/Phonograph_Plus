@@ -1,11 +1,12 @@
 /*
- * Copyright (c) 2022 chr_56
+ *  Copyright (c) 2022~2023 chr_56
  */
 
 @file:Suppress("MemberVisibilityCanBePrivate", "unused")
 
-package player.phonograph.util
+package player.phonograph.mechanism
 
+import lib.phonograph.misc.ICreateFileStorageAccess
 import org.jaudiotagger.audio.AudioFile
 import org.jaudiotagger.audio.AudioFileIO
 import org.jaudiotagger.audio.AudioHeader
@@ -15,7 +16,6 @@ import org.jaudiotagger.tag.id3.AbstractTagFrame
 import player.phonograph.App
 import player.phonograph.coil.loadImage
 import player.phonograph.coil.target.PaletteTargetBuilder
-import lib.phonograph.misc.ICreateFileStorageAccess
 import player.phonograph.model.LongFilePropertyField
 import player.phonograph.model.Song
 import player.phonograph.model.SongInfoModel
@@ -37,7 +37,7 @@ import java.io.File
 import java.io.IOException
 import java.io.OutputStream
 
-object SongDetailUtil {
+object SongDetail {
 
     fun readSong(song: Song): SongInfoModel = readSong(File(song.data))
 

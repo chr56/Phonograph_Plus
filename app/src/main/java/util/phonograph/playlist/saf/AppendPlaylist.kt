@@ -13,7 +13,7 @@ import player.phonograph.R
 import player.phonograph.model.Song
 import player.phonograph.model.playlist.FilePlaylist
 import player.phonograph.util.CoroutineUtil.coroutineToast
-import player.phonograph.util.PlaylistsUtil
+import player.phonograph.mechanism.PlaylistsUtil
 import player.phonograph.util.Util.reportError
 import util.phonograph.playlist.m3u.M3UGenerator
 import android.content.Context

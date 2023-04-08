@@ -12,7 +12,6 @@ import player.phonograph.adapter.display.PlayingQueueAdapter
 import player.phonograph.dialogs.LyricsDialog
 import player.phonograph.dialogs.SleepTimerDialog
 import player.phonograph.misc.PaletteColorHolder
-import player.phonograph.model.Song
 import player.phonograph.model.buildInfoString
 import player.phonograph.model.getReadableDurationString
 import player.phonograph.model.lyrics.AbsLyrics
@@ -23,7 +22,7 @@ import player.phonograph.ui.dialogs.CreatePlaylistDialog
 import player.phonograph.ui.dialogs.QueueSnapshotsDialog
 import player.phonograph.ui.fragments.AbsMusicServiceFragment
 import player.phonograph.ui.fragments.player.PlayerAlbumCoverFragment.Companion.VISIBILITY_ANIM_DURATION
-import player.phonograph.util.FavoriteUtil.toggleFavorite
+import player.phonograph.mechanism.Favorite.toggleFavorite
 import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.NavigationUtil
 import androidx.annotation.ColorInt

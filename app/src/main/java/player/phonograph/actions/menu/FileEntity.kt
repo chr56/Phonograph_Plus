@@ -24,8 +24,8 @@ import player.phonograph.model.file.FileEntity
 import player.phonograph.model.file.linkedSong
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.ui.compose.tag.TagEditorActivity
-import player.phonograph.util.PathFilterUtil
-import player.phonograph.util.preferences.FileConfig
+import player.phonograph.mechanism.PathFilter
+import player.phonograph.mechanism.setting.FileConfig
 import android.app.Activity
 import android.content.Context
 import android.media.MediaScannerConnection
@@ -102,7 +102,7 @@ fun fileEntityPopupMenu(
                 menuItem(title = getString(R.string.action_add_to_black_list)) { // id = R.id.action_add_to_black_list
                     showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
                     onClick {
-                        PathFilterUtil.addToBlacklist(context, File(file.location.absolutePath))
+                        PathFilter.addToBlacklist(context, File(file.location.absolutePath))
                         true
                     }
                 }

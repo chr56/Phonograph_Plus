@@ -4,7 +4,6 @@
 
 package player.phonograph.ui.dialogs
 
-import lib.phonograph.dialog.DialogContext
 import lib.phonograph.dialog.SingleChoiceItemMap
 import lib.phonograph.dialog.alertDialog
 import mt.color.MaterialColor
@@ -21,7 +20,7 @@ import player.phonograph.ui.components.viewcreater.buttonPanel
 import player.phonograph.ui.components.viewcreater.contentPanel
 import player.phonograph.ui.components.viewcreater.titlePanel
 import player.phonograph.util.TimeUtil.dateText
-import player.phonograph.util.UpdateUtil.canAccessGitHub
+import player.phonograph.mechanism.canAccessGitHub
 import androidx.appcompat.app.AlertDialog
 import androidx.cardview.widget.CardView
 import androidx.core.view.setMargins

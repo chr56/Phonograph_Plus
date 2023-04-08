@@ -10,7 +10,7 @@ import com.afollestad.materialdialogs.actions.getActionButton
 import com.afollestad.materialdialogs.input.input
 import mt.pref.ThemeColor.accentColor
 import player.phonograph.R
-import player.phonograph.util.PlaylistsUtil
+import player.phonograph.mechanism.PlaylistsUtil
 import util.phonograph.playlist.mediastore.renamePlaylistViaMediastore
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.lifecycleScope

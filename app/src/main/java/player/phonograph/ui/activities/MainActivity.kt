@@ -40,11 +40,11 @@ import player.phonograph.ui.dialogs.UpgradeDialog
 import player.phonograph.ui.fragments.HomeFragment
 import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.theme.nightMode
-import player.phonograph.util.UpdateUtil
+import player.phonograph.mechanism.Update
 import player.phonograph.util.Util.debug
 import player.phonograph.util.Util.warning
-import player.phonograph.util.preferences.HomeTabConfig
-import player.phonograph.util.preferences.StyleConfig
+import player.phonograph.mechanism.setting.HomeTabConfig
+import player.phonograph.mechanism.setting.StyleConfig
 import androidx.drawerlayout.widget.DrawerLayout
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -371,7 +371,7 @@ class MainActivity : AbsSlidingMusicPanelActivity(),
             return
         }
         CoroutineScope(SupervisorJob()).launch {
-            UpdateUtil.checkUpdate { versionCatalog: VersionCatalog, upgradable: Boolean ->
+            Update.checkUpdate { versionCatalog: VersionCatalog, upgradable: Boolean ->
                 if (upgradable) {
                     val channel = when (BuildConfig.FLAVOR) {
                         "preview" -> "preview"

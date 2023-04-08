@@ -5,13 +5,11 @@
 package player.phonograph.util.theme
 
 import mt.pref.ThemeColor
-import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.settings.Setting
-import player.phonograph.util.preferences.StyleConfig
+import player.phonograph.mechanism.setting.StyleConfig
 import android.content.Context
 import android.content.res.Configuration
-import android.content.res.Resources
 import android.os.Build
 
 

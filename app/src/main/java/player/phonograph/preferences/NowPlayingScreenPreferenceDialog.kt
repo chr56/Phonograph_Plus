@@ -10,7 +10,7 @@ import mt.util.color.primaryDisabledTextColor
 import player.phonograph.R
 import player.phonograph.model.NowPlayingScreen
 import player.phonograph.util.ViewUtil
-import player.phonograph.util.preferences.NowPlayingScreenConfig
+import player.phonograph.mechanism.setting.NowPlayingScreenConfig
 import androidx.fragment.app.DialogFragment
 import androidx.viewpager.widget.PagerAdapter
 import androidx.viewpager.widget.ViewPager

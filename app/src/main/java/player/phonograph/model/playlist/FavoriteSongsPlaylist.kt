@@ -11,7 +11,7 @@ import androidx.annotation.Keep
 import player.phonograph.R
 import player.phonograph.model.Song
 import player.phonograph.provider.FavoriteSongsStore
-import player.phonograph.util.FavoriteUtil
+import player.phonograph.mechanism.Favorite
 
 class FavoriteSongsPlaylist : SmartPlaylist, EditablePlaylist {
 
@@ -32,17 +32,17 @@ class FavoriteSongsPlaylist : SmartPlaylist, EditablePlaylist {
         FavoriteSongsStore.instance.contains(songId, "")
 
     override fun removeSong(context: Context, song: Song) {
-        FavoriteUtil.toggleFavorite(context, song)
+        Favorite.toggleFavorite(context, song)
     }
 
     override fun moveSong(context: Context, song: Song, from: Int, to: Int) { } // meaningless
 
     override fun appendSong(context: Context, song: Song) {
-        FavoriteUtil.toggleFavorite(context, song)
+        Favorite.toggleFavorite(context, song)
     }
 
     override fun appendSongs(context: Context, songs: List<Song>) {
-        for (song in songs) FavoriteUtil.toggleFavorite(context, song)
+        for (song in songs) Favorite.toggleFavorite(context, song)
     }
 
     override fun clear(context: Context) {

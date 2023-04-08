@@ -25,10 +25,10 @@ import player.phonograph.ui.dialogs.ClickModeSettingDialog
 import player.phonograph.ui.dialogs.ImageSourceConfigDialog
 import player.phonograph.ui.dialogs.PathFilterDialog
 import player.phonograph.util.NavigationUtil
-import player.phonograph.util.StatusBarLyricUtil
-import player.phonograph.util.preferences.HomeTabConfig
-import player.phonograph.util.preferences.NowPlayingScreenConfig
-import player.phonograph.util.preferences.StyleConfig
+import player.phonograph.mechanism.StatusBarLyric
+import player.phonograph.mechanism.setting.HomeTabConfig
+import player.phonograph.mechanism.setting.NowPlayingScreenConfig
+import player.phonograph.mechanism.setting.StyleConfig
 import util.phonograph.misc.ColorChooserListener
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.lifecycleScope
@@ -124,7 +124,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
                         Setting.BROADCAST_SYNCHRONIZED_LYRICS -> {
                             delay(200)
                             // clear lyrics displaying on the statusbar now
-                            StatusBarLyricUtil.stopLyric()
+                            StatusBarLyric.stopLyric()
                         }
                     }
                 }
@@ -162,7 +162,8 @@ class SettingsFragment : PreferenceFragmentCompat() {
     }
 
     private fun updateNowPlayingScreenSummary() {
-        findPreference<Preference>(getString(R.string.preference_key_now_playing_screen))?.setSummary(NowPlayingScreenConfig.nowPlayingScreen.titleRes)
+        findPreference<Preference>(getString(R.string.preference_key_now_playing_screen))?.setSummary(
+            NowPlayingScreenConfig.nowPlayingScreen.titleRes)
     }
 
     private fun updatePathFilterExcludeMode() {

@@ -16,7 +16,7 @@ import player.phonograph.ui.compose.tag.TagEditorActivity
 import player.phonograph.ui.dialogs.AddToPlaylistDialog
 import player.phonograph.ui.dialogs.DeleteSongsDialog
 import player.phonograph.util.NavigationUtil
-import player.phonograph.util.PathFilterUtil
+import player.phonograph.mechanism.PathFilter
 import player.phonograph.misc.RingtoneManager
 import androidx.core.util.Pair
 import androidx.fragment.app.FragmentActivity
@@ -104,7 +104,7 @@ fun Song.actionSetAsRingtone(context: Context): Boolean =
     RingtoneManager.setRingtone(context, id)
 
 fun Song.actionAddToBlacklist(context: Context): Boolean {
-    PathFilterUtil.addToBlacklist(context, this)
+    PathFilter.addToBlacklist(context, this)
     return true
 }
 

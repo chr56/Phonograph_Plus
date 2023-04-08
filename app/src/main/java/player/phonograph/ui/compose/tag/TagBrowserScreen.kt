@@ -5,9 +5,9 @@
 package player.phonograph.ui.compose.tag
 
 import player.phonograph.App
+import player.phonograph.mechanism.tageditor.applyEdit
 import player.phonograph.ui.compose.ColorTools
 import player.phonograph.ui.compose.components.CoverImage
-import player.phonograph.util.tageditor.applyEdit
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize

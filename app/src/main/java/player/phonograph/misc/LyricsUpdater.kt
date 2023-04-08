@@ -8,7 +8,7 @@ import player.phonograph.mediastore.LyricsLoader
 import player.phonograph.model.Song
 import player.phonograph.model.lyrics.LrcLyrics
 import player.phonograph.notification.ErrorNotification
-import player.phonograph.util.StatusBarLyricUtil
+import player.phonograph.mechanism.StatusBarLyric
 import android.util.Log
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.runBlocking
@@ -54,11 +54,11 @@ class LyricsUpdater(song: Song?) {
         if (newLine != null) {
             if (newLine != cache) {
                 cache = newLine // update cache
-                StatusBarLyricUtil.updateLyric(newLine)
+                StatusBarLyric.updateLyric(newLine)
             }
         } else {
             cache = ""
-            StatusBarLyricUtil.stopLyric()
+            StatusBarLyric.stopLyric()
         }
     }
 

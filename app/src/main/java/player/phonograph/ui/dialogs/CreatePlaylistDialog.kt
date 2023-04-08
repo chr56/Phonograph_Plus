@@ -11,7 +11,7 @@ import com.afollestad.materialdialogs.input.input
 import mt.pref.ThemeColor.accentColor
 import player.phonograph.R
 import player.phonograph.model.Song
-import player.phonograph.util.PlaylistsUtil
+import player.phonograph.mechanism.PlaylistsUtil
 import util.phonograph.playlist.PlaylistsManager
 import androidx.fragment.app.DialogFragment
 import android.app.Dialog

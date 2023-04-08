@@ -7,7 +7,7 @@ package player.phonograph.model.playlist
 import player.phonograph.R
 import player.phonograph.mediastore.PlaylistSongLoader
 import player.phonograph.model.Song
-import player.phonograph.util.PlaylistsUtil
+import player.phonograph.mechanism.PlaylistsUtil
 import util.phonograph.playlist.PlaylistsManager
 import util.phonograph.playlist.mediastore.moveItemViaMediastore
 import util.phonograph.playlist.mediastore.removeFromPlaylistViaMediastore

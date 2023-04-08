@@ -7,7 +7,7 @@ package player.phonograph.migrate
 import player.phonograph.model.pages.Pages
 import player.phonograph.service.util.QueuePreferenceManager
 import player.phonograph.util.Util.reportError
-import player.phonograph.util.preferences.HomeTabConfig
+import player.phonograph.mechanism.setting.HomeTabConfig
 import player.phonograph.migrate.DeprecatedPreference.SortOrder
 import player.phonograph.settings.Setting
 import androidx.preference.PreferenceManager

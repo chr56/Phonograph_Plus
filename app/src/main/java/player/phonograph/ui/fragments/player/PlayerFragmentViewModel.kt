@@ -9,7 +9,7 @@ import player.phonograph.mediastore.LyricsLoader
 import player.phonograph.model.Song
 import player.phonograph.model.lyrics.AbsLyrics
 import player.phonograph.model.lyrics.LyricsList
-import player.phonograph.util.FavoriteUtil.isFavorite
+import player.phonograph.mechanism.Favorite.isFavorite
 import player.phonograph.util.Util.reportError
 import androidx.annotation.ColorInt
 import androidx.lifecycle.ViewModel

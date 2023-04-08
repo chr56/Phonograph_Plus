@@ -1,10 +1,9 @@
 /*
- * Copyright (c) 2022~2023 chr_56
+ *  Copyright (c) 2022~2023 chr_56
  */
 
-package player.phonograph.util
+package player.phonograph.mechanism
 
-import StatusBarLyric.API.StatusBarLyric
 import player.phonograph.App
 import player.phonograph.PACKAGE_NAME
 import player.phonograph.R
@@ -17,8 +16,9 @@ import android.graphics.drawable.Drawable
 import android.util.Base64
 import android.util.Log
 import java.io.ByteArrayOutputStream
+import StatusBarLyric.API.StatusBarLyric as StatusBarLyricAPI
 
-object StatusBarLyricUtil {
+object StatusBarLyric {
     // Actually, ServiceName is (music) service name, so we have no suffix (.plus.BUILD_TYPE)
     private const val musicServiceName = PACKAGE_NAME
     private const val useSystemMusicActive = false
@@ -46,8 +46,8 @@ object StatusBarLyricUtil {
     /**
      *  StatusBar Lyrics API
      */
-    private val lyricsService: StatusBarLyric by lazy {
-        StatusBarLyric(App.instance, icon, musicServiceName, useSystemMusicActive)
+    private val lyricsService: StatusBarLyricAPI by lazy {
+        StatusBarLyricAPI(App.instance, icon, musicServiceName, useSystemMusicActive)
     }
 
     private fun legacyUpdateLyrics(lyric: String) {
@@ -78,5 +78,5 @@ object StatusBarLyricUtil {
         return Base64.encodeToString(bytes, Base64.DEFAULT).replace("\n", "")
     }
 
-    private const val TAG = "statusbar_lyric"
+    private const val TAG = "StatusBarAPI"
 }

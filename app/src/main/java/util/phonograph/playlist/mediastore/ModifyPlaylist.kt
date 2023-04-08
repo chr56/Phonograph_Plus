@@ -10,7 +10,7 @@ import player.phonograph.R
 import player.phonograph.model.PlaylistSong
 import player.phonograph.model.Song
 import player.phonograph.util.CoroutineUtil.coroutineToast
-import player.phonograph.util.PlaylistsUtil
+import player.phonograph.mechanism.PlaylistsUtil
 import android.content.ContentValues
 import android.content.Context
 import android.database.Cursor

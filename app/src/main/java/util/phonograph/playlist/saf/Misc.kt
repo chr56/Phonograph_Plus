@@ -6,7 +6,7 @@ package util.phonograph.playlist.saf
 
 import lib.phonograph.storage.getAbsolutePath
 import player.phonograph.model.playlist.FilePlaylist
-import player.phonograph.util.PlaylistsUtil
+import player.phonograph.mechanism.PlaylistsUtil
 import player.phonograph.util.Util
 import android.annotation.SuppressLint
 import android.content.Context

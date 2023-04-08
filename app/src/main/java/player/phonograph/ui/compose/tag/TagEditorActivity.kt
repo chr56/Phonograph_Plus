@@ -5,19 +5,19 @@
 package player.phonograph.ui.compose.tag
 
 import com.vanpra.composematerialdialogs.MaterialDialogState
-import mt.pref.ThemeColor.primaryColor
-import mt.util.color.darkenColor
-import player.phonograph.R
-import player.phonograph.mediastore.SongLoader
 import lib.phonograph.misc.CreateFileStorageAccessTool
 import lib.phonograph.misc.ICreateFileStorageAccess
 import lib.phonograph.misc.IOpenFileStorageAccess
 import lib.phonograph.misc.OpenFileStorageAccessTool
+import mt.pref.ThemeColor.primaryColor
+import mt.util.color.darkenColor
+import player.phonograph.R
+import player.phonograph.mechanism.SongDetail
+import player.phonograph.mechanism.tageditor.selectNewArtwork
+import player.phonograph.mediastore.SongLoader
 import player.phonograph.model.Song
 import player.phonograph.ui.compose.base.ComposeToolbarActivity
 import player.phonograph.ui.compose.theme.PhonographTheme
-import player.phonograph.util.SongDetailUtil
-import player.phonograph.util.tageditor.selectNewArtwork
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.material.Icon
@@ -123,7 +123,7 @@ class TagEditorScreenViewModel(song: Song, defaultColor: Color) :
         @Synchronized get() {
             if (_infoTableViewModel == null) {
                 _infoTableViewModel =
-                    EditableInfoTableState(SongDetailUtil.readSong(song), defaultColor)
+                    EditableInfoTableState(SongDetail.readSong(song), defaultColor)
             }
             return _infoTableViewModel!!
         }

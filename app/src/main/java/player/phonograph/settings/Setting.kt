@@ -11,7 +11,7 @@ import player.phonograph.model.sort.FileSortMode
 import player.phonograph.model.sort.SortMode
 import player.phonograph.model.sort.SortRef
 import player.phonograph.util.CalendarUtil
-import player.phonograph.util.preferences.StyleConfig
+import player.phonograph.mechanism.setting.StyleConfig
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.preference.PreferenceManager

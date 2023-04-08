@@ -18,7 +18,7 @@ import mt.pref.ThemeColor
 import player.phonograph.R
 import player.phonograph.adapter.sortable.PageTabConfigAdapter
 import player.phonograph.model.pages.PageConfig
-import player.phonograph.util.preferences.HomeTabConfig
+import player.phonograph.mechanism.setting.HomeTabConfig
 
 class HomeTabConfigDialog : DialogFragment() {
     private lateinit var adapter: PageTabConfigAdapter

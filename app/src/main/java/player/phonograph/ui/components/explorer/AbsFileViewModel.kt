@@ -10,7 +10,7 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.*
 import player.phonograph.model.file.FileEntity
 import player.phonograph.model.file.Location
-import player.phonograph.util.preferences.FileConfig
+import player.phonograph.mechanism.setting.FileConfig
 import java.util.*
 
 abstract class AbsFileViewModel : ViewModel() {
