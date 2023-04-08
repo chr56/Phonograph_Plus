@@ -11,6 +11,17 @@ import player.phonograph.R
 
 object StringUtil {
 
+    fun getSectionName(reference: String?): String {
+        if (reference.isNullOrBlank()) return ""
+        var str = reference.trim { it <= ' ' }.lowercase()
+        str = when {
+            str.startsWith("the ") -> str.substring(4)
+            str.startsWith("a ") -> str.substring(2)
+            else -> str
+        }
+        return if (str.isEmpty()) "" else str[0].uppercase()
+    }
+
     fun buildRemovalMessage(
         context: Context,
         itemSize: Int,

@@ -15,7 +15,7 @@ import player.phonograph.model.getReadableDurationString
 import player.phonograph.model.getYearString
 import player.phonograph.model.sort.SortRef
 import player.phonograph.settings.Setting
-import player.phonograph.util.MusicUtil
+import player.phonograph.util.StringUtil
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -52,9 +52,9 @@ open class SongDisplayAdapter(
         val song = dataset[position]
         val sectionName: String =
             when (Setting.instance.songSortMode.sortRef) {
-                SortRef.SONG_NAME -> MusicUtil.getSectionName(song.title)
-                SortRef.ARTIST_NAME -> MusicUtil.getSectionName(song.artistName)
-                SortRef.ALBUM_NAME -> MusicUtil.getSectionName(song.albumName)
+                SortRef.SONG_NAME -> StringUtil.getSectionName(song.title)
+                SortRef.ARTIST_NAME -> StringUtil.getSectionName(song.artistName)
+                SortRef.ALBUM_NAME -> StringUtil.getSectionName(song.albumName)
                 SortRef.YEAR -> getYearString(song.year)
                 SortRef.DURATION -> getReadableDurationString(song.duration)
                 SortRef.MODIFIED_DATE ->

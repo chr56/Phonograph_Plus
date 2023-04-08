@@ -17,7 +17,7 @@ import player.phonograph.model.Album
 import player.phonograph.model.getYearString
 import player.phonograph.model.sort.SortRef
 import player.phonograph.settings.Setting
-import player.phonograph.util.MusicUtil
+import player.phonograph.util.StringUtil
 
 class AlbumDisplayAdapter(
     activity: AppCompatActivity,
@@ -52,8 +52,8 @@ class AlbumDisplayAdapter(
         val album = dataset[position]
         val sectionName: String =
             when (Setting.instance.albumSortMode.sortRef) {
-                SortRef.ALBUM_NAME -> MusicUtil.getSectionName(album.title)
-                SortRef.ARTIST_NAME -> MusicUtil.getSectionName(album.artistName)
+                SortRef.ALBUM_NAME -> StringUtil.getSectionName(album.title)
+                SortRef.ARTIST_NAME -> StringUtil.getSectionName(album.artistName)
                 SortRef.YEAR -> getYearString(album.year)
                 SortRef.SONG_COUNT -> album.songCount.toString()
                 else -> ""

@@ -18,7 +18,7 @@ import player.phonograph.coil.target.PaletteTargetBuilder
 import player.phonograph.model.Artist
 import player.phonograph.model.sort.SortRef
 import player.phonograph.settings.Setting
-import player.phonograph.util.MusicUtil
+import player.phonograph.util.StringUtil
 
 class ArtistDisplayAdapter(
     activity: AppCompatActivity,
@@ -53,14 +53,14 @@ class ArtistDisplayAdapter(
         val artist = dataset[position]
         val sectionName: String =
             when (Setting.instance.artistSortMode.sortRef) {
-                SortRef.ARTIST_NAME -> MusicUtil.getSectionName(artist.name)
+                SortRef.ARTIST_NAME -> StringUtil.getSectionName(artist.name)
                 SortRef.ALBUM_COUNT -> artist.albumCount.toString()
                 SortRef.SONG_COUNT -> artist.songCount.toString()
                 else -> {
                     ""
                 }
             }
-        return MusicUtil.getSectionName(sectionName)
+        return StringUtil.getSectionName(sectionName)
     }
 
     override fun getRelativeOrdinalText(item: Artist): String = item.songCount.toString()
