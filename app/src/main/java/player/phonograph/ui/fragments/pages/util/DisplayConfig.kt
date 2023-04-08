@@ -13,7 +13,7 @@ import player.phonograph.ui.fragments.pages.util.DisplayConfigTarget.AlbumPage
 import player.phonograph.ui.fragments.pages.util.DisplayConfigTarget.ArtistPage
 import player.phonograph.ui.fragments.pages.util.DisplayConfigTarget.GenrePage
 import player.phonograph.ui.fragments.pages.util.DisplayConfigTarget.SongPage
-import player.phonograph.util.Util
+import player.phonograph.util.ui.isLandscape
 import androidx.preference.PreferenceManager
 import android.content.Context
 import android.content.res.Resources
@@ -30,7 +30,7 @@ internal sealed class DisplayConfigTarget {
 
 class DisplayConfig internal constructor(private val page: DisplayConfigTarget) {
     private val isLandscape: Boolean
-        get() = Util.isLandscape(App.instance.resources)
+        get() = isLandscape(App.instance.resources)
 
     val maxGridSize: Int
         get() = if (isLandscape) App.instance.resources.getInteger(R.integer.max_columns_land) else

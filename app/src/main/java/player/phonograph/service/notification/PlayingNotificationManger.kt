@@ -47,8 +47,8 @@ import player.phonograph.service.MusicService
 import player.phonograph.service.util.MediaButtonIntentReceiver
 import player.phonograph.settings.Setting
 import player.phonograph.ui.activities.MainActivity
-import player.phonograph.util.BitmapUtil
-import player.phonograph.util.Util.getScreenSize
+import player.phonograph.util.ui.BitmapUtil
+import player.phonograph.util.ui.getScreenSize
 import player.phonograph.util.theme.createTintedDrawable
 import android.app.Notification as OSNotification
 import androidx.core.app.NotificationCompat as XNotificationCompat

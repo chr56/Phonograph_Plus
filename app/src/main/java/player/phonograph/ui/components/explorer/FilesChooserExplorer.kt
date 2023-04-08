@@ -13,7 +13,7 @@ import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.model.file.FileEntity
 import player.phonograph.model.file.Location
-import player.phonograph.util.ViewUtil.setUpFastScrollRecyclerViewColor
+import player.phonograph.util.ui.setUpFastScrollRecyclerViewColor
 
 class FilesChooserExplorer(
     private val activity: ComponentActivity,

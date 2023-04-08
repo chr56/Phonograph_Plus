@@ -29,49 +29,6 @@ object Util {
             Intent(BROADCAST_PLAYLISTS_CHANGED)
         )
 
-    @JvmStatic
-    fun getActionBarSize(context: Context): Int {
-        val typedValue = TypedValue()
-        val textSizeAttr = intArrayOf(R.attr.actionBarSize)
-        val indexOfAttrTextSize = 0
-        val a = context.obtainStyledAttributes(typedValue.data, textSizeAttr)
-        val actionBarSize = a.getDimensionPixelSize(indexOfAttrTextSize, -1)
-        a.recycle()
-        return actionBarSize
-    }
-
-    fun Context.getScreenSize(): Point {
-        val windowManager = getSystemService(Context.WINDOW_SERVICE) as WindowManager
-        val size: Point =
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                windowManager.currentWindowMetrics.bounds.run { Point(width(), height()) }
-            } else {
-                Point().also { windowManager.defaultDisplay.getSize(it) }
-            }
-        return size
-    }
-
-    @JvmStatic
-    fun hideSoftKeyboard(activity: Activity?) {
-        if (activity != null) {
-            val currentFocus = activity.currentFocus
-            if (currentFocus != null) {
-                val inputMethodManager =
-                    activity.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
-                inputMethodManager.hideSoftInputFromWindow(currentFocus.windowToken, 0)
-            }
-        }
-    }
-
-    fun isTablet(resources: Resources): Boolean {
-        return resources.configuration.smallestScreenWidthDp >= 600
-    }
-
-    @JvmStatic
-    fun isLandscape(resources: Resources): Boolean {
-        return resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
-    }
-
     /**
      * only run [block] on [DEBUG] build
      */

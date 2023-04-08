@@ -19,7 +19,7 @@ import player.phonograph.model.sort.SortRef
 import player.phonograph.ui.components.popup.ListOptionsPopup
 import player.phonograph.ui.fragments.pages.util.DisplayConfig
 import player.phonograph.ui.fragments.pages.util.DisplayConfigTarget
-import player.phonograph.util.ViewUtil.setUpFastScrollRecyclerViewColor
+import player.phonograph.util.ui.setUpFastScrollRecyclerViewColor
 import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.theme.nightMode
 import androidx.fragment.app.viewModels

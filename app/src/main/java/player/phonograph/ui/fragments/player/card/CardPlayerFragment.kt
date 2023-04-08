@@ -17,13 +17,13 @@ import player.phonograph.model.infoString
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
 import player.phonograph.ui.fragments.player.AbsPlayerFragment
-import player.phonograph.util.AnimationUtil.PHONOGRAPH_ANIM_TIME
-import player.phonograph.util.AnimationUtil.backgroundColorTransitionAnimator
-import player.phonograph.util.AnimationUtil.textColorTransitionAnimator
+import player.phonograph.util.ui.PHONOGRAPH_ANIM_TIME
+import player.phonograph.util.ui.backgroundColorTransitionAnimator
+import player.phonograph.util.ui.textColorTransitionAnimator
 import player.phonograph.util.theme.requireDarkenColor
 import player.phonograph.util.theme.nightMode
-import player.phonograph.util.Util.isLandscape
-import player.phonograph.util.ViewUtil
+import player.phonograph.util.ui.isLandscape
+import player.phonograph.util.ui.convertDpToPixel
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.FragmentContainerView
 import androidx.lifecycle.Lifecycle
@@ -294,13 +294,13 @@ class CardPlayerFragment :
                 fragment.viewBinding.playerSlidingLayout.height - fragment.requireView()
                     .findViewById<View>(
                         R.id.player_content
-                    ).height + ViewUtil.convertDpToPixel(
+                    ).height + convertDpToPixel(
                     8f,
                     fragment.resources
                 )
                     .toInt()
             val minPanelHeight =
-                ViewUtil.convertDpToPixel((72 + 24).toFloat(), fragment.resources).toInt()
+                convertDpToPixel((72 + 24).toFloat(), fragment.resources).toInt()
             if (availablePanelHeight < minPanelHeight) {
                 albumCoverContainer.layoutParams.height =
                     albumCoverContainer.height - (minPanelHeight - availablePanelHeight)

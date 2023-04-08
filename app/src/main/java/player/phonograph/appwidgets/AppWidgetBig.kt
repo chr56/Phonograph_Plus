@@ -22,8 +22,8 @@ import player.phonograph.R
 import player.phonograph.appwidgets.base.BaseAppWidget
 import player.phonograph.service.MusicService
 import player.phonograph.ui.activities.MainActivity
-import player.phonograph.util.BitmapUtil
-import player.phonograph.util.Util.getScreenSize
+import player.phonograph.util.ui.BitmapUtil
+import player.phonograph.util.ui.getScreenSize
 import player.phonograph.util.theme.createTintedDrawable
 
 

@@ -11,7 +11,7 @@ import androidx.core.graphics.drawable.IconCompat
 import mt.pref.ThemeColor
 import player.phonograph.R
 import player.phonograph.settings.Setting
-import player.phonograph.util.BitmapUtil
+import player.phonograph.util.ui.BitmapUtil
 import player.phonograph.util.theme.createTintedDrawable
 
 /**

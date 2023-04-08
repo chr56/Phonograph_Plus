@@ -31,7 +31,7 @@ import player.phonograph.model.playlist.MyTopTracksPlaylist
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.settings.Setting
 import player.phonograph.mechanism.PlaylistsManagement
-import player.phonograph.util.ViewUtil.setUpFastScrollRecyclerViewColor
+import player.phonograph.util.ui.setUpFastScrollRecyclerViewColor
 
 class PlaylistPage : AbsPage() {
 

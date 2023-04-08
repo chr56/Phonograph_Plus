@@ -22,7 +22,7 @@ import player.phonograph.R
 import player.phonograph.model.Song
 import player.phonograph.model.infoString
 import player.phonograph.service.MusicPlayerRemote
-import player.phonograph.util.ViewUtil
+import player.phonograph.util.ui.hitTest
 
 class PlayingQueueAdapter(
     activity: AppCompatActivity,
@@ -117,7 +117,7 @@ class PlayingQueueAdapter(
     }
 
     override fun onCheckCanStartDrag(holder: ViewHolder, position: Int, x: Int, y: Int): Boolean =
-        ViewUtil.hitTest(holder.imageText as View, x, y)
+        hitTest(holder.imageText as View, x, y)
 
     override fun onGetItemDraggableRange(holder: ViewHolder, position: Int): ItemDraggableRange? = null
 

@@ -20,7 +20,7 @@ import player.phonograph.dialogs.SongDetailDialog
 import player.phonograph.model.Song
 import player.phonograph.ui.compose.tag.TagEditorActivity
 import player.phonograph.ui.dialogs.DeleteSongsDialog
-import player.phonograph.util.ViewUtil.hitTest
+import player.phonograph.util.ui.hitTest
 import androidx.appcompat.app.AppCompatActivity
 import android.content.Context
 import android.view.LayoutInflater

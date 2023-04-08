@@ -36,7 +36,7 @@ import player.phonograph.model.totalDuration
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
 import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.mechanism.PlaylistsManagement
-import player.phonograph.util.ViewUtil.setUpFastScrollRecyclerViewColor
+import player.phonograph.util.ui.setUpFastScrollRecyclerViewColor
 import util.phonograph.playlist.mediastore.moveItemViaMediastore
 import util.phonograph.playlist.mediastore.removeFromPlaylistViaMediastore
 import androidx.activity.viewModels
