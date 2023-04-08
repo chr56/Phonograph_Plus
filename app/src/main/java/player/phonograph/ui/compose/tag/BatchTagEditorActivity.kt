@@ -5,18 +5,18 @@
 package player.phonograph.ui.compose.tag
 
 import com.vanpra.composematerialdialogs.MaterialDialogState
-import mt.pref.ThemeColor.primaryColor
-import player.phonograph.R
-import player.phonograph.mediastore.SongLoader
 import lib.phonograph.misc.CreateFileStorageAccessTool
 import lib.phonograph.misc.ICreateFileStorageAccess
 import lib.phonograph.misc.IOpenFileStorageAccess
 import lib.phonograph.misc.OpenFileStorageAccessTool
+import mt.pref.ThemeColor.primaryColor
+import player.phonograph.R
+import player.phonograph.mechanism.SongDetail
+import player.phonograph.mechanism.tageditor.applyEdit
+import player.phonograph.mediastore.SongLoader
 import player.phonograph.model.Song
 import player.phonograph.ui.compose.base.ComposeToolbarActivity
 import player.phonograph.ui.compose.theme.PhonographTheme
-import player.phonograph.util.SongDetailUtil
-import player.phonograph.util.tageditor.applyEdit
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.RowScope
@@ -156,7 +156,7 @@ class BatchTagEditScreenViewModel(
         @Synchronized get() {
             if (_batchTagEditTableState == null) {
                 _batchTagEditTableState =
-                    BatchTagEditTableState(songs.map { SongDetailUtil.readSong(it) }, defaultColor)
+                    BatchTagEditTableState(songs.map { SongDetail.readSong(it) }, defaultColor)
             }
             return _batchTagEditTableState!!
         }

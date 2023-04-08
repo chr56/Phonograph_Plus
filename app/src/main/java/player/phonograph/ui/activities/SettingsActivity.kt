@@ -21,8 +21,8 @@ import lib.phonograph.misc.OpenFileStorageAccessTool
 import player.phonograph.misc.menuProvider
 import player.phonograph.ui.dialogs.BackupDataDialog
 import player.phonograph.ui.fragments.SettingsFragment
-import player.phonograph.util.CoroutineUtil
-import player.phonograph.util.TimeUtil.currentDateTime
+import player.phonograph.util.coroutineToast
+import player.phonograph.util.text.currentDateTime
 import androidx.appcompat.widget.Toolbar
 import android.net.Uri
 import android.os.Bundle
@@ -173,6 +173,6 @@ class SettingsActivity : ToolbarActivity(), ICreateFileStorageAccess, IOpenFileS
         SettingDataManager.importSetting(uri, App.instance)
 
     private suspend fun Boolean.andReport() {
-        CoroutineUtil.coroutineToast(App.instance, if (this) R.string.success else R.string.failed)
+        coroutineToast(App.instance, if (this) R.string.success else R.string.failed)
     }
 }

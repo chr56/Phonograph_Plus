@@ -1,15 +1,13 @@
 /*
- * Copyright (c) 2022 chr_56
+ *  Copyright (c) 2022~2023 chr_56
  */
 
-package player.phonograph.util.preferences
+package player.phonograph.mechanism.setting
 
 import player.phonograph.App
-import player.phonograph.settings.Setting
 import player.phonograph.util.FileUtil
 import player.phonograph.util.FileUtil.defaultStartDirectory
 import androidx.preference.PreferenceManager
-import android.content.Context
 import java.io.File
 
 object FileConfig {

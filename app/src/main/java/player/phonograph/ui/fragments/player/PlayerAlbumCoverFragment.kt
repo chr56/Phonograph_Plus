@@ -24,7 +24,7 @@ import player.phonograph.model.lyrics.LrcLyrics
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.settings.Setting
 import player.phonograph.ui.fragments.AbsMusicServiceFragment
-import player.phonograph.util.AnimationUtil.PHONOGRAPH_ANIM_TIME
+import player.phonograph.util.ui.PHONOGRAPH_ANIM_TIME
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.whenResumed
 

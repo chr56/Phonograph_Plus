@@ -12,7 +12,7 @@ import player.phonograph.mediastore.ArtistLoader
 import player.phonograph.mediastore.SongLoader
 import player.phonograph.misc.menuProvider
 import player.phonograph.ui.activities.base.AbsMusicServiceActivity
-import player.phonograph.util.Util
+import player.phonograph.util.ui.hideKeyboard
 import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -165,7 +165,7 @@ class SearchActivity : AbsMusicServiceActivity(), SearchView.OnQueryTextListener
     }
 
     private fun hideSoftKeyboard() {
-        Util.hideSoftKeyboard(this)
+        hideKeyboard(this)
         searchView?.clearFocus()
     }
 

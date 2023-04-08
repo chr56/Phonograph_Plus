@@ -27,7 +27,7 @@ import player.phonograph.model.Song
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.queue.ShuffleMode.NONE
 import player.phonograph.service.queue.ShuffleMode.SHUFFLE
-import player.phonograph.util.Util.testBit
+import player.phonograph.util.testBit
 import kotlin.random.Random
 
 fun songClick(

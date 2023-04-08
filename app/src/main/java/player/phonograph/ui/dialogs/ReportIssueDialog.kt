@@ -4,6 +4,15 @@
 
 package player.phonograph.ui.dialogs
 
+import mt.pref.ThemeColor
+import mt.tint.viewtint.tint
+import player.phonograph.ISSUE_TRACKER_LINK
+import player.phonograph.R
+import player.phonograph.databinding.DialogReportIssueBinding
+import player.phonograph.util.text.getDeviceInfo
+import player.phonograph.util.theme.getTintedDrawable
+import player.phonograph.util.theme.nightMode
+import androidx.fragment.app.DialogFragment
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
@@ -15,22 +24,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.fragment.app.DialogFragment
-import mt.pref.ThemeColor
-import mt.tint.viewtint.tint
-import player.phonograph.ISSUE_TRACKER_LINK
-import player.phonograph.R
-import player.phonograph.databinding.DialogReportIssueBinding
-import player.phonograph.util.DeviceInfoUtil
-import player.phonograph.util.theme.getTintedDrawable
-import player.phonograph.util.theme.nightMode
 
 class ReportIssueDialog : DialogFragment() {
 
     private var _binding: DialogReportIssueBinding? = null
     private val binding get() = _binding!!
 
-    private val deviceInfo by lazy { DeviceInfoUtil.getDeviceInfo(requireContext()) }
+    private val deviceInfo by lazy { getDeviceInfo(requireContext()) }
 
     override fun onCreateView(
         inflater: LayoutInflater,

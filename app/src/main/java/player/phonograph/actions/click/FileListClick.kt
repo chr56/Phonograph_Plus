@@ -30,7 +30,7 @@ import player.phonograph.model.file.linkedSong
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.queue.ShuffleMode.NONE
 import player.phonograph.service.queue.ShuffleMode.SHUFFLE
-import player.phonograph.util.Util.testBit
+import player.phonograph.util.testBit
 import android.content.Context
 import kotlin.random.Random
 import kotlin.LazyThreadSafetyMode.NONE as LazyNone

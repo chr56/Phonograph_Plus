@@ -12,11 +12,10 @@ import mt.tint.*
 import mt.util.color.darkenColor
 import mt.util.color.primaryTextColor
 import mt.util.color.secondaryTextColor
-import mt.util.isNightMode
 import player.phonograph.R
 import player.phonograph.util.theme.applyMonet
 import player.phonograph.util.theme.nightMode
-import player.phonograph.util.preferences.StyleConfig
+import player.phonograph.mechanism.setting.StyleConfig
 import androidx.appcompat.app.AppCompatDelegate
 import android.animation.ValueAnimator
 import android.content.res.Configuration

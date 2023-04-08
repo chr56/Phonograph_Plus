@@ -14,8 +14,8 @@ import player.phonograph.settings.Setting
 import player.phonograph.ui.dialogs.ReportIssueDialog
 import player.phonograph.ui.dialogs.UpgradeDialog
 import player.phonograph.util.theme.nightMode
-import player.phonograph.util.UpdateUtil
-import player.phonograph.util.Util.reportError
+import player.phonograph.mechanism.Update
+import player.phonograph.util.reportError
 import androidx.annotation.Keep
 import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.Toolbar
@@ -173,7 +173,7 @@ class AboutActivity : ToolbarActivity(), View.OnClickListener {
             }
             checkUpgrade -> {
                 CoroutineScope(Dispatchers.Unconfined).launch {
-                    UpdateUtil.checkUpdate { versionCatalog: VersionCatalog, upgradable: Boolean ->
+                    Update.checkUpdate { versionCatalog: VersionCatalog, upgradable: Boolean ->
                         if (upgradable) {
                             UpgradeDialog.create(versionCatalog).show(supportFragmentManager, "UPGRADE_DIALOG")
                             if (Setting.instance.ignoreUpgradeDate >= versionCatalog.currentLatestChannelVersionBy { it.date }.date) {

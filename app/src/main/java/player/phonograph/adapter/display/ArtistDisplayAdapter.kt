@@ -4,12 +4,6 @@
 
 package player.phonograph.adapter.display
 
-import android.graphics.drawable.Drawable
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.content.res.AppCompatResources
 import coil.size.ViewSizeResolver
 import player.phonograph.R
 import player.phonograph.adapter.base.MultiSelectionCabController
@@ -18,7 +12,13 @@ import player.phonograph.coil.target.PaletteTargetBuilder
 import player.phonograph.model.Artist
 import player.phonograph.model.sort.SortRef
 import player.phonograph.settings.Setting
-import player.phonograph.util.MusicUtil
+import player.phonograph.util.text.makeSectionName
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.content.res.AppCompatResources
+import android.graphics.drawable.Drawable
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 
 class ArtistDisplayAdapter(
     activity: AppCompatActivity,
@@ -53,14 +53,14 @@ class ArtistDisplayAdapter(
         val artist = dataset[position]
         val sectionName: String =
             when (Setting.instance.artistSortMode.sortRef) {
-                SortRef.ARTIST_NAME -> MusicUtil.getSectionName(artist.name)
+                SortRef.ARTIST_NAME -> makeSectionName(artist.name)
                 SortRef.ALBUM_COUNT -> artist.albumCount.toString()
                 SortRef.SONG_COUNT -> artist.songCount.toString()
                 else -> {
                     ""
                 }
             }
-        return MusicUtil.getSectionName(sectionName)
+        return makeSectionName(sectionName)
     }
 
     override fun getRelativeOrdinalText(item: Artist): String = item.songCount.toString()

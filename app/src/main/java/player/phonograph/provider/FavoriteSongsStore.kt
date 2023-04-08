@@ -9,7 +9,7 @@ import player.phonograph.MusicServiceMsgConst
 import player.phonograph.mediastore.SongLoader
 import player.phonograph.model.Song
 import player.phonograph.provider.DatabaseConstants.FAVORITE_DB
-import player.phonograph.util.TimeUtil.currentTimestamp
+import player.phonograph.util.text.currentTimestamp
 import android.content.ContentValues
 import android.content.Context
 import android.content.Intent

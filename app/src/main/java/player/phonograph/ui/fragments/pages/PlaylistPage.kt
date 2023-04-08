@@ -30,8 +30,8 @@ import player.phonograph.model.playlist.LastAddedPlaylist
 import player.phonograph.model.playlist.MyTopTracksPlaylist
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.settings.Setting
-import player.phonograph.util.PlaylistsUtil
-import player.phonograph.util.ViewUtil.setUpFastScrollRecyclerViewColor
+import player.phonograph.mechanism.PlaylistsManagement
+import player.phonograph.util.ui.setUpFastScrollRecyclerViewColor
 
 class PlaylistPage : AbsPage() {
 
@@ -105,7 +105,7 @@ class PlaylistPage : AbsPage() {
             ).also {
                 if (!Setting.instance.useLegacyFavoritePlaylistImpl)
                     it.add(FavoriteSongsPlaylist(context),)
-            }.also { it.addAll(PlaylistsUtil.getAllPlaylists(context)) }
+            }.also { it.addAll(PlaylistsManagement.getAllPlaylists(context)) }
 
             while (!isRecyclerViewPrepared) yield() // wait until ready
 

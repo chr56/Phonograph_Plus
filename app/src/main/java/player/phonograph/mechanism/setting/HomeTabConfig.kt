@@ -1,14 +1,14 @@
 /*
- * Copyright (c) 2022 chr_56
+ *  Copyright (c) 2022~2023 chr_56
  */
 
-package player.phonograph.util.preferences
+package player.phonograph.mechanism.setting
 
 import player.phonograph.model.pages.PageConfig
 import player.phonograph.model.pages.PageConfigUtil
 import player.phonograph.model.pages.PageConfigUtil.toJson
 import player.phonograph.settings.Setting
-import player.phonograph.util.Util
+import player.phonograph.util.reportError
 import android.util.Log
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -40,7 +40,7 @@ object HomeTabConfig {
                 val json = parser.parseToJsonElement(rawString)
                 PageConfigUtil.fromJson(json as JsonObject)
             } catch (e: Exception) {
-                Util.reportError(e, "Preference", "Fail to parse home tab config string $rawString")
+                reportError(e, "Preference", "Fail to parse home tab config string $rawString")
                 // return default
                 resetHomeTabConfig()
                 PageConfig.DEFAULT_CONFIG

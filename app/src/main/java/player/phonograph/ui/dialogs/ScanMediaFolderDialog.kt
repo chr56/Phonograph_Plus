@@ -14,7 +14,7 @@ import player.phonograph.R
 import player.phonograph.misc.UpdateToastMediaScannerCompletionListener
 import player.phonograph.model.file.Location
 import player.phonograph.notification.ErrorNotification
-import player.phonograph.util.CoroutineUtil.coroutineToast
+import player.phonograph.util.coroutineToast
 import player.phonograph.util.FileUtil.DirectoryInfo
 import player.phonograph.util.FileUtil.FileScanner
 import java.io.File

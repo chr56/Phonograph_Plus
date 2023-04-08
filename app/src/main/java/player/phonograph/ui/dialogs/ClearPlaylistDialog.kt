@@ -14,8 +14,9 @@ import player.phonograph.model.playlist.Playlist
 import player.phonograph.model.playlist.PlaylistType
 import player.phonograph.model.playlist.ResettablePlaylist
 import player.phonograph.model.playlist.SmartPlaylist
-import player.phonograph.util.StringUtil
 import player.phonograph.util.permissions.hasStorageWritePermission
+import player.phonograph.util.text.ItemGroup
+import player.phonograph.util.text.buildDeletionMessage
 import util.phonograph.playlist.PlaylistsManager
 import androidx.fragment.app.DialogFragment
 import android.app.Activity
@@ -42,17 +43,17 @@ class ClearPlaylistDialog : DialogFragment() {
         val hasPermission = hasStorageWritePermission(requireContext())
 
         // generate msg
-        val msg = StringUtil.buildDeletionMessage(
+        val msg = buildDeletionMessage(
             context = requireContext(),
             itemSize = playlists.size,
             extraSuffix = if (!hasPermission) requireContext().getString(
                 R.string.permission_manage_external_storage_denied
             ) else "",
-            StringUtil.ItemGroup(
+            ItemGroup(
                 resources.getQuantityString(R.plurals.item_playlists, filesLists.size),
                 filesLists.map { it.name }
             ),
-            StringUtil.ItemGroup(
+            ItemGroup(
                 resources.getQuantityString(R.plurals.item_playlists_generated, smartLists.size),
                 smartLists.map { it.name }
             )

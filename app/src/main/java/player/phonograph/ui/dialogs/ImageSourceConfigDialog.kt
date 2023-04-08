@@ -12,7 +12,7 @@ import mt.pref.ThemeColor
 import player.phonograph.R
 import player.phonograph.adapter.sortable.ImageSourceConfigAdapter
 import player.phonograph.model.config.ImageSourceConfig
-import player.phonograph.util.preferences.CoilImageSourceConfig
+import player.phonograph.mechanism.setting.CoilImageSourceConfig
 import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView

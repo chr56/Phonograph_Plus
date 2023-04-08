@@ -6,8 +6,9 @@ package util.phonograph.playlist.saf
 
 import lib.phonograph.storage.getAbsolutePath
 import player.phonograph.model.playlist.FilePlaylist
-import player.phonograph.util.PlaylistsUtil
-import player.phonograph.util.Util
+import player.phonograph.mechanism.PlaylistsManagement
+import player.phonograph.util.reportError
+import player.phonograph.util.warning
 import android.annotation.SuppressLint
 import android.content.Context
 import android.net.Uri
@@ -21,16 +22,16 @@ import java.util.Locale
 internal fun openOutputStreamSafe(context: Context, uri: Uri, mode: String): OutputStream? =
     try {
         val outputStream = context.contentResolver.openOutputStream(uri, mode)
-        if (outputStream == null) Util.warning(TAG, "Failed!")
+        if (outputStream == null) warning(TAG, "Failed!")
         outputStream
     } catch (e: FileNotFoundException) {
-        Util.reportError(e, TAG, "Not found $uri")
+        reportError(e, TAG, "Not found $uri")
         null
     }
 
 
 internal fun checkUri(context: Context, target: FilePlaylist, uri: Uri): Boolean =
-    uri.getAbsolutePath(context) == PlaylistsUtil.getPlaylistPath(context, target)
+    uri.getAbsolutePath(context) == PlaylistsManagement.getPlaylistPath(context, target)
 
 /**
  * common path root of a list of paths

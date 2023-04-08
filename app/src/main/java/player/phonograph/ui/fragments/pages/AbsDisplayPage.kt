@@ -18,10 +18,10 @@ import player.phonograph.model.Displayable
 import player.phonograph.ui.components.popup.ListOptionsPopup
 import player.phonograph.ui.fragments.pages.util.DisplayConfig
 import player.phonograph.ui.fragments.pages.util.DisplayConfigTarget
-import player.phonograph.util.Util
-import player.phonograph.util.ViewUtil.setUpFastScrollRecyclerViewColor
 import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.theme.nightMode
+import player.phonograph.util.ui.isLandscape
+import player.phonograph.util.ui.setUpFastScrollRecyclerViewColor
 import androidx.annotation.StringRes
 import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.GridLayoutManager
@@ -173,7 +173,7 @@ sealed class AbsDisplayPage<IT, A : DisplayAdapter<out Displayable>, LM : GridLa
         val displayConfig = DisplayConfig(displayConfigTarget)
 
         // grid size
-        if (Util.isLandscape(resources)) popup.viewBinding.titleGridSize.text =
+        if (isLandscape(resources)) popup.viewBinding.titleGridSize.text =
             resources.getText(R.string.action_grid_size_land)
         popup.maxGridSize = displayConfig.maxGridSize
         popup.gridSize = displayConfig.gridSize

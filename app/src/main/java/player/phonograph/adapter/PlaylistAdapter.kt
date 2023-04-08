@@ -17,7 +17,7 @@ import player.phonograph.adapter.base.MultiSelectAdapter
 import player.phonograph.adapter.base.MultiSelectionCabController
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.model.playlist.SmartPlaylist
-import player.phonograph.util.FavoriteUtil
+import player.phonograph.mechanism.Favorite
 import player.phonograph.util.NavigationUtil
 
 /**
@@ -81,9 +81,9 @@ class PlaylistAdapter(
     override fun updateItemCheckStatus(datasetPosition: Int) = notifyItemChanged(datasetPosition)
 
     private fun getIconRes(playlist: Playlist): Int = when {
-        playlist is SmartPlaylist -> playlist.iconRes
-        FavoriteUtil.isFavoritePlaylist(activity, playlist) -> R.drawable.ic_favorite_white_24dp
-        else -> R.drawable.ic_queue_music_white_24dp
+        playlist is SmartPlaylist                       -> playlist.iconRes
+        Favorite.isFavoritePlaylist(activity, playlist) -> R.drawable.ic_favorite_white_24dp
+        else                                            -> R.drawable.ic_queue_music_white_24dp
     }
 
     override fun getItemViewType(position: Int): Int =

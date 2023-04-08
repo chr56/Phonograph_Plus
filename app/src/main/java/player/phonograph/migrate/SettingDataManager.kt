@@ -11,8 +11,8 @@ import player.phonograph.BuildConfig.VERSION_CODE
 import player.phonograph.R
 import player.phonograph.settings.Setting
 import player.phonograph.util.FileUtil.saveToFile
-import player.phonograph.util.Util.reportError
-import player.phonograph.util.Util.warning
+import player.phonograph.util.reportError
+import player.phonograph.util.warning
 import androidx.preference.PreferenceManager
 import android.annotation.SuppressLint
 import android.content.ContentResolver

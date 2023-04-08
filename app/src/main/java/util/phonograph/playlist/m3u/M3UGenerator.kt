@@ -17,8 +17,8 @@ import player.phonograph.model.Song
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.model.playlist.SmartPlaylist
 import player.phonograph.notification.ErrorNotification
-import player.phonograph.util.CoroutineUtil
-import player.phonograph.util.TimeUtil
+import player.phonograph.util.coroutineToast
+import player.phonograph.util.text.currentDate
 
 object M3UGenerator {
 
@@ -32,7 +32,7 @@ object M3UGenerator {
         val filename: String = playlist.name +
             if (playlist is SmartPlaylist) {
                 // Since AbsCustomPlaylists are dynamic, we add a timestamp after their names.
-                SimpleDateFormat("_yy-MM-dd_HH-mm", Locale.getDefault()).format(TimeUtil.currentDate())
+                SimpleDateFormat("_yy-MM-dd_HH-mm", Locale.getDefault()).format(currentDate())
             } else ""
 
         val file = File(dir, "$filename.$EXTENSION")
@@ -71,7 +71,7 @@ object M3UGenerator {
                     try {
                         generate(outputStream, songs, addHeader)
                     } catch (e: IOException) {
-                        CoroutineUtil.coroutineToast(context ?: App.instance, R.string.failed)
+                        coroutineToast(context ?: App.instance, R.string.failed)
                         ErrorNotification.postErrorNotification(e, "Failed to write playlist!")
                     }
                 }

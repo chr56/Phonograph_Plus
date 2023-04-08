@@ -35,8 +35,8 @@ import player.phonograph.model.playlist.SmartPlaylist
 import player.phonograph.model.totalDuration
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
 import player.phonograph.util.theme.getTintedDrawable
-import player.phonograph.util.PlaylistsUtil
-import player.phonograph.util.ViewUtil.setUpFastScrollRecyclerViewColor
+import player.phonograph.mechanism.PlaylistsManagement
+import player.phonograph.util.ui.setUpFastScrollRecyclerViewColor
 import util.phonograph.playlist.mediastore.moveItemViaMediastore
 import util.phonograph.playlist.mediastore.removeFromPlaylistViaMediastore
 import androidx.activity.viewModels
@@ -169,7 +169,7 @@ class PlaylistDetailActivity :
             adapter.dataset = songs
             binding.empty.visibility = if (songs.isEmpty()) VISIBLE else GONE
             supportActionBar!!.title = playlist.name
-            if (playlist !is SmartPlaylist && !PlaylistsUtil.doesPlaylistExist(this, playlist.id)) {
+            if (playlist !is SmartPlaylist && !PlaylistsManagement.doesPlaylistExist(this, playlist.id)) {
                 // File Playlist was deleted
                 finish()
             }

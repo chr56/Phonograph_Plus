@@ -18,8 +18,8 @@ import player.phonograph.BuildConfig
 import player.phonograph.model.version.VersionCatalog
 import player.phonograph.notification.ErrorNotification
 import player.phonograph.notification.UpgradeNotification
-import player.phonograph.util.CoroutineUtil.coroutineToast
-import player.phonograph.util.UpdateUtil
+import player.phonograph.util.coroutineToast
+import player.phonograph.mechanism.Update
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 
@@ -46,7 +46,7 @@ class DebugDialog : DialogFragment() {
                     2 -> ErrorNotification.postErrorNotification(Exception("Test"), "Crash Notification Test!!")
                     3 -> {
                         CoroutineScope(Dispatchers.Unconfined).launch {
-                            UpdateUtil.checkUpdate(true) { versionCatalog: VersionCatalog, upgradable: Boolean ->
+                            Update.checkUpdate(true) { versionCatalog: VersionCatalog, upgradable: Boolean ->
                                 try {
                                     player.phonograph.ui.dialogs.UpgradeDialog.create(versionCatalog).show(fragmentManager, "DebugDialog")
                                     if (!upgradable) {
@@ -60,7 +60,7 @@ class DebugDialog : DialogFragment() {
                     }
                     4 -> {
                         CoroutineScope(Dispatchers.Unconfined).launch {
-                            UpdateUtil.checkUpdate(true) { versionCatalog: VersionCatalog, upgradable: Boolean ->
+                            Update.checkUpdate(true) { versionCatalog: VersionCatalog, upgradable: Boolean ->
                                 val channel = when (BuildConfig.FLAVOR) {
                                     "preview" -> "preview"
                                     else -> "stable"

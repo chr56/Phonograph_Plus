@@ -23,8 +23,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import player.phonograph.notification.ErrorNotification
-import player.phonograph.util.CoroutineUtil.createDefaultExceptionHandler
-import player.phonograph.util.BitmapUtil.restraintBitmapSize
+import player.phonograph.util.createDefaultExceptionHandler
+import player.phonograph.util.ui.BitmapUtil.restraintBitmapSize
 
 /**
  * Class that manage custom artist image

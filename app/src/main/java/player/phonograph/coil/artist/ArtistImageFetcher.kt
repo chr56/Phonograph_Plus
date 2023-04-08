@@ -14,7 +14,7 @@ import player.phonograph.coil.retriever.ExternalFileRetriever
 import player.phonograph.coil.retriever.ImageRetriever
 import player.phonograph.coil.retriever.readFromFile
 import player.phonograph.coil.retriever.retrieverFromConfig
-import player.phonograph.util.Util.debug
+import player.phonograph.util.debug
 import android.content.Context
 import android.util.Log
 

@@ -2,7 +2,7 @@
  * Copyright (c) 2022~2023 chr_56
  */
 
-package player.phonograph.util.tageditor
+package player.phonograph.mechanism.tageditor
 
 import org.jaudiotagger.audio.AudioFile
 import org.jaudiotagger.audio.AudioFileIO
@@ -18,7 +18,8 @@ import org.jaudiotagger.tag.images.Artwork
 import org.jaudiotagger.tag.images.ArtworkFactory
 import lib.phonograph.misc.IOpenFileStorageAccess
 import lib.phonograph.misc.OpenDocumentContract
-import player.phonograph.util.Util
+import player.phonograph.util.reportError
+import player.phonograph.util.warning
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import android.content.Context
@@ -59,7 +60,7 @@ fun selectNewArtwork(activity: Context): MutableState<Uri?> {
             if (uri != null) {
                 state.value = uri
             } else {
-                Util.warning("replaceArtworkImpl", "Failed to select Image File")
+                warning("replaceArtworkImpl", "Failed to select Image File")
             }
         }
     } else {
@@ -107,7 +108,7 @@ private inline fun safeEditTag(path: String, block: () -> Unit) {
     }
 }
 
-private fun Exception.report(message: String) = Util.reportError(this, LOGTAG, message)
+private fun Exception.report(message: String) = reportError(this, LOGTAG, message)
 
 private const val HINT = "please check file or storage permission"
 private const val LOGTAG = "TagEdit"
@@ -123,10 +124,10 @@ private fun replaceArtwork(activity: Context, songFile: File, uri: Uri) {
         try {
             replaceArtworkImpl(songFile, cacheFile)
         } catch (e: Exception) {
-            Util.reportError(e, LOGTAG, "Failed to write tag!")
+            reportError(e, LOGTAG, "Failed to write tag!")
         }
     } else {
-        Util.warning(LOGTAG, "Failed to replace Artwork!")
+        warning(LOGTAG, "Failed to replace Artwork!")
     }
     cacheFile?.delete()
 
@@ -175,7 +176,7 @@ private fun copyImageToCache(activity: Context, songFile: File, uri: Uri): File 
                 }
             }
         } else {
-            Util.warning(LOGTAG, "Can not open selected file! (uri: $uri)")
+            warning(LOGTAG, "Can not open selected file! (uri: $uri)")
         }
     }
     return cache

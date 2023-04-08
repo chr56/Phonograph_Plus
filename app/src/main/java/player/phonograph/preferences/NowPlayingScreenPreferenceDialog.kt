@@ -9,8 +9,8 @@ import mt.pref.ThemeColor
 import mt.util.color.primaryDisabledTextColor
 import player.phonograph.R
 import player.phonograph.model.NowPlayingScreen
-import player.phonograph.util.ViewUtil
-import player.phonograph.util.preferences.NowPlayingScreenConfig
+import player.phonograph.util.ui.convertDpToPixel
+import player.phonograph.mechanism.setting.NowPlayingScreenConfig
 import androidx.fragment.app.DialogFragment
 import androidx.viewpager.widget.PagerAdapter
 import androidx.viewpager.widget.ViewPager
@@ -56,7 +56,7 @@ class NowPlayingScreenPreferenceDialog : DialogFragment(), OnPageChangeListener 
         with(viewPager) {
             adapter = NowPlayingScreenAdapter(context)
             addOnPageChangeListener(this@NowPlayingScreenPreferenceDialog)
-            pageMargin = ViewUtil.convertDpToPixel(32f, resources).toInt()
+            pageMargin = convertDpToPixel(32f, resources).toInt()
             currentItem = NowPlayingScreenConfig.nowPlayingScreen.ordinal
         }
         val dialog = MaterialDialog(requireContext())

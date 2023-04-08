@@ -7,7 +7,6 @@ package player.phonograph.actions
 import player.phonograph.R
 import player.phonograph.dialogs.SongDetailDialog
 import player.phonograph.dialogs.SongShareDialog
-import player.phonograph.misc.PaletteColorHolder
 import player.phonograph.model.Song
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.queue.ShuffleMode
@@ -17,8 +16,8 @@ import player.phonograph.ui.compose.tag.TagEditorActivity
 import player.phonograph.ui.dialogs.AddToPlaylistDialog
 import player.phonograph.ui.dialogs.DeleteSongsDialog
 import player.phonograph.util.NavigationUtil
-import player.phonograph.util.PathFilterUtil
-import player.phonograph.util.RingtoneManager
+import player.phonograph.mechanism.PathFilter
+import player.phonograph.misc.RingtoneManager
 import androidx.core.util.Pair
 import androidx.fragment.app.FragmentActivity
 import android.content.Context
@@ -101,17 +100,11 @@ fun Song.actionShare(context: Context): Boolean {
     return true
 }
 
-fun Song.actionSetAsRingtone(context: Context): Boolean {
-    if (RingtoneManager.requiresDialog(context)) {
-        RingtoneManager.showDialog(context)
-    } else {
-        RingtoneManager.setRingtone(context, id)
-    }
-    return true
-}
+fun Song.actionSetAsRingtone(context: Context): Boolean =
+    RingtoneManager.setRingtone(context, id)
 
 fun Song.actionAddToBlacklist(context: Context): Boolean {
-    PathFilterUtil.addToBlacklist(context, this)
+    PathFilter.addToBlacklist(context, this)
     return true
 }
 

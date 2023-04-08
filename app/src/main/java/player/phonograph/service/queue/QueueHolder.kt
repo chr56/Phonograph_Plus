@@ -7,7 +7,7 @@ package player.phonograph.service.queue
 import player.phonograph.model.Song
 import player.phonograph.provider.MusicPlaybackQueueStore
 import player.phonograph.service.util.QueuePreferenceManager
-import player.phonograph.util.TimeUtil
+import player.phonograph.util.text.currentTimestamp
 import android.content.Context
 import java.util.concurrent.CopyOnWriteArrayList
 
@@ -193,7 +193,7 @@ class QueueHolder private constructor(
         repeatMode
     )
 
-    val snapshotTime: Long = TimeUtil.currentTimestamp()
+    val snapshotTime: Long = currentTimestamp()
 
     companion object {
         private val persistenceLock = Any()

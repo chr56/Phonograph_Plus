@@ -7,7 +7,7 @@ package player.phonograph.model.playlist
 import player.phonograph.R
 import player.phonograph.mediastore.PlaylistSongLoader
 import player.phonograph.model.Song
-import player.phonograph.util.PlaylistsUtil
+import player.phonograph.mechanism.PlaylistsManagement
 import util.phonograph.playlist.PlaylistsManager
 import util.phonograph.playlist.mediastore.moveItemViaMediastore
 import util.phonograph.playlist.mediastore.removeFromPlaylistViaMediastore
@@ -36,7 +36,7 @@ class FilePlaylist : Playlist, EditablePlaylist {
         PlaylistSongLoader.getPlaylistSongList(context, id)
 
     override fun containsSong(context: Context, songId: Long): Boolean =
-        PlaylistsUtil.doesPlaylistContain(context, id, songId)
+        PlaylistsManagement.doesPlaylistContain(context, id, songId)
 
     override val type: Int
         get() = PlaylistType.FILE

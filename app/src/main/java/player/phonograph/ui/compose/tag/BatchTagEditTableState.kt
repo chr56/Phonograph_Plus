@@ -6,8 +6,8 @@ package player.phonograph.ui.compose.tag
 
 import com.vanpra.composematerialdialogs.MaterialDialogState
 import org.jaudiotagger.tag.FieldKey
+import player.phonograph.mechanism.tageditor.selectNewArtwork
 import player.phonograph.model.SongInfoModel
-import player.phonograph.util.tageditor.selectNewArtwork
 import androidx.compose.ui.graphics.Color
 import android.content.Context
 import android.net.Uri

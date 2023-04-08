@@ -11,8 +11,8 @@ import player.phonograph.databinding.ActivityCrashBinding
 import player.phonograph.migrate.SettingDataManager
 import player.phonograph.notification.ErrorNotification.KEY_IS_A_CRASH
 import player.phonograph.notification.ErrorNotification.KEY_STACK_TRACE
-import player.phonograph.util.DeviceInfoUtil.getDeviceInfo
-import player.phonograph.util.TimeUtil.currentDateTime
+import player.phonograph.util.text.currentDateTime
+import player.phonograph.util.text.getDeviceInfo
 import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.theme.nightMode
 import android.content.ClipData

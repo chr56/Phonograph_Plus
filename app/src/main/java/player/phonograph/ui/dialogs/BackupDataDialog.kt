@@ -11,8 +11,8 @@ import player.phonograph.migrate.SettingDataManager
 import lib.phonograph.misc.ICreateFileStorageAccess
 import lib.phonograph.misc.IOpenFileStorageAccess
 import lib.phonograph.misc.OpenDocumentContract
-import player.phonograph.util.CoroutineUtil
-import player.phonograph.util.TimeUtil
+import player.phonograph.util.coroutineToast
+import player.phonograph.util.text.currentDateTime
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.lifecycleScope
@@ -41,7 +41,7 @@ class BackupDataDialog : DialogFragment() {
             "$stringExport$stringSetting" to {
                 export(
                     requireActivity(),
-                    "phonograph_plus_settings_${TimeUtil.currentDateTime()}.json"
+                    "phonograph_plus_settings_${currentDateTime()}.json"
                 ) { uri ->
                     SettingDataManager.exportSettings(uri, activity)
                     true
@@ -56,7 +56,7 @@ class BackupDataDialog : DialogFragment() {
             "$stringExport$stringPathFilter" to {
                 export(
                     requireActivity(),
-                    "phonograph_plus_path_filter_${TimeUtil.currentDateTime()}.json"
+                    "phonograph_plus_path_filter_${currentDateTime()}.json"
                 ) { uri ->
                     DatabaseBackupManger.exportPathFilter(activity, uri)
                     true
@@ -71,7 +71,7 @@ class BackupDataDialog : DialogFragment() {
             "$stringExport$stringPlayingQueue" to {
                 export(
                     requireActivity(),
-                    "phonograph_plus_playing_queues_${TimeUtil.currentDateTime()}.json"
+                    "phonograph_plus_playing_queues_${currentDateTime()}.json"
                 ) { uri ->
                     DatabaseBackupManger.exportPlayingQueues(activity, uri)
                     true
@@ -86,7 +86,7 @@ class BackupDataDialog : DialogFragment() {
             "$stringExport$stringFavorite" to {
                 export(
                     requireActivity(),
-                    "phonograph_plus_favorites_${TimeUtil.currentDateTime()}.json"
+                    "phonograph_plus_favorites_${currentDateTime()}.json"
                 ) { uri ->
                     DatabaseBackupManger.exportFavorites(activity, uri)
                     true
@@ -137,6 +137,6 @@ class BackupDataDialog : DialogFragment() {
     }
 
     private suspend fun Boolean.andReport() {
-        CoroutineUtil.coroutineToast(App.instance, if (this) R.string.success else R.string.failed)
+        coroutineToast(App.instance, if (this) R.string.success else R.string.failed)
     }
 }

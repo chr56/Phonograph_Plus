@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2022 chr_56 & Abou Zeid (kabouzeid) (original author)
+ *  Copyright (c) 2022~2023 chr_56
  */
-package player.phonograph.util
+package player.phonograph.mechanism
 
 import player.phonograph.App
 import player.phonograph.MusicServiceMsgConst
@@ -10,8 +10,8 @@ import player.phonograph.model.Song
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.provider.FavoriteSongsStore
 import player.phonograph.settings.Setting
-import player.phonograph.util.PlaylistsUtil.doesPlaylistContain
-import player.phonograph.util.PlaylistsUtil.getPlaylist
+import player.phonograph.mechanism.PlaylistsManagement.doesPlaylistContain
+import player.phonograph.mechanism.PlaylistsManagement.getPlaylist
 import util.phonograph.playlist.mediastore.addToPlaylistViaMediastore
 import util.phonograph.playlist.mediastore.createOrFindPlaylistViaMediastore
 import util.phonograph.playlist.mediastore.removeFromPlaylistViaMediastore
@@ -19,7 +19,7 @@ import android.content.Context
 import android.content.Intent
 import kotlinx.coroutines.runBlocking
 
-object FavoriteUtil {
+object Favorite {
 
     fun isFavorite(context: Context, song: Song): Boolean =
         if (Setting.instance.useLegacyFavoritePlaylistImpl) {

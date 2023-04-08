@@ -1,16 +1,15 @@
 package player.phonograph.adapter
 
+import player.phonograph.R
+import player.phonograph.service.MusicPlayerRemote
+import player.phonograph.settings.Setting
+import androidx.recyclerview.widget.RecyclerView
 import android.app.Activity
 import android.app.Dialog
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.recyclerview.widget.RecyclerView
-import player.phonograph.R
-import player.phonograph.service.MusicPlayerRemote
-import player.phonograph.settings.Setting
-import player.phonograph.util.MusicUtil
 import java.util.regex.Pattern
 
 class LyricsAdapter(private val context: Activity, stamps: IntArray, lines: Array<String>, private val callbackDialog: Dialog? = null) :
@@ -40,7 +39,7 @@ class LyricsAdapter(private val context: Activity, stamps: IntArray, lines: Arra
             b.append(it).appendLine()
         }
 
-        holder.time.text = MusicUtil.parseTimeStamp(timeStamps[position])
+        holder.time.text = parseTimeStamp(timeStamps[position])
         holder.time.setTextColor(context.resources.getColor(R.color.dividerColor))
         if (timeStamps[position] < 0 || !Setting.instance.displaySynchronizedLyricsTimeAxis)
             holder.time.visibility = View.GONE
@@ -56,5 +55,18 @@ class LyricsAdapter(private val context: Activity, stamps: IntArray, lines: Arra
 
     override fun getItemCount(): Int {
         return lyrics.size
+    }
+
+    /**
+     * convert a timestamp to a readable String
+     *
+     * @param t timeStamp to parse (Unit: milliseconds)
+     * @return human-friendly time
+     */
+    private fun parseTimeStamp(t: Int): String {
+        val ms = (t % 1000).toLong()
+        val s = (t % (1000 * 60) / 1000).toLong()
+        val m = (t - s * 1000 - ms) / (1000 * 60)
+        return String.format("%d:%02d.%03d", m, s, ms)
     }
 }

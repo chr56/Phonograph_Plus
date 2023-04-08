@@ -1,20 +1,23 @@
 /*
- * Copyright (c) 2021 chr_56 & Abou Zeid (kabouzeid) (original author)
+ *  Copyright (c) 2022~2023 chr_56
  */
 
-package player.phonograph.util
+package player.phonograph.mechanism
 
-import android.content.Context
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.list.listItemsSingleChoice
-import kotlinx.coroutines.*
 import player.phonograph.App
 import player.phonograph.R
 import player.phonograph.model.Song
 import player.phonograph.provider.PathFilterStore
+import android.content.Context
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.File
 
-object PathFilterUtil {
+object PathFilter {
     fun addToBlacklist(context: Context, file: File) {
         if (file.isDirectory)
             addToBlacklistImpl(context, file.absolutePath)

@@ -12,9 +12,9 @@ import lib.phonograph.storage.getAbsolutePath
 import player.phonograph.R
 import player.phonograph.model.Song
 import player.phonograph.model.playlist.FilePlaylist
-import player.phonograph.util.CoroutineUtil.coroutineToast
-import player.phonograph.util.PlaylistsUtil
-import player.phonograph.util.Util.reportError
+import player.phonograph.util.coroutineToast
+import player.phonograph.mechanism.PlaylistsManagement
+import player.phonograph.util.reportError
 import util.phonograph.playlist.m3u.M3UGenerator
 import android.content.Context
 import kotlinx.coroutines.Dispatchers
@@ -34,7 +34,7 @@ suspend fun appendToPlaylistViaSAF(
 ) = appendToPlaylistViaSAF(
     context,
     songs,
-    PlaylistsUtil.getPlaylist(context, playlistId),
+    PlaylistsManagement.getPlaylist(context, playlistId),
 )
 
 /**
@@ -50,7 +50,7 @@ suspend fun appendToPlaylistViaSAF(
     require(context is IOpenFileStorageAccess)
     while (context.openFileStorageAccessTool.busy) yield()
     // config
-    val playlistPath = PlaylistsUtil.getPlaylistPath(context, filePlaylist)
+    val playlistPath = PlaylistsManagement.getPlaylistPath(context, filePlaylist)
     val mimeTypes = arrayOf("audio/x-mpegurl", CONTENT_TYPE, ENTRY_CONTENT_TYPE)
     // launch
     val uri = chooseFileViaSAF(context, File(playlistPath), mimeTypes)

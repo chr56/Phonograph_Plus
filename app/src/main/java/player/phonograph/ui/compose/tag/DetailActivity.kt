@@ -13,7 +13,7 @@ import lib.phonograph.misc.ICreateFileStorageAccess
 import player.phonograph.model.Song
 import player.phonograph.ui.compose.base.ComposeToolbarActivity
 import player.phonograph.ui.compose.theme.PhonographTheme
-import player.phonograph.util.SongDetailUtil
+import player.phonograph.mechanism.SongDetail
 import androidx.activity.viewModels
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
@@ -84,7 +84,7 @@ class DetailScreenViewModel(song: Song, defaultColor: Color) :
         @Synchronized get() {
             if (_infoTableState == null) {
                 _infoTableState =
-                    InfoTableState(SongDetailUtil.readSong(song), defaultColor)
+                    InfoTableState(SongDetail.readSong(song), defaultColor)
             }
             return _infoTableState!!
         }

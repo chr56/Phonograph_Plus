@@ -1,11 +1,18 @@
 /*
- * Copyright (c) 2021 chr_56 & Abou Zeid (kabouzeid) (original author)
+ *  Copyright (c) 2022~2023 chr_56
  */
 
 @file:Suppress("unused", "MemberVisibilityCanBePrivate")
 
-package player.phonograph.util
+package player.phonograph.mechanism
 
+import legacy.phonograph.MediaStoreCompat.Audio.Playlists
+import legacy.phonograph.MediaStoreCompat.Audio.PlaylistsColumns
+import player.phonograph.mediastore.SQLWhereClause
+import player.phonograph.mediastore.withBasePlaylistFilter
+import player.phonograph.mediastore.withPathFilter
+import player.phonograph.model.playlist.FilePlaylist
+import androidx.documentfile.provider.DocumentFile
 import android.annotation.SuppressLint
 import android.content.ContentUris
 import android.content.Context
@@ -14,16 +21,9 @@ import android.net.Uri
 import android.os.Build
 import android.provider.BaseColumns
 import android.provider.MediaStore
-import legacy.phonograph.MediaStoreCompat.Audio.Playlists
-import legacy.phonograph.MediaStoreCompat.Audio.PlaylistsColumns
 import android.util.Log
-import androidx.documentfile.provider.DocumentFile
-import player.phonograph.mediastore.SQLWhereClause
-import player.phonograph.mediastore.withBasePlaylistFilter
-import player.phonograph.mediastore.withPathFilter
-import player.phonograph.model.playlist.FilePlaylist
 
-object PlaylistsUtil {
+object PlaylistsManagement {
     private const val TAG: String = "PlaylistUtil"
 
     fun getAllPlaylists(context: Context): List<FilePlaylist> {

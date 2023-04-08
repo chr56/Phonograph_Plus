@@ -21,7 +21,7 @@ import player.phonograph.appwidgets.base.BaseAppWidget
 import player.phonograph.coil.target.PaletteTargetBuilder
 import player.phonograph.service.MusicService
 import player.phonograph.ui.activities.MainActivity
-import player.phonograph.util.BitmapUtil
+import player.phonograph.util.ui.BitmapUtil
 import player.phonograph.util.theme.createTintedDrawable
 
 class AppWidgetSmall : BaseAppWidget() {

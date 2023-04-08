@@ -10,7 +10,7 @@ import com.afollestad.materialdialogs.actions.getActionButton
 import com.afollestad.materialdialogs.input.input
 import mt.pref.ThemeColor.accentColor
 import player.phonograph.R
-import player.phonograph.util.PlaylistsUtil
+import player.phonograph.mechanism.PlaylistsManagement
 import util.phonograph.playlist.mediastore.renamePlaylistViaMediastore
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.lifecycleScope
@@ -31,7 +31,7 @@ class RenamePlaylistDialog : DialogFragment() {
                     InputType.TYPE_TEXT_VARIATION_PERSON_NAME or
                     InputType.TYPE_TEXT_FLAG_CAP_WORDS,
                 hintRes = R.string.playlist_name_empty,
-                prefill = PlaylistsUtil.getNameForPlaylist(requireActivity(), playlistId),
+                prefill = PlaylistsManagement.getNameForPlaylist(requireActivity(), playlistId),
                 allowEmpty = false
             ) { _, charSequence ->
                 val name: String = charSequence.toString().trim()

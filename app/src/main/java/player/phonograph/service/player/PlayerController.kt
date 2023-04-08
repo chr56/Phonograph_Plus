@@ -23,8 +23,9 @@ import player.phonograph.service.MusicService
 import player.phonograph.service.util.QueuePreferenceManager
 import player.phonograph.service.util.makeErrorMessage
 import player.phonograph.settings.Setting
-import player.phonograph.util.MusicUtil
-import player.phonograph.util.StatusBarLyricUtil
+import player.phonograph.mechanism.StatusBarLyric
+import android.content.ContentUris
+import android.provider.MediaStore
 
 // todo cleanup queueManager.setQueueCursor
 /**
@@ -439,7 +440,8 @@ class PlayerController(internal val service: MusicService) : Playback.PlaybackCa
         const val PAUSE_FOR_TRANSIENT_LOSS_OF_FOCUS = 16
         const val PAUSE_ERROR = -2
 
-        private fun getTrackUri(songId: Long): Uri = MusicUtil.getSongFileUri(songId)
+        private fun getTrackUri(songId: Long): Uri =
+            ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, songId)
     }
 
     private var becomingNoisyReceiverRegistered = false
@@ -616,7 +618,7 @@ class PlayerController(internal val service: MusicService) : Playback.PlaybackCa
 
     fun switchGaplessPlayback(gaplessPlayback: Boolean) { audioPlayer.gaplessPlayback = gaplessPlayback }
 
-    private fun broadcastStopLyric() = StatusBarLyricUtil.stopLyric()
+    private fun broadcastStopLyric() = StatusBarLyric.stopLyric()
     fun replaceLyrics(lyrics: LrcLyrics?) {
         if (lyrics != null) {
             lyricsUpdater.forceReplaceLyrics(lyrics)

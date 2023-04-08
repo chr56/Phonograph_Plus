@@ -8,7 +8,7 @@ import legacy.phonograph.MediaStoreCompat
 import legacy.phonograph.MediaStoreCompat.Audio.Playlists.EXTERNAL_CONTENT_URI
 import legacy.phonograph.MediaStoreCompat.Audio.PlaylistsColumns
 import player.phonograph.R
-import player.phonograph.util.CoroutineUtil.coroutineToast
+import player.phonograph.util.coroutineToast
 import android.content.ContentValues
 import android.content.Context
 import kotlinx.coroutines.Dispatchers

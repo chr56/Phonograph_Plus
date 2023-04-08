@@ -1,4 +1,8 @@
-package player.phonograph.util
+/*
+ *  Copyright (c) 2022~2023 chr_56
+ */
+
+package player.phonograph.util.ui
 
 import androidx.core.graphics.drawable.toBitmap
 import androidx.core.graphics.scale

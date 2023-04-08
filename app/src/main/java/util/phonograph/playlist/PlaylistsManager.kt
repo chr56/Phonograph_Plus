@@ -19,9 +19,9 @@ import player.phonograph.model.Song
 import player.phonograph.model.playlist.FilePlaylist
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.settings.Setting
-import player.phonograph.util.CoroutineUtil.coroutineToast
-import player.phonograph.util.PlaylistsUtil
-import player.phonograph.util.Util.warning
+import player.phonograph.util.coroutineToast
+import player.phonograph.mechanism.PlaylistsManagement
+import player.phonograph.util.warning
 import util.phonograph.playlist.m3u.M3UGenerator
 import util.phonograph.playlist.mediastore.addToPlaylistViaMediastore
 import util.phonograph.playlist.mediastore.createOrFindPlaylistViaMediastore
@@ -60,7 +60,7 @@ object PlaylistsManager {
 
     private suspend fun createPlaylistLegacy(context: Context, playlistName: String, songs: List<Song>?) {
         val id = createOrFindPlaylistViaMediastore(context, playlistName)
-        if (PlaylistsUtil.doesPlaylistExist(context, id)) {
+        if (PlaylistsManagement.doesPlaylistExist(context, id)) {
             songs?.let {
                 addToPlaylistViaMediastore(context, it, id, true)
                 coroutineToast(context, R.string.success)
@@ -95,7 +95,7 @@ object PlaylistsManager {
         context: Context,
         songs: List<Song>,
         playlistId: Long,
-    ) = appendPlaylist(context, songs, PlaylistsUtil.getPlaylist(context, playlistId))
+    ) = appendPlaylist(context, songs, PlaylistsManagement.getPlaylist(context, playlistId))
 
     /**
      * @param context must be IOpenDirStorageAccess
