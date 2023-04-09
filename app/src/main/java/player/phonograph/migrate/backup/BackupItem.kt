@@ -20,6 +20,8 @@ sealed class BackupItem(
 ) {
     abstract fun data(context: Context): InputStream
 
+    abstract fun import(inputStream: InputStream, context: Context): Boolean
+
     open fun displayName(resources: Resources): CharSequence = key
 
     /**
@@ -54,6 +56,9 @@ object SettingBackup : BackupItem(KEY_SETTING, Type.JSON) {
         fromSink {
             SettingDataManager.exportSettings(it)
         }
+
+    override fun import(inputStream: InputStream, context: Context): Boolean =
+        SettingDataManager.importSetting(inputStream, context)
 }
 
 object PathFilterBackup : BackupItem(KEY_PATH_FILTER, Type.JSON) {
@@ -61,6 +66,9 @@ object PathFilterBackup : BackupItem(KEY_PATH_FILTER, Type.JSON) {
         fromSink {
             DatabaseBackupManger.exportPathFilter(it, context)
         }
+
+    override fun import(inputStream: InputStream, context: Context): Boolean =
+        DatabaseBackupManger.importPathFilter(context, inputStream)
 }
 
 object FavoriteBackup : BackupItem(KEY_FAVORITES, Type.JSON) {
@@ -68,6 +76,9 @@ object FavoriteBackup : BackupItem(KEY_FAVORITES, Type.JSON) {
         fromSink {
             DatabaseBackupManger.exportFavorites(it, context)
         }
+
+    override fun import(inputStream: InputStream, context: Context): Boolean =
+        DatabaseBackupManger.importFavorites(context, inputStream)
 }
 
 object PlayingQueuesBackup : BackupItem(KEY_PLAYING_QUEUES, Type.JSON) {
@@ -75,6 +86,9 @@ object PlayingQueuesBackup : BackupItem(KEY_PLAYING_QUEUES, Type.JSON) {
         fromSink {
             DatabaseBackupManger.exportPlayingQueues(it, context)
         }
+
+    override fun import(inputStream: InputStream, context: Context): Boolean =
+        DatabaseBackupManger.importPlayingQueues(context, inputStream)
 }
 
 
@@ -83,6 +97,9 @@ object FavoriteDatabaseBackup : BackupItem(KEY_DATABASE_FAVORITE, Type.DATABASE)
         fromSink {
             DatabaseDataManger.exportDatabases(it, DatabaseConstants.FAVORITE_DB, context)
         }
+
+    override fun import(inputStream: InputStream, context: Context): Boolean =
+        DatabaseDataManger.importSingleDatabases(inputStream, DatabaseConstants.FAVORITE_DB, context)
 }
 
 object PathFilterDatabaseBackup : BackupItem(KEY_DATABASE_PATH_FILTER, Type.DATABASE) {
@@ -90,6 +107,9 @@ object PathFilterDatabaseBackup : BackupItem(KEY_DATABASE_PATH_FILTER, Type.DATA
         fromSink {
             DatabaseDataManger.exportDatabases(it, DatabaseConstants.PATH_FILTER, context)
         }
+
+    override fun import(inputStream: InputStream, context: Context): Boolean =
+        DatabaseDataManger.importSingleDatabases(inputStream, DatabaseConstants.PATH_FILTER, context)
 }
 
 object HistoryDatabaseBackup : BackupItem(KEY_DATABASE_HISTORY, Type.DATABASE) {
@@ -97,6 +117,9 @@ object HistoryDatabaseBackup : BackupItem(KEY_DATABASE_HISTORY, Type.DATABASE) {
         fromSink {
             DatabaseDataManger.exportDatabases(it, DatabaseConstants.HISTORY_DB, context)
         }
+
+    override fun import(inputStream: InputStream, context: Context): Boolean =
+        DatabaseDataManger.importSingleDatabases(inputStream, DatabaseConstants.HISTORY_DB, context)
 }
 
 object SongPlayCountDatabaseBackup : BackupItem(KEY_DATABASE_SONG_PLAY_COUNT, Type.DATABASE) {
@@ -104,6 +127,9 @@ object SongPlayCountDatabaseBackup : BackupItem(KEY_DATABASE_SONG_PLAY_COUNT, Ty
         fromSink {
             DatabaseDataManger.exportDatabases(it, DatabaseConstants.SONG_PLAY_COUNT_DB, context)
         }
+
+    override fun import(inputStream: InputStream, context: Context): Boolean =
+        DatabaseDataManger.importSingleDatabases(inputStream, DatabaseConstants.SONG_PLAY_COUNT_DB, context)
 }
 
 object MusicPlaybackStateDatabaseBackup : BackupItem(KEY_DATABASE_MUSIC_PLAYBACK_STATE, Type.DATABASE) {
@@ -111,4 +137,7 @@ object MusicPlaybackStateDatabaseBackup : BackupItem(KEY_DATABASE_MUSIC_PLAYBACK
         fromSink {
             DatabaseDataManger.exportDatabases(it, DatabaseConstants.MUSIC_PLAYBACK_STATE_DB, context)
         }
+
+    override fun import(inputStream: InputStream, context: Context): Boolean =
+        DatabaseDataManger.importSingleDatabases(inputStream, DatabaseConstants.MUSIC_PLAYBACK_STATE_DB, context)
 }
