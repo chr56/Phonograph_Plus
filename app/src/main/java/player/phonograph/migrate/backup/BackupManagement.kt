@@ -14,7 +14,14 @@ import java.io.File
 object Backup {
     // todo
     private val DEFAULT_BACKUP_CONFIG =
-        listOf(SettingBackup, FavoriteBackup, PathFilterBackup, PlayingQueuesBackup)
+        listOf(
+            SettingBackup, FavoriteBackup, PathFilterBackup, PlayingQueuesBackup,
+            FavoriteDatabaseBackup,
+            PathFilterDatabaseBackup,
+            HistoryDatabaseBackup,
+            SongPlayCountDatabaseBackup,
+            MusicPlaybackStateDatabaseBackup,
+        )
 
     fun exportBackupToDirectory(
         context: Context,
@@ -23,7 +30,8 @@ object Backup {
     ) {
         val time = currentDateTime()
         for (item in config) {
-            val file = File(destination, "phonograph_plus_backup_${item.key}_$time.json").createOrOverrideFile()
+            val filename = "phonograph_plus_backup_${item.key}_$time.${item.type.suffix}"
+            val file = File(destination, filename).createOrOverrideFile()
             file.outputStream().use { outputStream ->
                 item.data().use { inputStream ->
                     inputStream.transferToOutputStream(outputStream)
