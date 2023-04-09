@@ -146,7 +146,7 @@ object MusicPlaybackStateDatabaseBackup : BackupItem(KEY_DATABASE_MUSIC_PLAYBACK
         DatabaseDataManger.importSingleDatabases(inputStream, DatabaseConstants.MUSIC_PLAYBACK_STATE_DB, context)
 }
 
-private fun fromKeyImpl(key: String): BackupItem = when (key) {
+private fun fromKeyImpl(key: String): BackupItem? = when (key) {
     KEY_SETTING                       -> SettingBackup
     KEY_PATH_FILTER                   -> PathFilterBackup
     KEY_FAVORITES                     -> FavoriteBackup
@@ -156,5 +156,5 @@ private fun fromKeyImpl(key: String): BackupItem = when (key) {
     KEY_DATABASE_HISTORY              -> HistoryDatabaseBackup
     KEY_DATABASE_SONG_PLAY_COUNT      -> SongPlayCountDatabaseBackup
     KEY_DATABASE_MUSIC_PLAYBACK_STATE -> MusicPlaybackStateDatabaseBackup
-    else                              -> throw IllegalArgumentException("Invalid key: $key")
+    else                              -> null
 }
