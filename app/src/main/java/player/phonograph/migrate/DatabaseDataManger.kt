@@ -15,6 +15,7 @@ import player.phonograph.util.FileUtil.moveFile
 import player.phonograph.util.reportError
 import player.phonograph.util.text.currentTimestamp
 import player.phonograph.util.transferToOutputStream
+import player.phonograph.util.warning
 import player.phonograph.util.zip.ZipUtil.addToZipFile
 import player.phonograph.util.zip.ZipUtil.extractZipFile
 import android.content.Context
@@ -43,6 +44,7 @@ object DatabaseDataManger {
     fun exportDatabases(sink: BufferedSink, dbName: String, context: Context): Boolean {
         val databaseFile = context.getDatabasePath(dbName) ?: return false
         val bytes = databaseFile.readBytes()
+        if (bytes.isEmpty()) warning(TAG, "database $dbName is empty")
         sink.write(bytes)
         return true
     }
@@ -90,7 +92,7 @@ object DatabaseDataManger {
             cacheDir.delete()
             true
         } catch (e: Exception) {
-            reportError(e, TAG,"Failed import database $dbName")
+            reportError(e, TAG, "Failed import database $dbName")
             e.printStackTrace()
             false
         }
