@@ -164,9 +164,17 @@ class SettingsActivity : ToolbarActivity(), ICreateFileStorageAccess, IOpenFileS
                 title = "Export All"
                 showAsActionFlag = SHOW_AS_ACTION_NEVER
                 onClick {
-                    lifecycleScope.launch(Dispatchers.IO) {
-                        Backup.exportBackupToDirectory(this@SettingsActivity)
+                    createFileStorageAccessTool.launch(
+                        "phonograph_plus_backup_${currentDateTime()}.zip"
+                    ) { uri ->
+                        uri ?: return@launch
+                        lifecycleScope.launch(Dispatchers.IO) {
+                            context.contentResolver.openOutputStream(uri, "wt")?.use {
+                                Backup.exportBackupToArchive(context = this@SettingsActivity, targetOutputStream = it)
+                            }
+                        }
                     }
+
                     true
                 }
             }
