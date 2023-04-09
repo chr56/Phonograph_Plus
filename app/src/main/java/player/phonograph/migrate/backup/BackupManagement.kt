@@ -10,7 +10,9 @@ import player.phonograph.util.transferToOutputStream
 import player.phonograph.util.zip.ZipUtil.addToZipFile
 import player.phonograph.util.zip.ZipUtil.extractZipFile
 import android.content.Context
-import java.io.BufferedWriter
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 import java.io.File
 import java.io.FileInputStream
 import java.io.InputStream
@@ -57,11 +59,9 @@ object Backup {
     ) {
         val timestamp = currentTimestamp()
 
-        val manifest = File(destination, BACKUP_MANIFEST_FILE).createOrOverrideFile()
-        val manifestWriter = manifest.bufferedWriter()
+        val fileList = mutableMapOf<BackupItem, String>() // track files added
 
-        manifestWriter.line("$BACKUP_TIME=$timestamp")
-
+        // export backups
         for (item in config) {
             val filename = "${item.key}_$timestamp.${item.type.suffix}"
             val file = File(destination, filename).createOrOverrideFile()
@@ -70,10 +70,17 @@ object Backup {
                     inputStream.transferToOutputStream(outputStream)
                 }
             }
-            manifestWriter.line("${item.key}=$filename")
+            fileList[item] = filename
         }
 
-        manifestWriter.close()
+        // generate manifest file
+        val manifestFile = File(destination, ManifestFile.BACKUP_MANIFEST_FILENAME).createOrOverrideFile()
+        manifestFile.outputStream().bufferedWriter().use {
+            val manifest = ManifestFile(timestamp, fileList)
+            val raw = parser.encodeToString(manifest)
+            it.write(raw)
+            it.flush()
+        }
     }
 
     fun importBackupFromArchive(
@@ -97,11 +104,11 @@ object Backup {
     ) {
         require(source.exists() && source.isDirectory) { "${source.absolutePath} is not accessible directory!" }
         // read manifest
-        val manifestFile = File(source, BACKUP_MANIFEST_FILE)
+        val manifestFile = File(source, ManifestFile.BACKUP_MANIFEST_FILENAME)
         if (manifestFile.exists() && manifestFile.isFile) {
-            val manifest = readManifest(source, manifestFile)
-            for ((item, file) in manifest.files) {
-                FileInputStream(file).use { inputStream ->
+            val manifest = decodeManifest(manifestFile)
+            for ((item, relativePath) in manifest.files) {
+                FileInputStream(File(source, relativePath)).use { inputStream ->
                     item.import(inputStream, context)
                 }
             }
@@ -110,32 +117,19 @@ object Backup {
         }
     }
 
-    private fun readManifest(source: File, manifestFile: File): ManifestFile {
-        val manifest =
-            manifestFile.readLines()
-                .map { it.split("=", ignoreCase = true, limit = 2) }
-                .associate { Pair(it[0], it[1]) }
-        val timestamp = (manifest[BACKUP_TIME] ?: "0").toLong()
-        val files = manifest.entries.mapNotNull { (key, value) ->
-            val backupItem = BackupItem.fromKey(key)
-            if (backupItem == null)
-                null
-            else
-                Pair(backupItem, File(source, value))
-        }.toMap()
-        return ManifestFile(timestamp, files)
+    private fun decodeManifest(inputFile: File): ManifestFile {
+        val manifestFile = inputFile.inputStream().bufferedReader().use {
+            val raw = it.readText()
+            parser.decodeFromString<ManifestFile>(raw)
+        }
+        return manifestFile
     }
 
-    private fun BufferedWriter.line(string: String): BufferedWriter {
-        write("$string\n")
-        return this
+    private val parser by lazy(LazyThreadSafetyMode.PUBLICATION) {
+        Json {
+            ignoreUnknownKeys = true
+            prettyPrint = true
+            encodeDefaults = true
+        }
     }
-
-    private const val BACKUP_MANIFEST_FILE = "MANIFEST.property"
-    private const val BACKUP_TIME = "BackupTime"
-
-    private class ManifestFile(
-        val timestamp: Long,
-        val files: Map<BackupItem, File>,
-    )
 }

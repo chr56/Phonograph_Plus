@@ -12,8 +12,37 @@ import player.phonograph.migrate.SettingDataManager
 import player.phonograph.provider.DatabaseConstants
 import android.content.Context
 import android.content.res.Resources
+import kotlinx.serialization.KSerializer
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.descriptors.PrimitiveKind
+import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
+import kotlinx.serialization.descriptors.SerialDescriptor
+import kotlinx.serialization.encoding.Decoder
+import kotlinx.serialization.encoding.Encoder
 import java.io.InputStream
 
+@Serializable
+class ManifestFile(
+    @SerialName(KEY_BACKUP_TIME)
+    val timestamp: Long,
+    @SerialName(KEY_FILES)
+    val files: Map<BackupItem, String>,
+    @SerialName(KEY_VERSION)
+    val version: Int = VERSION,
+) {
+    companion object {
+        const val BACKUP_MANIFEST_FILENAME = "MANIFEST.json"
+
+        private const val KEY_BACKUP_TIME = "BackupTime"
+        private const val KEY_FILES = "files"
+        private const val KEY_VERSION = "version"
+
+        private const val VERSION = 1
+    }
+}
+
+@Serializable(with = BackupItem.Serializer::class)
 sealed class BackupItem(
     val key: String,
     val type: Type,
@@ -31,6 +60,22 @@ sealed class BackupItem(
         BINARY("bin"),
         JSON("json"),
         DATABASE("db");
+    }
+
+    class Serializer : KSerializer<BackupItem> {
+        override val descriptor: SerialDescriptor =
+            PrimitiveSerialDescriptor("BackupItem", PrimitiveKind.STRING)
+
+
+        override fun serialize(encoder: Encoder, value: BackupItem) {
+            encoder.encodeString(value.key)
+        }
+
+        override fun deserialize(decoder: Decoder): BackupItem {
+            val rawString = decoder.decodeString()
+            return fromKey(rawString) ?: throw kotlinx.serialization.SerializationException("Unknown key ($rawString)")
+        }
+
     }
 
     companion object {
