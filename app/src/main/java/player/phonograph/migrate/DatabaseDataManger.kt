@@ -11,6 +11,7 @@ import player.phonograph.provider.DatabaseConstants.MUSIC_PLAYBACK_STATE_DB
 import player.phonograph.provider.DatabaseConstants.PATH_FILTER
 import player.phonograph.provider.DatabaseConstants.SONG_PLAY_COUNT_DB
 import player.phonograph.util.FileUtil.createOrOverrideFile
+import player.phonograph.util.FileUtil.moveFile
 import player.phonograph.util.reportError
 import player.phonograph.util.text.currentTimestamp
 import player.phonograph.util.transferToOutputStream
@@ -141,17 +142,6 @@ object DatabaseDataManger {
                 from = File(sourceDir, MUSIC_PLAYBACK_STATE_DB),
                 to = context.getDatabasePath(MUSIC_PLAYBACK_STATE_DB)
             )
-        }
-    }
-
-    private fun moveFile(from: File, to: File) {
-        if (from.isDirectory || to.isDirectory) throw IllegalArgumentException("move dirs")
-        if (from.exists() && from.canWrite()) {
-            if (to.exists()) {
-                Log.e(TAG, "deleting ${to.path}")
-                to.delete().also { require(it) { "Can't delete ${to.path}" } }
-            }
-            from.renameTo(to).also { require(it) { "Restore ${from.path} failed!" } }
         }
     }
 
