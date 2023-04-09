@@ -33,6 +33,7 @@ import android.view.MenuItem.SHOW_AS_ACTION_NEVER
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.io.FileInputStream
 
 class SettingsActivity : ToolbarActivity(), ICreateFileStorageAccess, IOpenFileStorageAccess {
 
@@ -160,7 +161,6 @@ class SettingsActivity : ToolbarActivity(), ICreateFileStorageAccess, IOpenFileS
                 }
             }
 
-            /*
             menuItem {
                 title = "Export All"
                 showAsActionFlag = SHOW_AS_ACTION_NEVER
@@ -179,7 +179,27 @@ class SettingsActivity : ToolbarActivity(), ICreateFileStorageAccess, IOpenFileS
                     true
                 }
             }
-             */
+
+            menuItem {
+                title = "Import All"
+                showAsActionFlag = SHOW_AS_ACTION_NEVER
+                onClick {
+                    openFileStorageAccessTool.launch(
+                        OpenDocumentContract.Config(arrayOf("*/*"))
+                    ) { uri ->
+                        uri ?: return@launch
+                        lifecycleScope.launch(Dispatchers.IO) {
+                            context.contentResolver.openFileDescriptor(uri, "r")?.use {
+                                FileInputStream(it.fileDescriptor).use { stream ->
+                                    Backup.importBackupFromArchive(context = this@SettingsActivity, stream)
+                                }
+                            }
+                        }
+                    }
+
+                    true
+                }
+            }
         }
     }
 
