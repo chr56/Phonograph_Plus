@@ -33,7 +33,7 @@ object Backup {
             val filename = "phonograph_plus_backup_${item.key}_$time.${item.type.suffix}"
             val file = File(destination, filename).createOrOverrideFile()
             file.outputStream().use { outputStream ->
-                item.data().use { inputStream ->
+                item.data(context).use { inputStream ->
                     inputStream.transferToOutputStream(outputStream)
                 }
             }
