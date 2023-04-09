@@ -32,6 +32,10 @@ sealed class BackupItem(
         JSON("json"),
         DATABASE("db");
     }
+
+    companion object {
+        fun fromKey(key: String) = fromKeyImpl(key)
+    }
 }
 
 private const val KEY_SETTING = "setting"
@@ -140,4 +144,17 @@ object MusicPlaybackStateDatabaseBackup : BackupItem(KEY_DATABASE_MUSIC_PLAYBACK
 
     override fun import(inputStream: InputStream, context: Context): Boolean =
         DatabaseDataManger.importSingleDatabases(inputStream, DatabaseConstants.MUSIC_PLAYBACK_STATE_DB, context)
+}
+
+private fun fromKeyImpl(key: String): BackupItem = when (key) {
+    KEY_SETTING                       -> SettingBackup
+    KEY_PATH_FILTER                   -> PathFilterBackup
+    KEY_FAVORITES                     -> FavoriteBackup
+    KEY_PLAYING_QUEUES                -> PlayingQueuesBackup
+    KEY_DATABASE_FAVORITE             -> FavoriteDatabaseBackup
+    KEY_DATABASE_PATH_FILTER          -> PathFilterDatabaseBackup
+    KEY_DATABASE_HISTORY              -> HistoryDatabaseBackup
+    KEY_DATABASE_SONG_PLAY_COUNT      -> SongPlayCountDatabaseBackup
+    KEY_DATABASE_MUSIC_PLAYBACK_STATE -> MusicPlaybackStateDatabaseBackup
+    else                              -> throw IllegalArgumentException("Invalid key: $key")
 }
