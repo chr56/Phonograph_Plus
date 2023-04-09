@@ -30,15 +30,22 @@ class BackupDataDialog : DialogFragment() {
             "Unsupported activity (SAF unavailable)"
         }
 
-        val stringImport = resources.getString(R.string.import_)
-        val stringExport = resources.getString(R.string.export_)
-        val stringSetting = resources.getString(R.string.action_settings)
-        val stringPathFilter = resources.getString(R.string.path_filter)
-        val stringPlayingQueue = resources.getString(R.string.label_playing_queue)
-        val stringFavorite = resources.getString(R.string.favorites)
+        val i = resources.getString(R.string.action_import)
+        val e = resources.getString(R.string.action_export)
+
+
+        val importSetting = String.format(i, resources.getString(R.string.action_settings))
+        val importPathFilter = String.format(i, resources.getString(R.string.path_filter))
+        val importPlayingQueue = String.format(i, resources.getString(R.string.label_playing_queue))
+        val importFavorite = String.format(i, resources.getString(R.string.favorites))
+
+        val exportSetting = String.format(e, resources.getString(R.string.action_settings))
+        val exportPathFilter = String.format(e, resources.getString(R.string.path_filter))
+        val exportPlayingQueue = String.format(e, resources.getString(R.string.label_playing_queue))
+        val exportFavorite = String.format(e, resources.getString(R.string.favorites))
 
         val menu = listOf(
-            "$stringExport$stringSetting" to {
+            exportSetting to {
                 export(
                     requireActivity(),
                     "phonograph_plus_settings_${currentDateTime()}.json"
@@ -47,13 +54,13 @@ class BackupDataDialog : DialogFragment() {
                     true
                 }
             },
-            "$stringImport$stringSetting" to {
+            importSetting to {
                 import(requireActivity(), "application/json") { uri ->
                     SettingDataManager.importSetting(uri, activity)
                     true
                 }
             },
-            "$stringExport$stringPathFilter" to {
+            exportPathFilter to {
                 export(
                     requireActivity(),
                     "phonograph_plus_path_filter_${currentDateTime()}.json"
@@ -62,13 +69,13 @@ class BackupDataDialog : DialogFragment() {
                     true
                 }
             },
-            "$stringImport$stringPathFilter" to {
+            importPathFilter to {
                 import(requireActivity(), "application/json") { uri ->
                     DatabaseBackupManger.importPathFilter(activity, uri)
                     true
                 }
             },
-            "$stringExport$stringPlayingQueue" to {
+            exportPlayingQueue to {
                 export(
                     requireActivity(),
                     "phonograph_plus_playing_queues_${currentDateTime()}.json"
@@ -77,13 +84,13 @@ class BackupDataDialog : DialogFragment() {
                     true
                 }
             },
-            "$stringImport$stringPlayingQueue" to {
+            importPlayingQueue to {
                 import(requireActivity(), "application/json") { uri ->
                     DatabaseBackupManger.importPlayingQueues(activity, uri)
                     true
                 }
             },
-            "$stringExport$stringFavorite" to {
+            exportFavorite to {
                 export(
                     requireActivity(),
                     "phonograph_plus_favorites_${currentDateTime()}.json"
@@ -92,7 +99,7 @@ class BackupDataDialog : DialogFragment() {
                     true
                 }
             },
-            "$stringImport$stringFavorite" to {
+            importFavorite to {
                 import(requireActivity(), "application/json") { uri ->
                     DatabaseBackupManger.importFavorites(activity, uri)
                     true

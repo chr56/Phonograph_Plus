@@ -70,7 +70,7 @@ class SettingsActivity : ToolbarActivity(), ICreateFileStorageAccess, IOpenFileS
         attach(from = menu) {
             menuItem {
                 itemId = R.id.action_export_data
-                title = "${getString(R.string.export_)}${getString(R.string.databases)}"
+                title = getString(R.string.action_export, getString(R.string.databases))
                 showAsActionFlag = SHOW_AS_ACTION_NEVER
                 onClick {
                     createFileStorageAccessTool.launch(
@@ -86,7 +86,7 @@ class SettingsActivity : ToolbarActivity(), ICreateFileStorageAccess, IOpenFileS
             }
             menuItem {
                 itemId = R.id.action_import_data
-                title = "${getString(R.string.import_)}${getString(R.string.databases)}"
+                title = getString(R.string.action_import, getString(R.string.databases))
                 showAsActionFlag = SHOW_AS_ACTION_NEVER
                 onClick {
                     openFileStorageAccessTool.launch(
@@ -102,7 +102,7 @@ class SettingsActivity : ToolbarActivity(), ICreateFileStorageAccess, IOpenFileS
             }
             menuItem {
                 itemId = R.id.action_export_preferences
-                title = "${getString(R.string.export_)}${getString(R.string.preferences)}"
+                title = getString(R.string.action_export, getString(R.string.preferences))
                 showAsActionFlag = SHOW_AS_ACTION_NEVER
                 onClick {
                     createFileStorageAccessTool.launch(
@@ -118,7 +118,7 @@ class SettingsActivity : ToolbarActivity(), ICreateFileStorageAccess, IOpenFileS
             }
             menuItem {
                 itemId = R.id.action_import_preferences
-                title = "${getString(R.string.import_)}${getString(R.string.preferences)}"
+                title = getString(R.string.action_import, getString(R.string.preferences))
                 showAsActionFlag = SHOW_AS_ACTION_NEVER
                 onClick {
                     openFileStorageAccessTool.launch(
@@ -162,7 +162,7 @@ class SettingsActivity : ToolbarActivity(), ICreateFileStorageAccess, IOpenFileS
             }
 
             menuItem {
-                title = "Export All"
+                title = getString(R.string.action_export, getString(R.string.action_backup))
                 showAsActionFlag = SHOW_AS_ACTION_NEVER
                 onClick {
                     createFileStorageAccessTool.launch(
@@ -181,7 +181,7 @@ class SettingsActivity : ToolbarActivity(), ICreateFileStorageAccess, IOpenFileS
             }
 
             menuItem {
-                title = "Import All"
+                title = getString(R.string.action_import, getString(R.string.action_backup))
                 showAsActionFlag = SHOW_AS_ACTION_NEVER
                 onClick {
                     openFileStorageAccessTool.launch(

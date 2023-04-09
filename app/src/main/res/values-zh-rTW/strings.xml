@@ -448,4 +448,6 @@
     <string name="dynamic_colors">動態色彩</string>
     <string name="pref_title_enable_monet">啟用 Monet 取色</string>
     <string name="pref_summary_enable_monet">使用 Material You 動態主題取色 (實驗性支援) \n[注: 僅修改配色, 不支援完整的 Material You]</string>
+    <string name="action_import">匯入 %1$s</string>
+    <string name="action_export">匯出 %1$s</string>
 </resources>
