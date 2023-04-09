@@ -160,6 +160,7 @@ class SettingsActivity : ToolbarActivity(), ICreateFileStorageAccess, IOpenFileS
                 }
             }
 
+            /*
             menuItem {
                 title = "Export All"
                 showAsActionFlag = SHOW_AS_ACTION_NEVER
@@ -178,6 +179,7 @@ class SettingsActivity : ToolbarActivity(), ICreateFileStorageAccess, IOpenFileS
                     true
                 }
             }
+             */
         }
     }
 
