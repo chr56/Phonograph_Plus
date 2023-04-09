@@ -10,7 +10,7 @@ import player.phonograph.util.text.currentTimestamp
 import player.phonograph.util.transferToOutputStream
 import player.phonograph.util.zip.ZipUtil.addToZipFile
 import android.content.Context
-import android.os.Environment
+import java.io.BufferedWriter
 import java.io.File
 import java.io.OutputStream
 import java.util.zip.ZipOutputStream
@@ -47,12 +47,18 @@ object Backup {
     }
 
 
-    fun exportBackupToDirectory(
+    private fun exportBackupToDirectory(
         context: Context,
-        config: List<BackupItem> = DEFAULT_BACKUP_CONFIG,
-        destination: File = context.getExternalFilesDir("Backup") ?: File(Environment.DIRECTORY_DOWNLOADS),
+        config: List<BackupItem>,
+        destination: File,
     ) {
         val time = currentDateTime()
+
+        val manifest = File(destination, BACKUP_MANIFEST_FILE).createOrOverrideFile()
+        val manifestWriter = manifest.bufferedWriter()
+
+        manifestWriter.line("$BACKUP_TIME=${currentTimestamp()}")
+
         for (item in config) {
             val filename = "phonograph_plus_backup_${item.key}_$time.${item.type.suffix}"
             val file = File(destination, filename).createOrOverrideFile()
@@ -61,6 +67,17 @@ object Backup {
                     inputStream.transferToOutputStream(outputStream)
                 }
             }
+            manifestWriter.line("${item.key}=$filename")
         }
+
+        manifestWriter.close()
     }
+
+    private fun BufferedWriter.line(string: String): BufferedWriter {
+        write("$string\n")
+        return this
+    }
+
+    private const val BACKUP_MANIFEST_FILE = "MANIFEST.property"
+    private const val BACKUP_TIME = "BackupTime"
 }
