@@ -5,7 +5,6 @@
 package player.phonograph.migrate.backup
 
 import player.phonograph.util.FileUtil.createOrOverrideFile
-import player.phonograph.util.text.currentDateTime
 import player.phonograph.util.text.currentTimestamp
 import player.phonograph.util.transferToOutputStream
 import player.phonograph.util.zip.ZipUtil.addToZipFile
@@ -56,15 +55,15 @@ object Backup {
         config: List<BackupItem>,
         destination: File,
     ) {
-        val time = currentDateTime()
+        val timestamp = currentTimestamp()
 
         val manifest = File(destination, BACKUP_MANIFEST_FILE).createOrOverrideFile()
         val manifestWriter = manifest.bufferedWriter()
 
-        manifestWriter.line("$BACKUP_TIME=${currentTimestamp()}")
+        manifestWriter.line("$BACKUP_TIME=$timestamp")
 
         for (item in config) {
-            val filename = "phonograph_plus_backup_${item.key}_$time.${item.type.suffix}"
+            val filename = "${item.key}_$timestamp.${item.type.suffix}"
             val file = File(destination, filename).createOrOverrideFile()
             file.outputStream().use { outputStream ->
                 item.data(context).use { inputStream ->
