@@ -4,6 +4,7 @@
 
 package player.phonograph.migrate
 
+import okio.BufferedSink
 import player.phonograph.MusicServiceMsgConst
 import player.phonograph.mediastore.searchSong
 import player.phonograph.model.Song
@@ -27,6 +28,7 @@ import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
 import java.io.FileInputStream
+import java.io.IOException
 import java.io.OutputStream
 
 object DatabaseBackupManger {
@@ -54,6 +56,18 @@ object DatabaseBackupManger {
         val content = parser.encodeToString(json)
         saveToFile(destinationUri, content, context.contentResolver)
         return true
+    }
+
+    fun exportPathFilter(sink: BufferedSink, context: Context): Boolean {
+        return try {
+            val json = exportPathFilter(context)
+            val content = parser.encodeToString(json)
+            sink.writeString(content, Charsets.UTF_8)
+            true
+        } catch (e: IOException) {
+            reportError(e, TAG, "Failed to export PathFilter!")
+            false
+        }
     }
 
     /**
@@ -135,6 +149,20 @@ object DatabaseBackupManger {
         return true
     }
 
+
+
+
+    fun exportPlayingQueues(sink: BufferedSink, context: Context): Boolean {
+        return try {
+            val json = exportPlayingQueues(context)
+            val content = parser.encodeToString(json)
+            sink.writeString(content, Charsets.UTF_8)
+            true
+        } catch (e: IOException) {
+            reportError(e, TAG, "Failed to export PlayingQueues!")
+            false
+        }
+    }
     /**
      * close stream after use
      */
@@ -211,6 +239,19 @@ object DatabaseBackupManger {
         val content = parser.encodeToString(json)
         saveToFile(destinationUri, content, context.contentResolver)
         return true
+    }
+
+
+    fun exportFavorites(sink: BufferedSink, context: Context): Boolean {
+        return try {
+            val json = exportFavorites(context)
+            val content = parser.encodeToString(json)
+            sink.writeString(content, Charsets.UTF_8)
+            true
+        } catch (e: IOException) {
+            reportError(e, TAG, "Failed to export Favorites!")
+            false
+        }
     }
 
     /**

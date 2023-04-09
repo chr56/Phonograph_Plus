@@ -4,6 +4,7 @@
 
 package player.phonograph.migrate
 
+import okio.BufferedSink
 import player.phonograph.provider.DatabaseConstants.FAVORITE_DB
 import player.phonograph.provider.DatabaseConstants.HISTORY_DB
 import player.phonograph.provider.DatabaseConstants.MUSIC_PLAYBACK_STATE_DB
@@ -32,6 +33,13 @@ object DatabaseDataManger {
                 }
             }
         } ?: false
+    }
+
+    fun exportDatabases(sink: BufferedSink, dbName: String, context: Context): Boolean {
+        val databaseFile = context.getDatabasePath(dbName) ?: return false
+        val bytes = databaseFile.readBytes()
+        sink.write(bytes)
+        return true
     }
 
     fun exportDatabases(folder: String = "exported", context: Context) {
@@ -67,7 +75,7 @@ object DatabaseDataManger {
     private fun importDatabaseImpl(
         fileInputStream: FileInputStream,
         context: Context,
-        cacheDir: File
+        cacheDir: File,
     ): Boolean {
         if (!cacheDir.exists() && !cacheDir.isDirectory && !cacheDir.canWrite())
             throw FileNotFoundException("Output dirs unavailable!")
@@ -86,7 +94,10 @@ object DatabaseDataManger {
             moveFile(from = File(sourceDir, PATH_FILTER), to = context.getDatabasePath(PATH_FILTER))
             moveFile(from = File(sourceDir, HISTORY_DB), to = context.getDatabasePath(HISTORY_DB))
             moveFile(from = File(sourceDir, SONG_PLAY_COUNT_DB), to = context.getDatabasePath(SONG_PLAY_COUNT_DB))
-            moveFile(from = File(sourceDir, MUSIC_PLAYBACK_STATE_DB), to = context.getDatabasePath(MUSIC_PLAYBACK_STATE_DB))
+            moveFile(
+                from = File(sourceDir, MUSIC_PLAYBACK_STATE_DB),
+                to = context.getDatabasePath(MUSIC_PLAYBACK_STATE_DB)
+            )
         }
     }
 

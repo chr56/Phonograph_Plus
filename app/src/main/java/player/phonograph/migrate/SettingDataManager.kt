@@ -5,6 +5,7 @@
 package player.phonograph.migrate
 
 import mt.pref.ThemeColor
+import okio.BufferedSink
 import player.phonograph.App
 import player.phonograph.BuildConfig.GIT_COMMIT_HASH
 import player.phonograph.BuildConfig.VERSION_CODE
@@ -15,7 +16,6 @@ import player.phonograph.util.reportError
 import player.phonograph.util.warning
 import androidx.preference.PreferenceManager
 import android.annotation.SuppressLint
-import android.content.ContentResolver
 import android.content.Context
 import android.content.SharedPreferences.Editor
 import android.net.Uri
@@ -26,7 +26,6 @@ import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.*
 import java.io.FileInputStream
-import java.io.FileOutputStream
 
 object SettingDataManager {
 
@@ -38,6 +37,18 @@ object SettingDataManager {
             val model = serializedPref(prefs)
             val content = parser.encodeToString(model)
             saveToFile(uri, content, context.contentResolver)
+            true
+        } catch (e: Exception) {
+            reportError(e, TAG, "Failed to convert SharedPreferences to Json")
+            false
+        }
+
+    fun exportSettings(sink: BufferedSink): Boolean =
+        try {
+            val prefs = Setting.instance.rawMainPreference.all
+            val model = serializedPref(prefs)
+            val content = parser.encodeToString(model)
+            sink.writeString(content, Charsets.UTF_8)
             true
         } catch (e: Exception) {
             reportError(e, TAG, "Failed to convert SharedPreferences to Json")
@@ -154,7 +165,7 @@ object SettingDataManager {
         @SerialName("format_version") val formatVersion: Int,
         @SerialName("app_version") val appVersion: Int,
         @SerialName("commit_hash") val commitHash: String,
-        @SerialName("content") val content: JsonObject
+        @SerialName("content") val content: JsonObject,
     )
 
     const val VERSION = 2
