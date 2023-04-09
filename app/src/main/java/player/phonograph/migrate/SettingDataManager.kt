@@ -26,6 +26,7 @@ import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.*
 import java.io.FileInputStream
+import java.io.InputStream
 
 object SettingDataManager {
 
@@ -63,6 +64,9 @@ object SettingDataManager {
         } ?: false
     }
 
+    fun importSetting(inputStream: InputStream, context: Context): Boolean =
+        loadSettings(inputStream, context)
+
     private fun serializedPref(prefs: Map<String, Any?>): SettingExport {
         val content = JsonObject(
             prefs.mapValues { serializedValue(it.value) }
@@ -87,9 +91,9 @@ object SettingDataManager {
     }
 
 
-    private fun loadSettings(fileInputStream: FileInputStream, context: Context): Boolean = try {
+    private fun loadSettings(inputStream: InputStream, context: Context): Boolean = try {
 
-        val rawString: String = fileInputStream.use { stream ->
+        val rawString: String = inputStream.use { stream ->
             stream.bufferedReader().use { it.readText() }
         }
 

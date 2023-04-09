@@ -10,7 +10,12 @@ import player.phonograph.provider.DatabaseConstants.HISTORY_DB
 import player.phonograph.provider.DatabaseConstants.MUSIC_PLAYBACK_STATE_DB
 import player.phonograph.provider.DatabaseConstants.PATH_FILTER
 import player.phonograph.provider.DatabaseConstants.SONG_PLAY_COUNT_DB
+import player.phonograph.util.FileUtil.createOrOverrideFile
+import player.phonograph.util.FileUtil.moveFile
+import player.phonograph.util.reportError
 import player.phonograph.util.text.currentTimestamp
+import player.phonograph.util.transferToOutputStream
+import player.phonograph.util.warning
 import player.phonograph.util.zip.ZipUtil.addToZipFile
 import player.phonograph.util.zip.ZipUtil.extractZipFile
 import android.content.Context
@@ -20,6 +25,7 @@ import java.io.File
 import java.io.FileInputStream
 import java.io.FileNotFoundException
 import java.io.FileOutputStream
+import java.io.InputStream
 import java.util.zip.ZipInputStream
 import java.util.zip.ZipOutputStream
 
@@ -38,6 +44,7 @@ object DatabaseDataManger {
     fun exportDatabases(sink: BufferedSink, dbName: String, context: Context): Boolean {
         val databaseFile = context.getDatabasePath(dbName) ?: return false
         val bytes = databaseFile.readBytes()
+        if (bytes.isEmpty()) warning(TAG, "database $dbName is empty")
         sink.write(bytes)
         return true
     }
@@ -72,6 +79,45 @@ object DatabaseDataManger {
         } ?: false
     }
 
+    fun importSingleDatabases(inputStream: InputStream, dbName: String, context: Context): Boolean {
+        return try {
+            // mahe cache
+            val cacheDir = File(context.externalCacheDir ?: context.cacheDir, "Backup_${currentTimestamp()}")
+            if (cacheDir.exists()) {
+                cacheDir.delete()
+            } else {
+                cacheDir.mkdirs()
+            }
+            importSingleDatabaseImpl(inputStream, dbName, context, cacheDir)
+            cacheDir.delete()
+            true
+        } catch (e: Exception) {
+            reportError(e, TAG, "Failed import database $dbName")
+            e.printStackTrace()
+            false
+        }
+    }
+
+    private fun importSingleDatabaseImpl(
+        inputStream: InputStream,
+        dbName: String,
+        context: Context,
+        cacheDir: File,
+    ) {
+
+        val tmpFile = File(cacheDir, dbName).createOrOverrideFile()
+
+        // copy from stream
+        tmpFile.outputStream().use { fileOutputStream ->
+            inputStream.transferToOutputStream(fileOutputStream)
+        }
+
+        // move
+        moveFile(from = tmpFile, to = context.getDatabasePath(dbName))
+
+        tmpFile.delete()
+    }
+
     private fun importDatabaseImpl(
         fileInputStream: FileInputStream,
         context: Context,
@@ -98,17 +144,6 @@ object DatabaseDataManger {
                 from = File(sourceDir, MUSIC_PLAYBACK_STATE_DB),
                 to = context.getDatabasePath(MUSIC_PLAYBACK_STATE_DB)
             )
-        }
-    }
-
-    private fun moveFile(from: File, to: File) {
-        if (from.isDirectory || to.isDirectory) throw IllegalArgumentException("move dirs")
-        if (from.exists() && from.canWrite()) {
-            if (to.exists()) {
-                Log.e(TAG, "deleting ${to.path}")
-                to.delete().also { require(it) { "Can't delete ${to.path}" } }
-            }
-            from.renameTo(to).also { require(it) { "Restore ${from.path} failed!" } }
         }
     }
 

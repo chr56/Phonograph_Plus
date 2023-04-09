@@ -13,10 +13,12 @@ import android.webkit.MimeTypeMap
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.isActive
 import player.phonograph.App
+import player.phonograph.migrate.DatabaseDataManger
 import player.phonograph.notification.ErrorNotification
 import androidx.core.content.getSystemService
 import android.content.ContentResolver
 import android.net.Uri
+import android.os.Build
 import android.os.storage.StorageManager
 import java.io.File
 import java.io.FileFilter
@@ -26,12 +28,15 @@ import java.util.*
 import kotlin.math.log10
 import kotlin.math.pow
 import java.io.FileOutputStream
+import java.nio.file.CopyOption
+import java.nio.file.Files
+import java.nio.file.StandardCopyOption
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
  */
 object FileUtil {
-
+    private const val TAG = "FileUtil"
     /**
      * create the file or delete it and create new one if exists
      */
@@ -39,6 +44,20 @@ object FileUtil {
         if (exists()) delete()
         createNewFile()
         return this
+    }
+
+    fun moveFile(from: File, to: File) {
+        require(from.exists()) { "${from.path} doesn't exits!" }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            Files.copy(from.toPath(), to.toPath(), StandardCopyOption.REPLACE_EXISTING)
+        } else {
+            if (from.canWrite()) {
+                if (to.exists()) {
+                    to.delete().also { require(it) { "Can't delete ${to.path}" } }
+                }
+                from.renameTo(to).also { require(it) { "Restore ${from.path} failed!" } }
+            }
+        }
     }
 
     private fun makePlaceholders(len: Int): String {

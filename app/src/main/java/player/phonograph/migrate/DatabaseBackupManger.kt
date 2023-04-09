@@ -29,6 +29,7 @@ import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
 import java.io.FileInputStream
 import java.io.IOException
+import java.io.InputStream
 import java.io.OutputStream
 
 object DatabaseBackupManger {
@@ -95,8 +96,17 @@ object DatabaseBackupManger {
         )
     }
 
+    fun importPathFilter(context: Context, inputStream: InputStream): Boolean {
+        val rawString = inputStream.reader().use { it.readText() }
+        return importPathFilter(context, rawString)
+    }
+
     fun importPathFilter(context: Context, sourceUri: Uri): Boolean {
         val rawString: String = readFrom(context, sourceUri)
+        return importPathFilter(context, rawString)
+    }
+
+    private fun importPathFilter(context: Context, rawString: String): Boolean {
         val json = parser.parseToJsonElement(rawString) as? JsonObject
         if (json != null) {
             try {
@@ -151,7 +161,6 @@ object DatabaseBackupManger {
 
 
 
-
     fun exportPlayingQueues(sink: BufferedSink, context: Context): Boolean {
         return try {
             val json = exportPlayingQueues(context)
@@ -190,6 +199,15 @@ object DatabaseBackupManger {
 
     fun importPlayingQueues(context: Context, sourceUri: Uri): Boolean {
         val rawString: String = readFrom(context, sourceUri)
+        return importPlayingQueues(context, rawString)
+    }
+
+    fun importPlayingQueues(context: Context, inputStream: InputStream): Boolean {
+        val rawString = inputStream.reader().use { it.readText() }
+        return importPlayingQueues(context, rawString)
+    }
+
+    private fun importPlayingQueues(context: Context, rawString: String): Boolean {
         val json = parser.parseToJsonElement(rawString) as? JsonObject
         if (json != null) {
             try {
@@ -278,8 +296,17 @@ object DatabaseBackupManger {
         )
     }
 
+    fun importFavorites(context: Context, inputStream: InputStream): Boolean {
+        val rawString = inputStream.reader().use { it.readText() }
+        return importFavorites(context, rawString)
+    }
+
     fun importFavorites(context: Context, sourceUri: Uri): Boolean {
         val rawString: String = readFrom(context, sourceUri)
+        return importFavorites(context, rawString)
+    }
+
+    fun importFavorites(context: Context, rawString: String): Boolean {
         val json = parser.parseToJsonElement(rawString) as? JsonObject
         if (json != null) {
             try {
