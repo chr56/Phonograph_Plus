@@ -18,12 +18,14 @@ import lib.phonograph.misc.ICreateFileStorageAccess
 import lib.phonograph.misc.IOpenFileStorageAccess
 import lib.phonograph.misc.OpenDocumentContract
 import lib.phonograph.misc.OpenFileStorageAccessTool
+import player.phonograph.migrate.backup.Backup
 import player.phonograph.misc.menuProvider
 import player.phonograph.ui.dialogs.BackupDataDialog
 import player.phonograph.ui.fragments.SettingsFragment
 import player.phonograph.util.coroutineToast
 import player.phonograph.util.text.currentDateTime
 import androidx.appcompat.widget.Toolbar
+import androidx.lifecycle.lifecycleScope
 import android.net.Uri
 import android.os.Bundle
 import android.view.Menu
@@ -154,6 +156,17 @@ class SettingsActivity : ToolbarActivity(), ICreateFileStorageAccess, IOpenFileS
                 showAsActionFlag = SHOW_AS_ACTION_NEVER
                 onClick {
                     BackupDataDialog().show(supportFragmentManager, "BACKUP_DIALOG")
+                    true
+                }
+            }
+
+            menuItem {
+                title = "Export All"
+                showAsActionFlag = SHOW_AS_ACTION_NEVER
+                onClick {
+                    lifecycleScope.launch(Dispatchers.IO) {
+                        Backup.exportBackupToDirectory(this@SettingsActivity)
+                    }
                     true
                 }
             }

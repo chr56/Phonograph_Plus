@@ -32,6 +32,15 @@ import java.io.FileOutputStream
  */
 object FileUtil {
 
+    /**
+     * create the file or delete it and create new one if exists
+     */
+    fun File.createOrOverrideFile(): File {
+        if (exists()) delete()
+        createNewFile()
+        return this
+    }
+
     private fun makePlaceholders(len: Int): String {
         val sb = StringBuilder(len * 2 - 1)
         sb.append("?")
