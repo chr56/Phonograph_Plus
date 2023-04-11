@@ -16,8 +16,8 @@ import android.os.Build
 /**
  * adjust color settings from Dynamic Color of Material You if available
  */
-fun applyMonet(context: Context) {
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && Setting.instance.enableMonet) {
+fun applyMonet(context: Context, force: Boolean = false) {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && (force || Setting.instance.enableMonet)) {
         ThemeColor.editTheme(context)
             .primaryColor(context.getColor(android.R.color.system_accent1_300))
             .accentColor(context.getColor(android.R.color.system_accent1_600))

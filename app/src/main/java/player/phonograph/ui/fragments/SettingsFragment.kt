@@ -11,6 +11,7 @@ import lib.phonograph.preference.ColorPreferenceX
 import lib.phonograph.preference.DialogPreferenceX
 import lib.phonograph.preference.EditTextPreferenceX
 import lib.phonograph.preference.ListPreferenceX
+import lib.phonograph.preference.SwitchPreferenceX
 import lib.phonograph.preference.dialog.EditTextPreferenceDialogFragmentCompatX
 import lib.phonograph.preference.dialog.ListPreferenceDialogFragmentCompatX
 import lib.phonograph.preference.dialog.PreferenceDialogFragmentX
@@ -18,6 +19,10 @@ import mt.pref.ThemeColor
 import mt.util.color.darkenColor
 import player.phonograph.R
 import player.phonograph.appshortcuts.DynamicShortcutManager
+import player.phonograph.mechanism.StatusBarLyric
+import player.phonograph.mechanism.setting.HomeTabConfig
+import player.phonograph.mechanism.setting.NowPlayingScreenConfig
+import player.phonograph.mechanism.setting.StyleConfig
 import player.phonograph.preferences.HomeTabConfigDialog
 import player.phonograph.preferences.NowPlayingScreenPreferenceDialog
 import player.phonograph.settings.Setting
@@ -25,10 +30,7 @@ import player.phonograph.ui.dialogs.ClickModeSettingDialog
 import player.phonograph.ui.dialogs.ImageSourceConfigDialog
 import player.phonograph.ui.dialogs.PathFilterDialog
 import player.phonograph.util.NavigationUtil
-import player.phonograph.mechanism.StatusBarLyric
-import player.phonograph.mechanism.setting.HomeTabConfig
-import player.phonograph.mechanism.setting.NowPlayingScreenConfig
-import player.phonograph.mechanism.setting.StyleConfig
+import player.phonograph.util.theme.applyMonet
 import util.phonograph.misc.ColorChooserListener
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.lifecycleScope
@@ -56,22 +58,22 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
     private fun onCreatePreferenceDialog(preference: Preference): DialogFragment? =
         when (val key = preference.key) {
-            getString(R.string.preference_key_app_language) -> LanguageSettingDialog()
-            getString(R.string.preference_key_blacklist) -> PathFilterDialog()
-            getString(R.string.preference_key_home_tab_config) -> HomeTabConfigDialog()
-            getString(R.string.preference_key_now_playing_screen) -> NowPlayingScreenPreferenceDialog()
-            getString(R.string.preference_key_click_behavior) -> ClickModeSettingDialog()
+            getString(R.string.preference_key_app_language)        -> LanguageSettingDialog()
+            getString(R.string.preference_key_blacklist)           -> PathFilterDialog()
+            getString(R.string.preference_key_home_tab_config)     -> HomeTabConfigDialog()
+            getString(R.string.preference_key_now_playing_screen)  -> NowPlayingScreenPreferenceDialog()
+            getString(R.string.preference_key_click_behavior)      -> ClickModeSettingDialog()
             getString(R.string.preference_key_image_source_config) -> ImageSourceConfigDialog()
-            else -> {
+            else                                                   -> {
                 when (preference) {
                     is EditTextPreferenceX ->
                         EditTextPreferenceDialogFragmentCompatX.newInstance(key)
-                    is ListPreferenceX ->
+                    is ListPreferenceX     ->
                         ListPreferenceDialogFragmentCompatX.newInstance(key)
-                    is DialogPreferenceX -> {
+                    is DialogPreferenceX   -> {
                         PreferenceDialogFragmentX.newInstance(key)
                     }
-                    else -> null
+                    else                   -> null
                 }
             }
         }
@@ -163,7 +165,8 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
     private fun updateNowPlayingScreenSummary() {
         findPreference<Preference>(getString(R.string.preference_key_now_playing_screen))?.setSummary(
-            NowPlayingScreenConfig.nowPlayingScreen.titleRes)
+            NowPlayingScreenConfig.nowPlayingScreen.titleRes
+        )
     }
 
     private fun updatePathFilterExcludeMode() {
@@ -208,6 +211,21 @@ class SettingsFragment : PreferenceFragmentCompat() {
         // Theme
         val primaryColor = ThemeColor.primaryColor(requireActivity())
         val accentColor = ThemeColor.accentColor(requireActivity())
+
+        val enableMonetSetting = findPreference<Preference>("enable_monet") as SwitchPreferenceX
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
+            enableMonetSetting.isVisible = false // hide below Android S
+        } else {
+            enableMonetSetting.onPreferenceChangeListener =
+                Preference.OnPreferenceChangeListener { preference: Preference, newValue: Any? ->
+                    if (newValue as Boolean) {
+                        applyMonet(preference.context, true)
+                        DynamicShortcutManager(preference.context).updateDynamicShortcuts()
+                        requireActivity().recreate()
+                    }
+                    true
+                }
+        }
 
         val primaryColorPref = findPreference<Preference>("primary_color") as ColorPreferenceX
         primaryColorPref.setColor(primaryColor, darkenColor(primaryColor))
