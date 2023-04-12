@@ -21,6 +21,7 @@ import lib.phonograph.misc.OpenFileStorageAccessTool
 import player.phonograph.migrate.backup.Backup
 import player.phonograph.misc.menuProvider
 import player.phonograph.ui.dialogs.BackupDataDialog
+import player.phonograph.ui.dialogs.BackupExportDialog
 import player.phonograph.ui.fragments.SettingsFragment
 import player.phonograph.util.coroutineToast
 import player.phonograph.util.text.currentDateTime
@@ -165,17 +166,7 @@ class SettingsActivity : ToolbarActivity(), ICreateFileStorageAccess, IOpenFileS
                 title = getString(R.string.action_export, getString(R.string.action_backup))
                 showAsActionFlag = SHOW_AS_ACTION_NEVER
                 onClick {
-                    createFileStorageAccessTool.launch(
-                        "phonograph_plus_backup_${currentDateTime()}.zip"
-                    ) { uri ->
-                        uri ?: return@launch
-                        lifecycleScope.launch(Dispatchers.IO) {
-                            context.contentResolver.openOutputStream(uri, "wt")?.use {
-                                Backup.exportBackupToArchive(context = this@SettingsActivity, targetOutputStream = it)
-                            }
-                        }
-                    }
-
+                    BackupExportDialog().show(supportFragmentManager, "EXPORT")
                     true
                 }
             }
