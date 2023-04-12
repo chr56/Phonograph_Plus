@@ -12,6 +12,7 @@ import lib.phonograph.misc.ICreateFileStorageAccess
 import mt.pref.ThemeColor
 import player.phonograph.R
 import player.phonograph.adapter.sortable.BackupChooserAdapter
+import player.phonograph.migrate.backup.ALL_BACKUP_CONFIG
 import player.phonograph.migrate.backup.Backup
 import player.phonograph.util.text.currentDateTime
 import androidx.fragment.app.DialogFragment
@@ -33,7 +34,7 @@ class BackupExportDialog : DialogFragment() {
 
         // setup view
         val view = requireActivity().layoutInflater.inflate(R.layout.recycler_view_wrapped, null)
-        adapter = BackupChooserAdapter().also { it.init() }
+        adapter = BackupChooserAdapter(ALL_BACKUP_CONFIG).also { it.init() }
         recyclerView = view.findViewById(R.id.recycler_view)
         recyclerView.layoutManager = LinearLayoutManager(activity)
         recyclerView.adapter = adapter
@@ -56,7 +57,7 @@ class BackupExportDialog : DialogFragment() {
                     uri ?: return@launch
                     lifecycleScope.launch(Dispatchers.IO) {
                         host.contentResolver.openOutputStream(uri, "wt")?.use { outputStream ->
-                            Backup.exportBackupToArchive(host, selected, outputStream)
+                            Backup.Export.exportBackupToArchive(host, selected, outputStream)
                         }
                     }
                 }

@@ -184,7 +184,7 @@ class SettingsActivity : ToolbarActivity(), ICreateFileStorageAccess, IOpenFileS
                             context.contentResolver.openFileDescriptor(uri, "r")?.use {
                                 FileInputStream(it.fileDescriptor).use { stream ->
                                     val sessionId =
-                                        Backup.startImportBackupFromArchive(context = this@SettingsActivity, stream)
+                                        Backup.Import.startImportBackupFromArchive(context = this@SettingsActivity, stream)
                                     BackupImportDialog.newInstance(sessionId).show(supportFragmentManager, "IMPORT")
                                 }
                             }

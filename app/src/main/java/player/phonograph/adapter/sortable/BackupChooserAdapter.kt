@@ -12,7 +12,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 
 class BackupChooserAdapter(
-    private val config: List<BackupItem> = Backup.DEFAULT_BACKUP_CONFIG,
+    private val config: List<BackupItem>,
 ) : SortableListAdapter<BackupItem>() {
 
 

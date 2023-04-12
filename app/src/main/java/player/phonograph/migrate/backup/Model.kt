@@ -191,6 +191,18 @@ object MusicPlaybackStateDatabaseBackup : BackupItem(KEY_DATABASE_MUSIC_PLAYBACK
         DatabaseDataManger.importSingleDatabases(inputStream, DatabaseConstants.MUSIC_PLAYBACK_STATE_DB, context)
 }
 
+
+// todo
+val ALL_BACKUP_CONFIG =
+    listOf(
+        SettingBackup, FavoriteBackup, PathFilterBackup, PlayingQueuesBackup,
+        FavoriteDatabaseBackup,
+        PathFilterDatabaseBackup,
+        HistoryDatabaseBackup,
+        SongPlayCountDatabaseBackup,
+        MusicPlaybackStateDatabaseBackup,
+    )
+
 private fun fromKeyImpl(key: String): BackupItem? = when (key) {
     KEY_SETTING                       -> SettingBackup
     KEY_PATH_FILTER                   -> PathFilterBackup

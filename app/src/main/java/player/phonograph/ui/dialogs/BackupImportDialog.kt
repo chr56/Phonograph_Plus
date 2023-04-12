@@ -34,7 +34,7 @@ class BackupImportDialog : DialogFragment() {
         sessionId = arguments?.getLong(KEY_SESSION) ?: throw IllegalArgumentException("No session id!")
 
         // read manifest
-        val manifest = Backup.readManifest(sessionId) ?: throw IllegalArgumentException("No Manifest found!")
+        val manifest = Backup.Import.readManifest(sessionId) ?: throw IllegalArgumentException("No Manifest found!")
         val contained = manifest.files.map { it.key }
 
         // setup view
@@ -56,7 +56,7 @@ class BackupImportDialog : DialogFragment() {
                 val host = activity.get() ?: return@positiveButton
                 dialog.dismiss()
                 lifecycleScope.launch(Dispatchers.IO) {
-                    Backup.executeImport(host, sessionId, selected)
+                    Backup.Import.executeImport(host, sessionId, selected)
                 }
             }
             .negativeButton(android.R.string.cancel) { it.dismiss() }
@@ -71,7 +71,7 @@ class BackupImportDialog : DialogFragment() {
 
     override fun onDestroy() {
         super.onDestroy()
-        Backup.endImportBackupFromArchive(sessionId)
+        Backup.Import.endImportBackupFromArchive(sessionId)
     }
 
     companion object {
