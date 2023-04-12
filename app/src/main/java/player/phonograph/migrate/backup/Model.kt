@@ -6,6 +6,7 @@ package player.phonograph.migrate.backup
 
 import okio.Buffer
 import okio.BufferedSink
+import player.phonograph.BuildConfig
 import player.phonograph.migrate.DatabaseBackupManger
 import player.phonograph.migrate.DatabaseDataManger
 import player.phonograph.migrate.SettingDataManager
@@ -23,20 +24,30 @@ import kotlinx.serialization.encoding.Encoder
 import java.io.InputStream
 
 @Serializable
-class ManifestFile(
+class ManifestFile constructor(
     @SerialName(KEY_BACKUP_TIME)
     val timestamp: Long,
     @SerialName(KEY_FILES)
     val files: Map<BackupItem, String>,
+    @SerialName(KEY_PHONOGRAPH_VERSION)
+    val phonographVersion: String = BuildConfig.VERSION_NAME,
+    @SerialName(KEY_PHONOGRAPH_VERSION_CODE)
+    val phonographVersionCode: Int = BuildConfig.VERSION_CODE,
     @SerialName(KEY_VERSION)
     val version: Int = VERSION,
 ) {
+
+    constructor(timestamp: Long, files: Map<BackupItem, String>) :
+            this(timestamp, files, BuildConfig.VERSION_NAME, BuildConfig.VERSION_CODE, VERSION)
+
     companion object {
         const val BACKUP_MANIFEST_FILENAME = "MANIFEST.json"
 
         private const val KEY_BACKUP_TIME = "BackupTime"
         private const val KEY_FILES = "files"
         private const val KEY_VERSION = "version"
+        private const val KEY_PHONOGRAPH_VERSION = "phonograph_version"
+        private const val KEY_PHONOGRAPH_VERSION_CODE = "phonograph_version_code"
 
         private const val VERSION = 1
     }
