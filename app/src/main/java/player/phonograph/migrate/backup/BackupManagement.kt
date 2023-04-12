@@ -38,8 +38,9 @@ object Backup {
         targetOutputStream: OutputStream,
     ) {
 
-        val cacheDir = context.externalCacheDir ?: context.cacheDir
-        val tmpDir = File(cacheDir, "BackupTmp_${currentTimestamp()}").also { it.mkdirs() }
+        val workingDir = workingDir(context)
+        val tmpDir = tmpDir(workingDir, currentTimestamp())
+
         exportBackupToDirectory(context, config, tmpDir)
 
         ZipOutputStream(targetOutputStream).use { zip ->
@@ -87,8 +88,8 @@ object Backup {
         context: Context,
         sourceInputStream: InputStream,
     ) {
-        val cacheDir = context.externalCacheDir ?: context.cacheDir
-        val tmpDir = File(cacheDir, "BackupTmp_${currentTimestamp()}").also { it.mkdirs() }
+        val workingDir = workingDir(context)
+        val tmpDir = tmpDir(workingDir, currentTimestamp())
 
         ZipInputStream(sourceInputStream).use { zipIn ->
             extractZipFile(zipIn, tmpDir)
@@ -132,4 +133,9 @@ object Backup {
             encodeDefaults = true
         }
     }
+
+    private const val TMP_BACKUP_FOLDER_PREFIX = "BackupTmp"
+    private fun workingDir(context: Context) = context.externalCacheDir ?: context.cacheDir!!
+    private fun tmpDir(workingDir: File, session: Long) =
+        File(workingDir, "${TMP_BACKUP_FOLDER_PREFIX}_${session}").also { it.mkdirs() }
 }
