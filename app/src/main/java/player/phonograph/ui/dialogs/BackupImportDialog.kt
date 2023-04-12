@@ -12,12 +12,17 @@ import mt.pref.ThemeColor
 import player.phonograph.R
 import player.phonograph.adapter.sortable.BackupChooserAdapter
 import player.phonograph.migrate.backup.Backup
+import androidx.appcompat.app.AlertDialog
+import androidx.core.view.setPadding
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import android.app.Dialog
+import android.content.Context
+import android.content.DialogInterface
 import android.os.Bundle
+import android.widget.ProgressBar
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.lang.ref.WeakReference
@@ -54,12 +59,19 @@ class BackupImportDialog : DialogFragment() {
             .positiveButton(android.R.string.ok) { dialog ->
                 val selected = adapter.currentConfig
                 val host = activity.get() ?: return@positiveButton
+                val processDialog = progressDialog(host)
                 dialog.dismiss()
+                processDialog.show()
                 lifecycleScope.launch(Dispatchers.IO) {
                     Backup.Import.executeImport(host, sessionId, selected)
+                    terminateBackup()
+                    processDialog.dismiss()
                 }
             }
-            .negativeButton(android.R.string.cancel) { it.dismiss() }
+            .negativeButton(android.R.string.cancel) {
+                terminateBackup()
+                it.dismiss()
+            }
             .apply {
                 val color = ThemeColor.accentColor(requireActivity())
                 getActionButton(WhichButton.POSITIVE).updateTextColor(color)
@@ -67,11 +79,6 @@ class BackupImportDialog : DialogFragment() {
             }
 
         return dialog
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        Backup.Import.endImportBackupFromArchive(sessionId)
     }
 
     companion object {
@@ -83,4 +90,18 @@ class BackupImportDialog : DialogFragment() {
                 }
             }
     }
+
+    private fun progressDialog(context: Context) =
+        AlertDialog.Builder(context)
+            .setTitle(R.string.action_backup)
+            .setView(
+                ProgressBar(context).also {
+                    it.isIndeterminate = true
+                    it.setPadding(32)
+                }
+            )
+            .setCancelable(false)
+            .create()
+
+    private fun terminateBackup() = Backup.Import.endImportBackupFromArchive(sessionId)
 }
