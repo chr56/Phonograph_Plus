@@ -14,15 +14,19 @@ import player.phonograph.R
 import player.phonograph.adapter.sortable.BackupChooserAdapter
 import player.phonograph.migrate.backup.ALL_BACKUP_CONFIG
 import player.phonograph.migrate.backup.Backup
+import player.phonograph.util.reportError
 import player.phonograph.util.text.currentDateTime
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import android.app.Dialog
+import android.content.Context
 import android.os.Bundle
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.lang.ref.WeakReference
 
 class BackupExportDialog : DialogFragment() {
@@ -49,7 +53,6 @@ class BackupExportDialog : DialogFragment() {
             .positiveButton(android.R.string.ok) { dialog ->
                 val selected = adapter.currentConfig
                 val host = activity.get() ?: return@positiveButton
-                dialog.dismiss()
                 require(host is ICreateFileStorageAccess)
                 host.createFileStorageAccessTool.launch(
                     "phonograph_plus_backup_${currentDateTime()}.zip"
@@ -57,7 +60,18 @@ class BackupExportDialog : DialogFragment() {
                     uri ?: return@launch
                     lifecycleScope.launch(Dispatchers.IO) {
                         host.contentResolver.openOutputStream(uri, "wt")?.use { outputStream ->
-                            Backup.Export.exportBackupToArchive(host, selected, outputStream)
+                            val result =
+                                try {
+                                    Backup.Export.exportBackupToArchive(host, selected, outputStream)
+                                    true
+                                } catch (e: Exception) {
+                                    reportError(e, TAG, host.getString(R.string.failed))
+                                    false
+                                }
+                            withContext(Dispatchers.Main) {
+                                dialog.dismiss()
+                                completeDialog(host, result).show()
+                            }
                         }
                     }
                 }
@@ -70,5 +84,17 @@ class BackupExportDialog : DialogFragment() {
             }
 
         return dialog
+    }
+
+    private fun completeDialog(context: Context, success: Boolean) =
+        AlertDialog.Builder(context)
+            .setTitle(R.string.action_backup)
+            .setMessage(context.getString(if (success) R.string.completed else R.string.failed))
+            .setPositiveButton(android.R.string.ok) { _, _ -> }
+            .create()
+
+
+    companion object {
+        private const val TAG = "BackupExportDialog"
     }
 }

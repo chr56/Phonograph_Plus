@@ -8,18 +8,26 @@ import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.WhichButton
 import com.afollestad.materialdialogs.actions.getActionButton
 import com.afollestad.materialdialogs.customview.customView
+import lib.phonograph.misc.Reboot
 import mt.pref.ThemeColor
 import player.phonograph.R
 import player.phonograph.adapter.sortable.BackupChooserAdapter
 import player.phonograph.migrate.backup.Backup
+import player.phonograph.util.reportError
+import androidx.appcompat.app.AlertDialog
+import androidx.core.view.setPadding
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import android.app.Dialog
+import android.content.Context
+import android.content.DialogInterface
 import android.os.Bundle
+import android.widget.ProgressBar
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.lang.ref.WeakReference
 
 class BackupImportDialog : DialogFragment() {
@@ -54,12 +62,30 @@ class BackupImportDialog : DialogFragment() {
             .positiveButton(android.R.string.ok) { dialog ->
                 val selected = adapter.currentConfig
                 val host = activity.get() ?: return@positiveButton
+                val processDialog = progressDialog(host)
                 dialog.dismiss()
+                processDialog.show()
                 lifecycleScope.launch(Dispatchers.IO) {
-                    Backup.Import.executeImport(host, sessionId, selected)
+                    val result =
+                        try {
+                            Backup.Import.executeImport(host, sessionId, selected)
+                            true
+                        } catch (e: Exception) {
+                            reportError(e, TAG, host.getString(R.string.failed))
+                            false
+                        } finally {
+                            terminateBackup()
+                        }
+                    withContext(Dispatchers.Main) {
+                        processDialog.dismiss()
+                        completeDialog(host, result).show()
+                    }
                 }
             }
-            .negativeButton(android.R.string.cancel) { it.dismiss() }
+            .negativeButton(android.R.string.cancel) {
+                terminateBackup()
+                it.dismiss()
+            }
             .apply {
                 val color = ThemeColor.accentColor(requireActivity())
                 getActionButton(WhichButton.POSITIVE).updateTextColor(color)
@@ -69,12 +95,8 @@ class BackupImportDialog : DialogFragment() {
         return dialog
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        Backup.Import.endImportBackupFromArchive(sessionId)
-    }
-
     companion object {
+        private const val TAG = "BackupImportDialog"
         private const val KEY_SESSION = "session"
         fun newInstance(sessionId: Long): BackupImportDialog =
             BackupImportDialog().apply {
@@ -83,4 +105,27 @@ class BackupImportDialog : DialogFragment() {
                 }
             }
     }
+
+    private fun progressDialog(context: Context) =
+        AlertDialog.Builder(context)
+            .setTitle(R.string.action_backup)
+            .setView(
+                ProgressBar(context).also {
+                    it.isIndeterminate = true
+                    it.setPadding(32)
+                }
+            )
+            .setCancelable(false)
+            .create()
+
+    private fun completeDialog(context: Context, success: Boolean) =
+        AlertDialog.Builder(context)
+            .setTitle(R.string.action_backup)
+            .setMessage(context.getString(if (success) R.string.completed else R.string.failed))
+            .setPositiveButton(context.getString(R.string.action_reboot)) { _, _ ->
+                Reboot.reboot(context)
+            }
+            .create()
+
+    private fun terminateBackup() = Backup.Import.endImportBackupFromArchive(sessionId)
 }
