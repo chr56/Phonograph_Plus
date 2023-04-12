@@ -8,6 +8,7 @@ import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.WhichButton
 import com.afollestad.materialdialogs.actions.getActionButton
 import com.afollestad.materialdialogs.customview.customView
+import lib.phonograph.misc.Reboot
 import mt.pref.ThemeColor
 import player.phonograph.R
 import player.phonograph.adapter.sortable.BackupChooserAdapter
@@ -25,6 +26,7 @@ import android.os.Bundle
 import android.widget.ProgressBar
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.lang.ref.WeakReference
 
 class BackupImportDialog : DialogFragment() {
@@ -65,7 +67,10 @@ class BackupImportDialog : DialogFragment() {
                 lifecycleScope.launch(Dispatchers.IO) {
                     Backup.Import.executeImport(host, sessionId, selected)
                     terminateBackup()
-                    processDialog.dismiss()
+                    withContext(Dispatchers.Main) {
+                        processDialog.dismiss()
+                        completeDialog(host).show()
+                    }
                 }
             }
             .negativeButton(android.R.string.cancel) {
@@ -101,6 +106,15 @@ class BackupImportDialog : DialogFragment() {
                 }
             )
             .setCancelable(false)
+            .create()
+
+    private fun completeDialog(context: Context) =
+        AlertDialog.Builder(context)
+            .setTitle(R.string.action_backup)
+            .setMessage(context.getString(R.string.completed))
+            .setPositiveButton(context.getString(R.string.action_reboot)) { _, _ ->
+                Reboot.reboot(context)
+            }
             .create()
 
     private fun terminateBackup() = Backup.Import.endImportBackupFromArchive(sessionId)

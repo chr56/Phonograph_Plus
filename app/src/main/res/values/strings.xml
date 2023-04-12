@@ -461,4 +461,5 @@
     <string name="pref_summary_enable_monet">Use Material You wallpaper-based theming system. (experimental, no full Material You support)</string>
     <string name="action_import">Import %1$s</string>
     <string name="action_export">Export %1$s</string>
+    <string name="action_reboot">Reboot App</string>
 </resources>
