@@ -13,6 +13,7 @@ import mt.pref.ThemeColor
 import player.phonograph.R
 import player.phonograph.adapter.sortable.BackupChooserAdapter
 import player.phonograph.migrate.backup.Backup
+import player.phonograph.util.reportError
 import androidx.appcompat.app.AlertDialog
 import androidx.core.view.setPadding
 import androidx.fragment.app.DialogFragment
@@ -65,11 +66,19 @@ class BackupImportDialog : DialogFragment() {
                 dialog.dismiss()
                 processDialog.show()
                 lifecycleScope.launch(Dispatchers.IO) {
-                    Backup.Import.executeImport(host, sessionId, selected)
-                    terminateBackup()
+                    val result =
+                        try {
+                            Backup.Import.executeImport(host, sessionId, selected)
+                            true
+                        } catch (e: Exception) {
+                            reportError(e, TAG, host.getString(R.string.failed))
+                            false
+                        } finally {
+                            terminateBackup()
+                        }
                     withContext(Dispatchers.Main) {
                         processDialog.dismiss()
-                        completeDialog(host).show()
+                        completeDialog(host, result).show()
                     }
                 }
             }
@@ -87,6 +96,7 @@ class BackupImportDialog : DialogFragment() {
     }
 
     companion object {
+        private const val TAG = "BackupImportDialog"
         private const val KEY_SESSION = "session"
         fun newInstance(sessionId: Long): BackupImportDialog =
             BackupImportDialog().apply {
@@ -108,10 +118,10 @@ class BackupImportDialog : DialogFragment() {
             .setCancelable(false)
             .create()
 
-    private fun completeDialog(context: Context) =
+    private fun completeDialog(context: Context, success: Boolean) =
         AlertDialog.Builder(context)
             .setTitle(R.string.action_backup)
-            .setMessage(context.getString(R.string.completed))
+            .setMessage(context.getString(if (success) R.string.completed else R.string.failed))
             .setPositiveButton(context.getString(R.string.action_reboot)) { _, _ ->
                 Reboot.reboot(context)
             }
