@@ -22,7 +22,7 @@ import java.util.zip.ZipOutputStream
 
 object Backup {
     // todo
-    private val DEFAULT_BACKUP_CONFIG =
+    val DEFAULT_BACKUP_CONFIG =
         listOf(
             SettingBackup, FavoriteBackup, PathFilterBackup, PlayingQueuesBackup,
             FavoriteDatabaseBackup,
