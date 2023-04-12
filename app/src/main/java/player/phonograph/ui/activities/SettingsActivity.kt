@@ -22,6 +22,7 @@ import player.phonograph.migrate.backup.Backup
 import player.phonograph.misc.menuProvider
 import player.phonograph.ui.dialogs.BackupDataDialog
 import player.phonograph.ui.dialogs.BackupExportDialog
+import player.phonograph.ui.dialogs.BackupImportDialog
 import player.phonograph.ui.fragments.SettingsFragment
 import player.phonograph.util.coroutineToast
 import player.phonograph.util.text.currentDateTime
@@ -182,7 +183,9 @@ class SettingsActivity : ToolbarActivity(), ICreateFileStorageAccess, IOpenFileS
                         lifecycleScope.launch(Dispatchers.IO) {
                             context.contentResolver.openFileDescriptor(uri, "r")?.use {
                                 FileInputStream(it.fileDescriptor).use { stream ->
-                                    Backup.importBackupFromArchive(context = this@SettingsActivity, stream)
+                                    val sessionId =
+                                        Backup.startImportBackupFromArchive(context = this@SettingsActivity, stream)
+                                    BackupImportDialog.newInstance(sessionId).show(supportFragmentManager, "IMPORT")
                                 }
                             }
                         }
