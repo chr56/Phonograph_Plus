@@ -83,6 +83,51 @@ object Backup {
             it.flush()
         }
     }
+    /**
+     * @return session ID
+     */
+    fun startImportBackupFromArchive(
+        context: Context,
+        sourceInputStream: InputStream,
+    ): Long {
+        val (session, tmpDir) = SessionManger.newSession(context)
+
+        ZipInputStream(sourceInputStream).use { zipIn ->
+            extractZipFile(zipIn, tmpDir)
+        }
+
+        return session
+    }
+
+    fun readManifest(
+        session: Long,
+    ): ManifestFile? {
+        val tmpDir = SessionManger.directory(session)
+        val manifestFile = File(tmpDir, ManifestFile.BACKUP_MANIFEST_FILENAME)
+        return if (manifestFile.exists()) decodeManifest(manifestFile) else null
+    }
+
+    fun executeImport(
+        context: Context,
+        session: Long,
+        content: Iterable<BackupItem>,
+    ) {
+        val tmpDir = SessionManger.directory(session)
+        val manifest = readManifest(session) ?: throw Exception("No Manifest!")
+        // filter
+        val selected = manifest.files.filterKeys { it in content }
+        for ((item, relativePath) in selected) {
+            FileInputStream(File(tmpDir, relativePath)).use { inputStream ->
+                item.import(inputStream, context)
+            }
+        }
+    }
+
+    fun endImportBackupFromArchive(
+        session: Long,
+    ) {
+        SessionManger.terminateSession(session)
+    }
 
     fun importBackupFromArchive(
         context: Context,
@@ -124,6 +169,26 @@ object Backup {
             parser.decodeFromString<ManifestFile>(raw)
         }
         return manifestFile
+    }
+
+    private object SessionManger {
+        private val sessions = mutableMapOf<Long, File>()
+        private fun sessionFolderName(id: Long) = "${TMP_BACKUP_FOLDER_PREFIX}_$id"
+
+        fun directory(sessionId: Long) = sessions[sessionId]
+
+        fun newSession(context: Context): Pair<Long, File> {
+            val sessionId = currentTimestamp()
+            val tmpFile = File(workingDir(context), sessionFolderName(sessionId)).also { it.mkdirs() }
+            sessions[sessionId] = tmpFile
+            return sessionId to tmpFile
+        }
+
+        fun terminateSession(sessionId: Long) {
+            val file = sessions.remove(sessionId)
+            file?.deleteRecursively()
+        }
+
     }
 
     private val parser by lazy(LazyThreadSafetyMode.PUBLICATION) {
