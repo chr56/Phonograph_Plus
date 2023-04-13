@@ -457,4 +457,7 @@
     <string name="dynamic_colors">Dynamische Farben</string>
     <string name="pref_title_enable_monet">Monet aktivieren</string>
     <string name="pref_summary_enable_monet">Verwende das auf Material You Wallpaper gestützte Design (experimentell, keine vollständige Material You Unterstützung)</string>
+    <string name="action_import">Importiere %1$s</string>
+    <string name="action_export">Exportiere %1$s</string>
+    <string name="action_reboot">App neu starten</string>
 </resources>
