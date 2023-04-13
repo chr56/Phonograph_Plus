@@ -4,7 +4,7 @@
 
 package player.phonograph.adapter.sortable
 
-import player.phonograph.migrate.backup.Backup
+import player.phonograph.migrate.backup.ALL_BACKUP_CONFIG
 import player.phonograph.migrate.backup.BackupItem
 import android.view.Gravity
 import android.view.View
@@ -13,11 +13,15 @@ import android.widget.TextView
 
 class BackupChooserAdapter(
     private val config: List<BackupItem>,
+    private val all: List<BackupItem> = ALL_BACKUP_CONFIG,
 ) : SortableListAdapter<BackupItem>() {
 
-
-    override fun fetchDataset(): SortableList<BackupItem> =
-        SortableList(config.map { SortableList.Item(it, true) })
+    override fun fetchDataset(): SortableList<BackupItem> {
+        val disabled = all.toMutableList().also { it.removeAll(config) }
+        return SortableList(
+            config.map { SortableList.Item(it, true) } + disabled.map { SortableList.Item(it, false) }
+        )
+    }
 
     override fun onCreateContentView(parent: ViewGroup, viewType: Int): View {
         return TextView(parent.context).apply {

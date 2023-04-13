@@ -14,6 +14,7 @@ import player.phonograph.R
 import player.phonograph.adapter.sortable.BackupChooserAdapter
 import player.phonograph.migrate.backup.ALL_BACKUP_CONFIG
 import player.phonograph.migrate.backup.Backup
+import player.phonograph.migrate.backup.ENABLE_BACKUP_CONFIG
 import player.phonograph.util.reportError
 import player.phonograph.util.text.currentDateTime
 import androidx.appcompat.app.AlertDialog
@@ -38,7 +39,7 @@ class BackupExportDialog : DialogFragment() {
 
         // setup view
         val view = requireActivity().layoutInflater.inflate(R.layout.recycler_view_wrapped, null)
-        adapter = BackupChooserAdapter(ALL_BACKUP_CONFIG).also { it.init() }
+        adapter = BackupChooserAdapter(ENABLE_BACKUP_CONFIG, ALL_BACKUP_CONFIG).also { it.init() }
         recyclerView = view.findViewById(R.id.recycler_view)
         recyclerView.layoutManager = LinearLayoutManager(activity)
         recyclerView.adapter = adapter

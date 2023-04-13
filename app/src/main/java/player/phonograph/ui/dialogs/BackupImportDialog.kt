@@ -47,7 +47,7 @@ class BackupImportDialog : DialogFragment() {
 
         // setup view
         val view = requireActivity().layoutInflater.inflate(R.layout.recycler_view_wrapped, null)
-        adapter = BackupChooserAdapter(contained).also { it.init() }
+        adapter = BackupChooserAdapter(contained, contained).also { it.init() }
         recyclerView = view.findViewById(R.id.recycler_view)
         recyclerView.layoutManager = LinearLayoutManager(activity)
         recyclerView.adapter = adapter
