@@ -11,6 +11,7 @@ import player.phonograph.migrate.DatabaseBackupManger
 import player.phonograph.migrate.DatabaseDataManger
 import player.phonograph.migrate.SettingDataManager
 import player.phonograph.provider.DatabaseConstants
+import androidx.annotation.Keep
 import android.content.Context
 import android.content.res.Resources
 import kotlinx.serialization.KSerializer
@@ -23,6 +24,7 @@ import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 import java.io.InputStream
 
+@Keep
 @Serializable
 class ManifestFile constructor(
     @SerialName(KEY_BACKUP_TIME)
@@ -53,6 +55,7 @@ class ManifestFile constructor(
     }
 }
 
+@Keep
 @Serializable(with = BackupItem.Serializer::class)
 sealed class BackupItem(
     val key: String,
