@@ -7,6 +7,7 @@ package player.phonograph.migrate.backup
 import okio.Buffer
 import okio.BufferedSink
 import player.phonograph.BuildConfig
+import player.phonograph.R
 import player.phonograph.migrate.DatabaseBackupManger
 import player.phonograph.migrate.DatabaseDataManger
 import player.phonograph.migrate.SettingDataManager
@@ -65,7 +66,7 @@ sealed class BackupItem(
 
     abstract fun import(inputStream: InputStream, context: Context): Boolean
 
-    open fun displayName(resources: Resources): CharSequence = key
+    abstract fun displayName(resources: Resources): CharSequence
 
     /**
      * Type of Backup
@@ -122,6 +123,8 @@ object SettingBackup : BackupItem(KEY_SETTING, Type.JSON) {
 
     override fun import(inputStream: InputStream, context: Context): Boolean =
         SettingDataManager.importSetting(inputStream, context)
+
+    override fun displayName(resources: Resources): CharSequence = resources.getString(R.string.action_settings)
 }
 
 object PathFilterBackup : BackupItem(KEY_PATH_FILTER, Type.JSON) {
@@ -132,6 +135,8 @@ object PathFilterBackup : BackupItem(KEY_PATH_FILTER, Type.JSON) {
 
     override fun import(inputStream: InputStream, context: Context): Boolean =
         DatabaseBackupManger.importPathFilter(context, inputStream)
+
+    override fun displayName(resources: Resources): CharSequence = resources.getString(R.string.path_filter)
 }
 
 object FavoriteBackup : BackupItem(KEY_FAVORITES, Type.JSON) {
@@ -142,6 +147,8 @@ object FavoriteBackup : BackupItem(KEY_FAVORITES, Type.JSON) {
 
     override fun import(inputStream: InputStream, context: Context): Boolean =
         DatabaseBackupManger.importFavorites(context, inputStream)
+
+    override fun displayName(resources: Resources): CharSequence = resources.getString(R.string.favorites)
 }
 
 object PlayingQueuesBackup : BackupItem(KEY_PLAYING_QUEUES, Type.JSON) {
@@ -152,6 +159,8 @@ object PlayingQueuesBackup : BackupItem(KEY_PLAYING_QUEUES, Type.JSON) {
 
     override fun import(inputStream: InputStream, context: Context): Boolean =
         DatabaseBackupManger.importPlayingQueues(context, inputStream)
+
+    override fun displayName(resources: Resources): CharSequence = resources.getString(R.string.label_playing_queue)
 }
 
 
@@ -163,6 +172,9 @@ object FavoriteDatabaseBackup : BackupItem(KEY_DATABASE_FAVORITE, Type.DATABASE)
 
     override fun import(inputStream: InputStream, context: Context): Boolean =
         DatabaseDataManger.importSingleDatabases(inputStream, DatabaseConstants.FAVORITE_DB, context)
+
+    override fun displayName(resources: Resources): CharSequence =
+        "[${resources.getString(R.string.databases)}] ${resources.getString(R.string.favorites)}"
 }
 
 object PathFilterDatabaseBackup : BackupItem(KEY_DATABASE_PATH_FILTER, Type.DATABASE) {
@@ -173,6 +185,9 @@ object PathFilterDatabaseBackup : BackupItem(KEY_DATABASE_PATH_FILTER, Type.DATA
 
     override fun import(inputStream: InputStream, context: Context): Boolean =
         DatabaseDataManger.importSingleDatabases(inputStream, DatabaseConstants.PATH_FILTER, context)
+
+    override fun displayName(resources: Resources): CharSequence =
+        "[${resources.getString(R.string.databases)}] ${resources.getString(R.string.path_filter)}"
 }
 
 object HistoryDatabaseBackup : BackupItem(KEY_DATABASE_HISTORY, Type.DATABASE) {
@@ -183,6 +198,9 @@ object HistoryDatabaseBackup : BackupItem(KEY_DATABASE_HISTORY, Type.DATABASE) {
 
     override fun import(inputStream: InputStream, context: Context): Boolean =
         DatabaseDataManger.importSingleDatabases(inputStream, DatabaseConstants.HISTORY_DB, context)
+
+    override fun displayName(resources: Resources): CharSequence =
+        "[${resources.getString(R.string.databases)}] ${resources.getString(R.string.history)}"
 }
 
 object SongPlayCountDatabaseBackup : BackupItem(KEY_DATABASE_SONG_PLAY_COUNT, Type.DATABASE) {
@@ -193,6 +211,9 @@ object SongPlayCountDatabaseBackup : BackupItem(KEY_DATABASE_SONG_PLAY_COUNT, Ty
 
     override fun import(inputStream: InputStream, context: Context): Boolean =
         DatabaseDataManger.importSingleDatabases(inputStream, DatabaseConstants.SONG_PLAY_COUNT_DB, context)
+
+    override fun displayName(resources: Resources): CharSequence =
+        "[${resources.getString(R.string.databases)}] ${resources.getString(R.string.my_top_tracks)}"
 }
 
 object MusicPlaybackStateDatabaseBackup : BackupItem(KEY_DATABASE_MUSIC_PLAYBACK_STATE, Type.DATABASE) {
@@ -203,6 +224,9 @@ object MusicPlaybackStateDatabaseBackup : BackupItem(KEY_DATABASE_MUSIC_PLAYBACK
 
     override fun import(inputStream: InputStream, context: Context): Boolean =
         DatabaseDataManger.importSingleDatabases(inputStream, DatabaseConstants.MUSIC_PLAYBACK_STATE_DB, context)
+
+    override fun displayName(resources: Resources): CharSequence =
+        "[${resources.getString(R.string.databases)}] ${resources.getString(R.string.label_playing_queue)}"
 }
 
 val ALL_BACKUP_CONFIG =
