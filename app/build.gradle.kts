@@ -1,3 +1,5 @@
+@file:Suppress("UnstableApiUsage")
+
 import com.android.build.api.dsl.ApplicationBaseFlavor
 import tools.release.git.getGitHash
 import tools.release.registerPublishTask
