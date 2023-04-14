@@ -7,7 +7,7 @@ import mt.tint.setActivityToolbarColorAuto
 import player.phonograph.BuildConfig
 import player.phonograph.R
 import player.phonograph.databinding.ActivityAboutBinding
-import player.phonograph.dialogs.ChangelogDialog
+import player.phonograph.ui.dialogs.ChangelogDialog
 import player.phonograph.dialogs.DebugDialog
 import player.phonograph.model.version.VersionCatalog
 import player.phonograph.settings.Setting

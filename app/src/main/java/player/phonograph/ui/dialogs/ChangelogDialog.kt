@@ -1,4 +1,4 @@
-package player.phonograph.dialogs
+package player.phonograph.ui.dialogs
 
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.WhichButton
