@@ -29,6 +29,7 @@ android {
     val appName = "Phonograph Plus"
 
     buildFeatures {
+        buildConfig = true
         viewBinding = true
         compose = true
     }
