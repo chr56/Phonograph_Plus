@@ -17,8 +17,10 @@ package player.phonograph.util
 import player.phonograph.App
 import player.phonograph.BROADCAST_PLAYLISTS_CHANGED
 import player.phonograph.BuildConfig.DEBUG
+import player.phonograph.model.Song
 import player.phonograph.notification.ErrorNotification
 import androidx.annotation.StringRes
+import androidx.core.content.FileProvider
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import android.content.Context
 import android.content.Intent
@@ -28,6 +30,7 @@ import android.widget.Toast
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.io.File
 
 
 //
@@ -124,4 +127,25 @@ inline fun <reified T, reified F> T.reflectDeclaredField(fieldName: String): F {
             isAccessible = true
         }
     return f.get(this) as F
+}
+
+//
+// Other
+//
+
+fun shareFileIntent(context: Context, song: Song): Intent {
+    return try {
+        Intent()
+            .setAction(Intent.ACTION_SEND)
+            .putExtra(
+                Intent.EXTRA_STREAM,
+                FileProvider.getUriForFile(context, context.applicationContext.packageName, File(song.data))
+            )
+            .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            .setType("audio/*")
+    } catch (e: IllegalArgumentException) {
+        // the path is most likely not like /storage/emulated/0/... but something like /storage/28C7-75B0/...
+        reportError(e, "Share", "Physical external SD card is not fully support!")
+        Intent()
+    }
 }
