@@ -5,7 +5,7 @@
 package player.phonograph.actions
 
 import player.phonograph.R
-import player.phonograph.dialogs.SongDetailDialog
+import player.phonograph.ui.dialogs.SongDetailDialog
 import player.phonograph.dialogs.SongShareDialog
 import player.phonograph.model.Song
 import player.phonograph.service.MusicPlayerRemote

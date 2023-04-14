@@ -16,7 +16,7 @@ import com.h6ah4i.android.widget.advrecyclerview.draggable.annotation.DraggableI
 import player.phonograph.R
 import player.phonograph.adapter.base.MultiSelectionCabController
 import player.phonograph.coil.loadImage
-import player.phonograph.dialogs.SongDetailDialog
+import player.phonograph.ui.dialogs.SongDetailDialog
 import player.phonograph.model.Song
 import player.phonograph.ui.compose.tag.TagEditorActivity
 import player.phonograph.ui.dialogs.DeleteSongsDialog

@@ -1,4 +1,8 @@
-package player.phonograph.dialogs
+/*
+ *  Copyright (c) 2022~2023 chr_56
+ */
+
+package player.phonograph.ui.dialogs
 
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.WhichButton
@@ -95,7 +99,8 @@ class SongDetailDialog : DialogFragment() {
 
         val songFile = File(song.data)
         fileName.text = makeTextWithTitle(context, R.string.label_file_name, "N/A")
-        trackLength.text = makeTextWithTitle(context, R.string.label_track_length, getReadableDurationString(song.duration))
+        trackLength.text =
+            makeTextWithTitle(context, R.string.label_track_length, getReadableDurationString(song.duration))
         if (songFile.exists()) {
             fileName.text = makeTextWithTitle(context, R.string.label_file_name, songFile.name)
             filePath.text = makeTextWithTitle(context, R.string.label_file_path, songFile.absolutePath)
@@ -106,69 +111,80 @@ class SongDetailDialog : DialogFragment() {
                 // files of the song
                 val audioHeader: AudioHeader = audioFile.audioHeader
                 fileFormat.text = makeTextWithTitle(context, R.string.label_file_format, audioHeader.format)
-                trackLength.text = makeTextWithTitle(context, R.string.label_track_length, getReadableDurationString((audioHeader.trackLength * 1000).toLong()))
+                trackLength.text = makeTextWithTitle(
+                    context,
+                    R.string.label_track_length,
+                    getReadableDurationString((audioHeader.trackLength * 1000).toLong())
+                )
                 bitRate.text = makeTextWithTitle(context, R.string.label_bit_rate, audioHeader.bitRate + " kb/s")
-                samplingRate.text = makeTextWithTitle(context, R.string.label_sampling_rate, audioHeader.sampleRate + " Hz")
+                samplingRate.text =
+                    makeTextWithTitle(context, R.string.label_sampling_rate, audioHeader.sampleRate + " Hz")
                 // tags of the song
                 title.text = makeTextWithTitle(context, R.string.title, song.title)
                 artist.text = makeTextWithTitle(context, R.string.artist, song.artistName!!)
                 album.text = makeTextWithTitle(context, R.string.album, song.albumName!!)
-                albumArtist.text = makeTextWithTitle(context, R.string.album_artist, audioFile.tag.getFirst(FieldKey.ALBUM_ARTIST))
+                albumArtist.text =
+                    makeTextWithTitle(context, R.string.album_artist, audioFile.tag.getFirst(FieldKey.ALBUM_ARTIST))
                 if (song.year != 0) year.text = makeTextWithTitle(context, R.string.year, song.year.toString())
                 val songGenre = audioFile.tag.getFirst(FieldKey.GENRE)
                 genre.text = makeTextWithTitle(context, R.string.genre, songGenre)
-                if (song.trackNumber != 0) track.text = makeTextWithTitle(context, R.string.track, song.trackNumber.toString())
+                if (song.trackNumber != 0) track.text =
+                    makeTextWithTitle(context, R.string.track, song.trackNumber.toString())
 
                 val custInfoField = audioFile.tag.getFields("TXXX")
                 var custInfo = "-"
                 if (custInfoField != null && custInfoField.size > 0) {
-                custInfo = "<br />"
-                if (custInfoField.size <= 128) {
-                    custInfoField.forEach { TagField ->
-                        val frame = TagField as AbstractID3v2Frame
-                        custInfo += frame.body.getObjectValue(DataTypes.OBJ_DESCRIPTION)
-                        custInfo += ":<br />"
-                        custInfo += frame.body.getObjectValue(DataTypes.OBJ_TEXT)
-                        custInfo += "<br />"
+                    custInfo = "<br />"
+                    if (custInfoField.size <= 128) {
+                        custInfoField.forEach { TagField ->
+                            val frame = TagField as AbstractID3v2Frame
+                            custInfo += frame.body.getObjectValue(DataTypes.OBJ_DESCRIPTION)
+                            custInfo += ":<br />"
+                            custInfo += frame.body.getObjectValue(DataTypes.OBJ_TEXT)
+                            custInfo += "<br />"
+                        }
+                    } else {
+                        Toast.makeText(
+                            requireContext(),
+                            "Other tags in this song is too many, only show the first 128 entries",
+                            Toast.LENGTH_LONG
+                        ).show()
+                        for (index in 0 until 127) {
+                            val frame = custInfoField[index] as AbstractID3v2Frame
+                            custInfo += frame.body.getObjectValue(DataTypes.OBJ_DESCRIPTION)
+                            custInfo += ":<br />"
+                            custInfo += frame.body.getObjectValue(DataTypes.OBJ_TEXT)
+                            custInfo += "<br />"
+                        }
                     }
-                } else {
-                    Toast.makeText(requireContext(),"Other tags in this song is too many, only show the first 128 entries",Toast.LENGTH_LONG).show()
-                    for (index in 0 until 127){
-                        val frame = custInfoField[index] as AbstractID3v2Frame
-                        custInfo += frame.body.getObjectValue(DataTypes.OBJ_DESCRIPTION)
-                        custInfo += ":<br />"
-                        custInfo += frame.body.getObjectValue(DataTypes.OBJ_TEXT)
-                        custInfo += "<br />"
-                    }
-                }
                 }
                 other.text = makeTextWithTitle(context, R.string.other_information, custInfo)
             }.apply {
-                if (isFailure){
-                    val errorMsg = when(val e = exceptionOrNull()){
-                        is CannotReadException ->
+                if (isFailure) {
+                    val errorMsg = when (val e = exceptionOrNull()) {
+                        is CannotReadException        ->
                             "Can not read the song file $songFile"
-                        is IOException ->
+                        is IOException                ->
                             "IOException occurs when reading file"
                         is InvalidAudioFrameException ->
                             "AudioFrame not found"
-                        is TagException -> {
-                            val msg = when(e){
-                                is TagNotFoundException -> "Tag not found: ${e.message}"
-                                is FieldDataInvalidException -> "FieldDataInvalid: ${e.message}"
-                                is EmptyFrameException -> "Find a Frame but it contains no data: ${e.message}"
-                                is InvalidDataTypeException -> "InvalidDataType: ${e.message}"
+                        is TagException               -> {
+                            val msg = when (e) {
+                                is TagNotFoundException            -> "Tag not found: ${e.message}"
+                                is FieldDataInvalidException       -> "FieldDataInvalid: ${e.message}"
+                                is EmptyFrameException             -> "Find a Frame but it contains no data: ${e.message}"
+                                is InvalidDataTypeException        -> "InvalidDataType: ${e.message}"
                                 is InvalidFrameIdentifierException -> "Frame Identifier is invalid: ${e.message}"
-                                else -> "Unknown"
+                                else                               -> "Unknown"
                             }
                             "Tag Error: $msg"
                         }
-                        else ->
+                        else                          ->
                             "Unknown"
                     }
                     Log.w(TAG, errorMsg)
                     ErrorNotification.postErrorNotification(
-                        exceptionOrNull()?: Exception(),
+                        exceptionOrNull() ?: Exception(),
                         "Error while reading the song file:\n$errorMsg",
                     )
                 }
@@ -178,21 +194,19 @@ class SongDetailDialog : DialogFragment() {
     }
 
     companion object {
-        val TAG: String = SongDetailDialog::class.java.simpleName
-        @JvmStatic
-        fun create(song: Song): SongDetailDialog {
-            val dialog = SongDetailDialog()
-            val args = Bundle()
-            args.putParcelable("song", song)
-            dialog.arguments = args
-            return dialog
-        }
+        const val TAG: String = "SongDetailDialog"
 
-        private fun makeTextWithTitle(context: Context, titleResId: Int, text: String): Spanned {
-            return Html.fromHtml("<b>" + context.resources.getString(titleResId) + ": " + "</b>" + text, Html.FROM_HTML_MODE_COMPACT)
-        }
-        private fun makeTextWithTitle(context: Context, title: String, text: String): Spanned {
-            return Html.fromHtml("<b>$title: </b>$text", Html.FROM_HTML_MODE_COMPACT)
-        }
+        fun create(song: Song): SongDetailDialog =
+            SongDetailDialog().apply {
+                arguments = Bundle().apply {
+                    putParcelable("song", song)
+                }
+            }
+
+        private fun makeTextWithTitle(context: Context, titleResId: Int, text: String): Spanned =
+            Html.fromHtml(
+                "<b>${context.resources.getString(titleResId)}: </b>$text",
+                Html.FROM_HTML_MODE_COMPACT
+            )
     }
 }
