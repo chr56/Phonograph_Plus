@@ -5,8 +5,7 @@
 package player.phonograph.actions
 
 import player.phonograph.R
-import player.phonograph.dialogs.SongDetailDialog
-import player.phonograph.dialogs.SongShareDialog
+import player.phonograph.ui.dialogs.SongDetailDialog
 import player.phonograph.model.Song
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.queue.ShuffleMode
@@ -18,6 +17,7 @@ import player.phonograph.ui.dialogs.DeleteSongsDialog
 import player.phonograph.util.NavigationUtil
 import player.phonograph.mechanism.PathFilter
 import player.phonograph.misc.RingtoneManager
+import player.phonograph.util.shareFileIntent
 import androidx.core.util.Pair
 import androidx.fragment.app.FragmentActivity
 import android.content.Context
@@ -94,7 +94,7 @@ fun Song.actionGotoArtist(context: Context, transitionView: View?): Boolean =
 fun Song.actionShare(context: Context): Boolean {
     context.startActivity(
         Intent.createChooser(
-            SongShareDialog.createShareSongFileIntent(this, context), null
+            shareFileIntent(context,this), null
         )
     )
     return true

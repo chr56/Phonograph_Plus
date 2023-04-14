@@ -1,4 +1,8 @@
-package player.phonograph.dialogs
+/*
+ *  Copyright (c) 2022~2023 chr_56
+ */
+
+package player.phonograph.ui.dialogs
 
 import android.content.res.ColorStateList
 import android.graphics.drawable.GradientDrawable

@@ -9,8 +9,8 @@ import mt.tint.viewtint.setMenuColor
 import mt.util.color.toolbarIconColor
 import player.phonograph.R
 import player.phonograph.adapter.display.PlayingQueueAdapter
-import player.phonograph.dialogs.LyricsDialog
-import player.phonograph.dialogs.SleepTimerDialog
+import player.phonograph.ui.dialogs.LyricsDialog
+import player.phonograph.ui.dialogs.SleepTimerDialog
 import player.phonograph.misc.PaletteColorHolder
 import player.phonograph.model.buildInfoString
 import player.phonograph.model.getReadableDurationString

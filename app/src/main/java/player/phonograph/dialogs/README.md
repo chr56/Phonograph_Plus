@@ -1,1 +1,0 @@
-**TODO: all dialogs in this package would be moved to package .ui.package**

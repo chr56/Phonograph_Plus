@@ -1,4 +1,4 @@
-package player.phonograph.dialogs
+package player.phonograph.ui.dialogs
 
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.WhichButton
@@ -7,9 +7,10 @@ import com.afollestad.materialdialogs.customview.customView
 import lib.phonograph.localization.Localization
 import mt.pref.ThemeColor
 import mt.util.color.resolveColor
-import org.intellij.lang.annotations.Language
 import player.phonograph.R
 import player.phonograph.notification.ErrorNotification
+import player.phonograph.util.text.changelogCSS
+import player.phonograph.util.text.changelogHTML
 import player.phonograph.util.theme.nightMode
 import androidx.fragment.app.DialogFragment
 import android.annotation.SuppressLint
@@ -52,6 +53,7 @@ class ChangelogDialog : DialogFragment() {
                     ThemeColor.accentColor(requireActivity())
                 )
             }
+
         val webView = customView.findViewById<WebView>(R.id.web_view)
 
         // Fetch correct changelog
@@ -72,7 +74,6 @@ class ChangelogDialog : DialogFragment() {
                 content,
                 ThemeColor.accentColor(requireContext())
             )
-            // if (DEBUG) Log.v("CHANGELOG", changeLog)
 
             webView.loadData(changeLog, "text/html", "UTF-8")
         } catch (e: Throwable) {
@@ -86,31 +87,29 @@ class ChangelogDialog : DialogFragment() {
         return dialog
     }
 
-    fun generateChangelogHTML(content: String, accentColor: Int): String {
+    private fun generateChangelogHTML(content: String, accentColor: Int): String {
         val backgroundColor =
-            colorToCSS(
-                resolveColor(
-                    requireContext(),
-                    R.attr.md_background_color,
-                    Color.parseColor(if (requireContext().nightMode) "#424242" else "#ffffff")
-                )
+            resolveColor(
+                requireContext(),
+                R.attr.md_background_color,
+                Color.parseColor(if (requireContext().nightMode) "#424242" else "#ffffff")
             )
+
         val textColor =
-            colorToCSS(
-                Color.parseColor(if (requireContext().nightMode) "#ffffff" else "#000000")
-            )
-        return getHTML(
-            CSS = getCSS(
+            Color.parseColor(if (requireContext().nightMode) "#ffffff" else "#000000")
+
+        return changelogHTML(
+            CSS = changelogCSS(
                 content_background_color = backgroundColor,
                 text_color = textColor,
-                highlight_color = colorToCSS(accentColor),
-                disable_color = "rgb(167, 167, 167)"
+                highlight_color = accentColor,
+                disable_color = Color.rgb(167, 167, 167)
             ),
             content = content
         )
     }
 
-    fun openLocalizedChangelogName(context: Context, locale: Locale): InputStream {
+    private fun openLocalizedChangelogName(context: Context, locale: Locale): InputStream {
         val fullSuffix = "${locale.language}-${locale.country}".uppercase()
         val mainSuffix = locale.language.uppercase()
         val assetManager = context.assets
@@ -129,86 +128,5 @@ class ChangelogDialog : DialogFragment() {
         private const val changelog = "changelog"
 
         fun create(): ChangelogDialog = ChangelogDialog()
-
-        private fun colorToCSS(color: Int): String =
-            String.format(
-                "rgb(%d, %d, %d)",
-                Color.red(color),
-                Color.green(color),
-                Color.blue(color)
-            ) // on API 29, WebView doesn't load with hex colors
-
-        @Language("CSS")
-        fun getCSS(
-            content_background_color: String,
-            text_color: String,
-            highlight_color: String,
-            disable_color: String,
-        ) = """
-        * {
-            word-wrap: break-word;
-        }
-        body {
-            background-color: $content_background_color;
-            color: $text_color;
-        }
-        a {
-            color: $highlight_color;
-        }
-        a:active {
-            color: $highlight_color;
-        }
-        h3 {
-            margin-top: 1ex;
-            margin-bottom: 1ex;
-        }
-        h4,
-        h5 {
-            padding: 0;
-            margin: 0;
-            margin-top: 2ex;
-            margin-bottom: 0.5ex;
-        }
-        ol,
-        ul {
-            list-style-position: inside;
-            border: 0;
-            padding: 0;
-            margin: 0;
-            margin-left: 0.5ex;
-        }
-        li {
-            padding: 1px;
-            margin: 0;
-            margin-left: 1ex;
-        }
-        p {
-            margin: 0.75ex;
-        }
-        .highlight-text{
-            color: $highlight_color;
-        }
-        .fine-print{
-            color: $disable_color;
-            font-size: small;
-        }"""
-
-        @Language("HTML")
-        fun getHTML(
-            CSS: String,
-            content: String,
-        ): String =
-            """
-        <html>
-        <head>
-        <style type="text/css">
-        $CSS
-        </style>
-        </head>
-        <body>
-        $content
-        </body>
-        </html>
-        """
     }
 }
