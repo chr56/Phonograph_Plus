@@ -20,9 +20,13 @@ object DatabaseDataManger {
     fun exportDatabase(sink: BufferedSink, dbName: String, context: Context): Boolean {
         val databaseFile = context.getDatabasePath(dbName) ?: return false
         val bytes = databaseFile.readBytes()
-        if (bytes.isEmpty()) warning(TAG, "database $dbName is empty")
-        sink.write(bytes)
-        return true
+        return if (bytes.isNotEmpty()) {
+            sink.write(bytes)
+            true
+        } else {
+            warning(TAG, "database $dbName is empty")
+            false
+        }
     }
 
     fun importDatabase(inputStream: InputStream, dbName: String, context: Context): Boolean {

@@ -60,7 +60,8 @@ sealed class BackupItem(
     val key: String,
     val type: Type,
 ) {
-    abstract fun data(context: Context): InputStream
+
+    abstract fun data(context: Context): InputStream?
 
     abstract fun import(inputStream: InputStream, context: Context): Boolean
 
@@ -106,15 +107,15 @@ private const val KEY_DATABASE_HISTORY = "database_history"
 private const val KEY_DATABASE_SONG_PLAY_COUNT = "database_song_play_count"
 private const val KEY_DATABASE_MUSIC_PLAYBACK_STATE = "database_music_playback_state"
 
-private fun fromSink(block: (BufferedSink) -> Boolean): InputStream {
+private fun fromSink(block: (BufferedSink) -> Boolean): InputStream? {
     val buffer = Buffer()
-    block(buffer)
-    return buffer.inputStream()
+    val result = block(buffer)
+    return if (result) buffer.inputStream() else null
 }
 
 
 object SettingBackup : BackupItem(KEY_SETTING, Type.JSON) {
-    override fun data(context: Context): InputStream =
+    override fun data(context: Context): InputStream? =
         fromSink {
             SettingDataManager.exportSettings(it)
         }
@@ -126,7 +127,7 @@ object SettingBackup : BackupItem(KEY_SETTING, Type.JSON) {
 }
 
 object PathFilterBackup : BackupItem(KEY_PATH_FILTER, Type.JSON) {
-    override fun data(context: Context): InputStream =
+    override fun data(context: Context): InputStream? =
         fromSink {
             DatabaseBackupManger.exportPathFilter(it, context)
         }
@@ -138,7 +139,7 @@ object PathFilterBackup : BackupItem(KEY_PATH_FILTER, Type.JSON) {
 }
 
 object FavoriteBackup : BackupItem(KEY_FAVORITES, Type.JSON) {
-    override fun data(context: Context): InputStream =
+    override fun data(context: Context): InputStream? =
         fromSink {
             DatabaseBackupManger.exportFavorites(it, context)
         }
@@ -150,7 +151,7 @@ object FavoriteBackup : BackupItem(KEY_FAVORITES, Type.JSON) {
 }
 
 object PlayingQueuesBackup : BackupItem(KEY_PLAYING_QUEUES, Type.JSON) {
-    override fun data(context: Context): InputStream =
+    override fun data(context: Context): InputStream? =
         fromSink {
             DatabaseBackupManger.exportPlayingQueues(it, context)
         }
@@ -163,7 +164,7 @@ object PlayingQueuesBackup : BackupItem(KEY_PLAYING_QUEUES, Type.JSON) {
 
 
 object FavoriteDatabaseBackup : BackupItem(KEY_DATABASE_FAVORITE, Type.DATABASE) {
-    override fun data(context: Context): InputStream =
+    override fun data(context: Context): InputStream? =
         fromSink {
             DatabaseDataManger.exportDatabase(it, DatabaseConstants.FAVORITE_DB, context)
         }
@@ -176,7 +177,7 @@ object FavoriteDatabaseBackup : BackupItem(KEY_DATABASE_FAVORITE, Type.DATABASE)
 }
 
 object PathFilterDatabaseBackup : BackupItem(KEY_DATABASE_PATH_FILTER, Type.DATABASE) {
-    override fun data(context: Context): InputStream =
+    override fun data(context: Context): InputStream? =
         fromSink {
             DatabaseDataManger.exportDatabase(it, DatabaseConstants.PATH_FILTER, context)
         }
@@ -189,7 +190,7 @@ object PathFilterDatabaseBackup : BackupItem(KEY_DATABASE_PATH_FILTER, Type.DATA
 }
 
 object HistoryDatabaseBackup : BackupItem(KEY_DATABASE_HISTORY, Type.DATABASE) {
-    override fun data(context: Context): InputStream =
+    override fun data(context: Context): InputStream? =
         fromSink {
             DatabaseDataManger.exportDatabase(it, DatabaseConstants.HISTORY_DB, context)
         }
@@ -202,7 +203,7 @@ object HistoryDatabaseBackup : BackupItem(KEY_DATABASE_HISTORY, Type.DATABASE) {
 }
 
 object SongPlayCountDatabaseBackup : BackupItem(KEY_DATABASE_SONG_PLAY_COUNT, Type.DATABASE) {
-    override fun data(context: Context): InputStream =
+    override fun data(context: Context): InputStream? =
         fromSink {
             DatabaseDataManger.exportDatabase(it, DatabaseConstants.SONG_PLAY_COUNT_DB, context)
         }
@@ -215,7 +216,7 @@ object SongPlayCountDatabaseBackup : BackupItem(KEY_DATABASE_SONG_PLAY_COUNT, Ty
 }
 
 object MusicPlaybackStateDatabaseBackup : BackupItem(KEY_DATABASE_MUSIC_PLAYBACK_STATE, Type.DATABASE) {
-    override fun data(context: Context): InputStream =
+    override fun data(context: Context): InputStream? =
         fromSink {
             DatabaseDataManger.exportDatabase(it, DatabaseConstants.MUSIC_PLAYBACK_STATE_DB, context)
         }
