@@ -462,4 +462,5 @@
     <string name="action_import">Import %1$s</string>
     <string name="action_export">Export %1$s</string>
     <string name="action_reboot">Reboot App</string>
+    <string name="process">Process…</string>
 </resources>

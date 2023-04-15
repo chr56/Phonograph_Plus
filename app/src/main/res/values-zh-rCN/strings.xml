@@ -451,4 +451,5 @@
     <string name="action_import">导入 %1$s</string>
     <string name="action_export">导出 %1$s</string>
     <string name="action_reboot">重启应用</string>
+    <string name="process">加载中…</string>
 </resources>
