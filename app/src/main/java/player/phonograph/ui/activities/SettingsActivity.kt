@@ -11,16 +11,14 @@ import mt.pref.ThemeColor
 import mt.tint.setActivityToolbarColorAuto
 import player.phonograph.App
 import player.phonograph.R
-import player.phonograph.mechanism.migrate.DatabaseDataManger
-import player.phonograph.mechanism.migrate.SettingDataManager
+import player.phonograph.mechanism.SettingDataManager
 import lib.phonograph.misc.CreateFileStorageAccessTool
 import lib.phonograph.misc.ICreateFileStorageAccess
 import lib.phonograph.misc.IOpenFileStorageAccess
 import lib.phonograph.misc.OpenDocumentContract
 import lib.phonograph.misc.OpenFileStorageAccessTool
-import player.phonograph.mechanism.migrate.backup.Backup
+import player.phonograph.mechanism.backup.Backup
 import player.phonograph.misc.menuProvider
-import player.phonograph.ui.dialogs.BackupDataDialog
 import player.phonograph.ui.dialogs.BackupExportDialog
 import player.phonograph.ui.dialogs.BackupImportDialog
 import player.phonograph.ui.fragments.SettingsFragment
@@ -70,38 +68,6 @@ class SettingsActivity : ToolbarActivity(), ICreateFileStorageAccess, IOpenFileS
 
     private fun setupMenu(menu: Menu) {
         attach(from = menu) {
-            menuItem {
-                itemId = R.id.action_export_data
-                title = getString(R.string.action_export, getString(R.string.databases))
-                showAsActionFlag = SHOW_AS_ACTION_NEVER
-                onClick {
-                    createFileStorageAccessTool.launch(
-                        "phonograph_plus_databases_${currentDateTime()}.zip"
-                    ) { uri ->
-                        uri ?: return@launch
-                        CoroutineScope(Dispatchers.IO).launch {
-                            exportDatabase(uri).andReport()
-                        }
-                    }
-                    true
-                }
-            }
-            menuItem {
-                itemId = R.id.action_import_data
-                title = getString(R.string.action_import, getString(R.string.databases))
-                showAsActionFlag = SHOW_AS_ACTION_NEVER
-                onClick {
-                    openFileStorageAccessTool.launch(
-                        OpenDocumentContract.Config(arrayOf("application/zip"))
-                    ) { uri ->
-                        uri ?: return@launch
-                        CoroutineScope(Dispatchers.IO).launch {
-                            importDatabase(uri).andReport()
-                        }
-                    }
-                    true
-                }
-            }
             menuItem {
                 itemId = R.id.action_export_preferences
                 title = getString(R.string.action_export, getString(R.string.preferences))
@@ -155,15 +121,6 @@ class SettingsActivity : ToolbarActivity(), ICreateFileStorageAccess, IOpenFileS
                 }
             }
             menuItem {
-                titleRes(R.string.action_backup)
-                showAsActionFlag = SHOW_AS_ACTION_NEVER
-                onClick {
-                    BackupDataDialog().show(supportFragmentManager, "BACKUP_DIALOG")
-                    true
-                }
-            }
-
-            menuItem {
                 title = getString(R.string.action_export, getString(R.string.action_backup))
                 showAsActionFlag = SHOW_AS_ACTION_NEVER
                 onClick {
@@ -196,12 +153,6 @@ class SettingsActivity : ToolbarActivity(), ICreateFileStorageAccess, IOpenFileS
             }
         }
     }
-
-    private fun exportDatabase(uri: Uri): Boolean =
-        DatabaseDataManger.exportDatabases(uri, App.instance)
-
-    private fun importDatabase(uri: Uri): Boolean =
-        DatabaseDataManger.importDatabases(uri, App.instance)
 
     private fun exportSetting(uri: Uri): Boolean =
         SettingDataManager.exportSettings(uri, App.instance)

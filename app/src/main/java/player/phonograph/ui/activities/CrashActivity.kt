@@ -8,7 +8,7 @@ import lib.phonograph.misc.Reboot
 import mt.util.color.primaryTextColor
 import player.phonograph.R
 import player.phonograph.databinding.ActivityCrashBinding
-import player.phonograph.mechanism.migrate.SettingDataManager
+import player.phonograph.mechanism.SettingDataManager
 import player.phonograph.notification.ErrorNotification.KEY_IS_A_CRASH
 import player.phonograph.notification.ErrorNotification.KEY_STACK_TRACE
 import player.phonograph.util.text.currentDateTime

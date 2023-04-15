@@ -2,7 +2,7 @@
  * Copyright (c) 2022~2023 chr_56
  */
 
-package player.phonograph.mechanism.migrate
+package player.phonograph.mechanism.backup
 
 import okio.BufferedSink
 import player.phonograph.MusicServiceMsgConst
@@ -11,13 +11,11 @@ import player.phonograph.model.Song
 import player.phonograph.provider.FavoriteSongsStore
 import player.phonograph.provider.MusicPlaybackQueueStore
 import player.phonograph.provider.PathFilterStore
-import player.phonograph.util.FileUtil.saveToFile
 import player.phonograph.util.reportError
 import player.phonograph.util.warning
 import androidx.annotation.Keep
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import kotlin.LazyThreadSafetyMode.NONE
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -27,10 +25,8 @@ import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
-import java.io.FileInputStream
 import java.io.IOException
 import java.io.InputStream
-import java.io.OutputStream
 
 object DatabaseBackupManger {
 
@@ -49,16 +45,6 @@ object DatabaseBackupManger {
     private const val WHITE_LIST = "whitelist"
     private const val BLACK_LIST = "blacklist"
 
-    /**
-     * @param destinationUri destination document uri
-     */
-    fun exportPathFilter(context: Context, destinationUri: Uri): Boolean {
-        val json = exportPathFilter(context)
-        val content = parser.encodeToString(json)
-        saveToFile(destinationUri, content, context.contentResolver)
-        return true
-    }
-
     fun exportPathFilter(sink: BufferedSink, context: Context): Boolean {
         return try {
             val json = exportPathFilter(context)
@@ -68,18 +54,6 @@ object DatabaseBackupManger {
         } catch (e: IOException) {
             reportError(e, TAG, "Failed to export PathFilter!")
             false
-        }
-    }
-
-    /**
-     * close stream after use
-     */
-    fun exportPathFilter(context: Context, outputStream: OutputStream) {
-        val json = exportPathFilter(context)
-        val content = parser.encodeToString(json)
-        outputStream.writer(Charsets.UTF_8).also {
-            it.write(content)
-            it.flush()
         }
     }
 
@@ -98,11 +72,6 @@ object DatabaseBackupManger {
 
     fun importPathFilter(context: Context, inputStream: InputStream): Boolean {
         val rawString = inputStream.reader().use { it.readText() }
-        return importPathFilter(context, rawString)
-    }
-
-    fun importPathFilter(context: Context, sourceUri: Uri): Boolean {
-        val rawString: String = readFrom(context, sourceUri)
         return importPathFilter(context, rawString)
     }
 
@@ -149,18 +118,6 @@ object DatabaseBackupManger {
     private const val PLAYING_QUEUE = "playing_queue"
     private const val ORIGINAL_PLAYING_QUEUE = "original_playing_queue"
 
-    /**
-     * @param destinationUri destination document uri
-     */
-    fun exportPlayingQueues(context: Context, destinationUri: Uri): Boolean {
-        val json = exportPlayingQueues(context)
-        val content = parser.encodeToString(json)
-        saveToFile(destinationUri, content, context.contentResolver)
-        return true
-    }
-
-
-
     fun exportPlayingQueues(sink: BufferedSink, context: Context): Boolean {
         return try {
             val json = exportPlayingQueues(context)
@@ -170,17 +127,6 @@ object DatabaseBackupManger {
         } catch (e: IOException) {
             reportError(e, TAG, "Failed to export PlayingQueues!")
             false
-        }
-    }
-    /**
-     * close stream after use
-     */
-    fun exportPlayingQueues(context: Context, outputStream: OutputStream) {
-        val json = exportPlayingQueues(context)
-        val content = parser.encodeToString(json)
-        outputStream.writer(Charsets.UTF_8).also {
-            it.write(content)
-            it.flush()
         }
     }
 
@@ -195,11 +141,6 @@ object DatabaseBackupManger {
                 ORIGINAL_PLAYING_QUEUE to JsonArray(oq),
             )
         )
-    }
-
-    fun importPlayingQueues(context: Context, sourceUri: Uri): Boolean {
-        val rawString: String = readFrom(context, sourceUri)
-        return importPlayingQueues(context, rawString)
     }
 
     fun importPlayingQueues(context: Context, inputStream: InputStream): Boolean {
@@ -249,16 +190,6 @@ object DatabaseBackupManger {
 
     private const val FAVORITE = "favorite"
 
-    /**
-     * @param destinationUri destination document uri
-     */
-    fun exportFavorites(context: Context, destinationUri: Uri): Boolean {
-        val json = exportFavorites(context)
-        val content = parser.encodeToString(json)
-        saveToFile(destinationUri, content, context.contentResolver)
-        return true
-    }
-
 
     fun exportFavorites(sink: BufferedSink, context: Context): Boolean {
         return try {
@@ -269,18 +200,6 @@ object DatabaseBackupManger {
         } catch (e: IOException) {
             reportError(e, TAG, "Failed to export Favorites!")
             false
-        }
-    }
-
-    /**
-     * close stream after use
-     */
-    fun exportFavorites(context: Context, outputStream: OutputStream) {
-        val json = exportFavorites(context)
-        val content = parser.encodeToString(json)
-        outputStream.writer(Charsets.UTF_8).also {
-            it.write(content)
-            it.flush()
         }
     }
 
@@ -301,12 +220,7 @@ object DatabaseBackupManger {
         return importFavorites(context, rawString)
     }
 
-    fun importFavorites(context: Context, sourceUri: Uri): Boolean {
-        val rawString: String = readFrom(context, sourceUri)
-        return importFavorites(context, rawString)
-    }
-
-    fun importFavorites(context: Context, rawString: String): Boolean {
+    private fun importFavorites(context: Context, rawString: String): Boolean {
         val json = parser.parseToJsonElement(rawString) as? JsonObject
         if (json != null) {
             try {
@@ -366,24 +280,5 @@ object DatabaseBackupManger {
         }
     }
 
-    /**
-     * @param uri source document content uri
-     */
-    private fun readFrom(context: Context, uri: Uri): String {
-        try {
-            context.contentResolver.openFileDescriptor(uri, "r")?.use {
-                FileInputStream(it.fileDescriptor).use { fileInputStream ->
-                    fileInputStream.use { stream ->
-                        return stream.bufferedReader().use { reader -> reader.readText() }
-                    }
-                }
-            }
-        } catch (e: Exception) {
-            reportError(e, TAG, "Could not read content from $uri")
-        }
-        return ""
-    }
-
     private const val TAG = "DatabaseBackupManger"
-
 }
