@@ -65,7 +65,7 @@ class BackupImportDialog : DialogFragment() {
                 val processDialog = progressDialog(host)
                 dialog.dismiss()
                 processDialog.show()
-                lifecycleScope.launch(Dispatchers.IO) {
+                host.lifecycleScope.launch(Dispatchers.IO) {
                     val result =
                         try {
                             Backup.Import.executeImport(host, sessionId, selected)
