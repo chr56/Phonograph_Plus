@@ -112,12 +112,14 @@ object Backup {
             context: Context,
             session: Long,
             content: Iterable<BackupItem>,
+            onUpdateProgress: (CharSequence) -> Unit,
         ) {
             val tmpDir = SessionManger.sessionDirectory(session)
             val manifest = readManifest(session) ?: throw Exception("No Manifest!")
             // filter
             val selected = manifest.files.filterKeys { it in content }
             for ((item, relativePath) in selected) {
+                onUpdateProgress(item.displayName(context.resources))
                 FileInputStream(File(tmpDir, relativePath)).use { inputStream ->
                     item.import(inputStream, context)
                 }

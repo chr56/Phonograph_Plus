@@ -15,17 +15,17 @@ import player.phonograph.adapter.sortable.BackupChooserAdapter
 import player.phonograph.mechanism.backup.Backup
 import player.phonograph.util.reportError
 import androidx.appcompat.app.AlertDialog
-import androidx.core.view.setPadding
 import androidx.fragment.app.DialogFragment
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.withStateAtLeast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import android.app.Dialog
 import android.content.Context
-import android.content.DialogInterface
 import android.os.Bundle
-import android.widget.ProgressBar
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.lang.ref.WeakReference
@@ -62,13 +62,23 @@ class BackupImportDialog : DialogFragment() {
             .positiveButton(android.R.string.ok) { dialog ->
                 val selected = adapter.currentConfig
                 val host = activity.get() ?: return@positiveButton
-                val processDialog = progressDialog(host)
+                val processDialog = ProgressDialog.newInstance(getString(R.string.action_backup))
                 dialog.dismiss()
-                processDialog.show()
+                processDialog.show(host.supportFragmentManager, "ProgressDialog")
                 host.lifecycleScope.launch(Dispatchers.IO) {
+                    val onUpdateProgress = fun(currentItem: CharSequence) {
+                        launch {
+                            processDialog.lifecycle.withStateAtLeast(Lifecycle.State.STARTED) {
+                                val context = processDialog.requireContext()
+                                processDialog.currentTextState.update {
+                                    context.getString(R.string.action_import, currentItem.toString())
+                                }
+                            }
+                        }
+                    }
                     val result =
                         try {
-                            Backup.Import.executeImport(host, sessionId, selected)
+                            Backup.Import.executeImport(host, sessionId, selected, onUpdateProgress)
                             true
                         } catch (e: Exception) {
                             reportError(e, TAG, host.getString(R.string.failed))
@@ -105,18 +115,6 @@ class BackupImportDialog : DialogFragment() {
                 }
             }
     }
-
-    private fun progressDialog(context: Context) =
-        AlertDialog.Builder(context)
-            .setTitle(R.string.action_backup)
-            .setView(
-                ProgressBar(context).also {
-                    it.isIndeterminate = true
-                    it.setPadding(32)
-                }
-            )
-            .setCancelable(false)
-            .create()
 
     private fun completeDialog(context: Context, success: Boolean) =
         AlertDialog.Builder(context)
