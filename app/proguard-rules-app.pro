@@ -64,7 +64,7 @@
 
 -keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.notification.**Impl {public <methods>;}
 
--keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.migrate.* extends player.phonograph.migrate.Migration{ public <methods>;}
--keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.migrate.SettingDataManager { public <methods>;}
--keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.migrate.DatabaseDataManger { boolean *(...);}
--keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.migrate.DatabaseBackupManger { boolean *(...);}
+-keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.mechanism.migrate.* extends player.phonograph.mechanism.migrate.Migration{ public <methods>;}
+-keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.mechanism.migrate.SettingDataManager { public <methods>;}
+-keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.mechanism.migrate.DatabaseDataManger { boolean *(...);}
+-keepclassmembernames,allowoptimization,allowshrinking class player.phonograph.mechanism.migrate.DatabaseBackupManger { boolean *(...);}

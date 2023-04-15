@@ -2,7 +2,7 @@
  *  Copyright (c) 2022~2023 chr_56
  */
 
-package player.phonograph.migrate.backup
+package player.phonograph.mechanism.migrate.backup
 
 import player.phonograph.util.FileUtil.createOrOverrideFile
 import player.phonograph.util.text.currentTimestamp

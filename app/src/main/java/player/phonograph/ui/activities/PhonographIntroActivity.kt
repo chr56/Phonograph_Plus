@@ -17,7 +17,7 @@ import player.phonograph.R
 import player.phonograph.databinding.FragmentIntroBinding
 import player.phonograph.databinding.FragmentIntroSlideSettingBinding
 import player.phonograph.databinding.ItemSimpleBinding
-import player.phonograph.migrate.SettingDataManager
+import player.phonograph.mechanism.migrate.SettingDataManager
 import player.phonograph.settings.Setting
 import player.phonograph.util.permissions.GrantedPermission
 import player.phonograph.util.permissions.checkPermission

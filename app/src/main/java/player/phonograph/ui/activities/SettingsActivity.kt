@@ -11,14 +11,14 @@ import mt.pref.ThemeColor
 import mt.tint.setActivityToolbarColorAuto
 import player.phonograph.App
 import player.phonograph.R
-import player.phonograph.migrate.DatabaseDataManger
-import player.phonograph.migrate.SettingDataManager
+import player.phonograph.mechanism.migrate.DatabaseDataManger
+import player.phonograph.mechanism.migrate.SettingDataManager
 import lib.phonograph.misc.CreateFileStorageAccessTool
 import lib.phonograph.misc.ICreateFileStorageAccess
 import lib.phonograph.misc.IOpenFileStorageAccess
 import lib.phonograph.misc.OpenDocumentContract
 import lib.phonograph.misc.OpenFileStorageAccessTool
-import player.phonograph.migrate.backup.Backup
+import player.phonograph.mechanism.migrate.backup.Backup
 import player.phonograph.misc.menuProvider
 import player.phonograph.ui.dialogs.BackupDataDialog
 import player.phonograph.ui.dialogs.BackupExportDialog

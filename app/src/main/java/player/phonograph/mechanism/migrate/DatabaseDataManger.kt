@@ -2,7 +2,7 @@
  * Copyright (c) 2022~2023 chr_56
  */
 
-package player.phonograph.migrate
+package player.phonograph.mechanism.migrate
 
 import okio.BufferedSink
 import player.phonograph.provider.DatabaseConstants.FAVORITE_DB

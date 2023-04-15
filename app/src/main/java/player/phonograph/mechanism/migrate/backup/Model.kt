@@ -2,15 +2,15 @@
  *  Copyright (c) 2022~2023 chr_56
  */
 
-package player.phonograph.migrate.backup
+package player.phonograph.mechanism.migrate.backup
 
 import okio.Buffer
 import okio.BufferedSink
 import player.phonograph.BuildConfig
 import player.phonograph.R
-import player.phonograph.migrate.DatabaseBackupManger
-import player.phonograph.migrate.DatabaseDataManger
-import player.phonograph.migrate.SettingDataManager
+import player.phonograph.mechanism.migrate.DatabaseBackupManger
+import player.phonograph.mechanism.migrate.DatabaseDataManger
+import player.phonograph.mechanism.migrate.SettingDataManager
 import player.phonograph.provider.DatabaseConstants
 import androidx.annotation.Keep
 import android.content.Context

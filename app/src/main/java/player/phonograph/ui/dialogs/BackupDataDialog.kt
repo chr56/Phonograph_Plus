@@ -6,8 +6,8 @@ package player.phonograph.ui.dialogs
 
 import player.phonograph.App
 import player.phonograph.R
-import player.phonograph.migrate.DatabaseBackupManger
-import player.phonograph.migrate.SettingDataManager
+import player.phonograph.mechanism.migrate.DatabaseBackupManger
+import player.phonograph.mechanism.migrate.SettingDataManager
 import lib.phonograph.misc.ICreateFileStorageAccess
 import lib.phonograph.misc.IOpenFileStorageAccess
 import lib.phonograph.misc.OpenDocumentContract

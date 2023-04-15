@@ -2,7 +2,7 @@
  * Copyright (c) 2022~2023 chr_56
  */
 
-package player.phonograph.migrate
+package player.phonograph.mechanism.migrate
 
 import okio.BufferedSink
 import player.phonograph.MusicServiceMsgConst
@@ -186,8 +186,8 @@ object DatabaseBackupManger {
 
     private fun exportPlayingQueues(context: Context): JsonObject {
         val db = MusicPlaybackQueueStore.getInstance(context)
-        val oq = db.savedOriginalPlayingQueue.map(::persistentSong)
-        val pq = db.savedPlayingQueue.map(::persistentSong)
+        val oq = db.savedOriginalPlayingQueue.map(DatabaseBackupManger::persistentSong)
+        val pq = db.savedPlayingQueue.map(DatabaseBackupManger::persistentSong)
         return JsonObject(
             mapOf(
                 VERSION to JsonPrimitive(VERSION_CODE),
@@ -287,7 +287,7 @@ object DatabaseBackupManger {
     private fun exportFavorites(context: Context): JsonObject {
         val db = FavoriteSongsStore.instance
 
-        val songs = db.getAllSongs(context).map(::persistentSong)
+        val songs = db.getAllSongs(context).map(DatabaseBackupManger::persistentSong)
         return JsonObject(
             mapOf(
                 VERSION to JsonPrimitive(VERSION_CODE),
