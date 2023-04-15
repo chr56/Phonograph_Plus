@@ -33,28 +33,11 @@ object DatabaseBackupManger {
     const val VERSION = "version"
     const val VERSION_CODE = 0
 
-
-    private val parser by lazy(NONE) {
-        Json {
-            prettyPrint = true
-            ignoreUnknownKeys = true
-            isLenient = true
-        }
-    }
-
     private const val WHITE_LIST = "whitelist"
     private const val BLACK_LIST = "blacklist"
 
     fun exportPathFilter(sink: BufferedSink, context: Context): Boolean {
-        return try {
-            val json = exportPathFilter(context)
-            val content = parser.encodeToString(json)
-            sink.writeString(content, Charsets.UTF_8)
-            true
-        } catch (e: IOException) {
-            reportError(e, TAG, "Failed to export PathFilter!")
-            false
-        }
+        return writeJson(sink, "PathFilter", exportPathFilter(context))
     }
 
     private fun exportPathFilter(context: Context): JsonObject {
@@ -72,24 +55,12 @@ object DatabaseBackupManger {
 
     fun importPathFilter(context: Context, inputStream: InputStream): Boolean {
         val rawString = inputStream.reader().use { it.readText() }
-        return importPathFilter(context, rawString)
-    }
-
-    private fun importPathFilter(context: Context, rawString: String): Boolean {
-        val json = parser.parseToJsonElement(rawString) as? JsonObject
-        if (json != null) {
-            try {
-                importPathFilter(context, json, true)
-            } catch (e: Exception) {
-                reportError(e, TAG, "Failed!")
-            }
-        } else {
-            warning(TAG, "Nothing to import")
+        return parseJson(rawString, "PathFilter") { json ->
+            importPathFilter(context, json, true)
         }
-        return true
     }
 
-    private fun importPathFilter(context: Context, json: JsonObject, override: Boolean) {
+    private fun importPathFilter(context: Context, json: JsonObject, override: Boolean): Boolean {
 
         val wl = json[WHITE_LIST] as? JsonArray
         val bl = json[BLACK_LIST] as? JsonArray
@@ -97,7 +68,7 @@ object DatabaseBackupManger {
 
         val db = PathFilterStore.getInstance(context)
 
-        if (!(wl == null && bl == null)) {
+        return if (!(wl == null && bl == null)) {
 
             bl?.map { (it as JsonPrimitive).content }?.let {
                 if (override) db.clearBlacklist()
@@ -108,9 +79,10 @@ object DatabaseBackupManger {
                 if (override) db.clearWhitelist()
                 db.addWhitelistPath(it)
             }
-
+            true
         } else {
-            warning(TAG, "Nothing to import")
+            warning(TAG, "PathFilter: Nothing to import")
+            false
         }
 
     }
@@ -119,15 +91,7 @@ object DatabaseBackupManger {
     private const val ORIGINAL_PLAYING_QUEUE = "original_playing_queue"
 
     fun exportPlayingQueues(sink: BufferedSink, context: Context): Boolean {
-        return try {
-            val json = exportPlayingQueues(context)
-            val content = parser.encodeToString(json)
-            sink.writeString(content, Charsets.UTF_8)
-            true
-        } catch (e: IOException) {
-            reportError(e, TAG, "Failed to export PlayingQueues!")
-            false
-        }
+        return writeJson(sink, "PlayingQueues", exportPlayingQueues(context))
     }
 
     private fun exportPlayingQueues(context: Context): JsonObject {
@@ -145,25 +109,12 @@ object DatabaseBackupManger {
 
     fun importPlayingQueues(context: Context, inputStream: InputStream): Boolean {
         val rawString = inputStream.reader().use { it.readText() }
-        return importPlayingQueues(context, rawString)
-    }
-
-    private fun importPlayingQueues(context: Context, rawString: String): Boolean {
-        val json = parser.parseToJsonElement(rawString) as? JsonObject
-        if (json != null) {
-            try {
-                importPlayingQueues(context, json)
-            } catch (e: Exception) {
-                reportError(e, TAG, "Failed!")
-            }
-        } else {
-            warning(TAG, "Nothing to import")
+        return parseJson(rawString, "PlayingQueues") { json ->
+            importPlayingQueues(context, json)
         }
-        return true
     }
 
-
-    private fun importPlayingQueues(context: Context, json: JsonObject) {
+    private fun importPlayingQueues(context: Context, json: JsonObject): Boolean {
         val oq = json[ORIGINAL_PLAYING_QUEUE] as? JsonArray
         val pq = json[PLAYING_QUEUE] as? JsonArray
 
@@ -173,7 +124,7 @@ object DatabaseBackupManger {
         val originalQueue = recoverSongs(context, oq)
         val currentQueueQueue = recoverSongs(context, pq)
 
-        if (!(originalQueue == null && currentQueueQueue == null)) {
+        return if (!(originalQueue == null && currentQueueQueue == null)) {
 
             // todo: report imported queues
 
@@ -182,9 +133,10 @@ object DatabaseBackupManger {
                 originalQueue ?: currentQueueQueue ?: emptyList(),
             )
             context.sendBroadcast(Intent(MusicServiceMsgConst.MEDIA_STORE_CHANGED))
-
+            true
         } else {
-            warning(TAG, "Nothing to import")
+            warning(TAG, "PlayingQueues: Nothing to import")
+            false
         }
     }
 
@@ -192,15 +144,7 @@ object DatabaseBackupManger {
 
 
     fun exportFavorites(sink: BufferedSink, context: Context): Boolean {
-        return try {
-            val json = exportFavorites(context)
-            val content = parser.encodeToString(json)
-            sink.writeString(content, Charsets.UTF_8)
-            true
-        } catch (e: IOException) {
-            reportError(e, TAG, "Failed to export Favorites!")
-            false
-        }
+        return writeJson(sink, "Favorites", exportFavorites(context))
     }
 
     private fun exportFavorites(context: Context): JsonObject {
@@ -217,38 +161,27 @@ object DatabaseBackupManger {
 
     fun importFavorites(context: Context, inputStream: InputStream): Boolean {
         val rawString = inputStream.reader().use { it.readText() }
-        return importFavorites(context, rawString)
-    }
-
-    private fun importFavorites(context: Context, rawString: String): Boolean {
-        val json = parser.parseToJsonElement(rawString) as? JsonObject
-        if (json != null) {
-            try {
-                importFavorites(context, json, true)
-            } catch (e: Exception) {
-                reportError(e, TAG, "Failed!")
-            }
-        } else {
-            warning(TAG, "Nothing to import")
+        return parseJson(rawString, "Favorites") { json ->
+            importFavorites(context, json, true)
         }
-        return true
     }
 
-    private fun importFavorites(context: Context, json: JsonObject, override: Boolean) {
+    private fun importFavorites(context: Context, json: JsonObject, override: Boolean): Boolean {
         val f = json[FAVORITE] as? JsonArray
 
         val db = FavoriteSongsStore.instance
 
         val songs = recoverSongs(context, f)
 
-        if (!songs.isNullOrEmpty()) {
-
+        return if (!songs.isNullOrEmpty()) {
             // todo: report imported songs
             if (override) db.clear()
             db.addAll(songs.asReversed())
             context.sendBroadcast(Intent(MusicServiceMsgConst.MEDIA_STORE_CHANGED))
+            true
         } else {
-            warning(TAG, "Nothing to import")
+            warning(TAG, "Favorites: Nothing to import")
+            false
         }
     }
 
@@ -277,6 +210,43 @@ object DatabaseBackupManger {
             val song = searchSong(context, path)
             if (song == Song.EMPTY_SONG) return null
             return song
+        }
+    }
+
+    private fun parseJson(rawString: String, name: String, block: (JsonObject) -> Boolean): Boolean {
+        val json = parser.parseToJsonElement(rawString) as? JsonObject
+        return if (json != null) {
+            try {
+                block(json)
+            } catch (e: Exception) {
+                reportError(e, TAG, "Failed to import $name!")
+                false
+            }
+        } else {
+            warning(TAG, "$name: Nothing to import")
+            false
+        }
+    }
+
+    /**
+     * write [json] to [sink]
+     */
+    private fun writeJson(sink: BufferedSink, name: String, json: JsonObject): Boolean {
+        return try {
+            val content = parser.encodeToString(json)
+            sink.writeString(content, Charsets.UTF_8)
+            true
+        } catch (e: IOException) {
+            reportError(e, TAG, "Failed to export $name!")
+            false
+        }
+    }
+
+    private val parser by lazy(NONE) {
+        Json {
+            prettyPrint = true
+            ignoreUnknownKeys = true
+            isLenient = true
         }
     }
 
