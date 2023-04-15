@@ -5,6 +5,7 @@
 package player.phonograph.mechanism.backup
 
 import okio.BufferedSink
+import okio.source
 import player.phonograph.util.FileUtil.createOrOverrideFile
 import player.phonograph.util.FileUtil.moveFile
 import player.phonograph.util.reportError
@@ -19,12 +20,11 @@ object DatabaseManger {
 
     fun exportDatabase(sink: BufferedSink, dbName: String, context: Context): Boolean {
         val databaseFile = context.getDatabasePath(dbName) ?: return false
-        val bytes = databaseFile.readBytes()
-        return if (bytes.isNotEmpty()) {
-            sink.write(bytes)
+        return if (databaseFile.isFile && databaseFile.length() > 0) {
+            sink.writeAll(databaseFile.source())
             true
         } else {
-            warning(TAG, "database $dbName is empty")
+            warning(TAG, "Failed to export $dbName (empty)")
             false
         }
     }
