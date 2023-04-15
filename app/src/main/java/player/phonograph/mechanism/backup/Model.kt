@@ -2,15 +2,13 @@
  *  Copyright (c) 2022~2023 chr_56
  */
 
-package player.phonograph.migrate.backup
+package player.phonograph.mechanism.backup
 
 import okio.Buffer
 import okio.BufferedSink
 import player.phonograph.BuildConfig
 import player.phonograph.R
-import player.phonograph.migrate.DatabaseBackupManger
-import player.phonograph.migrate.DatabaseDataManger
-import player.phonograph.migrate.SettingDataManager
+import player.phonograph.mechanism.SettingDataManager
 import player.phonograph.provider.DatabaseConstants
 import androidx.annotation.Keep
 import android.content.Context
@@ -62,7 +60,8 @@ sealed class BackupItem(
     val key: String,
     val type: Type,
 ) {
-    abstract fun data(context: Context): InputStream
+
+    abstract fun data(context: Context): InputStream?
 
     abstract fun import(inputStream: InputStream, context: Context): Boolean
 
@@ -108,15 +107,15 @@ private const val KEY_DATABASE_HISTORY = "database_history"
 private const val KEY_DATABASE_SONG_PLAY_COUNT = "database_song_play_count"
 private const val KEY_DATABASE_MUSIC_PLAYBACK_STATE = "database_music_playback_state"
 
-private fun fromSink(block: (BufferedSink) -> Boolean): InputStream {
+private fun fromSink(block: (BufferedSink) -> Boolean): InputStream? {
     val buffer = Buffer()
-    block(buffer)
-    return buffer.inputStream()
+    val result = block(buffer)
+    return if (result) buffer.inputStream() else null
 }
 
 
 object SettingBackup : BackupItem(KEY_SETTING, Type.JSON) {
-    override fun data(context: Context): InputStream =
+    override fun data(context: Context): InputStream? =
         fromSink {
             SettingDataManager.exportSettings(it)
         }
@@ -128,102 +127,102 @@ object SettingBackup : BackupItem(KEY_SETTING, Type.JSON) {
 }
 
 object PathFilterBackup : BackupItem(KEY_PATH_FILTER, Type.JSON) {
-    override fun data(context: Context): InputStream =
+    override fun data(context: Context): InputStream? =
         fromSink {
-            DatabaseBackupManger.exportPathFilter(it, context)
+            DatabaseDataManger.exportPathFilter(it, context)
         }
 
     override fun import(inputStream: InputStream, context: Context): Boolean =
-        DatabaseBackupManger.importPathFilter(context, inputStream)
+        DatabaseDataManger.importPathFilter(context, inputStream)
 
     override fun displayName(resources: Resources): CharSequence = resources.getString(R.string.path_filter)
 }
 
 object FavoriteBackup : BackupItem(KEY_FAVORITES, Type.JSON) {
-    override fun data(context: Context): InputStream =
+    override fun data(context: Context): InputStream? =
         fromSink {
-            DatabaseBackupManger.exportFavorites(it, context)
+            DatabaseDataManger.exportFavorites(it, context)
         }
 
     override fun import(inputStream: InputStream, context: Context): Boolean =
-        DatabaseBackupManger.importFavorites(context, inputStream)
+        DatabaseDataManger.importFavorites(context, inputStream)
 
     override fun displayName(resources: Resources): CharSequence = resources.getString(R.string.favorites)
 }
 
 object PlayingQueuesBackup : BackupItem(KEY_PLAYING_QUEUES, Type.JSON) {
-    override fun data(context: Context): InputStream =
+    override fun data(context: Context): InputStream? =
         fromSink {
-            DatabaseBackupManger.exportPlayingQueues(it, context)
+            DatabaseDataManger.exportPlayingQueues(it, context)
         }
 
     override fun import(inputStream: InputStream, context: Context): Boolean =
-        DatabaseBackupManger.importPlayingQueues(context, inputStream)
+        DatabaseDataManger.importPlayingQueues(context, inputStream)
 
     override fun displayName(resources: Resources): CharSequence = resources.getString(R.string.label_playing_queue)
 }
 
 
 object FavoriteDatabaseBackup : BackupItem(KEY_DATABASE_FAVORITE, Type.DATABASE) {
-    override fun data(context: Context): InputStream =
+    override fun data(context: Context): InputStream? =
         fromSink {
-            DatabaseDataManger.exportDatabases(it, DatabaseConstants.FAVORITE_DB, context)
+            DatabaseManger.exportDatabase(it, DatabaseConstants.FAVORITE_DB, context)
         }
 
     override fun import(inputStream: InputStream, context: Context): Boolean =
-        DatabaseDataManger.importSingleDatabases(inputStream, DatabaseConstants.FAVORITE_DB, context)
+        DatabaseManger.importDatabase(inputStream, DatabaseConstants.FAVORITE_DB, context)
 
     override fun displayName(resources: Resources): CharSequence =
         "[${resources.getString(R.string.databases)}] ${resources.getString(R.string.favorites)}"
 }
 
 object PathFilterDatabaseBackup : BackupItem(KEY_DATABASE_PATH_FILTER, Type.DATABASE) {
-    override fun data(context: Context): InputStream =
+    override fun data(context: Context): InputStream? =
         fromSink {
-            DatabaseDataManger.exportDatabases(it, DatabaseConstants.PATH_FILTER, context)
+            DatabaseManger.exportDatabase(it, DatabaseConstants.PATH_FILTER, context)
         }
 
     override fun import(inputStream: InputStream, context: Context): Boolean =
-        DatabaseDataManger.importSingleDatabases(inputStream, DatabaseConstants.PATH_FILTER, context)
+        DatabaseManger.importDatabase(inputStream, DatabaseConstants.PATH_FILTER, context)
 
     override fun displayName(resources: Resources): CharSequence =
         "[${resources.getString(R.string.databases)}] ${resources.getString(R.string.path_filter)}"
 }
 
 object HistoryDatabaseBackup : BackupItem(KEY_DATABASE_HISTORY, Type.DATABASE) {
-    override fun data(context: Context): InputStream =
+    override fun data(context: Context): InputStream? =
         fromSink {
-            DatabaseDataManger.exportDatabases(it, DatabaseConstants.HISTORY_DB, context)
+            DatabaseManger.exportDatabase(it, DatabaseConstants.HISTORY_DB, context)
         }
 
     override fun import(inputStream: InputStream, context: Context): Boolean =
-        DatabaseDataManger.importSingleDatabases(inputStream, DatabaseConstants.HISTORY_DB, context)
+        DatabaseManger.importDatabase(inputStream, DatabaseConstants.HISTORY_DB, context)
 
     override fun displayName(resources: Resources): CharSequence =
         "[${resources.getString(R.string.databases)}] ${resources.getString(R.string.history)}"
 }
 
 object SongPlayCountDatabaseBackup : BackupItem(KEY_DATABASE_SONG_PLAY_COUNT, Type.DATABASE) {
-    override fun data(context: Context): InputStream =
+    override fun data(context: Context): InputStream? =
         fromSink {
-            DatabaseDataManger.exportDatabases(it, DatabaseConstants.SONG_PLAY_COUNT_DB, context)
+            DatabaseManger.exportDatabase(it, DatabaseConstants.SONG_PLAY_COUNT_DB, context)
         }
 
     override fun import(inputStream: InputStream, context: Context): Boolean =
-        DatabaseDataManger.importSingleDatabases(inputStream, DatabaseConstants.SONG_PLAY_COUNT_DB, context)
+        DatabaseManger.importDatabase(inputStream, DatabaseConstants.SONG_PLAY_COUNT_DB, context)
 
     override fun displayName(resources: Resources): CharSequence =
         "[${resources.getString(R.string.databases)}] ${resources.getString(R.string.my_top_tracks)}"
 }
 
 object MusicPlaybackStateDatabaseBackup : BackupItem(KEY_DATABASE_MUSIC_PLAYBACK_STATE, Type.DATABASE) {
-    override fun data(context: Context): InputStream =
+    override fun data(context: Context): InputStream? =
         fromSink {
-            DatabaseDataManger.exportDatabases(it, DatabaseConstants.MUSIC_PLAYBACK_STATE_DB, context)
+            DatabaseManger.exportDatabase(it, DatabaseConstants.MUSIC_PLAYBACK_STATE_DB, context)
         }
 
     override fun import(inputStream: InputStream, context: Context): Boolean =
-        DatabaseDataManger.importSingleDatabases(inputStream, DatabaseConstants.MUSIC_PLAYBACK_STATE_DB, context)
+        DatabaseManger.importDatabase(inputStream, DatabaseConstants.MUSIC_PLAYBACK_STATE_DB, context)
 
     override fun displayName(resources: Resources): CharSequence =
         "[${resources.getString(R.string.databases)}] ${resources.getString(R.string.label_playing_queue)}"

@@ -2,11 +2,12 @@
  *  Copyright (c) 2022~2023 chr_56
  */
 
-package player.phonograph.migrate.backup
+package player.phonograph.mechanism.backup
 
 import player.phonograph.util.FileUtil.createOrOverrideFile
 import player.phonograph.util.text.currentTimestamp
 import player.phonograph.util.transferToOutputStream
+import player.phonograph.util.warning
 import player.phonograph.util.zip.ZipUtil.addToZipFile
 import player.phonograph.util.zip.ZipUtil.extractZipFile
 import android.content.Context
@@ -56,13 +57,18 @@ object Backup {
             // export backups
             for (item in config) {
                 val filename = "${item.key}.${item.type.suffix}"
-                val file = File(destination, filename).createOrOverrideFile()
-                file.outputStream().use { outputStream ->
-                    item.data(context).use { inputStream ->
-                        inputStream.transferToOutputStream(outputStream)
+                val exported = item.data(context)
+                if (exported != null) {
+                    val file = File(destination, filename).createOrOverrideFile()
+                    file.outputStream().use { outputStream ->
+                        exported.use { inputStream ->
+                            inputStream.transferToOutputStream(outputStream)
+                        }
                     }
+                    fileList[item] = filename
+                } else {
+                    warning(TAG, "No content to export for ${item.key}")
                 }
-                fileList[item] = filename
             }
 
             // generate manifest file
@@ -163,4 +169,6 @@ object Backup {
             encodeDefaults = true
         }
     }
+
+    private const val TAG = "Backup"
 }

@@ -2,13 +2,13 @@
  * Copyright (c) 2022~2023 chr_56
  */
 
-package player.phonograph.migrate
+package player.phonograph.mechanism.migrate
 
 import player.phonograph.model.pages.Pages
 import player.phonograph.service.util.QueuePreferenceManager
 import player.phonograph.util.reportError
 import player.phonograph.mechanism.setting.HomeTabConfig
-import player.phonograph.migrate.DeprecatedPreference.SortOrder
+import player.phonograph.mechanism.migrate.DeprecatedPreference.SortOrder
 import player.phonograph.settings.Setting
 import androidx.preference.PreferenceManager
 import android.content.Context

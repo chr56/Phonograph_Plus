@@ -13,7 +13,6 @@ import android.webkit.MimeTypeMap
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.isActive
 import player.phonograph.App
-import player.phonograph.migrate.DatabaseDataManger
 import player.phonograph.notification.ErrorNotification
 import androidx.core.content.getSystemService
 import android.content.ContentResolver
@@ -28,7 +27,6 @@ import java.util.*
 import kotlin.math.log10
 import kotlin.math.pow
 import java.io.FileOutputStream
-import java.nio.file.CopyOption
 import java.nio.file.Files
 import java.nio.file.StandardCopyOption
 

@@ -12,7 +12,7 @@ import lib.phonograph.misc.Reboot
 import mt.pref.ThemeColor
 import player.phonograph.R
 import player.phonograph.adapter.sortable.BackupChooserAdapter
-import player.phonograph.migrate.backup.Backup
+import player.phonograph.mechanism.backup.Backup
 import player.phonograph.util.reportError
 import androidx.appcompat.app.AlertDialog
 import androidx.core.view.setPadding

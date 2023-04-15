@@ -12,9 +12,9 @@ import lib.phonograph.misc.ICreateFileStorageAccess
 import mt.pref.ThemeColor
 import player.phonograph.R
 import player.phonograph.adapter.sortable.BackupChooserAdapter
-import player.phonograph.migrate.backup.ALL_BACKUP_CONFIG
-import player.phonograph.migrate.backup.Backup
-import player.phonograph.migrate.backup.ENABLE_BACKUP_CONFIG
+import player.phonograph.mechanism.backup.ALL_BACKUP_CONFIG
+import player.phonograph.mechanism.backup.Backup
+import player.phonograph.mechanism.backup.ENABLE_BACKUP_CONFIG
 import player.phonograph.util.reportError
 import player.phonograph.util.text.currentDateTime
 import androidx.appcompat.app.AlertDialog

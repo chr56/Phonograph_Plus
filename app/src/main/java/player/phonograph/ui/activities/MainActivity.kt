@@ -19,7 +19,7 @@ import player.phonograph.databinding.ActivityMainBinding
 import player.phonograph.databinding.LayoutDrawerBinding
 import player.phonograph.ui.dialogs.ChangelogDialog
 import player.phonograph.mediastore.SongLoader.getAllSongs
-import player.phonograph.migrate.migrate
+import player.phonograph.mechanism.migrate.migrate
 import lib.phonograph.misc.CreateFileStorageAccessTool
 import lib.phonograph.misc.ICreateFileStorageAccess
 import lib.phonograph.misc.IOpenDirStorageAccess
