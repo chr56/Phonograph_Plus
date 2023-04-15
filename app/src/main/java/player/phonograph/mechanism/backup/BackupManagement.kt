@@ -67,7 +67,7 @@ object Backup {
                     }
                     fileList[item] = filename
                 } else {
-                    warning(TAG, "${item.key} is empty")
+                    warning(TAG, "No content to export for ${item.key}")
                 }
             }
 

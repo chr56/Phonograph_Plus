@@ -28,7 +28,7 @@ import kotlinx.serialization.json.JsonPrimitive
 import java.io.IOException
 import java.io.InputStream
 
-object DatabaseBackupManger {
+object DatabaseDataManger {
 
     const val VERSION = "version"
     const val VERSION_CODE = 0
@@ -96,8 +96,8 @@ object DatabaseBackupManger {
 
     private fun exportPlayingQueues(context: Context): JsonObject {
         val db = MusicPlaybackQueueStore.getInstance(context)
-        val oq = db.savedOriginalPlayingQueue.map(DatabaseBackupManger::persistentSong)
-        val pq = db.savedPlayingQueue.map(DatabaseBackupManger::persistentSong)
+        val oq = db.savedOriginalPlayingQueue.map(DatabaseDataManger::persistentSong)
+        val pq = db.savedPlayingQueue.map(DatabaseDataManger::persistentSong)
         return JsonObject(
             mapOf(
                 VERSION to JsonPrimitive(VERSION_CODE),
@@ -150,7 +150,7 @@ object DatabaseBackupManger {
     private fun exportFavorites(context: Context): JsonObject {
         val db = FavoriteSongsStore.instance
 
-        val songs = db.getAllSongs(context).map(DatabaseBackupManger::persistentSong)
+        val songs = db.getAllSongs(context).map(DatabaseDataManger::persistentSong)
         return JsonObject(
             mapOf(
                 VERSION to JsonPrimitive(VERSION_CODE),

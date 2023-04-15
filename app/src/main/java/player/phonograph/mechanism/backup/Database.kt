@@ -15,7 +15,7 @@ import android.content.Context
 import java.io.File
 import java.io.InputStream
 
-object DatabaseDataManger {
+object DatabaseManger {
 
     fun exportDatabase(sink: BufferedSink, dbName: String, context: Context): Boolean {
         val databaseFile = context.getDatabasePath(dbName) ?: return false

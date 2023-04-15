@@ -129,11 +129,11 @@ object SettingBackup : BackupItem(KEY_SETTING, Type.JSON) {
 object PathFilterBackup : BackupItem(KEY_PATH_FILTER, Type.JSON) {
     override fun data(context: Context): InputStream? =
         fromSink {
-            DatabaseBackupManger.exportPathFilter(it, context)
+            DatabaseDataManger.exportPathFilter(it, context)
         }
 
     override fun import(inputStream: InputStream, context: Context): Boolean =
-        DatabaseBackupManger.importPathFilter(context, inputStream)
+        DatabaseDataManger.importPathFilter(context, inputStream)
 
     override fun displayName(resources: Resources): CharSequence = resources.getString(R.string.path_filter)
 }
@@ -141,11 +141,11 @@ object PathFilterBackup : BackupItem(KEY_PATH_FILTER, Type.JSON) {
 object FavoriteBackup : BackupItem(KEY_FAVORITES, Type.JSON) {
     override fun data(context: Context): InputStream? =
         fromSink {
-            DatabaseBackupManger.exportFavorites(it, context)
+            DatabaseDataManger.exportFavorites(it, context)
         }
 
     override fun import(inputStream: InputStream, context: Context): Boolean =
-        DatabaseBackupManger.importFavorites(context, inputStream)
+        DatabaseDataManger.importFavorites(context, inputStream)
 
     override fun displayName(resources: Resources): CharSequence = resources.getString(R.string.favorites)
 }
@@ -153,11 +153,11 @@ object FavoriteBackup : BackupItem(KEY_FAVORITES, Type.JSON) {
 object PlayingQueuesBackup : BackupItem(KEY_PLAYING_QUEUES, Type.JSON) {
     override fun data(context: Context): InputStream? =
         fromSink {
-            DatabaseBackupManger.exportPlayingQueues(it, context)
+            DatabaseDataManger.exportPlayingQueues(it, context)
         }
 
     override fun import(inputStream: InputStream, context: Context): Boolean =
-        DatabaseBackupManger.importPlayingQueues(context, inputStream)
+        DatabaseDataManger.importPlayingQueues(context, inputStream)
 
     override fun displayName(resources: Resources): CharSequence = resources.getString(R.string.label_playing_queue)
 }
@@ -166,11 +166,11 @@ object PlayingQueuesBackup : BackupItem(KEY_PLAYING_QUEUES, Type.JSON) {
 object FavoriteDatabaseBackup : BackupItem(KEY_DATABASE_FAVORITE, Type.DATABASE) {
     override fun data(context: Context): InputStream? =
         fromSink {
-            DatabaseDataManger.exportDatabase(it, DatabaseConstants.FAVORITE_DB, context)
+            DatabaseManger.exportDatabase(it, DatabaseConstants.FAVORITE_DB, context)
         }
 
     override fun import(inputStream: InputStream, context: Context): Boolean =
-        DatabaseDataManger.importDatabase(inputStream, DatabaseConstants.FAVORITE_DB, context)
+        DatabaseManger.importDatabase(inputStream, DatabaseConstants.FAVORITE_DB, context)
 
     override fun displayName(resources: Resources): CharSequence =
         "[${resources.getString(R.string.databases)}] ${resources.getString(R.string.favorites)}"
@@ -179,11 +179,11 @@ object FavoriteDatabaseBackup : BackupItem(KEY_DATABASE_FAVORITE, Type.DATABASE)
 object PathFilterDatabaseBackup : BackupItem(KEY_DATABASE_PATH_FILTER, Type.DATABASE) {
     override fun data(context: Context): InputStream? =
         fromSink {
-            DatabaseDataManger.exportDatabase(it, DatabaseConstants.PATH_FILTER, context)
+            DatabaseManger.exportDatabase(it, DatabaseConstants.PATH_FILTER, context)
         }
 
     override fun import(inputStream: InputStream, context: Context): Boolean =
-        DatabaseDataManger.importDatabase(inputStream, DatabaseConstants.PATH_FILTER, context)
+        DatabaseManger.importDatabase(inputStream, DatabaseConstants.PATH_FILTER, context)
 
     override fun displayName(resources: Resources): CharSequence =
         "[${resources.getString(R.string.databases)}] ${resources.getString(R.string.path_filter)}"
@@ -192,11 +192,11 @@ object PathFilterDatabaseBackup : BackupItem(KEY_DATABASE_PATH_FILTER, Type.DATA
 object HistoryDatabaseBackup : BackupItem(KEY_DATABASE_HISTORY, Type.DATABASE) {
     override fun data(context: Context): InputStream? =
         fromSink {
-            DatabaseDataManger.exportDatabase(it, DatabaseConstants.HISTORY_DB, context)
+            DatabaseManger.exportDatabase(it, DatabaseConstants.HISTORY_DB, context)
         }
 
     override fun import(inputStream: InputStream, context: Context): Boolean =
-        DatabaseDataManger.importDatabase(inputStream, DatabaseConstants.HISTORY_DB, context)
+        DatabaseManger.importDatabase(inputStream, DatabaseConstants.HISTORY_DB, context)
 
     override fun displayName(resources: Resources): CharSequence =
         "[${resources.getString(R.string.databases)}] ${resources.getString(R.string.history)}"
@@ -205,11 +205,11 @@ object HistoryDatabaseBackup : BackupItem(KEY_DATABASE_HISTORY, Type.DATABASE) {
 object SongPlayCountDatabaseBackup : BackupItem(KEY_DATABASE_SONG_PLAY_COUNT, Type.DATABASE) {
     override fun data(context: Context): InputStream? =
         fromSink {
-            DatabaseDataManger.exportDatabase(it, DatabaseConstants.SONG_PLAY_COUNT_DB, context)
+            DatabaseManger.exportDatabase(it, DatabaseConstants.SONG_PLAY_COUNT_DB, context)
         }
 
     override fun import(inputStream: InputStream, context: Context): Boolean =
-        DatabaseDataManger.importDatabase(inputStream, DatabaseConstants.SONG_PLAY_COUNT_DB, context)
+        DatabaseManger.importDatabase(inputStream, DatabaseConstants.SONG_PLAY_COUNT_DB, context)
 
     override fun displayName(resources: Resources): CharSequence =
         "[${resources.getString(R.string.databases)}] ${resources.getString(R.string.my_top_tracks)}"
@@ -218,11 +218,11 @@ object SongPlayCountDatabaseBackup : BackupItem(KEY_DATABASE_SONG_PLAY_COUNT, Ty
 object MusicPlaybackStateDatabaseBackup : BackupItem(KEY_DATABASE_MUSIC_PLAYBACK_STATE, Type.DATABASE) {
     override fun data(context: Context): InputStream? =
         fromSink {
-            DatabaseDataManger.exportDatabase(it, DatabaseConstants.MUSIC_PLAYBACK_STATE_DB, context)
+            DatabaseManger.exportDatabase(it, DatabaseConstants.MUSIC_PLAYBACK_STATE_DB, context)
         }
 
     override fun import(inputStream: InputStream, context: Context): Boolean =
-        DatabaseDataManger.importDatabase(inputStream, DatabaseConstants.MUSIC_PLAYBACK_STATE_DB, context)
+        DatabaseManger.importDatabase(inputStream, DatabaseConstants.MUSIC_PLAYBACK_STATE_DB, context)
 
     override fun displayName(resources: Resources): CharSequence =
         "[${resources.getString(R.string.databases)}] ${resources.getString(R.string.label_playing_queue)}"
