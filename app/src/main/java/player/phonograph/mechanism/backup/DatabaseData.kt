@@ -40,17 +40,21 @@ object DatabaseDataManger {
         return writeJson(sink, "PathFilter", exportPathFilter(context))
     }
 
-    private fun exportPathFilter(context: Context): JsonObject {
+    private fun exportPathFilter(context: Context): JsonObject? {
         val db = PathFilterStore.getInstance(context)
         val wl = db.whitelistPaths.map { JsonPrimitive(it) }
         val bl = db.blacklistPaths.map { JsonPrimitive(it) }
-        return JsonObject(
-            mapOf(
-                VERSION to JsonPrimitive(VERSION_CODE),
-                WHITE_LIST to JsonArray(wl),
-                BLACK_LIST to JsonArray(bl),
+        return if (wl.isNotEmpty() || bl.isNotEmpty()) {
+            JsonObject(
+                mapOf(
+                    VERSION to JsonPrimitive(VERSION_CODE),
+                    WHITE_LIST to JsonArray(wl),
+                    BLACK_LIST to JsonArray(bl),
+                )
             )
-        )
+        } else {
+            null
+        }
     }
 
     fun importPathFilter(context: Context, inputStream: InputStream): Boolean {
@@ -94,17 +98,21 @@ object DatabaseDataManger {
         return writeJson(sink, "PlayingQueues", exportPlayingQueues(context))
     }
 
-    private fun exportPlayingQueues(context: Context): JsonObject {
+    private fun exportPlayingQueues(context: Context): JsonObject? {
         val db = MusicPlaybackQueueStore.getInstance(context)
         val oq = db.savedOriginalPlayingQueue.map(DatabaseDataManger::persistentSong)
         val pq = db.savedPlayingQueue.map(DatabaseDataManger::persistentSong)
-        return JsonObject(
-            mapOf(
-                VERSION to JsonPrimitive(VERSION_CODE),
-                PLAYING_QUEUE to JsonArray(pq),
-                ORIGINAL_PLAYING_QUEUE to JsonArray(oq),
+        return if (oq.isNotEmpty() || pq.isNotEmpty()) {
+            JsonObject(
+                mapOf(
+                    VERSION to JsonPrimitive(VERSION_CODE),
+                    PLAYING_QUEUE to JsonArray(pq),
+                    ORIGINAL_PLAYING_QUEUE to JsonArray(oq),
+                )
             )
-        )
+        } else {
+            null
+        }
     }
 
     fun importPlayingQueues(context: Context, inputStream: InputStream): Boolean {
@@ -147,16 +155,19 @@ object DatabaseDataManger {
         return writeJson(sink, "Favorites", exportFavorites(context))
     }
 
-    private fun exportFavorites(context: Context): JsonObject {
+    private fun exportFavorites(context: Context): JsonObject? {
         val db = FavoriteSongsStore.instance
-
         val songs = db.getAllSongs(context).map(DatabaseDataManger::persistentSong)
-        return JsonObject(
-            mapOf(
-                VERSION to JsonPrimitive(VERSION_CODE),
-                FAVORITE to JsonArray(songs)
+        return if (songs.isNotEmpty()) {
+            JsonObject(
+                mapOf(
+                    VERSION to JsonPrimitive(VERSION_CODE),
+                    FAVORITE to JsonArray(songs)
+                )
             )
-        )
+        } else {
+            null
+        }
     }
 
     fun importFavorites(context: Context, inputStream: InputStream): Boolean {
@@ -231,11 +242,16 @@ object DatabaseDataManger {
     /**
      * write [json] to [sink]
      */
-    private fun writeJson(sink: BufferedSink, name: String, json: JsonObject): Boolean {
+    private fun writeJson(sink: BufferedSink, name: String, json: JsonObject?): Boolean {
         return try {
-            val content = parser.encodeToString(json)
-            sink.writeString(content, Charsets.UTF_8)
-            true
+            if (json != null) {
+                val content = parser.encodeToString(json)
+                sink.writeString(content, Charsets.UTF_8)
+                true
+            } else {
+                warning(TAG, "$name: Nothing to export")
+                false
+            }
         } catch (e: IOException) {
             reportError(e, TAG, "Failed to export $name!")
             false
