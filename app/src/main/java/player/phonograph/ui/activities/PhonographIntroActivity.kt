@@ -231,13 +231,12 @@ class PhonographIntroActivity : AppIntro(), IOpenFileStorageAccess, IRequestPerm
                     R.id.disable -> Setting.instance.checkUpgradeAtStartup = false
                 }
             }
-            val backupSetting = getString(R.string.action_import, getString(R.string.action_settings))
-            contentBinding.backup.text = backupSetting
+            contentBinding.backup.text = getString(R.string.action_import, getString(R.string.action_backup))
             contentBinding.backup.setOnClickListener {
                 val activity = requireActivity()
                 require(activity is IOpenFileStorageAccess)
                 activity.openFileStorageAccessTool.launch(
-                    OpenDocumentContract.Config(arrayOf("application/json"))
+                    OpenDocumentContract.Config(arrayOf("*/*"))
                 ) { uri ->
                     if (uri != null) {
                         SettingDataManager.importSetting(uri, activity)
