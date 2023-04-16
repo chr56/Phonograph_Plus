@@ -5,7 +5,6 @@
     <dimen name="detail_header_height">176dp</dimen>
     <dimen name="detail_header_image_height">144dp</dimen>
     <dimen name="detail_header_small_image_height">80dp</dimen>
-    <dimen name="title_view_height">72dp</dimen>
     <dimen name="toolbar_elevation">4dp</dimen>
     <dimen name="card_elevation">2dp</dimen>
 
@@ -19,8 +18,6 @@
     <dimen name="status_bar_padding">0dp</dimen>
 
     <dimen name="tab_height">48dp</dimen>
-
-    <dimen name="tagEditorHeaderVariableSpace">100dp</dimen>
 
     <!--
 Refer to App Widget Documentation for margin information
