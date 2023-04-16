@@ -1,4 +1,4 @@
-## **v0.6.2-dev2 2023.04.15**
+## **v0.6.2-dev3 2023.04.16**
 
 **Commit log**: https://github.com/
 
@@ -9,10 +9,11 @@
 4. Improve: All backup files are zipped in one file
 5. Improve: Allow to choose what content to import or export
 6. Improve: better user interface for backup
-7. Fix: color and style of some dialogs
-8. Fix: some text not capitalized (by Porkepix)
-9. Translation: update German (by cvzi & conk)
-10. Development: upgrade AGP to 7.4.2
+7. Fix: generated playlist can not be clear (since v0.6.0)
+8. Fix: color and style of some dialogs
+9. Fix: some text not capitalized (by Porkepix)
+10. Translation: update German (by cvzi & conk)
+11. Development: upgrade AGP to 7.4.2, remove unused strings, cleanup codes
 
 
 ### ZH
@@ -22,9 +23,10 @@
 4. 改进 所有备份使用压缩包
 5. 改进 支持选择备份导入与导出的内容
 6. 改进 备份的交互体验
-7. 修复 某些对话框的颜色和样式
-8. 修复 某些文本未大写 (by Porkepix)
-9. 翻译 更新德语翻译 (by cvzi & conk)
-10. 开发 更新 AGP 至 7.4.2
+7. 修复 无法清空生成的播放列表 (v0.6.0起)
+8. 修复 某些对话框的颜色和样式
+9. 修复 某些文本未大写 (by Porkepix)
+10. 翻译 更新德语翻译 (by cvzi & conk)
+11. 开发 更新 AGP 至 7.4.2, 清理代码
 
 
