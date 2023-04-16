@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="what_do_you_want_to_share">Какво бихте искали да споделите?</string>
-    <string name="currently_listening_to_x_by_x">В момента слушате %1$s от %2$s.</string>
-    <string name="the_audio_file">Аудио файлът</string>
     <string name="action_set_as_ringtone">Задай като той на звънене</string>
     <string name="action_share">Сподели</string>
     <string name="action_settings">Настройки</string>
@@ -37,9 +34,7 @@
     <string name="genre">Жанр</string>
     <string name="album_artist">Изпълнител</string>
     <string name="year">Година</string>
-    <string name="track_hint">Трак (2 за трак 2 или 3004 за CD3 трак 4)</string>
     <string name="lyrics">Текст на песента</string>
-    <string name="album_or_artist_empty">Заглавието или артистът са празни</string>
     <string name="saving_changes">Запазване на промените</string>
     <string name="label_details">Детайли</string>
     <string name="label_file_name">Име на файл</string>
@@ -88,7 +83,6 @@
     <string name="pref_title_album_art_on_lockscreen">Покажи обложката на албум</string>
     <string name="pref_title_blurred_album_art">Размажи обложката</string>
     <string name="pref_title_colored_notification">Оцвети известията</string>
-    <string name="pref_title_ignore_media_store_artwork">Игнорирай вградените обложки</string>
     <string name="pref_title_gapless_playback">Непрекъснато звучене</string>
     <string name="pref_title_audio_ducking">Намалявай звукът при известия</string>
     <string name="no_equalizer">Еквилайзерът не бе намерен.</string>
@@ -113,11 +107,9 @@
     <string name="pref_summary_blurred_album_art">Замъглява обложката при заключен екран. Би могло да създаде проблеми с апликации и известия създадени от трети лица.</string>
     <string name="pref_summary_colored_notification">\u041e\u0446\u0432\u0435\u0442\u044f\u0432\u0430 \u0438\u0437\u0432\u0435\u0441\u0442\u0438\u0435\u0442\u043e \u0432 \u0433\u043b\u0430\u0432\u043d\u0438\u044f \u0446\u0432\u044f\u0442 \u043e\u0442 \u043e\u0431\u043b\u043e\u0436\u043a\u0430\u0442\u0430.</string>
     <string name="pref_summary_gapless_playback">Би могло да създаде проблеми с възпроизвеждането при някои устройства.</string>
-    <string name="pref_summary_ignore_media_store_artwork">Може да увеличи качеството на обложките, но също така и забави времето за зареждане. Включете това, само ако имате проблеми с ниско качество на обложките.</string>
     <string name="pref_summary_colored_navigation_bar">Оцветява навигационната лента в главният цвят на апликацията.</string>
     <string name="pref_summary_colored_app_shortcuts">Оцветява бутоните в главният цвят на апликацията.</string>
     <string name="pref_summary_audio_ducking">Известия, навигация etc.</string>
-    <string name="could_not_download_album_cover">\u041d\u0435 \u043c\u043e\u0436\u0435\u0448\u0435 \u0434\u0430 \u0431\u044a\u0434\u0435 \u0438\u0437\u0442\u0435\u0433\u043b\u0435\u043d\u0430 \u043e\u0431\u043b\u043e\u0436\u043a\u0430.</string>
     <string name="search_hint">Търсене във вашата аудио библиотека...</string>
     <string name="favorites">Любими</string>
     <string name="last_added">Последно добавени</string>
@@ -159,9 +151,6 @@
     <string name="pref_title_now_playing_screen_appearance">Изглед</string>
     <string name="intro_label">Въеведение</string>
     <string name="welcome_to_phonograph">Добре дошли във Phonograph, красив и лек музикален плеър за Андроид. </string>
-    <string name="open_playing_queue_instruction">Плъзнете картата в екранът на текущо възпроизвеждащата се песен, за видите списъкът с песни.</string>
-    <string name="rearrange_playing_queue_instruction">Разместете списъкът с текущо възпроизвеждащи се песни, като хванете тракът за неговият номер.</string>
-    <string name="library">Библиотека</string>
     <string name="folders">Папки</string>
     <string name="failed_to_save_playlist">Плейлистът не бе запазен успешно (%s).</string>
     <string name="nothing_to_scan">Няма нищо за сканиране.</string>
@@ -172,30 +161,13 @@
     <string name="app_widget_classic_name">Phonograph - Класически</string>
     <string name="app_widget_small_name">Phonograph - Малък</string>
     <string name="report_an_issue">Съобщете за проблем</string>
-    <string name="bug_report_issue">Проблем</string>
-    <string name="login">Логин</string>
     <string name="title">Заглавие</string>
     <string name="description">Описание</string>
     <string name="device_info">Информация за устройството</string>
-    <string name="bug_report_use_account">Изпради чрез GitHub акаунт.</string>
     <string name="bug_report_manual">Изпрати ръчно.</string>
-    <string name="username">Юзернейм</string>
-    <string name="password">Парола</string>
-    <string name="bug_report_no_title">Моля веведете заглавие за проблемът</string>
-    <string name="bug_report_no_description">Моля въведете описание на проблемът</string>
-    <string name="bug_report_no_username">Моля въведете вашият валиден юзернейм за GitHub</string>
-    <string name="bug_report_no_password">Моля въведете вашата валидна парола за GitHub</string>
-    <string name="bug_report_uploading">Изпратете репорт в GitHub</string>
-    <string name="bug_report_failed">Репортът не можеше да бъде изпратен.</string>
-    <string name="bug_report_failed_wrong_credentials">Грешен юзернейм или парола.</string>
-    <string name="bug_report_failed_invalid_token">Невалиден токен за достъп. Моля свържете се с авторът на апликацията.</string>
-    <string name="bug_report_failed_issues_not_available">Проблемите не са включени за това репо. Моля свържете се с авторът на апликацията.</string>
-    <string name="bug_report_failed_unknown">Неочаквана грешка. Моля свържете се с авторът на апликацията.</string>
     <string name="copied_device_info_to_clipboard">Информацията за устройството бе копирана в системния буфер.</string>
-    <string name="your_account_data_is_only_used_for_authentication">Информацията за вашият акаунт се използва само за логин.</string>
     <string name="you_will_be_forwarded_to_the_issue_tracker_website">Вие ще бъдете пренасочени към уебсайтът който следи за проблеми.</string>
     <string name="app_shortcut_shuffle_all_short">Разбъркай</string>
     <string name="app_shortcut_top_tracks_short">Най - често слушани</string>
     <string name="app_shortcut_last_added_short">Последно_добавени</string>
-    <string name="playlist_is_empty">Плейлистът е празен</string>
 </resources>

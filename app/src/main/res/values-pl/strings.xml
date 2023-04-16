@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="what_do_you_want_to_share">Co chcesz udostępnić?</string>
-    <string name="currently_listening_to_x_by_x">Obecnie słuchasz %1$s od %2$s</string>
-    <string name="the_audio_file">Plik audio</string>
     <string name="action_set_as_ringtone">Ustaw jako dzwonek</string>
     <string name="action_share">Udostępnij</string>
     <string name="action_settings">Ustawienia</string>
@@ -41,9 +38,7 @@
     <string name="album_artist">Wykonawca albumu</string>
     <string name="year">Rok</string>
     <string name="track">Numer utworu</string>
-    <string name="track_hint">Numer utworu (2 dla utworu 2 lub 3004 dla CD3 utworu 4)</string>
     <string name="lyrics">Tekst</string>
-    <string name="album_or_artist_empty">Pole tytułu lub artysty jest puste</string>
     <string name="saving_changes">Zapisywanie zmian...</string>
     <string name="label_details">Szczegóły</string>
     <string name="label_file_name">Nazwa pliku</string>
@@ -111,7 +106,6 @@
     <string name="pref_title_blurred_album_art">Rozmywanie okładki albumu</string>
     <string name="pref_title_colored_notification">Kolorowy odtwarzacz w pasku powiadomień</string>
     <string name="pref_title_classic_notification">Klasyczny wygląd powiadomienia</string>
-    <string name="pref_title_ignore_media_store_artwork">Ignoruj okładki z Media Store</string>
     <string name="pref_title_gapless_playback">Odtwarzanie bez przerw</string>
     <string name="pref_title_audio_ducking">Zmniejszaj głośność przy powiadomieniach</string>
     <string name="pref_title_last_added_interval">Okres ostatnio dodanych list odtwarzania</string>
@@ -142,14 +136,11 @@
     <string name="pref_summary_classic_notification">Używaj klasycznego stylu powiadomienia.</string>
     <string name="pref_summary_colored_notification">Odtwarzacz w pasku powiadomie\u0144 ma tonacj\u0119 ok\u0142adki albumu</string>
     <string name="pref_summary_gapless_playback">Na niektórych urządzeniach mogą wystąpić problemy z odtwarzaniem</string>
-    <string name="pref_summary_ignore_media_store_artwork">Polepszy to jakość okładek, ale może spowodować ich wolniejsze ładowanie. Zaznacz tylko wtedy, gdy masz kłopoty z niską jakością grafik</string>
     <string name="pref_summary_colored_navigation_bar">Kolory paska nawigacyjnego będą odpowiadały kolorowi podstawowemu</string>
     <string name="pref_summary_colored_app_shortcuts">Kolory skrótów aplikacji w kolorze podstawowym</string>
     <string name="pref_summary_audio_ducking">Notyfikacje, nawigacja, itp.</string>
     <string name="pref_summary_synchronized_lyrics_show">Obecnie wspierane są tylko napisy w formacie LRC oraz te osadzone w osobnym pliku.</string>
     <string name="pref_summary_remember_last_tab">Idź do ostatniej otwartej zakładki przy starcie</string>
-    <string name="pref_summary_remember_shuffle">Tryb losowania pozostanie włączony podczas wybierania nowej listy utworów</string>
-    <string name="could_not_download_album_cover">Nie uda\u0142o si\u0119 pobra\u0107 pasuj\u0105cej ok\u0142adki albumu</string>
     <string name="search_hint">Szukaj w bibliotece...</string>
     <string name="favorites">Ulubione</string>
     <string name="last_added">Ostatnio dodane</string>
@@ -177,7 +168,6 @@
     <string name="author">O autorze</string>
     <string name="write_an_email">Napisz maila</string>
     <string name="follow_on_twitter">Śledź na Twitterze</string>
-    <string name="fork_on_github">Aplikacja na GitHub\'ie</string>
     <string name="visit_website">Odwiedź stronę</string>
     <string name="report_bugs">Zgłoś błędy</string>
     <string name="report_bugs_summary">Zgłaszaj błędy lub propozycje nowych funkcji</string>
@@ -193,9 +183,6 @@
     <string name="pref_title_now_playing_screen_appearance">Wygląd</string>
     <string name="intro_label">Wprowadzenie</string>
     <string name="welcome_to_phonograph">Witaj w Phonograph, pięknym i lekkim odtwarzaczu muzyki na Androida </string>
-    <string name="open_playing_queue_instruction">Przesuń kartę na ekranie Obecnie Grane w górę, aby odsłonić pełną kolejkę odtwarzania</string>
-    <string name="rearrange_playing_queue_instruction">Zmień kolejność odtwarzania, przeciągając numer utworu w górę lub w dół kolejki</string>
-    <string name="library">Biblioteka</string>
     <string name="folders">Foldery</string>
     <string name="theme_switch">Zmiana motywu</string>
     <string name="failed_to_save_playlist">Błąd podczas zapisywania listy odtwarzania (%s)</string>
@@ -210,43 +197,21 @@
     <string name="app_widget_small_name">Phonograph - Mały</string>
     <string name="app_widget_card_name">Phonograph - Karta</string>
     <string name="report_an_issue">Zgłoś problem</string>
-    <string name="bug_report_issue">Problem</string>
-    <string name="login">Zaloguj się</string>
     <string name="title">Tytuł</string>
     <string name="description">Opis</string>
     <string name="device_info">Informacje o urządzeniu</string>
-    <string name="bug_report_use_account">Wyślij używając konta GitHub</string>
     <string name="bug_report_manual">Wyślij ręcznie</string>
-    <string name="username">Nazwa użytkownika</string>
-    <string name="password">Hasło</string>
-    <string name="bug_report_no_title">Wpisz tytuł problemu</string>
-    <string name="bug_report_no_description">Dodaj opis problemu</string>
-    <string name="bug_report_no_username">Podaj swój login z GitHub</string>
-    <string name="bug_report_no_password">Wpisz swoje hasło z GitHub</string>
-    <string name="bug_report_uploading">Wysyłanie raportu do GitHub...</string>
-    <string name="bug_report_failed">Nie można wysłać raportu</string>
-    <string name="bug_report_failed_wrong_credentials">Błędna nazwa użytkownika lub hasło</string>
-    <string name="bug_report_failed_invalid_token">Niepoprawny token dostępu. Skontaktuj się z twórcą aplikacji</string>
-    <string name="bug_report_failed_issues_not_available">Raportowanie problemów nie jest włączone dla wybranego repozytorium. Skontaktuj się z twórcą aplikacji</string>
-    <string name="bug_report_failed_unknown">Wystąpił nieoczekiwany błąd. Skontaktuj się z twórcą aplikacji</string>
     <string name="copied_device_info_to_clipboard">Kopiowanie informacji o urządzeniu do schowka</string>
-    <string name="your_account_data_is_only_used_for_authentication">Twoje dane konta używane są tylko do uwierzytelniania</string>
     <string name="you_will_be_forwarded_to_the_issue_tracker_website">Zostaniesz przekierowany do strony umożliwiającej śledzenie błędów</string>
     <string name="app_shortcut_shuffle_all_short">Losowo</string>
     <string name="app_shortcut_top_tracks_short">Najlepsze utwory</string>
     <string name="app_shortcut_last_added_short">Ostatnio dodane</string>
-    <string name="playlist_is_empty">Lista odtwarzania jest pusta</string>
     <string name="playing_notification_description">Powiadomienie odtwarzania pozwala na zatrzymywanie/wznawianie itd.</string>
     <string name="playing_notification_name">Powiadomienie o odtwarzaniu</string>
     <string name="eugene_cheung_summary">Za jego wkład w kod źródłowy.</string>
     <string name="adrian_summary">Za stworzenie design\'u strony albumu</string>
     <string name="add_action">Dodaj</string>
     <string name="blacklist">Czarna lista</string>
-    <string name="remove_from_blacklist">Usuń z czarnej listy</string>
-    <string name="do_you_want_to_remove_from_the_blacklist">Czy chcesz usunąć <b>%1$s</b> z czarnej listy?</string>
-    <string name="clear_blacklist">Wyczyść czarną listę</string>
-    <string name="do_you_want_to_clear_the_blacklist">Czy chcesz wyczyścić czarną listę?</string>
-    <string name="pref_summary_blacklist">Zawartość czarnej listy jest niewidoczna w twojej bibliotece.</string>
     <string name="reset_artist_image">Wyczyść obraz artysty</string>
     <string name="set_artist_image">Zaktualizuj zdjęcie wykonawcy</string>
     <string name="library_categories">Kategorie biblioteki</string>
@@ -267,8 +232,6 @@
     <string name="perf_title_fixed_tab_layout">Napraw wszystkie karty</string>
     <string name="pref_summary_fixed_tab_layout">Karty na górze nie będą przewijane, ale będą układane kafelkowo bez żadnego marginesu.</string>
     <string name="auto_mode_on">Tryb automatyczny jest włączony, wyłącz i spróbuj ponownie!</string>
-    <string name="Permission_denied">Brak uprawnień</string>
-    <string name="err_permission_storage">Zezwolenie na przechowanie</string>
     <string name="add_blacklist">Chcesz dodać to do czarnej listy?</string>
     <string name="minutes_short">%1$d min</string>
     <string name="other_information">Inne</string>
@@ -288,8 +251,6 @@
     <string name="no_newer_version">Brak aktualizacji!</string>
     <string name="new_version">Nowa wersja</string>
     <string name="new_version_code">wersja</string>
-    <string name="new_version_log">lista zmian</string>
-    <string name="new_version_tips">To okno dialogowe może być wyłączone w Ustawieniach. (Możesz również sprawdzić aktualizację ręcznie.)</string>
     <string name="download">Pobierz</string>
     <string name="ignore_once">Ignoruj ten</string>
     <string name="upgrade_ignored">Aktualizacja została zignorowana.</string>
@@ -312,7 +273,6 @@
     <string name="loading">Ładowanie</string>
     <string name="file_incorrect">Plik jest nieprawidłowy!</string>
     <string name="pref_header_appearance">Wygląd</string>
-    <string name="deleting_old_files">Usuwanie starszych plików…</string>
     <string name="pref_title_reset_home_pages_tab_config">Resetuj wszystkie karty</string>
     <string name="are_you_sure">Jesteś pewny?</string>
     <string name="original_author">Autor oryginału</string>
@@ -324,8 +284,6 @@
     <string name="music_tags">Tagi muzyczne</string>
     <string name="file">Plik</string>
     <string name="pref_header_compatibility">Zgodność</string>
-    <string name="export_">Eksportuj: </string>
-    <string name="import_">Importuj:</string>
     <string name="databases">Bazy danych</string>
     <string name="embedded_lyrics">osadzony tekst</string>
     <string name="external_lyrics">zewnętrzne teksty</string>
@@ -337,7 +295,6 @@
     <string name="behaviour_auto">Automatyczne</string>
     <string name="sort_order_size">Rozmiar pliku</string>
     <string name="use_legacy_list_Files">Użyj starszego sposobu do odczytu plików</string>
-    <string name="pref_title_keep_playing_queue_intact">Pozostaw kolejkę odtwarzania nienaruszoną.</string>
     <string name="load_images_for_files">Wczytaj obrazy dla plików</string>
     <string name="app_language">Język Aplikacji</string>
     <string name="_default">Domyślne</string>

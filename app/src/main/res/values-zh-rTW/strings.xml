@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="what_do_you_want_to_share">您想分享哪些內容？</string>
-    <string name="currently_listening_to_x_by_x">我正在聽 %2$s 的 %1$s ！</string>
-    <string name="the_audio_file">音訊檔案</string>
     <string name="disable">關閉</string>
     <string name="choose_at_least_one">至少選一個</string>
     <string name="action_set_as_ringtone">設為鈴聲</string>
@@ -43,9 +40,7 @@
     <string name="album_artist">專輯演出者</string>
     <string name="year">年代</string>
     <string name="track">軌道編號</string>
-    <string name="track_hint">音軌（用2表示第2首歌或3004表示CD3的第4首歌）</string>
     <string name="lyrics">歌詞</string>
-    <string name="album_or_artist_empty">專輯名稱或演出者欄是空的</string>
     <string name="saving_changes">正在儲存變更…</string>
     <string name="label_details">詳細資訊</string>
     <string name="label_file_name">檔案名稱</string>
@@ -113,7 +108,6 @@
     <string name="pref_title_blurred_album_art">將專輯圖片模糊化</string>
     <string name="pref_title_colored_notification">彩色的狀態列</string>
     <string name="pref_title_classic_notification">經典通知樣式</string>
-    <string name="pref_title_ignore_media_store_artwork">忽略音訊檔內嵌的專輯封面</string>
     <string name="pref_title_gapless_playback">無縫播放</string>
     <string name="pref_title_audio_ducking">在焦點音訊響起時降低音量</string>
     <string name="pref_title_last_added_interval">最後新增列表的時間範圍</string>
@@ -144,14 +138,11 @@
     <string name="pref_summary_classic_notification">使用經典通知樣式</string>
     <string name="pref_summary_colored_notification">以鮮豔的專輯封面色調作為通知欄顏色</string>
     <string name="pref_summary_gapless_playback">可能會在某些裝置上出現播放問題。</string>
-    <string name="pref_summary_ignore_media_store_artwork">提高專輯封面的成像品質，但會造成較長的讀取時間。建議只有在您對低畫質的專輯封面有問題時才開啟此選項。</string>
     <string name="pref_summary_colored_navigation_bar">將專輯封面的主色調設為導航列的顏色。</string>
     <string name="pref_summary_colored_app_shortcuts">將主色調設為應用快捷方式的顏色</string>
     <string name="pref_summary_audio_ducking">通知鈴聲、導航語音等。</string>
     <string name="pref_summary_synchronized_lyrics_show">目前僅支援 LRC 格式歌詞。內嵌或外掛皆可。</string>
     <string name="pref_summary_remember_last_tab">開啟時顯示最後使用的頁面</string>
-    <string name="pref_summary_remember_shuffle">當選擇新歌曲列表時維持隨機播放模式</string>
-    <string name="could_not_download_album_cover">無法下載到匹配的專輯封面</string>
     <string name="search_hint">搜尋音樂庫…</string>
     <string name="favorites">最愛</string>
     <string name="last_added">最後新增</string>
@@ -179,7 +170,6 @@
     <string name="author">作者</string>
     <string name="write_an_email">寫 email 給我們</string>
     <string name="follow_on_twitter">在 Twitter 上追蹤我們</string>
-    <string name="fork_on_github">造訪 GitHub</string>
     <string name="visit_website">造訪網站</string>
     <string name="report_bugs">回報程式錯誤</string>
     <string name="report_bugs_summary">建議新功能或回報問題</string>
@@ -195,9 +185,6 @@
     <string name="pref_title_now_playing_screen_appearance">外觀</string>
     <string name="intro_label">程式介紹</string>
     <string name="welcome_to_phonograph">歡迎光臨 Phonograph，一個美麗又輕量的音樂播放器。</string>
-    <string name="open_playing_queue_instruction">在播放面板上滑來顯示播放佇列</string>
-    <string name="rearrange_playing_queue_instruction">您可以更改歌曲播放的順序，上下拖曳播放佇列中的歌曲編號即可。</string>
-    <string name="library">音樂庫</string>
     <string name="folders">文件夾</string>
     <string name="files">文件</string>
     <string name="theme_switch">主題切換</string>
@@ -213,43 +200,21 @@
     <string name="app_widget_small_name">Phonograph - 小型</string>
     <string name="app_widget_card_name">Phonograph - 卡片</string>
     <string name="report_an_issue">回報程式錯誤</string>
-    <string name="bug_report_issue">問題</string>
-    <string name="login">登入</string>
     <string name="title">標題</string>
     <string name="description">內容敘述</string>
     <string name="device_info">裝置資訊</string>
-    <string name="bug_report_use_account">透過 GitHub 帳戶傳送</string>
     <string name="bug_report_manual">手動傳送</string>
-    <string name="username">帳號</string>
-    <string name="password">密碼</string>
-    <string name="bug_report_no_title">請輸入問題的標題</string>
-    <string name="bug_report_no_description">請輸入問題內容敘述</string>
-    <string name="bug_report_no_username">請輸入有效的 GitHub 帳號</string>
-    <string name="bug_report_no_password">請輸入有效的 GitHub 密碼</string>
-    <string name="bug_report_uploading">正在上傳回報到 GitHub</string>
-    <string name="bug_report_failed">無法傳送回報</string>
-    <string name="bug_report_failed_wrong_credentials">錯誤的帳號或密碼</string>
-    <string name="bug_report_failed_invalid_token">無效的存取權杖。請聯絡應用程式開發人員。</string>
-    <string name="bug_report_failed_issues_not_available">問題在選定的資源庫中未啟用。請聯絡應用程式開發人員。</string>
-    <string name="bug_report_failed_unknown">發生不可預期的錯誤。請聯絡應用程式開發人員。</string>
     <string name="copied_device_info_to_clipboard">複製裝置資訊到剪貼版。</string>
-    <string name="your_account_data_is_only_used_for_authentication">您的帳戶資料僅用於驗證。</string>
     <string name="you_will_be_forwarded_to_the_issue_tracker_website">將被轉發到問題追蹤網站。</string>
     <string name="app_shortcut_shuffle_all_short">隨機播放</string>
     <string name="app_shortcut_top_tracks_short">最佳單曲</string>
     <string name="app_shortcut_last_added_short">最後新增</string>
-    <string name="playlist_is_empty">播放清單是空的</string>
     <string name="playing_notification_description">播放中通知提供了播放/暫停等操作</string>
     <string name="playing_notification_name">播放中通知</string>
     <string name="eugene_cheung_summary">原始碼貢獻者</string>
     <string name="adrian_summary">創建專輯頁面</string>
     <string name="add_action">新增</string>
     <string name="blacklist">黑名單</string>
-    <string name="remove_from_blacklist">從黑名單中移除</string>
-    <string name="do_you_want_to_remove_from_the_blacklist">你是否想把 <b>%1$s</b> 從黑名單中移除？</string>
-    <string name="clear_blacklist">清除黑名單</string>
-    <string name="do_you_want_to_clear_the_blacklist">你是否想要清除黑名單？</string>
-    <string name="pref_summary_blacklist">列入黑名單的文件夾將不會顯示在音樂庫中</string>
     <string name="reset_artist_image">重設歌手圖片</string>
     <string name="set_artist_image">設定歌手圖片</string>
     <string name="library_categories">音樂庫類別</string>
@@ -270,8 +235,6 @@
     <string name="perf_title_fixed_tab_layout">固定所有分頁</string>
     <string name="pref_summary_fixed_tab_layout">頂部標籤不再能夠滑動，並完全平鋪</string>
     <string name="auto_mode_on">已開啟自動模式，請關閉後再試!</string>
-    <string name="Permission_denied">權限不足</string>
-    <string name="err_permission_storage">儲存空間權限</string>
     <string name="add_blacklist">你是否想加至黑名單？</string>
     <string name="minutes_short">%1$d 分鐘</string>
     <string name="other_information">其它</string>
@@ -291,8 +254,6 @@
     <string name="no_newer_version">沒有更新</string>
     <string name="new_version">新版本！</string>
     <string name="new_version_code">版本</string>
-    <string name="new_version_log">更新日誌</string>
-    <string name="new_version_tips">更新對話方塊可在設定中手動關閉(可在\"關於\"中手動檢查更新)</string>
     <string name="download">下載</string>
     <string name="ignore_once">忽略</string>
     <string name="upgrade_ignored">更新已忽略！</string>
@@ -324,7 +285,6 @@
     <string name="direction_open_file_with_saf">請在SAF中選擇包含待處理的檔案</string>
     <string name="file_incorrect">檔案不正確!</string>
     <string name="pref_header_appearance">外觀</string>
-    <string name="deleting_old_files">正在刪除舊檔案…</string>
     <string name="pref_title_reset_home_pages_tab_config">重置全部頁籤</string>
     <string name="pref_summary_reset_home_pages_tab_config">所有媒體庫類別將還原為預設</string>
     <string name="are_you_sure">是否確定？</string>
@@ -341,8 +301,6 @@
     <string name="pref_header_compatibility">相容性</string>
     <string name="pref_title_use_legacy_favorite_playlist_impl">使用舊式歌曲收藏機制</string>
     <string name="pref_summary_use_legacy_favorite_playlist_impl">開啟後，收藏的歌曲將加至外部的m3u播放列表，而不是存於應用內部（需要手動匯出）</string>
-    <string name="export_">匯出：</string>
-    <string name="import_">匯入:</string>
     <string name="databases">數據庫</string>
     <string name="embedded_lyrics">內嵌歌詞</string>
     <string name="external_lyrics">外部歌詞</string>
@@ -361,8 +319,6 @@
     <string name="reached_to_root">已到達此卷的根目錄</string>
     <string name="sort_order_size">文件大小</string>
     <string name="use_legacy_list_Files">使用舊式方法讀取文件</string>
-    <string name="pref_title_keep_playing_queue_intact">保護播放列表不被肆意更改</string>
-    <string name="pref_summary_keep_playing_queue_intact">啟用後，Phonograph Plus 將儘可能保持播放列表而不會被意外清空</string>
     <string name="change_now_playing_screen">修改正在播放介面</string>
     <string name="load_images_for_files">載入封面</string>
     <string name="app_language">應用程式語言</string>

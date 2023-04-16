@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="what_do_you_want_to_share">Cosa vuoi condividere?</string>
-    <string name="currently_listening_to_x_by_x">Stai ascoltando %1$s di %2$s.</string>
-    <string name="the_audio_file">Il file audio</string>
     <string name="action_set_as_ringtone">Imposta come suoneria</string>
     <string name="action_share">Condividi</string>
     <string name="action_settings">Impostazioni</string>
@@ -41,9 +38,7 @@
     <string name="album_artist">Artista dell\'album</string>
     <string name="year">Anno</string>
     <string name="track">Numero Traccia</string>
-    <string name="track_hint">Traccia (2 per traccia 2, o 3004 per CD3 traccia 4)</string>
     <string name="lyrics">Testi</string>
-    <string name="album_or_artist_empty">Il titolo o l\'artista sono vuoti.</string>
     <string name="saving_changes">Salva le modifiche</string>
     <string name="label_details">Dettagli</string>
     <string name="label_file_name">Nome file</string>
@@ -111,7 +106,6 @@
     <string name="pref_title_blurred_album_art">Sfoca la copertina</string>
     <string name="pref_title_colored_notification">Notifica colorata</string>
     <string name="pref_title_classic_notification">Design di notifica classico</string>
-    <string name="pref_title_ignore_media_store_artwork">Ignora le copertine del Media Store</string>
     <string name="pref_title_gapless_playback">Riproduzione senza intervalli</string>
     <string name="pref_title_audio_ducking">Riduci volume in caso di perdita di focus audio</string>
     <string name="pref_title_last_added_interval">Ultimo intervallo di playlist aggiunto</string>
@@ -142,14 +136,11 @@
     <string name="pref_summary_classic_notification">Usa il design di notifica classico.</string>
     <string name="pref_summary_colored_notification">La notifica \u00e8 colorata secondo la gamma di colori della copertina.</string>
     <string name="pref_summary_gapless_playback">Può causare problemi di riproduzione su alcuni dispositivi.</string>
-    <string name="pref_summary_ignore_media_store_artwork">Può incrementare la qualità delle copertine, ma causa rallentamenti nei tempi di caricamento delle immagini. Abilita soltanto se hai problemi con copertine a bassa risoluzione.</string>
     <string name="pref_summary_colored_navigation_bar">Colora la barra di navigazione del colore principale.</string>
     <string name="pref_summary_colored_app_shortcuts">Colora le scorciatoie dell\'app con il colore principale.</string>
     <string name="pref_summary_audio_ducking">Notifiche, navigazione ecc.</string>
     <string name="pref_summary_synchronized_lyrics_show">Attualmente solo i testi sincronizzati in formato LRC sono supportati. Sia integrati o come file separati.</string>
     <string name="pref_summary_remember_last_tab">All\'avvio vai all\'ultima scheda aperta</string>
-    <string name="pref_summary_remember_shuffle">La modalità casuale rimarrà attiva quando si seleziona un nuovo elenco di brani</string>
-    <string name="could_not_download_album_cover">Impossibile scaricare una copertina adatta.</string>
     <string name="search_hint">Cercando nella tua libreria...</string>
     <string name="favorites">Preferiti</string>
     <string name="last_added">Aggiunti di recente</string>
@@ -177,7 +168,6 @@
     <string name="author">Autore</string>
     <string name="write_an_email">Scrivi un\'email</string>
     <string name="follow_on_twitter">Segui su Twitter</string>
-    <string name="fork_on_github">Vai su GitHub</string>
     <string name="visit_website">Visita sito web</string>
     <string name="report_bugs">Segnala bug</string>
     <string name="report_bugs_summary">Segnala bug o richiedi nuove funzionalità.</string>
@@ -193,9 +183,6 @@
     <string name="pref_title_now_playing_screen_appearance">Aspetto</string>
     <string name="intro_label">Introduzione</string>
     <string name="welcome_to_phonograph">Benvenuto in Phonograph, un music player bellissimo e leggero per Android. </string>
-    <string name="open_playing_queue_instruction">Fai uno swipe sulla card nella schermata In riproduzione per mostrare l\'intera coda di riproduzione.</string>
-    <string name="rearrange_playing_queue_instruction">Riorganizza la coda di riproduzione trascinando una canzone dal suo numero di traccia.</string>
-    <string name="library">Libreria</string>
     <string name="folders">Cartelle</string>
     <string name="theme_switch">Cambia tema</string>
     <string name="failed_to_save_playlist">Salvataggio playlist fallito (%s).</string>
@@ -210,43 +197,21 @@
     <string name="app_widget_small_name">Phonograph - Piccolo</string>
     <string name="app_widget_card_name">Phonograph - Scheda</string>
     <string name="report_an_issue">Segnala un problema</string>
-    <string name="bug_report_issue">Problema</string>
-    <string name="login">Accesso</string>
     <string name="title">Titolo</string>
     <string name="description">Descrizione</string>
     <string name="device_info">Informazioni dispositivo</string>
-    <string name="bug_report_use_account">Invia tramite account GitHub</string>
     <string name="bug_report_manual">Invia manualmente</string>
-    <string name="username">Nome utente</string>
-    <string name="password">Password</string>
-    <string name="bug_report_no_title">Si prega di inserire un titolo valido</string>
-    <string name="bug_report_no_description">Si prega di inserire una descrizione valida</string>
-    <string name="bug_report_no_username">Si prega di inserire un username GitHub valido</string>
-    <string name="bug_report_no_password">Si prega di inserire una password GitHub valida</string>
-    <string name="bug_report_uploading">Caricamento del rapporto su GitHub...</string>
-    <string name="bug_report_failed">Impossibile inviare un rapporto</string>
-    <string name="bug_report_failed_wrong_credentials">Username o password errata</string>
-    <string name="bug_report_failed_invalid_token">Token di accesso non valido. Si prega di contattare lo sviluppatore.</string>
-    <string name="bug_report_failed_issues_not_available">I problemi non sono abilitati per la repository selezionata. Si prega di contattare lo sviluppatore.</string>
-    <string name="bug_report_failed_unknown">Si è verificato un errore imprevisto. Si prega di contattare lo sviluppatore.</string>
     <string name="copied_device_info_to_clipboard">Informazioni dispositivo copiate negli appunti.</string>
-    <string name="your_account_data_is_only_used_for_authentication">I tuoi dati account sono usati solo per l\'autenticazione.</string>
     <string name="you_will_be_forwarded_to_the_issue_tracker_website">Verrai indirizzato al sito di bugtracking.</string>
     <string name="app_shortcut_shuffle_all_short">Casuale</string>
     <string name="app_shortcut_top_tracks_short">Migliori tracce</string>
     <string name="app_shortcut_last_added_short">Ultima aggiunta</string>
-    <string name="playlist_is_empty">La playlist è vuota</string>
     <string name="playing_notification_description">La notifica di riproduzione offre azioni per play/pausa ecc.</string>
     <string name="playing_notification_name">Notifica di riproduzione</string>
     <string name="eugene_cheung_summary">Per il suo contributo al codice sorgente.</string>
     <string name="adrian_summary">Per creare la pagina dell\'album.</string>
     <string name="add_action">Aggiungi</string>
     <string name="blacklist">Lista nera</string>
-    <string name="remove_from_blacklist">Rimuovi dalla lista nera</string>
-    <string name="do_you_want_to_remove_from_the_blacklist">Vuoi rimuovere <b>%1$s</b> dalla lista nera?</string>
-    <string name="clear_blacklist">Pulisci lista nera</string>
-    <string name="do_you_want_to_clear_the_blacklist">Vuoi pulire la lista nera?</string>
-    <string name="pref_summary_blacklist">Il contenuto delle cartelle in lista nera sono nascoste dalla tua libreria.</string>
     <string name="reset_artist_image">Reimposta immagine artista</string>
     <string name="set_artist_image">Imposta immagine artista</string>
     <string name="library_categories">Categorie libreria</string>
@@ -267,8 +232,6 @@
     <string name="perf_title_fixed_tab_layout">Fissa tutte le schede</string>
     <string name="pref_summary_fixed_tab_layout">Le schede in alto non saranno scrollabili, ma verranno affiancate senza alcun margine.</string>
     <string name="auto_mode_on">La modalità automatica è attiva, si prega di disattivarla e riprovare!</string>
-    <string name="Permission_denied">Permesso negato!</string>
-    <string name="err_permission_storage">Autorizzazione di archiviazione</string>
     <string name="add_blacklist">Vuoi aggiungerlo alla lista nera?</string>
     <string name="minutes_short">%1$d min</string>
     <string name="other_information">Altro</string>
@@ -288,8 +251,6 @@
     <string name="no_newer_version">Nessun aggiornamento!</string>
     <string name="new_version">Nuova versione!</string>
     <string name="new_version_code">versione</string>
-    <string name="new_version_log">Registro delle modifiche</string>
-    <string name="new_version_tips">Questa finestra di dialogo può essere disabilitata nelle impostazioni. (Puoi anche controllare l\'aggiornamento manualmente in Informazioni)</string>
     <string name="download">Scarica</string>
     <string name="ignore_once">Ignora questo</string>
     <string name="upgrade_ignored">L\'aggiornamento è stato ignorato.</string>
@@ -320,7 +281,6 @@
     <string name="direction_open_file_with_saf">Ora, seleziona il file con cui desideri operare</string>
     <string name="file_incorrect">Il file non è corretto!</string>
     <string name="pref_header_appearance">Aspetto</string>
-    <string name="deleting_old_files">Eliminazione dei file legacy…</string>
     <string name="pref_title_reset_home_pages_tab_config">Reimposta tutte le schede</string>
     <string name="pref_summary_reset_home_pages_tab_config">Tutte le categorie della libreria verrebbero ripristinate ai valori predefiniti.</string>
     <string name="are_you_sure">Sei sicuro?</string>
@@ -337,8 +297,6 @@
     <string name="pref_header_compatibility">Compatibilità</string>
     <string name="pref_title_use_legacy_favorite_playlist_impl">Usa il meccanismo legacy della playlist Preferiti</string>
     <string name="pref_summary_use_legacy_favorite_playlist_impl">Se abilitato, l\'app salverà i brani preferiti in una playlist m3u nell\'archiviazione invece di salvare i brani preferiti nel database interno dell\'app. (È possibile esportare la lista manualmente)</string>
-    <string name="export_">Esporta: </string>
-    <string name="import_">Importa: </string>
     <string name="databases">Database</string>
     <string name="embedded_lyrics">testi integrati</string>
     <string name="external_lyrics">testi esterni</string>
@@ -357,8 +315,6 @@
     <string name="reached_to_root">Hai raggiunto la cartella principale di questo volume di archiviazione</string>
     <string name="sort_order_size">Dimensione File</string>
     <string name="use_legacy_list_Files">Usa il modo precedente per leggere i file</string>
-    <string name="pref_title_keep_playing_queue_intact">Mantenere intatta la coda di riproduzione.</string>
-    <string name="pref_summary_keep_playing_queue_intact">Se abilitato, Phonograph Plus non proverebbe a cancellare la coda di riproduzione a meno che non chiedi, in modo da non perdere la coda di riproduzione per caso.</string>
     <string name="change_now_playing_screen">Cambia schermata di riproduzione</string>
     <string name="load_images_for_files">Carica immagini per i file</string>
     <string name="app_language">Lingua Applicazione</string>

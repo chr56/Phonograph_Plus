@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="what_do_you_want_to_share">どれを共有しますか？</string>
-    <string name="currently_listening_to_x_by_x">現在%2$sの%1$sを再生しています</string>
-    <string name="the_audio_file">音声ファイル</string>
     <string name="action_set_as_ringtone">着信音に設定</string>
     <string name="action_share">共有</string>
     <string name="action_settings">設定</string>
@@ -40,9 +37,7 @@
     <string name="album_artist">アルバムアーティスト</string>
     <string name="year">年</string>
     <string name="track">トラック番号</string>
-    <string name="track_hint">トラック (例: \'2\'ならトラック2, \'3004\'ならCD3のトラック4)</string>
     <string name="lyrics">歌詞</string>
-    <string name="album_or_artist_empty">アルバム名またはアルバムアーティストの欄が空白です</string>
     <string name="saving_changes">変更を保存しています</string>
     <string name="label_details">詳細情報</string>
     <string name="label_file_name">ファイル名</string>
@@ -110,7 +105,6 @@
     <string name="pref_title_blurred_album_art">アルバムアートにぼかし効果をかける</string>
     <string name="pref_title_colored_notification">通知に色を付ける</string>
     <string name="pref_title_classic_notification">古い通知デザイン</string>
-    <string name="pref_title_ignore_media_store_artwork">メディアストアのアートを無視する</string>
     <string name="pref_title_gapless_playback">ギャップレス再生</string>
     <string name="pref_title_audio_ducking">音声フォーカス喪失時に音量を下げる</string>
     <string name="pref_title_last_added_interval">最近追加された曲に含まれる期間</string>
@@ -141,14 +135,11 @@
     <string name="pref_summary_classic_notification">旧式の通知デザインを使用します。</string>
     <string name="pref_summary_colored_notification">通知をカバーアートの色にする</string>
     <string name="pref_summary_gapless_playback">一部の端末では再生に問題が生じる可能性があります</string>
-    <string name="pref_summary_ignore_media_store_artwork">アルバムアートの画質を上げることが出来ますが、画像の読み込みは遅くなる可能性があります。低画質のアルバムアートで問題がある場合に限り有効にしてください。</string>
     <string name="pref_summary_colored_navigation_bar">ナビゲーションバーの背景色をメインカラーに変更します。</string>
     <string name="pref_summary_colored_app_shortcuts">アプリのショートカットの色をメインカラーに変更します。</string>
     <string name="pref_summary_audio_ducking">通知やナビなどです。</string>
     <string name="pref_summary_synchronized_lyrics_show">現時点では LRC 形式の同期歌詞のみに対応しています。埋め込みと別ファイルのどちらにも対応しています。</string>
     <string name="pref_summary_remember_last_tab">アプリ起動時に最後に開いていたタブを開く</string>
-    <string name="pref_summary_remember_shuffle">新しい曲のリストを選択しても、シャッフルモードはオンのままになります。</string>
-    <string name="could_not_download_album_cover">一致するアルバムカバーをダウンロードできませんでした</string>
     <string name="search_hint">ライブラリ内を検索…</string>
     <string name="favorites">お気に入り</string>
     <string name="last_added">最近追加された曲</string>
@@ -176,7 +167,6 @@
     <string name="author">開発者</string>
     <string name="write_an_email">メールを書く</string>
     <string name="follow_on_twitter">Twitter でフォロー</string>
-    <string name="fork_on_github">GitHub でフォーク</string>
     <string name="visit_website">ウェブサイトを開く</string>
     <string name="report_bugs">バグを報告</string>
     <string name="report_bugs_summary">パグの報告または新機能のリクエスト</string>
@@ -192,9 +182,6 @@
     <string name="pref_title_now_playing_screen_appearance">外観</string>
     <string name="intro_label">説明</string>
     <string name="welcome_to_phonograph">Phonographへようこそ、美しく軽快に動作するAndroid用の音楽プレーヤーです。 </string>
-    <string name="open_playing_queue_instruction">カードをスワイプすると再生中のスクリーンから再生キューのページに移動します。</string>
-    <string name="rearrange_playing_queue_instruction">トラック番号をドラッグして再生キューの曲を並び替えることができます。</string>
-    <string name="library">ライブラリ</string>
     <string name="folders">フォルダ</string>
     <string name="theme_switch">テーマの切り替え</string>
     <string name="failed_to_save_playlist">プレイリスト(%s)の保存に失敗しました。</string>
@@ -209,43 +196,21 @@
     <string name="app_widget_small_name">Phonograph - 小</string>
     <string name="app_widget_card_name">Phonograph - カード</string>
     <string name="report_an_issue">問題を報告</string>
-    <string name="bug_report_issue">問題</string>
-    <string name="login">ログイン</string>
     <string name="title">タイトル</string>
     <string name="description">説明</string>
     <string name="device_info">端末の詳細</string>
-    <string name="bug_report_use_account">GitHubアカウントを使用して送信</string>
     <string name="bug_report_manual">手動で送信</string>
-    <string name="username">ユーザー名</string>
-    <string name="password">パスワード</string>
-    <string name="bug_report_no_title">問題のタイトルを入力してください</string>
-    <string name="bug_report_no_description">問題の説明を入力してください</string>
-    <string name="bug_report_no_username">正しいGitHubユーザーネームを入力してください</string>
-    <string name="bug_report_no_password">正しいGitHubパスワードを入力してください</string>
-    <string name="bug_report_uploading">GitHubにレポートをアップロード中…</string>
-    <string name="bug_report_failed">レポートの送信に失敗しました</string>
-    <string name="bug_report_failed_wrong_credentials">ユーザーネームまたはパスワードが間違っています</string>
-    <string name="bug_report_failed_invalid_token">不正なアクセストークンです。お手数ですがアプリの開発者にお問い合わせください。</string>
-    <string name="bug_report_failed_issues_not_available">問題は選択されたレポジトリに対して有効になっていません。お手数ですが、アプリの開発者にお問い合わせください。</string>
-    <string name="bug_report_failed_unknown">予期しないエラーが発生しました。お手数ですがアプリの開発者にお問い合わせください。</string>
     <string name="copied_device_info_to_clipboard">端末情報をクリップボードにコピーしました。</string>
-    <string name="your_account_data_is_only_used_for_authentication">あなたのアカウント情報は認証のみに使用されます。</string>
     <string name="you_will_be_forwarded_to_the_issue_tracker_website">バグ管理システムのウェブサイトに移動します。</string>
     <string name="app_shortcut_shuffle_all_short">シャッフル</string>
     <string name="app_shortcut_top_tracks_short">再生回数の多い曲</string>
     <string name="app_shortcut_last_added_short">最近追加された曲</string>
-    <string name="playlist_is_empty">プレイリストは空です</string>
     <string name="playing_notification_description">再生の通知は再生/一時停止などを提供します。</string>
     <string name="playing_notification_name">再生中の通知</string>
     <string name="eugene_cheung_summary">ソースコードへの貢献。</string>
     <string name="adrian_summary">アルバムページのデザインの作成。</string>
     <string name="add_action">追加</string>
     <string name="blacklist">ブラックリスト</string>
-    <string name="remove_from_blacklist">ブラックリストから除去</string>
-    <string name="do_you_want_to_remove_from_the_blacklist"><b>%1$s</b>をブラックリストから除去しますか？</string>
-    <string name="clear_blacklist">ブラックリストを消去</string>
-    <string name="do_you_want_to_clear_the_blacklist">ブラックリストを消去しますか？</string>
-    <string name="pref_summary_blacklist">ブラックリストにあるコンテンツはライブラリに表示されません。</string>
     <string name="reset_artist_image">アーティスト画像をリセット</string>
     <string name="set_artist_image">アーティスト画像をセット</string>
     <string name="library_categories">ライブラリのカテゴリ</string>
@@ -266,8 +231,6 @@
     <string name="perf_title_fixed_tab_layout">上部タブの固定</string>
     <string name="pref_summary_fixed_tab_layout">上部タブはスクロールできなくなり、余白なしのフラットな状態になります</string>
     <string name="auto_mode_on">オートモードがオンになっています。オフにしてもう一度お試しください!</string>
-    <string name="Permission_denied">アクセスが拒否されました!</string>
-    <string name="err_permission_storage">ストレージ権限</string>
     <string name="add_blacklist">ブラックリストに追加しますか?</string>
     <string name="minutes_short">%1$d 分</string>
     <string name="other_information">その他</string>
@@ -287,8 +250,6 @@
     <string name="no_newer_version">アップデートはありません!</string>
     <string name="new_version">新バージョンが利用可能です!</string>
     <string name="new_version_code">バージョン</string>
-    <string name="new_version_log">更新履歴</string>
-    <string name="new_version_tips">このダイアログは設定で無効にできます (手動で更新を確認することも可能です)。</string>
     <string name="download">ダウンロード</string>
     <string name="ignore_once">今回は無視する</string>
     <string name="upgrade_ignored">アップグレードは無視されています。</string>
@@ -319,7 +280,6 @@
     <string name="direction_open_file_with_saf">操作したいファイルを選択してください</string>
     <string name="file_incorrect">ファイルが正しくありません!</string>
     <string name="pref_header_appearance">外観</string>
-    <string name="deleting_old_files">古いファイルを削除しています…</string>
     <string name="pref_title_reset_home_pages_tab_config">すべてのカテゴリタブをリセット</string>
     <string name="pref_summary_reset_home_pages_tab_config">すべてのライブラリのカテゴリがデフォルトにリセットされます。</string>
     <string name="are_you_sure">よろしいですか?</string>
@@ -336,8 +296,6 @@
     <string name="pref_header_compatibility">互換性</string>
     <string name="pref_title_use_legacy_favorite_playlist_impl">旧式のお気に入りプレイリストフォーマットを使用する</string>
     <string name="pref_summary_use_legacy_favorite_playlist_impl">有効にすると、お気に入り曲をアプリ内部のデータベースではなく、ストレージ上のm3uプレイリストに保存します。 (手動でリストをエクスポートできます)</string>
-    <string name="export_">エクスポート: </string>
-    <string name="import_">インポート: </string>
     <string name="databases">データベース</string>
     <string name="embedded_lyrics">埋め込み歌詞</string>
     <string name="external_lyrics">外部歌詞</string>
@@ -356,8 +314,6 @@
     <string name="reached_to_root">このストレージのルートフォルダに達しました</string>
     <string name="sort_order_size">ファイルサイズ</string>
     <string name="use_legacy_list_Files">従来の方法を利用してファイルを読み込む</string>
-    <string name="pref_title_keep_playing_queue_intact">再生キューを保持します</string>
-    <string name="pref_summary_keep_playing_queue_intact">有効にすると、Phonograph Plusは再生キューをクリアしようとしないため、ミスでキューを失うことがなくなります。</string>
     <string name="change_now_playing_screen">再生中の画面を変更</string>
     <string name="load_images_for_files">ファイルのカバーアートを読み込む</string>
     <string name="app_language">アプリケーションの言語</string>
