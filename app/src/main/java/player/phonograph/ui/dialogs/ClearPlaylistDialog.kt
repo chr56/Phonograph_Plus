@@ -35,9 +35,15 @@ class ClearPlaylistDialog : DialogFragment() {
         val playlists: List<Playlist> = requireArguments().getParcelableArrayList(KEY)!!
 
         // classify
-        val grouped = playlists.groupBy { it.type }
-        val smartLists = grouped.getOrDefault(PlaylistType.ABS_SMART, emptyList()).filterIsInstance<SmartPlaylist>()
-        val filesLists = grouped.getOrDefault(PlaylistType.FILE, emptyList()).filterIsInstance<FilePlaylist>()
+        val grouped = playlists.groupBy {
+            when (it) {
+                is SmartPlaylist -> SMART_PLAYLIST
+                is FilePlaylist  -> FILE_PLAYLIST
+                else             -> OTHER_PLAYLIST
+            }
+        }
+        val smartLists = grouped.getOrDefault(SMART_PLAYLIST, emptyList()).filterIsInstance<SmartPlaylist>()
+        val filesLists = grouped.getOrDefault(FILE_PLAYLIST, emptyList()).filterIsInstance<FilePlaylist>()
 
         // extra permission check on R(11)
         val hasPermission = hasStorageWritePermission(requireContext())
@@ -112,5 +118,9 @@ class ClearPlaylistDialog : DialogFragment() {
                     putParcelableArrayList(KEY, ArrayList(playlists))
                 }
             }
+
+        private const val SMART_PLAYLIST = 1 shl 1
+        private const val FILE_PLAYLIST = 1 shl 2
+        private const val OTHER_PLAYLIST = 1 shl 8
     }
 }
