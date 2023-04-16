@@ -17,13 +17,15 @@ import player.phonograph.R
 import player.phonograph.databinding.FragmentIntroBinding
 import player.phonograph.databinding.FragmentIntroSlideSettingBinding
 import player.phonograph.databinding.ItemSimpleBinding
-import player.phonograph.mechanism.SettingDataManager
+import player.phonograph.mechanism.backup.Backup
 import player.phonograph.settings.Setting
+import player.phonograph.ui.dialogs.BackupImportDialog
 import player.phonograph.util.permissions.GrantedPermission
 import player.phonograph.util.permissions.checkPermission
 import androidx.annotation.StringRes
 import androidx.core.view.setMargins
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import android.Manifest
 import android.content.Intent
 import android.os.Build.VERSION.SDK_INT
@@ -39,6 +41,9 @@ import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.LinearLayout
 import android.widget.Toast
 import android.widget.Toast.LENGTH_LONG
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import java.io.FileInputStream
 
 class PhonographIntroActivity : AppIntro(), IOpenFileStorageAccess, IRequestPermission {
 
@@ -233,13 +238,23 @@ class PhonographIntroActivity : AppIntro(), IOpenFileStorageAccess, IRequestPerm
             }
             contentBinding.backup.text = getString(R.string.action_import, getString(R.string.action_backup))
             contentBinding.backup.setOnClickListener {
-                val activity = requireActivity()
+                val activity = activity
                 require(activity is IOpenFileStorageAccess)
                 activity.openFileStorageAccessTool.launch(
                     OpenDocumentContract.Config(arrayOf("*/*"))
                 ) { uri ->
-                    if (uri != null) {
-                        SettingDataManager.importSetting(uri, activity)
+                    uri ?: return@launch
+                    activity.lifecycleScope.launch(Dispatchers.IO) {
+                        activity.contentResolver.openFileDescriptor(uri, "r")?.use {
+                            FileInputStream(it.fileDescriptor).use { stream ->
+                                val sessionId =
+                                    Backup.Import.startImportBackupFromArchive(context = activity, stream)
+                                launch(Dispatchers.Main) {
+                                    BackupImportDialog.newInstance(sessionId)
+                                        .show(activity.supportFragmentManager, "IMPORT")
+                                }
+                            }
+                        }
                     }
                 }
             }
