@@ -7,7 +7,7 @@
     android:layout_height="wrap_content"
     android:descendantFocusability="blocksDescendants"
     android:focusable="true"
-    android:foreground="?attr/rectSelector"
+    android:foreground="@drawable/rect_selector_auto"
     android:minHeight="@dimen/md_listitem_height"
     android:orientation="horizontal"
     android:paddingStart="@dimen/md_dialog_frame_margin"
@@ -47,7 +47,6 @@
         android:clickable="false"
         android:focusable="false"
         android:minHeight="@dimen/md_listitem_height"
-        android:tint="?attr/iconColor"
         android:tintMode="src_in"
         app:srcCompat="@drawable/ic_drag_vertical_white_24dp"
         tools:ignore="ContentDescription" />
