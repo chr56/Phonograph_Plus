@@ -24,7 +24,7 @@ import player.phonograph.mechanism.setting.HomeTabConfig
 import player.phonograph.mechanism.setting.NowPlayingScreenConfig
 import player.phonograph.mechanism.setting.StyleConfig
 import player.phonograph.ui.dialogs.HomeTabConfigDialog
-import player.phonograph.preferences.NowPlayingScreenPreferenceDialog
+import player.phonograph.ui.dialogs.NowPlayingScreenPreferenceDialog
 import player.phonograph.settings.Setting
 import player.phonograph.ui.dialogs.ClickModeSettingDialog
 import player.phonograph.ui.dialogs.ImageSourceConfigDialog
