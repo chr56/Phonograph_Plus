@@ -8,6 +8,7 @@ import player.phonograph.R
 import player.phonograph.settings.Setting
 import androidx.annotation.StyleRes
 import android.content.Context
+import android.content.res.Configuration
 
 object StyleConfig {
 
@@ -29,6 +30,20 @@ object StyleConfig {
             else        -> R.style.Theme_Phonograph_Auto
         }
     }
+
+    fun isNightMode(context: Context): Boolean =
+        when (Setting.instance.themeString) {
+            THEME_DARK  -> true
+            THEME_BLACK -> true
+            THEME_LIGHT -> false
+            THEME_AUTO  ->
+                when (context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) {
+                    Configuration.UI_MODE_NIGHT_YES -> true
+                    Configuration.UI_MODE_NIGHT_NO  -> false
+                    else                            -> false
+                }
+            else        -> false
+        }
 
     const val THEME_AUTO = "auto"
     const val THEME_DARK = "dark"

@@ -25,20 +25,7 @@ fun applyMonet(context: Context, force: Boolean = false) {
     }
 }
 
-val Context.nightMode: Boolean
-    get() =
-        when (StyleConfig.generalTheme(this)) {
-            R.style.Theme_Phonograph_Black -> true
-            R.style.Theme_Phonograph_Dark  -> true
-            R.style.Theme_Phonograph_Light -> false
-            R.style.Theme_Phonograph_Auto  ->
-                when (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) {
-                    Configuration.UI_MODE_NIGHT_YES -> true
-                    Configuration.UI_MODE_NIGHT_NO  -> false
-                    else                            -> false
-                }
-            else                           -> false
-        }
+val Context.nightMode: Boolean get() = StyleConfig.isNightMode(this)
 
 fun backgroundColorByTheme(context: Context): Int = context.resources.getColor(
     when (StyleConfig.generalTheme(context)) {
