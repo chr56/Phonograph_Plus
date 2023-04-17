@@ -18,7 +18,7 @@ import player.phonograph.misc.MusicProgressViewUpdateHelperDelegate
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.ui.fragments.AbsMusicServiceFragment
 import player.phonograph.util.theme.nightMode
-import player.phonograph.views.PlayPauseDrawable
+import player.phonograph.ui.views.PlayPauseDrawable
 import kotlin.math.abs
 
 /**

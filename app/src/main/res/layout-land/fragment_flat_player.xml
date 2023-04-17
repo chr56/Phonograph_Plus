@@ -11,12 +11,12 @@
         android:elevation="@dimen/toolbar_elevation"
         tools:ignore="UnusedAttribute">
 
-        <player.phonograph.views.StatusBarView
+        <player.phonograph.ui.views.StatusBarView
             android:id="@+id/player_status_bar"
             android:layout_width="match_parent"
             android:layout_height="@dimen/status_bar_padding" />
 
-        <player.phonograph.views.StatusBarView
+        <player.phonograph.ui.views.StatusBarView
             android:layout_width="match_parent"
             android:layout_height="@dimen/status_bar_padding"
             android:background="@color/twenty_percent_black_overlay" />

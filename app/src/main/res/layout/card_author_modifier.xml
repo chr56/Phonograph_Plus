@@ -38,7 +38,7 @@
             android:paddingRight="16dp"
             android:focusable="true">
 
-            <player.phonograph.views.IconImageView
+            <player.phonograph.ui.views.IconImageView
                 android:id="@+id/icon_author"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
@@ -85,7 +85,7 @@
             android:paddingRight="16dp"
             android:focusable="true">
 
-            <player.phonograph.views.IconImageView
+            <player.phonograph.ui.views.IconImageView
                 android:id="@+id/icon_github"
                 android:layout_width="24dp"
                 android:layout_height="24dp"

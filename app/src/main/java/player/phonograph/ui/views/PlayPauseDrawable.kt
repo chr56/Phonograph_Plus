@@ -1,6 +1,6 @@
 @file:Suppress("DeprecatedCallableAddReplaceWith")
 
-package player.phonograph.views
+package player.phonograph.ui.views
 
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter

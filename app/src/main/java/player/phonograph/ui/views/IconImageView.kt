@@ -1,4 +1,4 @@
-package player.phonograph.views
+package player.phonograph.ui.views
 
 import mt.pref.ThemeColor
 import mt.util.color.resolveColor

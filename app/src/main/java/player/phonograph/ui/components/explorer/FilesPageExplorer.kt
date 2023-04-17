@@ -15,6 +15,7 @@ import player.phonograph.model.sort.SortRef
 import player.phonograph.settings.Setting
 import player.phonograph.ui.components.popup.ListOptionsPopup
 import player.phonograph.ui.fragments.HomeFragment
+import player.phonograph.ui.views.StatusBarView
 import player.phonograph.util.ui.setUpFastScrollRecyclerViewColor
 import androidx.core.app.ComponentActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -40,7 +41,7 @@ class FilesPageExplorer(
             popup.showAtLocation(
                 binding.root, Gravity.TOP or Gravity.END, 0,
                 (
-                        activity.findViewById<player.phonograph.views.StatusBarView>(R.id.status_bar)?.height
+                        activity.findViewById<StatusBarView>(R.id.status_bar)?.height
                             ?: 8
                         ) +
                         homeFragment.totalHeaderHeight + binding.innerAppBar.height

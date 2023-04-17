@@ -16,7 +16,7 @@ import player.phonograph.databinding.FragmentFlatPlayerPlaybackControlsBinding
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.ui.fragments.player.AbsPlayerControllerFragment
 import player.phonograph.ui.fragments.player.PlayPauseButtonOnClickHandler
-import player.phonograph.views.PlayPauseDrawable
+import player.phonograph.ui.views.PlayPauseDrawable
 import java.util.*
 
 class FlatPlayerControllerFragment : AbsPlayerControllerFragment() {

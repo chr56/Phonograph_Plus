@@ -124,7 +124,7 @@
                 android:paddingLeft="16dp"
                 android:paddingRight="16dp">
 
-                <player.phonograph.views.IconImageView
+                <player.phonograph.ui.views.IconImageView
                     android:id="@+id/icon_changelog"
                     android:layout_width="24dp"
                     android:layout_height="24dp"
@@ -155,7 +155,7 @@
                 android:paddingLeft="16dp"
                 android:paddingRight="16dp">
 
-                <player.phonograph.views.IconImageView
+                <player.phonograph.ui.views.IconImageView
                     android:id="@+id/icon_check_upgrade"
                     android:layout_width="24dp"
                     android:layout_height="24dp"
@@ -187,7 +187,7 @@
                 android:paddingLeft="16dp"
                 android:paddingRight="16dp">
 
-                <player.phonograph.views.IconImageView
+                <player.phonograph.ui.views.IconImageView
                     android:id="@+id/icon_github"
                     android:layout_width="24dp"
                     android:layout_height="24dp"
@@ -218,7 +218,7 @@
                 android:paddingLeft="16dp"
                 android:paddingRight="16dp">
 
-                <player.phonograph.views.IconImageView
+                <player.phonograph.ui.views.IconImageView
                     android:id="@+id/icon_licenses"
                     android:layout_width="24dp"
                     android:layout_height="24dp"

@@ -9,7 +9,7 @@
 
 
 -keep class player.phonograph.preferences.*PreferenceX {*;}
--keep class player.phonograph.views.** {*;}
+-keep class player.phonograph.ui.views.** {*;}
 
 -keep class player.phonograph.model.** {public <fields>;}
 

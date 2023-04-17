@@ -16,7 +16,7 @@ import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.queue.RepeatMode
 import player.phonograph.service.queue.ShuffleMode
 import player.phonograph.ui.fragments.AbsMusicServiceFragment
-import player.phonograph.views.PlayPauseDrawable
+import player.phonograph.ui.views.PlayPauseDrawable
 import androidx.core.graphics.BlendModeColorFilterCompat.createBlendModeColorFilterCompat
 import androidx.core.graphics.BlendModeCompat
 import androidx.lifecycle.Lifecycle

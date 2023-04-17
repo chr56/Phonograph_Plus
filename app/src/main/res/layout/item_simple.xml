@@ -32,7 +32,7 @@
             android:textColor="?android:textColorSecondary" />
     </LinearLayout>
 
-    <player.phonograph.views.IconImageView
+    <player.phonograph.ui.views.IconImageView
         android:id="@+id/menu"
         style="@style/OverFlowButton"
         android:background="@drawable/rect_selector_auto"

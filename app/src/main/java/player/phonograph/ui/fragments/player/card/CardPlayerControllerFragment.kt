@@ -18,7 +18,7 @@ import player.phonograph.databinding.FragmentCardPlayerPlaybackControlsBinding
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.ui.fragments.player.AbsPlayerControllerFragment
 import player.phonograph.ui.fragments.player.PlayPauseButtonOnClickHandler
-import player.phonograph.views.PlayPauseDrawable
+import player.phonograph.ui.views.PlayPauseDrawable
 
 class CardPlayerControllerFragment : AbsPlayerControllerFragment() {
 

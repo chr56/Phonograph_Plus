@@ -39,7 +39,7 @@
         android:paddingBottom="@dimen/md_listitem_vertical_margin_choice"
         tools:text="Item" />
 
-    <player.phonograph.views.IconImageView
+    <player.phonograph.ui.views.IconImageView
         android:id="@+id/drag_view"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
