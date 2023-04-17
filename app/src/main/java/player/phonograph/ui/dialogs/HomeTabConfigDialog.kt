@@ -1,8 +1,8 @@
 /*
- * Copyright (c) 2022 chr_56
+ *  Copyright (c) 2022~2023 chr_56
  */
 
-package player.phonograph.preferences
+package player.phonograph.ui.dialogs
 
 import android.app.Dialog
 import android.os.Bundle
