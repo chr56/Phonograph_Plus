@@ -15,7 +15,7 @@ import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.TaskAction
 import tools.release.filecopy.ApkInfo
 import tools.release.filecopy.copyApk
-import tools.release.filecopy.copyMapping
+import tools.release.filecopy.zipAndCopyMapping
 import tools.release.git.getGitHash
 import tools.release.text.shiftFirstLetter
 import java.io.File
@@ -88,7 +88,7 @@ open class PublishArtifactsTask @Inject constructor(
                 gitHash = project.getGitHash(true),
                 releaseMode = variant.buildType == "release"
             )
-            copyMapping(mappingFile, info, project.productDir())
+            zipAndCopyMapping(mappingFile, info, project.productDir())
         } else {
             println("No mapping files generated!")
         }
