@@ -20,7 +20,7 @@ import player.phonograph.adapter.display.SongDisplayAdapter
 import player.phonograph.adapter.legacy.HorizontalAlbumAdapter
 import player.phonograph.coil.CustomArtistImageStore
 import player.phonograph.databinding.ActivityArtistDetailBinding
-import player.phonograph.misc.PaletteColorHolder
+import player.phonograph.model.PaletteColorHolder
 import lib.phonograph.misc.menuProvider
 import player.phonograph.model.Artist
 import player.phonograph.model.albumCountString

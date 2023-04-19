@@ -1,4 +1,4 @@
-package player.phonograph.misc
+package player.phonograph.model
 
 import androidx.annotation.ColorInt
 
