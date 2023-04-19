@@ -18,7 +18,7 @@ import lib.phonograph.misc.IOpenFileStorageAccess
 import lib.phonograph.misc.OpenDocumentContract
 import lib.phonograph.misc.OpenFileStorageAccessTool
 import player.phonograph.mechanism.backup.Backup
-import player.phonograph.misc.menuProvider
+import lib.phonograph.misc.menuProvider
 import player.phonograph.ui.dialogs.BackupExportDialog
 import player.phonograph.ui.dialogs.BackupImportDialog
 import player.phonograph.ui.fragments.SettingsFragment

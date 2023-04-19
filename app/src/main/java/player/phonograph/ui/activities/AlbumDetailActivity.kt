@@ -22,7 +22,7 @@ import player.phonograph.adapter.display.SongDisplayAdapter
 import player.phonograph.coil.loadImage
 import player.phonograph.coil.target.PaletteTargetBuilder
 import player.phonograph.databinding.ActivityAlbumDetailBinding
-import player.phonograph.misc.menuProvider
+import lib.phonograph.misc.menuProvider
 import player.phonograph.model.Album
 import player.phonograph.model.getReadableDurationString
 import player.phonograph.model.getYearString
@@ -42,7 +42,6 @@ import android.net.Uri
 import android.os.Bundle
 import android.text.Spanned
 import android.view.Menu
-import android.view.MenuItem
 import android.view.View
 
 /**

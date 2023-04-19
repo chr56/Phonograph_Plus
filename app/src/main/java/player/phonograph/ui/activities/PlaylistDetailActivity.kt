@@ -25,7 +25,7 @@ import player.phonograph.actions.menu.playlistToolbar
 import player.phonograph.adapter.base.MultiSelectionCabController
 import player.phonograph.adapter.display.PlaylistSongAdapter
 import player.phonograph.databinding.ActivityPlaylistDetailBinding
-import player.phonograph.misc.menuProvider
+import lib.phonograph.misc.menuProvider
 import player.phonograph.model.Song
 import player.phonograph.model.getReadableDurationString
 import player.phonograph.model.playlist.FilePlaylist

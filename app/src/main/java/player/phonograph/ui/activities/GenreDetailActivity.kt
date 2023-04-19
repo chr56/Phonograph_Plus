@@ -9,7 +9,7 @@ import player.phonograph.adapter.base.MultiSelectionCabController
 import player.phonograph.adapter.display.SongDisplayAdapter
 import player.phonograph.databinding.ActivityGenreDetailBinding
 import player.phonograph.mediastore.GenreLoader
-import player.phonograph.misc.menuProvider
+import lib.phonograph.misc.menuProvider
 import player.phonograph.model.Genre
 import player.phonograph.model.Song
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity

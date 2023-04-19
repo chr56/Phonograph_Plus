@@ -10,7 +10,7 @@ import player.phonograph.databinding.ActivitySearchBinding
 import player.phonograph.mediastore.AlbumLoader
 import player.phonograph.mediastore.ArtistLoader
 import player.phonograph.mediastore.SongLoader
-import player.phonograph.misc.menuProvider
+import lib.phonograph.misc.menuProvider
 import player.phonograph.ui.activities.base.AbsMusicServiceActivity
 import player.phonograph.util.ui.hideKeyboard
 import androidx.appcompat.widget.SearchView
