@@ -6,7 +6,7 @@ package player.phonograph.ui.activities.base
 
 import lib.phonograph.activity.ToolbarActivity
 import player.phonograph.MusicServiceMsgConst
-import player.phonograph.misc.MusicServiceEventListener
+import player.phonograph.model.MusicServiceEventListener
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.MusicPlayerRemote.ServiceToken
 import player.phonograph.util.debug
