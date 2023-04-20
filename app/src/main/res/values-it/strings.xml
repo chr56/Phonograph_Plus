@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="disable">disabilita</string>
+    <string name="choose_at_least_one">Scegliere almeno uno</string>
     <string name="action_set_as_ringtone">Imposta come suoneria</string>
     <string name="action_share">Condividi</string>
     <string name="action_settings">Impostazioni</string>
@@ -184,6 +186,7 @@
     <string name="intro_label">Introduzione</string>
     <string name="welcome_to_phonograph">Benvenuto in Phonograph, un music player bellissimo e leggero per Android. </string>
     <string name="folders">Cartelle</string>
+    <string name="files">File</string>
     <string name="theme_switch">Cambia tema</string>
     <string name="failed_to_save_playlist">Salvataggio playlist fallito (%s).</string>
     <string name="saved_x_playlists_to_x">Salvate %1$d playlist in %2$s.</string>
@@ -240,13 +243,13 @@
     <string name="copy_to_clipboard">copia negli appunti</string>
     <string name="success">Successo!</string>
     <string name="failed">Fallito!</string>
-    <string name="clear_all_preference">cancella tutte le impostazioni dell\'applicazione</string>
+    <string name="clear_all_preference">Cancella tutte le impostazioni dell\'applicazione</string>
     <string name="clear_all_preference_msg"><b>Attenzione</b>: ciò resetterà <b>TUTTE</b> le preferenze/impostazioni dell\'app!\n\nQuesto potrebbe essere molto utile se l\'applicazione si arresta in modo anomalo all\'avvio.\nSei sicuro?</string>
     <string name="failed_to_delete">Impossibile eliminare</string>
     <string name="grant_permission">Concedi autorizzazione</string>
     <string name="retry">Riprova</string>
     <string name="permission_manage_external_storage_denied">sembra che Phonograph non abbia il permesso di \"gestire l\'archiviazione esterna\"!</string>
-    <string name="not_available_now">non disponibile ora</string>
+    <string name="not_available_now">Non disponibile ora</string>
     <string name="check_upgrade">Controlla aggiornamenti</string>
     <string name="no_newer_version">Nessun aggiornamento!</string>
     <string name="new_version">Nuova versione!</string>
@@ -368,7 +371,7 @@
     <string name="delete_with_lyrics">Elimina con i testi</string>
     <string name="excluded_paths">Percorsi Esclusi</string>
     <string name="included_paths">Percorsi Inclusi</string>
-    <string name="swith_mode">modalità di commutazione</string>
+    <string name="swith_mode">Cambia modalità</string>
     <string name="path_filter">Filtro Percorso</string>
     <string name="path_filter_excluded_mode">Modalità Esclusione</string>
     <string name="path_filter_included_mode">Modalità Inclusione</string>
@@ -397,4 +400,18 @@
     <string name="image_source_media_metadata_retriever">Recuperatore di metadati multimediali Android</string>
     <string name="image_source_external_file">File esterno</string>
     <string name="image_source_config">Configurazione origine immagine</string>
+    <string name="grant_permission_description">Alcuni permessi necessari sono richiesti per assicurare un corretto funzionamento dell\'app.</string>
+    <string name="permission_name_post_notifications">Pubblica notifiche</string>
+    <string name="permission_desc_post_notifications">A partire da Android T (13), le app richiedono questa autorizzazione per pubblicare notifiche.</string>
+    <string name="permission_desc_read_media_audio">A partire da Android T (13), le applicazioni con questa autorizzazione possono leggere gli audio del dispositivo.</string>
+    <string name="permission_name_read_external_storage">Leggi memoria esterna</string>
+    <string name="permission_desc_read_external_storage">L\'autorizzazione a leggere la memoria esterna è richiesta per leggere file musicali nel dispositivo.</string>
+    <string name="completed">Completato</string>
+    <string name="dynamic_colors">Colori dinamici</string>
+    <string name="pref_title_enable_monet">Abilita Monet</string>
+    <string name="pref_summary_enable_monet">Utilizza un tema Material You basato sullo sfondo. (Funzione sperimentale, supporto parziale a Material You)</string>
+    <string name="action_import">Importa %1$s</string>
+    <string name="action_export">Esporta %1$s</string>
+    <string name="action_reboot">Riavvia l\'app</string>
+    <string name="process">In Elaborazione...</string>
 </resources>
