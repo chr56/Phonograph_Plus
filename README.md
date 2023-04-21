@@ -146,7 +146,7 @@ See [Build_Instructions.md](./Build_Instructions.md)
 
 - [x] Rewrite Tag Editor
 
-- [ ] Improve data backup/migrate
+- [ ] Improve data backup/migrate (WIP🚧)
 
 - [ ] Improve App Intro (WIP🚧)
 
