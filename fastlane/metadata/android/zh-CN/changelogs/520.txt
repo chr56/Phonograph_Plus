@@ -1,0 +1,8 @@
+<b>0.6.2(520) 2023.04.22</b>
+- 新增 [Android S 及以上] 支持读取系统 Material You 动态颜色
+- 新增 [Android S 及以上] 支持主题颜色跟随系统 Material You 动态颜色（“Monet”）[实验性支持，仅颜色支持，非完整的 Material You 主题]
+- 新增 更好的备份机制
+- 改进 所有备份使用压缩包
+- 改进 支持选择备份导入与导出的内容
+- 改进 备份的交互体验
+...(Visit project homepage to see full changelogs)

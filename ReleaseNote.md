@@ -1,4 +1,4 @@
-## {{version:0.6.2-dev3}} {{versionCode:513}} {{date:1681630000}} {{channel:preview}}
+## {{version:0.6.2}} {{versionCode:520}} {{date:1682158000}} {{channel:stable}}
 
 ### {{note:en}}
 - New: [Android S and above] support to read system Material You dynamic colors 
@@ -7,10 +7,10 @@
 - Improve: All backup files are zipped in one file
 - Improve: Allow to choose what content to import or export
 - Improve: better user interface for backup
-- Fix: generated playlist can not be clear (since v0.6.0)
+- Fix: generated playlist can not be cleared (since v0.6.0)
 - Fix: color and style of some dialogs
 - Fix: some text not capitalized (by Porkepix)
-- Translation: update German (by cvzi & conk)
+- Translation: update German (by cvzi & conk), Italian (by Jacopo Norcini Pala (iagomago))
 - Development: upgrade AGP to 7.4.2, remove unused strings, cleanup codes
 
 ### {{note:zh}}
@@ -23,5 +23,5 @@
 - 修复 无法清空生成的播放列表 (v0.6.0起)
 - 修复 某些对话框的颜色和样式
 - 修复 某些文本未大写 (by Porkepix)
-- 翻译 更新德语翻译 (by cvzi & conk)
+- 翻译 更新德语翻译 (by cvzi & conk)，意大利语翻译 (by Jacopo Norcini Pala (iagomago))
 - 开发 更新 AGP 至 7.4.2, 清理代码

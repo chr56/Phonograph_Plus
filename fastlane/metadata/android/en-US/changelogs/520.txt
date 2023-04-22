@@ -1,0 +1,7 @@
+<b>0.6.2(520) 2023.04.22</b>
+- New: [Android S and above] support to read system Material You dynamic colors 
+- New: [Android S and above] support to follow system Material You dynamic colors ("Monet") [experimental, only color support, NO FULL Material You support]
+- New: Better Backup mechanises
+- Improve: All backup files are zipped in one file
+- Improve: Allow to choose what content to import or export
+...(Visit project homepage to see full changelogs)
