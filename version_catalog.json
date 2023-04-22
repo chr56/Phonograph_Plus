@@ -1,19 +1,19 @@
 {
   "versions": [
     {
-      "channel": "preview",
-      "versionName": "0.6.2-dev3",
-      "versionCode": 513,
-      "date": 1681630000,
+      "channel": "stable",
+      "versionName": "0.6.2",
+      "versionCode": 520,
+      "date": 1682158000,
       "link": [
         {
           "name": "Github Release",
-          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/v0.6.2-dev3"
+          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/v0.6.2"
         }
       ],
       "releaseNote": {
-        "zh-cn": "<ol><li>新增 [Android S 及以上] 支持读取系统 Material You 动态颜色</li><li>新增 [Android S 及以上] 支持主题颜色跟随系统 Material You 动态颜色（“Monet”）[实验性支持，仅颜色支持，非完整的 Material You 主题]</li><li>新增 更好的备份机制</li><li>改进 所有备份使用压缩包</li><li>改进 支持选择备份导入与导出的内容</li><li>改进 备份的交互体验</li><li>修复 无法清空生成的播放列表 (v0.6.0起)</li><li>修复 某些对话框的颜色和样式</li><li>修复 某些文本未大写 (by Porkepix)</li><li>翻译 更新德语翻译 (by cvzi & conk)</li><li>开发 更新 AGP 至 7.4.2, 清理代码</li></ol>",
-        "en": "<ol><li>New: [Android S and above] support to read system Material You dynamic colors </li><li>New: [Android S and above] support to follow system Material You dynamic colors (\"Monet\") [experimental, only color support, NO FULL Material You support]</li><li>New: Better Backup mechanises</li><li>Improve: All backup files are zipped in one file</li><li>Improve: Allow to choose what content to import or export</li><li>Improve: better user interface for backup</li><li>Fix: generated playlist can not be clear (since v0.6.0)</li><li>Fix: color and style of some dialogs</li><li>Fix: some text not capitalized (by Porkepix)</li><li>Translation: update German (by cvzi & conk)</li><li>Development: upgrade AGP to 7.4.2, remove unused strings, cleanup codes</li></ol>"
+        "zh-cn": "<ol><li>新增 [Android S 及以上] 支持读取系统 Material You 动态颜色</li><li>新增 [Android S 及以上] 支持主题颜色跟随系统 Material You 动态颜色（“Monet”）[实验性支持，仅颜色支持，非完整的 Material You 主题]</li><li>新增 更好的备份机制</li><li>改进 所有备份使用压缩包</li><li>改进 支持选择备份导入与导出的内容</li><li>改进 备份的交互体验</li><li>修复 无法清空生成的播放列表 (v0.6.0起)</li><li>修复 某些对话框的颜色和样式</li><li>修复 某些文本未大写 (by Porkepix)</li><li>翻译 更新德语翻译 (by cvzi & conk)，意大利语翻译 (by Jacopo Norcini Pala (iagomago))</li><li>开发 更新 AGP 至 7.4.2, 清理代码</li></ol>",
+        "en": "<ol><li>New: [Android S and above] support to read system Material You dynamic colors </li><li>New: [Android S and above] support to follow system Material You dynamic colors (\"Monet\") [experimental, only color support, NO FULL Material You support]</li><li>New: Better Backup mechanises</li><li>Improve: All backup files are zipped in one file</li><li>Improve: Allow to choose what content to import or export</li><li>Improve: better user interface for backup</li><li>Fix: generated playlist can not be cleared (since v0.6.0)</li><li>Fix: color and style of some dialogs</li><li>Fix: some text not capitalized (by Porkepix)</li><li>Translation: update German (by cvzi & conk), Italian (by Jacopo Norcini Pala (iagomago))</li><li>Development: upgrade AGP to 7.4.2, remove unused strings, cleanup codes</li></ol>"
       }
     },
     {
@@ -46,22 +46,6 @@
       "releaseNote": {
         "zh-cn": "<ol><li>改进 支持mp4(m4a)格式</li><li>修复 某个错误的备份文件名称</li><li>开发 其他针对F-Droid的小修改</li></ol>",
         "en": "<ol><li>Improve: support mp4(m4a) format</li><li>Fix: an incorrect name of backup file</li><li>Development: small miscellaneous changes for F-Droid </li></ol>"
-      }
-    },
-    {
-      "channel": "stable",
-      "versionName": "0.6.0",
-      "versionCode": 500,
-      "date": 1678264000,
-      "link": [
-        {
-          "name": "Github Release",
-          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/v0.6.0"
-        }
-      ],
-      "releaseNote": {
-        "zh-cn": "<ol><li>新增 平铺式文件夹页面</li><li>新增 全新的音乐标签编辑器（包括单曲编辑和批量编辑）</li><li>新增 备份路径过滤器、播放队列、收藏夹歌曲，支持跨设备迁移（只要两机的歌曲位置不动）。</li><li>移除 旧的音乐标签编辑器</li><li>改进 对多选和艺术家曲目进行批量编辑音乐标签</li><li>改进 标签页的顺序</li><li>改进 播放列表保存和删除</li><li>修改 导出设置json格式（警告：与先前版本不兼容）</li><li>修改 清除所有设置后强制重启应用</li><li>修改 禁止从旧版本升级（v0.2.4-RC1以前的版本）</li><li>修复 歌曲图像来源配置中的交互异常</li><li>修复 清除所有设置时的崩溃</li><li>修复 导入设置备份后崩溃</li><li>翻译 更新意大利语(by gdonisi)</li><li>开发 使用独立文件中存储播放器状态</li><li>开发 清理代码，重构项目结构</li><li>开发 更新AGP至7.4.1， kotlin至1.8.10， 更新其他依赖</li></ol>",
-        "en": "<ol><li>Add: Flatten Folder Page</li><li>Add: brand-new music tag editors (including Single Edit and Batch Edit)</li><li>Add: support backup of Path Filter, Playing Queue, Favorites Songs which can be migrated crossing different devices (as long as song locations unchanged)</li><li>Remove: legacy music tag editors</li><li>Improve: allow multi tag editing for the multi-selected and artist</li><li>Improve: order of Tab pages</li><li>Improve: playlists save and delete </li><li>Modify: the exported setting json format (WARNING: Incompatible with previous versions)</li><li>Modify: force reboot app after clearing all settings</li><li>Modify: forbid upgrading from old versions (versions before v0.2.4-RC1)</li><li>Fix: glitch of interactions in Image Source Config</li><li>Fix: crash while clearing all settings</li><li>Fix: crash after importing backups of setting</li><li>Translation: update Italian (by gdonisi)</li><li>Development: store player state in separate preference file</li><li>Development: cleanup code, refactor project structure</li><li>Development: upgrade AGP to 7.4.1, kotlin to 1.8.10 and other dependencies</li></ol>"
       }
     },
     {
