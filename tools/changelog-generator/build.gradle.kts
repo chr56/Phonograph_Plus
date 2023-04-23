@@ -19,6 +19,8 @@ val originalReleaseNotePath = "ReleaseNote.md"
 val outputGitHubReleaseNotePath = "GitHubReleaseNote.md"
 val outputEncodedUrlPath = "GitHubReleaseNote.url.txt"
 
+val changelogsPath = "app/src/main/assets"
+
 tasks.register("GenerateGithubReleaseNote", JavaExec::class.java) {
     args = listOf(
         rootProject.projectDir.absolutePath,
@@ -57,6 +59,19 @@ tasks.register("GenerateHTML", JavaExec::class.java) {
     dependsOn(tasks.findByPath("build"))
 }
 
+tasks.register("RefreshChangelogs", JavaExec::class.java) {
+    args = listOf(
+        rootProject.projectDir.absolutePath,
+        originalReleaseNotePath,
+        changelogsPath
+    )
+
+    classpath = sourceSets.named("main").get().runtimeClasspath
+    mainClass.set("util.phonograph.MainRefreshChangelogsKt")
+
+    dependsOn(tasks.findByPath("build"))
+}
+
 tasks.register("GenerateVersionJson", JavaExec::class.java) {
     args = listOf(
         rootProject.projectDir.absolutePath,
@@ -87,6 +102,6 @@ java {
     targetCompatibility = JavaVersion.VERSION_1_8
 }
 
-dependencies{
+dependencies {
     implementation(depsLibs.kotlinx.serialization.json)
 }
