@@ -2,6 +2,22 @@
   "versions": [
     {
       "channel": "stable",
+      "versionName": "0.6.2.1",
+      "versionCode": 521,
+      "date": 1682260000,
+      "link": [
+        {
+          "name": "Github Release",
+          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/v0.6.2.1"
+        }
+      ],
+      "releaseNote": {
+        "zh-cn": "<ol><li>注意 \"锁屏上显示专辑封面\"功能即将移除(此功能理应由系统负责)</li><li>修复 倒退到起始处后，通知进度条不刷新</li><li>修改 对于Android R (11)及以上，一律忽略设置 \"锁屏上显示专辑封面\"，并修复媒体通知的图片的长宽比异常（功能冲突）</li><li>改进 媒体通知的图像质量[仅限Android T]</li><li>开发 对于Android R (11)及以上，使用 MediaSession Metadata 来设置通知图片</li><li>开发 重构媒体通知的图片加载机制</li></ol>",
+        "en": "<ol><li>Note: Feature \"Show Album Cover on Lockscreen\" would be removed in next versions! (Applications should not be responsible for this!)</li><li>Fix: Progress bar on Notification would not be refreshed after rewinding to beginning</li><li>Modify: On Android R (11) and above, always ignore preference \"Show Album Cover on Lockscreen\", to fix incorrect aspect ratio of Notification Image (due to conflict)</li><li>Improve: Image quality on Media Notification [for Android T]</li><li>Development: On Android R (11) and above, set Notification Image via setting MediaSession Metadata Album Artwork</li><li>Development: refactor Media Notification Image loader mechanises</li></ol>"
+      }
+    },
+    {
+      "channel": "stable",
       "versionName": "0.6.2",
       "versionCode": 520,
       "date": 1682158000,
@@ -30,22 +46,6 @@
       "releaseNote": {
         "zh-cn": "<ol><li>新增 全新的首次启动介绍页</li><li>修改 介绍页内请求权限、设置自动检测更新、恢复设置备份</li><li>翻译 更新意大利语(by gdonisi）</li></ol>",
         "en": "<ol><li>New: a brand-new App Introduction</li><li>Modify: request permissions in App Intro, ask auto-upgrade-check in App Intro, recover setting backup in App Intro</li><li>Translation: updated Italian (by gdonisi)</li></ol>"
-      }
-    },
-    {
-      "channel": "stable",
-      "versionName": "0.6.0.1",
-      "versionCode": 501,
-      "date": 1678675000,
-      "link": [
-        {
-          "name": "Github Release",
-          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/v0.6.0.1"
-        }
-      ],
-      "releaseNote": {
-        "zh-cn": "<ol><li>改进 支持mp4(m4a)格式</li><li>修复 某个错误的备份文件名称</li><li>开发 其他针对F-Droid的小修改</li></ol>",
-        "en": "<ol><li>Improve: support mp4(m4a) format</li><li>Fix: an incorrect name of backup file</li><li>Development: small miscellaneous changes for F-Droid </li></ol>"
       }
     },
     {
