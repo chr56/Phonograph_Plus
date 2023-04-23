@@ -407,6 +407,11 @@ class MusicService : Service(), OnSharedPreferenceChangeListener {
         }
     }
 
+    internal fun requireRefreshMetadata(){
+        playNotificationManager.updateMediaSessionMetaData()
+        playNotificationManager.updateMediaSessionPlaybackState()
+    }
+
 
     override fun attachBaseContext(base: Context?) {
         // Localization

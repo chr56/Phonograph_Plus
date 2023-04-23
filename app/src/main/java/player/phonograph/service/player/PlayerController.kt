@@ -302,7 +302,8 @@ class PlayerController(internal val service: MusicService) : Playback.PlaybackCa
         it.rewindToBeginningImp()
     }
     private fun rewindToBeginningImp() {
-        audioPlayer.seek(0)
+        seekTo(0)
+        service.requireRefreshMetadata()
     }
 
     /**
