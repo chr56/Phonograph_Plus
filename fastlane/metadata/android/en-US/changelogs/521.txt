@@ -1,0 +1,6 @@
+<b>0.6.2.1(521) 2023.04.23</b>
+- Note: Feature "Show Album Cover on Lockscreen" would be removed in next versions!
+- Fix: Progress bar on Notification would not be refreshed after rewinding to beginning
+- Modify: On Android R (11) and above, always ignore preference "Show Album Cover on Lockscreen", to fix incorrect aspect ratio of Notification Image
+- Improve: Notification Image quality
+...(Visit project homepage to see full changelogs)

@@ -1,27 +1,17 @@
-## {{version:0.6.2}} {{versionCode:520}} {{date:1682158000}} {{channel:stable}}
+## {{version:0.6.2.1}} {{versionCode:521}} {{date:1682260000}} {{channel:stable}}
 
 ### {{note:en}}
-- New: [Android S and above] support to read system Material You dynamic colors 
-- New: [Android S and above] support to follow system Material You dynamic colors ("Monet") [experimental, only color support, NO FULL Material You support]
-- New: Better Backup mechanises
-- Improve: All backup files are zipped in one file
-- Improve: Allow to choose what content to import or export
-- Improve: better user interface for backup
-- Fix: generated playlist can not be cleared (since v0.6.0)
-- Fix: color and style of some dialogs
-- Fix: some text not capitalized (by Porkepix)
-- Translation: update German (by cvzi & conk), Italian (by Jacopo Norcini Pala (iagomago))
-- Development: upgrade AGP to 7.4.2, remove unused strings, cleanup codes
+- Note: Feature "Show Album Cover on Lockscreen" would be removed in next versions! (Applications should not be responsible for this!)
+- Fix: Progress bar on Notification would not be refreshed after rewinding to beginning
+- Modify: On Android R (11) and above, always ignore preference "Show Album Cover on Lockscreen", to fix incorrect aspect ratio of Notification Image (due to conflict)
+- Improve: Image quality on Media Notification [for Android T]
+- Development: On Android R (11) and above, set Notification Image via setting MediaSession Metadata Album Artwork
+- Development: refactor Media Notification Image loader mechanises
 
 ### {{note:zh}}
-- 新增 [Android S 及以上] 支持读取系统 Material You 动态颜色
-- 新增 [Android S 及以上] 支持主题颜色跟随系统 Material You 动态颜色（“Monet”）[实验性支持，仅颜色支持，非完整的 Material You 主题]
-- 新增 更好的备份机制
-- 改进 所有备份使用压缩包
-- 改进 支持选择备份导入与导出的内容
-- 改进 备份的交互体验
-- 修复 无法清空生成的播放列表 (v0.6.0起)
-- 修复 某些对话框的颜色和样式
-- 修复 某些文本未大写 (by Porkepix)
-- 翻译 更新德语翻译 (by cvzi & conk)，意大利语翻译 (by Jacopo Norcini Pala (iagomago))
-- 开发 更新 AGP 至 7.4.2, 清理代码
+- 注意 "锁屏上显示专辑封面"功能即将移除(此功能理应由系统负责)
+- 修复 倒退到起始处后，通知进度条不刷新
+- 修改 对于Android R (11)及以上，一律忽略设置 "锁屏上显示专辑封面"，并修复媒体通知的图片的长宽比异常（功能冲突）
+- 改进 媒体通知的图像质量[仅限Android T]
+- 开发 对于Android R (11)及以上，使用 MediaSession Metadata 来设置通知图片
+- 开发 重构媒体通知的图片加载机制
