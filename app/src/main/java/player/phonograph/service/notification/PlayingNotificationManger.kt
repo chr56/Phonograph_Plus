@@ -485,6 +485,8 @@ class PlayingNotificationManger(private val service: MusicService) {
                 )
             }
 
+        mediaSession.setMetadata(metaData.build())
+
         if (Setting.instance.albumArtOnLockscreen) {
             val screenSize = service.getScreenSize().run { Size(x, y) }
             val loader = Coil.imageLoader(service)
@@ -494,25 +496,15 @@ class PlayingNotificationManger(private val service: MusicService) {
                     .size(screenSize)
                     .target(
                         onSuccess = {
-                            metaData.putBitmap(
-                                METADATA_KEY_ALBUM_ART,
-                                it.toBitmap()
-                            )
-                            mediaSession.setMetadata(metaData.build())
-                        },
-                        onError = {
+                            metaData.putBitmap(METADATA_KEY_ALBUM_ART, it.toBitmap())
                             mediaSession.setMetadata(metaData.build())
                         }
                     )
                     .apply {
-                        if (Setting.instance.blurredAlbumArt) transformations(
-                            BlurTransformation(service)
-                        )
+                        if (Setting.instance.blurredAlbumArt) transformations(BlurTransformation(service))
                     }
                     .build()
             loader.enqueue(imageRequest)
-        } else {
-            mediaSession.setMetadata(metaData.build())
         }
     }
 
