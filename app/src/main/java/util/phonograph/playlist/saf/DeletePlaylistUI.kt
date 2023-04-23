@@ -19,6 +19,7 @@ import android.content.DialogInterface
 import android.util.Log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import mt.color.R as MR
 
 /**
  * use SAF to choose a directory, and delete playlist inside this directory with user's confirmation
@@ -58,9 +59,9 @@ suspend fun deletePlaylistsViaSAF(
 
         dialog.also {
             it.getButton(DialogInterface.BUTTON_POSITIVE)
-                .setTextColor(activity.getColor(R.color.md_red_800))
+                .setTextColor(activity.getColor(MR.color.md_red_800))
             it.getButton(DialogInterface.BUTTON_NEGATIVE)
-                .setTextColor(activity.getColor(R.color.md_grey_500))
+                .setTextColor(activity.getColor(MR.color.md_grey_500))
         }
 
         dialog.show()

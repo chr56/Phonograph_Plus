@@ -35,6 +35,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import java.io.File
+import mt.color.R as MR
 
 class CrashActivity : ToolbarActivity() {
 
@@ -43,10 +44,10 @@ class CrashActivity : ToolbarActivity() {
     private var crashReportMode = true
 
     private val colorPrimaryDeep get() =  resources.getColor(
-        if (crashReportMode) R.color.md_deep_orange_900 else R.color.md_grey_800, theme
+        if (crashReportMode) MR.color.md_deep_orange_900 else MR.color.md_grey_800, theme
     )
     private val colorPrimary get() =  resources.getColor(
-        if (crashReportMode) R.color.md_deep_orange_700 else R.color.md_grey_700, theme
+        if (crashReportMode) MR.color.md_deep_orange_700 else MR.color.md_grey_700, theme
     )
 
 
@@ -169,7 +170,7 @@ class CrashActivity : ToolbarActivity() {
                     }
                     dialog.show()
                     dialog.getButton(DialogInterface.BUTTON_POSITIVE)
-                        ?.setTextColor(getColor(R.color.md_red_A700))
+                        ?.setTextColor(getColor(MR.color.md_red_A700))
                     true
                 }
             }

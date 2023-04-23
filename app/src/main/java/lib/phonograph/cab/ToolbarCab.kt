@@ -122,7 +122,7 @@ class ToolbarCab internal constructor(
         }
 
     @StyleRes
-    var popThemeRes: Int = R.style.ThemeOverlay_AppCompat_DayNight_ActionBar
+    var popThemeRes: Int = androidx.appcompat.R.style.ThemeOverlay_AppCompat_DayNight_ActionBar
         set(value) {
             field = value
             toolbar.popupTheme = value

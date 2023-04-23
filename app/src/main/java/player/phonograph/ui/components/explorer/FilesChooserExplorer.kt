@@ -26,7 +26,7 @@ class FilesChooserExplorer(
     override fun initModel(model: FilesChooserViewModel) {
         fileModel = model
         binding.buttonPageHeader.visibility = GONE
-        binding.buttonBack.setImageDrawable(activity.getThemedDrawable(R.drawable.md_nav_back))
+        binding.buttonBack.setImageDrawable(activity.getThemedDrawable(com.afollestad.materialdialogs.R.drawable.md_nav_back))
         binding.buttonBack.setOnClickListener { gotoTopLevel(true) }
         binding.buttonBack.setOnLongClickListener {
             model.currentLocation = Location.HOME

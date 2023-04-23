@@ -100,7 +100,7 @@ class SearchAdapter(
         init {
             itemView.setOnLongClickListener(null)
             if (itemViewType != HEADER) {
-                itemView.setBackgroundColor(resolveColor(activity, R.attr.cardBackgroundColor))
+                itemView.setBackgroundColor(resolveColor(activity, androidx.cardview.R.attr.cardBackgroundColor))
                 itemView.elevation = activity.resources.getDimensionPixelSize(R.dimen.card_elevation).toFloat()
                 shortSeparator?.visibility = View.GONE
             }

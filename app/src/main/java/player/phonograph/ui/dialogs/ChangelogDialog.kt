@@ -91,7 +91,7 @@ class ChangelogDialog : DialogFragment() {
         val backgroundColor =
             resolveColor(
                 requireContext(),
-                R.attr.md_background_color,
+                com.afollestad.materialdialogs.R.attr.md_background_color,
                 Color.parseColor(if (requireContext().nightMode) "#424242" else "#ffffff")
             )
 

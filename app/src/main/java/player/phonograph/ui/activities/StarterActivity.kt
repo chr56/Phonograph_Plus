@@ -324,7 +324,7 @@ class StarterActivity : AppCompatActivity() {
             }
 
             val dialogView = createDialogView(text, buttons, { selected = it }, ok)
-            return AlertDialog.Builder(context, R.style.ThemeOverlay_AppCompat_Dialog_Alert)
+            return AlertDialog.Builder(context, androidx.appcompat.R.style.ThemeOverlay_AppCompat_Dialog_Alert)
                 .setView(dialogView).create()
         }
 

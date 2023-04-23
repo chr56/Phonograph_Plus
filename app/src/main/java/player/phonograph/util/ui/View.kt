@@ -27,13 +27,13 @@ fun FastScrollRecyclerView.setUpFastScrollRecyclerViewColor(context: Context, ac
     setPopupBgColor(accentColor)
     setPopupTextColor(context.primaryTextColor(accentColor))
     setThumbColor(accentColor)
-    setTrackColor(withAlpha(resolveColor(context, R.attr.colorControlNormal), 0.12f)) // todo
+    setTrackColor(withAlpha(resolveColor(context, androidx.appcompat.R.attr.colorControlNormal), 0.12f)) // todo
 }
 
 
 fun getActionBarSize(context: Context): Int {
     val typedValue = TypedValue()
-    val textSizeAttr = intArrayOf(R.attr.actionBarSize)
+    val textSizeAttr = intArrayOf(androidx.appcompat.R.attr.actionBarSize)
     val indexOfAttrTextSize = 0
     val a = context.obtainStyledAttributes(typedValue.data, textSizeAttr)
     val actionBarSize = a.getDimensionPixelSize(indexOfAttrTextSize, -1)

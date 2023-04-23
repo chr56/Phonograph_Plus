@@ -89,7 +89,7 @@ sealed class AbsFilesExplorer<M : AbsFileViewModel>(protected val context: Conte
                 if (model.currentLocation.parent == null) {
                     context.getThemedDrawable(R.drawable.ic_library_music_white_24dp)
                 } else {
-                    context.getThemedDrawable(R.drawable.icon_back_white)
+                    context.getThemedDrawable(com.afollestad.materialdialogs.color.R.drawable.icon_back_white)
                 }
             )
             binding.container.isRefreshing = false

@@ -79,7 +79,7 @@ class LyricsDialog : LargeDialog(), MusicProgressViewUpdateHelper.Callback {
         requireDialog().window!!.setBackgroundDrawable(
             GradientDrawable().apply {
                 this.cornerRadius = 0f
-                setColor(requireContext().theme.obtainStyledAttributes(intArrayOf(R.attr.colorBackgroundFloating)).getColor(0, 0))
+                setColor(requireContext().theme.obtainStyledAttributes(intArrayOf(androidx.appcompat.R.attr.colorBackgroundFloating)).getColor(0, 0))
             }
         )
         binding.ok.setOnClickListener { requireDialog().dismiss() }
@@ -99,7 +99,7 @@ class LyricsDialog : LargeDialog(), MusicProgressViewUpdateHelper.Callback {
     }
 
     private fun createChip(text: String, index: Int, checked: Boolean = false, callback: (Chip, Int) -> Unit): Chip {
-        val chip = Chip(requireContext(), null, R.style.Widget_MaterialComponents_Chip_Choice)
+        val chip = Chip(requireContext(), null, com.google.android.material.R.style.Widget_MaterialComponents_Chip_Choice)
         chip.text = text
         chip.isChecked = checked
         chip.setTextColor(getChipTextColor(checked))

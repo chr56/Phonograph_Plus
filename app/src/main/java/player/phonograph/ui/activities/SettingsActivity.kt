@@ -34,6 +34,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.io.FileInputStream
+import mt.color.R as MR
 
 class SettingsActivity : ToolbarActivity(), ICreateFileStorageAccess, IOpenFileStorageAccess {
 
@@ -115,7 +116,7 @@ class SettingsActivity : ToolbarActivity(), ICreateFileStorageAccess, IOpenFileS
                             Reboot.reboot(context)
                         }
                         cancelOnTouchOutside(true)
-                        getActionButton(WhichButton.POSITIVE).updateTextColor(getColor(R.color.md_red_A700))
+                        getActionButton(WhichButton.POSITIVE).updateTextColor(getColor(MR.color.md_red_A700))
                     }
                     true
                 }

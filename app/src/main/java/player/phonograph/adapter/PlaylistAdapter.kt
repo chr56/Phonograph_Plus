@@ -110,7 +110,7 @@ class PlaylistAdapter(
                 if (shortSeparator != null) {
                     shortSeparator!!.visibility = View.GONE
                 }
-                itemView.setBackgroundColor(resolveColor(activity, R.attr.cardBackgroundColor))
+                itemView.setBackgroundColor(resolveColor(activity, androidx.cardview.R.attr.cardBackgroundColor))
                 // if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 itemView.elevation =
                     activity.resources.getDimensionPixelSize(R.dimen.card_elevation).toFloat()

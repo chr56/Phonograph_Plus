@@ -11,6 +11,7 @@ import player.phonograph.mechanism.setting.StyleConfig
 import android.content.Context
 import android.content.res.Configuration
 import android.os.Build
+import mt.color.R as MR
 
 
 /**
@@ -30,10 +31,10 @@ val Context.nightMode: Boolean get() = StyleConfig.isNightMode(this)
 fun backgroundColorByTheme(context: Context): Int = context.resources.getColor(
     when (StyleConfig.generalTheme(context)) {
         R.style.Theme_Phonograph_Auto  -> R.color.cardBackgroundColor
-        R.style.Theme_Phonograph_Light -> R.color.md_white_1000
-        R.style.Theme_Phonograph_Black -> R.color.md_black_1000
-        R.style.Theme_Phonograph_Dark  -> R.color.md_grey_800
-        else                           -> R.color.md_grey_700
+        R.style.Theme_Phonograph_Light -> MR.color.md_white_1000
+        R.style.Theme_Phonograph_Black -> MR.color.md_black_1000
+        R.style.Theme_Phonograph_Dark  -> MR.color.md_grey_800
+        else                           -> MR.color.md_grey_700
     },
     context.theme
 )
