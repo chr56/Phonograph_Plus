@@ -173,11 +173,16 @@ class PlayingNotificationManger(private val service: MusicService) {
             postNotification(notificationBuilder.build())
 
 
-            val size = with(service.resources) {
-                Size(
-                    getDimensionPixelSize(androidx.core.R.dimen.notification_large_icon_width),
-                    getDimensionPixelSize(androidx.core.R.dimen.notification_large_icon_height)
-                )
+            val largeIconSize = with(service.resources) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    // on Vanilla Android T (13), the large icon of media notification is background, so no limit there
+                    Size.ORIGINAL
+                } else {
+                    Size(
+                        getDimensionPixelSize(androidx.core.R.dimen.notification_large_icon_width),
+                        getDimensionPixelSize(androidx.core.R.dimen.notification_large_icon_height)
+                    )
+                }
             }
 
             // then try to load cover image
@@ -185,7 +190,7 @@ class PlayingNotificationManger(private val service: MusicService) {
             val imageRequest =
                 ImageRequest.Builder(service)
                     .data(song)
-                    .size(size)
+                    .size(largeIconSize)
                     .target(
                         PaletteTargetBuilder(service)
                             .onResourceReady { result, paletteColor ->
