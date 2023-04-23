@@ -215,6 +215,7 @@ class MusicService : Service(), OnSharedPreferenceChangeListener {
         isDestroyed = true
         playNotificationManager.mediaSession.isActive = false
         playNotificationManager.removeNotification()
+        playNotificationManager.close()
         closeAudioEffectSession()
         playNotificationManager.mediaSession.release()
         unregisterReceiver(widgetIntentReceiver)
