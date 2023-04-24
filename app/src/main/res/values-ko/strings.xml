@@ -89,14 +89,11 @@
     <string name="pref_header_audio">오디오</string>
     <string name="pref_header_library">보관함</string>
     <string name="pref_header_images">이미지</string>
-    <string name="pref_header_lockscreen">잠금 화면</string>
     <string name="pref_header_playlists">재생목록</string>
     <string name="pref_header_notification">알림</string>
     <string name="pref_title_navigation_bar">내비게이션 바 색상 틴트</string>
     <string name="pref_title_app_shortcuts">앱 바로가기 색칠</string>
-    <string name="pref_title_album_art_on_lockscreen">앨범 커버 보이기</string>
     <string name="pref_title_auto_download_metadata">메타데이터 자동 다운로드</string>
-    <string name="pref_title_blurred_album_art">앨범 커버 블러 효과</string>
     <string name="pref_title_colored_notification">알림 색상 틴트</string>
     <string name="pref_title_classic_notification">클래식 알림 디자인</string>
     <string name="pref_title_gapless_playback">갭리스 재생</string>
@@ -123,8 +120,6 @@
     <string name="empty">트랙 없음</string>
     <string name="playlist_name_empty">재생 목록 이름</string>
     <string name="song">노래</string>
-    <string name="pref_summary_album_art_on_lockscreen">현재 재생 중인 노래의 앨범 커버를 잠금 화면의 배경 화면으로 사용합니다.</string>
-    <string name="pref_summary_blurred_album_art">잠금화면에서 앨범 커버를 흐릿하게 표시합니다. 써드파티 앱이나 위젯에서 문제가 발생할 수도 있습니다.</string>
     <string name="pref_summary_classic_notification">클래식 알림 디자인 사용</string>
     <string name="pref_summary_colored_notification">\uc54c\ub9bc \ucee8\ud2b8\ub864\uc744 \uc568\ubc94 \uc544\ud2b8\uc758 \uc8fc \uc0c9\uc0c1\uc73c\ub85c \uce60\ud569\ub2c8\ub2e4.</string>
     <string name="pref_summary_gapless_playback">일부 기기에서 곡 전환 관련 문제가 발생할 수 있습니다.</string>

@@ -89,14 +89,11 @@
     <string name="pref_header_audio">Âm thanh</string>
     <string name="pref_header_library">Thư viện</string>
     <string name="pref_header_images">Hình ảnh</string>
-    <string name="pref_header_lockscreen">Màn hình khóa</string>
     <string name="pref_header_playlists">Danh sách nhạc</string>
     <string name="pref_header_notification">Thông báo</string>
     <string name="pref_title_navigation_bar">Màu thanh điều hướng</string>
     <string name="pref_title_app_shortcuts">Màu sắc biểu tượng ứng dụng</string>
-    <string name="pref_title_album_art_on_lockscreen">Hiện bìa album</string>
     <string name="pref_title_auto_download_metadata">Tự động tải xuống siêu dữ liệu</string>
-    <string name="pref_title_blurred_album_art">Làm mờ bìa album</string>
     <string name="pref_title_colored_notification">Màu thông báo</string>
     <string name="pref_title_classic_notification">Thiết kế thông báo cổ điển</string>
     <string name="pref_title_gapless_playback">Phát lại quãng lặng</string>
@@ -124,8 +121,6 @@
     <string name="empty">Trống</string>
     <string name="playlist_name_empty">Tên danh sách nhạc</string>
     <string name="song">Bài hát</string>
-    <string name="pref_summary_album_art_on_lockscreen">Sử dụng bìa album các bài hát hiện tại làm hình nền màn hình khóa.</string>
-    <string name="pref_summary_blurred_album_art">Làm mờ bìa album trên màn hình khóa. Có thể gây ra vấn đề với các ứng dụng của bên thứ ba và các tiện ích (widget).</string>
     <string name="pref_summary_classic_notification">Sử dụng thiết kế thông báo cổ điển.</string>
     <string name="pref_summary_colored_notification">M\u00e0u s\u1eafc r\u1ef1c r\u1ee1 cho c\u00e1c th\u00f4ng b\u00e1o trong b\u00eca album.</string>
     <string name="pref_summary_gapless_playback">Có thể gây ra các vấn đề phát trên một số thiết bị.</string>

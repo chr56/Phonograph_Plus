@@ -98,14 +98,11 @@
     <string name="pref_header_player_behaviour">播放器行為</string>
     <string name="pref_header_library">音樂庫</string>
     <string name="pref_header_images">圖片</string>
-    <string name="pref_header_lockscreen">鎖定螢幕</string>
     <string name="pref_header_playlists">播放清單</string>
     <string name="pref_header_notification">通知</string>
     <string name="pref_title_navigation_bar">彩色的導航列</string>
     <string name="pref_title_app_shortcuts">彩色的應用快捷方式</string>
-    <string name="pref_title_album_art_on_lockscreen">顯示專輯封面</string>
     <string name="pref_title_auto_download_metadata">自動下載元數據</string>
-    <string name="pref_title_blurred_album_art">將專輯圖片模糊化</string>
     <string name="pref_title_colored_notification">彩色的狀態列</string>
     <string name="pref_title_classic_notification">經典通知樣式</string>
     <string name="pref_title_gapless_playback">無縫播放</string>
@@ -133,8 +130,6 @@
     <string name="empty">空的</string>
     <string name="playlist_name_empty">播放清單名稱</string>
     <string name="song">歌曲</string>
-    <string name="pref_summary_album_art_on_lockscreen">將播放中歌曲的專輯封面設為鎖定螢幕背景。</string>
-    <string name="pref_summary_blurred_album_art">在鎖定畫面上模糊化專輯圖片。第三方程式和小工具可能不正常運作。</string>
     <string name="pref_summary_classic_notification">使用經典通知樣式</string>
     <string name="pref_summary_colored_notification">以鮮豔的專輯封面色調作為通知欄顏色</string>
     <string name="pref_summary_gapless_playback">可能會在某些裝置上出現播放問題。</string>

@@ -90,14 +90,11 @@
     <string name="pref_header_audio">Ääni</string>
     <string name="pref_header_library">Kirjasto</string>
     <string name="pref_header_images">Kuvat</string>
-    <string name="pref_header_lockscreen">Lukitusnäyttö</string>
     <string name="pref_header_playlists">Soittolistat</string>
     <string name="pref_header_notification">Ilmoitukset</string>
     <string name="pref_title_navigation_bar">Värillinen navigaatiopalkki</string>
     <string name="pref_title_app_shortcuts">Värilliset sovelluksen pikavalinnat</string>
-    <string name="pref_title_album_art_on_lockscreen">Näytä albumin kansi</string>
     <string name="pref_title_auto_download_metadata">Metatietojen automaattinen lataus</string>
-    <string name="pref_title_blurred_album_art">Sumenna albumin kansi</string>
     <string name="pref_title_colored_notification">Värillinen ilmoitus</string>
     <string name="pref_title_classic_notification">Klassinen ilmoituksen ulkonäkö</string>
     <string name="pref_title_gapless_playback">Tauoton toisto</string>
@@ -125,8 +122,6 @@
     <string name="empty">Tyhjä</string>
     <string name="playlist_name_empty">Soittolistan nimi</string>
     <string name="song">Kappale</string>
-    <string name="pref_summary_album_art_on_lockscreen">Käyttää tämänhetkisen kappaleen albumin kantta lukitusnäytön taustakuvana.</string>
-    <string name="pref_summary_blurred_album_art">Sumentaa albumin kannen lukitusnäytöllä. Saattaa aiheuttaa ongelmia kolmannen osapuolen sovellusten ja widgettien kanssa.</string>
     <string name="pref_summary_classic_notification">Käytä klassista ilmoituksen ulkonäköä.</string>
     <string name="pref_summary_colored_notification">V\u00e4ritt\u00e4\u00e4 ilmoituksen albumin eloisalla v\u00e4rill\u00e4.</string>
     <string name="pref_summary_gapless_playback">Saattaa aiheuttaa toisto-ongelmia joillain laitteilla.</string>

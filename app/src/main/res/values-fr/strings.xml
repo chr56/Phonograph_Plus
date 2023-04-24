@@ -88,13 +88,10 @@
     <string name="pref_title_general_theme">Thème général</string>
     <string name="pref_header_player_behaviour">Comportement du lecteur</string>
     <string name="pref_header_library">Bibliothèque</string>
-    <string name="pref_header_lockscreen">Écran de verrouillage</string>
     <string name="pref_header_playlists">Listes de lecture</string>
     <string name="pref_title_navigation_bar">Barre de navigation colorée</string>
     <string name="pref_title_app_shortcuts">Raccourcis de l\'application colorés</string>
-    <string name="pref_title_album_art_on_lockscreen">Afficher la pochette de l\'album</string>
     <string name="pref_title_auto_download_metadata">Télécharger automatiquement les métadonnées</string>
-    <string name="pref_title_blurred_album_art">Flouter la pochette d\'album</string>
     <string name="pref_title_colored_notification">Notification colorée</string>
     <string name="pref_title_classic_notification">Style de notification classique</string>
     <string name="pref_title_gapless_playback">Lecture sans coupure</string>
@@ -122,8 +119,6 @@
     <string name="empty">Vide</string>
     <string name="playlist_name_empty">Nom de la playlist</string>
     <string name="song">Titre</string>
-    <string name="pref_summary_album_art_on_lockscreen">La pochette d\'album du titre actuel est utilisée comme fond d\'écran de verrouillage.</string>
-    <string name="pref_summary_blurred_album_art">Floute la pochette d\'album sur l\'écran de verrouillage. Peut causer des problèmes avec des applications et des widgets tiers.</string>
     <string name="pref_summary_classic_notification">Utiliser le style de notification classique. </string>
     <string name="pref_summary_colored_notification">Colore la notification en fonction de la pochette de l\'album.</string>
     <string name="pref_summary_gapless_playback">Peut causer des problèmes de lecture sur certains appareils.</string>
