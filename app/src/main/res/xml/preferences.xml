@@ -160,25 +160,6 @@
 
     </lib.phonograph.preference.PreferenceCategoryX>
 
-    <lib.phonograph.preference.PreferenceCategoryX android:title="@string/pref_header_lockscreen">
-
-        <lib.phonograph.preference.SwitchPreferenceX
-            android:defaultValue="true"
-            android:key="album_art_on_lockscreen"
-            android:summary="@string/pref_summary_album_art_on_lockscreen"
-            android:title="@string/pref_title_album_art_on_lockscreen"
-            app:iconSpaceReserved="false" />
-
-        <lib.phonograph.preference.SwitchPreferenceX
-            android:defaultValue="false"
-            android:dependency="album_art_on_lockscreen"
-            android:key="blurred_album_art"
-            android:summary="@string/pref_summary_blurred_album_art"
-            android:title="@string/pref_title_blurred_album_art"
-            app:iconSpaceReserved="false" />
-
-    </lib.phonograph.preference.PreferenceCategoryX>
-
     <lib.phonograph.preference.PreferenceCategoryX android:title="@string/pref_header_player_behaviour">
 
         <lib.phonograph.preference.DialogPreferenceX
