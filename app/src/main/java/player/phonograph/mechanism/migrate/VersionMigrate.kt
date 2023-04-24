@@ -55,7 +55,7 @@ private abstract class Migration(
      * check condition of migrate
      */
     fun check(from: Int, to: Int): Boolean {
-        return from <= to && introduced in from..to
+        return from <= to && introduced in from + 1..to
     }
 
     fun tryMigrate(context: Context, from: Int, to: Int) {
@@ -89,7 +89,7 @@ private class SortOrderMigration : Migration(introduced = 210) {
 
 }
 
-private class QueuePreferenceMigration : Migration(introduced = 454) {
+private class QueuePreferenceMigration : Migration(introduced = 460) {
     override fun doMigrate(context: Context) {
         fun moveTargetPreference(oldKeyName: String, newKeyName: String) =
             moveIntPreference(
@@ -166,7 +166,7 @@ object DeprecatedPreference {
         const val GENRE_SORT_ORDER = "genre_sort_order"
     }
 
-    // "move to a separate preference after 454"
+    // "move to a separate preference since 460"
     object QueueCfg {
         const val PREF_POSITION = "POSITION"
         const val PREF_SHUFFLE_MODE = "SHUFFLE_MODE"
