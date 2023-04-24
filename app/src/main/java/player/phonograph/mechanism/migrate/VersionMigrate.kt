@@ -31,6 +31,7 @@ fun migrate(context: Context, from: Int, to: Int) {
         migrate(SortOrderMigration())
         migrate(QueuePreferenceMigration())
         migrate(PagesMigration())
+        migrate(LockScreenCoverMigration())
     }
 
     Log.i(TAG, "End Migrate")
@@ -123,6 +124,13 @@ private class PagesMigration : Migration(introduced = 460) {
     }
 }
 
+private class LockScreenCoverMigration : Migration(introduced = 522) {
+    override fun doMigrate(context: Context) {
+        removePreference(context, keyName = DeprecatedPreference.LockScreenCover.ALBUM_ART_ON_LOCKSCREEN)
+        removePreference(context, keyName = DeprecatedPreference.LockScreenCover.BLURRED_ALBUM_ART)
+    }
+}
+
 private fun moveIntPreference(
     oldPreference: SharedPreferences,
     oldKeyName: String,
@@ -172,5 +180,11 @@ object DeprecatedPreference {
         const val PREF_SHUFFLE_MODE = "SHUFFLE_MODE"
         const val PREF_REPEAT_MODE = "REPEAT_MODE"
         const val PREF_POSITION_IN_TRACK = "POSITION_IN_TRACK"
+    }
+
+    // "remove lockscreen cover since 522"
+    object LockScreenCover {
+        const val ALBUM_ART_ON_LOCKSCREEN = "album_art_on_lockscreen"
+        const val BLURRED_ALBUM_ART = "blurred_album_art"
     }
 }
