@@ -378,8 +378,6 @@ class MusicService : Service(), OnSharedPreferenceChangeListener {
                     }
                 }
             }
-            Setting.ALBUM_ART_ON_LOCKSCREEN, Setting.BLURRED_ALBUM_ART ->
-                playNotificationManager.updateMediaSessionMetaData()
             Setting.COLORED_NOTIFICATION -> playNotificationManager.updateNotification()
             Setting.CLASSIC_NOTIFICATION -> {
                 playNotificationManager.setUpNotification()
