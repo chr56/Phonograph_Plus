@@ -56,11 +56,11 @@ class ClearPlaylistDialog : DialogFragment() {
                 R.string.permission_manage_external_storage_denied
             ) else "",
             ItemGroup(
-                resources.getQuantityString(R.plurals.item_playlists, filesLists.size),
+                resources.getQuantityString(R.plurals.item_playlists, filesLists.size, filesLists.size),
                 filesLists.map { it.name }
             ),
             ItemGroup(
-                resources.getQuantityString(R.plurals.item_playlists_generated, smartLists.size),
+                resources.getQuantityString(R.plurals.item_playlists_generated, smartLists.size, smartLists.size),
                 smartLists.map { it.name }
             )
         )

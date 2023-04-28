@@ -133,8 +133,8 @@ class DeleteSongsDialog : DialogFragment() {
                         R.string.permission_manage_external_storage_denied
                     ) else "",
                     ItemGroup(
-                        activity.resources.getQuantityString(R.plurals.item_songs,
-                                                             model.songs.size),
+                        activity.resources
+                            .getQuantityString(R.plurals.item_songs, model.songs.size, model.songs.size),
                         model.songs.map { it.title }
                     )
                 )

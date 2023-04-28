@@ -348,20 +348,20 @@
         <item quantity="other">%1$d / %2$d items were successfully deleted.</item>
     </plurals>
     <plurals name="item_songs">
-        <item quantity="one">Song</item>
-        <item quantity="other">Songs</item>
+        <item quantity="one">%1$d Song</item>
+        <item quantity="other">%1$d Songs</item>
     </plurals>
     <plurals name="item_playlists">
-        <item quantity="one">Playlist</item>
-        <item quantity="other">Playlists</item>
+        <item quantity="one">%1$d Playlist</item>
+        <item quantity="other">%1$d Playlists</item>
     </plurals>
     <plurals name="item_files">
-        <item quantity="one">file</item>
-        <item quantity="other">files</item>
+        <item quantity="one">%1$d File</item>
+        <item quantity="other">%1$d Files</item>
     </plurals>
     <plurals name="item_playlists_generated">
-        <item quantity="one">Generated Playlist</item>
-        <item quantity="other">Generated Playlists</item>
+        <item quantity="one">%1$d Generated Playlist</item>
+        <item quantity="other">%1$d Generated Playlists</item>
     </plurals>
     <string name="warning_can_not_retract">This action can not be retracted!</string>
     <string name="delete_with_lyrics">Delete with lyrics</string>
