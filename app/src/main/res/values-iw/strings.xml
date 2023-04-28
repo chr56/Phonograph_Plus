@@ -46,7 +46,7 @@
     <string name="label_file_format">תבנית</string>
     <string name="label_track_length">אורך</string>
     <string name="label_bit_rate">קצב נתונים</string>
-    <string name="label_sampling_rate">עיבוד אותות</string>
+    <string name="label_sampling_rate">קצב דגימה</string>
     <string name="action_go_to_artist">מעבר לאמן</string>
     <string name="action_go_to_album">מעבר לאלבום</string>
     <string name="label_playing_queue">מנגן תור השמעה</string>
