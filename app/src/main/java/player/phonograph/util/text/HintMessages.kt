@@ -18,7 +18,7 @@ fun buildDeletionMessage(
     val res = context.resources
     return buildSomeMessage(
         header =
-        res.getQuantityString(R.plurals.msg_header_delete_items, itemSize),
+        res.getQuantityString(R.plurals.msg_header_delete_items, itemSize, itemSize),
         content = data,
         end = extraSuffix,
         warning = res.getString(R.string.warning_can_not_retract)
@@ -35,7 +35,7 @@ fun buildRemovalMessage(
     val res = context.resources
     return buildSomeMessage(
         header =
-        res.getQuantityString(R.plurals.msg_header_remove_items, itemSize, where),
+        res.getQuantityString(R.plurals.msg_header_remove_items, itemSize, where, itemSize),
         content = data,
         end = suffix,
         warning = res.getString(R.string.warning_can_not_retract)
