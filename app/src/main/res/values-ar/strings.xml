@@ -91,14 +91,11 @@
     <string name="pref_header_audio">الصوت</string>
     <string name="pref_header_library">المكتبة</string>
     <string name="pref_header_images">الصور</string>
-    <string name="pref_header_lockscreen">شاشة القفل</string>
     <string name="pref_header_playlists">قوائم التشغيل</string>
     <string name="pref_header_notification">الإشعار</string>
     <string name="pref_title_navigation_bar">شريط تنقل ملون</string>
     <string name="pref_title_app_shortcuts">اختصارات تطبيق ملونة</string>
-    <string name="pref_title_album_art_on_lockscreen">عرض غلاف الألبوم</string>
     <string name="pref_title_auto_download_metadata">تحميل البيانات الوصفية تلقائياً</string>
-    <string name="pref_title_blurred_album_art">تغييم صورة الألبوم</string>
     <string name="pref_title_colored_notification">إشعار ملون</string>
     <string name="pref_title_classic_notification">تصميم الإشعار الكلاسيكي</string>
     <string name="pref_title_gapless_playback">تشغيل بدون فواصل</string>
@@ -126,8 +123,6 @@
     <string name="empty">فارغ</string>
     <string name="playlist_name_empty">اسم قائمة التشغيل</string>
     <string name="song">الأغنية</string>
-    <string name="pref_summary_album_art_on_lockscreen">استعمال غلاف ألبوم الأغنية الحالية كخلفية لشاشة القفل.</string>
-    <string name="pref_summary_blurred_album_art">تغييم غلاف الألبوم في شاشة القفل. قد يسبب مشاكل مع التطبيقات والأدوات الذكية من طرف ثالث.</string>
     <string name="pref_summary_classic_notification">استعمال تصميم الإشعار الكلاسيكي.</string>
     <string name="pref_summary_colored_notification">\u062a\u0644\u0648\u064a\u0646 \u0627\u0644\u0625\u0634\u0639\u0627\u0631 \u0628\u0644\u0648\u0646 \u063a\u0644\u0627\u0641 \u0627\u0644\u0623\u0644\u0628\u0648\u0645 \u0627\u0644\u0628\u0627\u0631\u0632.</string>
     <string name="pref_summary_gapless_playback">قد يسبب مشاكل في التشغيل على بعض الأجهزة.</string>

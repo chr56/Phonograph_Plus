@@ -104,8 +104,6 @@ class Setting(context: Context) {
     var coloredNotification: Boolean by BooleanPref(COLORED_NOTIFICATION, true)
     var classicNotification: Boolean by BooleanPref(CLASSIC_NOTIFICATION, false)
     var coloredAppShortcuts: Boolean by BooleanPref(COLORED_APP_SHORTCUTS, true)
-    var albumArtOnLockscreen: Boolean by BooleanPref(ALBUM_ART_ON_LOCKSCREEN, true)
-    var blurredAlbumArt: Boolean by BooleanPref(BLURRED_ALBUM_ART, false)
     var fixedTabLayout: Boolean by BooleanPref(FIXED_TAB_LAYOUT, false)
 
     // Behavior-Retention
@@ -270,8 +268,6 @@ class Setting(context: Context) {
         const val COLORED_NOTIFICATION = "colored_notification"
         const val CLASSIC_NOTIFICATION = "classic_notification"
         const val COLORED_APP_SHORTCUTS = "colored_app_shortcuts"
-        const val ALBUM_ART_ON_LOCKSCREEN = "album_art_on_lockscreen"
-        const val BLURRED_ALBUM_ART = "blurred_album_art"
         const val FIXED_TAB_LAYOUT = "fixed_tab_layout"
 
         // Behavior-Retention

@@ -9,11 +9,8 @@ import coil.request.Disposable
 import coil.request.ImageRequest
 import coil.size.Size
 import player.phonograph.R
-import player.phonograph.coil.BlurTransformation
 import player.phonograph.coil.target.PaletteTargetBuilder
 import player.phonograph.model.Song
-import player.phonograph.settings.Setting
-import player.phonograph.util.ui.getScreenSize
 import androidx.core.graphics.drawable.toBitmapOrNull
 import android.content.Context
 import android.graphics.Bitmap
@@ -55,7 +52,6 @@ class CoverLoader(private val context: Context) {
                             }
                             .build()
                     )
-                    .properBlur()
                     .build()
             return loader.enqueue(imageRequest)
         }
@@ -74,31 +70,13 @@ class CoverLoader(private val context: Context) {
                 // add do not allow [albumArtOnLockscreen],
                 // so no operation
             }
-            in VERSION_CODES.R until VERSION_CODES.TIRAMISU -> {
+            in  VERSION_CODES.BASE until VERSION_CODES.TIRAMISU -> {
                 // after Android R (11), [albumArtOnLockscreen] is invalid always
                 size(largeIconSize)
             }
-            in VERSION_CODES.BASE until VERSION_CODES.R -> {
-                // only older than R can use [albumArtOnLockscreen]
-                size(
-                    if (Setting.instance.albumArtOnLockscreen) {
-                        context.getScreenSize().run { Size(x, y) }
-                    } else {
-                        largeIconSize
-                    }
-                )
-            }
         }
         return this
     }
-
-    private fun ImageRequest.Builder.properBlur(): ImageRequest.Builder {
-        if (Setting.instance.blurredAlbumArt) {
-            transformations((BlurTransformation(context)))
-        }
-        return this
-    }
-
 
     internal val defaultCover: Bitmap by lazy(LazyThreadSafetyMode.NONE) {
         BitmapFactory.decodeResource(context.resources, R.drawable.default_album_art)

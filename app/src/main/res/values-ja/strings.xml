@@ -95,14 +95,11 @@
     <string name="pref_header_player_behaviour">プレイヤーの動作</string>
     <string name="pref_header_library">ライブラリ</string>
     <string name="pref_header_images">画像</string>
-    <string name="pref_header_lockscreen">ロック画面</string>
     <string name="pref_header_playlists">プレイリスト</string>
     <string name="pref_header_notification">通知</string>
     <string name="pref_title_navigation_bar">ナビゲーションバーに色を付ける</string>
     <string name="pref_title_app_shortcuts">アプリのショートカットに色を付ける</string>
-    <string name="pref_title_album_art_on_lockscreen">アルバムアートを表示する</string>
     <string name="pref_title_auto_download_metadata">楽曲情報の自動ダウンロード</string>
-    <string name="pref_title_blurred_album_art">アルバムアートにぼかし効果をかける</string>
     <string name="pref_title_colored_notification">通知に色を付ける</string>
     <string name="pref_title_classic_notification">古い通知デザイン</string>
     <string name="pref_title_gapless_playback">ギャップレス再生</string>
@@ -130,8 +127,6 @@
     <string name="empty">空</string>
     <string name="playlist_name_empty">名前を入力…</string>
     <string name="song">タイトル</string>
-    <string name="pref_summary_album_art_on_lockscreen">再生中の曲のアルバムアートをロック画面に表示します。</string>
-    <string name="pref_summary_blurred_album_art">ロック画面に表示するアルバムアートをぼかします。サードパーティのアプリやウィジェットで問題が発生する可能性があります。</string>
     <string name="pref_summary_classic_notification">旧式の通知デザインを使用します。</string>
     <string name="pref_summary_colored_notification">通知をカバーアートの色にする</string>
     <string name="pref_summary_gapless_playback">一部の端末では再生に問題が生じる可能性があります</string>

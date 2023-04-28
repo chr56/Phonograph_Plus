@@ -83,14 +83,11 @@
     <string name="pref_title_general_theme">Temă generală</string>
     <string name="pref_header_library">Bibliotecă</string>
     <string name="pref_header_images">Imagini</string>
-    <string name="pref_header_lockscreen">Ecran blocat</string>
     <string name="pref_header_playlists">Liste de redare</string>
     <string name="pref_header_notification">Notificare</string>
     <string name="pref_title_navigation_bar">Bară de navigare colorată</string>
     <string name="pref_title_app_shortcuts">Comenzi rapide colorate</string>
-    <string name="pref_title_album_art_on_lockscreen">Arată coperta de album</string>
     <string name="pref_title_auto_download_metadata">Descărcare automată metadate</string>
-    <string name="pref_title_blurred_album_art">Blurează coperta de album</string>
     <string name="pref_title_colored_notification">Notificare colorată</string>
     <string name="pref_title_classic_notification">Design clasic de notificare</string>
     <string name="pref_title_gapless_playback">Redare fără întreruperi</string>
@@ -117,8 +114,6 @@
     <string name="empty">Gol</string>
     <string name="playlist_name_empty">Nume listă</string>
     <string name="song">Melodie</string>
-    <string name="pref_summary_album_art_on_lockscreen">Folosește coperta de album a melodiei curente ca fundal pentru ecranul de blocare.</string>
-    <string name="pref_summary_blurred_album_art">Blurează coperta de album pentru ecranul de blocare. Poate cauza probleme cu widgeturi și aplicații terțe.</string>
     <string name="pref_summary_classic_notification">Utilizați designul clasic de notificare.</string>
     <string name="pref_summary_colored_notification">Coloreaz\u0103 bara de notificare cu cea mai vibrant\u0103 culoare a copertei de album.</string>
     <string name="pref_summary_gapless_playback">Poate cauza probleme de redare pe unele dispozitive.</string>

@@ -98,14 +98,11 @@
     <string name="pref_header_player_behaviour">Player-Verhalten</string>
     <string name="pref_header_library">Bibliothek</string>
     <string name="pref_header_images">Bilder</string>
-    <string name="pref_header_lockscreen">Sperrbildschirm</string>
     <string name="pref_header_playlists">Wiedergabelisten</string>
     <string name="pref_header_notification">Benachrichtigung</string>
     <string name="pref_title_navigation_bar">Farbige Navigationsleiste</string>
     <string name="pref_title_app_shortcuts">Farbige App-Shortcuts</string>
-    <string name="pref_title_album_art_on_lockscreen">Album-Cover anzeigen</string>
     <string name="pref_title_auto_download_metadata">Meta-Daten automatisch herunterladen</string>
-    <string name="pref_title_blurred_album_art">Album-Cover weichzeichnen</string>
     <string name="pref_title_colored_notification">Gefärbte Benachrichtigung</string>
     <string name="pref_title_classic_notification">Klassisches Benachrichtigungsdesign</string>
     <string name="pref_title_gapless_playback">Lückenlose Wiedergabe</string>
@@ -133,8 +130,6 @@
     <string name="empty">Leer</string>
     <string name="playlist_name_empty">Wiedergabelisten Name</string>
     <string name="song">Song</string>
-    <string name="pref_summary_album_art_on_lockscreen">Das Album Cover des aktuellen Songs wird als Hintergrund im Sperrbildschirm verwendet.</string>
-    <string name="pref_summary_blurred_album_art">Lässt das Album Cover auf dem Sperrbildschirm verschwommen aussehen. Kann Probleme mit Apps und Widgets von Dritten verursachen.</string>
     <string name="pref_summary_classic_notification">Das klassische Benachrichtigungsdesign verwenden.</string>
     <string name="pref_summary_colored_notification">Die Benachrichtigung ist in der Farbe des Album-Covers gef\u00e4rbt.</string>
     <string name="pref_summary_gapless_playback">Kann bei einigen Geräten Wiedergabeprobleme verursachen.</string>
