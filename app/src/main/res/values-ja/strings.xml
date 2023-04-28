@@ -313,16 +313,13 @@
     <string name="load_images_for_files">ファイルのカバーアートを読み込む</string>
     <string name="app_language">アプリケーションの言語</string>
     <string name="_default">デフォルト</string>
-    <plurals name="x_songs">
-        <item quantity="other">%1$d 曲</item>
-    </plurals>
-    <plurals name="x_albums">
+    <plurals name="item_albums">
         <item quantity="other">%1$d アルバム</item>
     </plurals>
-    <plurals name="x_artists">
+    <plurals name="item_artists">
         <item quantity="other">%1$d アーティスト</item>
     </plurals>
-    <plurals name="x_genres">
+    <plurals name="item_genres">
         <item quantity="other">%1$d ジャンル</item>
     </plurals>
     <plurals name="msg_header_delete_items">
@@ -336,16 +333,16 @@
         <item quantity="other">%1$d / %2$d アイテムが正常に削除されました。</item>
     </plurals>
     <plurals name="item_songs">
-        <item quantity="other">曲</item>
+        <item quantity="other">%1$d 曲</item>
     </plurals>
     <plurals name="item_playlists">
-        <item quantity="other">プレイリスト</item>
+        <item quantity="other">%1$d プレイリスト</item>
     </plurals>
     <plurals name="item_files">
-        <item quantity="other">ファイル</item>
+        <item quantity="other">%1$d ファイル</item>
     </plurals>
     <plurals name="item_playlists_generated">
-        <item quantity="other">作成済みプレイリスト</item>
+        <item quantity="other">%1$d 作成済みプレイリスト</item>
     </plurals>
     <string name="warning_can_not_retract">この操作は元に戻せません!</string>
     <string name="delete_with_lyrics">歌詞と一緒に削除</string>

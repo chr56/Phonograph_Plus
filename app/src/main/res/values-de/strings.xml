@@ -318,50 +318,46 @@
     <string name="load_images_for_files">Bilder für Dateien laden</string>
     <string name="app_language">Anwendungssprache</string>
     <string name="_default">Standard</string>
-    <plurals name="x_songs">
+    <plurals name="item_songs">
         <item quantity="one">%1$d Song</item>
         <item quantity="other">%1$d Songs</item>
     </plurals>
-    <plurals name="x_albums">
+    <plurals name="item_albums">
         <item quantity="one">%1$d Album</item>
         <item quantity="other">%1$d Alben</item>
     </plurals>
-    <plurals name="x_artists">
+    <plurals name="item_artists">
         <item quantity="one">%1$d Interpret</item>
         <item quantity="other">%1$d Interpreten</item>
     </plurals>
-    <plurals name="x_genres">
+    <plurals name="item_genres">
         <item quantity="one">%1$d Genre</item>
         <item quantity="other">%1$d Genres</item>
     </plurals>
     <plurals name="msg_header_delete_items">
-        <item quantity="one">Ein Element wird gelöscht.</item>
-        <item quantity="other">Die Elemente werden gelöscht.</item>
+        <item quantity="one">%1$d Element wird gelöscht.</item>
+        <item quantity="other">%1$d Elemente werden gelöscht.</item>
     </plurals>
     <plurals name="msg_header_remove_items">
         <!-- %1$s: where -->
-        <item quantity="one">Dieses Element würde aus %1$s entfernt:</item>
-        <item quantity="other">Diese Elemente würde aus %1$s entfernt:</item>
+        <item quantity="one">%2$d Element würde aus %1$s entfernt:</item>
+        <item quantity="other">%2$d Elemente würde aus %1$s entfernt:</item>
     </plurals>
     <plurals name="msg_deletion_result">
         <item quantity="one">%1$d / %2$d Elementen wurde erfolgreich gelöscht.</item>
         <item quantity="other">%1$d / %2$d Elementen wurde erfolgreich gelöscht.</item>
     </plurals>
-    <plurals name="item_songs">
-        <item quantity="one">Song</item>
-        <item quantity="other">Songs</item>
-    </plurals>
     <plurals name="item_playlists">
-        <item quantity="one">Wiedergabeliste</item>
-        <item quantity="other">Wiedergabelisten</item>
+        <item quantity="one">%1$d Wiedergabeliste</item>
+        <item quantity="other">%1$d Wiedergabelisten</item>
     </plurals>
     <plurals name="item_files">
-        <item quantity="one">Datei</item>
-        <item quantity="other">Dateien</item>
+        <item quantity="one">%1$d Datei</item>
+        <item quantity="other">%1$d Dateien</item>
     </plurals>
     <plurals name="item_playlists_generated">
-        <item quantity="one">Generierte Wiedergabeliste</item>
-        <item quantity="other">Generierte Wiedergabelisten</item>
+        <item quantity="one">%1$d Generierte Wiedergabeliste</item>
+        <item quantity="other">%1$d Generierte Wiedergabelisten</item>
     </plurals>
     <string name="warning_can_not_retract">Diese Aktion kann nicht rückgängig gemacht werden!</string>
     <string name="delete_with_lyrics">Mit Songtext löschen</string>

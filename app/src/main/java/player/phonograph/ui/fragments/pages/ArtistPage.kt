@@ -103,7 +103,7 @@ class ArtistPage : AbsDisplayPage<Artist, DisplayAdapter<Artist>, GridLayoutMana
 
     override fun getHeaderText(): CharSequence {
         val n = getDataSet().size
-        return hostFragment.mainActivity.resources.getQuantityString(R.plurals.x_artists, n, n)
+        return hostFragment.mainActivity.resources.getQuantityString(R.plurals.item_artists, n, n)
     }
 
     companion object {

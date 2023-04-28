@@ -287,7 +287,7 @@ class StarterActivity : AppCompatActivity() {
                 append("${getString(R.string.action_play)}\n")
                 val songs = playRequest.songs
                 val count = songs.size
-                append("${context.resources.getQuantityString(R.plurals.x_songs, count, count)}\n")
+                append("${context.resources.getQuantityString(R.plurals.item_songs, count, count)}\n")
                 songs.take(10).forEach {
                     append("${it.title}\n")
                 }

@@ -120,7 +120,7 @@ class SongPage : AbsDisplayPage<Song, DisplayAdapter<Song>, GridLayoutManager>()
 
     override fun getHeaderText(): CharSequence {
         val n = getDataSet().size
-        return hostFragment.mainActivity.resources.getQuantityString(R.plurals.x_songs, n, n)
+        return hostFragment.mainActivity.resources.getQuantityString(R.plurals.item_songs, n, n)
     }
 
     override fun configAppBar(panelToolbar: Toolbar) {

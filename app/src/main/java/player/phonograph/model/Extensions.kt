@@ -13,7 +13,7 @@ fun Song.infoString(): String =
     buildInfoString(artistName, albumName)
 
 fun songCountString(context: Context, songCount: Int): String =
-    context.resources.getQuantityString(R.plurals.x_songs, songCount, songCount)
+    context.resources.getQuantityString(R.plurals.item_songs, songCount, songCount)
 
 fun Artist.infoString(context: Context): String =
     buildInfoString(

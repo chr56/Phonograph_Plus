@@ -318,21 +318,33 @@
     <string name="load_images_for_files">Load images for files</string>
     <string name="app_language">Application Language</string>
     <string name="_default">Default</string>
-    <plurals name="x_songs">
-        <item quantity="one">%1$d song</item>
-        <item quantity="other">%1$d songs</item>
+    <plurals name="item_songs">
+        <item quantity="one">%1$d Song</item>
+        <item quantity="other">%1$d Songs</item>
     </plurals>
-    <plurals name="x_albums">
-        <item quantity="one">%1$d album</item>
-        <item quantity="other">%1$d albums</item>
+    <plurals name="item_files">
+        <item quantity="one">%1$d File</item>
+        <item quantity="other">%1$d Files</item>
     </plurals>
-    <plurals name="x_artists">
-        <item quantity="one">%1$d artist</item>
-        <item quantity="other">%1$d artists</item>
+    <plurals name="item_albums">
+        <item quantity="one">%1$d Album</item>
+        <item quantity="other">%1$d Albums</item>
     </plurals>
-    <plurals name="x_genres">
-        <item quantity="one">%1$d genre</item>
-        <item quantity="other">%1$d genres</item>
+    <plurals name="item_artists">
+        <item quantity="one">%1$d Artist</item>
+        <item quantity="other">%1$d Artists</item>
+    </plurals>
+    <plurals name="item_playlists">
+        <item quantity="one">%1$d Playlist</item>
+        <item quantity="other">%1$d Playlists</item>
+    </plurals>
+    <plurals name="item_playlists_generated">
+        <item quantity="one">%1$d Generated Playlist</item>
+        <item quantity="other">%1$d Generated Playlists</item>
+    </plurals>
+    <plurals name="item_genres">
+        <item quantity="one">%1$d Genre</item>
+        <item quantity="other">%1$d Genres</item>
     </plurals>
     <plurals name="msg_header_delete_items">
         <item quantity="one">%1$d item would be deleted:</item>
@@ -340,28 +352,12 @@
     </plurals>
     <plurals name="msg_header_remove_items">
         <!-- %1$s: where -->
-        <item quantity="one">%1$d item would be removed from %1$s:</item>
+        <item quantity="one">%2$d item would be removed from %1$s:</item>
         <item quantity="other">%2$d items would be removed from %1$s:</item>
     </plurals>
     <plurals name="msg_deletion_result">
         <item quantity="one">%1$d / %2$d item was successfully deleted.</item>
         <item quantity="other">%1$d / %2$d items were successfully deleted.</item>
-    </plurals>
-    <plurals name="item_songs">
-        <item quantity="one">%1$d Song</item>
-        <item quantity="other">%1$d Songs</item>
-    </plurals>
-    <plurals name="item_playlists">
-        <item quantity="one">%1$d Playlist</item>
-        <item quantity="other">%1$d Playlists</item>
-    </plurals>
-    <plurals name="item_files">
-        <item quantity="one">%1$d File</item>
-        <item quantity="other">%1$d Files</item>
-    </plurals>
-    <plurals name="item_playlists_generated">
-        <item quantity="one">%1$d Generated Playlist</item>
-        <item quantity="other">%1$d Generated Playlists</item>
     </plurals>
     <string name="warning_can_not_retract">This action can not be retracted!</string>
     <string name="delete_with_lyrics">Delete with lyrics</string>

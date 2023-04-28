@@ -236,7 +236,7 @@
     <string name="behaviour_force_saf">Forceer het gebruik van Opslag Access Framework</string>
     <string name="behaviour_force_legacy">Forceer het gebruik van oude methodes</string>
     <string name="reached_to_root">Je hebt de hoofdmap van dit opslagvolume bereikt</string>
-    <plurals name="x_songs">
+    <plurals name="item_songs">
         <item quantity="one">%1$d nummer</item>
         <item quantity="other">%1$d nummers</item>
     </plurals>

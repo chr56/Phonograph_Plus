@@ -47,9 +47,7 @@ class FilesPageAdapter(
                 text.text = when (item) {
                     is FileEntity.File -> Formatter.formatFileSize(context, item.size)
                     is FileEntity.Folder -> context.resources.getQuantityString(
-                        R.plurals.x_songs,
-                        item.songCount,
-                        item.songCount
+                        R.plurals.item_songs, item.songCount, item.songCount
                     )
                 }
 

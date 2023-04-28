@@ -264,20 +264,20 @@
     <string name="databases">Veritabanları</string>
     <string name="app_language">Uygulama Dili</string>
     <plurals name="item_songs">
-        <item quantity="one">Şarkı</item>
-        <item quantity="other">Şarkılar</item>
+        <item quantity="one">%1$d Şarkı</item>
+        <item quantity="other">%1$d Şarkılar</item>
     </plurals>
     <plurals name="item_playlists">
-        <item quantity="one">Çalma Listesi</item>
-        <item quantity="other">Çalma Listeleri</item>
+        <item quantity="one">%1$d Çalma Listesi</item>
+        <item quantity="other">%1$d Çalma Listeleri</item>
     </plurals>
     <plurals name="item_files">
-        <item quantity="one">dosya</item>
-        <item quantity="other">dosyalar</item>
+        <item quantity="one">%1$d dosya</item>
+        <item quantity="other">%1$d dosyalar</item>
     </plurals>
     <plurals name="item_playlists_generated">
-        <item quantity="one">Oluşturulan Çalma Listesi</item>
-        <item quantity="other">Oluşturulan Çalma Listeleri</item>
+        <item quantity="one">%1$d Oluşturulan Çalma Listesi</item>
+        <item quantity="other">%1$d Oluşturulan Çalma Listeleri</item>
     </plurals>
     <string name="delete_with_lyrics">Şarkı sözleriyle birlikte sil</string>
 </resources>

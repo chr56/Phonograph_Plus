@@ -318,39 +318,36 @@
     <string name="load_images_for_files">加载封面</string>
     <string name="app_language">语言</string>
     <string name="_default">默认</string>
-    <plurals name="x_songs">
-        <item quantity="other">%1$d 歌曲</item>
-    </plurals>
-    <plurals name="x_albums">
+    <plurals name="item_albums">
         <item quantity="other">%1$d 专辑</item>
     </plurals>
-    <plurals name="x_artists">
+    <plurals name="item_artists">
         <item quantity="other">%1$d 艺术家</item>
     </plurals>
-    <plurals name="x_genres">
+    <plurals name="item_genres">
         <item quantity="other">%1$d 流派</item>
     </plurals>
     <plurals name="msg_header_delete_items">
-        <item quantity="other">以下项目即将被删除：</item>
+        <item quantity="other">%1$d 项目即将被删除：</item>
     </plurals>
     <plurals name="msg_header_remove_items">
         <!-- %1$s: where -->
-        <item quantity="other">以下项目即将被从%1$s中移除：</item>
+        <item quantity="other">%2$d 项目即将被从 %1$s 中移除：</item>
     </plurals>
     <plurals name="msg_deletion_result">
         <item quantity="other">%1$d / %2$d 个项目删除成功</item>
     </plurals>
     <plurals name="item_songs">
-        <item quantity="other">歌曲</item>
+        <item quantity="other">%1$d 歌曲</item>
     </plurals>
     <plurals name="item_playlists">
-        <item quantity="other">播放列表</item>
+        <item quantity="other">%1$d 播放列表</item>
     </plurals>
     <plurals name="item_files">
-        <item quantity="other">文件</item>
+        <item quantity="other">%1$d 文件</item>
     </plurals>
     <plurals name="item_playlists_generated">
-        <item quantity="other">生成的播放列表</item>
+        <item quantity="other">%1$d 生成的播放列表</item>
     </plurals>
     <string name="warning_can_not_retract">此操作无法撤销！</string>
     <string name="delete_with_lyrics">删除(和歌词一起)</string>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
     <string name="action_set_as_ringtone">Définir comme sonnerie</string>
     <string name="action_share">Partager</string>
     <string name="action_settings">Paramètres</string>
@@ -292,20 +292,20 @@
     <string name="load_images_for_files">Charger les images pour les fichiers</string>
     <string name="app_language">Langue de l\'application</string>
     <string name="_default">Par défaut</string>
-    <plurals name="x_songs">
+    <plurals name="item_songs">
         <item quantity="one">%1$d morceau</item>
         <item quantity="many">%1$d morceaux</item>
         <item quantity="other">%1$d morceaux</item>
     </plurals>
-    <plurals name="x_artists">
+    <plurals name="item_artists">
         <item quantity="one">%1$d artiste</item>
         <item quantity="many">%1$d artistes</item>
         <item quantity="other">%1$d artistes</item>
     </plurals>
     <plurals name="msg_header_delete_items">
-        <item quantity="one" tools:ignore="ImpliedQuantity">Cet élément sera supprimé :</item>
-        <item quantity="many">Ces éléments seront supprimés :</item>
-        <item quantity="other">Ces éléments seront supprimés :</item>
+        <item quantity="one">%1$d Cet élément sera supprimé :</item>
+        <item quantity="many">%1$d Ces éléments seront supprimés :</item>
+        <item quantity="other">%1$d Ces éléments seront supprimés :</item>
     </plurals>
     <plurals name="msg_header_remove_items">
         <!-- %1$s: where -->
@@ -318,25 +318,20 @@
         <item quantity="many">%1$d / %2$d éléments ont été supprimés avec succès.</item>
         <item quantity="other">%1$d / %2$d éléments ont été supprimés avec succès.</item>
     </plurals>
-    <plurals name="item_songs">
-        <item quantity="one" tools:ignore="ImpliedQuantity">Morceau</item>
-        <item quantity="many">Morceaux</item>
-        <item quantity="other">Morceaux</item>
-    </plurals>
     <plurals name="item_playlists">
-        <item quantity="one" tools:ignore="ImpliedQuantity">Liste de lecture</item>
-        <item quantity="many">Listes de lecture</item>
-        <item quantity="other">Listes de lecture</item>
+        <item quantity="one">%1$d Liste de lecture</item>
+        <item quantity="many">%1$d Listes de lecture</item>
+        <item quantity="other">%1$d Listes de lecture</item>
     </plurals>
     <plurals name="item_files">
-        <item quantity="one" tools:ignore="ImpliedQuantity">fichier</item>
-        <item quantity="many">fichiers</item>
-        <item quantity="other">fichiers</item>
+        <item quantity="one">%1$d fichier</item>
+        <item quantity="many">%1$d fichiers</item>
+        <item quantity="other">%1$d fichiers</item>
     </plurals>
     <plurals name="item_playlists_generated">
-        <item quantity="one" tools:ignore="ImpliedQuantity">Liste de lecture générée</item>
-        <item quantity="many">Listes de lecture générées</item>
-        <item quantity="other">Listes de lecture générées</item>
+        <item quantity="one">%1$d Liste de lecture générée</item>
+        <item quantity="many">%1$d Listes de lecture générées</item>
+        <item quantity="other">%1$d Listes de lecture générées</item>
     </plurals>
     <string name="warning_can_not_retract">Cette action ne peut pas être annulée !</string>
 </resources>

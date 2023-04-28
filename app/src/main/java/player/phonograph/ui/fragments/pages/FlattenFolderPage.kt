@@ -233,7 +233,7 @@ class FlattenFolderPage : AbsPage() {
                         R.plurals.item_files, size, size
                     ) else
                     requireContext().resources.getQuantityString(
-                        R.plurals.x_songs, size, size
+                        R.plurals.item_songs, size, size
                     )
             }
         }

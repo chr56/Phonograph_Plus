@@ -93,7 +93,7 @@ class GenrePage : AbsDisplayPage<Genre, DisplayAdapter<Genre>, GridLayoutManager
 
     override fun getHeaderText(): CharSequence {
         val n = getDataSet().size
-        return hostFragment.mainActivity.resources.getQuantityString(R.plurals.x_genres, n, n)
+        return hostFragment.mainActivity.resources.getQuantityString(R.plurals.item_genres, n, n)
     }
 
     companion object {

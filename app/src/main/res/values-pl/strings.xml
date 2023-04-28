@@ -294,10 +294,10 @@
     <string name="app_language">Język Aplikacji</string>
     <string name="_default">Domyślne</string>
     <plurals name="item_files">
-        <item quantity="one">plik</item>
-        <item quantity="few">Plików</item>
-        <item quantity="many">Plików</item>
-        <item quantity="other">pliki</item>
+        <item quantity="one">%1$d plik</item>
+        <item quantity="few">%1$d Plików</item>
+        <item quantity="many">%1$d Plików</item>
+        <item quantity="other">%1$d pliki</item>
     </plurals>
     <string name="warning_can_not_retract">Tej czynności nie można cofnąć</string>
     <string name="delete_with_lyrics">Usuń z tekstem</string>
