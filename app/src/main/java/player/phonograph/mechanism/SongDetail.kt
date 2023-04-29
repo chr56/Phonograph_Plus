@@ -15,6 +15,7 @@ import org.jaudiotagger.tag.datatype.DataTypes
 import org.jaudiotagger.tag.id3.AbstractTagFrame
 import player.phonograph.App
 import player.phonograph.coil.loadImage
+import player.phonograph.coil.retriever.PARAMETERS_RAW
 import player.phonograph.coil.target.PaletteTargetBuilder
 import player.phonograph.model.LongFilePropertyField
 import player.phonograph.model.Song
@@ -133,6 +134,7 @@ object SongDetail {
     ) {
         loadImage(context) {
             data(data)
+            parameters(PARAMETERS_RAW)
             target(
                 PaletteTargetBuilder(context)
                     .onResourceReady { result: Drawable, paletteColor: Int ->
