@@ -5,9 +5,12 @@
 package player.phonograph.ui.compose.tag
 
 import player.phonograph.App
+import player.phonograph.R
 import player.phonograph.mechanism.tageditor.applyEdit
 import player.phonograph.ui.compose.ColorTools
 import player.phonograph.ui.compose.components.CoverImage
+import player.phonograph.util.permissions.navigateToAppDetailSetting
+import player.phonograph.util.permissions.navigateToStorageSetting
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -21,8 +24,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import android.app.Activity
 import android.content.Context
+import android.os.Build
+import android.widget.Toast
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.io.File
 
 @Composable
@@ -64,7 +70,18 @@ internal fun TagBrowserScreen(viewModel: TagBrowserScreenViewModel, context: Con
     // edit mode
     if (viewModel is TagEditorScreenViewModel) {
         SaveConfirmationDialog(viewModel.saveConfirmationDialogState, { DiffScreen(viewModel) }) {
-            saveImpl(viewModel, context)
+            val songFile = File(viewModel.song.data)
+            val coroutineScope = CoroutineScope(Dispatchers.Unconfined)
+            if (songFile.canWrite()) {
+                saveImpl(viewModel, songFile, coroutineScope, context ?: App.instance)
+            } else {
+                coroutineScope.launch(Dispatchers.Main) {
+                    Toast.makeText(
+                        App.instance, R.string.permission_manage_external_storage_denied, Toast.LENGTH_SHORT
+                    ).show()
+                }
+                navigateToStorageSetting(context ?: App.instance)
+            }
         }
         ExitWithoutSavingDialog(viewModel.exitWithoutSavingDialogState) {
             (context as? Activity)?.finish()
@@ -72,11 +89,16 @@ internal fun TagBrowserScreen(viewModel: TagBrowserScreenViewModel, context: Con
     }
 }
 
-private fun saveImpl(model: TagEditorScreenViewModel, context: Context?) =
+private fun saveImpl(
+    model: TagEditorScreenViewModel,
+    songFile: File,
+    coroutineScope: CoroutineScope,
+    context: Context,
+) =
     applyEdit(
-        CoroutineScope(Dispatchers.Unconfined),
-        context ?: App.instance,
-        File(model.song.data),
+        coroutineScope,
+        context,
+        songFile,
         model.infoTableState.allEditRequests,
         model.needDeleteCover,
         model.needReplaceCover,
