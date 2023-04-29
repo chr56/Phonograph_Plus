@@ -12,8 +12,8 @@ import coil.decode.DataSource
 import coil.decode.ImageSource
 import coil.fetch.FetchResult
 import coil.fetch.SourceResult
-import coil.size.Dimension
 import coil.size.Size
+import coil.size.pxOrElse
 import okio.Path.Companion.toOkioPath
 import okio.buffer
 import okio.source
@@ -28,12 +28,11 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import java.io.File
-import java.io.InputStream
 
 internal fun readFromMediaStore(
     albumId: Long,
     context: Context,
-    size: Size
+    size: Size,
 ): SourceResult? =
     runCatching {
         val uri = getMediaStoreAlbumCoverUri(albumId)
@@ -43,7 +42,7 @@ internal fun readFromMediaStore(
 internal fun retrieveFromMediaMetadataRetriever(
     filepath: String,
     retriever: MediaMetadataRetriever,
-    size: Size
+    size: Size,
 ): Bitmap? {
     val embeddedPicture: ByteArray? =
         runCatching {
@@ -55,13 +54,13 @@ internal fun retrieveFromMediaMetadataRetriever(
 
 internal fun retrieveFromJAudioTagger(
     filepath: String,
-    size: Size
+    size: Size,
 ): Bitmap? = runCatching {
     AudioFileIO.read(File(filepath)).retrieveEmbedPicture(size)
 }.getOrNull()
 
 internal fun retrieveFromExternalFile(
-    filepath: String
+    filepath: String,
 ): FetchResult? {
     val parent = File(filepath).parentFile ?: return null
     for (fallback in folderCoverFiles) {
@@ -86,27 +85,31 @@ internal fun retrieveFromExternalFile(
 internal fun readFromMediaStore(
     uri: Uri,
     context: Context,
-    size: Size
+    size: Size,
 ): SourceResult? {
     val contentResolver = context.contentResolver
-    val inputStream: InputStream? =
+    val source =
         if (Build.VERSION.SDK_INT >= 29) {
+            val width = size.width.pxOrElse { -1 }
+            val height = size.height.pxOrElse { -1 }
             val bundle: Bundle? =
-                run {
-                    val width = (size.width as? Dimension.Pixels)?.px ?: return@run null
-                    val height = (size.height as? Dimension.Pixels)?.px ?: return@run null
+                if (width >= 0 && height >= 0) {
                     Bundle(1).apply {
                         putParcelable(
-                            ContentResolver.EXTRA_SIZE,
-                            Point(width, height)
+                            ContentResolver.EXTRA_SIZE, Point(width, height)
                         )
                     }
+                } else null
+            contentResolver.openTypedAssetFile(uri, "image/*", bundle, null)?.use {
+                it.createInputStream().use { inputStream ->
+                    inputStream.source().buffer()
                 }
-            contentResolver.openTypedAssetFile(uri, "image/*", bundle, null)?.createInputStream()
+            }
         } else {
-            contentResolver.openInputStream(uri)
+            contentResolver.openInputStream(uri)?.use { inputStream ->
+                inputStream.source().buffer()
+            }
         }
-    val source = inputStream?.use { it.source().buffer() }
     return if (source != null) SourceResult(
         source = ImageSource(
             source = source,
@@ -121,7 +124,7 @@ internal fun readFromMediaStore(
 internal fun readFromFile(
     file: File,
     diskCacheKey: String? = null,
-    mimeType: String?
+    mimeType: String?,
 ): SourceResult {
     return SourceResult(
         source = ImageSource(
