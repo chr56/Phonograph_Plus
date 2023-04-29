@@ -43,20 +43,26 @@ internal fun retrieveFromMediaMetadataRetriever(
     filepath: String,
     retriever: MediaMetadataRetriever,
     size: Size,
+    raw: Boolean,
 ): Bitmap? {
     val embeddedPicture: ByteArray? =
         runCatching {
             retriever.setDataSource(filepath)
             retriever.embeddedPicture
         }.getOrNull()
-    return embeddedPicture?.toBitmap(size)
+    return if (raw) {
+        embeddedPicture?.toBitmap()
+    } else {
+        embeddedPicture?.toBitmap(size)
+    }
 }
 
 internal fun retrieveFromJAudioTagger(
     filepath: String,
     size: Size,
+    raw: Boolean,
 ): Bitmap? = runCatching {
-    AudioFileIO.read(File(filepath)).retrieveEmbedPicture(size)
+    AudioFileIO.read(File(filepath)).retrieveEmbedPicture(size, raw)
 }.getOrNull()
 
 internal fun retrieveFromExternalFile(
@@ -136,7 +142,7 @@ internal fun readFromFile(
     )
 }
 
-internal fun AudioFile.retrieveEmbedPicture(size: Size): Bitmap? {
+internal fun AudioFile.retrieveEmbedPicture(size: Size, raw: Boolean): Bitmap? {
     val artwork = this.tag.firstArtwork
-    return artwork?.binaryData?.toBitmap(size)
+    return artwork?.binaryData?.let { if (raw) it.toBitmap() else it.toBitmap(size) }
 }

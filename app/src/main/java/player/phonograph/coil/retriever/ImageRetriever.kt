@@ -20,6 +20,7 @@ interface ImageRetriever {
         id: Long,
         context: Context,
         size: Size,
+        raw: Boolean,
     ): FetchResult?
 }
 
@@ -29,7 +30,8 @@ class MediaStoreRetriever : ImageRetriever {
         path: String,
         id: Long,
         context: Context,
-        size: Size
+        size: Size,
+        raw: Boolean,
     ): FetchResult? {
         return readFromMediaStore(id, context, size)
     }
@@ -41,10 +43,11 @@ class MediaMetadataRetriever : ImageRetriever {
         path: String,
         id: Long,
         context: Context,
-        size: Size
+        size: Size,
+        raw: Boolean,
     ): FetchResult? {
         val bitmap = MediaMetadataRetriever().use {
-            retrieveFromMediaMetadataRetriever(path, it, size)
+            retrieveFromMediaMetadataRetriever(path, it, size, raw)
         }
         return bitmap?.let {
             DrawableResult(
@@ -60,10 +63,9 @@ class MediaMetadataRetriever : ImageRetriever {
 class JAudioTaggerRetriever : ImageRetriever {
     override val name: String = "JAudioTaggerRetriever"
     override fun retrieve(
-        path: String,
-        id: Long, context: Context, size: Size
+        path: String, id: Long, context: Context, size: Size, raw: Boolean,
     ): FetchResult? {
-        val bitmap = retrieveFromJAudioTagger(path, size)
+        val bitmap = retrieveFromJAudioTagger(path, size, raw)
         return bitmap?.let {
             DrawableResult(
                 BitmapDrawable(context.resources, bitmap),
@@ -78,7 +80,7 @@ class ExternalFileRetriever : ImageRetriever {
     override val name: String = "ExternalFileRetriever"
     override fun retrieve(
         path: String,
-        id: Long, context: Context, size: Size
+        id: Long, context: Context, size: Size, raw: Boolean,
     ): FetchResult? {
         return retrieveFromExternalFile(path)
     }

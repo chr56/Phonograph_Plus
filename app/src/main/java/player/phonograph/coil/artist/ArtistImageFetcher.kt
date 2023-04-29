@@ -12,22 +12,27 @@ import coil.size.Size
 import player.phonograph.coil.CustomArtistImageStore
 import player.phonograph.coil.retriever.ExternalFileRetriever
 import player.phonograph.coil.retriever.ImageRetriever
+import player.phonograph.coil.retriever.raw
 import player.phonograph.coil.retriever.readFromFile
 import player.phonograph.coil.retriever.retrieverFromConfig
 import player.phonograph.util.debug
 import android.content.Context
 import android.util.Log
 
-class ArtistImageFetcher(val data: ArtistImage, val context: Context, val size: Size) : Fetcher {
+class ArtistImageFetcher(
+    val data: ArtistImage,
+    val context: Context,
+    val size: Size,
+    private val raw: Boolean,
+) : Fetcher {
 
     class Factory : Fetcher.Factory<ArtistImage> {
         override fun create(
             data: ArtistImage,
             options: Options,
-            imageLoader: ImageLoader
-        ): Fetcher? {
-            return ArtistImageFetcher(data, options.context, options.size)
-        }
+            imageLoader: ImageLoader,
+        ) =
+            ArtistImageFetcher(data, options.context, options.size, options.raw(false))
     }
 
     override suspend fun fetch(): FetchResult? {
@@ -45,11 +50,11 @@ class ArtistImageFetcher(val data: ArtistImage, val context: Context, val size: 
         retrievers: List<ImageRetriever>,
         data: ArtistImage,
         context: Context,
-        size: Size
+        size: Size,
     ): FetchResult? {
         for (cover in data.albumCovers) {
             for (retriever in retrievers) {
-                val result = retriever.retrieve(cover.filePath, cover.id, context, size)
+                val result = retriever.retrieve(cover.filePath, cover.id, context, size, raw)
                 if (result == null) {
                     debug {
                         Log.v(

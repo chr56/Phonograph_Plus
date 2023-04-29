@@ -10,6 +10,7 @@ import coil.fetch.Fetcher
 import coil.request.Options
 import coil.size.Size
 import player.phonograph.coil.retriever.ImageRetriever
+import player.phonograph.coil.retriever.raw
 import player.phonograph.coil.retriever.retrieverFromConfig
 import player.phonograph.util.debug
 import android.content.Context
@@ -19,11 +20,17 @@ class AudioFileFetcher private constructor(
     private val audioFile: AudioFile,
     private val context: Context,
     private val size: Size,
+    private val rawImage: Boolean,
 ) : Fetcher {
 
     class Factory : Fetcher.Factory<AudioFile> {
         override fun create(data: AudioFile, options: Options, imageLoader: ImageLoader): Fetcher =
-            AudioFileFetcher(data, options.context, options.size)
+            AudioFileFetcher(
+                data,
+                options.context,
+                options.size,
+                options.raw(false),
+            )
     }
 
     override suspend fun fetch(): FetchResult? =
@@ -33,10 +40,10 @@ class AudioFileFetcher private constructor(
         retrievers: List<ImageRetriever>,
         audioFile: AudioFile,
         context: Context,
-        size: Size
+        size: Size,
     ): FetchResult? {
         for (retriever in retrievers) {
-            val result = retriever.retrieve(audioFile.path, audioFile.albumId, context, size)
+            val result = retriever.retrieve(audioFile.path, audioFile.albumId, context, size, rawImage)
             if (result == null) {
                 debug {
                     Log.v(TAG, "Image not available from ${retriever.name} for $audioFile")
