@@ -322,6 +322,10 @@
         <item quantity="one">%1$d Song</item>
         <item quantity="other">%1$d Songs</item>
     </plurals>
+    <plurals name="item_files">
+        <item quantity="one">%1$d Datei</item>
+        <item quantity="other">%1$d Dateien</item>
+    </plurals>
     <plurals name="item_albums">
         <item quantity="one">%1$d Album</item>
         <item quantity="other">%1$d Alben</item>
@@ -329,6 +333,14 @@
     <plurals name="item_artists">
         <item quantity="one">%1$d Interpret</item>
         <item quantity="other">%1$d Interpreten</item>
+    </plurals>
+    <plurals name="item_playlists">
+        <item quantity="one">%1$d Wiedergabeliste</item>
+        <item quantity="other">%1$d Wiedergabelisten</item>
+    </plurals>
+    <plurals name="item_playlists_generated">
+        <item quantity="one">%1$d Generierte Wiedergabeliste</item>
+        <item quantity="other">%1$d Generierte Wiedergabelisten</item>
     </plurals>
     <plurals name="item_genres">
         <item quantity="one">%1$d Genre</item>
@@ -346,18 +358,6 @@
     <plurals name="msg_deletion_result">
         <item quantity="one">%1$d / %2$d Elementen wurde erfolgreich gelöscht.</item>
         <item quantity="other">%1$d / %2$d Elementen wurde erfolgreich gelöscht.</item>
-    </plurals>
-    <plurals name="item_playlists">
-        <item quantity="one">%1$d Wiedergabeliste</item>
-        <item quantity="other">%1$d Wiedergabelisten</item>
-    </plurals>
-    <plurals name="item_files">
-        <item quantity="one">%1$d Datei</item>
-        <item quantity="other">%1$d Dateien</item>
-    </plurals>
-    <plurals name="item_playlists_generated">
-        <item quantity="one">%1$d Generierte Wiedergabeliste</item>
-        <item quantity="other">%1$d Generierte Wiedergabelisten</item>
     </plurals>
     <string name="warning_can_not_retract">Diese Aktion kann nicht rückgängig gemacht werden!</string>
     <string name="delete_with_lyrics">Mit Songtext löschen</string>
@@ -407,4 +407,5 @@
     <string name="action_import">Importiere %1$s</string>
     <string name="action_export">Exportiere %1$s</string>
     <string name="action_reboot">App neu starten</string>
+    <string name="process">Verarbeite…</string>
 </resources>
