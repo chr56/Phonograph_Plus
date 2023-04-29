@@ -15,16 +15,17 @@ import player.phonograph.model.lyrics.LrcLyrics
 import player.phonograph.model.lyrics.LyricsList
 import player.phonograph.model.lyrics.LyricsSource
 import player.phonograph.model.lyrics.TextLyrics
-import player.phonograph.notification.ErrorNotification.postErrorNotification
 import player.phonograph.settings.Setting
 import player.phonograph.util.FileUtil
 import player.phonograph.util.debug
 import player.phonograph.util.permissions.hasStorageReadPermission
+import player.phonograph.util.reportError
 import android.util.Log
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import java.io.File
+import java.io.FileNotFoundException
 
 object LyricsLoader {
 
@@ -90,11 +91,17 @@ object LyricsLoader {
     } catch (e: CannotReadException) {
         val suffix = songFile.name.substringAfterLast('.', "")
         if (ErrorMessage.NO_READER_FOR_THIS_FORMAT.getMsg(suffix) != e.message) {
-            postErrorNotification(e, "Failed to read song file\n")
+            reportError(e, TAG, "Failed to read song file\n")
+        }
+        null
+    } catch (e: FileNotFoundException) {
+        debug {
+            e.printStackTrace()
+            Log.v(TAG, "$songFile not available!")
         }
         null
     } catch (e: Exception) {
-        postErrorNotification(e, "Failed to read lyrics from song\n")
+        reportError(e, TAG, "Failed to read lyrics from song\n")
         null
     }
 
@@ -103,11 +110,20 @@ object LyricsLoader {
         lyricsSource: LyricsSource = LyricsSource.Unknown(),
     ): AbsLyrics? =
         try {
-            file.readText().let { content ->
-                if (content.isNotEmpty()) parse(content, lyricsSource) else null
+            if (file.exists())
+                file.readText().let { content ->
+                    if (content.isNotEmpty()) parse(content, lyricsSource) else null
+                }
+            else
+                null
+        } catch (e: FileNotFoundException) {
+            debug {
+                e.printStackTrace()
+                Log.v(TAG, "$file not available!")
             }
+            null
         } catch (e: Exception) {
-            postErrorNotification(e, "Failed to parse lyrics file")
+            reportError(e, TAG, "Failed to parse lyrics file")
             null
         }
 
