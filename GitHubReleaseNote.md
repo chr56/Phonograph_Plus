@@ -1,22 +1,26 @@
-## **v0.6.2.1 2023.04.23**
+## **v0.6.3 2023.04.30**
 
 **Commit log**: https://github.com/
 
 ### EN
-1. Note: Feature "Show Album Cover on Lockscreen" would be removed in next versions! (Applications should not be responsible for this!)
-2. Fix: Progress bar on Notification would not be refreshed after rewinding to beginning
-3. Modify: On Android R (11) and above, always ignore preference "Show Album Cover on Lockscreen", to fix incorrect aspect ratio of Notification Image (due to conflict)
-4. Improve: Image quality on Media Notification [for Android T]
-5. Development: On Android R (11) and above, set Notification Image via setting MediaSession Metadata Album Artwork
-6. Development: refactor Media Notification Image loader mechanises
+1. Remove: Feature Show Album Cover on Lockscreen and related setting
+2. Improve: crop non-square image unless in Song Detail
+3. Improve: navigate to setting if no storage permission granted
+4. Improve: mute some unnecessary exception notifications
+5. Improve: support zipped old backup files format
+6. Translation: update German (by conk), Hebrew (by Yaron Shahrabani (YaronSh)), Russian (by Макар Разин (Atrafon))
+7. Development: enable `fullmode` of R8 obfuscator  
+8. Development: better plurals string
 
 
 ### ZH
-1. 注意 "锁屏上显示专辑封面"功能即将移除(此功能理应由系统负责)
-2. 修复 倒退到起始处后，通知进度条不刷新
-3. 修改 对于Android R (11)及以上，一律忽略设置 "锁屏上显示专辑封面"，并修复媒体通知的图片的长宽比异常（功能冲突）
-4. 改进 媒体通知的图像质量[仅限Android T]
-5. 开发 对于Android R (11)及以上，使用 MediaSession Metadata 来设置通知图片
-6. 开发 重构媒体通知的图片加载机制
+1. 移除 “锁屏上显示专辑封面”等功能
+2. 改进 裁剪非方形封面（详情页除外）
+3. 改进 若无存储权限则转跳至设置
+4. 改进 关闭一些不必要的异常通知
+5. 改进 支持压缩打包旧版备份文件
+6. 翻译 更新德语(by conk)，希伯来语(by Yaron Shahrabani(YaronSh))，俄语(by Макар Разин(Atrafon))
+7. 开发 开启R8的`fullmode`
+8. 开发 改进复数字符串
 
 
