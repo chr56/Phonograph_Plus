@@ -106,6 +106,7 @@ private const val KEY_DATABASE_PATH_FILTER = "database_path_filter"
 private const val KEY_DATABASE_HISTORY = "database_history"
 private const val KEY_DATABASE_SONG_PLAY_COUNT = "database_song_play_count"
 private const val KEY_DATABASE_MUSIC_PLAYBACK_STATE = "database_music_playback_state"
+internal const val PREFIX_DATABASE = "database_"
 
 private fun fromSink(block: (BufferedSink) -> Boolean): InputStream? {
     val buffer = Buffer()

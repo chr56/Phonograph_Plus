@@ -100,12 +100,14 @@ object Backup {
             return session
         }
 
-        fun readManifest(
-            session: Long,
-        ): ManifestFile? {
+        fun readManifest(session: Long): ManifestFile? {
             val tmpDir = SessionManger.sessionDirectory(session)
             val manifestFile = File(tmpDir, ManifestFile.BACKUP_MANIFEST_FILENAME)
-            return if (manifestFile.exists()) decodeManifest(manifestFile) else null
+            return when {
+                manifestFile.exists() -> decodeManifest(manifestFile)
+                tmpDir != null        -> guessManifest(tmpDir)
+                else                  -> null
+            }
         }
 
         fun executeImport(
@@ -115,7 +117,8 @@ object Backup {
             onUpdateProgress: (CharSequence) -> Unit,
         ) {
             val tmpDir = SessionManger.sessionDirectory(session)
-            val manifest = readManifest(session) ?: throw Exception("No Manifest!")
+            val manifest = readManifest(session)
+            require(manifest != null) { "No Manifest!" }
             // filter
             val selected = manifest.files.filterKeys { it in content }
             for ((item, relativePath) in selected) {
@@ -138,6 +141,38 @@ object Backup {
                 parser.decodeFromString<ManifestFile>(raw)
             }
             return manifestFile
+        }
+
+        private fun guessManifest(dir: File): ManifestFile? {
+            require(dir.isDirectory)
+            val files = dir.list()
+            if (files != null && files.isNotEmpty()) {
+                val map = mutableMapOf<BackupItem, String>()
+                for (fileName in files) {
+                    for (item in ALL_BACKUP_CONFIG) {
+                        when {
+                            fileName.endsWith(BackupItem.Type.DATABASE.suffix) -> { // special for database
+                                if (fileName.endsWith(item.type.suffix, true) &&
+                                    fileName.contains(item.key.removePrefix(PREFIX_DATABASE), true)
+                                ) {
+                                    map[item] = fileName
+                                }
+                            }
+                            else                                               -> {
+                                if (fileName.endsWith(item.type.suffix, true) &&
+                                    fileName.contains(item.key, true)
+                                ) {
+                                    map[item] = fileName
+                                }
+                            }
+                        }
+                    }
+
+                }
+                return ManifestFile(dir.lastModified(), map)
+            }
+            warning(TAG, "Couldn't analysis the content of this backup")
+            return null
         }
 
 
