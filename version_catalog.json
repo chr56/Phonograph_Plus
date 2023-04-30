@@ -2,6 +2,22 @@
   "versions": [
     {
       "channel": "stable",
+      "versionName": "0.6.3",
+      "versionCode": 530,
+      "date": 1682840000,
+      "link": [
+        {
+          "name": "Github Release",
+          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/v0.6.3"
+        }
+      ],
+      "releaseNote": {
+        "zh-cn": "<ol><li>移除 “锁屏上显示专辑封面”等功能</li><li>改进 裁剪非方形封面（详情页除外）</li><li>改进 若无存储权限则转跳至设置</li><li>改进 关闭一些不必要的异常通知</li><li>改进 支持压缩打包旧版备份文件</li><li>翻译 更新德语(by conk)，希伯来语(by Yaron Shahrabani(YaronSh))，俄语(by Макар Разин(Atrafon))</li><li>开发 开启R8的`fullmode`</li><li>开发 改进复数字符串</li></ol>",
+        "en": "<ol><li>Remove: Feature Show Album Cover on Lockscreen and related setting</li><li>Improve: crop non-square image unless in Song Detail</li><li>Improve: navigate to setting if no storage permission granted</li><li>Improve: mute some unnecessary exception notifications</li><li>Improve: support zipped old backup files format</li><li>Translation: update German (by conk), Hebrew (by Yaron Shahrabani (YaronSh)), Russian (by Макар Разин (Atrafon))</li><li>Development: enable `fullmode` of R8 obfuscator  </li><li>Development: better plurals string</li></ol>"
+      }
+    },
+    {
+      "channel": "stable",
       "versionName": "0.6.2.1",
       "versionCode": 521,
       "date": 1682260000,
@@ -30,22 +46,6 @@
       "releaseNote": {
         "zh-cn": "<ol><li>新增 [Android S 及以上] 支持读取系统 Material You 动态颜色</li><li>新增 [Android S 及以上] 支持主题颜色跟随系统 Material You 动态颜色（“Monet”）[实验性支持，仅颜色支持，非完整的 Material You 主题]</li><li>新增 更好的备份机制</li><li>改进 所有备份使用压缩包</li><li>改进 支持选择备份导入与导出的内容</li><li>改进 备份的交互体验</li><li>修复 无法清空生成的播放列表 (v0.6.0起)</li><li>修复 某些对话框的颜色和样式</li><li>修复 某些文本未大写 (by Porkepix)</li><li>翻译 更新德语翻译 (by cvzi & conk)，意大利语翻译 (by Jacopo Norcini Pala (iagomago))</li><li>开发 更新 AGP 至 7.4.2, 清理代码</li></ol>",
         "en": "<ol><li>New: [Android S and above] support to read system Material You dynamic colors </li><li>New: [Android S and above] support to follow system Material You dynamic colors (\"Monet\") [experimental, only color support, NO FULL Material You support]</li><li>New: Better Backup mechanises</li><li>Improve: All backup files are zipped in one file</li><li>Improve: Allow to choose what content to import or export</li><li>Improve: better user interface for backup</li><li>Fix: generated playlist can not be cleared (since v0.6.0)</li><li>Fix: color and style of some dialogs</li><li>Fix: some text not capitalized (by Porkepix)</li><li>Translation: update German (by cvzi & conk), Italian (by Jacopo Norcini Pala (iagomago))</li><li>Development: upgrade AGP to 7.4.2, remove unused strings, cleanup codes</li></ol>"
-      }
-    },
-    {
-      "channel": "stable",
-      "versionName": "0.6.1",
-      "versionCode": 510,
-      "date": 1679050000,
-      "link": [
-        {
-          "name": "Github Release",
-          "uri": "https://github.com/chr56/Phonograph_Plus/releases/tag/v0.6.1"
-        }
-      ],
-      "releaseNote": {
-        "zh-cn": "<ol><li>新增 全新的首次启动介绍页</li><li>修改 介绍页内请求权限、设置自动检测更新、恢复设置备份</li><li>翻译 更新意大利语(by gdonisi）</li></ol>",
-        "en": "<ol><li>New: a brand-new App Introduction</li><li>Modify: request permissions in App Intro, ask auto-upgrade-check in App Intro, recover setting backup in App Intro</li><li>Translation: updated Italian (by gdonisi)</li></ol>"
       }
     },
     {
