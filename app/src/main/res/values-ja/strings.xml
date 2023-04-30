@@ -91,6 +91,8 @@
     <string name="this_year">今年</string>
     <string name="equalizer">イコライザー</string>
     <string name="pref_header_colors">配色</string>
+    <string name="pref_header_content">コンテンツ</string>
+    <string name="pref_header_lyrics">歌詞</string>
     <string name="pref_header_now_playing_screen">再生画面</string>
     <string name="pref_title_general_theme">テーマカラー</string>
     <string name="pref_header_audio">オーディオ</string>
@@ -99,6 +101,7 @@
     <string name="pref_header_images">画像</string>
     <string name="pref_header_playlists">プレイリスト</string>
     <string name="pref_header_notification">通知</string>
+    <string name="pref_title_player_style">メインプレーヤーのスタイル</string>
     <string name="pref_title_navigation_bar">ナビゲーションバーに色を付ける</string>
     <string name="pref_title_app_shortcuts">アプリのショートカットに色を付ける</string>
     <string name="pref_title_auto_download_metadata">楽曲情報の自動ダウンロード</string>
@@ -312,16 +315,29 @@
     <string name="behaviour_force_legacy">従来の方法を強制的に使用</string>
     <string name="reached_to_root">このストレージのルートフォルダに達しました</string>
     <string name="sort_order_size">ファイルサイズ</string>
+    <string name="sort_order_path">パス</string>
     <string name="use_legacy_list_Files">従来の方法を利用してファイルを読み込む</string>
     <string name="change_now_playing_screen">再生中の画面を変更</string>
     <string name="load_images_for_files">ファイルのカバーアートを読み込む</string>
     <string name="app_language">アプリケーションの言語</string>
     <string name="_default">デフォルト</string>
+    <plurals name="item_songs">
+        <item quantity="other">%1$d 曲</item>
+    </plurals>
+    <plurals name="item_files">
+        <item quantity="other">%1$d ファイル</item>
+    </plurals>
     <plurals name="item_albums">
         <item quantity="other">%1$d アルバム</item>
     </plurals>
     <plurals name="item_artists">
         <item quantity="other">%1$d アーティスト</item>
+    </plurals>
+    <plurals name="item_playlists">
+        <item quantity="other">%1$d プレイリスト</item>
+    </plurals>
+    <plurals name="item_playlists_generated">
+        <item quantity="other">%1$d 作成済みプレイリスト</item>
     </plurals>
     <plurals name="item_genres">
         <item quantity="other">%1$d ジャンル</item>
@@ -335,18 +351,6 @@
     </plurals>
     <plurals name="msg_deletion_result">
         <item quantity="other">%1$d / %2$d アイテムが正常に削除されました。</item>
-    </plurals>
-    <plurals name="item_songs">
-        <item quantity="other">%1$d 曲</item>
-    </plurals>
-    <plurals name="item_playlists">
-        <item quantity="other">%1$d プレイリスト</item>
-    </plurals>
-    <plurals name="item_files">
-        <item quantity="other">%1$d ファイル</item>
-    </plurals>
-    <plurals name="item_playlists_generated">
-        <item quantity="other">%1$d 作成済みプレイリスト</item>
     </plurals>
     <string name="warning_can_not_retract">この操作は元に戻せません!</string>
     <string name="delete_with_lyrics">歌詞と一緒に削除</string>
@@ -396,4 +400,7 @@
     <string name="action_export">エクスポート %1$s</string>
     <string name="action_reboot">アプリを再起動</string>
     <string name="process">処理中…</string>
+    <string name="action_choose_lyrics">歌詞を選択…</string>
+    <string name="loaded">読み込み済</string>
+    <string name="action_load">読み込み</string>
 </resources>
