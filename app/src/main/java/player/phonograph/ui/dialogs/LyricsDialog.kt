@@ -19,7 +19,6 @@ import player.phonograph.model.lyrics.AbsLyrics
 import player.phonograph.model.lyrics.DEFAULT_TITLE
 import player.phonograph.model.lyrics.LrcLyrics
 import player.phonograph.model.lyrics.LyricsInfo
-import player.phonograph.model.lyrics.LyricsSource
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
 import player.phonograph.ui.fragments.player.AbsPlayerFragment
 import player.phonograph.ui.fragments.player.LyricsViewModel
@@ -128,7 +127,7 @@ class LyricsDialog : LargeDialog(), MusicProgressViewUpdateHelper.Callback {
         binding.types.isSingleSelection = true
         lyricsInfo.forEachIndexed { index, lyrics ->
             val chip = createChip(
-                getLocalizedTypeName(lyrics.source), index, activated == lyrics, this::onChipClicked
+                lyrics.source.name(requireContext()), index, activated == lyrics, this::onChipClicked
             )
             binding.types.addView(chip)
             if (activated == lyrics) chipSelected = chip
@@ -163,14 +162,6 @@ class LyricsDialog : LargeDialog(), MusicProgressViewUpdateHelper.Callback {
             )
         }
     }
-
-    private fun getLocalizedTypeName(t: LyricsSource): String =
-        when (t.type) {
-            LyricsSource.EMBEDDED -> getString(R.string.embedded_lyrics)
-            LyricsSource.EXTERNAL_DECORATED, LyricsSource.EXTERNAL_PRECISE -> getString(R.string.external_lyrics)
-            LyricsSource.MANUALLY_LOADED -> getString(R.string.loaded)
-            else -> "unknown"
-        }
 
     private val accentColor by lazy { ThemeColor.accentColor(App.instance) }
     private val primaryColor by lazy { ThemeColor.primaryColor(App.instance) }
