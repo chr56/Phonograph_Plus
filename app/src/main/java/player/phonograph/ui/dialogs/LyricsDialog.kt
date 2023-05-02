@@ -24,12 +24,16 @@ import player.phonograph.model.lyrics.LyricsInfo
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
 import player.phonograph.ui.fragments.player.AbsPlayerFragment
 import player.phonograph.ui.fragments.player.LyricsViewModel
+import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.theme.nightMode
 import player.phonograph.util.warning
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import android.content.res.ColorStateList
+import android.graphics.Color
+import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
 import android.os.Message
@@ -37,6 +41,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CompoundButton
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 /**
  * Large Dialog to show Lyrics.
@@ -67,10 +74,9 @@ class LyricsDialog : LargeDialog(), MusicProgressViewUpdateHelper.Callback {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
-        binding.title.text =
-            if (activated.getTitle() != DEFAULT_TITLE) activated.getTitle() else lyricsInfo.linkedSong.title
-        initChip()
-        initRecycleView(activated)
+        updateChips(lyricsInfo)
+        updateTitle(lyricsInfo)
+        setupRecycleView(activated)
 
         // corner
         requireDialog().window!!.setBackgroundDrawable(
@@ -86,9 +92,10 @@ class LyricsDialog : LargeDialog(), MusicProgressViewUpdateHelper.Callback {
         binding.viewStub.setOnClickListener { requireDialog().dismiss() }
         setupFollowing()
 //        scrollingOffset = binding.root.height / 4
+        observe()
     }
 
-    private fun initRecycleView(lyrics: AbsLyrics) {
+    private fun setupRecycleView(lyrics: AbsLyrics) {
         linearLayoutManager = LinearLayoutManager(requireActivity(), RecyclerView.VERTICAL, false)
         lyricsAdapter =
             LyricsAdapter(requireActivity(), lyrics.getLyricsTimeArray(), lyrics.getLyricsLineArray(), dialog)
@@ -99,7 +106,13 @@ class LyricsDialog : LargeDialog(), MusicProgressViewUpdateHelper.Callback {
             }
     }
 
-    private fun createChip(label: String, index: Int, checked: Boolean = false, callback: (Chip, Int) -> Unit) =
+    private fun createChip(
+        label: String,
+        index: Int,
+        checked: Boolean = false,
+        icon: Drawable? = null,
+        callback: (Chip, Int) -> Unit,
+    ) =
         Chip(requireContext(), null, com.google.android.material.R.style.Widget_MaterialComponents_Chip_Choice)
             .apply {
                 text = label
@@ -109,6 +122,7 @@ class LyricsDialog : LargeDialog(), MusicProgressViewUpdateHelper.Callback {
                 setOnClickListener {
                     callback(it as Chip, index)
                 }
+                if (icon != null) chipIcon = icon
             }
 
     private fun getChipBackgroundColor(checked: Boolean): ColorStateList {
@@ -125,18 +139,44 @@ class LyricsDialog : LargeDialog(), MusicProgressViewUpdateHelper.Callback {
         )
     }
 
+    private fun observe() {
+        lifecycleScope.launch {
+            viewModel.lyricsInfo.collect { info ->
+                withContext(Dispatchers.Main) {
+                    updateTitle(info)
+                    updateChips(info)
+                }
+            }
+        }
+    }
+
+    private fun updateTitle(info: LyricsInfo) {
+        val activated = info.activatedLyrics
+        binding.title.text = if (activated != null && activated.getTitle() != DEFAULT_TITLE) {
+            activated.getTitle()
+        } else {
+            lyricsInfo.linkedSong.title
+        }
+    }
+
     private var chipSelected: Chip? = null
-    private fun initChip() {
+    private fun updateChips(info: LyricsInfo) {
+        binding.types.removeAllViews()
         binding.types.isSingleSelection = true
-        lyricsInfo.forEachIndexed { index, lyrics ->
+        for ((index, lyrics) in info.withIndex()) {
             val chip = createChip(
-                lyrics.source.name(requireContext()), index, activated == lyrics, this::onChipClicked
+                lyrics.source.name(requireContext()), index, activated == lyrics, null, this::onChipClicked
             )
             binding.types.addView(chip)
             if (activated == lyrics) chipSelected = chip
         }
         binding.types.addView(
-            createChip(getString(R.string.action_load), -1, false) { _, _ -> manualLoadLyrics() }
+            createChip(
+                getString(R.string.action_load),
+                -1,
+                false,
+                requireContext().getTintedDrawable(R.drawable.ic_add_white_24dp, Color.BLACK)
+            ) { _, _ -> manualLoadLyrics() }
         )
         // binding.types.isSelectionRequired = true
     }
