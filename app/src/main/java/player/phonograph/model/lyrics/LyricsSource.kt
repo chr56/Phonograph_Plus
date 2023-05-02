@@ -11,10 +11,12 @@ value class LyricsSource(val type: Int = UNKNOWN_SOURCE) {
         fun Embedded() = LyricsSource(EMBEDDED)
         fun ExternalPrecise() = LyricsSource(EXTERNAL_PRECISE)
         fun ExternalDecorated() = LyricsSource(EXTERNAL_DECORATED)
+        fun ManuallyLoaded() = LyricsSource(MANUALLY_LOADED)
 
         const val EMBEDDED = 0
         const val EXTERNAL_PRECISE = 1
         const val EXTERNAL_DECORATED = 2
+        const val MANUALLY_LOADED = 4
 
         fun Unknown() = LyricsSource(UNKNOWN_SOURCE)
         const val UNKNOWN_SOURCE = -1

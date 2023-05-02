@@ -193,7 +193,7 @@ object LyricsLoader {
     fun parseFromUri(context: Context, uri: Uri): AbsLyrics? {
         return context.contentResolver.openInputStream(uri)?.use { inputStream ->
             inputStream.reader().use {
-                parse(it.readText())
+                parse(it.readText(), LyricsSource.ManuallyLoaded())
             }
         }
     }

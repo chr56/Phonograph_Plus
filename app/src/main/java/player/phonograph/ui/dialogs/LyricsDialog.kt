@@ -97,18 +97,17 @@ class LyricsDialog : LargeDialog(), MusicProgressViewUpdateHelper.Callback {
             }
     }
 
-    private fun createChip(text: String, index: Int, checked: Boolean = false, callback: (Chip, Int) -> Unit): Chip {
-        val chip =
-            Chip(requireContext(), null, com.google.android.material.R.style.Widget_MaterialComponents_Chip_Choice)
-        chip.text = text
-        chip.isChecked = checked
-        chip.setTextColor(getChipTextColor(checked))
-        chip.chipBackgroundColor = getChipBackgroundColor(checked)
-        chip.setOnClickListener {
-            callback(it as Chip, index)
-        }
-        return chip
-    }
+    private fun createChip(label: String, index: Int, checked: Boolean = false, callback: (Chip, Int) -> Unit) =
+        Chip(requireContext(), null, com.google.android.material.R.style.Widget_MaterialComponents_Chip_Choice)
+            .apply {
+                text = label
+                isChecked = checked
+                setTextColor(getChipTextColor(checked))
+                chipBackgroundColor = getChipBackgroundColor(checked)
+                setOnClickListener {
+                    callback(it as Chip, index)
+                }
+            }
 
     private fun getChipBackgroundColor(checked: Boolean): ColorStateList {
         return ColorStateList.valueOf(
@@ -169,6 +168,7 @@ class LyricsDialog : LargeDialog(), MusicProgressViewUpdateHelper.Callback {
         when (t.type) {
             LyricsSource.EMBEDDED -> getString(R.string.embedded_lyrics)
             LyricsSource.EXTERNAL_DECORATED, LyricsSource.EXTERNAL_PRECISE -> getString(R.string.external_lyrics)
+            LyricsSource.MANUALLY_LOADED -> getString(R.string.loaded)
             else -> "unknown"
         }
 
