@@ -402,4 +402,5 @@
     <string name="process">加載中…</string>
     <string name="action_choose_lyrics">選擇歌詞…</string>
     <string name="loaded">加載的</string>
+    <string name="action_load">加載</string>
 </resources>

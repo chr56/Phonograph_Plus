@@ -412,4 +412,5 @@
     <string name="process">Process…</string>
     <string name="action_choose_lyrics">Choose Lyrics…</string>
     <string name="loaded">loaded</string>
+    <string name="action_load">Load</string>
 </resources>

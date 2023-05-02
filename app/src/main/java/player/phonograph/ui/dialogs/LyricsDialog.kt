@@ -6,6 +6,8 @@ package player.phonograph.ui.dialogs
 
 import com.google.android.material.chip.Chip
 import lib.phonograph.dialog.LargeDialog
+import lib.phonograph.misc.IOpenFileStorageAccess
+import lib.phonograph.misc.OpenDocumentContract
 import mt.pref.ThemeColor
 import mt.util.color.lightenColor
 import mt.util.color.primaryTextColor
@@ -23,6 +25,7 @@ import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
 import player.phonograph.ui.fragments.player.AbsPlayerFragment
 import player.phonograph.ui.fragments.player.LyricsViewModel
 import player.phonograph.util.theme.nightMode
+import player.phonograph.util.warning
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -132,6 +135,9 @@ class LyricsDialog : LargeDialog(), MusicProgressViewUpdateHelper.Callback {
             binding.types.addView(chip)
             if (activated == lyrics) chipSelected = chip
         }
+        binding.types.addView(
+            createChip(getString(R.string.action_load), -1, false) { _, _ -> manualLoadLyrics() }
+        )
         // binding.types.isSelectionRequired = true
     }
 
@@ -145,6 +151,17 @@ class LyricsDialog : LargeDialog(), MusicProgressViewUpdateHelper.Callback {
         chipSelected?.chipBackgroundColor = getChipBackgroundColor(false)
         chipSelected?.setTextColor(getChipTextColor(false))
         chipSelected = chip
+    }
+
+    private fun manualLoadLyrics() {
+        val accessor = requireActivity() as? IOpenFileStorageAccess
+        if (accessor != null) {
+            accessor.openFileStorageAccessTool.launch(
+                OpenDocumentContract.Config(arrayOf("*/*"))
+            ) { uri -> viewModel.insert(requireContext(), uri) }
+        } else {
+            warning("Lyrics", "Can not open file from $activity")
+        }
     }
 
     private fun switchLyrics(index: Int) {
