@@ -12,7 +12,7 @@ import player.phonograph.App
 import player.phonograph.model.Song
 import player.phonograph.model.lyrics.AbsLyrics
 import player.phonograph.model.lyrics.LrcLyrics
-import player.phonograph.model.lyrics.LyricsList
+import player.phonograph.model.lyrics.LyricsInfo
 import player.phonograph.model.lyrics.LyricsSource
 import player.phonograph.model.lyrics.TextLyrics
 import player.phonograph.settings.Setting
@@ -20,6 +20,8 @@ import player.phonograph.util.FileUtil
 import player.phonograph.util.debug
 import player.phonograph.util.permissions.hasStorageReadPermission
 import player.phonograph.util.reportError
+import android.content.Context
+import android.net.Uri
 import android.util.Log
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -31,19 +33,19 @@ object LyricsLoader {
 
     private val backgroundCoroutine: CoroutineScope by lazy { CoroutineScope(Dispatchers.IO) }
 
-    suspend fun loadLyrics(songFile: File, song: Song): LyricsList {
+    suspend fun loadLyrics(songFile: File, song: Song): LyricsInfo {
         if (!Setting.instance.enableLyrics) {
             debug {
                 Log.v(TAG, "Lyrics is off for ${song.title}")
             }
-            return LyricsList()
+            return LyricsInfo.EMPTY
         }
 
         if (!hasStorageReadPermission(App.instance)) {
             debug {
                 Log.v(TAG, "No storage read permission to fetch lyrics for ${song.title}")
             }
-            return LyricsList()
+            return LyricsInfo.EMPTY
         }
 
         // embedded
@@ -73,8 +75,10 @@ object LyricsLoader {
             addAll(vagueLyrics)
         }
 
+        val activated: Int = resultList.indexOfFirst { it is LrcLyrics }
+
         // end of fetching
-        return LyricsList(resultList)
+        return LyricsInfo(song, resultList, activated)
     }
 
     private fun parseEmbedded(
@@ -184,6 +188,16 @@ object LyricsLoader {
             emptyList()
         }
     }
+
+
+    fun parseFromUri(context: Context, uri: Uri): AbsLyrics? {
+        return context.contentResolver.openInputStream(uri)?.use { inputStream ->
+            inputStream.reader().use {
+                parse(it.readText(), LyricsSource.ManuallyLoaded())
+            }
+        }
+    }
+
 
     private const val TAG = "LyricsLoader"
 }

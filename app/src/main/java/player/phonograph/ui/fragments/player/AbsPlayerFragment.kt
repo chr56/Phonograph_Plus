@@ -4,6 +4,8 @@ import com.github.chr56.android.menu_dsl.attach
 import com.github.chr56.android.menu_dsl.menuItem
 import com.h6ah4i.android.widget.advrecyclerview.draggable.RecyclerViewDragDropManager
 import com.h6ah4i.android.widget.advrecyclerview.utils.WrapperAdapterUtils
+import lib.phonograph.misc.IOpenFileStorageAccess
+import lib.phonograph.misc.OpenDocumentContract
 import mt.pref.primaryColor
 import mt.tint.viewtint.setMenuColor
 import mt.util.color.toolbarIconColor
@@ -25,6 +27,7 @@ import player.phonograph.ui.fragments.player.PlayerAlbumCoverFragment.Companion.
 import player.phonograph.mechanism.Favorite.toggleFavorite
 import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.NavigationUtil
+import player.phonograph.util.warning
 import androidx.annotation.ColorInt
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -53,7 +56,7 @@ abstract class AbsPlayerFragment :
     protected lateinit var playerAlbumCoverFragment: PlayerAlbumCoverFragment
     protected lateinit var playbackControlsFragment: AbsPlayerControllerFragment
     protected val viewModel: PlayerFragmentViewModel by viewModels()
-    lateinit var handler: Handler
+    protected val lyricsViewModel: LyricsViewModel by viewModels()
 
     // recycle view
     protected lateinit var layoutManager: LinearLayoutManager
@@ -66,26 +69,6 @@ abstract class AbsPlayerFragment :
     protected lateinit var playerToolbar: Toolbar
 
     internal lateinit var impl: Impl
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        handler = Handler(Looper.getMainLooper(), handlerCallbacks)
-    }
-
-    private val handlerCallbacks = Handler.Callback { msg ->
-        if (msg.what == UPDATE_LYRICS) {
-            val lyrics = msg.data.get(LYRICS) as AbsLyrics
-            viewModel.forceReplaceLyrics(lyrics)
-            if (lyrics is LrcLyrics) {
-                playerAlbumCoverFragment.setLyrics(lyrics)
-                MusicPlayerRemote.musicService?.replaceLyrics(lyrics)
-            } else {
-                playerAlbumCoverFragment.clearLyrics()
-                MusicPlayerRemote.musicService?.replaceLyrics(null)
-            }
-        }
-        false
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -123,7 +106,7 @@ abstract class AbsPlayerFragment :
 
     override fun onDestroyView() {
         favoriteMenuItem = null
-        viewModel.lyricsMenuItem = null
+        lyricsMenuItem = null
         super.onDestroyView()
         _recyclerViewDragDropManager?.let {
             recyclerViewDragDropManager.release()
@@ -137,14 +120,17 @@ abstract class AbsPlayerFragment :
 
     private fun addLyricsObserver() {
         lifecycleScope.launch(viewModel.exceptionHandler) {
-            viewModel.currentLyrics.collect { lyrics ->
+            lyricsViewModel.lyricsInfo.collect { lyricsList ->
                 withContext(Dispatchers.Main) {
-                    if (lyrics != null && lyrics is LrcLyrics) {
-                        playerAlbumCoverFragment.setLyrics(lyrics)
+                    val activated = lyricsList.activatedLyrics
+                    if (lyricsList.isNotEmpty() && activated is LrcLyrics) {
+                        playerAlbumCoverFragment.setLyrics(activated)
+                        MusicPlayerRemote.musicService?.replaceLyrics(activated)
                     } else {
                         playerAlbumCoverFragment.clearLyrics()
+                        MusicPlayerRemote.musicService?.replaceLyrics(null)
                     }
-                    viewModel.lyricsMenuItem?.isVisible = (lyrics != null)
+                    lyricsMenuItem?.isVisible = lyricsList.isNotEmpty()
                 }
             }
         }
@@ -153,6 +139,9 @@ abstract class AbsPlayerFragment :
     //
     // Toolbar
     //
+
+    private var lyricsMenuItem: MenuItem? = null
+
     private fun initToolbar() {
         playerToolbar = getImplToolbar()
         playerToolbar.setNavigationIcon(R.drawable.ic_close_white_24dp)
@@ -167,18 +156,14 @@ abstract class AbsPlayerFragment :
                 visible = false
                 itemId = R.id.action_show_lyrics
                 onClick {
-                    val lyricsPack = viewModel.lyricsList.value
-                    if (!lyricsPack.isEmpty()) {
-                        LyricsDialog.create(
-                            lyricsPack,
-                            viewModel.currentSong.value,
-                            viewModel.currentLyrics.value ?: lyricsPack.getAvailableLyrics()!!
-                        ).show(childFragmentManager, "LYRICS")
+                    val lyricsList = lyricsViewModel.lyricsInfo.value
+                    if (lyricsList.isNotEmpty()) {
+                        LyricsDialog().show(childFragmentManager, "LYRICS")
                     }
                     true
                 }
-            }.apply {
-                viewModel.lyricsMenuItem = this
+            }.also {
+                lyricsMenuItem = it
             }
 
             menuItem(getString(R.string.action_add_to_favorites)) {
@@ -216,6 +201,21 @@ abstract class AbsPlayerFragment :
                 onClick {
                     CreatePlaylistDialog.create(MusicPlayerRemote.playingQueue)
                         .show(childFragmentManager, "ADD_TO_PLAYLIST")
+                    true
+                }
+            }
+            menuItem {
+                title = getString(R.string.action_choose_lyrics)
+                showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
+                onClick {
+                    val accessor = requireActivity() as? IOpenFileStorageAccess
+                    if (accessor != null) {
+                        accessor.openFileStorageAccessTool.launch(
+                            OpenDocumentContract.Config(arrayOf("*/*"))
+                        ) { uri -> lyricsViewModel.insert(requireContext(), uri) }
+                    } else {
+                        warning("Lyrics", "Can not open file from $activity")
+                    }
                     true
                 }
             }
@@ -351,14 +351,14 @@ abstract class AbsPlayerFragment :
         updateQueue()
         updateCurrentSong()
         viewModel.updateFavoriteState(MusicPlayerRemote.currentSong, context)
-        viewModel.loadLyrics(MusicPlayerRemote.currentSong)
+        lyricsViewModel.loadLyrics(MusicPlayerRemote.currentSong)
     }
 
     override fun onPlayingMetaChanged() {
         updateCurrentSong()
         updateQueuePosition()
         viewModel.updateFavoriteState(MusicPlayerRemote.currentSong, context)
-        viewModel.loadLyrics(MusicPlayerRemote.currentSong)
+        lyricsViewModel.loadLyrics(MusicPlayerRemote.currentSong)
     }
 
     override fun onQueueChanged() {
@@ -403,11 +403,6 @@ abstract class AbsPlayerFragment :
     }
 
     abstract override fun onToolbarToggled()
-
-    companion object {
-        const val UPDATE_LYRICS = 1001
-        const val LYRICS = "lyrics"
-    }
 
     internal interface Impl {
         fun init()

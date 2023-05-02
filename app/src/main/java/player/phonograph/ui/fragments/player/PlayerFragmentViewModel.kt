@@ -5,23 +5,18 @@
 package player.phonograph.ui.fragments.player
 
 import player.phonograph.App
-import player.phonograph.mediastore.LyricsLoader
-import player.phonograph.model.Song
-import player.phonograph.model.lyrics.AbsLyrics
-import player.phonograph.model.lyrics.LyricsList
 import player.phonograph.mechanism.Favorite.isFavorite
+import player.phonograph.model.Song
 import player.phonograph.util.reportError
 import androidx.annotation.ColorInt
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import android.content.Context
-import android.view.MenuItem
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import java.io.File
 
 class PlayerFragmentViewModel : ViewModel() {
 
@@ -35,38 +30,7 @@ class PlayerFragmentViewModel : ViewModel() {
     fun updateCurrentSong(song: Song, context: Context?) {
         viewModelScope.launch {
             _currentSong.emit(song)
-            loadLyrics(song)
             updateFavoriteState(song, context)
-        }
-    }
-
-    var lyricsMenuItem: MenuItem? = null
-
-    private var _lyricsList: MutableStateFlow<LyricsList> = MutableStateFlow(LyricsList())
-    val lyricsList get() = _lyricsList.asStateFlow()
-
-    private var _currentLyrics: MutableStateFlow<AbsLyrics?> = MutableStateFlow(null)
-    val currentLyrics get() = _currentLyrics.asStateFlow()
-
-    fun forceReplaceLyrics(lyrics: AbsLyrics) {
-        viewModelScope.launch {
-            _currentLyrics.emit(lyrics)
-        }
-    }
-
-    private var loadLyricsJob: Job? = null
-    fun loadLyrics(song: Song) {
-        // cancel old song's lyrics after switching
-        loadLyricsJob?.cancel()
-        _currentLyrics.value = null
-        _lyricsList.value = LyricsList()
-        lyricsMenuItem?.isVisible = false
-        // load new lyrics
-        loadLyricsJob = viewModelScope.launch {
-            if (song == Song.EMPTY_SONG) return@launch
-            val newLyrics = LyricsLoader.loadLyrics(File(song.data), song)
-            _lyricsList.emit(newLyrics)
-            _currentLyrics.emit(newLyrics.getAvailableLyrics())
         }
     }
 
