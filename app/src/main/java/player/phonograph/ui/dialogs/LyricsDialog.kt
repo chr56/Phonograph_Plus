@@ -48,7 +48,7 @@ class LyricsDialog : LargeDialog(), MusicProgressViewUpdateHelper.Callback {
 
     private val viewModel: LyricsViewModel by viewModels({ requireParentFragment() })
 
-    private val lyricsInfo: LyricsInfo get() = viewModel.lyricsList.value
+    private val lyricsInfo: LyricsInfo get() = viewModel.lyricsInfo.value
     private var activated: AbsLyrics
         get() = lyricsInfo.activatedLyrics ?: lyricsInfo.first()
         set(value) {

@@ -17,13 +17,14 @@ import kotlinx.coroutines.launch
 import java.io.File
 
 class LyricsViewModel : ViewModel() {
-    private var _lyricsList: MutableStateFlow<LyricsInfo> = MutableStateFlow(LyricsInfo.EMPTY)
-    val lyricsList get() = _lyricsList.asStateFlow()
+
+    private var _lyricsInfo: MutableStateFlow<LyricsInfo> = MutableStateFlow(LyricsInfo.EMPTY)
+    val lyricsInfo get() = _lyricsInfo.asStateFlow()
 
     fun forceReplaceLyrics(lyrics: AbsLyrics) {
         viewModelScope.launch {
-            val new = _lyricsList.value.replaceActivated(lyrics)
-            if (new != null) _lyricsList.emit(new)
+            val new = _lyricsInfo.value.replaceActivated(lyrics)
+            if (new != null) _lyricsInfo.emit(new)
         }
     }
 
@@ -31,12 +32,14 @@ class LyricsViewModel : ViewModel() {
     fun loadLyrics(song: Song) {
         // cancel old song's lyrics after switching
         loadLyricsJob?.cancel()
-        // _lyricsList.value = LyricsInfo.EMPTY
         // load new lyrics
         loadLyricsJob = viewModelScope.launch {
-            if (song == Song.EMPTY_SONG) return@launch
-            val newLyrics = LyricsLoader.loadLyrics(File(song.data), song)
-            _lyricsList.emit(newLyrics)
+            if (song == Song.EMPTY_SONG) {
+                _lyricsInfo.emit(LyricsInfo.EMPTY)
+            } else {
+                val newLyrics = LyricsLoader.loadLyrics(File(song.data), song)
+                _lyricsInfo.emit(newLyrics)
+            }
         }
     }
 }

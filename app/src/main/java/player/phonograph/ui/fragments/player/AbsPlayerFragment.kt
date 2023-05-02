@@ -138,7 +138,7 @@ abstract class AbsPlayerFragment :
 
     private fun addLyricsObserver() {
         lifecycleScope.launch(viewModel.exceptionHandler) {
-            lyricsViewModel.lyricsList.collect { lyricsList ->
+            lyricsViewModel.lyricsInfo.collect { lyricsList ->
                 withContext(Dispatchers.Main) {
                     val activated = lyricsList.activatedLyrics
                     if (lyricsList.isNotEmpty() && activated is LrcLyrics) {
@@ -172,7 +172,7 @@ abstract class AbsPlayerFragment :
                 visible = false
                 itemId = R.id.action_show_lyrics
                 onClick {
-                    val lyricsList = lyricsViewModel.lyricsList.value
+                    val lyricsList = lyricsViewModel.lyricsInfo.value
                     if (lyricsList.isNotEmpty()) {
                         LyricsDialog().show(childFragmentManager, "LYRICS")
                     }
