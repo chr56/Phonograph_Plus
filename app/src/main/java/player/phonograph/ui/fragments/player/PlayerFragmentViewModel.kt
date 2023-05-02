@@ -8,8 +8,8 @@ import player.phonograph.App
 import player.phonograph.mediastore.LyricsLoader
 import player.phonograph.model.Song
 import player.phonograph.model.lyrics.AbsLyrics
-import player.phonograph.model.lyrics.LyricsList
 import player.phonograph.mechanism.Favorite.isFavorite
+import player.phonograph.model.lyrics.LyricsList2
 import player.phonograph.util.reportError
 import androidx.annotation.ColorInt
 import androidx.lifecycle.ViewModel
@@ -42,15 +42,13 @@ class PlayerFragmentViewModel : ViewModel() {
 
     var lyricsMenuItem: MenuItem? = null
 
-    private var _lyricsList: MutableStateFlow<LyricsList> = MutableStateFlow(LyricsList())
+    private var _lyricsList: MutableStateFlow<LyricsList2> = MutableStateFlow(LyricsList2.EMPTY)
     val lyricsList get() = _lyricsList.asStateFlow()
-
-    private var _currentLyrics: MutableStateFlow<AbsLyrics?> = MutableStateFlow(null)
-    val currentLyrics get() = _currentLyrics.asStateFlow()
 
     fun forceReplaceLyrics(lyrics: AbsLyrics) {
         viewModelScope.launch {
-            _currentLyrics.emit(lyrics)
+            val new = _lyricsList.value.replaceActivated(lyrics)
+            if (new != null) _lyricsList.emit(new)
         }
     }
 
@@ -58,15 +56,13 @@ class PlayerFragmentViewModel : ViewModel() {
     fun loadLyrics(song: Song) {
         // cancel old song's lyrics after switching
         loadLyricsJob?.cancel()
-        _currentLyrics.value = null
-        _lyricsList.value = LyricsList()
+        _lyricsList.value = LyricsList2.EMPTY
         lyricsMenuItem?.isVisible = false
         // load new lyrics
         loadLyricsJob = viewModelScope.launch {
             if (song == Song.EMPTY_SONG) return@launch
             val newLyrics = LyricsLoader.loadLyrics(File(song.data), song)
             _lyricsList.emit(newLyrics)
-            _currentLyrics.emit(newLyrics.getAvailableLyrics())
         }
     }
 

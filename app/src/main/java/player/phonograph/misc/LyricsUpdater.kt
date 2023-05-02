@@ -33,7 +33,7 @@ class LyricsUpdater(song: Song?) {
             if (!file.exists()) return@also
             runBlocking(exceptionHandler) {
                 LyricsLoader.loadLyrics(file, song).let {
-                    fetcher = LyricsFetcher(it.getLrcLyrics())
+                    fetcher = LyricsFetcher(it.firstLrcLyrics())
                 }
             }
         }

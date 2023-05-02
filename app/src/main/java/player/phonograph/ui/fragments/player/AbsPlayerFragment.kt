@@ -137,14 +137,15 @@ abstract class AbsPlayerFragment :
 
     private fun addLyricsObserver() {
         lifecycleScope.launch(viewModel.exceptionHandler) {
-            viewModel.currentLyrics.collect { lyrics ->
+            viewModel.lyricsList.collect { lyricsList ->
                 withContext(Dispatchers.Main) {
-                    if (lyrics != null && lyrics is LrcLyrics) {
-                        playerAlbumCoverFragment.setLyrics(lyrics)
+                    val activated = lyricsList.activatedLyrics
+                    if (lyricsList.isNotEmpty() && activated is LrcLyrics) {
+                        playerAlbumCoverFragment.setLyrics(activated)
                     } else {
                         playerAlbumCoverFragment.clearLyrics()
                     }
-                    viewModel.lyricsMenuItem?.isVisible = (lyrics != null)
+                    viewModel.lyricsMenuItem?.isVisible = lyricsList.isNotEmpty()
                 }
             }
         }
@@ -167,13 +168,9 @@ abstract class AbsPlayerFragment :
                 visible = false
                 itemId = R.id.action_show_lyrics
                 onClick {
-                    val lyricsPack = viewModel.lyricsList.value
-                    if (!lyricsPack.isEmpty()) {
-                        LyricsDialog.create(
-                            lyricsPack,
-                            viewModel.currentSong.value,
-                            viewModel.currentLyrics.value ?: lyricsPack.getAvailableLyrics()!!
-                        ).show(childFragmentManager, "LYRICS")
+                    val lyricsList = viewModel.lyricsList.value
+                    if (lyricsList.isNotEmpty()) {
+                        LyricsDialog.create(lyricsList).show(childFragmentManager, "LYRICS")
                     }
                     true
                 }
