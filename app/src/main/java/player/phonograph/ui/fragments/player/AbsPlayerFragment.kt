@@ -53,6 +53,7 @@ abstract class AbsPlayerFragment :
     protected lateinit var playerAlbumCoverFragment: PlayerAlbumCoverFragment
     protected lateinit var playbackControlsFragment: AbsPlayerControllerFragment
     protected val viewModel: PlayerFragmentViewModel by viewModels()
+    protected val lyricsViewModel: LyricsViewModel by viewModels()
     lateinit var handler: Handler
 
     // recycle view
@@ -75,7 +76,7 @@ abstract class AbsPlayerFragment :
     private val handlerCallbacks = Handler.Callback { msg ->
         if (msg.what == UPDATE_LYRICS) {
             val lyrics = msg.data.get(LYRICS) as AbsLyrics
-            viewModel.forceReplaceLyrics(lyrics)
+            lyricsViewModel.forceReplaceLyrics(lyrics)
             if (lyrics is LrcLyrics) {
                 playerAlbumCoverFragment.setLyrics(lyrics)
                 MusicPlayerRemote.musicService?.replaceLyrics(lyrics)
@@ -137,7 +138,7 @@ abstract class AbsPlayerFragment :
 
     private fun addLyricsObserver() {
         lifecycleScope.launch(viewModel.exceptionHandler) {
-            viewModel.lyricsList.collect { lyricsList ->
+            lyricsViewModel.lyricsList.collect { lyricsList ->
                 withContext(Dispatchers.Main) {
                     val activated = lyricsList.activatedLyrics
                     if (lyricsList.isNotEmpty() && activated is LrcLyrics) {
@@ -171,7 +172,7 @@ abstract class AbsPlayerFragment :
                 visible = false
                 itemId = R.id.action_show_lyrics
                 onClick {
-                    val lyricsList = viewModel.lyricsList.value
+                    val lyricsList = lyricsViewModel.lyricsList.value
                     if (lyricsList.isNotEmpty()) {
                         LyricsDialog.create(lyricsList).show(childFragmentManager, "LYRICS")
                     }
@@ -351,14 +352,14 @@ abstract class AbsPlayerFragment :
         updateQueue()
         updateCurrentSong()
         viewModel.updateFavoriteState(MusicPlayerRemote.currentSong, context)
-        viewModel.loadLyrics(MusicPlayerRemote.currentSong)
+        lyricsViewModel.loadLyrics(MusicPlayerRemote.currentSong)
     }
 
     override fun onPlayingMetaChanged() {
         updateCurrentSong()
         updateQueuePosition()
         viewModel.updateFavoriteState(MusicPlayerRemote.currentSong, context)
-        viewModel.loadLyrics(MusicPlayerRemote.currentSong)
+        lyricsViewModel.loadLyrics(MusicPlayerRemote.currentSong)
     }
 
     override fun onQueueChanged() {
