@@ -5,17 +5,16 @@
 package player.phonograph.ui.fragments.player
 
 import player.phonograph.App
+import player.phonograph.mechanism.Favorite.isFavorite
 import player.phonograph.mediastore.LyricsLoader
 import player.phonograph.model.Song
 import player.phonograph.model.lyrics.AbsLyrics
-import player.phonograph.mechanism.Favorite.isFavorite
 import player.phonograph.model.lyrics.LyricsInfo
 import player.phonograph.util.reportError
 import androidx.annotation.ColorInt
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import android.content.Context
-import android.view.MenuItem
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -40,8 +39,6 @@ class PlayerFragmentViewModel : ViewModel() {
         }
     }
 
-    var lyricsMenuItem: MenuItem? = null
-
     private var _lyricsList: MutableStateFlow<LyricsInfo> = MutableStateFlow(LyricsInfo.EMPTY)
     val lyricsList get() = _lyricsList.asStateFlow()
 
@@ -56,8 +53,7 @@ class PlayerFragmentViewModel : ViewModel() {
     fun loadLyrics(song: Song) {
         // cancel old song's lyrics after switching
         loadLyricsJob?.cancel()
-        _lyricsList.value = LyricsInfo.EMPTY
-        lyricsMenuItem?.isVisible = false
+        // _lyricsList.value = LyricsInfo.EMPTY
         // load new lyrics
         loadLyricsJob = viewModelScope.launch {
             if (song == Song.EMPTY_SONG) return@launch

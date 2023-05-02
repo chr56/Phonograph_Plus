@@ -123,7 +123,7 @@ abstract class AbsPlayerFragment :
 
     override fun onDestroyView() {
         favoriteMenuItem = null
-        viewModel.lyricsMenuItem = null
+        lyricsMenuItem = null
         super.onDestroyView()
         _recyclerViewDragDropManager?.let {
             recyclerViewDragDropManager.release()
@@ -145,7 +145,7 @@ abstract class AbsPlayerFragment :
                     } else {
                         playerAlbumCoverFragment.clearLyrics()
                     }
-                    viewModel.lyricsMenuItem?.isVisible = lyricsList.isNotEmpty()
+                    lyricsMenuItem?.isVisible = lyricsList.isNotEmpty()
                 }
             }
         }
@@ -154,6 +154,9 @@ abstract class AbsPlayerFragment :
     //
     // Toolbar
     //
+
+    private var lyricsMenuItem: MenuItem? = null
+
     private fun initToolbar() {
         playerToolbar = getImplToolbar()
         playerToolbar.setNavigationIcon(R.drawable.ic_close_white_24dp)
@@ -174,8 +177,8 @@ abstract class AbsPlayerFragment :
                     }
                     true
                 }
-            }.apply {
-                viewModel.lyricsMenuItem = this
+            }.also {
+                lyricsMenuItem = it
             }
 
             menuItem(getString(R.string.action_add_to_favorites)) {
