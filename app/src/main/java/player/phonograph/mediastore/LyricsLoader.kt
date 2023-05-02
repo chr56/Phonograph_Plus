@@ -12,7 +12,7 @@ import player.phonograph.App
 import player.phonograph.model.Song
 import player.phonograph.model.lyrics.AbsLyrics
 import player.phonograph.model.lyrics.LrcLyrics
-import player.phonograph.model.lyrics.LyricsList2
+import player.phonograph.model.lyrics.LyricsInfo
 import player.phonograph.model.lyrics.LyricsSource
 import player.phonograph.model.lyrics.TextLyrics
 import player.phonograph.settings.Setting
@@ -31,19 +31,19 @@ object LyricsLoader {
 
     private val backgroundCoroutine: CoroutineScope by lazy { CoroutineScope(Dispatchers.IO) }
 
-    suspend fun loadLyrics(songFile: File, song: Song): LyricsList2 {
+    suspend fun loadLyrics(songFile: File, song: Song): LyricsInfo {
         if (!Setting.instance.enableLyrics) {
             debug {
                 Log.v(TAG, "Lyrics is off for ${song.title}")
             }
-            return LyricsList2.EMPTY
+            return LyricsInfo.EMPTY
         }
 
         if (!hasStorageReadPermission(App.instance)) {
             debug {
                 Log.v(TAG, "No storage read permission to fetch lyrics for ${song.title}")
             }
-            return LyricsList2.EMPTY
+            return LyricsInfo.EMPTY
         }
 
         // embedded
@@ -76,7 +76,7 @@ object LyricsLoader {
         val activated: Int = resultList.indexOfFirst { it is LrcLyrics }
 
         // end of fetching
-        return LyricsList2(song, resultList, activated)
+        return LyricsInfo(song, resultList, activated)
     }
 
     private fun parseEmbedded(

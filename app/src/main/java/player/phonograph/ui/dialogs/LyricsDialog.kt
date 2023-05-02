@@ -18,7 +18,7 @@ import player.phonograph.misc.MusicProgressViewUpdateHelper
 import player.phonograph.model.lyrics.AbsLyrics
 import player.phonograph.model.lyrics.DEFAULT_TITLE
 import player.phonograph.model.lyrics.LrcLyrics
-import player.phonograph.model.lyrics.LyricsList2
+import player.phonograph.model.lyrics.LyricsInfo
 import player.phonograph.model.lyrics.LyricsSource
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
 import player.phonograph.ui.fragments.player.AbsPlayerFragment
@@ -42,7 +42,7 @@ class LyricsDialog : LargeDialog(), MusicProgressViewUpdateHelper.Callback {
     private var _viewBinding: DialogLyricsBinding? = null
     val binding: DialogLyricsBinding get() = _viewBinding!!
 
-    private lateinit var lyricsList: LyricsList2
+    private lateinit var lyricsList: LyricsInfo
     private lateinit var activated: AbsLyrics
     private val availableLyricTypes: MutableSet<LyricsSource> = HashSet(1)
     private lateinit var lyricsAdapter: LyricsAdapter
@@ -251,7 +251,7 @@ class LyricsDialog : LargeDialog(), MusicProgressViewUpdateHelper.Callback {
 
         private const val LYRICS = "lyrics_list"
 
-        fun create(lyricsList: LyricsList2) = LyricsDialog().apply {
+        fun create(lyricsList: LyricsInfo) = LyricsDialog().apply {
             arguments = Bundle().apply {
                 putParcelable(LYRICS, lyricsList)
             }

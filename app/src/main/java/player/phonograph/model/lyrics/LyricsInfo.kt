@@ -10,7 +10,7 @@ import kotlinx.parcelize.Parcelize
 
 
 @Parcelize
-data class LyricsList2(
+data class LyricsInfo(
     val linkedSong: Song,
     private val lyricsList: ArrayList<AbsLyrics>,
     private val activatedLyricsNumber: Int,
@@ -31,29 +31,29 @@ data class LyricsList2(
         return null
     }
 
-    fun createAmended(absLyrics: AbsLyrics): LyricsList2 = insect(this, absLyrics)
+    fun createAmended(absLyrics: AbsLyrics): LyricsInfo = insect(this, absLyrics)
 
-    fun replaceActivated(index: Int): LyricsList2 = setActive(this,index)
-    fun replaceActivated(lyrics: AbsLyrics): LyricsList2? = setActive(this,lyrics)
+    fun replaceActivated(index: Int): LyricsInfo = setActive(this,index)
+    fun replaceActivated(lyrics: AbsLyrics): LyricsInfo? = setActive(this,lyrics)
 
     companion object {
-        val EMPTY = LyricsList2(Song.EMPTY_SONG, ArrayList(), -1)
+        val EMPTY = LyricsInfo(Song.EMPTY_SONG, ArrayList(), -1)
 
-        private fun insect(old: LyricsList2, newLyrics: AbsLyrics): LyricsList2 =
-            LyricsList2(
+        private fun insect(old: LyricsInfo, newLyrics: AbsLyrics): LyricsInfo =
+            LyricsInfo(
                 old.linkedSong,
                 ArrayList(old.lyricsList).also { it.add(newLyrics) },
                 old.activatedLyricsNumber
             )
 
-        private fun setActive(old: LyricsList2, index: Int): LyricsList2 =
-            LyricsList2(
+        private fun setActive(old: LyricsInfo, index: Int): LyricsInfo =
+            LyricsInfo(
                 old.linkedSong,
                 old.lyricsList,
                 index
             )
 
-        private fun setActive(old: LyricsList2, lyrics: AbsLyrics): LyricsList2? {
+        private fun setActive(old: LyricsInfo, lyrics: AbsLyrics): LyricsInfo? {
             var index = -1
             for ((i, l) in old.lyricsList.withIndex()) {
                 if (l === lyrics) {

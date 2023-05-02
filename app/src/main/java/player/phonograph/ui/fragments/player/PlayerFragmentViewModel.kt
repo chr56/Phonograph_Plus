@@ -9,7 +9,7 @@ import player.phonograph.mediastore.LyricsLoader
 import player.phonograph.model.Song
 import player.phonograph.model.lyrics.AbsLyrics
 import player.phonograph.mechanism.Favorite.isFavorite
-import player.phonograph.model.lyrics.LyricsList2
+import player.phonograph.model.lyrics.LyricsInfo
 import player.phonograph.util.reportError
 import androidx.annotation.ColorInt
 import androidx.lifecycle.ViewModel
@@ -42,7 +42,7 @@ class PlayerFragmentViewModel : ViewModel() {
 
     var lyricsMenuItem: MenuItem? = null
 
-    private var _lyricsList: MutableStateFlow<LyricsList2> = MutableStateFlow(LyricsList2.EMPTY)
+    private var _lyricsList: MutableStateFlow<LyricsInfo> = MutableStateFlow(LyricsInfo.EMPTY)
     val lyricsList get() = _lyricsList.asStateFlow()
 
     fun forceReplaceLyrics(lyrics: AbsLyrics) {
@@ -56,7 +56,7 @@ class PlayerFragmentViewModel : ViewModel() {
     fun loadLyrics(song: Song) {
         // cancel old song's lyrics after switching
         loadLyricsJob?.cancel()
-        _lyricsList.value = LyricsList2.EMPTY
+        _lyricsList.value = LyricsInfo.EMPTY
         lyricsMenuItem?.isVisible = false
         // load new lyrics
         loadLyricsJob = viewModelScope.launch {
