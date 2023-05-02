@@ -22,7 +22,9 @@ import player.phonograph.model.lyrics.LyricsInfo
 import player.phonograph.model.lyrics.LyricsSource
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
 import player.phonograph.ui.fragments.player.AbsPlayerFragment
+import player.phonograph.ui.fragments.player.LyricsViewModel
 import player.phonograph.util.theme.nightMode
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import android.content.res.ColorStateList
@@ -35,25 +37,26 @@ import android.view.ViewGroup
 import android.widget.CompoundButton
 
 /**
- * @author Karim Abou Zeid (kabouzeid)
+ * Large Dialog to show Lyrics.
+ *
+ * **MUST** be created from a view-model owner possessing [LyricsViewModel]
  */
 class LyricsDialog : LargeDialog(), MusicProgressViewUpdateHelper.Callback {
 
     private var _viewBinding: DialogLyricsBinding? = null
     val binding: DialogLyricsBinding get() = _viewBinding!!
 
-    private lateinit var lyricsList: LyricsInfo
-    private lateinit var activated: AbsLyrics
-    private val availableLyricTypes: MutableSet<LyricsSource> = HashSet(1)
+    private val viewModel: LyricsViewModel by viewModels({ requireParentFragment() })
+
+    private val lyricsInfo: LyricsInfo get() = viewModel.lyricsList.value
+    private var activated: AbsLyrics
+        get() = lyricsInfo.activatedLyrics ?: lyricsInfo.first()
+        set(value) {
+            viewModel.forceReplaceLyrics(value)
+        }
+
     private lateinit var lyricsAdapter: LyricsAdapter
     private lateinit var linearLayoutManager: LinearLayoutManager
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        lyricsList = requireArguments().getParcelable(LYRICS)!!
-        require(lyricsList.isNotEmpty()) { "No lyrics?!" }
-        activated = lyricsList.activatedLyrics ?: lyricsList.firstLrcLyrics() ?: lyricsList.first()
-    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _viewBinding = DialogLyricsBinding.inflate(layoutInflater)
@@ -61,9 +64,9 @@ class LyricsDialog : LargeDialog(), MusicProgressViewUpdateHelper.Callback {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        availableLyricTypes.addAll(lyricsList.availableSources())
+
         binding.title.text =
-            if (activated.getTitle() != DEFAULT_TITLE) activated.getTitle() else lyricsList.linkedSong.title
+            if (activated.getTitle() != DEFAULT_TITLE) activated.getTitle() else lyricsInfo.linkedSong.title
         initChip()
         initRecycleView(activated)
 
@@ -124,7 +127,7 @@ class LyricsDialog : LargeDialog(), MusicProgressViewUpdateHelper.Callback {
     private var chipSelected: Chip? = null
     private fun initChip() {
         binding.types.isSingleSelection = true
-        lyricsList.forEachIndexed { index, lyrics ->
+        lyricsInfo.forEachIndexed { index, lyrics ->
             val chip = createChip(
                 getLocalizedTypeName(lyrics.source), index, activated == lyrics, this::onChipClicked
             )
@@ -135,7 +138,7 @@ class LyricsDialog : LargeDialog(), MusicProgressViewUpdateHelper.Callback {
     }
 
     private fun onChipClicked(chip: Chip, index: Int) {
-        if (lyricsList[index] == activated) return // do not change
+        if (lyricsInfo[index] == activated) return // do not change
         switchLyrics(index)
         chip.isChecked = true
         chip.chipBackgroundColor = getChipBackgroundColor(true)
@@ -147,7 +150,7 @@ class LyricsDialog : LargeDialog(), MusicProgressViewUpdateHelper.Callback {
     }
 
     private fun switchLyrics(index: Int) {
-        val lyrics = lyricsList[index]
+        val lyrics = lyricsInfo[index]
         activated = lyrics
         lyricsAdapter.update(lyrics.getLyricsTimeArray(), lyrics.getLyricsLineArray())
         val fragment =
@@ -247,14 +250,4 @@ class LyricsDialog : LargeDialog(), MusicProgressViewUpdateHelper.Callback {
         }
     }
 
-    companion object {
-
-        private const val LYRICS = "lyrics_list"
-
-        fun create(lyricsList: LyricsInfo) = LyricsDialog().apply {
-            arguments = Bundle().apply {
-                putParcelable(LYRICS, lyricsList)
-            }
-        }
-    }
 }

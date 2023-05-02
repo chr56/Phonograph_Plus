@@ -174,7 +174,7 @@ abstract class AbsPlayerFragment :
                 onClick {
                     val lyricsList = lyricsViewModel.lyricsList.value
                     if (lyricsList.isNotEmpty()) {
-                        LyricsDialog.create(lyricsList).show(childFragmentManager, "LYRICS")
+                        LyricsDialog().show(childFragmentManager, "LYRICS")
                     }
                     true
                 }
