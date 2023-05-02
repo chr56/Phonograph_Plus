@@ -57,7 +57,6 @@ abstract class AbsPlayerFragment :
     protected lateinit var playbackControlsFragment: AbsPlayerControllerFragment
     protected val viewModel: PlayerFragmentViewModel by viewModels()
     protected val lyricsViewModel: LyricsViewModel by viewModels()
-    lateinit var handler: Handler
 
     // recycle view
     protected lateinit var layoutManager: LinearLayoutManager
@@ -70,26 +69,6 @@ abstract class AbsPlayerFragment :
     protected lateinit var playerToolbar: Toolbar
 
     internal lateinit var impl: Impl
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        handler = Handler(Looper.getMainLooper(), handlerCallbacks)
-    }
-
-    private val handlerCallbacks = Handler.Callback { msg ->
-        if (msg.what == UPDATE_LYRICS) {
-            val lyrics = msg.data.get(LYRICS) as AbsLyrics
-            lyricsViewModel.forceReplaceLyrics(lyrics)
-            if (lyrics is LrcLyrics) {
-                playerAlbumCoverFragment.setLyrics(lyrics)
-                MusicPlayerRemote.musicService?.replaceLyrics(lyrics)
-            } else {
-                playerAlbumCoverFragment.clearLyrics()
-                MusicPlayerRemote.musicService?.replaceLyrics(null)
-            }
-        }
-        false
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -146,8 +125,10 @@ abstract class AbsPlayerFragment :
                     val activated = lyricsList.activatedLyrics
                     if (lyricsList.isNotEmpty() && activated is LrcLyrics) {
                         playerAlbumCoverFragment.setLyrics(activated)
+                        MusicPlayerRemote.musicService?.replaceLyrics(activated)
                     } else {
                         playerAlbumCoverFragment.clearLyrics()
+                        MusicPlayerRemote.musicService?.replaceLyrics(null)
                     }
                     lyricsMenuItem?.isVisible = lyricsList.isNotEmpty()
                 }
@@ -422,11 +403,6 @@ abstract class AbsPlayerFragment :
     }
 
     abstract override fun onToolbarToggled()
-
-    companion object {
-        const val UPDATE_LYRICS = 1001
-        const val LYRICS = "lyrics"
-    }
 
     internal interface Impl {
         fun init()

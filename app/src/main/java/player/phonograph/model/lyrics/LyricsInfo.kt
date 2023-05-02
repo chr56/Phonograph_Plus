@@ -24,6 +24,8 @@ data class LyricsInfo(
     fun availableSources(): Set<LyricsSource> = lyricsList.map { it.source }.toSet()
     val activatedLyrics: AbsLyrics? get() = lyricsList.getOrNull(activatedLyricsNumber)
 
+    fun isActive(index: Int) = index == activatedLyricsNumber
+
     private inline fun <reified L> findFirst(): L? {
         for (lyric in lyricsList) {
             if (lyric is L) return lyric
@@ -33,8 +35,8 @@ data class LyricsInfo(
 
     fun createAmended(absLyrics: AbsLyrics): LyricsInfo = insect(this, absLyrics)
 
-    fun replaceActivated(index: Int): LyricsInfo = setActive(this,index)
-    fun replaceActivated(lyrics: AbsLyrics): LyricsInfo? = setActive(this,lyrics)
+    fun replaceActivated(index: Int): LyricsInfo = setActive(this, index)
+    fun replaceActivated(lyrics: AbsLyrics): LyricsInfo? = setActive(this, lyrics)
 
     companion object {
         val EMPTY = LyricsInfo(Song.EMPTY_SONG, ArrayList(), -1)

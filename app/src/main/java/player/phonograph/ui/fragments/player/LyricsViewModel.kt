@@ -57,4 +57,7 @@ class LyricsViewModel : ViewModel() {
             }
         }
     }
+
+    // for LyricsDialog
+    val requireLyricsFollowing = MutableStateFlow(false)
 }
