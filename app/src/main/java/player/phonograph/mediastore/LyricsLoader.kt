@@ -20,6 +20,8 @@ import player.phonograph.util.FileUtil
 import player.phonograph.util.debug
 import player.phonograph.util.permissions.hasStorageReadPermission
 import player.phonograph.util.reportError
+import android.content.Context
+import android.net.Uri
 import android.util.Log
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -186,6 +188,16 @@ object LyricsLoader {
             emptyList()
         }
     }
+
+
+    fun parseFromUri(context: Context, uri: Uri): AbsLyrics? {
+        return context.contentResolver.openInputStream(uri)?.use { inputStream ->
+            inputStream.reader().use {
+                parse(it.readText())
+            }
+        }
+    }
+
 
     private const val TAG = "LyricsLoader"
 }

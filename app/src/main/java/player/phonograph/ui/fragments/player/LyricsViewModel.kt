@@ -10,6 +10,9 @@ import player.phonograph.model.lyrics.AbsLyrics
 import player.phonograph.model.lyrics.LyricsInfo
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import android.content.Context
+import android.net.Uri
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -39,6 +42,18 @@ class LyricsViewModel : ViewModel() {
             } else {
                 val newLyrics = LyricsLoader.loadLyrics(File(song.data), song)
                 _lyricsInfo.emit(newLyrics)
+            }
+        }
+    }
+
+    fun insert(context: Context, uri: Uri?) {
+        if (uri != null) {
+            viewModelScope.launch(Dispatchers.IO) {
+                val lyrics = LyricsLoader.parseFromUri(context, uri)
+                if (lyrics != null) {
+                    val info = _lyricsInfo.value.createAmended(lyrics).replaceActivated(lyrics)!!
+                    _lyricsInfo.emit(info)
+                }
             }
         }
     }
