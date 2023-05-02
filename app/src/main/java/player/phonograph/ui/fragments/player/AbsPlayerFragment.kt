@@ -4,6 +4,8 @@ import com.github.chr56.android.menu_dsl.attach
 import com.github.chr56.android.menu_dsl.menuItem
 import com.h6ah4i.android.widget.advrecyclerview.draggable.RecyclerViewDragDropManager
 import com.h6ah4i.android.widget.advrecyclerview.utils.WrapperAdapterUtils
+import lib.phonograph.misc.IOpenFileStorageAccess
+import lib.phonograph.misc.OpenDocumentContract
 import mt.pref.primaryColor
 import mt.tint.viewtint.setMenuColor
 import mt.util.color.toolbarIconColor
@@ -25,6 +27,7 @@ import player.phonograph.ui.fragments.player.PlayerAlbumCoverFragment.Companion.
 import player.phonograph.mechanism.Favorite.toggleFavorite
 import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.NavigationUtil
+import player.phonograph.util.warning
 import androidx.annotation.ColorInt
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -217,6 +220,21 @@ abstract class AbsPlayerFragment :
                 onClick {
                     CreatePlaylistDialog.create(MusicPlayerRemote.playingQueue)
                         .show(childFragmentManager, "ADD_TO_PLAYLIST")
+                    true
+                }
+            }
+            menuItem {
+                title = getString(R.string.action_choose_lyrics)
+                showAsActionFlag = MenuItem.SHOW_AS_ACTION_NEVER
+                onClick {
+                    val accessor = requireActivity() as? IOpenFileStorageAccess
+                    if (accessor != null) {
+                        accessor.openFileStorageAccessTool.launch(
+                            OpenDocumentContract.Config(arrayOf("*/*"))
+                        ) { uri -> lyricsViewModel.insert(requireContext(), uri) }
+                    } else {
+                        warning("Lyrics", "Can not open file from $activity")
+                    }
                     true
                 }
             }
