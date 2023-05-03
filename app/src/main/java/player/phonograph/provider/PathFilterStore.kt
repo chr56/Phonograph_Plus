@@ -2,15 +2,13 @@ package player.phonograph.provider
 
 import android.content.ContentValues
 import android.content.Context
-import android.content.Intent
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import android.os.Environment.DIRECTORY_ALARMS
 import android.os.Environment.DIRECTORY_NOTIFICATIONS
 import android.os.Environment.DIRECTORY_RINGTONES
 import android.os.Environment.getExternalStoragePublicDirectory
-import player.phonograph.App
-import player.phonograph.MusicServiceMsgConst
+import player.phonograph.mechanism.event.MediaStoreTracker
 import player.phonograph.settings.Setting
 import player.phonograph.util.FileUtil.safeGetCanonicalPath
 import java.io.File
@@ -206,8 +204,6 @@ class PathFilterStore(context: Context) :
         }
 
 
-        private fun notifyMediaStoreChanged() {
-            App.instance.sendBroadcast(Intent(MusicServiceMsgConst.MEDIA_STORE_CHANGED))
-        }
+        private fun notifyMediaStoreChanged() = MediaStoreTracker.notifyAllListeners()
     }
 }

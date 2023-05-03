@@ -8,11 +8,12 @@ import mt.pref.ThemeColor
 import mt.pref.internal.ThemeStore
 import player.phonograph.appshortcuts.DynamicShortcutManager
 import player.phonograph.coil.createPhonographImageLoader
+import player.phonograph.mechanism.event.setupEventReceiver
 import player.phonograph.notification.ErrorNotification
 import player.phonograph.notification.ErrorNotification.KEY_STACK_TRACE
 import player.phonograph.service.queue.QueueManager
 import player.phonograph.ui.activities.CrashActivity
- import player.phonograph.util.theme.applyMonet
+import player.phonograph.util.theme.applyMonet
 import android.app.Application
 import android.content.Context
 import android.content.Intent
@@ -100,6 +101,9 @@ class App : Application(), ImageLoaderFactory {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
             DynamicShortcutManager(this).initDynamicShortcuts()
         }
+
+        // state listener
+        setupEventReceiver(this)
     }
 
     override fun onTerminate() {

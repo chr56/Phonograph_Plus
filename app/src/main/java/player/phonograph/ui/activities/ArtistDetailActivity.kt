@@ -22,6 +22,7 @@ import player.phonograph.coil.CustomArtistImageStore
 import player.phonograph.databinding.ActivityArtistDetailBinding
 import player.phonograph.model.PaletteColorHolder
 import lib.phonograph.misc.menuProvider
+import player.phonograph.mechanism.event.MediaStoreTracker
 import player.phonograph.model.Artist
 import player.phonograph.model.albumCountString
 import player.phonograph.model.getReadableDurationString
@@ -79,6 +80,8 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorHolder 
         setUpToolbar()
         setUpViews()
         observeData()
+
+        lifecycle.addObserver(MediaStoreListener())
     }
 
     override fun createContentView(): View = wrapSlidingMusicPanel(viewBinding.root)
@@ -228,9 +231,10 @@ class ArtistDetailActivity : AbsSlidingMusicPanelActivity(), PaletteColorHolder 
         }
     }
 
-    override fun onMediaStoreChanged() {
-        super.onMediaStoreChanged()
-        model.load(this)
+    private inner class MediaStoreListener : MediaStoreTracker.LifecycleListener() {
+        override fun onMediaStoreChanged() {
+            model.load(this@ArtistDetailActivity)
+        }
     }
 
     override fun setStatusbarColor(color: Int) {

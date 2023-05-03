@@ -5,7 +5,7 @@
 package player.phonograph.mechanism.backup
 
 import okio.BufferedSink
-import player.phonograph.MusicServiceMsgConst
+import player.phonograph.mechanism.event.MediaStoreTracker
 import player.phonograph.mediastore.searchSong
 import player.phonograph.model.Song
 import player.phonograph.provider.FavoriteSongsStore
@@ -15,7 +15,6 @@ import player.phonograph.util.reportError
 import player.phonograph.util.warning
 import androidx.annotation.Keep
 import android.content.Context
-import android.content.Intent
 import kotlin.LazyThreadSafetyMode.NONE
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -140,7 +139,7 @@ object DatabaseDataManger {
                 currentQueueQueue ?: originalQueue ?: emptyList(),
                 originalQueue ?: currentQueueQueue ?: emptyList(),
             )
-            context.sendBroadcast(Intent(MusicServiceMsgConst.MEDIA_STORE_CHANGED))
+            MediaStoreTracker.notifyAllListeners()
             true
         } else {
             warning(TAG, "PlayingQueues: Nothing to import")
@@ -188,7 +187,7 @@ object DatabaseDataManger {
             // todo: report imported songs
             if (override) db.clear()
             db.addAll(songs.asReversed())
-            context.sendBroadcast(Intent(MusicServiceMsgConst.MEDIA_STORE_CHANGED))
+            MediaStoreTracker.notifyAllListeners()
             true
         } else {
             warning(TAG, "Favorites: Nothing to import")

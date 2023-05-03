@@ -5,14 +5,13 @@
 package player.phonograph.provider
 
 import player.phonograph.App
-import player.phonograph.MusicServiceMsgConst
+import player.phonograph.mechanism.event.MediaStoreTracker
 import player.phonograph.mediastore.SongLoader
 import player.phonograph.model.Song
 import player.phonograph.provider.DatabaseConstants.FAVORITE_DB
 import player.phonograph.util.text.currentTimestamp
 import android.content.ContentValues
 import android.content.Context
-import android.content.Intent
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 
@@ -161,7 +160,7 @@ class FavoriteSongsStore(context: Context = App.instance) :
     }
     fun remove(song: Song): Boolean = remove(song.id, song.data!!)
 
-    private fun notifyMediaStoreChanged() { App.instance.sendBroadcast(Intent(MusicServiceMsgConst.MEDIA_STORE_CHANGED)) }
+    private fun notifyMediaStoreChanged() { MediaStoreTracker.notifyAllListeners() }
 
     companion object {
         private const val VERSION = 1

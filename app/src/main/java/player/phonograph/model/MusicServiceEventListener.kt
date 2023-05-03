@@ -11,5 +11,4 @@ interface MusicServiceEventListener {
     fun onPlayStateChanged()
     fun onRepeatModeChanged()
     fun onShuffleModeChanged()
-    fun onMediaStoreChanged()
 }

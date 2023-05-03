@@ -3,8 +3,6 @@
  */
 package player.phonograph.mechanism
 
-import player.phonograph.App
-import player.phonograph.MusicServiceMsgConst
 import player.phonograph.R
 import player.phonograph.model.Song
 import player.phonograph.model.playlist.Playlist
@@ -12,11 +10,11 @@ import player.phonograph.provider.FavoriteSongsStore
 import player.phonograph.settings.Setting
 import player.phonograph.mechanism.PlaylistsManagement.doesPlaylistContain
 import player.phonograph.mechanism.PlaylistsManagement.getPlaylist
+import player.phonograph.mechanism.event.MediaStoreTracker
 import util.phonograph.playlist.mediastore.addToPlaylistViaMediastore
 import util.phonograph.playlist.mediastore.createOrFindPlaylistViaMediastore
 import util.phonograph.playlist.mediastore.removeFromPlaylistViaMediastore
 import android.content.Context
-import android.content.Intent
 import kotlinx.coroutines.runBlocking
 
 object Favorite {
@@ -95,9 +93,5 @@ object Favorite {
         ).also { notifyMediaStoreChanged() }
     }
 
-    private fun notifyMediaStoreChanged() {
-        App.instance.sendBroadcast(
-            Intent(MusicServiceMsgConst.MEDIA_STORE_CHANGED)
-        )
-    }
+    private fun notifyMediaStoreChanged() = MediaStoreTracker.notifyAllListeners()
 }

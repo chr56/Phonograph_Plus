@@ -14,6 +14,7 @@ import player.phonograph.BuildConfig
 import player.phonograph.R
 import player.phonograph.adapter.display.DisplayAdapter
 import player.phonograph.databinding.FragmentDisplayPageBinding
+import player.phonograph.mechanism.event.MediaStoreTracker
 import player.phonograph.model.Displayable
 import player.phonograph.ui.components.popup.ListOptionsPopup
 import player.phonograph.ui.fragments.pages.util.DisplayConfig
@@ -247,11 +248,6 @@ sealed class AbsDisplayPage<IT, A : DisplayAdapter<out Displayable>, LM : GridLa
 
     protected abstract fun getHeaderText(): CharSequence
 
-    override fun onMediaStoreChanged() {
-        loadDataSet()
-        super.onMediaStoreChanged()
-    }
-
     override fun onDestroyView() {
         super.onDestroyView()
         adapter.unregisterAdapterDataObserver(adapterDataObserver)
@@ -260,6 +256,21 @@ sealed class AbsDisplayPage<IT, A : DisplayAdapter<out Displayable>, LM : GridLa
         hostFragment.removeOnAppBarOffsetChangedListener(outerAppbarOffsetListener)
         _viewBinding = null
     }
+
+    private lateinit var listener: MediaStoreListener
+    override fun onCreate(savedInstanceState: Bundle?) {
+        listener = MediaStoreListener()
+        super.onCreate(savedInstanceState)
+        lifecycle.addObserver(listener)
+    }
+
+
+    private inner class MediaStoreListener : MediaStoreTracker.LifecycleListener() {
+        override fun onMediaStoreChanged() {
+            loadDataSet()
+        }
+    }
+
 
     protected val loaderCoroutineScope: CoroutineScope = CoroutineScope(Dispatchers.IO)
 

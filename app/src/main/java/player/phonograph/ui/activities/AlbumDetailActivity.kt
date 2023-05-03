@@ -23,6 +23,7 @@ import player.phonograph.coil.loadImage
 import player.phonograph.coil.target.PaletteTargetBuilder
 import player.phonograph.databinding.ActivityAlbumDetailBinding
 import lib.phonograph.misc.menuProvider
+import player.phonograph.mechanism.event.MediaStoreTracker
 import player.phonograph.model.Album
 import player.phonograph.model.getReadableDurationString
 import player.phonograph.model.getYearString
@@ -83,6 +84,9 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity() {
 
         // content
         setUpViews()
+
+        // MediaStore
+        lifecycle.addObserver(MediaStoreListener())
     }
 
     lateinit var cab: ToolbarCab
@@ -261,9 +265,10 @@ class AlbumDetailActivity : AbsSlidingMusicPanelActivity() {
         }
     }
 
-    override fun onMediaStoreChanged() {
-        super.onMediaStoreChanged()
-        load()
+    private inner class MediaStoreListener : MediaStoreTracker.LifecycleListener() {
+        override fun onMediaStoreChanged() {
+            load()
+        }
     }
 
     override fun setStatusbarColor(color: Int) {
