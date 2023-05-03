@@ -5,10 +5,11 @@ import mt.util.color.resolveColor
 import mt.util.color.secondaryTextColor
 import player.phonograph.R
 import player.phonograph.databinding.FragmentMiniPlayerBinding
-import player.phonograph.mechanism.event.PlayerStateTracker
 import player.phonograph.mechanism.event.QueueStateTracker
 import player.phonograph.misc.MusicProgressViewUpdateHelperDelegate
 import player.phonograph.service.MusicPlayerRemote
+import player.phonograph.service.player.PlayerController
+import player.phonograph.service.player.currentState
 import player.phonograph.ui.fragments.AbsMusicServiceFragment
 import player.phonograph.ui.views.PlayPauseDrawable
 import player.phonograph.util.theme.nightMode
@@ -78,7 +79,7 @@ class MiniPlayerFragment : AbsMusicServiceFragment() {
         binding.miniPlayerPlayPauseButton.setOnClickListener(PlayPauseButtonOnClickHandler())
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
-                PlayerStateTracker.state.collect { newState ->
+                PlayerController.currentState.collect { newState ->
                     updatePlayPauseDrawableState(
                         lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)
                     )

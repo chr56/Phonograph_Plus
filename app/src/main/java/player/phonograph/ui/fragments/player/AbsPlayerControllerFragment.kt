@@ -9,12 +9,13 @@ import mt.util.color.primaryTextColor
 import mt.util.color.secondaryDisabledTextColor
 import mt.util.color.secondaryTextColor
 import player.phonograph.R
-import player.phonograph.mechanism.event.PlayerStateTracker
 import player.phonograph.mechanism.event.QueueStateTracker
 import player.phonograph.misc.MusicProgressViewUpdateHelperDelegate
 import player.phonograph.misc.SimpleOnSeekbarChangeListener
 import player.phonograph.model.getReadableDurationString
 import player.phonograph.service.MusicPlayerRemote
+import player.phonograph.service.player.PlayerController
+import player.phonograph.service.player.currentState
 import player.phonograph.service.queue.RepeatMode
 import player.phonograph.service.queue.ShuffleMode
 import player.phonograph.ui.fragments.AbsMusicServiceFragment
@@ -108,7 +109,7 @@ abstract class AbsPlayerControllerFragment : AbsMusicServiceFragment() {
         }
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
-                PlayerStateTracker.state.collect { newState ->
+                PlayerController.currentState.collect { newState ->
                     updatePlayPauseDrawableState(
                         lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)
                     )

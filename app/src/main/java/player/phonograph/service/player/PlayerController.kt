@@ -24,9 +24,12 @@ import player.phonograph.service.util.QueuePreferenceManager
 import player.phonograph.service.util.makeErrorMessage
 import player.phonograph.settings.Setting
 import player.phonograph.mechanism.StatusBarLyric
-import player.phonograph.mechanism.event.PlayerStateTracker
 import android.content.ContentUris
 import android.provider.MediaStore
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 
 // todo cleanup queueManager.setQueueCursor
 /**
@@ -110,7 +113,7 @@ class PlayerController(internal val service: MusicService) : Playback.PlaybackCa
                 _playerState = value
             }
             observers.executeForEach { onPlayerStateChanged(oldState, value) }
-            PlayerStateTracker.refreshState(value)
+            _state.update { _playerState }
         }
 
     /**
@@ -642,3 +645,12 @@ class PlayerController(internal val service: MusicService) : Playback.PlaybackCa
         log(where, msg)
     }
 }
+
+/**
+ *  the exposed internal state as StateFlow for collect in ui.
+ */
+val PlayerController.Companion.currentState: StateFlow<PlayerState>
+    get() = _state.asStateFlow()
+
+@Suppress("ObjectPropertyName")
+private val _state by lazy { MutableStateFlow(PlayerState.PREPARING) }
