@@ -13,9 +13,7 @@ import player.phonograph.service.queue.ShuffleMode
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import java.lang.ref.Reference
 import java.lang.ref.SoftReference
-import java.lang.ref.WeakReference
 
 @Suppress("ObjectPropertyName")
 object QueueStateTracker {
@@ -49,21 +47,30 @@ object QueueStateTracker {
         _position.update { newPosition }
     }
 
+    private val _current = MutableStateFlow(Song.EMPTY_SONG)
+    val currentSong get() = _current.asStateFlow()
+
+    private fun refreshCurrentSong(song: Song) {
+        _current.update { song }
+    }
 
     private fun refreshAll(queueManager: QueueManager) {
         refreshQueue(queueManager.playingQueue)
         refreshPosition(queueManager.currentSongPosition)
         refreshShuffleMode(queueManager.shuffleMode)
         refreshRepeatMode(queueManager.repeatMode)
+        refreshCurrentSong(queueManager.currentSong)
     }
 
     private object Observer : QueueObserver {
         override fun onQueueChanged(newPlayingQueue: List<Song>, newOriginalQueue: List<Song>) {
             refreshQueue(newPlayingQueue)
+            refreshCurrentSong(App.instance.queueManager.currentSong)
         }
 
         override fun onCurrentPositionChanged(newPosition: Int) {
             refreshPosition(newPosition)
+            refreshCurrentSong(App.instance.queueManager.currentSong)
         }
 
         override fun onShuffleModeChanged(newMode: ShuffleMode) {
