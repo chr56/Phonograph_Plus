@@ -9,11 +9,13 @@ import mt.util.color.primaryTextColor
 import mt.util.color.secondaryDisabledTextColor
 import mt.util.color.secondaryTextColor
 import player.phonograph.R
-import player.phonograph.mechanism.event.QueueStateTracker
+import player.phonograph.service.queue.CurrentQueueState
 import player.phonograph.misc.MusicProgressViewUpdateHelperDelegate
 import player.phonograph.misc.SimpleOnSeekbarChangeListener
 import player.phonograph.model.getReadableDurationString
 import player.phonograph.service.MusicPlayerRemote
+import player.phonograph.service.player.PlayerController
+import player.phonograph.service.player.currentState
 import player.phonograph.service.queue.RepeatMode
 import player.phonograph.service.queue.ShuffleMode
 import player.phonograph.ui.fragments.AbsMusicServiceFragment
@@ -77,7 +79,6 @@ abstract class AbsPlayerControllerFragment : AbsMusicServiceFragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        observeState()
         super.onViewCreated(view, savedInstanceState)
 
         setUpPlayPauseButton()
@@ -88,20 +89,30 @@ abstract class AbsPlayerControllerFragment : AbsMusicServiceFragment() {
         setUpProgressSlider()
 
         updateProgressTextColor()
+        observeState()
     }
 
     private fun observeState() {
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
-                QueueStateTracker.repeatMode.collect { repeatMode ->
+                CurrentQueueState.repeatMode.collect { repeatMode ->
                     updateRepeatState(repeatMode)
                 }
             }
         }
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
-                QueueStateTracker.shuffleMode.collect { shuffleMode ->
+                CurrentQueueState.shuffleMode.collect { shuffleMode ->
                     updateShuffleState(shuffleMode)
+                }
+            }
+        }
+        lifecycleScope.launch {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
+                PlayerController.currentState.collect { newState ->
+                    updatePlayPauseDrawableState(
+                        lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)
+                    )
                 }
             }
         }
@@ -145,10 +156,6 @@ abstract class AbsPlayerControllerFragment : AbsMusicServiceFragment() {
 
     override fun onServiceConnected() {
         updatePlayPauseDrawableState(false)
-    }
-
-    override fun onPlayStateChanged() {
-        updatePlayPauseDrawableState(true)
     }
 
     private fun calculateColor(context: Context, backgroundColor: Int) {

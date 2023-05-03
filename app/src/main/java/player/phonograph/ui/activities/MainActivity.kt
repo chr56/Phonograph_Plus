@@ -41,11 +41,15 @@ import player.phonograph.ui.fragments.HomeFragment
 import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.theme.nightMode
 import player.phonograph.mechanism.Update
+import player.phonograph.service.queue.CurrentQueueState
 import player.phonograph.util.debug
 import player.phonograph.util.warning
 import player.phonograph.mechanism.setting.HomeTabConfig
 import player.phonograph.mechanism.setting.StyleConfig
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
@@ -120,6 +124,14 @@ class MainActivity : AbsSlidingMusicPanelActivity(),
                 }
             }, 900
         )
+
+        lifecycleScope.launch {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
+                CurrentQueueState.currentSong.collect {
+                    updateNavigationDrawerHeader()
+                }
+            }
+        }
 
         if (DEBUG) {
             Log.v("Metrics", "${System.currentTimeMillis().mod(10000000)} MainActivity.onCreate()")
@@ -326,11 +338,6 @@ class MainActivity : AbsSlidingMusicPanelActivity(),
                 navigationDrawerHeader = null
             }
         }
-    }
-
-    override fun onPlayingMetaChanged() {
-        super.onPlayingMetaChanged()
-        updateNavigationDrawerHeader()
     }
 
     override fun onServiceConnected() {

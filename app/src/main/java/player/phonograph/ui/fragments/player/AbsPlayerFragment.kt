@@ -13,7 +13,7 @@ import player.phonograph.R
 import player.phonograph.adapter.display.PlayingQueueAdapter
 import player.phonograph.mechanism.Favorite.toggleFavorite
 import player.phonograph.mechanism.event.MediaStoreTracker
-import player.phonograph.mechanism.event.QueueStateTracker
+import player.phonograph.service.queue.CurrentQueueState
 import player.phonograph.model.PaletteColorHolder
 import player.phonograph.model.buildInfoString
 import player.phonograph.model.getReadableDurationString
@@ -356,13 +356,6 @@ abstract class AbsPlayerFragment :
         lyricsViewModel.loadLyrics(MusicPlayerRemote.currentSong)
     }
 
-    override fun onPlayingMetaChanged() {
-        updateCurrentSong()
-        updateQueuePosition()
-        viewModel.updateFavoriteState(MusicPlayerRemote.currentSong, context)
-        lyricsViewModel.loadLyrics(MusicPlayerRemote.currentSong)
-    }
-
     open fun onShow() {
         playbackControlsFragment.show()
     }
@@ -411,21 +404,31 @@ abstract class AbsPlayerFragment :
     private fun observeState() {
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
-                QueueStateTracker.queue.collect { queue ->
+                CurrentQueueState.queue.collect { queue ->
                     playingQueueAdapter.dataset = queue.get() ?: MusicPlayerRemote.playingQueue
+                    updateQueuePosition()
                 }
             }
         }
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
-                QueueStateTracker.position.collect { position ->
+                CurrentQueueState.position.collect { position ->
                     playingQueueAdapter.current = position
                 }
             }
         }
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
-                QueueStateTracker.shuffleMode.collect {
+                CurrentQueueState.currentSong.collect { song ->
+                    updateCurrentSong()
+                    viewModel.updateFavoriteState(MusicPlayerRemote.currentSong, context)
+                    lyricsViewModel.loadLyrics(MusicPlayerRemote.currentSong)
+                }
+            }
+        }
+        lifecycleScope.launch {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
+                CurrentQueueState.shuffleMode.collect {
                     updateQueue()
                 }
             }

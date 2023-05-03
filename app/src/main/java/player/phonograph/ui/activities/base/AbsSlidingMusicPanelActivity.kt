@@ -4,7 +4,7 @@ import com.sothree.slidinguppanel.SlidingUpPanelLayout
 import com.sothree.slidinguppanel.SlidingUpPanelLayout.PanelState
 import mt.tint.setNavigationBarColor
 import player.phonograph.R
-import player.phonograph.mechanism.event.QueueStateTracker
+import player.phonograph.service.queue.CurrentQueueState
 import player.phonograph.mechanism.setting.NowPlayingScreenConfig
 import player.phonograph.model.NowPlayingScreen
 import player.phonograph.service.MusicPlayerRemote
@@ -105,7 +105,7 @@ abstract class AbsSlidingMusicPanelActivity :
 
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
-                QueueStateTracker.queue.collect { queue ->
+                CurrentQueueState.queue.collect { queue ->
                     hideBottomBar(queue.get()?.isEmpty() ?: false)
                 }
             }

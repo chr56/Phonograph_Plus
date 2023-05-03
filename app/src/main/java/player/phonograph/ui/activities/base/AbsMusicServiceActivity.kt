@@ -5,27 +5,20 @@
 package player.phonograph.ui.activities.base
 
 import lib.phonograph.activity.ToolbarActivity
-import player.phonograph.MusicServiceMsgConst
 import player.phonograph.mechanism.event.MediaStoreTracker
-import player.phonograph.model.MusicServiceEventListener
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.MusicPlayerRemote.ServiceToken
 import player.phonograph.util.debug
 import player.phonograph.util.permissions.NonGrantedPermission
 import player.phonograph.util.permissions.Permission
 import player.phonograph.util.permissions.checkStorageReadPermission
-import android.content.BroadcastReceiver
 import android.content.ComponentName
-import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
 import android.content.ServiceConnection
 import android.media.AudioManager
 import android.os.Bundle
 import android.os.IBinder
 import android.util.Log
 import java.lang.System.currentTimeMillis
-import java.lang.ref.WeakReference
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
@@ -33,9 +26,6 @@ import java.lang.ref.WeakReference
 abstract class AbsMusicServiceActivity : ToolbarActivity(), MusicServiceEventListener {
 
     private var serviceToken: ServiceToken? = null
-
-    private var musicStateReceiver: MusicStateReceiver? = null
-    private var receiverRegistered = false
 
     private lateinit var permission: Permission
 
@@ -87,10 +77,6 @@ abstract class AbsMusicServiceActivity : ToolbarActivity(), MusicServiceEventLis
     override fun onDestroy() {
         super.onDestroy()
         MusicPlayerRemote.unbindFromService(serviceToken)
-        if (receiverRegistered) {
-            unregisterReceiver(musicStateReceiver)
-            receiverRegistered = false
-        }
     }
 
     //
@@ -112,59 +98,20 @@ abstract class AbsMusicServiceActivity : ToolbarActivity(), MusicServiceEventLis
     //
 
     override fun onServiceConnected() {
-        if (!receiverRegistered) {
-            musicStateReceiver = MusicStateReceiver(this)
-            registerReceiver(
-                musicStateReceiver,
-                IntentFilter().apply {
-                    addAction(MusicServiceMsgConst.PLAY_STATE_CHANGED)
-                    addAction(MusicServiceMsgConst.META_CHANGED)
-                }
-            )
-            receiverRegistered = true
-        }
         for (listener in mMusicServiceEventListeners) {
             listener.onServiceConnected()
         }
     }
 
     override fun onServiceDisconnected() {
-        if (receiverRegistered) {
-            unregisterReceiver(musicStateReceiver)
-            receiverRegistered = false
-        }
         for (listener in mMusicServiceEventListeners) {
             listener.onServiceDisconnected()
         }
     }
 
-    override fun onPlayingMetaChanged() {
-        for (listener in mMusicServiceEventListeners) {
-            listener.onPlayingMetaChanged()
-        }
-    }
+}
 
-    override fun onPlayStateChanged() {
-        for (listener in mMusicServiceEventListeners) {
-            listener.onPlayStateChanged()
-        }
-    }
-
-    //
-    // Receiver
-    //
-
-    private class MusicStateReceiver(activity: AbsMusicServiceActivity) : BroadcastReceiver() {
-        private val reference: WeakReference<AbsMusicServiceActivity> = WeakReference(activity)
-        override fun onReceive(context: Context, intent: Intent) {
-            val action = intent.action
-            reference.get()?.also { activity ->
-                when (action) {
-                    MusicServiceMsgConst.META_CHANGED         -> activity.onPlayingMetaChanged()
-                    MusicServiceMsgConst.PLAY_STATE_CHANGED   -> activity.onPlayStateChanged()
-                }
-            }
-        }
-    }
-
+interface MusicServiceEventListener {
+    fun onServiceConnected()
+    fun onServiceDisconnected()
 }
