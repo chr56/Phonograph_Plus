@@ -356,13 +356,6 @@ abstract class AbsPlayerFragment :
         lyricsViewModel.loadLyrics(MusicPlayerRemote.currentSong)
     }
 
-    override fun onPlayingMetaChanged() {
-        updateCurrentSong()
-        updateQueuePosition()
-        viewModel.updateFavoriteState(MusicPlayerRemote.currentSong, context)
-        lyricsViewModel.loadLyrics(MusicPlayerRemote.currentSong)
-    }
-
     open fun onShow() {
         playbackControlsFragment.show()
     }
@@ -413,6 +406,10 @@ abstract class AbsPlayerFragment :
             lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
                 QueueStateTracker.queue.collect { queue ->
                     playingQueueAdapter.dataset = queue.get() ?: MusicPlayerRemote.playingQueue
+                    updateQueuePosition()
+                    updateCurrentSong()
+                    viewModel.updateFavoriteState(MusicPlayerRemote.currentSong, context)
+                    lyricsViewModel.loadLyrics(MusicPlayerRemote.currentSong)
                 }
             }
         }
@@ -420,6 +417,9 @@ abstract class AbsPlayerFragment :
             lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
                 QueueStateTracker.position.collect { position ->
                     playingQueueAdapter.current = position
+                    updateCurrentSong()
+                    viewModel.updateFavoriteState(MusicPlayerRemote.currentSong, context)
+                    lyricsViewModel.loadLyrics(MusicPlayerRemote.currentSong)
                 }
             }
         }

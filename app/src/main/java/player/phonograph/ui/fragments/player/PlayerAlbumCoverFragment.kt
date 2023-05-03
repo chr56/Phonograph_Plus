@@ -56,6 +56,14 @@ class PlayerAlbumCoverFragment :
             lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
                 QueueStateTracker.queue.collect {
                     updatePlayingQueue()
+                    updatePosition()
+                }
+            }
+        }
+        lifecycleScope.launch {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
+                QueueStateTracker.position.collect {
+                    updatePosition()
                 }
             }
         }
@@ -106,10 +114,6 @@ class PlayerAlbumCoverFragment :
 
     override fun onServiceConnected() {
         updatePlayingQueue()
-    }
-
-    override fun onPlayingMetaChanged() {
-        updatePosition()
     }
 
     private val coroutineScope = CoroutineScope(SupervisorJob())

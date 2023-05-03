@@ -41,11 +41,15 @@ import player.phonograph.ui.fragments.HomeFragment
 import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.theme.nightMode
 import player.phonograph.mechanism.Update
+import player.phonograph.mechanism.event.QueueStateTracker
 import player.phonograph.util.debug
 import player.phonograph.util.warning
 import player.phonograph.mechanism.setting.HomeTabConfig
 import player.phonograph.mechanism.setting.StyleConfig
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
@@ -61,6 +65,7 @@ import kotlin.random.Random
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 class MainActivity : AbsSlidingMusicPanelActivity(),
@@ -120,6 +125,21 @@ class MainActivity : AbsSlidingMusicPanelActivity(),
                 }
             }, 900
         )
+
+        lifecycleScope.launch {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
+                QueueStateTracker.position.collect {
+                    updateNavigationDrawerHeader()
+                }
+            }
+        }
+        lifecycleScope.launch {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
+                QueueStateTracker.queue.collect {
+                    updateNavigationDrawerHeader()
+                }
+            }
+        }
 
         if (DEBUG) {
             Log.v("Metrics", "${System.currentTimeMillis().mod(10000000)} MainActivity.onCreate()")
@@ -326,11 +346,6 @@ class MainActivity : AbsSlidingMusicPanelActivity(),
                 navigationDrawerHeader = null
             }
         }
-    }
-
-    override fun onPlayingMetaChanged() {
-        super.onPlayingMetaChanged()
-        updateNavigationDrawerHeader()
     }
 
     override fun onServiceConnected() {

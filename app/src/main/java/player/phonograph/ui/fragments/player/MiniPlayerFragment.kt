@@ -6,6 +6,7 @@ import mt.util.color.secondaryTextColor
 import player.phonograph.R
 import player.phonograph.databinding.FragmentMiniPlayerBinding
 import player.phonograph.mechanism.event.PlayerStateTracker
+import player.phonograph.mechanism.event.QueueStateTracker
 import player.phonograph.misc.MusicProgressViewUpdateHelperDelegate
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.ui.fragments.AbsMusicServiceFragment
@@ -84,6 +85,20 @@ class MiniPlayerFragment : AbsMusicServiceFragment() {
                 }
             }
         }
+        lifecycleScope.launch {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
+                QueueStateTracker.position.collect {
+                    updateSongTitle()
+                }
+            }
+        }
+        lifecycleScope.launch {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
+                QueueStateTracker.queue.collect {
+                    updateSongTitle()
+                }
+            }
+        }
     }
 
     private fun updateSongTitle() {
@@ -93,10 +108,6 @@ class MiniPlayerFragment : AbsMusicServiceFragment() {
     override fun onServiceConnected() {
         updateSongTitle()
         updatePlayPauseDrawableState(false)
-    }
-
-    override fun onPlayingMetaChanged() {
-        updateSongTitle()
     }
 
     fun updateProgressViews(progress: Int, total: Int) {
