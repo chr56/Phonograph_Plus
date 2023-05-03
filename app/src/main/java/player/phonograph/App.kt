@@ -8,6 +8,7 @@ import mt.pref.ThemeColor
 import mt.pref.internal.ThemeStore
 import player.phonograph.appshortcuts.DynamicShortcutManager
 import player.phonograph.coil.createPhonographImageLoader
+import player.phonograph.mechanism.event.QueueStateTracker
 import player.phonograph.mechanism.event.setupEventReceiver
 import player.phonograph.notification.ErrorNotification
 import player.phonograph.notification.ErrorNotification.KEY_STACK_TRACE
@@ -104,9 +105,12 @@ class App : Application(), ImageLoaderFactory {
 
         // state listener
         setupEventReceiver(this)
+        QueueStateTracker.init(this)
+        QueueStateTracker.register(queueManager)
     }
 
     override fun onTerminate() {
+        QueueStateTracker.unregister(queueManager)
         queueManager.release()
         super.onTerminate()
     }
