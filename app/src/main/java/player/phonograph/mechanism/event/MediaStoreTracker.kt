@@ -5,7 +5,6 @@
 package player.phonograph.mechanism.event
 
 import player.phonograph.model.listener.MediaStoreChangedListener
-import player.phonograph.util.warning
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import java.lang.ref.WeakReference
@@ -23,7 +22,6 @@ object MediaStoreTracker {
 
     fun unregister(listener: MediaStoreChangedListener) {
         listeners.remove(WeakReference(listener))
-            .also { if (!it) warning(TAG, "${listener.javaClass} is not registered yet") }
     }
 
     fun unregisterAll() {
