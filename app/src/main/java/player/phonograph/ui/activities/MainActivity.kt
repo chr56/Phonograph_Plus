@@ -41,7 +41,7 @@ import player.phonograph.ui.fragments.HomeFragment
 import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.theme.nightMode
 import player.phonograph.mechanism.Update
-import player.phonograph.mechanism.event.QueueStateTracker
+import player.phonograph.service.queue.CurrentQueueState
 import player.phonograph.util.debug
 import player.phonograph.util.warning
 import player.phonograph.mechanism.setting.HomeTabConfig
@@ -65,7 +65,6 @@ import kotlin.random.Random
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 class MainActivity : AbsSlidingMusicPanelActivity(),
@@ -128,7 +127,7 @@ class MainActivity : AbsSlidingMusicPanelActivity(),
 
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
-                QueueStateTracker.currentSong.collect {
+                CurrentQueueState.currentSong.collect {
                     updateNavigationDrawerHeader()
                 }
             }

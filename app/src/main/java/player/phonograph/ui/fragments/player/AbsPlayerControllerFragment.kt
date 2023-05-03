@@ -9,7 +9,7 @@ import mt.util.color.primaryTextColor
 import mt.util.color.secondaryDisabledTextColor
 import mt.util.color.secondaryTextColor
 import player.phonograph.R
-import player.phonograph.mechanism.event.QueueStateTracker
+import player.phonograph.service.queue.CurrentQueueState
 import player.phonograph.misc.MusicProgressViewUpdateHelperDelegate
 import player.phonograph.misc.SimpleOnSeekbarChangeListener
 import player.phonograph.model.getReadableDurationString
@@ -95,14 +95,14 @@ abstract class AbsPlayerControllerFragment : AbsMusicServiceFragment() {
     private fun observeState() {
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
-                QueueStateTracker.repeatMode.collect { repeatMode ->
+                CurrentQueueState.repeatMode.collect { repeatMode ->
                     updateRepeatState(repeatMode)
                 }
             }
         }
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
-                QueueStateTracker.shuffleMode.collect { shuffleMode ->
+                CurrentQueueState.shuffleMode.collect { shuffleMode ->
                     updateShuffleState(shuffleMode)
                 }
             }

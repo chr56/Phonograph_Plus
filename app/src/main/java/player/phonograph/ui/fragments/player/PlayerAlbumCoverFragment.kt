@@ -3,7 +3,7 @@ package player.phonograph.ui.fragments.player
 import lib.phonograph.misc.SimpleAnimatorListener
 import player.phonograph.adapter.AlbumCoverPagerAdapter
 import player.phonograph.databinding.FragmentPlayerAlbumCoverBinding
-import player.phonograph.mechanism.event.QueueStateTracker
+import player.phonograph.service.queue.CurrentQueueState
 import player.phonograph.misc.MusicProgressViewUpdateHelperDelegate
 import player.phonograph.model.lyrics.LrcLyrics
 import player.phonograph.service.MusicPlayerRemote
@@ -57,7 +57,7 @@ class PlayerAlbumCoverFragment :
     private fun observeState() {
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
-                QueueStateTracker.queue.collect {
+                CurrentQueueState.queue.collect {
                     updatePlayingQueue()
                     updatePosition()
                 }
@@ -65,7 +65,7 @@ class PlayerAlbumCoverFragment :
         }
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
-                QueueStateTracker.position.collect {
+                CurrentQueueState.position.collect {
                     updatePosition()
                 }
             }

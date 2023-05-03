@@ -5,7 +5,7 @@ import mt.util.color.resolveColor
 import mt.util.color.secondaryTextColor
 import player.phonograph.R
 import player.phonograph.databinding.FragmentMiniPlayerBinding
-import player.phonograph.mechanism.event.QueueStateTracker
+import player.phonograph.service.queue.CurrentQueueState
 import player.phonograph.misc.MusicProgressViewUpdateHelperDelegate
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.player.PlayerController
@@ -88,7 +88,7 @@ class MiniPlayerFragment : AbsMusicServiceFragment() {
         }
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
-                QueueStateTracker.currentSong.collect {
+                CurrentQueueState.currentSong.collect {
                     updateSongTitle()
                 }
             }

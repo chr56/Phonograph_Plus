@@ -2,22 +2,18 @@
  *  Copyright (c) 2022~2023 chr_56
  */
 
-package player.phonograph.mechanism.event
+package player.phonograph.service.queue
 
 import player.phonograph.App
 import player.phonograph.model.Song
-import player.phonograph.service.queue.QueueManager
-import player.phonograph.service.queue.QueueObserver
-import player.phonograph.service.queue.RepeatMode
-import player.phonograph.service.queue.ShuffleMode
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import java.lang.ref.SoftReference
 
 @Suppress("ObjectPropertyName")
-object QueueStateTracker {
-    private const val TAG = "QueueStateTracker"
+object CurrentQueueState {
+    private const val TAG = "QueueState"
 
     private val _shuffleMode = MutableStateFlow(ShuffleMode.NONE)
     val shuffleMode get() = _shuffleMode.asStateFlow()
