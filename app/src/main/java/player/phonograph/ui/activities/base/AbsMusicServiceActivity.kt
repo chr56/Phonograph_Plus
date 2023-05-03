@@ -6,7 +6,6 @@ package player.phonograph.ui.activities.base
 
 import lib.phonograph.activity.ToolbarActivity
 import player.phonograph.mechanism.event.MediaStoreTracker
-import player.phonograph.model.MusicServiceEventListener
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.MusicPlayerRemote.ServiceToken
 import player.phonograph.util.debug
@@ -110,4 +109,9 @@ abstract class AbsMusicServiceActivity : ToolbarActivity(), MusicServiceEventLis
         }
     }
 
+}
+
+interface MusicServiceEventListener {
+    fun onServiceConnected()
+    fun onServiceDisconnected()
 }
