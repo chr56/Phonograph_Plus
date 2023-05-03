@@ -9,10 +9,13 @@ import mt.util.color.primaryTextColor
 import mt.util.color.secondaryDisabledTextColor
 import mt.util.color.secondaryTextColor
 import player.phonograph.R
+import player.phonograph.service.queue.CurrentQueueState
 import player.phonograph.misc.MusicProgressViewUpdateHelperDelegate
 import player.phonograph.misc.SimpleOnSeekbarChangeListener
 import player.phonograph.model.getReadableDurationString
 import player.phonograph.service.MusicPlayerRemote
+import player.phonograph.service.player.PlayerController
+import player.phonograph.service.player.currentState
 import player.phonograph.service.queue.RepeatMode
 import player.phonograph.service.queue.ShuffleMode
 import player.phonograph.ui.fragments.AbsMusicServiceFragment
@@ -86,6 +89,33 @@ abstract class AbsPlayerControllerFragment : AbsMusicServiceFragment() {
         setUpProgressSlider()
 
         updateProgressTextColor()
+        observeState()
+    }
+
+    private fun observeState() {
+        lifecycleScope.launch {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
+                CurrentQueueState.repeatMode.collect { repeatMode ->
+                    updateRepeatState(repeatMode)
+                }
+            }
+        }
+        lifecycleScope.launch {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
+                CurrentQueueState.shuffleMode.collect { shuffleMode ->
+                    updateShuffleState(shuffleMode)
+                }
+            }
+        }
+        lifecycleScope.launch {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
+                PlayerController.currentState.collect { newState ->
+                    updatePlayPauseDrawableState(
+                        lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)
+                    )
+                }
+            }
+        }
     }
 
     abstract fun setUpPlayPauseButton()
@@ -126,20 +156,6 @@ abstract class AbsPlayerControllerFragment : AbsMusicServiceFragment() {
 
     override fun onServiceConnected() {
         updatePlayPauseDrawableState(false)
-        updateRepeatState()
-        updateShuffleState()
-    }
-
-    override fun onPlayStateChanged() {
-        updatePlayPauseDrawableState(true)
-    }
-
-    override fun onRepeatModeChanged() {
-        updateRepeatState()
-    }
-
-    override fun onShuffleModeChanged() {
-        updateShuffleState()
     }
 
     private fun calculateColor(context: Context, backgroundColor: Int) {
@@ -159,8 +175,8 @@ abstract class AbsPlayerControllerFragment : AbsMusicServiceFragment() {
     }
 
     private suspend fun updateAll() = withContext(Dispatchers.Main) {
-        updateRepeatState()
-        updateShuffleState()
+        updateRepeatState(MusicPlayerRemote.repeatMode)
+        updateShuffleState(MusicPlayerRemote.shuffleMode)
         updatePrevNextColor()
         updatePlayPauseColor()
         updateProgressTextColor()
@@ -187,7 +203,7 @@ abstract class AbsPlayerControllerFragment : AbsMusicServiceFragment() {
         songCurrentProgress.text = getReadableDurationString(progress.toLong())
     }
 
-    private fun updateRepeatState() = when (MusicPlayerRemote.repeatMode) {
+    private fun updateRepeatState(repeatMode: RepeatMode) = when (repeatMode) {
         RepeatMode.NONE               -> {
             repeatButton.setImageResource(R.drawable.ic_repeat_white_24dp)
             repeatButton.setColorFilter(lastDisabledPlaybackControlsColor, SRC_IN)
@@ -202,8 +218,8 @@ abstract class AbsPlayerControllerFragment : AbsMusicServiceFragment() {
         }
     }
 
-    private fun updateShuffleState() = shuffleButton.setColorFilter(
-        when (MusicPlayerRemote.shuffleMode) {
+    private fun updateShuffleState(shuffleMode: ShuffleMode) = shuffleButton.setColorFilter(
+        when (shuffleMode) {
             ShuffleMode.SHUFFLE -> lastPlaybackControlsColor
             ShuffleMode.NONE    -> lastDisabledPlaybackControlsColor
         },

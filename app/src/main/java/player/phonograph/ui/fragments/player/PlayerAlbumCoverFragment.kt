@@ -1,10 +1,24 @@
 package player.phonograph.ui.fragments.player
 
+import lib.phonograph.misc.SimpleAnimatorListener
+import player.phonograph.adapter.AlbumCoverPagerAdapter
+import player.phonograph.databinding.FragmentPlayerAlbumCoverBinding
+import player.phonograph.service.queue.CurrentQueueState
+import player.phonograph.misc.MusicProgressViewUpdateHelperDelegate
+import player.phonograph.model.lyrics.LrcLyrics
+import player.phonograph.service.MusicPlayerRemote
+import player.phonograph.settings.Setting
+import player.phonograph.ui.fragments.AbsMusicServiceFragment
+import player.phonograph.util.ui.PHONOGRAPH_ANIM_TIME
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import androidx.lifecycle.whenResumed
+import androidx.lifecycle.whenStarted
+import androidx.viewpager2.widget.ViewPager2
 import android.animation.Animator
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.view.GestureDetector
 import android.view.GestureDetector.SimpleOnGestureListener
 import android.view.LayoutInflater
@@ -14,19 +28,7 @@ import android.view.View.OnTouchListener
 import android.view.ViewGroup
 import android.view.animation.AccelerateInterpolator
 import android.view.animation.DecelerateInterpolator
-import androidx.viewpager2.widget.ViewPager2
 import kotlinx.coroutines.*
-import lib.phonograph.misc.SimpleAnimatorListener
-import player.phonograph.adapter.AlbumCoverPagerAdapter
-import player.phonograph.databinding.FragmentPlayerAlbumCoverBinding
-import player.phonograph.misc.MusicProgressViewUpdateHelperDelegate
-import player.phonograph.model.lyrics.LrcLyrics
-import player.phonograph.service.MusicPlayerRemote
-import player.phonograph.settings.Setting
-import player.phonograph.ui.fragments.AbsMusicServiceFragment
-import player.phonograph.util.ui.PHONOGRAPH_ANIM_TIME
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.whenResumed
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
@@ -49,6 +51,25 @@ class PlayerAlbumCoverFragment :
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         lifecycle.addObserver(progressViewUpdateHelperDelegate)
+        observeState()
+    }
+
+    private fun observeState() {
+        lifecycleScope.launch {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
+                CurrentQueueState.queue.collect {
+                    updatePlayingQueue()
+                    updatePosition()
+                }
+            }
+        }
+        lifecycleScope.launch {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
+                CurrentQueueState.position.collect {
+                    updatePosition()
+                }
+            }
+        }
     }
 
     override fun onCreateView(
@@ -95,46 +116,26 @@ class PlayerAlbumCoverFragment :
     }
 
     override fun onServiceConnected() {
-        updatePlayingQueue()
-    }
-
-    override fun onQueueChanged() {
-        updatePlayingQueue()
-    }
-
-    override fun onPlayingMetaChanged() {
-        updatePosition()
-    }
-
-    private val coroutineScope = CoroutineScope(SupervisorJob())
-
-    private val handler: Handler = Handler(Looper.getMainLooper()) { message ->
-        when (message.what) {
-            MSG_UPDATE_QUEUE -> {
-                if (isResumed) {
-                    val queue = MusicPlayerRemote.playingQueue
-                    val position = MusicPlayerRemote.position
-                    albumCoverPagerAdapter = AlbumCoverPagerAdapter(this, queue)
-                    binding.playerCoverViewpager.adapter = albumCoverPagerAdapter
-                    binding.playerCoverViewpager.setCurrentItem(position, false)
-                    onPageSelected(position)
-                } else {
-                    Handler(Looper.getMainLooper()).postDelayed(::updatePlayingQueue, 400)
-                }
-            }
-            MSG_UPDATE_POSITION -> {
-                binding.playerCoverViewpager.setCurrentItem(MusicPlayerRemote.position, false)
-            }
+        lifecycleScope.launch {
+            updatePlayingQueue()
         }
-        false
     }
 
-    private fun updatePlayingQueue() {
-        handler.sendEmptyMessage(MSG_UPDATE_QUEUE)
+    private suspend fun updatePlayingQueue() {
+        lifecycle.whenStarted {
+            val queue = MusicPlayerRemote.playingQueue
+            val position = MusicPlayerRemote.position
+            albumCoverPagerAdapter = AlbumCoverPagerAdapter(this@PlayerAlbumCoverFragment, queue)
+            binding.playerCoverViewpager.adapter = albumCoverPagerAdapter
+            binding.playerCoverViewpager.setCurrentItem(position, false)
+            onPageSelected(position)
+        }
     }
 
-    private fun updatePosition() {
-        handler.sendEmptyMessage(MSG_UPDATE_POSITION)
+    private suspend fun updatePosition() {
+        lifecycle.whenStarted {
+            binding.playerCoverViewpager.setCurrentItem(MusicPlayerRemote.position, false)
+        }
     }
 
     private val pageChangeListener = object : ViewPager2.OnPageChangeCallback() {
@@ -153,7 +154,7 @@ class PlayerAlbumCoverFragment :
 
     private fun updateColorAt(position: Int) {
         albumCoverPagerAdapter?.let { adapter ->
-            coroutineScope.launch(Dispatchers.Default) {
+            lifecycleScope.launch(Dispatchers.Default) {
                 val song = adapter.dataSet.getOrElse(position) { return@launch }
                 val color = adapter.getPaletteColor(song)
                 notifyColorChange(color)
@@ -309,8 +310,5 @@ class PlayerAlbumCoverFragment :
 
     companion object {
         const val VISIBILITY_ANIM_DURATION = 300L
-
-        private const val MSG_UPDATE_QUEUE = 2
-        private const val MSG_UPDATE_POSITION = 4
     }
 }

@@ -31,7 +31,11 @@ import player.phonograph.model.playlist.MyTopTracksPlaylist
 import player.phonograph.model.playlist.Playlist
 import player.phonograph.settings.Setting
 import player.phonograph.mechanism.PlaylistsManagement
+import player.phonograph.mechanism.event.MediaStoreTracker
+import player.phonograph.model.listener.MediaStoreChangedListener
 import player.phonograph.util.ui.setUpFastScrollRecyclerViewColor
+import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.LifecycleOwner
 
 class PlaylistPage : AbsPage() {
 
@@ -41,7 +45,7 @@ class PlaylistPage : AbsPage() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         loadPlaylist()
         _viewBinding = FragmentDisplayPageBinding.inflate(inflater, container, false)
@@ -104,7 +108,7 @@ class PlaylistPage : AbsPage() {
                 MyTopTracksPlaylist(context),
             ).also {
                 if (!Setting.instance.useLegacyFavoritePlaylistImpl)
-                    it.add(FavoriteSongsPlaylist(context),)
+                    it.add(FavoriteSongsPlaylist(context))
             }.also { it.addAll(PlaylistsManagement.getAllPlaylists(context)) }
 
             while (!isRecyclerViewPrepared) yield() // wait until ready
@@ -121,11 +125,6 @@ class PlaylistPage : AbsPage() {
             binding.empty.setText(emptyMessage)
             binding.empty.visibility = if (adapter.dataSet.isEmpty()) View.VISIBLE else View.GONE
         }
-    }
-
-    override fun onMediaStoreChanged() {
-        loadPlaylist()
-        super.onMediaStoreChanged()
     }
 
     override fun onDestroyView() {
@@ -158,6 +157,19 @@ class PlaylistPage : AbsPage() {
         }
 
         binding.addNewItem.visibility = View.VISIBLE
+    }
+
+    private lateinit var listener: MediaStoreListener
+    override fun onCreate(savedInstanceState: Bundle?) {
+        listener = MediaStoreListener()
+        super.onCreate(savedInstanceState)
+        lifecycle.addObserver(listener)
+    }
+
+    private inner class MediaStoreListener : MediaStoreTracker.LifecycleListener() {
+        override fun onMediaStoreChanged() {
+            loadPlaylist()
+        }
     }
 
     companion object {

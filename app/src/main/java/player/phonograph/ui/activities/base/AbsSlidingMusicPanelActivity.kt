@@ -4,6 +4,8 @@ import com.sothree.slidinguppanel.SlidingUpPanelLayout
 import com.sothree.slidinguppanel.SlidingUpPanelLayout.PanelState
 import mt.tint.setNavigationBarColor
 import player.phonograph.R
+import player.phonograph.service.queue.CurrentQueueState
+import player.phonograph.mechanism.setting.NowPlayingScreenConfig
 import player.phonograph.model.NowPlayingScreen
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.settings.Setting
@@ -11,10 +13,11 @@ import player.phonograph.ui.fragments.player.AbsPlayerFragment
 import player.phonograph.ui.fragments.player.MiniPlayerFragment
 import player.phonograph.ui.fragments.player.card.CardPlayerFragment
 import player.phonograph.ui.fragments.player.flat.FlatPlayerFragment
-import player.phonograph.mechanism.setting.NowPlayingScreenConfig
 import androidx.annotation.ColorInt
 import androidx.annotation.FloatRange
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import android.animation.ArgbEvaluator
 import android.annotation.SuppressLint
 import android.os.Bundle
@@ -99,6 +102,14 @@ abstract class AbsSlidingMusicPanelActivity :
             if (key == Setting.NOW_PLAYING_SCREEN_ID)
                 recreate()
         }
+
+        lifecycleScope.launch {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
+                CurrentQueueState.queue.collect { queue ->
+                    hideBottomBar(queue.get()?.isEmpty() ?: false)
+                }
+            }
+        }
     }
 
     fun setAntiDragView(antiDragView: View?) {
@@ -115,11 +126,6 @@ abstract class AbsSlidingMusicPanelActivity :
                 }
             })
         } // don't call hideBottomBar(true) here as it causes a bug with the SlidingUpPanelLayout
-    }
-
-    override fun onQueueChanged() {
-        super.onQueueChanged()
-        hideBottomBar(MusicPlayerRemote.playingQueue.isEmpty())
     }
 
     override fun onPanelSlide(panel: View, @FloatRange(from = 0.0, to = 1.0) slideOffset: Float) {
