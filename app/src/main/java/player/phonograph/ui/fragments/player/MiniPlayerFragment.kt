@@ -88,14 +88,7 @@ class MiniPlayerFragment : AbsMusicServiceFragment() {
         }
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
-                QueueStateTracker.position.collect {
-                    updateSongTitle()
-                }
-            }
-        }
-        lifecycleScope.launch {
-            lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
-                QueueStateTracker.queue.collect {
+                QueueStateTracker.currentSong.collect {
                     updateSongTitle()
                 }
             }

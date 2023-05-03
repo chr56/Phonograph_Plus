@@ -407,9 +407,6 @@ abstract class AbsPlayerFragment :
                 QueueStateTracker.queue.collect { queue ->
                     playingQueueAdapter.dataset = queue.get() ?: MusicPlayerRemote.playingQueue
                     updateQueuePosition()
-                    updateCurrentSong()
-                    viewModel.updateFavoriteState(MusicPlayerRemote.currentSong, context)
-                    lyricsViewModel.loadLyrics(MusicPlayerRemote.currentSong)
                 }
             }
         }
@@ -417,6 +414,12 @@ abstract class AbsPlayerFragment :
             lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
                 QueueStateTracker.position.collect { position ->
                     playingQueueAdapter.current = position
+                }
+            }
+        }
+        lifecycleScope.launch {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
+                QueueStateTracker.currentSong.collect { song ->
                     updateCurrentSong()
                     viewModel.updateFavoriteState(MusicPlayerRemote.currentSong, context)
                     lyricsViewModel.loadLyrics(MusicPlayerRemote.currentSong)

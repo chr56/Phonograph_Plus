@@ -128,14 +128,7 @@ class MainActivity : AbsSlidingMusicPanelActivity(),
 
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
-                QueueStateTracker.position.collect {
-                    updateNavigationDrawerHeader()
-                }
-            }
-        }
-        lifecycleScope.launch {
-            lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
-                QueueStateTracker.queue.collect {
+                QueueStateTracker.currentSong.collect {
                     updateNavigationDrawerHeader()
                 }
             }
