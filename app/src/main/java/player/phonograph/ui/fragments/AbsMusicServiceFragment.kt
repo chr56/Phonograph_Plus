@@ -38,5 +38,4 @@ open class AbsMusicServiceFragment : Fragment(), MusicServiceEventListener {
     override fun onPlayingMetaChanged() {}
     override fun onServiceConnected() {}
     override fun onServiceDisconnected() {}
-    override fun onPlayStateChanged() {}
 }

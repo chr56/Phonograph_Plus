@@ -144,12 +144,6 @@ abstract class AbsMusicServiceActivity : ToolbarActivity(), MusicServiceEventLis
         }
     }
 
-    override fun onPlayStateChanged() {
-        for (listener in mMusicServiceEventListeners) {
-            listener.onPlayStateChanged()
-        }
-    }
-
     //
     // Receiver
     //
@@ -161,7 +155,6 @@ abstract class AbsMusicServiceActivity : ToolbarActivity(), MusicServiceEventLis
             reference.get()?.also { activity ->
                 when (action) {
                     MusicServiceMsgConst.META_CHANGED         -> activity.onPlayingMetaChanged()
-                    MusicServiceMsgConst.PLAY_STATE_CHANGED   -> activity.onPlayStateChanged()
                 }
             }
         }

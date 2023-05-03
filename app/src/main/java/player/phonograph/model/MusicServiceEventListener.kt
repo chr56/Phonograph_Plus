@@ -7,5 +7,4 @@ interface MusicServiceEventListener {
     fun onServiceConnected()
     fun onServiceDisconnected()
     fun onPlayingMetaChanged()
-    fun onPlayStateChanged()
 }
