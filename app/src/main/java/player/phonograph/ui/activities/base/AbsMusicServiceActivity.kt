@@ -118,10 +118,7 @@ abstract class AbsMusicServiceActivity : ToolbarActivity(), MusicServiceEventLis
                 musicStateReceiver,
                 IntentFilter().apply {
                     addAction(MusicServiceMsgConst.PLAY_STATE_CHANGED)
-                    addAction(MusicServiceMsgConst.SHUFFLE_MODE_CHANGED)
-                    addAction(MusicServiceMsgConst.REPEAT_MODE_CHANGED)
                     addAction(MusicServiceMsgConst.META_CHANGED)
-                    addAction(MusicServiceMsgConst.QUEUE_CHANGED)
                 }
             )
             receiverRegistered = true
@@ -147,27 +144,9 @@ abstract class AbsMusicServiceActivity : ToolbarActivity(), MusicServiceEventLis
         }
     }
 
-    override fun onQueueChanged() {
-        for (listener in mMusicServiceEventListeners) {
-            listener.onQueueChanged()
-        }
-    }
-
     override fun onPlayStateChanged() {
         for (listener in mMusicServiceEventListeners) {
             listener.onPlayStateChanged()
-        }
-    }
-
-    override fun onRepeatModeChanged() {
-        for (listener in mMusicServiceEventListeners) {
-            listener.onRepeatModeChanged()
-        }
-    }
-
-    override fun onShuffleModeChanged() {
-        for (listener in mMusicServiceEventListeners) {
-            listener.onShuffleModeChanged()
         }
     }
 
@@ -182,10 +161,7 @@ abstract class AbsMusicServiceActivity : ToolbarActivity(), MusicServiceEventLis
             reference.get()?.also { activity ->
                 when (action) {
                     MusicServiceMsgConst.META_CHANGED         -> activity.onPlayingMetaChanged()
-                    MusicServiceMsgConst.QUEUE_CHANGED        -> activity.onQueueChanged()
                     MusicServiceMsgConst.PLAY_STATE_CHANGED   -> activity.onPlayStateChanged()
-                    MusicServiceMsgConst.REPEAT_MODE_CHANGED  -> activity.onRepeatModeChanged()
-                    MusicServiceMsgConst.SHUFFLE_MODE_CHANGED -> activity.onShuffleModeChanged()
                 }
             }
         }

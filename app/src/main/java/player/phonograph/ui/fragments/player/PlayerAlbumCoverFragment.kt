@@ -1,5 +1,20 @@
 package player.phonograph.ui.fragments.player
 
+import lib.phonograph.misc.SimpleAnimatorListener
+import player.phonograph.adapter.AlbumCoverPagerAdapter
+import player.phonograph.databinding.FragmentPlayerAlbumCoverBinding
+import player.phonograph.mechanism.event.QueueStateTracker
+import player.phonograph.misc.MusicProgressViewUpdateHelperDelegate
+import player.phonograph.model.lyrics.LrcLyrics
+import player.phonograph.service.MusicPlayerRemote
+import player.phonograph.settings.Setting
+import player.phonograph.ui.fragments.AbsMusicServiceFragment
+import player.phonograph.util.ui.PHONOGRAPH_ANIM_TIME
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import androidx.lifecycle.whenResumed
+import androidx.viewpager2.widget.ViewPager2
 import android.animation.Animator
 import android.annotation.SuppressLint
 import android.os.Bundle
@@ -14,19 +29,7 @@ import android.view.View.OnTouchListener
 import android.view.ViewGroup
 import android.view.animation.AccelerateInterpolator
 import android.view.animation.DecelerateInterpolator
-import androidx.viewpager2.widget.ViewPager2
 import kotlinx.coroutines.*
-import lib.phonograph.misc.SimpleAnimatorListener
-import player.phonograph.adapter.AlbumCoverPagerAdapter
-import player.phonograph.databinding.FragmentPlayerAlbumCoverBinding
-import player.phonograph.misc.MusicProgressViewUpdateHelperDelegate
-import player.phonograph.model.lyrics.LrcLyrics
-import player.phonograph.service.MusicPlayerRemote
-import player.phonograph.settings.Setting
-import player.phonograph.ui.fragments.AbsMusicServiceFragment
-import player.phonograph.util.ui.PHONOGRAPH_ANIM_TIME
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.whenResumed
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
@@ -49,6 +52,13 @@ class PlayerAlbumCoverFragment :
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         lifecycle.addObserver(progressViewUpdateHelperDelegate)
+        lifecycleScope.launch {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
+                QueueStateTracker.queue.collect {
+                    updatePlayingQueue()
+                }
+            }
+        }
     }
 
     override fun onCreateView(
@@ -95,10 +105,6 @@ class PlayerAlbumCoverFragment :
     }
 
     override fun onServiceConnected() {
-        updatePlayingQueue()
-    }
-
-    override fun onQueueChanged() {
         updatePlayingQueue()
     }
 
