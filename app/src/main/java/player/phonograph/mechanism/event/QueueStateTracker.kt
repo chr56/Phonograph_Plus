@@ -35,8 +35,8 @@ object QueueStateTracker {
     private val _queue = MutableStateFlow(listOf<Song>())
     val queue get() = _queue.asStateFlow()
 
-    private fun refreshQueue(newQueue: List<Song>) {
-        _queue.update { newQueue }
+    private fun refreshQueue(queue: List<Song>) {
+        _queue.update { ArrayList(queue) } // todo: memory save
     }
 
     private val _position = MutableStateFlow(-1)
