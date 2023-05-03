@@ -30,6 +30,8 @@ object MediaStoreTracker {
         listeners.clear()
     }
 
+    fun notifyAllListeners() = dispatch()
+
     fun dispatch() {
         val rmBin = mutableListOf<WeakReference<MediaStoreChangedListener>>()
         for (weakReference in listeners) {

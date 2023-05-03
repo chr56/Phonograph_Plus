@@ -6,6 +6,7 @@ package player.phonograph.ui.activities.base
 
 import lib.phonograph.activity.ToolbarActivity
 import player.phonograph.MusicServiceMsgConst
+import player.phonograph.mechanism.event.MediaStoreTracker
 import player.phonograph.model.MusicServiceEventListener
 import player.phonograph.service.MusicPlayerRemote
 import player.phonograph.service.MusicPlayerRemote.ServiceToken
@@ -77,8 +78,7 @@ abstract class AbsMusicServiceActivity : ToolbarActivity(), MusicServiceEventLis
         if (permission is NonGrantedPermission) {
             notifyPermissionDeniedUser(listOf(permission)) {
                 requestPermissionImpl(arrayOf(permission.permissionId)) { result ->
-                    if (result.entries.first().value)
-                        sendBroadcast(Intent(MusicServiceMsgConst.MEDIA_STORE_CHANGED))
+                    if (result.entries.first().value) MediaStoreTracker.notifyAllListeners()
                 }
             }
         }
@@ -122,7 +122,6 @@ abstract class AbsMusicServiceActivity : ToolbarActivity(), MusicServiceEventLis
                     addAction(MusicServiceMsgConst.REPEAT_MODE_CHANGED)
                     addAction(MusicServiceMsgConst.META_CHANGED)
                     addAction(MusicServiceMsgConst.QUEUE_CHANGED)
-                    addAction(MusicServiceMsgConst.MEDIA_STORE_CHANGED)
                 }
             )
             receiverRegistered = true

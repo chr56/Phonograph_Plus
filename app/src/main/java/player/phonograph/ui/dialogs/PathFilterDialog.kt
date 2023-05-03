@@ -2,7 +2,6 @@ package player.phonograph.ui.dialogs
 
 import lib.phonograph.dialog.alertDialog
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -11,15 +10,13 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.FrameLayout.LayoutParams
 import android.widget.TextView
-import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import mt.pref.ThemeColor
 import mt.util.color.primaryTextColor
-import player.phonograph.App
-import player.phonograph.MusicServiceMsgConst
 import player.phonograph.R
+import player.phonograph.mechanism.event.MediaStoreTracker
 import player.phonograph.provider.PathFilterStore
 import player.phonograph.settings.Setting
 import player.phonograph.ui.components.viewcreater.*
@@ -63,7 +60,7 @@ class PathFilterDialog : DialogFragment() {
                 val inv = !Setting.instance.pathFilterExcludeMode
                 Setting.instance.pathFilterExcludeMode = inv
                 loadPaths()
-                App.instance.sendBroadcast(Intent(MusicServiceMsgConst.MEDIA_STORE_CHANGED))
+                MediaStoreTracker.notifyAllListeners()
             }
             space(1)
             button(2, getString(android.R.string.ok), accentColor) {
