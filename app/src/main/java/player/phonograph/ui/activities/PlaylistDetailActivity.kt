@@ -36,6 +36,7 @@ import player.phonograph.model.totalDuration
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
 import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.mechanism.PlaylistsManagement
+import player.phonograph.mechanism.event.MediaStoreTracker
 import player.phonograph.util.ui.setUpFastScrollRecyclerViewColor
 import util.phonograph.playlist.mediastore.moveItemViaMediastore
 import util.phonograph.playlist.mediastore.removeFromPlaylistViaMediastore
@@ -105,6 +106,8 @@ class PlaylistDetailActivity :
 
         setUpRecyclerView()
         setUpDashBroad()
+
+        lifecycle.addObserver(MediaStoreListener())
     }
 
     lateinit var cab: ToolbarCab
@@ -316,11 +319,6 @@ class PlaylistDetailActivity :
      *
      * *******************/
 
-    override fun onMediaStoreChanged() {
-        super.onMediaStoreChanged()
-        model.triggerUpdate()
-    }
-
     override fun onDestroy() {
         super.onDestroy()
         wrappedAdapter?.let {
@@ -333,6 +331,12 @@ class PlaylistDetailActivity :
     override fun onPause() {
         super.onPause()
         recyclerViewDragDropManager?.cancelDrag()
+    }
+
+    private inner class MediaStoreListener : MediaStoreTracker.LifecycleListener() {
+        override fun onMediaStoreChanged() {
+            model.triggerUpdate()
+        }
     }
 
     /* *******************

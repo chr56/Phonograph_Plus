@@ -42,5 +42,4 @@ open class AbsMusicServiceFragment : Fragment(), MusicServiceEventListener {
     override fun onPlayStateChanged() {}
     override fun onRepeatModeChanged() {}
     override fun onShuffleModeChanged() {}
-    override fun onMediaStoreChanged() {}
 }

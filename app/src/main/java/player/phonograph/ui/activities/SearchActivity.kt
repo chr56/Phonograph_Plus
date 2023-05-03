@@ -11,6 +11,7 @@ import player.phonograph.mediastore.AlbumLoader
 import player.phonograph.mediastore.ArtistLoader
 import player.phonograph.mediastore.SongLoader
 import lib.phonograph.misc.menuProvider
+import player.phonograph.mechanism.event.MediaStoreTracker
 import player.phonograph.ui.activities.base.AbsMusicServiceActivity
 import player.phonograph.util.ui.hideKeyboard
 import androidx.appcompat.widget.SearchView
@@ -66,6 +67,8 @@ class SearchActivity : AbsMusicServiceActivity(), SearchView.OnQueryTextListener
         setUpToolBar()
 
         savedInstanceState?.let { query = it.getString(QUERY) }
+
+        lifecycle.addObserver(MediaStoreListener())
     }
 
     private var isRecyclerViewPrepared: Boolean = false
@@ -149,10 +152,12 @@ class SearchActivity : AbsMusicServiceActivity(), SearchView.OnQueryTextListener
 
     private val loaderCoroutineScope: CoroutineScope = CoroutineScope(Dispatchers.IO)
 
-    override fun onMediaStoreChanged() {
-        super.onMediaStoreChanged()
-        if (!query.isNullOrEmpty()) loadDataSet(this, query!!)
+    private inner class MediaStoreListener : MediaStoreTracker.LifecycleListener() {
+        override fun onMediaStoreChanged() {
+            if (!query.isNullOrEmpty()) loadDataSet(this@SearchActivity, query!!)
+        }
     }
+
 
     override fun onQueryTextSubmit(query: String): Boolean {
         hideSoftKeyboard()

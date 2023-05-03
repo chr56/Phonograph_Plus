@@ -25,6 +25,8 @@ import player.phonograph.ui.dialogs.QueueSnapshotsDialog
 import player.phonograph.ui.fragments.AbsMusicServiceFragment
 import player.phonograph.ui.fragments.player.PlayerAlbumCoverFragment.Companion.VISIBILITY_ANIM_DURATION
 import player.phonograph.mechanism.Favorite.toggleFavorite
+import player.phonograph.mechanism.event.MediaStoreTracker
+import player.phonograph.model.listener.MediaStoreChangedListener
 import player.phonograph.util.theme.getTintedDrawable
 import player.phonograph.util.NavigationUtil
 import player.phonograph.util.warning
@@ -32,6 +34,7 @@ import androidx.annotation.ColorInt
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
@@ -365,11 +368,6 @@ abstract class AbsPlayerFragment :
         updateQueue()
     }
 
-    override fun onMediaStoreChanged() {
-        updateQueue()
-        viewModel.updateFavoriteState(MusicPlayerRemote.currentSong, context)
-    }
-
     override fun onShuffleModeChanged() {
         refreshAdapter()
     }
@@ -381,6 +379,20 @@ abstract class AbsPlayerFragment :
     open fun onHide() {
         playbackControlsFragment.hide()
         onBackPressed()
+    }
+
+    private lateinit var listener: MediaStoreListener
+    override fun onCreate(savedInstanceState: Bundle?) {
+        listener = MediaStoreListener()
+        super.onCreate(savedInstanceState)
+        lifecycle.addObserver(listener)
+    }
+
+    private inner class MediaStoreListener : MediaStoreTracker.LifecycleListener() {
+        override fun onMediaStoreChanged() {
+            updateQueue()
+            viewModel.updateFavoriteState(MusicPlayerRemote.currentSong, context)
+        }
     }
 
     abstract fun onBackPressed(): Boolean

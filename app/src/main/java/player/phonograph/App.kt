@@ -8,6 +8,7 @@ import mt.pref.ThemeColor
 import mt.pref.internal.ThemeStore
 import player.phonograph.appshortcuts.DynamicShortcutManager
 import player.phonograph.coil.createPhonographImageLoader
+import player.phonograph.mechanism.event.MediaStoreTracker
 import player.phonograph.notification.ErrorNotification
 import player.phonograph.notification.ErrorNotification.KEY_STACK_TRACE
 import player.phonograph.service.queue.QueueManager
@@ -100,6 +101,9 @@ class App : Application(), ImageLoaderFactory {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
             DynamicShortcutManager(this).initDynamicShortcuts()
         }
+
+        // state listener
+        MediaStoreTracker.setup(this)
     }
 
     override fun onTerminate() {

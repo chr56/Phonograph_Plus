@@ -10,6 +10,7 @@ import player.phonograph.adapter.display.SongDisplayAdapter
 import player.phonograph.databinding.ActivityGenreDetailBinding
 import player.phonograph.mediastore.GenreLoader
 import lib.phonograph.misc.menuProvider
+import player.phonograph.mechanism.event.MediaStoreTracker
 import player.phonograph.model.Genre
 import player.phonograph.model.Song
 import player.phonograph.ui.activities.base.AbsSlidingMusicPanelActivity
@@ -47,6 +48,8 @@ class GenreDetailActivity :
 
         setUpToolBar()
         setUpRecyclerView()
+
+        lifecycle.addObserver(MediaStoreListener())
     }
 
     override fun createContentView(): View {
@@ -112,9 +115,10 @@ class GenreDetailActivity :
         if (cabController.dismiss()) return else super.onBackPressed()
     }
 
-    override fun onMediaStoreChanged() {
-        super.onMediaStoreChanged()
-        loadDataSet(this)
+    private inner class MediaStoreListener : MediaStoreTracker.LifecycleListener() {
+        override fun onMediaStoreChanged() {
+            loadDataSet(this@GenreDetailActivity)
+        }
     }
 
     private fun checkIsEmpty() {

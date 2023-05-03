@@ -160,12 +160,6 @@ abstract class AbsMusicServiceActivity : ToolbarActivity(), MusicServiceEventLis
         }
     }
 
-    override fun onMediaStoreChanged() {
-        for (listener in mMusicServiceEventListeners) {
-            listener.onMediaStoreChanged()
-        }
-    }
-
     override fun onRepeatModeChanged() {
         for (listener in mMusicServiceEventListeners) {
             listener.onRepeatModeChanged()
@@ -193,7 +187,6 @@ abstract class AbsMusicServiceActivity : ToolbarActivity(), MusicServiceEventLis
                     MusicServiceMsgConst.PLAY_STATE_CHANGED   -> activity.onPlayStateChanged()
                     MusicServiceMsgConst.REPEAT_MODE_CHANGED  -> activity.onRepeatModeChanged()
                     MusicServiceMsgConst.SHUFFLE_MODE_CHANGED -> activity.onShuffleModeChanged()
-                    MusicServiceMsgConst.MEDIA_STORE_CHANGED  -> activity.onMediaStoreChanged()
                 }
             }
         }
